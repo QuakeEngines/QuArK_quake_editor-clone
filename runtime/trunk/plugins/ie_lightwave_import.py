@@ -227,7 +227,7 @@ def read_lwo2(file, basepath, filename, typ="LWO2"):
         except EOFError:
             break
         tobj.pprint(" ")
-        if lwochunk.chunkname == "TAGS":                           # Tags
+        if lwochunk.chunkname == "TAGS":                           # Tags, a list of skin textures used.
             tobj.pprint("---- TAGS (Model Components\Textures)")
             tag_list.extend(read_tags(lwochunk))
             tobj.pprint("tag_list (Model Components\Textures)")
@@ -604,7 +604,8 @@ def read_tags(lwochunk):
         char = data.read(1)
         if char == "\0":
             tag_list.append(current_tag)
-            if (len(current_tag) % 2 == 0): char = data.read(1)
+            if (len(current_tag) % 2 == 0):
+                char = data.read(1)
             current_tag = ""
         else:
             current_tag += char
@@ -1763,7 +1764,7 @@ def load_image(dir_part, name):
     dir_part = dir_part.replace("\\", "/")
     name = name.replace("\\", "/")
     name_list = []
-    ext_list = ['.tga', '.dds', '.png', '.jpg', '.bmp', '.pcx']  # Order from best to worst (personal judgement).
+    ext_list = ['.tga', '.dds', '.png', '.jpg', '.bmp']  # Order from best to worst (personal judgement).
     # QuArK is not case sensitive for paths or file names, so we don't need to correct for that.
     for ext in ext_list:
         name_list = name_list + [dir_part + name + ext]
@@ -2138,6 +2139,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".lwo LightWave Importer", ".lwo file", "*.
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.3  2008/06/28 14:52:35  cdunde
+# Added .lwo lightwave model export support and improved the importer.
+#
 # Revision 1.2  2008/06/20 05:54:24  cdunde
 # Improvements to uv placements.
 #

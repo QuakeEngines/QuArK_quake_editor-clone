@@ -213,7 +213,7 @@ def writefile(filename):
     file.close()
     end = time.clock()
     seconds = " in %.2f %s" % (end-start, "seconds")
-    message = "Successfully exported " + os.path.basename(filename) + seconds
+    message = "Successfully exported " + os.path.basename(filename) + seconds + "\n\nAny used skin textures that are not a\n.tga, .dds, .png, .jpg or .bmp\nwill need to be created to go with the model"
     quarkx.msgbox(message, quarkpy.qutils.MT_INFORMATION, quarkpy.qutils.MB_OK)
 
 
@@ -770,6 +770,9 @@ quarkpy.qmdlbase.RegisterMdlExporter(".lwo LightWave Exporter", ".lwo file", "*.
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.2  2008/06/28 15:12:06  cdunde
+# Minor correction.
+#
 # Revision 1.1  2008/06/28 14:52:35  cdunde
 # Added .lwo lightwave model export support and improved the importer.
 #
