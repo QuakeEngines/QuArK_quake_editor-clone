@@ -21,9 +21,10 @@ def RegisterMdlImporter(Text, Ext, Desc, Proc):
 def RegisterMdlExporter(Text, Ext, Desc, Proc):
     import qmacro
     qmacro.mdlexport.update( { Text: ([Ext, Desc],  Proc) } )
-    import quarkx
-    quarkx.mdlimportmenu(Text)
     
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.1  2008/06/04 03:56:39  cdunde
+# Setup new QuArK Model Editor Python model import export system.
+#
 #
