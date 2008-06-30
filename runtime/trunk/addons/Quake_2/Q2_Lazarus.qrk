@@ -5,6 +5,9 @@ QQRKSRC1
 // $Header$
 //
 // $Log$
+// Revision 1.23  2008/06/30 17:31:55  cdunde
+// Updates, additions and a new mod addon by X7.
+//
 // Revision 1.22  2008/05/21 18:15:13  cdunde
 // To add and\or activate Half-Life 2 functions: (all original code by Alexander)
 // 1) to create extra Specifics setting handles for func_useableladder function (point0 & point1)
@@ -68,420 +71,86 @@ QQRKSRC1
 {
   QuArKProtected = "1"
   Description = "Revision 1.18a+ - By X7 05-30-08"
+  Game Directories.qctx =
+  {
+  }
+
   Lazarus directory infos.qctx =
   {
-    Game = "Quake 2"
-    SourceDir = "lazarus"
-    GameDir = "lazarus"
-    TextureFlags:form =
+    TextureFlags:form =     // a form for setting Quake 2 texture flags on polyhedron faces
     {
       Style = "5"
-      Reset: =
+
+      Reset: =       // Reset button
       {
-        Cap = "Reset to default"
-        Typ = "B"
+        Cap = "Reset to default"      // button caption
+        Typ = "B"                     // "B"utton
         Hint = "Reset all flags to the texture's default"
         Delete: =
         {
-          Flags = ""
+          Flags = ""          // the button deletes these Specifics
           Contents = ""
           Value = ""
         }
       }
-      Sep: =
-      {
-        Txt = ""
-        Typ = "S"
-      }
-      Title: =
-      {
-        Txt = "Brush Contents"
-        Typ = "S"
-      }
-      Contents: =
-      {
-        Typ = "ER"
-        Txt = "Total Contents"
-        Hint = "Total Contents"
-      }
-      Contents: =
-      {
-        Txt = "1"
-        Cap = "solid"
-        Typ = "X1"
-        Hint = "Contents Solid"
-      }
-      Contents: =
-      {
-        Txt = "2"
-        Cap = "window"
-        Typ = "X2"
-        Hint = "transparent (the opposite face of windows are not drawn)"
-      }
-      Contents: =
-      {
-        Txt = "4"
-        Cap = "aux"
-        Typ = "X4"
-        Hint = "Contents ??"
-      }
-      Contents: =
-      {
-        Txt = "8"
-        Cap = "lava"
-        Typ = "X8"
-        Hint = "Contents very damaging"
-      }
-      Contents: =
-      {
-        Txt = "16"
-        Cap = "slime"
-        Typ = "X16"
-        Hint = "Contents mildly damaging"
-      }
-      Contents: =
-      {
-        Txt = "32"
-        Cap = "water"
-        Typ = "X32"
-        Hint = "Contents water"
-      }
-      Contents: =
-      {
-        Txt = "64"
-        Cap = "mist"
-        Typ = "X64"
-        Hint = "non-solid window (Player can walk through it)"
-      }
-      Contents: =
-      {
-        Txt = "32768"
-        Cap = "areaportal"
-        Typ = "X32768"
-        Hint = "Contents Areaportal"
-      }
-      Contents: =
-      {
-        Txt = "65536"
-        Cap = "playerclip"
-        Typ = "X65536"
-        Hint = "Stops Players from passing through"
-      }
-      Contents: =
-      {
-        Txt = "131072"
-        Cap = "monsterclip"
-        Typ = "X131072"
-        Hint = "Stops monsters passing through"
-      }
-      Sep: =
-      {
-        Txt = ""
-        Typ = "S"
-      }
-      Contents: =
-      {
-        Txt = "262144"
-        Cap = "current_0"
-        Typ = "X262144"
-        Hint = "Flowing water pushes to 0 west"
-      }
-      Contents: =
-      {
-        Txt = "524288"
-        Cap = "current_90"
-        Typ = "X524288"
-        Hint = "Flowing water pushes to 90 north"
-      }
-      Contents: =
-      {
-        Txt = "1048576"
-        Cap = "current_180"
-        Typ = "X1048576"
-        Hint = "Flowing water pushes to 180 east"
-      }
-      Contents: =
-      {
-        Txt = "2097152"
-        Cap = "current_270"
-        Typ = "X2097152"
-        Hint = "Flowing water pushes to 270 south"
-      }
-      Contents: =
-      {
-        Txt = "4194304"
-        Cap = "current_up"
-        Typ = "X4194304"
-        Hint = "Flowing water pushes Upwards"
-      }
-      Contents: =
-      {
-        Txt = "8388608"
-        Cap = "current_dn"
-        Typ = "X8388608"
-        Hint = "Flowing water pushes Down"
-      }
-      Sep: =
-      {
-        Txt = ""
-        Typ = "S"
-      }
-      Contents: =
-      {
-        Txt = "16777216"
-        Cap = "origin"
-        Typ = "X16777216"
-        Hint = "use as centrepoint, for rotating objects only"
-      }
-      Contents: =
-      {
-        Txt = "67108864"
-        Cap = "monster"
-        Typ = "X67108864"
-        Hint = "Contents Monster"
-      }
-      Contents: =
-      {
-        Txt = "33554432"
-        Cap = "deadmonster"
-        Typ = "X33554432"
-        Hint = "Contents Dead Monster"
-      }
-      Contents: =
-      {
-        Txt = "134217728"
-        Cap = "detail"
-        Typ = "X134217728"
-        Hint = "for small, detail brushes that QVIS3 can ignore"
-      }
-      Contents: =
-      {
-        Txt = "268435456"
-        Cap = "translucent"
-        Typ = "X268435456"
-        Hint = "translucent (allows light to pass, not vision - e.g. use for w"
-         "ater)"
-      }
-      Contents: =
-      {
-        Txt = "536870912"
-        Cap = "ladder"
-        Typ = "X536870912"
-        Hint = "Player can climb up this"
-      }
-      Sep: =
-      {
-        Txt = ""
-        Typ = "S"
-      }
-      Title: =
-      {
-        Txt = "Surface Properties"
-        Typ = "S"
-      }
-      Flags: =
-      {
-        Typ = "ER"
-        Txt = "Total Flags"
-        Hint = "Total Flags"
-      }
-      Flags: =
-      {
-        Txt = "1"
-        Cap = "light"
-        Typ = "X1"
-        Hint = "'value' is the light quantity"
-      }
-      Flags: =
-      {
-        Txt = "2"
-        Cap = "slick"
-        Typ = "X2"
-        Hint = "slidy surface"
-      }
-      Flags: =
-      {
-        Txt = "4"
-        Cap = "sky"
-        Typ = "X4"
-        Hint = "sky -can be used with 'light'"
-      }
-      Flags: =
-      {
-        Txt = "8"
-        Cap = "warping"
-        Typ = "X8"
-        Hint = "turbulent water warp (for 64x64 textures only)"
-      }
-      Flags: =
-      {
-        Txt = "16"
-        Cap = "trans33"
-        Typ = "X16"
-        Hint = "transparent, 33% (more see-through than 50%)"
-      }
-      Flags: =
-      {
-        Txt = "32"
-        Cap = "trans66"
-        Typ = "X32"
-        Hint = "transparent, 66% (less see-through than 50%)"
-      }
-      Flags: =
-      {
-        Txt = "64"
-        Cap = "flowing"
-        Typ = "X64"
-        Hint = "flow direction towards angle 0"
-      }
-      Flags: =
-      {
-        Txt = "128"
-        Cap = "nodraw"
-        Typ = "X128"
-        Hint = "for clip textures and trigger textures"
-      }
-      Flags: =
-      {
-        Txt = "256"
-        Cap = "hint"
-        Typ = "X256"
-        Hint = "tell QBSP3 to cut along this plane first"
-      }
-      Flags: =
-      {
-        Txt = "512"
-        Cap = "skip"
-        Typ = "X512"
-        Hint = "completely ignore, allowing non-closed brushes"
-      }
-      Sep: =
-      {
-        Txt = ""
-        Typ = "S"
-      }
-      Title: =
-      {
-        Txt = "Lazarus"
-        Typ = "S"
-      }
-      Lable: =
-      {
-        Txt = "footstep sounds"
-        Typ = "S"
-      }
-      Flags: =
-      {
-        Txt = "1024"
-        Cap = "metal"
-        Typ = "X1024"
-        Hint = "Metal footstep sounds"
-      }
-      Flags: =
-      {
-        Txt = "2048"
-        Cap = "dirt"
-        Typ = "X2048"
-        Hint = "Dirt footstep sounds"
-      }
-      Flags: =
-      {
-        Txt = "4096"
-        Cap = "vent"
-        Typ = "X4096"
-        Hint = "Vent footstep sounds"
-      }
-      Flags: =
-      {
-        Txt = "8192"
-        Cap = "grate"
-        Typ = "X8192"
-        Hint = "Grate footstep sounds"
-      }
-      Flags: =
-      {
-        Txt = "16384"
-        Cap = "tile"
-        Typ = "X16384"
-        Hint = "Tile footstep sounds"
-      }
-      Flags: =
-      {
-        Txt = "32768"
-        Cap = "grass"
-        Typ = "X32768"
-        Hint = "Grass footstep sounds"
-      }
-      Flags: =
-      {
-        Txt = "65536"
-        Cap = "snow"
-        Typ = "X65536"
-        Hint = "Snow footstep sounds"
-      }
-      Flags: =
-      {
-        Txt = "131072"
-        Cap = "carpet"
-        Typ = "X131072"
-        Hint = "Carpet footstep sounds"
-      }
-      Flags: =
-      {
-        Txt = "262144"
-        Cap = "force"
-        Typ = "X262144"
-        Hint = "Forcefield footstep sounds"
-      }
-      Sep: =
-      {
-        Txt = ""
-        Typ = "S"
-      }
-      Title: =
-      {
-        Txt = "KMQuake2 only"
-        Typ = "S"
-      }
-      Flags: =
-      {
-        Txt = "524288"
-        Cap = "gravel"
-        Typ = "X524288"
-        Hint = "Gravel footstep sounds"
-      }
-      Flags: =
-      {
-        Txt = "1048576"
-        Cap = "ice"
-        Typ = "X1048576"
-        Hint = "Ice footstep sounds"
-      }
-      Flags: =
-      {
-        Txt = "2097152"
-        Cap = "sand"
-        Typ = "X2097152"
-        Hint = "Sand footstep sounds"
-      }
-      Flags: =
-      {
-        Txt = "4194304"
-        Cap = "wood"
-        Typ = "X4194304"
-        Hint = "Wood footstep sounds"
-      }
-      Sep: =
-      {
-        Txt = ""
-        Typ = "S"
-      }
-      Value: =
-      {
-        Txt = "Value"
-        Typ = "E"
-        Hint = "The meaning of this depends on the other flags"
-      }
+
+      Sep:     ={Txt="" Typ="S"}  // separator
+
+      Contents:={Txt="Brush" Cap="water"          Typ="X32"        Hint="water"}
+      Contents:={Txt=""      Cap="slime"          Typ="X16"        Hint="mildly damaging"}
+      Contents:={Txt=""      Cap="lava"           Typ="X8"         Hint="very damaging"}
+      Contents:={Txt=""      Cap="window"         Typ="X2"         Hint="transparent (the opposite face of windows are not drawn)"}
+      Contents:={Txt=""      Cap="translucent"    Typ="X268435456" Hint="translucent (allows light to pass, not vision - e.g. use for water)"}
+      Contents:={Txt=""      Cap="mist"           Typ="X64"        Hint="non-solid window (Player can walk through it)"}
+      Contents:={Txt=""      Cap="origin"         Typ="X16777216"  Hint="use as centrepoint, for rotating objects only"}
+      Contents:={Txt=""      Cap="playerclip"     Typ="X65536"     Hint="Stops Players from passing through"}
+      Contents:={Txt=""      Cap="monsterclip"    Typ="X131072"    Hint="Stops monsters passing through"}
+      Contents:={Txt=""      Cap="detail"         Typ="X134217728" Hint="for small, detail brushes that QVIS3 can ignore"}
+      Contents:={Txt=""      Cap="ladder"         Typ="X536870912" Hint="Player can climb up this"}
+      Contents:={Txt=""      Cap="auxi"           Typ="X4"         Hint="??"}
+
+      Sep:     ={Txt="" Typ="S"}  // separator
+
+      Contents:={Txt="Flowing" Cap="current_0"      Typ="X262144"    Hint="Flowing water pushes to 0 west"}
+      Contents:={Txt=""        Cap="current_90"     Typ="X524288"    Hint="Flowing water pushes to 90 north"}
+      Contents:={Txt=""        Cap="current_180"    Typ="X1048576"   Hint="Flowing water pushes to 180 east"}
+      Contents:={Txt=""        Cap="current_270"    Typ="X2097152"   Hint="Flowing water pushes to 270 south"}
+      Contents:={Txt=""        Cap="current_up"     Typ="X4194304"   Hint="Flowing water pushes Upwards"}
+      Contents:={Txt=""        Cap="current_dn"     Typ="X8388608"   Hint="Flowing water pushes Down"}
+
+      Sep:     ={Txt="" Typ="S"}  // separator
+
+      Flags:   ={Txt="Face" Cap="hint"           Typ="X256"       Hint="tell QBSP3 to cut along this plane first"}
+      Flags:   ={Txt=""     Cap="skip"           Typ="X512"       Hint="completely ignore, allowing non-closed brushes"}
+      Flags:   ={Txt=""     Cap="light"          Typ="X1"         Hint="'value' is the light quantity"}
+      Flags:   ={Txt=""     Cap="slick"          Typ="X2"         Hint="slidy surface"}
+      Flags:   ={Txt=""     Cap="sky"            Typ="X4"         Hint="sky -can be used with 'light'"}
+      Flags:   ={Txt=""     Cap="warping"        Typ="X8"         Hint="turbulent water warp (for 64x64 textures only)"}
+      Flags:   ={Txt=""     Cap="trans33"        Typ="X16"        Hint="transparent, 33% (more see-through than 50%)"}
+      Flags:   ={Txt=""     Cap="trans66"        Typ="X32"        Hint="transparent, 66% (less see-through than 50%)"}
+      Flags:   ={Txt=""     Cap="flowing"        Typ="X64"        Hint="flow direction towards angle 0"}
+      Flags:   ={Txt=""     Cap="nodraw"         Typ="X128"       Hint="for clip textures and trigger textures"}
+
+      Sep:     ={Txt="" Typ="S"}  // separator
+
+      Title:   ={Txt="Lazarus" Typ="S"}  // Title
+      Lable:   ={Txt="footstep sounds" Typ="S"}  // Lable
+      Flags:   ={Txt=""     Cap="metal"          Typ = "X1024"    Hint = "Metal footstep sounds"}
+      Flags:   ={Txt=""     Cap="dirt"           Typ = "X2048"    Hint = "Dirt footstep sounds"}
+      Flags:   ={Txt=""     Cap="vent"           Typ = "X4096"    Hint = "Vent footstep sounds"}
+      Flags:   ={Txt=""     Cap="grate"          Typ = "X8192"    Hint = "Grate footstep sounds"}
+      Flags:   ={Txt=""     Cap="tile"           Typ = "X16384"   Hint = "Tile footstep sounds"}
+      Flags:   ={Txt=""     Cap="grass"          Typ = "X32768"   Hint = "Grass footstep sounds"}
+      Flags:   ={Txt=""     Cap="snow"           Typ = "X65536"   Hint = "Snow footstep sounds"}
+      Flags:   ={Txt=""     Cap="carpet"         Typ = "X131072"  Hint = "Carpet footstep sounds"}
+      Flags:   ={Txt=""     Cap="force"          Typ = "X262144"  Hint = "Forcefield footstep sounds"}
+      Flags:   ={Txt=""     Cap="gravel"         Typ = "X524288"  Hint = "Gravel footstep sounds"}
+      Flags:   ={Txt=""     Cap="ice"            Typ = "X1048576" Hint = "Ice footstep sounds"}
+      Flags:   ={Txt=""     Cap="normal"         Typ = "X2097152" Hint = "Normal footstep sounds"}
+
+      Sep:     ={Txt="" Typ="S"}  // separator
+
+      Value:   ={Txt="Value" Typ="E" Hint="The meaning of this depends on the other flags"}
     }
   }
   Textures.qtx =
