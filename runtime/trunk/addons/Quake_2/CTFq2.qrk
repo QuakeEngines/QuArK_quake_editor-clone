@@ -2,6 +2,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.7  2008/06/30 17:31:56  cdunde
+//Updates, additions and a new mod addon by X7.
+//
 //Revision 1.6  2007/03/29 15:27:57  danielpharos
 //Cleaned up the tabs.
 //
@@ -29,16 +32,6 @@ QQRKSRC1
 
     //    Thankyou!
 
-{
-  QuArKProtected = "1"
-  Description = "Requires q2ctf150.zip at ftp://ftp.idsoftware.com/idstuff/qua"
-   "ke2/ctf/"
-  CTF directory infos.qctx =
-  {
-    Game = "Quake 2"
-    SourceDir = "ctf"
-    GameDir = "ctf"
-  }
   Textures.qtx =
   {
     ToolBox = "Texture Browser..."
@@ -1174,6 +1167,7 @@ QQRKSRC1
   {
     t_noise3_form:form =
     {
+      Caption = "Quake II Sounds"
       noise: =
       {
         Typ = "C"
@@ -1793,6 +1787,7 @@ QQRKSRC1
     }
     t_spawner3_form:form =
     {
+      Caption = "Items Spawner"
       target: =
       {
         typ = "C"

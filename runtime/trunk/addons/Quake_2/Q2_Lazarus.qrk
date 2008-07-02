@@ -5,6 +5,9 @@ QQRKSRC1
 // $Header$
 //
 // $Log$
+// Revision 1.24  2008/06/30 17:51:48  cdunde
+// Update
+//
 // Revision 1.23  2008/06/30 17:31:55  cdunde
 // Updates, additions and a new mod addon by X7.
 //
@@ -71,12 +74,13 @@ QQRKSRC1
 {
   QuArKProtected = "1"
   Description = "Revision 1.18a+ - By X7 05-30-08"
-  Game Directories.qctx =
-  {
-  }
 
   Lazarus directory infos.qctx =
   {
+    Game = "Quake 2"
+    SourceDir = "lazarus"
+    GameDir = "lazarus"
+
     TextureFlags:form =     // a form for setting Quake 2 texture flags on polyhedron faces
     {
       Style = "5"
@@ -146,7 +150,6 @@ QQRKSRC1
       Flags:   ={Txt=""     Cap="force"          Typ = "X262144"  Hint = "Forcefield footstep sounds"}
       Flags:   ={Txt=""     Cap="gravel"         Typ = "X524288"  Hint = "Gravel footstep sounds"}
       Flags:   ={Txt=""     Cap="ice"            Typ = "X1048576" Hint = "Ice footstep sounds"}
-      Flags:   ={Txt=""     Cap="normal"         Typ = "X2097152" Hint = "Normal footstep sounds"}
 
       Sep:     ={Txt="" Typ="S"}  // separator
 
