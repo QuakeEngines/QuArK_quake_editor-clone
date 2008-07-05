@@ -1798,9 +1798,10 @@ def buildskinvertices(editor, view, layout, component, skindrawobject):
     linecount = 0
     from qbaseeditor import flagsmouse
 
-    for i in range(len(tris)):
+    for i in range(len(tris)): # i is the tri_index based on its position in the 'Tris' frame list.
         tri = tris[i]
-        for j in range(len(tri)):
+        for j in range(len(tri)): # j is the vert_index, either 0, 1 or 2 vertex of the triangle.
+                                  # To calculate a triangle's vert_index number = (i * 3) + j
             vtx = tri[j]
                ### This sets the Skin-view model mesh vertexes and line drawing location(s).
           #  h.append(SkinHandle(quarkx.vect(vtx[1]-int(texWidth*.5), vtx[2]-int(texHeight*.5), 0), i, j, component, texWidth, texHeight, tri))
@@ -3381,6 +3382,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.136  2008/06/17 20:59:22  cdunde
+#To stop some minor errors from occurring.
+#
 #Revision 1.135  2008/06/01 04:39:53  cdunde
 #Some Linear Handle fixes and added drag lines drawing.
 #
