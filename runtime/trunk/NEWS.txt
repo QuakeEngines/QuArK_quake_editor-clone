@@ -15,6 +15,8 @@ $Id$
 6.6.0 Beta 2
 ============
 
+* [cdunde]: Added new entity line drawing features by X7.
+
 * [cdunde]: Updates, additions and a new mod addon by X7 for Quake 2.
 
 * [cdunde/DanielPharos]: Added .lwo lightwave model export support and improved the importer.
