@@ -734,7 +734,6 @@ class DefaultDrawEntityLines:
         org2 = ObjectOrigin(entity)
         if org2 is not None:
             cv = view.canvas()
-#            cv.penwidth = 2 # DECKER - Make this a configurable size
             cv.penwidth = mapoptions.getThinLineThickness()
             cv.pencolor = color
 # DECKER - These font settings are commented out at the moment
@@ -958,18 +957,34 @@ class DefaultDrawEntityLines:
 ############ SHINE support code end
         if entity["target"] is not None:
            self.drawentityarrows("targetname", entity["target"], org, 0, color, view, entities, processentities)
-           # Rowdy: allow for Doom 3's target -> name instead of (and as well as) target -> targetname
+        if entity["target"] is not None:  # Rowdy: allow for Doom 3's target -> name instead of (and as well as) target -> targetname
            self.drawentityarrows("name", entity["target"], org, 0, color, view, entities, processentities)
+        if entity["pathtarget"] is not None:  # X7: pathtarget to targetname
+           self.drawentityarrows("targetname", entity["pathtarget"], org, 0, color, view, entities, processentities)
+        if entity["movewith"] is not None:  # X7: movewith to targetname, color GREEN
+          self.drawentityarrows("targetname", entity["movewith"], org, 0, GREEN, view, entities, processentities)
+        if entity["killtarget"] is not None:
+           self.drawentityarrows("targetname", entity["killtarget"], org, 0, RED, view, entities, processentities)
+        if entity["team"] is not None:  #X7: team (Arg) for enities the use Team's, color Blue
+           self.drawentityarrows("team", entity["team"], org, 0, BLUE, view, entities, processentities)
         if entity["targetname"] is not None:
            self.drawentityarrows("target", entity["targetname"], org, 1, color, view, entities, processentities)
+        if entity["targetname"] is not None:  # X7: pathtarget to targetname
+           self.drawentityarrows("pathtarget", entity["targetname"], org, 1, color, view, entities, processentities)
+        if entity["targetname"] is not None:  # X7: movewith to targetname, color GREEN
+           self.drawentityarrows("movewith", entity["targetname"], org, 1, GREEN, view, entities, processentities)
+        if entity["targetname"] is not None:
            self.drawentityarrows("killtarget", entity["targetname"], org, 1, RED, view, entities, processentities)
 ############ SHINE support code start
         if entity["Activator.Target"] is not None and quarkx.setupsubset(SS_GAMES)['GameCfg'] == "Shine":
            self.drawentityarrows("Trigger.TargetName", entity["Activator.Target"], org, 0, color, view, entities, processentities)
 ############ SHINE support code end
-        if entity["name"] is not None:
-           # Rowdy: allow for Doom 3's target -> name instead of (and as well as) target -> targetname
+        if entity["name"] is not None:  # Rowdy: allow for Doom 3's target -> name instead of (and as well as) target -> targetname
            self.drawentityarrows("target", entity["name"], org, 1, color, view, entities, processentities)
+        if entity["pathtarget"] is not None:  # X7: movewith to targetname, color GREEN
+           self.drawentityarrows("targetname", entity["pathtarget"], org, 0, color, view, entities, processentities)
+        if entity["movewith"] is not None:  # X7: pathtarget to targetname
+           self.drawentityarrows("targetname", entity["movewith"], org, 0, GREEN, view, entities, processentities)
         if entity["killtarget"] is not None:
            self.drawentityarrows("targetname", entity["killtarget"], org, 0, RED, view, entities, processentities)
 ############ SHINE support code start
@@ -1144,6 +1159,9 @@ def LoadEntityForm(sl):  # Let's find all the objects (items) in sl (a list)
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.59  2008/05/23 05:26:55  cdunde
+#To standardize and make game specific settings for spotlight cone line drawing.
+#
 #Revision 1.58  2008/05/21 18:14:56  cdunde
 #To add and\or activate Half-Life 2 functions: (all original code by Alexander)
 #1) to create extra Specifics setting handles for func_useableladder function (point0 & point1)
