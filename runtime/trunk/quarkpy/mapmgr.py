@@ -54,6 +54,7 @@ Map editor Layout managers.
 #                           suitable for long explanations.
 #
 
+import qutils
 import math
 import quarkx
 import qtoolbar
@@ -275,9 +276,9 @@ class MapLayout(BaseLayout):
         self.buttons["help"].hint = help + "||This button gives you the description of the selected entity, and how to use it.\n\nYou are given help in two manners : by simply moving the mouse over the button, a 'hint' text appears with the description; if you click the button, you are sent to an HTML document about the entity, if available, or you are shown the same text as previously, if nothing more is available.\n\nNote that there is currently not a lot of info available as HTML documents."
         sfbtn = self.buttons["sf"]
         if sl:
-            icon = mapentities.EntityIconSel(sl[0])
+            icon = qutils.EntityIconSel(sl[0])
             for s in sl[1:]:
-                icon2 = mapentities.EntityIconSel(s)
+                icon2 = qutils.EntityIconSel(s)
                 if not (icon is icon2):
                     icon = ico_objects[1][iiEntity]
                     break
@@ -901,6 +902,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.24  2008/05/01 12:08:36  danielpharos
+#Fix several objects not being unloaded correctly.
+#
 #Revision 1.23  2008/02/27 00:04:17  cdunde
 #DanielPharos fix to stop bezier-view from causing errors.
 #
