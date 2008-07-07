@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2008/05/16 20:56:43  danielpharos
+Remove TOPMOST from progress-window
+
 Revision 1.9  2007/11/09 11:17:34  danielpharos
 Made the progress-indicator topmost, and changed some weird conversions.
 
@@ -68,15 +71,14 @@ type
   PProgressIndicator = ^TProgressIndicator;
   TProgressIndicator = record
               NextProgressIndicator: PProgressIndicator;
-              Form: TFormTravail;
-              Ignore, Texte: Integer;
-              Debut: Cardinal;
-              Pos0, Position, IncrementStep, Max: Double;
+              Ignore, Text: Integer;
+              StartTime: Cardinal;
+              StartStep, CurrentStep, NumberSteps: Integer;
              end;
 
-procedure ProgressIndicatorStart(NoTexte, Total: Integer);
+procedure ProgressIndicatorStart(TextNr, Total: Integer);
 procedure ProgressIndicatorChangeMax(nPosition, Total: Integer);
-procedure ProgressIndicatorIncrement();
+procedure ProgressIndicatorIncrement(Delta: Integer = 1);
 procedure ProgressIndicatorStop;
 
  {------------------------}
@@ -88,7 +90,8 @@ uses QkObjects, Quarkx;
 {$R *.DFM}
 
 const
- cBarMax = 100;
+ cBarMax = 100; //Make sure this remains synced with the .dfm file!
+ cIgnoreTime = 375;  //in milliseconds
 
 {$IFDEF DebugTTT}
 var ProgressIndicatorCount: Integer;
@@ -96,14 +99,41 @@ var ProgressIndicatorCount: Integer;
 
 var
  FTravail: PProgressIndicator = Nil;
+ FForm: TFormTravail = Nil;
  Ignore1: Integer = 0;
+ TotalSteps: Integer = 0;
 
  {------------------------}
 
-procedure ProgressIndicatorStart(NoTexte, Total: Integer);
+procedure ProgressIndicatorPaint;
+var
+ nPos: Integer;
+begin
+  with FTravail^ do
+  begin
+    if Ignore=0 then
+    begin
+      nPos:=Round(cBarMax * (StartStep + CurrentStep) / TotalSteps);
+
+      if nPos<>FForm.PositionInt then
+      begin
+        with FForm do
+        begin
+          PositionInt:=nPos;
+          ProgressBar1.Position:=nPos;
+          Label1.Caption:=IntToStr(nPos)+'%';
+          BringToFront;
+          Update;
+          Sleep(1);
+        end;
+      end;
+    end;
+  end;
+end;
+
+procedure ProgressIndicatorStart(TextNr, Total: Integer);
 var
  P: PProgressIndicator;
- Range: Double;
 begin
 {$IFDEF DebugTTT}
   Inc(ProgressIndicatorCount);
@@ -128,15 +158,9 @@ begin
     Exit;
   end;
 
-  if FTravail = Nil then
+  if FTravail<>Nil then
   begin
-    Range := cBarMax
-  end
-  else
-  begin
-    Range := FTravail^.IncrementStep;
-
-    if Range < 1.5 then
+    if TotalSteps > cBarMax then
     begin  { too small steps }
       Inc(FTravail^.Ignore);
       Exit;
@@ -150,39 +174,33 @@ begin
     NextProgressIndicator := FTravail;
     FTravail  := P;
     Ignore    := 0;
+    CurrentStep := 0;
+    NumberSteps := Total;
+    TotalSteps := TotalSteps + Total;
 
     if NextProgressIndicator = Nil then
     begin
-      Form  := Nil;
-      Debut := GetTickCount;
-      Pos0  := 0;
-      Max   := cBarMax;
-      Texte := NoTexte;
+      StartTime := GetTickCount;
+      Text      := TextNr;
+      StartStep := 0;
 
       Screen.Cursor := crHourglass;
     end
     else
     begin
-      Form  := NextProgressIndicator^.Form;
-      Debut := NextProgressIndicator^.Debut;
-      Pos0  := NextProgressIndicator^.Position;
-      Max   := Pos0+Range;
-      Texte := NextProgressIndicator^.Texte;
+      StartTime := NextProgressIndicator^.StartTime;
+      Text      := NextProgressIndicator^.Text;
+      StartStep := NextProgressIndicator^.CurrentStep;
     end;
-
-    Position      := Pos0;
-    IncrementStep := Range / Total;
   end;
 end;
 
-procedure ProgressIndicatorIncrement();
+procedure ProgressIndicatorIncrement(Delta: Integer = 1);
 var
- Temps: Cardinal;
- Arrivee, Stop: Boolean;
+ FormLoaded, Stop: Boolean;
  Msg: TMsg;
  Pt: TPoint;
  R: TRect;
- nPos: Integer;
 begin
   if FTravail=Nil then
   begin
@@ -193,49 +211,34 @@ begin
   begin
     if Ignore=0 then
     begin
-      Position:=Position+IncrementStep;
-      if Position>Max then
+      CurrentStep:=CurrentStep+Delta;
+      if CurrentStep>TotalSteps then
       begin
-        Position:=Max;
+        // FIXME: Shouldn't happen!
+        CurrentStep:=TotalSteps;
       end;
     end;
 
-    Arrivee := Form = Nil;
+    FormLoaded := FForm = Nil;
 
-    if Arrivee then
+    if FormLoaded then
     begin
       //DanielPharos: Might overflow,
       //but you'd have to wait 49.7 days for it!
-      Temps:=GetTickCount-Debut;
-      if (Temps<375) or (Temps < (1300/cBarMax)*Position) then
+      if ((GetTickCount-StartTime) < cIgnoreTime) then
       begin
         Exit;
       end;
 
-      Form:=TFormTravail.Create(Application);
-      Form.LabelProgress.Caption:=LoadStr1(Texte);
+      FForm:=TFormTravail.Create(Application);
+      FForm.LabelProgress.Caption:=LoadStr1(Text);
     end;
 
-    if Ignore=0 then
-    begin
-      nPos:=Round(Position);
-
-      if nPos<>Form.PositionInt then
-      begin
-        with Form do
-        begin
-          PositionInt:=nPos;
-          ProgressBar1.Position:=nPos;
-          Label1.Caption:=IntToStr(nPos)+'%';
-          BringToFront;
-          Update;
-        end;
-      end;
-    end;
+    ProgressIndicatorPaint;
 
     Stop:=False;
 
-    while PeekMessage(Msg, Form.Handle, WM_KEYFIRST, WM_KEYLAST, PM_REMOVE) do
+    while PeekMessage(Msg, FForm.Handle, WM_KEYFIRST, WM_KEYLAST, PM_REMOVE) do
     begin
       Stop:=Stop or ((Msg.message=WM_KEYDOWN) and (Msg.wParam=VK_ESCAPE));
     end;
@@ -244,7 +247,7 @@ begin
     begin
       if GetCursorPos(Pt) then
       begin
-        with Form.ButtonStop do
+        with FForm.ButtonStop do
         begin
           R.TopLeft:=ClientToScreen(Point(0,0));
           R.BottomRight:=ClientToScreen(Point(Width,Height));
@@ -253,17 +256,17 @@ begin
       end;
     end;
 
-    if Arrivee then
+    if FormLoaded then
     begin
-      Form.Show;
-      Form.Update;
+      FForm.Show;
+      FForm.Update;
     end
     else
     begin
       if Stop then
       begin
-        Form.LabelProgress.Caption:=LoadStr1(505);
-        Form.LabelProgress.Update;
+        FForm.LabelProgress.Caption:=LoadStr1(505);
+        FForm.LabelProgress.Update;
         Abort;
       end;
     end;
@@ -273,6 +276,7 @@ end;
 procedure ProgressIndicatorStop;
 var
  P: PProgressIndicator;
+ StepsMissed: Integer;
 begin
 {$IFDEF DebugTTT}
   Dec(ProgressIndicatorCount);
@@ -300,21 +304,24 @@ begin
     Exit;
   end;
 
-  if FTravail^.NextProgressIndicator=Nil then
-  begin
-    FTravail^.Form.Free;
-    Screen.Cursor := crDefault;
-  end
-  else
-  begin
-    FTravail^.NextProgressIndicator^.Form := FTravail^.Form;
-  end;
+  StepsMissed := FTravail^.NumberSteps - FTravail^.CurrentStep;
+  TotalSteps := TotalSteps - FTravail^.NumberSteps;
 
   P := FTravail^.NextProgressIndicator;
 
   Dispose(FTravail);
 
   FTravail:=P;
+
+  if FTravail<>Nil then
+    FTravail^.CurrentStep := FTravail^.CurrentStep + StepsMissed;
+
+  if FTravail=Nil then
+  begin
+    FForm.Free;
+    FForm:=Nil;
+    Screen.Cursor := crDefault;
+  end;
 
   if (FTravail=Nil) and (Ignore1=0) then
   begin
@@ -331,9 +338,7 @@ begin
 {$ENDIF}
 end;
 
-procedure ProgressIndicatorChangeMax;
-var
- nIncrementStep, mPosition: Double;
+procedure ProgressIndicatorChangeMax(nPosition, Total: Integer);
 begin
   if (FTravail=Nil) or (Ignore>0) then
   begin
@@ -342,19 +347,20 @@ begin
 
   with FTravail^ do
   begin
-    nIncrementStep := (Max - Pos0) / Total;
+    TotalSteps:=TotalSteps-NumberSteps+Total;
+    NumberSteps:=Total;
 
-    if nPosition<0 then
+    if nPosition>=0 then
+      CurrentStep := nPosition;
+
+    if CurrentStep>TotalSteps then
     begin
-      mPosition := (Position - Pos0) * (nIncrementStep / IncrementStep);
-    end
-    else
-    begin
-      mPosition := nPosition * nIncrementStep;
+      // FIXME: Shouldn't happen!
+      CurrentStep:=TotalSteps;
     end;
 
-    Position      := Pos0 + mPosition;
-    IncrementStep := nIncrementStep;
+    if FForm<>Nil then
+      ProgressIndicatorPaint;
   end;
 end;
 
