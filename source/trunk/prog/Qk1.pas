@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.60  2008/06/04 03:04:04  cdunde
+Setup new QuArK Model Editor Python model import export system.
+
 Revision 1.59  2008/05/24 19:45:35  danielpharos
 Removed prev change: redundant
 
@@ -452,6 +455,9 @@ uses Undo, QkQuakeC, Setup, Config, ToolBox1, Game, QkOwnExplorer,
   PyMapView, PyForms, Qk3D, EdSceneObject, QkObjectClassList, QkApplPaths,
   QkQuakeCtx, QkSteamFS, AutoUpdater, Logging;
 
+var
+  g_Mutex: THandle;
+
 {$R *.DFM}
 {$R ICONES\ICONES.RES}
 
@@ -587,6 +593,16 @@ var
  Splash: TForm;
  Disclaimer: THandle;
 begin
+ //Checking for single-instance
+ g_Mutex:=CreateMutex(Nil, True, PChar('QuArK_Mutex'));
+ if g_Mutex = 0 then
+   //Something went terribly wrong!
+   Windows.MessageBox(0, PChar('Unable to check if there already is an instance of QuArK running! If this is the case, this can cause serious problems. For example, changed configuration settings might not be saved, and QuArK might not update correctly.'), PChar('QuArK'), MB_OK or MB_ICONWARNING or MB_TASKMODAL)
+ else
+   if GetLastError = ERROR_ALREADY_EXISTS then
+     if Windows.MessageBox(0, PChar('An instance of QuArK is already running. This can cause serious problems. For example, changed configuration settings might not be saved, and QuArK might not update correctly.'#13#10#13#10'Are you sure you want to start a new instance of QuArK?'), PChar('QuArK'), MB_YESNO or MB_ICONWARNING or MB_TASKMODAL) = idNo then
+       Halt(0);
+
  // This next line is done so that the G_ standard carries through for all of
  // the global variables.
  g_Form1 := Self;
@@ -1701,6 +1717,8 @@ begin  { the link to FormDestroy is made in FormCreate }
  ShutdownPython;
  g_Form1:=nil;
  Application.UnHookMainWindow(WindowHook);
+ if g_Mutex <> 0 then
+   ReleaseMutex(g_Mutex);
 end;
 
 procedure TForm1.Saveentryasfile1Click(Sender: TObject);
