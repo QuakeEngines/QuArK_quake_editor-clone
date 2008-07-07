@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2008/06/26 20:35:06  danielpharos
+Added sanity check for package build number, and completed package file parser.
+
 Revision 1.7  2008/06/25 14:23:41  danielpharos
 Major improvements in online update system.
 
@@ -229,6 +232,8 @@ begin
     CurrentFile.FileType := uptPackage
   else if ParseLine = 'Notification File' then
     CurrentFile.FileType := uptNotification
+  else if ParseLine = 'Patcher File' then
+    raise Exception.Create('Wrong file type.')
   else
     raise Exception.Create('Unknown file type.');
 
@@ -280,7 +285,7 @@ begin
   ParseString(FileData, CurrentFile.Description);
   ParseCardinal(FileData, CurrentFile.BuildNumber);
   if CurrentFile.BuildNumber <> UpdateIndexFile.Packages[CurrentFile.PackageIndex].BuildNumber then
-    raise exception.create('Build-numbers do not match.');
+    raise Exception.Create('Build-numbers do not match.');
 
   ParseCardinal(FileData, CurrentFile.FileNR);
   if CurrentFile.FileNR > 0 then
@@ -305,6 +310,7 @@ var
   Dummy: String;
   BuildNumber: Cardinal;
   AddThisPackage: Boolean;
+  ProgressIndicatorMax: Integer;
 begin
   Result := false;
   UpdateIndexFile := TUpdateIndexFile.Create;
@@ -312,7 +318,8 @@ begin
     try
       UpdateConnection:=THTTPConnection.Create;
       try
-        ProgressIndicatorStart(5462, 4);
+        ProgressIndicatorMax:=4;
+        ProgressIndicatorStart(5462, ProgressIndicatorMax);
         try
           UpdateConnection.GoOnline;
           ProgressIndicatorIncrement;
@@ -357,66 +364,64 @@ begin
               UpdatePackages[UpdatePackagesNR - 1].PackageIndex := I;
               UpdatePackages[UpdatePackagesNR - 1].FileName := UpdateIndexFile.Packages[I].FileName;
 
-              ProgressIndicatorStart(5462, 2);
+              ProgressIndicatorMax:=ProgressIndicatorMax+2;
+              ProgressIndicatorChangeMax(-1, ProgressIndicatorMax);
+              FileData := TMemoryStream.Create;
               try
-                FileData := TMemoryStream.Create;
-                try
-                  UpdateConnection.GetFile(UpdatePackages[UpdatePackagesNR - 1].FileName, FileData);
-                  ProgressIndicatorIncrement;
+                UpdateConnection.GetFile(UpdatePackages[UpdatePackagesNR - 1].FileName, FileData);
+                ProgressIndicatorIncrement;
 
-                  FileData.Seek(0, soFromBeginning);
+                FileData.Seek(0, soFromBeginning);
 
-                  ParsePackageFile(UpdatePackages[UpdatePackagesNR - 1], FileData);
-                  ProgressIndicatorIncrement;
-                finally
-                  FileData.Free;
-                end;
+                ParsePackageFile(UpdatePackages[UpdatePackagesNR - 1], FileData);
+                ProgressIndicatorIncrement;
               finally
-                ProgressIndicatorStop;
+                FileData.Free;
               end;
             end;
           end;
         finally
           ProgressIndicatorStop;
         end;
-
-        if Setup.Specifics.Values['AutomaticInstall'] = '' then
-        begin
-          UpdateWindow := TAutoUpdater.Create(nil);
-          try
-            for I:=0 to UpdatePackagesNR-1 do
-              with UpdateWindow.CheckListBox1 do
-              begin
-                AddItem(UpdatePackages[I].Name, nil);
-(*                case UpdatePackages[I].Priority of
-                upCritical:  Checked[I] := true;
-                upImportant: Checked[I] := true;
-                upOptional:  Checked[I] := false;
-                upBeta:      Checked[I] := false;
-                else
-                begin
-                  //Shouldn't happen!
-                  //@
-                  Checked[I] := true;
-                end;
-                end; *)
-              end;
-            UpdateWindow.ShowModal;
-            //@
-          finally
-            UpdateWindow.Free;
-          end;
-        end
-        else
-          if DoInstall = false then
-            Exit; //@
-
-        //@ Automatically install default checked updates, ask for others!!!
-
         UpdateConnection.GoOffline;
       finally
         UpdateConnection.Free;
       end;
+
+
+      if Setup.Specifics.Values['AutomaticInstall'] = '' then
+      begin
+        UpdateWindow := TAutoUpdater.Create(nil);
+        try
+          for I:=0 to UpdatePackagesNR-1 do
+            with UpdateWindow.CheckListBox1 do
+            begin
+              AddItem(UpdatePackages[I].Name, nil);
+(*              case UpdatePackages[I].Priority of
+              upCritical:  Checked[I] := true;
+              upImportant: Checked[I] := true;
+              upOptional:  Checked[I] := false;
+              upBeta:      Checked[I] := false;
+              else
+              begin
+                //Shouldn't happen!
+                //@
+                Checked[I] := true;
+              end;
+              end; *)
+            end;
+          UpdateWindow.ShowModal;
+          //@
+        finally
+          UpdateWindow.Free;
+        end;
+      end
+      else
+        if DoInstall = false then
+          Exit; //@
+
+      //@
+
       Result := true;
     except
       on E: Exception do

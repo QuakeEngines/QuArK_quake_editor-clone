@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2008/06/25 14:44:50  danielpharos
+Added missing log entries.
+
 Revision 1.5  2008/06/25 14:30:12  danielpharos
 Change to ASCII file property
 
@@ -118,62 +121,69 @@ end;
 
 procedure InstallPackages; stdcall;
 var
-  I, PackageNR: Integer;
+  I, J: Integer;
   UpdateConnection: THTTPConnection;
   FileData: TMemoryStream;
+  TotalFileNumber: Cardinal;
 begin
   InstallError:='Unknown error';
   try
     try
-      PackageNR:=0;
+      TotalFileNumber:=0;
       for I:=0 to UpdatePackagesNR-1 do
         with UpdatePackages[I] do
           if Install then
-            PackageNR:=PackageNR+1;
-      InstallWindow.pgbInstall.Max:=PackageNR*2;
+            TotalFileNumber:=TotalFileNumber+FileNR;
+      InstallWindow.pgbInstall.Max:=Integer(TotalFileNumber*2);
 
-      UpdateConnection:=THTTPConnection.Create;
-      try
-        UpdateConnection.GoOnline;
-        UpdateConnection.ConnectTo(QuArKUpdateSite);
+      if TotalFileNumber>0 then
+      begin
+        UpdateConnection:=THTTPConnection.Create;
+        try
+          UpdateConnection.GoOnline;
+          UpdateConnection.ConnectTo(QuArKUpdateSite);
 
-        //Download new files
+          //Download new files
+          for I:=0 to UpdatePackagesNR-1 do
+          begin
+            with UpdatePackages[I] do
+              if Install then
+              begin
+                for J:=0 to FileNR-1 do
+                begin
+                  FileData := TMemoryStream.Create;
+                  try
+                    //@Open file for QUPfiledata...
+                    UpdateConnection.GetFile(Files[J].FileName, FileData);
+                    FileData.Seek(0, soFromBeginning);
+                    //@Save QUPfiledata to file...
+                    //@
+                  finally
+                    FileData.Free;
+                  end;
+                  InstallWindow.pgbInstall.StepIt;
+                  if StopUpdate then
+                    Exit;
+                end;
+              end;
+          end;
+        finally
+          UpdateConnection.Free;
+        end;
+
+        //Install new files
         for I:=0 to UpdatePackagesNR-1 do
         begin
           with UpdatePackages[I] do
             if Install then
             begin
-              FileData := TMemoryStream.Create;
-              try
-                //@Open file for QUPfiledata...
-                UpdateConnection.GetFile(FileName, FileData);
-                FileData.Seek(0, soFromBeginning);
-                //@Save QUPfiledata to file...
-                //@
-              finally
-                FileData.Free;
-              end;
+              //@
+              UpdatePackages[I].InstallSuccessful:=True;
               InstallWindow.pgbInstall.StepIt;
               if StopUpdate then
                 Exit;
             end;
         end;
-      finally
-        UpdateConnection.Free;
-      end;
-
-      //Install new files
-      for I:=0 to UpdatePackagesNR-1 do
-      begin
-        with UpdatePackages[I] do
-          if Install then
-          begin
-            //@
-            UpdatePackages[I].InstallSuccessful:=True;
-            InstallWindow.pgbInstall.StepIt;
-            if StopUpdate then
-              Exit;
-          end;
       end;
     finally
       InstallWindow.StopBtn.Caption:='OK';
