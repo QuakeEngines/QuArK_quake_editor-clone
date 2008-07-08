@@ -955,38 +955,41 @@ class DefaultDrawEntityLines:
         if entity["pivot"] is not None and quarkx.setupsubset(SS_GAMES)['GameCfg'] == "Shine":
            self.drawentityarrows("pivotname", entity["pivot"], org, 1, RED, view, entities, processentities)
 ############ SHINE support code end
-        if entity["target"] is not None:
-           self.drawentityarrows("targetname", entity["target"], org, 0, color, view, entities, processentities)
-        if entity["target"] is not None:  # Rowdy: allow for Doom 3's target -> name instead of (and as well as) target -> targetname
-           self.drawentityarrows("name", entity["target"], org, 0, color, view, entities, processentities)
-        if entity["pathtarget"] is not None:  # X7: pathtarget to targetname
-           self.drawentityarrows("targetname", entity["pathtarget"], org, 0, color, view, entities, processentities)
-        if entity["movewith"] is not None:  # X7: movewith to targetname, color GREEN
-          self.drawentityarrows("targetname", entity["movewith"], org, 0, GREEN, view, entities, processentities)
+        if entity["combattarget"] is not None:  # X7: combattarget to targetname
+           self.drawentityarrows("targetname", entity["combattarget"], org, 0, color, view, entities, processentities)
+        if entity["deathtarget"] is not None:  # X7: deathtarget to targetname, color RED
+           self.drawentityarrows("targetname", entity["deathtarget"], org, 0, RED, view, entities, processentities)
         if entity["killtarget"] is not None:
            self.drawentityarrows("targetname", entity["killtarget"], org, 0, RED, view, entities, processentities)
-        if entity["team"] is not None:  #X7: team (Arg) for enities the use Team's, color Blue
-           self.drawentityarrows("team", entity["team"], org, 0, BLUE, view, entities, processentities)
-        if entity["targetname"] is not None:
-           self.drawentityarrows("target", entity["targetname"], org, 1, color, view, entities, processentities)
-        if entity["targetname"] is not None:  # X7: pathtarget to targetname
-           self.drawentityarrows("pathtarget", entity["targetname"], org, 1, color, view, entities, processentities)
-        if entity["targetname"] is not None:  # X7: movewith to targetname, color GREEN
-           self.drawentityarrows("movewith", entity["targetname"], org, 1, GREEN, view, entities, processentities)
-        if entity["targetname"] is not None:
-           self.drawentityarrows("killtarget", entity["targetname"], org, 1, RED, view, entities, processentities)
+        if entity["name"] is not None:  
+           # Rowdy: allow for Doom 3's target -> name instead of (and as well as) target -> targetname
+           self.drawentityarrows("target", entity["name"], org, 1, color, view, entities, processentities)
+        if entity["movewith"] is not None:  # X7: movewith to targetname, color GREEN
+           self.drawentityarrows("targetname", entity["movewith"], org, 0, GREEN, view, entities, processentities)
+        if entity["pathtarget"] is not None:  # X7: pathtarget to targetname
+           self.drawentityarrows("targetname", entity["pathtarget"], org, 0, color, view, entities, processentities)
+        if entity["target"] is not None:
+           self.drawentityarrows("targetname", entity["target"], org, 0, color, view, entities, processentities)       
+           self.drawentityarrows("name", entity["target"], org, 0, color, view, entities, processentities) # Rowdy: allow for Doom 3's
 ############ SHINE support code start
         if entity["Activator.Target"] is not None and quarkx.setupsubset(SS_GAMES)['GameCfg'] == "Shine":
            self.drawentityarrows("Trigger.TargetName", entity["Activator.Target"], org, 0, color, view, entities, processentities)
 ############ SHINE support code end
-        if entity["name"] is not None:  # Rowdy: allow for Doom 3's target -> name instead of (and as well as) target -> targetname
-           self.drawentityarrows("target", entity["name"], org, 1, color, view, entities, processentities)
-        if entity["pathtarget"] is not None:  # X7: movewith to targetname, color GREEN
-           self.drawentityarrows("targetname", entity["pathtarget"], org, 0, color, view, entities, processentities)
-        if entity["movewith"] is not None:  # X7: pathtarget to targetname
-           self.drawentityarrows("targetname", entity["movewith"], org, 0, GREEN, view, entities, processentities)
-        if entity["killtarget"] is not None:
-           self.drawentityarrows("targetname", entity["killtarget"], org, 0, RED, view, entities, processentities)
+        if entity["targetname"] is not None:
+           self.drawentityarrows("combattarget", entity["targetname"], org, 1, color, view, entities, processentities)
+           self.drawentityarrows("deathtarget", entity["targetname"], org, 1, RED, view, entities, processentities)
+           self.drawentityarrows("killtarget", entity["targetname"], org, 1, RED, view, entities, processentities)
+           self.drawentityarrows("movewith", entity["targetname"], org, 1, GREEN, view, entities, processentities)
+           self.drawentityarrows("pathtarget", entity["targetname"], org, 1, color, view, entities, processentities)
+           self.drawentityarrows("target", entity["targetname"], org, 1, color, view, entities, processentities)
+        if entity["team"] is not None:  #X7: team (Arg) for enities that use Team's, color Blue
+           self.drawentityarrows("team", entity["team"], org, 0, BLUE, view, entities, processentities)
+        if entity["team"] is not None:  #X7: team (Arg) for enities that use Team's, color Blue
+           self.drawentityarrows("team", entity["team"], org, 1, BLUE, view, entities, processentities)
+        if entity["dmgteam"] is not None:  #X7: dmgteam (Arg) for Q2 Lazarus Monsters enities, color Blue
+           self.drawentityarrows("dmgteam", entity["dmgteam"], org, 0, BLUE, view, entities, processentities)
+        if entity["dmgteam"] is not None:  #X7: dmgteam (Arg) for Q2 Lazarus Monsters enities, color Blue
+           self.drawentityarrows("dmgteam", entity["dmgteam"], org, 1, BLUE, view, entities, processentities)
 ############ SHINE support code start
         if quarkx.setupsubset(SS_GAMES)['GameCfg'] == "Shine":
     #    pos = string.find(CVD, " ")
@@ -1159,6 +1162,9 @@ def LoadEntityForm(sl):  # Let's find all the objects (items) in sl (a list)
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.60  2008/07/06 14:07:41  cdunde
+#Added new entity line drawing features by X7.
+#
 #Revision 1.59  2008/05/23 05:26:55  cdunde
 #To standardize and make game specific settings for spotlight cone line drawing.
 #
