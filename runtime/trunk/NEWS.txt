@@ -15,6 +15,9 @@ $Id$
 6.6.0 Beta 2
 ============
 
+* [Danielpharos/cdunde]: Fix the model groups icons not working, and now the model component
+          - icon changes to an X when you hide the component.
+
 * [cdunde]: Added new entity line drawing features by X7.
 
 * [cdunde]: Updates, additions and a new mod addon by X7 for Quake 2.

@@ -239,6 +239,7 @@ def ShowHideComp(x):
     obj = editor.layout.explorer.uniquesel
     if obj is None: return
     obj.showhide(x)
+    editor.layout.explorer.uniquesel = None
 
     if x == 0:
         for view in editor.layout.views:
@@ -435,6 +436,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.25  2008/05/01 15:39:19  danielpharos
+#Made an import more consistent with all others
+#
 #Revision 1.24  2007/11/14 00:11:13  cdunde
 #Corrections for face subdivision to stop models from drawing broken apart,
 #update Skin-view "triangles" amount displayed and proper full redraw

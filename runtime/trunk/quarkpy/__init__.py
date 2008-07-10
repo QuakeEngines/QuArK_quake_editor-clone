@@ -94,6 +94,7 @@ def RunQuArK():
     quarkx.seticons(qutils.iiGroup,      qutils.GroupIconSel,      qutils.GroupIconUnsel)
     quarkx.seticons(qutils.iiDuplicator, qutils.DuplicatorIconSel, qutils.DuplicatorIconUnsel)
     quarkx.seticons(qutils.iiModelGroup, qutils.ModelGroupIconSel, qutils.ModelGroupIconUnsel)
+    quarkx.seticons(qutils.iiComponent,  qutils.ComponentIconSel,  qutils.ComponentIconUnsel)
     s = "&Contextual help"
     qmacro.helpfn[s] = "Help1"
     quarkx.helpmenuitem(s)
@@ -116,6 +117,9 @@ def RunQuArK():
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.12  2005/10/15 00:46:30  cdunde
+#To reinstate headers and history
+#
 #Revision 1.9  2005/08/10 08:55:04  cdunde
 #To fix key error
 #

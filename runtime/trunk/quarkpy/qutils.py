@@ -376,13 +376,14 @@ def GroupIconSel(grp, ico_objects_group_set={
         except:
             pass
     return ico_objects[1][13]
+
 #
 # Variable icons handlers for Model objects
 #
 
 def ModelIcon(modelobj, iconset):
     #
-    # Load the Variable icons for Quake Entity objects
+    # Load the Variable icons for model objects
     #
     if not ico_dict.has_key('mdlobjs'):
         ico_dict['mdlobjs'] = LoadIconSet("images\\mdlobjs", 16)
@@ -396,12 +397,34 @@ def ModelIcon(modelobj, iconset):
     else:
         return ico_objects[iconset][iiUnknown]
 
-
 def ModelGroupIconSel(obj):
     return ModelIcon(obj, 1)
 
 def ModelGroupIconUnsel(obj):
     return ModelIcon(obj, 0)
+
+#
+# Variable icons handlers for Model component objects
+#
+
+def ComponentIcon(compobj, iconset):
+    ##
+    ## Load the Variable icons for model component objects
+    ##
+    #if not ico_dict.has_key('mdlobjs'):
+    #    ico_dict['mdlobjs'] = LoadIconSet("images\\mdlobjs", 16)   CHANGE NAME!
+    #icons = ico_dict['mdlobjs'][iconset]
+
+    if compobj['show'] == chr(1):
+        return ico_objects[iconset][iiComponent]
+    else:
+        return ico_editor[iconset][0]
+
+def ComponentIconSel(obj):
+    return ComponentIcon(obj, 1)
+
+def ComponentIconUnsel(obj):
+    return ComponentIcon(obj, 0)
 
 
 # quarkx.msgbox
@@ -751,6 +774,9 @@ def WhatIsThisObject(obj=None, self=None, view=None, flags=None, openconsole=Non
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.38  2008/07/10 20:36:10  danielpharos
+#Fix the model groups icons not working
+#
 #Revision 1.37  2008/05/01 19:15:23  danielpharos
 #Fix treeviewselchanged not updating.
 #
