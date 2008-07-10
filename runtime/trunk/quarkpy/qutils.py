@@ -386,13 +386,7 @@ def ModelIcon(modelobj, iconset):
     #
     if not ico_dict.has_key('mdlobjs'):
         ico_dict['mdlobjs'] = LoadIconSet("images\\mdlobjs", 16)
-    icons = ico_dict['mdlobjs']
-#    global ico_mdlobjs
-#    try:
-#        icons = ico_mdlobjs[iconset]
-#    except NameError:
-#        ico_mdlobjs = LoadIconSet("images\\mdlobjs", 16)
-#        icons = ico_mdlobjs[iconset]
+    icons = ico_dict['mdlobjs'][iconset]
     #
     # Read the type tag of the model
     #
@@ -757,6 +751,9 @@ def WhatIsThisObject(obj=None, self=None, view=None, flags=None, openconsole=Non
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.37  2008/05/01 19:15:23  danielpharos
+#Fix treeviewselchanged not updating.
+#
 #Revision 1.36  2008/05/01 13:52:32  danielpharos
 #Removed a whole bunch of redundant imports and other small fixes.
 #
