@@ -137,6 +137,9 @@ iiToolbarButton         = 30
  # iiFrameGroup            = 31
  # iiSkinGroup             = 32
  # iiSkin                  = 33
+iiGroupXed              = 31
+iiGroupHidden           = 32
+iiGroupHiddenXed        = 33
 iiFrame                 = 34
 iiComponent             = 35
 iiModelGroup            = 36
@@ -293,13 +296,16 @@ ico_objects = LoadIconSet("images\\objects", 16)
 # Generic editor icons
 ico_editor = LoadIconSet("images\\editor", 16)
 
+# Note: There are also some icon-loading calls in qeditor.py; search for "Icons for the layout of the Map/Model Editor"
+
+
 #
 # Variable icons handlers for Quake entities
 #
 
 def EntityIcon(entity, iconset):
     #
-    # Load the Variable icons for Quake Entity objects
+    # Sets the default icons for each entity type, by figuring out their type from their name.
     #
     if not ico_dict.has_key('ico_mapents'):
         ico_dict['ico_mapents'] = LoadIconSet("images\\mapents", 16)
@@ -349,33 +355,31 @@ def DuplicatorIconSel(dup):
 # Variable icons handlers for groups
 #
 
-#obj = quarkx.newobj("hello")
-
 def GroupIconUnsel(grp, ico_objects_group_set={
-  (0,0):ico_objects[0][32],
-  (0,1):ico_objects[0][13],
-  (4,0):ico_objects[0][33],
-  (4,1):ico_objects[0][31]}):
+  (0,0):ico_objects[0][iiGroupHidden],
+  (0,1):ico_objects[0][iiGroup],
+  (4,0):ico_objects[0][iiGroupHiddenXed],
+  (4,1):ico_objects[0][iiGroupXed]}):
     if grp[";view"]:
         try:
             view = int(grp[";view"])
             return ico_objects_group_set[view&4, not (view&~4)]
         except:
             pass
-    return ico_objects[0][13]
+    return ico_objects[0][iiGroup]
 
 def GroupIconSel(grp, ico_objects_group_set={
-  (0,0):ico_objects[1][32],
-  (0,1):ico_objects[1][13],
-  (4,0):ico_objects[1][33],
-  (4,1):ico_objects[1][31]}):
+  (0,0):ico_objects[1][iiGroupHidden],
+  (0,1):ico_objects[1][iiGroup],
+  (4,0):ico_objects[1][iiGroupHiddenXed],
+  (4,1):ico_objects[1][iiGroupXed]}):
     if grp[";view"]:
         try:
             view = int(grp[";view"])
             return ico_objects_group_set[view&4, not (view&~4)]
         except:
             pass
-    return ico_objects[1][13]
+    return ico_objects[1][iiGroup]
 
 #
 # Variable icons handlers for Model objects
@@ -383,11 +387,29 @@ def GroupIconSel(grp, ico_objects_group_set={
 
 def ModelIcon(modelobj, iconset):
     #
-    # Load the Variable icons for model objects
+    # Sets the default icons for each group type ex: ":sg", ":fg"...
+    # Also individual component group type icons can be set here as well.
+    # See the "EntityIcon" function above for examples.
     #
     if not ico_dict.has_key('mdlobjs'):
         ico_dict['mdlobjs'] = LoadIconSet("images\\mdlobjs", 16)
     icons = ico_dict['mdlobjs'][iconset]
+    #
+    # Figure out if this model group is hidden
+    #
+    DummyItem = modelobj
+    while DummyItem is not None:
+        if DummyItem.type == ":mr":
+            DummyItem = None
+            break
+        if DummyItem.type == ":mc":
+            # Found the parent component!
+            break
+        DummyItem = DummyItem.parent
+    # If it is hidden, draw an X
+    if DummyItem is not None:
+        if DummyItem['show'] != chr(1):
+            return ico_editor[iconset][0]
     #
     # Read the type tag of the model
     #
@@ -398,9 +420,13 @@ def ModelIcon(modelobj, iconset):
         return ico_objects[iconset][iiUnknown]
 
 def ModelGroupIconSel(obj):
+    "This function is called from the Delphi code, QObject.DisplayDetails function,"
+    "for which icon to use when the obj is selected."
     return ModelIcon(obj, 1)
 
 def ModelGroupIconUnsel(obj):
+    "This function is called from the Delphi code, QObject.DisplayDetails function,"
+    "for which icon to use when the obj is un-selected."
     return ModelIcon(obj, 0)
 
 #
@@ -409,7 +435,9 @@ def ModelGroupIconUnsel(obj):
 
 def ComponentIcon(compobj, iconset):
     ##
-    ## Load the Variable icons for model component objects
+    ## Sets the default icons for each component.
+    ## Also individual component icons can be set here as well.
+    ## See the "EntityIcon" function above for examples.
     ##
     #if not ico_dict.has_key('mdlobjs'):
     #    ico_dict['mdlobjs'] = LoadIconSet("images\\mdlobjs", 16)   CHANGE NAME!
@@ -774,6 +802,9 @@ def WhatIsThisObject(obj=None, self=None, view=None, flags=None, openconsole=Non
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.39  2008/07/10 21:21:58  danielpharos
+#The model component icon changes to an X when you hide the component.
+#
 #Revision 1.38  2008/07/10 20:36:10  danielpharos
 #Fix the model groups icons not working
 #

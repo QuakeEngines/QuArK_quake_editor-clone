@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.101  2008/05/27 07:42:31  cdunde
+To allow Save File to work in the Model Editor and stop crashes,
+ also to allow Used Skins in the Texture Browser and for them to be used.
+
 Revision 1.100  2008/05/05 05:18:37  cdunde
 Update for new release version.
 
@@ -399,9 +403,12 @@ const
   iiQme                   = 28;
   iiToolbar               = 29;
   iiToolbarButton         = 30;
-  iiInternal              = 31;
-{  iiSkinGroup             = 32;
+{  iiFrameGroup            = 31;
+  iiSkinGroup             = 32;
   iiSkin                  = 33;}
+  iiGroupXed              = 31;
+  iiGroupHidden           = 32;
+  iiGroupHiddenXed        = 33;
   iiFrame                 = 34;
   iiComponent             = 35;
   iiModelGroup            = 36;
@@ -1748,8 +1755,11 @@ begin
       args:=Py_BuildValueX('(O)', [@PythonObj]);
       if args<>Nil then
       begin
-        D.Icon:=PyEval_CallObject(D.Icon, args);
-        Py_DECREF(args);
+        try
+          D.Icon:=PyEval_CallObject(D.Icon, args);
+        finally
+          Py_DECREF(args);
+        end;
         if (D.Icon<>Nil) and (D.Icon^.ob_type <> @TyImage1_Type) then
         begin
           Py_DECREF(D.Icon);  { Image1 expected }
