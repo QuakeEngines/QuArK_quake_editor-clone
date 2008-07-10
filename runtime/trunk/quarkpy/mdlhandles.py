@@ -1700,10 +1700,7 @@ def buildskinvertices(editor, view, layout, component, skindrawobject):
             pass
         else:
             def draw1(view, finish=layout.editor.finishdrawing, texWidth=texWidth, texHeight=texHeight):
-                   ### This sets the center location point where the Skin-view grid lines are drawn from.
-                pt = view.space(quarkx.vect(-int(texWidth*.5),-int(texHeight*.5),0))
-                pt = view.proj(quarkx.vect(math.floor(pt.x), math.floor(pt.y), 0))
-                   ### This draws the lines from the above center location point.
+                   ### This draws the lines from the center location point.
                 view.drawgrid(quarkx.vect(texWidth*view.info["scale"],0,0), quarkx.vect(0,texHeight*view.info["scale"],0), MAROON, DG_LINES, 0, quarkx.vect(-int(texWidth*.5),-int(texHeight*.5),0))
                 finish(view)
 
@@ -1765,8 +1762,6 @@ def buildskinvertices(editor, view, layout, component, skindrawobject):
         except:
             if len(component.dictitems["Frames:fg"].subitems[0].vertices) == 0:
                 org = quarkx.vect(0,0,0)
-            else:
-                quarkx.msgbox("Component Hidden!\n\nYou must RMB click it\nand select 'Show Component'\nto edit this component again.", MT_ERROR, MB_OK)
 
     n = quarkx.vect(1,1,1)
     v = orthogonalvect(n, view)
@@ -3382,6 +3377,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.137  2008/07/05 19:11:42  cdunde
+#Comment addition for a triangle's UV vert_index number computation formula.
+#
 #Revision 1.136  2008/06/17 20:59:22  cdunde
 #To stop some minor errors from occurring.
 #
