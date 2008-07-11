@@ -641,7 +641,7 @@ def generate_surf(material_name, object):
             data.write(struct.pack(">H", 104))  # Hardcoded and ugly! Will only handle 1 image per material
 
             # IMAP subchunk (image map sub header)
-            data.write("IMAP")                  
+            data.write("IMAP")
             data_tmp = cStringIO.StringIO()
             data_tmp.write(struct.pack(">H", 0))  # Hardcoded - not sure what it represents
             data_tmp.write("CHAN")
@@ -805,6 +805,9 @@ quarkpy.qmdlbase.RegisterMdlExporter(".lwo LightWave Exporter", ".lwo file", "*.
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.4  2008/07/11 04:34:32  cdunde
+# Setup of Specifics\Arg page for model types data and settings.
+#
 # Revision 1.3  2008/06/29 05:29:08  cdunde
 # Minor correction.
 #
