@@ -15,7 +15,7 @@ Model editor Layout managers.
 # See the description in mapmgr.py for more information.
 #
 
-
+import qutils
 import mdleditor
 import math
 import quarkx
@@ -28,7 +28,6 @@ import mdltoolbars
 from qdictionnary import Strings
 from qbasemgr import BaseLayout
 from qbasemgr import MPPage
-import mdlentities
 
 
 ### globals
@@ -42,6 +41,9 @@ treeviewselchanged = 0 ### This global is set to 1 when any new item is selected
                        ### 2) Test for its value of 0 or 1:     if treeviewselchanged == 1:
                        ### 3) After using be SURE to reset:         treeviewselchanged = 0
                        ### 4) Then complete your function :         return
+SFTexts   = [".md2", ".md3", ".lwo"] # Supported model types for import\exporting.
+mdltypes = [0,1,2] # Control list that corresponds with the "SFTexts" list above.
+SFLetters = "set model type"
 
 class ModelLayout(BaseLayout):
     "An abstract base class for Model Editor screen layouts."
@@ -341,18 +343,153 @@ class ModelLayout(BaseLayout):
         self.skinform.sep = -79
         self.skinform.setdata([], quarkx.getqctxlist(':form', "Skin")[-1])
         self.skinform.onchange = self.skinformchange
-        self.skinview = fp.newmapview()  ### This is the skin view where it should show.
+        self.skinview = fp.newmapview()  ### This is the skin 2D view,  where it should show.
         self.skinview.color = BLACK
         self.skinview.viewtype = "panel"
         skingridbtn.views = [self.skinview]
         skinzoombtn.views = [self.skinview]
-   #     self.skinview.ondraw = self.skinviewdraw
-#        self.skinview.onmouse = self.skinviewmouse   ### This may be needed later.
+   #     self.skinview.ondraw = self.skinviewdraw     ### This may be needed later.
+   #     self.skinview.onmouse = self.skinviewmouse   ### This may be needed later.
         return fp
+
+  ###  The Specifics\Arg form page that can be filled for models that use these kind of settings.
+  ###  Settings for these specifics are read directly from the model file when it is imported.
+    def bs_dataform(self, panel):
+        ico_maped=ico_dict['ico_maped']
+        self.fp = panel.newpanel()
+        sfskills = (0,1,2)  # The model type control list, see the "### globals" section above.
+        for mdl in mdltypes:
+            s = mdl
+            if type(s)==type(()):
+                sfskills = s
+        mnu = []
+        for i in range(0, len(sfskills)):
+            item = qmenu.item(SFTexts[i], self.makesettingclick)
+            item.skill = sfskills[i]
+            mnu.append(item)
+        self.sfbtn = qtoolbar.menubutton(mnu, "model type||Set the type of model format you plan to export to. Some models have 'Specific' settings and others do not, in which case only general items will be displayed.|intro.modeleditor.dataforms.html", ico_maped, 10)
+        cap = "set model type"
+        self.sfbtn.caption = cap[:len(cap)]
+        self.helpbtn = qtoolbar.button(self.helpbtnclick, "", ico_maped, 13)
+        self.helpbtn.local = 1
+        self.buttons.update({"help": self.helpbtn, "sf": self.sfbtn})
+        self.bb = self.fp.newtoppanel(ico_maped_y,0).newbtnpanel([self.sfbtn, qtoolbar.widegap, self.helpbtn])
+        self.bb.margins = (0,0)
+        df = self.fp.newdataform()
+        df.allowedit = 1
+        df.addremaining = 0
+        df.editnames = "classname"
+        df.flags = DF_AUTOFOCUS
+        df.bluehint = 1
+        self.dataform = df
+        self.dataform.onchange = self.filldataform # Causes form to reload the currently selected object to update
+                                                   # any selection changes correctly, mainly for color selection.
+        return self.fp
+
+    def colorclick(self, btn):
+        if not MldOption("VertexUVColor") or quarkx.setupsubset(SS_MODEL, "Options")['VertexUVColor'] == "0":
+            quarkx.setupsubset(SS_MODEL, "Options")['VertexUVColor'] = "1"
+            qtoolbar.toggle(btn)
+            btn.state = qtoolbar.selected
+            quarkx.update(self.editor.form)
+            self.editor.vtxcolorclick(btn)
+        else:
+            quarkx.setupsubset(SS_MODEL, "Options")['VertexUVColor'] = "0"
+            qtoolbar.toggle(btn)
+            btn.state = qtoolbar.normal
+            quarkx.update(self.editor.form)
+        
+
+    def makesettingclick(self, m):
+        # The form uses this function when a setting is made or changed.
+        sl = self.explorer.sellist
+        sfbtn = self.buttons["sf"]
+        if m is not None:
+            self.sfbtn.caption = "set model type" # to make sure the width of this button doesn't change
+            if m.skill == 2:
+                ico_maped=ico_dict['ico_maped']
+                vtxcolorbtn = qtoolbar.button(self.colorclick, "Color UV Vertex mode||When active, puts the editor vertex selection into this mode and uses the 'COLR' specific setting as the color to designate these types of vertexes.\n\nIt also places the editor into Vertex Selection mode if not there already and clears any selected vertexes to protect from including unwanted ones by mistake.\n\nAny vertexes selected in this mode will become Color UV Vertexes and added to the component as such. Click the InfoBase button or press F1 again for more detail.|intro.modeleditor.dataforms.html", ico_maped, 10)
+                self.buttons.update({"help": self.helpbtn, "sf": self.sfbtn, "color": vtxcolorbtn})
+                self.bb.buttons = [self.sfbtn, qtoolbar.widegap, self.helpbtn, vtxcolorbtn]
+                self.bb.margins = (0,0)
+            else:
+                self.buttons.update({"help": self.helpbtn, "sf": self.sfbtn})
+                self.bb.buttons = [self.sfbtn, qtoolbar.widegap, self.helpbtn]
+                self.bb.margins = (0,0)
+            for i in range(0, len(sfbtn.menu)):
+                sfbtn.menu[i].state = 0
+                m.state = qmenu.checked
+                cap = SFTexts[m.skill]
+        else:
+            cap = "set model type"
+        sfbtn.caption = cap
+
+        try:
+            # This trys to use a filetype:form, in the Defaults.qrk "Default forms.qctx" section to create this form.
+            DummyItem = sl[0]
+            while (DummyItem is not None):
+                if DummyItem.type == ":mr":
+                    DummyItem = None
+                    break
+                if DummyItem.type == ":mc":
+                    break
+                else:
+                    DummyItem = DummyItem.parent
+            if DummyItem is None:
+                formobj = None
+                sl = []
+            else:
+                sl[0] = DummyItem
+                try:
+                    formobj = quarkx.getqctxlist(':form', sfbtn.caption.strip(".") + sl[0].type.replace(":","_"))[-1]
+                except:
+                    formobj = None
+        except:
+            formobj = None
+            sl = []
+        try:
+            self.dataform.setdata(sl, formobj) # Try to use the data returned to make the form again.
+        except:
+            formobj = None # If no form data is found, then set to None and just go on, there is no form for this item.
+            sl = []
+            self.dataform.setdata(sl, formobj)
+        help = ((formobj is not None) and formobj["Help"]) or ""
+        if help:
+            help = "?" + help   # This trick displays a blue hint.
+        self.buttons["help"].hint = help + "||This button gives you the description of the selected entity, and how to use it.\n\nYou are given help in two manners : by simply moving the mouse over the button, a 'hint' text appears with the description; if you click the button, you are sent to an HTML document about the entity, if available, or you are shown the same text as previously, if nothing more is available.\n\nNote that there is currently not a lot of info available as HTML documents."
+        if sl:
+            icon = qutils.EntityIconSel(sl[0])
+            for s in sl[1:]:
+                icon2 = qutils.EntityIconSel(s)
+                if not (icon is icon2):
+                    icon = ico_objects[1][iiEntity]
+                    break
+            for i in range(0, len(sfbtn.menu)):
+                m = sfbtn.menu[i]
+                if m.state != qmenu.checked:
+                    m.state = 0
+                else:
+                    cap = SFTexts[i]
+            if not cap:
+                cap = "set model type"
+        sfbtn.caption = cap
+        btnlist = self.mpp.btnpanel.buttons
+        if sl:
+            if sfbtn.caption == ".lwo":
+                if not sl[0].dictspec.has_key('lwo_NAME'):
+                    sl[0]['lwo_NAME'] = sl[0].dictitems['Skins:sg'].subitems[0].name
+        #        if not sl[0].dictspec.has_key('lwo_UVNAME'):
+        #            sl[0]['lwo_UVNAME'] = sl[0].dictitems['Skins:sg'].subitems[0].name
+                if not sl[0].dictspec.has_key('lwo_COLR'):
+                    sl[0]['lwo_COLR'] = "0.75 0.75 0.75"
+        quarkx.update(self.editor.form)
 
     def bs_additionalpages(self, panel):
         "Builds additional pages for the multi-pages panel."
         thesepages = []
+        page1 = qtoolbar.button(self.filldataform, "Specifics/Args-view||Specifics/Args-view:\n\nThis view displays the general parameters for the selected object(s).\n\nSee the infobase for a more detailed description and use of this view display.", ico_objects, iiEntity, "Specifics/Args-view", infobaselink='intro.mapeditor.dataforms.html#specsargsview')
+        page1.pc = [self.bs_dataform(panel)]
+        thesepages.append(page1)
         skin = qtoolbar.button(self.fillskinform, "Skin-view||Skin-view:\n\nParameters about the selected skin", ico_objects, iiPcx, "Skin-view", infobaselink='intro.mapeditor.dataforms.html#faceview')
         skin.pc = [self.bs_skinform(panel)]
         thesepages.append(skin)
@@ -380,6 +517,113 @@ class ModelLayout(BaseLayout):
         #        self.mpp.viewpage(2)
         #    elif fs.type == ':f':
         #        self.mpp.viewpage(3)
+
+    def filldataform(self, reserved):
+        # Code to create the form for the first time or when selecting another item in the tree-view that uses this form.
+        sl = self.explorer.sellist
+        sfbtn = self.buttons["sf"]
+        try:
+            DummyItem = sl[0]
+            while (DummyItem is not None):
+                if DummyItem.type == ":mr":
+                    DummyItem = None
+                    formobj = None
+                    sl = []
+                    self.dataform.setdata(sl, formobj)
+                    return
+                if DummyItem.type == ":mc":
+                    break
+                else:
+                    DummyItem = DummyItem.parent
+            if DummyItem is None:
+                formobj = None
+            else:
+                sl[0] = DummyItem
+                try:
+                    formobj = quarkx.getqctxlist(':form', sfbtn.caption.strip(".") + sl[0].type.replace(":","_"))[-1]
+                except:
+                    formobj = None
+            self.dataform.setdata(sl, formobj) # Try to use a file type:form data returned to fill this form.
+        except:
+            formobj = None # If no form data is found, then set to None and just go on, there is no form for this item.
+            self.dataform.setdata(sl, formobj)
+        help = ((formobj is not None) and formobj["Help"]) or ""
+        if help:
+            help = "?" + help   # this trick displays a blue hint
+        self.buttons["help"].hint = help + "||This button gives you the description of the selected entity, and how to use it.\n\nYou are given help in two manners : by simply moving the mouse over the button, a 'hint' text appears with the description; if you click the button, you are sent to an HTML document about the entity, if available, or you are shown the same text as previously, if nothing more is available.\n\nNote that there is currently not a lot of info available as HTML documents."
+        if sl:
+            icon = qutils.EntityIconSel(sl[0])
+            for s in sl[1:]:
+                icon2 = qutils.EntityIconSel(s)
+                if not (icon is icon2):
+                    icon = ico_objects[1][iiEntity]
+                    break
+            cap = ""
+            for i in range(0, len(sfbtn.menu)):
+                m = sfbtn.menu[i]
+                if m.state != qmenu.checked:
+                    m.state = 0
+                else:
+                    cap = SFTexts[i]
+            if cap == "":
+                cap = "set model type"
+        icon = ico_objects[1][iiEntity]
+        try:
+            sfbtn.caption = cap
+        except:
+            pass # Stops the Skin-view, when opened, from changing the Specifics/Args page model format setting.
+        # Sets which page to switch to when a hot key is pressed:
+        # 1 key = 0 = tree-view, 2 key = 1 = Specifics/Args page, 3 key = 2 = Skin-view
+        btnlist = self.mpp.btnpanel.buttons
+        if not (btnlist[1].icons[3] is icon):
+            l = list(btnlist[1].icons)
+            l[3] = icon
+            l[4] = icon
+            btnlist[1].icons = tuple(l)
+            self.mpp.btnpanel.buttons = btnlist
+        if sl:
+            if sfbtn.caption == ".lwo" and sl[0].type == ":mc" or sl[0].dictspec.has_key('Skins:sg'):
+                if not sl[0].dictspec.has_key('lwo_NAME'):
+                    sl[0]['lwo_NAME'] = sl[0].dictitems['Skins:sg'].subitems[0].name
+        #        if not sl[0].dictspec.has_key('lwo_UVNAME'):
+        #            sl[0]['lwo_UVNAME'] = sl[0].dictitems['Skins:sg'].subitems[0].name
+                if not sl[0].dictspec.has_key('lwo_COLR'):
+                    sl[0]['lwo_COLR'] = "0.75 0.75 0.75"
+                self.dataform.setdata(sl, formobj)
+
+
+    def helpbtnclick(self, m):
+        sl = self.explorer.sellist
+        sfbtn = self.buttons["sf"]
+        try:
+            DummyItem = sl[0]
+            while (DummyItem is not None):
+                if DummyItem.type == ":mr":
+                    DummyItem = None
+                    break
+                if DummyItem.type == ":mc":
+                    break
+                else:
+                    DummyItem = DummyItem.parent
+            if DummyItem is None:
+                formobj = None
+            else:
+                sl[0] = DummyItem
+                try:
+                    formobj = quarkx.getqctxlist(':form', sfbtn.caption.strip(".") + sl[0].type.replace(":","_"))[-1]
+                except:
+                    formobj = None
+        except:
+            formobj = None # If no form data is found, then set to None and just go on, there is no form for this item.
+        if formobj is not None:
+            if formobj["HTML"]:
+                formobj = formobj["HTML"]
+            elif formobj["Help"] and hasattr(m, "local"):
+                quarkx.helppopup(formobj["Help"])
+                return
+            else:
+                formobj = None
+        htmldoc(formobj)
 
 
     def componentof(self, obj):
@@ -454,8 +698,6 @@ class ModelLayout(BaseLayout):
         except:
             pass
 
-     #   skinzoombtn = self.buttons["skinzoom"]
-  ### new cdunde
         if len(slist)==0:
             cap = Strings[129]
 
@@ -497,14 +739,14 @@ class ModelLayout(BaseLayout):
         startup = 1
 
     def skinviewmouse(self, view, x, y, flags, handle):
-        "Can't figure out what this one does."
+        "Opens the Texture Browser if a click is made on the Skin-view (not being used)"
         if flags&MB_CLICKED:
             quarkx.clickform = view.owner
             mdlbtns.texturebrowser()
 
 
     def skinformchange(self, src):
-        "Can't figure out what this one does."
+        "Reloads the Skin-view form when a change has taken place."
         undo = quarkx.action()
         q = src.linkedobjects[0]
         tex = q["texture"]
@@ -643,7 +885,6 @@ class ModelLayout(BaseLayout):
 
         self.reset()
         c = self.componentof(skin)
-        ### may not need the 3 lines below
         if c is None:
             c = self.editor.Root
 
@@ -674,6 +915,14 @@ class ModelLayout(BaseLayout):
         else:
             fs = None
 
+        sfbtn = self.buttons["sf"]
+        for i in range(0, len(sfbtn.menu)):
+            m = sfbtn.menu[i]
+            if m.state == qmenu.checked:
+                break
+            if i == len(sfbtn.menu)-1:
+                m = None
+        self.makesettingclick(m) # Updates the Specifics/Args page correctly.
         if fs is not None:
             treeviewselchanged = 1
             if fs.type == ':mf':       # frame
@@ -743,6 +992,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.69  2008/05/25 23:18:45  cdunde
+#Commented out function causing the loss of drag handles, editor and other stuff until fixed.
+#
 #Revision 1.68  2008/05/19 00:10:00  cdunde
 #Fixed "Color Selector Dialog" to update correctly when needed.
 #

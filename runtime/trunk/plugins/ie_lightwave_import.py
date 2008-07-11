@@ -529,10 +529,7 @@ def read_vmap(uvcoords_dict, maxvertnum, lwochunk): # u,v per vertex point
     while (i < lwochunk.chunksize - 6):      #4+2 header bytes already read
         vertnum, vnum_size = read_vx(data)
         u, v = struct.unpack(">ff", data.read(8))
-        if vertnum >= maxvertnum:
-            tobj.pprint ("Hem: more uvmap than vertexes? ignoring uv data for vertex %d" % vertnum)
-        else:
-            my_uv_dict[vertnum] = (u, v)
+        my_uv_dict[vertnum] = (u, v)
         i += 8 + vnum_size
     #end loop on uv pairs
     uvcoords_dict[name] = my_uv_dict
@@ -556,10 +553,10 @@ def read_vmad(uvcoords_dict, facesuv_dict, maxfacenum, maxvertnum, lwochunk):
     name, i = read_name(data) #i initialized with string lenght + zeros
     tobj.pprint ("TXUV %d %s" % (dimension, name))
     if uvcoords_dict.has_key(name):
-        my_uv_dict = uvcoords_dict[name]          #update existing
+        my_uv_dict = uvcoords_dict[name] # update existing objspec_list[7]
     else:
-        my_uv_dict = {}    #start a brand new: this could be made more smart
-    my_facesuv_list = []
+        my_uv_dict = {}    # start a brand new  objspec_list[7]: this could be made more smart
+    my_facesuv_list = []   # start a brand new  objspec_list[8]
     newindex = maxvertnum + 10 #why +10? Why not?
     #end variable initialization
     while (i < lwochunk.chunksize - 6):  #4+2 header bytes already read
@@ -568,18 +565,9 @@ def read_vmad(uvcoords_dict, facesuv_dict, maxfacenum, maxvertnum, lwochunk):
         polynum, vnum_size = read_vx(data)
         i += vnum_size
         u, v = struct.unpack(">ff", data.read(8))
-
-        ### Start For testing only, take out later.
-        if u > 1 or v > 1:
-            break
-        ### End For testing only, take out later.
-
-        if polynum >= maxfacenum or vertnum >= maxvertnum:
-            tobj.pprint ("Hem: more uvmap than vertexes? ignorig uv data for vertex %d" % vertnum)
-        else:
-            my_uv_dict[newindex] = (u, v)
-            my_facesuv_list.append([polynum, vertnum, newindex])
-            newindex += 1
+        my_uv_dict[newindex] = (u, v)
+        my_facesuv_list.append([polynum, vertnum, newindex])
+        newindex += 1
         i += 8
     #end loop on uv pairs
     uvcoords_dict[name] = my_uv_dict
@@ -1687,7 +1675,7 @@ def create_objects(filename, polynames, clip_list, objspec_list, surf_list, base
                             pass
                     else:
                         try:
-                            for index_group in range(len(objspec_list[8][polyuvname])):
+                            for index_group in range(len(objspec_list[8][polyuvname])): # Original import a few uses this.
                                 if tri_index == objspec_list[8][polyuvname][index_group][0] and face[i] == objspec_list[8][polyuvname][index_group][1]:
                                     uv_index = objspec_list[8][polyuvname][index_group][2]
                                     u, v = objspec_list[7][polyuvname][uv_index]
@@ -1736,6 +1724,10 @@ def create_objects(filename, polynames, clip_list, objspec_list, surf_list, base
                     mesh = mesh + (x,y,z)
             progressbar.progress()
         frame['Vertices'] = mesh
+    #    for list in surf_list:
+    #        if list['NAME'] == poly:
+    #            if list.has_key("COLR"):
+    #                frame['lwo_COLR'] = list['COLR']
         framesgroup.appenditem(frame)
 
         # Now we start creating our Import Component and name it.
@@ -1743,6 +1735,13 @@ def create_objects(filename, polynames, clip_list, objspec_list, surf_list, base
         Component['skinsize'] = skinsize
         Component['Tris'] = Tris
         Component['show'] = chr(1)
+        for list in surf_list:
+            if list['NAME'] == poly:
+                Component['lwo_NAME'] = list['NAME']
+                if list.has_key('UVNAME'):
+                    Component['lwo_UVNAME'] = list['UVNAME']
+                if list.has_key('COLR'):
+                    Component['lwo_COLR'] = str(quarkx.vect(list['COLR'][0], list['COLR'][1], list['COLR'][2]))
         sdogroup = quarkx.newobj('SDO:sdo')
         Component.appenditem(sdogroup)
         Component.appenditem(skingroup)
@@ -2139,6 +2138,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".lwo LightWave Importer", ".lwo file", "*.
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.4  2008/06/29 05:29:08  cdunde
+# Minor correction.
+#
 # Revision 1.3  2008/06/28 14:52:35  cdunde
 # Added .lwo lightwave model export support and improved the importer.
 #

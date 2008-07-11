@@ -225,6 +225,7 @@ class ModelEditor(BaseEditor):
         quarkx.setupsubset(SS_MODEL, "Options")["AnimationPaused"] = None
         quarkx.setupsubset(SS_MODEL, "Options")["ExtrudeFaces"] = None
         quarkx.setupsubset(SS_MODEL, "Options")["ExtrudeBulkHeads"] = None
+        quarkx.setupsubset(SS_MODEL, "Options")['VertexUVColor'] = None
 
     def ListComponents(self):
         return self.Root.findallsubitems("", ':mc')   # find all components
@@ -460,6 +461,16 @@ class ModelEditor(BaseEditor):
     def moveby(self, text, delta):
         mdlbtns.moveselection(self, text, delta)
 
+    def vtxcolorclick(self, btn):
+        if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
+            self.ModelVertexSelList = []
+            self.linearbox = "True"
+            self.linear1click(btn)
+        else:
+            if self.ModelVertexSelList != []:
+                self.ModelVertexSelList = []
+                import mdlutils
+                mdlutils.Update_Editor_Views(self)
 
     def linear1click(self, btn):
         "Click on the 'Linear Drag Handles' button for the LinearHandle classes in the mdlhandles.py file."
@@ -1460,6 +1471,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.88  2008/06/17 20:59:22  cdunde
+#To stop some minor errors from occurring.
+#
 #Revision 1.87  2008/05/11 18:33:28  cdunde
 #Fixed Used Textures in the Texture Browser properly without breaking other functions.
 #

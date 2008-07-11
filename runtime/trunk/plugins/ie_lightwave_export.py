@@ -103,7 +103,7 @@ def writefile(filename):
     material_names = get_used_material_names(objects)
 
     tags = generate_tags(material_names) # "tags" is just a regular list of the skin names only.
-    surfs = generate_surfs(material_names) # Just 'SURF' keys list. Writes the "Surface data for TAG (Model Component\Texture)"
+    surfs = generate_surfs(material_names, objects) # Just 'SURF' keys list. Writes the "Surface data for TAG (Model Component\Texture)"
 
     # Used later to write the above items to the model file.
 #1    chunks = [text, desc, icon, tags]
@@ -145,8 +145,8 @@ def writefile(filename):
         bbox = generate_bbox(meshvectors)
 
         # pols is a list of the three vertex_index numbers for each face for all Components combined, objspec_list[3]
-        # uv_dict is a dictionary list with the vertex_index as the 'key' and its related u,v values, used further below.
-        pols, uv_dict = generate_pols(objects[obj_index])
+        # my_uv_dict and my_facesuv_list are dictionary lists with the vertex_index as the 'key' and its related u,v values, used further below.
+        pols, my_uv_dict, my_facesuv_list = generate_pols(objects[obj_index])
 
         # 'SURF' specifics and their settings, by texture name as key, the "surf_list" ALSO
         # Makes the list of "tri_index numbers", by texture name as key, objspec_list[5]
@@ -155,11 +155,14 @@ def writefile(filename):
         # Creation of the clip data, not active in QuArK right now.
         clip = generate_clip(mesh, material_names)
 
+        # Creation of the u,v data, using the my_uv_dict (objspec_list[7]) list from above.
+        vmap_uv = generate_vmap_uv(objects[obj_index], my_uv_dict)
+
         # Original code but not being qualified right now, for future reference only.
       #  if mesh.hasFaceUV():
       #      vmad_uv = generate_vmad_uv(mesh)  # per face
-        # Creation of the u,v data, using the uv_dict list from above.
-        vmad_uv = generate_vmad_uv(objects[obj_index], uv_dict)
+        # Creation of the u,v data, using the my_uv_dict (objspec_list[7]) and my_facesuv_list (objspec_list[8]) lists from above.
+        vmad_uv = generate_vmad_uv(objects[obj_index], my_uv_dict, my_facesuv_list)
 
         # Sense QuArK does not have these things right now
         # we are commenting them out until it does.
@@ -191,6 +194,8 @@ def writefile(filename):
     #        chunks.append(clip)
 
         # Writes the vert_index, u,v data to the model file.
+        write_chunk(meshdata, "VMAP", vmap_uv)
+        chunks.append(vmap_uv)
         write_chunk(meshdata, "VMAD", vmad_uv)
         chunks.append(vmad_uv)
 
@@ -279,26 +284,23 @@ def generate_tags(material_names):
 # ========================
 # === Generate Surface ===
 # ========================
-def generate_surface(surf_index, texture_name):
+def generate_surface(surf_index, texture_name, object):
     if texture_name.find("\251 Per-") == 0:
         return generate_vcol_surf(surf_index)
     elif texture_name == "\251 QuArK Default":
         return generate_default_surf()
     else:
-        return generate_surf(texture_name)
+        return generate_surf(texture_name, object)
 
 # =================================================================
 # ======================== Generate Surfs =========================
 # ===================== Just 'SURF' keys list. ====================
 # == Writes the "Surface data for TAG (Model Component\Texture)" ==
 # =================================================================
-def generate_surfs(material_names):
-    surf_indexes = []
-    texture_names = []
+def generate_surfs(material_names, objects):
+    surfaces = []
     for index in range(len(material_names)):
-        surf_indexes = surf_indexes + [index]
-        texture_names = texture_names + [material_names[index]]
-    surfaces = map(generate_surface, surf_indexes, texture_names)
+        surfaces = surfaces + [generate_surface(index, material_names[index], objects[index])]
     return surfaces
 
 # ===================================
@@ -423,25 +425,43 @@ def generate_vmad_vc(mesh):
     return data.getvalue()
 
 # ================================================
+# === Generate Per-Face UV Coords (VMAP Chunk) ===
+# ================================================
+def generate_vmap_uv(object, my_uv_dict): # "object" is one of the selected components being exported.
+    # setup a progress-indicator
+    progressbar = quarkx.progressbar(2451, len(my_uv_dict))
+    data = cStringIO.StringIO()
+    data.write("TXUV")                                       # type
+    data.write(struct.pack(">H", 2))                         # dimension
+    skinname = object.dictitems['Skins:sg'].subitems[0].name # texture skin name, Should be the "UVNAME"
+    skinname.split(".")[0]
+    data.write(generate_nstring(skinname)) # texture skin name
+    for key in my_uv_dict:
+        U, V = my_uv_dict[key]
+        data.write(struct.pack(">H", key)) # vertex index
+        data.write(struct.pack(">ff", U, V))
+        progressbar.progress()
+    progressbar.close()
+    return data.getvalue()
+
+# ================================================
 # === Generate Per-Face UV Coords (VMAD Chunk) ===
 # ================================================
-def generate_vmad_uv(object, uv_dict): # "object" is one of the selected components being exported.
+def generate_vmad_uv(object, my_uv_dict, my_facesuv_list): # "object" is one of the selected components being exported.
     # setup a progress-indicator
-    progressbar = quarkx.progressbar(2451, len(object.triangles))
+    progressbar = quarkx.progressbar(2451, len(my_facesuv_list))
     data = cStringIO.StringIO()
     data.write("TXUV")                                       # type
     data.write(struct.pack(">H", 2))                         # dimension
     skinname = object.dictitems['Skins:sg'].subitems[0].name # texture skin name
     skinname.split(".")[0]
-    data.write(generate_nstring(skinname)) # texture skin name
-    for i in range(len(object.triangles)):
-        face = object.triangles[i]
-        for j in xrange(len(face)):
-            U, V = uv_dict[face[j][0]]
-            v = face[j][0]
-            data.write(struct.pack(">H", v)) # vertex index
-            data.write(struct.pack(">H", i)) # face index
-            data.write(struct.pack(">ff", U, V))
+    data.write(generate_nstring(skinname)) # texture skin name, Should be the "UVNAME"
+    for item in range(len(my_facesuv_list)):
+        i, v, newindex = my_facesuv_list[item]
+        U, V = my_uv_dict[newindex]
+        data.write(struct.pack(">H", v)) # vertex index
+        data.write(struct.pack(">H", i)) # face index
+        data.write(struct.pack(">ff", U, V))
         progressbar.progress()
     progressbar.close()
     return data.getvalue()
@@ -466,22 +486,33 @@ def generate_pols(object): # "object" is one of the selected components being ex
     progressbar = quarkx.progressbar(2450, len(object.triangles))
     data = cStringIO.StringIO()
     data.write("FACE")
-    uv_dict = {}
+    maxfacenum = len(object.triangles)
+    frame = object.dictitems['Frames:fg'].subitems[0].name
+    maxvertnum = len(object.dictitems['Frames:fg'].dictitems[frame].dictspec['Vertices'])
+    my_uv_dict = {}      # start a brand new  objspec_list[7]
+    my_facesuv_list = [] # start a brand new  objspec_list[8]
+    newindex = maxvertnum + 10 #why +10? Why not?
     skinname = object.dictitems['Skins:sg'].subitems[0].name
     TexWidth, TexHeight = object.dictitems['Skins:sg'].dictitems[skinname].dictspec['Size']
     for i in range(len(object.triangles)):
         face = object.triangles[i]
-        data.write(struct.pack(">H", len(face))) # Number of vertexes per face, hard coded.
+        data.write(struct.pack(">H", len(face))) # Number of vertexes per face.
         for j in xrange(len(face)):
             index = face[j][0]
-            v = -face[j][2]
             u = face[j][1] / TexWidth
+            v = -face[j][2]
             v = (v / TexHeight) + 1
-            uv_dict[index] = (u, v)
+            if my_uv_dict.has_key(index):
+                if (u != my_uv_dict[index][0]) or (v != my_uv_dict[index][1]):
+                    my_uv_dict[newindex] = (u, v)
+                    my_facesuv_list.append([i, index, newindex])
+                    newindex += 1
+            else:
+                my_uv_dict[index] = (u, v)
             data.write(generate_vx(index))
         progressbar.progress()
     progressbar.close()
-    return data.getvalue(), uv_dict
+    return data.getvalue(), my_uv_dict, my_facesuv_list
 
 # =============================================================================================
 # ========================= Generate Polygon Tag Mapping (PTAG Chunk) =========================
@@ -557,13 +588,17 @@ def generate_vcol_surf(mesh):
 # === Generate Surface Definition (SURF Chunk) ===
 # ======= Makes up the 'SURF' detatil data =======
 # ================================================
-def generate_surf(material_name):
+def generate_surf(material_name, object):
     data = cStringIO.StringIO()
     data.write(generate_nstring(material_name))
     data.write("\0\0")
 
  #   R,G,B = material.R, material.G, material.B
-    R = G = B = 0.78431373834609985
+    if object.dictspec.has_key('lwo_COLR'):
+        color = object['lwo_COLR'].split(" ")
+        R, G, B = float(color[0]), float(color[1]), float(color[2])
+    else:
+        R = G = B = 0.78431373834609985
     data.write("COLR")
     data.write(struct.pack(">H", 14))
     data.write(struct.pack(">fffH", R, G, B, 0))
@@ -770,6 +805,9 @@ quarkpy.qmdlbase.RegisterMdlExporter(".lwo LightWave Exporter", ".lwo file", "*.
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.3  2008/06/29 05:29:08  cdunde
+# Minor correction.
+#
 # Revision 1.2  2008/06/28 15:12:06  cdunde
 # Minor correction.
 #
