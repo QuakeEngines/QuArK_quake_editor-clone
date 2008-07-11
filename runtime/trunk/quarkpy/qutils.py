@@ -410,6 +410,13 @@ def ModelIcon(modelobj, iconset):
     if DummyItem is not None:
         if DummyItem['show'] != chr(1):
             return ico_editor[iconset][0]
+
+    # Needed to display the correct icons of these groups for imported models.
+    if modelobj.type ==":fg":
+        return icons[1]
+    if modelobj.type ==":bg":
+        return icons[5]
+
     #
     # Read the type tag of the model
     #
@@ -802,6 +809,9 @@ def WhatIsThisObject(obj=None, self=None, view=None, flags=None, openconsole=Non
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.40  2008/07/10 22:32:33  danielpharos
+#Added additional comments and fixed some magic numbers.
+#
 #Revision 1.39  2008/07/10 21:21:58  danielpharos
 #The model component icon changes to an X when you hide the component.
 #
