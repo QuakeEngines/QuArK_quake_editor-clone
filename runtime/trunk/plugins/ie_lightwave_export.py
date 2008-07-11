@@ -668,7 +668,7 @@ def generate_surf(material_name, object):
         #    data.write("PROJ")
         #    data.write(struct.pack(">HH", 2, 5)) # UV projection
 
-            data.write("VMAP")
+            data.write("TMAP")
             uvname = generate_nstring(material_name)
             data.write(struct.pack(">H", len(uvname)))
             data.write(uvname)
@@ -805,6 +805,9 @@ quarkpy.qmdlbase.RegisterMdlExporter(".lwo LightWave Exporter", ".lwo file", "*.
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.5  2008/07/11 04:38:47  cdunde
+# Clean out blank spaces.
+#
 # Revision 1.4  2008/07/11 04:34:32  cdunde
 # Setup of Specifics\Arg page for model types data and settings.
 #
