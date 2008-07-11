@@ -15,6 +15,8 @@ $Id$
 6.6.0 Beta 2
 ============
 
+* [cdunde/DanielPharos]: Setup of Specifics\Arg page for model types data and settings.
+
 * [Danielpharos/cdunde]: Fix the model groups icons not working, and now the model component
           - icon changes to an X when you hide the component.
 
