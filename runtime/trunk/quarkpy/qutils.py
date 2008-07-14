@@ -805,10 +805,20 @@ def WhatIsThisObject(obj=None, self=None, view=None, flags=None, openconsole=Non
         quarkx.console()
     o.close()
 
+def sortdictionary(dictionary):
+    "Primarily used to sort menu dictionary lists,"
+    "but may work for other dictionary list."
+    "Returns just a sorted list of its keys."
+    keys = dictionary.keys()
+    keys.sort()
+    return keys
 
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.41  2008/07/11 19:36:13  cdunde
+#Fix for imported models icons.
+#
 #Revision 1.40  2008/07/10 22:32:33  danielpharos
 #Added additional comments and fixed some magic numbers.
 #
