@@ -75,120 +75,122 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mdleditor.ModelEditor.
 
     if type == "YZ":
 
-       if not MldOption("All2DviewsScale") and not MldOption("AllScalesCentered") and not MldOption("XviewScale") and not MldOption("XyScaleCentered") and not MldOption("XzScaleCentered"):
-           return
+        if not MldOption("All2DviewsScale") and not MldOption("AllScalesCentered") and not MldOption("XviewScale") and not MldOption("XyScaleCentered") and not MldOption("XzScaleCentered"):
+            return
+        if grid == 0:
+            return
 
-       cv.fontcolor = RED
-       cv.fontsize = 8
+        cv.fontcolor = RED
+        cv.fontsize = 8
 
-       YZarea = `view.clientarea`       # Gets the view area as a string
-       pixels = YZarea.replace("(","")  # trims ( from YZarea
-       pixels = pixels.replace(")","")  # trims ) from YZarea
-       pixels = pixels.split(",")       # trims , from YZarea
-       Ystring = pixels[0]              # pulls out y factor string
-       Zstring = pixels[1].strip()      # pulls out z factor string
-       Ypixels = int(Ystring)           # converts y string to intiger nbr
-       Zpixels = int(Zstring)           # converts z string to intiger nbr
-       highlight = int(quarkx.setupsubset(SS_MODEL, "Display")["GridHighlight"])
-       Ygroups = ((Ypixels/(grid * 1.0)) / view.scale()) / highlight
-       Zgroups = ((Zpixels/(grid * 1.0)) / view.scale()) / highlight
-       pixspergroup = Zpixels / Zgroups
-       Ycounter = 1
-       Zcounter = 1
-       Ygroup = (Ypixels / Ygroups)
-       Zgroup = (Zpixels / Zgroups)
-       if Ygroup < 20:return
-       units = (grid * highlight)
-       Ystring = quarkx.ftos(0)
-       Zstring = quarkx.ftos(0)
-
-
-       if not MldOption("XyScaleCentered") and not MldOption("AllScalesCentered"):
-           if not MldOption("AxisXYZ"):
-               Yviewcenter = 6
-           else:
-               Yviewcenter = 48
-       else:
-           if not MldOption("All2DviewsScale") and not MldOption("XviewScale"):
-               Yviewcenter = (Ypixels/2)+4
-           else:
-               Yviewcenter = 0
+        YZarea = `view.clientarea`       # Gets the view area as a string
+        pixels = YZarea.replace("(","")  # trims ( from YZarea
+        pixels = pixels.replace(")","")  # trims ) from YZarea
+        pixels = pixels.split(",")       # trims , from YZarea
+        Ystring = pixels[0]              # pulls out y factor string
+        Zstring = pixels[1].strip()      # pulls out z factor string
+        Ypixels = int(Ystring)           # converts y string to intiger nbr
+        Zpixels = int(Zstring)           # converts z string to intiger nbr
+        highlight = int(quarkx.setupsubset(SS_MODEL, "Display")["GridHighlight"])
+        Ygroups = ((Ypixels/(grid * 1.0)) / view.scale()) / highlight
+        Zgroups = ((Zpixels/(grid * 1.0)) / view.scale()) / highlight
+        pixspergroup = Zpixels / Zgroups
+        Ycounter = 1
+        Zcounter = 1
+        Ygroup = (Ypixels / Ygroups)
+        Zgroup = (Zpixels / Zgroups)
+        if Ygroup < 20:return
+        units = (grid * highlight)
+        Ystring = quarkx.ftos(0)
+        Zstring = quarkx.ftos(0)
 
 
-       if not MldOption("XzScaleCentered") and not MldOption("AllScalesCentered"):
-           Zviewcenter = (Zpixels)-12
-       else:
-           Zviewcenter = (Zpixels/2)-4
-       Ygroup1 = Yviewcenter+2
-       Zgroup1 = Zviewcenter
-       cv.brushstyle = BS_CLEAR
-       cv.fontname = "Terminal"
-       cv.textout(Yviewcenter, 2, "Y " + Ystring)
-       cv.textout(Yviewcenter, 16, "  l")      # for mark line
-       cv.textout(0, Zviewcenter, " Z " + Zstring + " --") # for mark line
-       Ytotal =  (units * 2)
-       Ztotal =  units
-       if pixspergroup > 40:
-           Zgroup = Zgroup/2
-           Ztotal = Ztotal/2
-           units = units/2
-       if pixspergroup > 80:
-           Zgroup = Zgroup/2
-           Ztotal = Ztotal/2
-           units = units/2
-       if pixspergroup > 160:
-           Zgroup = Zgroup/2
-           Ztotal = Ztotal/2
-           units = units/2
-       while 1:
-           if Zcounter > 11:
-              break
-           else:
-               Zstring =  quarkx.ftos(Ztotal)
-               Znextgroupup = Zgroup1 - (Zgroup * Zcounter)
-               Znextgroupup = int(Znextgroupup)    #py2.4
-               if Znextgroupup > 19:
-                   cv.textout(0, Znextgroupup, " " + Zstring + " --")
-               Znextgroupdown = Zgroup1 + (Zgroup * Zcounter)
-               Znextgroupdown = int(Znextgroupdown)    #py2.4
-               cv.textout(0, Znextgroupdown, "-" + Zstring + " --")
-               Zcounter = Zcounter + 1
-               Ztotal = Ztotal + units
+        if not MldOption("XyScaleCentered") and not MldOption("AllScalesCentered"):
+            if not MldOption("AxisXYZ"):
+                Yviewcenter = 6
+            else:
+                Yviewcenter = 48
+        else:
+            if not MldOption("All2DviewsScale") and not MldOption("XviewScale"):
+                Yviewcenter = (Ypixels/2)+4
+            else:
+                Yviewcenter = 0
 
-       if pixspergroup > 40:
-           Ygroup = Ygroup/2
-           Ytotal = Ytotal/2
-       if pixspergroup > 80:
-           Ygroup = Ygroup/2
-           Ytotal = Ytotal/2
-       if pixspergroup > 160:
-           Ygroup = Ygroup/2
-           Ytotal = Ytotal/2
-       if pixspergroup > 320:
-           Ygroup = Ygroup/2
-           Ytotal = Ytotal/2
-           units = units*.5
-       while 1:
-           if Ycounter > 7:
+
+        if not MldOption("XzScaleCentered") and not MldOption("AllScalesCentered"):
+            Zviewcenter = (Zpixels)-12
+        else:
+            Zviewcenter = (Zpixels/2)-4
+        Ygroup1 = Yviewcenter+2
+        Zgroup1 = Zviewcenter
+        cv.brushstyle = BS_CLEAR
+        cv.fontname = "Terminal"
+        cv.textout(Yviewcenter, 2, "Y " + Ystring)
+        cv.textout(Yviewcenter, 16, "  l")      # for mark line
+        cv.textout(0, Zviewcenter, " Z " + Zstring + " --") # for mark line
+        Ytotal =  (units * 2)
+        Ztotal =  units
+        if pixspergroup > 40:
+            Zgroup = Zgroup/2
+            Ztotal = Ztotal/2
+            units = units/2
+        if pixspergroup > 80:
+            Zgroup = Zgroup/2
+            Ztotal = Ztotal/2
+            units = units/2
+        if pixspergroup > 160:
+            Zgroup = Zgroup/2
+            Ztotal = Ztotal/2
+            units = units/2
+        while 1:
+            if Zcounter > 11:
                break
-           else:
-               Ystring =  quarkx.ftos(Ytotal)
-               Ynextgroupleft = Ygroup1 - ((Ygroup*2) * Ycounter)
-               Ynextgroupleft = int(Ynextgroupleft)    #py2.4
-               if not MldOption("AxisXYZ"):
-                   cv.textout(Ynextgroupleft-2, 2, Ystring)
-                   cv.textout(Ynextgroupleft-2, 16, "  l")
-               else:
-                   if Ynextgroupleft > 40:
-                       cv.textout(Ynextgroupleft-2, 2, Ystring)
-                       cv.textout(Ynextgroupleft-2, 16, "  l")
-               Ynextgroupright = Ygroup1 + ((Ygroup*2) * Ycounter)
-               Ynextgroupright = int(Ynextgroupright)    #py2.4
-               cv.textout(Ynextgroupright+4, 2, "-" + Ystring)
-               cv.textout(Ynextgroupright-2, 16, "  l")
-               cv.textout(Ynextgroupleft-2, 16, "  l")
-               Ycounter = Ycounter + 1
-               Ytotal = Ytotal + (units*2)
+            else:
+                Zstring =  quarkx.ftos(Ztotal)
+                Znextgroupup = Zgroup1 - (Zgroup * Zcounter)
+                Znextgroupup = int(Znextgroupup)    #py2.4
+                if Znextgroupup > 19:
+                    cv.textout(0, Znextgroupup, " " + Zstring + " --")
+                Znextgroupdown = Zgroup1 + (Zgroup * Zcounter)
+                Znextgroupdown = int(Znextgroupdown)    #py2.4
+                cv.textout(0, Znextgroupdown, "-" + Zstring + " --")
+                Zcounter = Zcounter + 1
+                Ztotal = Ztotal + units
+
+        if pixspergroup > 40:
+            Ygroup = Ygroup/2
+            Ytotal = Ytotal/2
+        if pixspergroup > 80:
+            Ygroup = Ygroup/2
+            Ytotal = Ytotal/2
+        if pixspergroup > 160:
+            Ygroup = Ygroup/2
+            Ytotal = Ytotal/2
+        if pixspergroup > 320:
+            Ygroup = Ygroup/2
+            Ytotal = Ytotal/2
+            units = units*.5
+        while 1:
+            if Ycounter > 7:
+                break
+            else:
+                Ystring =  quarkx.ftos(Ytotal)
+                Ynextgroupleft = Ygroup1 - ((Ygroup*2) * Ycounter)
+                Ynextgroupleft = int(Ynextgroupleft)    #py2.4
+                if not MldOption("AxisXYZ"):
+                    cv.textout(Ynextgroupleft-2, 2, Ystring)
+                    cv.textout(Ynextgroupleft-2, 16, "  l")
+                else:
+                    if Ynextgroupleft > 40:
+                        cv.textout(Ynextgroupleft-2, 2, Ystring)
+                        cv.textout(Ynextgroupleft-2, 16, "  l")
+                Ynextgroupright = Ygroup1 + ((Ygroup*2) * Ycounter)
+                Ynextgroupright = int(Ynextgroupright)    #py2.4
+                cv.textout(Ynextgroupright+4, 2, "-" + Ystring)
+                cv.textout(Ynextgroupright-2, 16, "  l")
+                cv.textout(Ynextgroupleft-2, 16, "  l")
+                Ycounter = Ycounter + 1
+                Ytotal = Ytotal + (units*2)
 
 # ===============
 # Y view settings
@@ -196,126 +198,128 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mdleditor.ModelEditor.
 
     elif type == "XZ":
 
-       if not MldOption("All2DviewsScale") and not MldOption("AllScalesCentered") and not MldOption("YviewScale") and not MldOption("YxScaleCentered") and not MldOption("YzScaleCentered"):
-           return
+        if not MldOption("All2DviewsScale") and not MldOption("AllScalesCentered") and not MldOption("YviewScale") and not MldOption("YxScaleCentered") and not MldOption("YzScaleCentered"):
+            return
+        if grid == 0:
+            return
 
-       cv.fontcolor = RED
-       cv.fontsize = 8
+        cv.fontcolor = RED
+        cv.fontsize = 8
 
-       XZarea = `view.clientarea`
-       pixels = XZarea.replace("(","")
-       pixels = pixels.replace(")","")
-       pixels = pixels.split(",")
-       Xstring = pixels[0]
-       Zstring = pixels[1].strip()
-       Xpixels = int(Xstring)
-       Zpixels = int(Zstring)
-       highlight = int(quarkx.setupsubset(SS_MODEL, "Display")["GridHighlight"])
-       Xgroups = ((Xpixels/(grid * 1.0)) / view.scale()) / highlight
-       Zgroups = ((Zpixels/(grid * 1.0)) / view.scale()) / highlight
-       pixspergroup = Zpixels / Zgroups
-       Xcounter = 1
-       Zcounter = 1
-       Xgroup = (Xpixels / Xgroups)
-       Zgroup = (Zpixels / Zgroups)
-       if Xgroup < 20:return
-       units = (grid * highlight)
-       Xstring = quarkx.ftos(0)
-       Zstring = quarkx.ftos(0)
+        XZarea = `view.clientarea`
+        pixels = XZarea.replace("(","")
+        pixels = pixels.replace(")","")
+        pixels = pixels.split(",")
+        Xstring = pixels[0]
+        Zstring = pixels[1].strip()
+        Xpixels = int(Xstring)
+        Zpixels = int(Zstring)
+        highlight = int(quarkx.setupsubset(SS_MODEL, "Display")["GridHighlight"])
+        Xgroups = ((Xpixels/(grid * 1.0)) / view.scale()) / highlight
+        Zgroups = ((Zpixels/(grid * 1.0)) / view.scale()) / highlight
+        pixspergroup = Zpixels / Zgroups
+        Xcounter = 1
+        Zcounter = 1
+        Xgroup = (Xpixels / Xgroups)
+        Zgroup = (Zpixels / Zgroups)
+        if Xgroup < 20:return
+        units = (grid * highlight)
+        Xstring = quarkx.ftos(0)
+        Zstring = quarkx.ftos(0)
+        
+
+
+
+        if not MldOption("YxScaleCentered") and not MldOption("AllScalesCentered"):
+            if not MldOption("AxisXYZ"):
+                Xviewcenter = 16
+            else:
+                Xviewcenter = 48
+        else:
+            if not MldOption("All2DviewsScale") and not MldOption("YviewScale"):
+                Xviewcenter = (Xpixels/2)+4
+            else:
+                Xviewcenter = 0
+
+
        
-
-
-
-       if not MldOption("YxScaleCentered") and not MldOption("AllScalesCentered"):
-           if not MldOption("AxisXYZ"):
-               Xviewcenter = 16
-           else:
-               Xviewcenter = 48
-       else:
-           if not MldOption("All2DviewsScale") and not MldOption("YviewScale"):
-               Xviewcenter = (Xpixels/2)+4
-           else:
-               Xviewcenter = 0
-
-
-   
-       if not MldOption("YzScaleCentered") and not MldOption("AllScalesCentered"):
-           Zviewcenter = (Zpixels)-12
-       else:
-           Zviewcenter = (Zpixels/2)-4
-       Xgroup1 = Xviewcenter+2
-       Zgroup1 = Zviewcenter
-       cv.brushstyle = BS_CLEAR
-       cv.fontname = "Terminal"
-       cv.textout(Xviewcenter, 2, "X " + Xstring)
-       cv.textout(Xviewcenter, 16, "  l")      # for mark line      
-       if MldOption("RedLines2") and not MldOption("AllScalesCentered") and not MldOption("YzScaleCentered"):
-           cv.textout(10, Zviewcenter, " Z " + Zstring + " --")
-       else:
-           cv.textout(0, Zviewcenter, " Z " + Zstring + " --")
-       Xtotal =  (units * 2)
-       Ztotal =  units
-       if pixspergroup > 40:
-           Zgroup = Zgroup/2
-           Ztotal = Ztotal/2
-           units = units/2
-       if pixspergroup > 80:
-           Zgroup = Zgroup/2
-           Ztotal = Ztotal/2
-           units = units/2
-       if pixspergroup > 160:
-           Zgroup = Zgroup/2
-           Ztotal = Ztotal/2
-           units = units/2
-       while 1:
-           if Zcounter > 11:
-              break
-           else:
-               Zstring =  quarkx.ftos(Ztotal)
-               Znextgroupup = Zgroup1 - (Zgroup * Zcounter)
-               Znextgroupup = int(Znextgroupup)    #py2.4
-               if Znextgroupup > 19:
-                   cv.textout(0, Znextgroupup, " " + Zstring + " --")
-               Znextgroupdown = Zgroup1 + (Zgroup * Zcounter)
-               Znextgroupdown = int(Znextgroupdown)    #py2.4
-               cv.textout(0, Znextgroupdown, "-" + Zstring + " --")
-               Zcounter = Zcounter + 1
-               Ztotal = Ztotal + units
-
-       if pixspergroup > 40:
-           Xgroup = Xgroup/2
-           Xtotal = Xtotal/2
-       if pixspergroup > 80:
-           Xgroup = Xgroup/2
-           Xtotal = Xtotal/2
-       if pixspergroup > 160:
-           Xgroup = Xgroup/2
-           Xtotal = Xtotal/2
-       if pixspergroup > 320:
-           Xgroup = Xgroup/2
-           Xtotal = Xtotal/2
-           units = units*.5
-       while 1:
-           if Xcounter > 7:
+        if not MldOption("YzScaleCentered") and not MldOption("AllScalesCentered"):
+            Zviewcenter = (Zpixels)-12
+        else:
+            Zviewcenter = (Zpixels/2)-4
+        Xgroup1 = Xviewcenter+2
+        Zgroup1 = Zviewcenter
+        cv.brushstyle = BS_CLEAR
+        cv.fontname = "Terminal"
+        cv.textout(Xviewcenter, 2, "X " + Xstring)
+        cv.textout(Xviewcenter, 16, "  l")      # for mark line      
+        if MldOption("RedLines2") and not MldOption("AllScalesCentered") and not MldOption("YzScaleCentered"):
+            cv.textout(10, Zviewcenter, " Z " + Zstring + " --")
+        else:
+            cv.textout(0, Zviewcenter, " Z " + Zstring + " --")
+        Xtotal =  (units * 2)
+        Ztotal =  units
+        if pixspergroup > 40:
+            Zgroup = Zgroup/2
+            Ztotal = Ztotal/2
+            units = units/2
+        if pixspergroup > 80:
+            Zgroup = Zgroup/2
+            Ztotal = Ztotal/2
+            units = units/2
+        if pixspergroup > 160:
+            Zgroup = Zgroup/2
+            Ztotal = Ztotal/2
+            units = units/2
+        while 1:
+            if Zcounter > 11:
                break
-           else:
-               Xstring =  quarkx.ftos(Xtotal)
-               Xnextgroupleft = Xgroup1 - ((Xgroup*2) * Xcounter)
-               Xnextgroupleft = int(Xnextgroupleft)    #py2.4
-               if not MldOption("AxisXYZ"):
-                   cv.textout(Xnextgroupleft-2, 2, "-" + Xstring)
-                   cv.textout(Xnextgroupleft-2, 16, "  l") # new for line
-               else:
-                   if Xnextgroupleft > 40:
-                       cv.textout(Xnextgroupleft-2, 2, "-" + Xstring)
-                       cv.textout(Xnextgroupleft-2, 16, "  l") # new for line
-               Xnextgroupright = Xgroup1 + ((Xgroup*2) * Xcounter)
-               Xnextgroupright = int(Xnextgroupright)    #py2.4
-               cv.textout(Xnextgroupright+4, 2, Xstring)
-               cv.textout(Xnextgroupright-2, 16, "  l")  # for mark line
-               cv.textout(Xnextgroupleft-2, 16, "  l")   # for mark line
-               Xcounter = Xcounter + 1
-               Xtotal = Xtotal + (units*2)
+            else:
+                Zstring =  quarkx.ftos(Ztotal)
+                Znextgroupup = Zgroup1 - (Zgroup * Zcounter)
+                Znextgroupup = int(Znextgroupup)    #py2.4
+                if Znextgroupup > 19:
+                    cv.textout(0, Znextgroupup, " " + Zstring + " --")
+                Znextgroupdown = Zgroup1 + (Zgroup * Zcounter)
+                Znextgroupdown = int(Znextgroupdown)    #py2.4
+                cv.textout(0, Znextgroupdown, "-" + Zstring + " --")
+                Zcounter = Zcounter + 1
+                Ztotal = Ztotal + units
+
+        if pixspergroup > 40:
+            Xgroup = Xgroup/2
+            Xtotal = Xtotal/2
+        if pixspergroup > 80:
+            Xgroup = Xgroup/2
+            Xtotal = Xtotal/2
+        if pixspergroup > 160:
+            Xgroup = Xgroup/2
+            Xtotal = Xtotal/2
+        if pixspergroup > 320:
+            Xgroup = Xgroup/2
+            Xtotal = Xtotal/2
+            units = units*.5
+        while 1:
+            if Xcounter > 7:
+                break
+            else:
+                Xstring =  quarkx.ftos(Xtotal)
+                Xnextgroupleft = Xgroup1 - ((Xgroup*2) * Xcounter)
+                Xnextgroupleft = int(Xnextgroupleft)    #py2.4
+                if not MldOption("AxisXYZ"):
+                    cv.textout(Xnextgroupleft-2, 2, "-" + Xstring)
+                    cv.textout(Xnextgroupleft-2, 16, "  l") # new for line
+                else:
+                    if Xnextgroupleft > 40:
+                        cv.textout(Xnextgroupleft-2, 2, "-" + Xstring)
+                        cv.textout(Xnextgroupleft-2, 16, "  l") # new for line
+                Xnextgroupright = Xgroup1 + ((Xgroup*2) * Xcounter)
+                Xnextgroupright = int(Xnextgroupright)    #py2.4
+                cv.textout(Xnextgroupright+4, 2, Xstring)
+                cv.textout(Xnextgroupright-2, 16, "  l")  # for mark line
+                cv.textout(Xnextgroupleft-2, 16, "  l")   # for mark line
+                Xcounter = Xcounter + 1
+                Xtotal = Xtotal + (units*2)
 
 # ===============
 # Z view settings
@@ -323,124 +327,126 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mdleditor.ModelEditor.
 
     elif type == "XY":
 
-       if not MldOption("All2DviewsScale") and not MldOption("AllScalesCentered") and not MldOption("ZviewScale") and not MldOption("ZxScaleCentered") and not MldOption("ZyScaleCentered"):
-           return
+        if not MldOption("All2DviewsScale") and not MldOption("AllScalesCentered") and not MldOption("ZviewScale") and not MldOption("ZxScaleCentered") and not MldOption("ZyScaleCentered"):
+            return
+        if grid == 0:
+            return
 
-       cv.fontcolor = RED
-       cv.fontsize = 8
+        cv.fontcolor = RED
+        cv.fontsize = 8
 
-       XZarea = `view.clientarea`
-       pixels = XZarea.replace("(","")
-       pixels = pixels.replace(")","")
-       pixels = pixels.split(",")
-       Xstring = pixels[0]
-       Ystring = pixels[1].strip()
-       Xpixels = int(Xstring)
-       Ypixels = int(Ystring)
-       highlight = int(quarkx.setupsubset(SS_MODEL, "Display")["GridHighlight"])
-       Xgroups = ((Xpixels/(grid * 1.0)) / view.scale()) / highlight
-       Ygroups = ((Ypixels/(grid * 1.0)) / view.scale()) / highlight
-       pixspergroup = Ypixels / Ygroups
-       Xcounter = 1
-       Ycounter = 1
-       Xgroup = (Xpixels / Xgroups)
-       Ygroup = (Ypixels / Ygroups)
-       if Xgroup < 20:return
-       units = (grid * highlight)
-       Xstring = quarkx.ftos(0)
-       Ystring = quarkx.ftos(0)
-
-
-
-       if not MldOption("ZxScaleCentered") and not MldOption("AllScalesCentered"):
-           if not MldOption("AxisXYZ"):
-               Xviewcenter = 16
-           else:
-               Xviewcenter = 48
-       else:
-           if not MldOption("All2DviewsScale") and not MldOption("ZviewScale"):
-               Xviewcenter = (Xpixels/2)+4
-           else:
-               Xviewcenter = 0
+        XZarea = `view.clientarea`
+        pixels = XZarea.replace("(","")
+        pixels = pixels.replace(")","")
+        pixels = pixels.split(",")
+        Xstring = pixels[0]
+        Ystring = pixels[1].strip()
+        Xpixels = int(Xstring)
+        Ypixels = int(Ystring)
+        highlight = int(quarkx.setupsubset(SS_MODEL, "Display")["GridHighlight"])
+        Xgroups = ((Xpixels/(grid * 1.0)) / view.scale()) / highlight
+        Ygroups = ((Ypixels/(grid * 1.0)) / view.scale()) / highlight
+        pixspergroup = Ypixels / Ygroups
+        Xcounter = 1
+        Ycounter = 1
+        Xgroup = (Xpixels / Xgroups)
+        Ygroup = (Ypixels / Ygroups)
+        if Xgroup < 20:return
+        units = (grid * highlight)
+        Xstring = quarkx.ftos(0)
+        Ystring = quarkx.ftos(0)
 
 
-       if not MldOption("ZyScaleCentered") and not MldOption("AllScalesCentered"):
-           Yviewcenter = (Ypixels)-12
-       else:
-           Yviewcenter = (Ypixels/2)-4
-       Xgroup1 = Xviewcenter+2
-       Ygroup1 = Yviewcenter
-       cv.brushstyle = BS_CLEAR
-       cv.fontname = "Terminal"
-       cv.textout(Xviewcenter, 2, "X " + Xstring)
-       cv.textout(Xviewcenter, 16, "  l")      # new for mark line
-       if not MldOption("AllScalesCentered") and not MldOption("ZyScaleCentered"):
-           cv.textout(10, Yviewcenter, " Y " + Ystring + " --") # for mark line
-       else:
-           cv.textout(0, Yviewcenter, " Y " + Ystring + " --")  # for mark line
-       Xtotal =  (units * 2)
-       Ytotal =  units
-       if pixspergroup > 40:
-           Ygroup = Ygroup/2
-           Ytotal = Ytotal/2
-           units = units/2
-       if pixspergroup > 80:
-           Ygroup = Ygroup/2
-           Ytotal = Ytotal/2
-           units = units/2
-       if pixspergroup > 160:
-           Ygroup = Ygroup/2
-           Ytotal = Ytotal/2
-           units = units/2
-       while 1:
-           if Ycounter > 11:
-              break
-           else:
-               Ystring =  quarkx.ftos(Ytotal)
-               Ynextgroupup = Ygroup1 - (Ygroup * Ycounter)
-               Ynextgroupup = int(Ynextgroupup)    #py2.4
-               if Ynextgroupup > 19:
-                   cv.textout(0, Ynextgroupup, " " + Ystring + " --")
-               Ynextgroupdown = Ygroup1 + (Ygroup * Ycounter)
-               Ynextgroupdown = int(Ynextgroupdown)    #py2.4
-               cv.textout(0, Ynextgroupdown, "-" + Ystring + " --")
-               Ycounter = Ycounter + 1
-               Ytotal = Ytotal + units
 
-       if pixspergroup > 40:
-           Xgroup = Xgroup/2
-           Xtotal = Xtotal/2
-       if pixspergroup > 80:
-           Xgroup = Xgroup/2
-           Xtotal = Xtotal/2
-       if pixspergroup > 160:
-           Xgroup = Xgroup/2
-           Xtotal = Xtotal/2
-       if pixspergroup > 320:
-           Xgroup = Xgroup/2
-           Xtotal = Xtotal/2
-           units = units*.5
-       while 1:
-           if Xcounter > 7:
+        if not MldOption("ZxScaleCentered") and not MldOption("AllScalesCentered"):
+            if not MldOption("AxisXYZ"):
+                Xviewcenter = 16
+            else:
+                Xviewcenter = 48
+        else:
+            if not MldOption("All2DviewsScale") and not MldOption("ZviewScale"):
+                Xviewcenter = (Xpixels/2)+4
+            else:
+                Xviewcenter = 0
+
+
+        if not MldOption("ZyScaleCentered") and not MldOption("AllScalesCentered"):
+            Yviewcenter = (Ypixels)-12
+        else:
+            Yviewcenter = (Ypixels/2)-4
+        Xgroup1 = Xviewcenter+2
+        Ygroup1 = Yviewcenter
+        cv.brushstyle = BS_CLEAR
+        cv.fontname = "Terminal"
+        cv.textout(Xviewcenter, 2, "X " + Xstring)
+        cv.textout(Xviewcenter, 16, "  l")      # new for mark line
+        if not MldOption("AllScalesCentered") and not MldOption("ZyScaleCentered"):
+            cv.textout(10, Yviewcenter, " Y " + Ystring + " --") # for mark line
+        else:
+            cv.textout(0, Yviewcenter, " Y " + Ystring + " --")  # for mark line
+        Xtotal =  (units * 2)
+        Ytotal =  units
+        if pixspergroup > 40:
+            Ygroup = Ygroup/2
+            Ytotal = Ytotal/2
+            units = units/2
+        if pixspergroup > 80:
+            Ygroup = Ygroup/2
+            Ytotal = Ytotal/2
+            units = units/2
+        if pixspergroup > 160:
+            Ygroup = Ygroup/2
+            Ytotal = Ytotal/2
+            units = units/2
+        while 1:
+            if Ycounter > 11:
                break
-           else:
-               Xstring =  quarkx.ftos(Xtotal)
-               Xnextgroupleft = Xgroup1 - ((Xgroup*2) * Xcounter)
-               Xnextgroupleft = int(Xnextgroupleft)    #py2.4
-               if not MldOption("AxisXYZ"):
-                   cv.textout(Xnextgroupleft-2, 2, "-" + Xstring)
-                   cv.textout(Xnextgroupleft-2, 16, "  l")      # for mark line
-               else:
-                   if Xnextgroupleft > 40:
-                       cv.textout(Xnextgroupleft-2, 2, "-" + Xstring)
-                       cv.textout(Xnextgroupleft-2, 16, "  l")  # for mark line
-               Xnextgroupright = Xgroup1 + ((Xgroup*2) * Xcounter)
-               Xnextgroupright = int(Xnextgroupright)   #py2.4
-               cv.textout(Xnextgroupright+4, 2, Xstring)
-               cv.textout(Xnextgroupright-2, 16, "  l")     # for mark line
-               cv.textout(Xnextgroupleft-2, 16, "  l")      # for mark line
-               Xcounter = Xcounter + 1
-               Xtotal = Xtotal + (units*2)
+            else:
+                Ystring =  quarkx.ftos(Ytotal)
+                Ynextgroupup = Ygroup1 - (Ygroup * Ycounter)
+                Ynextgroupup = int(Ynextgroupup)    #py2.4
+                if Ynextgroupup > 19:
+                    cv.textout(0, Ynextgroupup, " " + Ystring + " --")
+                Ynextgroupdown = Ygroup1 + (Ygroup * Ycounter)
+                Ynextgroupdown = int(Ynextgroupdown)    #py2.4
+                cv.textout(0, Ynextgroupdown, "-" + Ystring + " --")
+                Ycounter = Ycounter + 1
+                Ytotal = Ytotal + units
+
+        if pixspergroup > 40:
+            Xgroup = Xgroup/2
+            Xtotal = Xtotal/2
+        if pixspergroup > 80:
+            Xgroup = Xgroup/2
+            Xtotal = Xtotal/2
+        if pixspergroup > 160:
+            Xgroup = Xgroup/2
+            Xtotal = Xtotal/2
+        if pixspergroup > 320:
+            Xgroup = Xgroup/2
+            Xtotal = Xtotal/2
+            units = units*.5
+        while 1:
+            if Xcounter > 7:
+                break
+            else:
+                Xstring =  quarkx.ftos(Xtotal)
+                Xnextgroupleft = Xgroup1 - ((Xgroup*2) * Xcounter)
+                Xnextgroupleft = int(Xnextgroupleft)    #py2.4
+                if not MldOption("AxisXYZ"):
+                    cv.textout(Xnextgroupleft-2, 2, "-" + Xstring)
+                    cv.textout(Xnextgroupleft-2, 16, "  l")      # for mark line
+                else:
+                    if Xnextgroupleft > 40:
+                        cv.textout(Xnextgroupleft-2, 2, "-" + Xstring)
+                        cv.textout(Xnextgroupleft-2, 16, "  l")  # for mark line
+                Xnextgroupright = Xgroup1 + ((Xgroup*2) * Xcounter)
+                Xnextgroupright = int(Xnextgroupright)   #py2.4
+                cv.textout(Xnextgroupright+4, 2, Xstring)
+                cv.textout(Xnextgroupright-2, 16, "  l")     # for mark line
+                cv.textout(Xnextgroupleft-2, 16, "  l")      # for mark line
+                Xcounter = Xcounter + 1
+                Xtotal = Xtotal + (units*2)
 
     else:
        return
@@ -665,6 +671,9 @@ GridMenuCmds = [quarkpy.qmenu.popup("Grid scale in 2D views", [], ViewAmendMenu1
 #
 #
 #$Log$
+#Revision 1.15  2008/02/22 09:52:22  danielpharos
+#Move all finishdrawing code to the correct editor, and some small cleanups.
+#
 #Revision 1.14  2007/11/29 16:34:35  danielpharos
 #Prevent some model editor functions from triggering in the map editor. This should fix some errors that that popped-up when switching from the model editor to the map editor.
 #
