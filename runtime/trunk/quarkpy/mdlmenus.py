@@ -81,20 +81,22 @@ def BuildMenuBar(editor):
         from qmacro import mdlimport
         mdlimportmenu = []
         for menuitem in mdlimport:
-            mdlimportmenu = mdlimportmenu + [qmenu.item(menuitem, runimporter, "load an "+str(menuitem))] 
+            mdlimportmenu = mdlimportmenu + [qmenu.item(menuitem, runimporter, "load an "+str(menuitem))]
         if mdlimportmenu == []:
-            mdlimportmenu = mdlimportmenu + [qmenu.item("none available", None, "no importers available")] 
+            mdlimportmenu = mdlimportmenu + [qmenu.item("none available", None, "no importers available")]
         return mdlimportmenu
 
     def modelexporters():
         from qmacro import mdlexport
+        import qutils
+        mdlexport = qutils.sortdictionary(mdlexport)
         mdlexportmenu = []
         for menuitem in mdlexport:
-            mdlexportmenu = mdlexportmenu + [qmenu.item(menuitem, runexporter, "load an "+str(menuitem))] 
+            mdlexportmenu = mdlexportmenu + [qmenu.item(menuitem, runexporter, "load an "+str(menuitem))]
         if mdlexportmenu == []:
-            mdlexportmenu = mdlexportmenu + [qmenu.item("none available", None, "no exporters available")] 
+            mdlexportmenu = mdlexportmenu + [qmenu.item("none available", None, "no exporters available")]
         return mdlexportmenu
-        
+
     File1, sc1 = qmenu.DefaultFileMenu()
     MdlImport = qmenu.popup("Model &Importers", modelimporters(), runimporter, "|Model Importers:\n\nList of all available Python plugins model importers to load a model.", "intro.modeleditor.menu.html#filemenu")
     MdlExport = qmenu.popup("&Model Exporters", modelexporters(), runexporter, "|Model Exporters:\n\nList of all available Python plugins model exporters to save a model.", "intro.modeleditor.menu.html#filemenu")
@@ -269,6 +271,9 @@ def BaseMenu(sellist, editor):
 #
 #
 #$Log$
+#Revision 1.29  2008/06/28 14:44:52  cdunde
+#Some minor corrections.
+#
 #Revision 1.28  2008/06/14 08:18:41  cdunde
 #Fixed error if model import file selection window is closed without selecting anything.
 #
