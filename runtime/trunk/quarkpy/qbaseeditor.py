@@ -415,7 +415,7 @@ class BaseEditor:
                                 cv.pencolor = MapColor("SkinLines", SS_MODEL)
                         # No Ticks drawn during RecSelDrag or Method 1, Ticks drawn during RecSelDrag.
                             if (flagsmouse == 16384) or (flagsmouse == 1032 and isinstance(self.dragobject, mdlhandles.RectSelDragObject) and quarkx.setupsubset(SS_MODEL, "Options")["RDT_M1"] == "1"):
-                                if MldOption("Ticks") == "1":
+                                if MdlOption("Ticks") == "1":
                                     cv.brushcolor = WHITE
                                     cv.ellipse(int(vertex0X)-2, int(vertex0Y)-2, int(vertex0X)+2, int(vertex0Y)+2)
                                     cv.ellipse(int(vertex1X)-2, int(vertex1Y)-2, int(vertex1X)+2, int(vertex1Y)+2)
@@ -443,7 +443,7 @@ class BaseEditor:
                                 vertex0X, vertex0Y, vertex0Z = view.proj(trivertex0).tuple
                                 vertex1X, vertex1Y, vertex1Z = view.proj(trivertex1).tuple
                                 vertex2X, vertex2Y, vertex2Z = view.proj(trivertex2).tuple
-                                if MldOption("Ticks") == "1":
+                                if MdlOption("Ticks") == "1":
                                     cv.brushcolor = WHITE
                                     cv.ellipse(int(vertex0X)-2, int(vertex0Y)-2, int(vertex0X)+2, int(vertex0Y)+2)
                                     cv.ellipse(int(vertex1X)-2, int(vertex1Y)-2, int(vertex1X)+2, int(vertex1Y)+2)
@@ -1456,6 +1456,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.112  2008/06/17 20:59:22  cdunde
+#To stop some minor errors from occurring.
+#
 #Revision 1.111  2008/05/27 19:35:23  danielpharos
 #Fix typo
 #

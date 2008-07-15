@@ -53,7 +53,7 @@ def autobuild(m):
     editor.fileobject = editor.fileobject
 
 def revdir(m):
-    if not MldOption("RevDir"):
+    if not MdlOption("RevDir"):
         quarkx.setupsubset(SS_MODEL, "Options")['RevDir'] = "1"
     else:
         quarkx.setupsubset(SS_MODEL, "Options")['RevDir'] = None
@@ -119,6 +119,10 @@ onclick = commandsclick
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.17  2007/09/12 05:25:51  cdunde
+# To move Make New Component menu function from Commands menu to RMB Face Commands menu and
+# setup new function to move selected faces from one component to another.
+#
 # Revision 1.16  2007/09/07 23:55:29  cdunde
 # 1) Created a new function on the Commands menu and RMB editor & tree-view menus to create a new
 #      model component from selected Model Mesh faces and remove them from their current component.

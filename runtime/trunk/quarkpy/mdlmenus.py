@@ -252,7 +252,7 @@ def BaseMenu(sellist, editor):
     mult = len(sellist)>1 or (len(sellist)==1 and sellist[0].type==':g')
     Force1 = qmenu.item(("&Force to grid", "&Force everything to grid")[mult],
       editor.ForceEverythingToGrid)
-    if not MldOption("GridActive"):
+    if not MdlOption("GridActive") or quarkx.setupsubset(SS_MODEL, "Display")["GridStep"][0] == 0:
         Force1.state = qmenu.disabled
 
     Cut1 = qmenu.item("&Cut", editor.editcmdclick)
@@ -271,6 +271,9 @@ def BaseMenu(sellist, editor):
 #
 #
 #$Log$
+#Revision 1.30  2008/07/14 18:06:53  cdunde
+#To sort the exporters menu.
+#
 #Revision 1.29  2008/06/28 14:44:52  cdunde
 #Some minor corrections.
 #

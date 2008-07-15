@@ -53,7 +53,7 @@ def extrudeclick(m):
     qtoolbar.toggle(m)
     tb1 = editor.layout.toolbars["tb_edittools"]
     tb2 = editor.layout.toolbars["tb_objmodes"]
-    if not MldOption("ExtrudeFaces"):
+    if not MdlOption("ExtrudeFaces"):
         quarkx.setupsubset(SS_MODEL, "Options")["ExtrudeFaces"] = "1"
         tb1.tb.buttons[0].state = qtoolbar.selected
         quarkx.setupsubset(SS_MODEL, "Options")["ExtrudeBulkHeads"] = None
@@ -169,7 +169,7 @@ def extrudebulkheadsclick(m):
     qtoolbar.toggle(m)
     tb1 = editor.layout.toolbars["tb_edittools"]
     tb2 = editor.layout.toolbars["tb_objmodes"]
-    if not MldOption("ExtrudeBulkHeads"):
+    if not MdlOption("ExtrudeBulkHeads"):
         quarkx.setupsubset(SS_MODEL, "Options")["ExtrudeBulkHeads"] = "1"
         tb1.tb.buttons[1].state = qtoolbar.selected
         quarkx.setupsubset(SS_MODEL, "Options")["ExtrudeFaces"] = None
@@ -317,6 +317,10 @@ toolbars = {"tb_display": DisplayBar, "tb_edittools": EditToolsBar, "tb_movepal"
 #
 #
 #$Log$
+#Revision 1.12  2008/02/23 04:41:11  cdunde
+#Setup new Paint modes toolbar and complete painting functions to allow
+#the painting of skin textures in any Model Editor textured and Skin-view.
+#
 #Revision 1.11  2007/12/06 02:06:29  cdunde
 #Minor corrections.
 #

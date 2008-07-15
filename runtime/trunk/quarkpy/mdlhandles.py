@@ -681,7 +681,7 @@ class VertexHandle(qhandles.GenericHandle):
                 "Align Picked Vertexes to 'Base vertex' - Method 1"
                 "Other selected vertexes move to the 'Base' vertex"
                 "position of each tree-view selected 'frame'."
-                if not MldOption("APVexs_Method1"):
+                if not MdlOption("APVexs_Method1"):
                     quarkx.setupsubset(SS_MODEL, "Options")['APVexs_Method1'] = "1"
                     quarkx.setupsubset(SS_MODEL, "Options")['APVexs_Method2'] = None
                 else:
@@ -691,7 +691,7 @@ class VertexHandle(qhandles.GenericHandle):
                 "Align Picked Vertexes to 'Base vertex' - Method 2"
                 "Other selected vertexes move to the 'Base' vertex"
                 "position of the 1st tree-view selected 'frame'."
-                if not MldOption("APVexs_Method2"):
+                if not MdlOption("APVexs_Method2"):
                     quarkx.setupsubset(SS_MODEL, "Options")['APVexs_Method2'] = "1"
                     quarkx.setupsubset(SS_MODEL, "Options")['APVexs_Method1'] = None
                 else:
@@ -741,7 +741,7 @@ class VertexHandle(qhandles.GenericHandle):
         AlignVertOpsPop = qmenu.popup("Align Vertex Options", [], align_vert_ops_click, "|Align Vertex Options:\n\nThis menu gives different methods of aligning 'Picked' vertexes to the 'Base' vertex.\n\nSee the help for each method for detail on how they work.", "intro.modeleditor.rmbmenus.html#vertexrmbmenu")
         MergeVertexes = qmenu.item("&Merge Vertexes", merge_vertexes_click,"|Merge Vertexes:\n\nWhen two or more vertexes have been 'Picked' in one of the editor views this function becomes active allowing the 'picked' vertexes be moved to the 'Base' (stationary) vertex (the first one selected) location and aligned with that 'Base' vertex where they will then be merged into the one 'Base' vertex.\n\nTwo vertexes of the same face (triangle) can not be selected.\n\nThis function also works in conjunction with the 'Clear Pick list' above it.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
 
-        if not MldOption("GridActive") or editor.gridstep <= 0:
+        if not MdlOption("GridActive") or editor.gridstep <= 0:
             Forcetogrid.state = qmenu.disabled
 
         if len(editor.ModelVertexSelList) == 0:
@@ -819,7 +819,7 @@ class VertexHandle(qhandles.GenericHandle):
         if p.visible:
             cv.pencolor = vertexdotcolor
             cv.brushstyle = BS_SOLID
-            if MldOption("Ticks") == "1":
+            if MdlOption("Ticks") == "1":
                 cv.brushcolor = WHITE
                 cv.ellipse(int(p.x)-2, int(p.y)-2, int(p.x)+2, int(p.y)+2)
             else:
@@ -1132,7 +1132,7 @@ class SkinHandle(qhandles.GenericHandle):
         AlignSkinVertexes = qmenu.item(AlignText, alignskinvertexesclick,"|Align skin vertex(s):\n\nOnce a set of vertexes have been 'Picked' on the Skin-view all of those vertexes will be moved to the 'Base' (stationary) vertex (the first one selected) location and aligned for possible multiple vertex movement. It also works in conjunction with the 'Clear Skin Pick list' above it and the multi or single drag mode button on the Skin-view page.|intro.modeleditor.skinview.html#funcsnmenus")
         ClearSkinPicklist = qmenu.item("&Clear Skin Pick list", skinpick_cleared, "|Clear Skin Pick list:\n\nThis Clears the 'Base' (stationary) vertex and the 'Pick Skin Vertex' list of all vertexes and it becomes active when one or more vertexes have been selected.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.skinview.html#funcsnmenus")
 
-        if not MldOption("SkinGridActive") or editor.skingridstep <= 0:
+        if not MdlOption("SkinGridActive") or editor.skingridstep <= 0:
             Forcetogrid.state = qmenu.disabled
 
         if len(editor.SkinVertexSelList) == 0:
@@ -1166,7 +1166,7 @@ class SkinHandle(qhandles.GenericHandle):
 
         # Sync Editor views with Skin-view function.
         def mSYNC_EDwSV(m, self=self, editor=editor, view=view):
-            if not MldOption("SYNC_EDwSV"):
+            if not MdlOption("SYNC_EDwSV"):
                 quarkx.setupsubset(SS_MODEL, "Options")['SYNC_EDwSV'] = "1"
                 quarkx.setupsubset(SS_MODEL, "Options")['SYNC_SVwED'] = None
                 quarkx.setupsubset(SS_MODEL, "Options")['PVSTEV'] = None
@@ -1194,7 +1194,7 @@ class SkinHandle(qhandles.GenericHandle):
 
         # Pass (Skin-view) Vertex Selection To Editors Views function.
         def mPVSTEV(m, self=self, editor=editor, view=view):
-            if not MldOption("PVSTEV"):
+            if not MdlOption("PVSTEV"):
                 quarkx.setupsubset(SS_MODEL, "Options")['PVSTEV'] = "1"
                 quarkx.setupsubset(SS_MODEL, "Options")['PFSTSV'] = None
                 quarkx.setupsubset(SS_MODEL, "Options")['SYNC_EDwSV'] = None
@@ -1224,7 +1224,7 @@ class SkinHandle(qhandles.GenericHandle):
             # Rectangle Drag Ticks_Method 1
             def mRDT_M1(m):
                 editor = mdleditor.mdleditor
-                if not MldOption("RDT_M1"):
+                if not MdlOption("RDT_M1"):
                     quarkx.setupsubset(SS_MODEL, "Options")['RDT_M1'] = "1"
                     quarkx.setupsubset(SS_MODEL, "Options")['RDT_M2'] = None
                 else:
@@ -1233,7 +1233,7 @@ class SkinHandle(qhandles.GenericHandle):
             # Rectangle Drag Ticks_Method 2
             def mRDT_M2(m):
                 editor = mdleditor.mdleditor
-                if not MldOption("RDT_M2"):
+                if not MdlOption("RDT_M2"):
                     quarkx.setupsubset(SS_MODEL, "Options")['RDT_M2'] = "1"
                     quarkx.setupsubset(SS_MODEL, "Options")['RDT_M1'] = None
                 else:
@@ -1256,7 +1256,7 @@ class SkinHandle(qhandles.GenericHandle):
 
         # Turn taking Skin-view coors from editors 3D view on or off.
         def mSF3DV(m, self=self, editor=editor, view=view):
-            if not MldOption("SkinFrom3Dview"):
+            if not MdlOption("SkinFrom3Dview"):
                 quarkx.setupsubset(SS_MODEL, "Options")['SkinFrom3Dview'] = "1"
                 quarkx.setupsubset(SS_MODEL, "Options")['UseSkinViewScale'] = None
             else:
@@ -1264,7 +1264,7 @@ class SkinHandle(qhandles.GenericHandle):
 
         # When taking Skin-view coors from the Skin-view, turns using its "scale" factor on or off.
         def mUSVS(m, self=self, editor=editor, view=view):
-            if not MldOption("UseSkinViewScale"):
+            if not MdlOption("UseSkinViewScale"):
                 quarkx.setupsubset(SS_MODEL, "Options")['UseSkinViewScale'] = "1"
                 quarkx.setupsubset(SS_MODEL, "Options")['SkinFrom3Dview'] = None
             else:
@@ -1272,7 +1272,7 @@ class SkinHandle(qhandles.GenericHandle):
 
         # Turn Model Options function SkinGridVisible on or off.
         def mSGV(m, self=self, editor=editor, view=view):
-            if not MldOption("SkinGridVisible"):
+            if not MdlOption("SkinGridVisible"):
                 quarkx.setupsubset(SS_MODEL, "Options")['SkinGridVisible'] = "1"
                 if SkinView1 is not None:
                     SkinView1.invalidate()
@@ -1285,14 +1285,14 @@ class SkinHandle(qhandles.GenericHandle):
 
         # Turn Model Options function SkinGridActive on or off.
         def mSGA(m, self=self, editor=editor, view=view):
-            if not MldOption("SkinGridActive"):
+            if not MdlOption("SkinGridActive"):
                 quarkx.setupsubset(SS_MODEL, "Options")['SkinGridActive'] = "1"
             else:
                 quarkx.setupsubset(SS_MODEL, "Options")['SkinGridActive'] = None
 
         # Turn Model Options function SingleSelDragLines on or off.
         def mSSDL(m, self=self, editor=editor, view=view):
-            if not MldOption("SingleSelDragLines"):
+            if not MdlOption("SingleSelDragLines"):
                 quarkx.setupsubset(SS_MODEL, "Options")['SingleSelDragLines'] = "1"
             else:
                 quarkx.setupsubset(SS_MODEL, "Options")['SingleSelDragLines'] = None
@@ -1364,7 +1364,7 @@ class SkinHandle(qhandles.GenericHandle):
                     cv.line(int(pv2[0]), int(pv2[1]), int(fixedX), int(fixedY))
 
                 cv.reset()
-                if MldOption("Ticks") == "1":
+                if MdlOption("Ticks") == "1":
                     cv.brushcolor = WHITE
                     cv.ellipse(int(p.x)-2, int(p.y)-2, int(p.x)+2, int(p.y)+2)
                 else:
@@ -2104,7 +2104,7 @@ class RectSelDragObject(qhandles.RectangleDragObject):
                     if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_ISV'] == "1" and SkinView1 is not None:
                         editor.SkinVertexSelList = []
                         editor.SkinFaceSelList = []
-                        if MldOption("PFSTSV"):
+                        if MdlOption("PFSTSV"):
                             PassEditorSel2Skin(editor)
                         try:
                             skindrawobject = comp.currentskin
@@ -2165,7 +2165,7 @@ class RectSelDragObject(qhandles.RectangleDragObject):
                 if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_ISV'] == "1" and SkinView1 is not None:
                     editor.SkinVertexSelList = []
                     editor.SkinFaceSelList = []
-                    if MldOption("PFSTSV"):
+                    if MdlOption("PFSTSV"):
                         PassEditorSel2Skin(editor, 2)
                     try:
                         skindrawobject = editor.Root.currentcomponent.currentskin
@@ -3377,6 +3377,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.138  2008/07/10 21:21:33  danielpharos
+#Remove redundant code
+#
 #Revision 1.137  2008/07/05 19:11:42  cdunde
 #Comment addition for a triangle's UV vert_index number computation formula.
 #

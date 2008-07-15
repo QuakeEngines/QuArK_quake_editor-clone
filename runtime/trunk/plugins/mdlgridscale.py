@@ -75,7 +75,7 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mdleditor.ModelEditor.
 
     if type == "YZ":
 
-        if not MldOption("All2DviewsScale") and not MldOption("AllScalesCentered") and not MldOption("XviewScale") and not MldOption("XyScaleCentered") and not MldOption("XzScaleCentered"):
+        if not MdlOption("All2DviewsScale") and not MdlOption("AllScalesCentered") and not MdlOption("XviewScale") and not MdlOption("XyScaleCentered") and not MdlOption("XzScaleCentered"):
             return
         if grid == 0:
             return
@@ -105,19 +105,19 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mdleditor.ModelEditor.
         Zstring = quarkx.ftos(0)
 
 
-        if not MldOption("XyScaleCentered") and not MldOption("AllScalesCentered"):
-            if not MldOption("AxisXYZ"):
+        if not MdlOption("XyScaleCentered") and not MdlOption("AllScalesCentered"):
+            if not MdlOption("AxisXYZ"):
                 Yviewcenter = 6
             else:
                 Yviewcenter = 48
         else:
-            if not MldOption("All2DviewsScale") and not MldOption("XviewScale"):
+            if not MdlOption("All2DviewsScale") and not MdlOption("XviewScale"):
                 Yviewcenter = (Ypixels/2)+4
             else:
                 Yviewcenter = 0
 
 
-        if not MldOption("XzScaleCentered") and not MldOption("AllScalesCentered"):
+        if not MdlOption("XzScaleCentered") and not MdlOption("AllScalesCentered"):
             Zviewcenter = (Zpixels)-12
         else:
             Zviewcenter = (Zpixels/2)-4
@@ -177,7 +177,7 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mdleditor.ModelEditor.
                 Ystring =  quarkx.ftos(Ytotal)
                 Ynextgroupleft = Ygroup1 - ((Ygroup*2) * Ycounter)
                 Ynextgroupleft = int(Ynextgroupleft)    #py2.4
-                if not MldOption("AxisXYZ"):
+                if not MdlOption("AxisXYZ"):
                     cv.textout(Ynextgroupleft-2, 2, Ystring)
                     cv.textout(Ynextgroupleft-2, 16, "  l")
                 else:
@@ -198,7 +198,7 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mdleditor.ModelEditor.
 
     elif type == "XZ":
 
-        if not MldOption("All2DviewsScale") and not MldOption("AllScalesCentered") and not MldOption("YviewScale") and not MldOption("YxScaleCentered") and not MldOption("YzScaleCentered"):
+        if not MdlOption("All2DviewsScale") and not MdlOption("AllScalesCentered") and not MdlOption("YviewScale") and not MdlOption("YxScaleCentered") and not MdlOption("YzScaleCentered"):
             return
         if grid == 0:
             return
@@ -230,20 +230,20 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mdleditor.ModelEditor.
 
 
 
-        if not MldOption("YxScaleCentered") and not MldOption("AllScalesCentered"):
-            if not MldOption("AxisXYZ"):
+        if not MdlOption("YxScaleCentered") and not MdlOption("AllScalesCentered"):
+            if not MdlOption("AxisXYZ"):
                 Xviewcenter = 16
             else:
                 Xviewcenter = 48
         else:
-            if not MldOption("All2DviewsScale") and not MldOption("YviewScale"):
+            if not MdlOption("All2DviewsScale") and not MdlOption("YviewScale"):
                 Xviewcenter = (Xpixels/2)+4
             else:
                 Xviewcenter = 0
 
 
        
-        if not MldOption("YzScaleCentered") and not MldOption("AllScalesCentered"):
+        if not MdlOption("YzScaleCentered") and not MdlOption("AllScalesCentered"):
             Zviewcenter = (Zpixels)-12
         else:
             Zviewcenter = (Zpixels/2)-4
@@ -253,7 +253,7 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mdleditor.ModelEditor.
         cv.fontname = "Terminal"
         cv.textout(Xviewcenter, 2, "X " + Xstring)
         cv.textout(Xviewcenter, 16, "  l")      # for mark line      
-        if MldOption("RedLines2") and not MldOption("AllScalesCentered") and not MldOption("YzScaleCentered"):
+        if MdlOption("RedLines2") and not MdlOption("AllScalesCentered") and not MdlOption("YzScaleCentered"):
             cv.textout(10, Zviewcenter, " Z " + Zstring + " --")
         else:
             cv.textout(0, Zviewcenter, " Z " + Zstring + " --")
@@ -306,7 +306,7 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mdleditor.ModelEditor.
                 Xstring =  quarkx.ftos(Xtotal)
                 Xnextgroupleft = Xgroup1 - ((Xgroup*2) * Xcounter)
                 Xnextgroupleft = int(Xnextgroupleft)    #py2.4
-                if not MldOption("AxisXYZ"):
+                if not MdlOption("AxisXYZ"):
                     cv.textout(Xnextgroupleft-2, 2, "-" + Xstring)
                     cv.textout(Xnextgroupleft-2, 16, "  l") # new for line
                 else:
@@ -327,7 +327,7 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mdleditor.ModelEditor.
 
     elif type == "XY":
 
-        if not MldOption("All2DviewsScale") and not MldOption("AllScalesCentered") and not MldOption("ZviewScale") and not MldOption("ZxScaleCentered") and not MldOption("ZyScaleCentered"):
+        if not MdlOption("All2DviewsScale") and not MdlOption("AllScalesCentered") and not MdlOption("ZviewScale") and not MdlOption("ZxScaleCentered") and not MdlOption("ZyScaleCentered"):
             return
         if grid == 0:
             return
@@ -358,19 +358,19 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mdleditor.ModelEditor.
 
 
 
-        if not MldOption("ZxScaleCentered") and not MldOption("AllScalesCentered"):
-            if not MldOption("AxisXYZ"):
+        if not MdlOption("ZxScaleCentered") and not MdlOption("AllScalesCentered"):
+            if not MdlOption("AxisXYZ"):
                 Xviewcenter = 16
             else:
                 Xviewcenter = 48
         else:
-            if not MldOption("All2DviewsScale") and not MldOption("ZviewScale"):
+            if not MdlOption("All2DviewsScale") and not MdlOption("ZviewScale"):
                 Xviewcenter = (Xpixels/2)+4
             else:
                 Xviewcenter = 0
 
 
-        if not MldOption("ZyScaleCentered") and not MldOption("AllScalesCentered"):
+        if not MdlOption("ZyScaleCentered") and not MdlOption("AllScalesCentered"):
             Yviewcenter = (Ypixels)-12
         else:
             Yviewcenter = (Ypixels/2)-4
@@ -380,7 +380,7 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mdleditor.ModelEditor.
         cv.fontname = "Terminal"
         cv.textout(Xviewcenter, 2, "X " + Xstring)
         cv.textout(Xviewcenter, 16, "  l")      # new for mark line
-        if not MldOption("AllScalesCentered") and not MldOption("ZyScaleCentered"):
+        if not MdlOption("AllScalesCentered") and not MdlOption("ZyScaleCentered"):
             cv.textout(10, Yviewcenter, " Y " + Ystring + " --") # for mark line
         else:
             cv.textout(0, Yviewcenter, " Y " + Ystring + " --")  # for mark line
@@ -433,7 +433,7 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mdleditor.ModelEditor.
                 Xstring =  quarkx.ftos(Xtotal)
                 Xnextgroupleft = Xgroup1 - ((Xgroup*2) * Xcounter)
                 Xnextgroupleft = int(Xnextgroupleft)    #py2.4
-                if not MldOption("AxisXYZ"):
+                if not MdlOption("AxisXYZ"):
                     cv.textout(Xnextgroupleft-2, 2, "-" + Xstring)
                     cv.textout(Xnextgroupleft-2, 16, "  l")      # for mark line
                 else:
@@ -463,7 +463,7 @@ quarkpy.mdleditor.ModelEditor.finishdrawing = gridfinishdrawing
 
 def All2DviewsClick(m):
     editor = mapeditor()
-    if not MldOption("All2DviewsScale"):
+    if not MdlOption("All2DviewsScale"):
         quarkx.setupsubset(SS_MODEL, "Options")['All2DviewsScale'] = "1"
         quarkx.setupsubset(SS_MODEL, "Options")['AllScalesCentered'] = None
         quarkx.setupsubset(SS_MODEL, "Options")['XviewScale'] = None
@@ -482,7 +482,7 @@ def All2DviewsClick(m):
 
 def All2DviewsScalesCentered(m):
     editor = mapeditor()
-    if not MldOption("AllScalesCentered"):
+    if not MdlOption("AllScalesCentered"):
         quarkx.setupsubset(SS_MODEL, "Options")['AllScalesCentered'] = "1"
         quarkx.setupsubset(SS_MODEL, "Options")['All2DviewsScale'] = None
         quarkx.setupsubset(SS_MODEL, "Options")['XviewScale'] = None
@@ -501,7 +501,7 @@ def All2DviewsScalesCentered(m):
 
 def XviewScaleClick(m):
     editor = mapeditor()
-    if not MldOption("XviewScale"):
+    if not MdlOption("XviewScale"):
         quarkx.setupsubset(SS_MODEL, "Options")['XviewScale'] = "1"
         quarkx.setupsubset(SS_MODEL, "Options")['XyScaleCentered'] = None
         quarkx.setupsubset(SS_MODEL, "Options")['XzScaleCentered'] = None
@@ -514,7 +514,7 @@ def XviewScaleClick(m):
 
 def XviewYScaleCentered(m):
     editor = mapeditor()
-    if not MldOption("XyScaleCentered"):
+    if not MdlOption("XyScaleCentered"):
         quarkx.setupsubset(SS_MODEL, "Options")['XyScaleCentered'] = "1"
         quarkx.setupsubset(SS_MODEL, "Options")['XviewScale'] = None
         quarkx.setupsubset(SS_MODEL, "Options")['All2DviewsScale'] = None
@@ -526,7 +526,7 @@ def XviewYScaleCentered(m):
 
 def XviewZScaleCentered(m):
     editor = mapeditor()
-    if not MldOption("XzScaleCentered"):
+    if not MdlOption("XzScaleCentered"):
         quarkx.setupsubset(SS_MODEL, "Options")['XzScaleCentered'] = "1"
         quarkx.setupsubset(SS_MODEL, "Options")['XviewScale'] = None
         quarkx.setupsubset(SS_MODEL, "Options")['All2DviewsScale'] = None
@@ -538,7 +538,7 @@ def XviewZScaleCentered(m):
 
 def YviewScaleClick(m):
     editor = mapeditor()
-    if not MldOption("YviewScale"):
+    if not MdlOption("YviewScale"):
         quarkx.setupsubset(SS_MODEL, "Options")['YviewScale'] = "1"
         quarkx.setupsubset(SS_MODEL, "Options")['YxScaleCentered'] = None
         quarkx.setupsubset(SS_MODEL, "Options")['YzScaleCentered'] = None
@@ -551,7 +551,7 @@ def YviewScaleClick(m):
 
 def YviewXScaleCentered(m):
     editor = mapeditor()
-    if not MldOption("YxScaleCentered"):
+    if not MdlOption("YxScaleCentered"):
         quarkx.setupsubset(SS_MODEL, "Options")['YxScaleCentered'] = "1"
         quarkx.setupsubset(SS_MODEL, "Options")['YviewScale'] = None
         quarkx.setupsubset(SS_MODEL, "Options")['All2DviewsScale'] = None
@@ -563,7 +563,7 @@ def YviewXScaleCentered(m):
 
 def YviewZScaleCentered(m):
     editor = mapeditor()
-    if not MldOption("YzScaleCentered"):
+    if not MdlOption("YzScaleCentered"):
         quarkx.setupsubset(SS_MODEL, "Options")['YzScaleCentered'] = "1"
         quarkx.setupsubset(SS_MODEL, "Options")['YviewScale'] = None
         quarkx.setupsubset(SS_MODEL, "Options")['All2DviewsScale'] = None
@@ -575,7 +575,7 @@ def YviewZScaleCentered(m):
 
 def ZviewScaleClick(m):
     editor = mapeditor()
-    if not MldOption("ZviewScale"):
+    if not MdlOption("ZviewScale"):
         quarkx.setupsubset(SS_MODEL, "Options")['ZviewScale'] = "1"
         quarkx.setupsubset(SS_MODEL, "Options")['ZxScaleCentered'] = None
         quarkx.setupsubset(SS_MODEL, "Options")['ZyScaleCentered'] = None
@@ -588,7 +588,7 @@ def ZviewScaleClick(m):
 
 def ZviewXScaleCentered(m):
     editor = mapeditor()
-    if not MldOption("ZxScaleCentered"):
+    if not MdlOption("ZxScaleCentered"):
         quarkx.setupsubset(SS_MODEL, "Options")['ZxScaleCentered'] = "1"
         quarkx.setupsubset(SS_MODEL, "Options")['ZviewScale'] = None
         quarkx.setupsubset(SS_MODEL, "Options")['All2DviewsScale'] = None
@@ -600,7 +600,7 @@ def ZviewXScaleCentered(m):
 
 def ZviewYScaleCentered(m):
     editor = mapeditor()
-    if not MldOption("ZyScaleCentered"):
+    if not MdlOption("ZyScaleCentered"):
         quarkx.setupsubset(SS_MODEL, "Options")['ZyScaleCentered'] = "1"
         quarkx.setupsubset(SS_MODEL, "Options")['ZviewScale'] = None
         quarkx.setupsubset(SS_MODEL, "Options")['All2DviewsScale'] = None
@@ -671,6 +671,9 @@ GridMenuCmds = [quarkpy.qmenu.popup("Grid scale in 2D views", [], ViewAmendMenu1
 #
 #
 #$Log$
+#Revision 1.16  2008/07/14 18:52:51  cdunde
+#To stop errors when grid is turned off.
+#
 #Revision 1.15  2008/02/22 09:52:22  danielpharos
 #Move all finishdrawing code to the correct editor, and some small cleanups.
 #

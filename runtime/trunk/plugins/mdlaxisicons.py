@@ -158,7 +158,7 @@ def newfinishdrawing(editor, view, oldfinish=quarkpy.mdleditor.ModelEditor.finis
                     vlink[1].scrollto(None, y)
                 else:
                     vlink[1].scrollto(y, None)
-            if not MldOption("AxisXYZ"):
+            if not MdlOption("AxisXYZ"):
                 view.update()
             ### This is the 2D views Textured mode scroller section
             from quarkpy.qbaseeditor import flagsmouse
@@ -173,7 +173,7 @@ def newfinishdrawing(editor, view, oldfinish=quarkpy.mdleditor.ModelEditor.finis
         return scroller
     quarkpy.qhandles.MakeScroller = MakeScroller
 
-    if not MldOption("AxisXYZ"):return
+    if not MdlOption("AxisXYZ"):return
 
 
 
@@ -221,6 +221,9 @@ quarkpy.mdleditor.ModelEditor.finishdrawing = newfinishdrawing
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.17  2008/05/01 15:38:54  danielpharos
+#Got rid of global saveeditor
+#
 #Revision 1.16  2008/02/22 09:52:22  danielpharos
 #Move all finishdrawing code to the correct editor, and some small cleanups.
 #

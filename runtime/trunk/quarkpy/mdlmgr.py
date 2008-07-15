@@ -387,7 +387,7 @@ class ModelLayout(BaseLayout):
         return self.fp
 
     def colorclick(self, btn):
-        if not MldOption("VertexUVColor") or quarkx.setupsubset(SS_MODEL, "Options")['VertexUVColor'] == "0":
+        if not MdlOption("VertexUVColor") or quarkx.setupsubset(SS_MODEL, "Options")['VertexUVColor'] == "0":
             quarkx.setupsubset(SS_MODEL, "Options")['VertexUVColor'] = "1"
             qtoolbar.toggle(btn)
             btn.state = qtoolbar.selected
@@ -992,6 +992,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.70  2008/07/11 04:34:33  cdunde
+#Setup of Specifics\Arg page for model types data and settings.
+#
 #Revision 1.69  2008/05/25 23:18:45  cdunde
 #Commented out function causing the loss of drag handles, editor and other stuff until fixed.
 #

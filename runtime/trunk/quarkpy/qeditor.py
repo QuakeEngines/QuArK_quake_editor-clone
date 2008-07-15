@@ -1382,7 +1382,7 @@ def MapColor(tag, mode=SS_MAP):
 def MapOption(tag, mode=SS_MAP):
     return quarkx.setupsubset(mode, "Options")[tag]
 
-def MldOption(tag, mode=SS_MODEL):
+def MdlOption(tag, mode=SS_MODEL):
     return quarkx.setupsubset(mode, "Options")[tag]
 
 def SetMapOption(tag, value=None, mode=SS_MAP):   # default is to toggle value
@@ -1562,6 +1562,9 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.49  2008/05/04 16:18:21  cdunde
+#Update for new release.
+#
 #Revision 1.48  2008/05/01 19:15:24  danielpharos
 #Fix treeviewselchanged not updating.
 #

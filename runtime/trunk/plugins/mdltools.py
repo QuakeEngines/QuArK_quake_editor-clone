@@ -141,11 +141,11 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mdleditor.ModelEditor.
 
     if type == "YZ":
 
-       if not MldOption("All2DviewsRulers") and not MldOption("AllTopRulers") and not MldOption("AllSideRulers") and not MldOption("XviewRulers") and not MldOption("XyTopRuler") and not MldOption("XzSideRuler"):
+       if not MdlOption("All2DviewsRulers") and not MdlOption("AllTopRulers") and not MdlOption("AllSideRulers") and not MdlOption("XviewRulers") and not MdlOption("XyTopRuler") and not MdlOption("XzSideRuler"):
            return
 
        quarkpy.mdleditor.setsingleframefillcolor(editor, view)
-       if not MldOption("AllSideRulers") and not MldOption("XzSideRuler"):
+       if not MdlOption("AllSideRulers") and not MdlOption("XzSideRuler"):
      # Makes the X view top ruler
         # Makes the line for Y axis
            ypoint1 = quarkx.vect(x1, y1, z2+grid)
@@ -176,7 +176,7 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mdleditor.ModelEditor.
            cv.textout(x,y,quarkx.ftos(dist))
 
 
-       if not MldOption("AllTopRulers") and not MldOption("XyTopRuler"):
+       if not MdlOption("AllTopRulers") and not MdlOption("XyTopRuler"):
      # Makes the Z view side ruler
         # Makes the line for Z axis
            ypoint2 = quarkx.vect(x2, y1-grid, z2)
@@ -213,11 +213,11 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mdleditor.ModelEditor.
 
     elif type == "XZ":
 
-       if not MldOption("All2DviewsRulers") and not MldOption("AllTopRulers") and not MldOption("AllSideRulers") and not MldOption("YviewRulers") and not MldOption("YxTopRuler") and not MldOption("YzSideRuler"):
+       if not MdlOption("All2DviewsRulers") and not MdlOption("AllTopRulers") and not MdlOption("AllSideRulers") and not MdlOption("YviewRulers") and not MdlOption("YxTopRuler") and not MdlOption("YzSideRuler"):
            return
 
        quarkpy.mdleditor.setsingleframefillcolor(editor, view)
-       if not MldOption("AllSideRulers") and not MldOption("YzSideRuler"):
+       if not MdlOption("AllSideRulers") and not MdlOption("YzSideRuler"):
 
      # Makes the Y view top ruler
         # Makes the line for X axis
@@ -249,7 +249,7 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mdleditor.ModelEditor.
            cv.textout(x,y,quarkx.ftos(dist))
 
 
-       if not MldOption("AllTopRulers") and not MldOption("YxTopRuler"):
+       if not MdlOption("AllTopRulers") and not MdlOption("YxTopRuler"):
      # Makes the Y view side ruler
         # Makes the line for Y axis
            ypoint2 = quarkx.vect(x2+grid, y2, z2)
@@ -286,11 +286,11 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mdleditor.ModelEditor.
 
     elif type == "XY":
 
-       if not MldOption("All2DviewsRulers") and not MldOption("AllTopRulers") and not MldOption("AllSideRulers") and not MldOption("ZviewRulers") and not MldOption("ZxTopRuler") and not MldOption("ZySideRuler"):
+       if not MdlOption("All2DviewsRulers") and not MdlOption("AllTopRulers") and not MdlOption("AllSideRulers") and not MdlOption("ZviewRulers") and not MdlOption("ZxTopRuler") and not MdlOption("ZySideRuler"):
            return
 
        quarkpy.mdleditor.setsingleframefillcolor(editor, view)
-       if not MldOption("AllSideRulers") and not MldOption("ZySideRuler"):
+       if not MdlOption("AllSideRulers") and not MdlOption("ZySideRuler"):
      # Makes the Z view top ruler
         # Makes the line for X axis
            xpoint1 = quarkx.vect(x1, y2+grid, z2)
@@ -321,7 +321,7 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mdleditor.ModelEditor.
            cv.textout(x,y,quarkx.ftos(dist))
 
 
-       if not MldOption("AllTopRulers") and not MldOption("ZxTopRuler"):
+       if not MdlOption("AllTopRulers") and not MdlOption("ZxTopRuler"):
      # Makes the Z view side ruler
         # Makes the line for Y axis
            ypoint2 = quarkx.vect(x2+grid, y2, z2)
@@ -366,7 +366,7 @@ quarkpy.mdleditor.ModelEditor.finishdrawing = gridfinishdrawing
 
 def All2DviewsRulersClick(m):
     editor = mapeditor()
-    if not MldOption("All2DviewsRulers"):
+    if not MdlOption("All2DviewsRulers"):
         quarkx.setupsubset(SS_MODEL, "Options")['All2DviewsRulers'] = "1"
         quarkx.setupsubset(SS_MODEL, "Options")['AllTopRulers'] = None
         quarkx.setupsubset(SS_MODEL, "Options")['AllSideRulers'] = None
@@ -385,7 +385,7 @@ def All2DviewsRulersClick(m):
 
 def All2DviewsTopRulers(m):
     editor = mapeditor()
-    if not MldOption("AllTopRulers"):
+    if not MdlOption("AllTopRulers"):
         quarkx.setupsubset(SS_MODEL, "Options")['AllTopRulers'] = "1"
         quarkx.setupsubset(SS_MODEL, "Options")['All2DviewsRulers'] = None
         quarkx.setupsubset(SS_MODEL, "Options")['AllSideRulers'] = None
@@ -404,7 +404,7 @@ def All2DviewsTopRulers(m):
 
 def All2DviewsSideRulers(m):
     editor = mapeditor()
-    if not MldOption("AllSideRulers"):
+    if not MdlOption("AllSideRulers"):
         quarkx.setupsubset(SS_MODEL, "Options")['AllSideRulers'] = "1"
         quarkx.setupsubset(SS_MODEL, "Options")['All2DviewsRulers'] = None
         quarkx.setupsubset(SS_MODEL, "Options")['AllTopRulers'] = None
@@ -423,7 +423,7 @@ def All2DviewsSideRulers(m):
 
 def XviewRulerClick(m):
     editor = mapeditor()
-    if not MldOption("XviewRulers"):
+    if not MdlOption("XviewRulers"):
         quarkx.setupsubset(SS_MODEL, "Options")['XviewRulers'] = "1"
         quarkx.setupsubset(SS_MODEL, "Options")['All2DviewsRulers'] = None
         quarkx.setupsubset(SS_MODEL, "Options")['AllTopRulers'] = None
@@ -436,7 +436,7 @@ def XviewRulerClick(m):
 
 def XviewYtopRuler(m):
     editor = mapeditor()
-    if not MldOption("XyTopRuler"):
+    if not MdlOption("XyTopRuler"):
         quarkx.setupsubset(SS_MODEL, "Options")['XyTopRuler'] = "1"
         quarkx.setupsubset(SS_MODEL, "Options")['All2DviewsRulers'] = None
         quarkx.setupsubset(SS_MODEL, "Options")['AllTopRulers'] = None
@@ -449,7 +449,7 @@ def XviewYtopRuler(m):
 
 def XviewZsideRuler(m):
     editor = mapeditor()
-    if not MldOption("XzSideRuler"):
+    if not MdlOption("XzSideRuler"):
         quarkx.setupsubset(SS_MODEL, "Options")['XzSideRuler'] = "1"
         quarkx.setupsubset(SS_MODEL, "Options")['All2DviewsRulers'] = None
         quarkx.setupsubset(SS_MODEL, "Options")['AllTopRulers'] = None
@@ -462,7 +462,7 @@ def XviewZsideRuler(m):
 
 def YviewRulerClick(m):
     editor = mapeditor()
-    if not MldOption("YviewRulers"):
+    if not MdlOption("YviewRulers"):
         quarkx.setupsubset(SS_MODEL, "Options")['YviewRulers'] = "1"
         quarkx.setupsubset(SS_MODEL, "Options")['All2DviewsRulers'] = None
         quarkx.setupsubset(SS_MODEL, "Options")['AllTopRulers'] = None
@@ -475,7 +475,7 @@ def YviewRulerClick(m):
 
 def YviewXtopRuler(m):
     editor = mapeditor()
-    if not MldOption("YxTopRuler"):
+    if not MdlOption("YxTopRuler"):
         quarkx.setupsubset(SS_MODEL, "Options")['YxTopRuler'] = "1"
         quarkx.setupsubset(SS_MODEL, "Options")['All2DviewsRulers'] = None
         quarkx.setupsubset(SS_MODEL, "Options")['AllTopRulers'] = None
@@ -488,7 +488,7 @@ def YviewXtopRuler(m):
 
 def YviewZsideRuler(m):
     editor = mapeditor()
-    if not MldOption("YzSideRuler"):
+    if not MdlOption("YzSideRuler"):
         quarkx.setupsubset(SS_MODEL, "Options")['YzSideRuler'] = "1"
         quarkx.setupsubset(SS_MODEL, "Options")['All2DviewsRulers'] = None
         quarkx.setupsubset(SS_MODEL, "Options")['AllTopRulers'] = None
@@ -501,7 +501,7 @@ def YviewZsideRuler(m):
 
 def ZviewRulerClick(m):
     editor = mapeditor()
-    if not MldOption("ZviewRulers"):
+    if not MdlOption("ZviewRulers"):
         quarkx.setupsubset(SS_MODEL, "Options")['ZviewRulers'] = "1"
         quarkx.setupsubset(SS_MODEL, "Options")['All2DviewsRulers'] = None
         quarkx.setupsubset(SS_MODEL, "Options")['AllTopRulers'] = None
@@ -514,7 +514,7 @@ def ZviewRulerClick(m):
 
 def ZviewXtopRuler(m):
     editor = mapeditor()
-    if not MldOption("ZxTopRuler"):
+    if not MdlOption("ZxTopRuler"):
         quarkx.setupsubset(SS_MODEL, "Options")['ZxTopRuler'] = "1"
         quarkx.setupsubset(SS_MODEL, "Options")['All2DviewsRulers'] = None
         quarkx.setupsubset(SS_MODEL, "Options")['AllTopRulers'] = None
@@ -527,7 +527,7 @@ def ZviewXtopRuler(m):
 
 def ZviewYsideRuler(m):
     editor = mapeditor()
-    if not MldOption("ZySideRuler"):
+    if not MdlOption("ZySideRuler"):
         quarkx.setupsubset(SS_MODEL, "Options")['ZySideRuler'] = "1"
         quarkx.setupsubset(SS_MODEL, "Options")['All2DviewsRulers'] = None
         quarkx.setupsubset(SS_MODEL, "Options")['AllTopRulers'] = None
@@ -601,6 +601,9 @@ RulerMenuCmds = [quarkpy.qmenu.popup("Ruler guide in 2D views", [], ViewAmendMen
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.17  2008/02/22 09:52:21  danielpharos
+#Move all finishdrawing code to the correct editor, and some small cleanups.
+#
 #Revision 1.16  2007/11/29 16:34:35  danielpharos
 #Prevent some model editor functions from triggering in the map editor. This should fix some errors that that popped-up when switching from the model editor to the map editor.
 #

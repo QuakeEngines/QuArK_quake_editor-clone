@@ -217,12 +217,12 @@ def mSYNC_ISV(m):
     # Sync editor selection in Skin-view function.
     editor = mdleditor.mdleditor
     from mdlhandles import SkinView1
-    if not MldOption("SYNC_ISV"):
+    if not MdlOption("SYNC_ISV"):
         quarkx.setupsubset(SS_MODEL, "Options")['SYNC_ISV'] = "1"
         editor.SkinVertexSelList = []
         editor.SkinFaceSelList = []
         import mdlhandles
-        if MldOption("PFSTSV"):
+        if MdlOption("PFSTSV"):
             editor.SkinFaceSelList = editor.ModelFaceSelList
             import mdlutils
             mdlutils.PassEditorSel2Skin(editor, 2)
@@ -240,7 +240,7 @@ def mSYNC_ISV(m):
 def mSFSISV(m):
     # Show Face Selection In Skin-View function.
     editor = mdleditor.mdleditor
-    if not MldOption("SFSISV"):
+    if not MdlOption("SFSISV"):
         quarkx.setupsubset(SS_MODEL, "Options")['SFSISV'] = "1"
         quarkx.setupsubset(SS_MODEL, "Options")['PFSTSV'] = None
     else:
@@ -255,7 +255,7 @@ def mPFSTSV(m):
     # Pass Face Selection To Skin-View function.
     editor = mdleditor.mdleditor
     from mdlhandles import SkinView1
-    if not MldOption("PFSTSV"):
+    if not MdlOption("PFSTSV"):
         quarkx.setupsubset(SS_MODEL, "Options")['PFSTSV'] = "1"
         quarkx.setupsubset(SS_MODEL, "Options")['SFSISV'] = None
         quarkx.setupsubset(SS_MODEL, "Options")['SYNC_EDwSV'] = None
@@ -280,7 +280,7 @@ def mPFSTSV(m):
 def mNFDL(m):
     # No face drag lines function.
     editor = mdleditor.mdleditor
-    if not MldOption("NFDL"):
+    if not MdlOption("NFDL"):
         quarkx.setupsubset(SS_MODEL, "Options")['NFDL'] = "1"
         editor.SelCommonTriangles = []
         editor.SelVertexes = []
@@ -300,7 +300,7 @@ def mNFO(m):
     # No face outlines function.
     import mdlmgr
     mdlmgr.treeviewselchanged = 1
-    if not MldOption("NFO"):
+    if not MdlOption("NFO"):
         quarkx.setupsubset(SS_MODEL, "Options")['NFO'] = "1"
         quarkx.setupsubset(SS_MODEL, "Options")['NFOWM'] = None
     else:
@@ -312,7 +312,7 @@ def mNFOWM(m):
     # No face outlines while moving in 2D views function.
     import mdlmgr
     mdlmgr.treeviewselchanged = 1
-    if not MldOption("NFOWM"):
+    if not MdlOption("NFOWM"):
         quarkx.setupsubset(SS_MODEL, "Options")['NFOWM'] = "1"
         quarkx.setupsubset(SS_MODEL, "Options")['NFO'] = None
     else:
@@ -324,7 +324,7 @@ def mNOSF(m):
     # No selection fill function.
     import mdlmgr
     mdlmgr.treeviewselchanged = 1
-    if not MldOption("NOSF"):
+    if not MdlOption("NOSF"):
         quarkx.setupsubset(SS_MODEL, "Options")['NOSF'] = "1"
         quarkx.setupsubset(SS_MODEL, "Options")['FFONLY'] = None
         quarkx.setupsubset(SS_MODEL, "Options")['BFONLY'] = None
@@ -337,7 +337,7 @@ def mFFONLY(m):
     # (draw) Front faces only function.
     import mdlmgr
     mdlmgr.treeviewselchanged = 1
-    if not MldOption("FFONLY"):
+    if not MdlOption("FFONLY"):
         quarkx.setupsubset(SS_MODEL, "Options")['FFONLY'] = "1"
         quarkx.setupsubset(SS_MODEL, "Options")['NOSF'] = None
         quarkx.setupsubset(SS_MODEL, "Options")['BFONLY'] = None
@@ -350,7 +350,7 @@ def mBFONLY(m):
     # (draw) Back faces only function.
     import mdlmgr
     mdlmgr.treeviewselchanged = 1
-    if not MldOption("BFONLY"):
+    if not MdlOption("BFONLY"):
         quarkx.setupsubset(SS_MODEL, "Options")['BFONLY'] = "1"
         quarkx.setupsubset(SS_MODEL, "Options")['NOSF'] = None
         quarkx.setupsubset(SS_MODEL, "Options")['FFONLY'] = None
@@ -390,7 +390,7 @@ def VertexMenu(editor):
     # Sync Skin-view with Editor views function.
     def mSYNC_SVwED(m):
         editor = mdleditor.mdleditor
-        if not MldOption("SYNC_SVwED"):
+        if not MdlOption("SYNC_SVwED"):
             quarkx.setupsubset(SS_MODEL, "Options")['SYNC_SVwED'] = "1"
             quarkx.setupsubset(SS_MODEL, "Options")['SYNC_EDwSV'] = None
             quarkx.setupsubset(SS_MODEL, "Options")['PVSTEV'] = None
@@ -421,7 +421,7 @@ def VertexMenu(editor):
     # Pass (Editors Views) Vertex Selection To Skin-view function.
     def mPVSTSV(m):
         editor = mdleditor.mdleditor
-        if not MldOption("PVSTSV"):
+        if not MdlOption("PVSTSV"):
             quarkx.setupsubset(SS_MODEL, "Options")['PVSTSV'] = "1"
             quarkx.setupsubset(SS_MODEL, "Options")['SYNC_EDwSV'] = None
             quarkx.setupsubset(SS_MODEL, "Options")['SYNC_SVwED'] = None
@@ -442,7 +442,7 @@ def VertexMenu(editor):
     # No muti Vertex Selection drag lines function.
     def mNVDL(m):
         editor = mdleditor.mdleditor
-        if not MldOption("NVDL"):
+        if not MdlOption("NVDL"):
             quarkx.setupsubset(SS_MODEL, "Options")['NVDL'] = "1"
         else:
             quarkx.setupsubset(SS_MODEL, "Options")['NVDL'] = None
@@ -465,7 +465,7 @@ def VertexMenu(editor):
 def TicksViewingMenu(editor):
     # Rectangle Drag Ticks_Method 1
     def mRDT_M1(m):
-        if not MldOption("RDT_M1"):
+        if not MdlOption("RDT_M1"):
             quarkx.setupsubset(SS_MODEL, "Options")['RDT_M1'] = "1"
             quarkx.setupsubset(SS_MODEL, "Options")['RDT_M2'] = None
         else:
@@ -473,7 +473,7 @@ def TicksViewingMenu(editor):
 
     # Rectangle Drag Ticks_Method 2
     def mRDT_M2(m):
-        if not MldOption("RDT_M2"):
+        if not MdlOption("RDT_M2"):
             quarkx.setupsubset(SS_MODEL, "Options")['RDT_M2'] = "1"
             quarkx.setupsubset(SS_MODEL, "Options")['RDT_M1'] = None
         else:
@@ -495,7 +495,7 @@ def SkinViewOptionsMenu(editor):
     # Sync Editor views with Skin-view function.
     def mSYNC_EDwSV(m):
         editor = mdleditor.mdleditor
-        if not MldOption("SYNC_EDwSV"):
+        if not MdlOption("SYNC_EDwSV"):
             quarkx.setupsubset(SS_MODEL, "Options")['SYNC_EDwSV'] = "1"
             quarkx.setupsubset(SS_MODEL, "Options")['SYNC_SVwED'] = None
             quarkx.setupsubset(SS_MODEL, "Options")['PVSTEV'] = None
@@ -526,7 +526,7 @@ def SkinViewOptionsMenu(editor):
     # Pass (Skin-view) Vertex Selection To Editors Views function.
     def mPVSTEV(m):
         editor = mdleditor.mdleditor
-        if not MldOption("PVSTEV"):
+        if not MdlOption("PVSTEV"):
             quarkx.setupsubset(SS_MODEL, "Options")['PVSTEV'] = "1"
             quarkx.setupsubset(SS_MODEL, "Options")['PFSTSV'] = None
             quarkx.setupsubset(SS_MODEL, "Options")['SYNC_EDwSV'] = None
@@ -640,6 +640,9 @@ def OptionsMenuRMB():
 #
 #
 #$Log$
+#Revision 1.33  2008/05/27 19:36:16  danielpharos
+#Fixed another bunch of wrong imports
+#
 #Revision 1.32  2008/05/01 19:15:22  danielpharos
 #Fix treeviewselchanged not updating.
 #

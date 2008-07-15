@@ -152,7 +152,7 @@ class AnimationBar(ToolBar):
         global playlist, playNR
         import mdleditor
         editor = mdleditor.mdleditor
-        if not MldOption("AnimationActive"):
+        if not MdlOption("AnimationActive"):
             if editor.layout.explorer.sellist == [] or len(editor.layout.explorer.sellist) < 2:
                 quarkx.msgbox("Improper Action !\n\nYou need to select at least two frames\n(and no other types of sub-items)\nof the same component to activate animation.\n\nPress 'F1' for InfoBase help\nof this function for details.\n\nAction Canceled.", MT_ERROR, MB_OK)
                 return
@@ -224,7 +224,7 @@ class AnimationBar(ToolBar):
         "Play or Pause animation."
         global playlist, playNR
         editor = mapeditor()
-        if not MldOption("AnimationPaused"):
+        if not MdlOption("AnimationPaused"):
             quarkx.setupsubset(SS_MODEL, "Options")['AnimationPaused'] = "1"
             qtoolbar.toggle(btn)
             btn.state = qtoolbar.selected
@@ -250,7 +250,7 @@ class AnimationBar(ToolBar):
     def animateeditor3dview(self, btn):
         "Editor's 3D view animation."
         editor = mapeditor()
-        if not MldOption("AnimateEd3Dview"):
+        if not MdlOption("AnimateEd3Dview"):
             quarkx.setupsubset(SS_MODEL, "Options")['AnimateEd3Dview'] = "1"
             qtoolbar.toggle(btn)
             btn.state = qtoolbar.selected
@@ -264,7 +264,7 @@ class AnimationBar(ToolBar):
     def animatex2dview(self, btn):
         "Editor's X Back 2D view animation."
         editor = mapeditor()
-        if not MldOption("AnimateX2Dview"):
+        if not MdlOption("AnimateX2Dview"):
             quarkx.setupsubset(SS_MODEL, "Options")['AnimateX2Dview'] = "1"
             qtoolbar.toggle(btn)
             btn.state = qtoolbar.selected
@@ -278,7 +278,7 @@ class AnimationBar(ToolBar):
     def animatey2dview(self, btn):
         "Editor's Y Side 2D view animation."
         editor = mapeditor()
-        if not MldOption("AnimateY2Dview"):
+        if not MdlOption("AnimateY2Dview"):
             quarkx.setupsubset(SS_MODEL, "Options")['AnimateY2Dview'] = "1"
             qtoolbar.toggle(btn)
             btn.state = qtoolbar.selected
@@ -292,7 +292,7 @@ class AnimationBar(ToolBar):
     def animatez2dview(self, btn):
         "Editor's Z Top 2D view animation."
         editor = mapeditor()
-        if not MldOption("AnimateZ2Dview"):
+        if not MdlOption("AnimateZ2Dview"):
             quarkx.setupsubset(SS_MODEL, "Options")['AnimateZ2Dview'] = "1"
             qtoolbar.toggle(btn)
             btn.state = qtoolbar.selected
@@ -306,7 +306,7 @@ class AnimationBar(ToolBar):
     def animatefloat3dview(self, btn):
         "Editor's Floating 3D view animation."
         editor = mapeditor()
-        if not MldOption("AnimateFloat3Dview"):
+        if not MdlOption("AnimateFloat3Dview"):
             quarkx.setupsubset(SS_MODEL, "Options")['AnimateFloat3Dview'] = "1"
             qtoolbar.toggle(btn)
             btn.state = qtoolbar.selected
@@ -349,37 +349,37 @@ class AnimationBar(ToolBar):
         z2dviewanimated = qtoolbar.button(self.animatez2dview, "Animate Z Top 2D view||Animate Z Top 2D view:\n\nActivate this button to animate in the Editor's Z Top 2D view.", ico_mdlanim, 8, infobaselink="intro.modeleditor.toolpalettes.animation.html#viewselector")
         float3dviewanimated = qtoolbar.button(self.animatefloat3dview, "Animate Floating 3D view||Animate Floating 3D view:\n\nActivate this button to animate in the Editor's Floating 3D view.", ico_mdlanim, 9, infobaselink="intro.modeleditor.toolpalettes.animation.html#viewselector")
 
-        if not MldOption("AnimationActive"):
+        if not MdlOption("AnimationActive"):
             animateonoff.state = qtoolbar.normal
         else:
             animateonoff.state = qtoolbar.selected
 
-        if not MldOption("AnimationPaused"):
+        if not MdlOption("AnimationPaused"):
             animatepaused.state = qtoolbar.normal
         else:
             animatepaused.state = qtoolbar.selected
 
-        if not MldOption("AnimateEd3Dview"):
+        if not MdlOption("AnimateEd3Dview"):
             editor3dviewanimated.state = qtoolbar.normal
         else:
             editor3dviewanimated.state = qtoolbar.selected
 
-        if not MldOption("AnimateX2Dview"):
+        if not MdlOption("AnimateX2Dview"):
             x2dviewanimated.state = qtoolbar.normal
         else:
             x2dviewanimated.state = qtoolbar.selected
 
-        if not MldOption("AnimateY2Dview"):
+        if not MdlOption("AnimateY2Dview"):
             y2dviewanimated.state = qtoolbar.normal
         else:
             y2dviewanimated.state = qtoolbar.selected
 
-        if not MldOption("AnimateZ2Dview"):
+        if not MdlOption("AnimateZ2Dview"):
             z2dviewanimated.state = qtoolbar.normal
         else:
             z2dviewanimated.state = qtoolbar.selected
 
-        if not MldOption("AnimateFloat3Dview"):
+        if not MdlOption("AnimateFloat3Dview"):
             float3dviewanimated.state = qtoolbar.normal
         else:
             float3dviewanimated.state = qtoolbar.selected
@@ -404,6 +404,9 @@ class AnimationBar(ToolBar):
 #
 #
 #$Log$
+#Revision 1.10  2008/05/01 19:15:24  danielpharos
+#Fix treeviewselchanged not updating.
+#
 #Revision 1.9  2008/05/01 13:52:32  danielpharos
 #Removed a whole bunch of redundant imports and other small fixes.
 #
