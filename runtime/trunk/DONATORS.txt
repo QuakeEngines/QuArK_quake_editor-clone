@@ -1,0 +1,35 @@
+$Id$
+
+   ########                    ####                  ####    ####
+  ####  ####                 ########                ####   ####
+ ####    #### ####    #### ####    #### ####    #### ####  ####
+ ####    #### ####    #### ####    #### #### ####### #### ####
+ ####    #### ####    #### ####    #### #######      ######
+ ####    #### ####    #### ############ ####         #### ####
+ ####    #### ####    #### ####    #### ####         ####  ####
+  ####  ####   ####   #### ####    #### ####         ####   ####
+   ########     ########## ####    #### ####         ####    ####
+       #####
+        #####    Quake Army Knife Developers
+
+
+The QuArK Developers would like to thank the following donators
+for their support:
+
+QuArK 6.6.0 Beta 2 Donators
+------------------------------------
+
+- zy_fireblade
+
+
+- dbk2004
+                                        "Quake Army Knife rocks!"
+
+- ghostwolf1942
+                                         "Keep up the good work!"
+
+- eforhan
+                                         "Keep up the good work!"
+
+- jaimi
+                                                       "Have fun"
