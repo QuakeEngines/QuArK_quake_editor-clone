@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.61  2008/07/07 20:46:47  danielpharos
+Added single-instance check. This will also be used by the updater.
+
 Revision 1.60  2008/06/04 03:04:04  cdunde
 Setup new QuArK Model Editor Python model import export system.
 
@@ -253,6 +256,7 @@ type
              end;
   
   CmdLineOptions = record
+                    DoInstance: Boolean;
                     DoSplash: Boolean;
                     DoUpdate: Boolean;
                     OnlineUpdate: Boolean;
@@ -473,13 +477,16 @@ begin
  begin
   S := UpperCase(ParamStr(I));
   if S = '/?' then
-   MessageBox(0, 'Available parameters:' + #13 + #10
+   MessageBox(0, 'Available parameters:' + #13#10
    + #13 + #10
-   + '/?: Displays this window' + #13 + #10
-   + '/NOSPLASH: Skips the splash-screen' + #13 + #10
-   + '/NOUPDATE: Skips the update check' + #13 + #10
-   + #13 + #10
+   + '/?: Displays this window' + #13#10
+   + '/NOINSTANCE: Skips the single-instance check (use at own risk!)' + #13#10
+   + '/NOSPLASH: Skips the splash-screen' + #13#10
+   + '/NOUPDATE: Skips the update check' + #13#10
+   + #13#10
    + 'All other parameters will be interpreted as files to load.', 'QuArK', MB_OK)
+  else if S = '/NOINSTANCE' then
+   g_CmdOptions.DoInstance := false
   else if S = '/NOSPLASH' then
    g_CmdOptions.DoSplash := false
   else if S = '/NOUPDATE' then
@@ -593,16 +600,6 @@ var
  Splash: TForm;
  Disclaimer: THandle;
 begin
- //Checking for single-instance
- g_Mutex:=CreateMutex(Nil, True, PChar('QuArK_Mutex'));
- if g_Mutex = 0 then
-   //Something went terribly wrong!
-   Windows.MessageBox(0, PChar('Unable to check if there already is an instance of QuArK running! If this is the case, this can cause serious problems. For example, changed configuration settings might not be saved, and QuArK might not update correctly.'), PChar('QuArK'), MB_OK or MB_ICONWARNING or MB_TASKMODAL)
- else
-   if GetLastError = ERROR_ALREADY_EXISTS then
-     if Windows.MessageBox(0, PChar('An instance of QuArK is already running. This can cause serious problems. For example, changed configuration settings might not be saved, and QuArK might not update correctly.'#13#10#13#10'Are you sure you want to start a new instance of QuArK?'), PChar('QuArK'), MB_YESNO or MB_ICONWARNING or MB_TASKMODAL) = idNo then
-       Halt(0);
-
  // This next line is done so that the G_ standard carries through for all of
  // the global variables.
  g_Form1 := Self;
@@ -611,16 +608,36 @@ begin
  DecimalSeparator:='.';
  g_Form1Handle:=Handle;
 
- // Set-up the console
- Log(LOG_VERBOSE, 'Setting up console...');
- InitConsole;
-
  // DanielPharos: This processes the commandline and prepares it for further use
- g_CmdOptions.DoSplash := true; //These are the defaults
+ g_cmdOptions.DoInstance := true; //These are the defaults
+ g_CmdOptions.DoSplash := true;
  g_CmdOptions.DoUpdate := true;
  g_CmdOptions.OnlineUpdate := true;
  g_CmdOptions.FileNR := 0;
  ProcessCmdLine;
+
+ if g_CmdOptions.DoInstance then
+ begin
+   //Checking for single-instance
+   g_Mutex:=CreateMutex(Nil, True, PChar('QuArK_Mutex'));
+   if g_Mutex = 0 then
+     //Something went terribly wrong!
+     Windows.MessageBox(0, PChar('Unable to check if there already is an instance of QuArK running! If this is the case, this can cause serious problems. For example, changed configuration settings might not be saved, and QuArK might not update correctly.'), PChar('QuArK'), MB_OK or MB_ICONWARNING or MB_TASKMODAL)
+   else
+     if GetLastError = ERROR_ALREADY_EXISTS then
+     begin
+       S:='An instance of QuArK is already running. This can cause serious problems.';
+       S:=S+'For example, changed configuration settings might not be saved, and QuArK might not update correctly.'#13#10;
+       S:=S+'This check can be disabled (at own risk!) by supplying the /NOINSTANCE switch to QuArK when starting it.'#13#10#13#10;
+       S:=S+'Are you sure you want to start a new instance of QuArK?';
+       if Windows.MessageBox(0, PChar(S), PChar('QuArK'), MB_YESNO or MB_ICONWARNING or MB_TASKMODAL) = idNo then
+         Halt(0);
+     end;
+ end;
+
+  // Set-up the console
+ Log(LOG_VERBOSE, 'Setting up console...');
+ InitConsole;
 
  if g_CmdOptions.DoSplash then
  begin

@@ -4,6 +4,7 @@ The commandline of QuArK allows you to send some additional information to QuArK
 
 Recognized parameters:<br>
 /?: Displays a window containing this information.<br>
+/NOINSTANCE: Skips the single-instance check (use at own risk!)
 /NOSPLASH: Skips the splash screen.  This will improve start-up time.
 /NOUPDATE: Skips the update check.  This will prevent QuArK from checking for updates.
 
