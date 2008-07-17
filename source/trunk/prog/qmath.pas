@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.21  2005/09/28 10:48:32  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.19  2005/01/11 02:05:04  alexander
 added function to read a vec3_t from a string
 
@@ -106,7 +109,7 @@ type
 
  vec2_t = packed array[0..1] of scalar_t;
 
-  vec5_p = ^vec5_t;
+ vec5_p = ^vec5_t;
  vec5_t = array[0..4] of scalar_t;
  vec_st_p = ^vec_st_t;
  vec_st_t = record
@@ -135,7 +138,6 @@ function ftos1(const F: TDouble) : String;
 function ftosp(const F: TDouble; const P: integer) : String;
 function vtos(const V: TVect) : String;
 function vtos1(const V: TVect) : String;
-function StrToFloatDef(const S: String; const Def: TDouble) : TDouble;
 function CalculeMAngle(const Angles: TVect) : TVect;
 function coltov(C: TColor) : TVect;
 function coltos255(C: TColor) : String;
@@ -788,18 +790,6 @@ end;
 function vtos1(const V: TVect) : String;
 begin
  Result:=ftos1(V.X) + ' ' + ftos1(V.Y) + ' ' + ftos1(V.Z);
-end;
-
-function StrToFloatDef(const S: String; const Def: TDouble) : TDouble;
-begin
- if S='' then
-  Result:=Def
- else
-  try
-   Result:=StrToFloat(S);
-  except
-   Result:=Def;
-  end;
 end;
 
 function coltov(C: TColor) : TVect;

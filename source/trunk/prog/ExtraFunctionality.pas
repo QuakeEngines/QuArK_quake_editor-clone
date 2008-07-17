@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2008/03/29 15:15:47  danielpharos
+Moved all the CompareMem stuff to ExtraFunctionality, where it belongs.
+
 Revision 1.10  2008/02/23 19:25:21  danielpharos
 Moved a lot of path/file code around: should make it easier to use
 
@@ -66,6 +69,8 @@ const
   PathDelim  = {$IFDEF MSWINDOWS} '\'; {$ELSE} '/'; {$ENDIF}
   DriveDelim = {$IFDEF MSWINDOWS} ':'; {$ELSE} '';  {$ENDIF}
   PathSep    = {$IFDEF MSWINDOWS} ';'; {$ELSE} ':'; {$ENDIF}
+
+function StrToFloatDef(const S: String; const Def: TDouble) : TDouble;
 {$endif}
 
 {$ifndef Delphi7orNewerCompiler} // Pre-dates Delphi 7
@@ -114,6 +119,18 @@ begin
   Result := S;
   if not IsPathDelimiter(Result, Length(Result)) then
     Result := Result + PathDelim;
+end;
+
+function StrToFloatDef(const S: String; const Def: TDouble) : TDouble;
+begin
+ if S='' then
+  Result:=Def
+ else
+  try
+   Result:=StrToFloat(S);
+  except
+   Result:=Def;
+  end;
 end;
 {$endif}
 
