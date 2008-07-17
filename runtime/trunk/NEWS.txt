@@ -15,6 +15,13 @@ $Id$
 6.6.0 Beta 2
 ============
 
+* [cdunde/DanielPharos]: Added new .md2 exporter with progress bar and logging capabilities.
+
+* [cdunde/DanielPharos]: Added new function "Match Frame Count" to the Commands & RMB menus
+          - which duplicates the number of frames in selected components.
+
+* [cdunde]: Added option for error checking of selected components before exporting.
+
 * [cdunde/DanielPharos]: Setup of Specifics\Arg page for model types data and settings.
 
 * [Danielpharos/cdunde]: Fix the model groups icons not working, and now the model component
