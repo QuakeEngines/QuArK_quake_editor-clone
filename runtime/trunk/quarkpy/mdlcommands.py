@@ -17,6 +17,18 @@ import dlgclasses
 def newframeclick(m):
     editor = mapeditor()
     addframe(editor)
+
+def matchframesclick(m):
+    editor = mapeditor()
+    componentlist = editor.ListComponents()
+    if len(componentlist) > 0:
+        for component in componentlist:
+            if component in editor.layout.explorer.sellist:
+                component["includeincheck"] = chr(1)
+            else:
+                component["includeincheck"] = chr(0)
+        editor.Root.checkcomponents()
+        editor.layout.explorer.uniquesel = None
    
 
 def addtriclick(m):
@@ -44,7 +56,15 @@ def remtriclick(m):
 
 def checkcomponents(m):
     editor = mapeditor()
-    editor.Root.checkcomponents()
+    componentlist = editor.ListComponents()
+    if len(componentlist) > 0:
+        for component in componentlist:
+            if component in editor.layout.explorer.sellist:
+                component["includeincheck"] = chr(1)
+            else:
+                component["includeincheck"] = chr(0)
+        editor.Root.checkcomponents()
+        editor.layout.explorer.uniquesel = None
 
 
 def autobuild(m):
@@ -62,6 +82,8 @@ def revdir(m):
 
 NewFrame = qmenu.item("&Duplicate Current Frame", newframeclick, "|Duplicate Current Frame:\n\nThis copies a single frame that is currently selected and adds that copy to that model component's animation frames list.\n\nFor multiple frame copies use the 'Duplicate' function on the 'Edit' menu.|intro.modeleditor.menu.html#commandsmenu")
 
+MatchFrameCount = qmenu.item("&Match Frame Count", matchframesclick, "|Match Frame Count:\n\nThis will duplicate the number of frames in the selected components with the one that has the most frames in it. It will not copy the frames, only how many there are.|intro.modeleditor.menu.html#commandsmenu")
+
 AddTriangle = qmenu.item("&Add Triangle", addtriclick, "|Add Triangle:\n\nThis adds a new triangle to the currently selected component.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.menu.html#commandsmenu")
 
 ReverseDirection = qmenu.item("Reverse Direction", revdir, "|Reverse Direction:\n\nNormally, in QuArK, creating a new triangles vertexes in a 'clockwise' direction will produce a triangle that faces 'outwards'.\n\nBut sometimes this does not work for adding new triangles to existing ones.\n\nActivating this function (checking it) will reverse that direction causing the triangle to face the opposite way.\n\nClick on the 'InfoBase' button for more detail.|intro.modeleditor.menu.html#commandsmenu")
@@ -73,6 +95,7 @@ CheckC = qmenu.item("Check Components", checkcomponents, "|Check Components:\n\n
 AutoBuild = qmenu.item("Auto Assemble", autobuild, "|Auto Assemble:\n\nSome models are made up of seperate model files for example .md3 files. This function attempts to auto-load those related models model files and attach them using what is known as tags to match them up correctly.|intro.modeleditor.menu.html#commandsmenu")
 
 NewFrame.state = qmenu.disabled
+MatchFrameCount.state = qmenu.disabled
 AddTriangle.state = qmenu.disabled
 RemoveTriangle.state = qmenu.disabled
 ReverseDirection.state = quarkx.setupsubset(SS_MODEL,"Options").getint("RevDir")
@@ -81,7 +104,7 @@ ReverseDirection.state = quarkx.setupsubset(SS_MODEL,"Options").getint("RevDir")
 # Global variables to update from plug-ins.
 #
 
-items = [NewFrame, qmenu.sep, AddTriangle, ReverseDirection, RemoveTriangle, qmenu.sep, CheckC, AutoBuild]
+items = [NewFrame, MatchFrameCount, qmenu.sep, AddTriangle, ReverseDirection, RemoveTriangle, qmenu.sep, CheckC, AutoBuild]
 shortcuts = {"Ins": NewFrame}
 
 
@@ -104,6 +127,17 @@ def commandsclick(menu, oldcommand=onclick):
             NewFrame.state = qmenu.disabled
         else:
             NewFrame.state = qmenu.normal
+        if (len(editor.layout.explorer.sellist) < 2):
+            MatchFrameCount.state = qmenu.disabled
+        else:
+            mc_count = 0
+            for item in editor.layout.explorer.sellist:
+                if item.type == ":mc":
+                    mc_count = mc_count + 1
+            if mc_count > 1:
+                MatchFrameCount.state = qmenu.normal
+            else:
+                MatchFrameCount.state = qmenu.disabled
         if len(editor.ModelVertexSelList) == 3:
             AddTriangle.state = qmenu.normal
             RemoveTriangle.state = qmenu.normal
@@ -119,6 +153,9 @@ onclick = commandsclick
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.18  2008/07/15 23:16:26  cdunde
+# To correct typo error from MldOption to MdlOption in all files.
+#
 # Revision 1.17  2007/09/12 05:25:51  cdunde
 # To move Make New Component menu function from Commands menu to RMB Face Commands menu and
 # setup new function to move selected faces from one component to another.

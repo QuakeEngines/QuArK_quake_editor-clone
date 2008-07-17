@@ -425,6 +425,15 @@ class ModelEditor(BaseEditor):
                 return [mdlcommands.NewFrame , qmenu.sep] + mdlentities.CallManager("menu", sellist[0], self) + extra
             else:
                 return mdlentities.CallManager("menu", sellist[0], self) + extra
+        elif len(sellist)>1:
+            mc_count = 0
+            for item in sellist:
+                if item.type == ":mc":
+                    mc_count = mc_count + 1
+                if mc_count > 1:
+                    import mdlcommands
+                    mdlcommands.MatchFrameCount.state = qmenu.normal
+                    return [mdlcommands.MatchFrameCount , qmenu.sep] + mdlmenus.MultiSelMenu(sellist, self) + extra
         return mdlmenus.MultiSelMenu(sellist, self) + extra
 
 
@@ -1471,6 +1480,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.89  2008/07/11 04:34:33  cdunde
+#Setup of Specifics\Arg page for model types data and settings.
+#
 #Revision 1.88  2008/06/17 20:59:22  cdunde
 #To stop some minor errors from occurring.
 #
