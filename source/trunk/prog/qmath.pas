@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.22  2008/07/17 14:37:10  danielpharos
+Moved pre-Delphi6+ function into ExtraFunctionality
+
 Revision 1.21  2005/09/28 10:48:32  peter-b
 Revert removal of Log and Header keywords
 
@@ -152,6 +155,7 @@ function MakeVect5(V: vec5_t) : TVect5;
 function VecDiff(const V, W : TVect) : TVect;
 function VecSum(const V, W : TVect) : TVect;
 function VecScale(const R: Double; const V: TVect) : TVect;
+function Vec3Diff(const V, W : vec3_t) : vec3_t;
 function ProjectPointToPlane(const Point, Along, PlanePoint, PlaneNorm : TVect) : TVect;
 procedure SolveForThreePoints(const V1, V2, V3: TVect5; var P1, P2, P3:TVect);
 
@@ -888,6 +892,13 @@ begin
  Result.X:=R*V.X;
  Result.Y:=R*V.Y;
  Result.Z:=R*V.Z;
+end;
+
+function Vec3Diff(const V, W : vec3_t) : vec3_t;
+begin
+ Result[0]:=V[0]-W[0];
+ Result[1]:=V[1]-W[1];
+ Result[2]:=V[2]-W[2];
 end;
 
 function ProjectPointToPlane(const Point, Along, PlanePoint, PlaneNorm : TVect) : TVect;

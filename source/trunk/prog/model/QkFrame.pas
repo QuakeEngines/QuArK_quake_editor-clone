@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2007/11/15 22:08:12  danielpharos
+Fix the frame-won't-drag problem after a subdivide face action.
+
 Revision 1.14  2007/10/14 21:48:56  danielpharos
 Fix the frame-dragging in the Model Editor.
 
@@ -97,7 +100,7 @@ type
 implementation
 
 uses Quarkx, PyObjects, QkObjectClassList, QkComponent, QkModelRoot, QkModelTag,
-     QkFrameGroup, QkMiscGroup;
+     QkFrameGroup, QkMiscGroup, QkTagFrame;
 
 function QFrame.IsAllowedParent(Parent: QObject) : Boolean;
 begin
@@ -271,8 +274,8 @@ const
 var
   S: String;
   currentFrame: QFrame;
-  bf,bf2: QModelBone;
-  o_tag,s_tag: QModelTag;
+  bf,bf2: QModelTag;
+  o_tag,s_tag: QTagFrame;
   myRoot, modelRoot: QModelRoot;
   m,m1: PMatrixTransformation;
   x, x1: vec3_p;
@@ -289,13 +292,13 @@ begin
   modelRoot:=QModelRoot(GetRoot(true));
   if myRoot<>modelRoot then
   begin
-    //This only happens if a model is loaded INSIDE another model using MD3-tagging.
+    //This only happens if a model is loaded INSIDE another model using (MD3-)tagging.
     currentFrame:=modelRoot.GetComponentFromIndex(0).CurrentFrame;
     if currentFrame<>nil then begin
-      bf:=QModelBone(modelRoot.getmisc.FindSubObject('Bone Frame '+inttostr(Round(currentFrame.GetFloatSpec('index',1))), QModelBone, nil));
-      bf2:=QModelBone(myRoot.getmisc.FindSubObject('Bone Frame '+inttostr(Round(GetFloatSpec('index',1))), QModelBone, nil));
-      o_tag:=bf2.Tag(myRoot.Specifics.Values['linked_to']);
-      s_tag:=bf.Tag(myRoot.Specifics.Values['linked_to']);
+      bf:=QModelTag(modelRoot.getmisc.FindSubObject(myRoot.Specifics.Values['linked_to'], QModelTag, nil));
+      bf2:=QModelTag(myRoot.getmisc.FindSubObject(myRoot.Specifics.Values['linked_to'], QModelTag, nil));
+      o_tag:=QTagFrame(bf2.FindSubObject('Tag Group '+inttostr(Round(currentFrame.GetFloatSpec('index',1))), QTagFrame, nil));
+      s_tag:=QTagFrame(bf.FindSubObject('Tag Group '+inttostr(Round(GetFloatSpec('index',1))), QTagFrame, nil));
     end;
   end;
   S:=GetSpecArg(FloatSpecNameOf('Vertices'));
@@ -317,11 +320,14 @@ begin
     P:=New;
     s_Tag.GetRotMatrix(m);
     o_Tag.GetRotMatrix(m1);
-    bf.GetQ3A_Position(x);
-    if bf2<>nil then begin
-      bf2.GetQ3A_Position(x1);
+    x:=o_Tag.GetPosition;
+    if s_tag<>nil then
+    begin
+      x1:=s_Tag.GetPosition;
 //      sc:=bf2.GetQ3A_Scale;
-    end else begin
+    end
+    else
+    begin
       getmem(x1, sizeof(vec3_t));
       fillchar(x1^, sizeof(vec3_t), #0);
 //      sc:=0;

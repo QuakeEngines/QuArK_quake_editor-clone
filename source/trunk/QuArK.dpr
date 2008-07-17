@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.51  2008/05/16 20:55:39  danielpharos
+Changed comment characters to avoid compiler confusion
+
 Revision 1.50  2008/05/01 12:57:40  danielpharos
 Moved BrowseForFolder to a better place.
 
@@ -141,8 +144,8 @@ program QuArK;
 
 uses
   MemTester in 'prog\MemTester.pas',
-  {FastMM4 in 'prog\FastMM4.pas',}     {Enable for FastMM, copy the debug DLL to the runtime directory}
-  {MemCheck in 'prog\MemCheck.pas',}     {Enable for MemCheck, also see below}
+  (*FastMM4 in 'prog\FastMM4.pas',*)     (*Enable for FastMM, copy the debug DLL to the runtime directory*)
+  (*MemCheck in 'prog\MemCheck.pas',*)     (*Enable for MemCheck, also see below*)
   Forms,
   DWM in '3dfx\DWM.pas',
   DX9 in '3dfx\DX9.pas',
@@ -159,6 +162,7 @@ uses
   form_Model in 'prog\model\form_Model.pas' {FQMdl},
   Qk3ds in 'prog\model\Qk3ds.pas',
   QkBoneGroup in 'prog\model\QkBoneGroup.pas',
+  QkBoundFrame in 'prog\model\QkBoundFrame.pas',
   QkComponent in 'prog\model\QkComponent.pas',
   QkFrame in 'prog\model\QkFrame.pas',
   QkFrameGroup in 'prog\model\QkFrameGroup.pas',
@@ -175,6 +179,7 @@ uses
   QkQkl in 'prog\model\QkQkl.pas',
   qkskindrawobject in 'prog\model\qkskindrawobject.pas',
   QkSkinGroup in 'prog\model\QkSkinGroup.pas',
+  QkTagFrame in 'prog\model\QkTagFrame.pas',
   About in 'prog\About.pas' {AboutBox},
   AutoUpdater in 'prog\AutoUpdater.pas' {AutoUpdater},
   AutoUpdateInstaller in 'prog\AutoUpdateInstaller.pas' {AutoUpdateInstaller},

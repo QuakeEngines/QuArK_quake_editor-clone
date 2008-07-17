@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.38  2008/04/23 20:12:38  cdunde
+Setup for Warsow with .md3 model support.
+
 Revision 1.37  2008/04/04 19:24:42  cdunde
 Setup a new game support for NEXUIZ with .md3 model displaying.
 
@@ -144,8 +147,8 @@ interface
 
 uses Windows, SysUtils, Classes, QkObjects, QkForm, Graphics,
      QkImages, qmath, QkTextures, QkFileObjects, QkPcx,
-     QkModelFile, QkModelRoot, QkFrame, QkComponent, QkMdlObject, QkModelTag, QkModelBone,
-     QkMiscGroup, {QkFrameGroup,} qmatrices;
+     QkModelFile, QkModelRoot, QkFrame, QkComponent, QkMdlObject, QkModelTag,
+     QkTagFrame, QkBoundFrame, QkMiscGroup, {QkFrameGroup,} qmatrices;
 
 type
   QMd3File = class(QModelFile)
@@ -161,7 +164,6 @@ type
       function AttachModelToTagFromFileName(Tag_Name: string; Filename: string): boolean;
       function TryAutoLoadParts: boolean;
       Function GetFullFilename: string;
-      function GetBoneFrameForFrame(Root: QModelRoot; Frame: Integer): QModelBone;
       procedure ChangeGameMode; virtual;
     end;
 
@@ -169,7 +171,8 @@ type
 
 implementation
 
-uses QuarkX, Setup, QkObjectClassList, game, qkq3, qkpixelset, logging, Travail;
+uses QuarkX, Setup, QkObjectClassList, Game, QkQ3, QkPixelset,
+     Logging, Travail;
 
 const
  MAX_QPATH = 64;
@@ -182,25 +185,18 @@ type
     filename: array[1..MAX_QPATH] of byte;//sometimes left Blank...
     flags: Longint;                //???
     BoundFrame_num: Longint;       //number of BoundFrames
-    Tag_num: Longint;              //number of 'tags' per BoneFrame
+    Tag_num: Longint;              //number of 'tags' per Frame
     Mesh_num: Longint;             //number of meshes/skins
     Skin_num: Longint;             //number of unique skins
-    BoneFrame_offset: Longint;     //offset of the frames
+    BoundFrame_offset: Longint;    //offset of the boundframes
     Tag_offset: Longint;           //offset of the tags
     Surface_offset: Longint;       //offset of the surface
     End_offset: Longint;           //offset of the end of the file
   end;
   { Comments to TMD3Header
-     If Tag_offset is the same as Tag_surface then there are no tags.
-
-     Tag_Num is sometimes 0, this is alright it means that there are no tags...
-     i'm not sure what Tags are used for, altough there is a clear connection
-     with boneframe, together they're probably used for bone based animations
-     (where you rotate meshes around eachother to create animations).
-
      After the header comes a list of frame, then follows a list of tags, if available.
-     The amount of tags is the header variable Tag_num times the header variable BoneFrame_num.
-     So it is highly probably that tags have something to do with boneframes and that objects
+     The amount of tags is the header variable Tag_num times the header variable BoundFrame_num.
+     So it is highly probably that tags have something to do with boundframes and that objects
      can have 0 to n tags 'attached' to them.
      Note: We call them 'Tags' because the name in tag usually starts with "tag_".
   }
@@ -212,12 +208,12 @@ type
     Radius: single;
     Name: array[1..16] of byte;
   end;
-  { TMD3BoneFrame
+  { TMD3BoundFrame
      If you divide the maximum and minimum xyz values of all the vertices from each meshframe you get
-     the exact values as mins and maxs..
+     the exact values as mins and maxs.
      Position is the exact center of mins and maxs, most of the time anyway.
 
-     Name is very probably just the name of the program or file of which it (the boneframe?) was created,
+     Name is very probably just the name of the program or file of which it (the boundframe?) was created,
      sometimes it's "(from ASE)" sometimes it's the name of a .3ds file.
   }
 
@@ -239,9 +235,9 @@ type
      fairly obvious i think, the name is the name of the tag.
      "position" is the relative position and "rotation" is the relative rotation to the rest of the model.
 
-     After the tags come the 'boneframes', frames in the bone animation.
+     After the tags come the 'boundframes'.
      The number of meshframes is usually identical to this number or simply 1.
-     The header variable BoneFrame_num holds the ammount of BoneFrame..
+     The header variable BoundFrame_num holds the ammount of BoundFrame..
   }
 
   TMD3Mesh = packed record
@@ -555,7 +551,7 @@ begin
   begin
     fs.Seek(mhead.Skin_Start - sizeof(mhead), 1);
     fs.readbuffer(tex, sizeof(tex));
-    //@ There was a check here: was that needed?
+    //FIXME: There was a check here: was that needed?
     if tex.name[1]=0 then
       tex.name[1]:=Byte('m');
     base_tex_name:=BeforeZero(tex.name, MAX_QPATH);
@@ -704,9 +700,8 @@ begin
     O:=Self;
     While O.FParent<>nil do
     begin
-      if O<>Self then //Cut-off the PAK-filename
-        Result:=O.Name+PathDelim+Result;
       O:=O.FParent;
+      Result:=O.Name+PathDelim+Result;
     end;
   end
   else
@@ -727,44 +722,41 @@ end;
 function QMd3File.TryAutoLoadParts: boolean;
 var
   tag: QModelTag;
-  b: QModelBone;
   mg: QMiscGroup;
   fname,x: string;
-  i,j:integer;
+  i: integer;
   TagList: TQList;
   z_result: boolean;
 begin
   z_result:=true;
   mg:=GetRoot.GetMisc;
   TagList:=TQList.Create;
-  for i:=0 to mg.Subelements.count-1 do
-  begin
-    if mg.Subelements[i] is QModelBone then
+  try
+    for i:=0 to mg.Subelements.count-1 do
     begin
-      b:=QModelBone(mg.Subelements[i]);
-      For j:=0 to b.subelements.count-1 do
+      if mg.Subelements[i] is QModelTag then
       begin
-        if b.subelements[j] is QModelTag then
-          TagList.Add(b.subelements[j]);
+        tag:=QModelTag(mg.Subelements[i]);
+        TagList.Add(tag);
       end;
-      break;
     end;
-  end;
-  for i:=0 to TagList.count-1 do
-  begin
-    if TagList[i] is QModelTag then
+    for i:=0 to TagList.count-1 do
     begin
-      tag:=QModelTag(TagList[i]);
-      fname:=extractfilepath(GetFullFilename);
-      x:=TagNameToMd3FileName(tag.name, name);
-      if x='' then
-        continue;
-      fname:=fname+x;
-      z_result:=z_result and AttachModelToTagFromFilename(tag.name, fname);
+      if TagList[i] is QModelTag then
+      begin
+        tag:=QModelTag(TagList[i]);
+        fname:=extractfilepath(GetFullFilename);
+        fname:=copy(fname, pos(PathDelim, fname)+1, length(fname)-pos(PathDelim,fname)+1);
+        x:=TagNameToMd3FileName(tag.name, name);
+        if x='' then
+          continue;
+        fname:=fname+x;
+        z_result:=z_result and AttachModelToTagFromFilename(tag.name, fname);
+      end;
     end;
+  finally
+    TagList.Free;
   end;
-  TagList.Clear;
-  TagList.Free;
   result:=z_result;
 end;
 
@@ -784,11 +776,6 @@ begin
     exit;
   FileObj2.Acces;
   Result:=AttachModelToTag(Tag_Name, QModelFile(FileObj2));
-end;
-
-function QMD3File.GetBoneFrameForFrame(Root: QModelRoot; Frame: Integer): QModelBone;
-begin
-  Result:=QModelBone(Root.getMisc.FindSubObject('Bone Frame '+inttostr(Frame), QModelBone, nil));
 end;
 
 function QMd3File.AttachModelToTag(Tag_Name: string; model: QModelFile): boolean;
@@ -827,10 +814,11 @@ var
   boundframe: TMD3BoundFrame;
   //---
   Root: QModelRoot;
+  Tags: TQList;
   OTag: QModelTag;
-  OBone: QModelBone; //@
+  OTagFrame: QTagFrame;
+  OBoundFrame: QBoundFrame;
   misc: QMiscGroup;
-  bone: QObject;
 begin
   case ReadFormat of
     1: begin  { as stand-alone file }
@@ -862,31 +850,41 @@ begin
       Misc:=Root.GetMisc;
       if head.BoundFrame_num<>0 then
       begin
+        f.seek(head.BoundFrame_offset + org,soFromBeginning);
         for i:=1 to head.boundframe_num do
         begin
           f.readbuffer(boundframe,sizeof(boundframe));
-          OBone:=QModelBone.Create('Bone Frame '+inttostr(i), Misc);
-          OBone.IntSpec['Q3A_Style']:=1;
-          OBone.SetQ3AData(boundframe.position, boundframe.mins, boundframe.maxs, boundframe.radius);
-          Misc.SubElements.Add(OBone);
+          OBoundFrame:=QBoundFrame.Create('Bound Frame '+inttostr(i), Misc);
+          OBoundFrame.SetQ3AData(boundframe.position, boundframe.mins, boundframe.maxs, boundframe.radius);
+          Misc.SubElements.Add(OBoundFrame);
         end;
-        if not((head.Tag_num=0) or (head.Tag_offset=head.Surface_offset)) then
+        if head.Tag_num<>0 then
         begin
           f.seek(head.Tag_offset + org,soFromBeginning);
-          for j:=1 to head.boundframe_num do
-          begin
-            bone:=Misc.FindSubObject('Bone Frame '+inttostr(j), QModelBone, nil);
-            if bone = nil then
-              bone:=Misc;
-            for i:=1 to head.tag_num do
+          Tags:=TQList.Create;
+          try
+            Misc.FindAllSubObjects('', QModelTag, nil, Tags);
+
+            for j:=1 to head.boundframe_num do
             begin
-              fillchar(tag, sizeof(tag), #0);
-              f.readbuffer(tag,sizeof(tag));
-              OTag:=QModelTag.Create(BeforeZero(tag.name, MAX_QPATH), bone);
-              OTag.SetPosition(Tag.position);
-              OTag.SetRotMatrix(_3vec3t_to_matrix(Tag));
-              bone.SubElements.Add(OTag);
+              for i:=1 to head.tag_num do
+              begin
+                f.readbuffer(tag,sizeof(tag));
+                OTag:=QModelTag(Tags.FindShortName(BeforeZero(tag.name, MAX_QPATH)));
+                if OTag = nil then
+                begin
+                  OTag:=QModelTag.Create(BeforeZero(tag.name, MAX_QPATH), Misc);
+                  Misc.SubElements.Add(OTag);
+                  Tags.Add(OTag);
+                end;
+                OTagFrame:=QTagFrame.Create('Tag Frame ' + inttostr(j), OTag);
+                OTagFrame.SetPosition(tag.position);
+                OTagFrame.SetRotMatrix(_3vec3t_to_matrix(tag));
+                OTag.SubElements.Add(OTagFrame);
+              end;
             end;
+          finally
+            Tags.Free;
           end;
           f.seek(org2, sofrombeginning);
         end;
@@ -914,11 +912,14 @@ var
   skin: TMD3Skin;
   //---
   Root: QModelRoot;
+  Misc: QMiscGroup;
   SkinObj: QImage;
   BoundFrames: TQList;
-  OBoundFrame: QModelBone;
+  OBoundFrame: QBoundFrame;
   Tags: TQList;
-  OTag: QModelTag;
+  OModelTag: QModelTag;
+  TagFrames: TQList;
+  OTagFrame: QTagFrame;
   Components: TQList;
   Comp: QComponent;
   Skins: TQList;
@@ -1001,65 +1002,74 @@ begin
        FillChar(head.filename, sizeof(head.filename), 0);
        FillChar(head.flags, sizeof(head.flags), 0);
 
-       Comp:=QComponent(Components[0]); //@ Might not exist!
-       Frames:=Comp.BuildFrameList;
+       Misc:=Root.GetMisc;
+
+       BoundFrames:=TQList.Create;
        try
-         head.BoundFrame_num := Frames.Count;
-         head.BoneFrame_offset:=F.Position-Position0;
+         Misc.FindAllSubObjects('', QBoundFrame, nil, BoundFrames);
 
-         BoundFrames:=TQList.Create;
-         try
-           Root.GetMisc.FindAllSubObjects('', QModelBone, nil, BoundFrames);
-           Tags:=TQList.Create;
-           try
-             QModelBone(BoundFrames[0]).FindAllSubObjects('', QModelTag, nil, Tags);
-             head.Tag_num := Tags.Count;
-           finally
-             Tags.Free;
-           end;
+         head.BoundFrame_num := BoundFrames.Count;
+         head.BoundFrame_offset:=F.Position-Position0;
 
-           head.Mesh_num := Components.Count;
-           head.Skin_num := 0;  //Not used, as far as known
+         for I:=0 to head.BoundFrame_num-1 do
+         begin
+           OBoundFrame := QBoundFrame(BoundFrames[I]);
+           OBoundFrame.GetQ3A_Mins(vec3);
+           boundframe.Mins := vec3^;
+           OBoundFrame.GetQ3A_Maxs(vec3);
+           boundframe.Maxs := vec3^;
+           OBoundFrame.GetQ3A_Position(vec3);
+           boundframe.Position := vec3^;
+           boundframe.Radius := OBoundFrame.GetQ3A_Scale;
+           PasToChar(boundframe.name, OBoundFrame.Name);
+           F.WriteBuffer(boundframe, SizeOf(boundframe));
+         end;
+       finally
+         BoundFrames.Free;
+       end;
 
-           for I:=0 to head.BoundFrame_num-1 do
+       Tags:=TQList.Create;
+       try
+         Misc.FindAllSubObjects('', QModelTag, nil, Tags);
+
+         head.Tag_num := Tags.Count;
+         head.Tag_offset:=F.Position-Position0;
+
+         for I:=0 to head.BoundFrame_num-1 do
+         begin
+           for J:=0 to head.Tag_num-1 do
            begin
-             OBoundFrame := QModelBone(BoundFrames[I]);
-             OBoundFrame.GetQ3A_Mins(vec3);
-             boundframe.Mins := vec3^;
-             OBoundFrame.GetQ3A_Maxs(vec3);
-             boundframe.Maxs := vec3^;
-             OBoundFrame.GetQ3A_Position(vec3);
-             boundframe.Position := vec3^;
-             boundframe.Radius := OBoundFrame.GetQ3A_Scale;
-             PasToChar(boundframe.name, OBoundFrame.Name);
-             F.WriteBuffer(boundframe, SizeOf(boundframe));
-           end;
-
-           head.Tag_offset:=F.Position-Position0;
-           for I:=0 to head.BoundFrame_num-1 do
-           begin
-             OBoundFrame := QModelBone(BoundFrames[I]);
-             Tags:=TQList.Create;
+             OModelTag := QModelTag(Tags[J]);
+             TagFrames:=TQList.Create;
              try
-               OBoundFrame.FindAllSubObjects('', QModelTag, nil, Tags);
-               for J:=0 to head.Tag_num-1 do
-               begin
-                 OTag:=QModelTag(Tags[J]);
+               OModelTag.FindAllSubObjects('', QTagFrame, nil, TagFrames);
+               if TagFrames.Count<>head.BoundFrame_num then
+                 raise exception.create(''); //@
+               OTagFrame:=QTagFrame(TagFrames[I]);
 
-                 PasToChar(tag.name, OTag.Name);
-                 vec3:=OTag.GetPosition;
-                 tag.Position := vec3^;
-                 OTag.GetRotMatrix(TagMatrix);
-                 _matrix_to_3vec3t(tag, TagMatrix^);
-                 F.WriteBuffer(tag, SizeOf(tag));
-               end;
+               PasToChar(tag.name, OModelTag.Name);
+               vec3:=OTagFrame.GetPosition;
+               tag.Position := vec3^;
+               OTagFrame.GetRotMatrix(TagMatrix);
+               _matrix_to_3vec3t(tag, TagMatrix^);
+               F.WriteBuffer(tag, SizeOf(tag));
              finally
-               Tags.Free;
+               TagFrames.Free;
              end;
            end;
-         finally
-           BoundFrames.Free;
          end;
+       finally
+         Tags.Free;
+       end;
+
+         head.Mesh_num := Components.Count;
+         head.Skin_num := 0;  //Not used, as far as known
+
+
+       Comp:=QComponent(Components[0]); //FIXME: Might not exist!
+       Frames:=Comp.BuildFrameList;
+       try
+
        finally
          Frames.Free;
        end;
@@ -1129,7 +1139,6 @@ begin
              mesh.Vertex_num:=FrameObj.GetVertices(CVert);
              GetMem(TexCoord, mesh.Vertex_num * SizeOf(TMD3TexVec));
              TexCoord2:=TexCoord;
-             CVert2:=CVert;
              try
                for J:=0 to mesh.Vertex_num-1 do
                begin
