@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.412  2008/07/11 04:34:32  cdunde
+//Setup of Specifics\Arg page for model types data and settings.
+//
 //Revision 1.411  2008/06/17 20:39:13  cdunde
 //To add lwo model importer, uv's still not correct though.
 //Also added model import\export logging options for file types.
@@ -3904,6 +3907,7 @@ QQRKSRC1
         HandleHints        = "1"
         LinearBox          = ""
         TreeKeybDelay      = ""
+        ExpComponentChecks = "0"
         IELogging          = "0"
         IELogAll           = ""
         IELogByFileType    = ""
@@ -8646,6 +8650,7 @@ QQRKSRC1
         Typ="S"
         Txt = "Importers \ Exporters:"
       }
+      ExpComponentChecks        = {Typ="X"  Txt="When Exporting"                 Cap="Perform checks first" Hint="When checked = "$0D"Selected components are checked"$0D"for errors before exporting,"$0D"such as existence of unused vertexes"$0D"and number of frames matching."}
       IELogging:                = {Typ="CL" Txt="Logging" Hint="Not all importer\exporter files will have this feature."$0D"The 'Text Log' will be written to QuArK's main folder"$0D"and will give details about the file being loaded."
                           items = "No Logging"$0D "Text Log Only"$0D "Text Log & Console"    values = "0"$0D "1"$0D "2"     }
       IELogAll:                 = {Typ="X"  Txt="Log All"                        Cap="Log all imports\exports" Hint="Unchecked = Only logs current import\export."$0D"Checked = Logs all imports\exports."}

@@ -592,11 +592,13 @@ def generate_surf(material_name, object):
     data = cStringIO.StringIO()
     data.write(generate_nstring(material_name))
     data.write("\0\0")
+    print "exporter line 600 generate_surf object.name", object.name, object.dictspec.keys()
 
  #   R,G,B = material.R, material.G, material.B
     if object.dictspec.has_key('lwo_COLR'):
         color = object['lwo_COLR'].split(" ")
         R, G, B = float(color[0]), float(color[1]), float(color[2])
+        print "line 606 R, G, B",R, G, B, type(R)
     else:
         R = G = B = 0.78431373834609985
     data.write("COLR")
@@ -791,11 +793,30 @@ def write_header(file, chunks):
     file.write(struct.pack(">L", form_size))
     file.write("LWO2")
 
+# Saves the model file: root is the actual file,
+# filename is the full path and name of the .lwo file to create.
+# gamename is None."
+# For example:  C:\Doom 3\base\models\mapobjects\chairs\kitchenchair\kitchenchair.lwo
 def savemodel(root, filename, gamename, nomessage=0):
-    "Saves the model file: root is the actual file,"
-    "filename is the full path and name of the .lwo file to create."
-    "gamename is None."
-    "For example:  C:\Doom 3\base\models\mapobjects\chairs\kitchenchair\kitchenchair.lwo"
+    import quarkpy.qutils
+    editor = quarkpy.mdleditor.mdleditor
+    if editor is None:
+        return
+    if len(editor.layout.explorer.sellist) > 1 and quarkx.setupsubset(3, "Options")["ExpComponentChecks"] == "1":
+        frame_count = []
+        for item in editor.layout.explorer.sellist:
+            if item.type == ":mc":
+                frame_count = frame_count + [len(item.dictitems['Frames:fg'].dictitems)]
+        if len(frame_count) > 1:
+            for item in range(len(frame_count)):
+                if item >= len(frame_count)-1:
+                    break
+                if frame_count[item] != frame_count[item+1]:
+                    results = quarkx.msgbox("Number of selected component's frames do not match\nor some frames have identical names.\n\nDo you wish to continue with this export?", quarkpy.qutils.MT_INFORMATION, quarkpy.qutils.MB_YES|quarkpy.qutils.MB_NO)
+                    if results != 6:
+                        return
+                    else:
+                        break
     writefile(filename)
 
 ### To register this Python plugin and put it on the exporters menu.
@@ -805,6 +826,9 @@ quarkpy.qmdlbase.RegisterMdlExporter(".lwo LightWave Exporter", ".lwo file", "*.
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.6  2008/07/11 04:40:20  cdunde
+# Minor correction.
+#
 # Revision 1.5  2008/07/11 04:38:47  cdunde
 # Clean out blank spaces.
 #
