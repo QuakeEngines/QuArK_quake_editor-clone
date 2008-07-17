@@ -19,76 +19,89 @@ import quarkpy.qutils
 textlog = "model_ie_log.txt"
 tobj = None
 
-"""
+'''
 NOTE: ALL IMPORTERS AND EXPORTERS SHOULD INCLUDE THIS LOGGING CODE.
 
-1) To add logging to an importer or exporter put these lines near the top:
+1) To add logging to an importer or exporter put these lines near the top in this order:
+import os, time, operator
 import ie_utils
+from ie_utils import tobj
 
 # Globals
-importername = "(copy the file name here)"
-textlog = "model_ie_log.txt"
-from ie_utils import tobj
-if quarkx.setupsubset(3, "Options")['IELogAll'] != "1":
-    if quarkx.setupsubset(3, "Options")['IELogByFileType'] != "1":
-        textlog = "model_ie_log.txt"
-        tobj = ie_utils.tobj = ie_utils.dotext(textlog) # Calls the class to handle logging.
-    else:
-        textlog = "md2_ie_log.txt"
-        tobj = ie_utils.dotext(textlog) # Calls the class to handle logging.
-else:
-    if tobj is None:
-        if quarkx.setupsubset(3, "Options")['IELogByFileType'] != "1":
-            textlog = "model_ie_log.txt"
-            tobj = ie_utils.tobj = ie_utils.dotext(textlog) # Calls the class to handle logging.
-        else:
-            textlog = "md2_ie_log.txt"
-            tobj = ie_utils.dotext(textlog) # Calls the class to handle logging.
+logging = 0
+exportername = "" (or importername = "" depending on which one you're doing)
+textlog = ""
 
 2) Setup for a text file like this in TWO PLACES:
-def loadmodel(root, filename, gamename, nomessage=0):
-    global tobj, textlog
-    if quarkx.setupsubset(3, "Options")['IELogAll'] != "1":
-        if quarkx.setupsubset(3, "Options")['IELogByFileType'] != "1":
-            from ie_utils import tobj
+def save_md2(filename):
+    global tobj, logging, exportername, textlog
+    start = time.time()
+    if quarkx.setupsubset(3, "Options")['IELogging'] != "0":
+        logging = 1
+        exportername = "ie_md2_exporter.py"
+        if quarkx.setupsubset(3, "Options")['IELogByFileType'] != "1" and textlog == "md2_ie_log.txt" and tobj.txtobj is not None:
+            tobj.txtobj.close()
+            textlog = "model_ie_log.txt"
             tobj = ie_utils.tobj = ie_utils.dotext(textlog) # Calls the class to handle logging.
-        else:
-            tobj = ie_utils.dotext(textlog) # Calls the class to handle logging.
-    else:
-        if tobj is None:
+
+        if quarkx.setupsubset(3, "Options")['IELogByFileType'] == "1" and textlog == "model_ie_log.txt" and tobj.txtobj is not None:
+            tobj.txtobj.close()
+            textlog = "md2_ie_log.txt"
+            tobj = ie_utils.tobj = ie_utils.dotext(textlog) # Calls the class to handle logging.
+
+        if quarkx.setupsubset(3, "Options")['IELogAll'] != "1":
             if quarkx.setupsubset(3, "Options")['IELogByFileType'] != "1":
-                from ie_utils import tobj
+                textlog = "model_ie_log.txt"
                 tobj = ie_utils.tobj = ie_utils.dotext(textlog) # Calls the class to handle logging.
             else:
-                tobj = ie_utils.dotext(textlog) # Calls the class to handle logging.
+                textlog = "md2_ie_log.txt"
+                tobj = ie_utils.tobj = ie_utils.dotext(textlog) # Calls the class to handle logging.
+        else:
+            if tobj is None:
+                if quarkx.setupsubset(3, "Options")['IELogByFileType'] != "1":
+                    textlog = "model_ie_log.txt"
+                    tobj = ie_utils.tobj = ie_utils.dotext(textlog) # Calls the class to handle logging.
+                else:
+                    textlog = "md2_ie_log.txt"
+                    tobj = ie_utils.dotext(textlog) # Calls the class to handle logging.
 
-    try:
+        tobj.logcon ("#####################################################################")
+        tobj.logcon ("This is: %s" % exportername)
+        tobj.logcon ("Exporting file:")
+        tobj.logcon (filename)
+        tobj.pprint ("#####################################################################")
+        tobj.logcon ("")
+    else:
+        logging = 0
+
+    ### Line below here saves the model (just for this example---DO NOT COPY NEXT LINE).
+    fill_md2(md2, component)
+
+    end = time.time()
+    seconds = "in %.2f %s" % (end-start, "seconds")
+    if logging == 1:
+        tobj.pprint ("=====================================================================")
+        tobj.logcon ("Successfully exported " + os.path.basename(filename))
+        tobj.logcon (seconds + " " + time.asctime(time.localtime()))
+        tobj.logcon ("")
+        tobj.logcon ("Any used skin textures that are not a .pcx")
+        tobj.logcon ("will need to be created to go with the model")
+        tobj.logcon ("=====================================================================")
+        tobj.logcon ("")
+        tobj.logcon ("")
         if quarkx.setupsubset(3, "Options")['IELogAll'] != "1":
             tobj.txtobj.close()
-            tobj.txtobj = open(quarkx.exepath + textlog, "w")
-    except:
-        if int(quarkx.setupsubset(3, "Options")['IELogging']) != 0 and tobj.txtobj is None:
-            tobj.txtobj = open(quarkx.exepath + textlog, "w")
-    ### Line below here loads the model (just for this example---DO NOT COPY THIS).
-    ModelRoot, Component = import_md2_model(editor, filename)
-
-    # This MUST be in a 'try:' statement to avoid error at startup here and above (not dupe code).
-    try:
-        if quarkx.setupsubset(3, "Options")['IELogAll'] != "1":
-            tobj.txtobj.close()
-    except:
-        pass
 
 3) Then in any function you want logging declair the global and call for tobj like this:
-def import_md2_model(editor, md2_filename):
+def fill_md2(md2, component):
     global tobj
-    tobj.logcon ("#####################################################################")
-    tobj.logcon ("This is: %s" % importername)
-    tobj.logcon ("Importing file:")
-    tobj.logcon (filename)
-    tobj.logcon ("#####################################################################")
+    if logging == 1:
+        tobj.logcon ("#####################################################################")
+        tobj.logcon ("Skins group data: " + str(md2.num_skins) + " skins")
+        tobj.logcon ("#####################################################################")
+        tobj.logcon ("")
 
-"""
+'''
 
 def safestring(st):
     "Makes sure what it gets is a string,"
@@ -114,9 +127,9 @@ class dotext:
         self.txtobj = None
 
     def write(self, wstring, maxlen=80):
-        # Opens a text file in QuArK's main directory to log the .lwo file being imported.
+        # Opens a text file in QuArK's main directory for logging to.
         # See QuArK's Defaults.qrk file for additional setup code for IELogging option.
-        if int(quarkx.setupsubset(3, "Options")['IELogging']) != 0:
+        if quarkx.setupsubset(3, "Options")['IELogging'] != "0":
             if self.txtobj == None or not os.path.exists(quarkx.exepath + self.textlog):
                 self.txtobj = open(quarkx.exepath + self.textlog, "w")
         if (self.txtobj==None):
@@ -130,7 +143,11 @@ class dotext:
                     print (wstring[:maxlen])
                 wstring = (wstring[maxlen:])
             else:
-                self.txtobj.write(wstring)
+                try:
+                    self.txtobj.write(wstring)
+                except:
+                    self.txtobj = open(quarkx.exepath + self.textlog, "w")
+                    self.txtobj.write(wstring)
                 if int(quarkx.setupsubset(3, "Options")['IELogging']) == 2:
                     if wstring != "\n":
                         print wstring
@@ -203,6 +220,10 @@ def validpath(filename):
 #
 #
 #$Log$
+#Revision 1.4  2008/06/17 20:39:13  cdunde
+#To add lwo model importer, uv's still not correct though.
+#Also added model import\export logging options for file types.
+#
 #Revision 1.3  2008/06/16 00:11:46  cdunde
 #Made importer\exporter logging corrections to work with others
 #and started logging function for md2 model importer.
