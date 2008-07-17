@@ -298,6 +298,7 @@ Strings = {
     2452: "Writing component frame vertices data",
     2453: "Writing component triangle index data",
     2454: "Preparation data read...Importing model",
+    2455: "Preparation data read...Exporting model",
 
     2549: "shift left / right",
 
@@ -1051,6 +1052,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.125  2008/06/28 14:52:35  cdunde
+#Added .lwo lightwave model export support and improved the importer.
+#
 #Revision 1.124  2008/05/24 19:02:26  danielpharos
 #Moved a string to the dictionary
 #
