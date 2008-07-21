@@ -57,26 +57,21 @@ Info = {
 
 #python specific modules import
 import struct, chunk, os, cStringIO, time, operator
-# QuArK note: did not import, may still need this > import copy
 import quarkx
+import quarkpy.mdleditor
 import ie_utils
+from ie_utils import tobj
+from quarkpy.qdictionnary import Strings
 
 # ===========================================================
 # === Utility Preamble ======================================
 # ===========================================================
 
 # Globals
-ie_editor = None
-
+logging = 0
 importername = "ie_lightwave_import.py"
-from ie_utils import tobj
-if tobj is None:
-    if quarkx.setupsubset(3, "Options")['IELogByFileType'] != "1":
-        textlog = "model_ie_log.txt"
-        tobj = ie_utils.tobj = ie_utils.dotext(textlog) # Calls the class to handle logging.
-    else:
-        textlog = "lwo_ie_log.txt"
-        tobj = ie_utils.dotext(textlog) # Calls the class to handle logging.
+textlog = "lwo_ie_log.txt"
+editor = None
 
 def rlcopy(ll):
     if type(ll) != type ([]):
@@ -94,15 +89,10 @@ def rlcopy(ll):
 # === Read LightWave Format ===
 # =============================
 def read(basepath, filename):
-    global tobj
+    global tobj, logging, importername, textlog
 
-    tobj.logcon ("#####################################################################")
-    tobj.logcon ("This is: %s" % importername)
-    tobj.logcon ("Importing file:")
-    tobj.logcon (filename)
-    tobj.pprint ("#####################################################################")
+    logging, tobj, starttime = ie_utils.default_start_logging(importername, textlog, filename, "IM") ### Use "EX" for exporter text, "IM" for importer text.
 
-    start = time.clock()
     file = open(filename, "rb")
 
     form_id, form_size, form_type = struct.unpack(">4s1L4s",  file.read(12))
@@ -111,19 +101,17 @@ def read(basepath, filename):
     elif (form_type == "LWO2"):
         ComponentList, message = read_lwo2(file, basepath, filename)
     else:
-        tobj.logcon ("Can't read a file with the form_type: %s" %form_type)
+        if logging == 1:
+            tobj.logcon ("Can't read a file with the form_type: %s" %form_type)
         file.close()
         return [None, None, ""]
 
     file.close()
-    end = time.clock()
-    seconds = " in %.2f %s" % (end-start, "seconds")
-    if form_type == "LWO2": fmt = " (v6.0 Format)"
-    if form_type == "LWOB": fmt = " (v5.5 Format)"
-    logmessage = "Successfully imported " + os.path.basename(filename) + fmt + seconds
-    tobj.pprint ("#####################################################################")
-    tobj.logcon (logmessage)
-    tobj.logcon ("#####################################################################")
+
+    if form_type == "LWO2": add_to_message = "LWO2 (v6.0 Format) file type"
+    if form_type == "LWOB": add_to_message = "LWOB (v5.5 Format) file type"
+
+    ie_utils.default_end_logging(filename, "IM", starttime, add_to_message) ### Use "EX" for exporter text, "IM" for importer text.
 
     ### Use the 'ModelRoot' below to test opening the QuArK's Model Editor with, needs to be qualified with main menu item.
     ModelRoot = quarkx.newobj('Model:mr')
@@ -136,9 +124,10 @@ def read(basepath, filename):
 # === Read LightWave 5.5 format ===
 # =================================
 def read_lwob(file, basepath, filename):
-    global tobj
+    global tobj, logging
 
-    tobj.logcon("LightWave 5.5 format")
+    if logging == 1:
+        tobj.logcon("LightWave 5.5 format")
     objname = os.path.splitext(os.path.basename(filename))[0]
 
     while 1:
@@ -163,9 +152,10 @@ def read_lwob(file, basepath, filename):
 # === Read LightWave Format ===
 # =============================
 def read_lwo2(file, basepath, filename, typ="LWO2"):
-    global tobj
+    global tobj, logging
 
-    tobj.logcon("LightWave 6 (and above) format")
+    if logging == 1:
+        tobj.logcon("LightWave 6 (and above) format")
 
     name = filename.split('\\')
     fname_part = name[len(name)-1]
@@ -197,9 +187,9 @@ def read_lwo2(file, basepath, filename, typ="LWO2"):
     # and increase each following component by 1.
     CompNbr = "None"
     comparenbr = 0
-    for item in ie_editor.Root.dictitems:
-        if ie_editor.Root.dictitems[item].shortname.startswith('Import Component'):
-            getnbr = ie_editor.Root.dictitems[item].shortname
+    for item in editor.Root.dictitems:
+        if editor.Root.dictitems[item].shortname.startswith('Import Component'):
+            getnbr = editor.Root.dictitems[item].shortname
             getnbr = getnbr.replace('Import Component', '')
             if getnbr == "":
                nbr = 0
@@ -218,41 +208,51 @@ def read_lwo2(file, basepath, filename, typ="LWO2"):
     message = ""
 
     #pass 1: look in advance for materials
-    tobj.logcon ("#####################################################################")
-    tobj.logcon ("Starting Pass 1: hold on tight")
-    tobj.logcon ("#####################################################################")
+    if logging == 1:
+        tobj.logcon ("#####################################################################")
+        tobj.logcon ("Starting Pass 1:")
+        tobj.logcon ("#####################################################################")
     while 1:
         try:
             lwochunk = chunk.Chunk(file)
         except EOFError:
             break
-        tobj.pprint(" ")
+        if logging == 1:
+            tobj.pprint(" ")
         if lwochunk.chunkname == "TAGS":                           # Tags, a list of skin textures used.
-            tobj.pprint("---- TAGS (Model Components\Textures)")
+            if logging == 1:
+                tobj.pprint("---- TAGS (Model Components\Textures)")
             tag_list.extend(read_tags(lwochunk))
-            tobj.pprint("tag_list (Model Components\Textures)")
-            tobj.pprint(tag_list)
+            if logging == 1:
+                tobj.pprint("tag_list")
+                tobj.pprint(tag_list)
         elif lwochunk.chunkname == "SURF":                         # surfaces
-            tobj.pprint("---- SURF")
+            if logging == 1:
+                tobj.pprint("---- SURF")
             surf_list.append(read_surfs(lwochunk, surf_list, tag_list))
-            tobj.pprint("surf_list")
-            tobj.pprint(surf_list)
+            if logging == 1:
+                tobj.pprint("surf_list")
+                tobj.pprint(surf_list)
         elif lwochunk.chunkname == "CLIP":                         # texture images
-            tobj.pprint("---- CLIP")
+            if logging == 1:
+                tobj.pprint("---- CLIP")
             clip_list.append(read_clip(lwochunk, dir_part))
-            tobj.pprint("clip_list")
-            tobj.pprint(clip_list)
-            tobj.pprint("read total %s clips up to now" % len(clip_list))
+            if logging == 1:
+                tobj.pprint("read total %s clips up to now" % len(clip_list))
+                tobj.pprint("clip_list")
+                tobj.pprint(clip_list)
         else:                                                       # Misc Chunks
             if ask_weird:
                 ckname = ie_utils.safestring(lwochunk.chunkname)
                 if "#" in ckname:
                     choice = quarkx.msgbox("WARNING: file could be corrupted.%t|Import anyway|Give up", quarkpy.qutils.MT_WARNING, quarkpy.qutils.MB_YES_NO_CANCEL)
                     if choice != MR_YES:
-                        tobj.logcon("---- %s: Maybe file corrupted. Terminated by user" % lwochunk.chunkname)
+                        if logging == 1:
+                            tobj.logcon("---- %s: Maybe file corrupted. Terminated by user" % lwochunk.chunkname)
                         return None
                     ask_weird = 0
-            tobj.pprint("---- %s: skipping (maybe later)" % lwochunk.chunkname)
+            if logging == 1:
+                tobj.pprint("---- %s: skipping (maybe later)" % lwochunk.chunkname)
             lwochunk.skip()
 
     #add default material for orphaned faces, if any
@@ -260,25 +260,30 @@ def read_lwo2(file, basepath, filename, typ="LWO2"):
  #   surf_list.append({'NAME': "_Orphans", 'g_MAT': Blender.Material.New("_Orphans")})
 
     #pass 2: effectively generate objects
-    tobj.logcon ("#####################################################################")
-    tobj.logcon ("Pass 2: now for the hard part")
-    tobj.logcon ("#####################################################################")
+    if logging == 1:
+        tobj.logcon ("#####################################################################")
+        tobj.logcon ("Pass 2: now for the hard part")
+        tobj.logcon ("#####################################################################")
     file.seek(0)
     # === LWO header ===
     form_id, form_size, form_type = struct.unpack(">4s1L4s",  file.read(12))
     if (form_type != "LWO2"):
-        tobj.logcon ("??? Inconsistent file type: %s" %form_type)
+        if logging == 1:
+            tobj.logcon ("??? Inconsistent file type: %s" %form_type)
         return None
     while 1:
         try:
             lwochunk = chunk.Chunk(file)
         except EOFError:
             break
-        tobj.pprint(" ")
+        if logging == 1:
+            tobj.pprint(" ")
         if lwochunk.chunkname == "LAYR":
-            tobj.pprint("---- LAYR")
+            if logging == 1:
+                tobj.pprint("---- LAYR")
             objname = read_layr(lwochunk)
-            tobj.pprint(objname)
+            if logging == 1:
+                tobj.pprint(objname)
             if objspec_list != None: #create the object
                 polynames = polytag_dict.keys()
                 ComponentList, message, CompNbr = create_objects(filename, polynames, clip_list, objspec_list, surf_list, basepath, ComponentList, message, CompNbr)
@@ -286,32 +291,42 @@ def read_lwo2(file, basepath, filename, typ="LWO2"):
             objspec_list = [objname, {}, [], [], {}, {}, 0, {}, {}]
             object_index += 1
         elif lwochunk.chunkname == "PNTS":                         # Verts
-            tobj.pprint("---- PNTS, objspec_list[2]")
-            tobj.pprint("('verts' SINGLE list of dicts, used by ALL comps. Keys are vert_index)")
+            if logging == 1:
+                tobj.pprint("---- PNTS, objspec_list[2]")
+                tobj.pprint("('verts' SINGLE list of items of all vertex positions, used by ALL comps.)")
+                tobj.pprint("(Each item is a list of 3 positions (x, y, z) of one vertex.)")
+                tobj.pprint("(Each items position in the list corresponds with their)")
+                tobj.pprint("(vertex_index in the 'faces' list, objspec_list[3].)")
             verts = read_verts(lwochunk)
             objspec_list[2] = verts
         elif lwochunk.chunkname == "VMAP":                         # MAPS (UV)
-            tobj.pprint("---- VMAP")
+            if logging == 1:
+                tobj.pprint("---- VMAP")
             uvcoords_dict = read_vmap(objspec_list[7], len(objspec_list[2]), lwochunk)
-            tobj.pprint("uvcoords_dict 1st in VMAP")
-            tobj.pprint("total uv's")
-            for key in objspec_list[7].keys():
-                tobj.pprint(len(objspec_list[7][key]))
-            tobj.pprint("")
-            tobj.pprint(objspec_list[7])
+            if logging == 1:
+                tobj.pprint("uvcoords_dict 1st in VMAP")
+                tobj.pprint("total uv's")
+                for key in objspec_list[7].keys():
+                    tobj.pprint(len(objspec_list[7][key]))
+                tobj.pprint("")
+                tobj.pprint(objspec_list[7])
         elif lwochunk.chunkname == "VMAD":                         # MAPS (UV) per-face
-            tobj.pprint("---- VMAD")
+            if logging == 1:
+                tobj.pprint("---- VMAD")
             uvcoords_dict, facesuv_dict = read_vmad(objspec_list[7], objspec_list[8], len(objspec_list[3]), len(objspec_list[2]), lwochunk)
-            tobj.pprint("total facesuv_dict")
-            for key in objspec_list[8].keys():
-                tobj.pprint(len(objspec_list[8][key]))
+            if logging == 1:
+                tobj.pprint("total facesuv_dict")
+                for key in objspec_list[8].keys():
+                    tobj.pprint(len(objspec_list[8][key]))
         elif lwochunk.chunkname == "POLS": # Faces v6.0
-            tobj.pprint("-------- POLS(6), objspec_list[3] ('faces' list)")
-            tobj.pprint("STANDARD list of sub-lists, for all Components combined.")
-            tobj.pprint("Gives the three vertex_index numbers for each face.")
-            tobj.pprint("Use tri_index to get one set.")
+            if logging == 1:
+                tobj.pprint("-------- POLS(6), objspec_list[3] ('faces' list)")
+                tobj.pprint("STANDARD list of sub-lists, for all Components combined.")
+                tobj.pprint("Gives the three vertex_index numbers for each face.")
+                tobj.pprint("Use tri_index to get one set.")
             faces, flag = read_faces_6(lwochunk)
-            tobj.pprint(faces)
+            if logging == 1:
+                tobj.pprint(faces)
             #flag is 0 for regular polygon, 1 for patches (= subsurf), 2 for anything else to be ignored
             if flag<2:
                 if objspec_list[3] != []:
@@ -337,34 +352,37 @@ def read_lwo2(file, basepath, filename, typ="LWO2"):
                     objname = defaultname
             #end if processing a valid poly type
         elif lwochunk.chunkname == "PTAG":                         # PTags
-            tobj.pprint("---- PTAG, objspec_list[5] (polytag_dict) tri_index list")
-            tobj.pprint("(dict list, uses Component\Texture name as 'key'.)")
+            if logging == 1:
+                tobj.pprint("---- PTAG, objspec_list[5] (polytag_dict) tri_index list")
+                tobj.pprint("(dict list, uses Component\Texture name as 'key'.)")
             polytag_dict = read_ptags(lwochunk, tag_list)
             for key in polytag_dict.keys():
                 objspec_list[5][key] = polytag_dict[key]
-        else:                                                       # Misc Chunks
-            tobj.pprint("---- %s: skipping (definitely!)" % lwochunk.chunkname)
+        else:
+            if logging == 1:                             # Misc Chunks
+                tobj.pprint("---- %s: skipping (definitely!)" % lwochunk.chunkname)
             lwochunk.skip()
         #uncomment here to log data structure as it is built
         #tobj.pprint(object_list)
     #last object read
-    tobj.pprint("in read_vmad function, objspec_list[7] (uvcoords_dict)")
-    tobj.pprint("dict list, uses ['UVNAME'] as key, of dict lists, uses uv_index as keys.")
-    tobj.pprint("u,v 2D texture positions, both VMAD & VMAP use this.")
-    tobj.pprint("total uv's")
-    for key in objspec_list[7].keys():
-        tobj.pprint(len(objspec_list[7][key]))
-    tobj.pprint("")
-    tobj.pprint(uvcoords_dict)
-    tobj.pprint("")
-    tobj.pprint("")
-    tobj.pprint("in read_vmad function, objspec_list[8] (facesuv_dict)")
-    tobj.pprint("dict list, uses ['UVNAME'] as key, list of [tri, vert, uv] indexes.")
-    tobj.pprint("VMAD only uses this.")
-    tobj.pprint("No sub-keys, itterate using:")
-    tobj.pprint("if tri_index = [0] and vert_index = [1]: uv_index = [2] (for objspec_list[7])")
-    tobj.pprint(facesuv_dict)
-    tobj.pprint("")
+    if logging == 1:
+        tobj.pprint("in read_vmad function, objspec_list[7] (uvcoords_dict)")
+        tobj.pprint("dict list, uses ['UVNAME'] as key, of dict lists, uses uv_index as keys.")
+        tobj.pprint("u,v 2D texture positions, both VMAD & VMAP use this.")
+        tobj.pprint("total uv's")
+        for key in objspec_list[7].keys():
+            tobj.pprint(len(objspec_list[7][key]))
+        tobj.pprint("")
+        tobj.pprint(uvcoords_dict)
+        tobj.pprint("")
+        tobj.pprint("")
+        tobj.pprint("in read_vmad function, objspec_list[8] (facesuv_dict)")
+        tobj.pprint("dict list, uses ['UVNAME'] as key, list of [tri, vert, uv] indexes.")
+        tobj.pprint("VMAD only uses this.")
+        tobj.pprint("No sub-keys, itterate using:")
+        tobj.pprint("if tri_index = [0] and vert_index = [1]: uv_index = [2] (for objspec_list[7])")
+        tobj.pprint(facesuv_dict)
+        tobj.pprint("")
     polynames = polytag_dict.keys()
     ### The next two lines make it load 10 times slower and have no effect on the u,v problem.
     ### But if commented out will NOT allow multiple component model importing.
@@ -375,9 +393,10 @@ def read_lwo2(file, basepath, filename, typ="LWO2"):
     surf_list = None
     clip_list = None
 
-    tobj.pprint ("\n#####################################################################")
-    tobj.pprint("Created %d Components:" % object_index)
-    tobj.pprint ("#####################################################################")
+    if logging == 1:
+        tobj.pprint ("\n#####################################################################")
+        tobj.pprint("Created %d Components:" % object_index)
+        tobj.pprint ("#####################################################################")
 
     return ComponentList, message
 
@@ -389,18 +408,18 @@ def read_lwo2(file, basepath, filename, typ="LWO2"):
 # === Read Verts ===
 # ==================
 def read_verts(lwochunk):
-    global tobj
+    global tobj, logging
 
     data = cStringIO.StringIO(lwochunk.read())
     numverts = lwochunk.chunksize/12
-    #$verts = []
     verts = [None] * numverts
     # Makes QuArK component.currentframe.verteicies here.
     for i in xrange(numverts):
         x, y, z = struct.unpack(">fff", data.read(12))
         verts[i] = (x, z, y)
-    tobj.logcon (verts)
-    tobj.pprint("read %d vertexes" % (i+1))
+    if logging == 1:
+        tobj.logcon (verts)
+        tobj.pprint("read %d vertexes" % (i+1))
     return verts
 
 
@@ -437,7 +456,7 @@ def read_layr(lwochunk):
 # === Read Faces 5.5 ===
 # ======================
 def read_faces_5(lwochunk):
-    global tobj
+    global tobj, logging
     data = cStringIO.StringIO(lwochunk.read())
     faces = []
     i = 0
@@ -451,7 +470,8 @@ def read_faces_5(lwochunk):
         faces.append(facev)
         surfaceindex, = struct.unpack(">H", data.read(2))
         if surfaceindex < 0:
-            tobj.logcon ("***Error. Referencing uncorrect surface index")
+            if logging == 1:
+                tobj.logcon ("***Error. Referencing uncorrect surface index")
             return
         i += (4+numfaceverts*2)
     return faces
@@ -477,17 +497,19 @@ def read_vx(data):
 # ====== Read Color Map Float ======
 # ==================================
 def read_vcol(surf_list, lwochunk, data):
-    global tobj
-    tobj.pprint ("WE ARE IN ----- VCOL:")
-    '''intensity = struct.unpack(">f", data.read(4))
-    tobj.pprint ("intensity:")
-    tobj.pprint (intensity)
+    global tobj, logging
+  #  intensity = struct.unpack(">f", data.read(4))
+    if logging == 1:
+        tobj.pprint ("WE ARE IN ----- VCOL:")
+    '''    tobj.pprint ("intensity:")
+        tobj.pprint (intensity)
     VCOL = {}    #start a brand new: this could be made more smart
     i = 0
     my_uv_dict = {}
     while (i < lwochunk.chunksize - 6):      #4+2 header bytes already read
         vertnum, vnum_size = read_vx(data)
-        tobj.pprint ("vertnum = %s, vnum_size = %s" % (vertnum, vnum_size))
+        if logging == 1:
+            tobj.pprint ("vertnum = %s, vnum_size = %s" % (vertnum, vnum_size))
         u, v = struct.unpack(">ff", data.read(8))
         print "line 701 u, v",u, v
         my_uv_dict[vertnum] = (u, v)
@@ -498,8 +520,9 @@ def read_vcol(surf_list, lwochunk, data):
     surf_list['VCOL'] = my_uv_dict
     map_type = data.read(4)
     name, i = read_name(data) #i initialized with string lenght + zeros
-    tobj.pprint ("map type = %s, name = %s" % (map_type, name))
-    tobj.pprint ("Now reading uv data below:")'''
+    if logging == 1:
+        tobj.pprint ("map type = %s, name = %s" % (map_type, name))
+        tobj.pprint ("Now reading uv data below:")'''
 
     return
 
@@ -508,18 +531,21 @@ def read_vcol(surf_list, lwochunk, data):
 # == Read uvmapping (Quake 4 is using this) ==
 # ============================================
 def read_vmap(uvcoords_dict, maxvertnum, lwochunk): # u,v per vertex point
-    global tobj
+    global tobj, logging
     if maxvertnum == 0:
-        tobj.pprint ("Found VMAP but no vertexes to map!")
+        if logging == 1:
+            tobj.pprint ("Found VMAP but no vertexes to map!")
         return uvcoords_dict
     data = cStringIO.StringIO(lwochunk.read())
     map_type = data.read(4)
     if map_type != "TXUV":
-        tobj.pprint ("Reading VMAP: No Texture UV map Were Found. Map Type: %s" % map_type)
+        if logging == 1:
+            tobj.pprint ("Reading VMAP: No Texture UV map Were Found. Map Type: %s" % map_type)
         return uvcoords_dict
     dimension, = struct.unpack(">H", data.read(2))
     name, i = read_name(data) #i initialized with string lenght + zeros
-    tobj.pprint ("TXUV %d %s" % (dimension, name))
+    if logging == 1:
+        tobj.pprint ("TXUV %d %s" % (dimension, name))
     #note if there is already a VMAD it will be lost
     #it is assumed that VMAD will follow the corresponding VMAP
     if uvcoords_dict.has_key(name):
@@ -540,18 +566,21 @@ def read_vmap(uvcoords_dict, maxvertnum, lwochunk): # u,v per vertex point
 # === Read uvmapping 2 ===
 # ========================
 def read_vmad(uvcoords_dict, facesuv_dict, maxfacenum, maxvertnum, lwochunk):
-    global tobj
+    global tobj, logging
     if maxvertnum == 0 or maxfacenum == 0:
-        tobj.pprint ("Found VMAD but no vertexes to map!")
+        if logging == 1:
+            tobj.pprint ("Found VMAD but no vertexes to map!")
         return uvcoords_dict, facesuv_dict
     data = cStringIO.StringIO(lwochunk.read())
     map_type = data.read(4)
     if map_type != "TXUV":
-        tobj.pprint ("Reading VMAD: No Texture UV map Were Found. Map Type: %s" % map_type)
+        if logging == 1:
+            tobj.pprint ("Reading VMAD: No Texture UV map Were Found. Map Type: %s" % map_type)
         return uvcoords_dict, facesuv_dict
     dimension, = struct.unpack(">H", data.read(2))
     name, i = read_name(data) #i initialized with string lenght + zeros
-    tobj.pprint ("TXUV %d %s" % (dimension, name))
+    if logging == 1:
+        tobj.pprint ("TXUV %d %s" % (dimension, name))
     if uvcoords_dict.has_key(name):
         my_uv_dict = uvcoords_dict[name] # update existing objspec_list[7]
     else:
@@ -573,7 +602,8 @@ def read_vmad(uvcoords_dict, facesuv_dict, maxfacenum, maxvertnum, lwochunk):
     uvcoords_dict[name] = my_uv_dict
     facesuv_dict[name] = my_facesuv_list
     # QuArK Notes: Make each
-    tobj.pprint ("updated %d vertexes data (see data below by texture name)" % (newindex-maxvertnum-10))
+    if logging == 1:
+        tobj.pprint ("updated %d vertexes data (see data below by texture name)" % (newindex-maxvertnum-10))
     return [uvcoords_dict, facesuv_dict] # For VMAD
 
 
@@ -583,7 +613,6 @@ def read_vmad(uvcoords_dict, facesuv_dict, maxfacenum, maxvertnum, lwochunk):
 # == ['models/mapobjects/chairs/kitchenchair/kitchenchair', 'textures/base_trim/bluetex4s_ed'] ==
 # ===============================================================================================
 def read_tags(lwochunk):
-    global tobj
     data = cStringIO.StringIO(lwochunk.read())
     tag_list = []
     current_tag = ""
@@ -598,8 +627,8 @@ def read_tags(lwochunk):
         else:
             current_tag += char
         i += 1
-    tobj.pprint("read %d tags, list follows:" % len(tag_list))
-    tobj.pprint( tag_list)
+    if logging == 1:
+        tobj.pprint("read %d tags, list follows:" % len(tag_list))
     return tag_list
 
 
@@ -607,11 +636,12 @@ def read_tags(lwochunk):
 # === Read Ptags ===
 # ==================
 def read_ptags(lwochunk, tag_list):
-    global tobj
+    global tobj, logging
     data = cStringIO.StringIO(lwochunk.read())
     polygon_type = data.read(4)
     if polygon_type != "SURF":
-        tobj.pprint ("No Surf Were Found. Polygon Type: %s" % polygon_type)
+        if logging == 1:
+            tobj.pprint ("No Surf Were Found. Polygon Type: %s" % polygon_type)
         return {}
     ptag_dict = {}
     i = 0
@@ -621,7 +651,8 @@ def read_ptags(lwochunk, tag_list):
         i += poln_size
         surface_index, = struct.unpack(">H", data.read(2))
         if surface_index > (len(tag_list)):
-            tobj.pprint ("Reading PTAG: Surf belonging to undefined TAG: %d. Skipping" % tag_index)
+            if logging == 1:
+                tobj.pprint ("Reading PTAG: Surf belonging to undefined TAG: %d. Skipping" % tag_index)
             return {}
         i += 2
         tag_key = tag_list[surface_index]
@@ -631,14 +662,17 @@ def read_ptags(lwochunk, tag_list):
             ptag_dict[tag_list[surface_index]] = [poln]
         else:
             ptag_dict[tag_list[surface_index]].append(poln)
-    tobj.logcon (ptag_dict)
-    tobj.pprint ("from tag_list (same as 'poly'):")
+    if logging == 1:
+        tobj.logcon (ptag_dict)
+        tobj.pprint ("from tag_list (same as 'poly'):")
     facecount = 0
     for i in ptag_dict.keys():
-        tobj.pprint ("    read %d faces for Comp.\Tex. %s" % (len(ptag_dict[i]), i))
+        if logging == 1:
+            tobj.pprint ("    read %d faces for Comp.\Tex. %s" % (len(ptag_dict[i]), i))
         facecount = facecount + len(ptag_dict[i])
-    tobj.pprint ("        ------")
-    tobj.pprint ("   total %d faces" % (facecount))
+    if logging == 1:
+        tobj.pprint ("        ------")
+        tobj.pprint ("   total %d faces" % (facecount))
     return ptag_dict
 
 
@@ -646,7 +680,7 @@ def read_ptags(lwochunk, tag_list):
 # === Read Clips ===
 # ==================
 def read_clip(lwochunk, dir_part):
-    global tobj
+    global tobj, logging
 # img, IMG, g_IMG refers to blender image objects
 # ima, IMAG, g_IMAG refers to clip dictionary 'ID' entries: refer to blok and surf
     clip_dict = {}
@@ -658,7 +692,8 @@ def read_clip(lwochunk, dir_part):
         subchunkname, = struct.unpack("4s", data.read(4))
         subchunklen, = struct.unpack(">H", data.read(2))
         if subchunkname == "STIL":
-            tobj.pprint("-------- STIL")
+            if logging == 1:
+                tobj.pprint("-------- STIL")
             clip_name, k = read_name(data)
             #now split text independently from platform
             #depend on the system where image was saved. NOT the one where the script is run
@@ -667,44 +702,55 @@ def read_clip(lwochunk, dir_part):
             short_name = clip_name.split("/")
             short_name = short_name[len(short_name)-1]
             if (clip_name == "") or (short_name == ""):
-                tobj.pprint ("Reading CLIP: Empty clip name not allowed. Skipping")
+                if logging == 1:
+                    tobj.pprint ("Reading CLIP: Empty clip name not allowed. Skipping")
                 discard = data.read(subchunklen-k)
             clip_dict['NAME'] = clip_name
             clip_dict['BASENAME'] = short_name
         elif subchunkname == "XREF":                           #cross reference another image
-            tobj.pprint("-------- XREF")
+            if logging == 1:
+                tobj.pprint("-------- XREF")
             image_index, = struct.unpack(">L", data.read(4))
             clip_name, k = read_name(data)
             clip_dict['NAME'] = clip_name
             clip_dict['XREF'] = image_index
         elif subchunkname == "NEGA":                           #negate texture effect
-            tobj.pprint("-------- NEGA")
+            if logging == 1:
+                tobj.pprint("-------- NEGA")
             n, = struct.unpack(">H", data.read(2))
             clip_dict['NEGA'] = n
         else:                                                       # Misc Chunks
-            tobj.pprint("-------- CLIP:%s: skipping" % subchunkname)
+            if logging == 1:
+                tobj.pprint("-------- CLIP:%s: skipping" % subchunkname)
             discard = data.read(subchunklen)
         i = i + 6 + subchunklen
     #end loop on surf chunks
-    tobj.pprint("read image:%s" % clip_dict)
+    if logging == 1:
+        tobj.pprint("read image:%s" % clip_dict)
     if clip_dict.has_key('XREF'):
-        tobj.pprint("Cross-reference: no image pre-allocated.")
+        if logging == 1:
+            tobj.pprint("Cross-reference: no image pre-allocated.")
         return clip_dict
     """#look for images
     img = load_image("",clip_dict['NAME'])
     if img == None:
-        tobj.pprint (  "***No image %s found: trying LWO file subdir" % clip_dict['NAME'])
+        if logging == 1:
+            tobj.pprint (  "***No image %s found: trying LWO file subdir" % clip_dict['NAME'])
         img = load_image(dir_part,clip_dict['BASENAME'])
     if img == None:
-        tobj.pprint (  "***No image %s found in directory %s: trying Images subdir" % (clip_dict['BASENAME'], dir_part))
+        if logging == 1:
+            tobj.pprint (  "***No image %s found in directory %s: trying Images subdir" % (clip_dict['BASENAME'], dir_part))
         img = load_image(dir_part+Blender.sys.sep+"Images",clip_dict['BASENAME'])
     if img == None:
-        tobj.pprint (  "***No image %s found: trying alternate Images subdir" % clip_dict['BASENAME'])
+        if logging == 1:
+            tobj.pprint (  "***No image %s found: trying alternate Images subdir" % clip_dict['BASENAME'])
         img = load_image(dir_part+Blender.sys.sep+".."+Blender.sys.sep+"Images",clip_dict['BASENAME'])
     if img == None:
-        tobj.pprint (  "***No image %s found: giving up" % clip_dict['BASENAME'])
+        if logging == 1:
+            tobj.pprint (  "***No image %s found: giving up" % clip_dict['BASENAME'])
     #lucky we are: we have an image
-    tobj.pprint ("Image pre-allocated.")
+    if logging == 1:
+        tobj.pprint ("Image pre-allocated.")
     clip_dict['g_IMG'] = img"""
     return clip_dict
 
@@ -713,7 +759,7 @@ def read_clip(lwochunk, dir_part):
 # === Read Surfaces Block ===
 # ===========================
 def read_surfblok(subchunkdata):
-    global tobj
+    global tobj, logging
     lenght = len(subchunkdata)
     my_dict = {}
     my_uvname = ""
@@ -725,9 +771,11 @@ def read_surfblok(subchunkdata):
     subchunklen, = struct.unpack(">h", data.read(2))
     accumulate_i = subchunklen + 6
     if subchunkname != 'IMAP':
-        tobj.pprint("---------- SURF: BLOK: not IMAP, got %s: block aborting" % subchunkname)
+        if logging == 1:
+            tobj.pprint("---------- SURF: BLOK: not IMAP, got %s: block aborting" % subchunkname)
         return {}, ""
-    tobj.pprint ("---------- IMAP")
+    if logging == 1:
+        tobj.pprint ("---------- IMAP")
     ordinal, i = read_name(data)
     my_dict['ORD'] = ordinal
     #my_dict['g_ORD'] = -1
@@ -737,23 +785,27 @@ def read_surfblok(subchunkdata):
         sub2chunklen, = struct.unpack(">h", data.read(2))
         i = i + 6 + sub2chunklen
         if sub2chunkname == "CHAN":
-            tobj.pprint("------------ CHAN")
+            if logging == 1:
+                tobj.pprint("------------ CHAN")
             sub2chunkname, = struct.unpack("4s", data.read(4))
             my_dict['CHAN'] = sub2chunkname
             sub2chunklen -= 4
         elif sub2chunkname == "ENAB":                             #only present if is to be disabled
-            tobj.pprint("------------ ENAB")
+            if logging == 1:
+                tobj.pprint("------------ ENAB")
             ena, = struct.unpack(">h", data.read(2))
             my_dict['ENAB'] = ena
             sub2chunklen -= 2
         elif sub2chunkname == "NEGA":                             #only present if is to be enabled
-            tobj.pprint("------------ NEGA")
+            if logging == 1:
+                tobj.pprint("------------ NEGA")
             ena, = struct.unpack(">h", data.read(2))
             if ena == 1:
                 my_dict['NEGA'] = ena
             sub2chunklen -= 2
         elif sub2chunkname == "OPAC":                             #only present if is to be disabled
-            tobj.pprint("------------ OPAC")
+            if logging == 1:
+                tobj.pprint("------------ OPAC")
             opa, = struct.unpack(">h", data.read(2))
             s, = struct.unpack(">f", data.read(4))
             envelope, env_size = read_vx(data)
@@ -761,12 +813,14 @@ def read_surfblok(subchunkdata):
             my_dict['OPACVAL'] = s
             sub2chunklen -= 6
         elif sub2chunkname == "AXIS":
-            tobj.pprint("------------ AXIS")
+            if logging == 1:
+                tobj.pprint("------------ AXIS")
             ena, = struct.unpack(">h", data.read(2))
             my_dict['DISPLAXIS'] = ena
             sub2chunklen -= 2
         else:                                                       # Misc Chunks
-            tobj.pprint("------------ SURF: BLOK: IMAP: %s: skipping" % sub2chunkname)
+            if logging == 1:
+                tobj.pprint("------------ SURF: BLOK: IMAP: %s: skipping" % sub2chunkname)
             discard = data.read(sub2chunklen)
     #end loop on blok header subchunks
     ##############################################################
@@ -776,39 +830,46 @@ def read_surfblok(subchunkdata):
     subchunklen, = struct.unpack(">h", data.read(2))
     accumulate_i += subchunklen + 6
     if subchunkname != 'TMAP':
-        tobj.pprint("---------- SURF: BLOK: not TMAP, got %s: block aborting" % subchunkname)
+        if logging == 1:
+            tobj.pprint("---------- SURF: BLOK: not TMAP, got %s: block aborting" % subchunkname)
         return {}, ""
-    tobj.pprint ("---------- TMAP")
+    if logging == 1:
+        tobj.pprint ("---------- TMAP")
     i = 0
     while(i < subchunklen): # -----------left 6----------------------- loop on header parameters
         sub2chunkname, = struct.unpack("4s", data.read(4))
         sub2chunklen, = struct.unpack(">h", data.read(2))
         i = i + 6 + sub2chunklen
         if sub2chunkname == "CNTR":
-            tobj.pprint("------------ CNTR")
+            if logging == 1:
+                tobj.pprint("------------ CNTR")
             x, y, z = struct.unpack(">fff", data.read(12))
             envelope, env_size = read_vx(data)
             my_dict['CNTR'] = [x, y, z]
             sub2chunklen -= (12+env_size)
         elif sub2chunkname == "SIZE":
-            tobj.pprint("------------ SIZE")
+            if logging == 1:
+                tobj.pprint("------------ SIZE")
             x, y, z = struct.unpack(">fff", data.read(12))
             envelope, env_size = read_vx(data)
             my_dict['SIZE'] = [x, y, z]
             sub2chunklen -= (12+env_size)
         elif sub2chunkname == "ROTA":
-            tobj.pprint("------------ ROTA")
+            if logging == 1:
+                tobj.pprint("------------ ROTA")
             x, y, z = struct.unpack(">fff", data.read(12))
             envelope, env_size = read_vx(data)
             my_dict['ROTA'] = [x, y, z]
             sub2chunklen -= (12+env_size)
         elif sub2chunkname == "CSYS":
-            tobj.pprint("------------ CSYS")
+            if logging == 1:
+                tobj.pprint("------------ CSYS")
             ena, = struct.unpack(">h", data.read(2))
             my_dict['CSYS'] = ena
             sub2chunklen -= 2
         else:                                                       # Misc Chunks
-            tobj.pprint("------------ SURF: BLOK: TMAP: %s: skipping" % sub2chunkname)
+            if logging == 1:
+                tobj.pprint("------------ SURF: BLOK: TMAP: %s: skipping" % sub2chunkname)
         if  sub2chunklen > 0:
             discard = data.read(sub2chunklen)
     #end loop on blok attributes subchunks
@@ -820,22 +881,26 @@ def read_surfblok(subchunkdata):
         subchunklen, = struct.unpack(">H", data.read(2))
         accumulate_i = accumulate_i + 6 + subchunklen
         if subchunkname == "PROJ":
-            tobj.pprint("---------- PROJ")
+            if logging == 1:
+                tobj.pprint("---------- PROJ")
             p, = struct.unpack(">h", data.read(2))
             my_dict['PROJ'] = p
             subchunklen -= 2
         elif subchunkname == "AXIS":
-            tobj.pprint("---------- AXIS")
+            if logging == 1:
+                tobj.pprint("---------- AXIS")
             a, = struct.unpack(">h", data.read(2))
             my_dict['MAJAXIS'] = a
             subchunklen -= 2
         elif subchunkname == "IMAG":
-            tobj.pprint("---------- IMAG")
+            if logging == 1:
+                tobj.pprint("---------- IMAG")
             i, i_size = read_vx(data)
             my_dict['IMAG'] = i
             subchunklen -= i_size
         elif subchunkname == "WRAP":
-            tobj.pprint("---------- WRAP")
+            if logging == 1:
+                tobj.pprint("---------- WRAP")
             ww, wh = struct.unpack(">hh", data.read(4))
             #reduce width and height to just 1 parameter for both
             my_dict['WRAP'] = max([ww,wh])
@@ -843,25 +908,29 @@ def read_surfblok(subchunkdata):
             #my_dict['WRAPHEIGHT'] = wh
             subchunklen -= 4
         elif subchunkname == "WRPW":
-            tobj.pprint("---------- WRPW")
+            if logging == 1:
+                tobj.pprint("---------- WRPW")
             w, = struct.unpack(">f", data.read(4))
             my_dict['WRPW'] = w
             envelope, env_size = read_vx(data)
             subchunklen -= (env_size+4)
         elif subchunkname == "WRPH":
-            tobj.pprint("---------- WRPH")
+            if logging == 1:
+                tobj.pprint("---------- WRPH")
             w, = struct.unpack(">f", data.read(4))
             my_dict['WRPH'] = w
             envelope, env_size = read_vx(data)
             subchunklen -= (env_size+4)
         elif subchunkname == "VMAP":
-            tobj.pprint("---------- VMAP")
+            if logging == 1:
+                tobj.pprint("---------- VMAP")
             vmp, i = read_name(data)
             my_dict['VMAP'] = vmp
             my_uvname = vmp
             subchunklen -= i
         else:                                                    # Misc Chunks
-            tobj.pprint("---------- SURF: BLOK: %s: skipping" % subchunkname)
+            if logging == 1:
+                tobj.pprint("---------- SURF: BLOK: %s: skipping" % subchunkname)
         if  subchunklen > 0:
             discard = data.read(subchunklen)
     #end loop on blok subchunks
@@ -872,99 +941,114 @@ def read_surfblok(subchunkdata):
 # === Read Surfaces ===
 # =====================
 def read_surfs(lwochunk, surf_list, tag_list):
-    global tobj
+    global tobj, logging
     my_dict = {}
     data = cStringIO.StringIO(lwochunk.read())
     surf_name, i = read_name(data)
     parent_name, j = read_name(data)
     i += j
     if (surf_name == "") or not(surf_name in tag_list):
-        tobj.pprint ("Reading SURF: Actually empty surf name not allowed. Skipping")
+        if logging == 1:
+            tobj.pprint ("Reading SURF: Actually empty surf name not allowed. Skipping")
         return {}
     if (parent_name != ""):
         parent_index = [x['NAME'] for x in surf_list].count(parent_name)
         if parent_index >0:
             my_dict = surf_list[parent_index-1]
     my_dict['NAME'] = surf_name
-    tobj.pprint ("Surface data for TAG (Model Component\Texture)")
-    tobj.pprint ("    %s" % surf_name)
+    if logging == 1:
+        tobj.pprint ("Surface data for TAG (Model Component\Texture)")
+        tobj.pprint ("    %s" % surf_name)
     while(i < lwochunk.chunksize):
         subchunkname, = struct.unpack("4s", data.read(4))
         subchunklen, = struct.unpack(">H", data.read(2))
         i = i + 6 + subchunklen #6 bytes subchunk header
-        if subchunkname == "COLR":                             #color: mapped on color
-            tobj.pprint("-------- COLR")
+        if subchunkname == "COLR":             #color: mapped on color
+            if logging == 1:
+                tobj.pprint("-------- COLR")
             r, g, b = struct.unpack(">fff", data.read(12))
             envelope, env_size = read_vx(data)
             my_dict['COLR'] = [r, g, b]
             subchunklen -= (12+env_size)
-        elif subchunkname == "DIFF":                           #diffusion: mapped on reflection (diffuse shader)
-            tobj.pprint("-------- DIFF")
+        elif subchunkname == "DIFF":           #diffusion: mapped on reflection (diffuse shader)
+            if logging == 1:
+                tobj.pprint("-------- DIFF")
             s, = struct.unpack(">f", data.read(4))
             envelope, env_size = read_vx(data)
             my_dict['DIFF'] = s
             subchunklen -= (4+env_size)
-        elif subchunkname == "SPEC":                           #specularity: mapped to specularity (spec shader)
-            tobj.pprint("-------- SPEC")
+        elif subchunkname == "SPEC":           #specularity: mapped to specularity (spec shader)
+            if logging == 1:
+                tobj.pprint("-------- SPEC")
             s, = struct.unpack(">f", data.read(4))
             envelope, env_size = read_vx(data)
             my_dict['SPEC'] = s
             subchunklen -= (4+env_size)
-        elif subchunkname == "REFL":                           #reflection: mapped on raymirror
-            tobj.pprint("-------- REFL")
+        elif subchunkname == "REFL":           #reflection: mapped on raymirror
+            if logging == 1:
+                tobj.pprint("-------- REFL")
             s, = struct.unpack(">f", data.read(4))
             envelope, env_size = read_vx(data)
             my_dict['REFL'] = s
             subchunklen -= (4+env_size)
-        elif subchunkname == "TRNL":                           #translucency: mapped on same param
-            tobj.pprint("-------- TRNL")
+        elif subchunkname == "TRNL":           #translucency: mapped on same param
+            if logging == 1:
+                tobj.pprint("-------- TRNL")
             s, = struct.unpack(">f", data.read(4))
             envelope, env_size = read_vx(data)
             my_dict['TRNL'] = s
             subchunklen -= (4+env_size)
-        elif subchunkname == "GLOS":                           #glossiness: mapped on specularity hardness (spec shader)
-            tobj.pprint("-------- GLOS")
+        elif subchunkname == "GLOS":           #glossiness: mapped on specularity hardness (spec shader)
+            if logging == 1:
+                tobj.pprint("-------- GLOS")
             s, = struct.unpack(">f", data.read(4))
             envelope, env_size = read_vx(data)
             my_dict['GLOS'] = s
             subchunklen -= (4+env_size)
-        elif subchunkname == "TRAN":                           #transparency: inverted and mapped on alpha channel
-            tobj.pprint("-------- TRAN")
+        elif subchunkname == "TRAN":           #transparency: inverted and mapped on alpha channel
+            if logging == 1:
+                tobj.pprint("-------- TRAN")
             s, = struct.unpack(">f", data.read(4))
             envelope, env_size = read_vx(data)
             my_dict['TRAN'] = s
             subchunklen -= (4+env_size)
-        elif subchunkname == "LUMI":                           #luminosity: mapped on emit channel
-            tobj.pprint("-------- LUMI")
+        elif subchunkname == "LUMI":           #luminosity: mapped on emit channel
+            if logging == 1:
+                tobj.pprint("-------- LUMI")
             s, = struct.unpack(">f", data.read(4))
             envelope, env_size = read_vx(data)
             my_dict['LUMI'] = s
             subchunklen -= (4+env_size)
-        elif subchunkname == "GVAL":                           #glow: mapped on add channel
-            tobj.pprint("-------- GVAL")
+        elif subchunkname == "GVAL":           #glow: mapped on add channel
+            if logging == 1:
+                tobj.pprint("-------- GVAL")
             s, = struct.unpack(">f", data.read(4))
             envelope, env_size = read_vx(data)
             my_dict['GVAL'] = s
             subchunklen -= (4+env_size)
-        elif subchunkname == "SMAN":                           #smoothing angle
-            tobj.pprint("-------- SMAN")
+        elif subchunkname == "SMAN":           #smoothing angle
+            if logging == 1:
+                tobj.pprint("-------- SMAN")
             s, = struct.unpack(">f", data.read(4))
             my_dict['SMAN'] = s
             subchunklen -= 4
-        elif subchunkname == "SIDE":                           #double sided?
-            tobj.pprint("-------- SIDE")                             #if 1 side do not define key
+        elif subchunkname == "SIDE":           #double sided?
+            if logging == 1:
+                tobj.pprint("-------- SIDE")       #if 1 side do not define key
             s, = struct.unpack(">H", data.read(2))
             if s == 3:
                 my_dict['SIDE'] = s
             subchunklen -= 2
-        elif subchunkname == "RIND":                           #Refraction: mapped on IOR
-            tobj.pprint("-------- RIND")
+        elif subchunkname == "RIND":           #Refraction: mapped on IOR
+            if logging == 1:
+                tobj.pprint("-------- RIND")
             s, = struct.unpack(">f", data.read(4))
             envelope, env_size = read_vx(data)
             my_dict['RIND'] = s
             subchunklen -= (4+env_size)
-        elif subchunkname == "BLOK":                           #blocks
-            tobj.pprint("-------- BLOK")
+        elif subchunkname == "BLOK":           #blocks
+            if logging == 1:
+                tobj.pprint("-------- BLOK")
             rr, uvname = read_surfblok(data.read(subchunklen))
             #paranoia setting: preventing adding an empty dict
             if rr != {}:
@@ -973,17 +1057,19 @@ def read_surfs(lwochunk, surf_list, tag_list):
                 else:
                     my_dict['BLOK'].append(rr)
             if uvname != "":
-                my_dict['UVNAME'] = uvname                            #theoretically there could be a number of them: only one used per surf
+                my_dict['UVNAME'] = uvname     #theoretically there could be a number of them: only one used per surf
             if not(my_dict.has_key('g_IMAG')) and (rr.has_key('CHAN')) and (rr.has_key('OPAC')) and (rr.has_key('IMAG')):
                 if (rr['CHAN'] == 'COLR') and (rr['OPAC'] == 0):
-                    my_dict['g_IMAG'] = rr['IMAG']                 #do not set anything, just save image object for later assignment
+                    my_dict['g_IMAG'] = rr['IMAG'] #do not set anything, just save image object for later assignment
             subchunklen = 0 #force ending
-        else:                                                       # Misc Chunks
-            if subchunkname == "VCOL":                         # MAPS (UV color map)
-                tobj.pprint("---- SURF:VCOL")
+        else:                                  # Misc Chunks
+            if subchunkname == "VCOL":             # MAPS (UV color map)
+                if logging == 1:
+                    tobj.pprint("---- SURF:VCOL")
                 read_vcol(surf_list, lwochunk, data)
             else:
-                tobj.pprint("-------- SURF:%s: skipping" % subchunkname)
+                if logging == 1:
+                    tobj.pprint("-------- SURF:%s: skipping" % subchunkname)
         if  subchunklen > 0:
             discard = data.read(subchunklen)
     #end loop on surf chunks
@@ -994,7 +1080,8 @@ def read_surfs(lwochunk, surf_list, tag_list):
     # AW! Looks like it is adding a new Material Texture attached to the 'g_MAT' dictionary key
     # for special texturing like specle mapping or mimp mapping.
  #   my_dict['g_MAT'] = Blender.Material.New(my_dict['NAME'])
-    tobj.pprint("-> Material pre-allocated.")
+    if logging == 1:
+        tobj.pprint("-> Material pre-allocated.")
     return my_dict
 
 
@@ -1012,7 +1099,7 @@ def dist_vector (head, tail): #vector from head to tail
 # === Find Ear ===
 # ================
 def find_ear(normal, list_dict, verts, face):
-    global tobj
+    global tobj, logging
     nv = len(list_dict['MF'])
     #looping through vertexes trying to find an ear
     #most likely in case of panic
@@ -1028,8 +1115,9 @@ def find_ear(normal, list_dict, verts, face):
             mlc = c
             mla = a
             mlb = b
-            #tobj.pprint ("## mmindex: %s, %s, %s  'P': %s, %s, %s" % (c, a, b, list_dict['P'][c],list_dict['P'][a],list_dict['P'][b]))
-            #tobj.pprint ("   ok, this one passed")
+            #if logging == 1:
+            #    tobj.pprint ("## mmindex: %s, %s, %s  'P': %s, %s, %s" % (c, a, b, list_dict['P'][c],list_dict['P'][a],list_dict['P'][b]))
+            #    tobj.pprint ("   ok, this one passed")
             concave = 0
             concave_inside = 0
             for xx in xrange(nv): #looking for concave vertex
@@ -1080,7 +1168,8 @@ def find_ear(normal, list_dict, verts, face):
         #no convex vertex, try another one
     #end loop to find a suitable base vertex for ear
     #looped all candidate ears and find no-one suitable
-    tobj.pprint ("Reducing face: no valid ear found to reduce!")
+    if logging == 1:
+        tobj.pprint ("Reducing face: no valid ear found to reduce!")
     return [mlc, mla, mlb] #uses most likely
 
 
@@ -1172,15 +1261,16 @@ def get_uvface(complete_list, facenum):
     return my_facelist
 
 def get_newindex(polygon_list, vertnum):
-    global tobj
+    global tobj, logging
     # extract from the polygon list the new index associated to a vertex
     if polygon_list == []:
         return -1
     for elem in polygon_list:
         if elem[1] == vertnum:
             return elem[2]
-    #tobj.pprint("WARNING: expected vertex %s for polygon %s. Polygon_list dump follows" % (vertnum, polygon_list[0][0]))
-    #tobj.pprint(polygon_list)
+    #if logging == 1:
+    #    tobj.pprint("WARNING: expected vertex %s for polygon %s. Polygon_list dump follows" % (vertnum, polygon_list[0][0]))
+    #    tobj.pprint(polygon_list)
     return -1
 
 def get_surf(surf_list, cur_tag):
@@ -1212,7 +1302,7 @@ def revert (llist):
 # === Modified Create Blender Mesh ===
 # ====================================
 def my_create_mesh(clip_list, surf, objspec_list, current_facelist, objname, not_used_faces):
-    global tobj
+    global tobj, logging
     #take the needed faces and update the not-used face list
     complete_vertlist = objspec_list[2]
     complete_facelist = objspec_list[3]
@@ -1224,7 +1314,8 @@ def my_create_mesh(clip_list, surf, objspec_list, current_facelist, objname, not
     maxface = len(complete_facelist)
     for ff in current_facelist:
         if ff >= maxface:
-            tobj.logcon("Non existent face addressed: Giving up with this object")
+            if logging == 1:
+                tobj.logcon("Non existent face addressed: Giving up with this object")
             return None, not_used_faces              #return the created object
         cur_face = complete_facelist[ff]
         cur_ptag_faces_indexes.append(ff)
@@ -1233,64 +1324,65 @@ def my_create_mesh(clip_list, surf, objspec_list, current_facelist, objname, not
     #end loop on faces
     store_edge = 0
 
-    tobj.pprint ("")
-    tobj.pprint ("")
-    tobj.pprint ("******************************************************")
-    tobj.pprint ("CREATING THE MESH NOW IN my_create_mesh FUNCTION")
-    tobj.pprint ("******************************************************")
-    tobj.pprint ("")
-    tobj.pprint ("clip_list")
-    tobj.pprint (clip_list)
-    tobj.pprint ("")
-    tobj.pprint ("")
-    tobj.pprint ("surf")
-    tobj.pprint (surf)
-    tobj.pprint ("")
-    tobj.pprint ("")
-    tobj.pprint ("objspec_list")
-    tobj.pprint (objspec_list)
-    tobj.pprint ("")
-    tobj.pprint ("")
-    tobj.pprint ("current_facelist")
-    tobj.pprint (current_facelist)
-    tobj.pprint ("")
-    tobj.pprint ("")
-    tobj.pprint ("objname")
-    tobj.pprint (objname)
-    tobj.pprint ("")
-    tobj.pprint ("")
-    tobj.pprint ("not_used_faces")
-    tobj.pprint (not_used_faces)
-    tobj.pprint ("")
-    tobj.pprint ("")
-    tobj.pprint ("******************************************************")
-    tobj.pprint ("SPECIFIC ITEMS IN my_create_mesh FUNCTION")
-    tobj.pprint ("******************************************************")
-    tobj.pprint ("")
-    tobj.pprint ("complete_vertlist")
-    tobj.pprint (complete_vertlist)
-    tobj.pprint ("")
-    tobj.pprint ("")
-    tobj.pprint ("complete_facelist")
-    tobj.pprint (complete_facelist)
-    tobj.pprint ("")
-    tobj.pprint ("")
-    tobj.pprint ("uvcoords_dict")
-    tobj.pprint (uvcoords_dict)
-    tobj.pprint ("")
-    tobj.pprint ("")
-    tobj.pprint ("facesuv_dict")
-    tobj.pprint (facesuv_dict)
-    tobj.pprint ("")
-    tobj.pprint ("")
-    tobj.pprint ("cur_ptag_faces_indexes")
-    tobj.pprint (cur_ptag_faces_indexes)
-    tobj.pprint ("")
-    tobj.pprint ("")
-    tobj.pprint ("maxface")
-    tobj.pprint (maxface)
-    tobj.pprint ("")
-    tobj.pprint ("")
+    if logging == 10: # Stops repetitive logging of same data making it 3 times faster WITH logging.
+        tobj.pprint ("")
+        tobj.pprint ("")
+        tobj.pprint ("******************************************************")
+        tobj.pprint ("CREATING THE MESH NOW IN my_create_mesh FUNCTION")
+        tobj.pprint ("******************************************************")
+        tobj.pprint ("")
+        tobj.pprint ("clip_list")
+        tobj.pprint (clip_list)
+        tobj.pprint ("")
+        tobj.pprint ("")
+        tobj.pprint ("surf")
+        tobj.pprint (surf)
+        tobj.pprint ("")
+        tobj.pprint ("")
+        tobj.pprint ("objspec_list")
+        tobj.pprint (objspec_list)
+        tobj.pprint ("")
+        tobj.pprint ("")
+        tobj.pprint ("current_facelist")
+        tobj.pprint (current_facelist)
+        tobj.pprint ("")
+        tobj.pprint ("")
+        tobj.pprint ("objname")
+        tobj.pprint (objname)
+        tobj.pprint ("")
+        tobj.pprint ("")
+        tobj.pprint ("not_used_faces")
+        tobj.pprint (not_used_faces)
+        tobj.pprint ("")
+        tobj.pprint ("")
+        tobj.pprint ("******************************************************")
+        tobj.pprint ("SPECIFIC ITEMS IN my_create_mesh FUNCTION")
+        tobj.pprint ("******************************************************")
+        tobj.pprint ("")
+        tobj.pprint ("complete_vertlist")
+        tobj.pprint (complete_vertlist)
+        tobj.pprint ("")
+        tobj.pprint ("")
+        tobj.pprint ("complete_facelist")
+        tobj.pprint (complete_facelist)
+        tobj.pprint ("")
+        tobj.pprint ("")
+        tobj.pprint ("uvcoords_dict")
+        tobj.pprint (uvcoords_dict)
+        tobj.pprint ("")
+        tobj.pprint ("")
+        tobj.pprint ("facesuv_dict")
+        tobj.pprint (facesuv_dict)
+        tobj.pprint ("")
+        tobj.pprint ("")
+        tobj.pprint ("cur_ptag_faces_indexes")
+        tobj.pprint (cur_ptag_faces_indexes)
+        tobj.pprint ("")
+        tobj.pprint ("")
+        tobj.pprint ("maxface")
+        tobj.pprint (maxface)
+        tobj.pprint ("")
+        tobj.pprint ("")
 
     # cdunde next 2 lines temp, needs more examination to see what we need for QuArK.
     obj = None
@@ -1330,9 +1422,10 @@ def my_create_mesh(clip_list, surf, objspec_list, current_facelist, objname, not
         msh.hasFaceUV(1)
     msh.update(1)
 
-    tobj.pprint ("\n#===================================================================#")
-    tobj.pprint("Processing Object: %s" % objname)
-    tobj.pprint ("#===================================================================#")
+    if logging == 1:
+        tobj.pprint ("\n#===================================================================#")
+        tobj.pprint("Processing Object: %s" % objname)
+        tobj.pprint ("#===================================================================#")
 
     jj = 0
     vertlen = len(vertex_map.keys())
@@ -1340,7 +1433,8 @@ def my_create_mesh(clip_list, surf, objspec_list, current_facelist, objname, not
     for i in vertex_map.keys():
         if not jj%1000 and my_meshtools.show_progress: Blender.Window.DrawProgressBar(float(i)/vertlen, "Generating Verts")
         if i >= maxvert:
-            tobj.logcon("Non existent vertex addressed: Giving up with this object")
+            if logging == 1:
+                tobj.logcon("Non existent vertex addressed: Giving up with this object")
             return obj, not_used_faces              #return the created object
         x, y, z = complete_vertlist[i]
         msh.verts.append(Blender.NMesh.Vert(x, y, z))
@@ -1496,6 +1590,7 @@ def obj_size_pos(obj):
 # === Create the object ===
 # =========================
 def create_objects(filename, polynames, clip_list, objspec_list, surf_list, basepath, ComponentList, message, CompNbr):
+    global Strings
     nf = len(objspec_list[3])
     not_used_faces = range(nf)
     ptag_dict = objspec_list[5]
@@ -1547,6 +1642,8 @@ def create_objects(filename, polynames, clip_list, objspec_list, surf_list, base
     # Now we start making the elements of each component or "poly".
     polyuvname = None
     UVtype = "VMAP"
+    firstcomp = str(CompNbr)
+    lastcomp = str(CompNbr + len(polynames)-1)
     for poly in polynames:
         ### For the Skins:sg group.
         # Checks if the model has textures specified with it.
@@ -1623,6 +1720,10 @@ def create_objects(filename, polynames, clip_list, objspec_list, surf_list, base
                     skinsize = skin['Size']
 
         # setup a progress-indicator
+        if len(polynames) > 1:
+            Strings[2454] = "Processing Components " + firstcomp + " to " + lastcomp + "\n" + "Import Component " + str(CompNbr) + "\n\n" + Strings[2454] # 2nd \n hides original string.
+        else:
+            Strings[2454] = "Import Component " + str(CompNbr) + "\n" + Strings[2454]
         progressbar = quarkx.progressbar(2454, len(objspec_list[5][poly]))
         ### For the model's 'Tris', this needs to be in binary so we use the 'struct' function.
         Tris = ''
@@ -1668,7 +1769,7 @@ def create_objects(filename, polynames, clip_list, objspec_list, surf_list, base
                 else: # VMAP section
                     if polyuvname is None:
                         pass
-                    elif len(objspec_list[8][polyuvname]) == 0:
+                    elif objspec_list[8] == {} or len(objspec_list[8][polyuvname]) == 0:
                         try:
                             u, v = objspec_list[7][polyuvname][face[i]]
                         except:
@@ -1749,8 +1850,12 @@ def create_objects(filename, polynames, clip_list, objspec_list, surf_list, base
         Component.appenditem(framesgroup)
         Component.appenditem(skeletongroup)
         ComponentList = ComponentList + [Component]
-        CompNbr = CompNbr + 1
         progressbar.close()
+        if len(polynames) > 1:
+            Strings[2454] = Strings[2454].replace("Processing Components " + firstcomp + " to " + lastcomp + "\n" + "Import Component " + str(CompNbr) + "\n\n", "")
+        else:
+            Strings[2454] = Strings[2454].replace("Import Component " + str(CompNbr) + "\n", "")
+        CompNbr = CompNbr + 1
 
     return ComponentList, message, CompNbr
 
@@ -1788,10 +1893,10 @@ def lookup_imag(clip_list,ima_id):
 # === Create and assign image mapping to material ===
 # ===================================================
 def create_blok(surf, mat, clip_list, obj_size, obj_pos):
-    global tobj
+    global tobj, logging
 
     def output_size_ofs(size, pos, blok):
-        global tobj
+        global tobj, logging
         #just automate repetitive task
         c_map = [0,1,2]
         c_map_txt = ["    X--", "    -Y-", "    --Z"]
@@ -1799,7 +1904,8 @@ def create_blok(surf, mat, clip_list, obj_size, obj_pos):
             c_map = [1,2,0]
         if blok['MAJAXIS'] == 2:
             c_map = [0,2,1]
-        tobj.pprint ("!!!axis mapping:")
+        if logging == 1:
+            tobj.pprint ("!!!axis mapping:")
         for mp in c_map: tobj.pprint (c_map_txt[mp])
 
         s = ["1.0 (Forced)"] * 3
@@ -1813,32 +1919,39 @@ def create_blok(surf, mat, clip_list, obj_size, obj_pos):
         if blok['SIZE'][2] > 0.0:
             s[1] = "%.5f" % (size[1]/blok['SIZE'][2])
             o[1] = "%.5f" % ((blok['CNTR'][2]-pos[1])/blok['SIZE'][2])
-        tobj.pprint ("!!!texture size and offsets:")
-        tobj.pprint ("    sizeX = %s; sizeY = %s; sizeZ = %s" % (s[c_map[0]], s[c_map[1]], s[c_map[2]]))
-        tobj.pprint ("    ofsX = %s; ofsY = %s; ofsZ = %s" % (o[c_map[0]], o[c_map[1]], o[c_map[2]]))
+        if logging == 1:
+            tobj.pprint ("!!!texture size and offsets:")
+            tobj.pprint ("    sizeX = %s; sizeY = %s; sizeZ = %s" % (s[c_map[0]], s[c_map[1]], s[c_map[2]]))
+            tobj.pprint ("    ofsX = %s; ofsY = %s; ofsZ = %s" % (o[c_map[0]], o[c_map[1]], o[c_map[2]]))
         return
 
     ti = 0
     for blok in surf['BLOK']:
-        tobj.pprint ("#...................................................................#")
-        tobj.pprint ("# Processing texture block no.%s for surf %s" % (ti,surf['NAME']))
-        tobj.pprint ("#...................................................................#")
-        tobj.pdict (blok)
+        if logging == 1:
+            tobj.pprint ("#...................................................................#")
+            tobj.pprint ("# Processing texture block no.%s for surf %s" % (ti,surf['NAME']))
+            tobj.pprint ("#...................................................................#")
+            tobj.pdict (blok)
         if ti > 9: break                       #only 8 channels 0..7 allowed for texture mapping
         if not blok['ENAB']:
-            tobj.pprint (  "***Image is not ENABled! Quitting this block")
+            if logging == 1:
+                tobj.pprint (  "***Image is not ENABled! Quitting this block")
             break
         if not(blok.has_key('IMAG')):
-            tobj.pprint (  "***No IMAGe for this block? Quitting")
+            if logging == 1:
+                tobj.pprint (  "***No IMAGe for this block? Quitting")
             break                 #extract out the image index within the clip_list
-        tobj.pprint ("looking for image number %d" % blok['IMAG'])
+        if logging == 1:
+            tobj.pprint ("looking for image number %d" % blok['IMAG'])
         ima = lookup_imag(clip_list, blok['IMAG'])
         if ima == None:
-            tobj.pprint (  "***Block index image not within CLIP list? Quitting Block")
+            if logging == 1:
+                tobj.pprint (  "***Block index image not within CLIP list? Quitting Block")
             break                              #safety check (paranoia setting)
         img = ima['g_IMG']
         if img == None:
-            tobj.pprint ("***Failed to pre-allocate image %s found: giving up" % ima['BASENAME'])
+            if logging == 1:
+                tobj.pprint ("***Failed to pre-allocate image %s found: giving up" % ima['BASENAME'])
             break
         tname = str(ima['ID'])
         if blok.has_key('CHAN'):
@@ -1854,7 +1967,8 @@ def create_blok(surf, mat, clip_list, obj_size, obj_pos):
                 newtex.setExtend('Repeat')
             elif (blok['WRAP'] == 0):
                 newtex.setExtend('Clip')
-        tobj.pprint ("generated texture %s" % tname)
+        if logging == 1:
+            tobj.pprint ("generated texture %s" % tname)
 
         blendmode_list = ['Mix',
                          'Subtractive',
@@ -1869,7 +1983,8 @@ def create_blok(surf, mat, clip_list, obj_size, obj_pos):
             set_blendmode = blok['OPAC']
         if set_blendmode == 5: #transparency
             newtex.imageFlags |= Blender.Texture.ImageFlags.CALCALPHA
-        tobj.pprint ("!!!Set Texture -> MapTo -> Blending Mode = %s" % blendmode_list[set_blendmode])
+        if logging == 1:
+            tobj.pprint ("!!!Set Texture -> MapTo -> Blending Mode = %s" % blendmode_list[set_blendmode])
 
         set_dvar = 1.0
         if blok.has_key('OPACVAL'):
@@ -1879,50 +1994,63 @@ def create_blok(surf, mat, clip_list, obj_size, obj_pos):
         mapflag = Blender.Texture.MapTo.COL  #default to color
         if blok.has_key('CHAN'):
             if blok['CHAN'] == 'COLR':
-                tobj.pprint ("!!!Set Texture -> MapTo -> Col = %.3f" % set_dvar)
+                if logging == 1:
+                    tobj.pprint ("!!!Set Texture -> MapTo -> Col = %.3f" % set_dvar)
             if blok['CHAN'] == 'BUMP':
                 mapflag = Blender.Texture.MapTo.NOR
-                tobj.pprint ("!!!Set Texture -> MapTo -> Nor = %.3f" % set_dvar)
+                if logging == 1:
+                    tobj.pprint ("!!!Set Texture -> MapTo -> Nor = %.3f" % set_dvar)
             if blok['CHAN'] == 'LUMI':
                 mapflag = Blender.Texture.MapTo.EMIT
-                tobj.pprint ("!!!Set Texture -> MapTo -> DVar = %.3f" % set_dvar)
+                if logging == 1:
+                    tobj.pprint ("!!!Set Texture -> MapTo -> DVar = %.3f" % set_dvar)
             if blok['CHAN'] == 'DIFF':
                 mapflag = Blender.Texture.MapTo.REF
-                tobj.pprint ("!!!Set Texture -> MapTo -> DVar = %.3f" % set_dvar)
+                if logging == 1:
+                    tobj.pprint ("!!!Set Texture -> MapTo -> DVar = %.3f" % set_dvar)
             if blok['CHAN'] == 'SPEC':
                 mapflag = Blender.Texture.MapTo.SPEC
-                tobj.pprint ("!!!Set Texture -> MapTo -> DVar = %.3f" % set_dvar)
+                if logging == 1:
+                    tobj.pprint ("!!!Set Texture -> MapTo -> DVar = %.3f" % set_dvar)
             if blok['CHAN'] == 'TRAN':
                 mapflag = Blender.Texture.MapTo.ALPHA
-                tobj.pprint ("!!!Set Texture -> MapTo -> DVar = %.3f" % set_dvar)
-        if blok.has_key('NEGA'):
-            tobj.pprint ("!!!Watch-out: effect of this texture channel must be INVERTED!")
+                if logging == 1:
+                    tobj.pprint ("!!!Set Texture -> MapTo -> DVar = %.3f" % set_dvar)
+        if logging == 1:
+            if blok.has_key('NEGA'):
+                tobj.pprint ("!!!Watch-out: effect of this texture channel must be INVERTED!")
 
         #the TexCo flag is determined by PROJ parameter
         if blok.has_key('PROJ'):
             if blok['PROJ'] == 0: #0 - Planar
-               tobj.pprint ("!!!Flat projection")
-               coordflag = Blender.Texture.TexCo.ORCO
-               output_size_ofs(obj_size, obj_pos, blok)
+                if logging == 1:
+                    tobj.pprint ("!!!Flat projection")
+                coordflag = Blender.Texture.TexCo.ORCO
+                output_size_ofs(obj_size, obj_pos, blok)
             elif blok['PROJ'] == 1: #1 - Cylindrical
-               tobj.pprint ("!!!Cylindrical projection")
-               coordflag = Blender.Texture.TexCo.ORCO
-               output_size_ofs(obj_size, obj_pos, blok)
+                if logging == 1:
+                    tobj.pprint ("!!!Cylindrical projection")
+                coordflag = Blender.Texture.TexCo.ORCO
+                output_size_ofs(obj_size, obj_pos, blok)
             elif blok['PROJ'] == 2: #2 - Spherical
-               tobj.pprint ("!!!Spherical projection")
-               coordflag = Blender.Texture.TexCo.ORCO
-               output_size_ofs(obj_size, obj_pos, blok)
+                if logging == 1:
+                    tobj.pprint ("!!!Spherical projection")
+                coordflag = Blender.Texture.TexCo.ORCO
+                output_size_ofs(obj_size, obj_pos, blok)
             elif blok['PROJ'] == 3: #3 - Cubic
-               tobj.pprint ("!!!Cubic projection")
-               coordflag = Blender.Texture.TexCo.ORCO
-               output_size_ofs(obj_size, obj_pos, blok)
+                if logging == 1:
+                    tobj.pprint ("!!!Cubic projection")
+                coordflag = Blender.Texture.TexCo.ORCO
+                output_size_ofs(obj_size, obj_pos, blok)
             elif blok['PROJ'] == 4: #4 - Front Projection
-               tobj.pprint ("!!!Front projection")
-               coordflag = Blender.Texture.TexCo.ORCO
-               output_size_ofs(obj_size, obj_pos, blok)
+                if logging == 1:
+                    tobj.pprint ("!!!Front projection")
+                coordflag = Blender.Texture.TexCo.ORCO
+                output_size_ofs(obj_size, obj_pos, blok)
             elif blok['PROJ'] == 5: #5 - UV
-               tobj.pprint ("UVMapped")
-               coordflag = Blender.Texture.TexCo.UV
+                if logging == 1:
+                    tobj.pprint ("UVMapped")
+                coordflag = Blender.Texture.TexCo.UV
         mat.setTexture(ti, newtex, coordflag, mapflag)
         ti += 1
     #end loop over bloks
@@ -1936,12 +2064,13 @@ def create_blok(surf, mat, clip_list, obj_size, obj_pos):
 # ========================================
 #def update_material(surf_list, ptag_dict, obj, clip_list, uv_dict, dir_part):
 def update_material(clip_list, objspec, surf_list):
-    global tobj
+    global tobj, logging
     if (surf_list == []) or (objspec[5] == {}) or (objspec[1] == {}):
-        tobj.pprint( "something getting wrong in update_material: dump follows  ...")
-        tobj.pprint( surf_list)
-        tobj.pprint( objspec[5])
-        tobj.pprint( objspec[1])
+        if logging == 1:
+            tobj.pprint( "something getting wrong in update_material: dump follows  ...")
+            tobj.pprint( surf_list)
+            tobj.pprint( objspec[5])
+            tobj.pprint( objspec[1])
         return
     obj_dict = objspec[1]
     all_faces = objspec[3]
@@ -1951,20 +2080,23 @@ def update_material(clip_list, objspec, surf_list):
     facesuv_dict = objspec[8]
     for surf in surf_list:
         if (surf['NAME'] in ptag_dict.keys()):
-            tobj.pprint ("#-------------------------------------------------------------------#")
-            tobj.pprint ("Processing surface (material): %s" % surf['NAME'])
-            tobj.pprint ("#-------------------------------------------------------------------#")
+            if logging == 1:
+                tobj.pprint ("#-------------------------------------------------------------------#")
+                tobj.pprint ("Processing surface (material): %s" % surf['NAME'])
+                tobj.pprint ("#-------------------------------------------------------------------#")
             #material set up
             facelist = ptag_dict[surf['NAME']]
             #bounding box and position
             cur_obj = obj_dict[surf['NAME']]
             obj_size = obj_dim_dict[surf['NAME']][0]
             obj_pos = obj_dim_dict[surf['NAME']][1]
-            tobj.pprint(surf)
+            if logging == 1:
+                tobj.pprint(surf)
             #uncomment this if material pre-allocated by read_surf
             mat = surf['g_MAT']
             if mat == None:
-                tobj.pprint ("Sorry, no pre-allocated material to update. Giving up for %s." % surf['NAME'])
+                if logging == 1:
+                    tobj.pprint ("Sorry, no pre-allocated material to update. Giving up for %s." % surf['NAME'])
                 break
             #mat = Blender.Material.New(surf['NAME'])
             #surf['g_MAT'] = mat
@@ -2024,13 +2156,14 @@ def update_material(clip_list, objspec, surf_list):
 # === Read Faces 6.0 ===
 # ======================
 def read_faces_6(lwochunk):
-    global tobj
+    global tobj, logging
     data = cStringIO.StringIO(lwochunk.read())
     faces = []
     polygon_type = data.read(4)
     subsurf = 0
     if polygon_type != "FACE" and polygon_type != "PTCH":
-        tobj.pprint("No FACE/PATCH Were Found. Polygon Type: %s" % polygon_type)
+        if logging == 1:
+            tobj.pprint("No FACE/PATCH Were Found. Polygon Type: %s" % polygon_type)
         return "", 2
     if polygon_type == 'PTCH': subsurf = 1
     i = 0
@@ -2044,7 +2177,8 @@ def read_faces_6(lwochunk):
             i += index_size
             facev.append(index)
         faces.append(facev)
-    tobj.pprint("read %s total faces for all Components; type of block %d (0=FACE; 1=PATCH)" % (len(faces), subsurf))
+    if logging == 1:
+        tobj.pprint("read %s total faces for all Components; type of block %d (0=FACE; 1=PATCH)" % (len(faces), subsurf))
     return faces, subsurf
 
 
@@ -2062,17 +2196,8 @@ def loadmodel(root, filename, gamename, nomessage=0):
     "gamename is None."
     "For example:  C:\Doom 3\base\models\mapobjects\chairs\kitchenchair\kitchenchair.lwo"
 
-    import quarkpy.mdleditor
-    global ie_editor
-    ie_editor = quarkpy.mdleditor.mdleditor
-
-    global tobj, textlog
-    if tobj is None:
-        if quarkx.setupsubset(3, "Options")['IELogByFileType'] != "1":
-            from ie_utils import tobj
-            tobj = ie_utils.tobj = ie_utils.dotext(textlog) # Calls the class to handle logging.
-        else:
-            tobj = ie_utils.dotext(textlog) # Calls the class to handle logging.
+    global editor
+    editor = quarkpy.mdleditor.mdleditor
 
     ### First we test for a valid (proper) model path.
     basepath = ie_utils.validpath(filename)
@@ -2081,29 +2206,10 @@ def loadmodel(root, filename, gamename, nomessage=0):
 
     ### Line below just runs the importer without the editor being open.
     ### Need to figure out how to open the editor with it & complete the ModelRoot.
-  #  import_md2_model(ie_editor, filename)
-
-    ie_utils.dotext # Calls to run the logging class.
-
-    # See QuArK's Defaults.qrk file for original additional setup code for IELogAll option.
-    # This MUST be in a 'try:' statement to avoid error at startup here and below (not dupe code).
-    try:
-        if quarkx.setupsubset(3, "Options")['IELogAll'] != "1":
-            tobj.txtobj.close()
-            tobj.txtobj = open(quarkx.exepath + textlog, "w")
-    except:
-        if int(quarkx.setupsubset(3, "Options")['IELogging']) != 0 and tobj.txtobj is None:
-            tobj.txtobj = open(quarkx.exepath + textlog, "w")
+  #  import_md2_model(editor, filename)
 
     ### Lines below here loads the model into the opened editor's current model.
     ModelRoot, ComponentList, message = read(basepath, filename)
-
-    # This MUST be in a 'try:' statement to avoid error at startup here and above (not dupe code).
-    try:
-        if quarkx.setupsubset(3, "Options")['IELogAll'] != "1":
-            tobj.txtobj.close()
-    except:
-        pass
 
     if ModelRoot is None or ComponentList is None or ComponentList == []:
         quarkx.beep() # Makes the computer "Beep" once if a file is not valid. Add more info to message.
@@ -2112,14 +2218,14 @@ def loadmodel(root, filename, gamename, nomessage=0):
 
     undo = quarkx.action()
     for Component in ComponentList:
-        undo.put(ie_editor.Root, Component)
-        ie_editor.Root.currentcomponent = Component
-        compframes = ie_editor.Root.currentcomponent.findallsubitems("", ':mf')   # get all frames
+        undo.put(editor.Root, Component)
+        editor.Root.currentcomponent = Component
+        compframes = editor.Root.currentcomponent.findallsubitems("", ':mf')   # get all frames
         for compframe in compframes:
-            compframe.compparent = ie_editor.Root.currentcomponent # To allow frame relocation after editing.
-    ie_editor.ok(undo, str(len(ComponentList)) + " .lwo Components imported")
+            compframe.compparent = editor.Root.currentcomponent # To allow frame relocation after editing.
+    editor.ok(undo, str(len(ComponentList)) + " .lwo Components imported")
 
-    ie_editor = None   #Reset the global again
+    editor = None   #Reset the global again
     if message != "":
         message = message + "================================\n\n"
         message = message + "You need to find and supply the proper texture(s) and folder(s) above.\n"
@@ -2138,6 +2244,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".lwo LightWave Importer", ".lwo file", "*.
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.5  2008/07/11 04:34:32  cdunde
+# Setup of Specifics\Arg page for model types data and settings.
+#
 # Revision 1.4  2008/06/29 05:29:08  cdunde
 # Minor correction.
 #

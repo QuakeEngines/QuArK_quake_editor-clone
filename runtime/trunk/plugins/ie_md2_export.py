@@ -28,11 +28,12 @@ import quarkpy.mdleditor
 from types import *
 import ie_utils
 from ie_utils import tobj
+from quarkpy.qdictionnary import Strings
 
 #Globals
 logging = 0
-exportername = ""
-textlog = ""
+exportername = "ie_md2_export.py"
+textlog = "md2_ie_log.txt"
 progressbar = None
 user_frame_list=[]
 g_scale = 1.0
@@ -319,28 +320,28 @@ class md2_obj:
     def dump (self):
         global tobj
         if logging == 1:
-            tobj.pprint ("")
+            tobj.logcon ("")
             tobj.logcon ("#####################################################################")
-            tobj.pprint ("Header Information")
+            tobj.logcon ("Header Information")
             tobj.logcon ("#####################################################################")
-            tobj.pprint ("ident: " + str(self.ident))
-            tobj.pprint ("version: " + str(self.version))
-            tobj.pprint ("skin width: " + str(self.skin_width))
-            tobj.pprint ("skin height: " + str(self.skin_height))
-            tobj.pprint ("frame size: " + str(self.frame_size))
-            tobj.pprint ("number of skins: " + str(self.num_skins))
-            tobj.pprint ("number of texture coordinates: " + str(self.num_tex_coords))
-            tobj.pprint ("number of faces: " + str(self.num_faces))
-            tobj.pprint ("number of frames: " + str(self.num_frames))
-            tobj.pprint ("number of vertices: " + str(self.num_vertices))
-            tobj.pprint ("number of GL commands: " + str(self.num_GL_commands))
-            tobj.pprint ("offset skins: " + str(self.offset_skins))
-            tobj.pprint ("offset texture coordinates: " + str(self.offset_tex_coords))
-            tobj.pprint ("offset faces: " + str(self.offset_faces))
-            tobj.pprint ("offset frames: " + str(self.offset_frames))
-            tobj.pprint ("offset GL Commands: " + str(self.offset_GL_commands))
-            tobj.pprint ("offset end: " + str(self.offset_end))
-            tobj.pprint ("")
+            tobj.logcon ("ident: " + str(self.ident))
+            tobj.logcon ("version: " + str(self.version))
+            tobj.logcon ("skin width: " + str(int(self.skin_width)))
+            tobj.logcon ("skin height: " + str(int(self.skin_height)))
+            tobj.logcon ("frames byte size: " + str(self.frame_size))
+            tobj.logcon ("number of skins: " + str(self.num_skins))
+            tobj.logcon ("number of vertices per frame: " + str(self.num_vertices))
+            tobj.logcon ("number of texture coordinates: " + str(self.num_tex_coords))
+            tobj.logcon ("number of faces: " + str(self.num_faces))
+            tobj.logcon ("number of GL commands: " + str(self.num_GL_commands))
+            tobj.logcon ("number of frames: " + str(self.num_frames))
+            tobj.logcon ("offset skins: " + str(self.offset_skins))
+            tobj.logcon ("offset texture coordinates: " + str(self.offset_tex_coords))
+            tobj.logcon ("offset faces: " + str(self.offset_faces))
+            tobj.logcon ("offset frames: " + str(self.offset_frames))
+            tobj.logcon ("offset GL Commands: " + str(self.offset_GL_commands))
+            tobj.logcon ("offset end: " + str(self.offset_end))
+            tobj.logcon ("")
 
 ######################################################
 # Validation
@@ -445,10 +446,11 @@ def validation(component):
 # Fill MD2 data structure
 ######################################################
 def fill_md2(md2, component):
-    global user_frame_list, progressbar, tobj
+    global user_frame_list, progressbar, tobj, Strings
 
     # Get the component Mesh.
     mesh = component.triangles
+    Strings[2455] = component.shortname + "\n" + Strings[2455]
     progressbar = quarkx.progressbar(2455, len(mesh)*6)
     
     #load up some intermediate data structures
@@ -551,7 +553,7 @@ def fill_md2(md2, component):
         vertices = []
         framename = user_frame_list.subitems[frame].name
         if logging == 1:
-            tobj.logcon (str(frame) + ": " + framename)
+            tobj.logcon (str(frame) + ": " + user_frame_list.subitems[frame].shortname)
         frameVertices = user_frame_list.dictitems[framename].dictspec['Vertices']
         for vert_counter in range(0, md2.num_vertices):
             x= frameVertices[(vert_counter*3)]
@@ -859,7 +861,7 @@ def build_GL_commands(md2):
 # Save MD2 Format
 ######################################################
 def save_md2(filename):
-    global tobj, logging, exportername, textlog
+    global tobj, logging, exportername, textlog, Strings
     editor = quarkpy.mdleditor.mdleditor
     if editor is None:
         return
@@ -877,43 +879,7 @@ def save_md2(filename):
         quarkx.msgbox(str(len(objects)) + " Components have been selected for exporting.\nYou can ONLY select one component folder at a time for exporting.\n\nComponents can be combined or copied into one,\nbut only one skin can be used at a time.\n\nCorrect and try again.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
         return
 
-    start = time.time()
-    if quarkx.setupsubset(3, "Options")['IELogging'] != "0":
-        logging = 1
-        exportername = "ie_md2_exporter.py"
-        if quarkx.setupsubset(3, "Options")['IELogByFileType'] != "1" and textlog == "md2_ie_log.txt" and tobj.txtobj is not None:
-            tobj.txtobj.close()
-            textlog = "model_ie_log.txt"
-            tobj = ie_utils.tobj = ie_utils.dotext(textlog) # Calls the class to handle logging.
-
-        if quarkx.setupsubset(3, "Options")['IELogByFileType'] == "1" and textlog == "model_ie_log.txt" and tobj.txtobj is not None:
-            tobj.txtobj.close()
-            textlog = "md2_ie_log.txt"
-            tobj = ie_utils.tobj = ie_utils.dotext(textlog) # Calls the class to handle logging.
-
-        if quarkx.setupsubset(3, "Options")['IELogAll'] != "1":
-            if quarkx.setupsubset(3, "Options")['IELogByFileType'] != "1":
-                textlog = "model_ie_log.txt"
-                tobj = ie_utils.tobj = ie_utils.dotext(textlog) # Calls the class to handle logging.
-            else:
-                textlog = "md2_ie_log.txt"
-                tobj = ie_utils.tobj = ie_utils.dotext(textlog) # Calls the class to handle logging.
-        else:
-            if tobj is None:
-                if quarkx.setupsubset(3, "Options")['IELogByFileType'] != "1":
-                    textlog = "model_ie_log.txt"
-                    tobj = ie_utils.tobj = ie_utils.dotext(textlog) # Calls the class to handle logging.
-                else:
-                    textlog = "md2_ie_log.txt"
-                    tobj = ie_utils.dotext(textlog) # Calls the class to handle logging.
-
-        tobj.logcon ("#####################################################################")
-        tobj.logcon ("This is: %s" % exportername)
-        tobj.logcon ("Exporting file:")
-        tobj.logcon (filename)
-        tobj.pprint ("#####################################################################")
-    else:
-        logging = 0
+    logging, tobj, starttime = ie_utils.default_start_logging(exportername, textlog, filename, "EX") ### Use "EX" for exporter text, "IM" for importer text.
 
     md2 = md2_obj()  #blank md2 object to save
 
@@ -925,34 +891,21 @@ def save_md2(filename):
   #      return
 
     fill_md2(md2, component)
-    md2.dump()
+    if logging == 1:
+        md2.dump() # Writes the file Header last to the log for comparison reasons.
 
     #actually write it to disk
     file = open(filename,"wb")
     md2.save(file)
     file.close()
     progressbar.close()
+    Strings[2455] = Strings[2455].replace(component.shortname + "\n", "")
 
     #cleanup
     md2 = 0
 
-    end = time.time()
-    seconds = "in %.2f %s" % (end-start, "seconds")
-    if logging == 1:
-        tobj.pprint ("=====================================================================")
-        tobj.logcon ("Successfully exported " + os.path.basename(filename))
-        tobj.logcon (seconds + " " + time.asctime(time.localtime()))
-        tobj.logcon ("")
-        tobj.logcon ("Any used skin textures that are not a .pcx")
-        tobj.logcon ("will need to be created to go with the model")
-        tobj.logcon ("=====================================================================")
-        tobj.logcon ("")
-        tobj.logcon ("")
-        if quarkx.setupsubset(3, "Options")['IELogAll'] != "1":
-            tobj.txtobj.close()
-    message = "Successfully exported " + os.path.basename(filename) + "\n" + seconds + " " + time.asctime(time.localtime()) + "\n\nAny used skin textures that are not a .pcx\nwill need to be created to go with the model"
-    quarkx.msgbox(message, quarkpy.qutils.MT_INFORMATION, quarkpy.qutils.MB_OK)
-
+    add_to_message = "Any used skin textures that are not a .pcx\nwill need to be created to go with the model"
+    ie_utils.default_end_logging(filename, "EX", starttime, add_to_message) ### Use "EX" for exporter text, "IM" for importer text.
 
 # Saves the model file: root is the actual file,
 # filename is the full path and name of the .md2 file to create.
@@ -968,4 +921,7 @@ quarkpy.qmdlbase.RegisterMdlExporter(".md2 Quake 2 Exporter", ".md2 file", "*.md
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.1  2008/07/17 00:45:19  cdunde
+# Added new .md2 exporter with progress bar and logging capabilities.
+#
 #

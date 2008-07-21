@@ -11,11 +11,12 @@ Various Model importer\exporter utility functions.
 #$Header$
 
 
-import os, os.path
+import os, os.path, time, operator
 import quarkx
 import quarkpy.qutils
 
 # Globals
+logging = 0
 textlog = "model_ie_log.txt"
 tobj = None
 
@@ -29,70 +30,26 @@ from ie_utils import tobj
 
 # Globals
 logging = 0
-exportername = "" (or importername = "" depending on which one you're doing)
-textlog = ""
+exportername = "ie_md2_export.py" (or importername = "ie_md2_import.py" depending on which one you're doing)
+textlog = "md2_ie_log.txt"
 
-2) Setup for a text file like this in TWO PLACES:
+2) Then add needed globals and calls to start and end the logging in your main file function like this:
 def save_md2(filename):
-    global tobj, logging, exportername, textlog
-    start = time.time()
-    if quarkx.setupsubset(3, "Options")['IELogging'] != "0":
-        logging = 1
-        exportername = "ie_md2_exporter.py"
-        if quarkx.setupsubset(3, "Options")['IELogByFileType'] != "1" and textlog == "md2_ie_log.txt" and tobj.txtobj is not None:
-            tobj.txtobj.close()
-            textlog = "model_ie_log.txt"
-            tobj = ie_utils.tobj = ie_utils.dotext(textlog) # Calls the class to handle logging.
-
-        if quarkx.setupsubset(3, "Options")['IELogByFileType'] == "1" and textlog == "model_ie_log.txt" and tobj.txtobj is not None:
-            tobj.txtobj.close()
-            textlog = "md2_ie_log.txt"
-            tobj = ie_utils.tobj = ie_utils.dotext(textlog) # Calls the class to handle logging.
-
-        if quarkx.setupsubset(3, "Options")['IELogAll'] != "1":
-            if quarkx.setupsubset(3, "Options")['IELogByFileType'] != "1":
-                textlog = "model_ie_log.txt"
-                tobj = ie_utils.tobj = ie_utils.dotext(textlog) # Calls the class to handle logging.
-            else:
-                textlog = "md2_ie_log.txt"
-                tobj = ie_utils.tobj = ie_utils.dotext(textlog) # Calls the class to handle logging.
-        else:
-            if tobj is None:
-                if quarkx.setupsubset(3, "Options")['IELogByFileType'] != "1":
-                    textlog = "model_ie_log.txt"
-                    tobj = ie_utils.tobj = ie_utils.dotext(textlog) # Calls the class to handle logging.
-                else:
-                    textlog = "md2_ie_log.txt"
-                    tobj = ie_utils.dotext(textlog) # Calls the class to handle logging.
-
-        tobj.logcon ("#####################################################################")
-        tobj.logcon ("This is: %s" % exportername)
-        tobj.logcon ("Exporting file:")
-        tobj.logcon (filename)
-        tobj.pprint ("#####################################################################")
-        tobj.logcon ("")
-    else:
-        logging = 0
+    global tobj, logging, exportername, textlog ### Needed globals.
+    ### Next line starts the logging.
+    logging, tobj, starttime = ie_utils.default_start_logging(exportername, textlog, filename, "EX") ### Use "EX" for exporter text, "IM" for importer text.
 
     ### Line below here saves the model (just for this example---DO NOT COPY NEXT LINE).
     fill_md2(md2, component)
 
-    end = time.time()
-    seconds = "in %.2f %s" % (end-start, "seconds")
-    if logging == 1:
-        tobj.pprint ("=====================================================================")
-        tobj.logcon ("Successfully exported " + os.path.basename(filename))
-        tobj.logcon (seconds + " " + time.asctime(time.localtime()))
-        tobj.logcon ("")
-        tobj.logcon ("Any used skin textures that are not a .pcx")
-        tobj.logcon ("will need to be created to go with the model")
-        tobj.logcon ("=====================================================================")
-        tobj.logcon ("")
-        tobj.logcon ("")
-        if quarkx.setupsubset(3, "Options")['IELogAll'] != "1":
-            tobj.txtobj.close()
+    ### Next line is optional, it adds additional text at the bottom of the default message,
+    ### with a blank line between them. If none then just exclude it from the function arguments below.
+    add_to_message = "Any used skin textures that are not a .pcx\nwill need to be created to go with the model"
+    ### Next line ends the logging.
+    ie_utils.default_end_logging(filename, "EX", starttime, add_to_message) ### Use "EX" for exporter text, "IM" for importer text.
 
-3) Then in any function you want logging declair the global and call for tobj like this:
+
+3) Then in any function you want logging declair the global and call for tobj like this: (all items must be strings)
 def fill_md2(md2, component):
     global tobj
     if logging == 1:
@@ -102,6 +59,124 @@ def fill_md2(md2, component):
         tobj.logcon ("")
 
 '''
+
+
+def default_start_logging(IM_EX_name, IM_EX_textlog, filename, IM_or_EX, add_to_message=""):
+    global tobj, textlog
+
+    starttime = time.time()
+    if quarkx.setupsubset(3, "Options")['IELogging'] != "0":
+        logging = 1
+        if quarkx.setupsubset(3, "Options")['IELogByFileType'] != "1" and textlog != "model_ie_log.txt" and tobj is not None:
+            if tobj.txtobj is not None:
+                tobj.txtobj.close()
+                textlog = "model_ie_log.txt"
+                tobj = dotext(textlog) # Calls the class to handle logging.
+
+        if quarkx.setupsubset(3, "Options")['IELogByFileType'] == "1" and textlog == "model_ie_log.txt" and tobj is not None:
+            if tobj.txtobj is not None:
+                tobj.txtobj.close()
+                textlog = IM_EX_textlog
+                tobj = dotext(textlog) # Calls the class to handle logging.
+
+        if quarkx.setupsubset(3, "Options")['IELogAll'] != "1":
+            if quarkx.setupsubset(3, "Options")['IELogByFileType'] != "1":
+                textlog = "model_ie_log.txt"
+                tobj = dotext(textlog) # Calls the class to handle logging.
+            else:
+                textlog = IM_EX_textlog
+                tobj = dotext(textlog) # Calls the class to handle logging.
+        else:
+            if tobj is None:
+                if quarkx.setupsubset(3, "Options")['IELogByFileType'] != "1":
+                    textlog = "model_ie_log.txt"
+                    tobj = dotext(textlog) # Calls the class to handle logging.
+                else:
+                    textlog = IM_EX_textlog
+                    tobj = dotext(textlog) # Calls the class to handle logging.
+
+        if IM_or_EX == "IM":
+            tobj.logcon ("#####################################################################")
+            tobj.logcon ("This is: %s" % IM_EX_name)
+            tobj.logcon ("Importing file:")
+            tobj.logcon (filename)
+            if add_to_message == "":
+                tobj.logcon ("#####################################################################")
+            else:
+                tobj.logcon ("")
+                add2log = add_to_message.split('\n')
+                for item in add2log:
+                    tobj.logcon (item)
+                tobj.logcon ("#####################################################################")
+        else:
+            tobj.logcon ("#####################################################################")
+            tobj.logcon ("This is: %s" % IM_EX_name)
+            tobj.logcon ("Exporting file:")
+            tobj.logcon (filename)
+            if add_to_message == "":
+                tobj.logcon ("#####################################################################")
+            else:
+                tobj.logcon ("")
+                add2log = add_to_message.split('\n')
+                for item in add2log:
+                    tobj.logcon (item)
+                tobj.logcon ("#####################################################################")
+    else:
+        logging = 0
+
+    return logging, tobj, starttime
+
+
+def default_end_logging(filename, IM_or_EX, starttime, add_to_message=""):
+    global tobj
+
+    end = time.time()
+    seconds = "in %.2f %s" % (end-starttime, "seconds")
+    if quarkx.setupsubset(3, "Options")['IELogging'] != "0":
+        if IM_or_EX == "IM":
+            tobj.logcon ("=====================================================================")
+            tobj.logcon ("Successfully imported " + os.path.basename(filename))
+            tobj.logcon (seconds + " " + time.asctime(time.localtime()))
+            if add_to_message == "":
+                tobj.logcon ("=====================================================================")
+                tobj.logcon ("")
+                tobj.logcon ("")
+            else:
+                tobj.logcon ("")
+                add2log = add_to_message.split('\n')
+                for item in add2log:
+                    tobj.logcon (item)
+                tobj.logcon ("=====================================================================")
+                tobj.logcon ("")
+                tobj.logcon ("")
+            if quarkx.setupsubset(3, "Options")['IELogAll'] != "1":
+                tobj.txtobj.close()
+        else:
+            tobj.logcon ("=====================================================================")
+            tobj.logcon ("Successfully exported " + os.path.basename(filename))
+            tobj.logcon (seconds + " " + time.asctime(time.localtime()))
+            if add_to_message == "":
+                tobj.logcon ("=====================================================================")
+                tobj.logcon ("")
+                tobj.logcon ("")
+            else:
+                tobj.logcon ("")
+                add2log = add_to_message.split('\n')
+                for item in add2log:
+                    tobj.logcon (item)
+                tobj.logcon ("=====================================================================")
+                tobj.logcon ("")
+                tobj.logcon ("")
+            if quarkx.setupsubset(3, "Options")['IELogAll'] != "1":
+                tobj.txtobj.close()
+    if IM_or_EX == "EX":
+        if add_to_message == "":
+            message = "Successfully exported " + os.path.basename(filename) + "\n" + seconds + " " + time.asctime(time.localtime())
+        else:
+            message = "Successfully exported " + os.path.basename(filename) + "\n" + seconds + " " + time.asctime(time.localtime()) + "\n\n" + add_to_message
+        quarkx.msgbox(message, quarkpy.qutils.MT_INFORMATION, quarkpy.qutils.MB_OK)
+
+
 
 def safestring(st):
     "Makes sure what it gets is a string,"
@@ -220,6 +295,9 @@ def validpath(filename):
 #
 #
 #$Log$
+#Revision 1.5  2008/07/17 00:49:49  cdunde
+#Fixed proper switching of logging options during the same session of QuArK.
+#
 #Revision 1.4  2008/06/17 20:39:13  cdunde
 #To add lwo model importer, uv's still not correct though.
 #Also added model import\export logging options for file types.

@@ -22,30 +22,19 @@ Info = {
    "author e-mail": "cdunde@sbcglobal.net",
    "quark":         "Version 6.6.0 Beta 2" }
 
-import struct, sys, os
-from types import *
+import struct, sys, os, time, operator
 import quarkx
+from types import *
 import ie_utils
+from ie_utils import tobj
+from quarkpy.qdictionnary import Strings
 
 # Globals
-importername = "ie_md2_importer.py"
-textlog = "model_ie_log.txt"
-from ie_utils import tobj
-if quarkx.setupsubset(3, "Options")['IELogAll'] != "1":
-    if quarkx.setupsubset(3, "Options")['IELogByFileType'] != "1":
-        textlog = "model_ie_log.txt"
-        tobj = ie_utils.tobj = ie_utils.dotext(textlog) # Calls the class to handle logging.
-    else:
-        textlog = "md2_ie_log.txt"
-        tobj = ie_utils.dotext(textlog) # Calls the class to handle logging.
-else:
-    if tobj is None:
-        if quarkx.setupsubset(3, "Options")['IELogByFileType'] != "1":
-            textlog = "model_ie_log.txt"
-            tobj = ie_utils.tobj = ie_utils.dotext(textlog) # Calls the class to handle logging.
-        else:
-            textlog = "md2_ie_log.txt"
-            tobj = ie_utils.dotext(textlog) # Calls the class to handle logging.
+logging = 0
+importername = "ie_md2_import.py"
+textlog = "md2_ie_log.txt"
+progressbar = None
+g_scale = 1.0
 
 ######################################################
 # Main Body
@@ -83,8 +72,8 @@ class md2_alias_triangle:
         self.lightnormalindex=0
 
     def load(self, file):
-        # file is the model file & full path, ex: c:\Python24\models\chastity\tris.md2
-        # data[0] through data[3] ex: (178, 143, 180, 63), believe they are texture coords.
+        # file is the model file & full path, ex: C:\Quake2\baseq2\models\chastity\tris.md2
+        # data[0] through data[3] ex: (178, 143, 180, 63), 3 texture coords and normal (normal not needed).
         temp_data = file.read(struct.calcsize(self.binary_format))
         data = struct.unpack(self.binary_format, temp_data)
         self.vertices[0]=data[0]
@@ -112,7 +101,7 @@ class md2_face:
         self.texture_index = [ 0, 0, 0]
 
     def load (self, file):
-        # file is the model file & full path, ex: c:\Python24\models\chastity\tris.md2
+        # file is the model file & full path, ex: C:\Quake2\baseq2\models\chastity\tris.md2
         # data[0] through data[5] ex: (62, 38, 71, 49, 69, 77), are 3 vertex and 3 texture indexes as integers.
         temp_data=file.read(struct.calcsize(self.binary_format))
         data=struct.unpack(self.binary_format, temp_data)
@@ -145,7 +134,7 @@ class md2_tex_coord:
         self.v=0
 
     def load (self, file):
-        # file is the model file & full path, ex: c:\Python24\models\chastity\tris.md2
+        # file is the model file & full path, ex: C:\Quake2\baseq2\models\chastity\tris.md2
         # data[0] and data[1] ex: (169, 213), are 2D skin texture coords as integers.
         temp_data=file.read(struct.calcsize(self.binary_format))
         data=struct.unpack(self.binary_format, temp_data)
@@ -169,9 +158,8 @@ class md2_skin:
         self.name=""
 
     def load (self, file):
-        # file is the model file & full path, ex: c:\Python24\models\chastity\tris.md2
+        # file is the model file & full path, ex: C:\Quake2\baseq2\models\chastity\tris.md2
         # self.name is just the skin texture path and name, ex: models/chastity/anarchy.pcx
-        ### Make the 'Skins:sg' here, COPY the actual skin texture image.
         temp_data=file.read(struct.calcsize(self.binary_format))
         data=struct.unpack(self.binary_format, temp_data)
         self.name=asciiz(data[0])
@@ -201,7 +189,7 @@ class md2_alias_frame:
 
 
     def load (self, file):
-        # file is the model file & full path, ex: c:\Python24\models\chastity\tris.md2
+        # file is the model file & full path, ex: C:\Quake2\baseq2\models\chastity\tris.md2
         # self.scale[0] through self.scale[2] ex: 0.12633632123470306, 0.077566042542457581, 0.21140974760055542,
         # self.translate[0] through self.translate[2] ex: -16.496400833129883, -9.5092992782592773, -24.108100891113281,
         # self.name is the frame name ex: attack1
@@ -263,7 +251,7 @@ class md2_obj:
 
 
     def load (self, file):
-        # file is the model file & full path, ex: c:\Python24\models\chastity\tris.md2
+        # file is the model file & full path, ex: C:\Quake2\baseq2\models\chastity\tris.md2
         # data is all of the header data amounts.
         temp_data = file.read(struct.calcsize(self.binary_format))
         data = struct.unpack(self.binary_format, temp_data)
@@ -341,36 +329,49 @@ class md2_obj:
         return self
 
     def dump (self):
-        print "Header Information"
-        print "ident: ", self.ident
-        print "version: ", self.version
-        print "skin width: ", self.skin_width
-        print "skin height: ", self.skin_height
-        print "frames byte size: ", self.frame_size
-        print "number of skins: ", self.num_skins
-        print "number of vertices per frame: ", self.num_vertices
-        print "number of texture coordinates: ", self.num_tex_coords
-        print "number of faces: ", self.num_faces
-        print "number of gl commands: ", self.num_GL_commands
-        print "number of frames: ", self.num_frames
-        print "offset skins: ", self.offset_skins
-        print "offset texture coordinates: ", self.offset_tex_coords
-        print "offset faces: ", self.offset_faces
-        print "offset frames: ",self.offset_frames
-        print "offset gl commands: ",self.offset_GL_commands
-        print "offset EOF: ",self.offset_end
-        print ""
+        global tobj, logging
+        if logging == 1:
+            tobj.logcon ("")
+            tobj.logcon ("#####################################################################")
+            tobj.logcon ("Header Information")
+            tobj.logcon ("#####################################################################")
+            tobj.logcon ("ident: " + str(self.ident))
+            tobj.logcon ("version: " + str(self.version))
+            tobj.logcon ("skin width: " + str(self.skin_width))
+            tobj.logcon ("skin height: " + str(self.skin_height))
+            tobj.logcon ("frames byte size: " + str(self.frame_size))
+            tobj.logcon ("number of skins: " + str(self.num_skins))
+            tobj.logcon ("number of vertices per frame: " + str(self.num_vertices))
+            tobj.logcon ("number of texture coordinates: " + str(self.num_tex_coords))
+            tobj.logcon ("number of faces: " + str(self.num_faces))
+            tobj.logcon ("number of GL commands: " + str(self.num_GL_commands))
+            tobj.logcon ("number of frames: " + str(self.num_frames))
+            tobj.logcon ("offset skins: " + str(self.offset_skins))
+            tobj.logcon ("offset texture coordinates: " + str(self.offset_tex_coords))
+            tobj.logcon ("offset faces: " + str(self.offset_faces))
+            tobj.logcon ("offset frames: " + str(self.offset_frames))
+            tobj.logcon ("offset GL Commands: " + str(self.offset_GL_commands))
+            tobj.logcon ("offset end: " + str(self.offset_end))
+            tobj.logcon ("")
 
 ######################################################
 # Import functions
 ######################################################
 def load_textures(md2):
+    global tobj, logging
     # Checks if the model has textures specified with it.
     skinsize = ()
     skingroup = quarkx.newobj('Skins:sg')
     skingroup['type'] = chr(2)
+    if logging == 1:
+        tobj.logcon ("")
+        tobj.logcon ("#####################################################################")
+        tobj.logcon ("Skins group data: " + str(md2.num_skins) + " skins")
+        tobj.logcon ("#####################################################################")
     if int(md2.num_skins) > 0:
         for i in xrange(0,md2.num_skins):
+            if logging == 1:
+                tobj.logcon (md2.skins[i].name)
             skinname = md2.skins[i].name.split('/')
             skin = quarkx.newobj(md2.skins[i].name)
             image = quarkx.openfileobj(os.getcwd() + "\\" + skinname[len(skinname)-1])
@@ -391,129 +392,130 @@ def load_textures(md2):
 	
 
 def animate_md2(md2): # The Frames Group is made here & returned to be added to the Component.
+    global progressbar, tobj, logging
 	######### Animate the verts through the QuArK Frames lists.
     framesgroup = quarkx.newobj('Frames:fg')
- #   for i in xrange(1, md2.num_frames): # Why do they start at '1', it's skipping the first frame?
-    for i in xrange(0, md2.num_frames): # Changing it to '0' will show the 1st frames name & vertexes.
+
+    if logging == 1:
+        tobj.logcon ("")
+        tobj.logcon ("#####################################################################")
+        tobj.logcon ("Frame group data: " + str(md2.num_frames) + " frames")
+        tobj.logcon ("frame: frame name")
+        tobj.logcon ("#####################################################################")
+
+    for i in xrange(0, md2.num_frames):
         ### md2.frames[i].name is the frame name, ex: attack1
+        if logging == 1:
+            tobj.logcon (str(i) + ": " + md2.frames[i].name)
 
         frame = quarkx.newobj(md2.frames[i].name + ':mf')
         frame['index'] = (i,)
         mesh = ()
         #update the vertices
         for j in xrange(0,md2.num_vertices):
-         #   x=(md2.frames[i].scale[0]*md2.frames[i].vertices[j].vertices[0]+md2.frames[i].translate[0])*g_scale.val
-         #   y=(md2.frames[i].scale[1]*md2.frames[i].vertices[j].vertices[1]+md2.frames[i].translate[1])*g_scale.val
-         #   z=(md2.frames[i].scale[2]*md2.frames[i].vertices[j].vertices[2]+md2.frames[i].translate[2])*g_scale.val
             x=(md2.frames[i].scale[0]*md2.frames[i].vertices[j].vertices[0]+md2.frames[i].translate[0])*g_scale
             y=(md2.frames[i].scale[1]*md2.frames[i].vertices[j].vertices[1]+md2.frames[i].translate[1])*g_scale
             z=(md2.frames[i].scale[2]*md2.frames[i].vertices[j].vertices[2]+md2.frames[i].translate[2])*g_scale
 
             #put the vertex in the right spot
-         #   mesh.verts[j].co[0]=y
-         #   mesh.verts[j].co[1]=-x
-         #   mesh.verts[j].co[2]=z
-            # QuArK needs them in this order.
             mesh = mesh + (x,)
             mesh = mesh + (y,)
             mesh = mesh + (z,)
 
         frame['Vertices'] = mesh
         framesgroup.appenditem(frame)
+        progressbar.progress()
     return framesgroup
 
 
-def load_md2(md2_filename):
+def load_md2(md2_filename, name):
+    global progressbar, tobj, logging, Strings
     #read the file in
     file=open(md2_filename,"rb")
     md2=md2_obj()
     MODEL = md2.load(file)
-    if MODEL is None:
-        return None
-  #  md2.dump() # Comment out later, just to print the file Header to the console.
-    file.close()
 
+    file.close()
+    if MODEL is None:
+        return None, None, None, None
+
+    Strings[2454] = name + "\n" + Strings[2454]
+    progressbar = quarkx.progressbar(2454, md2.num_faces + (md2.num_frames * 2))
     skinsize, skingroup = load_textures(md2) # Calls here to make the Skins Group.
 
-    ######### Make the faces for QuArK, the 'component.triangles'.
+    ######### Make the faces for QuArK, the 'component.triangles', which is also the 'Tris'.
+    if logging == 1:
+        tobj.logcon ("")
+        tobj.logcon ("#####################################################################")
+        tobj.logcon ("Face group data: " + str(md2.num_faces) + " faces")
+        tobj.logcon ("face: (vert_index, U, V)")
+        tobj.logcon ("#####################################################################")
 
     Tris = ''
     for i in xrange(0, md2.num_faces):
+        if logging == 1:
+            facelist = []
+            facelist = facelist + [(md2.faces[i].vertex_index[0], md2.tex_coords[md2.faces[i].texture_index[0]].u, md2.tex_coords[md2.faces[i].texture_index[0]].v)]
+            facelist = facelist + [(md2.faces[i].vertex_index[1], md2.tex_coords[md2.faces[i].texture_index[1]].u, md2.tex_coords[md2.faces[i].texture_index[1]].v)]
+            facelist = facelist + [(md2.faces[i].vertex_index[2], md2.tex_coords[md2.faces[i].texture_index[2]].u, md2.tex_coords[md2.faces[i].texture_index[2]].v)]
+            tobj.logcon (str(i) + ": " + str(facelist))
         Tris = Tris + struct.pack("Hhh", md2.faces[i].vertex_index[0], md2.tex_coords[md2.faces[i].texture_index[0]].u, md2.tex_coords[md2.faces[i].texture_index[0]].v)
         Tris = Tris + struct.pack("Hhh", md2.faces[i].vertex_index[1], md2.tex_coords[md2.faces[i].texture_index[1]].u, md2.tex_coords[md2.faces[i].texture_index[1]].v)
         Tris = Tris + struct.pack("Hhh", md2.faces[i].vertex_index[2], md2.tex_coords[md2.faces[i].texture_index[2]].u, md2.tex_coords[md2.faces[i].texture_index[2]].v)
-
-        ### In QuArK writing:
-        ### print editor.Root.dictitems['Component 1:mc'].triangles
-        ### will print that list of the components triangles, which is also the 'Tris'.
+        progressbar.progress()
 
     framesgroup = animate_md2(md2) # Calls here to make the Frames Group.
 
+    if logging == 1:
+        md2.dump() # Writes the file Header last to the log for comparison reasons.
+
     return Tris, skinsize, skingroup, framesgroup
 
-#***********************************************
-# MAIN
-#***********************************************
-
-#Globals
-# g_scale=Create(1.0)
-g_scale = 1.0
 
 ########################
 # To run this file
 ########################
 
 def import_md2_model(editor, md2_filename):
-    global tobj
-
-    tobj.logcon ("#####################################################################")
-    tobj.logcon ("This is: %s" % importername)
-    tobj.logcon ("Importing file:")
-    tobj.logcon (md2_filename)
-    tobj.logcon ("#####################################################################")
 
 
-    try:
-        Tris, skinsize, skingroup, framesgroup = load_md2(md2_filename)
+    # Now we start creating our Import Component.
+    # But first we check for any other "Import Component"s,
+    # if so we name this one 1 more then the largest number.
+    name = "None"
+    comparenbr = 0
+    for item in editor.Root.dictitems:
+        if editor.Root.dictitems[item].shortname.startswith('Import Component'):
+            getnbr = editor.Root.dictitems[item].shortname
+            getnbr = getnbr.replace('Import Component', '')
+            if getnbr == "":
+               nbr = 0
+            else:
+                nbr = int(getnbr)
+            if nbr > comparenbr:
+                comparenbr = nbr
+            nbr = comparenbr + 1
+            name = "Import Component " + str(nbr)
+    if name != "None":
+        pass
+    else:
+        name = "Import Component 1"
 
-        # Now we start creating our Import Component.
-        # But first we check for any other "Import Component"s,
-        # if so we name this one 1 more then the largest number.
-        name = "None"
-        comparenbr = 0
-        for item in editor.Root.dictitems:
-            if editor.Root.dictitems[item].shortname.startswith('Import Component'):
-                getnbr = editor.Root.dictitems[item].shortname
-                getnbr = getnbr.replace('Import Component', '')
-                if getnbr == "":
-                   nbr = 0
-                else:
-                    nbr = int(getnbr)
-                if nbr > comparenbr:
-                    comparenbr = nbr
-                nbr = comparenbr + 1
-                name = "Import Component " + str(nbr)
-        if name != "None":
-            pass
-        else:
-            name = "Import Component 1"
+    Tris, skinsize, skingroup, framesgroup = load_md2(md2_filename, name) # Loads the model.
+    if Tris is None:
+        return None, None
 
-        # Now we and name our component that will be imported.
-        Component = quarkx.newobj(name + ':mc')
-        Component['skinsize'] = skinsize
-        Component['Tris'] = Tris
-        Component['show'] = chr(1)
-        sdogroup = quarkx.newobj('SDO:sdo')
-        Component.appenditem(sdogroup)
-        Component.appenditem(skingroup)
-        skeletongroup = quarkx.newobj('Skeleton:bg')
-        Component.appenditem(framesgroup)
-        Component.appenditem(skeletongroup)
-    except:
-        TestComponent = {}
-        TestComponent['Component 1:mc'] = load_md2(md2_filename)
-        if TestComponent['Component 1:mc'] is None:
-            return [None, None]
+    # Now we can name our component that will be imported.
+    Component = quarkx.newobj(name + ':mc')
+    Component['skinsize'] = skinsize
+    Component['Tris'] = Tris
+    Component['show'] = chr(1)
+    sdogroup = quarkx.newobj('SDO:sdo')
+    Component.appenditem(sdogroup)
+    Component.appenditem(skingroup)
+    skeletongroup = quarkx.newobj('Skeleton:bg')
+    Component.appenditem(framesgroup)
+    Component.appenditem(skeletongroup)
 
     ### Use the 'ModelRoot' below to test opening the QuArK's Model Editor with, needs to be qualified with main menu item.
     ModelRoot = quarkx.newobj('Model:mr')
@@ -528,22 +530,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
     "and name of the .md2 file selected."
     "For example:  C:\Quake2\baseq2\models\monkey\tris.md2"
 
-    global tobj, textlog
-
-    if quarkx.setupsubset(3, "Options")['IELogAll'] != "1":
-        if quarkx.setupsubset(3, "Options")['IELogByFileType'] != "1":
-            from ie_utils import tobj
-            tobj = ie_utils.tobj = ie_utils.dotext(textlog) # Calls the class to handle logging.
-        else:
-            tobj = ie_utils.dotext(textlog) # Calls the class to handle logging.
-    else:
-        if tobj is None:
-            if quarkx.setupsubset(3, "Options")['IELogByFileType'] != "1":
-                from ie_utils import tobj
-                tobj = ie_utils.tobj = ie_utils.dotext(textlog) # Calls the class to handle logging.
-            else:
-                tobj = ie_utils.dotext(textlog) # Calls the class to handle logging.
-
+    global progressbar, tobj, logging, importername, textlog, Strings
     import quarkpy.mdleditor
     editor = quarkpy.mdleditor.mdleditor
 
@@ -552,41 +539,29 @@ def loadmodel(root, filename, gamename, nomessage=0):
     if basepath is None:
         return
 
-    # See QuArK's Defaults.qrk file for original additional setup code for IELogAll option.
-    # This MUST be in a 'try:' statement to avoid error at startup here and below (not dupe code).
-    try:
-        if quarkx.setupsubset(3, "Options")['IELogAll'] != "1":
-            tobj.txtobj.close()
-            tobj.txtobj = open(quarkx.exepath + textlog, "w")
-    except:
-        if int(quarkx.setupsubset(3, "Options")['IELogging']) != 0 and tobj.txtobj is None:
-            tobj.txtobj = open(quarkx.exepath + textlog, "w")
-
-    ### Line below just runs the importer without the editor being open.
-    ### Need to figure out how to open the editor with it & complete the ModelRoot.
-  #  import_md2_model(editor, filename)
+    logging, tobj, starttime = ie_utils.default_start_logging(importername, textlog, filename, "IM") ### Use "EX" for exporter text, "IM" for importer text.
 
     ### Lines below here loads the model into the opened editor's current model.
     ModelRoot, Component = import_md2_model(editor, filename)
 
-    # This MUST be in a 'try:' statement to avoid error at startup here and above (not dupe code).
-    try:
-        if quarkx.setupsubset(3, "Options")['IELogAll'] != "1":
-            tobj.txtobj.close()
-    except:
-        pass
-
     if ModelRoot is None and Component is None:
         quarkx.beep() # Makes the computer "Beep" once if a file is not valid. Add more info to message.
         quarkx.msgbox("Invalid .md2 model.\nEditor can not import it.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
+        progressbar.close()
         return
 
     undo = quarkx.action()
     undo.put(editor.Root, Component)
     editor.Root.currentcomponent = Component
-    compframes = editor.Root.currentcomponent.findallsubitems("", ':mf')   # get all frames
+    compframes = editor.Root.currentcomponent.findallsubitems("", ':mf') # get all frames
     for compframe in compframes:
         compframe.compparent = editor.Root.currentcomponent # To allow frame relocation after editing.
+        progressbar.progress()
+
+    progressbar.close()
+    Strings[2454] = Strings[2454].replace(Component.shortname + "\n", "")
+    ie_utils.default_end_logging(filename, "IM", starttime) ### Use "EX" for exporter text, "IM" for importer text.
+
     editor.ok(undo, Component.shortname + " created")
 
 ### To register this Python plugin and put it on the importers menu.
@@ -596,6 +571,10 @@ quarkpy.qmdlbase.RegisterMdlImporter(".md2 Quake2 Importer", ".md2 file", "*.md2
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.5  2008/06/17 20:39:13  cdunde
+# To add lwo model importer, uv's still not correct though.
+# Also added model import\export logging options for file types.
+#
 # Revision 1.4  2008/06/16 00:11:46  cdunde
 # Made importer\exporter logging corrections to work with others
 # and started logging function for md2 model importer.
