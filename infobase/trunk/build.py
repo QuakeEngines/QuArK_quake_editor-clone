@@ -7,6 +7,7 @@
 import string, htmlentitydefs, time, os, sys
 
 EXTENSION = ".txt"
+OutputPath = "output"
 
 
 #
@@ -45,12 +46,14 @@ def path2html(path):
 
 def climbpath(curpath, relpath):
     if relpath[:3] == "../" :
-       return climbpath(curpath[:-1], relpath[3:])
+        return climbpath(curpath[:-1], relpath[3:])
     else:
-#      print 'CURPATH ' + `curpath`
-       newpath = string.join(curpath, '/') + relpath
-#      print 'NEWPATH ' + `newpath`
-       return newpath
+        if verboseMode:
+            print 'CURPATH ' + `curpath`
+        newpath = string.join(curpath, '/') + relpath
+        if verboseMode:
+            print 'NEWPATH ' + `newpath`
+        return newpath
 
 
 def relpath(curpath, relpath):
@@ -63,7 +66,8 @@ def relpath(curpath, relpath):
        return climbpath(track[:-2], relpath[2:])
 
 def findref(root, path, name, fkw, extraargs):
-#   print 'FKW: ' + `fkw["path"]`
+    if verboseMode:
+        print 'FKW: ' + `fkw["path"]`
 
 #    def ref(refnormal, refwithname, kw, name=name, extraargs):
     def ref(refnormal, refwithname, kw, name=name):
@@ -74,8 +78,9 @@ def findref(root, path, name, fkw, extraargs):
             return refwithname % kw
 
     path = relpath(fkw["path"], path)
-#   print 'PATH: ' + `path`
-#   print 'name: ' + `name`
+    if verboseMode:
+        print 'PATH: ' + `path`
+        print 'name: ' + `name`
     path0 = path
     path = string.split(path, "/")
     path1 = ""
@@ -88,9 +93,9 @@ def findref(root, path, name, fkw, extraargs):
                 break
         else:
             if len(path) == 1:
-                for kw, text in root.files:
-                    if kw["hrefaname"] == path[0]:
-                        return ref(REFFILE, REFFILE_NAME, kw)
+                for subfiles in root.files:
+                    if subfiles.kw["hrefaname"] == path[0]:
+                        return ref(REFFILE, REFFILE_NAME, subfiles.kw)
             raise "Reference not found to " + path0 + " in " + fkw["htmlfile"]
     return ref(REFDIR, REFDIR_NAME, root.kw)
 
@@ -114,27 +119,28 @@ def procpic(kw, path, extraargs):  #tiglari
         data = open(kw["path"]+path, "rb").read()
     except:
         raise "open-error for file \"%s\"" % (kw["path"]+path)
-    f = open("output/"+picrl, "wb")
+    f = open(OutputPath+"/"+picrl, "wb")
     f.write(data)
     f.close()
-#    kw["forgotten"].remove(path)
+#    self.forgotten.remove(path)
     return img
 
 def procrsc(kw, path):  #tiglari
     rscrl = string.join(filter(None, string.split(kw["path"], "/"))+[path], ".")
     data = open(kw["path"]+path, "rb").read()
-    f = open("output/"+rscrl, "wb")
+    f = open(OutputPath+"/"+rscrl, "wb")
     f.write(data)
     f.close()
-#    kw["forgotten"].remove(path)
+#    self.forgotten.remove(path)
     return '"%s"' % rscrl
 
 def proczip(kw, path):  #tiglari
+#    self.forgotten.remove(path)
     if localMode:
         data = open("zips/"+path, "rb").read()
-        if not os.path.exists("output/zips"):
-            os.mkdir("output/zips")
-        f = open("output/zips/"+path, "wb")
+        if not os.path.exists(OutputPath+"/zips"):
+            os.mkdir(OutputPath+"/zips")
+        f = open(OutputPath+"/zips/"+path, "wb")
         f.write(data)
         f.close()
         return '<a href="%s">%s</a>' % (path, path)
@@ -149,7 +155,7 @@ def procact(kw, actionstring):
     return ACT_HTML % actionstring
 
 
-def processtext(root, text, data, kw):
+def processtext(root, self, data):
 
     def perform_tag_action(tag, line, flags, root, kw):
 
@@ -263,7 +269,7 @@ def processtext(root, text, data, kw):
     flags["preformatmode"] = 0
     flags["inhtmlcomment"] = 0
 
-    for line in text:
+    for line in self.text:
         correctedline = ""
         trimmedline = string.strip(line)
         if not trimmedline:
@@ -304,14 +310,13 @@ def processtext(root, text, data, kw):
                             endchar_tag_found = string.find(line, ">")
                             if endchar_tag_found == -1:
                                 # there must exist an endchar_tag on the same line!
-                                raise "'%s' without ending '>' problem! <File>.TXT title: \"%s\"" % (line[:5], kw["title"])
+                                raise "'%s' without ending '>' problem! <File>.TXT title: \"%s\"" % (line[:5], self.kw["title"])
                             else:
                                 tag = (line[:endchar_tag_found+1])
-                                if (tag == "<p>") or (tag == "</p>") or (tag[:5] == "<html"):
-                                    # do now allow these tags anymore!
-                                    raise "The %s tag is not allowed! <File>.TXT title: \"%s\"" % (tag, kw["title"])
-                                correctedappend, line, line_flags = perform_tag_action(tag, line[endchar_tag_found+1:], flags, root, kw)
-
+                                if (tag == "<p>") or (tag == "</p>") or (tag[:5] == "<html") or (tag[:6] == "</html"):
+                                    # do not allow these tags!
+                                    raise "The %s tag is not allowed! <File>.TXT title: \"%s\"" % (tag, self.kw["title"])
+                                correctedappend, line, line_flags = perform_tag_action(tag, line[endchar_tag_found+1:], flags, root, self.kw)
                         correctedline = correctedline + correctedappend
 
             if flags["prevlineempty"] == 1:
@@ -331,39 +336,57 @@ def parse(file):
     try:
         f = open(file, "r")
     except:
-        raise "File missing:", file
-    kw = { }
-    # Read the beginning non-empty lines, which should contain "key: value"'s
-    while 1:
-        line = string.strip(f.readline())
-        if not line: # empty line found, stop reading for "key: value"'s
-            break
-        key = string.split(line, ":")[0]
-        value = string.strip(line[len(key)+1:])
-        try:
-            data = kw[key]
-        except:
-            kw[key] = value
-        else:
-            kw[key] = data+"\n"+value
-    return kw, f.readlines(), os.stat(file)[8] # Decker - changed from [9] to [8] to get the right file-modification-date on Win2K
+        raise "File missing: %s" % file
+    try:
+        kw = { }
+        # Read the beginning non-empty lines, which should contain "key: value"'s
+        while 1:
+            line = string.strip(f.readline())
+            if not line: # empty line found, stop reading for "key: value"'s
+                break
+            keysplit = string.find(line, ":")
+            if keysplit == -1: # not a valid keypair; we're probably done
+                break
+            key = string.strip(line[:keysplit])
+            value = string.strip(line[keysplit+1:])
+            try:
+                data = kw[key]
+            except (KeyError):
+                kw[key] = value
+            else:
+                kw[key] = data+"\n"+value
+        restdata = f.readlines()
+    finally:
+        f.close()
+    try:
+        # Doesn't work in versions lower than Python 2.2
+        return kw, restdata, os.stat(file).st_mtime
+    except:
+        return kw, restdata, os.stat(file)[8] # Decker - changed from [9] to [8] to get the right file-modification-date on Win2K
+
+class File:
+    def __init__(self, filename):
+        self.filename = filename
+        self.kw, self.text, self.lastmodifydate = parse(filename)
 
 class Folder:
-
     def __init__(self, path, classif, parents, prev=None):
         self.prev = prev
         self.parents = parents
         self.path = path
-#        print 'Path: '+self.path
+        if verboseMode:
+            print 'Path: '+self.path
         self.classif = classif
         if classif: # Decker
             shortname = string.join(map(lambda s: s+".", classif), "") + "&nbsp;"
         else: # Decker
             shortname = "" # Decker - Make the 'index.html' title _not_ prefixed with a single space
-#       print shortname,
+        if verboseMode:
+            print shortname,
         self.kw, self.text, lastmodifydate = parse(self.path + "index" + EXTENSION)
         s = self.kw["title"]
-#       print s
+        if verboseMode:
+            print s
         self.kw["htmltitle"] = text2html_nbsp(s)
         self.kw["htmltitleshort"] = text2html_nbsp(s, 25) # Decker - Try to prevent text-wrapping, so make it max 25 characters long
         self.kw["classif"] = shortname
@@ -383,8 +406,7 @@ class Folder:
         self.folders = []
         self.forgotten = map(string.lower, os.listdir("./" + self.path))
         self.forgotten.remove("index" + EXTENSION)
-        self.kw["forgotten"] = self.forgotten
-        self.kw["next"]=""
+        self.kw["next"] = ""
         self.kw["nextfooter"] = ""
         htmlpath = path2html(path)
         previous = None
@@ -397,14 +419,14 @@ class Folder:
             previous = folder
         self.files = []
         for filename in string.split(self.kw.get("desc", "")):
-            kw, text, lastmodifydate1 = parse(self.path + filename + EXTENSION)
-            if lastmodifydate1 > lastmodifydate:
-                lastmodifydate = lastmodifydate1
-            kw["htmlfile"] = shortname
-            kw["hrefaname"] = filename
-            kw["updateday"] = time.strftime("%d %b %Y", time.localtime(lastmodifydate1))
-            kw["path"] = path  # tiglari
-            self.files.append((kw, text))
+            file = File(self.path + filename + EXTENSION)
+            if file.lastmodifydate > lastmodifydate:
+                lastmodifydate = file.lastmodifydate
+            file.kw["htmlfile"] = shortname
+            file.kw["hrefaname"] = filename
+            file.kw["updateday"] = time.strftime("%d %b %Y", time.localtime(file.lastmodifydate))
+            file.kw["path"] = path  # tiglari         @: Gotta go away!
+            self.files.append(file)  #@(kw, text)
             self.forgotten.remove(filename + EXTENSION)
         self.lastmodifydate = lastmodifydate
         self.kw["updateday"] = time.strftime("%d %b %Y", time.localtime(lastmodifydate))
@@ -436,14 +458,15 @@ class Folder:
             folder.navigation()
 
     def writefiles(self, root, filewriter):
-#       print self.kw["htmlfile"], "  [%s]" % self.kw["title"]
+        if verboseMode:
+            print 'writing file: ' + self.kw["htmlfile"], "  [%s]" % self.kw["title"]
         filewriter(self.kw["htmlfile"], self.makefile(root))
         for folder in self.folders:
             folder.writefiles(root, filewriter)
 
     def makefile(self, root):
         data = [ HEADER_BEGIN % self.kw ]
-        processtext(root, self.text, data, self.kw)
+        processtext(root, self, data)
         data.append(HEADER_END)
         if self.folders:
             data.append(SUBDIR_BEGIN % self.kw)
@@ -458,7 +481,7 @@ class Folder:
                     if len(folder.files) < 11:
                         data.append(SUBFILES_BEGIN % folder.kw)
                         for subfiles in folder.files:
-                            data.append(SUBFILES_ITEM % subfiles[0])
+                            data.append(SUBFILES_ITEM % subfiles.kw)
                         data.append(SUBFILES_END % folder.kw)
                     else:
                         # If more than 10 files, put into two columns
@@ -470,7 +493,7 @@ class Folder:
                                 data.append(SUBFILES_END % folder.kw)
                                 data.append(SUBFILES_TABLEMIDDLE);
                                 data.append(SUBFILES_BEGIN % folder.kw)
-                            data.append(SUBFILES_ITEM % subfiles[0])
+                            data.append(SUBFILES_ITEM % subfiles.kw)
                             cnt = cnt + 1
                         data.append(SUBFILES_END % folder.kw)
                         data.append(SUBFILES_TABLEEND);
@@ -479,28 +502,28 @@ class Folder:
             data.append(FILES_BEGIN % self.kw)
             if len(self.files) < 11:
                 data.append(FILES_ITEMBEGIN % self.kw)
-                for kw, text in self.files:
-                    data.append(FILES_ITEM % kw)
+                for subfiles in self.files:
+                    data.append(FILES_ITEM % subfiles.kw)
                 data.append(FILES_ITEMEND % self.kw)
             else:
                 # If more than 10 files, put into two columns
                 data.append(SUBFILES_TABLEBEGIN);
                 data.append(FILES_ITEMBEGIN % self.kw)
                 cnt = 0
-                for kw, text in self.files:
+                for subfiles in self.files:
                     if cnt == ((len(self.files)+1) / 2):
                         data.append(FILES_ITEMEND % self.kw)
                         data.append(SUBFILES_TABLEMIDDLE);
                         data.append(FILES_ITEMBEGIN % self.kw)
-                    data.append(FILES_ITEM % kw)
+                    data.append(FILES_ITEM % subfiles.kw)
                     cnt = cnt + 1
                 data.append(FILES_ITEMEND % self.kw)
                 data.append(SUBFILES_TABLEEND);
             data.append(FILES_MIDDLE % self.kw)
-            for kw, text in self.files:
-                data.append(FILE_BEGIN % kw)
-                processtext(root, text, data, kw)
-                data.append(FILE_END % kw)
+            for subfiles in self.files:
+                data.append(FILE_BEGIN % subfiles.kw)
+                processtext(root, subfiles, data)
+                data.append(FILE_END % subfiles.kw)
             data.append(FILES_END % self.kw)
         data.append(FOOTER % self.kw)
         return data
@@ -515,41 +538,65 @@ class Folder:
 
 def defaultwriter(filename, data, writemode="w"):
     # write the target file
-    f = open("output/"+filename, writemode)
+    f = open(OutputPath+"/"+filename, writemode)
     f.writelines(data)
     f.close()
 
 def run(filewriter):
+    def printline(text):
+        if len(text)>77-3-1:
+            print text
+        else:
+            print "---" + text + "-"*(80-len(text)-3-1)
     # load format file
-    execfile("format"+EXTENSION, globals(), globals())
+    execfile("format.py", globals(), globals())
     # recursively load everything in memory
+    printline("FINDING ALL FILES")
     root = Folder("", (), ())
-    print "-"*50
     # recursively set navigation links
+    printline("SETTING UP NAVIGATION")
     root.navigation() # Decker
-    print "-"*50
+    
     # recursively write everything to disk
+    printline("WRITING FILES TO DISK")
     root.writefiles(root, filewriter)
-    print "-"*50
     for filename in string.split(root.kw.get("extrafiles_text", "")):
         filewriter(filename, [open(filename, "r").read()])
     for filename in string.split(root.kw.get("extrafiles_binary", "")):
         filewriter(filename, [open(filename, "rb").read()], "wb")
-    print "-"*50
+    printline("PRINTING FORGOTTEN FILES")
     root.forgotten = []
     root.viewforgotten()
 
 localMode=0
+verboseMode=0
 for flag in sys.argv:
     if flag=='-local':
         localMode=1
-if not os.path.exists('output'):
-    os.mkdir('output')
+    if flag=='-verbose':
+        verboseMode=1
+if not os.path.exists(OutputPath):
+    os.mkdir(OutputPath)
 
 run(defaultwriter)
 
 #
 # $Log$
+# Revision 1.25  2008/07/15 18:41:25  cdunde
+# To roll back changing of format.txt to format.py and all changes to build.py since May 17, 2008 that broke building of the InfoBase.
+#
+# Revision 1.24  2008/05/18 15:15:32  danielpharos
+# Added another forbidden tag
+#
+# Revision 1.23  2008/05/18 12:44:59  danielpharos
+# Made a class out of files to make it all more readable
+#
+# Revision 1.22  2008/05/18 12:17:33  danielpharos
+# Nicely close file handle after parsing the file + possibly faster keyword-parsing
+#
+# Revision 1.21  2008/05/17 22:22:21  danielpharos
+# Small internal changes.
+#
 # Revision 1.20  2003/07/09 21:47:45  cdunde
 # To correct case setting of web page links.
 #
