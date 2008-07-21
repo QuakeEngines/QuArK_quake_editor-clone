@@ -18,6 +18,12 @@ import qmenu
 import qbaseeditor
 import mdleditor
 
+# Globals
+saveEDtrue3Dcamerapos = None
+saveEDflat3Dcamerapos = None
+saveFLtrue3Dcamerapos = None
+saveFLflat3Dcamerapos = None
+
 
 def newfinishdrawing(editor, view, oldfinish=mdleditor.ModelEditor.finishdrawing):
 
@@ -123,6 +129,23 @@ def Plugins1Click(item):
     
 
 def Options1Click(menu):
+    editor = mdleditor.mdleditor
+    view = None
+    for v in editor.layout.views:
+        if v.info['viewname'] == "3Dwindow":
+            view = v
+            break
+    if view is None:
+        ft3dmode.state = qmenu.disabled
+    elif view.info["type"] == "3D":
+        quarkx.setupsubset(SS_MODEL, "Options")['Full3DTrue3Dmode'] = "1"
+        ft3dmode.state = qmenu.checked
+    else:
+        quarkx.setupsubset(SS_MODEL, "Options")['Full3DTrue3Dmode'] = None
+        ft3dmode.state = qmenu.normal
+
+    et3dmode.state = quarkx.setupsubset(SS_MODEL,"Options").getint("EditorTrue3Dmode")
+
     for item in menu.items:
         try:
             setup = apply(quarkx.setupsubset, item.sset)
@@ -140,7 +163,6 @@ def toggleitem(txt, toggle, sendupdate=(1,1), sset=(SS_MODEL,"Options"), hint=No
     item.sset = sset
     item.sendupdate = sendupdate
     return item
-
 
 class LineThickDlg(SimpleCancelDlgBox):
     #
@@ -572,7 +594,7 @@ def SkinViewOptionsMenu(editor):
     return menulist
 
 
-# ******************Creates the Popup menu********************
+# ****************** Creates the Popup menu ********************
 def FaceSelOptionsClick(m):
     editor = mdleditor.mdleditor
     m.items = FaceMenu(editor)
@@ -589,11 +611,124 @@ def SkinViewOptionsClick(m):
     editor = mdleditor.mdleditor
     m.items = SkinViewOptionsMenu(editor)
 
+
+# ****************** menu def's for Global items ********************
+def EditorTrue3Dmode(m):
+    # Changes the Editor's 3D view mode from default Flat3D to True3D and back.
+    global saveEDtrue3Dcamerapos, saveEDflat3Dcamerapos
+    import qeditor, qhandles
+    editor = mdleditor.mdleditor
+    view = None
+    for v in editor.layout.views:
+        if v.info['viewname'] == "editors3Dview":
+            view = v
+    if view is None:
+        return
+    if not MdlOption("EditorTrue3Dmode"):
+        quarkx.setupsubset(SS_MODEL, "Options")['EditorTrue3Dmode'] = "1"
+        et3dmode.state = qmenu.checked
+        if saveEDflat3Dcamerapos is None and view.info["type"] == "2D":
+            saveEDflat3Dcamerapos = [view.info["scale"], view.info["angle"], view.info["vangle"]]
+        view.info["type"] = "3D"
+        view.screencenter = view.info["center"] = quarkx.vect(0,0,0)
+        if saveEDtrue3Dcamerapos is None:
+            view.cameraposition = (quarkx.vect(102.59, -102.15, 46.11), 2.358, 0.288)
+        else:
+           view.cameraposition = saveEDtrue3Dcamerapos
+        qeditor.defsetprojmode(view)
+    else:
+        quarkx.setupsubset(SS_MODEL, "Options")['EditorTrue3Dmode'] = None
+        et3dmode.state = qmenu.normal
+        if view.info["type"] == "3D" and view.cameraposition is not None:
+            saveEDtrue3Dcamerapos = view.cameraposition
+        if saveEDflat3Dcamerapos is None:
+            saveEDflat3Dcamerapos = [2.0, -0.7, 0.3]
+        else:
+            saveEDflat3Dcamerapos = [view.info["scale"], view.info["angle"], view.info["vangle"]]
+        qhandles.flat3Dview(view, editor.layout)
+        view.info["type"] = "2D"
+        view.info["scale"], view.info["angle"], view.info["vangle"] = saveEDflat3Dcamerapos
+        view.screencenter = quarkx.vect(0,0,0)
+        rotationmode = quarkx.setupsubset(SS_MODEL, "Options").getint("3DRotation")
+        holdrotationmode = rotationmode
+        rotationmode == 0
+        qeditor.setprojmode(view)
+        rotationmode = holdrotationmode
+        modelcenter = view.info["center"]
+        if rotationmode == 2:
+            center = quarkx.vect(0,0,0) + modelcenter ### Moves the center of the MODEL to the center of the view.
+        elif rotationmode == 3:
+            center = quarkx.vect(0,0,0) + modelcenter ### Moves the center of the MODEL to the center of the view.
+        else:
+            center = quarkx.vect(0,0,0) ### For resetting the Original QuArK rotation and "Lock to center of 3Dview" methods.
+        view.info["scale"], view.info["angle"], view.info["vangle"] = saveEDflat3Dcamerapos
+        view.screencenter = center
+        qeditor.setprojmode(view)
+
+
+def Full3DTrue3Dmode(m):
+    # Changes the first Floating 3D view opened mode from default Flat3D to True3D and back.
+    global saveFLtrue3Dcamerapos, saveFLflat3Dcamerapos
+    import qeditor, qhandles
+    editor = mdleditor.mdleditor
+    view = None
+    for v in editor.layout.views:
+        if v.info['viewname'] == "3Dwindow":
+            view = v
+            break
+    if view is None:
+        return
+    if view.info["type"] == "2D":
+        quarkx.setupsubset(SS_MODEL, "Options")['Full3DTrue3Dmode'] = "1"
+        ft3dmode.state = qmenu.checked
+        if saveFLflat3Dcamerapos is None and view.info["type"] == "2D":
+            saveFLflat3Dcamerapos = [view.info["scale"], view.info["angle"], view.info["vangle"]]
+        view.info["type"] = "3D"
+        view.screencenter = view.info["center"] = quarkx.vect(0,0,0)
+        if saveFLtrue3Dcamerapos is None:
+            view.cameraposition = (quarkx.vect(102.59, -102.15, 46.11), 2.358, 0.288)
+        else:
+           view.cameraposition = saveFLtrue3Dcamerapos
+        qeditor.defsetprojmode(view)
+    else:
+        quarkx.setupsubset(SS_MODEL, "Options")['Full3DTrue3Dmode'] = None
+        ft3dmode.state = qmenu.normal
+        if view.info["type"] == "3D" and view.cameraposition is not None:
+            saveFLtrue3Dcamerapos = view.cameraposition
+        if saveFLflat3Dcamerapos is None:
+            saveFLflat3Dcamerapos = (2.0, -0.7, 0.3)
+        else:
+            saveFLflat3Dcamerapos = [view.info["scale"], view.info["angle"], view.info["vangle"]]
+        qhandles.flat3Dview(view, editor.layout)
+        view.info["type"] = "2D"
+        view.info["scale"], view.info["angle"], view.info["vangle"] = saveFLflat3Dcamerapos
+        view.screencenter = quarkx.vect(0,0,0)
+        rotationmode = quarkx.setupsubset(SS_MODEL, "Options").getint("3DRotation")
+        holdrotationmode = rotationmode
+        rotationmode == 0
+        qeditor.setprojmode(view)
+        rotationmode = holdrotationmode
+        modelcenter = view.info["center"]
+        if rotationmode == 2:
+            center = quarkx.vect(0,0,0) + modelcenter ### Moves the center of the MODEL to the center of the view.
+        elif rotationmode == 3:
+            center = quarkx.vect(0,0,0) + modelcenter ### Moves the center of the MODEL to the center of the view.
+        else:
+            center = quarkx.vect(0,0,0) ### For resetting the Original QuArK rotation and "Lock to center of 3Dview" methods.
+        view.info["scale"], view.info["angle"], view.info["vangle"] = saveFLflat3Dcamerapos
+        view.screencenter = center
+        qeditor.setprojmode(view)
+
+
 #
 # Global variables to update from plug-ins.
 #
 dhwr = toggleitem("Draw &handles while rotating", "DHWR", (0,0),
       hint="|Draw handles while rotating:\n\nThis allows the models vertex handles (if active) to be drawn during rotation, but this will slow down the redrawing process and can make rotation seem jerky.|intro.modeleditor.menu.html#optionsmenu")
+
+et3dmode = qmenu.item("&Editor True 3D mode", EditorTrue3Dmode, "|Editor True 3D mode:\n\nThis causes the Model Editor's 3D view to operate the same as the Map Editor when maneuvering and also allows passing through a component.\n\nThis is very useful when working on scenes to see ' into ' the model and work on other components within it.|intro.modeleditor.menu.html#optionsmenu")
+
+ft3dmode = qmenu.item("&Full3D True 3D mode", Full3DTrue3Dmode, "|Full3D True 3D mode:\n\nThis causes the FIRST Full 3D view opened only, to operate the same as the Map Editor when maneuvering and also allows passing through a component.\n\nThis is very useful when working on scenes to see ' into ' the model and work on other components within it.\n\nAll other floating Full 3D views will operate as usual.\nIf the first is closed and the next uses this option the last camera position of the first one will still be in effect.|intro.modeleditor.menu.html#optionsmenu")
 
 maiv = toggleitem("Model A&xis in views", "MAIV", (1,1),
       hint="|Model Axis in views:\n\nThis displays the models axis on which it was built in all views, showing its X, Y and Z direction.\n\nThe size of its letter indicators and line thickness can be increased or decreased by using the 'Set Line Thickness' function.\n\nTheir individual colors can be changed in the 'Configuration Model Colors' section.|intro.modeleditor.menu.html#optionsmenu")
@@ -611,6 +746,7 @@ ticks = toggleitem("Enlarge Vertices &Ticks", "Ticks", (1,1),
 
 items.append(ticks)
 
+ft3dmode.state = qmenu.disabled
 
 mdleditor.ModelEditor.finishdrawing = newfinishdrawing
 
@@ -624,7 +760,7 @@ def OptionsMenu():
     SkinViewOptions = qmenu.popup("Skin-view Options", [], SkinViewOptionsClick, "|Skin-view Options:\n\nThese functions deal with various Options pertaining directly to the Skin-view and the way certain elements can be manipulated and displayed while working on the Models Skin Mesh.\n\nPress the 'F1' key again or click the button below for further details.", "intro.modeleditor.skinview.html#funcsnmenus")
     PlugIns = qmenu.item("List of Plug-ins...", Plugins1Click)
     Config1 = qmenu.item("Confi&guration...", Config1Click,  hint = "|Configuration...:\n\nThis leads to the Configuration-Window where all elements of QuArK are setup. From the way the Editor looks and operates to Specific Game Configuration and Mapping or Modeling variables.\n\nBy pressing the F1 key one more time, or clicking the 'InfoBase' button below, you will be taken directly to the Infobase section that covers all of these areas, which can greatly assist you in setting up QuArK for a particular game you wish to map or model for.|intro.configuration.html")
-    Options1 = qmenu.popup("&Options", [RotationOptions, dhwr, qmenu.sep]+[maiv, dbf, lineThicknessItem, qmenu.sep, FaceSelOptions, VertexSelOptions, SkinViewOptions, qmenu.sep]+items+[qmenu.sep, PlugIns, Config1], Options1Click)
+    Options1 = qmenu.popup("&Options", [RotationOptions, dhwr, et3dmode, ft3dmode, qmenu.sep]+[maiv, dbf, lineThicknessItem, qmenu.sep, FaceSelOptions, VertexSelOptions, SkinViewOptions, qmenu.sep]+items+[qmenu.sep, PlugIns, Config1], Options1Click)
     return Options1, shortcuts
 
 
@@ -640,6 +776,9 @@ def OptionsMenuRMB():
 #
 #
 #$Log$
+#Revision 1.34  2008/07/15 23:16:26  cdunde
+#To correct typo error from MldOption to MdlOption in all files.
+#
 #Revision 1.33  2008/05/27 19:36:16  danielpharos
 #Fixed another bunch of wrong imports
 #

@@ -36,14 +36,21 @@ class Full3DLayout(ModelLayout):
         self.View3D.viewtype="editor"
         self.views[:] = [self.View3D]
         self.baseviews = self.views[:]
-        self.View3D.info = {"type": "3D", "viewname": "editors3Dview"}
         self.View3D.viewmode = "tex"
         self.View3D.showprogress=0
+        self.View3D.info = {
+          "type": "3D",
+          "viewname": "editors3Dview",
+          "scale": 2.0,
+          "angle": -0.7,
+          "vangle": 0.3,
+          "center": quarkx.vect(0,0,0)}
 
     ### Calling this function causes the 3D view mouse maneuvering to change,
     ### rotation is based on the center of the editor view or the model (0,0,0).
-        quarkpy.qhandles.flat3Dview(self.View3D, self)
-        del self.View3D.info["noclick"]
+        if quarkx.setupsubset(SS_MODEL, "Options")['EditorTrue3Dmode'] != "1":
+            quarkpy.qhandles.flat3Dview(self.View3D, self)
+            del self.View3D.info["noclick"] 
 
         #
         # To set the qbaseeditor's global currentview for proper creation and
@@ -59,6 +66,9 @@ LayoutsList.append(Full3DLayout)
 #
 #
 # $Log$
+# Revision 1.9  2007/12/06 00:59:21  danielpharos
+# Fix the OpenGL not always redrawing entirely, and re-enable the progressbars, except for the 3D views in the model editor.
+#
 # Revision 1.8  2007/06/05 22:42:26  cdunde
 # To set the qbaseeditor's global currentview for proper creation and
 # drawing of handles when switching from one layout to another.

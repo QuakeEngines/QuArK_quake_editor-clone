@@ -92,13 +92,18 @@ class FourViewsLayout(ModelLayout):
           "vangle": 0.0}
 
         self.View3D.info = {
-          "type": "3D",     # 3D view
-          "viewname": "editors3Dview"} # name
+          "type": "3D",
+          "viewname": "editors3Dview",
+          "scale": 2.0,
+          "angle": -0.7,
+          "vangle": 0.3,
+          "center": quarkx.vect(0,0,0)}
 
     ### Calling this function causes the 3D view mouse maneuvering to change,
     ### rotation is based on the center of the editor view or the model (0,0,0).
-        quarkpy.qhandles.flat3Dview(self.View3D, self)
-        del self.View3D.info["noclick"] 
+        if quarkx.setupsubset(SS_MODEL, "Options")['EditorTrue3Dmode'] != "1":
+            quarkpy.qhandles.flat3Dview(self.View3D, self)
+            del self.View3D.info["noclick"] 
 
 
     #
@@ -312,6 +317,9 @@ LayoutsList.insert(0, FourViewsLayout2)
 #
 #
 # $Log$
+# Revision 1.13  2007/12/19 12:41:11  danielpharos
+# Small code clean-up
+#
 # Revision 1.12  2007/12/06 04:57:14  cdunde
 # To stop the progressbars in all of the Model Editors views.
 #
