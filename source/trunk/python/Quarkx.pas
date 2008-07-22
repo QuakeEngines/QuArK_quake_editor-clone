@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.65  2008/06/04 03:04:04  cdunde
+Setup new QuArK Model Editor Python model import export system.
+
 Revision 1.64  2008/05/29 14:53:02  danielpharos
 Imported new features of GCFs from Adam Quest, and some generic cleaning up.
 
@@ -276,8 +279,8 @@ implementation
 
 uses Classes, Dialogs, Graphics, CommCtrl, ExtCtrls, Controls,
      QkForm, PyToolbars, PyImages, PyPanels, TB97, QkObjects,
-     PyObjects, QkFileObjects, {PyFiles,} PyExplorer, Travail, Setup,
-     Qk1, PyFormCfg, QkQuakeCtx, PyFloating, PyMapView, qmath,
+     PyObjects, QkFileObjects, {PyFiles,} PyExplorer, Travail,
+     Qk1, PyFormCfg, QkQuakeCtx, PyFloating, PyMapView, qmath, Setup,
      PyMath, PyCanvas, PyUndo, qmatrices, QkMapObjects, QkTextures,
      Undo, QkGroup, Qk3D, PyTravail, ToolBox1, Config, PyProcess,
      Console, Game, {$IFDEF CompiledWithDelphi2} ShellObj, {$ELSE} ShlObj, {$ENDIF}
@@ -872,6 +875,38 @@ begin
     Result:=@PythonObj;
     Py_INCREF(Result);
    end;
+ except
+  EBackToPython;
+  Result:=Nil;
+ end;
+end;
+
+function xSaveFileObj(self, args: PyObject) : PyObject; cdecl;
+var
+ nFileObject: PPythonObj;
+ nAskName, nDuplicate: Integer;
+ nForm: PPythonObj;
+ FileObject: QFileObject;
+ Form: TCustomForm;
+ nObj: QFileObject;
+begin
+ try
+  Result:=Nil;
+  nFileObject:=Nil;
+  nAskName:=0;
+  nDuplicate:=0;
+  nForm:=Nil;
+  if not PyArg_ParseTupleX(args, 'Oii|O', [@nFileObject, @nAskName, @nDuplicate, @nForm]) then
+   Exit;
+  FileObject:=QFileObject(QkObjFromPyObj(nFileObject));
+  if nForm=Py_None then
+   Form:=nil
+  else
+   Form:=TCustomForm(QkObjFromPyObj(nForm));
+  nObj:=SaveObject(FileObject, nAskName, nDuplicate, Form);
+  if nObj<>nil then
+   nObj.AddRef(-1);
+  Result:=PyNoResult;
  except
   EBackToPython;
   Result:=Nil;
@@ -2967,11 +3002,12 @@ begin
 end;
 
 const
- MethodTable: array[0..83] of TyMethodDef =
+ MethodTable: array[0..84] of TyMethodDef =
   ((ml_name: 'Setup1';          ml_meth: xSetup1;          ml_flags: METH_VARARGS),
    (ml_name: 'newobj';          ml_meth: xNewObj;          ml_flags: METH_VARARGS),
    (ml_name: 'newfileobj';      ml_meth: xNewFileObj;      ml_flags: METH_VARARGS),
    (ml_name: 'openfileobj';     ml_meth: xOpenFileObj;     ml_flags: METH_VARARGS),
+   (ml_name: 'savefileobj';     ml_meth: xSaveFileObj;     ml_flags: METH_VARARGS),
    (ml_name: 'setupsubset';     ml_meth: xSetupSubSet;     ml_flags: METH_VARARGS),
    (ml_name: 'getquakedir';     ml_meth: xGetQuakeDir;     ml_flags: METH_VARARGS),
    (ml_name: 'getgamedir';      ml_meth: xGetGameDir;      ml_flags: METH_VARARGS),
@@ -3281,7 +3317,12 @@ begin
  try
   if fntname='' then Exit;
   fnt:=PyDict_GetItemString(MacrosDict, PChar('MACRO_'+fntname));
-  if fnt=Nil then Exit;
+  if fnt=Nil then
+  begin
+    //FIXME: FIND A BETTER WAY!
+    Log(LOG_WARNING, 'Macro ' + fntname + 'not found!');
+    Exit;
+  end;
   if Hourglass then
    ProgressIndicatorStart(0,0);
   try
@@ -3442,7 +3483,7 @@ begin
   s:=PyString_FromString(PChar('dummy')); //Just a dummy object...
   CallMacro(s, 'shutdown');
   Py_Finalize;
-  {This apparently creates problems...}
+  //FIXME: This apparently creates problems...
   {UnInitializePython;}
 end;
 
