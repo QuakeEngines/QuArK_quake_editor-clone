@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.414  2008/07/21 02:31:06  cdunde
+//Added 3D view modes to Options menu to allow viewing through objects for scenes.
+//
 //Revision 1.413  2008/07/17 00:28:14  cdunde
 //Added option for error checking of selected components before exporting.
 //
@@ -3892,7 +3895,7 @@ QQRKSRC1
         setLock_X          = "0"
         setLock_Y          = "0"
         setLock_Z          = "0"
-        DrawAxis           = "1"
+        MAIV               = "1"
         DrawMapLimit       = "1"
         SolidGrid          = ""
         GridVisible        = "1"
@@ -8613,7 +8616,7 @@ QQRKSRC1
         Txt = "Editor:"
       }
       Style = "1"
-      DrawAxis:                 = {Typ="X" Txt="Model background"               Cap="Draw axis"                            }
+      MAIV:                     = {Typ="X" Txt="Model Axis in views"            Cap="Draw axis"                            }
       DrawMapLimit:             = {Typ="X" Txt="   ``"                          Cap="Draw model limits"                    }
       SolidGrid:                = {Typ="X" Txt="Grid"                           Cap="Grid as lines"                        }
       GridVisible:              = {Typ="X" Txt="   ``"                          Cap="Grid visible"                         }

@@ -1261,6 +1261,7 @@ class SkinHandle(qhandles.GenericHandle):
                 quarkx.setupsubset(SS_MODEL, "Options")['UseSkinViewScale'] = None
             else:
                 quarkx.setupsubset(SS_MODEL, "Options")['SkinFrom3Dview'] = None
+            quarkx.reloadsetup()
 
         # When taking Skin-view coors from the Skin-view, turns using its "scale" factor on or off.
         def mUSVS(m, self=self, editor=editor, view=view):
@@ -1269,6 +1270,9 @@ class SkinHandle(qhandles.GenericHandle):
                 quarkx.setupsubset(SS_MODEL, "Options")['SkinFrom3Dview'] = None
             else:
                 quarkx.setupsubset(SS_MODEL, "Options")['UseSkinViewScale'] = None
+            Xsf3Dv.state = quarkx.setupsubset(SS_MODEL,"Options").getint("SkinFrom3Dview")
+            Xusvs.state = quarkx.setupsubset(SS_MODEL,"Options").getint("UseSkinViewScale")
+            quarkx.reloadsetup()
 
         # Turn Model Options function SkinGridVisible on or off.
         def mSGV(m, self=self, editor=editor, view=view):
@@ -1282,6 +1286,9 @@ class SkinHandle(qhandles.GenericHandle):
                 if SkinView1 is not None:
                     SkinView1.invalidate()
                     mdleditor.ModelEditor.finishdrawing(editor, view)
+            Xsf3Dv.state = quarkx.setupsubset(SS_MODEL,"Options").getint("SkinFrom3Dview")
+            Xusvs.state = quarkx.setupsubset(SS_MODEL,"Options").getint("UseSkinViewScale")
+            quarkx.reloadsetup()
 
         # Turn Model Options function SkinGridActive on or off.
         def mSGA(m, self=self, editor=editor, view=view):
@@ -1289,6 +1296,7 @@ class SkinHandle(qhandles.GenericHandle):
                 quarkx.setupsubset(SS_MODEL, "Options")['SkinGridActive'] = "1"
             else:
                 quarkx.setupsubset(SS_MODEL, "Options")['SkinGridActive'] = None
+            quarkx.reloadsetup()
 
         # Turn Model Options function SingleSelDragLines on or off.
         def mSSDL(m, self=self, editor=editor, view=view):
@@ -3377,6 +3385,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.139  2008/07/15 23:16:27  cdunde
+#To correct typo error from MldOption to MdlOption in all files.
+#
 #Revision 1.138  2008/07/10 21:21:33  danielpharos
 #Remove redundant code
 #

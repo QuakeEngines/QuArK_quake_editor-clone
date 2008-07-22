@@ -145,6 +145,8 @@ def Options1Click(menu):
         ft3dmode.state = qmenu.normal
 
     et3dmode.state = quarkx.setupsubset(SS_MODEL,"Options").getint("EditorTrue3Dmode")
+    maiv.state = quarkx.setupsubset(SS_MODEL,"Options").getint("MAIV")
+    recenter.state = quarkx.setupsubset(SS_MODEL,"Options").getint("Recenter")
 
     for item in menu.items:
         try:
@@ -720,6 +722,25 @@ def Full3DTrue3Dmode(m):
         qeditor.setprojmode(view)
 
 
+def mMAIV(m):
+    "Toggels Model Axis In Views."
+    if not MdlOption("MAIV"):
+        quarkx.setupsubset(SS_MODEL, "Options")['MAIV'] = "1"
+        maiv.state = qmenu.checked
+    else:
+        quarkx.setupsubset(SS_MODEL, "Options")['MAIV'] = None
+        maiv.state = qmenu.normal
+    quarkx.reloadsetup()
+
+
+def mRecenter(m):
+    "Toggels the Recenter option."
+    if not MdlOption("Recenter"):
+        quarkx.setupsubset(SS_MODEL, "Options")['Recenter'] = "1"
+    else:
+        quarkx.setupsubset(SS_MODEL, "Options")['Recenter'] = None
+    recenter.state = quarkx.setupsubset(SS_MODEL,"Options").getint("Recenter")
+    quarkx.reloadsetup()
 #
 # Global variables to update from plug-ins.
 #
@@ -730,14 +751,15 @@ et3dmode = qmenu.item("&Editor True 3D mode", EditorTrue3Dmode, "|Editor True 3D
 
 ft3dmode = qmenu.item("&Full3D True 3D mode", Full3DTrue3Dmode, "|Full3D True 3D mode:\n\nThis causes the FIRST Full 3D view opened only, to operate the same as the Map Editor when maneuvering and also allows passing through a component.\n\nThis is very useful when working on scenes to see ' into ' the model and work on other components within it.\n\nAll other floating Full 3D views will operate as usual.\nIf the first is closed and the next uses this option the last camera position of the first one will still be in effect.|intro.modeleditor.menu.html#optionsmenu")
 
-maiv = toggleitem("Model A&xis in views", "MAIV", (1,1),
-      hint="|Model Axis in views:\n\nThis displays the models axis on which it was built in all views, showing its X, Y and Z direction.\n\nThe size of its letter indicators and line thickness can be increased or decreased by using the 'Set Line Thickness' function.\n\nTheir individual colors can be changed in the 'Configuration Model Colors' section.|intro.modeleditor.menu.html#optionsmenu")
+maiv = qmenu.item("Model A&xis in views", mMAIV, "|Model Axis in views:\n\nThis displays the models axis on which it was built in all views, showing its X, Y and Z direction.\n\nThe size of its letter indicators and line thickness can be increased or decreased by using the 'Set Line Thickness' function.\n\nTheir individual colors can be changed in the 'Configuration Model Colors' section.|intro.modeleditor.menu.html#optionsmenu")
 
 dbf = toggleitem("Draw &back faces", "DBF", (1,1),
       hint="|Draw back faces:\n\nThis allows the back face checkerboard pattern to be drawn in all view modes when the 'Views Options', 'Mesh in Frames' is checked for that view.\n\nUsing the option in this manner will help to distinguish which direction the faces are facing for proper construction.|intro.modeleditor.menu.html#optionsmenu")
 
+recenter = qmenu.item("&Paste objects at screen center", mRecenter, "|Paste objects at screen center:\n\nCheck this if you want objects that you paste into the editor's views to appear in the center of the current editor's view. Uncheck it, and it will paste it at the exact position as the original.|intro.modeleditor.menu.html#pasteobjectsatscreencenter")
+
 items = [
-    toggleitem("&Paste objects at screen center", "Recenter", (0,0)),
+    recenter,
     ]
 shortcuts = { }
 
@@ -776,6 +798,9 @@ def OptionsMenuRMB():
 #
 #
 #$Log$
+#Revision 1.35  2008/07/21 02:31:06  cdunde
+#Added 3D view modes to Options menu to allow viewing through objects for scenes.
+#
 #Revision 1.34  2008/07/15 23:16:26  cdunde
 #To correct typo error from MldOption to MdlOption in all files.
 #
