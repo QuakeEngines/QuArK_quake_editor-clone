@@ -1,6 +1,0 @@
-title: Model settings
-author: DanielPharos
-
-The options in this settings-folder are very similar to the ones of
-the Map-folder, with the exception that these settings apply to the
-Model editor.

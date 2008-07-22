@@ -54,6 +54,14 @@ Opens an existing file and returns an Internal QuArK file object.
 </td></tr>
 
 <tr><td class="doccode">
+savefileobj(tex,FM_SaveAsFile,0,None)
+</td><td>
+Opens a 'Save File' window and saves a selected texture image (Internal QuArK file object) to any location.<br>
+<b>tex</b> the selected image, <b>FM_SaveAsFile</b> enter as shown here (fixed setting), <b>0</b> default setting,
+<b>None</b> default setting.
+</td></tr>
+
+<tr><td class="doccode">
 setupsubset()<br>
 setupsubset(i)<br>
 setupsubset(i,subset)

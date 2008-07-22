@@ -24,7 +24,16 @@ It will redisplay the selected model component in the editor's view and cause it
 When the selected model component is in this state it will not be drawn in the editor's view and becomes
 inactive for various functions.
 
+<i>Save Skin File </i>&nbsp;: Opens a file save window and allows you to save the selected skin as various
+types of image files.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><u>NOTE</u></b>: You can NOT save another type as a .pcx 
+file because they do not have a <g>palette</g> like .pcx files do, this will only cause an error.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;You CAN save a .pcx file to another file type like .tga though.
+
 <img border=1 align=right>treeviewrmbmenus2.png</img>
+
+<i>Match Frame Count </i>&nbsp;: This will duplicate the number of frames in the selected components with the one
+that has the most frames in it. It will not copy the frames, only how many there are.
 
 <i>Duplicate Current Frame </i>&nbsp;: This copies a single frame that is currently selected and adds
 that copy to that model component's animation frames list just below the frame being copied.

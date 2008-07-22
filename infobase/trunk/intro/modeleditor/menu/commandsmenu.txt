@@ -7,6 +7,9 @@ author: cdunde
 adds that copy to that model component's animation frames list.
 For multiple frame copies use the 'Duplicate' function on the 'Edit' menu.
 
+<i>Match Frame Count </i>&nbsp;: This will duplicate the number of frames in the selected components
+with the one that has the most frames in it. It will not copy the frames, only how many there are.
+
 <i>Add Triangle </i>&nbsp;: This adds a new triangle to the currently selected component. It works
 in conjunction with the <b>Pick Vertex</b> function on the
 <a href="intro.modeleditor.rmbmenus.html#vertexrmbmenu">Vertex RMB menu</a> described below. See that

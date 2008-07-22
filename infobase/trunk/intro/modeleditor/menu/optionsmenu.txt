@@ -1,24 +1,26 @@
 title: Options menu
 author: cdunde
-
+editortrue3dmode
 <map name="optionsmenuMap0">
 <area href="#drawhandleswhilerotating" shape="rect" coords="2, 208, 250, 222">
-<area href="#modelaxisinviews" shape="rect" coords="2, 234, 250, 248">
-<area href="#drawbackfaces" shape="rect" coords="2, 251, 250, 265">
-<area href="#setlinethickness" shape="rect" coords="2, 268, 250, 282">
-<area href="#editorfaceselectionoptions" shape="rect" coords="2, 294, 250, 308">
+<area href="#editortrue3dmode" shape="rect" coords="2, 225, 250, 238">
+<area href="#full3dtrue3dmode" shape="rect" coords="2, 241, 250, 254">
+<area href="#modelaxisinviews" shape="rect" coords="2, 268, 250, 282">
+<area href="#drawbackfaces" shape="rect" coords="2, 285, 250, 299">
+<area href="#setlinethickness" shape="rect" coords="2, 302, 250, 316">
+<area href="#editorfaceselectionoptions" shape="rect" coords="2, 328, 250, 342">
 <area href="#editorfaceselectionoptions" shape="rect" coords="261, 292, 497, 464">
-<area href="#editorvertexselectionoptions" shape="rect" coords="2, 311, 250, 325">
+<area href="#editorvertexselectionoptions" shape="rect" coords="2, 345, 250, 359">
 <area href="#editorvertexselectionoptions" shape="rect" coords="261, 470, 452, 530">
-<area href="#skinviewoptions" shape="rect" coords="2, 328, 250, 342">
+<area href="#skinviewoptions" shape="rect" coords="2, 362, 250, 376">
 <area href="#skinviewoptions" shape="rect" coords="261, 536, 452, 613">
 <area href="#skinviewoptionsdrawticks" shape="rect" coords="100, 575, 256, 609">
-<area href="#pasteobjectsatscreencenter" shape="rect" coords="2, 354, 250, 368">
-<area href="#enlargeverticesticks" shape="rect" coords="2, 371, 250, 385">
-<area href="#rebuild3dviews" shape="rect" coords="2, 388, 250, 402">
-<area href="#axisxyzletters" shape="rect" coords="2, 405, 250, 419">
-<area href="#listofplugins" shape="rect" coords="2, 431, 250, 445">
-<area href="#configuration" shape="rect" coords="2, 448, 250, 462">
+<area href="#pasteobjectsatscreencenter" shape="rect" coords="2, 388, 250, 402">
+<area href="#enlargeverticesticks" shape="rect" coords="2, 405, 250, 419">
+<area href="#rebuild3dviews" shape="rect" coords="2, 422, 250, 436">
+<area href="#axisxyzletters" shape="rect" coords="2, 439, 250, 453">
+<area href="#listofplugins" shape="rect" coords="2, 465, 250, 479">
+<area href="#configuration" shape="rect" coords="2, 482, 250, 496">
 </map>
 
 <img border=0 align=right usemap="#optionsmenuMap0">options.png</img>
@@ -67,6 +69,17 @@ the model jumping back to some other location as in all of the above cases.
 <a name="drawhandleswhilerotating"></a>
 <i><b><a href="#rulerguide">Draw handles while rotating</a></b> </i>&nbsp;: This allows the models vertex handles (if active) to be drawn during
 rotation, but this will slow down the redrawing process and can make rotation seem jerky.
+
+<a name="editortrue3dmode"></a>
+<i><b><a href="#rulerguide">Editor True 3D mode</a></b> </i>&nbsp;: This causes the Model Editor's 3D view to operate the same as
+the Map Editor when maneuvering and also allows passing through a component. This is very useful when working on scenes
+to see ' into ' the model and work on other components within it.
+
+<a name="full3dtrue3dmode"></a>
+<i><b><a href="#rulerguide">Full3D True 3D mode</a></b> </i>&nbsp;: This causes the FIRST Full 3D view opened only, to operate the same as
+the Map Editor when maneuvering and also allows passing through a component. This is very useful when working on scenes
+to see ' into ' the model and work on other components within it. All other floating Full 3D views will operate as usual.
+If the first is closed and the next uses this option the last camera position of the first one will still be in effect.
 
 <a name="modelaxisinviews"></a>
 <i><b><a href="#rulerguide">Model Axis in views</a></b> </i>&nbsp;: This displays the models axis on which it was built in all views,
@@ -145,9 +158,9 @@ The 2nd <g><u>Rectangle drag-method 2</u> &nbsp;</g>: This function will draw th
 during a rectangle drag, but will cause the greatest amount of flickering.
 
 <a name="pasteobjectsatscreencenter"></a>
-<i><b><a href="#rulerguide">Paste objects at screen center</a></b> </i>&nbsp;: Check this if you want objects that you
-paste into the map-view, appear in the center of the current map-view. Uncheck
-it, and it will paste it at the exact position as the original.
+<i><b><a href="#rulerguide">Paste objects at screen center</a></b> </i>&nbsp;: Check this if you
+want objects that you paste into the editor's views to appear in the center of the current editor's view.
+Uncheck it, and it will paste it at the exact position as the original.
 
 <a name="enlargeverticesticks"></a>
 <i><b><a href="#rulerguide">Enlarge Vertices Ticks</a></b> </i>&nbsp;: This makes the model's ticks 1 size larger for easer viewing.

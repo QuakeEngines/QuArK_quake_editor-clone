@@ -1,0 +1,8 @@
+title: Building
+author: cdunde
+
+<img align=right>building.png</img>
+Controls some default values, that will affect your model-making.
+
+<i>Force angle to (degrees)</i>. The closest minimum degree angle, a rotation
+should snap to.
