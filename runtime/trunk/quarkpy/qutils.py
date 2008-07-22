@@ -102,6 +102,12 @@ SO_DISABLEFPCOORD  = 8    # don't write floating-point coordinates in .map files
 #SO_ENABLEBRUSHPRIM = 16   # enable brush primitives format
 SO_USEINTEGRALVERTICES = 64 # use integral vertices as threepoints if possible
 
+# values of the saveflags for savefileobj (must be same as in QkFileObjects.pas!)
+FM_Save           = 1;
+FM_SaveAsFile     = 2;
+FM_SaveIfModif    = 3;
+FM_SaveTagOnly    = 4;
+
 # icon indexes of internal objects (to be used with quarkx.seticons)
 iiUnknownFile           = 0
 iiExplorerGroup         = 1
@@ -816,6 +822,10 @@ def sortdictionary(dictionary):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.42  2008/07/14 18:06:30  cdunde
+#Added new function to sort dictionary lists by their keys.
+#Primarily used for menu items but may work for others.
+#
 #Revision 1.41  2008/07/11 19:36:13  cdunde
 #Fix for imported models icons.
 #

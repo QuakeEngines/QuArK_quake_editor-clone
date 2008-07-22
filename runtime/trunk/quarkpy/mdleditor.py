@@ -387,6 +387,9 @@ class ModelEditor(BaseEditor):
 
         import mdlmenus
 
+        def SaveSkinFile(m):
+            quarkx.savefileobj(obj, FM_SaveAsFile, 0, None)
+
         try:
             if view.info["viewname"] == "skinview":
                 return mdlmenus.MdlBackgroundMenu(self, view, origin)
@@ -423,6 +426,10 @@ class ModelEditor(BaseEditor):
                     return [mdlcommands.NewFrame , qmenu.sep , mdlfacepop, qmenu.sep] + mdlentities.CallManager("menu", sellist[0], self) + extra
                 mdlcommands.NewFrame.state = qmenu.normal
                 return [mdlcommands.NewFrame , qmenu.sep] + mdlentities.CallManager("menu", sellist[0], self) + extra
+            elif sellist[0].parent.type == ':sg':
+                obj = sellist[0]
+                saveskinfile = qmenu.item("&Save Skin File", SaveSkinFile, "|Save Skin File:\n\nOpens a file save window and allows you to save the selected skin as various types of image files.\n\nNOTE:\n   You can NOT save another type as a .pcx file because they do not have a 'palette' like .pcx files do, this will only cause an error.\n\nYou CAN save a .pcx file to another file type like .tga though.|intro.modeleditor.rmbmenus.html#treeviewrmbmenus")
+                return mdlentities.CallManager("menu", sellist[0], self) + extra + [qmenu.sep , saveskinfile]
             else:
                 return mdlentities.CallManager("menu", sellist[0], self) + extra
         elif len(sellist)>1:
@@ -1480,6 +1487,10 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.90  2008/07/17 00:36:44  cdunde
+#Added new function "Match Frame Count" to the Commands & RMB menus
+#which duplicates the number of frames in selected components.
+#
 #Revision 1.89  2008/07/11 04:34:33  cdunde
 #Setup of Specifics\Arg page for model types data and settings.
 #
