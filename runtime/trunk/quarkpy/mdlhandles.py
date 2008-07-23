@@ -3337,11 +3337,7 @@ def ClickOnView(editor, view, x, y):
     #
     # defined in QkPyMapview.pas
     #
-    try:
-        return view.clicktarget(editor.Root, int(x), int(y))
-    except:
-        pass
-
+    return view.clicktarget(editor.Root, int(x), int(y))
 
 
 
@@ -3389,6 +3385,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.141  2008/07/23 01:35:29  cdunde
+#Fix to stop erroneous errors some time ago but forgot to commit until now.
+#
 #Revision 1.140  2008/07/22 23:14:23  cdunde
 #Fixed menu items that were not interacting with their config settings in the Defaults.qrk file.
 #
