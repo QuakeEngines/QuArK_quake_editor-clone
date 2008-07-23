@@ -1162,13 +1162,16 @@ class BaseEditor:
                             return
 
                     # This takes you directly to (selects) the main model component folder for the
-                    #    component that was LMB clicked on if there was one under the
-                    #    cursor, if not then nothing happens.
+                    #    component that was LMB clicked on if there was one under the cursor,
+                    #    if not then if something IS selected already in the tree-view it clears all selections.
                     choice = mdlhandles.ClickOnView(self, view, x, y)
                     if choice != [] and flagsmouse == 264:
                         self.layout.explorer.uniquesel = choice[0][1].subitems[0].parent
                         import mdlutils
                         mdlutils.Update_Editor_Views(self, 4)
+                    if choice == [] and flagsmouse == 264:
+                        self.layout.explorer.sellist = []
+                        self.layout.explorer.uniquesel = None
                 #
                 # Send the click to MouseClicked
                 #
@@ -1456,6 +1459,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.113  2008/07/15 23:16:27  cdunde
+#To correct typo error from MldOption to MdlOption in all files.
+#
 #Revision 1.112  2008/06/17 20:59:22  cdunde
 #To stop some minor errors from occurring.
 #
