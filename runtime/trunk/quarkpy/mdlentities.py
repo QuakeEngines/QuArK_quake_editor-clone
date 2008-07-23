@@ -396,6 +396,7 @@ Generics = [GroupType(), FrameGroupType(), SkinGroupType(), SkinGroupType(), Mis
 
 #
 # Use the function below to call a method of the Entity Manager classes.
+# "method" is the function (in quotes) being called within the class.
 # Syntax is : CallManager("method", entity, arguments...)
 #
 
@@ -436,6 +437,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.26  2008/07/10 21:21:58  danielpharos
+#The model component icon changes to an X when you hide the component.
+#
 #Revision 1.25  2008/05/01 15:39:19  danielpharos
 #Made an import more consistent with all others
 #
