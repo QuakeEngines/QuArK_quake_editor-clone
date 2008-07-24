@@ -462,7 +462,7 @@ class ModelEditor(BaseEditor):
 
 
     def editcmdclick(self, m):
-        # dispatch the command to mdlbtns' "edit_xxx" procedure
+        # Pass the command to mdlbtns.py "edit_xxx" procedure.
         getattr(mdlbtns, "edit_" + m.cmd)(self, m)
 
 
@@ -1487,6 +1487,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.91  2008/07/22 00:54:08  cdunde
+#New function added to the Model Editor tree-view RMB to save a skin when one is selected.
+#
 #Revision 1.90  2008/07/17 00:36:44  cdunde
 #Added new function "Match Frame Count" to the Commands & RMB menus
 #which duplicates the number of frames in selected components.
