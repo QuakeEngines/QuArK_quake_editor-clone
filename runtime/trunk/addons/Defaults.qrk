@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.417  2008/07/24 15:08:55  danielpharos
+//Oops: forgot to remove now obsolete line in last commit
+//
 //Revision 1.416  2008/07/24 15:02:31  danielpharos
 //Cleaned up texture name checking code and interface.
 //
@@ -1495,6 +1498,7 @@ QQRKSRC1
         UpdateCheck = "1"
         UpdateCheckOnline = ""
         AutomaticInstall = ""
+        SingleInstance = "1"
         Form = "GeneralUpdate"
       }
       QuakeC:config =
@@ -8480,6 +8484,7 @@ QQRKSRC1
       UpdateCheck: = {Typ="X" Txt="Update check" Cap="Enabled" Hint = "Enables the update check when starting QuArK."}
       UpdateCheckOnline: = {Typ="X" Txt="Check online" Cap="Enabled" Hint = "Check for updates online."}
       AutomaticInstall: = {Typ="X" Txt="Automatically update" Cap="Enabled" Hint = "Automatically download and install any updates available."}
+      SingleInstance: = {Typ="X" Txt="Check for single instance" Cap="Enabled" Hint = "Enables the check for a single running QuArK (or updater instance) instance on start-up."}
     }
     externaledit:incl = {
       Typ = "EP"

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.62  2008/07/17 14:46:41  danielpharos
+Added NOINSTANCE switch to disable the single-instance check
+
 Revision 1.61  2008/07/07 20:46:47  danielpharos
 Added single-instance check. This will also be used by the updater.
 
@@ -599,6 +602,7 @@ var
  C: TColor;
  Splash: TForm;
  Disclaimer: THandle;
+ MutexError: DWORD;
 begin
  // This next line is done so that the G_ standard carries through for all of
  // the global variables.
@@ -616,24 +620,16 @@ begin
  g_CmdOptions.FileNR := 0;
  ProcessCmdLine;
 
- if g_CmdOptions.DoInstance then
+ //This is the mutex for single-instance checking
+ g_Mutex:=CreateMutex(Nil, True, PChar('QuArK_Mutex'));
+ if g_Mutex = 0 then
  begin
-   //Checking for single-instance
-   g_Mutex:=CreateMutex(Nil, True, PChar('QuArK_Mutex'));
-   if g_Mutex = 0 then
-     //Something went terribly wrong!
-     Windows.MessageBox(0, PChar('Unable to check if there already is an instance of QuArK running! If this is the case, this can cause serious problems. For example, changed configuration settings might not be saved, and QuArK might not update correctly.'), PChar('QuArK'), MB_OK or MB_ICONWARNING or MB_TASKMODAL)
-   else
-     if GetLastError = ERROR_ALREADY_EXISTS then
-     begin
-       S:='An instance of QuArK is already running. This can cause serious problems.';
-       S:=S+'For example, changed configuration settings might not be saved, and QuArK might not update correctly.'#13#10;
-       S:=S+'This check can be disabled (at own risk!) by supplying the /NOINSTANCE switch to QuArK when starting it.'#13#10#13#10;
-       S:=S+'Are you sure you want to start a new instance of QuArK?';
-       if Windows.MessageBox(0, PChar(S), PChar('QuArK'), MB_YESNO or MB_ICONWARNING or MB_TASKMODAL) = idNo then
-         Halt(0);
-     end;
- end;
+   //Something went terribly wrong!
+   Windows.MessageBox(0, PChar('Unable to check if there already is an instance of QuArK running! If this is the case, this can cause serious problems. For example, changed configuration settings might not be saved, and QuArK might not update correctly.'), PChar('QuArK'), MB_OK or MB_ICONWARNING or MB_TASKMODAL);
+   MutexError := 0;
+ end
+ else
+   MutexError := GetLastError();
 
   // Set-up the console
  Log(LOG_VERBOSE, 'Setting up console...');
@@ -657,14 +653,26 @@ begin
  // Python initialization and Defaults.qrk and Setup.qrk loading
  InitPython;
 
+ if g_CmdOptions.DoInstance and (SetupSubSet(ssGeneral, 'Update').Specifics.Values['SingleInstance']<>'') then
+ begin
+   if MutexError = ERROR_ALREADY_EXISTS then
+     begin
+       S:='An instance of QuArK is already running. This can cause serious problems.';
+       S:=S+'For example, changed configuration settings might not be saved, and QuArK might not update correctly.'#13#10;
+       S:=S+'This check can be disabled (at own risk!) in the configuration settings.'#13#10#13#10;
+       S:=S+'Are you sure you want to start a new instance of QuArK?';
+       if Windows.MessageBox(0, PChar(S), PChar('QuArK'), MB_YESNO or MB_ICONWARNING or MB_TASKMODAL) = idNo then
+         Halt(0);
+     end;
+ end;
+
  { DanielPharos: It's safer to do the update-check BEFORE loading Python,
    but then then option in the Defaults will have to be removed, since it
    won't be loaded yet. Change this when the update-screen isn't a nag-screen
    anymore! (Store data in registry?) }
  //Check for updates...
- if g_CmdOptions.DoUpdate then
-   if SetupSubSet(ssGeneral, 'Update').Specifics.Values['UpdateCheck']<>'' then
-     DoUpdate(g_CmdOptions.OnlineUpdate);
+ if g_CmdOptions.DoUpdate and (SetupSubSet(ssGeneral, 'Update').Specifics.Values['UpdateCheck']<>'') then
+   DoUpdate(g_CmdOptions.OnlineUpdate);
 
  if g_CmdOptions.DoSplash then
  begin
