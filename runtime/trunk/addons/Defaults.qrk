@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.416  2008/07/24 15:02:31  danielpharos
+//Cleaned up texture name checking code and interface.
+//
 //Revision 1.415  2008/07/22 23:14:24  cdunde
 //Fixed menu items that were not interacting with their config settings in the Defaults.qrk file.
 //
@@ -1381,7 +1384,6 @@ QQRKSRC1
         Sel = "1"
         MppTopBtns = "1"
         IconPath = "images\\"
-        TextureNameCheck = "1"
         MaxRecentFiles = '5'
         ConsoleWidth = '80'
         ConsoleHeight = '60'
