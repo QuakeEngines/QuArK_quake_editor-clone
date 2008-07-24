@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.66  2008/07/22 01:03:00  cdunde
+New function added to the Model Editor tree-view RMB to save a skin when one is selected.
+
 Revision 1.65  2008/06/04 03:04:04  cdunde
 Setup new QuArK Model Editor Python model import export system.
 
@@ -3406,7 +3409,7 @@ begin
   Result:=Result+'.';
 end;
 
-var ProbableCauseOfFatalError: array[-9..5] of String = (
+var ProbableCauseOfFatalError: array[-9..6] of String = (
    {-9}    ' (Unable to initialise Python module "Quarkx")',
    {-8}    ' (Unable to find "quarkpy" directory or incorrect file versions)',
    {-7}    ' (Unable to find or execute "quarkpy.__init__.py", function "RunQuArK()")',
@@ -3421,7 +3424,8 @@ var ProbableCauseOfFatalError: array[-9..5] of String = (
    { 2}    ' (Error loading version-specific Python functions)',
    { 3}    ' (Unable to determine Python dll version)',
    { 4}    ' (Error loading Python functions)',
-   { 5}    ' (Unable to find or load Python dll)');
+   { 5}    ' (Unable to find or load Python dll)',
+   { 6}    ' (Unable to set-up PythonPath environmental variable)');
 
 
 procedure FatalError(Err: Integer);

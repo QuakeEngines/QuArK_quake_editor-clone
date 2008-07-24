@@ -29,6 +29,9 @@ Normal QuArK if the $DEFINEs below are changed in the obvious manner
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.29  2008/05/29 14:51:59  danielpharos
+Move to Uses to correct place
+
 Revision 1.28  2008/05/16 20:57:50  danielpharos
 Use centralized call to get correct directory
 
@@ -616,7 +619,12 @@ var
   VersionSubStrings: array[0..2] of string;
 begin
   //See ProbableCauseOfFatalError in QuarkX for return value meaning
+  Result:=6;
+
+  if SetEnvironmentVariable('PYTHONPATH', PChar(ExtractFileDir(Application.Exename)+'\Lib')) = false then
+    Exit;
   Result:=5;
+
   if PythonLib=0 then
   begin
     PythonDll:='python.dll';
