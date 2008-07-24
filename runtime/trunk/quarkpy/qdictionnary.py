@@ -784,7 +784,7 @@ Strings = {
     5566: "This map contains unsupported objects. It might have been created with a more recent version of QuArK.\n\n%d object(s) of unknown type deleted",
     5567: "Cannot undo this operation, sorry",
     5568: "Could not build the tool bar '%s'.",
-    5569: "The data in this file ('%s') does not match the file name ('%s').",
+    5569: "The filename-data in this file ('%s') does not match the actual file name ('%s').",
     5570: "(switch back to %s game mode)",
     5571: "'%s' is not a Quake 2 MD2 file//%d-%d should be %d-%d",
     5572: "'%s' looks like a Quake-2 (or one of its game descendants) BSP file,\nbut its BSP-version is not recognized and therefore not supported.//%d should be %d",
@@ -1052,6 +1052,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.126  2008/07/17 00:45:19  cdunde
+#Added new .md2 exporter with progress bar and logging capabilities.
+#
 #Revision 1.125  2008/06/28 14:52:35  cdunde
 #Added .lwo lightwave model export support and improved the importer.
 #

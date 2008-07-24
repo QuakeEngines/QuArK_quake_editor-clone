@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.64  2008/05/06 11:40:17  danielpharos
+Revert breaking change.
+
 Revision 1.63  2008/04/26 15:33:24  danielpharos
 Added a new game-specific: ShadersType. This is a gamecode-value indicating what game-style shaders a game uses.
 
@@ -1948,9 +1951,17 @@ begin
 end;
 
 procedure QTextureFile.CheckTexName;
+var
+  TexName: String;
 begin
-  if SetupSubSet(ssGeneral, 'Display').Specifics.Values['TextureNameCheck']<>'' then
-    CheckForName(nName, GetTexName);
+  if SetupSubSet(ssFiles, 'Textures').Specifics.Values['TextureNameCheck']<>'' then
+  begin
+    TexName := GetTexName;
+    if ((nName = '') or (TexName = '')) and (SetupSubSet(ssFiles, 'Textures').Specifics.Values['TextureEmptyNameValid']<>'') then
+      Exit;
+    if CompareText(nName, TexName)<>0 then
+      GlobalWarning(FmtLoadStr1(5569, [nName, TexName]));
+  end;
 end;
 
 function QTextureFile.GetTexName : String;

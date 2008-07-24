@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.47  2008/05/27 07:42:31  cdunde
+To allow Save File to work in the Model Editor and stop crashes,
+ also to allow Used Skins in the Texture Browser and for them to be used.
+
 Revision 1.46  2008/05/24 19:02:22  danielpharos
 Moved a string to the dictionary
 
@@ -321,7 +325,6 @@ function OpenFileObjectData(F: TStream; const FullName: String; var Size: LongIn
 procedure DeleteTempFiles;
 function SaveObject(FFileObject: QFileObject; AskName, Duplicate: Integer; ParentForm: TCustomForm) : QFileObject;
 function GetFileRoot(Q: QObject) : QFileObject;
-procedure CheckForName(const Name1, Name2: String);
 procedure AddToRecentFiles(const FileName: String);
 procedure ResizeRecentFiles;
 procedure RestoreAutoSaved(const Ext: String);
@@ -477,12 +480,6 @@ begin
   Size:=Size1;
  end;
 end;*)
-
-procedure CheckForName(const Name1, Name2: String);
-begin
- if CompareText(Name1, Name2)<>0 then
-  GlobalWarning(FmtLoadStr1(5569, [Name1, Name2]));
-end;
 
  {------------------------}
 

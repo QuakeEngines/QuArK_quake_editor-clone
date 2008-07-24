@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.415  2008/07/22 23:14:24  cdunde
+//Fixed menu items that were not interacting with their config settings in the Defaults.qrk file.
+//
 //Revision 1.414  2008/07/21 02:31:06  cdunde
 //Added 3D view modes to Options menu to allow viewing through objects for scenes.
 //
@@ -3588,6 +3591,12 @@ QQRKSRC1
 
     Files:config =
     {
+      Textures:config =
+      {
+        TextureNameCheck = "1"
+        TextureEmptyNameValid = "1"
+        Form = "FilesTextures"
+      }
       BMP:config =
       {
         LoadLibrary = "FreeImage"
@@ -7497,6 +7506,12 @@ QQRKSRC1
       t_GameBuildPgms=!
     }
 
+    FilesTextures:form = 
+    {
+      Style = "7"
+      TextureNameCheck: = {Typ="X" Txt="Texture name check" Cap="Enabled" Hint = "Enables the checking of texture names to check for texture integrity."}
+      TextureEmptyNameValid: = {Typ="X" Txt="Empty texture name is always valid" Cap="Enabled" Hint = "Treats empty texture names as always valid."}
+    }
     FilesBMP:form =
     {
       Style = "7"
@@ -8235,7 +8250,6 @@ QQRKSRC1
       sep: = {Typ="S" Bold="0" Txt="  and size after you made changes here)"}
       sep: = {Typ="S" Txt = ""}
       MppTopBtns: = {Typ="X" Txt="Multi-pages panels" Cap="Buttons above"}
-      TextureNameCheck: = {Typ="X" Txt="Texture name check" Cap="Enabled" Hint = "Enables the checking of texture names to check for texture integrity."}
       MaxRecentFiles = {Txt="Maximum number of recent files" Typ="EF1" Hint="Maximum amount of recent files to keep track of (0 .. 5)"}
       //ConsoleWidth = {Txt="Width of console" Typ="EF1" Hint="Amount of character per line in the console (80 .. 80)"}
       ConsoleHeight = {Txt="Height of console" Typ="EF1" Hint="Maximum amount of lines in the console (60 .. 600)"}
