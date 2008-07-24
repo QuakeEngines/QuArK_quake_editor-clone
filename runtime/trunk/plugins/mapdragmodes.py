@@ -426,6 +426,9 @@ quarkpy.maptools.toolbars["tb_dragmodes"] = DragModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.19  2006/11/30 01:17:48  cdunde
+# To fix for filtering purposes, we do NOT want to use capital letters for cvs.
+#
 # Revision 1.18  2006/11/29 06:58:36  cdunde
 # To merge all runtime files that had changes from DanielPharos branch
 # to HEAD for QuArK 6.5.0 Beta 1.
@@ -443,7 +446,7 @@ quarkpy.maptools.toolbars["tb_dragmodes"] = DragModesBar
 #
 # Revision 1.16  2005/11/13 10:17:29  cdunde
 # Previous fix caused another problem.
-# This fix’s that cursor setting problem
+# This fix's that cursor setting problem
 #
 # Revision 1.15  2005/11/13 08:25:07  cdunde
 # To finally fix cursor setting problem

@@ -1728,7 +1728,7 @@ def create_objects(filename, polynames, clip_list, objspec_list, surf_list, base
         ### For the model's 'Tris', this needs to be in binary so we use the 'struct' function.
         Tris = ''
         for key in facesuv_dict.keys():
-            if key.find(skinname[len(skinname)-1].replace(".tga", "_0")) != -1: # We half to do it this way because some of these dummy’s can't get the path right! 8-\
+            if key.find(skinname[len(skinname)-1].replace(".tga", "_0")) != -1: # We half to do it this way because some of these dummy's can't get the path right! 8-\
                 keyname = key # Don't change this, we use the keyname again later so we don't have to go through this again.
                 uv_list = facesuv_dict[keyname] # Gets the u,v list for this poly using (as a 'key') its name with the _0 added at the end of its name.
                 break
@@ -2244,6 +2244,11 @@ quarkpy.qmdlbase.RegisterMdlImporter(".lwo LightWave Importer", ".lwo file", "*.
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.6  2008/07/21 18:06:09  cdunde
+# Moved all the start and end logging code to ie_utils.py in two functions,
+# "default_start_logging" and "default_end_logging" for easer use and consistency.
+# Also added logging and progress bars where needed and cleaned up files.
+#
 # Revision 1.5  2008/07/11 04:34:32  cdunde
 # Setup of Specifics\Arg page for model types data and settings.
 #

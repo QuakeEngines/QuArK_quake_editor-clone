@@ -2369,6 +2369,9 @@ quarkpy.maptools.toolbars["tb_terrmodes"] = TerrModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.27  2008/02/22 09:52:22  danielpharos
+# Move all finishdrawing code to the correct editor, and some small cleanups.
+#
 # Revision 1.26  2007/01/31 15:12:16  danielpharos
 # Removed bogus OpenGL texture mode
 #
@@ -2435,7 +2438,7 @@ quarkpy.maptools.toolbars["tb_terrmodes"] = TerrModesBar
 #
 # Revision 1.13  2005/11/13 10:17:55  cdunde
 # Previous fix caused another problem.
-# This fix’s that cursor setting problem
+# This fix's that cursor setting problem
 #
 # Revision 1.12  2005/11/10 03:30:50  cdunde
 # To finally fix cursor setting problem

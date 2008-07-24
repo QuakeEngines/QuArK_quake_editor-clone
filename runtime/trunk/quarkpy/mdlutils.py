@@ -552,7 +552,7 @@ def MakeEditorFaceObject(editor, option=0):
                     # The last 3 amount are usually for texture positioning on a face, but can not be used for the Model Editor's format.
                     vtxindexes = (float(tris[trinbr][0][0]), float(tris[trinbr][1][0]), float(tris[trinbr][2][0]), 0.0, 0.0, 0.0)
                     face["tv"] = (vtxindexes)                                  # They don't really give usable values for texture positioning.
-                    verts = editor.Root.currentcomponent.currentframe.vertices # The list of vertex positions of the current component’s
+                    verts = editor.Root.currentcomponent.currentframe.vertices # The list of vertex positions of the current component's
                                                                                # current animation frame selected, if any, if not then its 1st frame.
                     vect0X ,vect0Y, vect0Z = verts[tris[trinbr][0][0]].tuple # Gives the actual 3D vector x,y and z positions of the triangle's 1st vertex.
                     vect1X ,vect1Y, vect1Z = verts[tris[trinbr][1][0]].tuple # Gives the actual 3D vector x,y and z positions of the triangle's 2nd vertex.
@@ -585,7 +585,7 @@ def MakeEditorFaceObject(editor, option=0):
                 # Here we need to use the triangles vertexes to maintain their proper order.
                 vtxindexes = (float(tris[trinbr][0][0]), float(tris[trinbr][1][0]), float(tris[trinbr][2][0]), 0.0, 0.0, 0.0) # We use this triangle's 3 vertex_index numbers here just to create the face object.
                 face["tv"] = (vtxindexes)                                  # They don't really give usable values for texture positioning.
-                verts = editor.Root.currentcomponent.currentframe.vertices # The list of vertex positions of the current component’s
+                verts = editor.Root.currentcomponent.currentframe.vertices # The list of vertex positions of the current component's
                                                                            # current animation frame selected, if any, if not then its 1st frame.
                 vect00 ,vect01, vect02 = verts[tris[trinbr][0][0]].tuple # Gives the actual 3D vector x,y and z positions of the triangle's 1st vertex.
                 vect10 ,vect11, vect12 = verts[tris[trinbr][1][0]].tuple # Gives the actual 3D vector x,y and z positions of the triangle's 2nd vertex.
@@ -614,7 +614,7 @@ def MakeEditorFaceObject(editor, option=0):
                     face["tex"] = "None"
                 vtxindexes = (float(tris[trinbr][0][0]), float(tris[trinbr][1][0]), float(tris[trinbr][2][0]), 0.0, 0.0, 0.0) # We use each triangle's 3 vertex_index numbers here just to create it's face object.
                 face["tv"] = (vtxindexes)                                                                                     # They don't really give usable values for texture positioning.
-                verts = editor.Root.currentcomponent.currentframe.vertices # The list of vertex positions of the current component’s
+                verts = editor.Root.currentcomponent.currentframe.vertices # The list of vertex positions of the current component's
                                                                            # current animation frame selected, if any, if not then its 1st frame.
                 vect00 ,vect01, vect02 = verts[tris[trinbr][0][0]].tuple # Gives the actual 3D vector x,y and z positions of this triangle's 1st vertex.
                 vect10 ,vect11, vect12 = verts[tris[trinbr][1][0]].tuple # Gives the actual 3D vector x,y and z positions of this triangle's 2nd vertex.
@@ -640,7 +640,7 @@ def MakeEditorFaceObject(editor, option=0):
                     face["tex"] = "None"
                 vtxindexes = (float(tris[trinbr][0][0]), float(tris[trinbr][1][0]), float(tris[trinbr][2][0]), 0.0, 0.0, 0.0) # We use each triangle's 3 vertex_index numbers here just to create it's face object.
                 face["tv"] = (vtxindexes)                                                                                     # They don't really give usable values for texture positioning.
-                verts = editor.Root.currentcomponent.currentframe.vertices # The list of vertex positions of the current component’s
+                verts = editor.Root.currentcomponent.currentframe.vertices # The list of vertex positions of the current component's
                                                                            # current animation frame selected, if any, if not then its 1st frame.
                 vect00 ,vect01, vect02 = verts[tris[trinbr][0][0]].tuple # Gives the actual 3D vector x,y and z positions of this triangle's 1st vertex.
                 vect10 ,vect11, vect12 = verts[tris[trinbr][1][0]].tuple # Gives the actual 3D vector x,y and z positions of this triangle's 2nd vertex.
@@ -2540,6 +2540,9 @@ def TexturePixelLocation(editor, view, x, y, object=None):
 #
 #
 #$Log$
+#Revision 1.79  2008/05/01 19:15:22  danielpharos
+#Fix treeviewselchanged not updating.
+#
 #Revision 1.78  2008/05/01 13:52:31  danielpharos
 #Removed a whole bunch of redundant imports and other small fixes.
 #
