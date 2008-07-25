@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.48  2008/07/24 15:02:38  danielpharos
+Cleaned up texture name checking code and interface.
+
 Revision 1.47  2008/05/27 07:42:31  cdunde
 To allow Save File to work in the Model Editor and stop crashes,
  also to allow Used Skins in the Texture Browser and for them to be used.
@@ -323,7 +326,7 @@ procedure GlobalDisplayWarnings;
 function GetExceptionMessage(E: Exception) : String;
 function OpenFileObjectData(F: TStream; const FullName: String; var Size: LongInt; nParent: QObject) : QFileObject;
 procedure DeleteTempFiles;
-function SaveObject(FFileObject: QFileObject; AskName, Duplicate: Integer; ParentForm: TCustomForm) : QFileObject;
+function SaveObject(FFileObject: QFileObject; AskName, Duplicate: Integer; ParentForm: TCustomForm; AddToRecentsList: Boolean = true) : QFileObject;
 function GetFileRoot(Q: QObject) : QFileObject;
 procedure AddToRecentFiles(const FileName: String);
 procedure ResizeRecentFiles;
@@ -1861,7 +1864,7 @@ end;
 
  {------------------------}
 
-function SaveObject(FFileObject: QFileObject; AskName, Duplicate: Integer; ParentForm: TCustomForm) : QFileObject;
+function SaveObject(FFileObject: QFileObject; AskName, Duplicate: Integer; ParentForm: TCustomForm; AddToRecentsList: Boolean = true) : QFileObject;
 var
  SaveDialog1: TSaveDialog;
  Info, Info1: TFileObjectClassInfo;
@@ -2029,7 +2032,7 @@ begin
  end;
 {if ParentForm<>Nil then
   SendMessage(ParentForm.Handle, wm_InternalMessage, wp_SetModify, 0);}
- if AddToRecents<>'' then
+ if AddToRecentsList and (AddToRecents<>'') then
   AddToRecentFiles(AddToRecents);
 end;
 
