@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.54  2008/05/15 10:09:35  danielpharos
+Fix wrong error message
+
 Revision 1.53  2008/02/23 20:22:20  danielpharos
 Small changes to Python loading and unloading
 
@@ -833,7 +836,7 @@ begin
       GetPakNames.Free;
     end;
 
-    //HL2 steam access
+    //Steam filesystem access
     if SetupGameSet.Specifics.Values['Steam']='1' then
     begin
       SteamRunning := RunSteam;
