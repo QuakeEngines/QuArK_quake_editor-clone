@@ -808,6 +808,7 @@ class ModelLayout(BaseLayout):
                 if view.info["viewname"] == "skinview":
                     view.invalidate()
         self.editor.Root.setcomponent(comp)
+        self.editor.Root.currentcomponent.currentframe = self.editor.Root.currentcomponent.dictitems['Frames:fg'].subitems[0]
 
 ########## commenting out the lines below brakes Misc dragging
         if self.editor.Root.currentcomponent is not None and not self.editor.Root.currentcomponent.shortname in savedskins:
@@ -992,6 +993,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.71  2008/07/15 23:16:26  cdunde
+#To correct typo error from MldOption to MdlOption in all files.
+#
 #Revision 1.70  2008/07/11 04:34:33  cdunde
 #Setup of Specifics\Arg page for model types data and settings.
 #
