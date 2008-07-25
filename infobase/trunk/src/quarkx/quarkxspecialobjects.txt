@@ -54,11 +54,24 @@ Opens an existing file and returns an Internal QuArK file object.
 </td></tr>
 
 <tr><td class="doccode">
-savefileobj(tex,FM_SaveAsFile,0,None)
+savefileobj(obj,FM_SaveAsFile,0,None)
 </td><td>
-Opens a 'Save File' window and saves a selected texture image (Internal QuArK file object) to any location.<br>
-<b>tex</b> the selected image, <b>FM_SaveAsFile</b> enter as shown here (fixed setting), <b>0</b> default setting,
-<b>None</b> default setting.
+Opens a 'Save File' window and saves any selected fileobject such as a texture image (Internal QuArK file object) or md2 file to any location.<br>
+<b>obj</b> the selected object in QuArK, <b>FM_SaveAsFile</b> enter as shown here (see others below), <b>0</b> to specify type of file to save as (see others below),
+<b>None</b> (default setting) specifies as dialog form, will not save the file until dialog closed.<br>
+<b><i>other settings available</i></b> :<br>
+2nd argument:
+<code>
+FM_Save           = 1
+FM_SaveAsFile     = 2
+FM_SaveIfModif    = 3
+FM_SaveTagOnly    = 4
+</code>
+3rd argument
+<code>
+0       = (default setting), any file type *.*
+1 - 8   = as shown in source code (Pcx, Tga, DDS, Bmp, JPeg, Png, M32, VTF)
+</code>
 </td></tr>
 
 <tr><td class="doccode">
