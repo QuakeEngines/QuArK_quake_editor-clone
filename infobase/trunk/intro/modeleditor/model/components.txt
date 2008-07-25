@@ -1,7 +1,7 @@
 title: Components of a Model
 author: cdunde
 
-A model is a single <b>QuArK Internal Object</b> that can consist of a single or mutipal <g>components</g>.
+A model is a single <b>QuArK Internal Object</b> that can consist of a single or multiple <g>components</g>.
 The elements that make up a model are stored as "<g>key</g><b>:</b><g>value</g>" pairs of the QuArK Internal Object,
 where there is a <g>key</g> name and a <g>value</g> that goes along with that <g>key</g> name.
 
