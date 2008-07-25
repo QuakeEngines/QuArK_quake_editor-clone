@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.68  2008/07/25 19:31:52  danielpharos
+Added setting to disable AddToRecent in SaveObject
+
 Revision 1.67  2008/07/24 18:02:57  danielpharos
 Added all missing Python files, and made sure Python can find them.
 
@@ -891,28 +894,26 @@ function xSaveFileObj(self, args: PyObject) : PyObject; cdecl;
 var
  nFileObject: PPythonObj;
  FileObject: QFileObject;
- nAskName, nDuplicate: Integer;
+ nAskName, nFileType: Integer;
  nForm: PPythonObj;
  Form: TCustomForm;
  nAddToRecents: Integer;
- AddToRecents: Boolean;
  nObj: QFileObject;
 begin
  try
   Result:=Nil;
   nFileObject:=Nil;
   nAskName:=0;
-  nDuplicate:=0;
+  nFileType:=0;
   nForm:=Nil;
-  if not PyArg_ParseTupleX(args, 'Oii|Oi', [@nFileObject, @nAskName, @nDuplicate, @nForm, @nAddToRecents]) then
+  if not PyArg_ParseTupleX(args, 'Oii|Oi', [@nFileObject, @nAskName, @nFileType, @nForm, @nAddToRecents]) then
    Exit;
   FileObject:=QFileObject(QkObjFromPyObj(nFileObject));
   if nForm=Py_None then
    Form:=nil
   else
    Form:=TCustomForm(QkObjFromPyObj(nForm));
-  AddToRecents:=(nAddToRecents <> 0);
-  nObj:=SaveObject(FileObject, nAskName, nDuplicate, Form, AddToRecents);
+  nObj:=SaveObject(FileObject, nAskName, nFileType, Form, (nAddToRecents <> 0));
   if nObj<>nil then
    nObj.AddRef(-1);
   Result:=PyNoResult;

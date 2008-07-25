@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.49  2008/07/25 19:31:53  danielpharos
+Added setting to disable AddToRecent in SaveObject
+
 Revision 1.48  2008/07/24 15:02:38  danielpharos
 Cleaned up texture name checking code and interface.
 
@@ -326,7 +329,7 @@ procedure GlobalDisplayWarnings;
 function GetExceptionMessage(E: Exception) : String;
 function OpenFileObjectData(F: TStream; const FullName: String; var Size: LongInt; nParent: QObject) : QFileObject;
 procedure DeleteTempFiles;
-function SaveObject(FFileObject: QFileObject; AskName, Duplicate: Integer; ParentForm: TCustomForm; AddToRecentsList: Boolean = true) : QFileObject;
+function SaveObject(FFileObject: QFileObject; AskName, FileType: Integer; ParentForm: TCustomForm; AddToRecentsList: Boolean = true) : QFileObject;
 function GetFileRoot(Q: QObject) : QFileObject;
 procedure AddToRecentFiles(const FileName: String);
 procedure ResizeRecentFiles;
@@ -1864,7 +1867,7 @@ end;
 
  {------------------------}
 
-function SaveObject(FFileObject: QFileObject; AskName, Duplicate: Integer; ParentForm: TCustomForm; AddToRecentsList: Boolean = true) : QFileObject;
+function SaveObject(FFileObject: QFileObject; AskName, FileType: Integer; ParentForm: TCustomForm; AddToRecentsList: Boolean = true) : QFileObject;
 var
  SaveDialog1: TSaveDialog;
  Info, Info1: TFileObjectClassInfo;
@@ -1905,7 +1908,7 @@ begin
         if Info1.FileExt<>0 then
          begin
           S:=S+LoadStr1(Info1.FileExt)+'|';
-          if I=Duplicate then
+          if I=FileType then
            FilterIndex:=SavingAsText;
           Inc(SavingAsText);
          end;
@@ -1986,11 +1989,11 @@ begin
          FFileObject.AddRef(-1);
          FFileObject:=Result;
          FFileObject.AddRef(+1);
-         Duplicate:=0;
+         FileType:=0;
         end;
        SavingTo:=rf_Default;
       end;
-     if Duplicate<0 then
+     if FileType<0 then
       begin  { detach object from parent Explorer }
        Result:=FFileObject.Clone(Nil, False) as QFileObject;
        Result.AddRef(+1);
