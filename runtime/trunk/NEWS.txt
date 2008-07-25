@@ -15,6 +15,8 @@ $Id$
 6.6.0 Beta 2
 ============
 
+* [cdunde]: Fixed component's first frame not being set sometimes when the component's main folder is selected.
+
 * [DanielPharos]: Added a single-instance check to check that only one QuArK is running at once.
 
 * [cdunde]: Added ability to clear all selections by a single LMB click in any open area of a Model Editor's view.
