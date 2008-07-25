@@ -15,6 +15,9 @@ $Id$
 6.6.0 Beta 2
 ============
 
+* [DanielPharos]: Updated component error checking and added frame matching and\or
+          - duplicating with independent names to avoid errors with other functions.
+
 * [cdunde]: Fixed component's first frame not being set sometimes when the component's main folder is selected.
 
 * [DanielPharos]: Added a single-instance check to check that only one QuArK is running at once.
