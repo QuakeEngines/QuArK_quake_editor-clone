@@ -227,9 +227,6 @@ class ModelEditor(BaseEditor):
         quarkx.setupsubset(SS_MODEL, "Options")["ExtrudeBulkHeads"] = None
         quarkx.setupsubset(SS_MODEL, "Options")['VertexUVColor'] = None
 
-    def ListComponents(self):
-        return self.Root.findallsubitems("", ':mc')   # find all components
-
 
     def initmenu(self, form):
         "Builds the menu bar."
@@ -1487,6 +1484,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.92  2008/07/24 04:34:32  cdunde
+#To clarify comment.
+#
 #Revision 1.91  2008/07/22 00:54:08  cdunde
 #New function added to the Model Editor tree-view RMB to save a skin when one is selected.
 #
