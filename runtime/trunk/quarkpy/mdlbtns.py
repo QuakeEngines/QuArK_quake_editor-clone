@@ -10,14 +10,10 @@ Model Editor Buttons and implementation of editing commands
 
 #$Header$
 
-
-
 import quarkx
 import qtoolbar
 from qdictionnary import Strings
 from mdlutils import *
-
-
 
 #
 # Drag-and-drop functions
@@ -31,6 +27,7 @@ def componentof(obj):
     else:
       if obj.type == ':mc':
         return obj
+
 
 def droptarget(editor, newitem):
     "Where is the new item to be inserted ? (parent, insertbefore)"
@@ -133,6 +130,7 @@ def dropitemsnow(editor, newlist, text=Strings[544], center="S"):
     editor.layout.actionmpp()
     return 1
 
+
 def dropitemnow(editor, newitem):
     "Drop a new item into the given map editor."
     dropitemsnow(editor, [newitem], Strings[616])
@@ -140,6 +138,7 @@ def dropitemnow(editor, newitem):
 
 def replacespecifics(obj, mapping):
     pass
+
 
 def prepareobjecttodrop(editor, obj):
     "Call this to prepare an object to be dropped. It replaces [auto] Specifics."
@@ -149,14 +148,11 @@ def prepareobjecttodrop(editor, obj):
     obj[";incl"] = None
 
 
-
 def mdlbuttonclick(self):
     "Drop a new model object from a button."
     editor = mapeditor(SS_MODEL)
     if editor is None: return
     dropitemsnow(editor, map(lambda x: x.copy(), self.dragobject))
-
-
 
 #
 # General editing commands.
@@ -182,12 +178,15 @@ def deleteitems(root, list):
 def edit_del(editor, m=None):
     deleteitems(editor.Root, editor.visualselection())
 
+
 def edit_copy(editor, m=None):
     quarkx.copyobj(editor.visualselection())
+
 
 def edit_cut(editor, m=None):
     edit_copy(editor, m)
     edit_del(editor, m)
+
 
 def edit_paste(editor, m=None):
     newitems = quarkx.pasteobj(1)
@@ -198,9 +197,109 @@ def edit_paste(editor, m=None):
     if not dropitemsnow(editor, newitems, Strings[543], origin):
         quarkx.beep()
 
+
 def edit_dup(editor, m=None):
     if not dropitemsnow(editor, editor.visualselection(), Strings[541], "0"):
         quarkx.beep()
+    else:
+        for item in range(len(editor.visualselection())):
+            if editor.visualselection()[item].type == ":mc":
+                # Checks for component names matching any new components and changes the new one's
+                # name(s) if needed to avoid dupes which cause problems in other functions.
+                components = editor.Root.findallsubitems("", ':mc')   # find all components
+                itemdigit = None
+                if editor.visualselection()[item].shortname[len(editor.visualselection()[item].shortname)-1].isdigit():
+                    itemdigit = ""
+                    count = len(editor.visualselection()[item].shortname)-1
+                    while count >= 0:
+                        if editor.visualselection()[item].shortname[count] == " ":
+                            count = count - 1
+                        elif editor.visualselection()[item].shortname[count].isdigit():
+                            itemdigit = str(editor.visualselection()[item].shortname[count]) + itemdigit
+                            count = count - 1
+                        else:
+                            break
+                    itembasename = editor.visualselection()[item].shortname.split(itemdigit)[0]
+                else:
+                    itembasename = editor.visualselection()[item].shortname
+
+                name = None
+                comparenbr = 0
+                for comp in components:
+                    if not itembasename.endswith(" ") and comp.shortname.startswith(itembasename + " "):
+                        continue
+                    if comp.shortname.startswith(itembasename):
+                        getnbr = comp.shortname.replace(itembasename, '')
+                        if getnbr == "":
+                            nbr = 0
+                        else:
+                            nbr = int(getnbr)
+                        if nbr > comparenbr:
+                            comparenbr = nbr
+                        nbr = comparenbr + 1
+                        name = itembasename + str(nbr)
+                if name is not None:
+                    pass
+                else:
+                    name = editor.visualselection()[item].shortname
+                editor.visualselection()[item].shortname = name
+                compframes = editor.visualselection()[item].dictitems['Frames:fg'].subitems   # all frames
+                for compframe in compframes:
+                    compframe.compparent = editor.visualselection()[item] # To allow frame relocation after editing.
+
+            if editor.visualselection()[item].type == ":mf":
+                # Checks for component frame names matching any new components frame names and changes
+                # the new one's name(s) if needed to avoid dupes which cause problems in other functions.
+                compframes = editor.visualselection()[item].parent.subitems   # all frames
+                itemdigit = None
+                if editor.visualselection()[item].shortname[len(editor.visualselection()[item].shortname)-1].isdigit():
+                    itemdigit = ""
+                    count = len(editor.visualselection()[item].shortname)-1
+                    while count >= 0:
+                        if editor.visualselection()[item].shortname[count] == " ":
+                            count = count - 1
+                        elif editor.visualselection()[item].shortname[count].isdigit():
+                            itemdigit = str(editor.visualselection()[item].shortname[count]) + itemdigit
+                            count = count - 1
+                        else:
+                            break
+                    itembasename = editor.visualselection()[item].shortname.split(itemdigit)[0]
+                else:
+                    itembasename = editor.visualselection()[item].shortname
+
+                name = None
+                comparenbr = 0
+                count = 0
+                stopcount = 0
+                for compframe in compframes:
+                    if not itembasename.endswith(" ") and compframe.shortname.startswith(itembasename + " "):
+                        if stopcount == 0:
+                            count = count + 1
+                        continue
+                    if compframe.shortname.startswith(itembasename):
+                        stopcount = 1
+                        getnbr = compframe.shortname.replace(itembasename, '')
+                        if getnbr == "":
+                            nbr = 0
+                        else:
+                            nbr = int(getnbr)
+                        if nbr > comparenbr:
+                            comparenbr = nbr
+                            count = count + 1
+                        nbr = comparenbr + 1
+                        name = itembasename + str(nbr)
+                    if stopcount == 0:
+                        count = count + 1
+                if name is not None:
+                    pass
+                else:
+                    name = editor.visualselection()[item].shortname
+                editor.visualselection()[item].shortname = name
+                # Places the new frame at the end of its group of frames of the same name.
+                itemtomove = editor.visualselection()[item]
+                itemtomoveparent = itemtomove.parent
+                itemtomoveparent.removeitem(itemtomove)
+                itemtomoveparent.insertitem(count, itemtomove)
 
 
 def edit_newgroup(editor, m=None):
@@ -249,7 +348,6 @@ def edit_newgroup(editor, m=None):
     editor.layout.explorer.expand(newgroup)
 
 
-
 def texturebrowser(reserved=None):
     "Opens the texture browser."
 
@@ -274,8 +372,6 @@ def texturebrowser(reserved=None):
     #
 
     quarkx.opentoolbox("", seltex)
-
-
 
 
 def moveselection(editor, text, offset=None, matrix=None, origin=None, inflate=None):
@@ -355,7 +451,6 @@ def moveselection(editor, text, offset=None, matrix=None, origin=None, inflate=N
         quarkx.msgbox(Strings[222], MT_ERROR, MB_OK)
 
 
-
 def ForceToGrid(editor, grid, sellist):
     undo = quarkx.action()
     for obj in sellist:
@@ -391,6 +486,9 @@ def groupcolor(m):
 #
 #
 #$Log$
+#Revision 1.20  2008/05/27 19:36:16  danielpharos
+#Fixed another bunch of wrong imports
+#
 #Revision 1.19  2008/05/01 13:52:32  danielpharos
 #Removed a whole bunch of redundant imports and other small fixes.
 #

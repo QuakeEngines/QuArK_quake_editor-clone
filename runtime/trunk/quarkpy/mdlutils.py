@@ -1634,22 +1634,63 @@ def movefaces(editor, movetocomponent, option=2):
 def addframe(editor):
     comp = editor.Root.currentcomponent
     if (editor.layout.explorer.uniquesel is None) or (editor.layout.explorer.uniquesel.type != ":mf"):
-        quarkx.msgbox("You need to select a single\nframe to duplicate.", MT_ERROR, MB_OK)
+        quarkx.msgbox("You need to select a single frame to duplicate.\n\nFor multiple frames use 'Duplicate' on the 'Edit' menu.", MT_ERROR, MB_OK)
         return
 
     newframe = editor.layout.explorer.uniquesel.copy()
     new_comp = comp.copy()
-    for obj in new_comp.dictitems['Frames:fg'].subitems:
-       if obj.name == editor.layout.explorer.uniquesel.name:
-            count = new_comp.dictitems['Frames:fg'].subitems.index(obj)+1
-            break
+    compframes = new_comp.dictitems['Frames:fg'].subitems   # all frames
+    itemdigit = None
 
-    newframe.shortname = newframe.shortname + " copy"
-    new_comp.dictitems['Frames:fg'].insertitem(count, newframe)
-  #  new_comp.dictitems['Frames:fg'].appenditem(newframe) # This will just append the new frame copy at the end of the frames list.
-    compframes = new_comp.findallsubitems("", ':mf')   # get all frames
+    if newframe.shortname[len(newframe.shortname)-1].isdigit():
+        itemdigit = ""
+        count = len(newframe.shortname)-1
+        while count >= 0:
+            if newframe.shortname[count] == " ":
+                count = count - 1
+            elif newframe.shortname[count].isdigit():
+                itemdigit = str(newframe.shortname[count]) + itemdigit
+                count = count - 1
+            else:
+                break
+        itembasename = newframe.shortname.split(itemdigit)[0]
+    else:
+        itembasename = newframe.shortname
+
+    name = None
+    comparenbr = 0
+    count = 0
+    stopcount = 0
     for compframe in compframes:
-        compframe.compparent = new_comp # To allow frame relocation after editing.
+        if not itembasename.endswith(" ") and compframe.shortname.startswith(itembasename + " "):
+            if stopcount == 0:
+                count = count + 1
+            continue
+        if compframe.shortname.startswith(itembasename):
+            stopcount = 1
+            getnbr = compframe.shortname.replace(itembasename, '')
+            if getnbr == "":
+                nbr = 0
+            else:
+                nbr = int(getnbr)
+            if nbr > comparenbr:
+                comparenbr = nbr
+                count = count + 1
+            nbr = comparenbr + 1
+            name = itembasename + str(nbr)
+        if stopcount == 0:
+            count = count + 1
+    if name is not None:
+        pass
+    else:
+        name = newframe.shortname
+    newframe.shortname = name
+    # Places the new frame at the end of its group of frames of the same name.
+    new_comp.dictitems['Frames:fg'].insertitem(count, newframe)
+    compframes = new_comp.dictitems['Frames:fg'].subitems   # all frames
+    # To allow frame relocation after editing.
+    for compframe in compframes:
+        compframe.compparent = new_comp
     undo = quarkx.action()
     undo.exchange(comp, None)
     undo.put(editor.Root, new_comp)
@@ -2540,6 +2581,9 @@ def TexturePixelLocation(editor, view, x, y, object=None):
 #
 #
 #$Log$
+#Revision 1.80  2008/07/24 23:34:12  cdunde
+#To fix non-ASCII character from causing python depreciation errors.
+#
 #Revision 1.79  2008/05/01 19:15:22  danielpharos
 #Fix treeviewselchanged not updating.
 #
