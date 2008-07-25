@@ -807,8 +807,10 @@ class ModelLayout(BaseLayout):
             for view in self.editor.layout.views:
                 if view.info["viewname"] == "skinview":
                     view.invalidate()
+        for component in self.editor.Root.findallsubitems("", ':mc'):   # find all components
+            self.editor.Root.setcomponent(component)
+            self.editor.Root.currentcomponent.currentframe = self.editor.Root.currentcomponent.dictitems['Frames:fg'].subitems[0]
         self.editor.Root.setcomponent(comp)
-        self.editor.Root.currentcomponent.currentframe = self.editor.Root.currentcomponent.dictitems['Frames:fg'].subitems[0]
 
 ########## commenting out the lines below brakes Misc dragging
         if self.editor.Root.currentcomponent is not None and not self.editor.Root.currentcomponent.shortname in savedskins:
@@ -993,6 +995,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.72  2008/07/25 00:23:55  cdunde
+#Fixed component's first frame not being set sometimes when the component's main folder is selected.
+#
 #Revision 1.71  2008/07/15 23:16:26  cdunde
 #To correct typo error from MldOption to MdlOption in all files.
 #
