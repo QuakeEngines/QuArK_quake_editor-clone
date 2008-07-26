@@ -437,7 +437,8 @@ class ModelEditor(BaseEditor):
                 if mc_count > 1:
                     import mdlcommands
                     mdlcommands.MatchFrameCount.state = qmenu.normal
-                    return [mdlcommands.MatchFrameCount , qmenu.sep] + mdlmenus.MultiSelMenu(sellist, self) + extra
+                    mdlcommands.CheckC.state = qmenu.normal
+                    return [mdlcommands.MatchFrameCount, mdlcommands.CheckC, qmenu.sep] + mdlmenus.MultiSelMenu(sellist, self) + extra
         return mdlmenus.MultiSelMenu(sellist, self) + extra
 
 
@@ -1484,6 +1485,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.93  2008/07/25 22:43:01  cdunde
+#To remove unnecessary function, could cause problems if used then removed. (Dan suggested, good idea)
+#
 #Revision 1.92  2008/07/24 04:34:32  cdunde
 #To clarify comment.
 #

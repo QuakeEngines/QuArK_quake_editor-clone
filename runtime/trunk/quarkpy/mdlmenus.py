@@ -262,15 +262,20 @@ def BaseMenu(sellist, editor):
     paste1 = qmenu.item("Paste", editor.editcmdclick)
     paste1.cmd = "paste"
     paste1.state = not quarkx.pasteobj() and qmenu.disabled
+    Duplicate1 = qmenu.item("Dup&licate", editor.editcmdclick)
+    Duplicate1.cmd = "dup"
     Delete1 = qmenu.item("&Delete", editor.editcmdclick)
     Delete1.cmd = "del"
 
-    return [Force1, qmenu.sep, Cut1, Copy1, paste1, qmenu.sep, Delete1]
+    return [Force1, qmenu.sep, Cut1, Copy1, paste1, qmenu.sep, Duplicate1, Delete1]
 
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.31  2008/07/15 23:16:26  cdunde
+#To correct typo error from MldOption to MdlOption in all files.
+#
 #Revision 1.30  2008/07/14 18:06:53  cdunde
 #To sort the exporters menu.
 #
