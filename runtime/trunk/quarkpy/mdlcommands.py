@@ -28,12 +28,12 @@ def matchframesclick(m):
     new_comps = []
     for item in range(len(editor.layout.explorer.sellist)):
         if editor.layout.explorer.sellist[item].type == ":mc":
-            if len(editor.layout.explorer.sellist[item].dictitems['Frames:fg'].subitems)-1 > framecount:
+            if len(editor.layout.explorer.sellist[item].dictitems['Frames:fg'].subitems) > framecount:
                 if framecount != 0:
                     countsdontmatch = 1
-                framecount = len(editor.layout.explorer.sellist[item].dictitems['Frames:fg'].subitems)-1
+                framecount = len(editor.layout.explorer.sellist[item].dictitems['Frames:fg'].subitems)
                 hasmostframes = item
-            elif len(editor.layout.explorer.sellist[item].dictitems['Frames:fg'].subitems)-1 < framecount:
+            elif len(editor.layout.explorer.sellist[item].dictitems['Frames:fg'].subitems) < framecount:
                 countsdontmatch = 1
     if countsdontmatch is not None:
         newsellist = []
@@ -228,6 +228,10 @@ onclick = commandsclick
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.20  2008/07/25 22:57:23  cdunde
+# Updated component error checking and added frame matching and\or
+# duplicating with independent names to avoid errors with other functions.
+#
 # Revision 1.19  2008/07/17 00:36:44  cdunde
 # Added new function "Match Frame Count" to the Commands & RMB menus
 # which duplicates the number of frames in selected components.
