@@ -385,7 +385,7 @@ class ModelEditor(BaseEditor):
         import mdlmenus
 
         def SaveSkinFile(m):
-            quarkx.savefileobj(obj, FM_SaveAsFile, 0, None)
+            quarkx.savefileobj(obj, FM_SaveAsFile, 0, None, 0)
 
         try:
             if view.info["viewname"] == "skinview":
@@ -1485,6 +1485,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.94  2008/07/26 03:41:33  cdunde
+#Add functions to RMB menus.
+#
 #Revision 1.93  2008/07/25 22:43:01  cdunde
 #To remove unnecessary function, could cause problems if used then removed. (Dan suggested, good idea)
 #
