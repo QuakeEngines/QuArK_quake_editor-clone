@@ -15,6 +15,12 @@ the editor's grid.
 
 <i>Paste </i>&nbsp;: Paste a model object from the clipboard.
 
+<i>Duplicate </i>&nbsp;: This makes a copy of the selected object(s), but not all of them.
+Primarily components and frames, it gives each new item its own name by adding the next
+numerical sequence of its group. With frames it drops it at the end of its group.
+This avoids errors with other functions. Also handles skins, but no renaming,
+and multiple items, even in different groups and components.
+
 <i>Delete </i>&nbsp;: Delete the selection.
 
 <i>Show Component </i>&nbsp;: This works in conjunction with the <g>Hide Component</g> function below.
@@ -34,6 +40,9 @@ file because they do not have a <g>palette</g> like .pcx files do, this will onl
 
 <i>Match Frame Count </i>&nbsp;: This will duplicate the number of frames in the selected components with the one
 that has the most frames in it. It will not copy the frames, only how many there are.
+
+<i>Check Components </i>&nbsp;: This checks components for any errors in them that might exist. At this time just
+for <g>Match Frame Count</g> but more will be added in the future. However it does give more info about them.
 
 <i>Duplicate Current Frame </i>&nbsp;: This copies a single frame that is currently selected and adds
 that copy to that model component's animation frames list just below the frame being copied.
