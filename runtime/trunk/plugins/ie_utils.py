@@ -23,7 +23,7 @@ tobj = None
 '''
 NOTE: ALL IMPORTERS AND EXPORTERS SHOULD INCLUDE THIS LOGGING CODE.
 
-1) To add logging to an importer or exporter put these lines near the top in this order:
+1) To add logging to an importer or exporter put these lines near the top, under the file header, in this order:
 import os, time, operator
 import ie_utils
 from ie_utils import tobj
@@ -295,6 +295,11 @@ def validpath(filename):
 #
 #
 #$Log$
+#Revision 1.6  2008/07/21 18:06:14  cdunde
+#Moved all the start and end logging code to ie_utils.py in two functions,
+#"default_start_logging" and "default_end_logging" for easer use and consistency.
+#Also added logging and progress bars where needed and cleaned up files.
+#
 #Revision 1.5  2008/07/17 00:49:49  cdunde
 #Fixed proper switching of logging options during the same session of QuArK.
 #
