@@ -1,0 +1,38 @@
+title: About the Python Struct Module
+author: cdunde
+
+We'll only cover a very small portion of it here, but basically the <g>Struct Module</g> is made up of functions
+to handle <g>binary</g> code data, converting it into standard text format and back again. A link to the entire
+module is <a href="http://docs.python.org/lib/module-struct.html">here</a> and another good part to review is
+the chart at the top, <a href="http://docs.python.org/lib/module-array.html">here</a>, which is also shown below.
+<code>
+<b>pack(<i> fmt, v1, v2,</i> ...)</b>
+       Return a string containing the values v1, v2, ... packed according to the given format.
+       The arguments must match the values required by the format exactly.
+
+<b>unpack(<i> fmt, string</i>)</b>
+         Unpack the string (presumably packed by pack(fmt, ...)) according to the given format.
+         The result is a tuple even if it contains exactly one item.
+         The string must contain exactly the amount of data required by the format
+         (len(string) must equal calcsize(fmt))
+
+A format character may be preceded by an integral repeat count.
+    For example, the format string '4h' means exactly the same as 'hhhh'.
+Whitespace characters between formats are ignored; a count and its format must not contain whitespace though.
+
+<b>calcsize(<i> fmt</i>)</b>
+           Return the size of the struct (and hence of the string) corresponding to the given format.
+
+For the "s" format character, the count is interpreted as the size of the string,
+    not a repeat count like for the other format characters;
+    for example, '10s' means a single 10-byte string, while '10c' means 10 characters.
+</code>
+Format characters have the following meaning; the conversion between C and Python values should be obvious given their types:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+("signed" means they can be positive + or negative - values, "unsigned" means they are only positive +)
+<img border=0 align=left>struct2.png</img>
+<img border=0 align=left>struct1.png</img>
+
+
+
+

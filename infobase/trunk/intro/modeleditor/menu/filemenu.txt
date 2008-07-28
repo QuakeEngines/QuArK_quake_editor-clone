@@ -5,6 +5,12 @@ author: cdunde
 <i>Open</i> works just as in the QuArK-Explorer. You can open any supported model file with
 this to work on.
 
+<i>Model Importers</i> Shows the Python importer plugins that are available.
+They will import that type of model once the editor is open.
+
+<i>Model Exporters</i> Shows the Python exporters plugins that are available.
+They will export that type of model once the editor is open.
+
 <i>Save</i> will save your current model to the same location and file type it was opened as.
 
 <i>Save in QuArK Explorer</i>. Use this if you want to add this model to your

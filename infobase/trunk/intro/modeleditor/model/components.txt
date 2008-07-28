@@ -5,11 +5,11 @@ A model is a single <b>QuArK Internal Object</b> that can consist of a single or
 The elements that make up a model are stored as "<g>key</g><b>:</b><g>value</g>" pairs of the QuArK Internal Object,
 where there is a <g>key</g> name and a <g>value</g> that goes along with that <g>key</g> name.
 
-Also, each of the "key names" CAN BE given a specific <g>type</g> to distinguish what kind of element it is.
+Also, each of the "key names" CAN BE given a specific <g>type</g> to distinguish what kind of element it is.<br>
 So an example of a <g>key</g>, its <g>type</g> and its related <g>value</g> would look like this:
 <code>{'Skins:sg': &lt;QuArK Internal object at 0x01390F78>}</code>
 
-The <g>key</g> name is Skins, its <g>type</g> sg (skin group) and its <g>value</g> is another QuArK Internal Object (the skin group).
+The <g>key</g> name is Skins, its <g>type</g> sg (skin group) and its <g>value</g> is another QuArK Internal Object (the skin texture image).
 This method of using "<g>key</g><b>:</b><g>value</g>" pairs runs all the way through as a model's <g>component(s)</g> elements are broken down.
 
 A list of the different "type"s of "key"s is shown in the code example below, <g>displayed in blue</g>.<br>

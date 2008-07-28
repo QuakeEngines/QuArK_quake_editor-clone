@@ -1,0 +1,137 @@
+title: Writing the File Processing of the Code
+author: cdunde
+
+If you have completed the previous sections, you are now ready to start writing the part of the code that opens, reads
+and processes a model file.<br>
+We will continue to use the <g>QuArK\plugins\ie_md2_import.py</g> file as our working example, refer to it often since
+most of the code will be skipped here to keep it brief.
+
+<a name="import_md2_model2"></a>
+The next function we need to write is <a href="#import_md2_model1">import_md2_model</a>, which is called from our
+previous function <a href="#loadmodel1">loadmodel</a> passing the <g>editor</g> and <g>filename</g> to our new function.
+
+In the first part of its code you will see a section that deals with checking to see if we have already imported any
+other models into the editor so that it can get a proper numbering sequence to add to the name of the component that
+is currently being imported.<br>
+<b>All names need to be distinct to avoid problems with other functions of the editor's code</b>
+later on when working on (editing) the model.
+
+<a name="load_md2_1"></a>
+The line of code following the above section calls another function,
+<a href="#load_md2_2">load_md2</a>, which will return the various parts of
+data we will use in the
+<a href="intro.modeleditor.importexport.html#componentcreation">following section of this function to create the component</a>
+itself in a format that QuArK can understand and use, <a href="#dictitems2">The Component's Format</a>.
+<code>
+    Tris, skinsize, skingroup, framesgroup = load_md2(md2_filename, name) # Loads the model.
+</code>
+
+And finally, at the very end, this function will return the <g>ModelRoot</g> and the <g>Component</g> back to the
+<a href="#loadmodel1">loadmodel</a> function to finish the whole process by putting the model's component
+into the editor, using its <a href="#undo1">undo</a> section of code.
+
+Because we are working with the <g>.md2</g> code, a <g>Quake 2 model</g> only has one component per model.
+If we were importing a different kind of model format it might have more then one.
+In which case, this whole process would continue in one big <g>loop</g>, in this function, until all of
+the model's components have been loaded, creating a <g>list of components</g> that would then be returned
+to the previous function <a href="#loadmodel1">loadmodel</a> where each component in that list would be
+handled by its <a href="#undo1">undo</a> section to put them into the editor. You can find this kind of coding in the
+<g>QuArK\plugins\ie_lwo_import.py</g> file to use as a guide.
+
+<a name="load_md2_2"></a>
+Now let's go on to our next function <a href="#load_md2_1">load_md2</a>
+
+<u><b><i>Code to Open & Read a Model File</i></b></u> :<br>
+Near the very beginning of the <a href="#load_md2_1">load_md2</a> function we see this line of code which actually
+opens the <g>.md2</g> model file for reading.
+<code>
+    file=open(md2_filename,"rb")
+</code>
+Notice the <g>"rb"</g>, that stands for <g>read binary</g> because that is how most model files store their data,
+in <b>binary</b> format which you can not read like a regular text file. This saves space and speeds up the use of
+that file in the game. So yes, we will be getting into a little bit of <g>binary code</g> now. But not to worry,
+Python has a <g>module</g> called <a href="#fileimports">struct</a> that handles the conversion of that type of
+code into regular text so we can work with it. We just need to cover on how to use that <g>module</g>
+because we already <a href="#fileimports">imported the module</a> at the beginning.
+
+It reads the entire file at one time, stores all the data into memory and then closes the file with the code
+<g>file.close()</g> a few lines down. Now we're ready to <g>Process</g>.
+
+But before we do that we first need to deal with our <a href="src.quarkx.html#moduleprogressbar">progressbar</a>
+by using that <a href="#progressbars2">trick</a>
+to add a component's name to its text and <a href="#progressbars2">give its settings</a> to start it.<br>
+And just below that, after another function call, we start with some of our <g>logging text calls</g> (see the file).
+Ok, let's go <g>Process the Model's Data</g>.
+
+<a name="processdata"></a>
+<u><b><i>Code to Process the Model's Data</i></b></u> :<br>
+Remember, we are still in our <a href="#load_md2_1">load_md2</a> function that is going to be calling two other
+functions to do certain parts of the data processing and return what we need, right back to here, to pass on
+and create the component with later. These other two functions are:
+<code>
+    skinsize, skingroup = load_textures(md2) # Calls here to make the Skins Group.
+
+    (the <a href="#tris1"><b>Tris</b></a> creation code is done here)
+
+    framesgroup = animate_md2(md2) # Calls here to make the Frames Group.
+</code>
+And finally it <g>returns</g> all of this reconstructed data right back to our
+<a href="#load_md2_1">import_md2_model</a> function to finish
+<a href="intro.modeleditor.importexport.html#componentcreation">creating the comonent</a> with.
+<code>
+    return Tris, skinsize, skingroup, framesgroup
+</code>
+But lets not get ahead of ourselves, first we need to cover two more things, the '<a href="#tris1"><b>Tris</b></a>'
+and using the <a href="intro.modeleditor.importexport.html#structmodule">struct module</a>
+in one of the above functions for the binary code.
+
+As we had covered earlier in the <a href="intro.modeleditor.importexport.html#componentmakeup">What Makes Up a Model Component</a>
+section the <a href="#tris1"><b>Tris</b></a> is a list of smaller lists, each containing a <g>(vert_index, U, V)</g>
+but in <g>binary</g> code. The section above creates that <a href="#tris1"><b>Tris</b></a>. The lines of code are long,
+so I will need to split them up to demonstrate here, looking at the file may also help you.
+
+When ever you set something like this up you first need to define it (make a blank one) and since the
+<a href="#tris1"><b>Tris</b></a> is nothing more then a long text <g>string</g> of data, that's what we'll
+make it with the first line of code.
+
+Then we write a <g>Python loop</g> which just runs through each <g>face</g> (triangle) of the component's
+<g>mesh</g> adding that data to the <a href="#tris1"><b>Tris</b></a>. That's what the three lines of code are doing
+inside our <g>loop</g>, one line for each of the three vertexes of that <g>face</g> (triangle).
+
+Now you are seeing one of the functions (<a href="intro.modeleditor.importexport.html#structmodule">pack</a>) of the
+<a href="intro.modeleditor.importexport.html#structmodule">struct module</a> being put to work here and that is what
+the first part (<a href="intro.modeleditor.importexport.html#structmodule">"Hhh"</a>) is about.<br>
+This is how it tells the <a href="intro.modeleditor.importexport.html#structmodule">pack</a>
+function that the next three peices of data that follow are
+<a href="intro.modeleditor.importexport.html#structmodule">1 unsigned short integer and 2 short integers</a> and<br>
+that we want to <a href="intro.modeleditor.importexport.html#structmodule">pack</a> (or put) them into the
+<a href="#tris1"><b>Tris</b></a> as <a href="intro.modeleditor.importexport.html#structmodule">binary code</a>,
+because that is the way QuArK needs them in order to work.
+
+Notice how each piece of data is split up by a comma at the end, except for the last one, giving four data items per line.<br>
+The final three are the <g>vert_index, U,</g> and <g>V</g> values that are read in from the model file else ware in the code
+(see our work file).<br>
+They are other <g>lists of data</g> that have been <g>attached</g> (that's what the <g>dot</g> betweeNotice how each piece of data is split up by a comma at the end, except for the last one, giving four data items per line.
+The final three are the vert_index, U, and V values that are read in from the model file else ware in the code (see our work file).
+They are other lists of data that have been attached (that's what the dot betwean them does) to the md2 object which is created in another function in the file.
+Search and study the file to see where and how that is done. You shouldn't have a problem doing that now. 
+
+Also take a look at the load_textures and animate_md2 functions while you are there to see how those are written and handled as well. 
+
+n them does) to
+the <g>md2 object</g> which is created in another function in the file.<br>
+Search and study the file to see where and how that is done. You shouldn't have a problem doing that now.
+<code>
+Tris = ''
+for i in xrange(0, md2.num_faces):
+    Tris = Tris + struct.pack("Hhh", md2.faces[i].vertex_index[0], md2.tex_coords[md2.faces[i].texture_index[0]].u,
+                                     md2.tex_coords[md2.faces[i].texture_index[0]].v)
+    Tris = Tris + struct.pack("Hhh", md2.faces[i].vertex_index[1], md2.tex_coords[md2.faces[i].texture_index[1]].u,
+                                     md2.tex_coords[md2.faces[i].texture_index[1]].v)
+    Tris = Tris + struct.pack("Hhh", md2.faces[i].vertex_index[2], md2.tex_coords[md2.faces[i].texture_index[2]].u,
+                                     md2.tex_coords[md2.faces[i].texture_index[2]].v)
+</code>
+Also take a look at the <a href="#processdata">load_textures</a> and <a href="#processdata">animate_md2</a> functions
+while you are there to see how those are written and handled as well.<br>
+Once you have done that, continue on to our final step below. To write the <g>exporter</g>, basically it's just the reverse
+process.

@@ -1,6 +1,7 @@
 title: Model-editor in QuArK
 subdir: overview
 subdir: model
+subdir: importexport
 subdir: menu
 subdir: rmbmenus
 subdir: toolpalettes

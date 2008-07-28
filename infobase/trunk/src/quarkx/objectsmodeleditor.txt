@@ -1,21 +1,9 @@
-title: Internal objects & functions related to the Model Editor
+title: Internal objects related to the Model Editor
 author: cdunde
 
 From version 5.3, there are a few new types of QuArK Internal Objects. When editing a Model, the generic object in the tree
 view is of type MdlObject, which inherits all attributes and methods from 3Dobject (see above). A "component" of the Model is
 an object of type Component. A "frame" of the Model is an object of type Frame. A "skin" is a standard Image object.
-
-Here are the special functions of the Model Editor.
-
-<table border=1 cellspacing=0 cellpadding=4>
-
-<tr><td class="doccode">
-ListComponents
-</td><td>
-(located in mdleditor.py) Returns a list of all the model components in the editor, call like this ex: components = editor.ListComponents( )
-</td></tr>
-
-</table>
 
 Here are the attributes and methods of the Component objects.
 
