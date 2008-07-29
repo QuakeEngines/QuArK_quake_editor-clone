@@ -262,7 +262,7 @@ class dotext:
 """
 NOTE: ALL IMPORTERS AND EXPORTERS SHOULD INCLUDE THIS PATH CHECKING CODE.
 
-1) To add path checking to an importer or exporter put this lines near the top:
+1) To add path checking to an importer or exporter put this line near the top:
 import ie_utils
 
 2) Call for the path check like this:
@@ -295,6 +295,9 @@ def validpath(filename):
 #
 #
 #$Log$
+#Revision 1.7  2008/07/27 19:28:49  cdunde
+#Comment update.
+#
 #Revision 1.6  2008/07/21 18:06:14  cdunde
 #Moved all the start and end logging code to ie_utils.py in two functions,
 #"default_start_logging" and "default_end_logging" for easer use and consistency.
