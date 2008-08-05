@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2008/07/17 14:47:57  danielpharos
+Big (experimental) change to model bones, tags and boundframes
+
 Revision 1.12  2007/09/10 10:24:15  danielpharos
 Build-in an Allowed Parent check. Items shouldn't be able to be dropped somewhere where they don't belong.
 
@@ -103,7 +106,7 @@ type
     function IsAllowedParent(Parent: QObject) : Boolean; override;
     class function TypeInfo: String; override;
     procedure ObjectState(var E: TEtatObjet); override;
-    procedure Dessiner; override;
+//    procedure Dessiner; override;
     Function GetEndOffset(var endpoint: vec3_p): boolean;
     Function GetEndPoint(var endpoint: vec3_p): boolean;
     Function GetStartPoint(var startpoint: vec3_p): boolean;
@@ -153,13 +156,8 @@ begin
     exit;
   end;
   Result:=(Length(S) - StartSpecLen)=sizeof(vec3_t);
-  if not result then begin
-    if FParent is QModelBone then
-      Result:=QModelBone(FParent).GetEndPoint(startpoint)
-    else
-      Result:=false;
+  if not Result then
     Exit;
-  end;
   PChar(startpoint):=PChar(S) + StartSpecLen;
 end;
 
@@ -219,7 +217,7 @@ begin
   Result.Z:=vec^[2];
 end;
 
-procedure QModelBone.Dessiner;
+(*procedure QModelBone.Dessiner;
 var
   start_point, end_point: vec3_p;
   ok: boolean;
@@ -251,7 +249,7 @@ begin
   end;
 
   inherited;
-end;
+end;*)
 
 function QModelBone.PyGetAttr(attr: PChar) : PyObject;
 var
