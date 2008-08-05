@@ -10,7 +10,7 @@ $Id$
   ####  ####   ####   #### ####    #### ####         ####   ####
    ########     ########## ####    #### ####         ####    ####
        #####
-        #####    Quake Army Knife 6.6 Infobase Readme
+        #####    Quake Army Knife Infobase Readme
 
 
 The Infobase is the central repository for the QuArK documentation,
