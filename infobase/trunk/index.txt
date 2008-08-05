@@ -15,7 +15,7 @@ information about QuArK in a coherent way. With time, information found in
 other places should be moved here.
 
 These pages can also be downloaded for offline viewing. 
-Go to the <a href="http://dynamic.gamespy.com/~quark/download.php3#help">QuArK's download-page</a>
+Go to the <a href="http://quark.planetquake.gamespy.com/download.php3#help">QuArK's download-page</a>
 to find the zip-archive.
 
 <!--
