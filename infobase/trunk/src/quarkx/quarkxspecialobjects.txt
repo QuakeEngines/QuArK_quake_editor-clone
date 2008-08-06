@@ -38,7 +38,7 @@ Returns a matrix object. v1,v2,v3 are 3D vectors that are used as columns of the
 <tr><td class="doccode">
 newobj(name)
 </td><td>
-Creates a new Internal QuArK object called name. See below for a description of Internal QuArK objects.
+Creates a new Internal QuArK object called name. <a href="src.quarkx.html#objectsinternal">See below for a description of Internal QuArK objects.</a>
 </td></tr>
 
 <tr><td class="doccode">
