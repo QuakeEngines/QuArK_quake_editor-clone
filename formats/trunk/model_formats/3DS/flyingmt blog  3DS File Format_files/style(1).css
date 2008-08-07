@@ -1,0 +1,33 @@
+.coverpost {
+	CLEAR: both; MARGIN: 10px 0px; BORDER-BOTTOM: #ddd 1px solid
+}
+.coverpost H2 {
+	PADDING-RIGHT: 5px; FONT-SIZE: 120%
+}
+.coverpost H2 A {
+	LINE-HEIGHT: 125%; LETTER-SPACING: -1px
+}
+.coverpost .img_preview {
+	BORDER-RIGHT: #ccc 1px solid; BORDER-TOP: #ccc 1px solid; FLOAT: left; MARGIN: 0px 7px 7px 0px; OVERFLOW: hidden; BORDER-LEFT: #ccc 1px solid; WIDTH: 80px; BORDER-BOTTOM: #ccc 1px solid; HEIGHT: 80px; BACKGROUND-COLOR: #fff; TEXT-ALIGN: center
+}
+.coverpost .img_preview IMG {
+	WIDTH: 80px; CURSOR: pointer; HEIGHT: 80px
+}
+.coverpost .post_info .category A {
+	FONT: 1em Dotum, Arial, sans-serif; COLOR: #888; MARGIN-RIGHT: 6px
+}
+.coverpost .post_info .date {
+	FONT: 0.9em Verdana, Helvetica, Arial, Gulim, sans-serif; COLOR: #888
+}
+.coverpost .post_content {
+	MARGIN: 5px 0px; OVERFLOW: hidden; LINE-HEIGHT: 125%
+}
+.coverpost .post_tags {
+	CLEAR: both; PADDING-RIGHT: 5px; PADDING-LEFT: 40px; BACKGROUND: url(./images/entryTag.gif) no-repeat left center; PADDING-BOTTOM: 5px; PADDING-TOP: 5px
+}
+.coverpost .post_tags SPAN {
+	DISPLAY: none
+}
+.clear {
+	CLEAR: both
+}

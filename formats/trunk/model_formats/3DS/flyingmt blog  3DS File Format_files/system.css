@@ -1,0 +1,18 @@
+.TCwarning {
+	BACKGROUND-POSITION: center top; FONT-WEIGHT: bold; FONT-SIZE: 14px; BACKGROUND-IMAGE: url(../image/warning.gif); MARGIN: 50px 0px; COLOR: #333; PADDING-TOP: 50px; BACKGROUND-REPEAT: no-repeat; TEXT-ALIGN: center
+}
+#TTSearchForm {
+	PADDING-RIGHT: 0px; DISPLAY: inline; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-TOP: 0px
+}
+#TCfilelist {
+	WIDTH: 415px
+}
+#TCfilelist .enclosure {
+	COLOR: #000; BACKGROUND-COLOR: #c6a6e7
+}
+#templateDialog {
+	Z-INDEX: 100
+}
+SELECT#commandBox OPTION.default {
+	FONT-STYLE: italic
+}

@@ -1,0 +1,2394 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<!-- saved from url=(0081)http://www.lovehana.com/387?TSSESSIONlovehanacom=69e046aa1b8b72014fca1fa52c2cc52c -->
+<HTML xmlns="http://www.w3.org/1999/xhtml"><HEAD 
+profile=http://gmpg.org/xfn/11><TITLE>flyingmt blog :: 3DS File Format</TITLE>
+<META content="MSHTML 6.00.6000.16674" name=GENERATOR>
+<META http-equiv=Content-Type content="text/html; charset=UTF-8">
+<META http-equiv=Keywords content=""><LINK title="flyingmt blog" 
+href="http://lovehana.com/rss" type=application/rss+xml rel=alternate><LINK 
+title="flyingmt blog : comments" href="http://lovehana.com/rss/comment" 
+type=application/rss+xml rel=alternate><LINK title="flyingmt blog : trackbacks" 
+href="http://lovehana.com/rss/trackback" type=application/rss+xml 
+rel=alternate><LINK title="flyingmt blog :  comments + trackbacks" 
+href="http://lovehana.com/rss/response" type=application/rss+xml 
+rel=alternate><LINK media=screen 
+href="flyingmt blog  3DS File Format_files/style.css" 
+type=text/css rel=stylesheet><LINK href="/favicon.ico" rel="shortcut icon"><LINK 
+media=screen 
+href="flyingmt blog  3DS File Format_files/system.css" 
+type=text/css rel=stylesheet><LINK 
+title="Responses (RSS) : 3DS File Format - flyingmt blog" 
+href="http://lovehana.com/rss/response/387" type=application/rss+xml 
+rel=alternate><LINK title="Responses (ATOM) : 3DS File Format - flyingmt blog" 
+href="http://lovehana.com/atom/response/387" type=application/atom+xml 
+rel=alternate><LINK title=RSD href="http://www.lovehana.com/api?rsd" 
+type=application/rsd+xml rel=EditURI>
+<SCRIPT src="" type=text/javascript></SCRIPT>
+<LINK 
+href="flyingmt blog  3DS File Format_files/archiveScriptStyle.css" 
+type=text/css rel=stylesheet>
+<STYLE type=text/css>.highlight {
+	COLOR: #ffffff; BACKGROUND-COLOR: #6c92ca
+}
+</STYLE>
+<LINK media=screen 
+href="flyingmt blog  3DS File Format_files/style(1).css" 
+type=text/css rel=stylesheet>
+<SCRIPT src="flyingmt blog  3DS File Format_files/eolin_plugin.js" 
+type=text/javascript></SCRIPT>
+<LINK href="flyingmt blog  3DS File Format_files/myEolin.css" 
+type=text/css rel=stylesheet>
+<SCRIPT language=JavaScript type=text/javascript>
+//<![CDATA[
+	var apiEolinURL = new Array();
+	var pluginURL = "/plugins/myEolin";
+	function bookMarkEolin(id,permalink,gubun) {
+		var getEntryURL = "/plugin/getSaveEolin/?id="+id;
+		var bookmarkdata  = requestHttpText(getEntryURL);
+
+		if(bookmarkdata == "0"){
+			alert("비공개글입니다");
+		}else{
+			if(document.getElementsByTagName('body')[0]!= undefined){
+				viewBookmarkForm(bookmarkdata+"&url="+encodeURIComponent(permalink),gubun);
+			}else{
+				if (document.getSelection){
+					description=document.getSelection();
+				}else if(document.selection && document.selection.createRange) {
+					var range = document.selection.createRange(); 
+					var description = range.text;
+				}else{
+					var description='';
+				}
+			
+				if(gubun =="bookmark"){	
+				window.open('http://www.eolin.com/bookmark/post.php?url='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'&description='+encodeURIComponent(description));
+				}else{
+				window.open('http://www.eolin.com/bookmark/vote.php?url='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'&description='+encodeURIComponent(description));
+				}
+			}
+		}
+	}
+ //]]>
+</SCRIPT>
+
+<SCRIPT src="flyingmt blog  3DS File Format_files/RSSNews.js" 
+type=text/javascript></SCRIPT>
+
+<SCRIPT language=JavaScript>
+function allblur() {
+  for (i = 0; i < document.links.length; i++) {
+    var obj = document.links[i];
+    if(obj.addEventListener) obj.addEventListener("focus", oneblur, false);
+    else if(obj.attachEvent) obj.attachEvent("onfocus", oneblur);
+  }
+}
+function oneblur(e) {
+  var evt = e ? e : window.event;
+  if(evt.target) evt.target.blur();
+  else if(evt.srcElement) evt.srcElement.blur();
+}
+
+function inputMouseDown(style, obj)
+{		
+	if((style == "id") && (obj.value == "Name"))
+	{		
+			obj.value = "";
+	}
+	else if((style == "password") && (obj.value == "0000"))
+	{		
+			obj.value = "";
+	}
+}
+</SCRIPT>
+</HEAD>
+<BODY onload=allblur()>
+<DIV id=bookmark_handle 
+style="BORDER-RIGHT: #666 1px solid; BORDER-TOP: #666 1px solid; DISPLAY: none; Z-INDEX: 9999999; BACKGROUND: url(http://file.eolin.com/image/plugin_pop.gif) #fff repeat-x left top; LEFT: 105px; BORDER-LEFT: #666 1px solid; WIDTH: 550px; BORDER-BOTTOM: #666 1px solid; POSITION: absolute; TOP: 10px; HEIGHT: 570px">
+<DIV id=mini_bookmark_handle 
+style="Z-INDEX: 9999998; BACKGROUND: url(http://file.eolin.com/image/plugin_logo.gif) no-repeat 3px 3px; FLOAT: left; WIDTH: 432px; CURSOR: move; HEIGHT: 48px; TEXT-ALIGN: left"></DIV>
+<DIV id=mini_close style="FLOAT: right; MARGIN: 11px 10px 0px 0px"><A 
+title=close href="javascript:closePopup()"><IMG alt=close 
+src="flyingmt blog  3DS File Format_files/icon_close.gif" 
+border=0></A></DIV>
+<DIV style="CLEAR: both"><IFRAME id=eolin_iframe src="about:blank" 
+frameBorder=no width=550 scrolling=no height=500></IFRAME></DIV></DIV><!--
+		Textcube 1.7.1 : Risoluto
+
+		Homepage: http://www.textcube.org/
+		Copyright &copy; 2004-2008. Needlworks / Tatter Network Foundation. All rights reserved. Licensed under the GPL.
+	-->
+<SCRIPT type=text/javascript>
+	//<![CDATA[
+		var servicePath = "";
+		var blogURL = "";
+		var prevURL = "/388";
+		var nextURL = "/386";
+		var commentKey = "fd0d95d03b107b4a67cc1617dbff5c8b";
+		var doesHaveOwnership = false;
+		var isReaderEnabled = true;
+		var messages = {
+			"trackbackUrlCopied": "엮인글 주소가 복사되었습니다.",
+			"operationFailed": "실패했습니다.",
+			"confirmTrackbackDelete": "선택된 글걸기를 삭제합니다. 계속 하시겠습니까?",
+			"confirmEntryDelete": "이 글 및 이미지 파일을 완전히 삭제합니다. 계속 하시겠습니까?"
+		}
+	//]]>
+	</SCRIPT>
+
+<SCRIPT src="flyingmt blog  3DS File Format_files/EAF4.js" 
+type=text/javascript></SCRIPT>
+
+<SCRIPT src="flyingmt blog  3DS File Format_files/common2.js" 
+type=text/javascript></SCRIPT>
+
+<SCRIPT src="flyingmt blog  3DS File Format_files/gallery.js" 
+type=text/javascript></SCRIPT>
+
+<SCRIPT src="flyingmt blog  3DS File Format_files/flash.js" 
+type=text/javascript></SCRIPT>
+
+<SCRIPT type=text/javascript>
+		//<![CDATA[
+			document.onkeydown = processShortcut;
+		//]]>
+	</SCRIPT>
+
+<DIV 
+style="LEFT: 0px; BACKGROUND-IMAGE: none; POSITION: absolute; TOP: 0px; BACKGROUND-COLOR: transparent">
+<SCRIPT type=text/javascript>
+//<![CDATA[
+	AC_FL_RunContent(
+		'codebase','http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0',
+		'width','1',
+		'height','1',
+		'id','clipboardPoter',
+		'src','/script/clipboardPoter/clipboardPoter',
+		'wmode','transparent',
+		'name','clipboardPoter',
+		'allowscriptaccess','sameDomain',
+		'pluginspage','http://www.macromedia.com/go/getflashplayer',
+		'movie','/script/clipboardPoter/clipboardPoter',
+		'flashvars', 'callback=onClipBorad'
+	);
+	window.clipboardPoter = document.getElementById("clipboardPoter");
+//]]>
+</SCRIPT>
+</DIV><A name=top><!-- header -->
+<DIV id=header>
+<DIV class=inside>
+<DIV id=live-search>
+<FORM id=TTSearchForm onsubmit="return searchBlog()" action=/search/ 
+method=get><IMG alt=Search 
+src="flyingmt blog  3DS File Format_files/search.gif"> <INPUT 
+onkeypress="if (event.keyCode == 13) { searchBlog() }" name=search> 
+</FORM></DIV>
+<DIV class=blogImage><IMG alt="블로그 이미지" 
+src="flyingmt blog  3DS File Format_files/spacer.gif"> </DIV>
+<DIV class=blogTitle>
+<H2><A href="http://www.lovehana.com/">flyingmt blog</A></H2><BR>by 나는산 
+<DIV class=blogMenu><A href="http://www.lovehana.com/cover">Cover</A> / <A 
+href="http://www.lovehana.com/notice">Notice</A> / <A 
+href="http://www.lovehana.com/location">Local Log</A> / <A 
+href="http://www.lovehana.com/tag">Tag</A> / <A 
+href="http://www.lovehana.com/keylog">Keylog</A> / <A 
+href="http://www.lovehana.com/guestbook">Guest Book</A> / <A 
+href="http://www.lovehana.com/owner">Admin</A> / <A 
+href="http://www.lovehana.com/owner/entry/post">New Post</A> 
+</DIV></DIV></DIV></DIV><!-- [END] #header --><!-- cover --><!-- tag --><!-- search list --><!-- search reply list --><!-- location --><!-- guestbook --><!-- keyword --><!-- notice --><!-- pretected entries -->
+<DIV class=hfeed><A id=entry_387></A>
+<DIV class=hentry>
+<DIV class=single-post id=primary>
+<DIV class=inside>
+<DIV class=primary>
+<H1><A title="3DS File Format" 
+href="http://www.lovehana.com/entry/3DS-File-Format" target=_blank 
+rel=bookmark><SPAN class="art-title entry-title">3DS File Format</SPAN></A></H1>
+<DIV class="entrydesc entry-content">
+<P>&nbsp; &nbsp; &nbsp;&nbsp; </P>
+<P>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+=====================================<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 3D Studio File Format 
+(3ds).<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; Autodesk Ltd.<BR>&nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Document Revision 0.93 - January 1997 
+<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+=====================================</P>
+<P><BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; 3D-Studio File Format (.3ds)<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Autodesk Ltd.</P>
+<P><BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Document 
+Revision 0.93 - January 1997</P>
+<P>&nbsp; Rewritten by Martin van Velsen (email: <A 
+href="mailto:vvelsen@ronix.ptf.hro.nl">vvelsen@ronix.ptf.hro.nl</A> )<BR>&nbsp; 
+and Robin Fercoq ( 3ds-bin + mli )(email: <A 
+href="mailto:robin@msrwww.fc-net.fr">robin@msrwww.fc-net.fr</A>)<BR>&nbsp; Based 
+on documentation by Jim Pitts ( email: <A 
+href="mailto:jim@micronetics.com">jim@micronetics.com</A> )<BR>&nbsp; Source 
+update provided by: <BR>&nbsp; &nbsp; &nbsp; &nbsp; Albert Szilvasy (email: <A 
+href="mailto:szilvasy@almos.vein.hu">szilvasy@almos.vein.hu</A> )</P>
+<P>&nbsp; A lot of the chunks are still undocumented if you know what they 
+do<BR>&nbsp; please email me Martin van Velsen, Robin Feroq or Jimm Pitts. 
+<BR>&nbsp; As I get more information on the file format, I will document it for 
+<BR>&nbsp; everyone to see. I will post this regurlarly to alt.3d and 
+alt.3d-studio <BR>&nbsp; and I can be contacted there if my email does not 
+work.</P>
+<P>&nbsp; (Also see the 3d-studio material .mli documentation by Robin 
+Feroq.)</P>
+<P>&nbsp; Disclaimer.<BR>&nbsp; This document describes the file format of the 
+3ds files generated by<BR>&nbsp; 3d-studio by Autodesk. By using the information 
+contained within, you <BR>&nbsp; agree not to hold any of the authors liable if, 
+from its use, you <BR>&nbsp; f^Hmuck something up. OK?</P>
+<P>&nbsp; Autodesk has at not yet released the offical specifications of the 
+<BR>&nbsp; 3d-studio formats. You will therefor receive NO support from Autodesk 
+<BR>&nbsp; or any company related to Autodesk concerning the nature and contents 
+<BR>&nbsp; of the 3d-studio binary .3ds and .mli formats.</P>
+<P>&nbsp; A warning beforehand. This docs describes the format of 3ds files 
+<BR>&nbsp; produced by version 3.0 and higher of 3d-studio. You can find this 
+<BR>&nbsp; version information at byte 29 in the binary file.</P>
+<P>&nbsp; This document can be found on the regular newsgroups:<BR>&nbsp; alt.3d 
+and alt.3d-studio<BR>&nbsp; It can also be found at: "<A 
+href="http://www.mediatel.lu/">http://www.mediatel.lu/</A>"</P>
+<P>&nbsp; 
+-------------------------------------------------------------------------<BR>&nbsp;&nbsp; 
+</P>
+<P><BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; Contents </P>
+<P><BR>&nbsp; 1. Introduction<BR>&nbsp; 2. Chunks anyone ?<BR>&nbsp; 3. 3D 
+Editor chunks<BR>&nbsp; 4. Keyframer chunks<BR>&nbsp; 5. CODE</P><BR>
+<P>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp;&nbsp; 1. Introduction<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
+======================</P>
+<P>&nbsp; The 3ds file format is made up of chunks. They describe what 
+information<BR>&nbsp; is to follow and what it is made up of, it's ID and the 
+location of the<BR>&nbsp; next block. If you don't understand a chunk you can 
+quite simply skip it.<BR>&nbsp; The next chunk pointer is relative to the start 
+of the current chunk and<BR>&nbsp; in bytes. The binary information in the 3ds 
+file is written in a special<BR>&nbsp; kind of way. Namely the lest significant 
+byte comes first in an int.<BR>&nbsp; For example: 4A 5C&nbsp; (2 bytes in hex) 
+would be 5C high byte and 4A low <BR>&nbsp; byte. In a long it is: 4A 5C 3B 8F 
+where 5C4A is the low word and 8F 3B <BR>&nbsp; is the high word. And now for 
+the chunks. A chunk is defined as:</P>
+<P>&nbsp; start end size name<BR>&nbsp; 0 &nbsp; &nbsp; 1 &nbsp; 2 &nbsp;&nbsp; 
+Chunk ID<BR>&nbsp; 2 &nbsp; &nbsp; 5 &nbsp; 4 &nbsp;&nbsp; Pointer to next chunk 
+relative to the place where<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; Chunk ID is, in other words the length of the chunk</P>
+<P>&nbsp; Chunks have a hierarchy imposed on them that is identified byt it's 
+ID.<BR>&nbsp; A 3ds file has the Primary chunk ID 4D4Dh. This is always the 
+first<BR>&nbsp; chunk of the file. Within the primary chunk are the main 
+chunks.</P>
+<P>&nbsp; to give you a preview and a reference to the hierarchy of chunks, 
+<BR>&nbsp; below is a diagram to show the diffrent chunk ID's and their place 
+<BR>&nbsp; in the file. The chunks are given a name because below the diagram is 
+<BR>&nbsp; a list which defines the names to the actual chunk id's. This makes 
+it <BR>&nbsp; easier to put it in some source code ( how convenient that some 
+sample <BR>&nbsp; code is included )</P>
+<P><BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
+MAIN3DS&nbsp; (0x4D4D)<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; |<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
++--EDIT3DS&nbsp; (0x3D3D)<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; |&nbsp; |<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; |&nbsp; +--EDIT_MATERIAL (0xAFFF)<BR>&nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; |&nbsp; |&nbsp; |<BR>&nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; |&nbsp; |&nbsp; +--MAT_NAME01 (0xA000) 
+(See mli Doc) <BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
+|&nbsp; |<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
+|&nbsp; +--EDIT_CONFIG1&nbsp; (0x0100)<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp;&nbsp; |&nbsp; +--EDIT_CONFIG2&nbsp; (0x3E3D) <BR>&nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; |&nbsp; 
++--EDIT_VIEW_P1&nbsp; (0x7012)<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp;&nbsp; |&nbsp; |&nbsp; |<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp;&nbsp; |&nbsp; |&nbsp; +--TOP &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; (0x0001)<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; |&nbsp; |&nbsp; +--BOTTOM &nbsp; &nbsp; &nbsp; &nbsp; 
+(0x0002)<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
+|&nbsp; |&nbsp; +--LEFT &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; (0x0003)<BR>&nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; |&nbsp; |&nbsp; +--RIGHT 
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; (0x0004)<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp;&nbsp; |&nbsp; |&nbsp; +--FRONT &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; (0x0005) <BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; |&nbsp; |&nbsp; +--BACK &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+(0x0006)<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
+|&nbsp; |&nbsp; +--USER &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; (0x0007)<BR>&nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; |&nbsp; |&nbsp; +--CAMERA 
+&nbsp; &nbsp; &nbsp; &nbsp; (0xFFFF)<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp;&nbsp; |&nbsp; |&nbsp; +--LIGHT &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; (0x0009)<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; |&nbsp; |&nbsp; +--DISABLED &nbsp; &nbsp; &nbsp; (0x0010)&nbsp; 
+<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; |&nbsp; 
+|&nbsp; +--BOGUS &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; (0x0011)<BR>&nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; |&nbsp; |<BR>&nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; |&nbsp; +--EDIT_VIEW_P2&nbsp; 
+(0x7011)<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
+|&nbsp; |&nbsp; |<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; |&nbsp; |&nbsp; +--TOP &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
+(0x0001)<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
+|&nbsp; |&nbsp; +--BOTTOM &nbsp; &nbsp; &nbsp; &nbsp; (0x0002)<BR>&nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; |&nbsp; |&nbsp; +--LEFT &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; (0x0003)<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp;&nbsp; |&nbsp; |&nbsp; +--RIGHT &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; (0x0004)<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; |&nbsp; |&nbsp; +--FRONT &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; (0x0005) 
+<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; |&nbsp; 
+|&nbsp; +--BACK &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; (0x0006)<BR>&nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; |&nbsp; |&nbsp; +--USER &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; (0x0007)<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp;&nbsp; |&nbsp; |&nbsp; +--CAMERA &nbsp; &nbsp; &nbsp; &nbsp; 
+(0xFFFF)<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
+|&nbsp; |&nbsp; +--LIGHT &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; (0x0009)<BR>&nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; |&nbsp; |&nbsp; 
++--DISABLED &nbsp; &nbsp; &nbsp; (0x0010)&nbsp; <BR>&nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; |&nbsp; |&nbsp; +--BOGUS &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; (0x0011)<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; |&nbsp; |<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; |&nbsp; +--EDIT_VIEW_P3&nbsp; (0x7020)<BR>&nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; |&nbsp; +--EDIT_VIEW1 &nbsp;&nbsp; 
+(0x7001) <BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
+|&nbsp; +--EDIT_BACKGR &nbsp; (0x1200) <BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp;&nbsp; |&nbsp; +--EDIT_AMBIENT&nbsp; (0x2100)<BR>&nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; |&nbsp; +--EDIT_OBJECT 
+&nbsp; (0x4000)<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
+|&nbsp; |&nbsp; |<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; |&nbsp; |&nbsp; +--OBJ_TRIMESH &nbsp; (0x4100) &nbsp; &nbsp;&nbsp; 
+<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; |&nbsp; 
+|&nbsp; |&nbsp; |<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; |&nbsp; |&nbsp; |&nbsp; +--TRI_VERTEXL &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; (0x4110) <BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; |&nbsp; |&nbsp; |&nbsp; +--TRI_VERTEXOPTIONS &nbsp;&nbsp; 
+(0x4111)<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
+|&nbsp; |&nbsp; |&nbsp; +--TRI_MAPPINGCOORS &nbsp; &nbsp; (0x4140) <BR>&nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; |&nbsp; |&nbsp; |&nbsp; 
++--TRI_MAPPINGSTANDARD&nbsp; (0x4170)<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp;&nbsp; |&nbsp; |&nbsp; |&nbsp; +--TRI_FACEL1 &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; (0x4120)<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp;&nbsp; |&nbsp; |&nbsp; |&nbsp; |&nbsp; |<BR>&nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; |&nbsp; |&nbsp; |&nbsp; |&nbsp; 
++--TRI_SMOOTH &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; (0x4150) &nbsp; 
+<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; |&nbsp; 
+|&nbsp; |&nbsp; |&nbsp; +--TRI_MATERIAL &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
+(0x4130)<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
+|&nbsp; |&nbsp; |&nbsp; |<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; |&nbsp; |&nbsp; |&nbsp; +--TRI_LOCAL &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; (0x4160)<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; |&nbsp; |&nbsp; |&nbsp; +--TRI_VISIBLE &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; (0x4165)<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; |&nbsp; |&nbsp; |<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp;&nbsp; |&nbsp; |&nbsp; +--OBJ_LIGHT &nbsp;&nbsp; (0x4600)<BR>&nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; |&nbsp; |&nbsp; |&nbsp; 
+|<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; |&nbsp; 
+|&nbsp; |&nbsp; +--LIT_OFF &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
+(0x4620)<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
+|&nbsp; |&nbsp; |&nbsp; +--LIT_SPOT &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+(0x4610) <BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
+|&nbsp; |&nbsp; |&nbsp; +--LIT_UNKNWN01 &nbsp; &nbsp; &nbsp; &nbsp; (0x465A) 
+<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; |&nbsp; 
+|&nbsp; | <BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
+|&nbsp; |&nbsp; +--OBJ_CAMERA &nbsp; (0x4700)<BR>&nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; |&nbsp; |&nbsp; |&nbsp; |<BR>&nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; |&nbsp; |&nbsp; |&nbsp; 
++--CAM_UNKNWN01 &nbsp; &nbsp; &nbsp; &nbsp; (0x4710)<BR>&nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; |&nbsp; |&nbsp; |&nbsp; +--CAM_UNKNWN02 
+&nbsp; &nbsp; &nbsp; &nbsp; (0x4720)&nbsp; <BR>&nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; |&nbsp; |&nbsp; |<BR>&nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; |&nbsp; |&nbsp; +--OBJ_UNKNWN01 
+(0x4710)<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
+|&nbsp; |&nbsp; +--OBJ_UNKNWN02 (0x4720)<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp;&nbsp; |&nbsp; |<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp;&nbsp; |&nbsp; +--EDIT_UNKNW01&nbsp; (0x1100)<BR>&nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; |&nbsp; 
++--EDIT_UNKNW02&nbsp; (0x1201) <BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp;&nbsp; |&nbsp; +--EDIT_UNKNW03&nbsp; (0x1300)<BR>&nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; |&nbsp; +--EDIT_UNKNW04&nbsp; 
+(0x1400)<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
+|&nbsp; +--EDIT_UNKNW05&nbsp; (0x1420)<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp;&nbsp; |&nbsp; +--EDIT_UNKNW06&nbsp; (0x1450)<BR>&nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; |&nbsp; 
++--EDIT_UNKNW07&nbsp; (0x1500)<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp;&nbsp; |&nbsp; +--EDIT_UNKNW08&nbsp; (0x2200)<BR>&nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; |&nbsp; +--EDIT_UNKNW09&nbsp; 
+(0x2201)<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
+|&nbsp; +--EDIT_UNKNW10&nbsp; (0x2210)<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp;&nbsp; |&nbsp; +--EDIT_UNKNW11&nbsp; (0x2300)<BR>&nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; |&nbsp; 
++--EDIT_UNKNW12&nbsp; (0x2302)<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp;&nbsp; |&nbsp; +--EDIT_UNKNW13&nbsp; (0x2000)<BR>&nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; |&nbsp; +--EDIT_UNKNW14&nbsp; 
+(0xAFFF)<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
+|<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; +--KEYF3DS 
+(0xB000)<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; |<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; +--KEYF_UNKNWN01 (0xB00A)<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; +--............. (0x7001) ( viewport, same as editor 
+)<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
++--KEYF_FRAMES &nbsp; (0xB008)<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; +--KEYF_UNKNWN02 (0xB009)<BR>&nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; +--KEYF_OBJDES &nbsp; 
+(0xB002)<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp;&nbsp; |<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp;&nbsp; +--KEYF_OBJHIERARCH&nbsp; (0xB010)<BR>&nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
++--KEYF_OBJDUMMYNAME (0xB011)<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; +--KEYF_OBJUNKNWN01&nbsp; 
+(0xB013)<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp;&nbsp; +--KEYF_OBJUNKNWN02&nbsp; (0xB014)<BR>&nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
++--KEYF_OBJUNKNWN03&nbsp; (0xB015)&nbsp; <BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; +--KEYF_OBJPIVOT &nbsp; &nbsp; 
+(0xB020)&nbsp; <BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp;&nbsp; +--KEYF_OBJUNKNWN04&nbsp; (0xB021)&nbsp; <BR>&nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
++--KEYF_OBJUNKNWN05&nbsp; (0xB022)&nbsp; </P>
+<P><BR>A chunk type which you can find all through the file are the color 
+chunks<BR>which are called:</P>
+<P>COL_RGB<BR>COL_TRU<BR>COL_UNK</P><BR>
+<P>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; 2. Chunks anyone ?<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; =========================</P>
+<P>Now for the actual numbers, as you will see I used the define, because 
+I<BR>ripped that part right out of my code. Be carefull however because 
+there<BR>are a lot of new chunk types which were not documented in the original 
+<BR>paper by Jim Pitts.</P>
+<P>//------ Primary chunk</P>
+<P>#define MAIN3DS &nbsp; &nbsp; &nbsp; 0x4D4D</P>
+<P>//------ Main Chunks</P>
+<P>#define EDIT3DS &nbsp; &nbsp; &nbsp; 0x3D3D&nbsp; // this is the start of the 
+editor config<BR>#define KEYF3DS &nbsp; &nbsp; &nbsp; 0xB000&nbsp; // this is 
+the start of the keyframer config</P>
+<P>//------ sub defines of EDIT3DS</P>
+<P>#define EDIT_MATERIAL 0xAFFF<BR>#define EDIT_CONFIG1&nbsp; 0x0100<BR>#define 
+EDIT_CONFIG2&nbsp; 0x3E3D<BR>#define EDIT_VIEW_P1&nbsp; 0x7012<BR>#define 
+EDIT_VIEW_P2&nbsp; 0x7011<BR>#define EDIT_VIEW_P3&nbsp; 0x7020<BR>#define 
+EDIT_VIEW1 &nbsp;&nbsp; 0x7001<BR>#define EDIT_BACKGR &nbsp; 0x1200<BR>#define 
+EDIT_AMBIENT&nbsp; 0x2100<BR>#define EDIT_OBJECT &nbsp; 0x4000</P>
+<P>#define EDIT_UNKNW01&nbsp; 0x1100<BR>#define EDIT_UNKNW02&nbsp; 
+0x1201<BR>#define EDIT_UNKNW03&nbsp; 0x1300<BR>#define EDIT_UNKNW04&nbsp; 
+0x1400<BR>#define EDIT_UNKNW05&nbsp; 0x1420<BR>#define EDIT_UNKNW06&nbsp; 
+0x1450<BR>#define EDIT_UNKNW07&nbsp; 0x1500<BR>#define EDIT_UNKNW08&nbsp; 
+0x2200<BR>#define EDIT_UNKNW09&nbsp; 0x2201<BR>#define EDIT_UNKNW10&nbsp; 
+0x2210<BR>#define EDIT_UNKNW11&nbsp; 0x2300<BR>#define EDIT_UNKNW12&nbsp; 0x2302 
+<BR>#define EDIT_UNKNW13&nbsp; 0x3000<BR>#define EDIT_UNKNW14&nbsp; 0xAFFF</P>
+<P>//------ sub defines of EDIT_OBJECT<BR>#define OBJ_TRIMESH &nbsp; 
+0x4100<BR>#define OBJ_LIGHT &nbsp; &nbsp; 0x4600<BR>#define OBJ_CAMERA 
+&nbsp;&nbsp; 0x4700</P>
+<P>#define OBJ_UNKNWN01&nbsp; 0x4010<BR>#define OBJ_UNKNWN02&nbsp; 0x4012 //---- 
+Could be shadow</P>
+<P>//------ sub defines of OBJ_CAMERA<BR>#define CAM_UNKNWN01&nbsp; 0x4710 
+<BR>#define CAM_UNKNWN02&nbsp; 0x4720 </P>
+<P>//------ sub defines of OBJ_LIGHT<BR>#define LIT_OFF &nbsp; &nbsp; &nbsp; 
+0x4620<BR>#define LIT_SPOT &nbsp; &nbsp;&nbsp; 0x4610<BR>#define 
+LIT_UNKNWN01&nbsp; 0x465A</P>
+<P>//------ sub defines of OBJ_TRIMESH<BR>#define TRI_VERTEXL &nbsp; 
+0x4110<BR>#define TRI_FACEL2 &nbsp;&nbsp; 0x4111 <BR>#define TRI_FACEL1 
+&nbsp;&nbsp; 0x4120<BR>#define TRI_SMOOTH &nbsp;&nbsp; 0x4150<BR>#define 
+TRI_LOCAL &nbsp; &nbsp; 0x4160<BR>#define TRI_VISIBLE &nbsp; 0x4165</P>
+<P>//------ sub defs of KEYF3DS</P>
+<P>#define KEYF_UNKNWN01 0xB009<BR>#define KEYF_UNKNWN02 0xB00A<BR>#define 
+KEYF_FRAMES &nbsp; 0xB008<BR>#define KEYF_OBJDES &nbsp; 0xB002</P>
+<P>//------&nbsp; these define the different color chunk types<BR>#define 
+COL_RGB&nbsp; 0x0010<BR>#define COL_TRU&nbsp; 0x0011<BR>#define COL_UNK&nbsp; 
+0x0013</P>
+<P>//------ defines for viewport chunks</P>
+<P>#define TOP &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 0x0001<BR>#define BOTTOM 
+&nbsp; &nbsp; &nbsp;&nbsp; 0x0002<BR>#define LEFT &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; 0x0003<BR>#define RIGHT &nbsp; &nbsp; &nbsp; &nbsp; 
+0x0004<BR>#define FRONT &nbsp; &nbsp; &nbsp; &nbsp; 0x0005<BR>#define BACK 
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 0x0006<BR>#define USER &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; 0x0007<BR>#define CAMERA &nbsp; &nbsp; &nbsp;&nbsp; 0x0008 // 
+0xFFFF is the actual code read from file<BR>#define LIGHT &nbsp; &nbsp; &nbsp; 
+&nbsp; 0x0009<BR>#define DISABLED &nbsp; &nbsp;&nbsp; 0x0010<BR>#define BOGUS 
+&nbsp; &nbsp; &nbsp; &nbsp; 0x0011</P><BR>
+<P><BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp;&nbsp; 3. 3D Editor Chunks<BR>&nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ===========================</P>
+<P>So far for the quick stuff now the more detailed info.</P>
+<P>* Main chunks</P>
+<P>The main chunk ( the primary chunk of 0x4D4D that is ) is actually the 
+<BR>complete file. So the size of this chunk is the size of the file 
+minus<BR>the main chunk header.</P>
+<P>There are two more main chunks, the 3d-editor chunk and the keyframer 
+<BR>chunk:</P>
+<P>&nbsp; id</P>
+<P>&nbsp; 3D3D Start of Editor data&nbsp; ( this is also the place where the 
+objects are )<BR>&nbsp; B000 Start of Keyframer data</P>
+<P>&nbsp; Directly after a Main chunk is another chunk. This could be any other 
+type<BR>&nbsp; of chunk allowable within its main chunks scope. ( see diagram 
+)</P>
+<P>* Subchunks of 3D3D<BR>&nbsp; id &nbsp; Description<BR>0100&nbsp; Part of 
+configuration<BR>1100&nbsp; unknown<BR>1200&nbsp; Background Color<BR>1201&nbsp; 
+unknown<BR>1300&nbsp; unknown<BR>1400&nbsp; unknown<BR>1420&nbsp; 
+unknown<BR>1450&nbsp; unknown<BR>1500&nbsp; unknown<BR>2100&nbsp; Ambient Color 
+Block<BR>2200&nbsp; fog ?<BR>2201&nbsp; fog ?<BR>2210&nbsp; fog ?<BR>2300&nbsp; 
+unknown<BR>3000&nbsp; unknown<BR>3D3E&nbsp; Editor configuration main 
+block<BR>4000&nbsp; Definition of an Object<BR>AFFF&nbsp; Start of material 
+list</P>
+<P>* Subchunks of AFFF - Start of material list<BR>* A000 - material name<BR>- 
+This chunk contains the name of the material which is an ASCIIZ string</P>
+<P>( <BR>&nbsp; More material chunks are explained in the doc about 3d-studio 
+.mli<BR>&nbsp; files. The chunk types mentioned in that doc are exactly the 
+same<BR>&nbsp; as in the .3ds file<BR>)</P>
+<P>* Subchunks of 3D3E - Editor configuration</P>
+<P>&nbsp; id &nbsp; Description<BR>7001&nbsp; Start of viewport 
+indicator<BR>7011&nbsp; Viewport definition ( type 2 )<BR>7012&nbsp; Viewport 
+definition ( type 1 )<BR>7020&nbsp; Viewport definition ( type 3 )</P>
+<P>The 3D3E chunk is a curious one because it contains a lot of 
+redundant<BR>data. ( or so it seems ) The most important chunk is 7020. this 
+chunk<BR>describes the 4 viewports wich are active in the editor. I assume 
+that<BR>U are using the 4 normal viewport layout, because I have not tested 
+it<BR>with other configurations. The editor confid will contain 5x chunk 
+7020<BR>and 5x chunk 7011. only the first 4 7020 chunks are important for 
+how<BR>the viewports look like. I guess that the other chunks only give 
+additional<BR>info, but I am not sure. The things you are looking for in these 
+chunks is<BR>at byte: 6 &amp; 7 ( as offset from the first 6 bytes chunk header 
+and pointer )<BR>these bytes ( unsigned int ) contain the info at to what view 
+is used, with<BR>the following id's:</P>
+<P>&nbsp; id &nbsp;&nbsp; Description<BR>0001 &nbsp; Top<BR>0002 &nbsp; 
+Bottom<BR>0003 &nbsp; Left<BR>0004 &nbsp; Right<BR>0005 &nbsp; Front<BR>0006 
+&nbsp; Back<BR>0007 &nbsp; User<BR>FFFF &nbsp; Camera<BR>0009 &nbsp; 
+Light<BR>0010 &nbsp; Disabled</P>
+<P>* Subchunks of 4000 - Object description Block</P>
+<P>- first item of Subchunk 4000 is an ASCIIZ string of the objects 
+name.<BR>&nbsp; ASCIIZ means a string of charakters ended by a zero.</P>
+<P>Remember an Object can be a Camera a Light or a mesh<BR>&nbsp; id &nbsp; 
+&nbsp;&nbsp; Description<BR>4010 &nbsp; &nbsp; unknown<BR>4012 &nbsp; &nbsp; 
+shadow ?<BR>4100 &nbsp; &nbsp; Triangular Polygon List ( Contains only subchunks 
+)<BR>4600 &nbsp; &nbsp; Light<BR>4700 &nbsp; &nbsp; Camera</P>
+<P>( Mapping:</P>
+<P>&nbsp; These chunks are optional. They stand just after the vertex list 
+when<BR>&nbsp; the object is mapped. )<BR><BR>* Subchunks of 4100 - Triangular 
+Polygon List</P>
+<P>&nbsp; id &nbsp; &nbsp;&nbsp; Description<BR>4110 &nbsp; &nbsp; Vertex 
+List<BR>4111 &nbsp; &nbsp; Vertex Options<BR>4120 &nbsp; &nbsp; Face 
+List<BR>4130 &nbsp; &nbsp; Face Material<BR>4140 &nbsp; &nbsp; Mapping 
+Coordinates<BR>4150 &nbsp; &nbsp; Face smoothing group<BR>4160 &nbsp; &nbsp; 
+Translation Matrix<BR>4165 &nbsp; &nbsp; Object visible/invisble<BR>4170 &nbsp; 
+&nbsp; Standard Mapping</P>
+<P>* 4110 - Vertex List</P>
+<P>&nbsp; start end size type &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; name<BR>&nbsp; 0 
+&nbsp; &nbsp; 1 &nbsp;&nbsp; 2 &nbsp; unsigned int&nbsp; Total vertices in 
+object<BR>&nbsp; 2 &nbsp; &nbsp; 5 &nbsp;&nbsp; 4 &nbsp; float &nbsp; &nbsp; 
+&nbsp; &nbsp; X-value<BR>&nbsp; 6 &nbsp; &nbsp; 9 &nbsp;&nbsp; 4 &nbsp; float 
+&nbsp; &nbsp; &nbsp; &nbsp; Y-value<BR>&nbsp; 10 &nbsp;&nbsp; 13 &nbsp;&nbsp; 4 
+&nbsp; float &nbsp; &nbsp; &nbsp; &nbsp; Z-value</P>
+<P>bytes 2..13 are repeated times the total amount of vertices in the object</P>
+<P>* 4111 - Vertex Options</P>
+<P>First 2 bytes: number of vertices.</P>
+<P>Then a short int for each vertex:</P>
+<P>bit 0-7 &nbsp;&nbsp; 0<BR>bit 8-10 &nbsp; x<BR>bit 11-12&nbsp; 0<BR>bit 13 
+&nbsp; vertex selected in selection 3<BR>bit 14 &nbsp; vertex selected in 
+selection 2<BR>bit 15 &nbsp; vertex selected in selection 1</P>
+<P>bit 8-10 are just like random. From a save to another of the same scene<BR>it 
+may change.<BR><BR>Other bits (0-7 and 11-12) have effects on visibility of 
+vertex.</P>
+<P>The 4111 chunk can be deleted without much influence, 3ds will still 
+load<BR>the file all right.</P>
+<P><BR>* 4120 - Face list</P>
+<P>start end size type &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; name<BR>0&nbsp; 
+&nbsp;&nbsp; 1 &nbsp;&nbsp; 2 &nbsp; unsigned int&nbsp; total polygons in object 
+(numpoly)</P>
+<P>2&nbsp; &nbsp;&nbsp; 3 &nbsp;&nbsp; 2 &nbsp; unsigned int&nbsp; number of 
+vertex A<BR>4&nbsp; &nbsp;&nbsp; 5 &nbsp;&nbsp; 2 &nbsp; unsigned int&nbsp; 
+number of vertex B<BR>6&nbsp; &nbsp;&nbsp; 7 &nbsp;&nbsp; 2 &nbsp; unsigned 
+int&nbsp; number of vertex C<BR>8&nbsp; &nbsp;&nbsp; 9 &nbsp;&nbsp; 2 &nbsp; 
+unsigned int&nbsp; face info (*) </P>
+<P>repeats 'numpoly' times for each polygon.</P>
+<P>The first three ints are the three vertices of the face.<BR>0 stands for the 
+first vertex defined in the vertex list.<BR>The order has a purpose: to give the 
+direction for the normal <BR>of each face.<BR>If you turn a screw (standard 
+screw) in the way the vertices <BR>indicate you will find the normal.<BR>If 
+vertices given in order are A B C:</P>
+<P>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; C<BR>&nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; ^<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; |<BR>&nbsp; &nbsp; &nbsp;&nbsp; A-----B</P>
+<P>This means unscrewing = the normal points out of the screen.</P>
+<P>(*) this number is is a binary number which expands to 3 values.<BR>&nbsp; 
+&nbsp; for example 0x0006 would expand to 110 binary. The value should 
+be<BR>&nbsp; &nbsp; read as 1 1 0 .This value can be found in 3d-studio ascii 
+files as<BR>&nbsp; &nbsp; AB:1 BC:1 AC:0 .Which probably indicated the order of 
+the vertices.<BR>&nbsp; &nbsp; For example AB:1 would be a normal line from A to 
+B. But AB:0 would<BR>&nbsp; &nbsp; mean a line from B to A.</P>
+<P>&nbsp; &nbsp; bit 0 &nbsp; &nbsp; &nbsp; AC visibility<BR>&nbsp; &nbsp; bit 1 
+&nbsp; &nbsp; &nbsp; BC visibility<BR>&nbsp; &nbsp; bit 2 &nbsp; &nbsp; &nbsp; 
+AB visibility<BR>&nbsp; &nbsp; bit 3 &nbsp; &nbsp; &nbsp; Mapping (if there is 
+mapping for this face)<BR>&nbsp; &nbsp; bit 4-8 &nbsp; 0 (not used ?)<BR>&nbsp; 
+&nbsp; bit 9-10&nbsp; x (chaotic ???)<BR>&nbsp; &nbsp; bit 11-12 0 (not used 
+?)<BR>&nbsp; &nbsp; bit 13 &nbsp; &nbsp;&nbsp; face selected in selection 
+3<BR>&nbsp; &nbsp; bit 14 &nbsp; &nbsp;&nbsp; face selected in selection 
+2<BR>&nbsp; &nbsp; bit 15 &nbsp; &nbsp;&nbsp; face selected in selection 1</P>
+<P>* 4130 - Face Material Chunk </P>
+<P>&nbsp; If the object is all default material there is no 4130 
+chunk.<BR>&nbsp; In fact, there is one 4130 chunk for each material present on 
+the object.</P>
+<P>&nbsp; Each 4130 face material chunks begins with an asciiz of a 
+material,<BR>&nbsp; then after the null character is a short int that gives the 
+number<BR>&nbsp; of faces of the object concerned by this material, then there 
+is the<BR>&nbsp; list itself of these faces. 0000 means the first face of the 
+(4120) <BR>&nbsp; face list.</P>
+<P>&nbsp; ************ Read the Doc on MLI files for more info on 
+**************<BR>&nbsp; ************ Mapping and Materials &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; **************</P>
+<P>* 4140 Mapping coordinates.</P>
+<P>&nbsp; First 2 bytes: number of vertices.</P>
+<P>&nbsp; Then, for each vertex 2 floats that give the mapping 
+coordinates.<BR>&nbsp; That is, if a point is at the center of the map it will 
+have 0.5 0.5<BR>&nbsp; as mapping coordinates.</P>
+<P>* 4150 - Face Smoothing Group</P>
+<P>&nbsp; nfaces*4bytes</P>
+<P>&nbsp; If read as long int, the nth bit indicate if the face belongs or 
+not<BR>&nbsp; to the nth smoothing group.</P>
+<P>* 4160 Local axis</P>
+<P>&nbsp; Local axis info.<BR>&nbsp; The three first blocks of three floats are 
+the definition<BR>&nbsp; (in the absolute axis) of the local axis X Y Z of the 
+object.<BR>&nbsp; And the last block of three floats is the local center of the 
+object.<BR><BR><BR>* 4170 Standard mapping</P>
+<P>&nbsp; First 2 bytes: type of mapping<BR>&nbsp; 0 = plannar or specific (in 
+this case, like mapping from the lofter,<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; the information of 
+this chunk is irrelevant)<BR>&nbsp; 1 = cylindrical<BR>&nbsp; 2 = spherical</P>
+<P>&nbsp; then come 21 floats that describe the mapping.</P>
+<P>* 4600 - Light</P>
+<P>&nbsp; start end size type &nbsp; name<BR>&nbsp; 0 &nbsp; &nbsp;&nbsp; 3 
+&nbsp;&nbsp; 4&nbsp; float&nbsp; Light pos X<BR>&nbsp; 4 &nbsp; &nbsp;&nbsp; 7 
+&nbsp;&nbsp; 4&nbsp; float&nbsp; Light pos Y<BR>&nbsp; 8 &nbsp; &nbsp; 11 
+&nbsp;&nbsp; 4&nbsp; float&nbsp; Light pos Z</P>
+<P>&nbsp; after this structure check for more chunks.</P>
+<P>&nbsp; id &nbsp; &nbsp;&nbsp; Description ( full description later 
+)<BR>&nbsp; 0010 &nbsp; &nbsp; RGB color<BR>&nbsp; 0011 &nbsp; &nbsp; 24 bit 
+color<BR>&nbsp; 4610 &nbsp; &nbsp; Light is a Spot light<BR>&nbsp; 4620 &nbsp; 
+&nbsp; Light is off/on ( Boolean )</P>
+<P>* 4610 - Spot Light</P>
+<P>&nbsp; start end size type &nbsp; name<BR>&nbsp; 0 &nbsp; &nbsp; 3 
+&nbsp;&nbsp; 4&nbsp; float&nbsp; Target pos X<BR>&nbsp; 4 &nbsp; &nbsp; 7 
+&nbsp;&nbsp; 4&nbsp; float&nbsp; Target pos X<BR>&nbsp; 8 &nbsp;&nbsp; 11 
+&nbsp;&nbsp; 4&nbsp; float&nbsp; Target pos X<BR>&nbsp; 12 &nbsp;&nbsp; 15 
+&nbsp;&nbsp; 4&nbsp; float&nbsp; Hotspot<BR>&nbsp; 16 &nbsp;&nbsp; 19 
+&nbsp;&nbsp; 4&nbsp; float&nbsp; Falloff</P>
+<P>* 0010 - RGB Color</P>
+<P>&nbsp; start end size type &nbsp; name<BR>&nbsp; 0 &nbsp; &nbsp; 3 &nbsp; 4 
+&nbsp; float&nbsp; Red<BR>&nbsp; 4 &nbsp; &nbsp; 7 &nbsp; 4 &nbsp; float&nbsp; 
+Green<BR>&nbsp; 8 &nbsp;&nbsp; 11 &nbsp; 4 &nbsp; float&nbsp; Blue</P>
+<P>* 0011 - RGB Color - 24 bit</P>
+<P>&nbsp; start end size type &nbsp; name<BR>&nbsp; 0 &nbsp;&nbsp; 1 
+&nbsp;&nbsp; 1 &nbsp; byte &nbsp; Red<BR>&nbsp; 1 &nbsp;&nbsp; 1 &nbsp;&nbsp; 1 
+&nbsp; byte &nbsp; Green<BR>&nbsp; 2 &nbsp;&nbsp; 2 &nbsp;&nbsp; 1 &nbsp; byte 
+&nbsp; Blue</P>
+<P>* 4700 - Camera</P>
+<P>Describes the details of the camera in the scene</P>
+<P>start end size type &nbsp; name<BR>&nbsp; 0 &nbsp; &nbsp; 3 &nbsp; 4 &nbsp; 
+float&nbsp; Camera pos X<BR>&nbsp; 4 &nbsp; &nbsp; 7 &nbsp; 4 &nbsp; float&nbsp; 
+Camera pos Y<BR>&nbsp; 8 &nbsp;&nbsp; 11 &nbsp; 4 &nbsp; float&nbsp; Camera pos 
+Z<BR>12 &nbsp;&nbsp; 15 &nbsp; 4 &nbsp; float&nbsp; Camera target X<BR>16 
+&nbsp;&nbsp; 19 &nbsp; 4 &nbsp; float&nbsp; Camera target X<BR>20 &nbsp;&nbsp; 
+23 &nbsp; 4 &nbsp; float&nbsp; Camera target X<BR>24 &nbsp;&nbsp; 27 &nbsp; 4 
+&nbsp; float&nbsp; Camera bank ( rotation angle )<BR>28 &nbsp;&nbsp; 31 &nbsp; 4 
+&nbsp; float&nbsp; Camera lens</P><BR><BR><BR>
+<P>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; 4. Keyframer Chunks<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ==========================</P><BR>
+<P>* Keyframer chunk</P>
+<P>&nbsp; id &nbsp; &nbsp; &nbsp; &nbsp; Description<BR>B00A &nbsp; &nbsp; 
+&nbsp;&nbsp; unknown<BR>7001 &nbsp; &nbsp; &nbsp;&nbsp; See first description of 
+this chunk<BR>B008 &nbsp; &nbsp; &nbsp;&nbsp; Frames<BR>B009 &nbsp; &nbsp; 
+&nbsp;&nbsp; unknown<BR>B002 &nbsp; &nbsp; &nbsp;&nbsp; Start object 
+description</P>
+<P>* B008 - Frame information</P>
+<P>simple structure describing frame info</P>
+<P>start end size type &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; name<BR>&nbsp; 0 
+&nbsp;&nbsp; 3 &nbsp;&nbsp; 4&nbsp; unsigned long &nbsp; start frame<BR>&nbsp; 4 
+&nbsp;&nbsp; 7 &nbsp;&nbsp; 4&nbsp; unsigned long &nbsp; end frame</P>
+<P>*B002 - Start of Object info</P>
+<P>Subhunks</P>
+<P>&nbsp; id &nbsp; &nbsp; Description<BR>B010 &nbsp;&nbsp; Name &amp; 
+Hierarchy<BR>B011* &nbsp; Name Dummy Object<BR>B013 &nbsp;&nbsp; 
+unknown<BR>B014* &nbsp; unknown<BR>B015 &nbsp;&nbsp; unknown<BR>B020 
+&nbsp;&nbsp; Objects pivot point ?<BR>B021 &nbsp;&nbsp; unknown<BR>B022 
+&nbsp;&nbsp; unknown</P>
+<P>* B010 - Name &amp; Hierarchy descriptor</P>
+<P>start end&nbsp; size type &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; name<BR>0&nbsp; 
+&nbsp; &nbsp; ? &nbsp;&nbsp; ? &nbsp; ASCIIZ &nbsp; &nbsp; &nbsp;&nbsp; Object 
+name<BR>?&nbsp; &nbsp; &nbsp; ? &nbsp;&nbsp; 2 &nbsp; unsigned int&nbsp; 
+unknown<BR>?&nbsp; &nbsp; &nbsp; ? &nbsp;&nbsp; 2 &nbsp; unsigned int&nbsp; 
+unknown<BR>?&nbsp; &nbsp; &nbsp; ? &nbsp;&nbsp; 2 &nbsp; unsigned int&nbsp; 
+Hierarchy of Object</P>
+<P>The object hierarchy is a bit complex but works like this.<BR>Each Object in 
+the scene is given a number to identify its<BR>order in the tree. Also each 
+object is orddered in the 3ds<BR>file as it would appear in the tree.<BR>The 
+root object is given the number -1 ( FFFF ).<BR>As the file is read a counter of 
+the object number is kept.<BR>Is the counter increments the objects are children 
+of the<BR>previous objects. But when the pattern is broken by a number<BR>what 
+will be less than the current counter the hierarchy returns<BR>to that 
+level.</P>
+<P>for example.</P>
+<P>&nbsp;&nbsp; object &nbsp; hierarchy<BR>&nbsp;&nbsp; name</P>
+<P>&nbsp; &nbsp; &nbsp;&nbsp; A &nbsp; &nbsp;&nbsp; -1<BR>&nbsp; &nbsp; 
+&nbsp;&nbsp; B &nbsp; &nbsp; &nbsp; 0 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; This example is taken<BR>&nbsp; &nbsp; &nbsp;&nbsp; C &nbsp; 
+&nbsp; &nbsp; 1 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; from 
+50pman.3ds<BR>&nbsp; &nbsp; &nbsp;&nbsp; D &nbsp; &nbsp; &nbsp; 2<BR>&nbsp; 
+&nbsp; &nbsp;&nbsp; E &nbsp; &nbsp; &nbsp; 1 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; I would really reccomend<BR>&nbsp; &nbsp; &nbsp;&nbsp; F 
+&nbsp; &nbsp; &nbsp; 4 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+having a look at one of the<BR>&nbsp; &nbsp; &nbsp;&nbsp; G &nbsp; &nbsp; &nbsp; 
+5 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; examples with the 
+hierarchy<BR>&nbsp; &nbsp; &nbsp;&nbsp; H &nbsp; &nbsp; &nbsp; 1 &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; numbers to help work it out.<BR>&nbsp; 
+&nbsp; &nbsp;&nbsp; I &nbsp; &nbsp; &nbsp; 7<BR>&nbsp; &nbsp; &nbsp;&nbsp; J 
+&nbsp; &nbsp; &nbsp; 8<BR>&nbsp; &nbsp; &nbsp;&nbsp; K &nbsp; &nbsp; &nbsp; 
+0<BR>&nbsp; &nbsp; &nbsp;&nbsp; L &nbsp; &nbsp;&nbsp; 10<BR>&nbsp; &nbsp; 
+&nbsp;&nbsp; M &nbsp; &nbsp;&nbsp; 11<BR>&nbsp; &nbsp; &nbsp;&nbsp; N &nbsp; 
+&nbsp; &nbsp; 0<BR>&nbsp; &nbsp; &nbsp;&nbsp; O &nbsp; &nbsp;&nbsp; 13<BR>&nbsp; 
+&nbsp; &nbsp;&nbsp; P &nbsp; &nbsp;&nbsp; 14</P>
+<P><BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; A<BR>&nbsp; &nbsp; &nbsp; &nbsp; 
++-----------------+----------------+<BR>&nbsp; &nbsp; &nbsp; &nbsp; B &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; K &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp;&nbsp; N<BR>&nbsp;&nbsp; +----+----+ &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp;&nbsp; | &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
+|<BR>&nbsp;&nbsp; C &nbsp;&nbsp; E &nbsp;&nbsp; H &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; L &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
+O<BR>&nbsp;&nbsp; | &nbsp;&nbsp; | &nbsp;&nbsp; | &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; | &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
+|<BR>&nbsp;&nbsp; D &nbsp;&nbsp; F &nbsp;&nbsp; I &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; M &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
+P<BR>&nbsp; &nbsp; &nbsp; &nbsp; | &nbsp;&nbsp; |<BR>&nbsp; &nbsp; &nbsp; &nbsp; 
+G &nbsp;&nbsp; J</P>
+<P>Still not done with this chunk yet !<BR>If the object name is $$$DUMMY then 
+it is a dummy object<BR>and therefore you should expect a few extra chunks.</P>
+<P>* B011 - Dummy objects name.</P>
+<P>&nbsp;&nbsp; Names a dummy object. ASCIIZ string.</P>
+<P>* B020 - Pivot Point ?</P>
+<P>The Objects pivot point. Not quite sure what the first five floats do 
+yet<BR>( ideas ?).</P>
+<P>start end size type &nbsp; name<BR>&nbsp; 0 &nbsp;&nbsp; 3 &nbsp;&nbsp; 
+4&nbsp; float&nbsp; unknown<BR>&nbsp; 4 &nbsp;&nbsp; 7 &nbsp;&nbsp; 4&nbsp; 
+float&nbsp; unknown<BR>&nbsp; 8 &nbsp; 11 &nbsp;&nbsp; 4&nbsp; float&nbsp; 
+unknown<BR>&nbsp; 12 &nbsp; 16 &nbsp;&nbsp; 4&nbsp; float&nbsp; 
+unknown<BR>&nbsp; 16 &nbsp; 19 &nbsp;&nbsp; 4&nbsp; float&nbsp; 
+unknown<BR>&nbsp; 20 &nbsp; 23 &nbsp;&nbsp; 4&nbsp; float&nbsp; 
+unknown<BR>&nbsp; 24 &nbsp; 27 &nbsp;&nbsp; 4&nbsp; float&nbsp; Pivot 
+Y<BR>&nbsp; 28 &nbsp; 32 &nbsp;&nbsp; 4&nbsp; float&nbsp; Pivot X</P><BR>
+<P>&nbsp; &nbsp; <BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 5. CODE<BR>&nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+=============================</P>
+<P><BR>!!!!!!!!!!! The source code is not UP-TO-DATE it is written after rev 
+0.9<BR>of this Doc It will be updated when I can find the time ( or maybe YOU 
+can)<BR>If the code looks like it has been written by a a twelve year old, then 
+<BR>looks do decieve, I like very simple and easy to read source code. All 
+that<BR>matters is that it does the trick.</P>
+<P><BR>-----------------------------88-------------------------------</P>
+<P><BR>/*----------------------------------------------------------------------------*\<BR>&nbsp; 
+&nbsp; This is a lib which reads 3d-studio binary files from version 
+3.0<BR>&nbsp; &nbsp; and higher<BR>&nbsp; &nbsp; (v1.05)<BR>&nbsp; &nbsp; 
+author: Martin van Velsen<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ( and 
+some great help by Gert van der Spoel )<BR>&nbsp; &nbsp; email:&nbsp; <A 
+href="mailto:vvelsen@ronix.ptf.hro.nl">vvelsen@ronix.ptf.hro.nl</A></P>
+<P>&nbsp; &nbsp; If you happen to come across some variables with strange names, 
+then<BR>&nbsp; &nbsp; that will possible be Dutch names, sorry for that 
+:)<BR>\*----------------------------------------------------------------------------*/<BR>#ifndef 
+__3DSBIN_H__<BR>#define __3DSBIN_H__</P>
+<P>#include &lt;stdio.h<BR>#include &lt;string.h<BR>#include 
+&lt;stdlib.h<BR>#include &lt;conio.h &nbsp; // IF you are on a dos 
+system<BR>#include &lt;dos.h &nbsp; &nbsp; // IF you are on a dos system</P>
+<P>//------ tools</P>
+<P>#define __DEBUG__ &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 0</P>
+<P>#define TRUE &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 0<BR>#define 
+FALSE &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 1</P>
+<P>//------ Id Chunk</P>
+<P>#define MAIN3DS &nbsp; &nbsp; &nbsp; 0x4D4D</P>
+<P>//------ Main Chunks</P>
+<P>#define EDIT3DS &nbsp; &nbsp; &nbsp; 0x3D3D&nbsp; // this is the start of the 
+editor config<BR>#define KEYF3DS &nbsp; &nbsp; &nbsp; 0xB000&nbsp; // this is 
+the start of the keyframer config</P>
+<P>//------ sub defines of EDIT3DS</P>
+<P>#define EDIT_MATERIAL 0xAFFF<BR>#define EDIT_CONFIG1&nbsp; 0x0100<BR>#define 
+EDIT_CONFIG2&nbsp; 0x3E3D<BR>#define EDIT_VIEW_P1&nbsp; 0x7012<BR>#define 
+EDIT_VIEW_P2&nbsp; 0x7011<BR>#define EDIT_VIEW_P3&nbsp; 0x7020<BR>#define 
+EDIT_VIEW1 &nbsp;&nbsp; 0x7001<BR>#define EDIT_BACKGR &nbsp; 0x1200<BR>#define 
+EDIT_AMBIENT&nbsp; 0x2100<BR>#define EDIT_OBJECT &nbsp; 0x4000</P>
+<P>#define EDIT_UNKNW01&nbsp; 0x1100<BR>#define EDIT_UNKNW02&nbsp; 
+0x1201<BR>#define EDIT_UNKNW03&nbsp; 0x1300<BR>#define EDIT_UNKNW04&nbsp; 
+0x1400<BR>#define EDIT_UNKNW05&nbsp; 0x1420<BR>#define EDIT_UNKNW06&nbsp; 
+0x1450<BR>#define EDIT_UNKNW07&nbsp; 0x1500<BR>#define EDIT_UNKNW08&nbsp; 
+0x2200<BR>#define EDIT_UNKNW09&nbsp; 0x2201<BR>#define EDIT_UNKNW10&nbsp; 
+0x2210<BR>#define EDIT_UNKNW11&nbsp; 0x2300<BR>#define EDIT_UNKNW12&nbsp; 0x2302 
+// new chunk type<BR>#define EDIT_UNKNW13&nbsp; 0x3000<BR>#define 
+EDIT_UNKNW14&nbsp; 0xAFFF</P>
+<P>//------ sub defines of EDIT_MATERIAL<BR>#define MAT_NAME01 &nbsp;&nbsp; 
+0xA000&nbsp; // includes name (see mli doc for materials)</P>
+<P>//------ sub defines of EDIT_OBJECT</P>
+<P>#define OBJ_TRIMESH &nbsp; 0x4100<BR>#define OBJ_LIGHT &nbsp; &nbsp; 
+0x4600<BR>#define OBJ_CAMERA &nbsp;&nbsp; 0x4700</P>
+<P>#define OBJ_UNKNWN01&nbsp; 0x4010<BR>#define OBJ_UNKNWN02&nbsp; 0x4012 //---- 
+Could be shadow</P>
+<P>//------ sub defines of OBJ_CAMERA<BR>#define CAM_UNKNWN01&nbsp; 0x4710 // 
+new chunk type<BR>#define CAM_UNKNWN02&nbsp; 0x4720 // new chunk type</P>
+<P>//------ sub defines of OBJ_LIGHT<BR>#define LIT_OFF &nbsp; &nbsp; &nbsp; 
+0x4620<BR>#define LIT_SPOT &nbsp; &nbsp;&nbsp; 0x4610<BR>#define 
+LIT_UNKNWN01&nbsp; 0x465A</P>
+<P>//------ sub defines of OBJ_TRIMESH<BR>#define TRI_VERTEXL &nbsp; 
+0x4110<BR>#define TRI_FACEL2 &nbsp;&nbsp; 0x4111 // unknown yet<BR>#define 
+TRI_FACEL1 &nbsp;&nbsp; 0x4120<BR>#define TRI_SMOOTH &nbsp;&nbsp; 
+0x4150<BR>#define TRI_LOCAL &nbsp; &nbsp; 0x4160<BR>#define TRI_VISIBLE &nbsp; 
+0x4165</P>
+<P>//------ sub defs of KEYF3DS</P>
+<P>#define KEYF_UNKNWN01 0xB009<BR>#define KEYF_UNKNWN02 0xB00A<BR>#define 
+KEYF_FRAMES &nbsp; 0xB008<BR>#define KEYF_OBJDES &nbsp; 0xB002</P>
+<P>#define KEYF_OBJHIERARCH&nbsp; 0xB010<BR>#define KEYF_OBJDUMMYNAME 
+0xB011<BR>#define KEYF_OBJUNKNWN01&nbsp; 0xB013<BR>#define 
+KEYF_OBJUNKNWN02&nbsp; 0xB014<BR>#define KEYF_OBJUNKNWN03&nbsp; 0xB015&nbsp; 
+<BR>#define KEYF_OBJPIVOT &nbsp; &nbsp; 0xB020&nbsp; <BR>#define 
+KEYF_OBJUNKNWN04&nbsp; 0xB021&nbsp; <BR>#define KEYF_OBJUNKNWN05&nbsp; 
+0xB022&nbsp; </P>
+<P>//------&nbsp; these define the different color chunk types<BR>#define 
+COL_RGB&nbsp; 0x0010<BR>#define COL_TRU&nbsp; 0x0011<BR>#define COL_UNK&nbsp; 
+0x0013 // unknown</P>
+<P>//------ defines for viewport chunks</P>
+<P>#define TOP &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 0x0001<BR>#define BOTTOM 
+&nbsp; &nbsp; &nbsp;&nbsp; 0x0002<BR>#define LEFT &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; 0x0003<BR>#define RIGHT &nbsp; &nbsp; &nbsp; &nbsp; 
+0x0004<BR>#define FRONT &nbsp; &nbsp; &nbsp; &nbsp; 0x0005<BR>#define BACK 
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 0x0006<BR>#define USER &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; 0x0007<BR>#define CAMERA &nbsp; &nbsp; &nbsp;&nbsp; 0x0008 // 
+0xFFFF is the code read from file<BR>#define LIGHT &nbsp; &nbsp; &nbsp; &nbsp; 
+0x0009<BR>#define DISABLED &nbsp; &nbsp;&nbsp; 0x0010<BR>#define BOGUS &nbsp; 
+&nbsp; &nbsp; &nbsp; 0x0011</P>
+<P>//------ global vars</P>
+<P>char *viewports [11]={<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp;&nbsp; "Bogus",<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; "Top",<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; "Bottom",<BR>&nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; "Left",<BR>&nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; "Right",<BR>&nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
+"Front",<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; "Back",<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp;&nbsp; "User",<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp;&nbsp; "Camera",<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; "Light",<BR>&nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; "Disabled"<BR>&nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; };</P>
+<P>FILE *bin3ds;<BR>unsigned long current_chunk=0L;<BR>unsigned char 
+views_read=0;<BR>unsigned int numb_faces=0,numb_vertices=0;<BR>char temp_name 
+[100];<BR>float trans_mat [4][4]; // translation matrix for objects</P>
+<P>#endif</P><BR>
+<P>-----------------------------88-------------------------------</P>
+<P><BR>/*----------------------------------------------------------------------------*\<BR>&nbsp; 
+&nbsp; This is a lib which reads 3d-studio binary files from version 
+3.0<BR>&nbsp; &nbsp; and higher<BR>&nbsp; &nbsp; (v1.05)<BR>&nbsp; &nbsp; 
+author: Martin van Velsen<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ( and 
+some great help by Gert van der Spoel )<BR>&nbsp; &nbsp; email:&nbsp; <A 
+href="mailto:vvelsen@ronix.ptf.hro.nl">vvelsen@ronix.ptf.hro.nl</A><BR><BR>&nbsp; 
+&nbsp; If you happen to come across some variables with strange names, 
+then<BR>&nbsp; &nbsp; that will possible be Dutch names, sorry for that :)</P>
+<P>\*----------------------------------------------------------------------------*/<BR>#ifndef 
+__3DSBIN_C__<BR>#define __3DSBIN_C__</P>
+<P>#include "3ds_bin.h"</P>
+<P>/*----------------------------------------------------------------------------*/<BR>unsigned 
+char ReadChar (void)<BR>{<BR>return (fgetc (bin3ds));</P>
+<P>//------ if you want to add some code to create a progress bar, 
+then<BR>//------ I suggest you do it here. This is the only function 
+which<BR>//------ reads from 
+disk<BR>}<BR>/*----------------------------------------------------------------------------*/<BR>unsigned 
+int ReadInt (void)<BR>{<BR>unsigned int temp = ReadChar();<BR>return ( temp | 
+(ReadChar () &lt;&lt; 
+8));<BR>}<BR>/*----------------------------------------------------------------------------*/<BR>unsigned 
+long ReadLong (void)<BR>{<BR>unsigned long temp1,temp2;<BR>unsigned long 
+temp3,temp4;</P>
+<P>temp1=ReadInt ();<BR>temp2=ReadInt ();</P>
+<P>return 
+(temp3+(temp4*0x10000L));<BR>}<BR>/*----------------------------------------------------------------------------*/<BR>unsigned 
+long ReadChunkPointer (void)<BR>{<BR>return (ReadLong 
+());<BR>}<BR>/*----------------------------------------------------------------------------*/<BR>unsigned 
+long GetChunkPointer (void)<BR>{<BR>return (ftell (bin3ds)-2); // compensate for 
+the already read 
+Marker<BR>}<BR>/*----------------------------------------------------------------------------*/<BR>void 
+ChangeChunkPointer (unsigned long temp_pointer)<BR>{<BR>fseek 
+(bin3ds,temp_pointer,SEEK_SET);<BR>}<BR>/*----------------------------------------------------------------------------*/<BR>int 
+ReadName (void)<BR>{<BR>unsigned int teller=0;<BR>unsigned char letter;</P>
+<P>strcpy (temp_name,"Default name");</P>
+<P>letter=ReadChar ();<BR>if (letter==0) return (-1); // dummy 
+object<BR>temp_name [teller]=letter;<BR>teller++;</P>
+<P>do<BR>{<BR>&nbsp; letter=ReadChar ();<BR>&nbsp; temp_name 
+[teller]=letter;<BR>&nbsp; teller++;<BR>}<BR>while ((letter!=0) &amp;&amp; 
+(teller&lt;12));</P>
+<P>temp_name [teller-1]=0;</P>
+<P>#ifdef __DEBUG__<BR>&nbsp; printf (" &nbsp; &nbsp; Found name : 
+%s\n",temp_name);<BR>#endif<BR>return 
+(0);<BR>}<BR>/*----------------------------------------------------------------------------*/<BR>int 
+ReadLongName (void)<BR>{<BR>unsigned int teller=0;<BR>unsigned char letter;</P>
+<P>strcpy (temp_name,"Default name");</P>
+<P>letter=ReadChar ();<BR>if (letter==0) return (-1); // dummy 
+object<BR>temp_name [teller]=letter;<BR>teller++;</P>
+<P>do<BR>{<BR>&nbsp; letter=ReadChar ();<BR>&nbsp; temp_name 
+[teller]=letter;<BR>&nbsp; teller++;<BR>}<BR>while (letter!=0);</P>
+<P>temp_name [teller-1]=0;</P>
+<P>#ifdef __DEBUG__<BR>&nbsp; printf ("Found name : 
+%s\n",temp_name);<BR>#endif<BR>return 
+(0);<BR>}<BR>/*----------------------------------------------------------------------------*/<BR>unsigned 
+long ReadUnknownChunk (unsigned int chunk_id)<BR>{<BR>unsigned long 
+current_pointer;<BR>unsigned long temp_pointer;</P>
+<P>chunk_id=chunk_id;</P>
+<P>current_pointer=GetChunkPointer ();<BR>temp_pointer &nbsp; =ReadChunkPointer 
+();</P>
+<P>ChangeChunkPointer (current_pointer+temp_pointer); <BR>// move to the new 
+chunk position<BR>return 
+(temp_pointer);<BR>}<BR>/*----------------------------------------------------------------------------*/<BR>unsigned 
+long ReadRGBColor (void)<BR>{<BR>float rgb_val [3];</P>
+<P>for (int i=0;i&lt;3;i++)<BR>&nbsp; fread (&amp;(rgb_val [i]),sizeof 
+(float),1,bin3ds);</P>
+<P>#ifdef __DEBUG__<BR>printf (" &nbsp; &nbsp; Found Color (RGB) def of: 
+R:%5.2f,G:%5.2f,B:%5.2f\n",<BR>&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; rgb_val 
+[0],<BR>&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; rgb_val [1],<BR>&nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; rgb_val [2]);<BR>#endif</P>
+<P>return 
+(12L);<BR>}<BR>/*----------------------------------------------------------------------------*/<BR>unsigned 
+long ReadTrueColor (void)<BR>{<BR>unsigned char true_c_val [3];</P>
+<P>for (int i=0;i&lt;3;i++)<BR>&nbsp; true_c_val [i]=ReadChar ();</P>
+<P>#ifdef __DEBUG__<BR>printf (" &nbsp; &nbsp; Found Color (24bit) def of: 
+R:%d,G:%d,B:%d\n",<BR>&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; true_c_val 
+[0],<BR>&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; true_c_val [1],<BR>&nbsp; &nbsp; 
+&nbsp; &nbsp;&nbsp; true_c_val [2]);<BR>#endif</P>
+<P>return 
+(3L);<BR>}<BR>/*----------------------------------------------------------------------------*/<BR>unsigned 
+long ReadBooleanChunk (unsigned char *boolean)<BR>{<BR>unsigned long 
+current_pointer;<BR>unsigned long temp_pointer;</P>
+<P>current_pointer=GetChunkPointer ();<BR>temp_pointer &nbsp; =ReadChunkPointer 
+();</P>
+<P>*boolean=ReadChar ();</P>
+<P>ChangeChunkPointer (current_pointer+temp_pointer); // move to new chunk 
+position<BR>return 
+(temp_pointer);<BR>}<BR>/*----------------------------------------------------------------------------*/<BR>unsigned 
+long ReadSpotChunk (void)<BR>{<BR>unsigned long current_pointer;<BR>unsigned 
+long temp_pointer;<BR>float target [4];<BR>float hotspot,falloff;</P>
+<P>current_pointer=GetChunkPointer ();<BR>temp_pointer &nbsp; =ReadChunkPointer 
+();</P>
+<P>fread (&amp;(target [0]),sizeof (float),1,bin3ds);<BR>fread (&amp;(target 
+[1]),sizeof (float),1,bin3ds);<BR>fread (&amp;(target [2]),sizeof 
+(float),1,bin3ds);<BR>fread (&amp;hotspot,sizeof (float),1,bin3ds);<BR>fread 
+(&amp;falloff,sizeof (float),1,bin3ds);</P>
+<P>#ifdef __DEBUG__<BR>printf (" &nbsp; &nbsp;&nbsp; The target of the spot is 
+at: X:%5.2f Y:%5.2f Y:%5.2f\n",<BR>&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; target 
+[0],<BR>&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; target [1],<BR>&nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; target [2]);<BR>printf (" &nbsp; &nbsp;&nbsp; The hotspot of this 
+light is : %5.2f\n",hotspot);<BR>printf (" &nbsp; &nbsp;&nbsp; The falloff of 
+this light is : %5.2f\n",falloff);<BR>#endif</P>
+<P>ChangeChunkPointer (current_pointer+temp_pointer); <BR>// move to the new 
+chunk position<BR>return 
+(temp_pointer);<BR>}<BR>/*----------------------------------------------------------------------------*/<BR>unsigned 
+long ReadLightChunk (void)<BR>{<BR>unsigned char 
+end_found=FALSE,boolean;<BR>unsigned int temp_int;<BR>unsigned long 
+current_pointer;<BR>unsigned long temp_pointer;<BR>unsigned long tellertje=6L; 
+// 2 id + 4 pointer<BR>float light_coors [3];</P>
+<P>current_pointer=GetChunkPointer ();<BR>temp_pointer &nbsp; =ReadChunkPointer 
+();</P>
+<P>fread (&amp;(light_coors [0]),sizeof (float),1,bin3ds);<BR>fread 
+(&amp;(light_coors [1]),sizeof (float),1,bin3ds);<BR>fread (&amp;(light_coors 
+[2]),sizeof (float),1,bin3ds);</P>
+<P>#ifdef __DEBUG__<BR>printf (" &nbsp; &nbsp; Found light at coordinates: X: 
+%5.2f, Y: %5.2f,Z: %5.2f\n",<BR>&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; light_coors 
+[0],<BR>&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; light_coors [1],<BR>&nbsp; &nbsp; 
+&nbsp; &nbsp;&nbsp; light_coors [2]);<BR>#endif</P>
+<P>while (end_found==FALSE)<BR>{<BR>&nbsp; temp_int=ReadInt ();</P>
+<P>&nbsp; &nbsp; &nbsp; switch (temp_int)<BR>&nbsp; &nbsp; &nbsp; {<BR>&nbsp; 
+&nbsp; &nbsp;&nbsp; case LIT_UNKNWN01 :<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; #ifdef 
+__DEBUG__<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; printf (" Found Light unknown chunk<BR>&nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; id of %0X\n",LIT_UNKNWN01);<BR>&nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; #endif<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; tellertje+=ReadUnknownChunk 
+(LIT_UNKNWN01);<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; break;<BR>&nbsp; &nbsp; &nbsp;&nbsp; case 
+LIT_OFF &nbsp; &nbsp;&nbsp; :<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; #ifdef __DEBUG__<BR>&nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; printf (" Light is (on/off) chunk: %0X\n",LIT_OFF);<BR>&nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+#endif<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; tellertje+=ReadBooleanChunk (&amp;boolean);<BR>&nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; #ifdef __DEBUG__<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (boolean==TRUE)<BR>&nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; printf (" &nbsp; &nbsp;&nbsp; Light is on\n");<BR>&nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+else<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; printf (" &nbsp; &nbsp;&nbsp; Light is 
+off\n");<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; #endif<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; break;<BR>&nbsp; &nbsp; 
+&nbsp;&nbsp; case LIT_SPOT &nbsp; &nbsp; :<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; #ifdef 
+__DEBUG__<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; printf (" Light is SpotLight: 
+%0X\n",TRI_VERTEXL);<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; #endif<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; tellertje+=ReadSpotChunk 
+();<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; break;<BR>&nbsp; &nbsp; &nbsp;&nbsp; case COL_RGB &nbsp; 
+&nbsp;&nbsp; :<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; #ifdef __DEBUG__<BR>&nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; printf (" Found 
+Color def (RGB)<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+chunk id of %0X\n",temp_int);<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; #endif<BR>&nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+tellertje+=ReadRGBColor ();<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; break;<BR>&nbsp; &nbsp; &nbsp;&nbsp; 
+case COL_TRU &nbsp; &nbsp;&nbsp; :<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; #ifdef __DEBUG__<BR>&nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; printf (" Found Color def (24bit)<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; chunk id of %0X\n",temp_int);<BR>&nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+#endif<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; tellertje+=ReadTrueColor ();<BR>&nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; break;<BR>&nbsp; 
+&nbsp; &nbsp;&nbsp; default &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; :break;<BR>&nbsp; 
+&nbsp; &nbsp; }</P>
+<P>&nbsp; tellertje+=2;<BR>&nbsp; if (tellertje=temp_pointer)<BR>&nbsp; &nbsp; 
+end_found=TRUE;<BR>}</P>
+<P>ChangeChunkPointer (current_pointer+temp_pointer); <BR>// move to the new 
+chunk position<BR>return 
+(temp_pointer);<BR>}<BR>/*----------------------------------------------------------------------------*/<BR>unsigned 
+long ReadCameraChunk (void)<BR>{<BR>unsigned long current_pointer;<BR>unsigned 
+long temp_pointer;<BR>float camera_eye [3];<BR>float camera_focus [3];<BR>float 
+rotation,lens;</P>
+<P>current_pointer=GetChunkPointer ();<BR>temp_pointer &nbsp; =ReadChunkPointer 
+();</P>
+<P>fread (&amp;(camera_eye [0]),sizeof (float),1,bin3ds);<BR>fread 
+(&amp;(camera_eye [1]),sizeof (float),1,bin3ds);<BR>fread (&amp;(camera_eye 
+[2]),sizeof (float),1,bin3ds);</P>
+<P>#ifdef __DEBUG__<BR>printf (" &nbsp; &nbsp; Found Camera viewpoint at 
+<BR>&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; coordinates: X: %5.2f, Y: %5.2f,Z: 
+%5.2f\n",<BR>&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; camera_eye [0],<BR>&nbsp; &nbsp; 
+&nbsp; &nbsp;&nbsp; camera_eye [1],<BR>&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
+camera_eye [2]);<BR>#endif</P>
+<P>fread (&amp;(camera_focus [0]),sizeof (float),1,bin3ds);<BR>fread 
+(&amp;(camera_focus [1]),sizeof (float),1,bin3ds);<BR>fread (&amp;(camera_focus 
+[2]),sizeof (float),1,bin3ds);</P>
+<P>#ifdef __DEBUG__<BR>printf (" &nbsp; &nbsp; Found Camera focus coors at 
+<BR>&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; coordinates: X: %5.2f, Y: %5.2f,Z: 
+%5.2f\n",<BR>&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; camera_focus [0],<BR>&nbsp; 
+&nbsp; &nbsp; &nbsp;&nbsp; camera_focus [1],<BR>&nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; camera_focus [2]);<BR>#endif</P>
+<P>fread (&amp;rotation,sizeof (float),1,bin3ds);<BR>fread (&amp;lens,sizeof 
+(float),1,bin3ds);<BR>#ifdef __DEBUG__<BR>printf (" &nbsp; &nbsp; Rotation of 
+camera is:&nbsp; %5.4f\n",rotation);<BR>printf (" &nbsp; &nbsp; Lens in used 
+camera is: %5.4fmm\n",lens);<BR>#endif</P>
+<P>if ((temp_pointer-38)0) // this means more chunks are to 
+follow<BR>{<BR>&nbsp; #ifdef __DEBUG__<BR>&nbsp; printf (" &nbsp; &nbsp; **** 
+found extra cam chunks ****\n");<BR>&nbsp; #endif<BR>&nbsp; if (ReadInt 
+()==CAM_UNKNWN01)<BR>&nbsp; {<BR>&nbsp; #ifdef __DEBUG__<BR>&nbsp; printf (" 
+&nbsp; &nbsp; **** Found cam 1 type ch ****\n");<BR>&nbsp; #endif<BR>&nbsp; 
+ReadUnknownChunk (CAM_UNKNWN01);<BR>&nbsp; }<BR>&nbsp; if (ReadInt 
+()==CAM_UNKNWN02)<BR>&nbsp; {<BR>&nbsp; #ifdef __DEBUG__<BR>&nbsp; printf (" 
+&nbsp; &nbsp; **** Found cam 2 type ch ****\n");<BR>&nbsp; #endif<BR>&nbsp; 
+ReadUnknownChunk (CAM_UNKNWN02);<BR>&nbsp; }<BR>}</P>
+<P>ChangeChunkPointer (current_pointer+temp_pointer); <BR>// move to the new 
+chunk position<BR>return 
+(temp_pointer);<BR>}<BR>/*----------------------------------------------------------------------------*/<BR>unsigned 
+long ReadVerticesChunk (void)<BR>{<BR>unsigned long current_pointer;<BR>unsigned 
+long temp_pointer;<BR>float vertices [3]; // x,y,z<BR>unsigned int numb_v;</P>
+<P>current_pointer=GetChunkPointer ();<BR>temp_pointer &nbsp; =ReadChunkPointer 
+();<BR>numb_vertices&nbsp; =ReadInt ();</P>
+<P>#ifdef __DEBUG__<BR>printf (" &nbsp; &nbsp;&nbsp; Found (%d) number of 
+vertices\n",numb_vertices);<BR>#endif</P>
+<P>for (int i=0;i&lt;numb_vertices;i++)<BR>{<BR>&nbsp; fread (&amp;(vertices 
+[0]),sizeof (float),1,bin3ds);<BR>&nbsp; fread (&amp;(vertices [1]),sizeof 
+(float),1,bin3ds);<BR>&nbsp; fread (&amp;(vertices [2]),sizeof 
+(float),1,bin3ds);</P>
+<P>&nbsp; #ifdef __DEBUG__<BR>&nbsp; printf (" &nbsp; &nbsp;&nbsp; Vertex nr%4d: 
+X: %5.2f&nbsp; Y: %5.2f&nbsp; Z:%5.2f\n",<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+i,<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; vertices [0],<BR>&nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; vertices [1],<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; vertices 
+[2]);<BR>&nbsp; #endif<BR>}</P>
+<P>ChangeChunkPointer (current_pointer+temp_pointer); <BR>// move to the new 
+chunk position<BR>return 
+(temp_pointer);<BR>}<BR>/*----------------------------------------------------------------------------*/ 
+<BR>unsigned long ReadSmoothingChunk ()<BR>{<BR>unsigned long 
+current_pointer;<BR>unsigned long temp_pointer;<BR>unsigned long smoothing;</P>
+<P>current_pointer=GetChunkPointer ();<BR>temp_pointer &nbsp; =ReadChunkPointer 
+();</P>
+<P>for (int i=0;i&lt;numb_faces;i++)<BR>{<BR>&nbsp; 
+smoothing=ReadLong();<BR>&nbsp; smoothing=smoothing; // compiler warnig 
+depressor *:)<BR>&nbsp; #ifdef __DEBUG__<BR>&nbsp; printf (" &nbsp; &nbsp;&nbsp; 
+The smoothing group for face [%5d] is %d\n",i,smoothing);<BR>&nbsp; 
+#endif<BR>}</P>
+<P>ChangeChunkPointer (current_pointer+temp_pointer); <BR>// move to the new 
+chunk position<BR>return 
+(temp_pointer);<BR>}<BR>/*----------------------------------------------------------------------------*/<BR>unsigned 
+long ReadFacesChunk (void)<BR>{<BR>unsigned long current_pointer;<BR>unsigned 
+long temp_pointer;<BR>unsigned int temp_diff;<BR>unsigned int faces [6]; // 
+a,b,c,Diff (Diff= AB: BC: CA: )</P>
+<P>current_pointer=GetChunkPointer ();<BR>temp_pointer &nbsp; =ReadChunkPointer 
+();<BR>numb_faces &nbsp; &nbsp; =ReadInt ();<BR>#ifdef __DEBUG__<BR>printf (" 
+&nbsp; &nbsp;&nbsp; Found (%d) number of faces\n",numb_faces);<BR>#endif</P>
+<P>for (int i=0;i&lt;numb_faces;i++)<BR>{<BR>&nbsp; faces [0]=ReadInt 
+();<BR>&nbsp; faces [1]=ReadInt ();<BR>&nbsp; faces [2]=ReadInt ();<BR>&nbsp; 
+temp_diff=ReadInt () &amp; 0x000F;<BR>&nbsp; faces [3]=(temp_diff &amp; 
+0x0004)&nbsp; 2;<BR>&nbsp; faces [4]=(temp_diff &amp; 0x0002)&nbsp; 1;<BR>&nbsp; 
+faces [5]=(temp_diff &amp; 0x0001);</P>
+<P>&nbsp; #ifdef __DEBUG__<BR>&nbsp; printf (" &nbsp; &nbsp;&nbsp; Face nr:%d, 
+A: %d&nbsp; B: %d&nbsp; C:%d , AB:%d&nbsp; BC:%d&nbsp; CA:%d\n",<BR>&nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; i,<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; faces 
+[0],<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; faces [1],<BR>&nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; faces [2],<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; faces 
+[3],<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; faces [4],<BR>&nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; faces [5]);<BR>&nbsp; #endif<BR>}</P>
+<P>if (ReadInt ()==TRI_SMOOTH)<BR>&nbsp; ReadSmoothingChunk ();<BR>#ifdef 
+__DEBUG__<BR>else<BR>&nbsp; printf (" &nbsp; &nbsp;&nbsp; No smoothing groups 
+found, assuming autosmooth\n");<BR>#endif</P>
+<P>ChangeChunkPointer (current_pointer+temp_pointer); <BR>// move to the new 
+chunk position<BR>return 
+(temp_pointer);<BR>}<BR>/*----------------------------------------------------------------------------*/<BR>unsigned 
+long ReadTranslationChunk (void)<BR>{<BR>unsigned long 
+current_pointer;<BR>unsigned long 
+temp_pointer;<BR>current_pointer=GetChunkPointer ();<BR>temp_pointer &nbsp; 
+=ReadChunkPointer ();</P>
+<P>for (int j=0;j&lt;4;j++)<BR>{<BR>&nbsp; for (int 
+i=0;i&lt;3;i++)<BR>&nbsp;&nbsp; fread (&amp;(trans_mat [j][i]),sizeof 
+(float),1,bin3ds);<BR>}</P>
+<P>trans_mat [0][3]=0;<BR>trans_mat [1][3]=0;<BR>trans_mat 
+[2][3]=0;<BR>trans_mat [3][3]=1;</P>
+<P>#ifdef __DEBUG__<BR>printf (" &nbsp; &nbsp; The translation matrix 
+is:\n");<BR>for (int i=0;i&lt;4;i++)<BR>&nbsp; &nbsp; printf (" &nbsp; 
+&nbsp;&nbsp; | %5.2f %5.2f %5.2f %5.2f |\n",<BR>&nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp;&nbsp; trans_mat [i][0],<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; trans_mat [i][1],<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; trans_mat [i][2],<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; trans_mat [i][3]);<BR>#endif</P>
+<P>ChangeChunkPointer (current_pointer+temp_pointer); <BR>// move to the new 
+chunk position<BR>return 
+(temp_pointer);<BR>}<BR>/*----------------------------------------------------------------------------*/<BR>unsigned 
+long ReadObjChunk (void)<BR>{<BR>unsigned char 
+end_found=FALSE,boolean=TRUE;<BR>unsigned int temp_int;<BR>unsigned long 
+current_pointer;<BR>unsigned long temp_pointer;<BR>unsigned long tellertje=6L; 
+// 2 id + 4 pointer</P>
+<P>current_pointer=GetChunkPointer ();<BR>temp_pointer &nbsp; =ReadChunkPointer 
+();</P>
+<P>while (end_found==FALSE)<BR>{<BR>&nbsp; temp_int=ReadInt ();</P>
+<P>&nbsp; &nbsp; &nbsp; switch (temp_int)<BR>&nbsp; &nbsp; &nbsp; {<BR>&nbsp; 
+&nbsp; &nbsp;&nbsp; case TRI_VERTEXL :<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; #ifdef 
+__DEBUG__<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp;&nbsp; printf (" Found Object vertices chunk id of 
+%0X\n",<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; temp_int);<BR>&nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
+#endif<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp;&nbsp; tellertje+=ReadVerticesChunk ();<BR>&nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
+break;<BR>&nbsp; &nbsp; &nbsp;&nbsp; case TRI_FACEL1&nbsp; :<BR>&nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
+#ifdef __DEBUG__<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; printf (" Found Object faces (1) chunk id of 
+%0X\n",<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; temp_int);<BR>&nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
+#endif<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp;&nbsp; tellertje+=ReadFacesChunk ();<BR>&nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; break;<BR>&nbsp; 
+&nbsp; &nbsp;&nbsp; case TRI_FACEL2&nbsp; :<BR>&nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; #ifdef 
+__DEBUG__<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp;&nbsp; printf (" Found Object faces (2) chunk id of 
+%0X\n",<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; temp_int);<BR>&nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
+#endif<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp;&nbsp; tellertje+=ReadUnknownChunk (temp_int);<BR>&nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
+break;<BR>&nbsp; &nbsp; &nbsp;&nbsp; case TRI_LOCAL&nbsp; :<BR>&nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
+#ifdef __DEBUG__<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; printf (" Found Object translation chunk id of 
+%0X\n",<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; temp_int);<BR>&nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
+#endif<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp;&nbsp; tellertje+=ReadTranslationChunk ();<BR>&nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
+break;<BR>&nbsp; &nbsp; &nbsp;&nbsp; case TRI_VISIBLE :<BR>&nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; #ifdef 
+__DEBUG__<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp;&nbsp; printf (" Found Object vis/invis chunk id of 
+%0X\n",<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; temp_int);<BR>&nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
+#endif<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp;&nbsp; tellertje+=ReadBooleanChunk (&amp;boolean);</P>
+<P>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; #ifdef __DEBUG__<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; if (boolean==TRUE)<BR>&nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; printf (" &nbsp; &nbsp;&nbsp; Object is (visible)\n");<BR>&nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; else<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; printf (" &nbsp; &nbsp;&nbsp; Object 
+is (not visible)\n");<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; #endif<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; break;<BR>&nbsp; &nbsp; 
+&nbsp;&nbsp; default: &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; break;<BR>&nbsp; &nbsp; 
+&nbsp; }</P>
+<P>&nbsp; tellertje+=2;<BR>&nbsp; if (tellertje=temp_pointer)<BR>&nbsp; &nbsp; 
+end_found=TRUE;<BR>}</P>
+<P>ChangeChunkPointer (current_pointer+temp_pointer); <BR>// move to the new 
+chunk position<BR>return 
+(temp_pointer);<BR>}<BR>/*----------------------------------------------------------------------------*/<BR>unsigned 
+long ReadObjectChunk (void)<BR>{<BR>unsigned char end_found=FALSE;<BR>unsigned 
+int temp_int;<BR>unsigned long current_pointer;<BR>unsigned long 
+temp_pointer;<BR>unsigned long tellertje=6L; // 2 id + 4 pointer</P>
+<P>current_pointer=GetChunkPointer ();<BR>temp_pointer &nbsp; =ReadChunkPointer 
+();</P>
+<P>if (ReadName ()==-1)<BR>{<BR>&nbsp; #ifdef __DEBUG__<BR>&nbsp; printf ("* 
+Dummy Object found\n");<BR>&nbsp; #endif<BR>}</P>
+<P>while (end_found==FALSE)<BR>{<BR>&nbsp; temp_int=ReadInt ();</P>
+<P>&nbsp; &nbsp; &nbsp; switch (temp_int)<BR>&nbsp; &nbsp; &nbsp; {<BR>&nbsp; 
+&nbsp; &nbsp;&nbsp; case OBJ_UNKNWN01:tellertje+=ReadUnknownChunk 
+(OBJ_UNKNWN01);break;<BR>&nbsp; &nbsp; &nbsp;&nbsp; case 
+OBJ_UNKNWN02:tellertje+=ReadUnknownChunk (OBJ_UNKNWN02);break;<BR>&nbsp; &nbsp; 
+&nbsp;&nbsp; case OBJ_TRIMESH :<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; #ifdef __DEBUG__<BR>&nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; printf (" Found Obj/Mesh chunk id of %0X\n",<BR>&nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp;&nbsp; OBJ_TRIMESH);<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; #endif<BR>&nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
+tellertje+=ReadObjChunk ();<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; break;<BR>&nbsp; &nbsp; &nbsp;&nbsp; 
+case OBJ_LIGHT &nbsp; :<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; #ifdef __DEBUG__<BR>&nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
+printf (" Found Light chunk id of %0X\n",<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; OBJ_LIGHT);<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; #endif<BR>&nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
+tellertje+=ReadLightChunk ();<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; break;<BR>&nbsp; &nbsp; 
+&nbsp;&nbsp; case OBJ_CAMERA&nbsp; :<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; #ifdef 
+__DEBUG__<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp;&nbsp; printf (" Found Camera chunk id of %0X\n",<BR>&nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; OBJ_CAMERA);<BR>&nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; #endif<BR>&nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; tellertje+=ReadCameraChunk ();<BR>&nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; break;<BR>&nbsp; 
+&nbsp; &nbsp;&nbsp; default: &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; break;<BR>&nbsp; 
+&nbsp; &nbsp; }</P>
+<P>&nbsp; tellertje+=2;<BR>&nbsp; if (tellertje=temp_pointer)<BR>&nbsp; &nbsp; 
+end_found=TRUE;<BR>}</P>
+<P>ChangeChunkPointer (current_pointer+temp_pointer); <BR>// move to the new 
+chunk position<BR>return 
+(temp_pointer);<BR>}<BR>/*----------------------------------------------------------------------------*/<BR>unsigned 
+long ReadBackgrChunk (void)<BR>{<BR>unsigned char end_found=FALSE;<BR>unsigned 
+int temp_int;<BR>unsigned long current_pointer;<BR>unsigned long 
+temp_pointer;<BR>unsigned long tellertje=6L; // 2 id + 4 pointer</P>
+<P>current_pointer=GetChunkPointer ();<BR>temp_pointer &nbsp; =ReadChunkPointer 
+();</P>
+<P>while (end_found==FALSE)<BR>{<BR>&nbsp; temp_int=ReadInt ();</P>
+<P>&nbsp; &nbsp; &nbsp; switch (temp_int)<BR>&nbsp; &nbsp; &nbsp; {<BR>&nbsp; 
+&nbsp; &nbsp;&nbsp; case COL_RGB :<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; #ifdef __DEBUG__<BR>&nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; printf (" Found Color def 
+(RGB) chunk id of %0X\n",<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; temp_int);<BR>&nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
+#endif<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; tellertje+=ReadRGBColor ();<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; break;<BR>&nbsp; &nbsp; &nbsp;&nbsp; 
+case COL_TRU :<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; #ifdef __DEBUG__<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; printf (" Found Color def (24bit) chunk id of 
+%0X\n",<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; temp_int);<BR>&nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; #endif<BR>&nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; tellertje+=ReadTrueColor 
+();<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; break;<BR>&nbsp; &nbsp; &nbsp;&nbsp; default: &nbsp; &nbsp;&nbsp; 
+break;<BR>&nbsp; &nbsp; &nbsp; }</P>
+<P>&nbsp; tellertje+=2;<BR>&nbsp; if (tellertje=temp_pointer)<BR>&nbsp; &nbsp; 
+end_found=TRUE;<BR>}</P>
+<P>ChangeChunkPointer (current_pointer+temp_pointer); <BR>// move to the new 
+chunk position<BR>return 
+(temp_pointer);<BR>}<BR>/*----------------------------------------------------------------------------*/<BR>unsigned 
+long ReadAmbientChunk (void)<BR>{<BR>unsigned char end_found=FALSE;<BR>unsigned 
+int temp_int;<BR>unsigned long current_pointer;<BR>unsigned long 
+temp_pointer;<BR>unsigned long tellertje=6L; // 2 id + 4 pointer</P>
+<P>current_pointer=GetChunkPointer ();<BR>temp_pointer &nbsp; =ReadChunkPointer 
+();</P>
+<P>while (end_found==FALSE)<BR>{<BR>&nbsp; temp_int=ReadInt ();</P>
+<P>&nbsp; &nbsp; &nbsp; switch (temp_int)<BR>&nbsp; &nbsp; &nbsp; {<BR>&nbsp; 
+&nbsp; &nbsp;&nbsp; case COL_RGB :<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; #ifdef __DEBUG__<BR>&nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; printf (" Found Color def 
+(RGB) chunk id of %0X\n",<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; temp_int);<BR>&nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
+#endif<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; tellertje+=ReadRGBColor ();<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; break;<BR>&nbsp; &nbsp; &nbsp;&nbsp; 
+case COL_TRU :<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; #ifdef __DEBUG__<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; printf (" Found Color def (24bit) chunk id of 
+%0X\n",<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; temp_int);<BR>&nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; #endif<BR>&nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; tellertje+=ReadTrueColor 
+();<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; break;<BR>&nbsp; &nbsp; &nbsp;&nbsp; default: &nbsp; &nbsp;&nbsp; 
+break;<BR>&nbsp; &nbsp; &nbsp; }</P>
+<P>&nbsp; tellertje+=2;<BR>&nbsp; if (tellertje=temp_pointer)<BR>&nbsp; &nbsp; 
+end_found=TRUE;<BR>}</P>
+<P>ChangeChunkPointer (current_pointer+temp_pointer); <BR>// move to the new 
+chunk position<BR>return 
+(temp_pointer);<BR>}<BR>/*----------------------------------------------------------------------------*/<BR>unsigned 
+long FindCameraChunk (void)<BR>{<BR>long temp_pointer=0L;</P>
+<P>for (int i=0;i&lt;12;i++)<BR>&nbsp; ReadInt ();</P>
+<P>temp_pointer=11L;<BR>temp_pointer=ReadName ();</P>
+<P>#ifdef __DEBUG__<BR>if (temp_pointer==-1)<BR>&nbsp; printf ("* No Camera name 
+found\n");<BR>#endif</P>
+<P>return 
+(temp_pointer);<BR>}<BR>/*----------------------------------------------------------------------------*/<BR>unsigned 
+long ReadViewPortChunk (void)<BR>{<BR>unsigned long current_pointer;<BR>unsigned 
+long temp_pointer;<BR>unsigned int port,attribs;</P>
+<P>views_read++;</P>
+<P>current_pointer=GetChunkPointer ();<BR>temp_pointer &nbsp; =ReadChunkPointer 
+();</P>
+<P>attribs=ReadInt ();<BR>if (attribs==3)<BR>{<BR>&nbsp; #ifdef 
+__DEBUG__<BR>&nbsp; printf (" active in viewport\n");<BR>&nbsp; 
+#endif<BR>}<BR>if (attribs==5)<BR>{<BR>&nbsp; #ifdef __DEBUG__<BR>&nbsp; printf 
+(" active in viewport\n");<BR>&nbsp; #endif<BR>}</P>
+<P>for (int i=1;i&lt;6;i++) ReadInt (); // read 5 ints to get to the 
+viewport</P>
+<P>port=ReadInt ();<BR>if ((port==0xFFFF) || (port==0))<BR>{<BR>&nbsp; 
+FindCameraChunk ();<BR>&nbsp; port=CAMERA;<BR>}</P>
+<P>#ifdef __DEBUG__<BR>printf ("Reading [%s] information with id:%d\n",viewports 
+[port],port);<BR>#endif</P>
+<P>ChangeChunkPointer (current_pointer+temp_pointer); <BR>// move to the new 
+chunk position<BR>return 
+(temp_pointer);<BR>}<BR>/*----------------------------------------------------------------------------*/<BR>unsigned 
+long ReadViewChunk (void)<BR>{<BR>unsigned char end_found=FALSE;<BR>unsigned int 
+temp_int;<BR>unsigned long current_pointer;<BR>unsigned long 
+temp_pointer;<BR>unsigned long tellertje=6L;</P>
+<P>current_pointer=GetChunkPointer ();<BR>temp_pointer &nbsp; =ReadChunkPointer 
+();</P>
+<P>while (end_found==FALSE)<BR>{<BR>&nbsp; temp_int=ReadInt ();</P>
+<P>&nbsp; &nbsp; &nbsp; switch (temp_int)<BR>&nbsp; &nbsp; &nbsp; {<BR>&nbsp; 
+&nbsp; &nbsp;&nbsp; case EDIT_VIEW_P1 :<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; #ifdef 
+__DEBUG__<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; printf (" Found Viewport1 chunk id of 
+%0X\n",<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; temp_int);<BR>&nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+#endif<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; tellertje+=ReadViewPortChunk ();<BR>&nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+break;<BR>&nbsp; &nbsp; &nbsp;&nbsp; case EDIT_VIEW_P2 :<BR>&nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; #ifdef 
+__DEBUG__<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; printf (" Found Viewport2 (bogus) chunk id of 
+%0X\n",<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; temp_int);<BR>&nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+#endif<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; tellertje+=ReadUnknownChunk (EDIT_VIEW_P2);<BR>&nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; break;<BR>&nbsp; &nbsp; &nbsp; case EDIT_VIEW_P3 :<BR>&nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+#ifdef __DEBUG__<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; printf (" Found Viewport chunk id of 
+%0X\n",<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; temp_int);<BR>&nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+#endif<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; tellertje+=ReadViewPortChunk ();<BR>&nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+break;<BR>&nbsp; &nbsp; &nbsp;&nbsp; default &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+:break;<BR>&nbsp; &nbsp; &nbsp; }</P>
+<P>&nbsp; tellertje+=2;<BR>&nbsp; if (tellertje=temp_pointer)<BR>&nbsp; &nbsp; 
+end_found=TRUE;</P>
+<P>&nbsp; if (views_read3)<BR>&nbsp; &nbsp; end_found=TRUE;<BR>}</P>
+<P>ChangeChunkPointer (current_pointer+temp_pointer); <BR>// move to the new 
+chunk position<BR>return 
+(temp_pointer);<BR>}<BR>/*----------------------------------------------------------------------------*/<BR>unsigned 
+long ReadMatDefChunk (void)<BR>{<BR>unsigned long current_pointer;<BR>unsigned 
+long temp_pointer;</P>
+<P>current_pointer=GetChunkPointer ();<BR>temp_pointer &nbsp; =ReadChunkPointer 
+();</P>
+<P>if (ReadLongName ()==-1)<BR>{<BR>&nbsp; #ifdef __DEBUG__<BR>&nbsp; printf ("* 
+No Material name found\n");<BR>&nbsp; #endif<BR>}</P>
+<P>ChangeChunkPointer (current_pointer+temp_pointer); <BR>// move to the new 
+chunk position<BR>return 
+(temp_pointer);<BR>}<BR>/*----------------------------------------------------------------------------*/<BR>unsigned 
+long ReadMaterialChunk (void)<BR>{<BR>unsigned char end_found=FALSE;<BR>unsigned 
+int temp_int;<BR>unsigned long current_pointer;<BR>unsigned long 
+temp_pointer;<BR>unsigned long tellertje=6L;</P>
+<P>current_pointer=GetChunkPointer ();<BR>temp_pointer &nbsp; =ReadChunkPointer 
+();</P>
+<P>while (end_found==FALSE)<BR>{<BR>&nbsp; temp_int=ReadInt ();</P>
+<P>&nbsp; &nbsp; &nbsp; switch (temp_int)<BR>&nbsp; &nbsp; &nbsp; {<BR>&nbsp; 
+&nbsp; &nbsp;&nbsp; case MAT_NAME01&nbsp; :<BR>&nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; #ifdef 
+__DEBUG__<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp;&nbsp; printf (" Found Material def chunk id of 
+%0X\n",<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; temp_int);<BR>&nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
+#endif<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp;&nbsp; tellertje+=ReadMatDefChunk ();<BR>&nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
+break;<BR>&nbsp; &nbsp; &nbsp;&nbsp; default:break;<BR>&nbsp; &nbsp; &nbsp; 
+}</P>
+<P>&nbsp; tellertje+=2;<BR>&nbsp; if (tellertje=temp_pointer)<BR>&nbsp; &nbsp; 
+end_found=TRUE;<BR>}</P>
+<P>ChangeChunkPointer (current_pointer+temp_pointer); <BR>// move to the new 
+chunk position<BR>return 
+(temp_pointer);<BR>}<BR>/*----------------------------------------------------------------------------*/<BR>unsigned 
+long ReadEditChunk (void)<BR>{<BR>unsigned char end_found=FALSE;<BR>unsigned int 
+temp_int;<BR>unsigned long current_pointer;<BR>unsigned long 
+temp_pointer;<BR>unsigned long tellertje=6L;</P>
+<P>current_pointer=GetChunkPointer ();<BR>temp_pointer &nbsp; =ReadChunkPointer 
+();</P>
+<P>while (end_found==FALSE)<BR>{<BR>&nbsp; temp_int=ReadInt ();</P>
+<P>&nbsp; &nbsp; &nbsp; switch (temp_int)<BR>&nbsp; &nbsp; &nbsp; {<BR>&nbsp; 
+&nbsp; &nbsp;&nbsp; case EDIT_UNKNW01:tellertje+=ReadUnknownChunk 
+(EDIT_UNKNW01);break;<BR>&nbsp; &nbsp; &nbsp;&nbsp; case 
+EDIT_UNKNW02:tellertje+=ReadUnknownChunk (EDIT_UNKNW02);break;<BR>&nbsp; &nbsp; 
+&nbsp;&nbsp; case EDIT_UNKNW03:tellertje+=ReadUnknownChunk 
+(EDIT_UNKNW03);break;<BR>&nbsp; &nbsp; &nbsp;&nbsp; case 
+EDIT_UNKNW04:tellertje+=ReadUnknownChunk (EDIT_UNKNW04);break;<BR>&nbsp; &nbsp; 
+&nbsp;&nbsp; case EDIT_UNKNW05:tellertje+=ReadUnknownChunk 
+(EDIT_UNKNW05);break;<BR>&nbsp; &nbsp; &nbsp;&nbsp; case 
+EDIT_UNKNW06:tellertje+=ReadUnknownChunk (EDIT_UNKNW06);break;<BR>&nbsp; &nbsp; 
+&nbsp;&nbsp; case EDIT_UNKNW07:tellertje+=ReadUnknownChunk 
+(EDIT_UNKNW07);break;<BR>&nbsp; &nbsp; &nbsp;&nbsp; case 
+EDIT_UNKNW08:tellertje+=ReadUnknownChunk (EDIT_UNKNW08);break;<BR>&nbsp; &nbsp; 
+&nbsp;&nbsp; case EDIT_UNKNW09:tellertje+=ReadUnknownChunk 
+(EDIT_UNKNW09);break;<BR>&nbsp; &nbsp; &nbsp;&nbsp; case 
+EDIT_UNKNW10:tellertje+=ReadUnknownChunk (EDIT_UNKNW10);break;<BR>&nbsp; &nbsp; 
+&nbsp;&nbsp; case EDIT_UNKNW11:tellertje+=ReadUnknownChunk 
+(EDIT_UNKNW11);break;<BR>&nbsp; &nbsp; &nbsp;&nbsp; case 
+EDIT_UNKNW12:tellertje+=ReadUnknownChunk (EDIT_UNKNW12);break;<BR>&nbsp; &nbsp; 
+&nbsp;&nbsp; case EDIT_UNKNW13:tellertje+=ReadUnknownChunk 
+(EDIT_UNKNW13);break;</P>
+<P>&nbsp; &nbsp; &nbsp;&nbsp; case EDIT_MATERIAL :<BR>&nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
+#ifdef __DEBUG__<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; printf (" Found Materials chunk id of 
+%0X\n",<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; temp_int);<BR>&nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; #endif<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; tellertje+=ReadMaterialChunk 
+();<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp;&nbsp; break;<BR>&nbsp; &nbsp; &nbsp;&nbsp; case EDIT_VIEW1 
+&nbsp;&nbsp; :<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; #ifdef __DEBUG__<BR>&nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
+printf (" Found View main def chunk id of %0X\n",<BR>&nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp;&nbsp; temp_int);<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; #endif<BR>&nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; tellertje+=ReadViewChunk ();<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; break;<BR>&nbsp; 
+&nbsp; &nbsp;&nbsp; case EDIT_BACKGR &nbsp; :<BR>&nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; #ifdef 
+__DEBUG__<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; printf (" Found Backgr chunk id of 
+%0X\n",<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; temp_int);<BR>&nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; #endif<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; tellertje+=ReadBackgrChunk 
+();<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp;&nbsp; break;<BR>&nbsp; &nbsp; &nbsp;&nbsp; case 
+EDIT_AMBIENT&nbsp; :<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; #ifdef __DEBUG__<BR>&nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; printf (" Found Ambient chunk id of %0X\n",<BR>&nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp;&nbsp; temp_int);<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; #endif<BR>&nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; tellertje+=ReadAmbientChunk ();<BR>&nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
+break;<BR>&nbsp; &nbsp; &nbsp;&nbsp; case EDIT_OBJECT &nbsp; :<BR>&nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; #ifdef __DEBUG__<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; printf (" Found Object 
+chunk id of %0X\n",<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
+temp_int);<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; #endif<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
+tellertje+=ReadObjectChunk ();<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; break;<BR>&nbsp; &nbsp; 
+&nbsp;&nbsp; default: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; break;<BR>&nbsp; 
+&nbsp; &nbsp; }</P>
+<P>&nbsp; tellertje+=2;<BR>&nbsp; if (tellertje=temp_pointer)<BR>&nbsp; &nbsp; 
+end_found=TRUE;<BR>}</P>
+<P>ChangeChunkPointer (current_pointer+temp_pointer); <BR>// move to the new 
+chunk position<BR>return 
+(temp_pointer);<BR>}<BR>/*----------------------------------------------------------------------------*/<BR>unsigned 
+long ReadKeyfChunk (void)<BR>{<BR>unsigned char end_found=FALSE;<BR>unsigned int 
+temp_int;<BR>unsigned long current_pointer;<BR>unsigned long 
+temp_pointer;<BR>unsigned long tellertje=6L;</P>
+<P>current_pointer=GetChunkPointer ();<BR>temp_pointer &nbsp; =ReadChunkPointer 
+();</P>
+<P>while (end_found==FALSE)<BR>{<BR>&nbsp; temp_int=ReadInt ();</P>
+<P>&nbsp; &nbsp; &nbsp; switch (temp_int)<BR>&nbsp; &nbsp; &nbsp; {<BR>&nbsp; 
+&nbsp; &nbsp;&nbsp; case KEYF_UNKNWN01 :tellertje+=ReadUnknownChunk 
+(temp_int);break;<BR>&nbsp; &nbsp; &nbsp;&nbsp; case KEYF_UNKNWN02 
+:tellertje+=ReadUnknownChunk (temp_int);break;<BR>&nbsp; &nbsp; &nbsp;&nbsp; 
+case KEYF_FRAMES &nbsp; :<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; #ifdef __DEBUG__<BR>&nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; printf (" Found Keyframer frames chunk id of %0X\n",<BR>&nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; temp_int);<BR>&nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
+#endif<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp;&nbsp; tellertje+=ReadUnknownChunk (temp_int);<BR>&nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; break;<BR>&nbsp; &nbsp; &nbsp;&nbsp; case KEYF_OBJDES &nbsp; 
+:<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp;&nbsp; #ifdef __DEBUG__<BR>&nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; printf (" 
+Found Keyframer object description<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; chunk id of %0X\n", temp_int);<BR>&nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
+#endif<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp;&nbsp; tellertje+=ReadUnknownChunk (temp_int);<BR>&nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; break;<BR>&nbsp; &nbsp; &nbsp;&nbsp; case EDIT_VIEW1 &nbsp;&nbsp; 
+:<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp;&nbsp; #ifdef __DEBUG__<BR>&nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; printf (" 
+Found View main def chunk id of %0X\n",<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; temp_int);<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; #endif<BR>&nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
+tellertje+=ReadViewChunk ();<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; break;<BR>&nbsp; &nbsp; 
+&nbsp;&nbsp; default: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; break;<BR>&nbsp; 
+&nbsp; &nbsp; }</P>
+<P>&nbsp; tellertje+=2;<BR>&nbsp; if (tellertje=temp_pointer)<BR>&nbsp; &nbsp; 
+end_found=TRUE;<BR>}</P>
+<P>ChangeChunkPointer (current_pointer+temp_pointer); <BR>// move to the new 
+chunk position<BR>return 
+(temp_pointer);<BR>}<BR>/*----------------------------------------------------------------------------*/<BR>unsigned 
+long ReadMainChunk (void)<BR>{<BR>unsigned char end_found=FALSE;<BR>unsigned int 
+temp_int;<BR>unsigned long current_pointer;<BR>unsigned long 
+temp_pointer;<BR>unsigned long tellertje=6L;</P>
+<P>current_pointer=GetChunkPointer ();<BR>temp_pointer &nbsp; =ReadChunkPointer 
+();</P>
+<P>while (end_found==FALSE)<BR>{<BR>&nbsp; temp_int=ReadInt ();</P>
+<P>&nbsp; &nbsp; &nbsp; switch (temp_int)<BR>&nbsp; &nbsp; &nbsp; {<BR>&nbsp; 
+&nbsp; &nbsp;&nbsp; case KEYF3DS :<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; #ifdef __DEBUG__<BR>&nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; printf (" Found 
+*Keyframer* chunk id of %0X\n",KEYF3DS);<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; #endif<BR>&nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; tellertje+=ReadKeyfChunk 
+();<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; break;<BR>&nbsp; &nbsp; &nbsp;&nbsp; case EDIT3DS :<BR>&nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; #ifdef 
+__DEBUG__<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; printf (" Found *Editor* chunk id of %0X\n",EDIT3DS);<BR>&nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
+#endif<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; tellertje+=ReadEditChunk ();<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; break;<BR>&nbsp; &nbsp; &nbsp;&nbsp; 
+default: &nbsp; &nbsp;&nbsp; break;<BR>&nbsp; &nbsp; &nbsp; }</P>
+<P>&nbsp; tellertje+=2;<BR>&nbsp; if (tellertje=temp_pointer)<BR>&nbsp;&nbsp; 
+end_found=TRUE;<BR>}</P>
+<P>ChangeChunkPointer (current_pointer+temp_pointer); <BR>// move to the new 
+chunk position<BR>return 
+(temp_pointer);<BR>}<BR>/*----------------------------------------------------------------------------*/<BR>int 
+ReadPrimaryChunk (void)<BR>{<BR>unsigned char version;</P>
+<P>if (ReadInt ()==MAIN3DS)<BR>{<BR>&nbsp; #ifdef __DEBUG__<BR>&nbsp; printf (" 
+Found Main chunk id of %0X\n",MAIN3DS);<BR>&nbsp; #endif<BR>&nbsp; //---------- 
+find version number<BR>&nbsp; fseek (bin3ds,28L,SEEK_SET);<BR>&nbsp; 
+version=ReadChar ();<BR>&nbsp; if (version&lt;3)<BR>&nbsp; {<BR>&nbsp; #ifdef 
+__DEBUG__<BR>&nbsp; printf ("Sorry this lib can only read 3ds files of version 
+3.0 and higher\n");<BR>&nbsp; printf ("The version of the file you want to read 
+is: %d\n",version);<BR>&nbsp; #endif<BR>&nbsp; return (1);<BR>&nbsp; }<BR>&nbsp; 
+fseek (bin3ds,2,SEEK_SET);<BR>&nbsp; ReadMainChunk ();<BR>}<BR>else<BR>&nbsp; 
+return (1);</P>
+<P>return 
+(0);<BR>}<BR>/*----------------------------------------------------------------------------*/<BR>/* 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; Test 
+Main for the 3ds-bin lib &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; 
+*/<BR>/*----------------------------------------------------------------------------*/<BR>int 
+main (int argc,char **argv)<BR>{<BR>argc=argc;</P>
+<P>bin3ds=fopen (argv [1],"rb");<BR>if (bin3ds==NULL)<BR>&nbsp; return (-1);</P>
+<P>#ifdef __DEBUG__<BR>&nbsp; printf ("\nLoading 3ds binary file : %s\n",argv 
+[1]);<BR>#endif<BR>while (ReadPrimaryChunk ()==0);</P>
+<P>return 
+(0);<BR>}<BR>/*----------------------------------------------------------------------------*/<BR>#endif</P>
+<FIELDSET 
+style="PADDING-RIGHT: 5px; PADDING-LEFT: 5px; PADDING-BOTTOM: 5px; MARGIN: 20px 0px; PADDING-TOP: 5px"><LEGEND><SPAN><STRONG>크리에이티브 
+커먼즈 라이센스</STRONG></SPAN></LEGEND><!--Creative Commons License-->
+<DIV style="MARGIN-TOP: 3px; FLOAT: left; WIDTH: 88px"><A 
+href="http://creativecommons.org/licenses/by-nc-nd/2.0/kr/" target=_blank 
+rel=license><IMG 
+style="BORDER-TOP-WIDTH: 0px; BORDER-LEFT-WIDTH: 0px; BORDER-BOTTOM-WIDTH: 0px; BORDER-RIGHT-WIDTH: 0px" 
+alt="Creative Commons License" 
+src="flyingmt blog  3DS File Format_files/88x31.png"></A></DIV>
+<DIV style="MARGIN-TOP: 3px; MARGIN-LEFT: 92px; TEXT-ALIGN: justify">이 저작물은 <A 
+href="http://creativecommons.org/licenses/by-nc-nd/2.0/kr/" target=_blank 
+rel=license>크리에이티브 커먼즈 코리아 저작자표시-비영리-변경금지 2.0 대한민국 라이센스</A>에 따라 이용하실 수 있습니다. <!-- Creative Commons License--><!-- <rdf:RDF xmlns="http://web.resource.org/cc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+			<Work rdf:about="">
+			<license rdf:resource="http://creativecommons.org/licenses/by-nc-nd/2.0/kr/" />
+			</Work>
+			<License rdf:about="http://creativecommons.org/licenses/by-nc-nd/">
+			<permits rdf:resource="http://web.resource.org/cc/Reproduction"/>
+			<permits rdf:resource="http://web.resource.org/cc/Distribution"/>
+			<requires rdf:resource="http://web.resource.org/cc/Notice"/>
+			<requires rdf:resource="http://web.resource.org/cc/Attribution"/><prohibits rdf:resource="http://web.resource.org/cc/CommercialUse"/></License></rdf:RDF> --></DIV></FIELDSET>
+<DIV class=EolinBmVote><SPAN class=EolinBookmarkBtn><A title="이올린에 북마크하기" 
+onclick="bookMarkEolin(387, 'http://www.lovehana.com/entry/3DS-File-Format', 'bookmark');return false;" 
+href="http://www.lovehana.com/387?TSSESSIONlovehanacom=69e046aa1b8b72014fca1fa52c2cc52c#void"><IMG 
+style="VERTICAL-ALIGN: middle" alt="이올린에 북마크하기" 
+src="flyingmt blog  3DS File Format_files/bookmarkToEolin.gif" 
+border=0></A></SPAN>(<SPAN class=EolinBookmarkCount 
+id=bookmarkEolin387>0</SPAN>) <SPAN class=EolinVoteBtn><A title="이올린에 추천하기" 
+onclick="bookMarkEolin(387,'http://www.lovehana.com/entry/3DS-File-Format', 'vote');return false;" 
+href="http://www.lovehana.com/387?TSSESSIONlovehanacom=69e046aa1b8b72014fca1fa52c2cc52c#void"><IMG 
+style="VERTICAL-ALIGN: middle" alt="이올린에 추천하기" 
+src="flyingmt blog  3DS File Format_files/voteToEolin.gif" 
+border=0></A></SPAN>(<SPAN class=EolinVoteCount id=voteEolin387>0</SPAN>)
+<SCRIPT language=JavaScript type=text/javascript>//<![CDATA[	
+								apiEolinURL.push("http://api.eolin.com/myEolin/getEntryInfo.js?permalink=http%3A%2F%2Fwww.lovehana.com%2Fentry%2F3DS-File-Format&id=387&log=1");  
+								//]]></SCRIPT>
+</DIV></DIV><SPAN class=author style="DISPLAY: none">나는산</SPAN> 
+<DIV style="DISPLAY: none"><ABBR class=updated 
+title=2006-10-01T22:18:57+09:00>2006/10/01 22:18</ABBR> <ABBR class=published 
+title=2006-10-01T22:18:57+09:00>2006/10/01 22:18</ABBR> </DIV></DIV>
+<HR class=hide>
+
+<DIV class=secondary>
+<H2>About this entry</H2>
+<DIV class=featured>
+<P>You’re currently reading<BR>“ 3DS File Format ”</P>
+<DL>
+  <DT>Posted by 
+  <DD class=articleAuthor>나는산 </DD></DL>
+<DL>
+  <DT>Published: 
+  <DD>2006/10/01 22:18 </DD></DL>
+<DL>
+  <DT>Category: 
+  <DD><A title="View all posts in Programming/Application" 
+  href="http://www.lovehana.com/category/Programming/Application" 
+  rel="category tag">Programming/Application</A> </DD></DL></DIV>
+<DIV id=toTop><A 
+href="http://www.lovehana.com/387?TSSESSIONlovehanacom=69e046aa1b8b72014fca1fa52c2cc52c#top">▲</A><BR><A 
+href="http://www.lovehana.com/387?TSSESSIONlovehanacom=69e046aa1b8b72014fca1fa52c2cc52c#replyTop">▼</A></DIV><!-- bookmark  --></DIV></DIV>
+<DIV class=clear></DIV></DIV></DIV><!-- [END] #primary -->
+<HR class=hide>
+
+<DIV id=secondary>
+<DIV id=toTop><A 
+href="http://www.lovehana.com/387?TSSESSIONlovehanacom=69e046aa1b8b72014fca1fa52c2cc52c#top">▲</A><BR><A 
+href="http://www.lovehana.com/387?TSSESSIONlovehanacom=69e046aa1b8b72014fca1fa52c2cc52c#ancTop">▼</A></DIV><!-- bookmark  -->
+<DIV class=inside><A name=replyTop>
+<DIV class=comment-head>
+<H2><A onclick="toggleLayer('entry387Trackback'); return false" 
+href="http://www.lovehana.com/387?TSSESSIONlovehanacom=69e046aa1b8b72014fca1fa52c2cc52c#tb">Trackback<SPAN 
+class=cnt> 0</SPAN></A> : <A 
+onclick="toggleLayer('entry387Comment'); return false" 
+href="http://www.lovehana.com/387?TSSESSIONlovehanacom=69e046aa1b8b72014fca1fa52c2cc52c#rp">Comment 
+<SPAN class=cnt>0</SPAN></A></H2></DIV><!-- trackback -->
+<DIV id=entry387Trackback style="DISPLAY: block">
+<DIV class=trackback>
+<P class=add>Trackback Address : <A><SPAN 
+onclick="copyUrl('http://lovehana.com/trackback/387')">http://lovehana.com/trackback/387</SPAN></A></P>
+<OL></OL></DIV></DIV><!-- comment -->
+<DIV id=entry387Comment style="DISPLAY: block"><!-- comment list -->
+<OL id=comments></OL><!-- comment write-->
+<DIV id=comment-form>
+<FORM style="MARGIN: 0px" onsubmit="return false" action=/comment/add/387 
+method=post>
+<H3>Post a comment</H3><INPUT class=textfield 
+onmousedown="inputMouseDown('id',this);" id=name_387 
+onfocus="inputMouseDown('id',this);" value=Name name=name>&nbsp;&nbsp;&nbsp; 
+<INPUT class=textfield onmousedown="inputMouseDown('password',this);" 
+id=password_387 onfocus="inputMouseDown('password',this);" type=password 
+maxLength=8 value=0000 name=password>&nbsp;&nbsp;&nbsp; <INPUT 
+class=hp_textfield id=homepage_387 value=http:// name=homepage> <INPUT 
+class=checkbox id=secret_387 type=checkbox name=secret> <LABEL 
+for=secret_387>secret</LABEL> <TEXTAREA class=commentbox id=comment_387 name=comment></TEXTAREA> <BR><INPUT 
+class=submit onclick="addComment(this, 387); return false;" type=image 
+alt="Submit Comment" 
+src="flyingmt blog  3DS File Format_files/submit.gif" 
+value="Save a comment"> </FORM></DIV></DIV></DIV></DIV></DIV><!--
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+      xmlns:dc="http://purl.org/dc/elements/1.1/"
+        xmlns:trackback="http://madskills.com/public/xml/rss/module/trackback/">
+<rdf:Description
+   rdf:about="http://www.lovehana.com/entry/3DS-File-Format"
+   dc:identifier="http://www.lovehana.com/entry/3DS-File-Format"
+   dc:title="3DS File Format"
+   trackback:ping="http://lovehana.com/trackback/387" />
+</rdf:RDF>
+-->
+<DIV></DIV><!-- paging -->
+<HR class=hide>
+
+<DIV id=secondary>
+<DIV class=inside>
+<DIV class=paging><A href="http://www.lovehana.com/388">&lt;&lt; Previous </A>: 
+<A href="http://www.lovehana.com/524">[<SPAN>1</SPAN>]</A> : <SPAN 
+class=interword>...</SPAN> <A 
+href="http://www.lovehana.com/391">[<SPAN>125</SPAN>]</A> : <A 
+href="http://www.lovehana.com/390">[<SPAN>126</SPAN>]</A> : <A 
+href="http://www.lovehana.com/389">[<SPAN>127</SPAN>]</A> : <A 
+href="http://www.lovehana.com/388">[<SPAN>128</SPAN>]</A> : <A>[<SPAN 
+class=selected>129</SPAN>]</A> : <A 
+href="http://www.lovehana.com/386">[<SPAN>130</SPAN>]</A> : <A 
+href="http://www.lovehana.com/385">[<SPAN>131</SPAN>]</A> : <A 
+href="http://www.lovehana.com/384">[<SPAN>132</SPAN>]</A> : <A 
+href="http://www.lovehana.com/383">[<SPAN>133</SPAN>]</A> : <SPAN 
+class=interword>...</SPAN> <A 
+href="http://www.lovehana.com/62">[<SPAN>481</SPAN>]</A> : <A 
+href="http://www.lovehana.com/386">Next &gt;&gt;</A> </DIV></DIV></DIV>
+<HR class=hide>
+
+<DIV id=ancillary>
+<DIV class=inside><A name=ancTop>
+<DIV id=toTop><A 
+href="http://www.lovehana.com/387?TSSESSIONlovehanacom=69e046aa1b8b72014fca1fa52c2cc52c#replyTop">▲</A><BR><A 
+href="http://www.lovehana.com/387?TSSESSIONlovehanacom=69e046aa1b8b72014fca1fa52c2cc52c#endofpage">▼</A></DIV><!-- bookmark  -->
+<DIV class="block first"><!-- 태그목록 모듈 -->
+<H2>Tag Cloud</H2>
+<DIV class=tagcloud>
+<UL>
+  <LI><A class=cloud4 href="http://www.lovehana.com/tag/영화이야기">영화이야기</A> <A 
+  class=cloud5 href="http://www.lovehana.com/tag/책이야기">책이야기</A> <A class=cloud5 
+  href="http://www.lovehana.com/tag/internal">internal</A> <A class=cloud5 
+  href="http://www.lovehana.com/tag/MySQL">MySQL</A> <A class=cloud4 
+  href="http://www.lovehana.com/tag/실버라이트">실버라이트</A> <A class=cloud5 
+  href="http://www.lovehana.com/tag/춘천">춘천</A> <A class=cloud5 
+  href="http://www.lovehana.com/tag/AVI">AVI</A> <A class=cloud5 
+  href="http://www.lovehana.com/tag/300">300</A> <A class=cloud5 
+  href="http://www.lovehana.com/tag/블랙잭">블랙잭</A> <A class=cloud4 
+  href="http://www.lovehana.com/tag/영화%20이야기">영화 이야기</A> <A class=cloud5 
+  href="http://www.lovehana.com/tag/초급개발자">초급개발자</A> <A class=cloud5 
+  href="http://www.lovehana.com/tag/six%20feet%20under">six feet under</A> <A 
+  class=cloud5 href="http://www.lovehana.com/tag/Cell">Cell</A> <A class=cloud4 
+  href="http://www.lovehana.com/tag/영화">영화</A> <A class=cloud5 
+  href="http://www.lovehana.com/tag/비자">비자</A> <A class=cloud5 
+  href="http://www.lovehana.com/tag/여행사진">여행사진</A> <A class=cloud5 
+  href="http://www.lovehana.com/tag/알렉스%20프로야스">알렉스 프로야스</A> <A class=cloud5 
+  href="http://www.lovehana.com/tag/Midnight%20Hour">Midnight Hour</A> <A 
+  class=cloud4 href="http://www.lovehana.com/tag/SQL%20Server%202005">SQL Server 
+  2005</A> <A class=cloud5 href="http://www.lovehana.com/tag/워크샵">워크샵</A> <A 
+  class=cloud5 href="http://www.lovehana.com/tag/식스핏언더">식스핏언더</A> <A 
+  class=cloud4 href="http://www.lovehana.com/tag/Design%20Pattern">Design 
+  Pattern</A> <A class=cloud4 href="http://www.lovehana.com/tag/남산골%20한옥마을">남산골 
+  한옥마을</A> <A class=cloud5 href="http://www.lovehana.com/tag/Add-in">Add-in</A> 
+  <A class=cloud5 href="http://www.lovehana.com/tag/MSBuild">MSBuild</A> <A 
+  class=cloud4 href="http://www.lovehana.com/tag/ASP.NET%20With%20C%23">ASP.NET 
+  With C#</A> <A class=cloud5 href="http://www.lovehana.com/tag/MT">MT</A> <A 
+  class=cloud5 href="http://www.lovehana.com/tag/다빈치코드">다빈치코드</A> <A 
+  class=cloud5 href="http://www.lovehana.com/tag/FlowDocument">FlowDocument</A> 
+  <A class=cloud5 href="http://www.lovehana.com/tag/대학친구">대학친구</A> 
+</LI></UL></DIV><!-- Author page -->
+<DIV class=module id=authorList>
+<H3>Authors</H3>
+<OL>
+  <LI><A href="http://www.lovehana.com/author/%EB%82%98%EB%8A%94%EC%82%B0">나는산 
+  </A></LI></OL></DIV><!-- 카테고리 모듈 -->
+<H2>Categories</H2>
+<DIV class=category-list>
+<SCRIPT type=text/javascript>
+	//<![CDATA[
+		var expanded = false;
+		function expandTree() {
+			expandFolder(3, true);
+		}
+
+		function expandFolder(category, expand) {
+			var oLevel1 = document.getElementById("category_" + category);
+			var oImg = oLevel1.getElementsByTagName("img")[0];
+			switch (expand) {
+				case true:
+					oImg.src = "/image/tree/base/tab_opened.gif";
+					showLayer("category_" + category + "_children");
+					return true;
+				case false:
+					oImg.src = "/image/tree/base/tab_closed.gif";
+					hideLayer("category_" + category + "_children");
+					return true;
+			}
+			return false;
+		}
+
+		function toggleFolder(category) {
+			var oLevel1 = document.getElementById("category_" + category);
+			var oImg = oLevel1.getElementsByTagName("img")[0];
+			switch (oImg.src.substr(oImg.src.length - 10, 6)) {
+				case "isleaf":
+					return true;
+				case "closed":
+					oImg.src = "/image/tree/base/tab_opened.gif";
+					showLayer("category_" + category + "_children");
+					expanded = true;
+					return true;
+				case "opened":
+					oImg.src = "/image/tree/base/tab_closed.gif";
+					hideLayer("category_" + category + "_children");
+					expanded = false;
+					return true;
+			}
+			return false;
+		}
+		var selectedNode = 0;
+		function selectNode(category) {
+			try {
+				var root = document.getElementById('treeComponent');
+				var prevSelectedNode= root.getAttribute('currentselectednode');
+				var oLevel = document.getElementById("category_" + selectedNode);
+				var oChild = oLevel.getElementsByTagName("table")[0];
+
+				oChild.style.color = "#000000";
+				oChild.style.backgroundColor = "#d8d8d8"
+				root.setAttribute('currentselectednode',category);
+				document.getElementById('text_'+selectedNode).style.color="#000000";
+
+				var oLevel = document.getElementById("category_" + category);
+				var oChild = oLevel.getElementsByTagName("table")[0];
+				oChild.style.color = "#000000";
+				oChild.style.backgroundColor = "#eeeeee"
+				document.getElementById('text_'+category).style.color="#000000";
+
+				selectedNode = category;
+			} catch(e) {
+				alert(e.message);
+			}
+
+		}
+
+		function setTreeStyle(skin) {
+			try {
+				treeNodes = document.getElementsByName("treeNode");
+				for(var i=0; i<treeNodes.length; i++) {
+					if( ('category_'+selectedNode) == (treeNodes[i].getAttribute('id').value) ) {
+						var oLevel = document.getElementById('category_'+i);
+						var oChild = oLevel.getElementsByTagName("table")[0];
+						oChild.style.color ='#'+skin['activeItemColor'];
+						if (skin['activeItemBgColor'] != '' && skin['activeItemBgColor'] != undefined) {
+							oChild.style.backgroundColor ='#'+skin['activeItemBgColor'];
+						} else {
+							oChild.style.backgroundColor ="";
+						}
+						alert(oChild.style.backgroundColor);
+					} else{
+						var oLevel = document.getElementById("category_" + i);
+						var oChild = oLevel.getElementsByTagName("table")[0];
+						oChild.style.color ='#'+skin['colorOnTree'];
+						oChild.style.backgroundColor ='#'+skin['bgColorOnTree'];
+						var oLevel = document.getElementById('text_'+i).style.color='#'+skin['colorOnTree'];
+						alert(document.getElementById('text_'+i).style.color);
+				}
+				}
+			} catch(e) {
+				alert(e.message);
+			}
+		}
+	//]]>
+</SCRIPT>
+
+<TABLE id=treeComponent style="WIDTH: 100%" cellSpacing=0 cellPadding=0>
+  <TBODY>
+  <TR>
+    <TD>
+      <TABLE id=category_0 cellSpacing=0 cellPadding=0>
+        <TBODY>
+        <TR>
+          <TD class=ib style="FONT-SIZE: 1px"><IMG onclick=expandTree() alt="" 
+            src="flyingmt blog  3DS File Format_files/tab_top.gif" 
+            width=16></TD>
+          <TD style="PADDING-LEFT: 3px; FONT-SIZE: 9pt" vAlign=top>
+            <TABLE id=imp0 style="BACKGROUND-COLOR: #d8d8d8" onclick="" 
+            cellSpacing=0 cellPadding=0>
+              <TBODY>
+              <TR>
+                <TD class=branch3 onclick="window.location.href='/category'">
+                  <DIV id=text_0 style="COLOR: #000000">전체 <SPAN 
+                  class=c_cnt>(481)</SPAN></DIV></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE>
+      <TABLE id=category_1 cellSpacing=0 cellPadding=0>
+        <TBODY>
+        <TR>
+          <TD class=ib 
+          style="FONT-SIZE: 1px; BACKGROUND-IMAGE: url(/image/tree/base/navi_back_noactive.gif); WIDTH: 39px"><A 
+            class=click onclick="toggleFolder('1')"><IMG alt="" 
+            src="flyingmt blog  3DS File Format_files/tab_isleaf.gif" 
+            width=39></A></TD>
+          <TD>
+            <TABLE style="BACKGROUND-COLOR: #d8d8d8" cellSpacing=0 
+cellPadding=0>
+              <TBODY>
+              <TR>
+                <TD class=branch3 
+                onclick="window.location.href='/category/Thinking'">
+                  <DIV id=text_1 style="COLOR: #000000">Thinking <SPAN 
+                  class=c_cnt>(101)</SPAN></DIV></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE>
+      <DIV id=category_1_children style="DISPLAY: none"></DIV>
+      <TABLE id=category_2 cellSpacing=0 cellPadding=0>
+        <TBODY>
+        <TR>
+          <TD class=ib 
+          style="FONT-SIZE: 1px; BACKGROUND-IMAGE: url(/image/tree/base/navi_back_noactive.gif); WIDTH: 39px"><A 
+            class=click onclick="toggleFolder('2')"><IMG alt="" 
+            src="flyingmt blog  3DS File Format_files/tab_isleaf.gif" 
+            width=39></A></TD>
+          <TD>
+            <TABLE style="BACKGROUND-COLOR: #d8d8d8" cellSpacing=0 
+cellPadding=0>
+              <TBODY>
+              <TR>
+                <TD class=branch3 
+                onclick="window.location.href='/category/Using'">
+                  <DIV id=text_2 style="COLOR: #000000">Using <SPAN 
+                  class=c_cnt>(30)</SPAN></DIV></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE>
+      <DIV id=category_2_children style="DISPLAY: none"></DIV>
+      <TABLE id=category_3 cellSpacing=0 cellPadding=0>
+        <TBODY>
+        <TR>
+          <TD class=ib 
+          style="FONT-SIZE: 1px; BACKGROUND-IMAGE: url(/image/tree/base/navi_back_noactive.gif); WIDTH: 39px"><A 
+            class=click onclick="toggleFolder('3')"><IMG alt="" 
+            src="flyingmt blog  3DS File Format_files/tab_closed.gif" 
+            width=39></A></TD>
+          <TD>
+            <TABLE style="BACKGROUND-COLOR: #d8d8d8" cellSpacing=0 
+cellPadding=0>
+              <TBODY>
+              <TR>
+                <TD class=branch3 
+                onclick="window.location.href='/category/Programming'">
+                  <DIV id=text_3 style="COLOR: #000000">Programming <SPAN 
+                  class=c_cnt>(140)</SPAN></DIV></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE>
+      <DIV id=category_3_children style="DISPLAY: none">
+      <TABLE id=category_4 cellSpacing=0 cellPadding=0>
+        <TBODY>
+        <TR>
+          <TD style="FONT-SIZE: 1px; WIDTH: 39px"><IMG height=18 alt="" 
+            src="flyingmt blog  3DS File Format_files/navi_back_active.gif" 
+            width=17><IMG alt="" 
+            src="flyingmt blog  3DS File Format_files/tab_treed.gif" 
+            width=22></TD>
+          <TD>
+            <TABLE style="BACKGROUND-COLOR: #d8d8d8" 
+            onclick="window.location.href='/category/Programming/Application'" 
+            cellSpacing=0 cellPadding=0>
+              <TBODY>
+              <TR>
+                <TD class=branch3>
+                  <DIV id=text_4 style="COLOR: #000000">Application <SPAN 
+                  class=c_cnt>(73)</SPAN></DIV></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE>
+      <TABLE id=category_5 cellSpacing=0 cellPadding=0>
+        <TBODY>
+        <TR>
+          <TD style="FONT-SIZE: 1px; WIDTH: 39px"><IMG height=18 alt="" 
+            src="flyingmt blog  3DS File Format_files/navi_back_active.gif" 
+            width=17><IMG alt="" 
+            src="flyingmt blog  3DS File Format_files/tab_treed.gif" 
+            width=22></TD>
+          <TD>
+            <TABLE style="BACKGROUND-COLOR: #d8d8d8" 
+            onclick="window.location.href='/category/Programming/Web'" 
+            cellSpacing=0 cellPadding=0>
+              <TBODY>
+              <TR>
+                <TD class=branch3>
+                  <DIV id=text_5 style="COLOR: #000000">Web <SPAN 
+                  class=c_cnt>(22)</SPAN></DIV></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE>
+      <TABLE id=category_6 cellSpacing=0 cellPadding=0>
+        <TBODY>
+        <TR>
+          <TD style="FONT-SIZE: 1px; WIDTH: 39px"><IMG height=18 alt="" 
+            src="flyingmt blog  3DS File Format_files/navi_back_active.gif" 
+            width=17><IMG alt="" 
+            src="flyingmt blog  3DS File Format_files/tab_treed.gif" 
+            width=22></TD>
+          <TD>
+            <TABLE style="BACKGROUND-COLOR: #d8d8d8" 
+            onclick="window.location.href='/category/Programming/SQL'" 
+            cellSpacing=0 cellPadding=0>
+              <TBODY>
+              <TR>
+                <TD class=branch3>
+                  <DIV id=text_6 style="COLOR: #000000">SQL <SPAN 
+                  class=c_cnt>(5)</SPAN></DIV></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE>
+      <TABLE id=category_7 cellSpacing=0 cellPadding=0>
+        <TBODY>
+        <TR>
+          <TD style="FONT-SIZE: 1px; WIDTH: 39px"><IMG height=18 alt="" 
+            src="flyingmt blog  3DS File Format_files/navi_back_active.gif" 
+            width=17><IMG alt="" 
+            src="flyingmt blog  3DS File Format_files/tab_treed.gif" 
+            width=22></TD>
+          <TD>
+            <TABLE style="BACKGROUND-COLOR: #d8d8d8" 
+            onclick="window.location.href='/category/Programming/Design'" 
+            cellSpacing=0 cellPadding=0>
+              <TBODY>
+              <TR>
+                <TD class=branch3>
+                  <DIV id=text_7 style="COLOR: #000000">Design <SPAN 
+                  class=c_cnt>(5)</SPAN></DIV></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE>
+      <TABLE id=category_8 cellSpacing=0 cellPadding=0>
+        <TBODY>
+        <TR>
+          <TD style="FONT-SIZE: 1px; WIDTH: 39px"><IMG height=18 alt="" 
+            src="flyingmt blog  3DS File Format_files/navi_back_active.gif" 
+            width=17><IMG alt="" 
+            src="flyingmt blog  3DS File Format_files/tab_treed.gif" 
+            width=22></TD>
+          <TD>
+            <TABLE style="BACKGROUND-COLOR: #d8d8d8" 
+            onclick="window.location.href='/category/Programming/WPF'" 
+            cellSpacing=0 cellPadding=0>
+              <TBODY>
+              <TR>
+                <TD class=branch3>
+                  <DIV id=text_8 style="COLOR: #000000">WPF <SPAN 
+                  class=c_cnt>(31)</SPAN></DIV></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE>
+      <TABLE id=category_14 cellSpacing=0 cellPadding=0>
+        <TBODY>
+        <TR>
+          <TD style="FONT-SIZE: 1px; WIDTH: 39px"><IMG height=18 alt="" 
+            src="flyingmt blog  3DS File Format_files/navi_back_active.gif" 
+            width=17><IMG alt="" 
+            src="flyingmt blog  3DS File Format_files/tab_treed_end.gif" 
+            width=22></TD>
+          <TD>
+            <TABLE style="BACKGROUND-COLOR: #d8d8d8" 
+            onclick="window.location.href='/category/Programming/C%2B%2B/CLI'" 
+            cellSpacing=0 cellPadding=0>
+              <TBODY>
+              <TR>
+                <TD class=branch3>
+                  <DIV id=text_14 style="COLOR: #000000">C++/CLI <SPAN 
+                  class=c_cnt>(3)</SPAN></DIV></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE></DIV>
+      <TABLE id=category_9 cellSpacing=0 cellPadding=0>
+        <TBODY>
+        <TR>
+          <TD class=ib 
+          style="FONT-SIZE: 1px; BACKGROUND-IMAGE: url(/image/tree/base/navi_back_noactive.gif); WIDTH: 39px"><A 
+            class=click onclick="toggleFolder('9')"><IMG alt="" 
+            src="flyingmt blog  3DS File Format_files/tab_isleaf.gif" 
+            width=39></A></TD>
+          <TD>
+            <TABLE style="BACKGROUND-COLOR: #d8d8d8" cellSpacing=0 
+cellPadding=0>
+              <TBODY>
+              <TR>
+                <TD class=branch3 
+                onclick="window.location.href='/category/Looking%20%26%20Feeling'">
+                  <DIV id=text_9 style="COLOR: #000000">Looking &amp; Feeling 
+                  <SPAN 
+        class=c_cnt>(102)</SPAN></DIV></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE>
+      <DIV id=category_9_children style="DISPLAY: none"></DIV>
+      <TABLE id=category_10 cellSpacing=0 cellPadding=0>
+        <TBODY>
+        <TR>
+          <TD class=ib 
+          style="FONT-SIZE: 1px; BACKGROUND-IMAGE: url(/image/tree/base/navi_back_noactive.gif); WIDTH: 39px"><A 
+            class=click onclick="toggleFolder('10')"><IMG alt="" 
+            src="flyingmt blog  3DS File Format_files/tab_isleaf.gif" 
+            width=39></A></TD>
+          <TD>
+            <TABLE style="BACKGROUND-COLOR: #d8d8d8" cellSpacing=0 
+cellPadding=0>
+              <TBODY>
+              <TR>
+                <TD class=branch3 
+                onclick="window.location.href='/category/Blog'">
+                  <DIV id=text_10 style="COLOR: #000000">Blog <SPAN 
+                  class=c_cnt>(40)</SPAN></DIV></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE>
+      <DIV id=category_10_children style="DISPLAY: none"></DIV>
+      <TABLE id=category_11 cellSpacing=0 cellPadding=0>
+        <TBODY>
+        <TR>
+          <TD class=ib 
+          style="FONT-SIZE: 1px; BACKGROUND-IMAGE: url(/image/tree/base/navi_back_noactive.gif); WIDTH: 39px"><A 
+            class=click onclick="toggleFolder('11')"><IMG alt="" 
+            src="flyingmt blog  3DS File Format_files/tab_isleaf.gif" 
+            width=39></A></TD>
+          <TD>
+            <TABLE style="BACKGROUND-COLOR: #d8d8d8" cellSpacing=0 
+cellPadding=0>
+              <TBODY>
+              <TR>
+                <TD class=branch3 
+                onclick="window.location.href='/category/Camera%20%26%20Photo'">
+                  <DIV id=text_11 style="COLOR: #000000">Camera &amp; Photo 
+                  <SPAN 
+        class=c_cnt>(24)</SPAN></DIV></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE>
+      <DIV id=category_11_children style="DISPLAY: none"></DIV>
+      <TABLE id=category_15 cellSpacing=0 cellPadding=0>
+        <TBODY>
+        <TR>
+          <TD class=ib 
+          style="FONT-SIZE: 1px; BACKGROUND-IMAGE: url(/image/tree/base/navi_back_noactive.gif); WIDTH: 39px"><A 
+            class=click onclick="toggleFolder('15')"><IMG alt="" 
+            src="flyingmt blog  3DS File Format_files/tab_isleaf.gif" 
+            width=39></A></TD>
+          <TD>
+            <TABLE style="BACKGROUND-COLOR: #d8d8d8" cellSpacing=0 
+cellPadding=0>
+              <TBODY>
+              <TR>
+                <TD class=branch3 
+                onclick="window.location.href='/category/Linux'">
+                  <DIV id=text_15 style="COLOR: #000000">Linux <SPAN 
+                  class=c_cnt>(2)</SPAN></DIV></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE>
+      <DIV id=category_15_children style="DISPLAY: none"></DIV>
+      <TABLE id=category_12 cellSpacing=0 cellPadding=0>
+        <TBODY>
+        <TR>
+          <TD class=ib 
+          style="FONT-SIZE: 1px; BACKGROUND-IMAGE: url(/image/tree/base/navi_back_noactive.gif); WIDTH: 39px"><A 
+            class=click onclick="toggleFolder('12')"><IMG alt="" 
+            src="flyingmt blog  3DS File Format_files/tab_isleaf.gif" 
+            width=39></A></TD>
+          <TD>
+            <TABLE style="BACKGROUND-COLOR: #d8d8d8" cellSpacing=0 
+cellPadding=0>
+              <TBODY>
+              <TR>
+                <TD class=branch3 
+onclick="window.location.href='/category/Etc'">
+                  <DIV id=text_12 style="COLOR: #000000">Etc <SPAN 
+                  class=c_cnt>(41)</SPAN></DIV></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE>
+      <DIV id=category_12_children style="DISPLAY: none"></DIV>
+      <TABLE id=category_13 cellSpacing=0 cellPadding=0>
+        <TBODY>
+        <TR>
+          <TD class=ib 
+          style="FONT-SIZE: 1px; BACKGROUND-IMAGE: url(/image/tree/base/navi_back_noactive_end.gif); WIDTH: 39px"><A 
+            class=click onclick="toggleFolder('13')"><IMG alt="" 
+            src="flyingmt blog  3DS File Format_files/tab_isleaf.gif" 
+            width=39></A></TD>
+          <TD>
+            <TABLE style="BACKGROUND-COLOR: #d8d8d8" cellSpacing=0 
+cellPadding=0>
+              <TBODY>
+              <TR>
+                <TD class=branch3 
+                onclick="window.location.href='/category/Poetry'">
+                  <DIV id=text_13 style="COLOR: #000000">Poetry <SPAN 
+                  class=c_cnt>(0)</SPAN></DIV></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE>
+      <DIV id=category_13_children 
+style="DISPLAY: none"></DIV></TD></TR></TBODY></TABLE></DIV><BR><!-- 메뉴 모듈 -->
+<H2>Menu</H2>
+<UL class=counts>
+  <LI><A href="http://www.lovehana.com/location">Local Log</A> | <A 
+  href="http://www.lovehana.com/tag">Tag</A> | <A 
+  href="http://www.lovehana.com/keylog">Keylog</A> | <BR><A 
+  href="http://www.lovehana.com/guestbook">Guest Book</A> | <A 
+  onclick="window.open(this.href); return false" 
+  href="http://lovehana.com/rss">RSS </A></LI></UL><!-- 카운터 모듈 -->
+<H2>Counts</H2>
+<UL class=counts>
+  <LI><SPAN class=count>Total : 707462<BR>Today : 266<BR>Yesterday : 1272 
+  </SPAN></LI></UL></DIV>
+<DIV class=block><!-- 달력 모듈 -->
+<H2>Calendar</H2>
+<DIV class=calendar>
+<TABLE class=tt-calendar style="TABLE-LAYOUT: fixed; WIDTH: 100%" cellSpacing=1 
+cellPadding=0>
+  <CAPTION class=cal_month><A title="1개월 앞의 달력을 보여줍니다." 
+  href="http://www.lovehana.com/archive/200807">«</A> &nbsp; <A 
+  title="현재 달의 달력을 보여줍니다." 
+  href="http://www.lovehana.com/archive/200808">2008/08</A> &nbsp; <A 
+  title="1개월 뒤의 달력을 보여줍니다." href="http://www.lovehana.com/archive/200809">»</A> 
+  </CAPTION>
+  <THEAD>
+  <TR>
+    <TH class=cal_week2>일</TH>
+    <TH class=cal_week1>월</TH>
+    <TH class=cal_week1>화</TH>
+    <TH class=cal_week1>수</TH>
+    <TH class=cal_week1>목</TH>
+    <TH class=cal_week1>금</TH>
+    <TH class=cal_week1>토</TH></TR></THEAD>
+  <TBODY>
+  <TR class=cal_week>
+    <TD class=cal_day1>&nbsp;</TD>
+    <TD class=cal_day1>&nbsp;</TD>
+    <TD class=cal_day1>&nbsp;</TD>
+    <TD class=cal_day1>&nbsp;</TD>
+    <TD class=cal_day1>&nbsp;</TD>
+    <TD class=" cal_day cal_day3">1</TD>
+    <TD class=" cal_day cal_day3">2</TD></TR>
+  <TR class="cal_week cal_current_week">
+    <TD class=" cal_day cal_day_sunday cal_day3">3</TD>
+    <TD class=" cal_day cal_day3">4</TD>
+    <TD class=" cal_day cal_day3">5</TD>
+    <TD class=" cal_day cal_day3"><A class=cal_click 
+      href="http://www.lovehana.com/archive/20080806">6</A></TD>
+    <TD class=" cal_day cal_day3">7</TD>
+    <TD class=" cal_day cal_day4">8</TD>
+    <TD class=" cal_day cal_day3">9</TD></TR>
+  <TR class=cal_week>
+    <TD class=" cal_day cal_day_sunday cal_day3">10</TD>
+    <TD class=" cal_day cal_day3">11</TD>
+    <TD class=" cal_day cal_day3">12</TD>
+    <TD class=" cal_day cal_day3">13</TD>
+    <TD class=" cal_day cal_day3">14</TD>
+    <TD class=" cal_day cal_day3">15</TD>
+    <TD class=" cal_day cal_day3">16</TD></TR>
+  <TR class=cal_week>
+    <TD class=" cal_day cal_day_sunday cal_day3">17</TD>
+    <TD class=" cal_day cal_day3">18</TD>
+    <TD class=" cal_day cal_day3">19</TD>
+    <TD class=" cal_day cal_day3">20</TD>
+    <TD class=" cal_day cal_day3">21</TD>
+    <TD class=" cal_day cal_day3">22</TD>
+    <TD class=" cal_day cal_day3">23</TD></TR>
+  <TR class=cal_week>
+    <TD class=" cal_day cal_day_sunday cal_day3">24</TD>
+    <TD class=" cal_day cal_day3">25</TD>
+    <TD class=" cal_day cal_day3">26</TD>
+    <TD class=" cal_day cal_day3">27</TD>
+    <TD class=" cal_day cal_day3">28</TD>
+    <TD class=" cal_day cal_day3">29</TD>
+    <TD class=" cal_day cal_day3">30</TD></TR>
+  <TR class=cal_week>
+    <TD class=" cal_day cal_day_sunday cal_day3">31</TD>
+    <TD class=cal_day2>&nbsp;</TD>
+    <TD class=cal_day2>&nbsp;</TD>
+    <TD class=cal_day2>&nbsp;</TD>
+    <TD class=cal_day2>&nbsp;</TD>
+    <TD class=cal_day2>&nbsp;</TD>
+    <TD class=cal_day2>&nbsp;</TD></TR></TBODY></TABLE></DIV><!-- 최근 보관함 모듈 -->
+<H2>History</H2>
+<UL class=dates>
+  <LI><A href="http://www.lovehana.com/archive/200808"><SPAN 
+  class=date>2008/08</SPAN>(1)</A> 
+  <LI><A href="http://www.lovehana.com/archive/200807"><SPAN 
+  class=date>2008/07</SPAN>(7)</A> 
+  <LI><A href="http://www.lovehana.com/archive/200806"><SPAN 
+  class=date>2008/06</SPAN>(9)</A> 
+  <LI><A href="http://www.lovehana.com/archive/200805"><SPAN 
+  class=date>2008/05</SPAN>(3)</A> 
+  <LI><A href="http://www.lovehana.com/archive/200804"><SPAN 
+  class=date>2008/04</SPAN>(3)</A> </LI></UL></DIV>
+<DIV class=block><!-- 최근 포스트 모듈 -->
+<H2>Recent Posts</H2>
+<UL class=dates>
+  <LI><A href="http://www.lovehana.com/entry/Javascript-Editor">Javascript 
+  Editor<SPAN class=count> <SPAN 
+  id=commentCountOnRecentEntries524></SPAN></SPAN></A>
+  <LI><A 
+  href="http://www.lovehana.com/entry/Layout-Transitions-An-Animatable-WrapPanel">Layout 
+  Transitions - An Ani...<SPAN class=count> <SPAN 
+  id=commentCountOnRecentEntries523></SPAN></SPAN></A>
+  <LI><A href="http://www.lovehana.com/entry/Total-Commander-Plugin">Total 
+  Commander Plugin<SPAN class=count> <SPAN 
+  id=commentCountOnRecentEntries522></SPAN></SPAN></A>
+  <LI><A href="http://www.lovehana.com/entry/나들이">나들이<SPAN class=count> <SPAN 
+  id=commentCountOnRecentEntries521></SPAN></SPAN></A>
+  <LI><A href="http://www.lovehana.com/entry/최근에-본-일본-드라마">최근에 본 일본 드라마<SPAN 
+  class=count> <SPAN 
+id=commentCountOnRecentEntries520></SPAN></SPAN></A></LI></UL><!-- 최근 트랙백 모듈 -->
+<H2>Recent Trackbacks</H2>
+<UL class=dates>
+  <LI><A 
+  href="http://www.lovehana.com/entry/Silverlight-2-Beta-2-Splash-Screen#trackback91291"><SPAN 
+  class=date>07/01</SPAN>Silverlight 2 Beta 2 Splash...</A> <SPAN class=name>WPF 
+  Korea - Tips</SPAN> 
+  <LI><A 
+  href="http://www.lovehana.com/entry/Silverlight-2-Beta-2-Server-Side-요구사항#trackback91290"><SPAN 
+  class=date>07/01</SPAN>Silverlight 2 Beta 2 Server...</A> <SPAN class=name>WPF 
+  Korea - Tips</SPAN> 
+  <LI><A 
+  href="http://www.lovehana.com/entry/Silverlight-2-Beta-2-다자인-타임-검사#trackback91289"><SPAN 
+  class=date>07/01</SPAN>Silverlight 2 Beta 2 - 다자...</A> <SPAN class=name>WPF 
+  Korea - Tips</SPAN> 
+  <LI><A 
+  href="http://www.lovehana.com/entry/Silverlight-2에서-Canvas가-SizeChanged를-발생하지-않은-버그#trackback90514"><SPAN 
+  class=date>06/26</SPAN>Silverlight 2에서 Canvas가...</A> <SPAN class=name>WPF 
+  Korea - Tips</SPAN> 
+  <LI><A 
+  href="http://www.lovehana.com/entry/Silverlight2를-위한-Viewbox#trackback90221"><SPAN 
+  class=date>06/25</SPAN>Silverlight2를 위한 Viewbox</A> <SPAN class=name>WPF Korea 
+  - Tips</SPAN> </LI></UL>
+<H2>Recent Comments</H2><!-- 최근 댓글 모듈 -->
+<UL class=dates>
+  <LI><A href="http://www.lovehana.com/entry/Ajax-도움-웹페이지#comment16247"><SPAN 
+  class=date>07/22</SPAN>jQuery http://jquery.com/</A> <SPAN 
+  class=name>나는산</SPAN> 
+  <LI><A 
+  href="http://www.lovehana.com/entry/MS-SQL-Server-2005에서-사용자-추가와-데이터베이스-생성#comment16246"><SPAN 
+  class=date>07/19</SPAN>감사합니다. 도움이 많이 되...</A> <SPAN class=name>바이쭌</SPAN> 
+  <LI><A 
+  href="http://www.lovehana.com/entry/MS-SQL-Server-2005에서-사용자-추가와-데이터베이스-생성#comment16245"><SPAN 
+  class=date>07/10</SPAN>출처남기고 퍼갈게요 ^^;</A> <SPAN class=name>WhitePoem1</SPAN> 
+  <LI><A 
+  href="http://www.lovehana.com/entry/이정환닷컴에서-마이크로소프트와-불여우를-읽고#comment16234"><SPAN 
+  class=date>06/24</SPAN>아니 왜요~! 전 MS가 좋습니...</A> <SPAN class=name>Dish</SPAN> 
+  <LI><A href="http://www.lovehana.com/entry/LIFE라는-것이#comment10350"><SPAN 
+  class=date>05/22</SPAN>관리자만 볼 수 있는 댓글입...</A> <SPAN class=name>비밀방문자</SPAN> 
+  </LI></UL></DIV>
+<DIV class=block><!-- 링크 모듈 -->
+<H2>Link</H2>
+<UL class=dates>
+  <LI><A onclick="window.open(this.href); return false" 
+  href="http://www.logs.co.kr/">logs blog</A> 
+  <LI><A onclick="window.open(this.href); return false" 
+  href="http://www.sj-sj.net/blog/weblog.php">SJnSJ&amp;#39;s Diary</A> 
+</LI></UL></DIV>
+<DIV class=clear></DIV></DIV></DIV><!-- [END] #ancillary -->
+<HR class=hide>
+
+<DIV id=footer>
+<DIV class=inside>
+<P class=copyright>Powered by: <A onclick="window.open(this.href); return false" 
+href="http://www.textcube.org/">TextCube</A> &nbsp; - &nbsp; Flavored with: <A 
+onclick="window.open(this.href); return false" 
+href="http://warpspire.com/hemingway">Hemingway</A>, <A 
+onclick="window.open(this.href); return false" 
+href="http://willowryu.byus.net/">WillowRyu</A>, <A href="http://luvda.com/" 
+target=_blank>Luvda</A> and <A href="http://www.seojinhwe.com/" 
+target=_blank>SeoJinhwe</A></P>
+<P class=attributes><A onclick="window.open(this.href); return false" 
+href="http://lovehana.com/rss"><IMG alt="RSS Entries" 
+src="flyingmt blog  3DS File Format_files/rssfeed.gif"> RSS 
+Entries </A></P></DIV></DIV><!-- [END] #footer --><A name=endofpage>
+<SCRIPT type=text/javascript>
+		//<![CDATA[
+			updateFeed();
+		//]]>
+	</SCRIPT>
+
+<SCRIPT language=JavaScript type=text/javascript>
+//<![CDATA[
+	if(apiEolinURL.length > 0){
+		for(i=0;i<apiEolinURL.length;i++){
+			loadScript(apiEolinURL[i]);
+		}
+	}
+//]]>
+</SCRIPT>
+</A></BODY></HTML>

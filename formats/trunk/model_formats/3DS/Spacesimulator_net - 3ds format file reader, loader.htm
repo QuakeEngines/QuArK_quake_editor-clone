@@ -1,0 +1,887 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0049)http://www.spacesimulator.net/tut4_3dsloader.html -->
+<!-- saved from url=(0022)http://internet.e-mail --><HTML><HEAD><TITLE>Spacesimulator.net - 3ds format file reader, loader</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=windows-1252">
+<META content="MSHTML 6.00.6000.16674" name=GENERATOR>
+<META content=FrontPage.Editor.Document name=ProgId>
+<META content="Space simulator and 3d engine tutorial" name=Description>
+<META 
+content="space simulator, 3D engine, OpenGL, robot, spaceship, tutorial, planet, zetadeck" 
+name=keywords>
+<META content="Damiano Vitulli" name=Author></HEAD>
+<BODY text=#ffffff vLink=#ffff00 aLink=#ffff00 link=#ffff00 bgColor=#000000>
+<CENTER>
+<TABLE cellPadding=2 border=0>
+  <TBODY>
+  <TR>
+    <TD bgColor=#000000 colSpan=3>
+      <P align=center><IMG height=99 
+      src="Spacesimulator_net - 3ds format file reader, loader_files/logo.jpg" 
+      width=688 border=0></P></TD></TR></CENTER>
+  <TR>
+    <TD vAlign=top bgColor=#000000 colSpan=3>
+      <P align=right><B><FONT face=Verdana color=#ffff00 size=2>TUTORIAL 4: 3DS 
+      LOADER</FONT></B></P></TD></TR>
+  <CENTER>
+  <TR>
+    <TD vAlign=top bgColor=#000000>
+      <CENTER></CENTER>
+      <TABLE cellPadding=2 width=160 bgColor=#000000 border=0>
+        <TBODY>
+        <TR>
+          <TD align=middle bgColor=#000000>&nbsp;</TD>
+          <TD align=middle bgColor=#000000 colSpan=3><A 
+            href="http://www.spacesimulator.net/index.html"><B><FONT 
+            face=Verdana color=#ffffff size=1>Home</FONT></B></A></TD>
+          <TD align=middle bgColor=#000000>&nbsp;</TD></TR>
+        <TR>
+          <TD align=middle bgColor=#000000>&nbsp;</TD>
+          <TD borderColor=#ffff00 align=middle bgColor=#333333 colSpan=3><FONT 
+            face=Verdana size=1><A 
+            href="http://www.spacesimulator.net/tutorials.html"><B><FONT 
+            color=#ffffff>Tutorials</FONT></B></A></FONT></TD>
+          <TD align=middle bgColor=#000000>&nbsp;</TD></TR>
+        <TR>
+          <TD align=middle bgColor=#000000>&nbsp;</TD>
+          <TD align=middle bgColor=#333333>&nbsp;</TD>
+          <TD align=middle bgColor=#333333><FONT face=Verdana size=1><A 
+            href="http://www.spacesimulator.net/tut1_3dengine.html"><B><FONT 
+            color=#ffffff>The 3d engine</FONT></B></A></FONT></TD>
+          <TD align=middle bgColor=#333333>&nbsp;</TD>
+          <TD align=middle bgColor=#000000>&nbsp;</TD></TR>
+        <TR>
+          <TD align=middle bgColor=#000000>&nbsp;</TD>
+          <TD align=middle bgColor=#333333>&nbsp;</TD>
+          <TD align=middle bgColor=#333333><FONT face=Verdana size=1><A 
+            href="http://www.spacesimulator.net/tut2_opengl.html"><B><FONT 
+            color=#ffffff>OpenGL and GLUT</FONT></B></A></FONT></TD>
+          <TD align=middle bgColor=#333333>&nbsp;</TD>
+          <TD align=middle bgColor=#000000>&nbsp;</TD></TR>
+        <TR>
+          <TD align=middle bgColor=#000000>&nbsp;</TD>
+          <TD align=middle bgColor=#333333>&nbsp;</TD>
+          <TD align=middle bgColor=#333333><FONT face=Verdana size=1><A 
+            href="http://www.spacesimulator.net/tut3_texturemapping.html"><B><FONT 
+            color=#ffffff>Texture mapping</FONT></B></A></FONT></TD>
+          <TD align=middle bgColor=#333333>&nbsp;</TD>
+          <TD align=middle bgColor=#000000>&nbsp;</TD></TR>
+        <TR>
+          <TD align=middle bgColor=#000000>&nbsp;</TD>
+          <TD align=middle bgColor=#333333>&nbsp;</TD>
+          <TD align=middle bgColor=#333333><FONT face=Verdana size=1><A 
+            href="http://www.spacesimulator.net/tut4_3dsloader.html"><B><FONT 
+            color=#ffffff>3ds File Loader</FONT></B></A></FONT></TD>
+          <TD align=middle bgColor=#333333>&nbsp;</TD>
+          <TD align=middle bgColor=#000000>&nbsp;</TD></TR>
+        <TR>
+          <TD align=middle bgColor=#000000>&nbsp;</TD>
+          <TD align=middle bgColor=#333333>&nbsp;</TD>
+          <TD align=middle bgColor=#333333><A 
+            href="http://www.spacesimulator.net/tut5_vectors_and_lighting.html"><B><FONT 
+            face=Verdana color=#ffffff size=1>Vectors and 
+          lighting</FONT></B></A></TD>
+          <TD align=middle bgColor=#333333>&nbsp;</TD>
+          <TD align=middle bgColor=#000000>&nbsp;</TD></TR>
+        <TR>
+          <TD align=middle bgColor=#000000>&nbsp;</TD>
+          <TD align=middle bgColor=#666666 colSpan=3><A 
+            href="http://www.spacesimulator.net/projects.html"><B><FONT 
+            face=Verdana color=#ffffff size=1>Projects</FONT></B></A></TD>
+          <TD align=middle bgColor=#000000>&nbsp;</TD></TR>
+        <TR>
+          <TD align=middle bgColor=#000000>&nbsp;</TD>
+          <TD align=middle bgColor=#808080 colSpan=3><B><A 
+            href="http://www.spacesimulator.net/links.html"><FONT face=Verdana 
+            color=#000000 size=1>Useful links</FONT></A></B></TD>
+          <TD align=middle bgColor=#000000>&nbsp;</TD></TR>
+        <TR>
+          <TD align=middle bgColor=#000000>&nbsp;</TD>
+          <TD align=middle bgColor=#999999 colSpan=3><A 
+            href="http://www.spacesimulator.net/store.html"><B><FONT 
+            face=Verdana color=#000000 size=1>Store</FONT></B></A></TD>
+          <TD align=middle bgColor=#000000>&nbsp;</TD></TR>
+        <TR>
+          <TD align=middle bgColor=#000000>&nbsp;</TD>
+          <TD borderColor=#ffff00 align=middle bgColor=#c0c0c0 colSpan=3><FONT 
+            face=Verdana size=1><A 
+            href="http://www.spacesimulator.net/about.html"><B><FONT 
+            color=#000000>About</FONT></B></A></FONT></TD>
+          <TD align=middle bgColor=#000000>&nbsp;</TD></TR>
+        <TR>
+          <TD align=middle bgColor=#000000>&nbsp;</TD>
+          <TD borderColor=#ffff00 align=middle bgColor=#ffffff colSpan=3>
+            <P align=center><A href="http://www.opengl.org/"><IMG height=44 
+            src="Spacesimulator_net%20-%203ds%20format%20file%20reader,%20loader_bestanden/OGLA_sm.gif" 
+            width=84 border=0></A></P></TD>
+          <TD align=middle bgColor=#000000>&nbsp;</TD></TR>
+        <TR>
+          <TD align=middle bgColor=#000000>&nbsp;</TD>
+          <TD borderColor=#ffff00 align=middle bgColor=#000000 
+          colSpan=3>&nbsp;</TD>
+          <TD align=middle bgColor=#000000>&nbsp;</TD></TR>
+        <TR>
+          <TD align=middle bgColor=#000000>&nbsp;</TD>
+          <TD borderColor=#ffff00 align=middle bgColor=#000000 colSpan=3>
+            <FORM 
+            action="mailto:subscribe@spacesimulator.net?subject=Mailing List" 
+            method=post encType=text/plain>
+            <P align=center><FONT face=Verdana color=#ffffff size=1>Subscribe to 
+            know<BR>&nbsp;about the latest updates<BR><INPUT size=18 
+            name=Comment> 
+            <INPUT type=submit value="Send E-mail"></FONT></P></FORM></TD>
+          <TD align=middle bgColor=#000000>&nbsp;</TD></TR>
+        <TR>
+          <TD align=middle bgColor=#000000>&nbsp;</TD>
+          <TD borderColor=#ffff00 align=middle bgColor=#000000 
+          colSpan=3>&nbsp;</TD>
+          <TD align=middle bgColor=#000000>&nbsp;</TD></TR></TBODY></TABLE>
+      <CENTER>&nbsp;</CENTER></TD>
+    <TD vAlign=top 
+    background=Spacesimulator_net%20-%203ds%20format%20file%20reader,%20loader_bestanden/sftech.bmp>
+      <P align=left><B><FONT face=Verdana size=2><SPAN 
+      style="BACKGROUND-COLOR: #000000"><FONT 
+      color=#ff0000>INTRODU</FONT></SPAN><FONT color=#ff0000><SPAN 
+      style="BACKGROUND-COLOR: #000000">CTION</SPAN></FONT></FONT></B></P>
+      <P align=left><FONT face=Verdana size=2>It's now time to say goodbye to 
+      our dear cube! In this lesson we will develop a routine to load 3ds 
+      objects, a very popular file format on the internet and supported by 
+      various 3d modelers. A 3d modeler allows you to create any type of object 
+      in a more intuitive and human way rather than to define by hand the 
+      coordinates of the vertices, which can become an impossible task even for 
+      simple objects just slightly more complicated than a cube. Actually, I am 
+      very reluctant to throw away the cube, such a simple and perfect figure. 
+      However, until proven otherwise, spaceships, planets, missiles and 
+      anything that has to do with a space simulator seems to be completely 
+      different from the cube.<BR><BR>Before starting to write the code it will 
+      be necessary to analyze the 3ds file structure. Ok, prepare your favorite 
+      programming drink and get ready...</FONT></P>
+      <P align=left>&nbsp;</P>
+      <P align=left><B><SPAN style="BACKGROUND-COLOR: #000000"><FONT 
+      face=Verdana color=#ff0000 size=2>THE 3DS FILE STRUCTURE</FONT></SPAN></B> 
+
+      <P align=left><FONT face=Verdana size=2>A 3ds file contains a series of 
+      information used to describe every detail of a 3d scene composed of one or 
+      more objects. A 3ds file contains a series of blocks called <B><FONT 
+      color=#ffff00>Chunks</FONT><FONT color=#000000>.</FONT></B> What is 
+      contained in these blocks? Everything necessary to describe the scene: the 
+      name of each object, the vertices coordinates, the mapping coordinates, 
+      the list of polygons, the faces colors, the animation keyframes and so 
+      on...</FONT> 
+      <P align=left><FONT face=Verdana size=2>These chunks don't have a linear 
+      structure. This means that some chunks are dependent on others and can 
+      only be read if their relative parent chunks have been read first. 
+      &nbsp;It's not necessary to read all the chunks and we will only consider 
+      the most important ones here<BR>I will base my description of the 3ds file 
+      format on the information contained in the 3dsinfo.txt file written by 
+      Jochen Wilhelmy which explains in detail the structure of all the 
+      chunks.&nbsp;<BR>A chunk is composed of 4 fields:&nbsp;<BR><B><FONT 
+      color=#ffff00>-Identifier</FONT><FONT color=#000000>:</FONT></B> a 
+      hexadecimal number two bytes in length that identifies the chunk. This 
+      information immediately tells us if the chunk is useful for our purpose. 
+      If we need the chunk we can then extrapolate the scene information in it 
+      and, if necessary, any child chunks it may have. If we don't need the 
+      chunk, we jump it using the following information...&nbsp;<BR><B><FONT 
+      color=#ffff00>-Length of the chunk:</FONT></B> a 4 byte number that is the 
+      sum of the chunk length and all the lengths of every contained 
+      sub-chunk.<BR><FONT color=#ffff00><B>-Chunk data:</B> </FONT>this field 
+      has a variable length and conatians all the data for the scene.</FONT> 
+      <P align=left><FONT face=Verdana size=2><BR>This table shows the offset 
+      (in bytes) and the length (also in bytes) of each field in a typical 
+      chunk:</FONT></P>
+      <TABLE cellPadding=2 border=1>
+        <TBODY>
+        <TR>
+          <TD><FONT face="Courier New" color=#ffff00 size=2>Offset</FONT></TD>
+          <TD><FONT face="Courier New" color=#ffff00 size=2>Length</FONT></TD>
+          <TD>&nbsp;</TD></TR>
+        <TR>
+          <TD><FONT face="Courier New" size=2>0</FONT></TD>
+          <TD><FONT face="Courier New" size=2>2</FONT></TD>
+          <TD><FONT face="Courier New" color=#00ffff size=2>Chunk 
+            identifier</FONT></TD></TR>
+        <TR>
+          <TD><FONT face="Courier New" size=2>2</FONT></TD>
+          <TD><FONT face="Courier New" size=2>4</FONT></TD>
+          <TD><FONT face="Courier New" color=#00ffff size=2>Chunk length: 
+            chunk data + sub-chunks(6+n+m)</FONT></TD></TR>
+        <TR>
+          <TD><FONT face="Courier New" size=2>6</FONT></TD>
+          <TD><FONT face="Courier New" size=2>n</FONT></TD>
+          <TD><FONT face="Courier New" color=#00ffff size=2>Data</FONT></TD></TR>
+        <TR>
+          <TD><FONT face="Courier New" size=2>6+n</FONT></TD>
+          <TD><FONT face="Courier New" size=2>m</FONT></TD>
+          <TD><FONT face="Courier New" color=#00ffff 
+          size=2>Sub-chunks</FONT></TD></TR></TBODY></TABLE>
+      <P align=left><FONT face=Verdana size=2>We can see from the last line in 
+      the table exactly how some chunks are dependent on others: each child 
+      chunk is in fact contained inside the field "Sub-chunks" of the parent 
+      chunk.&nbsp;&nbsp;<BR><BR>The following are the most important chunks in a 
+      3ds file. Please note the hierarchy among the various elements:</FONT> 
+      <P align=left><FONT face="Courier New" size=2><SPAN 
+      style="mso-bidi-font-size: 12.0pt"><FONT color=#ffff00><SPAN lang=EN-GB 
+      style="mso-bidi-font-size: 12.0pt; mso-spacerun: yes; mso-ansi-language: EN-GB">MAIN 
+      </SPAN></FONT><SPAN lang=EN-GB 
+      style="mso-bidi-font-size: 12.0pt; mso-ansi-language: EN-GB"><FONT 
+      color=#ffff00>CHUNK </FONT><FONT face="Courier New" 
+      color=#00ffff>0x4D4D</FONT><FONT face="Courier New" color=#ffff00><SPAN 
+      style="mso-spacerun: yes"><BR>&nbsp;&nbsp; </SPAN>3D EDITOR CHUNK 
+      </FONT><FONT face="Courier New" color=#00ffff>0x3D3D</FONT><FONT 
+      face="Courier New" color=#ffff00><SPAN 
+      style="mso-spacerun: yes"><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>OBJECT 
+      BLOCK </FONT><FONT color=#00ffff>0x4000</FONT><FONT face="Courier New" 
+      color=#ffff00><SPAN 
+      style="mso-spacerun: yes"><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      </SPAN>TRIANGULAR MESH </FONT><FONT face="Courier New" 
+      color=#00ffff>0x4100</FONT></SPAN><SPAN lang=DE 
+      style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-bidi-font-size: 12.0pt; mso-ansi-language: DE"><FONT 
+      face="Courier New" color=#ffff00><SPAN 
+      style="mso-spacerun: yes"><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      </SPAN>VERTICES LIST </FONT><FONT face="Courier New" 
+      color=#00ffff>0x4110</FONT><FONT face="Courier New" 
+      color=#ffff00><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      FACES DESCRIPTION </FONT><FONT face="Courier New" 
+      color=#00ffff>0x4120</FONT><FONT face="Courier New" 
+      color=#ffff00><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      </FONT></SPAN><SPAN lang=EN-GB 
+      style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-bidi-font-size: 12.0pt; mso-ansi-language: EN-GB"><FONT 
+      face="Courier New" color=#ffff00>FACES MATERIAL </FONT><FONT 
+      face="Courier New" color=#00ffff>0x4130</FONT><FONT face="Courier New" 
+      color=#ffff00><SPAN 
+      style="mso-spacerun: yes"><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      </SPAN>MAPPING COORDINATES LIST </FONT><FONT face="Courier New" 
+      color=#00ffff>0x4140</FONT><FONT face="Courier New" color=#ffff00><SPAN 
+      style="mso-spacerun: yes"><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      </SPAN>SMOOTHING GROUP LIST </FONT><FONT face="Courier New" 
+      color=#00ffff>0x4150</FONT><FONT face="Courier New" color=#ffff00><SPAN 
+      style="mso-spacerun: yes"><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      LOCAL COORDINATES SYSTEM</SPAN> </FONT><FONT face="Courier New" 
+      color=#00ffff>0x4160</FONT><FONT face="Courier New" color=#ffff00><SPAN 
+      style="mso-spacerun: yes"><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      </SPAN>LIGHT </FONT><FONT face="Courier New" 
+      color=#00ffff>0x4600</FONT><FONT face="Courier New" color=#ffff00><SPAN 
+      style="mso-spacerun: yes"><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      </SPAN>SPOTLIGHT </FONT><FONT face="Courier New" 
+      color=#00ffff>0x4610</FONT><FONT face="Courier New" color=#ffff00><SPAN 
+      style="mso-spacerun: yes"><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      </SPAN>CAMERA </FONT><FONT face="Courier New" 
+      color=#00ffff>0x4700</FONT><FONT face="Courier New" color=#ffff00><SPAN 
+      style="mso-spacerun: yes"><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      </SPAN>MATERIAL BLOCK </FONT><FONT face="Courier New" 
+      color=#00ffff>0xAFFF</FONT><FONT face="Courier New" color=#ffff00><SPAN 
+      style="mso-spacerun: yes"><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</SPAN>MATERIAL 
+      NAME </FONT><FONT face="Courier New" 
+      color=#00ffff>0xA000</FONT></SPAN><SPAN lang=FR 
+      style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-bidi-font-size: 12.0pt; mso-ansi-language: FR"><FONT 
+      face="Courier New" color=#ffff00><SPAN 
+      style="mso-spacerun: yes"><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      </SPAN>AMBIENT COLOR </FONT><FONT face="Courier New" 
+      color=#00ffff>0xA010</FONT><FONT face="Courier New" color=#ffff00><SPAN 
+      style="mso-spacerun: yes"><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      </SPAN>DIFFUSE COLOR </FONT><FONT face="Courier New" 
+      color=#00ffff>0xA020</FONT></SPAN><SPAN lang=EN-GB 
+      style="mso-bidi-font-size: 12.0pt; mso-ansi-language: EN-GB"><FONT 
+      face="Courier New" color=#ffff00><SPAN 
+      style="mso-spacerun: yes"><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      </SPAN>SPECULAR COLOR </FONT><FONT face="Courier New" 
+      color=#00ffff>0xA030</FONT><FONT face="Courier New" color=#ffff00><SPAN 
+      style="mso-spacerun: yes"><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      </SPAN>TEXTURE MAP 1 </FONT><FONT face="Courier New" 
+      color=#00ffff>0xA200</FONT><FONT face="Courier New" color=#ffff00><SPAN 
+      style="mso-spacerun: yes"><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      </SPAN>BUMP MAP </FONT><FONT face="Courier New" 
+      color=#00ffff>0xA230</FONT><FONT face="Courier New" 
+      color=#ffff00><BR><SPAN style="mso-spacerun: yes">&nbsp; 
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</SPAN>REFLECTION MAP 
+      </FONT><FONT face="Courier New" color=#00ffff>0xA220</FONT><FONT 
+      face="Courier New" color=#ffff00><SPAN 
+      style="mso-spacerun: yes"><BR>&nbsp;&nbsp;&nbsp; 
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[SUB CHUNKS FOR EACH 
+      MAP]<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      </SPAN>MAPPING FILENAME </FONT><FONT face="Courier New" 
+      color=#00ffff>0xA300</FONT><FONT face="Courier New" 
+      color=#ffff00><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      MAPPING PARAMETERS </FONT><FONT face="Courier New" 
+      color=#00ffff>0xA351</FONT><FONT face="Courier New" color=#ffff00><SPAN 
+      style="mso-spacerun: yes"><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      </SPAN>KEYFRAMER CHUNK </FONT><FONT face="Courier New" 
+      color=#00ffff>0xB000</FONT><FONT face="Courier New" color=#ffff00><SPAN 
+      style="mso-spacerun: yes"><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      </SPAN>MESH INFORMATION BLOCK </FONT><FONT face="Courier New" 
+      color=#00ffff>0xB002</FONT><FONT face="Courier New" color=#ffff00><SPAN 
+      style="mso-spacerun: yes"><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      </SPAN>SPOT LIGHT INFORMATION BLOCK </FONT><FONT face="Courier New" 
+      color=#00ffff>0xB007</FONT><SPAN style="mso-spacerun: yes"><FONT 
+      face="Courier New" 
+      color=#ffff00><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FRAMES 
+      (START AND END) </FONT><FONT face="Courier New" 
+      color=#00ffff>0xB008</FONT><FONT face="Courier New" 
+      color=#ffff00><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      </FONT></SPAN><FONT face="Courier New" color=#ffff00>OBJECT NAME 
+      </FONT><FONT face="Courier New" color=#00ffff>0xB010</FONT><FONT 
+      face="Courier New" color=#ffff00><SPAN 
+      style="mso-spacerun: yes"><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      </SPAN>OBJECT PIVOT POINT </FONT><FONT face="Courier New" 
+      color=#00ffff>0xB013</FONT><FONT face="Courier New" color=#ffff00><SPAN 
+      style="mso-spacerun: yes"><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      </SPAN>POSITION TRACK </FONT><FONT face="Courier New" 
+      color=#00ffff>0xB020</FONT><FONT face="Courier New" color=#ffff00><SPAN 
+      style="mso-spacerun: yes"><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      </SPAN>ROTATION TRACK </FONT><FONT face="Courier New" 
+      color=#00ffff>0xB021</FONT><FONT face="Courier New" color=#ffff00><SPAN 
+      style="mso-spacerun: yes"><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SCALE 
+      </SPAN>TRACK </FONT><FONT face="Courier New" 
+      color=#00ffff>0xB022</FONT><FONT face="Courier New" color=#ffff00><SPAN 
+      style="mso-spacerun: yes"><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HIERARCHY 
+      POSITION </SPAN></FONT><FONT 
+      color=#00ffff>0xB030</FONT></SPAN></SPAN></FONT> 
+      <P class=MsoNormal><FONT face=Verdana size=2>As mentioned earlier, If we 
+      want to read a particular chunk we must always read its parent chunk 
+      first. Imagine the 3ds file is a tree and the chunk that we need is a leaf 
+      (and we are a little ant on the ground). In order to reach the leaf, we 
+      need to start from the trunk and cross any branches that lead to that 
+      leaf. For example, if we want to reach the chunk VERTICES LIST, we have to 
+      read the MAIN CHUNK first, then the 3D EDITOR CHUNK, the OBJECT BLOCK and 
+      finally the TRIANGULAR MESH chunk. The other chunks can safely be 
+      skipped.&nbsp;<BR>Now let's prune our tree and leave only the branches we 
+      are going to use in this tutorial : "vertices", "faces", "mapping 
+      coordinates" and their relative parents: </FONT></P>
+      <P class=MsoNormal><FONT face="Courier New" size=2><SPAN 
+      style="mso-bidi-font-size: 12.0pt"><FONT color=#ffff00><SPAN lang=EN-GB 
+      style="mso-bidi-font-size: 12.0pt; mso-spacerun: yes; mso-ansi-language: EN-GB">MAIN 
+      </SPAN></FONT><SPAN lang=EN-GB 
+      style="mso-bidi-font-size: 12.0pt; mso-ansi-language: EN-GB"><FONT 
+      color=#ffff00>CHUNK </FONT><FONT color=#00ffff>0x4D4D</FONT><FONT 
+      color=#ffff00><SPAN style="mso-spacerun: yes"><BR>&nbsp;&nbsp; </SPAN>3D 
+      EDITOR CHUNK </FONT><FONT color=#00ffff>0x3D3D</FONT><FONT 
+      color=#ffff00><SPAN 
+      style="mso-spacerun: yes"><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>OBJECT 
+      BLOCK </FONT><FONT color=#00ffff>0x4000</FONT><FONT color=#ffff00><SPAN 
+      style="mso-spacerun: yes"><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      </SPAN>TRIANGULAR MESH </FONT><FONT 
+      color=#00ffff>0x4100</FONT></SPAN><SPAN lang=DE 
+      style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-bidi-font-size: 12.0pt; mso-ansi-language: DE"><FONT 
+      color=#ffff00><SPAN 
+      style="mso-spacerun: yes"><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      </SPAN>VERTICES LIST </FONT><FONT color=#00ffff>0x4110</FONT><FONT 
+      color=#ffff00><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      FACES DESCRIPTION </FONT><FONT color=#00ffff>0x4120</FONT></SPAN><SPAN 
+      lang=EN-GB 
+      style="mso-bidi-font-size: 12.0pt; mso-ansi-language: EN-GB"><FONT 
+      color=#ffff00><SPAN 
+      style="mso-spacerun: yes"><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      </SPAN>MAPPING COORDINATES LIST </FONT><FONT 
+      color=#00ffff>0x4140</FONT></SPAN></SPAN></FONT></P>
+      <P class=MsoNormal><FONT face=Verdana size=2>Here are the chunks described 
+      in detail :</FONT></P>
+      <TABLE cellPadding=2 border=1>
+        <TBODY>
+        <TR>
+          <TD vAlign=top width=645 colSpan=2><FONT face="Courier New" 
+            color=#ffff00 size=2>MAIN CHUNK</FONT></TD></TR>
+        <TR>
+          <TD vAlign=top width=127><FONT face="Courier New" 
+            size=2>Identifier</FONT></TD>
+          <TD vAlign=top width=518><FONT face="Courier New" color=#00ffff 
+            size=2>0x4d4d&nbsp;</FONT></TD></TR>
+        <TR>
+          <TD vAlign=top width=127><FONT face="Courier New" 
+            size=2>Length</FONT></TD>
+          <TD vAlign=top width=518><FONT face="Courier New" color=#00ffff 
+            size=2>0 + sub-chunks length</FONT></TD></TR>
+        <TR>
+          <TD vAlign=top width=127><FONT face="Courier New" size=2>Chunk 
+            father</FONT></TD>
+          <TD vAlign=top width=518><FONT face="Courier New" color=#00ffff 
+            size=2>None</FONT></TD></TR>
+        <TR>
+          <TD vAlign=top width=127><FONT face="Courier New" size=2>Sub 
+            chunks</FONT></TD>
+          <TD vAlign=top width=518><FONT face="Courier New" color=#00ffff 
+            size=2>3D EDITOR CHUNK</FONT></TD></TR>
+        <TR>
+          <TD vAlign=top width=127><FONT face="Courier New" 
+          size=2>Data</FONT></TD>
+          <TD vAlign=top width=518><FONT face="Courier New" color=#00ffff 
+            size=2>None</FONT></TD></TR>
+        <TR>
+          <TD vAlign=top width=645 colSpan=2><FONT face="Courier New" 
+            color=#ffff00 size=2>3D EDITOR CHUNK</FONT></TD></TR>
+        <TR>
+          <TD vAlign=top width=127><FONT face="Courier New" 
+            size=2>Identifier</FONT></TD>
+          <TD vAlign=top width=518><FONT face="Courier New" color=#00ffff 
+            size=2>0x3D3D&nbsp;</FONT></TD></TR>
+        <TR>
+          <TD vAlign=top width=127><FONT face="Courier New" 
+            size=2>Length</FONT></TD>
+          <TD vAlign=top width=518><FONT face="Courier New" color=#00ffff 
+            size=2>0 + sub-chunks length</FONT></TD></TR>
+        <TR>
+          <TD vAlign=top width=127><FONT face="Courier New" size=2>Chunk 
+            father</FONT></TD>
+          <TD vAlign=top width=518><FONT face="Courier New" color=#00ffff 
+            size=2>MAIN CHUNK</FONT></TD></TR>
+        <TR>
+          <TD vAlign=top width=127><FONT face="Courier New" size=2>Sub 
+            chunks</FONT></TD>
+          <TD vAlign=top width=518><FONT face="Courier New" color=#00ffff 
+            size=2>OBJECT BLOCK, MATERIAL BLOCK, KEYFRAMER CHUNK</FONT></TD></TR>
+        <TR>
+          <TD vAlign=top width=127><FONT face="Courier New" 
+          size=2>Data</FONT></TD>
+          <TD vAlign=top width=518><FONT face="Courier New" color=#00ffff 
+            size=2>None</FONT></TD></TR>
+        <TR>
+          <TD vAlign=top width=645 colSpan=2><FONT face="Courier New" 
+            color=#ffff00 size=2>OBJECT BLOCK</FONT></TD></TR>
+        <TR>
+          <TD vAlign=top width=127><FONT face="Courier New" 
+            size=2>Identifier</FONT></TD>
+          <TD vAlign=top width=518><FONT face="Courier New" color=#00ffff 
+            size=2>0x4000</FONT></TD></TR>
+        <TR>
+          <TD vAlign=top width=127><FONT face="Courier New" 
+            size=2>Length</FONT></TD>
+          <TD vAlign=top width=518><FONT face="Courier New" color=#00ffff 
+            size=2>Object name length + sub-chunks length</FONT></TD></TR>
+        <TR>
+          <TD vAlign=top width=127><FONT face="Courier New" size=2>Chunk 
+            father</FONT></TD>
+          <TD vAlign=top width=518><FONT face="Courier New" color=#00ffff 
+            size=2>3D EDITOR CHUNK</FONT></TD></TR>
+        <TR>
+          <TD vAlign=top width=127><FONT face="Courier New" size=2>Sub 
+            chunks</FONT></TD>
+          <TD vAlign=top width=518><FONT face="Courier New" color=#00ffff 
+            size=2>TRIANGULAR MESH, LIGHT, CAMERA</FONT></TD></TR>
+        <TR>
+          <TD vAlign=top width=127><FONT face="Courier New" 
+          size=2>Data</FONT></TD>
+          <TD vAlign=top width=518><FONT face="Courier New" color=#00ffff 
+            size=2>Object name</FONT></TD></TR>
+        <TR>
+          <TD vAlign=top width=645 colSpan=2><FONT face="Courier New" 
+            color=#ffff00 size=2>TRIANGULAR MESH</FONT></TD></TR>
+        <TR>
+          <TD vAlign=top width=127><FONT face="Courier New" 
+            size=2>Identifier</FONT></TD>
+          <TD vAlign=top width=518><FONT face="Courier New" color=#00ffff 
+            size=2>0x4100</FONT></TD></TR>
+        <TR>
+          <TD vAlign=top width=127><FONT face="Courier New" 
+            size=2>Length</FONT></TD>
+          <TD vAlign=top width=518><FONT face="Courier New" color=#00ffff 
+            size=2>0 + sub-chunks length</FONT></TD></TR>
+        <TR>
+          <TD vAlign=top width=127><FONT face="Courier New" size=2>Chunk 
+            father</FONT></TD>
+          <TD vAlign=top width=518><FONT face="Courier New" color=#00ffff 
+            size=2>OBJECT BLOCK</FONT></TD></TR>
+        <TR>
+          <TD vAlign=top width=127><FONT face="Courier New" size=2>Sub 
+            chunks</FONT></TD>
+          <TD vAlign=top width=518><SPAN lang=DE 
+            style="mso-bidi-font-size: 12.0pt; mso-ansi-language: DE"><FONT 
+            face="Courier New" color=#00ffff size=2>VERTICES LIST, FACES 
+            DESCRIPTION, </FONT></SPAN><FONT face="Courier New" size=2><SPAN 
+            lang=EN-GB 
+            style="mso-bidi-font-size: 12.0pt; mso-ansi-language: EN-GB"><FONT 
+            color=#00ffff>MAPPING COORDINATES LIST</FONT></SPAN></FONT></TD></TR>
+        <TR>
+          <TD vAlign=top width=127><FONT face="Courier New" 
+          size=2>Data</FONT></TD>
+          <TD vAlign=top width=518><FONT face="Courier New" color=#00ffff 
+            size=2>None</FONT></TD></TR>
+        <TR>
+          <TD vAlign=top width=645 colSpan=2><FONT face="Courier New" 
+            color=#ffff00 size=2>VERTICES LIST</FONT></TD></TR>
+        <TR>
+          <TD vAlign=top width=127><FONT face="Courier New" 
+            size=2>Identifier</FONT></TD>
+          <TD vAlign=top width=518><FONT face="Courier New" color=#00ffff 
+            size=2>0x4110</FONT></TD></TR>
+        <TR>
+          <TD vAlign=top width=127><FONT face="Courier New" 
+            size=2>Length</FONT></TD>
+          <TD vAlign=top width=518><FONT face="Courier New" color=#00ffff 
+            size=2>varying + sub-chunks length</FONT></TD></TR>
+        <TR>
+          <TD vAlign=top width=127><FONT face="Courier New" size=2>Chunk 
+            father</FONT></TD>
+          <TD vAlign=top width=518><FONT face="Courier New" color=#00ffff 
+            size=2>TRIANGULAR MESH</FONT></TD></TR>
+        <TR>
+          <TD vAlign=top width=127><FONT face="Courier New" size=2>Sub 
+            chunks</FONT></TD>
+          <TD vAlign=top width=518><FONT face="Courier New" color=#00ffff 
+            size=2>None</FONT></TD></TR>
+        <TR>
+          <TD vAlign=top width=127><FONT face="Courier New" 
+          size=2>Data</FONT></TD>
+          <TD vAlign=top width=518><FONT face="Courier New" color=#00ffff 
+            size=2>Vertices number (unsigned short)<BR>Vertices list: 
+            x1,y1,z1,x2,y2,z2 etc. (for each vertex: 3*float)</FONT></TD></TR>
+        <TR>
+          <TD vAlign=top width=645 colSpan=2><FONT face="Courier New" 
+            color=#ffff00 size=2>FACES DESCRIPTION</FONT></TD></TR>
+        <TR>
+          <TD vAlign=top width=127><FONT face="Courier New" 
+            size=2>Identifier</FONT></TD>
+          <TD vAlign=top width=518><SPAN lang=EN-GB 
+            style="mso-bidi-font-size: 12.0pt; mso-ansi-language: EN-GB"><FONT 
+            face="Courier New" color=#00ffff size=2>0x4120</FONT></SPAN></TD></TR>
+        <TR>
+          <TD vAlign=top width=127><FONT face="Courier New" 
+            size=2>Length</FONT></TD>
+          <TD vAlign=top width=518><FONT face="Courier New" color=#00ffff 
+            size=2>varying + sub-chunks length</FONT></TD></TR>
+        <TR>
+          <TD vAlign=top width=127><FONT face="Courier New" size=2>Chunk 
+            father</FONT></TD>
+          <TD vAlign=top width=518><FONT face="Courier New" color=#00ffff 
+            size=2>TRIANGULAR MESH</FONT></TD></TR>
+        <TR>
+          <TD vAlign=top width=127><FONT face="Courier New" size=2>Sub 
+            chunks</FONT></TD>
+          <TD vAlign=top width=518><SPAN lang=EN-GB 
+            style="mso-bidi-font-size: 12.0pt; mso-ansi-language: EN-GB"><FONT 
+            face="Courier New" color=#00ffff size=2>FACES 
+          MATERIAL</FONT></SPAN></TD></TR>
+        <TR>
+          <TD vAlign=top width=127><FONT face="Courier New" 
+          size=2>Data</FONT></TD>
+          <TD vAlign=top width=518><FONT face="Courier New" color=#00ffff 
+            size=2>Polygons number (unsigned short)<BR>Polygons list: 
+            a1,b1,c1,a2,b2,c2 etc. (for each point: 3*unsigned short)<BR>Face 
+            flag: face options, sides visibility etc. (unsigned 
+        short)</FONT></TD></TR>
+        <TR>
+          <TD vAlign=top width=645 colSpan=2><FONT face="Courier New" 
+            color=#ffff00 size=2>MAPPING COORDINATES LIST</FONT></TD></TR>
+        <TR>
+          <TD vAlign=top width=127><FONT face="Courier New" 
+            size=2>Identifier</FONT></TD>
+          <TD vAlign=top width=518><SPAN lang=DE 
+            style="mso-bidi-font-size: 12.0pt; mso-ansi-language: DE"><FONT 
+            face="Courier New" color=#00ffff size=2>0x4140</FONT></SPAN></TD></TR>
+        <TR>
+          <TD vAlign=top width=127><FONT face="Courier New" 
+            size=2>Length</FONT></TD>
+          <TD vAlign=top width=518><FONT face="Courier New" color=#00ffff 
+            size=2>varying + sub-chunks length</FONT></TD></TR>
+        <TR>
+          <TD vAlign=top width=127><FONT face="Courier New" size=2>Chunk 
+            father</FONT></TD>
+          <TD vAlign=top width=518><FONT face="Courier New" color=#00ffff 
+            size=2>TRIANGULAR MESH</FONT></TD></TR>
+        <TR>
+          <TD vAlign=top width=127><FONT face="Courier New" size=2>Sub 
+            chunks</FONT></TD>
+          <TD vAlign=top width=518><SPAN lang=EN-GB 
+            style="mso-bidi-font-size: 12.0pt; mso-ansi-language: EN-GB"><FONT 
+            face="Courier New" color=#00ffff size=2>SMOOTHING GROUP 
+            LIST</FONT></SPAN></TD></TR>
+        <TR>
+          <TD vAlign=top width=127><FONT face="Courier New" 
+          size=2>Data</FONT></TD>
+          <TD vAlign=top width=518><FONT face="Courier New" color=#00ffff 
+            size=2>Vertices number (unsigned short)<BR>Mapping coordinates list: 
+            u1,v1,u2,v2 etc. (for each vertex: 
+      2*float)</FONT></TD></TR></TBODY></TABLE>
+      <P align=left><FONT face=Verdana size=2>Now that the 3ds file format is 
+      clear enough, we are going to take a look at the code for this tutorial. 
+      What? You're completely lost? =D Let's continue anyway. The "chunks" 
+      structure will become clearer to you as you go through the lesson. After 
+      all, we are programmers and we understand C better than own chatter 
+      ;)</FONT> 
+      <P align=left><B><FONT face=Verdana color=#ff0000 size=2>A SHORT 
+      BRIEFING</FONT></B> 
+      <P align=left><FONT face=Verdana size=2>The steps we need to take in order 
+      to load a 3ds object and save it in the format defined by our engine 
+      are:&nbsp;<BR>-implement a "while" loop (as we did for the texture loader) 
+      that continues its execution until the end of file is 
+      reached.&nbsp;<BR>-read the chunk_id and the chunk_length each iteration 
+      of the loop.&nbsp;<BR>-analyze the content of the chunk_id using a switch 
+      .&nbsp;<BR>-if the chunk is a section of the tree we don't need to read, 
+      we jump the whole length of that chunk by moving the file pointer to a new 
+      position which is calculated by using the length of the current chunk 
+      added to the current position. This allows us to jump any chunk we don't 
+      need as well as all contained sub-chunks. In other words: let's jump to 
+      another branch! Are you starting to feel like a monkey yet? 
+      =)&nbsp;<BR>-if the chunk allows us to reach another chunk that we need, 
+      or it contains data that we need, then we read its data if needed, and 
+      then move to the next chunk.&nbsp;<BR></FONT>
+      <P align=left><B><FONT face=Verdana color=#ff0000 size=2>FINALLY... 
+      CODE!</FONT></B> 
+      <P align=left><FONT face=Verdana size=2>The first thing to do is to create 
+      the files that will contain the new routines.<BR>We have used the file 
+      tutorial(n).cpp to contain the main data types of the engine in the 
+      previous tutotials. However, since our data structures are becoming 
+      bigger, we will insert the declarations of the data types in a header file 
+      that we will call tutorial4.h.<BR><BR>First, we increase the number of 
+      vertices and polygons that our engine is able to manage. </FONT></P>
+      <P align=left><FONT face="Courier New" color=#00ffff size=2>#define 
+      MAX_VERTICES 8000<BR>#define MAX_POLYGONS 8000</FONT> 
+      <P align=left><FONT face=Verdana size=2><BR>Next, we add the field char 
+      name[20]; to the structure obj_type. This field will contain the name of 
+      the loaded object.&nbsp;<BR>Lastly, we modify the name of our object 
+      variable from <FONT color=#ffff00><B>obj_type cube;</B> </FONT>to <FONT 
+      color=#ffff00><B>obj_type object;</B> </FONT>just to "highlight" the 
+      generic nature of our object.&nbsp;<BR><BR>The next file to create is 
+      3dsloader.cpp. In this file, we insert the following routine:</FONT> 
+      <P align=left><FONT face="Courier New" color=#00ffff size=2>char Load3DS 
+      (obj_type_ptr p_object, char *p_filename)<BR>{<BR>&nbsp;&nbsp; int 
+      i;<BR>&nbsp;&nbsp; FILE *l_file;<BR>&nbsp;&nbsp; unsigned short 
+      l_chunk_id;<BR>&nbsp;&nbsp; unsigned int l_chunk_length;<BR>&nbsp;&nbsp; 
+      unsigned char l_char;<BR>&nbsp;&nbsp; unsigned short 
+      l_qty;<BR>&nbsp;&nbsp; unsigned short l_face_flags;</FONT> 
+      <P align=left><FONT face=Verdana size=2>The Load3DS routine accepts two 
+      parameters: a pointer to the object data structure and the name of the 
+      file to open. It returns "0" if the file has not been found or "1" if the 
+      file has been found and read.&nbsp;<BR>There aren't too many variables to 
+      initialize: we have the usual counter <B><FONT color=#ffff00>i</FONT></B>, 
+      a pointer to the file&nbsp; <B><FONT color=#ffff00>*l_file</FONT></B> and 
+      a support variable to extrapolate byte data <B><FONT 
+      color=#ffff00>l_char</FONT></B>.<BR>The other variables 
+      are:&nbsp;<BR><B><FONT color=#ffff00>-unsigned short 
+      l_chunk_id;</FONT></B> a 2 byte hexadecimal number that tells us the 
+      chunk's id.<BR><B><FONT color=#ffff00>-unsigned int 
+      l_chunk_length;</FONT></B> a 4 byte number used to specify the length of 
+      the chunk.<BR><B><FONT color=#ffff00>-unsigned short l_qty;</FONT></B> a 
+      support variable that will tell us the quantity of information to 
+      read.&nbsp;<BR><B><FONT color=#ffff00>-unsigned short 
+      l_face_flags;</FONT></B><FONT color=#ffff00> </FONT>This variable holds 
+      various information regarding the current polygon (visible, not visible 
+      etc.) which the 3d editor uses to render the scene. We will only use this 
+      value to move the file pointer to the next chunk position.</FONT> 
+      <P align=left><FONT face=Verdana size=2>So let's open the file at 
+      last!</FONT> 
+      <P align=left><FONT face="Courier New" color=#00ffff size=2>&nbsp;&nbsp; 
+      if ((l_file=fopen (p_filename, "rb"))== NULL) return 0; //Open the 
+      file<BR>&nbsp;&nbsp; while (ftell (l_file) &lt; filelength (fileno 
+      (l_file))) //Loop to scan the whole 
+      file&nbsp;<BR>&nbsp;&nbsp;&nbsp;{</FONT> 
+      <P align=left><FONT face=Verdana size=2>The <B><FONT 
+      color=#ffff00>while</FONT></B> loop is performed for the entire length of 
+      the file. The <B><FONT color=#ffff00>ftell</FONT></B> function allows us 
+      to acquire the current file pointer position while <B><FONT 
+      color=#ffff00>filelength</FONT></B> returns the length of the 
+      file.</FONT></P>
+      <P align=left><FONT face="Courier New" color=#00ffff 
+      size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; fread (&amp;l_chunk_id, 2, 1, 
+      l_file); //Read the chunk header<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; fread 
+      (&amp;l_chunk_length, 4, 1, l_file); //Read the length of the chunk</FONT> 
+
+      <P align=left><FONT face=Verdana size=2>Here, we have extrapolated the 
+      identifier and the length of the chunk and have saved them in l_chunk_id 
+      and l_chunk_length respectively .&nbsp;<BR>First, we analyze the content 
+      of l_chunk_id.</FONT> 
+      <P align=left><FONT face="Courier New" color=#00ffff 
+      size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; switch 
+      (l_chunk_id)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case 
+      0x4d4d:&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      break;</FONT> 
+      <P align=left><FONT face=Verdana size=2>We have found the<FONT 
+      color=#ffff00> <B>MAIN CHUNK!</B> </FONT>Cool! What are we going to do 
+      with it? Simple... nothing! In fact, the MAIN CHUNK has no data. However, 
+      we are interested in its sub-chunks. We have included this particular 
+      "case" statement so that the whole MAIN chunk is not jumped! Jumping the 
+      length of the MAIN CHUNK would have meant moving the file pointer to the 
+      end of the file due to the "default case" at the end of this switch 
+      statement. I will discuss this "default case" more, later in this 
+      tutorial</FONT> 
+      <P align=left><FONT face=Verdana size=2>We take the same approach for 
+      the<B><FONT color=#000000> </FONT><FONT color=#ffff00>3D EDITOR 
+      CHUNK</FONT></B>. This is the next node that we need to navigate through 
+      in order to reach the information we need. Once again, this node has no 
+      data. So let's pretend to read it =) This will bring us to the child 
+      called Object Block.</FONT></P>
+      <P align=left><FONT face="Courier New" color=#00ffff 
+      size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case 
+      0x3d3d:<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; break;</FONT> 
+      <P align=left><FONT face=Verdana size=2>The chunk <B><FONT 
+      color=#ffff00>OBJECT BLOCK</FONT></B> finally has some interesting 
+      information: the name of the object. We store this data in the "name" 
+      field of the "object" structure. The while loop exits if the '\0' 
+      character is encountered or the number of characters exceeds 20. Be 
+      careful! We have just read all the data of this chunk and this has moved 
+      the file pointer to the next chunk.</FONT> 
+      <P align=left><FONT face="Courier New" color=#00ffff 
+      size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case 
+      0x4000:&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      i=0;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      do<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      fread (&amp;l_char, 1, 1, 
+      l_file);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      p_object-&gt;name[i]=l_char;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      i++;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      }while(l_char != '\0' &amp;&amp; 
+      i&lt;20);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      break;</FONT> 
+      <P align=left><FONT face=Verdana size=2>This next chunk is simply another 
+      empty node that is the parent node of the next chunks that we must 
+      read.</FONT> 
+      <P align=left><FONT face="Courier New" color=#00ffff 
+      size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case 
+      0x4100:<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; break;</FONT> 
+      <P align=left><FONT face=Verdana size=2>Finally, here are the vertices! 
+      The chunk <FONT color=#ffff00><B>VERTICES LIST</B> </FONT>contains all the 
+      vertices of the model. First, we read the value "quantity" and use it to 
+      create a for loop that reads all the vertices. We then save each vertex in 
+      the corresponding field of the object structure.</FONT> 
+      <P align=left><FONT face="Courier New" color=#00ffff 
+      size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case 
+      0x4110:&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      fread (&amp;l_qty, sizeof (unsigned short), 1, 
+      l_file);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      p_object-&gt;vertices_qty = 
+      l_qty;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      printf("Number of vertices: 
+      %d\n",l_qty);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      for (i=0; i&lt;l_qty; 
+      i++)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      fread (&amp;p_object-&gt;vertex[i].x, sizeof(float), 1, 
+      l_file);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      fread (&amp;p_object-&gt;vertex[i].y, sizeof(float), 1, 
+      l_file);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      fread (&amp;p_object-&gt;vertex[i].z, sizeof(float), 1, 
+      l_file);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; break;</FONT> 
+      <P align=left><FONT face=Verdana size=2>The chunk <B><FONT 
+      color=#ffff00>FACES DESCRIPTION</FONT><FONT color=#000000> 
+      </FONT></B>contains a list of the object's polygons. As explained in 
+      tutorial 1, the structure dealing with polygons doesn't contain 
+      coordinates, only numbers that&nbsp; correspond to elements containing a 
+      list of vertices. In order to read this chunk we do exactly the same 
+      procedure we have done for the vertices chunk: first, we read the number 
+      of faces then we create a for loop to read all the faces.<BR>Each face 
+      also has another 2 byte field, the face flags, that contains some 
+      information useful only for 3d editors (indicating visible faces and so 
+      on). We will only read it to move the file pointer to the next 
+      chunk.</FONT> 
+      <P align=left><FONT face="Courier New" color=#00ffff 
+      size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case 
+      0x4120:<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      fread (&amp;l_qty, sizeof (unsigned short), 1, 
+      l_file);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      p_object-&gt;polygons_qty = 
+      l_qty;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      printf("Number of polygons: 
+      %d\n",l_qty);&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      for (i=0; i&lt;l_qty; 
+      i++)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      fread (&amp;p_object-&gt;polygon[i].a, sizeof (unsigned short), 1, 
+      l_file);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      fread (&amp;p_object-&gt;polygon[i].b, sizeof (unsigned short), 1, 
+      l_file);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      fread (&amp;p_object-&gt;polygon[i].c, sizeof (unsigned short), 1, 
+      l_file);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      fread (&amp;l_face_flags, sizeof (unsigned short), 1, 
+      l_file);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; break;</FONT> 
+      <P align=left><FONT face=Verdana size=2>Finally, we read the <SPAN 
+      lang=EN-GB 
+      style="FONT-SIZE: 10pt; mso-bidi-font-size: 12.0pt; mso-ansi-language: EN-GB"><B><FONT 
+      color=#ffff00>MAPPING COORDINATES LIST</FONT></B></SPAN>. Once again, We 
+      read the quantity and use this value to set up a for loop. Each point has 
+      two coordinates, u and v do you remember? No?? What are you doing here 
+      then? ;)</FONT> 
+      <P align=left><FONT face="Courier New" color=#00ffff 
+      size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case 
+      0x4140:<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      fread (&amp;l_qty, sizeof (unsigned short), 1, 
+      l_file);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      for (i=0; i&lt;l_qty; 
+      i++)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      fread (&amp;p_object-&gt;mapcoord[i].u, sizeof (float), 1, 
+      l_file);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      fread (&amp;p_object-&gt;mapcoord[i].v, sizeof (float), 1, 
+      l_file);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; break;</FONT> 
+      <P align=left><FONT face=Verdana size=2>The <B><FONT 
+      color=#ffff00>default</FONT></B> case! This means that we are at the end 
+      of the routine. This case is simple: when we find chunks that we don't 
+      want to read, the <B><FONT color=#ffff00>fseek</FONT></B> function moves 
+      the file pointer to the beginning of the next chunk using the chunk_length 
+      information</FONT> 
+      <P align=left><FONT face="Courier New" color=#00ffff 
+      size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      default:<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      fseek(l_file, l_chunk_length-6, 
+      SEEK_CUR);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }&nbsp;<BR>&nbsp;&nbsp; 
+      }</FONT> 
+      <P align=left><FONT face=Verdana size=2>We have finished! Very little 
+      remains to be done. We close the file and return 1.</FONT> 
+      <P align=left><FONT face="Courier New" color=#00ffff 
+      size=2>&nbsp;&nbsp;&nbsp;fclose (l_file); // Closes the file 
+      stream<BR>&nbsp;&nbsp;&nbsp;return (1); // Returns ok<BR>}</FONT> 
+      <P align=left> 
+      <P align=left><B><FONT face=Verdana color=#ff0000 
+      size=2>CONCLUSIONS</FONT></B> 
+      <P align=left><FONT face=Verdana size=2>The 3ds reader that we have 
+      developed here is a starting point for more complex readers. Keep in mind 
+      however that our routine can only read a 3ds file if there is only one 
+      object present and it is positioned at the center.&nbsp; The next tutorial 
+      (the matrices tutorial), will add the functionality needed to load other 
+      objects. This will be the fun part. We have to include other spaceships 
+      right? Otherwise we won't have anything to destroy =)&nbsp;<BR>This lesson 
+      wasn't so hard was it? After all, we have already done the big work in 
+      previous lessons. We can use all the code written so far for the next 
+      tutorial, in which we will learn how to add lighting using OpenGL 
+      functions. Bye bye for now happy coders!</FONT></P>
+      <P align=left>&nbsp;</P>
+      <P align=left><B><FONT face=Verdana color=#ff0000 size=2>SOURCE 
+      CODE</FONT></B> 
+      <P align=left><FONT face=Verdana size=2><FONT color=#ffffff>To compile and 
+      execute this project you need the GLUT libraries that can be found 
+      at:</FONT><A 
+      href="http://www.opengl.org/developers/documentation/glut.html">www.opengl.org/developers/documentation/glut.html</A></FONT> 
+
+      <P><SPAN style="BACKGROUND-COLOR: #333333"><B><FONT face=Verdana 
+      size=2>Download the C/C++ source code and executable in zip 
+      format:&nbsp;<BR><A 
+      href="http://www.spacesimulator.net/tutorials/source_code/spacesimulator.net-tutorial4.zip">Windows 
+      version<BR></A><A 
+      href="http://www.spacesimulator.net/tutorials/source_code/spacesimulator.net-tutorial4_linux.zip">Linux 
+      version</A> (port by Panteleakis Ioannis)<A 
+      href="http://www.spacesimulator.net/tutorials/source_code/spacesimulator.net-tutorial4.zip"><BR></A><A 
+      href="http://www.spacesimulator.net/tutorials/source_code/spacesimulator.net-tutorial4_sdl.zip">SDL 
+      version</A> (p</FONT></B><FONT face=Verdana size=2><B>ort by Afrasinei 
+      Alexandru)<BR><A 
+      href="http://www.spacesimulator.net/tutorials/source_code/spacesimulator.net-tutorial4_macosx.zip">MAC 
+      OS version</A> (port by Martin Williams)</B></FONT></SPAN></P>
+      <P><B><FONT face=Verdana color=#ff0000 size=2>UTILITIES</FONT></B></P>
+      <P><B><SPAN style="BACKGROUND-COLOR: #333333"><FONT face=Verdana size=2><A 
+      href="http://www.spacesimulator.net/tutorials/source_code/spacesimulator.net-tutorial4_mingw32_makefile.zip">Mingw32 
+      makefile</A> (To use the Linux version on Mingw32 for Windows - by Jose 
+      Ortega)<BR><A 
+      href="http://www.spacesimulator.net/tut4_3dsloader_pf.html">Printer 
+      friendly version of this tutorial</A> (by Steve 
+      Bruce)</FONT></SPAN></B></P>
+      <P>&nbsp;</P>
+      <P align=center><FONT face=Verdana><B><A 
+      href="http://www.spacesimulator.net/tut3_texturemapping.html"><FONT 
+      size=1>&lt;&lt; PREVIOUS TUTORIAL</FONT></A></B>&nbsp;&nbsp; <FONT 
+      size=1><B><A 
+      href="http://www.spacesimulator.net/tut5_vectors_and_lighting.html">NEXT 
+      TUTORIAL&gt;&gt;</A></B></FONT></FONT></P></TD>
+    <TD vAlign=top bgColor=#000000>&nbsp; 
+      <P>&nbsp;</P></TD></TR>
+  <TR>
+    <TD vAlign=top bgColor=#000000 colSpan=3>
+      <P align=center><FONT face=Verdana color=#ffffff size=1><FONT 
+      class=copy>©2000-2003 </FONT><A 
+      href="mailto:info@spacesimulator.net">Damiano Vitulli</A><FONT 
+      class=copy>. All Rights Reserved.&nbsp;</FONT></FONT><FONT class=copy 
+      face=Verdana color=#ffffff size=1>No Portion Of This Site May Be 
+      Reproduced Without Permission.</FONT> <FONT face=Verdana color=#ffffff 
+      size=1>Best viewed at 1024x768.</FONT></P></TD></TR>
+  <TR>
+    <TD vAlign=top bgColor=#000000 colSpan=3>&nbsp;</TD></TR></TBODY></TABLE>&nbsp; 
+</CENTER></BODY></HTML>

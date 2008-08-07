@@ -1,0 +1,15 @@
+#archivebox {
+	MARGIN: 5px 0px 0px 3px; HEIGHT: 20px
+}
+#archiveSelect {
+	FONT: 8pt tahoma; WIDTH: 165px; COLOR: #555
+}
+#archiveSelect OPTION {
+	BACKGROUND-COLOR: #ffffff
+}
+#archiveSelect .archiveYear {
+	COLOR: #222; BACKGROUND-COLOR: #eee
+}
+#archiveSelect .archiveMonth {
+	BACKGROUND-COLOR: #fff
+}

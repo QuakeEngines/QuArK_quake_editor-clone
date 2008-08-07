@@ -1,0 +1,54 @@
+.eolin_member {
+	
+}
+.eolin_friend {
+	
+}
+.eolin_member {
+	MARGIN-TOP: 10px; TEXT-ALIGN: center
+}
+.eolin_member .title {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 25px; BACKGROUND: url(http://file.eolin.com/image/icon_eolin.gif) #eee no-repeat 3px 5px; PADDING-BOTTOM: 5px; MARGIN: 5px; FONT: bold 100% Verdana; PADDING-TOP: 5px; TEXT-ALIGN: left
+}
+.eolin_member .title STRONG {
+	FONT-SIZE: 120%; COLOR: #09c
+}
+.eolin_member IMG {
+	BORDER-RIGHT: #ddd 1px solid; PADDING-RIGHT: 2px; BORDER-TOP: #ddd 1px solid; PADDING-LEFT: 2px; PADDING-BOTTOM: 2px; BORDER-LEFT: #ddd 1px solid; PADDING-TOP: 2px; BORDER-BOTTOM: #ddd 1px solid
+}
+.eolin_member .name {
+	PADDING-BOTTOM: 2px; PADDING-TOP: 5px
+}
+.eolin_member .name A {
+	FONT-SIZE: 110%
+}
+.eolin_member .btn_memo {
+	PADDING-BOTTOM: 5px; PADDING-TOP: 2px
+}
+.eolin_member .btn_memo A {
+	PADDING-LEFT: 15px; FONT-SIZE: 90%; BACKGROUND: url(http://file.eolin.com/image/icon_memo.gif) no-repeat; PADDING-BOTTOM: 2px
+}
+.group_title {
+	PADDING-LEFT: 5px; FONT-WEIGHT: bold; BACKGROUND: url(http://file.eolin.com/image/ico_group_open.gif) no-repeat right top; MARGIN: 5px 0px; TEXT-DECORATION: none
+}
+.group_title2 {
+	PADDING-LEFT: 5px; FONT-WEIGHT: bold; BACKGROUND: url(http://file.eolin.com/image/ico_group_close.gif) no-repeat right top; MARGIN: 5px 0px; CURSOR: pointer; TEXT-DECORATION: none
+}
+.group_title A {
+	TEXT-DECORATION: none
+}
+.group_list {
+	DISPLAY: block; PADDING-LEFT: 12px; BACKGROUND: url(http://file.eolin.com/image/bul_group_tree.gif) no-repeat 3px 4px; PADDING-TOP: 3px; LIST-STYLE-TYPE: none
+}
+.group_list A {
+	TEXT-DECORATION: none
+}
+.group_list IMG {
+	VERTICAL-ALIGN: middle; MARGIN-RIGHT: 3px
+}
+.eolin_friend H3 {
+	FONT-WEIGHT: bold; FONT-SIZE: 1em; MARGIN-BOTTOM: 5px; COLOR: #7870ab; PADDING-TOP: 20px; BORDER-BOTTOM: #ccc 1px solid
+}
+.EolinBmVote {
+	CLEAR: both; PADDING-RIGHT: 10px; PADDING-LEFT: 10px; PADDING-BOTTOM: 10px; PADDING-TOP: 10px; TEXT-ALIGN: right
+}

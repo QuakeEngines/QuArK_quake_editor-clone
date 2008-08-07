@@ -1,0 +1,634 @@
+* {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-TOP: 0px
+}
+H1 {
+	MARGIN: 1em 0px
+}
+H2 {
+	MARGIN: 1em 0px
+}
+H3 {
+	MARGIN: 1em 0px
+}
+H4 {
+	MARGIN: 1em 0px
+}
+H5 {
+	MARGIN: 1em 0px
+}
+H6 {
+	MARGIN: 1em 0px
+}
+P {
+	MARGIN: 1em 0px
+}
+PRE {
+	MARGIN: 1em 0px
+}
+BLOCKQUOTE {
+	MARGIN: 1em 0px
+}
+LABEL {
+	MARGIN: 1em 0px
+}
+UL {
+	MARGIN: 1em 0px
+}
+OL {
+	MARGIN: 1em 0px
+}
+DL {
+	MARGIN: 1em 0px
+}
+FIELDSET {
+	MARGIN: 1em 0px
+}
+ADDRESS {
+	MARGIN: 1em 0px
+}
+LI {
+	MARGIN-LEFT: 5%
+}
+DD {
+	MARGIN-LEFT: 5%
+}
+FIELDSET {
+	PADDING-RIGHT: 0.5em; PADDING-LEFT: 0.5em; PADDING-BOTTOM: 0.5em; PADDING-TOP: 0.5em
+}
+SELECT OPTION {
+	PADDING-RIGHT: 5px; PADDING-LEFT: 5px; PADDING-BOTTOM: 0px; PADDING-TOP: 0px
+}
+.hide {
+	DISPLAY: none
+}
+.print-logo {
+	DISPLAY: none
+}
+.close-button {
+	DISPLAY: none
+}
+.left {
+	FLOAT: left
+}
+.right {
+	FLOAT: right
+}
+.clear {
+	CLEAR: both; FONT-SIZE: 1px; LINE-HEIGHT: 1px; HEIGHT: 1px
+}
+A IMG {
+	BORDER-TOP-STYLE: none; BORDER-RIGHT-STYLE: none; BORDER-LEFT-STYLE: none; BORDER-BOTTOM-STYLE: none
+}
+BODY {
+	FONT: 0.9em 'Malgun Gothic', '???? ????', Dotum, Verdana, AppleGothic, Sans-serif; COLOR: #666
+}
+TD {
+	FONT: 0.9em 'Malgun Gothic', '???? ????', Dotum, Verdana, AppleGothic, Sans-serif; COLOR: #666
+}
+INPUT {
+	FONT: 0.9em 'Malgun Gothic', '???? ????', Dotum, Verdana, AppleGothic, Sans-serif; COLOR: #666
+}
+TEXTAREA {
+	FONT: 0.9em 'Malgun Gothic', '???? ????', Dotum, Verdana, AppleGothic, Sans-serif; COLOR: #666
+}
+A:link {
+	COLOR: #cc6699; TEXT-DECORATION: none
+}
+A:visited {
+	COLOR: #cc6699; TEXT-DECORATION: none
+}
+A:hover {
+	COLOR: #666; TEXT-DECORATION: underline
+}
+IMG {
+	BORDER-TOP-WIDTH: 0px; BORDER-LEFT-WIDTH: 0px; BORDER-BOTTOM-WIDTH: 0px; BORDER-RIGHT-WIDTH: 0px
+}
+.imageblock IMG {
+	
+}
+.ib {
+	CURSOR: pointer
+}
+.text {
+	
+}
+.branch2 {
+	
+}
+.branch3 {
+	CURSOR: pointer; HEIGHT: 10px
+}
+.cal_month {
+	FONT-SIZE: 12px; HEIGHT: 18px
+}
+.cal_week1 {
+	FONT-SIZE: 12px; HEIGHT: 18px
+}
+.cal_week2 {
+	FONT-SIZE: 13px; COLOR: #f30; TEXT-ALIGN: center
+}
+.cal_day1 {
+	FONT-SIZE: 13px; COLOR: #000; TEXT-ALIGN: center
+}
+.cal_day2 {
+	FONT-SIZE: 12px; COLOR: #000; TEXT-ALIGN: center
+}
+.cal_day3 {
+	FONT-SIZE: 12px; TEXT-ALIGN: center
+}
+.cal_day4 {
+	FONT-WEIGHT: bold; FONT-SIZE: 12px; BACKGROUND-COLOR: #ccc; TEXT-ALIGN: center
+}
+A.cal_click:link {
+	FONT-WEIGHT: bold; COLOR: #333
+}
+A.cal_click:visited {
+	FONT-WEIGHT: bold; COLOR: #333
+}
+A.cal_click:hover {
+	FONT-WEIGHT: bold; COLOR: #cc6699
+}
+.cap1 {
+	COLOR: #876; TEXT-ALIGN: center
+}
+.key1 {
+	CURSOR: pointer; BORDER-BOTTOM: #ccc 1px dotted
+}
+.c_cnt {
+	FONT: 10px Tahoma; COLOR: #999
+}
+.ps_cnt {
+	FONT: 11px Tahoma; COLOR: #999
+}
+BODY {
+	BACKGROUND: #ffffff; FONT: 0.85em 'Malgun Gothic', '???? ????', 'Lucida Grande', 'Trebuchet MS', verdana, arial, sans-serif; COLOR: #7a7a7a
+}
+.inside {
+	MIN-WIDTH: 65em; MAX-WIDTH: 85em; MARGIN: 0px auto; WIDTH: 95%
+}
+A {
+	COLOR: #cc6699; TEXT-DECORATION: none
+}
+A:hover {
+	COLOR: #7a7a7a
+}
+H1 {
+	FONT-WEIGHT: normal; FONT-SIZE: 1.5em; MARGIN: 1.5em 0px; COLOR: #686868
+}
+.art-title {
+	MARGIN-TOP: 10px; FONT-WEIGHT: bold; COLOR: #cc6699
+}
+H2 {
+	FONT-WEIGHT: normal; FONT-SIZE: 1.15em; COLOR: #686868
+}
+H3 {
+	FONT-WEIGHT: normal; FONT-SIZE: 1.15em; COLOR: #686868
+}
+#primary H2 {
+	COLOR: #686868
+}
+P {
+	LINE-HEIGHT: 1.75em
+}
+.entrydesc {
+	LINE-HEIGHT: 160%
+}
+UL LI {
+	MARGIN: 0.5em 0px 0.5em 2em; LIST-STYLE-TYPE: square
+}
+BLOCKQUOTE {
+	PADDING-LEFT: 1em; MARGIN-LEFT: 1em; BORDER-LEFT: #d9d9d9 2px solid; COLOR: #7a7a7a
+}
+PRE {
+	PADDING-RIGHT: 0px; BORDER-TOP: #d9d9d9 1px dotted; PADDING-LEFT: 0px; PADDING-BOTTOM: 1em; OVERFLOW: auto; WIDTH: 100%; PADDING-TOP: 1em; BORDER-BOTTOM: #d9d9d9 1px dotted
+}
+.rule {
+	BORDER-TOP: #d9d9d9 1px solid; FONT-SIZE: 1px; MARGIN: 1.5em 0px; LINE-HEIGHT: 1px; HEIGHT: 1px
+}
+#header {
+	BACKGROUND: #ffffff; FONT: 0.9em 'Malgun Gothic', '???? ????', Dotum, Verdana, AppleGothic, Sans-serif
+}
+#header .inside {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 2em; MARGIN: auto; PADDING-TOP: 1em
+}
+#header H2 {
+	PADDING-RIGHT: 0.5em; PADDING-LEFT: 0px; FONT-SIZE: 2.25em; PADDING-BOTTOM: 0.25em; MARGIN: 0px 0.5em 0px 0px; PADDING-TOP: 0px
+}
+#header H2 A {
+	COLOR: #686868
+}
+#header H2 A :hover {
+	COLOR: #cc6699
+}
+#header .blogImage {
+	PADDING-RIGHT: 0.5em; PADDING-LEFT: 0px; FLOAT: left; PADDING-BOTTOM: 0.25em; MARGIN: 0.5em 2.5em 0px 0px; PADDING-TOP: 0px
+}
+#header .blogTitle {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 2em; PADDING-BOTTOM: 0px; MARGIN: 0px; FONT: 1.05em 'Malgun Gothic', '???? ????', Dotum, Verdana, AppleGothic, Sans-serif; PADDING-TOP: 0px
+}
+#header .blogMenu {
+	MARGIN: 0.5em 0px 0px
+}
+#primary {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; BACKGROUND: #fff; PADDING-BOTTOM: 2em; COLOR: #7a7a7a; PADDING-TOP: 1px
+}
+.onecol-stories#primary .primary {
+	FLOAT: left; MARGIN-LEFT: 3%; WIDTH: 80%
+}
+.onecol-stories#primary .secondary {
+	FLOAT: right; MARGIN: 0px 0px 0px 10%; WIDTH: 40%
+}
+.twocol-stories#primary .story {
+	DISPLAY: inline; FLOAT: left; MARGIN: 0px 0px 0px 4%; WIDTH: 48%
+}
+* HTML .twocol-stories#primary .story {
+	MARGIN-LEFT: 2%
+}
+.twocol-stories#primary .first {
+	MARGIN: 0px
+}
+* HTML .twocol-stories#primary .first {
+	MARGIN: 0px
+}
+#primary .images {
+	BORDER-RIGHT: #d9d9d9 1px solid; PADDING-RIGHT: 3px; BORDER-TOP: #d9d9d9 1px solid; PADDING-LEFT: 3px; BACKGROUND: #fff; FLOAT: left; PADDING-BOTTOM: 3px; MARGIN: 0px 10px 0px 0px; BORDER-LEFT: #d9d9d9 1px solid; PADDING-TOP: 3px; BORDER-BOTTOM: #d9d9d9 1px solid
+}
+.story H3 {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 10px; FONT-WEIGHT: normal; FONT-SIZE: 1.15em; BACKGROUND: url(./images/link-icon.gif) no-repeat 0px 7px; PADDING-BOTTOM: 0px; MARGIN: 0px 0px 1em; COLOR: #686868; PADDING-TOP: 0px
+}
+.story H3 A {
+	COLOR: #cc6699; TEXT-DECORATION: none
+}
+.story H3 A:hover {
+	COLOR: #7a7a7a
+}
+.story .details {
+	PADDING-RIGHT: 0px; BORDER-TOP: #d9d9d9 1px solid; PADDING-LEFT: 0px; FONT-SIZE: 11px; PADDING-BOTTOM: 0.5em; MARGIN: 1em 0px; COLOR: #7a7a7a; PADDING-TOP: 0.5em; TEXT-ALIGN: right
+}
+.story .details .read-on {
+	PADDING-RIGHT: 12px; BACKGROUND: url(./images/more.gif) no-repeat 90% 5px
+}
+.story .details A {
+	COLOR: #cc6699; TEXT-DECORATION: none
+}
+.story .details A:hover {
+	COLOR: #7a7a7a
+}
+#primary .primary {
+	PADDING-RIGHT: 20pt; FLOAT: right; WIDTH: 70%
+}
+.primary .entrydesc A {
+	BORDER-BOTTOM: #cc6699 1px dashed; TEXT-DECORATION: none
+}
+#primary .secondary {
+	DISPLAY: inline; FLOAT: right; FONT: 0.85em 'Malgun Gothic', '???? ????', Dotum, Verdana, AppleGothic, Sans-serif; WIDTH: 20%; MARGIN-RIGHT: 5%; PADDING-TOP: 0.65em
+}
+* HTML #primary .secondary {
+	MARGIN-RIGHT: 2%
+}
+.secondary .featured P {
+	PADDING-RIGHT: 0px; BORDER-TOP: #d9d9d9 1px solid; PADDING-LEFT: 0px; PADDING-BOTTOM: 0.6em; MARGIN: 1em 0px 0px; LINE-HEIGHT: 1.5em; PADDING-TOP: 0.5em; BORDER-BOTTOM: #d9d9d9 1px solid
+}
+.secondary H2 {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 10px; BACKGROUND: url(./images/link-icon.gif) no-repeat 0px 7px; PADDING-BOTTOM: 0px; PADDING-TOP: 0px
+}
+.secondary .featured DL {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0.6em; MARGIN: 0px; PADDING-TOP: 0.5em; BORDER-BOTTOM: #d9d9d9 1px solid
+}
+.secondary DT {
+	PADDING-RIGHT: 0px; DISPLAY: inline; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; COLOR: #7a7a7a; PADDING-TOP: 0px
+}
+.secondary DD {
+	PADDING-RIGHT: 0px; DISPLAY: inline; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-TOP: 0px
+}
+.secondary DD A {
+	COLOR: #cc6699
+}
+.secondary DD A:hover {
+	COLOR: #7a7a7a
+}
+.single-post H1 {
+	MARGIN-TOP: 0px; MARGIN-BOTTOM: 1em
+}
+.single-post H2 {
+	MARGIN-TOP: 0px; MARGIN-BOTTOM: 1em
+}
+.secondary .featured .articleAuthor {
+	COLOR: #cc6699
+}
+#secondary {
+	PADDING-RIGHT: 2em; BORDER-TOP: #d9d9d9 1px solid; PADDING-LEFT: 2em; BACKGROUND: #f3f3f3; PADDING-BOTTOM: 1px; FONT: 0.85em 'Malgun Gothic', '???? ????', Dotum, Verdana, AppleGothic, Sans-serif; PADDING-TOP: 1px
+}
+.comment-head {
+	PADDING-RIGHT: 2em; PADDING-LEFT: 2em; PADDING-BOTTOM: 1em; PADDING-TOP: 0.8em
+}
+.comment-head H2 {
+	FONT-SIZE: 1.5em; MARGIN: 0px 0px 0px 4%
+}
+.comment-head A {
+	COLOR: #cc6699; TEXT-DECORATION: none
+}
+.comment-head .details {
+	FONT-SIZE: 11px
+}
+OL#comments {
+	BORDER-TOP: #d9d9d9 1px solid; MARGIN: 0px 0px 0px 5%; LIST-STYLE-TYPE: none
+}
+OL#comments LI {
+	MARGIN: 2em 0px; LIST-STYLE-TYPE: none
+}
+OL#comments OL LI {
+	MARGIN: 0px 10px 0px 25px
+}
+OL#comments LI UL LI {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 10px; PADDING-BOTTOM: 5px; MARGIN: 10px 0px 0px 180px; PADDING-TOP: 5px
+}
+OL#comments LI CITE {
+	FLOAT: left; WIDTH: 15%; FONT-STYLE: normal; TEXT-ALIGN: right
+}
+OL#comments CITE SPAN {
+	DISPLAY: block
+}
+OL#comments CITE .author {
+	FONT-SIZE: 1.2em
+}
+OL#comments CITE .author A {
+	TEXT-DECORATION: none
+}
+OL#comments .content {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 2%; FLOAT: left; PADDING-BOTTOM: 0px; MARGIN-LEFT: 1.9%; BORDER-LEFT: #d9d9d9 1px solid; WIDTH: 75%; PADDING-TOP: 0px
+}
+OL#comments .content P {
+	MARGIN: 0px 0px 1em
+}
+OL#comments .content H3 {
+	FONT-SIZE: 1em; MARGIN: 0px
+}
+#comment-form {
+	MARGIN: 5em 0px 5em 8%
+}
+INPUT.textfield {
+	BORDER-RIGHT: #d9d9d9 1px solid; PADDING-RIGHT: 2px; BORDER-TOP: #d9d9d9 1px solid; PADDING-LEFT: 2px; PADDING-BOTTOM: 2px; MARGIN: 5px 0px; BORDER-LEFT: #d9d9d9 1px solid; WIDTH: 6em; COLOR: #7a7a7a; PADDING-TOP: 2px; BORDER-BOTTOM: #d9d9d9 1px solid; HEIGHT: 18px
+}
+INPUT.hp_textfield {
+	BORDER-RIGHT: #d9d9d9 1px solid; PADDING-RIGHT: 2px; BORDER-TOP: #d9d9d9 1px solid; PADDING-LEFT: 2px; PADDING-BOTTOM: 2px; MARGIN: 5px 0px; BORDER-LEFT: #d9d9d9 1px solid; WIDTH: 13em; COLOR: #7a7a7a; PADDING-TOP: 2px; BORDER-BOTTOM: #d9d9d9 1px solid; HEIGHT: 18px
+}
+.checkbox {
+	HEIGHT: 18px
+}
+TEXTAREA.commentbox {
+	BORDER-RIGHT: #d9d9d9 1px solid; PADDING-RIGHT: 0.25em; BORDER-TOP: #d9d9d9 1px solid; PADDING-LEFT: 0.25em; PADDING-BOTTOM: 0.25em; MARGIN: 5px 0px; FONT: 1em/150% 'Malgun Gothic', '???? ????', 'Lucida Grande', 'Trebuchet MS', verdana, arial, sans-serif; BORDER-LEFT: #d9d9d9 1px solid; WIDTH: 80%; COLOR: #7a7a7a; PADDING-TOP: 0.25em; BORDER-BOTTOM: #d9d9d9 1px solid; HEIGHT: 10em
+}
+LABEL.text {
+	LEFT: 0.5em; POSITION: relative; TOP: -0.5em
+}
+.trackback {
+	BORDER-TOP: #d9d9d9 1px solid; MARGIN: 0px 0px 0px 5%
+}
+.trackback .add {
+	MARGIN: 0.5em 0px 0.4em 2em
+}
+.trackback OL LI {
+	MARGIN: 0.5em 0px 0px 2em; LIST-STYLE-TYPE: none
+}
+.trackback .t-title {
+	MARGIN: 0px
+}
+#ancillary {
+	PADDING-RIGHT: 0px; BORDER-TOP: #c9c9c9 1px solid; PADDING-LEFT: 5em; BACKGROUND: #d8d8d8; PADDING-BOTTOM: 0px; FONT: 0.9em 'Malgun Gothic', '???? ????', Dotum, Verdana, AppleGothic, Sans-serif; PADDING-TOP: 2em
+}
+#ancillary .inside {
+	BACKGROUND: #d8d8d8
+}
+#ancillary DIV {
+	BACKGROUND: #d8d8d8
+}
+#ancillary .block {
+	FLOAT: left; MARGIN: 0px 0px 0px 5%; WIDTH: 20%
+}
+#ancillary .first {
+	CLEAR: both; MARGIN: 0px
+}
+* HTML #ancillary .first {
+	CLEAR: both; MARGIN: 0px
+}
+#ancillary .block-separator {
+	CLEAR: both; HEIGHT: 2.5em
+}
+#ancillary .block H2 {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 10px; BACKGROUND: url(./images/link-icon.gif) no-repeat 0px 7px; PADDING-BOTTOM: 0px; MARGIN: 0px 0px 1em; PADDING-TOP: 0px
+}
+#ancillary .block H3 {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 10px; BACKGROUND: url(./images/link-icon.gif) no-repeat 0px 7px; PADDING-BOTTOM: 0px; MARGIN: 0px 0px 1em; PADDING-TOP: 0px
+}
+.category-list {
+	FONT: 1.1em 'Malgun Gothic', '???? ????', Dotum, Verdana, AppleGothic, Sans-serif
+}
+.category-list TABLE {
+	FONT: 1.1em 'Malgun Gothic', '???? ????', Dotum, Verdana, AppleGothic, Sans-serif
+}
+.category-list UL LI {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-TOP: 0px; LIST-STYLE-TYPE: none
+}
+.category-list UL LI UL LI {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-TOP: 0px; LIST-STYLE-TYPE: none
+}
+.category-list UL LI UL LI A {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-TOP: 0px; LIST-STYLE-TYPE: none
+}
+UL.dates {
+	BORDER-TOP: #c9c9c9 1px solid; MARGIN: 1.5em 0px; LIST-STYLE-TYPE: none
+}
+UL.counts {
+	BORDER-TOP: #c9c9c9 1px solid; MARGIN: 1.5em 0px; LIST-STYLE-TYPE: none
+}
+UL.dates LI {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0.5em; MARGIN: 0px; PADDING-TOP: 0.5em; BORDER-BOTTOM: #c9c9c9 1px solid; LIST-STYLE-TYPE: none
+}
+UL.counts LI {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0.5em; MARGIN: 0px; PADDING-TOP: 0.5em; BORDER-BOTTOM: #c9c9c9 1px solid; LIST-STYLE-TYPE: none
+}
+UL.dates .date {
+	PADDING-RIGHT: 0.3em; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; COLOR: #7a7a7a; PADDING-TOP: 0px
+}
+UL.dates .count {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; FONT: 10px 'Malgun Gothic', '???? ????', Dotum, Verdana, AppleGothic, Sans-serif; COLOR: #7a7a7a; PADDING-TOP: 0px
+}
+UL.counts .count {
+	COLOR: #7a7a7a
+}
+UL.dates .name {
+	FONT-FAMILY: dotum, verdana
+	font-size:8pt; LETTER-SPACING: -1px
+}
+UL.dates A {
+	COLOR: #cc6699; TEXT-DECORATION: none
+}
+UL.counts A {
+	COLOR: #cc6699; TEXT-DECORATION: none
+}
+UL.dates A:hover {
+	COLOR: #7a7a7a
+}
+UL.dates A:hover .date {
+	COLOR: #7a7a7a
+}
+UL.counts A:hover {
+	COLOR: #7a7a7a
+}
+UL.counts A:hover .count {
+	COLOR: #7a7a7a
+}
+.calendar {
+	MARGIN: 0px 1em 1em
+}
+#footer {
+	CLEAR: both; BACKGROUND: #d8d8d8; MARGIN: 0px; COLOR: #7a7a7a
+}
+#footer .inside {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; BACKGROUND: url(./images/footer_white.gif) #d8d8d8 repeat-x 50% 0px; PADDING-BOTTOM: 1.6em; PADDING-TOP: 0.7em
+}
+#footer P {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; FONT-SIZE: 11px; PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-TOP: 0px
+}
+#footer P.copyright {
+	FLOAT: left
+}
+#footer P.attributes {
+	FLOAT: right
+}
+#footer P.attributes A {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 1em; PADDING-BOTTOM: 0px; COLOR: #cc6699; PADDING-TOP: 0px; TEXT-DECORATION: none
+}
+#footer P.attributes A:hover {
+	COLOR: #7a7a7a
+}
+#live-search {
+	FLOAT: right; MARGIN: 0.5em 1% 0px 0px; WIDTH: 170px; TEXT-ALIGN: right; -moz-opacity: 0.4
+}
+#live-search:hover {
+	-moz-opacity: 1.0
+}
+#live-search IMG {
+	MARGIN-TOP: 2px; LEFT: -5px; POSITION: relative; TOP: 0.25em
+}
+#live-search INPUT {
+	BORDER-RIGHT: #d9d9d9 1px solid; PADDING-RIGHT: 2px; BORDER-TOP: #d9d9d9 1px solid; MARGIN-TOP: 1px; PADDING-LEFT: 2px; FONT-SIZE: 11px; BACKGROUND: #f3f3f3; PADDING-BOTTOM: 2px; BORDER-LEFT: #d9d9d9 1px solid; WIDTH: 120px; COLOR: #7a7a7a; PADDING-TOP: 2px; BORDER-BOTTOM: #d9d9d9 1px solid; HEIGHT: 14px
+}
+#live-search INPUT:focus {
+	BACKGROUND: #fff
+}
+#search-results {
+	PADDING-RIGHT: 0px; BORDER-TOP: #d9d9d9 1px solid; PADDING-LEFT: 0px; BACKGROUND: #fff; FLOAT: right; PADDING-BOTTOM: 0px; WIDTH: 30%; PADDING-TOP: 0px; -moz-opacity: 0.9
+}
+#search-results H3 {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; FONT-WEIGHT: bold; BACKGROUND: #fff; PADDING-BOTTOM: 1em; MARGIN: 0px; PADDING-TOP: 0px; TEXT-ALIGN: left
+}
+#search-results SMALL {
+	PADDING-RIGHT: 1em; BORDER-TOP: #d9d9d9 1px solid; DISPLAY: block; PADDING-LEFT: 1em; FONT-SIZE: 11px; PADDING-BOTTOM: 0.7em; PADDING-TOP: 0.5em; BORDER-BOTTOM: #d9d9d9 1px solid; TEXT-ALIGN: left
+}
+#search-results SMALL A {
+	COLOR: #cc6699
+}
+#search-results UL LI {
+	PADDING-RIGHT: 1em; PADDING-LEFT: 1em; PADDING-BOTTOM: 0.5em; MARGIN: 0.5em 0px; PADDING-TOP: 0px; LIST-STYLE-TYPE: none
+}
+#search-results UL LI:hover {
+	BACKGROUND: #f3f3f3
+}
+#search-result UL {
+	MARGIN: 0px
+}
+#search-results UL LI A {
+	BORDER-BOTTOM: #d9d9d9 1px dotted; TEXT-DECORATION: none
+}
+.paging {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 10px; FONT: 10px Tahoma; PADDING-TOP: 10px; TEXT-ALIGN: center
+}
+.tagcloud UL {
+	PADDING-RIGHT: 2px; PADDING-LEFT: 2px; PADDING-BOTTOM: 2px; PADDING-TOP: 2px; TEXT-ALIGN: justify
+}
+.tagcloud UL LI {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-TOP: 0px; LIST-STYLE-TYPE: none
+}
+.tagcloud A {
+	LETTER-SPACING: -1px
+}
+.tagcloud LI .cloud1 {
+	FONT-WEIGHT: bold; FONT-SIZE: 16px; COLOR: #ff9933
+}
+.tagcloud LI .cloud2 {
+	FONT-WEIGHT: bold; FONT-SIZE: 15px; COLOR: #cc6699
+}
+.tagcloud LI .cloud3 {
+	FONT-SIZE: 14px; COLOR: #333
+}
+.tagcloud LI .cloud4 {
+	FONT-SIZE: 13px; COLOR: #666
+}
+.tagcloud LI .cloud5 {
+	FONT-SIZE: 12px; COLOR: #999
+}
+.tagcloud A:hover {
+	COLOR: #000
+}
+.ctnt-tagcloud {
+	PADDING-RIGHT: 2px; PADDING-LEFT: 2px; PADDING-BOTTOM: 2px; MARGIN: 0px; PADDING-TOP: 2px; LIST-STYLE-TYPE: none; LETTER-SPACING: 1px; TEXT-ALIGN: justify
+}
+.ctnt-tagcloud .cloud1 {
+	FONT-WEIGHT: bold; FONT-SIZE: 16px; COLOR: #ff9933
+}
+.ctnt-tagcloud .cloud2 {
+	FONT-WEIGHT: bold; FONT-SIZE: 15px; COLOR: #cc6699
+}
+.ctnt-tagcloud .cloud3 {
+	FONT-SIZE: 14px; COLOR: #333; BACKGROUND-COLOR: #eee
+}
+.ctnt-tagcloud .cloud4 {
+	FONT-SIZE: 13px; COLOR: #333
+}
+.ctnt-tagcloud .cloud5 {
+	FONT-SIZE: 12px; COLOR: #999
+}
+.coverpage .inside {
+	MIN-WIDTH: 65em; MAX-WIDTH: 85em; MARGIN: 0px auto; WIDTH: 90%
+}
+#primary .primaryKey {
+	PADDING-RIGHT: 20pt; FLOAT: right; WIDTH: 70%
+}
+.primaryKey UL {
+	TEXT-ALIGN: left; list-type-style: none
+}
+.primaryKey UL LI {
+	PADDING-RIGHT: 10px; DISPLAY: inline
+}
+#primary {
+	POSITION: relative
+}
+#primary #toTop {
+	LEFT: 10px; FLOAT: left; WIDTH: 20px; POSITION: absolute; TOP: 45px
+}
+#secondary {
+	POSITION: relative
+}
+#secondary #toTop {
+	LEFT: 10px; FLOAT: left; WIDTH: 20px; POSITION: absolute; TOP: 7px
+}
+#ancillary {
+	POSITION: relative
+}
+#ancillary #toTop {
+	LEFT: 10px; FLOAT: left; WIDTH: 20px; POSITION: absolute; TOP: 7px
+}
+#authorList OL {
+	LIST-STYLE-TYPE: none
+}
+#authorList UL {
+	LIST-STYLE-TYPE: none
+}
+#archiveBox UL {
+	LIST-STYLE-TYPE: none
+}
+#authorList LI {
+	LIST-STYLE-TYPE: none
+}
