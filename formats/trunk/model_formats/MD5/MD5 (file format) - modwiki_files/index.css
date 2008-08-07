@@ -1,0 +1,21 @@
+TABLE.listtable {
+	WIDTH: 80%
+}
+TABLE.listtable TD {
+	BORDER-TOP-WIDTH: 1px; BORDER-LEFT-WIDTH: 1px; BORDER-LEFT-COLOR: #dddddd; MARGIN: 0px; BORDER-TOP-COLOR: #dddddd; BORDER-BOTTOM: #dddddd 1px dashed; BORDER-RIGHT-WIDTH: 1px; BORDER-RIGHT-COLOR: #dddddd
+}
+TABLE.listtable TD:first-child {
+	WIDTH: 30%
+}
+TABLE.mwstyle {
+	WIDTH: 80%; BORDER-COLLAPSE: collapse; TEXT-ALIGN: center
+}
+TABLE.mwstyle TH {
+	BORDER-RIGHT: #990000 2px solid; PADDING-RIGHT: 2px; BORDER-TOP: #990000 2px solid; PADDING-LEFT: 2px; PADDING-BOTTOM: 2px; MARGIN: 0px; BORDER-LEFT: #990000 2px solid; PADDING-TOP: 2px; BORDER-BOTTOM: #990000 2px solid; TEXT-ALIGN: center
+}
+TABLE.mwstyle TD {
+	BORDER-RIGHT: #990000 2px solid; PADDING-RIGHT: 2px; BORDER-TOP: #990000 2px solid; PADDING-LEFT: 2px; PADDING-BOTTOM: 2px; MARGIN: 0px; BORDER-LEFT: #990000 2px solid; PADDING-TOP: 2px; BORDER-BOTTOM: #990000 2px solid; TEXT-ALIGN: center
+}
+TABLE.mwstyle TH {
+	BORDER-RIGHT: #dd9999 2px solid; BORDER-TOP: #dd9999 2px solid; FONT-WEIGHT: bold; BACKGROUND: #aa0000; BORDER-LEFT: #dd9999 2px solid; COLOR: white; BORDER-BOTTOM: #dd9999 2px solid
+}

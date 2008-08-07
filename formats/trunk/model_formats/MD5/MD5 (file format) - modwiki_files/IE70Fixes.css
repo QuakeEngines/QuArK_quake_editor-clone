@@ -1,0 +1,36 @@
+#column-content #content {
+	MARGIN-TOP: 3em; MARGIN-LEFT: 12.2em; HEIGHT: 1%
+}
+.rtl #column-one {
+	PADDING-TOP: 0px
+}
+.rtl #column-one #p-navigation {
+	MARGIN-TOP: 160px
+}
+#p-cactions {
+	Z-INDEX: 3
+}
+#p-cactions LI {
+	FLOAT: none! important; PADDING-BOTTOM: 0px! important; CURSOR: default; BORDER-TOP-STYLE: none; BORDER-RIGHT-STYLE: none; BORDER-LEFT-STYLE: none; BACKGROUND-COLOR: transparent; BORDER-BOTTOM-STYLE: none
+}
+#p-cactions LI A {
+	BORDER-RIGHT: #aaa 1px solid; BORDER-TOP: #aaa 1px solid; DISPLAY: inline-block! important; PADDING-BOTTOM: 0px; VERTICAL-ALIGN: top; BORDER-LEFT: #aaa 1px solid; BORDER-BOTTOM: #aaa 0px solid
+}
+#p-cactions LI.selected A {
+	BORDER-LEFT-COLOR: #fabd23; BORDER-BOTTOM-COLOR: #fabd23; PADDING-BOTTOM: 0.17em; BORDER-TOP-COLOR: #fabd23; BORDER-RIGHT-COLOR: #fabd23
+}
+#p-cactions LI A:hover {
+	PADDING-BOTTOM: 0.17em
+}
+#p-navigation A {
+	DISPLAY: inline-block; WIDTH: 100%
+}
+#portal-personaltools {
+	PADDING-BOTTOM: 0.1em
+}
+TEXTAREA {
+	WIDTH: 96%
+}
+#footer LI {
+	MARGIN-RIGHT: 0px
+}
