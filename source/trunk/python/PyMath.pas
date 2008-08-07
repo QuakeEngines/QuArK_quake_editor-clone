@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.21  2007/12/06 00:26:26  danielpharos
+Removed redundant include.
+
 Revision 1.20  2007/09/12 15:38:02  danielpharos
 Removed unused function in PyMath, and it will now use the SystemDetails Windows check result.
 
@@ -327,7 +330,7 @@ function PrintMatrix(self: PyObject) : PyObject; cdecl;
 function MatrixToStr(self: PyObject) : PyObject; cdecl;
 function MakePyMatrix(const nMatrix: TMatrixTransformation; transposed : boolean = false) : PyMatrix;
 
-function MatrixLength(m: PyObject) : Integer; cdecl;
+function MatrixLength(m: PyObject) : Py_ssize_t; cdecl;
 function MatrixSubscript(m, ij: PyObject) : PyObject; cdecl;
 function MatrixAssSubscript(m, ij, value: PyObject) : Integer; cdecl;
 
@@ -2363,13 +2366,13 @@ begin
     Result^.M:=nMatrix;
 end;
 
-function MatrixLength(m: PyObject) : Integer;
+function MatrixLength(m: PyObject) : Py_ssize_t;
 begin
  try
   Raise EError(4444);
  except
   EBackToPython;
-  Result:=-1;
+  Result:=0;
  end;
 end;
 

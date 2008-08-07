@@ -19,16 +19,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
-// Comments:
-(* this file has been hacked by Rowdy and tiglari to make QuArK work
-with Python 2.X.    We've tried to rig it so that it will work with
-Normal QuArK if the $DEFINEs below are changed in the obvious manner
-*)
-
 {
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.31  2008/08/07 21:22:04  danielpharos
+Added extra log-line to make things in the log more clear
+
 Revision 1.30  2008/07/24 18:02:49  danielpharos
 Added all missing Python files, and made sure Python can find them.
 
@@ -131,27 +128,40 @@ unit Python;
 
 interface
 
+// Comments:
+(* This file has been hacked by Rowdy and tiglari to make QuArK work
+with Python 2.X.
+A big clean-up was done by DanielPharos to add a lot of missing stuff. However,
+don't believe everything you see here! There can still be a LOT of wrong junk
+in here! YOU HAVE BEEN WARNED!
+*)
+
  {-------------------}
 
 {$INCLUDE PyVersions.inc}
 
 type
+ CFILE = Pointer;
+ 
+ size_t = Cardinal;   //This appears to be true in Delphi
+ Py_ssize_t = size_t;
+
  PyObjectPtr = ^PyObject;
  PyTypeObject = ^TyTypeObject;
 
  PyObject = ^TyObject;
  TyObject = object
-             ob_refcnt: Integer;
+             ob_refcnt: Py_ssize_t;
              ob_type: PyTypeObject;
             end;
 
  PyVarObject = ^TyVarObject;
  TyVarObject = object(TyObject)
-                ob_size: Integer;
+                ob_size: Py_ssize_t;
                end;
  PyIntObject = ^TyIntObject;
  TyIntObject = object(TyObject)
-                ob_ival: Integer;
+                ob_ival: LongInt;
                end;
 (* PyTupleObject = ^TyTupleObject;
  TyTupleObject = object(TyVarObject)
@@ -160,15 +170,14 @@ type
  PyStringObject = ^TyStringObject;
  TyStringObject = object(TyVarObject)
                    ob_shash: LongInt;
-                   ob_sinterned: PyObject;
-                   ob_svar: array[0..0] of Char;
+                   ob_sstate: Integer;
+                   ob_sval: array[0..0] of Char;
                   end; *)
 
-{Rowdy - moved from below due to references}
  TyCFunction = function(self, args: PyObject) : PyObject; cdecl;
  TyCFunctionKey = function(self, args, keys: PyObject) : PyObject; cdecl;
- PTymethodDef = ^TyMethodDef; // Rowdy
- TyMethodDef = record
+ PTymethodDef = ^TyMethodDef;
+ TyMethodDef = packed record
                 ml_name: PChar;
                 case Integer of
                  0: (ml_meth: TyCFunction;
@@ -176,50 +185,52 @@ type
                      ml_doc: PChar);
                  1: (ml_keymeth: TyCFunctionKey);
                end;
-{/Rowdy}
-{Rowdy}
-  // structmember.h
-  PPyMemberDef = ^PyMemberDef;
-  PyMemberDef = packed record
-    name : PChar;
-    _type : integer;
-    offset : integer;
-    flags : integer;
-    doc : PChar;
-  end;
 
-  getter = function ( ob : PyObject; ptr : Pointer) : PyObject;
-  setter = function ( ob1, ob2 : PyObject; ptr : Pointer) : integer;
+ PPyMemberDef = ^PyMemberDef;
+ PyMemberDef = packed record
+   name : PChar;
+   _type : integer;
+   offset : Py_ssize_t;
+   flags : integer;
+   doc : PChar;
+ end;
 
-  PPyGetSetDef = ^PyGetSetDef;
-  PyGetSetDef = packed record
-    name : PChar;
-    get : getter;
-    _set : setter;
-    doc : PChar;
-    closure : Pointer;
-  end;
+ getter = function(ob : PyObject; ptr : Pointer) : PyObject; cdecl;
+ setter = function(ob1, ob2 : PyObject; ptr : Pointer) : integer; cdecl;
 
-  descrgetfunc      = function ( ob1, ob2, ob3 : PyObject) : PyObject;
-  descrsetfunc      = function ( ob1, ob2, ob3 : PyObject) : Integer;
-  initproc          = function ( ob1, ob2, ob3 : PyObject) : Integer;
-  newfunc           = function ( t: PyTypeObject; ob1, ob2 : PyObject) : PyObject;
-  allocfunc         = function ( t: PyTypeObject; i : integer) : PyObject;
-  pydestructor      = procedure(ob: PyObject); cdecl;
-  richcmpfunc       = function ( ob1, ob2 : PyObject; i : Integer) : PyObject; cdecl;
-{/Rowdy}
+ PPyGetSetDef = ^PyGetSetDef;
+ PyGetSetDef = packed record
+   name : PChar;
+   get : getter;
+   _set : setter;
+   doc : PChar;
+   closure : Pointer;
+ end;
 
- CFILE = Pointer;
+ descrgetfunc      = function (ob1, ob2, ob3 : PyObject) : PyObject; cdecl;
+ descrsetfunc      = function (ob1, ob2, ob3 : PyObject) : Integer; cdecl;
+ initproc          = function (ob1, ob2, ob3 : PyObject) : Integer; cdecl;
+ newfunc           = function (t: PyTypeObject; ob1, ob2 : PyObject) : PyObject; cdecl;
+ allocfunc         = function (t: PyTypeObject; i : Py_ssize_t) : PyObject; cdecl;
+ freefunc          = procedure(ptr: Pointer); cdecl;
+ pydestructor      = procedure(ob: PyObject); cdecl;
+ richcmpfunc       = function (ob1, ob2 : PyObject; i : Integer) : PyObject; cdecl;
 
  FnUnaryFunc         = function(o1: PyObject) : PyObject; cdecl;
  FnBinaryfunc        = function(o1,o2: PyObject) : PyObject; cdecl;
  FnTernaryfunc       = function(o1,o2,o3: PyObject) : PyObject; cdecl;
  FnInquiry           = function(o: PyObject) : Integer; cdecl;
+ FnLenfunc           = function(o: PyObject) : Py_ssize_t; cdecl;
  FnIntargfunc        = function(o: PyObject; i1: Integer) : PyObject; cdecl;
  FnIntintargfunc     = function(o: PyObject; i1, i2: Integer) : PyObject; cdecl;
- FnIntobjargproc     = function(o: PyObject; i: Integer; o2: PyObject) : Integer; cdecl;
- FnIntintobjargproc  = function(o: PyObject; i1, i2: Integer; o2: PyObject) : Integer; cdecl;
- FnObjobjargproc     = function(o1,o2,o3: PyObject) : Integer; cdecl;
+ FnSSizeArgfunc      = function(o: PyObject; i1: Py_ssize_t) : PyObject; cdecl;
+ FnSSizeSSizeArgfunc = function(o: PyObject; i1: Py_ssize_t; i2: Py_ssize_t) : PyObject; cdecl;
+
+ FnIntobjargproc        = function(o: PyObject; i: Integer; o2: PyObject) : Integer; cdecl;
+ FnIntintobjargproc     = function(o: PyObject; i1, i2: Integer; o2: PyObject) : Integer; cdecl;
+ FnSSizeObjArgproc      = function(o: PyObject; i: Py_ssize_t; o2: PyObject) : Integer; cdecl;
+ FnSSizeSSizeObjArgproc = function(o: PyObject; i1, i2: Py_ssize_t; o2: PyObject) : Integer; cdecl;
+ FnObjobjargproc        = function(o1,o2,o3: PyObject) : Integer; cdecl;
 
  FnDestructor    = procedure(o: PyObject); cdecl;
  FnPrintfunc     = function(o: PyObject; f: CFILE; i: Integer) : Integer; cdecl;
@@ -232,15 +243,19 @@ type
  FnHashfunc      = function(o: PyObject) : LongInt; cdecl;
  FnCoercion      = function(var o1, o2: PyObject) : Integer; cdecl;
 
-  inquiry           = function( ob1 : PyObject): integer; cdecl;
-  visitproc         = function ( ob1: PyObject; ptr: Pointer): integer; cdecl;
-  traverseproc      = function ( ob1: PyObject; proc: visitproc; ptr: Pointer): integer; cdecl;
-  getiterfunc       = function ( ob1 : PyObject) : PyObject;
-  iternextfunc      = function ( ob1 : PyObject) : PyObject;
+ inquiry         = function(ob1 : PyObject): integer; cdecl;
+ visitproc       = function(ob1: PyObject; ptr: Pointer): integer; cdecl;
+ traverseproc    = function(ob1: PyObject; proc: visitproc; ptr: Pointer): integer; cdecl;
+ getiterfunc     = function(ob1 : PyObject) : PyObject; cdecl;
+ iternextfunc    = function(ob1 : PyObject) : PyObject; cdecl;
 
+ readbufferproc  = function(o: PyObject; i: Py_ssize_t; p: Pointer): Py_ssize_t; cdecl;
+ writebufferproc = function(o: PyObject; i: Py_ssize_t; p: Pointer): Py_ssize_t; cdecl;
+ segcountproc    = function(o: PyObject; i: Py_ssize_t): Py_ssize_t; cdecl;
+ charbufferproc  = function(o: PyObject; i: Py_ssize_t; p: PChar): Py_ssize_t; cdecl;
 
  PyNumberMethods = ^TyNumberMethods;
- TyNumberMethods = record
+ TyNumberMethods = packed record
                     nb_add, nb_subtract, nb_multiply,
                     nb_divide, nb_remainder, nb_divmod: FnBinaryFunc;
                     nb_power: FnTernaryFunc;
@@ -251,29 +266,55 @@ type
                     nb_and, nb_xor, nb_or: FnBinaryFunc;
                     nb_coerce: FnCoercion;
                     nb_int, nb_long, nb_float, nb_oct, nb_hex: FnUnaryFunc;
+{$IFDEF PYTHON20}
+                    nb_inplace_add, nb_inplace_subtract, nb_inplace_multiply,
+                    nb_inplace_divide, nb_inplace_remainder: FnBinaryFunc;
+                    nb_inplace_power: FnTernaryFunc;
+                    nb_inplace_lshift, nb_inplace_rshift,
+                    nb_inplace_and, nb_inplace_xor, nb_inplace_or: FnBinaryFunc;
+{$ENDIF}
+{$IFDEF PYTHON22}
+                    // The following require the Py_TPFLAGS_HAVE_CLASS flag
+                    nb_floor_divide, nb_true_divide, nb_inplace_floor_divide, nb_inplace_true_divide: FnBinaryFunc;
+{$ENDIF}
+{$IFDEF PYTHON25}
+                    nb_index: FnUnaryFunc;
+{$ENDIF}
                    end;
 
  PySequenceMethods = ^TySequenceMethods;
- TySequenceMethods = record
-                      sq_length: FnInquiry;
+ TySequenceMethods = packed record
+                      sq_length: FnLenfunc;
                       sq_concat: FnBinaryfunc;
-                      sq_repeat: FnIntargfunc;
-                      sq_item: FnIntargfunc;
-                      sq_slice: FnIntintargfunc;
-                      sq_ass_item: FnIntobjargproc;
-                      sq_ass_slice: FnIntintobjargproc;
+                      sq_repeat: FnSSizeArgfunc;
+                      sq_item: FnSSizeArgfunc;
+                      sq_slice: FnSSizeSSizeArgfunc;
+                      sq_ass_item: FnSSizeObjArgproc;
+                      sq_ass_slice: FnSSizeSSizeObjArgproc;
+{$IFDEF PYTHON20}
+                      sq_inplace_concat: FnBinaryfunc;
+                      sq_inplace_repeat: FnSSizeArgfunc;
+{$ENDIF}
                      end;
 
  PyMappingMethods = ^TyMappingMethods;
- TyMappingMethods = record
-                     mp_length: FnInquiry;
+ TyMappingMethods = packed record
+                     mp_length: FnLenfunc;
                      mp_subscript: FnBinaryfunc;
-                     mp_ass_subscript: FnObjobjargproc;
+                     mp_ass_subscript: FnObjObjArgproc;
                     end;
+
+ PyBufferProcs = ^TyBufferProcs;
+ TyBufferProcs = packed record
+                  bf_getreadbuffer: readbufferproc;
+                  bf_getwritebuffer: writebufferproc;
+                  bf_getsegcount: segcountproc;
+                  bf_getcharbuffer: charbufferproc;
+                 end;
 
  TyTypeObject = object(TyVarObject)
                  tp_name: PChar;
-                 tp_basicsize, tp_itemsize: Integer;
+                 tp_basicsize, tp_itemsize: Py_ssize_t;
 
                  tp_dealloc: FnDestructor;
                  tp_print: FnPrintfunc;
@@ -292,50 +333,43 @@ type
                  tp_getattro: FnGetattrofunc;
                  tp_setattro: FnSetattrofunc;
 
-                 tp_as_buffer: Pointer;
+                 tp_as_buffer: PyBufferProcs;
 
                  tp_flags: LongInt;
 
                  tp_doc: PChar;
 
 {$IFDEF PYTHON20}
-    // call function for all accessible objects
-    tp_traverse:    traverseproc;
-
-    // delete references to contained objects
-    tp_clear:       inquiry;
+                 tp_traverse:    traverseproc;   // call function for all accessible objects
+                 tp_clear:       inquiry;   // delete references to contained objects
 {$ENDIF}
 {$IFDEF PYTHON21}
-    // rich comparisons
-    tp_richcompare: richcmpfunc;
-
-    // weak reference enabler
-    tp_weaklistoffset: Longint;
+                 tp_richcompare: richcmpfunc;   // rich comparisons
+                 tp_weaklistoffset: Py_ssize_t;   // weak reference enabler
 {$ENDIF}
 {$IFDEF PYTHON22}
-    // Iterators
-    tp_iter : getiterfunc;
-    tp_iternext : iternextfunc;
+                 tp_iter: getiterfunc;
+                 tp_iternext: iternextfunc;
 
-    // Attribute descriptor and subclassing stuff
-    tp_methods          : PTyMethodDef;
-    tp_members          : PPyMemberDef;
-    tp_getset           : PPyGetSetDef;
-    tp_base             : PyTypeObject;
-    tp_dict             : PyObject;
-    tp_descr_get        : descrgetfunc;
-    tp_descr_set        : descrsetfunc;
-    tp_dictoffset       : longint;
-    tp_init             : initproc;
-    tp_alloc            : allocfunc;
-    tp_new              : newfunc;
-    tp_free             : pydestructor; // Low-level free-memory routine
-    tp_is_gc            : inquiry; // For PyObject_IS_GC
-    tp_bases            : PyObject;
-    tp_mro              : PyObject; // method resolution order
-    tp_cache            : PyObject;
-    tp_subclasses       : PyObject;
-    tp_weaklist         : PyObject;
+                 tp_methods          : PTyMethodDef;
+                 tp_members          : PPyMemberDef;
+                 tp_getset           : PPyGetSetDef;
+                 tp_base             : PyTypeObject;
+                 tp_dict             : PyObject;
+                 tp_descr_get        : descrgetfunc;
+                 tp_descr_set        : descrsetfunc;
+                 tp_dictoffset       : Py_ssize_t;
+                 tp_init             : initproc;
+                 tp_alloc            : allocfunc;
+                 tp_new              : newfunc;
+                 tp_free             : freefunc; // Low-level free-memory routine
+                 tp_is_gc            : inquiry; // For PyObject_IS_GC
+                 tp_bases            : PyObject;
+                 tp_mro              : PyObject; // method resolution order
+                 tp_cache            : PyObject;
+                 tp_subclasses       : PyObject;
+                 tp_weaklist         : PyObject;
+                 tp_del              : PyDestructor;
 {$ENDIF}
       end;
 
@@ -375,8 +409,19 @@ const
   {$ENDIF}
  {$ENDIF}
 {$ENDIF}
+
+// METH_OLDARGS  = $0000; //Do not use!
  METH_VARARGS  = $0001;
  METH_KEYWORDS = $0002;
+ METH_NOARGS   = $0004;
+ METH_O        = $0008;
+{$IFDEF PYTHON23}
+ METH_CLASS    = $0010;
+ METH_STATIC   = $0020;
+{$ENDIF}
+{$IFDEF PYTHON24}
+ METH_COEXIST  = $0040;
+{$ENDIF}
 
  {-------------------}
 

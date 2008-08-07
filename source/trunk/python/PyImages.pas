@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.20  2008/05/27 15:09:55  danielpharos
+Fixed remaining of Python errors getting lost
+
 Revision 1.19  2008/05/27 12:49:58  danielpharos
 Fix an icon memory leak
 
@@ -114,8 +117,8 @@ type
 
  {------------------------}
 
-function ImageList_length(self: PyObject) : Integer; cdecl;
-function ImageList_item(self: PyObject; i: Integer) : PyObject; cdecl;
+function ImageList_length(self: PyObject) : Py_ssize_t; cdecl;
+function ImageList_item(self: PyObject; i: Py_ssize_t) : PyObject; cdecl;
 procedure FreeImageList(o: PyObject); cdecl;
 function GetImage1Attr(self: PyObject; attr: PChar) : PyObject; cdecl;
 procedure FreeImage1(o: PyObject); cdecl;
@@ -395,20 +398,20 @@ begin
  end;
 end;
 
-function ImageList_length(self: PyObject) : Integer; cdecl;
+function ImageList_length(self: PyObject) : Py_ssize_t; cdecl;
 begin
  try
   Result:=ImageList_GetImageCount(PyImageList(self)^.Handle);
  except
   EBackToPython;
-  Result:=-1;
+  Result:=0;
  end;
 end;
 
-function ImageList_item(self: PyObject; i: Integer) : PyObject; cdecl;
+function ImageList_item(self: PyObject; i: Py_ssize_t) : PyObject; cdecl;
 begin
  try
-  if (i<0) or (i>=ImageList_length(self)) then
+  if (i>=ImageList_length(self)) then
    Raise EError(4445);
   Result:=PyImageList(self)^.NeedImage(False, i);
  except
