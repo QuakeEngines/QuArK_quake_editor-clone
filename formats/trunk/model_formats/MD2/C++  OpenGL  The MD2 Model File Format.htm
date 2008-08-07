@@ -1,0 +1,1142 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<!-- saved from url=(0042)http://tfc.duke.free.fr/old/models/md2.htm -->
+<HTML lang=fr xml:lang="fr" xmlns="http://www.w3.org/1999/xhtml"><HEAD><TITLE>C++ > OpenGL > The MD2 Model File Format</TITLE>
+<META http-equiv=Content-type content="text/html; charset=UTF-8">
+<META http-equiv=Content-style-type content=text/css>
+<META http-equiv=Content-language content=en>
+<META content="David Henry" name=author>
+<META content="C++, OpenGL, MD2, Quake II" name=keywords>
+<META 
+content="The Quake II's MD2 Model File Format - reading, rendering, animating" 
+name=description><LINK title=simple media=screen 
+href="C++  OpenGL  The MD2 Model File Format_files/style.css" 
+type=text/css rel=stylesheet><LINK title=simple media=print 
+href="C++  OpenGL  The MD2 Model File Format_files/print.css" 
+type=text/css rel=stylesheet><!-- Last revision : saturday 30th of july 2005 -->
+<META content="MSHTML 6.00.6000.16674" name=GENERATOR></HEAD>
+<BODY>
+<DIV id=header>
+<H1>The Quake II's MD2 file format</H1>
+<P id=headquote>written by David Henry, december 21<SUP>st</SUP> of 
+2002</P></DIV>
+<DIV class=part>
+<H2>Introduction</H2>
+<P>“Yeah a new MD2 tutorial yet...” Yes but mine will show you how to render 
+them by a different way ;-) But what the heck is an MD2 anyway? the MD2 file 
+format is a 3D model file format used in Id Software's Quake II engine! And here 
+I'll show you how to load and display it to the screen using OpenGL!</P>
+<P>You probably think “Damn, this guy stucks in the 1997 ol' days” but there are 
+good reasons to use it. First because the MD2 file format is a good 3D model 
+file format for learning because of it simplicity (if you're a beginner, you may 
+not understand this, but look at other model file formats and you'll see ;-)) 
+and then, because this format is absolutely free!!! (but not models, be 
+careful!).</P>
+<P>So what? here is a little overview of what we'll see in this article:</P>
+<UL>
+  <LI>The MD2 File Format 
+  <LI>Developping a CMD2MODEL class 
+  <LI>Reading and storing a MD2 model 
+  <LI>Displaying it to the screen 
+  <LI>Animation </LI></UL>
+<P>Also, the source code is totaly free and downloadable at the end of this 
+document.</P>
+<P>Before starting I would like to say that I am assuming that you're familiar 
+with the C++ and the OpenGL API. Ok let's start with some theory about the MD2 
+file format!</P></DIV>
+<DIV class=part>
+<H2>The MD2 File Format</H2>
+<P>Like most file formats, the MD2 file format is composed of two things: a file 
+header and the data. The header contains some very important variables used when 
+loading the file like the size of the file data to load, a magic number or the 
+version of the format, so its size must be always the same. That's why generally 
+the header is a structure. In opposition, the size of the data can vary from one 
+file to another and contains multiple structures for vertices, triangles, 
+texture coordinates, etc... Figure 1 represents the file architecture:</P>
+<DIV class=imgcenter><IMG 
+title="representation of the global structure of a MD2 file : the header and data" 
+alt="representation of the global structure of a MD2 file : the header and data" 
+src="C++  OpenGL  The MD2 Model File Format_files/01.gif"> 
+</DIV>
+<P>Here is the MD2 header structure definition (called <CODE>md2_t</CODE>):</P><PRE>// md2 header
+typedef struct
+{
+    int     ident;              // magic number. must be equal to "IDP2"
+    int     version;            // md2 version. must be equal to 8
+
+    int     skinwidth;          // width of the texture
+    int     skinheight;         // height of the texture
+    int     framesize;          // size of one frame in bytes
+
+    int     num_skins;          // number of textures
+    int     num_xyz;            // number of vertices
+    int     num_st;             // number of texture coordinates
+    int     num_tris;           // number of triangles
+    int     num_glcmds;         // number of opengl commands
+    int     num_frames;         // total number of frames
+
+    int     ofs_skins;          // offset to skin names (64 bytes each)
+    int     ofs_st;             // offset to s-t texture coordinates
+    int     ofs_tris;           // offset to triangles
+    int     ofs_frames;         // offset to frame data
+    int     ofs_glcmds;         // offset to opengl commands
+    int     ofs_end;            // offset to end of file
+
+} md2_t;</PRE>
+<P>Ok I'll explain briefly all these variables.</P>
+<P>First you have what is called a “magic number”. When loading the file in 
+memory, check this value and be sure it's equal to “IPD2”. If it isn't equal to 
+“IPD2” then you can close the file and stop the loading. It is not an MD2 file. 
+The next variable indicates the file version and must be equal to 8.</P>
+<P>Then we've got the dimensions of the texture (respectively the width and the 
+height). We won't use these variables because the md2 model's texture is stored 
+in another file, most of the time a PCX or a TGA file, and we obtain the 
+texture's dimensions from these files.</P>
+<P><CODE>framesize</CODE> specifies the size in bytes of each frame. Yes but 
+what the hell is a frame? A frame is like a picture in a movie. Looping many 
+frames at a certain speed, you get an animation! So one frame stores model's 
+vertices and triangles in a particular position. So a classic md2 file is 
+composed of 199 frames distributed in 21 animations. A frame contains a list of 
+vertices for all triangles of this frame (each frame has the same number of 
+triangles). For the moment, remember that we will need this variable to know how 
+much memory we need to allocate for storing each frame.</P>
+<P>The next variables are quite similar.</P>
+<P><CODE>num_skins</CODE> tells you the number of textures avalaible for this 
+model. For exemple, you can have a texture for the red team and an other for the 
+blue team in a team game. The name of each texture is stored in an array of 64 
+bytes at the <CODE>ofs_skins</CODE> offset in the file. However we won't use 
+these names because they are specific to the Quake2 directory, for exemple: 
+“player/ogro/igdosh.pcx”.</P>
+<P><CODE>num_xyz</CODE> is the total amount of vertices of the model. It 
+correspond to the sum of the number of vertices in each frame.</P>
+<P><CODE>num_st</CODE> is the number of texture coordinates which are stored in 
+the file at the offset <CODE>ofs_st</CODE>. Note that this number isn't 
+inevitably equal to the number of vertices. In our code we will use another way 
+to obtain these textures coordinates and in real-time so we won't need to load 
+the texture coordinate array from the file.</P>
+<P><CODE>num_tris</CODE> gives us the total amount of triangles in the 
+model.</P>
+<P><CODE>num_glcmds</CODE> is the number of OpenGL command. The GL command list 
+is an array of integers that allows us to render the model using only triangle 
+fans and triangle strip (<CODE>GL_TRIANGLE_STRIP</CODE> and 
+<CODE>GL_TRIANGLE_FAN</CODE>), instead of classic triangles 
+(<CODE>GL_TRIANGLES</CODE>). GL commands are very powerful. It is easy to get a 
+rendering about 10 or 15 fps faster!</P>
+<P>Finaly there is <CODE>num_frames</CODE> yet. It specifies the total number of 
+frames that holds the model. In fact, each of them are refered to as keyframes, 
+which are frames taken from discrete time intervals because it would be 
+impossible to hold 200 or 300 frames per animation! Consequently, we only keep 
+some of these for each animation and we'll calculate all intermediate frames 
+we'll need when rendering, using linear interpolation (I'll explain that later). 
+Look at Figure 2 to see an exemple. Here is represented a simplistic model with 
+one animation which need 20 frames to be fully displayed, but only 5 of these 
+are kept. Frames from number 1 to 4, 6 to 9, 11 to 14 and 16 to 19 must be 
+calculated before rendering to get a smooth animation.</P>
+<DIV class=imgcenter><IMG title="keyframe animation" 
+alt="explanation of what is keyframe animation" 
+src="C++  OpenGL  The MD2 Model File Format_files/02.gif"> 
+</DIV>
+<P>The last bloc of header's variables contains offsets to access to different 
+types of model's data. <CODE>ofs_skins</CODE> points on model's texture names, 
+<CODE>ofs_st</CODE> on texture coordinates, <CODE>ofs_tris</CODE> points on 
+vertices, <CODE>ofs_frames</CODE> on the first frame of the model, 
+<CODE>ofs_glcmds</CODE> on OpenGL command list and of course, 
+<CODE>ofs_end</CODE> which tells you the end of the file (we won't need it).</P>
+<P>Yeah we've finished with the header! Now let's look at structures needed to 
+store model data! Yes, like the header, we'll use structures to hold frames, 
+vertices and OpenGL commands.</P>
+<P>The first data type very useful in most 3D applications is the vector! We 
+don't need a complicated Vector Class so I will keep things simple: a simple 
+array of 3 float will represent a vector!</P><PRE>typedef float vec3_t[3];</PRE>
+<P>Each model is composed of <CODE>(num_frame * num_xyz)</CODE> vertices. Here 
+is the structure that hold a single vertex:</P><PRE>// vertex
+typedef struct
+{
+    unsigned char   v[3];                // compressed vertex (x, y, z) coordinates
+    unsigned char   lightnormalindex;    // index to a normal vector for the lighting
+
+} vertex_t;</PRE>
+<P>You may have noticed that <CODE>v[3]</CODE> contains vertex' (x,y,z) 
+coordinates and because of the unsigned char type, these coordinates can only 
+range from 0 to 255. In fact these 3D coordinates are compressed (3 bytes 
+instead of 12 if we would use float or vec3_t). To uncompress it, we'll use 
+other data proper to each frame. <CODE>lightnormalindex</CODE> is an index to a 
+precalculated normal table. Normal vectors will be used for the lighting.</P>
+<P>The last piece of information needed for a vertex is its texture coordinates. 
+They are also packed into a structure:</P><PRE>// texture coordinates
+typedef struct
+{
+    short    s;
+    short    t;
+
+} texCoord_t;</PRE>
+<P>Like for vertices, data is compresed. Here we use short (2 bytes) instead of 
+float (4 bytes) for storing texture coordinates. But to use them, we must 
+convert them to float because texture coordinates range from 0.0 to 1.0, and if 
+we kept short values, we could have only 0 or 1 and any intermediate value! So 
+how to uncompress them? It's quite simple. Divide the short value by the texture 
+size:</P>
+<UL>
+  <LI style="LIST-STYLE-TYPE: none"><CODE>RealST[i].s = (float)texCoord[i].s / 
+  header.skinwidth;</CODE> 
+  <LI style="LIST-STYLE-TYPE: none"><CODE>RealST[i].t = (float)texCoord[i].t / 
+  header.skinheight;</CODE> </LI></UL>
+<P>supposing that RealST is an object of a structure similar to 
+<CODE>texCoord_t</CODE> but with float instead of short types and 
+<CODE>texCoord</CODE> is an array of <CODE>texCoord_t</CODE> loaded from a MD2 
+file.</P>
+<P>Each frame (or keyframe) of the model is stored in a structure defined like 
+that:</P><PRE>// frame
+typedef struct
+{
+    float       scale[3];       // scale values
+    float       translate[3];   // translation vector
+    char        name[16];       // frame name
+    vertex_t    verts[1];       // first vertex of this frame
+
+} frame_t;</PRE>
+<P>Each frame is stored as a frame_t structure, holding all specific data to 
+this frame. So a classical model (i.e. a player model) has 199 
+<CODE>frame_t</CODE> objects. I said one minute ago that we will uncompress 
+vertices using frame data. Here is the data! To uncompress each vertex, we will 
+scale it multiplying its coordinates by the <CODE>scale[3]</CODE> values and 
+then translate it by the <CODE>translate[3]</CODE> vector (we could also write 
+<CODE>vec3_t translate</CODE> instead of <CODE>float translate[3]</CODE>).</P>
+<P><CODE>name[16]</CODE> is simply the name of the frame. Finaly, 
+<CODE>verts[1]</CODE> is the first vertex of the frame. Other vertices of this 
+frame are stored just after the first vertex, so we can access to them like 
+that:</P>
+<UL>
+  <LI style="LIST-STYLE-TYPE: none"><CODE>frame.verts[ 2 ] // get the second 
+  vertex of the frame</CODE> 
+  <LI style="LIST-STYLE-TYPE: none"><CODE>frame.verts[ i ] // get the i th 
+  vertex of the frame</CODE> 
+  <LI style="LIST-STYLE-TYPE: none"><CODE>frame.verts[ num_xyz - 1 ] // get the 
+  last vertex of this frame</CODE> </LI></UL>
+<P>Thus we get the real vertex coordinates:</P>
+<UL>
+  <LI style="LIST-STYLE-TYPE: none"><CODE>vertex.x = (frame.verts[i].v[0] * 
+  frame.scale[0]) + frame.translate[0]</CODE> 
+  <LI style="LIST-STYLE-TYPE: none"><CODE>vertex.y = (frame.verts[i].v[1] * 
+  frame.scale[1]) + frame.translate[1]</CODE> 
+  <LI style="LIST-STYLE-TYPE: none"><CODE>vertex.z = (frame.verts[i].v[2] * 
+  frame.scale[2]) + frame.translate[2]</CODE> </LI></UL>
+<P>where <CODE>i</CODE> ranges from 0 to <CODE>(num_xyz - 1)</CODE>.</P>
+<P>Look at Figure 3 to see a representation of relations between animations, 
+frames and vertices:</P>
+<DIV class=imgcenter><IMG 
+title="an animation have multiple frames which each have multiple vertices" 
+alt="representation of relations between animations, frames and vertices" 
+src="C++  OpenGL  The MD2 Model File Format_files/03.gif"> 
+</DIV>
+<P>So each animation contains <CODE>n</CODE> frames which contain each 
+<CODE>num_xyz</CODE> vertices.</P>
+<P>We need now to link each vertex with its texture coordinates couple. But 
+instead of linking one <CODE>vertex_t</CODE> with one <CODE>texCoord_t</CODE>, 
+they are linked by triplet to form a triangle, or a mesh:</P><PRE>// triangle
+typedef struct
+{
+    short   index_xyz[3];    // indexes to triangle's vertices
+    short   index_st[3];     // indexes to vertices' texture coorinates
+
+} triangle_t;</PRE>
+<P>This is how they are stored in the file. Notice that <CODE>index_xyz</CODE> 
+and <CODE>index_st</CODE> are indexes on the data and not the data themselves! 
+The data must be stored separately in <CODE>vertex_t</CODE> and 
+<CODE>texCoord_t</CODE> arrays or if you prefer uncompress them during the model 
+loading, in similar structures with float types. Supposing that 
+<CODE>Vertices[]</CODE> is an array of <CODE>vertex_t</CODE>, 
+<CODE>TexCoord[]</CODE> an array of <CODE>texCoord_t</CODE>, 
+<CODE>Meshes[]</CODE> an array of <CODE>triangle_t</CODE> and 
+<CODE>anorms[]</CODE> an array of <CODE>vec3_t</CODE> which stores all 
+precalculed normal vectors. You could draw the model using this method:</P><PRE>glBegin( GL_TRIANGLES );
+  // draw each triangle
+  for( int i = 0; i &lt; header.num_tris; i++ )
+  {
+      // draw triangle #i
+      for( int j = 0; j &lt; 3; j++ )
+      {
+          // k is the frame to draw
+          // i is the current triangle of the frame
+          // j is the current vertex of the triangle
+
+          glTexCoord2f( (float)TexCoord[ Meshes[i].index_st[j] ].s / header.skinwidth,
+                        (float)TexCoord[ Meshes[i].index_st[j] ].t / header.skinheight );
+
+          glNormal3fv( anorms[ Vertices[ Meshes[i].index_xyz[j] ].lightnormalindex ] );
+        
+          glVertex3f( (Vertices[ Meshes[i].index_xyz[j] ].v[0] * frame[k].scale[0]) + frame[k].translate[0],
+                      (Vertices[ Meshes[i].index_xyz[j] ].v[1] * frame[k].scale[1]) + frame[k].translate[1],
+                      (Vertices[ Meshes[i].index_xyz[j] ].v[2] * frame[k].scale[2]) + frame[k].translate[2] );
+      }
+  }
+glEnd();</PRE>
+<P>Ok this is not very easy to visualize and the method uses 
+<CODE>GL_TRIANGLES</CODE>. We can get better performances using 
+<CODE>GL_TRIANGLE_SRTIP</CODE> and <CODE>GL_TRIANGLE_FAN</CODE>. But how? Using 
+the OpenGL commands!</P>
+<P>This is all about data structures! I can now show you the entire file 
+architecture:</P>
+<DIV class=imgcenter><IMG title="the MD2 file format" 
+alt="representation of the entire file architecture" 
+src="C++  OpenGL  The MD2 Model File Format_files/04.gif"> 
+</DIV></DIV>
+<DIV class=part>
+<H2>Developing a CMD2Model Class</H2>
+<P>Thanks to OpenGL commands, we won't need to use <CODE>triangle_t</CODE> and 
+<CODE>texCoord_t</CODE> structures, because all this is also included in the 
+OpenGL command list, which we'll use. I covered them in case you don't want to 
+use OpenGL commands or if you don't want to render using OpenGL.</P>
+<P>We're now ready to develop a class which will represent an MD2 model object. 
+Here is the prototype:</P><PRE>// ============================================
+// CMD2Model - MD2 model class object.
+// ============================================
+
+class CMD2Model
+{
+public:
+    // constructor/destructor
+    CMD2Model( void );
+    ~CMD2Model( void );
+
+
+    // functions
+    bool    LoadModel( const char *filename );
+    bool    LoadSkin( const char *filename );
+
+    void    DrawModel( float time );
+    void    DrawFrame( int frame );
+
+    void    SetAnim( int type );
+    void    ScaleModel( float s ) { m_scale = s; }
+
+
+private:
+    void    Animate( float time );
+    void    ProcessLighting( void );
+    void    Interpolate( vec3_t *vertlist );
+    void    RenderFrame( void );
+
+
+public:
+    // member variables
+    static vec3_t   anorms[ NUMVERTEXNORMALS ];
+    static float    anorms_dots[ SHADEDOT_QUANT ][256];
+
+    static anim_t   animlist[21];       // animation list
+
+
+private:
+    int             num_frames;         // number of frames
+    int             num_xyz;            // number of vertices
+    int             num_glcmds;         // number of opengl commands
+
+    vec3_t          *m_vertices;        // vertex array
+    int             *m_glcmds;          // opengl command array
+    int             *m_lightnormals;    // normal index array
+
+    unsigned int    m_texid;            // texture id
+    animState_t     m_anim;             // animation
+    float           m_scale;            // scale value
+
+};</PRE>
+<P>Each MD2 model will be a <CODE>CMD2Model</CODE> object. Hum this class looks 
+quite strange more especially as there is nor <CODE>frame_t</CODE> object 
+neither <CODE>vertex_t</CODE> object! And where are texture coordinates stored? 
+some explanations are required...</P>
+<P>First we've got classic constructor and destructor that initialize all member 
+variables to 0 (excepted m_scale) and free allocated memory during the loading 
+of data.</P>
+<P>What about functions? I think they are self-explanatory. 
+<CODE>LoadModel()</CODE> will load the model from a file and initialize it and 
+<CODE>LoadSkin()</CODE> will load the texture and initialize 
+<CODE>m_texid</CODE>.</P>
+<P><CODE>DrawModel()</CODE> is the function we'll use to draw the animated model 
+with all transformation needed. The time parameter is needed to calculate the 
+frame to render from the actual animation.</P>
+<P><CODE>DrawFrame()</CODE> is the function we'll use to draw the model at a 
+specific frame.</P>
+<P><CODE>SetAnim()</CODE> and <CODE>ScaleModel()</CODE> are used to set the 
+current animation and the scale value.</P>
+<P><CODE>Animate()</CODE>, <CODE>ProcessLighting()</CODE>, 
+<CODE>Interpolate()</CODE> and <CODE>RenderFrame()</CODE> are private functions 
+because they must be only used inside the public <CODE>DrawModel()</CODE> 
+function. They process all calculations to render the proper frame interpolated 
+and lightened.</P>
+<P>Now member variables. anorms is an array of precalculated normal vectors. 
+Each vertex will have an index stored in the <CODE>m_lightnormals</CODE> array 
+to access to its own normal vector. <CODE>anorms_dots</CODE> looks like 
+<CODE>anorms</CODE> but this time it stores precalculated dot products. We will 
+need it when processing lighting. <CODE>animlist</CODE> is an array of 
+animations. Here is the <CODE>anim_t</CODE> structure prototype:</P><PRE>// animation
+typedef struct
+{
+    int     first_frame;            // first frame of the animation
+    int     last_frame;             // number of frames
+    int     fps;                    // number of frames per second
+
+} anim_t;</PRE>
+<P>You may have noticed that these three last member variables are static. This 
+is because they are the same for every MD2 model so we need only one copy of 
+them.</P>
+<P>Then we have <CODE>num_frames</CODE> which stores the total number of frames, 
+<CODE>num_xyz</CODE> the number of vertices per frame and 
+<CODE>num_glcmds</CODE> the number of OpenGL commands.</P>
+<P><CODE>m_vertices</CODE> holds 3D coordinates in floating point number for 
+each vertex. The <CODE>m_glcmds</CODE> array stores OpenGL command list. For the 
+moment, don't be afraid of these “OpenGL commands”, just think that it is magic. 
+I'll explain when we'll need them to draw model's meshes. For these three last 
+array, we will allocate memory dynamically.</P>
+<P><CODE>m_texid</CODE> will store the OpenGL texture ID. <CODE>m_anim</CODE> 
+store information about the current animation to play. It is an 
+<CODE>animState_t</CODE> object (look at comments for a brief description):</P><PRE>// animation state
+typedef struct
+{
+    int     startframe;              // first frame
+    int     endframe;                // last frame
+    int     fps;                     // frame per second for this animation
+
+    float   curr_time;               // current time
+    float   old_time;                // old time
+    float   interpol;                // percent of interpolation
+
+    int     type;                    // animation type
+
+    int     curr_frame;              // current frame
+    int     next_frame;              // next frame
+
+} animState_t;</PRE>
+<P>Finaly, <CODE>m_scale</CODE> stores the scale value for all axes. This is 
+better to scale vertices by multiplying them with the <CODE>m_scale</CODE> value 
+than using <CODE>glScalef()</CODE> because this function would scale normal 
+vectors also and would bring to strange lighting effects.</P>
+<P>I have said that we won't use neither <CODE>triangle_t</CODE> nor 
+<CODE>texCoord_t</CODE> structures, but what about <CODE>vertex_t</CODE> and 
+<CODE>frame_t</CODE> structures ? We'll only use these when loading the model in 
+the <CODE>LoadModel()</CODE> function and transform frame data to be stored in 
+<CODE>m_vertices</CODE> and <CODE>m_lightnormals</CODE> arrays.</P>
+<P>Before ending this section, I want to give you constructor and destructor 
+definitions:</P><PRE>// ----------------------------------------------
+// constructor - reset all data.
+// ----------------------------------------------
+
+CMD2Model::CMD2Model( void )
+{
+    m_vertices      = 0;
+    m_glcmds        = 0;
+    m_lightnormals  = 0;
+
+    num_frames      = 0;
+    num_xyz         = 0;
+    num_glcmds      = 0;
+
+    m_texid         = 0;
+    m_scale         = 1.0;
+
+    SetAnim( 0 );
+}
+
+
+// ----------------------------------------------
+// destructor - free allocated memory.
+// ----------------------------------------------
+
+CMD2Model::~CMD2Model( void )
+{
+    delete [] m_vertices;
+    delete [] m_glcmds;
+    delete [] m_lightnormals;
+}</PRE>
+<P>For the constructor, we set all member variables (excepts static variables 
+and <CODE>m_scale</CODE>) to 0. We initialize <CODE>m_scale</CODE> to 1.0 
+because if we would set it to 0, there would be nothing rendered! For the 
+destructor, we just desallocate memory...</P>
+<P>Ok, we're ready to start really! Let's move to the next section: loading a 
+MD2 model file!</P></DIV>
+<DIV class=part>
+<H2>Reading and storing a MD2 model</H2>
+<P>We load an MD2 model passing its filename in parameter to the 
+<CODE>LoadModel()</CODE> function. It returns true if success and false if 
+something fails during the loading. Look at the first part of the function:</P><PRE>// ----------------------------------------------
+// LoadModel() - load model from file.
+// ----------------------------------------------
+
+bool CMD2Model::LoadModel( const char *filename )
+{
+    std::ifstream   file;           // file stream
+    md2_t           header;         // md2 header
+    char            *buffer;        // buffer storing frame data
+    frame_t         *frame;         // temporary variable
+    vec3_t          *ptrverts;      // pointer on m_vertices
+    int             *ptrnormals;    // pointer on m_lightnormals
+
+
+    // try to open filename
+    file.open( filename, std::ios::in | std::ios::binary );
+
+    if( file.fail() )
+        return false;
+
+    // read header file
+    file.read( (char *)&amp;header, sizeof( md2_t ) );
+
+
+    /////////////////////////////////////////////
+    //      verify that this is a MD2 file
+
+    // check for the ident and the version number
+
+    if( (header.ident != MD2_IDENT) &amp;&amp; (header.version != MD2_VERSION) )
+    {
+        // this is not a MD2 model
+        file.close();
+        return false;
+    }
+
+    /////////////////////////////////////////////
+</PRE>
+<P>First we define some local variables that we'll need during the loading of 
+the model. <CODE>file</CODE> is a file stream to extract model data from a file. 
+header is a <CODE>md2_t</CODE> object which will store the header of the model 
+file. Then we have <CODE>buffer</CODE>. It's a large buffer for storing all 
+frame data. The three last variables are different pointers to access data from 
+<CODE>buffer</CODE>.</P>
+<P>We start by trying to open the specified file in read only mode and return 
+false if it fails. The file opened, we then load the model header. Thus we can 
+check for the magic number (the ident) and the version of the model to be sure 
+that it is a MD2 file. The ident must allways equal to “IDP2” and the version of 
+the model to 8. So we can define <CODE>MD2_IDENT</CODE> and 
+<CODE>MD2_VERSION</CODE> like this:</P><PRE>// magic number "IDP2" or 844121161
+#define MD2_IDENT                (('2'&lt;&lt;24) + ('P'&lt;&lt;16) + ('D'&lt;&lt;8) + 'I')
+
+// model version
+#define MD2_VERSION              8</PRE>
+<P>Notice that we could also check for the magic number comparing the ident to 
+844121161 or using the <CODE>strcmp()</CODE> function (ident must then be 
+defined as a char [4]).</P>
+<P>Now that we are sure that it's a valid MD2 file, we can continue te 
+loading:</P><PRE>    // initialize member variables
+    num_frames  = header.num_frames;
+    num_xyz     = header.num_xyz;
+    num_glcmds  = header.num_glcmds;
+
+
+    // allocate memory
+    m_vertices      = new vec3_t[ num_xyz * num_frames ];
+    m_glcmds        = new int[ num_glcmds ];
+    m_lightnormals  = new int[ num_xyz * num_frames ];
+    buffer          = new char[ num_frames * header.framesize ];
+
+
+    /////////////////////////////////////////////
+    //          reading file data
+
+    // read frame data...
+    file.seekg( header.ofs_frames, std::ios::beg );
+    file.read( (char *)buffer, num_frames * header.framesize );
+
+    // read opengl commands...
+    file.seekg( header.ofs_glcmds, std::ios::beg );
+    file.read( (char *)m_glcmds, num_glcmds * sizeof( int ) );
+
+    /////////////////////////////////////////////</PRE>
+<P>Here we first initialize our numerical variables from the model header. Then 
+we can allocate necessary memory for our <CODE>m_vertices</CODE>, 
+<CODE>m_glcmds</CODE>, <CODE>m_lightnormals</CODE> and buffer arrays. Notice 
+that there is the same number of elements for <CODE>m_vertices</CODE> and 
+<CODE>m_lightnormals</CODE>. Thus we can have one index for a vertex which would 
+points both on its 3D coordinates and in its normal index. We'll get this 
+pointer from the <CODE>m_glcmds</CODE> array.</P>
+<P>Memory is allocated so we can read data from the file. Before reading data, 
+we move to the position specified by header's offsets. We only read frame data 
+and OpenGL commands. We'll initialize <CODE>m_vertices</CODE> and 
+<CODE>m_lightnormals</CODE> with buffer like that:</P><PRE>    // vertex array initialization
+    for( int j = 0; j &lt; num_frames; j++ )
+    {
+        // adjust pointers
+        frame       = (frame_t *)&amp;buffer[ header.framesize * j ];
+        ptrverts    = &amp;m_vertices[ num_xyz * j ];
+        ptrnormals  = &amp;m_lightnormals[ num_xyz * j ];
+
+        for( int i = 0; i &lt; num_xyz; i++ )
+        {
+            ptrverts[i][0] = (frame-&gt;verts[i].v[0] * frame-&gt;scale[0]) + frame-&gt;translate[0];
+            ptrverts[i][1] = (frame-&gt;verts[i].v[1] * frame-&gt;scale[1]) + frame-&gt;translate[1];
+            ptrverts[i][2] = (frame-&gt;verts[i].v[2] * frame-&gt;scale[2]) + frame-&gt;translate[2];
+
+            ptrnormals[i] = frame-&gt;verts[i].lightnormalindex;
+        }
+    }</PRE>
+<P>This is the more difficult to understand. First we loop through each frame. 
+For each frame, we extract frame data from buffer using our 
+<CODE>frame_t*</CODE> pointer defined at the beginning of the function. We also 
+adjust our pointers on <CODE>*m_vertices</CODE> and <CODE>*m_lightnormals</CODE> 
+so that they point at the beginning of where must be stored the current frame 
+data.</P>
+<P>Then we loop through each vertex of the current frame that we are processing. 
+We initialize vertex's 3D coordinates with the formula I explained before, in 
+the section about the MD2 file format. We also initialize the normal index 
+stored in the vertex's <CODE>vertex_t</CODE> structure.</P>
+<P>We have initialized our three numerical variables and our three data arrays, 
+so we've finished with the model file! Was it so difficult? We have just to 
+close the file, free <CODE>buffer</CODE> and return true:</P><PRE>    // free buffer's memory
+    delete [] buffer;
+
+    // close the file and return
+    file.close();
+    return true;
+}</PRE>
+<P>Now what about the texture? For the texture, we only have its texture ID to 
+store in <CODE>m_texid</CODE>. MD2's textures are stored in classical TGA or PCX 
+files. Loading a texture from a file is beyond the scope of this article, so I 
+won't cover how it works. I assume that you have a function which loads a 
+texture from a file and returns a valid ID. In the source code that you can 
+download, I have written a simple Texture Manager which can loads and 
+initializes a texture from a bitmap, targa of pcx file. Here is how we load the 
+texture with the <CODE>LoadSkin()</CODE> function:</P><PRE>// ----------------------------------------------
+// LoadSkin() - load model texture.
+// ----------------------------------------------
+
+bool CMD2Model::LoadSkin( const char *filename )
+{
+    m_texid = LoadTexture( filename );
+
+    return (m_texid != LoadTexture( "default" ));
+}</PRE>
+<P>Just a few words about my texture manager: first I have written an inline 
+<CODE>LoadTexture()</CODE> function for easier code reading. This function 
+access to the Texture Manager's <CODE>LoadTexture()</CODE> function. The Texture 
+Manager is a singleton. When initializing, it creates a default texture (which 
+is a black and white checker). When loading a texture from a file, it first 
+checks if the texture has already been loaded. If yes it returns the texture ID, 
+else it tries to open the file and load it. If the loading fails, or the file 
+doesn't exist, it returns the default texture ID. So when calling 
+<CODE>texmgr.LoadTexture( "default" )</CODE>, this doesn't load a texture but 
+returns the default texture ID. When returning, we check the texture ID this 
+function gived us when loading our texture and return false if it equals to the 
+default texture ID.</P>
+<P>This is all for this section. We have loaded all data we need.</P></DIV>
+<DIV class=part>
+<H2>Drawing the model</H2>
+<P>It's time to render the model we've loaded!</P>
+<P>The main drawing model function is <CODE>DrawModel()</CODE>. However this 
+function won't render directly the model, but will process some transformations 
+and calculus before calling the <CODE>RenderFrame()</CODE> function. Let's look 
+at the function definition:</P><PRE>// ----------------------------------------------
+// DrawModel() - draw the model.
+// ----------------------------------------------
+
+void CMD2Model::DrawModel( float time )
+{
+    glPushMatrix();
+        // rotate the model
+        glRotatef( -90.0, 1.0, 0.0, 0.0 );
+        glRotatef( -90.0, 0.0, 0.0, 1.0 );
+
+        // render it on the screen
+        RenderFrame();
+    glPopMatrix();
+}</PRE>
+<P>Ok, there only are two simple rotations before rendering and for the moment, 
+the <CODE>time</CODE> parameter is not used... But we'll update this function 
+later, when animating! We need to rotate the model on the X and Z axis because 
+it isn't stored using OpenGL axis. You can comment the two calls to 
+<CODE>glRotatef()</CODE> to see why we do that :-)</P>
+<P>Remember the <CODE>m_scale</CODE> value and <CODE>ScaleModel()</CODE> 
+function I discussed earlier. To avoid having a huge model at the screen once 
+the rendering finished, we scale each vertices of the current frame we're 
+rendering. The scaling operation is processed by the <CODE>Interpolate()</CODE> 
+function called by <CODE>RenderFrame()</CODE>. Normaly vertex interpolation have 
+nothing to do with scaling, but because for the moment we are not animating, the 
+<CODE>Interpolate()</CODE> function will only scale vertices. Later we'll 
+rewrite it to really interpolate vertices from two frames. Here is the code:</P><PRE>// ----------------------------------------------
+// Interpolate() - interpolate and scale vertices
+// from the current and the next frame.
+// ----------------------------------------------
+
+void CMD2Model::Interpolate( vec3_t *vertlist )
+{
+    for( int i = 0; i &lt; num_xyz ; i++ )
+    {
+        vertlist[i][0] = m_vertices[ i + (num_xyz * m_anim.curr_frame) ][0] * m_scale;
+        vertlist[i][1] = m_vertices[ i + (num_xyz * m_anim.curr_frame) ][1] * m_scale;
+        vertlist[i][2] = m_vertices[ i + (num_xyz * m_anim.curr_frame) ][2] * m_scale;
+    }
+}</PRE>
+<P>This function initializes an array of vertices with the current frame scaled 
+vertices. So the <CODE>RenderFrame()</CODE> function will use the array passed 
+in parameter for rendering and won't use the original <CODE>m_vertices</CODE> 
+array directly. It will also be easier manipulating vertlist than 
+<CODE>m_vertices</CODE>.</P>
+<P>Now I would like to talk about lighting a little. There is two way to light 
+the model. The first way is using OpenGL lighting functions. For that, we just 
+need to set the normal of each vertex we're rendering. There is no difficulty, 
+the index stored in <CODE>m_lightnormals</CODE> give us a precalculated normal 
+from the anorms table.</P>
+<P>The second way to light the model is using <CODE>glColor()</CODE> for each 
+vertex to fake lighting and shading. Also this is the way used in Quake II's 
+engine. For this method, there is some work to do. So we'll put all it in the 
+<CODE>ProcessLighting()</CODE> function, called by <CODE>RenderFrame()</CODE> 
+like the <CODE>Interpolate()</CODE> function. But before, we need to create some 
+global variables and initialize others...</P><PRE>// number of precalculated normals
+#define NUMVERTEXNORMALS        162
+
+// number of precalculated dot product results (for lighting)
+#define SHADEDOT_QUANT          16
+
+// precalculated normal vectors
+vec3_t   CMD2Model::anorms[ NUMVERTEXNORMALS ] = {
+#include    "anorms.h"
+};
+
+// precalculated dot product results
+float    CMD2Model::anorms_dots[ SHADEDOT_QUANT ][256] = {
+#include    "anormtab.h"
+};
+
+static float    *shadedots = CMD2Model::anorms_dots[0];
+static vec3_t   lcolor;
+
+/////////////////////////////////////////////////
+
+vec3_t          g_lightcolor    = { 1.0, 1.0, 1.0 };
+int             g_ambientlight  = 32;
+float           g_shadelight    = 128;
+float           g_angle         = 0.0;
+
+/////////////////////////////////////////////////</PRE>
+<P>The precalculated normal and dot result lists are two big and not very 
+interesting to show, so they are stored in header files that we simply include 
+to initialize static arrays.</P>
+<P><CODE>shadedots</CODE> is a pointer which will ajusted in the 
+<CODE>ProcessLighting()</CODE> function. It will pointer in an element of the 
+<CODE>anorms_dots</CODE> array.</P>
+<P><CODE>lcolor</CODE> will store RGB values for the final light color.</P>
+<P>Finaly, the three last global variables are for the ambient light value 
+(which range from 0 to 255), shading value (from 0 to 255) and the angle from 
+where come te light (0.0 to 360.0).</P>
+<P>Here is the <CODE>ProcessLighting()</CODE> function definition:</P><PRE>// ----------------------------------------------
+// ProcessLighting() - process all lighting calculus.
+// ----------------------------------------------
+
+void CMD2Model::ProcessLighting( void )
+{
+    float lightvar = (float)((g_shadelight + g_ambientlight)/256.0);
+
+    lcolor[0] = g_lightcolor[0] * lightvar;
+    lcolor[1] = g_lightcolor[1] * lightvar;
+    lcolor[2] = g_lightcolor[2] * lightvar;
+
+    shadedots = anorms_dots[ ((int)(g_angle * (SHADEDOT_QUANT / 360.0))) &amp; (SHADEDOT_QUANT - 1) ];
+}</PRE>
+<P>First we create a local variable which we'll use to initialize the final 
+light color (<CODE>lcolor</CODE>) and then we adjust the <CODE>shadedots</CODE> 
+pointer. The formula is quite obscure, don't worry about it, it works fine it's 
+all we want ;-) It comes from the Quake II's source code.</P>
+<P>Now drawing each triangle! Remember at the beginning of this document when I 
+gave a piece of code rendering each triangle of the current frame. The bad thing 
+is that we were drawing using <CODE>GL_TRIANGLES</CODE>, and for that we need to 
+specify three vertices per triangle. Moreover, it is slower than rendering using 
+<CODE>GL_TRIANGLE_STRIP</CODE> or <CODE>GL_TRIANGLE_FAN</CODE> which need less 
+vertices to draw more triangles. Figure 5 shows this idea:</P>
+<DIV class=imgcenter><IMG 
+title="comparison of GL_TRIANGLE_FAN, GL_TRIANGLE_STRIP and GL_TRIANGLES" 
+alt="comparison of GL_TRIANGLE_FAN, GL_TRIANGLE_STRIP and GL_TRIANGLES" 
+src="C++  OpenGL  The MD2 Model File Format_files/05.gif"> 
+</DIV>
+<P>The best would be that we could draw the entire model using 
+<CODE>GL_TRIANGLE_STRIP</CODE> and <CODE>GL_TRIANGLE_FAN</CODE>. This is what 
+are made gl commands for! The OpenGL command list is a particular array of 
+integers. We'll initialize a pointer pointing at the beginning of the list and 
+read each command until the pointer return 0. 0 is the last value of the OpenGL 
+command list. Now how does it work?</P>
+<UL>
+  <LI>We read the first value. This value indicates two things: the type of 
+  triangle to draw (<CODE>GL_TRIANGLE_STRIP</CODE> if the number is positive and 
+  <CODE>GL_TRIANGLE_FAN</CODE> if negative) and the number n of vertices to draw 
+  for this rendering mode. 
+  <LI>The n * 3 next values store information about vertices to draw. 
+  <LI>The two first are (s, t) texture coordinates and the third is the vertex 
+  index to draw. 
+  <LI>Once all vertices of this group are processed, we read a new value to get 
+  a new group... If the read value is 0, it is done! </LI></UL>
+<P>It is not very simple the first time but with some practice you'll see that 
+in reality it is quite simple ;-) Look at figure 6 for a representation of 
+OpenGL command list (each rectangle represent one command which is one integer 
+value):</P>
+<DIV class=imgcenter><IMG title="OpenGL Command list" 
+alt="representation of an OpenGL Command list" 
+src="C++  OpenGL  The MD2 Model File Format_files/06.gif"> 
+</DIV>
+<P>Ok I've finished with theory. Now the code:</P><PRE>// ----------------------------------------------
+// RenderFrame() - draw the current model frame
+// using OpenGL commands.
+// ----------------------------------------------
+
+void CMD2Model::RenderFrame( void )
+{
+    static vec3_t    vertlist[ MAX_MD2_VERTS ];  // interpolated vertices
+    int              *ptricmds = m_glcmds;       // pointer on gl commands
+
+
+    // reverse the orientation of front-facing
+    // polygons because gl command list's triangles
+    // have clockwise winding
+    glPushAttrib( GL_POLYGON_BIT );
+    glFrontFace( GL_CW );
+
+    // enable backface culling
+    glEnable( GL_CULL_FACE );
+    glCullFace( GL_BACK );
+
+
+    // process lighting
+    ProcessLighting();
+
+    // interpolate
+    Interpolate( vertlist );
+
+    // bind model's texture
+    glBindTexture( GL_TEXTURE_2D, m_texid );
+
+
+    // draw each triangle!
+    while( int i = *(ptricmds++) )
+    {
+        if( i &lt; 0 )
+        {
+            glBegin( GL_TRIANGLE_FAN );
+            i = -i;
+        }
+        else
+        {
+            glBegin( GL_TRIANGLE_STRIP );
+        }
+
+
+        for( /* nothing */; i &gt; 0; i--, ptricmds += 3 )
+        {
+            // ptricmds[0] : texture coordinate s
+            // ptricmds[1] : texture coordinate t
+            // ptricmds[2] : vertex index to render
+
+            float l = shadedots[ m_lightnormals[ ptricmds[2] ] ];
+
+            // set the lighting color
+            glColor3f( l * lcolor[0], l * lcolor[1], l * lcolor[2] );
+
+            // parse texture coordinates
+            glTexCoord2f( ((float *)ptricmds)[0], ((float *)ptricmds)[1] );
+
+            // parse triangle's normal (for the lighting)
+            // &gt;&gt;&gt; only needed if using OpenGL lighting
+            glNormal3fv( anorms[ m_lightnormals[ ptricmds[2] ] ] );
+
+            // draw the vertex
+            glVertex3fv( vertlist[ ptricmds[2] ] );
+        }
+
+        glEnd();
+    }
+
+    glDisable( GL_CULL_FACE );
+    glPopAttrib();
+}</PRE>
+<P>We start creating two local variables. <CODE>vertlist[]</CODE> is an array of 
+3D floating point coordinates which will contains the interpolated and scaled 
+vertices of the frame to render. The array is static so it's declared only once. 
+It's better for performance improvement than creating a new array at each call 
+of this function. The size of the array is constant and is the maximum number of 
+vertices that a model can hold.</P>
+<P>The second variable is <CODE>ptricmds</CODE>. It is the pointer which will 
+read OpenGL commands.</P>
+<P>Then we save polygon attributes, reverse orientation of front-facing polygons 
+because of the GL commands and enable backface culling. We process all calculus 
+needed for the lighting, interpolate vertices and scale them, and bind the model 
+texture.</P>
+<P>All the rendering is done in the while statement. First we get the triangle 
+type and the number of vertices to draw. In the for statement we parse each 
+vertex. Because each vertex has 3 values stored in the gl command list, we 
+increment the pointer by 3 when all vertices of the group are processed.</P>
+<P>For each vertex, we set the lighting color using the pointer on the dot 
+product result table for the light angle and the final lighting color calculated 
+by the <CODE>ProcessLighting()</CODE> function. Textures coordinates are casted 
+from int to float. We obtain the normal vector from the anorms table and render 
+the vertex from the array initialized just before.</P>
+<P>Notice that if you don't use OpenGL lighting, the call to 
+<CODE>glNormal3fv()</CODE> don't do anything and if you use it, the call to 
+<CODE>glColor3f()</CODE> doesn't affect anything.</P></DIV>
+<DIV class=part>
+<H2>Animating</H2>
+<P>3D models look nicer when they are animated! So let's animate all that.</P>
+<P>Remember the static <CODE>animlist</CODE> array. It has been designed to 
+store all minimal animation data, that is to say the index of the first and last 
+frame, and the fps count for running the animation. All this is regrouped into a 
+structure <CODE>anim_t</CODE> we've already seen before. Here is the 
+initialisation:</P><PRE>// ----------------------------------------------
+// initialize the 21 MD2 model animations.
+// ----------------------------------------------
+
+anim_t CMD2Model::animlist[ 21 ] = 
+{
+    // first, last, fps
+
+    {   0,  39,  9 },   // STAND
+    {  40,  45, 10 },   // RUN
+    {  46,  53, 10 },   // ATTACK
+    {  54,  57,  7 },   // PAIN_A
+    {  58,  61,  7 },   // PAIN_B
+    {  62,  65,  7 },   // PAIN_C
+    {  66,  71,  7 },   // JUMP
+    {  72,  83,  7 },   // FLIP
+    {  84,  94,  7 },   // SALUTE
+    {  95, 111, 10 },   // FALLBACK
+    { 112, 122,  7 },   // WAVE
+    { 123, 134,  6 },   // POINT
+    { 135, 153, 10 },   // CROUCH_STAND
+    { 154, 159,  7 },   // CROUCH_WALK
+    { 160, 168, 10 },   // CROUCH_ATTACK
+    { 196, 172,  7 },   // CROUCH_PAIN
+    { 173, 177,  5 },   // CROUCH_DEATH
+    { 178, 183,  7 },   // DEATH_FALLBACK
+    { 184, 189,  7 },   // DEATH_FALLFORWARD
+    { 190, 197,  7 },   // DEATH_FALLBACKSLOW
+    { 198, 198,  5 },   // BOOM
+};</PRE>
+<P>We'll use an index to access to animation data, but it is better to define a 
+macro for each index for readability of the source code:</P><PRE>// animation list
+typedef enum {
+    STAND,
+    RUN,
+    ATTACK,
+    PAIN_A,
+    PAIN_B,
+    PAIN_C,
+    JUMP,
+    FLIP,
+    SALUTE,
+    FALLBACK,
+    WAVE,
+    POINT,
+    CROUCH_STAND,
+    CROUCH_WALK,
+    CROUCH_ATTACK,
+    CROUCH_PAIN,
+    CROUCH_DEATH, 
+    DEATH_FALLBACK,
+    DEATH_FALLFORWARD,
+    DEATH_FALLBACKSLOW,
+    BOOM,
+
+    MAX_ANIMATIONS
+
+} animType_t;</PRE>
+<P>The current animation data is stored in the <CODE>m_anim</CODE> variable but 
+is a little different from the <CODE>anim_t</CODE> structure. So to set an 
+animation we must retrieve animation data and initialize current animation data 
+with it. It's the <CODE>SetAnim()</CODE> function's job:</P><PRE>// ----------------------------------------------
+// SetAnim() - initialize m_anim from the specified
+// animation.
+// ----------------------------------------------
+
+void CMD2Model::SetAnim( int type )
+{
+    if( (type &lt; 0) || (type &gt; MAX_ANIMATIONS) )
+        type = 0;
+
+    m_anim.startframe   = animlist[ type ].first_frame;
+    m_anim.endframe     = animlist[ type ].last_frame;
+    m_anim.next_frame   = animlist[ type ].first_frame + 1;
+    m_anim.fps          = animlist[ type ].fps;
+    m_anim.type         = type;
+}</PRE>
+<P>First we check the type is valide and then we initialize 
+<CODE>m_anim</CODE>'s members variables. You can pass to type any macro defined 
+just before.</P>
+<P>We'll now see a new function: <CODE>Animate()</CODE>. This function will be 
+called in the <CODE>DrawModel()</CODE> function, so we must rewrite it:</P><PRE>// ----------------------------------------------
+// DrawModel() - draw the model.
+// ----------------------------------------------
+
+void CMD2Model::DrawModel( float time )
+{
+    // animate. calculate current frame and next frame
+    if( time &gt; 0.0 )
+        Animate( time );
+
+    glPushMatrix();
+        // rotate the model
+        glRotatef( -90.0, 1.0, 0.0, 0.0 );
+        glRotatef( -90.0, 0.0, 0.0, 1.0 );
+
+        // render it on the screen
+        RenderFrame();
+    glPopMatrix();
+}</PRE>
+<P>Here we animate only if time is greater than 0.0. Otherwise there is no 
+animation, the model is static. Look at the <CODE>Animate()</CODE> function 
+source code:</P><PRE>// ----------------------------------------------
+// Animate() - calculate the current frame, next
+// frame and interpolation percent.
+// ----------------------------------------------
+
+void CMD2Model::Animate( float time )
+{
+    m_anim.curr_time = time;
+
+    // calculate current and next frames
+    if( m_anim.curr_time - m_anim.old_time &gt; (1.0 / m_anim.fps) )
+    {
+        m_anim.curr_frame = m_anim.next_frame;
+        m_anim.next_frame++;
+
+        if( m_anim.next_frame &gt; m_anim.endframe )
+            m_anim.next_frame = m_anim.startframe;
+
+        m_anim.old_time = m_anim.curr_time;
+    }
+
+    // prevent having a current/next frame greater
+    // than the total number of frames...
+    if( m_anim.curr_frame &gt; (num_frames - 1) )
+        m_anim.curr_frame = 0;
+
+    if( m_anim.next_frame &gt; (num_frames - 1) )
+        m_anim.next_frame = 0;
+
+    m_anim.interpol = m_anim.fps * (m_anim.curr_time - m_anim.old_time);
+}</PRE>
+<P>In a first time, the function calculate the first and next frames using the 
+fps count specified to the current animation. In a second time, it check these 
+values and verify that they are correct (they must not be greater than the total 
+number of frames that holds the model. Finaly, the interpolation percent is 
+calculated from the animation fps count and the time.</P>
+<P>We must now review our <CODE>Interpolate()</CODE> function, this time to 
+really interpolate vertices. Otherwise, we would have a very poor animation 
+because of the number of frames the model can holds. With the interpolation, we 
+can create an “infinity” of frames (we create just that we need when rendering). 
+The formula is quite simple:</P>
+<UL>
+  <LI style="LIST-STYLE-TYPE: none"><CODE>X<SUB>interpolated</SUB> = 
+  X<SUB>inital</SUB> + InterpolationPercent * (X<SUB>final</SUB> - 
+  X<SUB>inital</SUB>)</CODE> </LI></UL>
+<P>So let's interpolate all vertices of the current and the next frames. The new 
+<CODE>Interpolate()</CODE> function looks like this:</P><PRE>// ----------------------------------------------
+// Interpolate() - interpolate and scale vertices
+// from the current and the next frame.
+// ----------------------------------------------
+
+void CMD2Model::Interpolate( vec3_t *vertlist )
+{
+    vec3_t  *curr_v;    // pointeur to current frame vertices
+    vec3_t  *next_v;    // pointeur to next frame vertices
+
+    // create current frame and next frame's vertex list
+    // from the whole vertex list
+    curr_v = &amp;m_vertices[ num_xyz * m_anim.curr_frame ];
+    next_v = &amp;m_vertices[ num_xyz * m_anim.next_frame ];
+
+    // interpolate and scale vertices to avoid ugly animation
+    for( int i = 0; i &lt; num_xyz ; i++ )
+    {
+        vertlist[i][0] = (curr_v[i][0] + m_anim.interpol * (next_v[i][0] - curr_v[i][0])) * m_scale;
+        vertlist[i][1] = (curr_v[i][1] + m_anim.interpol * (next_v[i][1] - curr_v[i][1])) * m_scale;
+        vertlist[i][2] = (curr_v[i][2] + m_anim.interpol * (next_v[i][2] - curr_v[i][2])) * m_scale;
+    }
+}</PRE>
+<P>By the way, we scale interpolated vertices... And that's all! You just need 
+to call once <CODE>SetAnim()</CODE> and <CODE>ScaleModel()</CODE> functions with 
+the parameter of your choice, and <CODE>DrawModel()</CODE> with the current time 
+in seconds in parameter during the rendering loop. That's not so bad!</P>
+<P>Just before ending, I would show you how to render a simple frame in case 
+you'll need (for example: drawing a statue):</P><PRE>// ----------------------------------------------
+// RenderFrame() - draw one frame of the model
+// using gl commands.
+// ----------------------------------------------
+
+void CMD2Model::DrawFrame( int frame )
+{
+    // set new animation parameters...
+    m_anim.startframe   = frame;
+    m_anim.endframe     = frame;
+    m_anim.next_frame   = frame;
+    m_anim.fps          = 1;
+    m_anim.type         = -1;
+
+    // draw the model
+    DrawModel( 1.0 );
+}</PRE>
+<P>This function adjust animation variables before calling 
+<CODE>DrawModel()</CODE> which will render the specified frame of the 
+model.</P></DIV>
+<DIV class=part>
+<H2>Conclusion</H2>
+<P>Here we are, it is finally finished! :-)</P>
+<P>This article is far from being perfect and can be widely improved like 
+including multiple skin support or separating model file data (vertex list, 
+normal list, ...) from model parameters (current frame, current animation, ...) 
+to avoid storing same model data multiple times when more than one entity is 
+representated by the same model... It is difficult to create a perfect 
+<CODE>CMD2Model</CODE> class which would work in any program with a simple cut 
+and paste...</P>
+<P>I hope this article helped you to learn about the MD2 model file format and 
+more generally about 3D Model files! Also I hope it was not too confusing. 
+Please don't spam my mailbox about my English, it is not my native language. 
+Otherwise, you can contact me at tfc_duke<EM>NOSPAM</EM>club-internet.fr for 
+anything you want to say about this article (suggestions, mistakes, ...).</P>
+<P>You can download source code (Visual C++ 6.0 version) and binaries with a 
+model and its weapon. Source code of this article is free and is provided 
+without warranty expressed or implied. Use at your own risk! Download: <A 
+href="http://tfc.duke.free.fr/old/models/q2md2_us.zip">q2md2_us.zip</A>.</P>
+<P 
+style="BORDER-RIGHT: red 1px solid; PADDING-RIGHT: 1em; BORDER-TOP: red 1px solid; PADDING-LEFT: 1em; PADDING-BOTTOM: 1em; BORDER-LEFT: red 1px solid; PADDING-TOP: 1em; BORDER-BOTTOM: red 1px solid; BACKGROUND-COLOR: #ffdddd">NOTE: 
+the code of my MD2 Loader has been completly rewritten since I published this 
+article (better C++ code). You can download the latest version: <A 
+href="http://tfc.duke.free.fr/coding/src/md2loader.zip">md2loader.zip</A>.</P>
+<P>Thanks to Squintik (squintik<EM>NOSPAM</EM>wanadoo.fr) from <A 
+href="http://www.game-lab.com/">Game-Lab</A> who helped me for the english 
+version of this document.</P>
+<DIV class=imgcenter><IMG title="" alt="screenshot 1" 
+src="C++  OpenGL  The MD2 Model File Format_files/q2_pic1.jpg"> 
+<IMG title="" alt="screenshot 2" 
+src="C++  OpenGL  The MD2 Model File Format_files/q2_pic2.jpg"> 
+<IMG title="" alt="screenshot 3" 
+src="C++  OpenGL  The MD2 Model File Format_files/q2_pic3.jpg"> 
+</DIV>
+<H3>Ressources</H3>
+<UL>
+  <LI><A href="http://tfc.duke.free.fr/coding/md2-specs-en.html">MD2 file format 
+  (Quake 2's models)</A>, Quick and short, <EM>David Henry</EM> (me). 
+  <LI><A href="http://glbook.gamedev.net/">OpenGL Game Programing</A>, Ch. 18, 
+  <EM>K. Hawkins, D. Astle</EM>. 
+  <LI><A 
+  href="http://www.gamedev.net/columns/books/bookdetails.asp?productid=213">Focus 
+  on 3D Models</A>, Ch. 3, <EM>Evan Pipho</EM>. 
+  <LI><A href="http://www.gametutorials.com/">Game Tutorials</A>, MD2 Loader, 
+  <EM>Ben “DigiBen” Humphrey</EM>. 
+  <LI><A href="http://www.gametutorials.com/">Game Tutorials</A>, MD2 Animation, 
+  <EM>Ben “DigiBen” Humphrey</EM>. 
+  <LI><A 
+  href="http://linux.ucla.edu/~phaethon/q3a/formats/md2-schoenblum.html">.md2 
+  File Format Specification</A>, <EM>Daniel E. Schoenblum</EM>. 
+  <LI><A href="http://www.idsoftware.com/">Quake II</A> source code (GPL), 
+  <EM>ID Software</EM>. 
+  <LI><A href="http://www.swissquake.ch/chumbalum-soft/md2v/">MD2 Viewer</A> 
+  source code, <EM>Mete Ciragan</EM>. 
+  <LI><A href="http://www.planetquake.com/qview/">qview</A> source code, 
+  <EM>Mustata “LoneRunner” Bogdan</EM>. 
+  <LI><A href="http://www.planetquake.com/qbism/">Qbism Game Engine</A> source 
+  code, <EM>Jeff Ford</EM>. 
+  <LI><A href="http://www.jawed.com/jawmd2/download.html">jawMD2</A> source 
+  code, <EM>Jawed Karim</EM>. </LI></UL></DIV>
+<DIV class=licence>
+<DIV class=licenceimg><A href="http://creativecommons.org/"><IMG 
+alt="Creative Commons Logo" 
+src="C++  OpenGL  The MD2 Model File Format_files/logo_trademark.gif"></A> 
+<A href="http://creativecommons.org/licenses/by-nd/2.0/fr/"><IMG 
+alt="Contrat Creative Commons" 
+src="C++  OpenGL  The MD2 Model File Format_files/somerights20.gif"></A> 
+</DIV>
+<P>This article is licensed under <A 
+href="http://creativecommons.org/licenses/by-nd/2.5/" rel=license>Creative 
+Commons Attribution-NoDerivs 2.5 licence</A> 
+(<STRONG>CC-BY-ND</STRONG>).</P></DIV></BODY></HTML>

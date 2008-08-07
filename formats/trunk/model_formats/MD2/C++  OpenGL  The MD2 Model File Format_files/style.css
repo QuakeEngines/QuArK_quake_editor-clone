@@ -1,0 +1,162 @@
+BODY {
+	PADDING-RIGHT: 1.5em; PADDING-LEFT: 1.5em; FONT-SIZE: 1em; PADDING-BOTTOM: 0px; MARGIN: 1em auto; WIDTH: 70%; COLOR: #222222; PADDING-TOP: 0px; FONT-STYLE: normal; FONT-FAMILY: sans-serif; BACKGROUND-COLOR: #ffffff; TEXT-ALIGN: justify
+}
+CODE {
+	FONT-WEIGHT: bold; FONT-SIZE: medium; FONT-FAMILY: monospace
+}
+A {
+	COLOR: #ff6600; TEXT-DECORATION: none
+}
+A:visited {
+	COLOR: #ff6600
+}
+A:hover {
+	COLOR: #ff8800; TEXT-DECORATION: underline
+}
+A:active {
+	COLOR: #ff8800; TEXT-DECORATION: underline
+}
+IMG {
+	BORDER-TOP-STYLE: none; BORDER-RIGHT-STYLE: none; BORDER-LEFT-STYLE: none; BORDER-BOTTOM-STYLE: none
+}
+Q {
+	COLOR: #444444
+}
+EM {
+	COLOR: #444444
+}
+STRONG {
+	COLOR: #006600
+}
+H1 {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; FONT-WEIGHT: bold; FONT-SIZE: 1.75em; PADDING-BOTTOM: 0px; MARGIN: 0.25em auto; COLOR: #006600; PADDING-TOP: 0px; FONT-STYLE: normal; TEXT-ALIGN: center
+}
+H2 {
+	FONT-SIZE: 1.5em
+}
+H2 {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; FONT-WEIGHT: bold; PADDING-BOTTOM: 0px; MARGIN: 0px 0px 1em; COLOR: #ff8800; PADDING-TOP: 0px; FONT-STYLE: normal
+}
+H3 {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; FONT-WEIGHT: bold; PADDING-BOTTOM: 0px; MARGIN: 0px 0px 1em; COLOR: #ff8800; PADDING-TOP: 0px; FONT-STYLE: normal
+}
+H4 {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; FONT-WEIGHT: bold; PADDING-BOTTOM: 0px; MARGIN: 0px 0px 1em; COLOR: #ff8800; PADDING-TOP: 0px; FONT-STYLE: normal
+}
+H5 {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; FONT-WEIGHT: bold; PADDING-BOTTOM: 0px; MARGIN: 0px 0px 1em; COLOR: #ff8800; PADDING-TOP: 0px; FONT-STYLE: normal
+}
+H6 {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; FONT-WEIGHT: bold; PADDING-BOTTOM: 0px; MARGIN: 0px 0px 1em; COLOR: #ff8800; PADDING-TOP: 0px; FONT-STYLE: normal
+}
+H2 EM {
+	COLOR: #ff8800
+}
+P {
+	PADDING-RIGHT: 0.7em; PADDING-LEFT: 0.7em; PADDING-BOTTOM: 0px; MARGIN: 1em 0px; TEXT-INDENT: 1em; PADDING-TOP: 0px; TEXT-ALIGN: justify
+}
+P.atright {
+	TEXT-ALIGN: right
+}
+P.centered {
+	TEXT-ALIGN: center
+}
+A.stronglink {
+	FONT-WEIGHT: bold; COLOR: #006600
+}
+DT {
+	PADDING-RIGHT: 0.7em; PADDING-LEFT: 0.7em
+}
+DT:unknown {
+	content: "- "
+}
+DD {
+	PADDING-RIGHT: 1.7em; PADDING-LEFT: 1.7em; MARGIN-BOTTOM: 1em; MARGIN-LEFT: 0px; TEXT-INDENT: 1em
+}
+OL {
+	PADDING-RIGHT: 2em; PADDING-LEFT: 3em; PADDING-BOTTOM: 0px; PADDING-TOP: 0px; TEXT-ALIGN: justify
+}
+OL {
+	PADDING-RIGHT: 3em; PADDING-LEFT: 3em
+}
+UL {
+	PADDING-RIGHT: 3em; PADDING-LEFT: 3em
+}
+UL LI {
+	MARGIN: 0.5em 0.5em 0em
+}
+OL LI {
+	MARGIN: 1em
+}
+OL.strong LI {
+	FONT-WEIGHT: bold; COLOR: #006600
+}
+DL.strong DT {
+	FONT-WEIGHT: bold; COLOR: #006600
+}
+LI DIV.imgcenter {
+	MARGIN-TOP: 1em
+}
+UL.spaced LI {
+	MARGIN-BOTTOM: 1em
+}
+PRE {
+	BORDER-RIGHT: #777777 1px solid; PADDING-RIGHT: 0.5em; BORDER-TOP: #777777 1px solid; PADDING-LEFT: 0.5em; FONT-SIZE: medium; PADDING-BOTTOM: 0.5em; MARGIN-LEFT: 2em; OVERFLOW: auto; BORDER-LEFT: #777777 1px solid; MARGIN-RIGHT: 2em; PADDING-TOP: 0.5em; BORDER-BOTTOM: #777777 1px solid; BACKGROUND-COLOR: #e6e6e6
+}
+TABLE {
+	MARGIN: auto
+}
+TABLE UL {
+	PADDING-LEFT: 1em
+}
+TH {
+	PADDING-RIGHT: 5px; PADDING-LEFT: 5px; BACKGROUND-COLOR: #dcdcdc; TEXT-ALIGN: center
+}
+TBODY TD {
+	PADDING-RIGHT: 5px; PADDING-LEFT: 5px
+}
+TBODY TD.centered {
+	TEXT-ALIGN: center
+}
+TABLE.withborder {
+	BORDER-COLLAPSE: collapse; border-spacing: 0px
+}
+TABLE.withborder TD {
+	BORDER-RIGHT: 1px solid; BORDER-TOP: 1px solid; BORDER-LEFT: 1px solid; BORDER-BOTTOM: 1px solid
+}
+TH {
+	BORDER-RIGHT: 1px solid; BORDER-TOP: 1px solid; BORDER-LEFT: 1px solid; BORDER-BOTTOM: 1px solid
+}
+#header {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 3em 0px; PADDING-TOP: 0px
+}
+DIV.part {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 1em 0px 2em; PADDING-TOP: 0px
+}
+DIV.imgcenter {
+	TEXT-ALIGN: center
+}
+DIV.imgcenter P {
+	MARGIN: 0px 0px 1em; FONT-STYLE: italic; TEXT-ALIGN: center
+}
+.nojustify {
+	TEXT-ALIGN: left
+}
+.spacer {
+	CLEAR: both; FONT-SIZE: 0.1em; HEIGHT: 1em
+}
+#headquote {
+	PADDING-RIGHT: 1em; PADDING-LEFT: 1em; FONT-SIZE: small; PADDING-BOTTOM: 0.25em; MARGIN: 0px auto; WIDTH: 95%; PADDING-TOP: 0.25em; FONT-STYLE: italic; TEXT-ALIGN: center
+}
+DIV.licence {
+	BORDER-RIGHT: black 1px solid; PADDING-RIGHT: 5px; BORDER-TOP: black 1px solid; PADDING-LEFT: 5px; FONT-SIZE: smaller; MARGIN-BOTTOM: 1em; PADDING-BOTTOM: 5px; BORDER-LEFT: black 1px solid; PADDING-TOP: 5px; BORDER-BOTTOM: black 1px solid
+}
+DIV.licence DIV.licenceimg {
+	FLOAT: left
+}
+DIV.licence P {
+	TEXT-ALIGN: center
+}
+DIV.important {
+	BORDER-RIGHT: red 2px solid; PADDING-RIGHT: 1em; BORDER-TOP: red 2px solid; PADDING-LEFT: 1em; MARGIN: 1em auto; BORDER-LEFT: red 2px solid; WIDTH: 80%; COLOR: red; BORDER-BOTTOM: red 2px solid; BACKGROUND-COLOR: #ffdddd; TEXT-ALIGN: center
+}
