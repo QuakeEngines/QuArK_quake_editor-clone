@@ -1,0 +1,429 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<!-- saved from url=(0048)http://tfc.duke.free.fr/coding/mdl-specs-en.html -->
+<HTML lang=en xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"><HEAD><TITLE>MDL file format specifications (Quake's models)</TITLE>
+<META http-equiv=Content-type content="text/html; charset=UTF-8">
+<META http-equiv=Content-style-type content=text/css>
+<META http-equiv=Content-language content=en>
+<META content="David Henry" name=author>
+<META content="OpenGL, MDL, MDL format, Quake, Specifications" name=keywords>
+<META 
+content="MDL file format specifications (Quake's models) -&#10;    reading, rendering and animating" 
+name=description>
+<STYLE type=text/css>BODY {
+	MARGIN-LEFT: 10%; MARGIN-RIGHT: 10%; FONT-FAMILY: sans-serif
+}
+H1 {
+	MARGIN-BOTTOM: 0em; TEXT-ALIGN: center
+}
+P#headline {
+	MARGIN-BOTTOM: 2em; TEXT-ALIGN: center
+}
+P {
+	TEXT-ALIGN: justify
+}
+LI {
+	PADDING-RIGHT: 2em
+}
+PRE {
+	MARGIN-LEFT: 2em; MARGIN-RIGHT: 2em
+}
+</STYLE>
+<!-- Last modifications: wednesday, 15th august of 2007 -->
+<META content="MSHTML 6.00.6000.16674" name=GENERATOR></HEAD>
+<BODY>
+<H1>MDL file format (Quake's models)</H1>
+<P id=headline>Written by David Henry, 20<SUP>th</SUP> December of 2004</P>
+<H2>Introduction</H2>
+<P>The MDL file format is the model format used in Quake (June 1996). MDL model 
+files' characteristics are these:</P>
+<UL>
+  <LI>Model's geometric data (triangles); 
+  <LI>8 bits texture data; 
+  <LI>Frame-by-frame animations; </LI></UL>
+<P>A MDL file can hold multiple textures.</P>
+<P>MDL model file's extension is “mdl”. A MDL file is a binary file divided in 
+two part: the header dans the data. The header contains all information needed 
+to use and manipulate the data.</P>
+<DIV 
+style="BORDER-RIGHT: black 1px solid; BORDER-TOP: black 1px solid; PADDING-BOTTOM: 0.5em; MARGIN-LEFT: auto; BORDER-LEFT: black 1px solid; WIDTH: 10em; MARGIN-RIGHT: auto; PADDING-TOP: 0.5em; BORDER-BOTTOM: black 1px solid; TEXT-ALIGN: center">Header 
+</DIV>
+<DIV 
+style="BORDER-RIGHT: black 1px solid; BORDER-TOP: black 1px; PADDING-BOTTOM: 3em; MARGIN-LEFT: auto; BORDER-LEFT: black 1px solid; WIDTH: 10em; MARGIN-RIGHT: auto; PADDING-TOP: 3em; BORDER-BOTTOM: black 1px solid; TEXT-ALIGN: center">Data 
+</DIV>
+<H2>Variable sizes</H2>
+<P>Variable types used in this document have those sizes:</P>
+<UL>
+  <LI><STRONG>char</STRONG>: 1 byte 
+  <LI><STRONG>short</STRONG>: 2 bytes 
+  <LI><STRONG>int</STRONG>: 4 bytes 
+  <LI><STRONG>float</STRONG>: 4 bytes 
+  <LI><STRONG>ubyte</STRONG>: 1 unsigned byte </LI></UL>
+<P>They correspond to C type sizes on the x86 architecture. Ensure that type 
+sizes correspond to these ones if you're compiling for another architecture.</P>
+<H2>Endianess issues</H2>
+<P>Since the MDL file format is a binary format, you'll have to deal with 
+endianess. MDL files are stored in little-endian (x86). If you're targetting a 
+big-endian architecture (PowerPC, SPARC, ...), or simply want your program to be 
+portable, you'll have to perform proper conversions for each word or double word 
+read from the file.</P>
+<H2>The header</H2>
+<P>The header is a structure which comes at the beginning of the file:</P><PRE>/* MDL header */
+struct mdl_header_t
+{
+  int ident;            /* magic number: "IDPO" */
+  int version;          /* version: 6 */
+
+  vec3_t scale;         /* scale factor */
+  vec3_t translate;     /* translation vector */
+  float boundingradius;
+  vec3_t eyeposition;   /* eyes' position */
+
+  int num_skins;        /* number of textures */
+  int skinwidth;        /* texture width */
+  int skinheight;       /* texture height */
+
+  int num_verts;        /* number of vertices */
+  int num_tris;         /* number of triangles */
+  int num_frames;       /* number of frames */
+
+  int synctype;         /* 0 = synchron, 1 = random */
+  int flags;            /* state flag */
+  float size;
+};</PRE>
+<P><CODE>ident</CODE> is the magic number of the file. It is used to identify 
+the file type. <CODE>ident</CODE> must be equal to 1330660425 or to the string 
+“IDPO”. We can obtain this number with the expression <CODE>(('2'&lt;&lt;24) + 
+('P'&lt;&lt;16) + ('D'&lt;&lt;8) + 'I')</CODE>.</P>
+<P><CODE>version</CODE> is the version number of the file format and must be 
+equal to 6.</P>
+<P><CODE>scale</CODE> and <CODE>translate</CODE> are needed to obtain the real 
+vertex coordinates of the model. <CODE>scale</CODE> is a scale factor and 
+<CODE>translate</CODE> a translation vector (or the origin of the model). You 
+have to first multiply the respective value of <CODE>scale</CODE> with the 
+vertex coordinate and then, add the respective value of <CODE>translate</CODE> 
+to the result:</P><PRE>vreal[i] = (scale[i] * vertex[i]) + translate[i];</PRE>
+<P>where <CODE>i</CODE> ranges from 0 ou 2 (x, y and z coordinates).</P>
+<P><CODE>boundingradius</CODE> is the radius of a sphere in which the whole 
+model can fit (used for collision detection for exemple).</P>
+<P><CODE>eyeposition</CODE> is... eyes' position (if the model is for a monster 
+or other NPC). Make what you want of it.</P>
+<P><CODE>num_skins</CODE> is the number of textures present in the file. 
+<CODE>skinwidth</CODE> and <CODE>skinheight</CODE> are respectively the with and 
+height of the textures. All textures must have the same size.</P>
+<P><CODE>num_verts</CODE> is the number of vertices of one 
+frame.<BR><CODE>num_tris</CODE> is the number of triangles of the 
+model.<BR><CODE>num_frames</CODE> is the number of frames of the model.</P>
+<H2>Data types</H2>
+<H3>Vector</H3>
+<P>The vector, composed of three floating coordinates (x, y, z):</P><PRE>/* Vector */
+typedef float vec3_t[3];</PRE>
+<H3>Texture information</H3>
+<P>Texture data come right after the header in the file. It can be a texture 
+composed of a single picture or a group of pictures (animated texture).</P><PRE>/* Skin */
+struct mdl_skin_t
+{
+  int group;      /* 0 = single, 1 = group */
+  GLubyte *data;  /* texture data */
+};</PRE>
+<P>or:</P><PRE>/* Group of pictures */
+struct mdl_groupskin_t
+{
+    int group;     /* 1 = group */
+    int nb;        /* number of pics */
+    float *time;   /* time duration for each pic */
+    ubyte **data;  /* texture data */
+};</PRE>
+<P><CODE>time</CODE> is an array of <CODE>nb</CODE> elements and 
+<CODE>data</CODE> an array of <CODE>nb</CODE> arrays of <CODE>skinwidth</CODE> * 
+<CODE>skinheight</CODE> elements (picture size).</P>
+<P>Data pictures are contained in the <CODE>data</CODE> array and are in 8 bits 
+color index mode. The colormap is generally in a separate LMP file (*.lmp). LMP 
+files are binary files which contain only 768 bytes (256 colors in 24 bits). 
+They are easy to use: just read the whole file in a buffer and it's done.</P>
+<P>A colormap is <A 
+href="http://tfc.duke.free.fr/coding/src/colormap.h">avalaible</A> in texte 
+format.</P>
+<P>There are <CODE>num_skins</CODE> objects of <CODE>mdl_skin_t</CODE> type or 
+<CODE>mdl_groupskin_t</CODE> type.</P>
+<H3>Texture coordinates</H3>
+<P>Texture coordinates are stored in a structure as <EM>short</EM> integers.</P><PRE>/* Texture coords */
+struct mdl_texcoord_t
+{
+  int onseam;
+  int s;
+  int t;
+};</PRE>
+<P>Texture are generally divided in two pieces: one for the frontface of the 
+model, and one for the backface. The backface piece must be translated of 
+<CODE>skinwidth/2</CODE> from the frontface piece.</P>
+<P><CODE>onseam</CODE> indicates if the vertex is on the boundary of two 
+pieces.</P>
+<P>To obtain real (s, t) coordinates (ranging from 0.0 to 1.0), you have to add 
+0.5 to the coordinates and then divide the result by <CODE>skinwidth</CODE> for 
+<CODE>s</CODE> and <CODE>skinheight</CODE> for <CODE>t</CODE>.</P>
+<P>There are <CODE>num_verts</CODE> (s, t) texture coordinates in a MDL model. 
+Texture coordinate data come after texture data.</P>
+<H3>Triangles</H3>
+<P>Each triangle has an array of vertex indices and a flag to indicate if it is 
+a frontface or a backface triangle.</P><PRE>/* Triangle info */
+struct mdl_triangle_t
+{
+  int facesfront;  /* 0 = backface, 1 = frontface */
+  int vertex[3];   /* vertex indices */
+};</PRE>
+<P>If a vertex which belong to a backface triangle is on the boundary of two 
+pieces (<CODE>onseam</CODE> is true), you have to add <CODE>skinwidth/2</CODE> 
+to <CODE>s</CODE> in order to correct texture coordinates.</P>
+<P>There are <CODE>num_tris</CODE> triangles in a MDL model. Triangle data 
+follow texture coord. data in the file.</P>
+<H3>Vertices</H3>
+<P>Vertices are composed of “compressed” 3D coordinates, which are stored in one 
+byte for each coordinate, and of a normal vector index. The normal vector array 
+is stored in the <A 
+href="http://tfc.duke.free.fr/coding/src/anorms.h">anorms.h</A> file of Quake 
+and hold 162 vectors in floating point (3 <EM>float</EM>).</P><PRE>/* Compressed vertex */
+struct mdl_vertex_t
+{
+  unsigned char v[3];
+  unsigned char normalIndex;
+};</PRE>
+<H3>Frames</H3>
+<P>Each frames has its vertex list and some other specific informations.</P><PRE>/* Simple frame */
+struct mdl_simpleframe_t
+{
+  struct mdl_vertex_t bboxmin; /* bouding box min */
+  struct mdl_vertex_t bboxmax; /* bouding box max */
+  char name[16];
+  struct mdl_vertex_t *verts;  /* vertex list of the frame */
+};</PRE>
+<P><CODE>bboxmin</CODE> and <CODE>bboxmax</CODE> define a box in which the model 
+can fit. <CODE>name</CODE> is the name of the frame. <CODE>verts</CODE> is the 
+vertex list of the frame.</P>
+<P>Frames can be simple frames or groups of frames. We can know if it's a simple 
+frame or a group with a flag:</P><PRE>/* Model frame */
+struct mdl_frame_t
+{
+  int type;                        /* 0 = simple, !0 = group */
+  struct mdl_simpleframe_t frame;  /* this program can't read models
+				      composed of group frames! */
+};</PRE>
+<P>or:</P><PRE>/* Group of simple frames */
+struct mdl_groupframe_t
+{
+  int type;                         /* !0 = group */
+  struct mdl_vertex_t min;          /* min pos in all simple frames */
+  struct mdl_vertex_t max;          /* max pos in all simple frames */
+  float *time;                      /* time duration for each frame */
+  struct mdl_simpleframe_t *frames; /* simple frame list */
+};</PRE>
+<P><CODE>time</CODE> and <CODE>frames</CODE> are arrays of <CODE>nb</CODE> 
+dimension. <CODE>min</CODE> and <CODE>max</CODE> correspond to the min and max 
+positions in all simple frames of the frame group. <CODE>time</CODE> is the 
+duration of each simple frame.</P>
+<P>There are <CODE>num_frames</CODE> frames in a MDL model. Frames come after 
+triangle data in the MDL file.</P>
+<H2>Reading a MDL file</H2>
+<P>Assuming that <CODE>mdl_model_t</CODE> is a structure holding all your 
+model's data and <CODE>*mdl</CODE> a pointer on a <CODE>mdl_model_t</CODE> 
+object, this code show how to load a MDL model file:</P><PRE>int
+ReadMDLModel (const char *filename, struct mdl_model_t *mdl)
+{
+  FILE *fp;
+  int i;
+
+  fp = fopen (filename, "rb");
+  if (!fp)
+    {
+      fprintf (stderr, "error: couldn't open \"%s\"!\n", filename);
+      return 0;
+    }
+
+  /* Read header */
+  fread (&amp;mdl-&gt;header, 1, sizeof (struct mdl_header_t), fp);
+
+  if ((mdl-&gt;header.ident != 1330660425) ||
+      (mdl-&gt;header.version != 6))
+    {
+      /* Error! */
+      fprintf (stderr, "Error: bad version or identifier\n");
+      fclose (fp);
+      return 0;
+    }
+
+  /* Memory allocations */
+  mdl-&gt;skins = (struct mdl_skin_t *)
+    malloc (sizeof (struct mdl_skin_t) * mdl-&gt;header.num_skins);
+  mdl-&gt;texcoords = (struct mdl_texcoord_t *)
+    malloc (sizeof (struct mdl_texcoord_t) * mdl-&gt;header.num_verts);
+  mdl-&gt;triangles = (struct mdl_triangle_t *)
+    malloc (sizeof (struct mdl_triangle_t) * mdl-&gt;header.num_tris);
+  mdl-&gt;frames = (struct mdl_frame_t *)
+    malloc (sizeof (struct mdl_frame_t) * mdl-&gt;header.num_frames);
+  mdl-&gt;tex_id = (GLuint *)
+    malloc (sizeof (GLuint) * mdl-&gt;header.num_skins);
+
+  mdl-&gt;iskin = 0;
+
+  /* Read texture data */
+  for (i = 0; i &lt; mdl-&gt;header.num_skins; ++i)
+    {
+      mdl-&gt;skins[i].data = (GLubyte *)malloc (sizeof (GLubyte)
+		* mdl-&gt;header.skinwidth * mdl-&gt;header.skinheight);
+
+      fread (&amp;mdl-&gt;skins[i].group, sizeof (int), 1, fp);
+      fread (mdl-&gt;skins[i].data, sizeof (GLubyte),
+	     mdl-&gt;header.skinwidth * mdl-&gt;header.skinheight, fp);
+
+      mdl-&gt;tex_id[i] = MakeTextureFromSkin (i, mdl);
+
+      free (mdl-&gt;skins[i].data);
+      mdl-&gt;skins[i].data = NULL;
+    }
+
+  fread (mdl-&gt;texcoords, sizeof (struct mdl_texcoord_t),
+	 mdl-&gt;header.num_verts, fp);
+  fread (mdl-&gt;triangles, sizeof (struct mdl_triangle_t),
+	 mdl-&gt;header.num_tris, fp);
+
+  /* Read frames */
+  for (i = 0; i &lt; mdl-&gt;header.num_frames; ++i)
+    {
+      /* Memory allocation for vertices of this frame */
+      mdl-&gt;frames[i].frame.verts = (struct mdl_vertex_t *)
+	malloc (sizeof (struct mdl_vertex_t) * mdl-&gt;header.num_verts);
+
+      /* Read frame data */
+      fread (&amp;mdl-&gt;frames[i].type, sizeof (long), 1, fp);
+      fread (&amp;mdl-&gt;frames[i].frame.bboxmin,
+	     sizeof (struct mdl_vertex_t), 1, fp);
+      fread (&amp;mdl-&gt;frames[i].frame.bboxmax,
+	     sizeof (struct mdl_vertex_t), 1, fp);
+      fread (mdl-&gt;frames[i].frame.name, sizeof (char), 16, fp);
+      fread (mdl-&gt;frames[i].frame.verts, sizeof (struct mdl_vertex_t),
+	     mdl-&gt;header.num_verts, fp);
+    }
+
+  fclose (fp);
+  return 1;
+}</PRE>
+<P>Note: this code can't handle MDL files with group frames.</P>
+<H2>Rendering the model</H2>
+<P>Here is an exemple of how to draw a frame <CODE>n</CODE> of a model 
+<CODE>mdl</CODE>:</P><PRE>void
+RenderFrame (int n, const struct mdl_model_t *mdl)
+{
+  int i, j;
+  GLfloat s, t;
+  vec3_t v;
+  struct mdl_vertex_t *pvert;
+
+  /* Check if n is in a valid range */
+  if ((n &lt; 0) || (n &gt; mdl-&gt;header.num_frames - 1))
+    return;
+
+  /* Enable model's texture */
+  glBindTexture (GL_TEXTURE_2D, mdl-&gt;tex_id[mdl-&gt;iskin]);
+
+  /* Draw the model */
+  glBegin (GL_TRIANGLES);
+    /* Draw each triangle */
+    for (i = 0; i &lt; mdl-&gt;header.num_tris; ++i)
+      {
+	/* Draw each vertex */
+	for (j = 0; j &lt; 3; ++j)
+	  {
+	    pvert = &amp;mdl-&gt;frames[n].frame.verts[mdl-&gt;triangles[i].vertex[j]];
+
+	    /* Compute texture coordinates */
+	    s = (GLfloat)mdl-&gt;texcoords[mdl-&gt;triangles[i].vertex[j]].s;
+	    t = (GLfloat)mdl-&gt;texcoords[mdl-&gt;triangles[i].vertex[j]].t;
+
+	    if (!mdl-&gt;triangles[i].facesfront &amp;&amp;
+		mdl-&gt;texcoords[mdl-&gt;triangles[i].vertex[j]].onseam)
+	      {
+		s += mdl-&gt;header.skinwidth * 0.5f; /* Backface */
+	      }
+
+	    /* Scale s and t to range from 0.0 to 1.0 */
+	    s = (s + 0.5) / mdl-&gt;header.skinwidth;
+	    t = (t + 0.5) / mdl-&gt;header.skinheight;
+
+	    /* Pass texture coordinates to OpenGL */
+	    glTexCoord2f (s, t);
+
+	    /* Normal vector */
+	    glNormal3fv (anorms_table[pvert-&gt;normalIndex]);
+
+	    /* Calculate real vertex position */
+	    v[0] = (mdl-&gt;header.scale[0] * pvert-&gt;v[0]) + mdl-&gt;header.translate[0];
+	    v[1] = (mdl-&gt;header.scale[1] * pvert-&gt;v[1]) + mdl-&gt;header.translate[1];
+	    v[2] = (mdl-&gt;header.scale[2] * pvert-&gt;v[2]) + mdl-&gt;header.translate[2];
+
+	    glVertex3fv (v);
+	  }
+      }
+  glEnd ();
+}</PRE>
+<H2>Animation</H2>
+<P>MDL models are frame-by-frame animated. A frame is a screenshot of an 
+animation. To avoid jerked and ugly animations, we use linear interpolation 
+between vertex coordinates of two consecutive frames (the current frame we are 
+drawing and the next frame). We do the same for the normal vector:</P><PRE>struct mdl_vertex_t *pvert1, *pvert2;
+vec3_t v;
+
+for (/* ... */)
+  {
+    pvert1 = &amp;mdl-&gt;frames[current].frame.verts[mdl-&gt;triangles[i].vertex[j]];
+    pvert2 = &amp;mdl-&gt;frames[current + 1].frame.verts[mdl-&gt;triangles[i].vertex[j]];
+
+    /* ... */
+
+    v[0] = mdl-&gt;header.scale[0] * (pvert1-&gt;v[0] + interp * (pvert2-&gt;v[0] - pvert1-&gt;v[0])) + mdl-&gt;header.translate[0];
+    v[1] = mdl-&gt;header.scale[1] * (pvert1-&gt;v[1] + interp * (pvert2-&gt;v[1] - pvert1-&gt;v[1])) + mdl-&gt;header.translate[1];
+    v[2] = mdl-&gt;header.scale[2] * (pvert1-&gt;v[2] + interp * (pvert2-&gt;v[2] - pvert1-&gt;v[2])) + mdl-&gt;header.translate[2];
+
+    /* ... */
+  }</PRE>
+<P><CODE>v</CODE> is the final vertex to draw. <CODE>interp</CODE> is the 
+interpolation percent between the two frames. It's a <EM>float</EM> which ranges 
+from 0.0 to 1.0. When it is equal to 1.0, <CODE>current</CODE> is incremented by 
+1 and <CODE>interp</CODE> is reinitialized at 0.0. It is useless to interpolate 
+texture coordinates because they are the same for all the model frames. It is 
+preferable that <CODE>interp</CODE> is related to the program's number of 
+rendering frame per second (fps).</P><PRE>void
+Animate (int start, int end, int *frame, float *interp)
+{
+  if ((*frame &lt; start) || (*frame &gt; end))
+    *frame = start;
+
+  if (*interp &gt;= 1.0f)
+    {
+      /* Move to next frame */
+      *interp = 0.0f;
+      (*frame)++;
+
+      if (*frame &gt;= end)
+	*frame = start;
+    }
+}</PRE>
+<H2>Constants</H2>
+<P>Here are some constant values defining maximal dimensions:</P>
+<UL>
+  <LI>Maximum number of triangles: 2048 
+  <LI>Maximum number of vertices: 1024 
+  <LI>Maximum number of texture coordinates: 1024 
+  <LI>Maximum number of frames: 256 
+  <LI>Number of precalculated normal vectors: 162 </LI></UL>
+<P 
+style="BORDER-RIGHT: black 1px solid; PADDING-RIGHT: 0.5em; BORDER-TOP: black 1px solid; PADDING-LEFT: 0.5em; PADDING-BOTTOM: 0.5em; BORDER-LEFT: black 1px solid; PADDING-TOP: 0.5em; BORDER-BOTTOM: black 1px solid; BACKGROUND-COLOR: #dedede"><STRONG>Sample 
+code:</STRONG> <A href="http://tfc.duke.free.fr/coding/src/mdl.c">mdl.c</A> 
+(15&nbsp;KB), <A href="http://tfc.duke.free.fr/coding/src/anorms.h">anorms.h</A> 
+(6.7&nbsp;KB), <A 
+href="http://tfc.duke.free.fr/coding/src/colormap.h">colormap.h</A> 
+(4.3&nbsp;KB).</P>
+<P 
+style="BORDER-RIGHT: black 1px solid; BORDER-TOP: black 1px solid; MARGIN-TOP: 2em; BORDER-LEFT: black 1px solid; BORDER-BOTTOM: black 1px solid; TEXT-ALIGN: center">This 
+document is available under the terms of the <A 
+href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License</A> 
+(GFDL)<BR>© David Henry – contact : tfc_duke (AT) club-internet (DOT) 
+fr</P></BODY></HTML>
