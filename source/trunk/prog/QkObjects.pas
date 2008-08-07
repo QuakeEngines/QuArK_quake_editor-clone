@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.102  2008/07/10 22:32:40  danielpharos
+Added additional comments and fixed some magic numbers.
+
 Revision 1.101  2008/05/27 07:42:31  cdunde
 To allow Save File to work in the Model Editor and stop crashes,
  also to allow Used Skins in the Texture Browser and for them to be used.
@@ -369,7 +372,7 @@ const
   QuArKRepository         = 'http://sourceforge.net/projects/quark/';
   QuArKForum              = 'http://quark.planetquake.gamespy.com/forums/';
   QuArKUpdateSite         = 'quark.planetquake.gamespy.com';
-  QuArKUpdateFile         = 'update/index.dat';
+  QuArKUpdateFile         = '/update/index.dat';
 
 
   iiUnknownFile           = 0;
