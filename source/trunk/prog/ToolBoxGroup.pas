@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2005/09/28 10:48:32  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.8  2002/03/07 19:14:32  decker_dk
 Removed QLvFileObject, as it was just another name for QFileObject.
 Removed QImages, as it was just another name for QImage
@@ -70,6 +73,7 @@ type
                    function GetDescription(DC: HDC; Q: QObject; var S: String) : Integer;}
                  end;
 
+//FIXME: I don't think this form can be opened, or is even finished...
 type
   TFQToolBoxGroup = class(TQForm2)
     procedure FormCreate(Sender: TObject);
@@ -105,8 +109,8 @@ class procedure QToolBoxGroup.FileObjectClassInfo(var Info: TFileObjectClassInfo
 begin
  inherited;
  Info.FileObjectDescriptionText:=LoadStr1(5140);
- Include(Info.WndInfo, wiNeverOpen);
  Info.WndInfo:=[wiSameExplorer];
+ Include(Info.WndInfo, wiNeverOpen);
 end;
 
 procedure QToolBoxGroup.ObjectState(var E: TEtatObjet);
