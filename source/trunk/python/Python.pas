@@ -29,6 +29,9 @@ Normal QuArK if the $DEFINEs below are changed in the obvious manner
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.30  2008/07/24 18:02:49  danielpharos
+Added all missing Python files, and made sure Python can find them.
+
 Revision 1.29  2008/05/29 14:51:59  danielpharos
 Move to Uses to correct place
 
@@ -684,6 +687,7 @@ begin
   Py_SetProgramName(PChar(Application.Exename));
   Py_Initialize;
   s:=Py_GetVersion;
+  Log(LOG_PYTHON,'PYTHON:');
   Log(LOG_PYTHON,'Version: '+s);
   Log(LOG_PYTHON,'DLL: '+RetrieveModuleFilename(PythonLib));
   Log(LOG_PYTHON,'');
