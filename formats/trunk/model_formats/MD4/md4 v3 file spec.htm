@@ -1,0 +1,626 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0034)http://gongo.quakedev.com/md4.html -->
+<HTML><HEAD><TITLE>md4 v3 file spec</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=iso-8859-1">
+<META content="MSHTML 6.00.6000.16674" name=GENERATOR></HEAD>
+<BODY text=#000000 bottomMargin=32 vLink=#333333 aLink=#333333 link=#000000 
+bgColor=#cccccc leftMargin=32 topMargin=32 rightMargin=32 marginheight="32" 
+marginwidth="32">
+<P><FONT face="Georgia, Times New Roman, Times, serif" size=2>md4 v4 file 
+spec</FONT> <FONT face="Georgia, Times New Roman, Times, serif" 
+size=2>2006.01.17<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;by gongo</FONT></P>
+<TABLE borderColor=#333333 cellSpacing=0 cellPadding=0 width="100%" border=1>
+  <TBODY>
+  <TR>
+    <TD bgColor=#333333>
+      <P><FONT face="Georgia, Times New Roman, Times, serif" color=#cccccc 
+      size=2>contents</FONT></P></TD>
+    <TD width="100%">&nbsp;</TD></TR></TBODY></TABLE>
+<P><FONT face="Georgia, Times New Roman, Times, serif" 
+size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A 
+href="http://gongo.quakedev.com/md4.html#foreword">foreword</A><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A 
+href="http://gongo.quakedev.com/md4.html#header">header</A><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A 
+href="http://gongo.quakedev.com/md4.html#frame">frame</A><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A 
+href="http://gongo.quakedev.com/md4.html#boneframe">boneframe</A><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A 
+href="http://gongo.quakedev.com/md4.html#bonename">bonename</A><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A 
+href="http://gongo.quakedev.com/md4.html#surface">surface</A><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A 
+href="http://gongo.quakedev.com/md4.html#vertex">vertex</A><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A 
+href="http://gongo.quakedev.com/md4.html#weight">weight</A><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A 
+href="http://gongo.quakedev.com/md4.html#triangle">triangle</A><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A 
+href="http://gongo.quakedev.com/md4.html#bonerefs">bonerefs</A><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A 
+href="http://gongo.quakedev.com/md4.html#collapsemap">collapsemap</A><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A 
+href="http://gongo.quakedev.com/md4.html#limits">limits</A> </FONT></P>
+<DIV class="section title" id=foreword>
+<TABLE borderColor=#333333 cellSpacing=0 cellPadding=0 width="100%" border=1>
+  <TBODY>
+  <TR>
+    <TD bgColor=#333333>
+      <P><FONT face="Georgia, Times New Roman, Times, serif" color=#cccccc 
+      size=2>foreword</FONT></P></TD>
+    <TD width="100%">&nbsp;</TD></TR></TBODY></TABLE></DIV>
+<P><FONT face="Georgia, Times New Roman, Times, serif" 
+size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the md4 file format is a skeletal version 
+of id software's md3 mesh model format. as is in the gpl'd <EM>quake 3</EM> 
+1.32b source base, the md4 format isn't fully implemented. to further complicate 
+things, up until now, there haven't been any publicly availble build tools for 
+md4, so developing for it has been difficult at best. </FONT></P>
+<P><FONT face="Georgia, Times New Roman, Times, serif" 
+size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;as the quest for skeletal animation in 
+<EM>quake 3</EM> began, i set out to learn as much as i could about the other 
+file formats implemented in third-party games developed from the <EM>quake 
+3</EM> engine. of particular interest to me was the <EM>wolfenstein</EM> series, 
+namely <EM>return to castle wolfenstein</EM>'s mds format and <EM>enemy 
+territory</EM>'s mdm/mdx formats. after many nights spent googling in vain for 
+the mdm build tools, i finally stumbled upon the mds build tools... only to find 
+that the skelout plugin was for 3dsmax r3 only...</FONT></P>
+<P><FONT face="Georgia, Times New Roman, Times, serif" 
+size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;in a last ditch attempt to find a suitable 
+<EM>quake 3</EM> based skeletal model format, i googled for sdks for <EM>elite 
+force</EM>, <EM>american mcgee's alice</EM>, and <EM>heavy metal fakk 2</EM>. i 
+found the sdk for <EM>heavy metal fakk 2</EM>, and noticed that the format is 
+more or less like the mdm/mdx, except it's skb/ska. while this system of having 
+a separate base frame and animation file was intreging to me, i noticed that i'd 
+have to do extensive changes to the md4 code already in place in the <EM>quake 
+3</EM> source, which was something that i wasn't quite prepared to do yet... i 
+have no previous experience with skeletal model formats, hence why i was looking 
+into <EM>return to castle wolfenstein</EM>'s mds format, just for simplicity's 
+sake it would be better to work with just one file first. and once again, the 
+skelout plugin was available for 3dsmax r2 and r3 only...</FONT></P>
+<P><FONT face="Georgia, Times New Roman, Times, serif" 
+size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;frustrated, sleep deprived, and confused, 
+my spirits were down and i was about to abandon the project altogether in favor 
+of skm. i figured that since there's much more info about skm available on 
+quakesrc, and it's still being used and developed, it would probably be the best 
+alternative. as i deleted the <EM>fakk 2</EM> tools directory, i noticed a 
+folder named 'source'... i unzipped the sdk again, and took a look at the tools 
+source folder, only to find the full source for skelout and max2skl, the skb/ska 
+build tool. i started digging around in the max2skl source and found that it had 
+some preliminary md4 exporting capabilities... from there, i compiled the 
+skelout plugin with the 3dsmax 6 sdk and instantly had a working skl file 
+exporter.</FONT></P>
+<P><FONT face="Georgia, Times New Roman, Times, serif" 
+size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;as i posted on the quakesrc.org forums 
+looking for more info about the mds, mdm/mdx, and skb/ska, someone suggested 
+that i simply complete the md4 format and tailor it to my own needs. inspired, 
+my heart took courage, and i set out to finish the md4 exporter and finalize the 
+md4 implementation in the <EM>quake 3</EM> source. the following is the result 
+of roughly 2 weeks worth of labor, working on this during every spare moment i 
+had.</FONT></P>
+<DIV class="section title" id=header>
+<TABLE borderColor=#333333 cellSpacing=0 cellPadding=0 width="100%" border=1>
+  <TBODY>
+  <TR>
+    <TD bgColor=#333333>
+      <P><FONT face="Georgia, Times New Roman, Times, serif" color=#cccccc 
+      size=2>md4Header</FONT></P></TD>
+    <TD width="100%">&nbsp;</TD></TR></TBODY></TABLE><FONT 
+face="Georgia, Times New Roman, Times, serif" size=2><BR></FONT></DIV>
+<TABLE cellSpacing=0 cellPadding=0 width=200 border=0>
+  <TBODY>
+  <TR>
+    <TD colSpan=3><FONT face="Georgia, Times New Roman, Times, serif" 
+      color=#666666 size=2>typedef struct { </FONT></TD></TR>
+  <TR>
+    <TD width=32>&nbsp;</TD>
+    <TD width=64><FONT face="Georgia, Times New Roman, Times, serif" 
+      color=#666666 size=2>int</FONT></TD>
+    <TD><FONT face="Georgia, Times New Roman, Times, serif" 
+    size=2>ident</FONT></TD></TR>
+  <TR>
+    <TD width=32>&nbsp;</TD>
+    <TD width=64><FONT face="Georgia, Times New Roman, Times, serif" 
+      color=#666666 size=2>int</FONT></TD>
+    <TD><FONT face="Georgia, Times New Roman, Times, serif" 
+      size=2>version</FONT></TD></TR>
+  <TR>
+    <TD width=32>&nbsp;</TD>
+    <TD width=64><FONT face="Georgia, Times New Roman, Times, serif" 
+      color=#666666 size=2>char</FONT></TD>
+    <TD><FONT face="Georgia, Times New Roman, Times, serif" 
+      size=2>name[64]</FONT></TD></TR>
+  <TR>
+    <TD width=32>&nbsp;</TD>
+    <TD width=64><FONT face="Georgia, Times New Roman, Times, serif" 
+      color=#666666 size=2>int</FONT></TD>
+    <TD><FONT face="Georgia, Times New Roman, Times, serif" 
+      size=2>numFrames</FONT></TD></TR>
+  <TR>
+    <TD width=32>&nbsp;</TD>
+    <TD width=64><FONT face="Georgia, Times New Roman, Times, serif" 
+      color=#666666 size=2>int</FONT></TD>
+    <TD><FONT face="Georgia, Times New Roman, Times, serif" 
+      size=2>numBones</FONT></TD></TR>
+  <TR>
+    <TD>&nbsp;</TD>
+    <TD><FONT face="Georgia, Times New Roman, Times, serif" color=#666666 
+      size=2>int</FONT></TD>
+    <TD><FONT face="Georgia, Times New Roman, Times, serif" 
+      size=2>numSurfs</FONT></TD></TR>
+  <TR>
+    <TD width=32>&nbsp;</TD>
+    <TD width=64><FONT face="Georgia, Times New Roman, Times, serif" 
+      color=#666666 size=2>int</FONT></TD>
+    <TD><FONT face="Georgia, Times New Roman, Times, serif" 
+      size=2>ofsFrames</FONT></TD></TR>
+  <TR>
+    <TD width=32>&nbsp;</TD>
+    <TD width=64><FONT face="Georgia, Times New Roman, Times, serif" 
+      color=#666666 size=2>int</FONT></TD>
+    <TD><FONT face="Georgia, Times New Roman, Times, serif" 
+      size=2>ofsBones</FONT></TD></TR>
+  <TR>
+    <TD width=32>&nbsp;</TD>
+    <TD width=64><FONT face="Georgia, Times New Roman, Times, serif" 
+      color=#666666 size=2>int</FONT></TD>
+    <TD><FONT face="Georgia, Times New Roman, Times, serif" 
+      size=2>ofsSurfs</FONT></TD></TR>
+  <TR>
+    <TD width=32>&nbsp;</TD>
+    <TD width=64><FONT face="Georgia, Times New Roman, Times, serif" 
+      color=#666666 size=2>int</FONT></TD>
+    <TD><FONT face="Georgia, Times New Roman, Times, serif" 
+      size=2>ofsEnd</FONT></TD></TR>
+  <TR>
+    <TD colSpan=3><FONT face="Georgia, Times New Roman, Times, serif" 
+      color=#666666 size=2>} md4Header_t </FONT></TD></TR></TBODY></TABLE>
+<P><FONT face="Georgia, Times New Roman, Times, serif" 
+size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<EM>ident</EM> should match 
+<EM>MD4_IDENT</EM> ("IDP4") and <EM>version</EM> should match 
+<EM>MD4_VERSION</EM> (currently "4") in <EM>qfiles.h</EM>. the offsets will give 
+you the position of the desired data within the file by in place conversion. for 
+example, (md4BoneName_t *)((byte *)header + header-&gt;ofsBones) will give you 
+the first md4BoneName_t in the array of md4BoneName_t <EM>numBones</EM> in 
+length. </FONT></P>
+<DIV class="section title" id=frame>
+<TABLE borderColor=#333333 cellSpacing=0 cellPadding=0 width="100%" border=1>
+  <TBODY>
+  <TR>
+    <TD bgColor=#333333>
+      <P><FONT face="Georgia, Times New Roman, Times, serif" color=#cccccc 
+      size=2>md4Frame</FONT></P></TD>
+    <TD width="100%">&nbsp;</TD></TR></TBODY></TABLE><FONT 
+face="Georgia, Times New Roman, Times, serif" size=2><BR></FONT></DIV>
+<TABLE cellSpacing=0 cellPadding=0 width=272 border=0>
+  <TBODY>
+  <TR>
+    <TD colSpan=3><FONT face="Georgia, Times New Roman, Times, serif" 
+      color=#666666 size=2>typedef struct { </FONT></TD></TR>
+  <TR>
+    <TD width=32>&nbsp;</TD>
+    <TD width=128><FONT face="Georgia, Times New Roman, Times, serif" 
+      color=#666666 size=2>float</FONT></TD>
+    <TD><FONT face="Georgia, Times New Roman, Times, serif" 
+      size=2>bounds[3][2]</FONT></TD></TR>
+  <TR>
+    <TD width=32>&nbsp;</TD>
+    <TD width=128><FONT face="Georgia, Times New Roman, Times, serif" 
+      color=#666666 size=2>float</FONT></TD>
+    <TD><FONT face="Georgia, Times New Roman, Times, serif" 
+      size=2>localOrigin[3]</FONT></TD></TR>
+  <TR>
+    <TD width=32>&nbsp;</TD>
+    <TD width=128><FONT face="Georgia, Times New Roman, Times, serif" 
+      color=#666666 size=2>float</FONT></TD>
+    <TD><FONT face="Georgia, Times New Roman, Times, serif" 
+      size=2>radius</FONT></TD></TR>
+  <TR>
+    <TD width=32>&nbsp;</TD>
+    <TD width=128><FONT face="Georgia, Times New Roman, Times, serif" 
+      color=#666666 size=2><A 
+      href="http://gongo.quakedev.com/md4.html#boneframe">md4BoneFrame_t</A></FONT></TD>
+    <TD><FONT face="Georgia, Times New Roman, Times, serif" 
+      size=2>bones[numBones]</FONT></TD></TR>
+  <TR>
+    <TD colSpan=3><FONT face="Georgia, Times New Roman, Times, serif" 
+      color=#666666 size=2>} md4Frame_t </FONT></TD></TR></TBODY></TABLE>
+<P><FONT face="Georgia, Times New Roman, Times, serif" 
+size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<EM>bounds</EM> gives the frame's min and 
+max for the bounding box. <EM>localOrigin</EM> is just <EM>bounds</EM> min + 
+<EM>bounds</EM> max divided by 2. <EM>radius</EM> will give the distance to 
+<EM>bounds</EM> min or max from <EM>localOrigin</EM>, used for sphere culling. 
+<EM>bones</EM> is an array of md4BoneFrame_t <EM>numBones</EM> in length. 
+</FONT></P>
+<DIV class="section title" id=boneframe>
+<TABLE borderColor=#333333 cellSpacing=0 cellPadding=0 width="100%" border=1>
+  <TBODY>
+  <TR>
+    <TD bgColor=#333333>
+      <P><FONT face="Georgia, Times New Roman, Times, serif" color=#cccccc 
+      size=2>md4BoneFrame</FONT></P></TD>
+    <TD width="100%">&nbsp;</TD></TR></TBODY></TABLE><FONT 
+face="Georgia, Times New Roman, Times, serif" size=2><BR></FONT></DIV>
+<TABLE cellSpacing=0 cellPadding=0 width=200 border=0>
+  <TBODY>
+  <TR>
+    <TD colSpan=3><FONT face="Georgia, Times New Roman, Times, serif" 
+      color=#666666 size=2>typedef struct { </FONT></TD></TR>
+  <TR>
+    <TD width=32>&nbsp;</TD>
+    <TD width=64><FONT face="Georgia, Times New Roman, Times, serif" 
+      color=#666666 size=2>float</FONT></TD>
+    <TD><FONT face="Georgia, Times New Roman, Times, serif" 
+      size=2>matrix[3][4]</FONT></TD></TR>
+  <TR>
+    <TD colSpan=3><FONT face="Georgia, Times New Roman, Times, serif" 
+      color=#666666 size=2>} md4BoneFrame_t </FONT></TD></TR></TBODY></TABLE>
+<P><FONT face="Georgia, Times New Roman, Times, serif" 
+size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<EM>matrix</EM> is the bone's axis and 
+offset. </FONT></P>
+<DIV class="section title" id=bonename>
+<TABLE borderColor=#333333 cellSpacing=0 cellPadding=0 width="100%" border=1>
+  <TBODY>
+  <TR>
+    <TD bgColor=#333333>
+      <P><FONT face="Georgia, Times New Roman, Times, serif" color=#cccccc 
+      size=2>md4BoneName</FONT></P></TD>
+    <TD width="100%">&nbsp;</TD></TR></TBODY></TABLE><FONT 
+face="Georgia, Times New Roman, Times, serif" size=2><BR></FONT></DIV>
+<TABLE cellSpacing=0 cellPadding=0 width=200 border=0>
+  <TBODY>
+  <TR>
+    <TD colSpan=3><FONT face="Georgia, Times New Roman, Times, serif" 
+      color=#666666 size=2>typedef struct { </FONT></TD></TR>
+  <TR>
+    <TD width=32>&nbsp;</TD>
+    <TD width=64><FONT face="Georgia, Times New Roman, Times, serif" 
+      color=#666666 size=2>char</FONT></TD>
+    <TD><FONT face="Georgia, Times New Roman, Times, serif" 
+      size=2>name[32]</FONT></TD></TR>
+  <TR>
+    <TD width=32>&nbsp;</TD>
+    <TD width=64><FONT face="Georgia, Times New Roman, Times, serif" 
+      color=#666666 size=2>int</FONT></TD>
+    <TD><FONT face="Georgia, Times New Roman, Times, serif" 
+      size=2>parent</FONT></TD></TR>
+  <TR>
+    <TD width=32>&nbsp;</TD>
+    <TD width=64><FONT face="Georgia, Times New Roman, Times, serif" 
+      color=#666666 size=2>int</FONT></TD>
+    <TD><FONT face="Georgia, Times New Roman, Times, serif" 
+    size=2>flags</FONT></TD></TR>
+  <TR>
+    <TD colSpan=3><FONT face="Georgia, Times New Roman, Times, serif" 
+      color=#666666 size=2>} md4BoneName_t </FONT></TD></TR></TBODY></TABLE>
+<P><FONT face="Georgia, Times New Roman, Times, serif" 
+size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<EM>parent</EM> gives the index to the 
+parent bone in the main bones list. <EM>flags</EM> holds any of the bone flags 
+<EM>MD4_BONE_FLAG_H</EM> (head), <EM>MD4_BONE_FLAG_U</EM> (upper), 
+<EM>MD4_BONE_FLAG_L</EM> (lower), or <EM>MD4_BONE_FLAG_T</EM> (tag). bone flags 
+are still currently under development, but future uses may include animating 
+bone groups by flags or using flagged bones as tags. </FONT></P>
+<DIV class="section title" id=surface>
+<TABLE borderColor=#333333 cellSpacing=0 cellPadding=0 width="100%" border=1>
+  <TBODY>
+  <TR>
+    <TD bgColor=#333333>
+      <P><FONT face="Georgia, Times New Roman, Times, serif" color=#cccccc 
+      size=2>md4Surface</FONT></P></TD>
+    <TD width="100%">&nbsp;</TD></TR></TBODY></TABLE><FONT 
+face="Georgia, Times New Roman, Times, serif" size=2><BR></FONT></DIV>
+<TABLE cellSpacing=0 cellPadding=0 width=200 border=0>
+  <TBODY>
+  <TR>
+    <TD colSpan=3><FONT face="Georgia, Times New Roman, Times, serif" 
+      color=#666666 size=2>typedef struct { </FONT></TD></TR>
+  <TR>
+    <TD width=32>&nbsp;</TD>
+    <TD width=64><FONT face="Georgia, Times New Roman, Times, serif" 
+      color=#666666 size=2>int</FONT></TD>
+    <TD><FONT face="Georgia, Times New Roman, Times, serif" 
+    size=2>ident</FONT></TD></TR>
+  <TR>
+    <TD width=32>&nbsp;</TD>
+    <TD width=64><FONT face="Georgia, Times New Roman, Times, serif" 
+      color=#666666 size=2>char</FONT></TD>
+    <TD><FONT face="Georgia, Times New Roman, Times, serif" 
+      size=2>name[64]</FONT></TD></TR>
+  <TR>
+    <TD width=32>&nbsp;</TD>
+    <TD width=64><FONT face="Georgia, Times New Roman, Times, serif" 
+      color=#666666 size=2>char</FONT></TD>
+    <TD><FONT face="Georgia, Times New Roman, Times, serif" 
+      size=2>shader[64]</FONT></TD></TR>
+  <TR>
+    <TD width=32>&nbsp;</TD>
+    <TD width=64><FONT face="Georgia, Times New Roman, Times, serif" 
+      color=#666666 size=2>int</FONT></TD>
+    <TD><FONT face="Georgia, Times New Roman, Times, serif" 
+      size=2>shaderIndex</FONT></TD></TR>
+  <TR>
+    <TD width=32>&nbsp;</TD>
+    <TD width=64><FONT face="Georgia, Times New Roman, Times, serif" 
+      color=#666666 size=2>int</FONT></TD>
+    <TD><FONT face="Georgia, Times New Roman, Times, serif" 
+      size=2>lodBias</FONT></TD></TR>
+  <TR>
+    <TD width=32>&nbsp;</TD>
+    <TD width=64><FONT face="Georgia, Times New Roman, Times, serif" 
+      color=#666666 size=2>int</FONT></TD>
+    <TD><FONT face="Georgia, Times New Roman, Times, serif" 
+      size=2>minLod</FONT></TD></TR>
+  <TR>
+    <TD width=32>&nbsp;</TD>
+    <TD width=64><FONT face="Georgia, Times New Roman, Times, serif" 
+      color=#666666 size=2>int</FONT></TD>
+    <TD><FONT face="Georgia, Times New Roman, Times, serif" 
+      size=2>ofsHeader</FONT></TD></TR>
+  <TR>
+    <TD width=32>&nbsp;</TD>
+    <TD width=64><FONT face="Georgia, Times New Roman, Times, serif" 
+      color=#666666 size=2>int</FONT></TD>
+    <TD><FONT face="Georgia, Times New Roman, Times, serif" 
+      size=2>numVerts</FONT></TD></TR>
+  <TR>
+    <TD width=32>&nbsp;</TD>
+    <TD width=64><FONT face="Georgia, Times New Roman, Times, serif" 
+      color=#666666 size=2>int</FONT></TD>
+    <TD><FONT face="Georgia, Times New Roman, Times, serif" 
+      size=2>ofsVerts</FONT></TD></TR>
+  <TR>
+    <TD width=32>&nbsp;</TD>
+    <TD width=64><FONT face="Georgia, Times New Roman, Times, serif" 
+      color=#666666 size=2>int</FONT></TD>
+    <TD><FONT face="Georgia, Times New Roman, Times, serif" 
+      size=2>numTris</FONT></TD></TR>
+  <TR>
+    <TD width=32>&nbsp;</TD>
+    <TD width=64><FONT face="Georgia, Times New Roman, Times, serif" 
+      color=#666666 size=2>int</FONT></TD>
+    <TD><FONT face="Georgia, Times New Roman, Times, serif" 
+      size=2>ofsTris</FONT></TD></TR>
+  <TR>
+    <TD width=32>&nbsp;</TD>
+    <TD width=64><FONT face="Georgia, Times New Roman, Times, serif" 
+      color=#666666 size=2>int</FONT></TD>
+    <TD><FONT face="Georgia, Times New Roman, Times, serif" 
+      size=2>numBoneRefs</FONT></TD></TR>
+  <TR>
+    <TD width=32>&nbsp;</TD>
+    <TD width=64><FONT face="Georgia, Times New Roman, Times, serif" 
+      color=#666666 size=2>int</FONT></TD>
+    <TD><FONT face="Georgia, Times New Roman, Times, serif" 
+      size=2>ofsBoneRefs</FONT></TD></TR>
+  <TR>
+    <TD width=32>&nbsp;</TD>
+    <TD width=64><FONT face="Georgia, Times New Roman, Times, serif" 
+      color=#666666 size=2>int</FONT></TD>
+    <TD><FONT face="Georgia, Times New Roman, Times, serif" 
+      size=2>ofsCollapseMap</FONT></TD></TR>
+  <TR>
+    <TD width=32>&nbsp;</TD>
+    <TD width=64><FONT face="Georgia, Times New Roman, Times, serif" 
+      color=#666666 size=2>int</FONT></TD>
+    <TD><FONT face="Georgia, Times New Roman, Times, serif" 
+      size=2>ofsEnd</FONT></TD></TR>
+  <TR>
+    <TD colSpan=3><FONT face="Georgia, Times New Roman, Times, serif" 
+      color=#666666 size=2>} md4Surface_t </FONT></TD></TR></TBODY></TABLE>
+<P><FONT face="Georgia, Times New Roman, Times, serif" 
+size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<EM>shader</EM> and <EM>shaderIndex</EM> 
+give the name and index of this surface's shader in the main shader list. 
+currently only one shader per surface is supported. <EM>lodBias</EM> is a 
+placeholder for use in the renderer. the calculated lod is put in 
+<EM>lodBias</EM> so that when the surface is passed to the renderer, the proper 
+level of detail collapse map will be used. <EM>lodBias</EM> is 0 by default 
+(full detail). <EM>minLod</EM> is the maximum level of collapsing that can be 
+done before the mesh starts to substantially lose shape, or in other words, the 
+lowest level of detail. <EM>ofsCollapseMap</EM> gives the position of the 
+collapse map for this surface. it is an array of ints <EM>numVerts</EM> in 
+length. </FONT></P>
+<DIV class="section title" id=vertex>
+<TABLE borderColor=#333333 cellSpacing=0 cellPadding=0 width="100%" border=1>
+  <TBODY>
+  <TR>
+    <TD bgColor=#333333>
+      <P><FONT face="Georgia, Times New Roman, Times, serif" color=#cccccc 
+      size=2>md4Vertex</FONT></P></TD>
+    <TD width="100%">&nbsp;</TD></TR></TBODY></TABLE><FONT 
+face="Georgia, Times New Roman, Times, serif" size=2><BR></FONT></DIV>
+<TABLE cellSpacing=0 cellPadding=0 width=272 border=0>
+  <TBODY>
+  <TR>
+    <TD colSpan=3><FONT face="Georgia, Times New Roman, Times, serif" 
+      color=#666666 size=2>typedef struct { </FONT></TD></TR>
+  <TR>
+    <TD width=32>&nbsp;</TD>
+    <TD width=96><FONT face="Georgia, Times New Roman, Times, serif" 
+      color=#666666 size=2>float</FONT></TD>
+    <TD><FONT face="Georgia, Times New Roman, Times, serif" 
+      size=2>vertex[3]</FONT></TD></TR>
+  <TR>
+    <TD width=32>&nbsp;</TD>
+    <TD width=96><FONT face="Georgia, Times New Roman, Times, serif" 
+      color=#666666 size=2>float</FONT></TD>
+    <TD><FONT face="Georgia, Times New Roman, Times, serif" 
+      size=2>normal[3]</FONT></TD></TR>
+  <TR>
+    <TD width=32>&nbsp;</TD>
+    <TD width=96><FONT face="Georgia, Times New Roman, Times, serif" 
+      color=#666666 size=2>float</FONT></TD>
+    <TD><FONT face="Georgia, Times New Roman, Times, serif" 
+      size=2>texCoords[2]</FONT></TD></TR>
+  <TR>
+    <TD width=32>&nbsp;</TD>
+    <TD width=96><FONT face="Georgia, Times New Roman, Times, serif" 
+      color=#666666 size=2>int</FONT></TD>
+    <TD><FONT face="Georgia, Times New Roman, Times, serif" 
+      size=2>numWeights</FONT></TD></TR>
+  <TR>
+    <TD width=32>&nbsp;</TD>
+    <TD width=96><FONT face="Georgia, Times New Roman, Times, serif" 
+      color=#666666 size=2><A 
+      href="http://gongo.quakedev.com/md4.html#weight">md4Weight_t</A></FONT></TD>
+    <TD><FONT face="Georgia, Times New Roman, Times, serif" 
+      size=2>weights[numWeights]</FONT></TD></TR>
+  <TR>
+    <TD colSpan=3><FONT face="Georgia, Times New Roman, Times, serif" 
+      color=#666666 size=2>} md4Vertex_t </FONT></TD></TR></TBODY></TABLE>
+<P><FONT face="Georgia, Times New Roman, Times, serif" 
+size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<EM>vertex</EM> is this vertex's position, 
+with <EM>normal</EM> giving the direction vector of the normal. 
+<EM>texCoords</EM> gives the vertex position on the texture. <EM>weights</EM> is 
+a list of md4Weight_t <EM>numWeights</EM> in length. each vertex can have no 
+more than 8 influences or weights. </FONT></P>
+<DIV class="section title" id=weight>
+<TABLE borderColor=#333333 cellSpacing=0 cellPadding=0 width="100%" border=1>
+  <TBODY>
+  <TR>
+    <TD bgColor=#333333>
+      <P><FONT face="Georgia, Times New Roman, Times, serif" color=#cccccc 
+      size=2>md4Weight</FONT></P></TD>
+    <TD width="100%">&nbsp;</TD></TR></TBODY></TABLE><FONT 
+face="Georgia, Times New Roman, Times, serif" size=2><BR></FONT></DIV>
+<TABLE cellSpacing=0 cellPadding=0 width=200 border=0>
+  <TBODY>
+  <TR>
+    <TD colSpan=3><FONT face="Georgia, Times New Roman, Times, serif" 
+      color=#666666 size=2>typedef struct { </FONT></TD></TR>
+  <TR>
+    <TD width=32>&nbsp;</TD>
+    <TD width=64><FONT face="Georgia, Times New Roman, Times, serif" 
+      color=#666666 size=2>int</FONT></TD>
+    <TD><FONT face="Georgia, Times New Roman, Times, serif" 
+      size=2>boneIndex</FONT></TD></TR>
+  <TR>
+    <TD width=32>&nbsp;</TD>
+    <TD width=64><FONT face="Georgia, Times New Roman, Times, serif" 
+      color=#666666 size=2>float</FONT></TD>
+    <TD><FONT face="Georgia, Times New Roman, Times, serif" 
+      size=2>boneWeight</FONT></TD></TR>
+  <TR>
+    <TD width=32>&nbsp;</TD>
+    <TD width=64><FONT face="Georgia, Times New Roman, Times, serif" 
+      color=#666666 size=2>float</FONT></TD>
+    <TD><FONT face="Georgia, Times New Roman, Times, serif" 
+      size=2>offset[3]</FONT></TD></TR>
+  <TR>
+    <TD colSpan=3><FONT face="Georgia, Times New Roman, Times, serif" 
+      color=#666666 size=2>} md4Weight_t </FONT></TD></TR></TBODY></TABLE>
+<P><FONT face="Georgia, Times New Roman, Times, serif" 
+size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<EM>boneIndex</EM> gives the index to the 
+bone in the array of bone references for the surface, not the main bones list. 
+<EM>boneWeight</EM> is any value between 0.01 and 1.0. the sum of all bone 
+weights for any given vertex must equal 1.0. <EM>offset</EM> gives the direction 
+vector of the weight's influence. </FONT></P>
+<DIV class="section title" id=triangle>
+<TABLE borderColor=#333333 cellSpacing=0 cellPadding=0 width="100%" border=1>
+  <TBODY>
+  <TR>
+    <TD bgColor=#333333>
+      <P><FONT face="Georgia, Times New Roman, Times, serif" color=#cccccc 
+      size=2>md4Triangle</FONT></P></TD>
+    <TD width="100%">&nbsp;</TD></TR></TBODY></TABLE><FONT 
+face="Georgia, Times New Roman, Times, serif" size=2><BR></FONT></DIV>
+<TABLE cellSpacing=0 cellPadding=0 width=200 border=0>
+  <TBODY>
+  <TR>
+    <TD colSpan=3><FONT face="Georgia, Times New Roman, Times, serif" 
+      color=#666666 size=2>typedef struct { </FONT></TD></TR>
+  <TR>
+    <TD width=32>&nbsp;</TD>
+    <TD width=64><FONT face="Georgia, Times New Roman, Times, serif" 
+      color=#666666 size=2>int</FONT></TD>
+    <TD><FONT face="Georgia, Times New Roman, Times, serif" 
+      size=2>indexes[3]</FONT></TD></TR>
+  <TR>
+    <TD colSpan=3><FONT face="Georgia, Times New Roman, Times, serif" 
+      color=#666666 size=2>} md4Triangle_t</FONT></TD></TR></TBODY></TABLE>
+<P><FONT face="Georgia, Times New Roman, Times, serif" 
+size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<EM>indexes</EM> points to the vertex 
+indices from the main vertex list that make up this triangle. <EM>indexes</EM> 
+is altered for dynamic level of detail via collapse mapping with 
+triangle-&gt;indexes[i] = collapsemap[triangle-&gt;indexes[i]] to get the index 
+of the vertex this collapses to. </FONT></P>
+<DIV class="section title" id=bonerefs>
+<TABLE borderColor=#333333 cellSpacing=0 cellPadding=0 width="100%" border=1>
+  <TBODY>
+  <TR>
+    <TD bgColor=#333333>
+      <P><FONT face="Georgia, Times New Roman, Times, serif" color=#cccccc 
+      size=2>boneRefs</FONT></P></TD>
+    <TD width="100%">&nbsp;</TD></TR></TBODY></TABLE></DIV>
+<P><FONT face="Georgia, Times New Roman, Times, serif" 
+size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<EM>boneRefs</EM> is an array of ints 
+<EM>numBoneRefs</EM> in length. the values in the array are indices into the 
+main bone list. <EM>boneRefs</EM> is used in order to know which bones need to 
+be translated and interpolated to get the final frame position for the current 
+surface in the model.</FONT></P>
+<DIV class="section title" id=collapsemap>
+<TABLE borderColor=#333333 cellSpacing=0 cellPadding=0 width="100%" border=1>
+  <TBODY>
+  <TR>
+    <TD bgColor=#333333>
+      <P><FONT face="Georgia, Times New Roman, Times, serif" color=#cccccc 
+      size=2>collapseMap</FONT></P></TD>
+    <TD width="100%">&nbsp;</TD></TR></TBODY></TABLE></DIV>
+<P><FONT face="Georgia, Times New Roman, Times, serif" 
+size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<EM>collapseMap</EM> is an array of ints 
+<EM>numVerts</EM> in length. the values stored in the array are indices into the 
+vertex list for the current surface. the array lists the indices in collapsing 
+order, such that index <EM>numVerts</EM> is the first to collapse, and index 0 
+is the last vertex and never collapses. every collapse removes 2 triangles along 
+the edge <EM>uv</EM> where <EM>u</EM> is the collapsing vertex and <EM>v</EM> is 
+the point <EM>u</EM> collapses to. this allows scaling of level of detail to a 
+resolution of 1 vertex. ideally, one should not collapse the mesh down past the 
+<EM>minLod</EM> in order to avoid excessive distortion of the mesh's overall 
+shape. for example, to collapse a mesh down to it's minimum resolution, all 
+vertices with index [<EM>minLod</EM>, <EM>numVerts</EM>) should be replaced with 
+<EM>collapseMap</EM>[index] until the value is within [0, <EM>minLod</EM>), 
+leaving <EM>minLod</EM> vertices to be rendered. in the process, some triangles 
+will have all 3 vertices collapse together. these triangles need to be removed 
+from the render list to avoid rendering one-dimensional triangles. generally 
+speaking, texture mapping is retained by using the <EM>texCoords</EM> of the 
+vertex collapsed to. the result is fairly faithful to the original full 
+resolution texture mapping, with an acceptable amount of error (seams in texture 
+mapping become more obvious). implementation in-game would entail scaling the 
+level of detail from <EM>minLod</EM> at lowest to <EM>numVerts</EM> at highest, 
+with the varying degrees of detail more or less spaced evenly between the two 
+points.</FONT></P>
+<DIV class="section title" id=limits>
+<TABLE borderColor=#333333 cellSpacing=0 cellPadding=0 width="100%" border=1>
+  <TBODY>
+  <TR>
+    <TD bgColor=#333333>
+      <P><FONT face="Georgia, Times New Roman, Times, serif" color=#cccccc 
+      size=2>limits</FONT></P></TD>
+    <TD width="100%">&nbsp;</TD></TR></TBODY></TABLE></DIV><FONT 
+face="Georgia, Times New Roman, Times, serif" size=2><BR></FONT>
+<TABLE cellSpacing=0 cellPadding=0 width=256 border=0>
+  <TBODY>
+  <TR>
+    <TD width=32>&nbsp;</TD>
+    <TD><FONT face="Georgia, Times New Roman, Times, serif" 
+      size=2>MD4_MAX_BONES</FONT></TD>
+    <TD width=48><FONT face="Georgia, Times New Roman, Times, serif" 
+      size=2>256</FONT></TD></TR>
+  <TR>
+    <TD width=32>&nbsp;</TD>
+    <TD><FONT face="Georgia, Times New Roman, Times, serif" 
+      size=2>MD4_MAX_FRAMES</FONT></TD>
+    <TD width=48><FONT face="Georgia, Times New Roman, Times, serif" 
+      size=2>2048</FONT></TD></TR>
+  <TR>
+    <TD width=32>&nbsp;</TD>
+    <TD><FONT face="Georgia, Times New Roman, Times, serif" 
+      size=2>MD4_MAX_SURFACES</FONT></TD>
+    <TD width=48><FONT face="Georgia, Times New Roman, Times, serif" 
+      size=2>32</FONT></TD></TR>
+  <TR>
+    <TD width=32>&nbsp;</TD>
+    <TD><FONT face="Georgia, Times New Roman, Times, serif" 
+      size=2>MD4_MAX_TRIANGLES</FONT></TD>
+    <TD width=48><FONT face="Georgia, Times New Roman, Times, serif" 
+      size=2>8192</FONT></TD></TR>
+  <TR>
+    <TD width=32>&nbsp;</TD>
+    <TD><FONT face="Georgia, Times New Roman, Times, serif" 
+      size=2>MD4_MAX_VERTS</FONT></TD>
+    <TD width=48><FONT face="Georgia, Times New Roman, Times, serif" 
+      size=2>4096</FONT></TD></TR></TBODY></TABLE>
+<P><FONT face="Georgia, Times New Roman, Times, serif" 
+size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bones, frames, and surfaces maximums are 
+per model. triangle and vertex maximums are per surface. note that these limits 
+are similar to those of the md3 format for consistency's sake. i could set the 
+limits higher, but given that the md4 spec technically maxes out at 8192 
+tris/surf * 32 surfs = 262144 tris, i don't think it's really 
+necessary...</FONT></P></BODY></HTML>
