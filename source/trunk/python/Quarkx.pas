@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.69  2008/07/25 19:36:06  danielpharos
+Changed confusing parameter-name
+
 Revision 1.68  2008/07/25 19:31:52  danielpharos
 Added setting to disable AddToRecent in SaveObject
 
@@ -793,7 +796,7 @@ begin
        Exit;
       end;
     end;
-   Log(LOG_PYTHON,'Making image '+Filename);
+   Log(LOG_PYTHON, 'Loading image: '+Filename);
    Result:=NewImageList(Bitmap, cx, MaskX, MaskY, cratio);
   finally
    Bitmap.Free;
