@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.50  2008/07/25 19:36:06  danielpharos
+Changed confusing parameter-name
+
 Revision 1.49  2008/07/25 19:31:53  danielpharos
 Added setting to disable AddToRecent in SaveObject
 
@@ -1757,6 +1760,8 @@ begin
   ProgressIndicatorStart(5452, 0);
   try
    FileObjectClassInfo(Info);
+   if wiNeverOpen in Info.WndInfo then
+    Exit;  { never open }
    if wiForm1 in Info.WndInfo then
     begin
      g_Form1.SetExplorerRoot(Self);   { display in the main window }
