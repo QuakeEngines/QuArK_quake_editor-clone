@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.51  2008/08/07 15:15:07  danielpharos
+Fixed wiNeverOpen not working when trying to open in a standalone window.
+
 Revision 1.50  2008/07/25 19:36:06  danielpharos
 Changed confusing parameter-name
 
@@ -1263,7 +1266,7 @@ begin
      if not MoveFile(PChar(TempFile), PChar(AlternateFile)) then
       begin
        g_Form1.NoTempDelete:=True;
-   //    Raise EErrorFmt(5516, [AlternateFile, S, ExtractFileName(AlternateFile)]);
+       Raise EErrorFmt(5516, [AlternateFile, S, ExtractFileName(AlternateFile)]);
       end;
      S:=AlternateFile;
     finally

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.103  2008/08/07 15:22:16  danielpharos
+Fix update file location
+
 Revision 1.102  2008/07/10 22:32:40  danielpharos
 Added additional comments and fixed some magic numbers.
 
@@ -982,8 +985,8 @@ begin
   begin
     Result:=TQStream(QFileList.Objects[I]);
 
- //   if maUnique in Mode then
- //     Raise EErrorFmt(5189, [theFilename]);
+    if maUnique in Mode then
+      Raise EErrorFmt(5189, [theFilename]);
 
     if maNoOpen in Mode then
       Exit;
