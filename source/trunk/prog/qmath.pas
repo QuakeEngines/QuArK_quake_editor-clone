@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23  2008/07/17 14:47:59  danielpharos
+Big (experimental) change to model bones, tags and boundframes
+
 Revision 1.22  2008/07/17 14:37:10  danielpharos
 Moved pre-Delphi6+ function into ExtraFunctionality
 
@@ -156,6 +159,7 @@ function VecDiff(const V, W : TVect) : TVect;
 function VecSum(const V, W : TVect) : TVect;
 function VecScale(const R: Double; const V: TVect) : TVect;
 function Vec3Diff(const V, W : vec3_t) : vec3_t;
+function Vec3Length(const V : vec3_t) : TDouble;
 function ProjectPointToPlane(const Point, Along, PlanePoint, PlaneNorm : TVect) : TVect;
 procedure SolveForThreePoints(const V1, V2, V3: TVect5; var P1, P2, P3:TVect);
 
@@ -899,6 +903,11 @@ begin
  Result[0]:=V[0]-W[0];
  Result[1]:=V[1]-W[1];
  Result[2]:=V[2]-W[2];
+end;
+
+function Vec3Length(const V : vec3_t) : TDouble;
+begin
+ Result:=sqrt((V[0]*V[0])+(V[1]*V[1])+(V[2]*V[2]));
 end;
 
 function ProjectPointToPlane(const Point, Along, PlanePoint, PlaneNorm : TVect) : TVect;

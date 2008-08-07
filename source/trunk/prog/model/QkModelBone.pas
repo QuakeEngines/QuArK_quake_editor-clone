@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2008/08/06 02:08:06  cdunde
+Disabled Delphi drawing for now and switch end_offset functionality to end_point, by DanielPharos.
+
 Revision 1.14  2008/08/05 19:55:43  danielpharos
 Disable bone line drawing for now.
 
@@ -69,7 +72,7 @@ uses Sysutils, qmath, QkMdlObject, QkObjects, Graphics, Python, QkBoneGroup;
 {
 Internal Format:
   Start_Point: Vec3_t;
-  End_Offset: Vec3_t;
+  End_Point: Vec3_t;
   Length: Single (Float);
 
 Bones are Connected End to Start of sub objects i.e.:
@@ -108,7 +111,6 @@ type
     class function TypeInfo: String; override;
     procedure ObjectState(var E: TEtatObjet); override;
 //    procedure Dessiner; override;
-    Function GetEndOffset(var endoffset: vec3_p): boolean;
     Function GetEndPoint(var endpoint: vec3_p): boolean;
     Function GetStartPoint(var startpoint: vec3_p): boolean;
     Function GetStartEnd(var startpoint, endpoint: vec3_p): Boolean;
@@ -177,31 +179,16 @@ begin
   PChar(endpoint):=PChar(S) + EndSpecLen;
 end;
 
-Function QModelBone.GetEndOffset(var endoffset: vec3_p): boolean;
-var
-  startpoint, endpoint: vec3_p;
-begin
-  Result:=GetStartPoint(startpoint) and GetEndPoint(endpoint);
-  if not result then
-    exit;
-  new(endoffset);
-  endoffset^[0]:=endpoint^[0]-startpoint^[0];
-  endoffset^[1]:=endpoint^[1]-startpoint^[1];
-  endoffset^[2]:=endpoint^[2]-startpoint^[2];
-end;
-
 Function QModelBone.GetLength: Single;
 var
   s,e: vec3_p;
-  d: vec3_t;
   r: boolean;
 begin
   Result:=GetFloatSpec('length', 0);
   if Result=0 then begin
     r:=GetStartEnd(s, e);
     if not r then exit;
-    d:=Vec3Diff(s^,e^);
-    result:=sqrt((d[0]*d[0])+(d[1]*d[1])+(d[2]*d[2]));
+    result:=Vec3Length(Vec3Diff(s^,e^));
     SetFloatSpec('length', result);
   end;
 end;
@@ -268,16 +255,6 @@ begin
       else
         Result:=Py_None;
       Exit;
-    end else if StrComp(attr, 'end_offset')=0 then begin
-      R:=GetEndOffset(P);
-      if R then
-      begin
-        Result:=MakePyVectv(P^);
-        Dispose(P);
-      end
-      else
-        Result:=Py_None;
-      Exit;
     end;
     'b': if StrComp(attr, 'bone_length')=0 then begin
       Result:=PyFloat_FromDouble(GetLength);
@@ -290,7 +267,7 @@ function QModelBone.PySetAttr(attr: PChar; value: PyObject) : Boolean;
 var
   P: PyVect;
   S, S0: String;
-  Dest, StartPoint: vec3_p;
+  Dest: vec3_p;
   length: single;
 begin
   Result:=inherited PySetAttr(attr, value);
@@ -337,28 +314,6 @@ begin
           Dest^[0]:=X;
           Dest^[1]:=Y;
           Dest^[2]:=Z;
-        end;
-        Specifics.Delete(Specifics.IndexofName(S0));
-        Specifics.Add(S);
-        Result:=True;
-        Exit;
-      end else if StrComp(attr, 'end_offset')=0 then begin
-        S0:=FloatSpecNameOf(EndSpec);
-        S:=S0+'=';
-        SetLength(S, EndSpecLen+SizeOf(vec3_t));
-        PChar(Dest):=PChar(S)+EndSpecLen;
-        P:=PyVect(value);
-        if P=Nil then
-          Exit;
-        if P^.ob_type <> @TyVect_Type then
-          Raise EError(4441);
-        Result:=GetStartPoint(StartPoint);
-        if not result then
-          exit;
-        with P^.V do begin
-          Dest^[0]:=X-StartPoint^[0];
-          Dest^[1]:=Y-StartPoint^[1];
-          Dest^[2]:=Z-StartPoint^[2];
         end;
         Specifics.Delete(Specifics.IndexofName(S0));
         Specifics.Add(S);
