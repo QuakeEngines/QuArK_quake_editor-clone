@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2005/09/28 10:48:32  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.12  2001/06/05 18:42:10  decker_dk
 Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
 
@@ -546,7 +549,6 @@ begin
     Explorer.AllowEditing:=aeUndo;
     Explorer.Height:=TailleMaximaleEcranY;
    {Explorer.LoadAllAuto:=True;}
-    Explorer.CreateSplitter;
     MarsCap.AppCaption:=LoadStr1(5441);
     MarsCap.ActiveBeginColor:=clBlack;
     MarsCap.ActiveEndColor:=clBlue;
@@ -564,49 +566,50 @@ begin
    finally
     SetupQrk.AddRef(-1);
    end;
-  finally
-   ProgressIndicatorStop;
-  end;
 
- (*FirstPrivate:=ToolBoxList.Count;
-   { looks for the same data in the currently loaded file }
-  if g_Form1.Explorer.Roots.Count>0 then
-   BrowseToolBoxes(g_Form1.Explorer.Roots[0], ToolBoxName, ToolBoxList);*)
+  (*FirstPrivate:=ToolBoxList.Count;
+    { looks for the same data in the currently loaded file }
+   if g_Form1.Explorer.Roots.Count>0 then
+    BrowseToolBoxes(g_Form1.Explorer.Roots[0], ToolBoxName, ToolBoxList);*)
 
-   { adds the toolboxes found }
-  ProgressIndicatorStart(5440, ToolBoxList.Count+1);
-  try
-  {NodeToSelect:=Nil;}
-   SetupInfo:=QToolBox.Create('', Nil);
-   SetupInfo.AddRef(+1);
-   for I:=0 to ToolBoxList.Count-1 do
-    try
-     ProgressIndicatorIncrement;
-     Q:=ToolBoxList[I] as QToolBox;
-     for J:=0 to Q.Specifics.Count-1 do
-      begin
-       S:=Q.Specifics[J];
-       P:=Pos('=',S);
-       SetupInfo.Specifics.Values[Copy(S,1,P-1)]:=Copy(S,P+1,MaxInt);
-      end;
-     Root:=Explorer.FindRootFromSpec(Q);
-     if Root=Nil then
-      Continue;  { no data }
-    {Node:=}Explorer.AddRoot(Root);
-    {if (I>=FirstPrivate) and (NodeToSelect=Nil) then
-      NodeToSelect:=Node;}
-    except
-     on E: Exception do
-      g_Form1.AppException(Self, E);
+    { adds the toolboxes found }
+   ProgressIndicatorStart(5440, ToolBoxList.Count+1);
+   try
+   {NodeToSelect:=Nil;}
+    SetupInfo:=QToolBox.Create('', Nil);
+    SetupInfo.AddRef(+1);
+    for I:=0 to ToolBoxList.Count-1 do
+     try
+      ProgressIndicatorIncrement;
+      Q:=ToolBoxList[I] as QToolBox;
+      for J:=0 to Q.Specifics.Count-1 do
+       begin
+        S:=Q.Specifics[J];
+        P:=Pos('=',S);
+        SetupInfo.Specifics.Values[Copy(S,1,P-1)]:=Copy(S,P+1,MaxInt);
+       end;
+      Root:=Explorer.FindRootFromSpec(Q);
+      if Root=Nil then
+       Continue;  { no data }
+      {Node:=}Explorer.AddRoot(Root);
+      {if (I>=FirstPrivate) and (NodeToSelect=Nil) then
+        NodeToSelect:=Node;}
+     except
+      on E: Exception do
+       g_Form1.AppException(Self, E);
+     end;
+    finally
+     ProgressIndicatorStop;
     end;
   finally
    ToolBoxList.Free;
   end;
-  ProgressIndicatorIncrement;
+
    { setup default position and various parameters }
   I:=Round(SetupInfo.GetFloatSpec('Left', 0));
   if I>0 then
    begin
+    Explorer.CreateSplitter;
     Explorer.Align:=alLeft;
     Explorer.Width:=I;
     Panel2.Show;
