@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.418  2008/07/24 15:19:48  danielpharos
+//Added single-instance option to config.
+//
 //Revision 1.417  2008/07/24 15:08:55  danielpharos
 //Oops: forgot to remove now obsolete line in last commit
 //
@@ -9789,45 +9792,23 @@ QQRKSRC1
       }
       Model.qkl =
       {
-        Root = "Model Root:mr"
-        Model Root:mr =
-        {
-          Misc Group:mg =
-          {
-            type = $06
-          }
-          Component:mc =
-          {
-            show = $01
-            Skins:sg =
-            {
-              type = $02
-              Skin0.pcx =
-              {
-                ;incl = "EmptyImage"
-              }
-            }
-            Frames:fg =
-            {
-              type = $01
-              newframe:mf =
-              {
-                Vertices = ''
-              }
-            }
-            Skeleton:bg =
-            {
-              type = $05
-            }
-          }
-        }
+        ;incl = "NewModel"
       }
-      Pak.pak = { }
-      ZIP Archive.zip = { }
-      PCX Image.pcx = { ;incl = "EmptyImage" }
-      TGA Image.tga = { ;incl = "EmptyImage" }
-      JPEG Image.jpg = { ;incl = "EmptyImage" }
-      Windows Bitmap Image.bmp = { ;incl = "EmptyImage" }
+      PAK and Archives.qtxfolder = {
+        Pak.pak = { }
+        ZIP Archive.zip = { }
+        GCF.gcf = { }
+      }
+      Image and Textures.qtxfolder =
+      {
+        PCX Image.pcx = { ;incl = "EmptyImage" }
+        TGA Image.tga = { ;incl = "EmptyImage" }
+        JPEG Image.jpg = { ;incl = "EmptyImage" }
+        Windows Bitmap Image.bmp = { ;incl = "EmptyImage" }
+        PNG Image.png = { ;incl = "EmptyImage" }
+        VTF Image.vtf = { ;incl = "EmptyImage" }
+        DDS Image.dds = { ;incl = "EmptyImage" }
+      }
       Text.txt = { }
       Configuration file.cfg = { }
       Sound.wav = { }
@@ -10606,6 +10587,48 @@ QQRKSRC1
       ;incl = "NewMap"     // NewMap:incl is read from one of the files DataXX.qrk
     }
   }
+  NewModel1:incl =
+  {
+    New model.qkl =
+    {
+      ;incl = "NewModel"     // NewModel:incl is read from one of the files DataXX.qrk
+    }
+  }
+  NewModel:incl = 
+  {
+    Root = "Model Root:mr"
+    Model Root:mr =
+    {
+      Misc Group:mg =
+      {
+        type = $06
+      }
+      Component:mc =
+      {
+        show = $01
+        Skins:sg =
+        {
+          type = $02
+          Skin0.pcx =
+          {
+            ;incl = "EmptyImage"
+          }
+        }
+        Frames:fg =
+        {
+          type = $01
+          newframe:mf =
+          {
+            Vertices = ''
+          }
+        }
+        Skeleton:bg =
+        {
+          type = $05
+        }
+      }
+    }
+  }
   EmptyGeneric:incl =
   {
     Size = '64 64'
@@ -10812,22 +10835,15 @@ QQRKSRC1
                $5C77C777CC488880055555555548870666608888888800666666666666666666
         Create = "NewMap1"   // the button creates a copy of NewMap1:incl
       }
-    //  image:tbbtn = {
-    //    Typ  = "N"
-    //    Hint = "new .pcx image (you cannot edit it yet)"
-    //    Icon = $66000000000000066687777777775506668FFFFFFFFFF506668FF557FFFFF706
-    //           $668FFF55577FF706668FFFF500F77706668FFFFF00FFF706668FF002200FF706
-    //           $668F5990AA00F706668F5F90AA000706668FF55AAA200506668FFF2BAA270006
-    //           $6685FF222227000666855FFFFFF7860066888888888866056666666666666666
-    //    Create = "NewPcx1"
-    //    NewPcx1:incl =
-    //    {
-    //     New image.pcx =
-    //      {
-    //
-    //      }
-    //    }
-    //  }
+      model:tbbtn = {
+        Typ  = "N"     // opens a new copy of an object in QuArK
+        Hint[] = "new model"
+        Icon = $66600888888811186000444444441191607878704CC411916078787087781191
+               $6000000058511171087070780383119160877780538311916608780558821191
+               $6660805888251191666008777777811844444444444878885C7F777CCC487770
+               $5C77C777CC488880055555555548870666608888888800666666666666666666
+        Create = "NewModel1"   // the button creates a copy of NewModel1:incl
+      }
       sep1:tbbtn = {Typ="S" Txt = ""}    // separator line
       group:tbbtn = {
         Typ  = "C"     // object creation
@@ -11389,5 +11405,3 @@ QQRKSRC1
   }
 
 }
-
-
