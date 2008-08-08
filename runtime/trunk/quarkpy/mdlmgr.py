@@ -425,25 +425,29 @@ class ModelLayout(BaseLayout):
         sfbtn.caption = cap
 
         try:
-            # This trys to use a filetype:form, in the Defaults.qrk "Default forms.qctx" section to create this form.
-            DummyItem = sl[0]
-            while (DummyItem is not None):
-                if DummyItem.type == ":mr":
-                    DummyItem = None
-                    break
-                if DummyItem.type == ":mc":
-                    break
-                else:
-                    DummyItem = DummyItem.parent
-            if DummyItem is None:
-                formobj = None
-                sl = []
+            if sl[0].type == ":bone":
+                import mdlentities
+                formobj = mdlentities.CallManager("dataformname", sl[0])
             else:
-                sl[0] = DummyItem
-                try:
-                    formobj = quarkx.getqctxlist(':form', sfbtn.caption.strip(".") + sl[0].type.replace(":","_"))[-1]
-                except:
+                # This trys to use a filetype:form, in the Defaults.qrk "Default forms.qctx" section to create this form.
+                DummyItem = sl[0]
+                while (DummyItem is not None):
+                    if DummyItem.type == ":mr":
+                        DummyItem = None
+                        break
+                    if DummyItem.type == ":mc":
+                        break
+                    else:
+                        DummyItem = DummyItem.parent
+                if DummyItem is None:
                     formobj = None
+                    sl = []
+                else:
+                    sl[0] = DummyItem
+                    try:
+                        formobj = quarkx.getqctxlist(':form', sfbtn.caption.strip(".") + sl[0].type.replace(":","_"))[-1]
+                    except:
+                        formobj = None
         except:
             formobj = None
             sl = []
@@ -474,7 +478,7 @@ class ModelLayout(BaseLayout):
                 cap = "set model type"
         sfbtn.caption = cap
         btnlist = self.mpp.btnpanel.buttons
-        if sl:
+        if sl and sl[0].type != ":bone":
             if sfbtn.caption == ".lwo":
                 if not sl[0].dictspec.has_key('lwo_NAME'):
                     sl[0]['lwo_NAME'] = sl[0].dictitems['Skins:sg'].subitems[0].name
@@ -523,26 +527,30 @@ class ModelLayout(BaseLayout):
         sl = self.explorer.sellist
         sfbtn = self.buttons["sf"]
         try:
-            DummyItem = sl[0]
-            while (DummyItem is not None):
-                if DummyItem.type == ":mr":
-                    DummyItem = None
-                    formobj = None
-                    sl = []
-                    self.dataform.setdata(sl, formobj)
-                    return
-                if DummyItem.type == ":mc":
-                    break
-                else:
-                    DummyItem = DummyItem.parent
-            if DummyItem is None:
-                formobj = None
+            if sl[0].type == ":bone":
+                import mdlentities
+                formobj = mdlentities.CallManager("dataformname", sl[0])
             else:
-                sl[0] = DummyItem
-                try:
-                    formobj = quarkx.getqctxlist(':form', sfbtn.caption.strip(".") + sl[0].type.replace(":","_"))[-1]
-                except:
+                DummyItem = sl[0]
+                while (DummyItem is not None):
+                    if DummyItem.type == ":mr":
+                        DummyItem = None
+                        formobj = None
+                        sl = []
+                        self.dataform.setdata(sl, formobj)
+                        return
+                    if DummyItem.type == ":mc":
+                        break
+                    else:
+                        DummyItem = DummyItem.parent
+                if DummyItem is None:
                     formobj = None
+                else:
+                    sl[0] = DummyItem
+                    try:
+                        formobj = quarkx.getqctxlist(':form', sfbtn.caption.strip(".") + sl[0].type.replace(":","_"))[-1]
+                    except:
+                        formobj = None
             self.dataform.setdata(sl, formobj) # Try to use a file type:form data returned to fill this form.
         except:
             formobj = None # If no form data is found, then set to None and just go on, there is no form for this item.
@@ -596,23 +604,27 @@ class ModelLayout(BaseLayout):
         sl = self.explorer.sellist
         sfbtn = self.buttons["sf"]
         try:
-            DummyItem = sl[0]
-            while (DummyItem is not None):
-                if DummyItem.type == ":mr":
-                    DummyItem = None
-                    break
-                if DummyItem.type == ":mc":
-                    break
-                else:
-                    DummyItem = DummyItem.parent
-            if DummyItem is None:
-                formobj = None
+            if sl[0].type == ":bone":
+                import mdlentities
+                formobj = mdlentities.CallManager("dataformname", sl[0])
             else:
-                sl[0] = DummyItem
-                try:
-                    formobj = quarkx.getqctxlist(':form', sfbtn.caption.strip(".") + sl[0].type.replace(":","_"))[-1]
-                except:
+                DummyItem = sl[0]
+                while (DummyItem is not None):
+                    if DummyItem.type == ":mr":
+                        DummyItem = None
+                        break
+                    if DummyItem.type == ":mc":
+                        break
+                    else:
+                        DummyItem = DummyItem.parent
+                if DummyItem is None:
                     formobj = None
+                else:
+                    sl[0] = DummyItem
+                    try:
+                        formobj = quarkx.getqctxlist(':form', sfbtn.caption.strip(".") + sl[0].type.replace(":","_"))[-1]
+                    except:
+                        formobj = None
         except:
             formobj = None # If no form data is found, then set to None and just go on, there is no form for this item.
         if formobj is not None:
@@ -859,19 +871,12 @@ class ModelLayout(BaseLayout):
 
     def selectbone(self, bone):
         "This is when you select a particular bone(s) in the 'Misc' group of the Tree-view."
-        global startup
-        startup = 0
-        self.editor.ModelVertexSelList = []
-        self.editor.SkinVertexSelList = []
-        self.editor.ModelFaceSelList = []
-        self.editor.EditorObjectList = []
-        self.editor.SkinFaceSelList = []
-        self.editor.SelCommonTriangles = []
-        self.editor.SelVertexes = []
-        self.editor.Root.currentcomponent.filltris = []
-        from mdlhandles import SkinView1
-        if SkinView1 is not None:
-            SkinView1.invalidate()
+
+        c = self.componentof(bone)
+        if c is not None:
+            self.selectcomponent(c)
+            c.setframe(bone)
+            c.setparentframes(bone)
 
     def selectframe(self, frame):
         "This is when you select a particular frame in the 'Frames' group of the Tree-view."
@@ -934,7 +939,7 @@ class ModelLayout(BaseLayout):
                 self.selectcgroup(fs)
             elif fs.type == ':sg':     # skin group
                 self.selectcgroup(fs)
-            elif fs.type == ':bone':   # bone (Misc group)
+            elif fs.type == ':bone':   # individual bone
                 self.selectbone(fs)
             elif fs.type == ':bg':     # bone group
                 self.selectcgroup(fs)
@@ -995,6 +1000,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.73  2008/07/25 22:46:24  cdunde
+#Additional fix needed for first frame reselection to cover for multiple components..
+#
 #Revision 1.72  2008/07/25 00:23:55  cdunde
 #Fixed component's first frame not being set sometimes when the component's main folder is selected.
 #

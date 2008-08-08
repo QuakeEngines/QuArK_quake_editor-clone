@@ -54,7 +54,8 @@ class EntityManager:
         import qhandles
         if view.info["viewname"] == "XY":
             if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh2"] == "1":
-                if (o.type == ":mr") or (o.type == ":mg") or( o.type == ":bone"):
+    #            if (o.type == ":mr") or (o.type == ":mg") or( o.type == ":bone"):
+                if (o.type == ":mr") or (o.type == ":mg"):
                     o = editor.Root
                 else:
                     o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
@@ -65,7 +66,8 @@ class EntityManager:
 
         elif view.info["viewname"] == "XZ":
             if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh4"] == "1":
-                if (o.type == ":mr") or (o.type == ":mg") or( o.type == ":bone"):
+     #           if (o.type == ":mr") or (o.type == ":mg") or( o.type == ":bone"):
+                if (o.type == ":mr") or (o.type == ":mg"):
                     o = editor.Root
                 else:
                     o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
@@ -76,7 +78,8 @@ class EntityManager:
 
         elif view.info["viewname"] == "YZ":
             if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh3"] == "1":
-                if (o.type == ":mr") or (o.type == ":mg") or( o.type == ":bone"):
+     #           if (o.type == ":mr") or (o.type == ":mg") or( o.type == ":bone"):
+                if (o.type == ":mr") or (o.type == ":mg"):
                     o = editor.Root
                 else:
                     o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
@@ -87,7 +90,8 @@ class EntityManager:
 
         elif view.info["viewname"] == "editors3Dview":
             if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh1"] == "1":
-                if (o.type == ":mr") or (o.type == ":mg") or( o.type == ":bone"):
+     #           if (o.type == ":mr") or (o.type == ":mg") or( o.type == ":bone"):
+                if (o.type == ":mr") or (o.type == ":mg"):
                     o = editor.Root
                 else:
                     o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
@@ -102,7 +106,8 @@ class EntityManager:
 
         elif view.info["viewname"] == "3Dwindow":
             if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh5"] == "1":
-                if (o.type == ":mr") or (o.type == ":mg") or( o.type == ":bone"):
+    #            if (o.type == ":mr") or (o.type == ":mg") or( o.type == ":bone"):
+                if (o.type == ":mr") or (o.type == ":mg"):
                     o = editor.Root
                 else:
                     o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
@@ -126,7 +131,8 @@ class EntityManager:
         editor = mdleditor.mdleditor
         if view.info["viewname"] == "XY":
             if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh2"] == "1":
-                if (o.type == ":mr") or (o.type == ":mg") or( o.type == ":bone"):
+     #           if (o.type == ":mr") or (o.type == ":mg") or( o.type == ":bone"):
+                if (o.type == ":mr") or (o.type == ":mg"):
                     o = editor.Root
                 else:
                     o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
@@ -137,7 +143,8 @@ class EntityManager:
 
         elif view.info["viewname"] == "XZ":
             if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh4"] == "1":
-                if (o.type == ":mr") or (o.type == ":mg") or( o.type == ":bone"):
+    #            if (o.type == ":mr") or (o.type == ":mg") or( o.type == ":bone"):
+                if (o.type == ":mr") or (o.type == ":mg"):
                     o = editor.Root
                 else:
                     o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
@@ -148,7 +155,8 @@ class EntityManager:
 
         elif view.info["viewname"] == "YZ":
             if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh3"] == "1":
-                if (o.type == ":mr") or (o.type == ":mg") or( o.type == ":bone"):
+    #            if (o.type == ":mr") or (o.type == ":mg") or( o.type == ":bone"):
+                if (o.type == ":mr") or (o.type == ":mg"):
                     o = editor.Root
                 else:
                     o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
@@ -159,7 +167,8 @@ class EntityManager:
 
         elif view.info["viewname"] == "editors3Dview":
             if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh1"] == "1":
-                if (o.type == ":mr") or (o.type == ":mg") or( o.type == ":bone"):
+    #            if (o.type == ":mr") or (o.type == ":mg") or( o.type == ":bone"):
+                if (o.type == ":mr") or (o.type == ":mg"):
                     o = editor.Root
                 else:
                     o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
@@ -174,7 +183,8 @@ class EntityManager:
 
         elif view.info["viewname"] == "3Dwindow":
             if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh5"] == "1":
-                if (o.type == ":mr") or (o.type == ":mg") or( o.type == ":bone"):
+    #            if (o.type == ":mr") or (o.type == ":mg") or( o.type == ":bone"):
+                if (o.type == ":mr") or (o.type == ":mg"):
                     o = editor.Root
                 else:
                     o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
@@ -202,7 +212,9 @@ class EntityManager:
         pass
 
     def dataformname(o):
-        "The name of the data form to use for the Specific/Args page."
+        "The name of the data form, or the data form itself,"
+        "to use for the Specific/Args page. See 'class BoneType' below for example."
+        "Returns the data form for this type of object 'o' (a bone) to use for the Specific/Args page."
         return "Default" + o.type
 
     def menu(o, editor):
@@ -276,7 +288,7 @@ def ShowComp(m):
 
 def HideComp(m):
     ShowHideComp(0)
- 
+
 class ComponentType(EntityManager):
     "Model Component."
 
@@ -293,7 +305,6 @@ class ComponentType(EntityManager):
         import mdlmenus
         return CallManager("menubegin", o, editor) + mdlmenus.BaseMenu([o], editor) + [qmenu.sep, SC1, HC1]
  
-
     def handles(o, editor, view):
         "A Model's COMPONENT currentframe 'frame' MESH, each animation Frame has its own."
         frame = o.currentframe
@@ -338,46 +349,61 @@ class BoneType(EntityManager):
 
     def handlesopt(o, editor):
         h = []
+        s = None
         index = ""
-        if o["start_point"] is None:
-          o = quarkx.newobj("BoneFrame:bone")   # false internal object
+        try:
+            tmp = o.dictspec['start_point']
+        except AttributeError:
+            o['start_point'] = (0,0,0)
+        try:
+            tmp = o.dictspec['end_point']
+        except AttributeError:
+            endpoint = quarkx.vect(o.dictspec['start_point']) + quarkx.vect(8,2,2)
+            o['end_point'] = endpoint.tuple
 
-          start = quarkx.newobj('start_point')
-          end = quarkx.newobj('end_point')
-          startpoint = quarkx.newobj(str(quarkx.vect(0,0,0)))
-          endpoint = quarkx.newobj(str(quarkx.vect(8,2,2)))
-          start.appenditem(startpoint)
-          end.appenditem(endpoint)
-          o.appenditem(start)
-          o.appenditem(end)
-          start_p = quarkx.vect(0,0,0)
-          end_p = quarkx.vect(8,2,2)
-        else:
-          start_p = o.start_point
-          end_p = o.end_point
-        s = mdlhandles.BoneHandle(start_p)
+        s = mdlhandles.BoneHandle(quarkx.vect(o.dictspec['start_point']), o) # s is a BoneHandle instance.
+        e = mdlhandles.BoneHandle(quarkx.vect(o.dictspec['end_point']), o) # e is a BoneHandle instance.
+
+        if s is None:
+            return h
         if MapOption("HandleHints", SS_MODEL):
             s.hint = "Start of %s"%o.shortname
-        s.bone = o
         s.s_or_e = 0
         s.name = "Start of BoneFrame"
         s.index = index
         h = h + [s]
-
-        e = mdlhandles.BoneHandle(end_p)
+        # Finishes the end handle.
         if MapOption("HandleHints", SS_MODEL):
             e.hint = "End of %s"%o.shortname
-        e.bone = o
-        e.start_point = quarkx.vect(0,0,0)
-        e.end_point = quarkx.vect(8,2,2)
-        e.bone_length = None
         e.s_or_e = 1
         e.name = "End of BoneFrame"
         e.index = index
         h = h + [e]
         return h
-    
-# /AiV
+
+    def dataformname(o):
+        "Returns the data form for this type of object 'o' (a bone) to use for the Specific/Args page."
+
+        dlgdef = """
+        {
+          Help = "These are the Specific settings for a component's Bones."$0D0D22
+                 "classname"$22" - The name of the bone currently selected for setting."$0D22
+                 "Start color"$22" - Color to use for this bones Start handle's vertex group color."$0D
+                 "          Click the color selector button to the right and pick a color."$0D22
+                 "Start color"$22" - Color to use for this bones End handle's vertex group color."$0D
+                 "          Click the color selector button to the right and pick a color."
+          start_color: = {          Txt="Start color"  Hint="Color to use for this bones Start handle's vertex group color."$0D"Set the color by hand here or use the color selector button below."}
+          start_color: = {Typ="L"   Txt="Start color"  Hint="Color to use for this bones Start handle's vertex group color."$0D"Click the color selector button to the right and pick a color."}
+          end_color:   = {          Txt="End color"    Hint="Color to use for this bones End handle's vertex group color."$0D"Set the color by hand here or use the color selector button below."}
+          end_color:   = {Typ="L"   Txt="End color"    Hint="Color to use for this bones End handle's vertex group color."$0D"Click the color selector button to the right and pick a color."}
+        }
+        """
+
+        formobj = quarkx.newobj("bone:form")
+        formobj.loadtext(dlgdef)
+
+        return formobj
+
 
 #
 # Mappings between Internal Objects types and Entity Manager classes.
@@ -437,6 +463,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.27  2008/07/23 01:22:23  cdunde
+#Added function comment for clarity.
+#
 #Revision 1.26  2008/07/10 21:21:58  danielpharos
 #The model component icon changes to an X when you hide the component.
 #

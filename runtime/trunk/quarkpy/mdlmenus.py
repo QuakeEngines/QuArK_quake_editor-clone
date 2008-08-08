@@ -191,8 +191,19 @@ def MdlBackgroundMenu(editor, view=None, origin=None):
     if view is not None:
         if view.info["viewname"] != "skinview":
             import mdloptions
+            bonepop = qmenu.popup("Bone Commands", mdlhandles.BoneHandle(origin, None).menu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
             mdlfacepop = qmenu.popup("Face Commands", mdlhandles.ModelFaceHandle(origin).menu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
             vertexpop = qmenu.popup("Vertex Commands", mdlhandles.VertexHandle(origin).menu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
+            bonepop.state = qmenu.disabled
+            if len(editor.layout.explorer.sellist) >= 1:
+                import mdlmgr
+                for item in editor.layout.explorer.sellist:
+                    if item.type == ':bg' or item.type == ':bone':
+                        bonepop.state = qmenu.normal
+                    comp =  editor.layout.componentof(item)
+                    if comp != editor.Root.currentcomponent:
+                        bonepop.state = qmenu.disabled
+                        break
             if editor.layout.explorer.sellist == [] or quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1" or editor.layout.explorer.sellist[0].type != ":mf":
                 vertexpop.state = qmenu.disabled
             def backbmp1click(m, view=view, form=editor.form):
@@ -200,9 +211,9 @@ def MdlBackgroundMenu(editor, view=None, origin=None):
                 qbackbmp.MdlBackBmpDlg(form, view)
             backbmp1 = qmenu.item("Background image...", backbmp1click, "|Background image:\n\nWhen selected, this will open a dialog box where you can choose a .bmp image file to place and display in the 2D view that the cursor was in when the RMB was clicked.\n\nClick on the 'InfoBase' button below for full detailed information about its functions and settings.|intro.mapeditor.rmb_menus.noselectionmenu.html#background")
             if editor.ModelFaceSelList != []:
-                extra = extra + [qmenu.sep] + [mdlfacepop] + [vertexpop] + [Commands1] + [qmenu.sep] + [FaceSelOptions] + [VertexSelOptions] + [qmenu.sep] + TexModeMenu(editor, view) + [qmenu.sep, backbmp1]
+                extra = extra + [qmenu.sep, bonepop, mdlfacepop, vertexpop, Commands1, qmenu.sep, FaceSelOptions, VertexSelOptions, qmenu.sep] + TexModeMenu(editor, view) + [qmenu.sep, backbmp1]
             else:
-                extra = extra + [qmenu.sep] + [vertexpop] + [Commands1] + [qmenu.sep] + [FaceSelOptions] + [VertexSelOptions] + [qmenu.sep] + TexModeMenu(editor, view) + [qmenu.sep, backbmp1]
+                extra = extra + [qmenu.sep, bonepop, vertexpop, Commands1, qmenu.sep, FaceSelOptions, VertexSelOptions, qmenu.sep] + TexModeMenu(editor, view) + [qmenu.sep, backbmp1]
         else:
             def resetSkinview(menu, editor=editor, view=view):
                 viewWidth, viewHeight = view.clientarea
@@ -224,7 +235,7 @@ def MdlBackgroundMenu(editor, view=None, origin=None):
             ResetSkinView = qmenu.item("&Reset Skin-view", resetSkinview, "|Reset Skin-view:\n\nIf the model skinning image becomes 'lost', goes out of the Skin-view, you can use this function to reset the view and bring the model back to its starting position.|intro.modeleditor.skinview.html#funcsnmenus")
             skinviewcommands = qmenu.popup("Vertex Commands", mdlhandles.SkinHandle(origin, None, None, None, None, None, None).menu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
             skinviewoptions = qmenu.popup("Skin-view Options", mdlhandles.SkinHandle(origin, None, None, None, None, None, None).optionsmenu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
-            extra = [qmenu.sep] + [ResetSkinView] + [qmenu.sep] + [skinviewcommands, skinviewoptions]
+            extra = [qmenu.sep, ResetSkinView, qmenu.sep, skinviewcommands, skinviewoptions]
     return [Undo1] + extra
 
 
@@ -273,6 +284,9 @@ def BaseMenu(sellist, editor):
 #
 #
 #$Log$
+#Revision 1.32  2008/07/26 03:41:33  cdunde
+#Add functions to RMB menus.
+#
 #Revision 1.31  2008/07/15 23:16:26  cdunde
 #To correct typo error from MldOption to MdlOption in all files.
 #

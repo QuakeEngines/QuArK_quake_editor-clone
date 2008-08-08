@@ -226,6 +226,7 @@ class ModelEditor(BaseEditor):
         quarkx.setupsubset(SS_MODEL, "Options")["ExtrudeFaces"] = None
         quarkx.setupsubset(SS_MODEL, "Options")["ExtrudeBulkHeads"] = None
         quarkx.setupsubset(SS_MODEL, "Options")['VertexUVColor'] = None
+        quarkx.setupsubset(SS_MODEL, "Options")['HideBones'] = None
 
 
     def initmenu(self, form):
@@ -355,7 +356,7 @@ class ModelEditor(BaseEditor):
 
             NewSellist.append(HoldObject)
         try:
-            if (NewSellist[0].name.endswith(":mr") or NewSellist[0].name.endswith(":mg") or NewSellist[0].name.endswith(":bone")):
+            if (NewSellist[0].name.endswith(":mr") or NewSellist[0].name.endswith(":mg")):
                 pass
             else:
                 self.layout.explorer.sellist = NewSellist  # go around if bone is in the list
@@ -407,7 +408,7 @@ class ModelEditor(BaseEditor):
         if len(sellist)==0:
             return mdlmenus.MdlBackgroundMenu(self, view, origin)
         try:
-            if view is not None and (sellist[0].type != ':mr' and sellist[0].type != ':mg' and sellist[0].type != ':bone'):
+            if view is not None and (sellist[0].type != ':mr' and sellist[0].type != ':mg'):
                 return mdlmenus.MdlBackgroundMenu(self, view, origin)
         except:
             pass
@@ -1485,6 +1486,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.95  2008/07/26 04:57:37  cdunde
+#Applied new setting to avoid saved skins from showing on recent files menu.
+#
 #Revision 1.94  2008/07/26 03:41:33  cdunde
 #Add functions to RMB menus.
 #

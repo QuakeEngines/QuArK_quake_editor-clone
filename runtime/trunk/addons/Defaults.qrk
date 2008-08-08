@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.419  2008/08/07 15:23:47  danielpharos
+//Added a bunch of new file formats to the new files toolbox and added a new model button to the toolbar
+//
 //Revision 1.418  2008/07/24 15:19:48  danielpharos
 //Added single-instance option to config.
 //
@@ -4008,6 +4011,8 @@ QQRKSRC1
         FaceSelOutline              = $0080FF
         BackFaceColor1              = $FFFFFF
         BackFaceColor2              = $BABABA
+        BoneHandles                 = $0000FF
+        BoneLines                   = $FF0000
         SkinLines                   = $FF0000
         SkinDragLines               = $00F000
         SkinVertexSelListColor      = $0080C0
@@ -8005,6 +8010,8 @@ QQRKSRC1
           FaceSelOutline             = $0080FF
           BackFaceColor1             = $FFFFFF
           BackFaceColor2             = $BABABA
+          BoneHandles                 = $0000FF
+          BoneLines                   = $FF0000
           SkinLines                  = $FF0000
           SkinDragLines              = $00F000
           SkinVertexSelListColor     = $0080C0
@@ -8056,6 +8063,8 @@ QQRKSRC1
       FaceSelOutline:          = { Txt = "Selected Faces Outline Color" Typ = "LI" }
       BackFaceColor1:          = { Txt = "Back Faces Pattern - color 1" Typ = "LI" }
       BackFaceColor2:          = { Txt = "Back Faces Pattern - color 2" Typ = "LI" }
+      BoneHandles:             = { Txt = "Bone Handles" Typ = "LI" }
+      BoneLines:               = { Txt = "Bone Lines" Typ = "LI" }
       Sep4: =
       {
         Typ = "S"    // Separator
