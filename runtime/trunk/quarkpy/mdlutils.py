@@ -17,9 +17,26 @@ from qeditor import *
 from math import *
 
 
+
+#
+# Checks all values, in the same list position, of two tuples
+# and returns 1 if they are all nearly the same.
+# Used for comparing vectors for possible dragging together.
+#
+def checktuplepos(tuple1, tuple2):
+    for i in range(len(tuple1)):
+        if abs(tuple1[i] - tuple2[i]) < 0.0001:
+            if i == len(tuple1)-1:
+                return 1
+            continue
+        else:
+            return 0
+
+
+
 #
 # Calculate Position of a Point along the vector AC, Keeping L (Length)
-# This funciton is used to calculate the new position of a "Bone" drag handle.
+# This function is used to calculate the new position of a "Bone" drag handle.
 #
 def ProjectKeepingLength(A,C,L):
     def NormaliseVect(v1, v2):
@@ -1472,6 +1489,91 @@ def addcomponent(editor, option=2):
     undo.put(editor.Root, change_comp)
     editor.ok(undo, change_comp.shortname + " updated")
 
+# This function adds a :bone-object to the skeleton-group of comp at position pos
+def addbone(editor, comp, pos):
+    name = None
+    comparenbr = 0
+    compbones = comp.findallsubitems("", ':bone')      # get all bones
+    for item in compbones:
+        if item.shortname.startswith('NewBone'):
+            getnbr = item.shortname
+            getnbr = getnbr.replace('NewBone', '')
+            if getnbr == "":
+                nbr = 0
+            else:
+                nbr = int(getnbr)
+            if nbr > comparenbr:
+                comparenbr = nbr
+            nbr = comparenbr + 1
+            name = "NewBone" + str(nbr)
+    if name is None:
+        name = "NewBone1"
+    new_o_bone = quarkx.newobj(name + ":bone")
+    new_o_bone['start_point'] = pos.tuple
+    endpoint = pos + quarkx.vect(8,2,2)
+    new_o_bone['end_point'] = endpoint.tuple
+
+    new_comp = comp.copy()
+    compskeleton = new_comp.findallsubitems("", ':bg')[0]
+    compskeleton.appenditem(new_o_bone)
+    undo = quarkx.action()
+    undo.exchange(comp, new_comp)
+    editor.Root.currentcomponent = new_comp
+    editor.ok(undo, "add bone")
+
+# This function creates a new bone at the start or end (s_or_e) of bone
+def continue_bone(editor, bone, s_or_e = 0):
+    compskeleton = bone.parent  # get the bones group
+    name = None
+    comparenbr = 0
+    compbones = compskeleton.findallsubitems("", ':bone')      # get all bones
+    for item in compbones:
+        if item.shortname.startswith('NewBone'):
+            getnbr = item.shortname
+            getnbr = getnbr.replace('NewBone', '')
+            if getnbr == "":
+                nbr = 0
+            else:
+                nbr = int(getnbr)
+            if nbr > comparenbr:
+                comparenbr = nbr
+            nbr = comparenbr + 1
+            name = "NewBone" + str(nbr)
+    if name is None:
+        name = "NewBone1"
+    new_o_bone = quarkx.newobj(name + ":bone")
+    if s_or_e == 0:
+        new_o_bone['start_point'] = bone['start_point']
+    else:
+        new_o_bone['start_point'] = bone['end_point']
+    endpoint = quarkx.vect(new_o_bone['start_point']) + quarkx.vect(8,2,2)
+    new_o_bone['end_point'] = endpoint.tuple
+    undo = quarkx.action()
+    undo.put(compskeleton, new_o_bone)
+    editor.ok(undo, "continue bone")
+
+# This function attaches bone2 to bone1
+def attach_bones(editor, bone1, bone2):
+    new_o_bone = bone2.copy()
+    new_o_bone['start_point'] = bone1['end_point']
+    undo = quarkx.action()
+    undo.exchange(bone2, new_o_bone)
+    editor.ok(undo, "attach bones")
+
+#This function detaches bone2 from bone1
+def detach_bones(editor, bone1, bone2):
+    new_o_bone = bone2.copy()
+    if (checktuplepos(bone1['start_point'], bone2['start_point']) == 1) or (checktuplepos(bone1['end_point'], bone2['start_point']) == 1):
+        newpoint = quarkx.vect(bone2['start_point']) + quarkx.vect(.01,.01,.01)
+        new_o_bone['start_point'] = newpoint.tuple
+    else:
+        newpoint = quarkx.vect(bone2['end_point']) + quarkx.vect(.01,.01,.01)
+        new_o_bone['end_point'] = newpoint.tuple
+    undo = quarkx.action()
+    undo.exchange(bone2, new_o_bone)
+    editor.ok(undo, "detach bones")
+
+
 #
 # The 'option' value of 1 COPIES the currently selected faces of a component to another component (that is not Hidden).
 # The 'option' value of 2 MOVES the currently selected faces of a component to another component (that is not Hidden).
@@ -2581,6 +2683,10 @@ def TexturePixelLocation(editor, view, x, y, object=None):
 #
 #
 #$Log$
+#Revision 1.81  2008/07/25 22:57:23  cdunde
+#Updated component error checking and added frame matching and\or
+#duplicating with independent names to avoid errors with other functions.
+#
 #Revision 1.80  2008/07/24 23:34:12  cdunde
 #To fix non-ASCII character from causing python depreciation errors.
 #
