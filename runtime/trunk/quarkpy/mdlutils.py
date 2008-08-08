@@ -18,6 +18,80 @@ from math import *
 
 
 
+###############################
+#
+# Operational functions
+#
+###############################
+
+
+
+def checkinlist(tri, toberemoved):
+  for tbr in toberemoved:
+    if (tri == tbr):
+      return 1
+  return 0
+
+
+#
+# Is a given object still in the tree view = 1, or was it removed = 0 ?
+#
+def checktree(root, obj):
+    while obj is not root:
+        t = obj.parent
+        if t is None or not (obj in t.subitems):
+            return 0
+        obj = t
+    return 1
+
+
+#
+# The UserDataPanel class, overridden to be model-specific.
+#
+class MdlUserDataPanel(UserDataPanel):
+
+    def btnclick(self, btn):
+        #
+        # Send the click message to the module mdlbtns.
+        #
+        import mdlbtns
+        mdlbtns.mdlbuttonclick(btn)
+
+
+    #def drop(self, btnpanel, list, i, source):
+        #if len(list)==1 and list[0].type == ':g':
+        #    quarkx.clickform = btnpanel.owner
+        #    editor = mapeditor()
+        #    if editor is not None and source is editor.layout.explorer:
+        #        choice = quarkx.msgbox("You are about to create a new button from this group. Do you want the button to display a menu with the items in this group ?\n\nYES: you can pick up individual items when you click on this button.\nNO: you can insert the whole group in your map by clicking on this button.", MT_CONFIRMATION, MB_YES_NO_CANCEL)
+        #        if choice == MR_CANCEL:
+        #            return
+        #        if choice == MR_YES:
+        #            list = [group2folder(list[0])]
+        #UserDataPanel.drop(self, btnpanel, list, i, source)
+
+
+
+def find2DTriangles(comp, tri_index, ver_index):
+    "This function returns triangles and their index of a component's"
+    "mesh that have a common vertex position of the 2D drag view."
+    "This is primarily used for the Skin-view mesh drag option."
+    "See the mdlhandles.py file class SkinHandle, drag function for its use."
+    tris = comp.triangles
+    tris_out = {}
+    i = 0
+    for tri in tris:
+        for vtx in tri:
+            if str(vtx) == str(tris[tri_index][ver_index]):
+              if i == tri_index:
+                  break
+              else:
+                  tris_out[i] = tri
+                  break
+        i = i + 1
+    return tris_out
+
+
 #
 # Checks all values, in the same list position, of two tuples
 # and returns 1 if they are all nearly the same.
@@ -36,7 +110,8 @@ def checktuplepos(tuple1, tuple2):
 
 #
 # Calculate Position of a Point along the vector AC, Keeping L (Length)
-# This function is used to calculate the new position of a "Bone" drag handle.
+# This function is used to calculate the new position of a "Bone" drag handle
+# to keep a bone the same length during and after a drag movement.
 #
 def ProjectKeepingLength(A,C,L):
     def NormaliseVect(v1, v2):
@@ -185,6 +260,530 @@ def fixUpVertexNos(tris, index):
          x = fixTri(tri, index)
          new_tris = new_tris + [x]
     return new_tris
+
+
+
+###############################
+#
+# Vertex functions
+#
+###############################
+
+
+#
+# Add a vertex to the currently selected model component or frame(s)
+# at the position where the cursor was when the RMB was clicked.
+#
+def addvertex(editor, comp, pos):
+    new_comp = comp.copy()
+    compframes = new_comp.findallsubitems("", ':mf')   # find all frames
+    for compframe in compframes:
+        vtxs = compframe.vertices
+        vtxs = vtxs + [pos]
+        compframe.vertices = vtxs
+        compframe.compparent = new_comp # To allow frame relocation after editing.
+    undo = quarkx.action()
+    undo.exchange(comp, new_comp)
+    editor.ok(undo, "add vertex")
+
+
+#
+# Updates (drags) a vertex or vertexes in the 'editor.SkinVertexSelList' list, or similar list,
+#    of the currently selected model component or frame(s),
+#    to the same position of the 1st item in the 'editor.SkinVertexSelList' list.
+# The 'editor.SkinVertexSelList' list is a group of lists within a list.
+# If 'option 1' is used for the Skin-view then
+# each group list must be created in the manner below then added to the 'editor.SkinVertexSelList' list:
+#    editor.SkinVertexSelList + [[self.pos, self, self.tri_index, self.ver_index]]
+# if 'option 0' is used for the Model Editor then
+# each group list must be created in the manner below then added to the 'editor.ModelVertexSelList' list:
+#    editor.ModelVertexSelList + [[frame_vertices_index, view.proj(pos)]]
+#
+def replacevertexes(editor, comp, vertexlist, flags, view, undomsg, option=1, method=1):
+    "option=0 uses the ModelVertexSelList for the editor."
+    "option=1 uses the SkinVertexSelList for the Skin-view."
+    "option=2 uses the ModelVertexSelList for the editor and merges two, or more, selected vertexes."
+    "method=1 other selected vertexes move to the 'Base' vertex position of each tree-view selected 'frame', only applies to option=0."
+    "method=2 other selected vertexes move to the 'Base' vertex position of the 1st tree-view selected 'frame', only applies to option=0."
+
+    new_comp = comp.copy()
+
+    if option == 0:
+        compframes = new_comp.findallsubitems("", ':mf')   # get all frames
+        for compframe in compframes:
+            for listframe in editor.layout.explorer.sellist:
+                if compframe.name == listframe.name:
+                    old_vtxs = compframe.vertices
+                    if quarkx.setupsubset(SS_MODEL, "Options")['APVexs_Method1'] == "1":
+                        newpos = old_vtxs[vertexlist[0][0]]
+                    elif quarkx.setupsubset(SS_MODEL, "Options")['APVexs_Method2'] == "1":
+                        newpos = editor.layout.explorer.sellist[0].vertices[vertexlist[0][0]]
+                    else:
+                        newpos = old_vtxs[vertexlist[0][0]]
+                    for vtx in vertexlist:
+                        if vtx == vertexlist[0]:
+                            continue
+                        old_vtxs[vtx[0]] = newpos
+                        compframe.vertices = old_vtxs
+            compframe.compparent = new_comp # To allow frame relocation after editing.
+        undo = quarkx.action()
+        undo.exchange(comp, new_comp)
+        editor.ok(undo, undomsg)
+
+    elif option == 1:
+        tris = new_comp.triangles
+        try:
+            tex = comp.currentskin
+            texWidth,texHeight = tex["Size"]
+        except:
+            texWidth,texHeight = view.clientarea
+
+        if comp.currentskin is not None:
+            newpos = vertexlist[0][0] + quarkx.vect(texWidth*.5, texHeight*.5, 0)
+        else:
+            newpos = vertexlist[0][0] + quarkx.vect(int((texWidth*.5) +.5), int((texHeight*.5) -.5), 0)
+
+        for triindex in range(len(tris)):
+            tri = tris[triindex]
+            for item in vertexlist:
+                if triindex == item[2]:
+                    for j in range(len(tri)):
+                        if j == item[3]:
+                            if j == 0:
+                                newtriangle = ((tri[j][0], int(newpos.tuple[0]), int(newpos.tuple[1])), tri[1], tri[2])
+                            elif j == 1:
+                                newtriangle = (tri[0], (tri[j][0], int(newpos.tuple[0]), int(newpos.tuple[1])), tri[2])
+                            else:
+                                newtriangle = (tri[0], tri[1], (tri[j][0], int(newpos.tuple[0]), int(newpos.tuple[1])))
+                            tris[triindex] = newtriangle
+        new_comp.triangles = tris
+        compframes = new_comp.findallsubitems("", ':mf')   # get all frames
+        for compframe in compframes:
+            compframe.compparent = new_comp # To allow frame relocation after editing.
+        undo = quarkx.action()
+        undo.exchange(comp, new_comp)
+        editor.ok(undo, undomsg)
+
+    elif option == 2:
+        tris = new_comp.triangles
+        compframes = new_comp.findallsubitems("", ':mf')   # get all frames
+        unusedvtxs = []
+        for vtx in range(len(vertexlist)):
+            if vtx == 0:
+                continue
+            unusedvtxs = unusedvtxs + [vertexlist[vtx][0]]
+        newvertnumbers = []
+        newvertoffset = 0
+        old_vtxs = comp.currentframe.vertices
+        for v in range(len(old_vtxs)):
+            if v == vertexlist[0][0]:
+                newindex = v + newvertoffset
+            if v in unusedvtxs:
+                newvertoffset = newvertoffset - 1
+            newvertnumbers = newvertnumbers + [v + newvertoffset]
+        for v in range(len(vertexlist)):
+            newvertnumbers[vertexlist[v][0]] = newindex
+        for triindex in range(len(tris)):
+            tri = tris[triindex]
+            newtriangle = ((newvertnumbers[tri[0][0]], tri[0][1], tri[0][2]), (newvertnumbers[tri[1][0]], tri[1][1], tri[1][2]), (newvertnumbers[tri[2][0]], tri[2][1], tri[2][2]))
+            if newtriangle[0][0] == newtriangle[1][0] or newtriangle[1][0] == newtriangle[2][0] or newtriangle[2][0] == newtriangle[0][0]:
+                quarkx.msgbox("Improper Selection!\n\nYou can not merge two\nvertexes of the same triangle.", MT_ERROR, MB_OK)
+                return None, None
+            tris[triindex] = newtriangle
+        unusedvtxs.sort()
+        unusedvtxs.reverse()
+        vtxs = []
+        for compframe in compframes:
+            old_vtxs = compframe.vertices
+            for index in range(len(unusedvtxs)):
+                vtxs = old_vtxs[:unusedvtxs[index]] + old_vtxs[unusedvtxs[index]+1:]
+                old_vtxs = vtxs
+
+            compframe.vertices = vtxs
+            compframe.compparent = new_comp # To allow frame relocation after editing.
+
+        new_comp.triangles = tris
+        editor.ModelVertexSelList = []
+        undo = quarkx.action()
+        undo.exchange(comp, new_comp)
+        editor.ok(undo, undomsg)
+
+
+#
+# remove a vertex from a component
+#
+def removevertex(comp, index, all3=0):
+    editor = mapeditor()
+    if editor is None:
+        return
+
+    new_comp = comp.copy() # create a copy to edit (we store the old one in the undo list)
+    tris = new_comp.triangles
+    #### 1) find all triangles that use vertex 'index' and delete them.
+    if all3 == 1:
+        index = editor.ModelVertexSelList[0][0]
+    toBeRemoved = findTriangles(comp, index)
+    new_tris = []
+    for tri in tris:
+        p = checkinlist(tri, toBeRemoved)
+        if (p==0):
+            new_tris = new_tris + [ tri ]
+    
+    if all3 == 1:
+        new_tris = []
+        for tri in tris:
+            if (editor.ModelVertexSelList[0][0] == tri[0][0]) and (editor.ModelVertexSelList[1][0] == tri[1][0]) and (editor.ModelVertexSelList[2][0] == tri[2][0]):
+                index = editor.ModelVertexSelList[0][0]
+                continue
+            elif (editor.ModelVertexSelList[0][0] == tri[0][0]) and (editor.ModelVertexSelList[2][0] == tri[1][0]) and (editor.ModelVertexSelList[1][0] == tri[2][0]):
+                index = editor.ModelVertexSelList[0][0]
+                continue
+            elif (editor.ModelVertexSelList[1][0] == tri[0][0]) and (editor.ModelVertexSelList[2][0] == tri[1][0]) and (editor.ModelVertexSelList[0][0] == tri[2][0]):
+                index = editor.ModelVertexSelList[1][0]
+                continue
+            elif (editor.ModelVertexSelList[1][0] == tri[0][0]) and (editor.ModelVertexSelList[0][0] == tri[1][0]) and (editor.ModelVertexSelList[2][0] == tri[2][0]):
+                index = editor.ModelVertexSelList[1][0]
+                continue
+            elif (editor.ModelVertexSelList[2][0] == tri[0][0]) and (editor.ModelVertexSelList[1][0] == tri[1][0]) and (editor.ModelVertexSelList[0][0] == tri[2][0]):
+                index = editor.ModelVertexSelList[2][0]
+                continue
+            elif (editor.ModelVertexSelList[2][0] == tri[0][0]) and (editor.ModelVertexSelList[0][0] == tri[1][0]) and (editor.ModelVertexSelList[1][0] == tri[2][0]):
+                index = editor.ModelVertexSelList[2][0]
+                continue
+            else:
+                new_tris = new_tris + [ tri ]
+
+    #### 2) loop through all frames and delete unused vertex(s).
+    if all3 == 1:
+        vertexestoremove = []
+        for vertex in editor.ModelVertexSelList:
+            vtxcount = 0
+            for tri in tris:
+                for vtx in tri:
+                    if vtx[0] == vertex[0]:
+                        vtxcount = vtxcount + 1
+            if vtxcount > 1:
+                pass
+            else:
+                vertexestoremove = vertexestoremove + [vertex]
+        compframes = new_comp.findallsubitems("", ':mf')   # find all frames
+        for unusedvertex in vertexestoremove:
+            unusedindex = unusedvertex[0]
+            for compframe in compframes: 
+                old_vtxs = compframe.vertices
+                vtxs = old_vtxs[:unusedindex]
+                compframe.vertices = vtxs
+                compframe.compparent = new_comp # To allow frame relocation after editing.
+        new_tris = fixUpVertexNos(new_tris, index)
+        new_comp.triangles = new_tris
+    else:
+        enew_tris = fixUpVertexNos(new_tris, index)
+        new_comp.triangles = enew_tris
+        compframes = new_comp.findallsubitems("", ':mf')   # find all frames
+        for compframe in compframes: 
+            old_vtxs = compframe.vertices
+            vtxs = old_vtxs[:index] + old_vtxs[index+1:]
+            compframe.vertices = vtxs
+            compframe.compparent = new_comp # To allow frame relocation after editing.
+
+    #### 3) re-build all views
+    undo = quarkx.action()
+    undo.exchange(comp, new_comp)
+    if all3 == 1:
+        editor.ok(undo, "remove triangle")
+        editor.ModelVertexSelList = []
+    else:
+        editor.ok(undo, "remove vertex")
+        editor.ModelVertexSelList = []
+
+
+
+###############################
+#
+# Triangle & Face functions
+#
+###############################
+
+
+#
+# Add a triangle to a given component
+#
+def addtriangle(editor):
+    comp = editor.Root.currentcomponent
+    if (comp is None):
+        return
+
+    v1 = editor.ModelVertexSelList[0][0]
+    v2 = editor.ModelVertexSelList[1][0]
+    v3 = editor.ModelVertexSelList[2][0]
+
+    from mdlhandles import SkinView1
+    if quarkx.setupsubset(SS_MODEL, "Options")['SkinFrom3Dview'] == "1" or SkinView1 is None:
+        for v in editor.layout.views:
+            if v.info["viewname"] == "editors3Dview":
+                cordsview = v
+    else:
+
+        try:
+            tex = comp.currentskin
+            texWidth,texHeight = tex["Size"]
+            if quarkx.setupsubset(SS_MODEL, "Options")['UseSkinViewScale'] == "1":
+                SkinViewScale = SkinView1.info["scale"]
+            else:
+                SkinViewScale = 1
+        except:
+            texWidth,texHeight = SkinView1.clientarea
+            SkinViewScale = 1
+    if quarkx.setupsubset(SS_MODEL, "Options")['SkinFrom3Dview'] == "1" or SkinView1 is None:
+        s1 = int(cordsview.proj(editor.ModelVertexSelList[0][1]).tuple[0])*.025
+        t1 = -int(cordsview.proj(editor.ModelVertexSelList[0][1]).tuple[1])*.025
+        s2 = int(cordsview.proj(editor.ModelVertexSelList[1][1]).tuple[0])*.025
+        t2 = -int(cordsview.proj(editor.ModelVertexSelList[1][1]).tuple[1])*.025
+        s3 = int(cordsview.proj(editor.ModelVertexSelList[2][1]).tuple[0])*.025
+        t3 = -int(cordsview.proj(editor.ModelVertexSelList[2][1]).tuple[1])*.025
+    else:
+        s1 = int(editor.ModelVertexSelList[0][1].tuple[0]+int(texWidth*.5))*SkinViewScale
+        t1 = int(editor.ModelVertexSelList[0][1].tuple[1]-int(texHeight*.5))*SkinViewScale
+        s2 = int(editor.ModelVertexSelList[1][1].tuple[0]+int(texWidth*.5))*SkinViewScale
+        t2 = int(editor.ModelVertexSelList[1][1].tuple[1]-int(texHeight*.5))*SkinViewScale
+        s3 = int(editor.ModelVertexSelList[2][1].tuple[0]+int(texWidth*.5))*SkinViewScale
+        t3 = int(editor.ModelVertexSelList[2][1].tuple[1]-int(texHeight*.5))*SkinViewScale
+
+    if findTriangle(comp, v1, v2, v3) is not None:
+        quarkx.msgbox("Improper Selection!\n\nA triangle using these 3 vertexes already exist.\n\nSelect at least one different vertex\nto make a new triangle with.\n\nTo 'Un-pick' a vertex from the 'Pick' list\nplace your cursor over that vertex,\nRMB click and select 'Pick Vertex'.\nThen you can pick another vertex to replace it.", MT_ERROR, MB_OK)
+        return
+
+    tris = comp.triangles
+
+    tris = tris + [((v1,s1,t1),(v2,s2,t2),(v3,s3,t3))] # This is where the 'actual' texture positions s and t are needed to add to the triangles vertexes.
+
+    new_comp = comp.copy()
+    new_comp.triangles = tris
+    new_comp.currentskin = editor.Root.currentcomponent.currentskin
+    new_comp.currentframe = editor.Root.currentcomponent.currentframe
+    compframes = new_comp.findallsubitems("", ':mf')   # get all frames
+    for compframe in compframes:
+        compframe.compparent = new_comp # To allow frame relocation after editing.
+    undo = quarkx.action()
+    undo.exchange(comp, new_comp)
+    editor.Root.currentcomponent = new_comp
+    editor.ok(undo, "add triangle")
+    if SkinView1 is not None:
+        SkinView1.invalidate()
+
+
+#
+# Remove a triangle ,using its triangle index, from the current component
+#
+def removeTriangle(editor, comp, index):
+    if (index is None):
+        return
+    todo = quarkx.msgbox("Do you also want to\nremove the 3 vertexes?",MT_CONFIRMATION, MB_YES_NO_CANCEL)
+    if todo == MR_CANCEL:
+        return
+    if todo == MR_YES:
+        vertexestoremove = []
+        for vertex in editor.ModelVertexSelList:
+            vtxcount = 0
+            tris = comp.triangles
+            for tri in tris:
+                for vtx in tri:
+                    if vtx[0] == vertex[0]:
+                        vtxcount = vtxcount + 1
+            if vtxcount > 1:
+                pass
+            else:
+                vertexestoremove = vertexestoremove + [vertex]
+        if len(vertexestoremove) == 0:
+            pass
+        else:
+            removevertex(comp, index, 1)
+            return
+    new_comp = comp.copy()
+    old_tris = new_comp.triangles
+    tris = old_tris[:index] + old_tris[index+1:]
+    new_comp.triangles = tris
+    compframes = new_comp.findallsubitems("", ':mf')   # get all frames
+    for compframe in compframes:
+        compframe.compparent = new_comp # To allow frame relocation after editing.
+    undo = quarkx.action()
+    undo.exchange(comp, new_comp)
+    editor.ok(undo, "remove triangle")
+
+
+#
+# Remove a triangle ,using its vertexes, from the current component
+#
+def removeTriangle_v3(editor):
+    comp = editor.Root.currentcomponent
+    v1 = editor.ModelVertexSelList[0][0]
+    v2 = editor.ModelVertexSelList[1][0]
+    v3 = editor.ModelVertexSelList[2][0]
+    removeTriangle(editor, comp, findTriangle(comp, v1,v2,v3))
+
+
+#
+# The 'option' value of 1 COPIES the currently selected faces of a component to another component (that is not Hidden).
+# The 'option' value of 2 MOVES the currently selected faces of a component to another component (that is not Hidden).
+# This function will also remove the selected faces and unused vertexes from the original component.
+# The 'option' value of 3 DELETES the currently selected faces of a component.
+# This function will also remove any unused vertexes of those faces from that component.
+#
+def movefaces(editor, movetocomponent, option=2):
+    comp = editor.Root.currentcomponent
+
+    # This section does a selection test and gives an error message box if needed.
+    for item in editor.layout.explorer.sellist:
+        if item.parent.parent.name != comp.name:
+            quarkx.msgbox("IMPROPER SELECTION !\n\nYou need to select a frame && faces from\none component to move them to another component.\n\nYou have selected items that are not\npart of the ''"+editor.Root.currentcomponent.shortname+"'' Frames group.\nPlease un-select these items.\n\nAction Canceled.", MT_ERROR, MB_OK)
+            return
+
+    # These are things that we need to setup first for use later on.
+    temp_list = []
+    remove_triangle_list = []
+    remove_vertices_list = []
+
+    # Now we start creating our data copies to work with and the final "ok" swapping function at the end.
+    tris = comp.triangles
+    change_comp = comp.copy()
+    if option < 3:
+        new_comp = editor.Root.dictitems[movetocomponent + ':mc'].copy()
+
+    # This section creates the "remove_triangle_list" from the ModelFaceSelList which is already
+    #    in ascending numerical order but may have duplicate tri_index numbers that need to be removed.
+    # The order also needs to be descending so when triangles are removed from another list it
+    #    does not select an improper triangle due to list items shifting forward numerically.
+    # The "remove_triangle_list" is used to re-create the current component.triangles and new_comp.triangles.
+    for tri_index in reversed(editor.ModelFaceSelList):
+        if tri_index in remove_triangle_list:
+            pass
+        else:
+            remove_triangle_list = remove_triangle_list + [tri_index]
+
+    # This section creates the "remove_vertices_list" to be used
+    #    to re-create the current component's frame.vertices.
+    # It also skips over any duplicated vertex_index numbers of the triangles to be moved
+    #    to the new_comp and\or removed from the original component if 'option' calls to.
+    for tri_index in remove_triangle_list:
+        for vtx in range(len(tris[tri_index])):
+            if tris[tri_index][vtx][0] in temp_list:
+                pass
+            else:
+                temp_list.append(tris[tri_index][vtx][0])
+
+    # This section sorts the "remove_vertices_list" numerically in ascending order then
+    # recreates it in descending order for the same reason that the triangles above were done.
+    temp_list.sort()
+    for item in reversed(temp_list):
+        remove_vertices_list.append(item)
+
+    ###### NEW COMPONENT SECTION ######
+    if option < 3:
+
+    # This first part adds the new triangles, which are the ones that have been selected,
+    #    to the "moveto" new_comp.triangles using the "remove_triangle_list" which are also
+    #    the same ones to be removed from the original component if 'option' calls to.
+        newtris = []
+        for tri_index in range(len(remove_triangle_list)):
+            newtris = newtris + [comp.triangles[remove_triangle_list[tri_index]]]
+
+    # This second part adds the NEW vertices to end of each frames "frame.vertices"
+    #    to construct the new triangles that are being added just below this section.
+        nbr_of_new_comp_vtxs_before_adding = len(new_comp.dictitems['Frames:fg'].subitems[0].vertices)
+        for frame in range(len(comp.dictitems['Frames:fg'].subitems)):
+            newframe_vertices = new_comp.dictitems['Frames:fg'].subitems[frame].vertices
+            for vert_index in range(len(remove_vertices_list)):
+                newframe_vertices = newframe_vertices + [comp.dictitems['Frames:fg'].subitems[frame].vertices[remove_vertices_list[vert_index]]]
+            new_comp.dictitems['Frames:fg'].subitems[frame].vertices = newframe_vertices
+
+    # This third part fixes up the 'new_comp.triangles', NEW triangles vertex index numbers
+    #    to coordinate with those frame.vertices lists updated above.
+        temptris = []
+        for tri in range(len(newtris)):
+            for index in range(len(newtris[tri])):
+                for vert_index in range(len(remove_vertices_list)):
+                    if newtris[tri][index][0] == remove_vertices_list[vert_index]:
+                        if index == 0:
+                            tri0 = (nbr_of_new_comp_vtxs_before_adding + vert_index, newtris[tri][index][1], newtris[tri][index][2])
+                            break
+                        elif index == 1:
+                            tri1 = (nbr_of_new_comp_vtxs_before_adding + vert_index, newtris[tri][index][1], newtris[tri][index][2])
+                            break
+                        else:
+                            tri2 = (nbr_of_new_comp_vtxs_before_adding + vert_index, newtris[tri][index][1], newtris[tri][index][2])
+                            temptris = temptris + [(tri0, tri1, tri2)]
+                            break
+        new_comp.triangles = new_comp.triangles + temptris
+
+    # This last part updates the "moveto" component finishing the process for that.
+        undo = quarkx.action()
+        compframes = new_comp.findallsubitems("", ':mf')   # get all frames
+        for compframe in compframes:
+            compframe.compparent = new_comp # To allow frame relocation after editing.
+        undo = quarkx.action()
+        undo.exchange(editor.Root.dictitems[movetocomponent + ':mc'], None)
+        undo.put(editor.Root, new_comp)
+        if option == 1:
+            editor.ok(undo, "faces copied to " + new_comp.shortname)
+        else:
+            editor.ok(undo, "faces moved to " + new_comp.shortname)
+
+    ###### ORIGINAL COMPONENT SECTION ######
+    if option > 1:
+
+    # This section checks and takes out, from the remove_vertices_list, any vert_index that is being used by a
+    #    triangle that is not being removed, in the remove_triangle_list, to avoid any invalid triangle errors.
+        dumylist = remove_vertices_list
+        for tri in range(len(change_comp.triangles)):
+            if tri in remove_triangle_list:
+                continue
+            else:
+                for vtx in range(len(change_comp.triangles[tri])):
+                    if change_comp.triangles[tri][vtx][0] in dumylist:
+                        dumylist.remove(change_comp.triangles[tri][vtx][0])
+        remove_vertices_list = dumylist
+
+    # This section uses the "remove_triangle_list" to recreate the original
+    #    component.triangles without the selected faces.
+        old_tris = change_comp.triangles
+        remove_triangle_list.sort()
+        remove_triangle_list = reversed(remove_triangle_list)
+        for index in remove_triangle_list:
+            old_tris = old_tris[:index] + old_tris[index+1:]
+        change_comp.triangles = old_tris
+
+    # This section uses the "remove_vertices_list" to recreate the
+    #    original component's frames without any unused vertexes.
+        new_tris = change_comp.triangles
+        compframes = change_comp.findallsubitems("", ':mf')   # find all frames
+        for index in remove_vertices_list:
+            enew_tris = fixUpVertexNos(new_tris, index)
+            new_tris = enew_tris
+            for compframe in compframes: 
+                old_vtxs = compframe.vertices
+                vtxs = old_vtxs[:index] + old_vtxs[index+1:]
+                compframe.vertices = vtxs
+        change_comp.triangles = new_tris
+
+    # This updates the original component finishing the process for that.
+        compframes = change_comp.findallsubitems("", ':mf')   # get all frames
+        for compframe in compframes:
+            compframe.compparent = change_comp # To allow frame relocation after editing.
+        undo = quarkx.action()
+        undo.exchange(comp, None)
+        undo.put(editor.Root, change_comp)
+        if option == 2:
+            editor.ok(undo, "faces moved from " + change_comp.shortname)
+        else:
+            editor.ok(undo, "faces deleted from " + change_comp.shortname)
+
+
+
+###############################
+#
+# Conversion functions
+#
+###############################
 
 
 
@@ -899,399 +1498,12 @@ def ConvertEditorFaceObject(editor, newobjectslist, flags, view, undomsg, option
         MakeEditorFaceObject(editor)
 
 
+
+###############################
 #
-# Changes the selected faces (triangles), in the ModelFaceSelList of the editor,
-# u and v skinning coords based on the editor3Dview positions
-# which also changes their layout in the Skin-view causing a
-# "re-mapping" of those selected faces skin positions.
+# Component & Sub-item Creation functions
 #
-def skinremap(editor):
-    comp = editor.Root.currentcomponent
-    if (comp is None) or (comp.currentframe is None) or (editor.ModelFaceSelList == []):
-        quarkx.msgbox("Improper Action !\n\nYou need to select at least one\nface of a component to be re-skinned\nto activate this function.\n\nPress 'F1' for InfoBase help\nof this function for details.\n\nAction Canceled.", MT_ERROR, MB_OK)
-        return
-    new_comp = comp.copy()
-    framevtxs = comp.currentframe.vertices
-
-    # Sets the editors 3D view to get the new u,v co-ordinances from.
-    for v in editor.layout.views:
-        if v.info["viewname"] == "editors3Dview":
-            cordsview = v
-
-    # Changes the old u,v Skin-view position values for each selected face
-    # to the new ones and replaces those old triangles with the updated ones.
-    for tri_index in editor.ModelFaceSelList:
-        # Because the original list can not be changed, we use a dummy list copy
-        # then pass the updated values back to the original list, and so on, in a loop.
-        newtris = new_comp.triangles
-        for vtx in range(len(comp.triangles[tri_index])):
-            u = int(cordsview.proj(framevtxs[comp.triangles[tri_index][vtx][0]]).tuple[0])
-            v = int(cordsview.proj(framevtxs[comp.triangles[tri_index][vtx][0]]).tuple[1])
-            if vtx == 0:
-                vtx0 = (comp.triangles[tri_index][vtx][0], u, v)
-            elif vtx == 1:
-                vtx1 = (comp.triangles[tri_index][vtx][0], u, v)
-            else:
-                vtx2 = (comp.triangles[tri_index][vtx][0], u, v)
-        tri = (vtx0, vtx1, vtx2)
-        newtris[tri_index:tri_index+1] = [tri]
-        new_comp.triangles = newtris
-
-        compframes = new_comp.findallsubitems("", ':mf')   # get all frames
-        for compframe in compframes:
-            compframe.compparent = new_comp # To allow frame relocation after editing.
-
-    # Finally the undo exchange is made and ok called to finish the function.
-    undo = quarkx.action()
-    undo.exchange(comp, new_comp)
-    editor.ok(undo, "Skin-view remap")
-    for view in editor.layout.views:
-        if view.viewmode != "wire":
-            view.invalidate(1)
-
-
-#
-# Add a vertex to the currently selected model component or frame(s)
-# at the position where the cursor was when the RMB was clicked.
-#
-def addvertex(editor, comp, pos):
-    new_comp = comp.copy()
-    compframes = new_comp.findallsubitems("", ':mf')   # find all frames
-    for compframe in compframes:
-        vtxs = compframe.vertices
-        vtxs = vtxs + [pos]
-        compframe.vertices = vtxs
-        compframe.compparent = new_comp # To allow frame relocation after editing.
-    undo = quarkx.action()
-    undo.exchange(comp, new_comp)
-    editor.ok(undo, "add vertex")
-
-
-#
-# Updates (drags) a vertex or vertexes in the 'editor.SkinVertexSelList' list, or similar list,
-#    of the currently selected model component or frame(s),
-#    to the same position of the 1st item in the 'editor.SkinVertexSelList' list.
-# The 'editor.SkinVertexSelList' list is a group of lists within a list.
-# If 'option 1' is used for the Skin-view then
-# each group list must be created in the manner below then added to the 'editor.SkinVertexSelList' list:
-#    editor.SkinVertexSelList + [[self.pos, self, self.tri_index, self.ver_index]]
-# if 'option 0' is used for the Model Editor then
-# each group list must be created in the manner below then added to the 'editor.ModelVertexSelList' list:
-#    editor.ModelVertexSelList + [[frame_vertices_index, view.proj(pos)]]
-#
-def replacevertexes(editor, comp, vertexlist, flags, view, undomsg, option=1, method=1):
-    "option=0 uses the ModelVertexSelList for the editor."
-    "option=1 uses the SkinVertexSelList for the Skin-view."
-    "option=2 uses the ModelVertexSelList for the editor and merges two, or more, selected vertexes."
-    "method=1 other selected vertexes move to the 'Base' vertex position of each tree-view selected 'frame', only applies to option=0."
-    "method=2 other selected vertexes move to the 'Base' vertex position of the 1st tree-view selected 'frame', only applies to option=0."
-
-    new_comp = comp.copy()
-
-    if option == 0:
-        compframes = new_comp.findallsubitems("", ':mf')   # get all frames
-        for compframe in compframes:
-            for listframe in editor.layout.explorer.sellist:
-                if compframe.name == listframe.name:
-                    old_vtxs = compframe.vertices
-                    if quarkx.setupsubset(SS_MODEL, "Options")['APVexs_Method1'] == "1":
-                        newpos = old_vtxs[vertexlist[0][0]]
-                    elif quarkx.setupsubset(SS_MODEL, "Options")['APVexs_Method2'] == "1":
-                        newpos = editor.layout.explorer.sellist[0].vertices[vertexlist[0][0]]
-                    else:
-                        newpos = old_vtxs[vertexlist[0][0]]
-                    for vtx in vertexlist:
-                        if vtx == vertexlist[0]:
-                            continue
-                        old_vtxs[vtx[0]] = newpos
-                        compframe.vertices = old_vtxs
-            compframe.compparent = new_comp # To allow frame relocation after editing.
-        undo = quarkx.action()
-        undo.exchange(comp, new_comp)
-        editor.ok(undo, undomsg)
-
-    elif option == 1:
-        tris = new_comp.triangles
-        try:
-            tex = comp.currentskin
-            texWidth,texHeight = tex["Size"]
-        except:
-            texWidth,texHeight = view.clientarea
-
-        if comp.currentskin is not None:
-            newpos = vertexlist[0][0] + quarkx.vect(texWidth*.5, texHeight*.5, 0)
-        else:
-            newpos = vertexlist[0][0] + quarkx.vect(int((texWidth*.5) +.5), int((texHeight*.5) -.5), 0)
-
-        for triindex in range(len(tris)):
-            tri = tris[triindex]
-            for item in vertexlist:
-                if triindex == item[2]:
-                    for j in range(len(tri)):
-                        if j == item[3]:
-                            if j == 0:
-                                newtriangle = ((tri[j][0], int(newpos.tuple[0]), int(newpos.tuple[1])), tri[1], tri[2])
-                            elif j == 1:
-                                newtriangle = (tri[0], (tri[j][0], int(newpos.tuple[0]), int(newpos.tuple[1])), tri[2])
-                            else:
-                                newtriangle = (tri[0], tri[1], (tri[j][0], int(newpos.tuple[0]), int(newpos.tuple[1])))
-                            tris[triindex] = newtriangle
-        new_comp.triangles = tris
-        compframes = new_comp.findallsubitems("", ':mf')   # get all frames
-        for compframe in compframes:
-            compframe.compparent = new_comp # To allow frame relocation after editing.
-        undo = quarkx.action()
-        undo.exchange(comp, new_comp)
-        editor.ok(undo, undomsg)
-
-    elif option == 2:
-        tris = new_comp.triangles
-        compframes = new_comp.findallsubitems("", ':mf')   # get all frames
-        unusedvtxs = []
-        for vtx in range(len(vertexlist)):
-            if vtx == 0:
-                continue
-            unusedvtxs = unusedvtxs + [vertexlist[vtx][0]]
-        newvertnumbers = []
-        newvertoffset = 0
-        old_vtxs = comp.currentframe.vertices
-        for v in range(len(old_vtxs)):
-            if v == vertexlist[0][0]:
-                newindex = v + newvertoffset
-            if v in unusedvtxs:
-                newvertoffset = newvertoffset - 1
-            newvertnumbers = newvertnumbers + [v + newvertoffset]
-        for v in range(len(vertexlist)):
-            newvertnumbers[vertexlist[v][0]] = newindex
-        for triindex in range(len(tris)):
-            tri = tris[triindex]
-            newtriangle = ((newvertnumbers[tri[0][0]], tri[0][1], tri[0][2]), (newvertnumbers[tri[1][0]], tri[1][1], tri[1][2]), (newvertnumbers[tri[2][0]], tri[2][1], tri[2][2]))
-            if newtriangle[0][0] == newtriangle[1][0] or newtriangle[1][0] == newtriangle[2][0] or newtriangle[2][0] == newtriangle[0][0]:
-                quarkx.msgbox("Improper Selection!\n\nYou can not merge two\nvertexes of the same triangle.", MT_ERROR, MB_OK)
-                return None, None
-            tris[triindex] = newtriangle
-        unusedvtxs.sort()
-        unusedvtxs.reverse()
-        vtxs = []
-        for compframe in compframes:
-            old_vtxs = compframe.vertices
-            for index in range(len(unusedvtxs)):
-                vtxs = old_vtxs[:unusedvtxs[index]] + old_vtxs[unusedvtxs[index]+1:]
-                old_vtxs = vtxs
-
-            compframe.vertices = vtxs
-            compframe.compparent = new_comp # To allow frame relocation after editing.
-
-        new_comp.triangles = tris
-        editor.ModelVertexSelList = []
-        undo = quarkx.action()
-        undo.exchange(comp, new_comp)
-        editor.ok(undo, undomsg)
-
-
-#
-# remove a vertex from a component
-#
-def removevertex(comp, index, all3=0):
-    editor = mapeditor()
-    if editor is None:
-        return
-
-    new_comp = comp.copy() # create a copy to edit (we store the old one in the undo list)
-    tris = new_comp.triangles
-    #### 1) find all triangles that use vertex 'index' and delete them.
-    if all3 == 1:
-        index = editor.ModelVertexSelList[0][0]
-    toBeRemoved = findTriangles(comp, index)
-    new_tris = []
-    for tri in tris:
-        p = checkinlist(tri, toBeRemoved)
-        if (p==0):
-            new_tris = new_tris + [ tri ]
-    
-    if all3 == 1:
-        new_tris = []
-        for tri in tris:
-            if (editor.ModelVertexSelList[0][0] == tri[0][0]) and (editor.ModelVertexSelList[1][0] == tri[1][0]) and (editor.ModelVertexSelList[2][0] == tri[2][0]):
-                index = editor.ModelVertexSelList[0][0]
-                continue
-            elif (editor.ModelVertexSelList[0][0] == tri[0][0]) and (editor.ModelVertexSelList[2][0] == tri[1][0]) and (editor.ModelVertexSelList[1][0] == tri[2][0]):
-                index = editor.ModelVertexSelList[0][0]
-                continue
-            elif (editor.ModelVertexSelList[1][0] == tri[0][0]) and (editor.ModelVertexSelList[2][0] == tri[1][0]) and (editor.ModelVertexSelList[0][0] == tri[2][0]):
-                index = editor.ModelVertexSelList[1][0]
-                continue
-            elif (editor.ModelVertexSelList[1][0] == tri[0][0]) and (editor.ModelVertexSelList[0][0] == tri[1][0]) and (editor.ModelVertexSelList[2][0] == tri[2][0]):
-                index = editor.ModelVertexSelList[1][0]
-                continue
-            elif (editor.ModelVertexSelList[2][0] == tri[0][0]) and (editor.ModelVertexSelList[1][0] == tri[1][0]) and (editor.ModelVertexSelList[0][0] == tri[2][0]):
-                index = editor.ModelVertexSelList[2][0]
-                continue
-            elif (editor.ModelVertexSelList[2][0] == tri[0][0]) and (editor.ModelVertexSelList[0][0] == tri[1][0]) and (editor.ModelVertexSelList[1][0] == tri[2][0]):
-                index = editor.ModelVertexSelList[2][0]
-                continue
-            else:
-                new_tris = new_tris + [ tri ]
-
-    #### 2) loop through all frames and delete unused vertex(s).
-    if all3 == 1:
-        vertexestoremove = []
-        for vertex in editor.ModelVertexSelList:
-            vtxcount = 0
-            for tri in tris:
-                for vtx in tri:
-                    if vtx[0] == vertex[0]:
-                        vtxcount = vtxcount + 1
-            if vtxcount > 1:
-                pass
-            else:
-                vertexestoremove = vertexestoremove + [vertex]
-        compframes = new_comp.findallsubitems("", ':mf')   # find all frames
-        for unusedvertex in vertexestoremove:
-            unusedindex = unusedvertex[0]
-            for compframe in compframes: 
-                old_vtxs = compframe.vertices
-                vtxs = old_vtxs[:unusedindex]
-                compframe.vertices = vtxs
-                compframe.compparent = new_comp # To allow frame relocation after editing.
-        new_tris = fixUpVertexNos(new_tris, index)
-        new_comp.triangles = new_tris
-    else:
-        enew_tris = fixUpVertexNos(new_tris, index)
-        new_comp.triangles = enew_tris
-        compframes = new_comp.findallsubitems("", ':mf')   # find all frames
-        for compframe in compframes: 
-            old_vtxs = compframe.vertices
-            vtxs = old_vtxs[:index] + old_vtxs[index+1:]
-            compframe.vertices = vtxs
-            compframe.compparent = new_comp # To allow frame relocation after editing.
-
-    #### 3) re-build all views
-    undo = quarkx.action()
-    undo.exchange(comp, new_comp)
-    if all3 == 1:
-        editor.ok(undo, "remove triangle")
-        editor.ModelVertexSelList = []
-    else:
-        editor.ok(undo, "remove vertex")
-        editor.ModelVertexSelList = []
-
-
-#
-# Add a triangle to a given component
-#
-def addtriangle(editor):
-    comp = editor.Root.currentcomponent
-    if (comp is None):
-        return
-
-    v1 = editor.ModelVertexSelList[0][0]
-    v2 = editor.ModelVertexSelList[1][0]
-    v3 = editor.ModelVertexSelList[2][0]
-
-    from mdlhandles import SkinView1
-    if quarkx.setupsubset(SS_MODEL, "Options")['SkinFrom3Dview'] == "1" or SkinView1 is None:
-        for v in editor.layout.views:
-            if v.info["viewname"] == "editors3Dview":
-                cordsview = v
-    else:
-
-        try:
-            tex = comp.currentskin
-            texWidth,texHeight = tex["Size"]
-            if quarkx.setupsubset(SS_MODEL, "Options")['UseSkinViewScale'] == "1":
-                SkinViewScale = SkinView1.info["scale"]
-            else:
-                SkinViewScale = 1
-        except:
-            texWidth,texHeight = SkinView1.clientarea
-            SkinViewScale = 1
-    if quarkx.setupsubset(SS_MODEL, "Options")['SkinFrom3Dview'] == "1" or SkinView1 is None:
-        s1 = int(cordsview.proj(editor.ModelVertexSelList[0][1]).tuple[0])*.025
-        t1 = -int(cordsview.proj(editor.ModelVertexSelList[0][1]).tuple[1])*.025
-        s2 = int(cordsview.proj(editor.ModelVertexSelList[1][1]).tuple[0])*.025
-        t2 = -int(cordsview.proj(editor.ModelVertexSelList[1][1]).tuple[1])*.025
-        s3 = int(cordsview.proj(editor.ModelVertexSelList[2][1]).tuple[0])*.025
-        t3 = -int(cordsview.proj(editor.ModelVertexSelList[2][1]).tuple[1])*.025
-    else:
-        s1 = int(editor.ModelVertexSelList[0][1].tuple[0]+int(texWidth*.5))*SkinViewScale
-        t1 = int(editor.ModelVertexSelList[0][1].tuple[1]-int(texHeight*.5))*SkinViewScale
-        s2 = int(editor.ModelVertexSelList[1][1].tuple[0]+int(texWidth*.5))*SkinViewScale
-        t2 = int(editor.ModelVertexSelList[1][1].tuple[1]-int(texHeight*.5))*SkinViewScale
-        s3 = int(editor.ModelVertexSelList[2][1].tuple[0]+int(texWidth*.5))*SkinViewScale
-        t3 = int(editor.ModelVertexSelList[2][1].tuple[1]-int(texHeight*.5))*SkinViewScale
-
-    if findTriangle(comp, v1, v2, v3) is not None:
-        quarkx.msgbox("Improper Selection!\n\nA triangle using these 3 vertexes already exist.\n\nSelect at least one different vertex\nto make a new triangle with.\n\nTo 'Un-pick' a vertex from the 'Pick' list\nplace your cursor over that vertex,\nRMB click and select 'Pick Vertex'.\nThen you can pick another vertex to replace it.", MT_ERROR, MB_OK)
-        return
-
-    tris = comp.triangles
-
-    tris = tris + [((v1,s1,t1),(v2,s2,t2),(v3,s3,t3))] # This is where the 'actual' texture positions s and t are needed to add to the triangles vertexes.
-
-    new_comp = comp.copy()
-    new_comp.triangles = tris
-    new_comp.currentskin = editor.Root.currentcomponent.currentskin
-    new_comp.currentframe = editor.Root.currentcomponent.currentframe
-    compframes = new_comp.findallsubitems("", ':mf')   # get all frames
-    for compframe in compframes:
-        compframe.compparent = new_comp # To allow frame relocation after editing.
-    undo = quarkx.action()
-    undo.exchange(comp, new_comp)
-    editor.Root.currentcomponent = new_comp
-    editor.ok(undo, "add triangle")
-    if SkinView1 is not None:
-        SkinView1.invalidate()
-
-
-#
-# Remove a triangle ,using its triangle index, from the current component
-#
-def removeTriangle(editor, comp, index):
-    if (index is None):
-        return
-    todo = quarkx.msgbox("Do you also want to\nremove the 3 vertexes?",MT_CONFIRMATION, MB_YES_NO_CANCEL)
-    if todo == MR_CANCEL:
-        return
-    if todo == MR_YES:
-        vertexestoremove = []
-        for vertex in editor.ModelVertexSelList:
-            vtxcount = 0
-            tris = comp.triangles
-            for tri in tris:
-                for vtx in tri:
-                    if vtx[0] == vertex[0]:
-                        vtxcount = vtxcount + 1
-            if vtxcount > 1:
-                pass
-            else:
-                vertexestoremove = vertexestoremove + [vertex]
-        if len(vertexestoremove) == 0:
-            pass
-        else:
-            removevertex(comp, index, 1)
-            return
-    new_comp = comp.copy()
-    old_tris = new_comp.triangles
-    tris = old_tris[:index] + old_tris[index+1:]
-    new_comp.triangles = tris
-    compframes = new_comp.findallsubitems("", ':mf')   # get all frames
-    for compframe in compframes:
-        compframe.compparent = new_comp # To allow frame relocation after editing.
-    undo = quarkx.action()
-    undo.exchange(comp, new_comp)
-    editor.ok(undo, "remove triangle")
-
-
-#
-# Remove a triangle ,using its vertexes, from the current component
-#
-def removeTriangle_v3(editor):
-    comp = editor.Root.currentcomponent
-    v1 = editor.ModelVertexSelList[0][0]
-    v2 = editor.ModelVertexSelList[1][0]
-    v3 = editor.ModelVertexSelList[2][0]
-    removeTriangle(editor, comp, findTriangle(comp, v1,v2,v3))
+###############################
 
 
 #
@@ -1489,6 +1701,85 @@ def addcomponent(editor, option=2):
     undo.put(editor.Root, change_comp)
     editor.ok(undo, change_comp.shortname + " updated")
 
+
+#
+# Add a frame to a given component (ie duplicate last one)
+#
+def addframe(editor):
+    comp = editor.Root.currentcomponent
+    if (editor.layout.explorer.uniquesel is None) or (editor.layout.explorer.uniquesel.type != ":mf"):
+        quarkx.msgbox("You need to select a single frame to duplicate.\n\nFor multiple frames use 'Duplicate' on the 'Edit' menu.", MT_ERROR, MB_OK)
+        return
+
+    newframe = editor.layout.explorer.uniquesel.copy()
+    new_comp = comp.copy()
+    compframes = new_comp.dictitems['Frames:fg'].subitems   # all frames
+    itemdigit = None
+
+    if newframe.shortname[len(newframe.shortname)-1].isdigit():
+        itemdigit = ""
+        count = len(newframe.shortname)-1
+        while count >= 0:
+            if newframe.shortname[count] == " ":
+                count = count - 1
+            elif newframe.shortname[count].isdigit():
+                itemdigit = str(newframe.shortname[count]) + itemdigit
+                count = count - 1
+            else:
+                break
+        itembasename = newframe.shortname.split(itemdigit)[0]
+    else:
+        itembasename = newframe.shortname
+
+    name = None
+    comparenbr = 0
+    count = 0
+    stopcount = 0
+    for compframe in compframes:
+        if not itembasename.endswith(" ") and compframe.shortname.startswith(itembasename + " "):
+            if stopcount == 0:
+                count = count + 1
+            continue
+        if compframe.shortname.startswith(itembasename):
+            stopcount = 1
+            getnbr = compframe.shortname.replace(itembasename, '')
+            if getnbr == "":
+                nbr = 0
+            else:
+                nbr = int(getnbr)
+            if nbr > comparenbr:
+                comparenbr = nbr
+                count = count + 1
+            nbr = comparenbr + 1
+            name = itembasename + str(nbr)
+        if stopcount == 0:
+            count = count + 1
+    if name is not None:
+        pass
+    else:
+        name = newframe.shortname
+    newframe.shortname = name
+    # Places the new frame at the end of its group of frames of the same name.
+    new_comp.dictitems['Frames:fg'].insertitem(count, newframe)
+    compframes = new_comp.dictitems['Frames:fg'].subitems   # all frames
+    # To allow frame relocation after editing.
+    for compframe in compframes:
+        compframe.compparent = new_comp
+    undo = quarkx.action()
+    undo.exchange(comp, None)
+    undo.put(editor.Root, new_comp)
+    editor.ok(undo, "add frame")
+
+
+
+###############################
+#
+# Skeleton & Bone functions
+#
+###############################
+
+
+
 # This function adds a :bone-object to the skeleton-group of comp at position pos
 def addbone(editor, comp, pos):
     name = None
@@ -1574,296 +1865,12 @@ def detach_bones(editor, bone1, bone2):
     editor.ok(undo, "detach bones")
 
 
+
+###############################
 #
-# The 'option' value of 1 COPIES the currently selected faces of a component to another component (that is not Hidden).
-# The 'option' value of 2 MOVES the currently selected faces of a component to another component (that is not Hidden).
-# This function will also remove the selected faces and unused vertexes from the original component.
-# The 'option' value of 3 DELETES the currently selected faces of a component.
-# This function will also remove any unused vertexes of those faces from that component.
+# Selection functions
 #
-def movefaces(editor, movetocomponent, option=2):
-    comp = editor.Root.currentcomponent
-
-    # This section does a selection test and gives an error message box if needed.
-    for item in editor.layout.explorer.sellist:
-        if item.parent.parent.name != comp.name:
-            quarkx.msgbox("IMPROPER SELECTION !\n\nYou need to select a frame && faces from\none component to move them to another component.\n\nYou have selected items that are not\npart of the ''"+editor.Root.currentcomponent.shortname+"'' Frames group.\nPlease un-select these items.\n\nAction Canceled.", MT_ERROR, MB_OK)
-            return
-
-    # These are things that we need to setup first for use later on.
-    temp_list = []
-    remove_triangle_list = []
-    remove_vertices_list = []
-
-    # Now we start creating our data copies to work with and the final "ok" swapping function at the end.
-    tris = comp.triangles
-    change_comp = comp.copy()
-    if option < 3:
-        new_comp = editor.Root.dictitems[movetocomponent + ':mc'].copy()
-
-    # This section creates the "remove_triangle_list" from the ModelFaceSelList which is already
-    #    in ascending numerical order but may have duplicate tri_index numbers that need to be removed.
-    # The order also needs to be descending so when triangles are removed from another list it
-    #    does not select an improper triangle due to list items shifting forward numerically.
-    # The "remove_triangle_list" is used to re-create the current component.triangles and new_comp.triangles.
-    for tri_index in reversed(editor.ModelFaceSelList):
-        if tri_index in remove_triangle_list:
-            pass
-        else:
-            remove_triangle_list = remove_triangle_list + [tri_index]
-
-    # This section creates the "remove_vertices_list" to be used
-    #    to re-create the current component's frame.vertices.
-    # It also skips over any duplicated vertex_index numbers of the triangles to be moved
-    #    to the new_comp and\or removed from the original component if 'option' calls to.
-    for tri_index in remove_triangle_list:
-        for vtx in range(len(tris[tri_index])):
-            if tris[tri_index][vtx][0] in temp_list:
-                pass
-            else:
-                temp_list.append(tris[tri_index][vtx][0])
-
-    # This section sorts the "remove_vertices_list" numerically in ascending order then
-    # recreates it in descending order for the same reason that the triangles above were done.
-    temp_list.sort()
-    for item in reversed(temp_list):
-        remove_vertices_list.append(item)
-
-    ###### NEW COMPONENT SECTION ######
-    if option < 3:
-
-    # This first part adds the new triangles, which are the ones that have been selected,
-    #    to the "moveto" new_comp.triangles using the "remove_triangle_list" which are also
-    #    the same ones to be removed from the original component if 'option' calls to.
-        newtris = []
-        for tri_index in range(len(remove_triangle_list)):
-            newtris = newtris + [comp.triangles[remove_triangle_list[tri_index]]]
-
-    # This second part adds the NEW vertices to end of each frames "frame.vertices"
-    #    to construct the new triangles that are being added just below this section.
-        nbr_of_new_comp_vtxs_before_adding = len(new_comp.dictitems['Frames:fg'].subitems[0].vertices)
-        for frame in range(len(comp.dictitems['Frames:fg'].subitems)):
-            newframe_vertices = new_comp.dictitems['Frames:fg'].subitems[frame].vertices
-            for vert_index in range(len(remove_vertices_list)):
-                newframe_vertices = newframe_vertices + [comp.dictitems['Frames:fg'].subitems[frame].vertices[remove_vertices_list[vert_index]]]
-            new_comp.dictitems['Frames:fg'].subitems[frame].vertices = newframe_vertices
-
-    # This third part fixes up the 'new_comp.triangles', NEW triangles vertex index numbers
-    #    to coordinate with those frame.vertices lists updated above.
-        temptris = []
-        for tri in range(len(newtris)):
-            for index in range(len(newtris[tri])):
-                for vert_index in range(len(remove_vertices_list)):
-                    if newtris[tri][index][0] == remove_vertices_list[vert_index]:
-                        if index == 0:
-                            tri0 = (nbr_of_new_comp_vtxs_before_adding + vert_index, newtris[tri][index][1], newtris[tri][index][2])
-                            break
-                        elif index == 1:
-                            tri1 = (nbr_of_new_comp_vtxs_before_adding + vert_index, newtris[tri][index][1], newtris[tri][index][2])
-                            break
-                        else:
-                            tri2 = (nbr_of_new_comp_vtxs_before_adding + vert_index, newtris[tri][index][1], newtris[tri][index][2])
-                            temptris = temptris + [(tri0, tri1, tri2)]
-                            break
-        new_comp.triangles = new_comp.triangles + temptris
-
-    # This last part updates the "moveto" component finishing the process for that.
-        undo = quarkx.action()
-        compframes = new_comp.findallsubitems("", ':mf')   # get all frames
-        for compframe in compframes:
-            compframe.compparent = new_comp # To allow frame relocation after editing.
-        undo = quarkx.action()
-        undo.exchange(editor.Root.dictitems[movetocomponent + ':mc'], None)
-        undo.put(editor.Root, new_comp)
-        if option == 1:
-            editor.ok(undo, "faces copied to " + new_comp.shortname)
-        else:
-            editor.ok(undo, "faces moved to " + new_comp.shortname)
-
-    ###### ORIGINAL COMPONENT SECTION ######
-    if option > 1:
-
-    # This section checks and takes out, from the remove_vertices_list, any vert_index that is being used by a
-    #    triangle that is not being removed, in the remove_triangle_list, to avoid any invalid triangle errors.
-        dumylist = remove_vertices_list
-        for tri in range(len(change_comp.triangles)):
-            if tri in remove_triangle_list:
-                continue
-            else:
-                for vtx in range(len(change_comp.triangles[tri])):
-                    if change_comp.triangles[tri][vtx][0] in dumylist:
-                        dumylist.remove(change_comp.triangles[tri][vtx][0])
-        remove_vertices_list = dumylist
-
-    # This section uses the "remove_triangle_list" to recreate the original
-    #    component.triangles without the selected faces.
-        old_tris = change_comp.triangles
-        remove_triangle_list.sort()
-        remove_triangle_list = reversed(remove_triangle_list)
-        for index in remove_triangle_list:
-            old_tris = old_tris[:index] + old_tris[index+1:]
-        change_comp.triangles = old_tris
-
-    # This section uses the "remove_vertices_list" to recreate the
-    #    original component's frames without any unused vertexes.
-        new_tris = change_comp.triangles
-        compframes = change_comp.findallsubitems("", ':mf')   # find all frames
-        for index in remove_vertices_list:
-            enew_tris = fixUpVertexNos(new_tris, index)
-            new_tris = enew_tris
-            for compframe in compframes: 
-                old_vtxs = compframe.vertices
-                vtxs = old_vtxs[:index] + old_vtxs[index+1:]
-                compframe.vertices = vtxs
-        change_comp.triangles = new_tris
-
-    # This updates the original component finishing the process for that.
-        compframes = change_comp.findallsubitems("", ':mf')   # get all frames
-        for compframe in compframes:
-            compframe.compparent = change_comp # To allow frame relocation after editing.
-        undo = quarkx.action()
-        undo.exchange(comp, None)
-        undo.put(editor.Root, change_comp)
-        if option == 2:
-            editor.ok(undo, "faces moved from " + change_comp.shortname)
-        else:
-            editor.ok(undo, "faces deleted from " + change_comp.shortname)
-
-
-#
-# Add a frame to a given component (ie duplicate last one)
-#
-def addframe(editor):
-    comp = editor.Root.currentcomponent
-    if (editor.layout.explorer.uniquesel is None) or (editor.layout.explorer.uniquesel.type != ":mf"):
-        quarkx.msgbox("You need to select a single frame to duplicate.\n\nFor multiple frames use 'Duplicate' on the 'Edit' menu.", MT_ERROR, MB_OK)
-        return
-
-    newframe = editor.layout.explorer.uniquesel.copy()
-    new_comp = comp.copy()
-    compframes = new_comp.dictitems['Frames:fg'].subitems   # all frames
-    itemdigit = None
-
-    if newframe.shortname[len(newframe.shortname)-1].isdigit():
-        itemdigit = ""
-        count = len(newframe.shortname)-1
-        while count >= 0:
-            if newframe.shortname[count] == " ":
-                count = count - 1
-            elif newframe.shortname[count].isdigit():
-                itemdigit = str(newframe.shortname[count]) + itemdigit
-                count = count - 1
-            else:
-                break
-        itembasename = newframe.shortname.split(itemdigit)[0]
-    else:
-        itembasename = newframe.shortname
-
-    name = None
-    comparenbr = 0
-    count = 0
-    stopcount = 0
-    for compframe in compframes:
-        if not itembasename.endswith(" ") and compframe.shortname.startswith(itembasename + " "):
-            if stopcount == 0:
-                count = count + 1
-            continue
-        if compframe.shortname.startswith(itembasename):
-            stopcount = 1
-            getnbr = compframe.shortname.replace(itembasename, '')
-            if getnbr == "":
-                nbr = 0
-            else:
-                nbr = int(getnbr)
-            if nbr > comparenbr:
-                comparenbr = nbr
-                count = count + 1
-            nbr = comparenbr + 1
-            name = itembasename + str(nbr)
-        if stopcount == 0:
-            count = count + 1
-    if name is not None:
-        pass
-    else:
-        name = newframe.shortname
-    newframe.shortname = name
-    # Places the new frame at the end of its group of frames of the same name.
-    new_comp.dictitems['Frames:fg'].insertitem(count, newframe)
-    compframes = new_comp.dictitems['Frames:fg'].subitems   # all frames
-    # To allow frame relocation after editing.
-    for compframe in compframes:
-        compframe.compparent = new_comp
-    undo = quarkx.action()
-    undo.exchange(comp, None)
-    undo.put(editor.Root, new_comp)
-    editor.ok(undo, "add frame")
-
-
-
-def checkinlist(tri, toberemoved):
-  for tbr in toberemoved:
-    if (tri == tbr):
-      return 1
-  return 0
-
-
-#
-# Is a given object still in the tree view = 1, or was it removed = 0 ?
-#
-def checktree(root, obj):
-    while obj is not root:
-        t = obj.parent
-        if t is None or not (obj in t.subitems):
-            return 0
-        obj = t
-    return 1
-
-
-#
-# The UserDataPanel class, overridden to be model-specific.
-#
-class MdlUserDataPanel(UserDataPanel):
-
-    def btnclick(self, btn):
-        #
-        # Send the click message to the module mdlbtns.
-        #
-        import mdlbtns
-        mdlbtns.mdlbuttonclick(btn)
-
-
-    #def drop(self, btnpanel, list, i, source):
-        #if len(list)==1 and list[0].type == ':g':
-        #    quarkx.clickform = btnpanel.owner
-        #    editor = mapeditor()
-        #    if editor is not None and source is editor.layout.explorer:
-        #        choice = quarkx.msgbox("You are about to create a new button from this group. Do you want the button to display a menu with the items in this group ?\n\nYES: you can pick up individual items when you click on this button.\nNO: you can insert the whole group in your map by clicking on this button.", MT_CONFIRMATION, MB_YES_NO_CANCEL)
-        #        if choice == MR_CANCEL:
-        #            return
-        #        if choice == MR_YES:
-        #            list = [group2folder(list[0])]
-        #UserDataPanel.drop(self, btnpanel, list, i, source)
-
-
-
-def find2DTriangles(comp, tri_index, ver_index):
-    "This function returns triangles and their index of a component's"
-    "mesh that have a common vertex position of the 2D drag view."
-    "This is primarily used for the Skin-view mesh drag option."
-    "See the mdlhandles.py file class SkinHandle, drag function for its use."
-    tris = comp.triangles
-    tris_out = {}
-    i = 0
-    for tri in tris:
-        for vtx in tri:
-            if str(vtx) == str(tris[tri_index][ver_index]):
-              if i == tri_index:
-                  break
-              else:
-                  tris_out[i] = tri
-                  break
-        i = i + 1
-    return tris_out
+###############################
 
 
 
@@ -2139,6 +2146,261 @@ def PassEditorSel2Skin(editor, option=1):
         dupe = holditem
         editor.SkinVertexSelList.remove(dupe)
         editor.SkinVertexSelList = [holditem] + editor.SkinVertexSelList
+
+
+
+###############################
+#
+# Texture handling functions
+#
+###############################
+
+
+#
+# Changes the selected faces (triangles), in the ModelFaceSelList of the editor,
+# u and v skinning coords based on the editor3Dview positions
+# which also changes their layout in the Skin-view causing a
+# "re-mapping" of those selected faces skin positions.
+#
+def skinremap(editor):
+    comp = editor.Root.currentcomponent
+    if (comp is None) or (comp.currentframe is None) or (editor.ModelFaceSelList == []):
+        quarkx.msgbox("Improper Action !\n\nYou need to select at least one\nface of a component to be re-skinned\nto activate this function.\n\nPress 'F1' for InfoBase help\nof this function for details.\n\nAction Canceled.", MT_ERROR, MB_OK)
+        return
+    new_comp = comp.copy()
+    framevtxs = comp.currentframe.vertices
+
+    # Sets the editors 3D view to get the new u,v co-ordinances from.
+    for v in editor.layout.views:
+        if v.info["viewname"] == "editors3Dview":
+            cordsview = v
+
+    # Changes the old u,v Skin-view position values for each selected face
+    # to the new ones and replaces those old triangles with the updated ones.
+    for tri_index in editor.ModelFaceSelList:
+        # Because the original list can not be changed, we use a dummy list copy
+        # then pass the updated values back to the original list, and so on, in a loop.
+        newtris = new_comp.triangles
+        for vtx in range(len(comp.triangles[tri_index])):
+            u = int(cordsview.proj(framevtxs[comp.triangles[tri_index][vtx][0]]).tuple[0])
+            v = int(cordsview.proj(framevtxs[comp.triangles[tri_index][vtx][0]]).tuple[1])
+            if vtx == 0:
+                vtx0 = (comp.triangles[tri_index][vtx][0], u, v)
+            elif vtx == 1:
+                vtx1 = (comp.triangles[tri_index][vtx][0], u, v)
+            else:
+                vtx2 = (comp.triangles[tri_index][vtx][0], u, v)
+        tri = (vtx0, vtx1, vtx2)
+        newtris[tri_index:tri_index+1] = [tri]
+        new_comp.triangles = newtris
+
+        compframes = new_comp.findallsubitems("", ':mf')   # get all frames
+        for compframe in compframes:
+            compframe.compparent = new_comp # To allow frame relocation after editing.
+
+    # Finally the undo exchange is made and ok called to finish the function.
+    undo = quarkx.action()
+    undo.exchange(comp, new_comp)
+    editor.ok(undo, "Skin-view remap")
+    for view in editor.layout.views:
+        if view.viewmode != "wire":
+            view.invalidate(1)
+
+
+
+# view = current view that the cursor is in.
+# If one of the editor's views:
+#    object = triangleface = a single item list containing the triangle face that the cursor is over.
+#    Returns TWO lists (of integers) WITHIN another list, of a texture's pixel u, v
+#        position on a triangle where the cursor is located at in any of the views.
+#    The first sub-list is used for any of the editor's views.
+#       It gives the actual pixel location on the skin texture itself.
+#       This sub-list is then used for any of the quarkx 'Texture Functions'
+#        to locate and\or change a pixel on a texture, or textures palette if one exist.
+#    The second sub-list is strictly used, if desired, to pass to and draw something
+#        in the Skin-view, using it's 'canvas()' function, at the same time and
+#        pixel location when the cursor is in one of the other editor's views, for example:
+#            returnedlist = [[pixU, pixV], [skinpixU, skinpixV]]
+#            skinpixU, skinpixV = returnedlist[1]
+#            if SkinView1 is not None:
+#                texWidth, texHeight = modelfacelist[0][1].currentskin["Size"]
+#                skinpix = quarkx.vect(skinpixU-int(texWidth*.5), skinpixV-int(texHeight*.5), 0)
+#                skinviewX, skinviewY, skinviewZ = SkinView1.proj(skinpix).tuple
+#                skincv = SkinView1.canvas()
+#                svs = round(SkinView1.info['scale']*.5)
+#                brushwidth = float(quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushWidth"])
+#                svs = int(brushwidth * svs)
+#                skincv.rectangle(int(skinviewX)-svs,int(skinviewY)-svs,int(skinviewX)+svs,int(skinviewY)+svs)
+#      If the cursor is currently in the Skin-view use as described below.
+# If the Skin-view:
+#    object (not needed)
+#    Returns a single list containing two integers, the texture's pixel u, v position in the Skin-view.
+# x and y = the position where the cursor is at in the view as a 'projected' 2D screen view.
+
+def TexturePixelLocation(editor, view, x, y, object=None):
+    if view.info["viewname"] != "skinview":
+        triangleface = object
+        if triangleface != []:
+            trivtx0, trivtx1, trivtx2 = triangleface[0][1].triangles[triangleface[0][2]]
+
+            facevtx0 = triangleface[0][1].currentframe.vertices[triangleface[0][1].triangles[triangleface[0][2]][0][0]]
+            facevtx1 = triangleface[0][1].currentframe.vertices[triangleface[0][1].triangles[triangleface[0][2]][1][0]]
+            facevtx2 = triangleface[0][1].currentframe.vertices[triangleface[0][1].triangles[triangleface[0][2]][2][0]]
+            
+            pixpos = view.space(quarkx.vect(x, y, 0)) # Where the cursor is pointing in the view.
+
+            vectorZ = view.vector("z").normalized
+            facenormal = ((facevtx1 - facevtx0) ^ (facevtx2 - facevtx0)).normalized
+            pixpos = pixpos - ((((pixpos - facevtx0) * facenormal) / (vectorZ * facenormal)) * vectorZ)
+
+            # Adapted from http://www.blackpawn.com/texts/pointinpoly/default.html
+            # Formula to compute u and v for a point on a triangle face:
+            # ==========================================================
+            # We use trivtx0 as our base, for it's U,V values to multiply our two factors by
+            # and get the U,V values for pixpos (where our cursor is at in the 3D view).
+
+            P = pixpos
+            A = facevtx0
+            B = facevtx1
+            C = facevtx2
+            # (what we are computing to get) u texture position value
+            # (what we are computing to get) v texture position value
+
+
+            v0 = (C - A)
+            v1 = (B - A)
+            v2 = (P - A)
+            
+            dot00 = v0 * v0
+            dot01 = v0 * v1
+            dot02 = v0 * v2
+            dot11 = v1 * v1
+            dot12 = v1 * v2
+
+            invDenom = 1 / (dot00 * dot11 - dot01 * dot01)
+            V = (dot11 * dot02 - dot01 * dot12) * invDenom
+            U = (dot00 * dot12 - dot01 * dot02) * invDenom
+
+            # To draw, by pixel location, in Skin-view using it's 'canvase()' function.
+            skinpixU = int((1 - U - V) * trivtx0[1] + U * trivtx1[1] + V * trivtx2[1])+.5
+            skinpixV = int((1 - U - V) * trivtx0[2] + U * trivtx1[2] + V * trivtx2[2])+.5
+
+            # The actual pixel location on the skin texture itself.
+            pixU = int(skinpixU-.5)
+            pixV = int(skinpixV-.5)
+
+            # This section corrects for texture tiling in the editor's views.
+            texWidth, texHeight = editor.Root.currentcomponent.currentskin["Size"]
+            cursorXpos = pixU
+            cursorYpos = pixV
+
+            if cursorXpos >= texWidth-1:
+                Xstart = int(cursorXpos / texWidth)
+                pixU = int(cursorXpos - (texWidth * Xstart))
+            elif cursorXpos < -texWidth:
+                Xstart = int(abs(cursorXpos / (texWidth+.5)))
+                pixU = int(cursorXpos + (texWidth * Xstart) + texWidth)
+            else:
+                if cursorXpos >= 1:
+                    pixU = cursorXpos
+                if cursorXpos <= -1:
+                    pixU = cursorXpos + texWidth
+                if cursorXpos == 0:
+                    pixU = 0
+
+            while pixU >= texWidth:
+                pixU = pixU - 1
+            while pixU <= -1:
+                pixU = texWidth - 1
+            pixU = int(pixU)
+
+            if cursorYpos >= texHeight-1:
+                Ystart = int(cursorYpos / texHeight)
+                pixV = int(cursorYpos - (texHeight * Ystart))
+            elif cursorYpos < -texHeight:
+                Ystart = int(abs(cursorYpos / (texHeight+.5)))
+                pixV = int(cursorYpos + (texHeight * Ystart) + texHeight)
+            else:
+                if cursorYpos >= 1:
+                    pixV = cursorYpos
+                if cursorYpos <= -1:
+                    pixV = cursorYpos + texHeight
+                if cursorYpos == 0:
+                    pixV = 0
+
+            while pixV >= texHeight:
+                pixV = pixV - 1
+            while pixV <= -1:
+                pixV = texHeight - 1
+            pixV = int(pixV)
+
+            return [[pixU, pixV], [skinpixU, skinpixV]]
+
+    else:
+        # This section computes the proper pixU, pixV position values for tiling in the Skin-view.
+        texWidth, texHeight = editor.Root.currentcomponent.currentskin["Size"]
+        list = view.space(quarkx.vect(x, y, 0)).tuple
+        cursorXpos = int(list[0])
+        cursorYpos = int(list[1])
+        if cursorXpos >= (texWidth * .5):
+            Xstart = int((cursorXpos / texWidth) -.5)
+            Xpos = -texWidth + cursorXpos - (texWidth * Xstart)
+        elif cursorXpos <= (-texWidth * .5):
+            Xstart = int((cursorXpos / texWidth) +.5)
+            Xpos = texWidth + cursorXpos + (texWidth * -Xstart) - 1
+        else:
+            if cursorXpos > 0:
+                Xpos = cursorXpos
+            if cursorXpos < 0:
+                Xpos = cursorXpos - 1
+            if cursorXpos == 0:
+                cursorXpos = list[0]
+                if cursorXpos < 0:
+                    Xpos = -1
+                else:
+                    Xpos = 0
+
+        pixU = Xpos + (texWidth * .5)
+        while pixU >= texWidth:
+            pixU = pixU - 1
+        while pixU <= -texWidth:
+            pixU = pixU + 1
+        pixU = int(pixU)
+
+        if cursorYpos >= (texHeight * .5):
+            Ystart = int((cursorYpos / texHeight) -.5)
+            Ypos = -texHeight + cursorYpos - (texHeight * Ystart)
+        elif cursorYpos <= (-texHeight * .5):
+            Ystart = int((cursorYpos / texHeight) +.5)
+            Ypos = texHeight + cursorYpos + (texHeight * -Ystart) -1
+        else:
+            if cursorYpos > 0:
+                Ypos = cursorYpos
+            if cursorYpos < 0:
+                Ypos = cursorYpos - 1
+            if cursorYpos == 0:
+                cursorYpos = list[1]
+                if cursorYpos < 0:
+                    Ypos = -1
+                else:
+                    Ypos = 0
+
+        pixV = Ypos + (texHeight * .5)
+        while pixV >= texHeight:
+            pixV = pixV - 1
+        while pixV <= -texHeight:
+            pixV = pixV + 1
+        pixV = int(pixV)
+
+        return [pixU, pixV]
+
+
+
+###############################
+#
+# General Editor functions
+#
+###############################
 
 
 
@@ -2492,197 +2754,13 @@ def SubdivideFaces(editor, pieces=None):
 
 
 
-# view = current view that the cursor is in.
-# If one of the editor's views:
-#    object = triangleface = a single item list containing the triangle face that the cursor is over.
-#    Returns TWO lists (of integers) WITHIN another list, of a texture's pixel u, v
-#        position on a triangle where the cursor is located at in any of the views.
-#    The first sub-list is used for any of the editor's views.
-#       It gives the actual pixel location on the skin texture itself.
-#       This sub-list is then used for any of the quarkx 'Texture Functions'
-#        to locate and\or change a pixel on a texture, or textures palette if one exist.
-#    The second sub-list is strictly used, if desired, to pass to and draw something
-#        in the Skin-view, using it's 'canvas()' function, at the same time and
-#        pixel location when the cursor is in one of the other editor's views, for example:
-#            returnedlist = [[pixU, pixV], [skinpixU, skinpixV]]
-#            skinpixU, skinpixV = returnedlist[1]
-#            if SkinView1 is not None:
-#                texWidth, texHeight = modelfacelist[0][1].currentskin["Size"]
-#                skinpix = quarkx.vect(skinpixU-int(texWidth*.5), skinpixV-int(texHeight*.5), 0)
-#                skinviewX, skinviewY, skinviewZ = SkinView1.proj(skinpix).tuple
-#                skincv = SkinView1.canvas()
-#                svs = round(SkinView1.info['scale']*.5)
-#                brushwidth = float(quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushWidth"])
-#                svs = int(brushwidth * svs)
-#                skincv.rectangle(int(skinviewX)-svs,int(skinviewY)-svs,int(skinviewX)+svs,int(skinviewY)+svs)
-#      If the cursor is currently in the Skin-view use as described below.
-# If the Skin-view:
-#    object (not needed)
-#    Returns a single list containing two integers, the texture's pixel u, v position in the Skin-view.
-# x and y = the position where the cursor is at in the view as a 'projected' 2D screen view.
-
-def TexturePixelLocation(editor, view, x, y, object=None):
-    if view.info["viewname"] != "skinview":
-        triangleface = object
-        if triangleface != []:
-            trivtx0, trivtx1, trivtx2 = triangleface[0][1].triangles[triangleface[0][2]]
-
-            facevtx0 = triangleface[0][1].currentframe.vertices[triangleface[0][1].triangles[triangleface[0][2]][0][0]]
-            facevtx1 = triangleface[0][1].currentframe.vertices[triangleface[0][1].triangles[triangleface[0][2]][1][0]]
-            facevtx2 = triangleface[0][1].currentframe.vertices[triangleface[0][1].triangles[triangleface[0][2]][2][0]]
-            
-            pixpos = view.space(quarkx.vect(x, y, 0)) # Where the cursor is pointing in the view.
-
-            vectorZ = view.vector("z").normalized
-            facenormal = ((facevtx1 - facevtx0) ^ (facevtx2 - facevtx0)).normalized
-            pixpos = pixpos - ((((pixpos - facevtx0) * facenormal) / (vectorZ * facenormal)) * vectorZ)
-
-            # Adapted from http://www.blackpawn.com/texts/pointinpoly/default.html
-            # Formula to compute u and v for a point on a triangle face:
-            # ==========================================================
-            # We use trivtx0 as our base, for it's U,V values to multiply our two factors by
-            # and get the U,V values for pixpos (where our cursor is at in the 3D view).
-
-            P = pixpos
-            A = facevtx0
-            B = facevtx1
-            C = facevtx2
-            # (what we are computing to get) u texture position value
-            # (what we are computing to get) v texture position value
-
-
-            v0 = (C - A)
-            v1 = (B - A)
-            v2 = (P - A)
-            
-            dot00 = v0 * v0
-            dot01 = v0 * v1
-            dot02 = v0 * v2
-            dot11 = v1 * v1
-            dot12 = v1 * v2
-
-            invDenom = 1 / (dot00 * dot11 - dot01 * dot01)
-            V = (dot11 * dot02 - dot01 * dot12) * invDenom
-            U = (dot00 * dot12 - dot01 * dot02) * invDenom
-
-            # To draw, by pixel location, in Skin-view using it's 'canvase()' function.
-            skinpixU = int((1 - U - V) * trivtx0[1] + U * trivtx1[1] + V * trivtx2[1])+.5
-            skinpixV = int((1 - U - V) * trivtx0[2] + U * trivtx1[2] + V * trivtx2[2])+.5
-
-            # The actual pixel location on the skin texture itself.
-            pixU = int(skinpixU-.5)
-            pixV = int(skinpixV-.5)
-
-            # This section corrects for texture tiling in the editor's views.
-            texWidth, texHeight = editor.Root.currentcomponent.currentskin["Size"]
-            cursorXpos = pixU
-            cursorYpos = pixV
-
-            if cursorXpos >= texWidth-1:
-                Xstart = int(cursorXpos / texWidth)
-                pixU = int(cursorXpos - (texWidth * Xstart))
-            elif cursorXpos < -texWidth:
-                Xstart = int(abs(cursorXpos / (texWidth+.5)))
-                pixU = int(cursorXpos + (texWidth * Xstart) + texWidth)
-            else:
-                if cursorXpos >= 1:
-                    pixU = cursorXpos
-                if cursorXpos <= -1:
-                    pixU = cursorXpos + texWidth
-                if cursorXpos == 0:
-                    pixU = 0
-
-            while pixU >= texWidth:
-                pixU = pixU - 1
-            while pixU <= -1:
-                pixU = texWidth - 1
-            pixU = int(pixU)
-
-            if cursorYpos >= texHeight-1:
-                Ystart = int(cursorYpos / texHeight)
-                pixV = int(cursorYpos - (texHeight * Ystart))
-            elif cursorYpos < -texHeight:
-                Ystart = int(abs(cursorYpos / (texHeight+.5)))
-                pixV = int(cursorYpos + (texHeight * Ystart) + texHeight)
-            else:
-                if cursorYpos >= 1:
-                    pixV = cursorYpos
-                if cursorYpos <= -1:
-                    pixV = cursorYpos + texHeight
-                if cursorYpos == 0:
-                    pixV = 0
-
-            while pixV >= texHeight:
-                pixV = pixV - 1
-            while pixV <= -1:
-                pixV = texHeight - 1
-            pixV = int(pixV)
-
-            return [[pixU, pixV], [skinpixU, skinpixV]]
-
-    else:
-        # This section computes the proper pixU, pixV position values for tiling in the Skin-view.
-        texWidth, texHeight = editor.Root.currentcomponent.currentskin["Size"]
-        list = view.space(quarkx.vect(x, y, 0)).tuple
-        cursorXpos = int(list[0])
-        cursorYpos = int(list[1])
-        if cursorXpos >= (texWidth * .5):
-            Xstart = int((cursorXpos / texWidth) -.5)
-            Xpos = -texWidth + cursorXpos - (texWidth * Xstart)
-        elif cursorXpos <= (-texWidth * .5):
-            Xstart = int((cursorXpos / texWidth) +.5)
-            Xpos = texWidth + cursorXpos + (texWidth * -Xstart) - 1
-        else:
-            if cursorXpos > 0:
-                Xpos = cursorXpos
-            if cursorXpos < 0:
-                Xpos = cursorXpos - 1
-            if cursorXpos == 0:
-                cursorXpos = list[0]
-                if cursorXpos < 0:
-                    Xpos = -1
-                else:
-                    Xpos = 0
-
-        pixU = Xpos + (texWidth * .5)
-        while pixU >= texWidth:
-            pixU = pixU - 1
-        while pixU <= -texWidth:
-            pixU = pixU + 1
-        pixU = int(pixU)
-
-        if cursorYpos >= (texHeight * .5):
-            Ystart = int((cursorYpos / texHeight) -.5)
-            Ypos = -texHeight + cursorYpos - (texHeight * Ystart)
-        elif cursorYpos <= (-texHeight * .5):
-            Ystart = int((cursorYpos / texHeight) +.5)
-            Ypos = texHeight + cursorYpos + (texHeight * -Ystart) -1
-        else:
-            if cursorYpos > 0:
-                Ypos = cursorYpos
-            if cursorYpos < 0:
-                Ypos = cursorYpos - 1
-            if cursorYpos == 0:
-                cursorYpos = list[1]
-                if cursorYpos < 0:
-                    Ypos = -1
-                else:
-                    Ypos = 0
-
-        pixV = Ypos + (texHeight * .5)
-        while pixV >= texHeight:
-            pixV = pixV - 1
-        while pixV <= -texHeight:
-            pixV = pixV + 1
-        pixV = int(pixV)
-
-        return [pixU, pixV]
-
-
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.82  2008/08/08 04:55:06  cdunde
+#To add new functions by DanielPharos and cdunde.
+#
 #Revision 1.81  2008/07/25 22:57:23  cdunde
 #Updated component error checking and added frame matching and\or
 #duplicating with independent names to avoid errors with other functions.
