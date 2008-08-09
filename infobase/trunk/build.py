@@ -114,7 +114,10 @@ def procpic(kw, path, extraargs):  #tiglari
     if (string.find(path, "/") > -1) or (string.find(path, "\\") > -1) or (path[:1] == "."):
         raise "Illegal picture filename: [%s]" % path
     picrl = string.join(filter(None, string.split(kw["path"], "/"))+[path], ".")
-    img = '<img %s src="%s">' % (extraargs, picrl)
+    if extraargs == '':
+        img = '<img src="%s">' % (picrl)
+    else:
+        img = '<img %s src="%s">' % (extraargs, picrl)
     try:
         data = open(kw["path"]+path, "rb").read()
     except:
@@ -582,6 +585,9 @@ run(defaultwriter)
 
 #
 # $Log$
+# Revision 1.27  2008/08/09 18:53:19  danielpharos
+# Fix inconsistent handling of percent-signs (fixes double percent-signs in output).
+#
 # Revision 1.26  2008/07/21 19:40:00  danielpharos
 # Re-upload new build files: fixed incompatibilities with older Python versions.
 #
