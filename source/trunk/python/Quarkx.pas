@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.70  2008/08/07 21:22:30  danielpharos
+Made a log-line more clear
+
 Revision 1.69  2008/07/25 19:36:06  danielpharos
 Changed confusing parameter-name
 
@@ -882,7 +885,7 @@ begin
   nParent:=Nil;
   if not PyArg_ParseTupleX(args, 's|O!', [@FileName, @TyObject_Type, @nParent]) then
    Exit;
-  with LienFichierQObject(FileName, QkObjFromPyObj(nParent), False) do
+  with BindFileQObject(FileName, QkObjFromPyObj(nParent), False) do
    begin
     Result:=@PythonObj;
     Py_INCREF(Result);

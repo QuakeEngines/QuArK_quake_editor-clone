@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.104  2008/08/07 15:23:06  danielpharos
+Re-enable turned off error catchers
+
 Revision 1.103  2008/08/07 15:22:16  danielpharos
 Fix update file location
 
@@ -513,7 +516,7 @@ type
                   Position: Integer;
                   StreamSize: Integer;
  {AiV}            OnAccess: Function (Ref: PQStreamRef; var S: TStream) : Integer;
-                  PUserData:  Pointer;
+                  PUserData: Pointer;
                 end;
 
   TInfoEnreg1 = class
@@ -527,8 +530,8 @@ type
   end;
 
   PPythonObj = ^TPythonObj;
-  TPythonObj =  object(TyObject)
-                end;
+  TPythonObj = object(TyObject)
+               end;
 
   QObject = class
   private
@@ -2135,7 +2138,7 @@ var
   Q: QFileObject;
 begin
   try
-    Q:=LienFichierQObject(nName, Self, False);
+    Q:=BindFileQObject(nName, Self, False);
     Q.AddRef(+1);
     try
       if Q.FParent<>Self then

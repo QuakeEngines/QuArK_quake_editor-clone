@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2008/02/23 19:25:20  danielpharos
+Moved a lot of path/file code around: should make it easier to use
+
 Revision 1.13  2005/09/28 10:48:31  peter-b
 Revert removal of Log and Header keywords
 
@@ -169,7 +172,7 @@ begin
   for I:=0 to ListView1.Items.Count-1 do
    with ListView1.Items[I] do
     try
-     Q:=LienFichierQObject(Caption, Nil, False);
+     Q:=BindFileQObject(Caption, Nil, False);
      Q.AddRef(+1);
      try
       Q.Acces;

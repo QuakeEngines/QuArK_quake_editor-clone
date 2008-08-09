@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.53  2008/08/09 19:33:54  danielpharos
+Fix a possible reference counter mistake.
+
 Revision 1.52  2008/08/07 15:23:07  danielpharos
 Re-enable turned off error catchers
 
@@ -326,7 +329,7 @@ type
 
  {------------------------}
 
-function LienFichierQObject(const theFilename: String; nParent: QObject; CheckParent: Boolean) : QFileObject;
+function BindFileQObject(const theFilename: String; nParent: QObject; CheckParent: Boolean) : QFileObject;
 function ExactFileLink(const theFilename: String; nParent: QObject; CheckParent: Boolean) : QFileObject;
 function BuildFileRoot(const theFilename: String; nParent: QObject) : QFileObject;
 procedure CopyToolbar(Source, Dest: TToolbar97);
@@ -407,7 +410,7 @@ begin
  end;
 end;
 
-function LienFichierQObject(const theFilename: String; nParent: QObject; CheckParent: Boolean) : QFileObject;
+function BindFileQObject(const theFilename: String; nParent: QObject; CheckParent: Boolean) : QFileObject;
 var
  pathAndFileName, {IncludePath,} CurDir: String;
  Q: QFileObject;

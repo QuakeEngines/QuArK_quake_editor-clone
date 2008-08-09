@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.69  2008/08/09 19:31:17  danielpharos
+Fix Setup.qrk possibly not being created right
+
 Revision 1.68  2008/05/27 10:05:39  danielpharos
 Fix QuArK creating DefaultIcon (and other) registry entries in the wrong place
 
@@ -658,7 +661,7 @@ begin
 
   { loads Defaults.qrk }
  try
-  SetupQrk:=LienFichierQObject(DefaultsFileName, Nil, False);
+  SetupQrk:=BindFileQObject(DefaultsFileName, Nil, False);
   SetupQrk.AddRef(+1);
   try
    LoadedDefaultsFileName:=SetupQrk.Filename;
@@ -697,7 +700,7 @@ begin
   { loads Setup.qrk over the default configuration }
  LoadedSetupFileName:='';
  try
-  SetupQrk:=LienFichierQObject(SetupFileName, Nil, False);
+  SetupQrk:=BindFileQObject(SetupFileName, Nil, False);
   SetupQrk.AddRef(+1);
   try
    LoadedSetupFileName:=SetupQrk.Filename;
@@ -850,7 +853,7 @@ begin
    else
      try
        { opens the old setup file }
-      SetupQrk:=LienFichierQObject(SetupFileName, Nil, False);
+      SetupQrk:=BindFileQObject(LoadedSetupFileName, Nil, False);
      except
       on EQObjectFileNotFound do  { creates a new setup file if not found }
        SetupQrk:=BuildFileRoot(GetQPath(pQuArK)+SetupFileName, Nil);
@@ -949,14 +952,14 @@ begin
     Result.Flags:=Result.Flags or ofFileLink;
     Result.Filename:=LoadedDefaultsFileName;
     Result.SubElements.Add(ExactFileLink(LoadedDefaultsFileName, Result, False));
-  (*Result.SubElements.Add(LienFichierQObject(
+  (*Result.SubElements.Add(BindFileQObject(
      SetupGameSet.Specifics.Values['Base'], Result));*)
     L:=TStringList.Create;
     try
      L.Text:=SetupGameSet.Specifics.Values['AddOns'];
      for I:=0 to L.Count-1 do
       try
-       Result.SubElements.Add(LienFichierQObject(L[I], Result, False));
+       Result.SubElements.Add(BindFileQObject(L[I], Result, False));
       except
        on EQObjectFileNotFound do
         if I=0 then
