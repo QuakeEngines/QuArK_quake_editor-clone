@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2008/05/01 10:29:55  danielpharos
+Fix error if console log file didn't exist when starting logging.
+
 Revision 1.9  2008/02/12 21:50:45  danielpharos
 Added ability to save console output to a text file.
 
@@ -99,6 +102,7 @@ procedure WriteConsole(Src: PyObject; Text: String);
 procedure UpdateRunningProcesses;
 
 procedure InitConsole;
+procedure ClearConsole;
 procedure FreeConsole;
 procedure ResizeConsole;
 
@@ -227,6 +231,14 @@ begin
   if ConsoleReady then Exit;
   InitBuffer(PipeBuffer, ConsoleWidth, ConsoleHeight);
   ConsoleReady:=True;
+end;
+
+procedure ClearConsole;
+begin
+  FreeBuffer(PipeBuffer, True);
+  PipeBuffer:=nil;
+  InitBuffer(PipeBuffer, ConsoleWidth, ConsoleHeight);
+  PipeBufPos:=0;
 end;
 
 procedure FreeConsole;

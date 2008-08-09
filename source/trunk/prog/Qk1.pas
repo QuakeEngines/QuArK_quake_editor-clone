@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.63  2008/07/24 15:19:55  danielpharos
+Added single-instance option to config.
+
 Revision 1.62  2008/07/17 14:46:41  danielpharos
 Added NOINSTANCE switch to disable the single-instance check
 
@@ -1738,8 +1741,9 @@ begin  { the link to FormDestroy is made in FormCreate }
  ClearPool(True);
  ClearSteamCache;
 // QObjectClassList.Free;
- FreeConsole;
+ ClearConsole;
  ShutdownPython;
+ FreeConsole;
  g_Form1:=nil;
  Application.UnHookMainWindow(WindowHook);
  if g_Mutex <> 0 then
