@@ -2,7 +2,7 @@ title: DirectX
 author: DanielPharos
 
 <img align=right>directx.png</img>
-Settings in this folder are only usable if you have a true DirectX
+Settings in this folder are only usable if you have a DirectX
 graphics-card.
 
 <i>Back buffer format</i>. The format of the back buffer used by
