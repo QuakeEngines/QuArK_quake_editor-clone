@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.22  2008/02/23 19:25:20  danielpharos
+Moved a lot of path/file code around: should make it easier to use
+
 Revision 1.21  2005/09/28 10:48:32  peter-b
 Revert removal of Log and Header keywords
 
@@ -535,12 +538,7 @@ function QPakFolder.GetFolder(Path: String) : QPakFolder;
 var
  I, J: Integer;
  Folder: QObject;
- S: String;
 begin
-{}
-  S:=TypeInfo;
-  S:=S;
-{}
  Result:=Self;
  while Path<>'' do
   begin
