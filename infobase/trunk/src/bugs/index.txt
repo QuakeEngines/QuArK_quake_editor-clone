@@ -1,5 +1,5 @@
 title: Known bugs in the Source Code
-subdir: range leaks
+subdir: range leaks destroy
 
 This section discusses the quality QuArK programming.  Over the years, many different people with a wide range
 of coding quality have been working on the QuArK Source Code.  And because there is no such things as a program

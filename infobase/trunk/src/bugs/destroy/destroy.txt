@@ -1,0 +1,28 @@
+title: Destroy-events
+author: DanielPharos
+
+To improve performance most forms in Delphi are recycled: They are closed,
+never destroyed. The Destroy-events of forms are triggered from Delphi's own
+code, when QuArK shuts down and all remaining objects are unloaded. This
+however means that the Destroy-event of forms are triggered when the bulk of
+the program has already been removed from memory! Specifically, the controls
+are already all gone. The Destroy-event triggers the Close-event though, and
+this is where the problem lies: the close-event is often not prepared for a
+there-are-no-controls-situation!
+
+Example:
+QkListview.pas, TQForm2.FormClose:
+<code>  g_Form1.AbortIdleJob(ListView1);</code>
+
+When this is triggered from the Destroy-event, the Destroy-event of Form1 has
+already run; g_Form1 is now nil! This triggers a difficult to trace access
+violation, that doesn't seem to make sence or do anything harmfull expect
+crash QuArK on shutdown. The workaround is putting in a check for g_Form1,
+which I have done. However, maybe this should be fixed differently and all
+together by running the Destroy-events on these forms BEFORE Form1/the program
+shuts down!
+
+Another location where this (or something very similar) was happening:
+Config.pas:
+DisableTimer (This is to indicate that parts of the Close-event shouldn't be
+run)
