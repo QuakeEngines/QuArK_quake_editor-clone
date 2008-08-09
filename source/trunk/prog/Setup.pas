@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.68  2008/05/27 10:05:39  danielpharos
+Fix QuArK creating DefaultIcon (and other) registry entries in the wrong place
+
 Revision 1.67  2008/05/01 12:18:45  danielpharos
 Fix wrong NEXUIZ gamecode.
 
@@ -692,6 +695,7 @@ begin
  Version:=InternalVersion;
 
   { loads Setup.qrk over the default configuration }
+ LoadedSetupFileName:='';
  try
   SetupQrk:=LienFichierQObject(SetupFileName, Nil, False);
   SetupQrk.AddRef(+1);
@@ -837,13 +841,20 @@ begin
     SetupQrk.AddRef(-1);
    end;
 
-   try
-     { opens the old setup file }
-    SetupQrk:=LienFichierQObject(SetupFileName, Nil, False);
-   except
-    on EQObjectFileNotFound do  { creates a new setup file if not found }
+   if LoadedSetupFileName='' then
+   begin
+      { no setup file yet }
      SetupQrk:=BuildFileRoot(GetQPath(pQuArK)+SetupFileName, Nil);
-   end;
+     LoadedSetupFileName:=GetQPath(pQuArK)+SetupFileName;
+   end
+   else
+     try
+       { opens the old setup file }
+      SetupQrk:=LienFichierQObject(SetupFileName, Nil, False);
+     except
+      on EQObjectFileNotFound do  { creates a new setup file if not found }
+       SetupQrk:=BuildFileRoot(GetQPath(pQuArK)+SetupFileName, Nil);
+     end;
     { stores the new setup information }
    SetupQrk.AddRef(+1);
    try
