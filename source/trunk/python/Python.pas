@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.32  2008/08/07 22:53:14  danielpharos
+A massive overhaul and clean-up: should make the Python interface more robust and future-proof
+
 Revision 1.31  2008/08/07 21:22:04  danielpharos
 Added extra log-line to make things in the log more clear
 
@@ -388,8 +391,9 @@ const
  //   1010 for Python 2.1a2 (and probably 2.1 as well)
  //   1011 for Python 2.2
  //   1012 for Python 2.3 (and 2.4?)
- //   1013 for Python 2.5?
- // Version info stored in here: http://svn.python.org/view/python/trunk/Include/modsupport.h
+ //   1013 for Python 2.5
+ //FIXME:   1013 or 1014 for Python 2.6?
+ // Version info from here: http://svn.python.org/view/python/trunk/Include/modsupport.h
 {$IFDEF PYTHON20}
  PYTHON_API_VERSION = 1009;
 {$ELSE}
@@ -404,6 +408,14 @@ const
    {$ELSE}
     {$IFDEF PYTHON24}
      PYTHON_API_VERSION = 1012;
+    {$ELSE}
+     {$IFDEF PYTHON25}
+      PYTHON_API_VERSION = 1013;
+     {$ELSE}
+      {$IFDEF PYTHON26}
+       PYTHON_API_VERSION = 1013;
+      {$ENDIF}
+     {$ENDIF}
     {$ENDIF}
    {$ENDIF}
   {$ENDIF}
@@ -682,22 +694,26 @@ begin
     begin
       //If the PythonDLL was not found in the dlls-dir,
       //let's try to load from anywhere else...
-      {$IFDEF PYTHON24}
-       PythonDll:='python24.dll';
+      {$IFDEF PYTHON25}
+       PythonDll:='python25.dll';
       {$ELSE}
-       {$IFDEF PYTHON23}
-        PythonDll:='python23.dll';
+       {$IFDEF PYTHON24}
+        PythonDll:='python24.dll';
        {$ELSE}
-        {$IFDEF PYTHON22}
-         PythonDll:='python22.dll';
+        {$IFDEF PYTHON23}
+         PythonDll:='python23.dll';
         {$ELSE}
-         {$IFDEF PYTHON21}
-          PythonDll:='python21.dll';
+         {$IFDEF PYTHON22}
+          PythonDll:='python22.dll';
          {$ELSE}
-          {$IFDEF PYTHON20}
-           PythonDll:='python20.dll';
+          {$IFDEF PYTHON21}
+           PythonDll:='python21.dll';
+          {$ELSE}
+           {$IFDEF PYTHON20}
+            PythonDll:='python20.dll';
            {$ELSE}
-           PythonDll:='';
+            PythonDll:='';
+           {$ENDIF}
           {$ENDIF}
          {$ENDIF}
         {$ENDIF}
