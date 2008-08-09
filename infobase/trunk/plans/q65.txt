@@ -13,13 +13,13 @@ to be delayed till 6.6, or never to happen at all.
 <br>status: done!
 
 <LI>Get the model editor back on track (cdunde)
-<br>status: well underway
+<br>status: back on track!
 
 <LI>Fully working Direct3D renderer (DanielPharos)
-<br>status: slowly making progress
+<br>status: only made stable basis
 
 <LI>OpenGL shader-rendering (DanielPharos)
-<br>status: envisioned
+<br>status: not done
 
 <LI>Left-overs from 6.4
 <br>status: ...

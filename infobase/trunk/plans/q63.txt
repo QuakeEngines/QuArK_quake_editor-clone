@@ -1,4 +1,4 @@
-title: QuArK 6.3 (current)
+title: QuArK 6.3 (stable)
 author: tiglari, etc.
 
 QuArK 6.3.0 has been released; there is also an update patch, and there
@@ -177,4 +177,3 @@ And in future updates + 6.3.1.
 <LI> more flexible vertex movement: (milifaar)
 <status>done as plugin
 </ul>
-
