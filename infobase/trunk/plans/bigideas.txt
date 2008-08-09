@@ -46,7 +46,10 @@ ur head...
 better than Quark's long list.
 
 <li>More Game Formats: (?)
-<br>Unreal engine, Serious Sam, Heroes of Might and Magic (Quark was
+<br>Unreal engine, Serious Sam, Far Cry...
+<!-- Heroes of Might and Magic (Quark was
 used some internally for either the one coming out now or the one
-before it, so maybe this one has a chance).
+before it, so maybe this one has a chance). 
+DanielPharos: First of all, I think it's Might and Magic, no Heroes
+of Might and Magic. Second, I can't find anything proving this...-->
 </ul>
