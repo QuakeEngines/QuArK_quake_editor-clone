@@ -1,0 +1,8 @@
+title: Textures
+author: DanielPharos
+
+<img align=right>textures.png</img>
+
+<i>Texture name check</i>. Some textures store the filename in the file itself. Enabling this option will make QuArK compare the stored texture name with the real filename to see if they match. Disabling this check can compromise texture integrity.
+
+<i>Empty texture name is always valid</i>. Enabling this option will make QuArK treat empty texture names as always correct when performing the above texture name check.

@@ -13,5 +13,5 @@ Also, as QuArK is constantly going through changes, it would be wise to study
 the fly-over hints, of the controls you're pointing at, in QuArK.
 
 You can access the configuration-window by opening the Edit menu and then
-selecting the configuration option when you aren't in the map/model editor, or
-using Options and then configuration when you have opened a map or model.
+selecting the Configuration option when you aren't in the map/model editor,
+or using Options and then Configuration when you have opened a map or model.

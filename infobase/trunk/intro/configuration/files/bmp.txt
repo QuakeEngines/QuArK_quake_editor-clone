@@ -1,0 +1,10 @@
+title: BMP
+author: DanielPharos
+
+<img align=right>bmp.png</img>
+
+<i>Select library for loading BMP files</i>. Here you can select the library you
+want to use to load BMP files.
+
+<i>Select library for saving BMP files</i>. Here you can select the library you
+want to use to save BMP files.
