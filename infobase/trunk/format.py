@@ -1,5 +1,5 @@
 #
-# Document formatting - this is actually a Python-script that is executed from within Build.PY
+# Document formatting - this is a Python-script that is executed from within Build.PY
 #
 
 EXTENSION = ".txt"
@@ -24,7 +24,7 @@ HEADER_BEGIN = """
 <table width=100%% border=0 cellspacing=0>
   <tr>
     <td width=213>
-      <a href="http://www.planetquake.com/quark"><img src="quarkicon.png" width=213 height=90 border=0 alt="Go to QuArK Web Site"></a>
+      <a target="_blank" href="http://quark.planetquake.gamespy.com/"><img src="quarkicon.png" width=213 height=90 border=0 alt="Go to QuArK Web Site"></a>
     </td>
     <td width=70%% align=center>
       <div class="topheadline">%(title)s</div>
@@ -64,7 +64,7 @@ FOOTER = """
   <tr class="headline">
     <td width=99%% align=middle>
       <p class="sm">
-        GNU General Public License by The QuArK (Quake Army Knife) Community - <a href="http://www.planetquake.com/quark">http://www.planetquake.com/quark</a>
+        GNU General Public License by The QuArK (Quake Army Knife) Community - <a target="_blank" href="http://quark.planetquake.gamespy.com/">http://quark.planetquake.gamespy.com/</a>
       </p>
     </td>
     <td width=1%% align=right nowrap>
