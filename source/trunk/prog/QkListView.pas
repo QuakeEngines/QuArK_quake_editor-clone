@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2007/08/14 16:32:59  danielpharos
+HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
+
 Revision 1.11  2005/09/28 10:48:32  peter-b
 Revert removal of Log and Header keywords
 
@@ -405,7 +408,10 @@ begin
  inherited;
  SelectThis:=Nil;
  Populating:=False;
- g_Form1.AbortIdleJob(ListView1);
+ if g_Form1<>nil then
+  //FIXME: This is a workaround. See the Infobase section
+  //about destroy-event bugs for more information!
+  g_Form1.AbortIdleJob(ListView1);
  ListView1.Hide;
  ListView1.Items.Clear;
 end;
