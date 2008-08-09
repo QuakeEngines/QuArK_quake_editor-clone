@@ -3,7 +3,7 @@ author: Armin Rigo, Decker, tiglari
 
 If you want to help with QuArK's development, here is how you can do various things. You don't have to be a programmer to
 give some help! If you need help about these ways of helping, see the
-<a href="http://www.dark-forge.com/forums/">QuArK forum</a> on the web site.
+<a href="http://quark.planetquake.gamespy.com/forums/">QuArK forum</a> on the web site.
 
 <ul>
 <li><strong>Testing</strong>:<br>
@@ -66,7 +66,7 @@ give some help! If you need help about these ways of helping, see the
 </ul>
 
 As stated above, you can find more help about this subject in the
-<a href="http://www.dark-forge.com/forums/">QuArK forum</a> on the web site.
+<a href="http://quark.planetquake.gamespy.com/forums/">QuArK forum</a> on the web site.
 
 The <ref>src</ref> section of the infobase is gradually coming to contain more information
 about how the Delphi code works and how it relates to the Python.

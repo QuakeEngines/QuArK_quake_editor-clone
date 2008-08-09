@@ -47,6 +47,6 @@ just by browsing it.  Don't worry if it seems like a completely
 impenetrable thicket at first!
 And if you get stuck or think you've found a mistake
 (it's been done before :)), don't hesitate to post a query to the
-<a href="http://www.dark-forge.com/forums/">QuArK forum</a>,
+<a href="http://quark.planetquake.gamespy.com/forums/">QuArK forum</a>,
 or email directly to
 <a href="mailto:tiglari@hexenworld.net">tiglari@hexenworld.net</a>.

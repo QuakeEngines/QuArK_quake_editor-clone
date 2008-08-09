@@ -18,7 +18,7 @@ The game-dependant features are not related to QuArK itself: All the map editors
 with a list of entities and textures and settings; what these settings actually do is programmed in the game itself. For
 information about this subject, you can look for general documentation at <a href="http://www.planetquake.com">PlanetQuake</a>.
 The other sources are Quake editing forums. You can use the one
-<a href="http://www.dark-forge.com/forums/">on the QuArK web site</a> (please mention explicitely which game you
+<a href="http://quark.planetquake.gamespy.com/forums/">on the QuArK web site</a> (please mention explicitely which game you
 are using!). See also the links (right column in the current design)
-<a href="http://www.planetquake.com/quark">on the web site</a>, as well as the <a href="./index.html">on-line docs</a>.
+<a href="http://quark.planetquake.gamespy.com/">on the web site</a>, as well as the <a href="./index.html">on-line docs</a>.
 There is also a <a href="http://www.planetquake.com/quark/armin/adv-quake2.html">Quake 2 - specific page</a> on the web site.
