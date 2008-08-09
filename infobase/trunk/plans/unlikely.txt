@@ -6,7 +6,7 @@ comes along who wants to do them.  If no explanation is provided, the
 explanation is an unfavorable apparent demand/probable effort ration.
 
 <UL>
-<li> Edit textures in .bsp files:
+<li>Edit textures in .bsp files:
 <br>an as-yet-unimplemented 4.7 feature, unlikely to be implemented
 since it makes it too easy to rip off other people's work.
 
@@ -16,8 +16,7 @@ games because the model structure seems to include
 brush info as well as face info.  But same problem as Edit textures
 in .bsp above.
 
-<li>FAKK2 support: (?)
-<br>And what about Daikatana?
+<li>Daikatana support: (?)
 
 <li>Adquedit-equivalent resource display for Q1: (Seth)
 <br>That is, edit *all* Q1 engine game resources.  This might
