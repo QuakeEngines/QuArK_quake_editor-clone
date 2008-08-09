@@ -467,7 +467,7 @@ class Folder:
     def makefile(self, root):
         data = [ HEADER_BEGIN % self.kw ]
         processtext(root, self, data)
-        data.append(HEADER_END)
+        data.append(HEADER_END % { })
         if self.folders:
             data.append(SUBDIR_BEGIN % self.kw)
             for folder in self.folders:
@@ -485,18 +485,18 @@ class Folder:
                         data.append(SUBFILES_END % folder.kw)
                     else:
                         # If more than 10 files, put into two columns
-                        data.append(SUBFILES_TABLEBEGIN);
+                        data.append(SUBFILES_TABLEBEGIN % { });
                         data.append(SUBFILES_BEGIN % folder.kw)
                         cnt = 0
                         for subfiles in folder.files:
                             if cnt == ((len(folder.files)+1) / 2):
                                 data.append(SUBFILES_END % folder.kw)
-                                data.append(SUBFILES_TABLEMIDDLE);
+                                data.append(SUBFILES_TABLEMIDDLE % { });
                                 data.append(SUBFILES_BEGIN % folder.kw)
                             data.append(SUBFILES_ITEM % subfiles.kw)
                             cnt = cnt + 1
                         data.append(SUBFILES_END % folder.kw)
-                        data.append(SUBFILES_TABLEEND);
+                        data.append(SUBFILES_TABLEEND % { });
             data.append(SUBDIR_END % self.kw)
         if self.files:
             data.append(FILES_BEGIN % self.kw)
@@ -507,18 +507,18 @@ class Folder:
                 data.append(FILES_ITEMEND % self.kw)
             else:
                 # If more than 10 files, put into two columns
-                data.append(SUBFILES_TABLEBEGIN);
+                data.append(SUBFILES_TABLEBEGIN % { });
                 data.append(FILES_ITEMBEGIN % self.kw)
                 cnt = 0
                 for subfiles in self.files:
                     if cnt == ((len(self.files)+1) / 2):
                         data.append(FILES_ITEMEND % self.kw)
-                        data.append(SUBFILES_TABLEMIDDLE);
+                        data.append(SUBFILES_TABLEMIDDLE % { });
                         data.append(FILES_ITEMBEGIN % self.kw)
                     data.append(FILES_ITEM % subfiles.kw)
                     cnt = cnt + 1
                 data.append(FILES_ITEMEND % self.kw)
-                data.append(SUBFILES_TABLEEND);
+                data.append(SUBFILES_TABLEEND % { });
             data.append(FILES_MIDDLE % self.kw)
             for subfiles in self.files:
                 data.append(FILE_BEGIN % subfiles.kw)
@@ -582,6 +582,9 @@ run(defaultwriter)
 
 #
 # $Log$
+# Revision 1.26  2008/07/21 19:40:00  danielpharos
+# Re-upload new build files: fixed incompatibilities with older Python versions.
+#
 # Revision 1.25  2008/07/15 18:41:25  cdunde
 # To roll back changing of format.txt to format.py and all changes to build.py since May 17, 2008 that broke building of the InfoBase.
 #
