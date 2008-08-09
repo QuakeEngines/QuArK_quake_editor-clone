@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.52  2008/08/07 15:23:07  danielpharos
+Re-enable turned off error catchers
+
 Revision 1.51  2008/08/07 15:15:07  danielpharos
 Fixed wiNeverOpen not working when trying to open in a standalone window.
 
@@ -2467,6 +2470,7 @@ procedure TQForm1.ForcedAssignObject(Q: QFileObject; State: TFileObjectWndState)
 var
  E: TEtatObjet;
 begin
+ FFileObject.AddRef(-1);
  FFileObject:=Q;
  FFileObject.AddRef(+1);
  FWndState:=State;
