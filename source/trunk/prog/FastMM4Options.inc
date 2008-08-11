@@ -92,14 +92,14 @@ Set the default options for FastMM here.
  program overwriting the bounds of allocated memory). These checks are
  expensive, and this option should thus only be used for debugging purposes.
  If this option is set then the ASMVersion option is automatically disabled.}
-{$define CheckHeapForCorruption}
+{.$define CheckHeapForCorruption}
 
 {Enable this option to catch attempts to perform MM operations after FastMM has
  been uninstalled. With this option set when FastMM is uninstalled it will not
  install the previous MM, but instead a dummy MM handler that throws an error
  if any MM operation is attempted. This will catch attempts to use the MM
  after FastMM has been uninstalled.}
-{$define DetectMMOperationsAfterUninstall}
+{.$define DetectMMOperationsAfterUninstall}
 
 {Set the following option to do extensive checking of all memory blocks. All
  blocks are padded with both a header and trailer that are used to verify the
@@ -111,7 +111,7 @@ Set the default options for FastMM here.
  Very important: If you enable this option your application will require the
  FastMM_FullDebugMode.dll library. If this library is not available you will
  get an error on startup.}
-{$define FullDebugMode}
+{.$define FullDebugMode}
 
   {Set this option to perform "raw" stack traces, i.e. check all entries on the
    stack for valid return addresses. Note that this is significantly slower
@@ -161,7 +161,7 @@ Set the default options for FastMM here.
 
 {Set this option to enable reporting of memory leaks. Combine it with the two
  options below for further fine-tuning.}
-{$define EnableMemoryLeakReporting}
+{.$define EnableMemoryLeakReporting}
 
   {Set this option to suppress the display and logging of expected memory leaks
    that were registered by pointer. Leaks registered by size or class are often
