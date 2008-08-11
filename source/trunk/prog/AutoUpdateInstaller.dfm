@@ -19,11 +19,11 @@ object AutoUpdateInstaller: TAutoUpdateInstaller
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
-    Left = 152
-    Top = 80
-    Width = 32
+    Left = 8
+    Top = 8
+    Width = 235
     Height = 13
-    Caption = 'Label1'
+    Caption = 'QuArK is now installing the updates. Please wait...'
   end
   object StopBtn: TButton
     Left = 192
@@ -40,7 +40,7 @@ object AutoUpdateInstaller: TAutoUpdateInstaller
     Top = 160
     Width = 473
     Height = 49
-    Step = 1
+    Step = 0
     TabOrder = 1
   end
 end

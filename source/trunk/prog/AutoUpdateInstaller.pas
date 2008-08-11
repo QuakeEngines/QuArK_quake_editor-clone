@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2008/07/07 19:51:50  danielpharos
+Small update: AutoUpdateInstaller now going through individual files of packages
+
 Revision 1.6  2008/06/25 14:44:50  danielpharos
 Added missing log entries.
 
@@ -73,7 +76,6 @@ var
   InstallWindow: TAutoUpdateInstaller;
   ThreadHandle: Cardinal;
   StopUpdate, ExitWindow: Boolean;
-  InstallError: string;
 
 {$R *.DFM}
 
@@ -95,7 +97,6 @@ begin
   Result:=False;
   InstallWindow:=TAutoUpdateInstaller.Create(nil);
   try
-    InstallWindow.Show;
     ThreadHandle:=CreateThread(nil, 0, @InstallPackages, nil, 0, ThreadId);
     if ThreadHandle = 0 then
     begin
@@ -103,16 +104,8 @@ begin
       Exit;
     end;
     SetThreadPriority(ThreadHandle, THREAD_PRIORITY_ABOVE_NORMAL);
-    while not ExitWindow do
-    begin
-      Sleep(50);
-      if (ThreadHandle = 0) and (Length(InstallError)<>0) then
-      begin
-        MessageBox(InstallWindow.Handle, PChar(InstallError), PChar('QuArK'), MB_OK);
-        InstallError:='';
-      end;
-      Application.ProcessMessages;
-    end;
+    //@ FUCK UP! Need better Thread-management!
+    InstallWindow.ShowModal;
   finally
     InstallWindow.Free;
   end;
@@ -126,7 +119,6 @@ var
   FileData: TMemoryStream;
   TotalFileNumber: Cardinal;
 begin
-  InstallError:='Unknown error';
   try
     try
       TotalFileNumber:=0;
@@ -134,10 +126,11 @@ begin
         with UpdatePackages[I] do
           if Install then
             TotalFileNumber:=TotalFileNumber+FileNR;
-      InstallWindow.pgbInstall.Max:=Integer(TotalFileNumber*2);
 
       if TotalFileNumber>0 then
       begin
+        InstallWindow.pgbInstall.Max:=Integer(TotalFileNumber*2);
+
         UpdateConnection:=THTTPConnection.Create;
         try
           UpdateConnection.GoOnline;
@@ -164,6 +157,7 @@ begin
                   InstallWindow.pgbInstall.StepIt;
                   if StopUpdate then
                     Exit;
+                  Application.ProcessMessages;
                 end;
               end;
           end;
@@ -182,18 +176,26 @@ begin
               InstallWindow.pgbInstall.StepIt;
               if StopUpdate then
                 Exit;
+              Application.ProcessMessages;
             end;
         end;
+      end
+      else
+      begin
+      //@
+        //InstallWindow.pgbInstall.Max:=1;
+        //InstallWindow.pgbInstall.Step:=1;
       end;
     finally
       InstallWindow.StopBtn.Caption:='OK';
       ThreadHandle:=0;
     end;
   except
-    InstallError:=GetExceptionMessage;
+    InstallWindow.Label1.Caption:=GetExceptionMessage; //@
     Exit;
   end;
-  InstallError:='';
+  InstallWindow.Label1.Caption:='QuArK needs to be restarted for the updates to be applied.'; //@
+  Application.ProcessMessages;
 end;
 
  {------------------------}
