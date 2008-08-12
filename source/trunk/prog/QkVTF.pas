@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.35  2008/08/12 14:53:15  danielpharos
+Added a file version option to VTF file saving, and fixed a memory leak and a bug causing non-alpha images to contain alpha after importing them.
+
 Revision 1.34  2007/08/15 16:28:08  danielpharos
 HUGE update to HL2: Took out some code that's now not needed anymore.
 
@@ -336,6 +339,7 @@ type
   PRGB = ^TRGB;
   TRGB = array[0..2] of char;
 var
+  NeedToFreeDummy: Boolean;
   DummyImage: QImage;
   PSD: TPixelSetDescription;
   TexSize : longword;
@@ -373,9 +377,15 @@ begin
     TexFormat := IMAGE_FORMAT_DXT5;
 
     if not IsTrueColor then
-      DummyImage:=ConvertToTrueColor
+    begin
+      NeedToFreeDummy:=True;
+      DummyImage:=ConvertToTrueColor;
+    end
     else
+    begin
+      NeedToFreeDummy:=False;
       DummyImage:=Self;
+    end;
 
     PSD:=DummyImage.Description;
     try
@@ -473,6 +483,8 @@ begin
     finally
       PSD.Done;
     end;
+    if NeedToFreeDummy then
+      DummyImage.Free;
 
     //Find out which version of VTF file we want to save
     VTFSaveVersion:=SetupSubSet(ssFiles, 'VTF').Specifics.Values['SaveVersion'];
