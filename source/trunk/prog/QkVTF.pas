@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.34  2007/08/15 16:28:08  danielpharos
+HUGE update to HL2: Took out some code that's now not needed anymore.
+
 Revision 1.33  2007/07/05 10:18:28  danielpharos
 Moved a string to the dictionary.
 
@@ -149,10 +152,7 @@ type
 
 implementation
 
-uses SysUtils, Setup, Quarkx, QkObjectClassList, Game, Logging;
-
-type
-  VTFImageFormat = Integer;
+uses SysUtils, StrUtils, Setup, Quarkx, QkObjectClassList, Game, Logging;
 
 var
   VTFLoaded: Boolean;
@@ -247,80 +247,80 @@ begin
       V[2]:=Height;
       SetFloatsSpec('Size', V);
       GetMem(RawData,vlImageComputeImageSize(Width, Height, 1, 1, ImageFormat));
-      RawData2:=vlImageGetData(0, 0, 0, 0);
-      if vlImageConvert(RawData2, RawData, Width, Height, vlImageGetFormat(), ImageFormat)=false then
-      begin
-        vlDeleteImage(VTFImage);
-        Fatal('Unable to load VTF file. Call to vlImageConvert failed.');
-      end;
-
-      //Allocate quarks image buffers
-      ImgData:=Spec1;
-      AlphaData:=Spec3;
-      SetLength(ImgData , Length(Spec1) + NumberOfPixels * 3); {RGB buffer}
-      Setlength(AlphaData,Length(Spec3) + NumberOfPixels);     {alpha buffer}
-
-      if HasAlpha then
-      begin
-        {copy and reverse the upside down RGBA image to quarks internal format}
-        {also the alpha channel is split}
-        Source:=PChar(RawData) + NumberOfPixels * 4;
-        DestImg:=PChar(ImgData) + Length(Spec1);
-        DestAlpha:=PChar(AlphaData)+Length(Spec3);
-        for J:=1 to Height do
+      try
+        RawData2:=vlImageGetData(0, 0, 0, 0);
+        if vlImageConvert(RawData2, RawData, Width, Height, vlImageGetFormat(), ImageFormat)=false then
         begin
-          Dec(Source, 4 * Width);
-          pSource:=Source;
-          pDestImg:=DestImg;
-          pDestAlpha:=DestAlpha;
-          for I:=1 to Width do
-          begin
-            PRGB(pDestImg)^[0]:=PRGB(pSource)^[2];
-            PRGB(pDestImg)^[1]:=PRGB(pSource)^[1];
-            PRGB(pDestImg)^[2]:=PRGB(pSource)^[0];
-            pDestAlpha^:=pSource[3];
-            Inc(pSource, 4);
-            Inc(pDestImg, 3);
-            Inc(pDestAlpha);
-          end;
-          Inc(DestImg, 3 * Width);
-          Inc(DestAlpha, Width);
+          vlDeleteImage(VTFImage);
+          Fatal('Unable to load VTF file. Call to vlImageConvert failed.');
         end;
 
-        Specifics.Add(AlphaData);
-        Specifics.Add(ImgData);
-
-      end
-      else
-      begin
-        //Allocate quarks image buffers
-        ImgData:=Spec1;
-        SetLength(ImgData, Length(Spec1) + NumberOfPixels * 3); {RGB buffer}
-
-        {copy and reverse the upside down RGB image to quarks internal format}
-        Source:=PChar(RawData) + NumberOfPixels * 3;
-        DestImg:=PChar(ImgData) + Length(Spec1);
-        for J:=1 to Height do
+        if HasAlpha then
         begin
-          Dec(Source, 3 * Width);
-          pSource:=Source;
-          pDestImg:=DestImg;
-          for I:=1 to Width do
+          //Allocate quarks image buffers
+          ImgData:=Spec1;
+          AlphaData:=Spec3;
+          SetLength(ImgData , Length(Spec1) + NumberOfPixels * 3); {RGB buffer}
+          Setlength(AlphaData,Length(Spec3) + NumberOfPixels);     {alpha buffer}
+
+          {copy and reverse the upside down RGBA image to quarks internal format}
+          {also the alpha channel is split}
+          Source:=PChar(RawData) + NumberOfPixels * 4;
+          DestImg:=PChar(ImgData) + Length(Spec1);
+          DestAlpha:=PChar(AlphaData)+Length(Spec3);
+          for J:=1 to Height do
           begin
-            PRGB(pDestImg)^[0]:=PRGB(pSource)^[2];
-            PRGB(pDestImg)^[1]:=PRGB(pSource)^[1];
-            PRGB(pDestImg)^[2]:=PRGB(pSource)^[0];
-            Inc(pSource, 3);
-            Inc(pDestImg, 3);
+            Dec(Source, 4 * Width);
+            pSource:=Source;
+            pDestImg:=DestImg;
+            pDestAlpha:=DestAlpha;
+            for I:=1 to Width do
+            begin
+              PRGB(pDestImg)^[0]:=PRGB(pSource)^[2];
+              PRGB(pDestImg)^[1]:=PRGB(pSource)^[1];
+              PRGB(pDestImg)^[2]:=PRGB(pSource)^[0];
+              pDestAlpha^:=pSource[3];
+              Inc(pSource, 4);
+              Inc(pDestImg, 3);
+              Inc(pDestAlpha);
+            end;
+            Inc(DestImg, 3 * Width);
+            Inc(DestAlpha, Width);
           end;
-          Inc(DestImg, 3 * Width);
+
+          Specifics.Add(AlphaData);
+          Specifics.Add(ImgData);
+        end
+        else
+        begin
+          //Allocate quarks image buffers
+          ImgData:=Spec1;
+          SetLength(ImgData, Length(Spec1) + NumberOfPixels * 3); {RGB buffer}
+
+          {copy and reverse the upside down RGB image to quarks internal format}
+          Source:=PChar(RawData) + NumberOfPixels * 3;
+          DestImg:=PChar(ImgData) + Length(Spec1);
+          for J:=1 to Height do
+          begin
+            Dec(Source, 3 * Width);
+            pSource:=Source;
+            pDestImg:=DestImg;
+            for I:=1 to Width do
+            begin
+              PRGB(pDestImg)^[0]:=PRGB(pSource)^[2];
+              PRGB(pDestImg)^[1]:=PRGB(pSource)^[1];
+              PRGB(pDestImg)^[2]:=PRGB(pSource)^[0];
+              Inc(pSource, 3);
+              Inc(pDestImg, 3);
+            end;
+            Inc(DestImg, 3 * Width);
+          end;
+
+          Specifics.Add(ImgData);
         end;
-
-        Specifics.Add(AlphaData);
-        Specifics.Add(ImgData);
-
+      finally
+        FreeMem(RawData);
       end;
-      FreeMem(RawData);
 
       vlDeleteImage(VTFImage);
     end;
@@ -336,14 +336,19 @@ type
   PRGB = ^TRGB;
   TRGB = array[0..2] of char;
 var
+  DummyImage: QImage;
   PSD: TPixelSetDescription;
   TexSize : longword;
   S, RawBuffer: String;
   RawData, RawData2: PByte;
   SourceImg, SourceAlpha, Dest, pSourceImg, pSourceAlpha, pDest: PChar;
+  Width, Height: Integer;
 
   VTFImage: Cardinal;
   TexFormat, ImageFormat: VTFImageFormat;
+  VTFOptions: SVTFCreateOptions;
+  VTFSaveVersion: String;
+  VTFMajorVersion, VTFMinorVersion: Cardinal;
   I, J: Integer;
   OutputSize: Cardinal;
 begin
@@ -366,99 +371,143 @@ begin
       Fatal('Unable to save VTF file. Call to vlBindImage failed.');
 
     TexFormat := IMAGE_FORMAT_DXT5;
-    PSD:=Description;
-    if PSD.AlphaBits=psa8bpp then
-    begin
-      S:=SetupSubSet(ssFiles, 'VTF').Specifics.Values['SaveFormatA'];
-      if S<>'' then
-      begin
-        try
-          TexFormat:=strtoint(S);
-          if (TexFormat < 0) or (TexFormat >= IMAGE_FORMAT_COUNT) then
-            TexFormat := IMAGE_FORMAT_DXT5;
-        except
-          TexFormat := IMAGE_FORMAT_DXT5;
-        end;
-      end;
-      ImageFormat:=IMAGE_FORMAT_RGBA8888;
-      GetMem(RawData2, PSD.size.X * PSD.size.Y * 4);
 
-      SourceImg:=PChar(PSD.Data) + PSD.size.X * PSD.size.Y * 3;
-      SourceAlpha:=PChar(PSD.AlphaData) + PSD.size.X * PSD.size.Y;
-      Dest:=PChar(RawData2);
-      for J:=1 to PSD.size.Y do
+    if not IsTrueColor then
+      DummyImage:=ConvertToTrueColor
+    else
+      DummyImage:=Self;
+
+    PSD:=DummyImage.Description;
+    try
+      Width:=PSD.size.x;
+      Height:=PSD.size.y;
+
+      if PSD.AlphaBits = psa8bpp then
       begin
-        Dec(SourceImg, 3 * PSD.size.X);
-        pSourceAlpha:=SourceAlpha;
-        pSourceImg:=SourceImg;
-        pDest:=Dest;
-        for I:=1 to PSD.size.X do
+        S:=SetupSubSet(ssFiles, 'VTF').Specifics.Values['SaveFormatA'];
+        if S<>'' then
         begin
-          PRGBA(pDest)^[2]:=PRGB(pSourceImg)^[0];  { rgb }
-          PRGBA(pDest)^[1]:=PRGB(pSourceImg)^[1];  { rgb }
-          PRGBA(pDest)^[0]:=PRGB(pSourceImg)^[2];  { rgb }
-          PRGBA(pDest)^[3]:=pSourceAlpha^;          { alpha }
-          Inc(pDest, 4);
-          Inc(pSourceImg, 3);
-          Inc(pSourceAlpha);
+          try
+            TexFormat:=strtoint(S);
+            if (TexFormat < 0) or (TexFormat >= IMAGE_FORMAT_COUNT) then
+              TexFormat := IMAGE_FORMAT_DXT5;
+          except
+            TexFormat := IMAGE_FORMAT_DXT5;
+          end;
         end;
-        Inc(Dest, 4 * PSD.size.X);
-      end;
-      TexSize:=vlImageComputeImageSize(PSD.size.X,PSD.size.Y,1,1,TexFormat);
-      GetMem(RawData, TexSize);
+        ImageFormat:=IMAGE_FORMAT_RGBA8888;
+        GetMem(RawData2, Width * Height * 4);
+        try
+          SourceImg:=PChar(PSD.Data) + Width * Height * 3;
+          SourceAlpha:=PChar(PSD.AlphaData) + Width * Height;
+          Dest:=PChar(RawData2);
+          for J:=1 to Height do
+          begin
+            Dec(SourceImg, 3 * Width);
+            pSourceAlpha:=SourceAlpha;
+            pSourceImg:=SourceImg;
+            pDest:=Dest;
+            for I:=1 to Width do
+            begin
+              PRGBA(pDest)^[2]:=PRGB(pSourceImg)^[0];  { rgb }
+              PRGBA(pDest)^[1]:=PRGB(pSourceImg)^[1];  { rgb }
+              PRGBA(pDest)^[0]:=PRGB(pSourceImg)^[2];  { rgb }
+              PRGBA(pDest)^[3]:=pSourceAlpha^;          { alpha }
+              Inc(pDest, 4);
+              Inc(pSourceImg, 3);
+              Inc(pSourceAlpha);
+            end;
+            Inc(Dest, 4 * Width);
+          end;
+          TexSize:=vlImageComputeImageSize(Width, Height, 1, 1, IMAGE_FORMAT_RGBA8888);
+          GetMem(RawData, TexSize);
 
-      if vlImageConvert(RawData2, RawData, PSD.size.X, PSD.size.Y, ImageFormat, TexFormat)=false then
-        Fatal('Unable to save VTF file. Call to vlImageConvert failed.');
+          if vlImageConvertToRGBA8888(RawData2, RawData, Width, Height, ImageFormat)=false then
+            Fatal('Unable to save VTF file. Call to vlImageConvert failed.');
+          finally
+            FreeMem(RawData2);
+          end;
+      end
+      else
+      begin
+        S:=SetupSubSet(ssFiles, 'VTF').Specifics.Values['SaveFormat'];
+        if S<>'' then
+        begin
+          try
+            TexFormat:=strtoint(S);
+            if (TexFormat < 0) or (TexFormat >= IMAGE_FORMAT_COUNT) then
+              TexFormat := IMAGE_FORMAT_DXT5;
+          except
+            TexFormat := IMAGE_FORMAT_DXT5;
+          end;
+        end;
+        ImageFormat:=IMAGE_FORMAT_RGB888;
+        GetMem(RawData2, Width * Height * 3);
+        try
+          SourceImg:=PChar(PSD.Data) + Width * Height * 3;
+          Dest:=PChar(RawData2);
+          for J:=1 to Height do
+          begin
+            Dec(SourceImg, 3 * Width);
+            pSourceImg:=SourceImg;
+            pDest:=Dest;
+            for I:=1 to Width do
+            begin
+              PRGB(pDest)^[0]:=PRGB(pSourceImg)^[2];  { rgb }
+              PRGB(pDest)^[1]:=PRGB(pSourceImg)^[1];  { rgb }
+              PRGB(pDest)^[2]:=PRGB(pSourceImg)^[0];  { rgb }
+              Inc(pDest, 3);
+              Inc(pSourceImg, 3);
+            end;
+            Inc(Dest, 3 * Width);
+          end;
+          TexSize:=vlImageComputeImageSize(Width, Height, 1, 1, IMAGE_FORMAT_RGBA8888);
+          GetMem(RawData, TexSize);
+
+          if vlImageConvertToRGBA8888(RawData2, RawData, Width, Height, ImageFormat)=false then
+            Fatal('Unable to save VTF file. Call to vlImageConvert failed.');
+        finally
+          FreeMem(RawData2);
+        end;
+      end;
+    finally
+      PSD.Done;
+    end;
+
+    //Find out which version of VTF file we want to save
+    VTFSaveVersion:=SetupSubSet(ssFiles, 'VTF').Specifics.Values['SaveVersion'];
+    I:=Pos('.', VTFSaveVersion);
+    if I>0 then
+    begin
+      try
+        VTFMajorVersion:=strtoint(LeftStr(VTFSaveVersion, I-1));
+      except
+        VTFMajorVersion:=VTF_MAJOR_VERSION;
+      end;
+      try
+        VTFMinorVersion:=strtoint(RightStr(VTFSaveVersion, Length(VTFSaveVersion)-I));
+      except
+        VTFMinorVersion:=VTF_MINOR_VERSION;
+      end;
     end
     else
     begin
-      S:=SetupSubSet(ssFiles, 'VTF').Specifics.Values['SaveFormat'];
-      if S<>'' then
-      begin
-        try
-          TexFormat:=strtoint(S);
-          if (TexFormat < 0) or (TexFormat >= IMAGE_FORMAT_COUNT) then
-            TexFormat := IMAGE_FORMAT_DXT5;
-        except
-          TexFormat := IMAGE_FORMAT_DXT5;
-        end;
-      end;
-      ImageFormat:=IMAGE_FORMAT_RGB888;
-      GetMem(RawData2, PSD.size.X * PSD.size.Y * 3);
-
-      SourceImg:=PChar(PSD.Data) + PSD.size.X * PSD.size.Y * 3;
-      Dest:=PChar(RawData2);
-      for J:=1 to PSD.size.Y do
-      begin
-        Dec(SourceImg, 3 * PSD.size.X);
-        pSourceImg:=SourceImg;
-        pDest:=Dest;
-        for I:=1 to PSD.size.X do
-        begin
-          PRGB(pDest)^[0]:=PRGB(pSourceImg)^[2];  { rgb }
-          PRGB(pDest)^[1]:=PRGB(pSourceImg)^[1];  { rgb }
-          PRGB(pDest)^[2]:=PRGB(pSourceImg)^[0];  { rgb }
-          Inc(pDest, 3);
-          Inc(pSourceImg, 3);
-        end;
-        Inc(Dest, 3 * PSD.size.X);
-      end;
-      TexSize:=vlImageComputeImageSize(PSD.size.X,PSD.size.Y,1,1,TexFormat);
-      GetMem(RawData, TexSize);
-
-      if vlImageConvert(RawData2, RawData, PSD.size.X, PSD.size.Y, ImageFormat, TexFormat)=false then
-        Fatal('Unable to save VTF file. Call to vlImageConvert failed.');
+      VTFMajorVersion:=VTF_MAJOR_VERSION;
+      VTFMinorVersion:=VTF_MINOR_VERSION;
     end;
-    if vlImageCreate(PSD.size.X, PSD.size.Y,1,1,1,TexFormat,false,false,false)=false then
-      Fatal('Unable to load VTF file. Call to vlImageCreate failed.');
-    vlImageSetData(0, 0, 0, 0, RawData);
+
+    vlImageCreateDefaultCreateStructure(@VTFOptions);
+    VTFOptions.uiVersion[0]:=VTFMajorVersion;
+    VTFOptions.uiVersion[1]:=VTFMinorVersion;
+    VTFOptions.ImageFormat:=TexFormat;
+
+    if vlImageCreateSingle(Width, Height, RawData, @VTFOptions)=false then
+      Fatal('Unable to load VTF file. Call to vlImageCreateSingle failed.');
     SetLength(RawBuffer, vlImageGetSize);
     if vlImageSaveLump(Pointer(RawBuffer), Length(RawBuffer), @OutputSize)=false then
       Fatal('Unable to save VTF file. Call to vlImageSaveLump failed.');
 
     F.WriteBuffer(Pointer(RawBuffer)^,OutputSize);
-
-    FreeMem(RawData2);
     FreeMem(RawData);
     vlDeleteImage(VTFImage);
   end

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2008/05/16 20:57:49  danielpharos
+Use centralized call to get correct directory
+
 Revision 1.17  2007/08/15 16:28:08  danielpharos
 HUGE update to HL2: Took out some code that's now not needed anymore.
 
@@ -158,6 +161,9 @@ procedure UnloadVTFLib(ForceUnload: boolean);
 {-------------------}
 
 const
+  VTF_MAJOR_VERSION	= 7;
+  VTF_MINOR_VERSION	= 4;
+
 //VTFImageFormat:
   IMAGE_FORMAT_RGBA8888= 0;
   IMAGE_FORMAT_ABGR8888= 1;
@@ -306,7 +312,7 @@ typedef enum tagVTFSharpenFilter    ALL THESE typedef'S STILL NEED TO BE CONVERT
 type
   VTFImageFormat = Integer;
   VMTNodeType = Integer;
-{  VTFMipmapFilter = Integer;
+  VTFMipmapFilter = Integer;
   VTFSharpenFilter = Integer;
   VTFResizeMethod = Integer;
   VTFKernelFilter = Integer;
@@ -314,13 +320,13 @@ type
   VTFNormalAlphaResult = Integer;
 
   SVTFCreateOptions = record
-  	uiVersion : array[0..2] of Cardinal;								//!< Output image version.
+  	uiVersion : array[0..1] of Cardinal;								//!< Output image version.
 	  ImageFormat : VTFImageFormat;							//!< Output image output storage format.
 
   	uiFlags : Cardinal;										//!< Output image header flags.
   	uiStartFrame : Cardinal;								//!< Output image start frame.
   	sBumpScale : Single;								//!< Output image bump scale.
-  	sReflectivity : array[0..3] of Single;							//!< Output image reflectivity. (Only used if bReflectivity is false.)
+  	sReflectivity : array[0..2] of Single;							//!< Output image reflectivity. (Only used if bReflectivity is false.)
 
   	bMipmaps : Boolean;									//!< Generate MIPmaps. (Space is always allocated.)
   	MipmapFilter : VTFMipmapFilter;						//!< MIP map re-size filter.
@@ -349,7 +355,7 @@ type
   	NormalAlphaResult : VTFNormalAlphaResult;				//!< How to handle output image alpha channel, post normal map creation.
   	bNormalMinimumZ : Byte;								//!< Minimum normal Z value.
   	sNormalScale : Single;								//!< Normal map scale.
-  	 bNormalWrap : Boolean;									//!< Wrap the normal map.
+  	bNormalWrap : Boolean;									//!< Wrap the normal map.
   	bNormalInvertX : Boolean;								//!< Invert the normal X component.
   	bNormalInvertY : Boolean;								//!< Invert the normal Y component.
   	bNormalInvertZ : Boolean;								//!< Invert the normal Z component.
@@ -357,7 +363,7 @@ type
   	bSphereMap : Boolean;									//!< Generate a sphere map for six faced environment maps.
   end;
 
-  PSVTFCreateOptions = ^SVTFCreateOptions; }
+  PSVTFCreateOptions = ^SVTFCreateOptions;
 
 var
   vlGetVersion: function : Cardinal; cdecl;
@@ -376,13 +382,15 @@ var
   vlImageGetWidth: function : Cardinal; cdecl;
   vlImageGetHeight: function : Cardinal; cdecl;
   vlImageConvert: function (lpSource : PByte; lpDest : PByte; uiWidth : Cardinal; uiHeight : Cardinal; SourceFormat : VTFImageFormat; DestFormat : VTFImageFormat) : Boolean; cdecl;
+  vlImageConvertToRGBA8888: function (lpSource : PByte; lpDest : PByte; uiWidth : Cardinal; uiHeight : Cardinal; SourceFormat : VTFImageFormat) : Boolean; cdecl;
+  //vlImageConvertFromRGBA8888: function (lpSource : PByte; lpDest : PByte; uiWidth : Cardinal; uiHeight : Cardinal; DestFormat : VTFImageFormat) : Boolean; cdecl;
   vlImageComputeImageSize: function (uiWidth : Cardinal; uiHeight : Cardinal; uiDepth : Cardinal; uiMipmaps : Cardinal; ImageFormat : VTFImageFormat) : Cardinal; cdecl;
   vlImageGetSize: function : Cardinal; cdecl;
   vlImageGetData: function (uiFrame : Cardinal; uiFace : Cardinal; uiSlice : Cardinal; uiMipmapLevel : Cardinal) : PByte; cdecl;
-  vlImageSetData: procedure (uiFrame : Cardinal; uiFace : Cardinal; uiSlice : Cardinal; uiMipmapLevel : Cardinal; lpData : PByte); cdecl;
-  vlImageCreate: function (uiWidth : Cardinal; uiHeight : Cardinal; uiFrames : Cardinal; uiFaces : Cardinal; uiSlices : Cardinal; ImageFormat :VTFImageFormat; bThumbnail : Boolean; bMipmaps: Boolean; bNullImageData : Boolean) : Boolean; cdecl;
-  //vlImageCreateSingle: function (uiWidth : Cardinal; uiHeight : Cardinal; lpImageDataRGBA8888 : PByte; VTFCreateOptions : PSVTFCreateOptions) : Boolean; cdecl;
-  //vlImageCreateDefaultCreateStructure: procedure (VTFCreateOptions : PSVTFCreateOptions); cdecl;
+  //vlImageSetData: procedure (uiFrame : Cardinal; uiFace : Cardinal; uiSlice : Cardinal; uiMipmapLevel : Cardinal; lpData : PByte); cdecl;
+  //vlImageCreate: function (uiWidth : Cardinal; uiHeight : Cardinal; uiFrames : Cardinal; uiFaces : Cardinal; uiSlices : Cardinal; ImageFormat :VTFImageFormat; bThumbnail : Boolean; bMipmaps: Boolean; bNullImageData : Boolean) : Boolean; cdecl;
+  vlImageCreateSingle: function (uiWidth : Cardinal; uiHeight : Cardinal; lpImageDataRGBA8888 : PByte; VTFCreateOptions : PSVTFCreateOptions) : Boolean; cdecl;
+  vlImageCreateDefaultCreateStructure: procedure (VTFCreateOptions : PSVTFCreateOptions); cdecl;
   vlCreateMaterial: function (uiMaterial : PCardinal) : Boolean; cdecl;
   vlBindMaterial: function (uiMaterial : Cardinal) : Boolean; cdecl;
   vlDeleteMaterial: procedure (uiMaterial : Cardinal); cdecl;
@@ -463,13 +471,15 @@ begin
       vlImageGetWidth   := InitDllPointer(HVTFLib, 'vlImageGetWidth');
       vlImageGetHeight  := InitDllPointer(HVTFLib, 'vlImageGetHeight');
       vlImageConvert    := InitDllPointer(HVTFLib, 'vlImageConvert');
+      vlImageConvertToRGBA8888   := InitDllPointer(HVTFLib, 'vlImageConvertToRGBA8888');
+      //vlImageConvertFromRGBA8888 := InitDllPointer(HVTFLib, 'vlImageConvertFromRGBA8888');
       vlImageComputeImageSize    := InitDllPointer(HVTFLib, 'vlImageComputeImageSize');
       vlImageGetSize    := InitDllPointer(HVTFLib, 'vlImageGetSize');
       vlImageGetData    := InitDllPointer(HVTFLib, 'vlImageGetData');
-      vlImageSetData    := InitDllPointer(HVTFLib, 'vlImageSetData');
-      vlImageCreate     := InitDllPointer(HVTFLib, 'vlImageCreate');
-      //vlImageCreateSingle        := InitDllPointer(HVTFLib, 'vlImageCreateSingle');
-      //vlImageCreateDefaultCreateStructure      := InitDllPointer(HVTFLib, 'vlImageCreateDefaultCreateStructure');
+      //vlImageSetData    := InitDllPointer(HVTFLib, 'vlImageSetData');
+      //vlImageCreate     := InitDllPointer(HVTFLib, 'vlImageCreate');
+      vlImageCreateSingle        := InitDllPointer(HVTFLib, 'vlImageCreateSingle');
+      vlImageCreateDefaultCreateStructure      := InitDllPointer(HVTFLib, 'vlImageCreateDefaultCreateStructure');
 
       //Calls for VMT file handling:
       vlCreateMaterial    := InitDllPointer(HVTFLib, 'vlCreateMaterial');
@@ -549,13 +559,15 @@ begin
       vlImageGetWidth   := nil;
       vlImageGetHeight  := nil;
       vlImageConvert    := nil;
+      vlImageConvertToRGBA8888   := nil;
+      //vlImageConvertFromRGBA8888 := nil;
       vlImageComputeImageSize    := nil;
       vlImageGetSize    := nil;
       vlImageGetData    := nil;
-      vlImageSetData    := nil;
-      vlImageCreate     := nil;
-      //vlImageCreateSingle        := nil;
-      //vlImageCreateDefaultCreateStructure      := nil;
+      //vlImageSetData    := nil;
+      //vlImageCreate     := nil;
+      vlImageCreateSingle        := nil;
+      vlImageCreateDefaultCreateStructure      := nil;
       vlCreateMaterial    := nil;
       vlBindMaterial      := nil;
       vlDeleteMaterial    := nil;

@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.422  2008/08/12 14:49:36  danielpharos
+//Init non paletted images without a palette
+//
 //Revision 1.421  2008/08/09 16:53:35  danielpharos
 //Fixed some typo's and swapped two controls about to make more sense.
 //
@@ -3663,6 +3666,7 @@ QQRKSRC1
         SaveLibrary = "VTFLib"
         SaveFormat  = "3"
         SaveFormatA = "15"
+        SaveVersion = "7.2"
         Form = "FilesVTF"
       }
     }
@@ -7826,6 +7830,17 @@ QQRKSRC1
              $0D "I32F"
              $0D "RGB323232F"
              $0D "RGBA32323232F"
+      }
+      SaveVersion: =
+      {
+        Typ = "CL"
+        Txt = "Format of exported alpha VTF textures"
+        Values = "7.0"$0D"7.1"$0D"7.2"$0D"7.3"$0D"7.4"
+        Items = "7.0"
+             $0D "7.1"
+             $0D "7.2"
+             $0D "7.3"
+             $0D "7.4"
       }
     }
 
