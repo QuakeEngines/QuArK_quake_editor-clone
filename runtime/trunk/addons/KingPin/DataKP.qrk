@@ -4,6 +4,15 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.10  2008/05/21 18:14:52  cdunde
+//To add and\or activate Half-Life 2 functions: (all original code by Alexander)
+//1) to create extra Specifics setting handles for func_useableladder function (point0 & point1)
+//      func_breakable_glass and func_breakable_surf functions
+//      (lowerleft, upperleft, lowerright and upperright)
+//2) to draw special light entity lines for functions like light_spot that have the Specifics
+//      (angles, _cone, spotlightwidth and\or _inner_cone)
+//3) face displacement. Commented out at this time. believe bezier type code should be used instead.
+//
 //Revision 1.9  2008/05/14 20:38:20  cdunde
 //Fixed basic lighting in all games and a few other small typo errors.
 //
@@ -147,7 +156,7 @@ QQRKSRC1
     Root = "KingPin file types.qtxfolder"
     KingPin file types.qtxfolder =
     {
-      Texture Image.tga = { ;incl = "EmptyImage" }
+      Texture Image.tga = { ;incl = "EmptyImagePal" }
     }
   }
   walltex:incl =
