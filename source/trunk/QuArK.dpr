@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.53  2008/08/11 23:13:49  danielpharos
+Enabled FastMM for normal use
+
 Revision 1.52  2008/07/17 14:47:59  danielpharos
 Big (experimental) change to model bones, tags and boundframes
 
@@ -146,8 +149,8 @@ program QuArK;
 {%File '..\Runtime\addons\Defaults.qrk'}
 
 uses
-  (*MemTester in 'prog\MemTester.pas',*)
-  FastMM4 in 'prog\FastMM4.pas',     (*Enable for FastMM, copy the debug DLL to the runtime directory when debugging*)
+  MemTester in 'prog\MemTester.pas',
+  (*FastMM4 in 'prog\FastMM4.pas',*)     (*Enable for FastMM, copy the debug DLL to the runtime directory when debugging*)
   (*MemCheck in 'prog\MemCheck.pas',*)     (*Enable for MemCheck, also see below*)
   Forms,
   DWM in '3dfx\DWM.pas',
