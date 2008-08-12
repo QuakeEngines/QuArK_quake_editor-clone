@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2007/09/12 15:28:16  danielpharos
+Replaced redundant property.
+
 Revision 1.18  2007/09/10 10:24:19  danielpharos
 Build-in an Allowed Parent check. Items shouldn't be able to be dropped somewhere where they don't belong.
 
@@ -1439,6 +1442,7 @@ end;*)
 procedure TQkExplorer.Edited(Item: QObject; const Text: String);
 begin
  DebutAction;
+ QuarkXWorkaroundNameChange(Item.GetFullName, Text+Item.TypeInfo);
  g_ListeActions.Add(TNameUndo.Create('', Text, Item));
  case AllowEditing of
   aeUndo: FinAction(Item, LoadStr1(566));

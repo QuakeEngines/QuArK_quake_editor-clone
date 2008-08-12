@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.71  2008/08/09 19:40:30  danielpharos
+Translated a function call
+
 Revision 1.70  2008/08/07 21:22:30  danielpharos
 Made a log-line more clear
 
@@ -287,6 +290,8 @@ function MiddleColor(c1, c2: TColorRef; const f: Single) : TColorRef;
 {procedure GetStdMenus(var HelpMenu: PyObject);}
 procedure ClickForm(nForm: TForm);
 procedure HTMLDoc(const URL: String);
+//QuarkXWorkaroundNameChange
+procedure QuarkXWorkaroundNameChange(OldName, NewName: String);
 
  {-------------------}
 
@@ -302,6 +307,14 @@ uses Classes, Dialogs, Graphics, CommCtrl, ExtCtrls, Controls,
      PakFiles, Reg2, SearchHoles, QkMapPoly, HelpPopup1,
      PyForms, QkPixelSet, Bezier, Logging, QkObjectClassList,
      QkApplPaths, MapError, StrUtils, QkImages, QkGCF;
+
+ {-------------------}
+
+// QuarkXWorkaroundNameChange:
+var
+  QuarkXWorkaroundNameChangeListOld: array of String;
+  QuarkXWorkaroundNameChangeListNew: array of String;
+
 
  {-------------------}
 
@@ -540,6 +553,21 @@ begin
  T.Interval:=nInterval;
  T.Enabled:=True;
  T.OnTimer:=T.TimerTimer;
+end;
+
+ {-------------------}
+
+//QuarkXWorkaroundNameChange
+procedure QuarkXWorkaroundNameChange(OldName, NewName: String);
+var
+  I: Integer;
+begin
+  I:=High(QuarkXWorkaroundNameChangeListOld)-Low(QuarkXWorkaroundNameChangeListOld)+1;
+  Inc(I);
+  SetLength(QuarkXWorkaroundNameChangeListOld, I);
+  SetLength(QuarkXWorkaroundNameChangeListNew, I);
+  QuarkXWorkaroundNameChangeListOld[I-1]:=OldName;
+  QuarkXWorkaroundNameChangeListNew[I-1]:=NewName;
 end;
 
  {-------------------}
@@ -3017,8 +3045,39 @@ begin
   end;
 end;
 
+//QuarkXWorkaroundNameChange
+function xGetChangedNames(self, args: PyObject) : PyObject; cdecl;
+var
+  N, I: Integer;
+  TMP: PyObject;
+begin
+  Result:=Nil;
+  try
+    N:=High(QuarkXWorkaroundNameChangeListOld)-Low(QuarkXWorkaroundNameChangeListOld)+1;
+    if N=0 then
+      Result:=PyNoResult
+    else
+    begin
+      Result:=PyList_New(N);
+      for I:=0 to N-1 do
+      begin
+        TMP:=PyList_New(2);
+        PyList_SetItem(TMP, 0, PyString_FromString(PChar(QuarkXWorkaroundNameChangeListOld[I])));
+        PyList_SetItem(TMP, 1, PyString_FromString(PChar(QuarkXWorkaroundNameChangeListNew[I])));
+        PyList_SetItem(Result, I, TMP);
+      end;
+    end;
+    SetLength(QuarkXWorkaroundNameChangeListOld, 0);
+    SetLength(QuarkXWorkaroundNameChangeListNew, 0);
+    Exit;
+  except
+    EBackToPython;
+    Result:=Nil;
+  end;
+end;
+
 const
- MethodTable: array[0..84] of TyMethodDef =
+ MethodTable: array[0..85] of TyMethodDef =
   ((ml_name: 'Setup1';          ml_meth: xSetup1;          ml_flags: METH_VARARGS),
    (ml_name: 'newobj';          ml_meth: xNewObj;          ml_flags: METH_VARARGS),
    (ml_name: 'newfileobj';      ml_meth: xNewFileObj;      ml_flags: METH_VARARGS),
@@ -3104,6 +3163,7 @@ const
    (ml_name: 'setpixelpal';     ml_meth: xSetPixelPal;     ml_flags: METH_VARARGS),
    (ml_name: 'setpixelalpha';   ml_meth: xSetPixelAlpha;   ml_flags: METH_VARARGS),
    (ml_name: 'GCFDLLConvTool';  ml_meth: xGCFDLLConvTool;  ml_flags: METH_VARARGS),
+   (ml_name: 'getchangednames'; ml_meth: xGetChangedNames; ml_flags: METH_VARARGS), //QuarkXWorkaroundNameChange
    (ml_Name: Nil;               ml_meth: Nil));
 
  {-------------------}
@@ -3708,6 +3768,9 @@ end;*)
 initialization
 
 finalization
+  //QuarkXWorkaroundNameChange
+  SetLength(QuarkXWorkaroundNameChangeListOld, 0);
+  SetLength(QuarkXWorkaroundNameChangeListNew, 0);
   if (Pool <> nil) then
     Pool.Free;
 end.
