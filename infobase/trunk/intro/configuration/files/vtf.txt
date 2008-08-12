@@ -17,3 +17,7 @@ texture format in which textures without transparancy are saved.
 
 <i>Format of exported alpha VTF textures</i>. With this you can select a
 texture format in which textures with transparancy are saved.
+
+<i>Version of exported VTF textures</i>. With this you can select the VTF file
+version in which textures are to be saved. 7.2 is the most common/portable
+version.
