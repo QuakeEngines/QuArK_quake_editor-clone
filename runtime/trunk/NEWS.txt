@@ -17,6 +17,7 @@ $Id$
 
 * [DanielPharos]: Added a file version option to VTF file saving, and fixed a memory leak
           - and a bug causing non-alpha images to contain alpha after importing them.
+          - Also fixed saving of paletted images as VTF files.
 
 * [cdunde/DanielPharos]: Setup and initiated a whole new system to support model bones.
 
