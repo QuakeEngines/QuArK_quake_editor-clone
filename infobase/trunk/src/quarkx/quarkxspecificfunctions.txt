@@ -16,6 +16,15 @@ Starts an undoable user action. Returns a copy of the <tt>undo</tt> module descr
 </td></tr>
 
 <tr><td class="doccode">
+getchangednames()
+</td><td>
+Returns a list with, one or more, tuple lists <tt>(oldname, newname)</tt> inside it, each consisting of two string items that give the old and new names of an object that was renamed.
+Do not call this function directly or it will clear the list, call it using a variable to be set by it.<br>
+For example: <g>changednames = quarkx.getchangednames()</g><br>
+Then use the variable to work with. If nothing has been renamed then this function will only return <g>None</g>, but not as a string item.
+</td></tr>
+
+<tr><td class="doccode">
 undostate(obj)
 </td><td>
 Returns a tuple <tt>(undostr, redostr)</tt> with two strings that give the next operation that can be undone (resp. redone) on the object <tt>obj</tt>. <tt>undostr</tt> and <tt>redostr</tt> are set to <tt>None</tt> if there is no operation to undo (resp. redo).
