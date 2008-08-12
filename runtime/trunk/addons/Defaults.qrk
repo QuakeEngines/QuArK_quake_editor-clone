@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.423  2008/08/12 14:53:03  danielpharos
+//Added a file version option to VTF file saving, and fixed a memory leak and a bug causing non-alpha images to contain alpha after importing them.
+//
 //Revision 1.422  2008/08/12 14:49:36  danielpharos
 //Init non paletted images without a palette
 //
@@ -7834,7 +7837,7 @@ QQRKSRC1
       SaveVersion: =
       {
         Typ = "CL"
-        Txt = "Format of exported alpha VTF textures"
+        Txt = "Version of exported VTF textures"
         Values = "7.0"$0D"7.1"$0D"7.2"$0D"7.3"$0D"7.4"
         Items = "7.0"
              $0D "7.1"
