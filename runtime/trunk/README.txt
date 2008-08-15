@@ -68,9 +68,9 @@ Although the exact minimum system requirements are unknown and prone
 to changes, you will need at least Windows 95 or compatible to run
 QuArK.  You will need about 40 MB of free disk space to install QuArK,
 and the minimum amount of RAM needed differs per game, but at least
-64 MB is advised.  Almost any CPU will be able to handle QuArK, but
-the slower the CPU, the slower QuArK will be.  Also, Internet Explorer
-4.0 or higher is needed.
+64 MB is advised.  Almost any Intel Pentium or compatible CPU will be
+able to handle QuArK, but the slower the CPU, the slower QuArK will
+be.  Also, Internet Explorer 4.0 or higher is needed.
 (Note: Although you do not actually need to use Internet Explorer to
 display the Infobase files, some components of Internet Explorer are
 used by QuArK, so you still need to have it installed.)
