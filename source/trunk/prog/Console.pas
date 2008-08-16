@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2008/08/09 19:32:18  danielpharos
+Fix console not existing when freeing Python
+
 Revision 1.10  2008/05/01 10:29:55  danielpharos
 Fix error if console log file didn't exist when starting logging.
 
@@ -235,6 +238,7 @@ end;
 
 procedure ClearConsole;
 begin
+  if not ConsoleReady then Exit;
   FreeBuffer(PipeBuffer, True);
   PipeBuffer:=nil;
   InitBuffer(PipeBuffer, ConsoleWidth, ConsoleHeight);
