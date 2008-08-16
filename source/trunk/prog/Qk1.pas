@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.65  2008/08/16 12:40:20  danielpharos
+Fix exceptions not displaying/crashing the program after a certain point in the shutdown process.
+
 Revision 1.64  2008/08/09 19:32:19  danielpharos
 Fix console not existing when freeing Python
 
@@ -469,7 +472,7 @@ uses Undo, QkQuakeC, Setup, Config, ToolBox1, Game, QkOwnExplorer,
   QkQuakeCtx, QkSteamFS, AutoUpdater, Logging;
 
 var
-  g_Mutex: THandle;
+  g_Mutex: THandle = 0;
   OldException: TExceptionEvent;
 
 {$R *.DFM}
@@ -718,7 +721,6 @@ begin
  ClearExplorer;
  RestorePositionTb('Main', False, Explorer);
  OnClose:=FormClose;
- OnDestroy:=FormDestroy;
  Application.HookMainWindow(WindowHook);
  Application.OnIdle:=AppIdle;
  Application.OnActivate:=AppActivate;
@@ -1735,7 +1737,7 @@ begin
 end;
 
 procedure TForm1.FormDestroy(Sender: TObject);
-begin  { the link to FormDestroy is made in FormCreate }
+begin
  try
   SaveSetupNow;
  except
