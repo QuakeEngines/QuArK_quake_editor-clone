@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.64  2008/08/09 19:32:19  danielpharos
+Fix console not existing when freeing Python
+
 Revision 1.63  2008/07/24 15:19:55  danielpharos
 Added single-instance option to config.
 
@@ -467,6 +470,7 @@ uses Undo, QkQuakeC, Setup, Config, ToolBox1, Game, QkOwnExplorer,
 
 var
   g_Mutex: THandle;
+  OldException: TExceptionEvent;
 
 {$R *.DFM}
 {$R ICONES\ICONES.RES}
@@ -610,6 +614,7 @@ begin
  // This next line is done so that the G_ standard carries through for all of
  // the global variables.
  g_Form1 := Self;
+ OldException:=Application.OnException;
  Application.OnException:=AppException;
  Application.UpdateFormatSettings:=False;
  DecimalSeparator:='.';
@@ -1744,6 +1749,8 @@ begin  { the link to FormDestroy is made in FormCreate }
  ClearConsole;
  ShutdownPython;
  FreeConsole;
+ Application.OnException:=OldException;
+ OldException:=nil;
  g_Form1:=nil;
  Application.UnHookMainWindow(WindowHook);
  if g_Mutex <> 0 then
