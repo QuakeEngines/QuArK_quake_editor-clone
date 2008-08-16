@@ -408,7 +408,6 @@ bool terminatePatched = false;
 
 //#pragma warn -8070 //"W8070 Function should return a value"
 #pragma option -w-rvl //the same as above
-
 __declspec(naked) void * _RTLENTRY Cpp_malloc_Stub(size_t size)
 {
   //if (size)
@@ -420,8 +419,13 @@ __declspec(naked) void * _RTLENTRY Cpp_malloc_Stub(size_t size)
     mov  eax, [esp + 4] //size
     test eax, eax
     jz   Exit
-    jmp  InternalGetMem //call InternalGetMem
+  #if __BORLANDC__ >= 0x564
+    jmp  InternalGetMem
     nop
+  #else
+    call InternalGetMem
+    ret
+  #endif
     nop
     nop
   Exit:
@@ -438,8 +442,13 @@ __declspec(naked) void _RTLENTRY Cpp_free_Stub(void *block)
     mov  eax, [esp + 4] //block
     test eax, eax
     jz   Exit
-    jmp  InternalFreeMem //call InternalFreeMem
+  #if __BORLANDC__ >= 0x564
+    jmp  InternalFreeMem
     nop
+  #else
+    call InternalFreeMem
+    ret
+  #endif
     nop
     nop
   Exit:
@@ -476,8 +485,13 @@ __declspec(naked) void * _RTLENTRY Cpp_realloc_Stub(void *block, size_t size)
     mov  eax, [esp + 8] //size
     test eax, eax
     jz   Exit2 //Exit1
-    jmp  InternalGetMem //call InternalGetMem
+  #if __BORLANDC__ >= 0x564
+    jmp  InternalGetMem
     nop
+  #else
+    call InternalGetMem
+    ret
+  #endif
     nop
     nop
   //Exit1:
@@ -492,9 +506,14 @@ __declspec(naked) void * _RTLENTRY Cpp_realloc_Stub(void *block, size_t size)
   Exit2:
     ret
   DoRealloc:
-    jmp  InternalReallocMem //call InternalReallocMem
+  #if __BORLANDC__ >= 0x564
+    jmp  InternalReallocMem
     //ret
-  }  
+  #else
+    call InternalReallocMem
+    ret
+  #endif
+  }
 }
 
 __declspec(naked) void _RTLENTRY Cpp_terminate_Stub(void)
@@ -524,8 +543,13 @@ __declspec(naked) void * _RTLENTRY Cpp_Invalid_malloc_Stub(size_t size)
     mov  eax, [esp + 4] //size
     test eax, eax
     jz   Exit
-    jmp  InvalidGetMemPtr //call InvalidGetMemPtr
+  #if __BORLANDC__ >= 0x564
+    jmp  InvalidGetMemPtr
     nop
+  #else
+    call InvalidGetMemPtr
+    ret
+  #endif
     nop
   Exit:
     ret
@@ -539,8 +563,13 @@ __declspec(naked) void _RTLENTRY Cpp_Invalid_free_Stub(void *block)
     mov  eax, [esp + 4] //block
     test eax, eax
     jz   Exit
-    jmp  InvalidFreeMemPtr //call InvalidFreeMemPtr
+  #if __BORLANDC__ >= 0x564
+    jmp  InvalidFreeMemPtr
     nop
+  #else
+    call InvalidFreeMemPtr
+    ret
+  #endif
     nop
   Exit:
     ret
@@ -558,8 +587,13 @@ __declspec(naked) void * _RTLENTRY Cpp_Invalid_realloc_Stub(void *block, size_t 
     mov  eax, [esp + 8] //size
     test eax, eax
     jz   Exit2 //Exit1
-    jmp  InvalidGetMemPtr //call InvalidGetMemPtr
+  #if __BORLANDC__ >= 0x564
+    jmp  InvalidGetMemPtr
     nop
+  #else
+    call InvalidGetMemPtr
+    ret
+  #endif
     nop
   //Exit1:
     //ret
@@ -576,9 +610,14 @@ __declspec(naked) void * _RTLENTRY Cpp_Invalid_realloc_Stub(void *block, size_t 
     nop
     nop
   DoRealloc:
-    jmp  InvalidReallocMemPtr//call InvalidReallocMemPtr
+  #if __BORLANDC__ >= 0x564
+    jmp  InvalidReallocMemPtr
     //ret
-  }  
+  #else
+    call InvalidReallocMemPtr
+    ret
+  #endif
+  }
 }
 #endif //DetectMMOperationsAfterUninstall
 
