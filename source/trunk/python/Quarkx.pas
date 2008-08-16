@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.73  2008/08/16 13:37:59  danielpharos
+Make sure Python loading/unloading only happens when appropriate.
+
 Revision 1.72  2008/08/12 00:24:52  cdunde
 DanielPharos added new quarkx function "getchangednames", see Infobase docs for what it does .
 
@@ -3783,8 +3786,8 @@ finalization
   //QuarkXWorkaroundNameChange
   SetLength(QuarkXWorkaroundNameChangeListOld, 0);
   SetLength(QuarkXWorkaroundNameChangeListNew, 0);
-  if (Pool <> nil) then
-    Pool.Free;
   if PythonLoaded then
     ShutdownPython;
+  if (Pool <> nil) then
+    Pool.Free;
 end.
