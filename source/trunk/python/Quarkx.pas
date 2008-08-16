@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.72  2008/08/12 00:24:52  cdunde
+DanielPharos added new quarkx function "getchangednames", see Infobase docs for what it does .
+
 Revision 1.71  2008/08/09 19:40:30  danielpharos
 Translated a function call
 
@@ -315,6 +318,8 @@ var
   QuarkXWorkaroundNameChangeListOld: array of String;
   QuarkXWorkaroundNameChangeListNew: array of String;
 
+var
+  PythonLoaded: Boolean;
 
  {-------------------}
 
@@ -3529,6 +3534,9 @@ var
  S: String;
  I: Integer;
 begin
+ if PythonLoaded then
+  Exit;
+
  {InitConsole;}
  I:=InitializePython;
  if I>0 then FatalError(I);
@@ -3551,17 +3559,21 @@ begin
  if PyRun_SimpleString(PythonRunPackage)<>0 then FatalError(-7);
  PythonCodeEnd;
  PythonUpdateAll;
+ PythonLoaded := True;
 end;
 
 procedure ShutdownPython;
 var
   s: PyObject;
 begin
+  if not PythonLoaded then
+   Exit;
   s:=PyString_FromString(PChar('dummy')); //Just a dummy object...
   CallMacro(s, 'shutdown');
   Py_Finalize;
   //FIXME: This apparently creates problems...
   {UnInitializePython;}
+  PythonLoaded := False;
 end;
 
 procedure PythonCodeEnd;
@@ -3773,4 +3785,6 @@ finalization
   SetLength(QuarkXWorkaroundNameChangeListNew, 0);
   if (Pool <> nil) then
     Pool.Free;
+  if PythonLoaded then
+    ShutdownPython;
 end.
