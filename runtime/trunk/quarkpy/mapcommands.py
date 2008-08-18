@@ -44,9 +44,6 @@ def ConvertHiddenToNoDrawClick(m):
 
 #BUILD Brush prefabs list
 
-import nt
-
-
 def PutItemFolder(Folder, Item):
     ItemName = Item
 
@@ -78,6 +75,7 @@ def FindTemplateNames():
 
     PrefabDir = quarkx.setupsubset()["Templates"]
     try:
+        import nt
         Directory = nt.listdir(PrefabDir)
     except:
         if quarkx.msgbox("The 'Directory of Templates' has not been\nchosen in this 'Games' configuration section.\nYou can not use any templates until\nyou select a folder to keep them in.\n\nWould you like to go there now to do so?", MT_CONFIRMATION, MB_YES | MB_NO) == MR_YES:
@@ -194,6 +192,9 @@ def CommandsMenu():
 #
 #
 #$Log$
+#Revision 1.9  2007/12/21 20:39:23  cdunde
+#Added new Templates functions and Templates.
+#
 #Revision 1.8  2005/10/15 00:47:57  cdunde
 #To reinstate headers and history
 #
