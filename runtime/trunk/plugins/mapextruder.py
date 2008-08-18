@@ -208,7 +208,7 @@ class TextureDlg (placepersistent_dialogbox):
           texinfo.appenditem(side)
         undo = quarkx.action()
         undo.exchange(texobj, texinfo)
-          
+        
         editor.ok(undo,"commit texturing")
     
         from mapmadsel import Unrestrict
@@ -239,7 +239,7 @@ def tex_pos(self):
   undo=quarkx.action()
   oldtex = dup.findname("texinfo:g")
   if oldtex is None:
-       undo.put(dup, texobj)
+      undo.put(dup, texobj)
   else:
       undo.exchange(oldtex, texobj)
   editor.ok(undo,"texture setup")
@@ -2921,6 +2921,9 @@ def ExtrudeClick(btn):
 
 
 #$Log$
+#Revision 1.29  2008/02/22 09:52:22  danielpharos
+#Move all finishdrawing code to the correct editor, and some small cleanups.
+#
 #Revision 1.28  2006/10/27 06:14:00  cdunde
 #Fixed extruder 2D view to Unrestricted other items when view is closed.
 #
