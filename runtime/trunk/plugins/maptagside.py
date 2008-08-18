@@ -75,7 +75,7 @@ def toggleitem(text,hint):
 # Texture multiple support (juggernaut's idea)
 #
 
-class MakeTexMultDlg (quarkpy.qmacro .dialogbox):
+class MakeTexMultDlg(quarkpy.qmacro.dialogbox):
 
     #
     # dialog layout
@@ -1826,8 +1826,6 @@ quarkpy.mapentities.BrushEntityType.menu = tagbrushmenu
 #   use right-mouse click?
 #
 
-mencutpoly = None
-
 def commandsclick(menu, oldcommand=quarkpy.mapcommands.onclick):
   oldcommand(menu)
   editor = mapeditor()
@@ -1928,7 +1926,7 @@ def selectionclick(menu, oldselect=quarkpy.mapselection.onclick):
     else:
         menselecttagged.state=qmenu.normal
         menselecttagged.taglist = list
-     
+
 quarkpy.mapselection.onclick = selectionclick
 quarkpy.mapselection.items.append(menselecttagged)
 
@@ -1938,6 +1936,9 @@ for menitem, keytag in [(menselecttagged, "Select Tagged Faces")]:
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.41  2008/02/22 09:52:21  danielpharos
+#Move all finishdrawing code to the correct editor, and some small cleanups.
+#
 #Revision 1.40  2006/11/30 01:17:47  cdunde
 #To fix for filtering purposes, we do NOT want to use capital letters for cvs.
 #
