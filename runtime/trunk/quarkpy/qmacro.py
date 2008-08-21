@@ -236,7 +236,8 @@ class dialogbox:
             df.sep = self.dfsep
             df.setdata(src, f)
             df.onchange = self.datachange
-            df.flags = 8   # DF_AUTOFOCUS
+            import qeditor
+            df.flags = qeditor.DF_AUTOFOCUS
             dlg.show()
 
     def windowrect(self):
@@ -372,6 +373,9 @@ def MACRO_mdl_pythonexporter(text):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.30  2008/06/28 14:44:52  cdunde
+#Some minor corrections.
+#
 #Revision 1.29  2008/06/04 03:56:39  cdunde
 #Setup new QuArK Model Editor Python model import export system.
 #
