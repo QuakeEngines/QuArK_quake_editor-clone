@@ -924,7 +924,6 @@ class RedImageDragObject(DragObject):
 
     def __init__(self, view, x, y, z, redcolor):
         DragObject.__init__(self, view, x, y, z)
-        self.view = view  ## Added this for Terrain objects - cdunde 05-14-05
         self.x = x        ## Added this for Terrain objects - cdunde 05-14-05
         self.y = y        ## Added this for Terrain objects - cdunde 05-14-05
         self.z = z        ## Added this for Terrain objects - cdunde 05-14-05
@@ -2163,6 +2162,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.73  2008/05/27 19:35:41  danielpharos
+#Removed redundant call to mapeditor()
+#
 #Revision 1.72  2008/05/25 23:19:34  cdunde
 #Fixed Model Editor Skin-view Linear vertex handles from not drawing.
 #
