@@ -1728,7 +1728,7 @@ def cutpoly(editor, o):
   item.state = qmenu.disabled
   tagged = gettaggedplane(editor)
   if tagged is None:
-    return item    
+    return item
   cutter1 = tagged.copy()
   piece1 = o.copy()
   piece1.appenditem(cutter1)
@@ -1739,7 +1739,7 @@ def cutpoly(editor, o):
   cutter2.swapsides()
   piece2.appenditem(cutter2)
   if piece2.broken:
-    return
+    return item
   for piece in [piece1, piece2]:
     for face in piece.subitems:
       if not face in piece.faces:
@@ -1936,6 +1936,9 @@ for menitem, keytag in [(menselecttagged, "Select Tagged Faces")]:
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.42  2008/08/18 20:36:25  danielpharos
+#Removed redundant variable
+#
 #Revision 1.41  2008/02/22 09:52:21  danielpharos
 #Move all finishdrawing code to the correct editor, and some small cleanups.
 #
