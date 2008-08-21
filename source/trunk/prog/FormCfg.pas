@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.41  2008/04/19 14:28:07  cdunde
+To activate RMB menu items.
+
 Revision 1.40  2008/04/17 15:19:05  cdunde
 Fixed 'Folder Browser' to stop displaying the 'Hint' and only show the 'Txt'.
 
@@ -2811,9 +2814,9 @@ begin
    Items[cmd_AddSpec].Enabled:=AllowEdit and AddRemaining;
    Items[cmd_DeleteSpec].Enabled:=AllowEdit and RowOk;
    Items[cmd_DeleteSpec].Tag:=I;
-   Items[cmd_CopySpec].Enabled:=RowOk; // AllowEdit and RowOk;
-   Items[cmd_PasteSpec].Enabled:=RowOk; // AllowEdit and RowOk;
-   Items[cmd_CutSpec].Enabled:=RowOk; // AllowEdit and RowOk;
+   Items[cmd_CopySpec].Enabled:=RowOk;
+   Items[cmd_PasteSpec].Enabled:=AllowEdit and RowOk;
+   Items[cmd_CutSpec].Enabled:=AllowEdit and RowOk;
  { Items[cmd_etc].Caption:=IntToStr(I);  }
   end;
 end;
