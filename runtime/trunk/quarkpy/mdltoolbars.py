@@ -11,13 +11,13 @@ The model editor's "Toolbars" menu (to be extended by plug-ins)
 #$Header$
 
 
-
 import qmenu
 from mdlutils import *
+import qeditor
 import mdleditor
 
 
-class DisplayBar(ToolBar):
+class DisplayBar(qeditor.ToolBar):
     "The standard Display tool bar."
 
     Caption = "Display"
@@ -282,7 +282,7 @@ def Subdivide4Click(m):
 
 
 
-class EditToolsBar(ToolBar):
+class EditToolsBar(qeditor.ToolBar):
     "Special model editing tools toolbar."
 
     Caption = "Editing Tools"
@@ -317,6 +317,9 @@ toolbars = {"tb_display": DisplayBar, "tb_edittools": EditToolsBar, "tb_movepal"
 #
 #
 #$Log$
+#Revision 1.13  2008/07/15 23:16:27  cdunde
+#To correct typo error from MldOption to MdlOption in all files.
+#
 #Revision 1.12  2008/02/23 04:41:11  cdunde
 #Setup new Paint modes toolbar and complete painting functions to allow
 #the painting of skin textures in any Model Editor textured and Skin-view.
