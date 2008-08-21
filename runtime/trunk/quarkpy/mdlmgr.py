@@ -378,6 +378,9 @@ class ModelLayout(BaseLayout):
         df = self.fp.newdataform()
         df.allowedit = 1
         df.addremaining = 0
+        df.actionchanging = 512   # indexes in qdictionnary.Strings
+        df.actiondeleting = 553
+        df.actionrenaming = 566
         df.editnames = "classname"
         df.flags = DF_AUTOFOCUS
         df.bluehint = 1
@@ -1000,6 +1003,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.74  2008/08/08 05:35:49  cdunde
+#Setup and initiated a whole new system to support model bones.
+#
 #Revision 1.73  2008/07/25 22:46:24  cdunde
 #Additional fix needed for first frame reselection to cover for multiple components..
 #
