@@ -378,9 +378,10 @@ class ModelLayout(BaseLayout):
         df = self.fp.newdataform()
         df.allowedit = 1
         df.addremaining = 0
-        df.actionchanging = 512   # indexes in qdictionnary.Strings
-        df.actiondeleting = 553
-        df.actionrenaming = 566
+        # Lines below causes triple drawing and loss of selection.
+    #    df.actionchanging = 512   # indexes in qdictionnary.Strings
+    #    df.actiondeleting = 553
+    #    df.actionrenaming = 566
         df.editnames = "classname"
         df.flags = DF_AUTOFOCUS
         df.bluehint = 1
@@ -1003,6 +1004,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.75  2008/08/21 11:43:23  danielpharos
+#Create undo when changing specifics.
+#
 #Revision 1.74  2008/08/08 05:35:49  cdunde
 #Setup and initiated a whole new system to support model bones.
 #
