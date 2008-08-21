@@ -27,7 +27,6 @@ from quarkpy.mdlmgr import *
 class Full3DLayout(ModelLayout):
     "The full-screen 3D layout."
 
-    from quarkpy.qbaseeditor import currentview
     shortname = "Full 3D"
 
     def buildscreen(self, form):
@@ -57,6 +56,7 @@ class Full3DLayout(ModelLayout):
         # drawing of handles when switching from one layout to another.
         #
         
+        from quarkpy.qbaseeditor import currentview
         quarkpy.qbaseeditor.currentview = self.View3D
 
 
@@ -66,6 +66,9 @@ LayoutsList.append(Full3DLayout)
 #
 #
 # $Log$
+# Revision 1.10  2008/07/21 02:31:08  cdunde
+# Added 3D view modes to Options menu to allow viewing through objects for scenes.
+#
 # Revision 1.9  2007/12/06 00:59:21  danielpharos
 # Fix the OpenGL not always redrawing entirely, and re-enable the progressbars, except for the 3D views in the model editor.
 #
