@@ -245,6 +245,7 @@ class FourViewsLayout(ModelLayout):
 
 class FourViewsLayout2(FourViewsLayout):
 
+    from quarkpy.qbaseeditor import currentview
     shortname = "4 views"
 
     def buildscreen(self, form):
@@ -302,7 +303,6 @@ class FourViewsLayout2(FourViewsLayout):
         # drawing of handles when switching from one layout to another.
         #
         
-        from quarkpy.qbaseeditor import currentview
         quarkpy.qbaseeditor.currentview = self.View3D
 
 
@@ -317,6 +317,9 @@ LayoutsList.insert(0, FourViewsLayout2)
 #
 #
 # $Log$
+# Revision 1.15  2008/08/21 12:04:03  danielpharos
+# Moved import to proper location.
+#
 # Revision 1.14  2008/07/21 02:31:08  cdunde
 # Added 3D view modes to Options menu to allow viewing through objects for scenes.
 #
