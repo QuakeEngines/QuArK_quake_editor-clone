@@ -174,7 +174,7 @@ class LiveBrowserDlg(LiveButtonDlg):
         self.chosen=self.pack.collected[eval(self.src["collected"])]
         if self.moreaction is not None:
             self.moreaction(self)
-    
+
 #
 # Like dialog box but with possiblity of specifying
 #   the location in the initialization.
@@ -182,31 +182,8 @@ class LiveBrowserDlg(LiveButtonDlg):
 class locatable_dialog_box(qmacro.dialogbox):
   def __init__(self, form, src, px, py, **buttons):
         self.px, self.py = px, py
-        name = self.name or self.__class__.__name__
-        qmacro.closedialogbox(name)
-        f = quarkx.newobj("Dlg:form")
-        f.loadtext(self.dlgdef)
-        for pybtn in f.findallsubitems("", ':py'):
-            pybtn["sendto"] = name
-        self.buttons = buttons
-        dlg = form.newfloating(self.dlgflags, f["Caption"])
-        qmacro.dialogboxes[name] = dlg
-        dlg.windowrect = self.windowrect()
-        if self.begincolor is not None: dlg.begincolor = self.begincolor
-        if self.endcolor is not None: dlg.endcolor = self.endcolor
-        dlg.onclose = self.onclose
-        dlg.info = self
-        self.dlg = dlg
-        self.src = src
-        df = dlg.mainpanel.newdataform()
-        self.df = df
-        df.header = 0
-        df.sep = self.dfsep
-        df.setdata(src, f)
-        df.onchange = self.datachange
-        df.flags = 8   # DF_AUTOFOCUS
-        dlg.show()
-     
+        qmacro.dialogbox.__init__(self, form, src, **buttons)
+
   def windowrect(self):
     x1,y1,x2,y2 = quarkx.screenrect()
     dx = x1-x2
@@ -221,6 +198,10 @@ class locatable_dialog_box(qmacro.dialogbox):
 #
 #
 #$Log$
+#Revision 1.14  2007/10/06 20:13:54  cdunde
+#Changed placepersistent_dialogbox class windowrect and onclose functions
+#to allow Model Editor to store its own settings separate from the Map Editor.
+#
 #Revision 1.13  2006/11/30 01:19:34  cdunde
 #To fix for filtering purposes, we do NOT want to use capital letters for cvs.
 #
