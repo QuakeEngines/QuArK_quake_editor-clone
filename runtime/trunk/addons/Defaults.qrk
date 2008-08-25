@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.425  2008/08/19 14:01:15  danielpharos
+//Updated gamelist in game context by X7.
+//
 //Revision 1.424  2008/08/12 14:59:26  danielpharos
 //Fix stupid mistake
 //
@@ -1517,7 +1520,7 @@ QQRKSRC1
       Update:config =
       {
         UpdateCheck = "1"
-        UpdateCheckOnline = ""
+        UpdateCheckOnline = "1"
         AutomaticInstall = ""
         SingleInstance = "1"
         Form = "GeneralUpdate"

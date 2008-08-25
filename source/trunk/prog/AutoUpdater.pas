@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2008/08/11 23:15:10  danielpharos
+Updated updater: it is now downloading and parsing the notifications file
+
 Revision 1.9  2008/07/07 19:51:50  danielpharos
 Small update: AutoUpdateInstaller now going through individual files of packages
 
@@ -66,6 +69,7 @@ type
   // This record contains the notification file array from the index file
   TUpdateNotification = record
     InternalName: String;
+    InternalBuildNumber: Cardinal;
     FileName: String; //@
     BuildNumber: Cardinal; //@
     //@
@@ -74,12 +78,19 @@ type
   // This record contains the package file array from the index file
   TUpdatePackage = record
     InternalName: String;
+    InternalBuildNumber: Cardinal;
     FileName: String;
     BuildNumber: Cardinal;
   end;
 
-  // This record contains the package file array from the package file
-  TPackageFile = record
+  // This record contains the notification item array from the notification file
+  TNotificationItem = record
+    DisplayIndex: Cardinal;
+    Text: String;
+  end;
+
+  // This record contains the package item array from the package file
+  TPackageItem = record
     FileName: String;
     FileSize: Cardinal;
     MD5: String;
@@ -109,9 +120,8 @@ type
     Name: String;
     Description: String;
     BuildNumber: Cardinal;
-    TextNR: Cardinal;
-    Texts: array of String;
-    //@
+    MessageNR: Cardinal;
+    Messages: array of TNotificationItem;
   end;
 
   // This class contains the read-in package file
@@ -124,7 +134,7 @@ type
     BuildNumber: Cardinal;
 //@    Priority: TUpdatePriority;
     FileNR: Cardinal;
-    Files: array of TPackageFile;
+    Files: array of TPackageItem;
     Install: Boolean;
     InstallSuccessful: Boolean;
   end;
@@ -307,13 +317,15 @@ begin
   if CurrentFile.BuildNumber <> UpdateIndexFile.Notifications[CurrentFile.NotificationIndex].BuildNumber then
     raise Exception.Create('Build-numbers do not match.');
 
-  ParseCardinal(FileData, CurrentFile.TextNR);
-  if CurrentFile.TextNR > 0 then
+  ParseCardinal(FileData, CurrentFile.MessageNR);
+  if CurrentFile.MessageNR > 0 then
   begin
-    SetLength(CurrentFile.Texts, CurrentFile.TextNR);
-    for I:=0 to CurrentFile.TextNR - 1 do
+    SetLength(CurrentFile.Messages, CurrentFile.MessageNR);
+    for I:=0 to CurrentFile.MessageNR - 1 do
     begin
-      ParseString(FileData, CurrentFile.Texts[I]);
+      ParseCardinal(FileData, CurrentFile.Messages[I].DisplayIndex);
+
+      ParseString(FileData, CurrentFile.Messages[I].Text);
     end;
   end;
 end;
@@ -352,7 +364,6 @@ var
   FileData: TMemoryStream;
   I, J: Cardinal;
   Dummy: String;
-  BuildNumber: Cardinal;
   AddThisNotification, AddThisPackage: Boolean;
   ProgressIndicatorMax: Integer;
 begin
@@ -389,18 +400,25 @@ begin
           begin
             for I:=0 to UpdateIndexFile.NotificationNR-1 do
             begin
-              AddThisNotification := False;
-              Dummy := Setup.Specifics.Values['Notification_'+UpdateIndexFile.Notifications[I].InternalName];
-              if Dummy <> '' then
-                try
-                  BuildNumber := StrToInt(Dummy);
-                  if BuildNumber < UpdateIndexFile.Notifications[I].BuildNumber then
-                    AddThisNotification := True;
-                except
-                  AddThisNotification := True;
-                end
-              else
-                AddThisNotification := True;
+              with UpdateIndexFile.Notifications[I] do
+              begin
+                Dummy := Setup.Specifics.Values['Notification_'+InternalName];
+                if Dummy <> '' then
+                  try
+                    InternalBuildNumber := StrToInt(Dummy);
+                  except
+                    InternalBuildNumber := 0;
+                  end
+                else
+                  InternalBuildNumber := 0;
+                if BuildNumber = 0 then
+                  AddThisNotification := False
+                else
+                  if InternalBuildNumber < BuildNumber then
+                    AddThisNotification := True
+                  else
+                    AddThisNotification := False;
+              end;
 
               if AddThisNotification then
               begin
@@ -432,18 +450,25 @@ begin
           begin
             for I:=0 to UpdateIndexFile.PackageNR-1 do
             begin
-              AddThisPackage := False;
-              Dummy := Setup.Specifics.Values['Package_'+UpdateIndexFile.Packages[I].InternalName];
-              if Dummy <> '' then
-                try
-                  BuildNumber := StrToInt(Dummy);
-                  if BuildNumber < UpdateIndexFile.Packages[I].BuildNumber then
-                    AddThisPackage := True;
-                except
-                  AddThisPackage := True;
-                end
-              else
-                AddThisPackage := True;
+              with UpdateIndexFile.Packages[I] do
+              begin
+                Dummy := Setup.Specifics.Values['Package_'+InternalName];
+                if Dummy <> '' then
+                  try
+                    InternalBuildNumber := StrToInt(Dummy);
+                  except
+                    InternalBuildNumber := 0;
+                  end
+                else
+                  InternalBuildNumber := 0;
+                if BuildNumber = 0 then
+                  AddThisPackage := False
+                else
+                  if InternalBuildNumber < BuildNumber then
+                    AddThisPackage := True
+                  else
+                    AddThisPackage := False
+              end;
 
               if AddThisPackage then
               begin
@@ -478,48 +503,53 @@ begin
         UpdateConnection.Free;
       end;
 
-      //Display notifications:
+      //Display notifications
       if UpdateNotificationsNR>0 then
         for I:=0 to UpdateNotificationsNR-1 do
           with UpdateNotifications[I] do
           begin
-            if TextNR>0 then
-              for J:=0 to TextNR-1 do
-                MessageBox(0, PChar(Texts[J]), PChar('QuArK Notification'), MB_OK);
+            if MessageNR>0 then
+              for J:=0 to MessageNR-1 do
+                if Messages[J].DisplayIndex > UpdateIndexFile.Notifications[NotificationIndex].InternalBuildNumber then
+                  MessageBox(0, PChar(Messages[J].Text), PChar('QuArK Notification'), MB_OK);
+            Setup.Specifics.Values['Notification_'+UpdateIndexFile.Notifications[NotificationIndex].InternalName] := Format('%u', [BuildNumber]);
           end;
 
       //Process packages
-      if Setup.Specifics.Values['AutomaticInstall'] = '' then
+      if UpdatePackagesNR>0 then
       begin
-        UpdateWindow := TAutoUpdater.Create(nil);
-        try
-          if UpdatePackagesNR>0 then
-            for I:=0 to UpdatePackagesNR-1 do
-              with UpdateWindow.CheckListBox1 do
-              begin
-                AddItem(UpdatePackages[I].Name, nil);
-(*                case UpdatePackages[I].Priority of
-                upCritical:  Checked[I] := true;
-                upImportant: Checked[I] := true;
-                upOptional:  Checked[I] := false;
-                upBeta:      Checked[I] := false;
-                else
+        if Setup.Specifics.Values['AutomaticInstall'] = '' then
+        begin
+          UpdateWindow := TAutoUpdater.Create(nil);
+          try
+            if UpdatePackagesNR>0 then
+              for I:=0 to UpdatePackagesNR-1 do
+                with UpdateWindow.CheckListBox1 do
                 begin
-                  //Shouldn't happen!
-                  //@
-                  Checked[I] := true;
+                  AddItem(UpdatePackages[I].Name, nil);
+(*                  case UpdatePackages[I].Priority of
+                  upCritical:  Checked[I] := true;
+                  upImportant: Checked[I] := true;
+                  upOptional:  Checked[I] := false;
+                  upBeta:      Checked[I] := false;
+                  else
+                  begin
+                    //Shouldn't happen!
+                    //@
+                    Checked[I] := true;
+                  end;
+                  end; *)
                 end;
-                end; *)
-              end;
-          UpdateWindow.ShowModal;
-          //@
-        finally
-          UpdateWindow.Free;
-        end;
-      end
-      else
-        if DoInstall = false then
-          Exit; //@
+            UpdateWindow.ShowModal;
+            //@
+          finally
+            UpdateWindow.Free;
+          end;
+        end
+        else
+          if DoInstall = false then
+            Exit; //@
+      end;
 
       //@
 
