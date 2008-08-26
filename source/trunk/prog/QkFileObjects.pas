@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.54  2008/08/09 19:40:23  danielpharos
+Translated a function call
+
 Revision 1.53  2008/08/09 19:33:54  danielpharos
 Fix a possible reference counter mistake.
 
@@ -832,6 +835,7 @@ var
  Ligne, I, J {,IgnoreLevel}: Integer;
  Value: Single;
  Prochain: PChar;
+ Filename: String; //Used in SyntaxError for display purposes
 
   procedure Lu(Delta: Integer);
   begin
@@ -868,7 +872,7 @@ var
 
   procedure SyntaxError(Texte: Integer);
   begin
-   Raise EErrorFmt(5193, [Ligne, LoadStr1(Texte)]);
+   Raise EErrorFmt(5193, [Filename, Ligne, LoadStr1(Texte)]);
   end;
 
   function HexVal(C: Char) : Integer;
@@ -980,6 +984,7 @@ var
   end;
 
 begin
+ Filename:=Self.GetFullName;
  ProgressIndicatorStart(5447, PSize div Granularite);
  try
   Ligne:=1;
@@ -1056,7 +1061,7 @@ begin
             try
              Value:=StrToFloat(A1);
             except
-             Raise EErrorFmt(5193, [Ligne, FmtLoadStr1(5209, [A1])]);
+             Raise EErrorFmt(5193, [Filename, Ligne, FmtLoadStr1(5209, [A1])]);
             end;
             SetLength(Arg, Length(Arg)+4);  { SizeOf(Single) }
             Move(Value, Arg[Length(Arg)-3], 4);  { SizeOf(Single) }

@@ -601,7 +601,7 @@ Strings = {
     5190: "File corruption in '%s'. You can try to continue to load it, but Warning ! This will likely cause serious troubles like mess in the object trees !\n\nThis error message may be displayed several times per file.\n\nReally continue ?",
     # 5191: "Cannot read file objects of type '%s' with format %d",
     5192: "DDS image",
-    5193: "Syntax error in source file, line %d : %s",
+    5193: "Syntax error in source file %s, line %d : %s",
     5194: "'{' expected",
     5195: "unexpected data after the final '}' has been ignored.",
     5196: "invalid property definition",
@@ -1052,6 +1052,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.127  2008/07/24 15:02:31  danielpharos
+#Cleaned up texture name checking code and interface.
+#
 #Revision 1.126  2008/07/17 00:45:19  cdunde
 #Added new .md2 exporter with progress bar and logging capabilities.
 #
