@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.427  2008/08/25 20:23:55  danielpharos
+//Changed 'new model' button icon to correct one.
+//
 //Revision 1.426  2008/08/25 19:00:15  danielpharos
 //Update to move towards a releasable state.
 //
@@ -2265,7 +2268,9 @@ QQRKSRC1
         Code = "l" // Hardcoded value in Setup.PAS
         Program = "JASP.EXE +set sv_pure 0"
 
-        Directory = "\JediAcademy\"
+        BaseMenu = "Star Wars: Jedi Knight"
+
+        Directory = "\LucasArts\Star Wars Jedi Knight Jedi Academy\GameData"
         CheckDirectory = "JASP.EXE"
 
         CD = ""
@@ -2280,11 +2285,11 @@ QQRKSRC1
 
         StupidBuildToolKludge = "1" // GTKRadiant's Q3MAP.EXE seems to work, when '-game wolf' and -fs_basepath <gamepath>' are applied.
         BuildPgm1  = "Q3MAP2.EXE"
-        BuildArgs1 = "-game ja -fs_basepath "$22"C:/Games/JediAcademy/"$22" -meta"
+        BuildArgs1 = "-game ja -fs_basepath "$22"%basepath%"$22" -meta"
         BuildPgm2  = "Q3MAP2.EXE"
-        BuildArgs2 = "-game ja -fs_basepath "$22"C:/Games/JediAcademy/"$22" -vis -saveprt"
+        BuildArgs2 = "-game ja -fs_basepath "$22"%basepath%"$22" -vis -saveprt"
         BuildPgm3  = "Q3MAP2.EXE"
-        BuildArgs3 = "-game ja -fs_basepath "$22"C:/Games/JediAcademy/"$22" -light -fast"
+        BuildArgs3 = "-game ja -fs_basepath "$22"%basepath%"$22" -light -fast"
 
         TexturesPath = "textures/"
         ShadersPath = "shaders/"
@@ -2335,6 +2340,8 @@ QQRKSRC1
 
         Directory = "\Star Wars JK II Jedi Outcast\GameData"
         CheckDirectory = "JK2MP.EXE"
+
+        BaseMenu = "Star Wars: Jedi Knight"
 
         CD = ""
         CDDir = ""
