@@ -49,8 +49,8 @@ Code    abbreviation            Name          or Screen name    taken
  n      RTCW-ET         RTCW-Enemy Territory  cdunde            25/06/06
  o      EF2             Star Trek: Elite      DanielPharos      04/16/07
                         Force 2
- p      COD             Call of Duty          DanielPharos      05/22/07
- q      COD2            Call of Duty 2        DanielPharos      05/22/07
+ p      CoD1            Call of Duty          DanielPharos      05/22/07
+ q      CoD2            Call of Duty 2        DanielPharos      05/22/07
  r      Prey            Prey                  DanielPharos      07/05/07
  s      FAKK2           Heavy Metal - FAKK2   cdunde            02/23/08
  v      Warsow          Warsow                cdunde            04/21/08

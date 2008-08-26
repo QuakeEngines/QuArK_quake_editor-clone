@@ -1,27 +1,14 @@
 QQRKSRC1
-// This file has been written by QuArK QuArK 6.4 alpha
-// It's the text version of file: DataQ3CoD.qrk
+// Call of Duty 1 Entities file for Quark
+
+//$Header$
+// ----------- REVISION HISTORY ------------
+//$Log$
+//
 
 {
-  Description = "Call of Duty Add-on"
-  CallofDuty directory infos.qctx =
-  {
-    Game = "Quake 3"
-    SourceDir = "CoD"
-    GameDir = "baseq3"
-  }
-  Textures.qtx =
-  {
-    ToolBox = "Texture Browser..."
-    Root = "CoD (Call of Duty).qtxfolder"
-    CoD (Call of Duty).qtxfolder =
-    {
-      CoD Textures & Shaders.osfolder =
-      {
-        path = "CoD"
-      }
-    }
-  }
+  QuArKProtected = "1"
+  Description = "Call of Duty Entities"
 
   Toolbox Folders.qtx =
   {
@@ -317,9 +304,7 @@ QQRKSRC1
         }
         light:e =
         {
-          light = "300"
-          _color = "1 1 1"
-          angles = "0 0 0"
+          angle = "360"
           origin = "0 0 0"
           ;desc = "Used for Non-displayed light settings."
         }
@@ -791,6 +776,13 @@ QQRKSRC1
   }
   Entity Forms.qctx =
   {
+    // Definition of "includes"
+    t_player_size:incl = { bbox = '-16 -16 -24 16 16 32' }
+    t_ammo_size:incl = { bbox = '-16 -16 -16 16 16 16' }
+    t_weapon_size:incl = { bbox = '-16 -16 -16 16 16 16' }
+    t_teleport_size:incl = { bbox = '-32 -32 -4 32 32 4' }
+    t_item_size:incl = { bbox = '-16 -16 -16 16 16 16' }
+
     t_model:incl =
     {
       model: =
@@ -813,7 +805,7 @@ QQRKSRC1
       help = "equivelant to info_player_deathmatch"
       bbox = '-16 -16 0 16 16 72'
       t_player_size = !
-	mdl = "models/players/sarge/upper.md3"
+      mdl = "models/players/sarge/upper.md3"
       md3_autolink = "1"
       :u_torso = "Frame 125"
       :u_rshoulder = "Frame 125"
@@ -884,20 +876,14 @@ QQRKSRC1
       _color: =
       {
         txt = "&"
-        hint = "light color (not the intensity, only the color)"
-      }
-      _color: =
-      {
-        txt = "&"
         Typ = "LN"
-        hint = "Click here to select the color."
+        hint = "light color (not the intensity, only the color)"
       }
       radius: =
       {
         txt = "&"
-        hint = "overrides the default 64 unit radius"$0D
-               "of a spotlight at the target point"$0D
-               "and it must target something to work."
+        hint = "overrides the default 64 unit radius"$0D"of a spotlight at the"
+         " target point."
       }
       exponent: =
       {
