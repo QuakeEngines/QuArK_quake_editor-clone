@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.3  2008/05/14 20:38:54  cdunde
+//Fixed basic lighting in all games and a few other small typo errors.
+//
 //Revision 1.2  2008/03/11 22:24:10  cdunde
 //Update to add Specific include selectors and correct other stuff.
 //
@@ -3276,6 +3279,11 @@ QQRKSRC1
       {
         txt = "&"
         hint = "turn trigger off"
+      }
+      map: =
+      {
+        txt = "&"
+        hint = "map to send the player to"
       }
     }
     trigger_use:form =
