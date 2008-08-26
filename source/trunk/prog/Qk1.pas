@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.66  2008/08/16 13:34:44  danielpharos
+Always run the FormDestroy of TForm1 to clean up.
+
 Revision 1.65  2008/08/16 12:40:20  danielpharos
 Fix exceptions not displaying/crashing the program after a certain point in the shutdown process.
 
@@ -2205,6 +2208,11 @@ begin
  Include(Buttons, mbIgnore);
  if E.HelpContext<>0 then Include(Buttons, mbHelp);
  S:=Format(Info, [GetExceptionMessage(E)]);
+ try
+   Log(LOG_ALWAYS, S);
+ except
+   //Ignore any errors here
+ end;
 {P:=Pos('//', S);
  if P=0 then
   P:=Length(S)+1;}
