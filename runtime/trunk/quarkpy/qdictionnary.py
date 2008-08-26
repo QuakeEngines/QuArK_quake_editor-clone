@@ -911,7 +911,7 @@ Strings = {
     5691: "Invalid Sprite File!",
     5692: "The file %s is not compressed\nusing stored, shrunk, imploded and deflated methods.\n\nLoading Aborted! (%d)",
     5693: "'%s' expected in %s",
-    5694: "Syntax error in Shader file, line %d",
+    5694: "Syntax error in Shader file %s, line %d",
     5695: "Shader '%s' has no image to display",
     5696: "Shader images are read-only",
     5697: "Shader stage '%s' has no image to display",
@@ -957,7 +957,7 @@ Strings = {
     5751: "Material images are read-only",
     5752: "Material stage '%s' has no image to display",
     5753: "Material list (Doom 3)",
-    5754: "Syntax error in Material file, line %d",
+    5754: "Syntax error in Material file %s, line %d",
     5755: "Material '%s' not found in %s",
     # 5756: reserved
     # 5757: reserved
@@ -1052,6 +1052,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.128  2008/08/26 15:11:45  danielpharos
+#Added filename of broken qrk source file to error-message.
+#
 #Revision 1.127  2008/07/24 15:02:31  danielpharos
 #Cleaned up texture name checking code and interface.
 #

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.36  2008/04/26 15:31:54  danielpharos
+Changed the way the default shader image is found to be more like the new Doom 3 code.
+
 Revision 1.35  2007/08/14 16:32:59  danielpharos
 HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
 
@@ -570,10 +573,11 @@ var
                     where it doesn't seem to set checks in the Mohraidant
                     surf inspector }
  EditableSurfaceParms : boolean;
+ Filename: String; //Used in SyntaxError for display purposes
 
   procedure SyntaxError;
   begin
-   Raise EErrorFmt(5694, [LineNumber]);
+   Raise EErrorFmt(5694, [Filename, LineNumber]);
   end;
 
   procedure SkipSpaces;
@@ -654,6 +658,7 @@ var
   end;
 
 begin
+ Filename:=Self.GetFullName;
 
  EditableSurfaceParms:=SetupGameSet.Specifics.Values['EditableSurfaceParms']<>'';
 

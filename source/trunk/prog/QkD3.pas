@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2008/04/26 15:31:12  danielpharos
+Added a missing Log-line.
+
 Revision 1.7  2008/04/25 20:42:14  danielpharos
 Added history, fixed two small material-file parsing bug, and added experimental 'e' shader keyword.
 
@@ -395,10 +398,11 @@ var
                     where it doesn't seem to set checks in the Mohradiant
                     surf inspector }
  EditableSurfaceParms : boolean;
+ Filename: String; //Used in SyntaxError for display purposes
 
   procedure SyntaxError;
   begin
-   Raise EErrorFmt(5754, [LineNumber]);
+   Raise EErrorFmt(5754, [Filename, LineNumber]);
   end;
 
   procedure SkipSpaces;
@@ -483,6 +487,8 @@ var
   end;
 
 begin
+ Filename:=Self.GetFullName;
+ 
  EditableSurfaceParms:=SetupGameSet.Specifics.Values['EditableSurfaceParms']<>'';
 
  case ReadFormat of
