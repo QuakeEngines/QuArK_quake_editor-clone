@@ -11,6 +11,15 @@ using the actual game files and other .qrk files as templates.
 
 #
 #$Log$
+#Revision 1.12  2008/06/25 14:32:33  danielpharos
+#Change to ASCII file property
+#
+#Revision 1.11  2008/05/27 19:33:32  danielpharos
+#Fix redundant import
+#
+#Revision 1.10  2008/04/23 20:22:27  cdunde
+#Minor improvements.
+#
 #Revision 1.9  2008/04/15 11:16:24  cdunde
 #To add main and all sub-folders level processing of texture listing.
 #
@@ -1684,7 +1693,7 @@ class TypeOfConversionDlg(quarkpy.qmacro.dialogbox):
                                  musicfolder, musicfiletype, hadfolder,
                                  listfilefolder, listfiletype)
             else:
-                quarkx.msgbox("PROCESS CANCELED:\n\nNothing was written to the  " + gamename + " folder\nand all files in that folder remain unchanged.", quarkpy.qutils.MT_INFORMATION, quarkpy.qutils.MB_OK)
+                quarkx.msgbox("PROCESS CANCELED:\n\nNothing was written to the " + gamename + " folder\nand all files in that folder remain unchanged.", quarkpy.qutils.MT_INFORMATION, quarkpy.qutils.MB_OK)
                 return
 
 
