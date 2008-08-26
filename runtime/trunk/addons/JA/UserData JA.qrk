@@ -146,7 +146,6 @@ QQRKSRC1
       Txt = "&Q3MAP2 (.bsp file creation)"
       Shortcut = "F10"
       Pause = "1"
-      RunGame = "1"
       ExportMapFile = "1"
       BuildPgm1 = "1"
     }
@@ -161,7 +160,6 @@ QQRKSRC1
     {
       Txt = "&Q3MAP2 -light (light projection)"
       Pause = "1"
-      RunGame = "1"
       ExportMapFile = "1"
       BuildPgm3 = "1"
     }
@@ -169,11 +167,9 @@ QQRKSRC1
     {
       Txt = "Q3MAP2 -onlyents (only &entities)"
       Pause = "1"
-      RunGame = "1"
       ExportMapFile = "1"
       BuildPgm1 = "1"
       BuildArgs1 = "-onlyents"
-
     }
   }
 }
