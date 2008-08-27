@@ -36,3 +36,6 @@ QuArK 6.6.0 Beta 2 Donators
 
 - hardcoal
             "Giving Force to the hands of cdunde and Dancing Dan"
+
+- northwood21 / Quentin
+                                                "Happy Coding :$"
