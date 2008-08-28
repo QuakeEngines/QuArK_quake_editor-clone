@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2008/05/23 21:17:16  danielpharos
+Check all call-definitions to DevIL and FreeImage to make sure all the variable types are correct
+
 Revision 1.14  2008/02/23 20:15:11  danielpharos
 Fix temporary tga file not being deleted after an error during dds-file saving
 
@@ -219,139 +222,118 @@ begin
     end;
 
     PSD:=Description;
-    Width:=PSD.size.x;
-    Height:=PSD.size.y;
+    try
+      Width:=PSD.size.x;
+      Height:=PSD.size.y;
 
-    if PSD.Format = psf8bpp then
-    begin
-      ImageBpp:=1;
-      ImageFormat:=IL_COLOUR_INDEX;
-      PaddingDest:=0;
-    end
-    else
-    begin
-      if PSD.AlphaBits=psa8bpp then
+      if PSD.Format = psf8bpp then
       begin
-        ImageBpp:=4;
-        ImageFormat:=IL_RGBA;
+        ImageBpp:=1;
+        ImageFormat:=IL_COLOUR_INDEX;
         PaddingDest:=0;
       end
       else
       begin
-        ImageBpp:=3;
-        ImageFormat:=IL_RGB;
-        PaddingDest:=0;
+        if PSD.AlphaBits=psa8bpp then
+        begin
+          ImageBpp:=4;
+          ImageFormat:=IL_RGBA;
+          PaddingDest:=0;
+        end
+        else
+        begin
+          ImageBpp:=3;
+          ImageFormat:=IL_RGB;
+          PaddingDest:=0;
+        end;
       end;
-    end;
 
-    ilGenImages(1, @DevILImage);
-    CheckDevILError(ilGetError);
-    ilBindImage(DevILImage);
-    CheckDevILError(ilGetError);
-
-    if ilTexImage(Width, Height, 1, ImageBpp, ImageFormat, IL_UNSIGNED_BYTE, nil)=IL_FALSE then
-    begin
-      ilDeleteImages(1, @DevILImage);
-      FatalFileError(SysUtils.Format('Unable to save %s file. Call to ilTexImage failed.', [FormatName]));
-    end;
-    CheckDevILError(ilGetError);
-
-    if ilClearImage=IL_FALSE then
-    begin
-      ilDeleteImages(1, @DevILImage);
-      FatalFileError(SysUtils.Format('Unable to save %s file. Call to ilClearImage failed.', [FormatName]));
-    end;
-    CheckDevILError(ilGetError);
-
-    if PSD.Format = psf8bpp then
-    begin
-      ilConvertPal(IL_PAL_RGB24);
+      ilGenImages(1, @DevILImage);
       CheckDevILError(ilGetError);
-    end;
+      ilBindImage(DevILImage);
+      CheckDevILError(ilGetError);
 
-    //This is the padding for the 'Image1'-RGB array
-    PaddingSource:=((((Width * 24) + 31) div 32) * 4) - (Width * 3);
+      if ilTexImage(Width, Height, 1, ImageBpp, ImageFormat, IL_UNSIGNED_BYTE, nil)=IL_FALSE then
+      begin
+        ilDeleteImages(1, @DevILImage);
+        FatalFileError(SysUtils.Format('Unable to save %s file. Call to ilTexImage failed.', [FormatName]));
+      end;
+      CheckDevILError(ilGetError);
 
-    TexFormat:=2;
-    if PSD.AlphaBits=psa8bpp then
-      S:=SetupSubSet(ssFiles, 'DDS').Specifics.Values['SaveFormatA']
-    else
-      S:=SetupSubSet(ssFiles, 'DDS').Specifics.Values['SaveFormat'];
-    if S<>'' then
-    begin
-      try
-        TexFormat:=strtoint(S);
-        if (TexFormat < 0) or (TexFormat > 11) then
+      if ilClearImage=IL_FALSE then
+      begin
+        ilDeleteImages(1, @DevILImage);
+        FatalFileError(SysUtils.Format('Unable to save %s file. Call to ilClearImage failed.', [FormatName]));
+      end;
+      CheckDevILError(ilGetError);
+
+      if PSD.Format = psf8bpp then
+      begin
+        ilConvertPal(IL_PAL_RGB24);
+        CheckDevILError(ilGetError);
+      end;
+
+      if PSD.Format = psf8bpp then
+      begin
+        //This is the padding for the 'Image1'-RGB array
+        PaddingSource:=((((Width * 8) + 31) div 32) * 4) - (Width * 1);
+      end
+      else
+      begin
+        //This is the padding for the 'Image1'-RGB array
+        PaddingSource:=((((Width * 24) + 31) div 32) * 4) - (Width * 3);
+      end;
+
+      TexFormat:=2;
+      if PSD.AlphaBits=psa8bpp then
+        S:=SetupSubSet(ssFiles, 'DDS').Specifics.Values['SaveFormatA']
+      else
+        S:=SetupSubSet(ssFiles, 'DDS').Specifics.Values['SaveFormat'];
+      if S<>'' then
+      begin
+        try
+          TexFormat:=strtoint(S);
+          if (TexFormat < 0) or (TexFormat > 11) then
+            TexFormat := 2;
+        except
           TexFormat := 2;
-      except
-        TexFormat := 2;
+        end;
       end;
-    end;
 
-    if PSD.Format = psf8bpp then
-    begin
-      GetMem(RawPal, 256*3);
-      try
-        ilRegisterPal(RawPal, 256*3, IL_PAL_RGB24);
+      if PSD.Format = psf8bpp then
+      begin
+        GetMem(RawPal, 256*3);
+        try
+          ilRegisterPal(RawPal, 256*3, IL_PAL_RGB24);
+          CheckDevILError(ilGetError);
+        finally
+          FreeMem(RawPal);
+        end;
+
+        Dest:=ilGetPalette;
         CheckDevILError(ilGetError);
-      finally
-        FreeMem(RawPal);
-      end;
-
-      Dest:=ilGetPalette;
-      CheckDevILError(ilGetError);
-      SourcePal:=PChar(PSD.ColorPalette);
-      pSourcePal:=SourcePal;
-      for I:=0 to 255 do
-      begin
-        PRGB(Dest)^[0]:=PRGB(pSourcePal)^[0];
-        PRGB(Dest)^[1]:=PRGB(pSourcePal)^[1];
-        PRGB(Dest)^[2]:=PRGB(pSourcePal)^[2];
-        Inc(pSourcePal, 3);
-        Inc(Dest, 3);
-      end;
-
-      Dest:=ilGetData;
-      CheckDevILError(ilGetError);
-      SourceImg:=PChar(PSD.Data);
-      pSourceImg:=SourceImg;
-      for J:=0 to Height-1 do
-      begin
-        for I:=0 to Width-1 do
+        SourcePal:=PChar(PSD.ColorPalette);
+        pSourcePal:=SourcePal;
+        for I:=0 to 255 do
         begin
-          Dest^:=PByte(pSourceImg)^;
-          Inc(pSourceImg, 1);
-          Inc(Dest, 1);
+          PRGB(Dest)^[0]:=PRGB(pSourcePal)^[0];
+          PRGB(Dest)^[1]:=PRGB(pSourcePal)^[1];
+          PRGB(Dest)^[2]:=PRGB(pSourcePal)^[2];
+          Inc(pSourcePal, 3);
+          Inc(Dest, 3);
         end;
-        Inc(pSourceImg, PaddingSource);
-        for I:=0 to PaddingDest-1 do
-        begin
-          Dest^:=0;
-          Inc(Dest, 1);
-        end;
-      end;
-    end
-    else
-    begin
-      if PSD.AlphaBits=psa8bpp then
-      begin
+
         Dest:=ilGetData;
         CheckDevILError(ilGetError);
         SourceImg:=PChar(PSD.Data);
-        SourceAlpha:=PChar(PSD.AlphaData);
         pSourceImg:=SourceImg;
-        pSourceAlpha:=SourceAlpha;
         for J:=0 to Height-1 do
         begin
           for I:=0 to Width-1 do
           begin
-            PRGBA(Dest)^[2]:=PRGB(pSourceImg)^[0];
-            PRGBA(Dest)^[1]:=PRGB(pSourceImg)^[1];
-            PRGBA(Dest)^[0]:=PRGB(pSourceImg)^[2];
-            PRGBA(Dest)^[3]:=PByte(pSourceAlpha)^;
-            Inc(pSourceImg, 3);
-            Inc(pSourceAlpha, 1);
-            Inc(Dest, 4);
+            Dest^:=PByte(pSourceImg)^;
+            Inc(pSourceImg, 1);
+            Inc(Dest, 1);
           end;
           Inc(pSourceImg, PaddingSource);
           for I:=0 to PaddingDest-1 do
@@ -363,28 +345,61 @@ begin
       end
       else
       begin
-        Dest:=ilGetData;
-        CheckDevILError(ilGetError);
-        SourceImg:=PChar(PSD.Data);
-        pSourceImg:=SourceImg;
-        for J:=0 to Height-1 do
+        if PSD.AlphaBits=psa8bpp then
         begin
-          for I:=0 to Width-1 do
+          Dest:=ilGetData;
+          CheckDevILError(ilGetError);
+          SourceImg:=PChar(PSD.Data);
+          SourceAlpha:=PChar(PSD.AlphaData);
+          pSourceImg:=SourceImg;
+          pSourceAlpha:=SourceAlpha;
+          for J:=0 to Height-1 do
           begin
-            PRGB(Dest)^[2]:=PRGB(pSourceImg)^[0];
-            PRGB(Dest)^[1]:=PRGB(pSourceImg)^[1];
-            PRGB(Dest)^[0]:=PRGB(pSourceImg)^[2];
-            Inc(pSourceImg, 3);
-            Inc(Dest, 3);
+            for I:=0 to Width-1 do
+            begin
+              PRGBA(Dest)^[2]:=PRGB(pSourceImg)^[0];
+              PRGBA(Dest)^[1]:=PRGB(pSourceImg)^[1];
+              PRGBA(Dest)^[0]:=PRGB(pSourceImg)^[2];
+              PRGBA(Dest)^[3]:=PByte(pSourceAlpha)^;
+              Inc(pSourceImg, 3);
+              Inc(pSourceAlpha, 1);
+              Inc(Dest, 4);
+            end;
+            Inc(pSourceImg, PaddingSource);
+            for I:=0 to PaddingDest-1 do
+            begin
+              Dest^:=0;
+              Inc(Dest, 1);
+            end;
           end;
-          Inc(pSourceImg, PaddingSource);
-          for I:=0 to PaddingDest-1 do
+        end
+        else
+        begin
+          Dest:=ilGetData;
+          CheckDevILError(ilGetError);
+          SourceImg:=PChar(PSD.Data);
+          pSourceImg:=SourceImg;
+          for J:=0 to Height-1 do
           begin
-            Dest^:=0;
-            Inc(Dest, 1);
+            for I:=0 to Width-1 do
+            begin
+              PRGB(Dest)^[2]:=PRGB(pSourceImg)^[0];
+              PRGB(Dest)^[1]:=PRGB(pSourceImg)^[1];
+              PRGB(Dest)^[0]:=PRGB(pSourceImg)^[2];
+              Inc(pSourceImg, 3);
+              Inc(Dest, 3);
+            end;
+            Inc(pSourceImg, PaddingSource);
+            for I:=0 to PaddingDest-1 do
+            begin
+              Dest^:=0;
+              Inc(Dest, 1);
+            end;
           end;
         end;
       end;
+    finally
+      PSD.Done;
     end;
 
     Quality:=2;
