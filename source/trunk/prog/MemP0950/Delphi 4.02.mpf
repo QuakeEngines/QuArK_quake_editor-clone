@@ -1,4 +1,0 @@
-Delphi 4.02
-
-kernel32.dll,VirtualAlloc,3,*,Forms*,MakeObjectInstance,0,0,Virtual Memory
-user32.dll,LoadCursorA,3,*,Forms*,TScreen.CreateCursors,5349,0,Cursor

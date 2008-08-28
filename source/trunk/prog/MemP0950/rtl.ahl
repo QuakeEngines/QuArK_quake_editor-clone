@@ -1,8 +1,0 @@
-[[RTL]]
-[GetMem]
-GetMem allocates memory from the RTL memory manager and returns a pointer.
-The returned pointer must be freed with FreeMem.
-
-[ReallocMem]
-GetMem reallocates a pointer from the RTL memory manager.
-The returned pointer must be freed with FreeMem.

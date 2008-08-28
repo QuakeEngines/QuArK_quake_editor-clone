@@ -1,6 +1,0 @@
-[[winspool.drv]]
-
-[OpenPrinter,OpenPrinterA,OpenPrinterW]
-OpenPrinter retrieves a handle identifying the specified printer or print server.
-The returned printer handle must be closed with ClosePrinter when no longer needed.
-

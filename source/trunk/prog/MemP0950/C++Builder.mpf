@@ -1,4 +1,0 @@
-C++Builder
-
-kernel32.dll,LocalAlloc,0,,,,0,3,Local Heap
-kernel32.dll,GetStdHandle,0,*,,,0,3,Std. Handle
