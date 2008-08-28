@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.21  2008/05/24 19:41:52  danielpharos
+Check all call-definitions to DevIL and FreeImage to make sure all the variable types are correct
+
 Revision 1.20  2008/03/29 15:25:58  danielpharos
 Fix some possible PSD leaks.
 
@@ -178,7 +181,7 @@ function TestConversionImages(var I: Integer{; Exclude: QImage}) : QImageClass;
 
 implementation
 
-uses QkPcx, QkBmp, QkTga, QkDDS, QkJpg, QkPng, QkSoF,QkVTF, TbPalette, qmath,
+uses QkPcx, QkBmp, QkTga, QkDDS, QkJpg, QkPng, QkSoF, QkVTF, TbPalette, qmath,
      Quarkx, CCode, Undo, Travail, Logging;
 
 {$R *.DFM}
@@ -258,7 +261,6 @@ var
 procedure QImage.FatalFileError(x:string);
 begin
   Log(LOG_CRITICAL,'Error during operation on %s file: %s', [FormatName, x]);
-  Windows.MessageBox(0, pchar(X), PChar(LoadStr1(401)), MB_TASKMODAL or MB_ICONERROR or MB_OK);
   Raise Exception.Create(x);
 end;
 
@@ -299,9 +301,8 @@ begin
     DevILLoaded:=true;
   end;
 
-  SetLength(RawBuffer, F.Size);
-  F.Seek(0, 0);
-  F.ReadBuffer(Pointer(RawBuffer)^, Length(RawBuffer));
+  SetLength(RawBuffer, FSize);
+  F.ReadBuffer(Pointer(RawBuffer)^, FSize);
 
   ilGenImages(1, @DevILImage);
   CheckDevILError(ilGetError);
@@ -313,7 +314,7 @@ begin
   ilEnable(IL_ORIGIN_SET);
   CheckDevILError(ilGetError);
 
-  if ilLoadL(FileTypeDevIL, Pointer(RawBuffer), Length(RawBuffer))=IL_FALSE then
+  if ilLoadL(FileTypeDevIL, Pointer(RawBuffer), FSize)=IL_FALSE then
   begin
     ilDeleteImages(1, @DevILImage);
     FatalFileError(Format('Unable to load %s file. Call to ilLoadL failed. Please make sure the file is a valid %s file, and not damaged or corrupt.', [FormatName, FormatName]));
@@ -336,7 +337,7 @@ begin
 
   if ilHasPalette then
   begin
-    //DanielPharos: Currently, no alpha is supported in palette-mode,
+    //FIXME: Currently, no alpha is supported in palette-mode,
     //so no need to check for that.
 
     //This is the padding for the 'Image1'-RGB array
@@ -581,11 +582,12 @@ begin
       CheckDevILError(ilGetError);
     end;
 
-    //This is the padding for the 'Image1'-RGB array
-    PaddingSource:=((((Width * 24) + 31) div 32) * 4) - (Width * 3);
-
     if PSD.Format = psf8bpp then
     begin
+      //This is the padding for the 'Image1'-RGB array
+      PaddingSource:=((((Width * 8) + 31) div 32) * 4) - (Width * 1);
+
+      //FIXME: Workaround for DevIL not making a palette even when the imageformat says so
       GetMem(RawPal, 256*3);
       try
         ilRegisterPal(RawPal, 256*3, IL_PAL_RGB24);
@@ -629,6 +631,9 @@ begin
     end
     else
     begin
+      //This is the padding for the 'Image1'-RGB array
+      PaddingSource:=((((Width * 24) + 31) div 32) * 4) - (Width * 3);
+
       if PSD.AlphaBits=psa8bpp then
       begin
         Dest:=ilGetData;
@@ -736,11 +741,10 @@ begin
     FreeImageLoaded:=true;
   end;
 
-  SetLength(RawBuffer, F.Size);
-  F.Seek(0, 0);
-  F.ReadBuffer(Pointer(RawBuffer)^, Length(RawBuffer));
+  SetLength(RawBuffer, FSize);
+  F.ReadBuffer(Pointer(RawBuffer)^, FSize);
 
-  FIBuffer := FreeImage_OpenMemory(Pointer(RawBuffer), Length(RawBuffer));
+  FIBuffer := FreeImage_OpenMemory(Pointer(RawBuffer), FSize);
   FIImage := FreeImage_LoadFromMemory(FileTypeFreeImage, FIBuffer, LoadFileFreeImageSettings);
 
   Width:=FreeImage_GetWidth(FIImage);
@@ -947,11 +951,11 @@ begin
     if FIImage=nil then
       FatalFileError(Format('Unable to save %s file. Call to FreeImage_Allocate failed.', [FormatName]));
 
-    //This is the padding for the 'Image1'-RGB array
-    PaddingSource:=((((Width * 24) + 31) div 32) * 4) - (Width * 3);
-
     if PSD.Format = psf8bpp then
     begin
+      //This is the padding for the 'Image1'-RGB array
+      PaddingSource:=((((Width * 8) + 31) div 32) * 4) - (Width * 1);
+
       DestPalette:=FreeImage_GetPalette(FIImage);
       SourcePal:=PChar(PSD.ColorPalette);
       pSourcePal:=SourcePal;
@@ -986,6 +990,9 @@ begin
     end
     else
     begin
+      //This is the padding for the 'Image1'-RGB array
+      PaddingSource:=((((Width * 24) + 31) div 32) * 4) - (Width * 3);
+
       if PSD.AlphaBits=psa8bpp then
       begin
         Dest:=FreeImage_GetBits(FIImage);

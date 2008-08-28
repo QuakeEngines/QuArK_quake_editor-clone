@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2008/05/23 21:17:16  danielpharos
+Check all call-definitions to DevIL and FreeImage to make sure all the variable types are correct
+
 Revision 1.4  2007/12/06 23:01:30  danielpharos
 Whole truckload of image-file-handling changes: Revert PCX file saving and fix paletted images not loading/saving correctly.
 
@@ -233,8 +236,7 @@ var
 procedure LogError(x:string);
 begin
   Log(LOG_CRITICAL, x);
-  Windows.MessageBox(0, pchar(X), PChar(LoadStr1(401)), MB_TASKMODAL or MB_ICONERROR or MB_OK);
-  //Raise Exception.Create(x);
+  Raise Exception.Create(x);
 end;
 
 function InitDllPointer(DLLHandle: HMODULE;APIFuncname:PChar):Pointer;
