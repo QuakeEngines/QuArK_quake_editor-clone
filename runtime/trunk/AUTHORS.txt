@@ -118,7 +118,6 @@ The developers of used libraries/programs
 - Delphi:
                         http://www.borland.com/
 
-
 - Python:
                         http://www.python.org/
 
