@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.431  2008/08/28 19:00:59  danielpharos
+//Added a bunch of DevIL setting, and re-enabled DevIL DDS file saving.
+//
 //Revision 1.430  2008/08/28 10:12:30  danielpharos
 //PCX file saving is now working in DevIL.
 //
@@ -3763,6 +3766,7 @@ QQRKSRC1
       {
         LoadLibrary = "FreeImage"
         SaveLibrary = "FreeImage"
+        InterlaceDevIL = ""
         Form = "FilesPNG"
       }
       TGA:config =
@@ -7977,6 +7981,8 @@ QQRKSRC1
         Values = "DevIL" $0D "FreeImage"
         Hint="Select the library QuArK will use to save files of this type."
       }
+      sep: = {Typ="S" Txt="---- Advanced DevIL Settings ----"}
+      InterlaceDevIL: = { Typ="X" Txt="Save Interlaced" Cap="Enabled" Hint="Save the PNG texture as an interlaced image."}
     }
     FilesTGA:form =
     {

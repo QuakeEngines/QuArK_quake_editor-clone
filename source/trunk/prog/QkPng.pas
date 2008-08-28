@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.17  2008/08/28 19:01:17  danielpharos
+Added a bunch of DevIL setting, and re-enabled DevIL DDS file saving.
+
 Revision 1.16  2007/12/06 23:01:31  danielpharos
 Whole truckload of image-file-handling changes: Revert PCX file saving and fix paletted images not loading/saving correctly.
 
@@ -83,6 +86,7 @@ type
         protected
           class function FileTypeDevIL : DevILType; override;
           class function FileTypeFreeImage : FREE_IMAGE_FORMAT; override;
+          procedure SaveFileDevILSettings; override;
           function LoadFileFreeImageSettings : Integer; override;
           function SaveFileFreeImageSettings : Integer; override;
           class function FormatName : String; override;
@@ -125,6 +129,23 @@ end;
 class function QPng.FileTypeFreeImage : FREE_IMAGE_FORMAT;
 begin
   Result:=FIF_PNG;
+end;
+
+procedure QPng.SaveFileDevILSettings;
+var
+  Setup: QObject;
+  Flag: Cardinal;
+begin
+  inherited;
+
+  Setup:=SetupSubSet(ssFiles, 'PNG');
+  if Setup.Specifics.Values['InterlaceDevIL']<>'' then
+    Flag:=IL_TRUE
+  else
+    Flag:=IL_FALSE;
+
+  ilSetInteger(IL_PNG_INTERLACE, Flag);
+  CheckDevILError(ilGetError);
 end;
 
 function QPng.LoadFileFreeImageSettings : Integer;
