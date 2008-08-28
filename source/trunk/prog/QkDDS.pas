@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.17  2008/08/28 19:01:15  danielpharos
+Added a bunch of DevIL setting, and re-enabled DevIL DDS file saving.
+
 Revision 1.16  2008/08/28 10:16:50  danielpharos
 Fix DDS saving of paletted images and possible memory leak.
 
@@ -138,11 +141,6 @@ var
   Flag: Cardinal;
 begin
   inherited;
-
-  ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
-  CheckDevILError(ilGetError);
-  ilEnable(IL_ORIGIN_SET);
-  CheckDevILError(ilGetError);
 
   Setup:=SetupSubSet(ssFiles, 'DDS');
   try
