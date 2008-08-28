@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.429  2008/08/26 16:47:12  danielpharos
+//Moved Call of Duty 1 to its own gamemode
+//
 //Revision 1.428  2008/08/26 12:41:44  danielpharos
 //Fixed compiler basepath not set correctly, and moved both Star Wars games to seperate game-menu.
 //
@@ -7883,7 +7886,7 @@ QQRKSRC1
       {
         Txt="Select library for loading PCX files"
         Typ="CL"
-        Items  = "QuArK" $0D "DevIL" $0D "FreeImage"   //DevIL and FreeImage aren't always loading PCX files correctly!
+        Items  = "QuArK" $0D "DevIL" $0D "FreeImage"
         Values = "QuArK" $0D "DevIL" $0D "FreeImage"
         Hint="Select the library QuArK will use to load files of this type."
       }
@@ -7891,8 +7894,8 @@ QQRKSRC1
       {
         Txt="Select library for saving PCX files"
         Typ="CL"
-        Items  = "QuArK"   //DevIL PCX file saving not working, and FreeImage doesn't support it!
-        Values = "QuArK"
+        Items  = "QuArK" $0D "DevIL"   //FreeImage doesn't support saving PCX files!
+        Values = "QuArK" $0D "DevIL"
         Hint="Select the library QuArK will use to save files of this type."
       }
     }
