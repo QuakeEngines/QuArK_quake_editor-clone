@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2008/08/28 10:10:37  danielpharos
+Fix saving paletted images, loading images from pack files and duplicate error messages.
+
 Revision 1.11  2008/05/23 21:17:16  danielpharos
 Check all call-definitions to DevIL and FreeImage to make sure all the variable types are correct
 
@@ -159,6 +162,15 @@ const
   IL_IMAGE_ORIGIN          =$0DFE;
   IL_IMAGE_CHANNELS        =$0DFF;
 
+// Hints
+  IL_FASTEST          =$0660;
+  IL_LESS_MEM         =$0661;
+  IL_DONT_CARE        =$0662;
+  IL_MEM_SPEED_HINT   =$0665;
+  IL_USE_COMPRESSION  =$0666;
+  IL_NO_COMPRESSION   =$0667;
+  IL_COMPRESSION_HINT =$0668;
+
 // Mode types (file specific):
   IL_TGA_CREATE_STAMP        =$0710;
   IL_JPG_QUALITY             =$0711;
@@ -180,6 +192,20 @@ const
   IL_CHEAD_HEADER_STRING     =$0722;
   IL_PCD_PICNUM              =$0723;
   IL_PNG_ALPHA_INDEX         =$0724;
+
+// DXTC definitions
+  IL_DXTC_FORMAT      =$0705;
+  IL_DXT1             =$0706;
+  IL_DXT2             =$0707;
+  IL_DXT3             =$0708;
+  IL_DXT4             =$0709;
+  IL_DXT5             =$070A;
+  IL_DXT_NO_COMP      =$070B;
+  IL_KEEP_DXTC_DATA   =$070C;
+  IL_DXTC_DATA_FORMAT =$070D;
+  IL_3DC              =$070E;
+  IL_RXGB             =$070F;
+  IL_ATI1N            =$0710;
 
 // Error types
   IL_NO_ERROR=             $0000;
@@ -233,6 +259,7 @@ type
   DevILType = Cardinal;
   DevILMode = Cardinal;
   DevILError = Cardinal;
+  DevILHint = Cardinal;
   DevILFormat = Cardinal;
   DevILFormatType = Cardinal;
   DevILFormatPalette = Cardinal;
@@ -246,6 +273,7 @@ var
   ilGetInteger: function (Mode : DevILMode) : Integer; stdcall;
   //ilGetIntegerv: procedure (Mode : DevILMode; Param : PInteger); stdcall;
   ilSetInteger: procedure (Mode : DevILMode; Param : Integer); stdcall;
+  ilHint: procedure (Target : DevILHint; Mode : DevILMode); stdcall;
 
   //ilGenImage: function : Integer; stdcall; //DanielPharos: I'm guessing this is a mistake in DevIL. The return should be a Cardinal!
   ilGenImages: procedure (Num : Integer; Images : PCardinal); stdcall;
@@ -326,6 +354,7 @@ begin
       ilGetInteger      := InitDllPointer(HDevIL, 'ilGetInteger');
       //ilGetIntegerv     := InitDllPointer(HDevIL, 'ilGetIntegerv');
       ilSetInteger      := InitDllPointer(HDevIL, 'ilSetInteger');
+      ilHint            := InitDllPointer(HDevIL, 'ilHint');
       //ilGenImage        := InitDllPointer(HDevIL, 'ilGenImage');
       ilGenImages       := InitDllPointer(HDevIL, 'ilGenImages');
       ilBindImage       := InitDllPointer(HDevIL, 'ilBindImage');
@@ -391,6 +420,7 @@ begin
       ilGetInteger          := nil;
       //ilGetIntegerv         := nil;
       ilSetInteger          := nil;
+      ilHint                := nil;
       //ilGenImage            := nil;
       ilGenImages           := nil;
       ilBindImage           := nil;

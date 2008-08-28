@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.17  2007/12/06 23:01:31  danielpharos
+Whole truckload of image-file-handling changes: Revert PCX file saving and fix paletted images not loading/saving correctly.
+
 Revision 1.16  2007/11/21 16:07:32  danielpharos
 Another bunch of hugh image fixes: everything should work again!
 
@@ -82,8 +85,6 @@ type
         protected
           class function FileTypeDevIL : DevILType; override;
           class function FileTypeFreeImage : FREE_IMAGE_FORMAT; override;
-          procedure LoadFileDevILSettings; override;
-          procedure SaveFileDevILSettings; override;
           function LoadFileFreeImageSettings : Integer; override;
           function SaveFileFreeImageSettings : Integer; override;
           class function FormatName : String; override;
@@ -126,14 +127,6 @@ end;
 class function QTga.FileTypeFreeImage : FREE_IMAGE_FORMAT;
 begin
   Result:=FIF_TARGA;
-end;
-
-procedure QTga.LoadFileDevILSettings;
-begin
-end;
-
-procedure QTga.SaveFileDevILSettings;
-begin
 end;
 
 function QTga.LoadFileFreeImageSettings : Integer;

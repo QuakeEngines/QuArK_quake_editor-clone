@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2008/08/28 10:16:50  danielpharos
+Fix DDS saving of paletted images and possible memory leak.
+
 Revision 1.15  2008/05/23 21:17:16  danielpharos
 Check all call-definitions to DevIL and FreeImage to make sure all the variable types are correct
 
@@ -84,7 +87,6 @@ type
         protected
           class function FileTypeDevIL : DevILType; override;
           class function FileTypeFreeImage : FREE_IMAGE_FORMAT; override;
-          procedure LoadFileDevILSettings; override;
           procedure SaveFileDevILSettings; override;
           function LoadFileFreeImageSettings : Integer; override;
           function SaveFileFreeImageSettings : Integer; override;
@@ -130,12 +132,35 @@ begin
   Result:=FIF_DDS;
 end;
 
-procedure QDDS.LoadFileDevILSettings;
-begin
-end;
-
 procedure QDDS.SaveFileDevILSettings;
+var
+  Setup: QObject;
+  Flag: Cardinal;
 begin
+  inherited;
+
+  ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
+  CheckDevILError(ilGetError);
+  ilEnable(IL_ORIGIN_SET);
+  CheckDevILError(ilGetError);
+
+  Setup:=SetupSubSet(ssFiles, 'DDS');
+  try
+    case StrToInt(Setup.Specifics.Values['SaveFormatDevIL']) of
+    0: Flag:=IL_DXT1;
+    1: Flag:=IL_DXT2;
+    2: Flag:=IL_DXT3;
+    3: Flag:=IL_DXT4;
+    4: Flag:=IL_DXT5;
+    else
+      Flag:=IL_DXT1;
+    end;
+  except
+    Flag:=IL_DXT1;
+  end;
+
+  ilSetInteger(IL_DXTC_FORMAT, Flag);
+  CheckDevILError(ilGetError);
 end;
 
 function QDDS.LoadFileFreeImageSettings : Integer;
@@ -182,6 +207,8 @@ type
   PRGBA = ^TRGBA;
   TRGBA = array[0..3] of Byte;
 var
+  LibraryToUse: string;
+
   PSD: TPixelSetDescription;
 //  TexSize : longword;
   //RawBuffer: String;
@@ -214,283 +241,294 @@ begin
   case Format of
   1:
   begin  { as stand-alone file }
-    if (not DevILLoaded) then
+    LibraryToUse:=SetupSubSet(ssFiles, 'JPG').Specifics.Values['SaveLibrary'];
+    if LibraryToUse='DevIL' then
+      SaveFileDevIL(Info)
+    //FreeImage has no DDS file saving support (yet?)
+    //else if LibraryToUse='FreeImage' then
+    //  SaveFileDevIL(Info)
+    else if LibraryToUse='NVDXT' then
     begin
-      if not LoadDevIL then
-        Raise EErrorFmt(5730, ['DevIL library', GetLastError]);
-      DevILLoaded:=true;
-    end;
-
-    PSD:=Description;
-    try
-      Width:=PSD.size.x;
-      Height:=PSD.size.y;
-
-      if PSD.Format = psf8bpp then
+      //DanielPharos: This is a workaround: we use DevIL to save a TGA, and then NVDXT to convert it to a DDS
+      if (not DevILLoaded) then
       begin
-        ImageBpp:=1;
-        ImageFormat:=IL_COLOUR_INDEX;
-        PaddingDest:=0;
-      end
-      else
-      begin
-        if PSD.AlphaBits=psa8bpp then
+        if not LoadDevIL then
+          Raise EErrorFmt(5730, ['DevIL library', GetLastError]);
+        DevILLoaded:=true;
+      end;
+
+      PSD:=Description;
+      try
+        Width:=PSD.size.x;
+        Height:=PSD.size.y;
+
+        if PSD.Format = psf8bpp then
         begin
-          ImageBpp:=4;
-          ImageFormat:=IL_RGBA;
+          ImageBpp:=1;
+          ImageFormat:=IL_COLOUR_INDEX;
           PaddingDest:=0;
         end
         else
         begin
-          ImageBpp:=3;
-          ImageFormat:=IL_RGB;
-          PaddingDest:=0;
+          if PSD.AlphaBits=psa8bpp then
+          begin
+            ImageBpp:=4;
+            ImageFormat:=IL_RGBA;
+            PaddingDest:=0;
+          end
+          else
+          begin
+            ImageBpp:=3;
+            ImageFormat:=IL_RGB;
+            PaddingDest:=0;
+          end;
         end;
-      end;
 
-      ilGenImages(1, @DevILImage);
-      CheckDevILError(ilGetError);
-      ilBindImage(DevILImage);
-      CheckDevILError(ilGetError);
-
-      if ilTexImage(Width, Height, 1, ImageBpp, ImageFormat, IL_UNSIGNED_BYTE, nil)=IL_FALSE then
-      begin
-        ilDeleteImages(1, @DevILImage);
-        FatalFileError(SysUtils.Format('Unable to save %s file. Call to ilTexImage failed.', [FormatName]));
-      end;
-      CheckDevILError(ilGetError);
-
-      if ilClearImage=IL_FALSE then
-      begin
-        ilDeleteImages(1, @DevILImage);
-        FatalFileError(SysUtils.Format('Unable to save %s file. Call to ilClearImage failed.', [FormatName]));
-      end;
-      CheckDevILError(ilGetError);
-
-      if PSD.Format = psf8bpp then
-      begin
-        ilConvertPal(IL_PAL_RGB24);
+        ilGenImages(1, @DevILImage);
         CheckDevILError(ilGetError);
+        ilBindImage(DevILImage);
+        CheckDevILError(ilGetError);
+
+        if ilTexImage(Width, Height, 1, ImageBpp, ImageFormat, IL_UNSIGNED_BYTE, nil)=IL_FALSE then
+        begin
+          ilDeleteImages(1, @DevILImage);
+          FatalFileError(SysUtils.Format('Unable to save %s file. Call to ilTexImage failed.', [FormatName]));
+        end;
+        CheckDevILError(ilGetError);
+
+        if ilClearImage=IL_FALSE then
+        begin
+          ilDeleteImages(1, @DevILImage);
+          FatalFileError(SysUtils.Format('Unable to save %s file. Call to ilClearImage failed.', [FormatName]));
+        end;
+        CheckDevILError(ilGetError);
+
+        if PSD.Format = psf8bpp then
+        begin
+          ilConvertPal(IL_PAL_RGB24);
+          CheckDevILError(ilGetError);
+        end;
+
+        if PSD.Format = psf8bpp then
+        begin
+          //This is the padding for the 'Image1'-RGB array
+          PaddingSource:=((((Width * 8) + 31) div 32) * 4) - (Width * 1);
+        end
+        else
+        begin
+          //This is the padding for the 'Image1'-RGB array
+          PaddingSource:=((((Width * 24) + 31) div 32) * 4) - (Width * 3);
+        end;
+
+        TexFormat:=2;
+        if PSD.AlphaBits=psa8bpp then
+          S:=SetupSubSet(ssFiles, 'DDS').Specifics.Values['SaveFormatANVDXT']
+        else
+          S:=SetupSubSet(ssFiles, 'DDS').Specifics.Values['SaveFormatNVDXT'];
+        if S<>'' then
+        begin
+          try
+            TexFormat:=strtoint(S);
+            if (TexFormat < 0) or (TexFormat > 11) then
+              TexFormat := 2;
+          except
+            TexFormat := 2;
+          end;
+        end;
+
+        if PSD.Format = psf8bpp then
+        begin
+          GetMem(RawPal, 256*3);
+          try
+            ilRegisterPal(RawPal, 256*3, IL_PAL_RGB24);
+            CheckDevILError(ilGetError);
+          finally
+            FreeMem(RawPal);
+          end;
+
+          Dest:=ilGetPalette;
+          CheckDevILError(ilGetError);
+          SourcePal:=PChar(PSD.ColorPalette);
+          pSourcePal:=SourcePal;
+          for I:=0 to 255 do
+          begin
+            PRGB(Dest)^[0]:=PRGB(pSourcePal)^[0];
+            PRGB(Dest)^[1]:=PRGB(pSourcePal)^[1];
+            PRGB(Dest)^[2]:=PRGB(pSourcePal)^[2];
+            Inc(pSourcePal, 3);
+            Inc(Dest, 3);
+          end;
+
+          Dest:=ilGetData;
+          CheckDevILError(ilGetError);
+          SourceImg:=PChar(PSD.Data);
+          pSourceImg:=SourceImg;
+          for J:=0 to Height-1 do
+          begin
+            for I:=0 to Width-1 do
+            begin
+              Dest^:=PByte(pSourceImg)^;
+              Inc(pSourceImg, 1);
+              Inc(Dest, 1);
+            end;
+            Inc(pSourceImg, PaddingSource);
+            for I:=0 to PaddingDest-1 do
+            begin
+              Dest^:=0;
+              Inc(Dest, 1);
+            end;
+          end;
+        end
+        else
+        begin
+          if PSD.AlphaBits=psa8bpp then
+          begin
+            Dest:=ilGetData;
+            CheckDevILError(ilGetError);
+            SourceImg:=PChar(PSD.Data);
+            SourceAlpha:=PChar(PSD.AlphaData);
+            pSourceImg:=SourceImg;
+            pSourceAlpha:=SourceAlpha;
+            for J:=0 to Height-1 do
+            begin
+              for I:=0 to Width-1 do
+              begin
+                PRGBA(Dest)^[2]:=PRGB(pSourceImg)^[0];
+                PRGBA(Dest)^[1]:=PRGB(pSourceImg)^[1];
+                PRGBA(Dest)^[0]:=PRGB(pSourceImg)^[2];
+                PRGBA(Dest)^[3]:=PByte(pSourceAlpha)^;
+                Inc(pSourceImg, 3);
+                Inc(pSourceAlpha, 1);
+                Inc(Dest, 4);
+              end;
+              Inc(pSourceImg, PaddingSource);
+              for I:=0 to PaddingDest-1 do
+              begin
+                Dest^:=0;
+                Inc(Dest, 1);
+              end;
+            end;
+          end
+          else
+          begin
+            Dest:=ilGetData;
+            CheckDevILError(ilGetError);
+            SourceImg:=PChar(PSD.Data);
+            pSourceImg:=SourceImg;
+            for J:=0 to Height-1 do
+            begin
+              for I:=0 to Width-1 do
+              begin
+                PRGB(Dest)^[2]:=PRGB(pSourceImg)^[0];
+                PRGB(Dest)^[1]:=PRGB(pSourceImg)^[1];
+                PRGB(Dest)^[0]:=PRGB(pSourceImg)^[2];
+                Inc(pSourceImg, 3);
+                Inc(Dest, 3);
+              end;
+              Inc(pSourceImg, PaddingSource);
+              for I:=0 to PaddingDest-1 do
+              begin
+                Dest^:=0;
+                Inc(Dest, 1);
+              end;
+            end;
+          end;
+        end;
+      finally
+        PSD.Done;
       end;
 
-      if PSD.Format = psf8bpp then
-      begin
-        //This is the padding for the 'Image1'-RGB array
-        PaddingSource:=((((Width * 8) + 31) div 32) * 4) - (Width * 1);
-      end
-      else
-      begin
-        //This is the padding for the 'Image1'-RGB array
-        PaddingSource:=((((Width * 24) + 31) div 32) * 4) - (Width * 3);
-      end;
-
-      TexFormat:=2;
-      if PSD.AlphaBits=psa8bpp then
-        S:=SetupSubSet(ssFiles, 'DDS').Specifics.Values['SaveFormatA']
-      else
-        S:=SetupSubSet(ssFiles, 'DDS').Specifics.Values['SaveFormat'];
+      Quality:=2;
+      S:=SetupSubSet(ssFiles, 'DDS').Specifics.Values['SaveQualityNVDXT'];
       if S<>'' then
       begin
         try
-          TexFormat:=strtoint(S);
-          if (TexFormat < 0) or (TexFormat > 11) then
-            TexFormat := 2;
+          Quality:=strtoint(S);
+          if (Quality < 0) or (Quality > 3) then
+            Quality := 2;
         except
-          TexFormat := 2;
-        end;
-      end;
-
-      if PSD.Format = psf8bpp then
-      begin
-        GetMem(RawPal, 256*3);
-        try
-          ilRegisterPal(RawPal, 256*3, IL_PAL_RGB24);
-          CheckDevILError(ilGetError);
-        finally
-          FreeMem(RawPal);
-        end;
-
-        Dest:=ilGetPalette;
-        CheckDevILError(ilGetError);
-        SourcePal:=PChar(PSD.ColorPalette);
-        pSourcePal:=SourcePal;
-        for I:=0 to 255 do
-        begin
-          PRGB(Dest)^[0]:=PRGB(pSourcePal)^[0];
-          PRGB(Dest)^[1]:=PRGB(pSourcePal)^[1];
-          PRGB(Dest)^[2]:=PRGB(pSourcePal)^[2];
-          Inc(pSourcePal, 3);
-          Inc(Dest, 3);
-        end;
-
-        Dest:=ilGetData;
-        CheckDevILError(ilGetError);
-        SourceImg:=PChar(PSD.Data);
-        pSourceImg:=SourceImg;
-        for J:=0 to Height-1 do
-        begin
-          for I:=0 to Width-1 do
-          begin
-            Dest^:=PByte(pSourceImg)^;
-            Inc(pSourceImg, 1);
-            Inc(Dest, 1);
-          end;
-          Inc(pSourceImg, PaddingSource);
-          for I:=0 to PaddingDest-1 do
-          begin
-            Dest^:=0;
-            Inc(Dest, 1);
-          end;
-        end;
-      end
-      else
-      begin
-        if PSD.AlphaBits=psa8bpp then
-        begin
-          Dest:=ilGetData;
-          CheckDevILError(ilGetError);
-          SourceImg:=PChar(PSD.Data);
-          SourceAlpha:=PChar(PSD.AlphaData);
-          pSourceImg:=SourceImg;
-          pSourceAlpha:=SourceAlpha;
-          for J:=0 to Height-1 do
-          begin
-            for I:=0 to Width-1 do
-            begin
-              PRGBA(Dest)^[2]:=PRGB(pSourceImg)^[0];
-              PRGBA(Dest)^[1]:=PRGB(pSourceImg)^[1];
-              PRGBA(Dest)^[0]:=PRGB(pSourceImg)^[2];
-              PRGBA(Dest)^[3]:=PByte(pSourceAlpha)^;
-              Inc(pSourceImg, 3);
-              Inc(pSourceAlpha, 1);
-              Inc(Dest, 4);
-            end;
-            Inc(pSourceImg, PaddingSource);
-            for I:=0 to PaddingDest-1 do
-            begin
-              Dest^:=0;
-              Inc(Dest, 1);
-            end;
-          end;
-        end
-        else
-        begin
-          Dest:=ilGetData;
-          CheckDevILError(ilGetError);
-          SourceImg:=PChar(PSD.Data);
-          pSourceImg:=SourceImg;
-          for J:=0 to Height-1 do
-          begin
-            for I:=0 to Width-1 do
-            begin
-              PRGB(Dest)^[2]:=PRGB(pSourceImg)^[0];
-              PRGB(Dest)^[1]:=PRGB(pSourceImg)^[1];
-              PRGB(Dest)^[0]:=PRGB(pSourceImg)^[2];
-              Inc(pSourceImg, 3);
-              Inc(Dest, 3);
-            end;
-            Inc(pSourceImg, PaddingSource);
-            for I:=0 to PaddingDest-1 do
-            begin
-              Dest^:=0;
-              Inc(Dest, 1);
-            end;
-          end;
-        end;
-      end;
-    finally
-      PSD.Done;
-    end;
-
-    Quality:=2;
-    S:=SetupSubSet(ssFiles, 'DDS').Specifics.Values['SaveQuality'];
-    if S<>'' then
-    begin
-      try
-        Quality:=strtoint(S);
-        if (Quality < 0) or (Quality > 3) then
           Quality := 2;
-      except
-        Quality := 2;
-      end;
-    end;
-
-    DumpFileName:=GetQPath(pQuArK)+'0';
-    while FileExists(DumpFileName+'.tga') or FileExists(DumpFileName+'.dds') do
-    begin
-      //DanielPharos: Ugly way of creating a unique filename...
-      DumpFileName:=GetQPath(pQuArK)+IntToStr(Random(999999));
-    end;
-    //DanielPharos: Can't save to IL_DDS, DevIL gives an error.
-    if ilSave(IL_TGA, PChar(DumpFileName+'.tga'))=IL_FALSE then
-    begin
-      ilDeleteImages(1, @DevILImage);
-      FatalFileError('Unable to save DDS file. Call to ilSave failed.');
-    end;
-
-    ilDeleteImages(1, @DevILImage);
-    CheckDevILError(ilGetError);
-
-    try
-      //DanielPharos: Now convert the TGA to DDS with NVIDIA's DDS tool...
-      if FileExists(GetQPath(pQuArKDll)+'nvdxt.exe')=false then
-        FatalFileError('Unable to save DDS file. dlls/nvdxt.exe not found.');
-
-      case TexFormat of
-      0: TexFormatParameter:='dxt1c';
-      1: TexFormatParameter:='dxt1a';
-      2: TexFormatParameter:='dxt3';
-      3: TexFormatParameter:='dxt5';
-      4: TexFormatParameter:='u1555';
-      5: TexFormatParameter:='u4444';
-      6: TexFormatParameter:='u565';
-      7: TexFormatParameter:='u8888';
-      8: TexFormatParameter:='u888';
-      9: TexFormatParameter:='u555';
-      10: TexFormatParameter:='l8';
-      11: TexFormatParameter:='a8';
+        end;
       end;
 
-      case Quality of
-      0: QualityParameter:='quick';
-      1: QualityParameter:='quality_normal';
-      2: QualityParameter:='quality_production';
-      3: QualityParameter:='quality_highest';
-      end;
-      FillChar(NVDXTStartupInfo, SizeOf(NVDXTStartupInfo), 0);
-      FillChar(NVDXTProcessInformation, SizeOf(NVDXTProcessInformation), 0);
-      NVDXTStartupInfo.cb:=SizeOf(NVDXTStartupInfo);
-      NVDXTStartupInfo.dwFlags:=STARTF_USESHOWWINDOW;
-      NVDXTStartupInfo.wShowWindow:=SW_HIDE+SW_MINIMIZE;
-      //FIXME: If you delete this, don't forget the implementation-link to QkApplPaths
-      if Windows.CreateProcess(nil, PChar(GetQPath(pQuArKDll)+'nvdxt.exe -file "'+DumpFileName+'.tga" -output "'+DumpFileName+'.dds" -'+TexFormatParameter+' -'+QualityParameter), nil, nil, false, 0, nil, PChar(GetQPath(pQuArKDll)), NVDXTStartupInfo, NVDXTProcessInformation)=false then
-        FatalFileError('Unable to save DDS file. Call to CreateProcess failed.');
-
-      //DanielPharos: This is kinda dangerous, but NVDXT should exit rather quickly!
-      if WaitForSingleObject(NVDXTProcessInformation.hProcess,INFINITE)=WAIT_FAILED then
+      DumpFileName:=GetQPath(pQuArK)+'0';
+      while FileExists(DumpFileName+'.tga') or FileExists(DumpFileName+'.dds') do
       begin
-        CloseHandle(NVDXTProcessInformation.hThread);
-        CloseHandle(NVDXTProcessInformation.hProcess);
-        FatalFileError('Unable to save DDS file. Call to WaitForSingleObject failed.');
+        //FIXME: Ugly way of creating a unique filename...
+        DumpFileName:=GetQPath(pQuArK)+IntToStr(Random(999999));
+      end;
+      if ilSave(IL_TGA, PChar(DumpFileName+'.tga'))=IL_FALSE then
+      begin
+        ilDeleteImages(1, @DevILImage);
+        FatalFileError('Unable to save DDS file. Call to ilSave failed.');
       end;
 
-      if CloseHandle(NVDXTProcessInformation.hThread)=false then
-        FatalFileError('Unable to save DDS file. Call to CloseHandle(thread) failed.');
-      if CloseHandle(NVDXTProcessInformation.hProcess)=false then
-        FatalFileError('Unable to save DDS file. Call to CloseHandle(process) failed.');
+      ilDeleteImages(1, @DevILImage);
+      CheckDevILError(ilGetError);
 
-    finally
-      if DeleteFile(DumpFileName+'.tga')=false then
-        FatalFileError('Unable to save DDS file. Call to DeleteFile(tga) failed.');
-    end;
+      try
+        //DanielPharos: Now convert the TGA to DDS with NVIDIA's DDS tool...
+        if FileExists(GetQPath(pQuArKDll)+'nvdxt.exe')=false then
+          FatalFileError('Unable to save DDS file. dlls/nvdxt.exe not found.');
 
-    //DanielPharos: Now let's read in that DDS file and be done!
-    DumpBuffer:=TFileStream.Create(DumpFileName+'.dds',fmOpenRead);
-    F.CopyFrom(DumpBuffer,DumpBuffer.Size);
-    DumpBuffer.Free;
-    if DeleteFile(DumpFileName+'.dds')=false then
-      FatalFileError('Unable to save DDS file. Call to DeleteFile(dds) failed.');
+        case TexFormat of
+        0: TexFormatParameter:='dxt1c';
+        1: TexFormatParameter:='dxt1a';
+        2: TexFormatParameter:='dxt3';
+        3: TexFormatParameter:='dxt5';
+        4: TexFormatParameter:='u1555';
+        5: TexFormatParameter:='u4444';
+        6: TexFormatParameter:='u565';
+        7: TexFormatParameter:='u8888';
+        8: TexFormatParameter:='u888';
+        9: TexFormatParameter:='u555';
+        10: TexFormatParameter:='l8';
+        11: TexFormatParameter:='a8';
+        end;
 
+        case Quality of
+        0: QualityParameter:='quick';
+        1: QualityParameter:='quality_normal';
+        2: QualityParameter:='quality_production';
+        3: QualityParameter:='quality_highest';
+        end;
+        FillChar(NVDXTStartupInfo, SizeOf(NVDXTStartupInfo), 0);
+        FillChar(NVDXTProcessInformation, SizeOf(NVDXTProcessInformation), 0);
+        NVDXTStartupInfo.cb:=SizeOf(NVDXTStartupInfo);
+        NVDXTStartupInfo.dwFlags:=STARTF_USESHOWWINDOW;
+        NVDXTStartupInfo.wShowWindow:=SW_HIDE+SW_MINIMIZE;
+        //FIXME: If you delete this, don't forget the implementation-link to QkApplPaths
+        if Windows.CreateProcess(nil, PChar(GetQPath(pQuArKDll)+'nvdxt.exe -file "'+DumpFileName+'.tga" -output "'+DumpFileName+'.dds" -'+TexFormatParameter+' -'+QualityParameter), nil, nil, false, 0, nil, PChar(GetQPath(pQuArKDll)), NVDXTStartupInfo, NVDXTProcessInformation)=false then
+          FatalFileError('Unable to save DDS file. Call to CreateProcess failed.');
+
+        //DanielPharos: This is kinda dangerous, but NVDXT should exit rather quickly!
+        if WaitForSingleObject(NVDXTProcessInformation.hProcess,INFINITE)=WAIT_FAILED then
+        begin
+          CloseHandle(NVDXTProcessInformation.hThread);
+          CloseHandle(NVDXTProcessInformation.hProcess);
+          FatalFileError('Unable to save DDS file. Call to WaitForSingleObject failed.');
+        end;
+
+        if CloseHandle(NVDXTProcessInformation.hThread)=false then
+          FatalFileError('Unable to save DDS file. Call to CloseHandle(thread) failed.');
+        if CloseHandle(NVDXTProcessInformation.hProcess)=false then
+          FatalFileError('Unable to save DDS file. Call to CloseHandle(process) failed.');
+
+      finally
+        if DeleteFile(DumpFileName+'.tga')=false then
+          FatalFileError('Unable to save DDS file. Call to DeleteFile(tga) failed.');
+      end;
+
+      //DanielPharos: Now let's read in that DDS file and be done!
+      DumpBuffer:=TFileStream.Create(DumpFileName+'.dds',fmOpenRead);
+      F.CopyFrom(DumpBuffer,DumpBuffer.Size);
+      DumpBuffer.Free;
+      if DeleteFile(DumpFileName+'.dds')=false then
+        FatalFileError('Unable to save DDS file. Call to DeleteFile(dds) failed.');
+
+    end
+    else
+      FatalFileError('Unable to save JPG file. No valid saving library selected.');
   end
   else
     inherited;

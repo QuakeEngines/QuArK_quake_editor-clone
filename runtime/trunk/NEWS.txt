@@ -15,6 +15,11 @@ $Id$
 6.6.0 Beta 2
 ============
 
+* [DanielPharos]: Fixed saving of paletted images padding bug, loading (and saving)
+          - images from non-compressed pack files, PCX file saving is now working in
+          - DevIL, fixed DDS saving of paletted images, added a bunch of DevIL settings,
+          - and re-enabled DevIL DDS file saving.
+
 * [DanielPharos]: Added a file version option to VTF file saving, and fixed a memory leak
           - and a bug causing non-alpha images to contain alpha after importing them.
           - Also fixed saving of paletted images as VTF files.

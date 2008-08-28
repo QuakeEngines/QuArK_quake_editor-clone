@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.22  2007/12/06 23:01:31  danielpharos
+Whole truckload of image-file-handling changes: Revert PCX file saving and fix paletted images not loading/saving correctly.
+
 Revision 1.21  2007/11/21 16:07:32  danielpharos
 Another bunch of hugh image fixes: everything should work again!
 
@@ -87,7 +90,6 @@ type
         protected
           class function FileTypeDevIL : DevILType; override;
           class function FileTypeFreeImage : FREE_IMAGE_FORMAT; override;
-          procedure LoadFileDevILSettings; override;
           procedure SaveFileDevILSettings; override;
           function LoadFileFreeImageSettings : Integer; override;
           function SaveFileFreeImageSettings : Integer; override;
@@ -145,12 +147,27 @@ begin
   Result:=FIF_JPEG;
 end;
 
-procedure QJpeg.LoadFileDevILSettings;
-begin
-end;
-
 procedure QJpeg.SaveFileDevILSettings;
+var
+  Setup: QObject;
+  Flag: Cardinal;
 begin
+  inherited;
+
+  Setup:=SetupSubSet(ssFiles, 'JPG');
+  try
+    case StrToInt(Setup.Specifics.Values['SaveFormatDevIL']) of
+    0: Flag:=IL_JFIF;
+    1: Flag:=IL_EXIF;
+    else
+      Flag:=IL_JFIF;
+    end;
+  except
+    Flag:=IL_JFIF;
+  end;
+
+  ilSetInteger(IL_JPG_SAVE_FORMAT, Flag);
+  CheckDevILError(ilGetError);
 end;
 
 function QJpeg.LoadFileFreeImageSettings : Integer;

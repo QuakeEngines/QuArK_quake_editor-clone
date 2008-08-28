@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.22  2008/08/28 10:10:36  danielpharos
+Fix saving paletted images, loading images from pack files and duplicate error messages.
+
 Revision 1.21  2008/05/24 19:41:52  danielpharos
 Check all call-definitions to DevIL and FreeImage to make sure all the variable types are correct
 
@@ -93,6 +96,8 @@ uses
 
 type
  QImage = class(QPixelSet)
+           private
+             procedure SetupDevILSettings;
            protected
              procedure FatalFileError(x:string);
              class function FileTypeDevIL : DevILType; virtual; abstract;
@@ -101,8 +106,8 @@ type
              procedure SaveFileDevIL(Info: TInfoEnreg1);
              procedure LoadFileFreeImage(F: TStream; FSize: Integer);
              procedure SaveFileFreeImage(Info: TInfoEnreg1);
-             procedure LoadFileDevILSettings; virtual; abstract;
-             procedure SaveFileDevILSettings; virtual; abstract;
+             procedure LoadFileDevILSettings; virtual;
+             procedure SaveFileDevILSettings; virtual;
              function LoadFileFreeImageSettings : Integer; virtual; abstract;
              function SaveFileFreeImageSettings : Integer; virtual; abstract;
              class function FormatName : String; virtual;
@@ -182,7 +187,7 @@ function TestConversionImages(var I: Integer{; Exclude: QImage}) : QImageClass;
 implementation
 
 uses QkPcx, QkBmp, QkTga, QkDDS, QkJpg, QkPng, QkSoF, QkVTF, TbPalette, qmath,
-     Quarkx, CCode, Undo, Travail, Logging;
+     Quarkx, CCode, Undo, Travail, Setup, Logging;
 
 {$R *.DFM}
 
@@ -269,6 +274,56 @@ begin
   Result:='*';
 end;
 
+procedure QImage.SetupDevILSettings;
+var
+  Setup: QObject;
+  Flag: Cardinal;
+begin
+  ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
+  CheckDevILError(ilGetError);
+  ilEnable(IL_ORIGIN_SET);
+  CheckDevILError(ilGetError);
+
+  Setup:=SetupSubSet(ssFiles, 'DevIL');
+  try
+    case StrToInt(Setup.Specifics.Values['MemSpeed']) of
+    0: Flag:=IL_DONT_CARE;
+    1: Flag:=IL_FASTEST;
+    2: Flag:=IL_LESS_MEM;
+    else
+      Flag:=IL_DONT_CARE;
+    end;
+  except
+    Flag:=IL_DONT_CARE;
+  end;
+  ilHint(IL_MEM_SPEED_HINT, Flag);
+  CheckDevILError(ilGetError);
+  
+  try
+    case StrToInt(Setup.Specifics.Values['Compression']) of
+    0: Flag:=IL_DONT_CARE;
+    1: Flag:=IL_USE_COMPRESSION;
+    2: Flag:=IL_NO_COMPRESSION;
+    else
+      Flag:=IL_DONT_CARE;
+    end;
+  except
+    Flag:=IL_DONT_CARE;
+  end;
+  ilHint(IL_COMPRESSION_HINT, Flag);
+  CheckDevILError(ilGetError);
+end;
+
+procedure QImage.LoadFileDevILSettings;
+begin
+  SetupDevILSettings;
+end;
+
+procedure QImage.SaveFileDevILSettings;
+begin
+  SetupDevILSettings;
+end;
+
 procedure QImage.LoadFileDevIL(F: TStream; FSize: Integer);
 const
   Spec1 = 'Image1=';
@@ -304,14 +359,11 @@ begin
   SetLength(RawBuffer, FSize);
   F.ReadBuffer(Pointer(RawBuffer)^, FSize);
 
+  LoadFileDevILSettings;
+
   ilGenImages(1, @DevILImage);
   CheckDevILError(ilGetError);
   ilBindImage(DevILImage);
-  CheckDevILError(ilGetError);
-
-  ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
-  CheckDevILError(ilGetError);
-  ilEnable(IL_ORIGIN_SET);
   CheckDevILError(ilGetError);
 
   if ilLoadL(FileTypeDevIL, Pointer(RawBuffer), FSize)=IL_FALSE then
@@ -556,6 +608,8 @@ begin
         PaddingDest:=0;
       end;
     end;
+
+    SaveFileDevILSettings;
 
     ilGenImages(1, @DevILImage);
     CheckDevILError(ilGetError);

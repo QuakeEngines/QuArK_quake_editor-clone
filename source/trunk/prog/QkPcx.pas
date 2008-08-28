@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.17  2008/04/05 09:25:45  danielpharos
+Fix a stupid bug.
+
 Revision 1.16  2008/03/29 15:34:21  danielpharos
 Build old PCX file loading code back in. DevIL and FreeImage were causing random trouble.
 
@@ -73,8 +76,6 @@ type
         protected
           class function FileTypeDevIL : DevILType; override;
           class function FileTypeFreeImage : FREE_IMAGE_FORMAT; override;
-          procedure LoadFileDevILSettings; override;
-          procedure SaveFileDevILSettings; override;
           function LoadFileFreeImageSettings : Integer; override;
           function SaveFileFreeImageSettings : Integer; override;
           class function FormatName : String; override;
@@ -141,14 +142,6 @@ end;
 class function QPcx.FileTypeFreeImage : FREE_IMAGE_FORMAT;
 begin
   Result:=FIF_PCX;
-end;
-
-procedure QPcx.LoadFileDevILSettings;
-begin
-end;
-
-procedure QPcx.SaveFileDevILSettings;
-begin
 end;
 
 function QPcx.LoadFileFreeImageSettings : Integer;

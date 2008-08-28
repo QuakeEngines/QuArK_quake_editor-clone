@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.430  2008/08/28 10:12:30  danielpharos
+//PCX file saving is now working in DevIL.
+//
 //Revision 1.429  2008/08/26 16:47:12  danielpharos
 //Moved Call of Duty 1 to its own gamemode
 //
@@ -3718,6 +3721,12 @@ QQRKSRC1
         TextureEmptyNameValid = "1"
         Form = "FilesTextures"
       }
+      DevIL:config =
+      {
+        MemSpeed = "0"
+        Compression = "0"
+        Form = "FilesDevIL"
+      }
       BMP:config =
       {
         LoadLibrary = "FreeImage"
@@ -3728,15 +3737,17 @@ QQRKSRC1
       {
         LoadLibrary = "DevIL"
         SaveLibrary = "NVDXT"
-        SaveFormat  = "2"
-        SaveFormatA = "2"
-        SaveQuality = "2"
+        SaveFormatNVDXT  = "2"
+        SaveFormatANVDXT = "2"
+        SaveQualityNVDXT = "2"
+        SaveFormatDevIL = "0"
         Form = "FilesDDS"
       }
       JPG:config =
       {
         LoadLibrary = "FreeImage"
         SaveLibrary = "FreeImage"
+        SaveFormatDevIL = "0"
         LoadQualityFreeImage = "2"
         SaveQualityFreeImage = "4"
         SaveProgressiveFreeImage = ""
@@ -7741,6 +7752,27 @@ QQRKSRC1
       TextureNameCheck: = {Typ="X" Txt="Texture name check" Cap="Enabled" Hint = "Enables the checking of texture names to check for texture integrity."}
       TextureEmptyNameValid: = {Typ="X" Txt="Empty texture name is always valid" Cap="Enabled" Hint = "Treats empty texture names as always valid."}
     }
+    FilesDevIL:form =
+    {
+      Style = "7"
+      sep: = {Typ="S" Txt="---- DevIL Settings ----"}
+      MemSpeed: =
+      {
+        Txt="Memory speed"
+        Typ="CL"
+        Items  = "Don't care" $0D "Fastest" $0D "Less memory"
+        Values = "0" $0D "1" $0D "2"
+        Hint="Controls the memory used vs. speed tradeoff."
+      }
+      Compression: =
+      {
+        Txt="Compression"
+        Typ="CL"
+        Items  = "Don't care" $0D "Use compression" $0D "No compression"
+        Values = "0" $0D "1" $0D "2"
+        Hint="Specifies that compression should be used when storing textures in memory, if possible."
+      }
+    }
     FilesBMP:form =
     {
       Style = "7"
@@ -7778,12 +7810,12 @@ QQRKSRC1
       {
         Txt="Select library for saving DDS files"
         Typ="CL"
-        Items  = "NVDXT"
-        Values = "NVDXT"
+        Items  = "NVDXT" $0D "DevIL"
+        Values = "NVDXT" $0D "DevIL"
         Hint="Select the library QuArK will use to save files of this type."
       }
-      sep: = {Typ="S" Txt="---- Advanced Saving Settings ----"}
-      SaveFormat: =
+      sep: = {Typ="S" Txt="---- Advanced NVDXT Settings ----"}
+      SaveFormatNVDXT: =
       {
         Typ = "CL"
         Txt = "Format of exported non-alpha DDS textures"
@@ -7801,8 +7833,9 @@ QQRKSRC1
              $0D "U555"
              $0D "L8"
              $0D "A8"
+        Hint = "The format the DDS texture will be saved in when using the NVDXT library"
       }
-      SaveFormatA: =
+      SaveFormatANVDXT: =
       {
         Typ = "CL"
         Txt = "Format of exported alpha DDS textures"
@@ -7820,8 +7853,9 @@ QQRKSRC1
              $0D "U555"
              $0D "L8"
              $0D "A8"
+        Hint = "The format the DDS texture with alpha will be saved in when using the NVDXT library"
       }
-      SaveQuality: =
+      SaveQualityNVDXT: =
       {
         Typ = "CL"
         Txt = "Quality of exported DDS textures"
@@ -7830,6 +7864,20 @@ QQRKSRC1
              $0D "Normal"
              $0D "Production"
              $0D "Highest"
+        Hint = "The quality the DDS texture will be saved in when using the NVDXT library"
+      }
+      sep: = {Typ="S" Txt="---- Advanced DevIL Settings ----"}
+      SaveFormatDevIL: =
+      {
+        Typ = "CL"
+        Txt = "Format of exported alpha DDS textures"
+        Values =  "0"$0D "1"$0D "2"$0D "3"$0D "4"
+        Items = "DXT1"
+             $0D "DXT2"
+             $0D "DXT3"
+             $0D "DXT4"
+             $0D "DXT5"
+        Hint = "The format the DDS texture will be saved in when using the DevIL library"
       }
     }
     FilesJPG:form =
@@ -7852,6 +7900,16 @@ QQRKSRC1
         Values = "DevIL" $0D "FreeImage"
         Hint="Select the library QuArK will use to save files of this type."
       }
+      sep: = {Typ="S" Txt="---- Advanced DevIL Settings ----"}
+      SaveFormatDevIL: =
+      {
+        Typ = "CL"
+        Txt = "Saving format"
+        Values =  "0"$0D "1"
+        Items = "JFIF"
+             $0D "EXIF"
+        Hint = "The format the JPG texture will be saved in when using the DevIL library"
+      }
       sep: = {Typ="S" Txt="---- Advanced FreeImage Settings ----"}
       LoadQualityFreeImage: =
       {
@@ -7861,7 +7919,7 @@ QQRKSRC1
         Items = "Default"
              $0D "Fast"
              $0D "Accurate"
-        Hint = "The quality the JPG texture will be loaded with when using the FreeImage library"
+        Hint = "The quality the JPG texture will be loaded in when using the FreeImage library"
       }
       SaveQualityFreeImage: =
       {
@@ -7874,7 +7932,7 @@ QQRKSRC1
              $0D "Normal (50:1)"
              $0D "Good (75:1)"
              $0D "Superb (100:1)"
-        Hint = "The quality the JPG texture will be saved with when using the FreeImage library"
+        Hint = "The quality the JPG texture will be saved in when using the FreeImage library"
       }
       SaveProgressiveFreeImage: = { Typ="X" Txt="Save Progressive" Cap="Enabled" Hint="Save the JPG texture as a progressive image."}
     }
@@ -7998,6 +8056,7 @@ QQRKSRC1
              $0D "I32F"
              $0D "RGB323232F"
              $0D "RGBA32323232F"
+        Hint = "The format the VTF texture will be saved in"
       }
       SaveFormatA: =
       {
@@ -8035,6 +8094,7 @@ QQRKSRC1
              $0D "I32F"
              $0D "RGB323232F"
              $0D "RGBA32323232F"
+        Hint = "The format the VTF texture with alpha will be saved in"
       }
       SaveVersion: =
       {
@@ -8046,6 +8106,7 @@ QQRKSRC1
              $0D "7.2"
              $0D "7.3"
              $0D "7.4"
+        Hint = "The file version the VTF texture will be saved in"
       }
     }
 
