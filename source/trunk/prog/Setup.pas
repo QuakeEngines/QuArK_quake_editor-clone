@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.70  2008/08/09 19:40:28  danielpharos
+Translated a function call
+
 Revision 1.69  2008/08/09 19:31:17  danielpharos
 Fix Setup.qrk possibly not being created right
 
@@ -419,7 +422,7 @@ implementation
 uses QkMapObjects, Travail, Game, Console, QkGroup, QkForm, Qk1,
      ToolBox1, Toolbar1, QkQuakeCtx, Quarkx, Python, PyMapView,
      PyObjects, PyForms, Qk3D, EdSceneObject, QkObjectClassList, QkApplPaths,
-     ExtraFunctionality;
+     ExtraFunctionality{$IFDEF Debug}, Logging{$ENDIF};
 
 const
  SetupFileName    = 'Setup.qrk';
@@ -982,11 +985,19 @@ begin
   end
  else
   Result:={Info^.}AddOns;
- Result.AddRef(+1); {DECKER - FIXME - Possible cause of "double Result.AddRef(+1)" here?}
+ Result.AddRef(+1);
+ //DECKER - Possible cause of "double Result.AddRef(+1)" here?
+ //DanielPharos: No; we don't want the AddOns to be deleted after the caller
+ //is done with them, so we double AddRef when the object is created. This
+ //extra reference is removed below, in CloseAddonsList.
 end;
 
 procedure CloseAddonsList;
 begin
+ {$IFDEF Debug}
+ if AddOns.PythonObj.ob_refcnt<>1 then
+   Log(LOG_WARNING, 'CloseAddonsList: ob_refcnt<>1 !');
+ {$ENDIF}
  AddOns.AddRef(-1);
  AddOns:=Nil;
  UpdateAddOnsContent;
