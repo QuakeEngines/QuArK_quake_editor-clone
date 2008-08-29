@@ -48,7 +48,7 @@ PackageDCPOutputDir=
 SearchPath=.;.\components;.\components\direct3d;.\components\zip;.\Prog;.\Prog\Model;.\3dfx;$(DELPHI)\Source\Samples;$(DELPHI)\Lib
 Packages=VCL50;VCLX50;VCLSMP50;QRPT50;VCLDB50;VCLBDE50;ibevnt50;VCLDBX50;TEEUI50;TEEDB50;TEE50;TEEQR50;VCLIB50;VCLIE50;INETDB50;INET50;NMFAST50;dclocx50;dclaxserver50;vcl;vclx;rtl
 Conditionals=
-DebugSourceDirs=$(DELPHI)\Lib\Debug;.;.\components;.\components\direct3d;.\components\zip;.\Prog;.\Prog\Model;.\Prog\Python;.\3dfx
+DebugSourceDirs=$(DELPHI)\Lib\Debug;.;.\components;.\components\direct3d;.\components\zip;.\Prog;.\Prog\Model;.\Python;.\3dfx
 UsePackages=0
 [Parameters]
 RunParams=
@@ -60,9 +60,9 @@ DebugCWD=
 IncludeVerInfo=1
 AutoIncBuild=0
 MajorVer=6
-MinorVer=5
+MinorVer=6
 Release=0
-Build=9
+Build=1
 Debug=0
 PreRelease=1
 Special=0
@@ -84,7 +84,7 @@ Comments=Original Coding by Armin Rigo
 Homepage=http://www.sourceforge.net/projects/quark
 [HistoryLists\hlDebugSourcePath]
 Count=1
-Item0=$(DELPHI)\Lib\Debug;.;.\components;.\components\jpeg;.\components\PNG;.\components\zip;.\Prog;.\Prog\Model;.\Prog\Python;.\3dfx
+Item0=$(DELPHI)\Lib\Debug;.;.\components;.\components\zip;.\Prog;.\Prog\Model;.\Python;.\3dfx
 [HistoryLists\hlUnitAliases]
 Count=1
 Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
