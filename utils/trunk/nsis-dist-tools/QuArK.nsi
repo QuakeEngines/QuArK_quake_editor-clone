@@ -45,6 +45,10 @@ InstallDir "$PROGRAMFILES\QuArK 6.6.0 Beta 1"
 InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show
 ShowUnInstDetails show
+#RequestExecutionLevel admin  #FIXME: Needed on Windows Vista. We should change the script to only need 'user'
+#SetShellVarContext: #FIXME: Start using this!
+#FIXME: If we set any reg-keys for QuArK, we need to switch to SetRegView 32!
+#XPStyle on #FIXME: Do we want this?
 
 ; MUI Settings
 !define MUI_ABORTWARNING
@@ -175,11 +179,15 @@ LangString TEXT_UNINSTALL3 ${LANG_NORWEGIAN} "$(^Name) was successfully removed 
 LangString TEXT_UNINSTALL3 ${LANG_RUSSIAN} "$(^Name) was successfully removed from your computer."
 LangString TEXT_UNINSTALL3 ${LANG_ARABIC} "$(^Name) was successfully removed from your computer."
 LangString TEXT_UNINSTALL3 ${LANG_TRADCHINESE} "$(^Name) was successfully removed from your computer."
+
+#LicenseLangString #FIXME: Start using this
 ; MUI end ------
 
 Section "$(TEXT_SEC01_TITLE)" SEC01
   SetOutPath "$INSTDIR\addons\6DX"
   File "${BUILDDIR}\addons\6DX\*.*"
+  SetOutPath "$INSTDIR\addons\CoD1"
+  File "${BUILDDIR}\addons\CoD1\*.*"
   SetOutPath "$INSTDIR\addons\Crystal_Space"
   File "${BUILDDIR}\addons\Crystal_Space\*.*"
   SetOutPath "$INSTDIR\addons\Doom_3"
@@ -284,6 +292,7 @@ Section -Post
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "UninstallString" "$INSTDIR\uninst.exe"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayIcon" "$INSTDIR\QuArK.exe"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayVersion" "${PRODUCT_VERSION}"
+  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "InstallLocation" "$INSTDIR"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "Publisher" "${PRODUCT_PUBLISHER}"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "URLInfoAbout" "${PRODUCT_WEB_SITE}"
 SectionEnd
@@ -320,6 +329,7 @@ Section Uninstall
   Delete "$INSTDIR\addons\EF2\*.*"
   Delete "$INSTDIR\addons\Doom_3\*.*"
   Delete "$INSTDIR\addons\Crystal_Space\*.*"
+  Delete "$INSTDIR\addons\CoD1\*.*"
   Delete "$INSTDIR\addons\6DX\*.*"
   Delete "$INSTDIR\addons\*.*"
   Delete "$INSTDIR\dlls\*.*"
@@ -329,11 +339,6 @@ Section Uninstall
   Delete "$INSTDIR\plugins\*.*"
   Delete "$INSTDIR\quarkpy\*.*"
   Delete "$INSTDIR\*.*"
-
-
-  Delete "$SMPROGRAMS\QuArK\*.*"
-  Delete "$DESKTOP\QuArK.lnk"
-
 
   RMDir "$INSTDIR\addons\WildWest"
   RMDir "$INSTDIR\addons\Warsow"
@@ -366,6 +371,7 @@ Section Uninstall
   RMDir "$INSTDIR\addons\EF2"
   RMDir "$INSTDIR\addons\Doom_3"
   RMDir "$INSTDIR\addons\Crystal_Space"
+  RMDir "$INSTDIR\addons\CoD1"
   RMDir "$INSTDIR\addons\6DX"
   RMDir "$INSTDIR\addons"
   RMDir "$INSTDIR\dlls"
@@ -375,8 +381,10 @@ Section Uninstall
   RMDir "$INSTDIR\plugins"
   RMDir "$INSTDIR\quarkpy"
   RMDir "$INSTDIR"
-  RMDir "$SMPROGRAMS\QuArK"
 
+  Delete "$SMPROGRAMS\QuArK\*.*"
+  RMDir "$SMPROGRAMS\QuArK"
+  Delete "$DESKTOP\QuArK.lnk"
 
   DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
   DeleteRegKey HKLM "${PRODUCT_DIR_REGKEY}"
