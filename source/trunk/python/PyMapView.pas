@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.42  2008/05/27 15:09:55  danielpharos
+Fixed remaining of Python errors getting lost
+
 Revision 1.41  2008/02/27 00:08:24  danielpharos
 Shaders are legal view.backgroundimages too.
 
@@ -2858,9 +2861,12 @@ begin
     try
      if ViewMode<>vmWireframe then
       begin
-       DC:=Canvas.Handle;
+       DC:=GetDC(Handle);
+//@
+//       DC:=Canvas.Handle;
        Scene.SetViewWnd(Handle);
        Scene.SetViewDC(DC);
+//       Scene.SetViewDC(0);
        if Drawing and dfRebuildScene <> 0 then
         begin
          if Drawing and dfNoGDI = 0 then
@@ -2882,6 +2888,8 @@ begin
         end
        else
         Scene.Copy3DView;
+       ReleaseDC(Handle, DC);
+       //@
       end;
     except
      on E: Exception do
@@ -2910,7 +2918,7 @@ begin
   if PyControlF(self)^.QkControl<>Nil then
    with PyControlF(self)^.QkControl as TPyMapView do
     begin
-     mode:=0;            {DanielPharos: Gotta change all of this!!! Separate fullscreen option!}
+     mode:=0;  //FIXME: Gotta change all of this!!! Separate fullscreen option!
      if mode>=0 then
       if ResetFullScreen(mode>0) then
        returnvalue:=1;
@@ -2924,10 +2932,29 @@ begin
  end;
 end;
 
+function mInvalidateRect(self, args: PyObject) : PyObject; cdecl;
+var
+ P1, P2: TPoint;
+ R: TRect;
+begin
+  Result:=Nil;
+ try
+  if not PyArg_ParseTupleX(args, 'iiii', [@P1.X, @P1.Y, @P2.X, @P2.Y]) then
+   Exit;
+  R.TopLeft:=P1;
+  R.BottomRight:=P2;
+  InvalidateRect(TWinControl(PyControlF(self)^.QkControl).Handle, @R, false);
+  Result:=PyNoResult;
+ except
+  EBackToPython;
+  Result:=Nil;
+ end;
+end;
+
  {------------------------}
 
 const
- MethodTable: array[0..13] of TyMethodDef =
+ MethodTable: array[0..14] of TyMethodDef =
   ((ml_name: 'proj';            ml_meth: mProj;            ml_flags: METH_VARARGS),
    (ml_name: 'space';           ml_meth: mSpace;           ml_flags: METH_VARARGS),
    (ml_name: 'vector';          ml_meth: mVector;          ml_flags: METH_VARARGS),
@@ -2941,7 +2968,8 @@ const
    (ml_name: 'drawgrid';        ml_meth: mDrawGrid;        ml_flags: METH_VARARGS),
    (ml_name: 'setrange';        ml_meth: mSetRange;        ml_flags: METH_VARARGS),
    (ml_name: 'setprojmode';     ml_meth: mSetProjMode;     ml_flags: METH_VARARGS),
-   (ml_name: 'full3Dview';      ml_meth: mFull3Dview;      ml_flags: METH_VARARGS));
+   (ml_name: 'full3Dview';      ml_meth: mFull3Dview;      ml_flags: METH_VARARGS),
+   (ml_name: 'invalidaterect';  ml_meth: mInvalidateRect;  ml_flags: METH_VARARGS));
 
 function GetMapViewObject(self: PyObject; attr: PChar) : PyObjectPtr;
 begin
