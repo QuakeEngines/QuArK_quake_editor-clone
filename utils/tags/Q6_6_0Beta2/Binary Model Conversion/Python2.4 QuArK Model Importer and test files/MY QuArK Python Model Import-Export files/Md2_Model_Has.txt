@@ -1,0 +1,37 @@
+
+
+Header Information
+ident:  844121161
+version:  8
+skin width:  256
+skin height:  256
+frame size:  2812
+number of skins:  1
+number of texture coordinates:  1408
+number of faces:  1060
+number of frames:  198 (0-197)
+number of vertices:  693
+offset skins:  68
+offset texture coordinates:  132
+offset faces:  5764
+offset frames:  18484
+
+MD2 Skin
+skin name:  models/alien/rust.pcx
+
+Mesh Vertex Data = xrange(693) md2.num_vertices
+
+UV Data = xrange(1408) md2.num_tex_coords
+
+Faces Data = xrange(1060) md2.num_faces
+1st 3 sets = vertexes, last set = face uv coords
+
+Frames:fg Data = xrange(198) md2.num_frames
+
+
+
+
+
+
+
+
