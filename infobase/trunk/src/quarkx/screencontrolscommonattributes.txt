@@ -77,6 +77,13 @@ Forces a control to display itself again. For map views in textured mode, this a
 </td></tr>
 
 <tr><td class="doccode">
+invalidaterect<br>
+(ULx, ULy, LRx, LRy)
+</td><td>
+Forces a control (view area) to display (redraw) itself again within the given max. and min. rectangle area positions<br>(upper left x , upper left y , lower right x , lower right y).
+</td></tr>
+
+<tr><td class="doccode">
 repaint()
 </td><td>
 Repaint the control immediately.
