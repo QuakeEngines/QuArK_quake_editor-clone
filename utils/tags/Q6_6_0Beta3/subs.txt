@@ -1,0 +1,460 @@
+
+# QTexture1 QTexture_Q1
+# QTexture2 QTexture_Q2
+# QM8 QTexture_HR2
+# QTextureHL QTexture_HL
+# QTextureHL1 QTexture_HL1
+# QTextureSin QTexture_SIN
+# QM32 QImage_SOF
+# QPcx QImage_PCX
+# QBmp QImage_BMP
+# QTga QImage_TGA
+# QJpeg QImage_JPG
+
+#       #Done up to QkMdl and including
+#       Enregistrer Save
+#       TInfoEnreg1 TSaveInfo
+#       GetTvParent GetTreeViewParent
+#       SetTvParent SetTreeViewParent
+#       TEtatObjet TObjectState
+#       EtatObjet ObjectState
+#       TvParent TreeViewParent
+#       SuivantDansGroupe FollowingInGroup
+#       LibererMemoireFiches FreeMemoryFiles
+#       LibererMemoireTextures FreeMemoryTextures
+#       LibererMaxMemoire FreeMaxMemory
+#       Enfant Child
+#       AfficherObjet DisplayObject
+#       OuvrirMaximum OpenMaximum
+#       ElSousFiche TheSubFile
+#       Fiche AFile
+#       Dessiner Draw
+#       Negatif NegativeSet
+#       #NB Negative Conflicted with a property in map objects
+#       PinceauNoir BlackBrush
+#       PinceauSelection SelectedBrush
+#       ResultatAnalyseClic AnalyzeResultClick
+#       Liste List
+#       Deplacement Displacement
+#       DessinerBBox DrawBBox
+#       TCouleursTraits TColorTraits
+#       CouleursTraits ColorTraits
+#       TesCouleurs UserColors
+#       TInfoDessiner TDrawInfo
+#       TMatriceTransformation TMatrixTransformation
+#       TModeDeplacement TDisplacementMode
+#       mdVecteurAngles mdVectorAngles
+#       mdDeplacement mdDisplacement
+#       esSelGroupe esSelectedGroup
+#       Reel TFloat
+#       #DECKER the above should really be Double or Single, but thats too dangerous due to Double=8bytes and Single=4bytes.
+#       #       The "TFloat" because "Float" could be confusing, when/if porting to C/C++
+#       PasGrille NotGrid
+#       TModeDessin TDrawingMode
+#       SourceTaille SourceSize
+#       mdCouleurFixe mdColorFixed
+#       mdDeplacementGrilleFort mdStrongDisplacementGrid
+#       mdDeplacementGrille mdDisplacementGrid
+#       mdLineaire mdLinear
+#       mdImageDuplicatorGrille mdImageDuplicatorGrid
+#       mdParcourirSel mdTraversalSelected
+#       bmpTaillePalette bmpPaletteSize
+#       TailleImage ImageSize
+#       esCouleurGrise esGreyColor
+#       PinceauGris GreyBrush
+#       Origine Origin
+#       EnregistrerBsp1 SaveBsp1
+#       EnregistrerBsp2 SaveBsp2
+#       ReLoadStr1ucture ReLoadStructure
+#       wmMessageInterne wmInternalMessage
+#       Entete Header
+#       Entrees Entry
+#       OperationDansScene OperationInScene
+#       NiveauAction NewAction
+#       FinTravail WorkEnd
+#       Fin theEnd
+#       Acces Access
+#       AccesRec AccessRec
+#       AnnuleUndos CancelUndo
+#       AjouterElement AddElement
+#       ToutChargerAuto AutoLoadAll
+#       Etat State
+#       TailleTotale TotalSize
+#       TEnteteFichierQ TFileStateQ
+#       SelectionVide EmptySelection
+#       AncienControl OldControl
+#       NouveauNumero NewNumber
+#       ListeActions ActionList
+#       FinAction EndAction
+#       InsererDansGroupe1 InsertIntoGroup1
+#       Interne Internal
+#       AccepteDestination AcceptDestination
+#       NoTexte NoText
+#       NomFichier Filename
+#       ProgresTravail WorkProgress
+#       DebutTravail WorkBegin
+#       DebutAction BeginAction
+#       EffacerSelection EraseSelection
+#       InsererAvant InsertInFront
+#       LireEnteteFichierStd ReadStandardFileHeading
+#       EcrireEnteteFichierStd WriteStandardFileHeading
+#       EnregistrerDansFichier SaveInFile
+#       LienFichierQObject QObjectFileLink
+#       ChargerObjTexte ConstructObjsFromText
+#       EcrireObjTexte WriteObjectText
+#       VersionFichierQ FileVersionQ
+#       TailleEnteteMin MinimumStateSize
+#       VersionSourceQ SourceVersionQ
+#       ChargerCommeTexte LoadTextComment
+#       #Should above be ReadTextComment ?????
+#       Separateurs Seperators
+#       ConstruireQObject ConstructQObject
+#       TSymbole TSymbol
+#       Symbole Symbol
+#       sTexteInattendu StringToken
+#       sTexteInAttendu StringToken
+#       sChaine QuoteDelimintedStringToken
+#       sValeur FloatToken
+#       OuvrirListeEntites OpenEntityList
+#       CouleurDessin DrawingColor
+#       BaseNombre BaseNumber
+#       AnalyseClic AnalyzeClick
+#       InfoClic InfoClick
+#       ModeDeplacement DisplacementMode
+#       Identite Identity
+#       Axe Axis
+#       MultiplieMatrices MultiplyMatrixes
+#       Matrice Matrix
+#       Matrices Matrixs
+#       MatriceInverse MatrixInverse
+#       TVect TVector
+#       Taille1 Size1
+#       VecteursNormaux Normals
+#       ControleSelection SelectionControl
+#       EntiteBezier BezierEntity
+#       LireTexte ReadText
+#       Lire Read
+#       Nouveaux New
+#       NoLigne NoLine
+#       Prochain Next
+#       #Ac ActiveControl
+#       ModeJeu PlayMode
+#       Anciens Old
+#       SauverSpec SaveSpec
+#       #should it be SaveSpecifics ????
+#       Attendu Waited
+#       TexteInattendu UnexpectedText
+#       wp_AfficherInfos wp_DisplayInfos
+#       wp_AfficherObjet wp_DisplayObject
+#       wp_TailleScrollBox wp_SizeScrollBox
+#       wp_RestaureFocus wp_RestoreFocus
+#       PosteMessageFiches PostMessageCard
+#       EnvoieMessageFiches SendMessageCard
+#       TailleMaximaleEcranX MaximumScreenSizeX
+#       TailleMaximaleEcranY MaximumScreenSizeY
+#       SetNomTex SetTexName
+#       GetNomTex GetTexName
+#       #Should above read Set/GetTextureName ???
+#       TailleBaseSurface BaseSurfaceSize
+#       CentreSurface SurfaceCenter
+#       AnalyseClicFace AnalyzeFaceClick
+#       DessinPolygoneFace DrawPolygonFace
+#       EchelleTexture ScaleTexture
+#       AjouteFace AddFace
+#       EnumAretes EnumEdges
+#       Retourner TurnOver
+#       AjusterNormale AdjustNormal
+#       RechercheAdjacents SeekAdjacents
+#       InterieurArrete InteriorEdge
+#       asDeplace1 asDisplace1
+#       asModifie asModify
+#       asAjoute asAdd
+#       asDeplace2 asDisplace2
+#       Normale Normal
+#       NoAretes NoEdges
+#       rien nothing
+#       Parcourir Traverse
+#       Facteur Factor
+#       sNomTex sTextureName
+#       ChargerFin EndLoad
+#       TailleRestante RestoreSize
+#       wm_MessageInterne wm_InternalMessage
+#
+#       #DECKER the following for QPAcc.PAS
+#       tInconnu tVoid
+#       tStr tString
+#       tReel tNumValue
+#       tVecteur tVector
+#       tPtr tPointer
+#       tObjData tObjData
+#       tFrPtr tFrPointer
+#       symInconnu symUnknown
+#       symDeuxPoints symColon
+#       symPointVirgule symSemiColon
+#       symPoint symPeriod
+#       symAffecte symAssign
+#       symVirgule symComma
+#       symPlus symAdd
+#       symMoins symSubtract
+#       symFois symMultiply
+#       symDivise symDivide
+#       symLogOr symLogicalOr
+#       symLogAnd symLogicalAnd
+#       symEgal symEqual
+#       symPlusPetit symLessThan
+#       symPlusGrand symGreaterThan
+#       symPlusPetitOuEgal symLessOrEqualTo
+#       symPlusGrandOuEgal symGreaterOrEqualTo
+#       symAccolade1 symCurlyBracketOpen
+#       symAccolade2 symCurlyBracketClose
+#       symParenthese1 symBracketOpen
+#       symParenthese2 symBracketClose
+#       symReel symNumValue
+#       symChaine symChain
+#       symVecteur symVector
+#       symCrochet1 symSquareBracketOpen
+#       symCrochet2 symSquareBracketClose
+#
+#       #TAjScene
+#       #Polyedres Polygons Polyhedras ????
+#       #TPolyedre
+#       #SauverTextePolyedre SavePoly???Text
+#       #Suivant AccordingTo
+#       #PTableauFSommets P??Sommets??Table
+#       #TTableauFSommets
+#       #PTamponAretes PEdgeBuffer or is it PBufferEdge or perhasp ExteriorEdge?
+#       #TTamponAretes TEdgeBuffer or is it TBufferEdge
+#       #MaxFSommets
+#       #NbAretes2
+#       #DetruireSommets
+#       #ConstruireSommets1 Construct...
+#       #ConstruireReduire ConstructReduction??????
+#       #ConstruireSommets Construct...
+#       #CentrePolyedre Poly???Center
+#       #ListePolyedres Poly???List
+#       #Sommet
+#       #nSommets
+#       #TPolyedre TPolyhedron ??? But they are equated .. why ???
+#       #PolyedreRencontrePolyedre Turn Poly???OverPoly???
+#       #SommetDeFace OfFace ????
+#       #FaceRencontrePolyedre
+#       #FaceRencontreFace
+#       #PolyedreNonVide Poly???NotEmpty
+#       #Arriere
+#       #Concerne
+#       #CylindreDeFace
+#       #SoustractionPolyedre Poly???Subtraction
+#       #SoustraitPolyMax
+#       #Ecart
+#       #Moitie1
+#       #PSommetEx
+#       #TSommetEx
+#       #EPolyedreInvalide InvalidPoly????
+#       #ConstruirePolyedres ConstructPoly???
+#       #asRetire
+#       #ListeSommets
+#       #PolyedreNonVide1
+#       #PolyedreNonVide
+#       #Moitie2
+#       #Granularite
+#       #Lu
+#       #Binaire
+#       #NonBinaire
+#       #Guillemet
+#       #Copier Copy
+#       #DeplacerIci1
+#       #El
+#       #RegleOrigine
+#       #Juste13 ???
+#       #FFiche
+#       #Racine
+#       #ObtenirFenetre
+#       #OuvrirDansFenetre ToOpenIn *Fenetre* ??????
+#       #Dec ???
+#       #CuttedNodes ????
+#       #ControlerEtatNoeud Control State Node ?????
+#       #CollerImage To Stick Image ?????
+#       #NomClasseEnClair Name Classifies In Light ????
+#       #OuvrirFenetre
+#       #ConstruirePolyedres ConstructPolygons ??????????
+#       #ModeAff
+#       #AncienSel LastSelection ????
+#       #MAJAffichage MaximiseDisplay ????????
+#       #OpDansScene OperationInScene ?????????????
+#       #ListePolyedres ListPolygons/Polyhedras ????????????????
+#       #PreDessinerSel PreDraw?????
+#       #ChercheExtremites SearchExtremities?????
+#       #Taille Size
+#       #mdLineaireCompat mdLinear????
+#       #smSousSelVide Under empty selection ?????
+#       #SoustractionPolyedre PolyhedralSubtraction ???
+
+#---DONE---
+#Valeur NumericValue
+#Valeur1 NumericValue1
+#OuvrirListeEntites ReadEntityList
+#Separateurs cSeperators
+#sTexteInattendu sStringToken
+#sChaine sStringQuotedToken
+#sValeur sNumValueToken
+#sNomTex sTokenForcedToString
+#sParenthese1 sBracketLeft
+#sParenthese2 sBracketRight
+#TexteInattendu ReadStringToken
+#sAccolade1 sCurlyBracketLeft
+#sAccolade2 sCurlyBracketRight
+#sSquareBracketOpen sSquareBracketLeft
+#sSquareBracketClose sSquareBracketRight
+#LireTexte ReadSymbolForceToText
+#Lire ReadSymbol
+#LireValeurs ReadValues
+#LireEntree ReadEntry
+#LireReel ReadNumValue
+#LireVecteur ReadVector
+#LireReelEx ReadNumValueEx
+#LireVect ReadVect
+#LireVect5 ReadVect5
+#TSymbole TSymbols
+#Symbole SymbolType
+#tInconnu tVoid
+#tStr tString
+#tReel tNumValue
+#tVecteur tVector
+#tPtr tPointer
+#tFrPtr tFrPointer
+#symInconnu symUnknown
+#symDeuxPoints symColon
+#symPointVirgule symSemiColon
+#symPoint symPeriod
+#symAffecte symAssign
+#symVirgule symComma
+#symPlus symAdd
+#symMoins symSubtract
+#symFois symMultiply
+#symDivise symDivide
+#symLogOr symLogicalOr
+#symLogAnd symLogicalAnd
+#symEgal symEqual
+#symPlusPetit symLessThan
+#symPlusGrand symGreaterThan
+#symPlusPetitOuEgal symLessOrEqualTo
+#symPlusGrandOuEgal symGreaterOrEqualTo
+#symAccolade1 symCurlyBracketLeft
+#symAccolade2 symCurlyBracketRight
+#symParenthese1 symBracketLeft
+#symParenthese2 symBracketRight
+#symReel symNumValue
+#symChaine symChain
+#symVecteur symVector
+#symCrochet1 symSquareBracketLeft
+#symCrochet2 symSquareBracketRight
+
+#TEnteteWad TWadHeader
+#NbEntrees NoOfFileEntries
+#PEntreeRep PWadFileRec
+#TEntreeRep TWadFileRec
+#OuvrirFenetre OpenWindow
+#ObtenirFenetre ObtainWindow
+#EtatObjet ObjectState
+#OuvrirDansFenetre OpenInWindow
+#OpDansScene OperationInScene
+#LibererMemoireTextures FreeNonVisibleTextures
+#LibererMemoireFiches FreeNonVisibleForms
+#LibererMaxMemoire FreeNonUsedObjects
+#PTravail PProgressIndicator
+#TTravail TProgressIndicator
+#TravailCnt ProgressIndicatorCount
+#DebutTravail ProgressIndicatorStart
+#ChangeMaxTravail ProgressIndicatorChangeMax
+#ProgresTravail ProgressIndicatorIncrement
+#FinTravail ProgressIndicatorStop
+#CaracFichDOS cDOSFilenameValidChars
+
+#ChargerCommeTexte LoadObjsFromText
+#NomFichier Filename
+#NomFichierSortiePak FindNextAvailablePakFilename
+#EnteteObjTexte CheckFileSignature
+#SignatureFichierQ c_FileSignatureQQRK
+#VersionFichierQ c_FileVersionBinary
+#VersionSourceQ c_FileVersionText
+#TailleEnteteMin c_FileSignatureSize
+#TEnteteFichierQ TFileHeaderBinary
+#Entete Header
+#TailleTotale TotalFileLength
+#Reel TDouble
+#TailleImage ImageSize
+#esCouleurGrise esGreyColor
+#PinceauGris GreyBrush
+#TCouleursTraits TColorTraits
+#CouleursTraits ColorTraits
+#TesCouleurs UserColors
+#TInfoDessiner TDrawInfo
+#TMatriceTransformation TMatrixTransformation
+#TModeDeplacement TDisplacementMode
+#mdVecteurAngles mdVectorAngles
+#mdDeplacement mdDisplacement
+#esSelGroupe esSelectedGroup
+#PinceauNoir BlackBrush
+#PinceauSelection SelectedBrush
+#mdCouleurFixe mdColorFixed
+#mdDeplacementGrilleFort mdStrongDisplacementGrid
+#mdDeplacementGrille mdDisplacementGrid
+#mdLineaire mdLinear
+#mdImageDuplicatorGrille mdImageDuplicatorGrid
+#mdParcourirSel mdTraversalSelected
+#LireEnteteFichierStd ReadStandardFileHeading
+#EcrireEnteteFichierStd WriteStandardFileHeading
+
+#wmMessageInterne wmInternalMessage
+#wm_MessageInterne wm_InternalMessage
+#wp_RestaureFocus wp_RestoreFocus
+#wp_TailleScrollBox wp_SizeScrollBox
+#tm_DoubleClic tm_DoubleClick
+
+#Enregistrer SaveFile
+#Enregistrer1 SaveFile1
+#EnregistrerDansFichier SaveInFile
+#EnregistrerCommeTexte ConvertObjsToTextWithComment
+#EnregistrerQuArK SaveQuArK
+#EcrireObjTexte ConvertObjsToText
+#ConstruireQObject ConstructQObject
+
+#GetSousElements GetSubElements
+#SousElements SubElements
+#Souselements SubElements
+#souselements SubElements
+#SousElementsC SubElementsC
+#FSousElements FSubElements
+#ofTvSousElement ofTreeViewSubElement
+
+#Charger LoadFile
+#NomFich theFilename
+#LienFichierExact ExactFileLink
+#AccesFichierQ FileAccessQ
+#Ouvrir Open
+#OuvrirGroupes OpenGroups
+#ToutCharger LoadAll
+#ChargerInterne LoadInternal
+
+#TEntreesBsp1 TBsp1EntryTypes
+#TEntreesBsp2 TBsp2EntryTypes
+#NomEntreesBsp Bsp1EntryNames
+#NomEntreesBsp2 Bsp2EntryNames
+#TEnteteBsp TBsp1Header
+#PEnteteBsp PBsp1Header
+#TQ2BSP TBsp2Header
+#ChargerBsp1 LoadBsp1
+#ChargerBsp2 LoadBsp2
+
+#SauverTexte SaveAsText
+#SauverTextePolyedre SaveAsTextPolygon
+#SauverTexteBezier SaveAsTextBezier
+#SauverSpec SaveAsTextSpecArgs
+
+#ofTvInvisible ofTreeViewInvisible
+#ofTvAlreadyExpanded ofTreeViewAlreadyExpanded
+#ofTvExpanded ofTreeViewExpanded
+#ofSurDisque ofNotLoadedToMemory
+#ModeFichier fmOpenReadOnly_ShareDenyWrite
+#ModeFichierEcr fmOpenReadWrite_ShareDenyWrite
+
