@@ -52,7 +52,7 @@ N.B. that dates should be in the format <tt>YYYYMMDD</tt>.
 Typically, QuArK snapshots are released every couple of weeks,
 although this may vary depending on how much work is being done.  If
 two weeks go by with very little CVS activity, there won't be much
-point in making a snapshot; equally, if things are frenetic, it's
+point in making a snapshot; equally, if things are frantic, it's
 likely we'll do snapshots more frequently.  Also, it depends how much
 time the release technicians have available.
 
