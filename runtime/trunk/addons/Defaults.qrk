@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.432  2008/08/28 22:15:26  danielpharos
+//Added DevIL PNG interlace option.
+//
 //Revision 1.431  2008/08/28 19:00:59  danielpharos
 //Added a bunch of DevIL setting, and re-enabled DevIL DDS file saving.
 //
@@ -1569,8 +1572,9 @@ QQRKSRC1
         .map = "1"     imap = '2'
         .vmf = "1"     ivmf = '2'
         .qkl = "!"     iqkl = '4'
-        .md2 = "1"     imd2 = '4'
         .mdl = "1"     imdl = '4'
+        .md2 = "1"     imd2 = '4'
+        .md3 = "1"     imd3 = '4'
         .pak = "1"     ipak = '5'
         .sin = "1"     isin = '5'
         .pk3 = "1"     ipk3 = '5'
@@ -1586,7 +1590,9 @@ QQRKSRC1
         .bmp = ""      ibmp = '7'
         .tga = ""      itga = '7'
         .jpg = ""      ijpg = '7'
-        .png = ""
+        .png = ""      ipng = '7'
+        .dds = ""      idds = '7'
+        .vtf = ""      ivtf = '7'
         .cin = "1"     icin = '6'
         .wav = ""
         .cfg = ""      icfg = '11'
@@ -1600,12 +1606,15 @@ QQRKSRC1
         .pcx = ""
         .tga = ""
         .bmp = "<open>"
-        .jpg = "" //DECKER
+        .jpg = ""
         .png = ""
+        .dds = ""
+        .vtf = ""
         .wav = "<edit>"
         .cin = "<open>"
         .mdl = "<open>"
         .md2 = "<open>"
+        .md3 = "<open>"
         .map = "Notepad.exe"
         .wal = ""
         .swl = ""
@@ -8806,10 +8815,13 @@ QQRKSRC1
       .bmp: = { Txt="BMP images" externaledit = ! }
       .jpg: = { Txt="JPG images" externaledit = ! }
       .png: = { Txt="PNG images" externaledit = ! }
+      .dds: = { Txt="DDS images" externaledit = ! }
+      .vtf: = { Txt="VTF images" externaledit = ! }
       .wav: = { Txt="WAV sounds" externaledit = ! }
       .cin: = { Txt="CIN videos" externaledit = ! }
       .mdl: = { Txt="MDL models" externaledit = ! }
       .md2: = { Txt="MD2 models" externaledit = ! }
+      .md3: = { Txt="MD3 models" externaledit = ! }
       .map: = { Txt="MAP text files" externaledit = ! }
       .wal: = { Txt="WAL textures" externaledit = ! }
       .swl: = { Txt="SWL Sin textures" externaledit = ! }
@@ -8854,8 +8866,9 @@ QQRKSRC1
       .map: = {Typ="X" Cap=".map" Txt="Standard Quake .map files"}
       .vmf: = {Typ="X" Cap=".vmf" Txt="Valve map format .vmf files"}
     //.qkl: = {Typ="X" Cap=".qkl" Txt="QuArK models (if not in .qrk)"}
-      .md2: = {Typ="X" Cap=".md2" Txt="Standard Quake 2 Models"}
       .mdl: = {Typ="X" Cap=".mdl" Txt="Standard Quake 1 Models"}
+      .md2: = {Typ="X" Cap=".md2" Txt="Standard Quake 2 Models"}
+      .md3: = {Typ="X" Cap=".md3" Txt="Standard Quake 3 Models"}
       .pak: = {Typ="X" Cap=".pak" Txt="PACK files"}
       .sin: = {Typ="X" Cap=".sin" Txt="PACK files for Sin"}
       .pk3: = {Typ="X" Cap=".pk3" Txt="PACK files for Quake 3"}
@@ -8871,6 +8884,8 @@ QQRKSRC1
       .tga: = {Typ="X" Cap=".tga" Txt="TGA Images"}
       .jpg: = {Typ="X" Cap=".jpg" Txt="JPEG Images"}
       .bmp: = {Typ="X" Cap=".bmp" Txt="Standard Windows Bitmap"}
+      .dds: = {Typ="X" Cap=".dds" Txt="DDS Images"}
+      .vtf: = {Typ="X" Cap=".vtf" Txt="VTF Images"}
       .cin: = {Typ="X" Cap=".cin" Txt="Video (Quake 2)"}
       .wav: = {Typ="X" Cap=".wav" Txt="Sound"}
       .zip: = {Typ="X" Cap=".zip" Txt="ZIP archives"}
