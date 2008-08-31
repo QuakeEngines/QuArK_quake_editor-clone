@@ -3,7 +3,7 @@ author: Decker
 
 <dl>
 <dt><a name="value">            </a>Value               <dd>See <a href="#argument">argument</a>.
-<dt><a name="valvesoftware">    </a>Valve Software      <dd>Software company. Creator of Half-Life. <a href="http://www.valvesoftware.com">http://www.valvesoftware.com</a>.
+<dt><a name="valvesoftware">    </a>Valve Software      <dd>Software company. Creator of <a href="#halflife">Half-Life</a>. <a href="http://www.valvesoftware.com">http://www.valvesoftware.com</a>.
 <dt><a name="vertex">           </a>Vertex              <dd>A single corner of a polyhedron. A dice has 8 vertexes. See also <a href="#edge">edge</a> and <a href="#face">face</a><br>
                                                             <pic>dice.gif</pic>
 <dt><a name="visgroup">         </a>Visgroup            <dd>A function in other editors to hide/show parts of the level, when designing it. In QuArK the function is associated with a <a href="#group">group</a> in the tree-view.
