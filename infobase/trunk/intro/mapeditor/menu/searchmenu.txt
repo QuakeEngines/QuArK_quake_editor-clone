@@ -26,7 +26,7 @@ invalid polyhedrons and faces which does not belong to a polyhedron.
 
 <i>Find Thin Faces</i>. This function will search for and identifies brushes with faces that are suspiciously thin.
 
-<i>Holes in map</i>. This function will try to check your map for <a href="glossary.html#l">leaks</a> also known as Holes. A map must not contain any hole, that is, there must be no path from 'inside' to 'outside' the map. All entities must be completely enclosed by polyhedrons. With this command, QuArK will search for such holes, and if it finds one, it displays an arrow that starts from an entity and goes outside through a hole or a gap. Generally, the end of the arrow is exactly in the hole. Note that the path found by QuArK is maybe not the most direct way to reach the hole, and there are maybe other holes in your map. It is not a accurate leak/hole finder, so sometimes it might point to a leak
+<i>Holes in map</i>. This function will try to check your map for <g>leaks</g> also known as Holes. A map must not contain any hole, that is, there must be no path from 'inside' to 'outside' the map. All entities must be completely enclosed by polyhedrons. With this command, QuArK will search for such holes, and if it finds one, it displays an arrow that starts from an entity and goes outside through a hole or a gap. Generally, the end of the arrow is exactly in the hole. Note that the path found by QuArK is maybe not the most direct way to reach the hole, and there are maybe other holes in your map. It is not a accurate leak/hole finder, so sometimes it might point to a leak
 which isn't there.
 
 <i>Basic checks</i>. Performs various checks on your map, to see if it can be
