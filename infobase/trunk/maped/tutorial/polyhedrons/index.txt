@@ -6,6 +6,7 @@ desc: navigating
 desc: texturing
 desc: firstroom
 desc: grouping
+desc: nextpart
 
 This is the second part of four, which guides you through the methods and
 functions of creating a map in QuArK's map-editor. You should have read

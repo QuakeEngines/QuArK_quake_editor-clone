@@ -9,7 +9,7 @@ on the <tt>new item</tt> icon which will bring up the
 <ref> intro/mapeditor/misctools/newmapitem \ New map items...</ref> window,
 from where you also can choose between the different entities.
 
-Lets try it out. Create a <tt>info_player_start</tt> point-entity, by clicking
+Let's try it out. Create a <tt>info_player_start</tt> point-entity, by clicking
 on the <tt>new item</tt> icon, and find the entity in the folder named
 something like 'Player starts'. Then double-click on it, to bring it into the
 map.

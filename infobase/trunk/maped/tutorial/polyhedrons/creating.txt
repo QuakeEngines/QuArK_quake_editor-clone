@@ -2,7 +2,7 @@ title: Creating brushes (polyhedrons)
 author: Decker
 
 <img width=178 height=73 align=right>image8.png</img>
-I presume you have deleted the default room completly, because we need a blank
+I presume you have deleted the default room completely, because we need a blank
 sheet in this section.
 
 A <g>brush</g> is like a brick. You use them to build floors, walls and

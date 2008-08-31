@@ -4,6 +4,7 @@ desc: twotypes
 desc: creating
 desc: values
 desc: gamerelated
+desc: nextpart
 
 This is the third part of four, which guides you through the methods and
 functions of creating a map in QuArK's map-editor. You should have read
