@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.43  2008/08/30 17:08:53  cdunde
+To add new quarkx function, invalidaterect, by DanielPharos.
+
 Revision 1.42  2008/05/27 15:09:55  danielpharos
 Fixed remaining of Python errors getting lost
 
@@ -2861,12 +2864,9 @@ begin
     try
      if ViewMode<>vmWireframe then
       begin
-       DC:=GetDC(Handle);
-//@
-//       DC:=Canvas.Handle;
+       DC:=Canvas.Handle;
        Scene.SetViewWnd(Handle);
        Scene.SetViewDC(DC);
-//       Scene.SetViewDC(0);
        if Drawing and dfRebuildScene <> 0 then
         begin
          if Drawing and dfNoGDI = 0 then
@@ -2888,8 +2888,6 @@ begin
         end
        else
         Scene.Copy3DView;
-       ReleaseDC(Handle, DC);
-       //@
       end;
     except
      on E: Exception do
@@ -2937,7 +2935,7 @@ var
  P1, P2: TPoint;
  R: TRect;
 begin
-  Result:=Nil;
+ Result:=Nil;
  try
   if not PyArg_ParseTupleX(args, 'iiii', [@P1.X, @P1.Y, @P2.X, @P2.Y]) then
    Exit;
