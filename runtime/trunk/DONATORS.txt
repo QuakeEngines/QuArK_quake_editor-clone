@@ -39,3 +39,6 @@ QuArK 6.6.0 Beta 2 Donators
 
 - northwood21 / Quentin
                                                 "Happy Coding :$"
+
+- fafhrd_pro
+            "Truly glad this project has remained active so long"
