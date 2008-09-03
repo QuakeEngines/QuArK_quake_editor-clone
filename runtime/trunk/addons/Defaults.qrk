@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.433  2008/08/31 10:48:23  danielpharos
+//Added a bunch of file associations to several lists.
+//
 //Revision 1.432  2008/08/28 22:15:26  danielpharos
 //Added DevIL PNG interlace option.
 //
@@ -3760,6 +3763,7 @@ QQRKSRC1
         LoadLibrary = "FreeImage"
         SaveLibrary = "FreeImage"
         SaveFormatDevIL = "0"
+        SaveQualityDevIL = '99'
         LoadQualityFreeImage = "2"
         SaveQualityFreeImage = "4"
         SaveProgressiveFreeImage = ""
@@ -7923,6 +7927,7 @@ QQRKSRC1
              $0D "EXIF"
         Hint = "The format the JPG texture will be saved in when using the DevIL library"
       }
+      SaveQualityDevIL: = {Txt="Saving quality" Typ="EF1" Hint="The quality the JPG texture will be saved in when using the DevIL library (any number between 0 and 99"}
       sep: = {Typ="S" Txt="---- Advanced FreeImage Settings ----"}
       LoadQualityFreeImage: =
       {

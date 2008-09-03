@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23  2008/08/28 19:01:16  danielpharos
+Added a bunch of DevIL setting, and re-enabled DevIL DDS file saving.
+
 Revision 1.22  2007/12/06 23:01:31  danielpharos
 Whole truckload of image-file-handling changes: Revert PCX file saving and fix paletted images not loading/saving correctly.
 
@@ -167,6 +170,17 @@ begin
   end;
 
   ilSetInteger(IL_JPG_SAVE_FORMAT, Flag);
+  CheckDevILError(ilGetError);
+
+  try
+    Flag:=Round(Setup.GetFloatSpec('SaveQualityDevIL', 99));
+  except
+    Flag:=99;
+  end;
+  if Flag > 99 then
+    Flag:=99;
+
+  ilSetInteger(IL_JPG_QUALITY, Flag);
   CheckDevILError(ilGetError);
 end;
 
