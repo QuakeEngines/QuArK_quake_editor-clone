@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.434  2008/09/03 13:26:40  danielpharos
+//Added JPG saving quality for DevIL.
+//
 //Revision 1.433  2008/08/31 10:48:23  danielpharos
 //Added a bunch of file associations to several lists.
 //
@@ -7887,7 +7890,7 @@ QQRKSRC1
       SaveFormatDevIL: =
       {
         Typ = "CL"
-        Txt = "Format of exported alpha DDS textures"
+        Txt = "Format of exported DDS textures"
         Values =  "0"$0D "1"$0D "2"$0D "3"$0D "4"
         Items = "DXT1"
              $0D "DXT2"
