@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2008/08/28 19:01:18  danielpharos
+Added a bunch of DevIL setting, and re-enabled DevIL DDS file saving.
+
 Revision 1.12  2008/08/28 10:10:37  danielpharos
 Fix saving paletted images, loading images from pack files and duplicate error messages.
 
@@ -82,41 +85,44 @@ const
   IL_PAL_BGRA32 =$0406;
 
 // Image types
-  IL_TYPE_UNKNOWN= 0;
-  IL_BMP= 1056;
-  IL_CHEAD= 1071;
-  IL_CUT= 1057;
-  IL_DCX= 1080;
-  IL_DDS= 1079;
-  IL_DOOM= 1058;
-  IL_DOOM_FLAT= 1059;
-  IL_EXIF= 1082;
-  IL_GIF= 1078;
-  IL_HDR= 1087;
-  IL_ICO= 1060;
-  IL_JFIF= 1061;
-  IL_JNG= 1077;
-  IL_JPG= 1061;
-  IL_LBM= 1062;
-  IL_LIF= 1076;
-  IL_MDL= 1073;
-  IL_MNG= 1077;
-  IL_PCD= 1063;
-  IL_PCX= 1064;
-  IL_PIC= 1065;
-  IL_PIX= 1084;
-  IL_PNG= 1066;
-  IL_PNM= 1067;
-  IL_PSD= 1081;
-  IL_PSP= 1083;
-  IL_PXR= 1085;
-  IL_RAW= 1072;
-  IL_SGI= 1068;
-  IL_TGA= 1069;
-  IL_TIF= 1070;
-  IL_WAL= 1074;
-  IL_XPM= 1086;
-  IL_JASC_PAL= 1141;
+  IL_TYPE_UNKNOWN =$0000;
+  IL_BMP          =$0420;
+  IL_CUT          =$0421;
+  IL_DOOM         =$0422;
+  IL_DOOM_FLAT    =$0423;
+  IL_ICO          =$0424;
+  IL_JPG          =$0425;
+  IL_JFIF         =$0425;
+  IL_LBM          =$0426;
+  IL_PCD          =$0427;
+  IL_PCX          =$0428;
+  IL_PIC          =$0429;
+  IL_PNG          =$042A;
+  IL_PNM          =$042B;
+  IL_SGI          =$042C;
+  IL_TGA          =$042D;
+  IL_TIF          =$042E;
+  IL_CHEAD        =$042F;
+  IL_RAW          =$0430;
+  IL_MDL          =$0431;
+  IL_WAL          =$0432;
+  IL_LIF          =$0434;
+  IL_MNG          =$0435;
+  IL_JNG          =$0435;
+  IL_GIF          =$0436;
+  IL_DDS          =$0437;
+  IL_DCX          =$0438;
+  IL_PSD          =$0439;
+  IL_EXIF         =$043A;
+  IL_PSP          =$043B;
+  IL_PIX          =$043C;
+  IL_PXR          =$043D;
+  IL_XPM          =$043E;
+  IL_HDR          =$043F;
+  IL_ICNS         =$0440;
+  IL_JP2          =$0441;
+
+  IL_JASC_PAL     =$0475;
 
 // Mode types
   IL_ORIGIN_SET            =$0600;
