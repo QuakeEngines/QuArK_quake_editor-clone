@@ -1,9 +1,9 @@
 title: Configuration of QuArK
 subdir: general
 subdir: games
-subdir: files
 subdir: map
 subdir: model
+subdir: files
 
 In the configuration-window you can specify many things, to change the lookout
 and feel of QuArK. It is <u>recommended</u> that you study these settings, to
