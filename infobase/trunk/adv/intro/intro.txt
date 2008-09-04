@@ -11,7 +11,7 @@ QuArK development can be carried out at three levels:
 
 The first two require just a text-editor, since a functioning QuArK
 installation includes the Python interpreter, while the last requires
-Delphi (Borland;s version of Pascal, enhanced with visual development
+Delphi (Borland's version of Pascal, enhanced with visual development
 tools).  The current developers seem to be using versions 4 or 5;
 it's possible that older versions such as 3 or even 2, might work.
 Older versions can sometimes be acquired free on computer magazine
@@ -27,10 +27,10 @@ into the texture and map formats, and the read/write code for these
 needs to be reasonably fast).  Interface ideas on the other hand can
 often be supported just in Python, with maybe a little bit of Delphi
 to support a new `specific type' in a form (if you have a bright idea
-and think you need a new specific type, some delphi coder might
+and think you need a new specific type, some Delphi coder might
 well be able to provide it).
 
-Central to eveything is the concept of `QObject', QuArK's universal
+Central to everything is the concept of `QObject', QuArK's universal
 format for the storage and management of structured information.
 Maps, game information supplied in add-ons, and the descriptions of
 most of the dialog boxes and other data-entry windows in QuArK are
@@ -52,7 +52,7 @@ So a face is a QObject with a `v' specific of 9 numbers indicating
 the face and texture position information (the location of the
 corner and two ends of the Cyan L), and a `tex' specific giving
 the name of the texture.  You can see the specifics of a map object
-by hittng the second button over the multi-page panel (it's usually
+by hitting the second button over the multi-page panel (it's usually
 only interesting for entities).
 
 And a poly (brush) is a QObject whose list of subitems are the non-shared
@@ -61,7 +61,7 @@ containing that poly).  And so on.
 
 There's one special specific that should always be there, and maybe
 shouldn't be thought of as a specific at all, and that is `name'.
-A QObject's name is divided into two parts, shortname, and extension.
+A QObject's name is divided into two parts, shortname and extension.
 The shortname is usually just an identifying label (tho for entities
 it's the classname), but the extension, separated by a dot or colon,
 specifies the kind of object.  The dot separator is used for types of
@@ -77,7 +77,7 @@ Here are some of the more important extensions:
 <li>:form - specifies a format for a window whereby info about something
     is entered into QuArK.  To support a mod, you'll have to
     get familiar with the :form object associated with each
-    entity, these are found in the entity forms.qctx of the .qrk
+    entity; these are found in the entity forms.qctx of the .qrk
 <li>:f - face
 <li>:p - poly (brush; faces in subitems thereof, shortname arbitrary label)
 <li>:g - group (contained faces, brushes & entities in subitems, shortname arbitrary label)
@@ -93,5 +93,5 @@ as given.  In principle you could make something depend on it, tho I
 don't think anyone ever has).
 
 It might be useful to note that QObjects are sort of like a limited
-form of XML, with no character data intererspersed betweeen subelements.
+form of XML, with no character data interspersed between subelements.
 With QObjects in hand, we push on to .qrk's.
