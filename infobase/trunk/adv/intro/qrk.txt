@@ -32,7 +32,7 @@ business with a line whose first nonblack character is:
 '{' opens a QObject.  We already know that QObjects have two
 `Specifics' (name-value pairs), and `Subitems', which are
 QObjects which will have a `name' specific.  So it's not too
-suprisiing that the rest of a QObject will consist of a series
+surprising that the rest of a QObject will consist of a series
 of pairs:
 
 <code>
@@ -73,9 +73,10 @@ QQRKSRC1
 </code>
 
 After the opening guff, we see that the first specific is
-`QuArKProtected', I don't know exactly what it does, but that
-doesn't matter.  Its value is a string, enclosed in quotes.
-There are several other schemes for representing values, such
+`QuArKProtected'. This will cause a warning to pop up whenever QuArK
+tries to save/overwrite this file (only use this if the file is
+considered part of QuArK).  'QuArKProtected''s value is a string, enclosed
+in quotes.  There are several other schemes for representing values, such
 as Hex codes, which we'll get into shortly.
 
 Then comes our first subelement.  Its Name specific will be
@@ -86,7 +87,7 @@ This particular QObject has two ordinary string-specifics,
 and then ends.  So it goes on with more subelements until the final
 '}' on line 6108.
 
-So that's the basic idea, but there is a bit more to it that that.
+So that's the basic idea, but there is a bit more to it than that.
 
 First, in addition to strings, there are several additional types of
 specific-values.  Binary data is introduced with `$'.  So for example
@@ -97,7 +98,7 @@ color for tags is:
   Tag        = $FF0000
 </code>
 
-(a standard RGB color code, for those new to such things)
+(a standard <g>RGB</g> color code, for those new to such things)
 
 Multiline strings can be specified as sequences of ordinary "-bounded
 strings separated by `$0D':
