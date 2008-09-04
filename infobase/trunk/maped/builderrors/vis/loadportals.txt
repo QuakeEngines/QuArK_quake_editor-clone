@@ -1,4 +1,4 @@
-title: LoadPortals:could'nt read maps/NoName.prt
+title: LoadPortals: couldn't read maps/NoName.prt
 author: Andy / Armin (?)
 
 Your map is not "sealed" : it means there is a hole from the "inside" of it to the "outside". Look carefully for this hole. Note that QBSP sometimes creates small gaps between polyhedrons even if they are perfectly glued together, if the separation is at a non-90 degree angle. To prevent this, you can make the polyhedrons overlap a bit. Usually, QBSP doesn't mind about overlapping polyhedrons. However, if you get an error "new portal was clipped away" from QBSP, it means you overlapped them too much ! See below. Not easy...
