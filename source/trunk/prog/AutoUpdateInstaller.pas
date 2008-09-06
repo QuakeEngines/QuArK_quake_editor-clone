@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2008/08/11 23:15:11  danielpharos
+Updated updater: it is now downloading and parsing the notifications file
+
 Revision 1.7  2008/07/07 19:51:50  danielpharos
 Small update: AutoUpdateInstaller now going through individual files of packages
 
@@ -80,15 +83,6 @@ var
 {$R *.DFM}
 
  {------------------------}
-
-function GetExceptionMessage: String;
-begin
-  Result:=LoadStr1(402);
-  if Result='' then
-    Result:='Unknown error';
-  if (ExceptObject is Exception) then
-    Result:=Exception(ExceptObject).Message;
-end;
 
 function DoInstall: Boolean;
 var
@@ -191,8 +185,11 @@ begin
       ThreadHandle:=0;
     end;
   except
-    InstallWindow.Label1.Caption:=GetExceptionMessage; //@
-    Exit;
+    on E: Exception do
+    begin
+      InstallWindow.Label1.Caption:=E.Message;
+      Exit;
+    end;
   end;
   InstallWindow.Label1.Caption:='QuArK needs to be restarted for the updates to be applied.'; //@
   Application.ProcessMessages;
