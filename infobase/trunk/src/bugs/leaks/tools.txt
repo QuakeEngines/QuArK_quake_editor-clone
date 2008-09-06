@@ -11,8 +11,6 @@ it can only be used on the actual executable, and thus can
 only be applied when searching for leaks the hard way, or for
 locating crashes.
 
-Location:
--none-<br>
 Website:
 <a target=_blank href="http://www.microsoft.com/whdc/devtools/debugging/default.mspx">www.microsoft.com/whdc/devtools/debugging/default.mspx</a>
 
@@ -21,8 +19,6 @@ A program that monitors the executable realtime, and lists
 memory usage.  When the program finishes, all the memory still
 being used has obviously leaked.
 
-Location:
-source/prog/MemP0950/*<br>
 Website:
 <a target=_blank href="http://www.automatedqa.com/products/memproof/">www.automatedqa.com/products/memproof/</a>
 
@@ -33,8 +29,6 @@ been done: all you need to do is to open the .dpr file in the
 source directory, comment out MemTester, comment in MemCheck
 AND the MemChk below at the end of the file, and you're done.
 
-Location:
-source/prog/MemCheck275/*<br>
 Website:
 <a target=_blank href="http://v.mahon.free.fr/pro/freeware/memcheck/">v.mahon.free.fr/pro/freeware/memcheck/</a>
 
@@ -50,11 +44,11 @@ enable the Full Debug Mode, you will need to place a DLL file
 into your runtime directory.  See the FastMM readme file for
 more information.
 
-Location:
-source/prog/FastMM478/*<br>
 Website:
 <a target=_blank href="http://sourceforge.net/projects/fastmm/">sourceforge.net/projects/fastmm/</a>
 
+
+The alternative memory managers have already been installed into QuArK. You can enable them by editing the QuArK.dpr file and switch the comment-tags. You'll find them at the top of the listing (memory managers must be the first to load). Note: Only one can be enabled at a time!
 
 Also, don't forget:<br>
 There are a lot of debugging options already present in
