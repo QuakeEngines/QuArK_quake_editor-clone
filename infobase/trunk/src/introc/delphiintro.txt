@@ -1,7 +1,7 @@
 title: Delphi for C(++) programmers
 author: Tiglari
 
-Delphi is an system built on Object Pascal.  The difference
+Delphi is a system built on Object Pascal.  The difference
 between O.P. and C++ is mostly syntax, but there are some
 substantive matters:
 
@@ -9,8 +9,7 @@ substantive matters:
 <li>case doesn't matter: string = String
 <li>@variable gives the address of variable.
 <li>The OP class system is based on RTTI, and has inherently
-    greater flexibility than C++ (tho a lot less that Python).
-    See e.g. Armin's remarks in source\prog\QObjects.txt
+    greater flexibility than C++ (tho a lot less than Python).
 <li>Casts are done with what looks like a C++ constructor.
     so if you want to cast a QObject as QFileObject, you write:
     <tt>QFileObject(Obj)</tt> where Obj is your QObject.
