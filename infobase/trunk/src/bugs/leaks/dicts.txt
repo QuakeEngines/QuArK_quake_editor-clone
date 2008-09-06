@@ -19,3 +19,6 @@ into:
 
 and see the memory slowly build up whenever you zoom or pan.
 (Or just redraw!)
+
+Update:
+Should be fixed as of QuArK 6.6.0 Beta 1/2!
