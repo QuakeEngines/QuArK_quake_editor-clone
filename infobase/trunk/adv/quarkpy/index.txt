@@ -7,13 +7,10 @@ Python provides for the Delphi code, and also the basic
 facilities that plugins depend on and add to.
 
 It can be thought of as a big and as yet poorly documented API;
-learning your way around it is imo the biggest obstacle to getting
-good at QuArK Python coding.
+learning your way around it is one of the biggest obstacle to
+getting good at QuArK Python coding.
 
 Hopefully the rather paltry info here will be augmented
 before too long.
 
-<!--
-Sorry, not much information available. Go through the .py files and try to make your way... You will need some basic knowledge of
-<a href="http://www.python.org">Python</a> before you can do so. See also <ref>src/quarkx</ref>.
--->
+See also <ref>src/quarkx</ref>.
