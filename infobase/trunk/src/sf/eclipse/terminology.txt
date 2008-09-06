@@ -1,7 +1,7 @@
 title: Terminology
 author: DanielPharos
 
-Here's a small list of some of the terms used in Eclipse and this description about Eclipse:
+Here's a small list of some of the terms used by CVS and in this description about Eclipse:
 
 <b>Check out a file/directory</b> - Downloading a file/directory from the CVS into your Workspace-directory.
 
@@ -18,5 +18,7 @@ Here's a small list of some of the terms used in Eclipse and this description ab
 <b>Remote file</b> - A file located in the repository, on the CVS.
 
 <b>Repository</b> - The online site where the files are actually kept.
+
+<b>Updating a file/directory</b> - Downloading changes from the CVS into your Workspace-directory.
 
 <b>Workspace</b> - The directory in which Eclipse stores the local files.
