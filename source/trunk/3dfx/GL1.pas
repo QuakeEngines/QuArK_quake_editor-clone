@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.30  2008/09/06 15:57:31  danielpharos
+Moved exception code into separate file.
+
 Revision 1.29  2008/04/11 09:42:14  danielpharos
 Fix the few remaining OpenGL transparency issues: transparent faces on top of each other not drawing, and wrong drawing order.
 
@@ -124,23 +127,27 @@ uses Windows, SysUtils;
 (**************    GL.H    **************)
 
 type
-  GLenum     = LongInt;
+  GLvoid     = Byte;
+  GLenum     = Longword;
   GLboolean  = Byte;
-  GLbitfield = LongInt;
+  GLbitfield = Longword;
   GLbyte     = ShortInt;
   GLshort    = SmallInt;
   GLint      = LongInt;
   GLsizei    = LongInt;
   GLubyte    = Byte;
   GLushort   = Word;
-  GLuint     = LongInt;
+  GLuint     = Longword;
   GLfloat    = Single;
   GLclampf   = Single;
   GLdouble   = Double;
   GLclampd   = Double;
+  PGLvoid    = ^GLvoid;
+  PGLboolean = ^GLboolean;
   PGLint     = ^GLint;
   PGLfloat   = ^GLfloat;
   PGLubyte   = ^GLubyte;
+  PGLuint    = ^GLuint;
 
 const
   (* AccumOp *)
@@ -728,7 +735,7 @@ var
   glShadeModel: procedure (mode : GLenum); stdcall;
   glFogi: procedure (pname: GLenum; param: GLint); stdcall;
   glFogf: procedure (pname: GLenum; param: GLfloat); stdcall;
-  glFogfv: procedure (pname: GLenum; var params); stdcall;
+  glFogfv: procedure (pname: GLenum; params: PGLfloat); stdcall;
   glGetError: function : GLenum; stdcall;
   glViewport: procedure (x, y : GLint; width, height : GLsizei); stdcall;
   glMatrixMode: procedure (mode: GLenum); stdcall;
@@ -742,24 +749,24 @@ var
   glEnd: procedure; stdcall;
 //  glColor3f: procedure (red, green, blue: GLfloat); stdcall;
 //  glColor4f: procedure (red, green, blue, alpha: GLfloat); stdcall;
-  glColor3fv: procedure (var v); stdcall;
-  glColor4fv: procedure (var v); stdcall;
-  glTexCoord2fv: procedure (var v); stdcall;
-  glVertex3fv: procedure (var v ); stdcall;
+  glColor3fv: procedure (v: PGLfloat); stdcall;
+  glColor4fv: procedure (v: PGLfloat); stdcall;
+  glTexCoord2fv: procedure (v: PGLfloat); stdcall;
+  glVertex3fv: procedure (v: PGLfloat); stdcall;
   glFinish: procedure; stdcall;
  {v1.9 broke OpenGL with PChar at end, changed back to v1.8 items - cdunde 09-21-2005}
 //  glTexImage2D: procedure (taget: GLenum; level, components : GLint; width, height: GLsizei; border: GLint; format, typ: GLenum; pixels:PChar ); stdcall;
   glTexImage2D: procedure (target: GLenum; level, components : GLint; width, height: GLsizei; border: GLint; format, typ: GLenum; const pixels); stdcall;
   glDeleteTextures: procedure (n: GLsizei; const textures); stdcall;
-  glAreTexturesResident: function (n: GLsizei; const textures; var residences) : GLboolean; stdcall;
+  glAreTexturesResident: function (n: GLsizei; const textures; residences: PGLboolean) : GLboolean; stdcall;
   glBindTexture: procedure (target: GLenum; texture: GLuint); stdcall;
-  glGenTextures: procedure (n: GLsizei; var textures); stdcall;
+  glGenTextures: procedure (n: GLsizei; textures: PGLuint); stdcall;
   glGenLists: function (range: GLsizei): GLuint; stdcall;
   glNewList: procedure (list: GLuint; mode: GLenum); stdcall;
   glEndList: procedure; stdcall;
   glCallList: procedure (list: GLuint); stdcall;
   glDeleteLists: procedure (list: GLuint; range: GLsizei); stdcall;
-  glReadPixels: procedure (x, y: GLint; width, height: GLsizei; format, typ: GLenum; var pixels); stdcall;
+  glReadPixels: procedure (x, y: GLint; width, height: GLsizei; format, typ: GLenum; pixels: PGLvoid); stdcall;
   glBlendFunc: procedure (sfactor: GLint; dfactor: GLint) stdcall; {Decker 2003.03.12 - Added}
   glOrtho: procedure (left: GLdouble; right: GLdouble; bottom: GLdouble; top: GLdouble; near: GLdouble; far: GLdouble) stdcall; {Daniel 2006.09.19 - Added}
   glGetIntegerv: procedure (pname: GLenum; params: PGLint) stdcall; {Daniel 2006.12.03 - Added}

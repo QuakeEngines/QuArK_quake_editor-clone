@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.73  2008/09/06 15:57:30  danielpharos
+Moved exception code into separate file.
+
 Revision 1.72  2008/04/11 09:42:14  danielpharos
 Fix the few remaining OpenGL transparency issues: transparent faces on top of each other not drawing, and wrong drawing order.
 
@@ -509,7 +512,7 @@ begin
     light[3]:=Currentf[3];
     glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT,@light);
     glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE,@light);
-    glColor4fv(light);
+    glColor4fv(@light);
     NormalVector[0]:=NormalePlan[0];
     NormalVector[1]:=NormalePlan[1];
     NormalVector[2]:=NormalePlan[2];
@@ -517,23 +520,23 @@ begin
 
     //with PV1^ do
     begin
-      glTexCoord2fv(PV1^.st);
-      glVertex3fv(PV1^.xyz);
+      glTexCoord2fv(@PV1^.st);
+      glVertex3fv(@PV1^.xyz);
     end;
     //with PV2^ do
     begin
-      glTexCoord2fv(PV2^.st);
-      glVertex3fv(PV2^.xyz);
+      glTexCoord2fv(@PV2^.st);
+      glVertex3fv(@PV2^.xyz);
     end;
     //with PV3^ do
     begin
-      glTexCoord2fv(PV3^.st);
-      glVertex3fv(PV3^.xyz);
+      glTexCoord2fv(@PV3^.st);
+      glVertex3fv(@PV3^.xyz);
     end;
     //with PV4^ do
     begin
-      glTexCoord2fv(PV4^.st);
-      glVertex3fv(PV4^.xyz);
+      glTexCoord2fv(@PV4^.st);
+      glVertex3fv(@PV4^.xyz);
     end;
     glEnd;
   end
@@ -670,17 +673,17 @@ begin
         begin
           glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT,@Points[J,I].light_rgb);
           glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE,@Points[J,I].light_rgb);
-          glColor4fv(Points[J,I].light_rgb);
-          glTexCoord2fv(Points[J,I].v.st);
-          glVertex3fv(Points[J,I].v.xyz);
+          glColor4fv(@Points[J,I].light_rgb);
+          glTexCoord2fv(@Points[J,I].v.st);
+          glVertex3fv(@Points[J,I].v.xyz);
         end;
         //with Points[J+StepJ,I] do
         begin
           glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT,@Points[J+StepJ,I].light_rgb);
           glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE,@Points[J+StepJ,I].light_rgb);
-          glColor4fv(Points[J+StepJ,I].light_rgb);
-          glTexCoord2fv(Points[J+StepJ,I].v.st);
-          glVertex3fv(Points[J+StepJ,I].v.xyz);
+          glColor4fv(@Points[J+StepJ,I].light_rgb);
+          glTexCoord2fv(@Points[J+StepJ,I].v.st);
+          glVertex3fv(@Points[J+StepJ,I].v.xyz);
         end;
         Inc(I, StepI);
       end;
@@ -724,9 +727,9 @@ begin
     Inc(vec3_p(PV));
     glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT,@Point.light_rgb);
     glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE,@Point.light_rgb);
-    glColor4fv(Point.light_rgb);
-    glTexCoord2fv(Point.v.st);
-    glVertex3fv(Point.v.xyz);
+    glColor4fv(@Point.light_rgb);
+    glTexCoord2fv(@Point.v.st);
+    glVertex3fv(@Point.v.xyz);
   end;
   glEnd;
   CheckOpenGLError('RenderQuadStrip');
@@ -1129,7 +1132,7 @@ begin
    {glFogf(GL_FOG_START, FarDistance * kDistFarToShort);
     glFogf(GL_FOG_END, FarDistance);}
     glFogf(GL_FOG_DENSITY, FogDensity/FarDistance);
-    glFogfv(GL_FOG_COLOR, nFogColor);
+    glFogfv(GL_FOG_COLOR, @nFogColor);
     glHint(GL_FOG_HINT, GL_NICEST);
   end
   else
@@ -2028,7 +2031,7 @@ begin
     end;
 
     {gluBuild2DMipmaps(GL_TEXTURE_2D, 3, W, H, GL_RGBA, GL_UNSIGNED_BYTE, TexData^);}
-    glGenTextures(1, Texture^.OpenGLName);
+    glGenTextures(1, @Texture^.OpenGLName);
     CheckOpenGLError('glGenTextures');
 
     if Texture^.OpenGLName=0 then
@@ -2321,7 +2324,7 @@ begin
 
       if Transparency and TransparentFaces then
       begin
-        glColor4fv(Currentf);
+        glColor4fv(@Currentf);
 
         Case TextureMode of
         //0, 4:
