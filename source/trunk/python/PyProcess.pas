@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2005/09/28 10:49:03  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.4  2001/06/05 18:43:47  decker_dk
 Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
 
@@ -37,12 +40,6 @@ interface
 uses Windows, SysUtils, Classes, QkObjects, Undo, Quarkx, Python;
 
  {-------------------}
-
-const
- DUPLICATE_CLOSE_SOURCE = 1;   { missing from Windows.pas }
- DUPLICATE_SAME_ACCESS  = 2;
- MAILSLOT_WAIT_FOREVER  = -1;
- MAILSLOT_NO_MESSAGE    = -1;
 
 procedure ProcessObjDestructor(o: PyObject); cdecl;
 function GetProcessAttr(self: PyObject; attr: PChar) : PyObject; cdecl;
@@ -79,7 +76,7 @@ function EmptyInputPipe : THandle;
 
 implementation
 
-uses PyObjects, QkForm, Qk1, Console;
+uses PyObjects, QkForm, Qk1, Console, ExtraFunctionality;
 
  {-------------------}
 

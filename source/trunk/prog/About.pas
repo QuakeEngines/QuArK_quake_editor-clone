@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.29  2007/09/18 19:32:23  danielpharos
+Fix the disclaimer disappearing in the About screen
+
 Revision 1.28  2007/09/18 18:18:43  danielpharos
 Kill another disclaimer redraw, and add history to About.pas
 
@@ -81,7 +84,7 @@ const
 
 implementation
 
-uses Quarkx, PyProcess;
+uses Quarkx, PyProcess, ExtraFunctionality;
 
 type
   PDisclaimerInfo = ^TDisclaimerInfo;

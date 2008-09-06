@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2008/07/17 14:39:30  danielpharos
+Moved pre-Delphi6+ function into ExtraFunctionality
+
 Revision 1.11  2008/03/29 15:15:47  danielpharos
 Moved all the CompareMem stuff to ExtraFunctionality, where it belongs.
 
@@ -48,7 +51,16 @@ interface
 
 uses SysUtils, StrUtils;
 
-{$ifndef Delphi5orNewerCompiler} // I'm not sure when this function was introduced;
+{$ifndef Delphi4orNewerCompiler} // FIXME: I'm not sure when this was introduced;
+                                 // but it at least exists in Delphi 4
+const
+  DUPLICATE_CLOSE_SOURCE     = $00000001;
+  DUPLICATE_SAME_ACCESS      = $00000002;
+  MAILSLOT_NO_MESSAGE                 = LongWord(-1);
+  MAILSLOT_WAIT_FOREVER               = LongWord(-1);
+{$endif}
+
+{$ifndef Delphi5orNewerCompiler} // FIXME: I'm not sure when this was introduced;
                                  // but it at least exists in Delphi 5
 { CompareMem performs a binary compare of Length bytes of memory referenced
   by P1 to that of P2.  CompareMem returns True if the memory referenced by
