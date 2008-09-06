@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2008/09/03 13:14:57  danielpharos
+Small clean-up.
+
 Revision 1.13  2008/08/28 19:01:18  danielpharos
 Added a bunch of DevIL setting, and re-enabled DevIL DDS file saving.
 
@@ -318,7 +321,7 @@ procedure CheckDevILError(DevILError: DevILError);
 
 implementation
 
-uses Setup, Quarkx, Logging;
+uses Setup, Quarkx, Logging, QkApplPaths;
 
 var
   TimesLoaded: Integer;
@@ -345,7 +348,7 @@ begin
 
     if (HDevIL = 0) then
     begin
-      HDevIL := LoadLibrary('dlls/DevIL.dll');
+      HDevIL := LoadLibrary(PChar(GetQPath(pQuArKDll)+'DevIL.dll'));
       if HDevIL = 0 then
       begin
         LogError('Unable to load dlls/DevIL.dll');

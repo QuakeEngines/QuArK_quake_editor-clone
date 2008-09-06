@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2008/08/28 10:10:19  danielpharos
+Fix saving paletted images, loading images from pack files and duplicate error messages.
+
 Revision 1.5  2008/05/23 21:17:16  danielpharos
 Check all call-definitions to DevIL and FreeImage to make sure all the variable types are correct
 
@@ -227,7 +230,7 @@ procedure UnloadFreeImage(ForceUnload: boolean);
 
 implementation
 
-uses Setup, Quarkx, Logging;
+uses Setup, Quarkx, Logging, QkApplPaths;
 
 var
   TimesLoaded: Integer;
@@ -260,7 +263,7 @@ begin
 
     if (HFreeImage = 0) then
     begin
-      HFreeImage := LoadLibrary('dlls/FreeImage.dll');
+      HFreeImage := LoadLibrary(PChar(GetQPath(pQuArKDll)+'FreeImage.dll'));
       if HFreeImage = 0 then
       begin
         LogError('Unable to load dlls/FreeImage.dll');
