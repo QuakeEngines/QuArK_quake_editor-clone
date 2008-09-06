@@ -1,0 +1,7 @@
+title: QkExceptions.pas
+author: DanielPharos
+desc: getexceptionmessage
+desc: eerror
+desc: eerrorfmt
+
+This file contains several functions useful for exception handling.

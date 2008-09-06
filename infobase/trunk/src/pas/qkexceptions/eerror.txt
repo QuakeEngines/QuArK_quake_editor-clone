@@ -1,0 +1,8 @@
+title: EError
+author: DanielPharos
+
+<code>
+function EError(Res: Integer) : Exception;
+</code>
+
+This function takes the number of a string from the dictionary, and creates an exception with the resulting text as the message.

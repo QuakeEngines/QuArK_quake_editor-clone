@@ -1,0 +1,8 @@
+title: EErrorFmt
+author: DanielPharos
+
+<code>
+function EErrorFmt(Res: Integer; Fmt: array of const) : Exception;
+</code>
+
+This function takes the number of a string from the dictionary, formats that string using the array of variables and values from the second parameter, and creates an exception with the resulting text as the message.
