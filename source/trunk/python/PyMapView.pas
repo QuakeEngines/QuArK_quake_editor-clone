@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.44  2008/09/01 23:47:53  danielpharos
+Fix test-code sneaking in.
+
 Revision 1.43  2008/08/30 17:08:53  cdunde
 To add new quarkx function, invalidaterect, by DanielPharos.
 
@@ -338,7 +341,7 @@ var
 implementation
 
 uses PyCanvas, QkTextures, Game, PyForms, FullScreenWnd, FullScr1, RedLines, Qk1,
-     EdSoftware, EdGlide, EdOpenGL, EdDirect3D, SystemDetails, QkFileObjects;
+     EdSoftware, EdGlide, EdOpenGL, EdDirect3D, SystemDetails, QkFileObjects, QkExceptions;
 
 
 constructor TPyMapView.Create(AOwner: TComponent);

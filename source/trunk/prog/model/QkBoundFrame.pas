@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.1  2008/07/17 14:47:58  danielpharos
+Big (experimental) change to model bones, tags and boundframes
+
 }
 
 unit QkBoundFrame;
@@ -60,7 +63,7 @@ type
 
 implementation
 
-uses qk3d, pymath, quarkx, QkObjectClassList, QkMiscGroup;
+uses qk3d, pymath, quarkx, QkExceptions, QkObjectClassList, QkMiscGroup;
 
 function QBoundFrame.IsAllowedParent(Parent: QObject) : Boolean;
 begin

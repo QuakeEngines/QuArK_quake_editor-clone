@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.17  2007/03/17 15:43:12  danielpharos
+Made another few dictionnary changes. Also fixed a double entry. And a small change in unloading the dll-files of VTFLib.
+
 Revision 1.16  2005/09/28 10:48:32  peter-b
 Revert removal of Log and Header keywords
 
@@ -62,7 +65,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   QkForm, QkFileObjects, QSplitter, StdCtrls, ComCtrls, ExtCtrls, TB97,
-  QkObjects, Quarkx, Game, Setup, Menus, QkImages, Sprite;
+  QkObjects, Game, Setup, Menus, QkImages, Sprite;
 
 type
   THLSprHeader = packed record // Half Life Sprite
@@ -161,7 +164,7 @@ Function MyIntSpec(s:QSprFile; ident:String):INteger;
 
 implementation
 
-uses QkPcx, QkTextures, QkObjectClassList;
+uses Quarkx, QkExceptions, QkPcx, QkTextures, QkObjectClassList;
 
 {$R *.DFM}
 

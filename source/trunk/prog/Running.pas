@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2005/09/28 10:48:32  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.9  2003/08/12 16:01:27  silverpaladin
 Added ExtraFunctionality to the uses so that platform independant routines are available for pre-Delphi 6 versions.
 
@@ -84,7 +87,7 @@ procedure ExternalEdit(Q: QObject);
 
 implementation
 
-uses qmath, Config, Undo, Setup, Quarkx;
+uses qmath, Config, Undo, Setup, Quarkx, QkExceptions;
 
 {$R *.DFM}
 

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2005/09/28 10:48:32  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.14  2001/03/20 21:46:07  decker_dk
 Updated copyright-header
 
@@ -84,8 +87,7 @@ unit QkHr2;
 interface
 
 uses Windows, SysUtils, Classes, Graphics, Dialogs, Controls,
-     QkObjects, QkFileObjects, QkTextures, QkMd2
-     ,QkQ2;
+     QkObjects, QkFileObjects, QkTextures, QkMd2, QkQ2;
 
 type
  QM8  = class(QTexture2)
@@ -111,7 +113,7 @@ type
 
 implementation
 
-uses Game, Setup, Quarkx, QkMdlObject, QkObjectClassList;
+uses Game, Setup, Quarkx, QkExceptions, QkMdlObject, QkObjectClassList;
 
 const
  MIP_VERSION = 2;

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.55  2008/07/25 18:49:14  danielpharos
+Fix a comment
+
 Revision 1.54  2008/05/15 10:09:35  danielpharos
 Fix wrong error message
 
@@ -293,8 +296,8 @@ implementation
 {$R *.DFM}
 
 uses QkPak, Setup, QkUnknown, QkTextures, Travail, ToolBox1, QkImages, Qk1,
-  Game2, QkQuakeCtx, Config, PakFiles, Quarkx, PyImages, QkApplPaths, QkSteamFS,
-  ExtraFunctionality, Python;
+  Game2, QkQuakeCtx, Config, PakFiles, Quarkx, QkExceptions, PyImages,
+  QkApplPaths, QkSteamFS, Python, ExtraFunctionality;
 
 var
  GameFiles: TQList = Nil;

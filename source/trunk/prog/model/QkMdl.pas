@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.22  2007/08/14 16:33:00  danielpharos
+HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
+
 Revision 1.21  2007/05/15 15:04:30  danielpharos
 Don't force HL2 skin loading through Steam, but rather use the normal way for loading files.
 
@@ -155,14 +158,11 @@ type
     Nom: array[0..15] of Byte;
   end;
 
-
-
-
-
+ {------------------------}
 
 implementation
 
-uses QuarkX, Setup, Travail, QkObjectClassList,QkPcx;
+uses QuarkX, QkExceptions, Setup, Travail, QkObjectClassList,QkPcx;
 
 class function QMdlFile.TypeInfo;
 begin

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.54  2008/08/12 15:46:08  danielpharos
+Revert prev rev
+
 Revision 1.53  2008/08/11 23:13:49  danielpharos
 Enabled FastMM for normal use
 
@@ -223,6 +226,7 @@ uses
   QkD3 in 'prog\QkD3.pas',
   QkDevIL in 'prog\QkDevIL.pas',
   QkDDS in 'prog\QkDDS.pas',
+  QkExceptions in 'prog\QkExceptions.pas',
   QkExplorer in 'prog\QkExplorer.pas',
   QkFileExplorer in 'prog\QkFileExplorer.pas',
   QkFileObjects in 'prog\QkFileObjects.pas' {QForm1},

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.36  2008/08/12 15:11:04  danielpharos
+Fix stupid memory leak
+
 Revision 1.35  2008/08/12 14:53:15  danielpharos
 Added a file version option to VTF file saving, and fixed a memory leak and a bug causing non-alpha images to contain alpha after importing them.
 
@@ -155,7 +158,8 @@ type
 
 implementation
 
-uses SysUtils, StrUtils, Setup, Quarkx, QkObjectClassList, Game, Logging;
+uses SysUtils, StrUtils, Setup, Quarkx, QkExceptions, QkObjectClassList,
+     Game, Logging;
 
 var
   VTFLoaded: Boolean;

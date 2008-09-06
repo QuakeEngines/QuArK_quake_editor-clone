@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2008/07/17 14:47:57  danielpharos
+Big (experimental) change to model bones, tags and boundframes
+
 Revision 1.15  2007/11/15 22:08:12  danielpharos
 Fix the frame-won't-drag problem after a subdivide face action.
 
@@ -99,8 +102,8 @@ type
 
 implementation
 
-uses Quarkx, PyObjects, QkObjectClassList, QkComponent, QkModelRoot, QkModelTag,
-     QkFrameGroup, QkMiscGroup, QkTagFrame;
+uses Quarkx, QkExceptions, PyObjects, QkObjectClassList, QkComponent, QkModelRoot,
+     QkModelTag, QkFrameGroup, QkMiscGroup, QkTagFrame;
 
 function QFrame.IsAllowedParent(Parent: QObject) : Boolean;
 begin

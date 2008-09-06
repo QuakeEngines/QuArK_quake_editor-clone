@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.65  2008/07/24 15:02:38  danielpharos
+Cleaned up texture name checking code and interface.
+
 Revision 1.64  2008/05/06 11:40:17  danielpharos
 Revert breaking change.
 
@@ -440,7 +443,7 @@ function CreateCopyTexture(Tex: QPixelSet) : QTextureFile;
 implementation
 
 uses QkWad, QkBsp, ToolBox1, QkImages, Setup, Travail, qmath, QkPcx,
-  TbPalette, TbTexture, Undo, QkExplorer, QkPak, QkQuakeCtx, Quarkx,
+  TbPalette, TbTexture, Undo, QkExplorer, QkPak, QkQuakeCtx, Quarkx, QkExceptions,
   CCode, PyObjects, QkHr2, QkHL, QkSin, QkFormCfg, Logging,
   QkQ1, QkQ2, QkQ3, QkObjectClassList, QkD3, QkApplPaths{, ExtraFunctionality};
 

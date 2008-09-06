@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2008/02/23 19:25:21  danielpharos
+Moved a lot of path/file code around: should make it easier to use
+
 Revision 1.8  2005/09/28 10:48:31  peter-b
 Revert removal of Log and Header keywords
 
@@ -78,7 +81,7 @@ type
 
 implementation
 
-uses Game, Qk1, Setup, QkGroup, QkObjects, QkFileObjects, Undo, Quarkx,
+uses Game, Qk1, Setup, QkGroup, QkObjects, QkFileObjects, Undo, Quarkx, QkExceptions,
   PyImages, ToolBoxGroup, QkApplPaths;
 
 {$R *.DFM}

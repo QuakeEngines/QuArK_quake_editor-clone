@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.24  2008/08/07 17:17:17  cdunde
+Removed end_offset from source code completely, just using end_point instead, by DanielPharos.
+
 Revision 1.23  2008/07/17 14:47:59  danielpharos
 Big (experimental) change to model bones, tags and boundframes
 
@@ -203,7 +206,7 @@ function PointVisible95(const P: TPoint) : Boolean;}
 
 implementation
 
-uses Quarkx;
+uses QkExceptions;
 
 var
  pDeltaX, pDeltaY, pDeltaZ: Integer;

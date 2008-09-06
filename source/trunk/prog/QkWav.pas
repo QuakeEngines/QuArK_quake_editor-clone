@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2005/09/28 10:48:32  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.9  2001/03/20 21:43:04  decker_dk
 Updated copyright-header
 
@@ -86,7 +89,7 @@ type
 
 implementation
 
-uses Quarkx, QkObjectClassList;
+uses Quarkx, QkExceptions, QkObjectClassList;
 
 const
  SignatureRIFF = $46464952;

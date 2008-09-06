@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2008/08/26 16:21:52  danielpharos
+Added filename of broken shader/material file to error-message.
+
 Revision 1.8  2008/04/26 15:31:12  danielpharos
 Added a missing Log-line.
 
@@ -47,8 +50,7 @@ interface
 
 uses
   Types, Classes, SysUtils, Windows,
-  QkZip2, QkFileObjects, Quarkx, QkObjectClassList, QkPixelSet, QkObjects, QkWad,
-  Game, Setup, Travail;
+  QkZip2, QkFileObjects, QkPixelSet, QkObjects, QkWad;
 
 type
   D3Pak = class(QZipPak)
@@ -96,7 +98,7 @@ type
 
 implementation
 
-uses Logging;
+uses Quarkx, QkExceptions, QkObjectClassList, Game, Setup, Travail, Logging;
 
 {------------------------}
 

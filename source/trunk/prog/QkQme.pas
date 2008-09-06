@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2007/10/30 20:43:35  danielpharos
+Fixed two weird-looking spaces
+
 Revision 1.13  2007/07/05 10:19:45  danielpharos
 Moved the Quake .map format code to a separate file.
 
@@ -107,7 +110,8 @@ type
 
 implementation
 
-uses QkMapObjects, QkMapPoly, qmath, Setup, Duplicator, Quarkx, Travail, QkObjectClassList;
+uses QkMapObjects, QkMapPoly, qmath, Setup, Duplicator, Quarkx, QkExceptions,
+     Travail, QkObjectClassList;
 
 {$R *.DFM}
 

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.29  2008/04/11 09:42:14  danielpharos
+Fix the few remaining OpenGL transparency issues: transparent faces on top of each other not drawing, and wrong drawing order.
+
 Revision 1.28  2008/02/23 20:33:04  danielpharos
 Forgot to remove a workaround for PosEx
 
@@ -795,7 +798,7 @@ procedure SetPixelFormatOnDC(DC: HDC; PixelFormat: TPixelFormatDescriptor);
 
 implementation
 
-uses Classes, StrUtils, Quarkx, Logging, Qk1, Setup, QkObjects, EdOpenGL,
+uses Classes, StrUtils, Quarkx, QkExceptions, Logging, Qk1, Setup, QkObjects, EdOpenGL,
      ExtraFunctionality;
 
 const

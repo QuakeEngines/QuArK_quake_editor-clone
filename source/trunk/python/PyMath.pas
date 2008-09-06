@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.22  2008/08/07 22:53:14  danielpharos
+A massive overhaul and clean-up: should make the Python interface more robust and future-proof
+
 Revision 1.21  2007/12/06 00:26:26  danielpharos
 Removed redundant include.
 
@@ -386,7 +389,7 @@ implementation
 
 { $DEFINE DebugCoord}
 
-uses QkMapObjects, QkMapPoly, Qk3D, SystemDetails;
+uses QkExceptions, QkMapObjects, QkMapPoly, Qk3D, SystemDetails;
 
  {------------------------}
 

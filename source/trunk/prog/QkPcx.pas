@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2008/08/28 19:01:15  danielpharos
+Added a bunch of DevIL setting, and re-enabled DevIL DDS file saving.
+
 Revision 1.17  2008/04/05 09:25:45  danielpharos
 Fix a stupid bug.
 
@@ -68,7 +71,7 @@ unit QkPcx;
 
 interface
 
-uses Classes, QkImages, QkPixelSet, QkObjects, QkFileObjects,
+uses Windows, Classes, QkImages, QkPixelSet, QkObjects, QkFileObjects,
      QkDevil, QkFreeImage;
 
 type
@@ -90,7 +93,8 @@ type
 
 implementation
 
-uses SysUtils, Setup, Quarkx, QkObjectClassList, Game, Logging, Windows, Travail;
+uses SysUtils, Setup, Quarkx, QkExceptions, QkObjectClassList,
+     Game, Logging, Travail;
 
 const
   pcxSignature   = $0801050A;

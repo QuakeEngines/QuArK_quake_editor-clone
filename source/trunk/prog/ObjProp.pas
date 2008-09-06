@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2005/09/28 10:48:31  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.7  2001/03/20 21:47:27  decker_dk
 Updated copyright-header
 
@@ -85,7 +88,7 @@ procedure ObjectProperties(QL: TList; nPasteTo: TQkForm);  { assume QL is non-em
 
 implementation
 
-uses Qk1, QkGroup, Quarkx, PyImages, Python, Travail, QkPixelSet;
+uses Qk1, QkGroup, Quarkx, QkExceptions, PyImages, Python, Travail, QkPixelSet;
 
 {$R *.DFM}
 

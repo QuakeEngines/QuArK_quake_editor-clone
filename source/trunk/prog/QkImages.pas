@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23  2008/08/28 19:01:17  danielpharos
+Added a bunch of DevIL setting, and re-enabled DevIL DDS file saving.
+
 Revision 1.22  2008/08/28 10:10:36  danielpharos
 Fix saving paletted images, loading images from pack files and duplicate error messages.
 
@@ -187,7 +190,7 @@ function TestConversionImages(var I: Integer{; Exclude: QImage}) : QImageClass;
 implementation
 
 uses QkPcx, QkBmp, QkTga, QkDDS, QkJpg, QkPng, QkSoF, QkVTF, TbPalette, qmath,
-     Quarkx, CCode, Undo, Travail, Setup, Logging;
+     Quarkx, QkExceptions, CCode, Undo, Travail, Setup, Logging;
 
 {$R *.DFM}
 

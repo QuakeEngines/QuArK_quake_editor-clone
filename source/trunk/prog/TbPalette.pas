@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2005/09/28 10:48:32  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.4  2001/03/20 21:41:57  decker_dk
 Updated copyright-header
 
@@ -58,7 +61,7 @@ function ChooseColor(nOwner: TComponent; var Color: TColor) : Boolean;
 
 implementation
 
-uses Undo, Travail, Quarkx;
+uses Undo, Travail, Quarkx, QkExceptions;
 
  {------------------------}
 

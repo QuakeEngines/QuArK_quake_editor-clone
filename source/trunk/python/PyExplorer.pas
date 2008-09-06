@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2008/05/27 15:09:54  danielpharos
+Fixed remaining of Python errors getting lost
+
 Revision 1.7  2005/09/28 10:49:03  peter-b
 Revert removal of Log and Header keywords
 
@@ -50,7 +53,7 @@ unit PyExplorer;
 
 interface
 
-uses Windows, Messages, SysUtils, Classes, Controls, Quarkx, QkExplorer, Python,
+uses Windows, Messages, SysUtils, Classes, Controls, QkExplorer, Python,
      Menus, QkObjects, PyObjects, PyControls, QkForm, QkGroup;
 
 const
@@ -101,7 +104,7 @@ var
 
 implementation
 
-uses PyForms, QkMapObjects, QkMapPoly, QkTreeView;
+uses Quarkx, QkExceptions, PyForms, QkMapObjects, QkMapPoly, QkTreeView;
 
  {------------------------}
 

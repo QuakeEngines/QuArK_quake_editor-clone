@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.21  2008/08/07 22:53:14  danielpharos
+A massive overhaul and clean-up: should make the Python interface more robust and future-proof
+
 Revision 1.20  2008/05/27 15:09:55  danielpharos
 Fixed remaining of Python errors getting lost
 
@@ -174,7 +177,7 @@ function LoadGlobalImageList(Q: QObject) : Integer;
 
 implementation
 
-uses Quarkx, PyCanvas, Dialogs;
+uses Quarkx, QkExceptions, PyCanvas, Dialogs;
 
 const
  DisabledNak = TBitmap(1);

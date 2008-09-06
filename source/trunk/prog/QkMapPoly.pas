@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.91  2008/02/21 21:05:59  danielpharos
+Small code cleanup.
+
 Revision 1.90  2007/07/05 10:19:45  danielpharos
 Moved the Quake .map format code to a separate file.
 
@@ -543,7 +546,7 @@ procedure GetAxisBase(const Normal0: TVect; var texS, texT: TVect);
 implementation
 
 uses QkFileObjects, Undo, PyMapView, QkQuakeMap, QkPixelSet, Dialogs,
-     Quarkx, PyObjects, QkSin, QkQuakeCtx, QkObjectClassList;
+     Quarkx, QkExceptions, PyObjects, QkSin, QkQuakeCtx, QkObjectClassList;
 
 const
  TmpFaceSpec = '!~tmp~!this is a bug';

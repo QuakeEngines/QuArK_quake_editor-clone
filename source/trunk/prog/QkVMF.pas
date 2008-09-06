@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2007/07/05 10:19:44  danielpharos
+Moved the Quake .map format code to a separate file.
+
 Revision 1.18  2007/06/24 20:38:06  danielpharos
 Comment out unused code.
 
@@ -104,7 +107,7 @@ type
 implementation
 
 uses Qk1, QkQme, QkMapPoly, qmath, Travail, Setup,
-  Qk3D, QkBspHulls, Undo, Game, Quarkx,
+  Qk3D, QkBspHulls, Undo, Game, Quarkx, QkExceptions,
   QkObjectClassList, MapError,Logging,DispFace;
 
 

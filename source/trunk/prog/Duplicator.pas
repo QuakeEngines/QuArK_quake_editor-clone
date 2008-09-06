@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2008/05/27 15:09:56  danielpharos
+Fixed remaining of Python errors getting lost
+
 Revision 1.14  2007/04/12 15:04:42  danielpharos
 BIG moving around of code. All the .map save routines should now be in QkMap. This will allow easy changes, and will simplify future map format support.
 
@@ -74,7 +77,7 @@ unit Duplicator;
 interface
 
 uses Windows, SysUtils, Classes, Graphics, QkObjects, QkMapObjects,
-     qmath, Python, PyObjects, Quarkx, Setup, PyMath;
+     qmath, Python, PyObjects, PyMath;
 
 type
  TDuplicator = class(TTreeMapEntity)
@@ -108,7 +111,8 @@ type
 
 implementation
 
-uses QkFileObjects, PyMapView, QkMapPoly, Qk3D, QkObjectClassList, Undo;
+uses Quarkx, QkExceptions, Setup, QkFileObjects, PyMapView, QkMapPoly, Qk3D,
+     QkObjectClassList, Undo;
 
  {------------------------}
 

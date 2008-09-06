@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.22  2008/03/29 15:15:47  danielpharos
+Moved all the CompareMem stuff to ExtraFunctionality, where it belongs.
+
 Revision 1.21  2008/02/06 00:12:55  danielpharos
 The skinview now properly updates to reflect changes made to textures.
 
@@ -86,7 +89,7 @@ unit QkPixelSet;
 interface
 
 uses SysUtils, Windows, Classes, Graphics, Game, Python, QkObjects, PyObjects,
-     Setup, QkFileObjects;
+     QkFileObjects;
 
 type
  TPixelSetFormat = (psfDefault, psf8bpp, psf24bpp);
@@ -169,7 +172,8 @@ procedure DrawToDC(DC: HDC; var BitmapInfo; Data: Pointer; Left, Top: Integer);
 
 implementation
 
-uses Controls, Dialogs, Quarkx, QkTextures, CCode, QkExplorer, Logging, ExtraFunctionality;
+uses Controls, Dialogs, Quarkx, QkExceptions, QkTextures, CCode, QkExplorer,
+     Setup, Logging, ExtraFunctionality;
 
  {------------------------}
 

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.28  2008/02/23 19:25:20  danielpharos
+Moved a lot of path/file code around: should make it easier to use
+
 Revision 1.27  2007/12/06 15:47:49  danielpharos
 Fixed a wrong text.
 
@@ -197,7 +200,7 @@ const
 
 implementation
 
-uses Travail, QkExplorer, Quarkx, PyObjects, Game, crc32, UNZIP, ZIP, QkObjectClassList,
+uses Travail, QkExplorer, Quarkx, QkExceptions, PyObjects, Game, crc32, UNZIP, ZIP, QkObjectClassList,
      ExtraFunctionality;
 
 function BuildLFH(ver, bit, com, las, crc, cmp, unc, fil, ext:longint) : TLocalFileHeader;

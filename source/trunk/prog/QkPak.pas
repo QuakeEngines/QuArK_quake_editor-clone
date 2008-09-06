@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23  2008/08/09 19:37:54  danielpharos
+Removed redundant code.
+
 Revision 1.22  2008/02/23 19:25:20  danielpharos
 Moved a lot of path/file code around: should make it easier to use
 
@@ -177,7 +180,7 @@ type
 
 implementation
 
-uses Travail, QkExplorer, Quarkx, PyObjects, Game, QkSin,
+uses Travail, QkExplorer, Quarkx, QkExceptions, PyObjects, Game, QkSin,
  Qkzip2, qkq3, QkObjectClassList, QkBsp, ExtraFunctionality;
 
 {$R *.DFM}

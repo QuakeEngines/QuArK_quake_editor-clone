@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2005/09/28 10:48:32  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.9  2001/11/11 01:28:49  tiglari
 icon leak fixes
 
@@ -236,7 +239,7 @@ procedure ListeActionsCopie(Source, Dest: QObject; Efface: Boolean);
 
 implementation
 
-uses Travail, Setup, QkForm, TbUndoMenu, Qk1, Quarkx;
+uses Travail, Setup, QkForm, TbUndoMenu, Qk1, Quarkx, QkExceptions;
 
 var
  UndoRoots: PUndoRoot = Nil;

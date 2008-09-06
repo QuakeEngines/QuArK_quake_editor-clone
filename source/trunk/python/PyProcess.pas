@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2008/09/06 15:31:52  danielpharos
+Moved old-compatibility code to ExtraFunctionality.
+
 Revision 1.6  2005/09/28 10:49:03  peter-b
 Revert removal of Log and Header keywords
 
@@ -76,7 +79,7 @@ function EmptyInputPipe : THandle;
 
 implementation
 
-uses PyObjects, QkForm, Qk1, Console, ExtraFunctionality;
+uses PyObjects, QkExceptions, QkForm, Qk1, Console, ExtraFunctionality;
 
  {-------------------}
 

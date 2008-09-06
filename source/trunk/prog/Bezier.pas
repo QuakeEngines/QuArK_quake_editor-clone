@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.33  2007/04/12 15:04:43  danielpharos
+BIG moving around of code. All the .map save routines should now be in QkMap. This will allow easy changes, and will simplify future map format support.
+
 Revision 1.32  2007/04/09 21:44:24  danielpharos
 Started work on Doom 3 map version 2 and Quake 4 map version 3.
 
@@ -116,7 +119,7 @@ unit Bezier;
 interface
 
 uses Windows, SysUtils, Classes, Python, qmath, qmatrices, PyMath, QkObjects,
-     Quarkx, Setup, QkMapObjects, QkMapPoly, Qk3D;
+     QkMapObjects, QkMapPoly, Qk3D;
 
  {------------------------}
 
@@ -206,7 +209,7 @@ function TriangleSTCoordinates(const cp: TBezierMeshBuf5; I, J: Integer) : vec_s
 
 implementation
 
-uses PyMapView, PyObjects, QkObjectClassList;
+uses QuarkX, QkExceptions, Setup, PyMapView, PyObjects, QkObjectClassList;
 
  (*    QUADRATIC BEZIER PATCHES
   *

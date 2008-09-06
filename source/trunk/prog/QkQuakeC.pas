@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2007/08/14 16:33:00  danielpharos
+HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
+
 Revision 1.9  2005/09/28 10:48:32  peter-b
 Revert removal of Log and Header keywords
 
@@ -110,7 +113,7 @@ procedure CompilerPatches(L: TQList; var CfgFile: String);
 
 implementation
 
-uses Undo, Qk1, Setup, FormCfg, Quarkx, QPAcc, Game,
+uses Undo, Qk1, Setup, FormCfg, Quarkx, QkExceptions, QPAcc, Game,
      QkUnknown, Keys, Travail, QkObjectClassList;
 
 {$R *.DFM}

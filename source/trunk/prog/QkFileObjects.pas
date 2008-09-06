@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.55  2008/08/26 15:11:49  danielpharos
+Added filename of broken qrk source file to error-message.
+
 Revision 1.54  2008/08/09 19:40:23  danielpharos
 Translated a function call
 
@@ -341,7 +344,6 @@ function LocalDoAccept(Ac: TControl) : Boolean;
 function GlobalDoCancel{(Sender: TObject)} : Boolean;
 procedure GlobalWarning(const Texte: String);
 procedure GlobalDisplayWarnings;
-function GetExceptionMessage(E: Exception) : String;
 function OpenFileObjectData(F: TStream; const FullName: String; var Size: LongInt; nParent: QObject) : QFileObject;
 procedure DeleteTempFiles;
 function SaveObject(FFileObject: QFileObject; AskName, FileType: Integer; ParentForm: TCustomForm; AddToRecentsList: Boolean = true) : QFileObject;
@@ -365,7 +367,7 @@ function MakeTempFileName(const Tag: String) : String;
 implementation
 
 uses Qk1, Undo, QkExplorer, Setup, qmath, QkGroup, Travail, QkOwnExplorer,
-  QkFileExplorer, QkUnknown, Toolbar1, Quarkx, QkInclude, PyObjects,
+  QkFileExplorer, QkUnknown, Toolbar1, Quarkx, QkExceptions, QkInclude, PyObjects,
   PyForms, QkTreeView, Game, QkObjectClassList, QkApplPaths, ExtraFunctionality;
 
 {$R *.DFM}
@@ -696,21 +698,6 @@ begin
          Result:=False;
     end;
  {end;}
-end;
-
-function GetExceptionMessage(E: Exception) : String;
-var
- I: Integer;
-begin
- Result:=E.Message;
- I:=Pos('//', Result);
- if I>0 then
-  begin
-   SetLength(Result, I);
-   Result[I]:='.';
-  end
- else
-  Result:=Result+'.';
 end;
 
  {------------------------}

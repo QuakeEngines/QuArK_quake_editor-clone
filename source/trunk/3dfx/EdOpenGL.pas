@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.72  2008/04/11 09:42:14  danielpharos
+Fix the few remaining OpenGL transparency issues: transparent faces on top of each other not drawing, and wrong drawing order.
+
 Revision 1.71  2008/02/23 18:54:05  danielpharos
 A lot of improvements to the OpenGL error messages.
 
@@ -361,7 +364,7 @@ procedure CheckOpenGLError(const Location: String);
 
 implementation
 
-uses SysUtils, Quarkx, Setup, Python, Logging, {Math,}
+uses SysUtils, Quarkx, QkExceptions, Setup, Python, Logging, {Math,}
      QkObjects, QkMapPoly, QkPixelSet, QkForm, SystemDetails, DWM;
 
  {------------------------}

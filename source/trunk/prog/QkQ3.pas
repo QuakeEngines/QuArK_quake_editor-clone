@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.37  2008/08/26 16:21:51  danielpharos
+Added filename of broken shader/material file to error-message.
+
 Revision 1.36  2008/04/26 15:31:54  danielpharos
 Changed the way the default shader image is found to be more like the new Doom 3 code.
 
@@ -128,7 +131,7 @@ unit QkQ3;
 interface
 
 uses
-  SysUtils, Windows, Classes, QkZip2, QkFileObjects, Quarkx, QkObjects, QkText,
+  SysUtils, Windows, Classes, QkZip2, QkFileObjects, QkObjects, QkText,
   QkJpg, QkTextures, Setup, QkWad, QkPixelSet;
 
 type
@@ -188,7 +191,7 @@ type
 
 implementation
 
-uses Game, Travail, QkObjectClassList, Logging;
+uses QuarkX, QkExceptions, Game, Travail, QkObjectClassList, Logging;
 
 procedure Q_HFile.ObjectState(var E: TEtatObjet);
 begin

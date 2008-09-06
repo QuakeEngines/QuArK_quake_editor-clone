@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2007/03/11 12:03:10  danielpharos
+Big changes to Logging. Simplified the entire thing.
+
 Revision 1.9  2007/02/07 18:48:34  danielpharos
 Fixes for memory leaks
 
@@ -69,7 +72,7 @@ implementation
 uses
  SysUtils,
  {$IFDEF Debug} MemTester, {$ENDIF}
- QkFileObjects, Quarkx,Logging;
+ QkFileObjects, Quarkx, QkExceptions, Logging;
 
 var
  QObjectClassList: TStringList = Nil;

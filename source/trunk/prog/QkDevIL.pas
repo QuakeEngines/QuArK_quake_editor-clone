@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2008/09/06 13:26:34  danielpharos
+Correctly retrieve dlls directory.
+
 Revision 1.14  2008/09/03 13:14:57  danielpharos
 Small clean-up.
 
@@ -64,8 +67,6 @@ Added DDS file support. Fixed wrong (but unused then) DevIL DDL interface. DDS f
 
 Revision 1.1  2007/04/30 21:52:55  danielpharos
 Added basic interface to DevIL.
-
-
 
 }
 
@@ -321,7 +322,7 @@ procedure CheckDevILError(DevILError: DevILError);
 
 implementation
 
-uses Setup, Quarkx, Logging, QkApplPaths;
+uses Setup, QkExceptions, Logging, QkApplPaths;
 
 var
   TimesLoaded: Integer;

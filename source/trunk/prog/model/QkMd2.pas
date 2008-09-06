@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2007/12/19 12:41:39  danielpharos
+Small code clean-up
+
 Revision 1.10  2007/12/06 22:57:40  danielpharos
 Fix typo and indentation mistake.
 
@@ -116,7 +119,7 @@ const
 
 implementation
 
-uses QuarkX, Setup, Travail, QkObjectClassList;
+uses QuarkX, QkExceptions, Setup, Travail, QkObjectClassList;
 
 class function QMd2File.TypeInfo;
 begin

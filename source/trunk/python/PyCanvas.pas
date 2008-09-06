@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2007/11/20 21:29:39  danielpharos
+Moved most of the DIB-calls to PixelSet, and added padding there. This should fix the few remaining image drawing issues.
+
 Revision 1.10  2007/08/14 16:33:00  danielpharos
 HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
 
@@ -75,7 +78,7 @@ var
 implementation
 
 uses qmath, PyObjects, PyImages, QkObjects, QkTextures, Game, Setup,
-     PyMath, Qk3D, QkImages, QkPixelSet;
+     PyMath, Qk3D, QkImages, QkPixelSet, QkExceptions;
 
  {------------------------}
 

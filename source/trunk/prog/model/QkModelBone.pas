@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2008/08/07 17:17:17  cdunde
+Removed end_offset from source code completely, just using end_point instead, by DanielPharos.
+
 Revision 1.15  2008/08/06 02:08:06  cdunde
 Disabled Delphi drawing for now and switch end_offset functionality to end_point, by DanielPharos.
 
@@ -120,9 +123,13 @@ type
     property ParentComponent: QObject read Component write Component;
   end;
 
+ {------------------------}
+
 implementation
 
-uses qk3d, pymath, quarkx, QkObjectClassList, QkMiscGroup;
+uses qk3d, pymath, quarkx, QkExceptions, QkObjectClassList, QkMiscGroup;
+
+ {------------------------}
 
 function QModelBone.IsAllowedParent(Parent: QObject) : Boolean;
 begin

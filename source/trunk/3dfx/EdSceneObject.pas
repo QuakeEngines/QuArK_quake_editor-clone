@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.42  2008/02/21 21:16:24  danielpharos
+Small bug fixes.
+
 Revision 1.41  2008/02/21 21:15:24  danielpharos
 Huge OpenGL change: Should fix OpenGL hangs, and maybe speed up OpenGL a bit.
 
@@ -393,8 +396,8 @@ procedure GetwhForTexture(const info: GrTexInfo; var w,h: Integer);
 
 implementation
 
-uses SysUtils,
-     Travail, Quarkx, Setup,
+uses SysUtils, ExtraFunctionality,
+     Travail, Quarkx, QkExceptions, Setup,
      QkMdlObject, QkTextures, QkImages, QkFileObjects,
      EdOpenGL;
      {EdTListP2;}

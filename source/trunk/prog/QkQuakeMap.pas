@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2008/04/23 20:12:38  cdunde
+Setup for Warsow with .md3 model support.
+
 Revision 1.10  2008/04/04 19:24:43  cdunde
 Setup a new game support for NEXUIZ with .md3 model displaying.
 
@@ -132,8 +135,8 @@ procedure SaveAsMapTextTDuplicator(ObjectToSave: QObject; GameCode: Char; MapVer
 implementation
 
 uses
-  Windows, Graphics, StrUtils, Setup, Game, Quarkx, Travail, Logging, PyForms,
-  Bezier, Duplicator, QkPixelSet, QkMap, QkVMF, QkQ2, qmatrices,
+  Windows, Graphics, StrUtils, Setup, Game, Quarkx, QkExceptions, Travail, Logging,
+  PyForms, Bezier, Duplicator, QkPixelSet, QkMap, QkVMF, QkQ2, qmatrices,
   Qk3D, QkBspHulls, QkObjectClassList, MapError;
 
 var

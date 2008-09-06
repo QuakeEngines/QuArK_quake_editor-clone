@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.17  2008/04/25 20:42:34  danielpharos
+Added experimental 'e' shader keyword.
+
 Revision 1.16  2008/02/23 19:25:21  danielpharos
 Moved a lot of path/file code around: should make it easier to use
 
@@ -77,6 +80,7 @@ Re-did the entire VMT file loading! It's using the VTFLib now. Saving VMT files 
 unit QkVMT;
 
 interface
+
 uses Windows, Classes, QkWad, QkPixelSet, QkObjects, QkFileObjects, QkVTFLib;
 
 type
@@ -106,8 +110,8 @@ type
 
 implementation
 
-uses SysUtils, Setup, Quarkx, QkObjectClassList, Game, Logging, QkVTF, StrUtils,
-     ExtraFunctionality, QkApplPaths;
+uses SysUtils, Setup, Quarkx, QkExceptions, QkObjectClassList, Game, Logging,
+     QkVTF, StrUtils, ExtraFunctionality, QkApplPaths;
 
 var
   VMTLoaded: Boolean;

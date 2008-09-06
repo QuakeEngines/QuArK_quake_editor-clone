@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.64  2008/02/23 19:25:20  danielpharos
+Moved a lot of path/file code around: should make it easier to use
+
 Revision 1.63  2007/07/05 10:19:45  danielpharos
 Moved the Quake .map format code to a separate file.
 
@@ -545,7 +548,7 @@ function BspType : Char; overload;
 implementation
 
 uses Travail, QkWad, Setup, QkText, QkQuakeMap, QkBspHulls,
-     Undo, Quarkx, PyForms, QkObjectClassList, ToolBox1,
+     Undo, Quarkx, QkExceptions, PyForms, QkObjectClassList, ToolBox1,
      ToolBoxGroup, QkQuakeCtx, FormCFG, Logging, QkTextures, QkQ1, QkFormCfg;
 
 {$R *.DFM}

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.27  2007/09/10 10:24:17  danielpharos
+Build-in an Allowed Parent check. Items shouldn't be able to be dropped somewhere where they don't belong.
+
 Revision 1.26  2007/07/20 01:31:10  cdunde
 To setup selected model mesh faces so they will draw correctly in all views.
 
@@ -174,8 +177,8 @@ type
 
 implementation
 
-uses PyMapView, quarkx, travail, pyobjects, QkModelRoot,
-     EdSceneObject, QkObjectClassList, logging, QkModelBone,
+uses PyMapView, QuarkX, QkExceptions, Travail, PyObjects, QkModelRoot,
+     EdSceneObject, QkObjectClassList, Logging, QkModelBone,
      QkMiscGroup;
 
 var

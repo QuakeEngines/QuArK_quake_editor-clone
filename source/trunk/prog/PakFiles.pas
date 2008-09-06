@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2008/02/23 19:25:21  danielpharos
+Moved a lot of path/file code around: should make it easier to use
+
 Revision 1.2  2007/08/21 23:43:44  danielpharos
 Another fix to the HL2 building process.
 
@@ -60,7 +63,7 @@ function FindNextAvailablePakFilename(Force: Boolean) : String;
 
 implementation
 
-uses StrUtils, SysUtils, Setup, Game, QkPak, Quarkx, QkApplPaths;
+uses StrUtils, SysUtils, Setup, Game, QkPak, Quarkx, QkExceptions, QkApplPaths;
 
 function IsPakTemp(const theFilename: String) : Boolean;
 var

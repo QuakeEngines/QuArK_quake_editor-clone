@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2008/05/29 21:36:31  danielpharos
+Imported new features of GCFs from Adam Quest, and some generic cleaning up.
+
 Revision 1.17  2008/05/16 20:57:50  danielpharos
 Use centralized call to get correct directory
 
@@ -83,7 +86,7 @@ unit QkGCF;
 
 interface
 
-uses  Windows,  SysUtils, Classes, QkObjects, QkFileObjects, QkPak;
+uses  Windows, SysUtils, Classes, QkObjects, QkFileObjects, QkPak;
 
 type
  QGCFFolder = class(QPakFolder)
@@ -113,7 +116,7 @@ procedure GCFDLLConversionTool(packagefile: PChar; textfile: PChar);
 
 implementation
 
-uses Quarkx, PyObjects, Game, QkObjectClassList, Logging, QkApplPaths;
+uses Quarkx, QkExceptions, PyObjects, Game, QkObjectClassList, Logging, QkApplPaths;
 
 const RequiredGCFAPI = 2;
 var

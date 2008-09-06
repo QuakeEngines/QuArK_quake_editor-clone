@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2007/03/25 13:52:25  danielpharos
+Moved a few dictionnary words around.
+
 Revision 1.8  2007/02/06 13:08:47  danielpharos
 Fixes for transparency. It should now work (more or less) correctly in all renderers that support it.
 
@@ -87,7 +90,7 @@ function CheckQ2MiptexEx(const Header: TQ2Miptex; HSize, FileSize: Integer; Offs
 implementation
 
 uses
-  SysUtils, Quarkx, QkQuakeCtx, Setup, QkObjectClassList;
+  SysUtils, Quarkx, QkExceptions, QkQuakeCtx, Setup, QkObjectClassList;
 
  { --------------- }
 

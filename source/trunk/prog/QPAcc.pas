@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2007/03/17 14:32:38  danielpharos
+Moved some dictionary entries around, moved some error messages into the dictionary and added several new error messages to improve feedback to the user.
+
 Revision 1.8  2005/09/28 10:48:31  peter-b
 Revert removal of Log and Header keywords
 
@@ -125,7 +128,7 @@ procedure Compiler(Patch: TStrings; Source, Dest: TStream;
 
 implementation
 
-uses {Tableaux,} Quarkx;
+uses {Tableaux,} Quarkx, QkExceptions;
 
 const
  FacteurT : ARRAY[1..6] OF LONGINT = (8, 8, 8, 36, 1, 4);

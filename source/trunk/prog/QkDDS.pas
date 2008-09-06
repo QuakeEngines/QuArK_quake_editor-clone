@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2008/08/28 22:14:04  danielpharos
+Removed code left behind on prev rev.
+
 Revision 1.17  2008/08/28 19:01:15  danielpharos
 Added a bunch of DevIL setting, and re-enabled DevIL DDS file saving.
 
@@ -105,7 +108,8 @@ type
 
 implementation
 
-uses SysUtils, Setup, Quarkx, QkObjectClassList, Game, Logging, QkApplPaths;
+uses SysUtils, Setup, Quarkx, QkExceptions, QkObjectClassList,
+     Game, Logging, QkApplPaths;
 
 class function QDDS.FormatName : String;
 begin

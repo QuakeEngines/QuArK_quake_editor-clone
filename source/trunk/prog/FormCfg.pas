@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.42  2008/08/21 11:42:22  danielpharos
+Stop allowing changing of specifics when AllowEdit is not set.
+
 Revision 1.41  2008/04/19 14:28:07  cdunde
 To activate RMB menu items.
 
@@ -281,8 +284,8 @@ function FontToString(Font: TFont) : String;
 implementation
 
 uses QkUnknown, Undo, TbPalette, QkFileObjects, Toolbar1, ToolBox1,
-     Setup, QkInclude, QkMacro, QkImages, QkTextures,
-     Python, Quarkx, PyMacros, PyToolbars, PyForms, QkPixelSet, QkObjectClassList,
+     Setup, QuarkX, QkExceptions, QkInclude, QkMacro, QkImages, QkTextures,
+     Python, PyMacros, PyToolbars, PyForms, QkPixelSet, QkObjectClassList,
      ExtraFunctionality;
 
 const

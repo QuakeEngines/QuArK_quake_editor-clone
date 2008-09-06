@@ -23,6 +23,11 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2006/05/05 06:04:44  cdunde
+To reverse Texture Memory changes. Cases problems with Quake 3 QkQ3.pas
+handling of textures in the Texture Browser, hour glass icon jitters and memeor usage
+increases causing prog crash, can not use scrole bar in TB.
+
 Revision 1.10  2006/04/06 19:28:06  nerdiii
 Texture memory wasn't freed because texture links had additional references to them.
 
@@ -106,7 +111,7 @@ function CheckQ1Miptex(var Header: TQ1Miptex; FileSize: Integer) : Integer;
 implementation
 
 uses
-  Quarkx, Setup, QkObjectClassList;
+  Quarkx, QkExceptions, Setup, QkObjectClassList;
 
  { --------------- }
 

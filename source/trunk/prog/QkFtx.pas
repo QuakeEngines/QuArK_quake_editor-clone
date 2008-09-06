@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2008/03/29 15:25:58  danielpharos
+Fix some possible PSD leaks.
+
 Revision 1.1  2008/01/31 16:07:18  danielpharos
 Added FTX file loading and saving support (Heavy Metal: F.A.K.K. 2 textures).
 
@@ -49,7 +52,7 @@ type
 
 implementation
 
-uses Quarkx, QkObjectClassList;
+uses Quarkx, QkExceptions, QkObjectClassList;
 
 type
  TFtxHeader = record

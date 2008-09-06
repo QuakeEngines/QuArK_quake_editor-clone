@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.26  2007/09/23 21:44:30  danielpharos
+Switch DirectX to dynamic explicit loading: it should work on WinNT4 again! Also fixed the access violations that popped up when loading of DirectX went wrong.
+
 Revision 1.25  2007/09/23 21:04:31  danielpharos
 Add Desktop Window Manager calls to disable Desktop Composition on Vista. This should fix/workaround corrupted OpenGL and DirectX viewports.
 
@@ -202,7 +205,7 @@ var
 
 implementation
 
-uses Logging, Quarkx, Setup, SysUtils, DWM, SystemDetails,
+uses Logging, Quarkx, QkExceptions, Setup, SysUtils, DWM, SystemDetails,
      QkObjects, QkMapPoly, DXTypes, D3DX9, Direct3D, DXErr9;
 
 type

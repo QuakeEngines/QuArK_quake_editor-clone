@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2007/10/30 20:24:38  danielpharos
+Fix a typo
+
 Revision 1.13  2007/09/11 08:16:34  danielpharos
 Build-in an Allowed Parent check. Items shouldn't be able to be dropped somewhere where they don't belong.
 
@@ -142,7 +145,7 @@ const
 
 implementation
 
-uses Quarkx, QkFileObjects, QkObjectClassList, QkExplorer;
+uses Quarkx, QkExceptions, QkFileObjects, QkObjectClassList, QkExplorer;
 
  {-------------------}
 

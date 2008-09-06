@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.69  2008/09/06 15:34:39  danielpharos
+Log exception of exception handler.
+
 Revision 1.68  2008/09/06 13:25:59  danielpharos
 Fall back to old exception handling when QuArK's handler fails.
 
@@ -478,7 +481,7 @@ uses Undo, QkQuakeC, Setup, Config, ToolBox1, Game, QkOwnExplorer,
   ObjProp, qmath, QkInclude, Running, Output1, QkTreeView, PyProcess,
   Console, Python, Quarkx, About, {$IFDEF Debug} MemTester, {$ENDIF}
   PyMapView, PyForms, Qk3D, EdSceneObject, QkObjectClassList, QkApplPaths,
-  QkQuakeCtx, QkSteamFS, AutoUpdater, Logging;
+  QkExceptions, QkQuakeCtx, QkSteamFS, AutoUpdater, Logging;
 
 var
   g_Mutex: THandle = 0;

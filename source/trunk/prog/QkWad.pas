@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.28  2007/08/14 16:33:00  danielpharos
+HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
+
 Revision 1.27  2006/05/05 06:04:44  cdunde
 To reverse Texture Memory changes. Cases problems with Quake 3 QkQ3.pas
 handling of textures in the Texture Browser, hour glass icon jitters and memeor usage
@@ -187,8 +190,8 @@ type
 
 implementation
 
-uses QkUnknown, Travail, Qk1, Setup, Quarkx, QkHL
-  ,QkQ1, QkObjectClassList;
+uses QkUnknown, Travail, Qk1, Setup, Quarkx, QkExceptions, QkHL,
+     QkQ1, QkObjectClassList;
 
 {$R *.DFM}
 

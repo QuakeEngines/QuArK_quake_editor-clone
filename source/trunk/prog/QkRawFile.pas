@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2005/09/28 10:48:32  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.10  2001/03/20 21:44:00  decker_dk
 Updated copyright-header
 
@@ -141,7 +144,7 @@ type
 
 implementation
 
-uses QkUnknown, Quarkx;
+uses QkUnknown, Quarkx, QkExceptions;
 
 {$R *.DFM}
 

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.50  2008/07/17 14:37:11  danielpharos
+Moved pre-Delphi6+ function into ExtraFunctionality
+
 Revision 1.49  2007/08/14 16:32:59  danielpharos
 HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
 
@@ -376,7 +379,7 @@ function ControleSelection(T: TTreeMap) : Boolean;
 
 implementation
 
-uses Setup, QkMapPoly, Undo, FormCfg, Game, QkMacro, Quarkx, PyMath,
+uses Setup, QkMapPoly, Undo, FormCfg, Game, QkMacro, Quarkx, QkExceptions, PyMath,
      PyMapView, PyObjects, QkImages, Bezier, EdSceneObject,
      QkObjectClassList, QkMD3, QKModelFile, QkModelRoot, ExtraFunctionality;
 

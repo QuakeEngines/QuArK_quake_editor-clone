@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2005/09/28 10:49:03  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.4  2001/06/05 18:42:56  decker_dk
 Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
 
@@ -70,7 +73,7 @@ procedure PythonDrop(nForm: TForm; lParam: LongInt; Button: Boolean);
 
 implementation
 
-uses QkForm, Quarkx, PyForms, PyFloating, QkObjects,
+uses QkExceptions, QkForm, Quarkx, PyForms, PyFloating, QkObjects,
      QkExplorer, PyObjects, PyToolbars;
 
  {-------------------}

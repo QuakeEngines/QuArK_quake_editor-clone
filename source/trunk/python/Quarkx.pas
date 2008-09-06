@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.74  2008/08/16 13:40:14  danielpharos
+Oops
+
 Revision 1.73  2008/08/16 13:37:59  danielpharos
 Make sure Python loading/unloading only happens when appropriate.
 
@@ -241,7 +244,7 @@ interface
 
 {$I DelphiVer.inc}
 
-uses Windows, Messages, ShellApi, SysUtils, ExtraFunctionality, Python, Forms,
+uses Windows, Messages, ShellApi, SysUtils, Python, Forms,
      Menus;
 
 const
@@ -276,11 +279,8 @@ function FmtLoadStr1(I: Integer; Args: array of const) : String;
 function PyNoResult : PyObject;
 function GetEmptyTuple : PyObject;
 procedure SimpleDestructor(o: PyObject); cdecl;
-function EError(Res: Integer) : Exception;
-function EErrorFmt(Res: Integer; Fmt: array of const) : Exception;
 procedure EBackToPython;
 procedure EBackToUser;
-function GetExceptionMessage(E: Exception) : String;
 function CallNotifyEvent(self, fnt: PyObject; Hourglass: Boolean) : Boolean;
 function GetPythonValue(value, args: PyObject; Hourglass: Boolean) : PyObject;
 function CallMacro(self: PyObject; const fntname: String) : PyObject;
@@ -312,7 +312,7 @@ uses Classes, Dialogs, Graphics, CommCtrl, ExtCtrls, Controls,
      Console, Game, {$IFDEF CompiledWithDelphi2} ShellObj, {$ELSE} ShlObj, {$ENDIF}
      PakFiles, Reg2, SearchHoles, QkMapPoly, HelpPopup1,
      PyForms, QkPixelSet, Bezier, Logging, QkObjectClassList,
-     QkApplPaths, MapError, StrUtils, QkImages, QkGCF;
+     QkApplPaths, MapError, StrUtils, QkImages, QkGCF, QkExceptions, ExtraFunctionality;
 
  {-------------------}
 
@@ -3428,18 +3428,6 @@ end;
 
  {-------------------}
 
-function EError(Res: Integer) : Exception;
-begin
- PythonCodeEnd;
- EError:=Exception.Create(LoadStr1(Res));
-end;
-
-function EErrorFmt(Res: Integer; Fmt: array of const) : Exception;
-begin
- PythonCodeEnd;
- EErrorFmt:=Exception.Create(FmtLoadStr1(Res, Fmt));
-end;
-
 procedure EBackToPython;
 var
  S: String;
@@ -3473,21 +3461,6 @@ begin
     g_Form1.AppException(Nil, Exception(ExceptObject));
     PyErr_SetString(QuarkxAborted, PChar(S));
    end;
-end;
-
-function GetExceptionMessage(E: Exception) : String;
-var
- I: Integer;
-begin
- Result:=E.Message;
- I:=Pos('//', Result);
- if I>0 then
-  begin
-   SetLength(Result, I);
-   Result[I]:='.';
-  end
- else
-  Result:=Result+'.';
 end;
 
 var ProbableCauseOfFatalError: array[-9..6] of String = (

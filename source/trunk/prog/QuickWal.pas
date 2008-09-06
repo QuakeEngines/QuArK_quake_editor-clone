@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.43  2008/02/23 19:25:21  danielpharos
+Moved a lot of path/file code around: should make it easier to use
+
 Revision 1.42  2007/05/06 21:23:00  danielpharos
 Fixed the name of the scripts folder for EF2.
 Changed DDS support to be EF2-specific.
@@ -197,7 +200,7 @@ function ListPakFiles(const Path: String) : TStringList;
 implementation
 
 uses QkGroup, Game, QkTextures, QkWad, QkExplorer,
-  Quarkx, Travail, ToolBox1, QkPak, QkFileObjects, QkHL, ToolBoxGroup,
+  Quarkx, QkExceptions, Travail, ToolBox1, QkPak, QkFileObjects, QkHL, ToolBoxGroup,
   Setup, QkQ3, OsFolder, QkD3, QkApplPaths;
 
 {$R *.DFM}

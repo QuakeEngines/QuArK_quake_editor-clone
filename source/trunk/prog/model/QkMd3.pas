@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.39  2008/07/17 14:47:58  danielpharos
+Big (experimental) change to model bones, tags and boundframes
+
 Revision 1.38  2008/04/23 20:12:38  cdunde
 Setup for Warsow with .md3 model support.
 
@@ -171,7 +174,7 @@ type
 
 implementation
 
-uses QuarkX, Setup, QkObjectClassList, Game, QkQ3, QkPixelset,
+uses QuarkX, QkExceptions, Setup, QkObjectClassList, Game, QkQ3, QkPixelset,
      Logging, Travail;
 
 const

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.71  2008/08/28 10:09:32  danielpharos
+Added some comment.
+
 Revision 1.70  2008/08/09 19:40:28  danielpharos
 Translated a function call
 
@@ -420,7 +423,7 @@ function InternalVersion : Single;
 implementation
 
 uses QkMapObjects, Travail, Game, Console, QkGroup, QkForm, Qk1,
-     ToolBox1, Toolbar1, QkQuakeCtx, Quarkx, Python, PyMapView,
+     ToolBox1, Toolbar1, QkQuakeCtx, Quarkx, QkExceptions, Python, PyMapView,
      PyObjects, PyForms, Qk3D, EdSceneObject, QkObjectClassList, QkApplPaths,
      ExtraFunctionality{$IFDEF Debug}, Logging{$ENDIF};
 
@@ -675,6 +678,7 @@ begin
  except
   on E: Exception do
    begin
+    //FIXME: We shouldn't call this like this... MessageException should be private IMHO (DanielPharos)
     g_Form1.MessageException(E, LoadStr1(5204), [mbOk]);
     Halt(1);   { cannot load Defaults.qrk - fatal error }
     Exit;

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.105  2008/08/09 19:40:22  danielpharos
+Translated a function call
+
 Revision 1.104  2008/08/07 15:23:06  danielpharos
 Re-enable turned off error catchers
 
@@ -775,7 +778,7 @@ implementation
 uses
   {$IFDEF Debug} MemTester, {$ENDIF}
   QkObjectClassList, QkFileObjects, QkExplorer, Travail,
-  PyObjects, PyImages, Quarkx, Qk1, Logging{, ExtraFunctionality};
+  PyObjects, PyImages, Quarkx, QkExceptions, Qk1, Logging{, ExtraFunctionality};
 
  {------------------------}
 
