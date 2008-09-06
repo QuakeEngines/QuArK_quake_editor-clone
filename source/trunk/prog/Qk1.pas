@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.68  2008/09/06 13:25:59  danielpharos
+Fall back to old exception handling when QuArK's handler fails.
+
 Revision 1.67  2008/08/26 16:43:08  danielpharos
 Log critical errors whenever possible; that's what the log is for!
 
@@ -2191,6 +2194,7 @@ begin
  except
    //If anything goes wrong with QuArK's exception handling, use the old one
    OldException(Sender, E);
+   Log(LOG_ALWAYS, Format('Error: Exception in exception handler: %s', [GetExceptionMessage(E)]));
  end;
 end;
 
@@ -2217,7 +2221,7 @@ begin
  if E.HelpContext<>0 then Include(Buttons, mbHelp);
  S:=Format(Info, [GetExceptionMessage(E)]);
  try
-   Log(LOG_ALWAYS, S);
+   Log(LOG_ALWAYS, 'Error: '+S);
  except
    //Ignore any errors here
  end;
