@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.67  2008/08/26 16:43:08  danielpharos
+Log critical errors whenever possible; that's what the log is for!
+
 Revision 1.66  2008/08/16 13:34:44  danielpharos
 Always run the FormDestroy of TForm1 to clean up.
 
@@ -2183,7 +2186,12 @@ end;
 
 procedure TForm1.AppException(Sender: TObject; E: Exception);
 begin
- MessageException(E, '%s', [mbOk]);
+ try
+   MessageException(E, '%s', [mbOk]);
+ except
+   //If anything goes wrong with QuArK's exception handling, use the old one
+   OldException(Sender, E);
+ end;
 end;
 
 function TForm1.MessageException(E: Exception; const Info: String; Buttons: TMsgDlgButtons) : TModalResult;

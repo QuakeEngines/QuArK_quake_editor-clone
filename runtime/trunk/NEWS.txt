@@ -15,6 +15,10 @@ $Id$
 6.6.0 Beta 2
 ============
 
+* [DanielPharos]: Fixes to exception handling. Now exceptions are logged, and if
+          - anything goes wrong with QuArK's exception handling, this doesn't produce
+          - a whole stream of weird generic pop-ups with runtime errors.
+
 * [DanielPharos]: Fixed saving of paletted images padding bug, loading (and saving)
           - images from non-compressed pack files, PCX file saving is now working in
           - DevIL, fixed DDS saving of paletted images, added a bunch of DevIL settings,
