@@ -23,25 +23,28 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.1  2008/09/06 15:57:23  danielpharos
+Moved exception code into separate file.
 
 }
-
 
 unit QkExceptions;
 
 interface
 
-uses SysUtils;
+uses Windows, SysUtils;
 
 function GetExceptionMessage(E: Exception) : String;
+procedure LogAndRaiseError(ErrMessage : String);
 function EError(Res: Integer) : Exception;
 function EErrorFmt(Res: Integer; Fmt: array of const) : Exception;
+function GetSystemErrorMessage(ErrNr: DWORD) : String;
 
  {-------------------}
 
 implementation
 
-uses Quarkx;
+uses Quarkx, Logging;
 
  {-------------------}
 
@@ -60,6 +63,12 @@ begin
   Result:=Result+'.';
 end;
 
+procedure LogAndRaiseError(ErrMessage : String);
+begin
+  Log(LOG_CRITICAL, ErrMessage);
+  Raise Exception.Create(ErrMessage);
+end;
+
 function EError(Res: Integer) : Exception;
 begin
  PythonCodeEnd;
@@ -70,6 +79,20 @@ function EErrorFmt(Res: Integer; Fmt: array of const) : Exception;
 begin
  PythonCodeEnd;
  EErrorFmt:=Exception.Create(FmtLoadStr1(Res, Fmt));
+end;
+
+//From http://www.swissdelphicenter.ch/torry/showcode.php?id=282:
+function GetSystemErrorMessage(ErrNr: DWORD) : String;
+var
+  P: PChar;
+begin
+  if FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER + FORMAT_MESSAGE_FROM_SYSTEM, nil, ErrNR, 0, @P, 0, nil) <> 0 then
+  begin
+    Result:=P;
+    LocalFree(Integer(P));
+  end
+  else
+    Result:='';
 end;
 
 end.

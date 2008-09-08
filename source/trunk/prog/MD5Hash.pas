@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2008/05/16 20:57:49  danielpharos
+Use centralized call to get correct directory
+
 Revision 1.3  2007/12/19 12:41:26  danielpharos
 Constantified some variables
 
@@ -49,7 +52,7 @@ function Md5GetRandomHash: string;
 
 implementation
 
-uses Setup, Quarkx, Logging, QkApplPaths;
+uses Setup, Quarkx, QkExceptions, Logging, QkApplPaths;
 
 var
   GetFileMd5: function(szFileName: LPSTR): LPSTR; cdecl;
@@ -60,18 +63,11 @@ var
   TimesLoaded: Integer;
   HMd5Hash  : HMODULE;
 
-procedure LogError(x:string);
-begin
-  Log(LOG_CRITICAL, x);
-  Windows.MessageBox(0, pchar(X), PChar(LoadStr1(401)), MB_TASKMODAL or MB_ICONERROR or MB_OK);
-  //Raise Exception.Create(x);
-end;
-
 function InitDllPointer(DLLHandle: HMODULE;APIFuncname:PChar):Pointer;
 begin
    result:= GetProcAddress(DLLHandle, APIFuncname);
    if result=Nil then
-     LogError('API Func "'+APIFuncname+ '" not found in dlls/md5dll.dll');
+     LogAndRaiseError('API Func "'+APIFuncname+ '" not found in dlls/md5dll.dll');
 end;
 
 function LoadMd5Hash : Boolean;
@@ -85,7 +81,7 @@ begin
       HMd5Hash := LoadLibrary(PChar(GetQPath(pQuArKDll)+'md5dll.dll'));
       if HMd5Hash = 0 then
       begin
-        LogError('Unable to load dlls/md5dll.dll');
+        LogAndRaiseError('Unable to load dlls/md5dll.dll');
         Exit;
       end;
 
@@ -112,7 +108,7 @@ begin
     if HMd5Hash <> 0 then
     begin
       if FreeLibrary(HMd5Hash) = false then
-        LogError('Unable to unload dlls/md5dll.dll');
+        LogAndRaiseError('Unable to unload dlls/md5dll.dll');
       HMd5Hash := 0;
 
       GetFileMd5        := nil;

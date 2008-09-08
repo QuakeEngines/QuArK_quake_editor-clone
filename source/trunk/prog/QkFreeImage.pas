@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2008/09/06 13:26:34  danielpharos
+Correctly retrieve dlls directory.
+
 Revision 1.6  2008/08/28 10:10:19  danielpharos
 Fix saving paletted images, loading images from pack files and duplicate error messages.
 
@@ -230,29 +233,22 @@ procedure UnloadFreeImage(ForceUnload: boolean);
 
 implementation
 
-uses Setup, Quarkx, Logging, QkApplPaths;
+uses Setup, Quarkx, QkExceptions, Logging, QkApplPaths;
 
 var
   TimesLoaded: Integer;
   HFreeImage  : HMODULE;
 
-procedure LogError(x:string);
-begin
-  Log(LOG_CRITICAL, x);
-  Raise Exception.Create(x);
-end;
-
 function InitDllPointer(DLLHandle: HMODULE;APIFuncname:PChar):Pointer;
 begin
    result:= GetProcAddress(DLLHandle, APIFuncname);
    if result=Nil then
-     LogError('API Func "'+APIFuncname+ '" not found in dlls/FreeImage.dll');
+     LogAndRaiseError('API Func "'+APIFuncname+ '" not found in dlls/FreeImage.dll');
 end;
 
 procedure FreeImageErrorHandler(fif : FREE_IMAGE_FORMAT; xmessage : PChar);
 begin
-  LogError(xmessage);
-  raise Exception.Create(xmessage);
+  LogAndRaiseError(xmessage);
 end;
 
 function LoadFreeImage : Boolean;
@@ -266,7 +262,7 @@ begin
       HFreeImage := LoadLibrary(PChar(GetQPath(pQuArKDll)+'FreeImage.dll'));
       if HFreeImage = 0 then
       begin
-        LogError('Unable to load dlls/FreeImage.dll');
+        LogAndRaiseError('Unable to load dlls/FreeImage.dll');
         Exit;
       end;
 
@@ -305,7 +301,7 @@ begin
       //DanielPharos: This is an ugly string comparison, but it should work.
       if FreeImage_GetVersion < '3.9.3' then
       begin
-        LogError('FreeImage library version mismatch!');
+        LogAndRaiseError('FreeImage library version mismatch!');
         Exit;
       end;
 
@@ -329,7 +325,7 @@ begin
     if HFreeImage <> 0 then
     begin
       if FreeLibrary(HFreeImage) = false then
-        LogError('Unable to unload dlls/FreeImage.dll');
+        LogAndRaiseError('Unable to unload dlls/FreeImage.dll');
       HFreeImage := 0;
 
       //FreeImage_Initialise            := nil;

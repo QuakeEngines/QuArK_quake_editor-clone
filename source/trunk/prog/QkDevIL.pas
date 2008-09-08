@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2008/09/06 15:57:29  danielpharos
+Moved exception code into separate file.
+
 Revision 1.15  2008/09/06 13:26:34  danielpharos
 Correctly retrieve dlls directory.
 
@@ -328,17 +331,11 @@ var
   TimesLoaded: Integer;
   HDevIL  : HMODULE;
 
-procedure LogError(x:string);
-begin
-  Log(LOG_CRITICAL, x);
-  Raise Exception.Create(x);
-end;
-
 function InitDllPointer(DLLHandle: HMODULE;APIFuncname:PChar):Pointer;
 begin
   result:=GetProcAddress(DLLHandle, APIFuncname);
   if result=Nil then
-    LogError('API Func "'+APIFuncname+ '" not found in dlls/DevIL.dll');
+    LogAndRaiseError('API Func "'+APIFuncname+ '" not found in dlls/DevIL.dll');
 end;
 
 function LoadDevIL : Boolean;
@@ -352,7 +349,7 @@ begin
       HDevIL := LoadLibrary(PChar(GetQPath(pQuArKDll)+'DevIL.dll'));
       if HDevIL = 0 then
       begin
-        LogError('Unable to load dlls/DevIL.dll');
+        LogAndRaiseError('Unable to load dlls/DevIL.dll');
         Exit;
       end;
 
@@ -392,7 +389,7 @@ begin
 
       if ilGetInteger(IL_VERSION_NUM) < 168 then
       begin
-        LogError('DevIL library version mismatch!');
+        LogAndRaiseError('DevIL library version mismatch!');
         Exit;
       end;
 
@@ -419,7 +416,7 @@ begin
       ilShutdown;
 
       if FreeLibrary(HDevIL) = false then
-        LogError('Unable to unload dlls/DevIL.dll');
+        LogAndRaiseError('Unable to unload dlls/DevIL.dll');
       HDevIL := 0;
 
       ilInit                := nil;

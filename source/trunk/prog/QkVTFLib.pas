@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2008/08/12 14:53:12  danielpharos
+Added a file version option to VTF file saving, and fixed a memory leak and a bug causing non-alpha images to contain alpha after importing them.
+
 Revision 1.18  2008/05/16 20:57:49  danielpharos
 Use centralized call to get correct directory
 
@@ -417,24 +420,17 @@ var
 
 implementation
 
-uses Setup, Quarkx, Logging, QkApplPaths;
+uses Setup, Quarkx, QkExceptions, Logging, QkApplPaths;
 
 var
   TimesLoaded: Integer;
   HVTFLib  : HMODULE;
 
-procedure LogError(x:string);
-begin
-  Log(LOG_CRITICAL, x);
-  Windows.MessageBox(0, pchar(X), PChar(LoadStr1(401)), MB_TASKMODAL or MB_ICONERROR or MB_OK);
-  //Raise Exception.Create(x);
-end;
-
 function InitDllPointer(DLLHandle: HMODULE;APIFuncname:PChar):Pointer;
 begin
    result:= GetProcAddress(DLLHandle, APIFuncname);
    if result=Nil then
-     LogError('API Func "'+APIFuncname+ '" not found in dlls/VTFLib.dll');
+     LogAndRaiseError('API Func "'+APIFuncname+ '" not found in dlls/VTFLib.dll');
 end;
 
 function LoadVTFLib : Boolean;
@@ -448,7 +444,7 @@ begin
       HVTFLib := LoadLibrary(PChar(GetQPath(pQuArKDll)+'VTFLib.dll'));
       if HVTFLib = 0 then
       begin
-        LogError('Unable to load dlls/VTFLib.dll');
+        LogAndRaiseError('Unable to load dlls/VTFLib.dll');
         Exit;
       end;
 
@@ -510,13 +506,13 @@ begin
 
       if vlGetVersion<125 then
       begin
-        LogError('VTFLib version mismatch!');
+        LogAndRaiseError('VTFLib version mismatch!');
         Exit;
       end;
 
       if vlInitialize=false then
       begin
-        LogError('Unable to initialize VTFLib!');
+        LogAndRaiseError('Unable to initialize VTFLib!');
         Exit;
       end;
     end;
@@ -540,7 +536,7 @@ begin
       vlShutdown;
 
       if FreeLibrary(HVTFLib) = false then
-        LogError('Unable to unload dlls/VTFLib.dll');
+        LogAndRaiseError('Unable to unload dlls/VTFLib.dll');
       HVTFLib := 0;
 
       vlGetVersion      := nil;
