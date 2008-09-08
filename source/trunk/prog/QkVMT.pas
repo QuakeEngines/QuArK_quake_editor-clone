@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2008/09/06 15:57:05  danielpharos
+Moved exception code into separate file.
+
 Revision 1.17  2008/04/25 20:42:34  danielpharos
 Added experimental 'e' shader keyword.
 
@@ -73,7 +76,6 @@ Added a few more keywords to find a texture for a VMT file.
 
 Revision 1.1  2007/03/15 22:19:13  danielpharos
 Re-did the entire VMT file loading! It's using the VTFLib now. Saving VMT files not supported yet.
-
 
 }
 
@@ -371,9 +373,8 @@ begin
         VMTLoaded:=true;
       end;
 
-      SetLength(RawBuffer, F.Size);
-      F.Seek(0, 0);
-      F.ReadBuffer(Pointer(RawBuffer)^, Length(RawBuffer));
+      SetLength(RawBuffer, FSize);
+      F.ReadBuffer(Pointer(RawBuffer)^, FSize);
 
       if vlCreateMaterial(@VMTMaterial)=false then
         Fatal('Unable to load VMT file. Call to vlCreateMaterial failed.');

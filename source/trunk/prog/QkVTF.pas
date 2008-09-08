@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.37  2008/09/06 15:56:58  danielpharos
+Moved exception code into separate file.
+
 Revision 1.36  2008/08/12 15:11:04  danielpharos
 Fix stupid memory leak
 
@@ -217,9 +220,8 @@ begin
         VTFLoaded:=true;
       end;
 
-      SetLength(RawBuffer, F.Size);
-      F.Seek(0, 0);
-      F.ReadBuffer(Pointer(RawBuffer)^, Length(RawBuffer));
+      SetLength(RawBuffer, FSize);
+      F.ReadBuffer(Pointer(RawBuffer)^, FSize);
 
       if vlCreateImage(@VTFImage)=false then
         Fatal('Unable to load VTF file. Call to vlCreateImage failed.');
