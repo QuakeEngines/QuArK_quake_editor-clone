@@ -99,7 +99,7 @@ Set the default options for FastMM here.
  install the previous MM, but instead a dummy MM handler that throws an error
  if any MM operation is attempted. This will catch attempts to use the MM
  after FastMM has been uninstalled.}
-{.$define DetectMMOperationsAfterUninstall}
+{$define DetectMMOperationsAfterUninstall}
 
 {Set the following option to do extensive checking of all memory blocks. All
  blocks are padded with both a header and trailer that are used to verify the
@@ -117,7 +117,7 @@ Set the default options for FastMM here.
    stack for valid return addresses. Note that this is significantly slower
    than using the stack frame tracing method, but is usually more complete. Has
    no effect unless FullDebugMode is enabled}
-  {$define RawStackTraces}
+  {.$define RawStackTraces}
 
   {Set this option to check for user code that uses an interface of a freed
    object. Note that this will disable the checking of blocks modified after
