@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.435  2008/09/03 13:42:00  danielpharos
+//Fix mistake.
+//
 //Revision 1.434  2008/09/03 13:26:40  danielpharos
 //Added JPG saving quality for DevIL.
 //
@@ -7776,6 +7779,7 @@ QQRKSRC1
     {
       Style = "7"
       sep: = {Typ="S" Txt="---- DevIL Settings ----"}
+      L0: = {Typ="S" Bold="0" Txt="Note: You will need to have the Visual C++ 2005 Runtime files installed to be able to use DevIL (specifically MSVCR80.DLL)."}
       MemSpeed: =
       {
         Txt="Memory speed"
