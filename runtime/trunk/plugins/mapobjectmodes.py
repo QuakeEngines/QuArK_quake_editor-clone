@@ -1077,7 +1077,6 @@ class SphereMakerDragObject(parent):
             if type == "XY":
                 XY_ycenter = view.screencenter.tuple[1] # gives y center point used below for 2D view
 
-
      ## This section creates the actual Sphere object
 
         type = self.view.info["type"]
@@ -1685,21 +1684,21 @@ class PyramidMakerDragObject(parent):
             factor = -15
         oblong = 1+(factor*.0625)
 
+        for view in editor.layout.views:
+            type = view.info["type"]
+            if type == "XZ":
+                XZ_xcenter = view.screencenter.tuple[0] # gives x center point used below for 2D view
+                XZ_zcenter = view.screencenter.tuple[2] # gives z center point used below for 2D view
+            if type == "XY":
+                XY_ycenter = view.screencenter.tuple[1] # gives y center point used below for 2D view
+
     ## This section creates the actual object
+
+        type = self.view.info["type"]
 
         poly = quarkx.newobj("pyramid:p")
 
         for Group in range(sphere_res-1):
-            editor = mapeditor()
-            for view in editor.layout.views:
-                type = view.info["type"]
-                if type == "XZ":
-                    XZ_xcenter = view.screencenter.tuple[0] # gives x center point used below for 2D view
-                    XZ_zcenter = view.screencenter.tuple[2] # gives z center point used below for 2D view
-                if type == "XY":
-                    XY_ycenter = view.screencenter.tuple[1] # gives y center point used below for 2D view
-
-            type = self.view.info["type"]
 
          ## Only allows the first pass to create the Pyramid group which are triangle faces
             if Group < 1:
@@ -2207,7 +2206,6 @@ class DoubleConeMakerDragObject(parent):
                 XZ_zcenter = view.screencenter.tuple[2] # gives z center point used below for 2D view
             if type == "XY":
                 XY_ycenter = view.screencenter.tuple[1] # gives y center point used below for 2D view
-
 
      ## This section creates the actual Double-cone object
 
@@ -2744,11 +2742,6 @@ class CylinderMakerDragObject(parent):
             factor = -15
         oblong = 1+(factor*.0625)
 
-     ## This section creates the actual object
-
-        poly = quarkx.newobj("cylinder:p")
-
-        editor = mapeditor()
         for view in editor.layout.views:
             type = view.info["type"]
             if type == "XZ":
@@ -2758,6 +2751,10 @@ class CylinderMakerDragObject(parent):
                 XY_ycenter = view.screencenter.tuple[1] # gives y center point used below for 2D view
 
         type = self.view.info["type"]
+
+     ## This section creates the actual object
+
+        poly = quarkx.newobj("cylinder:p")
 
         ###################### Creates the Cylinder faces #######################
 
@@ -3266,7 +3263,6 @@ class DomeMakerDragObject(parent):
                 XZ_zcenter = view.screencenter.tuple[2] # gives z center point used below for 2D view
             if type == "XY":
                 XY_ycenter = view.screencenter.tuple[1] # gives y center point used below for 2D view
-
 
      ## This section creates the actual dome object
 
@@ -3893,7 +3889,6 @@ class FanMakerDragObject(parent):
             factor = factor
         oblong = 1+(factor*.0625)
 
-        editor = mapeditor()
         for view in editor.layout.views:
             type = view.info["type"]
             if type == "XZ":
@@ -3901,7 +3896,6 @@ class FanMakerDragObject(parent):
                 XZ_zcenter = view.screencenter.tuple[2] # gives z center point used below for 2D view
             if type == "XY":
                 XY_ycenter = view.screencenter.tuple[1] # gives y center point used below for 2D view
-
 
      ## This section creates the actual fan object
 
@@ -4618,7 +4612,6 @@ class TorusMakerDragObject(parent):
                 z = (r1v*s2m-elliptv*c2m)*rzv
 
              #### Gets the center points of each view
-                editor = mapeditor()
                 for view in editor.layout.views:
                     type = view.info["type"]
                     if type == "XZ":
@@ -4921,6 +4914,9 @@ quarkpy.maptools.toolbars["tb_objmodes"] = ObjectModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.13  2008/02/22 09:52:21  danielpharos
+# Move all finishdrawing code to the correct editor, and some small cleanups.
+#
 # Revision 1.12  2007/10/08 18:47:30  cdunde
 # To stop both editor's Quick Object Makers from braking when zoomed in close.
 #
