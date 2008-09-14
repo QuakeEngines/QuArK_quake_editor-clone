@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.73  2008/09/14 10:11:19  danielpharos
+Small code cleanup.
+
 Revision 1.72  2008/09/06 15:57:14  danielpharos
 Moved exception code into separate file.
 
@@ -503,7 +506,7 @@ begin
         SubStr := SubStr + C;
       Inc(Idx);
     end;
-    g_TexExtensions.Add(SubStr);
+    Result.Add(SubStr);
   end;
 end;
 
