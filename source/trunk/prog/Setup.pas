@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.72  2008/09/06 15:57:14  danielpharos
+Moved exception code into separate file.
+
 Revision 1.71  2008/08/28 10:09:32  danielpharos
 Added some comment.
 
@@ -363,7 +366,6 @@ var
  g_SetupSet: TSetupSetArray;
 {--CONVEX-- support for multiple texture formats}
  g_TexExtensions : TStringList = NIL;
-{DanielPharos: Support for multiple pak formats}
  g_PakExtensions : TStringList = NIL;
 
 const  { for SetupChanged }
@@ -482,22 +484,13 @@ begin
 end;
 
 {--CONVEX-begin--}
-procedure StoreTexExtensions;
+function SplitKommaSeperatedList(const S : String) : TStringList;
 var
- C:Char;
+ C : Char;
  Idx : Byte;
- S, SubStr : String;
+ SubStr : String;
 begin
-  if g_TexExtensions<>NIL then
-   g_TexExtensions.Free;
-  g_TexExtensions := TStringList.Create;
-  try
-  {DECKER - changed key from 'TextureFormat', due to possible conflicts with
-   TGameBuffer(...)TextureExt in QkTextures.PAS}
-   S := SetupGameSet.Specifics.Values['TextureFileExtensions'];
-  except
-   S := '';
-  end;
+  Result:=TStringList.Create;
   Idx := 1;
   while (Idx <= Length(S)) do
   begin
@@ -514,34 +507,34 @@ begin
   end;
 end;
 
+procedure StoreTexExtensions;
+var
+ S : String;
+begin
+  if g_TexExtensions<>NIL then
+   g_TexExtensions.Free;
+  try
+  {DECKER - changed key from 'TextureFormat', due to possible conflicts with
+   TGameBuffer(...)TextureExt in QkTextures.PAS}
+   S := SetupGameSet.Specifics.Values['TextureFileExtensions'];
+  except
+   S := '';
+  end;
+  g_TexExtensions := SplitKommaSeperatedList(S);
+end;
+
 procedure StorePakExtensions;
 var
- C:Char;
- Idx : Byte;
- S, SubStr : String;
+ S : String;
 begin
   if g_PakExtensions<>NIL then
    g_PakExtensions.Free;
-  g_PakExtensions := TStringList.Create;
   try
    S := SetupGameSet.Specifics.Values['PakFileExtensions'];
   except
    S := '';
   end;
-  Idx := 1;
-  while (Idx <= Length(S)) do
-  begin
-    SubStr := '';
-    C := #0;
-    while ((C <> ' ') and (C <> ',') and (Idx <= Length(S))) do
-    begin
-      C := S[Idx];
-      if ((C <> ' ') and (C <> ',')) then
-        SubStr := SubStr + C;
-      Inc(Idx);
-    end;
-    g_PakExtensions.Add(SubStr);
-  end;
+  g_PakExtensions := SplitKommaSeperatedList(S);
 end;
 {--CONVEX-end--}
 
