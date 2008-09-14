@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2007/11/09 10:55:00  danielpharos
+Fix the SaveConfig dialog not showing, and maybe fix the config-not-saved problem.
+
 Revision 1.14  2007/04/12 21:11:28  danielpharos
 Heroic attempt number 3: And stay down!
 
@@ -112,6 +115,7 @@ type
     procedure CancelNow;
     procedure InsertNewObj(Sender: TObject);
   protected
+    procedure wmHelp(var Msg: TMessage); message wm_Help;
     procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
   public
     Explorer: TConfigExplorer;
@@ -366,6 +370,11 @@ begin
   CancelOn
  else
   CancelOff;
+end;
+
+procedure TConfigDlg.wmHelp(var Msg: TMessage);
+begin
+  HTMLDoc('intro.configuration.html');
 end;
 
 procedure TConfigDlg.wmInternalMessage(var Msg: TMessage);
