@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2008/09/14 12:52:30  danielpharos
+Changes to Help system: All forms now have a customizable help-link. Also, added an fallback option to the online infobase docs.
+
 Revision 1.13  2008/02/23 19:25:20  danielpharos
 Moved a lot of path/file code around: should make it easier to use
 
@@ -80,7 +83,7 @@ type
     { Déclarations privées }
     InfoBaseLink: String; {AiV}
   public
-    procedure SetInfoBaseLink(Link: String); {AiV}
+    procedure SetInfoBaseLink(const Link: String); {AiV}
     { Déclarations publiques }
   end;
 
@@ -201,7 +204,7 @@ begin
 end;
 
 {AiV/}
-procedure THelpPopup.SetInfoBaseLink(Link: String);
+procedure THelpPopup.SetInfoBaseLink(const Link: String);
 begin
   InfoBaseLink := Link;
   Button1.Visible := (Link <> '');
