@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2008/08/07 17:57:41  danielpharos
+Fixed a bogus splitter from being created on toolbox windows that do not have a second panel
+
 Revision 1.14  2005/09/28 10:48:32  peter-b
 Revert removal of Log and Header keywords
 
@@ -142,9 +145,11 @@ type
     procedure FormDeactivate(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
+    InfobaseLink: String;
     procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
     procedure wmSysCommand(var Msg: TWMSysCommand); message wm_SysCommand;
     procedure cmSysColorChange(var Msg: TWMSysCommand); message cm_SysColorChange;
+    procedure wmHelp(var Msg: TMessage); message wm_Help;
     procedure ReloadToolbox(Sender: TObject);
   protected
     SetupInfo: QToolBox;
@@ -631,6 +636,7 @@ begin
  {if SetupInfo.Specifics.Values['Bkgnd']<>'' then
    PanelBig.Color:=SetupInfo.IntSpec['Bkgnd'];}
   Explorer.SetMarsCaption(Self);
+  InfobaseLink:=SetupInfo.Specifics.Values['HTML'];
  finally
   ProgressIndicatorStop;
  end;
@@ -710,6 +716,14 @@ begin
   sc_Maximize, sc_Restore: PostMessage(Handle, wm_InternalMessage, wp_AfficherInfos, 0);
  end;
  inherited;
+end;
+
+procedure TToolBoxForm.wmHelp;
+begin
+  if InfobaseLink<>'' then
+    HTMLDoc(InfobaseLink)
+  else
+    inherited;
 end;
 
 procedure TToolBoxForm.FormClose(Sender: TObject;
