@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.40  2008/09/06 15:57:35  danielpharos
+Moved exception code into separate file.
+
 Revision 1.39  2008/07/17 14:47:58  danielpharos
 Big (experimental) change to model bones, tags and boundframes
 
@@ -474,7 +477,7 @@ begin
     exit;
   end;
 
-  shader_filename:=SetupGameSet.Specifics.Values['ShadersPath']+shader_filename+'.shader';
+  shader_filename:=GameShadersPath+shader_filename+'.shader';
   shader_texturename:=copy(tex_name, 1, pos('.', tex_name)-1);
 
   try
