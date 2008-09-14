@@ -15,6 +15,9 @@ $Id$
 6.6.0 Beta 2
 ============
 
+* [DanielPharos]: Changes to Help system: All forms now have a customizable help-link.
+          - Also, added a fallback to the online infobase docs option.
+
 * [DanielPharos]: Fixes to exception handling. Now exceptions are logged, and if
           - anything goes wrong with QuArK's exception handling, this doesn't produce
           - a whole stream of weird generic pop-ups with runtime errors.
