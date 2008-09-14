@@ -14,6 +14,8 @@ QQRKSRC1
   {
     ToolBox = "Texture Browser..."
     Root = "ET (Enemy Terror).qtxfolder"
+    HTML = "intro.texturebrowser.html"
+
     ET (Enemy Terror).qtxfolder =
     {
       ET Textures & Shaders.osfolder =

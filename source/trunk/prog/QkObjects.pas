@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.106  2008/09/06 15:57:01  danielpharos
+Moved exception code into separate file.
+
 Revision 1.105  2008/08/09 19:40:22  danielpharos
 Translated a function call
 
@@ -380,6 +383,8 @@ const
   QuArKWebsite            = 'http://quark.planetquake.gamespy.com/';
   QuArKRepository         = 'http://sourceforge.net/projects/quark/';
   QuArKForum              = 'http://quark.planetquake.gamespy.com/forums/';
+  QuArKInfobase           = 'http://quark.planetquake.gamespy.com/infobase/';
+  QuArKDefaultHelpPage    = 'index.html'; 
   QuArKUpdateSite         = 'quark.planetquake.gamespy.com';
   QuArKUpdateFile         = '/update/index.dat';
 

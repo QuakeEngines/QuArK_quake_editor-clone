@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.2  2008/04/19 00:48:56  cdunde
+//Made changes to sort material lists, cleanup dead ones and improved missing ones.
+//
 //Revision 1.1  2008/03/28 19:10:31  cdunde
 //Cleaned up, fixed if needed and brought into sync with all QuArK addons.
 //
@@ -17,6 +20,7 @@ QQRKSRC1
   {
     Toolbox = "Texture Browser..."
     Root = "id Software Textures.qtxfolder"
+    HTML = "intro.texturebrowser.html"
 
     t_q3:incl =      { a = "baseq3" }
     t_q3bbs:incl =   { a = "baseq3" b = "base_button" }

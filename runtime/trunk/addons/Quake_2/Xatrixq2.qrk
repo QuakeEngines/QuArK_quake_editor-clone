@@ -8,6 +8,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.7  2008/06/30 17:31:54  cdunde
+//Updates, additions and a new mod addon by X7.
+//
 //Revision 1.6  2008/06/03 23:52:00  cdunde
 //A couple of corrections noted by our uses, Thank you.
 //
@@ -34,6 +37,8 @@ QQRKSRC1
   {
     ToolBox = "Texture Browser..."
     Root = "Xatrix Textures.qtxfolder"
+    HTML = "intro.texturebrowser.html"
+
     left = '170'
     Xatrix Textures.qtxfolder =
     {

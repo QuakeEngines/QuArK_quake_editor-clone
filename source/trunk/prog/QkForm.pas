@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2008/02/21 21:07:20  danielpharos
+Removed redundant OpenGL code.
+
 Revision 1.17  2006/11/30 00:44:32  cdunde
 To merge all source files that had changes from DanielPharos branch
 to HEAD for QuArK 6.5.0 Beta 1.
@@ -194,6 +197,7 @@ type
    {procedure wmNCPaint(var Msg: TMessage); message WM_NCPAINT;
     procedure wmNCActivate(var Msg: TMessage); message WM_NCACTIVATE;
     procedure DefaultHandler(var Msg); override;}   { MARSCAPFIX }
+    procedure wmHelp(var Msg: TMessage); message wm_Help;
     procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
    {procedure HideToolbars;
     procedure ShowToolbars;}
@@ -530,6 +534,11 @@ begin
   wp_DropOnButton:
     PythonDrop(Self, Msg.lParam, True);
  end;
+end;
+
+procedure TQkForm.wmHelp(var Msg: TMessage);
+begin
+  HTMLDoc(QuArKDefaultHelpPage);
 end;
 
 procedure TQkForm.UpdateMarsCap;

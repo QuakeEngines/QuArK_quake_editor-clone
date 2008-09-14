@@ -10,10 +10,11 @@ QQRKSRC1
   {
     ToolBox = "Texture Browser..."
     Root = "TFC Textures.qtxfolder"
+    HTML = "intro.texturebrowser.html"
 
-        // Raw definition of WAD3 files
-        t_tfc:incl = { s = "tfc" d = "tfc" h = "C" }
-        t_tfc2:incl = { s = "tfc" d = "tfc2" h = "C" }
+    // Raw definition of WAD3 files
+    t_tfc:incl = { s = "tfc" d = "tfc" h = "C" }
+    t_tfc2:incl = { s = "tfc" d = "tfc2" h = "C" }
 
     TFC Textures.qtxfolder =
     {

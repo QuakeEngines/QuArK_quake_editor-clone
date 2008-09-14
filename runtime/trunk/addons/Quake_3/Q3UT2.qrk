@@ -8,6 +8,8 @@ QQRKSRC1
   {
     ToolBox = "Texture Browser..."
     Root = "Q3UT2.qtxfolder"
+    HTML = "intro.texturebrowser.html"
+
     Q3UT2.qtxfolder =
     {
       q3ut2.osfolder =

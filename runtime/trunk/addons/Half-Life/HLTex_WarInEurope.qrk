@@ -10,11 +10,12 @@ QQRKSRC1
   {
     ToolBox = "Texture Browser..."
     Root = "War In Europe Textures.qtxfolder"
+    HTML = "intro.texturebrowser.html"
 
-        // Raw definition of WAD3 files
-        t_wie_wie_wad:incl = { s = "wie" d = "wie_wad" h = "C" }
-        t_wie_corpes:incl = { s = "wie" d = "corpes" h = "C" }
-        t_wie_kamikazi_pack1:incl = { s = "wie" d = "kamikazi_pack1" h = "C" }
+    // Raw definition of WAD3 files
+    t_wie_wie_wad:incl = { s = "wie" d = "wie_wad" h = "C" }
+    t_wie_corpes:incl = { s = "wie" d = "corpes" h = "C" }
+    t_wie_kamikazi_pack1:incl = { s = "wie" d = "kamikazi_pack1" h = "C" }
 
     War In Europe Textures.qtxfolder =
     {

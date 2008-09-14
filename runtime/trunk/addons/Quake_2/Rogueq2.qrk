@@ -2,6 +2,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.6  2008/06/30 17:31:55  cdunde
+//Updates, additions and a new mod addon by X7.
+//
 //Revision 1.5  2007/03/29 15:27:55  danielpharos
 //Cleaned up the tabs.
 //
@@ -26,6 +29,8 @@ QQRKSRC1
   {
     ToolBox = "Texture Browser..."
     Root = "Rogue Textures.qtxfolder"
+    HTML = "intro.texturebrowser.html"
+
     left = '170'
     Rogue Textures.qtxfolder =
     {

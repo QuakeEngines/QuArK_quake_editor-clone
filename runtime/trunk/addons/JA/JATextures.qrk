@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.1  2008/03/28 19:08:15  cdunde
+//Cleaned up, fixed if needed and brought into sync with all QuArK addons.
+//
 //
 
 {
@@ -14,6 +17,7 @@ QQRKSRC1
   {
     Toolbox = "Texture Browser..."
     Root = "JA Textures.qtxfolder"
+    HTML = "intro.texturebrowser.html"
 
     JA Textures.qtxfolder =
     {

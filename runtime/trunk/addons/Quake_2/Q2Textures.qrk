@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.1  2008/03/28 19:10:36  cdunde
+//Cleaned up, fixed if needed and brought into sync with all QuArK addons.
+//
 //
 
 {
@@ -18,6 +21,8 @@ QQRKSRC1
   {
     ToolBox = "Texture Browser..."
     Root = "id Software Textures.qtxfolder"
+    HTML = "intro.texturebrowser.html"
+
     Left = '170'        // this is needed because Quake 2 texture names can be quite wide
     id Software Textures.qtxfolder =
     {

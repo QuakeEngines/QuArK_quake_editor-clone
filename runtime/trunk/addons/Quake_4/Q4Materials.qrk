@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.3  2008/04/19 00:48:56  cdunde
+//Made changes to sort material lists, cleanup dead ones and improved missing ones.
+//
 //Revision 1.2  2008/04/16 22:25:22  cdunde
 //Updated processing for Quake 4 type shaders.
 //
@@ -20,6 +23,7 @@ QQRKSRC1
   {
     Toolbox = "Texture Browser..."
     Root = "Quake 4 Materials.qtxfolder"
+    HTML = "intro.texturebrowser.html"
 
     t_q4basematerials_banners:incl      = { a="q4base" b="banners.mtr" }
     t_q4basematerials_canyon:incl       = { a="q4base" b="canyon.mtr" }

@@ -5,6 +5,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.4  2005/10/15 01:00:27  cdunde
+//To reinstate headers and history
+//
 //Revision 1.1  2001/02/11 11:07:05  decker_dk
 //Moved from addons directory
 //
@@ -54,6 +57,8 @@ QQRKSRC1
   {
     ToolBox = "Texture Browser..."
     Root = "Threewave CTF Textures.qtxfolder"
+    HTML = "intro.texturebrowser.html"
+
     Threewave CTF Textures.qtxfolder =
     {
       CTF.wad =

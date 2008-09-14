@@ -9,6 +9,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.4  2005/10/15 01:00:02  cdunde
+//To reinstate headers and history
+//
 //Revision 1.1  2001/02/11 11:09:59  decker_dk
 //Moved from addons directory
 //
@@ -874,6 +877,7 @@ QQRKSRC1
   {
     Toolbox = "Texture Browser..."
     Root = "Q3F Shaders.qtxfolder"
+    HTML = "intro.texturebrowser.html"
 
     t_q3fshader_2stag2:incl         = { a="q3f" b="2stag2.shader" }
     t_q3fshader_cyber:incl          = { a="q3f" b="cyber.shader" }

@@ -8,6 +8,8 @@ QQRKSRC1
   {
     ToolBox = "Texture Browser..."
     Root = "BuzzyBots Textures.qtxfolder"
+    HTML = "intro.texturebrowser.html"
+
     BuzzyBots Textures.qtxfolder =
     {
       ditlew.txlist =

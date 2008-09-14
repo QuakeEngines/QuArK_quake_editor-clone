@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2008/05/27 15:09:54  danielpharos
+Fixed remaining of Python errors getting lost
+
 Revision 1.15  2008/05/27 10:39:32  danielpharos
 Fix errors when clicking menu items not being shown/reported
 
@@ -964,36 +967,41 @@ begin
  end;
 end;
 
-
 procedure TPyForm.wmHelp;
 var
   P: PChar;
   obj: PyObject;
   S, S2: String;
   UrlPos : Integer;
+  PoppedUp: Boolean;
 begin
-  obj:=CallMacroEx2(Py_BuildValueX('(O)', [WndObject]), 'hint', False);
+  PoppedUp:=False;
   try
-    if (obj<>Nil) and (obj<>Py_None) then
-    begin
-      P:=PyString_AsString(obj);
-      if P<>Nil then
+    obj:=CallMacroEx2(Py_BuildValueX('(O)', [WndObject]), 'hint', False);
+    try
+      if (obj<>Nil) and (obj<>Py_None) then
       begin
-        S:=P;
-        if (Length(S)<=1) or (S[1]<>'|') then Exit;
-        S2:=Copy(S,2,Maxint);
-        UrlPos:=AnsiPos('|',S2);
-        if UrlPos<>0 then
-          HelpPopup(Copy(S2, 1, UrlPos-1), Copy(S2,UrlPos+1,MaxInt))
-        else
-          HelpPopup(S2);
+        P:=PyString_AsString(obj);
+        if P<>Nil then
+        begin
+          S:=P;
+          if (Length(S)<=1) or (S[1]<>'|') then Exit;
+          S2:=Copy(S,2,Maxint);
+          UrlPos:=AnsiPos('|',S2);
+          if UrlPos<>0 then
+            HelpPopup(Copy(S2, 1, UrlPos-1), Copy(S2,UrlPos+1,MaxInt))
+          else
+            HelpPopup(S2);
+          PoppedUp:=True;
+        end;
       end;
+      finally Py_XDECREF(obj);
     end;
-    finally Py_XDECREF(obj);
+  finally
+    if not PoppedUp then
+      HTMLDoc(QuArKDefaultHelpPage);
   end;
 end;
-
-
 
 procedure TPyForm.wmMenuSelect;
 var

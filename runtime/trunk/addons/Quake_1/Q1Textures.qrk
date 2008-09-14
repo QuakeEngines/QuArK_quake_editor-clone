@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.1  2008/03/28 19:10:35  cdunde
+//Cleaned up, fixed if needed and brought into sync with all QuArK addons.
+//
 //
 
 {
@@ -14,6 +17,8 @@ QQRKSRC1
   {
     ToolBox = "Texture Browser..."
     Root = "Quake 1 Textures.qtxfolder"
+    HTML = "intro.texturebrowser.html"
+
     Quake 1 Textures.qtxfolder =
     {
       Base.wad =        // ".wad" files ? Yes but it's only for the display

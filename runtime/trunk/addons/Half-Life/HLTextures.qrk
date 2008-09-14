@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.2  2008/05/14 20:38:10  cdunde
+//Fixed basic lighting in all games and a few other small typo errors.
+//
 //Revision 1.1  2008/03/28 19:05:50  cdunde
 //Cleaned up, fixed if needed and brought into sync with all QuArK addons.
 //
@@ -17,13 +20,14 @@ QQRKSRC1
   {
     ToolBox = "Texture Browser..."
     Root = "Valve Textures.qtxfolder"
+    HTML = "intro.texturebrowser.html"
 
-        // Raw definition of WAD3 files
-        t_sp:incl = { s = "valve" d = "spraypaint" h = "C" }
-        t_dc:incl = { s = "valve" d = "decals" h = "C" }
-        t_li:incl = { s = "valve" d = "liquids" h = "C" }
-        t_hl:incl = { s = "valve" d = "halflife" h = "C" }
-        t_xe:incl = { s = "valve" d = "xeno" h = "C" }
+    // Raw definition of WAD3 files
+    t_sp:incl = { s = "valve" d = "spraypaint" h = "C" }
+    t_dc:incl = { s = "valve" d = "decals" h = "C" }
+    t_li:incl = { s = "valve" d = "liquids" h = "C" }
+    t_hl:incl = { s = "valve" d = "halflife" h = "C" }
+    t_xe:incl = { s = "valve" d = "xeno" h = "C" }
 
     Valve Textures.qtxfolder =
     {

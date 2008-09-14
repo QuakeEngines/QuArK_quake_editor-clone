@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.1  2008/04/23 20:51:45  cdunde
+//Setup for Warsow with .md3 model support.
+//
 //
 
 {
@@ -14,6 +17,7 @@ QQRKSRC1
   {
     Toolbox = "Texture Browser..."
     Root = "Warsow Scripts.qtxfolder"
+    HTML = "intro.texturebrowser.html"
 
     t_basewswscripts_adv1:incl             = { a="basewsw" b="adv1.shader" }
     t_basewswscripts_amphi:incl            = { a="basewsw" b="amphi.shader" }

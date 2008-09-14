@@ -2,6 +2,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.8  2008/07/02 17:17:22  cdunde
+//Changes needed, noted by X7.
+//
 //Revision 1.7  2008/06/30 17:31:56  cdunde
 //Updates, additions and a new mod addon by X7.
 //
@@ -36,6 +39,8 @@ QQRKSRC1
   {
     ToolBox = "Texture Browser..."
     Root = "CTF Textues.qtxfolder"
+    HTML = "intro.texturebrowser.html"
+
     left = '170'
     CTF Textues.qtxfolder =
     {

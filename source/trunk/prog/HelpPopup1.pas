@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2008/02/23 19:25:20  danielpharos
+Moved a lot of path/file code around: should make it easier to use
+
 Revision 1.12  2005/09/28 10:48:31  peter-b
 Revert removal of Log and Header keywords
 
@@ -89,7 +92,7 @@ procedure HelpPopup(const HelpText: String; const InfoBaseLink: String = ''); {A
 
 implementation
 
-uses Quarkx, TB97, QkApplPaths;
+uses Quarkx, TB97;
 
 {$R *.DFM}
 
@@ -200,7 +203,7 @@ end;
 {AiV/}
 procedure THelpPopup.SetInfoBaseLink(Link: String);
 begin
-  InfoBaseLink := GetQPath(pQuArKHelp)+Link;
+  InfoBaseLink := Link;
   Button1.Visible := (Link <> '');
 end;
 {/AiV}

@@ -2,9 +2,13 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.4  2005/10/15 01:00:27  cdunde
+//To reinstate headers and history
+//
 //Revision 1.1  2001/02/11 11:07:05  decker_dk
 //Moved from addons directory
 //
+
 {
 	QuArKProtected = "1"
 	Rogue directory infos.qctx =
@@ -83,6 +87,8 @@ QQRKSRC1
   {
     ToolBox = "Texture Browser..."
     Root = "Rogue Textures.qtxfolder"
+    HTML = "intro.texturebrowser.html"
+
     Rogue Textures.qtxfolder =
     {
       Rogue.wad =        // ".wad" files ? Yes but it's only for the display

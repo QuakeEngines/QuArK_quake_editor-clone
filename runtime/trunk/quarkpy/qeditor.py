@@ -1506,11 +1506,7 @@ def htmldoc(doc):
         else:
             quarkx.msgbox("No help document available.", MT_ERROR, MB_OK)
             return
-    if (doc[:7] == "http://" or doc[:7] == "HTTP://"):
-        quarkx.htmldoc(doc)
-    else:
-        quarkx.htmldoc(quarkx.helppath + doc)
-
+    quarkx.htmldoc(doc)
 
 def Help1():
     editor = mapeditor()
@@ -1562,6 +1558,9 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.50  2008/07/15 23:16:27  cdunde
+#To correct typo error from MldOption to MdlOption in all files.
+#
 #Revision 1.49  2008/05/04 16:18:21  cdunde
 #Update for new release.
 #

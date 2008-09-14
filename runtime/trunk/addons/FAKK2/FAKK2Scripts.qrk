@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.2  2008/04/19 00:48:56  cdunde
+//Made changes to sort material lists, cleanup dead ones and improved missing ones.
+//
 //Revision 1.1  2008/02/29 05:15:39  cdunde
 //Added shader support for FAKK2.
 //
@@ -17,6 +20,7 @@ QQRKSRC1
   {
     Toolbox = "Texture Browser..."
     Root = "FAKK2 Scripts.qtxfolder"
+    HTML = "intro.texturebrowser.html"
 
     t_fakkscripts_blood_base:incl       = { a="fakk" b="blood_base.shader" }
     t_fakkscripts_cemetery:incl         = { a="fakk" b="cemetery.shader" }

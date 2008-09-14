@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.75  2008/09/06 15:57:35  danielpharos
+Moved exception code into separate file.
+
 Revision 1.74  2008/08/16 13:40:14  danielpharos
 Oops
 
@@ -2263,66 +2266,54 @@ end;
 
 procedure HTMLDoc(const URL: String);
 var
- S, FullFile, ProgramCall: String;
- Reg: TRegistry2;
- I: Integer;
- SI: TStartupInfo;
- PI: TProcessInformation;
+  S, FullFile: String;
+  I: Integer;
 
-  procedure OpenError(const Err: String);
+  function CheckFileExists(const Filename: String) : Boolean;
+  var
+    S: String;
   begin
-   raise EErrorFmt(5649, [URL, Err]);
+    I:=Pos('#', Filename);
+    if I>0 then
+      S:=LeftStr(Filename, I-1)
+    else
+      S:=Filename;
+    Result:=FileExists(S);
   end;
 
 begin
- //FIXME: DanielPharos: We need a better, more general way of checking
- //for known protocols...
- if (LeftStr(URL,8)<>'file:///') and (LeftStr(URL,7)<>'http://') then
-   FullFile:='file:///'+URL
- else
-   FullFile:=URL;
-
- if (LeftStr(FullFile,8)='file:///') then
- begin
-   S:=RightStr(FullFile, Length(FullFile)-8);
-   I:=Pos('#', S);
-   if I>0 then
-     S:=LeftStr(S, I-1);
-   if FileExists(S) = false then
-     raise EErrorFmt(5228, [S]);
- end;
-
- Reg:=TRegistry2.Create;
- try
-  Reg.RootKey:=HKEY_CLASSES_ROOT;
-  if (not Reg.ReadOpenKey('.html') and not Reg.ReadOpenKey('.htm'))
-  or not Reg.ReadString('', S) then
-   OpenError(LoadStr1(5650));
-  S:='\'+S+'\shell\open\command';
-  if not Reg.ReadOpenKey(S) or not Reg.ReadString('', ProgramCall) or (ProgramCall='') then
-   OpenError(FmtLoadStr1(5651, [S]));
- finally
-  Reg.Free;
- end;
-
- I:=Pos('%1', ProgramCall);
- if I>0 then
- begin
-   System.Delete(ProgramCall,I,2);
-   System.Insert(FullFile,ProgramCall,I);
- end
- else
-   ProgramCall:=ProgramCall+' "'+FullFile+'"';
-
- FillChar(SI, SizeOf(SI), 0);
- FillChar(PI, SizeOf(PI), 0);
- if CreateProcess(Nil, PChar(ProgramCall), Nil, Nil, False, 0, Nil, Nil, SI, PI) then
+  if LeftStr(URL, 1) = '*' then
   begin
-   DeleteObject(PI.hThread);
-   DeleteObject(PI.hProcess);
+    //This is a full link
+    S:=RightStr(URL, Length(URL)-1); //Remove the '*'
+
+    //FIXME: DanielPharos: We need a better, more general way of checking
+    //for known protocols...
+    if (LeftStr(S, 8)='file:///') or (LeftStr(S, 7)='http://') then
+      FullFile:=S
+    else
+      FullFile:='file:///'+S;
   end
- else
-  OpenError(FmtLoadStr1(5652, [ProgramCall]));
+  else
+  begin
+    //This is an infobase link
+    FullFile:=GetQPath(pQuArKHelp)+URL;
+    if not CheckFileExists(FullFile) then
+    begin
+      if SetupSubSet(ssGeneral, 'Display').Specifics.Values['OnlineHelp']<>'' then
+      begin
+        Log(LOG_WARNING, LoadStr1(5228), [URL]);
+        FullFile:=QuArKInfobase+URL
+      end
+      else
+        raise EErrorFmt(5228, [URL]);
+    end;
+  end;
+
+  if ShellExecute(0, 'open', PChar(FullFile), nil, nil, SW_SHOWDEFAULT) <= 32 then
+  begin
+    raise EErrorFmt(5649, [FullFile, GetSystemErrorMessage(GetLastError)]);
+  end;
 end;
 
 function xHTMLDoc(self, args: PyObject) : PyObject; cdecl;
@@ -3239,12 +3230,6 @@ begin
  if m=Nil then
   Exit;
  PyDict_SetItemString(QuarkxDict, 'exepath', m);
- Py_DECREF(m);
-
- m:=PyString_FromString(PChar(GetQPath(pQuArKHelp)));
- if m=Nil then
-  Exit;
- PyDict_SetItemString(QuarkxDict, 'helppath', m);
  Py_DECREF(m);
 
  m:=PyList_New(0);

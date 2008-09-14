@@ -3,6 +3,10 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.10  2005/10/16 18:48:04  cdunde
+//To remove letters referring to depository folders that
+// made filtering them out for distribution harder to do
+//
 //Revision 1.9  2005/10/15 01:00:02  cdunde
 //To reinstate headers and history
 //
@@ -28,6 +32,8 @@ QQRKSRC1
   {
     ToolBox = "Texture Browser..."
     Root = "Team Arena Textures.qtxfolder"
+    HTML = "intro.texturebrowser.html"
+
     Team Arena Textures.qtxfolder =
     {
       Base_Door.txlist =

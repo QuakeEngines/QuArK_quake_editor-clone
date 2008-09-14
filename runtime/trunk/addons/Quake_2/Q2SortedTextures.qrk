@@ -10,6 +10,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.1  2007/09/22 03:02:17  cdunde
+//Regrouped the textures according to levels (textures will now fit together). By OmnificienT
+//
 //
 
 {
@@ -29,6 +32,8 @@ QQRKSRC1
   {
     ToolBox = "Texture Browser..."
     Root = "id Software Textures-sorted by level.qtxfolder"
+    HTML = "intro.texturebrowser.html"
+
     Left = '170'        // this is needed because Quake 2 texture names can be quite wide
     id Software Textures-sorted by level.qtxfolder =
     {

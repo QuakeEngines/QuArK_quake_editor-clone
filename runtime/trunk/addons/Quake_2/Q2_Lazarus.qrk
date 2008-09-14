@@ -5,6 +5,9 @@ QQRKSRC1
 // $Header$
 //
 // $Log$
+// Revision 1.25  2008/07/02 17:17:22  cdunde
+// Changes needed, noted by X7.
+//
 // Revision 1.24  2008/06/30 17:51:48  cdunde
 // Update
 //
@@ -160,6 +163,8 @@ QQRKSRC1
   {
     ToolBox = "Texture Browser..."
     Root = "lazarus Textures.qtxfolder"
+    HTML = "intro.texturebrowser.html"
+
     left = '170'
     lazarus Textures.qtxfolder =
     {

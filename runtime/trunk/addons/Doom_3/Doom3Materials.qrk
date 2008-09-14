@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.2  2008/04/25 20:36:45  danielpharos
+//Major update: added all missing materials and removed all non-working ones.
+//
 //Revision 1.1  2008/04/19 00:42:31  cdunde
 //Adding this file and setting things right, uses materials not textures.
 //
@@ -17,6 +20,7 @@ QQRKSRC1
   {
     Toolbox = "Texture Browser..."
     Root = "Doom 3 Materials.qtxfolder"
+    HTML = "intro.texturebrowser.html"
 
     t_basematerials_aaduffyTest:incl  = { a="base" b="aaduffyTest.mtr" }
     t_basematerials_alphalabs:incl    = { a="base" b="alphalabs.mtr" }

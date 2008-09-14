@@ -11,6 +11,7 @@ QQRKSRC1
     {
       ToolBox = "Texture Browser..."
       Root = "TF2 Textures.qtxfolder"
+      HTML = "intro.texturebrowser.html"
 
       t_tf2:incl = { v="QuArKApps" path="tf/materials/" PakFile="team fortress 2 materials.gcf" }
 

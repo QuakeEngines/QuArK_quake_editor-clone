@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.436  2008/09/09 18:09:25  danielpharos
+//Updated to VS2005 release of DevIL (that works).
+//
 //Revision 1.435  2008/09/03 13:42:00  danielpharos
 //Fix mistake.
 //
@@ -1444,6 +1447,7 @@ QQRKSRC1
         MaxRecentFiles = '5'
         ConsoleWidth = '80'
         ConsoleHeight = '60'
+        OnlineHelp = "1"
         Form = "GeneralDisplay"
       }
       3D view:config =
@@ -8585,6 +8589,7 @@ QQRKSRC1
       MaxRecentFiles = {Txt="Maximum number of recent files" Typ="EF1" Hint="Maximum amount of recent files to keep track of (0 .. 5)"}
       //ConsoleWidth = {Txt="Width of console" Typ="EF1" Hint="Amount of character per line in the console (80 .. 80)"}
       ConsoleHeight = {Txt="Height of console" Typ="EF1" Hint="Maximum amount of lines in the console (60 .. 600)"}
+      OnlineHelp = {Txt="Online help" Typ="X" Cap="Enabled" Hint="This will cause QuArK to open up the online help when the wanted file is not available locally."}
     }
     General3DView:form =
     {
@@ -10836,6 +10841,7 @@ QQRKSRC1
     Target = ".qkm"      // textures are also to be put in maps
     Left = '140'         // size of the Explorer at the left (the right space displays the selected objects)
     Root = "Searched.qtxfolder"
+    HTML = "intro.texturebrowser.html"
     Searched.qtxfolder =
     {
       SearchBox = "1"

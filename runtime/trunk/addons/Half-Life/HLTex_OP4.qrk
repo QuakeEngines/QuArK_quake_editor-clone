@@ -10,11 +10,12 @@ QQRKSRC1
   {
     ToolBox = "Texture Browser..."
     Root = "Opposing Force Textures.qtxfolder"
+    HTML = "intro.texturebrowser.html"
 
-        // Raw definition of WAD3 files
-        t_op4_DECALS:incl = { s = "gearbox" d = "DECALS" h = "C" }
-        t_op4_OPFOR:incl = { s = "gearbox" d = "OPFOR" h = "C" }
-        t_op4_OP4CTF:incl = { s = "gearbox" d = "OP4CTF" h = "C" }
+    // Raw definition of WAD3 files
+    t_op4_DECALS:incl = { s = "gearbox" d = "DECALS" h = "C" }
+    t_op4_OPFOR:incl = { s = "gearbox" d = "OPFOR" h = "C" }
+    t_op4_OP4CTF:incl = { s = "gearbox" d = "OP4CTF" h = "C" }
 
     Opposing Force Textures.qtxfolder =
     {

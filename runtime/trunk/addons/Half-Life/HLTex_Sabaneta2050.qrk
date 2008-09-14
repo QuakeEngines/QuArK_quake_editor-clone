@@ -10,11 +10,12 @@ QQRKSRC1
   {
     ToolBox = "Texture Browser..."
     Root = "Sabaneta 2050 Textures.qtxfolder"
+    HTML = "intro.texturebrowser.html"
 
-        // Raw definition of WAD3 files
-        t_sb_decals:incl = { s = "sabaneta" d = "decals" h = "C" }
-        t_sb_general:incl = { s = "sabaneta" d = "general" h = "C" }
-        t_sb_misc:incl = { s = "sabaneta" d = "misc" h = "C" }
+    // Raw definition of WAD3 files
+    t_sb_decals:incl = { s = "sabaneta" d = "decals" h = "C" }
+    t_sb_general:incl = { s = "sabaneta" d = "general" h = "C" }
+    t_sb_misc:incl = { s = "sabaneta" d = "misc" h = "C" }
 
     Sabaneta 2050 Textures.qtxfolder =
     {

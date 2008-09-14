@@ -10,6 +10,7 @@ QQRKSRC1
   {
     ToolBox = "Texture Browser..."
     Root = "FireArms Textures.qtxfolder"
+    HTML = "intro.texturebrowser.html"
 
     t_fa_push:incl = {s = "firearms" d = "push" h = "C"}
     t_fa_decals:incl = {s = "firearms" d = "decals" h = "C"}

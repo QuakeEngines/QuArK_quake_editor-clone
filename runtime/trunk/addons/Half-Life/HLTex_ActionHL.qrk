@@ -10,14 +10,15 @@ QQRKSRC1
   {
     ToolBox = "Texture Browser..."
     Root = "Action Half-Life Textures.qtxfolder"
+    HTML = "intro.texturebrowser.html"
 
-        t_ahl_actcity2:incl = { s = "action" d = "actcity2" h = "C" }
-        t_ahl_dreamteam:incl = { s = "action" d = "dreamteam" h = "C" }
-        t_ahl_heatmiser:incl = { s = "action" d = "heatmiser" h = "C" }
-        t_ahl_wikked:incl = { s = "action" d = "wikked" h = "C" }
-        t_ahl_prison:incl = { s = "action" d = "prison" h = "C" }
-        t_ahl_Axel:incl = { s = "action" d = "Axel" h = "C" }
-        t_ahl_Hondo1:incl = { s = "action" d = "Hondo1" h = "C" }
+    t_ahl_actcity2:incl = { s = "action" d = "actcity2" h = "C" }
+    t_ahl_dreamteam:incl = { s = "action" d = "dreamteam" h = "C" }
+    t_ahl_heatmiser:incl = { s = "action" d = "heatmiser" h = "C" }
+    t_ahl_wikked:incl = { s = "action" d = "wikked" h = "C" }
+    t_ahl_prison:incl = { s = "action" d = "prison" h = "C" }
+    t_ahl_Axel:incl = { s = "action" d = "Axel" h = "C" }
+    t_ahl_Hondo1:incl = { s = "action" d = "Hondo1" h = "C" }
 
     Action Half-Life Textures.qtxfolder =
     {

@@ -9,6 +9,7 @@ QQRKSRC1
   {
     ToolBox = "Texture Browser..."
     Root = "HL2 Textures.qtxfolder"
+    HTML = "intro.texturebrowser.html"
 
     t_hl2:incl =      {  v="QuArKApps" path="hl2/materials/" PakFile="source materials.gcf"}
 

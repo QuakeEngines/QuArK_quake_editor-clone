@@ -9,6 +9,7 @@ QQRKSRC1
   {
     ToolBox = "Texture Browser..."
     Root = "CounterStrike Textures.qtxfolder"
+    HTML = "intro.texturebrowser.html"
 
     t_cs_n0th1ng:incl = { s="cstrike" d="n0th1ng" h="C" }
     t_cs_ajawad:incl = { s="cstrike" d="ajawad" h="C" }

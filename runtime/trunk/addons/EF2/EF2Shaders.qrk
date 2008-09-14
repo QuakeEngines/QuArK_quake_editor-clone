@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.1  2008/03/02 21:17:33  cdunde
+//Added EF2 shader support.
+//
 //
 
 {
@@ -14,6 +17,7 @@ QQRKSRC1
   {
     Toolbox = "Texture Browser..."
     Root = "EF2 Shaders.qtxfolder"
+    HTML = "intro.texturebrowser.html"
 
     t_baseshaders_Idryll-new:incl          = { a="base" b="Idryll-new.shader" }
     t_baseshaders_assetmap1_terrain:incl   = { a="base" b="assetmap1_terrain.shader" }

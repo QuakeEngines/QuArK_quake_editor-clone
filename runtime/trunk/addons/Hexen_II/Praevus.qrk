@@ -12,18 +12,19 @@ QQRKSRC1
   QuArKProtected = "1"
   Description = "Portal of Praevus Data"
 
-	praevus directory infos.qctx =	
-	{
-		Game = "Hexen II"	
-		SourceDir = "PORTALS"		
-//		GameDir = "fortress"		
-	}
-
+  praevus directory infos.qctx =
+  {
+    Game = "Hexen II"
+    SourceDir = "PORTALS"
+    //GameDir = "fortress"
+  }
 
   Textures.qtx =
   {
     ToolBox = "Texture Browser..."
     Root = "Praevus.qtxfolder"
+    HTML = "intro.texturebrowser.html"
+
     Praevus.qtxfolder =
     {
       Medieval2.wad =

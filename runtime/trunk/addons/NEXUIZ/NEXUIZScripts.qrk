@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.2  2008/04/19 00:48:56  cdunde
+//Made changes to sort material lists, cleanup dead ones and improved missing ones.
+//
 //Revision 1.1  2008/04/05 06:17:32  cdunde
 //Added full game support for NEXUIZ including .md3 model displaying.
 //
@@ -17,6 +20,7 @@ QQRKSRC1
   {
     Toolbox = "Texture Browser..."
     Root = "NEXUIZ Scripts.qtxfolder"
+    HTML = "intro.texturebrowser.html"
 
     t_datascripts_blacksky:incl                       = { a="data" b="blacksky.shader" }
     t_datascripts_common:incl                         = { a="data" b="common.shader" }

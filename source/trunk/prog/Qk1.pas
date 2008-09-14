@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.70  2008/09/06 15:57:28  danielpharos
+Moved exception code into separate file.
+
 Revision 1.69  2008/09/06 15:34:39  danielpharos
 Log exception of exception handler.
 
@@ -2322,7 +2325,7 @@ begin
  ShowConfigDlg('Games:'+SetupGameSet.Name);
 end;
 
-(*procedure TForm1wmCommand(var Msg: TMessage);
+(*procedure TForm1.wmCommand(var Msg: TMessage);
 begin
  if (Msg.wParam>=cmObjFirst) and (Msg.wParam<=cmObjLast) then
   g_PopupMenuObject.CallMenuCmd(Msg.wParam)
@@ -2554,8 +2557,8 @@ end;
 
 procedure TForm1.Registering1Click(Sender: TObject);
 begin
- HTMLDoc(GetQPath(pQuArKHelp)+'register.html');
-end;                                           
+ HTMLDoc('register.html');
+end;
 
 procedure TForm1.MdlImportFrom1Item1Click(Sender: TObject);
 var
