@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2008/09/08 18:07:08  danielpharos
+Fix last of F.Seek(0, 0) bugs.
+
 Revision 1.18  2008/09/06 15:57:05  danielpharos
 Moved exception code into separate file.
 
@@ -214,7 +217,7 @@ var
  GCFFilename: String;
  TexturePath: String;
  FullTextureFile: String;
- DefaultImageName: array[0..7] of String;
+ DefaultImageName: array[0..8] of String;
  DefaultImageIndex: Integer;
  ImageFileName: String;
  Size: TPoint;
@@ -241,13 +244,18 @@ begin
     TexturePath:='';
   end;
 
+  //FIXME: Horribly horriby workaround...! We need to get into the first
+  //element to find an image
+  if SubElements.Count>0 then
+  begin
+
   //TexExt:=SetupGameSet.Specifics.Values['TextureFormat'];
   TexExt:='.vtf';
   if ReverseLink<>nil then
     DefaultImageName[0]:=ReverseLink.Specifics.Values['e'];
   if DefaultImageName[0]<>'' then
   begin
-    FullTextureFile:=Specifics.Values[DefaultImageName[0]];
+    FullTextureFile:=SubElements[0].Specifics.Values[DefaultImageName[0]];
     Log(LOG_VERBOSE,'attempting to load '+FullTextureFile);
     try
       Result:=NeedGameFile(FullTextureFile, GCFFilename) as QPixelSet
@@ -258,15 +266,16 @@ begin
   else
   begin
     DefaultImageIndex:=0;
-    DefaultImageName[0]:=Specifics.Values['%tooltexture'];
-    DefaultImageName[1]:=Specifics.Values['$basetexture'];
-    DefaultImageName[2]:=Specifics.Values['$material'];
-    DefaultImageName[3]:=Specifics.Values['$bumpmap'];
-    DefaultImageName[4]:=Specifics.Values['$normalmap'];
-    DefaultImageName[5]:=Specifics.Values['$dudvmap'];
-    DefaultImageName[6]:=Specifics.Values['$envmap'];
-    DefaultImageName[7]:=Specifics.Values['$parallaxmap'];
-    while ((Result=nil) and (DefaultImageIndex<8)) do
+    DefaultImageName[0]:=SubElements[0].Specifics.Values['%tooltexture'];
+    DefaultImageName[1]:=SubElements[0].Specifics.Values['$basetexture'];
+    DefaultImageName[2]:=SubElements[0].Specifics.Values['$basetexture2'];
+    DefaultImageName[3]:=SubElements[0].Specifics.Values['$material'];
+    DefaultImageName[4]:=SubElements[0].Specifics.Values['$bumpmap'];
+    DefaultImageName[5]:=SubElements[0].Specifics.Values['$normalmap'];
+    DefaultImageName[6]:=SubElements[0].Specifics.Values['$dudvmap'];
+    DefaultImageName[7]:=SubElements[0].Specifics.Values['$envmap'];
+    DefaultImageName[8]:=SubElements[0].Specifics.Values['$parallaxmap'];
+    while ((Result=nil) and (DefaultImageIndex<9)) do
     begin
       if (DefaultImageName[DefaultImageIndex]<>'') then
       begin
@@ -282,6 +291,8 @@ begin
       if Result=nil then
         DefaultImageIndex:=DefaultImageIndex+1;
     end;
+  end;
+
   end;
 
   if (Result=nil) then
