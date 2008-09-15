@@ -237,6 +237,13 @@ def setLineThick(m):
 lineThicknessItem = qmenu.item("Set Line Thickness (2)",setLineThick,"|Set Line Thickness:\n\nThis lets you set the thickness of certain lines that are drawn on the Editor's views, such as the outlining of selected model mesh faces and the models axis lines.|intro.modeleditor.menu.html#optionsmenu")
 
 
+def mMBLines_Color(m):
+    # Matches bone lines color to the handle color during a drag.
+    if not MdlOption("MBLines_Color"):
+        quarkx.setupsubset(SS_MODEL, "Options")['MBLines_Color'] = "1"
+    else:
+        quarkx.setupsubset(SS_MODEL, "Options")['MBLines_Color'] = None
+
 def mSYNC_ISV(m):
     # Sync editor selection in Skin-view function.
     editor = mdleditor.mdleditor
@@ -381,6 +388,17 @@ def mBFONLY(m):
     else:
         quarkx.setupsubset(SS_MODEL, "Options")['BFONLY'] = None
     quarkx.reloadsetup()
+
+
+def BoneMenu(editor):
+    Xmblines_color = qmenu.item("&Match Bone Lines Color", mMBLines_Color, "|Match Bone Lines Color:\n\nWhen checked the bone lines color displayed during a drag will match the handle color being dragged.|intro.modeleditor.menu.html#optionsmenu")
+
+    menulist = [Xmblines_color]
+    
+    items = menulist
+    Xmblines_color.state = quarkx.setupsubset(SS_MODEL,"Options").getint("MBLines_Color")
+
+    return menulist
 
 
 def FaceMenu(editor):
@@ -597,6 +615,10 @@ def SkinViewOptionsMenu(editor):
 
 
 # ****************** Creates the Popup menu ********************
+def BoneOptionsClick(m):
+    editor = mdleditor.mdleditor
+    m.items = BoneMenu(editor)
+
 def FaceSelOptionsClick(m):
     editor = mdleditor.mdleditor
     m.items = FaceMenu(editor)
@@ -777,27 +799,32 @@ def OptionsMenu():
     "The Options menu, with its shortcuts."
 
     RotationOptions = qmenu.popup("3D Rotation Options", rotateitems, RotationMenu2click)
+    BoneOptions = qmenu.popup("Bone Options", [], BoneOptionsClick, "|Bone Options:\n\nThese functions deal with the Model Bone visual tools to work with.", "intro.mapeditor.menu.html#optionsmenu")
     FaceSelOptions = qmenu.popup("Editor Face Selection Options", [], FaceSelOptionsClick, "|Editor Face Selection Options:\n\nThese functions deal with the Model Mesh selection methods available and various visual tools to work with.", "intro.mapeditor.menu.html#optionsmenu")
     VertexSelOptions = qmenu.popup("Editor Vertex Selection Options", [], VertexSelOptionsClick, "|Editor Vertex Selection Options:\n\nThese functions deal with the Model Mesh selection methods available and various visual tools to work with.", "intro.mapeditor.menu.html#optionsmenu")
     SkinViewOptions = qmenu.popup("Skin-view Options", [], SkinViewOptionsClick, "|Skin-view Options:\n\nThese functions deal with various Options pertaining directly to the Skin-view and the way certain elements can be manipulated and displayed while working on the Models Skin Mesh.\n\nPress the 'F1' key again or click the button below for further details.", "intro.modeleditor.skinview.html#funcsnmenus")
     PlugIns = qmenu.item("List of Plug-ins...", Plugins1Click)
     Config1 = qmenu.item("Confi&guration...", Config1Click,  hint = "|Configuration...:\n\nThis leads to the Configuration-Window where all elements of QuArK are setup. From the way the Editor looks and operates to Specific Game Configuration and Mapping or Modeling variables.\n\nBy pressing the F1 key one more time, or clicking the 'InfoBase' button below, you will be taken directly to the Infobase section that covers all of these areas, which can greatly assist you in setting up QuArK for a particular game you wish to map or model for.|intro.configuration.html")
-    Options1 = qmenu.popup("&Options", [RotationOptions, dhwr, et3dmode, ft3dmode, qmenu.sep]+[maiv, dbf, lineThicknessItem, qmenu.sep, FaceSelOptions, VertexSelOptions, SkinViewOptions, qmenu.sep]+items+[qmenu.sep, PlugIns, Config1], Options1Click)
+    Options1 = qmenu.popup("&Options", [RotationOptions, dhwr, et3dmode, ft3dmode, qmenu.sep]+[maiv, dbf, lineThicknessItem, qmenu.sep, BoneOptions, FaceSelOptions, VertexSelOptions, SkinViewOptions, qmenu.sep]+items+[qmenu.sep, PlugIns, Config1], Options1Click)
     return Options1, shortcuts
 
 
 def OptionsMenuRMB():
     "The Options RMB menu items."
 
+    BoneOptions = qmenu.popup("Bone Options", [], BoneOptionsClick, "|Bone Options:\n\nThese functions deal with the Model Bone visual tools to work with.", "intro.mapeditor.menu.html#optionsmenu")
     FaceSelOptions = qmenu.popup("Editor Face Options", [], FaceSelOptionsClick, "|Editor Face Selection Options:\n\nThese functions deal with the Model Mesh selection methods available and various visual tools to work with.", "intro.mapeditor.menu.html#optionsmenu")
     VertexSelOptions = qmenu.popup("Editor Vertex Options", [], VertexSelOptionsClick, "|Editor Vertex Selection Options:\n\nThese functions deal with the Model Mesh selection methods available and various visual tools to work with.", "intro.mapeditor.menu.html#optionsmenu")
-    return FaceSelOptions, VertexSelOptions
+    return BoneOptions, FaceSelOptions, VertexSelOptions
 
 
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.36  2008/07/22 23:14:23  cdunde
+#Fixed menu items that were not interacting with their config settings in the Defaults.qrk file.
+#
 #Revision 1.35  2008/07/21 02:31:06  cdunde
 #Added 3D view modes to Options menu to allow viewing through objects for scenes.
 #

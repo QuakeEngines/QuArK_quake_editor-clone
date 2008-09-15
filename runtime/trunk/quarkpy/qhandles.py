@@ -242,10 +242,12 @@ class GenericHandle:
             return
         import mdleditor
         if isinstance(editor, mdleditor.ModelEditor):
-            if ri[0].type == ":mc":
-                compframes = ri[0].findallsubitems("", ':mf')   # get all frames
-                for compframe in compframes:
-                    compframe.compparent = ri[0] # To allow frame relocation after editing.
+            if ri == []:
+                old, ri = self.centerdrag(v1, v2, flags, view)
+            comp = editor.Root.currentcomponent
+            compframes = comp.findallsubitems("", ':mf')   # get all frames
+            for compframe in compframes:
+                compframe.compparent = comp # To allow frame relocation after editing.
         undo = quarkx.action()
         for i in range(0,len(old)):
             undo.exchange(old[i], ri[i])
@@ -927,6 +929,8 @@ class RedImageDragObject(DragObject):
         self.x = x        ## Added this for Terrain objects - cdunde 05-14-05
         self.y = y        ## Added this for Terrain objects - cdunde 05-14-05
         self.z = z        ## Added this for Terrain objects - cdunde 05-14-05
+        ### Added these for invalidating drag rectangle area only - cdunde 08-28-08
+        self.xmin = self.ymin = self.xmax = self.ymax = None
         self.redcolor = redcolor
         self.redhandledata = None
 ## the lines below were added for the Terrain Generator
@@ -948,6 +952,14 @@ class RedImageDragObject(DragObject):
 
     def dragto(self, x, y, flags):
         self.flags = flags
+        if x < self.xmin or self.xmin is None:
+            self.xmin = x
+        if y < self.ymin or self.ymin is None:
+            self.ymin = y
+        if x > self.xmax or self.xmax is None:
+            self.xmax = x
+        if y > self.ymax or self.ymax is None:
+            self.ymax = y
         if flags&MB_DRAGGING:
             self.autoscroll(x,y) # old is the object at its original position at the very beginning of a drag. This does not change.
         old, ri = self.buildredimages(x, y, flags) # ri stands for 'redimage'. It's the object while it's being moved in a drag.
@@ -999,7 +1011,7 @@ class RedImageDragObject(DragObject):
             if isinstance(editor.dragobject.handle, mdlhandles.VertexHandle):
                 ### Stops Model Editor Vertex drag handles from drawing if not returned.
                 return
-            if isinstance(editor.dragobject.handle, mdlhandles.LinRedHandle) or isinstance(editor.dragobject.handle, mdlhandles.LinSideHandle) or isinstance(editor.dragobject.handle, mdlhandles.LinCornerHandle):
+            if isinstance(editor.dragobject.handle, mdlhandles.LinRedHandle) or isinstance(editor.dragobject.handle, mdlhandles.LinSideHandle) or isinstance(editor.dragobject.handle, mdlhandles.LinCornerHandle) or isinstance(editor.dragobject.handle, mdlhandles.LinBoneCornerHandle):
                 ### Stops Model Editor Linear drag handles from drawing redline drag objects incorrectly.
                 return
             # Draws rectangle selector and Skin-view lines much faster this way.
@@ -1293,13 +1305,7 @@ def refreshtimer(self):
                   # Line below stops the editor 2D view handles from drawing during rec drag after the timer
                   # goes off one time, but does not recreate the handles if nothing is selected at end of drag.
                   #      self.view.handles = []
-                        mdleditor.setsingleframefillcolor(editor, self.view)
-                        self.view.repaint()
-                        if isinstance(editor.dragobject, mdlhandles.RectSelDragObject) and (self.view.info["viewname"] != "editors3dview" or self.view.info["viewname"] != "3Dwindow"):
-                            plugins.mdlgridscale.gridfinishdrawing(editor, self.view)
-                        reccolor = MapColor("Drag3DLines", SS_MODEL)
-                        for r in self.redimages:
-                            self.view.drawmap(r, mode, reccolor)
+                        self.view.invalidaterect(self.xmin, self.ymin, self.xmax, self.ymax)
             else:
                 if not isinstance(editor.dragobject, mdlhandles.LinearHandle):
                     return
@@ -2162,6 +2168,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.74  2008/08/21 12:02:37  danielpharos
+#Removed a redundant line of code
+#
 #Revision 1.73  2008/05/27 19:35:41  danielpharos
 #Removed redundant call to mapeditor()
 #

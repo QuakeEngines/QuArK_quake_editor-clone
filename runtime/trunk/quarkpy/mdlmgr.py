@@ -44,12 +44,19 @@ treeviewselchanged = 0 ### This global is set to 1 when any new item is selected
 SFTexts   = [".md2", ".md3", ".lwo"] # Supported model types for import\exporting.
 mdltypes = [0,1,2] # Control list that corresponds with the "SFTexts" list above.
 SFLetters = "set model type"
+checkstart_pos = None
+checkend_pos = None
+checkbone_length = None
+checkbone_start_offset = None
+checkbone_end_offset = None
 
 class ModelLayout(BaseLayout):
     "An abstract base class for Model Editor screen layouts."
 
     MODE = SS_MODEL
     MAXAUTOZOOM = 10.0
+    start_color = ''
+    end_color = ''
 
     def clearrefs(self):
         global startup, saveskin, savedskins, skincount
@@ -70,6 +77,8 @@ class ModelLayout(BaseLayout):
         BaseLayout.clearrefs(self)
         self.skinform = None
         self.skinview = None
+        self.start_color = ''
+        self.end_color = ''
 
     def readtoolbars(self, config):
         readtoolbars(mdltoolbars.toolbars, self, self.editor.form, config)
@@ -406,6 +415,7 @@ class ModelLayout(BaseLayout):
 
     def makesettingclick(self, m):
         # The form uses this function when a setting is made or changed.
+        global checkstart_pos, checkend_pos, checkbone_length, checkbone_start_offset, checkbone_end_offset
         sl = self.explorer.sellist
         sfbtn = self.buttons["sf"]
         if m is not None:
@@ -429,11 +439,15 @@ class ModelLayout(BaseLayout):
         sfbtn.caption = cap
 
         try:
-            if sl[0].type == ":bone":
+            # Gets the "bone form" if the "if" test is passed.
+            if (len(sl) == 1 and sl[0].type == ":bone") or (len(sl) == 2 and (sl[0].type == ":mf" and sl[1].type == ":bone")):
                 import mdlentities
-                formobj = mdlentities.CallManager("dataformname", sl[0])
+                if sl[0].type == ":bone":
+                    formobj = mdlentities.CallManager("dataformname", sl[0])
+                else:
+                    formobj = mdlentities.CallManager("dataformname", sl[1])
             else:
-                # This trys to use a filetype:form, in the Defaults.qrk "Default forms.qctx" section to create this form.
+                # This tries to use a filetype:form, in the Defaults.qrk "Default forms.qctx" section to create this form.
                 DummyItem = sl[0]
                 while (DummyItem is not None):
                     if DummyItem.type == ":mr":
@@ -448,7 +462,7 @@ class ModelLayout(BaseLayout):
                     sl = []
                 else:
                     sl[0] = DummyItem
-                    try:
+                    try: # Tries to get a form for the "model format type" setting.
                         formobj = quarkx.getqctxlist(':form', sfbtn.caption.strip(".") + sl[0].type.replace(":","_"))[-1]
                     except:
                         formobj = None
@@ -456,7 +470,15 @@ class ModelLayout(BaseLayout):
             formobj = None
             sl = []
         try:
-            self.dataform.setdata(sl, formobj) # Try to use the data returned to make the form again.
+            # Tries to use the data returned to make the form again.
+            if (len(sl) == 1 and sl[0].type == ":bone") or (len(sl) == 2 and (sl[0].type == ":mf" and sl[1].type == ":bone")): # Sets the bone form items.
+                if sl[0].type == ":bone":
+                    selitem = sl[0]
+                else:
+                    selitem = sl[1]
+                self.dataform.setdata(selitem, formobj) # Tries to use the data returned to make the bone's form again.
+            else:
+                self.dataform.setdata(sl, formobj) # Tries to use the data returned to make the model format form again.
         except:
             formobj = None # If no form data is found, then set to None and just go on, there is no form for this item.
             sl = []
@@ -482,7 +504,8 @@ class ModelLayout(BaseLayout):
                 cap = "set model type"
         sfbtn.caption = cap
         btnlist = self.mpp.btnpanel.buttons
-        if sl and sl[0].type != ":bone":
+        # Sets the model format form items.
+        if (len(sl) == 1 and sl[0].type != ":bone") or (len(sl) > 1 and (sl[0].type != ":bone" and sl[1].type != ":bone")):
             if sfbtn.caption == ".lwo":
                 if not sl[0].dictspec.has_key('lwo_NAME'):
                     sl[0]['lwo_NAME'] = sl[0].dictitems['Skins:sg'].subitems[0].name
@@ -490,6 +513,23 @@ class ModelLayout(BaseLayout):
         #            sl[0]['lwo_UVNAME'] = sl[0].dictitems['Skins:sg'].subitems[0].name
                 if not sl[0].dictspec.has_key('lwo_COLR'):
                     sl[0]['lwo_COLR'] = "0.75 0.75 0.75"
+
+        # Sets self.xxxx_color to a bone's handles colors, when selected,
+        # for comparison , in the "filldataform" function, if a handle color is changed.
+        # Same goes for checkbone_length, checkbone_start_offset and checkbone_end_offset.
+        if (len(sl) == 1 and sl[0].type == ":bone") or (len(sl) == 2 and (sl[0].type == ":mf" and sl[1].type == ":bone")): # Sets the bone form items.
+            if sl[0].type == ":bone":
+                selitem = sl[0]
+            else:
+                selitem = sl[1]
+            self.start_color = selitem['start_color']
+            self.end_color = selitem['end_color']
+            checkstart_pos = selitem.dictspec['start_point']
+            checkend_pos = selitem.dictspec['end_point']
+            selitem['bone_length'] = checkbone_length = ((quarkx.vect(selitem.dictspec['start_point']) - quarkx.vect(selitem.dictspec['end_point']))*-1).tuple
+            checkbone_start_offset = quarkx.vect(selitem.dictspec['start_offset']).tuple
+            checkbone_end_offset = quarkx.vect(selitem.dictspec['end_offset']).tuple
+            self.dataform.setdata([selitem], formobj)
         quarkx.update(self.editor.form)
 
     def bs_additionalpages(self, panel):
@@ -528,12 +568,16 @@ class ModelLayout(BaseLayout):
 
     def filldataform(self, reserved):
         # Code to create the form for the first time or when selecting another item in the tree-view that uses this form.
+        global checkstart_pos, checkend_pos, checkbone_length, checkbone_start_offset, checkbone_end_offset
         sl = self.explorer.sellist
         sfbtn = self.buttons["sf"]
         try:
-            if sl[0].type == ":bone":
+            if (len(sl) == 1 and sl[0].type == ":bone") or (len(sl) == 2 and (sl[0].type == ":mf" and sl[1].type == ":bone")): # Gets the "bone form" if the "if" test is passed.
                 import mdlentities
-                formobj = mdlentities.CallManager("dataformname", sl[0])
+                if sl[0].type == ":bone":
+                    formobj = mdlentities.CallManager("dataformname", sl[0])
+                else:
+                    formobj = mdlentities.CallManager("dataformname", sl[1])
             else:
                 DummyItem = sl[0]
                 while (DummyItem is not None):
@@ -555,13 +599,21 @@ class ModelLayout(BaseLayout):
                         formobj = quarkx.getqctxlist(':form', sfbtn.caption.strip(".") + sl[0].type.replace(":","_"))[-1]
                     except:
                         formobj = None
-            self.dataform.setdata(sl, formobj) # Try to use a file type:form data returned to fill this form.
+            # Tries to use a file type:form data returned to fill this form.
+            if (len(sl) == 1 and sl[0].type == ":bone") or (len(sl) == 2 and (sl[0].type == ":mf" and sl[1].type == ":bone")): # Sets the bone form items.
+                if sl[0].type == ":bone":
+                    selitem = sl[0]
+                else:
+                    selitem = sl[1]
+                self.dataform.setdata(selitem, formobj) # Tries to use the data returned to make the bone's form again.
+            else:
+                self.dataform.setdata(sl, formobj) # Tries to use the data returned to make the model format form again.
         except:
             formobj = None # If no form data is found, then set to None and just go on, there is no form for this item.
             self.dataform.setdata(sl, formobj)
         help = ((formobj is not None) and formobj["Help"]) or ""
         if help:
-            help = "?" + help   # this trick displays a blue hint
+            help = "?" + help   # This trick displays a blue hint.
         self.buttons["help"].hint = help + "||This button gives you the description of the selected entity, and how to use it.\n\nYou are given help in two manners : by simply moving the mouse over the button, a 'hint' text appears with the description; if you click the button, you are sent to an HTML document about the entity, if available, or you are shown the same text as previously, if nothing more is available.\n\nNote that there is currently not a lot of info available as HTML documents."
         if sl:
             icon = qutils.EntityIconSel(sl[0])
@@ -602,15 +654,153 @@ class ModelLayout(BaseLayout):
                 if not sl[0].dictspec.has_key('lwo_COLR'):
                     sl[0]['lwo_COLR'] = "0.75 0.75 0.75"
                 self.dataform.setdata(sl, formobj)
+            # Updates all vertexes 'color' that are assigned to a bone handle when that handle color is changed.
+            if (len(sl) == 1 and sl[0].type == ":bone") or (len(sl) == 2 and (sl[0].type == ":mf" and sl[1].type == ":bone")) and (not isinstance(reserved, qtoolbar.button)):
+                if sl[0].type == ":bone":
+                    selitem = sl[0]
+                else:
+                    selitem = sl[1]
+
+                if self.start_color != selitem["start_color"]:
+                    if selitem.dictspec.has_key("start_vtxlist"):
+                        vtxlist = selitem.dictspec['start_vtxlist']
+                        start_vtxlist = vtxlist.split(" ")
+                        for vtx in start_vtxlist:
+                            comp = self.editor.Root.currentcomponent
+                            if self.editor.ModelComponentList[comp.name]['bonevtxlist'].has_key(vtx):
+                                if self.editor.ModelComponentList[comp.name]['bonevtxlist'][vtx]['s_or_e'] == 0:
+                                    self.editor.ModelComponentList[comp.name]['bonevtxlist'][vtx]['color'] = selitem["start_color"]
+                    self.start_color = selitem["start_color"]
+                    Update_Editor_Views(self.editor) # Updates the Specifics/Args page and views correctly.
+
+                elif self.end_color != selitem["end_color"]:
+                    if selitem.dictspec.has_key("end_vtxlist"):
+                        vtxlist = selitem.dictspec['end_vtxlist']
+                        end_vtxlist = vtxlist.split(" ")
+                        for vtx in end_vtxlist:
+                            comp = self.editor.Root.currentcomponent
+                            if self.editor.ModelComponentList[comp.name]['bonevtxlist'].has_key(vtx):
+                                if self.editor.ModelComponentList[comp.name]['bonevtxlist'][vtx]['s_or_e'] == 1:
+                                    self.editor.ModelComponentList[comp.name]['bonevtxlist'][vtx]['color'] = selitem["end_color"]
+                    self.end_color = selitem["end_color"]
+                    Update_Editor_Views(self.editor) # Updates the Specifics/Args page and views correctly.
+
+                elif checktuplepos(checkbone_start_offset, selitem['start_offset']) != 1:
+                    if selitem.dictspec.has_key('start_vtxlist'):
+                        new_start_offset = selitem.dictspec['start_offset']
+                        offset_dif = quarkx.vect(selitem['start_offset']) - quarkx.vect(checkbone_start_offset)
+                        checkstart_pos = (quarkx.vect(selitem['start_point']) + offset_dif).tuple
+                        checkbone_length = ((quarkx.vect(selitem['start_point']) + offset_dif + quarkx.vect(selitem['end_point']))*-1).tuple
+                        selitem['start_offset'] = checkbone_start_offset
+                        checkbone_start_offset = new_start_offset
+                        common_handles_list, s_or_e_list = find_common_bone_handles(self.editor, selitem['start_point'])
+                        start_point = checkstart_pos
+                        undo = quarkx.action()
+                        for old_bone in range(len(common_handles_list)):
+                            new_bone = common_handles_list[old_bone].copy()
+                            if s_or_e_list[old_bone] == 0:
+                                new_bone['start_point'] = start_point
+                                new_bone['start_offset'] = new_start_offset
+                            else:
+                                new_bone['end_point'] = start_point
+                                new_bone['end_offset'] = new_start_offset
+                            new_bone['bone_length'] = ((quarkx.vect(new_bone['start_point']) + quarkx.vect(new_start_offset) + quarkx.vect(new_bone['end_point']))).tuple
+                            undo.exchange(common_handles_list[old_bone], new_bone)
+                        self.editor.ok(undo, 'bone joint move')
+                    else:
+                        checkbone_start_offset = selitem['start_offset']
+
+                elif checktuplepos(checkbone_end_offset, selitem['end_offset']) != 1:
+                    if selitem.dictspec.has_key('end_vtxlist'):
+                        new_end_offset = selitem.dictspec['end_offset']
+                        offset_dif = quarkx.vect(selitem['end_offset']) - quarkx.vect(checkbone_end_offset)
+                        checkend_pos = (quarkx.vect(selitem['end_point']) + offset_dif).tuple
+                        checkbone_length = ((quarkx.vect(selitem['start_point']) + offset_dif + quarkx.vect(selitem['end_point']))*-1).tuple
+                        selitem['end_offset'] = checkbone_end_offset
+                        checkbone_end_offset = new_end_offset
+                        common_handles_list, s_or_e_list = find_common_bone_handles(self.editor, selitem['end_point'])
+                        end_point = checkend_pos
+                        undo = quarkx.action()
+                        for old_bone in range(len(common_handles_list)):
+                            new_bone = common_handles_list[old_bone].copy()
+                            if s_or_e_list[old_bone] == 0:
+                                new_bone['start_point'] = end_point
+                                new_bone['start_offset'] = new_end_offset
+                            else:
+                                new_bone['end_point'] = end_point
+                                new_bone['end_offset'] = new_end_offset
+                            new_bone['bone_length'] = ((quarkx.vect(new_bone['start_point']) + quarkx.vect(new_end_offset) + quarkx.vect(new_bone['end_point']))).tuple
+                            undo.exchange(common_handles_list[old_bone], new_bone)
+                        self.editor.ok(undo, 'bone joint move')
+                    else:
+                        checkbone_end_offset = selitem['end_offset']
+
+                elif checktuplepos(checkstart_pos, selitem['start_point']) != 1:
+                    oldstart_pos = checkstart_pos
+                    checkstart_pos = selitem['start_point']
+                    checkbone_length = ((quarkx.vect(selitem['start_point']) + quarkx.vect(selitem['end_point']))*-1).tuple
+                    selitem['start_point'] = oldstart_pos
+                    common_handles_list, s_or_e_list = find_common_bone_handles(self.editor, oldstart_pos)
+                    start_point = checkstart_pos
+                    undo = quarkx.action()
+                    for old_bone in range(len(common_handles_list)):
+                        new_bone = common_handles_list[old_bone].copy()
+                        if s_or_e_list[old_bone] == 0:
+                            new_bone['start_point'] = start_point
+                        else:
+                            new_bone['end_point'] = start_point
+                        new_bone['bone_length'] = ((quarkx.vect(new_bone['start_point']) + quarkx.vect(new_bone['end_point']))).tuple
+                        undo.exchange(common_handles_list[old_bone], new_bone)
+                    self.editor.ok(undo, 'bone joint move')
+
+                elif checktuplepos(checkend_pos, selitem['end_point']) != 1:
+                    oldend_pos = checkend_pos
+                    checkend_pos = selitem['end_point']
+                    checkbone_length = ((quarkx.vect(selitem['start_point']) + quarkx.vect(selitem['end_point']))*-1).tuple
+                    selitem['end_point'] = oldend_pos
+                    common_handles_list, s_or_e_list = find_common_bone_handles(self.editor, oldend_pos)
+                    end_point = checkend_pos
+                    undo = quarkx.action()
+                    for old_bone in range(len(common_handles_list)):
+                        new_bone = common_handles_list[old_bone].copy()
+                        if s_or_e_list[old_bone] == 0:
+                            new_bone['start_point'] = end_point
+                        else:
+                            new_bone['end_point'] = end_point
+                        new_bone['bone_length'] = ((quarkx.vect(new_bone['start_point']) + quarkx.vect(new_bone['end_point']))).tuple
+                        undo.exchange(common_handles_list[old_bone], new_bone)
+                    self.editor.ok(undo, 'bone joint move')
+
+                elif checktuplepos(checkbone_length, selitem['bone_length']) != 1:
+                    oldbone_length = checkbone_length
+                    checkend_pos = (quarkx.vect(selitem['start_point']) + quarkx.vect(selitem['bone_length'])).tuple
+                    checkbone_length = selitem['bone_length']
+                    selitem['bone_length'] = oldbone_length
+                    common_handles_list, s_or_e_list = find_common_bone_handles(self.editor, selitem['end_point'])
+                    end_point = checkend_pos
+                    undo = quarkx.action()
+                    for old_bone in range(len(common_handles_list)):
+                        new_bone = common_handles_list[old_bone].copy()
+                        if s_or_e_list[old_bone] == 0:
+                            new_bone['start_point'] = end_point
+                        else:
+                            new_bone['end_point'] = end_point
+                        new_bone['bone_length'] = ((quarkx.vect(new_bone['start_point']) + quarkx.vect(new_bone['end_point']))).tuple
+                        undo.exchange(common_handles_list[old_bone], new_bone)
+                    self.editor.ok(undo, 'bone joint move')
 
 
     def helpbtnclick(self, m):
         sl = self.explorer.sellist
         sfbtn = self.buttons["sf"]
         try:
-            if sl[0].type == ":bone":
+            # Gets the "bone form" if the "if" test is passed.
+            if (len(sl) == 1 and sl[0].type == ":bone") or (len(sl) == 2 and (sl[0].type == ":mf" and sl[1].type == ":bone")):
                 import mdlentities
-                formobj = mdlentities.CallManager("dataformname", sl[0])
+                if sl[0].type == ":bone":
+                    formobj = mdlentities.CallManager("dataformname", sl[0])
+                else:
+                    formobj = mdlentities.CallManager("dataformname", sl[1])
             else:
                 DummyItem = sl[0]
                 while (DummyItem is not None):
@@ -774,6 +964,22 @@ class ModelLayout(BaseLayout):
         global savedskins, savefacesel
         from qbaseeditor import currentview, flagsmouse
 
+        # This section preserves, and passes on, any data in the ModelComponentList when a component is renamed.
+        changednames = quarkx.getchangednames()
+        if changednames is not None:
+            if changednames[0][0].endswith(":mc"):
+                if self.editor.ModelComponentList.has_key(changednames[0][0]):
+                    tempdata = self.editor.ModelComponentList[changednames[0][0]]
+                    del self.editor.ModelComponentList[changednames[0][0]]
+                    self.editor.ModelComponentList[changednames[0][1]] = tempdata
+            if changednames[0][0].endswith(":bone"):
+                if self.editor.ModelComponentList[comp.name]['boneobjlist'].has_key(changednames[0][0]):
+                    tempdata = self.editor.ModelComponentList[comp.name]['boneobjlist'][changednames[0][0]]
+                    del self.editor.ModelComponentList[comp.name]['boneobjlist'][changednames[0][0]]
+                    self.editor.ModelComponentList[comp.name]['boneobjlist'][changednames[0][1]] = tempdata
+                if self.editor.ModelComponentList[comp.name].has_key('bonevtxlist'):
+                    for key in self.editor.ModelComponentList[comp.name]['bonevtxlist'].keys():
+                        self.editor.ModelComponentList[comp.name]['bonevtxlist'][key]['bonename'] = changednames[0][1]
         if comp != self.editor.Root.currentcomponent:
             self.reset()
             if currentview.info["viewname"] == "skinview":
@@ -798,6 +1004,8 @@ class ModelLayout(BaseLayout):
                 else:
                     try:
                         if flagsmouse == 2060 and (isinstance(self.editor.dragobject.handle, mdlhandles.LinRedHandle) or isinstance(self.editor.dragobject.handle, mdlhandles.LinSideHandle) or isinstance(self.editor.dragobject.handle, mdlhandles.LinCornerHandle)):
+                            pass
+                        elif (isinstance(self.editor.dragobject.handle, mdlhandles.LinBoneCenterHandle) or isinstance(self.editor.dragobject.handle, mdlhandles.LinBoneCornerHandle)):
                             pass
                         else:
                             if savefacesel == 1:
@@ -1004,6 +1212,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.76  2008/08/21 18:29:46  cdunde
+#New code for undos causes triple drawing and loss of selection.
+#
 #Revision 1.75  2008/08/21 11:43:23  danielpharos
 #Create undo when changing specifics.
 #

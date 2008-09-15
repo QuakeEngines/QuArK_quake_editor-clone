@@ -348,37 +348,83 @@ class BoneType(EntityManager):
     "Bone"
 
     def handlesopt(o, editor):
+        from qbaseeditor import currentview
         h = []
+        if quarkx.setupsubset(SS_MODEL, "Options")['HideBones'] is not None:
+            return h
         s = None
         index = ""
-        try:
-            tmp = o.dictspec['start_point']
-        except AttributeError:
-            o['start_point'] = (0,0,0)
-        try:
-            tmp = o.dictspec['end_point']
-        except AttributeError:
-            endpoint = quarkx.vect(o.dictspec['start_point']) + quarkx.vect(8,2,2)
-            o['end_point'] = endpoint.tuple
+        if o.dictspec.has_key("start_vtx_pos") or o.dictspec.has_key("end_vtx_pos"):
+            comp = editor.Root.currentcomponent
+            if comp.currentframe is not None:
+                frame = comp.currentframe
+            else:
+                frame = comp.dictitems['Frames:fg'].subitems[0]
+            if o.dictspec.has_key("start_vtx_pos") and o.dictspec['start_vtx_pos'] is not None:
+                vtxlist = o.dictspec['start_vtx_pos']
+                vtxlist = vtxlist.split(" ")
+                start_vtxpos = quarkx.vect(0, 0, 0)
+                for start_vtx in vtxlist:
+                    start_vtxpos = start_vtxpos + frame.vertices[int(start_vtx)]
+                start_vtxpos = start_vtxpos/ float(len(vtxlist))
+                start_point = start_vtxpos + quarkx.vect(o.dictspec['start_offset'])
+                o['start_point'] = start_point.tuple
+            if o.dictspec.has_key("end_vtx_pos") and o.dictspec['end_vtx_pos'] is not None:
+                vtxlist = o.dictspec['end_vtx_pos']
+                vtxlist = vtxlist.split(" ")
+                end_vtxpos = quarkx.vect(0, 0, 0)
+                for end_vtx in vtxlist:
+                    end_vtxpos = end_vtxpos + frame.vertices[int(end_vtx)]
+                end_vtxpos = end_vtxpos/ float(len(vtxlist))
+                end_point = end_vtxpos + quarkx.vect(o.dictspec['end_offset'])
+                o['end_point'] = end_point.tuple
 
-        s = mdlhandles.BoneHandle(quarkx.vect(o.dictspec['start_point']), o) # s is a BoneHandle instance.
-        e = mdlhandles.BoneHandle(quarkx.vect(o.dictspec['end_point']), o) # e is a BoneHandle instance.
+        scenter = quarkx.vect(o.dictspec['start_point'])
+        sbbox = (scenter + quarkx.vect(-0.9, -0.9, -0.9), scenter + quarkx.vect(0.9, 0.9, 0.9))
+        startcolor = o.dictspec['start_color']
+        quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
+        scolor = MapColor("start_color", SS_MODEL)
 
-        if s is None:
-            return h
-        if MapOption("HandleHints", SS_MODEL):
-            s.hint = "Start of %s"%o.shortname
-        s.s_or_e = 0
-        s.name = "Start of BoneFrame"
-        s.index = index
-        h = h + [s]
+        ecenter = quarkx.vect(o.dictspec['end_point'])
+        ebbox = (ecenter + quarkx.vect(-0.9, -0.9, -0.9), ecenter + quarkx.vect(0.9, 0.9, 0.9))
+        endcolor = o.dictspec['end_color']
+        quarkx.setupsubset(SS_MODEL, "Colors")["end_color"] = endcolor
+        ecolor = MapColor("end_color", SS_MODEL)
+
+        svtxlist = []
+        start_vtxlist = []
+        evtxlist = []
+        end_vtxlist = []
+        sh = mdlhandles.ModelEditorBoneLinHandlesManager(scolor, sbbox, svtxlist, o, start_vtxlist).BuildHandles(scenter) # s is a LinBoneCenterHandle instance.
+        eh = mdlhandles.ModelEditorBoneLinHandlesManager(ecolor, ebbox, evtxlist, o, end_vtxlist).BuildHandles(ecenter) # e is a LinBoneCenterHandle instance.
+
+        for s in sh:
+            if s is None:
+                return h
+            if isinstance(s, mdlhandles.LinBoneCenterHandle):
+                if MapOption("HandleHints", SS_MODEL):
+                    s.hint = "Start of %s"%o.shortname
+                s.name = "BoneStartCenter"
+            if isinstance(s, mdlhandles.LinBoneCornerHandle):
+                if MapOption("HandleHints", SS_MODEL):
+                    s.hint = "Start rotate of %s"%o.shortname
+                s.name = "BoneStartCorner"
+            s.s_or_e = 0
+            s.index = index
+            h = h + [s]
         # Finishes the end handle.
-        if MapOption("HandleHints", SS_MODEL):
-            e.hint = "End of %s"%o.shortname
-        e.s_or_e = 1
-        e.name = "End of BoneFrame"
-        e.index = index
-        h = h + [e]
+        for e in eh:
+            if isinstance(e, mdlhandles.LinBoneCenterHandle):
+                if MapOption("HandleHints", SS_MODEL):
+                    e.hint = "End of %s"%o.shortname
+                e.name = "BoneEndCenter"
+            if isinstance(e, mdlhandles.LinBoneCornerHandle):
+                if MapOption("HandleHints", SS_MODEL):
+                    e.hint = "End rotate of %s"%o.shortname
+                e.name = "BoneEndCorner"
+            e.s_or_e = 1
+            e.index = index
+            h = h + [e]
         return h
 
     def dataformname(o):
@@ -390,18 +436,61 @@ class BoneType(EntityManager):
                  "classname"$22" - The name of the bone currently selected for setting."$0D22
                  "Start color"$22" - Color to use for this bones Start handle's vertex group color."$0D
                  "          Click the color selector button to the right and pick a color."$0D22
-                 "Start color"$22" - Color to use for this bones End handle's vertex group color."$0D
+                 "End color"$22" - Color to use for this bones End handle's vertex group color."$0D
                  "          Click the color selector button to the right and pick a color."
-          start_color: = {          Txt="Start color"  Hint="Color to use for this bones Start handle's vertex group color."$0D"Set the color by hand here or use the color selector button below."}
-          start_color: = {Typ="L"   Txt="Start color"  Hint="Color to use for this bones Start handle's vertex group color."$0D"Click the color selector button to the right and pick a color."}
-          end_color:   = {          Txt="End color"    Hint="Color to use for this bones End handle's vertex group color."$0D"Set the color by hand here or use the color selector button below."}
-          end_color:   = {Typ="L"   Txt="End color"    Hint="Color to use for this bones End handle's vertex group color."$0D"Click the color selector button to the right and pick a color."}
+          bone_length: = {
+              Typ="EF003" 
+              Txt="Bone Length:"
+              Hint="You must enter three values here."$0D"They have an accuracy of two digits."
+                 }
+          length_locked: = {
+              Typ="X1" 
+              Txt="Length Locked:"
+              Hint="When checked, the length of this bone will"$0D"not change by the dragging of either handle."
+                 }
+
+          sep: = { Typ="S" Txt="" }
+
+          sep: = {
+              Typ="S"
+              Txt="Bone Start Handle"
+                 }
+
+          start_color: = {Typ="LI"   Txt="color"  Hint="Color to use for this bones Start handle's vertex group color."$0D"Click the color selector button to the right and pick a color."}
+          start_point: = {
+              Typ="EF003" 
+              Txt="position"
+              Hint="You must enter three values here."$0D"They have an accuracy of two digits."
+                 }
+          start_offset: = {
+              Typ="EF003" 
+              Txt="offset"
+              Hint="You must enter three values here."$0D"They have an accuracy of two digits."$0D"Not all models use this."
+                 }
+
+          sep: = { Typ="S" Txt="" }
+
+          sep: = {
+              Typ="S"
+              Txt="Bone End Handle"
+                 }
+
+          end_color:   = {Typ="LI"   Txt="color"    Hint="Color to use for this bones End handle's vertex group color."$0D"Click the color selector button to the right and pick a color."}
+          end_point: = {
+              Typ="EF003" 
+              Txt="position"
+              Hint="You must enter three values here."$0D"They have an accuracy of two digits."
+                 }
+          end_offset: = {
+              Typ="EF003" 
+              Txt="offset"
+              Hint="You must enter three values here."$0D"They have an accuracy of two digits."$0D"Not all models use this."
+                 }
         }
         """
 
         formobj = quarkx.newobj("bone:form")
         formobj.loadtext(dlgdef)
-
         return formobj
 
 
@@ -463,6 +552,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.28  2008/08/08 05:35:50  cdunde
+#Setup and initiated a whole new system to support model bones.
+#
 #Revision 1.27  2008/07/23 01:22:23  cdunde
 #Added function comment for clarity.
 #

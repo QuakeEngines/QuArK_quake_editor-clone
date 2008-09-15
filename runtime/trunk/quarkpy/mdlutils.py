@@ -10,13 +10,10 @@ Various Model editor utility functions.
 
 #$Header$
 
-
-
 import quarkx
+import qutils
 from qeditor import *
 from math import *
-
-
 
 ###############################
 #
@@ -118,7 +115,7 @@ def ProjectKeepingLength(A,C,L):
         le = sqrt( pow(v2.x - v1.x, 2) + 
                    pow(v2.y - v1.y, 2) + 
                    pow(v2.z - v1.z, 2) )
-        if (le <> 0): 
+        if (le <> 0):
             v = quarkx.vect( \
                 (v2.x - v1.x) / le, \
                 (v2.y - v1.y) / le, \
@@ -787,13 +784,18 @@ def movefaces(editor, movetocomponent, option=2):
 
 
 
-def MakeEditorVertexPolyObject(editor, option=0):
-    "Creates a QuArK Internal Group Object which consist of QuArK internal Poly Objects"
-    "created from each selected vertex in the"
-    "option=0 uses the ModelVertexSelList for the editor and"
-    "option=1 uses the SkinVertexSelList for the Skin-view"
-    "that can be manipulated by some function using QuArK Internal Poly Objects"
-    "such as the Linear Handle functions."
+#
+# Creates a QuArK Internal Group Object which consist of QuArK internal Poly Objects
+# created from each selected vertex in the
+# option=0 uses the ModelVertexSelList for the editor and
+# option=1 uses the SkinVertexSelList for the Skin-view
+# that can be manipulated by some function using QuArK Internal Poly Objects
+# such as the Linear Handle functions.
+# "otherlist" does NOT apply for the Skin-view, only the editor and it will
+# use the list supplied and not the default ModelVertexSelList list above.
+#
+def MakeEditorVertexPolyObject(editor, option=0, otherlist=None, name=None):
+    "Creates a QuArK Internal Group Object of Poly Objects for vertex drags."
 
     if editor.Root.currentcomponent is None:
         componentnames = []
@@ -804,14 +806,21 @@ def MakeEditorVertexPolyObject(editor, option=0):
         editor.Root.currentcomponent = editor.Root.dictitems[componentnames[0]]
         
     if option == 0:
-        if editor.ModelVertexSelList == []:
+        if editor.ModelVertexSelList == [] and otherlist is None:
             return []
+        elif otherlist is not None:
+            VertexList = otherlist
+        else:
+            VertexList = editor.ModelVertexSelList
         from qbaseeditor import currentview
         polylist = []
-        group = quarkx.newobj("selected:g");
+        if name is None:
+            group = quarkx.newobj("selected:g");
+        else:
+            group = quarkx.newobj(name + ":g");
         for vtx in range (len(editor.Root.currentcomponent.currentframe.vertices)):
-            for ver_index in range (len(editor.ModelVertexSelList)):
-                if vtx == editor.ModelVertexSelList[ver_index][0]:
+            for ver_index in range (len(VertexList)):
+                if vtx == VertexList[ver_index][0]:
                     vertex = editor.Root.currentcomponent.currentframe.vertices[vtx]
                     p = quarkx.newobj(str(vtx)+":p");
                     face = quarkx.newobj("east:f")
@@ -971,7 +980,6 @@ def MakeEditorVertexPolyObject(editor, option=0):
 # option=2, called from mdlhandles.py class LinRedHandle, ok function
 #   is for the editor's selected edges vertexes extrusion function.
 #
-
 def ConvertVertexPolyObject(editor, newobjectslist, flags, view, undomsg, option=0):
     "Does the opposite of the 'MakeEditorVertexPolyObject' (just above this function) to convert a list"
     "of a group of polys that have been manipulated by some function using QuArK Internal Poly Objects."
@@ -980,22 +988,41 @@ def ConvertVertexPolyObject(editor, newobjectslist, flags, view, undomsg, option
         comp = editor.Root.currentcomponent
         new_comp = comp.copy()
         compframes = new_comp.findallsubitems("", ':mf')   # get all frames
-        for poly in range(len(newobjectslist[0].subitems)):
+        if len(newobjectslist) > 1:
             for compframe in compframes:
-                for listframe in editor.layout.explorer.sellist:
-                    if compframe.name == listframe.name:
-                        old_vtxs = compframe.vertices
-                        if listframe == editor.layout.explorer.sellist[0]:
-                            vtxnbr = int(newobjectslist[0].subitems[poly].shortname)
-                            face = newobjectslist[0].subitems[poly].subitems[0]
-                            vertex = quarkx.vect(face["v"][0] , face["v"][1], face["v"][2]) - quarkx.vect(1.0,0.0,0.0)/view.info["scale"]*2
-                            delta = vertex - old_vtxs[vtxnbr]
-                            old_vtxs[vtxnbr] = vertex
-                        else:
-                            vtxnbr = int(newobjectslist[0].subitems[poly].shortname)
-                            old_vtxs[vtxnbr] = old_vtxs[vtxnbr] + delta
-                        compframe.vertices = old_vtxs
+                for newobject in range(len(newobjectslist)):
+                    for poly in range(len(newobjectslist[newobject].subitems)):
+                        for listframe in editor.layout.explorer.sellist:
+                            if compframe.name == listframe.name:
+                                old_vtxs = compframe.vertices
+                                if listframe == editor.layout.explorer.sellist[0]:
+                                    vtxnbr = int(newobjectslist[newobject].subitems[poly].shortname)
+                                    face = newobjectslist[newobject].subitems[poly].subitems[0]
+                                    vertex = quarkx.vect(face["v"][0] , face["v"][1], face["v"][2]) - quarkx.vect(1.0,0.0,0.0)/view.info["scale"]*2
+                                    delta = vertex - old_vtxs[vtxnbr]
+                                    old_vtxs[vtxnbr] = vertex
+                                else:
+                                    vtxnbr = int(newobjectslist[newobject].subitems[poly].shortname)
+                                    old_vtxs[vtxnbr] = old_vtxs[vtxnbr] + delta
+                                compframe.vertices = old_vtxs
                 compframe.compparent = new_comp # To allow frame relocation after editing.
+        else:
+            for poly in range(len(newobjectslist[0].subitems)):
+                for compframe in compframes:
+                    for listframe in editor.layout.explorer.sellist:
+                        if compframe.name == listframe.name:
+                            old_vtxs = compframe.vertices
+                            if listframe == editor.layout.explorer.sellist[0]:
+                                vtxnbr = int(newobjectslist[0].subitems[poly].shortname)
+                                face = newobjectslist[0].subitems[poly].subitems[0]
+                                vertex = quarkx.vect(face["v"][0] , face["v"][1], face["v"][2]) - quarkx.vect(1.0,0.0,0.0)/view.info["scale"]*2
+                                delta = vertex - old_vtxs[vtxnbr]
+                                old_vtxs[vtxnbr] = vertex
+                            else:
+                                vtxnbr = int(newobjectslist[0].subitems[poly].shortname)
+                                old_vtxs[vtxnbr] = old_vtxs[vtxnbr] + delta
+                            compframe.vertices = old_vtxs
+                    compframe.compparent = new_comp # To allow frame relocation after editing.
         undo = quarkx.action()
         undo.exchange(comp, new_comp)
         editor.ok(undo, undomsg)
@@ -1315,7 +1342,7 @@ def ConvertEditorFaceObject(editor, newobjectslist, flags, view, undomsg, option
         undo.exchange(comp, new_comp)
         editor.ok(undo, undomsg)
 
-# for test reference only - def replacevertexes(editor, comp, vertexlist, flags, view, undomsg):
+    # for test reference only - def replacevertexes(editor, comp, vertexlist, flags, view, undomsg):
     if option == 1:
         comp = editor.Root.currentcomponent
         vertexlist = []
@@ -1780,7 +1807,9 @@ def addframe(editor):
 
 
 
+#
 # This function adds a :bone-object to the skeleton-group of comp at position pos
+#
 def addbone(editor, comp, pos):
     name = None
     comparenbr = 0
@@ -1803,7 +1832,10 @@ def addbone(editor, comp, pos):
     new_o_bone['start_point'] = pos.tuple
     endpoint = pos + quarkx.vect(8,2,2)
     new_o_bone['end_point'] = endpoint.tuple
-
+    new_o_bone['bone_length'] = (8,2,2)
+    new_o_bone['start_color'] = new_o_bone['end_color'] = MapColor("BoneHandles", SS_MODEL)
+    new_o_bone['start_offset'] = (0, 0, 0)
+    new_o_bone['end_offset'] = (0, 0, 0)
     new_comp = comp.copy()
     compskeleton = new_comp.findallsubitems("", ':bg')[0]
     compskeleton.appenditem(new_o_bone)
@@ -1812,7 +1844,9 @@ def addbone(editor, comp, pos):
     editor.Root.currentcomponent = new_comp
     editor.ok(undo, "add bone")
 
+#
 # This function creates a new bone at the start or end (s_or_e) of bone
+#
 def continue_bone(editor, bone, s_or_e = 0):
     compskeleton = bone.parent  # get the bones group
     name = None
@@ -1839,19 +1873,28 @@ def continue_bone(editor, bone, s_or_e = 0):
         new_o_bone['start_point'] = bone['end_point']
     endpoint = quarkx.vect(new_o_bone['start_point']) + quarkx.vect(8,2,2)
     new_o_bone['end_point'] = endpoint.tuple
+    new_o_bone['bone_length'] = (8,2,2)
+    new_o_bone['start_color'] = new_o_bone['end_color'] = MapColor("BoneHandles", SS_MODEL)
+    new_o_bone['start_offset'] = (0, 0, 0)
+    new_o_bone['end_offset'] = (0, 0, 0)
     undo = quarkx.action()
     undo.put(compskeleton, new_o_bone)
     editor.ok(undo, "continue bone")
 
+#
 # This function attaches bone2 to bone1
+#
 def attach_bones(editor, bone1, bone2):
     new_o_bone = bone2.copy()
     new_o_bone['start_point'] = bone1['end_point']
+    new_o_bone['bone_length'] = ((quarkx.vect(new_o_bone.dictspec['start_point']) - quarkx.vect(new_o_bone.dictspec['end_point']))*-1).tuple
     undo = quarkx.action()
     undo.exchange(bone2, new_o_bone)
     editor.ok(undo, "attach bones")
 
-#This function detaches bone2 from bone1
+#
+# This function detaches bone2 from bone1
+#
 def detach_bones(editor, bone1, bone2):
     new_o_bone = bone2.copy()
     if (checktuplepos(bone1['start_point'], bone2['start_point']) == 1) or (checktuplepos(bone1['end_point'], bone2['start_point']) == 1):
@@ -1860,9 +1903,65 @@ def detach_bones(editor, bone1, bone2):
     else:
         newpoint = quarkx.vect(bone2['end_point']) + quarkx.vect(.01,.01,.01)
         new_o_bone['end_point'] = newpoint.tuple
+    new_o_bone['bone_length'] = ((quarkx.vect(new_o_bone.dictspec['start_point']) - quarkx.vect(new_o_bone.dictspec['end_point']))*-1).tuple
     undo = quarkx.action()
     undo.exchange(bone2, new_o_bone)
     editor.ok(undo, "detach bones")
+
+#
+# This function aligns the two selected bones start_points.
+#
+def align_bones_starts(editor, bone1, bone2):
+    new_o_bone = bone2.copy()
+    newpoint = quarkx.vect(bone1['start_point']) + quarkx.vect(.01,.01,.01)
+    new_o_bone['start_point'] = newpoint.tuple
+    new_o_bone['bone_length'] = ((quarkx.vect(new_o_bone.dictspec['start_point']) - quarkx.vect(new_o_bone.dictspec['end_point']))*-1).tuple
+    undo = quarkx.action()
+    undo.exchange(bone2, new_o_bone)
+    editor.ok(undo, "align start handles")
+
+#
+# This function aligns the two selected bones end_points.
+#
+def align_bones_ends(editor, bone1, bone2):
+    new_o_bone = bone2.copy()
+    newpoint = quarkx.vect(bone1['end_point']) + quarkx.vect(.01,.01,.01)
+    new_o_bone['end_point'] = newpoint.tuple
+    new_o_bone['bone_length'] = ((quarkx.vect(new_o_bone.dictspec['start_point']) - quarkx.vect(new_o_bone.dictspec['end_point']))*-1).tuple
+    undo = quarkx.action()
+    undo.exchange(bone2, new_o_bone)
+    editor.ok(undo, "align end handles")
+
+#
+# This function aligns bone2 start_point to bone1 end_point.
+#
+def align_start2end(editor, bone1, bone2):
+    new_o_bone = bone2.copy()
+    newpoint = quarkx.vect(bone1['end_point']) + quarkx.vect(.01,.01,.01)
+    new_o_bone['start_point'] = newpoint.tuple
+    new_o_bone['bone_length'] = ((quarkx.vect(new_o_bone.dictspec['start_point']) - quarkx.vect(new_o_bone.dictspec['end_point']))*-1).tuple
+    undo = quarkx.action()
+    undo.exchange(bone2, new_o_bone)
+    editor.ok(undo, "align start2end handles")
+
+#
+# This function finds all bone handles start_points and end_points that are
+# the same as the handle_pos provided, primarily used for specific settings drags.
+#
+def find_common_bone_handles(editor, handle_pos):
+    common_handles_list = []
+    s_or_e_list = []
+    compbones = editor.Root.currentcomponent.findallsubitems("", ':bone')      # get all bones
+    for bone in compbones:
+        # Handles the "Start of Bone".
+        if checktuplepos(bone.dictspec['start_point'], handle_pos) == 1:
+            common_handles_list = common_handles_list + [bone]
+            s_or_e_list = s_or_e_list + [0]
+        # Handles the "End of Bone".
+        elif checktuplepos(bone.dictspec['end_point'], handle_pos) == 1:
+            common_handles_list = common_handles_list + [bone]
+            s_or_e_list = s_or_e_list + [1]
+    return common_handles_list, s_or_e_list
 
 
 
@@ -2207,7 +2306,7 @@ def skinremap(editor):
             view.invalidate(1)
 
 
-
+#
 # view = current view that the cursor is in.
 # If one of the editor's views:
 #    object = triangleface = a single item list containing the triangle face that the cursor is over.
@@ -2236,7 +2335,7 @@ def skinremap(editor):
 #    object (not needed)
 #    Returns a single list containing two integers, the texture's pixel u, v position in the Skin-view.
 # x and y = the position where the cursor is at in the view as a 'projected' 2D screen view.
-
+#
 def TexturePixelLocation(editor, view, x, y, object=None):
     if view.info["viewname"] != "skinview":
         triangleface = object
@@ -2758,6 +2857,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.83  2008/08/08 05:02:11  cdunde
+#Rearranged all functions into groups to organize and make locating easer.
+#
 #Revision 1.82  2008/08/08 04:55:06  cdunde
 #To add new functions by DanielPharos and cdunde.
 #

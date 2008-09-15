@@ -16,6 +16,8 @@ import mdlmgr
 from qbaseeditor import BaseEditor
 import mdlbtns
 import mdlentities
+import mdlutils
+from mdlutils import *
 
 import qmenu
 import qtoolbar
@@ -50,6 +52,11 @@ class ModelEditor(BaseEditor):
     #                        item disc.: cursor view's x,y,z pos. --- autopsy:mc (model component) --- comp tri_index,
     #                                                 Its triangle number in the Model component mesh "triangles" list
     #                                                    of the Models "currentcomponent".
+
+    # This is a dictionary list using each component's full name as its key.
+    # Each component's list can then store anything relating to that component
+    # and can be any type of item, another dictionary, tuple or standard list, object....
+    ModelComponentList = {}
 
 
 
@@ -155,7 +162,60 @@ class ModelEditor(BaseEditor):
             componentnames = []
             for item in self.Root.dictitems:
                 if item.endswith(":mc"):
+                    comp = self.Root.dictitems[item]
                     componentnames.append(item)
+                    self.ModelComponentList[item] = {}
+                    self.ModelComponentList[item]['bonevtxlist'] = {}
+                    self.ModelComponentList[item]['boneobjlist'] = {}
+                    bones = self.Root.dictitems[item].findallsubitems("", ':bone')   # get all bones
+                    for bone in bones:
+                        boneobjs = {}
+                        if bone.dictspec.has_key("start_vtxlist"):
+                            boneobjs['s_or_e0'] = {}
+                            bone_vtxlist = []
+                            tristodrawlist = []
+                            selvtxlist = []
+                            vtxlist = bone.dictspec['start_vtxlist'].split(" ")
+                            for vtx in vtxlist:
+                                vtxinfo = {}
+                                vtxinfo['bonename'] = bone.name
+                                vtxinfo['s_or_e'] = 0
+                                vtxinfo['color'] = bone['start_color']
+                                self.ModelComponentList[item]['bonevtxlist'][vtx] = vtxinfo
+                                vtx = int(vtx)
+                                bone_vtxlist = bone_vtxlist + [[vtx, quarkx.vect(0,0,0)]]
+                                if vtx in selvtxlist:
+                                    pass
+                                else:
+                                    selvtxlist = selvtxlist + [vtx]
+                                    tristodrawlist = tristodrawlist + findTrianglesAndIndexes(comp, vtx, quarkx.vect(0,0,0))
+                            boneobjs['s_or_e0']['vtxlist'] = bone_vtxlist
+                            boneobjs['s_or_e0']['tristodrawlist'] = tristodrawlist
+                            boneobjs['s_or_e0']['selvtxlist'] = selvtxlist
+                        if bone.dictspec.has_key("end_vtxlist"):
+                            boneobjs['s_or_e1'] = {}
+                            bone_vtxlist = []
+                            tristodrawlist = []
+                            selvtxlist = []
+                            vtxlist = bone.dictspec['end_vtxlist'].split(" ")
+                            for vtx in vtxlist:
+                                vtxinfo = {}
+                                vtxinfo['bonename'] = bone.name
+                                vtxinfo['s_or_e'] = 1
+                                vtxinfo['color'] = bone['end_color']
+                                self.ModelComponentList[item]['bonevtxlist'][vtx] = vtxinfo
+                                vtx = int(vtx)
+                                bone_vtxlist = bone_vtxlist + [[vtx, quarkx.vect(0,0,0)]]
+                                if vtx in selvtxlist:
+                                    pass
+                                else:
+                                    selvtxlist = selvtxlist + [vtx]
+                                    tristodrawlist = tristodrawlist + findTrianglesAndIndexes(comp, vtx, quarkx.vect(0,0,0))
+                            boneobjs['s_or_e1']['vtxlist'] = bone_vtxlist
+                            boneobjs['s_or_e1']['tristodrawlist'] = tristodrawlist
+                            boneobjs['s_or_e1']['selvtxlist'] = selvtxlist
+                        if bone.dictspec.has_key("start_vtxlist") or bone.dictspec.has_key("end_vtxlist"):
+                            self.ModelComponentList[item]['boneobjlist'][bone.name] = boneobjs
             componentnames.sort()
         try:
             self.Root.currentcomponent = self.Root.dictitems[componentnames[0]]
@@ -227,6 +287,8 @@ class ModelEditor(BaseEditor):
         quarkx.setupsubset(SS_MODEL, "Options")["ExtrudeBulkHeads"] = None
         quarkx.setupsubset(SS_MODEL, "Options")['VertexUVColor'] = None
         quarkx.setupsubset(SS_MODEL, "Options")['HideBones'] = None
+        quarkx.setupsubset(SS_MODEL, "Colors")['start_color'] = None
+        quarkx.setupsubset(SS_MODEL, "Colors")['end_color'] = None
 
 
     def initmenu(self, form):
@@ -1486,6 +1548,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.96  2008/08/08 05:35:50  cdunde
+#Setup and initiated a whole new system to support model bones.
+#
 #Revision 1.95  2008/07/26 04:57:37  cdunde
 #Applied new setting to avoid saved skins from showing on recent files menu.
 #

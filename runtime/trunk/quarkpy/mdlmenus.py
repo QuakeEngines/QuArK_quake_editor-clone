@@ -167,7 +167,7 @@ def MdlBackgroundMenu(editor, view=None, origin=None):
     File1, sc1 = qmenu.DefaultFileMenu()
     Commands1, sc2 = mdlcommands.CommandsMenu()
     sc1.update(sc2)   # merge shortcuts
-    FaceSelOptions, VertexSelOptions = mdloptions.OptionsMenuRMB()
+    BoneOptions, FaceSelOptions, VertexSelOptions = mdloptions.OptionsMenuRMB()
 
     undo, redo = quarkx.undostate(editor.Root)
     if undo is None:   # to undo
@@ -191,7 +191,7 @@ def MdlBackgroundMenu(editor, view=None, origin=None):
     if view is not None:
         if view.info["viewname"] != "skinview":
             import mdloptions
-            bonepop = qmenu.popup("Bone Commands", mdlhandles.BoneHandle(origin, None).menu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
+            bonepop = qmenu.popup("Bone Commands", mdlhandles.LinBoneCenterHandle(origin,None,None).menu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
             mdlfacepop = qmenu.popup("Face Commands", mdlhandles.ModelFaceHandle(origin).menu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
             vertexpop = qmenu.popup("Vertex Commands", mdlhandles.VertexHandle(origin).menu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
             bonepop.state = qmenu.disabled
@@ -211,9 +211,9 @@ def MdlBackgroundMenu(editor, view=None, origin=None):
                 qbackbmp.MdlBackBmpDlg(form, view)
             backbmp1 = qmenu.item("Background image...", backbmp1click, "|Background image:\n\nWhen selected, this will open a dialog box where you can choose a .bmp image file to place and display in the 2D view that the cursor was in when the RMB was clicked.\n\nClick on the 'InfoBase' button below for full detailed information about its functions and settings.|intro.mapeditor.rmb_menus.noselectionmenu.html#background")
             if editor.ModelFaceSelList != []:
-                extra = extra + [qmenu.sep, bonepop, mdlfacepop, vertexpop, Commands1, qmenu.sep, FaceSelOptions, VertexSelOptions, qmenu.sep] + TexModeMenu(editor, view) + [qmenu.sep, backbmp1]
+                extra = extra + [qmenu.sep, bonepop, mdlfacepop, vertexpop, Commands1, qmenu.sep, BoneOptions, FaceSelOptions, VertexSelOptions, qmenu.sep] + TexModeMenu(editor, view) + [qmenu.sep, backbmp1]
             else:
-                extra = extra + [qmenu.sep, bonepop, vertexpop, Commands1, qmenu.sep, FaceSelOptions, VertexSelOptions, qmenu.sep] + TexModeMenu(editor, view) + [qmenu.sep, backbmp1]
+                extra = extra + [qmenu.sep, bonepop, vertexpop, Commands1, qmenu.sep, BoneOptions, FaceSelOptions, VertexSelOptions, qmenu.sep] + TexModeMenu(editor, view) + [qmenu.sep, backbmp1]
         else:
             def resetSkinview(menu, editor=editor, view=view):
                 viewWidth, viewHeight = view.clientarea
@@ -284,6 +284,9 @@ def BaseMenu(sellist, editor):
 #
 #
 #$Log$
+#Revision 1.33  2008/08/08 05:35:49  cdunde
+#Setup and initiated a whole new system to support model bones.
+#
 #Revision 1.32  2008/07/26 03:41:33  cdunde
 #Add functions to RMB menus.
 #

@@ -946,7 +946,7 @@ class BaseEditor:
                         import mdlhandles
                         try:
                             # This returns during Linear Handle drag so that actual drag hints will appear properly in the 'Help box'.
-                            if isinstance(editor.dragobject.handle, mdlhandles.LinRedHandle) or isinstance(self.dragobject.handle, mdlhandles.LinCornerHandle) or isinstance(self.dragobject.handle, mdlhandles.LinSideHandle):
+                            if isinstance(editor.dragobject.handle, mdlhandles.LinRedHandle) or isinstance(self.dragobject.handle, mdlhandles.LinCornerHandle) or isinstance(self.dragobject.handle, mdlhandles.LinSideHandle) or isinstance(self.dragobject.handle, mdlhandles.LinBoneCornerHandle):
                                 return
                         except:
                             pass
@@ -1053,7 +1053,7 @@ class BaseEditor:
                                 s = quarkx.getlonghint(handle.hint)
                         else:
                             s = "Skin tri \\ vertex " + str(handle.tri_index) + " \\ " + str(handle.ver_index) + " x:%s"%ftoss(x) + " y:%s"%ftoss(y)
-                    elif (isinstance(handle, mdlhandles.LinRedHandle)) or (isinstance(handle, mdlhandles.LinSideHandle)) or (isinstance(handle, mdlhandles.LinCornerHandle)):
+                    elif (isinstance(handle, mdlhandles.LinRedHandle)) or (isinstance(handle, mdlhandles.LinSideHandle)) or (isinstance(handle, mdlhandles.LinCornerHandle)) or (isinstance(handle, mdlhandles.LinBoneCornerHandle)):
                         if view.info["viewname"] == "XY":
                             s = "Linear handle pos " + " x:%s"%ftoss(handle.pos.x) + " y:%s"%ftoss(handle.pos.y)
                         elif view.info["viewname"] == "XZ":
@@ -1459,6 +1459,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.114  2008/07/23 01:12:55  cdunde
+#Added ability to clear all selections by a single LMB click in any open area of a editor's view.
+#
 #Revision 1.113  2008/07/15 23:16:27  cdunde
 #To correct typo error from MldOption to MdlOption in all files.
 #
