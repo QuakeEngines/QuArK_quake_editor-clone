@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.24  2008/09/06 15:57:14  danielpharos
+Moved exception code into separate file.
+
 Revision 1.23  2008/08/09 19:37:54  danielpharos
 Removed redundant code.
 
@@ -181,7 +184,7 @@ type
 implementation
 
 uses Travail, QkExplorer, Quarkx, QkExceptions, PyObjects, Game, QkSin,
- Qkzip2, qkq3, QkObjectClassList, QkBsp, ExtraFunctionality;
+ Qkzip2, QkQ3, QkD3, QkCoD2, QkObjectClassList, QkBsp, ExtraFunctionality;
 
 {$R *.DFM}
 
@@ -883,10 +886,12 @@ end;
 function QPakFolder.TestConversionType(I: Integer) : QFileObjectClass;
 begin
   case I of
-    1: Result:=Q3Pak;
-    2: Result:=QZipPak;
-    3: Result:=QSinPak;
-    4: Result:=QPak;
+    1: Result:=D3Pak;
+    2: Result:=Q3Pak;
+    3: Result:=CoD2Pak;
+    4: Result:=QZipPak;
+    5: Result:=QSinPak;
+    6: Result:=QPak;
     else
       Result:=Nil;
   end;

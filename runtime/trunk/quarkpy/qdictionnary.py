@@ -280,6 +280,7 @@ Strings = {
     818: "Steam FS (*.SteamFS)|*.SteamFS",
     819: "DDS image (*.dds)|*.dds",
     820: "FTX image (*.ftx)|*.ftx",
+    821: "Call of Duty 2 Pak Files (.iwd)|*.iwd",
 
     2368: "Skins",
     2369: "Frames",
@@ -562,6 +563,8 @@ Strings = {
     5144: ".mdl file",
     5145: ".md2 file",
     5146: "Doom 3 Pak",
+    5147: "Call of Duty 2 Pak",
+
     5155: "Quake Context",
     5156: "Tool bar",
     5157: ".wav Sound",
@@ -1052,6 +1055,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.129  2008/08/26 16:22:00  danielpharos
+#Added filename of broken shader/material file to error-message.
+#
 #Revision 1.128  2008/08/26 15:11:45  danielpharos
 #Added filename of broken qrk source file to error-message.
 #

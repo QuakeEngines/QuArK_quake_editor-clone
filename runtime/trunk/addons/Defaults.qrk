@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.437  2008/09/14 12:55:29  danielpharos
+//Changes to Help system: All forms now have a customizable help-link. Also, added an fallback option to the online infobase docs.
+//
 //Revision 1.436  2008/09/09 18:09:25  danielpharos
 //Updated to VS2005 release of DevIL (that works).
 //
@@ -1592,6 +1595,7 @@ QQRKSRC1
         .sin = "1"     isin = '5'
         .pk3 = "1"     ipk3 = '5'
         .pk4 = "1"     ipk4 = '5'
+        .iwd = "1"     iiwd = '5'
         .bsp = "1"     ibsp = '3'
         .qc  = "1"     iqc  = '8'
         .hc  = "1"     ihc  = '8'
@@ -1635,6 +1639,7 @@ QQRKSRC1
         .pak = "<open>"
         .pk3 = "<open>" //DECKER
         .pk4 = "<open>"
+        .iwd = "<open>"
         .sin = ""
         .bsp = "<open>"
         .wad = "<open>"
@@ -8846,6 +8851,7 @@ QQRKSRC1
       .pak: = { Txt="PAK archives" externaledit = ! }
       .pk3: = { Txt="PK3 archives" externaledit = ! }
       .pk4: = { Txt="PK4 archives" externaledit = ! }
+      .iwd: = { Txt="IWD archives" externaledit = ! }
       .sin: = { Txt="SIN Pak archives" externaledit = ! }
       .bsp: = { Txt="BSP compiled maps" externaledit = ! }
       .wad: = { Txt="WAD texture lists" externaledit = ! }
@@ -8890,6 +8896,7 @@ QQRKSRC1
       .sin: = {Typ="X" Cap=".sin" Txt="PACK files for Sin"}
       .pk3: = {Typ="X" Cap=".pk3" Txt="PACK files for Quake 3"}
       .pk4: = {Typ="X" Cap=".pk4" Txt="PACK files for Doom 3"}
+      .iwd: = {Typ="X" Cap=".iwd" Txt="PACK files for Call of Duty 2"}
       .bsp: = {Typ="X" Cap=".bsp" Txt="Compiled maps"}
       .qc:  = {Typ="X" Cap=".qc"  Txt="QuakeC Code (Quake 1)"}
       .hc:  = {Typ="X" Cap=".hc"  Txt="HexenC Code (Hexen II)"}

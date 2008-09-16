@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.55  2008/09/06 15:57:38  danielpharos
+Moved exception code into separate file.
+
 Revision 1.54  2008/08/12 15:46:08  danielpharos
 Revert prev rev
 
@@ -223,6 +226,7 @@ uses
   QkBsp in 'prog\QkBsp.pas' {FQBsp},
   QkBspHulls in 'prog\QkBspHulls.pas',
   QkCin in 'prog\QkCin.pas',
+  QkCoD2 in 'prog\QkCoD2.pas',
   QkD3 in 'prog\QkD3.pas',
   QkDevIL in 'prog\QkDevIL.pas',
   QkDDS in 'prog\QkDDS.pas',
