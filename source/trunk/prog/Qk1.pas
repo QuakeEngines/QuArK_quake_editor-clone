@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.71  2008/09/14 12:52:28  danielpharos
+Changes to Help system: All forms now have a customizable help-link. Also, added an fallback option to the online infobase docs.
+
 Revision 1.70  2008/09/06 15:57:28  danielpharos
 Moved exception code into separate file.
 
@@ -489,6 +492,7 @@ uses Undo, QkQuakeC, Setup, Config, ToolBox1, Game, QkOwnExplorer,
 var
   g_Mutex: THandle = 0;
   OldException: TExceptionEvent;
+  LoadingComplete: Boolean = false;
 
 {$R *.DFM}
 {$R ICONES\ICONES.RES}
@@ -820,6 +824,8 @@ begin
 
 {Image1.Picture.Bitmap.LoadFromResourceName(HInstance, 'QUARKLOGO');
  StatusBar1.SimpleText:=FmtLoadStr1(1, [QuarkVersion]);}
+
+ LoadingComplete:=True;
 end;
 
 procedure TForm1.cmSysColorChange(var Msg: TWMSysCommand);
@@ -2202,6 +2208,10 @@ begin
    OldException(Sender, E);
    Log(LOG_ALWAYS, Format('Error: Exception in exception handler: %s', [GetExceptionMessage(E)]));
  end;
+
+ //If loading of Form1 has not been completed, then kill the program
+ if not LoadingComplete then
+   Application.Terminate;
 end;
 
 function TForm1.MessageException(E: Exception; const Info: String; Buttons: TMsgDlgButtons) : TModalResult;
