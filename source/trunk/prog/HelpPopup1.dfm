@@ -15,8 +15,7 @@ object HelpPopup: THelpPopup
   FormStyle = fsStayOnTop
   KeyPreview = True
   OldCreateOrder = True
-  OnClick = OkBtnClick
-  OnClose = FormClose
+  OnClick = FormClicked
   OnDeactivate = FormDeactivate
   OnKeyDown = FormKeyDown
   OnResize = FormResize
