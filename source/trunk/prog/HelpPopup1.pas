@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2008/09/14 21:46:18  danielpharos
+Const-ed a parameter.
+
 Revision 1.14  2008/09/14 12:52:30  danielpharos
 Changes to Help system: All forms now have a customizable help-link. Also, added an fallback option to the online infobase docs.
 
@@ -68,7 +71,6 @@ uses
   StdCtrls, QkForm, ExtCtrls, ActnList;
 
 type
-  PHelpPopup = ^THelpPopup;
   THelpPopup = class(TQkForm)
     Memo1: TMemo;
     ActionList1: TActionList;
@@ -77,14 +79,16 @@ type
     procedure OkBtnClick(Sender: TObject);
     procedure FormClicked(Sender: TObject);
     procedure FormResize(Sender: TObject);
-    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    //procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     { Déclarations privées }
     InfoBaseLink: String; {AiV}
+  protected
+    procedure wmHelp(var Msg: TMessage); message wm_Help;
   public
-    procedure SetInfoBaseLink(const Link: String); {AiV}
     { Déclarations publiques }
+    procedure SetInfoBaseLink(const Link: String); {AiV}
   end;
 
  {-------------------}
@@ -165,19 +169,19 @@ end;
 
 procedure THelpPopup.FormDeactivate(Sender: TObject);
 begin
- Close; {DECKER-todo}
+  Close;
 end;
 
 procedure THelpPopup.OkBtnClick(Sender: TObject);
 begin
   HTMLDoc(InfoBaseLink);
 
-  Close; {CDUNDE-todo-py link input for infobase page desired}
+  Close;
 end;
 
 procedure THelpPopup.FormClicked(Sender: TObject);
 begin
-  Close; {CDUNDE-to close popup help window by clicking in it}
+  Close;
 end;
 
 procedure THelpPopup.FormResize(Sender: TObject);
@@ -186,21 +190,31 @@ begin
   Memo1.SetBounds(0,0, ClientWidth, ClientHeight);
 end;
 
-procedure THelpPopup.FormClose(Sender: TObject; var Action: TCloseAction);
+//Even though we really want to unload the form,
+//that should happen automatically anyway.
+(*procedure THelpPopup.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   Action:=caFree;
-end;
+end;*)
 
 procedure THelpPopup.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   if Key = vk_Escape then
   begin
     Key:=0;
-    Close;
+    PostMessage(Self.Handle, WM_CLOSE, 0, 0);
   end
   else
   if Key = vk_F1 then
+  begin
+    Key:=0;
     OkBtnClick(Sender);
+  end;
+end;
+
+procedure THelpPopup.wmHelp(var Msg: TMessage);
+begin
+  //We don't need the F1-help function here!
 end;
 
 {AiV/}
