@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.72  2008/09/18 16:22:02  danielpharos
+Kill program when exception happens on start-up, so Form1 doesn't appear onscreen broken.
+
 Revision 1.71  2008/09/14 12:52:28  danielpharos
 Changes to Help system: All forms now have a customizable help-link. Also, added an fallback option to the online infobase docs.
 
@@ -2205,13 +2208,20 @@ begin
    MessageException(E, '%s', [mbOk]);
  except
    //If anything goes wrong with QuArK's exception handling, use the old one
-   OldException(Sender, E);
-   Log(LOG_ALWAYS, Format('Error: Exception in exception handler: %s', [GetExceptionMessage(E)]));
+   try
+     Log(LOG_ALWAYS, Format('Error: Exception in exception handler: %s', [GetExceptionMessage(E)]));
+   finally
+     OldException(Sender, E);
+   end;
  end;
 
  //If loading of Form1 has not been completed, then kill the program
  if not LoadingComplete then
-   Application.Terminate;
+   try
+     Log(LOG_ALWAYS, 'Error: Unhandled exception during start-up. Program terminated.');
+   finally
+     Application.Terminate;
+   end;
 end;
 
 function TForm1.MessageException(E: Exception; const Info: String; Buttons: TMsgDlgButtons) : TModalResult;
