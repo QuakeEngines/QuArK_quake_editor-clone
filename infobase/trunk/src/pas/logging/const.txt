@@ -1,0 +1,20 @@
+title: Constants
+author: DanielPharos
+
+<code>
+  LOG_FILENAME = 'QUARK.LOG';
+  LOG_PATCHFILE = 'PATCH.TXT';
+
+  LOG_ALWAYS = 0;
+  LOG_CRITICAL = 10;
+  LOG_WARNING = 20;
+  LOG_INFO = 30;
+  LOG_VERBOSE = 40;
+</code>
+
+All these constants are used by the logging procedures or their callers.
+
+<tt>LOG_FILENAME</tt> is the filename of the logfile. The path of the logfile is set in <tt>OpenLogFile</tt>.<br>
+<tt>LOG_PATCHFILE</tt> is not used anymore.
+
+<tt>LOG_*</tt> are a bunch of constants that define the default verbose output levels. Their names describe when the log-line what kind of info it contains. See <tt>Log</tt> for more info about what this means.

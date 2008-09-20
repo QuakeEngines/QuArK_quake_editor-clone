@@ -1,0 +1,11 @@
+title: Logging.pas
+author: DanielPharos
+desc: const
+desc: type
+desc: openlogfile
+desc: closelogfile
+desc: log
+desc: alog
+desc: getpatchversion
+
+This file contains all functions that deal with the QuArK.LOG file.

@@ -1,0 +1,49 @@
+title: Types
+author: DanielPharos
+
+<code>
+  TLogName = (LOG_DEFAULT, LOG_PASCAL, LOG_PYTHON, LOG_SYS, LOG_DEBUG);
+</code>
+
+This type is used by the callers of the <tt>Log</tt> procedure.
+
+<tt>TLogName</tt> is the name of the logger/'outputer' that will appear in front of the log-line. The following table describes all the options:
+
+<table border=1 cellspacing=0 cellpadding=4>
+
+<tr><td class="doccode">
+LOG_DEFAULT
+</td><td>
+Outputs 'Log'<br>
+This is the default. Use this when no other options apply.
+</td></tr>
+
+<tr><td class="doccode">
+LOG_PASCAL
+</td><td>
+Outputs 'QuArKLog'<br>
+You can use this when an error in the Pascal/Delphi code has occured.
+</td></tr>
+
+<tr><td class="doccode">
+LOG_PYTHON
+</td><td>
+Outputs 'PythonLog'<br>
+You can use this when an error in the Python code has occured.
+</td></tr>
+
+<tr><td class="doccode">
+LOG_SYS
+</td><td>
+Outputs 'SysLog'<br>
+This is used in the SystemDetails.pas. Use this only in this module.
+</td></tr>
+
+<tr><td class="doccode">
+LOG_DEBUG
+</td><td>
+Outputs 'DebugLog'<br>
+Use this for debug-output to the log. You should only use these in debug code, so they do not appear in the logfile in release-files.
+</td></tr>
+
+</table>

@@ -1,0 +1,8 @@
+title: aLog
+author: DanielPharos
+
+<code>
+Procedure aLog(logger: TLogName; s: string);
+</code>
+
+This procedure actually outputs the log-line. This procedure cannot be called from outside this module; use <tt>Log</tt> for that.

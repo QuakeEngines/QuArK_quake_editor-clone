@@ -1,0 +1,10 @@
+title: CloseLogFile
+author: DanielPharos
+
+<code>
+Procedure CloseLogFile;
+</code>
+
+This procedure closes the logfile.
+
+It first checks if the log is open (using the boolean <tt>LogOpened</tt>). If it is, it writes the date and time to the log, and closes it.
