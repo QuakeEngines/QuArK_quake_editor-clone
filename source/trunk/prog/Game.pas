@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.56  2008/09/06 15:56:59  danielpharos
+Moved exception code into separate file.
+
 Revision 1.55  2008/07/25 18:49:14  danielpharos
 Fix a comment
 
@@ -315,6 +318,7 @@ var
   CurAliasType   : TFileTypeAlias;
 {--CONVEX-end--}
 
+procedure CreateAllPaths(const Filename: string; StartIndex: Integer = 0); forward;
 function GetGameFileBase(const BaseDir, FileName, PakFileName: String; LookInCD: Boolean) : QFileObject; forward;
 
  {------------------------}
@@ -525,25 +529,12 @@ end;
 
 function OutputFile(const FileName: String) : String;
 var
- I, ErrorCode: Integer;
- S: String;
+ I: Integer;
 begin
- Result:=BaseOutputPath;
- I:=Length(Result);
+ Result:=IncludeTrailingPathDelimiter(BaseOutputPath); //To make sure there already is a trailing slash
+ I:=Length(Result)+1;
  Result:=ConvertPath(AppendFileToPath(Result, FileName));
- repeat
-  Inc(I);
-  if Result[I]=PathDelim then
-   begin
-    {$I-}
-    S:=Copy(Result, 1, I-1);
-    MkDir(S);
-    {$I+}
-    ErrorCode:=IOResult;
-    if not (ErrorCode in [0,183]) then
-     Raise EErrorFmt(5587, [S, SetupGameSet.Name, ErrorCode]);
-   end;
- until I>=Length(Result);
+ CreateAllPaths(Result, I);
 end;
 
 function GetGameDir : String;
@@ -571,6 +562,29 @@ begin
   if Result='' then
     Result:=GettmpQuArK;
   Result:=ConvertPath(Result);
+end;
+
+procedure CreateAllPaths(const Filename: string; StartIndex: Integer = 0);
+var
+ I, ErrorCode: Integer;
+ S: String;
+begin
+ I:=StartIndex;
+ if I<0 then I:=0;
+ while I<Length(Filename) do
+  begin
+   if Filename[I]=PathDelim then
+    begin
+     {$I-}
+     S:=Copy(Filename, 1, I-1);
+     MkDir(S);
+     {$I+}
+     ErrorCode:=IOResult;
+     if not (ErrorCode in [0,183]) then
+      Raise EErrorFmt(5587, [S, SetupGameSet.Name, ErrorCode]);
+    end;
+   Inc(I);
+  end;
 end;
 
 procedure ListSourceDirs(Dirs: TStrings);
@@ -1447,7 +1461,7 @@ function GameModelPath : String;
 begin
   Result:=SetupGameSet.Specifics.Values['MdlPath'];
   if Result='' then
-    Result:='progs/';
+    Result:='models/';
 end;
 
  {------------------------}
