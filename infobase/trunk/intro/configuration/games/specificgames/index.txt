@@ -16,7 +16,7 @@ command-line arguments.
 
 You must also specify where QuArK can find the specific build tools, which are
 needed to build (compile) a map to something that the FPS-game can read and
-understand. On <a href="http://www.planetquake.com/quark/">http://www.planetquake.com/quark</a>
+understand. On <a href="http://quark.planetquake.gamespy.com/download_tools.php3">http://quark.planetquake.gamespy.com/download_tools.php3</a>
 you can find file-archives with build tools for the FPS-games that QuArK
 supports.
 
