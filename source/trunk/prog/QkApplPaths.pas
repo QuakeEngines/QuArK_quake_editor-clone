@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2008/05/16 20:57:16  danielpharos
+Renamed a Type to avoid possible name-collision
+
 Revision 1.10  2008/02/23 19:25:21  danielpharos
 Moved a lot of path/file code around: should make it easier to use
 
@@ -88,7 +91,7 @@ type
                 end;
 
 function ConvertPath(const S: string): string;
-function AppendFileToPath(Path, FileName: String) : String;
+function AppendFileToPath(const Path, FileName: String) : String;
 procedure SetApplicationPath(const a_Path: String = '');
 function GetQPath(const PathToGet : TQPathType) : String;
 
@@ -118,12 +121,11 @@ begin
 end;
 
 //This function is also used to append paths to other paths
-function AppendFileToPath(Path, FileName: String) : String;
+function AppendFileToPath(const Path, FileName: String) : String;
 begin
- Path:=ConvertPath(Path);
- FileName:=ConvertPath(FileName);
- if Path<>'' then Path:=IncludeTrailingPathDelimiter(Path);
- Result:=Path+FileName;
+ Result:=ConvertPath(Path);
+ if Length(Result)<>0 then Result:=IncludeTrailingPathDelimiter(Result);
+ Result:=Result+ConvertPath(FileName);
 end;
 
 procedure SetApplicationPath(const a_Path: String = '');
