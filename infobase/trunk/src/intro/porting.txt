@@ -1,7 +1,7 @@
 title: Porting QuArK to C++ and/or Linux
 author: Armin Rigo, DanielPharos
 
-A lot of attention has been given recently about the possibility of translating QuArK to the C/C++ lanaguage and/or porting it
+A lot of attention has been given recently about the possibility of translating QuArK to the C/C++ language and/or porting it
 to another OS like Linux.
 
 The current state of the Linux port idea is that, unless we need for a C++ version that new programmers could handle without
