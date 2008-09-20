@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.56  2008/09/06 15:57:29  danielpharos
+Moved exception code into separate file.
+
 Revision 1.55  2008/08/26 15:11:49  danielpharos
 Added filename of broken qrk source file to error-message.
 
@@ -437,22 +440,24 @@ begin
     end;
   end;
 
-  { search through the defined QuArK path-structure, until either
-    the file is found, or there are no further defined QuArK paths to search. }
-  searchPaths:=QApplPaths.Create;
-  try
-    while (not FileExists(pathAndFileName)) do
-    begin
-      if (searchPaths.GetNextPath(somePath) = False) then
-      begin
-        GetDir(0, CurDir);
-        Raise EQObjectFileNotFound.Create(FmtLoadStr1(5203, [theFilename, CurDir]));
-      end;
+  if not FileExists(pathAndFileName) then
+  begin
+    { search through the defined QuArK path-structure, until either
+      the file is found, or there are no further defined QuArK paths to search. }
+    searchPaths:=QApplPaths.Create;
+    try
+      repeat
+        if (searchPaths.GetNextPath(somePath) = False) then
+        begin
+          GetDir(0, CurDir);
+          Raise EQObjectFileNotFound.Create(FmtLoadStr1(5203, [theFilename, CurDir]));
+        end;
 
-      pathAndFileName := somePath + theFilename;
+        pathAndFileName := somePath + theFilename;
+      until FileExists(pathAndFileName);
+    finally
+      searchPaths.Free;
     end;
-  finally
-    searchPaths.Free;
   end;
 
   Result:=ExactFileLink(ExpandFileName(pathAndFileName), nParent, CheckParent);
