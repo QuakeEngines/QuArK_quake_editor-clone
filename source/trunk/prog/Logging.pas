@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.20  2008/02/23 19:25:20  danielpharos
+Moved a lot of path/file code around: should make it easier to use
+
 Revision 1.19  2007/03/29 21:01:39  danielpharos
 Changed a few comments and error messages
 
@@ -87,7 +90,6 @@ uses Windows, Sysutils;
 type
   TLogName = (LOG_DEFAULT, LOG_PASCAL, LOG_PYTHON, LOG_SYS, LOG_DEBUG);
 
-Procedure aLog(Logger: TLogName; s: string);  //Don't call this one from the outside
 Procedure CloseLogFile;
 Procedure OpenLogFile;
 
@@ -121,6 +123,10 @@ var
   LogPatchname: string;
   LogLevel: cardinal;
   LogLevelEnv: string;
+
+Procedure aLog(Logger: TLogName; s: string); forward;
+
+ {------------------------}
 
 function GetPatchVersion: String;
 var
