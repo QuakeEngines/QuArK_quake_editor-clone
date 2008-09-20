@@ -1,0 +1,42 @@
+title: BuildScene
+author: tiglari
+
+  If a 3d window is open, gets called every time anything happens to the
+   views.  This seems excessive, for example for a selection event very little
+   gets changed.
+
+  1.  some initializations:
+         Held over from previous BuildScene:
+           TextureManager
+         Reinitialized:
+           TexNames list
+           FlistSurfaces - done via linked list freeing, maybe a slowdown factor?
+           nVertexList and nVertexList2
+
+  2.  scan the map objects and build the TexNames list, which gives
+        information about surfaces indexed by the TexNames, and
+        also add this information to the FlistSurfaces list.
+        
+      Problem: the info specifyies how much info is needed to store
+      the vertexes of the faces using the texture, but no info about
+      those vertexes seems to be recorded.
+
+
+  3.  rebuild the old textures, note how many new ones needed.
+        Q: what does building do?
+
+  4.  free old textures no longer needed
+
+  5.  load and build new textures
+
+  6.  build a lot of stuff
+
+  7.  for each face, load a lot of stuff into the appropriate
+        surf3d element [some of it looks like texture coordinates]
+
+  8.  ditto for models, sprites and beziers
+        lots of rather repetitive-looking code.
+
+  9.  and a bit of final cleanup.
+
+More understanding of what goes on in steps 6-8 is needed here.
