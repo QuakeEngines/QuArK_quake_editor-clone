@@ -50,20 +50,22 @@ def climbpath(curpath, relpath):
     else:
         if verboseMode:
             print 'CURPATH ' + `curpath`
-        newpath = string.join(curpath, '/') + relpath
+        if curpath != []:
+            newpath = string.join(curpath, '/') + '/' + relpath
+        else:
+            newpath = relpath
         if verboseMode:
             print 'NEWPATH ' + `newpath`
         return newpath
 
 
 def relpath(curpath, relpath):
-    if relpath[0] != '.':
-       return relpath
-    elif relpath[1] == '/':
+    if relpath[:2] == './':
        return curpath + relpath[2:]
-    elif relpath[1:3] == './':
+    elif relpath[:3] == '../':
        track = string.split(curpath, '/')
-       return climbpath(track[:-2], relpath[2:])
+       return climbpath(track[:-1], relpath)
+    return relpath
 
 def findref(root, path, name, fkw, extraargs):
     if verboseMode:
@@ -585,6 +587,9 @@ run(defaultwriter)
 
 #
 # $Log$
+# Revision 1.28  2008/08/09 19:50:08  danielpharos
+# Fixed a double space appearing in img-tags
+#
 # Revision 1.27  2008/08/09 18:53:19  danielpharos
 # Fix inconsistent handling of percent-signs (fixes double percent-signs in output).
 #
