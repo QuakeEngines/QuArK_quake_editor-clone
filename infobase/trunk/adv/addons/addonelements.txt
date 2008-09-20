@@ -1,6 +1,8 @@
 title: Elements of an add-on (unfinished)
 author: Decker
 
+Also see the '.Qrk files'-section in <ref> ../intro </ref> for more info.
+
 <code>
 <b>QQRKSRC1
 {
@@ -19,7 +21,7 @@ author: Decker
 <b>}</b>
 </code>
 
-A add-on which contain new entities, must have these two .qtx and .qctx structures:
+An add-on which contain new entities, must have these two .qtx and .qctx structures:
 
 
 <code>
