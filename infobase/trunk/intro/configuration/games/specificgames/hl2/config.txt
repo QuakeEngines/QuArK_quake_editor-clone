@@ -1,17 +1,17 @@
 title: Configuration
 author: cdunde/PuG
 
-In this short tutorial we will be showing you how to quickly setup Quark to compile maps
-for Valve's Half-Life 2. Please remember to be able to create maps for Half-Life 2, or any
-of its modifications you must have the latest version of the <a href="http://developer.valvesoftware.com/wiki/SDK_Docs">Source SDK</a> downloaded and installed for the necessary <g>build tools</g> & materials. This can be downloaded from Steam itself, under the Tools tab. Also, here is a link that list all of the games entities and how to use them
+In this short tutorial we will be showing you how to quickly setup QuArK to compile maps
+for Valve's Half-Life 2. Please remember: to be able to create maps for Half-Life 2, or any
+of its modifications you must have the latest version of the <a href="http://developer.valvesoftware.com/wiki/SDK_Docs">Source SDK</a> downloaded and installed for the necessary <g>build tools</g> & materials. This can be downloaded from Steam itself, under the Tools tab. Also, here is a link that list all of the games entities and how to use them:
 <a href="http://developer.valvesoftware.com/wiki/List_of_entities">HL2 Entities</a>.
 
 <table border=0 cellspacing=0>
 <tr><td valign=top align=left>
 <b>Part 1 – Setting up QuArK to work with Steam</b>
 
-First we need to setup Quark to work with Steam. Start Quark, and you should be
-greeted with the 'Quark Explorer' panel. The Quark Explorer allows you to define
+First we need to setup QuArK to work with Steam. Start QuArK, and you should be
+greeted with the 'QuArK Explorer' panel. The QuArK Explorer allows you to define
 which game environment you wish to work in, as well as doing many other things.
 
 We need to select the game we want to map for. We do this by simply going to the
@@ -19,7 +19,7 @@ We need to select the game we want to map for. We do this by simply going to the
 present you with a drop list of all the currently available games, select
 Half-Life 2 as shown in the screen shot to the right.
 
-Next we need to setup Quark to work with Steam, to do so go back to the 'Games'
+Next we need to setup QuArK to work with Steam, to do so go back to the 'Games'
 button and press the 'Configuration' button at the bottom of the list.
 
 Once selected a new window will be opened called 'Configuration', making sure you have
@@ -43,29 +43,27 @@ this should be:
 <ul>
 <li>C:/Program Files/Valve/Steam
 </ul>
-The other options can be changed to alter the way Quark works with Steam. The default
+The other options can be changed to alter the way QuArK works with Steam. The default
 settings are probably best.
 
 <img border=1 valign=top align=middle>steam_config.png</img>
 
 <b>Part 2 – Setting up QuArK to work with Half-Life 2</b>
 
-In this section we will quickly go over how to setup Quark to work with Half-Life 2.
+In this section we will quickly go over how to setup QuArK to work with Half-Life 2.
 
 Go to the Configuration panel of Half-Life 2 (described above for Steam).
 
 To start with we must select which of the Half-Life 2 games we wish to work with. To do
 so simply use the drop down menu to the right of the 'Half-Life 2 command-line' setting
 (under the Game Settings tab). This should give you a selection of three, for this
-tutorials we are going to be working with Counter-Strike: Source, so select:
+tutorial we are going to be working with Counter-Strike: Source, so select:
 
 "C:/Program Files/Valve/Steam/steam.exe -applaunch 240 -dev -console ..."
 
 You must also set the <b>Steam App Id</b> to 240 as well or QuArK will not be able to start the game after a build is done.
 
-So how do I know which one to select?<br>
-Each Half-Life 2 program/mod has an specific ID number<br>
-& each ID number is located within the command line:<br>
+So how do I know which one to select? Each Half-Life 2 program/mod has a specific ID number & each ID number is located within the command line:
 <ul>
 <li>220 – Half-Life 2
 <li>240 – Counter-Strike: Source   
@@ -73,6 +71,8 @@ Each Half-Life 2 program/mod has an specific ID number<br>
 </ul>
 
 Look <a href="http://developer.valvesoftware.com/wiki/Steam_Application_IDs">here</a> for a complete list of all the application IDs.
+
+If you select a different Steam App ID number, don't forget to update the number in the command-line setting too!
 
 (Tip: You may also want to increase the width & height of the Half-Life 2 window for when we use the 'Run Half-Life 2' option later on in the tutorial<br>
 e.g. '-window -width 1280 -height 1024'.)
@@ -91,7 +91,7 @@ For the rest of the settings for the compiler just use the screen shot below to 
 <table border=0 cellspacing=0 align=middle>
 <tr><td valign=top align=middle>
 <tr><td>
-Once you have finished setting Quark to work with the HL2 compiler, simply hit the 'Apply' button, and then press the 'OK' button to close the Configuration panel; this will leave you back in the Quark Explorer.
+Once you have finished setting QuArK to work with the HL2 compiler, simply press the 'OK' button to close the Configuration panel; this will leave you back in the QuArK Explorer.
 </td></tr>
 </table>
 
@@ -101,7 +101,7 @@ Once you have finished setting Quark to work with the HL2 compiler, simply hit t
 </td></tr>
 
 <tr><td valign=top align=left>
-In the section above we setup Quark to work with the HL2 compiler. Now its time to do something more exciting.
+In the section above we setup QuArK to work with the HL2 compiler. Now it's time to do something more exciting.
 First we need to create a new map. To do this click on the 'New Map' icon which is the 2nd button to the left of the
 'Games' button. You should now be confronted with the map editor itself with some pre-made structures and entities as shown below.
 </td><td valign=top>
@@ -113,8 +113,9 @@ First we need to create a new map. To do this click on the 'New Map' icon which 
 <tr><td valign=top align=middle>
 <img border=1 valign=top align=middle>hl2_config4.png</img>
 </td></tr>
+
 <tr><td>
-(Your Quark Map editor may look slightly different to mine, this is because I have Quad view ports set, and the colors have been
+(Your QuArK Map editor may look slightly different to mine, this is because I have Quad view ports set, and the colors have been
 slightly adjusted to my own personnel taste)
 
 If we compile the map as it stands, it will work fine in game though you may not be able to spawn (only look around). 
@@ -127,7 +128,7 @@ To compile the map simply go up to the 'Half-Life 2' button at the top of the pa
 </td></tr>
 
 <tr><td valign=top align=left>
-The Quark 'Console' should now appear, and a text output will show the progress of the compile. Once completed you should see the
+The QuArK 'Console' should now appear, and a text output will show the progress of the compile. Once completed you should see the
 following text at the bottom of the Console window:
 
 <ul>
@@ -142,7 +143,7 @@ The Console outputs what the Valve compiler is doing, and you should always revi
 as Map Leaks.
 
 With the map now compiled, you can either load up Counter-Strike: Source, and create a server making sure you have select your<br>
-map from the CS:S Map list (as default it should be called 'newmap'); or within the Quark Map Editor once again press the<br>
+map from the CS:S Map list (as default it should be called 'newmap'); or within the QuArK Map Editor once again press the<br>
 Half-Life 2 button at the top tool bar & select 'Run Half-Life 2', this should now start CS:S, and automatically create a server<br>
 with your newly compiled map.
 
