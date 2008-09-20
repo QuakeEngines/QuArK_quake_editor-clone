@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2008/09/14 12:52:27  danielpharos
+Changes to Help system: All forms now have a customizable help-link. Also, added an fallback option to the online infobase docs.
+
 Revision 1.18  2008/02/21 21:07:20  danielpharos
 Removed redundant OpenGL code.
 
@@ -90,6 +93,7 @@ interface
 
 {$I DelphiVer.inc}
 
+//FIXME: Disable MarsCaption for now...
 {$DEFINE NoMarsCaption}
 
 uses Windows, Messages, Classes, SysUtils, Controls, Forms,

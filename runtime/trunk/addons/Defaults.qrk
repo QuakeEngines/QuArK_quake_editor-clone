@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.438  2008/09/16 12:13:13  danielpharos
+//Added support for CoD2 iwd files.
+//
 //Revision 1.437  2008/09/14 12:55:29  danielpharos
 //Changes to Help system: All forms now have a customizable help-link. Also, added an fallback option to the online infobase docs.
 //
@@ -1441,7 +1444,7 @@ QQRKSRC1
       Display:config =
       {
         Gamma = '1.3'
-        MarsCaption = "?"
+        MarsCaption = ""
         AutoFocus = "1"
         Unsel = ""
         Sel = "1"
@@ -1451,6 +1454,7 @@ QQRKSRC1
         ConsoleWidth = '80'
         ConsoleHeight = '60'
         OnlineHelp = "1"
+        NoFirstRun = ""
         Form = "GeneralDisplay"
       }
       3D view:config =
@@ -8579,7 +8583,7 @@ QQRKSRC1
     {
       Style = "3"
       Gamma: = {Txt="Gamma correction" Typ="EF1" Hint="Gamma correction to display texture (1=darker, 2=lighter)"}
-      MarsCaption: = {Txt="Window captions" Typ="X" Cap="Colorful"}
+      //MarsCaption: = {Txt="Window captions" Typ="X" Cap="Colorful"}
       sep: = {Typ="S" Txt = ""}
       AutoFocus: = {Txt="Activate windows on mouseover" Typ="X" Cap="AutoFocus" Hint="if checked, the focus (active window) follows the mouse between windows (e.g. in the map editor)"}
       sep: = {Typ="S" Txt = ""}

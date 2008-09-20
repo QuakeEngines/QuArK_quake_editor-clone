@@ -910,7 +910,7 @@ Strings = {
     5687: "* The image will be converted to the palette of %s.\n",
     5688: "Invalid texture extension in Defaults.qrk",
     5689: "This image has got no palette : it is a true-color 24-bit image",
-    5690: "Setup file was cleared. QuArK is restarted with its default configuration.\n\nDo you want to activate Colorful Captions again ?",
+    5690: "Welcome to QuArK!\n\nThis appears to be the first time you have started QuArK. You can press F1 at any time to get help.\n\nPlease report any bugs you might find to the QuArK development team at http://quark.planetquake.gamespy.com/forums/\nThank you!",
     5691: "Invalid Sprite File!",
     5692: "The file %s is not compressed\nusing stored, shrunk, imploded and deflated methods.\n\nLoading Aborted! (%d)",
     5693: "'%s' expected in %s",
@@ -1055,6 +1055,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.130  2008/09/16 12:13:12  danielpharos
+#Added support for CoD2 iwd files.
+#
 #Revision 1.129  2008/08/26 16:22:00  danielpharos
 #Added filename of broken shader/material file to error-message.
 #

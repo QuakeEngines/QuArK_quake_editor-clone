@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.75  2008/09/20 20:45:28  danielpharos
+Added GetQPath functions to Defaults.qrk and Setup.qrk loading.
+
 Revision 1.74  2008/09/14 10:14:00  danielpharos
 Oops
 
@@ -730,7 +733,6 @@ end;
 procedure SetupChanged(Level: Integer);
 var
  fnt: PyObject;
- S: String;
  I, J: Integer;
 {SetupInfo: PyObject;}
 begin
@@ -758,16 +760,12 @@ begin
    g_DrawInfo.CacherFaces:=Specifics.Values['HideFaces']<>'';
    g_DrawInfo.TexAntiScroll:=IntSpec['TexAntiScroll'];
   end;
- S:=SetupSubSet(ssGeneral, 'Display').Specifics.Values['MarsCaption'];
- if S='?' then
+ if SetupSubSet(ssGeneral, 'Display').Specifics.Values['NoFirstRun']='' then
   begin
-   if MessageDlg(LoadStr1(5690), mtConfirmation, [mbYes, mbNo], 0) = mrYes then
-    S:='1'
-   else
-    S:='';
-   SetupSubSet(ssGeneral, 'Display').Specifics.Values['MarsCaption']:=S;
+   MessageDlg(LoadStr1(5690), mtInformation, [mbOK], 0);
+   SetupSubSet(ssGeneral, 'Display').Specifics.Values['NoFirstRun']:='1';
   end;
- SetMarsCapActive(S<>'');
+ SetMarsCapActive(SetupSubSet(ssGeneral, 'Display').Specifics.Values['MarsCaption']<>'');
  ResizeConsole;
 
   { stores the setup infos into the Quarkx Python module }
