@@ -37,3 +37,5 @@ QUARK_LOG_PATCHNAME: The name of the log of a patcher.  Shouldn't be used
 anymore.<br>
 QUARK_LOG_LEVEL: The log level of QuArK. See above in the 'Delphi code'
 part for a description.
+
+See <ref> ../../pas/logging </ref> for more on logging.
