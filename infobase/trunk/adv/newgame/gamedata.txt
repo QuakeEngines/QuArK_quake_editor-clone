@@ -1,12 +1,40 @@
 title: Game Data Addons
 author: tiglari
 
-Finally you need to make addons for the game data.  There are two
-of these, DataXXX.qrk, where XXX is your game's abbreviated name,
-and UserData XXX.qrk.  The easiest way to make these is by copying
-ones from a similar game, and then adding/changing things to suit
-(the game abbreviation for starters).  The most critical things in
-DataXXX.qrk are the texture and entity toolboxes.
+Finally you need to make addons for the game data.  There are several
+of these:
+
+<table border=1 cellspacing=0 cellpadding=4>
+
+<tr><td>
+DataXXX.qrk
+</td><td>
+Where XXX is your game's <b>abbreviated</b> name. This file contains the main info about the game, like some settings and the default room.
+</td></tr>
+
+<tr><td>
+XXXEntities.qrk<br>
+XXXMaterials.qrk<br>
+XXXModels.qrk<br>
+XXXShaders.qrk<br>
+XXXScripts.qrk<br>
+XXXSounds.qrk<br>
+XXXTextures.qrk<br>
+</td><td>
+Where XXX is the full game name. These files contain the main data about the game.<br>
+Note: not all files are needed for all games.
+</td></tr>
+
+<tr><td>
+UserData XXX.qrk
+</td><td>
+Where XXX is the full game name. This files contains some additional settings for QuArK for this game, like pre-fab object that can be dropped into the map, and the default settings for the build-menu.
+</td></tr>
+
+</table>
+
+The easiest way to make these is by copying ones from a similar game, and then
+adding/changing things to suit (the game abbreviation for starters).
 
 A workable texture toolbox for SoF2 is:
 <code>
@@ -23,10 +51,9 @@ A workable texture toolbox for SoF2 is:
     }
   }
 </code>
-This will load up textures dynamically from the <g>.PK3</g> folders.
-For better performance,
-you can use the 'make texture links' button in the texture toolbox and
-check 'static' to produce a list of the textures in the .PK3.
+This will load up textures dynamically from the <g>.PK3</g> folders. For
+better performance, you can use the 'make texture links' button in the texture
+toolbox and check 'static' to produce a list of the textures in the .PK3's.
 
 <ul><u>
 <li>Access of Mod & Custom Textures
@@ -71,7 +98,7 @@ that are placed in the "textures" and "scripts" folders or in their own
 sub-folder placed in these folders, with any name you wish to give them.
 These custom sub-folders can also have sub-folder within them as well for
 a better grouping of files. All of the folders will then be grouped in the
-<a href="intro.texturebrowser.overview.html">Texture Browser</a> under the
+<ref> ../../intro/texturebrowser/overview \ Texture Browser </ref> under the
 caption "Directories" and will be displayed by their individual folder and
 sub-folder names.
 
@@ -93,6 +120,8 @@ which in the case of SoF2 might start look like this:
     }
   }
 </code>
-Whatever you get should be substituted for the entity tollbox folder in
+Whatever you get should be substituted for the entity toolbox folder in
 the file you're copying from, and later edited by hand to add missing entities,
-improved help, etc.
+improve help, etc.
+
+More info about the converters and their options can be found here: <ref> ../conversion </ref>
