@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2008/09/20 19:34:43  danielpharos
+Const-ed some parameters, and re-factored some code for better performance.
+
 Revision 1.11  2008/05/16 20:57:16  danielpharos
 Renamed a Type to avoid possible name-collision
 
@@ -166,8 +169,10 @@ begin
   pQuArKGameAddon: Result:=AppendFileToPath(GetQPath(pQuArKAddon), UnderscoredGamename);
   pQuArKDll: Result:=AppendFileToPath(GetQPath(pQuArK), DLL_SUBDIRECTORY);
   pQuArKHelp: Result:=AppendFileToPath(GetQPath(pQuArK), HELP_SUBDIRECTORY);
-  pUserData: Result:=''; //@
-  pUserGameData: Result:=''; //@
+  //FIXME: Currently, these return the same as pQuArKAddon and pQuArKGameAddon.
+  //In the future, these should be changed to a my documents path, or even a AppData path!
+  pUserData: Result:=AppendFileToPath(GetQPath(pQuArK), ADDONS_SUBDIRECTORY);
+  pUserGameData: Result:=AppendFileToPath(GetQPath(pQuArKAddon), UnderscoredGamename);
   end;
   Result:=IncludeTrailingPathDelimiter(Result);
 end;

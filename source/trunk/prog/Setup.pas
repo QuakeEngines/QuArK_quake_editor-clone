@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.74  2008/09/14 10:14:00  danielpharos
+Oops
+
 Revision 1.73  2008/09/14 10:11:19  danielpharos
 Small code cleanup.
 
@@ -430,7 +433,7 @@ implementation
 uses QkMapObjects, Travail, Game, Console, QkGroup, QkForm, Qk1,
      ToolBox1, Toolbar1, QkQuakeCtx, Quarkx, QkExceptions, Python, PyMapView,
      PyObjects, PyForms, Qk3D, EdSceneObject, QkObjectClassList, QkApplPaths,
-     ExtraFunctionality{$IFDEF Debug}, Logging{$ENDIF};
+     ExtraFunctionality, Logging;
 
 const
  SetupFileName    = 'Setup.qrk';
@@ -663,7 +666,7 @@ begin
 
   { loads Defaults.qrk }
  try
-  SetupQrk:=BindFileQObject(DefaultsFileName, Nil, False);
+  SetupQrk:=BindFileQObject(GetQPath(pQuArKAddon)+DefaultsFileName, Nil, False);
   SetupQrk.AddRef(+1);
   try
    LoadedDefaultsFileName:=SetupQrk.Filename;
@@ -703,7 +706,8 @@ begin
   { loads Setup.qrk over the default configuration }
  LoadedSetupFileName:='';
  try
-  SetupQrk:=BindFileQObject(SetupFileName, Nil, False);
+  //FIXME: In the future, this should be changed to GetQPath(pUserData)!
+  SetupQrk:=BindFileQObject(GetQPath(pQuArK)+SetupFileName, Nil, False);
   SetupQrk.AddRef(+1);
   try
    LoadedSetupFileName:=SetupQrk.Filename;
@@ -713,6 +717,7 @@ begin
   end;
  except
   { could not load Setup.qrk - this is not an error, continue execution }
+  Log(LOG_WARNING, 'Unable to load Setup.qrk!');
  end;
 
  if g_SetupSet[ssGeneral].GetFloatSpec('RunVersion', 5.901)<5.9005 then
@@ -850,6 +855,7 @@ begin
    if LoadedSetupFileName='' then
    begin
       { no setup file yet }
+     //FIXME: In the future, this should be changed to GetQPath(pUserData)!
      SetupQrk:=BuildFileRoot(GetQPath(pQuArK)+SetupFileName, Nil);
      LoadedSetupFileName:=GetQPath(pQuArK)+SetupFileName;
    end
@@ -859,6 +865,7 @@ begin
       SetupQrk:=BindFileQObject(LoadedSetupFileName, Nil, False);
      except
       on EQObjectFileNotFound do  { creates a new setup file if not found }
+       //FIXME: In the future, this should be changed to GetQPath(pUserData)!
        SetupQrk:=BuildFileRoot(GetQPath(pQuArK)+SetupFileName, Nil);
      end;
     { stores the new setup information }
