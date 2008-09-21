@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.27  2008/05/29 21:36:38  danielpharos
+Fix a typo in a log-line
+
 Revision 1.26  2008/05/16 20:57:49  danielpharos
 Use centralized call to get correct directory
 
@@ -231,20 +234,21 @@ begin
           Fatal('Unable to extract file from Steam. Cannot create cache directory.');
 
       FilesToCopyFrom:=TStringList.Create;
-      FilesToCopyFrom.Add(SteamGCFFile);
       FilesToCopyTo:=TStringList.Create;
-      FilesToCopyTo.Add(FullFileName);
-      FilesToCopyFlags:=0;
-      if DoFileOperation(FO_COPY, FilesToCopyFrom, FilesToCopyTo, FilesToCopyFlags) = false then
-      begin
-        Log(LOG_WARNING, 'Unable to copy GCF file to cache: CopyFile failed!');
-        Result:=SteamGCFFile;
+      try
+        FilesToCopyFrom.Add(SteamGCFFile);
+        FilesToCopyTo.Add(FullFileName);
+        FilesToCopyFlags:=0;
+        if DoFileOperation(FO_COPY, FilesToCopyFrom, FilesToCopyTo, FilesToCopyFlags) = false then
+        begin
+          Log(LOG_WARNING, 'Unable to copy GCF file to cache: CopyFile failed!');
+          Result:=SteamGCFFile;
+          Exit;
+        end;
+      finally
         FilesToCopyFrom.Free;
         FilesToCopyTo.Free;
-        Exit;
       end;
-      FilesToCopyFrom.Free;
-      FilesToCopyTo.Free;
     end
     else
     begin
@@ -320,6 +324,8 @@ var
   SteamDirectory: String;
   SteamGameDirectory: String;
   SteamCacheDirectory: String;
+  SteamProgramDirectory: String;
+  SteamSourceSDKDirectory: String;
   SteamUser: String;
   SteamAppID: String;
   GameIDDir: String;
@@ -359,11 +365,14 @@ begin
   SteamGameDirectory:=SetupGameSet.Specifics.Values['tmpQuArK'];
   SteamCacheDirectory:=Setup.Specifics.Values['CacheDirectory'];
   QSASAdditionalParameters:=Setup.Specifics.Values['ExtractorParameters'];
-  if QSASAdditionalParameters<>'' then
+  if Length(QSASAdditionalParameters)<>0 then
     QSASAdditionalParameters:=' '+QSASAdditionalParameters;
 
   //Copy QSAS if it's not in the Steam directory yet
-  QSASPath := SteamDirectory + 'steamapps\' + SteamUser + '\sourcesdk\bin';
+  SteamProgramDirectory:=IncludeTrailingPathDelimiter(Setup.Specifics.Values['ProgramDirectory']);
+  SteamSourceSDKDirectory:=Setup.Specifics.Values['SourceSDKDirectory'];
+  RemoveTrailingSlash(SteamSourceSDKDirectory);
+  QSASPath := SteamDirectory + SteamProgramDirectory + IncludeTrailingPathDelimiter(SteamUser) + SteamSourceSDKDirectory;
   QSASFile := QSASPath + '\QuArKSAS.exe';
 
   if DirectoryExists(SteamDirectory) = false then
