@@ -395,8 +395,8 @@ class BoneType(EntityManager):
         start_vtxlist = []
         evtxlist = []
         end_vtxlist = []
-        sh = mdlhandles.ModelEditorBoneLinHandlesManager(scolor, sbbox, svtxlist, o, start_vtxlist).BuildHandles(scenter) # s is a LinBoneCenterHandle instance.
-        eh = mdlhandles.ModelEditorBoneLinHandlesManager(ecolor, ebbox, evtxlist, o, end_vtxlist).BuildHandles(ecenter) # e is a LinBoneCenterHandle instance.
+        sh = mdlhandles.ModelEditorBoneLinHandlesManager(scolor, sbbox, svtxlist, o, start_vtxlist, 0).BuildHandles(scenter) # s is a LinBoneCenterHandle instance.
+        eh = mdlhandles.ModelEditorBoneLinHandlesManager(ecolor, ebbox, evtxlist, o, end_vtxlist, 1).BuildHandles(ecenter) # e is a LinBoneCenterHandle instance.
 
         for s in sh:
             if s is None:
@@ -552,6 +552,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.29  2008/09/15 04:47:48  cdunde
+#Model Editor bones code update.
+#
 #Revision 1.28  2008/08/08 05:35:50  cdunde
 #Setup and initiated a whole new system to support model bones.
 #
