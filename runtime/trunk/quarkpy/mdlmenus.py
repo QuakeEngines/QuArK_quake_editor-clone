@@ -191,7 +191,7 @@ def MdlBackgroundMenu(editor, view=None, origin=None):
     if view is not None:
         if view.info["viewname"] != "skinview":
             import mdloptions
-            bonepop = qmenu.popup("Bone Commands", mdlhandles.LinBoneCenterHandle(origin,None,None).menu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
+            bonepop = qmenu.popup("Bone Commands", mdlhandles.LinBoneCenterHandle(origin,None,None,0).menu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
             mdlfacepop = qmenu.popup("Face Commands", mdlhandles.ModelFaceHandle(origin).menu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
             vertexpop = qmenu.popup("Vertex Commands", mdlhandles.VertexHandle(origin).menu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
             bonepop.state = qmenu.disabled
@@ -284,6 +284,9 @@ def BaseMenu(sellist, editor):
 #
 #
 #$Log$
+#Revision 1.34  2008/09/15 04:47:47  cdunde
+#Model Editor bones code update.
+#
 #Revision 1.33  2008/08/08 05:35:49  cdunde
 #Setup and initiated a whole new system to support model bones.
 #

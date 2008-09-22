@@ -522,6 +522,7 @@ class ModelLayout(BaseLayout):
                 selitem = sl[0]
             else:
                 selitem = sl[1]
+            # Globals are set here for comparison in filldataform function later.
             self.start_color = selitem['start_color']
             self.end_color = selitem['end_color']
             checkstart_pos = selitem.dictspec['start_point']
@@ -747,6 +748,15 @@ class ModelLayout(BaseLayout):
                         new_bone = common_handles_list[old_bone].copy()
                         if s_or_e_list[old_bone] == 0:
                             new_bone['start_point'] = start_point
+                            if new_bone.dictspec.has_key('start_vtxlist'):
+                                movediff = quarkx.vect(new_bone['start_point']) - quarkx.vect(oldstart_pos)
+                                old_vtxs = self.editor.Root.currentcomponent.currentframe.vertices
+                                selvtxlist = self.editor.ModelComponentList[self.editor.Root.currentcomponent.name]['boneobjlist'][new_bone.name]['s_or_e0']['selvtxlist']
+                                vtxlist = self.editor.ModelComponentList[self.editor.Root.currentcomponent.name]['boneobjlist'][new_bone.name]['s_or_e0']['vtxlist']
+                                for vtx in range(len(selvtxlist)):
+                                    old_vtxs[selvtxlist[vtx]] = self.editor.Root.currentcomponent.currentframe.vertices[selvtxlist[vtx]] + movediff
+                                    vtxlist[vtx][1] = old_vtxs[selvtxlist[vtx]]
+                                self.editor.Root.currentcomponent.currentframe.vertices = old_vtxs
                         else:
                             new_bone['end_point'] = start_point
                         new_bone['bone_length'] = ((quarkx.vect(new_bone['start_point']) + quarkx.vect(new_bone['end_point']))).tuple
@@ -1212,6 +1222,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.77  2008/09/15 04:47:47  cdunde
+#Model Editor bones code update.
+#
 #Revision 1.76  2008/08/21 18:29:46  cdunde
 #New code for undos causes triple drawing and loss of selection.
 #
