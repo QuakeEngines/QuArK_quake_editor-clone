@@ -170,6 +170,7 @@ class ModelEditor(BaseEditor):
                     bones = self.Root.dictitems[item].findallsubitems("", ':bone')   # get all bones
                     for bone in bones:
                         boneobjs = {}
+                        frame = self.Root.dictitems[item].dictitems['Frames:fg'].subitems[0]
                         if bone.dictspec.has_key("start_vtxlist"):
                             boneobjs['s_or_e0'] = {}
                             bone_vtxlist = []
@@ -183,12 +184,12 @@ class ModelEditor(BaseEditor):
                                 vtxinfo['color'] = bone['start_color']
                                 self.ModelComponentList[item]['bonevtxlist'][vtx] = vtxinfo
                                 vtx = int(vtx)
-                                bone_vtxlist = bone_vtxlist + [[vtx, quarkx.vect(0,0,0)]]
+                                bone_vtxlist = bone_vtxlist + [[vtx, frame.vertices[vtx]]]
                                 if vtx in selvtxlist:
                                     pass
                                 else:
                                     selvtxlist = selvtxlist + [vtx]
-                                    tristodrawlist = tristodrawlist + findTrianglesAndIndexes(comp, vtx, quarkx.vect(0,0,0))
+                                    tristodrawlist = tristodrawlist + findTrianglesAndIndexes(comp, vtx, frame.vertices[vtx])
                             boneobjs['s_or_e0']['vtxlist'] = bone_vtxlist
                             boneobjs['s_or_e0']['tristodrawlist'] = tristodrawlist
                             boneobjs['s_or_e0']['selvtxlist'] = selvtxlist
@@ -205,12 +206,12 @@ class ModelEditor(BaseEditor):
                                 vtxinfo['color'] = bone['end_color']
                                 self.ModelComponentList[item]['bonevtxlist'][vtx] = vtxinfo
                                 vtx = int(vtx)
-                                bone_vtxlist = bone_vtxlist + [[vtx, quarkx.vect(0,0,0)]]
+                                bone_vtxlist = bone_vtxlist + [[vtx, frame.vertices[vtx]]]
                                 if vtx in selvtxlist:
                                     pass
                                 else:
                                     selvtxlist = selvtxlist + [vtx]
-                                    tristodrawlist = tristodrawlist + findTrianglesAndIndexes(comp, vtx, quarkx.vect(0,0,0))
+                                    tristodrawlist = tristodrawlist + findTrianglesAndIndexes(comp, vtx, frame.vertices[vtx])
                             boneobjs['s_or_e1']['vtxlist'] = bone_vtxlist
                             boneobjs['s_or_e1']['tristodrawlist'] = tristodrawlist
                             boneobjs['s_or_e1']['selvtxlist'] = selvtxlist
@@ -1548,6 +1549,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.97  2008/09/15 04:47:48  cdunde
+#Model Editor bones code update.
+#
 #Revision 1.96  2008/08/08 05:35:50  cdunde
 #Setup and initiated a whole new system to support model bones.
 #

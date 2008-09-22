@@ -375,8 +375,10 @@ class ModelFaceHandle(qhandles.GenericHandle):
         if quarkx.setupsubset(SS_MODEL,"Options")['NFO'] == "1":
             return
         from qbaseeditor import flagsmouse, currentview
+        if (flagsmouse == 2056 or flagsmouse == 2060):
+            return
         if (flagsmouse == 1032 or flagsmouse == 1036):
-            if ((isinstance(editor.dragobject.handle, LinSideHandle)) or (isinstance(editor.dragobject.handle, LinCornerHandle)) or (isinstance(editor.dragobject.handle, LinBoneCornerHandle))) and quarkx.setupsubset(SS_MODEL, "Options")['NFDL'] is None:
+            if ((isinstance(editor.dragobject.handle, LinSideHandle)) or (isinstance(editor.dragobject.handle, LinCornerHandle)) or (isinstance(editor.dragobject.handle, LinBoneCornerHandle)) or (quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1")) and quarkx.setupsubset(SS_MODEL, "Options")['NFDL'] is None:
                 return
 
         if (flagsmouse == 1040 or flagsmouse == 1056):
@@ -2584,22 +2586,25 @@ class LinearHandle(qhandles.GenericHandle):
         self.mgr = mgr    # a LinHandlesManager instance
 
     def getvtxpos(self, view, new, item, count, item_vtx, tri_index, item_tri_index, projvtx0, projvtx1, projvtx2):
-        if item_vtx == 0 and tri_index == item_tri_index:
-            vtx0bbox = quarkx.boundingboxof([new[0].subitems[item]])
-            vtx0pos = (vtx0bbox[0] + vtx0bbox[1]) * .5
-            projvtx0 = view.proj(vtx0pos.tuple[0], vtx0pos.tuple[1], 0)
-            count = count + 1
-        if item_vtx == 1 and tri_index == item_tri_index:
-            vtx1bbox = quarkx.boundingboxof([new[0].subitems[item]])
-            vtx1pos = (vtx1bbox[0] + vtx1bbox[1]) * .5
-            projvtx1 = view.proj(vtx1pos.tuple[0], vtx1pos.tuple[1], 0)
-            count = count + 1
-        if item_vtx == 2 and tri_index == item_tri_index:
-            vtx2bbox = quarkx.boundingboxof([new[0].subitems[item]])
-            vtx2pos = (vtx2bbox[0] + vtx2bbox[1]) * .5
-            projvtx2 = view.proj(vtx2pos.tuple[0], vtx2pos.tuple[1], 0)
-            count = count + 1
-        return [count, projvtx0, projvtx1, projvtx2]
+        try:  # To avoid division by zero errors.
+            if item_vtx == 0 and tri_index == item_tri_index:
+                vtx0bbox = quarkx.boundingboxof([new[0].subitems[item]])
+                vtx0pos = (vtx0bbox[0] + vtx0bbox[1]) * .5
+                projvtx0 = view.proj(vtx0pos.tuple[0], vtx0pos.tuple[1], 0)
+                count = count + 1
+            if item_vtx == 1 and tri_index == item_tri_index:
+                vtx1bbox = quarkx.boundingboxof([new[0].subitems[item]])
+                vtx1pos = (vtx1bbox[0] + vtx1bbox[1]) * .5
+                projvtx1 = view.proj(vtx1pos.tuple[0], vtx1pos.tuple[1], 0)
+                count = count + 1
+            if item_vtx == 2 and tri_index == item_tri_index:
+                vtx2bbox = quarkx.boundingboxof([new[0].subitems[item]])
+                vtx2pos = (vtx2bbox[0] + vtx2bbox[1]) * .5
+                projvtx2 = view.proj(vtx2pos.tuple[0], vtx2pos.tuple[1], 0)
+                count = count + 1
+            return [count, projvtx0, projvtx1, projvtx2]
+        except:
+            return[None, None, None, None]
 
     def drawface(self, view, cv, count, comp, tri_index, texWidth, texHeight, projvtx0, projvtx1, projvtx2):
         if count != 3:
@@ -2625,22 +2630,26 @@ class LinearHandle(qhandles.GenericHandle):
 
     def drag(self, v1, v2, flags, view): # for LinearHandle
         if view.info["viewname"] == "skinview":
-            box = quarkx.boundingboxof(self.mgr.list)
-            view.handles = ModelEditorLinHandlesManager(MapColor("LinearHandleCircle", SS_MODEL), box, self.mgr.list, view).BuildHandles()
+            bbox = quarkx.boundingboxof(self.mgr.list)
+            view.handles = ModelEditorLinHandlesManager(MapColor("LinearHandleCircle", SS_MODEL), bbox, self.mgr.list, view).BuildHandles()
+        else:
+            bbox = quarkx.boundingboxof(self.mgr.list)
+            view.handles = ModelEditorLinHandlesManager(MapColor("LinearHandleCircle", SS_MODEL), bbox, self.mgr.list, view).BuildHandles()
         delta = v2-v1
         if flags&MB_CTRL:
-            g1 = 1
-            delta = qhandles.aligntogrid(delta, 0)
-        else:
             if view.info["viewname"] == "skinview":
-                if quarkx.setupsubset(SS_MODEL, "Options")['SkinGridActive'] is not None or not isinstance(self, LinRedHandle):
+                if isinstance(self, LinRedHandle) and quarkx.setupsubset(SS_MODEL, "Options")['SkinGridActive'] is not None:
                     delta = alignskintogrid(delta, 0)
                     g1 = 0
                 else:
                     g1 = 1
             else:
-                g1 = 0
-      #1       g1 = 1  #1 draws best but then no option for Ctrl key when swapped with code above.
+                if isinstance(self, LinRedHandle) and quarkx.setupsubset(SS_MODEL, "Options")['GridActive'] is not None:
+                    delta = qhandles.aligntogrid(delta, 0)
+                g1 = 1
+        else:
+            g1 = 0
+
         if delta or (flags&MB_REDIMAGE):
             new = map(lambda obj: obj.copy(), self.mgr.list)
             if not self.linoperation(new, delta, g1, view):
@@ -2704,69 +2713,98 @@ class LinearHandle(qhandles.GenericHandle):
                 for tri_vtx in range(len(tri[4])):
                     # This section draws the vertex drag lines.
                     if new[0].subitems != []:
-                        for item in new[0].subitems:
-                            if int(item.shortname) == tri[4][tri_vtx][0]:
-                                if tri_vtx == 0:
-                                    vtx0bbox = quarkx.boundingboxof([item])
-                                    vtx0pos = (vtx0bbox[0] + vtx0bbox[1]) * .5
-                                    projvtx0 = view.proj(vtx0pos.tuple[0], vtx0pos.tuple[1], vtx0pos.tuple[2])
-                                if tri_vtx == 1:
-                                    vtx1bbox = quarkx.boundingboxof([item])
-                                    vtx1pos = (vtx1bbox[0] + vtx1bbox[1]) * .5
-                                    projvtx1 = view.proj(vtx1pos.tuple[0], vtx1pos.tuple[1], vtx1pos.tuple[2])
-                                if tri_vtx == 2:
-                                    vtx2bbox = quarkx.boundingboxof([item])
-                                    vtx2pos = (vtx2bbox[0] + vtx2bbox[1]) * .5
-                                    projvtx2 = view.proj(vtx2pos.tuple[0], vtx2pos.tuple[1], vtx2pos.tuple[2])
+                        try: # To stop unsubscriptable object errors.
+                            for item in new[0].subitems:
+                                if int(item.shortname) == tri[4][tri_vtx][0]:
+                                    if tri_vtx == 0:
+                                        vtx0bbox = quarkx.boundingboxof([item])
+                                        vtx0pos = (vtx0bbox[0] + vtx0bbox[1]) * .5
+                                        projvtx0 = view.proj(vtx0pos.tuple[0], vtx0pos.tuple[1], vtx0pos.tuple[2])
+                                    if tri_vtx == 1:
+                                        vtx1bbox = quarkx.boundingboxof([item])
+                                        vtx1pos = (vtx1bbox[0] + vtx1bbox[1]) * .5
+                                        projvtx1 = view.proj(vtx1pos.tuple[0], vtx1pos.tuple[1], vtx1pos.tuple[2])
+                                    if tri_vtx == 2:
+                                        vtx2bbox = quarkx.boundingboxof([item])
+                                        vtx2pos = (vtx2bbox[0] + vtx2bbox[1]) * .5
+                                        projvtx2 = view.proj(vtx2pos.tuple[0], vtx2pos.tuple[1], vtx2pos.tuple[2])
+                        except:
+                            projvtx0 = projvtx1 = projvtx2 = None
                     # This section draws the face drag lines.
                     if new[0].subitems == []:
-                        for face in new:
-                            for obj in self.mgr.editor.EditorObjectList:
-                                if face.name == obj.name:
-                                    objvtxs = obj["v"]
-                            vtxs = face.shortname.split(',')
-                            vtxs = [int(vtxs[2]), int(vtxs[3]), int(vtxs[4])]
-                            for vtx in vtxs:
-                                if vtx == tri[4][tri_vtx][0]:
-                                    if tri_vtx == 0:
-                                        projvtx0 = view.proj(quarkx.vect(objvtxs[0], objvtxs[1], objvtxs[2]))
-                                    if tri_vtx == 1:
-                                        projvtx1 = view.proj(quarkx.vect(objvtxs[3], objvtxs[4], objvtxs[5]))
-                                    if tri_vtx == 2:
-                                        projvtx2 = view.proj(quarkx.vect(objvtxs[6], objvtxs[7], objvtxs[8]))
-                ###  Get stationary vtx's
-                if projvtx0 is None:
-                    projvtx0 = view.proj(framevtxs[tri[4][0][0]])
-                if projvtx1 is None:
-                    projvtx1 = view.proj(framevtxs[tri[4][1][0]])
-                if projvtx2 is None:
-                    projvtx2 = view.proj(framevtxs[tri[4][2][0]])
-                cv.line(int(projvtx0.tuple[0]), int(projvtx0.tuple[1]), int(projvtx1.tuple[0]), int(projvtx1.tuple[1]))
-                cv.line(int(projvtx1.tuple[0]), int(projvtx1.tuple[1]), int(projvtx2.tuple[0]), int(projvtx2.tuple[1]))
-                cv.line(int(projvtx2.tuple[0]), int(projvtx2.tuple[1]), int(projvtx0.tuple[0]), int(projvtx0.tuple[1]))
+                        if tri[4][tri_vtx][0] != tri[0] and tri[4][tri_vtx][0] not in self.mgr.selvtxlist:
+                            for face in new:
+                                objvtxs = face["v"]
+                                vtxs = face.shortname.split(',')
+                                vtxs = [int(vtxs[2]), int(vtxs[3]), int(vtxs[4])]
+                                for vtx in range(len(vtxs)):
+                                    if vtxs[vtx] == tri[0]:
+                                        if vtx == 0:
+                                            projvtx0 = view.proj(quarkx.vect(objvtxs[0], objvtxs[1], objvtxs[2]))
+                                        if vtx == 1:
+                                            projvtx1 = view.proj(quarkx.vect(objvtxs[3], objvtxs[4], objvtxs[5]))
+                                        if vtx == 2:
+                                            projvtx2 = view.proj(quarkx.vect(objvtxs[6], objvtxs[7], objvtxs[8]))
+
+                             ###  Draw face stationary vtx line.
+                            if projvtx0 is not None:
+                                trivtx = view.proj(framevtxs[tri[4][tri_vtx][0]])
+                                cv.line(int(projvtx0.tuple[0]), int(projvtx0.tuple[1]), int(trivtx.tuple[0]), int(trivtx.tuple[1]))
+                            if projvtx1 is not None:
+                                trivtx = view.proj(framevtxs[tri[4][tri_vtx][0]])
+                                cv.line(int(projvtx1.tuple[0]), int(projvtx1.tuple[1]), int(trivtx.tuple[0]), int(trivtx.tuple[1]))
+                            if projvtx2 is not None:
+                                trivtx = view.proj(framevtxs[tri[4][tri_vtx][0]])
+                                cv.line(int(projvtx2.tuple[0]), int(projvtx2.tuple[1]), int(trivtx.tuple[0]), int(trivtx.tuple[1]))
+                            projvtx0 = projvtx1 = projvtx2 = None
+
+                ###  Get stationary vtx's to draw for vertex drag.
+                if new[0].name.endswith(":g"):
+                    if projvtx0 is None:
+                        projvtx0 = view.proj(framevtxs[tri[4][0][0]])
+                    if projvtx1 is None:
+                        projvtx1 = view.proj(framevtxs[tri[4][1][0]])
+                    if projvtx2 is None:
+                        projvtx2 = view.proj(framevtxs[tri[4][2][0]])
+                    cv.line(int(projvtx0.tuple[0]), int(projvtx0.tuple[1]), int(projvtx1.tuple[0]), int(projvtx1.tuple[1]))
+                    cv.line(int(projvtx1.tuple[0]), int(projvtx1.tuple[1]), int(projvtx2.tuple[0]), int(projvtx2.tuple[1]))
+                    cv.line(int(projvtx2.tuple[0]), int(projvtx2.tuple[1]), int(projvtx0.tuple[0]), int(projvtx0.tuple[1]))
 
                 # Section below draws the selected faces if any.
-                if self.mgr.editor.EditorObjectList != [] and quarkx.setupsubset(SS_MODEL,"Options")['NFO'] != 1:
-                    cv.pencolor = faceseloutline
-                    try:
-                        cv.penwidth = float(quarkx.setupsubset(SS_MODEL,"Options")['linethickness'])
-                    except:
-                        cv.penwidth = 2
-                    cv.brushcolor = faceseloutline
-                    cv.brushstyle = BS_SOLID
-                    for obj in self.mgr.editor.EditorObjectList:
-                        objvtxs = obj["v"]
-                        projvtx0 = view.proj(quarkx.vect(objvtxs[0], objvtxs[1], objvtxs[2]))
-                        projvtx1 = view.proj(quarkx.vect(objvtxs[3], objvtxs[4], objvtxs[5]))
-                        projvtx2 = view.proj(quarkx.vect(objvtxs[6], objvtxs[7], objvtxs[8]))
-                        cv.line(int(projvtx0.tuple[0]), int(projvtx0.tuple[1]), int(projvtx1.tuple[0]), int(projvtx1.tuple[1]))
-                        cv.line(int(projvtx1.tuple[0]), int(projvtx1.tuple[1]), int(projvtx2.tuple[0]), int(projvtx2.tuple[1]))
-                        cv.line(int(projvtx2.tuple[0]), int(projvtx2.tuple[1]), int(projvtx0.tuple[0]), int(projvtx0.tuple[1]))
+                if self.mgr.editor.EditorObjectList != []:
+                    if quarkx.setupsubset(SS_MODEL, "Options")["NFDL"] is None: # NFDL = no face drag lines.
+                        cv.pencolor = faceseloutline
+                        try:
+                            cv.penwidth = float(quarkx.setupsubset(SS_MODEL,"Options")['linethickness'])
+                        except:
+                            cv.penwidth = 2
+                        cv.brushcolor = faceseloutline
+                        cv.brushstyle = BS_SOLID
+                    for obj in new:
+                        if obj.name.endswith(":g"):
+                            if (quarkx.setupsubset(SS_MODEL,"Options")['NFO'] != "1"):
+                                for face in self.mgr.editor.EditorObjectList:
+                                    objvtxs = face["v"]
+                                    projvtx0 = view.proj(quarkx.vect(objvtxs[0], objvtxs[1], objvtxs[2]))
+                                    projvtx1 = view.proj(quarkx.vect(objvtxs[3], objvtxs[4], objvtxs[5]))
+                                    projvtx2 = view.proj(quarkx.vect(objvtxs[6], objvtxs[7], objvtxs[8]))
+                                    cv.line(int(projvtx0.tuple[0]), int(projvtx0.tuple[1]), int(projvtx1.tuple[0]), int(projvtx1.tuple[1]))
+                                    cv.line(int(projvtx1.tuple[0]), int(projvtx1.tuple[1]), int(projvtx2.tuple[0]), int(projvtx2.tuple[1]))
+                                    cv.line(int(projvtx2.tuple[0]), int(projvtx2.tuple[1]), int(projvtx0.tuple[0]), int(projvtx0.tuple[1]))
+                        else:
+                            objvtxs = obj["v"]
+                            projvtx0 = view.proj(quarkx.vect(objvtxs[0], objvtxs[1], objvtxs[2]))
+                            projvtx1 = view.proj(quarkx.vect(objvtxs[3], objvtxs[4], objvtxs[5]))
+                            projvtx2 = view.proj(quarkx.vect(objvtxs[6], objvtxs[7], objvtxs[8]))
+                            cv.line(int(projvtx0.tuple[0]), int(projvtx0.tuple[1]), int(projvtx1.tuple[0]), int(projvtx1.tuple[1]))
+                            cv.line(int(projvtx1.tuple[0]), int(projvtx1.tuple[1]), int(projvtx2.tuple[0]), int(projvtx2.tuple[1]))
+                            cv.line(int(projvtx2.tuple[0]), int(projvtx2.tuple[1]), int(projvtx0.tuple[0]), int(projvtx0.tuple[1]))
+                            self.mgr.editor.EditorObjectList = new
                     cv.pencolor = dragcolor
                     cv.penwidth = 1
 
                 projvtx0 = projvtx1 = projvtx2 = None
-                        
+
         for h in view.handles:
             h.draw(view, cv, h)
         return self.mgr.list, new
@@ -2781,8 +2819,9 @@ class LinearHandle(qhandles.GenericHandle):
         view.repaint()
         plugins.mdlgridscale.gridfinishdrawing(editor, view)
         plugins.mdlaxisicons.newfinishdrawing(editor, view)
-        for obj in self.mgr.list: # Moves and draws the models triangles or vertexes correctly for the matrix handles.
-            cv = view.canvas()
+
+        for obj in list: # Moves and draws the models triangles or vertexes correctly for the matrix handles.
+            obj.linear(self.mgr.center, matrix)
             if obj.name.endswith(":g"):
                 if view.info["viewname"] == "skinview":
                     pass
@@ -2794,18 +2833,6 @@ class LinearHandle(qhandles.GenericHandle):
                         view.drawmap(newobj, DM_OTHERCOLOR, dragcolor)
                     except:
                         pass
-            obj.linear(self.mgr.center, matrix)
-      # Below causes duplicate and incorrect drawing of selected faces for corner and side Linear Handles.
-      #      else:
-      #          vect0X ,vect0Y, vect0Z, vect1X ,vect1Y, vect1Z, vect2X ,vect2Y, vect2Z = obj["v"]
-      #          vect0X ,vect0Y, vect0Z = view.proj(vect0X ,vect0Y, vect0Z).tuple
-      #          vect1X ,vect1Y, vect1Z = view.proj(vect1X ,vect1Y, vect1Z).tuple
-      #          vect2X ,vect2Y, vect2Z = view.proj(vect2X ,vect2Y, vect2Z).tuple
-      #          cv.pencolor = MapColor("FaceSelOutline", SS_MODEL)
-      #          cv.line(int(vect0X), int(vect0Y), int(vect1X), int(vect1Y))
-      #          cv.line(int(vect1X), int(vect1Y), int(vect2X), int(vect2Y))
-      #          cv.line(int(vect2X), int(vect2Y), int(vect0X), int(vect0Y))
-
         return 1
 
 
@@ -2968,10 +2995,18 @@ class LinRedHandle(LinearHandle): # for LinRedHandle
                     cv.line( int(ver0X), int(ver0Y), int(vect0X), int(vect0Y))
                     cv.line( int(ver1X), int(ver1Y), int(vect1X), int(vect1Y))
                     cv.line( int(ver2X), int(ver2Y), int(vect2X), int(vect2Y))
-                cv.pencolor = MapColor("FaceSelOutline", SS_MODEL)
+                cv.pencolor = faceseloutline
+                try:
+                    cv.penwidth = float(quarkx.setupsubset(SS_MODEL,"Options")['linethickness'])
+                except:
+                    cv.penwidth = 2
+                cv.brushcolor = faceseloutline
+                cv.brushstyle = BS_SOLID
                 cv.line(int(vect0X), int(vect0Y), int(vect1X), int(vect1Y))
                 cv.line(int(vect1X), int(vect1Y), int(vect2X), int(vect2Y))
                 cv.line(int(vect2X), int(vect2Y), int(vect0X), int(vect0Y))
+                cv.pencolor = dragcolor
+                cv.penwidth = 1
 
         if view.info["type"] == "XY":
             s = "was " + ftoss(self.pos.x) + " " + ftoss(self.pos.y) + " now " + ftoss(self.pos.x+delta.x) + " " + ftoss(self.pos.y+delta.y)
@@ -3186,6 +3221,8 @@ class LinCornerHandle(LinearHandle):
             self.pos0 = realpoint
         self.center = center - (pos1-center)
         self.cursor = CR_CROSSH
+        self.m = None
+        self.diff = 1.0  # pure rotation
 
     def draw(self, view, cv, draghandle=None): # for LinCornerHandle
         if view.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] == "1":
@@ -3221,44 +3258,39 @@ class LinCornerHandle(LinearHandle):
                 delta = quarkx.vect(delta.x, 0, delta.z)
             if editor.lock_z==1:
                 delta = quarkx.vect(delta.x, delta.y, 0)
-
         normal = view.vector("Z").normalized
-        texp4 = self.pos-self.center
+        texp4 = self.pos-self.mgr.center
         texp4 = texp4 - normal*(normal*texp4)
         npos = self.pos + delta
-        if g1 == 0 or g1 == 1:
-            npos = qhandles.aligntogrid(npos, 1)
-        npos = npos-self.center
+        npos = npos-self.mgr.center
         npos = npos - normal*(normal*npos)
-        m = diff = None
   ### Rotation section.
         if g1 == 0 and npos:
-            v = self.mgr.center
-            if m is None:
-                rotationspeed = quarkx.setupsubset(SS_MODEL,"Building")['LinRotationSpeed'][0]
-                rotationspeed = abs(rotationspeed)*-1
-                m = qhandles.UserRotationMatrix(normal, npos, delta, 0, rotationspeed)
-            diff = 1.0  # Forces pure rotation.
-            if m is None:
+            v = npos.normalized * abs(texp4)
+            if abs(v-texp4) > abs(v-npos):
+                pass
+            else:
+                self.m = quarkx.matrix((1,0,0),(0,1,0),(0,0,1))    # Forces pure scaling.
+            self.m = qhandles.UserRotationMatrix(normal, npos, texp4, 0, 1)
+            if self.m is None:
                 return
-  ### Scaling (zooming) section.
+  ### Scaling section.
         else:
-            rotationspeed = quarkx.setupsubset(SS_MODEL,"Building")['LinRotationSpeed'][0]
             v = self.mgr.center
-            m = quarkx.matrix((1,0,0),(0,1,0),(0,0,1))  # Forces pure zooming.
-            if diff is None:
-                diff = abs(npos) / abs(texp4)
+            if self.m is None:
+                self.m = quarkx.matrix((1,0,0),(0,1,0),(0,0,1))  # Forces pure scaling.
+            self.diff = abs(npos) / abs(texp4)
   ### Drag Hint section.
-    #org    self.draghint = "rotate %d deg.   zoom %d %%" % (math.acos(m[0,0])*180.0/math.pi, 100.0*diff)
-        self.draghint = "rotate %d deg.   zoom %d %%" % (math.acos(m[0,0])*180.0/math.pi, 100.0 * (diff - (diff * abs(rotationspeed)*.00125))+1)
+        if self.m is None:
+            self.m = quarkx.matrix((1,0,0),(0,1,0),(0,0,1))  # Forces pure scaling.
+        rotate = math.acos(self.m[0,0])*180.0/math.pi
+        scaling = 100.0*self.diff
+        self.draghint = "rotate %d deg.   scale %d %%" % (rotate, scaling)
 
         if g1 == 0 and npos:
-            return m
+            return self.m * self.diff
         else:
-            if diff > 1:
-                return m * (diff - (diff * abs(rotationspeed)*.00125))
-            else:
-                return m * (diff + (diff * abs(rotationspeed)*.00125))
+            return self.m * self.diff
 
 
     def ok(self, editor, undo, oldobjectslist, newobjectslist): # for LinCornerHandle
@@ -3290,7 +3322,7 @@ class ModelEditorBoneLinHandlesManager:
     "Linear Handle manager. This is the class called to manage and build"
     "the Linear Bone Handle by calling its other related classes below this one."
 
-    def __init__(self, color, bbox, list, bone, vtxlist, view=None):
+    def __init__(self, color, bbox, list, bone, vtxlist, s_or_e, view=None):
 
         self.editor = mdleditor.mdleditor
         self.color = color # The start or end handle color, which ever is being called.
@@ -3309,6 +3341,7 @@ class ModelEditorBoneLinHandlesManager:
         self.bmax = quarkx.vect(bmax1)
         self.list = list # A list of the above actual vertex objects, to create poly objects to draw.
         self.vtxlist = vtxlist # A "string" list of vert_index numbers assigned to the handle, if any.
+        self.s_or_e = s_or_e
 
         # To get all the triangles that need to be drawn during the drag
         # including ones that have vertexes that will be stationary.
@@ -3350,8 +3383,8 @@ class ModelEditorBoneLinHandlesManager:
         for x in (X,mX):
             for y in (Y,mY):
                 for z in (Z,mZ):
-                    h.append(LinBoneCornerHandle(center, quarkx.vect(x,y,z), self, self.bone))
-        return h + [LinBoneCenterHandle(center, self, self.bone)]
+                    h.append(LinBoneCornerHandle(center, quarkx.vect(x,y,z), self, self.bone, self.s_or_e))
+        return h + [LinBoneCenterHandle(center, self, self.bone, self.s_or_e)]
 
     def drawbox(self, view):
         return
@@ -3377,6 +3410,7 @@ class LinearBoneHandle(qhandles.GenericHandle):
     # Doing it this way keeps from slowing down the program, a lot.
     #
     def start_drag(self, view, x, y):
+        view.handles = []
         compbones = self.component.findallsubitems("", ':bone')      # get all bones
         if self.mgr.editor.layout.explorer.sellist != [] and len(self.mgr.editor.layout.explorer.sellist) <= 2:
             self.mgr.tristodrawlist = []
@@ -3424,30 +3458,59 @@ class LinearBoneHandle(qhandles.GenericHandle):
                 else: # Handles the "End of Bone".
                     self.oldbones_end = self.oldbones_end + [self.bone]
 
-                # Makes the vertex polys to draw during drag.
+                # Makes the vertex polys to draw during drag (these make the mesh change).
                 if self.s_or_e == 0:
-                    list = []
                     if isinstance(self, LinBoneCornerHandle) and self.bone.dictspec.has_key('end_vtxlist'):
                         name = self.bone.shortname + "_1"
-                        list = self.mgr.selvtxlist = self.mgr.editor.ModelComponentList[self.component.name]['boneobjlist'][self.bone.name]['s_or_e1']['selvtxlist']
+                        self.mgr.selvtxlist = self.mgr.editor.ModelComponentList[self.component.name]['boneobjlist'][self.bone.name]['s_or_e1']['selvtxlist']
                         self.mgr.tristodrawlist = self.mgr.editor.ModelComponentList[self.component.name]['boneobjlist'][self.bone.name]['s_or_e1']['tristodrawlist']
                     elif self.bone.dictspec.has_key('start_vtxlist'):
                         name = self.bone.shortname + "_0"
-                        list = self.mgr.selvtxlist = self.mgr.editor.ModelComponentList[self.component.name]['boneobjlist'][self.bone.name]['s_or_e0']['selvtxlist']
+                        self.mgr.selvtxlist = self.mgr.editor.ModelComponentList[self.component.name]['boneobjlist'][self.bone.name]['s_or_e0']['selvtxlist']
                         self.mgr.tristodrawlist = self.mgr.editor.ModelComponentList[self.component.name]['boneobjlist'][self.bone.name]['s_or_e0']['tristodrawlist']
-                    if list != []:
-                        for vtx in list:
+                    if self.mgr.selvtxlist != []:
+                        for vtx in self.mgr.selvtxlist:
                             vtxpos = view.proj(self.mgr.editor.Root.currentcomponent.currentframe.vertices[vtx])
                             self.mgr.vtxlist = self.mgr.vtxlist + [[vtx, vtxpos]]
                         self.mgr.list = MakeEditorVertexPolyObject(self.mgr.editor, 0, self.mgr.vtxlist, name)
-                if self.s_or_e == 1 and self.bone.dictspec.has_key('end_vtxlist'):
-                    name = self.bone.shortname + "_1"
-                    list = self.mgr.selvtxlist = self.mgr.editor.ModelComponentList[self.component.name]['boneobjlist'][self.bone.name]['s_or_e1']['selvtxlist']
-                    self.mgr.tristodrawlist = self.mgr.editor.ModelComponentList[self.component.name]['boneobjlist'][self.bone.name]['s_or_e1']['tristodrawlist']
-                    for vtx in list:
-                        vtxpos = view.proj(self.mgr.editor.Root.currentcomponent.currentframe.vertices[vtx])
-                        self.mgr.vtxlist = self.mgr.vtxlist + [[vtx, vtxpos]]
-                    self.mgr.list = MakeEditorVertexPolyObject(self.mgr.editor, 0, self.mgr.vtxlist, name)
+                    for bone in self.oldbones_start:
+                        if bone.dictspec.has_key('start_vtxlist') and bone.name != self.bone.name:
+                            self.mgr.tristodrawlist = self.mgr.tristodrawlist + self.mgr.editor.ModelComponentList[self.component.name]['boneobjlist'][bone.name]['s_or_e0']['tristodrawlist']
+                            self.mgr.vtxlist = self.mgr.editor.ModelComponentList[self.component.name]['boneobjlist'][bone.name]['s_or_e0']['vtxlist']
+                            name = bone.shortname + "_0" # Used to identify which bone handle they are for.
+                            self.mgr.list = self.mgr.list + MakeEditorVertexPolyObject(self.mgr.editor, 0, self.mgr.vtxlist, name)
+                            self.mgr.selvtxlist = self.mgr.selvtxlist + self.mgr.editor.ModelComponentList[self.component.name]['boneobjlist'][bone.name]['s_or_e0']['selvtxlist']
+                        if isinstance(self, LinBoneCornerHandle) and bone.dictspec.has_key('end_vtxlist') and bone.name != self.bone.name:
+                            self.mgr.tristodrawlist = self.mgr.tristodrawlist + self.mgr.editor.ModelComponentList[self.component.name]['boneobjlist'][bone.name]['s_or_e1']['tristodrawlist']
+                            self.mgr.vtxlist = self.mgr.editor.ModelComponentList[self.component.name]['boneobjlist'][bone.name]['s_or_e1']['vtxlist']
+                            name = bone.shortname + "_1" # Used to identify which bone handle they are for.
+                            self.mgr.list = self.mgr.list + MakeEditorVertexPolyObject(self.mgr.editor, 0, self.mgr.vtxlist, name)
+                            self.mgr.selvtxlist = self.mgr.selvtxlist + self.mgr.editor.ModelComponentList[self.component.name]['boneobjlist'][bone.name]['s_or_e1']['selvtxlist']
+                    for bone in self.oldbones_end:
+                        if isinstance(self, LinBoneCornerHandle):
+                            break
+                        if bone.dictspec.has_key('end_vtxlist') and bone.name != self.bone.name:
+                            self.mgr.tristodrawlist = self.mgr.tristodrawlist + self.mgr.editor.ModelComponentList[self.component.name]['boneobjlist'][bone.name]['s_or_e1']['tristodrawlist']
+                            self.mgr.vtxlist = self.mgr.editor.ModelComponentList[self.component.name]['boneobjlist'][bone.name]['s_or_e1']['vtxlist']
+                            name = bone.shortname + "_1" # Used to identify which bone handle they are for.
+                            self.mgr.list = self.mgr.list + MakeEditorVertexPolyObject(self.mgr.editor, 0, self.mgr.vtxlist, name)
+                            self.mgr.selvtxlist = self.mgr.selvtxlist + self.mgr.editor.ModelComponentList[self.component.name]['boneobjlist'][bone.name]['s_or_e1']['selvtxlist']
+                if self.s_or_e == 1:
+                    if self.bone.dictspec.has_key('end_vtxlist'):
+                        name = self.bone.shortname + "_1"
+                        self.mgr.selvtxlist = self.mgr.editor.ModelComponentList[self.component.name]['boneobjlist'][self.bone.name]['s_or_e1']['selvtxlist']
+                        self.mgr.tristodrawlist = self.mgr.editor.ModelComponentList[self.component.name]['boneobjlist'][self.bone.name]['s_or_e1']['tristodrawlist']
+                        for vtx in self.mgr.selvtxlist:
+                            vtxpos = view.proj(self.mgr.editor.Root.currentcomponent.currentframe.vertices[vtx])
+                            self.mgr.vtxlist = self.mgr.vtxlist + [[vtx, vtxpos]]
+                        self.mgr.list = MakeEditorVertexPolyObject(self.mgr.editor, 0, self.mgr.vtxlist, name)
+                    for bone in self.oldbones_start:
+                        if bone.dictspec.has_key('start_vtxlist'):
+                            self.mgr.tristodrawlist = self.mgr.tristodrawlist + self.mgr.editor.ModelComponentList[self.component.name]['boneobjlist'][bone.name]['s_or_e0']['tristodrawlist']
+                            self.mgr.vtxlist = self.mgr.editor.ModelComponentList[self.component.name]['boneobjlist'][bone.name]['s_or_e0']['vtxlist']
+                            name = bone.shortname + "_0" # Used to identify which bone handle they are for.
+                            self.mgr.list = self.mgr.list + MakeEditorVertexPolyObject(self.mgr.editor, 0, self.mgr.vtxlist, name)
+                            self.mgr.selvtxlist = self.mgr.selvtxlist + self.mgr.editor.ModelComponentList[self.component.name]['boneobjlist'][bone.name]['s_or_e0']['selvtxlist']
 
             # Bone group selection.
             elif (len(self.mgr.editor.layout.explorer.sellist) == 1 and self.mgr.editor.layout.explorer.sellist[0].type == ':bg') or ((self.mgr.editor.layout.explorer.sellist[0].type == ':mf' and self.mgr.editor.layout.explorer.sellist[1].type == ':bg') or (self.mgr.editor.layout.explorer.sellist[0].type == ':bg' and self.mgr.editor.layout.explorer.sellist[1].type == ':mf')):
@@ -3483,7 +3546,7 @@ class LinearBoneHandle(qhandles.GenericHandle):
                                 if mdlutils.checktuplepos(commstart.dictspec['end_point'], bone.dictspec['start_point']) == 1:
                                     self.oldbones_end = self.oldbones_end + [bone]
 
-                # Makes the vertex polys to draw during drag.
+                # Makes the vertex polys to draw during drag (these make the mesh change).
                 if self.s_or_e == 0:
                     self.mgr.tristodrawlist = []
                     self.mgr.list = []
@@ -3522,6 +3585,12 @@ class LinearBoneHandle(qhandles.GenericHandle):
                             self.mgr.list = self.mgr.list + MakeEditorVertexPolyObject(self.mgr.editor, 0, self.mgr.vtxlist, name)
                             self.mgr.selvtxlist = self.mgr.selvtxlist + self.mgr.editor.ModelComponentList[self.component.name]['boneobjlist'][bone.name]['s_or_e0']['selvtxlist']
                     for bone in self.oldbones_end:
+                        if bone.dictspec.has_key('start_vtxlist') and bone.name != self.bone.name:
+                            self.mgr.tristodrawlist = self.mgr.tristodrawlist + self.mgr.editor.ModelComponentList[self.component.name]['boneobjlist'][bone.name]['s_or_e0']['tristodrawlist']
+                            self.mgr.vtxlist = self.mgr.editor.ModelComponentList[self.component.name]['boneobjlist'][bone.name]['s_or_e0']['vtxlist']
+                            name = bone.shortname + "_0" # Used in poly group name to identify which bone handle they are for.
+                            self.mgr.list = self.mgr.list + MakeEditorVertexPolyObject(self.mgr.editor, 0, self.mgr.vtxlist, name)
+                            self.mgr.selvtxlist = self.mgr.selvtxlist + self.mgr.editor.ModelComponentList[self.component.name]['boneobjlist'][bone.name]['s_or_e0']['selvtxlist']
                         if bone.dictspec.has_key('end_vtxlist'):
                             self.mgr.tristodrawlist = self.mgr.tristodrawlist + self.mgr.editor.ModelComponentList[self.component.name]['boneobjlist'][bone.name]['s_or_e1']['tristodrawlist']
                             self.mgr.vtxlist = self.mgr.editor.ModelComponentList[self.component.name]['boneobjlist'][bone.name]['s_or_e1']['vtxlist']
@@ -3660,9 +3729,9 @@ def Update_BoneObjs(bonevtxlist, selfbonename, comp):
             vtx = int(key)
             s_or_e = bonevtxlist[key]['s_or_e']
             if s_or_e == 0 or s_or_e == 1:   # Sanity check
-                vtxlist[s_or_e] = vtxlist[s_or_e] + [[vtx, quarkx.vect(0,0,0)]]
+                vtxlist[s_or_e] = vtxlist[s_or_e] + [[vtx, comp.currentframe.vertices[vtx]]]
                 selvtxlist[s_or_e] = selvtxlist[s_or_e] + [vtx]
-                tristodrawlist[s_or_e] = tristodrawlist[s_or_e] + findTrianglesAndIndexes(comp, vtx, quarkx.vect(0,0,0))
+                tristodrawlist[s_or_e] = tristodrawlist[s_or_e] + findTrianglesAndIndexes(comp, vtx, comp.currentframe.vertices[vtx])
     boneobjs = {}
     if vtxlist[0] <> []:
         boneobjs['s_or_e0'] = {}
@@ -3677,19 +3746,33 @@ def Update_BoneObjs(bonevtxlist, selfbonename, comp):
     return boneobjs
 
 
+def DrawBoneHandle(p, cv, color, scale):
+    cv.pencolor = color
+    cv.ellipse(int(p.x-1.25*scale), int(p.y-1.25*scale), int(p.x+1.25*scale), int(p.y+1.25*scale)) # Start of bone circle
+    cv.line(int(p.x-1.25*scale), int(p.y), int(p.x+1.25*scale), int(p.y)) # Start of bone x line
+    cv.line(int(p.x), int(p.y-1.25*scale), int(p.x), int(p.y+1.25*scale)) # Start of bone y line
+
+def DrawBoneLine(p1, p2, cv, color, scale):
+    cv.pencolor = color
+    cv.line(int(p1.x), int(p1.y-1.25*scale), int(p2.x), int(p2.y)) # Top line
+    cv.line(int(p1.x+1.25*scale), int(p1.y), int(p2.x), int(p2.y)) # Right line
+    cv.line(int(p1.x), int(p1.y+1.25*scale), int(p2.x), int(p2.y)) # Bottom line
+    cv.line(int(p1.x-1.25*scale), int(p1.y), int(p2.x), int(p2.y)) # Left line
+
+
 class LinBoneCenterHandle(LinearBoneHandle):
     "Center Bone Handle,  handle at the center."
 
     from qbaseeditor import currentview
     size = (3,3)
-    def __init__(self, pos, mgr, bone):
+    def __init__(self, pos, mgr, bone, s_or_e):
         LinearBoneHandle.__init__(self, pos, mgr)
         self.cursor = CR_CROSSH
         self.undomsg = "bone joint move"
         self.editor = mdleditor.mdleditor
         self.component = self.editor.Root.currentcomponent
         self.bone = bone
-        self.s_or_e = None
+        self.s_or_e = s_or_e
         self.dict = {}
     try:
         self.start_drag(currentview, self.pos.x, self.pos.y)
@@ -4182,6 +4265,7 @@ class LinBoneCenterHandle(LinearBoneHandle):
                 for vtx in start_vtxlist:
                     del editor.ModelComponentList[comp.name]['bonevtxlist'][vtx]
                 selbone['start_vtxlist'] = ''
+                del editor.ModelComponentList[comp.name]['boneobjlist'][selbone.name]['s_or_e0']
             Update_Editor_Views(editor)
 
         def release_end_vertexes_click(m, self=self, editor=editor, view=view):
@@ -4203,6 +4287,7 @@ class LinBoneCenterHandle(LinearBoneHandle):
                 for vtx in end_vtxlist:
                     del editor.ModelComponentList[comp.name]['bonevtxlist'][vtx]
                 selbone['end_vtxlist'] = ''
+                del editor.ModelComponentList[comp.name]['boneobjlist'][selbone.name]['s_or_e1']
             Update_Editor_Views(editor)
 
         def ShowBones(m, self=self, editor=editor, view=view):
@@ -4473,7 +4558,7 @@ class LinBoneCenterHandle(LinearBoneHandle):
 
         from qbaseeditor import currentview
         undomsg = "bone center handle move"
-        # This call handles a normal editor selected vertexes drag.
+        # This stops the LinBoneCornerHandle from using this section.
         if isinstance(self, LinBoneCenterHandle):
             newobject = []
             for i in range(len(oldobjectslist)):
@@ -4506,7 +4591,6 @@ class LinBoneCenterHandle(LinearBoneHandle):
 
 
     def centerdrag(self, v1, v2, flags, view): # for LinBoneCenterHandle
-        self.handle = self
         p0 = view.proj(self.pos)
         if not p0.visible: return
         if flags&MB_CTRL:
@@ -4534,7 +4618,7 @@ class LinBoneCenterHandle(LinearBoneHandle):
             s = "was " + ftoss(self.pos.y) + " " + ftoss(self.pos.z) + " now " + ftoss(self.pos.y+delta.y) + " " + ftoss(self.pos.z+delta.z)
         else:
             s = "was %s"%self.pos + " now " + ftoss(self.pos.x+delta.x) + " " + ftoss(self.pos.y+delta.y) + " " + ftoss(self.pos.z+delta.z)
-        self.draghint = s
+        self.draghint = s # If we get all the rotation hints to work for the YZ view below these "s" lines can be deleted.
 
         newbones_start = []
         newbones_end = []
@@ -4582,81 +4666,56 @@ class LinBoneCenterHandle(LinearBoneHandle):
                         p2 = view.proj(quarkx.vect(compbone.dictspec['end_point']))
                         cv.penstyle = PS_INSIDEFRAME
                         cv.brushstyle = BS_CLEAR
-                        cv.pencolor = MapColor("BoneLines", SS_MODEL)
-                        cv.line(int(p1.x), int(p1.y-1.25*scale), int(p2.x), int(p2.y)) # Top line
-                        cv.line(int(p1.x+1.25*scale), int(p1.y), int(p2.x), int(p2.y)) # Right line
-                        cv.line(int(p1.x), int(p1.y+1.25*scale), int(p2.x), int(p2.y)) # Bottem line
-                        cv.line(int(p1.x-1.25*scale), int(p1.y), int(p2.x), int(p2.y)) # Left line
+                        DrawBoneLine(p1, p2, cv, MapColor("BoneLines", SS_MODEL), scale)
                         cv.penstyle = PS_INSIDEFRAME
                         cv.brushstyle = BS_CLEAR
                         startcolor = compbone.dictspec['start_color']
                         quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
-                        cv.pencolor = MapColor("start_color", SS_MODEL)
-                        cv.ellipse(int(p1.x-1.25*scale), int(p1.y-1.25*scale), int(p1.x+1.25*scale), int(p1.y+1.25*scale)) # Start of bone circle
-                        cv.ellipse(int(p1.x-1.25*scale), int(p1.y-.05*scale), int(p1.x+1.25*scale), int(p1.y+.05*scale)) # Start of bone x line
-                        cv.ellipse(int(p1.x-.05*scale), int(p1.y-1.25*scale), int(p1.x+.05*scale), int(p1.y+1.25*scale)) # Start of bone y line
+                        DrawBoneHandle(p1, cv, MapColor("start_color", SS_MODEL), scale)
 
                         endcolor = compbone.dictspec['end_color']
                         quarkx.setupsubset(SS_MODEL, "Colors")["end_color"] = endcolor
-                        cv.pencolor = MapColor("end_color", SS_MODEL)
-                        cv.ellipse(int(p2.x-1.25*scale), int(p2.y-1.25*scale), int(p2.x+1.25*scale), int(p2.y+1.25*scale)) # End of bone circle
-                        cv.ellipse(int(p2.x-1.25*scale), int(p2.y-.05*scale), int(p2.x+1.25*scale), int(p2.y+.05*scale)) # End of bone x line
-                        cv.ellipse(int(p2.x-.05*scale), int(p2.y-1.25*scale), int(p2.x+.05*scale), int(p2.y+1.25*scale)) # End of bone y line
+                        DrawBoneHandle(p2, cv, MapColor("end_color", SS_MODEL), scale)
                     # Now draws the bone being dragged.
-                    for bone in range(len(newbones_end)):
-                        p = view.proj(quarkx.vect(newbones_end[bone].dictspec['end_point']))
-                        p2 = view.proj(quarkx.vect(newbones_end[bone].dictspec['start_point']))
+                    for bone in range(len(self.oldbones_end)):
+                        p1 = view.proj(quarkx.vect(newbones_end[bone].dictspec['start_point']))
+                        p2 = view.proj(quarkx.vect(newbones_end[bone].dictspec['end_point']))
                         cv.penstyle = PS_INSIDEFRAME
                         cv.brushstyle = BS_CLEAR
                         if quarkx.setupsubset(SS_MODEL, "Options")['MBLines_Color'] is not None:
                             endcolor = newbones_end[bone].dictspec['end_color']
                             quarkx.setupsubset(SS_MODEL, "Colors")["end_color"] = endcolor
-                            cv.pencolor = MapColor("end_color", SS_MODEL)
+                            endcolor = MapColor("end_color", SS_MODEL)
                         else:
-                            cv.pencolor = MapColor("BoneHandles", SS_MODEL)
-                        cv.line(int(p2.x), int(p2.y-1.25*scale), int(p.x), int(p.y)) # Top line
-                        cv.line(int(p2.x+1.25*scale), int(p2.y), int(p.x), int(p.y)) # Right line
-                        cv.line(int(p2.x), int(p2.y+1.25*scale), int(p.x), int(p.y)) # Bottem line
-                        cv.line(int(p2.x-1.25*scale), int(p2.y), int(p.x), int(p.y)) # Left line
+                            endcolor = MapColor("BoneHandles", SS_MODEL)
+                        DrawBoneLine(p1, p2, cv, endcolor, scale)
                         cv.penstyle = PS_INSIDEFRAME
                         cv.brushstyle = BS_CLEAR
                         startcolor = newbones_end[bone].dictspec['start_color']
                         quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
-                        cv.pencolor = MapColor("start_color", SS_MODEL)
-                        cv.ellipse(int(p2.x-1.25*scale), int(p2.y-1.25*scale), int(p2.x+1.25*scale), int(p2.y+1.25*scale)) # End of bone circle
-                        cv.ellipse(int(p2.x-1.25*scale), int(p2.y-.05*scale), int(p2.x+1.25*scale), int(p2.y+.05*scale)) # End of bone x line
-                        cv.ellipse(int(p2.x-.05*scale), int(p2.y-1.25*scale), int(p2.x+.05*scale), int(p2.y+1.25*scale)) # End of bone y line
+                        DrawBoneHandle(p1, cv, MapColor("start_color", SS_MODEL), scale)
                     for bone in range(len(newbones_start)):
-                        p = view.proj(quarkx.vect(newbones_start[bone].dictspec['start_point']))
+                        p1 = view.proj(quarkx.vect(newbones_start[bone].dictspec['start_point']))
                         p2 = view.proj(quarkx.vect(newbones_start[bone].dictspec['end_point']))
                         cv.penstyle = PS_INSIDEFRAME
                         cv.brushstyle = BS_CLEAR
                         if quarkx.setupsubset(SS_MODEL, "Options")['MBLines_Color'] is not None:
                             startcolor = self.bone.dictspec['start_color']
                             quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
-                            cv.pencolor = MapColor("start_color", SS_MODEL)
+                            startcolor = MapColor("start_color", SS_MODEL)
                         else:
-                            cv.pencolor = MapColor("BoneHandles", SS_MODEL)
-                        cv.line(int(p.x), int(p.y-1.25*scale), int(p2.x), int(p2.y)) # Top line
-                        cv.line(int(p.x+1.25*scale), int(p.y), int(p2.x), int(p2.y)) # Right line
-                        cv.line(int(p.x), int(p.y+1.25*scale), int(p2.x), int(p2.y)) # Bottem line
-                        cv.line(int(p.x-1.25*scale), int(p.y), int(p2.x), int(p2.y)) # Left line
+                            startcolor = MapColor("BoneHandles", SS_MODEL)
+                        DrawBoneLine(p1, p2, cv, startcolor, scale)
                         cv.penstyle = PS_INSIDEFRAME
                         cv.brushstyle = BS_CLEAR
                         startcolor = self.bone.dictspec['start_color']
                         quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
-                        cv.pencolor = MapColor("start_color", SS_MODEL)
-                        cv.ellipse(int(p.x-1.25*scale), int(p.y-1.25*scale), int(p.x+1.25*scale), int(p.y+1.25*scale)) # Start of bone circle
-                        cv.ellipse(int(p.x-1.25*scale), int(p.y-.05*scale), int(p.x+1.25*scale), int(p.y+.05*scale)) # Start of bone x line
-                        cv.ellipse(int(p.x-.05*scale), int(p.y-1.25*scale), int(p.x+.05*scale), int(p.y+1.25*scale)) # Start of bone y line
+                        DrawBoneHandle(p1, cv, MapColor("start_color", SS_MODEL), scale)
                         cv.penstyle = PS_INSIDEFRAME
                         cv.brushstyle = BS_CLEAR
                         endcolor = self.bone.dictspec['end_color']
                         quarkx.setupsubset(SS_MODEL, "Colors")["end_color"] = endcolor
-                        cv.pencolor = MapColor("end_color", SS_MODEL)
-                        cv.ellipse(int(p2.x-1.25*scale), int(p2.y-1.25*scale), int(p2.x+1.25*scale), int(p2.y+1.25*scale)) # End of bone circle
-                        cv.ellipse(int(p2.x-1.25*scale), int(p2.y-.05*scale), int(p2.x+1.25*scale), int(p2.y+.05*scale)) # End of bone x line
-                        cv.ellipse(int(p2.x-.05*scale), int(p2.y-1.25*scale), int(p2.x+.05*scale), int(p2.y+1.25*scale)) # End of bone y line
+                        DrawBoneHandle(p2, cv, MapColor("end_color", SS_MODEL), scale)
                 else:
                     pass
             else: # Handles the "End of Bone".
@@ -4698,81 +4757,63 @@ class LinBoneCenterHandle(LinearBoneHandle):
                         cv.penstyle = PS_INSIDEFRAME
                         cv.brushstyle = BS_CLEAR
                         cv.pencolor = MapColor("BoneLines", SS_MODEL)
-                        cv.line(int(p1.x), int(p1.y-1.25*scale), int(p2.x), int(p2.y)) # Top line
-                        cv.line(int(p1.x+1.25*scale), int(p1.y), int(p2.x), int(p2.y)) # Right line
-                        cv.line(int(p1.x), int(p1.y+1.25*scale), int(p2.x), int(p2.y)) # Bottem line
-                        cv.line(int(p1.x-1.25*scale), int(p1.y), int(p2.x), int(p2.y)) # Left line
+                        DrawBoneLine(p1, p2, cv, MapColor("BoneLines", SS_MODEL), scale)
                         cv.penstyle = PS_INSIDEFRAME
                         cv.brushstyle = BS_CLEAR
                         startcolor = compbone.dictspec['start_color']
                         quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
-                        cv.pencolor = MapColor("start_color", SS_MODEL)
-                        cv.ellipse(int(p1.x-1.25*scale), int(p1.y-1.25*scale), int(p1.x+1.25*scale), int(p1.y+1.25*scale)) # Start of bone circle
-                        cv.ellipse(int(p1.x-1.25*scale), int(p1.y-.05*scale), int(p1.x+1.25*scale), int(p1.y+.05*scale)) # Start of bone x line
-                        cv.ellipse(int(p1.x-.05*scale), int(p1.y-1.25*scale), int(p1.x+.05*scale), int(p1.y+1.25*scale)) # Start of bone y line
+                        DrawBoneHandle(p1, cv, MapColor("start_color", SS_MODEL), scale)
 
                         endcolor = compbone.dictspec['end_color']
                         quarkx.setupsubset(SS_MODEL, "Colors")["end_color"] = endcolor
-                        cv.pencolor = MapColor("end_color", SS_MODEL)
-                        cv.ellipse(int(p2.x-1.25*scale), int(p2.y-1.25*scale), int(p2.x+1.25*scale), int(p2.y+1.25*scale)) # End of bone circle
-                        cv.ellipse(int(p2.x-1.25*scale), int(p2.y-.05*scale), int(p2.x+1.25*scale), int(p2.y+.05*scale)) # End of bone x line
-                        cv.ellipse(int(p2.x-.05*scale), int(p2.y-1.25*scale), int(p2.x+.05*scale), int(p2.y+1.25*scale)) # End of bone y line
+                        DrawBoneHandle(p2, cv, MapColor("end_color", SS_MODEL), scale)
                     # Now draws the bone being dragged.
-                    for bone in range(len(newbones_end)):
-                        p = view.proj(quarkx.vect(newbones_end[bone].dictspec['end_point']))
-                        p2 = view.proj(quarkx.vect(newbones_end[bone].dictspec['start_point']))
+                    for bone in range(len(self.oldbones_end)):
+                        p1 = view.proj(quarkx.vect(newbones_end[bone].dictspec['start_point']))
+                        p2 = view.proj(quarkx.vect(newbones_end[bone].dictspec['end_point']))
                         cv.penstyle = PS_INSIDEFRAME
                         cv.brushstyle = BS_CLEAR
                         if quarkx.setupsubset(SS_MODEL, "Options")['MBLines_Color'] is not None:
-                            endcolor = newbones_end[bone].dictspec['end_color']
+                            endcolor = self.bone.dictspec['end_color']
                             quarkx.setupsubset(SS_MODEL, "Colors")["end_color"] = endcolor
-                            cv.pencolor = MapColor("end_color", SS_MODEL)
+                            endcolor = MapColor("end_color", SS_MODEL)
                         else:
-                            cv.pencolor = MapColor("BoneHandles", SS_MODEL)
-                        cv.line(int(p2.x), int(p2.y-1.25*scale), int(p.x), int(p.y)) # Top line
-                        cv.line(int(p2.x+1.25*scale), int(p2.y), int(p.x), int(p.y)) # Right line
-                        cv.line(int(p2.x), int(p2.y+1.25*scale), int(p.x), int(p.y)) # Bottem line
-                        cv.line(int(p2.x-1.25*scale), int(p2.y), int(p.x), int(p.y)) # Left line
+                            endcolor = MapColor("BoneHandles", SS_MODEL)
+                        DrawBoneLine(p1, p2, cv, endcolor, scale)
                         cv.penstyle = PS_INSIDEFRAME
                         cv.brushstyle = BS_CLEAR
-                        endcolor = newbones_end[bone].dictspec['end_color']
+                        endcolor = self.bone.dictspec['end_color']
                         quarkx.setupsubset(SS_MODEL, "Colors")["end_color"] = endcolor
-                        cv.pencolor = MapColor("end_color", SS_MODEL)
-                        cv.ellipse(int(p.x-1.25*scale), int(p.y-1.25*scale), int(p.x+1.25*scale), int(p.y+1.25*scale)) # Start of bone circle
-                        cv.ellipse(int(p.x-1.25*scale), int(p.y-.05*scale), int(p.x+1.25*scale), int(p.y+.05*scale)) # Start of bone x line
-                        cv.ellipse(int(p.x-.05*scale), int(p.y-1.25*scale), int(p.x+.05*scale), int(p.y+1.25*scale)) # Start of bone y line
+                        DrawBoneHandle(p2, cv, MapColor("end_color", SS_MODEL), scale)
                         cv.penstyle = PS_INSIDEFRAME
                         cv.brushstyle = BS_CLEAR
-                        startcolor = newbones_end[bone].dictspec['start_color']
+                        startcolor = self.bone.dictspec['end_color']
+                        if self.oldbones_end[bone].name == self.bone.name:
+                            startcolor = self.bone.dictspec['start_color']
+                        if self.groupselection == 0:
+                            startcolor = newbones_end[bone].dictspec['start_color']
                         quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
-                        cv.pencolor = MapColor("start_color", SS_MODEL)
-                        cv.ellipse(int(p2.x-1.25*scale), int(p2.y-1.25*scale), int(p2.x+1.25*scale), int(p2.y+1.25*scale)) # End of bone circle
-                        cv.ellipse(int(p2.x-1.25*scale), int(p2.y-.05*scale), int(p2.x+1.25*scale), int(p2.y+.05*scale)) # End of bone x line
-                        cv.ellipse(int(p2.x-.05*scale), int(p2.y-1.25*scale), int(p2.x+.05*scale), int(p2.y+1.25*scale)) # End of bone y line
+                        DrawBoneHandle(p1, cv, MapColor("start_color", SS_MODEL), scale)
                     for bone in range(len(newbones_start)):
-                        p = view.proj(quarkx.vect(newbones_start[bone].dictspec['start_point']))
+                        p1 = view.proj(quarkx.vect(newbones_start[bone].dictspec['start_point']))
                         p2 = view.proj(quarkx.vect(newbones_start[bone].dictspec['end_point']))
                         cv.penstyle = PS_INSIDEFRAME
                         cv.brushstyle = BS_CLEAR
                         if quarkx.setupsubset(SS_MODEL, "Options")['MBLines_Color'] is not None:
                             startcolor = newbones_start[bone].dictspec['start_color']
                             quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
-                            cv.pencolor = MapColor("start_color", SS_MODEL)
+                            startcolor = MapColor("start_color", SS_MODEL)
                         else:
-                            cv.pencolor = MapColor("BoneHandles", SS_MODEL)
-                        cv.line(int(p.x), int(p.y-1.25*scale), int(p2.x), int(p2.y)) # Top line
-                        cv.line(int(p.x+1.25*scale), int(p.y), int(p2.x), int(p2.y)) # Right line
-                        cv.line(int(p.x), int(p.y+1.25*scale), int(p2.x), int(p2.y)) # Bottem line
-                        cv.line(int(p.x-1.25*scale), int(p.y), int(p2.x), int(p2.y)) # Left line
+                            startcolor = MapColor("BoneHandles", SS_MODEL)
+                        DrawBoneLine(p1, p2, cv, startcolor, scale)
                         cv.penstyle = PS_INSIDEFRAME
                         cv.brushstyle = BS_CLEAR
                         cv.pencolor = MapColor("BoneLines", SS_MODEL)
-                        endcolor = newbones_start[bone].dictspec['end_color']
+                        endcolor = self.bone.dictspec['end_color']
+                        if self.groupselection == 0:
+                            endcolor = newbones_start[bone].dictspec['end_color']
                         quarkx.setupsubset(SS_MODEL, "Colors")["end_color"] = endcolor
-                        cv.pencolor = MapColor("end_color", SS_MODEL)
-                        cv.ellipse(int(p2.x-1.25*scale), int(p2.y-1.25*scale), int(p2.x+1.25*scale), int(p2.y+1.25*scale)) # End of bone circle
-                        cv.ellipse(int(p2.x-1.25*scale), int(p2.y-.05*scale), int(p2.x+1.25*scale), int(p2.y+.05*scale)) # End of bone x line
-                        cv.ellipse(int(p2.x-.05*scale), int(p2.y-1.25*scale), int(p2.x+.05*scale), int(p2.y+1.25*scale)) # End of bone y line
+                        DrawBoneHandle(p2, cv, MapColor("end_color", SS_MODEL), scale)
                 else:
                     pass
         if (self.s_or_e == 0): # Handles the "Start of Bone".
@@ -4787,7 +4828,7 @@ class LinBoneCenterHandle(LinearBoneHandle):
 class LinBoneCornerHandle(LinearBoneHandle):
     "Linear Circle: handles at the corners for rotating."
 
-    def __init__(self, center, pos1, mgr, bone, realpoint=None):
+    def __init__(self, center, pos1, mgr, bone, s_or_e, realpoint=None):
         LinearBoneHandle.__init__(self, pos1, mgr)
         if realpoint is None:
             self.pos0 = pos1
@@ -4799,6 +4840,7 @@ class LinBoneCornerHandle(LinearBoneHandle):
         self.editor = mgr.editor
         self.component = self.editor.Root.currentcomponent
         self.bone = bone
+        self.s_or_e = s_or_e
 
     # Only draws all of the LinBoneCornerHandle handles even during a drag, which we stop it from doing below.
     def draw(self, view, cv, draghandle=None): # for LinBoneCornerHandle
@@ -4839,42 +4881,9 @@ class LinBoneCornerHandle(LinearBoneHandle):
             cv.reset()
             cv.brushcolor = MapColor("LinearHandleCorners", SS_MODEL)
             cv.pencolor = MapColor("LinearHandleOutline", SS_MODEL)
-            cv.polygon([(int(p.x)-3,int(p.y)), (int(p.x),int(p.y)-3), (int(p.x)+3,int(p.y)), (int(p.x),int(p.y)+3)])
+            cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
 
-    def linoperation(self, list, delta, g1, view): # for LinBoneCornerHandle, draws its drag lines, vertex polys and causes the polys to move.
-        def FindVertexPos(self, editor, vtxnr, framevtxs):
-            for bone in range(len(self.newbones_start)):
-                if self.newbones_start[bone] != self.bone:
-                    if editor.ModelComponentList[self.component.name]['boneobjlist'].has_key(self.newbones_start[bone].name):
-                        if editor.ModelComponentList[self.component.name]['boneobjlist'][self.newbones_start[bone].name].has_key('s_or_e0'):
-                            if editor.ModelComponentList[self.component.name]['boneobjlist'][self.newbones_start[bone].name]['s_or_e0'] != []:
-                                boneobjs = editor.ModelComponentList[self.component.name]['boneobjlist'][self.newbones_start[bone].name]['s_or_e0']
-                                if vtxnr in boneobjs['selvtxlist']:
-                                    projvtx = framevtxs[vtxnr]+(quarkx.vect(self.newbones_start[bone]['start_point'])-quarkx.vect(self.oldbones_start[bone]['start_point']))
-                                    return projvtx
-                        if editor.ModelComponentList[self.component.name]['boneobjlist'][self.newbones_start[bone].name].has_key('s_or_e1'):
-                            if editor.ModelComponentList[self.component.name]['boneobjlist'][self.newbones_start[bone].name]['s_or_e1'] != []:
-                                boneobjs = editor.ModelComponentList[self.component.name]['boneobjlist'][self.newbones_start[bone].name]['s_or_e1']
-                                if vtxnr in boneobjs['selvtxlist']:
-                                    projvtx = framevtxs[vtxnr]+(quarkx.vect(self.newbones_start[bone]['end_point'])-quarkx.vect(self.oldbones_start[bone]['end_point']))
-                                    return projvtx
-            for bone in range(len(self.newbones_end)):
-                if self.newbones_end[bone] != self.bone:
-                    if editor.ModelComponentList[self.component.name]['boneobjlist'].has_key(self.newbones_end[bone].name):
-                        if editor.ModelComponentList[self.component.name]['boneobjlist'][self.newbones_end[bone].name].has_key('s_or_e0'):
-                            if editor.ModelComponentList[self.component.name]['boneobjlist'][self.newbones_end[bone].name]['s_or_e0'] != []:
-                                boneobjs = editor.ModelComponentList[self.component.name]['boneobjlist'][self.newbones_end[bone].name]['s_or_e0']
-                                if vtxnr in boneobjs['selvtxlist']:
-                                    projvtx = framevtxs[vtxnr]+(quarkx.vect(self.newbones_end[bone]['start_point'])-quarkx.vect(self.oldbones_end[bone]['start_point']))
-                                    return projvtx
-                        if editor.ModelComponentList[self.component.name]['boneobjlist'][self.newbones_end[bone].name].has_key('s_or_e1'):
-                            if editor.ModelComponentList[self.component.name]['boneobjlist'][self.newbones_end[bone].name]['s_or_e1'] != []:
-                                boneobjs = editor.ModelComponentList[self.component.name]['boneobjlist'][self.newbones_end[bone].name]['s_or_e1']
-                                if vtxnr in boneobjs['selvtxlist']:
-                                    projvtx = framevtxs[vtxnr]+(quarkx.vect(self.newbones_end[bone]['end_point'])-quarkx.vect(self.oldbones_end[bone]['end_point']))
-                                    return projvtx
-            return framevtxs[vtxnr]
-
+    def linoperation(self, list, delta, g1, view): # for LinBoneCornerHandle, causes the vertex polys to move then draws its drag lines and vertex polys last.
         from qbaseeditor import flagsmouse
         editor = self.mgr.editor
         mdleditor.setsingleframefillcolor(editor, view)
@@ -4886,38 +4895,74 @@ class LinBoneCornerHandle(LinearBoneHandle):
             if editor.lock_z==1:
                 delta = quarkx.vect(delta.x, delta.y, 0)
 
-        cv = view.canvas()
-        cv.pencolor = MapColor("BoneHandles", SS_MODEL)
-        comp = self.mgr.editor.Root.currentcomponent
-        framevtxs = comp.currentframe.vertices
         if quarkx.setupsubset(SS_MODEL, "Options")['NVDL'] is None: # NVDL = no vertex drag lines.
-            for tri in self.mgr.tristodrawlist:
-                dragprojvtx = view.proj(FindVertexPos(self, editor, tri[0], framevtxs))
-                for vtx in range(len(tri[4])):
-                    if tri[4][vtx][0] == tri[0]:
-                        continue
-                    else:
-                        projvtx = view.proj(FindVertexPos(self, editor, tri[4][vtx][0], framevtxs))
-                        cv.line(int(dragprojvtx.tuple[0]), int(dragprojvtx.tuple[1]), int(projvtx.tuple[0]), int(projvtx.tuple[1]))
+            comp = self.mgr.editor.Root.currentcomponent
+            framevtxs = comp.currentframe.vertices
 
+        newobjlist = []
         for obj in list: # Draws the models triangles or vertexes, that are being dragged, correctly during a drag in all views.
             if obj.name.endswith(":g"):
                 for bone in range(len(self.newbones_start)):
                     if editor.ModelComponentList[self.component.name]['boneobjlist'].has_key(self.newbones_start[bone].name):
                         if editor.ModelComponentList[self.component.name]['boneobjlist'][self.newbones_start[bone].name].has_key('s_or_e0') and obj.shortname == self.newbones_start[bone].shortname + "_0":
-                            handlepos = quarkx.vect(self.newbones_start[bone]['start_point']) - quarkx.vect(self.oldbones_start[bone]['start_point'])
+                            oldpos = quarkx.vect(self.oldbones_start[bone]['start_point'])
+                            newpos = quarkx.vect(self.newbones_start[bone]['start_point'])
+                            oldposother = quarkx.vect(self.oldbones_start[bone]['end_point'])
+                            newposother = quarkx.vect(self.newbones_start[bone]['end_point'])
+                            break
                         if editor.ModelComponentList[self.component.name]['boneobjlist'][self.newbones_start[bone].name].has_key('s_or_e1') and obj.shortname == self.newbones_start[bone].shortname + "_1":
-                            handlepos = quarkx.vect(self.newbones_start[bone]['end_point']) - quarkx.vect(self.oldbones_start[bone]['end_point'])
+                            oldpos = quarkx.vect(self.oldbones_start[bone]['end_point'])
+                            newpos = quarkx.vect(self.newbones_start[bone]['end_point'])
+                            oldposother = quarkx.vect(self.oldbones_start[bone]['start_point'])
+                            newposother = quarkx.vect(self.newbones_start[bone]['start_point'])
+                            break
                 for bone in range(len(self.newbones_end)):
                     if editor.ModelComponentList[self.component.name]['boneobjlist'].has_key(self.newbones_end[bone].name):
                         if editor.ModelComponentList[self.component.name]['boneobjlist'][self.newbones_end[bone].name].has_key('s_or_e0') and obj.shortname == self.newbones_end[bone].shortname + "_0":
-                            handlepos = quarkx.vect(self.newbones_end[bone]['start_point']) - quarkx.vect(self.oldbones_end[bone]['start_point'])
+                            oldpos = quarkx.vect(self.oldbones_end[bone]['start_point'])
+                            newpos = quarkx.vect(self.newbones_end[bone]['start_point'])
+                            oldposother = quarkx.vect(self.oldbones_end[bone]['end_point'])
+                            newposother = quarkx.vect(self.newbones_end[bone]['end_point'])
+                            break
                         if editor.ModelComponentList[self.component.name]['boneobjlist'][self.newbones_end[bone].name].has_key('s_or_e1') and obj.shortname == self.newbones_end[bone].shortname + "_1":
-                            handlepos = quarkx.vect(self.newbones_end[bone]['end_point']) - quarkx.vect(self.oldbones_end[bone]['end_point'])
+                            oldpos = quarkx.vect(self.oldbones_end[bone]['end_point'])
+                            newpos = quarkx.vect(self.newbones_end[bone]['end_point'])
+                            oldposother = quarkx.vect(self.oldbones_end[bone]['start_point'])
+                            newposother = quarkx.vect(self.newbones_end[bone]['start_point'])
+                            break
 
-                obj.translate(handlepos)
-                dragcolor = vertexsellistcolor
+                oldvector = oldpos - oldposother
+                newvector = newpos - newposother
+                obj.translate(-oldposother)
+                m = qhandles.UserRotationMatrix((oldvector^newvector).normalized, newvector, oldvector, 0)
+                if m is not None:
+                    obj.linear(quarkx.vect(0, 0, 0), m)
+                obj.translate(newposother)
+                if quarkx.setupsubset(SS_MODEL, "Options")['NVDL'] is None: # NVDL = no vertex drag lines.
+                    newobjlist = newobjlist + [obj]
+
+                if quarkx.setupsubset(SS_MODEL, "Options")['NVDL'] is None: # NVDL = no vertex drag lines.
+                    for poly in obj.subitems:
+                        box = quarkx.boundingboxof([poly])
+                        box = (box[0] + box[1]) * .5
+                        framevtxs[int(poly.shortname)] = box
+
+        if quarkx.setupsubset(SS_MODEL, "Options")['NVDL'] is None: # NVDL = no vertex drag lines.
+            cv = view.canvas()
+            cv.pencolor = MapColor("BoneHandles", SS_MODEL)
+            for tri in self.mgr.tristodrawlist:
+                dragprojvtx = view.proj(framevtxs[tri[0]])
+                for vtx in range(len(tri[4])):
+                    if tri[4][vtx][0] == tri[0]:
+                        continue
+                    else:
+                        projvtx = view.proj(framevtxs[tri[4][vtx][0]])
+                    cv.line(int(dragprojvtx.tuple[0]), int(dragprojvtx.tuple[1]), int(projvtx.tuple[0]), int(projvtx.tuple[1]))
+
+            dragcolor = vertexsellistcolor
+            for obj in newobjlist:
                 view.drawmap(obj, DM_OTHERCOLOR, dragcolor)
+
         return delta
 
     def ok(self, editor, undo, oldobjectslist, newobjectslist): # for LinBoneCornerHandle
@@ -4957,7 +5002,6 @@ class LinBoneCornerHandle(LinearBoneHandle):
 
 
     def cornerdrag(self, v1, v2, flags, view): # for LinBoneCornerHandle
-        self.handle = self
         p0 = view.proj(self.pos)
         if not p0.visible: return
         if flags&MB_CTRL:
@@ -5000,32 +5044,16 @@ class LinBoneCornerHandle(LinearBoneHandle):
             view.repaint()
             cv = view.canvas()
             cv.penwidth = 1
-            if (self.s_or_e == 0): # Handles the "Start of Bone".
+            if self.s_or_e == 0: # Handles the "Start of Bone".
                 if self.groupselection == 0: # Single bone selection.
-                    # Does the rotation by changing the delta so the length of the bone doesn't get changed.
+                    # Does movement of the handles and rotation of their assigned vertexes, if any.
                     startpoint = quarkx.vect(self.bone.dictspec['start_point'])
                     endpoint = quarkx.vect(self.bone.dictspec['end_point'])
-                    bone_length = quarkx.vect(self.bone["bone_length"])
-                    bonelength = sqrt(pow(bone_length.x, 2) + pow(bone_length.y, 2) + pow(bone_length.z, 2))
-                    delta = mdlutils.ProjectKeepingLength(startpoint, endpoint + delta, bonelength) - endpoint
-                    for bone in range(len(self.oldbones_end)):
-                        startpoint = delta + quarkx.vect(self.oldbones_end[bone].dictspec['start_point'])
-                        self.newbones_end[bone]['start_point'] = startpoint.tuple
-                    for bone in range(len(self.oldbones_start)):
-                        endpoint = delta + quarkx.vect(self.oldbones_start[bone].dictspec['end_point'])
-                        self.newbones_start[bone]['end_point'] = endpoint.tuple
-                else: # Bone group selection.
-                    # Does the rotation by changing the delta so the length of the bone doesn't get changed.
-                    startpoint = quarkx.vect(self.bone.dictspec['start_point'])
-                    endpoint = quarkx.vect(self.bone.dictspec['end_point'])
-                    bone_length = quarkx.vect(self.bone["bone_length"])
-                    bonelength = sqrt(pow(bone_length.x, 2) + pow(bone_length.y, 2) + pow(bone_length.z, 2))
-                    delta = mdlutils.ProjectKeepingLength(startpoint, endpoint + delta, bonelength) - endpoint
-
                     orgstartpoint = startpoint
                     orgendpoint = endpoint
-                    change1 = orgendpoint - orgstartpoint
-                    change2 = (orgendpoint + delta) - orgstartpoint
+                    rotationorigin = orgstartpoint
+                    change1 = self.pos - rotationorigin
+                    change2 = (self.pos + delta) - rotationorigin
                     if view.info['type'] == "XY":
                         change1 = quarkx.vect(change1.x, change1.y, 0)
                         change2 = quarkx.vect(change2.x, change2.y, 0)
@@ -5037,34 +5065,78 @@ class LinBoneCornerHandle(LinearBoneHandle):
                         change2 = quarkx.vect(0, change2.y, change2.z)
                     changeaxis = change1 ^ change2   # Cross product
                     m = qhandles.UserRotationMatrix(changeaxis.normalized, change2, change1, 0)
-                    try:
-                        self.draghint = "rotate %d deg." % (math.acos(m[0,0])*180.0/math.pi)
-                    except:
-                        self.draghint = "rotate %d deg." % (0)
-                    changedradius = 0 # This corrects any radius-changes.
+                    if m is None:
+                        m = quarkx.matrix(quarkx.vect(1, 0, 0), quarkx.vect(0, 1, 0), quarkx.vect(0, 0, 1))
+                    self.draghint = "rotate %d deg." % (math.acos(m[0,0])*180.0/math.pi)
+                    # Use this if the radius should also be changed:
+                    #changedradius = sqrt(pow(change2.x, 2) + pow(change2.y, 2) + pow(change2.z, 2)) - sqrt(pow(change1.x, 2) + pow(change1.y, 2) + pow(change1.z, 2))
+                    changedradius = 0
                     for bone in range(len(self.oldbones_start)):
-                        if bone == 0:
-                            endpoint = delta + quarkx.vect(self.oldbones_start[bone].dictspec['end_point'])
-                            self.newbones_start[bone]['end_point'] = endpoint.tuple
-                        else:
-                            startpoint = quarkx.vect(self.oldbones_start[bone].dictspec['start_point'])
-                            endpoint = quarkx.vect(self.oldbones_start[bone].dictspec['end_point'])
-                            if mdlutils.checktuplepos(startpoint.tuple, orgendpoint.tuple):
-                                startpoint = startpoint + delta
-                            else:
-                                if m is not None:
-                                    change1 = (startpoint - orgstartpoint)
-                                    newchange1 = m * change1
-                                    startpoint = startpoint + (newchange1 - change1) + newchange1.normalized * changedradius
-                            if mdlutils.checktuplepos(endpoint.tuple, orgendpoint.tuple):
-                                endpoint = endpoint + delta
-                            else:
-                                if m is not None:
-                                    change2 = (endpoint - orgstartpoint)
-                                    newchange2 = m * change2
-                                    endpoint = endpoint + (newchange2 - change2) + newchange2.normalized * changedradius
-                            self.newbones_start[bone]['start_point'] = startpoint.tuple
-                            self.newbones_start[bone]['end_point'] = endpoint.tuple
+                        endpoint = quarkx.vect(self.oldbones_start[bone].dictspec['end_point'])
+                        change2 = (endpoint - rotationorigin)
+                        newchange2 = m * change2
+                        endpoint = endpoint + (newchange2 - change2) + newchange2.normalized * changedradius
+                        self.newbones_start[bone]['end_point'] = endpoint.tuple
+                    for bone in range(len(self.oldbones_end)):
+                        startpoint = quarkx.vect(self.oldbones_end[bone].dictspec['start_point'])
+                        change1 = (startpoint - rotationorigin)
+                        newchange1 = m * change1
+                        startpoint = startpoint + (newchange1 - change1) + newchange1.normalized * changedradius
+                        self.newbones_end[bone]['start_point'] = startpoint.tuple
+                        if self.oldbones_end[bone].dictspec.has_key('start_vtxlist'):
+                            endpoint = quarkx.vect(self.oldbones_end[bone].dictspec['end_point'])
+                            change2 = (endpoint - rotationorigin)
+                            newchange2 = m * change2
+                            endpoint = endpoint + (newchange2 - change2) + newchange2.normalized * changedradius
+                            self.newbones_end[bone]['end_point'] = endpoint.tuple
+                else: # Bone group selection.
+                    # Does movement of the handles and rotation of their assigned vertexes, if any.
+                    startpoint = quarkx.vect(self.bone.dictspec['start_point'])
+                    endpoint = quarkx.vect(self.bone.dictspec['end_point'])
+                    orgstartpoint = startpoint
+                    orgendpoint = endpoint
+                    rotationorigin = orgstartpoint
+                    change1 = self.pos - rotationorigin
+                    change2 = (self.pos + delta) - rotationorigin
+                    if view.info['type'] == "XY":
+                        change1 = quarkx.vect(change1.x, change1.y, 0)
+                        change2 = quarkx.vect(change2.x, change2.y, 0)
+                    elif view.info['type'] == "XZ":
+                        change1 = quarkx.vect(change1.x, 0, change1.z)
+                        change2 = quarkx.vect(change2.x, 0, change2.z)
+                    elif view.info['type'] == "YZ":
+                        change1 = quarkx.vect(0, change1.y, change1.z)
+                        change2 = quarkx.vect(0, change2.y, change2.z)
+                    changeaxis = change1 ^ change2   # Cross product
+                    m = qhandles.UserRotationMatrix(changeaxis.normalized, change2, change1, 0)
+                    if m is None:
+                        m = quarkx.matrix(quarkx.vect(1, 0, 0), quarkx.vect(0, 1, 0), quarkx.vect(0, 0, 1))
+                    self.draghint = "rotate %d deg." % (math.acos(m[0,0])*180.0/math.pi)
+                    # Use this if the radius should also be changed:
+                    #changedradius = sqrt(pow(change2.x, 2) + pow(change2.y, 2) + pow(change2.z, 2)) - sqrt(pow(change1.x, 2) + pow(change1.y, 2) + pow(change1.z, 2))
+                    changedradius = 0
+                    for bone in range(len(self.oldbones_start)):
+                        startpoint = quarkx.vect(self.oldbones_start[bone].dictspec['start_point'])
+                        endpoint = quarkx.vect(self.oldbones_start[bone].dictspec['end_point'])
+                        change1 = (startpoint - rotationorigin)
+                        newchange1 = m * change1
+                        startpoint = startpoint + (newchange1 - change1) + newchange1.normalized * changedradius
+                        change2 = (endpoint - rotationorigin)
+                        newchange2 = m * change2
+                        endpoint = endpoint + (newchange2 - change2) + newchange2.normalized * changedradius
+                        self.newbones_start[bone]['start_point'] = startpoint.tuple
+                        self.newbones_start[bone]['end_point'] = endpoint.tuple
+                    for bone in range(len(self.oldbones_end)):
+                        startpoint = quarkx.vect(self.oldbones_end[bone].dictspec['start_point'])
+                        endpoint = quarkx.vect(self.oldbones_end[bone].dictspec['end_point'])
+                        change1 = (startpoint - rotationorigin)
+                        newchange1 = m * change1
+                        startpoint = startpoint + (newchange1 - change1) + newchange1.normalized * changedradius
+                        change2 = (endpoint - rotationorigin)
+                        newchange2 = m * change2
+                        endpoint = endpoint + (newchange2 - change2) + newchange2.normalized * changedradius
+                        self.newbones_end[bone]['start_point'] = startpoint.tuple
+                        self.newbones_end[bone]['end_point'] = endpoint.tuple
 
                 if view.info['type'] != "3D":
                     scale = view.scale()
@@ -5074,129 +5146,77 @@ class LinBoneCornerHandle(LinearBoneHandle):
                         p2 = view.proj(quarkx.vect(compbone.dictspec['end_point']))
                         cv.penstyle = PS_INSIDEFRAME
                         cv.brushstyle = BS_CLEAR
-                        cv.pencolor = MapColor("BoneLines", SS_MODEL)
-                        cv.line(int(p1.x), int(p1.y-1.25*scale), int(p2.x), int(p2.y)) # Top line
-                        cv.line(int(p1.x+1.25*scale), int(p1.y), int(p2.x), int(p2.y)) # Right line
-                        cv.line(int(p1.x), int(p1.y+1.25*scale), int(p2.x), int(p2.y)) # Bottem line
-                        cv.line(int(p1.x-1.25*scale), int(p1.y), int(p2.x), int(p2.y)) # Left line
-                        cv.penstyle = PS_INSIDEFRAME
-                        cv.brushstyle = BS_CLEAR
+                        DrawBoneLine(p1, p2, cv, MapColor("BoneLines", SS_MODEL), scale)
                         startcolor = compbone.dictspec['start_color']
                         quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
-                        cv.pencolor = MapColor("start_color", SS_MODEL)
-                        cv.ellipse(int(p1.x-1.25*scale), int(p1.y-1.25*scale), int(p1.x+1.25*scale), int(p1.y+1.25*scale)) # Start of bone circle
-                        cv.ellipse(int(p1.x-1.25*scale), int(p1.y-.05*scale), int(p1.x+1.25*scale), int(p1.y+.05*scale)) # Start of bone x line
-                        cv.ellipse(int(p1.x-.05*scale), int(p1.y-1.25*scale), int(p1.x+.05*scale), int(p1.y+1.25*scale)) # Start of bone y line
-
+                        DrawBoneHandle(p1, cv, MapColor("start_color", SS_MODEL), scale)
                         endcolor = compbone.dictspec['end_color']
                         quarkx.setupsubset(SS_MODEL, "Colors")["end_color"] = endcolor
-                        cv.pencolor = MapColor("end_color", SS_MODEL)
-                        cv.ellipse(int(p2.x-1.25*scale), int(p2.y-1.25*scale), int(p2.x+1.25*scale), int(p2.y+1.25*scale)) # End of bone circle
-                        cv.ellipse(int(p2.x-1.25*scale), int(p2.y-.05*scale), int(p2.x+1.25*scale), int(p2.y+.05*scale)) # End of bone x line
-                        cv.ellipse(int(p2.x-.05*scale), int(p2.y-1.25*scale), int(p2.x+.05*scale), int(p2.y+1.25*scale)) # End of bone y line
+
+                        DrawBoneHandle(p2, cv, MapColor("end_color", SS_MODEL), scale)
                     # Now draws the bone being dragged.
-                    for bone in range(len(self.newbones_end)):
-                        p = view.proj(quarkx.vect(self.newbones_end[bone].dictspec['end_point']))
-                        p2 = view.proj(quarkx.vect(self.newbones_end[bone].dictspec['start_point']))
-                        cv.penstyle = PS_INSIDEFRAME
-                        cv.brushstyle = BS_CLEAR
-                        if quarkx.setupsubset(SS_MODEL, "Options")['MBLines_Color'] is not None:
-                            endcolor = self.newbones_end[bone].dictspec['end_color']
-                            quarkx.setupsubset(SS_MODEL, "Colors")["end_color"] = endcolor
-                            cv.pencolor = MapColor("end_color", SS_MODEL)
-                        else:
-                            cv.pencolor = MapColor("BoneHandles", SS_MODEL)
-                        cv.line(int(p2.x), int(p2.y-1.25*scale), int(p.x), int(p.y)) # Top line
-                        cv.line(int(p2.x+1.25*scale), int(p2.y), int(p.x), int(p.y)) # Right line
-                        cv.line(int(p2.x), int(p2.y+1.25*scale), int(p.x), int(p.y)) # Bottem line
-                        cv.line(int(p2.x-1.25*scale), int(p2.y), int(p.x), int(p.y)) # Left line
-                        cv.penstyle = PS_INSIDEFRAME
-                        cv.brushstyle = BS_CLEAR
-                        if self.groupselection == 0:
-                            endcolor = self.newbones_end[bone].dictspec['end_color']
-                            quarkx.setupsubset(SS_MODEL, "Colors")["end_color"] = endcolor
-                            cv.pencolor = MapColor("end_color", SS_MODEL)
-                            cv.ellipse(int(p.x-1.25*scale), int(p.y-1.25*scale), int(p.x+1.25*scale), int(p.y+1.25*scale)) # End of bone circle
-                            cv.ellipse(int(p.x-1.25*scale), int(p.y-.05*scale), int(p.x+1.25*scale), int(p.y+.05*scale)) # End of bone x line
-                            cv.ellipse(int(p.x-.05*scale), int(p.y-1.25*scale), int(p.x+.05*scale), int(p.y+1.25*scale)) # End of bone y line
-                        startcolor = self.newbones_end[bone].dictspec['start_color']
-                        quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
-                        cv.pencolor = MapColor("start_color", SS_MODEL)
-                        cv.ellipse(int(p2.x-1.25*scale), int(p2.y-1.25*scale), int(p2.x+1.25*scale), int(p2.y+1.25*scale)) # End of bone circle
-                        cv.ellipse(int(p2.x-1.25*scale), int(p2.y-.05*scale), int(p2.x+1.25*scale), int(p2.y+.05*scale)) # End of bone x line
-                        cv.ellipse(int(p2.x-.05*scale), int(p2.y-1.25*scale), int(p2.x+.05*scale), int(p2.y+1.25*scale)) # End of bone y line
                     for bone in range(len(self.newbones_start)):
-                        p = view.proj(quarkx.vect(self.newbones_start[bone].dictspec['start_point']))
+                        p1 = view.proj(quarkx.vect(self.newbones_start[bone].dictspec['start_point']))
                         p2 = view.proj(quarkx.vect(self.newbones_start[bone].dictspec['end_point']))
                         cv.penstyle = PS_INSIDEFRAME
                         cv.brushstyle = BS_CLEAR
                         if quarkx.setupsubset(SS_MODEL, "Options")['MBLines_Color'] is not None:
                             startcolor = self.bone.dictspec['start_color']
                             quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
-                            cv.pencolor = MapColor("start_color", SS_MODEL)
+                            startcolor = MapColor("start_color", SS_MODEL)
                         else:
-                            cv.pencolor = MapColor("BoneHandles", SS_MODEL)
-                        cv.line(int(p.x), int(p.y-1.25*scale), int(p2.x), int(p2.y)) # Top line
-                        cv.line(int(p.x+1.25*scale), int(p.y), int(p2.x), int(p2.y)) # Right line
-                        cv.line(int(p.x), int(p.y+1.25*scale), int(p2.x), int(p2.y)) # Bottem line
-                        cv.line(int(p.x-1.25*scale), int(p.y), int(p2.x), int(p2.y)) # Left line
+                            startcolor = MapColor("BoneHandles", SS_MODEL)
+                        DrawBoneLine(p1, p2, cv, startcolor, scale)
                         cv.penstyle = PS_INSIDEFRAME
                         cv.brushstyle = BS_CLEAR
                         startcolor = self.bone.dictspec['start_color']
                         quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
-                        cv.pencolor = MapColor("start_color", SS_MODEL)
-                        cv.ellipse(int(p.x-1.25*scale), int(p.y-1.25*scale), int(p.x+1.25*scale), int(p.y+1.25*scale)) # Start of bone circle
-                        cv.ellipse(int(p.x-1.25*scale), int(p.y-.05*scale), int(p.x+1.25*scale), int(p.y+.05*scale)) # Start of bone x line
-                        cv.ellipse(int(p.x-.05*scale), int(p.y-1.25*scale), int(p.x+.05*scale), int(p.y+1.25*scale)) # Start of bone y line
+                        startcolor = MapColor("start_color", SS_MODEL)
+                        DrawBoneHandle(p1, cv, MapColor("start_color", SS_MODEL), scale)
                         cv.penstyle = PS_INSIDEFRAME
                         cv.brushstyle = BS_CLEAR
                         endcolor = self.bone.dictspec['end_color']
                         quarkx.setupsubset(SS_MODEL, "Colors")["end_color"] = endcolor
-                        cv.pencolor = MapColor("end_color", SS_MODEL)
-                        cv.ellipse(int(p2.x-1.25*scale), int(p2.y-1.25*scale), int(p2.x+1.25*scale), int(p2.y+1.25*scale)) # End of bone circle
-                        cv.ellipse(int(p2.x-1.25*scale), int(p2.y-.05*scale), int(p2.x+1.25*scale), int(p2.y+.05*scale)) # End of bone x line
-                        cv.ellipse(int(p2.x-.05*scale), int(p2.y-1.25*scale), int(p2.x+.05*scale), int(p2.y+1.25*scale)) # End of bone y line
+                        DrawBoneHandle(p2, cv, MapColor("end_color", SS_MODEL), scale)
+
+                    for bone in range(len(self.newbones_end)):
+                        p1 = view.proj(quarkx.vect(self.newbones_end[bone].dictspec['start_point']))
+                        p2 = view.proj(quarkx.vect(self.newbones_end[bone].dictspec['end_point']))
+                        cv.penstyle = PS_INSIDEFRAME
+                        cv.brushstyle = BS_CLEAR
+                        if quarkx.setupsubset(SS_MODEL, "Options")['MBLines_Color'] is not None:
+                            startcolor = self.newbones_end[bone].dictspec['start_color']
+                            quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
+                            startcolor = MapColor("start_color", SS_MODEL)
+                        else:
+                            startcolor = MapColor("BoneHandles", SS_MODEL)
+                        quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
+                        if self.groupselection == 0:
+                            p2 = view.proj(quarkx.vect(self.oldbones_end[bone].dictspec['end_point']))
+                        DrawBoneLine(p1, p2, cv, MapColor("start_color", SS_MODEL), scale)
+                        cv.penstyle = PS_INSIDEFRAME
+                        cv.brushstyle = BS_CLEAR
+                        if self.groupselection == 0:
+                            endcolor = self.newbones_end[bone].dictspec['end_color']
+                            quarkx.setupsubset(SS_MODEL, "Colors")["end_color"] = endcolor
+                            endcolor = MapColor("end_color", SS_MODEL)
+                            p2 = view.proj(quarkx.vect(self.oldbones_end[bone].dictspec['end_point']))
+                            DrawBoneHandle(p2, cv, MapColor("end_color", SS_MODEL), scale)
+                        startcolor = self.newbones_end[bone].dictspec['start_color']
+                        quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
+                        DrawBoneHandle(p1, cv, MapColor("start_color", SS_MODEL), scale)
                 else:
                     pass
             else: # Handles the "End of Bone".
                 if self.groupselection == 0: # Single bone selection.
-                    # Does the rotation by changing the delta so the length of the bone doesn't get changed.
-                    startpoint = quarkx.vect(newbone.dictspec['start_point'])
-                    endpoint = quarkx.vect(newbone.dictspec['end_point'])
-                    bone_length = quarkx.vect(self.bone["bone_length"])
-                    bonelength = sqrt(pow(bone_length.x, 2) + pow(bone_length.y, 2) + pow(bone_length.z, 2))
-                    delta = mdlutils.ProjectKeepingLength(startpoint, endpoint + delta, bonelength) - endpoint
-                    for bone in range(len(self.oldbones_start)):
-                        startpoint = delta + quarkx.vect(self.oldbones_start[bone].dictspec['start_point'])
-                        self.newbones_start[bone]['start_point'] = startpoint.tuple
-                    for bone in range(len(self.oldbones_end)):
-                        endpoint = delta + quarkx.vect(self.oldbones_end[bone].dictspec['end_point'])
-                        self.newbones_end[bone]['end_point'] = endpoint.tuple
-                else: # Bone group selection.
-                    for bone in range(len(self.oldbones_end)):
-                        if self.oldbones_end[bone].name == self.bone.name:
-                            pass
-                        else:
-                            startpoint = delta + quarkx.vect(self.oldbones_end[bone].dictspec['start_point'])
-                            self.newbones_end[bone]['start_point'] = startpoint.tuple
-                        endpoint = delta + quarkx.vect(self.oldbones_end[bone].dictspec['end_point'])
-                        self.newbones_end[bone]['end_point'] = endpoint.tuple
-                    for bone in range(len(self.oldbones_start)):
-                        startpoint = delta + quarkx.vect(self.oldbones_start[bone].dictspec['start_point'])
-                        self.newbones_start[bone]['start_point'] = startpoint.tuple
-                        endpoint = delta + quarkx.vect(self.oldbones_start[bone].dictspec['end_point'])
-                        self.newbones_start[bone]['end_point'] = endpoint.tuple
-
+                    # Does movement of the handles and rotation of their assigned vertexes, if any.
                     startpoint = quarkx.vect(self.bone.dictspec['start_point'])
                     endpoint = quarkx.vect(self.bone.dictspec['end_point'])
-                    bone_length = quarkx.vect(self.bone["bone_length"])
-                    bonelength = sqrt(pow(bone_length.x, 2) + pow(bone_length.y, 2) + pow(bone_length.z, 2))
-                    hintdelta = mdlutils.ProjectKeepingLength(startpoint, endpoint + delta, bonelength) - endpoint
-
                     orgstartpoint = startpoint
                     orgendpoint = endpoint
-                    change1 = orgendpoint - orgstartpoint
-                    change2 = (orgendpoint + hintdelta) - orgstartpoint
+                    rotationorigin = orgstartpoint
+                    change1 = self.pos - rotationorigin
+                    change2 = (self.pos + delta) - rotationorigin
                     if view.info['type'] == "XY":
                         change1 = quarkx.vect(change1.x, change1.y, 0)
                         change2 = quarkx.vect(change2.x, change2.y, 0)
@@ -5208,10 +5228,68 @@ class LinBoneCornerHandle(LinearBoneHandle):
                         change2 = quarkx.vect(0, change2.y, change2.z)
                     changeaxis = change1 ^ change2   # Cross product
                     m = qhandles.UserRotationMatrix(changeaxis.normalized, change2, change1, 0)
-                    try:
-                        self.draghint = "rotate %d deg." % (math.acos(m[0,0])*180.0/math.pi)
-                    except:
-                        self.draghint = "rotate %d deg." % (0)
+                    if m is None:
+                        m = quarkx.matrix(quarkx.vect(1, 0, 0), quarkx.vect(0, 1, 0), quarkx.vect(0, 0, 1))
+                    self.draghint = "rotate %d deg." % (math.acos(m[0,0])*180.0/math.pi)
+                    # Use this if the radius should also be changed:
+                    #changedradius = sqrt(pow(change2.x, 2) + pow(change2.y, 2) + pow(change2.z, 2)) - sqrt(pow(change1.x, 2) + pow(change1.y, 2) + pow(change1.z, 2))
+                    changedradius = 0
+                    for bone in range(len(self.oldbones_start)):
+                        startpoint = quarkx.vect(self.oldbones_start[bone].dictspec['start_point'])
+                        change1 = (startpoint - rotationorigin)
+                        newchange1 = m * change1
+                        startpoint = startpoint + (newchange1 - change1) + newchange1.normalized * changedradius
+                        self.newbones_start[bone]['start_point'] = startpoint.tuple
+                        if self.oldbones_start[bone].dictspec.has_key('start_vtxlist'):
+                            endpoint = quarkx.vect(self.oldbones_start[bone].dictspec['end_point'])
+                            change2 = (endpoint - rotationorigin)
+                            newchange2 = m * change2
+                            endpoint = endpoint + (newchange2 - change2) + newchange2.normalized * changedradius
+                            self.newbones_start[bone]['end_point'] = endpoint.tuple
+                    for bone in range(len(self.oldbones_end)):
+                        endpoint = quarkx.vect(self.oldbones_end[bone].dictspec['end_point'])
+                        change2 = (endpoint - rotationorigin)
+                        newchange2 = m * change2
+                        endpoint = endpoint + (newchange2 - change2) + newchange2.normalized * changedradius
+                        self.newbones_end[bone]['end_point'] = endpoint.tuple
+                else: # Bone group selection.
+                    # Does movement of the handles and rotation of their assigned vertexes, if any.
+                    startpoint = quarkx.vect(self.bone.dictspec['start_point'])
+                    endpoint = quarkx.vect(self.bone.dictspec['end_point'])
+                    orgstartpoint = startpoint
+                    orgendpoint = endpoint
+                    rotationorigin = orgendpoint
+                    change1 = self.pos - rotationorigin
+                    change2 = (self.pos + delta) - rotationorigin
+                    if view.info['type'] == "XY":
+                        change1 = quarkx.vect(change1.x, change1.y, 0)
+                        change2 = quarkx.vect(change2.x, change2.y, 0)
+                    elif view.info['type'] == "XZ":
+                        change1 = quarkx.vect(change1.x, 0, change1.z)
+                        change2 = quarkx.vect(change2.x, 0, change2.z)
+                    elif view.info['type'] == "YZ":
+                        change1 = quarkx.vect(0, change1.y, change1.z)
+                        change2 = quarkx.vect(0, change2.y, change2.z)
+                    changeaxis = change1 ^ change2   # Cross product
+                    m = qhandles.UserRotationMatrix(changeaxis.normalized, change2, change1, 0)
+                    if m is None:
+                        m = quarkx.matrix(quarkx.vect(1, 0, 0), quarkx.vect(0, 1, 0), quarkx.vect(0, 0, 1))
+                    self.draghint = "rotate %d deg." % (math.acos(m[0,0])*180.0/math.pi)
+                    # Use this if the radius should also be changed:
+                    #changedradius = sqrt(pow(change2.x, 2) + pow(change2.y, 2) + pow(change2.z, 2)) - sqrt(pow(change1.x, 2) + pow(change1.y, 2) + pow(change1.z, 2))
+                    changedradius = 0
+                    for bone in range(len(self.oldbones_end)):
+                        endpoint = quarkx.vect(self.oldbones_end[bone].dictspec['end_point'])
+                        change2 = (endpoint - rotationorigin)
+                        newchange2 = m * change2
+                        endpoint = endpoint + (newchange2 - change2) + newchange2.normalized * changedradius
+                        self.newbones_end[bone]['end_point'] = endpoint.tuple
+                        if self.oldbones_end[bone] != self.bone:
+                            startpoint = quarkx.vect(self.oldbones_end[bone].dictspec['start_point'])
+                            change1 = (startpoint - rotationorigin)
+                            newchange1 = m * change1
+                            startpoint = startpoint + (newchange1 - change1) + newchange1.normalized * changedradius
+                            self.newbones_end[bone]['start_point'] = startpoint.tuple
 
                 if view.info['type'] != "3D":
                     scale = view.scale()
@@ -5221,82 +5299,72 @@ class LinBoneCornerHandle(LinearBoneHandle):
                         p2 = view.proj(quarkx.vect(compbone.dictspec['end_point']))
                         cv.penstyle = PS_INSIDEFRAME
                         cv.brushstyle = BS_CLEAR
-                        cv.pencolor = MapColor("BoneLines", SS_MODEL)
-                        cv.line(int(p1.x), int(p1.y-1.25*scale), int(p2.x), int(p2.y)) # Top line
-                        cv.line(int(p1.x+1.25*scale), int(p1.y), int(p2.x), int(p2.y)) # Right line
-                        cv.line(int(p1.x), int(p1.y+1.25*scale), int(p2.x), int(p2.y)) # Bottem line
-                        cv.line(int(p1.x-1.25*scale), int(p1.y), int(p2.x), int(p2.y)) # Left line
+                        DrawBoneLine(p1, p2, cv, MapColor("BoneLines", SS_MODEL), scale)
                         cv.penstyle = PS_INSIDEFRAME
                         cv.brushstyle = BS_CLEAR
                         startcolor = compbone.dictspec['start_color']
                         quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
-                        cv.pencolor = MapColor("start_color", SS_MODEL)
-                        cv.ellipse(int(p1.x-1.25*scale), int(p1.y-1.25*scale), int(p1.x+1.25*scale), int(p1.y+1.25*scale)) # Start of bone circle
-                        cv.ellipse(int(p1.x-1.25*scale), int(p1.y-.05*scale), int(p1.x+1.25*scale), int(p1.y+.05*scale)) # Start of bone x line
-                        cv.ellipse(int(p1.x-.05*scale), int(p1.y-1.25*scale), int(p1.x+.05*scale), int(p1.y+1.25*scale)) # Start of bone y line
+                        DrawBoneHandle(p1, cv, MapColor("start_color", SS_MODEL), scale)
 
                         endcolor = compbone.dictspec['end_color']
                         quarkx.setupsubset(SS_MODEL, "Colors")["end_color"] = endcolor
-                        cv.pencolor = MapColor("end_color", SS_MODEL)
-                        cv.ellipse(int(p2.x-1.25*scale), int(p2.y-1.25*scale), int(p2.x+1.25*scale), int(p2.y+1.25*scale)) # End of bone circle
-                        cv.ellipse(int(p2.x-1.25*scale), int(p2.y-.05*scale), int(p2.x+1.25*scale), int(p2.y+.05*scale)) # End of bone x line
-                        cv.ellipse(int(p2.x-.05*scale), int(p2.y-1.25*scale), int(p2.x+.05*scale), int(p2.y+1.25*scale)) # End of bone y line
+                        DrawBoneHandle(p2, cv, MapColor("end_color", SS_MODEL), scale)
                     # Now draws the bone being dragged.
-                    for bone in range(len(self.newbones_end)):
-                        p = view.proj(quarkx.vect(self.newbones_end[bone].dictspec['end_point']))
-                        p2 = view.proj(quarkx.vect(self.newbones_end[bone].dictspec['start_point']))
+                    for bone in range(len(self.oldbones_end)):
+                        if self.groupselection == 0:
+                            pass
+                        else:
+                            if self.oldbones_end[bone] == self.bone:
+                                p1 = view.proj(quarkx.vect(self.oldbones_end[bone].dictspec['start_point']))
+                                p2 = view.proj(quarkx.vect(self.oldbones_end[bone].dictspec['end_point']))
+                                DrawBoneLine(p1, p2, cv, MapColor("BoneLines", SS_MODEL), scale)
+                                startcolor = self.oldbones_end[bone].dictspec['start_color']
+                                quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
+                                DrawBoneHandle(p1, cv, MapColor("start_color", SS_MODEL), scale)
+                                endcolor = self.oldbones_end[bone].dictspec['end_color']
+                                quarkx.setupsubset(SS_MODEL, "Colors")["end_color"] = endcolor
+                                DrawBoneHandle(p2, cv, MapColor("end_color", SS_MODEL), scale)
+                                continue
+                        p1 = view.proj(quarkx.vect(self.newbones_end[bone].dictspec['start_point']))
+                        p2 = view.proj(quarkx.vect(self.newbones_end[bone].dictspec['end_point']))
                         cv.penstyle = PS_INSIDEFRAME
                         cv.brushstyle = BS_CLEAR
                         if quarkx.setupsubset(SS_MODEL, "Options")['MBLines_Color'] is not None:
-                            endcolor = self.newbones_end[bone].dictspec['end_color']
+                            endcolor = self.bone.dictspec['end_color']
                             quarkx.setupsubset(SS_MODEL, "Colors")["end_color"] = endcolor
-                            cv.pencolor = MapColor("end_color", SS_MODEL)
+                            endcolor = MapColor("end_color", SS_MODEL)
                         else:
-                            cv.pencolor = MapColor("BoneHandles", SS_MODEL)
-                        cv.line(int(p2.x), int(p2.y-1.25*scale), int(p.x), int(p.y)) # Top line
-                        cv.line(int(p2.x+1.25*scale), int(p2.y), int(p.x), int(p.y)) # Right line
-                        cv.line(int(p2.x), int(p2.y+1.25*scale), int(p.x), int(p.y)) # Bottem line
-                        cv.line(int(p2.x-1.25*scale), int(p2.y), int(p.x), int(p.y)) # Left line
+                            endcolor = MapColor("BoneHandles", SS_MODEL)
+                        DrawBoneLine(p1, p2, cv, endcolor, scale)
                         cv.penstyle = PS_INSIDEFRAME
                         cv.brushstyle = BS_CLEAR
-                        endcolor = self.newbones_end[bone].dictspec['end_color']
+                        endcolor = self.bone.dictspec['end_color']
                         quarkx.setupsubset(SS_MODEL, "Colors")["end_color"] = endcolor
-                        cv.pencolor = MapColor("end_color", SS_MODEL)
-                        cv.ellipse(int(p.x-1.25*scale), int(p.y-1.25*scale), int(p.x+1.25*scale), int(p.y+1.25*scale)) # Start of bone circle
-                        cv.ellipse(int(p.x-1.25*scale), int(p.y-.05*scale), int(p.x+1.25*scale), int(p.y+.05*scale)) # Start of bone x line
-                        cv.ellipse(int(p.x-.05*scale), int(p.y-1.25*scale), int(p.x+.05*scale), int(p.y+1.25*scale)) # Start of bone y line
+                        DrawBoneHandle(p2, cv, MapColor("end_color", SS_MODEL), scale)
                         cv.penstyle = PS_INSIDEFRAME
                         cv.brushstyle = BS_CLEAR
-                        startcolor = self.newbones_end[bone].dictspec['start_color']
-                        quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
-                        cv.pencolor = MapColor("start_color", SS_MODEL)
-                        cv.ellipse(int(p2.x-1.25*scale), int(p2.y-1.25*scale), int(p2.x+1.25*scale), int(p2.y+1.25*scale)) # End of bone circle
-                        cv.ellipse(int(p2.x-1.25*scale), int(p2.y-.05*scale), int(p2.x+1.25*scale), int(p2.y+.05*scale)) # End of bone x line
-                        cv.ellipse(int(p2.x-.05*scale), int(p2.y-1.25*scale), int(p2.x+.05*scale), int(p2.y+1.25*scale)) # End of bone y line
+                        endcolor = self.bone.dictspec['end_color']
+                        quarkx.setupsubset(SS_MODEL, "Colors")["end_color"] = endcolor
+                        DrawBoneHandle(p1, cv, MapColor("end_color", SS_MODEL), scale)
                     for bone in range(len(self.newbones_start)):
-                        p = view.proj(quarkx.vect(self.newbones_start[bone].dictspec['start_point']))
+                        p1 = view.proj(quarkx.vect(self.newbones_start[bone].dictspec['start_point']))
                         p2 = view.proj(quarkx.vect(self.newbones_start[bone].dictspec['end_point']))
+                        if self.groupselection == 0:
+                            p2 = view.proj(quarkx.vect(self.oldbones_start[bone].dictspec['end_point']))
                         cv.penstyle = PS_INSIDEFRAME
                         cv.brushstyle = BS_CLEAR
                         if quarkx.setupsubset(SS_MODEL, "Options")['MBLines_Color'] is not None:
                             startcolor = self.newbones_start[bone].dictspec['start_color']
                             quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
-                            cv.pencolor = MapColor("start_color", SS_MODEL)
+                            startcolor = MapColor("start_color", SS_MODEL)
                         else:
-                            cv.pencolor = MapColor("BoneHandles", SS_MODEL)
-                        cv.line(int(p.x), int(p.y-1.25*scale), int(p2.x), int(p2.y)) # Top line
-                        cv.line(int(p.x+1.25*scale), int(p.y), int(p2.x), int(p2.y)) # Right line
-                        cv.line(int(p.x), int(p.y+1.25*scale), int(p2.x), int(p2.y)) # Bottem line
-                        cv.line(int(p.x-1.25*scale), int(p.y), int(p2.x), int(p2.y)) # Left line
+                            startcolor = MapColor("BoneHandles", SS_MODEL)
+                        DrawBoneLine(p1, p2, cv, startcolor, scale)
                         cv.penstyle = PS_INSIDEFRAME
                         cv.brushstyle = BS_CLEAR
-                        cv.pencolor = MapColor("BoneLines", SS_MODEL)
                         endcolor = self.newbones_start[bone].dictspec['end_color']
                         quarkx.setupsubset(SS_MODEL, "Colors")["end_color"] = endcolor
-                        cv.pencolor = MapColor("end_color", SS_MODEL)
-                        cv.ellipse(int(p2.x-1.25*scale), int(p2.y-1.25*scale), int(p2.x+1.25*scale), int(p2.y+1.25*scale)) # End of bone circle
-                        cv.ellipse(int(p2.x-1.25*scale), int(p2.y-.05*scale), int(p2.x+1.25*scale), int(p2.y+.05*scale)) # End of bone x line
-                        cv.ellipse(int(p2.x-.05*scale), int(p2.y-1.25*scale), int(p2.x+.05*scale), int(p2.y+1.25*scale)) # End of bone y line
+                        DrawBoneHandle(p2, cv, MapColor("end_color", SS_MODEL), scale)
                 else:
                     pass
         if (self.s_or_e == 0): # Handles the "Start of Bone".
@@ -5395,6 +5463,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.145  2008/09/15 04:47:50  cdunde
+#Model Editor bones code update.
+#
 #Revision 1.144  2008/08/21 12:13:34  danielpharos
 #Fixed a minor mistake.
 #

@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.440  2008/09/21 15:26:34  danielpharos
+//Added some extra hidden settings; may be configurable later.
+//
 //Revision 1.439  2008/09/20 21:07:52  danielpharos
 //Removed MarsCaption option and added nice FirstRun dialogbox.
 //
@@ -4114,7 +4117,6 @@ QQRKSRC1
         ForceAngleStep    = '15'
         LinearWarning     = "1"
         LinearSetting     = '4'
-        LinRotationSpeed  = '.057'
         SkinLinearSetting = '4'
         Form = "MdlBuilding"
       }

@@ -173,12 +173,6 @@ class MdlConfigDialog(qmacro.dialogbox):
           Min="0.01"
           Hint="larger value makes the handle bigger & visa-versa, default is 4"
         }
-        LinRotationSpeed: = {
-          Txt="Linear Rotation Speed :"
-          Typ="EF0001"
-          Min="0.01"
-          Hint="larger value causes faster rotation & visa-versa, default is .057"
-        }
         SkinLinearSetting: = {
           Txt="Skin-view Linear Setting :"
           Typ="EF"
@@ -407,6 +401,9 @@ class ToolMoveBar(ToolBar):
 #
 #
 #$Log$
+#Revision 1.20  2008/05/01 19:15:24  danielpharos
+#Fix treeviewselchanged not updating.
+#
 #Revision 1.19  2008/05/01 13:52:32  danielpharos
 #Removed a whole bunch of redundant imports and other small fixes.
 #
