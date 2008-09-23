@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2008/09/06 15:57:35  danielpharos
+Moved exception code into separate file.
+
 Revision 1.7  2008/09/06 15:31:52  danielpharos
 Moved old-compatibility code to ExtraFunctionality.
 
@@ -476,4 +479,9 @@ end;
 
  {-------------------}
 
+initialization
+
+finalization
+  if RunningProcesses<>Nil then
+    RunningProcesses.Free;
 end.
