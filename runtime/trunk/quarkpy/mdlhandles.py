@@ -3355,6 +3355,33 @@ class ModelEditorBoneLinHandlesManager:
     def BuildHandles(self, center=None, minimal=None): # for ModelEditorBoneLinHandlesManager
         "Build a list of handles to put around the circle for linear distortion."
 
+        # Two sections below make bones positions frame independent.
+        comp = self.editor.Root.currentcomponent
+        if comp.currentframe is not None:
+            frame = comp.currentframe
+        else:
+            frame = comp.dictitems['Frames:fg'].subitems[0]
+        if self.s_or_e == 0 and self.bone.dictspec.has_key("start_vtx_pos") and self.bone.dictspec['start_vtx_pos'] is not None:
+            vtxlist = self.bone.dictspec['start_vtx_pos']
+            vtxlist = vtxlist.split(" ")
+            start_vtxpos = quarkx.vect(0, 0, 0)
+            for start_vtx in vtxlist:
+                start_vtxpos = start_vtxpos + frame.vertices[int(start_vtx)]
+            start_vtxpos = start_vtxpos/ float(len(vtxlist))
+            start_point = start_vtxpos + quarkx.vect(self.bone.dictspec['start_offset'])
+            self.bone['start_point'] = start_point.tuple
+            center = quarkx.vect(self.bone.dictspec['start_point'])
+        elif self.s_or_e == 1 and self.bone.dictspec.has_key("end_vtx_pos") and self.bone.dictspec['end_vtx_pos'] is not None:
+            vtxlist = self.bone.dictspec['end_vtx_pos']
+            vtxlist = vtxlist.split(" ")
+            end_vtxpos = quarkx.vect(0, 0, 0)
+            for end_vtx in vtxlist:
+                end_vtxpos = end_vtxpos + frame.vertices[int(end_vtx)]
+            end_vtxpos = end_vtxpos/ float(len(vtxlist))
+            end_point = end_vtxpos + quarkx.vect(self.bone.dictspec['end_offset'])
+            self.bone['end_point'] = end_point.tuple
+            center = quarkx.vect(self.bone.dictspec['end_point'])
+
         if center is None:
             center = 0.5 * (self.bmin + self.bmax)
         if self.list != []:
@@ -5463,6 +5490,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.147  2008/09/23 05:14:49  cdunde
+#Removed unneeded code check.
+#
 #Revision 1.146  2008/09/22 23:11:12  cdunde
 #Updates for Model Editor Linear and Bone handles.
 #
