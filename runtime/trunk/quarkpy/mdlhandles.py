@@ -2732,7 +2732,7 @@ class LinearHandle(qhandles.GenericHandle):
                             projvtx0 = projvtx1 = projvtx2 = None
                     # This section draws the face drag lines.
                     if new[0].subitems == []:
-                        if tri[4][tri_vtx][0] != tri[0] and tri[4][tri_vtx][0] not in self.mgr.selvtxlist:
+                        if tri[4][tri_vtx][0] not in self.mgr.selvtxlist:
                             for face in new:
                                 objvtxs = face["v"]
                                 vtxs = face.shortname.split(',')
@@ -5463,6 +5463,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.146  2008/09/22 23:11:12  cdunde
+#Updates for Model Editor Linear and Bone handles.
+#
 #Revision 1.145  2008/09/15 04:47:50  cdunde
 #Model Editor bones code update.
 #
