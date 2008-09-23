@@ -1,9 +1,11 @@
 title: QkExceptions.pas
 author: DanielPharos
 desc: getexceptionmessage
+desc: logandwarn
 desc: logandraiseerror
 desc: eerror
 desc: eerrorfmt
+desc: internale
 desc: getsystemerrormessage
 
 This file contains several functions useful for exception handling.
