@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.77  2008/09/23 08:27:08  danielpharos
+Small clean-up.
+
 Revision 1.76  2008/09/14 12:52:26  danielpharos
 Changes to Help system: All forms now have a customizable help-link. Also, added an fallback option to the online infobase docs.
 
@@ -2282,8 +2285,17 @@ procedure HTMLDoc(const URL: String);
     Result:=FileExists(S);
   end;
 
+  procedure OpenError(const Err: String);
+  begin
+   raise EErrorFmt(5649, [URL, Err]);
+  end;
+
 var
-  S, FullFile: String;
+  S, FullFile, ProgramCall: String;
+  Reg: TRegistry2;
+  I: Integer;
+  SI: TStartupInfo;
+  PI: TProcessInformation;
 begin
   if LeftStr(URL, 1) = '*' then
   begin
@@ -2313,8 +2325,41 @@ begin
     end;
   end;
 
-  if ShellExecute(0, 'open', PChar(FullFile), nil, nil, SW_SHOWDEFAULT) <= 32 then
-    raise EErrorFmt(5649, [FullFile, GetSystemErrorMessage(GetLastError)]);
+  //FIXME: This doesn't always work; everything below is the old way to do things
+  (*if ShellExecute(0, 'open', PChar(FullFile), nil, nil, SW_SHOWDEFAULT) <= 32 then
+    raise EErrorFmt(5649, [FullFile, GetSystemErrorMessage(GetLastError)]);*)
+
+ Reg:=TRegistry2.Create;
+ try
+  Reg.RootKey:=HKEY_CLASSES_ROOT;
+  if (not Reg.ReadOpenKey('.html') and not Reg.ReadOpenKey('.htm'))
+  or not Reg.ReadString('', S) then
+   OpenError(LoadStr1(5650));
+  S:='\'+S+'\shell\open\command';
+  if not Reg.ReadOpenKey(S) or not Reg.ReadString('', ProgramCall) or (ProgramCall='') then
+   OpenError(FmtLoadStr1(5651, [S]));
+ finally
+  Reg.Free;
+ end;
+
+ I:=Pos('%1', ProgramCall);
+ if I>0 then
+ begin
+   System.Delete(ProgramCall,I,2);
+   System.Insert(FullFile,ProgramCall,I);
+ end
+ else
+   ProgramCall:=ProgramCall+' "'+FullFile+'"';
+
+ FillChar(SI, SizeOf(SI), 0);
+ FillChar(PI, SizeOf(PI), 0);
+ if CreateProcess(Nil, PChar(ProgramCall), Nil, Nil, False, 0, Nil, Nil, SI, PI) then
+  begin
+   DeleteObject(PI.hThread);
+   DeleteObject(PI.hProcess);
+  end
+ else
+  OpenError(FmtLoadStr1(5652, [ProgramCall]));
 end;
 
 function xHTMLDoc(self, args: PyObject) : PyObject; cdecl;
