@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.33  2008/08/09 20:20:57  danielpharos
+Fixed Python 2.5 stuff and added Python 2.6 stuff
+
 Revision 1.32  2008/08/07 22:53:14  danielpharos
 A massive overhaul and clean-up: should make the Python interface more robust and future-proof
 
@@ -585,8 +588,8 @@ implementation
 
 uses
  {$IFDEF Debug} QkObjects, {$ENDIF}
-  Windows, Forms, Registry, SysUtils, StrUtils, QkObjects, SystemDetails,
-  QkApplPaths, ExtraFunctionality, Logging;
+  Windows, Forms, Registry, SysUtils, StrUtils, QkObjects, QkExceptions,
+  SystemDetails, QkApplPaths, ExtraFunctionality, Logging;
 
  {-------------------}
 

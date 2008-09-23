@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.107  2008/09/14 12:52:30  danielpharos
+Changes to Help system: All forms now have a customizable help-link. Also, added an fallback option to the online infobase docs.
+
 Revision 1.106  2008/09/06 15:57:01  danielpharos
 Moved exception code into separate file.
 
@@ -750,8 +753,6 @@ function CharToPas(C: array of Byte) : String;
 procedure PasToChar(var C: array of Byte; const S: String);
 function IntToPackedStr(Value: Integer) : String;
 function PackedStrToInt(const S: String) : Integer;
-
-function InternalE(const Hint: String) : Exception;
 
 procedure ReleaseStream(S: TStream);
 (* DanielPharos: OLD CODE + NEW CODE
@@ -3382,11 +3383,6 @@ begin
 end;
 
  {------------------------}
-
-function InternalE(const Hint: String) : Exception;
-begin
-  Result:=EErrorFmt(5223, [Hint]);
-end;
 
 {$IFDEF Debug}
 procedure DebugCheck;

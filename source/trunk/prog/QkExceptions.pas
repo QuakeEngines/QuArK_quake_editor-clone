@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2008/09/23 08:26:19  danielpharos
+Added LogAndWarn and const-ed a parameter.
+
 Revision 1.2  2008/09/08 18:08:51  danielpharos
 Added some more general exception functions.
 
@@ -42,6 +45,7 @@ procedure LogAndWarn(const WarnMessage : String);
 procedure LogAndRaiseError(const ErrMessage : String);
 function EError(Res: Integer) : Exception;
 function EErrorFmt(Res: Integer; Fmt: array of const) : Exception;
+function InternalE(const Hint: String) : Exception;
 function GetSystemErrorMessage(ErrNr: DWORD) : String;
 
  {-------------------}
@@ -89,6 +93,11 @@ function EErrorFmt(Res: Integer; Fmt: array of const) : Exception;
 begin
  PythonCodeEnd;
  EErrorFmt:=Exception.Create(FmtLoadStr1(Res, Fmt));
+end;
+
+function InternalE(const Hint: String) : Exception;
+begin
+  Result:=EErrorFmt(5223, [Hint]);
 end;
 
 //From http://www.swissdelphicenter.ch/torry/showcode.php?id=282:

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.20  2008/08/12 00:24:51  cdunde
+DanielPharos added new quarkx function "getchangednames", see Infobase docs for what it does .
+
 Revision 1.19  2007/09/12 15:28:16  danielpharos
 Replaced redundant property.
 
@@ -99,7 +102,7 @@ interface
 
 uses SysUtils, Windows, Messages, Classes, Controls, Menus,
      Forms, StdCtrls, ExtCtrls, Buttons, ComCtrls,
-     EnterEditCtrl, QkObjects, QkFileObjects, QkTreeView,
+     EnterEditCtrl, QkObjects, QkTreeView,
      QkGroup, QkForm, QSplitter;
 
 {const
@@ -240,7 +243,7 @@ type
 
 implementation
 
-uses Qk1, Undo, Travail, Quarkx;
+uses Qk1, QkExceptions, Undo, Travail, Quarkx;
 
  {------------------------}
 
