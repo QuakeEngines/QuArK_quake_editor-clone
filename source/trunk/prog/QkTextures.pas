@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.66  2008/09/06 15:57:13  danielpharos
+Moved exception code into separate file.
+
 Revision 1.65  2008/07/24 15:02:38  danielpharos
 Cleaned up texture name checking code and interface.
 
@@ -752,12 +755,8 @@ var
           else
           begin
             Q:=NeedGameFile(WriteTo, '');
-            Q.AddRef(+1);
-            try
-              Q.SaveInFile(rf_Default, OutputFile(WriteTo));
-            finally
-              Q.AddRef(-1);
-            end;
+            Q.Acces;
+            Q.SaveInFile(rf_Default, OutputFile(WriteTo));
           end;
         end;
       finally
@@ -1133,7 +1132,7 @@ begin
       P:=@P^.Next;
     end;
     P^:=Next;  { breaks the linked list }
-    Link.AddRef(-1); {DanielPharos: Apparently, this not always destroys the link?}
+    Link.AddRef(-1); //FIXME: Apparently, this not always destroys Link?!?
     Link:=Nil;
   end;
 end;
