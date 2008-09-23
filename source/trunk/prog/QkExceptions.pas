@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2008/09/08 18:08:51  danielpharos
+Added some more general exception functions.
+
 Revision 1.1  2008/09/06 15:57:23  danielpharos
 Moved exception code into separate file.
 
@@ -35,7 +38,8 @@ interface
 uses Windows, SysUtils;
 
 function GetExceptionMessage(E: Exception) : String;
-procedure LogAndRaiseError(ErrMessage : String);
+procedure LogAndWarn(const WarnMessage : String);
+procedure LogAndRaiseError(const ErrMessage : String);
 function EError(Res: Integer) : Exception;
 function EErrorFmt(Res: Integer; Fmt: array of const) : Exception;
 function GetSystemErrorMessage(ErrNr: DWORD) : String;
@@ -44,7 +48,7 @@ function GetSystemErrorMessage(ErrNr: DWORD) : String;
 
 implementation
 
-uses Quarkx, Logging;
+uses Forms, Quarkx, Logging;
 
  {-------------------}
 
@@ -63,7 +67,13 @@ begin
   Result:=Result+'.';
 end;
 
-procedure LogAndRaiseError(ErrMessage : String);
+procedure LogAndWarn(const WarnMessage : String);
+begin
+  Log(LOG_WARNING, WarnMessage);
+  Application.MessageBox(PChar(WarnMessage), 'QuArK', MB_OK); //@ GIVE ICON!
+end;
+
+procedure LogAndRaiseError(const ErrMessage : String);
 begin
   Log(LOG_CRITICAL, ErrMessage);
   Raise Exception.Create(ErrMessage);
