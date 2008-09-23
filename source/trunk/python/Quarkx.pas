@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.76  2008/09/14 12:52:26  danielpharos
+Changes to Help system: All forms now have a customizable help-link. Also, added an fallback option to the online infobase docs.
+
 Revision 1.75  2008/09/06 15:57:35  danielpharos
 Moved exception code into separate file.
 
@@ -2265,13 +2268,11 @@ begin
 end;
 
 procedure HTMLDoc(const URL: String);
-var
-  S, FullFile: String;
-  I: Integer;
 
   function CheckFileExists(const Filename: String) : Boolean;
   var
     S: String;
+    I: Integer;
   begin
     I:=Pos('#', Filename);
     if I>0 then
@@ -2281,6 +2282,8 @@ var
     Result:=FileExists(S);
   end;
 
+var
+  S, FullFile: String;
 begin
   if LeftStr(URL, 1) = '*' then
   begin
@@ -2311,9 +2314,7 @@ begin
   end;
 
   if ShellExecute(0, 'open', PChar(FullFile), nil, nil, SW_SHOWDEFAULT) <= 32 then
-  begin
     raise EErrorFmt(5649, [FullFile, GetSystemErrorMessage(GetLastError)]);
-  end;
 end;
 
 function xHTMLDoc(self, args: PyObject) : PyObject; cdecl;
