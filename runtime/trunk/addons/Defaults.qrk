@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.441  2008/09/22 23:11:11  cdunde
+//Updates for Model Editor Linear and Bone handles.
+//
 //Revision 1.440  2008/09/21 15:26:34  danielpharos
 //Added some extra hidden settings; may be configurable later.
 //
@@ -7800,7 +7803,6 @@ QQRKSRC1
     {
       Style = "7"
       sep: = {Typ="S" Txt="---- DevIL Settings ----"}
-      L0: = {Typ="S" Bold="0" Txt="Note: You will need to have the Visual C++ 2005 Runtime files installed to be able to use DevIL (specifically MSVCR80.DLL)."}
       MemSpeed: =
       {
         Txt="Memory speed"
