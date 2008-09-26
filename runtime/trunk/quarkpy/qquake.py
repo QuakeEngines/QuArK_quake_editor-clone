@@ -12,8 +12,6 @@ Routines to execute Quake, Hexen II, or Quake 2
 
 import quarkx
 from qdictionnary import Strings
-import qutils
-qutils.loadmapeditor()
 from maputils import *
 import qconsole
 
@@ -216,6 +214,9 @@ class GameConsole(BatchConsole):
 #
 #
 #$Log$
+#Revision 1.17  2008/09/26 19:38:22  danielpharos
+#Removed empty parameter option for outputfile().
+#
 #Revision 1.16  2008/05/27 19:32:58  danielpharos
 #Removed redundant code
 #
