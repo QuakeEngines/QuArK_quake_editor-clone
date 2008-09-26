@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.57  2008/09/20 19:32:00  danielpharos
+Changed a default value and re-factored some code.
+
 Revision 1.56  2008/09/06 15:56:59  danielpharos
 Moved exception code into separate file.
 
@@ -318,7 +321,7 @@ var
   CurAliasType   : TFileTypeAlias;
 {--CONVEX-end--}
 
-procedure CreateAllPaths(const Filename: string; StartIndex: Integer = 0); forward;
+procedure CreateAllDirs(const Filename: string; StartIndex: Integer = 0); forward;
 function GetGameFileBase(const BaseDir, FileName, PakFileName: String; LookInCD: Boolean) : QFileObject; forward;
 
  {------------------------}
@@ -523,8 +526,13 @@ begin
 end;
 
 function BaseOutputPath : String;
+var
+  I: Integer;
 begin
-  Result:=AppendFileToPath(QuakeDir, GettmpQuArK);
+  Result:=IncludeTrailingPathDelimiter(QuakeDir); //To make sure there already is a trailing slash
+  I:=Length(Result)+1;
+  Result:=IncludeTrailingPathDelimiter(ConvertPath(AppendFileToPath(Result, GettmpQuArK)));
+  CreateAllDirs(Result, I);
 end;
 
 function OutputFile(const FileName: String) : String;
@@ -533,8 +541,17 @@ var
 begin
  Result:=IncludeTrailingPathDelimiter(BaseOutputPath); //To make sure there already is a trailing slash
  I:=Length(Result)+1;
- Result:=ConvertPath(AppendFileToPath(Result, FileName));
- CreateAllPaths(Result, I);
+ if ExtractFileName(FileName) <> '' then
+ begin
+   //It's a filename, so we can't add a trailing slash, and we can't send the filename-part to CreateAllDirs
+   Result:=ConvertPath(AppendFileToPath(Result, FileName));
+   CreateAllDirs(IncludeTrailingPathDelimiter(ExtractFileDir(Result)), I);
+ end
+ else
+ begin
+   Result:=IncludeTrailingPathDelimiter(ConvertPath(AppendFileToPath(Result, FileName)));
+   CreateAllDirs(Result, I);
+ end;
 end;
 
 function GetGameDir : String;
@@ -564,14 +581,15 @@ begin
   Result:=ConvertPath(Result);
 end;
 
-procedure CreateAllPaths(const Filename: string; StartIndex: Integer = 0);
+procedure CreateAllDirs(const Filename: string; StartIndex: Integer = 0);
 var
  I, ErrorCode: Integer;
  S: String;
 begin
+ //Note: Do NOT forget to end any paths you might send through with a PathDelim!
  I:=StartIndex;
  if I<0 then I:=0;
- while I<Length(Filename) do
+ while I<=Length(Filename) do
   begin
    if Filename[I]=PathDelim then
     begin
