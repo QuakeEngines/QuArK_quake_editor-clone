@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.78  2008/09/23 09:51:19  danielpharos
+Revert to old way of launching help docs in browser.
+
 Revision 1.77  2008/09/23 08:27:08  danielpharos
 Small clean-up.
 
@@ -2157,13 +2160,10 @@ begin
  try
   Result:=Nil;
   s:=Nil;
-  if not PyArg_ParseTupleX(args, '|s', [@s]) then
+  if not PyArg_ParseTupleX(args, 's', [@s]) then
    Exit;
   CheckQuakeDir;
-  if s=Nil then
-   Result:=PyString_FromString(PChar(GettmpQuArK))
-  else
-   Result:=PyString_FromString(PChar(OutputFile(s)));
+  Result:=PyString_FromString(PChar(OutputFile(s)));
  except
   EBackToPython;
   Result:=Nil;

@@ -89,7 +89,7 @@ class GameConsole(BatchConsole):
             cmdline = ""
         else:
             format = setup["ExtraCmdLine"]
-            customdir = quarkx.outputfile()  # get the current tmpQuArK directory
+            customdir = quarkx.gettmpquark()
             if format:
                 cmdline = program + " " + format % customdir
             else:
@@ -216,6 +216,9 @@ class GameConsole(BatchConsole):
 #
 #
 #$Log$
+#Revision 1.16  2008/05/27 19:32:58  danielpharos
+#Removed redundant code
+#
 #Revision 1.15  2007/08/21 10:26:35  danielpharos
 #Small changes to let HL2 build again.
 #
