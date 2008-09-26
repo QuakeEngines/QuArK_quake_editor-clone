@@ -86,16 +86,12 @@ class GameConsole(BatchConsole):
         if map is self.DONT_RUN:
             cmdline = ""
         else:
-            format = setup["ExtraCmdLine"]
-            customdir = quarkx.gettmpquark()
-            if format:
-                cmdline = program + " " + format % customdir
+            extracmdline = setup["ExtraCmdLine"]
+            if extracmdline:
+                cmdline = program + " " + extracmdline
             else:
                 cmdline = program
             if map is not self.NO_MAP:
-                #debug('rowdy: before mangle run game command: "%s"' % cmdline)
-                #cmdline = cmdline + setup["RunMapCmdLine"] % map
-
                 # assume we have a clever game that can run anywhere, although we will probably
                 # be running it from the game directory anyway
                 argument_mappath = "maps"
@@ -105,22 +101,16 @@ class GameConsole(BatchConsole):
 
                 # this part is supposed to take care of games that do not need special processing
                 runMapCmdLine = setup["RunMapCmdLine"]
-                if not(runMapCmdLine is None):
-                    #debug('rowdy: RunMapCmdLine before: "%s"' % runMapCmdLine)
-                    if runMapCmdLine.find('%s') != -1:
-                        runMapCmdLine = runMapCmdLine % map
-                    #debug('rowdy: RunMapCmdLine after: "%s"' % runMapCmdLine)
-                    cmdline = cmdline + ' ' + runMapCmdLine
+                if runMapCmdLine:
+                    cmdline = cmdline + " " + runMapCmdLine
 
-                cmdline = cmdline.replace("%mappath%",  argument_mappath)
-                cmdline = cmdline.replace("%mapfile%",  argument_mapfile)
-                cmdline = cmdline.replace("%file%",     argument_file)
-                cmdline = cmdline.replace("%filename%", argument_filename)
-                cmdline = cmdline.replace("%basepath%", dir)
-                cmdline = cmdline.replace("%gamedir%", tmpquarkdir)
+                cmdline = cmdline.replace("%mappath%",   argument_mappath)
+                cmdline = cmdline.replace("%mapfile%",   argument_mapfile)
+                cmdline = cmdline.replace("%file%",      argument_file)
+                cmdline = cmdline.replace("%filename%",  argument_filename)
+                cmdline = cmdline.replace("%basepath%",  dir)
+                cmdline = cmdline.replace("%gamedir%",   tmpquarkdir)
                 cmdline = cmdline.replace("%quarkpath%", quarkx.exepath)
-
-                #debug('rowdy: after mangle run game command: "%s"' % cmdline)
 
         BatchConsole.__init__(self, cmdline, dir, next)
 
@@ -214,6 +204,9 @@ class GameConsole(BatchConsole):
 #
 #
 #$Log$
+#Revision 1.18  2008/09/26 19:39:14  danielpharos
+#Removed redundant call.
+#
 #Revision 1.17  2008/09/26 19:38:22  danielpharos
 #Removed empty parameter option for outputfile().
 #

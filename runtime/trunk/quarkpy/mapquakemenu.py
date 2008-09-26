@@ -478,25 +478,21 @@ def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile,
                     p1 = buildmode[pgrmcmd]
                     if p1: cmdline = cmdline + " " + p1
 
-                    # Search and replace any user-variable
-                    #debug('rowdy: about to search and replace on command: "%s"' % cmdline)
-                    newcmdline = cmdline
-                    newcmdline = newcmdline.replace("%mappath%",  argument_mappath)
-                    newcmdline = newcmdline.replace("%mapfile%",  argument_mapfile)
-                    newcmdline = newcmdline.replace("%file%",     argument_file)
-                    newcmdline = newcmdline.replace("%filename%", argument_filename)
-                    newcmdline = newcmdline.replace("%basepath%", setupdirectory)
-                    newcmdline = newcmdline.replace("%gamedir%", setuptmpquark)
-                    newcmdline = newcmdline.replace("%quarkpath%", quarkx.exepath)
-                    newcmdline = newcmdline.replace("%grouppath%", argument_grouppath)
-                    if setup["BuildPgmsDir"] is not None:
-                       newcmdline = newcmdline.replace("%buildpgmsdir%", setup["BuildPgmsDir"])
+                    # Add %mapfile% if there is no filename-string present
+                    if (cmdline.find("%mapfile%") == -1) and (cmdline.find("%file%") == -1) and (cmdline.find("%filename%") == -1):
+                      cmdline = cmdline + " %mapfile%"
 
-                    # If user-variable were not replaced, automatically append map-filename
-                    if (newcmdline == cmdline):
-                        cmdline = cmdline + " " + argument_mapfile
-                    else:
-                        cmdline = newcmdline
+                    # Search and replace any user-variable
+                    cmdline = cmdline.replace("%mappath%",   argument_mappath)
+                    cmdline = cmdline.replace("%mapfile%",   argument_mapfile)
+                    cmdline = cmdline.replace("%file%",      argument_file)
+                    cmdline = cmdline.replace("%filename%",  argument_filename)
+                    cmdline = cmdline.replace("%basepath%",  setupdirectory)
+                    cmdline = cmdline.replace("%gamedir%",   setuptmpquark)
+                    cmdline = cmdline.replace("%quarkpath%", quarkx.exepath)
+                    cmdline = cmdline.replace("%grouppath%", argument_grouppath)
+                    if setup["BuildPgmsDir"] is not None:
+                       cmdline = cmdline.replace("%buildpgmsdir%", setup["BuildPgmsDir"])
 
                     # Put this build-program last in execution queue
                     next = console(cmdline, toolworkdir, bspfile, editor, next, checkextensions)
@@ -686,6 +682,9 @@ def QuakeMenu(editor):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.53  2008/09/26 20:07:34  danielpharos
+#Removed empty parameter option for outputfile().
+#
 #Revision 1.52  2008/08/18 20:18:20  danielpharos
 #Removed a redundant import.
 #
