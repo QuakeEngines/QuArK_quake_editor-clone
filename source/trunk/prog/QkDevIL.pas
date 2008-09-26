@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.17  2008/09/08 18:08:52  danielpharos
+Added some more general exception functions.
+
 Revision 1.16  2008/09/06 15:57:29  danielpharos
 Moved exception code into separate file.
 
@@ -76,7 +79,8 @@ Added basic interface to DevIL.
 unit QkDevIL;
 
 interface
-uses Windows, SysUtils, QkObjects;
+
+uses Windows, SysUtils;
 
 const
   IL_FALSE =$0;
@@ -329,7 +333,7 @@ uses Setup, QkExceptions, Logging, QkApplPaths;
 
 var
   TimesLoaded: Integer;
-  HDevIL  : HMODULE;
+  HDevIL : HMODULE;
 
 function InitDllPointer(DLLHandle: HMODULE;APIFuncname:PChar):Pointer;
 begin
@@ -385,7 +389,6 @@ begin
       ilOriginFunc      := InitDllPointer(HDevIL, 'ilOriginFunc');
       ilClearImage      := InitDllPointer(HDevIL, 'ilClearImage');
       ilRegisterPal     := InitDllPointer(HDevIL, 'ilRegisterPal');
-      //DanielPharos: If one of the API func's fails, we should stop loading, and return False!
 
       if ilGetInteger(IL_VERSION_NUM) < 168 then
       begin
@@ -394,7 +397,6 @@ begin
       end;
 
       ilInit;
-
     end;
 
     TimesLoaded := 1;
