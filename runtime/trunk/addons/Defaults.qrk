@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.445  2008/09/26 20:28:33  danielpharos
+//Oops: forgot to update other games.
+//
 //Revision 1.444  2008/09/26 20:08:46  danielpharos
 //Small changes to path-code, to make it more consistent.
 //
@@ -2235,10 +2238,12 @@ QQRKSRC1
 
         BaseMenu = "Half Life"
 
+        Program = "C:\Program Files\Valve\Steam\steam.exe -applaunch 220 -dev -console -window -width 800 -height 600"
+
         Steam = "1" //This game uses Steam
         SteamAppID = "220"
         BaseDir = "hl2"
-        tmpQuArK = "SteamApps/<insert your Steam Account Name here>/half-life 2/hl2"
+        tmpQuArK = "SteamApps\<insert your Steam Account Name here>\half-life 2\hl2"
         MapCommentsPrefix = "//"
         OutputMapFormat = "HL2"
         ForceFaceFlags = ""
@@ -2246,20 +2251,20 @@ QQRKSRC1
         "gamesounds-hl2.qrk"$0D"textures-hl2-cs.qrk"$0D"base.qrk"$0D"cstrike.qrk"$0D
         "halflife2.qrk"$0D"hl2mp.qrk"$0D"prefabs-hl2.qrk"
 
-        BuildPgmsDir="C:/Program Files/Valve/Steam/SteamApps/<Your Steam Account>/sourcesdk/bin"
-        BuildPgm1  = "C:/Program Files/Valve/Steam/SteamApps/<Your Steam Account>/sourcesdk/bin/vbsp.exe"
+        BuildPgmsDir="C:\Program Files\Valve\Steam\SteamApps\<Your Steam Account>\sourcesdk\bin"
+        BuildPgm1  = "C:\Program Files\Valve\Steam\SteamApps\<Your Steam Account>\sourcesdk\bin\vbsp.exe"
         BuildArgs1 = ""
         BuildCheck1= ""
-        BuildPgm2  = "C:/Program Files/Valve/Steam/SteamApps/<Your Steam Account>/sourcesdk/bin/vvis.exe"
+        BuildPgm2  = "C:\Program Files\Valve\Steam\SteamApps\<Your Steam Account>\sourcesdk\bin\vvis.exe"
         BuildArgs2 = ""
         BuildCheck2= ""
-        BuildPgm3  = "C:/Program Files/Valve/Steam/SteamApps/<Your Steam Account>/sourcesdk/bin/vrad.exe"
+        BuildPgm3  = "C:\Program Files\Valve\Steam\SteamApps\<Your Steam Account>\sourcesdk\bin\vrad.exe"
         BuildArgs3 = ""
         BuildCheck3= ""
-        BuildPgm4  = "C:/Program Files/Valve/Steam/SteamApps/<Your Steam Account>/sourcesdk/bin/glview.exe"
+        BuildPgm4  = "C:\Program Files\Valve\Steam\SteamApps\<Your Steam Account>\sourcesdk\bin\glview.exe"
         BuildArgs4 = ""
         BuildCheck4= ""
-        BuildPgm5  = "C:/Program Files/Valve/Steam/SteamApps/<Your Steam Account>/sourcesdk/bin/bspzip.exe"
+        BuildPgm5  = "C:\Program Files\Valve\Steam\SteamApps\<Your Steam Account>\sourcesdk\bin\bspzip.exe"
         BuildArgs5 = ""
         BuildCheck5= ""
 
@@ -3405,7 +3410,7 @@ QQRKSRC1
       Steam:config =
       {
         SteamUser = "<Your Steam Account>"
-        Directory = "C:/Program Files/Valve/Steam"
+        Directory = "C:\Program Files\Valve\Steam"
         ExtractorParameters = ""
         Autostart = "1"
         CopyGCF = "1"
@@ -5326,18 +5331,18 @@ QQRKSRC1
         Txt = "Half-Life 2 command-line"
         Typ = "C"     // combo box
         t_ProgramHint=!
-        Items = "C:/Program Files/Valve/Steam/steam.exe -applaunch 220 -dev -console -window -width 800 -height 600"
-                $0D"C:/Program Files/Valve/Steam/steam.exe -applaunch 240 -dev -console -window -width 800 -height 600"
-                $0D"C:/Program Files/Valve/Steam/steam.exe -applaunch 320 -dev -console -window -width 800 -height 600"
+        Items = "C:\Program Files\Valve\Steam\steam.exe -applaunch 220 -dev -console -window -width 800 -height 600"
+                $0D"C:\Program Files\Valve\Steam\steam.exe -applaunch 240 -dev -console -window -width 800 -height 600"
+                $0D"C:\Program Files\Valve\Steam\steam.exe -applaunch 320 -dev -console -window -width 800 -height 600"
       }
       tmpQuArK: =
       {
         Txt = "Game Directory"
         Typ = "C"   // combo box
-        Hint = "relative to steam install directory, e.g. SteamApps/<insert your Steam Account Name here>/counter-strike source/cstrike"
-        Items = "SteamApps/<insert your Steam Account Name here>/half-life 2/hl2"
-             $0D"SteamApps/<insert your Steam Account Name here>/counter-strike source/cstrike"
-             $0D"SteamApps/<insert your Steam Account Name here>/half-life 2 deathmatch/hl2mp"
+        Hint = "relative to steam install directory, e.g. SteamApps\<insert your Steam Account Name here>\counter-strike source\cstrike"
+        Items = "SteamApps\<insert your Steam Account Name here>\half-life 2\hl2"
+             $0D"SteamApps\<insert your Steam Account Name here>\counter-strike source\cstrike"
+             $0D"SteamApps\<insert your Steam Account Name here>\half-life 2 deathmatch\hl2mp"
       }
       SteamAppId: =
       {
