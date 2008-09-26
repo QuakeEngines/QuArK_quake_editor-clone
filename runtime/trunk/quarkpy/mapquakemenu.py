@@ -491,7 +491,6 @@ def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile,
                     newcmdline = newcmdline.replace("%grouppath%", argument_grouppath)
                     if setup["BuildPgmsDir"] is not None:
                        newcmdline = newcmdline.replace("%buildpgmsdir%", setup["BuildPgmsDir"])
-                    newcmdline = newcmdline.replace("%output%", quarkx.outputfile())
 
                     # If user-variable were not replaced, automatically append map-filename
                     if (newcmdline == cmdline):
@@ -687,6 +686,9 @@ def QuakeMenu(editor):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.52  2008/08/18 20:18:20  danielpharos
+#Removed a redundant import.
+#
 #Revision 1.51  2007/08/21 20:34:35  danielpharos
 #Another of mine upload-mistakes. I think I should have my brains checked :|
 #

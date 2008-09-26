@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.442  2008/09/23 09:57:25  danielpharos
+//Updated to latest DevIL SDK release.
+//
 //Revision 1.441  2008/09/22 23:11:11  cdunde
 //Updates for Model Editor Linear and Bone handles.
 //
@@ -3102,9 +3105,9 @@ QQRKSRC1
         BuildPgm3  = "C:\Program Files\Return to Castle Wolfenstein\QuArk files\q3map_2.5.16_win32_x86\q3map2.exe"
         BuildArgs3 = "-game "$22"wolf"$22" -fs_basepath "$22"%basepath%"$22" -light "$22"%file%"$22""
         BuildPgm4 = "BSPC.EXE"
-        BuildArgs4 = "-ext _b0 -cfg "$22"%buildpgmsdir%\aascfg_lg.c"$22" -bsp2aas "$22"%basepath%\%output%\%file%.bsp"$22""
+        BuildArgs4 = "-ext _b0 -cfg "$22"%buildpgmsdir%\aascfg_lg.c"$22" -bsp2aas "$22"%basepath%\%gamedir%\%file%.bsp"$22""
         BuildPgm5 = "BSPC.EXE"
-        BuildArgs5 = "-ext _b1 -cfg "$22"%buildpgmsdir%\aascfg_sm.c"$22" -bsp2aas "$22"%basepath%\%output%\%file%.bsp"$22""
+        BuildArgs5 = "-ext _b1 -cfg "$22"%buildpgmsdir%\aascfg_sm.c"$22" -bsp2aas "$22"%basepath%\%gamedir%\%file%.bsp"$22""
         BuildPgm6 = "Rename.bat"
         BuildArgs6 = "%filename% "$22"%mappath%"$22""
 
