@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2008/08/25 18:57:54  danielpharos
+Update to move towards a releasable state.
+
 Revision 1.10  2008/08/11 23:15:10  danielpharos
 Updated updater: it is now downloading and parsing the notifications file
 
@@ -396,7 +399,7 @@ begin
           end;
 
           Setup := SetupSubSet(ssGeneral, 'Update');
-          if UpdateIndexFile.NotificationNR>0 then
+          if (Setup.Specifics.Values['CheckForNotifications']<>'') and (UpdateIndexFile.NotificationNR>0) then
           begin
             for I:=0 to UpdateIndexFile.NotificationNR-1 do
             begin
@@ -446,7 +449,7 @@ begin
             end;
           end;
 
-          if UpdateIndexFile.PackageNR>0 then
+          if (Setup.Specifics.Values['CheckForPackages']<>'') and (UpdateIndexFile.PackageNR>0) then
           begin
             for I:=0 to UpdateIndexFile.PackageNR-1 do
             begin

@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.446  2008/09/26 21:37:37  danielpharos
+//Fixed slashes in Steam and HL2 paths.
+//
 //Revision 1.445  2008/09/26 20:28:33  danielpharos
 //Oops: forgot to update other games.
 //
@@ -1583,6 +1586,8 @@ QQRKSRC1
       {
         UpdateCheck = "1"
         UpdateCheckOnline = "1"
+        CheckForNotifications = "1"   //Currently hidden
+        CheckForPackages = ""   //Currently hidden
         AutomaticInstall = ""
         SingleInstance = "1"
         Form = "GeneralUpdate"
