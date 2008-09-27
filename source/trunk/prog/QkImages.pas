@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.24  2008/09/06 15:56:59  danielpharos
+Moved exception code into separate file.
+
 Revision 1.23  2008/08/28 19:01:17  danielpharos
 Added a bunch of DevIL setting, and re-enabled DevIL DDS file saving.
 
@@ -189,8 +192,8 @@ function TestConversionImages(var I: Integer{; Exclude: QImage}) : QImageClass;
 
 implementation
 
-uses QkPcx, QkBmp, QkTga, QkDDS, QkJpg, QkPng, QkSoF, QkVTF, TbPalette, qmath,
-     Quarkx, QkExceptions, CCode, Undo, Travail, Setup, Logging;
+uses QkPcx, QkBmp, QkTga, QkDDS, QkFTX, QkJpg, QkPng, QkSoF, QkVTF, TbPalette,
+     qmath, Quarkx, QkExceptions, CCode, Undo, Travail, Setup, Logging;
 
 {$R *.DFM}
 
@@ -215,7 +218,7 @@ end;*)
 
 function TestConversionImages(var I: Integer) : QImageClass;
 const
- IntlImages: array[1..8] of QImageClass = (QPcx, QTga, QDDS, QBmp, QJPeg, QPng, QM32, QVTF);
+ IntlImages: array[1..9] of QImageClass = (QPcx, QTga, QDDS, QBmp, QJPeg, QPng, QM32, QFTX, QVTF);
 begin
  if I>High(IntlImages) then
   begin
