@@ -2,7 +2,7 @@ title: Configuration
 author: cdunde
 
 In this short tutorial I will be showing you how to quickly setup Quark to compile maps
-for the Torque game engine. To create maps for Torque you must download a version of its <g>build tool</g>, the <a href="http://quark.planetquake.gamespy.com/downloads/build_tools/TORQUEmap2dif_DEBUG.zip">map2dif_DEBUG.exe</a> file. There are a number of different versions available on the Internet, but I recommend using the <a href="http://quark.planetquake.gamespy.com/downloads/build_tools/TORQUEmap2dif_DEBUG.zip">0.900r-beta version</a>.
+for the Torque game engine. To create maps for Torque you must download a version of its <g>build tool</g>, the <a href="http://quark.planetquake.gamespy.com/download_tools.php3">map2dif_DEBUG.exe</a> file. There are a number of different versions available on the Internet, but I recommend using the <a href="http://quark.planetquake.gamespy.com/download_tools.php3">0.900r-beta version</a>.
 
 <table border=0 cellspacing=0>
 <tr><td valign=top align=left>

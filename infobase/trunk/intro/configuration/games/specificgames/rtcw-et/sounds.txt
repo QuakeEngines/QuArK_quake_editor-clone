@@ -14,8 +14,8 @@ needs to be extracted from the games .pak files.
 <b>Extracting .pak files & their placement</b>
 
 The games .pak files are nothing more than a type of .zip compression file and can easily be accessed
-to extract individual files or entire folders by either using <a href="http://www.WinZip.com/">WinZip</a>,
-<a href="http://quark.planetquake.gamespy.com/downloads/pakscape-011.zip">PakScape v0.11</a> (my personal
+to extract individual files or entire folders by either using a program that can extract ZIP files,
+<a href="http://quark.planetquake.gamespy.com/download_tools.php3">PakScape v0.11</a> (my personal
 favorite) or any other archive program.
 
 Once you have opened the .pak file, select the "sound" folder and drag it into your RTCW-ET "etmain" folder.
@@ -30,8 +30,8 @@ in that folder and select it for sound editing use. There is one important crite
 You can, however, use lower dashes _ instead of spaces to separate words in its name.
 
 If you wish to distribute any custom sound files with your map, just create a .pak file
-(using <a href="http://www.WinZip.com/">WinZip</a> or
-<a href="http://quark.planetquake.gamespy.com/downloads/pakscape-011.zip">PakScape v0.11</a>) and place a folder
+(using any ZIP-capible program and then renaming the ZIP-file to .pk3 or
+<a href="http://quark.planetquake.gamespy.com/download_tools.php3">PakScape v0.11</a>) and place a folder
 called "sound" in it with your custom.wav files located in that folder.
 
 When using a "sound file selector", there are a couple of nice functions that are available to you by clicking
