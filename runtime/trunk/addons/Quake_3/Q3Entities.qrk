@@ -4,6 +4,15 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.5  2008/05/21 18:15:23  cdunde
+//To add and\or activate Half-Life 2 functions: (all original code by Alexander)
+//1) to create extra Specifics setting handles for func_useableladder function (point0 & point1)
+//      func_breakable_glass and func_breakable_surf functions
+//      (lowerleft, upperleft, lowerright and upperright)
+//2) to draw special light entity lines for functions like light_spot that have the Specifics
+//      (angles, _cone, spotlightwidth and\or _inner_cone)
+//3) face displacement. Commented out at this time. believe bezier type code should be used instead.
+//
 //Revision 1.4  2008/05/14 20:38:57  cdunde
 //Fixed basic lighting in all games and a few other small typo errors.
 //
@@ -56,7 +65,7 @@ QQRKSRC1
         {
           origin = "0 0 0"
           angle = "360"
-          ;desc = "Player spawing postion for all Q3A maps."
+          ;desc = "Player spawing position for all Q3A maps."
         }
         info_player_intermission:e =
         {
@@ -138,14 +147,14 @@ QQRKSRC1
           origin = "0 0 0"
           angle = "360"
           wait = "10"
-          ;desc = "Short range multiple shots fired weapons decent power. Uses ammo_cells."
+          ;desc = "Short range rapid fire weapon with decent power. Uses ammo_cells."
         }
         weapon_bfg:e =
         {
           origin = "0 0 0"
           angle = "360"
           wait = "10"
-          ;desc = "Does this really need a explanation? Uses ammo_bfg."
+          ;desc = "Super powerful weapon. Uses ammo_bfg."
         }
         weapon_grapplinghook:e =
         {
@@ -209,7 +218,7 @@ QQRKSRC1
         info_camp:e =
         {
           origin = "0 0 0"
-          ;desc = "This atttracts bots which have a camping preference in their AI characteristics. It should be placed at least 32 units away from any brush surface."
+          ;desc = "This attracts bots which have a camping preference in their AI characteristics. It should be placed at least 32 units away from any brush surface."
         }
         item_botroam:e =
         {
@@ -230,7 +239,7 @@ QQRKSRC1
         {
           origin = "0 0 0"
           angle = "360"
-          ;desc = "This will turn the closet face of a brush to this entity into a portal and project the view of the misc_portal_camera onto face."
+          ;desc = "This will turn the closest face of a brush to this entity into a portal and project the view of the misc_portal_camera onto face."
         }
         misc_teleporter_dest:e =
         {
@@ -265,7 +274,7 @@ QQRKSRC1
         {
           angle = "360"
           ;incl = "defpoly"
-          ;desc = "A standard door"
+          ;desc = "A standard door."
         }
 // Maleficus: this entity is not in the game.
 // func_door_rotating:b =
@@ -310,7 +319,7 @@ QQRKSRC1
         func_rotating:b =
         {
           ;incl = "defpoly"
-          ;desc = "This is a rotating brush"
+          ;desc = "This is a rotating brush."
         }
       }
       Holdable & Path Entities.qtxfolder =
@@ -319,13 +328,13 @@ QQRKSRC1
         {
           origin = "0 0 0"
           angle = "360"
-          ;desc = "Used to restore players heath when activated."
+          ;desc = "Used to restore players health when activated."
         }
         holdable_teleporter:e =
         {
           origin = "0 0 0"
           angle = "360"
-          ;desc = "Used to teleport the playr to a random info_player_deathmatch when activated."
+          ;desc = "Used to teleport the player to a random info_player_deathmatch when activated."
         }
         path_corner:e =
         {
@@ -382,7 +391,7 @@ QQRKSRC1
         {
           origin = "0 0 0"
           angle = "360"
-          ;desc = "Sheesh everyone should know this."
+          ;desc = "Quad damage power-up."
         }
         item_regen:e =
         {
@@ -477,7 +486,7 @@ QQRKSRC1
           origin = "0 0 0"
           ;desc = "Prints a message to the players screen."
         }
-      //Maleficus: though its kinda broke, no reason to leave it out.
+      //Maleficus: though its kinda broken, no reason to leave it out.
         target_push:e =
         {
           origin = "0 0 0"
@@ -486,7 +495,7 @@ QQRKSRC1
         target_relay:e =
         {
           origin = "0 0 0"
-          ;desc = "Used for a realy between triggers. Can only be triggered by other triggers."
+          ;desc = "Used for a relay between triggers. Can only be triggered by other triggers."
         }
         target_remove_powerups:e =
         {
@@ -663,7 +672,7 @@ QQRKSRC1
             "Intro_09"$0D
             "Intro_10"$0D
             "Intro_11"$0D
-                    "Lostlead"$0D
+            "Lostlead"$0D
             "One"$0D
             "Perfect"$0D
             "Prepare"$0D
@@ -709,7 +718,7 @@ QQRKSRC1
             "/sound/feedback/teamstied.wav"$0D
             "/sound/feedback/three.wav"$0D
             "/sound/feedback/tiedlead.wav"$0D
-                    "/sound/feedback/two"
+            "/sound/feedback/two.wav"
       }
       noise: =
       {
@@ -1432,7 +1441,6 @@ QQRKSRC1
         "sound/player/watr_un.wav"
     }
 
-
     noise: =
       {
         typ = "C"
@@ -1801,7 +1809,6 @@ QQRKSRC1
         "Ambient: Ominous"$0D
         "Ambient: Rumble"$0D
         "Drones: Amb1"
-
 
         values =
         "/sound/world/1shot_droneboys_01.wav"$0D
@@ -3536,7 +3543,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not spawn in a Teamplay or CTF game Default value is 0."
+        Hint = "This item will not spawn in a Teamplay or CTF game. Default value is 0."
       }
 // Maleficus: here is the missing ammo specifics, now in place for ALL the ammo.
       count: =
@@ -3580,7 +3587,7 @@ QQRKSRC1
       wait: =
       {
         Txt = "&"
-        Hint = "Time that the item waits to respawn.(Default is 40, -1 never respawns)"
+        Hint = "Time that the item waits to respawn. (Default is 40, -1 never respawns)"
       }
       random: =
       {
@@ -3595,12 +3602,12 @@ QQRKSRC1
       notfree: =
       {
         Txt = "&"
-        Hint = "This item will not spawn in a Free for All or Tournament game Default value is 0."
+        Hint = "This item will not spawn in a Free for All or Tournament game. Default value is 0."
       }
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not spawn in a Teamplay or CTF game Default value is 0."
+        Hint = "This item will not spawn in a Teamplay or CTF game. Default value is 0."
       }
       count: =
       {
@@ -3658,12 +3665,12 @@ QQRKSRC1
       notfree: =
       {
         Txt = "&"
-        Hint = "This item will not spawn in a Free for All or Tournament game Default value is 0."
+        Hint = "This item will not spawn in a Free for All or Tournament game. Default value is 0."
       }
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not spawn in a Teamplay or CTF game Default value is 0."
+        Hint = "This item will not spawn in a Teamplay or CTF game. Default value is 0."
       }
       count: =
       {
@@ -3721,12 +3728,12 @@ QQRKSRC1
       notfree: =
       {
         Txt = "&"
-        Hint = "This item will not spawn in a Free for All or Tournament game Default value is 0."
+        Hint = "This item will not spawn in a Free for All or Tournament game. Default value is 0."
       }
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not spawn in a Teamplay or CTF game Default value is 0."
+        Hint = "This item will not spawn in a Teamplay or CTF game. Default value is 0."
       }
       count: =
       {
@@ -3784,12 +3791,12 @@ QQRKSRC1
       notfree: =
       {
         Txt = "&"
-        Hint = "This item will not spawn in a Free for All or Tournament game Default value is 0."
+        Hint = "This item will not spawn in a Free for All or Tournament game. Default value is 0."
       }
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not spawn in a Teamplay or CTF game Default value is 0."
+        Hint = "This item will not spawn in a Teamplay or CTF game. Default value is 0."
       }
       count: =
       {
@@ -3847,12 +3854,12 @@ QQRKSRC1
       notfree: =
       {
         Txt = "&"
-        Hint = "This item will not spawn in a Free for All or Tournament game Default value is 0."
+        Hint = "This item will not spawn in a Free for All or Tournament game. Default value is 0."
       }
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not spawn in a Teamplay or CTF game Default value is 0."
+        Hint = "This item will not spawn in a Teamplay or CTF game. Default value is 0."
       }
       count: =
       {
@@ -3910,12 +3917,12 @@ QQRKSRC1
       notfree: =
       {
         Txt = "&"
-        Hint = "This item will not spawn in a Free for All or Tournament game Default value is 0."
+        Hint = "This item will not spawn in a Free for All or Tournament game. Default value is 0."
       }
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not spawn in a Teamplay or CTF game Default value is 0."
+        Hint = "This item will not spawn in a Teamplay or CTF game. Default value is 0."
       }
       count: =
       {
@@ -3973,12 +3980,12 @@ QQRKSRC1
       notfree: =
       {
         Txt = "&"
-        Hint = "This item will not spawn in a Free for All or Tournament game Default value is 0."
+        Hint = "This item will not spawn in a Free for All or Tournament game. Default value is 0."
       }
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not spawn in a Teamplay or CTF game Default value is 0."
+        Hint = "This item will not spawn in a Teamplay or CTF game. Default value is 0."
       }
       count: =
       {

@@ -3,6 +3,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.11  2008/09/14 12:55:03  danielpharos
+//Changes to Help system: All forms now have a customizable help-link. Also, added an fallback option to the online infobase docs.
+//
 //Revision 1.10  2005/10/16 18:48:04  cdunde
 //To remove letters referring to depository folders that
 // made filtering them out for distribution harder to do
@@ -3620,7 +3623,7 @@ QQRKSRC1
           ;desc = "Ammo for the Nail Gun"
         }
       }
-      Hodable.qtxfolder =
+      Holdable.qtxfolder =
       {
         holdable_kamikaze:e =
         {
