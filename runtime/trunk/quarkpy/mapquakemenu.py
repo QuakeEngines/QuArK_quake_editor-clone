@@ -17,6 +17,7 @@ from qdictionnary import Strings
 from maputils import *
 import qmenu
 import qquake
+import qutils
 
 
 # Constants for BuildCheck extensions!
@@ -483,14 +484,17 @@ def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile,
                       cmdline = cmdline + " %mapfile%"
 
                     # Search and replace any user-variable
-                    cmdline = cmdline.replace("%mappath%",   argument_mappath)
-                    cmdline = cmdline.replace("%mapfile%",   argument_mapfile)
-                    cmdline = cmdline.replace("%file%",      argument_file)
-                    cmdline = cmdline.replace("%filename%",  argument_filename)
-                    cmdline = cmdline.replace("%basepath%",  setupdirectory)
-                    cmdline = cmdline.replace("%gamedir%",   setuptmpquark)
-                    cmdline = cmdline.replace("%quarkpath%", quarkx.exepath)
-                    cmdline = cmdline.replace("%grouppath%", argument_grouppath)
+                    cmdline = cmdline.replace("%mappath%",    argument_mappath)
+                    cmdline = cmdline.replace("%mapfile%",    argument_mapfile)
+                    cmdline = cmdline.replace("%file%",       argument_file)
+                    cmdline = cmdline.replace("%filename%",   argument_filename)
+                    cmdline = cmdline.replace("%basepath%",   setupdirectory)
+                    cmdline = cmdline.replace("%gamedir%",    setuptmpquark)
+                    cmdline = cmdline.replace("%quarkpath%",  quarkx.exepath)
+                    cmdline = cmdline.replace("%steamappid%", setup["SteamAppID"])
+                    cmdline = cmdline.replace("%steamdir%",  quarkx.setupsubset(SS_GAMES, "Steam")["Directory"])
+                    cmdline = cmdline.replace("%steamuser%",  quarkx.setupsubset(SS_GAMES, "Steam")["SteamUser"])
+                    cmdline = cmdline.replace("%grouppath%",  argument_grouppath)
                     if setup["BuildPgmsDir"] is not None:
                        cmdline = cmdline.replace("%buildpgmsdir%", setup["BuildPgmsDir"])
 
@@ -625,8 +629,6 @@ def prepAuxFileMenuItem(item,extkey,defext):
         item.editor = editor
         item.auxfilename = auxfilename
 
-import mapbrushnum
-
 def BrushNumClick(m):
     import mapbrushnum
     mapbrushnum.LoadBrushNums(m.editor, m.auxfilename)
@@ -682,6 +684,9 @@ def QuakeMenu(editor):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.54  2008/09/26 20:08:46  danielpharos
+#Small changes to path-code, to make it more consistent.
+#
 #Revision 1.53  2008/09/26 20:07:34  danielpharos
 #Removed empty parameter option for outputfile().
 #

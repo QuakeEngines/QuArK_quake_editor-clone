@@ -14,6 +14,7 @@ import quarkx
 from qdictionnary import Strings
 from maputils import *
 import qconsole
+import qutils
 
 
 def BuildConsole():
@@ -104,13 +105,16 @@ class GameConsole(BatchConsole):
                 if runMapCmdLine:
                     cmdline = cmdline + " " + runMapCmdLine
 
-                cmdline = cmdline.replace("%mappath%",   argument_mappath)
-                cmdline = cmdline.replace("%mapfile%",   argument_mapfile)
-                cmdline = cmdline.replace("%file%",      argument_file)
-                cmdline = cmdline.replace("%filename%",  argument_filename)
-                cmdline = cmdline.replace("%basepath%",  dir)
-                cmdline = cmdline.replace("%gamedir%",   tmpquarkdir)
-                cmdline = cmdline.replace("%quarkpath%", quarkx.exepath)
+                cmdline = cmdline.replace("%mappath%",    argument_mappath)
+                cmdline = cmdline.replace("%mapfile%",    argument_mapfile)
+                cmdline = cmdline.replace("%file%",       argument_file)
+                cmdline = cmdline.replace("%filename%",   argument_filename)
+                cmdline = cmdline.replace("%basepath%",   dir)
+                cmdline = cmdline.replace("%gamedir%",    tmpquarkdir)
+                cmdline = cmdline.replace("%quarkpath%",  quarkx.exepath)
+                cmdline = cmdline.replace("%steamappid%", setup["SteamAppID"])
+                cmdline = cmdline.replace("%steamdir%",  quarkx.setupsubset(SS_GAMES, "Steam")["Directory"])
+                cmdline = cmdline.replace("%steamuser%",  quarkx.setupsubset(SS_GAMES, "Steam")["SteamUser"])
 
         BatchConsole.__init__(self, cmdline, dir, next)
 
@@ -204,6 +208,9 @@ class GameConsole(BatchConsole):
 #
 #
 #$Log$
+#Revision 1.19  2008/09/26 20:08:46  danielpharos
+#Small changes to path-code, to make it more consistent.
+#
 #Revision 1.18  2008/09/26 19:39:14  danielpharos
 #Removed redundant call.
 #
