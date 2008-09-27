@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.449  2008/09/27 13:24:30  danielpharos
+//Added all missing file formats I could find, and sorted the associate file list etc.
+//
 //Revision 1.448  2008/09/27 12:08:59  danielpharos
 //Added Steam %-replace texts. Still experimentally.
 //
@@ -8901,7 +8904,7 @@ QQRKSRC1
     GeneralExternalEditors:form =
     {
       Style = "3"
-      Info: = {Typ="S" Txt="External editors to called from QuArK"}
+      Info: = {Typ="S" Txt="External editors to be called from QuArK"}
       Info2: = {Typ="S" Txt = ""}
       //.qrk: = { Txt="QRK files" externaledit = ! }
       //.qkm: = { Txt="QKM map files" externaledit = ! }
