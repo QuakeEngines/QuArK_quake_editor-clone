@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.450  2008/09/27 13:34:16  danielpharos
+//Fixed a typo.
+//
 //Revision 1.449  2008/09/27 13:24:30  danielpharos
 //Added all missing file formats I could find, and sorted the associate file list etc.
 //
@@ -2730,7 +2733,7 @@ QQRKSRC1
         Game = "NEXUIZ"
         Code = "z" // Hardcoded value in Setup.PAS
 
-        Program = "nexuiz-sdl.exe +map  %filename% +seta sv_pure 0"
+        Program = "nexuiz-sdl.exe +map %filename% +seta sv_pure 0"
         Directory = "C:\Program Files\Nexuiz"
         CheckDirectory = "nexuiz-sdl.exe"   // hidden setting
 
@@ -3134,7 +3137,7 @@ QQRKSRC1
         Game = "RTCW"
         Code = "d" // Hardcoded value in Setup.PAS
 
-        Program = "WOLFSP.EXE  +set sv_cheats 1 +set fs_homepath main +set fs_game tmpQuArK +set nextmap "$22"spdevmap %filename%"$22" +exec"
+        Program = "WOLFSP.EXE +set sv_cheats 1 +set fs_homepath main +set fs_game %gamedir% +set nextmap "$22"spdevmap %filename%"$22" +exec"
         Directory = "C:\Program Files\Return to Castle Wolfenstein"
         CheckDirectory = "*.EXE"   // hidden setting
         CD = ""
@@ -3206,7 +3209,7 @@ QQRKSRC1
         Game = "RTCW-ET"
         Code = "n" // Hardcoded value in Setup.PAS
 
-        Program = "ET.EXE +set sv_cheats 1 +set sv_pure 0 +set g_gametype 2 +set fs_homepath etmain +set fs_game tmpQuArK +devmap "$22"%filename%"$22" +exec"
+        Program = "ET.EXE +set sv_cheats 1 +set sv_pure 0 +set g_gametype 2 +set fs_homepath etmain +set fs_game %gamedir% +devmap "$22"%filename%"$22" +exec"
         Directory = "C:\Program Files\Wolfenstein - Enemy Territory"
         CheckDirectory = "ET.exe"   // hidden setting
         CD = ""
@@ -3748,9 +3751,9 @@ QQRKSRC1
         // WildWest game add on by SilverPaladin (Capt. Queeg to WildWest folk)
         Game = "WildWest"
         Code = "w" // Hardcoded value in Setup.PAS
-        Program = "WOLFMP.EXE +set sv_pure 0 +set fs_game WildWest "
+        Program = "WOLFMP.EXE +set sv_pure 0 +set fs_game %gamedir%"
 
-        Directory = "C:\Progra~1\Return~1\"
+        Directory = "C:\Program Files\Return to Castle Wolfenstein"
         CheckDirectory = "WildWest.EXE"
 
         CD = ""
@@ -3763,19 +3766,19 @@ QQRKSRC1
         ForceFaceFlags = ""
         AlwaysWriteThreeFields = "1"
         StupidBuildToolKludge = "" // GTKRadiant's Q3MAP.EXE seems to work, when '-game wolf' and -fs_basepath <gamepath>' are applied.
-        BuildPgmsDir = "c:\Progra~1\Return~1\Radiant"
+        BuildPgmsDir = "C:\Program Files\Return to Castle Wolfenstein\Radiant"
         BuildPgm1  = "Q3MAP2.EXE"
-        BuildArgs1 = "-game wolf -fs_basepath "$22"%basepath%."$22" -fs_game WildWest -bsp -meta "$22"%mapfile%"$22
+        BuildArgs1 = "-game wolf -fs_basepath "$22"%basepath%."$22" -fs_game %gamedir% -bsp -meta "$22"%mapfile%"$22
         BuildCheck1= "+BSP,-LIN{LoadLinFile}"
         BuildPgm2  = "Q3MAP2.EXE"
-        BuildArgs2 = "-game wolf -fs_basepath "$22"%basepath%."$22" -fs_game WildWest -vis -saveprt "$22"%mapfile%"$22
+        BuildArgs2 = "-game wolf -fs_basepath "$22"%basepath%."$22" -fs_game %gamedir% -vis -saveprt "$22"%mapfile%"$22
         BuildPgm3  = "Q3MAP2.EXE"
-        BuildArgs3 = "-game wolf -fs_basepath "$22"%basepath%."$22" -fs_game WildWest -light -bounce 10 -fast -samples 3 -thresh 0.3 "$22"%mapfile%"$22
+        BuildArgs3 = "-game wolf -fs_basepath "$22"%basepath%."$22" -fs_game %gamedir% -light -bounce 10 -fast -samples 3 -thresh 0.3 "$22"%mapfile%"$22
         BuildPgm4  = "Q3MAP2.EXE"
-        BuildArgs4 = "-game wolf -fs_basepath "$22"%basepath%."$22" -fs_game WildWest "$22"%mapfile%"$22
+        BuildArgs4 = "-game wolf -fs_basepath "$22"%basepath%."$22" -fs_game %gamedir% "$22"%mapfile%"$22
         BuildCheck4= "+BSP,-LIN{LoadLinFile}"
         BuildPgm5  = "Q3MAP2.EXE"
-        BuildArgs5 = "-game wolf -fs_basepath "$22"%basepath%."$22" -fs_game WildWest -vlight "$22"%mapfile%"$22
+        BuildArgs5 = "-game wolf -fs_basepath "$22"%basepath%."$22" -fs_game %gamedir% -vlight "$22"%mapfile%"$22
 
         TexturesPath = "textures/"
         ShadersPath = "scripts/"
@@ -6160,10 +6163,10 @@ QQRKSRC1
       Program: = {
         Typ = "C"     // combo box
         Txt = "NEXUIZ command-line"
-        Items = "nexuiz-sdl.exe +map  %filename% +seta sv_pure 0"
-             $0D"nexuiz-sdl.exe +map  %filename% +seta sv_cheats "$22"1"$22" +bind ~ "$22"toggleconsole"$22" +seta ui_console "$22"1"$22" +bind g "$22"god"$22" + bind i "$22"give all"$22" + bind n "$22"noclip"$22
-             $0D"nexuiz.exe +map  %filename% +seta sv_pure 0"
-             $0D"nexuiz.exe +map  %filename% +bind ~ "$22"toggleconsole"$22" +seta ui_console "$22"1"$22" +bind g "$22"god"$22" + bind i "$22"give all"$22" + bind n "$22"noclip"$22
+        Items = "nexuiz-sdl.exe +map %filename% +seta sv_pure 0"
+             $0D"nexuiz-sdl.exe +map %filename% +seta sv_cheats "$22"1"$22" +bind ~ "$22"toggleconsole"$22" +seta ui_console "$22"1"$22" +bind g "$22"god"$22" + bind i "$22"give all"$22" + bind n "$22"noclip"$22
+             $0D"nexuiz.exe +map %filename% +seta sv_pure 0"
+             $0D"nexuiz.exe +map %filename% +bind ~ "$22"toggleconsole"$22" +seta ui_console "$22"1"$22" +bind g "$22"god"$22" + bind i "$22"give all"$22" + bind n "$22"noclip"$22
         t_ProgramHint=!
       }
       Directory: =
@@ -6773,15 +6776,9 @@ QQRKSRC1
       Program: = {
         Typ = "C"     // combo box
         Txt = "RTCW command-line"
-        Items = "WOLFSP.EXE  +set sv_cheats 1 +set fs_homepath main +set fs_game tmpQuArK +set nextmap "$22"spdevmap %filename%"$22" +exec"
-                $0D"WOLFMP.EXE  +set sv_cheats 1 +set fs_homepath main +set fs_game tmpQuArK +set nextmap "$22"spdevmap %filename%"$22" +exec"
+        Items = "WOLFSP.EXE +set sv_cheats 1 +set fs_homepath main +set fs_game %gamedir% +set nextmap "$22"spdevmap %filename%"$22" +exec"
+                $0D"WOLFMP.EXE +set sv_cheats 1 +set fs_homepath main +set fs_game %gamedir% +set nextmap "$22"spdevmap %filename%"$22" +exec"
                 $0D"ET.EXE +set sv_pure 0"
-                $0D"(another exe) +set sv_pure 0"
-        Values = "1"
-                 $0D"2"
-                 $0D"3"
-                 $0D"4"
-        
         t_ProgramHint=!
       }
       Directory: =
@@ -6885,13 +6882,9 @@ QQRKSRC1
       Program: = {
         Typ = "C"     // combo box
         Txt = "RTCW-ET command-line"
-        Items = "ET.EXE +set sv_cheats 1 +set sv_pure 0 +set g_gametype 2 +set fs_homepath etmain +set fs_game tmpQuArK +devmap "$22"%filename%"$22" +exec"
+        Items = "ET.EXE +set sv_cheats 1 +set sv_pure 0 +set g_gametype 2 +set fs_homepath etmain +set fs_game %gamedir% +devmap "$22"%filename%"$22" +exec"
                 $0D"ET.EXE +set sv_pure 0"
                 $0D"(another exe) +set sv_pure 0"
-        Values = "1"
-                 $0D"2"
-                 $0D"3"
-        
         t_ProgramHint=!
       }
       Directory: =
@@ -7763,7 +7756,7 @@ QQRKSRC1
       Program: = {
         Typ = "C"     // combo box
         Txt = "WildWest command-line"
-        Items = "WOLFMP.EXE +set sv_pure 0 +set fs_Game WildWest"
+        Items = "WOLFMP.EXE +set sv_pure 0 +set fs_Game %gamedir%"
         t_ProgramHint=!
       }
       Directory: =
