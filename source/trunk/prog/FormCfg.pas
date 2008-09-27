@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.43  2008/09/06 15:57:03  danielpharos
+Moved exception code into separate file.
+
 Revision 1.42  2008/08/21 11:42:22  danielpharos
 Stop allowing changing of specifics when AllowEdit is not set.
 
@@ -1706,8 +1709,11 @@ begin
   Result:=Text
  else
   begin
-   GetSingleSpec(SourceSpec, Arg);
-   Result:=Copy(Text, 1, J-1) + Arg + Copy(Text, J+2, MaxInt);
+   if GetSingleSpec(SourceSpec, Arg) <> csNowhere then
+     Result:=Copy(Text, 1, J-1) + Arg + Copy(Text, J+2, MaxInt)
+   else
+     //No corresponding data for %s; let it be (might have misinterpreted something)
+     Result:=Text;
   end;
 end;
 
