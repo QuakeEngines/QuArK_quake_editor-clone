@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.448  2008/09/27 12:08:59  danielpharos
+//Added Steam %-replace texts. Still experimentally.
+//
 //Revision 1.447  2008/09/27 10:18:23  danielpharos
 //Disable update package check for now.
 //
@@ -1619,65 +1622,98 @@ QQRKSRC1
         .qrk = "!"     iqrk = '1'
         .qkm = "!"     iqkm = '2'
         .map = "1"     imap = '2'
+        .hmf = "1"     ihmf = '2'
         .vmf = "1"     ivmf = '2'
+        .bsp = "1"     ibsp = '3'
         .qkl = "!"     iqkl = '4'
         .mdl = "1"     imdl = '4'
         .md2 = "1"     imd2 = '4'
         .md3 = "1"     imd3 = '4'
+        .fm  = "1"     ifm  = '4'
         .pak = "1"     ipak = '5'
-        .sin = "1"     isin = '5'
         .pk3 = "1"     ipk3 = '5'
         .pk4 = "1"     ipk4 = '5'
+        .sin = "1"     isin = '5'
         .iwd = "1"     iiwd = '5'
-        .bsp = "1"     ibsp = '3'
+        .gcf = "1"     igcf = '5'
+        .vl2 = "1"     ivl2 = '5'
         .qc  = "1"     iqc  = '8'
         .hc  = "1"     ihc  = '8'
+        .cs  = "1"     ics  = '8'
         .wad = "1"     iwad = '9'
         .wal = "1"     iwal = '10'
         .swl = "1"     iswl = '10'
         .m8  = "1"     im8  = '10'
-        .pcx = ""      ipcx = '7'
+        .m32 = "1"     im32 = '10'
+        .shader = "1"  ishader = '10'
+        .mtr = "1"     imtr = '10'
+        .vmt = "1"     ivmt = '10'
         .bmp = ""      ibmp = '7'
+        .pcx = ""      ipcx = '7'
         .tga = ""      itga = '7'
         .jpg = ""      ijpg = '7'
         .png = ""      ipng = '7'
         .dds = ""      idds = '7'
         .vtf = ""      ivtf = '7'
-        .cin = "1"     icin = '6'
+        .ftx = ""      iftx = '7'
+        .spr = ""
+        .sp2 = ""
         .wav = ""
+        .cin = "1"     icin = '6'
         .cfg = ""      icfg = '11'
         .qme = ""
+        .txt = ""
         .zip = ""      izip = '5'
         Form = "GeneralAssociations"
       }
       External editors:config =
       {
         Form = "GeneralExternalEditors"
+        .qrk = "Notepad.exe"
+        .qkm = ""
+        .map = "Notepad.exe"
+        .hmf = "Notepad.exe"
+        .vmf = "Notepad.exe"
+        .bsp = "<open>"
+        .qkl = ""
+        .mdl = "<open>"
+        .md2 = "<open>"
+        .md3 = "<open>"
+        .fm  = "<open>"
+        .pak = "<open>"
+        .pk3 = "<open>"
+        .pk4 = "<open>"
+        .sin = ""
+        .iwd = ""
+        .gcf = ""
+        .vl2 = ""
+        .qc  = "Notepad.exe"
+        .hc  = "Notepad.exe"
+        .cs  = "Notepad.exe"
+        .wad = "<open>"
+        .wal = ""
+        .swl = ""
+        .m8  = ""
+        .m32 = ""
+        .shader = "Notepad.exe"
+        .mtr = "Notepad.exe"
+        .vmt = "Notepad.exe"
+        .bmp = "<open>"
         .pcx = ""
         .tga = ""
-        .bmp = "<open>"
         .jpg = ""
         .png = ""
         .dds = ""
         .vtf = ""
+        .ftx = ""
+        .spr = ""
+        .sp2 = ""
         .wav = "<edit>"
         .cin = "<open>"
-        .mdl = "<open>"
-        .md2 = "<open>"
-        .md3 = "<open>"
-        .map = "Notepad.exe"
-        .wal = ""
-        .swl = ""
-        .m8  = ""
-        .pak = "<open>"
-        .pk3 = "<open>" //DECKER
-        .pk4 = "<open>"
-        .iwd = "<open>"
-        .sin = ""
-        .bsp = "<open>"
-        .wad = "<open>"
-        .qc  = "Notepad.exe"
-        .qrk = "Notepad.exe"
+        .cfg = ""
+        .qme = ""
+        .txt = ""
+        .zip = ""
       }
       HotKeys:config =
       {
@@ -8867,29 +8903,51 @@ QQRKSRC1
       Style = "3"
       Info: = {Typ="S" Txt="External editors to called from QuArK"}
       Info2: = {Typ="S" Txt = ""}
-      .pcx: = { Txt="PCX images" externaledit = ! }
-      .tga: = { Txt="TGA images" externaledit = ! }
-      .bmp: = { Txt="BMP images" externaledit = ! }
-      .jpg: = { Txt="JPG images" externaledit = ! }
-      .png: = { Txt="PNG images" externaledit = ! }
-      .dds: = { Txt="DDS images" externaledit = ! }
-      .vtf: = { Txt="VTF images" externaledit = ! }
-      .wav: = { Txt="WAV sounds" externaledit = ! }
-      .cin: = { Txt="CIN videos" externaledit = ! }
+      //.qrk: = { Txt="QRK files" externaledit = ! }
+      //.qkm: = { Txt="QKM map files" externaledit = ! }
+      .map: = { Txt="MAP map files" externaledit = ! }
+      .hmf: = { Txt="HMF map files" externaledit = ! }
+      .vmf: = { Txt="VMF map files" externaledit = ! }
+      .bsp: = { Txt="BSP compiled maps" externaledit = ! }
+      //.qkl: = { Txt="QKL models" externaledit = ! }
       .mdl: = { Txt="MDL models" externaledit = ! }
       .md2: = { Txt="MD2 models" externaledit = ! }
       .md3: = { Txt="MD3 models" externaledit = ! }
-      .map: = { Txt="MAP text files" externaledit = ! }
-      .wal: = { Txt="WAL textures" externaledit = ! }
-      .swl: = { Txt="SWL Sin textures" externaledit = ! }
-      .m8:  = { Txt="M8 textures" externaledit = ! }
+      .fm:  = { Txt="FM models" externaledit = ! }
       .pak: = { Txt="PAK archives" externaledit = ! }
       .pk3: = { Txt="PK3 archives" externaledit = ! }
       .pk4: = { Txt="PK4 archives" externaledit = ! }
-      .iwd: = { Txt="IWD archives" externaledit = ! }
       .sin: = { Txt="SIN Pak archives" externaledit = ! }
-      .bsp: = { Txt="BSP compiled maps" externaledit = ! }
+      .iwd: = { Txt="IWD archives" externaledit = ! }
+      .gcf: = { Txt="GCF archives" externaledit = ! }
+      .vl2: = { Txt="VL2 archives" externaledit = ! }
+      .qc:  = { Txt="QC scripts" externaledit = ! }
+      .hc:  = { Txt="HC scripts" externaledit = ! }
+      .cs:  = { Txt="CS scripts" externaledit = ! }
       .wad: = { Txt="WAD texture lists" externaledit = ! }
+      .wal: = { Txt="WAL textures" externaledit = ! }
+      .swl: = { Txt="SWL Sin textures" externaledit = ! }
+      .m8:  = { Txt="M8 textures" externaledit = ! }
+      .m32: = { Txt="M32 textures" externaledit = ! }
+      .shader: = { Txt="SHADER shader lists" externaledit = ! }
+      .mtr: = { Txt="MTR materials" externaledit = ! }
+      .vmt: = { Txt="VMT materials" externaledit = ! }
+      .bmp: = { Txt="BMP images" externaledit = ! }
+      .pcx: = { Txt="PCX images" externaledit = ! }
+      .tga: = { Txt="TGA images" externaledit = ! }
+      .jpg: = { Txt="JPEG images" externaledit = ! }
+      .png: = { Txt="PNG images" externaledit = ! }
+      .dds: = { Txt="DDS images" externaledit = ! }
+      .vtf: = { Txt="VTF images" externaledit = ! }
+      .ftx: = { Txt="FTX images" externaledit = ! }
+      .spr: = { Txt="SPR sprites" externaledit = ! }
+      .sp2: = { Txt="SP2 sprites" externaledit = ! }
+      .wav: = { Txt="WAV sounds" externaledit = ! }
+      .cin: = { Txt="CIN videos" externaledit = ! }
+      //.cfg: = { Txt="CFG files" externaledit = ! }
+      //.qme: = { Txt="QME files" externaledit = ! }
+      .txt: = { Txt="TXT text files" externaledit = ! }
+      .zip: = { Txt="ZIP archives" externaledit = ! }
     }
     GeneralQuakeC:form =
     {
@@ -8921,34 +8979,49 @@ QQRKSRC1
       }
     //.qrk: = {Typ="X" Cap=".qrk" Txt="QuArK main file type"}
     //.qkm: = {Typ="X" Cap=".qkm" Txt="QuArK maps (if not in .qrk)"}
-      .map: = {Typ="X" Cap=".map" Txt="Standard Quake .map files"}
-      .vmf: = {Typ="X" Cap=".vmf" Txt="Valve map format .vmf files"}
+      .map: = {Typ="X" Cap=".map" Txt="Quake map files"}
+      .hmf: = {Typ="X" Cap=".hmf" Txt="6DX map files"}
+      .vmf: = {Typ="X" Cap=".vmf" Txt="Valve map format map files"}
+      .bsp: = {Typ="X" Cap=".bsp" Txt="Compiled maps"}
     //.qkl: = {Typ="X" Cap=".qkl" Txt="QuArK models (if not in .qrk)"}
       .mdl: = {Typ="X" Cap=".mdl" Txt="Standard Quake 1 Models"}
       .md2: = {Typ="X" Cap=".md2" Txt="Standard Quake 2 Models"}
       .md3: = {Typ="X" Cap=".md3" Txt="Standard Quake 3 Models"}
+      .fm:  = {Typ="X" Cap=".fm"  Txt="Heretic II Models"}
       .pak: = {Typ="X" Cap=".pak" Txt="PACK files"}
-      .sin: = {Typ="X" Cap=".sin" Txt="PACK files for Sin"}
       .pk3: = {Typ="X" Cap=".pk3" Txt="PACK files for Quake 3"}
       .pk4: = {Typ="X" Cap=".pk4" Txt="PACK files for Doom 3"}
+      .sin: = {Typ="X" Cap=".sin" Txt="PACK files for Sin"}
       .iwd: = {Typ="X" Cap=".iwd" Txt="PACK files for Call of Duty 2"}
-      .bsp: = {Typ="X" Cap=".bsp" Txt="Compiled maps"}
+      .gcf: = {Typ="X" Cap=".gcf" Txt="PACK files for Half-Life 2"}
+      .vl2: = {Typ="X" Cap=".vl2" Txt="PACK files for Tribe 2"}
       .qc:  = {Typ="X" Cap=".qc"  Txt="QuakeC Code (Quake 1)"}
       .hc:  = {Typ="X" Cap=".hc"  Txt="HexenC Code (Hexen II)"}
+      .cs:  = {Typ="X" Cap=".cs"  Txt="Tribes 2 Code"}
       .wad: = {Typ="X" Cap=".wad" Txt="Quake 1 Textures group"}
       .wal: = {Typ="X" Cap=".wal" Txt="Quake 2 Texture file"}
       .swl: = {Typ="X" Cap=".swl" Txt="Sin Texture file"}
       .m8:  = {Typ="X" Cap=".m8"  Txt="Heretic II Texture file"}
+      .m32: = {Typ="X" Cap=".m32" Txt="Soldier of Fortune Texture file"}
+      .shader: = {Typ="X" Cap=".shader" Txt="Quake 3 Shaderlist file"}
+      .mtr: = {Typ="X" Cap=".mtr" Txt="Doom 3 Material file"}
+      .vmt: = {Typ="X" Cap=".vmt" Txt="Half-Life 2 Material file"}
+      .bmp: = {Typ="X" Cap=".bmp" Txt="Standard Windows Bitmap"}
       .pcx: = {Typ="X" Cap=".pcx" Txt="PCX Images (Quake 2)"}
       .tga: = {Typ="X" Cap=".tga" Txt="TGA Images"}
       .jpg: = {Typ="X" Cap=".jpg" Txt="JPEG Images"}
-      .bmp: = {Typ="X" Cap=".bmp" Txt="Standard Windows Bitmap"}
+      .png: = {Typ="X" Cap=".png" Txt="PNG Images"}
       .dds: = {Typ="X" Cap=".dds" Txt="DDS Images"}
       .vtf: = {Typ="X" Cap=".vtf" Txt="VTF Images"}
+      .ftx: = {Typ="X" Cap=".ftx" Txt="FTX Images"}
+      .spr: = {Typ="X" Cap=".spr" Txt="SPR Sprites"}
+      .sp2: = {Typ="X" Cap=".sp2" Txt="SP2 Sprites"}
+      .wav: = {Typ="X" Cap=".wav" Txt="WAV Sounds"}
       .cin: = {Typ="X" Cap=".cin" Txt="Video (Quake 2)"}
-      .wav: = {Typ="X" Cap=".wav" Txt="Sound"}
-      .zip: = {Typ="X" Cap=".zip" Txt="ZIP archives"}
+      //.cfg: = {Typ="X" Cap=".cfg" Txt="CFG files"}
       .qme: = {Typ="X" Cap=".qme" Txt="Files from QuArK version 4"}
+      .txt: = {Typ="X" Cap=".txt" Txt="TXT text files"}
+      .zip: = {Typ="X" Cap=".zip" Txt="ZIP archives"}
       btn:tbbtn = {
         Typ="M"
         Msg="ASSK"
@@ -10180,13 +10253,14 @@ QQRKSRC1
       }
       Images and Textures.qtxfolder =
       {
+        Windows Bitmap Image.bmp = { ;incl = "EmptyImage" }
         PCX Image.pcx = { ;incl = "EmptyImagePal" }
         TGA Image.tga = { ;incl = "EmptyImagePal" }
         JPEG Image.jpg = { ;incl = "EmptyImage" }
-        Windows Bitmap Image.bmp = { ;incl = "EmptyImage" }
         PNG Image.png = { ;incl = "EmptyImage" }
-        VTF Image.vtf = { ;incl = "EmptyImage" }
         DDS Image.dds = { ;incl = "EmptyImage" }
+        VTF Image.vtf = { ;incl = "EmptyImage" }
+        FTX Image.ftx = { ;incl = "EmptyImage" }
       }
       Text.txt = { }
       Configuration file.cfg = { }
@@ -12138,6 +12212,19 @@ QQRKSRC1
         NewTexture:incl =
         {
           texture.vtf = { ;incl="EmptyImage" }
+        }
+      }
+      newtex:tbbtn = {
+        Typ   = "C"
+        Hint  = "new FTX texture (FAKK2)"
+        Icon  = $D00000000000000DD78888888888880DD7FFFFFFFFFFF80DD7FFFFFFFFFFF80D
+                $D70FFFF0FF0F080DD70FFFF0FF0F080DD7000FF0FFF0F80DD70FFFF0FF0F080D
+                $D7000F000F0F080DD7FFFFFFFFFFF80DD7FFFFFFFFFFF80DD7FFFFFFFFF0000D
+                $D7FFFFFFFFF8F7DDD7FFFFFFFFF87DDDD77777777777DDDDDDDDDDDDDDDDDDDD
+        Create = "NewTexture"
+        NewTexture:incl =
+        {
+          texture.ftx = { ;incl="EmptyImage" }
         }
       }
     }
