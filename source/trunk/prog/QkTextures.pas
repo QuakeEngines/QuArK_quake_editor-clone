@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.67  2008/09/23 09:05:00  danielpharos
+Fixed the annoying colormap saving problem!
+
 Revision 1.66  2008/09/06 15:57:13  danielpharos
 Moved exception code into separate file.
 
@@ -1320,7 +1323,7 @@ begin
           if (S='') or (Arg='') then
             Raise EError(5518);
           ChangeGameMode(mjNotQuake2, True);
-          Bsp:=NeedGameFileBase(Arg, 'maps/'+S+'.bsp', '') as QBsp;
+          Bsp:=NeedGameFileBase(Arg, GameMapPath+PathDelim+S+'.bsp', '') as QBsp;
           Bsp.AddRef(+1);
           try
             TexList:=Bsp.BspEntry[eMipTex, NoBsp2, NoBsp3] as QTextureList;

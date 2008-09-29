@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.38  2008/09/06 15:57:08  danielpharos
+Moved exception code into separate file.
+
 Revision 1.37  2008/08/26 16:21:51  danielpharos
 Added filename of broken shader/material file to error-message.
 
@@ -281,7 +284,7 @@ begin
 
  TexExt:=SetupGameSet.Specifics.Values['TextureFormat'];
  if ReverseLink<>nil then
-   DefaultImagename[0]:=ReverseLink.Specifics.Values['e'];
+   DefaultImageName[0]:=ReverseLink.Specifics.Values['e'];
  if DefaultImageName[0]<>'' then
  begin
    ImageFileName:=Specifics.Values[DefaultImageName[0]];

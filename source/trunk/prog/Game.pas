@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.59  2008/09/29 21:08:52  danielpharos
+Update filename resolving code. Still untested.
+
 Revision 1.58  2008/09/26 19:37:03  danielpharos
 Fix some broken path logic.
 
@@ -284,6 +287,7 @@ function GetGameDir : String;
 function QuakeDir : String;
 procedure ClearAllFilesRec(const Rep: String);
 function CheckQuakeDir : Boolean;
+function GameMapPath : String;
 function GameModelPath : String;
 function ResolveFilename(const Filename : String; const MapFileName : String = ''; MapObject : QObject = Nil) : TResolvedFilename;
 
@@ -628,9 +632,9 @@ function ResolveFilename(const Filename : String; const MapFileName : String = '
      Q := obj.FParent;
      while (Q <> nil) and (Q.FParent <> nil) do
      begin
-       makefolders := outputfile('maps/'+Q.Name);
+       makefolders := outputfile(GameMapPath+PathDelim+Q.Name);
        if Length(Result) <> 0 then
-         Result := '/' + Result;
+         Result := PathDelim + Result;
        Result := Q.Name + Result;
        Q := Q.FParent;
      end;
@@ -657,19 +661,18 @@ begin
   setupdirectory := QuakeDir;
   setupbasedir := Setup.Specifics.Values['BaseDir'];
   setuptmpquark := GettmpQuArK;
-  outputfilepath := outputfile('');
-  if outputfilepath[Length(outputfilepath)-1] = '\' then
-    //@ RUBBISH:
+  outputfilepath := OutputFile('');
+  if outputfilepath[Length(outputfilepath)-1] = PathDelim then
     outputfilepath := LeftStr(outputfilepath, Length(outputfilepath)-1);
 
 
   if Setup.Specifics.Values['StupidBuildToolKludge']<>'' then
   begin
-            // stupid tool that wants to run in the base dir
-            Result.Workdir := setupdirectory + '/' + setupbasedir;
-            argument_mappath := '../' + setuptmpquark + '/maps';
-            argument_mapfile := '../' + setuptmpquark + Format('/maps/%s.map', [MapFilename]);
-            argument_file    := '../' + setuptmpquark + Format('/maps/%s', [MapFilename]);
+    // stupid tool that wants to run in the base dir
+    Result.Workdir := setupdirectory + PathDelim + setupbasedir;
+    argument_mappath := '..' + PathDelim + setuptmpquark + PathDelim + GameMapPath;
+    argument_mapfile := '..' + PathDelim + setuptmpquark + PathDelim + GameMapPath + PathDelim + MapFilename + '.map';
+    argument_file    := '..' + PathDelim + setuptmpquark + PathDelim + GameMapPath + PathDelim + MapFilename;
   end
   else
   begin
@@ -678,13 +681,13 @@ begin
                 //# be running it from the game directory anyway
 
 
-            // clever tool that can run anywhere
-            Result.Workdir := outputfilepath;
-            argument_mappath := 'maps';
-            argument_mapfile := Format('maps/%s.map', [MapFilename]);
-            argument_file    := Format('maps/%s', [MapFilename]);
+    // clever tool that can run anywhere
+    Result.Workdir := outputfilepath;
+    argument_mappath := GameMapPath;
+    argument_mapfile := GameMapPath + PathDelim + MapFilename + '.map';
+    argument_file    := GameMapPath + PathDelim + MapFilename;
   end;
-  argument_filename := Format('%s', [MapFilename]);
+  argument_filename := MapFilename;
   argument_grouppath := getGroupFilePath(Mapobject);
 
   Result.Filename:=Filename;
@@ -1576,11 +1579,18 @@ begin
   end;
 end;
 
+function GameMapPath : String;
+begin
+  Result:=SetupGameSet.Specifics.Values['MapPath'];
+  if Result='' then
+    Result:='maps';
+end;
+
 function GameModelPath : String;
 begin
   Result:=SetupGameSet.Specifics.Values['MdlPath'];
   if Result='' then
-    Result:='models/';
+    Result:='models';
 end;
 
  {------------------------}

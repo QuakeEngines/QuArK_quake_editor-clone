@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2005/09/28 10:49:02  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.4  2001/03/20 21:37:04  decker_dk
 Updated copyright-header
 
@@ -123,7 +126,7 @@ begin
   if S='' then
     S:=Name;
   BuildCorrectFileName(S);
-  S:=GameModelPath+S+TypeInfo;
+  S:=GameModelPath+PathDelim+S+TypeInfo;
   SaveInFile(rf_Default, OutputFile(S));
   filename:=PyString_FromString(PChar(S));
   PyList_Append(extracted, filename);

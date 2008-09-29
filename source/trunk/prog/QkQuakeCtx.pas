@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.27  2008/02/23 19:25:20  danielpharos
+Moved a lot of path/file code around: should make it easier to use
+
 Revision 1.26  2005/09/28 10:48:32  peter-b
 Revert removal of Log and Header keywords
 
@@ -402,7 +405,7 @@ var
 begin
   dir:=IncludeTrailingPathDelimiter(QuakeDir)+Specifics.Values['GameDir'];
   paks:=OpenFiles(dir, ListPakFiles(dir));
-  Result:=FindFiles(dir+PathDelim+'maps', IncludeTrailingPathDelimiter(QuakeDir)+Specifics.Values['GameDir']+PathDelim+'maps'+PathDelim+'*.bsp');
+  Result:=FindFiles(dir+PathDelim+GameMapPath, IncludeTrailingPathDelimiter(QuakeDir)+Specifics.Values['GameDir']+PathDelim+GameMapPath+PathDelim+'*.bsp');
   ProgressIndicatorStart(5458,paks.count);
   while (Paks.count <> 0) do
   begin
@@ -413,7 +416,7 @@ begin
     except
       continue;
     end;
-    p_f:=QPakFolder(pak.FindSubObject('maps', QPakFolder, QPakFolder));
+    p_f:=QPakFolder(pak.FindSubObject(GameMapPath, QPakFolder, QPakFolder));
     if p_f<>nil then
     begin
       for j:=0 to p_f.subelements.count-1 do

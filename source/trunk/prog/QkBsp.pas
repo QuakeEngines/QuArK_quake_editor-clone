@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.65  2008/09/06 15:56:58  danielpharos
+Moved exception code into separate file.
+
 Revision 1.64  2008/02/23 19:25:20  danielpharos
 Moved a lot of path/file code around: should make it easier to use
 
@@ -275,7 +278,6 @@ type
    ,lump_pop
    ,lump_areas
    ,lump_areaportals);
-
 
   TBsp3EntryTypes =
    (eBsp3_entities
@@ -646,6 +648,7 @@ const
  cVersionBspQ3        = $0000002E; {Quake-3 or STVEF .BSP}
  cVersionBspJK2       = $00000001; {JK2 .BSP}
  cVersionBspHL2       = $00000013; {HL2 .bsp}
+
 const
  Bsp3EntryNames : array[TBsp3EntryTypes] of String =
    (              {Actually a 'FilenameExtension' - See TypeInfo()}
@@ -1439,7 +1442,7 @@ begin
  BuildCorrectFileName(S);
  if FirstMap='' then
   FirstMap:=S;
- S:='maps/'+S+TypeInfo;
+ S:=GameMapPath+PathDelim+S+TypeInfo;
  SaveInFile(rf_Default, OutputFile(S));
  mapname:=PyString_FromString(PChar(S));
  PyList_Append(extracted, mapname);
