@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.60  2008/09/29 21:45:31  danielpharos
+Soft-coded 'maps' directory (not in Python yet).
+
 Revision 1.59  2008/09/29 21:08:52  danielpharos
 Update filename resolving code. Still untested.
 
@@ -267,6 +270,13 @@ type
                 end;
  TGeneralGammaBuffer = array[0..255] of Byte;
 {TMQIDF = (dfWinFormat, dfTextureFormat, dfBottomUpTexture);}
+ TFileType = (ftAny, ftGame, ftTool);
+ TFileToResolve = record
+   Commandline: String;
+   FileType: TFileType;
+   AFilename: String;
+   AFileobject: QObject;
+ end;
  TResolvedFilename = record
    Filename: String;
    Workdir: String;
@@ -289,7 +299,7 @@ procedure ClearAllFilesRec(const Rep: String);
 function CheckQuakeDir : Boolean;
 function GameMapPath : String;
 function GameModelPath : String;
-function ResolveFilename(const Filename : String; const MapFileName : String = ''; MapObject : QObject = Nil) : TResolvedFilename;
+function ResolveFilename(const FileToResolve : TFileToResolve) : TResolvedFilename;
 
 function GameBuffer(NeededGame: Char) : PGameBuffer;
 procedure ClearBmpInfo24(var BmpInfo: TBitmapInfo256);
@@ -617,7 +627,7 @@ begin
   end;
 end;
 
-function ResolveFilename(const Filename : String; const MapFileName : String = ''; MapObject : QObject = Nil) : TResolvedFilename;
+function ResolveFilename(const FileToResolve : TFileToResolve) : TResolvedFilename;
 
  function getGroupFilePath(obj : QObject) : String;
  var
@@ -642,18 +652,20 @@ function ResolveFilename(const Filename : String; const MapFileName : String = '
  end;
 
 var
- Setup, SteamSetup: QObject;
+  Setup, SteamSetup: QObject;
 
- argument_mappath: String;
- argument_mapfile: String;
- argument_file: String;
- argument_filename: String;
- argument_grouppath: String;
+  argument_mappath: String;
+  argument_mapfile: String;
+  argument_file: String;
+  argument_filename: String;
+  argument_grouppath: String;
 
- setupdirectory: String;
- setupbasedir: String;
- setuptmpquark: String;
- outputfilepath: String;
+  setupdirectory: String;
+  setupbasedir: String;
+  setuptmpquark: String;
+  outputfilepath: String;
+
+  S: String;
 begin
   Setup:=SetupGameSet;
   SteamSetup:=SetupSubSet(ssGames, 'Steam');
@@ -666,31 +678,31 @@ begin
     outputfilepath := LeftStr(outputfilepath, Length(outputfilepath)-1);
 
 
-  if Setup.Specifics.Values['StupidBuildToolKludge']<>'' then
+  case FileToResolve.FileType of
+  ftAny: S:='';
+  ftGame: S:='StupidGameKludge';
+  ftTool: S:='StupidBuildToolKludge';
+  end;
+  if (S<>'') and (Setup.Specifics.Values[S]<>'') then
   begin
-    // stupid tool that wants to run in the base dir
+    // stupid program that wants to run in the base dir
     Result.Workdir := setupdirectory + PathDelim + setupbasedir;
     argument_mappath := '..' + PathDelim + setuptmpquark + PathDelim + GameMapPath;
-    argument_mapfile := '..' + PathDelim + setuptmpquark + PathDelim + GameMapPath + PathDelim + MapFilename + '.map';
-    argument_file    := '..' + PathDelim + setuptmpquark + PathDelim + GameMapPath + PathDelim + MapFilename;
+    argument_mapfile := '..' + PathDelim + setuptmpquark + PathDelim + GameMapPath + PathDelim + FileToResolve.AFilename + '.map';
+    argument_file    := '..' + PathDelim + setuptmpquark + PathDelim + GameMapPath + PathDelim + FileToResolve.AFilename;
   end
   else
   begin
-
-                  //# assume we have a clever game that can run anywhere, although we will probably
-                //# be running it from the game directory anyway
-
-
-    // clever tool that can run anywhere
+    // clever program that can run anywhere
     Result.Workdir := outputfilepath;
     argument_mappath := GameMapPath;
-    argument_mapfile := GameMapPath + PathDelim + MapFilename + '.map';
-    argument_file    := GameMapPath + PathDelim + MapFilename;
+    argument_mapfile := GameMapPath + PathDelim + FileToResolve.AFilename + '.map';
+    argument_file    := GameMapPath + PathDelim + FileToResolve.AFilename;
   end;
-  argument_filename := MapFilename;
-  argument_grouppath := getGroupFilePath(Mapobject);
+  argument_filename := FileToResolve.AFilename;
+  argument_grouppath := getGroupFilePath(FileToResolve.AFileobject);
 
-  Result.Filename:=Filename;
+  Result.Filename:=FileToResolve.Commandline;
   Result.Filename:=StringReplace(Result.Filename, '%mappath%', argument_mappath, [rfReplaceAll]);
   Result.Filename:=StringReplace(Result.Filename, '%mapfile%', argument_mapfile, [rfReplaceAll]);
   Result.Filename:=StringReplace(Result.Filename, '%file%', argument_file, [rfReplaceAll]);

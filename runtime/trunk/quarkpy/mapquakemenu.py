@@ -458,7 +458,7 @@ def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile,
                       cmdline = cmdline + " %mapfile%"
 
                     # Search and replace any user-variable
-                    cmdline, toolworkdir = quarkx.resolvefilename(cmdline, map, mapfileobject)
+                    cmdline, toolworkdir = quarkx.resolvefilename(cmdline, FT_TOOL, map, mapfileobject)
 
                     # Put this build-program last in execution queue
                     next = console(cmdline, toolworkdir, bspfile, editor, next, checkextensions)
@@ -646,6 +646,9 @@ def QuakeMenu(editor):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.56  2008/09/29 21:08:55  danielpharos
+#Update filename resolving code. Still untested.
+#
 #Revision 1.55  2008/09/27 12:08:57  danielpharos
 #Added Steam %-replace texts. Still experimentally.
 #

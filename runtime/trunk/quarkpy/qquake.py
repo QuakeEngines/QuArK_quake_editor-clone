@@ -97,7 +97,7 @@ class GameConsole(BatchConsole):
                 if runMapCmdLine:
                     cmdline = cmdline + " " + runMapCmdLine
 
-                cmdline, dir = quarkx.resolvefilename(cmdline, map)
+                cmdline, dir = quarkx.resolvefilename(cmdline, FT_GAME, map)
 
         BatchConsole.__init__(self, cmdline, dir, next)
 
@@ -191,6 +191,9 @@ class GameConsole(BatchConsole):
 #
 #
 #$Log$
+#Revision 1.21  2008/09/29 21:08:55  danielpharos
+#Update filename resolving code. Still untested.
+#
 #Revision 1.20  2008/09/27 12:08:58  danielpharos
 #Added Steam %-replace texts. Still experimentally.
 #

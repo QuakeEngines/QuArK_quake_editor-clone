@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.80  2008/09/29 21:08:51  danielpharos
+Update filename resolving code. Still untested.
+
 Revision 1.79  2008/09/26 19:38:19  danielpharos
 Removed empty parameter option for outputfile().
 
@@ -2196,9 +2199,10 @@ end;
 
 function xResolveFilename(self, args: PyObject) : PyObject; cdecl;
 var
+ i: Integer;
  s, Filename: PChar;
  nFileobject: PyObject;
- FileObject: QObject;
+ OldFilename: TFileToResolve;
  NewFilename: TResolvedFilename;
 begin
  try
@@ -2206,14 +2210,24 @@ begin
   s:=Nil;
   Filename:=Nil;
   nFileobject:=Nil;
-  if not PyArg_ParseTupleX(args, 'ss|O', [@s, @Filename, @nFileobject]) then
+  if not PyArg_ParseTupleX(args, 'sis|O', [@s, @i, @Filename, @nFileobject]) then
    Exit;
-  if (nFileObject<>Nil) and (nFileObject <> Py_None) then
-    Fileobject:=QkObjFromPyObj(nFileObject)
-  else
-    Fileobject:=Nil;
 
-  NewFilename:=ResolveFilename(s, Filename, FileObject);
+  OldFilename.Commandline:=s;
+  OldFilename.AFilename:=Filename;
+  case i of
+  0: OldFilename.FileType:=ftAny;
+  1: OldFilename.FileType:=ftGame;
+  2: OldFilename.FileType:=ftTool;
+  else
+    OldFilename.FileType:=ftAny;
+  end;
+  if (nFileObject<>Nil) and (nFileObject <> Py_None) then
+    OldFilename.AFileobject:=QkObjFromPyObj(nFileObject)
+  else
+    OldFilename.AFileobject:=Nil;
+
+  NewFilename:=ResolveFilename(OldFilename);
 
   Result:=PyTuple_New(2);
   PyTuple_SetItem(Result, 0, PyString_FromString(PChar(NewFilename.Filename)));
