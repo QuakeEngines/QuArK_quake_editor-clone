@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.62  2008/09/29 22:41:11  danielpharos
+Fixed for file resolving code. Fixes Steam-games.
+
 Revision 1.61  2008/09/29 22:02:00  danielpharos
 Update to filename resolving code. Needs more testing, but should work.
 
@@ -702,7 +705,10 @@ begin
     else
     begin
       // clever program that can run anywhere
-      Result.Workdir := QuickResolveFilename(argument_outputfile);
+      if FileToResolve.FileType = ftGame then
+        Result.Workdir := QuickResolveFilename(setupdirectory)
+      else
+        Result.Workdir := QuickResolveFilename(argument_outputfile);
       if Result.Workdir[Length(Result.Workdir)-1] = PathDelim then
         Result.Workdir := LeftStr(Result.Workdir, Length(Result.Workdir)-1);
       argument_mappath := GameMapPath;
