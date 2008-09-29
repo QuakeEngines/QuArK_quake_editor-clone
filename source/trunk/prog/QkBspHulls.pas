@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.30  2008/09/06 15:57:25  danielpharos
+Moved exception code into separate file.
+
 Revision 1.29  2005/09/28 10:48:31  peter-b
 Revert removal of Log and Header keywords
 
@@ -967,7 +970,7 @@ end;
 function TBSPHull.IsExplorerItem(Q: QObject) : TIsExplorerItem;
 begin
  if Q is TFace then
-  Result:=ieResult[True]  + [ieInvisible]
+  Result:=ieResult[True] + [ieInvisible]
  else
   Result:=[];
 end;
