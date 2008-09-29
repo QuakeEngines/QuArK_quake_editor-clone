@@ -112,32 +112,33 @@ class GameConsole(BatchConsole):
                 nopak = qname[:1]=='*'
                 if nopak:
                     qname = qname[1:]
+                fname = quarkx.resolvefilename(quarkx.outputfile(qname), FT_PATH)[0]
                 err = ": ready"
                 if qobj is None:
                     try:
-                        qobj = quarkx.openfileobj(quarkx.outputfile(qname))
+                        qobj = quarkx.openfileobj(fname)
                     except:
                         err = ": ignored"
                 if qobj is not None:
                     if nopak:
-                        if quarkx.getfileattr(quarkx.outputfile(qname))>-1: #DECKER - do not overwrite something that already is there!
-                            err = ": exists"                                #DECKER
-                        else:                                               #DECKER
-                            qobj.savefile(quarkx.outputfile(qname))
+                        if quarkx.getfileattr(fname)>-1: #DECKER - do not overwrite something that already is there!
+                            err = ": exists"             #DECKER
+                        else:                            #DECKER
+                            qobj.savefile(fname)
                     else:
                         type1 = qobj.type.upper()
                         if type1:
-                            type2 = qname[-len(type1):].upper()
+                            type2 = fname[-len(type1):].upper()
                             if type1 != type2:
-                                raise "Invalid file types : %s should be of type %s" % (qname,type1)
-                            qname = qname[:-len(type1)]
-                        i = len(qname)
-                        while i and not (qname[i-1] in ("/", "\\")):
+                                raise "Invalid file types : %s should be of type %s" % (fname,type1)
+                            fname = fname[:-len(type1)]
+                        i = len(fname)
+                        while i and not (fname[i-1] in ("/", "\\")):
                             i = i - 1
-                        folder = pak.getfolder(qname[:i])
-                        qobj.shortname = qname[i:]
+                        folder = pak.getfolder(fname[:i])
+                        qobj.shortname = fname[i:]
                         folder.appenditem(qobj)
-                print "/" + qname + err
+                print "/" + fname + err
             pak.filename = writeto
             pak.savefile()
         else:
@@ -145,7 +146,7 @@ class GameConsole(BatchConsole):
             for qname, qobj in self.filelistdata:
                 if qname[:1]=='*':
                     qname = qname[1:]
-                fname = quarkx.outputfile(qname)
+                fname = quarkx.resolvefilename(quarkx.outputfile(qname), FT_PATH)[0]
                 err = ": ready"
                 if qobj is None:
                     if quarkx.getfileattr(fname)==-1:
@@ -191,6 +192,9 @@ class GameConsole(BatchConsole):
 #
 #
 #$Log$
+#Revision 1.23  2008/09/29 22:41:06  danielpharos
+#Fixed for file resolving code. Fixes Steam-games.
+#
 #Revision 1.22  2008/09/29 22:01:56  danielpharos
 #Update to filename resolving code. Needs more testing, but should work.
 #

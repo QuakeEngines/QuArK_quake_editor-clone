@@ -195,10 +195,11 @@ def writemapfile(root, mapname, selonly, wadfile, hxstr=None, group=None):
     m = quarkx.newfileobj(mapfullname)
 
     if group == "":
-        m.filename = quarkx.outputfile("maps/%s" % mapfullname)
+        fullfilename = quarkx.outputfile("maps/%s" % mapfullname)
     else:
-        m.filename = quarkx.outputfile("maps/"+group+"/%s" % mapfullname)
-        m.filename = quarkx.outputfile("maps/%s" % mapfullname)
+        fullfilename = quarkx.outputfile("maps/"+group+"/%s" % mapfullname)
+        fullfilename = quarkx.outputfile("maps/%s" % mapfullname)
+    m.filename = quarkx.resolvefilename(fullfilename, FT_PATH)[0]
     worldspawn = root.copy(1)   # preserve selection while copying
     m["Root"] = worldspawn.name
     m.setint("saveflags", saveflags)
@@ -425,6 +426,7 @@ def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile,
                        cmdline2 = cmdline
                     else:
                        cmdline2 = setup["BuildPgmsDir"] + "\\" + cmdline
+                    cmdline2 = quarkx.resolvefilename(cmdline2, FT_TOOL)[0]
                     if (not quarkx.getfileattr(cmdline2)==FA_FILENOTFOUND):
                         # Success, use this build-tool!
                         cmdline = cmdline2
@@ -432,7 +434,8 @@ def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile,
                 except:
                     pass
 
-                if (not cmdline) or (quarkx.getfileattr(cmdline)==FA_FILENOTFOUND):
+                cmdline2 = quarkx.resolvefilename(cmdline, FT_GAME)[0]
+                if (not cmdline2) or (quarkx.getfileattr(cmdline2)==FA_FILENOTFOUND):
                     desc = setup["BuildDesc%d" % pgrmnbr] or cmdline or pgrmx
                     missing = "     %s\n%s" % (desc, missing)
                 else:
@@ -646,6 +649,9 @@ def QuakeMenu(editor):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.57  2008/09/29 22:01:56  danielpharos
+#Update to filename resolving code. Needs more testing, but should work.
+#
 #Revision 1.56  2008/09/29 21:08:55  danielpharos
 #Update filename resolving code. Still untested.
 #
