@@ -112,6 +112,7 @@ FM_SaveTagOnly    = 4;
 FT_ANY  = 0;
 FT_GAME = 1;
 FT_TOOL = 2;
+FT_PATH = 3;
 
 # icon indexes of internal objects (to be used with quarkx.seticons)
 iiUnknownFile           = 0
@@ -827,6 +828,9 @@ def sortdictionary(dictionary):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.44  2008/09/29 22:01:56  danielpharos
+#Update to filename resolving code. Needs more testing, but should work.
+#
 #Revision 1.43  2008/07/22 00:54:08  cdunde
 #New function added to the Model Editor tree-view RMB to save a skin when one is selected.
 #

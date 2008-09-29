@@ -78,7 +78,7 @@ class GameConsole(BatchConsole):
         self.pakfile = quarkx.outputpakfile(forcepak)
 
         dir = quarkx.getquakedir()
-        program = setup["Program"]
+        program = quarkx.resolvefilename(setup["Program"], FT_PATH)[0]
         if not dir or not program:
             quarkx.openconfigdlg(":")
             raise "Invalid configuration of the game executable"
@@ -191,6 +191,9 @@ class GameConsole(BatchConsole):
 #
 #
 #$Log$
+#Revision 1.22  2008/09/29 22:01:56  danielpharos
+#Update to filename resolving code. Needs more testing, but should work.
+#
 #Revision 1.21  2008/09/29 21:08:55  danielpharos
 #Update filename resolving code. Still untested.
 #

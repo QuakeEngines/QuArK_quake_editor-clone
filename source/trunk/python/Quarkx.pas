@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.81  2008/09/29 22:02:00  danielpharos
+Update to filename resolving code. Needs more testing, but should work.
+
 Revision 1.80  2008/09/29 21:08:51  danielpharos
 Update filename resolving code. Still untested.
 
@@ -1122,7 +1125,7 @@ end;
 function xGetQuakeDir(self, args: PyObject) : PyObject; cdecl;
 begin
  try
-  Result:=PyString_FromString(PChar(QuakeDir));
+  Result:=PyString_FromString(PChar(QuickResolveFilename(QuakeDir)));
  except
   EBackToPython;
   Result:=Nil;
@@ -1132,7 +1135,7 @@ end;
 function xGetGameDir(self, args: PyObject) : PyObject; cdecl;
 begin
  try
-  Result:=PyString_FromString(PChar(GetGameDir));
+  Result:=PyString_FromString(PChar(QuickResolveFilename(GetGameDir)));
  except
   EBackToPython;
   Result:=Nil;
@@ -1142,7 +1145,7 @@ end;
 function xGettmpQuArK(self, args: PyObject) : PyObject; cdecl;
 begin
  try
-  Result:=PyString_FromString(PChar(GettmpQuArK));
+  Result:=PyString_FromString(PChar(QuickResolveFilename(GettmpQuArK)));
  except
   EBackToPython;
   Result:=Nil;
@@ -2210,7 +2213,7 @@ begin
   s:=Nil;
   Filename:=Nil;
   nFileobject:=Nil;
-  if not PyArg_ParseTupleX(args, 'sis|O', [@s, @i, @Filename, @nFileobject]) then
+  if not PyArg_ParseTupleX(args, 'si|sO', [@s, @i, @Filename, @nFileobject]) then
    Exit;
 
   OldFilename.Commandline:=s;
@@ -2219,6 +2222,7 @@ begin
   0: OldFilename.FileType:=ftAny;
   1: OldFilename.FileType:=ftGame;
   2: OldFilename.FileType:=ftTool;
+  3: OldFilename.FileType:=ftPath;
   else
     OldFilename.FileType:=ftAny;
   end;

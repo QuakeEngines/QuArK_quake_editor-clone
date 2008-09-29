@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.61  2008/09/29 22:02:00  danielpharos
+Update to filename resolving code. Needs more testing, but should work.
+
 Revision 1.60  2008/09/29 21:45:31  danielpharos
 Soft-coded 'maps' directory (not in Python yet).
 
@@ -270,7 +273,7 @@ type
                 end;
  TGeneralGammaBuffer = array[0..255] of Byte;
 {TMQIDF = (dfWinFormat, dfTextureFormat, dfBottomUpTexture);}
- TFileType = (ftAny, ftGame, ftTool);
+ TFileType = (ftAny, ftGame, ftTool, ftPath);
  TFileToResolve = record
    Commandline: String;
    FileType: TFileType;
@@ -300,6 +303,7 @@ function CheckQuakeDir : Boolean;
 function GameMapPath : String;
 function GameModelPath : String;
 function ResolveFilename(const FileToResolve : TFileToResolve) : TResolvedFilename;
+function QuickResolveFilename(const Filename : String) : String;
 
 function GameBuffer(NeededGame: Char) : PGameBuffer;
 procedure ClearBmpInfo24(var BmpInfo: TBitmapInfo256);
@@ -606,17 +610,18 @@ end;
 procedure CreateAllDirs(const Filename: string; StartIndex: Integer = 0);
 var
  I, ErrorCode: Integer;
- S: String;
+ qFilename, S: String;
 begin
  //Note: Do NOT forget to end any paths you might send through with a PathDelim!
+ qFilename:=QuickResolveFilename(Filename);
  I:=StartIndex;
  if I<0 then I:=0;
- while I<=Length(Filename) do
+ while I<=Length(qFilename) do
   begin
-   if Filename[I]=PathDelim then
+   if qFilename[I]=PathDelim then
     begin
      {$I-}
-     S:=Copy(Filename, 1, I-1);
+     S:=Copy(qFilename, 1, I-1);
      MkDir(S);
      {$I+}
      ErrorCode:=IOResult;
@@ -659,11 +664,11 @@ var
   argument_file: String;
   argument_filename: String;
   argument_grouppath: String;
+  argument_outputfile: String;
 
   setupdirectory: String;
   setupbasedir: String;
   setuptmpquark: String;
-  outputfilepath: String;
 
   S: String;
 begin
@@ -673,36 +678,60 @@ begin
   setupdirectory := QuakeDir;
   setupbasedir := Setup.Specifics.Values['BaseDir'];
   setuptmpquark := GettmpQuArK;
-  outputfilepath := OutputFile('');
-  if outputfilepath[Length(outputfilepath)-1] = PathDelim then
-    outputfilepath := LeftStr(outputfilepath, Length(outputfilepath)-1);
-
+  if FileToResolve.FileType<>ftPath then
+    argument_outputfile := OutputFile('')
+  else
+    argument_outputfile := '';
 
   case FileToResolve.FileType of
-  ftAny: S:='';
   ftGame: S:='StupidGameKludge';
   ftTool: S:='StupidBuildToolKludge';
+  else
+    S:='';
   end;
-  if (S<>'') and (Setup.Specifics.Values[S]<>'') then
+  if FileToResolve.FileType<>ftPath then
   begin
-    // stupid program that wants to run in the base dir
-    Result.Workdir := setupdirectory + PathDelim + setupbasedir;
-    argument_mappath := '..' + PathDelim + setuptmpquark + PathDelim + GameMapPath;
-    argument_mapfile := '..' + PathDelim + setuptmpquark + PathDelim + GameMapPath + PathDelim + FileToResolve.AFilename + '.map';
-    argument_file    := '..' + PathDelim + setuptmpquark + PathDelim + GameMapPath + PathDelim + FileToResolve.AFilename;
+    if (S<>'') and (Setup.Specifics.Values[S]<>'') then
+    begin
+      // stupid program that wants to run in the base dir
+      Result.Workdir := setupdirectory + PathDelim + setupbasedir;
+      argument_mappath := '..' + PathDelim + setuptmpquark + PathDelim + GameMapPath;
+      argument_mapfile := '..' + PathDelim + setuptmpquark + PathDelim + GameMapPath + PathDelim + FileToResolve.AFilename + '.map';
+      argument_file    := '..' + PathDelim + setuptmpquark + PathDelim + GameMapPath + PathDelim + FileToResolve.AFilename;
+    end
+    else
+    begin
+      // clever program that can run anywhere
+      Result.Workdir := QuickResolveFilename(argument_outputfile);
+      if Result.Workdir[Length(Result.Workdir)-1] = PathDelim then
+        Result.Workdir := LeftStr(Result.Workdir, Length(Result.Workdir)-1);
+      argument_mappath := GameMapPath;
+      argument_mapfile := GameMapPath + PathDelim + FileToResolve.AFilename + '.map';
+      argument_file    := GameMapPath + PathDelim + FileToResolve.AFilename;
+    end;
+    argument_filename := FileToResolve.AFilename;
+    if FileToResolve.AFileobject<>Nil then
+      argument_grouppath := getGroupFilePath(FileToResolve.AFileobject)
+    else
+      argument_grouppath := '';
   end
   else
   begin
-    // clever program that can run anywhere
-    Result.Workdir := outputfilepath;
-    argument_mappath := GameMapPath;
-    argument_mapfile := GameMapPath + PathDelim + FileToResolve.AFilename + '.map';
-    argument_file    := GameMapPath + PathDelim + FileToResolve.AFilename;
+    Result.WorkDir := '';
+    argument_mappath   := '';
+    argument_mapfile   := '';
+    argument_file      := '';
+    argument_filename  := '';
+    argument_grouppath := '';
   end;
-  argument_filename := FileToResolve.AFilename;
-  argument_grouppath := getGroupFilePath(FileToResolve.AFileobject);
 
+  //Be careful when making changes here, because the order of these replacements is not arbitrary!
   Result.Filename:=FileToResolve.Commandline;
+  Result.Filename:=StringReplace(Result.Filename, '%output%', argument_outputfile, [rfReplaceAll]);
+  Result.Filename:=StringReplace(Result.Filename, '%grouppath%', argument_grouppath, [rfReplaceAll]);
+  if Setup.Specifics.Values['BuildPgmsDir']<>'' then
+    Result.Filename:=StringReplace(Result.Filename, '%buildpgmsdir%', Setup.Specifics.Values['BuildPgmsDir'], [rfReplaceAll]);
+
   Result.Filename:=StringReplace(Result.Filename, '%mappath%', argument_mappath, [rfReplaceAll]);
   Result.Filename:=StringReplace(Result.Filename, '%mapfile%', argument_mapfile, [rfReplaceAll]);
   Result.Filename:=StringReplace(Result.Filename, '%file%', argument_file, [rfReplaceAll]);
@@ -711,14 +740,23 @@ begin
   Result.Filename:=StringReplace(Result.Filename, '%gamedir%', GettmpQuArK, [rfReplaceAll]);
   Result.Filename:=StringReplace(Result.Filename, '%quarkpath%', GetQPath(pQuArK), [rfReplaceAll]);
 
-  Result.Filename:=StringReplace(Result.Filename, '%steamappid%', Setup.Specifics.Values['SteamAppID'], [rfReplaceAll]);
+  //Steam replacers:
   Result.Filename:=StringReplace(Result.Filename, '%steamdir%',  SteamSetup.Specifics.Values['Directory'], [rfReplaceAll]);
+  Result.Filename:=StringReplace(Result.Filename, '%steamappid%', Setup.Specifics.Values['SteamAppID'], [rfReplaceAll]);
   Result.Filename:=StringReplace(Result.Filename, '%steamuser%',  SteamSetup.Specifics.Values['SteamUser'], [rfReplaceAll]);
+end;
 
-  Result.Filename:=StringReplace(Result.Filename, '%grouppath%', argument_grouppath, [rfReplaceAll]);
-  if Setup.Specifics.Values['BuildPgmsDir']<>'' then
-    Result.Filename:=StringReplace(Result.Filename, '%buildpgmsdir%', Setup.Specifics.Values['BuildPgmsDir'], [rfReplaceAll]);
-  Result.Filename:=StringReplace(Result.Filename, '%output%', outputfile(''), [rfReplaceAll]);
+function QuickResolveFilename(const Filename : String) : String;
+var
+  FileToResolve: TFileToResolve;
+  ResolvedFilename: TResolvedFilename;
+begin
+  FileToResolve.Commandline:=Filename;
+  FileToResolve.FileType:=ftPath;
+  FileToResolve.AFilename:='';
+  FileToResolve.AFileobject:=nil;
+  ResolvedFilename:=ResolveFilename(FileToResolve);
+  Result:=ResolvedFilename.Filename;
 end;
 
 procedure ListSourceDirs(Dirs: TStrings);
