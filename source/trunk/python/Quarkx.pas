@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.79  2008/09/26 19:38:19  danielpharos
+Removed empty parameter option for outputfile().
+
 Revision 1.78  2008/09/23 09:51:19  danielpharos
 Revert to old way of launching help docs in browser.
 
@@ -2191,6 +2194,36 @@ begin
  end;
 end;
 
+function xResolveFilename(self, args: PyObject) : PyObject; cdecl;
+var
+ s, Filename: PChar;
+ nFileobject: PyObject;
+ FileObject: QObject;
+ NewFilename: TResolvedFilename;
+begin
+ try
+  Result:=Nil;
+  s:=Nil;
+  Filename:=Nil;
+  nFileobject:=Nil;
+  if not PyArg_ParseTupleX(args, 'ss|O', [@s, @Filename, @nFileobject]) then
+   Exit;
+  if (nFileObject<>Nil) and (nFileObject <> Py_None) then
+    Fileobject:=QkObjFromPyObj(nFileObject)
+  else
+    Fileobject:=Nil;
+
+  NewFilename:=ResolveFilename(s, Filename, FileObject);
+
+  Result:=PyTuple_New(2);
+  PyTuple_SetItem(Result, 0, PyString_FromString(PChar(NewFilename.Filename)));
+  PyTuple_SetItem(Result, 1, PyString_FromString(PChar(NewFilename.WorkDir)));
+ except
+  EBackToPython;
+  Result:=Nil;
+ end;
+end;
+
 function xGetFileAttr(self, args: PyObject) : PyObject; cdecl;
 var
  s: PChar;
@@ -3122,7 +3155,7 @@ begin
 end;
 
 const
- MethodTable: array[0..85] of TyMethodDef =
+ MethodTable: array[0..86] of TyMethodDef =
   ((ml_name: 'Setup1';          ml_meth: xSetup1;          ml_flags: METH_VARARGS),
    (ml_name: 'newobj';          ml_meth: xNewObj;          ml_flags: METH_VARARGS),
    (ml_name: 'newfileobj';      ml_meth: xNewFileObj;      ml_flags: METH_VARARGS),
@@ -3155,6 +3188,7 @@ const
    (ml_name: 'maptextures';     ml_meth: xMapTextures;     ml_flags: METH_VARARGS),
    (ml_name: 'outputfile';      ml_meth: xOutputFile;      ml_flags: METH_VARARGS),
    (ml_name: 'outputpakfile';   ml_meth: xOutputPakFile;   ml_flags: METH_VARARGS),
+   (ml_name: 'resolvefilename'; ml_meth: xResolveFilename; ml_flags: METH_VARARGS),
    (ml_name: 'opentoolbox';     ml_meth: xOpenToolBox;     ml_flags: METH_VARARGS),
    (ml_name: 'openconfigdlg';   ml_meth: xOpenConfigDlg;   ml_flags: METH_VARARGS),
    (ml_name: 'progressbar';     ml_meth: xProgressBar;     ml_flags: METH_VARARGS),

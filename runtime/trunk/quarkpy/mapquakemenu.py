@@ -231,18 +231,6 @@ def filesformap(map):
 #    else:
 #        return "QBSP1"
 
-def getGroupFilePath(obj):
- path = ""
- p = obj.parent
- setup = quarkx.setupsubset()
- while not p is None and not p.parent is None and setup["UseQrkGroupFolder"]:
-  makefolders = quarkx.outputfile("maps/"+p.shortname)
-  if len(path) > 0: path = "/" + path
-  path = p.shortname + path
-  p = p.parent
- #print "final path is:",path
- return path
-
 def qmenuitem1click(m):
     editor = mapeditor(SS_MAP)
     if editor is None: return
@@ -423,20 +411,6 @@ def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile,
         map = mapinfo["map"]
         bspfile = quarkx.outputfile("./maps/%s.bsp" % map)
 
-        if setup["StupidBuildToolKludge"]:
-            # stupid tool that wants to run in the base dir
-            toolworkdir = setupdirectory + "/" + setupbasedir
-            argument_mappath = "../" + setuptmpquark + "/maps"
-            argument_mapfile = "../" + setuptmpquark + "/maps/%s.map" % map
-            argument_file    = "../" + setuptmpquark + "/maps/%s" % map
-        else:
-            # clever tool that can run anywhere
-            toolworkdir = outputfilepath
-            argument_mappath = "maps"
-            argument_mapfile = "maps/%s.map" % map
-            argument_file    = "maps/%s" % map
-        argument_filename = "%s" % map
-        argument_grouppath = getGroupFilePath(mapfileobject)
         for pgrmnbr in range(9,0,-1):
             pgrmx = "BuildPgm%d" % pgrmnbr
 
@@ -484,19 +458,7 @@ def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile,
                       cmdline = cmdline + " %mapfile%"
 
                     # Search and replace any user-variable
-                    cmdline = cmdline.replace("%mappath%",    argument_mappath)
-                    cmdline = cmdline.replace("%mapfile%",    argument_mapfile)
-                    cmdline = cmdline.replace("%file%",       argument_file)
-                    cmdline = cmdline.replace("%filename%",   argument_filename)
-                    cmdline = cmdline.replace("%basepath%",   setupdirectory)
-                    cmdline = cmdline.replace("%gamedir%",    setuptmpquark)
-                    cmdline = cmdline.replace("%quarkpath%",  quarkx.exepath)
-                    cmdline = cmdline.replace("%steamappid%", setup["SteamAppID"])
-                    cmdline = cmdline.replace("%steamdir%",  quarkx.setupsubset(SS_GAMES, "Steam")["Directory"])
-                    cmdline = cmdline.replace("%steamuser%",  quarkx.setupsubset(SS_GAMES, "Steam")["SteamUser"])
-                    cmdline = cmdline.replace("%grouppath%",  argument_grouppath)
-                    if setup["BuildPgmsDir"] is not None:
-                       cmdline = cmdline.replace("%buildpgmsdir%", setup["BuildPgmsDir"])
+                    cmdline, toolworkdir = quarkx.resolvefilename(cmdline, map, mapfileobject)
 
                     # Put this build-program last in execution queue
                     next = console(cmdline, toolworkdir, bspfile, editor, next, checkextensions)
@@ -684,6 +646,9 @@ def QuakeMenu(editor):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.55  2008/09/27 12:08:57  danielpharos
+#Added Steam %-replace texts. Still experimentally.
+#
 #Revision 1.54  2008/09/26 20:08:46  danielpharos
 #Small changes to path-code, to make it more consistent.
 #

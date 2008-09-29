@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.58  2008/09/26 19:37:03  danielpharos
+Fix some broken path logic.
+
 Revision 1.57  2008/09/20 19:32:00  danielpharos
 Changed a default value and re-factored some code.
 
@@ -261,6 +264,10 @@ type
                 end;
  TGeneralGammaBuffer = array[0..255] of Byte;
 {TMQIDF = (dfWinFormat, dfTextureFormat, dfBottomUpTexture);}
+ TResolvedFilename = record
+   Filename: String;
+   Workdir: String;
+ end;
 
 procedure ClearGameBuffers(CanCancel: Boolean);
 procedure ClearGameBuffer1;
@@ -278,6 +285,7 @@ function QuakeDir : String;
 procedure ClearAllFilesRec(const Rep: String);
 function CheckQuakeDir : Boolean;
 function GameModelPath : String;
+function ResolveFilename(const Filename : String; const MapFileName : String = ''; MapObject : QObject = Nil) : TResolvedFilename;
 
 function GameBuffer(NeededGame: Char) : PGameBuffer;
 procedure ClearBmpInfo24(var BmpInfo: TBitmapInfo256);
@@ -603,6 +611,99 @@ begin
     end;
    Inc(I);
   end;
+end;
+
+function ResolveFilename(const Filename : String; const MapFileName : String = ''; MapObject : QObject = Nil) : TResolvedFilename;
+
+ function getGroupFilePath(obj : QObject) : String;
+ var
+   Q: QObject;
+   Setup: QObject;
+   makefolders: String;
+ begin
+   Result := '';
+   Setup := SetupGameset;
+   if (Setup.Specifics.Values['UseQrkGroupFolder']<>'') then
+   begin
+     Q := obj.FParent;
+     while (Q <> nil) and (Q.FParent <> nil) do
+     begin
+       makefolders := outputfile('maps/'+Q.Name);
+       if Length(Result) <> 0 then
+         Result := '/' + Result;
+       Result := Q.Name + Result;
+       Q := Q.FParent;
+     end;
+   end;
+ end;
+
+var
+ Setup, SteamSetup: QObject;
+
+ argument_mappath: String;
+ argument_mapfile: String;
+ argument_file: String;
+ argument_filename: String;
+ argument_grouppath: String;
+
+ setupdirectory: String;
+ setupbasedir: String;
+ setuptmpquark: String;
+ outputfilepath: String;
+begin
+  Setup:=SetupGameSet;
+  SteamSetup:=SetupSubSet(ssGames, 'Steam');
+
+  setupdirectory := QuakeDir;
+  setupbasedir := Setup.Specifics.Values['BaseDir'];
+  setuptmpquark := GettmpQuArK;
+  outputfilepath := outputfile('');
+  if outputfilepath[Length(outputfilepath)-1] = '\' then
+    //@ RUBBISH:
+    outputfilepath := LeftStr(outputfilepath, Length(outputfilepath)-1);
+
+
+  if Setup.Specifics.Values['StupidBuildToolKludge']<>'' then
+  begin
+            // stupid tool that wants to run in the base dir
+            Result.Workdir := setupdirectory + '/' + setupbasedir;
+            argument_mappath := '../' + setuptmpquark + '/maps';
+            argument_mapfile := '../' + setuptmpquark + Format('/maps/%s.map', [MapFilename]);
+            argument_file    := '../' + setuptmpquark + Format('/maps/%s', [MapFilename]);
+  end
+  else
+  begin
+
+                  //# assume we have a clever game that can run anywhere, although we will probably
+                //# be running it from the game directory anyway
+
+
+            // clever tool that can run anywhere
+            Result.Workdir := outputfilepath;
+            argument_mappath := 'maps';
+            argument_mapfile := Format('maps/%s.map', [MapFilename]);
+            argument_file    := Format('maps/%s', [MapFilename]);
+  end;
+  argument_filename := Format('%s', [MapFilename]);
+  argument_grouppath := getGroupFilePath(Mapobject);
+
+  Result.Filename:=Filename;
+  Result.Filename:=StringReplace(Result.Filename, '%mappath%', argument_mappath, [rfReplaceAll]);
+  Result.Filename:=StringReplace(Result.Filename, '%mapfile%', argument_mapfile, [rfReplaceAll]);
+  Result.Filename:=StringReplace(Result.Filename, '%file%', argument_file, [rfReplaceAll]);
+  Result.Filename:=StringReplace(Result.Filename, '%filename%', argument_filename, [rfReplaceAll]);
+  Result.Filename:=StringReplace(Result.Filename, '%basepath%', setupdirectory, [rfReplaceAll]);
+  Result.Filename:=StringReplace(Result.Filename, '%gamedir%', GettmpQuArK, [rfReplaceAll]);
+  Result.Filename:=StringReplace(Result.Filename, '%quarkpath%', GetQPath(pQuArK), [rfReplaceAll]);
+
+  Result.Filename:=StringReplace(Result.Filename, '%steamappid%', Setup.Specifics.Values['SteamAppID'], [rfReplaceAll]);
+  Result.Filename:=StringReplace(Result.Filename, '%steamdir%',  SteamSetup.Specifics.Values['Directory'], [rfReplaceAll]);
+  Result.Filename:=StringReplace(Result.Filename, '%steamuser%',  SteamSetup.Specifics.Values['SteamUser'], [rfReplaceAll]);
+
+  Result.Filename:=StringReplace(Result.Filename, '%grouppath%', argument_grouppath, [rfReplaceAll]);
+  if Setup.Specifics.Values['BuildPgmsDir']<>'' then
+    Result.Filename:=StringReplace(Result.Filename, '%buildpgmsdir%', Setup.Specifics.Values['BuildPgmsDir'], [rfReplaceAll]);
+  Result.Filename:=StringReplace(Result.Filename, '%output%', outputfile(''), [rfReplaceAll]);
 end;
 
 procedure ListSourceDirs(Dirs: TStrings);

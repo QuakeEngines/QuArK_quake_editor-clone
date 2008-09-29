@@ -79,7 +79,6 @@ class GameConsole(BatchConsole):
 
         dir = quarkx.getquakedir()
         program = setup["Program"]
-        tmpquarkdir = quarkx.gettmpquark()
         if not dir or not program:
             quarkx.openconfigdlg(":")
             raise "Invalid configuration of the game executable"
@@ -93,28 +92,12 @@ class GameConsole(BatchConsole):
             else:
                 cmdline = program
             if map is not self.NO_MAP:
-                # assume we have a clever game that can run anywhere, although we will probably
-                # be running it from the game directory anyway
-                argument_mappath = "maps"
-                argument_mapfile = "maps/%s.map" % map
-                argument_file    = "maps/%s" % map
-                argument_filename= "%s" % map
-
                 # this part is supposed to take care of games that do not need special processing
                 runMapCmdLine = setup["RunMapCmdLine"]
                 if runMapCmdLine:
                     cmdline = cmdline + " " + runMapCmdLine
 
-                cmdline = cmdline.replace("%mappath%",    argument_mappath)
-                cmdline = cmdline.replace("%mapfile%",    argument_mapfile)
-                cmdline = cmdline.replace("%file%",       argument_file)
-                cmdline = cmdline.replace("%filename%",   argument_filename)
-                cmdline = cmdline.replace("%basepath%",   dir)
-                cmdline = cmdline.replace("%gamedir%",    tmpquarkdir)
-                cmdline = cmdline.replace("%quarkpath%",  quarkx.exepath)
-                cmdline = cmdline.replace("%steamappid%", setup["SteamAppID"])
-                cmdline = cmdline.replace("%steamdir%",  quarkx.setupsubset(SS_GAMES, "Steam")["Directory"])
-                cmdline = cmdline.replace("%steamuser%",  quarkx.setupsubset(SS_GAMES, "Steam")["SteamUser"])
+                cmdline, dir = quarkx.resolvefilename(cmdline, map)
 
         BatchConsole.__init__(self, cmdline, dir, next)
 
@@ -208,6 +191,9 @@ class GameConsole(BatchConsole):
 #
 #
 #$Log$
+#Revision 1.20  2008/09/27 12:08:58  danielpharos
+#Added Steam %-replace texts. Still experimentally.
+#
 #Revision 1.19  2008/09/26 20:08:46  danielpharos
 #Small changes to path-code, to make it more consistent.
 #
