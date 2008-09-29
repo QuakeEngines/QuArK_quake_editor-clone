@@ -1606,7 +1606,7 @@ def ClickOnView(editor, view, x, y):
 
 
 def MapAuxKey(keytag):
-    return quarkx.setupsubset(SS_GENERAL,"AuxKeys")[keytag]
+    return quarkx.setupsubset(SS_GENERAL, "AuxKeys")[keytag]
 
 def wantPoly():
     return quarkx.keydown(MapAuxKey('Select Brushes'))==1
@@ -2022,6 +2022,9 @@ class UserCenterHandle(CenterHandle):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.72  2008/05/27 19:33:57  danielpharos
+#Fix typo
+#
 #Revision 1.71  2008/05/21 18:14:55  cdunde
 #To add and\or activate Half-Life 2 functions: (all original code by Alexander)
 #1) to create extra Specifics setting handles for func_useableladder function (point0 & point1)
