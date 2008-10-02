@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.46  2008/10/02 12:23:27  danielpharos
+Major improvements to HWnd and HDC handling. This should fix all kinds of OpenGL problems.
+
 Revision 1.45  2008/09/06 15:57:32  danielpharos
 Moved exception code into separate file.
 
@@ -154,6 +157,7 @@ uses Windows, Messages, SysUtils, Classes, Forms, Controls, Graphics,
 
 type
   TMapViewType = (vtEditor, vtPanel, vtWindow, vtFullScreen);
+  TMapViewRenderMode = (rmFull, rmSolidImage);
 
 const
   MapViewStr : array[TMapViewMode] of PChar =
@@ -215,7 +219,6 @@ const
   [keyRun, keyStep];
  mbNotPressing = TMouseButton(-1);
 
-
 type
   PAnimationSeq = ^TAnimationSeq;
   TAnimationSeq = record
@@ -233,6 +236,7 @@ type
   TPyMapView = class(TCursorScrollBox)
                private
                  DisplayType: TDisplayType;
+                 RenderMode: TMapViewRenderMode;
                  kDelta: TPoint;
                  FOnDraw, FBoundingBoxes, FOnMouse, FOnKey, FHandles,
                  FOnCameraMove: PyObject;
@@ -346,8 +350,7 @@ var
 implementation
 
 uses PyCanvas, QkTextures, Game, PyForms, FullScreenWnd, FullScr1, RedLines, Qk1,
-     EdSoftware, EdGlide, EdOpenGL, EdDirect3D, SystemDetails, QkFileObjects,
-     QkExceptions, Logging;
+     EdSoftware, EdGlide, EdOpenGL, EdDirect3D, SystemDetails, QkFileObjects, QkExceptions;
 
 
 constructor TPyMapView.Create(AOwner: TComponent);
@@ -388,6 +391,7 @@ begin
  Hint:=BlueHintPrefix;
  TabStop:=True;
  ShowProgress:=True;
+ RenderMode:=rmFull;
 end;
 
 destructor TPyMapView.Destroy;
@@ -665,8 +669,8 @@ begin
         raise EErrorFmt(6000, ['Invalid ViewType']);
 
       Scene.ShowProgress:=ShowProgress;
-      Scene.SetViewWnd(Self.Handle, True);
-      Scene.SetDrawRect(ClipRect); 
+      Scene.SetViewWnd(Self.Handle);
+      Scene.SetDrawRect(ClipRect);
       Scene.Init(MapViewProj, DisplayMode, DisplayType, Specifics.Values['Lib'], AllowsGDI);
 
       if AllowsGDI then
@@ -815,24 +819,37 @@ begin
    Exit;
   end;
 
- if Animation<>Nil then
-  Canvas.Handle:=Animation^.DC
- else
-  Canvas.Handle:=DC;
-
  ClipRect:=rcPaint;
  if (ClipRect.Left = 0) and (ClipRect.Right = 0) and (ClipRect.Top = 0) and (ClipRect.Bottom = 0) then
    ClipRect:=GetClientRect;
  if (Scene<>Nil) then
   Scene.SetDrawRect(ClipRect);
 
- try
-  Render;
- finally
-  if Animation<>Nil then
-   Canvas.Handle:=Animation^.SrcDC
-  else
-   Canvas.Handle:=0;
+ case RenderMode of
+ rmFull:
+  begin
+   if Animation<>Nil then
+    Canvas.Handle:=Animation^.DC
+   else
+    Canvas.Handle:=DC;
+
+   try
+    Render;
+   finally
+    if Animation<>Nil then
+     Canvas.Handle:=Animation^.SrcDC
+    else
+     Canvas.Handle:=0;
+   end;
+  end;
+ rmSolidImage:
+  begin
+   Scene.Render3DView;
+   if FullScreen then
+    Scene.SwapBuffers(True)
+   else
+    Scene.Copy3DView;
+  end;
  end;
 end;
 
@@ -971,7 +988,7 @@ begin
    end
   else
    begin  { solid or textured mode }
-    NeedScene(False);  {DanielPharos: Shouldn't this one be True if the Setup has just changed?}
+    NeedScene(False);
     if Scene.ErrorMsg='' then
      begin
       if Drawing and dfRebuildScene <> 0 then
@@ -1173,22 +1190,26 @@ end;
 procedure TPyMapView.wmPaint;
 var
  PaintInfo: TPaintStruct;
+ Wnd: HWnd;
 begin
  //Note: This overrides the original wmPaint...!
- if BeginPaint(Handle, PaintInfo)<>0 then
-  try
-   FPainting:=True;
-   try
-    if (Scene<>Nil) then
-     Scene.SetViewWnd(Handle);
-    if not (csDesigning in ComponentState) then
-     Paint(Self, PaintInfo.hDC, PaintInfo.rcPaint);
-   finally
-    FPainting:=False;
-   end;
-  finally
-   EndPaint(Handle, PaintInfo);
+ Wnd:=BeginPaint(Handle, PaintInfo);
+ try
+  if Wnd<>0 then
+   begin
+    FPainting:=True;
+    try
+     if (Scene<>Nil) then
+      Scene.SetViewWnd(Handle);
+     if not (csDesigning in ComponentState) then
+      Paint(Self, PaintInfo.hDC, PaintInfo.rcPaint);
+    finally
+     FPainting:=False;
+    end;
   end;
+ finally
+  EndPaint(Handle, PaintInfo);
+ end;
 end;
 
 procedure TPyMapView.SetRedLines;
@@ -1758,11 +1779,12 @@ begin
       end
      else
       begin
-       Scene.Render3DView;
-       if FullScreen then
-        Scene.SwapBuffers(True)
-       else
-        Scene.Copy3DView;
+       RenderMode:=rmSolidImage;
+       try
+         Repaint;
+       finally
+         RenderMode:=rmFull;
+       end;
       end;
 
      while PeekMessage(Msg, Handle, WM_KEYFIRST, WM_KEYLAST, PM_REMOVE) do ;
@@ -2894,42 +2916,47 @@ begin
     begin
      if not FPainting then
       begin
-       //FIXME: This shouldn't happen!
-       Log(LOG_WARNING, 'Trying to call solidimage outside a paint-function! This is not allowed!');
-       Result:=PyNoResult;       
-       Exit;
-      end;
-     try
-      if ViewMode<>vmWireframe then
-       begin
-        DC:=Canvas.Handle;
-        if Drawing and dfRebuildScene <> 0 then
-         begin
-          if Drawing and dfNoGDI = 0 then
-           DC1:=DC
-          else
-           DC1:=0;
-          Scene.BuildScene(DC1, QkObjFromPyObj(AltTexSrc));
-          Drawing:=Drawing and not dfRebuildScene;
-         end;
-        Drawing:=Drawing and not dfBuilding;
-        if FullScreen then
-         Scene.ClearFrame;
-        Scene.Render3DView;
-        if FullScreen then
-         begin
-          Scene.SwapBuffers(False);
-          Do3DFXTwoMonitorsActivation;
-         end
-        else
-         Scene.Copy3DView;
+       RenderMode:=rmSolidImage;
+       try
+         Repaint;
+       finally
+         RenderMode:=rmFull;
        end;
-     except
-      on E: Exception do
-       begin
-        ClearPanel(GetExceptionMessage(E));
-        Scene.ClearScene;
-        Drawing:=Drawing or dfRebuildScene;
+      end
+     else
+      begin
+       try
+        if ViewMode<>vmWireframe then
+         begin
+          DC:=Canvas.Handle;
+          if Drawing and dfRebuildScene <> 0 then
+           begin
+            if Drawing and dfNoGDI = 0 then
+             DC1:=DC
+            else
+             DC1:=0;
+            Scene.BuildScene(DC1, QkObjFromPyObj(AltTexSrc));
+            Drawing:=Drawing and not dfRebuildScene;
+           end;
+          Drawing:=Drawing and not dfBuilding;
+          if FullScreen then
+           Scene.ClearFrame;
+          Scene.Render3DView;
+          if FullScreen then
+           begin
+            Scene.SwapBuffers(False);
+            Do3DFXTwoMonitorsActivation;
+           end
+          else
+           Scene.Copy3DView;
+         end;
+       except
+        on E: Exception do
+         begin
+          ClearPanel(GetExceptionMessage(E));
+          Scene.ClearScene;
+          Drawing:=Drawing or dfRebuildScene;
+         end;
        end;
      end;
    end;
@@ -3341,11 +3368,23 @@ begin
                  end
                 else
                  begin
-                  Scene.Render3DView;
-                  if FullScreen then
-                   Scene.SwapBuffers(True)
+                  if not FPainting then
+                  begin
+                    RenderMode:=rmSolidImage;
+                    try
+                      Repaint;
+                    finally
+                      RenderMode:=rmFull;
+                    end;
+                  end
                   else
-                   Scene.Copy3DView;
+                  begin
+                   Scene.Render3DView;
+                   if FullScreen then
+                    Scene.SwapBuffers(True)
+                   else
+                    Scene.Copy3DView;
+                  end;
                  end;
              end;
            Result:=0;

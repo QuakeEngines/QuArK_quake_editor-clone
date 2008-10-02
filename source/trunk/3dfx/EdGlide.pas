@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2008/10/02 12:23:27  danielpharos
+Major improvements to HWnd and HDC handling. This should fix all kinds of OpenGL problems.
+
 Revision 1.13  2008/09/06 15:57:30  danielpharos
 Moved exception code into separate file.
 
@@ -557,6 +560,7 @@ begin
      Raise EErrorFmt(6200, ['grSstQueryHardware']);
     grSstSelect(0);
     if GlideTimesLoaded=1 then
+      //Even though we want multiple windows, Glide only supports 1. So we can't use ViewWnd here!
       if not grSstWinOpen(0,
                         Resolution,
                         GR_REFRESH_60HZ,
@@ -1968,6 +1972,8 @@ begin
  ScreenExtent(L, R, bmiHeader);
  BmpInfo.bmiHeader:=bmiHeader;
 
+ SetViewDC(True);
+ try
  DIBSection:=CreateDIBSection(ViewDC,bmpInfo,DIB_RGB_COLORS,Bits,0,0);
  if DIBSection = 0 then
    Raise EErrorFmt(6200, ['CreateDIBSection']);
@@ -1975,7 +1981,7 @@ begin
   begin
    try
     if not grLfbLock(GR_LFB_READ_ONLY, GR_BUFFER_BACKBUFFER, GR_LFBWRITEMODE_ANY,
-          GR_ORIGIN_ANY, FXFALSE, info) then
+        GR_ORIGIN_ANY, FXFALSE, info) then
      Raise EErrorFmt(6200, ['grLfbLock']);
     I:=bmiHeader.biHeight;
     SrcPtr:=info.lfbptr;
@@ -2050,6 +2056,7 @@ begin
   end
   else
    softgLoadFrameBuffer(Bits, SoftBufferFormat);
+
   L:=(ScreenX-bmiHeader.biWidth) div 2;
   T:=(ScreenY-bmiHeader.biHeight) div 2;
   R:=L+bmiHeader.biWidth;
@@ -2066,6 +2073,9 @@ begin
    0,bmiHeader.biHeight, Bits, BmpInfo, DIB_RGB_COLORS) = 0 then
     Raise EErrorFmt(6200, ['SetDIBitsToDevice']);
   DeleteObject(DIBSection);
+ finally
+   SetViewDC(False);
+ end;
 end;
 
 procedure TGlideSceneObject.SwapBuffers(Synch: Boolean);
@@ -2114,16 +2124,18 @@ begin
    ViewRect.R.Left:=((ViewRect.R.Left-2) and not 3) + 2;
    ViewRect.R.Right:=((ViewRect.R.Right+3+2) and not 3) - 2;
   end;
- ViewRect.ProjDx:=(VertexSnapper+ScreenCenterX)-Coord.ScrCenter.X;
- ViewRect.ProjDy:=(VertexSnapper+ScreenCenterY)+Coord.ScrCenter.Y;
+ if Coord=nil then
+  begin
+   ViewRect.ProjDx:=(VertexSnapper+ScreenCenterX);
+   ViewRect.ProjDy:=(VertexSnapper+ScreenCenterY);
+  end
+ else
+  begin
+   ViewRect.ProjDx:=(VertexSnapper+ScreenCenterX)-Coord.ScrCenter.X;
+   ViewRect.ProjDy:=(VertexSnapper+ScreenCenterY)+Coord.ScrCenter.Y;
+  end;
 
  ViewRect.DoubleSize:=False;
- if SoftBufferFormat>0 then
-  begin
-   ViewRect.DoubleSize:=True;
-   ViewRect.ProjDx:=(VertexSnapper+ScreenCenterX)-0.5*Coord.ScrCenter.X;
-   ViewRect.ProjDy:=(VertexSnapper+ScreenCenterY)+0.5*Coord.ScrCenter.Y;
-  end;
  ViewRect.Left  := ViewRect.R.Left  + (VertexSnapper-0.5);
  ViewRect.Top   := ViewRect.R.Top   + (VertexSnapper-0.5);
  ViewRect.Right := ViewRect.R.Right + (VertexSnapper+0.5);

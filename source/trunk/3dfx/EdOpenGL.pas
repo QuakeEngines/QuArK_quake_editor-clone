@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.75  2008/10/02 12:23:27  danielpharos
+Major improvements to HWnd and HDC handling. This should fix all kinds of OpenGL problems.
+
 Revision 1.74  2008/09/06 16:05:22  danielpharos
 Fixed OpenGL variable types.
 
@@ -1029,106 +1032,111 @@ begin
     MakeSections:=False;
   DoubleBuffered:=Setup.Specifics.Values['DoubleBuffer']<>'';
 
-  GetMem(PixelFormat, SizeOf(TPixelFormatDescriptor));
-  PixelFormat^:=FillPixelFormat(ViewDC);
-  ChangedViewDC; //To set the pixelformat:
-
-(*  if RC = 0 then //wglShareLists
-  begin
-    RC:=CreateNewRC(ViewDC);
-    if RC = 0 then
-      raise EError(6311);
-  end;*)
-
-//  if wglMakeCurrent(ViewDC, RC) = false then //wglShareLists
-  if wglMakeCurrent(ViewDC, GetOpenGLDummyRC) = false then
-    raise EError(6310);
+  SetViewDC(True);
   try
 
-  WinSwapHint:=LoadSwapHint;
+    GetMem(PixelFormat, SizeOf(TPixelFormatDescriptor));
+    PixelFormat^:=FillPixelFormat(ViewDC);
+    ChangedViewDC; //To set the pixelformat:
 
-  { set up OpenGL }
-  UnpackColor(FogColor, nFogColor);
-  glClearColor(nFogColor[0], nFogColor[1], nFogColor[2], 1);
- {glClearDepth(1);}
-  glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-  glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
-  glEnable(GL_NORMALIZE);
-  glEdgeFlag(0);
-  CheckOpenGLError('Init');
+(*    if RC = 0 then //wglShareLists
+    begin
+      RC:=CreateNewRC(ViewDC);
+      if RC = 0 then
+        raise EError(6311);
+    end;*)
 
-  if (DisplayMode=dmPanel) then
-    glDisable(GL_DEPTH_TEST)
-  else
-  begin
-    glEnable(GL_DEPTH_TEST);
-   {glDepthFunc(GL_LEQUAL);}
-  end;
-  CheckOpenGLError('Init: GL_DEPTH_TEST');
+//    if wglMakeCurrent(ViewDC, RC) = false then //wglShareLists
+    if wglMakeCurrent(ViewDC, GetOpenGLDummyRC) = false then
+      raise EError(6310);
+    try
+    WinSwapHint:=LoadSwapHint;
 
-  { set up texture parameters }  //DanielPharos: These are set per texture, in the BuildTexture procedure
-  {glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);}
-  {glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);}
-  {glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);}
-  {glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);}
-  {glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);}
-  {glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);}
+    { set up OpenGL }
+    UnpackColor(FogColor, nFogColor);
+    glClearColor(nFogColor[0], nFogColor[1], nFogColor[2], 1);
+   {glClearDepth(1);}
+    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+    glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+    glEnable(GL_NORMALIZE);
+    glEdgeFlag(0);
+    CheckOpenGLError('Init');
 
-  { set up fog }
-  if Fog then
-  begin
-    glEnable(GL_FOG);
-    glFogi(GL_FOG_MODE, GL_EXP2);
-   {glFogf(GL_FOG_START, FarDistance * kDistFarToShort);
-    glFogf(GL_FOG_END, FarDistance);}
-    glFogf(GL_FOG_DENSITY, FogDensity/FarDistance);
-    glFogfv(GL_FOG_COLOR, @nFogColor);
-    glHint(GL_FOG_HINT, GL_NICEST);
-  end
-  else
-    glDisable(GL_FOG);
-  CheckOpenGLError('Init: GL_FOG');
-  
-  if Lighting then
-  begin
-    glEnable(GL_LIGHTING);
-    LightParam[0]:=LightParams.ZeroLight;
-    LightParam[1]:=LightParams.ZeroLight;
-    LightParam[2]:=LightParams.ZeroLight;
-    LightParam[3]:=1.0;
-    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, @LightParam);
-    glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
-    glShadeModel(GL_SMOOTH);
-  end
-  else
-    glDisable(GL_LIGHTING);
-  CheckOpenGLError('Init: GL_LIGHTING');
+    if (DisplayMode=dmPanel) then
+      glDisable(GL_DEPTH_TEST)
+    else
+    begin
+      glEnable(GL_DEPTH_TEST);
+     {glDepthFunc(GL_LEQUAL);}
+    end;
+    CheckOpenGLError('Init: GL_DEPTH_TEST');
 
-  if Transparency then
-  begin
-    glEnable(GL_BLEND);
-  end
-  else
-    glDisable(GL_BLEND);
-  CheckOpenGLError('Init: GL_BLEND');
-  //DanielPharos: Things like normal maps, bump-maps etc. should be added in a similar way
+    { set up texture parameters }  //DanielPharos: These are set per texture, in the BuildTexture procedure
+    {glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);}
+    {glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);}
+    {glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);}
+    {glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);}
+    {glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);}
+    {glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);}
 
-  if Culling then
-  begin
-    glEnable(GL_CULL_FACE);
-    glFrontFace(GL_CW);
-  end
-  else
-    glDisable(GL_CULL_FACE);
-  CheckOpenGLError('Init: GL_CULL_FACE');
+    { set up fog }
+    if Fog then
+    begin
+      glEnable(GL_FOG);
+      glFogi(GL_FOG_MODE, GL_EXP2);
+     {glFogf(GL_FOG_START, FarDistance * kDistFarToShort);
+      glFogf(GL_FOG_END, FarDistance);}
+      glFogf(GL_FOG_DENSITY, FogDensity/FarDistance);
+      glFogfv(GL_FOG_COLOR, @nFogColor);
+      glHint(GL_FOG_HINT, GL_NICEST);
+    end
+    else
+      glDisable(GL_FOG);
+    CheckOpenGLError('Init: GL_FOG');
 
-  glGetIntegerv(GL_MAX_LIGHTS, @MaxLights);
-  CheckOpenGLError('Init: GL_MAX_LIGHTS');
-  if MaxLights<=0 then
-    MaxLights:=8;
+    if Lighting then
+    begin
+      glEnable(GL_LIGHTING);
+      LightParam[0]:=LightParams.ZeroLight;
+      LightParam[1]:=LightParams.ZeroLight;
+      LightParam[2]:=LightParams.ZeroLight;
+      LightParam[3]:=1.0;
+      glLightModelfv(GL_LIGHT_MODEL_AMBIENT, @LightParam);
+      glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
+      glShadeModel(GL_SMOOTH);
+    end
+    else
+      glDisable(GL_LIGHTING);
+    CheckOpenGLError('Init: GL_LIGHTING');
 
+    if Transparency then
+    begin
+      glEnable(GL_BLEND);
+    end
+    else
+      glDisable(GL_BLEND);
+    CheckOpenGLError('Init: GL_BLEND');
+    //DanielPharos: Things like normal maps, bump-maps etc. should be added in a similar way
+
+    if Culling then
+    begin
+      glEnable(GL_CULL_FACE);
+      glFrontFace(GL_CW);
+    end
+    else
+      glDisable(GL_CULL_FACE);
+    CheckOpenGLError('Init: GL_CULL_FACE');
+
+    glGetIntegerv(GL_MAX_LIGHTS, @MaxLights);
+    CheckOpenGLError('Init: GL_MAX_LIGHTS');
+    if MaxLights<=0 then
+      MaxLights:=8;
+
+    finally
+      wglMakeCurrent(0, 0);
+    end;
   finally
-    wglMakeCurrent(0, 0);
+    SetViewDC(False);
   end;
 end;
 
@@ -1141,24 +1149,29 @@ begin
 
   if DoubleBuffered then
   begin
-//    if wglMakeCurrent(ViewDC, RC) = false then //wglShareLists
-    if wglMakeCurrent(ViewDC, GetOpenGLDummyRC) = false then
-      raise EError(6310);
+    SetViewDC(True);
     try
-      if WinSwapHint<>nil then
-      begin
-        glAddSwapHintRectWIN:=WinSwapHint;
-        Int4Array[0]:=DrawRect.Left;
-        Int4Array[1]:=ScreenY - DrawRect.Bottom; //These coords start LOWER left
-        Int4Array[2]:=DrawRect.Right - DrawRect.Left;
-        Int4Array[3]:=DrawRect.Bottom - DrawRect.Top;
-        glAddSwapHintRectWIN(Int4Array[0], Int4Array[1], Int4Array[2], Int4Array[3]);
-        CheckOpenGLError('WinSwapHint');
+//      if wglMakeCurrent(ViewDC, RC) = false then //wglShareLists
+      if wglMakeCurrent(ViewDC, GetOpenGLDummyRC) = false then
+        raise EError(6310);
+      try
+        if WinSwapHint<>nil then
+        begin
+          glAddSwapHintRectWIN:=WinSwapHint;
+          Int4Array[0]:=DrawRect.Left;
+          Int4Array[1]:=ScreenY - DrawRect.Bottom; //These coords start LOWER left
+          Int4Array[2]:=DrawRect.Right - DrawRect.Left;
+          Int4Array[3]:=DrawRect.Bottom - DrawRect.Top;
+          glAddSwapHintRectWIN(Int4Array[0], Int4Array[1], Int4Array[2], Int4Array[3]);
+          CheckOpenGLError('WinSwapHint');
+        end;
+        if Windows.SwapBuffers(ViewDC)=false then
+          raise exception.create(LoadStr1(6315));
+      finally
+        wglMakeCurrent(0, 0);
       end;
-      if Windows.SwapBuffers(ViewDC)=false then
-        raise exception.create(LoadStr1(6315));
     finally
-      wglMakeCurrent(0, 0);
+      SetViewDC(False);
     end;
   end;
 end;
@@ -1208,7 +1221,7 @@ end;
 
 function TGLSceneObject.StartBuildScene({var PW: TPaletteWarning;} var VertexSize: Integer) : TBuildMode;
 var
-  MadeRCCurrent: Boolean;
+  ViewDCSet, MadeRCCurrent: Boolean;
   I: Integer;
 begin
  {PW:=Nil;}
@@ -1216,12 +1229,18 @@ begin
   Result:=bmOpenGL;
   if RenderingTextureBuffer=Nil then
     RenderingTextureBuffer:=TMemoryStream.Create;
+  ViewDCSet:=False;
   MadeRCCurrent:=False;
   try
     for I:=0 to 2 do
     begin
       if OpenGLDisplayLists[I]<>0 then
       begin
+        if not ViewDCSet then
+        begin
+          SetViewDC(True);
+          ViewDCSet:=True;
+        end;
         if not MadeRCCurrent then
         begin
 //          if wglMakeCurrent(ViewDC, RC) = false then //wglShareLists
@@ -1238,6 +1257,8 @@ begin
   finally
     if MadeRCCurrent then
       wglMakeCurrent(0, 0);
+    if ViewDCSet then
+      SetViewDC(False);
   end;
 end;
 
@@ -1413,15 +1434,17 @@ var
 begin
   if not OpenGlLoaded then
     Exit;
-//  if wglMakeCurrent(ViewDC, RC) = false then //wglShareLists
-  if wglMakeCurrent(ViewDC, GetOpenGLDummyRC) = false then
-   raise EError(6310);
+  SetViewDC(True);
   try
+//    if wglMakeCurrent(ViewDC, RC) = false then //wglShareLists
+    if wglMakeCurrent(ViewDC, GetOpenGLDummyRC) = false then
+      raise EError(6310);
+    try
 
-  SX:=ScreenX;
-  SY:=ScreenY;
-  glViewport(0, 0, SX, SY);   {Viewport width and height are silently clamped to a range that depends on the implementation. This range is queried by calling glGet with argument GL_MAX_VIEWPORT_DIMS.}
-  CheckOpenGLError('glViewPort');
+    SX:=ScreenX;
+    SY:=ScreenY;
+    glViewport(0, 0, SX, SY);   {Viewport width and height are silently clamped to a range that depends on the implementation. This range is queried by calling glGet with argument GL_MAX_VIEWPORT_DIMS.}
+    CheckOpenGLError('glViewPort');
 
   if Coord.FlatDisplay then
    begin
@@ -1708,6 +1731,9 @@ begin
   finally
     wglMakeCurrent(0, 0);
   end;
+  finally
+    SetViewDC(False);
+  end;
 end;
 
 procedure TGLSceneObject.BuildTexture(Texture: PTexture3);
@@ -1786,7 +1812,9 @@ begin
     begin //handle paletted textures   *)
 
     {GetwhForTexture(Texture^.info, W, H);}
-    
+
+    SetViewDC(True);
+    try
 //    if wglMakeCurrent(ViewDC, RC) = false then //wglShareLists
     if wglMakeCurrent(ViewDC, GetOpenGLDummyRC) = false then
       raise EError(6310);
@@ -2012,6 +2040,9 @@ begin
 
     finally
       wglMakeCurrent(0, 0);
+    end;
+    finally
+      SetViewDC(False);
     end;
   end;
 end;

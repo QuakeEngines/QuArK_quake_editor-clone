@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2008/10/02 12:23:27  danielpharos
+Major improvements to HWnd and HDC handling. This should fix all kinds of OpenGL problems.
+
 Revision 1.12  2008/09/06 15:57:31  danielpharos
 Moved exception code into separate file.
 
@@ -1978,6 +1981,8 @@ begin
  ScreenExtent(L, R, bmiHeader);
  BmpInfo.bmiHeader:=bmiHeader;
 
+ SetViewDC(True);
+ try
  DIBSection:=CreateDIBSection(ViewDC,bmpInfo,DIB_RGB_COLORS,Bits,0,0);
  if DIBSection = 0 then
    Raise EErrorFmt(6100, ['CreateDIBSection']);
@@ -2076,6 +2081,9 @@ begin
    0,bmiHeader.biHeight, Bits, BmpInfo, DIB_RGB_COLORS) = 0 then
     Raise EErrorFmt(6100, ['SetDIBitsToDevice']);
   DeleteObject(DIBSection);
+ finally
+   SetViewDC(False);
+ end;
 end;
 
 procedure TSoftwareSceneObject.SwapBuffers(Synch: Boolean);
@@ -2123,18 +2131,30 @@ begin
    ViewRect.R.Right:=((ViewRect.R.Right+3+2) and not 3) - 2;
   end;
 
- if SoftBufferFormat>0 then
+ if Coord=nil then
   begin
-   ViewRect.DoubleSize:=True;
-   ViewRect.ProjDx:=(VertexSnapper+ScreenCenterX)-0.5*Coord.ScrCenter.X;
-   ViewRect.ProjDy:=(VertexSnapper+ScreenCenterY)+0.5*Coord.ScrCenter.Y;
+   if SoftBufferFormat>0 then
+     ViewRect.DoubleSize:=True
+   else
+     ViewRect.DoubleSize:=False;
+   ViewRect.ProjDx:=(VertexSnapper+ScreenCenterX);
+   ViewRect.ProjDy:=(VertexSnapper+ScreenCenterY);
   end
  else
   begin
-   ViewRect.DoubleSize:=False;
-   ViewRect.ProjDx:=(VertexSnapper+ScreenCenterX)-Coord.ScrCenter.X;
-   ViewRect.ProjDy:=(VertexSnapper+ScreenCenterY)+Coord.ScrCenter.Y;
- end;
+   if SoftBufferFormat>0 then
+    begin
+     ViewRect.DoubleSize:=True;
+     ViewRect.ProjDx:=(VertexSnapper+ScreenCenterX)-0.5*Coord.ScrCenter.X;
+     ViewRect.ProjDy:=(VertexSnapper+ScreenCenterY)+0.5*Coord.ScrCenter.Y;
+    end
+   else
+    begin
+     ViewRect.DoubleSize:=False;
+     ViewRect.ProjDx:=(VertexSnapper+ScreenCenterX)-Coord.ScrCenter.X;
+     ViewRect.ProjDy:=(VertexSnapper+ScreenCenterY)+Coord.ScrCenter.Y;
+    end;
+  end;
  ViewRect.Left  := ViewRect.R.Left  + (VertexSnapper-0.5);
  ViewRect.Top   := ViewRect.R.Top   + (VertexSnapper-0.5);
  ViewRect.Right := ViewRect.R.Right + (VertexSnapper+0.5);

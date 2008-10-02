@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.44  2008/10/02 12:23:27  danielpharos
+Major improvements to HWnd and HDC handling. This should fix all kinds of OpenGL problems.
+
 Revision 1.43  2008/09/06 15:57:30  danielpharos
 Moved exception code into separate file.
 
@@ -334,8 +337,8 @@ type
    procedure ClearFrame; virtual;
    procedure SetDrawRect(NewRect: TRect);
    procedure SetViewSize(SX, SY: Integer); virtual; abstract;
-   procedure SetViewWnd(Wnd: HWnd; NeedViewDC: Boolean=false);
-   procedure SetViewDC(DC: HDC);
+   procedure SetViewWnd(Wnd: HWnd);
+   procedure SetViewDC(const State: Boolean);
    procedure SetCoords(nCoord: TCoordinates);
    procedure BuildScene(ProgressDC: HDC; AltTexSrc: QObject);
    procedure Render3DView; virtual; abstract;
@@ -1529,34 +1532,38 @@ begin
   DrawRect:=NewRect;
 end;
 
-procedure TSceneObject.SetViewWnd(Wnd: HWnd; NeedViewDC: Boolean=false);
+procedure TSceneObject.SetViewWnd(Wnd: HWnd);
+var
+  NeedViewDC: Boolean;
 begin
   if ViewWnd<>Wnd then
   begin
     if (ViewWnd<>0) and (ViewDC<>0) then
     begin
-      SetViewDC(0);
+      SetViewDC(False);
       NeedViewDC:=True;
-    end;
+    end
+    else
+      NeedViewDC:=False;
     ViewWnd:=Wnd;
     ChangedViewWnd;
     if (ViewWnd<>0) and NeedViewDC then
-      SetViewDC(GetDC(ViewWnd));
+      SetViewDC(True);
   end;
 end;
 
-procedure TSceneObject.SetViewDC(DC: HDC);
+procedure TSceneObject.SetViewDC(const State: Boolean);
 begin
-  if ViewDC<>DC then
+  if (ViewWnd<>0) and (ViewDC<>0) then
   begin
-    if (ViewWnd<>0) and (ViewDC<>0) then
-    begin
-      ReleaseDC(ViewWnd, ViewDC);
-      ViewDC:=0;
-    end;
-    ViewDC:=DC;
-    ChangedViewDC;
+    ReleaseDC(ViewWnd, ViewDC);
+    ViewDC:=0;
   end;
+  if State then
+    ViewDC:=GetDC(ViewWnd)
+  else
+    ViewDC:=0;
+  ChangedViewDC;
 end;
 
 procedure TSceneObject.ChangedViewWnd;

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.29  2008/10/02 12:34:13  danielpharos
+Small correction to ViewWnd and ViewDC handling.
+
 Revision 1.28  2008/10/02 12:23:27  danielpharos
 Major improvements to HWnd and HDC handling. This should fix all kinds of OpenGL problems.
 
@@ -687,7 +690,6 @@ begin
     pPresParm.BackBufferWidth:=ScreenX;
     pPresParm.BackBufferHeight:=ScreenY;
     pPresParm.hDeviceWindow:=ViewWnd;
-    //DanielPharos: How do we apply the possible change to ViewDC?
   end;
 
   if not CheckDeviceState then
