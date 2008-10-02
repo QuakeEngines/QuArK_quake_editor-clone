@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2008/09/06 15:57:33  danielpharos
+Moved exception code into separate file.
+
 Revision 1.6  2005/09/28 10:49:03  peter-b
 Revert removal of Log and Header keywords
 
@@ -416,10 +419,20 @@ end;
 procedure TyComponent.ChangeOwnerRec(nOwner: TQkMainPanel);
 var
  I: Integer;
+ C: TControl;
 begin
  if ob_type=@TyPanel_Type then
   with LayoutMgrFromPanelObj(@Self) do
    begin
+     with Owner do
+      for I:=0 to ControlCount-1 do
+       begin
+        C:=Controls[I];
+         if C is TPyMapView then
+          if TPyMapView(C).Scene<>Nil then
+           TPyMapView(C).Scene.SetViewWnd(nOwner.Handle);
+       end;
+
     for I:=0 to PyObject_Length(Controls)-1 do
      PyComponent(PyList_GetItem(Controls, I))^.ChangeOwnerRec(nOwner);
     Owner:=nOwner;

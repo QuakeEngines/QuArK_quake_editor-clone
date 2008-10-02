@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.74  2008/09/06 16:05:22  danielpharos
+Fixed OpenGL variable types.
+
 Revision 1.73  2008/09/06 15:57:30  danielpharos
 Moved exception code into separate file.
 
@@ -286,8 +289,6 @@ type
 
  TGLSceneObject = class(TSceneObject)
  private
-   ViewWnd: HWnd;
-   ViewDC: HDC;
 //   RC: HGLRC;  //wglShareLists
    WinSwapHint: Pointer;
    CurrentAlpha: LongInt;
@@ -312,11 +313,10 @@ type
    MaxLights: GLint;
    LightingQuality: Integer;
    OpenGLDisplayLists: array[0..2] of Integer;
-   PixelFormat: TPixelFormatDescriptor;
+   PixelFormat: PPixelFormatDescriptor;
    procedure RenderPList(PList: PSurfaces; TransparentFaces: Boolean; SourceCoord: TCoordinates);
  protected
    Bilinear: boolean;
-   DrawRect: TRect;
    ScreenX, ScreenY: Integer;
    procedure stScalePoly(Texture: PTexture3; var ScaleS, ScaleT: TDouble); override;
    procedure stScaleModel(Skin: PTexture3; var ScaleS, ScaleT: TDouble); override;
@@ -327,12 +327,12 @@ type
    procedure EndBuildScene; override;
    procedure ReleaseResources;
    procedure BuildTexture(Texture: PTexture3); override;
+   procedure ChangedViewDC; override;
  public
 //   FlagDisplayLists: Boolean; //wglShareLists
    constructor Create(nViewMode: TMapViewMode);
    destructor Destroy; override;
-   procedure Init(Wnd: HWnd;
-                  nCoord: TCoordinates;
+   procedure Init(nCoord: TCoordinates;
                   DisplayMode: TDisplayMode;
                   DisplayType: TDisplayType;
                   const LibName: String;
@@ -341,10 +341,7 @@ type
    procedure Render3DView; override;
    procedure Copy3DView; override;
    procedure AddLight(const Position: TVect; Brightness: Single; Color: TColorRef); override;
-   procedure SetDrawRect(NewRect: TRect); override;
    procedure SetViewSize(SX, SY: Integer); override;
-   procedure SetViewDC(DC: HDC); override;
-   procedure SetViewWnd(Wnd: HWnd; ResetViewDC: Boolean=false); override;
    function ChangeQuality(nQuality: Integer) : Boolean; override;
  end;
 
@@ -737,11 +734,6 @@ end;
 
  {------------------------}
 
-procedure TGLSceneObject.SetDrawRect(NewRect: TRect);
-begin
-  DrawRect:=NewRect;
-end;
-
 procedure TGLSceneObject.SetViewSize(SX, SY: Integer);
 begin
   if SX<1 then SX:=1;
@@ -750,31 +742,10 @@ begin
   ScreenY:=SY;
 end;
 
-procedure TGLSceneObject.SetViewDC(DC: HDC);
+procedure TGLSceneObject.ChangedViewDC;
 begin
-  if ViewDC<>DC then
-  begin
-    if (ViewWnd<>0) and (ViewDC<>0) then
-      ReleaseDC(ViewWnd, ViewDC);
-    ViewDC:=DC;
-    SetPixelFormatOnDC(ViewDC, PixelFormat);
-  end;
-end;
-
-procedure TGLSceneObject.SetViewWnd(Wnd: HWnd; ResetViewDC: Boolean=false);
-begin
-  if ViewWnd<>Wnd then
-  begin
-    if ResetViewDC then
-      if (ViewWnd<>0) and (ViewDC<>0) then
-      begin
-        ReleaseDC(ViewWnd,ViewDC);
-        ViewDC:=0;
-      end;
-    ViewWnd:=Wnd;
-    if ResetViewDC then
-      SetViewDC(GetDC(Wnd));
-  end;
+  if (ViewDC<>0) and (PixelFormat<>Nil) then
+    SetPixelFormatOnDC(ViewDC, PixelFormat^);
 end;
 
 function TGLSceneObject.ChangeQuality(nQuality: Integer) : Boolean;
@@ -887,8 +858,7 @@ begin
       begin
         if not MadeRCCurrent then
         begin
-//          if wglMakeCurrent(GetOpenGLDummyDC, GetOpenGLDummyRC) = false then //wglShareLists
-          if wglMakeCurrent(GetOpenGLDummyDC, GetOpenGLDummyRC) = false then
+          if wglMakeCurrent(GetOpenGLDummyDC, GetOpenGLDummyRC) = false then //wglShareLists
             raise EError(6310);
           MadeRCCurrent := True;
         end;
@@ -910,25 +880,21 @@ begin
     RC:=0;
   end;*)
 
-  if (ViewWnd<>0) and (ViewDC<>0) then
-  begin
-    ReleaseDC(ViewWnd, ViewDC);
-    ViewDC:=0;
-  end;
 end;
 
 constructor TGLSceneObject.Create(nViewMode: TMapViewMode);
 begin
   inherited Create(nViewMode);
   //RC:=0; //wglShareLists
-  ViewDC:=0;
-  ViewWnd:=0;
+  PixelFormat:=nil;
 end;
 
 destructor TGLSceneObject.Destroy;
 begin
-  inherited;
   ReleaseResources;
+  if PixelFormat<>Nil then
+    FreeMem(PixelFormat);
+  inherited;
   if OpenGLLoaded then
     UnloadOpenGl;
 
@@ -939,8 +905,7 @@ begin
   end;
 end;
 
-procedure TGLSceneObject.Init(Wnd: HWnd;
-                              nCoord: TCoordinates;
+procedure TGLSceneObject.Init(nCoord: TCoordinates;
                               DisplayMode: TDisplayMode;
                               DisplayType: TDisplayType;
                               const LibName: String;
@@ -1062,26 +1027,11 @@ begin
     It creates small sections out of big poly's, so the lighting effects are better.}
   else
     MakeSections:=False;
-
   DoubleBuffered:=Setup.Specifics.Values['DoubleBuffer']<>'';
-  FillChar(PixelFormat, SizeOf(PixelFormat), 0);
-  PixelFormat.nSize:=SizeOf(PixelFormat);
-  PixelFormat.nVersion:=1;
-  PixelFormat.dwFlags:=PFD_SUPPORT_OPENGL or PFD_DRAW_TO_WINDOW;
-  PixelFormat.iPixelType:=PFD_TYPE_RGBA;
-  if DoubleBuffered then
-    PixelFormat.dwFlags:=PixelFormat.dwFlags or PFD_DOUBLEBUFFER;
-  if Setup.Specifics.Values['SupportsGDI']<>'' then
-    PixelFormat.dwFlags:=PixelFormat.dwFlags or PFD_SUPPORT_GDI;
-  PixelFormat.cColorBits:=Round(Setup.GetFloatSpec('ColorBits', 0));
-  if PixelFormat.cColorBits<=0 then
-    PixelFormat.cColorBits:=GetDeviceCaps(ViewDC, BITSPIXEL);
-  PixelFormat.cDepthBits:=Round(Setup.GetFloatSpec('DepthBits', 16));
-  if PixelFormat.cDepthBits<=0 then
-    PixelFormat.cDepthBits:=0;
-  PixelFormat.iLayerType:=PFD_MAIN_PLANE;
 
-  SetViewWnd(Wnd,true);
+  GetMem(PixelFormat, SizeOf(TPixelFormatDescriptor));
+  PixelFormat^:=FillPixelFormat(ViewDC);
+  ChangedViewDC; //To set the pixelformat:
 
 (*  if RC = 0 then //wglShareLists
   begin
@@ -1511,6 +1461,7 @@ begin
         VZ:=VectorZ;
        end;
      end;
+
     DX:=(SX/2)/(Scaling*Scaling);
     DY:=(SY/2)/(Scaling*Scaling);
     {DZ:=(MapLimitSmallest*2)/(Scaling*Scaling);}

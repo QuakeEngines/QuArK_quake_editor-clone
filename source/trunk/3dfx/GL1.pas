@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.31  2008/09/06 16:05:22  danielpharos
+Fixed OpenGL variable types.
+
 Revision 1.30  2008/09/06 15:57:31  danielpharos
 Moved exception code into separate file.
 
@@ -263,6 +266,7 @@ const
   GL_STACK_OVERFLOW    = $0503;
   GL_STACK_UNDERFLOW   = $0504;
   GL_OUT_OF_MEMORY     = $0505;
+  GL_TABLE_TOO_LARGE   = $8031; //OpenGL 1.2 and higher only
 
   (* FeedBackMode *)
 
@@ -722,7 +726,7 @@ var
   wglDeleteContext: function (p1: HGLRC): Bool; stdcall;
   wglCreateContext: function (DC: HDC): HGLRC; stdcall;
   wglShareLists: function (hglrc1: HGLRC; hglrc2: HGLRC): Bool; stdcall;
-  wglSwapBuffers: function (DC: HDC): Bool; stdcall; {Decker 2002.02.26 - Added}
+  wglSwapBuffers: function (DC: HDC): Bool; stdcall;
 
   glClearColor: procedure (red, green, blue, alpha: GLclampf); stdcall;
   glClearDepth: procedure (depth: GLclampd); stdcall;
@@ -767,24 +771,24 @@ var
   glCallList: procedure (list: GLuint); stdcall;
   glDeleteLists: procedure (list: GLuint; range: GLsizei); stdcall;
   glReadPixels: procedure (x, y: GLint; width, height: GLsizei; format, typ: GLenum; pixels: PGLvoid); stdcall;
-  glBlendFunc: procedure (sfactor: GLint; dfactor: GLint) stdcall; {Decker 2003.03.12 - Added}
-  glOrtho: procedure (left: GLdouble; right: GLdouble; bottom: GLdouble; top: GLdouble; near: GLdouble; far: GLdouble) stdcall; {Daniel 2006.09.19 - Added}
-  glGetIntegerv: procedure (pname: GLenum; params: PGLint) stdcall; {Daniel 2006.12.03 - Added}
-  glGetString: function (name: GLenum) : PGLubyte; stdcall; {Daniel 2007.08.28 - Added}
-  glLightModelf: procedure (pname: GLenum; params: GLfloat) stdcall; {Daniel 2007.01.15 - Added}
-  glLightModelfv: procedure (pname: GLenum; params: PGLfloat) stdcall; {Daniel 2007.01.14 - Added}
-  glLightf: procedure (light: GLenum; pname: GLenum; params: GLfloat) stdcall; {Daniel 2007.01.14 - Added}
-  glLightfv: procedure (light: GLenum; pname: GLenum; params: PGLfloat) stdcall; {Daniel 2007.01.14 - Added}
-  glMaterialf: procedure (face: GLenum; pname: GLenum; params: GLfloat) stdcall; {Daniel 2007.01.15 - Added}
-  glMaterialfv: procedure (face: GLenum; pname: GLenum; params: PGLfloat) stdcall; {Daniel 2007.01.15 - Added}
-  glNormal3fv: procedure (v: PGLfloat) stdcall; {Daniel 2007.01.23 - Added}
-  glFrontFace: procedure (mode: GLenum) stdcall; {Daniel 2007.01.30 - Added}
-  glDepthMask: procedure (flag: GLboolean) stdcall;  {Daniel 2008.04.11 - Added}
+  glBlendFunc: procedure (sfactor: GLint; dfactor: GLint) stdcall;
+  glOrtho: procedure (left: GLdouble; right: GLdouble; bottom: GLdouble; top: GLdouble; near: GLdouble; far: GLdouble) stdcall;
+  glGetIntegerv: procedure (pname: GLenum; params: PGLint) stdcall;
+  glGetString: function (name: GLenum) : PGLubyte; stdcall;
+  glLightModelf: procedure (pname: GLenum; params: GLfloat) stdcall;
+  glLightModelfv: procedure (pname: GLenum; params: PGLfloat) stdcall;
+  glLightf: procedure (light: GLenum; pname: GLenum; params: GLfloat) stdcall;
+  glLightfv: procedure (light: GLenum; pname: GLenum; params: PGLfloat) stdcall;
+  glMaterialf: procedure (face: GLenum; pname: GLenum; params: GLfloat) stdcall;
+  glMaterialfv: procedure (face: GLenum; pname: GLenum; params: PGLfloat) stdcall;
+  glNormal3fv: procedure (v: PGLfloat) stdcall;
+  glFrontFace: procedure (mode: GLenum) stdcall;
+  glDepthMask: procedure (flag: GLboolean) stdcall;
 
   (*
   ** Utility routines from OPENGL32.DLL - GL_WIN_swap_hint
   *)
-  //glAddSwapHintRectWIN: procedure (x: GLint; y: GLint; width: GLsizei; height: GLsizei) stdcall; {Daniel 2007.08.28 - Added}
+  //glAddSwapHintRectWIN: procedure (x: GLint; y: GLint; width: GLsizei; height: GLsizei) stdcall;
 
   (*
   ** Utility routines from GLU32.DLL
@@ -798,10 +802,12 @@ function LoadSwapHint : Pointer;
 
 function GetOpenGLDummyRC: HGLRC;
 function GetOpenGLDummyDC: HDC;
+function GetOpenGLDummyHwnd: HWND;
 (*function CreateNewRC(DC: HDC): HGLRC; //wglShareLists
 procedure DeleteRC(RC: HGLRC);*)
 
-procedure SetPixelFormatOnDC(DC: HDC; PixelFormat: TPixelFormatDescriptor);
+function FillPixelFormat(DC: HDC) : TPixelFormatDescriptor;
+procedure SetPixelFormatOnDC(DC: HDC; const PixelFormat: TPixelFormatDescriptor);
 
 implementation
 
@@ -816,12 +822,12 @@ const
       FuncPtr: Pointer;
       FuncName: PChar;
     end =
-  ( (FuncPtr: @@wglGetProcAddress;     FuncName: 'wglGetProcAddress'     ) //DanielPharos 2007.08.28 - Added
+  ( (FuncPtr: @@wglGetProcAddress;     FuncName: 'wglGetProcAddress'     )
    ,(FuncPtr: @@wglMakeCurrent;        FuncName: 'wglMakeCurrent'        )
    ,(FuncPtr: @@wglDeleteContext;      FuncName: 'wglDeleteContext'      )
    ,(FuncPtr: @@wglCreateContext;      FuncName: 'wglCreateContext'      )
-//   ,(FuncPtr: @@wglShareLists;         FuncName: 'wglShareLists'         ) //DanielPharos 2006.09.26 - Added  //wglShareLists
-   ,(FuncPtr: @@wglSwapBuffers;        FuncName: 'wglSwapBuffers'        ) //Decker 2002.02.26 - Added
+//   ,(FuncPtr: @@wglShareLists;         FuncName: 'wglShareLists'         )
+   ,(FuncPtr: @@wglSwapBuffers;        FuncName: 'wglSwapBuffers'        )
    ,(FuncPtr: @@glClearColor;          FuncName: 'glClearColor'          )
    ,(FuncPtr: @@glClearDepth;          FuncName: 'glClearDepth'          )
    ,(FuncPtr: @@glEnable;              FuncName: 'glEnable'              )
@@ -845,8 +851,8 @@ const
    ,(FuncPtr: @@glBegin;               FuncName: 'glBegin'               )
    ,(FuncPtr: @@glEnd;                 FuncName: 'glEnd'                 )
 {DECKER 2003.03.13 - Removed again
-   ,(FuncPtr: @@glColor3f;             FuncName: 'glColor3f'             ) //Decker 2003.03.13 - Added
-   ,(FuncPtr: @@glColor4f;             FuncName: 'glColor4f'             ) //Decker 2003.03.13 - Added
+   ,(FuncPtr: @@glColor3f;             FuncName: 'glColor3f'             )
+   ,(FuncPtr: @@glColor4f;             FuncName: 'glColor4f'             )
 /DECKER}
    ,(FuncPtr: @@glColor3fv;            FuncName: 'glColor3fv'            )
    ,(FuncPtr: @@glColor4fv;            FuncName: 'glColor4fv'            )
@@ -858,25 +864,25 @@ const
    ,(FuncPtr: @@glAreTexturesResident; FuncName: 'glAreTexturesResident' )
    ,(FuncPtr: @@glBindTexture;         FuncName: 'glBindTexture'         )
    ,(FuncPtr: @@glGenTextures;         FuncName: 'glGenTextures'         )
-   ,(FuncPtr: @@glGenLists;            FuncName: 'glGenLists'            ) //DanielPharos 2006.09.19 - Added
+   ,(FuncPtr: @@glGenLists;            FuncName: 'glGenLists'            )
    ,(FuncPtr: @@glNewList;             FuncName: 'glNewList'             )
    ,(FuncPtr: @@glEndList;             FuncName: 'glEndList'             )
    ,(FuncPtr: @@glCallList;            FuncName: 'glCallList'            )
    ,(FuncPtr: @@glDeleteLists;         FuncName: 'glDeleteLists'         )
    ,(FuncPtr: @@glReadPixels;          FuncName: 'glReadPixels'          )
-   ,(FuncPtr: @@glBlendFunc;           FuncName: 'glBlendFunc'           ) //Decker 2003.03.12 - Added
-   ,(FuncPtr: @@glOrtho;               FuncName: 'glOrtho'               ) //DanielPharos 2006.09.28 - Added
-   ,(FuncPtr: @@glGetIntegerv;         FuncName: 'glGetIntegerv'         ) //DanielPharos 2006.12.03 - Added
-   ,(FuncPtr: @@glGetString;           FuncName: 'glGetString'           ) //DanielPharos 2007.08.28 - Added
-   ,(FuncPtr: @@glLightModelf;         FuncName: 'glLightModelf'         ) //DanielPharos 2007.01.15 - Added
-   ,(FuncPtr: @@glLightModelfv;        FuncName: 'glLightModelfv'        ) //DanielPharos 2007.01.14 - Added
-   ,(FuncPtr: @@glLightf;              FuncName: 'glLightf'              ) //DanielPharos 2007.01.14 - Added
-   ,(FuncPtr: @@glLightfv;             FuncName: 'glLightfv'             ) //DanielPharos 2007.01.14 - Added
-   ,(FuncPtr: @@glMaterialf;           FuncName: 'glMaterialf'           ) //DanielPharos 2007.01.15 - Added
-   ,(FuncPtr: @@glMaterialfv;          FuncName: 'glMaterialfv'          ) //DanielPharos 2007.01.15 - Added
-   ,(FuncPtr: @@glNormal3fv;           FuncName: 'glNormal3fv'           ) //DanielPharos 2007.01.23 - Added
-   ,(FuncPtr: @@glFrontFace;           FuncName: 'glFrontFace'           ) //DanielPharos 2007.01.30 - Added
-   ,(FuncPtr: @@glDepthMask;           FuncName: 'glDepthMask'           ) //DanielPharos 2008.04.11 - Added
+   ,(FuncPtr: @@glBlendFunc;           FuncName: 'glBlendFunc'           )
+   ,(FuncPtr: @@glOrtho;               FuncName: 'glOrtho'               )
+   ,(FuncPtr: @@glGetIntegerv;         FuncName: 'glGetIntegerv'         )
+   ,(FuncPtr: @@glGetString;           FuncName: 'glGetString'           )
+   ,(FuncPtr: @@glLightModelf;         FuncName: 'glLightModelf'         )
+   ,(FuncPtr: @@glLightModelfv;        FuncName: 'glLightModelfv'        )
+   ,(FuncPtr: @@glLightf;              FuncName: 'glLightf'              )
+   ,(FuncPtr: @@glLightfv;             FuncName: 'glLightfv'             )
+   ,(FuncPtr: @@glMaterialf;           FuncName: 'glMaterialf'           )
+   ,(FuncPtr: @@glMaterialfv;          FuncName: 'glMaterialfv'          )
+   ,(FuncPtr: @@glNormal3fv;           FuncName: 'glNormal3fv'           )
+   ,(FuncPtr: @@glFrontFace;           FuncName: 'glFrontFace'           )
+   ,(FuncPtr: @@glDepthMask;           FuncName: 'glDepthMask'           )
  );
 
   Glu32DLL_FuncList : array[0..0] of
@@ -919,6 +925,11 @@ begin
   Result := DummyDC;
 end;
 
+function GetOpenGLDummyHwnd: HWND;
+begin
+  Result := DummyWindow;
+end;
+
 (*function CreateNewRC(DC: HDC): HGLRC; //wglShareLists
 begin
   Result:=wglCreateContext(DC);
@@ -957,22 +968,47 @@ begin
   end;
 end;*)
 
-procedure SetPixelFormatOnDC(DC: HDC; PixelFormat: TPixelFormatDescriptor);
+function FillPixelFormat(DC: HDC) : TPixelFormatDescriptor;
 var
- CurrentPixelFormat, NewPixelFormat: Integer;
- NewPixelFormatDesc: TPixelFormatDescriptor;
+  Setup: QObject;
 begin
-  NewPixelFormatDesc:=PixelFormat;
+  FillChar(Result, SizeOf(Result), 0);
+  Setup:=SetupSubSet(ssGeneral, 'OpenGL');
+  Result.nSize:=SizeOf(Result);
+  Result.nVersion:=1;
+  Result.dwFlags:=PFD_SUPPORT_OPENGL or PFD_DRAW_TO_WINDOW;
+  Result.iPixelType:=PFD_TYPE_RGBA;
+  if Setup.Specifics.Values['DoubleBuffer']<>'' then
+    Result.dwFlags:=Result.dwFlags or PFD_DOUBLEBUFFER;
+  if Setup.Specifics.Values['SupportsGDI']<>'' then
+    Result.dwFlags:=Result.dwFlags or PFD_SUPPORT_GDI;
+  Result.cColorBits:=Round(Setup.GetFloatSpec('ColorBits', 0));
+  if Result.cColorBits<=0 then
+    Result.cColorBits:=GetDeviceCaps(DC, BITSPIXEL);
+  Result.cDepthBits:=Round(Setup.GetFloatSpec('DepthBits', 16));
+  if Result.cDepthBits<=0 then
+    Result.cDepthBits:=0;
+  Result.iLayerType:=PFD_MAIN_PLANE;
+end;
+
+procedure SetPixelFormatOnDC(DC: HDC; const PixelFormat: TPixelFormatDescriptor);
+var
+  CurrentPixelFormat, NewPixelFormat: Integer;
+  NewPixelFormatDesc: TPixelFormatDescriptor;
+begin
+  CopyMemory(@NewPixelFormatDesc, @PixelFormat, SizeOf(TPixelFormatDescriptor));
   NewPixelFormat:=ChoosePixelFormat(DC, @NewPixelFormatDesc);
   CurrentPixelFormat:=GetPixelFormat(DC);
   if CurrentPixelFormat<>NewPixelFormat then
   begin
+    if (NewPixelFormat = 0) then
+      Log(LOG_WARNING, 'OpenGL: Trying to set pixelformat 0. Will probably not work!');
     if not SetPixelFormat(DC, NewPixelFormat, @NewPixelFormatDesc) then
-      Raise EErrorFmt(6303, ['SetPixelFormat']);
+      Raise EErrorFmt(6301, ['SetPixelFormat']);
     {$IFDEF DebugGLErr}
     Log(LOG_VERBOSE, 'OpenGL: Selected PixelFormat: ' + IntToStr(NewPixelFormat));
     if DescribePixelFormat(DC, NewPixelFormat, SizeOf(NewPixelFormatDesc), NewPixelFormatDesc) = false then
-      Raise EErrorFmt(6303, ['DescribePixelFormat']);
+      Raise EErrorFmt(6301, ['DescribePixelFormat']);
     if ((NewPixelFormatDesc.dwFlags and PFD_GENERIC_FORMAT) <> 0) then
       if ((NewPixelFormatDesc.dwFlags and PFD_GENERIC_ACCELERATED) <> 0) then
         Log(LOG_VERBOSE, 'OpenGL: Hardware accelerated (MCD)')
@@ -1000,7 +1036,6 @@ type
 var
  I: Integer;
  P: Pointer;
- Setup: QObject;
  PixelFormat: TPixelFormatDescriptor;
 begin
   if TimesLoaded = 0 then
@@ -1055,23 +1090,7 @@ begin
       if DummyDC = 0 then
         Raise EErrorFmt(6301, ['GetDC']);
 
-      Setup:=SetupSubSet(ssGeneral, 'OpenGL');
-      FillChar(PixelFormat, SizeOf(PixelFormat), 0);
-      PixelFormat.nSize:=SizeOf(PixelFormat);
-      PixelFormat.nVersion:=1;
-      PixelFormat.dwFlags:=PFD_SUPPORT_OPENGL or PFD_DRAW_TO_WINDOW;
-      PixelFormat.iPixelType:=PFD_TYPE_RGBA;
-      if Setup.Specifics.Values['DoubleBuffer']<>'' then
-        PixelFormat.dwFlags:=PixelFormat.dwFlags or PFD_DOUBLEBUFFER;
-      if Setup.Specifics.Values['SupportsGDI']<>'' then
-        PixelFormat.dwFlags:=PixelFormat.dwFlags or PFD_SUPPORT_GDI;
-      PixelFormat.cColorBits:=Round(Setup.GetFloatSpec('ColorBits', 0));
-      if PixelFormat.cColorBits<=0 then
-        PixelFormat.cColorBits:=GetDeviceCaps(DummyDC, BITSPIXEL);
-      PixelFormat.cDepthBits:=Round(Setup.GetFloatSpec('DepthBits', 16));
-      if PixelFormat.cDepthBits<=0 then
-        PixelFormat.cDepthBits:=0;
-      PixelFormat.iLayerType:=PFD_MAIN_PLANE;
+      PixelFormat:=FillPixelFormat(DummyDC);
       SetPixelFormatOnDC(DummyDC, PixelFormat);
 
       DummyRC := wglCreateContext(DummyDC);

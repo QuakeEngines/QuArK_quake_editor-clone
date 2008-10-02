@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2008/09/06 15:57:30  danielpharos
+Moved exception code into separate file.
+
 Revision 1.12  2008/02/23 19:25:21  danielpharos
 Moved a lot of path/file code around: should make it easier to use
 
@@ -196,8 +199,6 @@ type
 
  TGlideSceneObject = class(TSceneObject)
  private
-   ViewWnd: HWnd;
-   ViewDC: HDC;
    FBuildNo: Integer;
    FVertexList: TMemoryStream;
    VOID_COLOR, FRAME_COLOR: GrColor_t;
@@ -209,7 +210,6 @@ type
    GlideLoaded: Boolean;
    function ScreenExtent(var L, R: Integer; var bmiHeader: TBitmapInfoHeader) : Boolean;
  protected
-   //DrawRect: TRect;
    ScreenX, ScreenY: Integer;
    function StartBuildScene({var PW: TPaletteWarning;} var VertexSize: Integer) : TBuildMode; override;
    procedure stScalePoly(Texture: PTexture3; var ScaleS, ScaleT: TDouble); override;
@@ -221,10 +221,10 @@ type
    procedure RenderPList(PList: PSurfaces; TransparentFaces: Boolean);
    procedure RenderTransparent(Transparent: Boolean);
    procedure BuildTexture(Texture: PTexture3); override;
+   procedure ChangedViewWnd; override;
  public
    constructor Create(ViewMode: TMapViewMode);
-   procedure Init(Wnd: HWnd;
-                  nCoord: TCoordinates;
+   procedure Init(nCoord: TCoordinates;
                   DisplayMode: TDisplayMode;
                   DisplayType: TDisplayType;
                   const LibName: String;
@@ -235,10 +235,7 @@ type
    procedure Copy3DView; override;
    procedure SwapBuffers(Synch: Boolean); override;
    procedure ClearScene; override;
-   procedure SetDrawRect(NewRect: TRect); override;
    procedure SetViewSize(SX, SY: Integer); override;
-   procedure SetViewDC(DC: HDC); override;
-   procedure SetViewWnd(Wnd: HWnd; ResetViewDC: Boolean=false); override;
    function ChangeQuality(nQuality: Integer) : Boolean; override;
  end;
 
@@ -431,7 +428,7 @@ begin
  SolidColors:=(ViewMode=vmSolidcolor);
 end;
 
-procedure TGlideSceneObject.Init(Wnd: HWnd; nCoord: TCoordinates; DisplayMode: TDisplayMode; DisplayType: TDisplayType;
+procedure TGlideSceneObject.Init(nCoord: TCoordinates; DisplayMode: TDisplayMode; DisplayType: TDisplayType;
           const LibName: String; var AllowsGDI: Boolean);
 var
  HiColor: Boolean;
@@ -2078,11 +2075,6 @@ begin
   grSstIdle;
 end;
 
-procedure TGlideSceneObject.SetDrawRect(NewRect: TRect);
-begin
-  //DrawText:=NewRect;
-end;
-
 procedure TGlideSceneObject.SetViewSize(SX, SY: Integer);
 var
  XMargin, YMargin: Integer;
@@ -2138,21 +2130,9 @@ begin
  ViewRect.Bottom:= ViewRect.R.Bottom+ (VertexSnapper+0.5);
 end;
 
-procedure TGlideSceneObject.SetViewDC(DC: HDC);
+procedure TGlideSceneObject.ChangedViewWnd;
 begin
-  if ViewDC<>DC then
-  begin
-    ViewDC:=DC;
-  end;
-end;
-
-procedure TGlideSceneObject.SetViewWnd(Wnd: HWnd; ResetViewDC: Boolean=false);
-begin
-  if ViewWnd<>Wnd then
-  begin
-    //DanielPharos: Do we need to set grSstWinOpen again?
-    ViewWnd:=Wnd;
-  end;
+  //FIXME: Do we need to set grSstWinOpen again?
 end;
 
 function TGlideSceneObject.ChangeQuality(nQuality: Integer) : Boolean;

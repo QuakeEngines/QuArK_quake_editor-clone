@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.45  2008/09/06 15:57:32  danielpharos
+Moved exception code into separate file.
+
 Revision 1.44  2008/09/01 23:47:53  danielpharos
 Fix test-code sneaking in.
 
@@ -253,6 +256,7 @@ type
                  FRAMETIME: TDouble;
                  Animation: PAnimationSeq;
                  OldCameraPos: PyObject;
+                 FPainting: Boolean;
                  ClipRect: TRect;
                  ShowProgress: Boolean;
                  procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
@@ -284,6 +288,7 @@ type
                  Canvas: TControlCanvas;
                  procedure Resize; override;
                  procedure wmMove(var Msg: TMessage); message wm_Move;
+                 procedure wmPaint(var Msg: TMessage); message wm_Paint;
                 {procedure wmCaptureChanged(var Msg: TMessage); message wm_CaptureChanged;}
                  procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
                  procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
@@ -341,7 +346,8 @@ var
 implementation
 
 uses PyCanvas, QkTextures, Game, PyForms, FullScreenWnd, FullScr1, RedLines, Qk1,
-     EdSoftware, EdGlide, EdOpenGL, EdDirect3D, SystemDetails, QkFileObjects, QkExceptions;
+     EdSoftware, EdGlide, EdOpenGL, EdDirect3D, SystemDetails, QkFileObjects,
+     QkExceptions, Logging;
 
 
 constructor TPyMapView.Create(AOwner: TComponent);
@@ -659,8 +665,9 @@ begin
         raise EErrorFmt(6000, ['Invalid ViewType']);
 
       Scene.ShowProgress:=ShowProgress;
-      Scene.Init(Self.Handle, MapViewProj, DisplayMode, DisplayType,
-       Specifics.Values['Lib'], AllowsGDI);
+      Scene.SetViewWnd(Self.Handle, True);
+      Scene.SetDrawRect(ClipRect); 
+      Scene.Init(MapViewProj, DisplayMode, DisplayType, Specifics.Values['Lib'], AllowsGDI);
 
       if AllowsGDI then
        Drawing:=Drawing and not dfNoGDI
@@ -816,6 +823,8 @@ begin
  ClipRect:=rcPaint;
  if (ClipRect.Left = 0) and (ClipRect.Right = 0) and (ClipRect.Top = 0) and (ClipRect.Bottom = 0) then
    ClipRect:=GetClientRect;
+ if (Scene<>Nil) then
+  Scene.SetDrawRect(ClipRect);
 
  try
   Render;
@@ -1159,6 +1168,27 @@ procedure TPyMapView.wmMove(var Msg: TMessage);
 begin
  inherited;
  SetRedLines;
+end;
+
+procedure TPyMapView.wmPaint;
+var
+ PaintInfo: TPaintStruct;
+begin
+ //Note: This overrides the original wmPaint...!
+ if BeginPaint(Handle, PaintInfo)<>0 then
+  try
+   FPainting:=True;
+   try
+    if (Scene<>Nil) then
+     Scene.SetViewWnd(Handle);
+    if not (csDesigning in ComponentState) then
+     Paint(Self, PaintInfo.hDC, PaintInfo.rcPaint);
+   finally
+    FPainting:=False;
+   end;
+  finally
+   EndPaint(Handle, PaintInfo);
+  end;
 end;
 
 procedure TPyMapView.SetRedLines;
@@ -1728,9 +1758,6 @@ begin
       end
      else
       begin
-       Scene.SetViewDC(DC);
-       ClipRect:=GetClientRect;
-       Scene.SetDrawRect(ClipRect);
        Scene.Render3DView;
        if FullScreen then
         Scene.SwapBuffers(True)
@@ -2864,42 +2891,48 @@ begin
    Exit;
   if PyControlF(self)^.QkControl<>Nil then
    with PyControlF(self)^.QkControl as TPyMapView do
-    try
-     if ViewMode<>vmWireframe then
+    begin
+     if not FPainting then
       begin
-       DC:=Canvas.Handle;
-       Scene.SetViewWnd(Handle);
-       Scene.SetViewDC(DC);
-       if Drawing and dfRebuildScene <> 0 then
-        begin
-         if Drawing and dfNoGDI = 0 then
-          DC1:=DC
-         else
-          DC1:=0;
-         Scene.BuildScene(DC1, QkObjFromPyObj(AltTexSrc));
-         Drawing:=Drawing and not dfRebuildScene;
-        end;
-       Drawing:=Drawing and not dfBuilding;
-       if FullScreen then
-        Scene.ClearFrame;
-       Scene.SetDrawRect(ClipRect);
-       Scene.Render3DView;
-       if FullScreen then
-        begin
-         Scene.SwapBuffers(False);
-         Do3DFXTwoMonitorsActivation;
-        end
-       else
-        Scene.Copy3DView;
+       //FIXME: This shouldn't happen!
+       Log(LOG_WARNING, 'Trying to call solidimage outside a paint-function! This is not allowed!');
+       Result:=PyNoResult;       
+       Exit;
       end;
-    except
-     on E: Exception do
-      begin
-       ClearPanel(GetExceptionMessage(E));
-       Scene.ClearScene;
-       Drawing:=Drawing or dfRebuildScene;
-      end;
-    end;
+     try
+      if ViewMode<>vmWireframe then
+       begin
+        DC:=Canvas.Handle;
+        if Drawing and dfRebuildScene <> 0 then
+         begin
+          if Drawing and dfNoGDI = 0 then
+           DC1:=DC
+          else
+           DC1:=0;
+          Scene.BuildScene(DC1, QkObjFromPyObj(AltTexSrc));
+          Drawing:=Drawing and not dfRebuildScene;
+         end;
+        Drawing:=Drawing and not dfBuilding;
+        if FullScreen then
+         Scene.ClearFrame;
+        Scene.Render3DView;
+        if FullScreen then
+         begin
+          Scene.SwapBuffers(False);
+          Do3DFXTwoMonitorsActivation;
+         end
+        else
+         Scene.Copy3DView;
+       end;
+     except
+      on E: Exception do
+       begin
+        ClearPanel(GetExceptionMessage(E));
+        Scene.ClearScene;
+        Drawing:=Drawing or dfRebuildScene;
+       end;
+     end;
+   end;
   Result:=PyNoResult;
  except
   EBackToPython;
@@ -3308,8 +3341,6 @@ begin
                  end
                 else
                  begin
-                  Scene.SetViewDC(DC);
-                  Scene.SetDrawRect(ClipRect);
                   Scene.Render3DView;
                   if FullScreen then
                    Scene.SwapBuffers(True)

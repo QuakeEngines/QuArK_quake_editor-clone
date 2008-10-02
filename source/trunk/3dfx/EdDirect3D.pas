@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.27  2008/09/06 15:57:29  danielpharos
+Moved exception code into separate file.
+
 Revision 1.26  2007/09/23 21:44:30  danielpharos
 Switch DirectX to dynamic explicit loading: it should work on WinNT4 again! Also fixed the access violations that popped up when loading of DirectX went wrong.
 
@@ -132,8 +135,6 @@ uses Windows, Classes,
 type
   TDirect3DSceneObject = class(TSceneObject)
   private
-    ViewWnd: HWnd;
-    ViewDC: HDC;
     Fog: Boolean;
     Transparency: Boolean;
     Lighting: Boolean;
@@ -153,7 +154,6 @@ type
 //    m_pD3DX: ID3DXContext;
 
     m_CurrentAlpha, m_CurrentColor: Integer;
-    DrawRect: TRect;
     ScreenX, ScreenY: Integer;
     function StartBuildScene(var VertexSize: Integer) : TBuildMode; override;
     procedure EndBuildScene; override;
@@ -164,11 +164,11 @@ type
     procedure WriteVertex(PV: PChar; Source: Pointer; const ns,nt: Single; HiRes: Boolean); override;
     procedure ReleaseResources;
     procedure BuildTexture(Texture: PTexture3); override;
+    procedure ChangedViewWnd; override;
     function CheckDeviceState : Boolean;
   public
     destructor Destroy; override;
-    procedure Init(Wnd: HWnd;
-                   nCoord: TCoordinates;
+    procedure Init(nCoord: TCoordinates;
                    DisplayMode: TDisplayMode;
                    DisplayType: TDisplayType;
                    const LibName: String;
@@ -177,10 +177,7 @@ type
  (*
     procedure ClearFrame; override;
  *)
-    procedure SetDrawRect(NewRect: TRect); override;
     procedure SetViewSize(SX, SY: Integer); override;
-    procedure SetViewDC(DC: HDC); override;
-    procedure SetViewWnd(Wnd: HWnd; ResetViewDC: Boolean=false); override;
     procedure Render3DView; override;
     procedure Copy3DView; override;
  (*
@@ -222,11 +219,6 @@ begin
   v[3]:=((Color shr 24) and $FF) * (1/255.0);
 end;
 
-procedure TDirect3DSceneObject.SetDrawRect(NewRect: TRect);
-begin
-  DrawRect:=NewRect;
-end;
-
 procedure TDirect3DSceneObject.SetViewSize(SX, SY: Integer);
 begin
   if SX<1 then SX:=1;
@@ -240,39 +232,12 @@ begin
   end;
 end;
 
-procedure TDirect3DSceneObject.SetViewDC(DC: HDC);
+procedure TDirect3DSceneObject.ChangedViewWnd;
 begin
-  if ViewDC<>DC then
-  begin
-    ScreenResized := True;
-    //DanielPharos: Do we need to do this?
+  ScreenResized := True;
+  //DanielPharos: Do we need to do this?
 
-    //DanielPharos: Do we need to reset the swapchains?
-
-    if (ViewWnd<>0) and (ViewDC<>0) then
-      ReleaseDC(ViewWnd, ViewDC);
-    ViewDC:=DC;
-  end;
-end;
-
-procedure TDirect3DSceneObject.SetViewWnd(Wnd: HWnd; ResetViewDC: Boolean=false);
-begin
-  if ViewWnd<>Wnd then
-  begin
-    ScreenResized := True;
-    //DanielPharos: Do we need to do this?
-
-    if ResetViewDC then
-      if (ViewWnd<>0) and (ViewDC<>0) then
-      begin
-        ReleaseDC(ViewWnd,ViewDC);
-        ViewDC:=0;
-      end;
-    ViewWnd:=Wnd;
-    pPresParm.hDeviceWindow:=ViewWnd;
-    if ResetViewDC then
-      SetViewDC(GetDC(Wnd));
-  end;
+  pPresParm.hDeviceWindow:=ViewWnd;
 end;
 
 function TDirect3DSceneObject.ChangeQuality(nQuality: Integer) : Boolean;
@@ -390,8 +355,7 @@ begin
   end;
 end;
 
-procedure TDirect3DSceneObject.Init(Wnd: HWnd;
-                                    nCoord: TCoordinates;
+procedure TDirect3DSceneObject.Init(nCoord: TCoordinates;
                                     DisplayMode: TDisplayMode;
                                     DisplayType: TDisplayType;
                                     const LibName: String;
@@ -494,8 +458,8 @@ begin
     Culling:=False;
   end;
 
-  SetViewWnd(Wnd);
-  if GetWindowRect(Wnd, DrawRect)=false then
+  //FIXME: Is this OK?
+  if GetWindowRect(ViewWnd, DrawRect)=false then
     Raise EErrorFmt(6400, ['GetWindowRect']);
   ScreenX:=DrawRect.Right-DrawRect.Left;
   ScreenY:=DrawRect.Bottom-DrawRect.Top;
@@ -503,7 +467,7 @@ begin
   pPresParm:=PresParm;
   pPresParm.BackBufferWidth:=ScreenX;
   pPresParm.BackBufferHeight:=ScreenY;
-  pPresParm.hDeviceWindow:=Wnd;
+  pPresParm.hDeviceWindow:=ViewWnd; //Should already have been done, but better safe than sorry
 
   if ListIndex=0 then
   begin

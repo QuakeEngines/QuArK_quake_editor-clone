@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.43  2008/09/06 15:57:30  danielpharos
+Moved exception code into separate file.
+
 Revision 1.42  2008/02/21 21:16:24  danielpharos
 Small bug fixes.
 
@@ -289,6 +292,9 @@ type
 
  TSceneObject = class
  protected
+   DrawRect: TRect;
+   ViewWnd: HWnd;
+   ViewDC: HDC;
    Coord: TCoordinates;
    FListSurfaces: PSurfaces;
    PolyFaces, ModelInfo, BezierInfo, SpriteInfo: TList;
@@ -304,6 +310,8 @@ type
    procedure WriteVertex(PV: PChar; Source: Pointer; const ns,nt: Single; HiRes: Boolean); virtual; abstract;
    procedure PostBuild(nVertexList, nVertexList2: TList); virtual;
    procedure BuildTexture(Texture: PTexture3); virtual; abstract;
+   procedure ChangedViewWnd; virtual;
+   procedure ChangedViewDC; virtual;
  public
    BlendColor: TColorRef;
    ViewEntities: TViewEntities;
@@ -317,18 +325,17 @@ type
    ShowProgress: Boolean;
    constructor Create(nViewMode: TMapViewMode);
    destructor Destroy; override;
-   procedure Init(Wnd: HWnd;
-                  nCoord: TCoordinates;
+   procedure Init(nCoord: TCoordinates;
                   DisplayMode: TDisplayMode;
                   DisplayType: TDisplayType;
                   const LibName: String;
                   var AllowsGDI: Boolean); virtual; abstract;
    procedure ClearScene; virtual;
    procedure ClearFrame; virtual;
-   procedure SetDrawRect(NewRect: TRect); virtual; abstract;
+   procedure SetDrawRect(NewRect: TRect);
    procedure SetViewSize(SX, SY: Integer); virtual; abstract;
-   procedure SetViewDC(DC: HDC); virtual; abstract;
-   procedure SetViewWnd(Wnd: HWnd; ResetViewDC: Boolean=false); virtual; abstract;
+   procedure SetViewWnd(Wnd: HWnd; NeedViewDC: Boolean=false);
+   procedure SetViewDC(DC: HDC);
    procedure SetCoords(nCoord: TCoordinates);
    procedure BuildScene(ProgressDC: HDC; AltTexSrc: QObject);
    procedure Render3DView; virtual; abstract;
@@ -416,11 +423,14 @@ begin
  SpriteInfo:=TList.Create;
  TemporaryStuff:=TQList.Create;
  ViewMode:=nViewMode;
+ ViewWnd:=0;
+ ViewDC:=0;
 end;
 
 destructor TSceneObject.Destroy;
 begin
  ClearScene;
+ SetViewWnd(0);
  TTextureManager.RemoveScene(Self);
  PolyFaces.Free;
  ModelInfo.Free;
@@ -1512,6 +1522,49 @@ begin
    TexNames.Free;
  end;
  EndBuildScene;
+end;
+
+procedure TSceneObject.SetDrawRect(NewRect: TRect);
+begin
+  DrawRect:=NewRect;
+end;
+
+procedure TSceneObject.SetViewWnd(Wnd: HWnd; NeedViewDC: Boolean=false);
+begin
+  if ViewWnd<>Wnd then
+  begin
+    if (ViewWnd<>0) and (ViewDC<>0) then
+    begin
+      SetViewDC(0);
+      NeedViewDC:=True;
+    end;
+    ViewWnd:=Wnd;
+    ChangedViewWnd;
+    if (ViewWnd<>0) and NeedViewDC then
+      SetViewDC(GetDC(ViewWnd));
+  end;
+end;
+
+procedure TSceneObject.SetViewDC(DC: HDC);
+begin
+  if ViewDC<>DC then
+  begin
+    if (ViewWnd<>0) and (ViewDC<>0) then
+    begin
+      ReleaseDC(ViewWnd, ViewDC);
+      ViewDC:=0;
+    end;
+    ViewDC:=DC;
+    ChangedViewDC;
+  end;
+end;
+
+procedure TSceneObject.ChangedViewWnd;
+begin
+end;
+
+procedure TSceneObject.ChangedViewDC;
+begin
 end;
 
  {------------------------}
