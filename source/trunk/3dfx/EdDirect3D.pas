@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.28  2008/10/02 12:23:27  danielpharos
+Major improvements to HWnd and HDC handling. This should fix all kinds of OpenGL problems.
+
 Revision 1.27  2008/09/06 15:57:29  danielpharos
 Moved exception code into separate file.
 
@@ -333,19 +336,12 @@ begin
       ListItemUsed[ListIndex-1]:=false;
     ListIndex:=0;
   end;
-
-  if (ViewWnd<>0) and (ViewDC<>0) then
-  begin
-    ReleaseDC(ViewWnd, ViewDC);
-    ViewDC:=0;
-  end;
-  ViewWnd:=0;
 end;
 
 destructor TDirect3DSceneObject.Destroy;
 begin
-  inherited;
   ReleaseResources;
+  inherited;
   if Direct3DLoaded then
     UnloadDirect3D;
   if DWMLoaded then
