@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2008/09/06 15:57:03  danielpharos
+Moved exception code into separate file.
+
 Revision 1.18  2008/08/28 22:14:04  danielpharos
 Removed code left behind on prev rev.
 
@@ -243,7 +246,7 @@ begin
   case Format of
   1:
   begin  { as stand-alone file }
-    LibraryToUse:=SetupSubSet(ssFiles, 'JPG').Specifics.Values['SaveLibrary'];
+    LibraryToUse:=SetupSubSet(ssFiles, 'DDS').Specifics.Values['SaveLibrary'];
     if LibraryToUse='DevIL' then
       SaveFileDevIL(Info)
     //FreeImage has no DDS file saving support (yet?)
@@ -530,7 +533,7 @@ begin
 
     end
     else
-      FatalFileError('Unable to save JPG file. No valid saving library selected.');
+      FatalFileError('Unable to save DDS file. No valid saving library selected.');
   end
   else
     inherited;

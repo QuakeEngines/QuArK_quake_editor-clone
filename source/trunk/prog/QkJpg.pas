@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.24  2008/09/03 13:26:47  danielpharos
+Added JPG saving quality for DevIL.
+
 Revision 1.23  2008/08/28 19:01:16  danielpharos
 Added a bunch of DevIL setting, and re-enabled DevIL DDS file saving.
 
@@ -262,7 +265,7 @@ begin
     if LibraryToUse='DevIL' then
       SaveFileDevIL(Info)
     else if LibraryToUse='FreeImage' then
-      SaveFileDevIL(Info)
+      SaveFileFreeImage(Info)
     else
       FatalFileError('Unable to save JPG file. No valid saving library selected.');
   end
