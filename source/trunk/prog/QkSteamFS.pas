@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.28  2008/09/21 15:26:27  danielpharos
+Added some extra hidden settings; may be configurable later.
+
 Revision 1.27  2008/05/29 21:36:38  danielpharos
 Fix a typo in a log-line
 
@@ -299,7 +302,7 @@ begin
     if I>50 then
     begin
       //We've been waiting for 10 SECONDS! Let's assume something went terribly wrong...!
-      if MessageBox(0, PChar('10 Seconds have passed, and QuArk cannot detect Steam as having started up... Please start it manually now (if it has not yet done so) and press YES when you are logged in. Otherwise, press NO.'), PChar('QuArK'), MB_YESNO) = IDNO then
+      if MessageBox(0, PChar('10 Seconds have passed, and QuArk cannot detect Steam as having started up... Please start it manually now (if it has not yet done so) and press YES when you are logged in. Otherwise, press NO.'), PChar('QuArK'), MB_TASKMODAL or MB_ICONEXCLAMATION or MB_YESNO) = IDNO then
       begin
         Result:=False;
         WaitForSteam:=False;
@@ -471,7 +474,7 @@ begin
         begin
           if WarnBeforeClear then
           begin
-            if MessageBox(0, PChar(FmtLoadStr1(5712, [SteamFullCacheDirectory])), PChar('QuArK'), MB_ICONWARNING+ MB_YESNO) = IDNO then
+            if MessageBox(0, PChar(FmtLoadStr1(5712, [SteamFullCacheDirectory])), PChar('QuArK'), MB_TASKMODAL or MB_ICONWARNING or MB_YESNO) = IDNO then
                Exit;
             WarnBeforeClear := false;    //So we don't show the warning multiple times!
           end;
@@ -487,7 +490,7 @@ begin
     if ClearCacheGCF then
     begin
       if WarnBeforeClear then
-        if MessageBox(0, PChar(FmtLoadStr1(5712, [SteamFullCacheDirectory])), PChar('QuArK'), MB_ICONWARNING+ MB_YESNO) = IDNO then
+        if MessageBox(0, PChar(FmtLoadStr1(5712, [SteamFullCacheDirectory])), PChar('QuArK'), MB_TASKMODAL or MB_ICONWARNING or MB_YESNO) = IDNO then
           Exit;
       FilesToDelete := TStringList.Create;
       FilesToDelete.Add(SteamFullCacheDirectory + '*.gcf');

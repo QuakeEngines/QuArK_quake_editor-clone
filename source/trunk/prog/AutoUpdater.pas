@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2008/09/27 10:18:14  danielpharos
+Disable update package check for now.
+
 Revision 1.11  2008/08/25 18:57:54  danielpharos
 Update to move towards a releasable state.
 
@@ -161,26 +164,26 @@ var
   UpdateNotifications: array of TUpdateNotificationFile;
   UpdatePackagesNR: Cardinal;
   UpdatePackages: array of TUpdatePackageFile;
+  UpdatesFound: Boolean;
 
-procedure DoUpdate(AllowOnline: Boolean);
-
-//Don't call these functions from outside this module!
-function GetLine(FileData: TMemoryStream; var OutputLine: String) : Boolean;
-
-procedure ParseString(FileData: TMemoryStream; var OutputVar: String);
-procedure ParseCardinal(FileData: TMemoryStream; var OutputVar: Cardinal);
-
-procedure ParseCommonHeader(CurrentFile: TUpdateFile; FileData: TMemoryStream);
-procedure ParseIndexFile(CurrentFile: TUpdateIndexFile; FileData: TMemoryStream);
-procedure ParseNotificationFile(CurrentFile: TUpdateNotificationFile; FileData: TMemoryStream);
-procedure ParsePackageFile(CurrentFile: TUpdatePackageFile; FileData: TMemoryStream);
+procedure DoUpdate(AllowOnline: Boolean; AutomaticCheck: Boolean);
 
  {------------------------}
 
 implementation
 
 uses StrUtils, SysUtils, DateUtils, QkObjects, Setup, Logging, Travail,
-  AutoUpdateInstaller;
+  QkExceptions, AutoUpdateInstaller;
+
+function GetLine(FileData: TMemoryStream; var OutputLine: String) : Boolean; forward;
+
+procedure ParseString(FileData: TMemoryStream; var OutputVar: String); forward;
+procedure ParseCardinal(FileData: TMemoryStream; var OutputVar: Cardinal); forward;
+
+procedure ParseCommonHeader(CurrentFile: TUpdateFile; FileData: TMemoryStream); forward;
+procedure ParseIndexFile(CurrentFile: TUpdateIndexFile; FileData: TMemoryStream); forward;
+procedure ParseNotificationFile(CurrentFile: TUpdateNotificationFile; FileData: TMemoryStream); forward;
+procedure ParsePackageFile(CurrentFile: TUpdatePackageFile; FileData: TMemoryStream); forward;
 
 {$R *.DFM}
 
@@ -514,7 +517,10 @@ begin
             if MessageNR>0 then
               for J:=0 to MessageNR-1 do
                 if Messages[J].DisplayIndex > UpdateIndexFile.Notifications[NotificationIndex].InternalBuildNumber then
-                  MessageBox(0, PChar(Messages[J].Text), PChar('QuArK Notification'), MB_OK);
+                begin
+                  UpdatesFound:=True;
+                  MessageBox(0, PChar(Messages[J].Text), PChar('QuArK Notification'), MB_TASKMODAL or MB_ICONINFORMATION or MB_OK);
+                end;
             Setup.Specifics.Values['Notification_'+UpdateIndexFile.Notifications[NotificationIndex].InternalName] := Format('%u', [BuildNumber]);
           end;
 
@@ -543,6 +549,7 @@ begin
                   end;
                   end; *)
                 end;
+            UpdatesFound:=True;
             UpdateWindow.ShowModal;
             //@
           finally
@@ -550,8 +557,12 @@ begin
           end;
         end
         else
+        begin
+          //@ Hmm, shouldn't we first filter which packages to install?
+          UpdatesFound:=True;
           if DoInstall = false then
             Exit; //@
+        end;
       end;
 
       //@
@@ -559,12 +570,7 @@ begin
       Result := true;
     except
       on E: Exception do
-      begin
-        //Recycle Dummy...
-        Dummy := 'The online update check has failed with the following error: '+E.Message+#13#10#13#10+'QuArK will not automatically fall back to offline update checking. If this error persists, please contact the QuArK development team via the forums.';
-        Log(LOG_WARNING, Dummy);
-        Application.MessageBox(PChar(Dummy), PChar('QuArK'), MB_OK);
-      end;
+        LogAndWarn('The online update check has failed with the following error: '+E.Message+#13#10#13#10+'If this error persists, please contact the QuArK development team.');
     end;
   finally
     UpdateIndexFile.Free;
@@ -585,10 +591,11 @@ begin
   end;
 end;
 
-procedure DoUpdate(AllowOnline: Boolean);
+procedure DoUpdate(AllowOnline: Boolean; AutomaticCheck: Boolean);
 var
   DoOfflineUpdate: Boolean;
 begin
+  UpdatesFound:=False;
   if AllowOnline then
   begin
     if SetupSubSet(ssGeneral, 'Update').Specifics.Values['UpdateCheckOnline'] <> '' then
@@ -600,6 +607,12 @@ begin
         //Something went wrong, let's fall back to the offline 'update'
         Log(LOG_WARNING, 'Unable to check for updates online! Using offline update routine.');
         DoOfflineUpdate := True;
+      end
+      else
+      begin
+        if not AutomaticCheck then
+          if not UpdatesFound then
+            MessageBox(0, 'No updates were found.', 'QuArK', MB_TASKMODAL or MB_ICONINFORMATION or MB_OK);
       end;
     end
     else
@@ -614,10 +627,10 @@ begin
     if DaySpan(Now, QuArKCompileDate) >= QuArKDaysOld then
     begin
       Log(LOG_WARNING, 'Offline update: Old version of QuArK detected!');
-      if MessageBox(0, 'This version of QuArK is rather old. Do you want to open the QuArK website to check for updates?', 'QuArK', MB_YESNO) = IDYES then
+      if MessageBox(0, 'This version of QuArK is rather old. Do you want to open the QuArK website to check for updates?', 'QuArK', MB_TASKMODAL or MB_ICONINFORMATION or MB_YESNO) = IDYES then
       begin
         if ShellExecute(0, 'open', QuArKWebsite, nil, nil, SW_SHOWDEFAULT) <= 32 then
-          MessageBox(0, 'Unable to open website: Call to ShellExecute failed!' + #13#10#13#10 + 'Please manually go to: ' + QuArKWebsite, 'QuArK', MB_OK);
+          MessageBox(0, 'Unable to open website: Call to ShellExecute failed!' + #13#10#13#10 + 'Please manually go to: ' + QuArKWebsite, 'QuArK', MB_TASKMODAL or MB_ICONEXCLAMATION or MB_OK);
       end;
     end;
   end;
@@ -644,7 +657,7 @@ begin
   end;
   if not PackageSelected then
   begin
-    MessageBox(0, PChar('No packages selected. Please first select packages to install, or click "Cancel".'), PChar('QuArK'), MB_OK);
+    MessageBox(0, PChar('No packages selected. Please first select packages to install, or click "Cancel".'), PChar('QuArK'), MB_TASKMODAL or MB_ICONEXCLAMATION or MB_OK);
     Exit;
   end;
   Close;

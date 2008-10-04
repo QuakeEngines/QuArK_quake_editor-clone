@@ -407,6 +407,10 @@ object Form1: TForm1
   object HelpMenu: TPopupMenu
     Left = 321
     Top = 209
+    object CheckUpdate1: TMenuItem
+      Caption = '&Check for updates...'
+      OnClick = CheckUpdate1Click
+    end
     object Viewconsole1: TMenuItem
       Caption = '&View console...'
       OnClick = Viewconsole1Click

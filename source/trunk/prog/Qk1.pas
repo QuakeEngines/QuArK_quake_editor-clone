@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.73  2008/09/18 16:36:37  danielpharos
+Added logging of unhandled exceptions during start-up.
+
 Revision 1.72  2008/09/18 16:22:02  danielpharos
 Kill program when exception happens on start-up, so Form1 doesn't appear onscreen broken.
 
@@ -421,6 +424,7 @@ type
     procedure About1Click(Sender: TObject);
     procedure Addons1Click(Sender: TObject);
     procedure Outputdirectories1Click(Sender: TObject);
+    procedure CheckUpdate1Click(Sender: TObject);
     procedure Viewconsole1Click(Sender: TObject);
     procedure HelpMenuItemClick(Sender: TObject);
     procedure Registering1Click(Sender: TObject);
@@ -519,7 +523,7 @@ begin
    + '/NOSPLASH: Skips the splash-screen' + #13#10
    + '/NOUPDATE: Skips the update check' + #13#10
    + #13#10
-   + 'All other parameters will be interpreted as files to load.', 'QuArK', MB_OK)
+   + 'All other parameters will be interpreted as files to load.', 'QuArK', MB_TASKMODAL or MB_OK)
   else if S = '/NOINSTANCE' then
    g_CmdOptions.DoInstance := false
   else if S = '/NOSPLASH' then
@@ -658,7 +662,7 @@ begin
  if g_Mutex = 0 then
  begin
    //Something went terribly wrong!
-   Windows.MessageBox(0, PChar('Unable to check if there already is an instance of QuArK running! If this is the case, this can cause serious problems. For example, changed configuration settings might not be saved, and QuArK might not update correctly.'), PChar('QuArK'), MB_OK or MB_ICONWARNING or MB_TASKMODAL);
+   Windows.MessageBox(0, PChar('Unable to check if there already is an instance of QuArK running! If this is the case, this can cause serious problems. For example, changed configuration settings might not be saved, and QuArK might not update correctly.'), PChar('QuArK'), MB_TASKMODAL or MB_OK or MB_ICONWARNING);
    MutexError := 0;
  end
  else
@@ -694,7 +698,7 @@ begin
        S:=S+'For example, changed configuration settings might not be saved, and QuArK might not update correctly.'#13#10;
        S:=S+'This check can be disabled (at own risk!) in the configuration settings.'#13#10#13#10;
        S:=S+'Are you sure you want to start a new instance of QuArK?';
-       if Windows.MessageBox(0, PChar(S), PChar('QuArK'), MB_YESNO or MB_ICONWARNING or MB_TASKMODAL) = idNo then
+       if Windows.MessageBox(0, PChar(S), PChar('QuArK'), MB_TASKMODAL or MB_YESNO or MB_ICONWARNING or MB_DEFBUTTON2) = idNo then
          Halt(0);
      end;
  end;
@@ -705,7 +709,7 @@ begin
    anymore! (Store data in registry?) }
  //Check for updates...
  if g_CmdOptions.DoUpdate and (SetupSubSet(ssGeneral, 'Update').Specifics.Values['UpdateCheck']<>'') then
-   DoUpdate(g_CmdOptions.OnlineUpdate);
+   DoUpdate(g_CmdOptions.OnlineUpdate, True);
 
  if g_CmdOptions.DoSplash then
  begin
@@ -2552,6 +2556,11 @@ end;
 procedure TForm1.Outputdirectories1Click(Sender: TObject);
 begin
  OutputDirDlg;
+end;
+
+procedure TForm1.CheckUpdate1Click(Sender: TObject);
+begin
+  DoUpdate(True, False);
 end;
 
 procedure TForm1.Viewconsole1Click(Sender: TObject);
