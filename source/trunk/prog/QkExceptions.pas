@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2008/09/23 08:27:29  danielpharos
+Moved InternalE to QkExceptions.
+
 Revision 1.3  2008/09/23 08:26:19  danielpharos
 Added LogAndWarn and const-ed a parameter.
 
@@ -74,7 +77,7 @@ end;
 procedure LogAndWarn(const WarnMessage : String);
 begin
   Log(LOG_WARNING, WarnMessage);
-  Application.MessageBox(PChar(WarnMessage), 'QuArK', MB_OK); //@ GIVE ICON!
+  Application.MessageBox(PChar(WarnMessage), 'QuArK', MB_TASKMODAL or MB_ICONEXCLAMATION or MB_OK);
 end;
 
 procedure LogAndRaiseError(const ErrMessage : String);
