@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2008/08/28 22:15:34  danielpharos
+Added DevIL PNG interlace option.
+
 Revision 1.17  2008/08/28 19:01:17  danielpharos
 Added a bunch of DevIL setting, and re-enabled DevIL DDS file saving.
 
@@ -101,7 +104,7 @@ type
 
 implementation
 
-uses SysUtils, Setup, Quarkx, QkObjectClassList, Game, Logging, Windows;
+uses SysUtils, Setup, Quarkx, QkObjectClassList, Game, Logging, QkExceptions;
 
 class function QPng.FormatName : String;
 begin
@@ -171,7 +174,7 @@ begin
     else if LibraryToUse='FreeImage' then
       LoadFileFreeImage(F, FSize)
     else
-      FatalFileError('Unable to load PNG file. No valid loading library selected.');
+      LogAndRaiseError('Unable to load PNG file. No valid loading library selected.');
   end;
   else
     inherited;
@@ -192,7 +195,7 @@ begin
     else if LibraryToUse='FreeImage' then
       SaveFileFreeImage(Info)
     else
-      FatalFileError('Unable to save PNG file. No valid saving library selected.');
+      LogAndRaiseError('Unable to save PNG file. No valid saving library selected.');
   end
   else
     inherited;

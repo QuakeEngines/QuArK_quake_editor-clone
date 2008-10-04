@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.20  2008/10/04 13:45:53  danielpharos
+Fixed some copy-paste mistakes.
+
 Revision 1.19  2008/09/06 15:57:03  danielpharos
 Moved exception code into separate file.
 
@@ -191,7 +194,7 @@ begin
     else if LibraryToUse='FreeImage' then
       LoadFileFreeImage(F, FSize)
     else
-      FatalFileError('Unable to load DDS file. No valid loading library selected.');
+      LogAndRaiseError('Unable to load DDS file. No valid loading library selected.');
   end;
   else
     inherited;
@@ -297,14 +300,14 @@ begin
         if ilTexImage(Width, Height, 1, ImageBpp, ImageFormat, IL_UNSIGNED_BYTE, nil)=IL_FALSE then
         begin
           ilDeleteImages(1, @DevILImage);
-          FatalFileError(SysUtils.Format('Unable to save %s file. Call to ilTexImage failed.', [FormatName]));
+          LogAndRaiseError(SysUtils.Format('Unable to save %s file. Call to ilTexImage failed.', [FormatName]));
         end;
         CheckDevILError(ilGetError);
 
         if ilClearImage=IL_FALSE then
         begin
           ilDeleteImages(1, @DevILImage);
-          FatalFileError(SysUtils.Format('Unable to save %s file. Call to ilClearImage failed.', [FormatName]));
+          LogAndRaiseError(SysUtils.Format('Unable to save %s file. Call to ilClearImage failed.', [FormatName]));
         end;
         CheckDevILError(ilGetError);
 
@@ -465,7 +468,7 @@ begin
       if ilSave(IL_TGA, PChar(DumpFileName+'.tga'))=IL_FALSE then
       begin
         ilDeleteImages(1, @DevILImage);
-        FatalFileError('Unable to save DDS file. Call to ilSave failed.');
+        LogAndRaiseError('Unable to save DDS file. Call to ilSave failed.');
       end;
 
       ilDeleteImages(1, @DevILImage);
@@ -474,7 +477,7 @@ begin
       try
         //DanielPharos: Now convert the TGA to DDS with NVIDIA's DDS tool...
         if FileExists(GetQPath(pQuArKDll)+'nvdxt.exe')=false then
-          FatalFileError('Unable to save DDS file. dlls/nvdxt.exe not found.');
+          LogAndRaiseError('Unable to save DDS file. dlls/nvdxt.exe not found.');
 
         case TexFormat of
         0: TexFormatParameter:='dxt1c';
@@ -504,24 +507,24 @@ begin
         NVDXTStartupInfo.wShowWindow:=SW_HIDE+SW_MINIMIZE;
         //FIXME: If you delete this, don't forget the implementation-link to QkApplPaths
         if Windows.CreateProcess(nil, PChar(GetQPath(pQuArKDll)+'nvdxt.exe -file "'+DumpFileName+'.tga" -output "'+DumpFileName+'.dds" -'+TexFormatParameter+' -'+QualityParameter), nil, nil, false, 0, nil, PChar(GetQPath(pQuArKDll)), NVDXTStartupInfo, NVDXTProcessInformation)=false then
-          FatalFileError('Unable to save DDS file. Call to CreateProcess failed.');
+          LogAndRaiseError('Unable to save DDS file. Call to CreateProcess failed.');
 
         //DanielPharos: This is kinda dangerous, but NVDXT should exit rather quickly!
         if WaitForSingleObject(NVDXTProcessInformation.hProcess,INFINITE)=WAIT_FAILED then
         begin
           CloseHandle(NVDXTProcessInformation.hThread);
           CloseHandle(NVDXTProcessInformation.hProcess);
-          FatalFileError('Unable to save DDS file. Call to WaitForSingleObject failed.');
+          LogAndRaiseError('Unable to save DDS file. Call to WaitForSingleObject failed.');
         end;
 
         if CloseHandle(NVDXTProcessInformation.hThread)=false then
-          FatalFileError('Unable to save DDS file. Call to CloseHandle(thread) failed.');
+          LogAndRaiseError('Unable to save DDS file. Call to CloseHandle(thread) failed.');
         if CloseHandle(NVDXTProcessInformation.hProcess)=false then
-          FatalFileError('Unable to save DDS file. Call to CloseHandle(process) failed.');
+          LogAndRaiseError('Unable to save DDS file. Call to CloseHandle(process) failed.');
 
       finally
         if DeleteFile(DumpFileName+'.tga')=false then
-          FatalFileError('Unable to save DDS file. Call to DeleteFile(tga) failed.');
+          LogAndRaiseError('Unable to save DDS file. Call to DeleteFile(tga) failed.');
       end;
 
       //DanielPharos: Now let's read in that DDS file and be done!
@@ -529,11 +532,11 @@ begin
       F.CopyFrom(DumpBuffer,DumpBuffer.Size);
       DumpBuffer.Free;
       if DeleteFile(DumpFileName+'.dds')=false then
-        FatalFileError('Unable to save DDS file. Call to DeleteFile(dds) failed.');
+        LogAndRaiseError('Unable to save DDS file. Call to DeleteFile(dds) failed.');
 
     end
     else
-      FatalFileError('Unable to save DDS file. No valid saving library selected.');
+      LogAndRaiseError('Unable to save DDS file. No valid saving library selected.');
   end
   else
     inherited;

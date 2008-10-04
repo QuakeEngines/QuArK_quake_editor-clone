@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.38  2008/09/08 18:07:07  danielpharos
+Fix last of F.Seek(0, 0) bugs.
+
 Revision 1.37  2008/09/06 15:56:58  danielpharos
 Moved exception code into separate file.
 
@@ -145,7 +148,7 @@ unit QkVTF;
 
 interface
 
-uses Windows, Classes, QkImages, QkPixelSet, QkObjects, QkFileObjects, QkVTFLib;
+uses Classes, QkImages, QkPixelSet, QkObjects, QkFileObjects, QkVTFLib;
 
 type
   QVTF = class(QImage)
@@ -166,13 +169,6 @@ uses SysUtils, StrUtils, Setup, Quarkx, QkExceptions, QkObjectClassList,
 
 var
   VTFLoaded: Boolean;
-
-procedure Fatal(x:string);
-begin
-  Log(LOG_CRITICAL,'Error during operation on VTF file: %s',[x]);
-  Windows.MessageBox(0, pchar(X), PChar(LoadStr1(401)), MB_TASKMODAL or MB_ICONERROR or MB_OK);
-  Raise Exception.Create(x);
-end;
 
 class function QVTF.TypeInfo: String;
 begin
@@ -224,18 +220,18 @@ begin
       F.ReadBuffer(Pointer(RawBuffer)^, FSize);
 
       if vlCreateImage(@VTFImage)=false then
-        Fatal('Unable to load VTF file. Call to vlCreateImage failed.');
+        LogAndRaiseError('Unable to load VTF file. Call to vlCreateImage failed.');
 
       if vlBindImage(VTFImage)=false then
       begin
         vlDeleteImage(VTFImage);
-        Fatal('Unable to load VTF file. Call to vlBindImage failed.');
+        LogAndRaiseError('Unable to load VTF file. Call to vlBindImage failed.');
       end;
 
       if vlImageLoadLump(Pointer(RawBuffer), Length(RawBuffer), false)=false then
       begin
         vlDeleteImage(VTFImage);
-        Fatal('Unable to load VTF file. Call to vlImageLoadLump failed. Please make sure the file is a valid VTF file, and not damaged or corrupt.');
+        LogAndRaiseError('Unable to load VTF file. Call to vlImageLoadLump failed. Please make sure the file is a valid VTF file, and not damaged or corrupt.');
       end;
 
       HasAlpha := (vlImageGetFlags() and (TEXTUREFLAGS_ONEBITALPHA or TEXTUREFLAGS_EIGHTBITALPHA))<>0;
@@ -249,7 +245,7 @@ begin
       if (Width>46340) or (Height>46340) then
       begin
         vlDeleteImage(VTFImage);
-        Fatal('Unable to load VTF file. Picture is too large.');
+        LogAndRaiseError('Unable to load VTF file. Picture is too large.');
       end;
       NumberOfPixels:=Width * Height;
       V[1]:=Width;
@@ -261,7 +257,7 @@ begin
         if vlImageConvert(RawData2, RawData, Width, Height, vlImageGetFormat(), ImageFormat)=false then
         begin
           vlDeleteImage(VTFImage);
-          Fatal('Unable to load VTF file. Call to vlImageConvert failed.');
+          LogAndRaiseError('Unable to load VTF file. Call to vlImageConvert failed.');
         end;
 
         if HasAlpha then
@@ -375,10 +371,10 @@ begin
     end;
 
     if vlCreateImage(@VTFImage)=false then
-      Fatal('Unable to save VTF file. Call to vlCreateImage failed.');
+      LogAndRaiseError('Unable to save VTF file. Call to vlCreateImage failed.');
 
     if vlBindImage(VTFImage)=false then
-      Fatal('Unable to save VTF file. Call to vlBindImage failed.');
+      LogAndRaiseError('Unable to save VTF file. Call to vlBindImage failed.');
 
     TexFormat := IMAGE_FORMAT_DXT5;
 
@@ -439,7 +435,7 @@ begin
           GetMem(RawData, TexSize);
 
           if vlImageConvertToRGBA8888(RawData2, RawData, Width, Height, ImageFormat)=false then
-            Fatal('Unable to save VTF file. Call to vlImageConvert failed.');
+            LogAndRaiseError('Unable to save VTF file. Call to vlImageConvert failed.');
           finally
             FreeMem(RawData2);
           end;
@@ -481,7 +477,7 @@ begin
           GetMem(RawData, TexSize);
 
           if vlImageConvertToRGBA8888(RawData2, RawData, Width, Height, ImageFormat)=false then
-            Fatal('Unable to save VTF file. Call to vlImageConvert failed.');
+            LogAndRaiseError('Unable to save VTF file. Call to vlImageConvert failed.');
         finally
           FreeMem(RawData2);
         end;
@@ -520,10 +516,10 @@ begin
     VTFOptions.ImageFormat:=TexFormat;
 
     if vlImageCreateSingle(Width, Height, RawData, @VTFOptions)=false then
-      Fatal('Unable to load VTF file. Call to vlImageCreateSingle failed.');
+      LogAndRaiseError('Unable to load VTF file. Call to vlImageCreateSingle failed.');
     SetLength(RawBuffer, vlImageGetSize);
     if vlImageSaveLump(Pointer(RawBuffer), Length(RawBuffer), @OutputSize)=false then
-      Fatal('Unable to save VTF file. Call to vlImageSaveLump failed.');
+      LogAndRaiseError('Unable to save VTF file. Call to vlImageSaveLump failed.');
 
     F.WriteBuffer(Pointer(RawBuffer)^,OutputSize);
     FreeMem(RawData);

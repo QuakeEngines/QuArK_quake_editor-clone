@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2008/08/28 19:01:19  danielpharos
+Added a bunch of DevIL setting, and re-enabled DevIL DDS file saving.
+
 Revision 1.17  2007/12/06 23:01:31  danielpharos
 Whole truckload of image-file-handling changes: Revert PCX file saving and fix paletted images not loading/saving correctly.
 
@@ -99,7 +102,7 @@ type
 
 implementation
 
-uses SysUtils, Setup, Quarkx, QkObjectClassList, Game, Logging, Windows;
+uses SysUtils, Setup, Quarkx, QkObjectClassList, Game, Logging, QkExceptions;
 
 class function QTga.FormatName : String;
 begin
@@ -152,7 +155,7 @@ begin
     else if LibraryToUse='FreeImage' then
       LoadFileFreeImage(F, FSize)
     else
-      FatalFileError('Unable to load TGA file. No valid loading library selected.');
+      LogAndRaiseError('Unable to load TGA file. No valid loading library selected.');
   end;
   else
     inherited;
@@ -173,7 +176,7 @@ begin
     else if LibraryToUse='FreeImage' then
       SaveFileFreeImage(Info)
     else
-      FatalFileError('Unable to save TGA file. No valid saving library selected.');
+      LogAndRaiseError('Unable to save TGA file. No valid saving library selected.');
   end
   else
     inherited;

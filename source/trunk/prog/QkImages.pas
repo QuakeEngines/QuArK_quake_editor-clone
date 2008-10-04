@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.25  2008/09/27 13:34:03  danielpharos
+Added FTX to image format list.
+
 Revision 1.24  2008/09/06 15:56:59  danielpharos
 Moved exception code into separate file.
 
@@ -105,7 +108,6 @@ type
            private
              procedure SetupDevILSettings;
            protected
-             procedure FatalFileError(x:string);
              class function FileTypeDevIL : DevILType; virtual; abstract;
              class function FileTypeFreeImage : FREE_IMAGE_FORMAT; virtual; abstract;
              procedure LoadFileDevIL(F: TStream; FSize: Integer);
@@ -269,12 +271,6 @@ var
   DevILLoaded: Boolean;
   FreeImageLoaded: Boolean;
 
-procedure QImage.FatalFileError(x:string);
-begin
-  Log(LOG_CRITICAL,'Error during operation on %s file: %s', [FormatName, x]);
-  Raise Exception.Create(x);
-end;
-
 class function QImage.FormatName : String;
 begin
   Result:='*';
@@ -375,7 +371,7 @@ begin
   if ilLoadL(FileTypeDevIL, Pointer(RawBuffer), FSize)=IL_FALSE then
   begin
     ilDeleteImages(1, @DevILImage);
-    FatalFileError(Format('Unable to load %s file. Call to ilLoadL failed. Please make sure the file is a valid %s file, and not damaged or corrupt.', [FormatName, FormatName]));
+    LogAndRaiseError(Format('Unable to load %s file. Call to ilLoadL failed. Please make sure the file is a valid %s file, and not damaged or corrupt.', [FormatName, FormatName]));
   end;
   CheckDevILError(ilGetError);
 
@@ -387,7 +383,7 @@ begin
   if (Width>46340) or (Height>46340) then
   begin
     ilDeleteImages(1, @DevILImage);
-    FatalFileError(Format('Unable to load %s file. Picture is too large.', [FormatName]));
+    LogAndRaiseError(Format('Unable to load %s file. Picture is too large.', [FormatName]));
   end;
   V[1]:=Width;
   V[2]:=Height;
@@ -423,7 +419,7 @@ begin
     if (PaletteSize=0) or (PaletteSize>256) then
     begin
       ilDeleteImages(1, @DevILImage);
-      FatalFileError(Format('Unable to load %s file. Invalid palette.', [FormatName]));
+      LogAndRaiseError(Format('Unable to load %s file. Invalid palette.', [FormatName]));
     end;
 
     Source:=ilGetPalette;
@@ -625,14 +621,14 @@ begin
     if ilTexImage(Width, Height, 1, ImageBpp, ImageFormat, IL_UNSIGNED_BYTE, nil)=IL_FALSE then
     begin
       ilDeleteImages(1, @DevILImage);
-      FatalFileError(Format('Unable to save %s file. Call to ilTexImage failed.', [FormatName]));
+      LogAndRaiseError(Format('Unable to save %s file. Call to ilTexImage failed.', [FormatName]));
     end;
     CheckDevILError(ilGetError);
 
     if ilClearImage=IL_FALSE then
     begin
       ilDeleteImages(1, @DevILImage);
-      FatalFileError(Format('Unable to save %s file. Call to ilClearImage failed.', [FormatName]));
+      LogAndRaiseError(Format('Unable to save %s file. Call to ilClearImage failed.', [FormatName]));
     end;
     CheckDevILError(ilGetError);
 
@@ -760,7 +756,7 @@ begin
   if OutputSize=0 then
   begin
     ilDeleteImages(1, @DevILImage);
-    FatalFileError(Format('Unable to save %s file. Call to ilSaveL failed.', [FormatName]));
+    LogAndRaiseError(Format('Unable to save %s file. Call to ilSaveL failed.', [FormatName]));
   end;
   ilDeleteImages(1, @DevILImage);
   CheckDevILError(ilGetError);
@@ -814,7 +810,7 @@ begin
   begin
     FreeImage_Unload(FIImage);
     FreeImage_CloseMemory(FIBuffer);
-    FatalFileError(Format('Unable to load %s file. Picture is too large.', [FormatName]));
+    LogAndRaiseError(Format('Unable to load %s file. Picture is too large.', [FormatName]));
   end;
   V[1]:=Width;
   V[2]:=Height;
@@ -1009,7 +1005,7 @@ begin
     //FIImage:=FreeImage_Allocate(Width, Height, FIBpp, FI_RGBA_RED_MASK, FI_RGBA_GREEN_MASK, FI_RGBA_BLUE_MASK);
     FIImage:=FreeImage_Allocate(Width, Height, FIBpp, 0, 0, 0);
     if FIImage=nil then
-      FatalFileError(Format('Unable to save %s file. Call to FreeImage_Allocate failed.', [FormatName]));
+      LogAndRaiseError(Format('Unable to save %s file. Call to FreeImage_Allocate failed.', [FormatName]));
 
     if PSD.Format = psf8bpp then
     begin
@@ -1112,12 +1108,12 @@ begin
 
   FIBuffer := FreeImage_OpenMemory(nil, 0);
   if FIBuffer = nil then
-    FatalFileError(Format('Unable to save %s file. Call to FreeImage_OpenMemory failed.', [FormatName]));
+    LogAndRaiseError(Format('Unable to save %s file. Call to FreeImage_OpenMemory failed.', [FormatName]));
 
   if FreeImage_SaveToMemory(FileTypeFreeImage, FIImage, FIBuffer, SaveFileFreeImageSettings)=false then
   begin
     FreeImage_CloseMemory(FIBuffer);
-    FatalFileError(Format('Unable to save %s file. Call to FreeImage_SaveToMemory failed.', [FormatName]));
+    LogAndRaiseError(Format('Unable to save %s file. Call to FreeImage_SaveToMemory failed.', [FormatName]));
   end;
   FreeImage_Unload(FIImage);
 
@@ -1126,13 +1122,13 @@ begin
   if FreeImage_SeekMemory(FIBuffer, 0, SEEK_SET)=false then
   begin
     FreeImage_CloseMemory(FIBuffer);
-    FatalFileError(Format('Unable to save %s file. Call to FreeImage_SeekMemory failed.', [FormatName]));
+    LogAndRaiseError(Format('Unable to save %s file. Call to FreeImage_SeekMemory failed.', [FormatName]));
   end;
   OutputSize:=FreeImage_ReadMemory(Pointer(RawBuffer), 1, OutputSize, FIBuffer);
   if OutputSize=0 then
   begin
     FreeImage_CloseMemory(FIBuffer);
-    FatalFileError(Format('Unable to save %s file. Call to FreeImage_ReadMemory failed.', [FormatName]));
+    LogAndRaiseError(Format('Unable to save %s file. Call to FreeImage_ReadMemory failed.', [FormatName]));
   end;
   FreeImage_CloseMemory(FIBuffer);
 

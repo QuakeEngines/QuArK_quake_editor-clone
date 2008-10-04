@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2008/09/06 15:57:27  danielpharos
+Moved exception code into separate file.
+
 Revision 1.18  2008/08/28 19:01:15  danielpharos
 Added a bunch of DevIL setting, and re-enabled DevIL DDS file saving.
 
@@ -286,7 +289,7 @@ begin
       finally ProgressIndicatorStop; end;
     end
     else
-      FatalFileError('Unable to load PCX file. No valid loading library selected.');
+      LogAndRaiseError('Unable to load PCX file. No valid loading library selected.');
   end;
   else
     inherited;

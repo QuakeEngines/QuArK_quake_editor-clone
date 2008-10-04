@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.25  2008/10/04 13:47:26  danielpharos
+Fixed some copy-paste mistakes.
+
 Revision 1.24  2008/09/03 13:26:47  danielpharos
 Added JPG saving quality for DevIL.
 
@@ -113,7 +116,7 @@ type
 
 implementation
 
-uses SysUtils, Setup, Quarkx, QkObjectClassList, QkTextures, Game, Logging, Windows;
+uses SysUtils, Setup, Quarkx, QkObjectClassList, QkTextures, Game, Logging, QkExceptions;
 
 class function QJPeg.FormatName : String;
 begin
@@ -246,7 +249,7 @@ begin
     else if LibraryToUse='FreeImage' then
       LoadFileFreeImage(F, FSize)
     else
-      FatalFileError('Unable to load JPG file. No valid loading library selected.');
+      LogAndRaiseError('Unable to load JPG file. No valid loading library selected.');
   end;
   else
     inherited;
@@ -267,7 +270,7 @@ begin
     else if LibraryToUse='FreeImage' then
       SaveFileFreeImage(Info)
     else
-      FatalFileError('Unable to save JPG file. No valid saving library selected.');
+      LogAndRaiseError('Unable to save JPG file. No valid saving library selected.');
   end
   else
     inherited;
