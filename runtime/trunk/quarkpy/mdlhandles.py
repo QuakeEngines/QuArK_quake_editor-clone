@@ -1762,61 +1762,109 @@ def BuildCommonHandles(editor, explorer, option=1):
     "option=1: Clears all exising handles in the 'h' list and rebuilds it for specific handle type."
     "option=2: Does NOT clear the list but adds to it to allow a combination of view handles to use."
 
+    bh = []
     if quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] == "1":
-        h = []
         if len(editor.ModelFaceSelList) != 0:
             MakeEditorFaceObject(editor)
-        return h
+        return bh
 
     letpass = 0
     if len(explorer.sellist) >= 1:
+        if (len(explorer.sellist) == 1 and explorer.sellist[0].type == ':fg') or (len(explorer.sellist) == 2 and (explorer.sellist[0].type == ':fg' and explorer.sellist[1].type == ':bg')) or (len(explorer.sellist) == 2 and (explorer.sellist[0].type == ':bg' and explorer.sellist[1].type == ':fg')):
+            return bh
         for item in explorer.sellist:
-            if item.type != ':mf' and item.type != ':bg' and item.type != ':bone':
-                h = []
-                return h
+            if item.type != ':fg' and item.type != ':mf' and item.type != ':bg' and item.type != ':bone':
+                return bh
             else:
                 if quarkx.setupsubset(SS_MODEL, "Options")['HideBones'] is not None:
                     pass
-                elif item.type == ':mf' and (letpass == 0 or letpass == 10):
-                    letpass = letpass + 1
-                elif item.type == ':mf' and (letpass == 1 or letpass == 11):
+                elif (item.type == ':fg' or item.type == ':mf' or item.type == ':bg' or item.type == ':bone') and (letpass == 0):
+                    letpass = letpass + 11
+                elif (item.type == ':fg' or item.type == ':mf' or item.type == ':bg' or item.type == ':bone'):
+                    continue
+                else:
                     letpass = 20
                     break
-                elif (item.type == ':bg' or item.type == ':bone') and (letpass == 0 or letpass == 1):
-                    letpass = letpass + 10
         if letpass == 20:
-            h = []
-            return h
-        elif letpass == 11:
+            return bh
+        if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] != "1" and quarkx.setupsubset(SS_MODEL, "Options")['HideBones'] is None:
+
+            comp = editor.Root.currentcomponent
+            bones = comp.dictitems['Skeleton:bg']
+            if comp.currentframe is not None:
+                frame = comp.currentframe
+            else:
+                frame = comp.dictitems['Frames:fg'].subitems[0]
+            # To keep attached bone handles from pulling apart after a LinBoneCornerHandle drag when one has vertexes assigned to it.
+            try:
+                # For a Start Handle Drag that might have vertexes assigned to it
+                # or other attached bone start handles that might have vertexes assigned to one of them.
+                start_controlbone = None
+                for bone in editor.dragobject.handle.oldbones_start:
+                    if bone.dictspec.has_key('start_vtx_pos'):
+                        start_controlbone = bone.name
+                        start_controlpos = bones.dictitems[bone.name].dictspec['start_point']
+                        vtxlist = bones.dictitems[bone.name].dictspec['start_vtx_pos']
+                        vtxlist = vtxlist.split(" ")
+                        start_vtxpos = quarkx.vect(0, 0, 0)
+                        for start_vtx in vtxlist:
+                            start_vtxpos = start_vtxpos + frame.vertices[int(start_vtx)]
+                        start_vtxpos = start_vtxpos/ float(len(vtxlist))
+                        comm_start_offset = bones.dictitems[bone.name].dictspec['start_offset']
+                        comm_start_point = (start_vtxpos + quarkx.vect(comm_start_offset)).tuple
+                        break
+                if start_controlbone is not None:
+                    for bone in editor.dragobject.handle.oldbones_start:
+                        if str(bones.dictitems[bone.name].dictspec['start_point']) == str(start_controlpos) and bone.name != start_controlbone:
+                            bones.dictitems[bone.name]['start_point'] = comm_start_point
+                            bones.dictitems[bone.name]['bone_length'] = ((quarkx.vect(bones.dictitems[bone.name].dictspec['start_point']) - quarkx.vect(bones.dictitems[bone.name].dictspec['end_point']))*-1).tuple
+                            bones.dictitems[bone.name]['start_offset'] = comm_start_offset
+                start_controlbone = None
+                for bone in editor.dragobject.handle.oldbones_end:
+                    # For an End Handle that has Attached Bone Start Handles that might have vertexes assigned to one of them
+                    # or an End Handle Drag that might have vertexes assigned to it and have common start handles.
+                    if bone.dictspec.has_key('start_vtx_pos'):
+                        start_controlbone = bone.name
+                        start_controlpos = bones.dictitems[bone.name].dictspec['start_point']
+                        vtxlist = bones.dictitems[bone.name].dictspec['start_vtx_pos']
+                        vtxlist = vtxlist.split(" ")
+                        start_vtxpos = quarkx.vect(0, 0, 0)
+                        for start_vtx in vtxlist:
+                            start_vtxpos = start_vtxpos + frame.vertices[int(start_vtx)]
+                        start_vtxpos = start_vtxpos/ float(len(vtxlist))
+                        comm_start_offset = bones.dictitems[bone.name].dictspec['start_offset']
+                        comm_start_point = (start_vtxpos + quarkx.vect(comm_start_offset)).tuple
+                        break
+                if start_controlbone is not None:
+                    # For an End Handle that has Attached Bone Start Handles that might have vertexes assigned to one of them.
+                    for bone in editor.dragobject.handle.oldbones_end:
+                        if str(bones.dictitems[bone.name].dictspec['start_point']) == str(start_controlpos) and bone.name != start_controlbone:
+                            bones.dictitems[bone.name]['start_point'] = comm_start_point
+                            bones.dictitems[bone.name]['bone_length'] = ((quarkx.vect(bones.dictitems[bone.name].dictspec['start_point']) - quarkx.vect(bones.dictitems[bone.name].dictspec['end_point']))*-1).tuple
+                            bones.dictitems[bone.name]['start_offset'] = comm_start_offset
+                    # For an End Handle Drag that might have vertexes assigned to it and have common start handles.
+                    for bone in editor.dragobject.handle.oldbones_start:
+                        if str(bones.dictitems[bone.name].dictspec['end_point']) == str(start_controlpos) and bone.name != start_controlbone:
+                            bones.dictitems[bone.name]['end_point'] = comm_start_point
+                            bones.dictitems[bone.name]['bone_length'] = ((quarkx.vect(bones.dictitems[bone.name].dictspec['start_point']) - quarkx.vect(bones.dictitems[bone.name].dictspec['end_point']))*-1).tuple
+                            bones.dictitems[bone.name]['end_offset'] = comm_start_offset
+            except:
+                pass
+
             for item in explorer.sellist:
-                if item.type == ':mf':
-                    h = mdlentities.CallManager("handlesopt", item, editor)
+                if (item.type == ':fg' or item.type == ':mf' or item.type == ':bg' or item.type == ':bone'):
+                    if item.type == ':bg':
+                        for bone in item.subitems:
+                            bh = bh + mdlentities.CallManager("handlesopt", bone, editor)
+                    else:
+                        bones = editor.Root.currentcomponent.findallsubitems("", ':bone')   # get all bones
+                        for bone in bones:
+                            bh = bh + mdlentities.CallManager("handlesopt", bone, editor)
                     break
-            for item in explorer.sellist:
-                if item.type == ':bg' or item.type == ':bone':
-                    if item.type == ':bg':
-                        for bone in item.subitems:
-                            h = h + mdlentities.CallManager("handlesopt", bone, editor)
-                    elif item.type == ':bone':
-                        bones = editor.Root.currentcomponent.findallsubitems("", ':bone')   # get all bones
-                        for bone in bones:
-                            h = h + mdlentities.CallManager("handlesopt", bone, editor)
-                    return qhandles.FilterHandles(h, SS_MODEL)
-        elif quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] != "1" and quarkx.setupsubset(SS_MODEL, "Options")['HideBones'] is None:
-            for item in explorer.sellist:
-                if item.type == ':bg' or item.type == ':bone':
-                    h = []
-                    if item.type == ':bg':
-                        for bone in item.subitems:
-                            h = h + mdlentities.CallManager("handlesopt", bone, editor)
-                    elif item.type == ':bone':
-                        bones = editor.Root.currentcomponent.findallsubitems("", ':bone')   # get all bones
-                        for bone in bones:
-                            h = h + mdlentities.CallManager("handlesopt", bone, editor)
-                    return qhandles.FilterHandles(h, SS_MODEL)
+            h = bh
     else:
-        h = []
-        return h
+        return bh
+
     if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
         #
         # Linear Handles and Selected Face Object Build call section.
@@ -1836,22 +1884,30 @@ def BuildCommonHandles(editor, explorer, option=1):
         #
         # Call the Entity Manager in mdlentities.py to build the Vertex handles.
         #
-        if len(editor.ModelFaceSelList) != 0:
-            MakeEditorFaceObject(editor)
-        if len(editor.ModelVertexSelList) >= 2:
-            option = 2
-            vtxlist = MakeEditorVertexPolyObject(editor)
-        if option == 1:
-            h = []
-        h = mdlentities.CallManager("handlesopt", explorer.sellist[0], editor)
-        if option == 2:
-            box = quarkx.boundingboxof(vtxlist)
-            if len(box) != 2:
-                editor.ModelVertexSelList = []
-            else:
-                h = h + ModelEditorLinHandlesManager(MapColor("LinearHandleCircle", SS_MODEL), box, vtxlist).BuildHandles()
-
-    return qhandles.FilterHandles(h, SS_MODEL)
+        if quarkx.setupsubset(SS_MODEL, "Options")['BHandles_Only'] is None:
+            if len(editor.ModelFaceSelList) != 0:
+                MakeEditorFaceObject(editor)
+            for item in explorer.sellist: # Makes and adds the vertex handles before any bone handles.
+                if item.type == ':mf':
+                    if len(editor.ModelVertexSelList) >= 2:
+                        option = 2
+                        vtxlist = MakeEditorVertexPolyObject(editor)
+                        vh = mdlentities.CallManager("handlesopt", explorer.sellist[0], editor)
+                    elif quarkx.setupsubset(SS_MODEL, "Options")['HideBones'] is not None:
+                        h = mdlentities.CallManager("handlesopt", explorer.sellist[0], editor)
+                    else:
+                        h = mdlentities.CallManager("handlesopt", explorer.sellist[0], editor) + h
+                    break
+            if option == 2: # Makes the vertex linear handle, if any, and adds before any bone handles.
+                box = quarkx.boundingboxof(vtxlist)
+                if len(box) != 2:
+                    editor.ModelVertexSelList = []
+                else:
+                    h = vh + ModelEditorLinHandlesManager(MapColor("LinearHandleCircle", SS_MODEL), box, vtxlist).BuildHandles() + bh
+    try:
+        return qhandles.FilterHandles(h, SS_MODEL)
+    except:
+        pass
 
 
 
@@ -1862,61 +1918,46 @@ def BuildHandles(editor, explorer, view, option=1):
     "option=1: Clears all exising handles in the 'h' list and rebuilds it for specific handle type."
     "option=2: Does NOT clear the list but adds to it to allow a combination of view handles to use."
 
+    bh = []
     if quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] == "1":
         view.handles = []
-        h = []
         if len(editor.ModelFaceSelList) != 0:
             MakeEditorFaceObject(editor)
-        return h
+        return bh
 
     letpass = 0
     if len(explorer.sellist) >= 1 and quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] != "1":
+        if (len(explorer.sellist) == 1 and explorer.sellist[0].type == ':fg') or (len(explorer.sellist) == 2 and (explorer.sellist[0].type == ':fg' and explorer.sellist[1].type == ':bg')) or (len(explorer.sellist) == 2 and (explorer.sellist[0].type == ':bg' and explorer.sellist[1].type == ':fg')):
+            return bh
         for item in explorer.sellist:
-            if item.type != ':mf' and item.type != ':bg' and item.type != ':bone':
-                h = []
-                return h
+            if item.type != ':fg' and item.type != ':mf' and item.type != ':bg' and item.type != ':bone':
+                return bh
             else:
                 if len(editor.ModelFaceSelList) != 0:
                     MakeEditorFaceObject(editor)
                 if quarkx.setupsubset(SS_MODEL, "Options")['HideBones'] is not None:
                     pass
-                elif item.type == ':mf' and (letpass == 0 or letpass == 10):
-                    letpass = letpass + 1
-                elif item.type == ':mf' and (letpass == 1 or letpass == 11):
+                elif (item.type == ':fg' or item.type == ':mf' or item.type == ':bg' or item.type == ':bone') and (letpass == 0):
+                    letpass = letpass + 11
+                elif (item.type == ':fg' or item.type == ':mf' or item.type == ':bg' or item.type == ':bone'):
+                    continue
+                else:
                     letpass = 20
                     break
-                elif (item.type == ':bg' or item.type == ':bone') and (letpass == 0 or letpass == 1):
-                    letpass = letpass + 10
         if letpass == 20:
-            h = []
-            return h
-        elif letpass == 11:
+            return bh
+        if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] != "1" and quarkx.setupsubset(SS_MODEL, "Options")['HideBones'] is None:
             for item in explorer.sellist:
-                if item.type == ':mf':
-                    h = mdlentities.CallManager("handlesopt", item, editor)
+                if (item.type == ':fg' or item.type == ':mf' or item.type == ':bg' or item.type == ':bone'):
+                    if item.type == ':bg':
+                        for bone in item.subitems:
+                            bh = bh + mdlentities.CallManager("handlesopt", bone, editor)
+                    else:
+                        bones = editor.Root.currentcomponent.findallsubitems("", ':bone')   # get all bones
+                        for bone in bones:
+                            bh = bh + mdlentities.CallManager("handlesopt", bone, editor)
                     break
-            for item in explorer.sellist:
-                if item.type == ':bg' or item.type == ':bone':
-                    if item.type == ':bg':
-                        for bone in item.subitems:
-                            h = h + mdlentities.CallManager("handlesopt", bone, editor)
-                    elif item.type == ':bone':
-                        bones = editor.Root.currentcomponent.findallsubitems("", ':bone')   # get all bones
-                        for bone in bones:
-                            h = h + mdlentities.CallManager("handlesopt", bone, editor)
-                    return qhandles.FilterHandles(h, SS_MODEL)
-        elif quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] != "1" and quarkx.setupsubset(SS_MODEL, "Options")['HideBones'] is None:
-            for item in explorer.sellist:
-                if item.type == ':bg' or item.type == ':bone':
-                    h = []
-                    if item.type == ':bg':
-                        for bone in item.subitems:
-                            h = h + mdlentities.CallManager("handlesopt", bone, editor)
-                    elif item.type == ':bone':
-                        bones = editor.Root.currentcomponent.findallsubitems("", ':bone')   # get all bones
-                        for bone in bones:
-                            h = h + mdlentities.CallManager("handlesopt", bone, editor)
-                    return qhandles.FilterHandles(h, SS_MODEL)
+            h = bh
 
     if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
         #
@@ -1937,23 +1978,26 @@ def BuildHandles(editor, explorer, view, option=1):
         #
         # Call the Entity Manager in mdlentities.py to build the Vertex handles.
         #
-        if len(editor.ModelFaceSelList) != 0:
-            MakeEditorFaceObject(editor)
-        if len(editor.ModelVertexSelList) >= 2:
-            option = 2
-            vtxlist = MakeEditorVertexPolyObject(editor)
-        if option == 1:
-            h = []
-        try:
-            h = mdlentities.CallManager("handlesopt", explorer.sellist[0], editor)
-        except:
-            pass
-        if option == 2:
-            box = quarkx.boundingboxof(vtxlist)
-            if len(box) != 2:
-                editor.ModelVertexSelList = []
-            else:
-                h = h + ModelEditorLinHandlesManager(MapColor("LinearHandleCircle", SS_MODEL), box, vtxlist, view).BuildHandles()
+        if quarkx.setupsubset(SS_MODEL, "Options")['BHandles_Only'] is None:
+            if len(editor.ModelFaceSelList) != 0:
+                MakeEditorFaceObject(editor)
+            for item in explorer.sellist: # Makes and adds the vertex handles before any bone handles.
+                if item.type == ':mf':
+                    if len(editor.ModelVertexSelList) >= 2:
+                        option = 2
+                        vtxlist = MakeEditorVertexPolyObject(editor)
+                        vh = mdlentities.CallManager("handlesopt", explorer.sellist[0], editor)
+                    elif quarkx.setupsubset(SS_MODEL, "Options")['HideBones'] is not None:
+                        h = mdlentities.CallManager("handlesopt", explorer.sellist[0], editor)
+                    else:
+                        h = mdlentities.CallManager("handlesopt", explorer.sellist[0], editor) + h
+                    break
+            if option == 2: # Makes the vertex linear handle, if any, and adds before any bone handles.
+                box = quarkx.boundingboxof(vtxlist)
+                if len(box) != 2:
+                    editor.ModelVertexSelList = []
+                else:
+                    h = vh + ModelEditorLinHandlesManager(MapColor("LinearHandleCircle", SS_MODEL), box, vtxlist, view).BuildHandles() + bh
     #
     # The 3D view "eyes".
     #
@@ -1969,7 +2013,10 @@ def BuildHandles(editor, explorer, view, option=1):
  #       h.append(qhandles.EyePosition(view, view))
  #       h.append(MdlEyeDirection(view, view))
 
-    return qhandles.FilterHandles(h, SS_MODEL)
+    try:
+        return qhandles.FilterHandles(h, SS_MODEL)
+    except:
+        pass
 
 
 #
@@ -3370,6 +3417,7 @@ class ModelEditorBoneLinHandlesManager:
             start_vtxpos = start_vtxpos/ float(len(vtxlist))
             start_point = start_vtxpos + quarkx.vect(self.bone.dictspec['start_offset'])
             self.bone['start_point'] = start_point.tuple
+            self.bone['bone_length'] = ((start_point - quarkx.vect(self.bone.dictspec['end_point']))*-1).tuple
             center = quarkx.vect(self.bone.dictspec['start_point'])
         elif self.s_or_e == 1 and self.bone.dictspec.has_key("end_vtx_pos") and self.bone.dictspec['end_vtx_pos'] is not None:
             vtxlist = self.bone.dictspec['end_vtx_pos']
@@ -3380,6 +3428,7 @@ class ModelEditorBoneLinHandlesManager:
             end_vtxpos = end_vtxpos/ float(len(vtxlist))
             end_point = end_vtxpos + quarkx.vect(self.bone.dictspec['end_offset'])
             self.bone['end_point'] = end_point.tuple
+            self.bone['bone_length'] = ((quarkx.vect(self.bone.dictspec['start_point']) - end_point)*-1).tuple
             center = quarkx.vect(self.bone.dictspec['end_point'])
 
         if center is None:
@@ -3460,6 +3509,12 @@ class LinearBoneHandle(qhandles.GenericHandle):
                     if (self.s_or_e == 0): # Handles the "Start of Bone".
                         if (mdlutils.checktuplepos(bone.dictspec['start_point'], self.bone.dictspec['start_point']) == 1) and (mdlutils.checktuplepos(bone.dictspec['start_point'], bone.dictspec['end_point']) != 1):
                             self.oldbones_start = self.oldbones_start + [bone]
+                            if isinstance(self, LinBoneCornerHandle):
+                                for nextbone in compbones:
+                                    if nextbone == self.bone or nextbone == bone:
+                                        continue
+                                    if mdlutils.checktuplepos(nextbone.dictspec['start_point'], bone.dictspec['end_point']) == 1:
+                                        self.oldbones_end = self.oldbones_end + [nextbone]
                         if isinstance(self, LinBoneCornerHandle):
                             if mdlutils.checktuplepos(bone.dictspec['start_point'], self.bone.dictspec['end_point']) == 1:
                                 self.oldbones_end = self.oldbones_end + [bone]
@@ -4317,6 +4372,12 @@ class LinBoneCenterHandle(LinearBoneHandle):
                 del editor.ModelComponentList[comp.name]['boneobjlist'][selbone.name]['s_or_e1']
             Update_Editor_Views(editor)
 
+        def keyframes_rotation_click(m, self=self, editor=editor, view=view):
+            quarkx.setupsubset(SS_MODEL, "Options")['HideBones'] = "1"
+            SB1.state = qmenu.normal
+            HB1.state = qmenu.disabled
+            mdlutils.Update_Editor_Views(editor)
+
         def ShowBones(m, self=self, editor=editor, view=view):
             quarkx.setupsubset(SS_MODEL, "Options")['HideBones'] = None
             SB1.state = qmenu.disabled
@@ -4342,6 +4403,7 @@ class LinBoneCenterHandle(LinearBoneHandle):
         SetHandlePosition = qmenu.item("Set &Handle Position", set_handle_position_click, "|Set Handle Position:\n\nActive when one or more vertexes are selected that are assigned to that bone handle. Click this item to position and set that bone handle centered within those vertexes. An 'offset' can also be applied to this setting.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
         ReleaseStartVertexes = qmenu.item("&Release Start Vertexes", release_start_vertexes_click, "|Release Start Vertexes:\n\nWhen only one bone is selected with vertexes assigned to it, click this item to release all of them from that bone's start handle.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
         ReleaseEndVertexes = qmenu.item("Release End &Vertexes", release_end_vertexes_click, "|Release End Vertexes:\n\nWhen only one bone is selected with vertexes assigned to it, click this item to release all of them from that bone's end handle.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
+        KeyframesRotation = qmenu.item("&Key frames Rotation move", keyframes_rotation_click,"|Key frames Rotation move:\n\nWhen two frames are selected that have bone movement, this movement will be spread from the 1st frames positions across all frames in between them to the 2nd frames positions using rotation and in the direction of the smallest angle (clockwise or counterclockwise).|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
         SB1 = qmenu.item("&Show Bones", ShowBones)
         HB1 = qmenu.item("&Hide Bones", HideBones)
 
@@ -4355,6 +4417,24 @@ class LinBoneCenterHandle(LinearBoneHandle):
         except:
             AddBone.state = qmenu.normal
             ContinueBones.state = qmenu.disabled
+
+        if len(editor.layout.explorer.sellist) == 1 and (editor.layout.explorer.sellist[0].type == ":fg" or editor.layout.explorer.sellist[0].type == ":bg"):
+            AddBone.state = qmenu.disabled
+            ContinueBones.state = qmenu.disabled
+
+        if len(editor.layout.explorer.sellist) == 3:
+            count = 0
+            for item in editor.layout.explorer.sellist:
+                if item.type == ":bg":
+                    count = count + 10
+                if item.type == ":mf":
+                    count = count + 5
+            if count == 20:
+                KeyframesRotation.state = qmenu.normal
+            else:
+                KeyframesRotation.state = qmenu.disabled
+        else:
+            KeyframesRotation.state = qmenu.disabled
 
         if len(editor.layout.explorer.sellist) == 2:
             count = 0
@@ -4448,7 +4528,7 @@ class LinBoneCenterHandle(LinearBoneHandle):
         if not MdlOption("GridActive") or editor.gridstep <= 0:
             Forcetogrid.state = qmenu.disabled
 
-        menu = [AddBone, ContinueBones, AttachBones, DetachBones, qmenu.sep, AlignBonesStarts, AlignBonesEnds, AlignStart2End, qmenu.sep, Assign2Start, Assign2End, SetHandlePosition, qmenu.sep, ReleaseStartVertexes, ReleaseEndVertexes, qmenu.sep, SB1, HB1, qmenu.sep, Forcetogrid]
+        menu = [AddBone, ContinueBones, AttachBones, DetachBones, qmenu.sep, AlignBonesStarts, AlignBonesEnds, AlignStart2End, qmenu.sep, Assign2Start, Assign2End, SetHandlePosition, qmenu.sep, ReleaseStartVertexes, ReleaseEndVertexes, qmenu.sep, KeyframesRotation, qmenu.sep, SB1, HB1, qmenu.sep, Forcetogrid]
 
         return menu
 
@@ -4599,6 +4679,8 @@ class LinBoneCenterHandle(LinearBoneHandle):
                     new_o_bone['start_point'] = newobjectslist[i].dictspec['start_point']
                     new_o_bone['end_point'] = newobjectslist[i].dictspec['end_point']
                     new_o_bone['bone_length'] = newobjectslist[i].dictspec['bone_length']
+                    new_o_bone['start_offset'] = newobjectslist[i].dictspec['start_offset']
+                    new_o_bone['end_offset'] = newobjectslist[i].dictspec['end_offset']
                     undo.exchange(oldobjectslist[i], new_o_bone)
                 editor.ok(undo, "bone handle move")
             else:
@@ -4610,6 +4692,8 @@ class LinBoneCenterHandle(LinearBoneHandle):
                     new_o_bone['start_point'] = newobjectslist[i].dictspec['start_point']
                     new_o_bone['end_point'] = newobjectslist[i].dictspec['end_point']
                     new_o_bone['bone_length'] = newobjectslist[i].dictspec['bone_length']
+                    new_o_bone['start_offset'] = newobjectslist[i].dictspec['start_offset']
+                    new_o_bone['end_offset'] = newobjectslist[i].dictspec['end_offset']
                     undo.exchange(oldobjectslist[i], new_o_bone)
                 editor.ok(undo, "")
                 ConvertVertexPolyObject(editor, newobject, currentview.flags, currentview, undomsg, 0)
@@ -4873,6 +4957,12 @@ class LinBoneCornerHandle(LinearBoneHandle):
     def draw(self, view, cv, draghandle=None): # for LinBoneCornerHandle
         editor = self.mgr.editor
         from qbaseeditor import flagsmouse, currentview
+
+        try:
+            if isinstance(editor.dragobject.handle, VertexHandle) and (flagsmouse == 1032 or flagsmouse == 1036):
+                return
+        except:
+            pass
         if quarkx.setupsubset(SS_MODEL, "Options")['HideBones'] is not None:
             return
         try:
@@ -4934,6 +5024,11 @@ class LinBoneCornerHandle(LinearBoneHandle):
                         if editor.ModelComponentList[self.component.name]['boneobjlist'][self.newbones_start[bone].name].has_key('s_or_e0') and obj.shortname == self.newbones_start[bone].shortname + "_0":
                             oldpos = quarkx.vect(self.oldbones_start[bone]['start_point'])
                             newpos = quarkx.vect(self.newbones_start[bone]['start_point'])
+                            if self.s_or_e == 1: # Handles the "Start of Bone".
+                                if self.groupselection == 0: # Single bone selection.
+                                    oldposother = quarkx.vect(self.oldbones_start[bone]['start_point'])
+                                    newposother = quarkx.vect(self.newbones_start[bone]['start_point'])
+                                    break
                             oldposother = quarkx.vect(self.oldbones_start[bone]['end_point'])
                             newposother = quarkx.vect(self.newbones_start[bone]['end_point'])
                             break
@@ -4948,6 +5043,11 @@ class LinBoneCornerHandle(LinearBoneHandle):
                         if editor.ModelComponentList[self.component.name]['boneobjlist'][self.newbones_end[bone].name].has_key('s_or_e0') and obj.shortname == self.newbones_end[bone].shortname + "_0":
                             oldpos = quarkx.vect(self.oldbones_end[bone]['start_point'])
                             newpos = quarkx.vect(self.newbones_end[bone]['start_point'])
+                            if self.s_or_e == 0: # Handles the "Start of Bone".
+                                if self.groupselection == 0: # Single bone selection.
+                                    oldposother = quarkx.vect(self.oldbones_end[bone]['start_point'])
+                                    newposother = quarkx.vect(self.newbones_end[bone]['start_point'])
+                                    break
                             oldposother = quarkx.vect(self.oldbones_end[bone]['end_point'])
                             newposother = quarkx.vect(self.newbones_end[bone]['end_point'])
                             break
@@ -5010,6 +5110,8 @@ class LinBoneCornerHandle(LinearBoneHandle):
                     new_o_bone['start_point'] = newobjectslist[i].dictspec['start_point']
                     new_o_bone['end_point'] = newobjectslist[i].dictspec['end_point']
                     new_o_bone['bone_length'] = newobjectslist[i].dictspec['bone_length']
+                    new_o_bone['start_offset'] = newobjectslist[i].dictspec['start_offset']
+                    new_o_bone['end_offset'] = newobjectslist[i].dictspec['end_offset']
                     undo.exchange(oldobjectslist[i], new_o_bone)
                 editor.ok(undo, "bone handle rotation 2")
             else:
@@ -5021,6 +5123,8 @@ class LinBoneCornerHandle(LinearBoneHandle):
                     new_o_bone['start_point'] = newobjectslist[i].dictspec['start_point']
                     new_o_bone['end_point'] = newobjectslist[i].dictspec['end_point']
                     new_o_bone['bone_length'] = newobjectslist[i].dictspec['bone_length']
+                    new_o_bone['start_offset'] = newobjectslist[i].dictspec['start_offset']
+                    new_o_bone['end_offset'] = newobjectslist[i].dictspec['end_offset']
                     undo.exchange(oldobjectslist[i], new_o_bone)
                 editor.ok(undo, "")
                 ConvertVertexPolyObject(editor, newobject, currentview.flags, currentview, undomsg, 0)
@@ -5111,11 +5215,9 @@ class LinBoneCornerHandle(LinearBoneHandle):
                         startpoint = startpoint + (newchange1 - change1) + newchange1.normalized * changedradius
                         self.newbones_end[bone]['start_point'] = startpoint.tuple
                         if self.oldbones_end[bone].dictspec.has_key('start_vtxlist'):
-                            endpoint = quarkx.vect(self.oldbones_end[bone].dictspec['end_point'])
-                            change2 = (endpoint - rotationorigin)
-                            newchange2 = m * change2
-                            endpoint = endpoint + (newchange2 - change2) + newchange2.normalized * changedradius
-                            self.newbones_end[bone]['end_point'] = endpoint.tuple
+                            if self.oldbones_end[bone] != self.bone:
+                                self.newbones_end[bone]['bone_length'] = ((startpoint - quarkx.vect(self.oldbones_end[bone].dictspec['end_point']))*-1).tuple
+                                continue
                 else: # Bone group selection.
                     # Does movement of the handles and rotation of their assigned vertexes, if any.
                     startpoint = quarkx.vect(self.bone.dictspec['start_point'])
@@ -5268,11 +5370,9 @@ class LinBoneCornerHandle(LinearBoneHandle):
                         startpoint = startpoint + (newchange1 - change1) + newchange1.normalized * changedradius
                         self.newbones_start[bone]['start_point'] = startpoint.tuple
                         if self.oldbones_start[bone].dictspec.has_key('start_vtxlist'):
-                            endpoint = quarkx.vect(self.oldbones_start[bone].dictspec['end_point'])
-                            change2 = (endpoint - rotationorigin)
-                            newchange2 = m * change2
-                            endpoint = endpoint + (newchange2 - change2) + newchange2.normalized * changedradius
-                            self.newbones_start[bone]['end_point'] = endpoint.tuple
+                            if self.oldbones_start[bone] != self.bone:
+                                self.newbones_start[bone]['bone_length'] = ((startpoint - quarkx.vect(self.oldbones_start[bone].dictspec['end_point']))*-1).tuple
+                                continue
                     for bone in range(len(self.oldbones_end)):
                         endpoint = quarkx.vect(self.oldbones_end[bone].dictspec['end_point'])
                         change2 = (endpoint - rotationorigin)
@@ -5417,6 +5517,14 @@ def MouseDragging(self, view, x, y, s, handle):
     cursordragstartpos = (x, y) # Used for start where clicked for Model Editor RectSelDragObject just above here.
     mdleditorsave = self
     mdleditorview = view
+    if isinstance(handle, LinBoneCenterHandle) or isinstance(handle, LinBoneCornerHandle):
+        if (len(mdleditorsave.layout.explorer.sellist) == 1) and (mdleditorsave.layout.explorer.sellist[0].type == ':bone'):
+            pass
+        elif (len(mdleditorsave.layout.explorer.sellist) == 2) and ((mdleditorsave.layout.explorer.sellist[0].type != ':mf' and mdleditorsave.layout.explorer.sellist[1].type != ':bone') or (mdleditorsave.layout.explorer.sellist[0].type != ':bone' and mdleditorsave.layout.explorer.sellist[1].type != ':mf')) and ((mdleditorsave.layout.explorer.sellist[0].type != ':fg' and mdleditorsave.layout.explorer.sellist[1].type != ':bone') or (mdleditorsave.layout.explorer.sellist[0].type != ':bone' and mdleditorsave.layout.explorer.sellist[1].type != ':fg')):
+            pass
+        else:
+            mdleditorsave.dragobject = None
+            return None
     for item in view.info:
         if item == 'center':
             center = view.info["center"]
@@ -5490,6 +5598,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.148  2008/09/23 08:07:44  cdunde
+#Added code to make bones positions frame independent.
+#
 #Revision 1.147  2008/09/23 05:14:49  cdunde
 #Removed unneeded code check.
 #

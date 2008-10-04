@@ -244,6 +244,14 @@ def mMBLines_Color(m):
     else:
         quarkx.setupsubset(SS_MODEL, "Options")['MBLines_Color'] = None
 
+def mBHandles_Only(m):
+    # Only allows bone handles to be displayed to increase drawing speed.
+    if not MdlOption("BHandles_Only"):
+        quarkx.setupsubset(SS_MODEL, "Options")['BHandles_Only'] = "1"
+    else:
+        quarkx.setupsubset(SS_MODEL, "Options")['BHandles_Only'] = None
+    quarkx.reloadsetup()
+
 def mSYNC_ISV(m):
     # Sync editor selection in Skin-view function.
     editor = mdleditor.mdleditor
@@ -392,11 +400,13 @@ def mBFONLY(m):
 
 def BoneMenu(editor):
     Xmblines_color = qmenu.item("&Match Bone Lines Color", mMBLines_Color, "|Match Bone Lines Color:\n\nWhen checked the bone lines color displayed during a drag will match the handle color being dragged.|intro.modeleditor.menu.html#optionsmenu")
+    Xmbhandles_only = qmenu.item("&Draw Bone Handles Only", mBHandles_Only, "|Draw Bone Handles Only:\n\nWhen checked only the bone handles are displayed to increase drawing speed during and after a drag.|intro.modeleditor.menu.html#optionsmenu")
 
-    menulist = [Xmblines_color]
+    menulist = [Xmblines_color, Xmbhandles_only]
     
     items = menulist
     Xmblines_color.state = quarkx.setupsubset(SS_MODEL,"Options").getint("MBLines_Color")
+    Xmbhandles_only.state = quarkx.setupsubset(SS_MODEL,"Options").getint("BHandles_Only")
 
     return menulist
 
@@ -822,6 +832,9 @@ def OptionsMenuRMB():
 #
 #
 #$Log$
+#Revision 1.37  2008/09/15 04:47:45  cdunde
+#Model Editor bones code update.
+#
 #Revision 1.36  2008/07/22 23:14:23  cdunde
 #Fixed menu items that were not interacting with their config settings in the Defaults.qrk file.
 #

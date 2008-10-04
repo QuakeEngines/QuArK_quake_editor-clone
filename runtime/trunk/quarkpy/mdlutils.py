@@ -1877,6 +1877,14 @@ def continue_bone(editor, bone, s_or_e = 0):
     new_o_bone['start_color'] = new_o_bone['end_color'] = MapColor("BoneHandles", SS_MODEL)
     new_o_bone['start_offset'] = (0, 0, 0)
     new_o_bone['end_offset'] = (0, 0, 0)
+    common_handles_list, s_or_e_list = find_common_bone_handles(editor, new_o_bone.dictspec['start_point'])
+    for bone in range(len(common_handles_list)):
+        if common_handles_list[bone] == new_o_bone:
+            continue
+        if s_or_e_list[bone] == 0 and common_handles_list[bone].dictspec.has_key('start_vtx_pos'):
+            new_o_bone['start_vtx_pos'] = common_handles_list[bone].dictspec['start_vtx_pos']
+        elif common_handles_list[bone].dictspec.has_key('end_vtx_pos'):
+            new_o_bone['start_vtx_pos'] = common_handles_list[bone].dictspec['end_vtx_pos']
     undo = quarkx.action()
     undo.put(compskeleton, new_o_bone)
     editor.ok(undo, "continue bone")
@@ -1888,6 +1896,14 @@ def attach_bones(editor, bone1, bone2):
     new_o_bone = bone2.copy()
     new_o_bone['start_point'] = bone1['end_point']
     new_o_bone['bone_length'] = ((quarkx.vect(new_o_bone.dictspec['start_point']) - quarkx.vect(new_o_bone.dictspec['end_point']))*-1).tuple
+    common_handles_list, s_or_e_list = find_common_bone_handles(editor, new_o_bone.dictspec['start_point'])
+    for bone in range(len(common_handles_list)):
+        if common_handles_list[bone] == new_o_bone:
+            continue
+        if s_or_e_list[bone] == 0 and common_handles_list[bone].dictspec.has_key('start_vtx_pos'):
+            new_o_bone['start_vtx_pos'] = common_handles_list[bone].dictspec['start_vtx_pos']
+        elif common_handles_list[bone].dictspec.has_key('end_vtx_pos'):
+            new_o_bone['start_vtx_pos'] = common_handles_list[bone].dictspec['end_vtx_pos']
     undo = quarkx.action()
     undo.exchange(bone2, new_o_bone)
     editor.ok(undo, "attach bones")
@@ -1900,9 +1916,13 @@ def detach_bones(editor, bone1, bone2):
     if (checktuplepos(bone1['start_point'], bone2['start_point']) == 1) or (checktuplepos(bone1['end_point'], bone2['start_point']) == 1):
         newpoint = quarkx.vect(bone2['start_point']) + quarkx.vect(.01,.01,.01)
         new_o_bone['start_point'] = newpoint.tuple
+        if new_o_bone.dictspec.has_key('start_vtx_pos') and not (new_o_bone.dictspec.has_key('start_vtxlist')):
+            new_o_bone['start_vtx_pos'] = ''
     else:
         newpoint = quarkx.vect(bone2['end_point']) + quarkx.vect(.01,.01,.01)
         new_o_bone['end_point'] = newpoint.tuple
+        if new_o_bone.dictspec.has_key('end_vtx_pos') and not (new_o_bone.dictspec.has_key('end_vtxlist')):
+            new_o_bone['end_vtx_pos'] = ''
     new_o_bone['bone_length'] = ((quarkx.vect(new_o_bone.dictspec['start_point']) - quarkx.vect(new_o_bone.dictspec['end_point']))*-1).tuple
     undo = quarkx.action()
     undo.exchange(bone2, new_o_bone)
@@ -2547,6 +2567,8 @@ def Update_Editor_Views(editor, option=4):
                     v.handles = newhandles
                 if editor.ModelFaceSelList != []:
                     mdlhandles.ModelFaceHandle(qhandles.GenericHandle).draw(editor, v, editor.EditorObjectList)
+                if v.handles is None:
+                    v.handles = []
                 if v.handles == []:
                     pass
                 else:
@@ -2857,6 +2879,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.84  2008/09/15 04:47:46  cdunde
+#Model Editor bones code update.
+#
 #Revision 1.83  2008/08/08 05:02:11  cdunde
 #Rearranged all functions into groups to organize and make locating easer.
 #

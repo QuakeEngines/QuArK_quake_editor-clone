@@ -349,6 +349,7 @@ class BoneType(EntityManager):
 
     def handlesopt(o, editor):
         from qbaseeditor import currentview
+
         h = []
         if quarkx.setupsubset(SS_MODEL, "Options")['HideBones'] is not None:
             return h
@@ -369,6 +370,7 @@ class BoneType(EntityManager):
                 start_vtxpos = start_vtxpos/ float(len(vtxlist))
                 start_point = start_vtxpos + quarkx.vect(o.dictspec['start_offset'])
                 o['start_point'] = start_point.tuple
+                o['bone_length'] = (start_point - quarkx.vect(o.dictspec['end_point'])*-1).tuple
             if o.dictspec.has_key("end_vtx_pos") and o.dictspec['end_vtx_pos'] is not None:
                 vtxlist = o.dictspec['end_vtx_pos']
                 vtxlist = vtxlist.split(" ")
@@ -378,6 +380,7 @@ class BoneType(EntityManager):
                 end_vtxpos = end_vtxpos/ float(len(vtxlist))
                 end_point = end_vtxpos + quarkx.vect(o.dictspec['end_offset'])
                 o['end_point'] = end_point.tuple
+                o['bone_length'] = ((quarkx.vect(o.dictspec['start_point']) - end_point)*-1).tuple
 
         scenter = quarkx.vect(o.dictspec['start_point'])
         sbbox = (scenter + quarkx.vect(-0.9, -0.9, -0.9), scenter + quarkx.vect(0.9, 0.9, 0.9))
@@ -552,6 +555,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.30  2008/09/22 23:30:27  cdunde
+#Updates for Model Editor Linear and Bone handles.
+#
 #Revision 1.29  2008/09/15 04:47:48  cdunde
 #Model Editor bones code update.
 #

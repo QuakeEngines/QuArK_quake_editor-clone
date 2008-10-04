@@ -53,12 +53,27 @@ class ModelEditor(BaseEditor):
     #                                                 Its triangle number in the Model component mesh "triangles" list
     #                                                    of the Models "currentcomponent".
 
-    # This is a dictionary list using each component's full name as its key.
+    # This is a dictionary list using each component's full name as its key, ex: editor.ModelComponentList[component's full name][sub-dict key].
     # Each component's list can then store anything relating to that component
     # and can be any type of item, another dictionary, tuple or standard list, object....
     ModelComponentList = {}
-
-
+    # Current uses for Bones:
+    # ['bonevtxlist'] = {'22': {'color': '\xff\x00\xff', 's_or_e': 0, 'bonename': 'NewBone2'}}
+    #                               Use:    Stores vertex frame index, color and other data when assigned to a bone handle for faster drawing of those vertexes.
+    #                     Created using:    Each component's full name.dictitems['Skeleton:bg'].subitems or "bones".
+    #                               key   : Its "Frame" "vertices" number, which is the same number as a triangles "ver_index" number.
+    #                               item 0: key = 'color', value = bone handle and assigned vertex color in hex format.
+    #                               item 1: key = 's_or_e', value = 0 or 1 (bone start = 0 or end = 1 handle) that frame vertex is assigned to.
+    #                               item 2: key = 'bonename', value = full name of the bone that frame vertex is assigned to.
+    # ['boneobjlist'] = {bone's full name {'s_or_e0' or 's_or_e1'{'vtxlist': }}}
+    #                               Use:    A list of integers of assigned vertexes for each bone handle for the creation of the 'tristodrawlist' dictionary item below.
+    #                     Created using:    Each component's full name.dictitems['Skeleton:bg'].subitems or "bones" ['start_vtxlist'] and ['end_vtxlist'] dictspec items.
+    # ['boneobjlist'] = {bone's full name {'s_or_e0' or 's_or_e1'{'tristodrawlist': }}}
+    #                               Use:    Stores assigned vertex data, for each bone handle, of all triangles that vertex is used in for faster drawing of those triangles "drag lines".
+    #                     Created using:    Each component's full name.dictitems['Skeleton:bg'].subitems or "bones" and data returned from mdlutils.py "findTrianglesAndIndexes" function.
+    # ['boneobjlist'] = {bone's full name {'s_or_e0' or 's_or_e1'{'selvtxlist': }}}
+    #                               Use:    Stores assigned frame vertex_index numbers, for each bone handle, without duplication of them. Used with 'tristodrawlist' above to avoid dupe drawing.
+    #                     Created using:    The 'tristodrawlist' dictionary item above.
 
     ModelVertexSelList = []
     # Editor vertexes    (frame_vertices_index, view.proj(pos))
@@ -266,6 +281,7 @@ class ModelEditor(BaseEditor):
         mdleditor = None
         self.findtargetdlg = None
 
+        self.ModelComponentList = {}
         self.ModelVertexSelList = []
         self.SkinVertexSelList = []
         self.ModelFaceSelList = []
@@ -385,7 +401,6 @@ class ModelEditor(BaseEditor):
         for Object in self.layout.explorer.sellist:
             HoldObject = Object
             if HoldObject is None:
-                Expanded = False
                 ParentNames = []
             else:
                 ParentNames = [HoldObject.name]
@@ -516,6 +531,44 @@ class ModelEditor(BaseEditor):
 
 
     def explorerselchange(self, ex=None):
+        global NewSellist
+        import qbaseeditor
+        from qbaseeditor import flagsmouse
+        if qbaseeditor.flagsmouse == 1032:
+            return
+        if len(self.layout.explorer.sellist) == 0:
+            NewSellist = []
+        if len(self.layout.explorer.sellist) == 1 and self.layout.explorer.sellist[0].type == ':bg':
+            for item in NewSellist:
+                if item.type == ':bg':
+                    NewSellist.remove(item)
+                    if NewSellist != []:
+                        self.layout.explorer.sellist = NewSellist
+                    else:
+                        self.layout.explorer.sellist = []
+                    break
+        for item in range(len(self.layout.explorer.sellist)):
+            frames = 0
+            bonegroup = 0
+            if self.layout.explorer.sellist[item].type == ':bone':
+                NewSellist = []
+                break
+            if self.layout.explorer.sellist[item].type == ':mf':
+                frames = frames + 1
+            if self.layout.explorer.sellist[item].type != ':bg' and self.layout.explorer.sellist[item].type != ':mf':
+                NewSellist = []
+                break
+            if self.layout.explorer.sellist[item].type == ':bg':
+                bonegroup = bonegroup + 1
+            if item == len(self.layout.explorer.sellist)-1:
+                if bonegroup != 0:
+                    NewSellist = self.layout.explorer.sellist
+                elif frames != 0:
+                    for thing in NewSellist:
+                        if thing.type == ':bg':
+                            self.layout.explorer.sellist = self.layout.explorer.sellist + [thing]
+                            NewSellist = self.layout.explorer.sellist
+                            break
         self.layout.selchange()
         self.buildhandles()
         import mdlmgr
@@ -1549,6 +1602,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.98  2008/09/22 23:11:12  cdunde
+#Updates for Model Editor Linear and Bone handles.
+#
 #Revision 1.97  2008/09/15 04:47:48  cdunde
 #Model Editor bones code update.
 #

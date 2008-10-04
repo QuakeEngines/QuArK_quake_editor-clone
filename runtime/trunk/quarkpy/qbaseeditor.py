@@ -1218,6 +1218,43 @@ class BaseEditor:
                                 skindrawobject = None
                             mdlhandles.buildskinvertices(self, view, self.layout, self.Root.currentcomponent, skindrawobject)
                         else:
+                            if (isinstance(self.dragobject, mdlhandles.LinBoneCenterHandle) or isinstance(self.dragobject, mdlhandles.LinBoneCornerHandle)) and (flagsmouse == 520 or flagsmouse == 524):
+                                from mdleditor import NewSellist
+                                if len(self.layout.explorer.sellist) == 0:
+                                    NewSellist = []
+                                if len(self.layout.explorer.sellist) == 1 and self.layout.explorer.sellist[0].type == ':bg':
+                                    for item in NewSellist:
+                                        if item.type == ':bg':
+                                            NewSellist.remove(item)
+                                            if NewSellist != []:
+                                                self.layout.explorer.sellist = NewSellist
+                                            else:
+                                                self.layout.explorer.sellist = []
+                                            break
+                                for item in range(len(self.layout.explorer.sellist)):
+                                    frames = 0
+                                    bonegroup = 0
+                                    if self.layout.explorer.sellist[item].type == ':bone':
+                                        NewSellist = []
+                                        break
+                                    if self.layout.explorer.sellist[item].type == ':mf':
+                                        frames = frames + 1
+                                    if self.layout.explorer.sellist[item].type != ':bg' and self.layout.explorer.sellist[item].type != ':mf':
+                                        NewSellist = []
+                                        break
+                                    if self.layout.explorer.sellist[item].type == ':bg':
+                                        bonegroup = bonegroup + 1
+                                    if item == len(self.layout.explorer.sellist)-1:
+                                        if bonegroup != 0:
+                                            NewSellist = self.layout.explorer.sellist
+                                        elif frames != 0:
+                                            for thing in NewSellist:
+                                                if thing.type == ':bg':
+                                                    self.layout.explorer.sellist = self.layout.explorer.sellist + [thing]
+                                                    NewSellist = self.layout.explorer.sellist
+                                                    break
+                                return
+
                             if isinstance(self.dragobject, mdlhandles.RectSelDragObject):
                                 self.dragobject.view = view
                              ### Tried to clear drawn handles from the view at start of drag
@@ -1459,6 +1496,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.115  2008/09/15 04:47:49  cdunde
+#Model Editor bones code update.
+#
 #Revision 1.114  2008/07/23 01:12:55  cdunde
 #Added ability to clear all selections by a single LMB click in any open area of a editor's view.
 #

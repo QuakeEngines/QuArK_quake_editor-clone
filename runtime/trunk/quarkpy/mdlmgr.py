@@ -687,59 +687,53 @@ class ModelLayout(BaseLayout):
                     Update_Editor_Views(self.editor) # Updates the Specifics/Args page and views correctly.
 
                 elif checktuplepos(checkbone_start_offset, selitem['start_offset']) != 1:
-                    if selitem.dictspec.has_key('start_vtxlist'):
-                        new_start_offset = selitem.dictspec['start_offset']
-                        offset_dif = quarkx.vect(selitem['start_offset']) - quarkx.vect(checkbone_start_offset)
-                        checkstart_pos = (quarkx.vect(selitem['start_point']) + offset_dif).tuple
-                        checkbone_length = ((quarkx.vect(selitem['start_point']) + offset_dif + quarkx.vect(selitem['end_point']))*-1).tuple
-                        selitem['start_offset'] = checkbone_start_offset
-                        checkbone_start_offset = new_start_offset
-                        common_handles_list, s_or_e_list = find_common_bone_handles(self.editor, selitem['start_point'])
-                        start_point = checkstart_pos
-                        undo = quarkx.action()
-                        for old_bone in range(len(common_handles_list)):
-                            new_bone = common_handles_list[old_bone].copy()
-                            if s_or_e_list[old_bone] == 0:
-                                new_bone['start_point'] = start_point
-                                new_bone['start_offset'] = new_start_offset
-                            else:
-                                new_bone['end_point'] = start_point
-                                new_bone['end_offset'] = new_start_offset
-                            new_bone['bone_length'] = ((quarkx.vect(new_bone['start_point']) + quarkx.vect(new_start_offset) + quarkx.vect(new_bone['end_point']))).tuple
-                            undo.exchange(common_handles_list[old_bone], new_bone)
-                        self.editor.ok(undo, 'bone joint move')
-                    else:
-                        checkbone_start_offset = selitem['start_offset']
+                    new_start_offset = selitem['start_offset']
+                    offset_dif = quarkx.vect(selitem['start_offset']) - quarkx.vect(checkbone_start_offset)
+                    checkstart_pos = (quarkx.vect(selitem['start_point']) + offset_dif).tuple
+                    checkbone_length = ((quarkx.vect(selitem['start_point']) + offset_dif - quarkx.vect(selitem['end_point']))*-1).tuple
+                    selitem['start_offset'] = checkbone_start_offset
+                    checkbone_start_offset = new_start_offset
+                    common_handles_list, s_or_e_list = find_common_bone_handles(self.editor, selitem['start_point'])
+                    start_point = checkstart_pos
+                    undo = quarkx.action()
+                    for old_bone in range(len(common_handles_list)):
+                        new_bone = common_handles_list[old_bone].copy()
+                        if s_or_e_list[old_bone] == 0:
+                            new_bone['start_point'] = start_point
+                            new_bone['start_offset'] = new_start_offset
+                        else:
+                            new_bone['end_point'] = start_point
+                            new_bone['end_offset'] = new_start_offset
+                        new_bone['bone_length'] = ((quarkx.vect(new_bone['start_point']) + quarkx.vect(new_start_offset) - quarkx.vect(new_bone['end_point']))*-1).tuple
+                        undo.exchange(common_handles_list[old_bone], new_bone)
+                    self.editor.ok(undo, 'bone joint move')
 
                 elif checktuplepos(checkbone_end_offset, selitem['end_offset']) != 1:
-                    if selitem.dictspec.has_key('end_vtxlist'):
-                        new_end_offset = selitem.dictspec['end_offset']
-                        offset_dif = quarkx.vect(selitem['end_offset']) - quarkx.vect(checkbone_end_offset)
-                        checkend_pos = (quarkx.vect(selitem['end_point']) + offset_dif).tuple
-                        checkbone_length = ((quarkx.vect(selitem['start_point']) + offset_dif + quarkx.vect(selitem['end_point']))*-1).tuple
-                        selitem['end_offset'] = checkbone_end_offset
-                        checkbone_end_offset = new_end_offset
-                        common_handles_list, s_or_e_list = find_common_bone_handles(self.editor, selitem['end_point'])
-                        end_point = checkend_pos
-                        undo = quarkx.action()
-                        for old_bone in range(len(common_handles_list)):
-                            new_bone = common_handles_list[old_bone].copy()
-                            if s_or_e_list[old_bone] == 0:
-                                new_bone['start_point'] = end_point
-                                new_bone['start_offset'] = new_end_offset
-                            else:
-                                new_bone['end_point'] = end_point
-                                new_bone['end_offset'] = new_end_offset
-                            new_bone['bone_length'] = ((quarkx.vect(new_bone['start_point']) + quarkx.vect(new_end_offset) + quarkx.vect(new_bone['end_point']))).tuple
-                            undo.exchange(common_handles_list[old_bone], new_bone)
-                        self.editor.ok(undo, 'bone joint move')
-                    else:
-                        checkbone_end_offset = selitem['end_offset']
+                    new_end_offset = selitem['end_offset']
+                    offset_dif = quarkx.vect(selitem['end_offset']) - quarkx.vect(checkbone_end_offset)
+                    checkend_pos = (quarkx.vect(selitem['end_point']) + offset_dif).tuple
+                    checkbone_length = ((quarkx.vect(selitem['start_point']) + offset_dif - quarkx.vect(selitem['end_point']))*-1).tuple
+                    selitem['end_offset'] = checkbone_end_offset
+                    checkbone_end_offset = new_end_offset
+                    common_handles_list, s_or_e_list = find_common_bone_handles(self.editor, selitem['end_point'])
+                    end_point = checkend_pos
+                    undo = quarkx.action()
+                    for old_bone in range(len(common_handles_list)):
+                        new_bone = common_handles_list[old_bone].copy()
+                        if s_or_e_list[old_bone] == 0:
+                            new_bone['start_point'] = end_point
+                            new_bone['start_offset'] = new_end_offset
+                        else:
+                            new_bone['end_point'] = end_point
+                            new_bone['end_offset'] = new_end_offset
+                        new_bone['bone_length'] = ((quarkx.vect(new_bone['start_point']) + quarkx.vect(new_end_offset) - quarkx.vect(new_bone['end_point']))*-1).tuple
+                        undo.exchange(common_handles_list[old_bone], new_bone)
+                    self.editor.ok(undo, 'bone joint move')
 
                 elif checktuplepos(checkstart_pos, selitem['start_point']) != 1:
                     oldstart_pos = checkstart_pos
                     checkstart_pos = selitem['start_point']
-                    checkbone_length = ((quarkx.vect(selitem['start_point']) + quarkx.vect(selitem['end_point']))*-1).tuple
+                    checkbone_length = ((quarkx.vect(selitem['start_point']) - quarkx.vect(selitem['end_point']))*-1).tuple
                     selitem['start_point'] = oldstart_pos
                     common_handles_list, s_or_e_list = find_common_bone_handles(self.editor, oldstart_pos)
                     start_point = checkstart_pos
@@ -759,14 +753,14 @@ class ModelLayout(BaseLayout):
                                 self.editor.Root.currentcomponent.currentframe.vertices = old_vtxs
                         else:
                             new_bone['end_point'] = start_point
-                        new_bone['bone_length'] = ((quarkx.vect(new_bone['start_point']) + quarkx.vect(new_bone['end_point']))).tuple
+                        new_bone['bone_length'] = ((quarkx.vect(new_bone['start_point']) - quarkx.vect(new_bone['end_point']))*-1).tuple
                         undo.exchange(common_handles_list[old_bone], new_bone)
                     self.editor.ok(undo, 'bone joint move')
 
                 elif checktuplepos(checkend_pos, selitem['end_point']) != 1:
                     oldend_pos = checkend_pos
                     checkend_pos = selitem['end_point']
-                    checkbone_length = ((quarkx.vect(selitem['start_point']) + quarkx.vect(selitem['end_point']))*-1).tuple
+                    checkbone_length = ((quarkx.vect(selitem['start_point']) - quarkx.vect(selitem['end_point']))*-1).tuple
                     selitem['end_point'] = oldend_pos
                     common_handles_list, s_or_e_list = find_common_bone_handles(self.editor, oldend_pos)
                     end_point = checkend_pos
@@ -775,9 +769,27 @@ class ModelLayout(BaseLayout):
                         new_bone = common_handles_list[old_bone].copy()
                         if s_or_e_list[old_bone] == 0:
                             new_bone['start_point'] = end_point
+                            if new_bone.dictspec.has_key('start_vtxlist'):
+                                movediff = quarkx.vect(new_bone['start_point']) - quarkx.vect(oldend_pos)
+                                old_vtxs = self.editor.Root.currentcomponent.currentframe.vertices
+                                selvtxlist = self.editor.ModelComponentList[self.editor.Root.currentcomponent.name]['boneobjlist'][new_bone.name]['s_or_e0']['selvtxlist']
+                                vtxlist = self.editor.ModelComponentList[self.editor.Root.currentcomponent.name]['boneobjlist'][new_bone.name]['s_or_e0']['vtxlist']
+                                for vtx in range(len(selvtxlist)):
+                                    old_vtxs[selvtxlist[vtx]] = self.editor.Root.currentcomponent.currentframe.vertices[selvtxlist[vtx]] + movediff
+                                    vtxlist[vtx][1] = old_vtxs[selvtxlist[vtx]]
+                                self.editor.Root.currentcomponent.currentframe.vertices = old_vtxs
                         else:
                             new_bone['end_point'] = end_point
-                        new_bone['bone_length'] = ((quarkx.vect(new_bone['start_point']) + quarkx.vect(new_bone['end_point']))).tuple
+                            if new_bone.dictspec.has_key('end_vtxlist'):
+                                movediff = quarkx.vect(new_bone['end_point']) - quarkx.vect(oldend_pos)
+                                old_vtxs = self.editor.Root.currentcomponent.currentframe.vertices
+                                selvtxlist = self.editor.ModelComponentList[self.editor.Root.currentcomponent.name]['boneobjlist'][new_bone.name]['s_or_e1']['selvtxlist']
+                                vtxlist = self.editor.ModelComponentList[self.editor.Root.currentcomponent.name]['boneobjlist'][new_bone.name]['s_or_e1']['vtxlist']
+                                for vtx in range(len(selvtxlist)):
+                                    old_vtxs[selvtxlist[vtx]] = self.editor.Root.currentcomponent.currentframe.vertices[selvtxlist[vtx]] + movediff
+                                    vtxlist[vtx][1] = old_vtxs[selvtxlist[vtx]]
+                                self.editor.Root.currentcomponent.currentframe.vertices = old_vtxs
+                        new_bone['bone_length'] = ((quarkx.vect(new_bone['start_point']) - quarkx.vect(new_bone['end_point']))*-1).tuple
                         undo.exchange(common_handles_list[old_bone], new_bone)
                     self.editor.ok(undo, 'bone joint move')
 
@@ -785,17 +797,36 @@ class ModelLayout(BaseLayout):
                     oldbone_length = checkbone_length
                     checkend_pos = (quarkx.vect(selitem['start_point']) + quarkx.vect(selitem['bone_length'])).tuple
                     checkbone_length = selitem['bone_length']
-                    selitem['bone_length'] = oldbone_length
                     common_handles_list, s_or_e_list = find_common_bone_handles(self.editor, selitem['end_point'])
                     end_point = checkend_pos
                     undo = quarkx.action()
                     for old_bone in range(len(common_handles_list)):
                         new_bone = common_handles_list[old_bone].copy()
                         if s_or_e_list[old_bone] == 0:
+                            if new_bone == selitem:
+                                continue
                             new_bone['start_point'] = end_point
+                            if new_bone.dictspec.has_key('start_vtxlist'):
+                                movediff = quarkx.vect(selitem['bone_length']) - quarkx.vect(oldbone_length)
+                                old_vtxs = self.editor.Root.currentcomponent.currentframe.vertices
+                                selvtxlist = self.editor.ModelComponentList[self.editor.Root.currentcomponent.name]['boneobjlist'][new_bone.name]['s_or_e0']['selvtxlist']
+                                vtxlist = self.editor.ModelComponentList[self.editor.Root.currentcomponent.name]['boneobjlist'][new_bone.name]['s_or_e0']['vtxlist']
+                                for vtx in range(len(selvtxlist)):
+                                    old_vtxs[selvtxlist[vtx]] = self.editor.Root.currentcomponent.currentframe.vertices[selvtxlist[vtx]] + movediff
+                                    vtxlist[vtx][1] = old_vtxs[selvtxlist[vtx]]
+                                self.editor.Root.currentcomponent.currentframe.vertices = old_vtxs
                         else:
                             new_bone['end_point'] = end_point
-                        new_bone['bone_length'] = ((quarkx.vect(new_bone['start_point']) + quarkx.vect(new_bone['end_point']))).tuple
+                            if new_bone.dictspec.has_key('end_vtxlist'):
+                                movediff = quarkx.vect(selitem['bone_length']) - quarkx.vect(oldbone_length)
+                                old_vtxs = self.editor.Root.currentcomponent.currentframe.vertices
+                                selvtxlist = self.editor.ModelComponentList[self.editor.Root.currentcomponent.name]['boneobjlist'][new_bone.name]['s_or_e1']['selvtxlist']
+                                vtxlist = self.editor.ModelComponentList[self.editor.Root.currentcomponent.name]['boneobjlist'][new_bone.name]['s_or_e1']['vtxlist']
+                                for vtx in range(len(selvtxlist)):
+                                    old_vtxs[selvtxlist[vtx]] = self.editor.Root.currentcomponent.currentframe.vertices[selvtxlist[vtx]] + movediff
+                                    vtxlist[vtx][1] = old_vtxs[selvtxlist[vtx]]
+                                self.editor.Root.currentcomponent.currentframe.vertices = old_vtxs
+                        new_bone['bone_length'] = ((quarkx.vect(new_bone['start_point']) - quarkx.vect(new_bone['end_point']))*-1).tuple
                         undo.exchange(common_handles_list[old_bone], new_bone)
                     self.editor.ok(undo, 'bone joint move')
 
@@ -1075,12 +1106,9 @@ class ModelLayout(BaseLayout):
                 self.editor.layout.explorer.sellist = NewSellist
                 for item in editor.layout.explorer.sellist:
                     editor.layout.explorer.expand(item.parent)
-                mdleditor.NewSellist = []
                 return
         except:
-            mdleditor.NewSellist = []
             pass
-        mdleditor.NewSellist = []
         self.mpp.resetpage() # This calls for the Skin-view to be updated and redrawn.
 
 
@@ -1222,6 +1250,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.78  2008/09/22 23:38:20  cdunde
+#Updates for Model Editor Linear and Bone handles.
+#
 #Revision 1.77  2008/09/15 04:47:47  cdunde
 #Model Editor bones code update.
 #

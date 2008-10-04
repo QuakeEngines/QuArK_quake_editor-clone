@@ -197,13 +197,12 @@ def MdlBackgroundMenu(editor, view=None, origin=None):
             bonepop.state = qmenu.disabled
             if len(editor.layout.explorer.sellist) >= 1:
                 import mdlmgr
-                for item in editor.layout.explorer.sellist:
-                    if item.type == ':bg' or item.type == ':bone':
-                        bonepop.state = qmenu.normal
-                    comp =  editor.layout.componentof(item)
-                    if comp != editor.Root.currentcomponent:
-                        bonepop.state = qmenu.disabled
-                        break
+                item = editor.layout.explorer.sellist[0]
+                if (item.type == ':fg' or item.type == ':mf' or item.type == ':bg' or item.type == ':bone') and (quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] != "1"):
+                    bonepop.state = qmenu.normal
+                comp =  editor.layout.componentof(item)
+                if comp != editor.Root.currentcomponent:
+                    bonepop.state = qmenu.disabled
             if editor.layout.explorer.sellist == [] or quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1" or editor.layout.explorer.sellist[0].type != ":mf":
                 vertexpop.state = qmenu.disabled
             def backbmp1click(m, view=view, form=editor.form):
@@ -284,6 +283,9 @@ def BaseMenu(sellist, editor):
 #
 #
 #$Log$
+#Revision 1.35  2008/09/22 23:38:21  cdunde
+#Updates for Model Editor Linear and Bone handles.
+#
 #Revision 1.34  2008/09/15 04:47:47  cdunde
 #Model Editor bones code update.
 #
