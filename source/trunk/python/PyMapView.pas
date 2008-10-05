@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.47  2008/10/02 18:55:54  danielpharos
+Don't render when not in wp_paint handling.
+
 Revision 1.46  2008/10/02 12:23:27  danielpharos
 Major improvements to HWnd and HDC handling. This should fix all kinds of OpenGL problems.
 
@@ -264,7 +267,7 @@ type
                  ClipRect: TRect;
                  ShowProgress: Boolean;
                  procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
-                 procedure Paint(Sender: TObject; DC: {HDC}Integer; const rcPaint: TRect);
+                 procedure Paint(Sender: TObject; DC: HDC; const rcPaint: TRect);
                  procedure Render;
                  procedure NeedScene(NeedSetup: Boolean);
                  procedure SetCursor(Sender: TObject; var nCursor: TCursor);

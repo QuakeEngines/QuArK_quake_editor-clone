@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2005/09/28 10:49:02  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.5  2001/06/05 18:42:41  decker_dk
 Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
 
@@ -61,7 +64,7 @@ type
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
     FRoot: QMdlObject;
-    procedure ScrollBox1Paint(Sender: TObject; DC: Integer; const rcPaint: TRect);
+    procedure ScrollBox1Paint(Sender: TObject; DC: HDC; const rcPaint: TRect);
   protected
     function AssignObject(Q: QFileObject; State: TFileObjectWndState) : Boolean; override;
     procedure ReadSetupInformation(Level: Integer); override;
@@ -180,7 +183,7 @@ begin
   ScrollBox1.OnPaint:=ScrollBox1Paint;
 end;
 
-procedure TFQMdl.ScrollBox1Paint(Sender: TObject; DC: Integer; const rcPaint: TRect);
+procedure TFQMdl.ScrollBox1Paint(Sender: TObject; DC: HDC; const rcPaint: TRect);
 var
   Pen: HPen;
   Brush: HBrush;

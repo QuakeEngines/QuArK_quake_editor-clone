@@ -2,6 +2,9 @@
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2005/09/28 10:48:31  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.2  2000/09/10 14:05:21  alexander
 added cvs headers
 
@@ -18,7 +21,7 @@ uses
 
 type
   TSetCursorEvent = procedure(Sender: TObject; var nCursor: TCursor) of object;
-  TCSBPaintEvent = procedure(Sender: TObject; DC: {HDC}Integer; const rcPaint: TRect) of object;
+  TCSBPaintEvent = procedure(Sender: TObject; DC: HDC; const rcPaint: TRect) of object;
   TCursorScrollBox = class(TScrollBox)
   private
     FOnSetCursor: TSetCursorEvent;

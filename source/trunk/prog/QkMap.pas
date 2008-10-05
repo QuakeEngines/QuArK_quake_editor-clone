@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.75  2007/07/05 10:19:45  danielpharos
+Moved the Quake .map format code to a separate file.
+
 Revision 1.74  2007/06/06 21:27:38  danielpharos
 Fix a problem where several things weren't saved in .map files.
 
@@ -271,7 +274,7 @@ type
   private
    {FOldPaint: TCSBPaintEvent;}
     FRoot: TTreeMap;
-    procedure ScrollBox1Paint(Sender: TObject; DC: {HDC}Integer; const rcPaint: TRect);
+    procedure ScrollBox1Paint(Sender: TObject; DC: HDC; const rcPaint: TRect);
   protected
     function AssignObject(Q: QFileObject; State: TFileObjectWndState) : Boolean; override;
     procedure ReadSetupInformation(Level: Integer); override;
@@ -395,7 +398,7 @@ begin
  ScrollBox1.OnPaint:=ScrollBox1Paint;
 end;
 
-procedure TFQMap.ScrollBox1Paint(Sender: TObject; DC: Integer; const rcPaint: TRect);
+procedure TFQMap.ScrollBox1Paint(Sender: TObject; DC: HDC; const rcPaint: TRect);
 var
  Pen: HPen;
  Brush: HBrush;
