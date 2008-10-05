@@ -95,10 +95,12 @@ class BaseEditor:
         try:
             view.info["timer"]   # check the presence of the "timer" attribute
             quarkx.settimer(qbasemgr.RefreshView, view, 0)
+            view.nodraw = 1
             qbasemgr.RefreshView(view)   # re-invalidate the whole view
             return
         except:
             pass
+        view.nodraw = 0
 
         #
         # First read the view's scale.
@@ -1496,6 +1498,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.116  2008/10/04 05:48:06  cdunde
+#Updates for Model Editor Bones system.
+#
 #Revision 1.115  2008/09/15 04:47:49  cdunde
 #Model Editor bones code update.
 #

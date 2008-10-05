@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.48  2008/10/05 13:51:19  danielpharos
+Correct Integer to HDC.
+
 Revision 1.47  2008/10/02 18:55:54  danielpharos
 Don't render when not in wp_paint handling.
 
@@ -240,6 +243,7 @@ type
                private
                  DisplayType: TDisplayType;
                  RenderMode: TMapViewRenderMode;
+                 NoDraw: Boolean;
                  kDelta: TPoint;
                  FOnDraw, FBoundingBoxes, FOnMouse, FOnKey, FHandles,
                  FOnCameraMove: PyObject;
@@ -367,6 +371,7 @@ begin
    CurrentMapView:=Nil;
   end;
  inherited;
+ NoDraw:=False;
  PressingMouseButton:=mbNotPressing;
  OnPaint:=Paint;
  OnSetCursor:=SetCursor;
@@ -519,9 +524,9 @@ begin
                      if FullScreen then
                       begin
                        Canvas.Handle:=HDC(-1);
-                       //@ClipRect
+                       //@ClipRect...
                        try
-                        Render;
+                        //@Render;
                        finally
                         Canvas.Handle:=0;
                        end;
@@ -809,7 +814,7 @@ begin
   F.Update;
 end;*)
 
-procedure TPyMapView.Paint(Sender: TObject; DC: Integer; const rcPaint: TRect);
+procedure TPyMapView.Paint(Sender: TObject; DC: HDC; const rcPaint: TRect);
 begin
  if FullScreen then
   begin
@@ -1193,12 +1198,12 @@ end;
 procedure TPyMapView.wmPaint;
 var
  PaintInfo: TPaintStruct;
- Wnd: HWnd;
+ DC: HDC;
 begin
  //Note: This overrides the original wmPaint...!
- Wnd:=BeginPaint(Handle, PaintInfo);
+ DC:=BeginPaint(Handle, PaintInfo);
  try
-  if Wnd<>0 then
+  if DC<>0 then
    begin
     FPainting:=True;
     try
@@ -1883,10 +1888,8 @@ begin
  if ViewType<>Vt then
   begin
    SetAnimation(False);
+   DeleteScene;
    ViewType:=Vt;
-   Invalidate;
-   FScene.Free;
-   FScene:=Nil;
   end;
 end;
 
@@ -2919,6 +2922,7 @@ begin
     begin
      if not FPainting then
       begin
+       //FIXME: This function should not be called outside wmPaint...
        RenderMode:=rmSolidImage;
        try
          Repaint;
@@ -3177,6 +3181,14 @@ begin
           begin
            if QkControl<>Nil then
             Result:=PyInt_FromLong((QkControl as TPyMapView).HandleCursor);
+           Exit;
+          end;
+    'n': if StrComp(attr, 'nodraw')=0 then
+          begin
+           if (QkControl as TPyMapView).NoDraw then
+            Result:=PyInt_FromLong(1)
+           else
+            Result:=PyInt_FromLong(0);
            Exit;
           end;
     'r': if StrComp(attr, 'redlines')=0 then
@@ -3488,6 +3500,15 @@ begin
               HandleCursor:=PyInt_AsLong(value);
               Perform(CM_CURSORCHANGED, 0, 0);
              end;
+           Result:=0;
+           Exit;
+          end;
+    'n': if StrComp(attr, 'nodraw')=0 then
+          begin
+           if PyInt_AsLong(value)=0 then
+            (QkControl as TPyMapView).NoDraw:=False
+           else
+            (QkControl as TPyMapView).NoDraw:=True;
            Result:=0;
            Exit;
           end;
