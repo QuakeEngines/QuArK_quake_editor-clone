@@ -821,7 +821,7 @@ def maddrawview(view, mapobj, mode, olddraw=quarkpy.qbaseeditor.drawview):
       view.drawmap(mapobj, mode, 0, restrictor)
   else:
     olddraw(view,mapobj,mode)
-    
+
 quarkpy.qbaseeditor.drawview = maddrawview
 
 def RestSelClick(m):
@@ -1127,6 +1127,9 @@ quarkpy.mapoptions.items.append(mennosel)
 #
 #
 # $Log$
+# Revision 1.40  2007/12/21 20:39:23  cdunde
+# Added new Templates functions and Templates.
+#
 # Revision 1.39  2006/11/30 01:17:48  cdunde
 # To fix for filtering purposes, we do NOT want to use capital letters for cvs.
 #
