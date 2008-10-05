@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.76  2008/10/02 18:55:54  danielpharos
+Don't render when not in wp_paint handling.
+
 Revision 1.75  2008/10/02 12:23:27  danielpharos
 Major improvements to HWnd and HDC handling. This should fix all kinds of OpenGL problems.
 
@@ -279,6 +282,8 @@ var
  glAddSwapHintRectWIN: procedure (x: GLint; y: GLint; width: GLsizei; height: GLsizei) stdcall; {Daniel 2007.08.28 - Added}
 
 type
+ TProjectionSettings = (psUnknown, ps2D, ps3D);
+
  PLightList = ^TLightList;
  TLightList = record
                SubLightList, Next: PLightList;
@@ -292,7 +297,7 @@ type
 
  TGLSceneObject = class(TSceneObject)
  private
-//   RC: HGLRC;  //wglShareLists
+   RC: HGLRC;
    WinSwapHint: Pointer;
    CurrentAlpha: LongInt;
    Currentf: GLfloat4;
@@ -315,9 +320,9 @@ type
    MapLimitSmallest: Double;
    MaxLights: GLint;
    LightingQuality: Integer;
+   ProjectionSetting: TProjectionSettings;
    OpenGLDisplayLists: array[0..2] of Integer;
    PixelFormat: PPixelFormatDescriptor;
-   procedure RenderPList(PList: PSurfaces; TransparentFaces: Boolean; SourceCoord: TCoordinates);
  protected
    Bilinear: boolean;
    ScreenX, ScreenY: Integer;
@@ -329,10 +334,11 @@ type
    function StartBuildScene({var PW: TPaletteWarning;} var VertexSize: Integer) : TBuildMode; override;
    procedure EndBuildScene; override;
    procedure ReleaseResources;
+   procedure RenderPList(PList: PSurfaces; TransparentFaces: Boolean; SourceCoord: TCoordinates);
    procedure BuildTexture(Texture: PTexture3); override;
    procedure ChangedViewDC; override;
+   function SetProjection(NewProjection: TProjectionSettings) : GLdouble3;
  public
-//   FlagDisplayLists: Boolean; //wglShareLists
    constructor Create(nViewMode: TMapViewMode);
    destructor Destroy; override;
    procedure Init(nCoord: TCoordinates;
@@ -342,10 +348,12 @@ type
                   var AllowsGDI: Boolean); override;
    procedure ClearScene; override;
    procedure Render3DView; override;
-   procedure Copy3DView; override;
+   procedure Present3DView; override;
    procedure AddLight(const Position: TVect; Brightness: Single; Color: TColorRef); override;
    procedure SetViewSize(SX, SY: Integer); override;
    function ChangeQuality(nQuality: Integer) : Boolean; override;
+   procedure Draw2DLine(StartPoint, EndPoint: vec2_t); override;
+   procedure Draw2DRectangle(StartPoint, EndPoint: vec2_t); override;
  end;
 
 type  { this is the data shared by all existing TGLSceneObjects }
@@ -353,7 +361,6 @@ type  { this is the data shared by all existing TGLSceneObjects }
   public
     procedure ClearTexture(Tex: PTexture3);
     procedure ClearAllOpenGLTextures;
-//    procedure FlagAllOpenGLDisplayLists; //wglShareLists
   end;
   
 var
@@ -861,7 +868,7 @@ begin
       begin
         if not MadeRCCurrent then
         begin
-          if wglMakeCurrent(GetOpenGLDummyDC, GetOpenGLDummyRC) = false then //wglShareLists
+          if wglMakeCurrent(GetOpenGLDummyDC, GetOpenGLDummyRC) = false then
             raise EError(6310);
           MadeRCCurrent := True;
         end;
@@ -876,19 +883,18 @@ begin
       wglMakeCurrent(0, 0);
   end;
 
-(*  if RC<>0 then //wglShareLists
+  if RC<>0 then
   begin
     if OpenGLLoaded then
       DeleteRC(RC);
     RC:=0;
-  end;*)
-
+  end;
 end;
 
 constructor TGLSceneObject.Create(nViewMode: TMapViewMode);
 begin
   inherited Create(nViewMode);
-  //RC:=0; //wglShareLists
+  RC:=0;
   PixelFormat:=nil;
 end;
 
@@ -1039,15 +1045,14 @@ begin
     PixelFormat^:=FillPixelFormat(ViewDC);
     ChangedViewDC; //To set the pixelformat:
 
-(*    if RC = 0 then //wglShareLists
+    if RC = 0 then
     begin
       RC:=CreateNewRC(ViewDC);
       if RC = 0 then
         raise EError(6311);
-    end;*)
+    end;
 
-//    if wglMakeCurrent(ViewDC, RC) = false then //wglShareLists
-    if wglMakeCurrent(ViewDC, GetOpenGLDummyRC) = false then
+    if wglMakeCurrent(ViewDC, RC) = false then
       raise EError(6310);
     try
     WinSwapHint:=LoadSwapHint;
@@ -1140,39 +1145,42 @@ begin
   end;
 end;
 
-procedure TGLSceneObject.Copy3DView;
+procedure TGLSceneObject.Present3DView;
 var
   Int4Array: array[0..3] of Integer;
 begin
   if not OpenGlLoaded then
     Exit;
 
-  if DoubleBuffered then
-  begin
-    SetViewDC(True);
+  SetViewDC(True);
+  try
+    if wglMakeCurrent(ViewDC, RC) = false then
+      raise EError(6310);
     try
-//      if wglMakeCurrent(ViewDC, RC) = false then //wglShareLists
-      if wglMakeCurrent(ViewDC, GetOpenGLDummyRC) = false then
-        raise EError(6310);
-      try
-        if WinSwapHint<>nil then
-        begin
-          glAddSwapHintRectWIN:=WinSwapHint;
-          Int4Array[0]:=DrawRect.Left;
-          Int4Array[1]:=ScreenY - DrawRect.Bottom; //These coords start LOWER left
-          Int4Array[2]:=DrawRect.Right - DrawRect.Left;
-          Int4Array[3]:=DrawRect.Bottom - DrawRect.Top;
-          glAddSwapHintRectWIN(Int4Array[0], Int4Array[1], Int4Array[2], Int4Array[3]);
-          CheckOpenGLError('WinSwapHint');
-        end;
-        if Windows.SwapBuffers(ViewDC)=false then
-          raise exception.create(LoadStr1(6315));
-      finally
-        wglMakeCurrent(0, 0);
+
+    glFinish;
+    CheckOpenGLError('Present3DView: glFinish');
+
+    if DoubleBuffered then
+    begin
+      if WinSwapHint<>nil then
+      begin
+        glAddSwapHintRectWIN:=WinSwapHint;
+        Int4Array[0]:=DrawRect.Left;
+        Int4Array[1]:=ScreenY - DrawRect.Bottom; //These coords start LOWER left
+        Int4Array[2]:=DrawRect.Right - DrawRect.Left;
+        Int4Array[3]:=DrawRect.Bottom - DrawRect.Top;
+        glAddSwapHintRectWIN(Int4Array[0], Int4Array[1], Int4Array[2], Int4Array[3]);
+        CheckOpenGLError('Present3DView: WinSwapHint');
       end;
-    finally
-      SetViewDC(False);
+      if Windows.SwapBuffers(ViewDC)=false then
+        raise exception.create(LoadStr1(6315));
     end;
+    finally
+      wglMakeCurrent(0, 0);
+    end;
+  finally
+    SetViewDC(False);
   end;
 end;
 
@@ -1243,8 +1251,7 @@ begin
         end;
         if not MadeRCCurrent then
         begin
-//          if wglMakeCurrent(ViewDC, RC) = false then //wglShareLists
-          if wglMakeCurrent(ViewDC, GetOpenGLDummyRC) = false then
+          if wglMakeCurrent(ViewDC, RC) = false then
             raise EError(6310);
           MadeRCCurrent := True;
         end;
@@ -1416,15 +1423,230 @@ begin
   end;
 end;
 
-procedure TGLSceneObject.Render3DView;
+function TGLSceneObject.SetProjection(NewProjection: TProjectionSettings) : GLdouble3;
 var
- SX, SY: Integer;
  DX, DY, DZ: Double;
  VX, VY, VZ: TVect;
  Scaling: TDouble;
  LocX, LocY: GLdouble;
  TransX, TransY, TransZ: GLdouble;
  MatrixTransform: TMatrix4f;
+begin
+  if NewProjection = psUnknown then
+    raise Exception.Create('SetProjection: Invalid projection setting'); //@ Move to dictionary
+
+  if NewProjection <> ProjectionSetting then
+  begin
+    case NewProjection of
+    ps2D:
+     begin
+      glDisable(GL_FOG);
+      CheckOpenGLError('SetProjection: ps3D: GL_FOG');
+      glDisable(GL_LIGHTING);
+      CheckOpenGLError('SetProjection: ps2D: GL_LIGHTING');
+      glDisable(GL_BLEND);
+      CheckOpenGLError('SetProjection: ps2D: GL_BLEND');
+      glDisable(GL_CULL_FACE);
+      CheckOpenGLError('SetProjection: ps2D: GL_CULL_FACE');
+      glDisable(GL_DEPTH_TEST);
+      CheckOpenGLError('SetProjection: ps2D: GL_DEPTH_TEST');
+
+      case ViewMode of
+      vmWireframe:
+       begin
+        //glDisable(GL_TEXTURE_2D);
+       end;
+      vmSolidcolor:
+       begin
+        glDisable(GL_TEXTURE_2D);
+       end;
+      else //vmTextured:
+       begin
+        glDisable(GL_TEXTURE_2D);
+       end;
+      end;
+      CheckOpenGLError('SetProjection: ps2D: GL_TEXTURE_2D');
+
+      glMatrixMode(GL_PROJECTION);
+      glLoadIdentity;
+      glOrtho(0, ScreenX, ScreenY, 0, -1, 1); //Z-buffer is not OK...!
+      glMatrixMode(GL_MODELVIEW);
+      glLoadIdentity;
+      CheckOpenGLError('SetProjection: ps2D: Camera set-up');
+     end;
+    ps3D:
+     begin
+      if Fog then
+       begin
+        glEnable(GL_FOG);
+        {glFogf(GL_FOG_START, FarDistance * kDistFarToShort);
+        glFogf(GL_FOG_END, FarDistance);}
+        glFogf(GL_FOG_DENSITY, FogDensity/FarDistance);
+       end
+      else
+       glDisable(GL_FOG);
+      CheckOpenGLError('SetProjection: ps3D: GL_FOG');
+
+      if Lighting then
+       glEnable(GL_LIGHTING)
+      else
+       glDisable(GL_LIGHTING);
+      CheckOpenGLError('SetProjection: ps3D: GL_LIGHTING');
+
+      if Transparency then
+       glEnable(GL_BLEND)
+      else
+       glDisable(GL_BLEND);
+      CheckOpenGLError('SetProjection: ps3D: GL_BLEND');
+
+      if Culling then
+       glEnable(GL_CULL_FACE)
+      else
+       glDisable(GL_CULL_FACE);
+      CheckOpenGLError('SetProjection: ps3D: GL_CULL_FACE');
+
+      if (CurrentDisplayMode=dmPanel) then
+       glDisable(GL_DEPTH_TEST)
+      else
+       glEnable(GL_DEPTH_TEST);
+      CheckOpenGLError('SetProjection: ps3D: GL_DEPTH_TEST');
+
+      case ViewMode of
+      vmWireframe:
+       begin
+        glDisable(GL_TEXTURE_2D);
+        //glDisable(GL_COLOR_MATERIAL);
+       end;
+      vmSolidcolor:
+       begin
+        glDisable(GL_TEXTURE_2D);
+        //glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+        //glEnable(GL_COLOR_MATERIAL);
+       end;
+      else //vmTextured:
+       begin
+        glEnable(GL_TEXTURE_2D);
+        //glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+        //glEnable(GL_COLOR_MATERIAL);
+       end;
+      end;
+      CheckOpenGLError('SetProjection: ps3D: GL_TEXTURE_2D');
+     end;
+    end;
+    ProjectionSetting := NewProjection;
+  end;
+
+  case ProjectionSetting of
+  ps2D:
+   begin
+    Result[0]:=0;
+    Result[1]:=0;
+    Result[2]:=0;
+   end;
+  ps3D:
+   begin
+    if Coord.FlatDisplay then
+     begin
+      if CurrentDisplayType=dtXY then
+       begin
+        with TXYCoordinates(Coord) do
+         begin
+          Scaling:=ScalingFactor(Nil);
+          LocX:=pDeltaX-ScrCenter.X;
+          LocY:=-(pDeltaY-ScrCenter.Y);
+          VX:=VectorX;
+          VY:=VectorY;
+          VZ:=VectorZ;
+         end;
+       end
+      else if CurrentDisplayType=dtXZ then
+       begin
+        with TXZCoordinates(Coord) do
+         begin
+          Scaling:=ScalingFactor(Nil);
+          LocX:=pDeltaX-ScrCenter.X;
+          LocY:=-(pDeltaY-ScrCenter.Y);
+          VX:=VectorX;
+          VY:=VectorY;
+          VZ:=VectorZ;
+         end;
+       end
+      else {if (CurrentDisplayType=dtYZ) or (CurrentDisplayType=dt2D) then}
+       begin
+        with T2DCoordinates(Coord) do
+         begin
+          Scaling:=ScalingFactor(Nil);
+          LocX:=pDeltaX-ScrCenter.X;
+          LocY:=-(pDeltaY-ScrCenter.Y);
+          VX:=VectorX;
+          VY:=VectorY;
+          VZ:=VectorZ;
+         end;
+       end;
+
+      DX:=(ScreenX/2)/(Scaling*Scaling);
+      DY:=(ScreenY/2)/(Scaling*Scaling);
+      {DZ:=(MapLimitSmallest*2)/(Scaling*Scaling);}
+      DZ:=100000;   //DanielPharos: Workaround for the zoom-in-disappear problem
+      TransX:=LocX/(Scaling*Scaling);
+      TransY:=LocY/(Scaling*Scaling);
+      TransZ:=-MapLimitSmallest;
+      MatrixTransform[0,0]:=VX.X;
+      MatrixTransform[0,1]:=-VY.X;
+      MatrixTransform[0,2]:=-VZ.X;
+      MatrixTransform[0,3]:=0;
+      MatrixTransform[1,0]:=VX.Y;
+      MatrixTransform[1,1]:=-VY.Y;
+      MatrixTransform[1,2]:=-VZ.Y;
+      MatrixTransform[1,3]:=0;
+      MatrixTransform[2,0]:=VX.Z;
+      MatrixTransform[2,1]:=-VY.Z;
+      MatrixTransform[2,2]:=-VZ.Z;
+      MatrixTransform[2,3]:=0;
+      MatrixTransform[3,0]:=0;
+      MatrixTransform[3,1]:=0;
+      MatrixTransform[3,2]:=0;
+      MatrixTransform[3,3]:=1;
+
+      glMatrixMode(GL_PROJECTION);
+      glLoadIdentity;
+      glOrtho(-DX, DX, -DY, DY, -DZ, DZ);
+
+      glMatrixMode(GL_MODELVIEW);
+      glLoadIdentity;
+      glTranslated(TransX, TransY, TransZ);
+      glMultMatrixd(MatrixTransform);
+     end
+    else
+     begin
+      with TCameraCoordinates(Coord) do
+       begin
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity;
+        gluPerspective(VCorrection2*VAngleDegrees, ScreenX/ScreenY, FarDistance / 65536, FarDistance);     //DanielPharos: Assuming 16 bit depth buffer
+
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity;
+        glRotated(PitchAngle * (180/pi), -1,0,0);
+        glRotated(HorzAngle * (180/pi), 0,-1,0);
+        glRotated(120, -1,1,1);
+        TransX:=-Camera.X;
+        TransY:=-Camera.Y;
+        TransZ:=-Camera.Z;
+        glTranslated(TransX, TransY, TransZ);
+      end;
+    end;
+    CheckOpenGLError('SetProjection: ps3D');
+    Result[0]:=TransX;
+    Result[1]:=TransX;
+    Result[2]:=TransX;
+   end;
+  end;
+end;
+
+procedure TGLSceneObject.Render3DView;
+var
+ CameraPos: GLdouble3;
  FirstItem: Boolean;
  PList: PSurfaces;
  CurrentPList: PSurfaces;
@@ -1434,147 +1656,17 @@ var
 begin
   if not OpenGlLoaded then
     Exit;
+
   SetViewDC(True);
   try
-//    if wglMakeCurrent(ViewDC, RC) = false then //wglShareLists
-    if wglMakeCurrent(ViewDC, GetOpenGLDummyRC) = false then
+    if wglMakeCurrent(ViewDC, RC) = false then
       raise EError(6310);
-    try
+  try
 
-    SX:=ScreenX;
-    SY:=ScreenY;
-    glViewport(0, 0, SX, SY);   {Viewport width and height are silently clamped to a range that depends on the implementation. This range is queried by calling glGet with argument GL_MAX_VIEWPORT_DIMS.}
-    CheckOpenGLError('glViewPort');
+  glViewport(0, 0, ScreenX, ScreenY);   {Viewport width and height are silently clamped to a range that depends on the implementation. This range is queried by calling glGet with argument GL_MAX_VIEWPORT_DIMS.}
+  CheckOpenGLError('glViewPort');
 
-  if Coord.FlatDisplay then
-   begin
-    if CurrentDisplayType=dtXY then
-     begin
-      with TXYCoordinates(Coord) do
-       begin
-        Scaling:=ScalingFactor(Nil);
-        LocX:=pDeltaX-ScrCenter.X;
-        LocY:=-(pDeltaY-ScrCenter.Y);
-        VX:=VectorX;
-        VY:=VectorY;
-        VZ:=VectorZ;
-       end;
-     end
-    else if CurrentDisplayType=dtXZ then
-     begin
-      with TXZCoordinates(Coord) do
-       begin
-        Scaling:=ScalingFactor(Nil);
-        LocX:=pDeltaX-ScrCenter.X;
-        LocY:=-(pDeltaY-ScrCenter.Y);
-        VX:=VectorX;
-        VY:=VectorY;
-        VZ:=VectorZ;
-       end;
-     end
-    else {if (CurrentDisplayType=dtYZ) or (CurrentDisplayType=dt2D) then}
-     begin
-      with T2DCoordinates(Coord) do
-       begin
-        Scaling:=ScalingFactor(Nil);
-        LocX:=pDeltaX-ScrCenter.X;
-        LocY:=-(pDeltaY-ScrCenter.Y);
-        VX:=VectorX;
-        VY:=VectorY;
-        VZ:=VectorZ;
-       end;
-     end;
-
-    DX:=(SX/2)/(Scaling*Scaling);
-    DY:=(SY/2)/(Scaling*Scaling);
-    {DZ:=(MapLimitSmallest*2)/(Scaling*Scaling);}
-    DZ:=100000;   //DanielPharos: Workaround for the zoom-in-disappear problem
-    TransX:=LocX/(Scaling*Scaling);
-    TransY:=LocY/(Scaling*Scaling);
-    TransZ:=-MapLimitSmallest;
-    MatrixTransform[0,0]:=VX.X;
-    MatrixTransform[0,1]:=-VY.X;
-    MatrixTransform[0,2]:=-VZ.X;
-    MatrixTransform[0,3]:=0;
-    MatrixTransform[1,0]:=VX.Y;
-    MatrixTransform[1,1]:=-VY.Y;
-    MatrixTransform[1,2]:=-VZ.Y;
-    MatrixTransform[1,3]:=0;
-    MatrixTransform[2,0]:=VX.Z;
-    MatrixTransform[2,1]:=-VY.Z;
-    MatrixTransform[2,2]:=-VZ.Z;
-    MatrixTransform[2,3]:=0;
-    MatrixTransform[3,0]:=0;
-    MatrixTransform[3,1]:=0;
-    MatrixTransform[3,2]:=0;
-    MatrixTransform[3,3]:=1;
-
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity;
-    glOrtho(-DX, DX, -DY, DY, -DZ, DZ);
-
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity;
-    glTranslated(TransX, TransY, TransZ);
-    glMultMatrixd(MatrixTransform);
-   end
-  else
-   begin
-    with TCameraCoordinates(Coord) do
-     begin
-      glMatrixMode(GL_PROJECTION);
-      glLoadIdentity;
-      gluPerspective(VCorrection2*VAngleDegrees, SX/SY, FarDistance / 65536, FarDistance);     //DanielPharos: Assuming 16 bit depth buffer
-
-      glMatrixMode(GL_MODELVIEW);
-      glLoadIdentity;
-      glRotated(PitchAngle * (180/pi), -1,0,0);
-      glRotated(HorzAngle * (180/pi), 0,-1,0);
-      glRotated(120, -1,1,1);
-      TransX:=-Camera.X;
-      TransY:=-Camera.Y;
-      TransZ:=-Camera.Z;
-      glTranslated(TransX, TransY, TransZ);
-     end;
-   end;
-  CheckOpenGLError('Render3DView: Camera set-up');
-
-  //wglShareList: DanielPharos: We've got to reset the state, since we're only using
-  //one rendering context now.
-  if (CurrentDisplayMode=dmPanel) then
-    glDisable(GL_DEPTH_TEST)
-  else
-    glEnable(GL_DEPTH_TEST);
-  CheckOpenGLError('Render3DView: GL_DEPTH_TEST');
-
-  if Fog then
-  begin
-    glEnable(GL_FOG);
-    {glFogf(GL_FOG_START, FarDistance * kDistFarToShort);
-    glFogf(GL_FOG_END, FarDistance);}
-    glFogf(GL_FOG_DENSITY, FogDensity/FarDistance);
-  end
-  else
-    glDisable(GL_FOG);
-  CheckOpenGLError('Render3DView: GL_FOG');
-  
-  if Lighting then
-    glEnable(GL_LIGHTING)
-  else
-    glDisable(GL_LIGHTING);
-  CheckOpenGLError('Render3DView: GL_LIGHTING');
-
-  if Transparency then
-    glEnable(GL_BLEND)
-  else
-    glDisable(GL_BLEND);
-  CheckOpenGLError('Render3DView: GL_BLEND');
-
-  if Culling then
-    glEnable(GL_CULL_FACE)
-  else
-    glDisable(GL_CULL_FACE);
-  CheckOpenGLError('Render3DView: GL_CULL_FACE');
+  CameraPos:=SetProjection(ps3D);
 
   glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT);
   CheckOpenGLError('Render3DView: glClear');
@@ -1582,44 +1674,9 @@ begin
   CurrentAlpha:=0;
   FillChar(Currentf, SizeOf(Currentf), 0);
 
-  case ViewMode of
-  vmWireframe:
-    begin
-      glDisable(GL_TEXTURE_2D);
-//      glDisable(GL_COLOR_MATERIAL);
-    end;
-  vmSolidcolor:
-    begin
-      glDisable(GL_TEXTURE_2D);
-//      glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-//      glEnable(GL_COLOR_MATERIAL);
-    end;
-  else //vmTextured:
-    begin
-      glEnable(GL_TEXTURE_2D);
-//      glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-//      glEnable(GL_COLOR_MATERIAL);
-    end;
-  end;
-  CheckOpenGLError('Render3DView: ViewMode');
-
   RebuildDisplayList:=False;
   if DisplayLists then
   begin
-(*    if FlagDisplayLists then //wglShareLists
-    begin
-      for I:=0 to 2 do
-      begin
-        if OpenGLDisplayLists[I]<>0 then
-        begin
-          glDeleteLists(1, OpenGLDisplayLists[I]);
-          CheckOpenGLError(glGetError);
-          OpenGLDisplayLists[I]:=0;
-        end;
-      end;
-      FlagDisplayLists:=False;
-    end;*)
-
     if (OpenGLDisplayLists[LightingQuality]=0) then
     begin
       OpenGLDisplayLists[LightingQuality]:=glGenLists(1);
@@ -1678,7 +1735,7 @@ begin
       if (PList^.Transparent=True) or (PList^.NumberTransparentFaces>0) then
       begin
         PList^.TransparentDrawn:=false;
-        PList^.OpenGLDistance:=Sqr(Plist.OpenGLAveragePosition[0]+TransX)+Sqr(Plist.OpenGLAveragePosition[1]+TransY)+Sqr(Plist.OpenGLAveragePosition[2]+TransZ);
+        PList^.OpenGLDistance:=Sqr(Plist.OpenGLAveragePosition[0]+CameraPos[0])+Sqr(Plist.OpenGLAveragePosition[1]+CameraPos[1])+Sqr(Plist.OpenGLAveragePosition[2]+CameraPos[2]);
         //Note: Sqr is the square; Sqrt (note the 'T'!) is the square root
         //Note: Trans(X/Y/Z) is the NEGATIVE coordinate, so we need to ADD instead of SUBSTRACT
         //      the two values for the distance-calc.
@@ -1726,8 +1783,9 @@ begin
     CheckOpenGLError('Render3DView: glDepthMask (true)');
   end;
 
-  glFinish;
-  CheckOpenGLError('Render3DView: glFinish');
+  glFlush;
+  CheckOpenGLError('Render3DView: glFlush');
+
   finally
     wglMakeCurrent(0, 0);
   end;
@@ -1815,8 +1873,7 @@ begin
 
     SetViewDC(True);
     try
-//    if wglMakeCurrent(ViewDC, RC) = false then //wglShareLists
-    if wglMakeCurrent(ViewDC, GetOpenGLDummyRC) = false then
+    if wglMakeCurrent(ViewDC, RC) = false then
       raise EError(6310);
     try
 
@@ -2378,6 +2435,84 @@ begin
   end;
 end;
 
+procedure TGLSceneObject.Draw2DLine(StartPoint, EndPoint: vec2_t);
+var
+  Color: GLfloat3;
+begin
+  SetViewDC(True);
+  try
+  if wglMakeCurrent(ViewDC, RC) = false then
+   raise EError(6310);
+  try
+
+  SetProjection(ps2D);
+
+  glLineWidth(1.0);
+  CheckOpenGLError('Draw2DLine: glLineWidth');
+
+  //@
+  Color[0] := 1.0;
+  Color[1] := 1.0;
+  Color[2] := 1.0;
+
+  glBegin(GL_LINES);
+  glColor3fv(@Color);
+  glVertex2fv(@StartPoint);
+  glVertex2fv(@EndPoint);
+  glEnd;
+  CheckOpenGLError('Draw2DLine: glEnd');
+
+  finally
+    wglMakeCurrent(0, 0);
+  end;
+  finally
+    SetViewDC(False);
+  end;
+end;
+
+procedure TGLSceneObject.Draw2DRectangle(StartPoint, EndPoint: vec2_t);
+var
+  Color: GLfloat3;
+  Point1, Point2: vec2_t;
+begin
+  SetViewDC(True);
+  try
+  if wglMakeCurrent(ViewDC, RC) = false then
+   raise EError(6310);
+  try
+
+  SetProjection(ps2D);
+
+  glLineWidth(1.0);
+  CheckOpenGLError('Draw2DRectangle: glLineWidth');
+
+  //@
+  Color[0] := 1.0;
+  Color[1] := 1.0;
+  Color[2] := 1.0;
+
+  Point1[0]:=EndPoint[0];
+  Point1[1]:=StartPoint[1];
+  Point2[0]:=StartPoint[0];
+  Point2[1]:=EndPoint[1];
+
+  glBegin(GL_LINE_LOOP);
+  glColor3fv(@Color);
+  glVertex2fv(@StartPoint);
+  glVertex2fv(@Point1);
+  glVertex2fv(@EndPoint);
+  glVertex2fv(@Point2);
+  glEnd;
+  CheckOpenGLError('Draw2DRectangle: glEnd');
+
+  finally
+    wglMakeCurrent(0, 0);
+  end;
+  finally
+    SetViewDC(False);
+  end;
+end;
+
  {------------------------}
 
 procedure TGLState.ClearTexture(Tex: PTexture3);
@@ -2385,7 +2520,6 @@ begin
   //DanielPharos: How can you be sure OpenGL has been loaded?
   if (Tex^.OpenGLName<>0) then
   begin
-//    if wglMakeCurrent(GetOpenGLDummyDC, GetOpenGLDummyRC) = false then //wglShareLists
     if wglMakeCurrent(GetOpenGLDummyDC, GetOpenGLDummyRC) = false then
       raise EError(6310);
     try
@@ -2413,21 +2547,6 @@ begin
         ClearTexture(Tex);
   end;
 end;
-
-(*procedure TGLState.FlagAllOpenGLDisplayLists; //wglShareLists
-var
- TextureManager: TTextureManager;
- I: Integer;
- Scene: TObject;
-begin
-  TextureManager:=TTextureManager.GetInstance;
-  for I:=0 to TextureManager.Scenes.Count-1 do
-  begin
-    Scene:=TextureManager.Scenes[I];
-    if Scene is TGLSceneObject then
-      TGLSceneObject(Scene).FlagDisplayLists:=True;
-  end;
-end;*)
 
  {------------------------}
 

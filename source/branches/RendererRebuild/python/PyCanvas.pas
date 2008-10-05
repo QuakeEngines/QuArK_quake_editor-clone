@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2008/09/06 15:57:34  danielpharos
+Moved exception code into separate file.
+
 Revision 1.11  2007/11/20 21:29:39  danielpharos
 Moved most of the DIB-calls to PixelSet, and added padding there. This should fix the few remaining image drawing issues.
 
@@ -50,12 +53,14 @@ unit PyCanvas;
 
 interface
 
-uses Windows, SysUtils, Classes, Graphics, Python, Quarkx, CommCtrl;
+uses Windows, SysUtils, Classes, Graphics, Python, Quarkx, CommCtrl,
+     PyMapView, EdSceneObject;
 
 type
  PyCanvasObj = ^TyCanvasObj;
  TyCanvasObj = object(TyObject)
                 Canvas: TCanvas;
+                MapView: TPyMapView;
                end;
 
  {------------------------}
@@ -86,26 +91,53 @@ function cLine(self, args: PyObject) : PyObject; cdecl;
 var
  P1, P2: TPoint;
  v1, v2: PyVect;
+ TargetScene: TSceneObject;
+ DrawDone: Boolean;
 begin
  try
-  if Assigned(PyCanvasObj(self)^.Canvas) then
+  Result:=Nil;
+  DrawDone:=False;
+  if PyCanvasObj(self)^.MapView<>nil then
    begin
-    g_DrawInfo.DC:=PyCanvasObj(self)^.Canvas.Handle;
-    Result:=Nil;
-    if PyObject_Length(args)=2 then
+    TargetScene:=PyCanvasObj(self)^.MapView.Scene;
+    if TargetScene<>nil then
      begin
-      if not PyArg_ParseTupleX(args, 'O!O!', [@TyVect_Type, @v1, @TyVect_Type, @v2]) then
-       Exit;
-      if (v1^.Source3D=Nil) or (v1^.Source3D<>v2^.Source3D) then
-       Raise EError(4447);
-      v1^.Source3D.Line95f(PyVect_AsPP(v1), PyVect_AsPP(v2));
-     end
-    else
+      if PyObject_Length(args)=2 then
+       begin
+        if not PyArg_ParseTupleX(args, 'O!O!', [@TyVect_Type, @v1, @TyVect_Type, @v2]) then
+         Exit;
+        TargetScene.Draw2DLine(PyVect_AsVec2(v1), PyVect_AsVec2(v2));
+       end
+      else
+       begin
+        if not PyArg_ParseTupleX(args, 'iiii', [@P1.X, @P1.Y, @P2.X, @P2.Y]) then
+         Exit;
+        TargetScene.Draw2DLine(TPointToVec2(P1), TPointToVec2(P2));
+       end;
+      DrawDone:=True;
+     end;
+   end;
+
+  if not DrawDone then
+   begin
+    if Assigned(PyCanvasObj(self)^.Canvas) then
      begin
-      if not PyArg_ParseTupleX(args, 'iiii', [@P1.X, @P1.Y, @P2.X, @P2.Y]) then
-       Exit;
-      Windows.MoveToEx(g_DrawInfo.DC, P1.X, P1.Y, Nil);
-      Windows.LineTo(g_DrawInfo.DC, P2.X, P2.Y);
+      g_DrawInfo.DC:=PyCanvasObj(self)^.Canvas.Handle;
+      if PyObject_Length(args)=2 then
+       begin
+        if not PyArg_ParseTupleX(args, 'O!O!', [@TyVect_Type, @v1, @TyVect_Type, @v2]) then
+         Exit;
+        if (v1^.Source3D=Nil) or (v1^.Source3D<>v2^.Source3D) then
+         Raise EError(4447);
+        v1^.Source3D.Line95f(PyVect_AsPP(v1), PyVect_AsPP(v2));
+       end
+      else
+       begin
+        if not PyArg_ParseTupleX(args, 'iiii', [@P1.X, @P1.Y, @P2.X, @P2.Y]) then
+         Exit;
+        Windows.MoveToEx(g_DrawInfo.DC, P1.X, P1.Y, Nil);
+        Windows.LineTo(g_DrawInfo.DC, P2.X, P2.Y);
+       end;
      end;
    end;
   Result:=PyNoResult;
@@ -118,13 +150,31 @@ end;
 function cRectangle(self, args: PyObject) : PyObject; cdecl;
 var
  P1, P2: TPoint;
+ TargetScene: TSceneObject;
+ DrawDone: Boolean;
 begin
  try
   Result:=Nil;
-  if not PyArg_ParseTupleX(args, 'iiii', [@P1.X, @P1.Y, @P2.X, @P2.Y]) then
-   Exit;
-  if Assigned(PyCanvasObj(self)^.Canvas) then
-   Rectangle95(PyCanvasObj(self)^.Canvas.Handle, P1.X, P1.Y, P2.X, P2.Y);
+  DrawDone:=False;
+  if PyCanvasObj(self)^.MapView<>nil then
+   begin
+    TargetScene:=PyCanvasObj(self)^.MapView.Scene;
+    if TargetScene<>nil then
+     begin
+      if not PyArg_ParseTupleX(args, 'iiii', [@P1.X, @P1.Y, @P2.X, @P2.Y]) then
+       Exit;
+      TargetScene.Draw2DRectangle(TPointToVec2(P1), TPointToVec2(P2)); 
+      DrawDone:=True;
+     end;
+   end;
+
+  if not DrawDone then
+   begin
+    if not PyArg_ParseTupleX(args, 'iiii', [@P1.X, @P1.Y, @P2.X, @P2.Y]) then
+     Exit;
+    if Assigned(PyCanvasObj(self)^.Canvas) then
+     Rectangle95(PyCanvasObj(self)^.Canvas.Handle, P1.X, P1.Y, P2.X, P2.Y);
+   end;
   Result:=PyNoResult;
  except
   EBackToPython;

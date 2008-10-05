@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2008/10/02 18:55:54  danielpharos
+Don't render when not in wp_paint handling.
+
 Revision 1.14  2008/10/02 12:23:27  danielpharos
 Major improvements to HWnd and HDC handling. This should fix all kinds of OpenGL problems.
 
@@ -234,12 +237,13 @@ type
                   var AllowsGDI: Boolean); override;
    destructor Destroy; override;
    procedure Render3DView; override;
+   procedure Present3DView; override;
    procedure ClearFrame; override;
-   procedure Copy3DView; override;
-   procedure SwapBuffers(Synch: Boolean); override;
    procedure ClearScene; override;
    procedure SetViewSize(SX, SY: Integer); override;
    function ChangeQuality(nQuality: Integer) : Boolean; override;
+   procedure Draw2DLine(StartPoint, EndPoint: vec2_t); override;
+   procedure Draw2DRectangle(StartPoint, EndPoint: vec2_t); override;
  end;
 
 procedure SetIntelPrecision;
@@ -1917,6 +1921,16 @@ begin
  end;
 end;
 
+procedure TGlideSceneObject.Draw2DLine(StartPoint, EndPoint: vec2_t);
+begin
+  //FIXME
+end;
+
+procedure TGlideSceneObject.Draw2DRectangle(StartPoint, EndPoint: vec2_t);
+begin
+  //FIXME
+end;
+
 function TGlideSceneObject.ScreenExtent(var L, R: Integer; var bmiHeader: TBitmapInfoHeader) : Boolean;
 begin
  Result:=False;
@@ -1939,7 +1953,7 @@ begin
   end;
 end;
 
-procedure TGlideSceneObject.Copy3DView;
+procedure TGlideSceneObject.Present3DView;
 var
  I, L, R, T, B, Count1: Integer;
  bmiHeader: TBitmapInfoHeader;
@@ -2073,16 +2087,11 @@ begin
    0,bmiHeader.biHeight, Bits, BmpInfo, DIB_RGB_COLORS) = 0 then
     Raise EErrorFmt(6200, ['SetDIBitsToDevice']);
   DeleteObject(DIBSection);
+
+  grBufferSwap(0);
  finally
    SetViewDC(False);
  end;
-end;
-
-procedure TGlideSceneObject.SwapBuffers(Synch: Boolean);
-begin
- grBufferSwap(0);
- if Synch then
-  grSstIdle;
 end;
 
 procedure TGlideSceneObject.SetViewSize(SX, SY: Integer);

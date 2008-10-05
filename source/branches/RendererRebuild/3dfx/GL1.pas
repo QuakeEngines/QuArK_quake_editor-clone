@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.32  2008/10/02 12:23:27  danielpharos
+Major improvements to HWnd and HDC handling. This should fix all kinds of OpenGL problems.
+
 Revision 1.31  2008/09/06 16:05:22  danielpharos
 Fixed OpenGL variable types.
 
@@ -715,7 +718,9 @@ const
 
 type
   TMatrix4f = array[0..3, 0..3] of GLdouble;
+  GLfloat3 = array[0..2] of GLfloat;
   GLfloat4 = array[0..3] of GLfloat;
+  GLdouble3 = array[0..3] of GLdouble;
 
 var
   (*
@@ -756,7 +761,9 @@ var
   glColor3fv: procedure (v: PGLfloat); stdcall;
   glColor4fv: procedure (v: PGLfloat); stdcall;
   glTexCoord2fv: procedure (v: PGLfloat); stdcall;
+  glVertex2fv: procedure (v: PGLfloat); stdcall;
   glVertex3fv: procedure (v: PGLfloat); stdcall;
+  glFlush: procedure; stdcall;
   glFinish: procedure; stdcall;
  {v1.9 broke OpenGL with PChar at end, changed back to v1.8 items - cdunde 09-21-2005}
 //  glTexImage2D: procedure (taget: GLenum; level, components : GLint; width, height: GLsizei; border: GLint; format, typ: GLenum; pixels:PChar ); stdcall;
@@ -784,6 +791,8 @@ var
   glNormal3fv: procedure (v: PGLfloat) stdcall;
   glFrontFace: procedure (mode: GLenum) stdcall;
   glDepthMask: procedure (flag: GLboolean) stdcall;
+  glLineWidth: procedure (width: GLfloat) stdcall;
+  glColorMaterial: procedure (face: Glenum; mode: GLenum) stdcall;
 
   (*
   ** Utility routines from OPENGL32.DLL - GL_WIN_swap_hint
@@ -803,8 +812,8 @@ function LoadSwapHint : Pointer;
 function GetOpenGLDummyRC: HGLRC;
 function GetOpenGLDummyDC: HDC;
 function GetOpenGLDummyHwnd: HWND;
-(*function CreateNewRC(DC: HDC): HGLRC; //wglShareLists
-procedure DeleteRC(RC: HGLRC);*)
+function CreateNewRC(DC: HDC): HGLRC;
+procedure DeleteRC(RC: HGLRC);
 
 function FillPixelFormat(DC: HDC) : TPixelFormatDescriptor;
 procedure SetPixelFormatOnDC(DC: HDC; const PixelFormat: TPixelFormatDescriptor);
@@ -817,7 +826,7 @@ uses Classes, StrUtils, Quarkx, QkExceptions, Logging, Qk1, Setup, QkObjects, Ed
 const
   DummyWindowClassName: string = 'QuArK Dummy Window Class';
   
-  OpenGL32DLL_FuncList : array[0..55] of
+  OpenGL32DLL_FuncList : array[0..59] of
     record
       FuncPtr: Pointer;
       FuncName: PChar;
@@ -826,7 +835,7 @@ const
    ,(FuncPtr: @@wglMakeCurrent;        FuncName: 'wglMakeCurrent'        )
    ,(FuncPtr: @@wglDeleteContext;      FuncName: 'wglDeleteContext'      )
    ,(FuncPtr: @@wglCreateContext;      FuncName: 'wglCreateContext'      )
-//   ,(FuncPtr: @@wglShareLists;         FuncName: 'wglShareLists'         )
+   ,(FuncPtr: @@wglShareLists;         FuncName: 'wglShareLists'         )
    ,(FuncPtr: @@wglSwapBuffers;        FuncName: 'wglSwapBuffers'        )
    ,(FuncPtr: @@glClearColor;          FuncName: 'glClearColor'          )
    ,(FuncPtr: @@glClearDepth;          FuncName: 'glClearDepth'          )
@@ -857,11 +866,13 @@ const
    ,(FuncPtr: @@glColor3fv;            FuncName: 'glColor3fv'            )
    ,(FuncPtr: @@glColor4fv;            FuncName: 'glColor4fv'            )
    ,(FuncPtr: @@glTexCoord2fv;         FuncName: 'glTexCoord2fv'         )
+   ,(FuncPtr: @@glVertex2fv;           FuncName: 'glVertex2fv'           )
    ,(FuncPtr: @@glVertex3fv;           FuncName: 'glVertex3fv'           )
+   ,(FuncPtr: @@glFlush;               FuncName: 'glFlush'               )
    ,(FuncPtr: @@glFinish;              FuncName: 'glFinish'              )
    ,(FuncPtr: @@glTexImage2D;          FuncName: 'glTexImage2D'          )
    ,(FuncPtr: @@glDeleteTextures;      FuncName: 'glDeleteTextures'      )
-   ,(FuncPtr: @@glAreTexturesResident; FuncName: 'glAreTexturesResident' )
+//   ,(FuncPtr: @@glAreTexturesResident; FuncName: 'glAreTexturesResident' )
    ,(FuncPtr: @@glBindTexture;         FuncName: 'glBindTexture'         )
    ,(FuncPtr: @@glGenTextures;         FuncName: 'glGenTextures'         )
    ,(FuncPtr: @@glGenLists;            FuncName: 'glGenLists'            )
@@ -883,6 +894,8 @@ const
    ,(FuncPtr: @@glNormal3fv;           FuncName: 'glNormal3fv'           )
    ,(FuncPtr: @@glFrontFace;           FuncName: 'glFrontFace'           )
    ,(FuncPtr: @@glDepthMask;           FuncName: 'glDepthMask'           )
+   ,(FuncPtr: @@glLineWidth;           FuncName: 'glLineWidth'           )
+   ,(FuncPtr: @@glColorMaterial;       FuncName: 'glColorMaterial'       )
  );
 
   Glu32DLL_FuncList : array[0..0] of
@@ -901,17 +914,12 @@ var
 
   GLExtensions: TStringList = nil;
 
-  //DanielPharos: *sigh* The best way of having multiple viewports is using
-  //multiple Rendering Contexts. But the call to share resources between them,
-  //wglShareLists() is kinda broken on some NVIDIA, ATi and Intel drivers.
-  //So now we're using just one to do everything.
-  //Old code marked with: //wglShareLists
   DummyWindowClass: WNDCLASSEX;
   DummyWindowClassAtom: ATOM;
   DummyWindow: HWND;
   DummyDC: HDC;
   DummyRC: HGLRC;
-(*  RCs: array of HGLRC;*)
+  RCs: array of HGLRC;
 
  { ----------------- }
 
@@ -930,7 +938,7 @@ begin
   Result := DummyWindow;
 end;
 
-(*function CreateNewRC(DC: HDC): HGLRC; //wglShareLists
+function CreateNewRC(DC: HDC): HGLRC;
 begin
   Result:=wglCreateContext(DC);
   if Result <> 0 then
@@ -948,10 +956,6 @@ var
 begin
   if RC<>0 then
   begin
-    //DanielPharos: Apparently, displaylists get corrupt when deleting contexts
-    if qrkGLState<>nil then
-      qrkGLState.FlagAllOpenGLDisplayLists;
-
     if wglDeleteContext(RC) = false then
       raise EError(6312);
     I:=0;
@@ -966,7 +970,7 @@ begin
         Inc(I);
     end;
   end;
-end;*)
+end;
 
 function FillPixelFormat(DC: HDC) : TPixelFormatDescriptor;
 var

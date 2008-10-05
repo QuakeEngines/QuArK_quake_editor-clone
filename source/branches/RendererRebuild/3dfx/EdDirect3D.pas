@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.30  2008/10/02 18:55:54  danielpharos
+Don't render when not in wp_paint handling.
+
 Revision 1.29  2008/10/02 12:34:13  danielpharos
 Small correction to ViewWnd and ViewDC handling.
 
@@ -153,7 +156,6 @@ type
     DXFogColor: D3DColor;
     LightingQuality: Integer;
     ListIndex: Integer;
-    procedure RenderPList(PList: PSurfaces; TransparentFaces: Boolean; SourceCoord: TCoordinates);
   protected
     ScreenResized: Boolean;
 
@@ -169,6 +171,7 @@ type
     procedure stScaleBezier(Texture: PTexture3; var ScaleS, ScaleT: TDouble); override;
     procedure WriteVertex(PV: PChar; Source: Pointer; const ns,nt: Single; HiRes: Boolean); override;
     procedure ReleaseResources;
+    procedure RenderPList(PList: PSurfaces; TransparentFaces: Boolean; SourceCoord: TCoordinates);
     procedure BuildTexture(Texture: PTexture3); override;
     procedure ChangedViewWnd; override;
     function CheckDeviceState : Boolean;
@@ -185,12 +188,13 @@ type
  *)
     procedure SetViewSize(SX, SY: Integer); override;
     procedure Render3DView; override;
-    procedure Copy3DView; override;
+    procedure Present3DView; override;
  (*
-    procedure SwapBuffers(Synch: Boolean); override;
     procedure AddLight(const Position: TVect; Brightness: Single; Color: TColorRef); override;
  *)
     function ChangeQuality(nQuality: Integer) : Boolean; override;
+    procedure Draw2DLine(StartPoint, EndPoint: vec2_t); override;
+    procedure Draw2DRectangle(StartPoint, EndPoint: vec2_t); override;
   end;
 
 type  { this is the data shared by all existing TDirect3DSceneObjects }
@@ -644,7 +648,7 @@ begin
   Result:=True;
 end;
 
-procedure TDirect3DSceneObject.Copy3DView;
+procedure TDirect3DSceneObject.Present3DView;
 var
   l_Res: HResult;
 begin
@@ -802,9 +806,19 @@ begin
   end;
 end;
 
+procedure TDirect3DSceneObject.Draw2DLine(StartPoint, EndPoint: vec2_t);
+begin
+  //FIXME
+end;
+
+procedure TDirect3DSceneObject.Draw2DRectangle(StartPoint, EndPoint: vec2_t);
+begin
+  //FIXME
+end;
+
 procedure TDirect3DSceneObject.BuildTexture(Texture: PTexture3);
 begin
-
+  //FIXME
 end;
 
  {------------------------}

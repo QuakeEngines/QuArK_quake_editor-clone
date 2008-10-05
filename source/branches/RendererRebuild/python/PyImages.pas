@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.22  2008/09/06 15:57:31  danielpharos
+Moved exception code into separate file.
+
 Revision 1.21  2008/08/07 22:53:14  danielpharos
 A massive overhaul and clean-up: should make the Python interface more robust and future-proof
 
@@ -806,6 +809,7 @@ begin
    begin
     Result:=PyObject_NEW(@TyCanvas_Type);
     PyCanvasObj(Result)^.Canvas:=(PyControlF(self)^.QkControl as TPyImageControl).Canvas;
+    PyCanvasObj(Result)^.MapView:=nil;
     with PyCanvasObj(Result)^.Canvas do
      begin
       Brush.Style:=bsSolid;

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.25  2008/09/06 15:57:13  danielpharos
+Moved exception code into separate file.
+
 Revision 1.24  2008/08/07 17:17:17  cdunde
 Removed end_offset from source code completely, just using end_point instead, by DanielPharos.
 
@@ -113,10 +116,11 @@ type
           X, Y, Z: TDouble;
          end;
  scalar_t = Single;
+ vec2_p = ^vec2_t;
+ vec2_t = packed array[0..1] of scalar_t;
+
  vec3_p = ^vec3_t;
  vec3_t = packed array[0..2] of scalar_t;
-
- vec2_t = packed array[0..1] of scalar_t;
 
  vec5_p = ^vec5_t;
  vec5_t = array[0..4] of scalar_t;
@@ -195,6 +199,8 @@ procedure InitProjVar;
 
 function TailleMaximaleEcranX: Integer;
 function TailleMaximaleEcranY: Integer;
+
+function TPointToVec2(const T: TPoint) : vec2_t;
 
 {procedure CheckWindows16bits(HiZoom: Boolean);}
 
@@ -944,21 +950,27 @@ def solveForThreepoints((v1, (s1, t1)), (v2, (s2, t2)), (v3, (s3, t3))):
     return p0, d1+p0, d2+p0
 }
 
-    Denom:= 1/(v1.s*v2.t-v1.s*v3.t-v1.t*v2.s+v1.t*v3.s-v3.s*v2.t+v3.t*v2.s);
-    P1.X:= -v2.t*v1.x*v3.s+v2.x*v1.t*v3.s-v3.t*v1.s*v2.x+v3.t*v1.x*v2.s+v2.t*v1.s*v3.x-v3.x*v1.t*v2.s;
-    P1.Y:= -v2.t*v1.y*v3.s+v2.y*v1.t*v3.s-v3.t*v1.s*v2.y+v3.t*v1.y*v2.s+v2.t*v1.s*v3.y-v3.y*v1.t*v2.s;
-    P1.Z:= -(v2.t*v1.z*v3.s-v2.z*v1.t*v3.s+v3.t*v1.s*v2.z-v3.t*v1.z*v2.s-v2.t*v1.s*v3.z+v3.z*v1.t*v2.s);
-    P1:=VecScale(Denom,P1);
-    D1.X:= -(v2.t*v3.x-v2.t*v1.x+v3.t*v1.x-v3.x*v1.t+v2.x*v1.t-v2.x*v3.t);
-    D1.Y:= -(v2.t*v3.y-v2.t*v1.y+v3.t*v1.y-v3.y*v1.t+v2.y*v1.t-v2.y*v3.t);
-    D1.Z:= -(v2.t*v3.z-v2.t*v1.z+v3.t*v1.z-v3.z*v1.t+v2.z*v1.t-v2.z*v3.t);
-    D1 := VecScale(Denom,D1);
-    P2:=VecSum(P1,D1);
-    D2.X := -v1.s*v3.x+v1.s*v2.x-v3.s*v2.x+v3.x*v2.s-v1.x*v2.s+v1.x*v3.s;
-    D2.Y := -v1.s*v3.y+v1.s*v2.y-v3.s*v2.y+v3.y*v2.s-v1.y*v2.s+v1.y*v3.s;
-    D2.Z := -v1.s*v3.z+v1.s*v2.z-v3.s*v2.z+v3.z*v2.s-v1.z*v2.s+v1.z*v3.s;
-    D2 := VecScale(Denom,D2);
-    P3:=VecSum(P1,D2);
-  end;
-end.
+  Denom:= 1/(v1.s*v2.t-v1.s*v3.t-v1.t*v2.s+v1.t*v3.s-v3.s*v2.t+v3.t*v2.s);
+  P1.X:= -v2.t*v1.x*v3.s+v2.x*v1.t*v3.s-v3.t*v1.s*v2.x+v3.t*v1.x*v2.s+v2.t*v1.s*v3.x-v3.x*v1.t*v2.s;
+  P1.Y:= -v2.t*v1.y*v3.s+v2.y*v1.t*v3.s-v3.t*v1.s*v2.y+v3.t*v1.y*v2.s+v2.t*v1.s*v3.y-v3.y*v1.t*v2.s;
+  P1.Z:= -(v2.t*v1.z*v3.s-v2.z*v1.t*v3.s+v3.t*v1.s*v2.z-v3.t*v1.z*v2.s-v2.t*v1.s*v3.z+v3.z*v1.t*v2.s);
+  P1:=VecScale(Denom,P1);
+  D1.X:= -(v2.t*v3.x-v2.t*v1.x+v3.t*v1.x-v3.x*v1.t+v2.x*v1.t-v2.x*v3.t);
+  D1.Y:= -(v2.t*v3.y-v2.t*v1.y+v3.t*v1.y-v3.y*v1.t+v2.y*v1.t-v2.y*v3.t);
+  D1.Z:= -(v2.t*v3.z-v2.t*v1.z+v3.t*v1.z-v3.z*v1.t+v2.z*v1.t-v2.z*v3.t);
+  D1 := VecScale(Denom,D1);
+  P2:=VecSum(P1,D1);
+  D2.X := -v1.s*v3.x+v1.s*v2.x-v3.s*v2.x+v3.x*v2.s-v1.x*v2.s+v1.x*v3.s;
+  D2.Y := -v1.s*v3.y+v1.s*v2.y-v3.s*v2.y+v3.y*v2.s-v1.y*v2.s+v1.y*v3.s;
+  D2.Z := -v1.s*v3.z+v1.s*v2.z-v3.s*v2.z+v3.z*v2.s-v1.z*v2.s+v1.z*v3.s;
+  D2 := VecScale(Denom,D2);
+  P3:=VecSum(P1,D2);
+end;
 
+function TPointToVec2(const T: TPoint) : vec2_t;
+begin
+  Result[0]:=T.X;
+  Result[1]:=T.Y;
+end;
+
+end.

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23  2008/09/06 15:57:34  danielpharos
+Moved exception code into separate file.
+
 Revision 1.22  2008/08/07 22:53:14  danielpharos
 A massive overhaul and clean-up: should make the Python interface more robust and future-proof
 
@@ -280,7 +283,8 @@ function MakePyVect5(const nX, nY, nZ, nS, nT: Double) : PyVectST;
 function MakePyVect(const nV: TVect) : PyVect;
 function MakePyVectv(const v3: vec3_t) : PyVect;
 {function MakePyVectvArray(Source: vec3_p; Count: Integer) : PyVect;}
-function PyVect_AsPP(V: PyVect) : TPointProj;
+function PyVect_AsPP(const V: PyVect) : TPointProj;
+function PyVect_AsVec2(const V: PyVect) : vec2_t;
 
 function GetVectAttr(self: PyObject; attr: PChar) : PyObject; cdecl;
 {function SetVectAttr(self: PyObject; attr: PChar; value: PyObject) : Integer; cdecl;}
@@ -2022,14 +2026,23 @@ begin
   end;
 end;
 
-function PyVect_AsPP(V: PyVect) : TPointProj;
+function PyVect_AsPP(const V: PyVect) : TPointProj;
 begin
- with V^ do
+  with V^ do
   begin
-   Result.x:=V.X;
-   Result.y:=V.Y;
-   Result.oow:=V.Z;
-   Result.OffScreen:=OffScreen;
+    Result.x:=V.X;
+    Result.y:=V.Y;
+    Result.oow:=V.Z;
+    Result.OffScreen:=OffScreen;
+  end;
+end;
+
+function PyVect_AsVec2(const V: PyVect) : vec2_t;
+begin
+  with V^ do
+  begin
+    Result[0]:=V.X;
+    Result[1]:=V.Y;
   end;
 end;
 

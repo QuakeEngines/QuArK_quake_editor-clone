@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.45  2008/10/02 18:55:54  danielpharos
+Don't render when not in wp_paint handling.
+
 Revision 1.44  2008/10/02 12:23:27  danielpharos
 Major improvements to HWnd and HDC handling. This should fix all kinds of OpenGL problems.
 
@@ -301,6 +304,7 @@ type
    Coord: TCoordinates;
    FListSurfaces: PSurfaces;
    PolyFaces, ModelInfo, BezierInfo, SpriteInfo: TList;
+   ViewMode: TMapViewMode;
    CurrentDisplayMode: TDisplayMode;
    CurrentDisplayType: TDisplayType;
    procedure ClearPList;
@@ -324,7 +328,6 @@ type
    TemporaryStuff: TQList;   { anything that should not be freed while the scene is alive }
    FarDistance: TDouble;
    FogDensity: Single;
-   ViewMode: TMapViewMode;
    ShowProgress: Boolean;
    constructor Create(nViewMode: TMapViewMode);
    destructor Destroy; override;
@@ -342,8 +345,7 @@ type
    procedure SetCoords(nCoord: TCoordinates);
    procedure BuildScene(ProgressDC: HDC; AltTexSrc: QObject);
    procedure Render3DView; virtual; abstract;
-   procedure SwapBuffers(Synch: Boolean); virtual;
-   procedure Copy3DView; virtual; abstract;
+   procedure Present3DView; virtual; abstract;
    function ChangeQuality(nQuality: Integer) : Boolean; virtual;
    procedure SetColor(nColor: TColorRef);
    procedure AddPolyFace(const a_PolyFace: PSurface);
@@ -352,6 +354,8 @@ type
    procedure AddBezier(const a_Bezier: TBezier);
    procedure AddLight(const Position: TVect; Brightness: Single; Color: TColorRef); virtual;
    property ListSurfaces: PSurfaces read FListSurfaces;
+   procedure Draw2DLine(StartPoint, EndPoint: vec2_t); virtual; abstract;
+   procedure Draw2DRectangle(StartPoint, EndPoint: vec2_t); virtual; abstract;
  end;
 
  {------------------------}
@@ -574,10 +578,6 @@ end;
 procedure TSceneObject.SetCoords(nCoord: TCoordinates);
 begin
   Coord:=nCoord;
-end;
-
-procedure TSceneObject.SwapBuffers;
-begin
 end;
 
 procedure TSceneObject.EndBuildScene;
