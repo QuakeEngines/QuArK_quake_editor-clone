@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.82  2008/09/29 22:41:10  danielpharos
+Fixed for file resolving code. Fixes Steam-games.
+
 Revision 1.81  2008/09/29 22:02:00  danielpharos
 Update to filename resolving code. Needs more testing, but should work.
 
@@ -2765,23 +2768,23 @@ begin
  end;
 end;
 
-{AiV}
-Function xLog(self, args: PyObject) : PyObject; cdecl;
+function xLog(self, args: PyObject) : PyObject; cdecl;
 var
   P: PChar;
 begin
-  Result:=Nil;
   try
-    P:=PyString_AsString(Args);
+    Result:=Nil;
+    if not PyArg_ParseTupleX(args, 's', [@P]) then
+      Exit;
     if P=Nil then
       Exit;
-    Log(LOG_PYTHON, P^);
+    Log(LOG_PYTHON, P);
     Result:=PyNoResult;
   except
     EBackToPython;
     Result:=Nil;
   end;
-end;{/AiV}
+end;
 
 function xHeapStatus(self, args: PyObject) : PyObject; cdecl;
 begin
