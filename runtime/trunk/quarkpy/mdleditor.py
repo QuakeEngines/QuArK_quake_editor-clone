@@ -572,7 +572,7 @@ class ModelEditor(BaseEditor):
                     self.layout.explorer.sellist = self.layout.explorer.sellist + BonesSellist
                 else:
                     self.layout.explorer.sellist = BonesSellist
-
+        testcount = 0
         for item in range(len(self.layout.explorer.sellist)):
             frames = 0
             bonegroup = 0
@@ -586,7 +586,11 @@ class ModelEditor(BaseEditor):
                 bonegroup = bonegroup + 1
             if self.layout.explorer.sellist[item].type == ':bone':
                 bone = bone + 1
+                testcount = testcount + 1
             if item == len(self.layout.explorer.sellist)-1:
+                if testcount > 1:
+                    BonesSellist = []
+                    break
                 if bonegroup != 0:
                     BonesSellist = self.layout.explorer.sellist
                 if bone != 0:
@@ -1639,6 +1643,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.100  2008/10/06 00:04:46  cdunde
+#Update for auto frame, bone group and bone selection method.
+#
 #Revision 1.99  2008/10/04 05:48:06  cdunde
 #Updates for Model Editor Bones system.
 #
