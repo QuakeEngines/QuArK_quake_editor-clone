@@ -28,6 +28,7 @@ from qeditor import *
 # Globals
 HoldObject = None
 NewSellist = []
+BonesSellist = []
 mdleditor = None
 
 #py2.4 indicates upgrade change for python 2.4
@@ -531,44 +532,80 @@ class ModelEditor(BaseEditor):
 
 
     def explorerselchange(self, ex=None):
-        global NewSellist
+        global BonesSellist
         import qbaseeditor
         from qbaseeditor import flagsmouse
+
         if qbaseeditor.flagsmouse == 1032:
             return
         if len(self.layout.explorer.sellist) == 0:
-            NewSellist = []
+            BonesSellist = []
         if len(self.layout.explorer.sellist) == 1 and self.layout.explorer.sellist[0].type == ':bg':
-            for item in NewSellist:
+            for item in BonesSellist:
+                if item.type == ':bone':
+                    BonesSellist.remove(item)
+            selmatch = 0
+            for item in BonesSellist:
                 if item.type == ':bg':
-                    NewSellist.remove(item)
-                    if NewSellist != []:
-                        self.layout.explorer.sellist = NewSellist
-                    else:
-                        self.layout.explorer.sellist = []
+                    if item == self.layout.explorer.sellist[0]:
+                        selmatch = 1
+                    BonesSellist.remove(item)
                     break
+            if BonesSellist != []:
+                if selmatch == 0:
+                    self.layout.explorer.sellist = self.layout.explorer.sellist + BonesSellist
+                else:
+                    self.layout.explorer.sellist = BonesSellist
+        elif len(self.layout.explorer.sellist) == 1 and self.layout.explorer.sellist[0].type == ':bone':
+            for item in BonesSellist:
+                if item.type == ':bg':
+                    BonesSellist.remove(item)
+                    break
+            selmatch = 0
+            for item in BonesSellist:
+                if item.type == ':bone':
+                    if item == self.layout.explorer.sellist[0]:
+                        selmatch = 1
+                    BonesSellist.remove(item)
+            if BonesSellist != []:
+                if selmatch == 0:
+                    self.layout.explorer.sellist = self.layout.explorer.sellist + BonesSellist
+                else:
+                    self.layout.explorer.sellist = BonesSellist
+
         for item in range(len(self.layout.explorer.sellist)):
             frames = 0
             bonegroup = 0
-            if self.layout.explorer.sellist[item].type == ':bone':
-                NewSellist = []
+            bone = 0
+            if self.layout.explorer.sellist[item].type != ':mf' and self.layout.explorer.sellist[item].type != ':bg' and self.layout.explorer.sellist[item].type != ':bone':
+                BonesSellist = []
                 break
             if self.layout.explorer.sellist[item].type == ':mf':
                 frames = frames + 1
-            if self.layout.explorer.sellist[item].type != ':bg' and self.layout.explorer.sellist[item].type != ':mf':
-                NewSellist = []
-                break
             if self.layout.explorer.sellist[item].type == ':bg':
                 bonegroup = bonegroup + 1
+            if self.layout.explorer.sellist[item].type == ':bone':
+                bone = bone + 1
             if item == len(self.layout.explorer.sellist)-1:
                 if bonegroup != 0:
-                    NewSellist = self.layout.explorer.sellist
-                elif frames != 0:
-                    for thing in NewSellist:
+                    BonesSellist = self.layout.explorer.sellist
+                if bone != 0:
+                    BonesSellist = self.layout.explorer.sellist
+                if frames != 0:
+                    nobones = 0
+                    for thing in BonesSellist:
                         if thing.type == ':bg':
                             self.layout.explorer.sellist = self.layout.explorer.sellist + [thing]
-                            NewSellist = self.layout.explorer.sellist
+                            BonesSellist = self.layout.explorer.sellist
+                            nobones = 1
                             break
+                        if thing.type == ':bone':
+                            self.layout.explorer.sellist = self.layout.explorer.sellist + [thing]
+                            BonesSellist = self.layout.explorer.sellist
+                            nobones = 1
+                            break
+                    if nobones == 0:
+                        BonesSellist = self.layout.explorer.sellist
         self.layout.selchange()
         self.buildhandles()
         import mdlmgr
@@ -1602,6 +1639,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.99  2008/10/04 05:48:06  cdunde
+#Updates for Model Editor Bones system.
+#
 #Revision 1.98  2008/09/22 23:11:12  cdunde
 #Updates for Model Editor Linear and Bone handles.
 #
