@@ -316,7 +316,7 @@ def setviews(list, attr, value):
 
 
 def orthogonalvect(vect, view=None):
-    "Returns a normalized vector orthogonal to the given one and horizontal."
+    "Returns a horizontal, normalized vector orthogonal to the given one."
     v = quarkx.vect(-vect.y, vect.x, 0)
     #
     # If vect was vertical, v will be zero. Otherwise, we can return v.
@@ -1558,6 +1558,9 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.51  2008/09/14 12:55:10  danielpharos
+#Changes to Help system: All forms now have a customizable help-link. Also, added an fallback option to the online infobase docs.
+#
 #Revision 1.50  2008/07/15 23:16:27  cdunde
 #To correct typo error from MldOption to MdlOption in all files.
 #
