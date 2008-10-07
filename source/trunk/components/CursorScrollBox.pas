@@ -2,6 +2,9 @@
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2008/10/05 13:51:19  danielpharos
+Correct Integer to HDC.
+
 Revision 1.4  2005/09/28 10:48:31  peter-b
 Revert removal of Log and Header keywords
 
@@ -134,20 +137,24 @@ end;
 procedure TCursorScrollBox.wmPaint;
 var
  PaintInfo: TPaintStruct;
+ DC: HDC;
 {H: Integer;}
 begin
- if BeginPaint(Handle, PaintInfo)<>0 then
-  try
-  {if FDisplayHPos=0 then
-    H:=HorzScrollBar.Position
-   else
-    H:=FDisplayHPos;
-   SetWindowOrgEx(PaintInfo.hDC, H, VertScrollBar.Position, Nil);}
-   if Assigned(FOnPaint) and not (csDesigning in ComponentState) then
-    FOnPaint(Self, PaintInfo.hDC, PaintInfo.rcPaint);
-  finally
-   EndPaint(Handle, PaintInfo);
-  end;
+ DC:=BeginPaint(Handle, PaintInfo);
+ try
+  if DC<>0 then
+   begin
+    {if FDisplayHPos=0 then
+     H:=HorzScrollBar.Position
+    else
+     H:=FDisplayHPos;
+    SetWindowOrgEx(PaintInfo.hDC, H, VertScrollBar.Position, Nil);}
+    if Assigned(FOnPaint) and not (csDesigning in ComponentState) then
+     FOnPaint(Self, PaintInfo.hDC, PaintInfo.rcPaint);
+   end;
+ finally
+  EndPaint(Handle, PaintInfo);
+ end;
 end;
 
 (*function TCursorScrollBox.ComputeDC : HDC;
