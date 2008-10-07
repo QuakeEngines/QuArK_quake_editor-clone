@@ -665,12 +665,15 @@ def ViewAmendMenu1click(m):
 
 
 GridMenuCmds = [quarkpy.qmenu.popup("Grid scale in 2D views", [], ViewAmendMenu1click, "|Grid scale in 2D views:\n\nThese functions allow you to display a scale of the current grid setting in any one, combination, or all of the 2D views of the Editor.", "intro.modeleditor.menu.html#optionsmenu")]
-    
+
 
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.17  2008/07/15 23:16:27  cdunde
+#To correct typo error from MldOption to MdlOption in all files.
+#
 #Revision 1.16  2008/07/14 18:52:51  cdunde
 #To stop errors when grid is turned off.
 #
