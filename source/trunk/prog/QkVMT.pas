@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.20  2008/09/15 21:07:04  danielpharos
+Workarounded VMT files not finding any textures.
+
 Revision 1.19  2008/09/08 18:07:08  danielpharos
 Fix last of F.Seek(0, 0) bugs.
 
@@ -217,7 +220,7 @@ var
  GCFFilename: String;
  TexturePath: String;
  FullTextureFile: String;
- DefaultImageName: array[0..8] of String;
+ DefaultImageName: array[0..9] of String;
  DefaultImageIndex: Integer;
  ImageFileName: String;
  Size: TPoint;
@@ -269,13 +272,14 @@ begin
     DefaultImageName[0]:=SubElements[0].Specifics.Values['%tooltexture'];
     DefaultImageName[1]:=SubElements[0].Specifics.Values['$basetexture'];
     DefaultImageName[2]:=SubElements[0].Specifics.Values['$basetexture2'];
-    DefaultImageName[3]:=SubElements[0].Specifics.Values['$material'];
-    DefaultImageName[4]:=SubElements[0].Specifics.Values['$bumpmap'];
-    DefaultImageName[5]:=SubElements[0].Specifics.Values['$normalmap'];
-    DefaultImageName[6]:=SubElements[0].Specifics.Values['$dudvmap'];
-    DefaultImageName[7]:=SubElements[0].Specifics.Values['$envmap'];
-    DefaultImageName[8]:=SubElements[0].Specifics.Values['$parallaxmap'];
-    while ((Result=nil) and (DefaultImageIndex<9)) do
+    DefaultImageName[3]:=SubElements[0].Specifics.Values['$2basetexture'];
+    DefaultImageName[4]:=SubElements[0].Specifics.Values['$material'];
+    DefaultImageName[5]:=SubElements[0].Specifics.Values['$bumpmap'];
+    DefaultImageName[6]:=SubElements[0].Specifics.Values['$normalmap'];
+    DefaultImageName[7]:=SubElements[0].Specifics.Values['$dudvmap'];
+    DefaultImageName[8]:=SubElements[0].Specifics.Values['$envmap'];
+    DefaultImageName[9]:=SubElements[0].Specifics.Values['$parallaxmap'];
+    while ((Result=nil) and (DefaultImageIndex<10)) do
     begin
       if (DefaultImageName[DefaultImageIndex]<>'') then
       begin
