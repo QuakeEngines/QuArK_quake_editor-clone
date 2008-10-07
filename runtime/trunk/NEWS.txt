@@ -15,6 +15,10 @@ $Id$
 6.6.0 Beta 2
 ============
 
+* [DanielPharos]: Massive update to get Steam finally working better. Now just
+          - changing one setting will allow you to switch to ANY different Steam/HL2
+          - game!
+
 * [DanielPharos]: Major improvements to HWnd and HDC handling. This should fix all
           - kinds of OpenGL problems.
 

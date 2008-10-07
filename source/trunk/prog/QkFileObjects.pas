@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.57  2008/09/20 20:44:56  danielpharos
+Don't go SearchPath when the file has already been found.
+
 Revision 1.56  2008/09/06 15:57:29  danielpharos
 Moved exception code into separate file.
 
@@ -1265,8 +1268,8 @@ begin
     F.Temporary:=False;
     try
      F.TemporaryClose;
-     DeleteFile(AlternateFile);
-     if not MoveFile(PChar(TempFile), PChar(AlternateFile)) then
+     DeleteFile(QuickResolveFilename(AlternateFile));
+     if not MoveFile(PChar(QuickResolveFilename(TempFile)), PChar(QuickResolveFilename(AlternateFile))) then
       begin
        g_Form1.NoTempDelete:=True;
        Raise EErrorFmt(5516, [AlternateFile, S, ExtractFileName(AlternateFile)]);
@@ -1287,7 +1290,7 @@ begin
    try  { target is removeable - we COPY the file there }
     I:=F.Size;
     ProgressIndicatorStart(5450, I div Granularite + 1); try
-    TargetFile:=TFileStream.Create(AlternateFile, fmCreate); try
+    TargetFile:=TFileStream.Create(QuickResolveFilename(AlternateFile), fmCreate); try
     F.Position:=0;
     while I>0 do
      begin

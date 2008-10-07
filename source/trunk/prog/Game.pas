@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.64  2008/10/07 21:04:52  danielpharos
+Added GetBaseDir function and other small fixes.
+
 Revision 1.63  2008/09/29 22:50:32  danielpharos
 Resolve-code: Fixed games trying to start from wrong directory.
 
@@ -309,6 +312,10 @@ procedure ClearAllFilesRec(const Rep: String);
 function CheckQuakeDir : Boolean;
 function GameMapPath : String;
 function GameModelPath : String;
+function SteamAppID : String;
+function GetSteamtmpQuArK : String;
+function GetSteamBaseDir : String;
+function SourceSDKDir : String;
 function ResolveFilename(const FileToResolve : TFileToResolve) : TResolvedFilename;
 function QuickResolveFilename(const Filename : String) : String;
 
@@ -545,12 +552,16 @@ begin
  Result:=SetupGameSet.Specifics.Values['tmpQuArK'];
  if Result='' then
   Result:='tmpQuArK';
+ if Result='(auto)' then
+   Result:=GetSteamtmpQuArK;
  Result:=ConvertPath(Result);
 end;
 
 function GetBaseDir : String;
 begin
  Result:=SetupGameSet.Specifics.Values['BaseDir'];
+ if Result='(auto)' then
+   Result:=GetSteamBaseDir;
  Result:=ConvertPath(Result);
 end;
 
@@ -684,7 +695,32 @@ var
   setuptmpquark: String;
 
   S: String;
+  I, J, K: Integer;
 begin
+  //Workaround: Only try to resolve if there is anything to resolve. This fixes
+  //crashes when the setup is not init-ed properly yet.
+  I:=Pos('%', FileToResolve.CommandLine);
+  if I=0 then
+  begin
+    Result.Filename:=FileToResolve.CommandLine;
+    Result.WorkDir:='';
+    Exit;
+  end;
+  J:=PosEx('%', FileToResolve.CommandLine, I+1);
+  if J=0 then
+  begin
+    Result.Filename:=FileToResolve.CommandLine;
+    Result.WorkDir:='';
+    Exit;
+  end;
+  K:=PosEx(PathDelim, FileToResolve.CommandLine, I+1);
+  if (K<>0) and (K < J) then
+  begin
+    Result.Filename:=FileToResolve.CommandLine;
+    Result.WorkDir:='';
+    Exit;
+  end;
+
   Setup:=SetupGameSet;
   SteamSetup:=SetupSubSet(ssGames, 'Steam');
 
@@ -755,9 +791,10 @@ begin
   Result.Filename:=StringReplace(Result.Filename, '%quarkpath%', GetQPath(pQuArK), [rfReplaceAll]);
 
   //Steam replacers:
-  Result.Filename:=StringReplace(Result.Filename, '%steamdir%',  SteamSetup.Specifics.Values['Directory'], [rfReplaceAll]);
-  Result.Filename:=StringReplace(Result.Filename, '%steamappid%', Setup.Specifics.Values['SteamAppID'], [rfReplaceAll]);
-  Result.Filename:=StringReplace(Result.Filename, '%steamuser%',  SteamSetup.Specifics.Values['SteamUser'], [rfReplaceAll]);
+  Result.Filename:=StringReplace(Result.Filename, '%sourcesdkdir%', SourceSDKDir, [rfReplaceAll]);
+  Result.Filename:=StringReplace(Result.Filename, '%steamdir%',     SteamSetup.Specifics.Values['Directory'], [rfReplaceAll]);
+  Result.Filename:=StringReplace(Result.Filename, '%steamappid%',   SteamAppID, [rfReplaceAll]);
+  Result.Filename:=StringReplace(Result.Filename, '%steamuser%',    SteamSetup.Specifics.Values['SteamUser'], [rfReplaceAll]);
 end;
 
 function QuickResolveFilename(const Filename : String) : String;
@@ -959,6 +996,7 @@ var
  Setup: QObject;
  SteamRunning: Boolean;
  SteamCacheDir: String;
+ SteamCheckGCF: Boolean;
 begin
   Result := NIL;
   if (GameFiles=Nil) then
@@ -998,45 +1036,54 @@ begin
     //Pak file search (this includes GCF's)
     RestartAliasing(FileName);
     FilenameAlias := GetNextAlias;
+    SteamCheckGCF := True;
     if SetupGameSet.Specifics.Values['Steam']='1' then
     begin
-      PakRealFileName:=GetGCFFile(PakFileName);
-      PakSearchPath:=ExtractFileDir(PakRealFileName);
-      PakRealFileName:=ExtractFileName(PakRealFileName);
+      if SetupSubSet(ssGames, 'Steam').Specifics.Values['CacheGCF'] = '1' then
+      begin
+        PakRealFileName:=GetGCFFile(PakFileName);
+        PakSearchPath:=ExtractFileDir(PakRealFileName);
+        PakRealFileName:=ExtractFileName(PakRealFileName);
+      end
+      else
+        SteamCheckGCF:=False;
     end
     else
     begin
       PakRealFileName:=PakFileName;
       PakSearchPath:=AbsolutePath;
     end;
-    GetPakNames:=TGetPakNames.Create;
-    try
-      GetPakNames.CreatePakList(PakSearchPath, PakRealFileName, True, False);
-      while (FilenameAlias <> '') do
-      begin
-        GetPakNames.ResetIter(True);
-        AbsolutePathAndFilename:=ExpandFileName(AppendFileToPath(AbsolutePath, FilenameAlias));
-        while GetPakNames.GetNextPakName(True, AbsolutePathAndFilename, True) do
+    if SteamCheckGCF then
+    begin
+      GetPakNames:=TGetPakNames.Create;
+      try
+        GetPakNames.CreatePakList(PakSearchPath, PakRealFileName, True, False);
+        while (FilenameAlias <> '') do
         begin
-          if (not IsPakTemp(AbsolutePathAndFilename)) then  // ignores QuArK's own temporary pak's
+          GetPakNames.ResetIter(True);
+          AbsolutePathAndFilename:=ExpandFileName(AppendFileToPath(AbsolutePath, FilenameAlias));
+          while GetPakNames.GetNextPakName(True, AbsolutePathAndFilename, True) do
           begin
-            PakFile:=SortedFindFileName(GameFiles, AbsolutePathAndFilename);
-            if (PakFile=Nil) then
-            begin  // open the pak file if not already opened
-              PakFile:=ExactFileLink(AbsolutePathAndFilename, Nil, True);
-              PakFile.Flags:=PakFile.Flags or ofWarnBeforeChange;
-              GameFiles.Add(PakFile);
-              GameFiles.Sort(ByFileName);
+            if (not IsPakTemp(AbsolutePathAndFilename)) then  // ignores QuArK's own temporary pak's
+            begin
+              PakFile:=SortedFindFileName(GameFiles, AbsolutePathAndFilename);
+              if (PakFile=Nil) then
+              begin  // open the pak file if not already opened
+                PakFile:=ExactFileLink(AbsolutePathAndFilename, Nil, True);
+                PakFile.Flags:=PakFile.Flags or ofWarnBeforeChange;
+                GameFiles.Add(PakFile);
+                GameFiles.Sort(ByFileName);
+              end;
+              Result:=PakFile.FindFile(FilenameAlias);
+              if (Result<>Nil) then
+                Exit; // found it
             end;
-            Result:=PakFile.FindFile(FilenameAlias);
-            if (Result<>Nil) then
-              Exit; // found it
           end;
+          FilenameAlias := GetNextAlias;
         end;
-        FilenameAlias := GetNextAlias;
+      finally
+        GetPakNames.Free;
       end;
-    finally
-      GetPakNames.Free;
     end;
 
     //Steam filesystem access
@@ -1655,6 +1702,154 @@ begin
   Result:=SetupGameSet.Specifics.Values['MdlPath'];
   if Result='' then
     Result:='models';
+end;
+
+function SteamAppID : String;
+var
+  S: String;
+begin
+  Result := SetupGameSet.Specifics.Values['SteamAppID'];
+  if Result = '(auto)' then
+  begin
+    S := SetupGameSet.Specifics.Values['SteamGame'];
+    if S = 'HL2' then
+      Result := '220'
+    else if S = 'CSS' then
+      Result := '240'
+    else if S = 'HL:S' then
+      Result := '280'
+    else if S = 'HL2:DM' then
+      Result := '320'
+    else if S = 'HL2:LC' then
+      Result := '340'
+    else if S = 'HL:DM:S' then
+      Result := '360'
+    else if S = 'HL2:EP1' then
+      Result := '380'
+    else if S = 'Portal' then
+      Result := '400'
+    else if S = 'HL2:EP2' then
+      Result := '420'
+    else if S = 'TF2' then
+      Result := '440'
+    else
+    begin
+      //Shouldn't happen!
+      Log(LOG_WARNING, 'SourceSDKDir: Unknown SteamGame value!');
+      Result := '';
+    end;
+  end;
+end;
+
+function GetSteamtmpQuArK : String;
+var
+  S: String;
+begin
+  Result := SetupGameSet.Specifics.Values['tmpQuArK'];
+  if Result = '(auto)' then
+  begin
+    S := SetupGameSet.Specifics.Values['SteamGame'];
+    if S = 'HL2' then
+      Result := 'SteamApps\%steamuser%\half-life 2\hl2'
+    else if S = 'CSS' then
+      Result := 'SteamApps\%steamuser%\counter-strike source\cstrike'
+    else if S = 'HL:S' then
+      Result := 'SteamApps\%steamuser%\half-life source\hl1'
+    else if S = 'HL2:DM' then
+      Result := 'SteamApps\%steamuser%\half-life 2 deathmatch\hl2mp'
+    else if S = 'HL2:LC' then
+      Result := 'SteamApps\%steamuser%\half-life 2 lostcoast\lostcoast'
+    else if S = 'HL:DM:S' then
+      Result := 'SteamApps\%steamuser%\half-life deathmatch source\hl1mp'
+    else if S = 'HL2:EP1' then
+      Result := 'SteamApps\%steamuser%\half-life 2 episode one\episodic'
+    else if S = 'Portal' then
+      Result := 'SteamApps\%steamuser%\portal\portal'
+    else if S = 'HL2:EP2' then
+      Result := 'SteamApps\%steamuser%\half-life 2 episode two\ep2'
+    else if S = 'TF2' then
+      Result := 'SteamApps\%steamuser%\team fortress 2\tf'
+    else
+    begin
+      //Shouldn't happen!
+      Log(LOG_WARNING, 'GetSteamtmpQuArK: Unknown SteamGame value!');
+      Result := '';
+    end;
+  end;
+end;
+
+function GetSteamBaseDir : String;
+var
+  S: String;
+begin
+  Result := SetupGameSet.Specifics.Values['BaseDir'];
+  if Result = '(auto)' then
+  begin
+    S := SetupGameSet.Specifics.Values['SteamGame'];
+    if S = 'HL2' then
+      Result := 'hl2'
+    else if S = 'CSS' then
+      Result := 'cstrike'
+    else if S = 'HL:S' then
+      Result := 'hl1'
+    else if S = 'HL2:DM' then
+      Result := 'hl2mp'
+    else if S = 'HL2:LC' then
+      Result := 'lostcoast'
+    else if S = 'HL:DM:S' then
+      Result := 'hl1mp'
+    else if S = 'HL2:EP1' then
+      Result := 'episodic'
+    else if S = 'Portal' then
+      Result := 'portal'
+    else if S = 'HL2:EP2' then
+      Result := 'ep2'
+    else if S = 'TF2' then
+      Result := 'tf'
+    else
+    begin
+      //Shouldn't happen!
+      Log(LOG_WARNING, 'GetSteamBaseDir: Unknown SteamGame value!');
+      Result := '';
+    end;
+  end;
+end;
+
+function SourceSDKDir : String;
+var
+  S: String;
+begin
+  Result := SetupGameSet.Specifics.Values['SourceSDKDir'];
+  if Result = '(auto)' then
+  begin
+    S := SetupGameSet.Specifics.Values['SteamGame'];
+    if S = 'HL2' then
+      Result := 'sourcesdk\bin\ep1\bin'
+    else if S = 'CSS' then
+      Result := 'sourcesdk\bin\ep1\bin'
+    else if S = 'HL:S' then
+      Result := 'sourcesdk\bin\ep1\bin'
+    else if S = 'HL2:DM' then
+      Result := 'sourcesdk\bin\ep1\bin'
+    else if S = 'HL2:LC' then
+      Result := 'sourcesdk\bin\ep1\bin'
+    else if S = 'HL:DM:S' then
+      Result := 'sourcesdk\bin\ep1\bin'
+    else if S = 'HL2:EP1' then
+      Result := 'sourcesdk\bin\ep1\bin'
+    else if S = 'Portal' then
+      Result := 'sourcesdk\bin\orangebox\bin'
+    else if S = 'HL2:EP2' then
+      Result := 'sourcesdk\bin\orangebox\bin'
+    else if S = 'TF2' then
+      Result := 'sourcesdk\bin\orangebox\bin'
+    else
+    begin
+      //Shouldn't happen!
+      Log(LOG_WARNING, 'SourceSDKDir: Unknown SteamGame value!');
+      Result := '';
+    end;
+  end;
 end;
 
  {------------------------}

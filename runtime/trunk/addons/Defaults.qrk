@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.451  2008/09/27 14:01:57  danielpharos
+//Fixed some typo's.
+//
 //Revision 1.450  2008/09/27 13:34:16  danielpharos
 //Fixed a typo.
 //
@@ -2291,9 +2294,11 @@ QQRKSRC1
         Program = "%steamdir%\steam.exe -applaunch %steamappid% -dev -console -window -width 800 -height 600"
 
         Steam = "1" //This game uses Steam
-        SteamAppID = "220"
-        BaseDir = "hl2"
-        tmpQuArK = "SteamApps\%steamuser%\half-life 2\hl2"
+        SteamGame = "HL2"
+        SteamAppID = "(auto)"
+        BaseDir = "(auto)"
+        tmpQuArK = "(auto)"
+        SourceSDKDir = "(auto)"
         MapCommentsPrefix = "//"
         OutputMapFormat = "HL2"
         ForceFaceFlags = ""
@@ -2301,20 +2306,20 @@ QQRKSRC1
         "gamesounds-hl2.qrk"$0D"textures-hl2-cs.qrk"$0D"base.qrk"$0D"cstrike.qrk"$0D
         "halflife2.qrk"$0D"hl2mp.qrk"$0D"prefabs-hl2.qrk"
 
-        BuildPgmsDir="%steamdir%\SteamApps\%steamuser%\sourcesdk\bin"
-        BuildPgm1  = "%steamdir%\SteamApps\%steamuser%\sourcesdk\bin\vbsp.exe"
+        BuildPgmsDir="%steamdir%\SteamApps\%steamuser%\%sourcesdkdir%"
+        BuildPgm1  = "vbsp.exe"
         BuildArgs1 = ""
         BuildCheck1= ""
-        BuildPgm2  = "%steamdir%\SteamApps\%steamuser%\sourcesdk\bin\vvis.exe"
+        BuildPgm2  = "vvis.exe"
         BuildArgs2 = ""
         BuildCheck2= ""
-        BuildPgm3  = "%steamdir%\SteamApps\%steamuser%\sourcesdk\bin\vrad.exe"
+        BuildPgm3  = "vrad.exe"
         BuildArgs3 = ""
         BuildCheck3= ""
-        BuildPgm4  = "%steamdir%\SteamApps\%steamuser%\sourcesdk\bin\glview.exe"
+        BuildPgm4  = "glview.exe"
         BuildArgs4 = ""
         BuildCheck4= ""
-        BuildPgm5  = "%steamdir%\SteamApps\%steamuser%\sourcesdk\bin\bspzip.exe"
+        BuildPgm5  = "bspzip.exe"
         BuildArgs5 = ""
         BuildCheck5= ""
 
@@ -3463,7 +3468,7 @@ QQRKSRC1
         SteamUser = "<Your Steam Account>"
         ExtractorParameters = ""
         Autostart = "1"
-        CopyGCF = "1"
+        CacheGCF = "1"
         WarnBeforeClear = "1"
         AllowRecycle = ""
         ClearcacheGCF = ""
@@ -5384,46 +5389,110 @@ QQRKSRC1
         Items = "%steamdir%\steam.exe -applaunch %steamappid% -dev -console"
                 $0D"%steamdir%\steam.exe -applaunch %steamappid% -dev -console -window -width 800 -height 600"
       }
+      SteamGame: =
+      {
+        Txt = "Steam Game"
+        Typ = "CL"     // Combobox list
+        Hint = "Select game to use for (auto) settings below"
+        Items = "Half-Life 2"
+             $0D"Counter-Strike: Source"
+             $0D"Half-Life: Source"
+             $0D"Half-Life 2: Deathmatch"
+             $0D"Half-Life 2: Lost Coast"
+             $0D"Half-Life Deathmatch: Source"
+             $0D"Half-Life 2: Episode One"
+             $0D"Portal"
+             $0D"Half-Life 2: Episode Two"
+             $0D"Team Fortress 2"
+        Values = "HL2"
+              $0D"CSS"
+              $0D"HL:S"
+              $0D"HL2:DM"
+              $0D"HL2:LC"
+              $0D"HL:DM:S"
+              $0D"HL2:EP1"
+              $0D"Portal"
+              $0D"HL2:EP2"
+              $0D"TF2"
+      }
       tmpQuArK: =
       {
         Txt = "Game Directory"
         Typ = "C"   // combo box
         Hint = "relative to steam install directory, e.g. SteamApps\%steamuser%\counter-strike source\cstrike"
-        Items = "SteamApps\%steamuser%\half-life 2\hl2"
+        Items = "(auto)"
+             $0D"SteamApps\%steamuser%\half-life 2\hl2"
              $0D"SteamApps\%steamuser%\counter-strike source\cstrike"
+             $0D"SteamApps\%steamuser%\half-life source\hl1"
              $0D"SteamApps\%steamuser%\half-life 2 deathmatch\hl2mp"
+             $0D"SteamApps\%steamuser%\half-life 2 lostcoast\lostcoast"
+             $0D"SteamApps\%steamuser%\half-life deathmatch source\hl1mp"
+             $0D"SteamApps\%steamuser%\half-life 2 episode one\episodic"
+             $0D"SteamApps\%steamuser%\portal\portal"
+             $0D"SteamApps\%steamuser%\half-life 2 episode two\ep2"
+             $0D"SteamApps\%steamuser%\team fortress 2\tf"
       }
       SteamAppId: =
       {
         Txt = "Steam App Id"
         Typ = "C"     // combo box
-        Hint = "set to 211 for Source SDK"$0D
-               "220 for Half-Life 2"$0D
+        Hint = "set to 220 for Half-Life 2"$0D
                "240 for Counter-Strike: Source"$0D
                "280 for Half-Life: Source"$0D
                "320 for Half-Life 2: Deathmatch"$0D
                "340 for Half-Life 2: Lost Coast"$0D
                "360 for Half-Life Deathmatch: Source"$0D
                "380 for Half-Life 2: Episode One"
-        Items = "211"$0D
+               "400 for Portal"
+               "420 for Half-Life 2: Episode Two"
+               "440 for Team Fortress 2"
+        Items = "(auto)"
                "220"$0D
                "240"$0D
                "280"$0D
                "320"$0D
                "340"$0D
                "360"$0D
-               "380"
+               "380"$0D
+               "400"$0D
+               "420"$0D
+               "440"
       }
       BaseDir: =
       {
         Txt = "Game data directory"
         Typ = "C"   // combo box
         Hint = "Set this to the directory containing the game data, e.g. hl2 for Half-Life 2"
-            $0D"cstrike for Counter-Strike Source"
+            $0D"cstrike for Counter-Strike: Source"
+            $0D"hl1 for Half-Life: Source"
             $0D"hl2mp for Half-Life 2: Deathmatch"
-        Items = "hl2"
+            $0D"lostcoast for Half-Life 2: Lost Coast"
+            $0D"hl1mp for Half-Life Deathmatch: Source"
+            $0D"episodic for Half-Life 2: Episode One"
+            $0D"portal for Portal"
+            $0D"ep2 for Half-Life 2: Episode Two"
+            $0D"tf for Team Fortress 2"
+        Items = "(auto)"
+             $0D"hl2"
              $0D"cstrike"
+             $0D"hl1"
              $0D"hl2mp"
+             $0D"lostcoast"
+             $0D"hl1mp"
+             $0D"episodic"
+             $0D"portal"
+             $0D"ep2"
+             $0D"tf"
+      }
+      SourceSDKDir: =
+      {
+        Txt = "Source SDK Bin directory"
+        Typ = "C"   // combo box
+        Hint = "Set this to the directory containing the compilers"
+        Items = "(auto)"
+             $0D"sourcesdk\bin"
+             $0D"sourcesdk\bin\ep1\bin"
+             $0D"sourcesdk\bin\orangebox\bin"
       }
       Templates: =
       {
@@ -6884,7 +6953,6 @@ QQRKSRC1
         Txt = "RTCW-ET command-line"
         Items = "ET.EXE +set sv_cheats 1 +set sv_pure 0 +set g_gametype 2 +set fs_homepath etmain +set fs_game %gamedir% +devmap "$22"%filename%"$22" +exec"
                 $0D"ET.EXE +set sv_pure 0"
-                $0D"(another exe) +set sv_pure 0"
         t_ProgramHint=!
       }
       Directory: =
@@ -7300,7 +7368,7 @@ QQRKSRC1
         Cap="Enabled"
         Hint = "Enables autostart. This will start Steam if it's needed, but isn't running."
       }
-      CopyGCF: = {
+      CacheGCF: = {
         Txt="Cache GCF files"
         Typ="X"
         Cap="Enabled"

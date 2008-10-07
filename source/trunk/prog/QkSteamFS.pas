@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.29  2008/10/04 13:33:25  danielpharos
+Added Check for Updates option to ? menu and added some dialog icons.
+
 Revision 1.28  2008/09/21 15:26:27  danielpharos
 Added some extra hidden settings; may be configurable later.
 
@@ -125,18 +128,12 @@ procedure ClearSteamCache;
 implementation
 
 uses ShellAPI, SysUtils, StrUtils, Quarkx, Setup, Logging, SystemDetails,
-     QkObjects, Md5Hash, ExtraFunctionality, QkApplPaths;
+     QkObjects, Md5Hash, ExtraFunctionality, QkApplPaths, QkExceptions;
 
 var
-  ClearCacheNeeded: Boolean;
-  CheckQuArKSAS: Boolean;
-
-procedure Fatal(x:string);
-begin
-  Log(LOG_CRITICAL,'Error during operation on SteamFS file: %s',[x]);
-  Windows.MessageBox(0, pchar(X), PChar(LoadStr1(401)), MB_TASKMODAL or MB_ICONERROR or MB_OK);
-  Raise Exception.Create(x);
-end;
+  ClearCacheNeeded: Boolean = false;
+  ClearGCFCacheNeeded: Boolean = false;
+  CheckQuArKSAS: Boolean = true;
 
 function DoFileOperation(Operation: Word; FilesFrom: TStringList; FilesTo: TStringList; FileOpFlags: Word): Boolean;
 
@@ -209,6 +206,7 @@ var
   Setup: QObject;
   SteamDirectory: String;
   CacheDirectory: String;
+  ProgramDirectory: String;
   FullFileName: String;
   SteamGCFFile: String;
   FilesToCopyFrom: TStringList;
@@ -218,45 +216,39 @@ begin
   Setup:=SetupSubSet(ssGames, 'Steam');
   SteamDirectory:=IncludeTrailingPathDelimiter(Setup.Specifics.Values['Directory']);
   CacheDirectory:=IncludeTrailingPathDelimiter(Setup.Specifics.Values['CacheDirectory']);
+  ProgramDirectory:=IncludeTrailingPathDelimiter(Setup.Specifics.Values['ProgramDirectory']);
   FullFileName:=SteamDirectory + CacheDirectory + FileName;
   if FileExists(FullFileName)=false then
   begin
     //Try to copy original file...
-    ClearCacheNeeded:=true;
+    ClearGCFCacheNeeded:=true;
 
-    SteamGCFFile:=SteamDirectory+'steamapps\'+Filename;
+    SteamGCFFile:=SteamDirectory+ProgramDirectory+Filename;
     if FileExists(SteamGCFFile) = false then
     begin
+      Log(LOG_WARNING, 'Unable to copy GCF file to cache: FileExists failed!');
       Result:='';
       Exit;
     end;
-    if Setup.Specifics.Values['CopyGCF'] = '1' then
-    begin
-      if DirectoryExists(SteamDirectory+CacheDirectory) = false then
-        if CreateDir(SteamDirectory+CacheDirectory) = false then
-          Fatal('Unable to extract file from Steam. Cannot create cache directory.');
+    if DirectoryExists(SteamDirectory+CacheDirectory) = false then
+      if CreateDir(SteamDirectory+CacheDirectory) = false then
+        LogAndRaiseError('Unable to extract file from Steam. Cannot create cache directory.');
 
-      FilesToCopyFrom:=TStringList.Create;
-      FilesToCopyTo:=TStringList.Create;
-      try
-        FilesToCopyFrom.Add(SteamGCFFile);
-        FilesToCopyTo.Add(FullFileName);
-        FilesToCopyFlags:=0;
-        if DoFileOperation(FO_COPY, FilesToCopyFrom, FilesToCopyTo, FilesToCopyFlags) = false then
-        begin
-          Log(LOG_WARNING, 'Unable to copy GCF file to cache: CopyFile failed!');
-          Result:=SteamGCFFile;
-          Exit;
-        end;
-      finally
-        FilesToCopyFrom.Free;
-        FilesToCopyTo.Free;
+    FilesToCopyFrom:=TStringList.Create;
+    FilesToCopyTo:=TStringList.Create;
+    try
+      FilesToCopyFrom.Add(SteamGCFFile);
+      FilesToCopyTo.Add(FullFileName);
+      FilesToCopyFlags:=0;
+      if DoFileOperation(FO_COPY, FilesToCopyFrom, FilesToCopyTo, FilesToCopyFlags) = false then
+      begin
+        Log(LOG_WARNING, 'Unable to copy GCF file to cache: CopyFile failed!');
+        Result:=SteamGCFFile;
+        Exit;
       end;
-    end
-    else
-    begin
-      Result:=SteamGCFFile;
-      Exit;
+    finally
+      FilesToCopyFrom.Free;
+      FilesToCopyTo.Free;
     end;
   end;
   Result:=FullFileName;
@@ -379,24 +371,24 @@ begin
   QSASFile := QSASPath + '\QuArKSAS.exe';
 
   if DirectoryExists(SteamDirectory) = false then
-    Fatal('Unable to extract file from Steam. Cannot find Steam directory.');
+    LogAndRaiseError('Unable to extract file from Steam. Cannot find Steam directory.');
 
   if DirectoryExists(SteamDirectory+SteamCacheDirectory) = false then
     if CreateDir(SteamDirectory+SteamCacheDirectory) = false then
-      Fatal('Unable to extract file from Steam. Cannot create cache directory.');
+      LogAndRaiseError('Unable to extract file from Steam. Cannot create cache directory.');
 
   if DirectoryExists(SteamDirectory+SteamCacheDirectory+'\'+GameIDDir) = false then
     if CreateDir(SteamDirectory+SteamCacheDirectory+'\'+GameIDDir) = false then
-      Fatal('Unable to extract file from Steam. Cannot create cache directory.');
+      LogAndRaiseError('Unable to extract file from Steam. Cannot create cache directory.');
 
   if CheckQuArKSAS then
   begin
     if FileExists(QSASFile) = false then
     begin
       if FileExists(GetQPath(pQuArKDll)+'QuArKSAS.exe') = false then
-        Fatal('Unable to extract file from Steam. dlls/QuArKSAS.exe not found.');
+        LogAndRaiseError('Unable to extract file from Steam. dlls/QuArKSAS.exe not found.');
       if CopyFile(PChar(GetQPath(pQuArKDll)+'QuArKSAS.exe'), PChar(QSASFile), true) = false then
-        Fatal('Unable to extract file from Steam. Call to CopyFile failed.');
+        LogAndRaiseError('Unable to extract file from Steam. Call to CopyFile failed.');
     end
     else
     begin
@@ -408,7 +400,7 @@ begin
         //Files do not match. The one in dlls is probably the most current one,
         //so let's update the Steam one.
         if CopyFile(PChar(GetQPath(pQuArKDll)+'QuArKSAS.exe'), PChar(QSASFile), false) = false then
-          Fatal('Unable to extract file from Steam. Call to CopyFile failed.');
+          LogAndRaiseError('Unable to extract file from Steam. Call to CopyFile failed.');
       end;
     end;
     CheckQuArKSAS:=false;
@@ -425,16 +417,17 @@ begin
   QSASStartupInfo.cb:=SizeOf(QSASStartupInfo);
   QSASStartupInfo.dwFlags:=STARTF_USESHOWWINDOW;
   QSASStartupInfo.wShowWindow:=SW_SHOWMINNOACTIVE;
-  if Windows.CreateProcess(nil, PChar(QSASPath + '\QuArKSAS.exe ' + QSASParameters + ' ' + FullFilename), nil, nil, false, 0, nil, PChar(QSASPath), QSASStartupInfo, QSASProcessInformation)=false then
-    Fatal('Unable to extract file from Steam. Call to CreateProcess failed.');
+  try
+    if Windows.CreateProcess(nil, PChar(QSASPath + '\QuArKSAS.exe ' + QSASParameters + ' ' + FullFilename), nil, nil, false, 0, nil, PChar(QSASPath), QSASStartupInfo, QSASProcessInformation)=false then
+      LogAndRaiseError('Unable to extract file from Steam. Call to CreateProcess failed.');
 
-  //DanielPharos: Waiting for INFINITE is rather dangerous,
-  //so let's wait only 10 seconds
-  if WaitForSingleObject(QSASProcessInformation.hProcess, 10000)=WAIT_FAILED then
-  begin
+    //DanielPharos: Waiting for INFINITE is rather dangerous,
+    //so let's wait only 10 seconds
+    if WaitForSingleObject(QSASProcessInformation.hProcess, 10000)=WAIT_FAILED then
+      LogAndRaiseError('Unable to extract file from Steam. Call to WaitForSingleObject failed.');
+  finally
     CloseHandle(QSASProcessInformation.hThread);
     CloseHandle(QSASProcessInformation.hProcess);
-    Fatal('Unable to extract file from Steam. Call to WaitForSingleObject failed.');
   end;
   Result:=True;
 end;
@@ -448,22 +441,20 @@ var
   FilesToDeleteFlags: Word;
   sr: TSearchRec;
 begin
-  if ClearCacheNeeded=false then
-    Exit;
-  ClearCacheNeeded:=false;
   Setup:=SetupSubSet(ssGames, 'Steam');
   ClearCache:=Setup.Specifics.Values['Clearcache']<>'';
   ClearCacheGCF:=Setup.Specifics.Values['ClearcacheGCF']<>'';
-  SteamFullCacheDirectory:=ConvertPath(IncludeTrailingPathDelimiter(Setup.Specifics.Values['Directory'])+Setup.Specifics.Values['CacheDirectory']+'\');
-  if ClearCache or ClearCacheGCF then
+  if (ClearCache and (ClearCacheNeeded=false)) and (ClearCacheGCF and (ClearGCFCacheNeeded=false)) then
+    Exit;
+  SteamFullCacheDirectory:=ConvertPath(IncludeTrailingPathDelimiter(Setup.Specifics.Values['Directory'])+Setup.Specifics.Values['CacheDirectory']+PathDelim);
+  WarnBeforeClear:=Setup.Specifics.Values['WarnBeforeClear']<>'';
+  AllowRecycle:=Setup.Specifics.Values['AllowRecycle']<>'';
+  if ClearCache and ClearCacheNeeded then
   begin
-    WarnBeforeClear:=Setup.Specifics.Values['WarnBeforeClear']<>'';
-    AllowRecycle:=Setup.Specifics.Values['AllowRecycle']<>'';
-    if ClearCache then
+    if FindFirst(SteamFullCacheDirectory + '*.*', faDirectory	, sr) = 0 then
     begin
-      if FindFirst(SteamFullCacheDirectory + '*.*', faDirectory	, sr) = 0 then
-      begin
-        FilesToDelete := TStringList.Create;
+      FilesToDelete := TStringList.Create;
+      try
         repeat
           if (sr.name <> '.') and (sr.name <> '..') then
             if Lowercase(RightStr(sr.Name, 4)) <> '.gcf' then
@@ -484,28 +475,31 @@ begin
           if DoFileOperation(FO_DELETE, FilesToDelete, nil, FilesToDeleteFlags) = false then
             Log(LOG_WARNING, 'Warning: Clearing of cache failed!');
         end;
+      finally
         FilesToDelete.Free;
       end;
     end;
-    if ClearCacheGCF then
-    begin
-      if WarnBeforeClear then
-        if MessageBox(0, PChar(FmtLoadStr1(5712, [SteamFullCacheDirectory])), PChar('QuArK'), MB_TASKMODAL or MB_ICONWARNING or MB_YESNO) = IDNO then
-          Exit;
-      FilesToDelete := TStringList.Create;
+    ClearCacheNeeded:=false;
+  end;
+  if ClearCacheGCF and ClearGCFCacheNeeded then
+  begin
+    if WarnBeforeClear then
+      if MessageBox(0, PChar(FmtLoadStr1(5712, [SteamFullCacheDirectory])), PChar('QuArK'), MB_TASKMODAL or MB_ICONWARNING or MB_YESNO) = IDNO then
+        Exit;
+    FilesToDelete := TStringList.Create;
+    try
       FilesToDelete.Add(SteamFullCacheDirectory + '*.gcf');
       FilesToDeleteFlags := FOF_NOCONFIRMATION;
       if AllowRecycle then
         FilesToDeleteFlags := FilesToDeleteFlags or FOF_ALLOWUNDO;
       if DoFileOperation(FO_DELETE, FilesToDelete, nil, FilesToDeleteFlags) = false then
         Log(LOG_WARNING, 'Warning: Clearing of GCF cache failed!');
+    finally
       FilesToDelete.Free;
     end;
+    ClearGCFCacheNeeded:=false;
   end;
 end;
 
-initialization
-  ClearCacheNeeded:=false;
-  CheckQuArKSAS:=true;
 end.
 
