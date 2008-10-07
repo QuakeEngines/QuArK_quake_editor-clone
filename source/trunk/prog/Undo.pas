@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2008/09/06 15:57:01  danielpharos
+Moved exception code into separate file.
+
 Revision 1.11  2005/09/28 10:48:32  peter-b
 Revert removal of Log and Header keywords
 
@@ -1273,7 +1276,7 @@ procedure TMoveUndo.DoOp1;
 begin
 {N0:=g_NiveauAction;
  g_NiveauAction:=g_NiveauAction or na_Select;}
- OperationDansScene(Element, asDeplace1, Nil);    { deatch }
+ OperationDansScene(Element, asDeplace1, Nil);    { deattach }
 end;
 
 procedure TMoveUndo.DoOp2;
