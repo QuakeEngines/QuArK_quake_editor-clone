@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.83  2008/10/05 13:16:53  danielpharos
+Fix Log function not working properly.
+
 Revision 1.82  2008/09/29 22:41:10  danielpharos
 Fixed for file resolving code. Fixes Steam-games.
 
@@ -1128,7 +1131,7 @@ end;
 function xGetQuakeDir(self, args: PyObject) : PyObject; cdecl;
 begin
  try
-  Result:=PyString_FromString(PChar(QuickResolveFilename(QuakeDir)));
+  Result:=PyString_FromString(PChar(QuakeDir));
  except
   EBackToPython;
   Result:=Nil;
@@ -1138,7 +1141,7 @@ end;
 function xGetGameDir(self, args: PyObject) : PyObject; cdecl;
 begin
  try
-  Result:=PyString_FromString(PChar(QuickResolveFilename(GetGameDir)));
+  Result:=PyString_FromString(PChar(GetGameDir));
  except
   EBackToPython;
   Result:=Nil;
@@ -1148,7 +1151,17 @@ end;
 function xGettmpQuArK(self, args: PyObject) : PyObject; cdecl;
 begin
  try
-  Result:=PyString_FromString(PChar(QuickResolveFilename(GettmpQuArK)));
+  Result:=PyString_FromString(PChar(GettmpQuArK));
+ except
+  EBackToPython;
+  Result:=Nil;
+ end;
+end;
+
+function xGetBaseDir(self, args: PyObject) : PyObject; cdecl;
+begin
+ try
+  Result:=PyString_FromString(PChar(GetBaseDir));
  except
   EBackToPython;
   Result:=Nil;
@@ -2253,7 +2266,7 @@ begin
   Result:=Nil;
   if not PyArg_ParseTupleX(args, 's', [@s]) then
    Exit;
-  Result:=PyInt_FromLong(GetFileAttributes(s));
+  Result:=PyInt_FromLong(GetFileAttributes(PChar(QuickResolveFilename(s))));
  except
   EBackToPython;
   Result:=Nil;
@@ -2271,11 +2284,11 @@ begin
    Exit;
   if i=-1 then
    begin
-    if not Windows.DeleteFile(s) then
+    if not Windows.DeleteFile(PChar(QuickResolveFilename(s))) then
      Raise EError(4455);
    end
   else
-   if not SetFileAttributes(s,i) then
+   if not SetFileAttributes(PChar(QuickResolveFilename(s)),i) then
     Raise EError(4455);
   Result:=PyNoResult;
  except
@@ -3176,7 +3189,7 @@ begin
 end;
 
 const
- MethodTable: array[0..86] of TyMethodDef =
+ MethodTable: array[0..87] of TyMethodDef =
   ((ml_name: 'Setup1';          ml_meth: xSetup1;          ml_flags: METH_VARARGS),
    (ml_name: 'newobj';          ml_meth: xNewObj;          ml_flags: METH_VARARGS),
    (ml_name: 'newfileobj';      ml_meth: xNewFileObj;      ml_flags: METH_VARARGS),
@@ -3186,6 +3199,7 @@ const
    (ml_name: 'getquakedir';     ml_meth: xGetQuakeDir;     ml_flags: METH_VARARGS),
    (ml_name: 'getgamedir';      ml_meth: xGetGameDir;      ml_flags: METH_VARARGS),
    (ml_name: 'gettmpquark';     ml_meth: xGettmpQuArK;     ml_flags: METH_VARARGS),
+   (ml_name: 'getbasedir';      ml_meth: xGetBaseDir;      ml_flags: METH_VARARGS),
    (ml_name: 'lines2list';      ml_meth: xLines2List;      ml_flags: METH_VARARGS),
    (ml_name: 'list2lines';      ml_meth: xList2Lines;      ml_flags: METH_VARARGS),
    (ml_name: 'truncstr';        ml_meth: xTruncStr;        ml_flags: METH_VARARGS),

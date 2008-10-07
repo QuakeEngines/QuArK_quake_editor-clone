@@ -90,21 +90,21 @@ class MapEditor(BaseEditor):
      #   NoImageFile = None
         for UsedTextureName in UsedTexturesList:
             UsedTexture = quarkx.newobj(UsedTextureName + ".wl")
-   #         UsedTexture["a"] = (quarkx.getquakedir()+("/")+quarkx.setupsubset()["BaseDir"])
+   #         UsedTexture["a"] = (quarkx.getquakedir()+("/")+quarkx.getbasedir())
      #       if quarkx.setupsubset()["ShadersPath"] is not None:
      #           try:
-     #               GameFilesPath = (quarkx.getquakedir()+("/")+quarkx.setupsubset()["BaseDir"])
+     #               GameFilesPath = (quarkx.getquakedir()+("/")+quarkx.getbasedir())
      #               UsedTexture["a"] = (GameFilesPath+("/")+quarkx.setupsubset()["ShadersPath"]+("sky.shader")+("[textures/")+UsedTextureName+("]"))
-     #               UsedTexture["a"] = (quarkx.getquakedir()+("/")+quarkx.setupsubset()["BaseDir"])
+     #               UsedTexture["a"] = (quarkx.getquakedir()+("/")+quarkx.getbasedir())
      #           except:
-     #               UsedTexture["a"] = (quarkx.getquakedir()+("/")+quarkx.setupsubset()["BaseDir"])
+     #               UsedTexture["a"] = (quarkx.getquakedir()+("/")+quarkx.getbasedir())
      #       else:
-     #           UsedTexture["a"] = (quarkx.getquakedir()+("/")+quarkx.setupsubset()["BaseDir"])
+     #           UsedTexture["a"] = (quarkx.getquakedir()+("/")+quarkx.getbasedir())
      #           try:
      #               print "mapeditor line 106 the image path",(UsedTexture["a"]+("/")+quarkx.setupsubset()["TexturesPath"]+UsedTextureName)
      #           except:
      #               NoImageFile = 1
-            UsedTexture["a"] = (quarkx.getquakedir()+("/")+quarkx.setupsubset()["BaseDir"])
+            UsedTexture["a"] = (quarkx.getquakedir()+("/")+quarkx.getbasedir())
             UsedTexture.flags = UsedTexture.flags | qutils.OF_TVSUBITEM
             Folder.appenditem(UsedTexture)
    #     if NoImageFile is not None:
@@ -408,6 +408,9 @@ def autosave(editor):
 #
 #
 #$Log$
+#Revision 1.17  2008/05/01 17:22:09  danielpharos
+#Fix flags-overwriting.
+#
 #Revision 1.16  2008/01/23 01:40:19  cdunde
 #Couple of fixes to top the Texture Browser from opening all the time and
 #stop multiple creations of the Used Textures in the Texture Browser.

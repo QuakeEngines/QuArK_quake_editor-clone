@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.63  2008/09/29 22:50:32  danielpharos
+Resolve-code: Fixed games trying to start from wrong directory.
+
 Revision 1.62  2008/09/29 22:41:11  danielpharos
 Fixed for file resolving code. Fixes Steam-games.
 
@@ -297,6 +300,7 @@ function NeedGameFile(const FileName, PakFile: String) : QFileObject;
 function NeedGameFileBase(const BaseDir, FileName, PakFile: String) : QFileObject;
 procedure BuildCorrectFileName(var S: String);
 function GettmpQuArK : String;
+function GetBaseDir : String;
 function BaseOutputPath : String;
 function OutputFile(const FileName: String) : String;
 function GetGameDir : String;
@@ -533,7 +537,7 @@ begin
    GameDir:=L[I].Specifics.Values['GameDir'];
    if GameDir<>'' then
     begin
-     Result:=GameDir;
+     Result:=ConvertPath(GameDir);
      Exit;
     end;
   end;
@@ -541,6 +545,12 @@ begin
  Result:=SetupGameSet.Specifics.Values['tmpQuArK'];
  if Result='' then
   Result:='tmpQuArK';
+ Result:=ConvertPath(Result);
+end;
+
+function GetBaseDir : String;
+begin
+ Result:=SetupGameSet.Specifics.Values['BaseDir'];
  Result:=ConvertPath(Result);
 end;
 
@@ -679,7 +689,7 @@ begin
   SteamSetup:=SetupSubSet(ssGames, 'Steam');
 
   setupdirectory := QuakeDir;
-  setupbasedir := Setup.Specifics.Values['BaseDir'];
+  setupbasedir := GetBaseDir;
   setuptmpquark := GettmpQuArK;
   if FileToResolve.FileType<>ftPath then
     argument_outputfile := OutputFile('')
@@ -699,8 +709,6 @@ begin
       // stupid program that wants to run in the base dir
       Result.Workdir := setupdirectory + PathDelim + setupbasedir;
       argument_mappath := '..' + PathDelim + setuptmpquark + PathDelim + GameMapPath;
-      argument_mapfile := '..' + PathDelim + setuptmpquark + PathDelim + GameMapPath + PathDelim + FileToResolve.AFilename + '.map';
-      argument_file    := '..' + PathDelim + setuptmpquark + PathDelim + GameMapPath + PathDelim + FileToResolve.AFilename;
     end
     else
     begin
@@ -712,9 +720,9 @@ begin
       if Result.Workdir[Length(Result.Workdir)-1] = PathDelim then
         Result.Workdir := LeftStr(Result.Workdir, Length(Result.Workdir)-1);
       argument_mappath := GameMapPath;
-      argument_mapfile := GameMapPath + PathDelim + FileToResolve.AFilename + '.map';
-      argument_file    := GameMapPath + PathDelim + FileToResolve.AFilename;
     end;
+    argument_mapfile := argument_mappath + PathDelim + FileToResolve.AFilename + '.map';
+    argument_file    := argument_mappath + PathDelim + FileToResolve.AFilename;
     argument_filename := FileToResolve.AFilename;
     if FileToResolve.AFileobject<>Nil then
       argument_grouppath := getGroupFilePath(FileToResolve.AFileobject)
@@ -778,7 +786,7 @@ begin
     if SourceDir<>'' then
       Dirs.Add(SourceDir);
   end;
-  Dirs.Add(SetupGameSet.Specifics.Values['BaseDir']);
+  Dirs.Add(GetBaseDir);
 end;
 
 {--Convex-begin--}
@@ -891,7 +899,7 @@ begin
         Exit;   { found it }
     end;
   end;
-  Result:=GetGameFileBase(SetupGameSet.Specifics.Values['BaseDir'], FileName, PakFile, True);
+  Result:=GetGameFileBase(GetBaseDir, FileName, PakFile, True);
   if Result=Nil then
     Raise EErrorFmt(5560, [SetupGameSet.Name, DisplayAllAlias(FileName)]);
 end;
@@ -1047,9 +1055,9 @@ begin
         while (FilenameAlias <> '') do
         begin
           if RunSteamExtractor(FilenameAlias) then
-            if FileExists(SteamCacheDir+'\'+FilenameAlias) then
+            if FileExists(SteamCacheDir+PathDelim+FilenameAlias) then
             begin
-              Result:=ExactFileLink(SteamCacheDir+'\'+FilenameAlias, Nil, True);
+              Result:=ExactFileLink(SteamCacheDir+PathDelim+FilenameAlias, Nil, True);
               Result.Flags:=Result.Flags or ofWarnBeforeChange;
               GameFiles.Add(Result);
               GameFiles.Sort(ByFileName);
