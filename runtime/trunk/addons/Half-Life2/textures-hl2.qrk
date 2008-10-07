@@ -647,6 +647,8 @@ QQRKSRC1
             Debug/debugempty.wl  = { t_hl2=! }
             Debug/debugluxels.wl  = { t_hl2=! }
             Debug/debugluxelsnoalpha.wl  = { t_hl2=! }
+            Debug/debugwireframe.wl  = { t_hl2=! }
+            Debug/debugworldwireframezbuffer.wl  = { t_hl2=! }
         }
         
         Decals.txlist =
@@ -1492,6 +1494,19 @@ QQRKSRC1
             Engine/rendertarget256-2.wl  = { t_hl2=! }
         }
         
+        Environment Maps.txlist =
+        {
+            Environment Maps/borealis_003.wl  = { t_hl2=! }
+            Environment Maps/d1_trainstation_05.wl  = { t_hl2=! }
+            Environment Maps/envmap001a.wl  = { t_hl2=! }
+            Environment Maps/envmap009a.wl  = { t_hl2=! }
+            Environment Maps/envmapcombine.wl  = { t_hl2=! }
+            Environment Maps/gallery002.wl  = { t_hl2=! }
+            Environment Maps/rg.wl  = { t_hl2=! }
+            Environment Maps/train_01.wl  = { t_hl2=! }
+            Environment Maps/water_wasteland05.wl  = { t_hl2=! }
+        }
+        
         Glass.txlist =
         {
             Glass/combineglass001a.wl  = { t_hl2=! }
@@ -1974,6 +1989,7 @@ QQRKSRC1
             Models/Alyx/eyeball_l.wl  = { t_hl2=! }
             Models/Alyx/eyeball_r.wl  = { t_hl2=! }
             Models/Alyx/fmouth.wl  = { t_hl2=! }
+            Models/Alyx/glint.wl  = { t_hl2=! }
             Models/Alyx/hairbits.wl  = { t_hl2=! }
             Models/Alyx/pupil_l.wl  = { t_hl2=! }
             Models/Alyx/pupil_r.wl  = { t_hl2=! }
@@ -4341,6 +4357,10 @@ QQRKSRC1
             VGUI/hud/800corner2.wl  = { t_hl2=! }
             VGUI/hud/800corner3.wl  = { t_hl2=! }
             VGUI/hud/800corner4.wl  = { t_hl2=! }
+            VGUI/hud/autoaim.wl  = { t_hl2=! }
+            VGUI/hud/icon_commentary.wl  = { t_hl2=! }
+            VGUI/hud/icon_commentary_off.wl  = { t_hl2=! }
+            VGUI/hud/icon_commentary_small.wl  = { t_hl2=! }
             VGUI/mouse.wl  = { t_hl2=! }
             VGUI/plugin/message_waiting.wl  = { t_hl2=! }
             VGUI/resource/game_menu.wl  = { t_hl2=! }
@@ -4351,6 +4371,10 @@ QQRKSRC1
             VGUI/resource/icon_folder_selected.wl  = { t_hl2=! }
             VGUI/resource/icon_hlicon1.wl  = { t_hl2=! }
             VGUI/resource/icon_hlicon2.wl  = { t_hl2=! }
+            VGUI/resource/icon_play_bounce.wl  = { t_hl2=! }
+            VGUI/resource/icon_play_bounce2.wl  = { t_hl2=! }
+            VGUI/resource/icon_play_loop.wl  = { t_hl2=! }
+            VGUI/resource/icon_play_once.wl  = { t_hl2=! }
             VGUI/resource/icon_steam.wl  = { t_hl2=! }
             VGUI/resource/icon_steam_disabled.wl  = { t_hl2=! }
             VGUI/resource/icon_vac.wl  = { t_hl2=! }
@@ -4375,6 +4399,23 @@ QQRKSRC1
             VGUI/servers/icon_password_column.wl  = { t_hl2=! }
             VGUI/servers/icon_robotron.wl  = { t_hl2=! }
             VGUI/servers/icon_robotron_column.wl  = { t_hl2=! }
+            VGUI/servers/icon_secure_deny.wl  = { t_hl2=! }
+            VGUI/steam/games/icon_cg.wl  = { t_hl2=! }
+            VGUI/steam/games/icon_cs.wl  = { t_hl2=! }
+            VGUI/steam/games/icon_css.wl  = { t_hl2=! }
+            VGUI/steam/games/icon_cz.wl  = { t_hl2=! }
+            VGUI/steam/games/icon_dedicated.wl  = { t_hl2=! }
+            VGUI/steam/games/icon_dmc.wl  = { t_hl2=! }
+            VGUI/steam/games/icon_dod.wl  = { t_hl2=! }
+            VGUI/steam/games/icon_dods.wl  = { t_hl2=! }
+            VGUI/steam/games/icon_hl.wl  = { t_hl2=! }
+            VGUI/steam/games/icon_hl2.wl  = { t_hl2=! }
+            VGUI/steam/games/icon_hls.wl  = { t_hl2=! }
+            VGUI/steam/games/icon_opfor.wl  = { t_hl2=! }
+            VGUI/steam/games/icon_ric.wl  = { t_hl2=! }
+            VGUI/steam/games/icon_source_ds.wl  = { t_hl2=! }
+            VGUI/steam/games/icon_sourcesdk.wl  = { t_hl2=! }
+            VGUI/steam/games/icon_tfc.wl  = { t_hl2=! }
             VGUI/timer.wl  = { t_hl2=! }
             VGUI/white.wl  = { t_hl2=! }
             VGUI/white_additive.wl  = { t_hl2=! }
