@@ -99,6 +99,9 @@ The developers of used libraries/programs
                         Pierre le Riche
                         http://fastmm.sourceforge.net/
 
+- QuArKSAS:
+                        DanielPharos
+
 - DirectX Delphi library:
                         Alexey Barkovoy
                         http://www.clootie.ru/
