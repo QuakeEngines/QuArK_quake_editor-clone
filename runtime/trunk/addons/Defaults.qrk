@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.452  2008/10/07 21:16:19  danielpharos
+//Massive update to get Steam finally working better.
+//
 //Revision 1.451  2008/09/27 14:01:57  danielpharos
 //Fixed some typo's.
 //
@@ -2309,7 +2312,7 @@ QQRKSRC1
         BuildPgmsDir="%steamdir%\SteamApps\%steamuser%\%sourcesdkdir%"
         BuildPgm1  = "vbsp.exe"
         BuildArgs1 = ""
-        BuildCheck1= ""
+        BuildCheck1= "+BSP"
         BuildPgm2  = "vvis.exe"
         BuildArgs2 = ""
         BuildCheck2= ""
