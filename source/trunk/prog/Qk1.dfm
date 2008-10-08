@@ -191,7 +191,7 @@ object Form1: TForm1
       Caption = '-'
     end
     object FileRecent: TMenuItem
-      Caption = 'Recent files'
+      Caption = '&Recent files'
       object Recent0: TMenuItem
         Caption = '(empty)'
         Enabled = False
