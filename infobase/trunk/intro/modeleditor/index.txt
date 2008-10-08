@@ -17,13 +17,13 @@ change and manipulate these kind of game models for the formats that QuArK's Mod
 Basically, a model is made out of a mathematical mesh consisting of individual triangular <g>faces</g> in 3D space.
 Each face of a model has three <g>vertexes</g> which can be moved, in 3D space, to form the shape of the models mesh.
 The entire mesh is then "Skinned" using a <g>texture</g> image file such as a .pcx, .jpg, .tga or some other
-texture. The "Skin-view" page of the editor is used for this skinning process,
+format that the editor will support. The "Skin-view" page of the editor is used for this skinning process,
 where there is another set of <g>vertexes</g> of the "unwrapped" model mesh and their vertex handles that are used
 to move this flat mesh of the model over the texture image changing the projected image position of the texture on
 the model's 3D mesh and giving the model its final appearance.
 
 The <a href="intro.modeleditor.skinview.html">Skin-view page</a> works a bit differently then the editor's views do,
-based on the fact that it has no actual triangles. Only what is known as <g>view</g> <g>handles</g>, view being the view
+based on the fact that it has no actual triangles. Only what is known as <g>view.handles</g>, view being the view
 displayed on the <a href="intro.modeleditor.skinview.html">Skin-view page</a> itself. Another big difference,
 at this time, is that unlike all of the other <g>views</g> of the editor which are in a <g>list</g> of its
 <g>editor.layout.view</g>, the <a href="intro.modeleditor.skinview.html">Skin-view page</a> view is never actually added
