@@ -190,33 +190,21 @@ object Form1: TForm1
     object N3: TMenuItem
       Caption = '-'
     end
+    object FileRecent: TMenuItem
+      Caption = 'Recent files'
+      object Recent0: TMenuItem
+        Caption = '(empty)'
+        Enabled = False
+        OnClick = RecentFileClick
+      end
+    end
+    object N4: TMenuItem
+      Caption = '-'
+    end
     object Close1: TMenuItem
       Caption = '&Close'
       ShortCut = 16465
       OnClick = Close1Click
-    end
-    object FileSep1: TMenuItem
-      Caption = '-'
-    end
-    object N5: TMenuItem
-      Caption = '-'
-      OnClick = RecentFileClick
-    end
-    object N6: TMenuItem
-      Caption = '-'
-      OnClick = RecentFileClick
-    end
-    object N7: TMenuItem
-      Caption = '-'
-      OnClick = RecentFileClick
-    end
-    object N8: TMenuItem
-      Caption = '-'
-      OnClick = RecentFileClick
-    end
-    object N9: TMenuItem
-      Caption = '-'
-      OnClick = RecentFileClick
     end
   end
   object EditMenu: TPopupMenu
@@ -265,7 +253,7 @@ object Form1: TForm1
       ShortCut = 16473
       OnClick = EditMenuItemClick
     end
-    object N4: TMenuItem
+    object N5: TMenuItem
       Caption = '-'
     end
     object Copyas1: TMenuItem

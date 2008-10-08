@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.454  2008/10/08 21:42:12  danielpharos
+//Made map extension changable.
+//
 //Revision 1.453  2008/10/08 20:14:16  danielpharos
 //Added BSP-check for buildtool1 in HL2.
 //
@@ -8734,7 +8737,7 @@ QQRKSRC1
       sep: = {Typ="S" Bold="0" Txt="  and size after you made changes here)"}
       sep: = {Typ="S" Txt = ""}
       MppTopBtns: = {Typ="X" Txt="Multi-pages panels" Cap="Buttons above"}
-      MaxRecentFiles = {Txt="Maximum number of recent files" Typ="EF1" Hint="Maximum amount of recent files to keep track of (0 .. 5)"}
+      MaxRecentFiles = {Txt="Maximum number of recent files" Typ="EF1" Hint="Maximum amount of recent files to keep track of (0 .. 20)"}
       //ConsoleWidth = {Txt="Width of console" Typ="EF1" Hint="Amount of character per line in the console (80 .. 80)"}
       ConsoleHeight = {Txt="Height of console" Typ="EF1" Hint="Maximum amount of lines in the console (60 .. 600)"}
       OnlineHelp = {Txt="Online help" Typ="X" Cap="Enabled" Hint="This will cause QuArK to open up the online help when the wanted file is not available locally."}

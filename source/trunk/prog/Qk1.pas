@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.75  2008/10/08 19:44:16  danielpharos
+Fix some possible synchronization issues.
+
 Revision 1.74  2008/10/04 13:33:25  danielpharos
 Added Check for Updates option to ? menu and added some dialog icons.
 
@@ -334,7 +337,10 @@ type
     Saveinnewentry1: TMenuItem;
     Saveasfile1: TMenuItem;
     N3: TMenuItem;
+    FileRecent: TMenuItem;
+    N4: TMenuItem;
     Close1: TMenuItem;
+    Recent0: TMenuItem;
     leftdock: TDock97;
     rightdock: TDock97;
     bottomdock: TDock97;
@@ -348,7 +354,7 @@ type
     Games1: TToolbarButton97;
     Minimize1: TMenuItem;
     OpenSel1: TMenuItem;
-    N4: TMenuItem;
+    N5: TMenuItem;
     Copy1: TMenuItem;
     Cut1: TMenuItem;
     Paste1: TMenuItem;
@@ -359,12 +365,6 @@ type
     SSep1: TMenuItem;
     Copyas1: TMenuItem;
     N2: TMenuItem;
-    FileSep1: TMenuItem;
-    N5: TMenuItem;
-    N6: TMenuItem;
-    N7: TMenuItem;
-    N8: TMenuItem;
-    N9: TMenuItem;
     GamesMenu: TPopupMenu;
     PasteObj1: TMenuItem;
     N10: TMenuItem;
@@ -1234,6 +1234,7 @@ var
  L: TStringList;
  I: Integer;
  MaxRecentFiles: Integer;
+ NewMenuItem: TMenuItem;
 begin
  F:=ValidParentForm(FileMenu.PopupComponent as TControl);
  QF1:=F is TQForm1;
@@ -1279,27 +1280,39 @@ begin
  //FileMenu.Tag is used to flag if the RecentFiles need to be updated
  if FileMenu.Tag=0 then
   begin
+   while FileRecent.Count>0 do
+     FileRecent.Delete(0);
    L:=TStringList.Create;
    try
     L.Text:=g_SetupSet[ssGeneral].Specifics.Values['RecentFiles'];
     MaxRecentFiles:=Round(SetupSubSet(ssGeneral, 'Display').GetFloatSpec('MaxRecentFiles', 5));
-    FileSep1.Visible:=(MaxRecentFiles>0) and (L.Count>0);
-    for I:=0 to 4 do //Loop over all the RecentFile menu-items
-     with FileMenu.Items[FileSep1.MenuIndex+I+1] do
+    if MaxRecentFiles<0 then
+      MaxRecentFiles:=0;
+    if MaxRecentFiles>20 then //Let's set an upper limit
+      MaxRecentFiles:=20;
+    for I:=0 to MaxRecentFiles-1 do //Loop over all the RecentFile menu-items
+     if I<L.Count then
       begin
-      if I <= MaxRecentFiles-1 then
-       begin
-        if I<L.Count then
+       NewMenuItem:=TMenuItem.Create(FileRecent);
+       with NewMenuItem do
         begin
+         OnClick:=RecentFileClick;
          Visible:=True;
          Caption:=FmtLoadStr1(3, [I+1, ExtractFileName(L[I])]);
-        end
-        else
-         Visible:=False;
-       end
-      else
-       Visible:=False;
+        end;
+       FileRecent.Add(NewMenuItem);
       end;
+    if FileRecent.Count = 0 then
+     begin
+      NewMenuItem:=TMenuItem.Create(FileRecent);
+      with NewMenuItem do
+       begin
+        Caption:='(empty)';
+        Enabled:=False;
+        OnClick:=RecentFileClick;
+       end;
+      FileRecent.Add(NewMenuItem);
+     end;
    finally
     L.Free;
    end;
@@ -2166,7 +2179,7 @@ var
  I: Integer;
  FileName: String;
 begin
- I:=(Sender as TMenuItem).MenuIndex - FileSep1.MenuIndex - 1;
+ I:=(Sender as TMenuItem).MenuIndex;
  L:=TStringList.Create;
  try
   L.Text:=g_SetupSet[ssGeneral].Specifics.Values['RecentFiles'];
