@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.21  2008/10/04 13:50:55  danielpharos
+Start using LogAndRaiseError instead of local Fatal's.
+
 Revision 1.20  2008/10/04 13:45:53  danielpharos
 Fixed some copy-paste mistakes.
 
@@ -505,23 +508,18 @@ begin
         NVDXTStartupInfo.cb:=SizeOf(NVDXTStartupInfo);
         NVDXTStartupInfo.dwFlags:=STARTF_USESHOWWINDOW;
         NVDXTStartupInfo.wShowWindow:=SW_HIDE+SW_MINIMIZE;
-        //FIXME: If you delete this, don't forget the implementation-link to QkApplPaths
-        if Windows.CreateProcess(nil, PChar(GetQPath(pQuArKDll)+'nvdxt.exe -file "'+DumpFileName+'.tga" -output "'+DumpFileName+'.dds" -'+TexFormatParameter+' -'+QualityParameter), nil, nil, false, 0, nil, PChar(GetQPath(pQuArKDll)), NVDXTStartupInfo, NVDXTProcessInformation)=false then
-          LogAndRaiseError('Unable to save DDS file. Call to CreateProcess failed.');
+        try
+          //FIXME: If you delete this, don't forget the implementation-link to QkApplPaths
+          if Windows.CreateProcess(nil, PChar(GetQPath(pQuArKDll)+'nvdxt.exe -file "'+DumpFileName+'.tga" -output "'+DumpFileName+'.dds" -'+TexFormatParameter+' -'+QualityParameter), nil, nil, false, 0, nil, PChar(GetQPath(pQuArKDll)), NVDXTStartupInfo, NVDXTProcessInformation)=false then
+            LogAndRaiseError('Unable to save DDS file. Call to CreateProcess failed.');
 
-        //DanielPharos: This is kinda dangerous, but NVDXT should exit rather quickly!
-        if WaitForSingleObject(NVDXTProcessInformation.hProcess,INFINITE)=WAIT_FAILED then
-        begin
+          //DanielPharos: This is kinda dangerous, but NVDXT should exit rather quickly!
+          if WaitForSingleObject(NVDXTProcessInformation.hProcess,INFINITE)<>WAIT_TIMEOUT then
+            LogAndRaiseError('Unable to save DDS file. Call to WaitForSingleObject failed.');
+        finally
           CloseHandle(NVDXTProcessInformation.hThread);
           CloseHandle(NVDXTProcessInformation.hProcess);
-          LogAndRaiseError('Unable to save DDS file. Call to WaitForSingleObject failed.');
         end;
-
-        if CloseHandle(NVDXTProcessInformation.hThread)=false then
-          LogAndRaiseError('Unable to save DDS file. Call to CloseHandle(thread) failed.');
-        if CloseHandle(NVDXTProcessInformation.hProcess)=false then
-          LogAndRaiseError('Unable to save DDS file. Call to CloseHandle(process) failed.');
-
       finally
         if DeleteFile(DumpFileName+'.tga')=false then
           LogAndRaiseError('Unable to save DDS file. Call to DeleteFile(tga) failed.');

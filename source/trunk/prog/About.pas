@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.30  2008/09/06 15:31:51  danielpharos
+Moved old-compatibility code to ExtraFunctionality.
+
 Revision 1.29  2007/09/18 19:32:23  danielpharos
 Fix the disclaimer disappearing in the About screen
 
@@ -75,8 +78,6 @@ type
 
 function OpenSplashScreen : TForm;
 function DisclaimerThread(F: TForm): THandle;
-var RedrawDisclaimer: Boolean;
-var ExitDisclaimer: Boolean;
 
 const
   MAX_DELAY = 10;
@@ -100,6 +101,8 @@ type
   TSplashScreen = class(TForm)
     procedure RedrawSplashScreen(Sender : Tobject);
   end;
+
+var RedrawDisclaimer: Boolean;
 
 {$R *.DFM}
 
@@ -147,73 +150,75 @@ begin
     I := 0;
   Font := CreateFont(Info^.TextSize, 0, 0, 0, I, 0, 0, 0, 0, 0, 0, 0, FF_SWISS, nil);
   DC := GetDC(Info^.H);
-  Font1 := SelectObject(DC, Font);
-  SetBkColor(DC, clWhite);
-  SetBkMode(DC, TRANSPARENT);
-  {SetTextAlign(DC, TA_BOTTOM or TA_CENTER);}
-  SkipDelay := false;
-  I := Info^.FlashCount;
-  if I < MIN_FLASH_COUNT then
-    I := MIN_FLASH_COUNT;
-  I := I * 10 - 5;
-  repeat
-    C := (I + 5) mod 10;
-    if C > 5 then
-      C := 10 - C;
-    {SetTextColor(DC, clWhite - ($203333 * C));}
-    SetTextColor(DC, clWhite - ($333300 * C));
-    DrawText(DC, Info^.Text, -1, Info^.R, DT_CENTER or DT_NOPREFIX or DT_WORDBREAK);
-    GDIFlush;
-    if Info^.Event = 0 then
-      Sleep(50)
-    else
-      if WaitForSingleObject(Info^.Event, 50) <> WAIT_TIMEOUT then
-      begin
-        SkipDelay := true;
-        Break;
-      end;
-    Dec(I);
-  until I < 0;
-  if not SkipDelay then
-  begin
-    if Info^.Event = 0 then
-    begin
-      I := Info^.Delay;
-      if I > MAX_DELAY then
-        I := MAX_DELAY;
-      I:=I*10;
-      repeat
-        if RedrawDisclaimer then
+  try
+    Font1 := SelectObject(DC, Font);
+    SetBkColor(DC, clWhite);
+    SetBkMode(DC, TRANSPARENT);
+    {SetTextAlign(DC, TA_BOTTOM or TA_CENTER);}
+    SkipDelay := false;
+    I := Info^.FlashCount;
+    if I < MIN_FLASH_COUNT then
+      I := MIN_FLASH_COUNT;
+    I := I * 10 - 5;
+    repeat
+      C := (I + 5) mod 10;
+      if C > 5 then
+        C := 10 - C;
+      {SetTextColor(DC, clWhite - ($203333 * C));}
+      SetTextColor(DC, clWhite - ($333300 * C));
+      DrawText(DC, Info^.Text, -1, Info^.R, DT_CENTER or DT_NOPREFIX or DT_WORDBREAK);
+      GDIFlush;
+      if Info^.Event = 0 then
+        Sleep(50)
+      else
+        if WaitForSingleObject(Info^.Event, 50) <> WAIT_TIMEOUT then
         begin
-          RedrawDisclaimer:=false;
-          DrawText(DC, Info^.Text, -1, Info^.R, DT_CENTER or DT_NOPREFIX or DT_WORDBREAK);
-          GDIFlush;
-        end;
-        Sleep(100);
-        Dec(I);
-      until I < 0;
-    end
-    else
-    begin
-      repeat
-        if RedrawDisclaimer then
-        begin
-          RedrawDisclaimer:=false;
-          DrawText(DC, Info^.Text, -1, Info^.R, DT_CENTER or DT_NOPREFIX or DT_WORDBREAK);
-          GDIFlush;
-        end;
-        if WaitForSingleObject(Info^.Event, 100) <> WAIT_TIMEOUT then
           SkipDelay := true;
-      until SkipDelay;
+          Break;
+        end;
+      Dec(I);
+    until I < 0;
+    if not SkipDelay then
+    begin
+      if Info^.Event = 0 then
+      begin
+        I := Info^.Delay;
+        if I > MAX_DELAY then
+          I := MAX_DELAY;
+        I:=I*10;
+        repeat
+          if RedrawDisclaimer then
+          begin
+            RedrawDisclaimer:=false;
+            DrawText(DC, Info^.Text, -1, Info^.R, DT_CENTER or DT_NOPREFIX or DT_WORDBREAK);
+            GDIFlush;
+          end;
+          Sleep(100);
+          Dec(I);
+        until I < 0;
+      end
+      else
+      begin
+        repeat
+          if RedrawDisclaimer then
+          begin
+            RedrawDisclaimer:=false;
+            DrawText(DC, Info^.Text, -1, Info^.R, DT_CENTER or DT_NOPREFIX or DT_WORDBREAK);
+            GDIFlush;
+          end;
+          if WaitForSingleObject(Info^.Event, 100) <> WAIT_TIMEOUT then
+            SkipDelay := true;
+        until SkipDelay;
+      end;
     end;
+    SelectObject(DC, Font1);
+  finally
+    ReleaseDC(Info^.H, DC);
+    DeleteObject(Font);
+    if Info^.Event <> 0 then
+      CloseHandle(Info^.Event);
+    Dispose(Info);
   end;
-  SelectObject(DC, Font1);
-  ReleaseDC(Info^.H, DC);
-  DeleteObject(Font);
-  if Info^.Event <> 0 then
-    CloseHandle(Info^.Event);
-  Dispose(Info);
-  ExitDisclaimer:=true;
   Result := 0;
 end;
 
@@ -222,7 +227,6 @@ var
   Dummy: DWORD;
   S: string;
 begin
-  ExitDisclaimer:=false;
   Info^.TextSize := 10;
   Info^.FlashCount := MIN_FLASH_COUNT;
   Info^.Delay := 2;
@@ -370,7 +374,7 @@ begin
     CloseHandle(Event);
     Event:=0;
     // Strange error if 'event' isn't set to 0 after call to CloseHandle(..)
-    // DanielPharos: That's because this procedure is called mulitple times !!!
+    // DanielPharos: That's because this procedure is called multiple times !!!
   end;
 end;
 

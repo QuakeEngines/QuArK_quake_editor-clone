@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2008/10/04 13:33:25  danielpharos
+Added Check for Updates option to ? menu and added some dialog icons.
+
 Revision 1.9  2008/09/06 15:33:12  danielpharos
 Removed name-collision function.
 
@@ -101,7 +104,6 @@ begin
       Exit;
     end;
     SetThreadPriority(ThreadHandle, THREAD_PRIORITY_ABOVE_NORMAL);
-    //@ FUCK UP! Need better Thread-management!
     InstallWindow.ShowModal;
   finally
     InstallWindow.Free;
@@ -116,6 +118,8 @@ var
   FileData: TMemoryStream;
   TotalFileNumber: Cardinal;
 begin
+  //When interfacing with InstallWindow, make sure to only send Windows-messages,
+  //to make it threadsafe-ish.
   try
     try
       TotalFileNumber:=0;
@@ -154,7 +158,6 @@ begin
                   InstallWindow.pgbInstall.StepIt;
                   if StopUpdate then
                     Exit;
-                  Application.ProcessMessages;
                 end;
               end;
           end;
@@ -173,7 +176,6 @@ begin
               InstallWindow.pgbInstall.StepIt;
               if StopUpdate then
                 Exit;
-              Application.ProcessMessages;
             end;
         end;
       end
@@ -195,7 +197,6 @@ begin
     end;
   end;
   InstallWindow.Label1.Caption:='QuArK needs to be restarted for the updates to be applied.'; //@
-  Application.ProcessMessages;
 end;
 
  {------------------------}
@@ -217,7 +218,7 @@ begin
     StopUpdate:=True;
     while ThreadHandle<>0 do
     begin
-      Sleep(50);
+      Sleep(100);
       Application.ProcessMessages;
     end;
   end;

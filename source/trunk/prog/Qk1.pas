@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.74  2008/10/04 13:33:25  danielpharos
+Added Check for Updates option to ? menu and added some dialog icons.
+
 Revision 1.73  2008/09/18 16:36:37  danielpharos
 Added logging of unhandled exceptions during start-up.
 
@@ -715,8 +718,7 @@ begin
  begin
    repeat
      Application.ProcessMessages;
-     Sleep(200);
-   until ExitDisclaimer;
+   until (WaitForSingleObject(Disclaimer, 100)<>WAIT_TIMEOUT);
    CloseHandle(Disclaimer);
    Splash.Release;
    Application.ProcessMessages;

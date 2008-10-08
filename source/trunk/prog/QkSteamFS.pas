@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.30  2008/10/07 21:16:25  danielpharos
+Massive update to get Steam finally working better.
+
 Revision 1.29  2008/10/04 13:33:25  danielpharos
 Added Check for Updates option to ? menu and added some dialog icons.
 
@@ -423,7 +426,7 @@ begin
 
     //DanielPharos: Waiting for INFINITE is rather dangerous,
     //so let's wait only 10 seconds
-    if WaitForSingleObject(QSASProcessInformation.hProcess, 10000)=WAIT_FAILED then
+    if WaitForSingleObject(QSASProcessInformation.hProcess, 10000)<>WAIT_TIMEOUT then
       LogAndRaiseError('Unable to extract file from Steam. Call to WaitForSingleObject failed.');
   finally
     CloseHandle(QSASProcessInformation.hThread);
