@@ -26,7 +26,6 @@ from qeditor import *
 #from qdictionnary import Strings
 
 # Globals
-HoldObject = None
 NewSellist = []
 BonesSellist = []
 mdleditor = None
@@ -276,8 +275,7 @@ class ModelEditor(BaseEditor):
     def CloseRoot(self):
         import mdlanimation
         quarkx.settimer(mdlanimation.drawanimation, self, 0)
-        global HoldObject, NewSellist, mdleditor
-        HoldObject = None
+        global NewSellist, mdleditor
         NewSellist = []
         mdleditor = None
         self.findtargetdlg = None
@@ -396,9 +394,11 @@ class ModelEditor(BaseEditor):
 
 
     def ok(self, undo, msg, autoremove=[]):
-        global HoldObject, NewSellist
+        global NewSellist
+        HoldObject = None
         NewSellist = []
         HoldObjectList = []
+        ObjectState = {}
         for Object in self.layout.explorer.sellist:
             HoldObject = Object
             if HoldObject is None:
@@ -410,6 +410,7 @@ class ModelEditor(BaseEditor):
                     ParentNames.append(HoldObject.name)
 
             HoldObjectList.append(ParentNames)
+            ObjectState[Object.name] = (Object.flags & qutils.OF_TVEXPANDED)
 
         undo.ok(self.Root, msg)
 
@@ -431,7 +432,7 @@ class ModelEditor(BaseEditor):
 
            ### Line below moved to mdlmgr.py, def selectcomponent, using HoldObject as global
            ### to allow Skin-view to complete its new undo mesh and handles, was not working from here.
-           # self.layout.explorer.sellist = [HoldObject]
+            self.layout.explorer.sellist = [HoldObject]
 
             NewSellist.append(HoldObject)
         try:
@@ -440,7 +441,7 @@ class ModelEditor(BaseEditor):
             else:
                 self.layout.explorer.sellist = NewSellist  # go around if bone is in the list
         except:
-            pass    
+            pass
 
         if len(NewSellist) <= 1:
             if len(NewSellist) == 1 and (NewSellist[0].name.endswith(":mr") or NewSellist[0].name.endswith(":mg")):
@@ -448,11 +449,16 @@ class ModelEditor(BaseEditor):
             else:
                 for item in self.layout.explorer.sellist:
                     self.layout.explorer.expand(item.parent)
+                    if item.name.endswith(":bg"):
+                        if ObjectState[item.name]<>0:
+                            self.layout.explorer.expand(item)
         else:
-            HoldObject = None
             for item in self.layout.explorer.sellist:
                 self.layout.explorer.expand(item.parent)
-
+                if item.name.endswith(":bg"):
+                    if ObjectState[item.name]<>0:
+                        self.layout.explorer.expand(item)
+        NewSellist = []
 
     def dropmap(self, view, newlist, x, y, src):
         center = view.space(x, y, view.proj(view.screencenter).z)
@@ -1643,6 +1649,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.101  2008/10/06 01:58:34  cdunde
+#Small correction for auto bone selection method.
+#
 #Revision 1.100  2008/10/06 00:04:46  cdunde
 #Update for auto frame, bone group and bone selection method.
 #

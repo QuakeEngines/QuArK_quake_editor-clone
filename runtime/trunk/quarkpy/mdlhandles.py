@@ -3610,12 +3610,16 @@ class LinearBoneHandle(qhandles.GenericHandle):
                         else:
                             if mdlutils.checktuplepos(self.bone.dictspec['start_point'], bone.dictspec['end_point']) == 1:
                                 self.oldbones_end = self.oldbones_end + [bone]
-                        for bone in compbones:
-                            if bone in self.oldbones_start or bone in self.oldbones_end:
-                                continue
-                            for commstart in self.oldbones_start:
-                                if mdlutils.checktuplepos(commstart.dictspec['end_point'], bone.dictspec['start_point']) == 1:
-                                    self.oldbones_start = self.oldbones_start + [bone]
+                        FoundNew = 1
+                        while FoundNew:
+                            FoundNew = 0
+                            for bone in compbones:
+                                if bone in self.oldbones_start or bone in self.oldbones_end:
+                                    continue
+                                for commstart in self.oldbones_start:
+                                    if mdlutils.checktuplepos(commstart.dictspec['end_point'], bone.dictspec['start_point']) == 1:
+                                        self.oldbones_start = self.oldbones_start + [bone]
+                                        FoundNew = 1
                     if (self.s_or_e == 1): # Handles the "End of Bone".
                         if mdlutils.checktuplepos(self.bone.dictspec['end_point'], bone.dictspec['end_point']) == 1:
                             self.oldbones_end = self.oldbones_end + [bone]
@@ -3876,14 +3880,23 @@ class LinBoneCenterHandle(LinearBoneHandle):
             mdlmgr.savefacesel = 1
             continue_bone(editor, self.bone, self.s_or_e)
 
-        def attach_bones_click(m, self=self, editor=editor, view=view):
+        def attach_start2end_click(m, self=self, editor=editor, view=view):
             import mdlmgr
             mdlmgr.savefacesel = 1
             if self.bone is None:
                 bone = editor.layout.explorer.sellist[0]
             else:
                 bone = self.bone
-            attach_bones(editor, bone, editor.layout.explorer.sellist[1])
+            attach_start2end(editor, bone, editor.layout.explorer.sellist[1])
+
+        def attach_bones_starts_click(m, self=self, editor=editor, view=view):
+            import mdlmgr
+            mdlmgr.savefacesel = 1
+            if self.bone is None:
+                bone = editor.layout.explorer.sellist[0]
+            else:
+                bone = self.bone
+            attach_bones_starts(editor, bone, editor.layout.explorer.sellist[1])
 
         def detach_bones_click(m, self=self, editor=editor, view=view):
             import mdlmgr
@@ -3893,6 +3906,15 @@ class LinBoneCenterHandle(LinearBoneHandle):
             else:
                 bone = self.bone
             detach_bones(editor, bone, editor.layout.explorer.sellist[1])
+
+        def align_start2end_click(m, self=self, editor=editor, view=view):
+            import mdlmgr
+            mdlmgr.savefacesel = 1
+            if self.bone is None:
+                bone = editor.layout.explorer.sellist[0]
+            else:
+                bone = self.bone
+            align_start2end(editor, bone, editor.layout.explorer.sellist[1])
 
         def align_bones_starts_click(m, self=self, editor=editor, view=view):
             import mdlmgr
@@ -3911,15 +3933,6 @@ class LinBoneCenterHandle(LinearBoneHandle):
             else:
                 bone = self.bone
             align_bones_ends(editor, bone, editor.layout.explorer.sellist[1])
-
-        def align_start2end_click(m, self=self, editor=editor, view=view):
-            import mdlmgr
-            mdlmgr.savefacesel = 1
-            if self.bone is None:
-                bone = editor.layout.explorer.sellist[0]
-            else:
-                bone = self.bone
-            align_start2end(editor, bone, editor.layout.explorer.sellist[1])
 
         def assign2start_click(m, self=self, editor=editor, view=view):
             comp = editor.Root.currentcomponent
@@ -4390,22 +4403,114 @@ class LinBoneCenterHandle(LinearBoneHandle):
             HB1.state = qmenu.disabled
             mdlutils.Update_Editor_Views(editor)
 
+        def select_handle_vertexes_click(m, self=self, editor=editor, view=view):
+            comp = editor.Root.currentcomponent
+            frame = comp.currentframe
+            if self.s_or_e == 0:
+                handle = self.bone.dictspec['start_point']
+            else:
+                handle = self.bone.dictspec['end_point']
+            common_handles_list, s_or_e_list = find_common_bone_handles(editor, handle)
+            for bone in range(len(common_handles_list)):
+                bonename = common_handles_list[bone].name
+                if s_or_e_list[bone] == 0:
+                    if common_handles_list[bone].dictspec.has_key('start_vtxlist'):
+                        bone_vtxlist = []
+                        vtxlist = editor.ModelComponentList[comp.name]['boneobjlist'][bonename]['s_or_e0']['selvtxlist']
+                        for vtx in vtxlist:
+                            bone_vtxlist = bone_vtxlist + [[vtx, frame.vertices[vtx]]]
+                        editor.ModelVertexSelList = bone_vtxlist
+                        break
+                else:
+                    if common_handles_list[bone].dictspec.has_key('end_vtxlist'):
+                        bone_vtxlist = []
+                        vtxlist = editor.ModelComponentList[comp.name]['boneobjlist'][bonename]['s_or_e1']['selvtxlist']
+                        for vtx in vtxlist:
+                            bone_vtxlist = bone_vtxlist + [[vtx, frame.vertices[vtx]]]
+                        editor.ModelVertexSelList = bone_vtxlist
+                        break
+            Update_Editor_Views(editor)
+
+        def select_handle_pos_vertexes_click(m, self=self, editor=editor, view=view):
+            comp = editor.Root.currentcomponent
+            frame = comp.currentframe
+            if self.s_or_e == 0:
+                handle = self.bone.dictspec['start_point']
+            else:
+                handle = self.bone.dictspec['end_point']
+            common_handles_list, s_or_e_list = find_common_bone_handles(editor, handle)
+            for bone in range(len(common_handles_list)):
+                bonename = common_handles_list[bone].name
+                if s_or_e_list[bone] == 0:
+                    if common_handles_list[bone].dictspec.has_key('start_vtxlist'):
+                        bone_vtxlist = []
+                        vtxlist = common_handles_list[bone].dictspec['start_vtx_pos']
+                        vtxlist = vtxlist.split(" ")
+                        for vtx in vtxlist:
+                            vtx = int(vtx)
+                            bone_vtxlist = bone_vtxlist + [[vtx, frame.vertices[vtx]]]
+                        editor.ModelVertexSelList = bone_vtxlist
+                        break
+                else:
+                    if common_handles_list[bone].dictspec.has_key('end_vtxlist'):
+                        bone_vtxlist = []
+                        vtxlist = common_handles_list[bone].dictspec['end_vtx_pos']
+                        vtxlist = vtxlist.split(" ")
+                        for vtx in vtxlist:
+                            vtx = int(vtx)
+                            bone_vtxlist = bone_vtxlist + [[vtx, frame.vertices[vtx]]]
+                        editor.ModelVertexSelList = bone_vtxlist
+                        break
+            Update_Editor_Views(editor)
+
         Forcetogrid = qmenu.item("&Force to grid", force_to_grid_click,"|Force to grid:\n\nThis will cause any vertex to 'snap' to the nearest location on the editor's grid for the view that the RMB click was made in.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
         AddBone = qmenu.item("&Add Bone Here", add_bone_click, "|Add Bone Here:\n\nThis will add a single bone to the currently selected model component 'Skeleton' group.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
         ContinueBones = qmenu.item("&Continue Bones", continue_bones_click, "|Continue Bones:\n\nThis will add a single bone, connected to the last bone, of the currently selected model component 'Skeleton' group.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
-        AttachBones = qmenu.item("A&ttach Bones", attach_bones_click, "|Attach Bones:\n\nThis will attach two selected bones to one another of the currently selected model component 'Skeleton' group.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
-        DetachBones = qmenu.item("&Detach Bones", detach_bones_click, "|Detach Bones:\n\nThis will detach two selected bones to one another of the currently selected model component 'Skeleton' group.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
-        AlignBonesStarts = qmenu.item("Align &Bones Starts", align_bones_starts_click, "|Align Bones Starts:\n\nThis will align second selected bone's start handle to first selected bone's end handle, but not attach them. To reverse the bone moved, switch their order in the tree-view.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
-        AlignBonesEnds = qmenu.item("Align B&ones Ends", align_bones_ends_click, "|Align Bones Ends:\n\nThis will align second selected bone's end handle to first selected bone's end handle, but not attach them. To reverse the bone moved, switch their order in the tree-view.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
-        AlignStart2End = qmenu.item("Align Start &to End", align_start2end_click, "|Align Start to End:\n\nThis will align second selected bone's start handle to first selected bone's end handle, but not attach them. To reverse the bone moved, switch their order in the tree-view.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
-        Assign2Start = qmenu.item("Assign to &Start", assign2start_click, "|Assign to Start:\n\nWhen only one bone and vertexes of that component are selected, click this item to assign them to the 'start_point' of that bone.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
+        AttachStart2End = qmenu.item("A&ttach Start to End", attach_start2end_click, "|Attach Start to End:\n\nThis will attach the second selected bone's start handle to the first selected bone's end handle of the currently selected model component 'Skeleton' group.\n\nMoving the second bone above the first bone in the tree-view will reverse this movement.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
+        AttachBonesStarts = qmenu.item("Attach B&ones Starts", attach_bones_starts_click, "|Attach Bones Starts:\n\nThis will attach the second selected bone's start handle to the first selected bone's start handle of the currently selected model component 'Skeleton' group.\n\nMoving the second bone above the first bone in the tree-view will reverse this movement.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
+        DetachBones = qmenu.item("&Detach Bones", detach_bones_click, "|Detach Bones:\n\nThis will detach two selected bones attached handles from one another of the currently selected model component 'Skeleton' group.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
+        AlignStart2End = qmenu.item("Align Start to E&nd", align_start2end_click, "|Align Start to End:\n\nThis will align the second selected bone's start handle to first selected bone's end handle, but not attach them.\n\nMoving the second bone above the first bone in the tree-view will reverse this movement.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
+        AlignBonesStarts = qmenu.item("Align &Bones Starts", align_bones_starts_click, "|Align Bones Starts:\n\nThis will align the second selected bone's start handle to first selected bone's end handle, but not attach them.\n\nMoving the second bone above the first bone in the tree-view will reverse this movement.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
+        AlignBonesEnds = qmenu.item("Align Bones Ends", align_bones_ends_click, "|Align Bones Ends:\n\nThis will align the second selected bone's end handle to first selected bone's end handle, but not attach them.\n\nMoving the second bone above the first bone in the tree-view will reverse this movement.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
+        Assign2Start = qmenu.item("Ass&ign to Start", assign2start_click, "|Assign to Start:\n\nWhen only one bone and vertexes of that component are selected, click this item to assign them to the 'start_point' of that bone.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
         Assign2End = qmenu.item("Assign to &End", assign2end_click, "|Assign to End:\n\nWhen only one bone and vertexes of that component are selected, and there is no continuing bone, click this item to assign them to the 'end_point' of that bone.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
-        SetHandlePosition = qmenu.item("Set &Handle Position", set_handle_position_click, "|Set Handle Position:\n\nActive when one or more vertexes are selected that are assigned to that bone handle. Click this item to position and set that bone handle centered within those vertexes. An 'offset' can also be applied to this setting.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
+        SetHandlePosition = qmenu.item("Set Handle Position", set_handle_position_click, "|Set Handle Position:\n\nActive when one or more vertexes are selected that are assigned to that bone handle. Click this item to position and set that bone handle centered within those vertexes. An 'offset' can also be applied to this setting.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
         ReleaseStartVertexes = qmenu.item("&Release Start Vertexes", release_start_vertexes_click, "|Release Start Vertexes:\n\nWhen only one bone is selected with vertexes assigned to it, click this item to release all of them from that bone's start handle.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
         ReleaseEndVertexes = qmenu.item("Release End &Vertexes", release_end_vertexes_click, "|Release End Vertexes:\n\nWhen only one bone is selected with vertexes assigned to it, click this item to release all of them from that bone's end handle.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
         KeyframesRotation = qmenu.item("&Key frames Rotation move", keyframes_rotation_click,"|Key frames Rotation move:\n\nWhen two frames are selected that have bone movement, this movement will be spread from the 1st frames positions across all frames in between them to the 2nd frames positions using rotation and in the direction of the smallest angle (clockwise or counterclockwise).|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
         SB1 = qmenu.item("&Show Bones", ShowBones)
         HB1 = qmenu.item("&Hide Bones", HideBones)
+        try:
+            if isinstance(self, LinBoneCenterHandle):
+                if self.s_or_e == 0:
+                    handle = self.bone.dictspec['start_point']
+                else:
+                    handle = self.bone.dictspec['end_point']
+                common_handles_list, s_or_e_list = find_common_bone_handles(editor, handle)
+                for bone in range(len(common_handles_list)):
+                    name = common_handles_list[bone].shortname + " "
+                    if s_or_e_list[bone] == 0:
+                        if common_handles_list[bone].dictspec.has_key('start_vtxlist'):
+                            pos = "Start Handle "
+                            SelectHandleVertexes = qmenu.item("Se&lect " + name + pos + "Vertexes", select_handle_vertexes_click, "|Select (bone handle name) Vertexes:\n\nWhen the cursor is over a bone's Center handle with vertexes assigned to it, click this item to select all of them from that bone's handle.\n\nOr, if another handle is attached that has the vertexes assigned to it instead, then those are the vertexes that will be selected.\n\nIf no vertexes have been assigned to any handle at that location, then the menu item will show disabled.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
+                            SelectHandlePosVertexes = qmenu.item("Select " + name + "Handle &Position Vertexes", select_handle_pos_vertexes_click, "|Select (bone handle name) handle position Vertexes:\n\nWhen the cursor is over a bone's Center handle with vertexes assigned to it, click this item to select the vertexes used to set that bone's handle position.\n\nOr, if another handle is attached that has the vertexes assigned to it instead, then those are the position vertexes for that handle that will be selected.\n\nIf no vertexes have been assigned to any handle at that location, then the menu item will show disabled.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
+                            break
+                    else:
+                        if common_handles_list[bone].dictspec.has_key('end_vtxlist'):
+                            pos = "End Handle "
+                            SelectHandleVertexes = qmenu.item("Se&lect " + name + pos + "Vertexes", select_handle_vertexes_click, "|Select (bone handle name) Vertexes:\n\nWhen the cursor is over a bone's Center handle with vertexes assigned to it, click this item to select all of them from that bone's handle.\n\nOr, if another handle is attached that has the vertexes assigned to it instead, then those are the vertexes that will be selected.\n\nIf no vertexes have been assigned to any handle at that location, then the menu item will show disabled.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
+                            SelectHandlePosVertexes = qmenu.item("Select " + name + "Handle &Position Vertexes", select_handle_pos_vertexes_click, "|Select (bone handle name) handle position Vertexes:\n\nWhen the cursor is over a bone's Center handle with vertexes assigned to it, click this item to select the vertexes used to set that bone's handle position.\n\nOr, if another handle is attached that has the vertexes assigned to it instead, then those are the position vertexes for that handle that will be selected.\n\nIf no vertexes have been assigned to any handle at that location, then the menu item will show disabled.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
+                            break
+                    if bone == len(common_handles_list)-1:
+                        SelectHandleVertexes = qmenu.item("Se&lect Handle Vertexes", select_handle_vertexes_click, "|Select (bone handle name) Vertexes:\n\nWhen the cursor is over a bone's Center handle with vertexes assigned to it, click this item to select all of them from that bone's handle.\n\nOr, if another handle is attached that has the vertexes assigned to it instead, then those are the vertexes that will be selected.\n\nIf no vertexes have been assigned to any handle at that location, then the menu item will show disabled.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
+                        SelectHandleVertexes.state = qmenu.disabled
+                        SelectHandlePosVertexes = qmenu.item("Select Handle &Position Vertexes", select_handle_pos_vertexes_click, "|Select (bone handle name) handle position Vertexes:\n\nWhen the cursor is over a bone's Center handle with vertexes assigned to it, click this item to select the vertexes used to set that bone's handle position.\n\nOr, if another handle is attached that has the vertexes assigned to it instead, then those are the position vertexes for that handle that will be selected.\n\nIf no vertexes have been assigned to any handle at that location, then the menu item will show disabled.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
+                        SelectHandlePosVertexes.state = qmenu.disabled
+        except:
+            SelectHandleVertexes = qmenu.item("Se&lect Handle Vertexes", select_handle_vertexes_click, "|Select (bone handle name) Vertexes:\n\nWhen the cursor is over a bone's Center handle with vertexes assigned to it, click this item to select all of them from that bone's handle.\n\nOr, if another handle is attached that has the vertexes assigned to it instead, then those are the vertexes that will be selected.\n\nIf no vertexes have been assigned to any handle at that location, then the menu item will show disabled.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
+            SelectHandleVertexes.state = qmenu.disabled
+            SelectHandlePosVertexes = qmenu.item("Select Handle &Position Vertexes", select_handle_pos_vertexes_click, "|Select (bone handle name) handle position Vertexes:\n\nWhen the cursor is over a bone's Center handle with vertexes assigned to it, click this item to select the vertexes used to set that bone's handle position.\n\nOr, if another handle is attached that has the vertexes assigned to it instead, then those are the position vertexes for that handle that will be selected.\n\nIf no vertexes have been assigned to any handle at that location, then the menu item will show disabled.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
+            SelectHandlePosVertexes.state = qmenu.disabled
 
         try:
             if self.bone.parent:
@@ -4442,19 +4547,22 @@ class LinBoneCenterHandle(LinearBoneHandle):
                 if item.type == ":bone":
                     count = count + 1
             if count == 2:
-                AttachBones.state = qmenu.normal
+                AttachStart2End.state = qmenu.normal
+                AttachBonesStarts.state = qmenu.normal
                 DetachBones.state = qmenu.normal
                 AlignBonesStarts.state = qmenu.normal
                 AlignBonesEnds.state = qmenu.normal
                 AlignStart2End.state = qmenu.normal
             else:
-                AttachBones.state = qmenu.disabled
+                AttachStart2End.state = qmenu.disabled
+                AttachBonesStarts.state = qmenu.disabled
                 DetachBones.state = qmenu.disabled
                 AlignBonesStarts.state = qmenu.disabled
                 AlignBonesEnds.state = qmenu.disabled
                 AlignStart2End.state = qmenu.disabled
         else:
-            AttachBones.state = qmenu.disabled
+            AttachStart2End.state = qmenu.disabled
+            AttachBonesStarts.state = qmenu.disabled
             DetachBones.state = qmenu.disabled
             AlignBonesStarts.state = qmenu.disabled
             AlignBonesEnds.state = qmenu.disabled
@@ -4528,7 +4636,7 @@ class LinBoneCenterHandle(LinearBoneHandle):
         if not MdlOption("GridActive") or editor.gridstep <= 0:
             Forcetogrid.state = qmenu.disabled
 
-        menu = [AddBone, ContinueBones, AttachBones, DetachBones, qmenu.sep, AlignBonesStarts, AlignBonesEnds, AlignStart2End, qmenu.sep, Assign2Start, Assign2End, SetHandlePosition, qmenu.sep, ReleaseStartVertexes, ReleaseEndVertexes, qmenu.sep, KeyframesRotation, qmenu.sep, SB1, HB1, qmenu.sep, Forcetogrid]
+        menu = [AddBone, ContinueBones, qmenu.sep, AttachStart2End, AttachBonesStarts, DetachBones, qmenu.sep, AlignStart2End, AlignBonesStarts, AlignBonesEnds, qmenu.sep, Assign2Start, Assign2End, SetHandlePosition, qmenu.sep, SelectHandleVertexes, SelectHandlePosVertexes, qmenu.sep, ReleaseStartVertexes, ReleaseEndVertexes, qmenu.sep, KeyframesRotation, qmenu.sep, SB1, HB1, qmenu.sep, Forcetogrid]
 
         return menu
 
@@ -5113,7 +5221,7 @@ class LinBoneCornerHandle(LinearBoneHandle):
                     new_o_bone['start_offset'] = newobjectslist[i].dictspec['start_offset']
                     new_o_bone['end_offset'] = newobjectslist[i].dictspec['end_offset']
                     undo.exchange(oldobjectslist[i], new_o_bone)
-                editor.ok(undo, "bone handle rotation 2")
+                editor.ok(undo, "bone handle rotation")
             else:
                 undo = quarkx.action()
                 for i in range(len(oldobjectslist)):
@@ -5598,6 +5706,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.149  2008/10/04 05:48:06  cdunde
+#Updates for Model Editor Bones system.
+#
 #Revision 1.148  2008/09/23 08:07:44  cdunde
 #Added code to make bones positions frame independent.
 #
