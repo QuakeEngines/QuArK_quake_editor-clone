@@ -68,7 +68,7 @@ Strings = {
     ### The entries 176,177,178 are used in [QkMap.PAS] QMapFile.SaveFile()
     176: "This map has been written by QuArK - Quake Army Knife, %s",
     177: "It is a map for the game %s.",
-    178: "For more information see QuArK's Home Page :  http://www.planetquake.com/quark",
+    178: "For more information see QuArK's Home Page: http://quark.planetquake.gamespy.com/",
     179: "(%d textures)",
     180: "noname",
     181: "  Map for the game %s",
@@ -1055,6 +1055,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.131  2008/09/20 21:07:51  danielpharos
+#Removed MarsCaption option and added nice FirstRun dialogbox.
+#
 #Revision 1.130  2008/09/16 12:13:12  danielpharos
 #Added support for CoD2 iwd files.
 #
