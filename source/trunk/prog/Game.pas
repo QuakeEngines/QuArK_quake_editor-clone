@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.65  2008/10/07 21:16:25  danielpharos
+Massive update to get Steam finally working better.
+
 Revision 1.64  2008/10/07 21:04:52  danielpharos
 Added GetBaseDir function and other small fixes.
 
@@ -658,6 +661,31 @@ end;
 
 function ResolveFilename(const FileToResolve : TFileToResolve) : TResolvedFilename;
 
+ function ConstainsReplacer(const StringToCheck : String) : Boolean;
+ var
+   I, J, K: Integer;
+ begin
+   I:=Pos('%', StringToCheck);
+   if I=0 then
+   begin
+     Result := False;
+     Exit;
+   end;
+   J:=PosEx('%', StringToCheck, I+1);
+   if J=0 then
+   begin
+     Result := False;
+     Exit;
+   end;
+   K:=PosEx(PathDelim, StringToCheck, I+1);
+   if (K<>0) and (K < J) then
+   begin
+     Result := False;
+     Exit;
+   end;
+   Result := True;
+ end;
+
  function getGroupFilePath(obj : QObject) : String;
  var
    Q: QObject;
@@ -687,34 +715,20 @@ var
   argument_mapfile: String;
   argument_file: String;
   argument_filename: String;
+  argument_fullfilename: String;
   argument_grouppath: String;
   argument_outputfile: String;
 
   setupdirectory: String;
   setupbasedir: String;
   setuptmpquark: String;
+  MapExt: String;
 
   S: String;
-  I, J, K: Integer;
 begin
   //Workaround: Only try to resolve if there is anything to resolve. This fixes
   //crashes when the setup is not init-ed properly yet.
-  I:=Pos('%', FileToResolve.CommandLine);
-  if I=0 then
-  begin
-    Result.Filename:=FileToResolve.CommandLine;
-    Result.WorkDir:='';
-    Exit;
-  end;
-  J:=PosEx('%', FileToResolve.CommandLine, I+1);
-  if J=0 then
-  begin
-    Result.Filename:=FileToResolve.CommandLine;
-    Result.WorkDir:='';
-    Exit;
-  end;
-  K:=PosEx(PathDelim, FileToResolve.CommandLine, I+1);
-  if (K<>0) and (K < J) then
+  if not ConstainsReplacer(FileToResolve.CommandLine) then
   begin
     Result.Filename:=FileToResolve.CommandLine;
     Result.WorkDir:='';
@@ -757,9 +771,13 @@ begin
         Result.Workdir := LeftStr(Result.Workdir, Length(Result.Workdir)-1);
       argument_mappath := GameMapPath;
     end;
-    argument_mapfile := argument_mappath + PathDelim + FileToResolve.AFilename + '.map';
+    MapExt := Setup.Specifics.Values['MapExt'];
+    if MapExt = '' then
+      MapExt := '.map';
+    argument_mapfile := argument_mappath + PathDelim + FileToResolve.AFilename + MapExt;
     argument_file    := argument_mappath + PathDelim + FileToResolve.AFilename;
     argument_filename := FileToResolve.AFilename;
+    argument_fullfilename := FileToResolve.AFilename + MapExt;
     if FileToResolve.AFileobject<>Nil then
       argument_grouppath := getGroupFilePath(FileToResolve.AFileobject)
     else
@@ -786,6 +804,7 @@ begin
   Result.Filename:=StringReplace(Result.Filename, '%mapfile%', argument_mapfile, [rfReplaceAll]);
   Result.Filename:=StringReplace(Result.Filename, '%file%', argument_file, [rfReplaceAll]);
   Result.Filename:=StringReplace(Result.Filename, '%filename%', argument_filename, [rfReplaceAll]);
+  Result.Filename:=StringReplace(Result.Filename, '%fullfilename%', argument_fullfilename, [rfReplaceAll]);
   Result.Filename:=StringReplace(Result.Filename, '%basepath%', setupdirectory, [rfReplaceAll]);
   Result.Filename:=StringReplace(Result.Filename, '%gamedir%', GettmpQuArK, [rfReplaceAll]);
   Result.Filename:=StringReplace(Result.Filename, '%quarkpath%', GetQPath(pQuArK), [rfReplaceAll]);
@@ -795,6 +814,11 @@ begin
   Result.Filename:=StringReplace(Result.Filename, '%steamdir%',     SteamSetup.Specifics.Values['Directory'], [rfReplaceAll]);
   Result.Filename:=StringReplace(Result.Filename, '%steamappid%',   SteamAppID, [rfReplaceAll]);
   Result.Filename:=StringReplace(Result.Filename, '%steamuser%',    SteamSetup.Specifics.Values['SteamUser'], [rfReplaceAll]);
+
+  {$IFDEF Debug}
+  if not ConstainsReplacer(FileToResolve.CommandLine) then
+    Log(LOG_WARNING, 'Warning: ResolveFilename: There might be items left to be replaced...!');
+  {$ENDIF}
 end;
 
 function QuickResolveFilename(const Filename : String) : String;

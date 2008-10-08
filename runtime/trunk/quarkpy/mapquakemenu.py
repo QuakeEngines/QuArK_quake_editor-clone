@@ -65,11 +65,6 @@ def CreateCheckFileExtensionArray(instring):
 
 
 
-def ExtensionFromFilter(filter):
-    startex = filter.rfind('|*.')
-    return filter[startex+2:]
-
-
 class BuildPgmConsole(qquake.BatchConsole):
     "StdOut console for programs that build files."
 
@@ -186,20 +181,17 @@ def writemapfile(root, mapname, selonly, wadfile, hxstr=None, group=None):
     if selonly:
         saveflags = saveflags | SO_SELONLY
     setup = quarkx.setupsubset()
-    mapfiltercode = setup["MapFilter"]
-    if mapfiltercode:
-        mapext=ExtensionFromFilter(Strings[eval(mapfiltercode)])
-    else:
-        mapext='.map'
-    mapfullname=mapname+mapext
+    mapext = setup["MapExt"]
+    if not mapext:
+        mapext = '.map'
+    mapfullname = mapname + mapext
     m = quarkx.newfileobj(mapfullname)
 
     if group == "":
-        fullfilename = quarkx.outputfile("maps/%s" % mapfullname)
+        m.filename = quarkx.outputfile("maps/%s" % mapfullname)
     else:
-        fullfilename = quarkx.outputfile("maps/"+group+"/%s" % mapfullname)
-        fullfilename = quarkx.outputfile("maps/%s" % mapfullname)
-    m.filename = quarkx.resolvefilename(fullfilename, FT_PATH)[0]
+        m.filename = quarkx.outputfile("maps/"+group+"/%s" % mapfullname)
+        m.filename = quarkx.outputfile("maps/%s" % mapfullname)
     worldspawn = root.copy(1)   # preserve selection while copying
     m["Root"] = worldspawn.name
     m.setint("saveflags", saveflags)
@@ -377,9 +369,6 @@ def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile,
     missing = ""
     hxstr = ""
     hxstrfile = setup["HxStrings"]
-    setupdirectory = quarkx.getquakedir()
-    setupbasedir = setup["BaseDir"]
-    setuptmpquark = quarkx.gettmpquark()
     if hxstrfile and len(maplist):
         try:
             hxstr = quarkx.needgamefile(hxstrfile)["Data"]
@@ -426,7 +415,6 @@ def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile,
                        cmdline2 = cmdline
                     else:
                        cmdline2 = setup["BuildPgmsDir"] + "\\" + cmdline
-                    cmdline2 = quarkx.resolvefilename(cmdline2, FT_TOOL)[0]
                     if (not quarkx.getfileattr(cmdline2)==FA_FILENOTFOUND):
                         # Success, use this build-tool!
                         cmdline = cmdline2
@@ -434,8 +422,7 @@ def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile,
                 except:
                     pass
 
-                cmdline2 = quarkx.resolvefilename(cmdline, FT_GAME)[0]
-                if (not cmdline2) or (quarkx.getfileattr(cmdline2)==FA_FILENOTFOUND):
+                if (not cmdline) or (quarkx.getfileattr(cmdline)==FA_FILENOTFOUND):
                     desc = setup["BuildDesc%d" % pgrmnbr] or cmdline or pgrmx
                     missing = "     %s\n%s" % (desc, missing)
                 else:
@@ -649,6 +636,9 @@ def QuakeMenu(editor):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.58  2008/09/29 23:16:38  danielpharos
+#Resolve-code: Another fix. This should get Steam-games compiling and running again.
+#
 #Revision 1.57  2008/09/29 22:01:56  danielpharos
 #Update to filename resolving code. Needs more testing, but should work.
 #

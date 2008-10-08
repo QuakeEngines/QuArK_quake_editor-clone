@@ -78,7 +78,7 @@ class GameConsole(BatchConsole):
         self.pakfile = quarkx.outputpakfile(forcepak)
 
         dir = quarkx.getquakedir()
-        program = quarkx.resolvefilename(setup["Program"], FT_PATH)[0]
+        program = setup["Program"]
         if not dir or not program:
             quarkx.openconfigdlg(":")
             raise "Invalid configuration of the game executable"
@@ -98,6 +98,8 @@ class GameConsole(BatchConsole):
                     cmdline = cmdline + " " + runMapCmdLine
 
                 cmdline, dir = quarkx.resolvefilename(cmdline, FT_GAME, map)
+            else:
+                cmdline = quarkx.resolvefilename(cmdline, FT_PATH)[0]
 
         BatchConsole.__init__(self, cmdline, dir, next)
 
@@ -112,7 +114,7 @@ class GameConsole(BatchConsole):
                 nopak = qname[:1]=='*'
                 if nopak:
                     qname = qname[1:]
-                fname = quarkx.resolvefilename(quarkx.outputfile(qname), FT_PATH)[0]
+                fname = quarkx.outputfile(qname)
                 err = ": ready"
                 if qobj is None:
                     try:
@@ -146,7 +148,7 @@ class GameConsole(BatchConsole):
             for qname, qobj in self.filelistdata:
                 if qname[:1]=='*':
                     qname = qname[1:]
-                fname = quarkx.resolvefilename(quarkx.outputfile(qname), FT_PATH)[0]
+                fname = quarkx.outputfile(qname)
                 err = ": ready"
                 if qobj is None:
                     if quarkx.getfileattr(fname)==-1:
@@ -192,6 +194,9 @@ class GameConsole(BatchConsole):
 #
 #
 #$Log$
+#Revision 1.24  2008/09/29 23:16:38  danielpharos
+#Resolve-code: Another fix. This should get Steam-games compiling and running again.
+#
 #Revision 1.23  2008/09/29 22:41:06  danielpharos
 #Fixed for file resolving code. Fixes Steam-games.
 #
