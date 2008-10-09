@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.1  2008/09/16 12:12:48  danielpharos
+Added support for CoD2 iwd files.
+
 }
 
 unit QkCoD2;
@@ -55,7 +58,7 @@ class procedure CoD2Pak.FileObjectClassInfo(var Info: TFileObjectClassInfo);
 begin
  inherited;
  Info.FileObjectDescriptionText:=LoadStr1(5147);
- Info.FileExt:=798;
+ Info.FileExt:=821;
 end;
 
  {------------------------}
