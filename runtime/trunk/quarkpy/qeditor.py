@@ -1522,13 +1522,13 @@ def Help3():
     htmldoc("intro.html") # Assumes the infobase have been installed in the ./HELP folder
 
 def Help4():
-    htmldoc("http://quark.planetquake.gamespy.com/") # Takes the user to QuArK's official web page
+    htmldoc("*http://quark.planetquake.gamespy.com/") # Takes the user to QuArK's official web page
 
 def Help5():
     htmldoc("intro.mapeditor.overview.html") # Takes the user to the Overview page
 
 def Help6():
-    htmldoc("http://quark.planetquake.gamespy.com/forums/") # Takes the user to QuArK's Forums web page
+    htmldoc("*http://quark.planetquake.gamespy.com/forums/") # Takes the user to QuArK's Forums web page
 
 #
 # Retrieves all objects with a given type, excluding VF_CANTSELECT groups.
@@ -1558,6 +1558,9 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.52  2008/10/07 21:08:59  danielpharos
+#Changed a comment a bit.
+#
 #Revision 1.51  2008/09/14 12:55:10  danielpharos
 #Changes to Help system: All forms now have a customizable help-link. Also, added an fallback option to the online infobase docs.
 #
