@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.455  2008/10/08 23:14:17  danielpharos
+//Moved the MaxRecentFiles-items to a separate menu, and upped the limit to 20.
+//
 //Revision 1.454  2008/10/08 21:42:12  danielpharos
 //Made map extension changable.
 //
@@ -1653,6 +1656,7 @@ QQRKSRC1
         .pk4 = "1"     ipk4 = '5'
         .sin = "1"     isin = '5'
         .iwd = "1"     iiwd = '5'
+        .col = "1"     icol = '5'
         .gcf = "1"     igcf = '5'
         .vl2 = "1"     ivl2 = '5'
         .qc  = "1"     iqc  = '8'
@@ -1703,6 +1707,7 @@ QQRKSRC1
         .pk4 = "<open>"
         .sin = ""
         .iwd = ""
+        .col = ""
         .gcf = ""
         .vl2 = ""
         .qc  = "Notepad.exe"
@@ -8994,6 +8999,7 @@ QQRKSRC1
       .pk4: = { Txt="PK4 archives" externaledit = ! }
       .sin: = { Txt="SIN Pak archives" externaledit = ! }
       .iwd: = { Txt="IWD archives" externaledit = ! }
+      .col: = { Txt="COL archives" externaledit = ! }
       .gcf: = { Txt="GCF archives" externaledit = ! }
       .vl2: = { Txt="VL2 archives" externaledit = ! }
       .qc:  = { Txt="QC scripts" externaledit = ! }
@@ -9068,6 +9074,7 @@ QQRKSRC1
       .pk4: = {Typ="X" Cap=".pk4" Txt="PACK files for Doom 3"}
       .sin: = {Typ="X" Cap=".sin" Txt="PACK files for Sin"}
       .iwd: = {Typ="X" Cap=".iwd" Txt="PACK files for Call of Duty 2"}
+      .col: = {Typ="X" Cap=".col" Txt="PACK files for Sylphis"}
       .gcf: = {Typ="X" Cap=".gcf" Txt="PACK files for Half-Life 2"}
       .vl2: = {Typ="X" Cap=".vl2" Txt="PACK files for Tribe 2"}
       .qc:  = {Typ="X" Cap=".qc"  Txt="QuakeC Code (Quake 1)"}

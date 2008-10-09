@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.25  2008/09/16 12:12:49  danielpharos
+Added support for CoD2 iwd files.
+
 Revision 1.24  2008/09/06 15:57:14  danielpharos
 Moved exception code into separate file.
 
@@ -184,7 +187,8 @@ type
 implementation
 
 uses Travail, QkExplorer, Quarkx, QkExceptions, PyObjects, Game, QkSin,
- Qkzip2, QkQ3, QkD3, QkCoD2, QkObjectClassList, QkBsp, ExtraFunctionality;
+ Qkzip2, QkQ3, QkD3, QkCoD2, QkSylphis, QkObjectClassList, QkBsp,
+ ExtraFunctionality;
 
 {$R *.DFM}
 
@@ -891,7 +895,8 @@ begin
     3: Result:=CoD2Pak;
     4: Result:=QZipPak;
     5: Result:=QSinPak;
-    6: Result:=QPak;
+    6: Result:=SylphisPak;
+    7: Result:=QPak;
     else
       Result:=Nil;
   end;

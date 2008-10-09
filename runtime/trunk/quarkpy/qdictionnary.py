@@ -268,7 +268,7 @@ Strings = {
     806: "SoF Texture (*.m32)|*.m32",
     807: "3d studio file (*.3ds)|*.3ds",
     808: "Hmf (6DX) map file (*.hmf)|*.hmf",
-
+    809: "Sylphis Pak files (*.col)|*.col",
     810: "PNG image (*.png)|*.png",
     811: "Tribes 2 VL2 Files (*.vl2)|*.vl2",
     812: "Tribes 2 CS-script Files (*.cs)|*.cs",
@@ -564,6 +564,7 @@ Strings = {
     5145: ".md2 file",
     5146: "Doom 3 Pak",
     5147: "Call of Duty 2 Pak",
+    5148: "Sylphis Pak",
 
     5155: "Quake Context",
     5156: "Tool bar",
@@ -1055,6 +1056,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.132  2008/10/08 21:41:47  danielpharos
+#Fixed website address.
+#
 #Revision 1.131  2008/09/20 21:07:51  danielpharos
 #Removed MarsCaption option and added nice FirstRun dialogbox.
 #

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.56  2008/09/16 12:12:50  danielpharos
+Added support for CoD2 iwd files.
+
 Revision 1.55  2008/09/06 15:57:38  danielpharos
 Moved exception code into separate file.
 
@@ -270,6 +273,7 @@ uses
   QkSoF in 'prog\QkSoF.pas',
   QkSpr in 'prog\QkSpr.pas',
   QkSteamFS in 'prog\QkSteamFS.pas',
+  QkSylphis in 'prog\QkSylphis.pas',
   QkText in 'prog\QkText.pas',
   QkTextures in 'prog\QkTextures.pas' {FQTexture},
   QkTga in 'prog\QkTga.pas',
