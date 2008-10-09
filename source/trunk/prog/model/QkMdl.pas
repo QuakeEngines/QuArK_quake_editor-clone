@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23  2008/09/06 15:57:37  danielpharos
+Moved exception code into separate file.
+
 Revision 1.22  2007/08/14 16:33:00  danielpharos
 HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
 
@@ -348,7 +351,11 @@ var
 begin
   Result:=nil;
   try
-    tex:= NeedGameFile(tex_name, '');
+    try
+      tex:=NeedGameFile(tex_name, '');
+    except
+      tex:=nil;  { file not found, silently ignore }
+    end;
     if tex = nil then
       exit;
     tex.acces;

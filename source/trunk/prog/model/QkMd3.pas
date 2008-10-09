@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.41  2008/09/14 09:50:35  danielpharos
+Use centralized function to retrieve ShadersPath.
+
 Revision 1.40  2008/09/06 15:57:35  danielpharos
 Moved exception code into separate file.
 
@@ -573,28 +576,32 @@ begin
       skin:=Loaded_SkinFile(Comp, ChangeFileExt(base_tex_name,'.jpg'), false);
     if skin=nil then
       skin:=Loaded_SkinFile(Comp, ChangeFileExt(base_tex_name,'.png'), false);
-         // SilverPaladin - 12/01/2003 - If we have not been able to find a skin file   
-      // in the current directories (unpure has priority), look for it in the PK3
-      // files (pure mode) that have been loaded for the game.   
-      if (Skin = NIL)   
-      then begin   
-        ImageFile := NeedGameFile(base_tex_name, '');
-        if (ImageFile <> NIL)   
-        then begin   
-         ImageFile.AddRef(+1);   
-         try   
-           ImageFile.Acces;   
-           if (ImageFile is QImage)   
-           then Skin := QImage(ImageFile);   
-         finally   
-           ImageFile.AddRef(-1);   
-         end;   
-        end;   
-      end;   
-     
-      // If the files does not exist in the directories or in the packs then raise   
-      // an error. 
 
+    // SilverPaladin - 12/01/2003 - If we have not been able to find a skin file
+    // in the current directories (unpure has priority), look for it in the PK3
+    // files (pure mode) that have been loaded for the game.
+    if (Skin = NIL) then
+    begin
+      try
+        ImageFile := NeedGameFile(base_tex_name, '');
+      except
+        ImageFile := nil;  { file not found, silently ignore }
+      end;
+      if (ImageFile <> NIL) then
+      begin
+        ImageFile.AddRef(+1);
+        try
+          ImageFile.Acces;
+          if (ImageFile is QImage) then
+            Skin := QImage(ImageFile);
+        finally
+          ImageFile.AddRef(-1);
+        end;
+      end;
+    end;
+
+    // If the files does not exist in the directories or in the packs then raise
+    // an error.
     if skin=nil then
     begin
       t:=FmtLoadStr1(5575, [base_tex_name+' or '+ChangeFileExt(base_tex_name,'.jpg'), LoadName]);
