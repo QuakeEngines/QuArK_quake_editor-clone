@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2008/09/06 15:57:05  danielpharos
+Moved exception code into separate file.
+
 Revision 1.11  2008/04/23 20:12:38  cdunde
 Setup for Warsow with .md3 model support.
 
@@ -136,7 +139,7 @@ implementation
 
 uses
   Windows, Graphics, StrUtils, Setup, Game, Quarkx, QkExceptions, Travail, Logging,
-  PyForms, Bezier, Duplicator, QkPixelSet, QkMap, QkVMF, QkQ2, qmatrices,
+  PyForms, Bezier, Duplicator, QkPixelSet, QkMap, QkVMF, QkSylphis, QkQ2, qmatrices,
   Qk3D, QkBspHulls, QkObjectClassList, MapError;
 
 var
@@ -231,6 +234,8 @@ begin
        Result:=QHmfFile;
      mjHL2:
        Result:=QVMFFile;
+     mjSylphis:
+       Result:=QCMapFile;
      else
        Result:=QQuakeMapFile;
      end;

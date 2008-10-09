@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.1  2008/10/09 11:31:51  danielpharos
+Added decent .col Sylphis archive support.
+
 }
 
 unit QkSylphis;
@@ -30,8 +33,7 @@ unit QkSylphis;
 interface
 
 uses
-  SysUtils, Windows, Classes, QkZip2, QkFileObjects, QkObjects, QkText,
-  QkJpg, QkTextures, Setup, QkWad, QkPixelSet;
+  QkZip2, QkFileObjects, QkObjects, QkQuakeMap;
 
 type
   SylphisPak = class(QZipPak)
@@ -40,9 +42,15 @@ type
          class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
         end;
 
+ QCMapFile = class(QMapFile)
+        public
+          class function TypeInfo: String; override;
+          class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
+        end;
+
 implementation
 
-uses QuarkX, QkExceptions, Game, Travail, QkObjectClassList, Logging;
+uses QuarkX, QkObjectClassList;
 
 {------------------------}
 
@@ -60,7 +68,22 @@ end;
 
  {------------------------}
 
+class function QCMapFile.TypeInfo;
+begin
+ Result:='.cmap';
+end;
+
+class procedure QCMapFile.FileObjectClassInfo(var Info: TFileObjectClassInfo);
+begin
+ inherited;
+ Info.FileObjectDescriptionText:=LoadStr1(5149);
+ Info.FileExt:=822;
+end;
+
+ {------------------------}
+
 initialization
   RegisterQObject(SylphisPak, 's');
+  RegisterQObject(QCMapFile, 'x');
 end.
 

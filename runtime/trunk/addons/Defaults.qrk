@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.456  2008/10/09 11:31:46  danielpharos
+//Added decent .col Sylphis archive support.
+//
 //Revision 1.455  2008/10/08 23:14:17  danielpharos
 //Moved the MaxRecentFiles-items to a separate menu, and upped the limit to 20.
 //
@@ -1645,6 +1648,7 @@ QQRKSRC1
         .map = "1"     imap = '2'
         .hmf = "1"     ihmf = '2'
         .vmf = "1"     ivmf = '2'
+        .cmap = "1"    icmap = '2'
         .bsp = "1"     ibsp = '3'
         .qkl = "!"     iqkl = '4'
         .mdl = "1"     imdl = '4'
@@ -1696,6 +1700,7 @@ QQRKSRC1
         .map = "Notepad.exe"
         .hmf = "Notepad.exe"
         .vmf = "Notepad.exe"
+        .cmap = "Notepad.exe"
         .bsp = "<open>"
         .qkl = ""
         .mdl = "<open>"
@@ -8988,6 +8993,7 @@ QQRKSRC1
       .map: = { Txt="MAP map files" externaledit = ! }
       .hmf: = { Txt="HMF map files" externaledit = ! }
       .vmf: = { Txt="VMF map files" externaledit = ! }
+      .cmap: = { Txt="CMAP map files" externaledit = ! }
       .bsp: = { Txt="BSP compiled maps" externaledit = ! }
       //.qkl: = { Txt="QKL models" externaledit = ! }
       .mdl: = { Txt="MDL models" externaledit = ! }
@@ -9063,6 +9069,7 @@ QQRKSRC1
       .map: = {Typ="X" Cap=".map" Txt="Quake map files"}
       .hmf: = {Typ="X" Cap=".hmf" Txt="6DX map files"}
       .vmf: = {Typ="X" Cap=".vmf" Txt="Valve map format map files"}
+      .cmap: = {Typ="X" Cap=".cmap" Txt="Sylphis map files"}
       .bsp: = {Typ="X" Cap=".bsp" Txt="Compiled maps"}
     //.qkl: = {Typ="X" Cap=".qkl" Txt="QuArK models (if not in .qrk)"}
       .mdl: = {Typ="X" Cap=".mdl" Txt="Standard Quake 1 Models"}

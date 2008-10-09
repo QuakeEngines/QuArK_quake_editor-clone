@@ -281,6 +281,7 @@ Strings = {
     819: "DDS image (*.dds)|*.dds",
     820: "FTX image (*.ftx)|*.ftx",
     821: "Call of Duty 2 Pak Files (.iwd)|*.iwd",
+    822: "Sylphis Map File (*.cmap)|*.cmap",
 
     2368: "Skins",
     2369: "Frames",
@@ -565,6 +566,7 @@ Strings = {
     5146: "Doom 3 Pak",
     5147: "Call of Duty 2 Pak",
     5148: "Sylphis Pak",
+    5149: "Sylphis Map file",
 
     5155: "Quake Context",
     5156: "Tool bar",
@@ -1056,6 +1058,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.133  2008/10/09 11:31:46  danielpharos
+#Added decent .col Sylphis archive support.
+#
 #Revision 1.132  2008/10/08 21:41:47  danielpharos
 #Fixed website address.
 #

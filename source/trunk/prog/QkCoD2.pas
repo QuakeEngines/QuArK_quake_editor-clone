@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2008/10/09 11:28:38  danielpharos
+Fix mistake.
+
 Revision 1.1  2008/09/16 12:12:48  danielpharos
 Added support for CoD2 iwd files.
 
@@ -33,8 +36,7 @@ unit QkCoD2;
 interface
 
 uses
-  SysUtils, Windows, Classes, QkZip2, QkFileObjects, QkObjects, QkText,
-  QkJpg, QkTextures, Setup, QkWad, QkPixelSet;
+  QkZip2, QkFileObjects, QkObjects;
 
 type
   CoD2Pak = class(QZipPak)
@@ -45,7 +47,7 @@ type
 
 implementation
 
-uses QuarkX, QkExceptions, Game, Travail, QkObjectClassList, Logging;
+uses QuarkX, QkObjectClassList;
 
 {------------------------}
 
