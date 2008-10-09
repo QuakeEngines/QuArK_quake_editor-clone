@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.17  2008/09/06 15:57:36  danielpharos
+Moved exception code into separate file.
+
 Revision 1.16  2008/08/07 17:17:17  cdunde
 Removed end_offset from source code completely, just using end_point instead, by DanielPharos.
 
@@ -109,10 +112,14 @@ type
   QModelBone = class(QMdlObject)
   private
     Component: QObject;
+    //Workaround: We want to be able to store handles with the bones:
+    FStartHandle, FEndHandle: PyObject;
   public
     function IsAllowedParent(Parent: QObject) : Boolean; override;
     class function TypeInfo: String; override;
     procedure ObjectState(var E: TEtatObjet); override;
+    constructor Create(const nName: String; nParent: QObject);
+    destructor Destroy; override;
 //    procedure Dessiner; override;
     Function GetEndPoint(var endpoint: vec3_p): boolean;
     Function GetStartPoint(var startpoint: vec3_p): boolean;
@@ -148,6 +155,20 @@ procedure QModelBone.ObjectState(var E: TEtatObjet);
 begin
   inherited;
   E.IndexImage:=iiModelBone;
+end;
+
+constructor QModelBone.Create(const nName: String; nParent: QObject);
+begin
+  inherited;
+  FStartHandle:=PyNoResult;
+  FEndHandle:=PyNoResult;
+end;
+
+destructor QModelBone.Destroy;
+begin
+  Py_XDECREF(FStartHandle);
+  Py_XDECREF(FEndHandle);
+  inherited;
 end;
 
 const
@@ -247,23 +268,36 @@ begin
   Result:=inherited PyGetAttr(attr);
   if Result<>Nil then Exit;
   case attr[0] of
-    's': if StrComp(attr, 'start_point')=0 then begin
+    's': if StrComp(attr, 'start_point')=0 then
+    begin
       R:=GetStartPoint(P);
       if R then
         Result:=MakePyVectv(P^)
       else
         Result:=Py_None;
       Exit;
+    end
+    else if StrComp(attr, 'start_handle')=0 then
+    begin
+      Result:=FStartHandle;
+      Exit;
     end;
-    'e': if StrComp(attr, 'end_point')=0 then begin
+    'e': if StrComp(attr, 'end_point')=0 then
+    begin
       R:=GetEndPoint(P);
       if R then
         Result:=MakePyVectv(P^)
       else
         Result:=Py_None;
       Exit;
+    end
+    else if StrComp(attr, 'end_handle')=0 then
+    begin
+      Result:=FEndHandle;
+      Exit;
     end;
-    'b': if StrComp(attr, 'bone_length')=0 then begin
+    'b': if StrComp(attr, 'bone_length')=0 then
+    begin
       Result:=PyFloat_FromDouble(GetLength);
       Exit;
     end;
@@ -306,6 +340,14 @@ begin
         Specifics.Add(S);
         Result:=True;
         Exit;
+      end
+      else if StrComp(attr, 'start_handle')=0 then
+      begin
+        Py_XDECREF(FStartHandle);
+        FStartHandle:=value;
+        Py_XINCREF(value);
+        Result:=True;
+        Exit;
       end;
       'e': if StrComp(attr, 'end_point')=0 then begin
         S0:=FloatSpecNameOf(EndSpec);
@@ -326,8 +368,15 @@ begin
         Specifics.Add(S);
         Result:=True;
         Exit;
+      end
+      else if StrComp(attr, 'end_handle')=0 then
+      begin
+        Py_XDECREF(FEndHandle);
+        FEndHandle:=value;
+        Py_XINCREF(value);
+        Result:=True;
+        Exit;
       end;
-
     end;
   end;
 end;
