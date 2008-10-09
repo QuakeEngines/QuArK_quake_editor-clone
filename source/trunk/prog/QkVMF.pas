@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.20  2008/09/06 15:57:10  danielpharos
+Moved exception code into separate file.
+
 Revision 1.19  2007/07/05 10:19:44  danielpharos
 Moved the Quake .map format code to a separate file.
 
@@ -797,7 +800,6 @@ expected one.
    ReadSymbol(sStringToken);
    ReadSymbol(sCurlyBracketLeft);
 
-
    // read attributes of world
    while SymbolType=sStringQuotedToken do
    begin
@@ -811,31 +813,27 @@ expected one.
      else
        Root.Specifics.Add(S1+'='+S);
      ReadSymbol(sStringQuotedToken);
-
-
    end;
-   if (SymbolType=sCurlyBracketRight) then
-     ReadSymbol(sCurlyBracketRight);
 
-     while SymbolType = sStringToken do  {read a brush}
-       if LowerCase(s)='solid' then
-         ReadHL2Solid(MapStructure)
+   while SymbolType = sStringToken do  {read a brush}
+     if LowerCase(s)='solid' then
+       ReadHL2Solid(MapStructure)
+     else
+       if LowerCase(s)='group' then
+         ReadHL2Group(MapStructure)
        else
-         if LowerCase(s)='group' then
+         if LowerCase(s)='hidden' then
            ReadHL2Group(MapStructure)
          else
-           if LowerCase(s)='hidden' then
-             ReadHL2Group(MapStructure)
-           else
-             raise EErrorFmt(254, [LineNoBeingParsed, 'unknown thing']);
+           raise EErrorFmt(254, [LineNoBeingParsed, 'unknown thing']);
    ReadSymbol(sCurlyBracketRight);
-
  end;
 
  procedure ReadVersionInfo;
  begin
    ReadSymbol(sStringToken);
    ReadSymbol(sCurlyBracketLeft);
+
    // read attributes of versioninfo
    while SymbolType=sStringQuotedToken do
    begin
@@ -843,8 +841,6 @@ expected one.
      ReadSymbol(sStringQuotedToken);
 
 //tbd : what versions to allow ?
-//           if (S1='mapversion') and (S<>'1') then
-//             raise EErrorFmt(254, [LineNoBeingParsed, LoadStr1(268)]);
 //           if (S1='formatversion') and (S<>'100') then
 //             raise EErrorFmt(254, [LineNoBeingParsed, LoadStr1(268)]);
      ReadSymbol(sStringQuotedToken);
