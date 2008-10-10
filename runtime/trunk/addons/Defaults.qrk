@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.457  2008/10/09 12:58:40  danielpharos
+//Added decent Sylphis map file support, and removed some redundant 'uses'.
+//
 //Revision 1.456  2008/10/09 11:31:46  danielpharos
 //Added decent .col Sylphis archive support.
 //
@@ -5468,16 +5471,16 @@ QQRKSRC1
                "420 for Half-Life 2: Episode Two"
                "440 for Team Fortress 2"
         Items = "(auto)"
-               "220"$0D
-               "240"$0D
-               "280"$0D
-               "320"$0D
-               "340"$0D
-               "360"$0D
-               "380"$0D
-               "400"$0D
-               "420"$0D
-               "440"
+             $0D"220"
+             $0D"240"
+             $0D"280"
+             $0D"320"
+             $0D"340"
+             $0D"360"
+             $0D"380"
+             $0D"400"
+             $0D"420"
+             $0D"440"
       }
       BaseDir: =
       {
