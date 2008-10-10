@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.458  2008/10/10 20:59:31  danielpharos
+//Fixed minor mistake.
+//
 //Revision 1.457  2008/10/09 12:58:40  danielpharos
 //Added decent Sylphis map file support, and removed some redundant 'uses'.
 //
@@ -9109,7 +9112,7 @@ QQRKSRC1
       .spr: = {Typ="X" Cap=".spr" Txt="SPR Sprites"}
       .sp2: = {Typ="X" Cap=".sp2" Txt="SP2 Sprites"}
       .wav: = {Typ="X" Cap=".wav" Txt="WAV Sounds"}
-      .cin: = {Typ="X" Cap=".cin" Txt="Video (Quake 2)"}
+      .cin: = {Typ="X" Cap=".cin" Txt="CIN Videos (Quake 2)"}
       //.cfg: = {Typ="X" Cap=".cfg" Txt="CFG files"}
       .qme: = {Typ="X" Cap=".qme" Txt="Files from QuArK version 4"}
       .txt: = {Typ="X" Cap=".txt" Txt="TXT text files"}
