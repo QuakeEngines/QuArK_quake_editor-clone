@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.459  2008/10/10 21:13:26  danielpharos
+//Minor cosmetic fix.
+//
 //Revision 1.458  2008/10/10 20:59:31  danielpharos
 //Fixed minor mistake.
 //
@@ -4610,7 +4613,7 @@ QQRKSRC1
       Program: = {
         Typ = "C"     // combo box
         Txt = "6DX command-line"
-        Items = ""
+        Items = "6DX11.EXE"
         t_ProgramHint=!
       }
       Directory: =
