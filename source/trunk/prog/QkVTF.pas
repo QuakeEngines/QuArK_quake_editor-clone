@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.39  2008/10/04 13:50:55  danielpharos
+Start using LogAndRaiseError instead of local Fatal's.
+
 Revision 1.38  2008/09/08 18:07:07  danielpharos
 Fix last of F.Seek(0, 0) bugs.
 
@@ -535,7 +538,7 @@ end;
 
 initialization
 begin
-  RegisterQObject(QVTF, 'v');
+  RegisterQObject(QVTF, 'l');
 end;
 
 finalization
