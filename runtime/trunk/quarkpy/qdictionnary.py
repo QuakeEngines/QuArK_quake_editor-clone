@@ -282,6 +282,7 @@ Strings = {
     820: "FTX image (*.ftx)|*.ftx",
     821: "Call of Duty 2 Pak Files (.iwd)|*.iwd",
     822: "Sylphis Map File (*.cmap)|*.cmap",
+    823: "Doom 3 Material File (*.mtr)|*.mtr",
 
     2368: "Skins",
     2369: "Frames",
@@ -1058,6 +1059,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.134  2008/10/09 12:58:40  danielpharos
+#Added decent Sylphis map file support, and removed some redundant 'uses'.
+#
 #Revision 1.133  2008/10/09 11:31:46  danielpharos
 #Added decent .col Sylphis archive support.
 #

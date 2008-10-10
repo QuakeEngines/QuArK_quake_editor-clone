@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2008/09/06 15:57:13  danielpharos
+Moved exception code into separate file.
+
 Revision 1.9  2008/08/26 16:21:52  danielpharos
 Added filename of broken shader/material file to error-message.
 
@@ -371,7 +374,7 @@ begin
  inherited;
  // Rowdy: technically Doom 3 does not have material lists (equivalent to Q3's shader lists)
  Info.FileObjectDescriptionText:=LoadStr1(5753);
- Info.FileExt{Count}:=804;
+ Info.FileExt{Count}:=823;
 end;
 
 function D3MaterialFile.IsExplorerItem(Q: QObject): TIsExplorerItem;
