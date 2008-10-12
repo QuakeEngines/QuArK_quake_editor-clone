@@ -15,13 +15,13 @@ QQRKSRC1
     Toolbox = "Texture Browser..."
     Root = "CoD1 Textures and shaders.qtxfolder"
 
-    t_main:incl =      { a = "main" }
+    t_main:incl =      { a = "Main" }
 
     CoD1 Textures and shaders.qtxfolder =
     {
       CoD1 Textures and shaders.osfolder =
       {
-        path = "main"
+        path = "Main"
         build = "1"
       }
     }

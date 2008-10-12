@@ -112,15 +112,15 @@ QQRKSRC1
   }
   walltex:incl =
   {
-    tex = "base_wall/basewall03"
+    tex = "austria/trim/concrete@chateauext_benchtop"
   }
   floortex:incl =
   {
-    tex = "base_floor/clangdark"
+    tex = "austria/floors/brick@tilefloor_cotta1"
   }
   ceiltex:incl =
   {
-    tex = "skies/toxicskytim_dm8"
+    tex = "austria/floors/rock@marblestair_run"
   }
   caulktex:incl =
   {

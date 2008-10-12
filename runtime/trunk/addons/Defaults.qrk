@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.460  2008/10/10 21:21:04  danielpharos
+//Another minor cosmetic fix.
+//
 //Revision 1.459  2008/10/10 21:13:26  danielpharos
 //Minor cosmetic fix.
 //
@@ -1861,12 +1864,12 @@ QQRKSRC1
 
         BaseMenu = "Call of Duty"
 
-        Program = "CoDSP.EXE +set sv_pure 0"
+        Program = "CoDSP.exe +set sv_pure 0"
         Directory = "C:\Program Files\Call of Duty"
-        CheckDirectory = "CoDSP2.EXE"   // hidden setting
+  //      CheckDirectory = "CoDSP.exe"   // hidden setting
 
         CD = ""
-        CDDir = "Setup\main"   // hidden setting
+        CDDir = "Setup\Main"   // hidden setting
 
         MapLimit = '65536 65536 65536'
 
@@ -1895,8 +1898,8 @@ QQRKSRC1
         BezierPatchSupport = "1" // this game supports bezier-patches
         BezierPatchPluginPrefixes = "MB2" // Prefix of the MB2*.PY files. You can also specify the value: "MB2"$0D"MB3"$0D"MB4"
 
-        DefaultTexture = "base_wall/basewall03" //@@@
-        DefaultTextureTrigger = "common/trigger"
+        DefaultTexture = "austria/unique/dirt_clampy@roadrev1"
+        DefaultTextureTrigger = "common/nodraw"
         DefaultTextureOrigin = "common/origin"
         DefaultTextureClip = "common/clip"
         DefaultTextureCaulk = "common/caulk"
@@ -1904,12 +1907,12 @@ QQRKSRC1
         LightingInnerConeKeyword = "radius"    // <-- ex: "" if game does not use or ex: "_cone" is the specifics name that gives the spotlight inter size.
         LightingOuterConeKeyword = ""    // <-- ex: "" if game does not use or ex: "_cone2" is the specifics name that gives the spotlight outer size.
 
-        TextureFormat = ".jpg"                  // primary texture fileextension
-        TextureFileExtensions = ".tga,.jpg,.png"     // possible texture fileextensions
-        TextureWriteFormat = ".jpg"
+        TextureFormat = ".dds"                  // primary texture fileextension
+        TextureFileExtensions = ".dds,.tga,.jpg,.png"     // possible texture fileextensions
+        TextureWriteFormat = ".dds"
         TextureShaders = "scripts/quark.shader"
 
-        BaseDir = "main"
+        BaseDir = "Main"
         tmpQuArK = "tmpQuArK"
 
         Palette = ":pics/colormap.pcx"
@@ -1921,11 +1924,11 @@ QQRKSRC1
         PakFormat = "*.PK3"
         PakMaxNumber = "99"
         Console = "1"
-        Form = "GameCoD1"
         LightFactor = '0.9'
         3DLight = '512'
         PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas)
         DecimalPlaces = '5'
+        Form = "GameCoD1"
       }
 
 
@@ -4715,7 +4718,8 @@ QQRKSRC1
       Program: = {
         Typ = "C"     // combo box
         Txt = "Call of Duty command-line"
-        Items = "CoDSP.EXE +set sv_pure 0"
+        Items = "CoDSP.exe +set sv_pure 0"
+             $0D"CoDMP.exe +set sv_pure 0"
         t_ProgramHint=!
       }
       Directory: =
@@ -4723,7 +4727,7 @@ QQRKSRC1
         Txt = "Directory of Call of Duty"
         Typ = "ED"      // Edit Directory
         Hint = "Path to the game executable"
-        CheckFile = "CoDSP.EXE"
+   //     CheckFile = "CoDSP.exe"
       }
       Templates: =
       {
@@ -4737,7 +4741,7 @@ QQRKSRC1
         Typ = "ED"      // Edit Directory
         Hint = "If you installed Call of Duty minimally, this is the drive of the CD-ROM."
         //CheckFile = "Call of Duty\main\PAK0.PK3"
-        CheckFile = "PAK0.PK3"
+        CheckFile = "pak0.pk3"
       }
       AddOns:tbbtn =       // button (don't forget :tbbtn for all the action buttons !)
       {
