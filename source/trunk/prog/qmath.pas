@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.25  2008/09/06 15:57:13  danielpharos
+Moved exception code into separate file.
+
 Revision 1.24  2008/08/07 17:17:17  cdunde
 Removed end_offset from source code completely, just using end_point instead, by DanielPharos.
 
@@ -113,13 +116,14 @@ type
           X, Y, Z: TDouble;
          end;
  scalar_t = Single;
+ vec2_p = ^vec2_t;
+ vec2_t = packed array[0..1] of scalar_t;
+
  vec3_p = ^vec3_t;
  vec3_t = packed array[0..2] of scalar_t;
 
- vec2_t = packed array[0..1] of scalar_t;
-
  vec5_p = ^vec5_t;
- vec5_t = array[0..4] of scalar_t;
+ vec5_t = packed array[0..4] of scalar_t;
  vec_st_p = ^vec_st_t;
  vec_st_t = record
              s,t: TDouble;
