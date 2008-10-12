@@ -23,70 +23,44 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
-Revision 1.2  2008/10/09 12:58:48  danielpharos
-Added decent Sylphis map file support, and removed some redundant 'uses'.
-
-Revision 1.1  2008/10/09 11:31:51  danielpharos
-Added decent .col Sylphis archive support.
-
 }
 
-unit QkSylphis;
+
+unit Qk6DX;
 
 interface
 
 uses
-  QkZip2, QkFileObjects, QkObjects, QkMap;
+  QkObjects, QkFileObjects, QkMap;
 
 type
-  SylphisPak = class(QZipPak)
-        public
-         class function TypeInfo: String; override;
-         class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
-        end;
-
- QCMapFile = class(QMapFile)
+  QHmfFile = class(QMapFile)
         public
           class function TypeInfo: String; override;
           class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
-        end;
+         end;
+
+ {------------------------}
 
 implementation
 
-uses QuarkX, QkObjectClassList;
-
-{------------------------}
-
-class function SylphisPak.TypeInfo;
-begin
- Result:='.col';
-end;
-
-class procedure SylphisPak.FileObjectClassInfo(var Info: TFileObjectClassInfo);
-begin
- inherited;
- Info.FileObjectDescriptionText:=LoadStr1(5148);
- Info.FileExt:=809;
-end;
+uses
+  QuarkX, QkObjectClassList;
 
  {------------------------}
 
-class function QCMapFile.TypeInfo;
+class function QHmfFile.TypeInfo;
 begin
- Result:='.cmap';
+ Result:='.hmf';
 end;
 
-class procedure QCMapFile.FileObjectClassInfo(var Info: TFileObjectClassInfo);
+class procedure QHmfFile.FileObjectClassInfo(var Info: TFileObjectClassInfo);
 begin
  inherited;
- Info.FileObjectDescriptionText:=LoadStr1(5149);
- Info.FileExt:=822;
+ Info.FileObjectDescriptionText:=LoadStr1(5180);
+ Info.FileExt:=808;
 end;
-
- {------------------------}
 
 initialization
-  RegisterQObject(SylphisPak, 's');
-  RegisterQObject(QCMapFile, 'x');
+  RegisterQObject(QHmfFile, 'x');
 end.
-

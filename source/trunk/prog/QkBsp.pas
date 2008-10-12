@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.66  2008/09/29 21:45:31  danielpharos
+Soft-coded 'maps' directory (not in Python yet).
+
 Revision 1.65  2008/09/06 15:56:58  danielpharos
 Moved exception code into separate file.
 
@@ -549,7 +552,7 @@ function BspType : Char; overload;
 
 implementation
 
-uses Travail, QkWad, Setup, QkText, QkQuakeMap, QkBspHulls,
+uses Travail, QkWad, Setup, QkText, QkMap, QkBspHulls,
      Undo, Quarkx, QkExceptions, PyForms, QkObjectClassList, ToolBox1,
      ToolBoxGroup, QkQuakeCtx, FormCFG, Logging, QkTextures, QkQ1, QkFormCfg;
 

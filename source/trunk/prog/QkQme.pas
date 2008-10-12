@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2008/09/06 15:57:15  danielpharos
+Moved exception code into separate file.
+
 Revision 1.14  2007/10/30 20:43:35  danielpharos
 Fixed two weird-looking spaces
 
@@ -67,7 +70,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  QkObjects, QkFileObjects, QkForm, TB97, QkQuakeMap, QkQuakeC, QkWad, QkPak,
+  QkObjects, QkFileObjects, QkForm, TB97, QkMap, QkQuakeC, QkWad, QkPak,
   QkMdl, QkGroup, Python;
 
 type

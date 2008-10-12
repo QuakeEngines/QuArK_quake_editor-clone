@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.57  2008/10/09 11:31:51  danielpharos
+Added decent .col Sylphis archive support.
+
 Revision 1.56  2008/09/16 12:12:50  danielpharos
 Added support for CoD2 iwd files.
 
@@ -224,6 +227,7 @@ uses
   PakFiles in 'prog\PakFiles.pas',
   Qk1 in 'prog\Qk1.pas' {Form1},
   Qk3D in 'prog\Qk3D.pas',
+  Qk6DX in 'prog\Qk6DX.pas',
   QkApplPaths in 'prog\QkApplPaths.pas',
   QkBmp in 'prog\QkBmp.pas',
   QkBsp in 'prog\QkBsp.pas' {FQBsp},

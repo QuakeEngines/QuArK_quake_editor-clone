@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.92  2008/09/06 15:57:28  danielpharos
+Moved exception code into separate file.
+
 Revision 1.91  2008/02/21 21:05:59  danielpharos
 Small code cleanup.
 
@@ -545,7 +548,7 @@ procedure GetAxisBase(const Normal0: TVect; var texS, texT: TVect);
 
 implementation
 
-uses QkFileObjects, Undo, PyMapView, QkQuakeMap, QkPixelSet, Dialogs,
+uses QkFileObjects, Undo, PyMapView, QkMap, QkPixelSet, Dialogs,
      Quarkx, QkExceptions, PyObjects, QkSin, QkQuakeCtx, QkObjectClassList;
 
 const

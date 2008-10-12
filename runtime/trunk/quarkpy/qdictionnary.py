@@ -926,7 +926,7 @@ Strings = {
     5699: "(complex)",
     #5700: "%s or %s",
     5701: "The configuration-setting '.MAP comments prefix' for %s is empty.\nPlease correct this, or set the \"Don't write comments in .map files\" in Configuration->Map->Options.",
-    #5702: "Unknown map format: %s\n",
+    5702: "Unknown map format: %s",
 
     # alexander would like to reserve 5703 .. 5729 for HL2 :-)
     5703: "%s contains an unsupported format (width %d, height %d, format %d)",
@@ -1059,6 +1059,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.135  2008/10/10 19:43:33  danielpharos
+#Fix .mtr files showing up as .shader.
+#
 #Revision 1.134  2008/10/09 12:58:40  danielpharos
 #Added decent Sylphis map file support, and removed some redundant 'uses'.
 #

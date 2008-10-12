@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.21  2008/10/09 22:56:14  danielpharos
+Fixed a .vmf importer bug.
+
 Revision 1.20  2008/09/06 15:57:10  danielpharos
 Moved exception code into separate file.
 
@@ -94,7 +97,7 @@ uses
   Windows, SysUtils, Classes, Dialogs,
   QkFileObjects, QkObjects,
   QkMapObjects, QkBsp,
-  qmatrices, QkQuakeMap;
+  qmatrices, QkMap;
 
 type
  QVMFFile = class(QMapFile)
