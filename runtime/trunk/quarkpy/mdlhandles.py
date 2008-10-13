@@ -3549,7 +3549,7 @@ class LinearBoneHandle(qhandles.GenericHandle):
                     elif self.bone.dictspec.has_key('start_vtxlist'):
                         name = self.bone.shortname + "_0"
                         self.mgr.selvtxlist = self.mgr.editor.ModelComponentList[self.component.name]['boneobjlist'][self.bone.name]['s_or_e0']['selvtxlist']
-                        self.mgr.tristodrawlist = self.mgr.editor.ModelComponentList[self.component.name]['boneobjlist'][self.bone.name]['s_or_e0']['tristodrawlist']
+                        self.mgr.tristodrawlist = self.mgr.tristodrawlist + self.mgr.editor.ModelComponentList[self.component.name]['boneobjlist'][self.bone.name]['s_or_e0']['tristodrawlist']
                     if self.mgr.selvtxlist != []:
                         for vtx in self.mgr.selvtxlist:
                             vtxpos = view.proj(self.mgr.editor.Root.currentcomponent.currentframe.vertices[vtx])
@@ -5706,6 +5706,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.150  2008/10/08 20:00:47  cdunde
+#Updates for Model Editor Bones system.
+#
 #Revision 1.149  2008/10/04 05:48:06  cdunde
 #Updates for Model Editor Bones system.
 #
