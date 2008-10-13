@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23  2008/10/13 19:12:48  danielpharos
+Fixed a typo.
+
 Revision 1.22  2008/10/12 11:31:32  danielpharos
 Moved 6DX map format to separate file, and re-factored QkMap and QkQuakeMap.
 
@@ -846,9 +849,9 @@ expected one.
      S1:=S;
      ReadSymbol(sStringQuotedToken);
 
-//tbd : what versions to allow ?
-//           if (S1='formatversion') and (S<>'100') then
-//             raise EErrorFmt(254, [LineNoBeingParsed, LoadStr1(268)]);
+     if (S1='formatversion') and (S<>'100') then
+       raise EErrorFmt(254, [LineNoBeingParsed, LoadStr1(268)]);
+
      ReadSymbol(sStringQuotedToken);
    end;
    ReadSymbol(sCurlyBracketRight);
@@ -1026,6 +1029,10 @@ begin
          saveflags:=saveflags or soUseIntegralVertices;
        saveflags:=saveflags or IntSpec['saveflags']; {merge in selonly}
 
+       Dest.Add('versioninfo');
+       Dest.Add('{');
+       Dest.Add('  "formatversion" "100"');
+       Dest.Add('}');
        SaveAsMapText(TTreeMap(Root), ObjectGameCode, -1, List, Dest, saveflags, HxStrings);
        Dest.SaveToStream(F);
        if HxStrings<>Nil then
