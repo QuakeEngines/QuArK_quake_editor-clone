@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.22  2008/10/08 19:44:16  danielpharos
+Fix some possible synchronization issues.
+
 Revision 1.21  2008/10/04 13:50:55  danielpharos
 Start using LogAndRaiseError instead of local Fatal's.
 
@@ -243,10 +246,6 @@ var
   NVDXTStartupInfo: StartUpInfo;
   NVDXTProcessInformation: Process_Information;
 begin
-  {FIXME: DanielPharos: We should simply be using the DevIL functions, but they don't seem to work,
-  because of limitations in the current versions of the DevIL library. We
-  bypass this by saving it to a temporary file, and loading that.
-  I know this is dodgy and ugly, but I don't see any other (easy) way.}
  Log(LOG_VERBOSE,'Saving DDS file: %s',[self.name]);
  with Info do
   case Format of
@@ -509,12 +508,11 @@ begin
         NVDXTStartupInfo.dwFlags:=STARTF_USESHOWWINDOW;
         NVDXTStartupInfo.wShowWindow:=SW_HIDE+SW_MINIMIZE;
         try
-          //FIXME: If you delete this, don't forget the implementation-link to QkApplPaths
-          if Windows.CreateProcess(nil, PChar(GetQPath(pQuArKDll)+'nvdxt.exe -file "'+DumpFileName+'.tga" -output "'+DumpFileName+'.dds" -'+TexFormatParameter+' -'+QualityParameter), nil, nil, false, 0, nil, PChar(GetQPath(pQuArKDll)), NVDXTStartupInfo, NVDXTProcessInformation)=false then
+          if Windows.CreateProcess(PChar(GetQPath(pQuArKDll)+'nvdxt.exe'), PChar('nvdxt.exe -rescale nearest -file "'+DumpFileName+'.tga" -output "'+DumpFileName+'.dds" -'+TexFormatParameter+' -'+QualityParameter), nil, nil, false, 0, nil, PChar(GetQPath(pQuArKDll)), NVDXTStartupInfo, NVDXTProcessInformation)=false then
             LogAndRaiseError('Unable to save DDS file. Call to CreateProcess failed.');
 
           //DanielPharos: This is kinda dangerous, but NVDXT should exit rather quickly!
-          if WaitForSingleObject(NVDXTProcessInformation.hProcess,INFINITE)<>WAIT_TIMEOUT then
+          if WaitForSingleObject(NVDXTProcessInformation.hProcess,INFINITE)=WAIT_FAILED then
             LogAndRaiseError('Unable to save DDS file. Call to WaitForSingleObject failed.');
         finally
           CloseHandle(NVDXTProcessInformation.hThread);
@@ -527,8 +525,11 @@ begin
 
       //DanielPharos: Now let's read in that DDS file and be done!
       DumpBuffer:=TFileStream.Create(DumpFileName+'.dds',fmOpenRead);
-      F.CopyFrom(DumpBuffer,DumpBuffer.Size);
-      DumpBuffer.Free;
+      try
+        F.CopyFrom(DumpBuffer,DumpBuffer.Size);
+      finally
+        DumpBuffer.Free;
+      end;
       if DeleteFile(DumpFileName+'.dds')=false then
         LogAndRaiseError('Unable to save DDS file. Call to DeleteFile(dds) failed.');
 
