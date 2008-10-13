@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.22  2008/10/12 11:31:32  danielpharos
+Moved 6DX map format to separate file, and re-factored QkMap and QkQuakeMap.
+
 Revision 1.21  2008/10/09 22:56:14  danielpharos
 Fixed a .vmf importer bug.
 
@@ -1039,8 +1042,6 @@ begin
 end;
 
  {------------------------}
-
-
 
 initialization
   RegisterQObject(QVMFFile, 'x');
