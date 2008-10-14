@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.44  2008/09/27 12:08:44  danielpharos
+Fixed replacing of %s when there is nothing to replace it with. (Also workarounds false positive %s finding.)
+
 Revision 1.43  2008/09/06 15:57:03  danielpharos
 Moved exception code into separate file.
 
@@ -1525,18 +1528,18 @@ begin
                            S:=Copy(S,I,Length(S));
                          end else begin
                            {$ifdef Delphi1-5}
-                           Application.MessageBox(PAnsiChar(FmtLoadStr1(5656,[ConvOriginal,SOriginal])),PAnsiChar(LoadStr1(400)),0);
+                           Application.MessageBox(PChar(FmtLoadStr1(5656,[ConvOriginal,SOriginal])),PChar(LoadStr1(400)),0);
                            {$else}
-                           Application.MessageBox(PAnsiChar(FmtLoadStr1(5656,[ConvOriginal,SOriginal])),PAnsiChar(LoadStr1(400)));
+                           Application.MessageBox(PChar(FmtLoadStr1(5656,[ConvOriginal,SOriginal])),PChar(LoadStr1(400)));
                            {$endif}
                            goto again;
                          end;
                        end;
                      end else begin
                        {$ifdef Delphi1-5}
-                       Application.MessageBox(PAnsiChar(FmtLoadStr1(5656,[ConvOriginal,SOriginal])),PAnsiChar(LoadStr1(400)),0);
+                       Application.MessageBox(PChar(FmtLoadStr1(5656,[ConvOriginal,SOriginal])),PChar(LoadStr1(400)),0);
                        {$else}
-                       Application.MessageBox(PAnsiChar(FmtLoadStr1(5656,[ConvOriginal,SOriginal])),PAnsiChar(LoadStr1(400)));
+                       Application.MessageBox(PChar(FmtLoadStr1(5656,[ConvOriginal,SOriginal])),PChar(LoadStr1(400)));
                        {$endif}
                        goto again;
                      end;
