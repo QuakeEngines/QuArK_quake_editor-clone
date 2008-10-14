@@ -818,7 +818,8 @@ def UserRotationMatrix(normal, texpdest, texp4, g1, rotationspeed=1):
     if not texpdest: return
     norme2 = abs(texpdest)
     sinangle = (v3*(texp4^texpdest)) / (norme1*norme2)
-    sinangle = sinangle * rotationspeed
+    if rotationspeed != 1:
+        sinangle = math.sin(math.asin(sinangle) * rotationspeed)
     norme1 = sinangle*sinangle
     if norme1 > SNAP:
         if sinangle>0:
@@ -2168,6 +2169,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.75  2008/09/15 04:47:45  cdunde
+#Model Editor bones code update.
+#
 #Revision 1.74  2008/08/21 12:02:37  danielpharos
 #Removed a redundant line of code
 #
