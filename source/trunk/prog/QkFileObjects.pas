@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.58  2008/10/07 21:16:25  danielpharos
+Massive update to get Steam finally working better.
+
 Revision 1.57  2008/09/20 20:44:56  danielpharos
 Don't go SearchPath when the file has already been found.
 
@@ -821,7 +824,7 @@ end;
 
 procedure ConstructObjsFromText(Self: QObject; P: PChar; PSize: Integer);
 const
- cSeperators = [#13, #10, ' ', #9];
+ cSeparators = [#13, #10, ' ', #9];
  Granularite = 8192;
 var
  NameSpec, Arg, A1: String;
@@ -829,6 +832,7 @@ var
  P1: PChar;
  Ligne, I, J {,IgnoreLevel}: Integer;
  Value: Single;
+ ValueI: Integer;
  Prochain: PChar;
  Filename: String; //Used in SyntaxError for display purposes
 
@@ -841,7 +845,7 @@ var
      Inc(Prochain, Granularite);
     end;
    repeat
-    while P^ in cSeperators do
+    while P^ in cSeparators do
      begin
       case P^ of
       #13:
@@ -1014,7 +1018,7 @@ begin
      Inc(I);
     end;
    J:=I+1;
-   while P[I-1] in cSeperators do
+   while P[I-1] in cSeparators do
     Dec(I);
    SetString(NameSpec, P, I);
    Lu(J);
@@ -1044,13 +1048,13 @@ begin
           {if IgnoreLevel=0 then}
            Level.SpecificsAdd(NameSpec+'='+Arg);
          end;
-    '''':begin { Number Specific }
+    '''':begin { Float number Specific }
           Arg:='';
           Lu(1);
           while P^<>'''' do
            begin
             P1:=P;
-            while not (P^ in (['''', #0]+cSeperators)) do
+            while not (P^ in (['''', #0]+cSeparators)) do
              Inc(P);
             SetString(A1, P1, P-P1);
             try
@@ -1064,6 +1068,31 @@ begin
            end;
           Lu(1);
           NameSpec[1]:=Chr(Ord(NameSpec[1]) or chrFloatSpec);
+          {if IgnoreLevel=0 then}
+           Level.SpecificsAdd(NameSpec+'='+Arg);
+         end;
+    '|': begin { Integer number Specific }
+          Arg:='';
+          Lu(1);
+          while P^<>'|' do
+           begin
+            P1:=P;
+            while not (P^ in (['|', #0]+cSeparators)) do
+             Inc(P);
+            SetString(A1, P1, P-P1);
+            try
+             ValueI:=StrToInt(A1);
+            except
+             Raise EErrorFmt(5193, [Filename, Ligne, FmtLoadStr1(5229, [A1])]);
+            end;
+            SetLength(Arg, Length(Arg)+4);  { SizeOf(Integer) }
+            Move(ValueI, Arg[Length(Arg)-3], 4);  { SizeOf(Integer) }
+            Lu(0);
+           end;
+          Lu(1);
+          if Length(NameSpec)<2 then
+           Raise EErrorFmt(5193, [Filename, Ligne, Format('SpecName to small: %s', [NameSpec])]);
+          NameSpec[2]:=Chr(Ord(NameSpec[2]) or chrFloatSpec);
           {if IgnoreLevel=0 then}
            Level.SpecificsAdd(NameSpec+'='+Arg);
          end;
@@ -1378,6 +1407,7 @@ var
  C: Char;
  Q: QObject;
  Value{, Value2}: Single;
+ ValueI: Integer;
 {ValueL: LongInt absolute Value;
  Value2L: LongInt absolute Value2;}
 begin
@@ -1408,96 +1438,115 @@ begin
      Arg:=Arg+'''';
     end
    else
-    if P=Length(S) then
-     Arg:=Arg+'""'   { empty Specific }
-//    else if (Length(S)=P+1) and (S[P+1]='!') then
-//      Arg:=Arg+'!'
-    else
-     begin  { normal Specific }
-      Binaire:=False;
-      for I:=Length(S) downto P+1 do
-       if not (S[I] in NonBinaire) then
-        begin
-         if (I=Length(S)) and (S[I]=#0) then Continue;  { ignore this case }
-         Binaire:=True;
-         Break;
-        end;
-    (*FloatOk:=False;
-      if Binaire and ((Length(S)-P) and 3 = 0)   { 3 = SizeOf(Single)-1 }
-      and (Length(S)-P<=MaxFloatSpecLength) then
+    if (Length(S)>1) and (Ord(S[2])>=chrFloatSpec) and ((Length(S)-P) and 3 = 0) then
+     begin  { integer Specific }
+      Arg[Length(Indent)+2]:=Chr(Ord(S[2]) and not chrFloatSpec);
+      C:='|';
+      for I:=1 to (Length(S)-P) div 4 do
        begin
-        Values:='''';
-        try
-         for I:=1 to (Length(S)-P) div 4 do
-          begin
-           Move(S[P+I*4-3], Value, 4);  { SizeOf(Single) }
-           if (Value=0)
-           or ((Value>-MaxFloatAccept) and (Value<MaxFloatAccept)
-            and ((Value<-MinFloatAccept) or (Value>MinFloatAccept))) then
-            begin
-            {Value2:=StrToFloat(FloatToStr(Value));
-             if ValueL<>Value2L then
-              begin
-               FloatOk:=False;
-               Break;
-              end;}
-             Values:=Values + ftos1(Value) + ' ';
-            end;
-          end;
-         Values[Length(Values)]:='''';
-         Arg:=Arg+Values;
-         FloatOk:=True;
-        except
-         {FloatOk:=False;}
-        end;
-       end;
-      if not FloatOk then*)
-       begin
-        Guillemet:=False;
-        Dollar:=False;
-        Car:=PChar(S)+P;
-        for I:=P+1 to Length(S) do
+        if Length(Arg)>=Marge then
          begin
-          if Length(Arg)>=Marge then
-           begin
-            if Guillemet then
-             Arg:=Arg+'"';
-            L.Add(Arg);
-            Arg:=Indent+' ';
-            Guillemet:=False;
-            Dollar:=False;
-           end;
-          if Binaire or not (Car^ in Imprimable) then
-           begin
-            if Guillemet then
-             begin
-              Arg:=Arg+'"';
-              Guillemet:=False;
-             end;
-            if not Dollar then
-             begin
-              Arg:=Arg+'$';
-              Dollar:=True;
-             end;
-            Arg:=Arg+IntToHex(Ord(Car^), 2);
-           end
-          else
-           begin
-            Dollar:=False;
-            if not Guillemet then
-             begin
-              Arg:=Arg+'"'+Car^;
-              Guillemet:=True;
-             end
-            else
-             Arg:=Arg+Car^;
-           end;
-          Inc(Car);
+          L.Add(Arg);
+          Arg:=Indent+' ';
          end;
-        if Guillemet then
-         Arg:=Arg+'"';
+        Move(S[P+I*4-3], ValueI, 4);  { SizeOf(Integer) }
+        Arg:=Arg + C + itos(ValueI);
+        C:=' ';
        end;
-     end;
+      if C<>' ' then Arg:=Arg+C;
+      Arg:=Arg+'|';
+     end
+    else
+     if P=Length(S) then
+      Arg:=Arg+'""'   { empty Specific }
+//     else if (Length(S)=P+1) and (S[P+1]='!') then
+//       Arg:=Arg+'!'
+     else
+      begin  { normal Specific }
+       Binaire:=False;
+       for I:=Length(S) downto P+1 do
+        if not (S[I] in NonBinaire) then
+         begin
+          if (I=Length(S)) and (S[I]=#0) then Continue;  { ignore this case }
+          Binaire:=True;
+          Break;
+         end;
+     (*FloatOk:=False;
+       if Binaire and ((Length(S)-P) and 3 = 0)   { 3 = SizeOf(Single)-1 }
+       and (Length(S)-P<=MaxFloatSpecLength) then
+        begin
+         Values:='''';
+         try
+          for I:=1 to (Length(S)-P) div 4 do
+           begin
+            Move(S[P+I*4-3], Value, 4);  { SizeOf(Single) }
+            if (Value=0)
+            or ((Value>-MaxFloatAccept) and (Value<MaxFloatAccept)
+             and ((Value<-MinFloatAccept) or (Value>MinFloatAccept))) then
+             begin
+             {Value2:=StrToFloat(FloatToStr(Value));
+              if ValueL<>Value2L then
+               begin
+                FloatOk:=False;
+                Break;
+               end;}
+              Values:=Values + ftos1(Value) + ' ';
+             end;
+           end;
+          Values[Length(Values)]:='''';
+          Arg:=Arg+Values;
+          FloatOk:=True;
+         except
+          {FloatOk:=False;}
+         end;
+        end;
+       if not FloatOk then*)
+        begin
+         Guillemet:=False;
+         Dollar:=False;
+         Car:=PChar(S)+P;
+         for I:=P+1 to Length(S) do
+          begin
+           if Length(Arg)>=Marge then
+            begin
+             if Guillemet then
+              Arg:=Arg+'"';
+             L.Add(Arg);
+             Arg:=Indent+' ';
+             Guillemet:=False;
+             Dollar:=False;
+            end;
+           if Binaire or not (Car^ in Imprimable) then
+            begin
+             if Guillemet then
+              begin
+               Arg:=Arg+'"';
+               Guillemet:=False;
+              end;
+             if not Dollar then
+              begin
+               Arg:=Arg+'$';
+               Dollar:=True;
+              end;
+             Arg:=Arg+IntToHex(Ord(Car^), 2);
+            end
+           else
+            begin
+             Dollar:=False;
+             if not Guillemet then
+              begin
+               Arg:=Arg+'"'+Car^;
+               Guillemet:=True;
+              end
+             else
+              Arg:=Arg+Car^;
+            end;
+           Inc(Car);
+          end;
+         if Guillemet then
+          Arg:=Arg+'"';
+        end;
+      end;
    L.Add(Arg);
   end;
  ProgressIndicatorIncrement;

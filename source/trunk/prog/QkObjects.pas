@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.108  2008/09/23 08:27:29  danielpharos
+Moved InternalE to QkExceptions.
+
 Revision 1.107  2008/09/14 12:52:30  danielpharos
 Changes to Help system: All forms now have a customizable help-link. Also, added an fallback option to the online infobase docs.
 
@@ -631,6 +634,7 @@ type
     function IsExplorerItem(Q: QObject) : TIsExplorerItem; virtual;
     property IntSpec[const Name: String] : Integer read GetIntSpec write SetIntSpec;
     property VectSpec[const Name: String] : TVect read GetVectSpec write SetVectSpec;
+    function GetIntsSpec(const Name: String; var I: array of Integer) : Boolean;
     function GetFloatSpec(const Name: String; const Default: Single) : Single;
     procedure SetFloatSpec(const Name: String; const Value: Single);
     function GetFloatsSpecPartial(const Name: String; var F: array of Single) : Integer;
@@ -742,6 +746,7 @@ var
 
 function FileAccessQ(const theFilename: String; Mode: TModeAcces) : TQStream;
 procedure LoadedItem(Format: Integer; F: TStream; Q: QObject; Size: Integer);
+function IntSpecNameOf(const Name: String) : String;
 function FloatSpecNameOf(const Name: String) : String;
 procedure CheckValidSpec(var Spec: String);
 function StringListConcatWithSeparator(theStringList: TStrings; theStringSeparator: Byte) : String;
@@ -2749,6 +2754,20 @@ begin
   SetFloatsSpec(Name, V);
 end;
 
+function IntSpecNameOf(const Name: String) : String;
+{ (Comment by Decker 2001-02-23)
+ Creates a specific-name that identifies it to contain arg(s)-data of raw
+ binary Integer-values!
+ (Decker - Personally I find this way, of telling what type of data there is
+  in the arg(s), very dangerous. It should be the data itself which told what
+  type it is.)
+}
+begin
+  Result:=Name;
+  if Length(Result) > 1 then
+    Result[2]:=Chr(Ord(Result[2]) or chrFloatSpec);
+end;
+
 function FloatSpecNameOf(const Name: String) : String;
 { (Comment by Decker 2001-02-23)
  Creates a specific-name that identifies it to contain arg(s)-data of raw
@@ -2771,7 +2790,7 @@ procedure CheckValidSpec(var Spec: String);
 }
 const
   ValidSymbols = [' '..#127] - ['=', '{', '}'];   { NEW : ' ' is authorized inside the Specifics }
-  FirstSymbol  = ValidSymbols - ['"', '$', '''', '@'];
+  FirstSymbol  = ValidSymbols - ['"', '$', '''', '|', '@'];
 var
   I: Integer;
 begin
@@ -2865,6 +2884,21 @@ begin
   SetLength(S, 4);   { SizeOf(Single) }
   Move(Value, S[1], 4);   { SizeOf(Single) }
   Specifics.Values[FloatSpecNameOf(Name)]:=S;
+end;
+
+function QObject.GetIntsSpec(const Name: String; var I: array of Integer) : Boolean;
+{ (Comment by Decker 2001-02-23)
+ If the specific in question, contains the correct number of 'Integer' values
+ as the 'I' array have space for, they will be copied into the 'I' array and
+ True will be returned. If not, nothing is copied and False is returned.
+}
+var
+  S: String;
+begin
+  S:=Specifics.Values[IntSpecNameOf(Name)];
+  Result:=Length(S) = Succ(High(I))*4;   { SizeOf(Integer) }
+  if Result then
+    Move(S[1], I[0], Length(S));
 end;
 
 function QObject.GetFloatsSpec(const Name: String; var F: array of Single) : Boolean;
@@ -3177,6 +3211,7 @@ var
   Cls: QObjectClass;
   S: String;
   PF: ^Single;
+  PI: ^Integer;
 begin
   for I:=Low(PyObjMethodTable) to High(PyObjMethodTable) do
   begin
@@ -3235,7 +3270,22 @@ begin
         begin
           S[J]:=#0;
           if Ord(S[1]) and chrFloatSpec = 0 then
-            o:=PyString_FromStringAndSize(PChar(S)+J, Length(S)-J)
+          begin
+            if (Length(S) > 1) and not (Ord(S[2]) and chrFloatSpec = 0) then
+            begin
+              N:=(Length(S)-J) div 4;    { SizeOf(Integer) }
+              PChar(PI):=PChar(S)+J;
+              o:=PyTuple_New(N);
+              for J:=0 to N-1 do
+              begin
+                PyTuple_SetItem(o, J, PyInt_FromLong(PI^));
+                Inc(PI);
+              end;
+              S[2]:=Chr(Ord(S[2]) and not chrFloatSpec);
+            end
+            else
+              o:=PyString_FromStringAndSize(PChar(S)+J, Length(S)-J);
+          end
           else
           begin
             N:=(Length(S)-J) div 4;    { SizeOf(Single) }

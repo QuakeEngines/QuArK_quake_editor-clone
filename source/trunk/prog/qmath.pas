@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.26  2008/10/12 11:30:52  danielpharos
+Small cleanup, making things more consistent.
+
 Revision 1.25  2008/09/06 15:57:13  danielpharos
 Moved exception code into separate file.
 
@@ -110,6 +113,7 @@ const
  DemiFacteur     = 1 shl DemiFacteur1;
 
 type
+ TInteger = Integer;
  TDouble = Double;
  PVect = ^TVect;
  TVect = record
@@ -145,6 +149,7 @@ procedure ReadValues(const S1: String; var Vals: array of TDouble);
 function ReadVector(const S: String) : TVect;
 function ReadVec3(const S: String) : vec3_t;
 function ReadNumValueEx(const S: String) : TDouble;
+function itos(const I: TInteger) : String;
 function ftos(const F: TDouble) : String;
 function ftos0(const F: TDouble) : String;
 function ftos1(const F: TDouble) : String;
@@ -329,6 +334,11 @@ begin
    Result:=ArcTan(Y/X)
   else
    Result:=ArcTan(Y/X)+pi;
+end;
+
+function itos(const I: TInteger) : String;
+begin
+ Result:=IntToStr(I);
 end;
 
 function ftos(const F: TDouble) : String;

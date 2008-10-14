@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2008/09/06 15:57:32  danielpharos
+Moved exception code into separate file.
+
 Revision 1.14  2007/10/30 20:24:38  danielpharos
 Fix a typo
 
@@ -774,6 +777,7 @@ var
  I, J, N: Integer;
  S, Spec: String;
  PF: ^Single;
+ PI: ^Integer;
 begin
  try
   Result:=Nil;
@@ -789,7 +793,22 @@ begin
       I:=Specifics.IndexOfName(FloatSpecNameOf(Spec));
       if I<0 then
        begin
-        Result:=PyNoResult;
+        I:=Specifics.IndexOfName(IntSpecNameOf(Spec));
+        if I<0 then
+         begin
+          Result:=PyNoResult;
+          Exit;
+         end;
+        S:=Specifics[I];
+        I:=Length(Spec)+1;
+        N:=(Length(S)-I) div 4;    { SizeOf(Integer) }
+        PChar(PI):=PChar(S)+I;
+        Result:=PyTuple_New(N);
+        for J:=0 to N-1 do
+         begin
+          PyTuple_SetItem(Result, J, PyInt_FromLong(PI^));
+          Inc(PI);
+         end;
         Exit;
        end;
       S:=Specifics[I];
@@ -821,6 +840,7 @@ var
  I, N: Integer;
  obj: PyObject;
  PF: ^Single;
+ PI: ^Integer;
 begin
  if value^.ob_type = PyString_Type then
   begin
@@ -836,16 +856,32 @@ begin
   end;
  N:=PyObject_Length(value);
  if N<0 then Abort;
- SetLength(Result, N*4);   { SizeOf(Single) }
- PChar(PF):=PChar(Result);
- for I:=0 to N-1 do
-  begin
-   obj:=PyTuple_GetItem(value, I);
-   if obj=Nil then Abort;
-   PF^:=PyFloat_AsDouble(obj);
-   Inc(PF);
-  end;
- Spec:=FloatSpecNameOf(Spec);
+ SetLength(Result, N*4);   { SizeOf(Single) and SizeOf(Integer) }
+ obj:=PyTuple_GetItem(value, 0);
+ if obj^.ob_type = PyInt_Type then
+ begin
+   PChar(PI):=PChar(Result);
+   for I:=0 to N-1 do
+    begin
+     obj:=PyTuple_GetItem(value, I);
+     if obj=Nil then Abort;
+     PI^:=PyInt_AsLong(obj);
+     Inc(PI);
+    end;
+   Spec:=IntSpecNameOf(Spec);
+ end
+ else
+ begin
+   PChar(PF):=PChar(Result);
+   for I:=0 to N-1 do
+    begin
+     obj:=PyTuple_GetItem(value, I);
+     if obj=Nil then Abort;
+     PF^:=PyFloat_AsDouble(obj);
+     Inc(PF);
+    end;
+   Spec:=FloatSpecNameOf(Spec);
+ end;
 end;
 
 function SetObjSpec(self, o, value: PyObject) : Integer; cdecl;

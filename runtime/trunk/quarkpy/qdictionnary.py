@@ -645,6 +645,7 @@ Strings = {
     5226: "FTX image",
     5227: "Cannot save image as FTX file: it has a palette, which is not supported by FTX files. Please convert before saving.",
     5228: "Unable to open link: Cannot find file: '%s'",
+    5229: "integer or floating-point value expected - '%s' is not an integer value",
 
     5248: "Cancel",
     5249: "&Move here",
@@ -1059,6 +1060,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.136  2008/10/12 11:31:27  danielpharos
+#Moved 6DX map format to separate file, and re-factored QkMap and QkQuakeMap.
+#
 #Revision 1.135  2008/10/10 19:43:33  danielpharos
 #Fix .mtr files showing up as .shader.
 #
