@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2008/09/26 19:36:56  danielpharos
+Small code clean-up.
+
 Revision 1.17  2008/09/08 18:08:52  danielpharos
 Added some more general exception functions.
 
@@ -292,7 +295,9 @@ var
   ilSetInteger: procedure (Mode : DevILMode; Param : Integer); stdcall;
   ilHint: procedure (Target : DevILHint; Mode : DevILMode); stdcall;
 
-  //ilGenImage: function : Integer; stdcall; //DanielPharos: I'm guessing this is a mistake in DevIL. The return should be a Cardinal!
+  //DanielPharos: Versions earlier than the latest 1.7.2 release have this returntype defined as
+  //an Integer, but this has been corrected after an email from me:
+  //ilGenImage: function : Cardinal; stdcall;
   ilGenImages: procedure (Num : Integer; Images : PCardinal); stdcall;
   ilBindImage: procedure (Image : Cardinal); stdcall;
   //ilDeleteImage: procedure (const Num : Cardinal); stdcall;
