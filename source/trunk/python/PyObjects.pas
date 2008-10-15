@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.17  2008/10/15 13:45:18  danielpharos
+Abort on wrong input.
+
 Revision 1.16  2008/10/14 00:07:16  danielpharos
 Add an integer list as a specific type.
 
@@ -774,6 +777,9 @@ begin
  end;
 end;*)
 
+//FIXME: Currently, we're using Lists for Integers and Tuples for Floats...
+//And we're accepting both when reading in specifics...
+
 function GetObjSpec(self, o: PyObject) : PyObject; cdecl;
 var
  P: PChar;
@@ -806,10 +812,10 @@ begin
         I:=Length(Spec)+1;
         N:=(Length(S)-I) div 4;    { SizeOf(Integer) }
         PChar(PI):=PChar(S)+I;
-        Result:=PyTuple_New(N);
+        Result:=PyList_New(N);
         for J:=0 to N-1 do
          begin
-          PyTuple_SetItem(Result, J, PyInt_FromLong(PI^));
+          PyList_SetItem(Result, J, PyInt_FromLong(PI^));
           Inc(PI);
          end;
         Exit;
@@ -844,6 +850,7 @@ var
  obj: PyObject;
  PF: ^Single;
  PI: ^Integer;
+ IsTupleNotList: Boolean;
 begin
  if value^.ob_type = PyString_Type then
   begin
@@ -857,35 +864,55 @@ begin
    Result:=IntToPackedStr(PyInt_AsLong(value));
    Exit;
   end;
- if value.ob_type<>PyTuple_Type then
-   Abort;
- N:=PyObject_Length(value);
- if N<0 then Abort;
- SetLength(Result, N*4);   { SizeOf(Single) and SizeOf(Integer) }
- obj:=PyTuple_GetItem(value, 0);
- if obj^.ob_type = PyInt_Type then
- begin
-   PChar(PI):=PChar(Result);
-   for I:=0 to N-1 do
+ if (value.ob_type=PyTuple_Type) or (value.ob_type=PyTuple_Type) then
+  begin
+   if (value.ob_type=PyTuple_Type) then
+    IsTupleNotList:=True
+   else
+    IsTupleNotList:=False;
+   N:=PyObject_Length(value);
+   if N<0 then Abort;
+   SetLength(Result, N*4);   { SizeOf(Single) and SizeOf(Integer) }
+   obj:=PyTuple_GetItem(value, 0);
+   if obj=Nil then Abort;
+   if obj^.ob_type = PyInt_Type then
     begin
-     obj:=PyTuple_GetItem(value, I);
-     if obj=Nil then Abort;
-     PI^:=PyInt_AsLong(obj);
-     Inc(PI);
-    end;
-   Spec:=IntSpecNameOf(Spec);
- end
+     PChar(PI):=PChar(Result);
+     for I:=0 to N-1 do
+      begin
+       if IsTupleNotList then
+        obj:=PyTuple_GetItem(value, I)
+       else
+        obj:=PyList_GetItem(value, I);
+       if obj=Nil then Abort;
+       if obj^.ob_type <> PyInt_Type then Abort;
+       PI^:=PyInt_AsLong(obj);
+       Inc(PI);
+      end;
+     Spec:=IntSpecNameOf(Spec);
+    end
+   else if obj^.ob_type = PyFloat_Type then
+    begin
+     PChar(PF):=PChar(Result);
+     for I:=0 to N-1 do
+      begin
+       if IsTupleNotList then
+        obj:=PyTuple_GetItem(value, I)
+       else
+        obj:=PyList_GetItem(value, I);
+       if obj=Nil then Abort;
+       if obj^.ob_type <> PyFloat_Type then Abort;
+       PF^:=PyFloat_AsDouble(obj);
+       Inc(PF);
+      end;
+     Spec:=FloatSpecNameOf(Spec);
+    end
+   else
+    Abort;
+  end
  else
- begin
-   PChar(PF):=PChar(Result);
-   for I:=0 to N-1 do
-    begin
-     obj:=PyTuple_GetItem(value, I);
-     if obj=Nil then Abort;
-     PF^:=PyFloat_AsDouble(obj);
-     Inc(PF);
-    end;
-   Spec:=FloatSpecNameOf(Spec);
+  begin
+   Abort;
  end;
 end;
 
