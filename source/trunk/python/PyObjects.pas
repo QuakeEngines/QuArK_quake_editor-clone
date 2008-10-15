@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2008/10/14 00:07:16  danielpharos
+Add an integer list as a specific type.
+
 Revision 1.15  2008/09/06 15:57:32  danielpharos
 Moved exception code into separate file.
 
@@ -854,6 +857,8 @@ begin
    Result:=IntToPackedStr(PyInt_AsLong(value));
    Exit;
   end;
+ if value.ob_type<>PyTuple_Type then
+   Abort;
  N:=PyObject_Length(value);
  if N<0 then Abort;
  SetLength(Result, N*4);   { SizeOf(Single) and SizeOf(Integer) }
