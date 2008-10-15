@@ -383,13 +383,13 @@ class BoneType(EntityManager):
                 o['bone_length'] = ((quarkx.vect(o.dictspec['start_point']) - end_point)*-1).tuple
 
         scenter = quarkx.vect(o.dictspec['start_point'])
-        sbbox = (scenter + quarkx.vect(-0.9, -0.9, -0.9), scenter + quarkx.vect(0.9, 0.9, 0.9))
+        sbbox = (scenter + quarkx.vect(-0.9, -0.9, -0.9)*o.dictspec['start_scale'][0], scenter + quarkx.vect(0.9, 0.9, 0.9)*o.dictspec['start_scale'][0])
         startcolor = o.dictspec['start_color']
         quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
         scolor = MapColor("start_color", SS_MODEL)
 
         ecenter = quarkx.vect(o.dictspec['end_point'])
-        ebbox = (ecenter + quarkx.vect(-0.9, -0.9, -0.9), ecenter + quarkx.vect(0.9, 0.9, 0.9))
+        ebbox = (ecenter + quarkx.vect(-0.9, -0.9, -0.9)*o.dictspec['end_scale'][0], ecenter + quarkx.vect(0.9, 0.9, 0.9)*o.dictspec['end_scale'][0])
         endcolor = o.dictspec['end_color']
         quarkx.setupsubset(SS_MODEL, "Colors")["end_color"] = endcolor
         ecolor = MapColor("end_color", SS_MODEL)
@@ -428,6 +428,8 @@ class BoneType(EntityManager):
             e.s_or_e = 1
             e.index = index
             h = h + [e]
+        o.start_handle = sh
+        o.end_handle = eh
         return h
 
     def dataformname(o):
@@ -470,6 +472,11 @@ class BoneType(EntityManager):
               Txt="offset"
               Hint="You must enter three values here."$0D"They have an accuracy of two digits."$0D"Not all models use this."
                  }
+          start_scale: = {
+              Typ="EF001" 
+              Txt="scale"
+              Hint="You must enter one positive float value here."$0D"It has an accuracy of two digits."$0D"Larger value = bigger handle size."$0D"Smaller value = smaller handle size."$0D"The default value for normal size = 1.00"
+                 }
 
           sep: = { Typ="S" Txt="" }
 
@@ -488,6 +495,11 @@ class BoneType(EntityManager):
               Typ="EF003" 
               Txt="offset"
               Hint="You must enter three values here."$0D"They have an accuracy of two digits."$0D"Not all models use this."
+                 }
+          end_scale: = {
+              Typ="EF001" 
+              Txt="scale"
+              Hint="You must enter one positive float value here."$0D"It has an accuracy of two digits."$0D"Larger value = bigger handle size."$0D"Smaller value = smaller handle size."$0D"The default value for normal size = 1.00"
                  }
         }
         """
@@ -555,6 +567,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.31  2008/10/04 05:48:06  cdunde
+#Updates for Model Editor Bones system.
+#
 #Revision 1.30  2008/09/22 23:30:27  cdunde
 #Updates for Model Editor Linear and Bone handles.
 #

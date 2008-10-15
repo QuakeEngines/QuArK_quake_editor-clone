@@ -1833,6 +1833,8 @@ def addbone(editor, comp, pos):
     endpoint = pos + quarkx.vect(8,2,2)
     new_o_bone['end_point'] = endpoint.tuple
     new_o_bone['bone_length'] = (8,2,2)
+    new_o_bone['start_scale'] = (1.0,)
+    new_o_bone['end_scale'] = (1.0,)
     new_o_bone['start_color'] = new_o_bone['end_color'] = MapColor("BoneHandles", SS_MODEL)
     new_o_bone['start_offset'] = (0, 0, 0)
     new_o_bone['end_offset'] = (0, 0, 0)
@@ -1874,6 +1876,8 @@ def continue_bone(editor, bone, s_or_e = 0):
     endpoint = quarkx.vect(new_o_bone['start_point']) + quarkx.vect(8,2,2)
     new_o_bone['end_point'] = endpoint.tuple
     new_o_bone['bone_length'] = (8,2,2)
+    new_o_bone['start_scale'] = (1.0,)
+    new_o_bone['end_scale'] = (1.0,)
     new_o_bone['start_color'] = new_o_bone['end_color'] = MapColor("BoneHandles", SS_MODEL)
     new_o_bone['start_offset'] = (0, 0, 0)
     new_o_bone['end_offset'] = (0, 0, 0)
@@ -2016,6 +2020,103 @@ def align_bones_ends(editor, bone1, bone2):
     undo.exchange(bone2, new_o_bone)
     editor.ok(undo, "align end handles")
 
+#
+# This function does the rotation movement of all bones between two selected "Key frames".
+#
+def keyframes_rotation(editor, bonesgroup, frame1, frame2):
+    import qhandles
+    comp = editor.Root.currentcomponent
+    new_comp = comp.copy()
+    framesgroup = new_comp.dictitems['Frames:fg']
+    count = 0
+    framecount = 0
+    for frame in framesgroup.subitems:
+        if frame.name == frame1.name:
+            startframe = count
+        count = count + 1
+        if frame.name == frame2.name:
+            break
+        if frame.name == frame1.name or framecount != 0:
+            framecount = framecount + 1
+    for bone in bonesgroup.subitems:
+        # Gives us just bones with vertexes assigned to their start handle.
+        if bone.dictspec.has_key('start_vtxlist') and bone.dictspec.has_key('start_vtx_pos') and bone.dictspec['start_vtx_pos'] is not None:
+            common_handles_list, s_or_e_list = find_common_bone_handles(editor, bone['start_point'])
+            for common_handle in range(len(common_handles_list)):
+                if s_or_e_list[common_handle] == 1:
+                    basebonehandle = common_handles_list[common_handle].start_handle
+                    import mdlhandles
+                    for item in basebonehandle:
+                        if isinstance(item, mdlhandles.LinBoneCornerHandle):
+                            handle = item
+                            break
+                    view = editor.layout.views[0]
+               #     from qbaseeditor import currentview
+               #     view = currentview
+                    handle.groupselection = 1
+                    handle.start_drag(view, 0, 0, 1)
+                    basebonename = common_handles_list[common_handle].name
+                    basebonepos = common_handles_list[common_handle]['start_point']
+                    break
+                else:
+                    basebonehandle = common_handles_list[common_handle].start_handle
+                    import mdlhandles
+                    for item in basebonehandle:
+                        if isinstance(item, mdlhandles.LinBoneCornerHandle):
+                            handle = item
+                            break
+        #            view = editor.layout.views[0]
+                    from qbaseeditor import currentview
+                    view = currentview
+                    handle.groupselection = 1
+                    handle.start_drag(view, 0, 0, 1)
+                    basebonename = common_handles_list[common_handle].name
+                    basebonepos = common_handles_list[common_handle]['start_point']
+                    break
+            vtxlist = bone.dictspec['start_vtx_pos']
+            vtxlist = vtxlist.split(" ")
+            frame1_start_vtxpos = frame2_start_vtxpos = quarkx.vect(0, 0, 0)
+            for start_vtx in vtxlist:
+                frame1_start_vtxpos = frame1_start_vtxpos + frame1.vertices[int(start_vtx)]
+                frame2_start_vtxpos = frame2_start_vtxpos + frame2.vertices[int(start_vtx)]
+            frame1_start_vtxpos = frame1_start_vtxpos/ float(len(vtxlist))
+            frame2_start_vtxpos = frame2_start_vtxpos/ float(len(vtxlist))
+            if str(frame1_start_vtxpos) != str(frame2_start_vtxpos):
+                vex_diff = frame2_start_vtxpos - frame1_start_vtxpos
+            #        delta_diff = vex_diff / framecount # Incremental difference of movement from frame to frame.
+                vex_diff = vex_diff.tuple
+                factor = 1-(framecount/framecount+1)
+                delta_diff = quarkx.vect(vex_diff[0]*factor, vex_diff[1]*factor, vex_diff[2]*factor)  # This way avoids division by zero errors.
+                count = 1
+                while count != framecount:
+                    delta = delta_diff * count
+                    frame = framesgroup.subitems[startframe + count]
+                    v1 = handle.pos
+                    v2 = v1 + delta
+                    flags = 2056
+                    oldobjectslist, newobjectslist = handle.drag(v1, v2, flags, view)
+                    change1 = frame1_start_vtxpos - handle.mgr.center
+                    change2 = frame2_start_vtxpos - handle.mgr.center
+                    changeaxis = change1 ^ change2   # Cross product
+                    m = qhandles.UserRotationMatrix(changeaxis.normalized, change2, change1, 0, float(count) / float(framecount))
+                    if m is None:
+                        m = quarkx.matrix(quarkx.vect(1, 0, 0), quarkx.vect(0, 1, 0), quarkx.vect(0, 0, 1))
+                    vtxs = []
+                    old_vtxs = frame1.vertices
+                    for item in newobjectslist:
+                        if item.type == ':g':
+                            for poly in item.subitems:
+                                vtx_index = int(poly.shortname)
+                                vtx_pos = (m * (old_vtxs[vtx_index] - handle.mgr.center)) + handle.mgr.center
+                                vtxs = old_vtxs[:vtx_index] + [vtx_pos] + old_vtxs[vtx_index+1:]
+                                old_vtxs = vtxs
+                    frame.vertices = vtxs
+                    count = count + 1
+    for frame in framesgroup.subitems:
+        frame.compparent = new_comp # To allow frame relocation after editing.
+    undo = quarkx.action()
+    undo.exchange(comp, new_comp)
+    editor.ok(undo, "key frames rotation")
 #
 # This function finds all bone handles start_points and end_points that are
 # the same as the handle_pos provided, primarily used for specific settings drags.
@@ -2931,6 +3032,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.86  2008/10/08 20:00:45  cdunde
+#Updates for Model Editor Bones system.
+#
 #Revision 1.85  2008/10/04 05:48:06  cdunde
 #Updates for Model Editor Bones system.
 #

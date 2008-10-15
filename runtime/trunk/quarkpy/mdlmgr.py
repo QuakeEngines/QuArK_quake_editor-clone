@@ -49,6 +49,8 @@ checkend_pos = None
 checkbone_length = None
 checkbone_start_offset = None
 checkbone_end_offset = None
+checkbone_start_scale = None
+checkbone_end_scale = None
 
 class ModelLayout(BaseLayout):
     "An abstract base class for Model Editor screen layouts."
@@ -415,7 +417,7 @@ class ModelLayout(BaseLayout):
 
     def makesettingclick(self, m):
         # The form uses this function when a setting is made or changed.
-        global checkstart_pos, checkend_pos, checkbone_length, checkbone_start_offset, checkbone_end_offset
+        global checkstart_pos, checkend_pos, checkbone_length, checkbone_start_offset, checkbone_end_offset, checkbone_start_scale, checkbone_end_scale
         sl = self.explorer.sellist
         sfbtn = self.buttons["sf"]
         if m is not None:
@@ -530,6 +532,8 @@ class ModelLayout(BaseLayout):
             selitem['bone_length'] = checkbone_length = ((quarkx.vect(selitem.dictspec['start_point']) - quarkx.vect(selitem.dictspec['end_point']))*-1).tuple
             checkbone_start_offset = quarkx.vect(selitem.dictspec['start_offset']).tuple
             checkbone_end_offset = quarkx.vect(selitem.dictspec['end_offset']).tuple
+            checkbone_start_scale = selitem.dictspec['start_scale']
+            checkbone_end_scale = selitem.dictspec['end_scale']
             self.dataform.setdata([selitem], formobj)
         quarkx.update(self.editor.form)
 
@@ -569,7 +573,7 @@ class ModelLayout(BaseLayout):
 
     def filldataform(self, reserved):
         # Code to create the form for the first time or when selecting another item in the tree-view that uses this form.
-        global checkstart_pos, checkend_pos, checkbone_length, checkbone_start_offset, checkbone_end_offset
+        global checkstart_pos, checkend_pos, checkbone_length, checkbone_start_offset, checkbone_end_offset, checkbone_start_scale, checkbone_end_scale
         sl = self.explorer.sellist
         sfbtn = self.buttons["sf"]
         try:
@@ -829,6 +833,14 @@ class ModelLayout(BaseLayout):
                         new_bone['bone_length'] = ((quarkx.vect(new_bone['start_point']) - quarkx.vect(new_bone['end_point']))*-1).tuple
                         undo.exchange(common_handles_list[old_bone], new_bone)
                     self.editor.ok(undo, 'bone joint move')
+
+                elif checktuplepos(checkbone_start_scale, selitem["start_scale"]) != 1:
+                    checkbone_start_scale = self.start_scale = selitem["start_scale"] = (abs(selitem["start_scale"][0]),)
+                    Update_Editor_Views(self.editor) # Updates the Specifics/Args page and views correctly.
+
+                elif checktuplepos(checkbone_end_scale, selitem["end_scale"]) != 1:
+                    checkbone_end_scale = self.end_scale = selitem["end_scale"] = (abs(selitem["end_scale"][0]),)
+                    Update_Editor_Views(self.editor) # Updates the Specifics/Args page and views correctly.
 
 
     def helpbtnclick(self, m):
@@ -1250,6 +1262,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.79  2008/10/04 05:48:06  cdunde
+#Updates for Model Editor Bones system.
+#
 #Revision 1.78  2008/09/22 23:38:20  cdunde
 #Updates for Model Editor Linear and Bone handles.
 #

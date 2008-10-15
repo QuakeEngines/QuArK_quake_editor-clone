@@ -186,6 +186,10 @@ class ModelEditor(BaseEditor):
                     for bone in bones:
                         boneobjs = {}
                         frame = self.Root.dictitems[item].dictitems['Frames:fg'].subitems[0]
+                        if not bone.dictspec.has_key("start_scale"):
+                            bone['start_scale'] = (1.00,)
+                        if not bone.dictspec.has_key("end_scale"):
+                            bone['end_scale'] = (1.00,)
                         if bone.dictspec.has_key("start_vtxlist"):
                             boneobjs['s_or_e0'] = {}
                             bone_vtxlist = []
@@ -1649,6 +1653,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.102  2008/10/08 20:00:47  cdunde
+#Updates for Model Editor Bones system.
+#
 #Revision 1.101  2008/10/06 01:58:34  cdunde
 #Small correction for auto bone selection method.
 #
