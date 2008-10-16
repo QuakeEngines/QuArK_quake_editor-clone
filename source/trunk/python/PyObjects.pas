@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2008/10/15 21:55:18  danielpharos
+Workaround for tuple/list confusion.
+
 Revision 1.17  2008/10/15 13:45:18  danielpharos
 Abort on wrong input.
 
@@ -864,7 +867,7 @@ begin
    Result:=IntToPackedStr(PyInt_AsLong(value));
    Exit;
   end;
- if (value.ob_type=PyTuple_Type) or (value.ob_type=PyTuple_Type) then
+ if (value.ob_type=PyTuple_Type) or (value.ob_type=PyList_Type) then
   begin
    if (value.ob_type=PyTuple_Type) then
     IsTupleNotList:=True
@@ -873,7 +876,10 @@ begin
    N:=PyObject_Length(value);
    if N<0 then Abort;
    SetLength(Result, N*4);   { SizeOf(Single) and SizeOf(Integer) }
-   obj:=PyTuple_GetItem(value, 0);
+   if IsTupleNotList then
+    obj:=PyTuple_GetItem(value, 0)
+   else
+    obj:=PyList_GetItem(value, 0);
    if obj=Nil then Abort;
    if obj^.ob_type = PyInt_Type then
     begin
