@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.462  2008/10/16 21:18:34  danielpharos
+//Fixed a typo.
+//
 //Revision 1.461  2008/10/12 07:27:57  cdunde
 //Setup changes for CoD1 support.
 //
@@ -2325,14 +2328,14 @@ QQRKSRC1
 
         BaseMenu = "Half Life"
 
-        Program = "%steamdir%\steam.exe -applaunch %steamappid% -dev -console -window -width 800 -height 600"
+        Program = "%steampath%\steam.exe -applaunch %steamappid% -dev -console -window -width 800 -height 600"
 
         Steam = "1" //This game uses Steam
         SteamGame = "HL2"
-        SteamAppID = "(auto)"
-        BaseDir = "(auto)"
-        tmpQuArK = "(auto)"
-        SourceSDKDir = "(auto)"
+        SteamAppID = "*auto*"
+        BaseDir = "*auto*"
+        tmpQuArK = "*auto*"
+        SourceSDKDir = "*auto*"
         MapCommentsPrefix = "//"
         OutputMapFormat = "HL2"
         ForceFaceFlags = ""
@@ -2340,7 +2343,7 @@ QQRKSRC1
         "gamesounds-hl2.qrk"$0D"textures-hl2-cs.qrk"$0D"base.qrk"$0D"cstrike.qrk"$0D
         "halflife2.qrk"$0D"hl2mp.qrk"$0D"prefabs-hl2.qrk"
 
-        BuildPgmsDir="%steamdir%\SteamApps\%steamuser%\%sourcesdkdir%"
+        BuildPgmsDir="%steampath%\SteamApps\%steamuser%\%sourcesdkdir%"
         BuildPgm1  = "vbsp.exe"
         BuildArgs1 = ""
         BuildCheck1= "+BSP"
@@ -5423,14 +5426,14 @@ QQRKSRC1
         Txt = "Half-Life 2 command-line"
         Typ = "C"     // combo box
         t_ProgramHint=!
-        Items = "%steamdir%\steam.exe -applaunch %steamappid% -dev -console"
-                $0D"%steamdir%\steam.exe -applaunch %steamappid% -dev -console -window -width 800 -height 600"
+        Items = "%steampath%\steam.exe -applaunch %steamappid% -dev -console"
+                $0D"%steampath%\steam.exe -applaunch %steamappid% -dev -console -window -width 800 -height 600"
       }
       SteamGame: =
       {
         Txt = "Steam Game"
         Typ = "CL"     // Combobox list
-        Hint = "Select game to use for (auto) settings below"
+        Hint = "Select game to use for *auto* settings below"
         Items = "Half-Life 2"
              $0D"Counter-Strike: Source"
              $0D"Half-Life: Source"
@@ -5457,7 +5460,7 @@ QQRKSRC1
         Txt = "Game Directory"
         Typ = "C"   // combo box
         Hint = "relative to steam install directory, e.g. SteamApps\%steamuser%\counter-strike source\cstrike"
-        Items = "(auto)"
+        Items = "*auto*"
              $0D"SteamApps\%steamuser%\half-life 2\hl2"
              $0D"SteamApps\%steamuser%\counter-strike source\cstrike"
              $0D"SteamApps\%steamuser%\half-life source\hl1"
@@ -5483,7 +5486,7 @@ QQRKSRC1
                "400 for Portal"
                "420 for Half-Life 2: Episode Two"
                "440 for Team Fortress 2"
-        Items = "(auto)"
+        Items = "*auto*"
              $0D"220"
              $0D"240"
              $0D"280"
@@ -5509,7 +5512,7 @@ QQRKSRC1
             $0D"portal for Portal"
             $0D"ep2 for Half-Life 2: Episode Two"
             $0D"tf for Team Fortress 2"
-        Items = "(auto)"
+        Items = "*auto*"
              $0D"hl2"
              $0D"cstrike"
              $0D"hl1"
@@ -5526,7 +5529,7 @@ QQRKSRC1
         Txt = "Source SDK Bin directory"
         Typ = "C"   // combo box
         Hint = "Set this to the directory containing the compilers"
-        Items = "(auto)"
+        Items = "*auto*"
              $0D"sourcesdk\bin"
              $0D"sourcesdk\bin\ep1\bin"
              $0D"sourcesdk\bin\orangebox\bin"

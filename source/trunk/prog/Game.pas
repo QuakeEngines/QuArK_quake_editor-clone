@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.66  2008/10/08 21:42:18  danielpharos
+Made map extension changable.
+
 Revision 1.65  2008/10/07 21:16:25  danielpharos
 Massive update to get Steam finally working better.
 
@@ -555,7 +558,7 @@ begin
  Result:=SetupGameSet.Specifics.Values['tmpQuArK'];
  if Result='' then
   Result:='tmpQuArK';
- if Result='(auto)' then
+ if Result='*auto*' then
    Result:=GetSteamtmpQuArK;
  Result:=ConvertPath(Result);
 end;
@@ -563,7 +566,7 @@ end;
 function GetBaseDir : String;
 begin
  Result:=SetupGameSet.Specifics.Values['BaseDir'];
- if Result='(auto)' then
+ if Result='*auto*' then
    Result:=GetSteamBaseDir;
  Result:=ConvertPath(Result);
 end;
@@ -811,7 +814,7 @@ begin
 
   //Steam replacers:
   Result.Filename:=StringReplace(Result.Filename, '%sourcesdkdir%', SourceSDKDir, [rfReplaceAll]);
-  Result.Filename:=StringReplace(Result.Filename, '%steamdir%',     SteamSetup.Specifics.Values['Directory'], [rfReplaceAll]);
+  Result.Filename:=StringReplace(Result.Filename, '%steampath%',    SteamSetup.Specifics.Values['Directory'], [rfReplaceAll]);
   Result.Filename:=StringReplace(Result.Filename, '%steamappid%',   SteamAppID, [rfReplaceAll]);
   Result.Filename:=StringReplace(Result.Filename, '%steamuser%',    SteamSetup.Specifics.Values['SteamUser'], [rfReplaceAll]);
 
@@ -1733,7 +1736,7 @@ var
   S: String;
 begin
   Result := SetupGameSet.Specifics.Values['SteamAppID'];
-  if Result = '(auto)' then
+  if Result = '*auto*' then
   begin
     S := SetupGameSet.Specifics.Values['SteamGame'];
     if S = 'HL2' then
@@ -1770,7 +1773,7 @@ var
   S: String;
 begin
   Result := SetupGameSet.Specifics.Values['tmpQuArK'];
-  if Result = '(auto)' then
+  if Result = '*auto*' then
   begin
     S := SetupGameSet.Specifics.Values['SteamGame'];
     if S = 'HL2' then
@@ -1807,7 +1810,7 @@ var
   S: String;
 begin
   Result := SetupGameSet.Specifics.Values['BaseDir'];
-  if Result = '(auto)' then
+  if Result = '*auto*' then
   begin
     S := SetupGameSet.Specifics.Values['SteamGame'];
     if S = 'HL2' then
@@ -1844,7 +1847,7 @@ var
   S: String;
 begin
   Result := SetupGameSet.Specifics.Values['SourceSDKDir'];
-  if Result = '(auto)' then
+  if Result = '*auto*' then
   begin
     S := SetupGameSet.Specifics.Values['SteamGame'];
     if S = 'HL2' then
