@@ -35,14 +35,14 @@ to fill out some of the necessary settings on the right of the Configuration pan
 <table border=0 cellspacing=0>
 <tr><td valign=top align=left>
 
-Enter your Steam account name in the appropriate field. This is used to locate files
-in the Steam directory.
-In the next field, click on the button to the right of the field and locate the folder
+Click on the button to the right of the first field and locate the folder
 in which you have installed Steam. If you used the default when you installed Steam,
 this should be:
 <ul>
 <li>C:/Program Files/Valve/Steam
 </ul>
+In the next field, Enter your Steam account name. This is used to locate files in the
+Steam directory.
 The other options can be changed to alter the way QuArK works with Steam. The default
 settings are probably best.
 
@@ -54,34 +54,40 @@ In this section we will quickly go over how to setup QuArK to work with Half-Lif
 
 Go to the Configuration panel of Half-Life 2 (described above for Steam).
 
-To start with we must select which of the Half-Life 2 games we wish to work with. To do
-so simply use the drop down menu to the right of the 'Half-Life 2 command-line' setting
-(under the Game Settings tab). This should give you a selection of three, for this
-tutorial we are going to be working with Counter-Strike: Source, so select:
+To start with we must select which of the Half-Life 2 games we wish to work with. To
+do so simply use the drop down menu to the right of the 'Steam game' setting
+(under the Game Settings tab). This should give you a selection of several games, for
+this tutorial we are going to be working with Counter-Strike: Source, so select:
 
-"C:/Program Files/Valve/Steam/steam.exe -applaunch 240 -dev -console ..."
+"Counter-Strike: Source"
 
-You must also set the <b>Steam App Id</b> to 240 as well or QuArK will not be able to start the game after a build is done.
+(Tip: You may want to increase the width & height of the Half-Life 2 window for when
+we use the 'Run Half-Life 2' option later on in the tutorial e.g. '-window -width
+1280 -height 1024'.)
 
-So how do I know which one to select? Each Half-Life 2 program/mod has a specific ID number & each ID number is located within the command line:
-<ul>
-<li>220 – Half-Life 2
-<li>240 – Counter-Strike: Source   
-<li>320 – Half-Life 2: Deathmatch
-</ul>
+All other relevant settings are set to "*auto*" on default, so you don't need to
+change those. However, should you ever want to, here's a few pointers:
 
-Look <a href="http://developer.valvesoftware.com/wiki/Steam_Application_IDs">here</a> for a complete list of all the application IDs.
+Set the Game directory to the directory containing all the game's files, relative to
+the Steam directory.
 
-If you select a different Steam App ID number, don't forget to update the number in the command-line setting too!
+Set the 'Steam App Id' to the Application ID of the game you want Steam to run. Look
+<a href="http://developer.valvesoftware.com/wiki/Steam_Application_IDs">here</a> for a complete list of all the application IDs.
 
-(Tip: You may also want to increase the width & height of the Half-Life 2 window for when we use the 'Run Half-Life 2' option later on in the tutorial<br>
-e.g. '-window -width 1280 -height 1024'.)
+Set the Game data directory to the directory in which the game's data is located. For
+Counter-Strike: Source, it's 'cstrike'. This is the directory that contains the 'bin'
+folder with the executable, and the 'GameInfo.txt' file, and is the last directory
+of the Game directory setting.
 
-Set the Game data directory to the directory in which the game's data is located. For Counter-Strike: Source, it's 'cstrike'.
+Set the Source SDK Bin directory to the directory containing the SDK tools for that
+game. This directory should contain the compilers.
 
-For Counter-Strike: Source we also need to change the name of the GCF file to 'counter-strike source shared'.
+The compiler settings should work just fine, but if they need to be changed and you
+are unsure on any of the settings, hold your mouse cursor over the white
+box and it will come up with a quick example.
 
-For the rest of the settings for the compiler just use the screen shot below to go by. If you are unsure on any of the settings hold your mouse cursor over the white box and it will come up with a quick example.
+Note: If you change to any other game than Half-Life 2, be sure to also change the
+Addons used to make sure you're not using Half-Life 2 items in other games.
 </td></tr>
 <tr><td valign=top align=middle>
 <img border=1 valign=top align=middle>hl2_config2.png</img>
@@ -135,20 +141,23 @@ following text at the bottom of the Console window:
 <li>/quark.cfg: exists
 <li>/maps/newmap.bsp: ready
 <li>/maps/newmap.pts: ignored
-<li>Files stored in C:Program FilesValveSteamSteamAppscounte
-<li>r-strike sourcecstrike
+<li>Files stored in C:\Program Files\Valve\Steam\SteamApps\...\counte
+<li>r-strike source\cstrike\
 <li>Operation finished.
 </ul>
-The Console outputs what the Valve compiler is doing, and you should always review the output regarding any error reports such<br>
-as Map Leaks.
+The Console outputs what the Valve compiler is doing, and you should always
+review the output regarding any error reports such as Map Leaks.
 
-With the map now compiled, you can either load up Counter-Strike: Source, and create a server making sure you have select your<br>
-map from the CS:S Map list (as default it should be called 'newmap'); or within the QuArK Map Editor once again press the<br>
-Half-Life 2 button at the top tool bar & select 'Run Half-Life 2', this should now start CS:S, and automatically create a server<br>
-with your newly compiled map.
+With the map now compiled, you can either load up Counter-Strike: Source, and
+create a server making sure you have select your map from the CS:S Map list (as
+default it should be called 'newmap'); or within the QuArK Map Editor once
+again press the Half-Life 2 button at the top tool bar & select 'Run Half-Life
+2', this should now start CS:S, and automatically create a server with your
+newly compiled map.
 
-With the default pre-made map you will not be able to spawn with CS:S, only join as a Spectator; and with any luck you should<br>
-now be viewing a box room with sky like the one shown below. 
+With the default pre-made map you will not be able to spawn with CS:S, only
+join as a Spectator; and with any luck you should now be viewing a box room
+with sky like the one shown below.
 </td></tr>
 
 <tr><td valign=top align=middle>
