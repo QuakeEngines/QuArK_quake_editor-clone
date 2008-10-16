@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.461  2008/10/12 07:27:57  cdunde
+//Setup changes for CoD1 support.
+//
 //Revision 1.460  2008/10/10 21:21:04  danielpharos
 //Another minor cosmetic fix.
 //
@@ -5005,7 +5008,7 @@ QQRKSRC1
       sep: = {Typ="S" Txt="---- Game Settings ----"}
       Program: = {
         Typ = "C"     // combo box
-        Txt = "Star Trek: Elite Force 2 command-line"
+        Txt = "Heavy Metal - FAKK2 command-line"
         Items = "fakk2.exe +set sv_pure 0"
              $0D"fakk2.exe +bind ~ "$22"toggleconsole"$22" +seta ui_console "$22"1"$22" +bind t "$22"toggle cg_3rd_person"$22" +bind g "$22"god"$22" + bind i "$22"give all"$22" + bind h "$22"health 100"$22" + bind n "$22"noclip"$22
         t_ProgramHint=!
