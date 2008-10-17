@@ -44,6 +44,8 @@ treeviewselchanged = 0 ### This global is set to 1 when any new item is selected
 SFTexts   = [".md2", ".md3", ".lwo"] # Supported model types for import\exporting.
 mdltypes = [0,1,2] # Control list that corresponds with the "SFTexts" list above.
 SFLetters = "set model type"
+check_start_vertex_count = "0"
+check_end_vertex_count = "0"
 checkstart_pos = None
 checkend_pos = None
 checkbone_length = None
@@ -417,7 +419,7 @@ class ModelLayout(BaseLayout):
 
     def makesettingclick(self, m):
         # The form uses this function when a setting is made or changed.
-        global checkstart_pos, checkend_pos, checkbone_length, checkbone_start_offset, checkbone_end_offset, checkbone_start_scale, checkbone_end_scale
+        global check_start_vertex_count, check_end_vertex_count, checkstart_pos, checkend_pos, checkbone_length, checkbone_start_offset, checkbone_end_offset, checkbone_start_scale, checkbone_end_scale
         sl = self.explorer.sellist
         sfbtn = self.buttons["sf"]
         if m is not None:
@@ -525,8 +527,17 @@ class ModelLayout(BaseLayout):
             else:
                 selitem = sl[1]
             # Globals are set here for comparison in filldataform function later.
+            comp = self.editor.Root.currentcomponent
             self.start_color = selitem['start_color']
             self.end_color = selitem['end_color']
+            try:
+                check_start_vertex_count = selitem['start_vertex_count'] = str(len(self.editor.ModelComponentList[comp.name]['boneobjlist'][selitem.name]['s_or_e0']['vtxlist']))
+            except:
+                check_start_vertex_count = selitem['start_vertex_count'] = "0"
+            try:
+                check_end_vertex_count = selitem['end_vertex_count'] = str(len(self.editor.ModelComponentList[comp.name]['boneobjlist'][selitem.name]['s_or_e1']['vtxlist']))
+            except:
+                check_end_vertex_count = selitem['end_vertex_count'] = "0"
             checkstart_pos = selitem.dictspec['start_point']
             checkend_pos = selitem.dictspec['end_point']
             selitem['bone_length'] = checkbone_length = ((quarkx.vect(selitem.dictspec['start_point']) - quarkx.vect(selitem.dictspec['end_point']))*-1).tuple
@@ -558,14 +569,13 @@ class ModelLayout(BaseLayout):
         MdlUserDataPanel(panel, "Drop your most commonly used Model parts to this panel", "MdlObjPanel.qrk", "UserData.qrk")
 
     def actionmpp(self):
-        "Switch the multi-pages-panel for the current selection."
-        pass#...
-        #if (self.mpp.n<4) and not (self.mpp.lock.state & qtoolbar.selected):
-        #    fs = self.explorer.focussel
-        #    if fs is None:
-        #        self.mpp.viewpage(0)
-        #    elif fs.type == ':e':
-        #        self.mpp.viewpage(1)
+        "Switch or update the multi-pages-panel for the current selection."
+        if (self.mpp.n<4): # and not (self.mpp.lock.state & qtoolbar.selected):
+            fs = self.explorer.focussel
+            if fs is None:
+                self.mpp.viewpage(0)
+            elif fs.type == ':bone' and self.mpp.pagebtns[1].state == 2:
+                self.mpp.viewpage(1)
         #    elif fs.type == ':p':
         #        self.mpp.viewpage(2)
         #    elif fs.type == ':f':
@@ -573,7 +583,8 @@ class ModelLayout(BaseLayout):
 
     def filldataform(self, reserved):
         # Code to create the form for the first time or when selecting another item in the tree-view that uses this form.
-        global checkstart_pos, checkend_pos, checkbone_length, checkbone_start_offset, checkbone_end_offset, checkbone_start_scale, checkbone_end_scale
+        global check_start_vertex_count, check_end_vertex_count, checkstart_pos, checkend_pos, checkbone_length, checkbone_start_offset, checkbone_end_offset, checkbone_start_scale, checkbone_end_scale
+        comp = self.editor.Root.currentcomponent
         sl = self.explorer.sellist
         sfbtn = self.buttons["sf"]
         try:
@@ -841,6 +852,18 @@ class ModelLayout(BaseLayout):
                 elif checktuplepos(checkbone_end_scale, selitem["end_scale"]) != 1:
                     checkbone_end_scale = self.end_scale = selitem["end_scale"] = (abs(selitem["end_scale"][0]),)
                     Update_Editor_Views(self.editor) # Updates the Specifics/Args page and views correctly.
+
+                try:
+                    if check_start_vertex_count != str(len(self.editor.ModelComponentList[comp.name]['boneobjlist'][selitem.name]['s_or_e0']['vtxlist'])):
+                        check_start_vertex_count = self.start_vertexes = selitem["start_vertex_count"] = str(len(self.editor.ModelComponentList[comp.name]['boneobjlist'][selitem.name]['s_or_e0']['vtxlist']))
+                except:
+                    check_start_vertex_count = self.start_vertexes = selitem["start_vertex_count"] = "0"
+
+                try:
+                    if check_end_vertex_count != str(len(self.editor.ModelComponentList[comp.name]['boneobjlist'][selitem.name]['s_or_e1']['vtxlist'])):
+                        check_end_vertex_count = self.end_vertexes = selitem["end_vertex_count"] = str(len(self.editor.ModelComponentList[comp.name]['boneobjlist'][selitem.name]['s_or_e1']['vtxlist']))
+                except:
+                    check_end_vertex_count = self.end_vertexes = selitem["end_vertex_count"] = "0"
 
 
     def helpbtnclick(self, m):
@@ -1262,6 +1285,10 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.80  2008/10/15 00:01:30  cdunde
+#Setup of bones individual handle scaling and Keyframe matrix rotation.
+#Also removed unneeded code.
+#
 #Revision 1.79  2008/10/04 05:48:06  cdunde
 #Updates for Model Editor Bones system.
 #

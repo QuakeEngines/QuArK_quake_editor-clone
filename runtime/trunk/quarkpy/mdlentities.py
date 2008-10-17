@@ -461,6 +461,8 @@ class BoneType(EntityManager):
               Txt="Bone Start Handle"
                  }
 
+          start_vertex_count: = {Typ="E R" Txt="vertexes" Hint="Number of vertexes"$0D"assigned to this handle."}
+
           start_color: = {Typ="LI"   Txt="color"  Hint="Color to use for this bones Start handle's vertex group color."$0D"Click the color selector button to the right and pick a color."}
           start_point: = {
               Typ="EF003" 
@@ -485,7 +487,9 @@ class BoneType(EntityManager):
               Txt="Bone End Handle"
                  }
 
-          end_color:   = {Typ="LI"   Txt="color"    Hint="Color to use for this bones End handle's vertex group color."$0D"Click the color selector button to the right and pick a color."}
+          end_vertex_count: = {Typ="E R" Txt="vertexes" Hint="Number of vertexes"$0D"assigned to this handle."}
+
+          end_color: = {Typ="LI"   Txt="color"    Hint="Color to use for this bones End handle's vertex group color."$0D"Click the color selector button to the right and pick a color."}
           end_point: = {
               Typ="EF003" 
               Txt="position"
@@ -567,6 +571,10 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.32  2008/10/15 00:01:30  cdunde
+#Setup of bones individual handle scaling and Keyframe matrix rotation.
+#Also removed unneeded code.
+#
 #Revision 1.31  2008/10/04 05:48:06  cdunde
 #Updates for Model Editor Bones system.
 #

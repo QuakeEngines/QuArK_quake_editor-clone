@@ -4115,12 +4115,16 @@ class LinBoneCenterHandle(LinearBoneHandle):
 
             if not selbone.dictspec.has_key('start_vtxlist') and selbone.dictspec.has_key('start_vtx_pos'):
                 release_start_vertexes_click(m, self)
-                return
-
-            if selbone.dictspec.has_key("start_vtx_pos") and selbone.dictspec['start_vtx_pos'] is not None:
-                Update_Editor_Views(editor)
             else:
-                set_handle_position_click(m, self)
+                if selbone.dictspec.has_key("start_vtx_pos") and selbone.dictspec['start_vtx_pos'] is not None:
+                    Update_Editor_Views(editor)
+                else:
+                    set_handle_position_click(m, self)
+            try:
+                selbone['start_vertex_count'] = str(len(editor.ModelComponentList[comp.name]['boneobjlist'][selbone.name]['s_or_e0']['vtxlist']))
+            except:
+                selbone['start_vertex_count'] = "0"
+            editor.layout.makesettingclick(None)
 
         def assign2end_click(m, self=self, editor=editor, view=view):
             comp = editor.Root.currentcomponent
@@ -4303,12 +4307,16 @@ class LinBoneCenterHandle(LinearBoneHandle):
 
             if not selbone.dictspec.has_key('end_vtxlist') and selbone.dictspec.has_key('end_vtx_pos'):
                 release_end_vertexes_click(m, self)
-                return
-
-            if selbone.dictspec.has_key("end_vtx_pos") and selbone.dictspec['end_vtx_pos'] is not None:
-                Update_Editor_Views(editor)
             else:
-                set_handle_position_click(m, self)
+                if selbone.dictspec.has_key("end_vtx_pos") and selbone.dictspec['end_vtx_pos'] is not None:
+                    Update_Editor_Views(editor)
+                else:
+                    set_handle_position_click(m, self)
+            try:
+                selbone['end_vertex_count'] = str(len(editor.ModelComponentList[comp.name]['boneobjlist'][selbone.name]['s_or_e1']['vtxlist']))
+            except:
+                selbone['end_vertex_count'] = "0"
+            editor.layout.makesettingclick(None)
 
         def set_handle_position_click(m, self=self, editor=editor, view=view):
             import mdlmgr
@@ -4362,6 +4370,8 @@ class LinBoneCenterHandle(LinearBoneHandle):
                 selbone['start_vtxlist'] = ''
                 del editor.ModelComponentList[comp.name]['boneobjlist'][selbone.name]['s_or_e0']
             Update_Editor_Views(editor)
+            selbone['start_vertex_count'] = "0"
+            editor.layout.makesettingclick(None)
 
         def release_end_vertexes_click(m, self=self, editor=editor, view=view):
             comp = editor.Root.currentcomponent
@@ -4384,6 +4394,8 @@ class LinBoneCenterHandle(LinearBoneHandle):
                 selbone['end_vtxlist'] = ''
                 del editor.ModelComponentList[comp.name]['boneobjlist'][selbone.name]['s_or_e1']
             Update_Editor_Views(editor)
+            selbone['end_vertex_count'] = "0"
+            editor.layout.makesettingclick(None)
 
         def keyframes_rotation_click(m, self=self, editor=editor, view=view):
             frame1 = frame2 = None
@@ -5725,6 +5737,10 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.152  2008/10/15 00:01:30  cdunde
+#Setup of bones individual handle scaling and Keyframe matrix rotation.
+#Also removed unneeded code.
+#
 #Revision 1.151  2008/10/13 06:42:10  cdunde
 #To add drag lines that were missed for a single bone corner handle rotation drag.
 #
