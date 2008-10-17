@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2008/10/16 20:56:56  danielpharos
+Note to self: No coding while asleep.
+
 Revision 1.18  2008/10/15 21:55:18  danielpharos
 Workaround for tuple/list confusion.
 
@@ -782,6 +785,7 @@ end;*)
 
 //FIXME: Currently, we're using Lists for Integers and Tuples for Floats...
 //And we're accepting both when reading in specifics...
+//(Don't forget the 'dictspec'-code in QkObjects!
 
 function GetObjSpec(self, o: PyObject) : PyObject; cdecl;
 var
