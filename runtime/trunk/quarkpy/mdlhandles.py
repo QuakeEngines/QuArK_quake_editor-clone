@@ -4201,7 +4201,7 @@ class LinBoneCenterHandle(LinearBoneHandle):
                                         newvtxlist = newvtxlist + " " + removefrom_end_vtxlist[endlistvtx]
                                 comp.dictitems['Skeleton:bg'].dictitems[bonename]['end_vtxlist'] = newvtxlist
                                 if boneobjlist[bonename]['s_or_e1']['selvtxlist'] == []:
-                                    common_handles_list, s_or_e_list = find_common_bone_handles(editor, comp.dictitems['Skeleton:bg'].dictitems[bonename].dictspec['start_point'])
+                                    common_handles_list, s_or_e_list = find_common_bone_handles(editor, comp.dictitems['Skeleton:bg'].dictitems[bonename].dictspec['end_point'])
                                     for bone in range(len(common_handles_list)):
                                         if s_or_e_list[bone] == 0:
                                             if common_handles_list[bone].dictspec.has_key('start_vtx_pos'):
@@ -5737,6 +5737,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.153  2008/10/17 22:29:05  cdunde
+#Added assigned vertex count (read only) to Specifics/Args page for each bone handle.
+#
 #Revision 1.152  2008/10/15 00:01:30  cdunde
 #Setup of bones individual handle scaling and Keyframe matrix rotation.
 #Also removed unneeded code.
