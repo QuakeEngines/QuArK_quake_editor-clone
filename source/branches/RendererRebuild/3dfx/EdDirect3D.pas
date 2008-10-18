@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.30.2.1  2008/10/05 13:57:16  danielpharos
+Moved Line and Rectangle to renderers. Colors and fill not working (yet).
+
 Revision 1.30  2008/10/02 18:55:54  danielpharos
 Don't render when not in wp_paint handling.
 
@@ -202,6 +205,7 @@ type  { this is the data shared by all existing TDirect3DSceneObjects }
   public
     procedure ClearTexture(Tex: PTexture3);
   end;
+
 var
   qrkDXState: TDirect3DState;
   SwapChain: array of IDirect3DSwapChain9;
@@ -648,19 +652,6 @@ begin
   Result:=True;
 end;
 
-procedure TDirect3DSceneObject.Present3DView;
-var
-  l_Res: HResult;
-begin
-  if not Direct3DLoaded then
-    Exit;
-  if SwapChain[ListIndex-1]=nil then
-    Render3DView;
-  l_Res:=SwapChain[ListIndex-1].Present(nil, nil, 0, nil, 0);
-  if (l_Res <> D3D_OK) then
-    raise EErrorFmt(6403, ['Present', DXGetErrorString9(l_Res)]);
-end;
-
 procedure TDirect3DSceneObject.ClearScene;
 begin
 end;
@@ -702,7 +693,7 @@ begin
 
   l_Res:=D3DDevice.Clear(0, nil, D3DCLEAR_TARGET or D3DCLEAR_ZBUFFER, DXFogColor, 1, 0);
   if (l_Res <> D3D_OK) then
-    raise EErrorFmt(6403, ['SetDepthStencilSurface', DXGetErrorString9(l_Res)]);
+    raise EErrorFmt(6403, ['Clear', DXGetErrorString9(l_Res)]);
 
     { set camera }
   {with TCameraCoordinates(Coord) do
@@ -728,35 +719,53 @@ begin
   if (l_Res <> 0) then
     raise EErrorFmt(6403, ['BeginScene', DXGetErrorString9(l_Res)]);
 
-//  m_CurrentAlpha  :=0;
-//  m_CurrentColor:=0;
- 
+  try
+//    m_CurrentAlpha  :=0;
+//    m_CurrentColor:=0;
 
-  PList:=ListSurfaces;
-  while Assigned(PList) do
-  begin
-    if Transparency then
+    PList:=ListSurfaces;
+    while Assigned(PList) do
     begin
-      if (PList^.Transparent=False) then
+      if Transparency then
+      begin
+        if (PList^.Transparent=False) then
+          RenderPList(PList, False, Coord);
+      end
+      else
+      begin
         RenderPList(PList, False, Coord);
-    end
-    else
-    begin
-      RenderPList(PList, False, Coord);
-      if PList^.NumberTransparentFaces>0 then
-        RenderPList(PList, True, Coord);
+        if PList^.NumberTransparentFaces>0 then
+          RenderPList(PList, True, Coord);
+      end;
+      PList:=PList^.Next;
     end;
-    PList:=PList^.Next;
-  end;
 
-  l_Res:=D3DDevice.EndScene;
-  if (l_Res <> 0) then
-    raise EErrorFmt(6403, ['EndScene', DXGetErrorString9(l_Res)]);
+  finally
+    l_Res:=D3DDevice.EndScene;
+    if (l_Res <> 0) then
+      raise EErrorFmt(6403, ['EndScene', DXGetErrorString9(l_Res)]);
+  end;
 
 {  l_Res := m_pD3DX.UpdateFrame(0);
   if (l_Res <> 0) then
     raise EErrorFmt(6403, ['UpdateFrame', D3DXGetErrorMsg(l_Res)]);}
 
+end;
+
+procedure TDirect3DSceneObject.Present3DView;
+var
+  l_Res: HResult;
+begin
+  if not Direct3DLoaded then
+    Exit;
+
+  if SwapChain[ListIndex-1]=nil then
+    //FIXME: This should raise an error!
+    Render3DView;
+  //FIXME: Add the ClipRect here!
+  l_Res:=SwapChain[ListIndex-1].Present(nil, nil, 0, nil, 0);
+  if (l_Res <> D3D_OK) then
+    raise EErrorFmt(6403, ['Present', DXGetErrorString9(l_Res)]);
 end;
 
 procedure TDirect3DSceneObject.RenderPList(PList: PSurfaces; TransparentFaces: Boolean; SourceCoord: TCoordinates);
@@ -826,9 +835,14 @@ end;
 procedure TDirect3DState.ClearTexture(Tex: PTexture3);
 begin
   //DanielPharos: How can you be sure Direct3D has been loaded?
-  
+  //FIXME:
 end;
 
  {------------------------}
 
+initialization
+  //FIXME: Is this really needed...?
+  qrkDXState:=TDirect3DState.Create;
+finalization
+  qrkDXState.Free;
 end.
