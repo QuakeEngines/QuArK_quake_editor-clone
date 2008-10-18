@@ -3963,6 +3963,35 @@ class LinBoneCenterHandle(LinearBoneHandle):
                                 removefrom_bone_vtxlist = comp.dictitems['Skeleton:bg'].dictitems[bonename].dictspec['start_vtxlist']
                                 removefrom_start_vtxlist = removefrom_bone_vtxlist.split(" ")
                                 removefrom_start_vtxlist.remove(str(editor.ModelVertexSelList[vtx][0]))
+                                common_handles_list, s_or_e_list = find_common_bone_handles(editor, comp.dictitems['Skeleton:bg'].dictitems[bonename].dictspec['start_point'])
+                                for bone in range(len(common_handles_list)):
+                                    if s_or_e_list[bone] == 0:
+                                        if common_handles_list[bone].dictspec.has_key('start_vtx_pos'):
+                                            removefrom_bone_vtx_pos = common_handles_list[bone]['start_vtx_pos']
+                                            removefrom_start_vtx_pos = removefrom_bone_vtx_pos.split(" ")
+                                            if str(editor.ModelVertexSelList[vtx][0]) in removefrom_start_vtx_pos:
+                                                removefrom_start_vtx_pos.remove(str(editor.ModelVertexSelList[vtx][0]))
+                                            newvtx_poslist = ''
+                                            for startposvtx in range(len(removefrom_start_vtx_pos)):
+                                                if startposvtx == 0:
+                                                    newvtx_poslist = newvtx_poslist + removefrom_start_vtx_pos[startposvtx]
+                                                else:
+                                                    newvtx_poslist = newvtx_poslist + " " + removefrom_start_vtx_pos[startposvtx]
+                                            common_handles_list[bone]['start_vtx_pos'] = newvtx_poslist
+                                    else:
+                                        if common_handles_list[bone].dictspec.has_key('end_vtx_pos'):
+                                            removefrom_bone_vtx_pos = common_handles_list[bone]['end_vtx_pos']
+
+                                            removefrom_end_vtx_pos = removefrom_bone_vtx_pos.split(" ")
+                                            if str(editor.ModelVertexSelList[vtx][0]) in removefrom_end_vtx_pos:
+                                                removefrom_end_vtx_pos.remove(str(editor.ModelVertexSelList[vtx][0]))
+                                            newvtx_poslist = ''
+                                            for endposvtx in range(len(removefrom_end_vtx_pos)):
+                                                if endposvtx == 0:
+                                                    newvtx_poslist = newvtx_poslist + removefrom_end_vtx_pos[endposvtx]
+                                                else:
+                                                    newvtx_poslist = newvtx_poslist + " " + removefrom_end_vtx_pos[endposvtx]
+                                            common_handles_list[bone]['end_vtx_pos'] = newvtx_poslist
                                 for item in boneobjlist[bonename]['s_or_e0']['vtxlist']:
                                     if item[0] == editor.ModelVertexSelList[vtx][0]:
                                         boneobjlist[bonename]['s_or_e0']['vtxlist'].remove(item)
@@ -3992,6 +4021,35 @@ class LinBoneCenterHandle(LinearBoneHandle):
                                 removefrom_bone_vtxlist = comp.dictitems['Skeleton:bg'].dictitems[bonename].dictspec['end_vtxlist']
                                 removefrom_end_vtxlist = removefrom_bone_vtxlist.split(" ")
                                 removefrom_end_vtxlist.remove(str(editor.ModelVertexSelList[vtx][0]))
+                                common_handles_list, s_or_e_list = find_common_bone_handles(editor, comp.dictitems['Skeleton:bg'].dictitems[bonename].dictspec['end_point'])
+                                for bone in range(len(common_handles_list)):
+                                    if s_or_e_list[bone] == 0:
+                                        if common_handles_list[bone].dictspec.has_key('start_vtx_pos'):
+                                            removefrom_bone_vtx_pos = common_handles_list[bone]['start_vtx_pos']
+                                            removefrom_start_vtx_pos = removefrom_bone_vtx_pos.split(" ")
+                                            if str(editor.ModelVertexSelList[vtx][0]) in removefrom_start_vtx_pos:
+                                                removefrom_start_vtx_pos.remove(str(editor.ModelVertexSelList[vtx][0]))
+                                            newvtx_poslist = ''
+                                            for startposvtx in range(len(removefrom_start_vtx_pos)):
+                                                if startposvtx == 0:
+                                                    newvtx_poslist = newvtx_poslist + removefrom_start_vtx_pos[startposvtx]
+                                                else:
+                                                    newvtx_poslist = newvtx_poslist + " " + removefrom_start_vtx_pos[startposvtx]
+                                            common_handles_list[bone]['start_vtx_pos'] = newvtx_poslist
+                                    else:
+                                        if common_handles_list[bone].dictspec.has_key('end_vtx_pos'):
+                                            removefrom_bone_vtx_pos = common_handles_list[bone]['end_vtx_pos']
+
+                                            removefrom_end_vtx_pos = removefrom_bone_vtx_pos.split(" ")
+                                            if str(editor.ModelVertexSelList[vtx][0]) in removefrom_end_vtx_pos:
+                                                removefrom_end_vtx_pos.remove(str(editor.ModelVertexSelList[vtx][0]))
+                                            newvtx_poslist = ''
+                                            for endposvtx in range(len(removefrom_end_vtx_pos)):
+                                                if endposvtx == 0:
+                                                    newvtx_poslist = newvtx_poslist + removefrom_end_vtx_pos[endposvtx]
+                                                else:
+                                                    newvtx_poslist = newvtx_poslist + " " + removefrom_end_vtx_pos[endposvtx]
+                                            common_handles_list[bone]['end_vtx_pos'] = newvtx_poslist
                                 for item in boneobjlist[bonename]['s_or_e1']['vtxlist']:
                                     if item[0] == editor.ModelVertexSelList[vtx][0]:
                                         boneobjlist[bonename]['s_or_e1']['vtxlist'].remove(item)
@@ -4047,6 +4105,35 @@ class LinBoneCenterHandle(LinearBoneHandle):
                             removefrom_bone_vtxlist = comp.dictitems['Skeleton:bg'].dictitems[bonename].dictspec['start_vtxlist']
                             removefrom_start_vtxlist = removefrom_bone_vtxlist.split(" ")
                             removefrom_start_vtxlist.remove(str(editor.ModelVertexSelList[vtx][0]))
+                            common_handles_list, s_or_e_list = find_common_bone_handles(editor, comp.dictitems['Skeleton:bg'].dictitems[bonename].dictspec['start_point'])
+                            for bone in range(len(common_handles_list)):
+                                if s_or_e_list[bone] == 0:
+                                    if common_handles_list[bone].dictspec.has_key('start_vtx_pos'):
+                                        removefrom_bone_vtx_pos = common_handles_list[bone]['start_vtx_pos']
+                                        removefrom_start_vtx_pos = removefrom_bone_vtx_pos.split(" ")
+                                        if str(editor.ModelVertexSelList[vtx][0]) in removefrom_start_vtx_pos:
+                                            removefrom_start_vtx_pos.remove(str(editor.ModelVertexSelList[vtx][0]))
+                                        newvtx_poslist = ''
+                                        for startposvtx in range(len(removefrom_start_vtx_pos)):
+                                            if startposvtx == 0:
+                                                newvtx_poslist = newvtx_poslist + removefrom_start_vtx_pos[startposvtx]
+                                            else:
+                                                newvtx_poslist = newvtx_poslist + " " + removefrom_start_vtx_pos[startposvtx]
+                                        common_handles_list[bone]['start_vtx_pos'] = newvtx_poslist
+                                else:
+                                    if common_handles_list[bone].dictspec.has_key('end_vtx_pos'):
+                                        removefrom_bone_vtx_pos = common_handles_list[bone]['end_vtx_pos']
+
+                                        removefrom_end_vtx_pos = removefrom_bone_vtx_pos.split(" ")
+                                        if str(editor.ModelVertexSelList[vtx][0]) in removefrom_end_vtx_pos:
+                                            removefrom_end_vtx_pos.remove(str(editor.ModelVertexSelList[vtx][0]))
+                                        newvtx_poslist = ''
+                                        for endposvtx in range(len(removefrom_end_vtx_pos)):
+                                            if endposvtx == 0:
+                                                newvtx_poslist = newvtx_poslist + removefrom_end_vtx_pos[endposvtx]
+                                            else:
+                                                newvtx_poslist = newvtx_poslist + " " + removefrom_end_vtx_pos[endposvtx]
+                                        common_handles_list[bone]['end_vtx_pos'] = newvtx_poslist
                             for item in boneobjlist[bonename]['s_or_e0']['vtxlist']:
                                 if item[0] == editor.ModelVertexSelList[vtx][0]:
                                     boneobjlist[bonename]['s_or_e0']['vtxlist'].remove(item)
@@ -4076,6 +4163,35 @@ class LinBoneCenterHandle(LinearBoneHandle):
                             removefrom_bone_vtxlist = comp.dictitems['Skeleton:bg'].dictitems[bonename].dictspec['end_vtxlist']
                             removefrom_end_vtxlist = removefrom_bone_vtxlist.split(" ")
                             removefrom_end_vtxlist.remove(str(editor.ModelVertexSelList[vtx][0]))
+                            common_handles_list, s_or_e_list = find_common_bone_handles(editor, comp.dictitems['Skeleton:bg'].dictitems[bonename].dictspec['end_point'])
+                            for bone in range(len(common_handles_list)):
+                                if s_or_e_list[bone] == 0:
+                                    if common_handles_list[bone].dictspec.has_key('start_vtx_pos'):
+                                        removefrom_bone_vtx_pos = common_handles_list[bone]['start_vtx_pos']
+                                        removefrom_start_vtx_pos = removefrom_bone_vtx_pos.split(" ")
+                                        if str(editor.ModelVertexSelList[vtx][0]) in removefrom_start_vtx_pos:
+                                            removefrom_start_vtx_pos.remove(str(editor.ModelVertexSelList[vtx][0]))
+                                        newvtx_poslist = ''
+                                        for startposvtx in range(len(removefrom_start_vtx_pos)):
+                                            if startposvtx == 0:
+                                                newvtx_poslist = newvtx_poslist + removefrom_start_vtx_pos[startposvtx]
+                                            else:
+                                                newvtx_poslist = newvtx_poslist + " " + removefrom_start_vtx_pos[startposvtx]
+                                        common_handles_list[bone]['start_vtx_pos'] = newvtx_poslist
+                                else:
+                                    if common_handles_list[bone].dictspec.has_key('end_vtx_pos'):
+                                        removefrom_bone_vtx_pos = common_handles_list[bone]['end_vtx_pos']
+
+                                        removefrom_end_vtx_pos = removefrom_bone_vtx_pos.split(" ")
+                                        if str(editor.ModelVertexSelList[vtx][0]) in removefrom_end_vtx_pos:
+                                            removefrom_end_vtx_pos.remove(str(editor.ModelVertexSelList[vtx][0]))
+                                        newvtx_poslist = ''
+                                        for endposvtx in range(len(removefrom_end_vtx_pos)):
+                                            if endposvtx == 0:
+                                                newvtx_poslist = newvtx_poslist + removefrom_end_vtx_pos[endposvtx]
+                                            else:
+                                                newvtx_poslist = newvtx_poslist + " " + removefrom_end_vtx_pos[endposvtx]
+                                        common_handles_list[bone]['end_vtx_pos'] = newvtx_poslist
                             for item in boneobjlist[bonename]['s_or_e1']['vtxlist']:
                                 if item[0] == editor.ModelVertexSelList[vtx][0]:
                                     boneobjlist[bonename]['s_or_e1']['vtxlist'].remove(item)
@@ -4112,6 +4228,9 @@ class LinBoneCenterHandle(LinearBoneHandle):
                 editor.ModelComponentList[comp.name]['bonevtxlist'] = self.dict
                 editor.ModelComponentList[comp.name]['boneobjlist'] = {}
                 editor.ModelComponentList[comp.name]['boneobjlist'][selbone.name] = Update_BoneObjs(editor.ModelComponentList[comp.name]['bonevtxlist'], self.bone.name, comp)
+
+            for bone in comp.dictitems['Skeleton:bg'].subitems:
+                editor.ModelComponentList[comp.name]['boneobjlist'][bone.name] = Update_BoneObjs(editor.ModelComponentList[comp.name]['bonevtxlist'], bone.name, comp)
 
             if not selbone.dictspec.has_key('start_vtxlist') and selbone.dictspec.has_key('start_vtx_pos'):
                 release_start_vertexes_click(m, self)
@@ -4155,14 +4274,44 @@ class LinBoneCenterHandle(LinearBoneHandle):
                                 removefrom_bone_vtxlist = comp.dictitems['Skeleton:bg'].dictitems[bonename].dictspec['start_vtxlist']
                                 removefrom_start_vtxlist = removefrom_bone_vtxlist.split(" ")
                                 removefrom_start_vtxlist.remove(str(editor.ModelVertexSelList[vtx][0]))
+                                common_handles_list, s_or_e_list = find_common_bone_handles(editor, comp.dictitems['Skeleton:bg'].dictitems[bonename].dictspec['start_point'])
+                                for bone in range(len(common_handles_list)):
+                                    if s_or_e_list[bone] == 0:
+                                        if common_handles_list[bone].dictspec.has_key('start_vtx_pos'):
+                                            removefrom_bone_vtx_pos = common_handles_list[bone]['start_vtx_pos']
+                                            removefrom_start_vtx_pos = removefrom_bone_vtx_pos.split(" ")
+                                            if str(editor.ModelVertexSelList[vtx][0]) in removefrom_start_vtx_pos:
+                                                removefrom_start_vtx_pos.remove(str(editor.ModelVertexSelList[vtx][0]))
+                                            newvtx_poslist = ''
+                                            for startposvtx in range(len(removefrom_start_vtx_pos)):
+                                                if startposvtx == 0:
+                                                    newvtx_poslist = newvtx_poslist + removefrom_start_vtx_pos[startposvtx]
+                                                else:
+                                                    newvtx_poslist = newvtx_poslist + " " + removefrom_start_vtx_pos[startposvtx]
+                                            common_handles_list[bone]['start_vtx_pos'] = newvtx_poslist
+                                    else:
+                                        if common_handles_list[bone].dictspec.has_key('end_vtx_pos'):
+                                            removefrom_bone_vtx_pos = common_handles_list[bone]['end_vtx_pos']
+
+                                            removefrom_end_vtx_pos = removefrom_bone_vtx_pos.split(" ")
+                                            if str(editor.ModelVertexSelList[vtx][0]) in removefrom_end_vtx_pos:
+                                                removefrom_end_vtx_pos.remove(str(editor.ModelVertexSelList[vtx][0]))
+                                            newvtx_poslist = ''
+                                            for endposvtx in range(len(removefrom_end_vtx_pos)):
+                                                if endposvtx == 0:
+                                                    newvtx_poslist = newvtx_poslist + removefrom_end_vtx_pos[endposvtx]
+                                                else:
+                                                    newvtx_poslist = newvtx_poslist + " " + removefrom_end_vtx_pos[endposvtx]
+                                            common_handles_list[bone]['end_vtx_pos'] = newvtx_poslist
                                 for item in boneobjlist[bonename]['s_or_e0']['vtxlist']:
                                     if item[0] == editor.ModelVertexSelList[vtx][0]:
                                         boneobjlist[bonename]['s_or_e0']['vtxlist'].remove(item)
                                 boneobjlist[bonename]['s_or_e0']['selvtxlist'].remove(editor.ModelVertexSelList[vtx][0])
-                                templist = boneobjlist[bonename]['s_or_e0']['tristodrawlist']
+                                templist = []
                                 for item in boneobjlist[bonename]['s_or_e0']['tristodrawlist']:
                                     if item[0] == editor.ModelVertexSelList[vtx][0]:
-                                        templist.remove(item)
+                                        continue
+                                    templist = templist + item
                                 boneobjlist[bonename]['s_or_e0']['tristodrawlist'] = templist
                                 newvtxlist = ''
                                 for startlistvtx in range(len(removefrom_start_vtxlist)):
@@ -4184,14 +4333,44 @@ class LinBoneCenterHandle(LinearBoneHandle):
                                 removefrom_bone_vtxlist = comp.dictitems['Skeleton:bg'].dictitems[bonename].dictspec['end_vtxlist']
                                 removefrom_end_vtxlist = removefrom_bone_vtxlist.split(" ")
                                 removefrom_end_vtxlist.remove(str(editor.ModelVertexSelList[vtx][0]))
+                                common_handles_list, s_or_e_list = find_common_bone_handles(editor, comp.dictitems['Skeleton:bg'].dictitems[bonename].dictspec['end_point'])
+                                for bone in range(len(common_handles_list)):
+                                    if s_or_e_list[bone] == 0:
+                                        if common_handles_list[bone].dictspec.has_key('start_vtx_pos'):
+                                            removefrom_bone_vtx_pos = common_handles_list[bone]['start_vtx_pos']
+                                            removefrom_start_vtx_pos = removefrom_bone_vtx_pos.split(" ")
+                                            if str(editor.ModelVertexSelList[vtx][0]) in removefrom_start_vtx_pos:
+                                                removefrom_start_vtx_pos.remove(str(editor.ModelVertexSelList[vtx][0]))
+                                            newvtx_poslist = ''
+                                            for startposvtx in range(len(removefrom_start_vtx_pos)):
+                                                if startposvtx == 0:
+                                                    newvtx_poslist = newvtx_poslist + removefrom_start_vtx_pos[startposvtx]
+                                                else:
+                                                    newvtx_poslist = newvtx_poslist + " " + removefrom_start_vtx_pos[startposvtx]
+                                            common_handles_list[bone]['start_vtx_pos'] = newvtx_poslist
+                                    else:
+                                        if common_handles_list[bone].dictspec.has_key('end_vtx_pos'):
+                                            removefrom_bone_vtx_pos = common_handles_list[bone]['end_vtx_pos']
+
+                                            removefrom_end_vtx_pos = removefrom_bone_vtx_pos.split(" ")
+                                            if str(editor.ModelVertexSelList[vtx][0]) in removefrom_end_vtx_pos:
+                                                removefrom_end_vtx_pos.remove(str(editor.ModelVertexSelList[vtx][0]))
+                                            newvtx_poslist = ''
+                                            for endposvtx in range(len(removefrom_end_vtx_pos)):
+                                                if endposvtx == 0:
+                                                    newvtx_poslist = newvtx_poslist + removefrom_end_vtx_pos[endposvtx]
+                                                else:
+                                                    newvtx_poslist = newvtx_poslist + " " + removefrom_end_vtx_pos[endposvtx]
+                                            common_handles_list[bone]['end_vtx_pos'] = newvtx_poslist
                                 for item in boneobjlist[bonename]['s_or_e1']['vtxlist']:
                                     if item[0] == editor.ModelVertexSelList[vtx][0]:
                                         boneobjlist[bonename]['s_or_e1']['vtxlist'].remove(item)
                                 boneobjlist[bonename]['s_or_e1']['selvtxlist'].remove(editor.ModelVertexSelList[vtx][0])
-                                templist = boneobjlist[bonename]['s_or_e1']['tristodrawlist']
+                                templist = []
                                 for item in boneobjlist[bonename]['s_or_e1']['tristodrawlist']:
                                     if item[0] == editor.ModelVertexSelList[vtx][0]:
-                                        templist.remove(item)
+                                        continue
+                                    templist = templist + item
                                 boneobjlist[bonename]['s_or_e1']['tristodrawlist'] = templist
                                 newvtxlist = ''
                                 for endlistvtx in range(len(removefrom_end_vtxlist)):
@@ -4239,6 +4418,35 @@ class LinBoneCenterHandle(LinearBoneHandle):
                             removefrom_bone_vtxlist = comp.dictitems['Skeleton:bg'].dictitems[bonename].dictspec['start_vtxlist']
                             removefrom_start_vtxlist = removefrom_bone_vtxlist.split(" ")
                             removefrom_start_vtxlist.remove(str(editor.ModelVertexSelList[vtx][0]))
+                            common_handles_list, s_or_e_list = find_common_bone_handles(editor, comp.dictitems['Skeleton:bg'].dictitems[bonename].dictspec['start_point'])
+                            for bone in range(len(common_handles_list)):
+                                if s_or_e_list[bone] == 0:
+                                    if common_handles_list[bone].dictspec.has_key('start_vtx_pos'):
+                                        removefrom_bone_vtx_pos = common_handles_list[bone]['start_vtx_pos']
+                                        removefrom_start_vtx_pos = removefrom_bone_vtx_pos.split(" ")
+                                        if str(editor.ModelVertexSelList[vtx][0]) in removefrom_start_vtx_pos:
+                                            removefrom_start_vtx_pos.remove(str(editor.ModelVertexSelList[vtx][0]))
+                                        newvtx_poslist = ''
+                                        for startposvtx in range(len(removefrom_start_vtx_pos)):
+                                            if startposvtx == 0:
+                                                newvtx_poslist = newvtx_poslist + removefrom_start_vtx_pos[startposvtx]
+                                            else:
+                                                newvtx_poslist = newvtx_poslist + " " + removefrom_start_vtx_pos[startposvtx]
+                                        common_handles_list[bone]['start_vtx_pos'] = newvtx_poslist
+                                else:
+                                    if common_handles_list[bone].dictspec.has_key('end_vtx_pos'):
+                                        removefrom_bone_vtx_pos = common_handles_list[bone]['end_vtx_pos']
+
+                                        removefrom_end_vtx_pos = removefrom_bone_vtx_pos.split(" ")
+                                        if str(editor.ModelVertexSelList[vtx][0]) in removefrom_end_vtx_pos:
+                                            removefrom_end_vtx_pos.remove(str(editor.ModelVertexSelList[vtx][0]))
+                                        newvtx_poslist = ''
+                                        for endposvtx in range(len(removefrom_end_vtx_pos)):
+                                            if endposvtx == 0:
+                                                newvtx_poslist = newvtx_poslist + removefrom_end_vtx_pos[endposvtx]
+                                            else:
+                                                newvtx_poslist = newvtx_poslist + " " + removefrom_end_vtx_pos[endposvtx]
+                                        common_handles_list[bone]['end_vtx_pos'] = newvtx_poslist
                             for item in boneobjlist[bonename]['s_or_e0']['vtxlist']:
                                 if item[0] == editor.ModelVertexSelList[vtx][0]:
                                     boneobjlist[bonename]['s_or_e0']['vtxlist'].remove(item)
@@ -4268,6 +4476,35 @@ class LinBoneCenterHandle(LinearBoneHandle):
                             removefrom_bone_vtxlist = comp.dictitems['Skeleton:bg'].dictitems[bonename].dictspec['end_vtxlist']
                             removefrom_end_vtxlist = removefrom_bone_vtxlist.split(" ")
                             removefrom_end_vtxlist.remove(str(editor.ModelVertexSelList[vtx][0]))
+                            common_handles_list, s_or_e_list = find_common_bone_handles(editor, comp.dictitems['Skeleton:bg'].dictitems[bonename].dictspec['end_point'])
+                            for bone in range(len(common_handles_list)):
+                                if s_or_e_list[bone] == 0:
+                                    if common_handles_list[bone].dictspec.has_key('start_vtx_pos'):
+                                        removefrom_bone_vtx_pos = common_handles_list[bone]['start_vtx_pos']
+                                        removefrom_start_vtx_pos = removefrom_bone_vtx_pos.split(" ")
+                                        if str(editor.ModelVertexSelList[vtx][0]) in removefrom_start_vtx_pos:
+                                            removefrom_start_vtx_pos.remove(str(editor.ModelVertexSelList[vtx][0]))
+                                        newvtx_poslist = ''
+                                        for startposvtx in range(len(removefrom_start_vtx_pos)):
+                                            if startposvtx == 0:
+                                                newvtx_poslist = newvtx_poslist + removefrom_start_vtx_pos[startposvtx]
+                                            else:
+                                                newvtx_poslist = newvtx_poslist + " " + removefrom_start_vtx_pos[startposvtx]
+                                        common_handles_list[bone]['start_vtx_pos'] = newvtx_poslist
+                                else:
+                                    if common_handles_list[bone].dictspec.has_key('end_vtx_pos'):
+                                        removefrom_bone_vtx_pos = common_handles_list[bone]['end_vtx_pos']
+
+                                        removefrom_end_vtx_pos = removefrom_bone_vtx_pos.split(" ")
+                                        if str(editor.ModelVertexSelList[vtx][0]) in removefrom_end_vtx_pos:
+                                            removefrom_end_vtx_pos.remove(str(editor.ModelVertexSelList[vtx][0]))
+                                        newvtx_poslist = ''
+                                        for endposvtx in range(len(removefrom_end_vtx_pos)):
+                                            if endposvtx == 0:
+                                                newvtx_poslist = newvtx_poslist + removefrom_end_vtx_pos[endposvtx]
+                                            else:
+                                                newvtx_poslist = newvtx_poslist + " " + removefrom_end_vtx_pos[endposvtx]
+                                        common_handles_list[bone]['end_vtx_pos'] = newvtx_poslist
                             for item in boneobjlist[bonename]['s_or_e1']['vtxlist']:
                                 if item[0] == editor.ModelVertexSelList[vtx][0]:
                                     boneobjlist[bonename]['s_or_e1']['vtxlist'].remove(item)
@@ -4304,6 +4541,9 @@ class LinBoneCenterHandle(LinearBoneHandle):
                 editor.ModelComponentList[comp.name]['bonevtxlist'] = self.dict
                 editor.ModelComponentList[comp.name]['boneobjlist'] = {}
                 editor.ModelComponentList[comp.name]['boneobjlist'][selbone.name] = Update_BoneObjs(editor.ModelComponentList[comp.name]['bonevtxlist'], self.bone.name, comp)
+
+            for bone in comp.dictitems['Skeleton:bg'].subitems:
+                editor.ModelComponentList[comp.name]['boneobjlist'][bone.name] = Update_BoneObjs(editor.ModelComponentList[comp.name]['bonevtxlist'], bone.name, comp)
 
             if not selbone.dictspec.has_key('end_vtxlist') and selbone.dictspec.has_key('end_vtx_pos'):
                 release_end_vertexes_click(m, self)
@@ -4498,6 +4738,10 @@ class LinBoneCenterHandle(LinearBoneHandle):
         KeyframesRotation = qmenu.item("&Key frames Rotation move", keyframes_rotation_click,"|Key frames Rotation move:\n\nWhen two frames are selected that have bone movement, this movement will be spread from the 1st frames positions across all frames in between them to the 2nd frames positions using rotation and in the direction of the smallest angle (clockwise or counterclockwise).|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
         SB1 = qmenu.item("&Show Bones", ShowBones)
         HB1 = qmenu.item("&Hide Bones", HideBones)
+        SelectHandleVertexes = qmenu.item("Se&lect Handle Vertexes", select_handle_vertexes_click, "|Select (bone handle name) Vertexes:\n\nWhen the cursor is over a bone's Center handle with vertexes assigned to it, click this item to select all of them from that bone's handle.\n\nOr, if another handle is attached that has the vertexes assigned to it instead, then those are the vertexes that will be selected.\n\nIf no vertexes have been assigned to any handle at that location, then the menu item will show disabled.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
+        SelectHandleVertexes.state = qmenu.disabled
+        SelectHandlePosVertexes = qmenu.item("Select Handle &Position Vertexes", select_handle_pos_vertexes_click, "|Select (bone handle name) handle position Vertexes:\n\nWhen the cursor is over a bone's Center handle with vertexes assigned to it, click this item to select the vertexes used to set that bone's handle position.\n\nOr, if another handle is attached that has the vertexes assigned to it instead, then those are the position vertexes for that handle that will be selected.\n\nIf no vertexes have been assigned to any handle at that location, then the menu item will show disabled.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
+        SelectHandlePosVertexes.state = qmenu.disabled
         try:
             if isinstance(self, LinBoneCenterHandle):
                 if self.s_or_e == 0:
@@ -4525,10 +4769,7 @@ class LinBoneCenterHandle(LinearBoneHandle):
                         SelectHandlePosVertexes = qmenu.item("Select Handle &Position Vertexes", select_handle_pos_vertexes_click, "|Select (bone handle name) handle position Vertexes:\n\nWhen the cursor is over a bone's Center handle with vertexes assigned to it, click this item to select the vertexes used to set that bone's handle position.\n\nOr, if another handle is attached that has the vertexes assigned to it instead, then those are the position vertexes for that handle that will be selected.\n\nIf no vertexes have been assigned to any handle at that location, then the menu item will show disabled.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
                         SelectHandlePosVertexes.state = qmenu.disabled
         except:
-            SelectHandleVertexes = qmenu.item("Se&lect Handle Vertexes", select_handle_vertexes_click, "|Select (bone handle name) Vertexes:\n\nWhen the cursor is over a bone's Center handle with vertexes assigned to it, click this item to select all of them from that bone's handle.\n\nOr, if another handle is attached that has the vertexes assigned to it instead, then those are the vertexes that will be selected.\n\nIf no vertexes have been assigned to any handle at that location, then the menu item will show disabled.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
-            SelectHandleVertexes.state = qmenu.disabled
-            SelectHandlePosVertexes = qmenu.item("Select Handle &Position Vertexes", select_handle_pos_vertexes_click, "|Select (bone handle name) handle position Vertexes:\n\nWhen the cursor is over a bone's Center handle with vertexes assigned to it, click this item to select the vertexes used to set that bone's handle position.\n\nOr, if another handle is attached that has the vertexes assigned to it instead, then those are the position vertexes for that handle that will be selected.\n\nIf no vertexes have been assigned to any handle at that location, then the menu item will show disabled.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
-            SelectHandlePosVertexes.state = qmenu.disabled
+            pass
 
         try:
             if self.bone.parent:
@@ -5737,6 +5978,10 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.154  2008/10/18 22:37:01  cdunde
+#To fix vertex not being removed from end handle end_vtx_pos list
+#when a vertex is re-assigned to another handle.
+#
 #Revision 1.153  2008/10/17 22:29:05  cdunde
 #Added assigned vertex count (read only) to Specifics/Args page for each bone handle.
 #
