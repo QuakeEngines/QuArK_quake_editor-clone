@@ -805,20 +805,20 @@ def FilterHandles(handlelist, mode):
 # Function that computes a rotation matrix out of a mouse movement.
 #
 
-def UserRotationMatrix(normal, texpdest, texp4, g1, rotationspeed=1):
-     # normal: normal vector for the view plane
-     # texpdest: new position of the reference vector texp4
-     # texp4: reference vector (handle position minus rotation center)
-     # g1: if True, snap angle to grid
-     # rotationspeed, example .5 = half rotation speed, 2 = twice as fast.
+def UserRotationMatrix(normal, texpdest, texp4, g1, rotationspeed=1.0):
+    # normal: normal vector for the view plane
+    # texpdest: new position of the reference vector texp4
+    # texp4: reference vector (handle position minus rotation center)
+    # g1: if True, snap angle to grid
+    # rotationspeed, example .5 = half rotation speed, 2.0 = twice as fast.
+    if not normal: return
     SNAP = 0.998
     if not texp4: return
-    v3 = normal
     norme1 = abs(texp4)
     if not texpdest: return
     norme2 = abs(texpdest)
-    sinangle = (v3*(texp4^texpdest)) / (norme1*norme2)
-    if rotationspeed != 1:
+    sinangle = (normal*(texp4^texpdest)) / (norme1*norme2)
+    if rotationspeed != 1.0:
         sinangle = math.sin(math.asin(sinangle) * rotationspeed)
     norme1 = sinangle*sinangle
     if norme1 > SNAP:
@@ -2169,6 +2169,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.76  2008/10/14 00:15:00  cdunde
+#Fix by DanielPharos for rotationspeed.
+#
 #Revision 1.75  2008/09/15 04:47:45  cdunde
 #Model Editor bones code update.
 #
