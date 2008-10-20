@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.20  2008/10/17 08:07:34  danielpharos
+Oops, missed a spot.
+
 Revision 1.19  2008/10/16 20:56:56  danielpharos
 Note to self: No coding while asleep.
 
@@ -783,9 +786,8 @@ begin
  end;
 end;*)
 
-//FIXME: Currently, we're using Lists for Integers and Tuples for Floats...
-//And we're accepting both when reading in specifics...
-//(Don't forget the 'dictspec'-code in QkObjects!
+//FIXME: Currently, we're accepting both lists and tuples when reading in specifics...
+//(Don't forget the 'dictspec'-code in QkObjects!)
 
 function GetObjSpec(self, o: PyObject) : PyObject; cdecl;
 var
@@ -819,10 +821,10 @@ begin
         I:=Length(Spec)+1;
         N:=(Length(S)-I) div 4;    { SizeOf(Integer) }
         PChar(PI):=PChar(S)+I;
-        Result:=PyList_New(N);
+        Result:=PyTuple_New(N);
         for J:=0 to N-1 do
          begin
-          PyList_SetItem(Result, J, PyInt_FromLong(PI^));
+          PyTuple_SetItem(Result, J, PyInt_FromLong(PI^));
           Inc(PI);
          end;
         Exit;

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.110  2008/10/17 08:07:34  danielpharos
+Oops, missed a spot.
+
 Revision 1.109  2008/10/14 00:07:16  danielpharos
 Add an integer list as a specific type.
 
@@ -3278,10 +3281,10 @@ begin
             begin
               N:=(Length(S)-J) div 4;    { SizeOf(Integer) }
               PChar(PI):=PChar(S)+J;
-              o:=PyList_New(N);
+              o:=PyTuple_New(N);
               for J:=0 to N-1 do
               begin
-                PyList_SetItem(o, J, PyInt_FromLong(PI^));
+                PyTuple_SetItem(o, J, PyInt_FromLong(PI^));
                 Inc(PI);
               end;
               S[2]:=Chr(Ord(S[2]) and not chrFloatSpec);
