@@ -160,6 +160,30 @@ Writes the text in the console. src should be an object of class qconsole.consol
 </td></tr>
 
 <tr><td class="doccode">
+getquakedir()
+</td><td>
+Returns the Quake dir. This is the directory containing the game's executable file.
+</td></tr>
+
+<tr><td class="doccode">
+getgamedir()
+</td><td>
+Returns the Game dir. This is the directory containing the pak files (note: can be different for mods!).
+</td></tr>
+
+<tr><td class="doccode">
+gettmpquark()
+</td><td>
+Returns the tmpquark dir. This is the directory QuArK outputs files to.
+</td></tr>
+
+<tr><td class="doccode">
+getbasedir()
+</td><td>
+Returns the base dir. This is the directory containing the game's (official) pak files.
+</td></tr>
+
+<tr><td class="doccode">
 outputfile(pathandname)
 </td><td>
 Expands pathandname into a complete path and name. pathandname is a name as seen by Quake, e.g. maps/xyz.bsp. The returned path is in the directory tmpQuArK. The directories are created if they don’t already exist. If the directory to Quake has not been set in the Configuration dialog box, outputfile warns the user and raises quarkx.abort.
