@@ -544,8 +544,10 @@ class ModelEditor(BaseEditor):
     def explorerselchange(self, ex=None):
         global BonesSellist
         import qbaseeditor
+        import mdlmgr
         from qbaseeditor import flagsmouse
 
+        mdlmgr.savefacesel = 1
         skipbuild = 0
         if qbaseeditor.flagsmouse == 1032:
             return
@@ -1400,7 +1402,7 @@ def commonhandles(self, redraw=1):
             continue
         ### To update only those views that are in 'Textured' mode after a Skin-view drag has been done.
         try:
-            if flagsmouse == 16384 and currentview.info["viewname"] == "skinview" and isinstance(self.dragobject.handle, mdlhandles.SkinHandle):
+            if flagsmouse == 16384 and currentview.info["viewname"] == "skinview":
                 if v.viewmode != "tex":
                     continue
                 else:
@@ -1561,7 +1563,7 @@ def commonhandles(self, redraw=1):
     
             ### To update only those views that are in 'Textured' mode after a Skin-view drag has been done.
             try:
-                if flagsmouse == 16384 and currentview.info["viewname"] == "skinview" and isinstance(self.dragobject.handle, mdlhandles.SkinHandle):
+                if flagsmouse == 16384 and currentview.info["viewname"] == "skinview":
                     if v.viewmode != "tex":
                         v.handles = hlist
                         continue
@@ -1661,6 +1663,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.105  2008/10/21 18:13:27  cdunde
+#To try to stop dupe drawing of bone handles.
+#
 #Revision 1.104  2008/10/21 04:33:53  cdunde
 #To stop individual bone corner handle drags from hanging if causes a selection change in the tree-view.
 #
