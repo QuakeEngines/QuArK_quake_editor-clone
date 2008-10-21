@@ -546,8 +546,14 @@ class ModelEditor(BaseEditor):
         import qbaseeditor
         from qbaseeditor import flagsmouse
 
+        skipbuild = 0
         if qbaseeditor.flagsmouse == 1032:
             return
+        try:
+            if (qbaseeditor.flagsmouse == 520) or (qbaseeditor.flagsmouse == 16384 and isinstance(self.dragobject.handle, mdlhandles.LinBoneCornerHandle)):
+                skipbuild = 1
+        except:
+            pass
         if len(self.layout.explorer.sellist) == 0:
             BonesSellist = []
         if len(self.layout.explorer.sellist) == 1 and self.layout.explorer.sellist[0].type == ':bg':
@@ -621,7 +627,10 @@ class ModelEditor(BaseEditor):
                     if nobones == 0:
                         BonesSellist = self.layout.explorer.sellist
         self.layout.selchange()
-        self.buildhandles()
+        if skipbuild == 1:
+            pass
+        else:
+            self.buildhandles()
         import mdlmgr
         mdlmgr.treeviewselchanged = 1
         self.invalidateviews(1)
@@ -1653,6 +1662,10 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.103  2008/10/15 00:01:30  cdunde
+#Setup of bones individual handle scaling and Keyframe matrix rotation.
+#Also removed unneeded code.
+#
 #Revision 1.102  2008/10/08 20:00:47  cdunde
 #Updates for Model Editor Bones system.
 #
