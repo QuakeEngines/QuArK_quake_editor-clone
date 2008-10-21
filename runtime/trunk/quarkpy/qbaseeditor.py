@@ -1077,9 +1077,6 @@ class BaseEditor:
                                 s = handle.name + " " + "%s "%handle.index + " x,y,z: %s"%handle.pos
                         except:
                             pass
-                    import mdlmgr
-                    if mdlmgr.treeviewselchanged == 1:
-                        mdlmgr.treeviewselchanged = 0
                 else:
                     s = quarkx.getlonghint(handle.hint)
             self.showhint(s)
@@ -1498,6 +1495,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.117  2008/10/05 13:53:55  danielpharos
+#Fixed an oops and add NoDraw (will be used later).
+#
 #Revision 1.116  2008/10/04 05:48:06  cdunde
 #Updates for Model Editor Bones system.
 #

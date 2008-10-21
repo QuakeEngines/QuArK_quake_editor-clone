@@ -1295,7 +1295,6 @@ def commonhandles(self, redraw=1):
                     self.dragobject = None
             if isinstance(self.dragobject, qhandles.FreeZoomDragObject):
                 if mdlmgr.treeviewselchanged == 1:
-                    mdlmgr.treeviewselchanged = 0
                     self.dragobject = None
                 else:
                     return
@@ -1662,6 +1661,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.104  2008/10/21 04:33:53  cdunde
+#To stop individual bone corner handle drags from hanging if causes a selection change in the tree-view.
+#
 #Revision 1.103  2008/10/15 00:01:30  cdunde
 #Setup of bones individual handle scaling and Keyframe matrix rotation.
 #Also removed unneeded code.
