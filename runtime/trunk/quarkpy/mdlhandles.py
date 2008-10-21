@@ -5437,10 +5437,13 @@ class LinBoneCornerHandle(LinearBoneHandle):
                             newposother = quarkx.vect(self.newbones_end[bone]['start_point'])
                             break
 
+                normal = view.vector("Z").normalized
                 oldvector = oldpos - oldposother
+                oldvector = oldvector - normal*(normal*oldvector)
                 newvector = newpos - newposother
+                newvector = newvector - normal*(normal*newvector)
                 obj.translate(-oldposother)
-                m = qhandles.UserRotationMatrix((oldvector^newvector).normalized, newvector, oldvector, 0)
+                m = qhandles.UserRotationMatrix(normal, newvector, oldvector, 0)
                 if m is not None:
                     obj.linear(quarkx.vect(0, 0, 0), m)
                 obj.translate(newposother)
@@ -5454,20 +5457,24 @@ class LinBoneCornerHandle(LinearBoneHandle):
                         framevtxs[int(poly.shortname)] = box
 
         if quarkx.setupsubset(SS_MODEL, "Options")['NVDL'] is None: # NVDL = no vertex drag lines.
-            cv = view.canvas()
-            cv.pencolor = MapColor("BoneHandles", SS_MODEL)
-            for tri in self.mgr.tristodrawlist:
-                dragprojvtx = view.proj(framevtxs[tri[0]])
-                for vtx in range(len(tri[4])):
-                    if tri[4][vtx][0] == tri[0]:
-                        continue
-                    else:
-                        projvtx = view.proj(framevtxs[tri[4][vtx][0]])
-                    cv.line(int(dragprojvtx.tuple[0]), int(dragprojvtx.tuple[1]), int(projvtx.tuple[0]), int(projvtx.tuple[1]))
+            from mdlutils import keyframesrotation
+            if keyframesrotation == 1:
+                pass
+            else:
+                cv = view.canvas()
+                cv.pencolor = MapColor("BoneHandles", SS_MODEL)
+                for tri in self.mgr.tristodrawlist:
+                    dragprojvtx = view.proj(framevtxs[tri[0]])
+                    for vtx in range(len(tri[4])):
+                        if tri[4][vtx][0] == tri[0]:
+                            continue
+                        else:
+                            projvtx = view.proj(framevtxs[tri[4][vtx][0]])
+                        cv.line(int(dragprojvtx.tuple[0]), int(dragprojvtx.tuple[1]), int(projvtx.tuple[0]), int(projvtx.tuple[1]))
 
-            dragcolor = vertexsellistcolor
-            for obj in newobjlist:
-                view.drawmap(obj, DM_OTHERCOLOR, dragcolor)
+                dragcolor = vertexsellistcolor
+                for obj in newobjlist:
+                    view.drawmap(obj, DM_OTHERCOLOR, dragcolor)
 
         return delta
 
@@ -5551,7 +5558,11 @@ class LinBoneCornerHandle(LinearBoneHandle):
             self.newbones_end = self.newbones_end + [newbone]
 
         if delta or (flags&MB_REDIMAGE):
-            view.repaint()
+            from mdlutils import keyframesrotation
+            if keyframesrotation == 1:
+                pass
+            else:
+                view.repaint()
             cv = view.canvas()
             cv.penwidth = 1
             if self.s_or_e == 0: # Handles the "Start of Bone".
@@ -5569,8 +5580,10 @@ class LinBoneCornerHandle(LinearBoneHandle):
                     elif view.info['type'] == "YZ":
                         change1 = quarkx.vect(0, change1.y, change1.z)
                         change2 = quarkx.vect(0, change2.y, change2.z)
-                    changeaxis = change1 ^ change2   # Cross product
-                    m = qhandles.UserRotationMatrix(changeaxis.normalized, change2, change1, 0)
+                    normal = view.vector("Z").normalized
+                    change1 = change1 - normal*(normal*change1)
+                    change2 = change2 - normal*(normal*change2)
+                    m = qhandles.UserRotationMatrix(normal, change2, change1, 0)
                     if m is None:
                         m = quarkx.matrix(quarkx.vect(1, 0, 0), quarkx.vect(0, 1, 0), quarkx.vect(0, 0, 1))
                     self.draghint = "rotate %d deg." % (math.acos(m[0,0])*180.0/math.pi)
@@ -5607,8 +5620,10 @@ class LinBoneCornerHandle(LinearBoneHandle):
                     elif view.info['type'] == "YZ":
                         change1 = quarkx.vect(0, change1.y, change1.z)
                         change2 = quarkx.vect(0, change2.y, change2.z)
-                    changeaxis = change1 ^ change2   # Cross product
-                    m = qhandles.UserRotationMatrix(changeaxis.normalized, change2, change1, 0)
+                    normal = view.vector("Z").normalized
+                    change1 = change1 - normal*(normal*change1)
+                    change2 = change2 - normal*(normal*change2)
+                    m = qhandles.UserRotationMatrix(normal, change2, change1, 0)
                     if m is None:
                         m = quarkx.matrix(quarkx.vect(1, 0, 0), quarkx.vect(0, 1, 0), quarkx.vect(0, 0, 1))
                     self.draghint = "rotate %d deg." % (math.acos(m[0,0])*180.0/math.pi)
@@ -5638,80 +5653,84 @@ class LinBoneCornerHandle(LinearBoneHandle):
                         self.newbones_end[bone]['start_point'] = startpoint.tuple
                         self.newbones_end[bone]['end_point'] = endpoint.tuple
 
-                if view.info['type'] != "3D":
-                    scale = view.scale()
-                    # Draws all the stationary bones first.
-                    for compbone in self.fixedbones:
-                        p1 = view.proj(quarkx.vect(compbone.dictspec['start_point']))
-                        p2 = view.proj(quarkx.vect(compbone.dictspec['end_point']))
-                        handle_start_scale = compbone.dictspec['start_scale']
-                        handle_end_scale = compbone.dictspec['end_scale']
-                        cv.penstyle = PS_INSIDEFRAME
-                        cv.brushstyle = BS_CLEAR
-                        DrawBoneLine(p1, p2, cv, MapColor("BoneLines", SS_MODEL), scale, handle_start_scale)
-                        startcolor = compbone.dictspec['start_color']
-                        quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
-                        DrawBoneHandle(p1, cv, MapColor("start_color", SS_MODEL), scale, handle_start_scale)
-                        endcolor = compbone.dictspec['end_color']
-                        quarkx.setupsubset(SS_MODEL, "Colors")["end_color"] = endcolor
-                        DrawBoneHandle(p2, cv, MapColor("end_color", SS_MODEL), scale, handle_end_scale)
-                    # Now draws the bone being dragged.
-                    for bone in range(len(self.newbones_start)):
-                        p1 = view.proj(quarkx.vect(self.newbones_start[bone].dictspec['start_point']))
-                        p2 = view.proj(quarkx.vect(self.newbones_start[bone].dictspec['end_point']))
-                        cv.penstyle = PS_INSIDEFRAME
-                        cv.brushstyle = BS_CLEAR
-                        if quarkx.setupsubset(SS_MODEL, "Options")['MBLines_Color'] is not None:
+                from mdlutils import keyframesrotation
+                if keyframesrotation == 1:
+                    pass
+                else:
+                    if view.info['type'] != "3D":
+                        scale = view.scale()
+                        # Draws all the stationary bones first.
+                        for compbone in self.fixedbones:
+                            p1 = view.proj(quarkx.vect(compbone.dictspec['start_point']))
+                            p2 = view.proj(quarkx.vect(compbone.dictspec['end_point']))
+                            handle_start_scale = compbone.dictspec['start_scale']
+                            handle_end_scale = compbone.dictspec['end_scale']
+                            cv.penstyle = PS_INSIDEFRAME
+                            cv.brushstyle = BS_CLEAR
+                            DrawBoneLine(p1, p2, cv, MapColor("BoneLines", SS_MODEL), scale, handle_start_scale)
+                            startcolor = compbone.dictspec['start_color']
+                            quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
+                            DrawBoneHandle(p1, cv, MapColor("start_color", SS_MODEL), scale, handle_start_scale)
+                            endcolor = compbone.dictspec['end_color']
+                            quarkx.setupsubset(SS_MODEL, "Colors")["end_color"] = endcolor
+                            DrawBoneHandle(p2, cv, MapColor("end_color", SS_MODEL), scale, handle_end_scale)
+                        # Now draws the bone being dragged.
+                        for bone in range(len(self.newbones_start)):
+                            p1 = view.proj(quarkx.vect(self.newbones_start[bone].dictspec['start_point']))
+                            p2 = view.proj(quarkx.vect(self.newbones_start[bone].dictspec['end_point']))
+                            cv.penstyle = PS_INSIDEFRAME
+                            cv.brushstyle = BS_CLEAR
+                            if quarkx.setupsubset(SS_MODEL, "Options")['MBLines_Color'] is not None:
+                                startcolor = self.bone.dictspec['start_color']
+                                quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
+                                startcolor = MapColor("start_color", SS_MODEL)
+                            else:
+                                startcolor = MapColor("BoneHandles", SS_MODEL)
+                            handle_start_scale = self.newbones_start[bone].dictspec['start_scale']
+                            handle_end_scale = self.newbones_start[bone].dictspec['end_scale']
+                            DrawBoneLine(p1, p2, cv, startcolor, scale, handle_start_scale)
+                            cv.penstyle = PS_INSIDEFRAME
+                            cv.brushstyle = BS_CLEAR
                             startcolor = self.bone.dictspec['start_color']
                             quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
                             startcolor = MapColor("start_color", SS_MODEL)
-                        else:
-                            startcolor = MapColor("BoneHandles", SS_MODEL)
-                        handle_start_scale = self.newbones_start[bone].dictspec['start_scale']
-                        handle_end_scale = self.newbones_start[bone].dictspec['end_scale']
-                        DrawBoneLine(p1, p2, cv, startcolor, scale, handle_start_scale)
-                        cv.penstyle = PS_INSIDEFRAME
-                        cv.brushstyle = BS_CLEAR
-                        startcolor = self.bone.dictspec['start_color']
-                        quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
-                        startcolor = MapColor("start_color", SS_MODEL)
-                        DrawBoneHandle(p1, cv, MapColor("start_color", SS_MODEL), scale, handle_start_scale)
-                        cv.penstyle = PS_INSIDEFRAME
-                        cv.brushstyle = BS_CLEAR
-                        endcolor = self.bone.dictspec['end_color']
-                        quarkx.setupsubset(SS_MODEL, "Colors")["end_color"] = endcolor
-                        DrawBoneHandle(p2, cv, MapColor("end_color", SS_MODEL), scale, handle_end_scale)
+                            DrawBoneHandle(p1, cv, MapColor("start_color", SS_MODEL), scale, handle_start_scale)
+                            cv.penstyle = PS_INSIDEFRAME
+                            cv.brushstyle = BS_CLEAR
+                            endcolor = self.bone.dictspec['end_color']
+                            quarkx.setupsubset(SS_MODEL, "Colors")["end_color"] = endcolor
+                            DrawBoneHandle(p2, cv, MapColor("end_color", SS_MODEL), scale, handle_end_scale)
 
-                    for bone in range(len(self.newbones_end)):
-                        p1 = view.proj(quarkx.vect(self.newbones_end[bone].dictspec['start_point']))
-                        p2 = view.proj(quarkx.vect(self.newbones_end[bone].dictspec['end_point']))
-                        cv.penstyle = PS_INSIDEFRAME
-                        cv.brushstyle = BS_CLEAR
-                        if quarkx.setupsubset(SS_MODEL, "Options")['MBLines_Color'] is not None:
+                        for bone in range(len(self.newbones_end)):
+                            p1 = view.proj(quarkx.vect(self.newbones_end[bone].dictspec['start_point']))
+                            p2 = view.proj(quarkx.vect(self.newbones_end[bone].dictspec['end_point']))
+                            cv.penstyle = PS_INSIDEFRAME
+                            cv.brushstyle = BS_CLEAR
+                            if quarkx.setupsubset(SS_MODEL, "Options")['MBLines_Color'] is not None:
+                                startcolor = self.newbones_end[bone].dictspec['start_color']
+                                quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
+                                startcolor = MapColor("start_color", SS_MODEL)
+                            else:
+                                startcolor = MapColor("BoneHandles", SS_MODEL)
+                            quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
+                            if self.groupselection == 0:
+                                p2 = view.proj(quarkx.vect(self.oldbones_end[bone].dictspec['end_point']))
+                            handle_start_scale = self.newbones_end[bone].dictspec['start_scale']
+                            handle_end_scale = self.newbones_end[bone].dictspec['end_scale']
+                            DrawBoneLine(p1, p2, cv, MapColor("start_color", SS_MODEL), scale, handle_start_scale)
+                            cv.penstyle = PS_INSIDEFRAME
+                            cv.brushstyle = BS_CLEAR
+                            if self.groupselection == 0:
+                                endcolor = self.newbones_end[bone].dictspec['end_color']
+                                quarkx.setupsubset(SS_MODEL, "Colors")["end_color"] = endcolor
+                                endcolor = MapColor("end_color", SS_MODEL)
+                                p2 = view.proj(quarkx.vect(self.oldbones_end[bone].dictspec['end_point']))
+                                DrawBoneHandle(p2, cv, MapColor("end_color", SS_MODEL), scale, handle_end_scale)
                             startcolor = self.newbones_end[bone].dictspec['start_color']
                             quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
-                            startcolor = MapColor("start_color", SS_MODEL)
-                        else:
-                            startcolor = MapColor("BoneHandles", SS_MODEL)
-                        quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
-                        if self.groupselection == 0:
-                            p2 = view.proj(quarkx.vect(self.oldbones_end[bone].dictspec['end_point']))
-                        handle_start_scale = self.newbones_end[bone].dictspec['start_scale']
-                        handle_end_scale = self.newbones_end[bone].dictspec['end_scale']
-                        DrawBoneLine(p1, p2, cv, MapColor("start_color", SS_MODEL), scale, handle_start_scale)
-                        cv.penstyle = PS_INSIDEFRAME
-                        cv.brushstyle = BS_CLEAR
-                        if self.groupselection == 0:
-                            endcolor = self.newbones_end[bone].dictspec['end_color']
-                            quarkx.setupsubset(SS_MODEL, "Colors")["end_color"] = endcolor
-                            endcolor = MapColor("end_color", SS_MODEL)
-                            p2 = view.proj(quarkx.vect(self.oldbones_end[bone].dictspec['end_point']))
-                            DrawBoneHandle(p2, cv, MapColor("end_color", SS_MODEL), scale, handle_end_scale)
-                        startcolor = self.newbones_end[bone].dictspec['start_color']
-                        quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
-                        DrawBoneHandle(p1, cv, MapColor("start_color", SS_MODEL), scale, handle_start_scale)
-                else:
-                    pass
+                            DrawBoneHandle(p1, cv, MapColor("start_color", SS_MODEL), scale, handle_start_scale)
+                    else:
+                        pass
             else: # Handles the "End of Bone".
                 if self.groupselection == 0: # Single bone selection.
                     # Does movement of the handles and rotation of their assigned vertexes, if any.
@@ -5727,8 +5746,10 @@ class LinBoneCornerHandle(LinearBoneHandle):
                     elif view.info['type'] == "YZ":
                         change1 = quarkx.vect(0, change1.y, change1.z)
                         change2 = quarkx.vect(0, change2.y, change2.z)
-                    changeaxis = change1 ^ change2   # Cross product
-                    m = qhandles.UserRotationMatrix(changeaxis.normalized, change2, change1, 0)
+                    normal = view.vector("Z").normalized
+                    change1 = change1 - normal*(normal*change1)
+                    change2 = change2 - normal*(normal*change2)
+                    m = qhandles.UserRotationMatrix(normal, change2, change1, 0)
                     if m is None:
                         m = quarkx.matrix(quarkx.vect(1, 0, 0), quarkx.vect(0, 1, 0), quarkx.vect(0, 0, 1))
                     self.draghint = "rotate %d deg." % (math.acos(m[0,0])*180.0/math.pi)
@@ -5765,8 +5786,10 @@ class LinBoneCornerHandle(LinearBoneHandle):
                     elif view.info['type'] == "YZ":
                         change1 = quarkx.vect(0, change1.y, change1.z)
                         change2 = quarkx.vect(0, change2.y, change2.z)
-                    changeaxis = change1 ^ change2   # Cross product
-                    m = qhandles.UserRotationMatrix(changeaxis.normalized, change2, change1, 0)
+                    normal = view.vector("Z").normalized
+                    change1 = change1 - normal*(normal*change1)
+                    change2 = change2 - normal*(normal*change2)
+                    m = qhandles.UserRotationMatrix(normal, change2, change1, 0)
                     if m is None:
                         m = quarkx.matrix(quarkx.vect(1, 0, 0), quarkx.vect(0, 1, 0), quarkx.vect(0, 0, 1))
                     self.draghint = "rotate %d deg." % (math.acos(m[0,0])*180.0/math.pi)
@@ -5787,91 +5810,95 @@ class LinBoneCornerHandle(LinearBoneHandle):
                             self.newbones_end[bone]['start_point'] = startpoint.tuple
 
                 if view.info['type'] != "3D":
-                    scale = view.scale()
-                    # Draws all the stationary bones first.
-                    for compbone in self.fixedbones:
-                        p1 = view.proj(quarkx.vect(compbone.dictspec['start_point']))
-                        p2 = view.proj(quarkx.vect(compbone.dictspec['end_point']))
-                        cv.penstyle = PS_INSIDEFRAME
-                        cv.brushstyle = BS_CLEAR
-                        handle_start_scale = compbone.dictspec['start_scale']
-                        handle_end_scale = compbone.dictspec['end_scale']
-                        DrawBoneLine(p1, p2, cv, MapColor("BoneLines", SS_MODEL), scale, handle_start_scale)
-                        cv.penstyle = PS_INSIDEFRAME
-                        cv.brushstyle = BS_CLEAR
-                        startcolor = compbone.dictspec['start_color']
-                        quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
-                        DrawBoneHandle(p1, cv, MapColor("start_color", SS_MODEL), scale, handle_start_scale)
+                    from mdlutils import keyframesrotation
+                    if keyframesrotation == 1:
+                        pass
+                    else:
+                        scale = view.scale()
+                        # Draws all the stationary bones first.
+                        for compbone in self.fixedbones:
+                            p1 = view.proj(quarkx.vect(compbone.dictspec['start_point']))
+                            p2 = view.proj(quarkx.vect(compbone.dictspec['end_point']))
+                            cv.penstyle = PS_INSIDEFRAME
+                            cv.brushstyle = BS_CLEAR
+                            handle_start_scale = compbone.dictspec['start_scale']
+                            handle_end_scale = compbone.dictspec['end_scale']
+                            DrawBoneLine(p1, p2, cv, MapColor("BoneLines", SS_MODEL), scale, handle_start_scale)
+                            cv.penstyle = PS_INSIDEFRAME
+                            cv.brushstyle = BS_CLEAR
+                            startcolor = compbone.dictspec['start_color']
+                            quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
+                            DrawBoneHandle(p1, cv, MapColor("start_color", SS_MODEL), scale, handle_start_scale)
 
-                        endcolor = compbone.dictspec['end_color']
-                        quarkx.setupsubset(SS_MODEL, "Colors")["end_color"] = endcolor
-                        DrawBoneHandle(p2, cv, MapColor("end_color", SS_MODEL), scale, handle_end_scale)
-                    # Now draws the bone being dragged.
-                    for bone in range(len(self.oldbones_end)):
-                        if self.groupselection == 0:
-                            pass
-                        else:
-                            if self.oldbones_end[bone] == self.bone:
-                                p1 = view.proj(quarkx.vect(self.oldbones_end[bone].dictspec['start_point']))
-                                p2 = view.proj(quarkx.vect(self.oldbones_end[bone].dictspec['end_point']))
-                                handle_start_scale = self.oldbones_end[bone].dictspec['start_scale']
-                                handle_end_scale = self.oldbones_end[bone].dictspec['end_scale']
-                                DrawBoneLine(p1, p2, cv, MapColor("BoneLines", SS_MODEL), scale, handle_start_scale)
-                                startcolor = self.oldbones_end[bone].dictspec['start_color']
-                                quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
-                                DrawBoneHandle(p1, cv, MapColor("start_color", SS_MODEL), scale, handle_start_scale)
-                                endcolor = self.oldbones_end[bone].dictspec['end_color']
+                            endcolor = compbone.dictspec['end_color']
+                            quarkx.setupsubset(SS_MODEL, "Colors")["end_color"] = endcolor
+                            DrawBoneHandle(p2, cv, MapColor("end_color", SS_MODEL), scale, handle_end_scale)
+                        # Now draws the bone being dragged.
+                        for bone in range(len(self.oldbones_end)):
+                            if self.groupselection == 0:
+                                pass
+                            else:
+                                if self.oldbones_end[bone] == self.bone:
+                                    p1 = view.proj(quarkx.vect(self.oldbones_end[bone].dictspec['start_point']))
+                                    p2 = view.proj(quarkx.vect(self.oldbones_end[bone].dictspec['end_point']))
+                                    handle_start_scale = self.oldbones_end[bone].dictspec['start_scale']
+                                    handle_end_scale = self.oldbones_end[bone].dictspec['end_scale']
+                                    DrawBoneLine(p1, p2, cv, MapColor("BoneLines", SS_MODEL), scale, handle_start_scale)
+                                    startcolor = self.oldbones_end[bone].dictspec['start_color']
+                                    quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
+                                    DrawBoneHandle(p1, cv, MapColor("start_color", SS_MODEL), scale, handle_start_scale)
+                                    endcolor = self.oldbones_end[bone].dictspec['end_color']
+                                    quarkx.setupsubset(SS_MODEL, "Colors")["end_color"] = endcolor
+                                    DrawBoneHandle(p2, cv, MapColor("end_color", SS_MODEL), scale, handle_end_scale)
+                                    continue
+                            p1 = view.proj(quarkx.vect(self.newbones_end[bone].dictspec['start_point']))
+                            p2 = view.proj(quarkx.vect(self.newbones_end[bone].dictspec['end_point']))
+                            cv.penstyle = PS_INSIDEFRAME
+                            cv.brushstyle = BS_CLEAR
+                            if quarkx.setupsubset(SS_MODEL, "Options")['MBLines_Color'] is not None:
+                                endcolor = self.bone.dictspec['end_color']
                                 quarkx.setupsubset(SS_MODEL, "Colors")["end_color"] = endcolor
-                                DrawBoneHandle(p2, cv, MapColor("end_color", SS_MODEL), scale, handle_end_scale)
-                                continue
-                        p1 = view.proj(quarkx.vect(self.newbones_end[bone].dictspec['start_point']))
-                        p2 = view.proj(quarkx.vect(self.newbones_end[bone].dictspec['end_point']))
-                        cv.penstyle = PS_INSIDEFRAME
-                        cv.brushstyle = BS_CLEAR
-                        if quarkx.setupsubset(SS_MODEL, "Options")['MBLines_Color'] is not None:
+                                endcolor = MapColor("end_color", SS_MODEL)
+                            else:
+                                endcolor = MapColor("BoneHandles", SS_MODEL)
+                            handle_start_scale = self.newbones_end[bone].dictspec['start_scale']
+                            handle_end_scale = self.newbones_end[bone].dictspec['end_scale']
+                            DrawBoneLine(p1, p2, cv, endcolor, scale, handle_start_scale)
+                            cv.penstyle = PS_INSIDEFRAME
+                            cv.brushstyle = BS_CLEAR
                             endcolor = self.bone.dictspec['end_color']
                             quarkx.setupsubset(SS_MODEL, "Colors")["end_color"] = endcolor
-                            endcolor = MapColor("end_color", SS_MODEL)
-                        else:
-                            endcolor = MapColor("BoneHandles", SS_MODEL)
-                        handle_start_scale = self.newbones_end[bone].dictspec['start_scale']
-                        handle_end_scale = self.newbones_end[bone].dictspec['end_scale']
-                        DrawBoneLine(p1, p2, cv, endcolor, scale, handle_start_scale)
-                        cv.penstyle = PS_INSIDEFRAME
-                        cv.brushstyle = BS_CLEAR
-                        endcolor = self.bone.dictspec['end_color']
-                        quarkx.setupsubset(SS_MODEL, "Colors")["end_color"] = endcolor
-                        DrawBoneHandle(p2, cv, MapColor("end_color", SS_MODEL), scale, handle_end_scale)
-                        cv.penstyle = PS_INSIDEFRAME
-                        cv.brushstyle = BS_CLEAR
-                        endcolor = self.bone.dictspec['end_color']
-                        quarkx.setupsubset(SS_MODEL, "Colors")["end_color"] = endcolor
-                        DrawBoneHandle(p1, cv, MapColor("end_color", SS_MODEL), scale, handle_start_scale)
-                    for bone in range(len(self.newbones_start)):
-                        p1 = view.proj(quarkx.vect(self.newbones_start[bone].dictspec['start_point']))
-                        p2 = view.proj(quarkx.vect(self.newbones_start[bone].dictspec['end_point']))
-                        handle_start_scale = self.newbones_start[bone].dictspec['start_scale']
-                        handle_end_scale = self.newbones_start[bone].dictspec['end_scale']
-                        if self.groupselection == 0:
-                            p2 = view.proj(quarkx.vect(self.oldbones_start[bone].dictspec['end_point']))
-                            if self.bone.dictspec['end_scale'] != self.newbones_start[bone].dictspec['start_scale']:
+                            DrawBoneHandle(p2, cv, MapColor("end_color", SS_MODEL), scale, handle_end_scale)
+                            cv.penstyle = PS_INSIDEFRAME
+                            cv.brushstyle = BS_CLEAR
+                            endcolor = self.bone.dictspec['end_color']
+                            quarkx.setupsubset(SS_MODEL, "Colors")["end_color"] = endcolor
+                            DrawBoneHandle(p1, cv, MapColor("end_color", SS_MODEL), scale, handle_start_scale)
+                        for bone in range(len(self.newbones_start)):
+                            p1 = view.proj(quarkx.vect(self.newbones_start[bone].dictspec['start_point']))
+                            p2 = view.proj(quarkx.vect(self.newbones_start[bone].dictspec['end_point']))
+                            handle_start_scale = self.newbones_start[bone].dictspec['start_scale']
+                            handle_end_scale = self.newbones_start[bone].dictspec['end_scale']
+                            if self.groupselection == 0:
+                                p2 = view.proj(quarkx.vect(self.oldbones_start[bone].dictspec['end_point']))
+                                if self.bone.dictspec['end_scale'] != self.newbones_start[bone].dictspec['start_scale']:
+                                    startcolor = self.newbones_start[bone].dictspec['start_color']
+                                    quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
+                                    DrawBoneHandle(p1, cv, MapColor("start_color", SS_MODEL), scale, handle_start_scale)
+                            cv.penstyle = PS_INSIDEFRAME
+                            cv.brushstyle = BS_CLEAR
+                            if quarkx.setupsubset(SS_MODEL, "Options")['MBLines_Color'] is not None:
                                 startcolor = self.newbones_start[bone].dictspec['start_color']
                                 quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
-                                DrawBoneHandle(p1, cv, MapColor("start_color", SS_MODEL), scale, handle_start_scale)
-                        cv.penstyle = PS_INSIDEFRAME
-                        cv.brushstyle = BS_CLEAR
-                        if quarkx.setupsubset(SS_MODEL, "Options")['MBLines_Color'] is not None:
-                            startcolor = self.newbones_start[bone].dictspec['start_color']
-                            quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
-                            startcolor = MapColor("start_color", SS_MODEL)
-                        else:
-                            startcolor = MapColor("BoneHandles", SS_MODEL)
-                        DrawBoneLine(p1, p2, cv, startcolor, scale, handle_start_scale)
-                        cv.penstyle = PS_INSIDEFRAME
-                        cv.brushstyle = BS_CLEAR
-                        endcolor = self.newbones_start[bone].dictspec['end_color']
-                        quarkx.setupsubset(SS_MODEL, "Colors")["end_color"] = endcolor
-                        DrawBoneHandle(p2, cv, MapColor("end_color", SS_MODEL), scale, handle_end_scale)
+                                startcolor = MapColor("start_color", SS_MODEL)
+                            else:
+                                startcolor = MapColor("BoneHandles", SS_MODEL)
+                            DrawBoneLine(p1, p2, cv, startcolor, scale, handle_start_scale)
+                            cv.penstyle = PS_INSIDEFRAME
+                            cv.brushstyle = BS_CLEAR
+                            endcolor = self.newbones_start[bone].dictspec['end_color']
+                            quarkx.setupsubset(SS_MODEL, "Colors")["end_color"] = endcolor
+                            DrawBoneHandle(p2, cv, MapColor("end_color", SS_MODEL), scale, handle_end_scale)
                 else:
                     pass
         if (self.s_or_e == 0): # Handles the "Start of Bone".
@@ -5978,6 +6005,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.155  2008/10/18 22:57:32  cdunde
+#A bunch of fixes for reassigning vertexes between bone handles.
+#
 #Revision 1.154  2008/10/18 22:37:01  cdunde
 #To fix vertex not being removed from end handle end_vtx_pos list
 #when a vertex is re-assigned to another handle.

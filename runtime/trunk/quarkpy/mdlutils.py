@@ -15,6 +15,9 @@ import qutils
 from qeditor import *
 from math import *
 
+### Globals
+keyframesrotation = 0
+
 ###############################
 #
 # Operational functions
@@ -2024,12 +2027,14 @@ def align_bones_ends(editor, bone1, bone2):
 # This function does the rotation movement of all bones between two selected "Key frames".
 #
 def keyframes_rotation(editor, bonesgroup, frame1, frame2):
+    global keyframesrotation
     import qhandles
     comp = editor.Root.currentcomponent
     new_comp = comp.copy()
     framesgroup = new_comp.dictitems['Frames:fg']
     count = 0
     framecount = 0
+    keyframesrotation = 1
     for frame in framesgroup.subitems:
         if frame.name == frame1.name:
             startframe = count
@@ -2051,27 +2056,19 @@ def keyframes_rotation(editor, bonesgroup, frame1, frame2):
                             handle = item
                             break
                     view = editor.layout.views[0]
-               #     from qbaseeditor import currentview
-               #     view = currentview
                     handle.groupselection = 1
                     handle.start_drag(view, 0, 0, 1)
-                    basebonename = common_handles_list[common_handle].name
-                    basebonepos = common_handles_list[common_handle]['start_point']
                     break
                 else:
-                    basebonehandle = common_handles_list[common_handle].start_handle
+                    basebonehandle = common_handles_list[common_handle].end_handle
                     import mdlhandles
                     for item in basebonehandle:
                         if isinstance(item, mdlhandles.LinBoneCornerHandle):
                             handle = item
                             break
-        #            view = editor.layout.views[0]
-                    from qbaseeditor import currentview
-                    view = currentview
+                    view = editor.layout.views[0]
                     handle.groupselection = 1
                     handle.start_drag(view, 0, 0, 1)
-                    basebonename = common_handles_list[common_handle].name
-                    basebonepos = common_handles_list[common_handle]['start_point']
                     break
             vtxlist = bone.dictspec['start_vtx_pos']
             vtxlist = vtxlist.split(" ")
@@ -2083,7 +2080,6 @@ def keyframes_rotation(editor, bonesgroup, frame1, frame2):
             frame2_start_vtxpos = frame2_start_vtxpos/ float(len(vtxlist))
             if str(frame1_start_vtxpos) != str(frame2_start_vtxpos):
                 vex_diff = frame2_start_vtxpos - frame1_start_vtxpos
-            #        delta_diff = vex_diff / framecount # Incremental difference of movement from frame to frame.
                 vex_diff = vex_diff.tuple
                 factor = 1-(framecount/framecount+1)
                 delta_diff = quarkx.vect(vex_diff[0]*factor, vex_diff[1]*factor, vex_diff[2]*factor)  # This way avoids division by zero errors.
@@ -2108,6 +2104,10 @@ def keyframes_rotation(editor, bonesgroup, frame1, frame2):
                             for poly in item.subitems:
                                 vtx_index = int(poly.shortname)
                                 vtx_pos = (m * (old_vtxs[vtx_index] - handle.mgr.center)) + handle.mgr.center
+                ### 3 lines below gives a straight delta drag, use for straight Keyframe movement code.
+                #                newvtxlist = frame.vertices[vtx_index] + delta
+                #                vtxs = old_vtxs[:vtx_index] + [quarkx.vect(newvtxlist.tuple)] + old_vtxs[vtx_index+1:]
+                ### 1 line below gives a vertex rotation drag, use for rotation Keyframe movement code.
                                 vtxs = old_vtxs[:vtx_index] + [vtx_pos] + old_vtxs[vtx_index+1:]
                                 old_vtxs = vtxs
                     frame.vertices = vtxs
@@ -2117,6 +2117,8 @@ def keyframes_rotation(editor, bonesgroup, frame1, frame2):
     undo = quarkx.action()
     undo.exchange(comp, new_comp)
     editor.ok(undo, "key frames rotation")
+    keyframesrotation = 0
+
 #
 # This function finds all bone handles start_points and end_points that are
 # the same as the handle_pos provided, primarily used for specific settings drags.
@@ -3032,6 +3034,10 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.87  2008/10/15 00:01:30  cdunde
+#Setup of bones individual handle scaling and Keyframe matrix rotation.
+#Also removed unneeded code.
+#
 #Revision 1.86  2008/10/08 20:00:45  cdunde
 #Updates for Model Editor Bones system.
 #
