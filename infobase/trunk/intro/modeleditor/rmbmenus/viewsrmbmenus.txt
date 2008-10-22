@@ -2,11 +2,13 @@ title: Editor Views RMB menus
 author: cdunde
 
 <map name="rmbmenusMap0">
-<area href="#facecommands" shape="rect" coords="2, 55, 155, 69">
-<area href="#vertexcommands" shape="rect" coords="2, 73, 155, 86">
-<area href="#commands" shape="rect" coords="2, 91, 155, 104">
-<area href="#editorfaceoptions" shape="rect" coords="2, 116, 155, 130">
-<area href="#editorvertexoptions" shape="rect" coords="2, 134, 155, 148">
+<area href="#bonecommands" shape="rect" coords="2, 55, 155, 69">
+<area href="#facecommands" shape="rect" coords="2, 73, 155, 87">
+<area href="#vertexcommands" shape="rect" coords="2, 91, 155, 104">
+<area href="#commands" shape="rect" coords="2, 116, 155, 130">
+<area href="#editorboneoptions" shape="rect" coords="2, 134, 155, 148">
+<area href="#editorfaceoptions" shape="rect" coords="2, 152, 155, 166">
+<area href="#editorvertexoptions" shape="rect" coords="2, 170, 155, 184">
 </map>
 
 <img border=1 align=right usemap="#rmbmenusMap0">viewsrmbmenus1.png</img>
@@ -16,6 +18,14 @@ author: cdunde
 <i>Paste here </i>&nbsp;: This is a simple paste command to drop something you have copied into
 one of the editors views if it can be.
 
+<i>Bone Commands </i>&nbsp;: This is the link to the Bone Commands sub-menu that will appear
+when your courser is over it. To activate this menu item you must have the
+<a href="intro.modeleditor.toolpalettes.display.html">Linear Drag Handles</a> button
+de-activated (in vertex mode) and select either a model component's <g>Frames</g> or <g>Skeleton</g> folder,
+or at least one frame or bone within one of those folders, then this menu item will activate.
+Individual items will become active on its sub-menu depending on your selections and cursor placement over a bone handle.
+These are strictly bone related and are covered in detail below.
+
 <i>Face Commands </i>&nbsp;: This is the link to the Face Commands sub-menu that will appear
 when your courser is over it. To implement this menu you must have the
 <a href="intro.modeleditor.toolpalettes.display.html">Linear Drag Handles</a> button
@@ -23,11 +33,17 @@ activated (in face mode) and select at least one face in a model component, then
 item will appear. These are strictly face (triangle) related and are covered in detail below.
 
 <i>Vertex Commands </i>&nbsp;: This is the link to the Vertex Commands sub-menu that will appear
-when your courser is over it. These are strictly vertex related and are covered in detail below.
+when your courser is over it. To activate this menu item you must have the
+<a href="intro.modeleditor.toolpalettes.display.html">Linear Drag Handles</a> button
+de-activated (in vertex mode) and select at least one frame in a model component's <g>Frames</g> folder,
+then this menu item will activate. These are strictly vertex related and are covered in detail below.
 
 <i>Commands </i>&nbsp;: This is the link to the Commands sub-menu that will appear
 when your courser is over it. These are the same commands located on the 'Commands' menu of the Main
 menu bar and are more Triangle related. These are also covered in detail below.
+
+<i>Bone Options </i>&nbsp;: These functions deal with the Model Bone visual tools to work with.
+They are strictly bone related and are covered in detail below.
 
 <i>Editor Face Options </i>&nbsp;: These functions deal with the Model Mesh selection methods
 available and various visual tools to work with. They are strictly face related and are covered in detail below.
@@ -55,6 +71,70 @@ Click <a href="intro.mapeditor.rmb_menus.noselectionmenu.html#background">here</
 about its functions and settings.
 
 <table border=0 cellspacing=0>
+<tr><td valign=top>
+<img border=1 align=right>bonermbmenu1.png</img>
+
+<a name="bonecommands"></a>
+<b><u><a href="#viewsrmbmenus">Bone Commands sub-menu :</a></u></b> This is the sub-menu described above and its functions.
+
+<i>Add Bone Here </i>&nbsp;: This will add a single bone to the currently selected model component <g>Skeleton</g> group.
+
+<i>Continue Bones </i>&nbsp;: This will add a single bone, connected to the last bone, of the currently selected model component <g>Skeleton</g> group.
+
+<i>Attach Start to End </i>&nbsp;: This will attach the second selected bone's start handle to the first selected bone's
+end handle of the currently selected model component <g>Skeleton</g> group.
+Moving the second bone above the first bone in the <g>tree-view</g> will reverse this movement.
+
+<i>Attach Bones Starts </i>&nbsp;: This will attach the second selected bone's start handle to the first selected bone's
+start handle of the currently selected model component <g>Skeleton</g> group.
+Moving the second bone above the first bone in the <g>tree-view</g> will reverse this movement.
+
+<i>Detach Bones </i>&nbsp;: This will detach two selected bones attached handles from one another
+of the currently selected model component <g>Skeleton</g> group.
+
+<i>Align Start to End </i>&nbsp;: This will align the second selected bone's start handle to first selected bone's end handle,
+but not attach them. Moving the second bone above the first bone in the <g>tree-view</g> will reverse this movement.
+
+<i>Align Bones Starts </i>&nbsp;: This will attach the second selected bone's start handle to the first selected bone's
+start handle of the currently selected model component <g>Skeleton</g> group.
+Moving the second bone above the first bone in the <g>tree-view</g> will reverse this movement.
+
+<i>Align Bones Ends </i>&nbsp;: This will align the second selected bone's end handle to first selected bone's end handle,
+but not attach them. Moving the second bone above the first bone in the <g>tree-view</g> will reverse this movement.
+
+<i>Assign to Start </i>&nbsp;: When only one bone and vertexes of that component are selected,
+click this item to assign them to the <g>start_point</g> of that bone.
+
+<i>Assign to End </i>&nbsp;: When only one bone and vertexes of that component are selected,
+and there is no continuing bone, click this item to assign them to the <g>end_point</g> of that bone.
+
+<i>Select (bone handle name) Vertexes </i>&nbsp;: When the cursor is over a bone's Center handle with vertexes assigned to it,
+click this item to select all of them from that bone's handle. Or, if another handle is attached that has the vertexes
+assigned to it instead, then those are the vertexes that will be selected. If no vertexes have been assigned to any
+handle at that location, then the menu item will show disabled.
+
+<i>Select (bone handle name) handle position Vertexes </i>&nbsp;: When the cursor is over a bone's Center handle with vertexes
+assigned to it, click this item to select the vertexes used to set that bone's handle position. Or, if another handle is
+attached that has the vertexes assigned to it instead, then those are the position vertexes for that handle that will be
+selected. If no vertexes have been assigned to any handle at that location, then the menu item will show disabled.
+
+<i>Release Start Vertexes </i>&nbsp;: When only one bone is selected with vertexes assigned to it,
+click this item to release all of them from that bone's start handle.
+
+<i>Release End Vertexes </i>&nbsp;: When only one bone is selected with vertexes assigned to it,
+click this item to release all of them from that bone's end handle.
+
+<i>Key frames Rotation move </i>&nbsp;: When the <g>Skeleton</g> folder and two frames that have bone movement are selected,
+this movement will be spread from the 1st frames positions across all frames in between them to the 2nd frames positions
+using rotation and in the direction of the smallest angle (clockwise or counterclockwise).
+
+<i>Show Bones </i>&nbsp;: This allows all bones to be displayed in the editor's views.
+
+<i>Hide Bones </i>&nbsp;: This stops all bones from being displayed in the editor's views.
+
+<i>Force to grid </i>&nbsp;: This will cause a bone's center handle to <g>snap</g> to the nearest location on the
+editor's grid for the view that the RMB click was made in.
+
 <tr><td valign=top>
 <img border=1 align=right>facermbmenu1.png</img>
 
@@ -153,6 +233,17 @@ They restrict any <g>vertex</g> movement in their related direction for all view
 corrisponding buttons on the
 <a href="intro.modeleditor.toolpalettes.viewselection.html">View Selection tool-palette</a>.
 </td></tr>
+
+<tr><td valign=top><br>
+<img border=1 align=right valign=top>bonermbmenu2.png</img>
+
+<a name="editorboneoptions"></a>
+<b><u><a href="#viewsrmbmenus">Bone Options sub-menu :</a></u></b> This is the sub-menu described above and its functions in detail.<br>
+(also located on the <a href="intro.modeleditor.menu.html#optionsmenu">Options menu</a>)
+
+<i>Match Bone Lines Color </i>&nbsp;: When checked the bone lines color displayed during a drag will match the handle color being dragged.
+
+<i>Draw Bone Handles Only </i>&nbsp;: When checked only the bone handles are displayed to increase drawing speed during and after a drag.
 
 <tr><td valign=top><br>
 <img border=1 align=right valign=top>viewsrmbmenus4.png</img>

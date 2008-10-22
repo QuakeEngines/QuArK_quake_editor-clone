@@ -8,19 +8,21 @@ editortrue3dmode
 <area href="#modelaxisinviews" shape="rect" coords="2, 268, 250, 282">
 <area href="#drawbackfaces" shape="rect" coords="2, 285, 250, 299">
 <area href="#setlinethickness" shape="rect" coords="2, 302, 250, 316">
-<area href="#editorfaceselectionoptions" shape="rect" coords="2, 328, 250, 342">
-<area href="#editorfaceselectionoptions" shape="rect" coords="261, 292, 497, 464">
-<area href="#editorvertexselectionoptions" shape="rect" coords="2, 345, 250, 359">
-<area href="#editorvertexselectionoptions" shape="rect" coords="261, 470, 452, 530">
-<area href="#skinviewoptions" shape="rect" coords="2, 362, 250, 376">
-<area href="#skinviewoptions" shape="rect" coords="261, 536, 452, 613">
-<area href="#skinviewoptionsdrawticks" shape="rect" coords="100, 575, 256, 609">
-<area href="#pasteobjectsatscreencenter" shape="rect" coords="2, 388, 250, 402">
-<area href="#enlargeverticesticks" shape="rect" coords="2, 405, 250, 419">
-<area href="#rebuild3dviews" shape="rect" coords="2, 422, 250, 436">
-<area href="#axisxyzletters" shape="rect" coords="2, 439, 250, 453">
-<area href="#listofplugins" shape="rect" coords="2, 465, 250, 479">
-<area href="#configuration" shape="rect" coords="2, 482, 250, 496">
+<area href="#boneoptions" shape="rect" coords="2, 327, 250, 341">
+<area href="#boneoptions" shape="rect" coords="261, 293, 417, 328">
+<area href="#editorfaceselectionoptions" shape="rect" coords="2, 344, 250, 358">
+<area href="#editorfaceselectionoptions" shape="rect" coords="261, 332, 497, 504">
+<area href="#editorvertexselectionoptions" shape="rect" coords="2, 361, 250, 375">
+<area href="#editorvertexselectionoptions" shape="rect" coords="261, 512, 452, 572">
+<area href="#skinviewoptions" shape="rect" coords="2, 378, 250, 392">
+<area href="#skinviewoptions" shape="rect" coords="261, 577, 452, 654">
+<area href="#skinviewoptionsdrawticks" shape="rect" coords="100, 616, 256, 650">
+<area href="#pasteobjectsatscreencenter" shape="rect" coords="2, 404, 250, 418">
+<area href="#enlargeverticesticks" shape="rect" coords="2, 421, 250, 435">
+<area href="#rebuild3dviews" shape="rect" coords="2, 438, 250, 452">
+<area href="#axisxyzletters" shape="rect" coords="2, 455, 250, 469">
+<area href="#listofplugins" shape="rect" coords="2, 481, 250, 495">
+<area href="#configuration" shape="rect" coords="2, 498, 250, 512">
 </map>
 
 <img border=0 align=right usemap="#optionsmenuMap0">options.png</img>
@@ -95,6 +97,14 @@ is checked for that view. Using the option in this manner will help to distingui
 <a name="setlinethickness"></a>
 <i><b><a href="#rulerguide">Set Line Thickness</a></b> </i>&nbsp;: This lets you set the thickness of certain lines that are drawn on the Editor's views,
 such as the outlining of selected model mesh faces and the models axis lines.
+
+<a name="boneoptions"></a>
+<i><b><a href="#rulerguide">Bone Options</a></b> - submenu items </i>&nbsp;:<br>
+<u><i>Match Bone Lines Color </i></u>&nbsp;: This funciton is also located on the
+<a href="intro.modeleditor.rmbmenus.html#viewsrmbmenus">Editor Views RMB menus</a>, please click on the menu link for this functions full description.
+
+<u><i>Draw Bone Handles Only </i></u>&nbsp;: This funciton is also located on the
+<a href="intro.modeleditor.rmbmenus.html#viewsrmbmenus">Editor Views RMB menus</a>, please click on the menu link for this functions full description.
 
 <a name="editorfaceselectionoptions"></a>
 <i><b><a href="#rulerguide">Editor Face Selection Options</a></b> - submenu items </i>&nbsp;:<br>
