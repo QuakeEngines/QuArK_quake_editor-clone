@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.464  2008/10/23 22:15:31  danielpharos
+//First try to set-up CoD1 compilers.
+//
 //Revision 1.463  2008/10/16 21:26:45  danielpharos
 //Fix naming of steam path replacer and give auto-setting an invalid filename, so it can never be actually used.
 //
@@ -1885,7 +1888,7 @@ QQRKSRC1
         Console = "1"                  // "Run these build-programs..." setting
         BuildPgmsDir = "C:\Program Files\Call of Duty\Tools\bin"
         MapCommentsPrefix = "//"
-        OutputMapFormat = "Brush Primitives"
+        OutputMapFormat = "Quark etp"
         ForceFaceFlags = ""
         StupidBuildToolKludge = "1" //those guys should get shot for that
         AlwaysWriteThreeFields = "1"
@@ -1894,7 +1897,7 @@ QQRKSRC1
         BuildArgs1 = ""
         BuildCheck1= "+BSP,-LIN{LoadLinFile}"
         BuildPgm2  = "Q3MAP.EXE"
-        BuildArgs2 = "-vis -saveprt"
+        BuildArgs2 = "-vis"
         BuildPgm3  = "FLARE.EXE"
         BuildArgs3 = "-extra -sundiffusesamples 10"
         BuildPgm4  = "..\..\CodSP.EXE"
