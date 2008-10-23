@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.79  2008/10/23 19:21:17  danielpharos
+Fix mistake prev rev and read all CoD1 surface flags.
+
 Revision 1.78  2008/10/23 18:55:50  danielpharos
 Added partial support for loading Call of Duty 2 maps.
 
@@ -968,6 +971,34 @@ expected one.
    ReadSymbolForceToText:=False;
  end;
 
+ function ReadVect10(theLastSymbolForceToText: Boolean): TVect10;
+ begin
+   ReadSymbol(sBracketLeft);
+   Result.X1:=NumericValue;
+   ReadSymbol(sNumValueToken);
+   Result.X2:=NumericValue;
+   ReadSymbol(sNumValueToken);
+   Result.X3:=NumericValue;
+   ReadSymbol(sNumValueToken);
+   Result.X4:=NumericValue;
+   ReadSymbol(sNumValueToken);
+   Result.X5:=NumericValue;
+   ReadSymbol(sNumValueToken);
+   Result.X6:=NumericValue;
+   ReadSymbol(sNumValueToken);
+   Result.X7:=NumericValue;
+   ReadSymbol(sNumValueToken);
+   Result.X8:=NumericValue;
+   ReadSymbol(sNumValueToken);
+   Result.X9:=NumericValue;
+   ReadSymbol(sNumValueToken);
+   Result.X10:=NumericValue;
+   ReadSymbol(sNumValueToken);
+   ReadSymbolForceToText:=theLastSymbolForceToText;
+   ReadSymbol(sBracketRight);
+   ReadSymbolForceToText:=False;
+ end;
+
  function ReadVect7(theLastSymbolForceToText: Boolean): TVect7;
  begin
    ReadSymbol(sBracketLeft);
@@ -1456,6 +1487,171 @@ expected one.
 
      ReadSymbol(sBracketRight);  { rparen which finishes all the lines of control points }
      ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the patchDef3 }
+     ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the brush }
+   finally
+     FreeMem(MeshBuf1.CP);
+   end;
+ end;
+
+ //FIXME: This is more or less a dummy procedure...
+ procedure ReadPatchTerrainDef3;
+ var
+   I, J: Integer;
+   V7: TVect7;
+   V10: TVect10;
+ begin
+   ReadSymbol(sStringToken); // lbrace follows "patchTerrainDef3"
+   ReadSymbol(sCurlyBracketLeft); // texture follows lbrace
+
+   { DanielPharos: We've got a problem here...
+   Map versions 2 and higher explicitly put 'textures/' in front
+   of the paths! All we can do for the moment is cutting that off.
+   In the future, somebody should change QuArK's behaviour to where
+   you can set if this path gets prefixed. }
+   if MapVersion>1 then
+   begin
+     if LowerCase(LeftStr(S,9))='textures/' then
+       S:=RightStr(S,Length(S)-9);
+   end;
+
+   {$IFDEF TexUpperCase}
+   S:=LowerCase(S);
+   {$ENDIF}
+   Q2Tex:=Q2Tex or (Pos('/',S)<>0);
+
+//   B:=TBezier.Create(LoadStr1(261), EntiteBezier); // 261 = "bezier"
+//   EntiteBezier.SubElements.Add(B); //&&&
+//   B.NomTex:=S;   { here we get the texture-name }
+
+   if MapVersion>1 then
+     ReadSymbol(sStringQuotedToken) // lparen follows texture
+   else
+     ReadSymbol(sStringToken); // lparen follows texture
+
+   // now comes 7 numbers which tell how many control points there are
+   // use ReadVect7 which is the same as ReadVect but expects 7 numbers
+   // and we only need the first and second values
+   V7:=ReadVect7(False);
+   // Nr 1: Width (many lines of control points there are)
+   // Nr 2: Height (how many control points on each line)
+   // Nr 3: HorzSubdivisions (?)
+   // Nr 4: VertSubdivisions (?)
+   // Nr 5: ?
+   // Nr 6: ?
+   // Nr 7: ?
+
+   MeshBuf1.W := Round(V7.X1);
+   MeshBuf1.H := Round(V7.X2);
+
+   GetMem(MeshBuf1.CP, MeshBuf1.W * MeshBuf1.H * SizeOf(vec5_t));
+   try
+     ReadSymbol(sBracketLeft); // lparen follows vect7
+     for I:=0 to MeshBuf1.W-1 do
+     begin
+       pCP1:=MeshBuf1.CP;
+       Inc(pCP1, I);
+       ReadSymbol(sBracketLeft); // read the leading lparen for the line
+       for J:=1 to MeshBuf1.H do
+       begin
+         V10:=ReadVect10(False);
+         pCP1^[0]:=V10.X1;
+         pCP1^[1]:=V10.X2;
+         pCP1^[2]:=V10.X3;
+         pCP1^[3]:=V10.X4;
+         pCP1^[4]:=V10.X5;
+         //FIXME: What are the other values? (6-9 look like color-RGBA)
+         Inc(pCP1, MeshBuf1.W);
+       end;
+       ReadSymbol(sBracketRight); // read the trailing rparen for the line end
+     end;
+//     B.ControlPoints:=MeshBuf1; //FIXME: Doesn't work...!
+//     B.AutoSetSmooth;
+
+     ReadSymbol(sBracketRight);  { rparen which finishes all the lines of control points }
+     ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the patchTerrainDef3 }
+     ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the brush }
+   finally
+     FreeMem(MeshBuf1.CP);
+   end;
+ end;
+
+ //FIXME: This is more or less a dummy procedure...
+ procedure ReadPatchDef5;
+ var
+   I, J: Integer;
+   V7: TVect7;
+   V10: TVect10;
+ begin
+   ReadSymbol(sStringToken); // lbrace follows "patchDef5"
+   ReadSymbol(sCurlyBracketLeft); // texture follows lbrace
+
+   { DanielPharos: We've got a problem here...
+   Map versions 2 and higher explicitly put 'textures/' in front
+   of the paths! All we can do for the moment is cutting that off.
+   In the future, somebody should change QuArK's behaviour to where
+   you can set if this path gets prefixed. }
+   if MapVersion>1 then
+   begin
+     if LowerCase(LeftStr(S,9))='textures/' then
+       S:=RightStr(S,Length(S)-9);
+   end;
+
+   {$IFDEF TexUpperCase}
+   S:=LowerCase(S);
+   {$ENDIF}
+   Q2Tex:=Q2Tex or (Pos('/',S)<>0);
+
+//   B:=TBezier.Create(LoadStr1(261), EntiteBezier); // 261 = "bezier"
+//   EntiteBezier.SubElements.Add(B); //&&&
+//   B.NomTex:=S;   { here we get the texture-name }
+
+   if MapVersion>1 then
+     ReadSymbol(sStringQuotedToken) // lparen follows texture
+   else
+     ReadSymbol(sStringToken); // lparen follows texture
+
+   // now comes 7 numbers which tell how many control points there are
+   // use ReadVect7 which is the same as ReadVect but expects 7 numbers
+   // and we only need the first and second values
+   V7:=ReadVect7(False);
+   // Nr 1: Width (many lines of control points there are)
+   // Nr 2: Height (how many control points on each line)
+   // Nr 3: HorzSubdivisions (?)
+   // Nr 4: VertSubdivisions (?)
+   // Nr 5: ?
+   // Nr 6: ?
+   // Nr 7: ?
+
+
+   MeshBuf1.W := Round(V7.X1);
+   MeshBuf1.H := Round(V7.X2);
+
+   GetMem(MeshBuf1.CP, MeshBuf1.W * MeshBuf1.H * SizeOf(vec5_t));
+   try
+     ReadSymbol(sBracketLeft); // lparen follows vect7
+     for I:=0 to MeshBuf1.W-1 do
+     begin
+       pCP1:=MeshBuf1.CP;
+       Inc(pCP1, I);
+       ReadSymbol(sBracketLeft); // read the leading lparen for the line
+       for J:=1 to MeshBuf1.H do
+       begin
+         V10:=ReadVect10(False);
+         pCP1^[0]:=V10.X1;
+         pCP1^[1]:=V10.X2;
+         pCP1^[2]:=V10.X3;
+         pCP1^[3]:=V10.X4;
+         pCP1^[4]:=V10.X5;
+         //FIXME: What are the other values? (6-9 look like color-RGBA)
+         Inc(pCP1, MeshBuf1.W);
+       end;
+       ReadSymbol(sBracketRight); // read the trailing rparen for the line end
+     end;
+//     B.ControlPoints:=MeshBuf1;
+//     B.AutoSetSmooth;
+
+     ReadSymbol(sBracketRight);  { rparen which finishes all the lines of control points }
+     ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the patchDef5 }
      ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the brush }
    finally
      FreeMem(MeshBuf1.CP);
@@ -2097,7 +2293,7 @@ begin
                  Racine.SubElements.Add(MapStructureB);
                  EntiteBezier:=MapStructureB;
                end;
-               ReadPatchDef2(); {DECKER - moved to local-procedure to increase readability}
+               ReadPatchDef2();
              end
              else if LowerCase(s)='patchdef3' then
              begin
@@ -2111,21 +2307,49 @@ begin
                  Racine.SubElements.Add(MapStructureB);
                  EntiteBezier:=MapStructureB;
                end;
-               ReadPatchDef3(); //DECKER - moved to local-procedure to increase readability
+               ReadPatchDef3();
+             end
+             else if LowerCase(s)='patchterraindef3' then
+             begin
+               // A patchTerrainDef3 means it is at least a Call of Duty 1 map
+               if Result=mjQuake then
+                 Result:=mjCoD;
+               { Armin: create the MapStructureB group if not already done }
+               if EntiteBezier=Nil then
+               begin
+                 MapStructureB:=TTreeMapGroup.Create(LoadStr1(262), Racine);
+                 Racine.SubElements.Add(MapStructureB);
+                 EntiteBezier:=MapStructureB;
+               end;
+               ReadPatchTerrainDef3();
+             end
+             else if LowerCase(s)='patchdef5' then
+             begin
+               // A patchDef5 means it is at least a Call of Duty 1 map
+               if Result=mjQuake then
+                 Result:=mjCoD;
+               { Armin: create the MapStructureB group if not already done }
+               if EntiteBezier=Nil then
+               begin
+                 MapStructureB:=TTreeMapGroup.Create(LoadStr1(262), Racine);
+                 Racine.SubElements.Add(MapStructureB);
+                 EntiteBezier:=MapStructureB;
+               end;
+               ReadPatchDef5();
              end
              else if LowerCase(s)='brushdef' then
              begin
                // A brushDef means it is at least a Quake 3 map
                if Result=mjQuake then
                  Result:=mjQ3A;
-               ReadBrushDef(); //DECKER - moved to local-procedure to increase readability
+               ReadBrushDef();
              end
              else if LowerCase(s)='brushdef2' then
              begin
                // A brushDef2 means it is at least a Doom 3 map (not sure about this)
                if Result=mjQuake then
                  Result:=mjDoom3;
-               ReadBrushDef3(); //DECKER - moved to local-procedure to increase readability
+               ReadBrushDef3();
                // The difference between brushdef2 and brushdef3 is minimal...
              end
              else if LowerCase(s)='brushdef3' then

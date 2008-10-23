@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.28  2008/10/23 18:55:50  danielpharos
+Added partial support for loading Call of Duty 2 maps.
+
 Revision 1.27  2008/10/14 00:07:16  danielpharos
 Add an integer list as a specific type.
 
@@ -143,6 +146,9 @@ type
           end;
  TVect7 = record
            X1, X2, X3, X4, X5, X6, X7: TDouble;
+          end;
+ TVect10 = record
+           X1, X2, X3, X4, X5, X6, X7, X8, X9, X10: TDouble;
           end;
 
 function VecLength(const V1: TVect): TDouble;
