@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.465  2008/10/23 22:29:37  danielpharos
+//Save correct map format for CoD1.
+//
 //Revision 1.464  2008/10/23 22:15:31  danielpharos
 //First try to set-up CoD1 compilers.
 //
@@ -1929,7 +1932,7 @@ QQRKSRC1
         tmpQuArK = "tmpQuArK"
 
         Palette = ":pics/colormap.pcx"
-        ExtraCmdLine = "+set fs_game %gamedir% +set r_vc_compile 2"
+        ExtraCmdLine = "+set fs_game %gamedir%" // +set r_vc_compile 2
         RunMapCmdLine = "+devmap %filename%"
         AddOns = "Bezier_Library.qrk"$0D"Q3ArchLib.qrk"$0D"DataCoD1.qrk"$0D"CoD1Entities.qrk"$0D"CoD1Textures.qrk"
         AlwaysPak = ""
