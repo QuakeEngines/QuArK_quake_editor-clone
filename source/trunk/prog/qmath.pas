@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.27  2008/10/14 00:07:16  danielpharos
+Add an integer list as a specific type.
+
 Revision 1.26  2008/10/12 11:30:52  danielpharos
 Small cleanup, making things more consistent.
 
@@ -137,6 +140,9 @@ type
           end;
  TVect5 = record
            X, Y, Z, S, T: TDouble;
+          end;
+ TVect7 = record
+           X1, X2, X3, X4, X5, X6, X7: TDouble;
           end;
 
 function VecLength(const V1: TVect): TDouble;

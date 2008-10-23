@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.77  2008/10/12 11:31:32  danielpharos
+Moved 6DX map format to separate file, and re-factored QkMap and QkQuakeMap.
+
 Revision 1.76  2008/10/05 13:51:19  danielpharos
 Correct Integer to HDC.
 
@@ -517,7 +520,6 @@ type
 var
  SymbolType: TSymbols;
  S, S1, Classname: String;
- StringValue: String;
  NumericValue: Double;
  V: array[1..3] of TVect;
  P: TPolyhedron;
@@ -539,7 +541,6 @@ var
  Facteur: TDouble;
  Delta, Delta1: TVect;
  {Rowdy}
- V5: TVect5;
  B: TBezier;
  EntiteBezier: TTreeMapSpec;
  MeshBuf1: TBezierMeshBuf5;
@@ -964,27 +965,28 @@ expected one.
    ReadSymbolForceToText:=False;
  end;
 
- function ReadVect7(theLastSymbolForceToText: Boolean): TVect5;
+ function ReadVect7(theLastSymbolForceToText: Boolean): TVect7;
  begin
    ReadSymbol(sBracketLeft);
-   Result.X:=NumericValue;
+   Result.X1:=NumericValue;
    ReadSymbol(sNumValueToken);
-   Result.Y:=NumericValue;
+   Result.X2:=NumericValue;
    ReadSymbol(sNumValueToken);
-   Result.Z:=NumericValue;
+   Result.X3:=NumericValue;
    ReadSymbol(sNumValueToken);
-   Result.S:=NumericValue;
+   Result.X4:=NumericValue;
    ReadSymbol(sNumValueToken);
-   Result.T:=NumericValue;
+   Result.X5:=NumericValue;
    ReadSymbol(sNumValueToken);
+   Result.X6:=NumericValue;
    ReadSymbol(sNumValueToken);
+   Result.X7:=NumericValue;
    ReadSymbol(sNumValueToken);
    ReadSymbolForceToText:=theLastSymbolForceToText;
    ReadSymbol(sBracketRight);
    ReadSymbolForceToText:=False;
  end;
 
- {Rowdy}
  function ReadVect5(theLastSymbolForceToText: Boolean): TVect5;
  begin
    ReadSymbol(sBracketLeft);
@@ -1002,7 +1004,6 @@ expected one.
    ReadSymbol(sBracketRight);
    ReadSymbolForceToText:=False;
  end;
- {/Rowdy}
  
  function ReadVect4(theLastSymbolForceToText: Boolean): TVect4;
  begin
@@ -1018,418 +1019,6 @@ expected one.
    ReadSymbolForceToText:=theLastSymbolForceToText;
    ReadSymbol(sBracketRight);
    ReadSymbolForceToText:=False;
- end;
-
- procedure ReadPatchDef2;
- var
-   I, J: Integer;
- begin
-   ReadSymbol(sStringToken); // lbrace follows "patchDef2"
-   ReadSymbol(sCurlyBracketLeft); // texture follows lbrace
-
-   { DanielPharos: We've got a problem here...
-   Map versions 2 and higher explicitly put 'textures/' in front
-   of the paths! All we can do for the moment is cutting that off.
-   In the future, somebody should change QuArK's behaviour to where
-   you can set if this path gets prefixed. }
-   if MapVersion>1 then
-   begin
-     if LowerCase(LeftStr(S,9))='textures/' then
-       S:=RightStr(S,Length(S)-9);
-   end;
-
-   {$IFDEF TexUpperCase}
-   S:=LowerCase(S);
-   {$ENDIF}
-   Q2Tex:=Q2Tex or (Pos('/',S)<>0);
-
-   B:=TBezier.Create(LoadStr1(261), EntiteBezier); // 261 = "bezier"
-   EntiteBezier.SubElements.Add(B); //&&&
-   B.NomTex:=S;   { here we get the texture-name }
-
-   if MapVersion>1 then
-     ReadSymbol(sStringQuotedToken) // lparen follows texture
-   else
-     ReadSymbol(sStringToken); // lparen follows texture
-
-   // now comes 5 numbers which tell how many control points there are
-   // use ReadVect5 which is the same as ReadVect but expects 5 numbers
-   // and we only need the X and Y values
-   V5:=ReadVect5(False);
-   // Nr 1: Width (many lines of control points there are)
-   // Nr 2: Height (how many control points on each line)
-   // Nr 3: HorzSubdivisions (?)
-   // Nr 4: VertSubdivisions (?)
-   // Nr 5: ?
-
-   MeshBuf1.W := Round(V5.X);
-   MeshBuf1.H := Round(V5.Y);
-
-   GetMem(MeshBuf1.CP, MeshBuf1.W * MeshBuf1.H * SizeOf(vec5_t));
-   try
-     ReadSymbol(sBracketLeft); // lparen follows vect5
-     for I:=0 to MeshBuf1.W-1 do
-     begin
-       pCP1:=MeshBuf1.CP;
-       Inc(pCP1, I);
-       ReadSymbol(sBracketLeft); // read the leading lparen for the line
-       for J:=1 to MeshBuf1.H do
-       begin
-         V5:=ReadVect5(False);
-         pCP1^[0]:=V5.X;
-         pCP1^[1]:=V5.Y;
-         pCP1^[2]:=V5.Z;
-         pCP1^[3]:=V5.S;
-         pCP1^[4]:=V5.T;
-         Inc(pCP1, MeshBuf1.W);
-       end;
-       ReadSymbol(sBracketRight); // read the trailing rparen for the line
-     end;
-     ReadSymbol(sBracketRight);  { rparen which finishes all the lines of control points }
-     ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the patchDef2 }
-     ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the brush }
-
-     B.ControlPoints:=MeshBuf1;
-     B.AutoSetSmooth;
-   finally
-     FreeMem(MeshBuf1.CP);
-   end;
- end;
- 
- 
- procedure ReadPatchDef3;
- var
-   I, J: Integer;
- begin
-   ReadSymbol(sStringToken); // lbrace follows "patchDef3"
-   ReadSymbol(sCurlyBracketLeft); // texture follows lbrace
-
-   { DanielPharos: We've got a problem here...
-   Map versions 2 and higher explicitly put 'textures/' in front
-   of the paths! All we can do for the moment is cutting that off.
-   In the future, somebody should change QuArK's behaviour to where
-   you can set if this path gets prefixed. }
-   if MapVersion>1 then
-   begin
-     if LowerCase(LeftStr(S,9))='textures/' then
-       S:=RightStr(S,Length(S)-9);
-   end;
-
-   {$IFDEF TexUpperCase}
-   S:=LowerCase(S);
-   {$ENDIF}
-   Q2Tex:=Q2Tex or (Pos('/',S)<>0);
-
-   B:=TBezier.Create(LoadStr1(261), EntiteBezier); // 261 = "bezier"
-   EntiteBezier.SubElements.Add(B); //&&&
-   B.NomTex:=S;   { here we get the texture-name }
-
-   if MapVersion>1 then
-     ReadSymbol(sStringQuotedToken) // lparen follows texture
-   else
-     ReadSymbol(sStringToken); // lparen follows texture
-
-   // now comes 7 numbers which tell how many control points there are
-   // use ReadVect7 which is the same as ReadVect but expects 7 numbers
-   // and we only need the first and second values
-   V5:=ReadVect7(False);
-   // Nr 1: Width (many lines of control points there are)
-   // Nr 2: Height (how many control points on each line)
-   // Nr 3: HorzSubdivisions (?)
-   // Nr 4: VertSubdivisions (?)
-   // Nr 5: ?
-   // Nr 6: ?
-   // Nr 7: ?
-
-   MeshBuf1.W := Round(V5.X);
-   MeshBuf1.H := Round(V5.Y);
-
-   GetMem(MeshBuf1.CP, MeshBuf1.W * MeshBuf1.H * SizeOf(vec5_t));
-   try
-     ReadSymbol(sBracketLeft); // lparen follows vect7
-     for I:=0 to MeshBuf1.W-1 do
-     begin
-       pCP1:=MeshBuf1.CP;
-       Inc(pCP1, I);
-       ReadSymbol(sBracketLeft); // read the leading lparen for the line
-       for J:=1 to MeshBuf1.H do
-       begin
-         V5:=ReadVect5(False);
-         pCP1^[0]:=V5.X;
-         pCP1^[1]:=V5.Y;
-         pCP1^[2]:=V5.Z;
-         pCP1^[3]:=V5.S;
-         pCP1^[4]:=V5.T;
-         Inc(pCP1, MeshBuf1.W);
-       end;
-       ReadSymbol(sBracketRight); // read the trailing rparen for the line end
-     end;
-     B.ControlPoints:=MeshBuf1;
-     B.AutoSetSmooth;
-
-     ReadSymbol(sBracketRight);  { rparen which finishes all the lines of control points }
-     ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the patchDef3 }
-     ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the brush }
-   finally
-     FreeMem(MeshBuf1.CP);
-   end;
- end;
-
-
- procedure ReadBrushDef;
- var
-   R1, R2, TexS, TexT, Tex0, P0, P1, P2, ZVect : TVect;
-   Denom : Double;
-   Matrix : TMatrixTransformation;
- begin
-  ReadSymbol(sStringToken); // lbrace follows "brushDef"
-  ReadSymbol(sCurlyBracketLeft); // data follows lbrace
-  P:=TPolyhedron.Create(LoadStr1(138), EntitePoly);
-  EntitePoly.SubElements.Add(P);
-  ContentsFlags:=0;
-  while SymbolType <> sCurlyBracketRight do  { read the faces }
-  begin
-    TxCommand:=#0; { Reset the QuArK-special '//TX1' '//TX2' indicator to not-found }
-    Inc(FaceNum);
-    V[1]:=ReadVect(False);
-    V[2]:=ReadVect(False);
-    V[3]:=ReadVect(False);
-    ReadSymbol(sBracketLeft);
-    R1:=ReadVect(False);
-    R2:=ReadVect(False);
-    ReadSymbolForceToText:=true;
-    ReadSymbol(sBracketRight);
-    ReadSymbolForceToText:=false;
-    Surface:=TFace.Create(LoadStr1(139), P);
-    P.SubElements.Add(Surface);
-    Surface.SetThreePoints(V[1], V[3], V[2]);
-    if not Surface.LoadData then
-      ShowMessage('LoadData failure');
-     { set relevant attributes }
-    { get 3points expressed in AxisBase coordinates
-       (see infobase|Src|Topics|Scale|Brush primitives) }
-    Denom:=R1.X*R2.Y-R1.Y*R2.X;
-    P0.X:=(-R1.Z*R2.Y+R1.Y*R2.Z)/Denom;      {-a13*a22+a12*a23}
-    P0.Y:=-(R1.X*R2.Z-R1.Z*R2.X)/Denom;       {-(a11*a23-a13*a21)}
-    P0.Z:=0.0;
-    P1.X:=(-R1.Z*R2.Y+R2.Y+R1.Y*R2.Z)/Denom; {-a13*a22+a22+a12*a23}
-    P1.Y:=-(R1.X*R2.Z-R1.Z*R2.X+R2.X)/Denom;  {-(a11*a23-a13*a21+a21)}
-    P1.Z:=0.0;
-    P2.X:=(R1.Y*R2.Z+R1.Y-R1.Z*R2.Y)/Denom;  {a12*a23+a12-a13*a22}
-    P2.Y:=-(-R1.Z*R2.X+R1.X*R2.Z+R1.X)/Denom; {-(-a13*a21+a11*a23+a11)}
-    P2.Z:=0.0;
-    { Convert to map space }
-    GetAxisBase(Surface.Normale, TexS, TexT);
-    Tex0:=VecScale(Surface.Dist, Surface.Normale);
-    ZVect.X:=0; ZVect.Y:=0; ZVect.Z:=1;
-    Matrix:=MatrixFromCols(TexS, TexT, ZVect);
-    P0:=VecSum(MatrixMultByVect(Matrix,P0),Tex0);
-    P1:=VecSum(MatrixMultByVect(Matrix,P1),Tex0);
-    P2:=VecSum(MatrixMultByVect(Matrix,P2),Tex0);
-
-    { DanielPharos: We've got a problem here...
-    Map versions 2 and higher explicitly put 'textures/' in front
-    of the paths! All we can do for the moment is cutting that off.
-    In the future, somebody should change QuArK's behaviour to where
-    you can set if this path gets prefixed. }
-    if MapVersion>1 then
-    begin
-      if LowerCase(LeftStr(S,9))='textures/' then
-         S:=RightStr(S,Length(S)-9);
-    end;
-
-    {$IFDEF TexUpperCase}
-    S:=LowerCase(S);
-    {$ENDIF}
-    Q2Tex:=Q2Tex or (Pos('/',S)<>0);
-    Surface.NomTex:=S;   { here we get the texture-name }
-    Surface.SetThreePointsUserTex(P0,P1,P2,nil);
-    ReadSymbol(sTokenForcedToString);
-    if SymbolType=sNumValueToken then
-    begin
-      NumericValue1:=Round(NumericValue);
-      ReadSymbol(sNumValueToken);
-      ContentsFlags:=NumericValue1;
-      Surface.Specifics.Values['Contents']:=IntToStr(NumericValue1);
-      Surface.Specifics.Values['Flags']:=IntToStr(Round(NumericValue));
-      ReadSymbol(sNumValueToken);
-      Surface.Specifics.Values['Value']:=IntToStr(Round(NumericValue));
-      ReadSymbol(sNumValueToken);
-      Result:=mjNotQuake1;
-    end
-  end;
-  ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the brushDef }
-  ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the brush }
- end;
-
- procedure ReadBrushDef3;
- var
-   R1, R2, TexS, TexT, Tex0, P0, P1, P2, ZVect : TVect;
-   Denom : Double;
-   texname : String;
-   Plane : TVect4;
-   normal : TVect;
-   dist : double;
-   texparm : TFaceParams;
-   Matrix : TMatrixTransformation;
- begin
-  ReadSymbol(sStringToken); // lbrace follows "brushDef3"
-  ReadSymbol(sCurlyBracketLeft); // texture follows lbrace
-  P:=TPolyhedron.Create(LoadStr1(138), EntitePoly);
-  EntitePoly.SubElements.Add(P);
-  ContentsFlags:=0;
-  while SymbolType <> sCurlyBracketRight do  { read the faces }
-  begin
-    TxCommand:=#0; { Reset the QuArK-special '//TX1' '//TX2' indicator to not-found }
-    Inc(FaceNum);
-
-    Plane := ReadVect4(False);
-    ReadSymbol(sBracketLeft);
-
-    normal.X := Plane.X;
-    normal.Y := Plane.Y;
-    normal.Z := Plane.Z;
-    dist := -Plane.D;
-
-    R1 := ReadVect(False);
-    R2 := ReadVect(False);
-
-    V[1] := R1;
-    V[2] := R2;
-
-    ReadSymbolForceToText:=true;
-    ReadSymbol(sBracketRight);
-    texname := S;
-    ReadSymbolForceToText:=false;
-
-    ReadSymbol(sTokenForcedToString);
-
-    if MapVersion<3 then
-    begin
-      v[3].x := NumericValue;
-      ReadSymbol(sNumValueToken);
-      v[3].y := NumericValue;
-      ReadSymbol(sNumValueToken);
-      v[3].z := NumericValue;
-      ReadSymbol(sNumValueToken);
-    end
-    else
-    begin
-      v[3].x := 0;
-      v[3].y := 0;
-      v[3].z := 0;
-    end;
-
-    Surface:=TFace.Create(LoadStr1(139), P);
-    P.SubElements.Add(Surface);
-    Surface.SetThreePoints(V[1], V[3], V[2]);
-
-    texparm[1] := 0;
-    texparm[2] := 0;
-    texparm[3] := 0;
-    texparm[4] := 0;
-    texparm[5] := 0;
-    Surface.SetFaceFromParams(normal, dist, texparm);
-    if not Surface.LoadData then
-      ShowMessage('LoadData failure');
-
-    Denom:=R1.X*R2.Y-R1.Y*R2.X;
-    P0.X:=(-R1.Z*R2.Y+R1.Y*R2.Z)/Denom;      {-a13*a22+a12*a23}
-    P0.Y:=-(R1.X*R2.Z-R1.Z*R2.X)/Denom;       {-(a11*a23-a13*a21)}
-    P0.Z:=0.0;
-    P1.X:=(-R1.Z*R2.Y+R2.Y+R1.Y*R2.Z)/Denom; {-a13*a22+a22+a12*a23}
-    P1.Y:=-(R1.X*R2.Z-R1.Z*R2.X+R2.X)/Denom;  {-(a11*a23-a13*a21+a21)}
-    P1.Z:=0.0;
-    P2.X:=(R1.Y*R2.Z+R1.Y-R1.Z*R2.Y)/Denom;  {a12*a23+a12-a13*a22}
-    P2.Y:=-(-R1.Z*R2.X+R1.X*R2.Z+R1.X)/Denom; {-(-a13*a21+a11*a23+a11)}
-    P2.Z:=0.0;
-    { Convert to map space }
-    GetAxisBase(Surface.Normale, TexS, TexT);
-    {GetAxisBase(normal, TexS, TexT);    }
-    Tex0:=VecScale(Surface.Dist, Surface.Normale);
-    ZVect.X:=0; ZVect.Y:=0; ZVect.Z:=1;
-    Matrix:=MatrixFromCols(TexS, TexT, ZVect);
-    P0:=VecSum(MatrixMultByVect(Matrix,P0),Tex0);
-    P1:=VecSum(MatrixMultByVect(Matrix,P1),Tex0);
-    P2:=VecSum(MatrixMultByVect(Matrix,P2),Tex0);
-
-    { DanielPharos: We've got a problem here...
-    Map versions 2 and higher explicitly put 'textures/' in front
-    of the paths! All we can do for the moment is cutting that off.
-    In the future, somebody should change QuArK's behaviour to where
-    you can set if this path gets prefixed. }
-    if MapVersion>1 then
-    begin
-      if LowerCase(LeftStr(texname,9))='textures/' then
-         texname:=RightStr(texname,Length(texname)-9);
-    end;
-
-    {$IFDEF TexUpperCase}
-    texname:=LowerCase(texname);
-    {$ENDIF}
-    Q2Tex:=Q2Tex or (Pos('/',texname)<>0);
-    Surface.NomTex:=texname;   { here we get the texture-name }
-    Surface.SetThreePointsUserTex(P0,P1,P2,nil);
-  end;
-  ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the brushDef3 }
-  ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the brush }
- end;
-
- //DanielPharos: This is more or less a dummy procedure...
- procedure ReadCurve;
- var
-   texname : String;
-   lightmapname : String;
-   CurveParams : array[1..4] of double;
-   I,J: Integer;
- begin
-   ReadSymbol(sStringToken); // lbrace follows "curve"
-   ReadSymbol(sCurlyBracketLeft); // data follows lbrace
-   //Always toolFlags;?
-   if S<>'toolFlags;' then
-   begin
-     //Better exception handling needed!
-     raise Exception.Create('toolFlags not found!');
-   end;
-   ReadSymbol(sStringToken);
-   texname:=S;
-   ReadSymbol(sStringToken);
-   lightmapname:=S;
-   ReadSymbol(sStringToken);
-   for I:=1 to 4 do
-   begin
-     CurveParams[I]:=NumericValue;
-     ReadSymbol(sNumValueToken);
-   end;
-   //There probably is a how-many-point-are-there number in the params...
-   for I:=1 to 3 do
-   begin
-     ReadSymbol(sBracketLeft);
-     for J:=1 to 3 do
-     begin
-       //v
-       ReadSymbol(sStringToken);
-       //NR 1
-       ReadSymbol(sNumValueToken);
-       //NR 2
-       ReadSymbol(sNumValueToken);
-       //NR 3
-       ReadSymbol(sNumValueToken);
-       //t
-       ReadSymbol(sStringToken);
-       //NR 1
-       ReadSymbol(sNumValueToken);
-       //NR 2
-       ReadSymbol(sNumValueToken);
-       //NR 3
-       ReadSymbol(sNumValueToken);
-       //NR 4
-       ReadSymbol(sNumValueToken);
-     end;
-     ReadSymbol(sBracketRight);
-   end;
-   ReadSymbol(sCurlyBracketRight); // rbrace which finishes the curve
-   ReadSymbol(sCurlyBracketRight); // rbrace which finishes the brush
  end;
 
  procedure ReadSinSurfaceFlags;
@@ -1671,9 +1260,30 @@ expected one.
   end;
  end;
 
+ procedure ReadCOD2Flags;
+ begin
+   //FIXME: We need to do this right. At the moment, we're just dumping the data!
+   if (SymbolType<>sStringToken) then
+     Exit;
+   if S='contents' then
+   begin
+     // "contents"
+     ReadSymbol(sStringToken);
+     // "details;"
+     ReadSymbol(sStringToken);
+   end;
+   if S='toolFlags' then
+   begin
+     // "toolFlags"
+     ReadSymbol(sStringToken);
+     // *whatever*
+     ReadSymbol(sStringToken);
+   end;
+ end;
+
  procedure ReadCOD2SurfaceParams;
  begin
-   //We need to do this right. At the moment, we're just dumping the data!
+   //FIXME: We need to do this right. At the moment, we're just dumping the data!
 
    //Lightmap name...
    ReadSymbol(sStringToken);
@@ -1689,6 +1299,623 @@ expected one.
    ReadSymbol(sNumValueToken);
    //Param 6
    ReadSymbol(sNumValueToken);
+ end;
+
+ procedure ReadPatchDef2;
+ var
+   I, J: Integer;
+   V5: TVect5;
+ begin
+   ReadSymbol(sStringToken); // lbrace follows "patchDef2"
+   ReadSymbol(sCurlyBracketLeft); // texture follows lbrace
+
+   { DanielPharos: We've got a problem here...
+   Map versions 2 and higher explicitly put 'textures/' in front
+   of the paths! All we can do for the moment is cutting that off.
+   In the future, somebody should change QuArK's behaviour to where
+   you can set if this path gets prefixed. }
+   if MapVersion>1 then
+   begin
+     if LowerCase(LeftStr(S,9))='textures/' then
+       S:=RightStr(S,Length(S)-9);
+   end;
+
+   {$IFDEF TexUpperCase}
+   S:=LowerCase(S);
+   {$ENDIF}
+   Q2Tex:=Q2Tex or (Pos('/',S)<>0);
+
+   B:=TBezier.Create(LoadStr1(261), EntiteBezier); // 261 = "bezier"
+   EntiteBezier.SubElements.Add(B); //&&&
+   B.NomTex:=S;   { here we get the texture-name }
+
+   if MapVersion>1 then
+     ReadSymbol(sStringQuotedToken) // lparen follows texture
+   else
+     ReadSymbol(sStringToken); // lparen follows texture
+
+   // now comes 5 numbers which tell how many control points there are
+   // use ReadVect5 which is the same as ReadVect but expects 5 numbers
+   // and we only need the X and Y values
+   V5:=ReadVect5(False);
+   // Nr 1: Width (many lines of control points there are)
+   // Nr 2: Height (how many control points on each line)
+   // Nr 3: HorzSubdivisions (?)
+   // Nr 4: VertSubdivisions (?)
+   // Nr 5: ?
+
+   MeshBuf1.W := Round(V5.X);
+   MeshBuf1.H := Round(V5.Y);
+
+   GetMem(MeshBuf1.CP, MeshBuf1.W * MeshBuf1.H * SizeOf(vec5_t));
+   try
+     ReadSymbol(sBracketLeft); // lparen follows vect5
+     for I:=0 to MeshBuf1.W-1 do
+     begin
+       pCP1:=MeshBuf1.CP;
+       Inc(pCP1, I);
+       ReadSymbol(sBracketLeft); // read the leading lparen for the line
+       for J:=1 to MeshBuf1.H do
+       begin
+         V5:=ReadVect5(False);
+         pCP1^[0]:=V5.X;
+         pCP1^[1]:=V5.Y;
+         pCP1^[2]:=V5.Z;
+         pCP1^[3]:=V5.S;
+         pCP1^[4]:=V5.T;
+         Inc(pCP1, MeshBuf1.W);
+       end;
+       ReadSymbol(sBracketRight); // read the trailing rparen for the line
+     end;
+     ReadSymbol(sBracketRight);  { rparen which finishes all the lines of control points }
+     ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the patchDef2 }
+     ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the brush }
+
+     B.ControlPoints:=MeshBuf1;
+     B.AutoSetSmooth;
+   finally
+     FreeMem(MeshBuf1.CP);
+   end;
+ end;
+ 
+ 
+ procedure ReadPatchDef3;
+ var
+   I, J: Integer;
+   V5: TVect5;
+   V7: TVect7;
+ begin
+   ReadSymbol(sStringToken); // lbrace follows "patchDef3"
+   ReadSymbol(sCurlyBracketLeft); // texture follows lbrace
+
+   { DanielPharos: We've got a problem here...
+   Map versions 2 and higher explicitly put 'textures/' in front
+   of the paths! All we can do for the moment is cutting that off.
+   In the future, somebody should change QuArK's behaviour to where
+   you can set if this path gets prefixed. }
+   if MapVersion>1 then
+   begin
+     if LowerCase(LeftStr(S,9))='textures/' then
+       S:=RightStr(S,Length(S)-9);
+   end;
+
+   {$IFDEF TexUpperCase}
+   S:=LowerCase(S);
+   {$ENDIF}
+   Q2Tex:=Q2Tex or (Pos('/',S)<>0);
+
+   B:=TBezier.Create(LoadStr1(261), EntiteBezier); // 261 = "bezier"
+   EntiteBezier.SubElements.Add(B); //&&&
+   B.NomTex:=S;   { here we get the texture-name }
+
+   if MapVersion>1 then
+     ReadSymbol(sStringQuotedToken) // lparen follows texture
+   else
+     ReadSymbol(sStringToken); // lparen follows texture
+
+   // now comes 7 numbers which tell how many control points there are
+   // use ReadVect7 which is the same as ReadVect but expects 7 numbers
+   // and we only need the first and second values
+   V7:=ReadVect7(False);
+   // Nr 1: Width (many lines of control points there are)
+   // Nr 2: Height (how many control points on each line)
+   // Nr 3: HorzSubdivisions (?)
+   // Nr 4: VertSubdivisions (?)
+   // Nr 5: ?
+   // Nr 6: ?
+   // Nr 7: ?
+
+   MeshBuf1.W := Round(V5.X);
+   MeshBuf1.H := Round(V5.Y);
+
+   GetMem(MeshBuf1.CP, MeshBuf1.W * MeshBuf1.H * SizeOf(vec5_t));
+   try
+     ReadSymbol(sBracketLeft); // lparen follows vect7
+     for I:=0 to MeshBuf1.W-1 do
+     begin
+       pCP1:=MeshBuf1.CP;
+       Inc(pCP1, I);
+       ReadSymbol(sBracketLeft); // read the leading lparen for the line
+       for J:=1 to MeshBuf1.H do
+       begin
+         V5:=ReadVect5(False);
+         pCP1^[0]:=V5.X;
+         pCP1^[1]:=V5.Y;
+         pCP1^[2]:=V5.Z;
+         pCP1^[3]:=V5.S;
+         pCP1^[4]:=V5.T;
+         Inc(pCP1, MeshBuf1.W);
+       end;
+       ReadSymbol(sBracketRight); // read the trailing rparen for the line end
+     end;
+     B.ControlPoints:=MeshBuf1;
+     B.AutoSetSmooth;
+
+     ReadSymbol(sBracketRight);  { rparen which finishes all the lines of control points }
+     ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the patchDef3 }
+     ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the brush }
+   finally
+     FreeMem(MeshBuf1.CP);
+   end;
+ end;
+
+ procedure ReadBrush;
+ var
+   I: Integer;
+ begin
+  P:=TPolyhedron.Create(LoadStr1(138), EntitePoly);
+  EntitePoly.SubElements.Add(P);
+  ContentsFlags:=0;
+  while SymbolType <> sCurlyBracketRight do  { read the faces }
+   begin
+    TxCommand:=#0; { Reset the QuArK-special '//TX1' '//TX2' indicator to not-found }
+    Inc(FaceNum);
+    V[1]:=ReadVect(False);
+    V[2]:=ReadVect(False);
+    V[3]:=ReadVect(True);
+    Surface:=TFace.Create(LoadStr1(139), P);
+    P.SubElements.Add(Surface);
+    Surface.SetThreePoints(V[1], V[3], V[2]);
+    {$IFDEF TexUpperCase}
+    S:=LowerCase(S);
+    {$ENDIF}
+    Q2Tex:=Q2Tex or (Pos('/',S)<>0);
+    Surface.NomTex:=S;   { here we get the texture-name }
+    ReadSymbol(sTokenForcedToString);
+    {DECKER}
+    if (SymbolType=sSquareBracketLeft) then
+    begin
+      { WorldCraft3.3 map-format version 220 encountered }
+      WC33map:=True;
+      {Params[1]:=ReadSquareTex4();} {Read some texture scale/position thingy}
+      ReadSquareTex4(UAxis, UShift);
+      ReadSymbol(sSquareBracketRight);
+     { Params[2]:=ReadSquareTex4(); }{Read some texture scale/position thingy}
+      ReadSquareTex4(VAxis, VShift);
+      ReadSymbol(sSquareBracketRight);
+      for I:=3 to 5 do {Read the last three values}
+        { Rot, UScale, VScale; Rot always 0 }
+       begin
+        Params[I]:=NumericValue;
+        ReadSymbol(sNumValueToken);
+       end;
+    end
+    else
+    begin
+      for I:=1 to 5 do
+       begin
+        Params[I]:=NumericValue;
+        ReadSymbol(sNumValueToken);
+       end;
+      if charmodejeu=mjGenesis3D then
+      begin
+        if PointsToPlane(Surface.Normale)='X' then
+           Params[4]:=-Params[4];
+      end;
+    end;
+    {/DECKER}
+    if Result=mjCOD2 then
+    begin
+      //What is this 6th number...?
+      NumericValue1:=Round(NumericValue);
+      ReadSymbol(sNumValueToken);
+
+      ReadCOD2SurfaceParams;
+    end
+    else
+    begin
+      if SymbolType=sNumValueToken then
+       begin
+        NumericValue1:=Round(NumericValue);
+        ReadSymbol(sNumValueToken);
+        if SymbolType<>sNumValueToken then
+         Result:=mjHexen  { Hexen II : ignore la luminosité de radiation }
+         //Could also be bad Call of Duty 2 file (when the 'iwmap 4' header is missing)
+        else
+         begin  { Quake 2, Heretic2 and Mohaa : read the three fields }
+          ContentsFlags:=NumericValue1;
+          Surface.Specifics.Values['Contents']:=IntToStr(NumericValue1);
+          Surface.Specifics.Values['Flags']:=IntToStr(Round(NumericValue));
+          ReadSymbol(sNumValueToken);
+          Surface.Specifics.Values['Value']:=IntToStr(Round(NumericValue));
+          ReadSymbol(sNumValueToken);
+          Result:=mjNotQuake1;
+          if SymbolType=sStringToken then // Mohaa
+            ReadMohaaSurfaceParms
+         end;
+       end
+      else
+       if SymbolType=sStringToken then
+        begin  { Sin : extra surface flags as text }
+         Result:=mjSin;
+         ReadSinSurfaceFlags(); {DECKER - moved to procedure to increase readability}
+        end;
+    end;
+    if not Surface.LoadData then
+     Inc(InvFaces)
+    else
+     case TxCommand of   { "//TX#" means that the three points already define the texture params themselves }
+      '1': ;
+      '2': Surface.TextureMirror:=True;
+     else
+      if WC33Map then
+        WC33Params
+      else
+       with Surface do
+        SetFaceFromParams(Normale, Dist, Params);
+     end;
+   end;
+
+  ReadSymbol(sCurlyBracketRight);
+
+  if not P.CheckPolyhedron then
+   Inc(InvPoly)
+  else
+   if ContentsFlags and ContentsOrigin <> 0 then
+    OriginBrush:=P;
+ end;
+
+
+ procedure ReadBrushDef;
+ var
+   R1, R2, TexS, TexT, Tex0, P0, P1, P2, ZVect : TVect;
+   Denom : Double;
+   Matrix : TMatrixTransformation;
+ begin
+  ReadSymbol(sStringToken); // lbrace follows "brushDef"
+  ReadSymbol(sCurlyBracketLeft); // data follows lbrace
+  P:=TPolyhedron.Create(LoadStr1(138), EntitePoly);
+  EntitePoly.SubElements.Add(P);
+  ContentsFlags:=0;
+  while SymbolType <> sCurlyBracketRight do  { read the faces }
+  begin
+    TxCommand:=#0; { Reset the QuArK-special '//TX1' '//TX2' indicator to not-found }
+    Inc(FaceNum);
+    V[1]:=ReadVect(False);
+    V[2]:=ReadVect(False);
+    V[3]:=ReadVect(False);
+    ReadSymbol(sBracketLeft);
+    R1:=ReadVect(False);
+    R2:=ReadVect(False);
+    ReadSymbolForceToText:=true;
+    ReadSymbol(sBracketRight);
+    ReadSymbolForceToText:=false;
+    Surface:=TFace.Create(LoadStr1(139), P);
+    P.SubElements.Add(Surface);
+    Surface.SetThreePoints(V[1], V[3], V[2]);
+    if not Surface.LoadData then
+      ShowMessage('LoadData failure');
+     { set relevant attributes }
+    { get 3points expressed in AxisBase coordinates
+       (see infobase|Src|Topics|Scale|Brush primitives) }
+    Denom:=R1.X*R2.Y-R1.Y*R2.X;
+    P0.X:=(-R1.Z*R2.Y+R1.Y*R2.Z)/Denom;      {-a13*a22+a12*a23}
+    P0.Y:=-(R1.X*R2.Z-R1.Z*R2.X)/Denom;       {-(a11*a23-a13*a21)}
+    P0.Z:=0.0;
+    P1.X:=(-R1.Z*R2.Y+R2.Y+R1.Y*R2.Z)/Denom; {-a13*a22+a22+a12*a23}
+    P1.Y:=-(R1.X*R2.Z-R1.Z*R2.X+R2.X)/Denom;  {-(a11*a23-a13*a21+a21)}
+    P1.Z:=0.0;
+    P2.X:=(R1.Y*R2.Z+R1.Y-R1.Z*R2.Y)/Denom;  {a12*a23+a12-a13*a22}
+    P2.Y:=-(-R1.Z*R2.X+R1.X*R2.Z+R1.X)/Denom; {-(-a13*a21+a11*a23+a11)}
+    P2.Z:=0.0;
+    { Convert to map space }
+    GetAxisBase(Surface.Normale, TexS, TexT);
+    Tex0:=VecScale(Surface.Dist, Surface.Normale);
+    ZVect.X:=0; ZVect.Y:=0; ZVect.Z:=1;
+    Matrix:=MatrixFromCols(TexS, TexT, ZVect);
+    P0:=VecSum(MatrixMultByVect(Matrix,P0),Tex0);
+    P1:=VecSum(MatrixMultByVect(Matrix,P1),Tex0);
+    P2:=VecSum(MatrixMultByVect(Matrix,P2),Tex0);
+
+    { DanielPharos: We've got a problem here...
+    Map versions 2 and higher explicitly put 'textures/' in front
+    of the paths! All we can do for the moment is cutting that off.
+    In the future, somebody should change QuArK's behaviour to where
+    you can set if this path gets prefixed. }
+    if MapVersion>1 then
+    begin
+      if LowerCase(LeftStr(S,9))='textures/' then
+         S:=RightStr(S,Length(S)-9);
+    end;
+
+    {$IFDEF TexUpperCase}
+    S:=LowerCase(S);
+    {$ENDIF}
+    Q2Tex:=Q2Tex or (Pos('/',S)<>0);
+    Surface.NomTex:=S;   { here we get the texture-name }
+    Surface.SetThreePointsUserTex(P0,P1,P2,nil);
+    ReadSymbol(sTokenForcedToString);
+    if SymbolType=sNumValueToken then
+    begin
+      NumericValue1:=Round(NumericValue);
+      ReadSymbol(sNumValueToken);
+      ContentsFlags:=NumericValue1;
+      Surface.Specifics.Values['Contents']:=IntToStr(NumericValue1);
+      Surface.Specifics.Values['Flags']:=IntToStr(Round(NumericValue));
+      ReadSymbol(sNumValueToken);
+      Surface.Specifics.Values['Value']:=IntToStr(Round(NumericValue));
+      ReadSymbol(sNumValueToken);
+      Result:=mjNotQuake1;
+    end
+  end;
+  ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the brushDef }
+  ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the brush }
+ end;
+
+ procedure ReadBrushDef3;
+ var
+   R1, R2, TexS, TexT, Tex0, P0, P1, P2, ZVect : TVect;
+   Denom : Double;
+   texname : String;
+   Plane : TVect4;
+   normal : TVect;
+   dist : double;
+   texparm : TFaceParams;
+   Matrix : TMatrixTransformation;
+ begin
+  ReadSymbol(sStringToken); // lbrace follows "brushDef3"
+  ReadSymbol(sCurlyBracketLeft); // texture follows lbrace
+  P:=TPolyhedron.Create(LoadStr1(138), EntitePoly);
+  EntitePoly.SubElements.Add(P);
+  ContentsFlags:=0;
+  while SymbolType <> sCurlyBracketRight do  { read the faces }
+  begin
+    TxCommand:=#0; { Reset the QuArK-special '//TX1' '//TX2' indicator to not-found }
+    Inc(FaceNum);
+
+    Plane := ReadVect4(False);
+    ReadSymbol(sBracketLeft);
+
+    normal.X := Plane.X;
+    normal.Y := Plane.Y;
+    normal.Z := Plane.Z;
+    dist := -Plane.D;
+
+    R1 := ReadVect(False);
+    R2 := ReadVect(False);
+
+    V[1] := R1;
+    V[2] := R2;
+
+    ReadSymbolForceToText:=true;
+    ReadSymbol(sBracketRight);
+    texname := S;
+    ReadSymbolForceToText:=false;
+
+    ReadSymbol(sTokenForcedToString);
+
+    if MapVersion<3 then
+    begin
+      v[3].x := NumericValue;
+      ReadSymbol(sNumValueToken);
+      v[3].y := NumericValue;
+      ReadSymbol(sNumValueToken);
+      v[3].z := NumericValue;
+      ReadSymbol(sNumValueToken);
+    end
+    else
+    begin
+      v[3].x := 0;
+      v[3].y := 0;
+      v[3].z := 0;
+    end;
+
+    Surface:=TFace.Create(LoadStr1(139), P);
+    P.SubElements.Add(Surface);
+    Surface.SetThreePoints(V[1], V[3], V[2]);
+
+    texparm[1] := 0;
+    texparm[2] := 0;
+    texparm[3] := 0;
+    texparm[4] := 0;
+    texparm[5] := 0;
+    Surface.SetFaceFromParams(normal, dist, texparm);
+    if not Surface.LoadData then
+      ShowMessage('LoadData failure');
+
+    Denom:=R1.X*R2.Y-R1.Y*R2.X;
+    P0.X:=(-R1.Z*R2.Y+R1.Y*R2.Z)/Denom;      {-a13*a22+a12*a23}
+    P0.Y:=-(R1.X*R2.Z-R1.Z*R2.X)/Denom;       {-(a11*a23-a13*a21)}
+    P0.Z:=0.0;
+    P1.X:=(-R1.Z*R2.Y+R2.Y+R1.Y*R2.Z)/Denom; {-a13*a22+a22+a12*a23}
+    P1.Y:=-(R1.X*R2.Z-R1.Z*R2.X+R2.X)/Denom;  {-(a11*a23-a13*a21+a21)}
+    P1.Z:=0.0;
+    P2.X:=(R1.Y*R2.Z+R1.Y-R1.Z*R2.Y)/Denom;  {a12*a23+a12-a13*a22}
+    P2.Y:=-(-R1.Z*R2.X+R1.X*R2.Z+R1.X)/Denom; {-(-a13*a21+a11*a23+a11)}
+    P2.Z:=0.0;
+    { Convert to map space }
+    GetAxisBase(Surface.Normale, TexS, TexT);
+    {GetAxisBase(normal, TexS, TexT);    }
+    Tex0:=VecScale(Surface.Dist, Surface.Normale);
+    ZVect.X:=0; ZVect.Y:=0; ZVect.Z:=1;
+    Matrix:=MatrixFromCols(TexS, TexT, ZVect);
+    P0:=VecSum(MatrixMultByVect(Matrix,P0),Tex0);
+    P1:=VecSum(MatrixMultByVect(Matrix,P1),Tex0);
+    P2:=VecSum(MatrixMultByVect(Matrix,P2),Tex0);
+
+    { DanielPharos: We've got a problem here...
+    Map versions 2 and higher explicitly put 'textures/' in front
+    of the paths! All we can do for the moment is cutting that off.
+    In the future, somebody should change QuArK's behaviour to where
+    you can set if this path gets prefixed. }
+    if MapVersion>1 then
+    begin
+      if LowerCase(LeftStr(texname,9))='textures/' then
+         texname:=RightStr(texname,Length(texname)-9);
+    end;
+
+    {$IFDEF TexUpperCase}
+    texname:=LowerCase(texname);
+    {$ENDIF}
+    Q2Tex:=Q2Tex or (Pos('/',texname)<>0);
+    Surface.NomTex:=texname;   { here we get the texture-name }
+    Surface.SetThreePointsUserTex(P0,P1,P2,nil);
+  end;
+  ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the brushDef3 }
+  ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the brush }
+ end;
+
+ //FIXME: This is more or less a dummy procedure...
+ procedure ReadCurve;
+ var
+   texname : String;
+   lightmapname : String;
+   CurveParams : array[1..4] of double;
+   I,J: Integer;
+ begin
+   ReadSymbol(sStringToken); // lbrace follows "curve"
+   ReadSymbol(sCurlyBracketLeft); // data follows lbrace
+   ReadCOD2Flags;
+   texname:=S;
+   ReadSymbol(sStringToken);
+   lightmapname:=S;
+   ReadSymbol(sStringToken);
+   for I:=1 to 4 do
+   begin
+     CurveParams[I]:=NumericValue;
+     ReadSymbol(sNumValueToken);
+   end;
+
+   for I:=1 to Round(CurveParams[1]) do
+   begin
+     ReadSymbol(sBracketLeft);
+     for J:=1 to Round(CurveParams[2]) do
+     begin
+       //v --> vertices
+       ReadSymbol(sStringToken);
+       //NR 1
+       ReadSymbol(sNumValueToken);
+       //NR 2
+       ReadSymbol(sNumValueToken);
+       //NR 3
+       ReadSymbol(sNumValueToken);
+       if (SymbolType=sStringToken) and (S='c') then
+       begin
+         //c --> color
+         ReadSymbol(sStringToken);
+         //NR 1
+         ReadSymbol(sNumValueToken);
+         //NR 2
+         ReadSymbol(sNumValueToken);
+         //NR 3
+         ReadSymbol(sNumValueToken);
+         //NR 4
+         ReadSymbol(sNumValueToken);
+       end;
+       //t --> texture
+       ReadSymbol(sStringToken);
+       //NR 1
+       ReadSymbol(sNumValueToken);
+       //NR 2
+       ReadSymbol(sNumValueToken);
+       //NR 3
+       ReadSymbol(sNumValueToken);
+       //NR 4
+       ReadSymbol(sNumValueToken);
+     end;
+     ReadSymbol(sBracketRight);
+   end;
+   ReadSymbol(sCurlyBracketRight); // rbrace which finishes the curve
+   ReadSymbol(sCurlyBracketRight); // rbrace which finishes the brush
+ end;
+
+ //FIXME: This is more or less a dummy procedure...
+ procedure ReadMesh;
+ var
+   texname : String;
+   lightmapname : String;
+   I,J: Integer;
+   MeshParams : array[1..4] of double;
+ begin
+   ReadSymbol(sStringToken); // lbrace follows "mesh"
+   ReadSymbol(sCurlyBracketLeft); // data follows lbrace
+   ReadCOD2Flags;
+   texname:=S;
+   ReadSymbol(sStringToken);
+   lightmapname:=S;
+   ReadSymbol(sStringToken);
+
+   // now comes 4 numbers which tell how many control points there are
+   // use ReadVect4 which is the same as ReadVect but expects 4 numbers
+   // and we only need the X and Y values
+   for I:=1 to 4 do
+   begin
+     MeshParams[I]:=NumericValue;
+     ReadSymbol(sNumValueToken);
+   end;
+   // Nr 1: Width (many lines of control points there are)
+   // Nr 2: Height (how many control points on each line)
+   // Nr 3: ?
+   // Nr 4: ?
+
+   for I:=1 to Round(MeshParams[1]) do
+   begin
+     ReadSymbol(sBracketLeft);
+     for J:=1 to Round(MeshParams[2]) do
+     begin
+       //v --> vertices
+       ReadSymbol(sStringToken);
+       //NR 1
+       ReadSymbol(sNumValueToken);
+       //NR 2
+       ReadSymbol(sNumValueToken);
+       //NR 3
+       ReadSymbol(sNumValueToken);
+       if (SymbolType=sStringToken) and (S='c') then
+       begin
+         //c --> color
+         ReadSymbol(sStringToken);
+         //NR 1
+         ReadSymbol(sNumValueToken);
+         //NR 2
+         ReadSymbol(sNumValueToken);
+         //NR 3
+         ReadSymbol(sNumValueToken);
+         //NR 4
+         ReadSymbol(sNumValueToken);
+       end;
+       //t --> texture
+       ReadSymbol(sStringToken);
+       //NR 1
+       ReadSymbol(sNumValueToken);
+       //NR 2
+       ReadSymbol(sNumValueToken);
+       //NR 3
+       ReadSymbol(sNumValueToken);
+       //NR 4
+       ReadSymbol(sNumValueToken);
+       if (SymbolType=sStringToken) and (S='f') then
+       begin
+         //f --> flags
+         ReadSymbol(sStringToken);
+         //NR
+         ReadSymbol(sNumValueToken);
+       end;
+     end;
+     ReadSymbol(sBracketRight);
+   end;
+   ReadSymbol(sCurlyBracketRight); // rbrace which finishes the mesh
+   ReadSymbol(sCurlyBracketRight); // rbrace which finishes the brush
  end;
 
 begin
@@ -1752,6 +1979,8 @@ begin
         end
         else if (CompareText(S,'iwmap')=0) then
         begin
+         //FIXME:
+         LogAndWarn('Warning: Call of Duty 2 maps are only partially supported. Brushes will load, but curves and meshes will not!');
          ReadSymbol(sStringToken); // get the map version number // NumValueToken);
          if SymbolType<>sNumValueToken then
            raise EErrorFmt(254, [LineNoBeingParsed, LoadStr1(251)]); // invalid number
@@ -1904,122 +2133,26 @@ begin
                  Result:=mjCOD2;
                ReadCurve();
              end
+             else if LowerCase(s)='mesh' then
+             begin
+               // A mesh means it is a least a Call of Duty 2 (maybe 1?) map
+               if Result=mjQuake then
+                 Result:=mjCOD2;
+               ReadMesh();
+             end
+             else if LowerCase(s)='contents' then
+             begin
+               // A "contents detail;" means it is a least a Call of Duty 2 (maybe 1?) map
+               ReadCOD2Flags;
+               if Result=mjQuake then
+                 Result:=mjCOD2;
+               ReadBrush;
+             end
              else
                raise EErrorFmt(254, [LineNoBeingParsed, LoadStr1(260)]);
            end
           else
-           begin
-            P:=TPolyhedron.Create(LoadStr1(138), EntitePoly);
-            EntitePoly.SubElements.Add(P);
-            ContentsFlags:=0;
-            while SymbolType <> sCurlyBracketRight do  { read the faces }
-             begin
-              TxCommand:=#0; { Reset the QuArK-special '//TX1' '//TX2' indicator to not-found }
-              Inc(FaceNum);
-              V[1]:=ReadVect(False);
-              V[2]:=ReadVect(False);
-              V[3]:=ReadVect(True);
-              Surface:=TFace.Create(LoadStr1(139), P);
-              P.SubElements.Add(Surface);
-              Surface.SetThreePoints(V[1], V[3], V[2]);
-              {$IFDEF TexUpperCase}
-              S:=LowerCase(S);
-              {$ENDIF}
-              Q2Tex:=Q2Tex or (Pos('/',S)<>0);
-              Surface.NomTex:=S;   { here we get the texture-name }
-              ReadSymbol(sTokenForcedToString);
-              {DECKER}
-              if (SymbolType=sSquareBracketLeft) then
-              begin
-                { WorldCraft3.3 map-format version 220 encountered }
-                WC33map:=True;
-                {Params[1]:=ReadSquareTex4();} {Read some texture scale/position thingy}
-                ReadSquareTex4(UAxis, UShift);
-                ReadSymbol(sSquareBracketRight);
-               { Params[2]:=ReadSquareTex4(); }{Read some texture scale/position thingy}
-                ReadSquareTex4(VAxis, VShift);
-                ReadSymbol(sSquareBracketRight);
-                for I:=3 to 5 do {Read the last three values}
-                  { Rot, UScale, VScale; Rot always 0 }
-                 begin
-                  Params[I]:=NumericValue;
-                  ReadSymbol(sNumValueToken);
-                 end;
-              end
-              else
-              begin
-                for I:=1 to 5 do
-                 begin
-                  Params[I]:=NumericValue;
-                  ReadSymbol(sNumValueToken);
-                 end;
-                if charmodejeu=mjGenesis3D then
-                begin
-                  if PointsToPlane(Surface.Normale)='X' then
-                     Params[4]:=-Params[4];
-                end;
-              end;
-              {/DECKER}
-              if Result=mjCOD2 then
-              begin
-                //What is this 6th number...?
-                NumericValue1:=Round(NumericValue);
-                ReadSymbol(sNumValueToken);
-
-                ReadCOD2SurfaceParams;
-              end
-              else
-              begin
-                if SymbolType=sNumValueToken then
-                 begin
-                  NumericValue1:=Round(NumericValue);
-                  ReadSymbol(sNumValueToken);
-                  if SymbolType<>sNumValueToken then
-                   Result:=mjHexen  { Hexen II : ignore la luminosité de radiation }
-                   //Could also be bad Call of Duty 2 file (when the 'iwmap 4' header is missing)
-                  else
-                   begin  { Quake 2, Heretic2 and Mohaa : read the three fields }
-                    ContentsFlags:=NumericValue1;
-                    Surface.Specifics.Values['Contents']:=IntToStr(NumericValue1);
-                    Surface.Specifics.Values['Flags']:=IntToStr(Round(NumericValue));
-                    ReadSymbol(sNumValueToken);
-                    Surface.Specifics.Values['Value']:=IntToStr(Round(NumericValue));
-                    ReadSymbol(sNumValueToken);
-                    Result:=mjNotQuake1;
-                    if SymbolType=sStringToken then // Mohaa
-                      ReadMohaaSurfaceParms
-                   end;
-                 end
-                else
-                 if SymbolType=sStringToken then
-                  begin  { Sin : extra surface flags as text }
-                   Result:=mjSin;
-                   ReadSinSurfaceFlags(); {DECKER - moved to procedure to increase readability}
-                  end;
-              end;
-              if not Surface.LoadData then
-               Inc(InvFaces)
-              else
-               case TxCommand of   { "//TX#" means that the three points already define the texture params themselves }
-                '1': ;
-                '2': Surface.TextureMirror:=True;
-               else
-                if WC33Map then
-                  WC33Params
-                else
-                 with Surface do
-                  SetFaceFromParams(Normale, Dist, Params);
-               end;
-             end;
-
-            ReadSymbol(sCurlyBracketRight);
-
-            if not P.CheckPolyhedron then
-             Inc(InvPoly)
-            else
-             if ContentsFlags and ContentsOrigin <> 0 then
-              OriginBrush:=P;
-           end;
+           ReadBrush;
          end;
 
        if (OriginBrush<>Nil) and (EntitePoly<>MapStructure) then
