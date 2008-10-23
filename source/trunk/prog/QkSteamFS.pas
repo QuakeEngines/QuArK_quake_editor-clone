@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.31  2008/10/08 19:44:16  danielpharos
+Fix some possible synchronization issues.
+
 Revision 1.30  2008/10/07 21:16:25  danielpharos
 Massive update to get Steam finally working better.
 
@@ -297,7 +300,7 @@ begin
     if I>50 then
     begin
       //We've been waiting for 10 SECONDS! Let's assume something went terribly wrong...!
-      if MessageBox(0, PChar('10 Seconds have passed, and QuArk cannot detect Steam as having started up... Please start it manually now (if it has not yet done so) and press YES when you are logged in. Otherwise, press NO.'), PChar('QuArK'), MB_TASKMODAL or MB_ICONEXCLAMATION or MB_YESNO) = IDNO then
+      if MessageBox(0, PChar('10 Seconds have passed, and QuArK cannot detect Steam as having started up... Please start it manually now (if it has not yet done so) and press YES when you are logged in. Otherwise, press NO.'), PChar('QuArK'), MB_TASKMODAL or MB_ICONEXCLAMATION or MB_YESNO) = IDNO then
       begin
         Result:=False;
         WaitForSteam:=False;
