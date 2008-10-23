@@ -6,6 +6,7 @@ desc: codestart
 desc: codeprocessing
 desc: componentcreation
 desc: structmodule
+desc: bones
 
 The <a href="intro.modeleditor.model.html">QuArK's Model Structure</a> section covers more of the
 technical part, in detail, of QuArK's Model Structure for programming purposes and is very important to

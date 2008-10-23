@@ -130,6 +130,14 @@ which are whole sections of added functions for each <g>module</g>.
     editor.ok(undo, Component.shortname + " created")
 </code>
 
+If you were also importing <a href="intro.modeleditor.editelements.html#bones">Bones</a>
+from the model this is the second of
+<a href="intro.modeleditor.importexport.html#componentcreation">two places</a>
+where that code would be added now that the component has been created.<br>
+See the section below covering
+<a href="intro.modeleditor.importexport.html#bones2">Bones Structure, QuArK's ModelComponentList</a>
+for the needed code to copy and paste in this location of your import file.
+
 Last, but not least, at the very bottom of our importer file we need to <g>Register</g> our starting function so that
 it will show up on the <a href="intro.modeleditor.menu.html#filemenu">Files > Importer \ Exporter</a> menus in the
 <a href="intro.modeleditor.html">QuArK Model Editor</a>. This is done outside of our function and just below it.
