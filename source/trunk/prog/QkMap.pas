@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.81  2008/10/23 22:29:42  danielpharos
+Fix for CoD1 map format.
+
 Revision 1.80  2008/10/23 21:49:54  danielpharos
 Ignore everything we don't understand from CoD1 maps.
 
@@ -3306,8 +3309,7 @@ begin
  if MapFormat=HL2Type then
   Brush.Add('solid');
 
- if GameCode<>mjCoD then
-   Brush.Add(' {');
+ Brush.Add(' {');
 
  if MapFormat=BPType then
  begin
@@ -3344,8 +3346,7 @@ begin
    end;
  if MapFormat=BPType then
    Brush.Add(' }');
- if GameCode<>mjCoD then
-   Brush.Add(' }');
+ Brush.Add(' }');
 
  end;
 end;
@@ -3835,6 +3836,11 @@ begin
       S3:=CheckFieldDefault('Value','Value', Q);
       S:=S+' '+S1+' '+S2+' '+S3;
    end
+   else if (GameCode=mjCOD) then
+   begin
+     //FIXME: Output right flags
+     S:=S+' 0 0 0 0';
+   end
    else
     { and in Q2, default flags get written into the map
       automatically, no wuccaz (<- wuccin furries) }
@@ -3854,7 +3860,6 @@ begin
         if S2='' then S2:='0';
         if S3='' then S3:='0';
         S:=S+' '+S1+' '+S2+' '+S3;
-        //FIXME: There are also extra flags in CoD1...
 //<mohaa>
         if GameCode=mjMOHAA then
         begin
