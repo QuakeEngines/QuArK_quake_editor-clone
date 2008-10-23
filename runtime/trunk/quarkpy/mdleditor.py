@@ -179,6 +179,8 @@ class ModelEditor(BaseEditor):
                 if item.endswith(":mc"):
                     comp = self.Root.dictitems[item]
                     componentnames.append(item)
+
+                    ### Start of bone data creation.
                     self.ModelComponentList[item] = {}
                     self.ModelComponentList[item]['bonevtxlist'] = {}
                     self.ModelComponentList[item]['boneobjlist'] = {}
@@ -236,6 +238,8 @@ class ModelEditor(BaseEditor):
                             boneobjs['s_or_e1']['selvtxlist'] = selvtxlist
                         if bone.dictspec.has_key("start_vtxlist") or bone.dictspec.has_key("end_vtxlist"):
                             self.ModelComponentList[item]['boneobjlist'][bone.name] = boneobjs
+                    ### End of bone data creation.
+
             componentnames.sort()
         try:
             self.Root.currentcomponent = self.Root.dictitems[componentnames[0]]
@@ -1663,6 +1667,10 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.106  2008/10/21 19:45:12  cdunde
+#To keep editor selected lists after mutual vertex drag with single bone selection
+#and only redraw textured editor views for all Skin-view handle drags.
+#
 #Revision 1.105  2008/10/21 18:13:27  cdunde
 #To try to stop dupe drawing of bone handles.
 #

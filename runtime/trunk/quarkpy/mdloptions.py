@@ -809,7 +809,7 @@ def OptionsMenu():
     "The Options menu, with its shortcuts."
 
     RotationOptions = qmenu.popup("3D Rotation Options", rotateitems, RotationMenu2click)
-    BoneOptions = qmenu.popup("Bone Options", [], BoneOptionsClick, "|Bone Options:\n\nThese functions deal with the Model Bone visual tools to work with.", "intro.mapeditor.menu.html#optionsmenu")
+    BoneOptions = qmenu.popup("Bone Options", [], BoneOptionsClick, "|Bone Options:\n\nThese functions deal with the Model Bone visual tools to work with.", "intro.modeleditor.menu.html#optionsmenu")
     FaceSelOptions = qmenu.popup("Editor Face Selection Options", [], FaceSelOptionsClick, "|Editor Face Selection Options:\n\nThese functions deal with the Model Mesh selection methods available and various visual tools to work with.", "intro.mapeditor.menu.html#optionsmenu")
     VertexSelOptions = qmenu.popup("Editor Vertex Selection Options", [], VertexSelOptionsClick, "|Editor Vertex Selection Options:\n\nThese functions deal with the Model Mesh selection methods available and various visual tools to work with.", "intro.mapeditor.menu.html#optionsmenu")
     SkinViewOptions = qmenu.popup("Skin-view Options", [], SkinViewOptionsClick, "|Skin-view Options:\n\nThese functions deal with various Options pertaining directly to the Skin-view and the way certain elements can be manipulated and displayed while working on the Models Skin Mesh.\n\nPress the 'F1' key again or click the button below for further details.", "intro.modeleditor.skinview.html#funcsnmenus")
@@ -822,7 +822,7 @@ def OptionsMenu():
 def OptionsMenuRMB():
     "The Options RMB menu items."
 
-    BoneOptions = qmenu.popup("Bone Options", [], BoneOptionsClick, "|Bone Options:\n\nThese functions deal with the Model Bone visual tools to work with.", "intro.mapeditor.menu.html#optionsmenu")
+    BoneOptions = qmenu.popup("Bone Options", [], BoneOptionsClick, "|Bone Options:\n\nThese functions deal with the Model Bone visual tools to work with.", "intro.modeleditor.menu.html#optionsmenu")
     FaceSelOptions = qmenu.popup("Editor Face Options", [], FaceSelOptionsClick, "|Editor Face Selection Options:\n\nThese functions deal with the Model Mesh selection methods available and various visual tools to work with.", "intro.mapeditor.menu.html#optionsmenu")
     VertexSelOptions = qmenu.popup("Editor Vertex Options", [], VertexSelOptionsClick, "|Editor Vertex Selection Options:\n\nThese functions deal with the Model Mesh selection methods available and various visual tools to work with.", "intro.mapeditor.menu.html#optionsmenu")
     return BoneOptions, FaceSelOptions, VertexSelOptions
@@ -832,6 +832,9 @@ def OptionsMenuRMB():
 #
 #
 #$Log$
+#Revision 1.38  2008/10/04 05:48:06  cdunde
+#Updates for Model Editor Bones system.
+#
 #Revision 1.37  2008/09/15 04:47:45  cdunde
 #Model Editor bones code update.
 #
