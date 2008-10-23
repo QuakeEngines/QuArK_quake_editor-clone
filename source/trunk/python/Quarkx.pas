@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.84  2008/10/07 21:04:52  danielpharos
+Added GetBaseDir function and other small fixes.
+
 Revision 1.83  2008/10/05 13:16:53  danielpharos
 Fix Log function not working properly.
 
@@ -3659,7 +3662,14 @@ var
 begin
  if PyErr_Occurred<>Nil then
   if PyErr_ExceptionMatches(QuarkxAborted) then
-   PyErr_Clear   { silent exception }
+   begin
+    {$IFDEF Debug}
+    PyErr_Print;
+//    ShowConsole(True); //Don't show console
+    {$ELSE}
+    PyErr_Clear; //Silent exception
+    {$ENDIF}
+   end
   else
    if Assigned(ExceptionMethod) and PyErr_ExceptionMatches(QuarkxError) then
     begin
