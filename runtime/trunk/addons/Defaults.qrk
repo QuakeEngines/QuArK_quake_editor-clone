@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.463  2008/10/16 21:26:45  danielpharos
+//Fix naming of steam path replacer and give auto-setting an invalid filename, so it can never be actually used.
+//
 //Revision 1.462  2008/10/16 21:18:34  danielpharos
 //Fixed a typo.
 //
@@ -1878,7 +1881,9 @@ QQRKSRC1
         CDDir = "Setup\Main"   // hidden setting
 
         MapLimit = '65536 65536 65536'
-
+        
+        Console = "1"                  // "Run these build-programs..." setting
+        BuildPgmsDir = "C:\Program Files\Call of Duty\Tools\bin"
         MapCommentsPrefix = "//"
         OutputMapFormat = "Brush Primitives"
         ForceFaceFlags = ""
@@ -1890,11 +1895,10 @@ QQRKSRC1
         BuildCheck1= "+BSP,-LIN{LoadLinFile}"
         BuildPgm2  = "Q3MAP.EXE"
         BuildArgs2 = "-vis -saveprt"
-        BuildPgm3  = "Q3MAP.EXE"
-        BuildArgs3 = "-light"
-        BuildPgm4  = "BSPC.EXE"
-        BuildArgs4 = "-bsp2aas %file%.BSP -output %mappath%"
-        BuildCheck4= "+AAS"
+        BuildPgm3  = "FLARE.EXE"
+        BuildArgs3 = "-extra -sundiffusesamples 10"
+        BuildPgm4  = "..\..\CodSP.EXE"
+        BuildArgs4 = "+set g_connectpaths 2 +set dedicated 1 +devmap %file%"
 
         TexturesPath = "textures/"
         ShadersPath = "scripts/"
@@ -1922,7 +1926,7 @@ QQRKSRC1
         tmpQuArK = "tmpQuArK"
 
         Palette = ":pics/colormap.pcx"
-        ExtraCmdLine = "+set fs_game %gamedir%"
+        ExtraCmdLine = "+set fs_game %gamedir% +set r_vc_compile 2"
         RunMapCmdLine = "+devmap %filename%"
         AddOns = "Bezier_Library.qrk"$0D"Q3ArchLib.qrk"$0D"DataCoD1.qrk"$0D"CoD1Entities.qrk"$0D"CoD1Textures.qrk"
         AlwaysPak = ""
