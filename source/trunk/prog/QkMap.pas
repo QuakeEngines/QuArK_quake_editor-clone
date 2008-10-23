@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.80  2008/10/23 21:49:54  danielpharos
+Ignore everything we don't understand from CoD1 maps.
+
 Revision 1.79  2008/10/23 19:21:17  danielpharos
 Fix mistake prev rev and read all CoD1 surface flags.
 
@@ -3282,7 +3285,9 @@ begin
   if MapVersion>0 then
     BrushDefVersion:=3
   else
-    if GameCode>=mjQ3A then
+    if GameCode=mjCoD then
+      BrushDefVersion:=0
+    else if GameCode>=mjQ3A then
       //DanielPharos: This should select all Quake3 and better games.
       BrushDefVersion:=1;
 
@@ -3301,7 +3306,8 @@ begin
  if MapFormat=HL2Type then
   Brush.Add('solid');
 
- Brush.Add(' {');
+ if GameCode<>mjCoD then
+   Brush.Add(' {');
 
  if MapFormat=BPType then
  begin
@@ -3338,7 +3344,8 @@ begin
    end;
  if MapFormat=BPType then
    Brush.Add(' }');
- Brush.Add(' }');
+ if GameCode<>mjCoD then
+   Brush.Add(' }');
 
  end;
 end;
@@ -3832,9 +3839,9 @@ begin
     { and in Q2, default flags get written into the map
       automatically, no wuccaz (<- wuccin furries) }
     {\tiglari}
-    {Decker - Until we figure out how to clearly handle MOHAA's
-     face-flags, we now just write them to the .MAP so the
-     MOHAA-Q3MAP.EXE will be happy.}
+    {Decker - FIXME: Until we figure out how to clearly handle
+     MOHAA's face-flags, we now just write them to the .MAP so
+     the MOHAA-Q3MAP.EXE will be happy.}
    begin
       S1:=F.Specifics.Values['Contents'];
       S2:=F.Specifics.Values['Flags'];
@@ -3847,6 +3854,7 @@ begin
         if S2='' then S2:='0';
         if S3='' then S3:='0';
         S:=S+' '+S1+' '+S2+' '+S3;
+        //FIXME: There are also extra flags in CoD1...
 //<mohaa>
         if GameCode=mjMOHAA then
         begin
