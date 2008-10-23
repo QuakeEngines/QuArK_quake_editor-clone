@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.78  2008/10/23 18:55:50  danielpharos
+Added partial support for loading Call of Duty 2 maps.
+
 Revision 1.77  2008/10/12 11:31:32  danielpharos
 Moved 6DX map format to separate file, and re-factored QkMap and QkQuakeMap.
 
@@ -1425,8 +1428,8 @@ expected one.
    // Nr 6: ?
    // Nr 7: ?
 
-   MeshBuf1.W := Round(V5.X);
-   MeshBuf1.H := Round(V5.Y);
+   MeshBuf1.W := Round(V7.X1);
+   MeshBuf1.H := Round(V7.X2);
 
    GetMem(MeshBuf1.CP, MeshBuf1.W * MeshBuf1.H * SizeOf(vec5_t));
    try
@@ -1542,6 +1545,12 @@ expected one.
           Result:=mjNotQuake1;
           if SymbolType=sStringToken then // Mohaa
             ReadMohaaSurfaceParms
+          else if SymbolType=sNumValueToken then //CoD1
+          begin
+            //FIXME: We need to set the gametype (+ above)
+            //Also, interprete these values!
+            ReadSymbol(sNumValueToken);
+          end;
          end;
        end
       else
