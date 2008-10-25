@@ -1040,9 +1040,9 @@ class ModelLayout(BaseLayout):
         global savedskins, savefacesel
         from qbaseeditor import currentview, flagsmouse
 
-        # This section preserves, and passes on, any data in the ModelComponentList when a component is renamed.
+        # This section preserves, and passes on, data in the ModelComponentList (if any) when a component is renamed.
         changednames = quarkx.getchangednames()
-        if changednames is not None:
+        if self.editor.ModelComponentList.has_key(self.editor.Root.currentcomponent.name) and changednames is not None:
             if changednames[0][0].endswith(":mc"):
                 if self.editor.ModelComponentList.has_key(changednames[0][0]):
                     tempdata = self.editor.ModelComponentList[changednames[0][0]]
@@ -1285,6 +1285,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.81  2008/10/17 22:29:05  cdunde
+#Added assigned vertex count (read only) to Specifics/Args page for each bone handle.
+#
 #Revision 1.80  2008/10/15 00:01:30  cdunde
 #Setup of bones individual handle scaling and Keyframe matrix rotation.
 #Also removed unneeded code.

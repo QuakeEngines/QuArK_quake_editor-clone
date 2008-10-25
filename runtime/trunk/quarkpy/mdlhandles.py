@@ -823,7 +823,7 @@ class VertexHandle(qhandles.GenericHandle):
 
         p = view.proj(self.pos)
         if p.visible:
-            if editor.ModelComponentList[editor.Root.currentcomponent.name].has_key('bonevtxlist') and editor.ModelComponentList[editor.Root.currentcomponent.name]['bonevtxlist'].has_key(str(self.index)):
+            if editor.ModelComponentList.has_key(editor.Root.currentcomponent.name) and editor.ModelComponentList[editor.Root.currentcomponent.name].has_key('bonevtxlist') and editor.ModelComponentList[editor.Root.currentcomponent.name]['bonevtxlist'].has_key(str(self.index)):
                 # Here "startcolor" is just a dummy item (it could be an end color) to pass the vertex's
                 # color to so we can use the MapColor function to set the cv.pencolor correctly.
                 startcolor = editor.ModelComponentList[editor.Root.currentcomponent.name]['bonevtxlist'][str(self.index)]['color']
@@ -6005,6 +6005,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.157  2008/10/23 04:42:24  cdunde
+#Infobase links and updates for Bones.
+#
 #Revision 1.156  2008/10/21 04:35:33  cdunde
 #Bone corner handle rotation fixed correctly by DanielPharos
 #and stop all drawing during Keyframe Rotation function.
