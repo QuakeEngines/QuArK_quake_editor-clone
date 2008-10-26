@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.466  2008/10/23 23:21:22  danielpharos
+//Removed switch that doesn't seem to work.
+//
 //Revision 1.465  2008/10/23 22:29:37  danielpharos
 //Save correct map format for CoD1.
 //
@@ -9381,28 +9384,6 @@ QQRKSRC1
       CutPath = "$Game\?\"
       DirSep = "/"
     }
-
-  // Model type forms
-    lwo_mc:form =
-    {
-      Help = "These are the Specific settings for Lightwave (.lwo) model types."$0D
-             "Lightwave uses 'levels' the same way that QuArK uses 'components'."$0D
-             "Each can have its own special Surface level (or skin texture) settings."$0D0D22
-             "NAME"$22" - Surface level control name, which is its skin texture name."$0D22
-             "UVNAME"$22" - Special UV process control name (over rides 'NAME')."$0D
-             "          type in any name you want to use."$0D22
-             "COLR"$22" - Color to use for this components uv vertex color mapping."$0D
-             "          Click the color selector button to the right and pick a color."$0D22
-             "IMAG"$22" - Image Map Image. Indicates that this surface is an image map."$0D
-             "        Check this if 'CHAN' & 'IMAG' are checked and 'OPAC' is NOT checked."
-      lwo_NAME:   = {t_texturebrowser = ! Txt="NAME"    Hint="Surface level control name,"$0D"which is its main skin texture name."}
-      lwo_UVNAME: = {Typ="E"   Txt="UVNAME"  Hint="Special UV process control name (over rides 'NAME'),"$0D"type in any name you want to use."}
-      lwo_COLR:   = {          Txt="COLR"                                                                          }
-      lwo_COLR:   = {Typ="L"   Txt="COLR"    Hint="Color to use for this components uv vertex color mapping."$0D"Click the color selector button to the right and pick a color."}
-      lwo_IMAG:   = {Typ="X"   Txt="IMAG"    Hint="Image Map Image. Indicates that this surface is an image map."$0D"Check this if 'CHAN' & 'IMAG' are checked and 'OPAC' is NOT checked."}
-    }
-// End of the model filetype:forms for the Model Editor only.
-
     Polyhedron:form =     // form on the polyhedrons page
     {
       Style = "1"

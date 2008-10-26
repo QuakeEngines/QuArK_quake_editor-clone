@@ -566,11 +566,106 @@ def loadmodel(root, filename, gamename, nomessage=0):
 
 ### To register this Python plugin and put it on the importers menu.
 import quarkpy.qmdlbase
-quarkpy.qmdlbase.RegisterMdlImporter(".md2 Quake2 Importer", ".md2 file", "*.md2", loadmodel)
+import ie_md2_import # This imports itself to be passed along so it can be used in mdlmgr.py later.
+quarkpy.qmdlbase.RegisterMdlImporter(".md2 Quake2 Importer", ".md2 file", "*.md2", loadmodel, ie_md2_import)
+
+
+def dataformname(o, vtxcolorbtn=None):
+    "Returns the data form for this type of object 'o' (a model component) to use for the Specific/Args page."
+
+    dlgdef = """
+    {
+      Help = "This is just a test for putting forms in the model import export files."$0D0D22
+             "classname"$22" - The name of the bone currently selected for setting."$0D22
+             "Start color"$22" - Color to use for this bones Start handle's vertex group color."$0D
+             "          Click the color selector button to the right and pick a color."$0D22
+             "End color"$22" - Color to use for this bones End handle's vertex group color."$0D
+             "          Click the color selector button to the right and pick a color."
+      bone_length: = {
+          Typ="EF003" 
+          Txt="Bone Length:"
+          Hint="You must enter three values here."$0D"They have an accuracy of two digits."
+             }
+      length_locked: = {
+          Typ="X1" 
+          Txt="Length Locked:"
+          Hint="When checked, the length of this bone will"$0D"not change by the dragging of either handle."
+             }
+
+      sep: = { Typ="S" Txt="" }
+
+      sep: = {
+          Typ="S"
+          Txt="Test Form loading"
+             }
+
+      start_vertex_count: = {Typ="E R" Txt="vertexes" Hint="Number of vertexes"$0D"assigned to this handle."}
+
+      start_color: = {Typ="LI"   Txt="color"  Hint="Color to use for this bones Start handle's vertex group color."$0D"Click the color selector button to the right and pick a color."}
+      start_point: = {
+          Typ="EF003" 
+          Txt="position"
+          Hint="You must enter three values here."$0D"They have an accuracy of two digits."
+             }
+      start_offset: = {
+          Typ="EF003" 
+          Txt="offset"
+          Hint="You must enter three values here."$0D"They have an accuracy of two digits."$0D"Not all models use this."
+             }
+      start_scale: = {
+          Typ="EF001" 
+          Txt="scale"
+          Hint="You must enter one positive float value here."$0D"It has an accuracy of two digits."$0D"Larger value = bigger handle size."$0D"Smaller value = smaller handle size."$0D"The default value for normal size = 1.00"
+             }
+
+      sep: = { Typ="S" Txt="" }
+
+      sep: = {
+          Typ="S"
+          Txt="Bone End Handle"
+             }
+
+      end_vertex_count: = {Typ="E R" Txt="vertexes" Hint="Number of vertexes"$0D"assigned to this handle."}
+
+      end_color: = {Typ="LI"   Txt="color"    Hint="Color to use for this bones End handle's vertex group color."$0D"Click the color selector button to the right and pick a color."}
+      end_point: = {
+          Typ="EF003" 
+          Txt="position"
+          Hint="You must enter three values here."$0D"They have an accuracy of two digits."
+             }
+      end_offset: = {
+          Typ="EF003" 
+          Txt="offset"
+          Hint="You must enter three values here."$0D"They have an accuracy of two digits."$0D"Not all models use this."
+             }
+      end_scale: = {
+          Typ="EF001" 
+          Txt="scale"
+          Hint="You must enter one positive float value here."$0D"It has an accuracy of two digits."$0D"Larger value = bigger handle size."$0D"Smaller value = smaller handle size."$0D"The default value for normal size = 1.00"
+             }
+    }
+    """
+
+    formobj = quarkx.newobj("md2_mc:form")
+    formobj.loadtext(dlgdef)
+    return formobj, vtxcolorbtn
+
+
+def dataforminput(o):
+    "Returns the default settings or input data for this type of object 'o' (a model component) to use for the Specific/Args page."
+
+    if not o.dictspec.has_key('start_color'):
+        o['start_color'] = '\x00\x00\xff'
+
 
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.1  2008/07/21 18:06:08  cdunde
+# Moved all the start and end logging code to ie_utils.py in two functions,
+# "default_start_logging" and "default_end_logging" for easer use and consistency.
+# Also added logging and progress bars where needed and cleaned up files.
+#
 # Revision 1.5  2008/06/17 20:39:13  cdunde
 # To add lwo model importer, uv's still not correct though.
 # Also added model import\export logging options for file types.

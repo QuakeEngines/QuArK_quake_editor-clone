@@ -511,11 +511,8 @@ def read_vcol(surf_list, lwochunk, data):
         if logging == 1:
             tobj.pprint ("vertnum = %s, vnum_size = %s" % (vertnum, vnum_size))
         u, v = struct.unpack(">ff", data.read(8))
-        print "line 701 u, v",u, v
         my_uv_dict[vertnum] = (u, v)
-        print "line 705 my_uv_dict",my_uv_dict
         i += 8 + vnum_size
-        print "line 707 i",i
     #end loop on uv pairs
     surf_list['VCOL'] = my_uv_dict
     map_type = data.read(4)
@@ -2239,11 +2236,55 @@ def loadmodel(root, filename, gamename, nomessage=0):
 
 ### To register this Python plugin and put it on the importers menu.
 import quarkpy.qmdlbase
-quarkpy.qmdlbase.RegisterMdlImporter(".lwo LightWave Importer", ".lwo file", "*.lwo", loadmodel)
+import ie_lightwave_import # This imports itself to be passed along so it can be used in mdlmgr.py later.
+quarkpy.qmdlbase.RegisterMdlImporter(".lwo LightWave Importer", ".lwo file", "*.lwo", loadmodel, ie_lightwave_import)
+
+
+def dataformname(o, vtxcolorbtn=1):
+    "Returns the data form for this type of object 'o' (a model component) to use for the Specific/Args page."
+
+    dlgdef = """
+    {
+      Help = "These are the Specific settings for Lightwave (.lwo) model types."$0D
+             "Lightwave uses 'levels' the same way that QuArK uses 'components'."$0D
+             "Each can have its own special Surface level (or skin texture) settings."$0D0D22
+             "NAME"$22" - Surface level control name, which is its skin texture name."$0D22
+             "UVNAME"$22" - Special UV process control name (over rides 'NAME')."$0D
+             "          type in any name you want to use."$0D22
+             "COLR"$22" - Color to use for this components uv vertex color mapping."$0D
+             "          Click the color selector button to the right and pick a color."$0D22
+             "IMAG"$22" - Image Map Image. Indicates that this surface is an image map."$0D
+             "        Check this if 'CHAN' & 'IMAG' are checked and 'OPAC' is NOT checked."
+      lwo_NAME:   = {t_texturebrowser = ! Txt="NAME"    Hint="Surface level control name,"$0D"which is its main skin texture name."}
+      lwo_UVNAME: = {Typ="E"   Txt="UVNAME"  Hint="Special UV process control name (over rides 'NAME'),"$0D"type in any name you want to use."}
+      lwo_COLR:   = {          Txt="COLR"                                                                          }
+      lwo_COLR:   = {Typ="L"   Txt="COLR"    Hint="Color to use for this components uv vertex color mapping."$0D"Click the color selector button to the right and pick a color."}
+      lwo_IMAG:   = {Typ="X"   Txt="IMAG"    Hint="Image Map Image. Indicates that this surface is an image map."$0D"Check this if 'CHAN' & 'IMAG' are checked and 'OPAC' is NOT checked."}
+    }
+    """
+
+    formobj = quarkx.newobj("lwo_mc:form")
+    formobj.loadtext(dlgdef)
+    return formobj, vtxcolorbtn
+
+
+def dataforminput(o):
+    "Returns the default settings or input data for this type of object 'o' (a model component) to use for the Specific/Args page."
+
+    if not o.dictspec.has_key('lwo_NAME'):
+        o['lwo_NAME'] = o.dictitems['Skins:sg'].subitems[0].name
+  #  if not o.dictspec.has_key('lwo_UVNAME'):
+  #      o['lwo_UVNAME'] = o.dictitems['Skins:sg'].subitems[0].name
+    if not o.dictspec.has_key('lwo_COLR'):
+        o['lwo_COLR'] = "0.75 0.75 0.75"
+
 
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.7  2008/07/24 23:34:11  cdunde
+# To fix non-ASCII character from causing python depreciation errors.
+#
 # Revision 1.6  2008/07/21 18:06:09  cdunde
 # Moved all the start and end logging code to ie_utils.py in two functions,
 # "default_start_logging" and "default_end_logging" for easer use and consistency.

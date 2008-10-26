@@ -41,8 +41,9 @@ treeviewselchanged = 0 ### This global is set to 1 when any new item is selected
                        ### 2) Test for its value of 0 or 1:     if treeviewselchanged == 1:
                        ### 3) After using be SURE to reset:         treeviewselchanged = 0
                        ### 4) Then complete your function :         return
-SFTexts   = [".md2", ".md3", ".lwo"] # Supported model types for import\exporting.
-mdltypes = [0,1,2] # Control list that corresponds with the "SFTexts" list above.
+SFTexts   = [] # Supported model types for import\exporting.
+mdltypes = [] # Control list that corresponds with the "SFTexts" list above.
+IEfile = [] # Actual imported .py Importer\Exporter file list that corresponds with the "SFTexts" list above.
 SFLetters = "set model type"
 check_start_vertex_count = "0"
 check_end_vertex_count = "0"
@@ -370,7 +371,7 @@ class ModelLayout(BaseLayout):
     def bs_dataform(self, panel):
         ico_maped=ico_dict['ico_maped']
         self.fp = panel.newpanel()
-        sfskills = (0,1,2)  # The model type control list, see the "### globals" section above.
+        sfskills = mdltypes  # The model type control list, see the "### globals" section above.
         for mdl in mdltypes:
             s = mdl
             if type(s)==type(()):
@@ -418,22 +419,16 @@ class ModelLayout(BaseLayout):
         
 
     def makesettingclick(self, m):
-        # The form uses this function when a setting is made or changed.
+        "This function fills in the Default values of the Specifics/Args page form"
+        "and changes the form's values when a setting is made."
         global check_start_vertex_count, check_end_vertex_count, checkstart_pos, checkend_pos, checkbone_length, checkbone_start_offset, checkbone_end_offset, checkbone_start_scale, checkbone_end_scale
         sl = self.explorer.sellist
         sfbtn = self.buttons["sf"]
         if m is not None:
             self.sfbtn.caption = "set model type" # to make sure the width of this button doesn't change
-            if m.skill == 2:
-                ico_maped=ico_dict['ico_maped']
-                vtxcolorbtn = qtoolbar.button(self.colorclick, "Color UV Vertex mode||When active, puts the editor vertex selection into this mode and uses the 'COLR' specific setting as the color to designate these types of vertexes.\n\nIt also places the editor into Vertex Selection mode if not there already and clears any selected vertexes to protect from including unwanted ones by mistake.\n\nAny vertexes selected in this mode will become Color UV Vertexes and added to the component as such. Click the InfoBase button or press F1 again for more detail.|intro.modeleditor.dataforms.html", ico_maped, 10)
-                self.buttons.update({"help": self.helpbtn, "sf": self.sfbtn, "color": vtxcolorbtn})
-                self.bb.buttons = [self.sfbtn, qtoolbar.widegap, self.helpbtn, vtxcolorbtn]
-                self.bb.margins = (0,0)
-            else:
-                self.buttons.update({"help": self.helpbtn, "sf": self.sfbtn})
-                self.bb.buttons = [self.sfbtn, qtoolbar.widegap, self.helpbtn]
-                self.bb.margins = (0,0)
+            self.buttons.update({"help": self.helpbtn, "sf": self.sfbtn})
+            self.bb.buttons = [self.sfbtn, qtoolbar.widegap, self.helpbtn]
+            self.bb.margins = (0,0)
             for i in range(0, len(sfbtn.menu)):
                 sfbtn.menu[i].state = 0
                 m.state = qmenu.checked
@@ -466,13 +461,14 @@ class ModelLayout(BaseLayout):
                     sl = []
                 else:
                     sl[0] = DummyItem
-                    try: # Tries to get a form for the "model format type" setting.
+                    try: # Tries to get a form for the "model format type" setting in the Defaults.qrk file.
                         formobj = quarkx.getqctxlist(':form', sfbtn.caption.strip(".") + sl[0].type.replace(":","_"))[-1]
                     except:
                         formobj = None
         except:
             formobj = None
             sl = []
+        vtxcolorbtn = None # This allows the option of an importer\exporter to use the vertex color button on its form.
         try:
             # Tries to use the data returned to make the form again.
             if (len(sl) == 1 and sl[0].type == ":bone") or (len(sl) == 2 and (sl[0].type == ":mf" and sl[1].type == ":bone")): # Sets the bone form items.
@@ -482,11 +478,29 @@ class ModelLayout(BaseLayout):
                     selitem = sl[1]
                 self.dataform.setdata(selitem, formobj) # Tries to use the data returned to make the bone's form again.
             else:
-                self.dataform.setdata(sl, formobj) # Tries to use the data returned to make the model format form again.
+                for filetype in range(len(SFTexts)):
+                    if sfbtn.caption == SFTexts[filetype]:
+                        filename = IEfile[filetype]
+                        formobj, vtxcolorbtn = filename.dataformname(DummyItem)
+                        sl = [DummyItem]
+                        break
+                    else:
+                        formobj = None
+                        sl = [DummyItem]
+                self.dataform.setdata(sl, formobj) # Tries to use data returned from an import or export file to make the model format form.
+
         except:
             formobj = None # If no form data is found, then set to None and just go on, there is no form for this item.
             sl = []
             self.dataform.setdata(sl, formobj)
+        if m is not None and vtxcolorbtn is not None: # This allows the option of an importer\exporter to use the vertex color button on its form.
+            self.sfbtn.caption = "set model type" # to make sure the width of this button doesn't change
+            ico_maped=ico_dict['ico_maped']
+            vtxcolorbtn = qtoolbar.button(self.colorclick, "Color UV Vertex mode||When active, puts the editor vertex selection into this mode and uses the 'COLR' specific setting as the color to designate these types of vertexes.\n\nIt also places the editor into Vertex Selection mode if not there already and clears any selected vertexes to protect from including unwanted ones by mistake.\n\nAny vertexes selected in this mode will become Color UV Vertexes and added to the component as such. Click the InfoBase button or press F1 again for more detail.|intro.modeleditor.dataforms.html", ico_maped, 10)
+            self.buttons.update({"help": self.helpbtn, "sf": self.sfbtn, "color": vtxcolorbtn})
+            self.bb.buttons = [self.sfbtn, qtoolbar.widegap, self.helpbtn, vtxcolorbtn]
+            self.bb.margins = (0,0)
+
         help = ((formobj is not None) and formobj["Help"]) or ""
         if help:
             help = "?" + help   # This trick displays a blue hint.
@@ -508,16 +522,14 @@ class ModelLayout(BaseLayout):
                 cap = "set model type"
         sfbtn.caption = cap
         btnlist = self.mpp.btnpanel.buttons
-        # Sets the model format form items.
+        # Fills the model format form items.
         if (len(sl) == 1 and sl[0].type != ":bone") or (len(sl) > 1 and (sl[0].type != ":bone" and sl[1].type != ":bone")):
-            if sfbtn.caption == ".lwo":
-                if not sl[0].dictspec.has_key('lwo_NAME'):
-                    sl[0]['lwo_NAME'] = sl[0].dictitems['Skins:sg'].subitems[0].name
-        #        if not sl[0].dictspec.has_key('lwo_UVNAME'):
-        #            sl[0]['lwo_UVNAME'] = sl[0].dictitems['Skins:sg'].subitems[0].name
-                if not sl[0].dictspec.has_key('lwo_COLR'):
-                    sl[0]['lwo_COLR'] = "0.75 0.75 0.75"
-
+            ### This section handles the model importer\exporter default settings and data input for the Specifics/Args page..
+            for filetype in range(len(SFTexts)):
+                if sfbtn.caption == SFTexts[filetype]:
+                   filename = IEfile[filetype]
+                   filename.dataforminput(sl[0])
+        ### This section handles the Bones default settings and data input for the Specifics/Args page..
         # Sets self.xxxx_color to a bone's handles colors, when selected,
         # for comparison , in the "filldataform" function, if a handle color is changed.
         # Same goes for checkbone_length, checkbone_start_offset and checkbone_end_offset.
@@ -582,7 +594,8 @@ class ModelLayout(BaseLayout):
         #        self.mpp.viewpage(3)
 
     def filldataform(self, reserved):
-        # Code to create the form for the first time or when selecting another item in the tree-view that uses this form.
+        "This function creates the Specifics/Args page form (formobj) for the first time"
+        "or when selecting another item in the tree-view that uses a form."
         global check_start_vertex_count, check_end_vertex_count, checkstart_pos, checkend_pos, checkbone_length, checkbone_start_offset, checkbone_end_offset, checkbone_start_scale, checkbone_end_scale
         comp = self.editor.Root.currentcomponent
         sl = self.explorer.sellist
@@ -612,21 +625,37 @@ class ModelLayout(BaseLayout):
                 else:
                     sl[0] = DummyItem
                     try:
+                        # Tries to get the :form data from the Defaults.qrk file.
                         formobj = quarkx.getqctxlist(':form', sfbtn.caption.strip(".") + sl[0].type.replace(":","_"))[-1]
                     except:
                         formobj = None
-            # Tries to use a file type:form data returned to fill this form.
             if (len(sl) == 1 and sl[0].type == ":bone") or (len(sl) == 2 and (sl[0].type == ":mf" and sl[1].type == ":bone")): # Sets the bone form items.
+                # Uses the data returned from the mdlentities.py file, class BoneType, def dataformname function
+                # to create the Specifics/Args page form for bones.
                 if sl[0].type == ":bone":
                     selitem = sl[0]
                 else:
                     selitem = sl[1]
                 self.dataform.setdata(selitem, formobj) # Tries to use the data returned to make the bone's form again.
             else:
-                self.dataform.setdata(sl, formobj) # Tries to use the data returned to make the model format form again.
+                # Tries to use a file type:form data returned to create this form.
+                try:
+                    for filetype in range(len(SFTexts)):
+                        if sfbtn.caption == SFTexts[filetype]:
+                            filename = IEfile[filetype]
+                            formobj, vtxcolorbtn = filename.dataformname(DummyItem)
+                            sl = [DummyItem]
+                            break
+                        else:
+                            formobj = None
+                            sl = [DummyItem]
+                    self.dataform.setdata(sl, formobj) # Tries to use the data returned from an import file to make the model format form.
+                except:
+                    self.dataform.setdata(sl, formobj) # Tries to use the data returned to make the model format form again.
         except:
             formobj = None # If no form data is found, then set to None and just go on, there is no form for this item.
             self.dataform.setdata(sl, formobj)
+
         help = ((formobj is not None) and formobj["Help"]) or ""
         if help:
             help = "?" + help   # This trick displays a blue hint.
@@ -662,14 +691,14 @@ class ModelLayout(BaseLayout):
             btnlist[1].icons = tuple(l)
             self.mpp.btnpanel.buttons = btnlist
         if sl:
-            if sfbtn.caption == ".lwo" and sl[0].type == ":mc" or sl[0].dictspec.has_key('Skins:sg'):
-                if not sl[0].dictspec.has_key('lwo_NAME'):
-                    sl[0]['lwo_NAME'] = sl[0].dictitems['Skins:sg'].subitems[0].name
-        #        if not sl[0].dictspec.has_key('lwo_UVNAME'):
-        #            sl[0]['lwo_UVNAME'] = sl[0].dictitems['Skins:sg'].subitems[0].name
-                if not sl[0].dictspec.has_key('lwo_COLR'):
-                    sl[0]['lwo_COLR'] = "0.75 0.75 0.75"
-                self.dataform.setdata(sl, formobj)
+            ### This section handles the model importer\exporter default settings and data input for the Specifics/Args page..
+            if sl[0].type == ":mc" or sl[0].dictspec.has_key('Skins:sg'):
+                for filetype in range(len(SFTexts)):
+                    if sfbtn.caption == SFTexts[filetype]:
+                        filename = IEfile[filetype]
+                        filename.dataforminput(sl[0])
+                        self.dataform.setdata(sl, formobj)
+            ### This section handles the Bones default settings and data input for the Specifics/Args page..
             # Updates all vertexes 'color' that are assigned to a bone handle when that handle color is changed.
             if (len(sl) == 1 and sl[0].type == ":bone") or (len(sl) == 2 and (sl[0].type == ":mf" and sl[1].type == ":bone")) and (not isinstance(reserved, qtoolbar.button)):
                 if sl[0].type == ":bone":
@@ -894,7 +923,13 @@ class ModelLayout(BaseLayout):
                     try:
                         formobj = quarkx.getqctxlist(':form', sfbtn.caption.strip(".") + sl[0].type.replace(":","_"))[-1]
                     except:
-                        formobj = None
+                        for filetype in range(len(SFTexts)):
+                            if sfbtn.caption == SFTexts[filetype]:
+                                filename = IEfile[filetype]
+                                formobj, vtxcolorbtn = filename.dataformname(DummyItem)
+                                break
+                            else:
+                                formobj = None
         except:
             formobj = None # If no form data is found, then set to None and just go on, there is no form for this item.
         if formobj is not None:
@@ -1285,6 +1320,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.82  2008/10/25 23:41:15  cdunde
+#Fix for errors from the editor.ModelComponentList if a model component is not in it.
+#
 #Revision 1.81  2008/10/17 22:29:05  cdunde
 #Added assigned vertex count (read only) to Specifics/Args page for each bone handle.
 #
