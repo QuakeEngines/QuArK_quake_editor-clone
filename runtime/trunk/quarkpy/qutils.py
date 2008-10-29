@@ -285,6 +285,9 @@ def loadmdleditor():
     import mdlutils
     import mdleditor
     import mdlmenus
+    # --- import the importers/exporters if they haven't been loaded yet
+    import qmacro
+    qmacro.MACRO_loadmdlimportexportplugins(None)
     #---- import the plug-ins ----
     import plugins
     plugins.LoadPlugins("MDL")
@@ -828,6 +831,9 @@ def sortdictionary(dictionary):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.45  2008/09/29 22:41:06  danielpharos
+#Fixed for file resolving code. Fixes Steam-games.
+#
 #Revision 1.44  2008/09/29 22:01:56  danielpharos
 #Update to filename resolving code. Needs more testing, but should work.
 #

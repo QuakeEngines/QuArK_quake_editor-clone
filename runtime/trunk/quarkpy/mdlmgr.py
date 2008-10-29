@@ -1243,14 +1243,13 @@ class ModelLayout(BaseLayout):
         else:
             fs = None
 
+        menuitem = None
         sfbtn = self.buttons["sf"]
-        for i in range(0, len(sfbtn.menu)):
-            m = sfbtn.menu[i]
+        for m in sfbtn.menu:
             if m.state == qmenu.checked:
+                menuitem = m
                 break
-            if i == len(sfbtn.menu)-1:
-                m = None
-        self.makesettingclick(m) # Updates the Specifics/Args page correctly.
+        self.makesettingclick(menuitem) # Updates the Specifics/Args page correctly.
         if fs is not None:
             treeviewselchanged = 1
             if fs.type == ':mf':       # frame
@@ -1320,6 +1319,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.83  2008/10/26 00:07:09  cdunde
+#Moved all of the Specifics/Args page code for the Python importers\exports to the importer files.
+#
 #Revision 1.82  2008/10/25 23:41:15  cdunde
 #Fix for errors from the editor.ModelComponentList if a model component is not in it.
 #
