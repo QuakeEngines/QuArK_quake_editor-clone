@@ -514,6 +514,7 @@ def import_md2_model(editor, md2_filename):
     Component.appenditem(sdogroup)
     Component.appenditem(skingroup)
     skeletongroup = quarkx.newobj('Skeleton:bg')
+    skeletongroup['type'] = chr(5)
     Component.appenditem(framesgroup)
     Component.appenditem(skeletongroup)
 
@@ -572,6 +573,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".md2 Quake2 Importer", ".md2 file", "*.md2
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.3  2008/10/26 00:42:21  cdunde
+# Opps! Forgot md2 files don't have any Specifics, to remove test code.
+#
 # Revision 1.2  2008/10/26 00:07:09  cdunde
 # Moved all of the Specifics/Args page code for the Python importers\exports to the importer files.
 #
