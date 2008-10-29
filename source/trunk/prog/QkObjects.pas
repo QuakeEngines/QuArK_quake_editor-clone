@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.111  2008/10/20 20:42:41  danielpharos
+Take out the lists-part. Too many problems!
+
 Revision 1.110  2008/10/17 08:07:34  danielpharos
 Oops, missed a spot.
 
@@ -678,6 +681,7 @@ type
     { stuff that should be done when an object has been read in from text rep. }
     procedure FinalizeFromText; virtual;
     function WriteSubelements : Boolean; virtual;
+    function ClassList : TStringList;
     function IsAllowedParent(Parent: QObject) : Boolean; virtual;
   end;
 
@@ -2592,6 +2596,19 @@ begin
     Result:=Name;
 end;
 
+function QObject.ClassList : TStringList;
+var
+  Cls: QObjectClass;
+begin
+  Result:=TStringList.Create;
+  Cls:=QObjectClass(ClassType);
+  while Cls<>QObject do
+  begin
+    Result.Append(Cls.ClassName);
+    Cls:=QObjectClass(Cls.ClassParent);
+  end;
+end;
+
 
 procedure QObject.SetSelMult();
   procedure OpenGroups(Groupe: QObject);
@@ -3214,10 +3231,10 @@ function QObject.PyGetAttr(attr: PChar) : PyObject;
 var
   I, J, N: Integer;
   o: PyObject;
-  Cls: QObjectClass;
   S: String;
   PF: ^Single;
   PI: ^Integer;
+  L: TStringList;
 begin
   for I:=Low(PyObjMethodTable) to High(PyObjMethodTable) do
   begin
@@ -3232,20 +3249,15 @@ begin
   'c':
     if StrComp(attr, 'classes') = 0 then
     begin
-      Cls:=QObjectClass(ClassType);
-      N:=1;
-      while Cls<>QObject do
-      begin
-        Inc(N);
-        Cls:=QObjectClass(Cls.ClassParent);
-      end;
-      Result:=PyTuple_New(N);
-      Cls:=QObjectClass(ClassType);
-      for I:=N-1 downto 0 do
-      begin
-        S:=Cls.ClassName;
-        PyTuple_SetItem(Result, I, PyString_FromString(PChar(S)+1));
-        Cls:=QObjectClass(Cls.ClassParent);
+      L:=ClassList;
+      try
+        Result:=PyTuple_New(L.Count);
+        for I:=0 to L.Count-1 do
+        begin
+          PyTuple_SetItem(Result, I, PyString_FromString(PChar(L[I])));
+        end;
+      finally
+        L.Free;
       end;
       Exit;
     end;

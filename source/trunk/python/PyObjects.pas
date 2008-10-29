@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.21  2008/10/20 20:42:41  danielpharos
+Take out the lists-part. Too many problems!
+
 Revision 1.20  2008/10/17 08:07:34  danielpharos
 Oops, missed a spot.
 
@@ -95,6 +98,7 @@ function GetPySpecArg(var Spec: String; value: PyObject) : String;
 procedure PythonObjDestructor(o: PyObject); cdecl;
 function GetObjAttr(self: PyObject; attr: PChar) : PyObject; cdecl;
 function SetObjAttr(self: PyObject; attr: PChar; value: PyObject) : Integer; cdecl;
+function ObjRepr(self: PyObject) : PyObject; cdecl;
 {function GetFileObjAttr(self: PyObject; attr: PChar) : PyObject; cdecl;
 function SetFileObjAttr(self: PyObject; attr: PChar; value: PyObject) : Integer; cdecl;}
 function GetObjSpec(self, o: PyObject) : PyObject; cdecl;
@@ -112,6 +116,7 @@ var
    tp_dealloc:     PythonObjDestructor;
    tp_getattr:     GetObjAttr;
    tp_setattr:     SetObjAttr;
+   tp_repr:        ObjRepr;
    tp_as_mapping:  @TyObjectMapping;
    tp_doc:         'An internal object for QuArK.');
 
@@ -248,6 +253,36 @@ begin
  except
   EBackToPython;
   Result:=-1;
+ end;
+end;
+
+function ObjRepr(self: PyObject) : PyObject; cdecl;
+var
+ Q: QObject;
+ s, s1: string;
+ L: TStringList;
+ I: Integer;
+begin
+ try
+  Q:=QkObjFromPyObj(self);
+  L:=Q.ClassList;
+  try
+    if L.Count = 0 then
+      s1:=''
+    else
+    begin
+      s1:=L[0];
+      for I:=1 to L.Count-1 do
+        s1:=s1+', '+L[I];
+    end;
+  finally
+    L.Free;
+  end;
+  s:=Format('<%s object at %p, name: "%s", class: "%s">', [self.ob_type.tp_name, @self, Q.Name+Q.TypeInfo, s1]);
+  Result:=PyString_FromString(PChar(s));
+ except
+  EBackToPython;
+  Result:=Nil;
  end;
 end;
 
