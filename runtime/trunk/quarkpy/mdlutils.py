@@ -1537,7 +1537,7 @@ def ConvertEditorFaceObject(editor, newobjectslist, flags, view, undomsg, option
 
 
 #
-# The 'option' value of 1 MAKES a "clean" brand new component with NO triangles or frame.vertecies, only frames.
+# The 'option' value of 1 MAKES a "clean" brand new component with NO triangles, frame.vertecies (only frames) or bones.
 # The 'option' value of 2 ADDS a new component to the model using currently selected faces of another component.
 #    This function will also remove the selected faces and unused vertexes from the original component.
 #
@@ -1674,13 +1674,16 @@ def addcomponent(editor, option=2):
         new_comp.triangles = []
         for compframe in range(len(new_comp.dictitems['Frames:fg'].subitems)):
             new_comp.dictitems['Frames:fg'].subitems[compframe].vertices = []
-        new_comp.dictitems['Skeleton:bg'] = []
 
     ## This last part places the new component into the editor and the model.
     compframes = new_comp.findallsubitems("", ':mf')   # get all frames
     for compframe in compframes:
         compframe.compparent = new_comp # To allow frame relocation after editing.
     undo = quarkx.action()
+    undo.exchange(new_comp.dictitems['Skeleton:bg'], None)
+    skeletongroup = quarkx.newobj('Skeleton:bg')
+    skeletongroup['type'] = chr(5)
+    new_comp.appenditem(skeletongroup)
     undo.put(editor.Root, new_comp)
     editor.ok(undo, new_comp.shortname + " created")
     if option == 1:
@@ -1699,7 +1702,7 @@ def addcomponent(editor, option=2):
                 if change_comp.triangles[tri][vtx][0] in dumylist:
                     dumylist.remove(change_comp.triangles[tri][vtx][0])
     remove_vertices_list = dumylist
-
+    
     # This section uses the "remove_triangle_list" to recreate the original
     # component.triangles without the selected faces.
     old_tris = change_comp.triangles
@@ -1722,6 +1725,80 @@ def addcomponent(editor, option=2):
             compframe.vertices = vtxs
     change_comp.triangles = new_tris
 
+    # This section updates any bones in the original component and the editor.ModelComponentList,
+    # if any vertexes that are being removed have been assigned to a bone's handle.
+    remove_vertices_list.sort()
+    if len(change_comp.dictitems['Skeleton:bg'].subitems) != 0:
+        if editor.ModelComponentList.has_key(change_comp.name) and editor.ModelComponentList[change_comp.name].has_key('bonevtxlist'):
+            bones2update = {}
+            for vtx in remove_vertices_list:
+                if editor.ModelComponentList[change_comp.name]['bonevtxlist'].has_key(str(vtx)):
+                    if bones2update.has_key(editor.ModelComponentList[change_comp.name]['bonevtxlist'][str(vtx)]['bonename']):
+                        bonename = editor.ModelComponentList[change_comp.name]['bonevtxlist'][str(vtx)]['bonename']
+                        if editor.ModelComponentList[change_comp.name]['bonevtxlist'][str(vtx)]['s_or_e'] == 0:
+                            if bones2update[bonename].has_key('s_or_e0'):
+                                bones2update[bonename]['s_or_e0'].append(str(vtx))
+                            else:
+                                bones2update[bonename]['s_or_e0'] = []
+                                bones2update[bonename]['s_or_e0'].append(str(vtx))
+                        else:
+                            if bones2update[bonename].has_key('s_or_e1'):
+                                bones2update[bonename]['s_or_e1'].append(str(vtx))
+                            else:
+                                bones2update[bonename]['s_or_e1'] = []
+                                bones2update[bonename]['s_or_e1'].append(str(vtx))
+                    else:
+                        bonename = editor.ModelComponentList[change_comp.name]['bonevtxlist'][str(vtx)]['bonename']
+                        bones2update[bonename] = {}
+                        if editor.ModelComponentList[change_comp.name]['bonevtxlist'][str(vtx)]['s_or_e'] == 0:
+                            bones2update[bonename]['s_or_e0'] = []
+                            bones2update[bonename]['s_or_e0'].append(str(vtx))
+                        else:
+                            bones2update[bonename]['s_or_e1'] = []
+                            bones2update[bonename]['s_or_e1'].append(str(vtx))
+                    del editor.ModelComponentList[change_comp.name]['bonevtxlist'][str(vtx)]
+            if len(bones2update) != 0:
+                import mdlhandles
+                for key in bones2update.keys():
+                    selbone = change_comp.dictitems['Skeleton:bg'].dictitems[key]
+                    if bones2update[key].has_key('s_or_e0'):
+                        vtxlist = selbone.dictspec['start_vtxlist']
+                        start_vtxlist = vtxlist.split(" ")
+                        vtxlist = selbone.dictspec['start_vtx_pos']
+                        start_vtx_pos = vtxlist.split(" ")
+                        for vtx in bones2update[key]['s_or_e0']:
+                            if vtx in start_vtxlist:
+                                start_vtxlist.remove(vtx)
+                            if vtx in start_vtx_pos:
+                                start_vtx_pos.remove(vtx)
+                        new_start_vtxlist = ""
+                        for vtx in start_vtxlist:
+                            new_start_vtxlist = new_start_vtxlist + vtx
+                        selbone['start_vtxlist'] = new_start_vtxlist
+                        new_start_vtx_pos = ""
+                        for vtx in start_vtx_pos:
+                            new_start_vtx_pos = new_start_vtx_pos + vtx
+                        selbone['start_vtx_pos'] = new_start_vtx_pos
+                    if bones2update[key].has_key('s_or_e1'):
+                        vtxlist = selbone.dictspec['end_vtxlist']
+                        end_vtxlist = vtxlist.split(" ")
+                        vtxlist = selbone.dictspec['end_vtx_pos']
+                        end_vtx_pos = vtxlist.split(" ")
+                        for vtx in bones2update[key]['s_or_e1']:
+                            if vtx in end_vtxlist:
+                                end_vtxlist.remove(vtx)
+                            if vtx in end_vtx_pos:
+                                end_vtx_pos.remove(vtx)
+                        new_end_vtxlist = ""
+                        for vtx in end_vtxlist:
+                            new_end_vtxlist = new_end_vtxlist + vtx
+                        selbone['end_vtxlist'] = new_end_vtxlist
+                        new_end_vtx_pos = ""
+                        for vtx in end_vtx_pos:
+                            new_end_vtx_pos = new_end_vtx_pos + vtx
+                        selbone['end_vtx_pos'] = new_end_vtx_pos
+                    editor.ModelComponentList[change_comp.name]['boneobjlist'][selbone.name] = mdlhandles.Update_BoneObjs(editor.ModelComponentList[change_comp.name]['bonevtxlist'], selbone.name, editor.Root.currentcomponent)
+
     # This last section updates the original component finishing the process for it.
     compframes = change_comp.findallsubitems("", ':mf')   # get all frames
     for compframe in compframes:
@@ -1730,7 +1807,7 @@ def addcomponent(editor, option=2):
     undo.exchange(comp, None)
     undo.put(editor.Root, change_comp)
     editor.ok(undo, change_comp.shortname + " updated")
-
+    Update_Editor_Views(editor)
 
 #
 # Add a frame to a given component (ie duplicate last one)
@@ -3034,6 +3111,10 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.88  2008/10/21 04:35:33  cdunde
+#Bone corner handle rotation fixed correctly by DanielPharos
+#and stop all drawing during Keyframe Rotation function.
+#
 #Revision 1.87  2008/10/15 00:01:30  cdunde
 #Setup of bones individual handle scaling and Keyframe matrix rotation.
 #Also removed unneeded code.
