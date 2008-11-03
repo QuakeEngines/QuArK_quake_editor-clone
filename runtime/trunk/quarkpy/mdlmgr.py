@@ -218,7 +218,7 @@ class ModelLayout(BaseLayout):
                 cap = "fps \t%s" % g
             item = qmenu.item(cap, self.animationfpsmenuclick)
             item.animationFPS = g
-            item.state = g==animationFPS and qmenu.radiocheck
+            item.state = g==animationFPS[0] and qmenu.radiocheck
             animationfpsmenu.append(item)
         animationfpsmenu.append(qmenu.sep)
         txt = "&Other...\t%s" % quarkx.ftos(animationFPS[0])
@@ -1319,6 +1319,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.84  2008/10/29 04:29:31  cdunde
+#Minor error fix.
+#
 #Revision 1.83  2008/10/26 00:07:09  cdunde
 #Moved all of the Specifics/Args page code for the Python importers\exports to the importer files.
 #
