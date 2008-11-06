@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.76  2008/10/08 23:14:21  danielpharos
+Moved the MaxRecentFiles-items to a separate menu, and upped the limit to 20.
+
 Revision 1.75  2008/10/08 19:44:16  danielpharos
 Fix some possible synchronization issues.
 
@@ -1789,7 +1792,8 @@ begin
  end;
  ClearGameBuffers(False);
  ClearPool(True);
- ClearSteamCache;
+ if LoadingComplete then
+   ClearSteamCache;
 // QObjectClassList.Free;
  ClearConsole;
  ShutdownPython;
