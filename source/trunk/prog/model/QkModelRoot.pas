@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2007/08/05 20:04:33  danielpharos
+Fix a typo in a comment.
+
 Revision 1.12  2005/09/28 10:49:02  peter-b
 Revert removal of Log and Header keywords
 
@@ -82,7 +85,7 @@ type
 
 implementation
 
-uses quarkx, pyobjects, travail, QkObjectClassList, qkmd3;
+uses math, quarkx, pyobjects, travail, QkObjectClassList, qkmd3;
 
 function qSetComponent(self, args: PyObject) : PyObject; cdecl;
 var
@@ -136,11 +139,6 @@ const
      (ml_name: 'tryautoloadparts';ml_meth: qTryAutoLoadParts;ml_flags: METH_VARARGS));
 
 { ----------------------------- }
-
-function Max(a,b: Longint): Longint;
-begin
-  if a>b then result:=a else result:=b;
-end;
 
 destructor QModelRoot.Destroy;
 begin
