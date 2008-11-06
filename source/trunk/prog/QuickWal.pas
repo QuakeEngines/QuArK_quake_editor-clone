@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.44  2008/09/06 15:57:28  danielpharos
+Moved exception code into separate file.
+
 Revision 1.43  2008/02/23 19:25:21  danielpharos
 Moved a lot of path/file code around: should make it easier to use
 
@@ -194,8 +197,9 @@ procedure BuildTextureFolders(Base: String; var Q: QObject);
 procedure BuildDynamicFolders(Base: String; var Q: QObject; merged, allshaders: boolean; Filter: String);
 procedure BuildStaticFolders(Base: String; var Q: QObject; merged, allshaders: boolean; Filter: String);
 procedure MergeTextureFolders(Base: String; var Q: QObject; allshaders: boolean; Filter: String);
-function GameShaderList : String;
 function ListPakFiles(const Path: String) : TStringList;
+
+ {------------------------}
 
 implementation
 
@@ -204,9 +208,6 @@ uses QkGroup, Game, QkTextures, QkWad, QkExplorer,
   Setup, QkQ3, OsFolder, QkD3, QkApplPaths;
 
 {$R *.DFM}
-
-var
-  PakName: String;
 
 function FileNameOnly(Name: String) : String;
 begin
@@ -245,13 +246,6 @@ begin
     List.Add(List2[I]);
   Result:=List;
   List2.Free;
-end;
-
-function GameShaderList : String;
-begin
-  Result:=SetupGameSet.Specifics.Values['ShaderList'];
-  if Result='' then
-    Result:=GameShadersPath+'shaderlist.txt';
 end;
 
 function Link1(var ResultFolder: QObject; const FolderName, Name, Spec, Arg: String) : QObject; overload
@@ -1123,7 +1117,6 @@ begin
   for I:=PakList.Count-1 downto 0 do
   begin
     Pak:=ExactFileLink(AppendFileToPath(Path, PakList[I]), Nil, False) as QPakFolder;
-    PakName:=Pak.Name;
     Pak.AddRef(+1);
     try
       Pak.Acces;
@@ -1167,7 +1160,6 @@ begin
   for I:=PakList.Count-1 downto 0 do
   begin
     Pak:=ExactFileLink(AppendFileToPath(Path, PakList[I]), Nil, False) as QPakFolder;
-    PakName:=Pak.Name;
     Pak.AddRef(+1);
     try
       Pak.Acces;

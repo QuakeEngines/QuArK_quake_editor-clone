@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.67  2008/10/16 21:26:38  danielpharos
+Fix naming of steam path replacer and give auto-setting an invalid filename, so it can never be actually used.
+
 Revision 1.66  2008/10/08 21:42:18  danielpharos
 Made map extension changable.
 
@@ -318,6 +321,7 @@ procedure ClearAllFilesRec(const Rep: String);
 function CheckQuakeDir : Boolean;
 function GameMapPath : String;
 function GameModelPath : String;
+function GameShaderList : String;
 function SteamAppID : String;
 function GetSteamtmpQuArK : String;
 function GetSteamBaseDir : String;
@@ -1729,6 +1733,13 @@ begin
   Result:=SetupGameSet.Specifics.Values['MdlPath'];
   if Result='' then
     Result:='models';
+end;
+
+function GameShaderList : String;
+begin
+  Result:=SetupGameSet.Specifics.Values['ShaderList'];
+  if Result='' then
+    Result:=GameShadersPath+'shaderlist.txt';
 end;
 
 function SteamAppID : String;
