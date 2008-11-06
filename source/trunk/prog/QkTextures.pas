@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.68  2008/09/29 21:45:31  danielpharos
+Soft-coded 'maps' directory (not in Python yet).
+
 Revision 1.67  2008/09/23 09:05:00  danielpharos
 Fixed the annoying colormap saving problem!
 
@@ -734,13 +737,13 @@ var
 
               for J:=DirsList.Count-1 downto 0 do
               begin
-                DosError:=FindFirst(AppendFileToPath(AppendFileToPath(QuakeDir, DirsList[J]), WriteTo), faAnyFile, SRec);
+                DosError:=FindFirst(ConcatPaths([QuakeDir, DirsList[J], WriteTo]), faAnyFile, SRec);
                 try
                   while DosError=0 do
                   begin
                     if SRec.Attr and faDirectory = 0 then
                     begin
-                      CopyFile(PChar(AppendFileToPath(AppendFileToPath(AppendFileToPath(QuakeDir, DirsList[J]), SourceDir), SRec.Name)),
+                      CopyFile(PChar(ConcatPaths([QuakeDir, DirsList[J], SourceDir, SRec.Name])),
                                PChar(OutputFile(SourceDir+SRec.Name)),
                                False);
                     end;
@@ -1323,7 +1326,7 @@ begin
           if (S='') or (Arg='') then
             Raise EError(5518);
           ChangeGameMode(mjNotQuake2, True);
-          Bsp:=NeedGameFileBase(Arg, GameMapPath+PathDelim+S+'.bsp', '') as QBsp;
+          Bsp:=NeedGameFileBase(Arg, ConcatPaths([GameMapPath, S+'.bsp']), '') as QBsp;
           Bsp.AddRef(+1);
           try
             TexList:=Bsp.BspEntry[eMipTex, NoBsp2, NoBsp3] as QTextureList;

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.59  2008/10/14 00:07:16  danielpharos
+Add an integer list as a specific type.
+
 Revision 1.58  2008/10/07 21:16:25  danielpharos
 Massive update to get Steam finally working better.
 
@@ -1232,7 +1235,7 @@ begin
    I:=Length(Path);
    while (I>0) and (Path[I]<>'/') do
     Dec(I);
-   QFileObject(Obj).SaveInFile(rf_Default, AppendFileToPath(BasePath, Copy(Path, I+1, MaxInt)));
+   QFileObject(Obj).SaveInFile(rf_Default, ConcatPaths([BasePath, Copy(Path, I+1, MaxInt)]));
   end
  else
   inherited;
@@ -2165,7 +2168,7 @@ begin
  S[1]:=#0;
  GetTempPath(MAX_PATH, PChar(S));
  SetLength(S, StrLen(PChar(S)));
- DosError:=FindFirst(AppendFileToPath(S, Format('auto-save-*%s', [Ext])), faAnyFile, Rec);
+ DosError:=FindFirst(ConcatPaths([S, Format('auto-save-*%s', [Ext])]), faAnyFile, Rec);
  try
   while DosError=0 do
    begin
@@ -2186,7 +2189,7 @@ begin
         CloseHandle(H);
         if OldId=0 then
          begin
-          S1:=AppendFileToPath(S, Rec.Name);
+          S1:=ConcatPaths([S, Rec.Name]);
           case MessageDlg(FmtLoadStr1(5682, [S1]), mtInformation, mbYesNoCancel, 0) of
            mrYes: with TSaveDialog.Create(Application) do
                    try
@@ -2448,7 +2451,7 @@ begin
          S[1]:=#0;
          GetTempPath(MAX_PATH, PChar(S));
          SetLength(S, StrLen(PChar(S)));
-         S:=AppendFileToPath(S, Format('auto-save-%x-%x%s', [GetCurrentProcessId, LongInt(Self), TypeInfo]));
+         S:=ConcatPaths([S, Format('auto-save-%x-%x%s', [GetCurrentProcessId, LongInt(Self), TypeInfo])]);
          Result:=PyString_FromString(PChar(S));
          Exit;
         end;

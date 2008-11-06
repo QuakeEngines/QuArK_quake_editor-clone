@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2008/02/23 19:25:19  danielpharos
+Moved a lot of path/file code around: should make it easier to use
+
 Revision 1.14  2007/08/14 16:32:59  danielpharos
 HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
 
@@ -261,7 +264,7 @@ begin
         begin
           GetPakNames := TGetPakNames.Create;
           try
-            GetPakNames.CreatePakList(AppendFileToPath(QD1, sr.Name), '', False, True);
+            GetPakNames.CreatePakList(ConcatPaths([QD1, sr.Name]), '', False, True);
             while GetPakNames.GetNextPakName(True, PakFilename, False) do
             begin
               if IsPakTemp(PakFilename) then

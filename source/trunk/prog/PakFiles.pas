@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2008/09/06 15:57:26  danielpharos
+Moved exception code into separate file.
+
 Revision 1.3  2008/02/23 19:25:21  danielpharos
 Moved a lot of path/file code around: should make it easier to use
 
@@ -157,20 +160,20 @@ begin
    for J:=0 to PakFileMaxNumber do
    begin
      S := LeftStr(PakFileFilter, I-1) + IntToStr(J) + RightStr(PakFileFilter, Length(PakFileFilter) - I);
-     StrList.Add(AppendFileToPath(Path, S));
+     StrList.Add(ConcatPaths([Path, S]));
    end;
  end
  else
  begin
    //Get the list of strings, by looking in the path for files matching the filefilter
-   if FindFirst(AppendFileToPath(Path, PakFileFilter), faAnyFile, sr) = 0 then
+   if FindFirst(ConcatPaths([Path, PakFileFilter]), faAnyFile, sr) = 0 then
    begin
-     S := AppendFileToPath(Path, sr.Name);
+     S := ConcatPaths([Path, sr.Name]);
      if (not SearchForTemp) or (SearchForTemp and IsPakTemp(S)) then
        StrList.Add(S);
      while FindNext(sr) = 0 do
      begin
-       S := AppendFileToPath(Path, sr.Name);
+       S := ConcatPaths([Path, sr.Name]);
        if (not SearchForTemp) or (SearchForTemp and IsPakTemp(S)) then
          StrList.Add(S);
      end;
@@ -215,7 +218,7 @@ begin
    FindNextAvailablePakFilename:='';  // no pak file to write
    Exit;
  end;
- GameModDir:=AppendFileToPath(QuakeDir, GameModDir);
+ GameModDir:=ConcatPaths([QuakeDir, GameModDir]);
  GetPakNames := TGetPakNames.Create;
  try
    //-- Find last existing package with QuArK-tag --
@@ -229,7 +232,7 @@ begin
      FoundFreeOne:=False;
      for I:=0 to PakFileMaxNumber do
      begin
-       AvailablePakFile:=AppendFileToPath(GameModDir,'tmpQuArK' + IntToStr(I) + PakFileExt);
+       AvailablePakFile:=ConcatPaths([GameModDir,'tmpQuArK' + IntToStr(I) + PakFileExt]);
        if FileExists(AvailablePakFile) = false then
        begin
          FoundFreeOne:=True;

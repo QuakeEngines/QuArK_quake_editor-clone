@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.28  2008/09/29 21:45:30  danielpharos
+Soft-coded 'maps' directory (not in Python yet).
+
 Revision 1.27  2008/02/23 19:25:20  danielpharos
 Moved a lot of path/file code around: should make it easier to use
 
@@ -133,7 +136,7 @@ function OpacityToFlags(Flags: Integer; Alpha: Integer) : Integer;
 implementation
 
 uses Setup, QkGroup, Quarkx, QkObjectClassList, QuickWal, QkPak, QkBSP, ToolBox1,
-     ToolBoxGroup, Game, QkMapObjects, FormCfg, QkExplorer,
+     ToolBoxGroup, Game, QkMapObjects, FormCfg, QkExplorer, QkApplPaths,
      QkForm, Travail, QkFormCfg, ExtraFunctionality;
 
  {------------------------}
@@ -341,7 +344,7 @@ begin
   Result:=TQList.Create;
   For i:=0 to l.count-1 do
   begin
-    Result.Add(ExactFileLink(dir+PathDelim+l.strings[i], nil, false));
+    Result.Add(ExactFileLink(ConcatPaths([dir, l.strings[i]]), nil, false));
   end;
 end;
 
@@ -354,7 +357,7 @@ begin
   f_e:=FindFirst(filter, faAnyFile, F);
   while f_e=0 do
   begin
-    Result.add(ExactFileLink(dir+PathDelim+f.name, nil, false));
+    Result.add(ExactFileLink(ConcatPaths([dir, f.name]), nil, false));
     f_e:=FindNext(F);
   end;
   FindClose(f);
@@ -403,9 +406,9 @@ var
   p_f: QPakFolder;
   j: Integer;
 begin
-  dir:=IncludeTrailingPathDelimiter(QuakeDir)+Specifics.Values['GameDir'];
+  dir:=ConcatPaths([QuakeDir, Specifics.Values['GameDir']]);
   paks:=OpenFiles(dir, ListPakFiles(dir));
-  Result:=FindFiles(dir+PathDelim+GameMapPath, IncludeTrailingPathDelimiter(QuakeDir)+Specifics.Values['GameDir']+PathDelim+GameMapPath+PathDelim+'*.bsp');
+  Result:=FindFiles(ConcatPaths([dir, GameMapPath]), ConcatPaths([QuakeDir, Specifics.Values['GameDir'], GameMapPath, '*.bsp']));
   ProgressIndicatorStart(5458,paks.count);
   while (Paks.count <> 0) do
   begin

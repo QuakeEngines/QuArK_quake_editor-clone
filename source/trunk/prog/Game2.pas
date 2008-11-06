@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2008/08/09 19:40:21  danielpharos
+Translated a function call
+
 Revision 1.14  2008/02/23 19:25:20  danielpharos
 Moved a lot of path/file code around: should make it easier to use
 
@@ -89,7 +92,7 @@ type
 
 implementation
 
-uses Game, QkFileObjects, Setup, QkObjects, PyImages, Travail, QkApplPaths, ExtraFunctionality;
+uses Game, QkFileObjects, Setup, QkObjects, PyImages, Travail, QkApplPaths;
 
 {$R *.DFM}
 
@@ -129,7 +132,7 @@ var
   rc: Integer;
   searchRec: TSearchRec;
 begin
-  rc:=FindFirst(IncludeTrailingPathDelimiter(a_Path)+a_FileMask, faAnyFile, searchRec);
+  rc:=FindFirst(ConcatPaths([a_Path, a_FileMask]), faAnyFile, searchRec);
   try
     while rc=0 do
     begin

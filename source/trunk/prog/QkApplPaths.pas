@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2008/09/20 20:45:27  danielpharos
+Added GetQPath functions to Defaults.qrk and Setup.qrk loading.
+
 Revision 1.12  2008/09/20 19:34:43  danielpharos
 Const-ed some parameters, and re-factored some code for better performance.
 
@@ -94,7 +97,7 @@ type
                 end;
 
 function ConvertPath(const S: string): string;
-function AppendFileToPath(const Path, FileName: String) : String;
+function ConcatPaths(const Paths: array of String) : String;
 procedure SetApplicationPath(const a_Path: String = '');
 function GetQPath(const PathToGet : TQPathType) : String;
 
@@ -123,12 +126,24 @@ begin
   {$ENDIF}
 end;
 
-//This function is also used to append paths to other paths
-function AppendFileToPath(const Path, FileName: String) : String;
+//You can also send a filename as the last element.
+function ConcatPaths(const Paths: array of String) : String;
+var
+  I: Integer;
+  S: String;
 begin
- Result:=ConvertPath(Path);
- if Length(Result)<>0 then Result:=IncludeTrailingPathDelimiter(Result);
- Result:=Result+ConvertPath(FileName);
+  Result:='';
+  if High(Paths)=Low(Paths) then
+    Exit;
+  for I:=Low(Paths) to High(Paths) do
+  begin
+    S:=Paths[I];
+    if Length(S)<>0 then
+      if I=High(Paths) then
+        Result:=Result+ConvertPath(S)
+      else
+        Result:=Result+IncludeTrailingPathDelimiter(ConvertPath(S));
+  end;
 end;
 
 procedure SetApplicationPath(const a_Path: String = '');
@@ -165,14 +180,14 @@ begin
 
   case PathToGet of
   pQuArK: Result:=ApplicationPath;
-  pQuArKAddon: Result:=AppendFileToPath(GetQPath(pQuArK), ADDONS_SUBDIRECTORY);
-  pQuArKGameAddon: Result:=AppendFileToPath(GetQPath(pQuArKAddon), UnderscoredGamename);
-  pQuArKDll: Result:=AppendFileToPath(GetQPath(pQuArK), DLL_SUBDIRECTORY);
-  pQuArKHelp: Result:=AppendFileToPath(GetQPath(pQuArK), HELP_SUBDIRECTORY);
+  pQuArKAddon: Result:=ConcatPaths([GetQPath(pQuArK), ADDONS_SUBDIRECTORY]);
+  pQuArKGameAddon: Result:=ConcatPaths([GetQPath(pQuArKAddon), UnderscoredGamename]);
+  pQuArKDll: Result:=ConcatPaths([GetQPath(pQuArK), DLL_SUBDIRECTORY]);
+  pQuArKHelp: Result:=ConcatPaths([GetQPath(pQuArK), HELP_SUBDIRECTORY]);
   //FIXME: Currently, these return the same as pQuArKAddon and pQuArKGameAddon.
   //In the future, these should be changed to a my documents path, or even a AppData path!
-  pUserData: Result:=AppendFileToPath(GetQPath(pQuArK), ADDONS_SUBDIRECTORY);
-  pUserGameData: Result:=AppendFileToPath(GetQPath(pQuArKAddon), UnderscoredGamename);
+  pUserData: Result:=ConcatPaths([GetQPath(pQuArK), ADDONS_SUBDIRECTORY]);
+  pUserGameData: Result:=ConcatPaths([GetQPath(pQuArKAddon), UnderscoredGamename]);
   end;
   Result:=IncludeTrailingPathDelimiter(Result);
 end;

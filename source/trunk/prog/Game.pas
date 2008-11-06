@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.68  2008/11/06 19:19:57  danielpharos
+Moved GameShaderList to correct location, and removed unused variable.
+
 Revision 1.67  2008/10/16 21:26:38  danielpharos
 Fix naming of steam path replacer and give auto-setting an invalid filename, so it can never be actually used.
 
@@ -328,6 +331,7 @@ function GetSteamBaseDir : String;
 function SourceSDKDir : String;
 function ResolveFilename(const FileToResolve : TFileToResolve) : TResolvedFilename;
 function QuickResolveFilename(const Filename : String) : String;
+procedure CreateAllDirs(const Filename: string; StartIndex: Integer = 1);
 
 function GameBuffer(NeededGame: Char) : PGameBuffer;
 procedure ClearBmpInfo24(var BmpInfo: TBitmapInfo256);
@@ -371,7 +375,6 @@ var
   CurAliasType   : TFileTypeAlias;
 {--CONVEX-end--}
 
-procedure CreateAllDirs(const Filename: string; StartIndex: Integer = 0); forward;
 function GetGameFileBase(const BaseDir, FileName, PakFileName: String; LookInCD: Boolean) : QFileObject; forward;
 
  {------------------------}
@@ -591,7 +594,7 @@ var
 begin
   Result:=IncludeTrailingPathDelimiter(QuakeDir); //To make sure there already is a trailing slash
   I:=Length(Result)+1;
-  Result:=IncludeTrailingPathDelimiter(ConvertPath(AppendFileToPath(Result, GettmpQuArK)));
+  Result:=IncludeTrailingPathDelimiter(ConcatPaths([Result, GettmpQuArK]));
   CreateAllDirs(Result, I);
 end;
 
@@ -604,12 +607,12 @@ begin
  if ExtractFileName(FileName) <> '' then
  begin
    //It's a filename, so we can't add a trailing slash, and we can't send the filename-part to CreateAllDirs
-   Result:=ConvertPath(AppendFileToPath(Result, FileName));
+   Result:=ConcatPaths([Result, FileName]);
    CreateAllDirs(IncludeTrailingPathDelimiter(ExtractFileDir(Result)), I);
  end
  else
  begin
-   Result:=IncludeTrailingPathDelimiter(ConvertPath(AppendFileToPath(Result, FileName)));
+   Result:=IncludeTrailingPathDelimiter(ConcatPaths([Result, FileName]));
    CreateAllDirs(Result, I);
  end;
 end;
@@ -641,7 +644,7 @@ begin
   Result:=ConvertPath(Result);
 end;
 
-procedure CreateAllDirs(const Filename: string; StartIndex: Integer = 0);
+procedure CreateAllDirs(const Filename: string; StartIndex: Integer = 1);
 var
  I, ErrorCode: Integer;
  qFilename, S: String;
@@ -649,7 +652,7 @@ begin
  //Note: Do NOT forget to end any paths you might send through with a PathDelim!
  qFilename:=QuickResolveFilename(Filename);
  I:=StartIndex;
- if I<0 then I:=0;
+ if I<1 then I:=1;
  while I<=Length(qFilename) do
   begin
    if qFilename[I]=PathDelim then
@@ -706,7 +709,7 @@ function ResolveFilename(const FileToResolve : TFileToResolve) : TResolvedFilena
      Q := obj.FParent;
      while (Q <> nil) and (Q.FParent <> nil) do
      begin
-       makefolders := outputfile(GameMapPath+PathDelim+Q.Name);
+       makefolders := outputfile(ConcatPaths([GameMapPath, Q.Name]));
        if Length(Result) <> 0 then
          Result := PathDelim + Result;
        Result := Q.Name + Result;
@@ -764,8 +767,8 @@ begin
     if (S<>'') and (Setup.Specifics.Values[S]<>'') then
     begin
       // stupid program that wants to run in the base dir
-      Result.Workdir := setupdirectory + PathDelim + setupbasedir;
-      argument_mappath := '..' + PathDelim + setuptmpquark + PathDelim + GameMapPath;
+      Result.Workdir := ConcatPaths([setupdirectory, setupbasedir]);
+      argument_mappath := ConcatPaths(['..', setuptmpquark, GameMapPath]);
     end
     else
     begin
@@ -781,8 +784,8 @@ begin
     MapExt := Setup.Specifics.Values['MapExt'];
     if MapExt = '' then
       MapExt := '.map';
-    argument_mapfile := argument_mappath + PathDelim + FileToResolve.AFilename + MapExt;
-    argument_file    := argument_mappath + PathDelim + FileToResolve.AFilename;
+    argument_mapfile := ConcatPaths([argument_mappath, FileToResolve.AFilename + MapExt]);
+    argument_file    := ConcatPaths([argument_mappath, FileToResolve.AFilename]);
     argument_filename := FileToResolve.AFilename;
     argument_fullfilename := FileToResolve.AFilename + MapExt;
     if FileToResolve.AFileobject<>Nil then
@@ -1010,7 +1013,7 @@ function GetGameFileBase(const BaseDir, FileName, PakFileName: String; LookInCD:
    CD:=SetupGameSet.Specifics.Values['CD'];
    if CD='' then
      Exit; // no CD drive configured
-   Result:=AppendFileToPath(AppendFileToPath(CD, CDDir), BaseDir);
+   Result:=ConcatPaths([CD, CDDir, BaseDir]);
    if DirectoryExists(Result) = false then
      if MessageDlg(FmtLoadStr1(5559, [SetupGameSet.Name, FileName]), mtInformation, mbOkCancel, 0) <> mrOk then
        Result:='';
@@ -1033,14 +1036,14 @@ begin
   if (GameFiles=Nil) then
     GameFiles:=TQList.Create;
   SearchStage:=0;
-  AbsolutePath:=AppendFileToPath(QuakeDir, BaseDir);
+  AbsolutePath:=ConcatPaths([QuakeDir, BaseDir]);
   repeat
     // Buffer search
     RestartAliasing(FileName);
     FilenameAlias := GetNextAlias;
     while (FilenameAlias <> '') do
     begin
-      AbsolutePathAndFilename := ExpandFileName(AppendFileToPath(AbsolutePath, FilenameAlias));
+      AbsolutePathAndFilename := ExpandFileName(ConcatPaths([AbsolutePath, FilenameAlias]));
       Result := SortedFindFileName(GameFiles, AbsolutePathAndFilename);
       if (Result <> NIL) then
         Exit; { found it }
@@ -1052,7 +1055,7 @@ begin
     FilenameAlias := GetNextAlias;
     while (FilenameAlias <> '') do
     begin
-      AbsolutePathAndFilename := ExpandFileName(AppendFileToPath(AbsolutePath, FilenameAlias));
+      AbsolutePathAndFilename := ExpandFileName(ConcatPaths([AbsolutePath, FilenameAlias]));
       if FileExists(AbsolutePathAndFilename) then
       begin
         Result:=ExactFileLink(AbsolutePathAndFilename, Nil, True);
@@ -1092,7 +1095,7 @@ begin
         while (FilenameAlias <> '') do
         begin
           GetPakNames.ResetIter(True);
-          AbsolutePathAndFilename:=ExpandFileName(AppendFileToPath(AbsolutePath, FilenameAlias));
+          AbsolutePathAndFilename:=ExpandFileName(ConcatPaths([AbsolutePath, FilenameAlias]));
           while GetPakNames.GetNextPakName(True, AbsolutePathAndFilename, True) do
           begin
             if (not IsPakTemp(AbsolutePathAndFilename)) then  // ignores QuArK's own temporary pak's
@@ -1127,15 +1130,15 @@ begin
       else
       begin
         Setup:=SetupSubSet(ssGames, 'Steam');
-        SteamCacheDir:=AppendFileToPath(Setup.Specifics.Values['Directory'], Setup.Specifics.Values['CacheDirectory']);
+        SteamCacheDir:=ConcatPaths([Setup.Specifics.Values['Directory'], Setup.Specifics.Values['CacheDirectory']]);
         RestartAliasing(FileName);
         FilenameAlias := GetNextAlias;
         while (FilenameAlias <> '') do
         begin
           if RunSteamExtractor(FilenameAlias) then
-            if FileExists(SteamCacheDir+PathDelim+FilenameAlias) then
+            if FileExists(ConcatPaths([SteamCacheDir, FilenameAlias])) then
             begin
-              Result:=ExactFileLink(SteamCacheDir+PathDelim+FilenameAlias, Nil, True);
+              Result:=ExactFileLink(ConcatPaths([SteamCacheDir, FilenameAlias]), Nil, True);
               Result.Flags:=Result.Flags or ofWarnBeforeChange;
               GameFiles.Add(Result);
               GameFiles.Sort(ByFileName);
@@ -1626,11 +1629,11 @@ var
 begin
   SousRep:=TStringList.Create;
   try
-    if FindFirst(AppendFileToPath(Rep, '*.*'), faAnyFile, S) = 0 then
+    if FindFirst(ConcatPaths([Rep, '*.*']), faAnyFile, S) = 0 then
     begin
       repeat
         if S.Attr and faDirectory = 0 then
-          DeleteFile(AppendFileToPath(Rep, S.Name))
+          DeleteFile(ConcatPaths([Rep, S.Name]))
         else
           if (S.Name<>'.') and (S.Name<>'..') then
             SousRep.Add(S.Name);
@@ -1638,7 +1641,7 @@ begin
     end;
     FindClose(S);
     for I:=0 to SousRep.Count-1 do
-      ClearAllFilesRec(AppendFileToPath(Rep, SousRep[I]));
+      ClearAllFilesRec(ConcatPaths([Rep, SousRep[I]]));
   finally
     SousRep.Free;
   end;
@@ -1675,7 +1678,7 @@ begin
     S2:=CheckDir;
     while (pos(#$D, S2) <> 0) do
     begin
-      CheckFile:=AppendFileToPath(QuakeDir, Copy(S2, 1, pos(#$D, S2)-1));
+      CheckFile:=ConcatPaths([QuakeDir, Copy(S2, 1, pos(#$D, S2)-1)]);
       F:=FileExists(CheckFile);
       Result:=Result or F;
       if not F then TryingToFind:=TryingToFind+Copy(S2, 1, pos(#$D, S2)-1)+', or ';
@@ -1689,7 +1692,7 @@ begin
     S2:=CheckDir;
     while (pos(#$A, S2) <> 0) do
     begin
-      CheckFile:=AppendFileToPath(QuakeDir, Copy(S2, 1, pos(#$A, S2)-1));
+      CheckFile:=ConcatPaths([QuakeDir, Copy(S2, 1, pos(#$A, S2)-1)]);
       F:=FileExists(CheckFile);
       Result:=Result and F;
       if not F then TryingToFind:=TryingToFind+Copy(S2, 1, pos(#$A, S2)-1)+', and ';
@@ -1699,7 +1702,7 @@ begin
   end
   else
   begin
-    Result:=FileExists(AppendFileToPath(QuakeDir, CheckDir));
+    Result:=FileExists(ConcatPaths([QuakeDir, CheckDir]));
     TryingToFind:=CheckDir;
   end;
 
@@ -1739,7 +1742,7 @@ function GameShaderList : String;
 begin
   Result:=SetupGameSet.Specifics.Values['ShaderList'];
   if Result='' then
-    Result:=GameShadersPath+'shaderlist.txt';
+    Result:=ConcatPaths([GameShadersPath, 'shaderlist.txt']);
 end;
 
 function SteamAppID : String;

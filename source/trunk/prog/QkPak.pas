@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.26  2008/10/09 11:31:51  danielpharos
+Added decent .col Sylphis archive support.
+
 Revision 1.25  2008/09/16 12:12:49  danielpharos
 Added support for CoD2 iwd files.
 
@@ -599,13 +602,7 @@ var
 begin
  Result:=0;
  if PathBase<>'' then PathBase:=IncludeTrailingPathDelimiter(PathBase);
- for I:=1 to Length(PathBase) do
-  if PathBase[I]=PathDelim then
-   begin
-    PathBase[I]:=#0;
-    CreateDirectory(PChar(PathBase), Nil);
-    PathBase[I]:=PathDelim;
-   end;
+ CreateAllDirs(PathBase);
  Acces;
  for I:=0 to SubElements.Count-1 do
   begin
@@ -629,15 +626,8 @@ var
  EntityFile: TextFile;
 begin
  Result:=0;
-
  if PathBase<>'' then PathBase:=IncludeTrailingPathDelimiter(PathBase);
- for I:=1 to Length(PathBase) do
-  if PathBase[I]=PathDelim then
-   begin
-    PathBase[I]:=#0;
-    CreateDirectory(PChar(PathBase), Nil);
-    PathBase[I]:=PathDelim;
-   end;
+ CreateAllDirs(PathBase);
  Acces;
  for I:=0 to SubElements.Count-1 do
   begin

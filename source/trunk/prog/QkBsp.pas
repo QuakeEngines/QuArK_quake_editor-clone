@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.67  2008/10/12 11:31:32  danielpharos
+Moved 6DX map format to separate file, and re-factored QkMap and QkQuakeMap.
+
 Revision 1.66  2008/09/29 21:45:31  danielpharos
 Soft-coded 'maps' directory (not in Python yet).
 
@@ -552,7 +555,7 @@ function BspType : Char; overload;
 
 implementation
 
-uses Travail, QkWad, Setup, QkText, QkMap, QkBspHulls,
+uses Travail, QkWad, Setup, QkText, QkMap, QkBspHulls, QkApplPaths,
      Undo, Quarkx, QkExceptions, PyForms, QkObjectClassList, ToolBox1,
      ToolBoxGroup, QkQuakeCtx, FormCFG, Logging, QkTextures, QkQ1, QkFormCfg;
 
@@ -1445,7 +1448,7 @@ begin
  BuildCorrectFileName(S);
  if FirstMap='' then
   FirstMap:=S;
- S:=GameMapPath+PathDelim+S+TypeInfo;
+ S:=ConcatPaths([GameMapPath, S+TypeInfo]);
  SaveInFile(rf_Default, OutputFile(S));
  mapname:=PyString_FromString(PChar(S));
  PyList_Append(extracted, mapname);
