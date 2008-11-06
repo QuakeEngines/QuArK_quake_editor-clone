@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.85  2008/10/23 21:56:02  danielpharos
+When debugging, show Abort exceptions.
+
 Revision 1.84  2008/10/07 21:04:52  danielpharos
 Added GetBaseDir function and other small fixes.
 
@@ -494,8 +497,7 @@ end;
 
 destructor TPyTimer.Destroy;
 begin
- Py_XDECREF(Info);
- Py_XDECREF(Call);
+ Clear;
  inherited;
 end;
 
@@ -589,8 +591,8 @@ begin
  T.Call:=nCall; Py_INCREF(nCall);
  T.Info:=nInfo; Py_INCREF(nInfo);
  T.Interval:=nInterval;
- T.Enabled:=True;
  T.OnTimer:=T.TimerTimer;
+ T.Enabled:=True;
 end;
 
  {-------------------}
