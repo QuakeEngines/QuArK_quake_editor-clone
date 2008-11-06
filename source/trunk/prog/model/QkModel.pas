@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2008/09/29 21:45:32  danielpharos
+Soft-coded 'maps' directory (not in Python yet).
+
 Revision 1.6  2005/09/28 10:49:02  peter-b
 Revert removal of Log and Header keywords
 
@@ -57,7 +60,7 @@ type
 
 implementation
 
-uses QkQkl, QkMdl, QkMd2, QkMd3, form_model, QkHr2;
+uses QkQkl, QkMdl, QkMd2, QkMd3, form_model, QkHr2, QkApplPaths;
 
 function QModel.TestConversionType(I: Integer) : QFileObjectClass;
 begin
@@ -126,7 +129,7 @@ begin
   if S='' then
     S:=Name;
   BuildCorrectFileName(S);
-  S:=GameModelPath+PathDelim+S+TypeInfo;
+  S:=ConcatPaths([GameModelPath, S+TypeInfo]);
   SaveInFile(rf_Default, OutputFile(S));
   filename:=PyString_FromString(PChar(S));
   PyList_Append(extracted, filename);
