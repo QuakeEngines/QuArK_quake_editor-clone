@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.20  2008/10/04 13:50:55  danielpharos
+Start using LogAndRaiseError instead of local Fatal's.
+
 Revision 1.19  2008/09/06 15:57:27  danielpharos
 Moved exception code into separate file.
 
@@ -285,7 +288,7 @@ begin
       Data:=Spec2;
       SetLength(Data, Length(Spec2)+pcxTaillePalette);
       F.ReadBuffer(Data[Length(Spec2)+1], pcxTaillePalette);
-      SpecificsAdd(Data);  { "Pal=xxxxx" }
+      Specifics.Add(Data);  { "Pal=xxxxx" }
       finally ProgressIndicatorStop; end;
     end
     else

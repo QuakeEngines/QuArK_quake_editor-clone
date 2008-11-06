@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2005/09/28 10:49:02  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.7  2002/03/07 19:17:48  decker_dk
 Removed QImages, as it was just another name for QImage
 
@@ -112,7 +115,7 @@ begin
   S:=Spec1;
   SetLength(S, Length(Spec1) + SizeOf(TPaletteLmp));
   Move(GameBuffer(ObjectGameCode)^.PaletteLmp, S[Length(Spec1)+1], SizeOf(TPaletteLmp));
-  Result.SpecificsAdd(S);
+  Result.Specifics.Add(S);
   S:=Spec2;
   DeltaW:=-((Round(Size[0])+3) and not 3);
   SetLength(S, Length(Spec2) - DeltaW*Round(Size[1]));

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2008/09/06 15:57:11  danielpharos
+Moved exception code into separate file.
+
 Revision 1.17  2007/03/17 15:43:12  danielpharos
 Made another few dictionnary changes. Also fixed a double entry. And a small change in unloading the dll-files of VTFLib.
 
@@ -225,11 +228,11 @@ begin
   if dst.version<>1 then
     raise Exception.CreateFmt('Quake 1 Sprite Version = %d, Should be: %d',[dst.version,2]);
   ObjectGameCode:=mjQuake;
-  Self.SpecificsAdd(format('SPR_STYPE=%d',[dst.sType]));
-  Self.SpecificsAdd(format('SPR_TXTYPE=%d',[-1]));
-  Self.SpecificsAdd(format('SPR_RADIUS=%f',[dst.boundingradius]));
-  Self.SpecificsAdd(format('SPR_WIDTH=%d',[dst.width]));
-  Self.SpecificsAdd(format('SPR_HEIGHT=%d',[dst.height]));
+  Self.Specifics.Add(format('SPR_STYPE=%d',[dst.sType]));
+  Self.Specifics.Add(format('SPR_TXTYPE=%d',[-1]));
+  Self.Specifics.Add(format('SPR_RADIUS=%f',[dst.boundingradius]));
+  Self.Specifics.Add(format('SPR_WIDTH=%d',[dst.width]));
+  Self.Specifics.Add(format('SPR_HEIGHT=%d',[dst.height]));
   for i:=1 to dst.numframes do begin
     fs.ReadBuffer(group,4);
     if group=0 then begin
@@ -282,12 +285,12 @@ begin
   if dst.version<>2 then
     raise Exception.CreateFmt('Half Life Sprite Version = %d, Should be: %d',[dst.version,2]);
   ObjectGameCode:=mjHalfLife;
-  Self.SpecificsAdd(format('SPR_STYPE=%d',[dst.sType]));
-  Self.SpecificsAdd(format('SPR_TXTYPE=%d',[dst.texformat]));
-  Self.SpecificsAdd(format('SPR_RADIUS=%f',[dst.boundingradius]));
-  Self.SpecificsAdd(format('SPR_WIDTH=%d',[dst.width]));
-  Self.SpecificsAdd(format('SPR_HEIGHT=%d',[dst.height]));
-  Self.SpecificsAdd(format('SPR_NOFRAMES=%d',[dst.numframes]));
+  Self.Specifics.Add(format('SPR_STYPE=%d',[dst.sType]));
+  Self.Specifics.Add(format('SPR_TXTYPE=%d',[dst.texformat]));
+  Self.Specifics.Add(format('SPR_RADIUS=%f',[dst.boundingradius]));
+  Self.Specifics.Add(format('SPR_WIDTH=%d',[dst.width]));
+  Self.Specifics.Add(format('SPR_HEIGHT=%d',[dst.height]));
+  Self.Specifics.Add(format('SPR_NOFRAMES=%d',[dst.numframes]));
 
   fs.ReadBuffer(FShort,2);
   for i:=0 to FShort-1 do begin
@@ -496,24 +499,24 @@ begin
   if dst.version<>2 then
     raise Exception.CreateFmt('Quake 2 Sprite Version = %d, Should be: %d',[dst.version,2]);
   ObjectGameCode:=mjQuake2;
-  Self.SpecificsAdd(format('SPR_STYPE=%d',[-1]));
-  Self.SpecificsAdd(format('SPR_TXTYPE=%d',[-1]));
-  Self.SpecificsAdd(format('SPR_RADIUS=%s',['N / A']));
-  Self.SpecificsAdd(format('SPR_WIDTH=%s',['N / A']));
-  Self.SpecificsAdd(format('SPR_HEIGHT=%s',['N / A']));
-  Self.SpecificsAdd(format('SPR_NOFRAMES=%d',[Dst.noframes]));
+  Self.Specifics.Add(format('SPR_STYPE=%d',[-1]));
+  Self.Specifics.Add(format('SPR_TXTYPE=%d',[-1]));
+  Self.Specifics.Add(format('SPR_RADIUS=%s',['N / A']));
+  Self.Specifics.Add(format('SPR_WIDTH=%s',['N / A']));
+  Self.Specifics.Add(format('SPR_HEIGHT=%s',['N / A']));
+  Self.Specifics.Add(format('SPR_NOFRAMES=%d',[Dst.noframes]));
   fillchar(Frame,sizeof(Frame),#0);
   For i:=1 to dst.Noframes do begin
     f.Readbuffer(frame,sizeof(frame));
     str:=frame.fn;
     setlength(str,pos(#0,frame.fn));
-    Self.SpecificsAdd(Format('SPR_FRAME%d_CAPTION=%d',[i,i]));
-    Self.SpecificsAdd(Format('SPR_FRAME%d_FTYPE=%s',[i,str]));
-    Self.SpecificsAdd(Format('SPR_FRAME%d_XORG=%d',[i,frame.x]));
-    Self.SpecificsAdd(Format('SPR_FRAME%d_YORG=%d',[i,frame.y]));
-    Self.SpecificsAdd(Format('SPR_FRAME%d_WIDTH=%d',[i,frame.w]));
-    Self.SpecificsAdd(Format('SPR_FRAME%d_HEIGHT=%d',[i,frame.h]));
-    Self.SpecificsAdd(Format('SPR_FRAME%d_IDATASIZE=%s',[i,'N / A']));
+    Self.Specifics.Add(Format('SPR_FRAME%d_CAPTION=%d',[i,i]));
+    Self.Specifics.Add(Format('SPR_FRAME%d_FTYPE=%s',[i,str]));
+    Self.Specifics.Add(Format('SPR_FRAME%d_XORG=%d',[i,frame.x]));
+    Self.Specifics.Add(Format('SPR_FRAME%d_YORG=%d',[i,frame.y]));
+    Self.Specifics.Add(Format('SPR_FRAME%d_WIDTH=%d',[i,frame.w]));
+    Self.Specifics.Add(Format('SPR_FRAME%d_HEIGHT=%d',[i,frame.h]));
+    Self.Specifics.Add(Format('SPR_FRAME%d_IDATASIZE=%s',[i,'N / A']));
 //    Loaded_FrameFile(self, fStr);// Doesn't Work. Wonder Why??
   end;
 end;
@@ -613,7 +616,7 @@ begin
   else if ObjectGameCode=mjHalfLife then
     Move(pal,S[Length(Spec1)+1],sizeof(TPaletteLmp));
   palout:=s;
-  Result.SpecificsAdd(S);
+  Result.Specifics.Add(S);
   S:=Spec2;
   DeltaW:=-((Round(Size[0])+3) and not 3);
   SetLength(S, Length(Spec2) - DeltaW*Round(Size[1]));

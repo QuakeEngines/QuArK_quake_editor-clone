@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.112  2008/10/29 00:31:07  danielpharos
+The printout of QuArK internal objects is now much more useful.
+
 Revision 1.111  2008/10/20 20:42:41  danielpharos
 Take out the lists-part. Too many problems!
 
@@ -349,25 +352,6 @@ Find new shaders and misc.
 
 unit QkObjects;
 
-(* DanielPharos:
-   Some huge changes were made to this file, to the Specifics list.
-   The old version (marked with 'OLD CODE') can only store up to 100 strings, And would create access violations
-   in its assembler code trying to store more.
-   The new version (marked with 'NEW CODE") stores everything, but that slows everything down a lot.
-   
-   This version doesn't store anything at all. The increase in memory usage is minor, and QuArK gets a little bit of
-   extra speed out of it. But the old versions are left in here, commented out. Just do a search for the markings.
-   Maybe, in the future, when the best method is decided, the commented parts can be removed, and the file can be
-   cleaned up.
-   
-   There is also one line of code in the Qk1.pas file, in the procedure TForm1.AppIdle
-   Check the difference between 1.40 and 1.41 for it.
-   Also one line in the Logging.pas file, between 1.15 and 1.16.
-   
-   OLD CODE version: 1.81
-   NEW CODE version: 1.83 (there are some other changes to that code, 1.82 is probably closer)
-*)
-
 interface
 
 {$I DelphiVer.inc}
@@ -375,12 +359,6 @@ interface
 uses Windows, SysUtils, Messages, Classes, Clipbrd,
      Controls, Graphics, Forms, qmath, Menus,
      CommCtrl, Python;
-
-(* DanielPharos: OLD CODE + NEW CODE
-{$IFNDEF NoShare}
-{$DEFINE ShareSpecMem}
-{$ENDIF}
-*)
 
 const
   QuArKVersion            = 'QuArK 6.6 Beta';
@@ -676,7 +654,6 @@ type
     procedure PySetParent(nParent: QObject);
     function IsClosed: Boolean;
     property PyNoParent: Boolean write FPyNoParent;
-    procedure SpecificsAdd(S: String);
     function DirectDataAccess(var S: TStream; var Size: Integer) : Boolean;
     { stuff that should be done when an object has been read in from text rep. }
     procedure FinalizeFromText; virtual;
@@ -770,9 +747,6 @@ function IntToPackedStr(Value: Integer) : String;
 function PackedStrToInt(const S: String) : Integer;
 
 procedure ReleaseStream(S: TStream);
-(* DanielPharos: OLD CODE + NEW CODE
-procedure ClearObjectManager;
-*)
 
 {$IFDEF Debug}
 var g_MemQObject: TList;
@@ -780,17 +754,6 @@ procedure DebugCheck;
 {function DebugError: Exception;}
 procedure DataDump;
 {$ENDIF}
-
-(* DanielPharos: OLD CODE
-type
-  PStringArray = ^TStringArray;
-  TStringArray = array[0..99] of String;
-*)
-(* DanielPharos: NEW CODE
-type
-  PStringArray = ^TStringArray;
-  TStringArray = array of String;
-*)
 
  {------------------------}
 
@@ -801,179 +764,8 @@ uses
   QkObjectClassList, QkFileObjects, QkExplorer, Travail,
   PyObjects, PyImages, Quarkx, QkExceptions, Qk1, Logging{, ExtraFunctionality};
 
- {------------------------}
-
-
 var
   QFileList: TStringList;
-(* DanielPharos: OLD CODE + NEW CODE
-{$IFDEF ShareSpecMem}
-  CommonSpecifics: TList = Nil;
-{$ENDIF}
- {Deleted: TQList;}
- {_cs_count, _cs_size: Integer;}
-
-procedure ClearObjectManager;
-{$IFNDEF ShareSpecMem}
-begin
-end;
-{$ELSE}
-var
-  P: PStringArray;
-begin
-  if CommonSpecifics<>Nil then
-  begin
-    P:=PStringArray(CommonSpecifics.List);
-    Finalize(P^[0], CommonSpecifics.Count);
-    CommonSpecifics.Free;
-    CommonSpecifics:=Nil;
-  end;
-end;
-{$ENDIF}
-*)
-
-procedure QObject.SpecificsAdd(S: String);
-(* DanielPharos: OLD CODE + NEW CODE
-{$IFNDEF ShareSpecMem}
-*)
-begin
-  Specifics.Add(S);
-end;
-(* DanielPharos: OLD CODE + NEW CODE
-{$ELSE}
-var
-  J: Integer;
-  Source: PStringArray;
-*)
-(* DanielPharos: OLD CODE
-  Source1: Pointer;
-*)
-(* DanielPharos: OLD CODE + NEW CODE
-  Ok: Boolean;
-begin
-  if CommonSpecifics=Nil then
-  begin
-    CommonSpecifics:=TList.Create;
-    J:=0;
-  end
-  else
-  begin
-    Ok:=False;
-*)
-(* DanielPharos: NEW CODE
-    Source:=PStringArray(CommonSpecifics.List);
-    for J:=CommonSpecifics.Count-1 downto 0 do
-    begin
-      if Source^[J]=S then
-      begin
-        OK:=true;
-        break;
-      end;
-*)
-(* DanielPharos: OLD CODE
-    J:=CommonSpecifics.Count;
-    Source:=PStringArray(CommonSpecifics.List);
-    asm                     { Comments added by DanielPharos, but I'm not sure they are correct!! }
-      push esi              { save the value of esi in the stack for later retrival }
-      push edi              { save the value of edi in the stack for later retrival }
-      mov edx, [J]          { move the value of J to edx }
-      mov esi, [Source]     { move the value of Source to esi }
-      cld                   { clear the direction flag to ensure that string operations go forward in memory }
-      mov [Source1], esi    { move the value of esi to Source1 }
-
-      @Loop:                { create a label for jumping to, called Loop }
-       shr edx, 1           { shift the value of edx to the right by 1 place (divide by 2) }
-       mov edi, [S]         { move the value of S to edi }
-       mov esi, [esi+4*edx] { move the value of esi+4*edx to esi }
-       rcl edx, 1           { rotate edx left by 1 place }
-
-       mov ecx, [edi-4]     { move the value of edi-4 to ecx }
-       mov eax, [esi-4]     { move the value of esi-4 to eax }
-       cmp ecx, eax         { compare the values of ecx and eax }
-       ja @Longer           { if Above, jump to the label called Longer }
-       je @SameLength       { if Equal, jump to the label called SameLength }
-
-      @Shorter:             { create a label for jumping to, called Shorter }
-       repe cmpsb           { repeatly compare string bits }
-       jl @GoBefore         { if Less, jump to Go Before }
-      @GoAfter:             { create a label for jumping to, called GoAfter }
-       mov esi, [Source1]   { move the value of Source1 to esi }
-       mov eax, edx         { move the value of edx to eax }
-       shr eax, 1           { shift the value of eax to the right by 1 place (divide by 2) }
-       inc eax              { increase eax (by 1) }
-       sub edx, eax         { substract the value of eax from edx }
-       jz @EndOfLoop        { if Zero, jump to the lavel called EndOfLoop }
-       shl eax, 2           { shift the value of eax to the left by 2 places {multiply by 4) }
-       add esi, eax         { add the value of eax to esi }
-       mov [Source1], esi   { move the value of esi to Source1 }
-       jmp @Loop            { jump to the label called Loop }
-
-      @SameLength:          { create a label for jumping to, called SameLength }
-       repe cmpsb           { repeatly compare string bits }
-       jl @GoBefore         { if Less, jump to the label called GoBefore }
-       jg @GoAfter          { if Greater, jump to the label called GoAfter }
-       shr edx, 1           { shift the value of edx to the right by 1 place (divide by 2) }
-       mov [Ok], 1          { move 1 to Ok }
-       dec edx              { decrease the value of edx (by 1) }
-       jmp @EndOfLoop       { jump to the label called EndOfLoop }
-
-      @Longer:              { create a label for jumping to, called Longer }
-       mov ecx, eax         { move the value of eax to ecx }
-       repe cmpsb           { repeatly compare string bits }
-       jg @GoAfter          { if Greater, jump to the label called GoAfter }
-      @GoBefore:            { create a label for jumping to, called GoBefore }
-       mov esi, [Source1]   { move the value of Source1 to esi }
-       shr edx, 1           { shift the value of edx to the right by 1 place (divide by 2) }
-       jnz @Loop            { if Not Zero, jump to the label called Loop }
-       dec edx              { decrease the value of edx (by 1) }
-
-     @EndOfLoop:            { create a label for jumping to, called EndOfLoop }
-      mov esi, [Source1]    { move the value of Source1 to esi }
-      inc edx               { increase the value of edx (by 1) }
-      sub esi, [Source]     { substract the value of Source from esi }
-      shr esi, 2            { shift the value of esi to the right by 2 places (divide by 4) }
-      add edx, esi          { add the value of esi to edx }
-      mov [J], edx          { move the value of edx to J }
-      pop edi               { retrieve a value from the stack, and put it in edi }
-      pop esi               { retrieve a value from the stack, and put it in esi }
-    end;
-
-    if Ok then
-    begin
-      {$IFDEF Debug}
-      if (Length(Source^[J])<>Length(S))
-      or not CompareMem(Pointer(Source^[J]), Pointer(S), Length(S)) then
-        Raise InternalE('SpecificsAdd');
-      {$ENDIF}
-
-      Specifics.Add(Source^[J]);
-     {Inc(_cs_count);
-      Inc(_cs_size, Length(S)+9);
-      g_Form1.Caption:=Format('%d  (%d bytes)', [_cs_count, _cs_size]);}
-      Exit;
-    end;
-*)
-(* DanielPharos: NEW CODE
-    J:=CommonSpecifics.Count;
-  CommonSpecifics.Insert(J, Nil);
-  Source:=PStringArray(CommonSpecifics.List);
-  SetLength(Source^,CommonSpecifics.Count);
-{  Source^[J]:=S;}
-  Source^[J]:=Copy(S, 1, Length(S));
-  Specifics.Add(Source^[J]);
-end;
-{$ENDIF}
-*)
-(* DanielPharos: OLD CODE
-  end;
-
-  Specifics.Add(S);
-  CommonSpecifics.Insert(J, Nil);
-  Source:=PStringArray(CommonSpecifics.List);
-  Source^[J]:=S;
-end;
-{$ENDIF}
-*)
 
  {------------------------}
 
@@ -2030,7 +1822,7 @@ begin
         SetLength(Name, Info^.NameSize+1+Size);
         Name[Info^.NameSize+1]:='=';
         F.ReadBuffer(Name[Info^.NameSize+2], Size);
-        SpecificsAdd(Name);
+        Specifics.Add(Name);
       end
       else
       begin
@@ -2453,7 +2245,7 @@ begin
   S:=cSpec1;
   SetLength(S, Length(cSpec1)+Size);
   F.ReadBuffer(S[Length(cSpec1)+1], Size);
-  SpecificsAdd(S);
+  Specifics.Add(S);
 end;
 
 procedure QObject.SaveUnformatted(F: TStream);

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.60  2008/11/06 19:29:51  danielpharos
+Renamed function to concatenate paths, and start using it.
+
 Revision 1.59  2008/10/14 00:07:16  danielpharos
 Add an integer list as a specific type.
 
@@ -977,11 +980,11 @@ var
     end;
     Lu(1);
     if (OnlyValues=True) then
-      Level.SpecificsAdd('Items='+Values) { All the Values are actually Items. Go figure! }
+      Level.Specifics.Add('Items='+Values) { All the Values are actually Items. Go figure! }
     else
     begin
-      Level.SpecificsAdd('Items='+Items);
-      Level.SpecificsAdd('Values='+Values);
+      Level.Specifics.Add('Items='+Items);
+      Level.Specifics.Add('Values='+Values);
     end;
   end;
 
@@ -1049,7 +1052,7 @@ begin
          begin
           Arg:=StringVal();
           {if IgnoreLevel=0 then}
-           Level.SpecificsAdd(NameSpec+'='+Arg);
+           Level.Specifics.Add(NameSpec+'='+Arg);
          end;
     '''':begin { Float number Specific }
           Arg:='';
@@ -1072,7 +1075,7 @@ begin
           Lu(1);
           NameSpec[1]:=Chr(Ord(NameSpec[1]) or chrFloatSpec);
           {if IgnoreLevel=0 then}
-           Level.SpecificsAdd(NameSpec+'='+Arg);
+           Level.Specifics.Add(NameSpec+'='+Arg);
          end;
     '|': begin { Integer number Specific }
           Arg:='';
@@ -1097,7 +1100,7 @@ begin
            Raise EErrorFmt(5193, [Filename, Ligne, Format('SpecName to small: %s', [NameSpec])]);
           NameSpec[2]:=Chr(Ord(NameSpec[2]) or chrFloatSpec);
           {if IgnoreLevel=0 then}
-           Level.SpecificsAdd(NameSpec+'='+Arg);
+           Level.Specifics.Add(NameSpec+'='+Arg);
          end;
     '!': begin { Copy Specifics+SubElements from this Object }
           Lu(1);

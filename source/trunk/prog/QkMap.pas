@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.82  2008/10/23 23:17:31  danielpharos
+Fixed CoD1 map output. Should work now.
+
 Revision 1.81  2008/10/23 22:29:42  danielpharos
 Fix for CoD1 map format.
 
@@ -1099,14 +1102,14 @@ expected one.
       ThreeSing[2] := NumericValue;
       S1 := S1+' '+FloatToStrF(NumericValue,ffFixed,7,2);
       ReadSymbol(sNumValueToken);
-      Surface.SpecificsAdd('color='+S1);
+      Surface.Specifics.Add('color='+S1);
     { Surface.SetFloatsSpec('color', ThreeSing);  }
      end
     else
     if S = 'directstyle' then { following string value }
      begin
       ReadSymbol(sStringToken);
-      Surface.SpecificsAdd('directstyle='+S);
+      Surface.Specifics.Add('directstyle='+S);
       ReadSymbol(sStringToken);
      end
     else
@@ -1128,12 +1131,12 @@ expected one.
                 end;
         'd' : if S1 = 'direct' then
                 begin
-                 Surface.SpecificsAdd('direct='+IntToStr(Round(LastValue)));
+                 Surface.Specifics.Add('direct='+IntToStr(Round(LastValue)));
                 end
               else
               if S1 = 'directangle' then
                 begin
-                 Surface.SpecificsAdd('directangle='+IntToStr(Round(LastValue)));
+                 Surface.Specifics.Add('directangle='+IntToStr(Round(LastValue)));
                 end;
         'f' : if S1 = 'friction' then
                 begin
@@ -1141,7 +1144,7 @@ expected one.
                 end;
         'l' : if S1 = 'lightvalue' then { assuming that this is the old Value }
                 begin
-                  Surface.SpecificsAdd('Value='+IntToStr(Round(LastValue)));
+                  Surface.Specifics.Add('Value='+IntToStr(Round(LastValue)));
                 end;
         'n' : if S1 = 'nonlitvalue' then { note name discrepancy }
                 begin
@@ -1163,7 +1166,7 @@ expected one.
               else
               if S1 = 'trans_angle' then
                 begin
-                 Surface.SpecificsAdd('trans_angle='+IntToStr(Round(LastValue)));
+                 Surface.Specifics.Add('trans_angle='+IntToStr(Round(LastValue)));
                 end;
      end
     end

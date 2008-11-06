@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2008/10/12 11:31:32  danielpharos
+Moved 6DX map format to separate file, and re-factored QkMap and QkQuakeMap.
+
 Revision 1.15  2008/09/06 15:57:15  danielpharos
 Moved exception code into separate file.
 
@@ -208,7 +211,7 @@ begin
      S:=Copy(Ids, TailleIds, P^.TailleId)+'=';
      SetLength(S, Length(S)+P^.Taille);
      SourceFile.ReadBuffer(S[P^.TailleId+2], P^.Taille);
-     Q.SpecificsAdd(S);
+     Q.Specifics.Add(S);
      Inc(TailleIds, P^.TailleId);
      Inc(P);
     end;

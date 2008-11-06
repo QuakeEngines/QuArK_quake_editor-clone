@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.28  2008/09/06 15:57:36  danielpharos
+Moved exception code into separate file.
+
 Revision 1.27  2007/09/10 10:24:17  danielpharos
 Build-in an Allowed Parent check. Items shouldn't be able to be dropped somewhere where they don't belong.
 
@@ -196,7 +199,7 @@ begin
         f:=QFrame(CurrentFrame.Clone(fg, true))
       else begin
         f:=QFrame.Create('new frame', fg);
-        f.specificsadd(FloatSpecNameOf('Vertices='));
+        f.specifics.add(FloatSpecNameOf('Vertices='));
       end;
       fg.subelements.add(f);
 

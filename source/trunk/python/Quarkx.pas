@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.86  2008/11/06 19:17:28  danielpharos
+Small fixes to avoid a rare timer race condition.
+
 Revision 1.85  2008/10/23 21:56:02  danielpharos
 When debugging, show Abort exceptions.
 
@@ -2831,16 +2834,16 @@ begin
     with ConstructQObject('heapstatus', Nil) do
     begin
       Result:=@PythonObj;
-      SpecificsAdd('TotalAddrSpace=0');
-      SpecificsAdd('TotalUncommitted=0');
-      SpecificsAdd('TotalCommitted=0');
-      SpecificsAdd('TotalAllocated=0');
-      SpecificsAdd('TotalFree=0');
-      SpecificsAdd('FreeSmall=0');
-      SpecificsAdd('FreeBig=0');
-      SpecificsAdd('Unused=0');
-      SpecificsAdd('Overhead=0');
-      SpecificsAdd('HeapErrorCode=0');
+      Specifics.Add('TotalAddrSpace=0');
+      Specifics.Add('TotalUncommitted=0');
+      Specifics.Add('TotalCommitted=0');
+      Specifics.Add('TotalAllocated=0');
+      Specifics.Add('TotalFree=0');
+      Specifics.Add('FreeSmall=0');
+      Specifics.Add('FreeBig=0');
+      Specifics.Add('Unused=0');
+      Specifics.Add('Overhead=0');
+      Specifics.Add('HeapErrorCode=0');
       Py_INCREF(Result);
     end;
   {$ENDIF}

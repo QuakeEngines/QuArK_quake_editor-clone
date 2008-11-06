@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2005/09/28 10:48:32  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.13  2002/03/07 19:16:44  decker_dk
 Removed QImages, as it was just another name for QImage
 
@@ -301,7 +304,7 @@ begin
        if sig<>4 then
          raise Exception.Create('Not a valid m32 file!');
        tex:=ReadPath(F);
-       SpecificsAdd(format('Texture_Path=%s',[tex]));
+       Specifics.Add(format('Texture_Path=%s',[tex]));
        F.Position:=org+$204;
        F.ReadBuffer(wi, 2);
        F.Position:=org+$244;
@@ -320,9 +323,9 @@ begin
        specifics.add(rgb);
        specifics.add(a);
 
-       SpecificsAdd(format('Contents=%d',[content]));
-       SpecificsAdd(format('Flags=%d',[flags]));
-       SpecificsAdd(format('Value=%d',[value]));
+       Specifics.Add(format('Contents=%d',[content]));
+       Specifics.Add(format('Flags=%d',[flags]));
+       Specifics.Add(format('Value=%d',[value]));
      end;
  else inherited;
  end;

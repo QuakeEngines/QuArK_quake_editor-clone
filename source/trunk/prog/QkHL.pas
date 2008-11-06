@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2005/09/28 10:48:32  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.10  2001/03/20 21:46:07  decker_dk
 Updated copyright-header
 
@@ -154,7 +157,7 @@ begin
      F.ReadBuffer(P^, PalSize*SizeOf(TPaletteLmp1));
   end;
 
- SpecificsAdd(Data);  { "Pal=xxxxx" }
+ Specifics.Add(Data);  { "Pal=xxxxx" }
 end;
 
 procedure QTextureHL.SaveFile(Info: TInfoEnreg1);

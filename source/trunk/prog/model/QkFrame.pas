@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.17  2008/09/06 15:57:37  danielpharos
+Moved exception code into separate file.
+
 Revision 1.16  2008/07/17 14:47:57  danielpharos
 Big (experimental) change to model bones, tags and boundframes
 
@@ -195,7 +198,7 @@ begin
       inc(Dest);
     end;
     Frame.Specifics.Delete(Frame.Specifics.IndexOfName(S0));
-    Frame.SpecificsAdd(S);
+    Frame.Specifics.Add(S);
 end;
 
 procedure QFrame.TranslateFrame(vec: vec3_t);
@@ -216,7 +219,7 @@ begin
     TranslateVecs(vec, Dest, C);
 
     Frame.Specifics.Delete(Frame.Specifics.IndexOfName(S0));
-    Frame.SpecificsAdd(S);
+    Frame.Specifics.Add(S);
 end;
 
 destructor QFrame.Destroy;

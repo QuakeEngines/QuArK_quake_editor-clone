@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.22  2008/10/29 00:31:07  danielpharos
+The printout of QuArK internal objects is now much more useful.
+
 Revision 1.21  2008/10/20 20:42:41  danielpharos
 Take out the lists-part. Too many problems!
 
@@ -1024,7 +1027,7 @@ begin
   Q:=QkObjFromPyObj(self);
   if Q=nil then
     exit;
-  Q.SpecificsAdd(nSpec);
+  Q.Specifics.Add(nSpec);
  except
   EBackToPython;
   Result:=Nil;

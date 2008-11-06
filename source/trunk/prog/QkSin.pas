@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2008/09/06 15:57:03  danielpharos
+Moved exception code into separate file.
+
 Revision 1.14  2005/09/28 10:48:32  peter-b
 Revert removal of Log and Header keywords
 
@@ -181,7 +184,7 @@ begin
          if A<>0 then
           HasAlpha:=True;
         end;
-      SpecificsAdd(Data);  { "Pal=xxxxx" }
+      Specifics.Add(Data);  { "Pal=xxxxx" }
 
       if HasAlpha then
        begin
@@ -190,16 +193,16 @@ begin
         P:=@Data[Length(Spec3)+1];
         for I:=0 to 255 do
          P[I]:=Chr(Header.Palette[I].A);
-        SpecificsAdd(Data);  { "Alpha=xxxx" }
+        Specifics.Add(Data);  { "Alpha=xxxx" }
        end;
 
        { reads misc flags }
       IntSpec['PalCrc']:=Header.PalCrc;
-      SpecificsAdd('direct='+IntToStr(Header.direct));
+      Specifics.Add('direct='+IntToStr(Header.direct));
       SetFloatSpec('animtime', Header.animtime);
       SetFloatSpec('nonlit', Header.nonlit);
-      SpecificsAdd('directangle='+IntToStr(Header.directangle));
-      SpecificsAdd('trans_angle='+IntToStr(Header.trans_angle));
+      Specifics.Add('directangle='+IntToStr(Header.directangle));
+      Specifics.Add('trans_angle='+IntToStr(Header.trans_angle));
     { tiglari: this shouldn't be set since it shouldn't be in .swl's
 	   at all, nor in tex. def. files, it's a label for grouping light
 	   sources that go on & off together, treated as a string in the
@@ -215,9 +218,9 @@ begin
 	  the three floats (2 dec places)
 	  SetFloatsSpec('color', Header.color); }
 
-      SpecificsAdd('color='+FloatToStrF(Header.color[0],ffFixed,7,2)+' '+
-                            FloatToStrF(Header.color[1],ffFixed,7,2)+ ' '+
-                            FloatToStrF(Header.color[2],ffFixed,7,2));
+      Specifics.Add('color='+FloatToStrF(Header.color[0],ffFixed,7,2)+' '+
+                             FloatToStrF(Header.color[1],ffFixed,7,2)+ ' '+
+                             FloatToStrF(Header.color[2],ffFixed,7,2));
 
        { reads the image data }
       Q2MipTex.W:=Header.Width;

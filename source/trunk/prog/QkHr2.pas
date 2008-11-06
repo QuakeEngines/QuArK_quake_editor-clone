@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.17  2008/09/06 15:57:04  danielpharos
+Moved exception code into separate file.
+
 Revision 1.16  2005/09/28 10:48:32  peter-b
 Revert removal of Log and Header keywords
 
@@ -187,7 +190,7 @@ begin
       Data:=Spec2;
       SetLength(Data, Length(Spec2)+SizeOf(TPaletteLmp));
       PPaletteLmp(@Data[Length(Spec2)+1])^:=Header.Palette;
-      SpecificsAdd(Data);  { "Pal=xxxxx" }
+      Specifics.Add(Data);  { "Pal=xxxxx" }
 
        { reads the image data }
       Q2MipTex.W:=Header.Width[0];

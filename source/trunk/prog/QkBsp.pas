@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.68  2008/11/06 19:29:51  danielpharos
+Renamed function to concatenate paths, and start using it.
+
 Revision 1.67  2008/10/12 11:31:32  danielpharos
 Moved 6DX map format to separate file, and re-factored QkMap and QkQuakeMap.
 
@@ -2051,11 +2054,11 @@ begin
         TexFolder.Subelements.Add(TexFolder2);
       end;
       Link:=QTextureLnk.Create(Tex.name, TexFolder2);
-      Link.SpecificsAdd('b='+Name);
+      Link.Specifics.Add('b='+Name);
       if FParent=nil then
-        Link.SpecificsAdd('s='+GetBaseDir(Self.Filename, false))
+        Link.Specifics.Add('s='+GetBaseDir(Self.Filename, false))
       else
-        Link.SpecificsAdd('s='+GetBaseDir(QFileObject(FParent.FParent).Filename, true));  // in a pak file
+        Link.Specifics.Add('s='+GetBaseDir(QFileObject(FParent.FParent).Filename, true));  // in a pak file
       TexFolder2.Subelements.Add(Link);
     end;
     SortTexFolder(TexFolder);

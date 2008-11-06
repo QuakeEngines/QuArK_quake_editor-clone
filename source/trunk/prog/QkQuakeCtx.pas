@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.29  2008/11/06 19:29:51  danielpharos
+Renamed function to concatenate paths, and start using it.
+
 Revision 1.28  2008/09/29 21:45:30  danielpharos
 Soft-coded 'maps' directory (not in Python yet).
 
@@ -489,7 +492,7 @@ begin
     TexFolders.Name:=Specifics.Values['GameDir']+' textures';
     TexRoot.Flags := TexRoot.Flags or ofTreeViewSubElement;
     if TexRoot.Specifics.IndexOfName('Root')=-1 then
-      TexRoot.SpecificsAdd('Root='+TexFolders.GetFullName);
+      TexRoot.Specifics.Add('Root='+TexFolders.GetFullName);
     if TexRoot.SubElements.FindShortName(TexFolders.Name)=nil then
       TexRoot.SubElements.Add(TexFolders)
     else
@@ -696,11 +699,11 @@ begin
         begin
           if e_sl.Names[j] = 'classname' then continue // remove classname specific
           else if (e_sl.Names[j] = 'model') and (e_sl.Values['model'][1]='*') then continue; // remove model specifics if it points to a BSP model
-          Entity.SpecificsAdd(e_sl.Strings[j]);
+          Entity.Specifics.Add(e_sl.Strings[j]);
         end;
-        Entity.SpecificsAdd(';desc=(insert description here)');
+        Entity.Specifics.Add(';desc=(insert description here)');
         if ext=':b' then
-          Entity.SpecificsAdd(';incl=defpoly');
+          Entity.Specifics.Add(';incl=defpoly');
         if pos('_',Entity.name)<>0 then
         begin
           tb:=copy(Entity.name, 1,pos('_', Entity.Name))+'* entities';
@@ -744,15 +747,15 @@ begin
           eSpec:=QInternal.Create(Entity.Specifics.Names[j], eForm);
           if uppercase(Entity.Specifics.Names[j])='ORIGIN' then
             hasOrigin:=true;
-          eSpec.SpecificsAdd('txt=&');
-          eSpec.SpecificsAdd('hint=(insert hint here)');
-          eSpec.SpecificsAdd('typ='+GuessArgType(Entity.Specifics.Names[j], Entity.Specifics.Values[Entity.Specifics.Names[j]]));
+          eSpec.Specifics.Add('txt=&');
+          eSpec.Specifics.Add('hint=(insert hint here)');
+          eSpec.Specifics.Add('typ='+GuessArgType(Entity.Specifics.Names[j], Entity.Specifics.Values[Entity.Specifics.Names[j]]));
           eSpec.Flags := eSpec.flags or ofTreeViewSubElement;
           Entity.Specifics.Delete(J);
           eForm.SubElements.Add(eSpec);
         end;
         if (Entity.TypeInfo = ':e') and (hasOrigin) then
-          Entity.SpecificsAdd('Origin=0 0 0'); // Hack for map editor
+          Entity.Specifics.Add('Origin=0 0 0'); // Hack for map editor
       end;
       entities.free;
       entityForms.Flags := entityForms.flags or ofTreeViewSubElement;
