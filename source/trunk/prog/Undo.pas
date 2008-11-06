@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2008/10/07 21:05:14  danielpharos
+Fixed a typo in a comment.
+
 Revision 1.12  2008/09/06 15:57:01  danielpharos
 Moved exception code into separate file.
 
@@ -138,12 +141,12 @@ type
 
  TSetSpecificsUndo = class(TObjPropUndo)
                      private
-                      OldSpec: TStringList;
+                      OldSpec: TSpecificsList;
                      protected
                       procedure DoAtom; override;
                       function MemorySize(Loaded: TQStream; LoadNow: Boolean) : Integer; override;
                      public
-                      constructor Create(nText: String; nSpec: TStringList; nAppliqueA: QObject);
+                      constructor Create(nText: String; nSpec: TSpecificsList; nAppliqueA: QObject);
                       destructor Destroy; override;
                      end;
 
@@ -1196,7 +1199,7 @@ end;
 constructor TSetSpecificsUndo.Create;
 begin
  inherited Create(nText, nAppliqueA);
- OldSpec:=TStringList.Create;
+ OldSpec:=TSpecificsList.Create;
  OldSpec.Assign(nSpec);
 end;
 
@@ -1217,11 +1220,11 @@ end;
 
 procedure TSetSpecificsUndo.DoAtom;
 var
- SwapSpec: TStringList;
+ SwapSpec: TSpecificsList;
 begin
  AppliqueA.Modified;
  SwapSpec:=AppliqueA.Specifics;
- AppliqueA.SetSpecificsList:=OldSpec;
+ AppliqueA.Specifics:=OldSpec;
  OldSpec:=SwapSpec;
 end;
 

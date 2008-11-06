@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.24  2008/10/13 21:34:14  danielpharos
+Handle VMF formatversion.
+
 Revision 1.23  2008/10/13 19:12:48  danielpharos
 Fixed a typo.
 
@@ -637,11 +640,11 @@ expected one.
  var
 
    Entity : TTreeMapSpec;
-   SpecificList: TStringList;
+   SpecificList: TSpecificsList;
    classname: String;
 
 
-   procedure AddConnection(var List: TStringlist;outputname,value:string);
+   procedure AddConnection(var List: TSpecificsList; outputname, value: string);
    var
      i,num{,lastfound} : integer;
 
@@ -668,9 +671,7 @@ expected one.
    entity := nil;
    ReadSymbol(sStringToken);
    ReadSymbol(sCurlyBracketLeft);
-   SpecificList:=TStringList.Create;
-   SpecificList.Clear;
-
+   SpecificList:=TSpecificsList.Create;
 
    // read attributes of entity
    while SymbolType<>sCurlyBracketRight do
@@ -993,7 +994,7 @@ var
  Root: QObject;
  List: TQList;
  saveflags : Integer;
- MapOptionSpecs : TStringList;
+ MapOptionSpecs : TSpecificsList;
 begin
  with Info do case Format of
   1: begin  { as stand-alone file }

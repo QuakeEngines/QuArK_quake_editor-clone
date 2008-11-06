@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.83  2008/11/06 20:18:22  danielpharos
+Removed old stuff in preparation for new specifics code.
+
 Revision 1.82  2008/10/23 23:17:31  danielpharos
 Fixed CoD1 map output. Should work now.
 
@@ -542,7 +545,7 @@ var
  I, J, K, NumericValue1, ContentsFlags: Integer;
  WorldSpawn: Boolean;
  Entite, EntitePoly: TTreeMapSpec;
- L: TStringList;
+ L: TSpecificsList;
  LineNoBeingParsed: Integer;
  Juste13{, EndOfLine}, Q2Tex, ReadSymbolForceToText: Boolean;
  HullNum, BrushNum, FaceNum: Integer;
@@ -2148,7 +2151,7 @@ begin
     Juste13:=False;
    {EndOfLine:=False;}
     HullList:=Nil;
-    L:=TStringList.Create;
+    L:=TSpecificsList.Create;
     try
      WorldSpawn:=False;  //we haven't seen the worldspawn entity yet
      Entities:=TTreeMapGroup.Create(LoadStr1(136), Racine);
@@ -2791,7 +2794,7 @@ var
  Root: QObject;
  List: TQList;
  saveflags : Integer;
- MapOptionSpecs : TStringList;
+ MapOptionSpecs : TSpecificsList;
  MapVersion: Integer;
 begin
  with Info do case Format of
@@ -2964,7 +2967,7 @@ end;
 
 procedure SaveAsMapText(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Negatif: TQList; Texte: TStrings; Flags2: Integer; HxStrings: TStrings);
 var
-  MapOptionSpecs : TStringList;
+  MapOptionSpecs : TSpecificsList;
 begin
   if MapVersion=-1 then
   begin
@@ -3267,7 +3270,7 @@ var
  S:String;
  { BrushPrim, Valve220Map : Boolean }
  MapFormat: MapFormatTypes;
- MapOptionSpecs : TStringList;
+ MapOptionSpecs : TSpecificsList;
  BrushDefVersion: Integer;
 begin
   if MapVersion=-1 then

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.113  2008/11/06 20:18:22  danielpharos
+Removed old stuff in preparation for new specifics code.
+
 Revision 1.112  2008/10/29 00:31:07  danielpharos
 The printout of QuArK internal objects is now much more useful.
 
@@ -496,6 +499,7 @@ const
   eoParentSel   = $80;  { internal use of TMyTreeView }
 
 type
+  TSpecificsList = TStringList;
   TQList = class;
   TQStream = class;
   QObject = class;
@@ -536,12 +540,8 @@ type
 
   QObject = class
   private
-    FSpecifics: TStringList;
+    FSpecifics: TSpecificsList;
     FSubElements: TQList;
-    {$IFDEF Debug}
-    function GetSpecifics : TStringList;
-    function GetSubElements : TQList;
-    {$ENDIF}
     function GetTvParent : QObject;
     { Tv for `tree-view; Nil if obj is root in a tree
       view, such was worldspawn, whose parent is
@@ -594,9 +594,8 @@ type
     procedure SaveFile1(Info: TInfoEnreg1);
     destructor Destroy; override;
     procedure FixupAllReferences;
-    property Specifics: TStringList read {$IFDEF Debug} GetSpecifics; {$ELSE} FSpecifics; {$ENDIF}
-    property SetSpecificsList: TStringList read FSpecifics write FSpecifics;
-    property SubElements: TQList read {$IFDEF Debug} GetSubElements; {$ELSE} FSubElements; {$ENDIF}
+    property Specifics: TSpecificsList read FSpecifics write FSpecifics;
+    property SubElements: TQList read FSubElements;
     function Ancestry: String;
     procedure AddRef(Delta: Integer);
     { incr/decr Py reference count, frees if 0 }
@@ -1222,7 +1221,7 @@ begin
   else*)
     PythonObj.ob_type:=@TyObject_Type;
 
-  FSpecifics:=TStringList.Create;
+  FSpecifics:=TSpecificsList.Create;
   FSubElements:=TQList.Create;
 
   if not IsAllowedParent(nParent) then
@@ -1368,38 +1367,6 @@ function QObject.GetFullName: String;
 begin
   Result:=Name+TypeInfo();
 end;
-
-{$IFDEF Debug}
-function QObject.GetSpecifics : TStringList;
-begin
-  {alex}
-  if (FFlags and ofNotLoadedToMemory <> 0) and not FLoading then
-  begin
-    AccesRec;
-  end;
-  {/alex ######### FIXME ! i think this is needed , and thus it should be
-   enabled always !!!!!}
-  if (FFlags and ofNotLoadedToMemory <> 0) and not FLoading then
-    Raise InternalE('GetSpecifics');
-
-  Result:=FSpecifics;
-end;
-
-function QObject.GetSubElements : TQList;
-begin
-  {alex}
-  if (FFlags and ofNotLoadedToMemory <> 0) and not FLoading then
-  begin
-    AccesRec;
-  end;
-  {/alex ######### FIXME ! i think this is needed , and thus it should be
-   enabled always !!!!!}
-  if (FFlags and ofNotLoadedToMemory <> 0) and not FLoading then
-    Raise InternalE('GetSubElements');
-
-  Result:=FSubElements;
-end;
-{$ENDIF}
 
 function QObject.GetObjectSize(Loaded: TQStream; LoadNow: Boolean) : Integer;
 var
