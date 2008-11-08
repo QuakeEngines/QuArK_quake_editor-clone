@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.77  2008/11/06 21:10:36  danielpharos
+Fixed access violation on exit when setup wasn't loaded correctly.
+
 Revision 1.76  2008/10/08 23:14:21  danielpharos
 Moved the MaxRecentFiles-items to a separate menu, and upped the limit to 20.
 
@@ -523,7 +526,7 @@ begin
   S := UpperCase(ParamStr(I));
   if S = '/?' then
    MessageBox(0, 'Available parameters:' + #13#10
-   + #13 + #10
+   + #13#10
    + '/?: Displays this window' + #13#10
    + '/NOINSTANCE: Skips the single-instance check (use at own risk!)' + #13#10
    + '/NOSPLASH: Skips the splash-screen' + #13#10
