@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.61  2008/11/06 20:18:22  danielpharos
+Removed old stuff in preparation for new specifics code.
+
 Revision 1.60  2008/11/06 19:29:51  danielpharos
 Renamed function to concatenate paths, and start using it.
 
@@ -1073,7 +1076,7 @@ begin
             Lu(0);
            end;
           Lu(1);
-          NameSpec[1]:=Chr(Ord(NameSpec[1]) or chrFloatSpec);
+          NameSpec:=FloatSpecNameOf(NameSpec);
           {if IgnoreLevel=0 then}
            Level.Specifics.Add(NameSpec+'='+Arg);
          end;
@@ -1098,7 +1101,7 @@ begin
           Lu(1);
           if Length(NameSpec)<2 then
            Raise EErrorFmt(5193, [Filename, Ligne, Format('SpecName to small: %s', [NameSpec])]);
-          NameSpec[2]:=Chr(Ord(NameSpec[2]) or chrFloatSpec);
+          NameSpec:=IntSpecNameOf(NameSpec);
           {if IgnoreLevel=0 then}
            Level.Specifics.Add(NameSpec+'='+Arg);
          end;

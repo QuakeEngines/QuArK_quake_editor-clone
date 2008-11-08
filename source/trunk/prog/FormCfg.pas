@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.45  2008/10/14 00:06:35  danielpharos
+Removed explicit cast.
+
 Revision 1.44  2008/09/27 12:08:44  danielpharos
 Fixed replacing of %s when there is nothing to replace it with. (Also workarounds false positive %s finding.)
 
@@ -845,8 +848,7 @@ begin
       FreeMem(ValueList);
      end;
               { Spec to modify }
-     S:=Name;
-     if S<>'' then S[1]:=Chr(Ord(S[1]) or chrFloatSpec);
+     S:=FloatSpecNameOf(Name);
      SetSpecArg(S, Arg, sp_Auto);
     end
    else
@@ -916,7 +918,7 @@ begin
     end;
    if (Length(S)>=4) and (S[4]='F') then
     begin
-     Spec[1]:=Chr(Ord(Spec[1]) or chrFloatSpec);
+     Spec:=FloatSpecNameOf(Spec);
      if Base255 then
       begin
        Color:=vtocol(V);
@@ -2167,7 +2169,7 @@ begin
                  end;
            'L': begin  { coLor selection }
                  if (Length(S)>=4) and (S[4]='F') then
-                  Spec[1]:=Chr(Ord(Spec[1]) or chrFloatSpec);
+                  Spec:=FloatSpecNameOf(Spec);
                  EditTogether.Add(Spec);
                 {Panel:=TPanel.Create(Self);
                  Panel.Caption:='';
@@ -2377,7 +2379,7 @@ begin
           else  begin   { edit box by default }
                  if S[1]<>'E' then S:='!';
                  if (S[2]='F') and (Spec<>'') then
-                  Spec[1]:=Chr(Ord(Spec[1]) or chrFloatSpec);
+                  Spec:=FloatSpecNameOf(Spec);
                  ReadOnly:=(Length(S)>=3) and (S[3]='R');
                  if not ReadOnly then
                   EditTogether.Add(Spec);
