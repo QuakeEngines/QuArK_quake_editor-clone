@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.35  2008/05/05 17:39:44  danielpharos
+Fixed garbage at the end of retrieved registry strings.
+
 Revision 1.34  2008/02/23 20:22:18  danielpharos
 Small changes to Python loading and unloading
 
@@ -128,7 +131,7 @@ interface
 {$I DelphiVer.inc}
 
 uses
-  SysUtils, Windows, Classes, Registry;
+  SysUtils, StrUtils, Windows, Classes, Registry;
 
 const
   SM_CXVIRTUALSCREEN = 78;
@@ -395,7 +398,7 @@ type
 
 implementation
 
-uses ShlObj, TlHelp32, Psapi, Logging, Qk1;
+uses ShlObj, TlHelp32, Psapi, Logging, ExtraFunctionality;
 
 type
   TPlatformType = (osWin95Comp, osWinNTComp);
@@ -890,16 +893,6 @@ begin
   StrDispose(Path);
 end;
 
-function ReverseStr(S: string): string;
-var
-  l,i: integer;
-begin
-  l:=Length(s);
-  Result:='';
-  for i:=0 to l-1 do
-    Result:=Result+s[l-i];
-end;
-
 procedure TOperatingSystem.GetInfo;
 var
   OS: TOSVersionInfo;
@@ -1147,8 +1140,8 @@ begin
   FDirs.Add('StartMenu='        +GetSpecialFolder(WinH,CSIDL_STARTMENU));
   FDirs.Add('StartUp='          +GetSpecialFolder(WinH,CSIDL_STARTUP));
   FDirs.Add('Templates='        +GetSpecialFolder(WinH,CSIDL_TEMPLATES));
-  s:=ReverseStr(FDirs.Values['Desktop']);
-  s:=ReverseStr(Copy(s,Pos('\',s)+1,255));
+  s:=ReverseString(FDirs.Values['Desktop']);
+  s:=ReverseString(Copy(s,Pos('\',s)+1,255));
   FDirs.Add('Profile='+s);
   GetEnvironment;
 end;

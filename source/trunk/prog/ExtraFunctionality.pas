@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2008/09/06 15:31:51  danielpharos
+Moved old-compatibility code to ExtraFunctionality.
+
 Revision 1.12  2008/07/17 14:39:30  danielpharos
 Moved pre-Delphi6+ function into ExtraFunctionality
 
@@ -83,6 +86,9 @@ const
   PathSep    = {$IFDEF MSWINDOWS} ';'; {$ELSE} ':'; {$ENDIF}
 
 function StrToFloatDef(const S: String; const Def: TDouble) : TDouble;
+
+{ Returns the reverse of a specified string. }
+function ReverseString(const AText: string): string;
 {$endif}
 
 {$ifndef Delphi7orNewerCompiler} // Pre-dates Delphi 7
@@ -142,6 +148,20 @@ begin
    Result:=StrToFloat(S);
   except
    Result:=Def;
+  end;
+end;
+
+function ReverseString(const AText: string): string;
+var
+  I: Integer;
+  P: PChar;
+begin
+  SetLength(Result, Length(AText));
+  P := PChar(Result);
+  for I := Length(AText) downto 1 do
+  begin
+    P^ := AText[I];
+    Inc(P);
   end;
 end;
 {$endif}
