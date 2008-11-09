@@ -15,6 +15,8 @@ $Id$
 6.6.0 Beta 2
 ============
 
+* [cdunde]: A new addon file for Quake Rally, created by X7.
+
 * [DanielPharos]: Added partial support for loading Call of Duty 2 maps.
 
 * [cdunde]: Did a whole write up on "Bones" and updated "How to Write Model Importers & Exporters"
