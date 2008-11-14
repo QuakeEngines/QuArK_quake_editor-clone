@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.45  2008/10/02 18:55:54  danielpharos
+Don't render when not in wp_paint handling.
+
 Revision 1.44  2008/10/02 12:23:27  danielpharos
 Major improvements to HWnd and HDC handling. This should fix all kinds of OpenGL problems.
 
@@ -242,7 +245,7 @@ type
                OpenGLLightList: POpenGLLightingList;
                OpenGLAveragePosition: vec3_t;
                VertexCount: Integer;    { < 0 for a Bezier's GL_TRI_STRIP (OpenGL only) }
-               AlphaColor: FxU32;
+               AlphaColor: TColorRef;
                TextureMode: Integer;
                TransparentDrawn: Boolean;
               end;
@@ -256,7 +259,7 @@ type
               ColorBits: TPixelSetFormat;
               AlphaBits: TPixelSetAlpha;
               info: GrTexInfo;
-              MeanColor: FxU32;
+              MeanColor: TColorRef;
               startAddress, endAddress: FxU32;
               OpenGLName: Integer;
               {Scaled: Boolean;}
@@ -357,7 +360,7 @@ type
  {------------------------}
 
 const
- MeanColorNotComputed = FxU32($FFFFFFFF);
+ MeanColorNotComputed = TColorRef($FFFFFFFF);
 
 type
  TTextureManager = class
@@ -396,7 +399,7 @@ type
    property Scenes: TList read FScenes;
  end;
 
-function ComputeMeanColor(const PSD: TPixelSetDescription) : FxU32;
+function ComputeMeanColor(const PSD: TPixelSetDescription) : TColorRef;
 function GetTex3Description(const Tex3: TTexture3) : TPixelSetDescription;
 function SwapColor(Col: TColorRef) : TColorRef;
 function GetLodFor(w: Integer) : GrLOD_t;
@@ -614,7 +617,7 @@ var
  v3p: array[0..2] of vec3_p;
  nRadius2, Radius2: FxFloat;
  FirstPoint: TVect;
- CurrentColor, ObjectColor: FxU32;
+ CurrentColor, ObjectColor: TColorRef;
  NewRenderMode: Integer;
  TextureManager: TTextureManager;
  Mode: TBuildMode;
@@ -986,7 +989,7 @@ begin
      PolySurface:=PSurface(PolyFaces[I]);
      if PolySurface=Nil then
      begin
-       CurrentColor:=FxU32(PolyFaces[I+1]);
+       CurrentColor:=TColorRef(PolyFaces[I+1]);
        Inc(I,2);
      end
      else
@@ -1024,7 +1027,7 @@ begin
            VertexCount:=prvVertexCount;
            OpenGLLightList:=nil;
 
-           AlphaColor:=CurrentColor or (255 shl 24);
+           AlphaColor:=CurrentColor or ($FF000000);
            TextureMode:=0;
            // if the texture has alpha channel its probably transparent
            if Assigned(PList^.Texture^.SourceTexture) then
@@ -1169,7 +1172,7 @@ begin
      Model3DInfo:=PModel3DInfo(ModelInfo[I]);
      if Model3DInfo=Nil then
      begin
-       CurrentColor:=FxU32(ModelInfo[I+1]);
+       CurrentColor:=TColorRef(ModelInfo[I+1]);
        Inc(I,2);
      end
      else
@@ -1285,7 +1288,7 @@ begin
      xSpriteInfo:=PSpriteInfo(SpriteInfo[I]);
      if xSpriteInfo=Nil then
      begin
-       CurrentColor:=FxU32(SpriteInfo[I+1]);
+       CurrentColor:=TColorRef(SpriteInfo[I+1]);
        Inc(I,2);
      end
      else
@@ -1400,7 +1403,7 @@ begin
      OneBezier:=TBezier(BezierInfo[I]);
      if OneBezier=Nil then
      begin
-       CurrentColor:=FxU32(BezierInfo[I+1]);
+       CurrentColor:=TColorRef(BezierInfo[I+1]);
        Inc(I,2);
      end
      else
@@ -2173,7 +2176,7 @@ begin
   end;
 end;
 
-function ComputeMeanColor(const PSD: TPixelSetDescription) : FxU32;
+function ComputeMeanColor(const PSD: TPixelSetDescription) : TColorRef;
 var
  re, gr, bl: LongInt;
  re2, gr2, bl2: LongInt;
@@ -2252,9 +2255,10 @@ end;
 
 function SwapColor(Col: TColorRef) : TColorRef;
 begin
- Result:=((Col and $FF0000) shr 16)
-       or (Col and $00FF00)
-      or ((Col and $0000FF) shl 16);
+ Result:=(Col and $FF000000)
+     or ((Col and $00FF0000) shr 16)
+     or  (Col and $0000FF00)
+     or ((Col and $000000FF) shl 16);
 end;
 
 function GetLodFor(w: Integer) : GrLOD_t;

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2008/10/02 18:55:54  danielpharos
+Don't render when not in wp_paint handling.
+
 Revision 1.14  2008/10/02 12:23:27  danielpharos
 Major improvements to HWnd and HDC handling. This should fix all kinds of OpenGL problems.
 
@@ -338,7 +341,8 @@ procedure TGlideState.NeedTex(PTex: PTexture3);
 const
  TEXMEM_2MB_EDGE = 2097152;
 var
- I, nStartAddress, nSize: Integer;
+ nStartAddress, nSize: FxU32;
+ I: Integer;
  TextureManager: TTextureManager;
 begin
  {$IFDEF Debug}
@@ -634,7 +638,7 @@ begin
  if Fog=True then
  begin
    ReallocMem(FogTableCache, SizeOf(GrFogTable_t));
-   guFogGenerateExp2(FogTableCache^, (FogDensity/20)/FarDistance);
+   guFogGenerateExp2(FogTableCache^, FogDensity/MaxW);
    grFogColorValue(FogColor);
  end;
 end;
@@ -1588,7 +1592,7 @@ begin
 
     if (((AlphaColor and $FF000000)=$FF000000) xor TransparentFaces) and CCoord.PositiveHalf(Normale[0], Normale[1], Normale[2], Dist) then
     begin
-      nColor:=AlphaColor;
+      nColor:=SwapColor(AlphaColor);
 
       if SolidColors then
       begin
@@ -1985,7 +1989,7 @@ begin
      Raise EErrorFmt(6200, ['grLfbLock']);
     I:=bmiHeader.biHeight;
     SrcPtr:=info.lfbptr;
-    Inc(PChar(SrcPtr), L*2 + (ScreenSizeY-ViewRect.R.Bottom)*info.strideInBytes);
+    Inc(PChar(SrcPtr), L*2 + (ScreenSizeY-ViewRect.R.Bottom)*Integer(info.strideInBytes));
     Count1:=(R-L) div 4;
     asm
      push esi

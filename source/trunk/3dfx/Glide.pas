@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2008/09/06 15:57:30  danielpharos
+Moved exception code into separate file.
+
 Revision 1.13  2006/11/30 00:42:32  cdunde
 To merge all source files that had changes from DanielPharos branch
 to HEAD for QuArK 6.5.0 Beta 1.
@@ -75,8 +78,8 @@ type
  FxI8     = ShortInt;
  FxU16    = Word;
  FxI16    = SmallInt;
+ FxU32    = LongWord;
  FxI32    = LongInt;
- FxU32    = {Cardinal;}LongInt;
  FxBool   = LongBool;
  FxFloat  = Single;
  FxDouble = Double;
@@ -1314,12 +1317,18 @@ begin
 end;
 
 procedure UnloadGlide;
+var
+  I: Integer;
 begin
   if TimesLoaded = 1 then
   begin
     if GlideLib<>0 then
       FreeLibrary(GlideLib);
     GlideLib := 0;
+
+    Hardware3DFX := False;
+    for I:=Low(GlideDLL_FuncList) to High(GlideDLL_FuncList) do
+      PPointer(GlideDLL_FuncList[I].FuncPtr)^:=nil;
 
     TimesLoaded := 0;
   end

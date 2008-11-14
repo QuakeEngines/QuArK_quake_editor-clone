@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.31  2008/10/18 15:09:59  danielpharos
+Small clean-up.
+
 Revision 1.30  2008/10/02 18:55:54  danielpharos
 Don't render when not in wp_paint handling.
 
@@ -162,7 +165,7 @@ type
 
 //    m_pD3DX: ID3DXContext;
 
-    m_CurrentAlpha, m_CurrentColor: Integer;
+    m_CurrentAlpha, m_CurrentColor: TColorRef;
     ScreenX, ScreenY: Integer;
     function StartBuildScene(var VertexSize: Integer) : TBuildMode; override;
     procedure EndBuildScene; override;

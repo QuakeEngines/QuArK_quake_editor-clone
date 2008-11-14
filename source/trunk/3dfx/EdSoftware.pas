@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2008/10/02 18:55:54  danielpharos
+Don't render when not in wp_paint handling.
+
 Revision 1.13  2008/10/02 12:23:27  danielpharos
 Major improvements to HWnd and HDC handling. This should fix all kinds of OpenGL problems.
 
@@ -222,7 +225,7 @@ type
    FBuildNo: Integer;
    FVertexList: TMemoryStream;
    VOID_COLOR, FRAME_COLOR: GrColor_t;
-   CurrentAlpha: FxU32;
+   CurrentAlpha: TColorRef;
    Fog: Boolean;
    ViewRect: TViewRect;
    SoftBufferFormat: Integer;
@@ -391,7 +394,8 @@ procedure TGlideState.NeedTex(PTex: PTexture3);
 const
  TEXMEM_2MB_EDGE = 2097152;
 var
- I, nStartAddress, nSize: Integer;
+ I: Integer;
+ nStartAddress, nSize: FxU32;
  TextureManager: TTextureManager;
 begin
  {$IFDEF Debug}
@@ -1281,7 +1285,7 @@ const
  oe_Right  = 3;
  oe_Bottom = 4;
 var
- nColor: FxU32;
+ nColor: TColorRef;
  NeedTex, PrevChanged: Boolean;
  ScrDiff, ScrTotal: Byte;
  SourceEdge, LastEdge: Byte;

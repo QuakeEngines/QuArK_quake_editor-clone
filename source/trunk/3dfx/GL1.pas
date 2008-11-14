@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.32  2008/10/02 12:23:27  danielpharos
+Major improvements to HWnd and HDC handling. This should fix all kinds of OpenGL problems.
+
 Revision 1.31  2008/09/06 16:05:22  danielpharos
 Fixed OpenGL variable types.
 
@@ -779,8 +782,9 @@ var
   glLightModelfv: procedure (pname: GLenum; params: PGLfloat) stdcall;
   glLightf: procedure (light: GLenum; pname: GLenum; params: GLfloat) stdcall;
   glLightfv: procedure (light: GLenum; pname: GLenum; params: PGLfloat) stdcall;
-  glMaterialf: procedure (face: GLenum; pname: GLenum; params: GLfloat) stdcall;
-  glMaterialfv: procedure (face: GLenum; pname: GLenum; params: PGLfloat) stdcall;
+//  glMaterialf: procedure (face: GLenum; pname: GLenum; params: GLfloat) stdcall;
+//  glMaterialfv: procedure (face: GLenum; pname: GLenum; params: PGLfloat) stdcall;
+  glColorMaterial: procedure (face: GLenum; mode: GLenum); stdcall;
   glNormal3fv: procedure (v: PGLfloat) stdcall;
   glFrontFace: procedure (mode: GLenum) stdcall;
   glDepthMask: procedure (flag: GLboolean) stdcall;
@@ -817,7 +821,7 @@ uses Classes, StrUtils, Quarkx, QkExceptions, Logging, Qk1, Setup, QkObjects, Ed
 const
   DummyWindowClassName: string = 'QuArK Dummy Window Class';
   
-  OpenGL32DLL_FuncList : array[0..55] of
+  OpenGL32DLL_FuncList : array[0..54] of
     record
       FuncPtr: Pointer;
       FuncName: PChar;
@@ -878,8 +882,9 @@ const
    ,(FuncPtr: @@glLightModelfv;        FuncName: 'glLightModelfv'        )
    ,(FuncPtr: @@glLightf;              FuncName: 'glLightf'              )
    ,(FuncPtr: @@glLightfv;             FuncName: 'glLightfv'             )
-   ,(FuncPtr: @@glMaterialf;           FuncName: 'glMaterialf'           )
-   ,(FuncPtr: @@glMaterialfv;          FuncName: 'glMaterialfv'          )
+//   ,(FuncPtr: @@glMaterialf;           FuncName: 'glMaterialf'           )
+//   ,(FuncPtr: @@glMaterialfv;          FuncName: 'glMaterialfv'          )
+   ,(FuncPtr: @@glColorMaterial;       FuncName: 'glColorMaterial'       )
    ,(FuncPtr: @@glNormal3fv;           FuncName: 'glNormal3fv'           )
    ,(FuncPtr: @@glFrontFace;           FuncName: 'glFrontFace'           )
    ,(FuncPtr: @@glDepthMask;           FuncName: 'glDepthMask'           )

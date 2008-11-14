@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.76  2008/10/02 18:55:54  danielpharos
+Don't render when not in wp_paint handling.
+
 Revision 1.75  2008/10/02 12:23:27  danielpharos
 Major improvements to HWnd and HDC handling. This should fix all kinds of OpenGL problems.
 
@@ -294,8 +297,6 @@ type
  private
 //   RC: HGLRC;  //wglShareLists
    WinSwapHint: Pointer;
-   CurrentAlpha: LongInt;
-   Currentf: GLfloat4;
    RenderingTextureBuffer: TMemoryStream;
    DoubleBuffered: Boolean;
    Fog: Boolean;
@@ -383,7 +384,7 @@ type
  PP3D = ^TP3D;
  TP3D = record
          v: TVertex3D;
-         light_rgb: array[0..3] of GLfloat;
+         light_rgb: GLfloat4;
         end;
 
 procedure UnpackColor(Color: TColorRef; var v: GLfloat4);
@@ -500,7 +501,7 @@ var
  SubList: PLightList;
  LPP: ^PLightList;
  DistToSource, Dist1: TDouble;
- light: array[0..3] of GLfloat;
+ light: GLfloat4;
  NormalVector: array[0..2] of GLfloat;
 begin
   if MakeSections=False then
@@ -510,8 +511,6 @@ begin
     light[1]:=LightParams.ZeroLight * Currentf[1];
     light[2]:=LightParams.ZeroLight * Currentf[2];
     light[3]:=Currentf[3];
-    glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT,@light);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE,@light);
     glColor4fv(@light);
     NormalVector[0]:=NormalePlan[0];
     NormalVector[1]:=NormalePlan[1];
@@ -671,16 +670,12 @@ begin
       begin
         //with Points[J,I] do
         begin
-          glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT,@Points[J,I].light_rgb);
-          glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE,@Points[J,I].light_rgb);
           glColor4fv(@Points[J,I].light_rgb);
           glTexCoord2fv(@Points[J,I].v.st);
           glVertex3fv(@Points[J,I].v.xyz);
         end;
         //with Points[J+StepJ,I] do
         begin
-          glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT,@Points[J+StepJ,I].light_rgb);
-          glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE,@Points[J+StepJ,I].light_rgb);
           glColor4fv(@Points[J+StepJ,I].light_rgb);
           glTexCoord2fv(@Points[J+StepJ,I].v.st);
           glVertex3fv(@Points[J+StepJ,I].v.xyz);
@@ -725,8 +720,6 @@ begin
     Inc(PV);
     LightAtPoint(Point, LP, Currentf, LightParams, vec3_p(PV)^);
     Inc(vec3_p(PV));
-    glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT,@Point.light_rgb);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE,@Point.light_rgb);
     glColor4fv(@Point.light_rgb);
     glTexCoord2fv(@Point.v.st);
     glVertex3fv(@Point.v.xyz);
@@ -914,10 +907,10 @@ procedure TGLSceneObject.Init(nCoord: TCoordinates;
                               const LibName: String;
                               var AllowsGDI: Boolean);
 var
- nFogColor: GLfloat4;
- FogColor{, FrameColor}: TColorRef;
- Setup: QObject;
- LightParam: array[0..3] of GLfloat;
+  nFogColor: GLfloat4;
+  FogColor{, FrameColor}: TColorRef;
+  Setup: QObject;
+  LightParam: GLfloat4;
 begin
   ClearScene;
 
@@ -1056,6 +1049,7 @@ begin
     UnpackColor(FogColor, nFogColor);
     glClearColor(nFogColor[0], nFogColor[1], nFogColor[2], 1);
    {glClearDepth(1);}
+    glDepthFunc(GL_LEQUAL); //FIXME: We need this for colored things (dmSelected and dmOtherColo)
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
     glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
     glEnable(GL_NORMALIZE);
@@ -1126,6 +1120,10 @@ begin
     else
       glDisable(GL_CULL_FACE);
     CheckOpenGLError('Init: GL_CULL_FACE');
+
+    glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+    glEnable(GL_COLOR_MATERIAL);
+    CheckOpenGLError('Init: GL_COLOR_MATERIAL');
 
     glGetIntegerv(GL_MAX_LIGHTS, @MaxLights);
     CheckOpenGLError('Init: GL_MAX_LIGHTS');
@@ -1579,26 +1577,18 @@ begin
   glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT);
   CheckOpenGLError('Render3DView: glClear');
 
-  CurrentAlpha:=0;
-  FillChar(Currentf, SizeOf(Currentf), 0);
-
   case ViewMode of
   vmWireframe:
     begin
       glDisable(GL_TEXTURE_2D);
-//      glDisable(GL_COLOR_MATERIAL);
     end;
   vmSolidcolor:
     begin
       glDisable(GL_TEXTURE_2D);
-//      glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-//      glEnable(GL_COLOR_MATERIAL);
     end;
   else //vmTextured:
     begin
       glEnable(GL_TEXTURE_2D);
-//      glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-//      glEnable(GL_COLOR_MATERIAL);
     end;
   end;
   CheckOpenGLError('Render3DView: ViewMode');
@@ -2061,7 +2051,7 @@ var
  PL: PLightList;
  PO: POpenGLLightingList;
  LightNR: LongInt;
- LightParam: array[0..3] of GLfloat;
+ LightParam: GLfloat4;
  GLColor: GLfloat4;
  PSD: TPixelSetDescription;
  CurrentfTMP: GLfloat4;
@@ -2071,6 +2061,7 @@ var
  Scaling: TDouble;
  LocX, LocY: GLdouble;
  TransX, TransY, TransZ: GLdouble;
+ Currentf: GLfloat4;
 begin
   case ViewMode of
   vmWireframe:
@@ -2268,7 +2259,6 @@ begin
         end;
       end;
 
-      CurrentAlpha:=AlphaColor;
       UnpackColor(AlphaColor, Currentf);
 
       if NeedColor then
@@ -2304,10 +2294,10 @@ begin
 
       PV:=PVertex3D(CurrentSurf);
 
+      glColor4fv(@Currentf);
+
       if Transparency and TransparentFaces then
       begin
-        glColor4fv(@Currentf);
-
         Case TextureMode of
         //0, 4:
           //glBlendFunc(GL_ONE, GL_ZERO);
