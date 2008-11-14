@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2008/08/16 13:32:17  danielpharos
+Fix a crash when console was cleared but not inited.
+
 Revision 1.11  2008/08/09 19:32:18  danielpharos
 Fix console not existing when freeing Python
 
@@ -101,7 +104,7 @@ var
  {-------------------}
 
 procedure ShowConsole(Show: Boolean);
-procedure WriteConsole(Src: PyObject; Text: String);
+procedure WriteConsole(Src: PyObject; const Text: String);
 procedure UpdateRunningProcesses;
 
 procedure InitConsole;
@@ -113,7 +116,7 @@ procedure InitConsoleFile;
 procedure OpenConsoleFile;
 procedure CloseConsoleFile;
 procedure DelConsoleFile;
-procedure WriteConsoleFile(Text: String);
+procedure WriteConsoleFile(const Text: String);
 
 const
   CONSOLE_FILENAME = 'Console.txt';
@@ -188,11 +191,11 @@ begin
   Erase(ConsoleFile);
 end;
 
-procedure WriteConsoleFile(Text: String);
+procedure WriteConsoleFile(const Text: String);
 begin
   if not ConsoleFileOpened then
     Exit;
-  WriteLn(ConsoleFile, Text);
+  Write(ConsoleFile, Text);
   Flush(ConsoleFile);
 end;
 
@@ -366,7 +369,7 @@ begin
  PipeBufPos:=I;
 end;
 
-procedure WriteConsole(Src: PyObject; Text: String);
+procedure WriteConsole(Src: PyObject; const Text: String);
 var
  I: Integer;
  Line: ^TPipeLine;
