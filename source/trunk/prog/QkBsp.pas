@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.70  2008/11/17 19:11:37  danielpharos
+Added and fixed some BSP file format detections, and fixed surfacetype determination for Quake 3-like engines.
+
 Revision 1.69  2008/11/06 20:18:22  danielpharos
 Removed old stuff in preparation for new specifics code.
 
@@ -411,7 +414,7 @@ type
      firstchild: Integer; {child indices, neg if leaf }
      secondchild: Integer;
      mins, maxs: array [0..2] of integer; {bbox}
-     constructor Create(SourcePtr: PChar; GameCode: Char); overload;
+     constructor Create(SourcePtr: PChar; GameCode: Char);
     end;
 
   PQ1Leaf = ^TQ1Leaf;
@@ -515,8 +518,6 @@ type
           VertexCount, PlaneCount, LeafCount, NodeCount: Integer;
           PlaneSize, LeafSize, NodeSize: Integer;
           NonFaces: Integer;
-          GameCode: Char;
-          constructor Create(const nName: String; nParent: QObject); overload;
           property Structure: TTreeMapBrush read GetStructure;
           destructor Destroy; override;
           class function TypeInfo: String; override;
@@ -660,22 +661,22 @@ const
  Bsp3EntryNames : array[TBsp3EntryTypes] of String =
    (              {Actually a 'FilenameExtension' - See TypeInfo()}
     'entities'    + '.a.bsp3'   // eBsp3_entities
-   ,'planes'      + '.b.bsp3'   // eBsp3_unknown01
-   ,'vertexes'    + '.c.bsp3'   // eBsp3_unknown02
-   ,'visibility'  + '.d.bsp3'   // eBsp3_unknown03
-   ,'nodes'       + '.e.bsp3'   // eBsp3_unknown04
-   ,'texinfo'     + '.f.bsp3'   // eBsp3_unknown05
-   ,'faces'       + '.g.bsp3'   // eBsp3_unknown06
-   ,'lighting'    + '.h.bsp3'   // eBsp3_unknown07
-   ,'leafs'       + '.i.bsp3'   // eBsp3_unknown08
-   ,'leaffaces'   + '.j.bsp3'   // eBsp3_unknown09
-   ,'leafbrushes' + '.k.bsp3'   // eBsp3_unknown10
-   ,'edges'       + '.l.bsp3'   // eBsp3_unknown11
-   ,'surfedges'   + '.m.bsp3'   // eBsp3_unknown12
-   ,'models'      + '.n.bsp3'   // eBsp3_unknown13
-   ,'brushes'     + '.o.bsp3'   // eBsp3_unknown14
-   ,'brushsides'  + '.p.bsp3'   // eBsp3_unknown15
-   ,'pop'         + '.q.bsp3'   // eBsp3_unknown16
+   ,'texinfo'     + '.b.bsp3'   // eBsp3_texinfo
+   ,'planes'      + '.c.bsp3'   // eBsp3_planes
+   ,'nodes'       + '.d.bsp3'   // eBsp3_nodes
+   ,'leafs'       + '.e.bsp3'   // eBsp3_leafs
+   ,'leaffaces'   + '.f.bsp3'   // eBsp3_leaffaces
+   ,'leafbrushes' + '.g.bsp3'   // eBsp3_leafbrushes
+   ,'models'      + '.h.bsp3'   // eBsp3_models
+   ,'brushes'     + '.i.bsp3'   // eBsp3_brushes
+   ,'brushsides'  + '.j.bsp3'   // eBsp3_brushsides
+   ,'vertexes'    + '.k.bsp3'   // eBsp3_vertexes
+   ,'meshvertexes'+ '.l.bsp3'   // eBsp3_meshvertexes
+   ,'effects'     + '.m.bsp3'   // eBsp3_effects
+   ,'faces'       + '.n.bsp3'   // eBsp3_faces
+   ,'lighting'    + '.o.bsp3'   // eBsp3_lighting
+   ,'lightvol'    + '.p.bsp3'   // eBsp3_lightvol
+   ,'visibility'  + '.q.bsp3'   // eBsp3_visibility
    );
 
 type
@@ -760,12 +761,6 @@ class function QBsp3a.TypeInfo; begin TypeInfo:='.a.bsp3'; {'entities.a.bsp3'} e
 class function QBsp.TypeInfo;
 begin
  Result:='.bsp';
-end;
-
-constructor Qbsp.Create(const nName: String; nParent: QObject);
-begin
-  inherited Create(nName, nParent);
-  GameCode:=mjAny;
 end;
 
 function QBsp.OpenWindow(nOwner: TComponent) : TQForm1;
@@ -1124,7 +1119,7 @@ begin
             begin
           (*
               LoadBSP3(F, StreamSize);
-              ObjectGameCode:=mjRTCW;
+              ObjectGameCode := mjRTCW;
           *)
               Raise EErrorFmt(5602, [LoadName, Version, cVersionBspRTCW]);
             end;
@@ -1400,8 +1395,7 @@ var
  SurfType: Char;
  Pozzie: vec3_t;
 begin
-  GameCode:=NeedObjectGameCode;
-  SurfType:=BspSurfaceType(GameCode);
+  SurfType:=BspSurfaceType(NeedObjectGameCode);
   if FStructure=Nil then
   begin
     if FVertices<>Nil then
@@ -1489,7 +1483,7 @@ begin
    FStructure.LoadAll;
    Dest:=TStringList.Create;
    try
-    SaveAsMapText(FStructure, GameCode, -1, Nil, Dest, soBSP, Nil);
+    SaveAsMapText(FStructure, NeedObjectGameCode, -1, Nil, Dest, soBSP, Nil);
     S:=Dest.Text;
    finally
     Dest.Free;
@@ -1910,7 +1904,7 @@ var
   Stats: TNodeStats;
   bspkind: Char;
 begin
-  bspkind:=BspType(GameCode);
+  bspkind:=BspType(NeedObjectGameCode);
   case bspkind of
       bspTypeQ1:
        begin
@@ -1952,7 +1946,7 @@ var
       { add 1, so that first child index is 0 (Max McQuires
         Q2 Bsp Format description on www.flipcode.com) }
       PLeaf:=FirstLeaf-(child+1)*LeafSize;
-      TreeNode:=TTreeBspNode.Create(Name, Parent, BspLeaf.Create(PLeaf,GameCode), Stats);
+      TreeNode:=TTreeBspNode.Create(Name, Parent, BspLeaf.Create(PLeaf, NeedObjectGameCode), Stats);
       TreeNode.Source:=PLeaf;
     end;
     if Copy(Name,1,5)='First' then
@@ -1962,7 +1956,7 @@ var
   end;
 
 begin
-  NodeWrapper:=BspNode.Create(Node,GameCode);
+  NodeWrapper:=BspNode.Create(Node, NeedObjectGameCode);
   Result:=TTreeBspNode.Create(Name, Parent, NodeWrapper, Stats);
   with NodeWrapper do
   begin
@@ -2159,7 +2153,7 @@ begin
   with Bsp do
   begin
     HalfPlaneCount:=(PlaneCount-1) div 2;
-    SurfType:=BspSurfaceType(GameCode);
+    SurfType:=BspSurfaceType(NeedObjectGameCode);
     if SurfType=bspSurfQ12 then
       PlaneSize:=SizeOf(TbPlane)
     else
