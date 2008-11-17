@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2008/11/14 00:39:54  danielpharos
+Fixed a few variable types and fixed the coloring of faces not working properly in OpenGL and giving the wrong color in Glide.
+
 Revision 1.14  2008/09/06 15:57:30  danielpharos
 Moved exception code into separate file.
 
@@ -1326,7 +1329,6 @@ begin
       FreeLibrary(GlideLib);
     GlideLib := 0;
 
-    Hardware3DFX := False;
     for I:=Low(GlideDLL_FuncList) to High(GlideDLL_FuncList) do
       PPointer(GlideDLL_FuncList[I].FuncPtr)^:=nil;
 
