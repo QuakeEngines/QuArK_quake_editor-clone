@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2008/11/06 20:18:22  danielpharos
+Removed old stuff in preparation for new specifics code.
+
 Revision 1.17  2008/09/06 15:57:37  danielpharos
 Moved exception code into separate file.
 
@@ -428,6 +431,7 @@ begin
       Exit;
     end;
     'v': if StrComp(attr, 'vertices')=0 then begin
+      Acces;
       Count:=GetVertices(P);
       Result:=PyList_New(Count);
       for I:=0 to Count-1 do begin
@@ -470,6 +474,7 @@ begin
         Exit;
       end;
       'v': if StrComp(attr, 'vertices')=0 then begin
+        Acces;
         Count:=PyObject_Length(value);
         if Count<0 then
           Exit;
