@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.69  2008/11/06 20:18:22  danielpharos
+Removed old stuff in preparation for new specifics code.
+
 Revision 1.68  2008/11/06 19:29:51  danielpharos
 Renamed function to concatenate paths, and start using it.
 
@@ -552,7 +555,7 @@ type
  {------------------------}
 
 Function StringListFromEntityLump(e_lump: String; ExistingAddons: QFileObject; var Found: TStringList): Integer;
-function BspSurfaceType(const bspType : Char) : Char;
+function BspSurfaceType(const GameMode : Char) : Char;
 function BspType(mj : Char) : Char; overload;
 function BspType : Char; overload;
 
@@ -597,7 +600,6 @@ const
    );
 
 type
- PBsp1Header = ^TBsp1Header;
  TBsp1Header = record
                Signature: LongInt;
                Entries: array[TBsp1EntryTypes] of TBspEntries;
@@ -606,13 +608,12 @@ type
 (***********  Quake 2 .bsp format  ***********)
 
 const
- cSignatureBspQ2DKQ3  = $50534249; {"IBSP" 4-letter header, which Quake-2, Daikatana and Quake-3:Arena contains}
- cSignatureSin        = 1347633746;
+ cSignatureBspQ2 = $50534249; {"IBSP" 4-letter header}
 
- cVersionBspQ2        = $00000026; {Quake-2 .BSP}
- cVersionSin          = $00000001; {Sin .BSP}
- cVersionBspDK        = $00000029; {Daikatana .BSP}
- cVersionBspRTCW      = $0000002F; {RTCW .BSP}
+ cVersionBspQ2   = $00000026; {Quake-2 .BSP}
+ cVersionBspQ3   = $0000002E; {Quake-3 or STVEF or Nexuiz .BSP}
+ cVersionBspDK   = $00000029; {Daikatana .BSP}
+ cVersionBspRTCW = $0000002F; {RTCW .BSP}
   
 const
  Bsp2EntryNames : array[TBsp2EntryTypes] of String =
@@ -649,14 +650,11 @@ type
 
 const
  // Note: Quake-3 and STVEF .BSPs, uses the same signature as Quake-2 .BSPs!
+ cSignatureBspQ3      = $50534252; {"RBSP" 4-letter header}
+ cSignatureMohaa      = $35313032;
 
- cSignatureBspJK2     = $50534252; {"RBSP" 4-letter header, which Jedi Knight II contains}
- cSignatureMohaa      = 892416050;
- cSignatureHL2        = $50534256; {HL2 .bsp}
-
- cVersionBspQ3        = $0000002E; {Quake-3 or STVEF .BSP}
- cVersionBspJK2       = $00000001; {JK2 .BSP}
- cVersionBspHL2       = $00000013; {HL2 .bsp}
+ cVersionBspJK2JA     = $00000001; {JK2 or JA .BSP}
+ cVersionBspSin       = $00000001; {SiN .BSP}
 
 const
  Bsp3EntryNames : array[TBsp3EntryTypes] of String =
@@ -689,13 +687,50 @@ type
 
 (***********  FAKK .bsp format  ***********)
 const
-  cSignatureBspFAKK = $4B4B4146; {"FAKK" 4-letter header, which HW:FAKK contains}
+  cSignatureBspFAKK = $4B4B4146; {"FAKK" 4-letter header, which HM:FAKK2 contains}
 
   cVersionBspFAKK   = $0000000C; {FAKK .BSP}
+  cVersionBspAlice  = $0000002A; {Alice .BSP}
 
 { (Comment by Decker 2001-01-21)
  Lots more missing here, for FAKK - but it could be a superset of Quake-3:Arena's .BSP structure!
 }
+
+(***********  Warsow .bsp format  ***********)
+const
+  cSignatureBspWarsow = $50534246; {"PSBF" 4-letter header, which Warsow contains}
+
+  cVersionBspWarsow   = $00000001; {Warsow .BSP}
+
+//FIXME: Lots of stuff missing here
+
+(***********  Half-Life 2 .bsp format  ***********)
+
+const
+ cSignatureHL2        = $50534256; {"VBSP" 4-letter header, which HL2 contains}
+
+ cVersionBspHL2       = $00000013; {HL2}
+ cVersionBspHL2HDR    = $00000014; {HL2 with HDR lighting}
+
+const
+  HEADER_LUMPS = 64; //From HL2's bspfile.h
+
+type
+ THL2Lump_T = record
+      fileofs: LongInt;
+      filelen: LongInt;
+      version: LongInt;
+      fourCC: array[1..4] of Char;
+ end;
+
+ TBspHL2Header = record
+      Signature: LongInt;
+      Version: LongInt;
+      lumps: array[1..HEADER_LUMPS] of THL2Lump_T;
+      mapRevision: LongInt;
+ end;
+
+//FIXME: Lots of stuff missing here
 
 (***********  QuArK objects  ***********)
 
@@ -1047,7 +1082,7 @@ begin
           ObjectGameCode := mjHalfLife;
         end;
 
-        cSignatureBspQ2DKQ3:
+        cSignatureBspQ2:
         begin
           { Check version of a cSignatureBspQ2DKQ3 file type }
 { FIXME: SOF don't load, got same Sig/Vers as Q3 (!!)
@@ -1099,35 +1134,63 @@ begin
           end;
         end;
 
-        cSignatureBspJK2: { Jedi Knight II }
+        cSignatureBspQ3:
         begin
-          LoadBsp3(F, StreamSize); {Decker - try using the Q3 .BSP loader for JK2 maps}
-          if CharModeJeu<mjQ3A then
-            ObjectGameCode := mjQ3A
-          else
-            ObjectGameCode := CharModeJeu;
+          case Version of
+            cVersionBspJK2JA: { Jedi Knight II or Jedi Academy}
+            begin
+              LoadBsp3(F, StreamSize); {Decker - try using the Q3 .BSP loader for JK2/JA maps}
+              if CharModeJeu<mjQ3A then
+                ObjectGameCode := mjQ3A
+              else
+                ObjectGameCode := CharModeJeu;
+            end;
+
+//            cVersionBspSin: { SiN }
+//            begin
+//              { This is a Quake 2 engine game! Somebody else should ALSO be shot! }
+//              Raise EErrorFmt(5602, [LoadName, Version, cVersionBspSin]);
+//(*              LoadBsp2(F, StreamSize);
+//              ObjectGameCode := mjSin;*)
+//            end;
+
+            else {version unknown}
+              Raise EErrorFmt(5572, [LoadName, Version, cVersionBspJK2JA]);
+          end;
         end;
 
-        cSignatureMohaa: { Moh:aa}
+        cSignatureMohaa: { Moh:aa }
         begin
-          Raise EErrorFmt(5602, [LoadName, Version, cVersionBspRTCW]);
+          Raise EErrorFmt(5602, [LoadName, Version, cSignatureMohaa]);
 
 (* Non functiona
-          LoadBsp3(F, StreamSize); {Decker - try using the Q3 .BSP loader for JK2 maps}
+          LoadBsp3(F, StreamSize); {Decker - try using the Q3 .BSP loader for Moh:aa maps}
           ObjectGameCode := mjMohaa;
 *)
         end;
 
-        cSignatureHL2: { HL2}
+        cSignatureHL2: { HL2 }
         begin
-          ObjectGameCode := mjHL2;
-//          Raise EErrorFmt(5602, [LoadName, Version, cVersionBspRTCW]);
+          case Version of
+            cVersionBspHL2: {HL2}
+            begin
+              Raise EErrorFmt(5602, [LoadName, Version, cVersionBspHL2]);
+(*              ObjectGameCode := mjHL2;*)
+            end;
 
+            cVersionBspHL2HDR: {HL2 with HDR lighting}
+            begin
+              Raise EErrorFmt(5602, [LoadName, Version, cVersionBspHL2HDR]);
+(*              ObjectGameCode := mjHL2;*)
+            end;
+
+            else {version unknown}
+              Raise EErrorFmt(5572, [LoadName, Version, cVersionBspHL2]);
+          end;
         end;
 
-
-      else
-        Raise EErrorFmt(5520, [LoadName, Signature, cSignatureBspQ1H2, cSignatureBspQ2DKQ3]);
+        else {signature unknown}
+          Raise EErrorFmt(5520, [LoadName, Signature, cSignatureBspQ1H2, cSignatureBspQ2]);
       end;
     end;
   else
@@ -1214,7 +1277,7 @@ begin
     Fin := Info.F.Position;
 
     Info.F.Position := Origine;
-    Header.Signature := cSignatureBspQ2DKQ3;
+    Header.Signature := cSignatureBspQ2;
     Header.Version := cVersionBspQ2;
     Info.F.WriteBuffer(Header, SizeOf(Header));
 
@@ -1258,7 +1321,7 @@ begin
     Fin := Info.F.Position;
 
     Info.F.Position := Origine;
-    Header.Signature := cSignatureBspQ2DKQ3;
+    Header.Signature := cSignatureBspQ2;
     Header.Version := cVersionBspQ3;
     Info.F.WriteBuffer(Header, SizeOf(Header));
 
@@ -2000,9 +2063,9 @@ begin
    Result:=mj
 end;
 
-function bspSurfaceType(const BspType : Char) : Char;
+function bspSurfaceType(const GameMode : Char) : Char;
 begin
-  if BspType=BspTypeQ3 then
+  if BspType(GameMode)=BspTypeQ3 then
     Result:=BspTypeQ3
   else
     Result:=BspTypeQ1
