@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.46  2008/11/08 15:56:08  danielpharos
+Cleaned up some SpecNameOf-usage.
+
 Revision 1.45  2008/10/14 00:06:35  danielpharos
 Removed explicit cast.
 
@@ -2008,24 +2011,25 @@ begin
                  ComboBox.Tag:=I+1;
                  ComboBox.Items.Text:=TextValues;
                  ComboBox.ItemIndex:=MatchSpecItem(ComboBox, ArgValue, True); { "ComboBox.Tag" must be set to a value!!! }
-            // Created step around to stop filling multiple dropdown list with erroneous data, like for misc_model entity
-                 if Spec <> 'model' then
-                   if Spec <> 'model2' then
-                     if Spec <> 'editormodel' then  
-                       if Spec <> 'clipmodel' then
-                         if Spec <> 'head' then
-                           if Spec <> 'skin' then
-                             if Spec <> 'NPC_editor_model' then
-                               if Spec <> 'NPC_type' then
-                                 if Spec <> 'spawnscript' then
-                                   if Spec <> 'sound' then
-                                     if Spec <> 'noise' then
-                                       if Spec <> 'music' then
-                                         if Spec <> 's_shader' then
-                                           // All of these below are for HL2 alone.
-                                           if Spec <> 'message' then
-                                             if Spec <> 'soundscape' then
-                                               ComboBox.Text:=ArgValue;
+                 if S[2]<>'L' then
+                   // Created step around to stop filling multiple dropdown list with erroneous data, like for misc_model entity
+                   if Spec <> 'model' then
+                     if Spec <> 'model2' then
+                       if Spec <> 'editormodel' then  
+                         if Spec <> 'clipmodel' then
+                           if Spec <> 'head' then
+                             if Spec <> 'skin' then
+                               if Spec <> 'NPC_editor_model' then
+                                 if Spec <> 'NPC_type' then
+                                   if Spec <> 'spawnscript' then
+                                     if Spec <> 'sound' then
+                                       if Spec <> 'noise' then
+                                         if Spec <> 'music' then
+                                           if Spec <> 's_shader' then
+                                             // All of these below are for HL2 alone.
+                                             if Spec <> 'message' then
+                                               if Spec <> 'soundscape' then
+                                                 ComboBox.Text:=ArgValue;
                  ComboBox.OnKeyDown:=ComboKeyDown;
                  ComboBox.OnChange:=EnterEditChange;
                  ComboBox.Hint:=HintMsg;
