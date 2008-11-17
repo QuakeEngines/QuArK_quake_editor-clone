@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.77  2008/11/14 00:39:54  danielpharos
+Fixed a few variable types and fixed the coloring of faces not working properly in OpenGL and giving the wrong color in Glide.
+
 Revision 1.76  2008/10/02 18:55:54  danielpharos
 Don't render when not in wp_paint handling.
 
@@ -297,7 +300,6 @@ type
  private
 //   RC: HGLRC;  //wglShareLists
    WinSwapHint: Pointer;
-   RenderingTextureBuffer: TMemoryStream;
    DoubleBuffered: Boolean;
    Fog: Boolean;
    Transparency: Boolean;
@@ -316,7 +318,7 @@ type
    MapLimitSmallest: Double;
    MaxLights: GLint;
    LightingQuality: Integer;
-   OpenGLDisplayLists: array[0..2] of Integer;
+   OpenGLDisplayLists: array[0..2] of GLuint;
    PixelFormat: PPixelFormatDescriptor;
    procedure RenderPList(PList: PSurfaces; TransparentFaces: Boolean; SourceCoord: TCoordinates);
  protected
@@ -817,9 +819,6 @@ var
 { NameArray, NameAreaWalker: ^GLuint;}
  MadeRCCurrent: Boolean;
 begin
-  RenderingTextureBuffer.Free;
-  RenderingTextureBuffer:=Nil;
-
   {with TTextureManager.GetInstance do
   begin
     GetMem(NameArray, Textures.Count*SizeOf(GLuint));
@@ -858,7 +857,7 @@ begin
             raise EError(6310);
           MadeRCCurrent := True;
         end;
-        glDeleteLists(1, OpenGLDisplayLists[I]);
+        glDeleteLists(OpenGLDisplayLists[I], 1);
         CheckOpenGLError('ReleaseResources: glDeleteLists');
 
         OpenGLDisplayLists[I]:=0;
@@ -1225,8 +1224,6 @@ begin
  {PW:=Nil;}
   VertexSize:=SizeOf(TVertex3D);
   Result:=bmOpenGL;
-  if RenderingTextureBuffer=Nil then
-    RenderingTextureBuffer:=TMemoryStream.Create;
   ViewDCSet:=False;
   MadeRCCurrent:=False;
   try
@@ -1247,7 +1244,7 @@ begin
           MadeRCCurrent := True;
         end;
 
-        glDeleteLists(1, OpenGLDisplayLists[I]);
+        glDeleteLists(OpenGLDisplayLists[I], 1);
         CheckOpenGLError('StartBuildScene: glDeleteLists');
         OpenGLDisplayLists[I]:=0;
       end;
@@ -1280,9 +1277,6 @@ var
  LightList: LongInt;
  Distance: Double;
 begin
-  RenderingTextureBuffer.Free;
-  RenderingTextureBuffer:=Nil;
-
   if (Lighting and (LightingQuality=0)) or Transparency then
   begin
     PS:=FListSurfaces;
@@ -1485,7 +1479,10 @@ begin
 
     DX:=(SX/2)/(Scaling*Scaling);
     DY:=(SY/2)/(Scaling*Scaling);
-    {DZ:=(MapLimitSmallest*2)/(Scaling*Scaling);}
+    //Start using: ChercheExtremites
+    //or better: do it in the BuildScene when the positions are being processed!
+
+    //DZ:=(MapLimitSmallest*2)/(Scaling*Scaling);
     DZ:=100000;   //DanielPharos: Workaround for the zoom-in-disappear problem
     TransX:=LocX/(Scaling*Scaling);
     TransY:=LocY/(Scaling*Scaling);
@@ -1602,7 +1599,7 @@ begin
       begin
         if OpenGLDisplayLists[I]<>0 then
         begin
-          glDeleteLists(1, OpenGLDisplayLists[I]);
+          glDeleteLists(OpenGLDisplayLists[I], 1);
           CheckOpenGLError(glGetError);
           OpenGLDisplayLists[I]:=0;
         end;
@@ -1772,23 +1769,26 @@ begin
       if PSD2.AlphaBits = psa8bpp then
       begin
         MemSize:=PSD2.Size.X * PSD2.Size.Y * 4;
-        RenderingTextureBuffer.SetSize(MemSize);
-        TexData:=RenderingTextureBuffer.Memory;
-        Source:=PSD2.Data;
-        AlphaSource:=PSD2.AlphaData;
-        Dest:=TexData;
-        J:= PSD2.Size.X * PSD2.Size.Y;
+        GetMem(TexData, MemSize);
+        try
+          Source:=PSD2.Data;
+          AlphaSource:=PSD2.AlphaData;
+          Dest:=TexData;
+          J:= PSD2.Size.X * PSD2.Size.Y;
 
-        // tbd: more efficient copying
-        while J > 0 do
-        begin
-          Dest^ := Source^;        inc(Source);      Inc(Dest);
-          Dest^ := Source^;        inc(Source);      Inc(Dest);
-          Dest^ := Source^;        inc(Source);      Inc(Dest);
-          Dest^ := AlphaSource^;   inc(AlphaSource); Inc(Dest);
-          Dec(J);
+          // tbd: more efficient copying
+          while J > 0 do
+          begin
+            Dest^ := Source^;        inc(Source);      Inc(Dest);
+            Dest^ := Source^;        inc(Source);      Inc(Dest);
+            Dest^ := Source^;        inc(Source);      Inc(Dest);
+            Dest^ := AlphaSource^;   inc(AlphaSource); Inc(Dest);
+            Dec(J);
+          end;
+          glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,PSD2.Size.X, PSD2.Size.Y,0, GL_BGRA, GL_UNSIGNED_BYTE, TexData);
+        finally
+          FreeMem(TexData);
         end;
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,PSD2.Size.X, PSD2.Size.Y,0, GL_BGRA, GL_UNSIGNED_BYTE, TexData);
       end       // end of making use of alpha channel of textures
       else
         glTexImage2D(GL_TEXTURE_2D, 0, 3,PSD2.Size.X, PSD2.Size.Y,0, GL_BGR, GL_UNSIGNED_BYTE, PSD2.Data);
@@ -1823,11 +1823,8 @@ begin
      end;
 
     MemSize:=W*H*4;
-
-    if RenderingTextureBuffer.Size < MemSize then
-      RenderingTextureBuffer.SetSize(MemSize);
-
-    TexData:=RenderingTextureBuffer.Memory;
+    GetMem(TexData, MemSize);
+    try
 
     PSD2.Init;
    // Removing line below broke OpenGL for odd sized textures in version 1.24 2004/12/14
@@ -2027,6 +2024,9 @@ begin
   (*  glTexImage2D(GL_TEXTURE_2D, 0, 3, W, H, 0, GL_RGB, GL_UNSIGNED_BYTE, TexData)
     end;//paletted textures   *)
     CheckOpenGLError('glTexImage2D');
+    finally
+      FreeMem(TexData);
+    end;
 
     finally
       wglMakeCurrent(0, 0);
