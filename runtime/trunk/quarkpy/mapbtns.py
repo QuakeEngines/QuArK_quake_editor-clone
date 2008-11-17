@@ -59,7 +59,7 @@ def dropitemsnow(editor, newlist, text=Strings[544], center=quarkx.vect(0,0,0)):
         return
 
     for newitem in newlist:
-        if "PixelSet" in newitem.classes:
+        if "QPixelSet" in newitem.classes:
             applytexture(editor, newitem.shortname)
             return 1
     delta = None
@@ -91,7 +91,7 @@ def dropitemsnow(editor, newlist, text=Strings[544], center=quarkx.vect(0,0,0)):
         if nparent is None:
             undo.cancel()    # not required, but it's better when it's done
             msg = Strings[-101]
-            #if "Image" in newitem.classes:
+            #if "QImage" in newitem.classes:
             #    msg = msg + Strings[-102]
             quarkx.msgbox(msg, MT_ERROR, MB_OK)
             return
@@ -145,7 +145,7 @@ def prepareobjecttodrop(editor, obj):
     oldincl = obj[";incl"]
     obj[";desc"] = None
     obj[";incl"] = None
-    if not ("TreeMap" in obj.classes):
+    if not ("TTreeMap" in obj.classes):
         return
 
     # replace the textures "[auto]", "[terrain]", "[trigger]", "[clip]", "[origin]" and "[caulk]"
@@ -746,6 +746,9 @@ def groupview1click(m):
 #
 #
 #$Log$
+#Revision 1.35  2008/10/07 21:04:49  danielpharos
+#Added GetBaseDir function and other small fixes.
+#
 #Revision 1.34  2008/05/27 19:34:16  danielpharos
 #Removed redundant call to mapeditor()
 #

@@ -358,7 +358,7 @@ def texturebrowser(reserved=None):
     if editor is None:
         seltex = None
     else:
-        if not ("TreeMap" in editor.layout.explorer.sellist[0].classes):
+        if not ("TTreeMap" in editor.layout.explorer.sellist[0].classes):
             seltex = None
         else:
             texlist = quarkx.texturesof(editor.layout.explorer.sellist)
@@ -486,6 +486,10 @@ def groupcolor(m):
 #
 #
 #$Log$
+#Revision 1.21  2008/07/25 22:57:24  cdunde
+#Updated component error checking and added frame matching and\or
+#duplicating with independent names to avoid errors with other functions.
+#
 #Revision 1.20  2008/05/27 19:36:16  danielpharos
 #Fixed another bunch of wrong imports
 #

@@ -1181,7 +1181,7 @@ class UserDataPanel:
 
     def newbutton(self, p, btnpanel, icon=None):
         list = p.subitems
-        if len(list)==1 and ("PixelSet" in list[0].classes):
+        if len(list)==1 and ("QPixelSet" in list[0].classes):
             hint = "TEX?" + p.shortname + "|" + p.shortname
         else:
             hint = p.shortname
@@ -1558,6 +1558,9 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.53  2008/10/09 21:24:57  danielpharos
+#Fix links in Help menu not working properly.
+#
 #Revision 1.52  2008/10/07 21:08:59  danielpharos
 #Changed a comment a bit.
 #
