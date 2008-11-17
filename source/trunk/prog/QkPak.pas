@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.27  2008/11/06 19:29:51  danielpharos
+Renamed function to concatenate paths, and start using it.
+
 Revision 1.26  2008/10/09 11:31:51  danielpharos
 Added decent .col Sylphis archive support.
 
@@ -169,8 +172,8 @@ type
  {------------------------}
 
 const
- SignaturePACK = $4B434150;
- SignatureSPAK = $4B415053;
+ SignaturePACK = $4B434150; { Quake-1 or Quake-2 }
+ SignatureSPAK = $4B415053; { SiN }
  SignatureQuArKPAK1 = $51202F2F;
  SignatureQuArKPAK2 = $4B724175;
  SignatureQuArKmod1 = $512E2F2F;
