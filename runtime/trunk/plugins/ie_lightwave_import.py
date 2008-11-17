@@ -2272,7 +2272,10 @@ def dataforminput(o):
     "Returns the default settings or input data for this type of object 'o' (a model component) to use for the Specific/Args page."
 
     if not o.dictspec.has_key('lwo_NAME'):
-        o['lwo_NAME'] = o.dictitems['Skins:sg'].subitems[0].name
+        if len(o.dictitems['Skins:sg'].subitems) != 0:
+           o['lwo_NAME'] = o.dictitems['Skins:sg'].subitems[0].name
+        else:
+           o['lwo_NAME'] = "no skins exist"
   #  if not o.dictspec.has_key('lwo_UVNAME'):
   #      o['lwo_UVNAME'] = o.dictitems['Skins:sg'].subitems[0].name
     if not o.dictspec.has_key('lwo_COLR'):
@@ -2282,6 +2285,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.8  2008/10/26 00:07:09  cdunde
+# Moved all of the Specifics/Args page code for the Python importers\exports to the importer files.
+#
 # Revision 1.7  2008/07/24 23:34:11  cdunde
 # To fix non-ASCII character from causing python depreciation errors.
 #
