@@ -56,7 +56,7 @@ class MapEditor(BaseEditor):
 
     def OpenRoot(self):
         self.tmpsaved = None
-        if "Bsp" in self.fileobject.classes:
+        if IsBsp(self):
             self.Root = self.fileobject.structure
             if self.Root is not None:
                 self.Root.flags = self.Root.flags &~ OF_MODIFIED
@@ -74,45 +74,47 @@ class MapEditor(BaseEditor):
             quarkx.msgbox('there were errors reading the map; check the console',2,4)
         self.AutoSave(0)
 
-        import qutils
-        # Creates the "Used Textures.txlist" to display in the Texture Browser for the map that is opened in the editor.
-        tbx_list = quarkx.findtoolboxes("Texture Browser...");
-        ToolBoxName, ToolBox = tbx_list[0]
-        # Removes the old Used Textures ToolBoxFolder so duplicates of it are not displayed.
-        for ToolBoxFolder in ToolBox.subitems:
-            if ToolBoxFolder.name == "Used Textures.txlist":
-                ToolBoxFolder.parent.removeitem(ToolBoxFolder)
-                break
-        # Creates the "Used Textures.txlist" to display in the Texture Browser.
-        Folder = quarkx.newobj("Used Textures.txlist")
-        Folder.flags = Folder.flags | qutils.OF_TVSUBITEM
-        UsedTexturesList = quarkx.texturesof([self.Root])
-     #   NoImageFile = None
-        for UsedTextureName in UsedTexturesList:
-            UsedTexture = quarkx.newobj(UsedTextureName + ".wl")
-   #         UsedTexture["a"] = (quarkx.getquakedir()+("/")+quarkx.getbasedir())
-     #       if quarkx.setupsubset()["ShadersPath"] is not None:
-     #           try:
-     #               GameFilesPath = (quarkx.getquakedir()+("/")+quarkx.getbasedir())
-     #               UsedTexture["a"] = (GameFilesPath+("/")+quarkx.setupsubset()["ShadersPath"]+("sky.shader")+("[textures/")+UsedTextureName+("]"))
-     #               UsedTexture["a"] = (quarkx.getquakedir()+("/")+quarkx.getbasedir())
-     #           except:
-     #               UsedTexture["a"] = (quarkx.getquakedir()+("/")+quarkx.getbasedir())
-     #       else:
-     #           UsedTexture["a"] = (quarkx.getquakedir()+("/")+quarkx.getbasedir())
-     #           try:
-     #               print "mapeditor line 106 the image path",(UsedTexture["a"]+("/")+quarkx.setupsubset()["TexturesPath"]+UsedTextureName)
-     #           except:
-     #               NoImageFile = 1
-            UsedTexture["a"] = (quarkx.getquakedir()+("/")+quarkx.getbasedir())
-            UsedTexture.flags = UsedTexture.flags | qutils.OF_TVSUBITEM
-            Folder.appenditem(UsedTexture)
-   #     if NoImageFile is not None:
-   #         pass
-   #     else:
-   #         ToolBox.appenditem(Folder)
-        ToolBox.appenditem(Folder)
-   #      quarkx.opentoolbox("", None)
+        if not IsBsp(self):
+            import qutils
+            # Creates the "Used Textures.txlist" to display in the Texture Browser for the map that is opened in the editor.
+            tbx_list = quarkx.findtoolboxes("Texture Browser...");
+            ToolBoxName, ToolBox = tbx_list[0]
+            # Removes the old Used Textures ToolBoxFolder so duplicates of it are not displayed.
+            for ToolBoxFolder in ToolBox.subitems:
+                if ToolBoxFolder.name == "Used Textures.txlist":
+                    ToolBoxFolder.parent.removeitem(ToolBoxFolder)
+                    break
+            # Creates the "Used Textures.txlist" to display in the Texture Browser.
+            Folder = quarkx.newobj("Used Textures.txlist")
+            Folder.flags = Folder.flags | qutils.OF_TVSUBITEM
+            print self.Root
+            UsedTexturesList = quarkx.texturesof([self.Root])
+        #   NoImageFile = None
+            for UsedTextureName in UsedTexturesList:
+                UsedTexture = quarkx.newobj(UsedTextureName + ".wl")
+    #         UsedTexture["a"] = (quarkx.getquakedir()+("/")+quarkx.getbasedir())
+        #       if quarkx.setupsubset()["ShadersPath"] is not None:
+        #           try:
+        #               GameFilesPath = (quarkx.getquakedir()+("/")+quarkx.getbasedir())
+        #               UsedTexture["a"] = (GameFilesPath+("/")+quarkx.setupsubset()["ShadersPath"]+("sky.shader")+("[textures/")+UsedTextureName+("]"))
+        #               UsedTexture["a"] = (quarkx.getquakedir()+("/")+quarkx.getbasedir())
+        #           except:
+        #               UsedTexture["a"] = (quarkx.getquakedir()+("/")+quarkx.getbasedir())
+        #       else:
+        #           UsedTexture["a"] = (quarkx.getquakedir()+("/")+quarkx.getbasedir())
+        #           try:
+        #               print "mapeditor line 106 the image path",(UsedTexture["a"]+("/")+quarkx.setupsubset()["TexturesPath"]+UsedTextureName)
+        #           except:
+        #               NoImageFile = 1
+                UsedTexture["a"] = (quarkx.getquakedir()+("/")+quarkx.getbasedir())
+                UsedTexture.flags = UsedTexture.flags | qutils.OF_TVSUBITEM
+                Folder.appenditem(UsedTexture)
+    #     if NoImageFile is not None:
+    #         pass
+    #     else:
+    #         ToolBox.appenditem(Folder)
+            ToolBox.appenditem(Folder)
+    #      quarkx.opentoolbox("", None)
 
     def FrozenDragObject(self, view, x, y, s, redcolor):
         #
@@ -165,7 +167,7 @@ class MapEditor(BaseEditor):
                      
 
     def CloseRoot(self):
-        if not (self.Root is None) and ("Bsp" in self.fileobject.classes):
+        if not (self.Root is None) and (IsBsp(self)):
             mod = self.Root.flags & OF_MODIFIED
             self.Root = None
             if mod:
@@ -408,6 +410,9 @@ def autosave(editor):
 #
 #
 #$Log$
+#Revision 1.18  2008/10/07 21:04:49  danielpharos
+#Added GetBaseDir function and other small fixes.
+#
 #Revision 1.17  2008/05/01 17:22:09  danielpharos
 #Fix flags-overwriting.
 #

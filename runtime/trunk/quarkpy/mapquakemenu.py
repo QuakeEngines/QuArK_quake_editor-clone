@@ -602,7 +602,6 @@ def QuakeMenu(editor):
 
     items = []
     sc = {}
-    isbsp = "Bsp" in editor.fileobject.classes   # some items don't apply for BSP files
     gamename = quarkx.setupsubset().shortname
     #firstcmd = FirstBuildCmd()
     sourcename = "UserData %s.qrk" % gamename
@@ -616,7 +615,7 @@ def QuakeMenu(editor):
             else:
                 m = qmenu.item(txt, qmenuitem1click, "|The commands in this menu lets you run your map with the game. The most common commands are the first few ones, which lets you try your map as a one-step operation.\n\nBefore a map can be played, it must be compiled (translated into a .bsp file). This is done by other programs that QuArK will call for you. See the Configuration dialog box, under the page of the game you wish to map for, where you must tell QuArK where these build programs are installed. The programs themselves are available in Build Packs, one for each game you want to make maps for, and that can be downloaded from http://dynamic.gamespy.com/~quark/.|intro.mapeditor.menu.html#gamemenu")
                 m.info = p
-                #if isbsp and p[firstcmd]:
+                #if IsBsp(editor) and p[firstcmd]:
                 #    m.state = qmenu.disabled
                 #elif p["Shortcut"]:
                 if p["Shortcut"]:
@@ -636,6 +635,9 @@ def QuakeMenu(editor):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.59  2008/10/08 21:42:12  danielpharos
+#Made map extension changable.
+#
 #Revision 1.58  2008/09/29 23:16:38  danielpharos
 #Resolve-code: Another fix. This should get Steam-games compiling and running again.
 #

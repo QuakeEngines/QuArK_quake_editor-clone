@@ -331,6 +331,11 @@ def CaulkTexture():
     else:
         return quarkx.setupsubset()["DefaultTexture"]
 
+#
+# Checks if the file loaded in the editor is a bsp file.
+#
+def IsBsp(editor):
+    return ("QBsp" in editor.fileobject.classes)
 
 #
 # returns n points, lying on the warped circle inscribed
@@ -382,6 +387,9 @@ def warpedCircleFrom4Points(n, points):
 #
 #
 #$Log$
+#Revision 1.27  2008/05/27 19:35:02  danielpharos
+#Fix typo
+#
 #Revision 1.26  2008/02/07 13:19:07  danielpharos
 #Fix typo in comment
 #

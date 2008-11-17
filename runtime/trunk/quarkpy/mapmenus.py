@@ -103,7 +103,7 @@ def BuildMenuBar(editor):
     import maptools
     import mapoptions
 
-    if "Bsp" in editor.fileobject.classes:
+    if IsBsp(editor):
         File1, sc1 = qmenu.DefaultFileMenuBsp()
     else:
         File1, sc1 = qmenu.DefaultFileMenu()
@@ -136,7 +136,7 @@ def BuildMenuBar(editor):
     Search1, sc2 = mapsearch.SearchMenu()
     sc1.update(sc2)   # merge shortcuts
 
-    if "Bsp" in editor.fileobject.classes:
+    if IsBsp(editor):
         Commands1, sc2 = bspcommands.CommandsMenu()
     else:
         Commands1, sc2 = mapcommands.CommandsMenu()
@@ -436,6 +436,9 @@ def BaseMenu(sellist, editor):
 #
 #
 #$Log$
+#Revision 1.18  2006/05/19 17:07:53  cdunde
+#To add links to docs on RMB menus and background image function.
+#
 #Revision 1.17  2006/01/30 10:07:13  cdunde
 #Changes by Nazar to the scale, zoom and map sizes that QuArK can handle
 #to allow the creation of much larger maps for the more recent games.
