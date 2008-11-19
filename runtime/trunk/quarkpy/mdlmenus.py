@@ -194,17 +194,19 @@ def MdlBackgroundMenu(editor, view=None, origin=None):
             bonepop = qmenu.popup("Bone Commands", mdlhandles.LinBoneCenterHandle(origin,None,None,0).menu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
             mdlfacepop = qmenu.popup("Face Commands", mdlhandles.ModelFaceHandle(origin).menu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
             vertexpop = qmenu.popup("Vertex Commands", mdlhandles.VertexHandle(origin).menu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
-            bonepop.state = qmenu.disabled
             if len(editor.layout.explorer.sellist) >= 1:
                 import mdlmgr
                 item = editor.layout.explorer.sellist[0]
                 if (item.type == ':fg' or item.type == ':mf' or item.type == ':bg' or item.type == ':bone') and (quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] != "1"):
                     bonepop.state = qmenu.normal
                 comp =  editor.layout.componentof(item)
-                if comp != editor.Root.currentcomponent:
-                    bonepop.state = qmenu.disabled
-            if editor.layout.explorer.sellist == [] or quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1" or editor.layout.explorer.sellist[0].type != ":mf":
+            if editor.layout.explorer.sellist == [] or quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1" or (len(editor.layout.explorer.sellist) == 1 and editor.layout.explorer.sellist[0].type != ':mf'):
                 vertexpop.state = qmenu.disabled
+            else:
+                for item in editor.layout.explorer.sellist:
+                    if item.type != ':bg' and item.type != ':bone' and item.type != ':fg' and item.type != ':mf':
+                        vertexpop.state = qmenu.disabled
+                        break
             def backbmp1click(m, view=view, form=editor.form):
                 import qbackbmp
                 qbackbmp.MdlBackBmpDlg(form, view)
@@ -283,6 +285,9 @@ def BaseMenu(sellist, editor):
 #
 #
 #$Log$
+#Revision 1.36  2008/10/04 05:48:06  cdunde
+#Updates for Model Editor Bones system.
+#
 #Revision 1.35  2008/09/22 23:38:21  cdunde
 #Updates for Model Editor Linear and Bone handles.
 #

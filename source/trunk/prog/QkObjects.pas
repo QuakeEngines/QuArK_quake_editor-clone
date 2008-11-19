@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.114  2008/11/06 21:11:50  danielpharos
+Made type Specifics soft-coded: Will lated be changed into a new, yet-to-be-defined type.
+
 Revision 1.113  2008/11/06 20:18:22  danielpharos
 Removed old stuff in preparation for new specifics code.
 
@@ -620,7 +623,7 @@ type
     function IsExplorerItem(Q: QObject) : TIsExplorerItem; virtual;
     property IntSpec[const Name: String] : Integer read GetIntSpec write SetIntSpec;
     property VectSpec[const Name: String] : TVect read GetVectSpec write SetVectSpec;
-    function GetIntsSpec(const Name: String; var I: array of Integer) : Boolean;
+(*    function GetIntsSpec(const Name: String; var I: array of Integer) : Boolean;*)
     function GetFloatSpec(const Name: String; const Default: Single) : Single;
     procedure SetFloatSpec(const Name: String; const Value: Single);
     function GetFloatsSpecPartial(const Name: String; var F: array of Single) : Integer;
@@ -732,7 +735,7 @@ var
 
 function FileAccessQ(const theFilename: String; Mode: TModeAcces) : TQStream;
 procedure LoadedItem(Format: Integer; F: TStream; Q: QObject; Size: Integer);
-function IntSpecNameOf(const Name: String) : String;
+(*function IntSpecNameOf(const Name: String) : String;*)
 function FloatSpecNameOf(const Name: String) : String;
 procedure CheckValidSpec(var Spec: String);
 function StringListConcatWithSeparator(theStringList: TStrings; theStringSeparator: Byte) : String;
@@ -2536,7 +2539,7 @@ begin
   SetFloatsSpec(Name, V);
 end;
 
-function IntSpecNameOf(const Name: String) : String;
+(*function IntSpecNameOf(const Name: String) : String;
 { (Comment by Decker 2001-02-23)
  Creates a specific-name that identifies it to contain arg(s)-data of raw
  binary Integer-values!
@@ -2548,7 +2551,7 @@ begin
   Result:=Name;
   if Length(Result) > 1 then
     Result[2]:=Chr(Ord(Result[2]) or chrFloatSpec);
-end;
+end;*)
 
 function FloatSpecNameOf(const Name: String) : String;
 { (Comment by Decker 2001-02-23)
@@ -2668,7 +2671,7 @@ begin
   Specifics.Values[FloatSpecNameOf(Name)]:=S;
 end;
 
-function QObject.GetIntsSpec(const Name: String; var I: array of Integer) : Boolean;
+(*function QObject.GetIntsSpec(const Name: String; var I: array of Integer) : Boolean;
 { (Comment by Decker 2001-02-23)
  If the specific in question, contains the correct number of 'Integer' values
  as the 'I' array have space for, they will be copied into the 'I' array and
@@ -2681,7 +2684,7 @@ begin
   Result:=Length(S) = Succ(High(I))*4;   { SizeOf(Integer) }
   if Result then
     Move(S[1], I[0], Length(S));
-end;
+end;*)
 
 function QObject.GetFloatsSpec(const Name: String; var F: array of Single) : Boolean;
 { (Comment by Decker 2001-02-23)
@@ -2992,7 +2995,7 @@ var
   o: PyObject;
   S: String;
   PF: ^Single;
-  PI: ^Integer;
+(*  PI: ^Integer;*)
   L: TStringList;
 begin
   for I:=Low(PyObjMethodTable) to High(PyObjMethodTable) do
@@ -3048,7 +3051,7 @@ begin
           S[J]:=#0;
           if Ord(S[1]) and chrFloatSpec = 0 then
           begin
-            if (Length(S) > 1) and not (Ord(S[2]) and chrFloatSpec = 0) then
+(*            if (Length(S) > 1) and not (Ord(S[2]) and chrFloatSpec = 0) then
             begin
               N:=(Length(S)-J) div 4;    { SizeOf(Integer) }
               PChar(PI):=PChar(S)+J;
@@ -3060,7 +3063,7 @@ begin
               end;
               S[2]:=Chr(Ord(S[2]) and not chrFloatSpec);
             end
-            else
+            else*)
               o:=PyString_FromStringAndSize(PChar(S)+J, Length(S)-J);
           end
           else

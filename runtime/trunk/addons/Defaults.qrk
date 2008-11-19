@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.467  2008/10/26 00:07:09  cdunde
+//Moved all of the Specifics/Args page code for the Python importers\exports to the importer files.
+//
 //Revision 1.466  2008/10/23 23:21:22  danielpharos
 //Removed switch that doesn't seem to work.
 //
@@ -11156,6 +11159,10 @@ QQRKSRC1
       {
         type = $06
       }
+      Skeleton:bg =
+      {
+        type = $05
+      }
       Component:mc =
       {
         show = $01
@@ -11174,10 +11181,6 @@ QQRKSRC1
           {
             Vertices = ''
           }
-        }
-        Skeleton:bg =
-        {
-          type = $05
         }
       }
     }

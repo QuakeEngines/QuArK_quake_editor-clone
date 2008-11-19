@@ -276,22 +276,24 @@ class BaseEditor:
                     if b.state == 2:
                         fs = None
         # End of Terrain Generator added code
-        if (fs is not None) and (view.viewmode == "wire"):
-            # This gives the option of NOT filling the selected poly with color in 2D views.
-            # Very helpful when a background image is being used to work with.
-            if MapOption("PolySelectNoFill", self.MODE) and fs.type != ":e":
-                mode=self.drawmode | DM_DONTDRAWSEL
-            else:
-                mode = self.drawmode | DM_BACKGROUND
+        if isinstance(self, mdleditor.ModelEditor):
+            pass
+        else:
+            if (fs is not None) and (view.viewmode == "wire"):
+                # This gives the option of NOT filling the selected poly with color in 2D views.
+                # Very helpful when a background image is being used to work with.
+                if MapOption("PolySelectNoFill", self.MODE) and fs.type != ":e":
+                    mode=self.drawmode | DM_DONTDRAWSEL
+                else:
+                    mode = self.drawmode | DM_BACKGROUND
 
-            if MapOption("BBoxSelected", self.MODE):
-                mode=mode|DM_BBOX
-            self.ObjectMgr.im_func("drawback", fs, self, view, mode)
+                if MapOption("BBoxSelected", self.MODE):
+                    mode=mode|DM_BBOX
+                self.ObjectMgr.im_func("drawback", fs, self, view, mode)
 
         #
         # Draw the map
         #
-
         mode = self.drawmode
         if MapOption("BBoxAlways", self.MODE): mode=mode|DM_BBOX
         if self.Root.selected:
@@ -299,24 +301,40 @@ class BaseEditor:
             # tiglari asks:  is this the right technique?
             #
             #view.drawmap(self.Root, mode)     # draw the whole map in normal back lines
-            drawview(view, self.Root, mode)
+            if isinstance(self, mdleditor.ModelEditor) and view.viewmode == "wire":
+                self.ObjectMgr.im_func("drawback", self.Root, self, view, 1)
+            else:
+                drawview(view, self.Root, mode)
         else:
             #
             # Draw the unselected items first
             #
-            #view.drawmap(self.Root, mode | DM_DONTDRAWSEL)     # draw the map in back lines, don't draw selected items
-            drawview(view, self.Root, mode | DM_DONTDRAWSEL)
+            if isinstance(self, mdleditor.ModelEditor) and view.viewmode == "wire":
+                drawview(view, self.Root, mode | DM_DONTDRAWSEL)
+                if len(ex.sellist)<=1:
+                    if  isinstance(self, mdleditor.ModelEditor) and len(ex.sellist)==0:
+                        self.ObjectMgr.im_func("drawback", self.Root, self, view, 1)
+                    else:
+                        self.ObjectMgr.im_func("drawback", ex.sellist[0], self, view, 1)
+                else:
+                    self.ObjectMgr.im_func("drawback", self.Root.currentcomponent, self, view, 1)
+            else:
+                #view.drawmap(self.Root, mode | DM_DONTDRAWSEL)     # draw the map in back lines, don't draw selected items
+                drawview(view, self.Root, mode | DM_DONTDRAWSEL)
             #
             # Then the selected ones over them
             #
-            mode = self.drawmode
-            if MapOption("BBoxSelected", self.MODE): mode=mode|DM_BBOX
-            list = ex.sellist
-            if len(list)==1:
-                self.ObjectMgr.im_func("drawsel", list[0], view, mode)
+            if isinstance(self, mdleditor.ModelEditor):
+                pass
             else:
-                for sel in list:    # draw the selected objects in "highlight" white-and-black lines
-                    view.drawmap(sel, mode | DM_SELECTED, view.setup.getint("SelMultColor"))
+                mode = self.drawmode
+                if MapOption("BBoxSelected", self.MODE): mode=mode|DM_BBOX
+                list = ex.sellist
+                if len(list)==1:
+                    self.ObjectMgr.im_func("drawsel", list[0], view, mode)
+                else:
+                    for sel in list:    # draw the selected objects in "highlight" white-and-black lines
+                        view.drawmap(sel, mode | DM_SELECTED, view.setup.getint("SelMultColor"))
 
 
         #
@@ -1495,6 +1513,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.118  2008/10/21 18:13:27  cdunde
+#To try to stop dupe drawing of bone handles.
+#
 #Revision 1.117  2008/10/05 13:53:55  danielpharos
 #Fixed an oops and add NoDraw (will be used later).
 #

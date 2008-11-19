@@ -175,24 +175,28 @@ class ModelEditor(BaseEditor):
         self.Root = Root
         if self.Root.currentcomponent is None and self.Root.name.endswith(":mr"):
             componentnames = []
+            bones = self.Root.dictitems['Skeleton:bg'].findallsubitems("", ':bone')   # get all bones
             for item in self.Root.dictitems:
                 if item.endswith(":mc"):
                     comp = self.Root.dictitems[item]
                     componentnames.append(item)
 
                     ### Start of bone data creation.
-                    self.ModelComponentList[item] = {}
-                    self.ModelComponentList[item]['bonevtxlist'] = {}
-                    self.ModelComponentList[item]['boneobjlist'] = {}
-                    bones = self.Root.dictitems[item].findallsubitems("", ':bone')   # get all bones
+                    foundbone = 0
+                    for bone in range(len(bones)):
+                        if (bones[bone].dictspec['start_component'] == item and bones[bone].dictspec.has_key("start_vtxlist")) or (bones[bone].dictspec['end_component'] == item and bones[bone].dictspec.has_key("end_vtxlist")):
+                            self.ModelComponentList[item] = {}
+                            self.ModelComponentList[item]['bonevtxlist'] = {}
+                            self.ModelComponentList[item]['boneobjlist'] = {}
+                            foundbone = 1
+                            break
+
+                    if foundbone == 0:
+                        continue
                     for bone in bones:
                         boneobjs = {}
                         frame = self.Root.dictitems[item].dictitems['Frames:fg'].subitems[0]
-                        if not bone.dictspec.has_key("start_scale"):
-                            bone['start_scale'] = (1.00,)
-                        if not bone.dictspec.has_key("end_scale"):
-                            bone['end_scale'] = (1.00,)
-                        if bone.dictspec.has_key("start_vtxlist"):
+                        if bone.dictspec['start_component'] == item and bone.dictspec.has_key("start_vtxlist"):
                             boneobjs['s_or_e0'] = {}
                             bone_vtxlist = []
                             tristodrawlist = []
@@ -214,7 +218,7 @@ class ModelEditor(BaseEditor):
                             boneobjs['s_or_e0']['vtxlist'] = bone_vtxlist
                             boneobjs['s_or_e0']['tristodrawlist'] = tristodrawlist
                             boneobjs['s_or_e0']['selvtxlist'] = selvtxlist
-                        if bone.dictspec.has_key("end_vtxlist"):
+                        if bone.dictspec['end_component'] == item and bone.dictspec.has_key("end_vtxlist"):
                             boneobjs['s_or_e1'] = {}
                             bone_vtxlist = []
                             tristodrawlist = []
@@ -236,7 +240,7 @@ class ModelEditor(BaseEditor):
                             boneobjs['s_or_e1']['vtxlist'] = bone_vtxlist
                             boneobjs['s_or_e1']['tristodrawlist'] = tristodrawlist
                             boneobjs['s_or_e1']['selvtxlist'] = selvtxlist
-                        if bone.dictspec.has_key("start_vtxlist") or bone.dictspec.has_key("end_vtxlist"):
+                        if (bone.dictspec['start_component'] == item and bone.dictspec.has_key("start_vtxlist")) or (bone.dictspec['end_component'] == item and bone.dictspec.has_key("end_vtxlist")):
                             self.ModelComponentList[item]['boneobjlist'][bone.name] = boneobjs
                     ### End of bone data creation.
 
@@ -429,14 +433,9 @@ class ModelEditor(BaseEditor):
                 EditorRoot = 0
             else:
                 EditorRoot = ParentNames.index(HoldObject.name)
-        
+
             for x in range(len(ParentNames)-EditorRoot-1):
-                if x+EditorRoot == 1:
-                    HoldObject = HoldObject.findname(ParentNames[EditorRoot+x+1])
-                elif x+EditorRoot == 2:
-                    HoldObject = HoldObject.dictitems[ParentNames[EditorRoot+x+1]]
-                elif x+EditorRoot == 3:
-                    HoldObject = HoldObject.dictitems[ParentNames[EditorRoot+x+1]]
+                HoldObject = HoldObject.findname(ParentNames[EditorRoot+x+1])
 
            ### Line below moved to mdlmgr.py, def selectcomponent, using HoldObject as global
            ### to allow Skin-view to complete its new undo mesh and handles, was not working from here.
@@ -512,10 +511,10 @@ class ModelEditor(BaseEditor):
         if len(sellist)==1:
             if sellist[0].type == ':mf':
                 import mdlcommands
+                mdlcommands.NewFrame.state = qmenu.normal
                 if self.ModelFaceSelList != []:
                     mdlfacepop = qmenu.popup("Face Commands", mdlhandles.ModelFaceHandle(origin).menu(self, view), hint="")
                     return [mdlcommands.NewFrame , qmenu.sep , mdlfacepop, qmenu.sep] + mdlentities.CallManager("menu", sellist[0], self) + extra
-                mdlcommands.NewFrame.state = qmenu.normal
                 return [mdlcommands.NewFrame , qmenu.sep] + mdlentities.CallManager("menu", sellist[0], self) + extra
             elif sellist[0].parent.type == ':sg':
                 obj = sellist[0]
@@ -560,25 +559,26 @@ class ModelEditor(BaseEditor):
                 skipbuild = 1
         except:
             pass
-        if len(self.layout.explorer.sellist) == 0:
+        if len(self.layout.explorer.sellist) == 0 and self.layout.explorer.uniquesel is None:
             BonesSellist = []
-        if len(self.layout.explorer.sellist) == 1 and self.layout.explorer.sellist[0].type == ':bg':
+        if (len(self.layout.explorer.sellist) == 1 and self.layout.explorer.sellist[0].type == ':bg') or (self.layout.explorer.uniquesel is not None and self.layout.explorer.uniquesel.type == ':bg'):
             for item in BonesSellist:
                 if item.type == ':bone':
                     BonesSellist.remove(item)
             selmatch = 0
             for item in BonesSellist:
                 if item.type == ':bg':
-                    if item == self.layout.explorer.sellist[0]:
+                    if (item == self.layout.explorer.sellist[0]) or item == self.layout.explorer.uniquesel:
                         selmatch = 1
                     BonesSellist.remove(item)
                     break
             if BonesSellist != []:
                 if selmatch == 0:
-                    self.layout.explorer.sellist = self.layout.explorer.sellist + BonesSellist
+        #            self.layout.explorer.sellist = self.layout.explorer.sellist + BonesSellist
+                    self.layout.explorer.sellist = [self.layout.explorer.uniquesel] + BonesSellist
                 else:
                     self.layout.explorer.sellist = BonesSellist
-        elif len(self.layout.explorer.sellist) == 1 and self.layout.explorer.sellist[0].type == ':bone':
+        elif (len(self.layout.explorer.sellist) == 1 and self.layout.explorer.sellist[0].type == ':bone') or (self.layout.explorer.uniquesel is not None and self.layout.explorer.uniquesel.type == ':bone'):
             for item in BonesSellist:
                 if item.type == ':bg':
                     BonesSellist.remove(item)
@@ -586,52 +586,66 @@ class ModelEditor(BaseEditor):
             selmatch = 0
             for item in BonesSellist:
                 if item.type == ':bone':
-                    if item == self.layout.explorer.sellist[0]:
+        #            if item == self.layout.explorer.sellist[0]:
+                    if item == self.layout.explorer.uniquesel:
                         selmatch = 1
                     BonesSellist.remove(item)
             if BonesSellist != []:
                 if selmatch == 0:
-                    self.layout.explorer.sellist = self.layout.explorer.sellist + BonesSellist
+        #            self.layout.explorer.sellist = self.layout.explorer.sellist + BonesSellist
+                    self.layout.explorer.sellist = [self.layout.explorer.uniquesel] + BonesSellist
                 else:
                     self.layout.explorer.sellist = BonesSellist
         testcount = 0
-        for item in range(len(self.layout.explorer.sellist)):
-            frames = 0
-            bonegroup = 0
-            bone = 0
-            if self.layout.explorer.sellist[item].type != ':mf' and self.layout.explorer.sellist[item].type != ':bg' and self.layout.explorer.sellist[item].type != ':bone':
+        selection = []
+        if len(self.layout.explorer.sellist) != 0:
+            selection = self.layout.explorer.sellist
+        elif self.layout.explorer.uniquesel is not None:
+            selection = selection + [self.layout.explorer.uniquesel]
+        frames = 0
+        bonegroup = 0
+        bone = 0
+        for item in range(len(selection)):
+            if selection[item].type != ':mf' and selection[item].type != ':bg' and selection[item].type != ':bone':
                 BonesSellist = []
                 break
-            if self.layout.explorer.sellist[item].type == ':mf':
+            if selection[item].type == ':mf':
                 frames = frames + 1
-            if self.layout.explorer.sellist[item].type == ':bg':
+                if frames == 1:
+                    for frame in range(len(self.Root.currentcomponent.dictitems['Frames:fg'].subitems)):
+                        if selection[item] == self.Root.currentcomponent.dictitems['Frames:fg'].subitems[frame]:
+                            self.bone_frame = frame
+            if selection[item].type == ':bg':
                 bonegroup = bonegroup + 1
-            if self.layout.explorer.sellist[item].type == ':bone':
+            if selection[item].type == ':bone':
                 bone = bone + 1
                 testcount = testcount + 1
-            if item == len(self.layout.explorer.sellist)-1:
+            if item == len(selection)-1:
                 if testcount > 1:
                     BonesSellist = []
                     break
                 if bonegroup != 0:
-                    BonesSellist = self.layout.explorer.sellist
+                    BonesSellist = selection
                 if bone != 0:
-                    BonesSellist = self.layout.explorer.sellist
+                    BonesSellist = selection
                 if frames != 0:
                     nobones = 0
-                    for thing in BonesSellist:
+                    """for thing in BonesSellist:
                         if thing.type == ':bg':
                             self.layout.explorer.sellist = self.layout.explorer.sellist + [thing]
                             BonesSellist = self.layout.explorer.sellist
                             nobones = 1
                             break
                         if thing.type == ':bone':
-                            self.layout.explorer.sellist = self.layout.explorer.sellist + [thing]
+                            self.layout.explorer.sellist = selection + [thing]
                             BonesSellist = self.layout.explorer.sellist
                             nobones = 1
-                            break
+                            break"""
                     if nobones == 0:
-                        BonesSellist = self.layout.explorer.sellist
+                        if len(self.layout.explorer.sellist) != 0:
+                            BonesSellist = self.layout.explorer.sellist
+                        else:
+                            BonesSellist = selection
         self.layout.selchange()
         if skipbuild == 1:
             pass
@@ -1667,6 +1681,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.107  2008/10/23 04:42:24  cdunde
+#Infobase links and updates for Bones.
+#
 #Revision 1.106  2008/10/21 19:45:12  cdunde
 #To keep editor selected lists after mutual vertex drag with single bone selection
 #and only redraw textured editor views for all Skin-view handle drags.

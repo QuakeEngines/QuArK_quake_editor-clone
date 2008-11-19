@@ -49,7 +49,7 @@ class EntityManager:
 
     def drawback(o, editor, view, mode):
         "Called to draw the Model's Mesh for the 'Component' object 'o'"
-        "when in 'Textured' or 'Solid' view mode, for each animation 'frame'."
+        "when in 'Textured', 'Solid' or 'Wire Frame' view mode, for each animation 'frame'."
 
         import qhandles
         if view.info["viewname"] == "XY":
@@ -59,10 +59,10 @@ class EntityManager:
                     o = editor.Root
                 else:
                     o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
+                meshcolor = MapColor("Options3Dviews_frameColor2", SS_MODEL)
+                view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # draws selected color for model mesh lines
             else:
-                pass
-            meshcolor = MapColor("Options3Dviews_frameColor2", SS_MODEL)
-            view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # draws selected color for model mesh lines
+                view.drawmap(o, mode)  # draws default color for model mesh lines
 
         elif view.info["viewname"] == "XZ":
             if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh4"] == "1":
@@ -71,10 +71,10 @@ class EntityManager:
                     o = editor.Root
                 else:
                     o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
+                meshcolor = MapColor("Options3Dviews_frameColor4", SS_MODEL)
+                view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # draws selected color for model mesh lines
             else:
-                pass
-            meshcolor = MapColor("Options3Dviews_frameColor4", SS_MODEL)
-            view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # draws selected color for model mesh lines
+                view.drawmap(o, mode)  # draws default color for model mesh lines
 
         elif view.info["viewname"] == "YZ":
             if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh3"] == "1":
@@ -83,10 +83,10 @@ class EntityManager:
                     o = editor.Root
                 else:
                     o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
+                meshcolor = MapColor("Options3Dviews_frameColor3", SS_MODEL)
+                view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # draws selected color for model mesh lines
             else:
-                pass
-            meshcolor = MapColor("Options3Dviews_frameColor3", SS_MODEL)
-            view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # draws selected color for model mesh lines
+                view.drawmap(o, mode)  # draws default color for model mesh lines
 
         elif view.info["viewname"] == "editors3Dview":
             if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh1"] == "1":
@@ -95,10 +95,10 @@ class EntityManager:
                     o = editor.Root
                 else:
                     o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
+                meshcolor = MapColor("Options3Dviews_frameColor1", SS_MODEL)
+                view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # draws selected color for model mesh lines
             else:
-                pass
-            meshcolor = MapColor("Options3Dviews_frameColor1", SS_MODEL)
-            view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # draws selected color for model mesh lines
+                view.drawmap(o, mode)  # draws default color for model mesh lines
             if editor.ModelFaceSelList != []:
                 # draws model mesh faces, if selected, while rotating, panning or zooming.
                 if isinstance(editor.dragobject, qhandles.Rotator2D) or isinstance(editor.dragobject, qhandles.ScrollViewDragObject) or isinstance(editor.dragobject, qhandles.FreeZoomDragObject):
@@ -111,16 +111,14 @@ class EntityManager:
                     o = editor.Root
                 else:
                     o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
+                meshcolor = MapColor("Options3Dviews_frameColor5", SS_MODEL)
+                view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # draws selected color for model mesh lines
             else:
-                pass
-            meshcolor = MapColor("Options3Dviews_frameColor5", SS_MODEL)
-            view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # draws selected color for model mesh lines
+                view.drawmap(o, mode)  # draws default color for model mesh lines
             if editor.ModelFaceSelList != []:
                 # draws model mesh faces, if selected, while rotating, panning or zooming.
                 if isinstance(editor.dragobject, qhandles.Rotator2D) or isinstance(editor.dragobject, qhandles.ScrollViewDragObject) or isinstance(editor.dragobject, qhandles.FreeZoomDragObject):
                     mdlhandles.ModelFaceHandle(mode).draw(editor, view, editor.EditorObjectList)
-        else:
-            view.drawmap(o, mode)  # draws default color for model mesh lines
 
     def drawsel(o, view, mode):
         "Called to draw the Model's Mesh for the 'Component' object 'o'"
@@ -136,10 +134,10 @@ class EntityManager:
                     o = editor.Root
                 else:
                     o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
+                meshcolor = MapColor("Options3Dviews_frameColor2", SS_MODEL)
+                view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # draws selected color for model mesh lines
             else:
-                pass
-            meshcolor = MapColor("Options3Dviews_frameColor2", SS_MODEL)
-            view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # draws selected color for model mesh lines
+                view.drawmap(o, mode)  # draws default color for model mesh lines
 
         elif view.info["viewname"] == "XZ":
             if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh4"] == "1":
@@ -148,10 +146,10 @@ class EntityManager:
                     o = editor.Root
                 else:
                     o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
+                meshcolor = MapColor("Options3Dviews_frameColor4", SS_MODEL)
+                view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # draws selected color for model mesh lines
             else:
-                pass
-            meshcolor = MapColor("Options3Dviews_frameColor4", SS_MODEL)
-            view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # draws selected color for model mesh lines
+                view.drawmap(o, mode)  # draws default color for model mesh lines
 
         elif view.info["viewname"] == "YZ":
             if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh3"] == "1":
@@ -160,44 +158,42 @@ class EntityManager:
                     o = editor.Root
                 else:
                     o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
+                meshcolor = MapColor("Options3Dviews_frameColor3", SS_MODEL)
+                view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # draws selected color for model mesh lines
             else:
-                pass
-            meshcolor = MapColor("Options3Dviews_frameColor3", SS_MODEL)
-            view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # draws selected color for model mesh lines
+                view.drawmap(o, mode)  # draws default color for model mesh lines
 
         elif view.info["viewname"] == "editors3Dview":
-            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh1"] == "1":
-    #            if (o.type == ":mr") or (o.type == ":mg") or( o.type == ":bone"):
-                if (o.type == ":mr") or (o.type == ":mg"):
-                    o = editor.Root
-                else:
-                    o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
+    #        if (o.type == ":mr") or (o.type == ":mg") or( o.type == ":bone"):
+            if (o.type == ":mr") or (o.type == ":mg"):
+                o = editor.Root
             else:
-                pass
-            meshcolor = MapColor("Options3Dviews_frameColor1", SS_MODEL)
-            view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # draws selected color for model mesh lines
+                o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
+            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh1"] == "1":
+                meshcolor = MapColor("Options3Dviews_frameColor1", SS_MODEL)
+                view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # draws selected color for model mesh lines
+            else:
+                view.drawmap(o, mode)  # draws default color for model mesh lines
             if editor.ModelFaceSelList != []:
                 # draws model mesh faces, if selected, while rotating, panning or zooming.
                 if isinstance(editor.dragobject, qhandles.Rotator2D) or isinstance(editor.dragobject, qhandles.ScrollViewDragObject) or isinstance(editor.dragobject, qhandles.FreeZoomDragObject):
                     mdlhandles.ModelFaceHandle(mode).draw(editor, view, editor.EditorObjectList)
 
         elif view.info["viewname"] == "3Dwindow":
-            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh5"] == "1":
-    #            if (o.type == ":mr") or (o.type == ":mg") or( o.type == ":bone"):
-                if (o.type == ":mr") or (o.type == ":mg"):
-                    o = editor.Root
-                else:
-                    o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
+    #        if (o.type == ":mr") or (o.type == ":mg") or( o.type == ":bone"):
+            if (o.type == ":mr") or (o.type == ":mg"):
+                o = editor.Root
             else:
-                pass
-            meshcolor = MapColor("Options3Dviews_frameColor5", SS_MODEL)
-            view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # draws selected color for model mesh lines
+                o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
+            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh5"] == "1":
+                meshcolor = MapColor("Options3Dviews_frameColor5", SS_MODEL)
+                view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # draws selected color for model mesh lines
+            else:
+                view.drawmap(o, mode)  # draws default color for model mesh lines
             if editor.ModelFaceSelList != []:
                 # draws model mesh faces, if selected, while rotating, panning or zooming.
                 if isinstance(editor.dragobject, qhandles.Rotator2D) or isinstance(editor.dragobject, qhandles.ScrollViewDragObject) or isinstance(editor.dragobject, qhandles.FreeZoomDragObject):
                     mdlhandles.ModelFaceHandle(mode).draw(editor, view, editor.EditorObjectList)
-        else:
-            view.drawmap(o, mode)  # draws default color for model mesh lines
 
     def handles(o, editor, view):
         "Build a list of handles related to this object."
@@ -344,6 +340,12 @@ class SkinType(EntityManager):
 class TagType(EntityManager):
     "Tag"
 
+class TagFrameType(EntityManager):
+    "Tag Frame"
+
+class BoundType(EntityManager):
+    "Bound Frame"
+
 class BoneType(EntityManager):
     "Bone"
 
@@ -358,25 +360,39 @@ class BoneType(EntityManager):
         if o.dictspec.has_key("start_vtx_pos") or o.dictspec.has_key("end_vtx_pos"):
             comp = editor.Root.currentcomponent
             if comp.currentframe is not None:
-                frame = comp.currentframe
+                start_frame = end_frame = comp.currentframe
             else:
-                frame = comp.dictitems['Frames:fg'].subitems[0]
+                start_frame = end_frame = comp.dictitems['Frames:fg'].subitems[0]
             if o.dictspec.has_key("start_vtx_pos") and o.dictspec['start_vtx_pos'] is not None:
+                if o.dictspec['start_component'] != "None":
+                    try:
+                        start_frame = editor.Root.dictitems[o.dictspec['start_component']].dictitems['Frames:fg'].subitems[editor.bone_frame]
+                    except:
+                        quarkx.msgbox("FRAME COUNT ERROR !\n\nNot all components using these bones\nhave the same number of frames.\n\nCorrect and try again.", qutils.MT_ERROR, qutils.MB_OK)
+                        editor.layout.explorer.sellist = [comp.dictitems['Frames:fg'].subitems[0]]
+                        return
                 vtxlist = o.dictspec['start_vtx_pos']
                 vtxlist = vtxlist.split(" ")
                 start_vtxpos = quarkx.vect(0, 0, 0)
                 for start_vtx in vtxlist:
-                    start_vtxpos = start_vtxpos + frame.vertices[int(start_vtx)]
+                    start_vtxpos = start_vtxpos + start_frame.vertices[int(start_vtx)]
                 start_vtxpos = start_vtxpos/ float(len(vtxlist))
                 start_point = start_vtxpos + quarkx.vect(o.dictspec['start_offset'])
                 o['start_point'] = start_point.tuple
                 o['bone_length'] = (start_point - quarkx.vect(o.dictspec['end_point'])*-1).tuple
             if o.dictspec.has_key("end_vtx_pos") and o.dictspec['end_vtx_pos'] is not None:
+                if o.dictspec['end_component'] != "None":
+                    try:
+                        end_frame = editor.Root.dictitems[o.dictspec['end_component']].dictitems['Frames:fg'].subitems[editor.bone_frame]
+                    except:
+                        quarkx.msgbox("FRAME COUNT ERROR !\n\nNot all components using these bones\nhave the same number of frames.\n\nCorrect and try again.", qutils.MT_ERROR, qutils.MB_OK)
+                        editor.layout.explorer.sellist = [comp.dictitems['Frames:fg'].subitems[0]]
+                        return
                 vtxlist = o.dictspec['end_vtx_pos']
                 vtxlist = vtxlist.split(" ")
                 end_vtxpos = quarkx.vect(0, 0, 0)
                 for end_vtx in vtxlist:
-                    end_vtxpos = end_vtxpos + frame.vertices[int(end_vtx)]
+                    end_vtxpos = end_vtxpos + end_frame.vertices[int(end_vtx)]
                 end_vtxpos = end_vtxpos/ float(len(vtxlist))
                 end_point = end_vtxpos + quarkx.vect(o.dictspec['end_offset'])
                 o['end_point'] = end_point.tuple
@@ -461,6 +477,8 @@ class BoneType(EntityManager):
               Txt="Bone Start Handle"
                  }
 
+          start_component: = {Typ="E R" Txt="component" Hint="The component this"$0D"handle is assigned to."}
+
           start_vertex_count: = {Typ="E R" Txt="vertexes" Hint="Number of vertexes"$0D"assigned to this handle."}
 
           start_color: = {Typ="LI"   Txt="color"  Hint="Color to use for this bones Start handle's vertex group color."$0D"Click the color selector button to the right and pick a color."}
@@ -486,6 +504,8 @@ class BoneType(EntityManager):
               Typ="S"
               Txt="Bone End Handle"
                  }
+
+          end_component: = {Typ="E R" Txt="component" Hint="The component this"$0D"handle is assigned to."}
 
           end_vertex_count: = {Typ="E R" Txt="vertexes" Hint="Number of vertexes"$0D"assigned to this handle."}
 
@@ -518,15 +538,18 @@ class BoneType(EntityManager):
 #
 
 Mapping = {
-    ":mc": ComponentType(),
-    ":mf": FrameType(),
-    ".pcx": SkinType(),
-    ".jpg": SkinType(),
-    ".tga": SkinType(),
-    ":tag": TagType(),
-    ":bone": BoneType() }
+    ":mc":       ComponentType(),
+    ":mf":       FrameType(),
+    ".pcx":      SkinType(),
+    ".jpg":      SkinType(),
+    ".tga":      SkinType(),
+    ":bound":    BoundType(),
+    ":tag":      TagType(),
+    ":tagframe": TagFrameType(),
+    ":bone":     BoneType() }
 
-Generics = [GroupType(), FrameGroupType(), SkinGroupType(), SkinGroupType(), MiscGroupType(), MiscGroupType()]  # AiV
+# Generics = [GroupType(), FrameGroupType(), SkinGroupType(), SkinGroupType(), MiscGroupType(), MiscGroupType()]  # AiV
+Generics = [GroupType(), MiscGroupType(), FrameGroupType(), SkinGroupType()]  # AiV
 
 #
 # Use the function below to call a method of the Entity Manager classes.
@@ -571,6 +594,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.33  2008/10/17 22:29:05  cdunde
+#Added assigned vertex count (read only) to Specifics/Args page for each bone handle.
+#
 #Revision 1.32  2008/10/15 00:01:30  cdunde
 #Setup of bones individual handle scaling and Keyframe matrix rotation.
 #Also removed unneeded code.

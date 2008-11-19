@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23  2008/11/06 20:18:22  danielpharos
+Removed old stuff in preparation for new specifics code.
+
 Revision 1.22  2008/10/29 00:31:07  danielpharos
 The printout of QuArK internal objects is now much more useful.
 
@@ -833,7 +836,7 @@ var
  I, J, N: Integer;
  S, Spec: String;
  PF: ^Single;
- PI: ^Integer;
+(* PI: ^Integer;*)
 begin
  try
   Result:=Nil;
@@ -849,13 +852,13 @@ begin
       I:=Specifics.IndexOfName(FloatSpecNameOf(Spec));
       if I<0 then
        begin
-        I:=Specifics.IndexOfName(IntSpecNameOf(Spec));
+(*        I:=Specifics.IndexOfName(IntSpecNameOf(Spec));
         if I<0 then
-         begin
+         begin*)
           Result:=PyNoResult;
           Exit;
          end;
-        S:=Specifics[I];
+(*        S:=Specifics[I];
         I:=Length(Spec)+1;
         N:=(Length(S)-I) div 4;    { SizeOf(Integer) }
         PChar(PI):=PChar(S)+I;
@@ -866,7 +869,7 @@ begin
           Inc(PI);
          end;
         Exit;
-       end;
+       end;*)
       S:=Specifics[I];
       I:=Length(Spec)+1;
       N:=(Length(S)-I) div 4;    { SizeOf(Single) }
@@ -896,7 +899,7 @@ var
  I, N: Integer;
  obj: PyObject;
  PF: ^Single;
- PI: ^Integer;
+(* PI: ^Integer;*)
  IsTupleNotList: Boolean;
 begin
  if value^.ob_type = PyString_Type then
@@ -925,7 +928,7 @@ begin
    else
     obj:=PyList_GetItem(value, 0);
    if obj=Nil then Abort;
-   if obj^.ob_type = PyInt_Type then
+(*   if obj^.ob_type = PyInt_Type then
     begin
      PChar(PI):=PChar(Result);
      for I:=0 to N-1 do
@@ -942,7 +945,7 @@ begin
      Spec:=IntSpecNameOf(Spec);
     end
    else if obj^.ob_type = PyFloat_Type then
-    begin
+    begin*)
      PChar(PF):=PChar(Result);
      for I:=0 to N-1 do
       begin
@@ -951,14 +954,14 @@ begin
        else
         obj:=PyList_GetItem(value, I);
        if obj=Nil then Abort;
-       if obj^.ob_type <> PyFloat_Type then Abort;
+(*       if obj^.ob_type <> PyFloat_Type then Abort;*)
        PF^:=PyFloat_AsDouble(obj);
        Inc(PF);
       end;
      Spec:=FloatSpecNameOf(Spec);
-    end
+(*    end
    else
-    Abort;
+    Abort;*)
   end
  else
   begin
@@ -982,7 +985,10 @@ begin
    begin
     Acces;
     if value<>Py_None then
-     Specifics.Values[nSpec]:=S
+     if value^.ob_type = PyFloat_Type then
+      Specifics.Values[FloatSpecNameOf(nSpec)]:=S
+     else
+      Specifics.Values[nSpec]:=S
     else
      begin
       Specifics.Values[nSpec]:='';

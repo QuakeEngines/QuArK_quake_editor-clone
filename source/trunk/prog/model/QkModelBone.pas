@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2008/10/09 21:34:12  danielpharos
+We want to be able to store handles with the bones.
+
 Revision 1.17  2008/09/06 15:57:36  danielpharos
 Moved exception code into separate file.
 
@@ -111,7 +114,6 @@ Skeleton                             #                |
 type
   QModelBone = class(QMdlObject)
   private
-    Component: QObject;
     //Workaround: We want to be able to store handles with the bones:
     FStartHandle, FEndHandle: PyObject;
   public
@@ -127,7 +129,6 @@ type
     function PyGetAttr(attr: PChar) : PyObject; override;
     function PySetAttr(attr: PChar; value: PyObject) : Boolean; override;
     Function GetLength: Single;
-    property ParentComponent: QObject read Component write Component;
   end;
 
  {------------------------}

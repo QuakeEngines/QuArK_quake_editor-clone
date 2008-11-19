@@ -2,35 +2,49 @@ title: Bones System
 author: cdunde
 
 <g>Bones</g> are used primarily for the animation, movement, of models in the same way that our bodies
-<g>Skeleton</g> bones are. Each <g>Component</g> of a model has its own <g>Skeleton</g> folder where
-these bones are kept, if there are any. Even though a model may not come with its own bones,
-you can still create your own set of bones and store them in a QuArK Model <g>.qkl</g> Work File.
+<g>Skeleton</g> bones are. The editor has one <a href="intro.modeleditor.dataforms.html#treeview">Skeleton folder</a>
+where these bones are kept, if there are any. They can be applied to a single model <g>Component</g>,
+multipul components of a single model or components of another model that has been imported.
+Even though a model may not come with its own bones, you can still create your own set of bones and store them
+in a QuArK Model <g>.qkl</g> Work File.
 
-The use of bones is activated by clicking on the <g>Skeleton</g> folder in the
-<a href="intro.modeleditor.dataforms.html#treeview">tree-view</a>, if there are no bones, or by
+The use of bones is activated by clicking on a single frame of any component and either the
+<a href="intro.modeleditor.dataforms.html#treeview">Skeleton folder</a>
+in the <a href="intro.modeleditor.dataforms.html#treeview">tree-view</a>, if there are bones, or by
 opening that folder and clicking on any of the bones inside it. Once activated, all of this systems
 controlling functions are located on the
 <a href="intro.modeleditor.rmbmenus.html#viewsrmbmenus">Editor Views RMB menu</a> for
 <a href="intro.modeleditor.rmbmenus.html#bonecommands">Bone Commands</a>. Reading their brief descriptions
 will give you a quick understanding of each function. For a quick reference, hold your cursor over any menu
 item and press your <b>F1</b> key for its help box that will also give you its use information.
+A <a href="intro.modeleditor.dataforms.html#treeview">Skeleton folder</a> selection causes all <g>attached</g>
+bones to move together, while a single bone selection only moves that particular bone.
+Moving a bone below its attached bone in the <a href="intro.modeleditor.dataforms.html#treeview">tree-view</a>
+will give you access to that bone's end handle for assigning vertexes if needed. However, it is advisable to
+assign them to the start handles, except for the last bone of each set.
 
 <img border=1 align=right>bones1.png</img>
 
 <g><i><b><u>Basic Applications</u></b></i></g>&nbsp;:<br>
 
-The first step is to <a href="intro.modeleditor.rmbmenus.html#bonecommands">Add a Bone</a>,
-shown to the right at the top, by selecting a <b>single frame</b> in the
-<a href="intro.modeleditor.dataforms.html#treeview">Frames folder</a> and the
-<a href="intro.modeleditor.dataforms.html#treeview">Skeleton folder in the tree-view</a>,
-<b>both in the same model component</b>.
+The first step is to <a href="intro.modeleditor.rmbmenus.html#bonecommands">Add a Bone</a>.
+To do this you must be in <a href="intro.modeleditor.toolpalettes.display.html">Vertex mode</a>
+and not <a href="intro.modeleditor.toolpalettes.display.html#linear">Linear Drag Handles mode</a>
+as the bones will not be displayed.
 Then do a <g>LMB</g> click, in one of the editor's <g>2D views</g> where you want to place the bone,
 to get the popup menu, go to <a href="intro.modeleditor.rmbmenus.html#viewsrmbmenus">Bone Commands</a>
 then click on <a href="intro.modeleditor.rmbmenus.html#bonecommands">Add Bone Here</a>.
 
-Each bone has a <g>start handle</g>, the lines are the widest, and an <g>end handle</g>, where the lines
+By selecting a <b>single component</b> in the
+<a href="intro.modeleditor.dataforms.html#treeview">tree-view</a> both the start and end handles
+of the new bone will be assigned to that <b>component</b>. Otherwise they will be assigned to the
+first component in the <a href="intro.modeleditor.dataforms.html#treeview">tree-view</a>.
+This will change automatically if any vertexes of another component are assigned to a bone's handle,
+which means bones can be spread across different components within the editor if needed.
+
+Each bone has a <g>start handle</g>, where the lines are the widest, and an <g>end handle</g>, where the lines
 meet in the middle. The middle of each handle is the <g>center drag</g> point, which does the lateral movements,
-and the four yellow rectangles are the <g>corner drag</g> points, any one of these do the rotation movements.
+and the four yellow rectangles are the <g>corner drag</g> points, any one of these do the rotation and scaling (Ctrl key) movements.
 
 The next set of bones show how you can
 <a href="intro.modeleditor.rmbmenus.html#bonecommands">Continue the bones</a> by placing your cursor over the
@@ -45,8 +59,10 @@ in the <a href="intro.modeleditor.dataforms.html#treeview">Skeleton folder</a>, 
 be selected, then select a number of vertexes by doing a <g>LMB drag</g> in the view over those vertexes.
 Now do a <g>LMB</g> click (hold button briefly for <a href="#autoselection">auto selection</a>)
 on the <b>center</b> of the bone handle
-you want to Assign those vertexes too, do a <g>RMB</g> click on its center and select
-<a href="intro.modeleditor.rmbmenus.html#bonecommands">Assign to Start</a> from the popup menu.
+you want to assign those vertexes too, do a <g>RMB</g> click on its center and select
+<a href="intro.modeleditor.rmbmenus.html#bonecommands">Assign to Start</a> or
+<a href="intro.modeleditor.rmbmenus.html#bonecommands">Assign to End</a>, depending on which handle
+you are working with, from the popup menu.
 The handle will automatically center itself on those vertexes.
 You can <a href="intro.modeleditor.rmbmenus.html#bonecommands">Set the Handle Position</a> a couple of ways
 which is covered below, along with more about the built in
@@ -59,8 +75,8 @@ of the bone system, see below.
 <img border=1 align=right>bones2.png</img>
 <a name="specificsettings"></a>
 <g><i><b><u>Specific Settings</u></b></i></g>&nbsp;:<br>
-When a single bone, or a single bone and frame, is selected a number of settings can be made for
-that bone on its <a href="intro.modeleditor.dataforms.html#specsargsview">Specifics/Args</a>
+When a single bone, or a single bone and other component items are selected, a number of settings can
+be made for that bone on its <a href="intro.modeleditor.dataforms.html#specsargsview">Specifics/Args</a>
 page shown to the right.
 
 <u><i>classname </i></u>&nbsp;: Here the name of the bone can be changed to any name you choose.
@@ -74,6 +90,9 @@ of its handles in any of the editor's views or by giving it an exact length here
 <u><i>Length Locked </i></u>&nbsp;: When this box is checked, by clicking on it, the length will not
 change when that bone is dragged or rotated when that bone itself is selected. However, its length can still be
 changed when the <a href="intro.modeleditor.dataforms.html#treeview">Skeleton Group folder</a> is selected.
+
+<u><i>component </i></u>&nbsp;: This will show the name of the component currently assigned to a bones handle.
+This is a read only value and can not be change by hand, only by component assignment.
 
 <u><i>vertexes </i></u>&nbsp;: This will show how many vertexes are currently assigned to a bones handle.
 This is a read only value and can not be change by hand, only by vertex assignment.
@@ -106,6 +125,7 @@ for a drag to take place. These are:
 can be selected, or
 <li> Only a single frame and a single bone can be selected.
 <li> If a bone's handle has vertexes assigned to it, or an attached bone's handle does, a single frame must also be selected.
+<li> If no vertexes have been assigned then a single frame selection is not required.
 </ul>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Because of the above criteria it can be cumbersome if you constantly
 need to use your <g>Ctrl</g> key to maneuver in the selection of these items, therefore:
@@ -113,10 +133,10 @@ need to use your <g>Ctrl</g> key to maneuver in the selection of these items, th
 <li> Select any single frame, you can then select the <a href="intro.modeleditor.dataforms.html#treeview">Skeleton Group folder</a>
 or any single bone without having to use your <g>Ctrl</g> key, that frame will remain selected.
 <li> You can select another single frame and the <a href="intro.modeleditor.dataforms.html#treeview">Skeleton Group folder</a>
-or single bone will remain selected.
+or single bone will remain selected. (deactivated at this time)
 <li> With a single frame selected, you can bounch from the <a href="intro.modeleditor.dataforms.html#treeview">Skeleton Group folder</a>
 to any single bone, or from one bone to another without having to use your <g>Ctrl</g> key
-<li> or you can bounch from frame to frame without having to use your <g>Ctrl</g> key.
+<li> or you can bounch from frame to frame without having to use your <g>Ctrl</g> key. (deactivated at this time)
 
 <li> To cancel this action, click on the <a href="intro.modeleditor.dataforms.html#treeview">Frames Group folder</a>
 <li> or any blank unused area in one of the editor's views or the model itself
@@ -127,18 +147,18 @@ can take place.<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;That is because your selection in the tree-view does not meet
 the above criteria and you simply need to make the correct selection.
 
-<a href="intro.modeleditor.rmbmenus.html#bonecommands">Key frames Movement :</a><br>
+<a href="intro.modeleditor.rmbmenus.html#bonecommands">Key frames Movement :</a> (not dependable at this time)<br>
 To activate this menu item you <b>must</b> have <b>two single frames</b> and the
 <a href="intro.modeleditor.dataforms.html#treeview">Skeleton Group folder</a>
 selected. This is because those two frames will be used to <g>spread</g> the movement from the first frame to the second
-evenly over the frame that are between them. For example, you want to do a walking motion, the first frame has the arms and legs
+evenly over the frames that are between them. For example, you want to do a walking motion, the first frame has the arms and legs
 swung in one direction and the last, second, frame has them in the opposite positions. With a spread of about 10 frames you will
 create an animation of a fast walk, with a spread of 20 frames the motion would seem a bit slower. <b>Be advised</b>, the
 outcome may not always be what you expect and even though they can be reversed by using the
 <a href="intro.modeleditor.menu.html#editmenu">Undo system</a> that could still cause a crash of the program.
 So it is highly recommended that you always save your work before using this function.
 
-<a name="bonelinescolor"><g>Bone Line Colors :</g></a><br>
+<a name="bonelinescolor"><g>Bone Lines & Vertex Colors :</g></a><br>
 When a bone's handles colors are set on its
 <a href="#specificsettings">Specific Settings</a> page and the
 <a href="intro.modeleditor.rmbmenus.html#viewsrmbmenus">Bone Options</a> sub-menu
@@ -148,9 +168,12 @@ act as a guide to help distinguish which bone's handle is being dragged. They al
 
 when the <a href="intro.modeleditor.dataforms.html#treeview">Skeleton Group folder</a> is selected all of the lines
 share the same color as the drag handle, all the way <g>down line</g> for any connected bones that are also being moved
-or rotated. Where as for a single bone, only its lines match the handle and any connecting bones handles will display
-their stationary handle's color.
+or rotated. Where as for a single bone, only its lines, matching the drag handle, and any connecting bone handles will display
+their respective handle's color.
 
 For any bone's that are using the default colors, those colors will be reverse when a drag is being made, also when a single
-bone or bones are selected those lines will become the drfault blue color, as long as there are no frames or other folders
+bone or bones are selected those lines will become the default blue color, as long as there are no frames or other folders
 selected as well.
+
+Any vertexes assigned to a bone handle will be displayed using that same handle's color. Releasing or re-assigning vertexes
+to another handle will change their display color respectively.

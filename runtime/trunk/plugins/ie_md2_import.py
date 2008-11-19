@@ -513,10 +513,7 @@ def import_md2_model(editor, md2_filename):
     sdogroup = quarkx.newobj('SDO:sdo')
     Component.appenditem(sdogroup)
     Component.appenditem(skingroup)
-    skeletongroup = quarkx.newobj('Skeleton:bg')
-    skeletongroup['type'] = chr(5)
     Component.appenditem(framesgroup)
-    Component.appenditem(skeletongroup)
 
     ### Use the 'ModelRoot' below to test opening the QuArK's Model Editor with, needs to be qualified with main menu item.
     ModelRoot = quarkx.newobj('Model:mr')
@@ -573,6 +570,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".md2 Quake2 Importer", ".md2 file", "*.md2
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.4  2008/10/29 04:25:34  cdunde
+# Minor correction.
+#
 # Revision 1.3  2008/10/26 00:42:21  cdunde
 # Opps! Forgot md2 files don't have any Specifics, to remove test code.
 #

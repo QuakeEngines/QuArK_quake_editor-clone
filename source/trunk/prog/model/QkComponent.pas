@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.29  2008/11/06 20:18:22  danielpharos
+Removed old stuff in preparation for new specifics code.
+
 Revision 1.28  2008/09/06 15:57:36  danielpharos
 Moved exception code into separate file.
 
@@ -113,13 +116,13 @@ interface
 
 uses Windows, SysUtils, Classes, QkObjects, Qk3D, QkForm, Graphics,
      QkImages, qmath, QkTextures, PyMath, Python, dialogs, QkMdlObject,
-     QkFrame, QkFrameGroup, QkSkinGroup, QkBoneGroup, QkSkinDrawObject,
-     qmatrices;
+     QkFrame, QkFrameGroup, QkSkinGroup, QkSkinDrawObject, qmatrices;
 
 const
   MDL_GROUP_FRAME = 1;
   MDL_GROUP_SKIN  = 2;
   MDL_GROUP_BONE  = 5;
+  MDL_GROUP_MISC  = 6;
 
 type
   TBoneVertexLink = packed record
@@ -140,10 +143,10 @@ type
   protected
     procedure CouleurDessin(var C: TColor);
   public
+    destructor Destroy; override;
     class function TypeInfo: String; override;
     function IsAllowedParent(Parent: QObject) : Boolean; override;
     procedure ObjectState(var E: TEtatObjet); override;
-    destructor Destroy; override;
     function Triangles(var P: PComponentTris) : Integer;
     function VertexLinks(var P: PBoneVertexLink) : Integer;
     function GetSkinDescr(Static: Boolean) : String;
@@ -166,8 +169,6 @@ type
     procedure AnalyseClic(Liste: PyObject); override;
     Function FrameGroup: QFrameGroup;
     Function SkinGroup: QSkinGroup;
-    Function BoneGroup: QBoneGroup;
-    Function CreateBoneGroup: QBoneGroup;
     Function CreateSkinGroup: QSkinGroup;
     Function CreateFrameGroup: QFrameGroup;
     Function CreateSDO: QSkinDrawObject;
@@ -181,8 +182,8 @@ type
 implementation
 
 uses PyMapView, QuarkX, QkExceptions, Travail, PyObjects, QkModelRoot,
-     EdSceneObject, QkObjectClassList, Logging, QkModelBone,
-     QkMiscGroup;
+     EdSceneObject, QkObjectClassList, Logging, QkMiscGroup;
+
 
 var
   GlobalSkinCounter: Integer;
@@ -366,13 +367,24 @@ end;
 
 const
   MethodTable: array[0..5] of TyMethodDef =
-   ((ml_name: 'setframe';      ml_meth: qSetFrame;      ml_flags: METH_VARARGS),
-    (ml_name: 'mergevertices'; ml_meth: qMergeVertices; ml_flags: METH_VARARGS),
-    (ml_name: 'showhide';      ml_meth: qShowHideComp;  ml_flags: METH_VARARGS),
-//    (ml_name: 'removevertex';  ml_meth: qRemoveVertex;  ml_flags: METH_VARARGS), now done in py code
-    (ml_name: 'removetriangle';ml_meth: qRemoveTriangle;ml_flags: METH_VARARGS),
-    (ml_name: 'addframe';      ml_meth: qAddFrame;      ml_flags: METH_VARARGS),
-    (ml_name: 'setparentframes';ml_meth: qSetParentFrames; ml_flags: METH_VARARGS));
+   ((ml_name: 'setframe';        ml_meth: qSetFrame;        ml_flags: METH_VARARGS),
+    (ml_name: 'mergevertices';   ml_meth: qMergeVertices;   ml_flags: METH_VARARGS),
+    (ml_name: 'showhide';        ml_meth: qShowHideComp;    ml_flags: METH_VARARGS),
+//    (ml_name: 'removevertex';    ml_meth: qRemoveVertex;    ml_flags: METH_VARARGS), now done in python code
+    (ml_name: 'removetriangle';  ml_meth: qRemoveTriangle;  ml_flags: METH_VARARGS),
+    (ml_name: 'addframe';        ml_meth: qAddFrame;        ml_flags: METH_VARARGS),
+    (ml_name: 'setparentframes'; ml_meth: qSetParentFrames; ml_flags: METH_VARARGS));
+
+destructor QComponent.Destroy;
+begin
+  Py_XDECREF(FInfo);
+  FCurrentSkin.AddRef(-1);
+  FCurrentFrameObj.AddRef(-1);
+  {FreeMem(FCurrentFrame);}
+  Py_XDECREF(FSelTris);
+  {Py_XDECREF(FColor);}
+  inherited;
+end;
 
 function QComponent.IsAllowedParent(Parent: QObject) : Boolean;
 begin
@@ -429,20 +441,9 @@ begin
   begin
     nSkin.AddRef(+1);
     FSkinCounter:=GlobalSkinCounter;
-    // DanielPharos: GlobalSkinCounter never decreases. Eventually, we're going to overflow!
+    //FIXME: GlobalSkinCounter never decreases. Eventually, we're going to overflow!
     Inc(GlobalSkinCounter);
   end;
-end;
-
-destructor QComponent.Destroy;
-begin
-  Py_XDECREF(FInfo);
-  FCurrentSkin.AddRef(-1);
-  FCurrentFrameObj.AddRef(-1);
-  {FreeMem(FCurrentFrame);}
-  Py_XDECREF(FSelTris);
-  {Py_XDECREF(FColor);}
-  inherited;
 end;
 
 function QComponent.Triangles(var P: PComponentTris) : Integer;
@@ -756,13 +757,6 @@ begin
       Result:=0;
 end;
 
-Function QComponent.CreateBoneGroup: QBoneGroup;
-begin
-  Result:=QBoneGroup.Create('Skeleton', Self);
-  Result.IntSpec['type']:=MDL_GROUP_BONE;
-  SubElements.Add(Result);
-end;
-
 Function QComponent.CreateSkinGroup: QSkinGroup;
 begin
   Result:=QSkinGroup.Create('Skins', Self);
@@ -798,23 +792,6 @@ begin
   end;
   if result=nil then
     Result:=CreateSDO;
-end;
-
-Function QComponent.BoneGroup: QBoneGroup;
-var
-  i: Integer;
-  x: QObject;
-begin
-  result:=nil;
-  for i:=0 to SubElements.Count-1 do begin
-    x:=SubElements.Items1[i];
-    if x is QBoneGroup then begin
-      result:=QBoneGroup(x);
-      exit;
-    end;
-  end;
-  if result=nil then
-    Result:=CreateBoneGroup;
 end;
 
 Function QComponent.SkinGroup: QSkinGroup;
@@ -1194,9 +1171,6 @@ begin
     end else if StrComp(attr, 'group_skin')=0 then begin
       Result:=GetPyObj(SkinGroup);
       Exit;
-    end else if StrComp(attr, 'group_bone')=0 then begin
-      Result:=GetPyObj(BoneGroup);
-      Exit;
     end;
     'i': if StrComp(attr, 'info')=0 then begin
       if FInfo=Nil then
@@ -1261,7 +1235,8 @@ begin
       Exit;
     end else if StrComp(attr, 'currentframeindex') = 0 then begin
       I:=0;
-      PyArg_ParseTupleX(value,'i',[@i]);
+      if not PyArg_ParseTupleX(value,'i',[@i]) then
+        Exit;
       CurrentFrame:=GetFrameFromIndex(I);
       Result:=True;
       Exit;

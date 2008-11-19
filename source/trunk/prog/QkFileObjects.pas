@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.62  2008/11/08 15:56:08  danielpharos
+Cleaned up some SpecNameOf-usage.
+
 Revision 1.61  2008/11/06 20:18:22  danielpharos
 Removed old stuff in preparation for new specifics code.
 
@@ -841,7 +844,7 @@ var
  P1: PChar;
  Ligne, I, J {,IgnoreLevel}: Integer;
  Value: Single;
- ValueI: Integer;
+(* ValueI: Integer;*)
  Prochain: PChar;
  Filename: String; //Used in SyntaxError for display purposes
 
@@ -1080,7 +1083,7 @@ begin
           {if IgnoreLevel=0 then}
            Level.Specifics.Add(NameSpec+'='+Arg);
          end;
-    '|': begin { Integer number Specific }
+(*    '|': begin { Integer number Specific }
           Arg:='';
           Lu(1);
           while P^<>'|' do
@@ -1104,7 +1107,7 @@ begin
           NameSpec:=IntSpecNameOf(NameSpec);
           {if IgnoreLevel=0 then}
            Level.Specifics.Add(NameSpec+'='+Arg);
-         end;
+         end;*)
     '!': begin { Copy Specifics+SubElements from this Object }
           Lu(1);
           {if IgnoreLevel=0 then}

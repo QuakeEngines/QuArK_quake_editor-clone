@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2007/09/10 10:24:16  danielpharos
+Build-in an Allowed Parent check. Items shouldn't be able to be dropped somewhere where they don't belong.
+
 Revision 1.6  2005/09/28 10:49:02  peter-b
 Revert removal of Log and Header keywords
 
@@ -52,11 +55,11 @@ type
 
 implementation
 
-uses QkObjectClassList, QkComponent;
+uses QkObjectClassList, QkModelRoot;
 
 function QBoneGroup.IsAllowedParent(Parent: QObject) : Boolean;
 begin
-  if (Parent=nil) or (Parent is QComponent) then
+  if (Parent=nil) or (Parent is QModelRoot) then
     Result:=true
   else
     Result:=false;

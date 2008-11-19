@@ -9,11 +9,11 @@ various categories and some have sub-categories which in turn may have their own
 The categories and items in a models Tree-view are:
 <ul>
 <li><i>Model</i> : The main <g>editor Root</g> of the model that is loaded.
-<li><i>Misc</i> : (not active) Originally setup for <g>bones</g> or other items, like tags, of a model.
-<li><i>Component</i> : The element of a models structure folder which can be more then one.
+<li><i>Misc</i> : Setup for future <g>Bound Frames</g>, <g>tags</g> and <g>Tag Frames</g> of a model.
+<li><i>Skeleton</i> : Contains the <a href="intro.modeleditor.editelements.html#bones">bones</a> to be used for one or more components.
+<li><i>Component</i> : The elements of a model's structure folder which can be more then one.
 <li><i>Skins</i> : Contains the image file, or files, that can be used for that component.
 <li><i>Frames</i> : Contains the <g>animation</g> frames for movement of that component.
-<li><i>Skeleton</i> :  (not active) Also setup for future use of a components <g>bones</g>.
 </ul>
 
 One important point here is about the <g>Frames</g>. Each component must contain the same number

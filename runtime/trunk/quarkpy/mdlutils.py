@@ -305,7 +305,10 @@ def replacevertexes(editor, comp, vertexlist, flags, view, undomsg, option=1, me
     "option=2 uses the ModelVertexSelList for the editor and merges two, or more, selected vertexes."
     "method=1 other selected vertexes move to the 'Base' vertex position of each tree-view selected 'frame', only applies to option=0."
     "method=2 other selected vertexes move to the 'Base' vertex position of the 1st tree-view selected 'frame', only applies to option=0."
-
+    for item in editor.layout.explorer.sellist:
+        if item.type == ':mf':
+            compairframe = item
+            break
     new_comp = comp.copy()
 
     if option == 0:
@@ -317,7 +320,7 @@ def replacevertexes(editor, comp, vertexlist, flags, view, undomsg, option=1, me
                     if quarkx.setupsubset(SS_MODEL, "Options")['APVexs_Method1'] == "1":
                         newpos = old_vtxs[vertexlist[0][0]]
                     elif quarkx.setupsubset(SS_MODEL, "Options")['APVexs_Method2'] == "1":
-                        newpos = editor.layout.explorer.sellist[0].vertices[vertexlist[0][0]]
+                        newpos = compairframe.vertices[vertexlist[0][0]]
                     else:
                         newpos = old_vtxs[vertexlist[0][0]]
                     for vtx in vertexlist:
@@ -806,7 +809,9 @@ def MakeEditorVertexPolyObject(editor, option=0, otherlist=None, name=None):
             if item.endswith(":mc"):
                 componentnames.append(item)
         componentnames.sort()
-        editor.Root.currentcomponent = editor.Root.dictitems[componentnames[0]]
+        comp = editor.Root.dictitems[componentnames[0]]
+    else:
+        comp = editor.Root.currentcomponent
         
     if option == 0:
         if editor.ModelVertexSelList == [] and otherlist is None:
@@ -820,19 +825,22 @@ def MakeEditorVertexPolyObject(editor, option=0, otherlist=None, name=None):
         if name is None:
             group = quarkx.newobj("selected:g");
         else:
+            if name.find(":mc-b-") != -1:
+                thiscomp = name.split("-b-")[0]
+                comp = editor.Root.dictitems[thiscomp]
             group = quarkx.newobj(name + ":g");
-        for vtx in range (len(editor.Root.currentcomponent.currentframe.vertices)):
+        for vtx in range (len(comp.currentframe.vertices)):
             for ver_index in range (len(VertexList)):
                 if vtx == VertexList[ver_index][0]:
-                    vertex = editor.Root.currentcomponent.currentframe.vertices[vtx]
+                    vertex = comp.currentframe.vertices[vtx]
                     p = quarkx.newobj(str(vtx)+":p");
                     face = quarkx.newobj("east:f")
                     vtx0X, vtx0Y, vtx0Z = (vertex + quarkx.vect(1.0,0.0,0.0)/currentview.info["scale"]*2).tuple
                     vtx1X, vtx1Y, vtx1Z = (vertex + quarkx.vect(1.0,1.0,0.0)/currentview.info["scale"]*2).tuple
                     vtx2X, vtx2Y, vtx2Z = (vertex + quarkx.vect(1.0,0.0,1.0)/currentview.info["scale"]*2).tuple
                     face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
-                    if editor.Root.currentcomponent.currentskin is not None:
-                        face["tex"] = editor.Root.currentcomponent.currentskin.shortname
+                    if comp.currentskin is not None:
+                        face["tex"] = comp.currentskin.shortname
                     else:
                         face["tex"] = "None"
                     p.appenditem(face)
@@ -841,8 +849,8 @@ def MakeEditorVertexPolyObject(editor, option=0, otherlist=None, name=None):
                     vtx1X, vtx1Y, vtx1Z = (vertex + quarkx.vect(-1.0,-1.0,0.0)/currentview.info["scale"]*2).tuple
                     vtx2X, vtx2Y, vtx2Z = (vertex + quarkx.vect(-1.0,0.0,1.0)/currentview.info["scale"]*2).tuple
                     face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
-                    if editor.Root.currentcomponent.currentskin is not None:
-                        face["tex"] = editor.Root.currentcomponent.currentskin.shortname
+                    if comp.currentskin is not None:
+                        face["tex"] = comp.currentskin.shortname
                     else:
                         face["tex"] = "None"
                     p.appenditem(face)
@@ -851,8 +859,8 @@ def MakeEditorVertexPolyObject(editor, option=0, otherlist=None, name=None):
                     vtx1X, vtx1Y, vtx1Z = (vertex + quarkx.vect(-1.0,1.0,0.0)/currentview.info["scale"]*2).tuple
                     vtx2X, vtx2Y, vtx2Z = (vertex + quarkx.vect(0.0,1.0,1.0)/currentview.info["scale"]*2).tuple
                     face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
-                    if editor.Root.currentcomponent.currentskin is not None:
-                        face["tex"] = editor.Root.currentcomponent.currentskin.shortname
+                    if comp.currentskin is not None:
+                        face["tex"] = comp.currentskin.shortname
                     else:
                         face["tex"] = "None"
                     p.appenditem(face)
@@ -861,8 +869,8 @@ def MakeEditorVertexPolyObject(editor, option=0, otherlist=None, name=None):
                     vtx1X, vtx1Y, vtx1Z = (vertex + quarkx.vect(1.0,-1.0,0.0)/currentview.info["scale"]*2).tuple
                     vtx2X, vtx2Y, vtx2Z = (vertex + quarkx.vect(0.0,-1.0,1.0)/currentview.info["scale"]*2).tuple
                     face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
-                    if editor.Root.currentcomponent.currentskin is not None:
-                        face["tex"] = editor.Root.currentcomponent.currentskin.shortname
+                    if comp.currentskin is not None:
+                        face["tex"] = comp.currentskin.shortname
                     else:
                         face["tex"] = "None"
                     p.appenditem(face)
@@ -871,8 +879,8 @@ def MakeEditorVertexPolyObject(editor, option=0, otherlist=None, name=None):
                     vtx1X, vtx1Y, vtx1Z = (vertex + quarkx.vect(1.0,0.0,1.0)/currentview.info["scale"]*2).tuple
                     vtx2X, vtx2Y, vtx2Z = (vertex + quarkx.vect(0.0,1.0,1.0)/currentview.info["scale"]*2).tuple
                     face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
-                    if editor.Root.currentcomponent.currentskin is not None:
-                        face["tex"] = editor.Root.currentcomponent.currentskin.shortname
+                    if comp.currentskin is not None:
+                        face["tex"] = comp.currentskin.shortname
                     else:
                         face["tex"] = "None"
                     p.appenditem(face)
@@ -881,8 +889,8 @@ def MakeEditorVertexPolyObject(editor, option=0, otherlist=None, name=None):
                     vtx1X, vtx1Y, vtx1Z = (vertex + quarkx.vect(1.0,0.0,-1.0)/currentview.info["scale"]*2).tuple
                     vtx2X, vtx2Y, vtx2Z = (vertex + quarkx.vect(0.0,-1.0,-1.0)/currentview.info["scale"]*2).tuple
                     face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
-                    if editor.Root.currentcomponent.currentskin is not None:
-                        face["tex"] = editor.Root.currentcomponent.currentskin.shortname
+                    if comp.currentskin is not None:
+                        face["tex"] = comp.currentskin.shortname
                     else:
                         face["tex"] = "None"
                     p.appenditem(face)
@@ -986,36 +994,77 @@ def MakeEditorVertexPolyObject(editor, option=0, otherlist=None, name=None):
 def ConvertVertexPolyObject(editor, newobjectslist, flags, view, undomsg, option=0):
     "Does the opposite of the 'MakeEditorVertexPolyObject' (just above this function) to convert a list"
     "of a group of polys that have been manipulated by some function using QuArK Internal Poly Objects."
-    
+
+    for item in editor.layout.explorer.sellist:
+        if item.type == ':mf':
+            compairframe = item
+            break
     if option == 0:
-        comp = editor.Root.currentcomponent
-        new_comp = comp.copy()
-        compframes = new_comp.findallsubitems("", ':mf')   # get all frames
+        bones = None
+        undo = quarkx.action()
         if len(newobjectslist) > 1:
-            for compframe in compframes:
+            comp_list = []
+            if newobjectslist[0].name.find(":mc-b-") != -1:
+                for obj in newobjectslist:
+                    if obj.name.find(":mc-b-") != -1:
+                        thiscomp = obj.name.split("-b-")[0]
+                        if thiscomp in comp_list:
+                            continue
+                        comp_list = comp_list + [thiscomp]
+                bones = 1
+            else:
+                comp = editor.Root.currentcomponent
+                comp_list = [comp.name]
+                new_comp = comp.copy()
+                compframes = new_comp.findallsubitems("", ':mf')   # get all frames
+            comp_count = len(comp_list)
+            count = 0
+            while 1:
+                comp = editor.Root.currentcomponent # Don't need this line unless we do an option setting & maybe not then either.
+                if comp.name != comp_list[count]: # Don't need this line unless we do an option setting & maybe not then either.
+                    comp = editor.Root.dictitems[comp_list[count]]
+                new_comp = comp.copy()
+                compframes = new_comp.findallsubitems("", ':mf')   # get all frames
+                compframe = compframes[editor.bone_frame]
                 for newobject in range(len(newobjectslist)):
+                    if bones is not None:
+                        obj_name = newobjectslist[newobject].name.split("-b-")[0]
+                        if obj_name != comp_list[count]:
+                            continue
                     for poly in range(len(newobjectslist[newobject].subitems)):
                         for listframe in editor.layout.explorer.sellist:
-                            if compframe.name == listframe.name:
-                                old_vtxs = compframe.vertices
-                                if listframe == editor.layout.explorer.sellist[0]:
-                                    vtxnbr = int(newobjectslist[newobject].subitems[poly].shortname)
-                                    face = newobjectslist[newobject].subitems[poly].subitems[0]
-                                    vertex = quarkx.vect(face["v"][0] , face["v"][1], face["v"][2]) - quarkx.vect(1.0,0.0,0.0)/view.info["scale"]*2
-                                    delta = vertex - old_vtxs[vtxnbr]
-                                    old_vtxs[vtxnbr] = vertex
-                                else:
-                                    vtxnbr = int(newobjectslist[newobject].subitems[poly].shortname)
-                                    old_vtxs[vtxnbr] = old_vtxs[vtxnbr] + delta
-                                compframe.vertices = old_vtxs
-                compframe.compparent = new_comp # To allow frame relocation after editing.
-        else:
-            for poly in range(len(newobjectslist[0].subitems)):
-                for compframe in compframes:
-                    for listframe in editor.layout.explorer.sellist:
-                        if compframe.name == listframe.name:
+                            if listframe.type != ':mf':
+                                continue
                             old_vtxs = compframe.vertices
-                            if listframe == editor.layout.explorer.sellist[0]:
+                            if listframe == compairframe:
+                                vtxnbr = int(newobjectslist[newobject].subitems[poly].shortname)
+                                face = newobjectslist[newobject].subitems[poly].subitems[0]
+                                vertex = quarkx.vect(face["v"][0] , face["v"][1], face["v"][2]) - quarkx.vect(1.0,0.0,0.0)/view.info["scale"]*2
+                                delta = vertex - old_vtxs[vtxnbr]
+                                old_vtxs[vtxnbr] = vertex
+                            compframe.vertices = old_vtxs
+                    compframe.compparent = new_comp # To allow frame relocation after editing.
+                if count == comp_count-1:
+                    break
+                undo.exchange(comp, new_comp)
+                count = count + 1
+        else:
+            if newobjectslist[0].name.find(":mc-b-") != -1:
+                thiscomp = newobjectslist[0].name.split("-b-")[0]
+                comp = editor.Root.dictitems[thiscomp]
+                bones = 1
+            else:
+                comp = editor.Root.currentcomponent
+            new_comp = comp.copy()
+            compframes = new_comp.findallsubitems("", ':mf')   # get all frames
+            for poly in range(len(newobjectslist[0].subitems)):
+                for compframe in range(len(compframes)):
+                    for listframe in editor.layout.explorer.sellist:
+                        if listframe.type != ":mf":
+                            continue
+                        if (bones is None and compframes[compframe].name == listframe.name) or (bones is not None and compframe == editor.bone_frame):
+                            old_vtxs = compframes[compframe].vertices
+                            if listframe == compairframe:
                                 vtxnbr = int(newobjectslist[0].subitems[poly].shortname)
                                 face = newobjectslist[0].subitems[poly].subitems[0]
                                 vertex = quarkx.vect(face["v"][0] , face["v"][1], face["v"][2]) - quarkx.vect(1.0,0.0,0.0)/view.info["scale"]*2
@@ -1024,9 +1073,9 @@ def ConvertVertexPolyObject(editor, newobjectslist, flags, view, undomsg, option
                             else:
                                 vtxnbr = int(newobjectslist[0].subitems[poly].shortname)
                                 old_vtxs[vtxnbr] = old_vtxs[vtxnbr] + delta
-                            compframe.vertices = old_vtxs
-                    compframe.compparent = new_comp # To allow frame relocation after editing.
-        undo = quarkx.action()
+                            compframes[compframe].vertices = old_vtxs
+                    compframes[compframe].compparent = new_comp # To allow frame relocation after editing.
+        # This does the undo.exchange or final undo.exchange when needed.
         undo.exchange(comp, new_comp)
         editor.ok(undo, undomsg)
 
@@ -1311,7 +1360,10 @@ def MakeEditorFaceObject(editor, option=0):
 def ConvertEditorFaceObject(editor, newobjectslist, flags, view, undomsg, option=0):
     "Does the opposite of the 'MakeEditorFaceObject' (just above this function) to convert"
     "a list of faces that have been manipulated by some function using QuArK Internal Face Objects."
-
+    for item in editor.layout.explorer.sellist:
+        if item.type == ':mf':
+            compairframe = item
+            break
     if option == 0:
         comp = editor.Root.currentcomponent
         new_comp = comp.copy()
@@ -1334,7 +1386,7 @@ def ConvertEditorFaceObject(editor, newobjectslist, flags, view, undomsg, option
                     for listframe in editor.layout.explorer.sellist:
                         if compframe.name == listframe.name:
                             old_vtxs = compframe.vertices
-                            if listframe == editor.layout.explorer.sellist[0]:
+                            if listframe == compairframe:
                                 delta = Vert[1] - old_vtxs[Vert[0]]
                                 old_vtxs[Vert[0]] = Vert[1]
                             else:
@@ -1680,10 +1732,6 @@ def addcomponent(editor, option=2):
     for compframe in compframes:
         compframe.compparent = new_comp # To allow frame relocation after editing.
     undo = quarkx.action()
-    undo.exchange(new_comp.dictitems['Skeleton:bg'], None)
-    skeletongroup = quarkx.newobj('Skeleton:bg')
-    skeletongroup['type'] = chr(5)
-    new_comp.appenditem(skeletongroup)
     undo.put(editor.Root, new_comp)
     editor.ok(undo, new_comp.shortname + " created")
     if option == 1:
@@ -1727,8 +1775,10 @@ def addcomponent(editor, option=2):
 
     # This section updates any bones in the original component and the editor.ModelComponentList,
     # if any vertexes that are being removed have been assigned to a bone's handle.
+ #   Update_BoneALLLists(editor, comp, remove_vertices_list)
+### Function above is not finished yet. Remove entire section below (lines 1781-1851) when line above is uncommented.
     remove_vertices_list.sort()
-    if len(change_comp.dictitems['Skeleton:bg'].subitems) != 0:
+    if len(editor.Root.dictitems['Skeleton:bg'].subitems) != 0:
         if editor.ModelComponentList.has_key(change_comp.name) and editor.ModelComponentList[change_comp.name].has_key('bonevtxlist'):
             bones2update = {}
             for vtx in remove_vertices_list:
@@ -1760,7 +1810,7 @@ def addcomponent(editor, option=2):
             if len(bones2update) != 0:
                 import mdlhandles
                 for key in bones2update.keys():
-                    selbone = change_comp.dictitems['Skeleton:bg'].dictitems[key]
+                    selbone = editor.Root.dictitems['Skeleton:bg'].dictitems[key]
                     if bones2update[key].has_key('s_or_e0'):
                         vtxlist = selbone.dictspec['start_vtxlist']
                         start_vtxlist = vtxlist.split(" ")
@@ -1893,7 +1943,7 @@ def addframe(editor):
 def addbone(editor, comp, pos):
     name = None
     comparenbr = 0
-    compbones = comp.findallsubitems("", ':bone')      # get all bones
+    compbones = editor.Root.findallsubitems("", ':bone')      # get all bones
     for item in compbones:
         if item.shortname.startswith('NewBone'):
             getnbr = item.shortname
@@ -1909,7 +1959,13 @@ def addbone(editor, comp, pos):
     if name is None:
         name = "NewBone1"
     new_o_bone = quarkx.newobj(name + ":bone")
+  #  new_o_bone['start_component'] = "None"
+    new_o_bone['start_component'] = editor.Root.currentcomponent.name
+    new_o_bone['start_vertex_count'] = "0"
     new_o_bone['start_point'] = pos.tuple
+  #  new_o_bone['end_component'] = "None"
+    new_o_bone['end_component'] = editor.Root.currentcomponent.name
+    new_o_bone['end_vertex_count'] = "0"
     endpoint = pos + quarkx.vect(8,2,2)
     new_o_bone['end_point'] = endpoint.tuple
     new_o_bone['bone_length'] = (8,2,2)
@@ -1918,12 +1974,9 @@ def addbone(editor, comp, pos):
     new_o_bone['start_color'] = new_o_bone['end_color'] = MapColor("BoneHandles", SS_MODEL)
     new_o_bone['start_offset'] = (0, 0, 0)
     new_o_bone['end_offset'] = (0, 0, 0)
-    new_comp = comp.copy()
-    compskeleton = new_comp.findallsubitems("", ':bg')[0]
-    compskeleton.appenditem(new_o_bone)
+    compskeleton = editor.Root.findallsubitems("", ':bg')[0]
     undo = quarkx.action()
-    undo.exchange(comp, new_comp)
-    editor.Root.currentcomponent = new_comp
+    undo.put(compskeleton, new_o_bone)
     editor.ok(undo, "add bone")
 
 #
@@ -1950,9 +2003,14 @@ def continue_bone(editor, bone, s_or_e = 0):
         name = "NewBone1"
     new_o_bone = quarkx.newobj(name + ":bone")
     if s_or_e == 0:
+        new_o_bone['start_component'] = bone['start_component']
         new_o_bone['start_point'] = bone['start_point']
     else:
+        new_o_bone['start_component'] = bone['end_component']
         new_o_bone['start_point'] = bone['end_point']
+    new_o_bone['end_component'] = editor.Root.currentcomponent.name
+    new_o_bone['start_vertex_count'] = "0"
+    new_o_bone['end_vertex_count'] = "0"
     endpoint = quarkx.vect(new_o_bone['start_point']) + quarkx.vect(8,2,2)
     new_o_bone['end_point'] = endpoint.tuple
     new_o_bone['bone_length'] = (8,2,2)
@@ -2203,7 +2261,7 @@ def keyframes_rotation(editor, bonesgroup, frame1, frame2):
 def find_common_bone_handles(editor, handle_pos):
     common_handles_list = []
     s_or_e_list = []
-    compbones = editor.Root.currentcomponent.findallsubitems("", ':bone')      # get all bones
+    compbones = editor.Root.findallsubitems("", ':bone')      # get all bones
     for bone in compbones:
         # Handles the "Start of Bone".
         if checktuplepos(bone.dictspec['start_point'], handle_pos) == 1:
@@ -2215,7 +2273,99 @@ def find_common_bone_handles(editor, handle_pos):
             s_or_e_list = s_or_e_list + [1]
     return common_handles_list, s_or_e_list
 
+def Update_BoneALLLists(editor, component, verticestoremove):
+    # First, let's create a list of new indices
+    oldbonevtxlist = editor.ModelComponentList[component.name]['bonevtxlist']
+    print ""
+    print "mdlutils line 2279 verticestoremove",verticestoremove
+    print "mdlutils line 2280 oldbonevtxlist",oldbonevtxlist
+    NewVertexNumbers = []
+    newvtx = -1
+    BonesToUpdate = []
+    oldbonevtxlistkeys = oldbonevtxlist.keys()
+    for vtx in range(len(oldbonevtxlistkeys)):
+        vertexindex = oldbonevtxlistkeys[vtx]
+        bonename = oldbonevtxlist[str(oldbonevtxlistkeys[vtx])]['bonename']
+        if not (bonename in BonesToUpdate):
+            # Adding this bone to the list of bones we need to update
+            BonesToUpdate = BonesToUpdate + [bonename]
+        if vtx in verticestoremove:
+            # This vertex dies!
+            NewVertexNumbers = NewVertexNumbers + [-1]
+        else:
+            newvtx = newvtx + 1
+            NewVertexNumbers = NewVertexNumbers + [newvtx]
 
+    # Now create the new list
+    newbonevtxlist = {}
+    print "mdlutils line 2300 oldbonevtxlist",oldbonevtxlist
+    print "mdlutils line 2301 oldbonevtxlist.keys",oldbonevtxlist.keys()
+    print "mdlutils line 2302 NewVertexNumbers",NewVertexNumbers
+    for vtx in range(len(oldbonevtxlist)):
+        if NewVertexNumbers[vtx] <> -1:
+            print "mdlutils line 2302 key",oldbonevtxlist.keys()[vtx]
+  #          newbonevtxlist[str(NewVertexNumbers[vtx])] = oldbonevtxlist[str(vtx)]
+            newbonevtxlist[str(NewVertexNumbers[vtx])] = oldbonevtxlist[oldbonevtxlist.keys()[vtx]]
+    editor.ModelComponentList[component.name]['bonevtxlist'] = newbonevtxlist
+    print "mdlutils line 2309 bonevtxlist",editor.ModelComponentList[component.name]['bonevtxlist']
+
+    print "mdlutils line 2311 BonesToUpdate",BonesToUpdate
+    for bonename in BonesToUpdate:
+  #      bone = editor.Root.dicitems['Skeleton:bg'][bonename]
+        bone = editor.Root.dictitems['Skeleton:bg'].dictitems[bonename]
+        print "mdlutils line 2316 bone, bone.name",bone, bone.name
+
+        OldList = bone['start_vtxlist'].split(" ")
+        NewList = []
+        for item in OldList:
+            NewList = NewList + [str(NewVertexNumbers[item])]
+        bone['start_vtxlist'] = " ".join(NewList)
+
+        OldList = bone['start_vtx_pos'].split(" ")
+        NewList = []
+        for item in OldList:
+            NewList = NewList + [str(NewVertexNumbers[item])]
+        bone['start_vtx_pos'] = " ".join(NewList)
+
+        OldList = bone['end_vtxlist'].split(" ")
+        NewList = []
+        for item in OldList:
+            NewList = NewList + [str(NewVertexNumbers[item])]
+        bone['end_vtxlist'] = " ".join(NewList)
+
+        OldList = bone['end_vtx_pos'].split(" ")
+        NewList = []
+        for item in OldList:
+            NewList = NewList + [str(NewVertexNumbers[item])]
+        bone['end_vtx_pos'] = " ".join(NewList)
+
+    for bonename in BonesToUpdate:
+        Update_BoneObjs(newbonevtxlist, bonename, component)
+
+def Update_BoneObjs(bonevtxlist, selfbonename, comp):
+    vtxlist = [[], []]
+    tristodrawlist = [[], []]
+    selvtxlist = [[], []]
+    for key in bonevtxlist:
+        if bonevtxlist[key]['bonename'] == selfbonename:
+            vtx = int(key)
+            s_or_e = bonevtxlist[key]['s_or_e']
+            if s_or_e == 0 or s_or_e == 1:   # Sanity check
+                vtxlist[s_or_e] = vtxlist[s_or_e] + [[vtx, comp.currentframe.vertices[vtx]]]
+                selvtxlist[s_or_e] = selvtxlist[s_or_e] + [vtx]
+                tristodrawlist[s_or_e] = tristodrawlist[s_or_e] + findTrianglesAndIndexes(comp, vtx, comp.currentframe.vertices[vtx])
+    boneobjs = {}
+    if vtxlist[0] <> []:
+        boneobjs['s_or_e0'] = {}
+        boneobjs['s_or_e0']['vtxlist'] = vtxlist[0]
+        boneobjs['s_or_e0']['tristodrawlist'] = tristodrawlist[0]
+        boneobjs['s_or_e0']['selvtxlist'] = selvtxlist[0]
+    if vtxlist[1] <> []:
+        boneobjs['s_or_e1'] = {}
+        boneobjs['s_or_e1']['vtxlist'] = vtxlist[1]
+        boneobjs['s_or_e1']['tristodrawlist'] = tristodrawlist[1]
+        boneobjs['s_or_e1']['selvtxlist'] = selvtxlist[1]
+    return boneobjs
 
 ###############################
 #
@@ -3111,6 +3261,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.89  2008/11/01 07:53:02  cdunde
+#To stop any bones being copied to new components.
+#
 #Revision 1.88  2008/10/21 04:35:33  cdunde
 #Bone corner handle rotation fixed correctly by DanielPharos
 #and stop all drawing during Keyframe Rotation function.

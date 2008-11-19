@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2008/09/06 15:57:35  danielpharos
+Moved exception code into separate file.
+
 Revision 1.1  2008/07/17 14:47:58  danielpharos
 Big (experimental) change to model bones, tags and boundframes
 
@@ -162,7 +165,7 @@ end;
 
 class function QBoundFrame.TypeInfo;
 begin
-  TypeInfo:=':bone';
+  TypeInfo:=':bound';
 end;
 
 procedure QBoundFrame.ObjectState(var E: TEtatObjet);

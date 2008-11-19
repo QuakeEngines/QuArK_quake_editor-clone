@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2008/11/06 20:18:22  danielpharos
+Removed old stuff in preparation for new specifics code.
+
 Revision 1.9  2005/09/28 10:49:02  peter-b
 Revert removal of Log and Header keywords
 
@@ -64,7 +67,7 @@ type
     function Loaded_Frame(Component: QComponent; const Name: String) : QFrame;
     function Loaded_SkinFile(Component: QComponent; const Name: String; warnifnotfound: Boolean) : QImage;
     function Loaded_Component(Root: QModelRoot; cname: string): QComponent;
-    function Loaded_Bone(Component: QComponent; Parent: QModelBone; const Name: String): QModelBone;
+    function Loaded_Bone(Root: QModelRoot; Parent: QModelBone; const Name: String): QModelBone;
     function CantFindTexture(Component: QComponent; name: string; SZ: TPoint): QImage;
   end;
 
@@ -86,7 +89,6 @@ begin
       IntSpec['show']:=1;
       CreateSkinGroup;
       CreateFrameGroup;
-      CreateBoneGroup;
       CreateSDO;
     end;
     Root.SubElements.Add(Result);
@@ -133,15 +135,12 @@ begin
   Frames.SubElements.Add(Result);
 end;
 
-function QModelFile.Loaded_Bone(Component: QComponent; Parent: QModelBone; const Name: String): QModelBone;
+function QModelFile.Loaded_Bone(Root: QModelRoot; Parent: QModelBone; const Name: String): QModelBone;
 var
-  Bones: QObject;      // Actually a QBoneObject
+  Bones: QBoneGroup;
 begin
-  Bones:=Parent;
-  if Bones = nil then
-    Bones:=Component.BoneGroup;
+  Bones:=Root.BoneGroup;
   Result:=QModelBone.Create(Name, Bones);
-  Result.ParentComponent:=Component;
   Bones.SubElements.Add(Result);
 end;
 
@@ -195,13 +194,17 @@ end;
 function QModelFile.Loaded_Root : QModelRoot;
 var
   misc: QMiscGroup;
+  BoneGroup: QBoneGroup;
 begin
   Specifics.Values['FileName']:=ExtractFileName(LoadName);
   Result:=QModelRoot.Create(LoadStr1(2371), Self);
-  Misc:=QMiscGroup.Create('Misc', Result);
-  Misc.IntSpec['type']:=6;
   SubElements.Add(Result);
+  Misc:=QMiscGroup.Create('Misc', Result);
+  Misc.IntSpec['type']:=MDL_GROUP_MISC;
   Result.SubElements.Add(Misc);
+  BoneGroup:=QBoneGroup.Create('Skeleton', Result);
+  BoneGroup.IntSpec['type']:=MDL_GROUP_BONE;
+  Result.SubElements.Add(BoneGroup);
   Specifics.Values['Root']:=Result.Name+Result.TypeInfo;
 end;
 

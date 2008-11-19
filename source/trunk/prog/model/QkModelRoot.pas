@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2008/11/06 20:15:54  danielpharos
+Removed redundant function.
+
 Revision 1.13  2007/08/05 20:04:33  danielpharos
 Fix a typo in a comment.
 
@@ -60,7 +63,7 @@ interface
 
 uses Windows, SysUtils, Classes, QkObjects, Qk3D, QkForm, Graphics,
      QkImages, QkTextures, PyMath, Python, QkMdlObject,
-     QkMiscGroup, QkComponent, QkFrameGroup, QkFrame;
+     QkMiscGroup, QkBoneGroup, QkComponent, QkFrameGroup, QkFrame;
 
 type
   QModelRoot = class(QMdlObject)
@@ -75,6 +78,7 @@ type
     property CurrentComponent : QComponent read FCurrentComponentObj write SetCurrentComponent;
     function GetComponentFromIndex(N: Integer) : QComponent;
     Function GetMisc: QMiscGroup;
+    Function BoneGroup: QBoneGroup;
     function BuildComponentList : TQList;
     procedure CheckComponentFrames;
     procedure SetFrames(index: Integer);
@@ -152,10 +156,12 @@ var
   i: Integer;
 begin
   l:=BuildComponentList;
-  for i:=0 to l.count-1 do
-    QComponent(l.Items1[i]).CurrentFrame:=QComponent(l.Items1[i]).GetFrameFromIndex(index);
-  l.clear;
-  l.free;
+  try
+    for i:=0 to l.count-1 do
+      QComponent(l.Items1[i]).CurrentFrame:=QComponent(l.Items1[i]).GetFrameFromIndex(index);
+  finally
+    l.free;
+  end;
 end;
 
 procedure QModelRoot.setFramesByName(s: string);
@@ -164,10 +170,12 @@ var
   i: Integer;
 begin
   l:=BuildComponentList;
-  for i:=0 to l.count-1 do
-    QComponent(l.Items1[i]).CurrentFrame:=QComponent(l.Items1[i]).GetFrameFromName(s);
-  l.clear;
-  l.free;
+  try
+    for i:=0 to l.count-1 do
+      QComponent(l.Items1[i]).CurrentFrame:=QComponent(l.Items1[i]).GetFrameFromName(s);
+  finally
+    l.free;
+  end;
 end;
 
 procedure QModelRoot.CheckComponentFrames;
@@ -182,36 +190,42 @@ var
   cnt: Longint;
 begin
   l:=BuildComponentList;
-  needed_framecount:=-1;
-  for i:=0 to l.count-1 do begin
-    c:=QComponent(l.Items1[i]);
-    f:=c.BuildFrameList;
-    needed_framecount:=Max(needed_framecount, f.count-1);
-    f.clear;
-    f.free;
-  end;
-  for i:=0 to l.count-1 do begin
-    c:=QComponent(l.Items1[i]);
-    if c.IntSpec['includeincheck']=0 then // skip component
-      continue;
-    f:=c.BuildFrameList;
-    cnt:=f.count;
-    if cnt-1 < needed_framecount then begin
-      fg:=c.FrameGroup;
-      ProgressIndicatorStart(5459, needed_framecount-(cnt-1));
-      while f.count-1 < needed_framecount do begin
-        qf:=QFrame(f.Items1[cnt-1].Clone(fg,true));
-        fg.subelements.add(qf);
-        f.add(qf);
-        ProgressIndicatorIncrement;
+  try
+    needed_framecount:=-1;
+    for i:=0 to l.count-1 do begin
+      c:=QComponent(l.Items1[i]);
+      f:=c.BuildFrameList;
+      try
+        needed_framecount:=Max(needed_framecount, f.count-1);
+      finally
+        f.free;
       end;
-      ProgressIndicatorStop;
     end;
-    f.clear;
-    f.free;
+    for i:=0 to l.count-1 do begin
+      c:=QComponent(l.Items1[i]);
+      if c.IntSpec['includeincheck']=0 then // skip component
+        continue;
+      f:=c.BuildFrameList;
+      try
+        cnt:=f.count;
+        if cnt-1 < needed_framecount then begin
+          fg:=c.FrameGroup;
+          ProgressIndicatorStart(5459, needed_framecount-(cnt-1));
+          while f.count-1 < needed_framecount do begin
+            qf:=QFrame(f.Items1[cnt-1].Clone(fg,true));
+            fg.subelements.add(qf);
+            f.add(qf);
+            ProgressIndicatorIncrement;
+          end;
+          ProgressIndicatorStop;
+        end;
+      finally
+        f.free;
+      end;
+    end;
+  finally
+    l.free;
   end;
-  l.clear;
-  l.free;
 end;
 
 class function QModelRoot.TypeInfo;
@@ -255,7 +269,11 @@ begin
       Result:=GetPyObj(CurrentComponent);
       Exit;
     end;
-    'g': if StrComp(attr, 'group_misc')=0 then begin
+    'g': if StrComp(attr, 'group_bone')=0 then begin
+      Result:=GetPyObj(BoneGroup);
+      Exit;
+    end
+    else if StrComp(attr, 'group_misc')=0 then begin
       Result:=GetPyObj(GetMisc);
       Exit;
     end;
@@ -338,6 +356,24 @@ begin
   end;
   if result=nil then
     raise exception.Create('GetMisc = nil (QModelRoot.GetMisc)');
+end;
+
+Function QModelRoot.BoneGroup: QBoneGroup;
+var
+  i: Integer;
+  x: QObject;
+begin
+  result:=nil;
+  for i:=0 to SubElements.Count-1 do begin
+    x:=SubElements.Items1[i];
+    if x is QBoneGroup then begin
+      result:=QBoneGroup(x);
+      exit;
+    end;
+  end;
+  //Shouldn't happen:
+  //if result=nil then
+  //  Result:=CreateBoneGroup;
 end;
 
 procedure QModelRoot.Dessiner;

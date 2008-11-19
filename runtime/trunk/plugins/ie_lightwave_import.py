@@ -1843,9 +1843,7 @@ def create_objects(filename, polynames, clip_list, objspec_list, surf_list, base
         sdogroup = quarkx.newobj('SDO:sdo')
         Component.appenditem(sdogroup)
         Component.appenditem(skingroup)
-        skeletongroup = quarkx.newobj('Skeleton:bg')
         Component.appenditem(framesgroup)
-        Component.appenditem(skeletongroup)
         ComponentList = ComponentList + [Component]
         progressbar.close()
         if len(polynames) > 1:
@@ -2285,6 +2283,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.9  2008/11/17 03:03:53  cdunde
+# Minor correction to avoid a Specifics page error if no skin exist.
+#
 # Revision 1.8  2008/10/26 00:07:09  cdunde
 # Moved all of the Specifics/Args page code for the Python importers\exports to the importer files.
 #

@@ -15,7 +15,10 @@ $Id$
 6.6.0 Beta 2
 ============
 
-* [cdunde]: DEV. NOTE: Bones system inside components for Model Editor and InfoBase update completed :
+* [cdunde/DanielPharos]: DEV. NOTE: Bones system moved to outside of components for Model Editor completed.
+          - all files for source code, runtime and InfoBase updated Nov. 18, 2008.
+
+* [cdunde/DanielPharos]: DEV. NOTE: Bones system inside components for Model Editor and InfoBase update completed :
           - for source code files Oct. 11, 2008, runtime files Nov. 3, 2008, InfoBase files Oct. 23, 2008.
 
 * [cdunde]: A new addon file for Quake Rally, created by X7.
