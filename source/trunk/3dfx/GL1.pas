@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.33  2008/11/14 00:39:54  danielpharos
+Fixed a few variable types and fixed the coloring of faces not working properly in OpenGL and giving the wrong color in Glide.
+
 Revision 1.32  2008/10/02 12:23:27  danielpharos
 Major improvements to HWnd and HDC handling. This should fix all kinds of OpenGL problems.
 
@@ -761,11 +764,9 @@ var
   glTexCoord2fv: procedure (v: PGLfloat); stdcall;
   glVertex3fv: procedure (v: PGLfloat); stdcall;
   glFinish: procedure; stdcall;
- {v1.9 broke OpenGL with PChar at end, changed back to v1.8 items - cdunde 09-21-2005}
-//  glTexImage2D: procedure (taget: GLenum; level, components : GLint; width, height: GLsizei; border: GLint; format, typ: GLenum; pixels:PChar ); stdcall;
-  glTexImage2D: procedure (target: GLenum; level, components : GLint; width, height: GLsizei; border: GLint; format, typ: GLenum; const pixels); stdcall;
-  glDeleteTextures: procedure (n: GLsizei; const textures); stdcall;
-  glAreTexturesResident: function (n: GLsizei; const textures; residences: PGLboolean) : GLboolean; stdcall;
+  glTexImage2D: procedure (target: GLenum; level, components : GLint; width, height: GLsizei; border: GLint; format, typ: GLenum; const pixels: PGLvoid); stdcall;
+  glDeleteTextures: procedure (n: GLsizei; const textures: PGLuint); stdcall;
+  glAreTexturesResident: function (n: GLsizei; const textures: PGLuint; residences: PGLboolean) : GLboolean; stdcall;
   glBindTexture: procedure (target: GLenum; texture: GLuint); stdcall;
   glGenTextures: procedure (n: GLsizei; textures: PGLuint); stdcall;
   glGenLists: function (range: GLsizei): GLuint; stdcall;
@@ -798,7 +799,8 @@ var
   ** Utility routines from GLU32.DLL
   *)
   gluPerspective: procedure (fovy, aspect, zNear, zFar: GLdouble); stdcall;
- {gluBuild2DMipmaps: function (target: GLenum; components: GLint; width, height: GLint; format: GLenum; typ: GLenum; const data): GLint; stdcall;}
+  //Looks like a bug in the OpenGL specs: the last parameter is void, not GLvoid
+ {gluBuild2DMipmaps: function (target: GLenum; components: GLint; width, height: GLint; format: GLenum; typ: GLenum; const data: PByte): GLint; stdcall;}
 
 function LoadOpenGl : Boolean;
 procedure UnloadOpenGl;
@@ -807,21 +809,20 @@ function LoadSwapHint : Pointer;
 function GetOpenGLDummyRC: HGLRC;
 function GetOpenGLDummyDC: HDC;
 function GetOpenGLDummyHwnd: HWND;
-(*function CreateNewRC(DC: HDC): HGLRC; //wglShareLists
-procedure DeleteRC(RC: HGLRC);*)
+function CreateNewRC(DC: HDC): HGLRC;
+procedure DeleteRC(RC: HGLRC);
 
 function FillPixelFormat(DC: HDC) : TPixelFormatDescriptor;
 procedure SetPixelFormatOnDC(DC: HDC; const PixelFormat: TPixelFormatDescriptor);
 
 implementation
 
-uses Classes, StrUtils, Quarkx, QkExceptions, Logging, Qk1, Setup, QkObjects, EdOpenGL,
+uses Classes, StrUtils, Quarkx, QkExceptions, Logging, Setup, QkObjects,
+     EdOpenGL, QkDummyWindow,
      ExtraFunctionality;
 
 const
-  DummyWindowClassName: string = 'QuArK Dummy Window Class';
-  
-  OpenGL32DLL_FuncList : array[0..54] of
+  OpenGL32DLL_FuncList : array[0..55] of
     record
       FuncPtr: Pointer;
       FuncName: PChar;
@@ -830,7 +831,7 @@ const
    ,(FuncPtr: @@wglMakeCurrent;        FuncName: 'wglMakeCurrent'        )
    ,(FuncPtr: @@wglDeleteContext;      FuncName: 'wglDeleteContext'      )
    ,(FuncPtr: @@wglCreateContext;      FuncName: 'wglCreateContext'      )
-//   ,(FuncPtr: @@wglShareLists;         FuncName: 'wglShareLists'         )
+   ,(FuncPtr: @@wglShareLists;         FuncName: 'wglShareLists'         )
    ,(FuncPtr: @@wglSwapBuffers;        FuncName: 'wglSwapBuffers'        )
    ,(FuncPtr: @@glClearColor;          FuncName: 'glClearColor'          )
    ,(FuncPtr: @@glClearDepth;          FuncName: 'glClearDepth'          )
@@ -906,17 +907,10 @@ var
 
   GLExtensions: TStringList = nil;
 
-  //DanielPharos: *sigh* The best way of having multiple viewports is using
-  //multiple Rendering Contexts. But the call to share resources between them,
-  //wglShareLists() is kinda broken on some NVIDIA, ATi and Intel drivers.
-  //So now we're using just one to do everything.
-  //Old code marked with: //wglShareLists
-  DummyWindowClass: WNDCLASSEX;
-  DummyWindowClassAtom: ATOM;
   DummyWindow: HWND;
   DummyDC: HDC;
   DummyRC: HGLRC;
-(*  RCs: array of HGLRC;*)
+  RCs: array of HGLRC;
 
  { ----------------- }
 
@@ -935,14 +929,14 @@ begin
   Result := DummyWindow;
 end;
 
-(*function CreateNewRC(DC: HDC): HGLRC; //wglShareLists
+function CreateNewRC(DC: HDC): HGLRC;
 begin
   Result:=wglCreateContext(DC);
   if Result <> 0 then
   begin
     if wglShareLists(DummyRC, Result)=false then
       Raise EErrorFmt(6301, ['wglShareLists']);
-    SetLength(RCs,Length(RCs)+1);
+    SetLength(RCs, Length(RCs)+1);
     RCs[Length(RCs)-1]:=Result;
   end;
 end;
@@ -953,10 +947,6 @@ var
 begin
   if RC<>0 then
   begin
-    //DanielPharos: Apparently, displaylists get corrupt when deleting contexts
-    if qrkGLState<>nil then
-      qrkGLState.FlagAllOpenGLDisplayLists;
-
     if wglDeleteContext(RC) = false then
       raise EError(6312);
     I:=0;
@@ -965,13 +955,13 @@ begin
       if RCs[I]=RC then
       begin
         RCs[I]:=RCs[Length(RCs)-1];
-        SetLength(RCs,Length(RCs)-1);
+        SetLength(RCs, Length(RCs)-1);
       end
       else
         Inc(I);
     end;
   end;
-end;*)
+end;
 
 function FillPixelFormat(DC: HDC) : TPixelFormatDescriptor;
 var
@@ -1030,11 +1020,6 @@ begin
   end;
 end;
 
-function WndMessageProc(hWnd: HWND; Msg: UINT; WParam: WPARAM; LParam: LPARAM): UINT; stdcall;
-begin
-  Result := DefWindowProc(hWnd,Msg,wParam,lParam);
-end;
-
 function LoadOpenGl : Boolean;
 type
  PPointer = ^Pointer;
@@ -1077,20 +1062,9 @@ begin
         PPointer(Glu32DLL_FuncList[I].FuncPtr)^:=P;
       end;
 
-      //Creating dummy Rendering Context
-      FillChar(DummyWindowClass, SizeOf(DummyWindowClass), 0);
-      DummyWindowClass.cbSize:=SizeOf(DummyWindowClass);
-      DummyWindowClass.style:=CS_NOCLOSE Or CS_HREDRAW Or CS_VREDRAW Or CS_OWNDC;
-      DummyWindowClass.hInstance:=hInstance;
-      DummyWindowClass.lpszClassName:=PChar(DummyWindowClassName);
-      DummyWindowClass.lpfnWndProc:=@WndMessageProc;
-      DummyWindowClassAtom:=RegisterClassEx(DummyWindowClass);
-      if DummyWindowClassAtom = 0 then
-        Raise EErrorFmt(6301, ['RegisterClassEx']);
-
-      DummyWindow := CreateWindow(DummyWindowClass.lpszClassName, PChar('QuArK - OpenGL Dummy Window'), WS_CLIPCHILDREN or WS_CLIPSIBLINGS or WS_DISABLED, Integer(CW_USEDEFAULT), Integer(CW_USEDEFAULT), Integer(CW_USEDEFAULT), Integer(CW_USEDEFAULT), 0, 0, hInstance, nil);
+      DummyWindow := CreateDummyWindow('QuArK - OpenGL Dummy Window');
       if DummyWindow = 0 then
-        Raise EErrorFmt(6301, ['CreateWindow']);
+        Raise EErrorFmt(6301, ['CreateDummyWindow']);
       DummyDC := GetDC(DummyWindow);
       if DummyDC = 0 then
         Raise EErrorFmt(6301, ['GetDC']);
@@ -1138,13 +1112,8 @@ begin
       Raise EErrorFmt(6305, ['ReleaseDC']);
     DummyDC := 0;
 
-    if DestroyWindow(DummyWindow) = false then
-      Raise EErrorFmt(6305, ['DestroyWindow']);
+    DeleteDummyWindow(DummyWindow);
     DummyWindow := 0;
-
-    if Windows.UnregisterClass(DummyWindowClass.lpszClassName, hInstance) = false then
-      Raise EErrorFmt(6305, ['UnregisterClass']);
-    DummyWindowClassAtom := 0;
 
     //DanielPharos: This cannot be freed, because the pixel format will then be forgotton,
     //causing errors when OpenGL is restarted!

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.78  2008/11/17 22:27:05  danielpharos
+Removed redundant variable, fixed a wrong type, and fixed a HUGE and stupid bug with the OpenGL displaylists!
+
 Revision 1.77  2008/11/14 00:39:54  danielpharos
 Fixed a few variable types and fixed the coloring of faces not working properly in OpenGL and giving the wrong color in Glide.
 
@@ -298,7 +301,7 @@ type
 
  TGLSceneObject = class(TSceneObject)
  private
-//   RC: HGLRC;  //wglShareLists
+   RC: HGLRC;
    WinSwapHint: Pointer;
    DoubleBuffered: Boolean;
    Fog: Boolean;
@@ -335,7 +338,6 @@ type
    procedure BuildTexture(Texture: PTexture3); override;
    procedure ChangedViewDC; override;
  public
-//   FlagDisplayLists: Boolean; //wglShareLists
    constructor Create(nViewMode: TMapViewMode);
    destructor Destroy; override;
    procedure Init(nCoord: TCoordinates;
@@ -356,7 +358,6 @@ type  { this is the data shared by all existing TGLSceneObjects }
   public
     procedure ClearTexture(Tex: PTexture3);
     procedure ClearAllOpenGLTextures;
-//    procedure FlagAllOpenGLDisplayLists; //wglShareLists
   end;
   
 var
@@ -853,7 +854,7 @@ begin
       begin
         if not MadeRCCurrent then
         begin
-          if wglMakeCurrent(GetOpenGLDummyDC, GetOpenGLDummyRC) = false then //wglShareLists
+          if wglMakeCurrent(GetOpenGLDummyDC, GetOpenGLDummyRC) = false then
             raise EError(6310);
           MadeRCCurrent := True;
         end;
@@ -868,19 +869,19 @@ begin
       wglMakeCurrent(0, 0);
   end;
 
-(*  if RC<>0 then //wglShareLists
+  if RC<>0 then
   begin
     if OpenGLLoaded then
       DeleteRC(RC);
     RC:=0;
-  end;*)
+  end;
 
 end;
 
 constructor TGLSceneObject.Create(nViewMode: TMapViewMode);
 begin
   inherited Create(nViewMode);
-  //RC:=0; //wglShareLists
+  RC:=0;
   PixelFormat:=nil;
 end;
 
@@ -1031,15 +1032,14 @@ begin
     PixelFormat^:=FillPixelFormat(ViewDC);
     ChangedViewDC; //To set the pixelformat:
 
-(*    if RC = 0 then //wglShareLists
+    if RC = 0 then
     begin
       RC:=CreateNewRC(ViewDC);
       if RC = 0 then
         raise EError(6311);
-    end;*)
+    end;
 
-//    if wglMakeCurrent(ViewDC, RC) = false then //wglShareLists
-    if wglMakeCurrent(ViewDC, GetOpenGLDummyRC) = false then
+    if wglMakeCurrent(ViewDC, RC) = false then
       raise EError(6310);
     try
     WinSwapHint:=LoadSwapHint;
@@ -1148,8 +1148,7 @@ begin
   begin
     SetViewDC(True);
     try
-//      if wglMakeCurrent(ViewDC, RC) = false then //wglShareLists
-      if wglMakeCurrent(ViewDC, GetOpenGLDummyRC) = false then
+      if wglMakeCurrent(ViewDC, RC) = false then
         raise EError(6310);
       try
         if WinSwapHint<>nil then
@@ -1238,8 +1237,7 @@ begin
         end;
         if not MadeRCCurrent then
         begin
-//          if wglMakeCurrent(ViewDC, RC) = false then //wglShareLists
-          if wglMakeCurrent(ViewDC, GetOpenGLDummyRC) = false then
+          if wglMakeCurrent(ViewDC, RC) = false then
             raise EError(6310);
           MadeRCCurrent := True;
         end;
@@ -1428,8 +1426,7 @@ begin
     Exit;
   SetViewDC(True);
   try
-//    if wglMakeCurrent(ViewDC, RC) = false then //wglShareLists
-    if wglMakeCurrent(ViewDC, GetOpenGLDummyRC) = false then
+    if wglMakeCurrent(ViewDC, RC) = false then
       raise EError(6310);
     try
 
@@ -1534,43 +1531,6 @@ begin
    end;
   CheckOpenGLError('Render3DView: Camera set-up');
 
-  //wglShareList: DanielPharos: We've got to reset the state, since we're only using
-  //one rendering context now.
-  if (CurrentDisplayMode=dmPanel) then
-    glDisable(GL_DEPTH_TEST)
-  else
-    glEnable(GL_DEPTH_TEST);
-  CheckOpenGLError('Render3DView: GL_DEPTH_TEST');
-
-  if Fog then
-  begin
-    glEnable(GL_FOG);
-    {glFogf(GL_FOG_START, FarDistance * kDistFarToShort);
-    glFogf(GL_FOG_END, FarDistance);}
-    glFogf(GL_FOG_DENSITY, FogDensity/FarDistance);
-  end
-  else
-    glDisable(GL_FOG);
-  CheckOpenGLError('Render3DView: GL_FOG');
-  
-  if Lighting then
-    glEnable(GL_LIGHTING)
-  else
-    glDisable(GL_LIGHTING);
-  CheckOpenGLError('Render3DView: GL_LIGHTING');
-
-  if Transparency then
-    glEnable(GL_BLEND)
-  else
-    glDisable(GL_BLEND);
-  CheckOpenGLError('Render3DView: GL_BLEND');
-
-  if Culling then
-    glEnable(GL_CULL_FACE)
-  else
-    glDisable(GL_CULL_FACE);
-  CheckOpenGLError('Render3DView: GL_CULL_FACE');
-
   glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT);
   CheckOpenGLError('Render3DView: glClear');
 
@@ -1593,20 +1553,6 @@ begin
   RebuildDisplayList:=False;
   if DisplayLists then
   begin
-(*    if FlagDisplayLists then //wglShareLists
-    begin
-      for I:=0 to 2 do
-      begin
-        if OpenGLDisplayLists[I]<>0 then
-        begin
-          glDeleteLists(OpenGLDisplayLists[I], 1);
-          CheckOpenGLError(glGetError);
-          OpenGLDisplayLists[I]:=0;
-        end;
-      end;
-      FlagDisplayLists:=False;
-    end;*)
-
     if (OpenGLDisplayLists[LightingQuality]=0) then
     begin
       OpenGLDisplayLists[LightingQuality]:=glGenLists(1);
@@ -1785,13 +1731,13 @@ begin
             Dest^ := AlphaSource^;   inc(AlphaSource); Inc(Dest);
             Dec(J);
           end;
-          glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,PSD2.Size.X, PSD2.Size.Y,0, GL_BGRA, GL_UNSIGNED_BYTE, TexData);
+          glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,PSD2.Size.X, PSD2.Size.Y,0, GL_BGRA, GL_UNSIGNED_BYTE, PGLvoid(TexData));
         finally
           FreeMem(TexData);
         end;
       end       // end of making use of alpha channel of textures
       else
-        glTexImage2D(GL_TEXTURE_2D, 0, 3,PSD2.Size.X, PSD2.Size.Y,0, GL_BGR, GL_UNSIGNED_BYTE, PSD2.Data);
+        glTexImage2D(GL_TEXTURE_2D, 0, 3,PSD2.Size.X, PSD2.Size.Y,0, GL_BGR, GL_UNSIGNED_BYTE, PGLvoid(PSD2.Data));
 
     finally
       PSD.Done;
@@ -1805,8 +1751,7 @@ begin
 
     SetViewDC(True);
     try
-//    if wglMakeCurrent(ViewDC, RC) = false then //wglShareLists
-    if wglMakeCurrent(ViewDC, GetOpenGLDummyRC) = false then
+    if wglMakeCurrent(ViewDC, RC) = false then
       raise EError(6310);
     try
 
@@ -2019,10 +1964,7 @@ begin
     end;
     CheckOpenGLError('glTexParameterf');
 
-      // To reverse changes that broke OpenGL for odd sized textures in version 1.24 2004/12/14
-    glTexImage2D(GL_TEXTURE_2D, 0, NumberOfComponents, W, H, 0, BufferType, GL_UNSIGNED_BYTE, TexData^);
-  (*  glTexImage2D(GL_TEXTURE_2D, 0, 3, W, H, 0, GL_RGB, GL_UNSIGNED_BYTE, TexData)
-    end;//paletted textures   *)
+    glTexImage2D(GL_TEXTURE_2D, 0, NumberOfComponents, W, H, 0, BufferType, GL_UNSIGNED_BYTE, PGLvoid(TexData));
     CheckOpenGLError('glTexImage2D');
     finally
       FreeMem(TexData);
@@ -2375,11 +2317,10 @@ begin
   //DanielPharos: How can you be sure OpenGL has been loaded?
   if (Tex^.OpenGLName<>0) then
   begin
-//    if wglMakeCurrent(GetOpenGLDummyDC, GetOpenGLDummyRC) = false then //wglShareLists
     if wglMakeCurrent(GetOpenGLDummyDC, GetOpenGLDummyRC) = false then
       raise EError(6310);
     try
-      glDeleteTextures(1, Tex^.OpenGLName);
+      glDeleteTextures(1, @(Tex^.OpenGLName));
       CheckOpenGLError('ClearTexture: glDeleteTextures');
       Tex^.OpenGLName:=0;
     finally
@@ -2403,21 +2344,6 @@ begin
         ClearTexture(Tex);
   end;
 end;
-
-(*procedure TGLState.FlagAllOpenGLDisplayLists; //wglShareLists
-var
- TextureManager: TTextureManager;
- I: Integer;
- Scene: TObject;
-begin
-  TextureManager:=TTextureManager.GetInstance;
-  for I:=0 to TextureManager.Scenes.Count-1 do
-  begin
-    Scene:=TextureManager.Scenes[I];
-    if Scene is TGLSceneObject then
-      TGLSceneObject(Scene).FlagDisplayLists:=True;
-  end;
-end;*)
 
  {------------------------}
 

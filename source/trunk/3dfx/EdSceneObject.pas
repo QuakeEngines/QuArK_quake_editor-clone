@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.46  2008/11/14 00:39:54  danielpharos
+Fixed a few variable types and fixed the coloring of faces not working properly in OpenGL and giving the wrong color in Glide.
+
 Revision 1.45  2008/10/02 18:55:54  danielpharos
 Don't render when not in wp_paint handling.
 
@@ -196,7 +199,7 @@ interface
 uses Windows, Classes,
      Game, PyMath, qmath, Bezier,
      QkObjects, QkPixelSet, QkComponent, QkMapPoly,
-     Glide, Sprite;
+     Glide, GL1, Sprite;
 
  {------------------------}
 
@@ -261,7 +264,7 @@ type
               info: GrTexInfo;
               MeanColor: TColorRef;
               startAddress, endAddress: FxU32;
-              OpenGLName: Integer;
+              OpenGLName: GLuint;
               {Scaled: Boolean;}
               Used: Boolean;
               DefaultAlpha: Byte;

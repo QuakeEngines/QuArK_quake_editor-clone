@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2008/11/14 00:39:54  danielpharos
+Fixed a few variable types and fixed the coloring of faces not working properly in OpenGL and giving the wrong color in Glide.
+
 Revision 1.15  2008/10/02 18:55:54  danielpharos
 Don't render when not in wp_paint handling.
 
@@ -211,7 +214,6 @@ type
    CurrentAlpha: FxU32;
    Fog: Boolean;
    ViewRect: TViewRect;
-   SoftBufferFormat: Integer;
    FogTableCache: ^GrFogTable_t;
    GlideLoaded: Boolean;
    function ScreenExtent(var L, R: Integer; var bmiHeader: TBitmapInfoHeader) : Boolean;
@@ -252,7 +254,6 @@ procedure Do3DFXTwoMonitorsDeactivation;
 procedure Set3DFXGammaCorrection(Value: TDouble);
 
 var
- Hardware3DFX: Boolean;
  ScreenSizeX: Integer;
  ScreenSizeY: Integer;
  ScreenCenterX: Integer;
@@ -320,8 +321,7 @@ begin
    grTexFilterMode(GR_TMU0, GR_TEXTUREFILTER_BILINEAR, GR_TEXTUREFILTER_BILINEAR);
    grTexClampMode(GR_TMU0, GR_TEXTURECLAMP_WRAP, GR_TEXTURECLAMP_WRAP);
    grTexMipMapMode(GR_TMU0, GR_MIPMAP_NEAREST, FXFALSE);
-   if Assigned(grTexLodBiasValue) then
-     grTexLodBiasValue(GR_TMU0, +0.5);  {This one is located in the software part! But just to be sure, let's leave it here too}
+   grTexLodBiasValue(GR_TMU0, +0.5);
    grTexCombineFunction(GR_TMU0, GR_TEXTURECOMBINE_DECAL);
    grFogMode(GR_FOG_WITH_TABLE);
   end;
@@ -564,8 +564,8 @@ begin
      Raise EErrorFmt(6200, ['grSstQueryHardware']);
     grSstSelect(0);
     if GlideTimesLoaded=1 then
-      //Even though we want multiple windows, Glide only supports 1. So we can't use ViewWnd here!
-      if not grSstWinOpen(0,
+      //Glide only only supports 1 window at a time. So we can't use ViewWnd here!
+      if not grSstWinOpen(GetGlideDummyHwnd,
                         Resolution,
                         GR_REFRESH_60HZ,
                         GR_COLORFORMAT_ARGB,
@@ -596,18 +596,8 @@ begin
  if (not Assigned(qrkGlideState)) then
    raise InternalE(LoadStr1(6221));
  TGlideState(qrkGlideState).Init;
- Hardware3DFX:=qrkGlideVersion>=HardwareGlideVersion;
- if Hardware3DFX then
-  HiColor:=True
- else
-  if qrkGlideVersion<SoftMultiplePalettes then
-   HiColor:=False
-  else
-   begin
-    HiColor:=not TTextureManager.GetInstance.UnifiedPalette;
-    softgLoadFrameBuffer(Nil, $100 or Ord(not HiColor));
-    HiColor:=HiColor and (qrkGlideVersion>=SoftTexFmt565);
-   end;
+ 
+ HiColor:=True;
  TGlideState(qrkGlideState).Accepts16bpp:=HiColor;
 
  Setup:=SetupSubSet(ssGeneral, '3D View');
@@ -1030,8 +1020,6 @@ var
   end;
 
 begin
- if qrkGlideVersion<HardwareGlideVersion then
-  Exit;
  L:=ViewRect.R.Left;
  T:=ViewRect.R.Top;
  R:=ViewRect.R.Right;
@@ -1573,11 +1561,7 @@ begin
  LocalViewRectRight :=ViewRect.Right;
  LocalViewRectBottom:=ViewRect.Bottom;
 
- if (qrkGlideVersion<HardwareGlideVersion)
- and (SoftBufferFormat = SoftBufferCoarse) then
-  VertexSnapper1:=VertexSnapper+0.25
- else
-  VertexSnapper1:=VertexSnapper;
+ VertexSnapper1:=VertexSnapper;
 
  NeedTex:=not SolidColors;
 
@@ -1930,16 +1914,6 @@ begin
   begin
    biWidth:=R-L;
    biHeight:=ViewRect.R.Bottom-ViewRect.R.Top;
-   if qrkGlideVersion<HardwareGlideVersion then
-    begin
-     Inc(biHeight, 2*SOFTMARGIN);
-     if SoftBufferFormat>0 then
-      begin
-       biWidth:=biWidth*2;
-       biHeight:=biHeight*2;
-       Result:=True;
-      end;
-    end;
   end;
 end;
 
@@ -1978,11 +1952,9 @@ begin
 
  SetViewDC(True);
  try
- DIBSection:=CreateDIBSection(ViewDC,bmpInfo,DIB_RGB_COLORS,Bits,0,0);
- if DIBSection = 0 then
-   Raise EErrorFmt(6200, ['CreateDIBSection']);
- if Hardware3DFX then
-  begin
+   DIBSection:=CreateDIBSection(ViewDC,bmpInfo,DIB_RGB_COLORS,Bits,0,0);
+   if DIBSection = 0 then
+     Raise EErrorFmt(6200, ['CreateDIBSection']);
    try
     if not grLfbLock(GR_LFB_READ_ONLY, GR_BUFFER_BACKBUFFER, GR_LFBWRITEMODE_ANY,
         GR_ORIGIN_ANY, FXFALSE, info) then
@@ -2057,26 +2029,23 @@ begin
    finally
     grLfbUnlock(GR_LFB_READ_ONLY, GR_BUFFER_BACKBUFFER);
    end;
-  end
-  else
-   softgLoadFrameBuffer(Bits, SoftBufferFormat);
 
-  L:=(ScreenX-bmiHeader.biWidth) div 2;
-  T:=(ScreenY-bmiHeader.biHeight) div 2;
-  R:=L+bmiHeader.biWidth;
-  B:=T+bmiHeader.biHeight;
-  FrameBrush:=0;
-  if L>0 then  Frame(0, T, L, B-T);
-  if T>0 then  Frame(0, 0, ScreenX, T);
-  if R<ScreenX then Frame(R, T, ScreenX-R, B-T);
-  if B<ScreenY then Frame(0, B, ScreenX, ScreenY-B);
-  if FrameBrush<>0 then
-   DeleteObject(FrameBrush);
-  if SetDIBitsToDevice(ViewDC, L, T,
-   bmiHeader.biWidth, bmiHeader.biHeight, 0,0,
-   0,bmiHeader.biHeight, Bits, BmpInfo, DIB_RGB_COLORS) = 0 then
-    Raise EErrorFmt(6200, ['SetDIBitsToDevice']);
-  DeleteObject(DIBSection);
+   L:=(ScreenX-bmiHeader.biWidth) div 2;
+   T:=(ScreenY-bmiHeader.biHeight) div 2;
+   R:=L+bmiHeader.biWidth;
+   B:=T+bmiHeader.biHeight;
+   FrameBrush:=0;
+   if L>0 then  Frame(0, T, L, B-T);
+   if T>0 then  Frame(0, 0, ScreenX, T);
+   if R<ScreenX then Frame(R, T, ScreenX-R, B-T);
+   if B<ScreenY then Frame(0, B, ScreenX, ScreenY-B);
+   if FrameBrush<>0 then
+    DeleteObject(FrameBrush);
+   if SetDIBitsToDevice(ViewDC, L, T,
+    bmiHeader.biWidth, bmiHeader.biHeight, 0,0,
+    0,bmiHeader.biHeight, Bits, BmpInfo, DIB_RGB_COLORS) = 0 then
+     Raise EErrorFmt(6200, ['SetDIBitsToDevice']);
+   DeleteObject(DIBSection);
  finally
    SetViewDC(False);
  end;
@@ -2097,11 +2066,6 @@ begin
  if SY<1 then SY:=1;
  ScreenX:=SX;
  ScreenY:=SY;
- if SoftBufferFormat>0 then
-  begin
-   SX:=(SX+1) div 2;
-   SY:=(SY+1) div 2;
-  end;
 
  if CurrentDisplayMode=dmFullScreen then
   begin
@@ -2153,11 +2117,7 @@ end;
 
 function TGlideSceneObject.ChangeQuality(nQuality: Integer) : Boolean;
 begin
- Result:=(qrkGlideVersion<HardwareGlideVersion)
-     and (SoftBufferFormat<>nQuality);
- SoftBufferFormat:=nQuality;
- if Coord<>nil then
-   SetViewSize(ScreenX, ScreenY);
+ Result:=False;  //DanielPharos: No quality settings for Glide
 end;
 
 procedure TGlideSceneObject.BuildTexture(Texture: PTexture3);

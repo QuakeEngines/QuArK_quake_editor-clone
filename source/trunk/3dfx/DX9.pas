@@ -25,7 +25,7 @@ unit DX9;
 
 interface
 
-uses Windows, Direct3D, Direct3D9;
+uses Windows, SysUtils, Direct3D, Direct3D9;
 
 var
  D3D : IDirect3D9 = nil;
@@ -33,20 +33,29 @@ var
  RenderingType : D3DDEVTYPE;
  BehaviorFlags : DWORD;
  PresParm: D3DPRESENT_PARAMETERS;
- D3DDevice: IDirect3DDevice9;
- OrigSwapChain: IDirect3DSwapChain9;
+ D3DDevice: IDirect3DDevice9 = nil;
+ OrigBackBuffer: IDirect3DSurface9 = nil;
 
 function LoadDirect3D : Boolean;
 procedure UnloadDirect3D;
 
+function GetDirect3DDummyHwnd: HWND;
+
 implementation
 
-uses SysUtils, Logging, QkObjects, Setup, quarkx, DXErr9, Qk1;
+uses QkDummyWindow, Logging, QkObjects, Setup, Quarkx, QkExceptions, DXErr9;
 
 var
   TimesLoaded : Integer;
 
+  DummyWindow: HWND;
+
  { ----------------- }
+
+function GetDirect3DDummyHwnd: HWND;
+begin
+  Result := DummyWindow;
+end;
 
 function LoadDirect3D : Boolean;
 var
@@ -134,6 +143,10 @@ begin
       //using calls in DirectX. That way, we can do a nice error and shutdown, without
       //needing a restart of QuArK.
 
+      DummyWindow := CreateDummyWindow('QuArK - Direct3D Dummy Window');
+      if DummyWindow = 0 then
+        Raise EErrorFmt(6400, ['CreateDummyWindow']);
+
       //This is a dummy swapchain. This swapchain will make sure there always is a
       //valid device available for shared resources.
       PresParm.BackBufferHeight := 1;
@@ -152,8 +165,8 @@ begin
       PresParm.BackBufferCount := 1;
       PresParm.MultiSampleType := D3DMULTISAMPLE_NONE;
       PresParm.MultiSampleQuality := 0;
-      PresParm.SwapEffect := D3DSWAPEFFECT_FLIP;
-      PresParm.hDeviceWindow := g_Form1Handle;
+      PresParm.SwapEffect := D3DSWAPEFFECT_DISCARD;
+      PresParm.hDeviceWindow := DummyWindow;
       PresParm.Windowed := True;
       PresParm.EnableAutoDepthStencil := False;
       case StencilBufferBits of
@@ -174,11 +187,11 @@ begin
         Exit;
       end;
 
-      //The first parameter isn't necessarily 0!
-      l_Res:=D3DDevice.GetSwapChain(0, OrigSwapChain);
+      //FIXME: Are the first two parameters always 0?
+      l_Res:=D3DDevice.GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, OrigBackBuffer);
       if (l_Res <> D3D_OK) then
       begin
-        Log(LOG_WARNING, LoadStr1(6403), ['GetSwapChain', DXGetErrorString9(l_Res)]);
+        Log(LOG_WARNING, LoadStr1(6403), ['GetBackBuffer', DXGetErrorString9(l_Res)]);
         Exit;
       end;
 
@@ -210,25 +223,19 @@ procedure UnloadDirect3D;
 begin
   if TimesLoaded = 1 then
   begin
-    if not (OrigSwapChain=nil) then
-    begin
-      while (OrigSwapChain._Release > 0) do;
-      Pointer(OrigSwapChain):=nil;
-    end;
+    if not (OrigBackBuffer=nil) then
+      OrigBackBuffer:=nil;
+
+    DeleteDummyWindow(DummyWindow);
+    DummyWindow := 0;
 
     if not (D3DDevice=nil) then
-    begin
-      while (D3DDevice._Release > 0) do;
-      Pointer(D3DDevice):=nil;
-    end;
+      D3DDevice:=nil;
 
     //Delete D3DCaps and others...
 
     if not (D3D=nil) then
-    begin
-      while (D3D._Release > 0) do;
-      Pointer(D3D):=nil;
-    end;
+      D3D:=nil;
 
     UnLoadDirect3D9;
     //Ignoring failure here

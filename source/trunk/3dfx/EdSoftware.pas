@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2008/11/17 20:31:22  danielpharos
+Oops
+
 Revision 1.15  2008/11/14 00:39:54  danielpharos
 Fixed a few variable types and fixed the coloring of faces not working properly in OpenGL and giving the wrong color in Glide.
 
@@ -233,8 +236,8 @@ type
    ViewRect: TViewRect;
    SoftBufferFormat: Integer;
    FogTableCache: ^GrFogTable_t;
-   Hardware3DFX: Boolean;
-   GlideLoaded: Boolean;
+   RendererVersion: Integer;
+   RendererLoaded: Boolean;
    function ScreenExtent(var L, R: Integer; var bmiHeader: TBitmapInfoHeader) : Boolean;
  protected
    ScreenX, ScreenY: Integer;
@@ -280,6 +283,7 @@ uses Game, Quarkx, QkExceptions, FullScr1, Travail,
 
 const
  VertexSnapper = 1.0*(3 shl 18);
+ SoftBufferCoarse = 1;
 
 type
  PVect3D = ^TVect3D;
@@ -364,30 +368,13 @@ type  { this is the data shared by all existing T3DFXSceneObjects }
 constructor TGlideState.Create;
 begin
  inherited;
- if qrkGlideVersion>=HardwareGlideVersion then
-  begin  { first time hardware setup }
-   FMinAddress:=grTexMinAddress(GR_TMU0);
-   FMaxAddress:=grTexMaxAddress(GR_TMU0);
-   FLoopAddress:=FMinAddress;
-
-   grTexFilterMode(GR_TMU0, GR_TEXTUREFILTER_BILINEAR, GR_TEXTUREFILTER_BILINEAR);
-   grTexClampMode(GR_TMU0, GR_TEXTURECLAMP_WRAP, GR_TEXTURECLAMP_WRAP);
-   grTexMipMapMode(GR_TMU0, GR_MIPMAP_NEAREST, FXFALSE);
-   if Assigned(grTexLodBiasValue) then
-    grTexLodBiasValue(GR_TMU0, +0.5);
-   grTexCombineFunction(GR_TMU0, GR_TEXTURECOMBINE_DECAL);
-{   if Fog=true then
-     grFogMode(GR_FOG_WITH_TABLE)
-   else
-     grFogMode(GR_FOG_DISABLED);}
-  end;
 end;
 
 (*procedure TGlideState.PaletteWarning;
 begin
  if not PalWarning then
   begin
-   if qrkGlideVersion < SoftMultiplePalettes then
+   if RendererVersion < SoftMultiplePalettes then
     GlobalWarning(LoadStr1(5656));
    PalWarning:=True;
   end;
@@ -397,45 +384,13 @@ procedure TGlideState.NeedTex(PTex: PTexture3);
 const
  TEXMEM_2MB_EDGE = 2097152;
 var
- I: Integer;
- nStartAddress, nSize: FxU32;
  TextureManager: TTextureManager;
 begin
  {$IFDEF Debug}
  if PTex^.info.data=Nil then
   Raise InternalE(LoadStr1(6010));
  {$ENDIF}
- if (PTex^.startAddress = GR_NULL_MIPMAP_HANDLE)
- and (qrkGlideVersion>=HardwareGlideVersion) then
-  begin
-   TextureManager:=TTextureManager.GetInstance;
-    { computes destination address }
-   nStartAddress:=FLoopAddress;
-   nSize:=grTexTextureMemRequired(GR_MIPMAPLEVELMASK_BOTH, PTex^.info);
-   if nStartAddress+nSize > FMaxAddress then
-    nStartAddress:=FMinAddress
-   else
-    if (nStartAddress < TEXMEM_2MB_EDGE)
-    and (nStartAddress+nSize > TEXMEM_2MB_EDGE) then
-     nStartAddress:=TEXMEM_2MB_EDGE;
-   FLoopAddress:=nStartAddress+nSize;
-
-    { invalidates any other texture overlapping this interval }
-   for I:=TextureManager.Textures.Count-1 downto 0 do
-    with PTexture3(TextureManager.Textures.Objects[I])^ do
-     if (startAddress<>GR_NULL_MIPMAP_HANDLE)
-     and (startAddress<FLoopAddress)
-     and (endAddress>nStartAddress) then
-      startAddress:=GR_NULL_MIPMAP_HANDLE;
-
-    { downloads the new texture }
-   grTexDownloadMipMap(GR_TMU0, nStartAddress, GR_MIPMAPLEVELMASK_BOTH, PTex^.info);
-   PTex^.startAddress:=nStartAddress;
-   PTex^.endAddress:=FLoopAddress;
-   {$IFDEF DeXXXXbugLOG} LogS:='DL-'; {$ENDIF}
-  end
- else
-  TextureManager:=Nil;
+ TextureManager:=Nil;
 
  if PTex^.GuPalette<>Nil then
   begin
@@ -507,13 +462,14 @@ begin
  CurrentDisplayMode:=DisplayMode;
  CurrentDisplayType:=DisplayType;
 
- if (not GlideLoaded) or (qrkGlideLibName<>LibName) then
+ if (not RendererLoaded) then
   begin
    if LibName='' then
     Raise EError(6001);
    if not LoadGlide(LibName, GetQPath(pQuArKDll)) then
     Raise EErrorFmt(6002, [LibName, GetLastError]);
    try
+    RendererVersion:=softgQuArK;
     SetIntelPrecision;
     grGlideInit;
     if Assigned(grSstQueryHardware) then
@@ -539,7 +495,7 @@ begin
     grDepthMask(FXTRUE);
    ClearBuffers(0);
    qrkGlideState:=TGlideState.Create;
-   GlideLoaded:=true;
+   RendererLoaded:=true;
   end;
  if (CurrentDisplayMode=dmFullScreen) then
  begin
@@ -558,18 +514,14 @@ begin
  if (not Assigned(qrkGlideState)) then
    raise InternalE(LoadStr1(6121));
  TGlideState(qrkGlideState).Init;
- Hardware3DFX:=qrkGlideVersion>=HardwareGlideVersion;
- if qrkGlideVersion>=HardwareGlideVersion then
-  HiColor:=True
+ if RendererVersion<SoftMultiplePalettes then
+  HiColor:=False
  else
-  if qrkGlideVersion<SoftMultiplePalettes then
-   HiColor:=False
-  else
-   begin
-    HiColor:=not TTextureManager.GetInstance.UnifiedPalette;
-    softgLoadFrameBuffer(Nil, $100 or Ord(not HiColor));
-    HiColor:=HiColor and (qrkGlideVersion>=SoftTexFmt565);
-   end;
+  begin
+   HiColor:=not TTextureManager.GetInstance.UnifiedPalette;
+   softgLoadFrameBuffer(Nil, $100 or Ord(not HiColor));
+   HiColor:=HiColor and (RendererVersion>=SoftTexFmt565);
+  end;
  TGlideState(qrkGlideState).Accepts16bpp:=HiColor;
 
  Setup:=SetupSubSet(ssGeneral, '3D View');
@@ -626,7 +578,7 @@ begin
    FreeMem(FogTableCache);
    FogTableCache := nil;
  end;
- if GlideLoaded = True then
+ if RendererLoaded = True then
   begin
    if GlideTimesLoaded=1 then
     begin
@@ -1011,8 +963,7 @@ var
   end;
 
 begin
- if qrkGlideVersion<HardwareGlideVersion then
-  Exit;
+ Exit; //FIXME: ?
  L:=ViewRect.R.Left;
  T:=ViewRect.R.Top;
  R:=ViewRect.R.Right;
@@ -1041,8 +992,6 @@ begin
 end;
 
 procedure TSoftwareSceneObject.Render3DView;
-var
- OldMinDist, OldMaxDist: TDouble;
 begin
  CCoord:=Coord;  { PyMath.CCoord }
  if CCoord.FlatDisplay then
@@ -1072,10 +1021,7 @@ begin
      grFogTable(FogTableCache^);
  end;
 
- if qrkGlideVersion>=HardwareGlideVersion then
-   grClipWindow(ViewRect.R.Left, ViewRect.R.Top, ViewRect.R.Right, ViewRect.R.Bottom)
- else
-   grClipWindow(ViewRect.R.Left-SOFTMARGIN, ViewRect.R.Top-SOFTMARGIN, ViewRect.R.Right+SOFTMARGIN, ViewRect.R.Bottom+SOFTMARGIN);
+ grClipWindow(ViewRect.R.Left-SOFTMARGIN, ViewRect.R.Top-SOFTMARGIN, ViewRect.R.Right+SOFTMARGIN, ViewRect.R.Bottom+SOFTMARGIN);
 
  CurrentAlpha:=0;
  IteratedAlpha:=False;
@@ -1110,38 +1056,6 @@ begin
  if Assigned(grAlphaBlendFunction) then
    grAlphaBlendFunction(GR_BLEND_SRC_ALPHA, GR_BLEND_ONE_MINUS_SRC_ALPHA, GR_BLEND_ONE, GR_BLEND_ZERO);
  RenderTransparent(True);
-
- if (qrkGlideVersion>=HardwareGlideVersion) and CCoord.FlatDisplay and (TranspFactor>0) then
- begin
-   Inc(FBuildNo);
-   //grAlphaCombine(GR_COMBINE_FUNCTION_BLEND_LOCAL, GR_COMBINE_FACTOR_OTHER_ALPHA, GR_COMBINE_LOCAL_DEPTH, GR_COMBINE_OTHER_CONSTANT, FXTRUE);
-   if Assigned(grAlphaCombine) then
-     grAlphaCombine(GR_COMBINE_FUNCTION_SCALE_OTHER, GR_COMBINE_FACTOR_ONE_MINUS_LOCAL_ALPHA, GR_COMBINE_LOCAL_ITERATED, GR_COMBINE_OTHER_CONSTANT, FXFALSE);
-   IteratedAlpha:=True;
-   //grAlphaCombine(GR_COMBINE_FUNCTION_SCALE_OTHER, GR_COMBINE_FACTOR_LOCAL_ALPHA, GR_COMBINE_LOCAL_CONSTANT, GR_COMBINE_OTHER_ITERATED, FXFALSE);
-   //grConstantColorValue($30FFFFFF);
-   OldMinDist:=CCoord.MinDistance;
-   OldMaxDist:=CCoord.MaxDistance;
-   try
-     CCoord.MinDistance:=OldMinDist - (OldMaxDist-OldMinDist)*TranspFactor;
-     CCoord.MaxDistance:=OldMinDist;
-     InitFlatZ;
-     if Assigned(grFogMode) then
-       grFogMode(GR_FOG_DISABLE);
-     grDepthMask(FXFALSE);
-     grDepthBufferFunction(GR_CMP_ALWAYS);
-     RenderTransparent(False);
-     RenderTransparent(True);
-   finally
-     grDepthBufferFunction(GR_CMP_LESS);
-     grDepthMask(FXTRUE);
-     if Fog=True then
-       if Assigned(grFogMode) then
-         grFogMode(GR_FOG_WITH_TABLE);
-     CCoord.MinDistance:=OldMinDist;
-     CCoord.MaxDistance:=OldMaxDist;
-   end;
- end;
 end;
 
 procedure Proj(var Vect: TVect3D; const ViewRect: TViewRect; nBuildNo: Integer{; DistMin, DistMax: FxFloat}) {: Boolean};
@@ -1567,8 +1481,7 @@ begin
  LocalViewRectRight :=ViewRect.Right;
  LocalViewRectBottom:=ViewRect.Bottom;
 
- if (qrkGlideVersion<HardwareGlideVersion)
- and (SoftBufferFormat = SoftBufferCoarse) then
+ if (SoftBufferFormat = SoftBufferCoarse) then
   VertexSnapper1:=VertexSnapper+0.25
  else
   VertexSnapper1:=VertexSnapper;
@@ -1942,26 +1855,22 @@ begin
   begin
    biWidth:=R-L;
    biHeight:=ViewRect.R.Bottom-ViewRect.R.Top;
-   if qrkGlideVersion<HardwareGlideVersion then
+   Inc(biHeight, 2*SOFTMARGIN);
+   if SoftBufferFormat>0 then
     begin
-     Inc(biHeight, 2*SOFTMARGIN);
-     if SoftBufferFormat>0 then
-      begin
-       biWidth:=biWidth*2;
-       biHeight:=biHeight*2;
-       Result:=True;
-      end;
+     biWidth:=biWidth*2;
+     biHeight:=biHeight*2;
+     Result:=True;
     end;
   end;
 end;
 
 procedure TSoftwareSceneObject.Copy3DView;
 var
- I, L, R, T, B, Count1: Integer;
+ L, R, T, B: Integer;
  bmiHeader: TBitmapInfoHeader;
  BmpInfo: TBitmapInfo;
- info: GrLfbInfo_t;
- Bits, SrcPtr: Pointer;
+ Bits: Pointer;
  FrameBrush: HBrush;
  DIBSection: HGDIOBJ;
 
@@ -1990,104 +1899,27 @@ begin
 
  SetViewDC(True);
  try
- DIBSection:=CreateDIBSection(ViewDC,bmpInfo,DIB_RGB_COLORS,Bits,0,0);
- if DIBSection = 0 then
-   Raise EErrorFmt(6100, ['CreateDIBSection']);
- if qrkGlideVersion>=HardwareGlideVersion then
-  begin
-   try
-    if not grLfbLock(GR_LFB_READ_ONLY, GR_BUFFER_BACKBUFFER, GR_LFBWRITEMODE_ANY,
-          GR_ORIGIN_ANY, FXFALSE, info) then
-     Raise EErrorFmt(6100, ['grLfbLock']);
-    I:=bmiHeader.biHeight;
-    SrcPtr:=info.lfbptr;
-    Inc(PChar(SrcPtr), L*2 + (ScreenSizeY-ViewRect.R.Bottom)*Integer(info.strideInBytes));
-    Count1:=(R-L) div 4;
-    asm
-     push esi
-     push edi
-     mov edi, [Bits]
-
-     @BoucleY:
-      mov esi, [SrcPtr]
-      mov eax, [info.strideInBytes]
-      add eax, esi
-      mov [SrcPtr], eax
-      mov ecx, [Count1]
-      push ebx
-
-      @Boucle:
-
-       mov eax, [esi]
-       mov edx, eax
-       shl eax, 11    { 1B }
-       mov ebx, edx
-       shr edx, 3
-       mov al, dl     { 1G }
-       shl eax, 16
-       mov ah, bh     { 1R }
-       shr edx, 10
-       mov al, dl     { 2B }
-       and eax, $F8FCF8F8
-       bswap eax
-       mov [edi], eax
-
-       shr edx, 6
-       shl dh, 3
-       and dl, $F8
-       bswap edx    { 2G - 2R }
-       mov eax, [esi+4]
-       add esi, 8
-       shld ebx, eax, 16
-       shl eax, 3
-       mov dh, al   { 3B }
-       shl eax, 2
-       mov dl, ah   { 3G }
-       bswap edx
-       mov [edi+4], edx
-
-       mov ah, bl   { 4B }
-       shl eax, 11  { 3R }
-       mov al, bh   { 4R }
-       shr ebx, 3
-       mov ah, bl   { 4G }
-       and eax, $F8F8FCF8
-       bswap eax
-       mov [edi+8], eax
-       add edi, 12
-
-       dec ecx
-      jnz @Boucle
-
-      pop ebx
-      dec [I]
-     jnz @BoucleY
-
-     pop edi
-     pop esi
-    end;
-   finally
-    grLfbUnlock(GR_LFB_READ_ONLY, GR_BUFFER_BACKBUFFER);
-   end;
-  end
-  else
+   DIBSection:=CreateDIBSection(ViewDC,bmpInfo,DIB_RGB_COLORS,Bits,0,0);
+   if DIBSection = 0 then
+     Raise EErrorFmt(6100, ['CreateDIBSection']);
    softgLoadFrameBuffer(Bits, SoftBufferFormat);
-  L:=(ScreenX-bmiHeader.biWidth) div 2;
-  T:=(ScreenY-bmiHeader.biHeight) div 2;
-  R:=L+bmiHeader.biWidth;
-  B:=T+bmiHeader.biHeight;
-  FrameBrush:=0;
-  if L>0 then  Frame(0, T, L, B-T);
-  if T>0 then  Frame(0, 0, ScreenX, T);
-  if R<ScreenX then Frame(R, T, ScreenX-R, B-T);
-  if B<ScreenY then Frame(0, B, ScreenX, ScreenY-B);
-  if FrameBrush<>0 then
-   DeleteObject(FrameBrush);
-  if SetDIBitsToDevice(ViewDC, L, T,
-   bmiHeader.biWidth, bmiHeader.biHeight, 0,0,
-   0,bmiHeader.biHeight, Bits, BmpInfo, DIB_RGB_COLORS) = 0 then
-    Raise EErrorFmt(6100, ['SetDIBitsToDevice']);
-  DeleteObject(DIBSection);
+
+   L:=(ScreenX-bmiHeader.biWidth) div 2;
+   T:=(ScreenY-bmiHeader.biHeight) div 2;
+   R:=L+bmiHeader.biWidth;
+   B:=T+bmiHeader.biHeight;
+   FrameBrush:=0;
+   if L>0 then  Frame(0, T, L, B-T);
+   if T>0 then  Frame(0, 0, ScreenX, T);
+   if R<ScreenX then Frame(R, T, ScreenX-R, B-T);
+   if B<ScreenY then Frame(0, B, ScreenX, ScreenY-B);
+   if FrameBrush<>0 then
+    DeleteObject(FrameBrush);
+   if SetDIBitsToDevice(ViewDC, L, T,
+    bmiHeader.biWidth, bmiHeader.biHeight, 0,0,
+    0,bmiHeader.biHeight, Bits, BmpInfo, DIB_RGB_COLORS) = 0 then
+     Raise EErrorFmt(6100, ['SetDIBitsToDevice']);
+   DeleteObject(DIBSection);
  finally
    SetViewDC(False);
  end;
@@ -2132,11 +1964,8 @@ begin
  ViewRect.R.Top:=YMargin;
  ViewRect.R.Right:=ScreenSizeX-XMargin;
  ViewRect.R.Bottom:=ScreenSizeY-YMargin;
- if qrkGlideVersion<HardwareGlideVersion then
-  begin
-   ViewRect.R.Left:=((ViewRect.R.Left-2) and not 3) + 2;
-   ViewRect.R.Right:=((ViewRect.R.Right+3+2) and not 3) - 2;
-  end;
+ ViewRect.R.Left:=((ViewRect.R.Left-2) and not 3) + 2;
+ ViewRect.R.Right:=((ViewRect.R.Right+3+2) and not 3) - 2;
 
  if Coord=nil then
   begin
@@ -2170,8 +1999,7 @@ end;
 
 function TSoftwareSceneObject.ChangeQuality(nQuality: Integer) : Boolean;
 begin
- Result:=(qrkGlideVersion<HardwareGlideVersion)
-     and (SoftBufferFormat<>nQuality);
+ Result:=(SoftBufferFormat<>nQuality);
  SoftBufferFormat:=nQuality;
  if Coord<>nil then
    SetViewSize(ScreenX, ScreenY);

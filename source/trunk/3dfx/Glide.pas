@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2008/11/17 20:31:22  danielpharos
+Oops
+
 Revision 1.15  2008/11/14 00:39:54  danielpharos
 Fixed a few variable types and fixed the coloring of faces not working properly in OpenGL and giving the wrong color in Glide.
 
@@ -1171,23 +1174,22 @@ var
 
   (****************************)
 
+  softgQuArK: function: Integer; stdcall;
+
   softgLoadFrameBuffer: procedure (Data: Pointer; Format: Integer); stdcall;
 
   (*
   ** end of routines
   *)
 
-  qrkGlideVersion: Integer;
-  qrkGlideLibName: String;
   qrkGlideState: TObject;
+  Hardware3DFX: Boolean;
+
+function GetGlideDummyHwnd: HWND;
 
 const
  SoftMultiplePalettes = 20;
  SoftTexFmt565        = 30;
- HardwareGlideVersion = 1000;
-{HardwareGlideLib     = 'glide2x.dll';
- SoftwareGlideLib     = 'qrksoftg.dll';}
- SoftBufferCoarse     = 1;
 
 function GlideTimesLoaded : Integer;
 function LoadGlide(const LibName, SearchDir: String) : Boolean;
@@ -1195,10 +1197,13 @@ procedure UnloadGlide;
 
 implementation
 
+uses QkExceptions, QkDummyWindow, QkApplPaths;
+
 type
   TFuncRequirement =  { Specifies which DLL, the function should exist in: }
-    ( inGlide         { must exist in Glide??.DLL and QrkSoftG.DLL }
-     ,inSoftG );      { must exist in QrkSoftG.DLL }
+    ( inGlide,        { must exist in Glide??.DLL and QrkSoftG.DLL }
+      inSoftG,        { must exist in QrkSoftG.DLL }
+      inBoth  );      { must exist in BOTH }
 
 const
   GlideDLL_FuncList : array[0..39] of
@@ -1209,18 +1214,18 @@ const
     end =
   ({(FuncPtr: @@grDrawPlanarPolygonVertexList;  FuncReq: inGlide;  FuncName: '_grDrawPlanarPolygonVertexList@8' )}
   {,(FuncPtr: @@grDrawPolygonVertexList;        FuncReq: inGlide;  FuncName: '_grDrawPolygonVertexList@8'       )}
-    (FuncPtr: @@grDrawTriangle;                 FuncReq: inGlide;  FuncName: '_grDrawTriangle@12'               )
-   ,(FuncPtr: @@grBufferClear;                  FuncReq: inGlide;  FuncName: '_grBufferClear@12'                )
+    (FuncPtr: @@grDrawTriangle;                 FuncReq: inBoth;   FuncName: '_grDrawTriangle@12'               )
+   ,(FuncPtr: @@grBufferClear;                  FuncReq: inBoth;   FuncName: '_grBufferClear@12'                )
    ,(FuncPtr: @@grBufferSwap;                   FuncReq: inGlide;  FuncName: '_grBufferSwap@4'                  )
    ,(FuncPtr: @@grSstIdle;                      FuncReq: inGlide;  FuncName: '_grSstIdle@0'                     )
-   ,(FuncPtr: @@grSstWinOpen;                   FuncReq: inGlide;  FuncName: '_grSstWinOpen@28'                 )
-   ,(FuncPtr: @@grSstWinClose;                  FuncReq: inGlide;  FuncName: '_grSstWinClose@0'                 )
+   ,(FuncPtr: @@grSstWinOpen;                   FuncReq: inBoth;   FuncName: '_grSstWinOpen@28'                 )
+   ,(FuncPtr: @@grSstWinClose;                  FuncReq: inBoth;   FuncName: '_grSstWinClose@0'                 )
    ,(FuncPtr: @@grSstControl;                   FuncReq: inGlide;  FuncName: '_grSstControl@4'                  )
    ,(FuncPtr: @@grSstQueryHardware;             FuncReq: inGlide;  FuncName: '_grSstQueryHardware@4'            )
    ,(FuncPtr: @@grSstSelect;                    FuncReq: inGlide;  FuncName: '_grSstSelect@4'                   )
    ,(FuncPtr: @@grAlphaBlendFunction;           FuncReq: inGlide;  FuncName: '_grAlphaBlendFunction@16'         )
    ,(FuncPtr: @@grAlphaCombine;                 FuncReq: inGlide;  FuncName: '_grAlphaCombine@20'               )
-   ,(FuncPtr: @@grClipWindow;                   FuncReq: inGlide;  FuncName: '_grClipWindow@16'                 )
+   ,(FuncPtr: @@grClipWindow;                   FuncReq: inBoth;   FuncName: '_grClipWindow@16'                 )
    ,(FuncPtr: @@grColorMask;                    FuncReq: inGlide;  FuncName: '_grColorMask@8'                   )
    ,(FuncPtr: @@grConstantColorValue;           FuncReq: inGlide;  FuncName: '_grConstantColorValue@4'          )
    ,(FuncPtr: @@grDepthBufferFunction;          FuncReq: inGlide;  FuncName: '_grDepthBufferFunction@4'         )
@@ -1233,20 +1238,20 @@ const
    ,(FuncPtr: @@grTexTextureMemRequired;        FuncReq: inGlide;  FuncName: '_grTexTextureMemRequired@8'       )
    ,(FuncPtr: @@grTexMinAddress;                FuncReq: inGlide;  FuncName: '_grTexMinAddress@4'               )
    ,(FuncPtr: @@grTexMaxAddress;                FuncReq: inGlide;  FuncName: '_grTexMaxAddress@4'               )
-   ,(FuncPtr: @@grTexSource;                    FuncReq: inGlide;  FuncName: '_grTexSource@16'                  )
+   ,(FuncPtr: @@grTexSource;                    FuncReq: inBoth ;  FuncName: '_grTexSource@16'                  )
    ,(FuncPtr: @@grTexClampMode;                 FuncReq: inGlide;  FuncName: '_grTexClampMode@12'               )
    ,(FuncPtr: @@grTexCombineFunction;           FuncReq: inGlide;  FuncName: '_grTexCombineFunction@8'          )
    ,(FuncPtr: @@grTexFilterMode;                FuncReq: inGlide;  FuncName: '_grTexFilterMode@12'              )
-   ,(FuncPtr: @@grTexLodBiasValue;              FuncReq: inSoftG;  FuncName: '_grTexLodBiasValue@8'             )
+   ,(FuncPtr: @@grTexLodBiasValue;              FuncReq: inGlide;  FuncName: '_grTexLodBiasValue@8'             )
    ,(FuncPtr: @@grTexDownloadMipMap;            FuncReq: inGlide;  FuncName: '_grTexDownloadMipMap@16'          )
-   ,(FuncPtr: @@grTexDownloadTable;             FuncReq: inGlide;  FuncName: '_grTexDownloadTable@12'           )
+   ,(FuncPtr: @@grTexDownloadTable;             FuncReq: inBoth;   FuncName: '_grTexDownloadTable@12'           )
    ,(FuncPtr: @@grTexMipMapMode;                FuncReq: inGlide;  FuncName: '_grTexMipMapMode@12'              )
    ,(FuncPtr: @@grLfbLock;                      FuncReq: inGlide;  FuncName: '_grLfbLock@24'                    )
    ,(FuncPtr: @@grLfbUnlock;                    FuncReq: inGlide;  FuncName: '_grLfbUnlock@8'                   )
   {,(FuncPtr: @@grLfbReadRegion;                FuncReq: inGlide;  FuncName: '_grLfbReadRegion@28'              )}
-   ,(FuncPtr: @@grGlideInit;                    FuncReq: inGlide;  FuncName: '_grGlideInit@0'                   )
+   ,(FuncPtr: @@grGlideInit;                    FuncReq: inBoth;   FuncName: '_grGlideInit@0'                   )
    ,(FuncPtr: @@grGlideShutdown;                FuncReq: inGlide;  FuncName: '_grGlideShutdown@0'               )
-   ,(FuncPtr: @@grHints;                        FuncReq: inGlide;  FuncName: '_grHints@8'                       )
+   ,(FuncPtr: @@grHints;                        FuncReq: inBoth;   FuncName: '_grHints@8'                       )
    ,(FuncPtr: @@guColorCombineFunction;         FuncReq: inGlide;  FuncName: '_guColorCombineFunction@4'        )
    ,(FuncPtr: @@guFogGenerateExp2;              FuncReq: inGlide;  FuncName: '_guFogGenerateExp2@8'             )
    ,(FuncPtr: @@softgLoadFrameBuffer;           FuncReq: inSoftG;  FuncName: '_softgLoadFrameBuffer@8'          ) );
@@ -1255,6 +1260,15 @@ var
   TimesLoaded : Integer;
 
   GlideLib: THandle;
+
+  DummyWindow: HWND;
+
+ { ----------------- }
+
+function GetGlideDummyHwnd: HWND;
+begin
+  Result := DummyWindow;
+end;
 
 function GlideTimesLoaded : Integer;
 begin
@@ -1269,8 +1283,8 @@ type
 var
   I: Integer;
   P: Pointer;
-  softgQuArK: function : Integer; stdcall;
   S: String;
+  NeedCall: Boolean;
 begin
   if TimesLoaded = 0 then
   begin
@@ -1279,28 +1293,42 @@ begin
       GlideLib:=LoadLibrary(PChar(LibName));
       if GlideLib=0 then
       begin
-        S:=SearchDir+PathDelim+LibName;
+        S:=ConcatPaths([SearchDir, LibName]);
         GlideLib:=LoadLibrary(PChar(S));
         if GlideLib=0 then
           Exit;
       end;
 
-      qrkGlideLibName:=LibName;
-      qrkGlideState:=Nil;
+      if qrkGlideState<>nil then
+      begin
+        qrkGlideState.Free;
+        qrkGlideState:=Nil;
+      end;
 
       @softgQuArK:=GetProcAddress(GlideLib, softgQuArK_Identifier_FuncName);
-      if Assigned(softgQuArK) then
-        qrkGlideVersion:=softgQuArK()
-      else
-        qrkGlideVersion:=HardwareGlideVersion;
+      Hardware3DFX:=not Assigned(softgQuArK);
 
       for I:=Low(GlideDLL_FuncList) to High(GlideDLL_FuncList) do
       begin
-        P:=GetProcAddress(GlideLib, GlideDLL_FuncList[I].FuncName);
-        if (P=Nil) and (GlideDLL_FuncList[I].FuncReq<>inSoftG) and not Assigned(softgQuArK) then
-          Exit;
-        PPointer(GlideDLL_FuncList[I].FuncPtr)^:=P;
+        case GlideDLL_FuncList[I].FuncReq of
+        inGlide: NeedCall := Hardware3DFX;
+        inSoftG: NeedCall := not Hardware3DFX;
+        inBoth: NeedCall := True;
+        else
+          NeedCall := False; //Should never happen...
+        end;
+        if NeedCall then
+        begin
+          P:=GetProcAddress(GlideLib, GlideDLL_FuncList[I].FuncName);
+          if (P=Nil) then
+            Exit;
+          PPointer(GlideDLL_FuncList[I].FuncPtr)^:=P;
+        end;
       end;
+
+      DummyWindow := CreateDummyWindow('QuArK - Glide Dummy Window');
+      if DummyWindow = 0 then
+        Raise EErrorFmt(6200, ['CreateDummyWindow']);
 
       TimesLoaded := 1;
       Result := True;
@@ -1325,10 +1353,14 @@ var
 begin
   if TimesLoaded = 1 then
   begin
+    DeleteDummyWindow(DummyWindow);
+    DummyWindow := 0;
+
     if GlideLib<>0 then
       FreeLibrary(GlideLib);
     GlideLib := 0;
 
+    Hardware3DFX := False;
     for I:=Low(GlideDLL_FuncList) to High(GlideDLL_FuncList) do
       PPointer(GlideDLL_FuncList[I].FuncPtr)^:=nil;
 

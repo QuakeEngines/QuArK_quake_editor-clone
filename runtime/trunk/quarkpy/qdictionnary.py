@@ -995,6 +995,7 @@ Strings = {
     6011: "Invalid value for %s found: %d. Using default",
     6012: "No valid value for %s found, defaulting to: %d",
     6013: "Unable to load Desktop Window Manager (DWM).//Desktop Composition may be enabled, causing corruption in OpenGL and DirectX viewports",
+    6014: "Error during handling of the renderer Dummy Window: %s",
 
     # DanielPharos would like to reserve 6100 .. 6199 for the software renderer
     6100: "Error with the Software 3D drivers//%s failed",
@@ -1060,6 +1061,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.137  2008/10/14 00:07:12  danielpharos
+#Add an integer list as a specific type.
+#
 #Revision 1.136  2008/10/12 11:31:27  danielpharos
 #Moved 6DX map format to separate file, and re-factored QkMap and QkQuakeMap.
 #

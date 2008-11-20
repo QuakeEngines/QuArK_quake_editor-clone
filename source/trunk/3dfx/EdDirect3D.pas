@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.32  2008/11/14 00:39:54  danielpharos
+Fixed a few variable types and fixed the coloring of faces not working properly in OpenGL and giving the wrong color in Glide.
+
 Revision 1.31  2008/10/18 15:09:59  danielpharos
 Small clean-up.
 
@@ -151,6 +154,7 @@ type
     Transparency: Boolean;
     Lighting: Boolean;
     Culling: Boolean;
+    Scissor: Boolean;
     Direct3DLoaded: Boolean;
     DWMLoaded: Boolean;
     MapLimit: TVect;
@@ -158,13 +162,11 @@ type
     pPresParm: D3DPRESENT_PARAMETERS;
     DXFogColor: D3DColor;
     LightingQuality: Integer;
-    ListIndex: Integer;
+    SwapChain: IDirect3DSwapChain9;
+    DepthStencilSurface: IDirect3DSurface9;
     procedure RenderPList(PList: PSurfaces; TransparentFaces: Boolean; SourceCoord: TCoordinates);
   protected
     ScreenResized: Boolean;
-
-//    m_pD3DX: ID3DXContext;
-
     m_CurrentAlpha, m_CurrentColor: TColorRef;
     ScreenX, ScreenY: Integer;
     function StartBuildScene(var VertexSize: Integer) : TBuildMode; override;
@@ -179,6 +181,7 @@ type
     procedure ChangedViewWnd; override;
     function CheckDeviceState : Boolean;
   public
+    constructor Create(nViewMode: TMapViewMode);
     destructor Destroy; override;
     procedure Init(nCoord: TCoordinates;
                    DisplayMode: TDisplayMode;
@@ -202,14 +205,12 @@ type
 type  { this is the data shared by all existing TDirect3DSceneObjects }
   TDirect3DState = class
   public
+    procedure ReleaseAllResources;
     procedure ClearTexture(Tex: PTexture3);
   end;
 
 var
   qrkDXState: TDirect3DState;
-  SwapChain: array of IDirect3DSwapChain9;
-  DepthStencilSurface: array of IDirect3DSurface9;
-  ListItemUsed: array of Boolean;
 
  {------------------------}
 
@@ -320,32 +321,17 @@ begin
 
 end;
 
+constructor TDirect3DSceneObject.Create(nViewMode: TMapViewMode);
+begin
+  inherited Create(nViewMode);
+  SwapChain:=nil;
+  DepthStencilSurface:=nil;
+end;
+
 procedure TDirect3DSceneObject.ReleaseResources;
 begin
-  if ListIndex<>0 then
-  begin
-    if not (DepthStencilSurface[ListIndex-1]=nil) then
-    begin
-      while (DepthStencilSurface[ListIndex-1]._Release > 0) do;
-      Pointer(DepthStencilSurface[ListIndex-1]):=nil;
-    end;
-
-    if not (SwapChain[ListIndex-1]=nil) then
-    begin
-      while (SwapChain[ListIndex-1]._Release > 0) do;
-      Pointer(SwapChain[ListIndex-1]):=nil;
-    end;
-
-    if (Length(ListItemUsed)=ListIndex-1) then
-    begin
-      SetLength(SwapChain,Length(SwapChain)-1);
-      SetLength(DepthStencilSurface,Length(DepthStencilSurface)-1);
-      SetLength(ListItemUsed,Length(ListItemUsed)-1);
-    end
-    else
-      ListItemUsed[ListIndex-1]:=false;
-    ListIndex:=0;
-  end;
+  SwapChain:=nil;
+  DepthStencilSurface:=nil;
 end;
 
 destructor TDirect3DSceneObject.Destroy;
@@ -371,7 +357,6 @@ var
   FogColor{, FrameColor}: TColorRef;
   Setup: QObject;
   l_Res: HResult;
-  I: Integer;
 begin
   ClearScene;
 
@@ -464,6 +449,11 @@ begin
     Culling:=False;
   end;
 
+  if (D3DCaps.RasterCaps and D3DPRASTERCAPS_SCISSORTEST)<>0 then
+    Scissor:=True
+  else
+    Scissor:=False;
+
   //FIXME: Is this OK?
   if GetWindowRect(ViewWnd, DrawRect)=false then
     Raise EErrorFmt(6400, ['GetWindowRect']);
@@ -475,39 +465,15 @@ begin
   pPresParm.BackBufferHeight:=ScreenY;
   pPresParm.hDeviceWindow:=ViewWnd; //Should already have been done, but better safe than sorry
 
-  if ListIndex=0 then
-  begin
-    for I:=0 to Length(ListItemUsed)-1 do
-    begin
-      if ListItemUsed[I]=false then
-      begin
-        ListIndex:=I+1;
-        break;
-      end;
-    end;
-    if ListIndex=0 then
-    begin
-      ListIndex:=Length(ListItemUsed)+1;
-      SetLength(SwapChain,Length(SwapChain)+1);
-      SetLength(DepthStencilSurface,Length(DepthStencilSurface)+1);
-      SetLength(ListItemUsed,Length(ListItemUsed)+1);
-    end;
-    ListItemUsed[ListIndex-1]:=true;
-  end;
-
   //Using CreateAdditionalSwapChain to create new chains will automatically share
   //textures and other resources between views.
-  l_Res:=D3DDevice.CreateAdditionalSwapChain(pPresParm, SwapChain[ListIndex-1]);
+  l_Res:=D3DDevice.CreateAdditionalSwapChain(pPresParm, SwapChain);
   if (l_Res <> D3D_OK) then
     raise EErrorFmt(6403, ['CreateAdditionalSwapChain', DXGetErrorString9(l_Res)]);
 
-  l_Res:=D3DDevice.CreateDepthStencilSurface(ScreenX, ScreenY, pPresParm.AutoDepthStencilFormat, pPresParm.MultiSampleType, pPresParm.MultiSampleQuality, false, DepthStencilSurface[ListIndex-1], nil);
+  l_Res:=D3DDevice.CreateDepthStencilSurface(ScreenX, ScreenY, pPresParm.AutoDepthStencilFormat, pPresParm.MultiSampleType, pPresParm.MultiSampleQuality, false, DepthStencilSurface, nil);
   if (l_Res <> D3D_OK) then
     raise EErrorFmt(6403, ['CreateDepthStencilSurface', DXGetErrorString9(l_Res)]);
-
-  l_Res:=D3DDevice.SetDepthStencilSurface(DepthStencilSurface[ListIndex-1]);
-  if (l_Res <> D3D_OK) then
-    raise EErrorFmt(6403, ['SetDepthStencilSurface', DXGetErrorString9(l_Res)]);
 
   UnpackColor(FogColor, nFogColor);
 
@@ -529,6 +495,11 @@ begin
   else
     D3DDevice.SetRenderState(D3DRS_FOGENABLE, 0);  //False := 0
 
+  if Scissor then
+    D3DDevice.SetRenderState(D3DRS_SCISSORTESTENABLE, 1)
+  else
+    D3DDevice.SetRenderState(D3DRS_SCISSORTESTENABLE, 0);
+
 {  // Create material
   FillChar(l_Material, SizeOf(l_Material), 0);
   l_Material.dcvDiffuse  := TD3DColorValue(D3DXColor(0.00, 0.00, 0.00, 0.00));
@@ -542,9 +513,6 @@ end;
 function TDirect3DSceneObject.CheckDeviceState : Boolean;
 var
   l_Res: HResult;
-  OrigBackBuffer: IDirect3DSurface9;
-  pBackBuffer: IDirect3DSurface9;
-  I: Integer;
   NeedReset: Boolean;
 begin
   Result:=false;
@@ -552,7 +520,7 @@ begin
   l_Res:=D3DDevice.TestCooperativeLevel;
   case l_Res of
   D3D_OK: ;
-  D3DERR_DEVICELOST:  Exit;  //Device lost and can't be restored at this time.
+  D3DERR_DEVICELOST: Exit;  //Device lost and can't be restored at this time.
   D3DERR_DEVICENOTRESET: NeedReset:=True;  //Device can be recovered
   D3DERR_DRIVERINTERNALERROR: raise EError(6410);  //Big problem!
   end;
@@ -563,11 +531,7 @@ begin
     Exit;
   end;
 
-  //The first paramter isn't necessarily 0!
-  l_Res:=D3DDevice.GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, OrigBackBuffer);
-  if (l_Res <> D3D_OK) then
-    raise EErrorFmt(6403, ['GetBackBuffer', DXGetErrorString9(l_Res)]);
-
+  //FIXME: The first parameter isn't necessarily 0!
   l_Res:=D3DDevice.SetRenderTarget(0, OrigBackBuffer);
   if (l_Res <> D3D_OK) then
     raise EErrorFmt(6403, ['SetRenderTarget', DXGetErrorString9(l_Res)]);
@@ -576,77 +540,46 @@ begin
   if (l_Res <> D3D_OK) then
     raise EErrorFmt(6403, ['SetDepthStencilSurface', DXGetErrorString9(l_Res)]);
 
-  //Releasing surfs...
-  while (OrigBackBuffer._Release > 0) do;
-  Pointer(OrigBackBuffer):=nil;
-
   if NeedReset then
   begin
-    for I:=0 to Length(ListItemUsed)-1 do
-    begin
-      if ListItemUsed[I]=true then
-      begin
-        if not (DepthStencilSurface[I]=nil) then
-        begin
-          while (DepthStencilSurface[I]._Release > 0) do;
-          Pointer(DepthStencilSurface[I]):=nil;
-        end;
+    qrkDXState.ReleaseAllResources;
 
-        if not (SwapChain[I]=nil) then
-        begin
-          while (SwapChain[I]._Release > 0) do;
-          Pointer(SwapChain[I]):=nil;
-        end;
-      end;
-    end;
+    OrigBackBuffer:=nil;
 
     l_Res:=D3DDevice.Reset(pPresParm);
     if (l_Res <> D3D_OK) then
       raise EErrorFmt(6403, ['Reset', DXGetErrorString9(l_Res)]);
 
-    // We now need to reload all the textures and stuff!
+    //FIXME: Are the first two parameters always 0?
+    l_Res:=D3DDevice.GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, OrigBackBuffer);
+    if (l_Res <> D3D_OK) then
+    begin
+      Log(LOG_WARNING, LoadStr1(6403), ['GetBackBuffer', DXGetErrorString9(l_Res)]);
+      Exit;
+    end;
+
+    //FIXME: We now need to reload all the textures and stuff!
   end
   else
   begin
-    if not (DepthStencilSurface[ListIndex-1]=nil) then
-    begin
-      while (DepthStencilSurface[ListIndex-1]._Release > 0) do;
-      Pointer(DepthStencilSurface[ListIndex-1]):=nil;
-    end;
+    if not (DepthStencilSurface=nil) then
+      DepthStencilSurface:=nil;
 
-    if not (SwapChain[ListIndex-1]=nil) then
-    begin
-      while (SwapChain[ListIndex-1]._Release > 0) do;
-      Pointer(SwapChain[ListIndex-1]):=nil;
-    end;
+    if not (SwapChain=nil) then
+      SwapChain:=nil;
   end;
 
-  l_Res:=D3DDevice.CreateAdditionalSwapChain(pPresParm, SwapChain[ListIndex-1]);
+  l_Res:=D3DDevice.CreateAdditionalSwapChain(pPresParm, SwapChain);
   if (l_Res <> D3D_OK) then
     raise EErrorFmt(6403, ['CreateAdditionalSwapChain', DXGetErrorString9(l_Res)]);
 
-  l_Res:=D3DDevice.CreateDepthStencilSurface(pPresParm.BackBufferWidth, pPresParm.BackBufferHeight, pPresParm.AutoDepthStencilFormat, pPresParm.MultiSampleType, pPresParm.MultiSampleQuality, false, DepthStencilSurface[ListIndex-1], nil);
+  l_Res:=D3DDevice.CreateDepthStencilSurface(pPresParm.BackBufferWidth, pPresParm.BackBufferHeight, pPresParm.AutoDepthStencilFormat, pPresParm.MultiSampleType, pPresParm.MultiSampleQuality, false, DepthStencilSurface, nil);
   if (l_Res <> D3D_OK) then
     raise EErrorFmt(6403, ['CreateDepthStencilSurface', DXGetErrorString9(l_Res)]);
 
-  l_Res:=D3DDevice.SetDepthStencilSurface(DepthStencilSurface[ListIndex-1]);
+  l_Res:=D3DDevice.SetDepthStencilSurface(DepthStencilSurface);
   if (l_Res <> D3D_OK) then
     raise EErrorFmt(6403, ['SetDepthStencilSurface', DXGetErrorString9(l_Res)]);
-
-  l_Res:=SwapChain[ListIndex-1].GetBackBuffer(0, D3DBACKBUFFER_TYPE_MONO, pBackBuffer);
-  if (l_Res <> D3D_OK) then
-    raise EErrorFmt(6403, ['GetBackBuffer', DXGetErrorString9(l_Res)]);
-
-  l_Res:=D3DDevice.SetRenderTarget(0, pBackBuffer);
-  if (l_Res <> D3D_OK) then
-    raise EErrorFmt(6403, ['SetRenderTarget', DXGetErrorString9(l_Res)]);
-
-  l_Res:=D3DDevice.SetDepthStencilSurface(DepthStencilSurface[ListIndex-1]);
-  if (l_Res <> D3D_OK) then
-    raise EErrorFmt(6403, ['SetDepthStencilSurface', DXGetErrorString9(l_Res)]);
-
-  while (pBackBuffer._Release > 0) do;
-  Pointer(pBackBuffer):=nil;
 
   Result:=True;
 end;
@@ -668,6 +601,7 @@ end;
 procedure TDirect3DSceneObject.Render3DView;
 var
   l_Res: HResult;
+  pBackBuffer: IDirect3DSurface9;
 {  l_VCenter: D3DVector;
   l_Projection: TD3DXMatrix;
   l_CameraEye: TD3DXMatrix;
@@ -690,7 +624,28 @@ begin
     Exit;
   ScreenResized := False;
 
-  l_Res:=D3DDevice.Clear(0, nil, D3DCLEAR_TARGET or D3DCLEAR_ZBUFFER, DXFogColor, 1, 0);
+  l_Res:=SwapChain.GetBackBuffer(0, D3DBACKBUFFER_TYPE_MONO, pBackBuffer);
+  if (l_Res <> D3D_OK) then
+    raise EErrorFmt(6403, ['GetBackBuffer', DXGetErrorString9(l_Res)]);
+
+  l_Res:=D3DDevice.SetRenderTarget(0, pBackBuffer);
+  if (l_Res <> D3D_OK) then
+    raise EErrorFmt(6403, ['SetRenderTarget', DXGetErrorString9(l_Res)]);
+
+  pBackBuffer:=nil;
+
+  l_Res:=D3DDevice.SetDepthStencilSurface(DepthStencilSurface);
+  if (l_Res <> D3D_OK) then
+    raise EErrorFmt(6403, ['SetDepthStencilSurface', DXGetErrorString9(l_Res)]);
+
+  if Scissor then
+  begin
+    l_Res:=D3DDevice.SetScissorRect(@DrawRect);
+    if (l_Res <> D3D_OK) then
+      raise EErrorFmt(6403, ['SetScissorRect', DXGetErrorString9(l_Res)]);
+  end;
+
+  l_Res:=D3DDevice.Clear(0, nil, D3DCLEAR_TARGET or D3DCLEAR_ZBUFFER, DXFogColor, 1.0, 0);
   if (l_Res <> D3D_OK) then
     raise EErrorFmt(6403, ['Clear', DXGetErrorString9(l_Res)]);
 
@@ -758,9 +713,7 @@ begin
   if not Direct3DLoaded then
     Exit;
 
-  if SwapChain[ListIndex-1]=nil then
-    Render3DView;
-  l_Res:=SwapChain[ListIndex-1].Present(nil, nil, 0, nil, 0);
+  l_Res:=SwapChain.Present(nil, nil, 0, nil, 0);
   if (l_Res <> D3D_OK) then
     raise EErrorFmt(6403, ['Present', DXGetErrorString9(l_Res)]);
 end;
@@ -814,15 +767,33 @@ end;
 
 procedure TDirect3DSceneObject.BuildTexture(Texture: PTexture3);
 begin
+  //D3DDevice.CreateTexture(@);
 
 end;
 
  {------------------------}
 
+procedure TDirect3DState.ReleaseAllResources;
+var
+ TextureManager: TTextureManager;
+ I: Integer;
+ Scene: TObject;
+begin
+ TextureManager:=TTextureManager.GetInstance;
+ for I:=0 to TextureManager.Scenes.Count-1 do
+  begin
+   Scene:=TextureManager.Scenes[I];
+   if Scene is TDirect3DSceneObject then
+     TDirect3DSceneObject(Scene).ReleaseResources;
+  end;
+
+  //FIXME: Also, need to release all OTHER resources (like textures etc.)
+end;
+
 procedure TDirect3DState.ClearTexture(Tex: PTexture3);
 begin
   //DanielPharos: How can you be sure Direct3D has been loaded?
-  
+
 end;
 
  {------------------------}
