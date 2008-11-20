@@ -41,6 +41,7 @@ class ModelEditor(BaseEditor):
     HandlesModule = mdlhandles
     MouseDragMode = mdlhandles.RectSelDragObject
     findtargetdlg = None
+    bone_frame = 0
 
     ### Different lists of the Model Editor.
     ###|--- contence ---|-------- format -------|----------------------- discription -----------------------|
@@ -1681,6 +1682,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.108  2008/11/19 06:16:23  cdunde
+#Bones system moved to outside of components for Model Editor completed.
+#
 #Revision 1.107  2008/10/23 04:42:24  cdunde
 #Infobase links and updates for Bones.
 #
