@@ -4557,7 +4557,7 @@ begin
   if l_Direct3D9Loaded then
   begin
     Result:=UnloadD3D9;
-    l_Direct3D9Loaded:=Result;
+    l_Direct3D9Loaded:=not Result;
   end
   else
     Result:=True;
