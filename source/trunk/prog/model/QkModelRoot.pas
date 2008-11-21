@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2008/11/19 06:14:00  cdunde
+Bones system moved to outside of components for Model Editor completed.
+
 Revision 1.14  2008/11/06 20:15:54  danielpharos
 Removed redundant function.
 
@@ -211,13 +214,16 @@ begin
         if cnt-1 < needed_framecount then begin
           fg:=c.FrameGroup;
           ProgressIndicatorStart(5459, needed_framecount-(cnt-1));
-          while f.count-1 < needed_framecount do begin
-            qf:=QFrame(f.Items1[cnt-1].Clone(fg,true));
-            fg.subelements.add(qf);
-            f.add(qf);
-            ProgressIndicatorIncrement;
+          try
+            while f.count-1 < needed_framecount do begin
+              qf:=QFrame(f.Items1[cnt-1].Clone(fg,true));
+              fg.subelements.add(qf);
+              f.add(qf);
+              ProgressIndicatorIncrement;
+            end;
+          finally
+            ProgressIndicatorStop;
           end;
-          ProgressIndicatorStop;
         end;
       finally
         f.free;
