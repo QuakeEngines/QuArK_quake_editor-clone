@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.1  2008/11/20 23:45:50  danielpharos
+Big update to renderers: mostly cleanup, and stabilized Direct3D a bit more.
+
 }
 
 unit QkDummyWindow;
@@ -56,15 +59,18 @@ end;
 
 function CreateDummyWindow(const Caption: String): HWND;
 begin
-  FillChar(DummyWindowClass, SizeOf(DummyWindowClass), 0);
-  DummyWindowClass.cbSize:=SizeOf(DummyWindowClass);
-  DummyWindowClass.style:=CS_NOCLOSE Or CS_HREDRAW Or CS_VREDRAW Or CS_OWNDC;
-  DummyWindowClass.hInstance:=hInstance;
-  DummyWindowClass.lpszClassName:=PChar(DummyWindowClassName);
-  DummyWindowClass.lpfnWndProc:=@WndMessageProc;
-  DummyWindowClassAtom:=RegisterClassEx(DummyWindowClass);
-  if DummyWindowClassAtom = 0 then
-    Raise EErrorFmt(6014, ['RegisterClassEx']);
+  if WindowsLoaded = 0 then
+  begin
+    FillChar(DummyWindowClass, SizeOf(DummyWindowClass), 0);
+    DummyWindowClass.cbSize:=SizeOf(DummyWindowClass);
+    DummyWindowClass.style:=CS_NOCLOSE Or CS_HREDRAW Or CS_VREDRAW Or CS_OWNDC;
+    DummyWindowClass.hInstance:=hInstance;
+    DummyWindowClass.lpszClassName:=PChar(DummyWindowClassName);
+    DummyWindowClass.lpfnWndProc:=@WndMessageProc;
+    DummyWindowClassAtom:=RegisterClassEx(DummyWindowClass);
+    if DummyWindowClassAtom = 0 then
+      Raise EErrorFmt(6014, ['RegisterClassEx']);
+  end;
 
   Result := CreateWindow(DummyWindowClass.lpszClassName, PChar(Caption), WS_CLIPCHILDREN or WS_CLIPSIBLINGS or WS_DISABLED, Integer(CW_USEDEFAULT), Integer(CW_USEDEFAULT), Integer(CW_USEDEFAULT), Integer(CW_USEDEFAULT), 0, 0, hInstance, nil);
   if Result = 0 then
