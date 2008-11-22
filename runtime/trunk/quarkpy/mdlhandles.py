@@ -4554,11 +4554,37 @@ class LinBoneCenterHandle(LinearBoneHandle):
 
         def select_handle_vertexes_click(m, self=self, editor=editor, view=view):
             comp = editor.Root.currentcomponent
+            compchanged = None
             frame = comp.currentframe
             if self.s_or_e == 0:
+                if (self.bone.dictspec['start_component'] != comp.name) or (len(editor.layout.explorer.sellist) == 0):
+                    for item in range(len(comp.dictitems['Frames:fg'].subitems)):
+                        if comp.dictitems['Frames:fg'].subitems[item] == frame:
+                            framenbr = item
+                    comp = editor.Root.dictitems[self.bone.dictspec['start_component']]
+                    editor.layout.explorer.sellist = [self.bone, comp.dictitems['Frames:fg'].subitems[framenbr]]
+                    frame = editor.layout.explorer.sellist[1]
+                    editor.layout.selchange()
+                    compchanged = 1
                 handle = self.bone.dictspec['start_point']
             else:
+                if (self.bone.dictspec['end_component'] != comp.name) or (len(editor.layout.explorer.sellist) == 0):
+                    for item in range(len(comp.dictitems['Frames:fg'].subitems)):
+                        if comp.dictitems['Frames:fg'].subitems[item] == frame:
+                            framenbr = item
+                    comp = editor.Root.dictitems[self.bone.dictspec['end_component']]
+                    editor.layout.explorer.sellist = [self.bone, comp.dictitems['Frames:fg'].subitems[framenbr]]
+                    frame = editor.layout.explorer.sellist[1]
+                    editor.layout.selchange()
+                    compchanged = 1
                 handle = self.bone.dictspec['end_point']
+            if not editor.Root.dictitems['Skeleton:bg'] in editor.layout.explorer.sellist:
+                editor.layout.explorer.sellist = [self.bone, frame]
+                editor.layout.selchange()
+                compchanged = 1
+                editor.layout.explorer.expand(self.bone.parent)
+            editor.layout.explorer.expand(comp)
+            editor.layout.explorer.expand(frame.parent)
             common_handles_list, s_or_e_list = find_common_bone_handles(editor, handle)
             for bone in range(len(common_handles_list)):
                 bonename = common_handles_list[bone].name
@@ -4578,15 +4604,42 @@ class LinBoneCenterHandle(LinearBoneHandle):
                             bone_vtxlist = bone_vtxlist + [[vtx, frame.vertices[vtx]]]
                         editor.ModelVertexSelList = bone_vtxlist
                         break
-            Update_Editor_Views(editor)
+            if compchanged is None:
+                Update_Editor_Views(editor)
 
         def select_handle_pos_vertexes_click(m, self=self, editor=editor, view=view):
             comp = editor.Root.currentcomponent
+            compchanged = None
             frame = comp.currentframe
             if self.s_or_e == 0:
+                if (self.bone.dictspec['start_component'] != comp.name) or (len(editor.layout.explorer.sellist) == 0):
+                    for item in range(len(comp.dictitems['Frames:fg'].subitems)):
+                        if comp.dictitems['Frames:fg'].subitems[item] == frame:
+                            framenbr = item
+                    comp = editor.Root.dictitems[self.bone.dictspec['start_component']]
+                    editor.layout.explorer.sellist = [self.bone, comp.dictitems['Frames:fg'].subitems[framenbr]]
+                    frame = editor.layout.explorer.sellist[1]
+                    editor.layout.selchange()
+                    compchanged = 1
                 handle = self.bone.dictspec['start_point']
             else:
+                if (self.bone.dictspec['end_component'] != comp.name) or (len(editor.layout.explorer.sellist) == 0):
+                    for item in range(len(comp.dictitems['Frames:fg'].subitems)):
+                        if comp.dictitems['Frames:fg'].subitems[item] == frame:
+                            framenbr = item
+                    comp = editor.Root.dictitems[self.bone.dictspec['end_component']]
+                    editor.layout.explorer.sellist = [self.bone, comp.dictitems['Frames:fg'].subitems[framenbr]]
+                    frame = editor.layout.explorer.sellist[1]
+                    editor.layout.selchange()
+                    compchanged = 1
                 handle = self.bone.dictspec['end_point']
+            if not editor.Root.dictitems['Skeleton:bg'] in editor.layout.explorer.sellist:
+                editor.layout.explorer.sellist = [self.bone, frame]
+                editor.layout.selchange()
+                compchanged = 1
+                editor.layout.explorer.expand(self.bone.parent)
+            editor.layout.explorer.expand(comp)
+            editor.layout.explorer.expand(frame.parent)
             common_handles_list, s_or_e_list = find_common_bone_handles(editor, handle)
             for bone in range(len(common_handles_list)):
                 bonename = common_handles_list[bone].name
@@ -4610,7 +4663,8 @@ class LinBoneCenterHandle(LinearBoneHandle):
                             bone_vtxlist = bone_vtxlist + [[vtx, frame.vertices[vtx]]]
                         editor.ModelVertexSelList = bone_vtxlist
                         break
-            Update_Editor_Views(editor)
+            if compchanged is None:
+                Update_Editor_Views(editor)
 
         Forcetogrid = qmenu.item("&Force to grid", force_to_grid_click,"|Force to grid:\n\nThis will cause a bone's center handle to 'snap' to the nearest location on the editor's grid for the view that the RMB click was made in.|intro.modeleditor.rmbmenus.html#bonecommands")
         AddBone = qmenu.item("&Add Bone Here", add_bone_click, "|Add Bone Here:\n\nThis will add a single bone to the currently selected model component 'Skeleton' group.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
@@ -6124,6 +6178,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.159  2008/11/19 06:16:23  cdunde
+#Bones system moved to outside of components for Model Editor completed.
+#
 #Revision 1.158  2008/10/25 23:41:15  cdunde
 #Fix for errors from the editor.ModelComponentList if a model component is not in it.
 #
