@@ -560,98 +560,97 @@ class ModelEditor(BaseEditor):
                 skipbuild = 1
         except:
             pass
-        if len(self.layout.explorer.sellist) == 0 and self.layout.explorer.uniquesel is None:
+        if len(self.layout.explorer.sellist) == 0 or quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
             BonesSellist = []
-        if (len(self.layout.explorer.sellist) == 1 and self.layout.explorer.sellist[0].type == ':bg') or (self.layout.explorer.uniquesel is not None and self.layout.explorer.uniquesel.type == ':bg'):
-            for item in BonesSellist:
-                if item.type == ':bone':
-                    BonesSellist.remove(item)
-            selmatch = 0
-            for item in BonesSellist:
-                if item.type == ':bg':
-                    if (item == self.layout.explorer.sellist[0]) or item == self.layout.explorer.uniquesel:
-                        selmatch = 1
-                    BonesSellist.remove(item)
-                    break
-            if BonesSellist != []:
-                if selmatch == 0:
-        #            self.layout.explorer.sellist = self.layout.explorer.sellist + BonesSellist
-                    self.layout.explorer.sellist = [self.layout.explorer.uniquesel] + BonesSellist
-                else:
-                    self.layout.explorer.sellist = BonesSellist
-        elif (len(self.layout.explorer.sellist) == 1 and self.layout.explorer.sellist[0].type == ':bone') or (self.layout.explorer.uniquesel is not None and self.layout.explorer.uniquesel.type == ':bone'):
-            for item in BonesSellist:
-                if item.type == ':bg':
-                    BonesSellist.remove(item)
-                    break
-            selmatch = 0
-            for item in BonesSellist:
-                if item.type == ':bone':
-        #            if item == self.layout.explorer.sellist[0]:
-                    if item == self.layout.explorer.uniquesel:
-                        selmatch = 1
-                    BonesSellist.remove(item)
-            if BonesSellist != []:
-                if selmatch == 0:
-        #            self.layout.explorer.sellist = self.layout.explorer.sellist + BonesSellist
-                    self.layout.explorer.sellist = [self.layout.explorer.uniquesel] + BonesSellist
-                else:
-                    self.layout.explorer.sellist = BonesSellist
-        testcount = 0
-        selection = []
-        if len(self.layout.explorer.sellist) != 0:
-            selection = self.layout.explorer.sellist
-        elif self.layout.explorer.uniquesel is not None:
-            selection = selection + [self.layout.explorer.uniquesel]
-        frames = 0
-        bonegroup = 0
-        bone = 0
-        for item in range(len(selection)):
-            if selection[item].type != ':mf' and selection[item].type != ':bg' and selection[item].type != ':bone':
-                BonesSellist = []
-                break
-            if selection[item].type == ':mf':
-                frames = frames + 1
-                if frames == 1:
-                    for frame in range(len(self.Root.currentcomponent.dictitems['Frames:fg'].subitems)):
-                        if selection[item] == self.Root.currentcomponent.dictitems['Frames:fg'].subitems[frame]:
-                            self.bone_frame = frame
-            if selection[item].type == ':bg':
-                bonegroup = bonegroup + 1
-            if selection[item].type == ':bone':
-                bone = bone + 1
-                testcount = testcount + 1
-            if item == len(selection)-1:
-                if testcount > 1:
+        if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] != "1":
+            if len(self.layout.explorer.sellist) == 1 and self.layout.explorer.sellist[0].type == ':bg':
+                for item in BonesSellist:
+                    if item.type == ':bone':
+                        BonesSellist.remove(item)
+                selmatch = 0
+                for item in BonesSellist:
+                    if item.type == ':bg':
+                        if item == self.layout.explorer.sellist[0]:
+                            selmatch = 1
+                        BonesSellist.remove(item)
+                        break
+                if BonesSellist != []:
+                    if selmatch == 0:
+                        self.layout.explorer.sellist = self.layout.explorer.sellist + BonesSellist
+                    else:
+                        self.layout.explorer.sellist = BonesSellist
+            elif len(self.layout.explorer.sellist) == 1 and self.layout.explorer.sellist[0].type == ':bone':
+                for item in BonesSellist:
+                    if item.type == ':bg':
+                        BonesSellist.remove(item)
+                        break
+                selmatch = 0
+                for item in BonesSellist:
+                    if item.type == ':bone':
+                        if item == self.layout.explorer.sellist[0]:
+                            selmatch = 1
+                        BonesSellist.remove(item)
+                if BonesSellist != []:
+                    if selmatch == 0:
+                        self.layout.explorer.sellist = self.layout.explorer.sellist + BonesSellist
+                    else:
+                        self.layout.explorer.sellist = BonesSellist
+            testcount = 0
+            selection = []
+            if len(self.layout.explorer.sellist) != 0:
+                selection = self.layout.explorer.sellist
+
+            frames = 0
+            bonegroup = 0
+            bone = 0
+            for item in range(len(selection)):
+                if selection[item].type != ':mf' and selection[item].type != ':bg' and selection[item].type != ':bone':
                     BonesSellist = []
                     break
-                if bonegroup != 0:
-                    BonesSellist = selection
-                if bone != 0:
-                    BonesSellist = selection
-                if frames != 0:
-                    nobones = 0
-                    """for thing in BonesSellist:
-                        if thing.type == ':bg':
-                            self.layout.explorer.sellist = self.layout.explorer.sellist + [thing]
-                            BonesSellist = self.layout.explorer.sellist
-                            nobones = 1
-                            break
-                        if thing.type == ':bone':
-                            self.layout.explorer.sellist = selection + [thing]
-                            BonesSellist = self.layout.explorer.sellist
-                            nobones = 1
-                            break"""
-                    if nobones == 0:
-                        if len(self.layout.explorer.sellist) != 0:
-                            BonesSellist = self.layout.explorer.sellist
-                        else:
-                            BonesSellist = selection
-        self.layout.selchange()
+                if selection[item].type == ':mf':
+                    frames = frames + 1
+                    if frames == 1:
+                        for frame in range(len(self.Root.currentcomponent.dictitems['Frames:fg'].subitems)):
+                            if selection[item] == self.Root.currentcomponent.dictitems['Frames:fg'].subitems[frame]:
+                                self.bone_frame = frame
+                if selection[item].type == ':bg':
+                    bonegroup = bonegroup + 1
+                if selection[item].type == ':bone':
+                    bone = bone + 1
+                    testcount = testcount + 1
+                if item == len(selection)-1:
+                    if testcount > 1:
+                        BonesSellist = []
+                        break
+                    if bonegroup != 0:
+                        BonesSellist = selection
+                        break
+                    if bone != 0:
+                        BonesSellist = selection
+                        break
+                    if frames != 0:
+                        nobones = 0
+                        for thing in BonesSellist:
+                            if thing.type == ':bg':
+                                self.layout.explorer.sellist = self.layout.explorer.sellist + [thing]
+                                BonesSellist = self.layout.explorer.sellist
+                                nobones = 1
+                                
+                            if thing.type == ':bone':
+                                self.layout.explorer.sellist = selection + [thing]
+                                BonesSellist = self.layout.explorer.sellist
+                                nobones = 1
+                                break
+                        if nobones == 0:
+                            if len(self.layout.explorer.sellist) != 0:
+                                BonesSellist = self.layout.explorer.sellist
+                            else:
+                                BonesSellist = selection
         if skipbuild == 1:
             pass
         else:
             self.buildhandles()
+        self.layout.selchange()
         import mdlmgr
         mdlmgr.treeviewselchanged = 1
         self.invalidateviews(1)
@@ -691,7 +690,17 @@ class ModelEditor(BaseEditor):
         newhandles = []
         import mdlmgr
         mdlmgr.treeviewselchanged = 1
-        if not self.linearbox:
+        if not self.linearbox: # Turns Linear Handles mode on.
+            if len(self.layout.explorer.sellist) != 0:
+                for item in self.layout.explorer.sellist:
+                    if item.type == ":bg" or item.type == ":bone":
+                        templist = []
+                        for item in self.layout.explorer.sellist:
+                            if item.type == ":bg" or item.type == ":bone":
+                                continue
+                            templist = templist + [item]
+                        self.layout.explorer.sellist = templist
+                        break
             quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] = "1"
             setup = quarkx.setupsubset(self.MODE, "Building")
             self.linearbox = True
@@ -738,7 +747,7 @@ class ModelEditor(BaseEditor):
                         plugins.mdlaxisicons.newfinishdrawing(self, view)
                         if quarkx.setupsubset(SS_MODEL, "Options")["MAIV"] == "1":
                             modelaxis(view)
-        else:
+        else: # Turns Linear Handles mode off.
             quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] = "0"
             import mdlhandles
             if len(self.layout.explorer.sellist) >= 1:
@@ -1682,6 +1691,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.109  2008/11/20 20:20:35  cdunde
+#Bones system moved to outside of components for Model Editor completed.
+#
 #Revision 1.108  2008/11/19 06:16:23  cdunde
 #Bones system moved to outside of components for Model Editor completed.
 #
