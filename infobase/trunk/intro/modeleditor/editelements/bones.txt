@@ -133,10 +133,10 @@ need to use your <g>Ctrl</g> key to maneuver in the selection of these items, th
 <li> Select any single frame, you can then select the <a href="intro.modeleditor.dataforms.html#treeview">Skeleton Group folder</a>
 or any single bone without having to use your <g>Ctrl</g> key, that frame will remain selected.
 <li> You can select another single frame and the <a href="intro.modeleditor.dataforms.html#treeview">Skeleton Group folder</a>
-or single bone will remain selected. (deactivated at this time)
+or single bone will remain selected.
 <li> With a single frame selected, you can bounch from the <a href="intro.modeleditor.dataforms.html#treeview">Skeleton Group folder</a>
 to any single bone, or from one bone to another without having to use your <g>Ctrl</g> key
-<li> or you can bounch from frame to frame without having to use your <g>Ctrl</g> key. (deactivated at this time)
+<li> or you can bounch from frame to frame without having to use your <g>Ctrl</g> key.
 
 <li> To cancel this action, click on the <a href="intro.modeleditor.dataforms.html#treeview">Frames Group folder</a>
 <li> or any blank unused area in one of the editor's views or the model itself
