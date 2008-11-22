@@ -1775,79 +1775,10 @@ def addcomponent(editor, option=2):
 
     # This section updates any bones in the original component and the editor.ModelComponentList,
     # if any vertexes that are being removed have been assigned to a bone's handle.
- #   Update_BoneALLLists(editor, comp, remove_vertices_list)
-### Function above is not finished yet. Remove entire section below (lines 1781-1851) when line above is uncommented.
     remove_vertices_list.sort()
-    if len(editor.Root.dictitems['Skeleton:bg'].subitems) != 0:
-        if editor.ModelComponentList.has_key(change_comp.name) and editor.ModelComponentList[change_comp.name].has_key('bonevtxlist'):
-            bones2update = {}
-            for vtx in remove_vertices_list:
-                if editor.ModelComponentList[change_comp.name]['bonevtxlist'].has_key(str(vtx)):
-                    if bones2update.has_key(editor.ModelComponentList[change_comp.name]['bonevtxlist'][str(vtx)]['bonename']):
-                        bonename = editor.ModelComponentList[change_comp.name]['bonevtxlist'][str(vtx)]['bonename']
-                        if editor.ModelComponentList[change_comp.name]['bonevtxlist'][str(vtx)]['s_or_e'] == 0:
-                            if bones2update[bonename].has_key('s_or_e0'):
-                                bones2update[bonename]['s_or_e0'].append(str(vtx))
-                            else:
-                                bones2update[bonename]['s_or_e0'] = []
-                                bones2update[bonename]['s_or_e0'].append(str(vtx))
-                        else:
-                            if bones2update[bonename].has_key('s_or_e1'):
-                                bones2update[bonename]['s_or_e1'].append(str(vtx))
-                            else:
-                                bones2update[bonename]['s_or_e1'] = []
-                                bones2update[bonename]['s_or_e1'].append(str(vtx))
-                    else:
-                        bonename = editor.ModelComponentList[change_comp.name]['bonevtxlist'][str(vtx)]['bonename']
-                        bones2update[bonename] = {}
-                        if editor.ModelComponentList[change_comp.name]['bonevtxlist'][str(vtx)]['s_or_e'] == 0:
-                            bones2update[bonename]['s_or_e0'] = []
-                            bones2update[bonename]['s_or_e0'].append(str(vtx))
-                        else:
-                            bones2update[bonename]['s_or_e1'] = []
-                            bones2update[bonename]['s_or_e1'].append(str(vtx))
-                    del editor.ModelComponentList[change_comp.name]['bonevtxlist'][str(vtx)]
-            if len(bones2update) != 0:
-                import mdlhandles
-                for key in bones2update.keys():
-                    selbone = editor.Root.dictitems['Skeleton:bg'].dictitems[key]
-                    if bones2update[key].has_key('s_or_e0'):
-                        vtxlist = selbone.dictspec['start_vtxlist']
-                        start_vtxlist = vtxlist.split(" ")
-                        vtxlist = selbone.dictspec['start_vtx_pos']
-                        start_vtx_pos = vtxlist.split(" ")
-                        for vtx in bones2update[key]['s_or_e0']:
-                            if vtx in start_vtxlist:
-                                start_vtxlist.remove(vtx)
-                            if vtx in start_vtx_pos:
-                                start_vtx_pos.remove(vtx)
-                        new_start_vtxlist = ""
-                        for vtx in start_vtxlist:
-                            new_start_vtxlist = new_start_vtxlist + vtx
-                        selbone['start_vtxlist'] = new_start_vtxlist
-                        new_start_vtx_pos = ""
-                        for vtx in start_vtx_pos:
-                            new_start_vtx_pos = new_start_vtx_pos + vtx
-                        selbone['start_vtx_pos'] = new_start_vtx_pos
-                    if bones2update[key].has_key('s_or_e1'):
-                        vtxlist = selbone.dictspec['end_vtxlist']
-                        end_vtxlist = vtxlist.split(" ")
-                        vtxlist = selbone.dictspec['end_vtx_pos']
-                        end_vtx_pos = vtxlist.split(" ")
-                        for vtx in bones2update[key]['s_or_e1']:
-                            if vtx in end_vtxlist:
-                                end_vtxlist.remove(vtx)
-                            if vtx in end_vtx_pos:
-                                end_vtx_pos.remove(vtx)
-                        new_end_vtxlist = ""
-                        for vtx in end_vtxlist:
-                            new_end_vtxlist = new_end_vtxlist + vtx
-                        selbone['end_vtxlist'] = new_end_vtxlist
-                        new_end_vtx_pos = ""
-                        for vtx in end_vtx_pos:
-                            new_end_vtx_pos = new_end_vtx_pos + vtx
-                        selbone['end_vtx_pos'] = new_end_vtx_pos
-                    editor.ModelComponentList[change_comp.name]['boneobjlist'][selbone.name] = mdlhandles.Update_BoneObjs(editor.ModelComponentList[change_comp.name]['bonevtxlist'], selbone.name, editor.Root.currentcomponent)
+    BonesToUpdate = None
+    if editor.ModelComponentList.has_key(comp.name):
+        BonesToUpdate = Update_BoneALLLists(editor, comp, remove_vertices_list)
 
     # This last section updates the original component finishing the process for it.
     compframes = change_comp.findallsubitems("", ':mf')   # get all frames
@@ -1858,6 +1789,9 @@ def addcomponent(editor, option=2):
     undo.put(editor.Root, change_comp)
     editor.ok(undo, change_comp.shortname + " updated")
     Update_Editor_Views(editor)
+    if BonesToUpdate is not None:
+        for bonename in BonesToUpdate:
+            editor.ModelComponentList[change_comp.name]['boneobjlist'][bonename] = Update_BoneObjs(editor.ModelComponentList[change_comp.name]['bonevtxlist'], bonename, change_comp)
 
 #
 # Add a frame to a given component (ie duplicate last one)
@@ -2273,75 +2207,123 @@ def find_common_bone_handles(editor, handle_pos):
             s_or_e_list = s_or_e_list + [1]
     return common_handles_list, s_or_e_list
 
-def Update_BoneALLLists(editor, component, verticestoremove):
+#
+# When any vertexes are removed from the component, this function updates all bone handles
+# associated with those vertexes, common handles included, for the new vertex numbers that changed or removed.
+# It also updates their data in the editor.ModelComponentList bonevtxlist section
+# then calls on the Update_BoneObjs utilitis function to do the same for the boneobjlist section.
+#
+def Update_BoneALLLists(editor, component, vertices_to_remove):
     # First, let's create a list of new indices
     oldbonevtxlist = editor.ModelComponentList[component.name]['bonevtxlist']
-    print ""
-    print "mdlutils line 2279 verticestoremove",verticestoremove
-    print "mdlutils line 2280 oldbonevtxlist",oldbonevtxlist
     NewVertexNumbers = []
-    newvtx = -1
     BonesToUpdate = []
-    oldbonevtxlistkeys = oldbonevtxlist.keys()
+    BonesToUpdate_s_or_e = []
+    old_vertex_indexes = []
+    oldbonevtxlistkeys = oldbonevtxlist.keys() # List of 'bonevtxlist' keys as string items.
+    handle_vtxs_removed = 0
     for vtx in range(len(oldbonevtxlistkeys)):
-        vertexindex = oldbonevtxlistkeys[vtx]
-        bonename = oldbonevtxlist[str(oldbonevtxlistkeys[vtx])]['bonename']
+        old_vertex_indexes = old_vertex_indexes + [int(oldbonevtxlistkeys[vtx])] # NOT EVEN BEING USED
+        bonename = oldbonevtxlist[oldbonevtxlistkeys[vtx]]['bonename'] # List of bone names for above keys.
+        bone_s_or_e = oldbonevtxlist[oldbonevtxlistkeys[vtx]]['s_or_e'] # List of bone names for above keys.
         if not (bonename in BonesToUpdate):
             # Adding this bone to the list of bones we need to update
-            BonesToUpdate = BonesToUpdate + [bonename]
-        if vtx in verticestoremove:
+            BonesToUpdate = BonesToUpdate + [bonename] # List of bone names to update, WE ALSO NEED A s_or_e list HERE.
+            BonesToUpdate_s_or_e = BonesToUpdate_s_or_e + [bone_s_or_e]
+        if int(oldbonevtxlistkeys[vtx]) in vertices_to_remove:
             # This vertex dies!
             NewVertexNumbers = NewVertexNumbers + [-1]
+            handle_vtxs_removed = handle_vtxs_removed + 1
         else:
-            newvtx = newvtx + 1
-            NewVertexNumbers = NewVertexNumbers + [newvtx]
-
+            for remove in range(len(vertices_to_remove)):
+                if vertices_to_remove[remove] > int(oldbonevtxlistkeys[vtx]):
+                    NewVertexNumbers = NewVertexNumbers + [int(oldbonevtxlistkeys[vtx]) - (remove-1)]
+                    break
+                if remove == len(vertices_to_remove)-1:
+                    NewVertexNumbers = NewVertexNumbers + [int(oldbonevtxlistkeys[vtx]) - len(vertices_to_remove)]
+    if handle_vtxs_removed != 0:
+        fix_NewVertexNumbers = []
+        for index in NewVertexNumbers:
+            if index == -1:
+                fix_NewVertexNumbers = fix_NewVertexNumbers + [index]
+            else:
+                fix_NewVertexNumbers = fix_NewVertexNumbers + [index - handle_vtxs_removed]
+        NewVertexNumbers = fix_NewVertexNumbers
     # Now create the new list
     newbonevtxlist = {}
-    print "mdlutils line 2300 oldbonevtxlist",oldbonevtxlist
-    print "mdlutils line 2301 oldbonevtxlist.keys",oldbonevtxlist.keys()
-    print "mdlutils line 2302 NewVertexNumbers",NewVertexNumbers
+
     for vtx in range(len(oldbonevtxlist)):
         if NewVertexNumbers[vtx] <> -1:
-            print "mdlutils line 2302 key",oldbonevtxlist.keys()[vtx]
-  #          newbonevtxlist[str(NewVertexNumbers[vtx])] = oldbonevtxlist[str(vtx)]
             newbonevtxlist[str(NewVertexNumbers[vtx])] = oldbonevtxlist[oldbonevtxlist.keys()[vtx]]
     editor.ModelComponentList[component.name]['bonevtxlist'] = newbonevtxlist
-    print "mdlutils line 2309 bonevtxlist",editor.ModelComponentList[component.name]['bonevtxlist']
 
-    print "mdlutils line 2311 BonesToUpdate",BonesToUpdate
-    for bonename in BonesToUpdate:
-  #      bone = editor.Root.dicitems['Skeleton:bg'][bonename]
-        bone = editor.Root.dictitems['Skeleton:bg'].dictitems[bonename]
-        print "mdlutils line 2316 bone, bone.name",bone, bone.name
+    for bonename in range(len(BonesToUpdate)): # CAN'T DO THIS WAY, PUT BONE UPDATE RIGHT AFTER NewVertex Numbers fix.
+        bone = editor.Root.dictitems['Skeleton:bg'].dictitems[BonesToUpdate[bonename]]
+        if BonesToUpdate_s_or_e[bonename] == 0:
+            Old_vtxlist = bone['start_vtxlist'].split(" ")
+            Old_vtx_pos = bone['start_vtx_pos'].split(" ")
+            New_vtxlist = []
+            New_vtx_pos = []
+            for item in Old_vtxlist:
+                for old_vtx in range(len(oldbonevtxlistkeys)):
+                    if item == oldbonevtxlistkeys[old_vtx]:
+                        if NewVertexNumbers[old_vtx] == -1:
+                            break
+                        New_vtxlist = New_vtxlist + [str(NewVertexNumbers[old_vtx])]
+                        if item in Old_vtx_pos:
+                            New_vtx_pos = New_vtx_pos + [str(NewVertexNumbers[old_vtx])]
+                        break
+                    if old_vtx == len(oldbonevtxlistkeys)-1:
+                        New_vtxlist = New_vtxlist + [item]
+                        if item in Old_vtx_pos:
+                            New_vtx_pos = New_vtx_pos + [item]
+            bone['start_vertex_count'] = str(len(New_vtxlist))
+            bone['start_vtxlist'] = " ".join(New_vtxlist)
+            bone['start_vtx_pos'] = " ".join(New_vtx_pos)
+            common_handles_list, s_or_e_list = find_common_bone_handles(editor, editor.Root.dictitems['Skeleton:bg'].dictitems[BonesToUpdate[bonename]].dictspec['start_point'])
+            for handle in range(len(common_handles_list)):
+                if s_or_e_list[handle] == 0:
+                    if common_handles_list[handle].dictspec.has_key('start_vtx_pos'):
+                        common_handles_list[handle]['start_vtx_pos'] = bone.dictspec['start_vtx_pos']
+                else:
+                    if common_handles_list[handle].dictspec.has_key('end_vtx_pos'):
+                        common_handles_list[handle]['end_vtx_pos'] = bone.dictspec['start_vtx_pos']
+        else:
+            Old_vtxlist = bone['end_vtxlist'].split(" ")
+            Old_vtx_pos = bone['end_vtx_pos'].split(" ")
+            New_vtxlist = []
+            New_vtx_pos = []
+            for item in Old_vtxlist:
+                for old_vtx in range(len(oldbonevtxlistkeys)):
+                    if item == oldbonevtxlistkeys[old_vtx]:
+                        if NewVertexNumbers[old_vtx] == -1:
+                            break
+                        New_vtxlist = New_vtxlist + [str(NewVertexNumbers[old_vtx])]
+                        if item in Old_vtx_pos:
+                            New_vtx_pos = New_vtx_pos + [str(NewVertexNumbers[old_vtx])]
+                        break
+                    if old_vtx == len(oldbonevtxlistkeys)-1:
+                        New_vtxlist = New_vtxlist + [item]
+                        if item in Old_vtx_pos:
+                            New_vtx_pos = New_vtx_pos + [item]
+            bone['end_vertex_count'] = str(len(New_vtxlist))
+            bone['end_vtxlist'] = " ".join(New_vtxlist)
+            bone['end_vtx_pos'] = " ".join(New_vtx_pos)
+            common_handles_list, s_or_e_list = find_common_bone_handles(editor, editor.Root.dictitems['Skeleton:bg'].dictitems[BonesToUpdate[bonename]].dictspec['end_point'])
+            for handle in range(len(common_handles_list)):
+                if s_or_e_list[handle] == 0:
+                    if common_handles_list[handle].dictspec.has_key('start_vtx_pos'):
+                        common_handles_list[handle]['start_vtx_pos'] = bone.dictspec['end_vtx_pos']
+                else:
+                    if common_handles_list[handle].dictspec.has_key('end_vtx_pos'):
+                        common_handles_list[handle]['end_vtx_pos'] = bone.dictspec['end_vtx_pos']
 
-        OldList = bone['start_vtxlist'].split(" ")
-        NewList = []
-        for item in OldList:
-            NewList = NewList + [str(NewVertexNumbers[item])]
-        bone['start_vtxlist'] = " ".join(NewList)
+    return BonesToUpdate
 
-        OldList = bone['start_vtx_pos'].split(" ")
-        NewList = []
-        for item in OldList:
-            NewList = NewList + [str(NewVertexNumbers[item])]
-        bone['start_vtx_pos'] = " ".join(NewList)
-
-        OldList = bone['end_vtxlist'].split(" ")
-        NewList = []
-        for item in OldList:
-            NewList = NewList + [str(NewVertexNumbers[item])]
-        bone['end_vtxlist'] = " ".join(NewList)
-
-        OldList = bone['end_vtx_pos'].split(" ")
-        NewList = []
-        for item in OldList:
-            NewList = NewList + [str(NewVertexNumbers[item])]
-        bone['end_vtx_pos'] = " ".join(NewList)
-
-    for bonename in BonesToUpdate:
-        Update_BoneObjs(newbonevtxlist, bonename, component)
-
+#
+# This function updates the editor.ModelComponentList boneobjlist section
+# for vertex index numbers in the bonevtxlist of the bone and component that are sent to it.
+#
 def Update_BoneObjs(bonevtxlist, selfbonename, comp):
     vtxlist = [[], []]
     tristodrawlist = [[], []]
@@ -3261,6 +3243,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.90  2008/11/19 06:16:22  cdunde
+#Bones system moved to outside of components for Model Editor completed.
+#
 #Revision 1.89  2008/11/01 07:53:02  cdunde
 #To stop any bones being copied to new components.
 #
