@@ -2215,72 +2215,60 @@ def find_common_bone_handles(editor, handle_pos):
 #
 def Update_BoneALLLists(editor, component, vertices_to_remove):
     # First, let's create a list of new indices
-    oldbonevtxlist = editor.ModelComponentList[component.name]['bonevtxlist']
+    old_bonevtxlist = editor.ModelComponentList[component.name]['bonevtxlist']
     NewVertexNumbers = []
     BonesToUpdate = []
-    BonesToUpdate_s_or_e = []
-    old_vertex_indexes = []
-    oldbonevtxlistkeys = oldbonevtxlist.keys() # List of 'bonevtxlist' keys as string items.
-    handle_vtxs_removed = 0
-    for vtx in range(len(oldbonevtxlistkeys)):
-        old_vertex_indexes = old_vertex_indexes + [int(oldbonevtxlistkeys[vtx])] # NOT EVEN BEING USED
-        bonename = oldbonevtxlist[oldbonevtxlistkeys[vtx]]['bonename'] # List of bone names for above keys.
-        bone_s_or_e = oldbonevtxlist[oldbonevtxlistkeys[vtx]]['s_or_e'] # List of bone names for above keys.
+    old_bonevtxlistkeys = old_bonevtxlist.keys() # List of 'bonevtxlist' keys as string items.
+    for vtx in range(len(old_bonevtxlistkeys)):
+        bonename = old_bonevtxlist[old_bonevtxlistkeys[vtx]]['bonename'] # List of bone names for above keys.
         if not (bonename in BonesToUpdate):
             # Adding this bone to the list of bones we need to update
-            BonesToUpdate = BonesToUpdate + [bonename] # List of bone names to update, WE ALSO NEED A s_or_e list HERE.
-            BonesToUpdate_s_or_e = BonesToUpdate_s_or_e + [bone_s_or_e]
-        if int(oldbonevtxlistkeys[vtx]) in vertices_to_remove:
-            # This vertex dies!
+            BonesToUpdate = BonesToUpdate + [bonename]
+        if int(old_bonevtxlistkeys[vtx]) in vertices_to_remove:
+            # This vertex index is completely removed because it was combined with another, moved to another component or deleted.
             NewVertexNumbers = NewVertexNumbers + [-1]
-            handle_vtxs_removed = handle_vtxs_removed + 1
         else:
             for remove in range(len(vertices_to_remove)):
-                if vertices_to_remove[remove] > int(oldbonevtxlistkeys[vtx]):
-                    NewVertexNumbers = NewVertexNumbers + [int(oldbonevtxlistkeys[vtx]) - (remove-1)]
+                if vertices_to_remove[remove] > int(old_bonevtxlistkeys[vtx]):
+                    NewVertexNumbers = NewVertexNumbers + [int(old_bonevtxlistkeys[vtx]) - (remove)]
                     break
                 if remove == len(vertices_to_remove)-1:
-                    NewVertexNumbers = NewVertexNumbers + [int(oldbonevtxlistkeys[vtx]) - len(vertices_to_remove)]
-    if handle_vtxs_removed != 0:
-        fix_NewVertexNumbers = []
-        for index in NewVertexNumbers:
-            if index == -1:
-                fix_NewVertexNumbers = fix_NewVertexNumbers + [index]
-            else:
-                fix_NewVertexNumbers = fix_NewVertexNumbers + [index - handle_vtxs_removed]
-        NewVertexNumbers = fix_NewVertexNumbers
+                    NewVertexNumbers = NewVertexNumbers + [int(old_bonevtxlistkeys[vtx]) - len(vertices_to_remove)]
     # Now create the new list
     newbonevtxlist = {}
 
-    for vtx in range(len(oldbonevtxlist)):
+    for vtx in range(len(old_bonevtxlist)):
         if NewVertexNumbers[vtx] <> -1:
-            newbonevtxlist[str(NewVertexNumbers[vtx])] = oldbonevtxlist[oldbonevtxlist.keys()[vtx]]
+            newbonevtxlist[str(NewVertexNumbers[vtx])] = old_bonevtxlist[old_bonevtxlist.keys()[vtx]]
     editor.ModelComponentList[component.name]['bonevtxlist'] = newbonevtxlist
 
-    for bonename in range(len(BonesToUpdate)): # CAN'T DO THIS WAY, PUT BONE UPDATE RIGHT AFTER NewVertex Numbers fix.
-        bone = editor.Root.dictitems['Skeleton:bg'].dictitems[BonesToUpdate[bonename]]
-        if BonesToUpdate_s_or_e[bonename] == 0:
+    for bonename in editor.Root.dictitems['Skeleton:bg'].dictitems:
+    ###  This is wrong also,  we should be checking end handle as well for comp name and updating its vertexes if same comp.
+        bone = editor.Root.dictitems['Skeleton:bg'].dictitems[bonename]
+        if bone.dictspec['start_component'] == component.name and bone.dictspec.has_key('start_vtxlist'):
             Old_vtxlist = bone['start_vtxlist'].split(" ")
             Old_vtx_pos = bone['start_vtx_pos'].split(" ")
             New_vtxlist = []
             New_vtx_pos = []
-            for item in Old_vtxlist:
-                for old_vtx in range(len(oldbonevtxlistkeys)):
-                    if item == oldbonevtxlistkeys[old_vtx]:
-                        if NewVertexNumbers[old_vtx] == -1:
+            for vtx in range(len(Old_vtxlist)):
+                if int(Old_vtxlist[vtx]) in vertices_to_remove:
+                    continue
+                else:
+                    for remove in range(len(vertices_to_remove)):
+                        if vertices_to_remove[remove] > int(Old_vtxlist[vtx]):
+                            New_vtxlist = New_vtxlist + [str(int(Old_vtxlist[vtx]) - remove)]
+                            if Old_vtxlist[vtx] in Old_vtx_pos:
+                                New_vtx_pos = New_vtx_pos + [str(int(Old_vtxlist[vtx]) - remove)]
                             break
-                        New_vtxlist = New_vtxlist + [str(NewVertexNumbers[old_vtx])]
-                        if item in Old_vtx_pos:
-                            New_vtx_pos = New_vtx_pos + [str(NewVertexNumbers[old_vtx])]
-                        break
-                    if old_vtx == len(oldbonevtxlistkeys)-1:
-                        New_vtxlist = New_vtxlist + [item]
-                        if item in Old_vtx_pos:
-                            New_vtx_pos = New_vtx_pos + [item]
+                        if remove == len(vertices_to_remove)-1:
+                            New_vtxlist = New_vtxlist + [str(int(Old_vtxlist[vtx]) - len(vertices_to_remove))]
+                            if Old_vtxlist[vtx] in Old_vtx_pos:
+                                New_vtx_pos = New_vtx_pos + [str(int(Old_vtxlist[vtx]) - len(vertices_to_remove))]
+
             bone['start_vertex_count'] = str(len(New_vtxlist))
             bone['start_vtxlist'] = " ".join(New_vtxlist)
             bone['start_vtx_pos'] = " ".join(New_vtx_pos)
-            common_handles_list, s_or_e_list = find_common_bone_handles(editor, editor.Root.dictitems['Skeleton:bg'].dictitems[BonesToUpdate[bonename]].dictspec['start_point'])
+            common_handles_list, s_or_e_list = find_common_bone_handles(editor, editor.Root.dictitems['Skeleton:bg'].dictitems[bone.name].dictspec['start_point'])
             for handle in range(len(common_handles_list)):
                 if s_or_e_list[handle] == 0:
                     if common_handles_list[handle].dictspec.has_key('start_vtx_pos'):
@@ -2288,28 +2276,30 @@ def Update_BoneALLLists(editor, component, vertices_to_remove):
                 else:
                     if common_handles_list[handle].dictspec.has_key('end_vtx_pos'):
                         common_handles_list[handle]['end_vtx_pos'] = bone.dictspec['start_vtx_pos']
-        else:
+        if bone.dictspec['end_component'] == component.name and bone.dictspec.has_key('end_vtxlist'):
             Old_vtxlist = bone['end_vtxlist'].split(" ")
             Old_vtx_pos = bone['end_vtx_pos'].split(" ")
             New_vtxlist = []
             New_vtx_pos = []
-            for item in Old_vtxlist:
-                for old_vtx in range(len(oldbonevtxlistkeys)):
-                    if item == oldbonevtxlistkeys[old_vtx]:
-                        if NewVertexNumbers[old_vtx] == -1:
+            for vtx in range(len(Old_vtxlist)):
+                if int(Old_vtxlist[vtx]) in vertices_to_remove:
+                    continue
+                else:
+                    for remove in range(len(vertices_to_remove)):
+                        if vertices_to_remove[remove] > int(Old_vtxlist[vtx]):
+                            New_vtxlist = New_vtxlist + [str(int(Old_vtxlist[vtx]) - remove)]
+                            if Old_vtxlist[vtx] in Old_vtx_pos:
+                                New_vtx_pos = New_vtx_pos + [str(int(Old_vtxlist[vtx]) - remove)]
                             break
-                        New_vtxlist = New_vtxlist + [str(NewVertexNumbers[old_vtx])]
-                        if item in Old_vtx_pos:
-                            New_vtx_pos = New_vtx_pos + [str(NewVertexNumbers[old_vtx])]
-                        break
-                    if old_vtx == len(oldbonevtxlistkeys)-1:
-                        New_vtxlist = New_vtxlist + [item]
-                        if item in Old_vtx_pos:
-                            New_vtx_pos = New_vtx_pos + [item]
+                        if remove == len(vertices_to_remove)-1:
+                            New_vtxlist = New_vtxlist + [str(int(Old_vtxlist[vtx]) - len(vertices_to_remove))]
+                            if Old_vtxlist[vtx] in Old_vtx_pos:
+                                New_vtx_pos = New_vtx_pos + [str(int(Old_vtxlist[vtx]) - len(vertices_to_remove))]
+
             bone['end_vertex_count'] = str(len(New_vtxlist))
             bone['end_vtxlist'] = " ".join(New_vtxlist)
             bone['end_vtx_pos'] = " ".join(New_vtx_pos)
-            common_handles_list, s_or_e_list = find_common_bone_handles(editor, editor.Root.dictitems['Skeleton:bg'].dictitems[BonesToUpdate[bonename]].dictspec['end_point'])
+            common_handles_list, s_or_e_list = find_common_bone_handles(editor, editor.Root.dictitems['Skeleton:bg'].dictitems[bone.name].dictspec['end_point'])
             for handle in range(len(common_handles_list)):
                 if s_or_e_list[handle] == 0:
                     if common_handles_list[handle].dictspec.has_key('start_vtx_pos'):
@@ -3243,6 +3233,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.91  2008/11/22 05:08:55  cdunde
+#To update bone and editor.ModelComponentList after new component is created.
+#
 #Revision 1.90  2008/11/19 06:16:22  cdunde
 #Bones system moved to outside of components for Model Editor completed.
 #
