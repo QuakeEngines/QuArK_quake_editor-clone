@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.17  2008/11/20 23:45:50  danielpharos
+Big update to renderers: mostly cleanup, and stabilized Direct3D a bit more.
+
 Revision 1.16  2008/11/17 20:31:22  danielpharos
 Oops
 
@@ -1227,7 +1230,7 @@ const
    ,(FuncPtr: @@grAlphaCombine;                 FuncReq: inGlide;  FuncName: '_grAlphaCombine@20'               )
    ,(FuncPtr: @@grClipWindow;                   FuncReq: inBoth;   FuncName: '_grClipWindow@16'                 )
    ,(FuncPtr: @@grColorMask;                    FuncReq: inGlide;  FuncName: '_grColorMask@8'                   )
-   ,(FuncPtr: @@grConstantColorValue;           FuncReq: inGlide;  FuncName: '_grConstantColorValue@4'          )
+   ,(FuncPtr: @@grConstantColorValue;           FuncReq: inBoth;   FuncName: '_grConstantColorValue@4'          )
    ,(FuncPtr: @@grDepthBufferFunction;          FuncReq: inGlide;  FuncName: '_grDepthBufferFunction@4'         )
    ,(FuncPtr: @@grDepthBufferMode;              FuncReq: inGlide;  FuncName: '_grDepthBufferMode@4'             )
    ,(FuncPtr: @@grDepthMask;                    FuncReq: inGlide;  FuncName: '_grDepthMask@4'                   )
@@ -1252,7 +1255,7 @@ const
    ,(FuncPtr: @@grGlideInit;                    FuncReq: inBoth;   FuncName: '_grGlideInit@0'                   )
    ,(FuncPtr: @@grGlideShutdown;                FuncReq: inGlide;  FuncName: '_grGlideShutdown@0'               )
    ,(FuncPtr: @@grHints;                        FuncReq: inBoth;   FuncName: '_grHints@8'                       )
-   ,(FuncPtr: @@guColorCombineFunction;         FuncReq: inGlide;  FuncName: '_guColorCombineFunction@4'        )
+   ,(FuncPtr: @@guColorCombineFunction;         FuncReq: inBoth;   FuncName: '_guColorCombineFunction@4'        )
    ,(FuncPtr: @@guFogGenerateExp2;              FuncReq: inGlide;  FuncName: '_guFogGenerateExp2@8'             )
    ,(FuncPtr: @@softgLoadFrameBuffer;           FuncReq: inSoftG;  FuncName: '_softgLoadFrameBuffer@8'          ) );
 
