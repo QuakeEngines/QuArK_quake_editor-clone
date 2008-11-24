@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.47  2008/11/20 23:45:50  danielpharos
+Big update to renderers: mostly cleanup, and stabilized Direct3D a bit more.
+
 Revision 1.46  2008/11/14 00:39:54  danielpharos
 Fixed a few variable types and fixed the coloring of faces not working properly in OpenGL and giving the wrong color in Glide.
 
@@ -566,7 +569,6 @@ end;
 procedure TSceneObject.SetColor(nColor: TColorRef);
 begin
  BlendColor:=nColor;
- nColor:=SwapColor(nColor);
  PolyFaces.Add(Nil);
  PolyFaces.Add(TObject(nColor));
  ModelInfo.Add(Nil);

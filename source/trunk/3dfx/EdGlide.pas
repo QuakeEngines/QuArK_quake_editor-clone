@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.17  2008/11/20 23:45:50  danielpharos
+Big update to renderers: mostly cleanup, and stabilized Direct3D a bit more.
+
 Revision 1.16  2008/11/14 00:39:54  danielpharos
 Fixed a few variable types and fixed the coloring of faces not working properly in OpenGL and giving the wrong color in Glide.
 
@@ -1591,9 +1594,9 @@ begin
               PSD.Done;
             end;
           end;
-          nColor:=  (((nColor         and $FF)* (MeanColor         and $FF))              shr 8)
+          nColor:= ((((nColor         and $FF)* (MeanColor         and $FF)) and $00FF00) shl 8)
                or  ((((nColor shr 8)  and $FF)*((MeanColor shr 8)  and $FF)) and $00FF00)
-               or (((((nColor shr 16) and $FF)*((MeanColor shr 16) and $FF)) and $00FF00) shl 8)
+               or (((((nColor shr 16) and $FF)*((MeanColor shr 16) and $FF)) and $00FF00) shr 8)
                or (((nColor shr 24) and $FF) shl 24);
         end;
       end;

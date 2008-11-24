@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.17  2008/11/20 23:45:50  danielpharos
+Big update to renderers: mostly cleanup, and stabilized Direct3D a bit more.
+
 Revision 1.16  2008/11/17 20:31:22  danielpharos
 Oops
 
@@ -1499,7 +1502,7 @@ begin
 
     if (((AlphaColor and $FF000000)=$FF000000) xor TransparentFaces) and CCoord.PositiveHalf(Normale[0], Normale[1], Normale[2], Dist) then
     begin
-      nColor:=AlphaColor;
+      nColor:=SwapColor(AlphaColor);
 
       if SolidColors then
       begin
