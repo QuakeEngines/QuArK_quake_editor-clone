@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2005/09/28 10:49:02  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.5  2001/03/20 21:36:53  decker_dk
 Updated copyright-header
 
@@ -41,7 +44,7 @@ unit QkQkl;
 interface
 
 uses
-  QkObjects, QkFileObjects, QkForm, QkImages, Python, Game, QkModel;
+  QkObjects, QkFileObjects, QkModel;
 
 type
   QQkl = class(QModel)
@@ -52,7 +55,7 @@ type
 
 implementation
 
-uses QuarkX, Setup, PyForms, Undo, QkObjectClassList;
+uses QuarkX, QkObjectClassList;
 
 class function QQkl.TypeInfo;
 begin
