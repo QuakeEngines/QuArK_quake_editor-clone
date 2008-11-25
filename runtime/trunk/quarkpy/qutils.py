@@ -619,11 +619,19 @@ def RGBToColor(RGB):
     return (65536 * RGB[2]) + (256 * RGB[1]) + RGB[0]
 
 # Converts long integer color number into separate color components Red Green Blue (RGB)
-# Returns those components as a list of three intiger numbers but backwards BGR
+# Returns those components as a list of three integer numbers but backwards BGR
 #   because that is how Windows and other image editing programs draw them.
 def ColorToRGB(Color):
     return (int(round(Color / 65536)) & 255, int(round(Color / 256)) & 255, int(Color) & 255)
 
+# Converts long integer color number into separate color components Red Green Blue (RGB)
+# Reverses the R and the B values and returns the new color as a BGR color.
+def SwapRandB(LongIntNbr):
+    Color = ColorToRGB(LongIntNbr)
+    TMPColor = Color[2]
+    Color[2] = Color[0]
+    Color[0] = TMPColor
+    return RGBToColor(Color)
 
 #---- import the plug-ins ----
 import plugins
@@ -831,6 +839,9 @@ def sortdictionary(dictionary):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.46  2008/10/29 04:29:31  cdunde
+#Minor error fix.
+#
 #Revision 1.45  2008/09/29 22:41:06  danielpharos
 #Fixed for file resolving code. Fixes Steam-games.
 #
