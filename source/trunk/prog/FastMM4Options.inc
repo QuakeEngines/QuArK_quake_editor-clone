@@ -72,7 +72,7 @@ Set the default options for FastMM here.
 {Enable this option to suppress the generation of debug info for the
  FastMM4.pas unit. This will prevent the integrated debugger from stepping into
  the memory manager code.}
-{$define NoDebugInfo}
+{.$define NoDebugInfo}
 
 {Enable this option to suppress the display of all message dialogs. This is
  useful in service applications that should not be interrupted.}
@@ -123,7 +123,7 @@ Set the default options for FastMM here.
    object. Note that this will disable the checking of blocks modified after
    being freed (the two are not compatible). This option has no effect if
    FullDebugMode is not also enabled.}
-  {$define CatchUseOfFreedInterfaces}
+  {.$define CatchUseOfFreedInterfaces}
 
   {Set this option to log all errors to a text file in the same folder as the
    application. Memory errors (with the FullDebugMode option set) will be
@@ -141,7 +141,7 @@ Set the default options for FastMM here.
 
   {Deletes the error log file on startup. No effect if LogErrorsToFile is not
    also set.}
-  {$define ClearLogFileOnStartup}
+  {.$define ClearLogFileOnStartup}
 
   {Loads the FASTMM_FullDebugMode.dll dynamically. If the DLL cannot be found
    then stack traces will not be available. Note that this may cause problems
@@ -157,11 +157,15 @@ Set the default options for FastMM here.
    help to catch those errors sooner.}
   {$define AlwaysAllocateTopDown}
 
+  {Disables the logging of memory dumps together with the other detail for
+   memory errors.}
+  {.$define DisableLoggingOfMemoryDumps}
+
 {---------------------------Memory Leak Reporting-----------------------------}
 
 {Set this option to enable reporting of memory leaks. Combine it with the two
  options below for further fine-tuning.}
-{.$define EnableMemoryLeakReporting}
+{$define EnableMemoryLeakReporting}
 
   {Set this option to suppress the display and logging of expected memory leaks
    that were registered by pointer. Leaks registered by size or class are often
