@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.49  2008/10/05 13:53:52  danielpharos
+Fixed an oops and add NoDraw (will be used later).
+
 Revision 1.48  2008/10/05 13:51:19  danielpharos
 Correct Integer to HDC.
 
@@ -1210,7 +1213,8 @@ begin
      if (Scene<>Nil) then
       Scene.SetViewWnd(Handle);
      if not (csDesigning in ComponentState) then
-      Paint(Self, PaintInfo.hDC, PaintInfo.rcPaint);
+      if Assigned(OnPaint) then
+       OnPaint(Self, PaintInfo.hDC, PaintInfo.rcPaint);
     finally
      FPainting:=False;
     end;
