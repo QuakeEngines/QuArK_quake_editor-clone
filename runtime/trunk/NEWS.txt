@@ -15,6 +15,8 @@ $Id$
 6.6.0 Beta 2
 ============
 
+* [cdunde]: Setup new Component Colors and draw Textured View Tint Colors system.
+
 * [cdunde/DanielPharos]: DEV. NOTE: Bones system moved to outside of components for Model Editor completed.
           - all files for source code, runtime and InfoBase updated Nov. 18, 2008.
 
