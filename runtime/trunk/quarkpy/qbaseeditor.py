@@ -309,15 +309,42 @@ class BaseEditor:
             #
             # Draw the unselected items first
             #
-            if isinstance(self, mdleditor.ModelEditor) and view.viewmode == "wire":
-                drawview(view, self.Root, mode | DM_DONTDRAWSEL)
+            if isinstance(self, mdleditor.ModelEditor) and (view.viewmode == "wire" or quarkx.setupsubset(SS_MODEL, "Options")["CompColors"] is not None):
                 if len(ex.sellist)<=1:
-                    if  isinstance(self, mdleditor.ModelEditor) and len(ex.sellist)==0:
+                    if len(ex.sellist)==0 or (quarkx.setupsubset(SS_MODEL, "Options")["CompColors"] is not None and (ex.sellist[0].type == ":bg" or ex.sellist[0].type == ":bone" or view.viewmode == "wire")):
                         self.ObjectMgr.im_func("drawback", self.Root, self, view, 1)
                     else:
-                        self.ObjectMgr.im_func("drawback", ex.sellist[0], self, view, 1)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["CompColors"] is not None:
+                            if view.viewmode != "wire":
+                                drawview(view, self.Root, mode | DM_DONTDRAWSEL) # Has to be here or texture image does not draw at all.
+                                for item in self.Root.dictitems:
+                                    if self.Root.dictitems[item].type == ":mc": # This applies the color for each component.
+                                        o = self.Root.dictitems[item]
+                                        if o.dictspec.has_key("comp_color") and o.dictspec['comp_color'] != "\x00":
+                                            meshcolor = o.dictspec['comp_color']
+                                            quarkx.setupsubset(SS_MODEL, "Colors")["meshcolor"] = meshcolor
+                                            meshcolor = MapColor("meshcolor", SS_MODEL)
+                                            view.drawmap(o, DM_OTHERCOLOR, meshcolor)
+                            else:
+                                self.ObjectMgr.im_func("drawback", ex.sellist[0], self, view, 1)
+                        else:
+                            self.ObjectMgr.im_func("drawback", ex.sellist[0], self, view, 1)
                 else:
-                    self.ObjectMgr.im_func("drawback", self.Root.currentcomponent, self, view, 1)
+                    if quarkx.setupsubset(SS_MODEL, "Options")["CompColors"] is not None:
+                        if view.viewmode != "wire":
+                            drawview(view, self.Root, mode | DM_DONTDRAWSEL) # Has to be here or texture image does not draw at all.
+                            for item in self.Root.dictitems:
+                                if self.Root.dictitems[item].type == ":mc": # This applies the color for each component.
+                                    o = self.Root.dictitems[item]
+                                    if o.dictspec.has_key("comp_color") and o.dictspec['comp_color'] != "\x00":
+                                        meshcolor = o.dictspec['comp_color']
+                                        quarkx.setupsubset(SS_MODEL, "Colors")["meshcolor"] = meshcolor
+                                        meshcolor = MapColor("meshcolor", SS_MODEL)
+                                        view.drawmap(o, DM_OTHERCOLOR, meshcolor)
+                        else:
+                            self.ObjectMgr.im_func("drawback", ex.sellist[0], self, view, 1)
+                    else:
+                        self.ObjectMgr.im_func("drawback", self.Root.currentcomponent, self, view, 1)
             else:
                 #view.drawmap(self.Root, mode | DM_DONTDRAWSEL)     # draw the map in back lines, don't draw selected items
                 drawview(view, self.Root, mode | DM_DONTDRAWSEL)
@@ -352,9 +379,12 @@ class BaseEditor:
         #
 
         if (fs is not None) and (view.viewmode != "wire"):
-            mode = self.drawmode
-            if MapOption("BBoxSelected", self.MODE): mode=mode|DM_BBOX
-            self.ObjectMgr.im_func("drawback", fs, self, view, mode)
+            if isinstance(self, mdleditor.ModelEditor) and quarkx.setupsubset(SS_MODEL, "Options")["CompColors"] is not None:
+                self.ObjectMgr.im_func("drawback", fs, self, view, mode) # Causes lines to be drawn in Model Editor.
+            else:
+                mode = self.drawmode
+                if MapOption("BBoxSelected", self.MODE): mode=mode|DM_BBOX
+                self.ObjectMgr.im_func("drawback", fs, self, view, mode) # Causes lines to be drawn in Model Editor.
 
         # This allows plp to pick the color the selected poly will be drawn when the No Fill option is active.
         if len(list)==1 and MapOption("PolySelectNoFill", self.MODE) and fs.type != ":e":
@@ -1513,6 +1543,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.119  2008/11/19 06:16:23  cdunde
+#Bones system moved to outside of components for Model Editor completed.
+#
 #Revision 1.118  2008/10/21 18:13:27  cdunde
 #To try to stop dupe drawing of bone handles.
 #

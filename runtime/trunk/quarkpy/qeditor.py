@@ -1484,11 +1484,18 @@ def TexModeMenu(editor, view):
         menu.state = menu.mode==view.viewmode and qmenu.radiocheck
     import mdleditor
     if isinstance(editor, mdleditor.ModelEditor):
+        import mdloptions
+        UseCompColors = mdloptions.toggleitem("&Use Component Colors", "CompColors", (1,1),
+            hint="|Use Component Colors:\n\nWhen checked this activates the display of individual component colors, which can be set on the Specifics page, to distinguish one model component mesh area from another.|intro.modeleditor.rmbmenus.html#viewsrmbmenus")
         if view.info["type"] == "2D":
             modhint = qbasemgr.ModesHint + "\n\nReset 3D view:\nIf the model becomes 'lost', goes out of the 3D view, you can use this function to reset the 3D view and bring the model back to its starting position when it was first opened and based on the 'Rotation Method' you last chose to rotate the model by."
             infobaselink = "intro.modeleditor.menu.html#rmbmenus"
             Reset3D = qmenu.item("&Reset 3D view", reset3Dview, modhint, infobaselink)
-            List = [Reset3D] + List
+            List = [Reset3D] + [UseCompColors] + List
+        else:
+            List = [UseCompColors] + List
+        UseCompColors.state = quarkx.setupsubset(SS_MODEL,"Options").getint("CompColors")
+
     return List
 
 
@@ -1558,6 +1565,9 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.54  2008/11/17 23:56:04  danielpharos
+#Compensate for accidental change in behaviour in QkObjects rev 1.112.
+#
 #Revision 1.53  2008/10/09 21:24:57  danielpharos
 #Fix links in Help menu not working properly.
 #

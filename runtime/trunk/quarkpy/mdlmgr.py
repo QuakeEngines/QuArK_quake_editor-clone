@@ -424,7 +424,7 @@ class ModelLayout(BaseLayout):
         "This function fills in the Default values of the Specifics/Args page form"
         "and changes the form's values when a setting is made."
         global check_start_component, check_end_component, check_start_vertex_count, check_end_vertex_count, checkstart_pos, checkend_pos, checkbone_length, checkbone_start_offset, checkbone_end_offset, checkbone_start_scale, checkbone_end_scale
-
+            
         sl = self.explorer.sellist
         if len(sl) == 0 and self.explorer.uniquesel is not None:
             sl = [self.explorer.uniquesel]
@@ -441,14 +441,20 @@ class ModelLayout(BaseLayout):
         else:
             cap = "set model type"
         sfbtn.caption = cap
-
+        DummyItem = None
         try:
-            # Gets the "bone form" if the "if" test is passed.
-            if sl[0].type == ":bone":
-                import mdlentities
+            # Gets the selected item's type "form" if the "if" test is passed.
+            import mdlentities
+            if sl[0].type == ":bound":
+                formobj = mdlentities.CallManager("dataformname", sl[0])
+            elif sl[0].type == ":tagframe":
+                formobj = mdlentities.CallManager("dataformname", sl[0])
+            elif sl[0].type == ":bone":
+                formobj = mdlentities.CallManager("dataformname", sl[0])
+            elif sl[0].type == ":mc":
                 formobj = mdlentities.CallManager("dataformname", sl[0])
             else:
-                # This tries to use a filetype:form, in the Defaults.qrk "Default forms.qctx" section to create this form.
+                # This tries to use a filetype:form, in a Python model importer or exporter (plugins ie_ type) file to create this form.
                 DummyItem = sl[0]
                 while (DummyItem is not None):
                     if DummyItem.type == ":mr":
@@ -461,9 +467,8 @@ class ModelLayout(BaseLayout):
                 if DummyItem is None:
                     formobj = None
                 else:
-                    sl[0] = DummyItem
-                    try: # Tries to get a form for the "model format type" setting in the Defaults.qrk file.
-                        formobj = quarkx.getqctxlist(':form', sfbtn.caption.strip(".") + sl[0].type.replace(":","_"))[-1]
+                    try: # Tries to get a form for the "model format type" setting in a Python model importer or exporter (plugins ie_ type) file.
+                        formobj = quarkx.getqctxlist(':form', sfbtn.caption.strip(".") + DummyItem.type.replace(":","_"))[-1]
                     except:
                         formobj = None
         except:
@@ -471,20 +476,32 @@ class ModelLayout(BaseLayout):
 
         vtxcolorbtn = None # This allows the option of an importer\exporter to use the vertex color button on its form.
         try:
-            # Tries to use the data returned to make the form again.
-            if sl[0].type == ":bone": # Sets the bone form items.
+            # Tries to use the data returned to make the selected item's type form again.
+            if sl[0].type == ":bound": # Sets the bound frame form items.
+                selitem = sl[0]
+                self.dataform.setdata(selitem, formobj) # Tries to use the data returned to make the bound frame's form again.
+            elif sl[0].type == ":tagframe": # Sets the tag frame form items.
+                selitem = sl[0]
+                self.dataform.setdata(selitem, formobj) # Tries to use the data returned to make the tag frame's form again.
+            elif sl[0].type == ":bone": # Sets the bone form items.
                 selitem = sl[0]
                 self.dataform.setdata(selitem, formobj) # Tries to use the data returned to make the bone's form again.
+            elif sl[0].type == ":mc": # Sets the component form items.
+                selitem = sl[0]
+                self.dataform.setdata(selitem, formobj) # Tries to use the data returned to make the component's form again.
             else:
                 for filetype in range(len(SFTexts)):
-                    if sfbtn.caption == SFTexts[filetype] and sl[0].type == ':mc':
+                    if sfbtn.caption == SFTexts[filetype] and DummyItem.type == ':mc':
                         filename = IEfile[filetype]
                         formobj, vtxcolorbtn = filename.dataformname(DummyItem)
-                        sl = [DummyItem]
                         break
                     else:
                         formobj = None
-                self.dataform.setdata(sl, formobj) # Tries to use data returned from an import or export file to make the model format form.
+                if DummyItem is not None and formobj is not None:
+                    self.dataform.setdata([DummyItem], formobj) # Tries to use data returned from an import or export file to make the model format form.
+                else:
+                    formobj = None
+                    self.dataform.setdata(sl, formobj)
 
         except:
             formobj = None # If no form data is found, then set to None and just go on, there is no form for this item.
@@ -520,17 +537,41 @@ class ModelLayout(BaseLayout):
         sfbtn.caption = cap
         btnlist = self.mpp.btnpanel.buttons
         # Fills the model format form items.
-        if (len(sl) == 1 and sl[0].type != ":bone") or (len(sl) > 1 and (sl[0].type != ":bone" and sl[1].type != ":bone")):
+        if (DummyItem is not None and len(sl) == 1 and sl[0].type != ":bound" and sl[0].type != ":tagframe" and sl[0].type != ":bone" and sl[0].type != ":mc") or (DummyItem is not None and len(sl) > 1 and sl[0].type != ":bound" and sl[0].type != ":tagframe" and sl[0].type != ":bone" and sl[1].type != ":bone" and (sl[0].type != ":mc")):
             ### This section handles the model importer\exporter default settings and data input for the Specifics/Args page..
             for filetype in range(len(SFTexts)):
-                if sfbtn.caption == SFTexts[filetype] and sl[0].type == ':mc':
+                if sfbtn.caption == SFTexts[filetype] and sl[0].type == ':mf':
                    filename = IEfile[filetype]
-                   filename.dataforminput(sl[0])
+                   filename.dataforminput(DummyItem)
         ### This section handles the Bones default settings and data input for the Specifics/Args page..
         # Sets self.xxxx_color to a bone's handles colors, when selected,
         # for comparison , in the "filldataform" function, if a handle color is changed.
         # Same goes for checkbone_length, checkbone_start_offset and checkbone_end_offset.
-        if len(sl) != 0 and sl[0].type == ":bone": # Sets the bone form items.
+        if len(sl) != 0 and sl[0].type == ":bound": # Sets the bound frame form items.
+            selitem = sl[0]
+            try:
+                self.position = quarkx.vect(selitem['position']).tuple
+            except:
+                self.position = '0 0 0'
+            try:
+                self.scale = str(selitem['scale'][0])
+            except:
+                self.scale = '0'
+            try:
+                self.maxs = quarkx.vect(selitem['maxs']).tuple
+            except:
+                self.maxs = '0 0 0'
+            try:
+                self.mins = quarkx.vect(selitem['mins']).tuple
+            except:
+                self.mins = '0 0 0'
+        elif len(sl) != 0 and sl[0].type == ":tagframe": # Sets the tag frame form items.
+            selitem = sl[0]
+            try:
+                self.origin = quarkx.vect(selitem['origin']).tuple
+            except:
+                self.origin = '0 0 0'
+        elif len(sl) != 0 and sl[0].type == ":bone": # Sets the bone form items.
             selitem = sl[0]
             # Globals are set here for comparison in filldataform function later.
             self.start_color = selitem['start_color']
@@ -555,6 +596,15 @@ class ModelLayout(BaseLayout):
             checkbone_start_scale = selitem.dictspec['start_scale']
             checkbone_end_scale = selitem.dictspec['end_scale']
             self.dataform.setdata([selitem], formobj)
+
+        elif len(sl) != 0 and sl[0].type == ":mc": # Sets the component form items.
+            selitem = sl[0]
+            try:
+                self.comp_color = selitem.dictspec['comp_color']
+            except:
+                selitem['comp_color'] = '\x00'
+                self.comp_color = selitem.dictspec['comp_color']
+
         quarkx.update(self.editor.form)
 
 
@@ -595,13 +645,21 @@ class ModelLayout(BaseLayout):
         "This function creates the Specifics/Args page form (formobj) for the first time"
         "or when selecting another item in the tree-view that uses a form."
         global check_start_component, check_end_component, check_start_vertex_count, check_end_vertex_count, checkstart_pos, checkend_pos, checkbone_length, checkbone_start_offset, checkbone_end_offset, checkbone_start_scale, checkbone_end_scale
+
         sl = self.explorer.sellist
         if len(sl) == 0 and self.explorer.uniquesel is not None:
             sl = [self.explorer.uniquesel]
         sfbtn = self.buttons["sf"]
+        DummyItem = None
         try:
-            if sl[0].type == ":bone": # Gets the "bone form" if the "if" test is passed.
-                import mdlentities
+            import mdlentities
+            if sl[0].type == ":bound": # Gets the "bound frame form" if the "if" test is passed.
+                formobj = mdlentities.CallManager("dataformname", sl[0])
+            elif sl[0].type == ":tagframe": # Gets the "tag frame form" if the "if" test is passed.
+                formobj = mdlentities.CallManager("dataformname", sl[0])
+            elif sl[0].type == ":bone": # Gets the "bone form" if the "if" test is passed.
+                formobj = mdlentities.CallManager("dataformname", sl[0])
+            elif sl[0].type == ":mc": # Gets the "component form" if the "if" test is passed.
                 formobj = mdlentities.CallManager("dataformname", sl[0])
             else:
                 DummyItem = sl[0]
@@ -618,30 +676,43 @@ class ModelLayout(BaseLayout):
                 if DummyItem is None:
                     formobj = None
                 else:
-                    sl[0] = DummyItem
                     try:
                         # Tries to get the :form data from the Defaults.qrk file.
-                        formobj = quarkx.getqctxlist(':form', sfbtn.caption.strip(".") + sl[0].type.replace(":","_"))[-1]
+                        formobj = quarkx.getqctxlist(':form', sfbtn.caption.strip(".") + DummyItem.type.replace(":","_"))[-1]
                     except:
                         formobj = None
-            if sl[0].type == ":bone": # Sets the bone form items.
+            if sl[0].type == ":bound": # Sets the bound frame form items.
+                # Uses the data returned from the mdlentities.py file, class BoundType, def dataformname function
+                # to create the Specifics/Args page form for bound frames.
+                selitem = sl[0]
+                self.dataform.setdata(selitem, formobj) # Tries to use the data returned to make the bound frame's form again.
+            elif sl[0].type == ":tagframe": # Sets the tag frame form items.
+                # Uses the data returned from the mdlentities.py file, class TagFrameType, def dataformname function
+                # to create the Specifics/Args page form for tag frames.
+                selitem = sl[0]
+                self.dataform.setdata(selitem, formobj) # Tries to use the data returned to make the tag frame's form again.
+            elif sl[0].type == ":bone": # Sets the bone form items.
                 # Uses the data returned from the mdlentities.py file, class BoneType, def dataformname function
                 # to create the Specifics/Args page form for bones.
                 selitem = sl[0]
                 self.dataform.setdata(selitem, formobj) # Tries to use the data returned to make the bone's form again.
+            elif sl[0].type == ":mc": # Sets the component form items.
+                # Uses the data returned from the mdlentities.py file, class ComponentType, def dataformname function
+                # to create the Specifics/Args page form for components.
+                selitem = sl[0]
+                self.dataform.setdata(selitem, formobj) # Tries to use the data returned to make the component's form again.
             else:
-                # Tries to use a file type:form data returned to create this form.
-                try:
-                    for filetype in range(len(SFTexts)):
-                        if sfbtn.caption == SFTexts[filetype] and sl[0].type == ':mc':
-                            filename = IEfile[filetype]
-                            formobj, vtxcolorbtn = filename.dataformname(DummyItem)
-                            sl = [DummyItem]
-                            break
-                        else:
-                            formobj = None
-                    self.dataform.setdata(sl, formobj) # Tries to use the data returned from an import file to make the model format form.
-                except:
+                # Tries to use a file type:form data returned from an import or export file to create this form.
+                for filetype in range(len(SFTexts)):
+                    if sfbtn.caption == SFTexts[filetype] and DummyItem.type == ':mc':
+                        filename = IEfile[filetype]
+                        formobj, vtxcolorbtn = filename.dataformname(DummyItem)
+                        break
+                    else:
+                        formobj = None
+                if DummyItem is not None and formobj is not None:
+                    self.dataform.setdata([DummyItem], formobj) # Tries to use the data returned from an import or export file to make the model format form.
+                else:
                     self.dataform.setdata(sl, formobj) # Tries to use the data returned to make the model format form again.
         except:
             formobj = None # If no form data is found, then set to None and just go on, there is no form for this item.
@@ -682,18 +753,29 @@ class ModelLayout(BaseLayout):
             btnlist[1].icons = tuple(l)
             self.mpp.btnpanel.buttons = btnlist
         if sl:
-            ### This section handles the model importer\exporter default settings and data input for the Specifics/Args page..
-            if sl[0].type == ":mc": # or sl[0].dictspec.has_key('Skins:sg') or sl[0].type == ":mf":
+            ### This section handles the component color default settings,
+            ### the model importer\exporter default settings
+            ### and any data input for the Specifics/Args page.
+            if sl[0].type == ":mc":
+                selitem = sl[0]
                 for filetype in range(len(SFTexts)):
                     if sfbtn.caption == SFTexts[filetype]:
                         filename = IEfile[filetype]
                         filename.dataforminput(sl[0])
                         self.dataform.setdata(sl, formobj)
-            ### This section handles the Bones default settings and data input for the Specifics/Args page..
+                try:
+                    self.comp_color = selitem.dictspec['comp_color']
+                    for view in self.views:
+                        view.invalidate(1)
+                except:
+                    selitem['comp_color'] = '\x00'
+                    self.comp_color = selitem.dictspec['comp_color']
+                    for view in self.views:
+                        view.invalidate(1)
+            ### This section handles the Bones default settings and data input for the Specifics/Args page.
             # Updates all vertexes 'color' that are assigned to a bone handle when that handle color is changed.
             if (sl[0].type == ":bone") and (not isinstance(reserved, qtoolbar.button)):
                 selitem = sl[0]
-
                 if self.start_color != selitem["start_color"]:
                     if selitem.dictspec.has_key("start_vtxlist"):
                         vtxlist = selitem.dictspec['start_vtxlist']
@@ -890,14 +972,21 @@ class ModelLayout(BaseLayout):
 
 
     def helpbtnclick(self, m):
+        "Brings up the help window of a form or the InfoBase Docs if there is none."
+
         sl = self.explorer.sellist
         if len(sl) == 0 and self.explorer.uniquesel is not None:
             sl = [self.explorer.uniquesel]
         sfbtn = self.buttons["sf"]
         try:
-            # Gets the "bone form" if the "if" test is passed.
-            if sl[0].type == ":bone":
-                import mdlentities
+            import mdlentities
+            if sl[0].type == ":bound": # Gets the "bound frame form" if the "if" test is passed.
+                formobj = mdlentities.CallManager("dataformname", sl[0])
+            elif sl[0].type == ":tagframe": # Gets the "tag frame form" if the "if" test is passed.
+                formobj = mdlentities.CallManager("dataformname", sl[0])
+            elif sl[0].type == ":bone": # Gets the "bone form" if the "if" test is passed.
+                formobj = mdlentities.CallManager("dataformname", sl[0])
+            elif sl[0].type == ":mc": # Gets the "component form" if the "if" test is passed.
                 formobj = mdlentities.CallManager("dataformname", sl[0])
             else:
                 DummyItem = sl[0]
@@ -912,12 +1001,11 @@ class ModelLayout(BaseLayout):
                 if DummyItem is None:
                     formobj = None
                 else:
-                    sl[0] = DummyItem
                     try:
-                        formobj = quarkx.getqctxlist(':form', sfbtn.caption.strip(".") + sl[0].type.replace(":","_"))[-1]
+                        formobj = quarkx.getqctxlist(':form', sfbtn.caption.strip(".") + DummyItem.type.replace(":","_"))[-1]
                     except:
                         for filetype in range(len(SFTexts)):
-                            if sfbtn.caption == SFTexts[filetype] and sl[0].type == ':mc':
+                            if sfbtn.caption == SFTexts[filetype] and DummyItem.type == ':mc':
                                 filename = IEfile[filetype]
                                 formobj, vtxcolorbtn = filename.dataformname(DummyItem)
                                 break
@@ -1319,6 +1407,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.86  2008/11/19 06:16:22  cdunde
+#Bones system moved to outside of components for Model Editor completed.
+#
 #Revision 1.85  2008/11/03 23:31:44  cdunde
 #Small fix found by Dan.
 #

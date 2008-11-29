@@ -53,51 +53,275 @@ class EntityManager:
 
         import qhandles
         if view.info["viewname"] == "XY":
-            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh2"] == "1":
-    #            if (o.type == ":mr") or (o.type == ":mg") or( o.type == ":bone"):
-                if (o.type == ":mr") or (o.type == ":mg"):
+            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh2"] == "1" and quarkx.setupsubset(SS_MODEL, "Options")["CompColors"] is None:
+                meshcolor = MapColor("Options3Dviews_frameColor2", SS_MODEL)
+                if (o.type == ":mr") or (o.type == ":mg") or (o.type == ":bound") or (o.type == ":tag") or (o.type == ":tagframe"):
                     o = editor.Root
+                    view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # Draws selected color for model mesh lines.
                 else:
                     o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
-                meshcolor = MapColor("Options3Dviews_frameColor2", SS_MODEL)
-                view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # draws selected color for model mesh lines
+                    for item in editor.Root.dictitems:
+                        if editor.Root.dictitems[item].type == ":mc":
+                            if editor.Root.dictitems[item].name != o.name:
+                                view.drawmap(editor.Root.dictitems[item], mode)  # Draws default color for model mesh lines.
+                    view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # Draws selected color for model mesh lines last to avoid other lines drawing over them.
+            elif quarkx.setupsubset(SS_MODEL, "Options")["CompColors"] is not None:
+                if (o.type == ":mr") or (o.type == ":mg") or (o.type == ":bound") or (o.type == ":tag") or (o.type == ":tagframe"):
+                    for item in editor.Root.dictitems:
+                        if editor.Root.dictitems[item].type == ":mc":
+                            o = editor.Root.dictitems[item]
+                            if o.dictspec.has_key("comp_color") and o.dictspec['comp_color'] != "\x00":
+                                meshcolor = editor.Root.dictitems[item].dictspec['comp_color']
+                                quarkx.setupsubset(SS_MODEL, "Colors")["meshcolor"] = meshcolor
+                                meshcolor = MapColor("meshcolor", SS_MODEL)
+                                view.drawmap(o, DM_OTHERCOLOR, meshcolor)
+                            else:
+                                view.drawmap(o, mode)  # draws default color for model mesh lines
+                else:
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh2"] != "1":
+                        if len(editor.layout.explorer.sellist) > 1 and view.viewmode == "wire":
+                            o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
+                            for item in editor.Root.dictitems:
+                                if editor.Root.dictitems[item].type == ":mc":
+                                    o = editor.Root.dictitems[item]
+                                    if o.dictspec.has_key("comp_color") and o.dictspec['comp_color'] != "\x00":
+                                        meshcolor = editor.Root.dictitems[item].dictspec['comp_color']
+                                        quarkx.setupsubset(SS_MODEL, "Colors")["meshcolor"] = meshcolor
+                                        meshcolor = MapColor("meshcolor", SS_MODEL)
+                                        view.drawmap(o, DM_OTHERCOLOR, meshcolor)
+                                    else:
+                                        view.drawmap(o, mode)  # Draws default color for model mesh lines.
+                        else:
+                            pass    
+                    else:
+                        if len(editor.layout.explorer.sellist) > 1 and view.viewmode == "wire":
+                            o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
+                            for item in editor.Root.dictitems:
+                                if editor.Root.dictitems[item].type == ":mc":
+                                    o = editor.Root.dictitems[item]
+                                    if o.dictspec.has_key("comp_color") and o.dictspec['comp_color'] != "\x00":
+                                        meshcolor = editor.Root.dictitems[item].dictspec['comp_color']
+                                        quarkx.setupsubset(SS_MODEL, "Colors")["meshcolor"] = meshcolor
+                                        meshcolor = MapColor("meshcolor", SS_MODEL)
+                                        view.drawmap(o, DM_OTHERCOLOR, meshcolor)
+                                    else:
+                                        view.drawmap(o, mode)  # Draws default color for model mesh lines.
+                        else:
+                            o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
+                            if o.dictspec.has_key("comp_color") and o.dictspec['comp_color'] != "\x00":
+                                meshcolor = o.dictspec['comp_color']
+                                quarkx.setupsubset(SS_MODEL, "Colors")["meshcolor"] = meshcolor
+                                meshcolor = MapColor("meshcolor", SS_MODEL)
+                                view.drawmap(o, DM_OTHERCOLOR, meshcolor)
+                            else:
+                                view.drawmap(o, mode)  # Draws default color for model mesh lines.
             else:
-                view.drawmap(o, mode)  # draws default color for model mesh lines
+                if view.viewmode == "wire":
+                    o = editor.Root
+                view.drawmap(o, mode)  # Draws default color for model mesh lines.
 
         elif view.info["viewname"] == "XZ":
-            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh4"] == "1":
-     #           if (o.type == ":mr") or (o.type == ":mg") or( o.type == ":bone"):
-                if (o.type == ":mr") or (o.type == ":mg"):
+            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh4"] == "1" and quarkx.setupsubset(SS_MODEL, "Options")["CompColors"] is None:
+                meshcolor = MapColor("Options3Dviews_frameColor4", SS_MODEL)
+                if (o.type == ":mr") or (o.type == ":mg") or (o.type == ":bound") or (o.type == ":tag") or (o.type == ":tagframe"):
                     o = editor.Root
+                    view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # Draws selected color for model mesh lines.
                 else:
                     o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
-                meshcolor = MapColor("Options3Dviews_frameColor4", SS_MODEL)
-                view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # draws selected color for model mesh lines
+                    for item in editor.Root.dictitems:
+                        if editor.Root.dictitems[item].type == ":mc":
+                            if editor.Root.dictitems[item].name != o.name:
+                                view.drawmap(editor.Root.dictitems[item], mode)  # Draws default color for model mesh lines.
+                    view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # Draws selected color for model mesh lines last to avoid other lines drawing over them.
+            elif quarkx.setupsubset(SS_MODEL, "Options")["CompColors"] is not None:
+                if (o.type == ":mr") or (o.type == ":mg") or (o.type == ":bound") or (o.type == ":tag") or (o.type == ":tagframe"):
+                    for item in editor.Root.dictitems:
+                        if editor.Root.dictitems[item].type == ":mc":
+                            o = editor.Root.dictitems[item]
+                            if o.dictspec.has_key("comp_color") and o.dictspec['comp_color'] != "\x00":
+                                meshcolor = editor.Root.dictitems[item].dictspec['comp_color']
+                                quarkx.setupsubset(SS_MODEL, "Colors")["meshcolor"] = meshcolor
+                                meshcolor = MapColor("meshcolor", SS_MODEL)
+                                view.drawmap(o, DM_OTHERCOLOR, meshcolor)
+                            else:
+                                view.drawmap(o, mode)  # draws default color for model mesh lines
+                else:
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh4"] != "1":
+                        if len(editor.layout.explorer.sellist) > 1 and view.viewmode == "wire":
+                            o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
+                            for item in editor.Root.dictitems:
+                                if editor.Root.dictitems[item].type == ":mc":
+                                    o = editor.Root.dictitems[item]
+                                    if o.dictspec.has_key("comp_color") and o.dictspec['comp_color'] != "\x00":
+                                        meshcolor = editor.Root.dictitems[item].dictspec['comp_color']
+                                        quarkx.setupsubset(SS_MODEL, "Colors")["meshcolor"] = meshcolor
+                                        meshcolor = MapColor("meshcolor", SS_MODEL)
+                                        view.drawmap(o, DM_OTHERCOLOR, meshcolor)
+                                    else:
+                                        view.drawmap(o, mode)  # Draws default color for model mesh lines.
+                        else:
+                            pass    
+                    else:
+                        if len(editor.layout.explorer.sellist) > 1 and view.viewmode == "wire":
+                            o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
+                            for item in editor.Root.dictitems:
+                                if editor.Root.dictitems[item].type == ":mc":
+                                    o = editor.Root.dictitems[item]
+                                    if o.dictspec.has_key("comp_color") and o.dictspec['comp_color'] != "\x00":
+                                        meshcolor = editor.Root.dictitems[item].dictspec['comp_color']
+                                        quarkx.setupsubset(SS_MODEL, "Colors")["meshcolor"] = meshcolor
+                                        meshcolor = MapColor("meshcolor", SS_MODEL)
+                                        view.drawmap(o, DM_OTHERCOLOR, meshcolor)
+                                    else:
+                                        view.drawmap(o, mode)  # Draws default color for model mesh lines.
+                        else:
+                            o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
+                            if o.dictspec.has_key("comp_color") and o.dictspec['comp_color'] != "\x00":
+                                meshcolor = o.dictspec['comp_color']
+                                quarkx.setupsubset(SS_MODEL, "Colors")["meshcolor"] = meshcolor
+                                meshcolor = MapColor("meshcolor", SS_MODEL)
+                                view.drawmap(o, DM_OTHERCOLOR, meshcolor)
+                            else:
+                                view.drawmap(o, mode)  # Draws default color for model mesh lines.
             else:
-                view.drawmap(o, mode)  # draws default color for model mesh lines
+                if view.viewmode == "wire":
+                    o = editor.Root
+                view.drawmap(o, mode)  # Draws default color for model mesh lines.
 
         elif view.info["viewname"] == "YZ":
-            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh3"] == "1":
-     #           if (o.type == ":mr") or (o.type == ":mg") or( o.type == ":bone"):
-                if (o.type == ":mr") or (o.type == ":mg"):
+            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh3"] == "1" and quarkx.setupsubset(SS_MODEL, "Options")["CompColors"] is None:
+                meshcolor = MapColor("Options3Dviews_frameColor3", SS_MODEL)
+                if (o.type == ":mr") or (o.type == ":mg") or (o.type == ":bound") or (o.type == ":tag") or (o.type == ":tagframe"):
                     o = editor.Root
+                    view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # Draws selected color for model mesh lines.
                 else:
                     o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
-                meshcolor = MapColor("Options3Dviews_frameColor3", SS_MODEL)
-                view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # draws selected color for model mesh lines
+                    for item in editor.Root.dictitems:
+                        if editor.Root.dictitems[item].type == ":mc":
+                            if editor.Root.dictitems[item].name != o.name:
+                                view.drawmap(editor.Root.dictitems[item], mode)  # Draws default color for model mesh lines.
+                    view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # Draws selected color for model mesh lines last to avoid other lines drawing over them.
+            elif quarkx.setupsubset(SS_MODEL, "Options")["CompColors"] is not None:
+                if (o.type == ":mr") or (o.type == ":mg") or (o.type == ":bound") or (o.type == ":tag") or (o.type == ":tagframe"):
+                    for item in editor.Root.dictitems:
+                        if editor.Root.dictitems[item].type == ":mc":
+                            o = editor.Root.dictitems[item]
+                            if o.dictspec.has_key("comp_color") and o.dictspec['comp_color'] != "\x00":
+                                meshcolor = editor.Root.dictitems[item].dictspec['comp_color']
+                                quarkx.setupsubset(SS_MODEL, "Colors")["meshcolor"] = meshcolor
+                                meshcolor = MapColor("meshcolor", SS_MODEL)
+                                view.drawmap(o, DM_OTHERCOLOR, meshcolor)
+                            else:
+                                view.drawmap(o, mode)  # draws default color for model mesh lines
+                else:
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh3"] != "1":
+                        if len(editor.layout.explorer.sellist) > 1 and view.viewmode == "wire":
+                            o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
+                            for item in editor.Root.dictitems:
+                                if editor.Root.dictitems[item].type == ":mc":
+                                    o = editor.Root.dictitems[item]
+                                    if o.dictspec.has_key("comp_color") and o.dictspec['comp_color'] != "\x00":
+                                        meshcolor = editor.Root.dictitems[item].dictspec['comp_color']
+                                        quarkx.setupsubset(SS_MODEL, "Colors")["meshcolor"] = meshcolor
+                                        meshcolor = MapColor("meshcolor", SS_MODEL)
+                                        view.drawmap(o, DM_OTHERCOLOR, meshcolor)
+                                    else:
+                                        view.drawmap(o, mode)  # Draws default color for model mesh lines.
+                        else:
+                            pass    
+                    else:
+                        if len(editor.layout.explorer.sellist) > 1 and view.viewmode == "wire":
+                            o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
+                            for item in editor.Root.dictitems:
+                                if editor.Root.dictitems[item].type == ":mc":
+                                    o = editor.Root.dictitems[item]
+                                    if o.dictspec.has_key("comp_color") and o.dictspec['comp_color'] != "\x00":
+                                        meshcolor = editor.Root.dictitems[item].dictspec['comp_color']
+                                        quarkx.setupsubset(SS_MODEL, "Colors")["meshcolor"] = meshcolor
+                                        meshcolor = MapColor("meshcolor", SS_MODEL)
+                                        view.drawmap(o, DM_OTHERCOLOR, meshcolor)
+                                    else:
+                                        view.drawmap(o, mode)  # Draws default color for model mesh lines.
+                        else:
+                            o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
+                            if o.dictspec.has_key("comp_color") and o.dictspec['comp_color'] != "\x00":
+                                meshcolor = o.dictspec['comp_color']
+                                quarkx.setupsubset(SS_MODEL, "Colors")["meshcolor"] = meshcolor
+                                meshcolor = MapColor("meshcolor", SS_MODEL)
+                                view.drawmap(o, DM_OTHERCOLOR, meshcolor)
+                            else:
+                                view.drawmap(o, mode)  # Draws default color for model mesh lines.
             else:
-                view.drawmap(o, mode)  # draws default color for model mesh lines
+                if view.viewmode == "wire":
+                    o = editor.Root
+                view.drawmap(o, mode)  # Draws default color for model mesh lines.
 
         elif view.info["viewname"] == "editors3Dview":
-            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh1"] == "1":
-     #           if (o.type == ":mr") or (o.type == ":mg") or( o.type == ":bone"):
-                if (o.type == ":mr") or (o.type == ":mg"):
+            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh1"] == "1" and quarkx.setupsubset(SS_MODEL, "Options")["CompColors"] is None:
+                meshcolor = MapColor("Options3Dviews_frameColor1", SS_MODEL)
+                if (o.type == ":mr") or (o.type == ":mg") or (o.type == ":bound") or (o.type == ":tag") or (o.type == ":tagframe"):
                     o = editor.Root
+                    view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # Draws selected color for model mesh lines.
                 else:
                     o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
-                meshcolor = MapColor("Options3Dviews_frameColor1", SS_MODEL)
-                view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # draws selected color for model mesh lines
+                    for item in editor.Root.dictitems:
+                        if editor.Root.dictitems[item].type == ":mc":
+                            if editor.Root.dictitems[item].name != o.name:
+                                view.drawmap(editor.Root.dictitems[item], mode)  # Draws default color for model mesh lines.
+                    view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # Draws selected color for model mesh lines last to avoid other lines drawing over them.
+            elif quarkx.setupsubset(SS_MODEL, "Options")["CompColors"] is not None:
+                if (o.type == ":mr") or (o.type == ":mg") or (o.type == ":bound") or (o.type == ":tag") or (o.type == ":tagframe"):
+                    for item in editor.Root.dictitems:
+                        if editor.Root.dictitems[item].type == ":mc":
+                            o = editor.Root.dictitems[item]
+                            if o.dictspec.has_key("comp_color") and o.dictspec['comp_color'] != "\x00":
+                                meshcolor = editor.Root.dictitems[item].dictspec['comp_color']
+                                quarkx.setupsubset(SS_MODEL, "Colors")["meshcolor"] = meshcolor
+                                meshcolor = MapColor("meshcolor", SS_MODEL)
+                                view.drawmap(o, DM_OTHERCOLOR, meshcolor)
+                            else:
+                                view.drawmap(o, mode)  # Draws default color for model mesh lines.
+                else:
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh1"] != "1":
+                        if len(editor.layout.explorer.sellist) > 1 and view.viewmode == "wire":
+                            o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
+                            for item in editor.Root.dictitems:
+                                if editor.Root.dictitems[item].type == ":mc":
+                                    o = editor.Root.dictitems[item]
+                                    if o.dictspec.has_key("comp_color") and o.dictspec['comp_color'] != "\x00":
+                                        meshcolor = editor.Root.dictitems[item].dictspec['comp_color']
+                                        quarkx.setupsubset(SS_MODEL, "Colors")["meshcolor"] = meshcolor
+                                        meshcolor = MapColor("meshcolor", SS_MODEL)
+                                        view.drawmap(o, DM_OTHERCOLOR, meshcolor)
+                                    else:
+                                        view.drawmap(o, mode)  # Draws default color for model mesh lines.
+                        else:
+                            pass    
+                    else:
+                        if len(editor.layout.explorer.sellist) > 1 and view.viewmode == "wire":
+                            o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
+                            for item in editor.Root.dictitems:
+                                if editor.Root.dictitems[item].type == ":mc":
+                                    o = editor.Root.dictitems[item]
+                                    if o.dictspec.has_key("comp_color") and o.dictspec['comp_color'] != "\x00":
+                                        meshcolor = editor.Root.dictitems[item].dictspec['comp_color']
+                                        quarkx.setupsubset(SS_MODEL, "Colors")["meshcolor"] = meshcolor
+                                        meshcolor = MapColor("meshcolor", SS_MODEL)
+                                        view.drawmap(o, DM_OTHERCOLOR, meshcolor)
+                                    else:
+                                        view.drawmap(o, mode)  # Draws default color for model mesh lines.
+                        else:
+                            o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
+                            if o.dictspec.has_key("comp_color") and o.dictspec['comp_color'] != "\x00":
+                                meshcolor = o.dictspec['comp_color']
+                                quarkx.setupsubset(SS_MODEL, "Colors")["meshcolor"] = meshcolor
+                                meshcolor = MapColor("meshcolor", SS_MODEL)
+                                view.drawmap(o, DM_OTHERCOLOR, meshcolor)
+                            else:
+                                view.drawmap(o, mode)  # Draws default color for model mesh lines.
             else:
+                if view.viewmode == "wire":
+                    o = editor.Root
                 view.drawmap(o, mode)  # draws default color for model mesh lines
             if editor.ModelFaceSelList != []:
                 # draws model mesh faces, if selected, while rotating, panning or zooming.
@@ -105,14 +329,68 @@ class EntityManager:
                     mdlhandles.ModelFaceHandle(mode).draw(editor, view, editor.EditorObjectList)
 
         elif view.info["viewname"] == "3Dwindow":
-            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh5"] == "1":
-    #            if (o.type == ":mr") or (o.type == ":mg") or( o.type == ":bone"):
-                if (o.type == ":mr") or (o.type == ":mg"):
+            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh5"] == "1" and quarkx.setupsubset(SS_MODEL, "Options")["CompColors"] is None:
+                meshcolor = MapColor("Options3Dviews_frameColor5", SS_MODEL)
+                if (o.type == ":mr") or (o.type == ":mg") or (o.type == ":bound") or (o.type == ":tag") or (o.type == ":tagframe"):
                     o = editor.Root
+                    view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # Draws selected color for model mesh lines.
                 else:
                     o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
-                meshcolor = MapColor("Options3Dviews_frameColor5", SS_MODEL)
-                view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # draws selected color for model mesh lines
+                    for item in editor.Root.dictitems:
+                        if editor.Root.dictitems[item].type == ":mc":
+                            if editor.Root.dictitems[item].name != o.name:
+                                view.drawmap(editor.Root.dictitems[item], mode)  # Draws default color for model mesh lines.
+                    view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # Draws selected color for model mesh lines last to avoid other lines drawing over them.
+            elif quarkx.setupsubset(SS_MODEL, "Options")["CompColors"] is not None:
+                if (o.type == ":mr") or (o.type == ":mg") or (o.type == ":bound") or (o.type == ":tag") or (o.type == ":tagframe"):
+                    for item in editor.Root.dictitems:
+                        if editor.Root.dictitems[item].type == ":mc":
+                            o = editor.Root.dictitems[item]
+                            if o.dictspec.has_key("comp_color") and o.dictspec['comp_color'] != "\x00":
+                                meshcolor = editor.Root.dictitems[item].dictspec['comp_color']
+                                quarkx.setupsubset(SS_MODEL, "Colors")["meshcolor"] = meshcolor
+                                meshcolor = MapColor("meshcolor", SS_MODEL)
+                                view.drawmap(o, DM_OTHERCOLOR, meshcolor)
+                            else:
+                                view.drawmap(o, mode)  # draws default color for model mesh lines
+                else:
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh5"] != "1":
+                        if len(editor.layout.explorer.sellist) > 1 and view.viewmode == "wire":
+                            o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
+                            for item in editor.Root.dictitems:
+                                if editor.Root.dictitems[item].type == ":mc":
+                                    o = editor.Root.dictitems[item]
+                                    if o.dictspec.has_key("comp_color") and o.dictspec['comp_color'] != "\x00":
+                                        meshcolor = editor.Root.dictitems[item].dictspec['comp_color']
+                                        quarkx.setupsubset(SS_MODEL, "Colors")["meshcolor"] = meshcolor
+                                        meshcolor = MapColor("meshcolor", SS_MODEL)
+                                        view.drawmap(o, DM_OTHERCOLOR, meshcolor)
+                                    else:
+                                        view.drawmap(o, mode)  # Draws default color for model mesh lines.
+                        else:
+                            pass    
+                    else:
+                        if len(editor.layout.explorer.sellist) > 1 and view.viewmode == "wire":
+                            o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
+                            for item in editor.Root.dictitems:
+                                if editor.Root.dictitems[item].type == ":mc":
+                                    o = editor.Root.dictitems[item]
+                                    if o.dictspec.has_key("comp_color") and o.dictspec['comp_color'] != "\x00":
+                                        meshcolor = editor.Root.dictitems[item].dictspec['comp_color']
+                                        quarkx.setupsubset(SS_MODEL, "Colors")["meshcolor"] = meshcolor
+                                        meshcolor = MapColor("meshcolor", SS_MODEL)
+                                        view.drawmap(o, DM_OTHERCOLOR, meshcolor)
+                                    else:
+                                        view.drawmap(o, mode)  # Draws default color for model mesh lines.
+                        else:
+                            o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
+                            if o.dictspec.has_key("comp_color") and o.dictspec['comp_color'] != "\x00":
+                                meshcolor = o.dictspec['comp_color']
+                                quarkx.setupsubset(SS_MODEL, "Colors")["meshcolor"] = meshcolor
+                                meshcolor = MapColor("meshcolor", SS_MODEL)
+                                view.drawmap(o, DM_OTHERCOLOR, meshcolor)
+                            else:
+                                view.drawmap(o, mode)  # Draws default color for model mesh lines.
             else:
                 view.drawmap(o, mode)  # draws default color for model mesh lines
             if editor.ModelFaceSelList != []:
@@ -317,6 +595,32 @@ class ComponentType(EntityManager):
             frame = o
             return CallManager("handlesopt", frame, editor)
 
+    def dataformname(o):
+        "Returns the data form for this type of object 'o' (a model component) to use for the Specific/Args page."
+
+        dlgdef = """
+        {
+          Help = "These are the Specific settings for a Model Component."$0D0D22
+                 "mesh color"$22" - Color to use for this component's mesh."$0D
+                 "                        Click the selector button to pick a color."$0D0D
+                 "When a views RMB menu item 'Use Component Colors'"$0D
+                 "is checked these become active"$0D
+                 "and override all other settings."$0D0D
+                 " If the 'Model' is selected all meshes display their own"$0D
+                 "mesh line color in wire frame views and a Tint of that"$0D
+                 "color over their textured and solid views."
+          comp_color: = {Typ="LI"
+                         Txt="mesh color"
+                         Hint="Color to use for this component's mesh color."$0D
+                              "Click the color selector button to pick a color."
+                        }
+        }
+        """
+
+        formobj = quarkx.newobj("mc:form")
+        formobj.loadtext(dlgdef)
+        return formobj
+
 
 class FrameType(EntityManager):
     "Model Frame."
@@ -343,8 +647,77 @@ class TagType(EntityManager):
 class TagFrameType(EntityManager):
     "Tag Frame"
 
+    def dataformname(o):
+        "Returns the data form for this type of object 'o' (a Tag Frame) to use for the Specific/Args page."
+
+        dlgdef = """
+        {
+          Help = "These are the Specific settings for a Tag Frame."$0D0D22
+                 "origin"$22" - You must enter three values here."$0D
+                 "          They have an accuracy of two digits."
+          sep: = {
+              Typ="S"
+              Txt="(Not funtional at this time)"
+                 }
+          origin: = {
+              Typ="EF003" 
+              Txt="origin"
+              Hint="You must enter three values here."$0D"They have an accuracy of two digits."
+                 }
+        }
+        """
+
+        formobj = quarkx.newobj("tagframe:form")
+        formobj.loadtext(dlgdef)
+        return formobj
+
 class BoundType(EntityManager):
     "Bound Frame"
+
+    def dataformname(o):
+        "Returns the data form for this type of object 'o' (a Bound Frame) to use for the Specific/Args page."
+
+        dlgdef = """
+        {
+          Help = "These are the Specific settings for a Bound Frame."$0D0D22
+                 "position"$22" - You must enter three values here."$0D
+                 "          They have an accuracy of two digits."$0D22
+                 "scale"$22" - You must enter one positive float value here."$0D
+                 "          They have an accuracy of two digits."$0D22
+                 "maxs"$22" - You must enter three values here."$0D
+                 "          They have an accuracy of two digits."$0D22
+                 "mins"$22" - You must enter three values here."$0D
+                 "          They have an accuracy of two digits."
+          sep: = {
+              Typ="S"
+              Txt="(Not funtional at this time)"
+                 }
+          position: = {
+              Typ="EF003" 
+              Txt="position"
+              Hint="You must enter three values here."$0D"They have an accuracy of two digits."
+                 }
+          scale: = {
+              Typ="EF001" 
+              Txt="scale"
+              Hint="You must enter one positive float value here."$0D"It has an accuracy of two digits."
+                 }
+          maxs: = {
+              Typ="EF003" 
+              Txt="maxs"
+              Hint="You must enter three values here."$0D"They have an accuracy of two digits."
+                 }
+          mins: = {
+              Typ="EF003" 
+              Txt="mins"
+              Hint="You must enter three values here."$0D"They have an accuracy of two digits."
+                 }
+        }
+        """
+
+        formobj = quarkx.newobj("bound:form")
+        formobj.loadtext(dlgdef)
+        return formobj
 
 class BoneType(EntityManager):
     "Bone"
@@ -461,12 +834,12 @@ class BoneType(EntityManager):
                  "          Click the color selector button to the right and pick a color."
           bone_length: = {
               Typ="EF003" 
-              Txt="Bone Length:"
+              Txt="Bone Length"
               Hint="You must enter three values here."$0D"They have an accuracy of two digits."
                  }
           length_locked: = {
               Typ="X1" 
-              Txt="Length Locked:"
+              Txt="Length Locked"
               Hint="When checked, the length of this bone will"$0D"not change by the dragging of either handle."
                  }
 
@@ -594,6 +967,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.34  2008/11/19 06:16:23  cdunde
+#Bones system moved to outside of components for Model Editor completed.
+#
 #Revision 1.33  2008/10/17 22:29:05  cdunde
 #Added assigned vertex count (read only) to Specifics/Args page for each bone handle.
 #
