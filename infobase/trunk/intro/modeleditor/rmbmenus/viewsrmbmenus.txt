@@ -55,6 +55,10 @@ available and various visual tools to work with. They are strictly vertex relate
 function to reset the 3D view and bring the model back to its starting position when it was first opened
 and based on the 'Rotation Method' you last chose to rotate the model by.
 
+<i>Use Component Colors </i>&nbsp;: When checked this activates the display of individual component colors,
+which can be set on the <a href="intro.modeleditor.dataforms.html#specsargsview">Specifics page</a>,
+to distinguish one model component mesh area from another.
+
 <u>Each view can be set to one of three rendering modes :</u>
 
 <i>Wireframe </i>&nbsp;: The model mesh will be drawn as lines.

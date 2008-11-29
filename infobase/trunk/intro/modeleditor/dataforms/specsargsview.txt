@@ -11,6 +11,11 @@ Selecting the <g>Frames</g> folder or a number of frames only will display the
 <g>model type page</g>, while selecting a single frame will display settings for that
 type of model, is any exist, and\or a single bone will display the
 <a href="intro.modeleditor.editelements.html#bones">bone's page</a>.
+Selecting a single component displays its page where you can set a <g>tint</g> color for each
+component that will be applied over that component's texture and lines when a
+<a href="intro.modeleditor.rmbmenus.html#viewsrmbmenus">view's RMB menu</a> item
+<a href="intro.modeleditor.rmbmenus.html#viewsrmbmenus">Use Component Colors</a>
+is active (checked) to help distinguish one component from another.
 
 If you do not know what permitted values an arg can have, place your
 mouse-cursor over that item for a second and a blue 'flyover' help-box will appear,
