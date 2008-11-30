@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.29  2008/09/06 15:57:14  danielpharos
+Moved exception code into separate file.
+
 Revision 1.28  2007/08/14 16:33:00  danielpharos
 HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
 
@@ -758,7 +761,7 @@ var
 {Bits: array[0..63, 0..63] of Char;}
  Q: QObject;
  R: TRect;
- TexLoop: TList;
+ TexLoop: TQList;
  BaseImage: Integer;
  SelectNow{, ZeroIsNotBlack}: Boolean;
  Item: TListItem;
@@ -850,7 +853,7 @@ begin
     Dec(CurrentTexLoadNo);
 
      { build the animation loop }
-    TexLoop:=TList.Create;
+    TexLoop:=TQList.Create;
     try
       repeat
         TexLoop.Add(Q);
@@ -976,7 +979,7 @@ begin
         TextureTitle:=TextureTitle+' × '+IntToStr(TexLoop.Count);
 
       { add the list view item }
-      Q:=QObject(TexLoop[0]);
+      Q:=TexLoop[0];
       Item:=ListView1.Items.Add;
       {$IFDEF Debug}
       if BaseImage>=ImageTextures.Count then
