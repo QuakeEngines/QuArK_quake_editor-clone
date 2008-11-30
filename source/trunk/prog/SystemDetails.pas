@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.36  2008/11/08 12:54:04  danielpharos
+Moved some legacy compatibility code to ExtraFuncionality.
+
 Revision 1.35  2008/05/05 17:39:44  danielpharos
 Fixed garbage at the end of retrieved registry strings.
 
@@ -143,8 +146,8 @@ var
 Procedure LogSystemDetails;
 function CheckWindowsNT: Boolean;
 function CheckWindowsVista: Boolean;
-function ProcessExists(exeFileName: string): Boolean;
-function WindowExists(WindowName: String): Boolean;
+function ProcessExists(const exeFileName: string): Boolean;
+function WindowExists(const WindowName: String): Boolean;
 function RetrieveModuleFilename(ModuleHandle: Cardinal): String;
 
 type
@@ -1974,7 +1977,7 @@ begin
   R.free;
 end;
 
-function ProcessExists(exeFileName: string): Boolean;
+function ProcessExists(const exeFileName: string): Boolean;
 var 
   ContinueLoop: BOOL; 
   FSnapshotHandle: THandle; 
@@ -2063,7 +2066,7 @@ begin
   end;
 end;
 
-function WindowExists(WindowName: String): Boolean;
+function WindowExists(const WindowName: String): Boolean;
 var
   FoundWindow: HWND;
 begin
