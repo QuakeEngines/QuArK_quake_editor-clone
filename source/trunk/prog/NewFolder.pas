@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2008/09/06 15:57:03  danielpharos
+Moved exception code into separate file.
+
 Revision 1.9  2008/02/23 19:25:21  danielpharos
 Moved a lot of path/file code around: should make it easier to use
 
@@ -92,7 +95,7 @@ begin
  MarsCap.ActiveEndColor:=clYellow;
  UpdateMarsCap;
  OpenGlobalImageList(ListView1);
- SaveDialog1.FileName:=GetQPath(pQuArK)+'*.qrk';
+ SaveDialog1.FileName:=ConcatPaths([GetQPath(pQuArK), '*.qrk']);
  DisplayAddOnsList(ListView1);
 end;
 
