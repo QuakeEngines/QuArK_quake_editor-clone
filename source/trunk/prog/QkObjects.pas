@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.115  2008/11/19 06:14:00  cdunde
+Bones system moved to outside of components for Model Editor completed.
+
 Revision 1.114  2008/11/06 21:11:50  danielpharos
 Made type Specifics soft-coded: Will lated be changed into a new, yet-to-be-defined type.
 
@@ -751,7 +754,7 @@ function PackedStrToInt(const S: String) : Integer;
 procedure ReleaseStream(S: TStream);
 
 {$IFDEF Debug}
-var g_MemQObject: TList;
+var g_MemQObject: TQList;
 procedure DebugCheck;
 {function DebugError: Exception;}
 procedure DataDump;
@@ -2371,7 +2374,6 @@ begin
   end;
 end;
 
-
 procedure QObject.SetSelMult();
   procedure OpenGroups(Groupe: QObject);
   begin
@@ -3234,33 +3236,35 @@ var
   SomeQObject: QObject;
 begin
   Text:=TStringList.Create;
+  try
+    Text.Add(QuArKVersion);
+    Text.Add(HeavyMemDump);
 
-  Text.Add(QuArKVersion);
-  Text.Add(HeavyMemDump);
+    Text.Add('-----');
 
-  Text.Add('-----');
+    Text.Add(Format('%5.5s  %s', ['RefCnt', 'Object']));
+    for I:=0 to QFileList.Count-1 do
+    begin
+      SomeQStream := TQStream(QFileList.Objects[I]);
+      Text.Add(Format('%5d  %s', [SomeQStream.RefCount1, QFileList[I]]));
+    end;
 
-  Text.Add(Format('%5.5s  %s', ['RefCnt', 'Object']));
-  for I:=0 to QFileList.Count-1 do
-  begin
-    SomeQStream := TQStream(QFileList.Objects[I]);
-    Text.Add(Format('%5d  %s', [SomeQStream.RefCount1, QFileList[I]]));
+    Text.Add('-----');
+
+    Text.Add(Format('%5.5s  %2.2s  %s', ['RefCnt', 'Flags', 'Object']));
+    for I:=0 to g_MemQObject.Count-1 do
+    begin
+      SomeQObject := g_MemQObject[I];
+      if SomeQObject.PythonObj.ob_refcnt<>1 then
+        Text.Add(Format('%5d  %2x  %s', [SomeQObject.PythonObj.ob_refcnt, SomeQObject.Flags, SomeQObject.GetFullName]))
+      else
+        Text.Add(Format('%5s  %2x  %s', [                             '', SomeQObject.Flags, SomeQObject.GetFullName]));
+    end;
+
+    Text.SaveToFile(ExtractFilePath(ParamStr(0))+DataDumpFile);
+  finally
+    Text.Free;
   end;
-
-  Text.Add('-----');
-
-  Text.Add(Format('%5.5s  %2.2s  %s', ['RefCnt', 'Flags', 'Object']));
-  for I:=0 to g_MemQObject.Count-1 do
-  begin
-    SomeQObject := QObject(g_MemQObject[I]);
-    if SomeQObject.PythonObj.ob_refcnt<>1 then
-      Text.Add(Format('%5d  %2x  %s', [SomeQObject.PythonObj.ob_refcnt, SomeQObject.Flags, SomeQObject.GetFullName]))
-    else
-      Text.Add(Format('%5s  %2x  %s', [                             '', SomeQObject.Flags, SomeQObject.GetFullName]));
-  end;
-
-  Text.SaveToFile(ExtractFilePath(ParamStr(0))+DataDumpFile);
-  Text.Free;
 end;
 
 procedure TestDataDump;
@@ -3279,7 +3283,7 @@ initialization
   g_CF_QObjects:=RegisterClipboardFormat('QuArK Object');
   {$IFDEF Debug}
   g_DataDumpProc:=@TestDataDump;
-  g_MemQObject:=TList.Create;
+  g_MemQObject:=TQList.Create;
   {$ENDIF}
 
 finalization
