@@ -600,10 +600,15 @@ class ModelLayout(BaseLayout):
         elif len(sl) != 0 and sl[0].type == ":mc": # Sets the component form items.
             selitem = sl[0]
             try:
-                self.comp_color = selitem.dictspec['comp_color']
+                self.comp_color1 = selitem.dictspec['comp_color1']
             except:
-                selitem['comp_color'] = '\x00'
-                self.comp_color = selitem.dictspec['comp_color']
+                selitem['comp_color1'] = '\x00'
+                self.comp_color1 = selitem.dictspec['comp_color1']
+            try:
+                self.comp_color2 = selitem.dictspec['comp_color2']
+            except:
+                selitem['comp_color2'] = '\x00'
+                self.comp_color2 = selitem.dictspec['comp_color2']
 
         quarkx.update(self.editor.form)
 
@@ -764,12 +769,21 @@ class ModelLayout(BaseLayout):
                         filename.dataforminput(sl[0])
                         self.dataform.setdata(sl, formobj)
                 try:
-                    self.comp_color = selitem.dictspec['comp_color']
+                    self.comp_color1 = selitem.dictspec['comp_color1']
                     for view in self.views:
                         view.invalidate(1)
                 except:
-                    selitem['comp_color'] = '\x00'
-                    self.comp_color = selitem.dictspec['comp_color']
+                    selitem['comp_color1'] = '\x00'
+                    self.comp_color1 = selitem.dictspec['comp_color1']
+                    for view in self.views:
+                        view.invalidate(1)
+                try:
+                    self.comp_color2 = selitem.dictspec['comp_color2']
+                    for view in self.views:
+                        view.invalidate(1)
+                except:
+                    selitem['comp_color2'] = '\x00'
+                    self.comp_color2 = selitem.dictspec['comp_color2']
                     for view in self.views:
                         view.invalidate(1)
             ### This section handles the Bones default settings and data input for the Specifics/Args page.
@@ -1407,6 +1421,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.87  2008/11/29 06:56:25  cdunde
+#Setup new Component Colors and draw Textured View Tint Colors system.
+#
 #Revision 1.86  2008/11/19 06:16:22  cdunde
 #Bones system moved to outside of components for Model Editor completed.
 #
