@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.50  2008/11/26 00:34:54  danielpharos
+Fixed map preview in QuArK Explorer not working (properly) anymore.
+
 Revision 1.49  2008/10/05 13:53:52  danielpharos
 Fixed an oops and add NoDraw (will be used later).
 
@@ -271,7 +274,6 @@ type
                  Animation: PAnimationSeq;
                  OldCameraPos: PyObject;
                  FPainting: Boolean;
-                 ClipRect: TRect;
                  ShowProgress: Boolean;
                  procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
                  procedure Paint(Sender: TObject; DC: HDC; const rcPaint: TRect);
@@ -527,7 +529,6 @@ begin
                      if FullScreen then
                       begin
                        Canvas.Handle:=HDC(-1);
-                       //@ClipRect...
                        try
                         //@Render;
                        finally
@@ -681,7 +682,6 @@ begin
 
       Scene.ShowProgress:=ShowProgress;
       Scene.SetViewWnd(Self.Handle);
-      Scene.SetDrawRect(ClipRect);
       Scene.Init(MapViewProj, DisplayMode, DisplayType, Specifics.Values['Lib'], AllowsGDI);
 
       if AllowsGDI then
@@ -830,11 +830,8 @@ begin
    Exit;
   end;
 
- ClipRect:=rcPaint;
- if (ClipRect.Left = 0) and (ClipRect.Right = 0) and (ClipRect.Top = 0) and (ClipRect.Bottom = 0) then
-   ClipRect:=GetClientRect;
  if (Scene<>Nil) then
-  Scene.SetDrawRect(ClipRect);
+  Scene.SetDrawRect(rcPaint);
 
  case RenderMode of
  rmFull:
@@ -2952,6 +2949,7 @@ begin
           Drawing:=Drawing and not dfBuilding;
           if FullScreen then
            Scene.ClearFrame;
+          Scene.SetDrawRect(GetClientRect);
           Scene.Render3DView;
           if FullScreen then
            begin
@@ -3398,6 +3396,7 @@ begin
                   end
                   else
                   begin
+                   Scene.SetDrawRect(GetClientRect);
                    Scene.Render3DView;
                    if FullScreen then
                     Scene.SwapBuffers(True)
