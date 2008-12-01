@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.34  2008/11/20 23:45:50  danielpharos
+Big update to renderers: mostly cleanup, and stabilized Direct3D a bit more.
+
 Revision 1.33  2008/11/14 00:39:54  danielpharos
 Fixed a few variable types and fixed the coloring of faces not working properly in OpenGL and giving the wrong color in Glide.
 
@@ -804,7 +807,8 @@ var
 
 function LoadOpenGl : Boolean;
 procedure UnloadOpenGl;
-function LoadSwapHint : Pointer;
+function ExtensionSupported(const ExtensionName: String) : Boolean;
+function GetWinSwapHint : Pointer;
 
 function GetOpenGLDummyRC: HGLRC;
 function GetOpenGLDummyDC: HDC;
@@ -906,6 +910,8 @@ var
   Glu32Lib: THandle;
 
   GLExtensions: TStringList = nil;
+  WinSwapHintLoaded: Boolean = false;
+  WinSwapHint: Pointer;
 
   DummyWindow: HWND;
   DummyDC: HDC;
@@ -1115,6 +1121,19 @@ begin
     DeleteDummyWindow(DummyWindow);
     DummyWindow := 0;
 
+
+    if GLExtensions<>nil then
+    begin
+      GLExtensions.Free;
+      GlExtensions:=nil;
+    end;
+
+    if WinSwapHintLoaded then
+    begin
+      WinSwapHint:=nil;
+      WinSwapHintLoaded:=False;
+    end;
+
     //DanielPharos: This cannot be freed, because the pixel format will then be forgotton,
     //causing errors when OpenGL is restarted!
     {if OpenGL32Lib<>0 then
@@ -1134,12 +1153,6 @@ begin
 
     for I:=Low(Glu32DLL_FuncList) to High(Glu32DLL_FuncList) do
       PPointer(Glu32DLL_FuncList[I].FuncPtr)^:=nil;
-
-    if GLExtensions<>nil then
-    begin
-      GLExtensions.Free;
-      GlExtensions:=nil;
-    end;
 
     TimesLoaded := 0;
   end
@@ -1186,23 +1199,44 @@ begin
   Result:=True;
 end;
 
-function LoadSwapHint : Pointer;
+function GetWinSwapHint : Pointer;
+begin
+  if not WinSwapHintLoaded then
+  begin
+    if GLExtensions=nil then
+      if not LoadExtentionList then
+      begin
+        Log(LOG_WARNING, LoadStr1(6304));
+        Result:=nil;
+        Exit;
+      end;
+
+    //We need to check for GL_WIN_swap_hint before loading...
+    if GLExtensions.IndexOf('GL_WIN_swap_hint')=-1 then
+    begin
+      Result:=nil;
+      Exit;
+    end;
+    WinSwapHint:=wglGetProcAddress('glAddSwapHintRectWIN');
+    WinSwapHintLoaded:=True;
+  end;
+  Result:=WinSwapHint;
+end;
+
+function ExtensionSupported(const ExtensionName: String) : Boolean;
 begin
   if GLExtensions=nil then
     if not LoadExtentionList then
     begin
       Log(LOG_WARNING, LoadStr1(6304));
-      Result:=nil;
+      Result:=false;
       Exit;
     end;
 
-  //We need to check for GL_WIN_swap_hint before loading...
-  if GLExtensions.IndexOf('GL_WIN_swap_hint')=-1 then
-  begin
-    Result:=nil;
-    Exit;
-  end;
-  Result:=wglGetProcAddress('glAddSwapHintRectWIN');
+  if GLExtensions.IndexOf(ExtensionName)=-1 then
+    Result:=false
+  else
+    Result:=true;
 end;
 
 initialization

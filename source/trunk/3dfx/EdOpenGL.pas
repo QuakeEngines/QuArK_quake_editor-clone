@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.79  2008/11/20 23:45:50  danielpharos
+Big update to renderers: mostly cleanup, and stabilized Direct3D a bit more.
+
 Revision 1.78  2008/11/17 22:27:05  danielpharos
 Removed redundant variable, fixed a wrong type, and fixed a HUGE and stupid bug with the OpenGL displaylists!
 
@@ -285,7 +288,7 @@ const
  kScaleCos = 0.5;
 
 var
- glAddSwapHintRectWIN: procedure (x: GLint; y: GLint; width: GLsizei; height: GLsizei) stdcall; {Daniel 2007.08.28 - Added}
+ glAddSwapHintRectWIN: procedure (x: GLint; y: GLint; width: GLsizei; height: GLsizei) stdcall;
 
 type
  PLightList = ^TLightList;
@@ -302,7 +305,6 @@ type
  TGLSceneObject = class(TSceneObject)
  private
    RC: HGLRC;
-   WinSwapHint: Pointer;
    DoubleBuffered: Boolean;
    Fog: Boolean;
    Transparency: Boolean;
@@ -1030,6 +1032,11 @@ begin
 
     GetMem(PixelFormat, SizeOf(TPixelFormatDescriptor));
     PixelFormat^:=FillPixelFormat(ViewDC);
+    if GetWinSwapHint<>nil then
+      if (DisplayMode=dmFullScreen) then
+        PixelFormat^.dwFlags:=PixelFormat^.dwFlags or PFD_SWAP_EXCHANGE
+      else
+        PixelFormat^.dwFlags:=PixelFormat^.dwFlags or PFD_SWAP_COPY;
     ChangedViewDC; //To set the pixelformat:
 
     if RC = 0 then
@@ -1042,13 +1049,12 @@ begin
     if wglMakeCurrent(ViewDC, RC) = false then
       raise EError(6310);
     try
-    WinSwapHint:=LoadSwapHint;
 
     { set up OpenGL }
     UnpackColor(FogColor, nFogColor);
     glClearColor(nFogColor[0], nFogColor[1], nFogColor[2], 1);
    {glClearDepth(1);}
-    glDepthFunc(GL_LEQUAL); //FIXME: We need this for colored things (dmSelected and dmOtherColo)
+    glDepthFunc(GL_LEQUAL); //FIXME: We need this for colored things (dmSelected and dmOtherColor)
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
     glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
     glEnable(GL_NORMALIZE);
@@ -1139,7 +1145,8 @@ end;
 
 procedure TGLSceneObject.Copy3DView;
 var
-  Int4Array: array[0..3] of Integer;
+  SwapHintX, SwapHintY: GLint;
+  SwapHintWidth, SwapHintHeight: GLsizei;
 begin
   if not OpenGlLoaded then
     Exit;
@@ -1151,14 +1158,24 @@ begin
       if wglMakeCurrent(ViewDC, RC) = false then
         raise EError(6310);
       try
-        if WinSwapHint<>nil then
+        @glAddSwapHintRectWIN:=GetWinSwapHint;
+        if @glAddSwapHintRectWIN<>nil then
         begin
-          glAddSwapHintRectWIN:=WinSwapHint;
-          Int4Array[0]:=DrawRect.Left;
-          Int4Array[1]:=ScreenY - DrawRect.Bottom; //These coords start LOWER left
-          Int4Array[2]:=DrawRect.Right - DrawRect.Left;
-          Int4Array[3]:=DrawRect.Bottom - DrawRect.Top;
-          glAddSwapHintRectWIN(Int4Array[0], Int4Array[1], Int4Array[2], Int4Array[3]);
+          if (CurrentDisplayMode=dmFullScreen) then
+          begin
+            SwapHintX:=0;
+            SwapHintY:=0;
+            SwapHintWidth:=DrawRect.Right - DrawRect.Left;
+            SwapHintHeight:=DrawRect.Bottom - DrawRect.Top;
+          end
+          else
+          begin
+            SwapHintX:=DrawRect.Left;
+            SwapHintY:=ScreenY - DrawRect.Bottom; //These coords start LOWER left
+            SwapHintWidth:=DrawRect.Right - DrawRect.Left;
+            SwapHintHeight:=DrawRect.Bottom - DrawRect.Top;
+          end;
+          glAddSwapHintRectWIN(SwapHintX, SwapHintY, SwapHintWidth, SwapHintHeight);
           CheckOpenGLError('WinSwapHint');
         end;
         if Windows.SwapBuffers(ViewDC)=false then

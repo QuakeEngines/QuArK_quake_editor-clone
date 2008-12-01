@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.33  2008/11/20 23:45:50  danielpharos
+Big update to renderers: mostly cleanup, and stabilized Direct3D a bit more.
+
 Revision 1.32  2008/11/14 00:39:54  danielpharos
 Fixed a few variable types and fixed the coloring of faces not working properly in OpenGL and giving the wrong color in Glide.
 
@@ -154,7 +157,6 @@ type
     Transparency: Boolean;
     Lighting: Boolean;
     Culling: Boolean;
-    Scissor: Boolean;
     Direct3DLoaded: Boolean;
     DWMLoaded: Boolean;
     MapLimit: TVect;
@@ -330,6 +332,7 @@ end;
 
 procedure TDirect3DSceneObject.ReleaseResources;
 begin
+  //FIXME: Set the RenderBackBuffer to something else, just in case...
   SwapChain:=nil;
   DepthStencilSurface:=nil;
 end;
@@ -357,6 +360,7 @@ var
   FogColor{, FrameColor}: TColorRef;
   Setup: QObject;
   l_Res: HResult;
+  WindowRect: TRect;
 begin
   ClearScene;
 
@@ -449,21 +453,26 @@ begin
     Culling:=False;
   end;
 
-  if (D3DCaps.RasterCaps and D3DPRASTERCAPS_SCISSORTEST)<>0 then
-    Scissor:=True
-  else
-    Scissor:=False;
+  if (ScreenX = 0) or (ScreenY = 0) then
+  begin
+    if GetWindowRect(ViewWnd, WindowRect)=false then
+      Raise EErrorFmt(6400, ['GetWindowRect']);
+    ScreenX:=WindowRect.Right-WindowRect.Left;
+    ScreenY:=WindowRect.Bottom-WindowRect.Top;
+  end;
 
-  //FIXME: Is this OK?
-  if GetWindowRect(ViewWnd, DrawRect)=false then
-    Raise EErrorFmt(6400, ['GetWindowRect']);
-  ScreenX:=DrawRect.Right-DrawRect.Left;
-  ScreenY:=DrawRect.Bottom-DrawRect.Top;
-
-  pPresParm:=PresParm;
+  CopyMemory(@pPresParm, @PresParm, SizeOf(D3DPRESENT_PARAMETERS));
   pPresParm.BackBufferWidth:=ScreenX;
   pPresParm.BackBufferHeight:=ScreenY;
-  pPresParm.hDeviceWindow:=ViewWnd; //Should already have been done, but better safe than sorry
+  if (DisplayMode=dmFullScreen) then
+  begin
+    ppresparm.SwapEffect:=D3DSWAPEFFECT_DISCARD;
+  end
+  else
+  begin
+    ppresparm.SwapEffect:=D3DSWAPEFFECT_COPY;
+  end;
+  pPresParm.hDeviceWindow:=ViewWnd;
 
   //Using CreateAdditionalSwapChain to create new chains will automatically share
   //textures and other resources between views.
@@ -494,11 +503,6 @@ begin
   end
   else
     D3DDevice.SetRenderState(D3DRS_FOGENABLE, 0);  //False := 0
-
-  if Scissor then
-    D3DDevice.SetRenderState(D3DRS_SCISSORTESTENABLE, 1)
-  else
-    D3DDevice.SetRenderState(D3DRS_SCISSORTESTENABLE, 0);
 
 {  // Create material
   FillChar(l_Material, SizeOf(l_Material), 0);
@@ -638,13 +642,6 @@ begin
   if (l_Res <> D3D_OK) then
     raise EErrorFmt(6403, ['SetDepthStencilSurface', DXGetErrorString9(l_Res)]);
 
-  if Scissor then
-  begin
-    l_Res:=D3DDevice.SetScissorRect(@DrawRect);
-    if (l_Res <> D3D_OK) then
-      raise EErrorFmt(6403, ['SetScissorRect', DXGetErrorString9(l_Res)]);
-  end;
-
   l_Res:=D3DDevice.Clear(0, nil, D3DCLEAR_TARGET or D3DCLEAR_ZBUFFER, DXFogColor, 1.0, 0);
   if (l_Res <> D3D_OK) then
     raise EErrorFmt(6403, ['Clear', DXGetErrorString9(l_Res)]);
@@ -713,7 +710,10 @@ begin
   if not Direct3DLoaded then
     Exit;
 
-  l_Res:=SwapChain.Present(nil, nil, 0, nil, 0);
+  if (CurrentDisplayMode=dmFullScreen) then
+    l_Res:=SwapChain.Present(nil, nil, 0, nil, 0)
+  else
+    l_Res:=SwapChain.Present(@DrawRect, @DrawRect, 0, nil, 0);
   if (l_Res <> D3D_OK) then
     raise EErrorFmt(6403, ['Present', DXGetErrorString9(l_Res)]);
 end;
