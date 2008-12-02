@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.37  2008/11/30 20:26:16  danielpharos
+Const-ed two strings.
+
 Revision 1.36  2008/11/08 12:54:04  danielpharos
 Moved some legacy compatibility code to ExtraFuncionality.
 
@@ -148,7 +151,7 @@ function CheckWindowsNT: Boolean;
 function CheckWindowsVista: Boolean;
 function ProcessExists(const exeFileName: string): Boolean;
 function WindowExists(const WindowName: String): Boolean;
-function RetrieveModuleFilename(ModuleHandle: Cardinal): String;
+function RetrieveModuleFilename(ModuleHandle: HMODULE): String;
 
 type
   {$IFDEF Delphi4orNewerCompiler}
@@ -2077,7 +2080,7 @@ begin
     Result := False;
 end;
 
-function RetrieveModuleFilename(ModuleHandle : Cardinal) : String;
+function RetrieveModuleFilename(ModuleHandle: HMODULE) : String;
 var
   Buffer: PChar;
   ReturnSize: Cardinal;
@@ -2109,38 +2112,41 @@ var
   i: integer;
 begin
   s:=TStringList.Create;
-  s.add('CPU:');
-  GetCPUDetails(s);
-  s.add('');
-  s.add('MEMORY:');
-  GetMemoryDetails(s);
-  s.add('');
-  s.add('OS:');
-  GetOperatingSystemDetails(s);
+  try
+    s.add('CPU:');
+    GetCPUDetails(s);
+    s.add('');
+    s.add('MEMORY:');
+    GetMemoryDetails(s);
+    s.add('');
+    s.add('OS:');
+    GetOperatingSystemDetails(s);
 (*Peter: removed as of 18-08-2003.
-  Logging of Python interpreter details now done in Python.pas.
+    Logging of Python interpreter details now done in Python.pas.
 
-  s.add('');
-  s.add('PYTHON:');
-  GetPythonDetails(s);
-  s.add('');
+    s.add('');
+    s.add('PYTHON:');
+    GetPythonDetails(s);
+    s.add('');
 *)
 
 (*DECKER 2001.03.17 - we're not interested in Machine-/Username. We're not Login-Crackers!
-  s.add('MACHINE:');
-  GetWorkStationDetails(s);
+    s.add('MACHINE:');
+    GetWorkStationDetails(s);
 *)
-  s.add('');
-  s.add('VIDEO:');
-  GetDisplayDetails(s);
-  s.add('');
-  s.add('DIRECTX:');
-  GetDirectxDetails(s);
-  for i:=0 to s.count-1 do
-  begin
-    Log(LOG_SYS, s.strings[i]);
+    s.add('');
+    s.add('VIDEO:');
+    GetDisplayDetails(s);
+    s.add('');
+    s.add('DIRECTX:');
+    GetDirectxDetails(s);
+    for i:=0 to s.count-1 do
+    begin
+      Log(LOG_SYS, s.strings[i]);
+    end;
+  finally
+    s.free;
   end;
-  s.free;
 end;
 
 end.
