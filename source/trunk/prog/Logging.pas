@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.22  2008/12/02 15:38:26  danielpharos
+Use ConcatPaths.
+
 Revision 1.21  2008/09/20 19:34:24  danielpharos
 Made aLog declaration a forward, so it's not public anymore.
 
@@ -159,7 +162,6 @@ begin
   if LogOpened then
     exit;
   {$I-}
-  SetApplicationPath();
   AssignFile(LogFile, ConcatPaths([GetQPath(pQuArK), LogFilename]));
   rewrite(LogFile);
   {$I+}

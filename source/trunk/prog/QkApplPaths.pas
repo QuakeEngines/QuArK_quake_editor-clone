@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2008/11/06 19:29:51  danielpharos
+Renamed function to concatenate paths, and start using it.
+
 Revision 1.13  2008/09/20 20:45:27  danielpharos
 Added GetQPath functions to Defaults.qrk and Setup.qrk loading.
 
@@ -98,7 +101,6 @@ type
 
 function ConvertPath(const S: string): string;
 function ConcatPaths(const Paths: array of String) : String;
-procedure SetApplicationPath(const a_Path: String = '');
 function GetQPath(const PathToGet : TQPathType) : String;
 
  { ------------------- }
@@ -144,28 +146,6 @@ begin
       else
         Result:=Result+IncludeTrailingPathDelimiter(ConvertPath(S));
   end;
-end;
-
-procedure SetApplicationPath(const a_Path: String = '');
-{ Sets application path, or in case there is a QUARKPATH
-  environment-variable, it overrules the argument }
-var
-  environmentContents: array[0..MAX_PATH] of Char;
-  environmentLength: Integer;
-begin
-  environmentLength := GetEnvironmentVariable('QUARKPATH', environmentContents, SizeOf(environmentContents));
-
-  if environmentLength = 0 then
-  begin
-    if a_Path = '' then
-      ApplicationPath := ExtractFilePath(Application.Exename)
-    else
-      ApplicationPath := a_Path;
-  end
-  else
-    SetString(ApplicationPath, environmentContents, environmentLength);
-
-  ApplicationPath := IncludeTrailingPathDelimiter(ApplicationPath);
 end;
 
 function GetQPath(const PathToGet : TQPathType) : String;
@@ -236,4 +216,9 @@ begin
   Inc(m_NextPathToTry);
 end;
 
+initialization
+  ApplicationPath := GetEnvironmentVariable('QUARKPATH');
+  if ApplicationPath = '' then
+    ApplicationPath := ExtractFilePath(Application.Exename);
+  ApplicationPath := IncludeTrailingPathDelimiter(ApplicationPath);
 end.

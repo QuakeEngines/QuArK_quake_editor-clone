@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.78  2008/11/08 12:53:29  danielpharos
+Fixed a typo
+
 Revision 1.77  2008/11/06 21:10:36  danielpharos
 Fixed access violation on exit when setup wasn't loaded correctly.
 
@@ -692,9 +695,6 @@ begin
    Splash:=nil;
    Disclaimer:=0;
  end;
-
- // Set the ApplicationPath variable (is actually already done in OpenLogFile...)
- SetApplicationPath();
 
  // Python initialization and Defaults.qrk and Setup.qrk loading
  InitPython;
