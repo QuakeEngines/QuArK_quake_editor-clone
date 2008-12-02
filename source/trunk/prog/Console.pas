@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2008/11/14 00:39:15  danielpharos
+Consted a few string and fix additional newlines appearing in the console.txt.
+
 Revision 1.12  2008/08/16 13:32:17  danielpharos
 Fix a crash when console was cleared but not inited.
 
@@ -112,10 +115,9 @@ procedure ClearConsole;
 procedure FreeConsole;
 procedure ResizeConsole;
 
-procedure InitConsoleFile;
 procedure OpenConsoleFile;
 procedure CloseConsoleFile;
-procedure DelConsoleFile;
+procedure ClearConsoleFile;
 procedure WriteConsoleFile(const Text: String);
 
 const
@@ -127,7 +129,7 @@ implementation
 
 {$R *.DFM}
 
-uses Qk1, QkObjects, Quarkx, PyProcess, Setup;
+uses Qk1, QkObjects, Quarkx, PyProcess, Setup, QkApplPaths;
 
 var
   ConsoleFile: TextFile;
@@ -159,16 +161,16 @@ var
 
  {-------------------}
 
-procedure InitConsoleFile;
-begin
-  AssignFile(ConsoleFile, ConsoleFilename);
-end;
-
 procedure OpenConsoleFile;
+var
+  FullFilename: String;
 begin
   if ConsoleFileOpened then
     Exit;
-  if not FileExists(ConsoleFilename) then
+  FullFilename:=ConcatPaths([GetQPath(pQuArK), ConsoleFilename]);
+  AssignFile(ConsoleFile, FullFilename);
+  SetLineBreakStyle(ConsoleFile, tlbsCRLF);
+  if not FileExists(FullFilename) then
     Rewrite(ConsoleFile)
   else
     Append(ConsoleFile);
@@ -183,12 +185,13 @@ begin
   ConsoleFileOpened:=False;
 end;
 
-procedure DelConsoleFile;
+procedure ClearConsoleFile;
 begin
   if not ConsoleFileOpened then
     Exit;
   CloseConsoleFile;
   Erase(ConsoleFile);
+  OpenConsoleFile;
 end;
 
 procedure WriteConsoleFile(const Text: String);
@@ -356,26 +359,27 @@ begin
   end;
 end;
 
-procedure NewLine(Src: PyObject);
-var
- I: Integer;
-begin
- I:=PipeBufPos+1;
- if I=ConsoleHeight then I:=0;
- Py_XDECREF(PipeBuffer^[I].Src);
- PipeBuffer^[I].Src:=Src;
- Py_INCREF(Src);
- PipeBuffer^[I].DataLength:=0;
- PipeBufPos:=I;
-end;
-
 procedure WriteConsole(Src: PyObject; const Text: String);
+
+  procedure NewLine(Src: PyObject);
+  var
+   I: Integer;
+  begin
+   if ConsoleFileOpened then
+     WriteConsoleFile(sLineBreak);
+   I:=PipeBufPos+1;
+   if I=ConsoleHeight then I:=0;
+   Py_XDECREF(PipeBuffer^[I].Src);
+   PipeBuffer^[I].Src:=Src;
+   Py_INCREF(Src);
+   PipeBuffer^[I].DataLength:=0;
+   PipeBufPos:=I;
+  end;
+
 var
  I: Integer;
  Line: ^TPipeLine;
 begin
- if ConsoleFileOpened then
-   WriteConsoleFile(Text);
  if not ConsoleReady then Exit;
  if Length(Text)>0 then
   begin
@@ -405,6 +409,8 @@ begin
         Line:=@PipeBuffer^[PipeBufPos];
        end;
       Line^.Data[Line^.DataLength]:=Text[I];
+      if ConsoleFileOpened then
+       WriteConsoleFile(Text[I]);
       Inc(Line^.DataLength);
      end;
     end;
@@ -770,7 +776,6 @@ end;
 initialization
   ConsoleFileOpened:=False;
   ConsoleFileName:=CONSOLE_FILENAME;
-  InitConsoleFile;
 finalization
   CloseConsoleFile;
 end.

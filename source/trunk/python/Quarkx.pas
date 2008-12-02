@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.87  2008/11/06 20:18:22  danielpharos
+Removed old stuff in preparation for new specifics code.
+
 Revision 1.86  2008/11/06 19:17:28  danielpharos
 Small fixes to avoid a rare timer race condition.
 
@@ -2881,7 +2884,7 @@ function xClearConsoleLog(self, args: PyObject) : PyObject; cdecl;
 begin
   Result:=Nil;
   try
-    DelConsoleFile;
+    ClearConsoleFile;
     Result:=PyNoResult;
   except
     EBackToPython;
@@ -3682,7 +3685,11 @@ begin
      PyErr_Fetch(ptype, pvalue, ptraceback);
      try
       str:=PyObject_Str(pvalue);
-      if str=Nil then Exit;
+      if str=Nil then
+       begin
+        //PyErr_Restore(ptype, pvalue, ptraceback); //FIXME: Can't XDECREF below though...!
+        Exit;
+       end;
       ExceptionMethod(PyString_AsString(str));
      finally
       Py_XDECREF(str);
