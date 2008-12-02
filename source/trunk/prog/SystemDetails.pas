@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.38  2008/12/02 15:38:15  danielpharos
+Fixed a wrong type and a possible memory leak.
+
 Revision 1.37  2008/11/30 20:26:16  danielpharos
 Const-ed two strings.
 
@@ -138,10 +141,6 @@ interface
 
 uses
   SysUtils, StrUtils, Windows, Classes, Registry;
-
-const
-  SM_CXVIRTUALSCREEN = 78;
-  SM_CYVIRTUALSCREEN = 79;
 
 var
   g_CxScreen, g_CyScreen: Integer;

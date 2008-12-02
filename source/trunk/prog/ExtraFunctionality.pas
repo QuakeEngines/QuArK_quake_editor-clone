@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2008/11/08 12:54:04  danielpharos
+Moved some legacy compatibility code to ExtraFuncionality.
+
 Revision 1.13  2008/09/06 15:31:51  danielpharos
 Moved old-compatibility code to ExtraFunctionality.
 
@@ -53,6 +56,13 @@ interface
 {$I DelphiVer.inc}
 
 uses SysUtils, StrUtils;
+
+{$ifndef Delphi6orNewerCompiler} // FIXME: I'm not sure when this was introduced;
+                                 // but it at least exists in Delphi 6
+const
+  SM_CXVIRTUALSCREEN = 78;
+  SM_CYVIRTUALSCREEN = 79;
+{$endif}
 
 {$ifndef Delphi4orNewerCompiler} // FIXME: I'm not sure when this was introduced;
                                  // but it at least exists in Delphi 4
