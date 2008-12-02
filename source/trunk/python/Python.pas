@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.34  2008/09/23 08:27:29  danielpharos
+Moved InternalE to QkExceptions.
+
 Revision 1.33  2008/08/09 20:20:57  danielpharos
 Fixed Python 2.5 stuff and added Python 2.6 stuff
 
@@ -473,7 +476,7 @@ PyErr_Print: procedure; cdecl;
 PyErr_Clear: procedure; cdecl;
 PyErr_Occurred: function : PyObject; cdecl;
 PyErr_Fetch: procedure (var o1, o2, o3: PyObject); cdecl;
-//procedure PyErr_Restore(o1, o2, o3: PyObject); cdecl;
+//PyErr_Restore: procedure (o1, o2, o3: PyObject); cdecl;
 PyErr_NewException: function (name: PChar; base, dict: PyObject) : PyObject; cdecl;
 PyErr_SetString: procedure (o: PyObject; c: PChar); cdecl;
 //function PyErr_BadArgument : Integer; cdecl;
@@ -619,6 +622,7 @@ const
     (Variable: @@PyErr_Clear;                Name: 'PyErr_Clear';                MinimalVersion: 0  ),
     (Variable: @@PyErr_Occurred;             Name: 'PyErr_Occurred';             MinimalVersion: 0  ),
     (Variable: @@PyErr_Fetch;                Name: 'PyErr_Fetch';                MinimalVersion: 0  ),
+//  (Variable: @@PyErr_Restore;              Name: 'PyErr_Restore';              MinimalVersion: 0  ),
     (Variable: @@PyErr_NewException;         Name: 'PyErr_NewException';         MinimalVersion: 0  ),
     (Variable: @@PyErr_SetString;            Name: 'PyErr_SetString';            MinimalVersion: 0  ),
     (Variable: @@PyErr_ExceptionMatches;     Name: 'PyErr_ExceptionMatches';     MinimalVersion: 0  ),
@@ -789,15 +793,12 @@ begin
 
   //DanielPharos: We're not supporting all versions of Python, so let's check that:
   if (VersionSubStrings[0]<>'2') or ((VersionSubStrings[1]<>'3') and (VersionSubStrings[1]<>'4')) then
-  begin
-    Log(LOG_WARNING, 'Incompatible version of Python found: '+VersionString);
-    MessageBox(0, PChar('This version ('+VersionString+') of Python is not supported. QuArK might behave unpredictably!'), PChar('QuArK'), MB_TASKMODAL or MB_ICONWARNING or MB_OK);
-  end;
+    LogAndWarn('Unsupported version ('+VersionString+') of Python found. QuArK might behave unpredictably!');
 
   //Now that we know the Python version, load the version-specific fucntions
   for I:=Low(PythonProcList) to High(PythonProcList) do
   begin
-    if (PythonProcList[I].MinimalVersion > 0) and (PythonProcList[I].MinimalVersion < PythonCurrentVersion) then
+    if (PythonProcList[I].MinimalVersion > 0) and (PythonProcList[I].MinimalVersion <= PythonCurrentVersion) then
     begin
       P:=GetProcAddress(PythonLib, PythonProcList[I].Name);
       if P=Nil then
@@ -1111,7 +1112,7 @@ initialization
   PythonLib:=0;
 
 finalization
-  {UnInitializePython;}
-  {This apparently creates problems...}
+  //FIXME: This apparently creates problems...
+  //UnInitializePython;
 end.
 
