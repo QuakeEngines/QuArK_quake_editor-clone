@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.21  2008/09/20 19:34:24  danielpharos
+Made aLog declaration a forward, so it's not public anymore.
+
 Revision 1.20  2008/02/23 19:25:20  danielpharos
 Moved a lot of path/file code around: should make it easier to use
 
@@ -157,7 +160,7 @@ begin
     exit;
   {$I-}
   SetApplicationPath();
-  AssignFile(LogFile, GetQPath(pQuArK)+LogFilename);
+  AssignFile(LogFile, ConcatPaths([GetQPath(pQuArK), LogFilename]));
   rewrite(LogFile);
   {$I+}
   LogOpened:=true;
