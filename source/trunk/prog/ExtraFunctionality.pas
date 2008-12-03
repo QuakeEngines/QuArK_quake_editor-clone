@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2008/12/02 16:16:28  danielpharos
+Moved some consts to ExtraFunctionality where they belong.
+
 Revision 1.14  2008/11/08 12:54:04  danielpharos
 Moved some legacy compatibility code to ExtraFuncionality.
 
@@ -57,8 +60,7 @@ interface
 
 uses SysUtils, StrUtils;
 
-{$ifndef Delphi6orNewerCompiler} // FIXME: I'm not sure when this was introduced;
-                                 // but it at least exists in Delphi 6
+{$ifndef Delphi7orNewerCompiler} // Pre-dates Delphi 7
 const
   SM_CXVIRTUALSCREEN = 78;
   SM_CYVIRTUALSCREEN = 79;
