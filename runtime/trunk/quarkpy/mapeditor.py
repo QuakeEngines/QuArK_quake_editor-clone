@@ -185,6 +185,7 @@ class MapEditor(BaseEditor):
                 quarkx.setfileattr(self.tmpsaved, -1)
             except:
                 pass
+        quarkx.setupsubset(SS_MAP, "Options")['ConsoleLog'] = None
 
 
     def initmenu(self, form):
@@ -410,6 +411,9 @@ def autosave(editor):
 #
 #
 #$Log$
+#Revision 1.19  2008/11/17 19:10:23  danielpharos
+#Centralized and fixed BSP file detection.
+#
 #Revision 1.18  2008/10/07 21:04:49  danielpharos
 #Added GetBaseDir function and other small fixes.
 #

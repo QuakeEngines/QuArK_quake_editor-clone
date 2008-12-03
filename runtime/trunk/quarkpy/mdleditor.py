@@ -316,6 +316,7 @@ class ModelEditor(BaseEditor):
         quarkx.setupsubset(SS_MODEL, "Options")["ExtrudeBulkHeads"] = None
         quarkx.setupsubset(SS_MODEL, "Options")['VertexUVColor'] = None
         quarkx.setupsubset(SS_MODEL, "Options")['HideBones'] = None
+        quarkx.setupsubset(SS_MODEL, "Options")['ConsoleLog'] = None
         quarkx.setupsubset(SS_MODEL, "Colors")['start_color'] = None
         quarkx.setupsubset(SS_MODEL, "Colors")['end_color'] = None
 
@@ -1691,6 +1692,10 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.110  2008/11/22 05:08:29  cdunde
+#Fixed rest of auto selection for bones and to deselect any item to do with
+#bones when switching to Linear Handles mode to allow menus to activate properly.
+#
 #Revision 1.109  2008/11/20 20:20:35  cdunde
 #Bones system moved to outside of components for Model Editor completed.
 #
