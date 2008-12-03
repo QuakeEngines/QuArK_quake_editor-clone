@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.80  2008/12/01 22:34:03  danielpharos
+Cleaned up the clipping routines.
+
 Revision 1.79  2008/11/20 23:45:50  danielpharos
 Big update to renderers: mostly cleanup, and stabilized Direct3D a bit more.
 
@@ -1425,7 +1428,6 @@ end;
 
 procedure TGLSceneObject.Render3DView;
 var
- SX, SY: Integer;
  DX, DY, DZ: Double;
  VX, VY, VZ: TVect;
  Scaling: TDouble;
@@ -1447,9 +1449,7 @@ begin
       raise EError(6310);
     try
 
-    SX:=ScreenX;
-    SY:=ScreenY;
-    glViewport(0, 0, SX, SY);   {Viewport width and height are silently clamped to a range that depends on the implementation. This range is queried by calling glGet with argument GL_MAX_VIEWPORT_DIMS.}
+    glViewport(0, 0, ScreenX, ScreenY);   {Viewport width and height are silently clamped to a range that depends on the implementation. This range is queried by calling glGet with argument GL_MAX_VIEWPORT_DIMS.}
     CheckOpenGLError('glViewPort');
 
   if Coord.FlatDisplay then
@@ -1491,8 +1491,8 @@ begin
        end;
      end;
 
-    DX:=(SX/2)/(Scaling*Scaling);
-    DY:=(SY/2)/(Scaling*Scaling);
+    DX:=(ScreenX/2)/(Scaling*Scaling);
+    DY:=(ScreenY/2)/(Scaling*Scaling);
     //Start using: ChercheExtremites
     //or better: do it in the BuildScene when the positions are being processed!
 
@@ -1533,7 +1533,7 @@ begin
      begin
       glMatrixMode(GL_PROJECTION);
       glLoadIdentity;
-      gluPerspective(VCorrection2*VAngleDegrees, SX/SY, FarDistance / 65536, FarDistance);     //DanielPharos: Assuming 16 bit depth buffer
+      gluPerspective(VCorrection2*VAngleDegrees, ScreenX/ScreenY, FarDistance / 65536, FarDistance);     //DanielPharos: Assuming 16 bit depth buffer
 
       glMatrixMode(GL_MODELVIEW);
       glLoadIdentity;
