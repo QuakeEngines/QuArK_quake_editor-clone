@@ -58,6 +58,31 @@ def IgnoreDupClick(item):
     UndoMoveDups(undo, editor.Root)
     editor.ok(undo, "")
 
+
+def StartConsoleLogClick(m):
+    "Start and stop console logging output to Console.txt file."
+    if not MapOption("ConsoleLog"):
+        quarkx.setupsubset(SS_MAP, "Options")['ConsoleLog'] = "1"
+        try:
+            quarkx.startconsolelog()
+        except:
+            pass
+        consolelog.state = qmenu.checked
+    else:
+        quarkx.setupsubset(SS_MAP, "Options")['ConsoleLog'] = None
+        quarkx.stopconsolelog()
+        consolelog.state = qmenu.normal
+
+
+def ClearConsoleLogClick(m):
+    "Clears the Console.txt file."
+    if MapOption("ConsoleLog"):
+        quarkx.stopconsolelog()
+        quarkx.clearconsolelog()
+        quarkx.startconsolelog()
+    else:
+        quarkx.clearconsolelog()
+
 def Config1Click(item):
     "Configuration Dialog Box."
     quarkx.openconfigdlg()
@@ -190,6 +215,9 @@ lineThicknessItem = qmenu.item("Set Line Thickness (3)",setLineThick,"|Set Line 
 #
 # Global variables to update from plug-ins.
 #
+consolelog = qmenu.item("&Log Console", StartConsoleLogClick, "|Log Console:\n\nWhen active this will write everything that is printed to the console to a text file called 'Console.txt' which is located in QuArK's main folder.|intro.mapeditor.menu.html#optionsmenu")
+
+clearconsolelog = qmenu.item("&Clear Console Log", ClearConsoleLogClick, "|Clear Console Log:\n\nWhen clicked this will clear everything that is printed to the text file called 'Console.txt' which is located in QuArK's main folder.|intro.mapeditor.menu.html#optionsmenu")
 
 items = [
 
@@ -234,13 +262,16 @@ def OptionsMenu():
 
     PlugIns = qmenu.item("List of Plug-ins...", Plugins1Click, "lists loaded plug-ins")
     Config1 = qmenu.item("Confi&guration...", Config1Click,  hint = "|Configuration...:\n\nThis leads to the Configuration-Window where all elements of QuArK are setup. From the way the Editor looks and operates to Specific Game Configuration and Mapping or Modeling variables.\n\nBy pressing the F1 key one more time, or clicking the 'InfoBase' button below, you will be taken directly to the Infobase section that covers all of these areas, which can greatly assist you in setting up QuArK for a particular game you wish to map or model for.|intro.configuration.html")
-    Options1 = qmenu.popup("&Options", items+[qmenu.sep, PlugIns, Config1], Options1Click)
+    Options1 = qmenu.popup("&Options", items+[qmenu.sep, PlugIns, Config1, qmenu.sep, consolelog, clearconsolelog], Options1Click)
     return Options1, shortcuts
 
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.17  2007/12/21 22:47:37  cdunde
+#To avoid unneeded reloadsetup for Duplicators for faster and better redraws.
+#
 #Revision 1.16  2007/12/21 20:39:23  cdunde
 #Added new Templates functions and Templates.
 #
