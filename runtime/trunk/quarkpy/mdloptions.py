@@ -100,6 +100,31 @@ def ToggleOption(item):
         quarkx.reloadsetup()
 
 
+def StartConsoleLogClick(m):
+    "Start and stop console logging output to Console.txt file."
+    if not MdlOption("ConsoleLog"):
+        quarkx.setupsubset(SS_MODEL, "Options")['ConsoleLog'] = "1"
+        try:
+            quarkx.startconsolelog()
+        except:
+            pass
+        consolelog.state = qmenu.checked
+    else:
+        quarkx.setupsubset(SS_MODEL, "Options")['ConsoleLog'] = None
+        quarkx.stopconsolelog()
+        consolelog.state = qmenu.normal
+
+
+def ClearConsoleLogClick(m):
+    "Clears the Console.txt file."
+    if MdlOption("ConsoleLog"):
+        quarkx.stopconsolelog()
+        quarkx.clearconsolelog()
+        quarkx.startconsolelog()
+    else:
+        quarkx.clearconsolelog()
+
+
 def Config1Click(item):
     "Configuration Dialog Box."
     quarkx.openconfigdlg()
@@ -776,6 +801,10 @@ def mRecenter(m):
 #
 # Global variables to update from plug-ins.
 #
+consolelog = qmenu.item("&Log Console", StartConsoleLogClick, "|Log Console:\n\nWhen active this will write everything that is printed to the console to a text file called 'Console.txt' which is located in QuArK's main folder.|intro.modeleditor.menu.html#optionsmenu")
+
+clearconsolelog = qmenu.item("&Clear Console Log", ClearConsoleLogClick, "|Clear Console Log:\n\nWhen clicked this will clear everything that is printed to the text file called 'Console.txt' which is located in QuArK's main folder.|intro.modeleditor.menu.html#optionsmenu")
+
 dhwr = toggleitem("Draw &handles while rotating", "DHWR", (0,0),
       hint="|Draw handles while rotating:\n\nThis allows the models vertex handles (if active) to be drawn during rotation, but this will slow down the redrawing process and can make rotation seem jerky.|intro.modeleditor.menu.html#optionsmenu")
 
@@ -815,7 +844,7 @@ def OptionsMenu():
     SkinViewOptions = qmenu.popup("Skin-view Options", [], SkinViewOptionsClick, "|Skin-view Options:\n\nThese functions deal with various Options pertaining directly to the Skin-view and the way certain elements can be manipulated and displayed while working on the Models Skin Mesh.\n\nPress the 'F1' key again or click the button below for further details.", "intro.modeleditor.skinview.html#funcsnmenus")
     PlugIns = qmenu.item("List of Plug-ins...", Plugins1Click)
     Config1 = qmenu.item("Confi&guration...", Config1Click,  hint = "|Configuration...:\n\nThis leads to the Configuration-Window where all elements of QuArK are setup. From the way the Editor looks and operates to Specific Game Configuration and Mapping or Modeling variables.\n\nBy pressing the F1 key one more time, or clicking the 'InfoBase' button below, you will be taken directly to the Infobase section that covers all of these areas, which can greatly assist you in setting up QuArK for a particular game you wish to map or model for.|intro.configuration.html")
-    Options1 = qmenu.popup("&Options", [RotationOptions, dhwr, et3dmode, ft3dmode, qmenu.sep]+[maiv, dbf, lineThicknessItem, qmenu.sep, BoneOptions, FaceSelOptions, VertexSelOptions, SkinViewOptions, qmenu.sep]+items+[qmenu.sep, PlugIns, Config1], Options1Click)
+    Options1 = qmenu.popup("&Options", [RotationOptions, dhwr, et3dmode, ft3dmode, qmenu.sep]+[maiv, dbf, lineThicknessItem, qmenu.sep, BoneOptions, FaceSelOptions, VertexSelOptions, SkinViewOptions, qmenu.sep]+items+[qmenu.sep, PlugIns, Config1, qmenu.sep, consolelog, clearconsolelog], Options1Click)
     return Options1, shortcuts
 
 
@@ -832,6 +861,9 @@ def OptionsMenuRMB():
 #
 #
 #$Log$
+#Revision 1.39  2008/10/23 04:42:24  cdunde
+#Infobase links and updates for Bones.
+#
 #Revision 1.38  2008/10/04 05:48:06  cdunde
 #Updates for Model Editor Bones system.
 #
