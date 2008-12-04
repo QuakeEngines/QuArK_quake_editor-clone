@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2008/12/02 16:18:33  danielpharos
+Cleanup for ConsoleLog. Should now always appear in main directory.
+
 Revision 1.13  2008/11/14 00:39:15  danielpharos
 Consted a few string and fix additional newlines appearing in the console.txt.
 
@@ -186,12 +189,15 @@ begin
 end;
 
 procedure ClearConsoleFile;
+var
+  OldConsoleFileStatus: Boolean;
 begin
-  if not ConsoleFileOpened then
-    Exit;
-  CloseConsoleFile;
+  OldConsoleFileStatus:=ConsoleFileOpened;
+  if ConsoleFileOpened then
+    CloseConsoleFile;
   Erase(ConsoleFile);
-  OpenConsoleFile;
+  if OldConsoleFileStatus then
+    OpenConsoleFile;
 end;
 
 procedure WriteConsoleFile(const Text: String);
