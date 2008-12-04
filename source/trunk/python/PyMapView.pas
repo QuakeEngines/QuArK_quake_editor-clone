@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.51  2008/12/01 22:33:07  danielpharos
+Fixed the DrawRect not always getting set properly.
+
 Revision 1.50  2008/11/26 00:34:54  danielpharos
 Fixed map preview in QuArK Explorer not working (properly) anymore.
 
@@ -169,6 +172,7 @@ uses Windows, Messages, SysUtils, Classes, Forms, Controls, Graphics,
 
 type
   TMapViewType = (vtEditor, vtPanel, vtWindow, vtFullScreen);
+  TMapViewMode = (vmWireframe, vmSolidcolor, vmTextured);
   TMapViewRenderMode = (rmFull, rmSolidImage);
 
 const
@@ -364,6 +368,7 @@ implementation
 uses PyCanvas, QkTextures, Game, PyForms, FullScreenWnd, FullScr1, RedLines, Qk1,
      EdSoftware, EdGlide, EdOpenGL, EdDirect3D, SystemDetails, QkFileObjects, QkExceptions;
 
+ {------------------------}
 
 constructor TPyMapView.Create(AOwner: TComponent);
 var
@@ -597,6 +602,7 @@ var
  K: TKey3D;
  ve1: TViewEntities;
  DisplayMode: TDisplayMode;
+ RenderMode: TRenderMode;
  AllowsGDI: Boolean;
 begin
  if Inv then
@@ -669,20 +675,26 @@ begin
       Scene.ErrorMsg:='';
       AllowsGDI:=True;
 
-      if ViewType=vtEditor then
-        DisplayMode:=dmEditor
-      else if ViewType=vtPanel then
-        DisplayMode:=dmPanel
-      else if ViewType=vtWindow then
-        DisplayMode:=dmWindow
-      else if ViewType=vtFullScreen then
-        DisplayMode:=dmFullScreen
+      case ViewType of
+      vtEditor:     DisplayMode:=dmEditor;
+      vtPanel:      DisplayMode:=dmPanel;
+      vtWindow:     DisplayMode:=dmWindow;
+      vtFullScreen: DisplayMode:=dmFullScreen;
       else
         raise EErrorFmt(6000, ['Invalid ViewType']);
+      end;
+
+      case ViewMode of
+      vmWireframe:  RenderMode:=rmWireframe;
+      vmSolidcolor: RenderMode:=rmSolidColor;
+      vmTextured:   RenderMode:=rmTextured;
+      else
+        raise EErrorFmt(6000, ['Invalid ViewMode']);
+      end;
 
       Scene.ShowProgress:=ShowProgress;
       Scene.SetViewWnd(Self.Handle);
-      Scene.Init(MapViewProj, DisplayMode, DisplayType, Specifics.Values['Lib'], AllowsGDI);
+      Scene.Init(MapViewProj, DisplayMode, DisplayType, RenderMode, Specifics.Values['Lib'], AllowsGDI);
 
       if AllowsGDI then
        Drawing:=Drawing and not dfNoGDI
@@ -862,22 +874,10 @@ begin
 end;
 
 procedure TPyMapView.NeedScene(NeedSetup: Boolean);
-var
- S: String;
 begin
  if Scene=Nil then
   begin
-   S:=SetupSubSet(ssGeneral, '3D View').Specifics.Values['Lib'];
-   if S='qrksoftg.dll' then
-     FScene:=TSoftwareSceneObject.Create(ViewMode)
-   else if S='glide2x.dll' then
-     FScene:=TGlideSceneObject.Create(ViewMode)
-   else if S='OpenGL32.dll' then
-     FScene:=TGLSceneObject.Create(ViewMode)
-   else if S='d3d9.dll' then
-     FScene:=TDirect3DSceneObject.Create(ViewMode)
-   else
-     raise EErrorFmt(6000, ['Invalid LibName']);
+   FScene:=GetNewSceneObject;
    ReadSetupInformation(NeedSetup);
    Drawing:=Drawing or dfRebuildScene;
   end
@@ -2949,7 +2949,6 @@ begin
           Drawing:=Drawing and not dfBuilding;
           if FullScreen then
            Scene.ClearFrame;
-          Scene.SetDrawRect(GetClientRect);
           Scene.Render3DView;
           if FullScreen then
            begin
@@ -3396,7 +3395,6 @@ begin
                   end
                   else
                   begin
-                   Scene.SetDrawRect(GetClientRect);
                    Scene.Render3DView;
                    if FullScreen then
                     Scene.SwapBuffers(True)

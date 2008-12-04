@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.81  2008/12/03 11:08:10  danielpharos
+Removed two redundant variables.
+
 Revision 1.80  2008/12/01 22:34:03  danielpharos
 Cleaned up the clipping routines.
 
@@ -343,11 +346,12 @@ type
    procedure BuildTexture(Texture: PTexture3); override;
    procedure ChangedViewDC; override;
  public
-   constructor Create(nViewMode: TMapViewMode);
+   constructor Create;
    destructor Destroy; override;
    procedure Init(nCoord: TCoordinates;
-                  DisplayMode: TDisplayMode;
-                  DisplayType: TDisplayType;
+                  nDisplayMode: TDisplayMode;
+                  nDisplayType: TDisplayType;
+                  nRenderMode: TRenderMode;
                   const LibName: String;
                   var AllowsGDI: Boolean); override;
    procedure ClearScene; override;
@@ -883,9 +887,9 @@ begin
 
 end;
 
-constructor TGLSceneObject.Create(nViewMode: TMapViewMode);
+constructor TGLSceneObject.Create;
 begin
-  inherited Create(nViewMode);
+  inherited;
   RC:=0;
   PixelFormat:=nil;
 end;
@@ -907,8 +911,9 @@ begin
 end;
 
 procedure TGLSceneObject.Init(nCoord: TCoordinates;
-                              DisplayMode: TDisplayMode;
-                              DisplayType: TDisplayType;
+                              nDisplayMode: TDisplayMode;
+                              nDisplayType: TDisplayType;
+                              nRenderMode: TRenderMode;
                               const LibName: String;
                               var AllowsGDI: Boolean);
 var
@@ -919,8 +924,9 @@ var
 begin
   ClearScene;
 
-  CurrentDisplayMode:=DisplayMode;
-  CurrentDisplayType:=DisplayType;
+  DisplayMode:=nDisplayMode;
+  DisplayType:=nDisplayType;
+  RenderMode:=nRenderMode;
 
   //We need to disable Desktop Composition on Vista and higher,
   //because this causes Python-overlays to draw incorrectly
@@ -1164,7 +1170,7 @@ begin
         @glAddSwapHintRectWIN:=GetWinSwapHint;
         if @glAddSwapHintRectWIN<>nil then
         begin
-          if (CurrentDisplayMode=dmFullScreen) then
+          if (DisplayMode=dmFullScreen) then
           begin
             SwapHintX:=0;
             SwapHintY:=0;
@@ -1454,7 +1460,7 @@ begin
 
   if Coord.FlatDisplay then
    begin
-    if CurrentDisplayType=dtXY then
+    if DisplayType=dtXY then
      begin
       with TXYCoordinates(Coord) do
        begin
@@ -1466,7 +1472,7 @@ begin
         VZ:=VectorZ;
        end;
      end
-    else if CurrentDisplayType=dtXZ then
+    else if DisplayType=dtXZ then
      begin
       with TXZCoordinates(Coord) do
        begin
@@ -1478,7 +1484,7 @@ begin
         VZ:=VectorZ;
        end;
      end
-    else {if (CurrentDisplayType=dtYZ) or (CurrentDisplayType=dt2D) then}
+    else {if (DisplayType=dtYZ) or (DisplayType=dt2D) then}
      begin
       with T2DCoordinates(Coord) do
        begin
@@ -1551,21 +1557,21 @@ begin
   glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT);
   CheckOpenGLError('Render3DView: glClear');
 
-  case ViewMode of
-  vmWireframe:
+  case RenderMode of
+  rmWireframe:
     begin
       glDisable(GL_TEXTURE_2D);
     end;
-  vmSolidcolor:
+  rmSolidcolor:
     begin
       glDisable(GL_TEXTURE_2D);
     end;
-  else //vmTextured:
+  else //rmTextured:
     begin
       glEnable(GL_TEXTURE_2D);
     end;
   end;
-  CheckOpenGLError('Render3DView: ViewMode');
+  CheckOpenGLError('Render3DView: RenderMode');
 
   RebuildDisplayList:=False;
   if DisplayLists then
@@ -2022,18 +2028,18 @@ var
  TransX, TransY, TransZ: GLdouble;
  Currentf: GLfloat4;
 begin
-  case ViewMode of
-  vmWireframe:
+  case RenderMode of
+  rmWireframe:
     begin
       NeedColor:=False;
       NeedTex:=False;
     end;
-  vmSolidcolor:
+  rmSolidcolor:
     begin
       NeedColor:=True;
       NeedTex:=False;
     end;
-  else //vmTextured:
+  else //rmTextured:
     begin
       NeedColor:=False;
       NeedTex:=True;
@@ -2070,7 +2076,7 @@ begin
   begin}
     if Coord.FlatDisplay then
     begin
-      if CurrentDisplayType=dtXY then
+      if DisplayType=dtXY then
       begin
         with TXYCoordinates(Coord) do
         begin
@@ -2079,7 +2085,7 @@ begin
           LocY:=-(pDeltaY-ScrCenter.Y);
         end;
       end
-      else if CurrentDisplayType=dtXZ then
+      else if DisplayType=dtXZ then
       begin
         with TXZCoordinates(Coord) do
         begin
@@ -2088,7 +2094,7 @@ begin
           LocY:=-(pDeltaY-ScrCenter.Y);
         end;
       end
-      else {if (CurrentDisplayType=dtYZ) or (CurrentDisplayType=dt2D) then}
+      else {if (DisplayType=dtYZ) or (DisplayType=dt2D) then}
       begin
         with T2DCoordinates(Coord) do
         begin

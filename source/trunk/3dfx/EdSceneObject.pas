@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.48  2008/11/24 23:26:25  danielpharos
+Fix some RGB <--> BGR confusion.
+
 Revision 1.47  2008/11/20 23:45:50  danielpharos
 Big update to renderers: mostly cleanup, and stabilized Direct3D a bit more.
 
@@ -222,6 +225,7 @@ type
  TViewEntities = (veNever, veBoxes, veModels);
  TDisplayMode = (dmEditor, dmPanel, dmWindow, dmFullScreen);
  TDisplayType = (dtXY, dtXZ, dtYZ, dt2D, dt3D);
+ TRenderMode = (rmWireframe, rmSolidColor, rmTextured);
 
  POpenGLLightingList = ^LongInt;
 
@@ -300,7 +304,6 @@ type
 
 type
  TBuildMode = (bmSoftware, bmGlide, bmOpenGL, bmDirect3D);
- TMapViewMode = (vmWireframe, vmSolidcolor, vmTextured);
 
  TSceneObject = class
  protected
@@ -310,8 +313,9 @@ type
    Coord: TCoordinates;
    FListSurfaces: PSurfaces;
    PolyFaces, ModelInfo, BezierInfo, SpriteInfo: TList;
-   CurrentDisplayMode: TDisplayMode;
-   CurrentDisplayType: TDisplayType;
+   DisplayMode: TDisplayMode;
+   DisplayType: TDisplayType;
+   RenderMode: TRenderMode;
    procedure ClearPList;
    function StartBuildScene({var PW: TPaletteWarning;} var VertexSize: Integer) : TBuildMode; virtual; abstract;
    procedure EndBuildScene; virtual;
@@ -333,13 +337,13 @@ type
    TemporaryStuff: TQList;   { anything that should not be freed while the scene is alive }
    FarDistance: TDouble;
    FogDensity: Single;
-   ViewMode: TMapViewMode;
    ShowProgress: Boolean;
-   constructor Create(nViewMode: TMapViewMode);
+   constructor Create;
    destructor Destroy; override;
    procedure Init(nCoord: TCoordinates;
-                  DisplayMode: TDisplayMode;
-                  DisplayType: TDisplayType;
+                  nDisplayMode: TDisplayMode;
+                  nDisplayType: TDisplayType;
+                  nRenderMode: TRenderMode;
                   const LibName: String;
                   var AllowsGDI: Boolean); virtual; abstract;
    procedure ClearScene; virtual;
@@ -405,6 +409,8 @@ type
    property Scenes: TList read FScenes;
  end;
 
+function GetNewSceneObject: TSceneObject;
+
 function ComputeMeanColor(const PSD: TPixelSetDescription) : TColorRef;
 function GetTex3Description(const Tex3: TTexture3) : TPixelSetDescription;
 function SwapColor(Col: TColorRef) : TColorRef;
@@ -418,15 +424,14 @@ implementation
 uses SysUtils, ExtraFunctionality,
      Travail, Quarkx, QkExceptions, Setup,
      QkMdlObject, QkTextures, QkImages, QkFileObjects,
-     EdOpenGL;
-     {EdTListP2;}
+     EdSoftware, EdGlide, EdOpenGL, EdDirect3D;
 
 const
  cDummyTextureWHSize = 16;
 
  {------------------------}
 
-constructor TSceneObject.Create(nViewMode: TMapViewMode);
+constructor TSceneObject.Create;
 begin
  inherited Create;
  PolyFaces:=TList.Create;
@@ -434,7 +439,6 @@ begin
  BezierInfo:=TList.Create;
  SpriteInfo:=TList.Create;
  TemporaryStuff:=TQList.Create;
- ViewMode:=nViewMode;
  ViewWnd:=0;
  ViewDC:=0;
 end;
@@ -2147,6 +2151,25 @@ begin
      TextureManager:=Nil;
     end;
   end;
+end;
+
+ {------------------------}
+
+function GetNewSceneObject: TSceneObject;
+var
+ S: String;
+begin
+ S:=SetupSubSet(ssGeneral, '3D View').Specifics.Values['Lib'];
+ if S='qrksoftg.dll' then
+  Result:=TSoftwareSceneObject.Create
+ else if S='glide2x.dll' then
+  Result:=TGlideSceneObject.Create
+ else if S='OpenGL32.dll' then
+  Result:=TGLSceneObject.Create
+ else if S='d3d9.dll' then
+  Result:=TDirect3DSceneObject.Create
+ else
+  raise EErrorFmt(6000, ['Invalid LibName']);
 end;
 
  {------------------------}

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2008/11/24 23:26:25  danielpharos
+Fix some RGB <--> BGR confusion.
+
 Revision 1.17  2008/11/20 23:45:50  danielpharos
 Big update to renderers: mostly cleanup, and stabilized Direct3D a bit more.
 
@@ -234,10 +237,11 @@ type
    procedure BuildTexture(Texture: PTexture3); override;
    procedure ChangedViewWnd; override;
  public
-   constructor Create(ViewMode: TMapViewMode);
+   constructor Create;
    procedure Init(nCoord: TCoordinates;
-                  DisplayMode: TDisplayMode;
-                  DisplayType: TDisplayType;
+                  nDisplayMode: TDisplayMode;
+                  nDisplayType: TDisplayType;
+                  nRenderMode: TRenderMode;
                   const LibName: String;
                   var AllowsGDI: Boolean); override;
    destructor Destroy; override;
@@ -431,15 +435,15 @@ end;
 
  {------------------------}
 
-constructor TGlideSceneObject.Create(ViewMode: TMapViewMode);
+constructor TGlideSceneObject.Create;
 begin
  inherited;
  FVertexList:=TMemoryStream.Create;
- SolidColors:=(ViewMode=vmSolidcolor);
+ SolidColors:=(RenderMode=rmSolidcolor);
 end;
 
-procedure TGlideSceneObject.Init(nCoord: TCoordinates; DisplayMode: TDisplayMode; DisplayType: TDisplayType;
-          const LibName: String; var AllowsGDI: Boolean);
+procedure TGlideSceneObject.Init(nCoord: TCoordinates; nDisplayMode: TDisplayMode; nDisplayType: TDisplayType;
+          nRenderMode: TRenderMode; const LibName: String; var AllowsGDI: Boolean);
 var
  HiColor: Boolean;
  hwconfig: GrHwConfiguration;
@@ -452,8 +456,9 @@ var
 begin
  ClearScene;
 
- CurrentDisplayMode:=DisplayMode;
- CurrentDisplayType:=DisplayType;
+ DisplayMode:=nDisplayMode;
+ DisplayType:=nDisplayType;
+ RenderMode:=nRenderMode;
 
  Setup:=SetupSubSet(ssGeneral, 'Glide (3DFX)');
  SetupResolution:=StrToInt(Setup.Specifics.Values['Resolution']);

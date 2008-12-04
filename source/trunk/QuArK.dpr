@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.59  2008/11/20 23:45:50  danielpharos
+Big update to renderers: mostly cleanup, and stabilized Direct3D a bit more.
+
 Revision 1.58  2008/10/12 11:31:32  danielpharos
 Moved 6DX map format to separate file, and re-factored QkMap and QkQuakeMap.
 
@@ -175,7 +178,6 @@ uses
   EdOpenGL in '3dfx\EdOpenGL.pas',
   EdSceneObject in '3dfx\EdSceneObject.pas',
   EdSoftware in '3dfx\EdSoftware.pas',
-  EdTListP2 in '3dfx\EdTListP2.pas',
   QkDummyWindow in '3dfx\QkDummyWindow.pas',
   FullScr1 in '3dfx\FullScr1.pas' {TwoMonitorsDlg},
   FullScreenWnd in '3dfx\FullScreenWnd.pas' {FullScrDlg},

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2008/11/24 23:26:25  danielpharos
+Fix some RGB <--> BGR confusion.
+
 Revision 1.17  2008/11/20 23:45:50  danielpharos
 Big update to renderers: mostly cleanup, and stabilized Direct3D a bit more.
 
@@ -255,10 +258,11 @@ type
    procedure RenderTransparent(Transparent: Boolean);
    procedure BuildTexture(Texture: PTexture3); override;
  public
-   constructor Create(ViewMode: TMapViewMode);
+   constructor Create;
    procedure Init(nCoord: TCoordinates;
-                  DisplayMode: TDisplayMode;
-                  DisplayType: TDisplayType;
+                  nDisplayMode: TDisplayMode;
+                  nDisplayType: TDisplayType;
+                  nRenderMode: TRenderMode;
                   const LibName: String;
                   var AllowsGDI: Boolean); override;
    destructor Destroy; override;
@@ -445,15 +449,15 @@ end;
 
  {------------------------}
 
-constructor TSoftwareSceneObject.Create(ViewMode: TMapViewMode);
+constructor TSoftwareSceneObject.Create;
 begin
  inherited;
  FVertexList:=TMemoryStream.Create;
- SolidColors:=(ViewMode=vmSolidcolor);
+ SolidColors:=(RenderMode=rmSolidcolor);
 end;
 
-procedure TSoftwareSceneObject.Init(nCoord: TCoordinates; DisplayMode: TDisplayMode; DisplayType: TDisplayType;
-          const LibName: String; var AllowsGDI: Boolean);
+procedure TSoftwareSceneObject.Init(nCoord: TCoordinates; nDisplayMode: TDisplayMode; nDisplayType: TDisplayType;
+          nRenderMode: TRenderMode; const LibName: String; var AllowsGDI: Boolean);
 var
  HiColor: Boolean;
  hwconfig: GrHwConfiguration;
@@ -462,8 +466,9 @@ var
 begin
  ClearScene;
 
- CurrentDisplayMode:=DisplayMode;
- CurrentDisplayType:=DisplayType;
+ DisplayMode:=nDisplayMode;
+ DisplayType:=nDisplayType;
+ RenderMode:=nRenderMode;
 
  if (not RendererLoaded) then
   begin
@@ -500,7 +505,7 @@ begin
    qrkGlideState:=TGlideState.Create;
    RendererLoaded:=true;
   end;
- if (CurrentDisplayMode=dmFullScreen) then
+ if (DisplayMode=dmFullScreen) then
  begin
   Raise InternalE(LoadStr1(6120));
   //DanielPharos: We have to check all this...
@@ -1950,7 +1955,7 @@ begin
    SY:=(SY+1) div 2;
   end;
 
- if CurrentDisplayMode=dmFullScreen then
+ if DisplayMode=dmFullScreen then
   begin
    XMargin:=0;
    YMargin:=0;

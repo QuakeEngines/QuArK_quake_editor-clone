@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.34  2008/12/01 22:34:03  danielpharos
+Cleaned up the clipping routines.
+
 Revision 1.33  2008/11/20 23:45:50  danielpharos
 Big update to renderers: mostly cleanup, and stabilized Direct3D a bit more.
 
@@ -183,11 +186,12 @@ type
     procedure ChangedViewWnd; override;
     function CheckDeviceState : Boolean;
   public
-    constructor Create(nViewMode: TMapViewMode);
+    constructor Create;
     destructor Destroy; override;
     procedure Init(nCoord: TCoordinates;
-                   DisplayMode: TDisplayMode;
-                   DisplayType: TDisplayType;
+                   nDisplayMode: TDisplayMode;
+                   nDisplayType: TDisplayType;
+                   nRenderMode: TRenderMode;
                    const LibName: String;
                    var AllowsGDI: Boolean); override;
     procedure ClearScene; override;
@@ -323,9 +327,9 @@ begin
 
 end;
 
-constructor TDirect3DSceneObject.Create(nViewMode: TMapViewMode);
+constructor TDirect3DSceneObject.Create;
 begin
-  inherited Create(nViewMode);
+  inherited;
   SwapChain:=nil;
   DepthStencilSurface:=nil;
 end;
@@ -351,8 +355,9 @@ begin
 end;
 
 procedure TDirect3DSceneObject.Init(nCoord: TCoordinates;
-                                    DisplayMode: TDisplayMode;
-                                    DisplayType: TDisplayType;
+                                    nDisplayMode: TDisplayMode;
+                                    nDisplayType: TDisplayType;
+                                    nRenderMode: TRenderMode;
                                     const LibName: String;
                                     var AllowsGDI: Boolean);
 var
@@ -364,8 +369,9 @@ var
 begin
   ClearScene;
 
-  CurrentDisplayMode:=DisplayMode;
-  CurrentDisplayType:=DisplayType;
+  DisplayMode:=nDisplayMode;
+  DisplayType:=nDisplayType;
+  RenderMode:=nRenderMode;
 
   if CheckWindowsVista then
   begin
@@ -710,7 +716,7 @@ begin
   if not Direct3DLoaded then
     Exit;
 
-  if (CurrentDisplayMode=dmFullScreen) then
+  if (DisplayMode=dmFullScreen) then
     l_Res:=SwapChain.Present(nil, nil, 0, nil, 0)
   else
     l_Res:=SwapChain.Present(@DrawRect, @DrawRect, 0, nil, 0);
