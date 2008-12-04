@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2008/12/04 12:14:00  danielpharos
+Fixed a redraw-clipping problem, removed a redundant file and cleaned-up the constructor of the EdSceneObjects.
+
 Revision 1.18  2008/11/24 23:26:25  danielpharos
 Fix some RGB <--> BGR confusion.
 
@@ -2075,7 +2078,7 @@ begin
  ScreenX:=SX;
  ScreenY:=SY;
 
- if CurrentDisplayMode=dmFullScreen then
+ if DisplayMode=dmFullScreen then
   begin
    XMargin:=0;
    YMargin:=0;
