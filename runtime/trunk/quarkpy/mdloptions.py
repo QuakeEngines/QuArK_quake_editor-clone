@@ -117,12 +117,7 @@ def StartConsoleLogClick(m):
 
 def ClearConsoleLogClick(m):
     "Clears the Console.txt file."
-    if MdlOption("ConsoleLog"):
-        quarkx.stopconsolelog()
-        quarkx.clearconsolelog()
-        quarkx.startconsolelog()
-    else:
-        quarkx.clearconsolelog()
+    quarkx.clearconsolelog()
 
 
 def Config1Click(item):
@@ -861,6 +856,9 @@ def OptionsMenuRMB():
 #
 #
 #$Log$
+#Revision 1.40  2008/12/03 08:24:05  cdunde
+#Added functions for console logging and clearing of that log to the options menu.
+#
 #Revision 1.39  2008/10/23 04:42:24  cdunde
 #Infobase links and updates for Bones.
 #
