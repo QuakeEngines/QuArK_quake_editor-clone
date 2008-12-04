@@ -493,7 +493,7 @@ class ModelLayout(BaseLayout):
                 for filetype in range(len(SFTexts)):
                     if sfbtn.caption == SFTexts[filetype] and DummyItem.type == ':mc':
                         filename = IEfile[filetype]
-                        formobj, vtxcolorbtn = filename.dataformname(DummyItem)
+                        formobj, vtxcolorbtn = filename.dataformname(sl[0])
                         break
                     else:
                         formobj = None
@@ -683,7 +683,7 @@ class ModelLayout(BaseLayout):
                 else:
                     try:
                         # Tries to get the :form data from the Defaults.qrk file.
-                        formobj = quarkx.getqctxlist(':form', sfbtn.caption.strip(".") + DummyItem.type.replace(":","_"))[-1]
+                        formobj = quarkx.getqctxlist(sl[0], sfbtn.caption.strip(".") + DummyItem.type.replace(":","_"))[-1]
                     except:
                         formobj = None
             if sl[0].type == ":bound": # Sets the bound frame form items.
@@ -711,7 +711,7 @@ class ModelLayout(BaseLayout):
                 for filetype in range(len(SFTexts)):
                     if sfbtn.caption == SFTexts[filetype] and DummyItem.type == ':mc':
                         filename = IEfile[filetype]
-                        formobj, vtxcolorbtn = filename.dataformname(DummyItem)
+                        formobj, vtxcolorbtn = filename.dataformname(sl[0])
                         break
                     else:
                         formobj = None
@@ -1021,7 +1021,7 @@ class ModelLayout(BaseLayout):
                         for filetype in range(len(SFTexts)):
                             if sfbtn.caption == SFTexts[filetype] and DummyItem.type == ':mc':
                                 filename = IEfile[filetype]
-                                formobj, vtxcolorbtn = filename.dataformname(DummyItem)
+                                formobj, vtxcolorbtn = filename.dataformname(sl[0])
                                 break
                             else:
                                 formobj = None
@@ -1421,6 +1421,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.88  2008/12/01 04:53:54  cdunde
+#Update for component colors functions for OpenGL source code corrections.
+#
 #Revision 1.87  2008/11/29 06:56:25  cdunde
 #Setup new Component Colors and draw Textured View Tint Colors system.
 #
