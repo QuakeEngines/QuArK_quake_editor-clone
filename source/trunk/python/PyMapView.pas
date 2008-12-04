@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.52  2008/12/04 12:14:00  danielpharos
+Fixed a redraw-clipping problem, removed a redundant file and cleaned-up the constructor of the EdSceneObjects.
+
 Revision 1.51  2008/12/01 22:33:07  danielpharos
 Fixed the DrawRect not always getting set properly.
 
@@ -694,6 +697,7 @@ begin
 
       Scene.ShowProgress:=ShowProgress;
       Scene.SetViewWnd(Self.Handle);
+      Scene.SetDrawRect(GetClientRect);
       Scene.Init(MapViewProj, DisplayMode, DisplayType, RenderMode, Specifics.Values['Lib'], AllowsGDI);
 
       if AllowsGDI then
