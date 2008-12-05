@@ -117,7 +117,10 @@ def StartConsoleLogClick(m):
 
 def ClearConsoleLogClick(m):
     "Clears the Console.txt file."
-    quarkx.clearconsolelog()
+    try:
+        quarkx.clearconsolelog()
+    except:
+        pass
 
 
 def Config1Click(item):
@@ -856,6 +859,9 @@ def OptionsMenuRMB():
 #
 #
 #$Log$
+#Revision 1.41  2008/12/04 21:15:11  cdunde
+#Minor update to work with the function properly.
+#
 #Revision 1.40  2008/12/03 08:24:05  cdunde
 #Added functions for console logging and clearing of that log to the options menu.
 #

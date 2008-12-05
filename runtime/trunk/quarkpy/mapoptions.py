@@ -76,12 +76,10 @@ def StartConsoleLogClick(m):
 
 def ClearConsoleLogClick(m):
     "Clears the Console.txt file."
-    if MapOption("ConsoleLog"):
-        quarkx.stopconsolelog()
+    try:
         quarkx.clearconsolelog()
-        quarkx.startconsolelog()
-    else:
-        quarkx.clearconsolelog()
+    except:
+        pass
 
 def Config1Click(item):
     "Configuration Dialog Box."
@@ -269,6 +267,9 @@ def OptionsMenu():
 #
 #
 #$Log$
+#Revision 1.18  2008/12/03 08:37:13  cdunde
+#Added functions for console logging and clearing of that log to the options menu.
+#
 #Revision 1.17  2007/12/21 22:47:37  cdunde
 #To avoid unneeded reloadsetup for Duplicators for faster and better redraws.
 #
