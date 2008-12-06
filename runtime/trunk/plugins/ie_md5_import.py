@@ -683,8 +683,8 @@ def load_md5(md5_filename, basepath):
                                                 image = quarkx.openfileobj(foundimage)
                                                 skin['Image1'] = image.dictspec['Image1']
                                                 skin['Size'] = image.dictspec['Size']
+                                                skin['shader_keyword'] = shader_keyword
                                                 skingroup.appenditem(skin)
-                                                skingroup[skinname + '_shader_keyword'] = shader_keyword
                                                 if skinsize == (256, 256):
                                                     skinsize = skin['Size']
                                                 foundtexture = None
@@ -734,18 +734,21 @@ def load_md5(md5_filename, basepath):
                                     if os.path.isfile(basepath + map):
                                         skinname = map
                                         foundimage = basepath + skinname
+                                        shader_keyword = "map"
                                 if foundimage is None and bumpmap is not None:
                                     if imagefile is None:
                                         imagefile = basepath + bumpmap
                                     if os.path.isfile(basepath + bumpmap):
                                         skinname = bumpmap
                                         foundimage = basepath + skinname
+                                        shader_keyword = "bumpmap"
                                 if foundimage is None and specularmap is not None:
                                     if imagefile is None:
                                         imagefile = basepath + specularmap
                                     if os.path.isfile(basepath + specularmap):
                                         skinname = specularmap
                                         foundimage = basepath + skinname
+                                        shader_keyword = "specularmap"
                                 if imagefile is None:
                                     imagefile = "NO IMAGE FILE FOUND AT ALL, CHECK THE SHADER."
                                 if foundimage is not None:
@@ -755,6 +758,7 @@ def load_md5(md5_filename, basepath):
                                     image = quarkx.openfileobj(foundimage)
                                     skin['Image1'] = image.dictspec['Image1']
                                     skin['Size'] = image.dictspec['Size']
+                                    skin['shader_keyword'] = shader_keyword
                                     skingroup.appenditem(skin)
                                     if skinsize == (256, 256):
                                         skinsize = skin['Size']
@@ -1284,13 +1288,100 @@ def loadmodel(root, filename, gamename, nomessage=0):
         message = message + "Either case, it would be for editing purposes only and should be placed in the proper folder.\n\n"
         message = message + "Once this is done, then delete the imported components and re-import the model."
         quarkx.msgbox("Missing Skin Textures:\n\n================================\n" + message, quarkpy.qutils.MT_INFORMATION, quarkpy.qutils.MB_OK)
+
 ### To register this Python plugin and put it on the importers menu.
 import quarkpy.qmdlbase
-quarkpy.qmdlbase.RegisterMdlImporter(".md5 Doom3\Quake4 Importer", ".md5mesh file", "*.md5mesh", loadmodel)
+import ie_md5_import # This imports itself to be passed along so it can be used in mdlmgr.py later.
+quarkpy.qmdlbase.RegisterMdlImporter(".md5 Doom3\Quake4 Importer", ".md5mesh file", "*.md5mesh", loadmodel, ie_md5_import)
+
+
+def dataformname(o, vtxcolorbtn=1):
+    "Returns the data form for this type of object 'o' (a model component) to use for the Specific/Args page."
+
+    skin_dlgdef = """
+    {
+      Help = "These are the Specific settings for Doom3\Quake4 (.md5mesh) model types."$0D
+             "md5 models use 'meshes' the same way that QuArK uses 'components'."$0D
+             "Each can have its own special Surface or skin texture settings."$0D
+             "These textures may or may not have 'shaders' that they use for special effects."$0D0D22
+             "shader file"$22" - Gives the full path and name of the .mtr material"$0D
+             "           shader file that the selected skin texture uses, if any."$0D22
+             "shader name"$22" - Gives the name of the shader located in the above file"$0D
+             "           that the selected skin texture uses, if any."$0D22
+             "skin name"$22" - The currently selected skin texture name."$0D22
+             "shader keyword"$22" - Gives the above shader 'keyword' that is used to identify"$0D
+             "          the currently selected skin texture used in the shader, if any."$0D22
+             "mesh shader"$22" - Contains the full text of this skin texture's shader, if any."$0D
+             "          This can be copied to a text file, changed and saved."
+      shader_file:    = {Typ="E"   Txt="shader file"  Hint="Gives the full path and name of the .mtr material"$0D"shader file that the selected skin texture uses, if any."}
+      shader_name:    = {Typ="E"   Txt="shader name"  Hint="Gives the name of the shader located in the above file"$0D"that the selected skin texture uses, if any."}
+      skin_name:      = {t_ModelEditor_texturebrowser = ! Txt="skin name"    Hint="The currently selected skin texture name."}
+      shader_keyword: = {Typ="E"   Txt="shader keyword"  Hint="Gives the above shader 'keyword' that is used to identify"$0D"the currently selected skin texture used in the shader, if any."}
+      mesh_shader:    = {Typ="M"  Txt = "mesh shader"  Hint="Contains the full text of this skin texture's shader, if any."$0D"This can be copied to a text file, changed and saved."}
+    }
+    """
+
+    DummyItem = o
+    while (DummyItem.type != ":mc"): # Gets the object's model component.
+        DummyItem = DummyItem.parent
+    if DummyItem.type == ":mc":
+        comp = DummyItem
+        # This sections handles the data for this model type skin page form.
+        # This makes sure what is selected is a model skin, if so it returns the Skin page data to make the form with.
+        if len(comp.dictitems['Skins:sg'].subitems) == 0 or o in comp.dictitems['Skins:sg'].subitems:
+            formobj = quarkx.newobj("md5_mc:form")
+            formobj.loadtext(skin_dlgdef)
+            return formobj, vtxcolorbtn
+    else:
+        return None, None
+
+
+def dataforminput(o):
+    "Returns the default settings or input data for this type of object 'o' (a model component) to use for the Specific/Args page."
+
+    editor = quarkpy.mdleditor.mdleditor
+
+    DummyItem = o
+    while (DummyItem.type != ":mc"): # Gets the object's model component.
+        DummyItem = DummyItem.parent
+    if DummyItem.type == ":mc":
+        comp = DummyItem
+        # This sections handles the data for this model type skin page form.
+        # This makes sure what is selected is a model skin, if so it fills the Skin page data and adds the items to the component.
+        if len(comp.dictitems['Skins:sg'].subitems) == 0 or o in comp.dictitems['Skins:sg'].subitems:
+            if not comp.dictspec.has_key('shader_file'):
+                comp['shader_file'] = "None"
+            if not comp.dictspec.has_key('shader_name'):
+                comp['shader_name'] = "None"
+            if not comp.dictspec.has_key('skin_name'):
+                if len(comp.dictitems['Skins:sg'].subitems) != 0:
+                   comp['skin_name'] = o.name
+                else:
+                   comp['skin_name'] = "no skins exist"
+            else:
+                if len(comp.dictitems['Skins:sg'].subitems) != 0:
+                   comp['skin_name'] = o.name
+                else:
+                   comp['skin_name'] = "no skins exist"
+            if not comp.dictspec.has_key('shader_keyword'):
+                if o.dictspec.has_key("shader_keyword"):
+                    comp['shader_keyword'] = o.dictspec['shader_keyword']
+                else:
+                    comp['shader_keyword'] = "None"
+            else:
+                if o.dictspec.has_key("shader_keyword"):
+                    comp['shader_keyword'] = o.dictspec['shader_keyword']
+                else:
+                    comp['shader_keyword'] = "None"
+            if not comp.dictspec.has_key('mesh_shader'):
+                comp['mesh_shader'] = "None"
 
 
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.1  2008/12/05 09:30:14  cdunde
+# Added setup file for Doom3 Quake4 .md5mesh and .md5anim model importing.
+#
 #
 
