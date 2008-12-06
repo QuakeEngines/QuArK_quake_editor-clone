@@ -540,9 +540,9 @@ class ModelLayout(BaseLayout):
         if (DummyItem is not None and len(sl) == 1 and sl[0].type != ":bound" and sl[0].type != ":tagframe" and sl[0].type != ":bone" and sl[0].type != ":mc") or (DummyItem is not None and len(sl) > 1 and sl[0].type != ":bound" and sl[0].type != ":tagframe" and sl[0].type != ":bone" and sl[1].type != ":bone" and (sl[0].type != ":mc")):
             ### This section handles the model importer\exporter default settings and data input for the Specifics/Args page..
             for filetype in range(len(SFTexts)):
-                if sfbtn.caption == SFTexts[filetype] and sl[0].type == ':mf':
+                if sfbtn.caption == SFTexts[filetype]:
                    filename = IEfile[filetype]
-                   filename.dataforminput(DummyItem)
+                   filename.dataforminput(sl[0])
         ### This section handles the Bones default settings and data input for the Specifics/Args page..
         # Sets self.xxxx_color to a bone's handles colors, when selected,
         # for comparison , in the "filldataform" function, if a handle color is changed.
@@ -763,11 +763,6 @@ class ModelLayout(BaseLayout):
             ### and any data input for the Specifics/Args page.
             if sl[0].type == ":mc":
                 selitem = sl[0]
-                for filetype in range(len(SFTexts)):
-                    if sfbtn.caption == SFTexts[filetype]:
-                        filename = IEfile[filetype]
-                        filename.dataforminput(sl[0])
-                        self.dataform.setdata(sl, formobj)
                 try:
                     self.comp_color1 = selitem.dictspec['comp_color1']
                     for view in self.views:
@@ -1421,6 +1416,10 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.89  2008/12/04 23:47:49  cdunde
+#To allow what subitem of a component is selected to be passed on
+#to get the proper Specifics page form for that type of item.
+#
 #Revision 1.88  2008/12/01 04:53:54  cdunde
 #Update for component colors functions for OpenGL source code corrections.
 #

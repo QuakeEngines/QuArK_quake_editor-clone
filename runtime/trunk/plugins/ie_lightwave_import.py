@@ -2253,7 +2253,7 @@ def dataformname(o, vtxcolorbtn=1):
              "          Click the color selector button to the right and pick a color."$0D22
              "IMAG"$22" - Image Map Image. Indicates that this surface is an image map."$0D
              "        Check this if 'CHAN' & 'IMAG' are checked and 'OPAC' is NOT checked."
-      lwo_NAME:   = {t_texturebrowser = ! Txt="NAME"    Hint="Surface level control name,"$0D"which is its main skin texture name."}
+      lwo_NAME:   = {t_ModelEditor_texturebrowser = ! Txt="NAME"    Hint="Surface level control name,"$0D"which is its main skin texture name."}
       lwo_UVNAME: = {Typ="E"   Txt="UVNAME"  Hint="Special UV process control name (over rides 'NAME'),"$0D"type in any name you want to use."}
       lwo_COLR:   = {          Txt="COLR"                                                                          }
       lwo_COLR:   = {Typ="L"   Txt="COLR"    Hint="Color to use for this components uv vertex color mapping."$0D"Click the color selector button to the right and pick a color."}
@@ -2261,28 +2261,43 @@ def dataformname(o, vtxcolorbtn=1):
     }
     """
 
-    formobj = quarkx.newobj("lwo_mc:form")
-    formobj.loadtext(dlgdef)
-    return formobj, vtxcolorbtn
+    DummyItem = o
+    while (DummyItem.type != ":mc"): # Gets the object's model component.
+        DummyItem = DummyItem.parent
+    o = DummyItem
+    if o.type == ":mc": # Just makes sure what we have is a model component.
+        formobj = quarkx.newobj("lwo_mc:form")
+        formobj.loadtext(dlgdef)
+        return formobj, vtxcolorbtn
+    else:
+        return None, None
 
 
 def dataforminput(o):
     "Returns the default settings or input data for this type of object 'o' (a model component) to use for the Specific/Args page."
 
-    if not o.dictspec.has_key('lwo_NAME'):
-        if len(o.dictitems['Skins:sg'].subitems) != 0:
-           o['lwo_NAME'] = o.dictitems['Skins:sg'].subitems[0].name
-        else:
-           o['lwo_NAME'] = "no skins exist"
-  #  if not o.dictspec.has_key('lwo_UVNAME'):
-  #      o['lwo_UVNAME'] = o.dictitems['Skins:sg'].subitems[0].name
-    if not o.dictspec.has_key('lwo_COLR'):
-        o['lwo_COLR'] = "0.75 0.75 0.75"
+    DummyItem = o
+    while (DummyItem.type != ":mc"): # Gets the object's model component.
+        DummyItem = DummyItem.parent
+    o = DummyItem
+    if o.type == ":mc": # Just makes sure what we have is a model component.
+        if not o.dictspec.has_key('lwo_NAME'):
+            if len(o.dictitems['Skins:sg'].subitems) != 0:
+               o['lwo_NAME'] = o.dictitems['Skins:sg'].subitems[0].name
+            else:
+               o['lwo_NAME'] = "no skins exist"
+      #  if not o.dictspec.has_key('lwo_UVNAME'):
+      #      o['lwo_UVNAME'] = o.dictitems['Skins:sg'].subitems[0].name
+        if not o.dictspec.has_key('lwo_COLR'):
+            o['lwo_COLR'] = "0.75 0.75 0.75"
 
 
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.10  2008/11/19 06:16:22  cdunde
+# Bones system moved to outside of components for Model Editor completed.
+#
 # Revision 1.9  2008/11/17 03:03:53  cdunde
 # Minor correction to avoid a Specifics page error if no skin exist.
 #
