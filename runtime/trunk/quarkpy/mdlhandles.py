@@ -362,7 +362,7 @@ class ModelFaceHandle(qhandles.GenericHandle):
         if (flagsmouse == 2056 or flagsmouse == 2060):
             return
         if (flagsmouse == 1032 or flagsmouse == 1036):
-            if ((isinstance(editor.dragobject.handle, LinSideHandle)) or (isinstance(editor.dragobject.handle, LinCornerHandle)) or (isinstance(editor.dragobject.handle, LinBoneCornerHandle)) or (quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1")) and quarkx.setupsubset(SS_MODEL, "Options")['NFDL'] is None:
+            if ((isinstance(editor.dragobject.handle, LinSideHandle)) or (isinstance(editor.dragobject.handle, LinCornerHandle)) or (isinstance(editor.dragobject.handle, LinBoneCornerHandle)) or (quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1" and not isinstance(editor.dragobject, qhandles.Rotator2D))) and quarkx.setupsubset(SS_MODEL, "Options")['NFDL'] is None:
                 return
 
         if (flagsmouse == 1040 or flagsmouse == 1056):
@@ -6178,6 +6178,10 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.160  2008/11/22 05:09:42  cdunde
+#Selects bone and first frame of bone handle component if not currentcomponent
+#to avoid errors of menu vertex selection.
+#
 #Revision 1.159  2008/11/19 06:16:23  cdunde
 #Bones system moved to outside of components for Model Editor completed.
 #
