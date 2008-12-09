@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.47  2008/11/17 19:14:15  danielpharos
+Fixed (illegally) setting Text on DropDownList-style ComboBoxes.
+
 Revision 1.46  2008/11/08 15:56:08  danielpharos
 Cleaned up some SpecNameOf-usage.
 
@@ -1767,6 +1770,9 @@ var
  Lu4: array[1..4] of TDouble;
  Valeurs: vec3_t;
  ValeursV: TVect;
+ sTextRows: String;
+ TextRows: Integer;
+ sScrollBars: String;
 begin
  if Form=Nil then Exit;
  case Msg.wParam of
@@ -2358,9 +2364,27 @@ begin
 {Decker 2002-12-29}
            'M': begin { Memo / Multiline-text-displaybox }
                  Icone := 0;
+                 sTextRows := Values['Rows'];
+                 if sTextRows<>'' then
+                   TextRows := StrToIntDef(sTextRows, 0)
+                 else
+                   TextRows := 3;
+                 if TextRows < 1 then
+                   TextRows := 1
+                 else if TextRows > 35 then  //Just some arbitrary max...
+                   TextRows := 35;
                  Memo := TMemo.Create(Self);
-                 Memo.SetBounds(X, Y, W, 3 * LineHeight); { hardcoded to display 3 lines. TODO: Calculate the most optimal height, considering WordWrap and the amount of text in ArgValue. }
-                 ExtraVertSpace := 2 * LineHeight; { to adjust height for Y below. }
+                 Memo.SetBounds(X, Y, W, TextRows * LineHeight); { TODO: Maybe calculate the most optimal height, considering WordWrap and the amount of text in ArgValue. }
+                 ExtraVertSpace := (TextRows - 1) * LineHeight; { to adjust height for Y below. }
+                 sScrollBars := Values['Scrollbars'];
+                 if sScrollBars = 'H' then
+                   Memo.ScrollBars := ssHorizontal
+                 else if sScrollBars = 'V' then
+                   Memo.ScrollBars := ssVertical
+                 else if sScrollBars = '1' then
+                   Memo.ScrollBars := ssBoth
+                 else
+                   Memo.ScrollBars := ssNone;
                  Memo.Parent := SB;
                  Memo.Hint := HintMsg;
                  Memo.Tag := I+1;
