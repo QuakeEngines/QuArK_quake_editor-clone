@@ -1,4 +1,4 @@
-title: Bones Structure
+title: Adding Bones & Their Structure
 author: cdunde
 
 <table border=0 cellspacing=0>

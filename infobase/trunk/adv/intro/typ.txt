@@ -1,5 +1,27 @@
 title: Guide to Typ's
-author: Decker
+author: cdunde
+
+Typ's are used in all kinds of forms but the most common are <a href="adv.quarkpy.gui.html#dialogs">Dialog Boxes</a>.
+These are placed within tripple double quotes <g>"""</g> and ends with them also, because it's a multi-line string.<br>
+A <b>very important</b> thing to know and remember about this is how to use a Python defined variable within this
+tripple double quotes area.
+
+First the variable, which can also be a stored setting, must be defind before and outside of the above area like this:
+<code>
+    NbrOfLines = "10"
+</code>
+Then that variable can be used within the tripple double quotes area like this:
+
+<code>
+    mesh_shader: = {Typ="M"
+                    Rows = """ + chr(34) + NbrOfLines + chr(34) + """
+                    Scrollbars="1"
+                    Txt = "mesh shader"
+                    Hint="Contains the full text of this skin texture's shader, if any."$0D
+                         "This can be copied to a text file, changed and saved."
+                   }
+</code>
+The <g>chr(34)</g> items, which is for a single double quote, must be used like this to avoid confusion with the tripple double quotes.
 
 Here is a list of the most common used Typ's in .QRK :form definitions.
 
@@ -366,12 +388,23 @@ extedit:tbbtn = {
              11111660FFFFFFFF91
          $111160F777787F79111660FFFFFFFF7F911660FFFFFFFF7069
              666000000000066666
+    Rows = "10"
+    Scrollbars = "V"
     }
 </pre>
 <u><i>Specifics:</i></u><br>
-<u>Msg</u> - message to send<br> 
-<u>Cap</u> - caption of the button/menu<br>
-<u>Icon</u> - hex raw-data of a 16*16 pixel 16 colors icon (same as for Typ "I") 
+<u>Msg</u> - Message to send.<br> 
+<u>Cap</u> - Caption of the button/menu.<br>
+<u>Icon</u> - Hex raw-data of a 16*16 pixel 16 colors icon (same as for Typ "I").<br>
+<u>Rows</u> - Set this to the string number value of rows of text to display at once (max:35, default: 3).<br>
+<u>Scrollbars</u> - Set this to add scrollbars to the control.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Three values are available: (default: No scrollbars)
+<pre>
+    -"H": The control will have a horizontal scrollbar.
+    -"V": The control will have a vertical scrollbar.
+    -"1": The control will have both a horizontal AND a vertical scrollbar.
+Any other setting will result in no scrollbars.
+</pre>
 </td></tr>
 
 <tr><td align=center>

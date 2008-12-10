@@ -96,10 +96,33 @@ Next comes the 'dialog definition', dlgdef:
     """
 </code>
 
-This is just a form, represented in .qrk format.  The value
-to be assigned to dlgdef begins with triple double quotes,
+This is just a form, represented in .qrk format.
+The value to be assigned to dlgdef begins with triple double quotes,
 and ends with them too, because it's a multi-line string.
 Note that it can happily contain ordinary solo double quotes.
+A detailed discription of the <a href="adv.intro.html#typ">Typ</a>
+items that it uses is located in the <a href="adv.intro.html#typ">Guide to Typ's</a>
+section of these docs.
+
+A <b>very important</b> thing to know and remember about this is how to use a Python defined variable within this
+tripple double quotes area.
+
+First the variable, which can also be a stored setting, must be defind before and outside of the above area like this:
+<code>
+    NbrOfLines = "10"
+</code>
+Then that variable can be used within the tripple double quotes area like this:
+
+<code>
+    mesh_shader: = {Typ="M"
+                    Rows = """ + chr(34) + NbrOfLines + chr(34) + """
+                    Scrollbars="1"
+                    Txt = "mesh shader"
+                    Hint="Contains the full text of this skin texture's shader, if any."$0D
+                         "This can be copied to a text file, changed and saved."
+                   }
+</code>
+The <g>chr(34)</g> items, which is for a single double quote, must be used like this to avoid confusion with the tripple double quotes.
 
 It starts out with a style and a caption; the style is
 a number obtained by adding these flags (from quarkpy.qutils):

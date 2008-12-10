@@ -9,7 +9,7 @@ To begin with, there a numbers of ways to get started. You can look for model im
 someone else has already written to go by as a guide<br>
 (no I'm not suggesting that you steal code) or you can look for them written in other computer languages
 or you can start from scratch using a model's format doc.<br>
-Not matter the choice, I highly recommend that you obtain a copy of the model's format documentation as a
+No matter the choice, I highly recommend that you obtain a copy of the model's format documentation as a
 guide to go by as you create your own code because many times other files may have parts that have been
 left out, skipped over or completely incorrect to start with. The format doc will help you spot these
 kinds of situations and avoid a lot of wasted time. Conversely, having other code to go by as a guide,
@@ -44,6 +44,9 @@ bottom add the following code for your files history:
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.1  2008/07/28 22:40:28  cdunde
+# Update
+#
 #
 </code>
 The file name <b>MUST</b> start with <b>ie_</b> or it will not show up on the QuArK Importer\Exporter menu,
