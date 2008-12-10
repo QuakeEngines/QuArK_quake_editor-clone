@@ -2238,7 +2238,7 @@ import ie_lightwave_import # This imports itself to be passed along so it can be
 quarkpy.qmdlbase.RegisterMdlImporter(".lwo LightWave Importer", ".lwo file", "*.lwo", loadmodel, ie_lightwave_import)
 
 
-def dataformname(o, vtxcolorbtn=1):
+def dataformname(o):
     "Returns the data form for this type of object 'o' (a model component) to use for the Specific/Args page."
 
     dlgdef = """
@@ -2261,6 +2261,14 @@ def dataformname(o, vtxcolorbtn=1):
     }
     """
 
+    from quarkpy.qeditor import ico_dict # Get the dictionary list of all icon image files available.
+    import quarkpy.qtoolbar              # Get the toolbar functions to make the button with.
+    editor = quarkpy.mdleditor.mdleditor # Get the editor.
+    ico_maped = ico_dict['ico_maped']    # Just to shorten our call later.
+    icon_btns = {}                       # Setup our button list, as a dictionary list, to return at the end.
+    vtxcolorbtn = quarkpy.qtoolbar.button(editor.layout.colorclick, "Color UV Vertex mode||When active, puts the editor vertex selection into this mode and uses the 'COLR' specific setting as the color to designate these types of vertexes.\n\nIt also places the editor into Vertex Selection mode if not there already and clears any selected vertexes to protect from including unwanted ones by mistake.\n\nAny vertexes selected in this mode will become Color UV Vertexes and added to the component as such. Click the InfoBase button or press F1 again for more detail.|intro.modeleditor.dataforms.html", ico_maped, 10)
+    icon_btns['color'] = vtxcolorbtn     # Put our button in the above list to return.
+
     DummyItem = o
     while (DummyItem.type != ":mc"): # Gets the object's model component.
         DummyItem = DummyItem.parent
@@ -2268,7 +2276,7 @@ def dataformname(o, vtxcolorbtn=1):
     if o.type == ":mc": # Just makes sure what we have is a model component.
         formobj = quarkx.newobj("lwo_mc:form")
         formobj.loadtext(dlgdef)
-        return formobj, vtxcolorbtn
+        return formobj, icon_btns
     else:
         return None, None
 
@@ -2291,10 +2299,78 @@ def dataforminput(o):
         if not o.dictspec.has_key('lwo_COLR'):
             o['lwo_COLR'] = "0.75 0.75 0.75"
 
+"""
+SPECIAL NOTES FOR THIS IMPORTER
+
+in mdlmgr.py (about line 477) sets up button list for all importers and exporters to use)
+============
+(about line 477)
+        vtxcolorbtn = None # This allows the option of an importer\exporter to use the vertex color button on its form.
+( about lines 493-497 also same code lines 711-715 and again lines 1016-1020)
+                for filetype in range(len(SFTexts)):
+                    if sfbtn.caption == SFTexts[filetype] and DummyItem.type == ':mc':
+                        filename = IEfile[filetype]
+                        formobj, vtxcolorbtn = filename.dataformname(sl[0])
+                        break
+
+in mdlmgr.py (about line 409-420) sets up action for this button)
+============
+
+    def colorclick(self, btn):
+        if not MdlOption("VertexUVColor") or quarkx.setupsubset(SS_MODEL, "Options")['VertexUVColor'] == "0":
+            quarkx.setupsubset(SS_MODEL, "Options")['VertexUVColor'] = "1"
+            qtoolbar.toggle(btn)
+            btn.state = qtoolbar.selected
+            quarkx.update(self.editor.form)
+            self.editor.vtxcolorclick(btn)
+        else:
+            quarkx.setupsubset(SS_MODEL, "Options")['VertexUVColor'] = "0"
+            qtoolbar.toggle(btn)
+            btn.state = qtoolbar.normal
+            quarkx.update(self.editor.form)
+
+in mdlmgr.py (about line 510-516) sets up vtxcolorbtn button to go with above action)
+============
+
+        if m is not None and vtxcolorbtn is not None: # This allows the option of an importer\exporter to use the vertex color button on its form.
+            self.sfbtn.caption = "set model type" # to make sure the width of this button doesn't change
+            ico_maped=ico_dict['ico_maped']
+            vtxcolorbtn = qtoolbar.button(self.colorclick, "Color UV Vertex mode||When active, puts the editor vertex selection into this mode and uses the 'COLR' specific setting as the color to designate these types of vertexes.\n\nIt also places the editor into Vertex Selection mode if not there already and clears any selected vertexes to protect from including unwanted ones by mistake.\n\nAny vertexes selected in this mode will become Color UV Vertexes and added to the component as such. Click the InfoBase button or press F1 again for more detail.|intro.modeleditor.dataforms.html", ico_maped, 10)
+            self.buttons.update({"help": self.helpbtn, "sf": self.sfbtn, "color": vtxcolorbtn})
+            self.bb.buttons = [self.sfbtn, qtoolbar.widegap, self.helpbtn, vtxcolorbtn]
+            self.bb.margins = (0,0)
+
+in mdleditor.py (about lines 728-737 set up to receive action from above button)
+=============== (not completed, once it clears self.ModelVertexSelList = [] it )
+                (used that same list to get the vertexes to store in component.)
+
+    def vtxcolorclick(self, btn):
+        if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
+            self.ModelVertexSelList = []
+            self.linearbox = "True"
+            self.linear1click(btn)
+        else:
+            if self.ModelVertexSelList != []:
+                self.ModelVertexSelList = []
+                import mdlutils
+                mdlutils.Update_Editor_Views(self)
+
+TODO list
+=========
+1) All or as much code above should be moved to the importer.py file.
+
+2) Should clear the editor.ModelVertexSelList when clicked both on or off.
+
+3) Should use the editor.ModelVertexSelList while button is active to pass selected
+      vertexes to the current model component and store them as its own vtxcolorlist.
+"""
 
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.11  2008/12/06 19:29:26  cdunde
+# To allow Specific page form creation of various item types.
+#
 # Revision 1.10  2008/11/19 06:16:22  cdunde
 # Bones system moved to outside of components for Model Editor completed.
 #
