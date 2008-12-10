@@ -562,6 +562,14 @@ def loadmodel(root, filename, gamename, nomessage=0):
 
     editor.ok(undo, Component.shortname + " created")
 
+    comp = editor.Root.currentcomponent
+    skins = comp.findallsubitems("", ':sg')      # Gets the skin group.
+    if len(skins[0].subitems) != 0:
+        comp.currentskin = skins[0].subitems[0]      # To try and set to the correct skin.
+        quarkpy.mdlutils.Update_Skin_View(editor, 2) # Sends the Skin-view for updating and center the texture in the view.
+    else:
+        comp.currentskin = None
+
 ### To register this Python plugin and put it on the importers menu.
 import quarkpy.qmdlbase
 import ie_md2_import # This imports itself to be passed along so it can be used in mdlmgr.py later.
@@ -570,6 +578,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".md2 Quake2 Importer", ".md2 file", "*.md2
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.5  2008/11/19 06:16:22  cdunde
+# Bones system moved to outside of components for Model Editor completed.
+#
 # Revision 1.4  2008/10/29 04:25:34  cdunde
 # Minor correction.
 #
