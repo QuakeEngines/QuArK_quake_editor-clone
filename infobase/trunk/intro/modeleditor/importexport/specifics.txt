@@ -37,8 +37,10 @@ An example on how to call one would be like this:(shortened)
 You can see at the very end of the next to the last line of code above that we are using icon 10, the 11th one,
 from the maped-0.bmp and maped-1.bmp image files.
 
-The first argument of the quarkpy.qtoolbar.button call is <g>colorclick</g>. This is a function that will be called
-when the button is activated, clicked, that you create, define, in your import file.
+The first argument of the quarkpy.qtoolbar.button call is <g>colorclick</g>. This is the name of the function to call
+when the button is activated (or clicked) that you write, define, in your import file.<br>
+This name can be anything you wish and the actual function can do just about anything you want it to do in the editor,<br>
+such as storing vertex and\or triangle indexes and other needed data within the component that will be needed for exporting later.
 
 The second argument does a couple of things:
 <ul>

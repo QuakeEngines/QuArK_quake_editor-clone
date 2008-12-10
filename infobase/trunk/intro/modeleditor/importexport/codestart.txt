@@ -97,7 +97,7 @@ from one function to another and even have things <g>returned</g> to be used lat
 
 <a name="undo1"></a>
 Finally we call the <a href="src.quarkx.html#moduleundo">editor.ok</a> of the
-<a href="src.quarkx.html#moduleundo">undo function</a>
+<a href="src.quarkx.html#moduleundo">undo function</a>, set the current component skin (for proper selection)
 and our job is done....the model should now be imported. (SUCCESS ! ...well at least once we finish.)
 
 One last point here, have you noticed how you have also been using some of the
@@ -128,6 +128,14 @@ which are whole sections of added functions for each <g>module</g>.
     ie_utils.default_end_logging(filename, "IM", starttime) ### Use "EX" for exporter text, "IM" for importer text.
 
     editor.ok(undo, Component.shortname + " created")
+
+    comp = editor.Root.currentcomponent
+    skins = comp.findallsubitems("", ':sg')      # Gets the skin group.
+    if len(skins[0].subitems) != 0:
+        comp.currentskin = skins[0].subitems[0]      # To try and set to the correct skin.
+        quarkpy.mdlutils.Update_Skin_View(editor, 2) # Sends the Skin-view for updating and center the texture in the view.
+    else:
+        comp.currentskin = None
 </code>
 
 If you were also importing <a href="intro.modeleditor.editelements.html#bones">Bones</a>
