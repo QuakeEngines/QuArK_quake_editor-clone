@@ -27,10 +27,10 @@ An example on how to call one would be like this:(shortened)
     from quarkpy.qeditor import ico_dict # Get the dictionary list of all icon image files available.
     import quarkpy.qtoolbar              # Get the toolbar functions to make the button with.
     ico_maped=ico_dict['ico_maped']      # Just to shorten our call later.
-    icon_btns = []                       # Setup our button list to return at the end.
+    icon_btns = {}                       # Setup our button list, as a dictionary list, to return at the end.
                                          # Make our first button, below, to go into the above list.
-    icon_btn1 = quarkpy.qtoolbar.button(colorclick, "Color UV Vertex mode||When active, puts the editor\nvertex selection into this mode.|intro.modeleditor.dataforms.html", ico_maped, 10)
-    icon_btns = icon_btns + [icon_btn1]  # Put our button in the above list to return.
+    vtxcolorbtn = quarkpy.qtoolbar.button(colorclick, "Color UV Vertex mode||When active, puts the editor\nvertex selection into this mode.|intro.modeleditor.dataforms.html", ico_maped, 10)
+    icon_btns['color'] = vtxcolorbtn     # Put our button in the above list to return.
 </code>
 <table border=0 cellspacing=0>
 <tr><td valign=top>
