@@ -2877,6 +2877,59 @@ def TexturePixelLocation(editor, view, x, y, object=None):
 
 
 
+def Update_Skin_View(editor, option=1):
+    "Updates the Skin-view using virous option settings."
+    "option = 0 updates just the upper section."
+    "option = 1 updates the upper section and redraws the lower section."
+    "option = 2 same a 1 and resets the texture positioning in the lower section."
+
+    import mdlhandles
+    from mdlhandles import SkinView1
+    if SkinView1 is not None:
+        comp = editor.Root.currentcomponent
+        skin = comp.currentskin
+        if option == 0:
+            # Updates the upper section only.
+            q = editor.layout.skinform.linkedobjects[0]
+            q["triangles"] = str(len(comp.triangles))
+            q["ownedby"] = comp.shortname
+            if skin is not None:
+                q["texture"] = skin.name
+                texWidth,texHeight = skin["Size"]
+                q["skinsize"] = (str(int(texWidth)) + " wide by " + str(int(texHeight)) + " high")
+            else:
+                q["texture"] = "no skins exist for this component"
+                q["skinsize"] = "not available"
+            editor.layout.skinform.setdata(q, editor.layout.skinform.form)
+            SkinView1.invalidate()
+        if option == 1:
+            # Updates the upper section.
+            editor.layout.selectskin(skin)
+            editor.layout.mpp.resetpage()
+            # Updates the lower (view) section.
+            mdlhandles.buildskinvertices(editor, SkinView1, editor.layout, comp, skin)
+        if option == 2:
+            # Updates the upper section.
+            editor.layout.selectskin(skin)
+            editor.layout.mpp.resetpage()
+            # Updates the lower (view) section and centers the texture.
+            viewWidth, viewHeight = SkinView1.clientarea
+            try:
+                texWidth, texHeight = skin["Size"]
+            except:
+                texWidth, texHeight = SkinView1.clientarea
+            if texWidth > texHeight:
+                SkinView1.info["scale"] = viewWidth / texWidth
+            elif texWidth < texHeight:
+                SkinView1.info["scale"] = viewHeight / texHeight
+            elif viewWidth > viewHeight:
+                SkinView1.info["scale"] = viewHeight / texHeight
+            else:
+                SkinView1.info["scale"] = viewWidth / texWidth
+            SkinView1.info["center"] = SkinView1.screencenter = quarkx.vect(0,0,0)
+            setprojmode(SkinView1)
+
+
 def Update_Editor_Views(editor, option=4):
     "Updates the Editors views once something has chaged in the Skin-view,"
     "such as synchronized or added 'skin mesh' vertex selections."
@@ -3233,6 +3286,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.92  2008/11/24 22:51:10  cdunde
+#To update bone and editor.ModelComponentList after new component is created. Additional fix.
+#
 #Revision 1.91  2008/11/22 05:08:55  cdunde
 #To update bone and editor.ModelComponentList after new component is created.
 #
