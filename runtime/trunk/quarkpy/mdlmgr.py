@@ -474,7 +474,7 @@ class ModelLayout(BaseLayout):
         except:
             formobj = None
 
-        vtxcolorbtn = None # This allows the option of an importer\exporter to use the vertex color button on its form.
+        icon_btns = None # This allows the option of an importer\exporter to use the vertex color button on its form.
         try:
             # Tries to use the data returned to make the selected item's type form again.
             if sl[0].type == ":bound": # Sets the bound frame form items.
@@ -493,7 +493,8 @@ class ModelLayout(BaseLayout):
                 for filetype in range(len(SFTexts)):
                     if sfbtn.caption == SFTexts[filetype] and DummyItem.type == ':mc':
                         filename = IEfile[filetype]
-                        formobj, vtxcolorbtn = filename.dataformname(sl[0])
+                        formobj, icon_btns = filename.dataformname(sl[0])
+
                         break
                     else:
                         formobj = None
@@ -507,12 +508,14 @@ class ModelLayout(BaseLayout):
             formobj = None # If no form data is found, then set to None and just go on, there is no form for this item.
             self.dataform.setdata(sl, formobj)
 
-        if m is not None and vtxcolorbtn is not None: # This allows the option of an importer\exporter to use the vertex color button on its form.
+        if m is not None and icon_btns is not None: # This allows the option of an importer\exporter to use the vertex color button on its form.
             self.sfbtn.caption = "set model type" # to make sure the width of this button doesn't change
-            ico_maped=ico_dict['ico_maped']
-            vtxcolorbtn = qtoolbar.button(self.colorclick, "Color UV Vertex mode||When active, puts the editor vertex selection into this mode and uses the 'COLR' specific setting as the color to designate these types of vertexes.\n\nIt also places the editor into Vertex Selection mode if not there already and clears any selected vertexes to protect from including unwanted ones by mistake.\n\nAny vertexes selected in this mode will become Color UV Vertexes and added to the component as such. Click the InfoBase button or press F1 again for more detail.|intro.modeleditor.dataforms.html", ico_maped, 10)
-            self.buttons.update({"help": self.helpbtn, "sf": self.sfbtn, "color": vtxcolorbtn})
-            self.bb.buttons = [self.sfbtn, qtoolbar.widegap, self.helpbtn, vtxcolorbtn]
+            specifics_btns = {"help": self.helpbtn, "sf": self.sfbtn}
+            self.bb.buttons = [self.sfbtn, qtoolbar.widegap, self.helpbtn]
+            for btn in icon_btns.keys():
+                specifics_btns[btn] = icon_btns[btn]
+                self.bb.buttons = self.bb.buttons + [icon_btns[btn]]
+            self.buttons.update(specifics_btns)
             self.bb.margins = (0,0)
 
         help = ((formobj is not None) and formobj["Help"]) or ""
@@ -711,7 +714,7 @@ class ModelLayout(BaseLayout):
                 for filetype in range(len(SFTexts)):
                     if sfbtn.caption == SFTexts[filetype] and DummyItem.type == ':mc':
                         filename = IEfile[filetype]
-                        formobj, vtxcolorbtn = filename.dataformname(sl[0])
+                        formobj, icon_btns = filename.dataformname(sl[0])
                         break
                     else:
                         formobj = None
@@ -1016,7 +1019,7 @@ class ModelLayout(BaseLayout):
                         for filetype in range(len(SFTexts)):
                             if sfbtn.caption == SFTexts[filetype] and DummyItem.type == ':mc':
                                 filename = IEfile[filetype]
-                                formobj, vtxcolorbtn = filename.dataformname(sl[0])
+                                formobj, icon_btns = filename.dataformname(sl[0])
                                 break
                             else:
                                 formobj = None
@@ -1416,6 +1419,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.90  2008/12/06 19:29:26  cdunde
+#To allow Specific page form creation of various item types.
+#
 #Revision 1.89  2008/12/04 23:47:49  cdunde
 #To allow what subitem of a component is selected to be passed on
 #to get the proper Specifics page form for that type of item.
