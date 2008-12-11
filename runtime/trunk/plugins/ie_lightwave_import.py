@@ -2264,9 +2264,9 @@ def dataformname(o):
     from quarkpy.qeditor import ico_dict # Get the dictionary list of all icon image files available.
     import quarkpy.qtoolbar              # Get the toolbar functions to make the button with.
     editor = quarkpy.mdleditor.mdleditor # Get the editor.
-    ico_maped = ico_dict['ico_maped']    # Just to shorten our call later.
+    ico_mdlskv = ico_dict['ico_mdlskv']  # Just to shorten our call later.
     icon_btns = {}                       # Setup our button list, as a dictionary list, to return at the end.
-    vtxcolorbtn = quarkpy.qtoolbar.button(editor.layout.colorclick, "Color UV Vertex mode||When active, puts the editor vertex selection into this mode and uses the 'COLR' specific setting as the color to designate these types of vertexes.\n\nIt also places the editor into Vertex Selection mode if not there already and clears any selected vertexes to protect from including unwanted ones by mistake.\n\nAny vertexes selected in this mode will become Color UV Vertexes and added to the component as such. Click the InfoBase button or press F1 again for more detail.|intro.modeleditor.dataforms.html", ico_maped, 10)
+    vtxcolorbtn = quarkpy.qtoolbar.button(editor.layout.colorclick, "Color UV Vertex mode||When active, puts the editor vertex selection into this mode and uses the 'COLR' specific setting as the color to designate these types of vertexes.\n\nIt also places the editor into Vertex Selection mode if not there already and clears any selected vertexes to protect from including unwanted ones by mistake.\n\nAny vertexes selected in this mode will become Color UV Vertexes and added to the component as such. Click the InfoBase button or press F1 again for more detail.|intro.modeleditor.dataforms.html#specsargsview", ico_mdlskv, 5)
     icon_btns['color'] = vtxcolorbtn     # Put our button in the above list to return.
 
     DummyItem = o
@@ -2368,6 +2368,10 @@ TODO list
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.12  2008/12/10 20:24:48  cdunde
+# To move more code into this importer from main mdl files
+# and posted notes on related code and things to do still.
+#
 # Revision 1.11  2008/12/06 19:29:26  cdunde
 # To allow Specific page form creation of various item types.
 #
