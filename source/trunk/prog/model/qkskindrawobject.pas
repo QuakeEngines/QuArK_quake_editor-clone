@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2007/09/10 10:24:15  danielpharos
+Build-in an Allowed Parent check. Items shouldn't be able to be dropped somewhere where they don't belong.
+
 Revision 1.9  2007/01/08 19:28:41  danielpharos
 Splitted the Ed3DFX file into two separate renderers: Software and Glide
 
@@ -150,20 +153,23 @@ begin
   //  draw net connecting vertices
   try
     tris:=tris_o;
-    getmem(pa_o, sizeof(TPOintProj)*3);
-    for i:=0 to numtris-1 do begin
-      pa:=pa_o;
-      for j:=0 to 2 do begin
-        va.x:=tris^[j].X;
-        va.y:=tris^[j].Y;
-        va.z:=0;
-        pA^:=CCoord.Proj(vA);
-        inc(pa);
+    getmem(pa_o, sizeof(TPointProj)*3);
+    try
+      for i:=0 to numtris-1 do begin
+        pa:=pa_o;
+        for j:=0 to 2 do begin
+          va.x:=tris^[j].X;
+          va.y:=tris^[j].Y;
+          va.z:=0;
+          pA^:=CCoord.Proj(vA);
+          inc(pa);
+        end;
+        CCoord.Polygon95f(pa_o^,3, false);
+        inc(tris);
       end;
-      CCoord.Polygon95f(pa_o^,3, false);
-      inc(tris);
+    finally
+      freemem(pa_o);
     end;
-    freemem(pa_o);
   finally
     FreeMem(Tris_o);
   end;
