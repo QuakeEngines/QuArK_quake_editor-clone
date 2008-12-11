@@ -1377,7 +1377,22 @@ quarkpy.qmdlbase.RegisterMdlImporter(".md5 Doom3\Quake4 Importer", ".md5mesh fil
 def dataformname(o):
     "Returns the data form for this type of object 'o' (a model component) to use for the Specific/Args page."
 
-    NbrOfLines = "10"
+    import quarkx
+    if o.parent.parent.dictspec.has_key("shader_lines"):
+        if int(o.parent.parent.dictspec['shader_lines']) < 3:
+            o.parent.parent['shader_lines'] = "3"
+        if int(o.parent.parent.dictspec['shader_lines']) > 35:
+            o.parent.parent['shader_lines'] = "35"
+        NbrOfShaderLines = o.parent.parent.dictspec['shader_lines']
+        quarkx.setupsubset(3, "Options")["NbrOfShaderLines"] = NbrOfShaderLines
+    else:
+        if quarkx.setupsubset(3, "Options")["NbrOfShaderLines"] is not None:
+            NbrOfShaderLines = quarkx.setupsubset(3, "Options")["NbrOfShaderLines"]
+            o.parent.parent.dictspec['shader_lines'] = NbrOfShaderLines
+        else:
+            NbrOfShaderLines = "8"
+            o.parent.parent.dictspec['shader_lines'] = NbrOfShaderLines
+            quarkx.setupsubset(3, "Options")["NbrOfShaderLines"] = NbrOfShaderLines
 
     skin_dlgdef = """
     {
@@ -1392,6 +1407,7 @@ def dataformname(o):
              "skin name"$22" - The currently selected skin texture name."$0D22
              "shader keyword"$22" - Gives the above shader 'keyword' that is used to identify"$0D
              "          the currently selected skin texture used in the shader, if any."$0D22
+             "shader lines"$22" - Number of lines to display in window below, max. = 35."$0D22
              "edit shader"$22" - Opens shader below in a text editor."$0D22
              "mesh shader"$22" - Contains the full text of this skin texture's shader, if any."$0D
              "          This can be copied to a text file, changed and saved."
@@ -1399,6 +1415,7 @@ def dataformname(o):
       shader_name:    = {Typ="E"   Txt="shader name"  Hint="Gives the name of the shader located in the above file"$0D"that the selected skin texture uses, if any."}
       skin_name:      = {t_ModelEditor_texturebrowser = ! Txt="skin name"    Hint="The currently selected skin texture name."}
       shader_keyword: = {Typ="E"   Txt="shader keyword"  Hint="Gives the above shader 'keyword' that is used to identify"$0D"the currently selected skin texture used in the shader, if any."}
+      shader_lines:   = {Typ="EU"  Txt="shader lines"    Hint="Number of lines to display in window below, max. = 35."}
       extedit:tbbtn   = {
                          Typ = "M"
                          Txt = "edit shader ---->"
@@ -1410,16 +1427,16 @@ def dataformname(o):
                                 $1111807760FF7FF91111107760FFFFFF9111117660FF877FF911111660FFFFFFFF91
                                 $111160F777787F79111660FFFFFFFF7F911660FFFFFFFF7069666000000000066666
                         }
-      mesh_shader:    = {Typ="M"  Rows = """ + chr(34) + NbrOfLines + chr(34) + """ Scrollbars="1" Txt = "mesh shader"  Hint="Contains the full text of this skin texture's shader, if any."$0D"This can be copied to a text file, changed and saved."}
+      mesh_shader:    = {Typ="M"  Rows = """ + chr(34) + NbrOfShaderLines + chr(34) + """ Scrollbars="1" Txt = "mesh shader"  Hint="Contains the full text of this skin texture's shader, if any."$0D"This can be copied to a text file, changed and saved."}
     }
     """
 
     from quarkpy.qeditor import ico_dict # Get the dictionary list of all icon image files available.
     import quarkpy.qtoolbar              # Get the toolbar functions to make the button with.
     editor = quarkpy.mdleditor.mdleditor # Get the editor.
-    ico_maped = ico_dict['ico_maped']    # Just to shorten our call later.
+    ico_mdlskv = ico_dict['ico_mdlskv']  # Just to shorten our call later.
     icon_btns = {}                       # Setup our button list, as a dictionary list, to return at the end.
-    vtxcolorbtn = quarkpy.qtoolbar.button(editor.layout.colorclick, "Color UV Vertex mode||When active, puts the editor vertex selection into this mode and uses the 'COLR' specific setting as the color to designate these types of vertexes.\n\nIt also places the editor into Vertex Selection mode if not there already and clears any selected vertexes to protect from including unwanted ones by mistake.\n\nAny vertexes selected in this mode will become Color UV Vertexes and added to the component as such. Click the InfoBase button or press F1 again for more detail.|intro.modeleditor.dataforms.html", ico_maped, 10)
+    vtxcolorbtn = quarkpy.qtoolbar.button(editor.layout.colorclick, "Color UV Vertex mode||When active, puts the editor vertex selection into this mode and uses the 'COLR' specific setting as the color to designate these types of vertexes.\n\nIt also places the editor into Vertex Selection mode if not there already and clears any selected vertexes to protect from including unwanted ones by mistake.\n\nAny vertexes selected in this mode will become Color UV Vertexes and added to the component as such. Click the InfoBase button or press F1 again for more detail.|intro.modeleditor.dataforms.html#specsargsview", ico_mdlskv, 5)
     icon_btns['color'] = vtxcolorbtn     # Put our button in the above list to return.
 
     if o.name == editor.Root.currentcomponent.currentskin.name: # If this is not done it will cause looping through multiple times.
@@ -1469,6 +1486,7 @@ def dataformname(o):
 def dataforminput(o):
     "Returns the default settings or input data for this type of object 'o' (a model component) to use for the Specific/Args page."
 
+    import quarkx
     DummyItem = o
     while (DummyItem.type != ":mc"): # Gets the object's model component.
         DummyItem = DummyItem.parent
@@ -1501,6 +1519,14 @@ def dataforminput(o):
                     comp['shader_keyword'] = o.dictspec['shader_keyword']
                 else:
                     comp['shader_keyword'] = o['shader_keyword'] = "None"
+            if not comp.dictspec.has_key('shader_lines'):
+                if quarkx.setupsubset(3, "Options")["NbrOfShaderLines"] is not None:
+                    comp['shader_lines'] = quarkx.setupsubset(3, "Options")["NbrOfShaderLines"]
+                else:
+                    comp['shader_lines'] = "8"
+                    quarkx.setupsubset(3, "Options")["NbrOfShaderLines"] = comp.dictspec['shader_lines']
+            else:
+                quarkx.setupsubset(3, "Options")["NbrOfShaderLines"] = comp.dictspec['shader_lines']
             if not comp.dictspec.has_key('mesh_shader'):
                 comp['mesh_shader'] = "None"
 
@@ -1508,6 +1534,10 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.3  2008/12/10 20:24:16  cdunde
+# To move more code into importers from main mdl files
+# and made this importer multi skin per component based on what is used in its shader (materials) file.
+#
 # Revision 1.2  2008/12/06 19:25:58  cdunde
 # Development update.
 #
