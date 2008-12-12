@@ -1,0 +1,10 @@
+title: GlobalWarning
+author: DanielPharos
+
+<code>
+procedure GlobalWarning(const Texte: String);
+</code>
+
+Adds <tt>Texte</tt> to the list of global warnings.
+
+Use this for instance during loading of a file, so all warnings can be displayed at once when loading has been completed.

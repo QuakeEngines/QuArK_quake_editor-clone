@@ -1,0 +1,10 @@
+title: GlobalDisplayWarnings
+author: DanielPharos
+
+<code>
+procedure GlobalDisplayWarnings;
+</code>
+
+Displays and clears all global warnings.
+
+This is called from AppIdle, so there (normally) is no need to call it yourself.

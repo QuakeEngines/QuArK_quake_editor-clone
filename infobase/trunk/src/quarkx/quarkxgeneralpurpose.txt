@@ -85,7 +85,13 @@ Assigns the given icon to the objects of kind i. See qutils.py for a complete li
 <tr><td class="doccode">
 msgbox(msg, typ, btn)
 </td><td>
-Displays a message box. See qutils.py for a list of available flags.
+Displays a message box. See qutils.py for a list of available flags for typ and btn.
+</td></tr>
+
+<tr><td class="doccode">
+textbox(msg, text, typ)
+</td><td>
+Displays a text box form. See qutils.py for a list of available flags for typ.
 </td></tr>
 
 <tr><td class="doccode">

@@ -6,6 +6,8 @@ desc: logandraiseerror
 desc: eerror
 desc: eerrorfmt
 desc: internale
+desc: globalwarning
+desc: globaldisplaywarnings
 desc: getsystemerrormessage
 
 This file contains several functions useful for exception handling.
