@@ -1374,6 +1374,38 @@ import ie_md5_import # This imports itself to be passed along so it can be used 
 quarkpy.qmdlbase.RegisterMdlImporter(".md5 Doom3\Quake4 Importer", ".md5mesh file", "*.md5mesh", loadmodel, ie_md5_import)
 
 
+def vtxcolorclick(btn):
+    import quarkx
+    import quarkpy.mdleditor
+    editor = quarkpy.mdleditor.mdleditor # Get the editor.
+    if quarkx.setupsubset(3, "Options")["LinearBox"] == "1":
+        editor.ModelVertexSelList = []
+        editor.linearbox = "True"
+        editor.linear1click(btn)
+    else:
+        if editor.ModelVertexSelList != []:
+            editor.ModelVertexSelList = []
+            import quarkpy.mdlutils
+            quarkpy.mdlutils.Update_Editor_Views(editor)
+
+
+def colorclick(btn):
+    import quarkx
+    import quarkpy.qtoolbar              # Get the toolbar functions to make the button with.
+    editor = quarkpy.mdleditor.mdleditor # Get the editor.
+    if not quarkx.setupsubset(3, "Options")['VertexUVColor'] or quarkx.setupsubset(3, "Options")['VertexUVColor'] == "0":
+        quarkx.setupsubset(3, "Options")['VertexUVColor'] = "1"
+        quarkpy.qtoolbar.toggle(btn)
+        btn.state = quarkpy.qtoolbar.selected
+        quarkx.update(editor.form)
+        vtxcolorclick(btn)
+    else:
+        quarkx.setupsubset(3, "Options")['VertexUVColor'] = "0"
+        quarkpy.qtoolbar.toggle(btn)
+        btn.state = quarkpy.qtoolbar.normal
+        quarkx.update(editor.form)
+
+
 def dataformname(o):
     "Returns the data form for this type of object 'o' (a model component) to use for the Specific/Args page."
 
@@ -1416,16 +1448,12 @@ def dataformname(o):
       skin_name:      = {t_ModelEditor_texturebrowser = ! Txt="skin name"    Hint="The currently selected skin texture name."}
       shader_keyword: = {Typ="E"   Txt="shader keyword"  Hint="Gives the above shader 'keyword' that is used to identify"$0D"the currently selected skin texture used in the shader, if any."}
       shader_lines:   = {Typ="EU"  Txt="shader lines"    Hint="Number of lines to display in window below, max. = 35."}
-      extedit:tbbtn   = {
-                         Typ = "M"
+      open_editor:     = {
+                         Typ = "P"
                          Txt = "edit shader ---->"
+                         Macro = "opentexteditor"
                          Hint = "Opens shader below"$0D"in a text editor."
-                         Msg = "EXTE"
                          Cap = "edit shader"
-                         Icon = $6677777777777776600000000000007660FFFFFFFFFFF07660FFFFFFFFFFF07660F7
-                                $F33FFFFFF07660FFF3333FF7F07660F7F333118FF07660FFFF331118807660FFFF91
-                                $1111807760FF7FF91111107760FFFFFF9111117660FF877FF911111660FFFFFFFF91
-                                $111160F777787F79111660FFFFFFFF7F911660FFFFFFFF7069666000000000066666
                         }
       mesh_shader:    = {Typ="M"  Rows = """ + chr(34) + NbrOfShaderLines + chr(34) + """ Scrollbars="1" Txt = "mesh shader"  Hint="Contains the full text of this skin texture's shader, if any."$0D"This can be copied to a text file, changed and saved."}
     }
@@ -1436,7 +1464,7 @@ def dataformname(o):
     editor = quarkpy.mdleditor.mdleditor # Get the editor.
     ico_mdlskv = ico_dict['ico_mdlskv']  # Just to shorten our call later.
     icon_btns = {}                       # Setup our button list, as a dictionary list, to return at the end.
-    vtxcolorbtn = quarkpy.qtoolbar.button(editor.layout.colorclick, "Color UV Vertex mode||When active, puts the editor vertex selection into this mode and uses the 'COLR' specific setting as the color to designate these types of vertexes.\n\nIt also places the editor into Vertex Selection mode if not there already and clears any selected vertexes to protect from including unwanted ones by mistake.\n\nAny vertexes selected in this mode will become Color UV Vertexes and added to the component as such. Click the InfoBase button or press F1 again for more detail.|intro.modeleditor.dataforms.html#specsargsview", ico_mdlskv, 5)
+    vtxcolorbtn = quarkpy.qtoolbar.button(colorclick, "Color UV Vertex mode||When active, puts the editor vertex selection into this mode and uses the 'COLR' specific setting as the color to designate these types of vertexes.\n\nIt also places the editor into Vertex Selection mode if not there already and clears any selected vertexes to protect from including unwanted ones by mistake.\n\nAny vertexes selected in this mode will become Color UV Vertexes and added to the component as such. Click the InfoBase button or press F1 again for more detail.|intro.modeleditor.dataforms.html#specsargsview", ico_mdlskv, 5)
     icon_btns['color'] = vtxcolorbtn     # Put our button in the above list to return.
 
     if o.name == editor.Root.currentcomponent.currentskin.name: # If this is not done it will cause looping through multiple times.
@@ -1481,6 +1509,25 @@ def dataformname(o):
             return formobj, icon_btns
     else:
         return None, None
+
+
+def macro_opentexteditor(btn):
+    editor = quarkpy.mdleditor.mdleditor # Get the editor.
+    import quarkx
+    # quarkx.externaledit(editor.Root.currentcomponent.currentskin) # Opens skin in PSP - external editor.
+
+  #  shader_text = quarkx.newfileobj("tempdata:material")
+  #  shader_text['Data'] = editor.Root.currentcomponent.dictspec['mesh_shader']
+  #  obj = quarkx.newfileobj("temp.mtr")
+  #  obj.appenditem(shader_text)
+  #  quarkx.externaledit(obj)
+    
+    obj = quarkx.newfileobj("temp.txt")
+    obj['Data'] = editor.Root.currentcomponent.dictspec['mesh_shader']
+    quarkx.externaledit(obj)
+
+quarkpy.qmacro.MACRO_opentexteditor = macro_opentexteditor
+
 
 
 def dataforminput(o):
@@ -1534,6 +1581,10 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.4  2008/12/11 07:07:00  cdunde
+# Added button to change number of lines size of shader text box.
+# Added custom icon for UV Color mode function.
+#
 # Revision 1.3  2008/12/10 20:24:16  cdunde
 # To move more code into importers from main mdl files
 # and made this importer multi skin per component based on what is used in its shader (materials) file.
