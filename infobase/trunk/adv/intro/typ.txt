@@ -410,7 +410,7 @@ Any other setting will result in no scrollbars.
 <tr><td align=center>
 P
 </td><td valign=top>
-<b>Phyton macro button</b>.
+<b>Python macro button</b>.
 </td><td>
 generates a button to fire a python-macro.
 <pre>
