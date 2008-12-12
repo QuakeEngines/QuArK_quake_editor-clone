@@ -410,7 +410,7 @@ Any other setting will result in no scrollbars.
 <tr><td align=center>
 P
 </td><td valign=top>
-<b>Python macro button</b>.
+<b>Phyton macro button</b>.
 </td><td>
 generates a button to fire a python-macro.
 <pre>
@@ -424,7 +424,12 @@ centering: = {
 </pre>
 <u><i>Specifics:</i></u><br>
 <u>Cap</u> - button caption<br>
-<u>Macro</u> - macro to be fired<br>
+<u>Macro</u> - macro to be fired. Most of the items called in the macro are pre-coded in the source code.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;But using the
+<a href="src.quarkx.html#qmacro_py">quarkx.externaledit(obj)</a>
+function, any object, such as text or a texture image,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+can be passed to it causing that object to be opened in an external editor.
 </td></tr>
 
 <tr><td align=center>

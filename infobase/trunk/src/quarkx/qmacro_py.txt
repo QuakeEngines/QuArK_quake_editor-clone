@@ -52,4 +52,23 @@ MACRO_helpmenu(text)
 Called when the user selects an item in the '?' menu. text is the string describing this item.
 </td></tr>
 
+<tr><td class="doccode">
+externaledit(obj)
+</td><td>
+A special quarkx function call allowing any (obj) object, such as text or a texture image, to be passed to it causing that object to be opened in an external editor, and would be used like this:
+<code>
+    obj = quarkx.newfileobj("temp.txt")
+    obj['Data'] = editor.Root.currentcomponent.dictspec['mesh_shader']
+    quarkx.externaledit(obj)
+</code>
+This can be used in conjunction with <a href="adv.intro.html#typ">a form button of Typ "P"</a>
+which uses its <b>Macro = "the macro name"</b> to call the <b>def macro_the macro name(btn)</b> that contains the
+<b>quarkx.externaledit(obj)</b> function call. This def of the macro is then registered with the quarkpy\qmacro.py
+file attaching itself to the other macros in that file, that code looks like this:
+<code>
+quarkpy.qmacro.MACRO_opentexteditor = macro_opentexteditor
+</code>
+For the complete code of the above examples see the plugins\ie_md5_import.py file.
+</td></tr>
+
 </table>
