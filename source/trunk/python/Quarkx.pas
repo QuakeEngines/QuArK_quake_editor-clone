@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.88  2008/12/02 16:18:33  danielpharos
+Cleanup for ConsoleLog. Should now always appear in main directory.
+
 Revision 1.87  2008/11/06 20:18:22  danielpharos
 Removed old stuff in preparation for new specifics code.
 
@@ -344,7 +347,7 @@ implementation
 
 uses Classes, Dialogs, Graphics, CommCtrl, ExtCtrls, Controls,
      QkForm, PyToolbars, PyImages, PyPanels, TB97, QkObjects,
-     PyObjects, QkFileObjects, {PyFiles,} PyExplorer, Travail,
+     PyObjects, QkFileObjects, {PyFiles,} PyExplorer, Travail, Running,
      Qk1, PyFormCfg, QkQuakeCtx, PyFloating, PyMapView, qmath, Setup,
      PyMath, PyCanvas, PyUndo, qmatrices, QkMapObjects, QkTextures,
      Undo, QkGroup, Qk3D, PyTravail, ToolBox1, Config, PyProcess,
@@ -2792,6 +2795,25 @@ begin
  end;
 end;
 
+function xExternalEdit(self, args: PyObject) : PyObject; cdecl;
+var
+ obj: PyObject;
+ Q: QObject;
+begin
+ try
+  Result:=Nil;
+  if not PyArg_ParseTupleX(args, 'O', [@obj]) then
+   Exit;
+  Q:=QkObjFromPyObj(obj);
+  if Q<>nil then
+   ExternalEdit(Q);
+  Result:=PyNoResult;
+ except
+  EBackToPython;
+  Result:=Nil;
+ end;
+end;
+
 function xLog(self, args: PyObject) : PyObject; cdecl;
 var
   P: PChar;
@@ -3200,7 +3222,7 @@ begin
 end;
 
 const
- MethodTable: array[0..87] of TyMethodDef =
+ MethodTable: array[0..88] of TyMethodDef =
   ((ml_name: 'Setup1';          ml_meth: xSetup1;          ml_flags: METH_VARARGS),
    (ml_name: 'newobj';          ml_meth: xNewObj;          ml_flags: METH_VARARGS),
    (ml_name: 'newfileobj';      ml_meth: xNewFileObj;      ml_flags: METH_VARARGS),
@@ -3274,6 +3296,7 @@ const
    (ml_name: 'mdlimportmenu';   ml_meth: xMdlImpMenuItem;  ml_flags: METH_VARARGS),
    (ml_name: 'htmldoc';         ml_meth: xHTMLDoc;         ml_flags: METH_VARARGS),
    (ml_name: 'needgamefile';    ml_meth: xNeedGameFile;    ml_flags: METH_VARARGS),
+   (ml_name: 'externaledit';    ml_meth: xExternalEdit;    ml_flags: METH_VARARGS),
    (ml_name: 'wait';            ml_meth: xWait;            ml_flags: METH_VARARGS),
    (ml_name: 'exit';            ml_meth: xExit;            ml_flags: METH_VARARGS),
    (ml_name: 'log';             ml_meth: xLog;             ml_flags: METH_VARARGS),{AiV}
