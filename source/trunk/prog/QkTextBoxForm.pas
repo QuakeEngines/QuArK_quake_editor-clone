@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.1  2008/12/12 12:47:52  danielpharos
+Moved GlobalWarning to QkExceptions, and added QkTextBoxForm.
+
 
 }
 
@@ -110,7 +113,7 @@ begin
   if IconID <> nil then
   begin
     Image1.Picture.Icon.Handle := LoadIcon(0, IconID);
-    WidthMargin := Image1.Width + 16 + 8;
+    WidthMargin := Image1.Width + 8 + 32;
   end
   else
   begin

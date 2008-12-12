@@ -22,7 +22,7 @@ object FQTextBoxForm: TFQTextBoxForm
     Caption = 'Label1'
   end
   object Image1: TImage
-    Left = 16
+    Left = 24
     Top = 168
     Width = 32
     Height = 32
