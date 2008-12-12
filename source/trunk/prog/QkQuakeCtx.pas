@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.30  2008/11/06 20:18:22  danielpharos
+Removed old stuff in preparation for new specifics code.
+
 Revision 1.29  2008/11/06 19:29:51  danielpharos
 Renamed function to concatenate paths, and start using it.
 
@@ -140,7 +143,7 @@ implementation
 
 uses Setup, QkGroup, Quarkx, QkObjectClassList, QuickWal, QkPak, QkBSP, ToolBox1,
      ToolBoxGroup, Game, QkMapObjects, FormCfg, QkExplorer, QkApplPaths,
-     QkForm, Travail, QkFormCfg, ExtraFunctionality;
+     QkForm, Travail, QkFormCfg, QkExceptions, ExtraFunctionality;
 
  {------------------------}
 

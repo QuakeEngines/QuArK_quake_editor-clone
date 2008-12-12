@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.63  2008/11/19 06:14:00  cdunde
+Bones system moved to outside of components for Model Editor completed.
+
 Revision 1.62  2008/11/08 15:56:08  danielpharos
 Cleaned up some SpecNameOf-usage.
 
@@ -363,8 +366,6 @@ procedure CopyToolbar(Source, Dest: TToolbar97);
 function GlobalDoAccept{(Sender: TObject)} : Boolean;
 function LocalDoAccept(Ac: TControl) : Boolean;
 function GlobalDoCancel{(Sender: TObject)} : Boolean;
-procedure GlobalWarning(const Texte: String);
-procedure GlobalDisplayWarnings;
 function OpenFileObjectData(F: TStream; const FullName: String; var Size: LongInt; nParent: QObject) : QFileObject;
 procedure DeleteTempFiles;
 function SaveObject(FFileObject: QFileObject; AskName, FileType: Integer; ParentForm: TCustomForm; AddToRecentsList: Boolean = true) : QFileObject;
@@ -577,36 +578,6 @@ begin
     Min:=Test+1;
   end;
  Result:=Nil;  { didn't find it }
-end;
-
- {------------------------}
-
-var
- GlobalWarnings: TStringList;
-
-procedure GlobalWarning(const Texte: String);
-begin
- if Texte='' then Exit;
- if GlobalWarnings=Nil then
-  begin
-   GlobalWarnings:=TStringList.Create;
-  {PostMessage(g_Form1.Handle, wm_InternalMessage, wp_Warning, 0);}
-  end;
- if GlobalWarnings.IndexOf(Texte)<0 then
-  GlobalWarnings.Add(Texte);
-end;
-
-procedure GlobalDisplayWarnings;
-var
- S: String;
-begin
- if GlobalWarnings<>Nil then
-  begin
-   S:=GlobalWarnings.Text;
-   GlobalWarnings.Free;
-   GlobalWarnings:=Nil;
-   MessageDlg(S, mtWarning, [mbOk], 0);
-  end;
 end;
 
  {------------------------}

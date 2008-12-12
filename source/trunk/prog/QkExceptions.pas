@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2008/10/04 13:32:48  danielpharos
+Fixed warning dialog icon.
+
 Revision 1.4  2008/09/23 08:27:29  danielpharos
 Moved InternalE to QkExceptions.
 
@@ -41,7 +44,7 @@ unit QkExceptions;
 
 interface
 
-uses Windows, SysUtils;
+uses Windows, SysUtils, Classes, Dialogs;
 
 function GetExceptionMessage(E: Exception) : String;
 procedure LogAndWarn(const WarnMessage : String);
@@ -49,13 +52,17 @@ procedure LogAndRaiseError(const ErrMessage : String);
 function EError(Res: Integer) : Exception;
 function EErrorFmt(Res: Integer; Fmt: array of const) : Exception;
 function InternalE(const Hint: String) : Exception;
+
+procedure GlobalWarning(const Texte: String);
+procedure GlobalDisplayWarnings;
+
 function GetSystemErrorMessage(ErrNr: DWORD) : String;
 
  {-------------------}
 
 implementation
 
-uses Forms, Quarkx, Logging;
+uses Forms, QkTextBoxForm, Quarkx, Logging;
 
  {-------------------}
 
@@ -102,6 +109,44 @@ function InternalE(const Hint: String) : Exception;
 begin
   Result:=EErrorFmt(5223, [Hint]);
 end;
+
+ {------------------------}
+
+var
+ GlobalWarnings: TStringList;
+
+procedure GlobalWarning(const Texte: String);
+begin
+ if Texte='' then Exit;
+ if GlobalWarnings=Nil then
+  begin
+   GlobalWarnings:=TStringList.Create;
+  {PostMessage(g_Form1.Handle, wm_InternalMessage, wp_Warning, 0);}
+  end;
+ if GlobalWarnings.IndexOf(Texte)<0 then
+  GlobalWarnings.Add(Texte);
+end;
+
+procedure GlobalDisplayWarnings;
+var
+ //We need to clear GlobalWarnings before going into the Modal loop,
+ //because AppIdle will trigger, and call this procedure again,
+ //causing an endless loop!
+ DummyStringList: TStringList;
+begin
+ if GlobalWarnings<>Nil then
+  begin
+   DummyStringList:=GlobalWarnings;
+   try
+     GlobalWarnings:=Nil;
+     ShowTextBox('QuArK', 'There are warnings:', DummyStringList, mtWarning);
+   finally
+     DummyStringList.Free;
+   end;
+  end;
+end;
+
+ {------------------------}
 
 //From http://www.swissdelphicenter.ch/torry/showcode.php?id=282:
 function GetSystemErrorMessage(ErrNr: DWORD) : String;

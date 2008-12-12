@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.60  2008/12/04 12:14:00  danielpharos
+Fixed a redraw-clipping problem, removed a redundant file and cleaned-up the constructor of the EdSceneObjects.
+
 Revision 1.59  2008/11/20 23:45:50  danielpharos
 Big update to renderers: mostly cleanup, and stabilized Direct3D a bit more.
 
@@ -285,6 +288,7 @@ uses
   QkSteamFS in 'prog\QkSteamFS.pas',
   QkSylphis in 'prog\QkSylphis.pas',
   QkText in 'prog\QkText.pas',
+  QkTextBoxForm in 'prog\QkTextBoxForm.pas' {FQTextBoxForm},
   QkTextures in 'prog\QkTextures.pas' {FQTexture},
   QkTga in 'prog\QkTga.pas',
   QkTreeView in 'prog\QkTreeView.pas',

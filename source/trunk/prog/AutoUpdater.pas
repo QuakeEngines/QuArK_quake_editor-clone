@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2008/10/04 13:33:25  danielpharos
+Added Check for Updates option to ? menu and added some dialog icons.
+
 Revision 1.12  2008/09/27 10:18:14  danielpharos
 Disable update package check for now.
 
@@ -173,7 +176,7 @@ procedure DoUpdate(AllowOnline: Boolean; AutomaticCheck: Boolean);
 implementation
 
 uses StrUtils, SysUtils, DateUtils, QkObjects, Setup, Logging, Travail,
-  QkExceptions, AutoUpdateInstaller;
+  QkExceptions, AutoUpdateInstaller, QkTextBoxForm;
 
 function GetLine(FileData: TMemoryStream; var OutputLine: String) : Boolean; forward;
 
@@ -372,6 +375,7 @@ var
   Dummy: String;
   AddThisNotification, AddThisPackage: Boolean;
   ProgressIndicatorMax: Integer;
+  Notifications: TStringList;
 begin
   Result := false;
   UpdateIndexFile := TUpdateIndexFile.Create;
@@ -515,12 +519,20 @@ begin
           with UpdateNotifications[I] do
           begin
             if MessageNR>0 then
-              for J:=0 to MessageNR-1 do
-                if Messages[J].DisplayIndex > UpdateIndexFile.Notifications[NotificationIndex].InternalBuildNumber then
-                begin
-                  UpdatesFound:=True;
-                  MessageBox(0, PChar(Messages[J].Text), PChar('QuArK Notification'), MB_TASKMODAL or MB_ICONINFORMATION or MB_OK);
-                end;
+            begin
+              Notifications:=TStringList.Create;
+              try
+                for J:=0 to MessageNR-1 do
+                  if Messages[J].DisplayIndex > UpdateIndexFile.Notifications[NotificationIndex].InternalBuildNumber then
+                  begin
+                    UpdatesFound:=True;
+                    Notifications.Add(Messages[J].Text);
+                  end;
+                ShowTextBox('QuArK Notification', 'There are new update notifications:', Notifications);
+              finally
+                Notifications.Free;
+              end;
+            end;
             Setup.Specifics.Values['Notification_'+UpdateIndexFile.Notifications[NotificationIndex].InternalName] := Format('%u', [BuildNumber]);
           end;
 

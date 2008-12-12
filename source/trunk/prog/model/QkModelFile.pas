@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2008/11/19 06:14:00  cdunde
+Bones system moved to outside of components for Model Editor completed.
+
 Revision 1.10  2008/11/06 20:18:22  danielpharos
 Removed old stuff in preparation for new specifics code.
 
@@ -54,9 +57,7 @@ unit QkModelFile;
 interface
 
 uses
-  windows, sysutils, QkObjects, QkFileObjects, QkForm, QkImages, Python, Game, QkModel, QkModelRoot,
-  qkcomponent, qkframe, qkskingroup, qkframegroup, qkbonegroup, qkpcx, qktextures, qkmiscgroup,
-  graphics, QkModelBone;
+  Windows, Graphics, SysUtils, QkModel, QkModelRoot, QkComponent, QkFrame, QkModelBone, QkImages;
 
 type
   QModelFile = class(QModel)
@@ -73,7 +74,8 @@ type
 
 implementation
 
-uses quarkx, qkskindrawobject;
+uses quarkx, qkskindrawobject, QkObjects, Python, Game, QkExceptions,
+  qkskingroup, qkframegroup, qkbonegroup, qkpcx, qktextures, qkmiscgroup;
 
 function QModelFile.Loaded_Component(Root: QModelRoot; cname: string): QComponent;
 var

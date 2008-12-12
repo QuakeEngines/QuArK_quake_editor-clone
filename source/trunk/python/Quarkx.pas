@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.89  2008/12/12 00:33:14  cdunde
+To add new quarkx function, externaledit, by DanielPharos.
+
 Revision 1.88  2008/12/02 16:18:33  danielpharos
 Cleanup for ConsoleLog. Should now always appear in main directory.
 
@@ -353,7 +356,7 @@ uses Classes, Dialogs, Graphics, CommCtrl, ExtCtrls, Controls,
      Undo, QkGroup, Qk3D, PyTravail, ToolBox1, Config, PyProcess,
      Console, Game, {$IFDEF CompiledWithDelphi2} ShellObj, {$ELSE} ShlObj, {$ENDIF}
      PakFiles, Reg2, SearchHoles, QkMapPoly, HelpPopup1,
-     PyForms, QkPixelSet, Bezier, Logging, QkObjectClassList,
+     PyForms, QkPixelSet, Bezier, Logging, QkObjectClassList, QkTextBoxForm,
      QkApplPaths, MapError, StrUtils, QkImages, QkGCF, QkExceptions, ExtraFunctionality;
 
  {-------------------}
@@ -1616,6 +1619,23 @@ begin
   if not PyArg_ParseTupleX(args, 'sii', [@msg, @typ, @btn]) then
    Exit;
   Result:=PyInt_FromLong(MessageDlg(msg, TMsgDlgType(typ), Buttons, 0));
+ except
+  EBackToPython;
+  Result:=Nil;
+ end;
+end;
+
+function xTextBox(self, args: PyObject) : PyObject; cdecl;
+var
+ msg, text: PChar;
+ typ: Integer;
+begin
+ try
+  Result:=Nil;
+  if not PyArg_ParseTupleX(args, 'ssi', [@msg, @text, @typ]) then
+   Exit;
+  ShowTextBox('QuArK', msg, text, TMsgDlgType(typ));
+  Result:=PyNoResult;
  except
   EBackToPython;
   Result:=Nil;
@@ -3222,7 +3242,7 @@ begin
 end;
 
 const
- MethodTable: array[0..88] of TyMethodDef =
+ MethodTable: array[0..89] of TyMethodDef =
   ((ml_name: 'Setup1';          ml_meth: xSetup1;          ml_flags: METH_VARARGS),
    (ml_name: 'newobj';          ml_meth: xNewObj;          ml_flags: METH_VARARGS),
    (ml_name: 'newfileobj';      ml_meth: xNewFileObj;      ml_flags: METH_VARARGS),
@@ -3278,6 +3298,7 @@ const
    (ml_name: 'screenrect';      ml_meth: xScreenRect;      ml_flags: METH_VARARGS),
    (ml_name: 'seticons';        ml_meth: xSetIcons;        ml_flags: METH_VARARGS),
    (ml_name: 'msgbox';          ml_meth: xMsgBox;          ml_flags: METH_VARARGS),
+   (ml_name: 'textbox';         ml_meth: xTextBox;         ml_flags: METH_VARARGS),
    (ml_name: 'beep';            ml_meth: xBeep;            ml_flags: METH_VARARGS),
    (ml_name: 'console';         ml_meth: xConsole;         ml_flags: METH_VARARGS),
    (ml_name: 'writeconsole';    ml_meth: xWriteConsole;    ml_flags: METH_VARARGS),

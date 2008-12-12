@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2007/11/20 18:28:06  danielpharos
+Moved most of the DIB-calls to PixelSet, and added padding there. This should fix the few remaining image drawing issues.
+
 Revision 1.14  2005/09/28 10:48:32  peter-b
 Revert removal of Log and Header keywords
 
@@ -137,7 +140,7 @@ procedure ExecuteObjectMacros(Sender: TComponent; Obj: QObject);
 
 implementation
 
-uses Game, Setup, QkExplorer, ToolBox1, QkMacro, QkInclude, Running,
+uses Game, Setup, QkExplorer, ToolBox1, QkMacro, QkInclude, Running, QkExceptions,
      FormCfg, Quarkx, QkObjectClassList, QkFormCfg, Python, QkPixelSet;
 
 const

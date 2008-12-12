@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.79  2008/12/02 16:17:34  danielpharos
+Removed unneeded SetApplicationPath function.
+
 Revision 1.78  2008/11/08 12:53:29  danielpharos
 Fixed a typo
 
@@ -680,7 +683,7 @@ begin
  else
    MutexError := GetLastError();
 
-  // Set-up the console
+ // Set-up the console
  Log(LOG_VERBOSE, 'Setting up console...');
  InitConsole;
 
