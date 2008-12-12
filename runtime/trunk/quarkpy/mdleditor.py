@@ -673,17 +673,6 @@ class ModelEditor(BaseEditor):
     def moveby(self, text, delta):
         mdlbtns.moveselection(self, text, delta)
 
-    def vtxcolorclick(self, btn):
-        if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
-            self.ModelVertexSelList = []
-            self.linearbox = "True"
-            self.linear1click(btn)
-        else:
-            if self.ModelVertexSelList != []:
-                self.ModelVertexSelList = []
-                import mdlutils
-                mdlutils.Update_Editor_Views(self)
-
     def linear1click(self, btn):
         "Click on the 'Linear Drag Handles' button for the LinearHandle classes in the mdlhandles.py file."
 
@@ -1692,6 +1681,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.111  2008/12/03 10:34:06  cdunde
+#Added functions for console logging and clearing of that log to the options menu.
+#
 #Revision 1.110  2008/11/22 05:08:29  cdunde
 #Fixed rest of auto selection for bones and to deselect any item to do with
 #bones when switching to Linear Handles mode to allow menus to activate properly.

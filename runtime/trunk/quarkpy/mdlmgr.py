@@ -405,19 +405,6 @@ class ModelLayout(BaseLayout):
         self.dataform.onchange = self.filldataform # Causes form to reload the currently selected object to update
                                                    # any selection changes correctly, mainly for color selection.
         return self.fp
-
-    def colorclick(self, btn):
-        if not MdlOption("VertexUVColor") or quarkx.setupsubset(SS_MODEL, "Options")['VertexUVColor'] == "0":
-            quarkx.setupsubset(SS_MODEL, "Options")['VertexUVColor'] = "1"
-            qtoolbar.toggle(btn)
-            btn.state = qtoolbar.selected
-            quarkx.update(self.editor.form)
-            self.editor.vtxcolorclick(btn)
-        else:
-            quarkx.setupsubset(SS_MODEL, "Options")['VertexUVColor'] = "0"
-            qtoolbar.toggle(btn)
-            btn.state = qtoolbar.normal
-            quarkx.update(self.editor.form)
         
 
     def makesettingclick(self, m):
@@ -1419,6 +1406,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.91  2008/12/10 20:23:35  cdunde
+#To move more code into importers from main mdl files.
+#
 #Revision 1.90  2008/12/06 19:29:26  cdunde
 #To allow Specific page form creation of various item types.
 #
