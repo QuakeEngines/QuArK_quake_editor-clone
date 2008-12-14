@@ -2284,6 +2284,7 @@ def dataformname(o):
              "Lightwave uses 'levels' the same way that QuArK uses 'components'."$0D
              "Each can have its own special Surface level (or skin texture) settings."$0D0D22
              "NAME"$22" - Surface level control name, which is its skin texture name."$0D22
+             "edit skin"$22" - Opens this skin texture in an external editor."$0D22
              "UVNAME"$22" - Special UV process control name (over rides 'NAME')."$0D
              "          type in any name you want to use."$0D22
              "COLR"$22" - Color to use for this components uv vertex color mapping."$0D
@@ -2291,6 +2292,13 @@ def dataformname(o):
              "IMAG"$22" - Image Map Image. Indicates that this surface is an image map."$0D
              "        Check this if 'CHAN' & 'IMAG' are checked and 'OPAC' is NOT checked."
       lwo_NAME:   = {t_ModelEditor_texturebrowser = ! Txt="NAME"    Hint="Surface level control name,"$0D"which is its main skin texture name."}
+      edit_skin:  = {
+                     Typ = "P"
+                     Txt = "edit skin ---->"
+                     Macro = "opentexteditor"
+                     Hint = "Opens this skin texture"$0D"in an external editor."
+                     Cap = "edit skin"
+                    }
       lwo_UVNAME: = {Typ="E"   Txt="UVNAME"  Hint="Special UV process control name (over rides 'NAME'),"$0D"type in any name you want to use."}
       lwo_COLR:   = {          Txt="COLR"                                                                          }
       lwo_COLR:   = {Typ="L"   Txt="COLR"    Hint="Color to use for this components uv vertex color mapping."$0D"Click the color selector button to the right and pick a color."}
@@ -2318,6 +2326,33 @@ def dataformname(o):
         return None, None
 
 
+def macro_opentexteditor(btn):
+    editor = quarkpy.mdleditor.mdleditor # Get the editor.
+
+    if btn.name == "edit_skin:":
+        newImage = editor.Root.currentcomponent.currentskin
+        quarkx.externaledit(editor.Root.currentcomponent.currentskin) # Opens skin in - external editor for this texture file type.
+        editor.Root.currentcomponent.currentskin = newImage
+        skin = editor.Root.currentcomponent.currentskin
+        editor.layout.skinview.background = quarkx.vect(-int(skin["Size"][0]*.5),-int(skin["Size"][1]*.5),0), 1.0, 0, 1
+        editor.layout.skinview.backgroundimage = skin,
+        editor.layout.skinview.repaint()
+        for v in editor.layout.views:
+            if v.viewmode == "tex":
+                v.invalidate(1)
+    else:
+      #  shader_text = quarkx.newfileobj("tempdata:material")
+      #  shader_text['Data'] = editor.Root.currentcomponent.dictspec['mesh_shader']
+      #  obj = quarkx.newfileobj("temp.mtr")
+      #  obj.appenditem(shader_text)
+      #  quarkx.externaledit(obj)
+        obj = quarkx.newfileobj("temp.txt")
+        obj['Data'] = editor.Root.currentcomponent.dictspec['mesh_shader']
+        quarkx.externaledit(obj)
+
+quarkpy.qmacro.MACRO_opentexteditor = macro_opentexteditor
+
+
 def dataforminput(o):
     "Returns the default settings or input data for this type of object 'o' (a model component) to use for the Specific/Args page."
 
@@ -2340,6 +2375,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.14  2008/12/12 05:41:44  cdunde
+# To move all code for lwo UV Color Selection function into the lwo plugins\ie_lightwave_import.py file.
+#
 # Revision 1.13  2008/12/11 07:07:16  cdunde
 # Added custom icon for UV Color mode function.
 #
