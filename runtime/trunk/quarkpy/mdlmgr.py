@@ -41,9 +41,9 @@ treeviewselchanged = 0 ### This global is set to 1 when any new item is selected
                        ### 2) Test for its value of 0 or 1:     if treeviewselchanged == 1:
                        ### 3) After using be SURE to reset:         treeviewselchanged = 0
                        ### 4) Then complete your function :         return
-SFTexts   = [] # Supported model types for import\exporting.
-mdltypes = [] # Control list that corresponds with the "SFTexts" list above.
-IEfile = [] # Actual imported .py Importer\Exporter file list that corresponds with the "SFTexts" list above.
+SFTexts   = ['default'] # Supported model types for import\exporting.
+mdltypes = [0] # Control list that corresponds with the "SFTexts" list above.
+IEfile = ['default'] # Actual imported .py Importer\Exporter file list that corresponds with the "SFTexts" list above.
 SFLetters = "set model type"
 check_start_component = "None"
 check_end_component = "None"
@@ -405,6 +405,40 @@ class ModelLayout(BaseLayout):
         self.dataform.onchange = self.filldataform # Causes form to reload the currently selected object to update
                                                    # any selection changes correctly, mainly for color selection.
         return self.fp
+
+
+    def bs_additionalpages(self, panel):
+        "Builds additional pages for the multi-pages panel."
+        thesepages = []
+        page1 = qtoolbar.button(self.filldataform, "Specifics/Args-view||Specifics/Args-view:\n\nThis view displays the general parameters for the selected object(s).\n\nSee the infobase for a more detailed description and use of this view display.", ico_objects, iiEntity, "Specifics/Args-view", infobaselink='intro.mapeditor.dataforms.html#specsargsview')
+        page1.pc = [self.bs_dataform(panel)]
+        thesepages.append(page1)
+        skin = qtoolbar.button(self.fillskinform, "Skin-view||Skin-view:\n\nParameters about the selected skin", ico_objects, iiPcx, "Skin-view", infobaselink='intro.mapeditor.dataforms.html#faceview')
+        skin.pc = [self.bs_skinform(panel)]
+        thesepages.append(skin)
+        return thesepages, mppages
+
+    def bs_userobjects(self, panel):
+        "A panel with user-defined model objects."
+        #
+        # Note : for the map editor, the userdatapanel is game-specific because there are too
+        # many dependencies (textures, etc). For the Model editor, however, I don't see any
+        # reason to make it game-specific.
+        #
+        MdlUserDataPanel(panel, "Drop your most commonly used Model parts to this panel", "MdlObjPanel.qrk", "UserData.qrk")
+
+    def actionmpp(self):
+        "Switch or update the multi-pages-panel for the current selection."
+        if (self.mpp.n<4): # and not (self.mpp.lock.state & qtoolbar.selected):
+            fs = self.explorer.focussel
+            if fs is None:
+                self.mpp.viewpage(0)
+            elif fs.type == ':bone' and self.mpp.pagebtns[1].state == 2:
+                self.mpp.viewpage(1)
+        #    elif fs.type == ':p':
+        #        self.mpp.viewpage(2)
+        #    elif fs.type == ':f':
+        #        self.mpp.viewpage(3)
         
 
     def makesettingclick(self, m):
@@ -429,6 +463,7 @@ class ModelLayout(BaseLayout):
             cap = "set model type"
         sfbtn.caption = cap
         DummyItem = None
+        formobj = None
         try:
             # Gets the selected item's type "form" if the "if" test is passed.
             import mdlentities
@@ -439,6 +474,8 @@ class ModelLayout(BaseLayout):
             elif sl[0].type == ":bone":
                 formobj = mdlentities.CallManager("dataformname", sl[0])
             elif sl[0].type == ":mc":
+                formobj = mdlentities.CallManager("dataformname", sl[0])
+            elif sl[0].type == ":sg":
                 formobj = mdlentities.CallManager("dataformname", sl[0])
             else:
                 # This tries to use a filetype:form, in a Python model importer or exporter (plugins ie_ type) file to create this form.
@@ -475,16 +512,24 @@ class ModelLayout(BaseLayout):
                 self.dataform.setdata(selitem, formobj) # Tries to use the data returned to make the bone's form again.
             elif sl[0].type == ":mc": # Sets the component form items.
                 selitem = sl[0]
+                self.dataform.setdata(selitem, formobj) # Tries to use the data returned to make the skins group form again.
+            elif sl[0].type == ":sg": # Sets the skins group form items.
+                selitem = sl[0]
                 self.dataform.setdata(selitem, formobj) # Tries to use the data returned to make the component's form again.
             else:
-                for filetype in range(len(SFTexts)):
-                    if sfbtn.caption == SFTexts[filetype] and DummyItem.type == ':mc':
-                        filename = IEfile[filetype]
-                        formobj, icon_btns = filename.dataformname(sl[0])
-
-                        break
-                    else:
+                if self.sfbtn.caption == "set model type" or self.sfbtn.caption == "default":
+                    try:
+                        formobj = mdlentities.CallManager("dataformname", sl[0])
+                    except:
                         formobj = None
+                else:
+                    for filetype in range(len(SFTexts)):
+                        if sfbtn.caption == SFTexts[filetype] and DummyItem.type == ':mc':
+                            filename = IEfile[filetype]
+                            formobj, icon_btns = filename.dataformname(sl[0])
+                            break
+                        else:
+                            formobj = None
                 if DummyItem is not None and formobj is not None:
                     self.dataform.setdata([DummyItem], formobj) # Tries to use data returned from an import or export file to make the model format form.
                 else:
@@ -504,8 +549,12 @@ class ModelLayout(BaseLayout):
                 self.bb.buttons = self.bb.buttons + [icon_btns[btn]]
             self.buttons.update(specifics_btns)
             self.bb.margins = (0,0)
-
-        help = ((formobj is not None) and formobj["Help"]) or ""
+        try:
+            help = ((formobj is not None) and formobj["Help"]) or ""
+        except:
+            formobj = None
+            self.dataform.setdata(sl, formobj)
+            help = ((formobj is not None) and formobj["Help"]) or ""
         if help:
             help = "?" + help   # This trick displays a blue hint.
         self.buttons["help"].hint = help + "||This button gives you the description of the selected entity, and how to use it.\n\nYou are given help in two manners : by simply moving the mouse over the button, a 'hint' text appears with the description; if you click the button, you are sent to an HTML document about the entity, if available, or you are shown the same text as previously, if nothing more is available.\n\nNote that there is currently not a lot of info available as HTML documents."
@@ -528,11 +577,17 @@ class ModelLayout(BaseLayout):
         btnlist = self.mpp.btnpanel.buttons
         # Fills the model format form items.
         if (DummyItem is not None and len(sl) == 1 and sl[0].type != ":bound" and sl[0].type != ":tagframe" and sl[0].type != ":bone" and sl[0].type != ":mc") or (DummyItem is not None and len(sl) > 1 and sl[0].type != ":bound" and sl[0].type != ":tagframe" and sl[0].type != ":bone" and sl[1].type != ":bone" and (sl[0].type != ":mc")):
-            ### This section handles the model importer\exporter default settings and data input for the Specifics/Args page..
-            for filetype in range(len(SFTexts)):
-                if sfbtn.caption == SFTexts[filetype]:
-                   filename = IEfile[filetype]
-                   filename.dataforminput(sl[0])
+            ### This section handles the model importer\exporter default settings and data input for the Specifics/Args page.
+            if sfbtn.caption == "set model type" or sfbtn.caption == "default":
+                try:
+                    mdlentities.CallManager("dataforminput", sl[0])
+                except:
+                    pass
+            else:
+                for filetype in range(len(SFTexts)):
+                    if sfbtn.caption == SFTexts[filetype]:
+                       filename = IEfile[filetype]
+                       filename.dataforminput(sl[0])
         ### This section handles the Bones default settings and data input for the Specifics/Args page..
         # Sets self.xxxx_color to a bone's handles colors, when selected,
         # for comparison , in the "filldataform" function, if a handle color is changed.
@@ -603,39 +658,6 @@ class ModelLayout(BaseLayout):
         quarkx.update(self.editor.form)
 
 
-    def bs_additionalpages(self, panel):
-        "Builds additional pages for the multi-pages panel."
-        thesepages = []
-        page1 = qtoolbar.button(self.filldataform, "Specifics/Args-view||Specifics/Args-view:\n\nThis view displays the general parameters for the selected object(s).\n\nSee the infobase for a more detailed description and use of this view display.", ico_objects, iiEntity, "Specifics/Args-view", infobaselink='intro.mapeditor.dataforms.html#specsargsview')
-        page1.pc = [self.bs_dataform(panel)]
-        thesepages.append(page1)
-        skin = qtoolbar.button(self.fillskinform, "Skin-view||Skin-view:\n\nParameters about the selected skin", ico_objects, iiPcx, "Skin-view", infobaselink='intro.mapeditor.dataforms.html#faceview')
-        skin.pc = [self.bs_skinform(panel)]
-        thesepages.append(skin)
-        return thesepages, mppages
-
-    def bs_userobjects(self, panel):
-        "A panel with user-defined model objects."
-        #
-        # Note : for the map editor, the userdatapanel is game-specific because there are too
-        # many dependencies (textures, etc). For the Model editor, however, I don't see any
-        # reason to make it game-specific.
-        #
-        MdlUserDataPanel(panel, "Drop your most commonly used Model parts to this panel", "MdlObjPanel.qrk", "UserData.qrk")
-
-    def actionmpp(self):
-        "Switch or update the multi-pages-panel for the current selection."
-        if (self.mpp.n<4): # and not (self.mpp.lock.state & qtoolbar.selected):
-            fs = self.explorer.focussel
-            if fs is None:
-                self.mpp.viewpage(0)
-            elif fs.type == ':bone' and self.mpp.pagebtns[1].state == 2:
-                self.mpp.viewpage(1)
-        #    elif fs.type == ':p':
-        #        self.mpp.viewpage(2)
-        #    elif fs.type == ':f':
-        #        self.mpp.viewpage(3)
-
     def filldataform(self, reserved):
         "This function creates the Specifics/Args page form (formobj) for the first time"
         "or when selecting another item in the tree-view that uses a form."
@@ -646,6 +668,7 @@ class ModelLayout(BaseLayout):
             sl = [self.explorer.uniquesel]
         sfbtn = self.buttons["sf"]
         DummyItem = None
+        formobj = None
         try:
             import mdlentities
             if sl[0].type == ":bound": # Gets the "bound frame form" if the "if" test is passed.
@@ -655,6 +678,8 @@ class ModelLayout(BaseLayout):
             elif sl[0].type == ":bone": # Gets the "bone form" if the "if" test is passed.
                 formobj = mdlentities.CallManager("dataformname", sl[0])
             elif sl[0].type == ":mc": # Gets the "component form" if the "if" test is passed.
+                formobj = mdlentities.CallManager("dataformname", sl[0])
+            elif sl[0].type == ":sg": # Gets the "skins group form" if the "if" test is passed.
                 formobj = mdlentities.CallManager("dataformname", sl[0])
             else:
                 DummyItem = sl[0]
@@ -696,15 +721,26 @@ class ModelLayout(BaseLayout):
                 # to create the Specifics/Args page form for components.
                 selitem = sl[0]
                 self.dataform.setdata(selitem, formobj) # Tries to use the data returned to make the component's form again.
+            elif sl[0].type == ":sg": # Sets the skins group form items.
+                # Uses the data returned from the mdlentities.py file, class SkinGroupType, def dataformname function
+                # to create the Specifics/Args page form for a component's Skins group.
+                selitem = sl[0]
+                self.dataform.setdata(selitem, formobj) # Tries to use the data returned to make the component's form again.
             else:
                 # Tries to use a file type:form data returned from an import or export file to create this form.
-                for filetype in range(len(SFTexts)):
-                    if sfbtn.caption == SFTexts[filetype] and DummyItem.type == ':mc':
-                        filename = IEfile[filetype]
-                        formobj, icon_btns = filename.dataformname(sl[0])
-                        break
-                    else:
+                if sfbtn.caption == "set model type" or sfbtn.caption == "default":
+                    try:
+                        formobj = mdlentities.CallManager("dataformname", sl[0])
+                    except:
                         formobj = None
+                else:
+                    for filetype in range(len(SFTexts)):
+                        if sfbtn.caption == SFTexts[filetype] and DummyItem.type == ':mc':
+                            filename = IEfile[filetype]
+                            formobj, icon_btns = filename.dataformname(sl[0])
+                            break
+                        else:
+                            formobj = None
                 if DummyItem is not None and formobj is not None:
                     self.dataform.setdata([DummyItem], formobj) # Tries to use the data returned from an import or export file to make the model format form.
                 else:
@@ -712,8 +748,12 @@ class ModelLayout(BaseLayout):
         except:
             formobj = None # If no form data is found, then set to None and just go on, there is no form for this item.
             self.dataform.setdata(sl, formobj)
-
-        help = ((formobj is not None) and formobj["Help"]) or ""
+        try:
+            help = ((formobj is not None) and formobj["Help"]) or ""
+        except:
+            formobj = None
+            self.dataform.setdata(sl, formobj)
+            help = ((formobj is not None) and formobj["Help"]) or ""
         if help:
             help = "?" + help   # This trick displays a blue hint.
         self.buttons["help"].hint = help + "||This button gives you the description of the selected entity, and how to use it.\n\nYou are given help in two manners : by simply moving the mouse over the button, a 'hint' text appears with the description; if you click the button, you are sent to an HTML document about the entity, if available, or you are shown the same text as previously, if nothing more is available.\n\nNote that there is currently not a lot of info available as HTML documents."
@@ -977,6 +1017,8 @@ class ModelLayout(BaseLayout):
         if len(sl) == 0 and self.explorer.uniquesel is not None:
             sl = [self.explorer.uniquesel]
         sfbtn = self.buttons["sf"]
+        DummyItem = None
+        formobj = None
         try:
             import mdlentities
             if sl[0].type == ":bound": # Gets the "bound frame form" if the "if" test is passed.
@@ -986,6 +1028,8 @@ class ModelLayout(BaseLayout):
             elif sl[0].type == ":bone": # Gets the "bone form" if the "if" test is passed.
                 formobj = mdlentities.CallManager("dataformname", sl[0])
             elif sl[0].type == ":mc": # Gets the "component form" if the "if" test is passed.
+                formobj = mdlentities.CallManager("dataformname", sl[0])
+            elif sl[0].type == ":sg": # Gets the "skins group form" if the "if" test is passed.
                 formobj = mdlentities.CallManager("dataformname", sl[0])
             else:
                 DummyItem = sl[0]
@@ -1003,13 +1047,19 @@ class ModelLayout(BaseLayout):
                     try:
                         formobj = quarkx.getqctxlist(':form', sfbtn.caption.strip(".") + DummyItem.type.replace(":","_"))[-1]
                     except:
-                        for filetype in range(len(SFTexts)):
-                            if sfbtn.caption == SFTexts[filetype] and DummyItem.type == ':mc':
-                                filename = IEfile[filetype]
-                                formobj, icon_btns = filename.dataformname(sl[0])
-                                break
-                            else:
+                        if sfbtn.caption == "set model type" or sfbtn.caption == "default":
+                            try:
+                                formobj = mdlentities.CallManager("dataformname", sl[0])
+                            except:
                                 formobj = None
+                        else:
+                            for filetype in range(len(SFTexts)):
+                                if sfbtn.caption == SFTexts[filetype] and DummyItem.type == ':mc':
+                                    filename = IEfile[filetype]
+                                    formobj, icon_btns = filename.dataformname(sl[0])
+                                    break
+                                else:
+                                    formobj = None
         except:
             formobj = None # If no form data is found, then set to None and just go on, there is no form for this item.
         if formobj is not None:
@@ -1353,9 +1403,15 @@ class ModelLayout(BaseLayout):
                 self.selectcomponent(fs)
             elif fs.type == '.pcx':    # skin
                 self.selectskin(fs)
+            elif fs.type == '.tga':    # skin
+                self.selectskin(fs)
+            elif fs.type == '.dds':    # skin
+                self.selectskin(fs)
+            elif fs.type == '.png':    # skin
+                self.selectskin(fs)
             elif fs.type == '.jpg':    # skin
                 self.selectskin(fs)
-            elif fs.type == '.tga':    # skin
+            elif fs.type == '.bmp':    # skin
                 self.selectskin(fs)
             else:
                 self.editor.ModelVertexSelList = []
@@ -1406,6 +1462,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.92  2008/12/12 05:41:44  cdunde
+#To move all code for lwo UV Color Selection function into the lwo plugins\ie_lightwave_import.py file.
+#
 #Revision 1.91  2008/12/10 20:23:35  cdunde
 #To move more code into importers from main mdl files.
 #

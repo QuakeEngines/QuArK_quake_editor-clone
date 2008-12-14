@@ -621,18 +621,6 @@ class EntityManager:
 
 
 
-class GroupType(EntityManager):
-    "Generic Model object type."
-
-class MiscGroupType(EntityManager):
-    "Misc. Object Group."
-
-class FrameGroupType(EntityManager):
-    "Model Frame Group."
-
-class SkinGroupType(EntityManager):
-    "Model Skin Group."
-
 def ShowHideComp(x):
     editor = mapeditor()
     if editor is None: return
@@ -680,141 +668,21 @@ def ShowHideComp(x):
 def ShowComp(m):
     ShowHideComp(1)
 
+
 def HideComp(m):
     ShowHideComp(0)
 
-class ComponentType(EntityManager):
-    "Model Component."
 
-    def menu(o, editor):
-        import qmenu
-        SC1 = qmenu.item("&Show Component", ShowComp)
-        HC1 = qmenu.item("&Hide Component", HideComp)
-
-        if len(o.triangles) == 0:
-            HC1.state = qmenu.disabled
-        else:
-            SC1.state = qmenu.disabled
-
-        import mdlmenus
-        return CallManager("menubegin", o, editor) + mdlmenus.BaseMenu([o], editor) + [qmenu.sep, SC1, HC1]
- 
-    def handles(o, editor, view):
-        "A Model's COMPONENT currentframe 'frame' MESH, each animation Frame has its own."
-        frame = o.currentframe
-        if frame is None:
-            return []
-        else:
-            return CallManager("handles", frame, editor, view)
-
-    def handlesopt(o, editor):
-        "A Model's COMPONENT currentframe 'frame' MESH, each animation Frame has its own."
-        if o.type != ':mf':
-            return []
-        else:
-            frame = o
-            return CallManager("handlesopt", frame, editor)
-
-    def dataformname(o):
-        "Returns the data form for this type of object 'o' (a model component) to use for the Specific/Args page."
-
-        dlgdef = """
-        {
-          Help = "These are the Specific settings for a Model Component."$0D0D22
-                 "comp color 1"$22" - Color to use for this component's tint"$0D
-                 "color in texture or solid mode or line color in wire mode."$0D
-                 "                        Click the selector button to pick a color."$0D0D22
-                 "comp color 2"$22" - Color to use for this component's mesh"$0D
-                 "color in texture or solid mode if 'use color 2' is checked."$0D
-                 "                        Click the selector button to pick a color."$0D0D22
-                 "use color 2"$22" - When checked, this color draws the"$0D
-                 "component's mesh lines in textured or solid view mode."$0D0D
-                 "When a views RMB menu item 'Use Component Colors'"$0D
-                 "is checked these become active"$0D
-                 "and override all other settings."$0D0D
-                 " If the component is selected all meshes display their own"$0D
-                 "mesh line color in wire frame views and a Tint of that"$0D
-                 "color over their textured and solid views which can also"$0D
-                 "display their mesh lines in a second color when a views"$0D
-                 "'Mesh in Frames' option is checked on the 'Views Options' dialog."
-          comp_color1: = {
-              Typ="LI"
-              Txt="comp color 1"
-              Hint="Color to use for this component's tint"$0D
-              "color in texture or solid mode and line color in wire mode."$0D
-              "Click the color selector button to pick a color."
-                 }
-          comp_color2: = {Typ="LI"
-              Txt="comp color 2"
-              Hint="Color to use for this component's mesh"$0D
-              "color in texture or solid mode if 'use color 2' is checked."$0D
-              "Click the color selector button to pick a color."
-                 }
-          usecolor2: = {
-              Typ="X1" 
-              Txt="use color 2"
-              Hint="When checked, this color draws the"$0D
-              "component's mesh lines in textured or solid view mode."
-                 }
-        }
-        """
-
-        formobj = quarkx.newobj("mc:form")
-        formobj.loadtext(dlgdef)
-        return formobj
+class GroupType(EntityManager):
+    "Generic Model object type."
 
 
-class FrameType(EntityManager):
-    "Model Frame."
+class MiscGroupType(EntityManager):
+    "Misc. Object Group, type = :mg"
 
-    def handlesopt(o, editor):
-        vtx = o.vertices
-        h = map(mdlhandles.VertexHandle, vtx)
-        for i in range(len(h)):
-            item = h[i]
-            item.frame = o
-            item.index = i
-            item.name = "Vertex"
-            if MapOption("HandleHints", SS_MODEL):
-                item.hint = item.name + " %s"%item.index
-        return h
-
-
-class SkinType(EntityManager):
-    "Model Skin."
-
-class TagType(EntityManager):
-    "Tag"
-
-class TagFrameType(EntityManager):
-    "Tag Frame"
-
-    def dataformname(o):
-        "Returns the data form for this type of object 'o' (a Tag Frame) to use for the Specific/Args page."
-
-        dlgdef = """
-        {
-          Help = "These are the Specific settings for a Tag Frame."$0D0D22
-                 "origin"$22" - You must enter three values here."$0D
-                 "          They have an accuracy of two digits."
-          sep: = {
-              Typ="S"
-              Txt="(Not funtional at this time)"
-                 }
-          origin: = {
-              Typ="EF003" 
-              Txt="origin"
-              Hint="You must enter three values here."$0D"They have an accuracy of two digits."
-                 }
-        }
-        """
-
-        formobj = quarkx.newobj("tagframe:form")
-        formobj.loadtext(dlgdef)
-        return formobj
 
 class BoundType(EntityManager):
-    "Bound Frame"
+    "Bound Frame, type = :bound"
 
     def dataformname(o):
         "Returns the data form for this type of object 'o' (a Bound Frame) to use for the Specific/Args page."
@@ -861,8 +729,41 @@ class BoundType(EntityManager):
         formobj.loadtext(dlgdef)
         return formobj
 
+
+class TagType(EntityManager):
+    "Tag, type = :tag"
+
+
+class TagFrameType(EntityManager):
+    "Tag Frame, type = :tagframe"
+
+    def dataformname(o):
+        "Returns the data form for this type of object 'o' (a Tag Frame) to use for the Specific/Args page."
+
+        dlgdef = """
+        {
+          Help = "These are the Specific settings for a Tag Frame."$0D0D22
+                 "origin"$22" - You must enter three values here."$0D
+                 "          They have an accuracy of two digits."
+          sep: = {
+              Typ="S"
+              Txt="(Not funtional at this time)"
+                 }
+          origin: = {
+              Typ="EF003" 
+              Txt="origin"
+              Hint="You must enter three values here."$0D"They have an accuracy of two digits."
+                 }
+        }
+        """
+
+        formobj = quarkx.newobj("tagframe:form")
+        formobj.loadtext(dlgdef)
+        return formobj
+
+
 class BoneType(EntityManager):
-    "Bone"
+    "Bone, type = :bone"
 
     def handlesopt(o, editor):
         from qbaseeditor import currentview
@@ -1048,6 +949,259 @@ class BoneType(EntityManager):
         return formobj
 
 
+class ComponentType(EntityManager):
+    "Model Component, type = :mc"
+
+    def menu(o, editor):
+        import qmenu
+        SC1 = qmenu.item("&Show Component", ShowComp)
+        HC1 = qmenu.item("&Hide Component", HideComp)
+
+        if len(o.triangles) == 0:
+            HC1.state = qmenu.disabled
+        else:
+            SC1.state = qmenu.disabled
+
+        import mdlmenus
+        return CallManager("menubegin", o, editor) + mdlmenus.BaseMenu([o], editor) + [qmenu.sep, SC1, HC1]
+ 
+    def handles(o, editor, view):
+        "A Model's COMPONENT currentframe 'frame' MESH, each animation Frame has its own."
+        frame = o.currentframe
+        if frame is None:
+            return []
+        else:
+            return CallManager("handles", frame, editor, view)
+
+    def handlesopt(o, editor):
+        "A Model's COMPONENT currentframe 'frame' MESH, each animation Frame has its own."
+        if o.type != ':mf':
+            return []
+        else:
+            frame = o
+            return CallManager("handlesopt", frame, editor)
+
+    def dataformname(o):
+        "Returns the data form for this type of object 'o' (a model component) to use for the Specific/Args page."
+
+        dlgdef = """
+        {
+          Help = "These are the Specific settings for a Model Component."$0D0D22
+                 "comp color 1"$22" - Color to use for this component's tint"$0D
+                 "color in texture or solid mode or line color in wire mode."$0D
+                 "                        Click the selector button to pick a color."$0D0D22
+                 "comp color 2"$22" - Color to use for this component's mesh"$0D
+                 "color in texture or solid mode if 'use color 2' is checked."$0D
+                 "                        Click the selector button to pick a color."$0D0D22
+                 "use color 2"$22" - When checked, this color draws the"$0D
+                 "component's mesh lines in textured or solid view mode."$0D0D
+                 "When a views RMB menu item 'Use Component Colors'"$0D
+                 "is checked these become active"$0D
+                 "and override all other settings."$0D0D
+                 " If the component is selected all meshes display their own"$0D
+                 "mesh line color in wire frame views and a Tint of that"$0D
+                 "color over their textured and solid views which can also"$0D
+                 "display their mesh lines in a second color when a views"$0D
+                 "'Mesh in Frames' option is checked on the 'Views Options' dialog."
+          comp_color1: = {
+              Typ="LI"
+              Txt="comp color 1"
+              Hint="Color to use for this component's tint"$0D
+              "color in texture or solid mode and line color in wire mode."$0D
+              "Click the color selector button to pick a color."
+                 }
+          comp_color2: = {Typ="LI"
+              Txt="comp color 2"
+              Hint="Color to use for this component's mesh"$0D
+              "color in texture or solid mode if 'use color 2' is checked."$0D
+              "Click the color selector button to pick a color."
+                 }
+          usecolor2: = {
+              Typ="X1" 
+              Txt="use color 2"
+              Hint="When checked, this color draws the"$0D
+              "component's mesh lines in textured or solid view mode."
+                 }
+        }
+        """
+
+        formobj = quarkx.newobj("mc:form")
+        formobj.loadtext(dlgdef)
+        return formobj
+
+
+class SkinGroupType(EntityManager):
+    "Model Skin Group, type = :sg"
+
+    def dataformname(o):
+        "Returns the data form for this type of object 'o' (the Skins:sg folder) to use for the Specific/Args page."
+
+        skin_group_dlgdef = """
+        {
+          Help = "These are the Specific settings for the Skins group."$0D0D22
+                 "import skin"$22" - Select a skin texture image file"$0D
+                 "                    to import and add to this group."$0D
+                 "                    Will not add a skin with duplicate names."
+          skin_name: = {t_ModelEditor_texturebrowser = ! Txt="import skin"    Hint="Select a skin texture image file"$0D"to import and add to this group."$0D"Will not add a skin with duplicate names."}
+        }
+        """
+
+        import mdleditor
+        editor = mdleditor.mdleditor # Get the editor.
+        if (o.dictspec.has_key("skin_name")) and (not o.dictspec['skin_name'] in o.parent.dictitems['Skins:sg'].dictitems.keys()):
+            # Gives the newly selected skin texture's game folders path and file name, for example:
+            #     models/monsters/cacodemon/cacoeye.tga
+            skinname = o.dictspec['skin_name']
+            skin = quarkx.newobj(skinname)
+            # Gives the full current work directory (cwd) path up to the file name, need to add "\\" + filename, for example:
+            #     E:\Program Files\Doom 3\base\models\monsters\cacodemon
+            import os
+            cur_folder = os.getcwd()
+            # Gives just the actual file name, for example: cacoeye.tga
+            tex_file = skinname.split("/")[-1]
+            # Puts the full path and file name together to get the file, for example:
+            # E:\Program Files\Doom 3\base\models\monsters\cacodemon\cacoeye.tga
+            file = cur_folder + "\\" + tex_file
+            image = quarkx.openfileobj(file)
+            skin['Image1'] = image.dictspec['Image1']
+            skin['Size'] = image.dictspec['Size']
+            skingroup = o.parent.dictitems['Skins:sg']
+            o['skin_name'] = ""
+            undo = quarkx.action()
+            undo.put(skingroup, skin)
+            editor.ok(undo, o.parent.shortname + " - " + "new skin added")
+            editor.Root.currentcomponent.currentskin = skin
+            editor.layout.explorer.sellist = [editor.Root.currentcomponent.currentskin]
+            import mdlutils
+            mdlutils.Update_Skin_View(editor, 2) # The 2 argument resets the Skin-view to the new skin's size and centers it.
+        else:
+            if o.dictspec.has_key("skin_name"):
+                o['skin_name'] = ""
+
+        formobj = quarkx.newobj("sg:form")
+        formobj.loadtext(skin_group_dlgdef)
+        return formobj
+
+
+class SkinType(EntityManager):
+    "Model Skin, types = .pcx, .tga, .dds, .png, .jpg, .bmp"
+
+    def dataformname(o):
+        "Returns the data form for this type of object 'o' (a model's skin texture) to use for the Specific/Args page."
+
+        def_skin_dlgdef = """
+        {
+          Help = "These are the Specific default settings for a model's skins."$0D0D22
+                 "skin name"$22" - The currently selected skin texture name."$0D22
+                 "edit skin"$22" - Opens this skin texture in an external editor."
+          skin_name:      = {t_ModelEditor_texturebrowser = ! Txt="skin name"    Hint="The currently selected skin texture name."}
+          edit_skin:      = {
+                             Typ = "P"
+                             Txt = "edit skin ---->"
+                             Macro = "opentexteditor"
+                             Hint = "Opens this skin texture"$0D"in an external editor."
+                             Cap = "edit skin"
+                            }
+        }
+        """
+
+        import mdleditor
+        editor = mdleditor.mdleditor # Get the editor.
+        if o.name == editor.Root.currentcomponent.currentskin.name: # If this is not done it will cause looping through multiple times.
+            if (o.parent.parent.dictspec.has_key("skin_name")) and (o.parent.parent.dictspec['skin_name'] != o.name) and (not o.parent.parent.dictspec['skin_name'] in o.parent.parent.dictitems['Skins:sg'].dictitems.keys()):
+                # Gives the newly selected skin texture's game folders path and file name, for example:
+                #     models/monsters/cacodemon/cacoeye.tga
+                skinname = o.parent.parent.dictspec['skin_name']
+                skin = quarkx.newobj(skinname)
+                # Gives the full current work directory (cwd) path up to the file name, need to add "\\" + filename, for example:
+                #     E:\Program Files\Doom 3\base\models\monsters\cacodemon
+                import os
+                cur_folder = os.getcwd()
+                # Gives just the actual file name, for example: cacoeye.tga
+                tex_file = skinname.split("/")[-1]
+                # Puts the full path and file name together to get the file, for example:
+                # E:\Program Files\Doom 3\base\models\monsters\cacodemon\cacoeye.tga
+                file = cur_folder + "\\" + tex_file
+                image = quarkx.openfileobj(file)
+                skin['Image1'] = image.dictspec['Image1']
+                skin['Size'] = image.dictspec['Size']
+                skingroup = o.parent.parent.dictitems['Skins:sg']
+                undo = quarkx.action()
+                undo.put(skingroup, skin)
+                editor.ok(undo, o.parent.parent.shortname + " - " + "new skin added")
+                editor.Root.currentcomponent.currentskin = skin
+                editor.layout.explorer.sellist = [editor.Root.currentcomponent.currentskin]
+                import mdlutils
+                mdlutils.Update_Skin_View(editor, 2) # The 2 argument resets the Skin-view to the new skin's size and centers it.
+
+        DummyItem = o
+        while (DummyItem.type != ":mc"): # Gets the object's model component.
+            DummyItem = DummyItem.parent
+        if DummyItem.type == ":mc":
+            comp = DummyItem
+            # This sections handles the data for this model type skin page form.
+            # This makes sure what is selected is a model skin, if so it returns the Skin page data to make the form with.
+            if len(comp.dictitems['Skins:sg'].subitems) == 0 or o in comp.dictitems['Skins:sg'].subitems:
+                formobj = quarkx.newobj("skin:form")
+                formobj.loadtext(def_skin_dlgdef)
+                return formobj
+        else:
+            return None
+
+
+    def macro_opentexteditor(btn):
+        import mdleditor
+        editor = mdleditor.mdleditor # Get the editor.
+        if btn.name == "edit_skin:":
+            newImage = editor.Root.currentcomponent.currentskin
+            quarkx.externaledit(editor.Root.currentcomponent.currentskin) # Opens skin in - external editor for this texture file type.
+            editor.Root.currentcomponent.currentskin = newImage
+            skin = editor.Root.currentcomponent.currentskin
+            editor.layout.skinview.background = quarkx.vect(-int(skin["Size"][0]*.5),-int(skin["Size"][1]*.5),0), 1.0, 0, 1
+            editor.layout.skinview.backgroundimage = skin,
+            editor.layout.skinview.repaint()
+            for v in editor.layout.views:
+                if v.viewmode == "tex":
+                    v.invalidate(1)
+
+    qmacro.MACRO_opentexteditor = macro_opentexteditor
+
+
+    def dataforminput(o):
+        "Returns the default settings or input data for this type of object 'o' (a model's skin texture) to use for the Specific/Args page."
+
+        DummyItem = o
+        while (DummyItem.type != ":mc"): # Gets the object's model component.
+            DummyItem = DummyItem.parent
+        if DummyItem.type == ":mc":
+            comp = DummyItem
+            # This sections handles the data for this model type skin page form.
+            # This makes sure what is selected is a model skin, if so it fills the Skin page data and adds the items to the component.
+            if len(comp.dictitems['Skins:sg'].subitems) != 0:
+               comp['skin_name'] = o.name
+            else:
+               comp['skin_name'] = "no skins exist"
+
+
+class FrameGroupType(EntityManager):
+    "Model Frame Group, type = :fg"
+
+
+class FrameType(EntityManager):
+    "Model Frame, type = :mf"
+
+    def handlesopt(o, editor):
+        vtx = o.vertices
+        h = map(mdlhandles.VertexHandle, vtx)
+        for i in range(len(h)):
+            item = h[i]
+            item.frame = o
+            item.index = i
+            item.name = "Vertex"
+            if MapOption("HandleHints", SS_MODEL):
+                item.hint = item.name + " %s"%item.index
+        return h
+
 #
 # Mappings between Internal Objects types and Entity Manager classes.
 #
@@ -1055,16 +1209,19 @@ class BoneType(EntityManager):
 Mapping = {
     ":mc":       ComponentType(),
     ":mf":       FrameType(),
+    ":sg":       SkinGroupType(),
     ".pcx":      SkinType(),
-    ".jpg":      SkinType(),
     ".tga":      SkinType(),
+    ".dds":      SkinType(),
+    ".png":      SkinType(),
+    ".jpg":      SkinType(),
+    ".bmp":      SkinType(),
     ":bound":    BoundType(),
     ":tag":      TagType(),
     ":tagframe": TagFrameType(),
     ":bone":     BoneType() }
 
-# Generics = [GroupType(), FrameGroupType(), SkinGroupType(), SkinGroupType(), MiscGroupType(), MiscGroupType()]  # AiV
-Generics = [GroupType(), MiscGroupType(), FrameGroupType(), SkinGroupType()]  # AiV
+Generics = [GroupType(), MiscGroupType(), FrameGroupType()]  # AiV
 
 #
 # Use the function below to call a method of the Entity Manager classes.
@@ -1109,6 +1266,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.36  2008/12/01 04:53:54  cdunde
+#Update for component colors functions for OpenGL source code corrections.
+#
 #Revision 1.35  2008/11/29 06:56:25  cdunde
 #Setup new Component Colors and draw Textured View Tint Colors system.
 #
