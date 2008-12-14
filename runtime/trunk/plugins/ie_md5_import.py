@@ -32,6 +32,7 @@ from types import *
 import quarkx
 import quarkpy.mdleditor
 import quarkpy.mdlhandles
+import quarkpy.mdlutils
 import ie_utils
 from os import path
 from ie_utils import tobj
@@ -1313,7 +1314,8 @@ def loadmodel(root, filename, gamename, nomessage=0):
     "For example:  C:\Program Files\Doom 3\base\models\md5\monsters\pinky\pinky.md5mesh"
 
     global editor, progressbar, tobj, logging, importername, textlog, Strings
-    editor = quarkpy.mdleditor.mdleditor
+    if editor is None:
+        editor = quarkpy.mdleditor.mdleditor
 
     ### First we test for a valid (proper) model path.
     basepath = ie_utils.validpath(filename)
@@ -1375,9 +1377,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".md5 Doom3\Quake4 Importer", ".md5mesh fil
 
 
 def vtxcolorclick(btn):
-    import quarkx
-    import quarkpy.mdleditor
-    editor = quarkpy.mdleditor.mdleditor # Get the editor.
+    global editor
+    if editor is None:
+        editor = quarkpy.mdleditor.mdleditor # Get the editor.
     if quarkx.setupsubset(3, "Options")["LinearBox"] == "1":
         editor.ModelVertexSelList = []
         editor.linearbox = "True"
@@ -1385,14 +1387,14 @@ def vtxcolorclick(btn):
     else:
         if editor.ModelVertexSelList != []:
             editor.ModelVertexSelList = []
-            import quarkpy.mdlutils
             quarkpy.mdlutils.Update_Editor_Views(editor)
 
 
 def colorclick(btn):
-    import quarkx
+    global editor
     import quarkpy.qtoolbar              # Get the toolbar functions to make the button with.
-    editor = quarkpy.mdleditor.mdleditor # Get the editor.
+    if editor is None:
+        editor = quarkpy.mdleditor.mdleditor # Get the editor.
     if not quarkx.setupsubset(3, "Options")['VertexUVColor'] or quarkx.setupsubset(3, "Options")['VertexUVColor'] == "0":
         quarkx.setupsubset(3, "Options")['VertexUVColor'] = "1"
         quarkpy.qtoolbar.toggle(btn)
@@ -1407,9 +1409,9 @@ def colorclick(btn):
 
 
 def dataformname(o):
-    "Returns the data form for this type of object 'o' (a model component) to use for the Specific/Args page."
+    "Returns the data form for this type of object 'o' (a model's skin texture) to use for the Specific/Args page."
+    global editor
 
-    import quarkx
     if o.parent.parent.dictspec.has_key("shader_lines"):
         if int(o.parent.parent.dictspec['shader_lines']) < 3:
             o.parent.parent['shader_lines'] = "3"
@@ -1432,23 +1434,31 @@ def dataformname(o):
              "md5 models use 'meshes' the same way that QuArK uses 'components'."$0D
              "Each can have its own special Surface or skin texture settings."$0D
              "These textures may or may not have 'shaders' that they use for special effects."$0D0D22
+             "skin name"$22" - The currently selected skin texture name."$0D22
+             "edit skin"$22" - Opens this skin texture in an external editor."$0D22
              "shader file"$22" - Gives the full path and name of the .mtr material"$0D
              "           shader file that the selected skin texture uses, if any."$0D22
              "shader name"$22" - Gives the name of the shader located in the above file"$0D
              "           that the selected skin texture uses, if any."$0D22
-             "skin name"$22" - The currently selected skin texture name."$0D22
              "shader keyword"$22" - Gives the above shader 'keyword' that is used to identify"$0D
              "          the currently selected skin texture used in the shader, if any."$0D22
              "shader lines"$22" - Number of lines to display in window below, max. = 35."$0D22
              "edit shader"$22" - Opens shader below in a text editor."$0D22
              "mesh shader"$22" - Contains the full text of this skin texture's shader, if any."$0D
              "          This can be copied to a text file, changed and saved."
+      skin_name:      = {t_ModelEditor_texturebrowser = ! Txt="skin name"    Hint="The currently selected skin texture name."}
+      edit_skin:      = {
+                         Typ = "P"
+                         Txt = "edit skin ---->"
+                         Macro = "opentexteditor"
+                         Hint = "Opens this skin texture"$0D"in an external editor."
+                         Cap = "edit skin"
+                        }
       shader_file:    = {Typ="E"   Txt="shader file"  Hint="Gives the full path and name of the .mtr material"$0D"shader file that the selected skin texture uses, if any."}
       shader_name:    = {Typ="E"   Txt="shader name"  Hint="Gives the name of the shader located in the above file"$0D"that the selected skin texture uses, if any."}
-      skin_name:      = {t_ModelEditor_texturebrowser = ! Txt="skin name"    Hint="The currently selected skin texture name."}
       shader_keyword: = {Typ="E"   Txt="shader keyword"  Hint="Gives the above shader 'keyword' that is used to identify"$0D"the currently selected skin texture used in the shader, if any."}
       shader_lines:   = {Typ="EU"  Txt="shader lines"    Hint="Number of lines to display in window below, max. = 35."}
-      open_editor:     = {
+      edit_shader:    = {
                          Typ = "P"
                          Txt = "edit shader ---->"
                          Macro = "opentexteditor"
@@ -1461,7 +1471,8 @@ def dataformname(o):
 
     from quarkpy.qeditor import ico_dict # Get the dictionary list of all icon image files available.
     import quarkpy.qtoolbar              # Get the toolbar functions to make the button with.
-    editor = quarkpy.mdleditor.mdleditor # Get the editor.
+    if editor is None:
+        editor = quarkpy.mdleditor.mdleditor # Get the editor.
     ico_mdlskv = ico_dict['ico_mdlskv']  # Just to shorten our call later.
     icon_btns = {}                       # Setup our button list, as a dictionary list, to return at the end.
     vtxcolorbtn = quarkpy.qtoolbar.button(colorclick, "Color UV Vertex mode||When active, puts the editor vertex selection into this mode and uses the 'COLR' specific setting as the color to designate these types of vertexes.\n\nIt also places the editor into Vertex Selection mode if not there already and clears any selected vertexes to protect from including unwanted ones by mistake.\n\nAny vertexes selected in this mode will become Color UV Vertexes and added to the component as such. Click the InfoBase button or press F1 again for more detail.|intro.modeleditor.dataforms.html#specsargsview", ico_mdlskv, 5)
@@ -1471,7 +1482,7 @@ def dataformname(o):
         if o.parent.parent.dictspec.has_key("shader_keyword") and o.dictspec.has_key("shader_keyword"):
             if o.parent.parent.dictspec['shader_keyword'] != o.dictspec['shader_keyword']:
                 o['shader_keyword'] = o.parent.parent.dictspec['shader_keyword']
-        if o.parent.parent.dictspec.has_key("skin_name") and o.parent.parent.dictspec['skin_name'] != o.name:
+        if (o.parent.parent.dictspec.has_key("skin_name")) and (o.parent.parent.dictspec['skin_name'] != o.name) and (not o.parent.parent.dictspec['skin_name'] in o.parent.parent.dictitems['Skins:sg'].dictitems.keys()):
             # Gives the newly selected skin texture's game folders path and file name, for example:
             #     models/monsters/cacodemon/cacoeye.tga
             skinname = o.parent.parent.dictspec['skin_name']
@@ -1494,7 +1505,7 @@ def dataformname(o):
             editor.ok(undo, o.parent.parent.shortname + " - " + "new skin added")
             editor.Root.currentcomponent.currentskin = skin
             editor.layout.explorer.sellist = [editor.Root.currentcomponent.currentskin]
-            quarkpy.mdlutils.Update_Skin_View(editor)
+            quarkpy.mdlutils.Update_Skin_View(editor, 2)
 
     DummyItem = o
     while (DummyItem.type != ":mc"): # Gets the object's model component.
@@ -1512,28 +1523,38 @@ def dataformname(o):
 
 
 def macro_opentexteditor(btn):
-    editor = quarkpy.mdleditor.mdleditor # Get the editor.
-    import quarkx
-    # quarkx.externaledit(editor.Root.currentcomponent.currentskin) # Opens skin in PSP - external editor.
+    global editor
+    if editor is None:
+        editor = quarkpy.mdleditor.mdleditor # Get the editor.
 
-  #  shader_text = quarkx.newfileobj("tempdata:material")
-  #  shader_text['Data'] = editor.Root.currentcomponent.dictspec['mesh_shader']
-  #  obj = quarkx.newfileobj("temp.mtr")
-  #  obj.appenditem(shader_text)
-  #  quarkx.externaledit(obj)
-    
-    obj = quarkx.newfileobj("temp.txt")
-    obj['Data'] = editor.Root.currentcomponent.dictspec['mesh_shader']
-    quarkx.externaledit(obj)
+    if btn.name == "edit_skin:":
+        newImage = editor.Root.currentcomponent.currentskin
+        quarkx.externaledit(editor.Root.currentcomponent.currentskin) # Opens skin in - external editor for this texture file type.
+        editor.Root.currentcomponent.currentskin = newImage
+        skin = editor.Root.currentcomponent.currentskin
+        editor.layout.skinview.background = quarkx.vect(-int(skin["Size"][0]*.5),-int(skin["Size"][1]*.5),0), 1.0, 0, 1
+        editor.layout.skinview.backgroundimage = skin,
+        editor.layout.skinview.repaint()
+        for v in editor.layout.views:
+            if v.viewmode == "tex":
+                v.invalidate(1)
+    else:
+      #  shader_text = quarkx.newfileobj("tempdata:material")
+      #  shader_text['Data'] = editor.Root.currentcomponent.dictspec['mesh_shader']
+      #  obj = quarkx.newfileobj("temp.mtr")
+      #  obj.appenditem(shader_text)
+      #  quarkx.externaledit(obj)
+        obj = quarkx.newfileobj("temp.txt")
+        obj['Data'] = editor.Root.currentcomponent.dictspec['mesh_shader']
+        quarkx.externaledit(obj)
 
 quarkpy.qmacro.MACRO_opentexteditor = macro_opentexteditor
 
 
 
 def dataforminput(o):
-    "Returns the default settings or input data for this type of object 'o' (a model component) to use for the Specific/Args page."
+    "Returns the default settings or input data for this type of object 'o' (a model's skin texture) to use for the Specific/Args page."
 
-    import quarkx
     DummyItem = o
     while (DummyItem.type != ":mc"): # Gets the object's model component.
         DummyItem = DummyItem.parent
@@ -1581,6 +1602,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.5  2008/12/12 05:42:04  cdunde
+# To ability to open a component's stored shader file in a text editor.
+#
 # Revision 1.4  2008/12/11 07:07:00  cdunde
 # Added button to change number of lines size of shader text box.
 # Added custom icon for UV Color mode function.
