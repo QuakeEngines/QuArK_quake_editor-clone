@@ -1694,13 +1694,13 @@ def create_objects(filename, polynames, clip_list, objspec_list, surf_list, base
             if file == len(name_list)-1:
                 if not os.path.exists(os.getcwd().replace("\\", "/") + "/" + skinname[len(skinname)-1]):
                     if message != "":
-                        message = message + "================================\n"
+                        message = message + "================================\r\n"
                     temppath = basepath
-                    message = message + "Import Component " + str(CompNbr) + " needs the skin texture\n"
-                    message = message + (temppath.replace("\\", "/") + polyname[0] + '\n')
-                    message = message + "But the texture is not in that location.\n"
-                    message = message + "Look for:\n"
-                    message = message + ('    ' + polyname[0] + '\n')
+                    message = message + "Import Component " + str(CompNbr) + " needs the skin texture\r\n"
+                    message = message + (temppath.replace("\\", "/") + polyname[0] + '\r\n')
+                    message = message + "But the texture is not in that location.\r\n"
+                    message = message + "Look for:\r\n"
+                    message = message + ('    ' + polyname[0] + '\r\n')
                     polyuvlist = None
                 else:
                     temppath = filename
@@ -2222,15 +2222,15 @@ def loadmodel(root, filename, gamename, nomessage=0):
 
     editor = None   #Reset the global again
     if message != "":
-        message = message + "================================\n\n"
-        message = message + "You need to find and supply the proper texture(s) and folder(s) above.\n"
-        message = message + "Extract the 'Look for:' folder(s) and file(s) to the 'game' folder.\n\n"
-        message = message + "If a texture does not exist it may be a .dds or some other type of image file.\n"
-        message = message + "If so then you need to make a .tga file copy of that texture, perhaps in PaintShop Pro.\n\n"
-        message = message + "You may also need to rename it to match the exact name above.\n"
-        message = message + "Either case, it would be for editing purposes only and should be placed in the model's folder.\n\n"
+        message = message + "================================\r\n\r\n"
+        message = message + "You need to find and supply the proper texture(s) and folder(s) above.\r\n"
+        message = message + "Extract the 'Look for:' folder(s) and file(s) to the 'game' folder.\r\n\r\n"
+        message = message + "If a texture does not exist it may be a .dds or some other type of image file.\r\n"
+        message = message + "If so then you need to make a .tga file copy of that texture, perhaps in PaintShop Pro.\r\n\r\n"
+        message = message + "You may also need to rename it to match the exact name above.\r\n"
+        message = message + "Either case, it would be for editing purposes only and should be placed in the model's folder.\r\n\r\n"
         message = message + "Once this is done, then delete the imported components and re-import the model."
-        quarkx.msgbox("Missing Skin Textures:\n\n================================\n" + message, quarkpy.qutils.MT_INFORMATION, quarkpy.qutils.MB_OK)
+        quarkx.msgbox("Missing Skin Textures:\r\n\r\n================================\r\n" + message, quarkpy.qutils.MT_INFORMATION, quarkpy.qutils.MB_OK)
 
 ### To register this Python plugin and put it on the importers menu.
 import quarkpy.qmdlbase
@@ -2375,6 +2375,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.15  2008/12/14 22:11:14  cdunde
+# Added skin texture editing ability in external editor.
+#
 # Revision 1.14  2008/12/12 05:41:44  cdunde
 # To move all code for lwo UV Color Selection function into the lwo plugins\ie_lightwave_import.py file.
 #

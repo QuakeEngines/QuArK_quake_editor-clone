@@ -418,7 +418,7 @@ def load_md5(md5_filename, basepath):
         for line_counter in range(0,num_lines):
             current_line=lines[line_counter]
             words=current_line.split()
-
+            ### BONES start here., see class md5_bone above.
             if words and words[0]=="numJoints":
                 #print "found a bunch of bones"
                 num_bones=int(words[1])
@@ -436,7 +436,7 @@ def load_md5(md5_filename, basepath):
                         line_counter+=1
                         current_line=lines[line_counter]
                         words=current_line.split()
-
+                # QuArK note: this is where we start making our bones.
                     md5_bones[bone_counter].bone_index=bone_counter
                     #get rid of the quotes on either side
                     temp_name=str(words[0])
@@ -689,7 +689,7 @@ def load_md5(md5_filename, basepath):
                                                 foundtexture = None
                                             else: # Keep looking in the shader files, the shader may be in another one.
                                                 imagefile = basepath + foundtexture
-                                                noimage = noimage + "\nFound needed shader for Import Component " + str(CompNbr) + ":\n    " + mesh.shader + "\n" + "in\n    " + shaderspath+"/"+shaderfile + "\n" + "and the 'diffusemap' image to display.\n    " + foundtexture + "\n" + "But that image file does not exist.\n"
+                                                noimage = noimage + "\r\nFound needed shader for Import Component " + str(CompNbr) + ":\r\n    " + mesh.shader + "\r\n" + "in\r\n    " + shaderspath+"/"+shaderfile + "\r\n" + "and the 'diffusemap' image to display.\r\n    " + foundtexture + "\r\n" + "But that image file does not exist.\r\n"
                                     if lines[line].find("bumpmap") != -1 and (not lines[line].find("addnormals") != -1 and not lines[line].find("heightmap") != -1):
                                         words = lines[line].replace("("," ")
                                         words = words.replace(")"," ")
@@ -745,7 +745,7 @@ def load_md5(md5_filename, basepath):
                                                 if skinsize == (256, 256):
                                                     skinsize = skin['Size']
                                             else:
-                                                noimage = noimage + "\nFound needed shader for Import Component " + str(CompNbr) + ":\n    " + mesh.shader + "\n" + "in\n    " + shaderspath+"/"+shaderfile + "\n" + "but the texture image file it calls to display\n    " + imagefile + "\nis not there or has a different name.\nMake a copy of the file and rename it or\ncheck the shader and make a correction to add it.\n"
+                                                noimage = noimage + "\r\nFound needed shader for Import Component " + str(CompNbr) + ":\r\n    " + mesh.shader + "\r\n" + "in\r\n    " + shaderspath+"/"+shaderfile + "\r\n" + "but the texture image file it calls to display\r\n    " + imagefile + "\r\nis not there or has a different name.\r\nMake a copy of the file and rename it or\r\ncheck the shader and make a correction to add it.\r\n"
                                     else:
                                         if lines[line].find("/") != -1:
                                             if lines[line-1].find("qer_editorimage") != -1 or lines[line-1].find("diffusemap") != -1 or lines[line-1].find("bumpmap") != -1 or lines[line-1].find("addnormals") != -1 or lines[line-1].find("heightmap") != -1 or lines[line-1].find("specularmap") != -1 or lines[line].find(chr(32)+"map") != -1 or lines[line].find(chr(9)+"map") != -1:
@@ -783,7 +783,7 @@ def load_md5(md5_filename, basepath):
                                                                 if skinsize == (256, 256):
                                                                     skinsize = skin['Size']
                                                             else:
-                                                                noimage = noimage + "\nFound needed shader for Import Component " + str(CompNbr) + ":\n    " + mesh.shader + "\n" + "in\n    " + shaderspath+"/"+shaderfile + "\n" + "but the texture image file it calls to display\n    " + imagefile + "\nis not there or has a different name.\nMake a copy of the file and rename it or\ncheck the shader and make a correction to add it.\n"
+                                                                noimage = noimage + "\r\nFound needed shader for Import Component " + str(CompNbr) + ":\r\n    " + mesh.shader + "\r\n" + "in\r\n    " + shaderspath+"/"+shaderfile + "\r\n" + "but the texture image file it calls to display\r\n    " + imagefile + "\r\nis not there or has a different name.\r\nMake a copy of the file and rename it or\r\ncheck the shader and make a correction to add it.\r\n"
                                     shaderline = lines[line].replace(chr(9), "    ")
                                     shaderline = shaderline.rstrip()
                                     if mesh_shader is not None:
@@ -807,7 +807,7 @@ def load_md5(md5_filename, basepath):
                                         if skinsize == (256, 256):
                                             skinsize = skin['Size']
                                     else:
-                                        noimage = noimage + "\nFound needed shader for Import Component " + str(CompNbr) + ":\n    " + mesh.shader + "\n" + "in\n    " + shaderspath+"/"+shaderfile + "\n" + "but the texture image file it calls to display\n    " + imagefile + "\nis not there or has a different name.\nMake a copy of the file and rename it or\ncheck the shader and make a correction to add it.\n"
+                                        noimage = noimage + "\r\nFound needed shader for Import Component " + str(CompNbr) + ":\r\n    " + mesh.shader + "\r\n" + "in\r\n    " + shaderspath+"/"+shaderfile + "\r\n" + "but the texture image file it calls to display\r\n    " + imagefile + "\r\nis not there or has a different name.\r\nMake a copy of the file and rename it or\r\ncheck the shader and make a correction to add it.\r\n"
                                 if addnormals is not None:
                                     imagefile = basepath + addnormals
                                     if os.path.isfile(basepath + addnormals):
@@ -824,7 +824,7 @@ def load_md5(md5_filename, basepath):
                                         if skinsize == (256, 256):
                                             skinsize = skin['Size']
                                     else:
-                                        noimage = noimage + "\nFound needed shader for Import Component " + str(CompNbr) + ":\n    " + mesh.shader + "\n" + "in\n    " + shaderspath+"/"+shaderfile + "\n" + "but the texture image file it calls to display\n    " + imagefile + "\nis not there or has a different name.\nMake a copy of the file and rename it or\ncheck the shader and make a correction to add it.\n"
+                                        noimage = noimage + "\r\nFound needed shader for Import Component " + str(CompNbr) + ":\r\n    " + mesh.shader + "\r\n" + "in\r\n    " + shaderspath+"/"+shaderfile + "\r\n" + "but the texture image file it calls to display\r\n    " + imagefile + "\r\nis not there or has a different name.\r\nMake a copy of the file and rename it or\r\ncheck the shader and make a correction to add it.\r\n"
                                 if heightmap is not None:
                                     imagefile = basepath + heightmap
                                     if os.path.isfile(basepath + heightmap):
@@ -841,7 +841,7 @@ def load_md5(md5_filename, basepath):
                                         if skinsize == (256, 256):
                                             skinsize = skin['Size']
                                     else:
-                                        noimage = noimage + "\nFound needed shader for Import Component " + str(CompNbr) + ":\n    " + mesh.shader + "\n" + "in\n    " + shaderspath+"/"+shaderfile + "\n" + "but the texture image file it calls to display\n    " + imagefile + "\nis not there or has a different name.\nMake a copy of the file and rename it or\ncheck the shader and make a correction to add it.\n"
+                                        noimage = noimage + "\r\nFound needed shader for Import Component " + str(CompNbr) + ":\r\n    " + mesh.shader + "\r\n" + "in\r\n    " + shaderspath+"/"+shaderfile + "\r\n" + "but the texture image file it calls to display\r\n    " + imagefile + "\r\nis not there or has a different name.\r\nMake a copy of the file and rename it or\r\ncheck the shader and make a correction to add it.\r\n"
                                 if specularmap is not None:
                                     imagefile = basepath + specularmap
                                     if os.path.isfile(basepath + specularmap):
@@ -858,7 +858,7 @@ def load_md5(md5_filename, basepath):
                                         if skinsize == (256, 256):
                                             skinsize = skin['Size']
                                     else:
-                                        noimage = noimage + "\nFound needed shader for Import Component " + str(CompNbr) + ":\n    " + mesh.shader + "\n" + "in\n    " + shaderspath+"/"+shaderfile + "\n" + "but the texture image file it calls to display\n    " + imagefile + "\nis not there or has a different name.\nMake a copy of the file and rename it or\ncheck the shader and make a correction to add it.\n"
+                                        noimage = noimage + "\r\nFound needed shader for Import Component " + str(CompNbr) + ":\r\n    " + mesh.shader + "\r\n" + "in\r\n    " + shaderspath+"/"+shaderfile + "\r\n" + "but the texture image file it calls to display\r\n    " + imagefile + "\r\nis not there or has a different name.\r\nMake a copy of the file and rename it or\r\ncheck the shader and make a correction to add it.\r\n"
                                 if imagefile is None:
                                     imagefile = "NO IMAGE FILE FOUND AT ALL, CHECK THE SHADER."
                                 break
@@ -879,7 +879,7 @@ def load_md5(md5_filename, basepath):
                                 if skinsize == (256, 256):
                                     skinsize = skin['Size']
                             else: # If no texture is found then we are missing the shader.
-                                message = message + "\nImport Component " + str(CompNbr) + " calls for the shader:\n    " + mesh.shader + "\n" + "but it could not be located in\n    " + shaderspath + "\n" + "Extract shader file to this folder\nor create a shader file if needed.\n"
+                                message = message + "\r\nImport Component " + str(CompNbr) + " calls for the shader:\r\n    " + mesh.shader + "\r\n" + "but it could not be located in\r\n    " + shaderspath + "\r\n" + "Extract shader file to this folder\r\nor create a shader file if needed.\r\n"
              #           print "line 665 good to here",message
 
         #        blender_mesh=NMesh.New() # make this a QuArK component's frame verticies
@@ -1360,15 +1360,15 @@ def loadmodel(root, filename, gamename, nomessage=0):
 
     editor = None   #Reset the global again
     if message != "":
-        message = message + "================================\n\n"
-        message = message + "You need to find and supply the proper texture(s) and folder(s) above.\n"
-        message = message + "Extract the required folder(s) and file(s) to the 'game' folder.\n\n"
-        message = message + "If a texture does not exist it may be a .dds or some other type of image file.\n"
-        message = message + "If so then you need to make a .tga file copy of that texture, perhaps in PaintShop Pro.\n\n"
-        message = message + "You may also need to rename it to match the exact name above.\n"
-        message = message + "Either case, it would be for editing purposes only and should be placed in the proper folder.\n\n"
+        message = message + "================================\r\n\r\n"
+        message = message + "You need to find and supply the proper texture(s) and folder(s) above.\r\n"
+        message = message + "Extract the required folder(s) and file(s) to the 'game' folder.\r\n\r\n"
+        message = message + "If a texture does not exist it may be a .dds or some other type of image file.\r\n"
+        message = message + "If so then you need to make a .tga file copy of that texture, perhaps in PaintShop Pro.\r\n\r\n"
+        message = message + "You may also need to rename it to match the exact name above.\r\n"
+        message = message + "Either case, it would be for editing purposes only and should be placed in the proper folder.\r\n\r\n"
         message = message + "Once this is done, then delete the imported components and re-import the model."
-        quarkx.msgbox("Missing Skin Textures:\n\n================================\n" + message, quarkpy.qutils.MT_INFORMATION, quarkpy.qutils.MB_OK)
+        quarkx.textbox("WARNING", "Missing Skin Textures:\r\n\r\n================================\r\n" + message, quarkpy.qutils.MB_OK)
 
 ### To register this Python plugin and put it on the importers menu.
 import quarkpy.qmdlbase
@@ -1602,6 +1602,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.6  2008/12/14 22:11:29  cdunde
+# Needed to fix error causing multiple copies of skins to be made.
+#
 # Revision 1.5  2008/12/12 05:42:04  cdunde
 # To ability to open a component's stored shader file in a text editor.
 #
