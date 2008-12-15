@@ -1368,7 +1368,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
         message = message + "You may also need to rename it to match the exact name above.\r\n"
         message = message + "Either case, it would be for editing purposes only and should be placed in the proper folder.\r\n\r\n"
         message = message + "Once this is done, then delete the imported components and re-import the model."
-        quarkx.textbox("WARNING", "Missing Skin Textures:\r\n\r\n================================\r\n" + message, quarkpy.qutils.MB_OK)
+        quarkx.textbox("WARNING", "Missing Skin Textures:\r\n\r\n================================\r\n" + message, quarkpy.qutils.MT_WARNING)
 
 ### To register this Python plugin and put it on the importers menu.
 import quarkpy.qmdlbase
@@ -1602,6 +1602,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.7  2008/12/15 01:28:11  cdunde
+# To update all importers needed message boxes to new quarkx.textbox function.
+#
 # Revision 1.6  2008/12/14 22:11:29  cdunde
 # Needed to fix error causing multiple copies of skins to be made.
 #
