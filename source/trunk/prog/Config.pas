@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2008/09/14 21:51:25  danielpharos
+Changes to Help system: All forms now have a customizable help-link. Also, added an fallback option to the online infobase docs.
+
 Revision 1.15  2007/11/09 10:55:00  danielpharos
 Fix the SaveConfig dialog not showing, and maybe fix the config-not-saved problem.
 
@@ -323,6 +326,8 @@ begin
        FormCfg1:=TFormCfg.Create(Self);
        FormCfg1.Left:=Width;
        FormCfg1.Parent:=Self;
+       FormCfg1.AllowEdit:=True;
+       FormCfg1.NoSpecifics:=True;
        FormCfg1.OnChange:=FormCfg1Change;
       {FormCfg1.Delta:=0.57;}
       end;

@@ -64,9 +64,15 @@ List of the objects given in the last call to <tt>setdata</tt>. Does not include
 </td></tr>
 
 <tr><td class="doccode">
-header
+noheader
 </td><td>
-Display columns headers? (must be set before a call to <tt>setdata</tt>)
+Do not display columns headers? (must be set before a call to <tt>setdata</tt>)
+</td></tr>
+
+<tr><td class="doccode">
+nospecifics
+</td><td>
+Do not enable the specifics add/delete menu-options.
 </td></tr>
 
 <tr><td class="doccode">

@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.48  2008/12/09 19:49:40  cdunde
+To added scroll bars and new variable setting functions for the Type "M" form objects, by DanielPharos
+and reverse previous attempt to fix multiple fills of selection boxes for Type "L" that didn't work out.
+
 Revision 1.47  2008/11/17 19:14:15  danielpharos
 Fixed (illegally) setting Text on DropDownList-style ComboBoxes.
 
@@ -265,7 +269,7 @@ type
             public
               ActionChanging, ActionDeleting, ActionRenaming, ActionNiveau: Integer;
               OnChange: TNotifyEvent;
-              Modified, AllowEdit, InternalEditing,
+              Modified, AllowEdit, InternalEditing, NoSpecifics,
               NoHeader, AddRemaining, NoClientAlign: Boolean;
               Delta: TDouble;
               TxtSpec, TxtArg: Integer;
@@ -2853,9 +2857,18 @@ begin
  {  SetFocus;
    RowOk:=GetFocused1(True);  }
 
-   Items[cmd_AddSpec].Enabled:=AllowEdit and AddRemaining;
-   Items[cmd_DeleteSpec].Enabled:=AllowEdit and RowOk;
-   Items[cmd_DeleteSpec].Tag:=I;
+   if NoSpecifics then
+   begin
+     Items[cmd_AddSpec].Enabled:=False;
+     Items[cmd_DeleteSpec].Enabled:=False;
+     Items[cmd_DeleteSpec].Tag:=I;
+   end
+   else
+   begin
+     Items[cmd_AddSpec].Enabled:=AllowEdit and AddRemaining;
+     Items[cmd_DeleteSpec].Enabled:=AllowEdit and RowOk;
+     Items[cmd_DeleteSpec].Tag:=I;
+   end;
    Items[cmd_CopySpec].Enabled:=RowOk;
    Items[cmd_PasteSpec].Enabled:=AllowEdit and RowOk;
    Items[cmd_CutSpec].Enabled:=AllowEdit and RowOk;
