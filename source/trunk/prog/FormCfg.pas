@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.49  2008/12/15 22:20:58  danielpharos
+Fixed the right-click popup menu in the configuration not enabling all the usable menu-options.
+
 Revision 1.48  2008/12/09 19:49:40  cdunde
 To added scroll bars and new variable setting functions for the Type "M" form objects, by DanielPharos
 and reverse previous attempt to fix multiple fills of selection boxes for Type "L" that didn't work out.
@@ -2515,6 +2518,8 @@ begin
                  end;
                  Edit.SetBounds(X,Y,J,LineHeight);
                  Edit.Parent:=SB;
+                 //FIXME: Propagate this fix to all other controls here...!
+                 Inc(ExtraVertSpace, Edit.Height - LineHeight); //The Autosize (triggered by the Parent-change) changes the height, so we need to compensate for that!
                  Edit.Hint:=HintMsg;
                  Edit.Tag:=I+1;
                  Notify:=AcceptEdit;
