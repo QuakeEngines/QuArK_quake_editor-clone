@@ -34,7 +34,7 @@ object FQTextBoxForm: TFQTextBoxForm
     Height = 153
     ReadOnly = True
     ScrollBars = ssVertical
-    TabOrder = 0
+    TabOrder = 1
   end
   object Button1: TButton
     Left = 170
@@ -42,7 +42,8 @@ object FQTextBoxForm: TFQTextBoxForm
     Width = 137
     Height = 41
     Caption = 'OK'
-    TabOrder = 1
+    Default = True
+    TabOrder = 0
     OnClick = Button1Click
   end
 end
