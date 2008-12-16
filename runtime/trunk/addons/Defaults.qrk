@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.470  2008/12/06 19:26:49  cdunde
+//To make specific texture browser for the Model Editor import\export files use, non-game dependent.
+//
 //Revision 1.469  2008/11/29 06:56:25  cdunde
 //Setup new Component Colors and draw Textured View Tint Colors system.
 //
@@ -9387,7 +9390,7 @@ QQRKSRC1
   // Definition of "includes"
     t_ModelEditor_texturebrowser:incl =
     {
-      Typ = "EP"
+      Typ = "EPR"
       DefExt = "tga; *.dds; *.png; *.jpg; *.bmp"
       BasePath = "?\?\?"
       CutPath = "?\?\?\?\"
