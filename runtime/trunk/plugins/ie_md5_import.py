@@ -39,6 +39,8 @@ from ie_utils import tobj
 import math
 from math import *
 from quarkpy.qdictionnary import Strings
+from quarkpy.qeditor import MapColor # Strictly needed for QuArK bones MapColor call.
+
 # HACK -- it seems that some Blender versions don't define sys.argv,
 # which may crash Python if a warning occurs.
 if not hasattr(sys, "argv"): sys.argv = ["???"]
@@ -322,7 +324,8 @@ class md5_bone:
 		self.name=""
 		self.bindpos=[0.0]*3
 		self.bindmat=[None]*3  #is this how you initilize a 2d-array
-		for i in range(3): self.bindmat[i] = [0.0]*3
+		for i in range(3):
+			self.bindmat[i] = [0.0]*3
 		self.parent=""
 		self.parent_index=0
 		self.blenderbone=None
@@ -403,6 +406,8 @@ def load_md5(md5_filename, basepath):
 
         ComponentList = []
         message = ""
+        QuArK_bones = [] # To store all bones created by the .md5mesh file, if any, which can spread from component to component.
+        QuArK_bone_list = [] # To store all bones created by each mesh (component), if any.
 
         #read the file in
         file=open(md5_filename,"r")
@@ -436,20 +441,58 @@ def load_md5(md5_filename, basepath):
                         line_counter+=1
                         current_line=lines[line_counter]
                         words=current_line.split()
-                # QuArK note: this is where we start making our bones.
                     md5_bones[bone_counter].bone_index=bone_counter
                     #get rid of the quotes on either side
                     temp_name=str(words[0])
                     temp_name=temp_name[1:-1]
+                    ### QuArK note: this is where we start making our bones.
+                    new_bone = quarkx.newobj(temp_name + ":bone")
+                    new_bone['start_component'] = "None" # None for now and get the component name later.
+                    new_bone['start_vertex_count'] = "0"
+                    new_bone['start_point'] = (0, 0, 0) # Just in case this is not reset further below.
+                    new_bone['start_offset'] = (0, 0, 0)
+                    new_bone['start_scale'] = (1.0,)
+                    new_bone['end_component'] = "None" # None for now and get the component name later.
+                    new_bone['end_vertex_count'] = "0"
+                    new_bone['end_point'] = (0, 0, 0) # Just in case this is not reset further below.
+                    new_bone['end_offset'] = (0, 0, 0)
+                    new_bone['start_color'] = new_bone['end_color'] = MapColor("BoneHandles", 3)
+                    new_bone['end_scale'] = (1.0,)
+                    start_point = quarkx.vect(new_bone.dictspec['start_point']) + quarkx.vect(new_bone.dictspec['start_offset'])
+                    end_point = quarkx.vect(new_bone.dictspec['end_point']) + quarkx.vect(new_bone.dictspec['end_offset'])
+                    new_bone['bone_length'] = (start_point - end_point*-1).tuple
+
                     md5_bones[bone_counter].name=temp_name
          #           print "found a bone: ", md5_bones[bone_counter].name
                     md5_bones[bone_counter].parent_index = int(words[1])
+              #      print "line 468 parent_index",int(words[1])
+                    new_bone['parent_index'] = words[1] # QuArK code, probably can NOT be an integer but a string of its value.
+              #      print "line 470 parent_index",new_bone.dictspec['parent_index'], type(new_bone.dictspec['parent_index'])
          #           print "parent_index: ", md5_bones[bone_counter].parent_index
+                    # QuArK note: Even though the bone's parent name is not used anywhere else in this file,
+                    # we need to store it with the bone so it can be written easily to the export file.
                     if md5_bones[bone_counter].parent_index>=0:
+                        new_bone['parent_name'] = md5_bones[md5_bones[bone_counter].parent_index].name
                         md5_bones[bone_counter].parent = md5_bones[md5_bones[bone_counter].parent_index].name
                     md5_bones[bone_counter].bindpos[0]=float(words[3])
                     md5_bones[bone_counter].bindpos[1]=float(words[4])
                     md5_bones[bone_counter].bindpos[2]=float(words[5])
+                    # QuArK code below, probably not right, need to consider other bones connecting to this one and so on.
+                    if bone_counter == 0:
+                        new_bone['start_point'] = (float(words[3]), float(words[4]), float(words[5]))
+                    elif bone_counter == num_bones-1:
+                        new_bone['start_point'] = QuArK_bone_list[int(new_bone.dictspec['parent_index'])].dictspec['end_point']
+                        new_bone['end_point'] = (float(words[3]), float(words[4]), float(words[5]))
+                        start_point = quarkx.vect(new_bone.dictspec['start_point'])
+                        end_point = quarkx.vect(new_bone.dictspec['end_point'])
+                        new_bone['bone_length'] = (start_point - end_point*-1).tuple
+                    else:
+                        new_bone['start_point'] = QuArK_bone_list[int(new_bone.dictspec['parent_index'])].dictspec['end_point']
+                        new_bone['end_point'] = (float(words[3]), float(words[4]), float(words[5]))
+                        start_point = quarkx.vect(new_bone.dictspec['start_point'])
+                        end_point = quarkx.vect(new_bone.dictspec['end_point'])
+                        new_bone['bone_length'] = (start_point - end_point*-1).tuple
+
         #            print "bindpos: ", md5_bones[bone_counter].bindpos
                     qx = float(words[8])
                     qy = float(words[9])
@@ -462,14 +505,23 @@ def load_md5(md5_filename, basepath):
                         qw = -sqrt(qw)
                     md5_bones[bone_counter].bindmat = quaternion2matrix([qx,qy,qz,qw])
        #             print "bindmat: ", md5_bones[bone_counter].bindmat
+
+                    # QuArK code below
+            #        new_bone['bindmat'] = quaternion2matrix([qx,qy,qz,qw]) # QuArK code THIS LINE BRAKE EVERYTHING
+                    new_bone['bindmat'] = (float(words[8]), float(words[9]), float(words[10])) # QuArK code, use these values to build this bones matrix (see code above).
+                    QuArK_bone_list = QuArK_bone_list + [new_bone]
+
                 for bone in md5_bones:
                     bone.dump()
+          #      print "line 510 QuArK_bone_list",QuArK_bone_list
 
 
             elif words and words[0]=="numMeshes":
                 num_meshes=int(words[1])
        #         print "num_meshes: ", num_meshes
             elif words and words[0]=="mesh":
+                QuArK_bone_list_index = [] # To match which bones belong to which mesh (component).
+                QuArK_mesh_bone_list = []
                 #create a new mesh and name it
                 md5_model.append(md5_mesh())
                 #print "md5_mesh: ",md5_model
@@ -510,13 +562,20 @@ def load_md5(md5_filename, basepath):
                             #load it with raw data
                             md5_model[mesh_counter].weights[weight_counter].weight_index=int(words[1])
                             md5_model[mesh_counter].weights[weight_counter].bone_index=int(words[2])
+                            if int(words[2]) not in QuArK_bone_list_index: # To match which bones belong to which mesh (component).
+                                QuArK_bone_list_index = QuArK_bone_list_index + [int(words[2])]
                             md5_model[mesh_counter].weights[weight_counter].bias=float(words[3])
                             md5_model[mesh_counter].weights[weight_counter].weights[0]=float(words[5])
                             md5_model[mesh_counter].weights[weight_counter].weights[1]=float(words[6])
                             md5_model[mesh_counter].weights[weight_counter].weights[2]=float(words[7])
                             #md5_model[mesh_counter].weights[weight_counter].dump()
                 #print "end of this mesh structure"
+           #     print "line 567 QuArK_bone_list_index",QuArK_bone_list_index
+                for index in QuArK_bone_list_index:
+                    QuArK_mesh_bone_list = QuArK_mesh_bone_list + [QuArK_bone_list[index]]
                 mesh_counter += 1
+           #     print "line 571 QuArK_mesh_bone_list",QuArK_mesh_bone_list
+                QuArK_bones = QuArK_bones + [QuArK_mesh_bone_list]
 
 
 	#figure out the base pose for each vertex from the weights
@@ -614,6 +673,9 @@ def load_md5(md5_filename, basepath):
                                           # md5_filename "C:\Program Files\Doom 3\base\models\md5\monsters\pinky\pinky.md5mesh"
         firstcomp = str(CompNbr)
         lastcomp = str(CompNbr + len(md5_model)-1)
+
+        QuArK_mesh_counter = 0
+  #      print "line 672 QuArK_bones",QuArK_bones
         for mesh in md5_model: # A new QuArK component needs to be made for each mesh.
   #              print "making  Import Component ",CompNbr # The name of this component being created now, ex: "Import Component 1"
   #              print "adding mesh ", mesh.mesh_index, " to blender"
@@ -981,7 +1043,13 @@ def load_md5(md5_filename, basepath):
         #        armObj.makeParentDeform([mesh_obj], 0, 0)
 
                 # Now we start creating our Import Component and name it.
+          #      print ""
+          #      print "line 1041 len(QuArK_bones), QuArK_mesh_counter",len(QuArK_bones), QuArK_mesh_counter
+          #      print "line 1042 len(QuArK_bones[QuArK_mesh_counter])",len(QuArK_bones[QuArK_mesh_counter])
                 Component = quarkx.newobj("Import Component " + str(CompNbr) + ':mc')
+                for bone in QuArK_bones[QuArK_mesh_counter]:
+                    bone['start_component'] = Component.name
+                    bone['end_component'] = Component.name
                 if shader_file is not None:
                     Component['shader_file'] = shader_file
                 if shader_name is not None:
@@ -1005,9 +1073,10 @@ def load_md5(md5_filename, basepath):
             #    else:
             #        Strings[2454] = Strings[2454].replace("Import Component " + str(CompNbr) + "\n", "")
                 CompNbr = CompNbr + 1
+                QuArK_mesh_counter = QuArK_mesh_counter + 1
 
     #    return armObj
-        return ComponentList, message
+        return ComponentList, QuArK_bones, message
 
 class md5anim_bone:
     name = ""
@@ -1298,13 +1367,13 @@ def handle_button_event(evt):
 
 def import_md5_model(basepath, md5_filename):
 
-    ComponentList, message = load_md5(md5_filename, basepath) # Loads the model.
+    ComponentList, QuArK_bones, message = load_md5(md5_filename, basepath) # Loads the model.
 
     ### Use the 'ModelRoot' below to test opening the QuArK's Model Editor with, needs to be qualified with main menu item.
     ModelRoot = quarkx.newobj('Model:mr')
   #  ModelRoot.appenditem(Component)
 
-    return ModelRoot, ComponentList, message
+    return ModelRoot, ComponentList, QuArK_bones, message
 
 
 def loadmodel(root, filename, gamename, nomessage=0):
@@ -1326,7 +1395,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
     logging, tobj, starttime = ie_utils.default_start_logging(importername, textlog, filename, "IM") ### Use "EX" for exporter text, "IM" for importer text.
 
     ### Lines below here loads the model into the opened editor's current model.
-    ModelRoot, ComponentList, message = import_md5_model(basepath, filename)
+    ModelRoot, ComponentList, QuArK_bones, message = import_md5_model(basepath, filename)
 
     if ModelRoot is None or ComponentList is None or ComponentList == []:
         quarkx.beep() # Makes the computer "Beep" once if a file is not valid. Add more info to message.
@@ -1334,14 +1403,21 @@ def loadmodel(root, filename, gamename, nomessage=0):
         progressbar.close()
         return
 
+    QuArK_mesh_counter = 0
     undo = quarkx.action()
     for Component in ComponentList:
         undo.put(editor.Root, Component)
+        for bone in QuArK_bones[QuArK_mesh_counter]:
+            try:
+                undo.put(editor.Root.dictitems['Skeleton:bg'], bone)
+            except:
+                pass
         editor.Root.currentcomponent = Component
         compframes = editor.Root.currentcomponent.findallsubitems("", ':mf')   # get all frames
         for compframe in compframes:
             compframe.compparent = editor.Root.currentcomponent # To allow frame relocation after editing.
          #   progressbar.progress() # un-comment this line once progress bar is set up
+        QuArK_mesh_counter = QuArK_mesh_counter + 1
 
     editor.Root.currentcomponent = ComponentList[0]  # Sets the current component.
   #  progressbar.close() # un-comment this line once progress bar is set up
@@ -1476,6 +1552,10 @@ def dataformname(o):
     ico_mdlskv = ico_dict['ico_mdlskv']  # Just to shorten our call later.
     icon_btns = {}                       # Setup our button list, as a dictionary list, to return at the end.
     vtxcolorbtn = quarkpy.qtoolbar.button(colorclick, "Color UV Vertex mode||When active, puts the editor vertex selection into this mode and uses the 'COLR' specific setting as the color to designate these types of vertexes.\n\nIt also places the editor into Vertex Selection mode if not there already and clears any selected vertexes to protect from including unwanted ones by mistake.\n\nAny vertexes selected in this mode will become Color UV Vertexes and added to the component as such. Click the InfoBase button or press F1 again for more detail.|intro.modeleditor.dataforms.html#specsargsview", ico_mdlskv, 5)
+    if quarkx.setupsubset(3, "Options")['VertexUVColor'] == "1":
+        vtxcolorbtn.state = quarkpy.qtoolbar.selected
+    else:
+        vtxcolorbtn.state = quarkpy.qtoolbar.normal
     icon_btns['color'] = vtxcolorbtn     # Put our button in the above list to return.
 
     if o.name == editor.Root.currentcomponent.currentskin.name: # If this is not done it will cause looping through multiple times.
@@ -1602,6 +1682,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.8  2008/12/15 01:46:35  cdunde
+# Slight correction.
+#
 # Revision 1.7  2008/12/15 01:28:11  cdunde
 # To update all importers needed message boxes to new quarkx.textbox function.
 #
