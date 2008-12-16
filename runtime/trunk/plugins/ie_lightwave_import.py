@@ -2312,6 +2312,10 @@ def dataformname(o):
     ico_mdlskv = ico_dict['ico_mdlskv']  # Just to shorten our call later.
     icon_btns = {}                       # Setup our button list, as a dictionary list, to return at the end.
     vtxcolorbtn = quarkpy.qtoolbar.button(colorclick, "Color UV Vertex mode||When active, puts the editor vertex selection into this mode and uses the 'COLR' specific setting as the color to designate these types of vertexes.\n\nIt also places the editor into Vertex Selection mode if not there already and clears any selected vertexes to protect from including unwanted ones by mistake.\n\nAny vertexes selected in this mode will become Color UV Vertexes and added to the component as such. Click the InfoBase button or press F1 again for more detail.|intro.modeleditor.dataforms.html#specsargsview", ico_mdlskv, 5)
+    if quarkx.setupsubset(3, "Options")['VertexUVColor'] == "1":
+        vtxcolorbtn.state = quarkpy.qtoolbar.selected
+    else:
+        vtxcolorbtn.state = quarkpy.qtoolbar.normal
     icon_btns['color'] = vtxcolorbtn     # Put our button in the above list to return.
 
     DummyItem = o
@@ -2375,6 +2379,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.17  2008/12/15 01:46:35  cdunde
+# Slight correction.
+#
 # Revision 1.16  2008/12/15 01:28:11  cdunde
 # To update all importers needed message boxes to new quarkx.textbox function.
 #
