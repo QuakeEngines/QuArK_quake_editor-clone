@@ -351,7 +351,7 @@ class ModelLayout(BaseLayout):
         Vertexdragmodebtn.state = (qtoolbar.selected,0)[not MapOption("SingleVertexDrag", self.MODE)]
         skinremapbtn = qtoolbar.button(self.reskin, "Remap Snapshot||Remap Snapshot:\n\nClick this button when you have selected some faces in any of the editor's views and it will 'Re-map' those faces on the current Skin-view skin for that component using the angle of view that is seen in the editor's 3D view when the button is clicked.\n\nChanging the angle, panning or zooming in the editor's 3D view and clicking the button again will change the size and re-mapping of those same faces once more.\n\nTo reverse what has been done use the 'Undo/Redo' list on the Edit menu.", ico_mdlskv, 1, "Skin-view", infobaselink="intro.modeleditor.skinview.html#selection")
         self.buttons.update({"skingrid": skingridbtn, "skinzoom": skinzoombtn, "vtxdragmode": Vertexdragmodebtn, "skinremap": skinremapbtn})
-        tp = fp.newtoppanel(123,0) # Sets the height of the top panel.
+        tp = fp.newtoppanel(140,0) # Sets the height of the top panel.
         btnp = tp.newbottompanel(23,0).newbtnpanel([skingridbtn, skinzoombtn, Vertexdragmodebtn, skinremapbtn])
         btnp.margins = (0,0)
         self.skinform = tp.newdataform()
@@ -1462,6 +1462,10 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.93  2008/12/14 22:08:27  cdunde
+#Added Skin group Specifics page to allow importing of skins to that group.
+#Added default skin Specifics page and default model type to list.
+#
 #Revision 1.92  2008/12/12 05:41:44  cdunde
 #To move all code for lwo UV Color Selection function into the lwo plugins\ie_lightwave_import.py file.
 #
