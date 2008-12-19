@@ -2339,6 +2339,41 @@ def Update_BoneObjs(bonevtxlist, selfbonename, comp):
         boneobjs['s_or_e1']['selvtxlist'] = selvtxlist[1]
     return boneobjs
 
+#
+# This creates the editor.ModelComponentList bonevtxlist section
+# for the bone and component that are sent to it.
+# Then it calls the Update_BoneObjs function to finish the process.
+#
+def Make_BoneVtxList(editor, bone, comp):
+    dict = {}
+    if bone.dictspec.has_key('start_vtxlist'):
+        start_vtxlist = bone.dictspec['start_vtxlist'].split(" ")
+        for vtx in range(len(start_vtxlist)):
+            vtxinfo = {}
+            vtxinfo['bonename'] = bone.name
+            vtxinfo['s_or_e'] = 0
+            vtxinfo['color'] = bone.dictspec['start_color']
+            dict[start_vtxlist[vtx]] = vtxinfo
+    if bone.dictspec.has_key('end_vtxlist'):
+        end_vtxlist = bone.dictspec['end_vtxlist'].split(" ")
+        for vtx in range(len(end_vtxlist)):
+            vtxinfo = {}
+            vtxinfo['bonename'] = bone.name
+            vtxinfo['s_or_e'] = 1
+            vtxinfo['color'] = bone.dictspec['end_color']
+            dict[end_vtxlist[vtx]] = vtxinfo
+
+    if editor.ModelComponentList.has_key(comp.name) and editor.ModelComponentList[comp.name].has_key('bonevtxlist'):
+        for vtx in dict:
+            editor.ModelComponentList[comp.name]['bonevtxlist'][vtx] = dict[vtx]
+        editor.ModelComponentList[comp.name]['boneobjlist'][bone.name] = Update_BoneObjs(editor.ModelComponentList[comp.name]['bonevtxlist'], bone.name, comp)
+    else:
+        editor.ModelComponentList[comp.name] = {}
+        editor.ModelComponentList[comp.name]['bonevtxlist'] = dict
+        editor.ModelComponentList[comp.name]['boneobjlist'] = {}
+        editor.ModelComponentList[comp.name]['boneobjlist'][bone.name] = Update_BoneObjs(editor.ModelComponentList[comp.name]['bonevtxlist'], bone.name, comp)
+
+
 ###############################
 #
 # Selection functions
@@ -2885,34 +2920,36 @@ def Update_Skin_View(editor, option=1):
 
     import mdlhandles
     from mdlhandles import SkinView1
-    if SkinView1 is not None:
-        comp = editor.Root.currentcomponent
-        skin = comp.currentskin
-        if option == 0:
-            # Updates the upper section only.
-            q = editor.layout.skinform.linkedobjects[0]
-            q["triangles"] = str(len(comp.triangles))
-            q["ownedby"] = comp.shortname
-            if skin is not None:
-                q["texture"] = skin.name
-                texWidth,texHeight = skin["Size"]
-                q["skinsize"] = (str(int(texWidth)) + " wide by " + str(int(texHeight)) + " high")
-            else:
-                q["texture"] = "no skins exist for this component"
-                q["skinsize"] = "not available"
-            editor.layout.skinform.setdata(q, editor.layout.skinform.form)
+    comp = editor.Root.currentcomponent
+    skin = comp.currentskin
+    if option == 0:
+        # Updates the upper section only.
+        q = editor.layout.skinform.linkedobjects[0]
+        q["triangles"] = str(len(comp.triangles))
+        q["ownedby"] = comp.shortname
+        if skin is not None:
+            q["texture"] = skin.name
+            texWidth,texHeight = skin["Size"]
+            q["skinsize"] = (str(int(texWidth)) + " wide by " + str(int(texHeight)) + " high")
+        else:
+            q["texture"] = "no skins exist for this component"
+            q["skinsize"] = "not available"
+        editor.layout.skinform.setdata(q, editor.layout.skinform.form)
+        if SkinView1 is not None:
             SkinView1.invalidate()
-        if option == 1:
-            # Updates the upper section.
-            editor.layout.selectskin(skin)
-            editor.layout.mpp.resetpage()
-            # Updates the lower (view) section.
+    if option == 1:
+        # Updates the upper section.
+        editor.layout.selectskin(skin)
+        editor.layout.mpp.resetpage()
+        # Updates the lower (view) section.
+        if SkinView1 is not None:
             mdlhandles.buildskinvertices(editor, SkinView1, editor.layout, comp, skin)
-        if option == 2:
-            # Updates the upper section.
-            editor.layout.selectskin(skin)
-            editor.layout.mpp.resetpage()
-            # Updates the lower (view) section and centers the texture.
+    if option == 2:
+        # Updates the upper section.
+        editor.layout.selectskin(skin)
+        editor.layout.mpp.resetpage()
+        # Updates the lower (view) section and centers the texture.
+        if SkinView1 is not None:
             viewWidth, viewHeight = SkinView1.clientarea
             try:
                 texWidth, texHeight = skin["Size"]
@@ -3286,6 +3323,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.93  2008/12/10 20:20:58  cdunde
+#Setup a utility to deal with the updating of the Skin-view easer.
+#
 #Revision 1.92  2008/11/24 22:51:10  cdunde
 #To update bone and editor.ModelComponentList after new component is created. Additional fix.
 #
