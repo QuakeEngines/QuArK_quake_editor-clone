@@ -406,8 +406,8 @@ def load_md5(md5_filename, basepath):
 
         ComponentList = []
         message = ""
-        QuArK_bones = [] # To store all bones created by the .md5mesh file, if any, which can spread from component to component.
-        QuArK_bone_list = [] # To store all bones created by each mesh (component), if any.
+        QuArK_bones = [] # # To store all bones created by each mesh (component), if any.
+        QuArK_bone_list = [] # To store all bones created by the .md5mesh file, if any, which can spread from component to component.
 
         #read the file in
         file=open(md5_filename,"r")
@@ -465,33 +465,50 @@ def load_md5(md5_filename, basepath):
                     md5_bones[bone_counter].name=temp_name
          #           print "found a bone: ", md5_bones[bone_counter].name
                     md5_bones[bone_counter].parent_index = int(words[1])
-              #      print "line 468 parent_index",int(words[1])
-                    new_bone['parent_index'] = words[1] # QuArK code, probably can NOT be an integer but a string of its value.
-              #      print "line 470 parent_index",new_bone.dictspec['parent_index'], type(new_bone.dictspec['parent_index'])
+                    new_bone['parent_index'] = words[1] # QuArK code, this is NOT an integer but a string of its integer value.
          #           print "parent_index: ", md5_bones[bone_counter].parent_index
                     # QuArK note: Even though the bone's parent name is not used anywhere else in this file,
                     # we need to store it with the bone so it can be written easily to the export file.
                     if md5_bones[bone_counter].parent_index>=0:
-                        new_bone['parent_name'] = md5_bones[md5_bones[bone_counter].parent_index].name
+                        new_bone['parent'] = md5_bones[md5_bones[bone_counter].parent_index].name
                         md5_bones[bone_counter].parent = md5_bones[md5_bones[bone_counter].parent_index].name
                     md5_bones[bone_counter].bindpos[0]=float(words[3])
                     md5_bones[bone_counter].bindpos[1]=float(words[4])
                     md5_bones[bone_counter].bindpos[2]=float(words[5])
-                    # QuArK code below, probably not right, need to consider other bones connecting to this one and so on.
+                    # QuArK code below, adjust to handles scale for other bones connecting to this one and so on.
                     if bone_counter == 0:
                         new_bone['start_point'] = (float(words[3]), float(words[4]), float(words[5]))
-                    elif bone_counter == num_bones-1:
-                        new_bone['start_point'] = QuArK_bone_list[int(new_bone.dictspec['parent_index'])].dictspec['end_point']
-                        new_bone['end_point'] = (float(words[3]), float(words[4]), float(words[5]))
-                        start_point = quarkx.vect(new_bone.dictspec['start_point'])
-                        end_point = quarkx.vect(new_bone.dictspec['end_point'])
-                        new_bone['bone_length'] = (start_point - end_point*-1).tuple
                     else:
                         new_bone['start_point'] = QuArK_bone_list[int(new_bone.dictspec['parent_index'])].dictspec['end_point']
+                        parent_bone_length = QuArK_bone_list[int(new_bone.dictspec['parent_index'])].dictspec['bone_length']
+                        if abs(parent_bone_length[0]) + abs(parent_bone_length[1]) + abs(parent_bone_length[2]) > 1:
+                            new_bone['start_scale'] = QuArK_bone_list[int(new_bone.dictspec['parent_index'])].dictspec['end_scale']
+                        if new_bone.dictspec['start_scale'][0] < 0.1: # Written this way because it is stored as a tuple.
+                            new_bone['start_scale'] = (0.1,)
                         new_bone['end_point'] = (float(words[3]), float(words[4]), float(words[5]))
                         start_point = quarkx.vect(new_bone.dictspec['start_point'])
                         end_point = quarkx.vect(new_bone.dictspec['end_point'])
-                        new_bone['bone_length'] = (start_point - end_point*-1).tuple
+                        new_bone['bone_length'] = (start_point - end_point).tuple
+                        end_scale = 1.0
+                        if abs(new_bone.dictspec['bone_length'][0]) > abs(new_bone.dictspec['bone_length'][1]):
+                            if  abs(new_bone.dictspec['bone_length'][0]) > abs(new_bone.dictspec['bone_length'][2]):
+                                testscale = abs(new_bone.dictspec['bone_length'][0])
+                            else:
+                                testscale = abs(new_bone.dictspec['bone_length'][2])
+                        else:
+                            if  abs(new_bone.dictspec['bone_length'][1]) > abs(new_bone.dictspec['bone_length'][2]):
+                                testscale = abs(new_bone.dictspec['bone_length'][1])
+                            else:
+                                testscale = abs(new_bone.dictspec['bone_length'][2])
+                        if testscale < 8:
+                            end_scale = testscale * .08
+                        new_bone['end_scale'] = (end_scale,)
+                        if new_bone.dictspec['end_scale'][0] < 0.1: # Written this way because it is stored as a tuple.
+                            new_bone['end_scale'] = (0.1,)
+               #         print ""
+               #         print "line 488 new_bone.name, new_bone.dictspec['bone_length'] -->",new_bone.name, new_bone.dictspec['bone_length']
+               #         print "line 489 start setting, end setting -->",QuArK_bone_list[int(new_bone.dictspec['parent_index'])].dictspec['end_point'], (float(words[3]), float(words[4]), float(words[5]))
+               #         print "line 490 start_point, end_point -->",new_bone.dictspec['start_point'], new_bone.dictspec['end_point']
 
         #            print "bindpos: ", md5_bones[bone_counter].bindpos
                     qx = float(words[8])
@@ -513,7 +530,6 @@ def load_md5(md5_filename, basepath):
 
                 for bone in md5_bones:
                     bone.dump()
-          #      print "line 510 QuArK_bone_list",QuArK_bone_list
 
 
             elif words and words[0]=="numMeshes":
@@ -570,13 +586,10 @@ def load_md5(md5_filename, basepath):
                             md5_model[mesh_counter].weights[weight_counter].weights[2]=float(words[7])
                             #md5_model[mesh_counter].weights[weight_counter].dump()
                 #print "end of this mesh structure"
-           #     print "line 567 QuArK_bone_list_index",QuArK_bone_list_index
                 for index in QuArK_bone_list_index:
                     QuArK_mesh_bone_list = QuArK_mesh_bone_list + [QuArK_bone_list[index]]
                 mesh_counter += 1
-           #     print "line 571 QuArK_mesh_bone_list",QuArK_mesh_bone_list
                 QuArK_bones = QuArK_bones + [QuArK_mesh_bone_list]
-
 
 	#figure out the base pose for each vertex from the weights
         for mesh in md5_model:
@@ -621,7 +634,7 @@ def load_md5(md5_filename, basepath):
         if lindex==-1: lindex=0
     #    tempstring = string.rstrip(tempstring, ".md5mesh")
         tempstring = tempstring.rstrip(".md5mesh")
- #       print "line 5281 tempstring",tempstring
+    #    print "line 528 tempstring",tempstring
         tempstring = tempstring[lindex+1:len(tempstring)]
  #       print "line 530 tempstring",tempstring
     #    armObj = Object.New('Armature', tempstring)
@@ -632,15 +645,26 @@ def load_md5(md5_filename, basepath):
     #    scene.link(armObj) 
     #    armData.makeEditable() 
         # QuArK, make bones here.
+ #1       bonecounter = 0 # For trying Blinder's code way, but doesn't link the bones up right for QuArK.
         for bone in md5_bones: 
     #        bone.blenderbone = Blender.Armature.Editbone() 
     #        headData = Blender.Mathutils.Vector(bone.bindpos[0]*scale, bone.bindpos[1]*scale, bone.bindpos[2]*scale)
             headData = quarkx.vect(bone.bindpos[0]*scale, bone.bindpos[1]*scale, bone.bindpos[2]*scale)
- #           print "line 543 bone start_point",headData
+ #           print "line 653 bone start_point",headData, bone.name, bone.bone_index
     #        bone.blenderbone.head = headData 
     #        tailData = Blender.Mathutils.Vector(bone.bindpos[0]*scale+bonesize*scale*bone.bindmat[1][0], bone.bindpos[1]*scale+bonesize*scale*bone.bindmat[1][1], bone.bindpos[2]*scale+bonesize*scale*bone.bindmat[1][2])
             tailData = quarkx.vect(bone.bindpos[0]*scale+bonesize*scale*bone.bindmat[1][0], bone.bindpos[1]*scale+bonesize*scale*bone.bindmat[1][1], bone.bindpos[2]*scale+bonesize*scale*bone.bindmat[1][2])
- #           print "line 547 bone end_point",tailData
+ #1           if bonecounter == 0:
+ #1               QuArK_bone_list[bonecounter+1]['start_point'] = headData.tuple
+ #1           elif bonecounter == len(md5_bones)-1:
+ #1               QuArK_bone_list[bonecounter]['end_point'] = tailData.tuple
+ #1               QuArK_bone_list[bonecounter]['bone_length'] = (quarkx.vect(QuArK_bone_list[bonecounter].dictspec['start_point']) - quarkx.vect(QuArK_bone_list[bonecounter].dictspec['end_point'])).tuple
+ #1           else:
+ #1               QuArK_bone_list[bonecounter]['end_point'] = headData.tuple
+ #1               QuArK_bone_list[bonecounter+1]['start_point'] = headData.tuple
+ #1               QuArK_bone_list[bonecounter]['bone_length'] = (quarkx.vect(QuArK_bone_list[bonecounter].dictspec['start_point']) - quarkx.vect(QuArK_bone_list[bonecounter].dictspec['end_point'])).tuple
+ #1           bonecounter = bonecounter + 1
+       #     print "line 667 bone end_point",tailData, bone.name, bone.bone_index
     #        bone.blenderbone.tail = tailData 
     #        if bone.parent != "": 
     #            bone.blenderbone.parent = md5_bones[bone.parent_index].blenderbone 
@@ -675,7 +699,6 @@ def load_md5(md5_filename, basepath):
         lastcomp = str(CompNbr + len(md5_model)-1)
 
         QuArK_mesh_counter = 0
-  #      print "line 672 QuArK_bones",QuArK_bones
         for mesh in md5_model: # A new QuArK component needs to be made for each mesh.
   #              print "making  Import Component ",CompNbr # The name of this component being created now, ex: "Import Component 1"
   #              print "adding mesh ", mesh.mesh_index, " to blender"
@@ -942,7 +965,6 @@ def load_md5(md5_filename, basepath):
                                     skinsize = skin['Size']
                             else: # If no texture is found then we are missing the shader.
                                 message = message + "\r\nImport Component " + str(CompNbr) + " calls for the shader:\r\n    " + mesh.shader + "\r\n" + "but it could not be located in\r\n    " + shaderspath + "\r\n" + "Extract shader file to this folder\r\nor create a shader file if needed.\r\n"
-             #           print "line 665 good to here",message
 
         #        blender_mesh=NMesh.New() # make this a QuArK component's frame verticies
                 framesgroup = quarkx.newobj('Frames:fg')
@@ -956,7 +978,6 @@ def load_md5(md5_filename, basepath):
                         # As a percentage of the QuArK Skinview1.clientarea for X and Y.
         #                v.uvco[0]=vert.uvco[0]
         #                v.uvco[1]=vert.uvco[1]
-                 #       print "U,V uvco values = ",vert.uvco[0], vert.uvco[1]
                         U = int(skinsize[0] * vert.uvco[0])
                         V = int(skinsize[1] * vert.uvco[1])
                         V = -V + skinsize[1]
@@ -964,8 +985,6 @@ def load_md5(md5_filename, basepath):
                         #add the vertex to the blender mesh
             #            blender_mesh.verts.append(v)
                         comp_verts = comp_verts + [v]
-         #       print "comp_mesh = ",comp_mesh
-         #       print "comp_verts = ",comp_verts
                 frame['Vertices'] = comp_mesh
                 framesgroup.appenditem(frame)
                 # Make QuArK Tris here.
@@ -979,7 +998,6 @@ def load_md5(md5_filename, basepath):
                     #    f.uv.append((blender_mesh.verts[tri.vert_index[0]].uvco[0],blender_mesh.verts[tri.vert_index[0]].uvco[1]))
                     #    f.uv.append((blender_mesh.verts[tri.vert_index[2]].uvco[0],blender_mesh.verts[tri.vert_index[2]].uvco[1]))
                     #    f.uv.append((blender_mesh.verts[tri.vert_index[1]].uvco[0],blender_mesh.verts[tri.vert_index[1]].uvco[1]))
-          #              print tri.vert_index[0],comp_verts[tri.vert_index[0]][0],comp_verts[tri.vert_index[0]][1]
                         Tris = Tris + struct.pack("Hhh", tri.vert_index[0],comp_verts[tri.vert_index[0]][0],comp_verts[tri.vert_index[0]][1])
                         Tris = Tris + struct.pack("Hhh", tri.vert_index[1],comp_verts[tri.vert_index[1]][0],comp_verts[tri.vert_index[1]][1])
                         Tris = Tris + struct.pack("Hhh", tri.vert_index[2],comp_verts[tri.vert_index[2]][0],comp_verts[tri.vert_index[2]][1])
@@ -1043,9 +1061,9 @@ def load_md5(md5_filename, basepath):
         #        armObj.makeParentDeform([mesh_obj], 0, 0)
 
                 # Now we start creating our Import Component and name it.
-          #      print ""
-          #      print "line 1041 len(QuArK_bones), QuArK_mesh_counter",len(QuArK_bones), QuArK_mesh_counter
-          #      print "line 1042 len(QuArK_bones[QuArK_mesh_counter])",len(QuArK_bones[QuArK_mesh_counter])
+    #            print ""
+    #            print "line 1065 len(QuArK_bones), QuArK_mesh_counter",len(QuArK_bones), QuArK_mesh_counter
+    #            print "line 1066 len(QuArK_bone_list), len(QuArK_bones[QuArK_mesh_counter])",len(QuArK_bone_list), len(QuArK_bones[QuArK_mesh_counter])
                 Component = quarkx.newobj("Import Component " + str(CompNbr) + ':mc')
                 for bone in QuArK_bones[QuArK_mesh_counter]:
                     bone['start_component'] = Component.name
@@ -1063,9 +1081,6 @@ def load_md5(md5_filename, basepath):
                 Component.appenditem(sdogroup)
                 Component.appenditem(skingroup)
                 Component.appenditem(framesgroup)
-    #            skeletongroup = quarkx.newobj('Skeleton:bg')
-    #            skeletongroup['type'] = chr(5)
-    #            Component.appenditem(skeletongroup)
                 ComponentList = ComponentList + [Component]
             #    progressbar.close() # un-comment this line once progress bar is set up
             #    if len(polynames) > 1:
@@ -1076,7 +1091,7 @@ def load_md5(md5_filename, basepath):
                 QuArK_mesh_counter = QuArK_mesh_counter + 1
 
     #    return armObj
-        return ComponentList, QuArK_bones, message
+        return ComponentList, QuArK_bone_list, message # Gives a list of ALL bone as they are created, same as in the .md5mesh file.
 
 class md5anim_bone:
     name = ""
@@ -1307,8 +1322,6 @@ EVENT_MESHFILENAME = 4
 EVENT_ANIMFILENAME = 5
 EVENT_MESHFILENAME_STRINGBUTTON = 6
 EVENT_ANIMFILENAME_STRINGBUTTON = 7
-# md5mesh_filename = Blender.Draw.Create("")
-# md5anim_filename = Blender.Draw.Create("")
 
 
 # scale_slider = Blender.Draw.Create(1.0)
@@ -1366,14 +1379,13 @@ def handle_button_event(evt):
 ########################
 
 def import_md5_model(basepath, md5_filename):
-
-    ComponentList, QuArK_bones, message = load_md5(md5_filename, basepath) # Loads the model.
+    ComponentList, QuArK_bone_list, message = load_md5(md5_filename, basepath) # Loads the model using list of ALL bones as they are created.
 
     ### Use the 'ModelRoot' below to test opening the QuArK's Model Editor with, needs to be qualified with main menu item.
     ModelRoot = quarkx.newobj('Model:mr')
   #  ModelRoot.appenditem(Component)
 
-    return ModelRoot, ComponentList, QuArK_bones, message
+    return ModelRoot, ComponentList, QuArK_bone_list, message # Using list of ALL bones as they are created.
 
 
 def loadmodel(root, filename, gamename, nomessage=0):
@@ -1395,7 +1407,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
     logging, tobj, starttime = ie_utils.default_start_logging(importername, textlog, filename, "IM") ### Use "EX" for exporter text, "IM" for importer text.
 
     ### Lines below here loads the model into the opened editor's current model.
-    ModelRoot, ComponentList, QuArK_bones, message = import_md5_model(basepath, filename)
+    ModelRoot, ComponentList, QuArK_bone_list, message = import_md5_model(basepath, filename) # Using list of ALL bones as they are created.
 
     if ModelRoot is None or ComponentList is None or ComponentList == []:
         quarkx.beep() # Makes the computer "Beep" once if a file is not valid. Add more info to message.
@@ -1407,11 +1419,17 @@ def loadmodel(root, filename, gamename, nomessage=0):
     undo = quarkx.action()
     for Component in ComponentList:
         undo.put(editor.Root, Component)
-        for bone in QuArK_bones[QuArK_mesh_counter]:
-            try:
-                undo.put(editor.Root.dictitems['Skeleton:bg'], bone)
-            except:
-                pass
+        if QuArK_mesh_counter == 0:
+            for bone in range(len(QuArK_bone_list)): # Using list of ALL bones as they are created.
+                if bone == 0:
+                    continue
+                if QuArK_bone_list[bone].dictspec['start_component'] == "None":
+                    QuArK_bone_list[bone]['start_component'] = Component.name
+                if QuArK_bone_list[bone].dictspec['end_component'] == "None":
+                    QuArK_bone_list[bone]['end_component'] = Component.name
+    #            print ""
+    #            print "line 1426 QuArK_bone_list[bone].dictspec",QuArK_bone_list[bone].dictspec
+                undo.put(editor.Root.dictitems['Skeleton:bg'], QuArK_bone_list[bone])
         editor.Root.currentcomponent = Component
         compframes = editor.Root.currentcomponent.findallsubitems("", ':mf')   # get all frames
         for compframe in compframes:
@@ -1448,7 +1466,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
 
 ### To register this Python plugin and put it on the importers menu.
 import quarkpy.qmdlbase
-import ie_md5_import # This imports itself to be passed along so it can be used in mdlmgr.py later.
+import ie_md5_import # This imports itself to be passed along so it can be used in mdlmgr.py later for the Specifics page.
 quarkpy.qmdlbase.RegisterMdlImporter(".md5 Doom3\Quake4 Importer", ".md5mesh file", "*.md5mesh", loadmodel, ie_md5_import)
 
 
@@ -1552,6 +1570,7 @@ def dataformname(o):
     ico_mdlskv = ico_dict['ico_mdlskv']  # Just to shorten our call later.
     icon_btns = {}                       # Setup our button list, as a dictionary list, to return at the end.
     vtxcolorbtn = quarkpy.qtoolbar.button(colorclick, "Color UV Vertex mode||When active, puts the editor vertex selection into this mode and uses the 'COLR' specific setting as the color to designate these types of vertexes.\n\nIt also places the editor into Vertex Selection mode if not there already and clears any selected vertexes to protect from including unwanted ones by mistake.\n\nAny vertexes selected in this mode will become Color UV Vertexes and added to the component as such. Click the InfoBase button or press F1 again for more detail.|intro.modeleditor.dataforms.html#specsargsview", ico_mdlskv, 5)
+    # Sets the button to its current status, that might be effected by another importer file, either on or off.
     if quarkx.setupsubset(3, "Options")['VertexUVColor'] == "1":
         vtxcolorbtn.state = quarkpy.qtoolbar.selected
     else:
@@ -1682,6 +1701,10 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.9  2008/12/16 21:50:03  cdunde
+# Fixed UV color button setting from one import file to another.
+# Added the start for importing bones for this file.
+#
 # Revision 1.8  2008/12/15 01:46:35  cdunde
 # Slight correction.
 #
