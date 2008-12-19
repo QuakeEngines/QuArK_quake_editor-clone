@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2008/09/06 15:57:26  danielpharos
+Moved exception code into separate file.
+
 Revision 1.15  2008/05/27 15:09:56  danielpharos
 Fixed remaining of Python errors getting lost
 
@@ -101,7 +104,7 @@ type
                  procedure ListePolyedres(Polyedres, Negatif: TQList; Flags: Integer; Brushes: Integer); override;
                  procedure ListeEntites(Entites: TQList; Cat: TEntityChoice); override;
                  procedure ListeBeziers(Entites: TQList; Flags: Integer); override;
-                 procedure AddTo3DScene; override;
+                 procedure AddTo3DScene(Scene: TObject); override;
                  function PyGetAttr(attr: PChar) : PyObject; override;
                  function ReplaceTexture(const Source, Dest: String; U: Boolean) : Integer; override;
                 {function PySetAttr(attr: PChar; value: PyObject) : Boolean; override;}
@@ -112,7 +115,7 @@ type
 implementation
 
 uses Quarkx, QkExceptions, Setup, QkFileObjects, PyMapView, QkMapPoly, Qk3D,
-     QkObjectClassList, Undo;
+     QkObjectClassList, Undo, EdSceneObject;
 
  {------------------------}
 
@@ -343,7 +346,7 @@ begin
   (QkObjFromPyObj(PyList_GetItem(FCache, I)) as TTreeMap).ListeBeziers(Entites, Flags);
 end;
 
-procedure TDuplicator.AddTo3DScene;
+procedure TDuplicator.AddTo3DScene(Scene: TObject);
 var
  Color1: TColorRef;
  I, InvPoly, InvFaces: Integer;
@@ -353,16 +356,16 @@ begin
 {MD:=g_DrawInfo.ModeDessin;
  Exclude(g_DrawInfo.ModeDessin, mdComputingPolys);}
  Color1:=CurrentMapView.Scene.BlendColor;
- CurrentMapView.Scene.SetColor(MiddleColor(Color1, MapColors(lcDuplicator), 0.5));
+ TSceneObject(Scene).SetColor(MiddleColor(Color1, MapColors(lcDuplicator), 0.5));
  InvPoly:=0;
  InvFaces:=0;
  for I:=0 to PyObject_Length(BuildImages)-1 do
   begin
    T:=QkObjFromPyObj(PyList_GetItem(FCache, I)) as TTreeMap;
    BuildPolyhedronsNow(T, InvPoly, InvFaces);
-   T.AddTo3DScene;
+   T.AddTo3DScene(Scene);
   end;
- CurrentMapView.Scene.SetColor(Color1);
+ TSceneObject(Scene).SetColor(Color1);
 {Include(g_DrawInfo.ModeDessin, mdComputingPolys);}
 end;
 

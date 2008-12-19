@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2005/09/28 10:48:32  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.3  2001/06/05 18:41:51  decker_dk
 Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
 
@@ -44,7 +47,7 @@ type
     procedure ObjectState(var E: TEtatObjet); override;
     Function GetSkinDescr: String;
     Function Skin0: QImage;
-    procedure AddTo3DScene; override;
+    procedure AddTo3DScene(Scene: TObject); override;
     procedure BuildRefList(L: TQList); virtual;
     procedure ChercheExtremites(var Min, Max: TVect); override;
     procedure GetVertices(var p: vec3_p);
@@ -121,7 +124,7 @@ begin
   p_o^:=vec3(size.x,size.y,0);
 end;
 
-procedure QSprite.AddTo3DScene;
+procedure QSprite.AddTo3DScene(Scene: TObject);
 var
   Info: PSpriteInfo;
   size: tpoint;
@@ -136,7 +139,7 @@ begin
   Info^.Height:=size.y;
   GetVertices(Info^.Vertices);
   AddRef(+1);
-  CurrentMapView.Scene.AddSprite(Info);
+  TSceneObject(Scene).AddSprite(Info);
 end;
 
 procedure QSprite.ChercheExtremites(var Min, Max: TVect);

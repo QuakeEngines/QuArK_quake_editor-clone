@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.53  2008/12/04 20:56:33  danielpharos
+Fixed gray-out view when initing Scene.
+
 Revision 1.52  2008/12/04 12:14:00  danielpharos
 Fixed a redraw-clipping problem, removed a redundant file and cleaned-up the constructor of the EdSceneObjects.
 
@@ -171,7 +174,6 @@ uses Windows, Messages, SysUtils, Classes, Forms, Controls, Graphics,
      PyControls, QkForm, CursorScrollBox, Qk3D, QkMapObjects,
      qmath, PyMath, PyMath3D, Setup, Travail, ExtCtrls,
      EdSceneObject, QkPixelSet;
-
 
 type
   TMapViewType = (vtEditor, vtPanel, vtWindow, vtFullScreen);
@@ -2579,7 +2581,7 @@ begin
         CurrentMapView.Scene.SetColor(OtherColor);
         if Flags and dmComputePolys <> 0 then
          Include(g_DrawInfo.ModeDessin, mdComputePolys);
-        Q3DObject(Root).AddTo3DScene;
+        Q3DObject(Root).AddTo3DScene(CurrentMapView.Scene);
        end;
      end
    else

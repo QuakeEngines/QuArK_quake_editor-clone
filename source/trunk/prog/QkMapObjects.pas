@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.51  2008/09/06 15:57:13  danielpharos
+Moved exception code into separate file.
+
 Revision 1.50  2008/07/17 14:37:11  danielpharos
 Moved pre-Delphi6+ function into ExtraFunctionality
 
@@ -263,7 +266,7 @@ type
              { function GetObjectMenu(Control: TControl) : TPopupMenu; override;
               function GetTMMenuState(Item: Integer) : Integer; dynamic;}
               procedure SetSelFocus; dynamic;
-              procedure AddTo3DScene; override;
+              procedure AddTo3DScene(Scene: TObject); override;
               property Negative: String read GetNegative write SetNegative;
               function PyGetAttr(attr: PChar) : PyObject; override;
             end;
@@ -307,7 +310,7 @@ type
                     procedure ListeEntites(Entites: TQList; Cat: TEntityChoice); override;
                     function GetFormName : String; override;
                    {function AjouterRef(Liste: TList; Niveau: Integer) : Integer; override;}
-                    procedure AddTo3DScene; override;
+                    procedure AddTo3DScene(Scene: TObject); override;
                     function PyGetAttr(attr: PChar) : PyObject; override;
                   end;
  TTreeMapGroup = class(TTreeMapSpec)
@@ -325,7 +328,7 @@ type
                    procedure ListePolyedres(Polyedres, Negatif: TQList; Flags: Integer; Brushes: Integer); override;
                    procedure ListeEntites(Entites: TQList; Cat: TEntityChoice); override;
                    procedure ListeBeziers(Entites: TQList; Flags: Integer); override;
-                   procedure AddTo3DScene; override;
+                   procedure AddTo3DScene(Scene: TObject); override;
                    procedure AnalyseClic(Liste: PyObject); override;
                   {function SingleLevel: Boolean; virtual;}
                  protected
@@ -343,7 +346,7 @@ type
                    function GetFormName : String; override;
                    function IsExplorerItem(Q: QObject) : TIsExplorerItem; override;
                    function PyGetAttr(attr: PChar) : PyObject; override;
-                  {procedure AddTo3DScene; override;}
+                  {procedure AddTo3DScene(Scene: TObject); override;}
                  end;
 
  {------------------------}
@@ -569,7 +572,7 @@ begin
   Inc(Result, TTreeMap(SubElements[I]).AjouterRef(Liste, Niveau+1));
 end;*)
 
-procedure TTreeMap.AddTo3DScene;
+procedure TTreeMap.AddTo3DScene(Scene: TObject);
 var
  I: Integer;
  T: TTreeMap;
@@ -578,7 +581,7 @@ begin
   begin
    T:=TTreeMap(SubElements[I]);
    if not Odd(T.SelMult) or (mdTraversalSelected in g_DrawInfo.ModeDessin) then
-    T.AddTo3DScene;
+    T.AddTo3DScene(Scene);
   end;
 end;
 
@@ -1984,7 +1987,7 @@ begin
  end;
 end;
 
-procedure TTreeMapEntity.AddTo3DScene;
+procedure TTreeMapEntity.AddTo3DScene(Scene: TObject);
 var
  Light: Single;
  L4: array[1..4] of TDouble;
@@ -1994,9 +1997,9 @@ var
 begin
   if HasOrigin then
   begin
-    if (CurrentMapView.Scene.ViewEntities<>veNever) then
+    if (TSceneObject(Scene).ViewEntities<>veNever) then
     begin
-      if (CurrentMapView.Scene.ViewEntities=veModels) and AddModelTo3DScene then
+      if (TSceneObject(Scene).ViewEntities=veModels) and AddModelTo3DScene then
         Exit;
      {FIXME: bounding boxes in 3D view}
     end;
@@ -2031,7 +2034,7 @@ begin
           end;
         end;
       end;
-      CurrentMapView.Scene.AddLight(Origin, Light, Color);
+      TSceneObject(Scene).AddLight(Origin, Light, Color);
     end;
   end;
 end;
@@ -2226,7 +2229,7 @@ begin
  Action(Self, TSpecificUndo.Create(LoadStr1(590), ';view', IntToStr(Flags), P, Self));
 end;
 
-procedure TTreeMapGroup.AddTo3DScene;
+procedure TTreeMapGroup.AddTo3DScene(Scene: TObject);
 begin
  { mdComputePolys means that we must compute polyhedrons as digged by negative polyhedrons.
    mdComputingPolys means that subobjects must not add polyhedrons to the scene directly;
@@ -2402,7 +2405,7 @@ begin
  inherited;
 end;
 
-(*procedure TTreeMapBrush.AddTo3DScene;
+(*procedure TTreeMapBrush.AddTo3DScene(Scene: TObject);
 var
  MD: TModeDessin;
 begin

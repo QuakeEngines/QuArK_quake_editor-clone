@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2007/10/14 21:48:56  danielpharos
+Fix the frame-dragging in the Model Editor.
+
 Revision 1.6  2005/09/28 10:49:02  peter-b
 Revert removal of Log and Header keywords
 
@@ -69,7 +72,7 @@ type
     class function TypeInfo: String; override;
     procedure ObjectState(var E: TEtatObjet); override;
     function IsExplorerItem(Q: QObject) : TIsExplorerItem; override;
-    procedure AddTo3DScene; override;
+    procedure AddTo3DScene(Scene: TObject); override;
     procedure BuildRefList(L: TQList); virtual;
     procedure ChercheExtremites(var Min, Max: TVect); override;
     procedure Dessiner; override;
@@ -108,7 +111,7 @@ begin
   PythonObj.ob_refcnt:=0;
 end;                        }
 
-procedure QMdlObject.AddTo3DScene;
+procedure QMdlObject.AddTo3DScene(Scene: TObject);
 var
   I: Integer;
   Q: QObject;
@@ -116,7 +119,7 @@ begin
   for I:=0 to SubElements.Count-1 do begin
     Q:=SubElements[I];
     if Q is QMdlObject then
-      QMdlObject(Q).AddTo3DScene;
+      QMdlObject(Q).AddTo3DScene(Scene);
   end;
 end;
 

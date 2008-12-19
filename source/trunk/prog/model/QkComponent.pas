@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.30  2008/11/19 06:14:00  cdunde
+Bones system moved to outside of components for Model Editor completed.
+
 Revision 1.29  2008/11/06 20:18:22  danielpharos
 Removed old stuff in preparation for new specifics code.
 
@@ -152,7 +155,7 @@ type
     function GetSkinDescr(Static: Boolean) : String;
     property CurrentSkin : QImage read FCurrentSkin write SetCurrentSkin;
     property CurrentFrame : QFrame read FCurrentFrameObj write SetCurrentFrame;
-    procedure AddTo3DScene; override;
+    procedure AddTo3DScene(Scene: TObject); override;
     procedure BuildRefList(L: TQList); override;
     function GetFrameFromIndex(N: Integer) : QFrame;
     function GetFrameFromName(const nName: String) : QFrame;
@@ -472,7 +475,7 @@ begin
   Result:=(Length(S)-(Length(Spec1)+1)) div SizeOf(TBoneVertexLink);
 end;
 
-procedure QComponent.AddTo3DScene;
+procedure QComponent.AddTo3DScene(Scene: TObject);
 var
   Info: PModel3DInfo;
 begin
@@ -490,7 +493,7 @@ begin
   Info^.ModelAlpha:=255;
   Info^.VertexCount:=FCurrentFrameObj.GetVertices(Info^.Vertices);
   AddRef(+1);
-  CurrentMapView.Scene.AddModel(Info);
+  TSceneObject(Scene).AddModel(Info);
 end;
 
 procedure QComponent.BuildRefList(L: TQList);
@@ -571,7 +574,6 @@ begin
   else
     Result:=L[N] as QFrame;
   finally
-    L.Clear;
     L.Free;
   end;
 end;
@@ -598,7 +600,6 @@ begin
     else
       Result:=L[N] as QImage;
   finally
-    L.Clear;
     L.Free;
   end;
 end;

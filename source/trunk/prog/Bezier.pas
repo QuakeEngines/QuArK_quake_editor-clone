@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.34  2008/09/06 15:57:27  danielpharos
+Moved exception code into separate file.
+
 Revision 1.33  2007/04/12 15:04:43  danielpharos
 BIG moving around of code. All the .map save routines should now be in QkMap. This will allow easy changes, and will simplify future map format support.
 
@@ -177,7 +180,7 @@ type
              procedure PreDessinerSel; override;
              procedure OperationInScene(Aj: TAjScene; PosRel: Integer); override;
              procedure ObjectState(var E: TEtatObjet); override;
-             procedure AddTo3DScene; override;
+             procedure AddTo3DScene(Scene: TObject); override;
              procedure ChercheExtremites(var Min, Max: TVect); override;
 
              procedure ListeEntites(Entites: TQList; Cat: TEntityChoice); override;
@@ -209,7 +212,7 @@ function TriangleSTCoordinates(const cp: TBezierMeshBuf5; I, J: Integer) : vec_s
 
 implementation
 
-uses QuarkX, QkExceptions, Setup, PyMapView, PyObjects, QkObjectClassList;
+uses QuarkX, QkExceptions, Setup, PyMapView, PyObjects, QkObjectClassList, EdSceneObject;
 
  (*    QUADRATIC BEZIER PATCHES
   *
@@ -1373,9 +1376,9 @@ begin
 end;
 
  { puts patches into textured views }
-procedure TBezier.AddTo3DScene;
+procedure TBezier.AddTo3DScene(Scene: TObject);
 begin
-  CurrentMapView.Scene.AddBezier(Self);
+  TSceneObject(Scene).AddBezier(Self);
 end;
 
  { bounding box }

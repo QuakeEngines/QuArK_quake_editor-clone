@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.93  2008/10/12 11:31:32  danielpharos
+Moved 6DX map format to separate file, and re-factored QkMap and QkQuakeMap.
+
 Revision 1.92  2008/09/06 15:57:28  danielpharos
 Moved exception code into separate file.
 
@@ -512,7 +515,7 @@ type
                procedure UnlinkSurface(S: PSurface);
                function Retourner : Boolean;
                function Retourner_leavetex : Boolean;
-               procedure AddTo3DScene; override;
+               procedure AddTo3DScene(Scene: TObject); override;
                procedure AnalyseClic(Liste: PyObject); override;
                function PyGetAttr(attr: PChar) : PyObject; override;
             end;
@@ -548,7 +551,7 @@ procedure GetAxisBase(const Normal0: TVect; var texS, texT: TVect);
 
 implementation
 
-uses QkFileObjects, Undo, PyMapView, QkMap, QkPixelSet, Dialogs,
+uses QkFileObjects, Undo, PyMapView, QkMap, QkPixelSet, Dialogs, EdSceneObject,
      Quarkx, QkExceptions, PyObjects, QkSin, QkQuakeCtx, QkObjectClassList;
 
 const
@@ -4439,7 +4442,7 @@ begin
   Result:=0;
 end;*)
 
-procedure TFace.AddTo3DScene;
+procedure TFace.AddTo3DScene(Scene: TObject);
 var
  P: PSurface;
 begin
@@ -4449,7 +4452,7 @@ begin
     while Assigned(P) do
     begin
       if not ((mdComputingPolys in g_DrawInfo.ModeDessin) and (P^.Source is TPolyedre)) then
-        CurrentMapView.Scene.AddPolyFace(P);
+        TSceneObject(Scene).AddPolyFace(P);
       P:=P^.NextF;
     end;
   end;
