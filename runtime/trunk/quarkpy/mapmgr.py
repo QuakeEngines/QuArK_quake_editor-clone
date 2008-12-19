@@ -143,7 +143,7 @@ class MapLayout(BaseLayout):
         TexBtn = qtoolbar.button(mapbtns.texturebrowser, "choose texture", ico_maped, 0)
         NegBtn = qtoolbar.button(self.neg1click, "negative poly||When a polyhedron is marked as negative, it behaves like a hole : every polyhedron in the same group as this one is 'digged' by the overlapping part.\n\nUsing 'Brush subtraction' in the 'Commands' menu is the same as marking the polyhedron negative, except that digging is not performed immediately. This helps keep the map clear.\n\nNegative polyhedrons appear in pink on the map.", ico_maped, 23)
         self.buttons["negpoly"] = NegBtn
-        tp = fp.newtoppanel(124,0)
+        tp = fp.newtoppanel(132,0)
         tp.newbottompanel(ico_maped_y,0).newbtnpanel([TexBtn, qtoolbar.widegap, NegBtn, qtoolbar.padright] + self.texflags("polyhedron"))
         self.polyform = tp.newdataform()
         self.polyform.header = 0
@@ -177,7 +177,7 @@ class MapLayout(BaseLayout):
         facezoombtn = qtoolbar.menubutton(getzoommenu, "choose zoom factor", ico_maped, 14)
         facezoombtn.near = 1
         self.buttons.update({"facezoom": facezoombtn, "prevf": prevface, "nextf": nextface})
-        tp = fp.newtoppanel(142,0)
+        tp = fp.newtoppanel(154,0)
         btnp = tp.newbottompanel(ico_maped_y,0).newbtnpanel([prevface, nextface, facezoombtn, qtoolbar.smallgap, TexBtn, ts1Btn, ts2Btn, ts3Btn] + self.texflags("face"))
         btnp.margins = (0,0)
         self.faceform = tp.newdataform()
@@ -902,6 +902,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.25  2008/07/06 18:19:16  cdunde
+#Fixed function link properly.
+#
 #Revision 1.24  2008/05/01 12:08:36  danielpharos
 #Fix several objects not being unloaded correctly.
 #
