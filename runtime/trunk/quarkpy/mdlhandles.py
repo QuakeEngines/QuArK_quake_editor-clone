@@ -4956,7 +4956,7 @@ class LinBoneCenterHandle(LinearBoneHandle):
                     thiscomp, bone_name = obj.name.split("-b-")
                     if thiscomp != comp_list[count]:
                         continue
-                    bone_name, s_or_e = bone_name.split("_")
+                    bone_name, s_or_e = bone_name.rsplit("_", 1)
                     bone_name = bone_name + ":bone"
                     s_or_e = "s_or_e" + s_or_e.replace(":g", "")
                     selvtxlist = selvtxlist + editor.ModelComponentList[comp_list[count]]['boneobjlist'][bone_name][s_or_e]['selvtxlist']
@@ -5394,7 +5394,7 @@ class LinBoneCornerHandle(LinearBoneHandle):
                 thiscomp, bone_name = obj.name.split("-b-")
                 if thiscomp != comp_list[count]:
                     continue
-                bone_name, s_or_e = bone_name.split("_")
+                bone_name, s_or_e = bone_name.rsplit("_", 1)
                 bone_name = bone_name + ":bone"
                 s_or_e = "s_or_e" + s_or_e.replace(":g", "")
                 selvtxlist = selvtxlist + editor.ModelComponentList[comp_list[count]]['boneobjlist'][bone_name][s_or_e]['selvtxlist']
@@ -6178,6 +6178,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.161  2008/12/09 11:04:07  cdunde
+#Fixed face mode not drawing selection outlines while rotating.
+#
 #Revision 1.160  2008/11/22 05:09:42  cdunde
 #Selects bone and first frame of bone handle component if not currentcomponent
 #to avoid errors of menu vertex selection.
