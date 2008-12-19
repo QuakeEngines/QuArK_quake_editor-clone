@@ -1012,7 +1012,7 @@ class RedImageDragObject(DragObject):
             if isinstance(editor.dragobject.handle, mdlhandles.VertexHandle):
                 ### Stops Model Editor Vertex drag handles from drawing if not returned.
                 return
-            if isinstance(editor.dragobject.handle, mdlhandles.LinRedHandle) or isinstance(editor.dragobject.handle, mdlhandles.LinSideHandle) or isinstance(editor.dragobject.handle, mdlhandles.LinCornerHandle) or isinstance(editor.dragobject.handle, mdlhandles.LinBoneCornerHandle):
+            if isinstance(editor.dragobject.handle, mdlhandles.LinRedHandle) or isinstance(editor.dragobject.handle, mdlhandles.LinSideHandle) or isinstance(editor.dragobject.handle, mdlhandles.LinCornerHandle) or isinstance(editor.dragobject.handle, mdlhandles.LinBoneCornerHandle) or isinstance(editor.dragobject.handle, mdlhandles.LinBoneCenterHandle):
                 ### Stops Model Editor Linear drag handles from drawing redline drag objects incorrectly.
                 return
             # Draws rectangle selector and Skin-view lines much faster this way.
@@ -2169,6 +2169,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.77  2008/10/20 22:23:52  danielpharos
+#Removed redundant variable.
+#
 #Revision 1.76  2008/10/14 00:15:00  cdunde
 #Fix by DanielPharos for rotationspeed.
 #
