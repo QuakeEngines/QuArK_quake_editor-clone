@@ -595,6 +595,8 @@ def load_md5(md5_filename, basepath):
         for mesh in md5_model:
                 #print "updating vertex info for mesh: ", mesh.mesh_index
                 mesh.dump()
+                bone_index_list = [] # QuArK code
+                bone_vtx_list = {}
                 for vert_counter in range(0, len(mesh.verts)):
                         blend_index=mesh.verts[vert_counter].blend_index
                         for blend_counter in range(0, mesh.verts[vert_counter].blend_count):
@@ -604,6 +606,11 @@ def load_md5(md5_filename, basepath):
                                 #w.dump()
                                 #the bone that the current weight is refering to
                                 b=md5_bones[w.bone_index]
+                                if not w.bone_index in bone_index_list:
+                                    bone_index_list = bone_index_list + [w.bone_index] # QuArK code
+                                    bone_vtx_list[w.bone_index] = []
+                                if not vert_counter in bone_vtx_list[w.bone_index]:
+                                    bone_vtx_list[w.bone_index] = bone_vtx_list[w.bone_index] + [vert_counter]
                                 #print "b: "
                                 #b.dump()
                                 #a position is the weight position * bone transform matrix (or position)
@@ -619,7 +626,20 @@ def load_md5(md5_filename, basepath):
                                 mesh.verts[vert_counter].co[0]+=pos[0]
                                 mesh.verts[vert_counter].co[1]+=pos[1]
                                 mesh.verts[vert_counter].co[2]+=pos[2]
-
+   #     print "line 629 bone_index_list, type",bone_index_list, type(bone_index_list[0])
+        bone_index_list.sort()
+   #     print "line 631 bone_index_list sorted",bone_index_list
+   #     print "line 632 bone_vtx_list, len(QuArK_bone_list)",bone_vtx_list, len(QuArK_bone_list)
+        for bone in range(len(QuArK_bone_list)):
+            if bone == 0:
+                continue
+            list = bone_vtx_list[bone]
+            QuArK_bone_list[bone]['start_vertex_count'] = str(len(list))
+            list = str(list)
+            list = list.replace(",", "")
+            list = list.replace("[", "")
+            list = list.replace("]", "")
+            QuArK_bone_list[bone]['start_vtxlist'] = list
 	#build the armature in blender
   #      print "line 515 md5_filename",md5_filename
      #   translationtable = string.maketrans("\\", "/")
@@ -967,11 +987,11 @@ def load_md5(md5_filename, basepath):
                                 message = message + "\r\nImport Component " + str(CompNbr) + " calls for the shader:\r\n    " + mesh.shader + "\r\n" + "but it could not be located in\r\n    " + shaderspath + "\r\n" + "Extract shader file to this folder\r\nor create a shader file if needed.\r\n"
 
         #        blender_mesh=NMesh.New() # make this a QuArK component's frame verticies
-                framesgroup = quarkx.newobj('Frames:fg')
-                frame = quarkx.newobj('Base frame' + ':mf')
-                comp_mesh = ()
-                comp_verts = []
-                for vert in mesh.verts:
+                framesgroup = quarkx.newobj('Frames:fg') # QuArK Frames group made here.
+                frame = quarkx.newobj('Base frame' + ':mf') # QuArK frame made here.
+                comp_mesh = () # QuArK code
+                comp_verts = [] # QuArK code
+                for vert in mesh.verts: # QuArK frame Vertices made here.
        #                 v=NMesh.Vert(vert.co[0]*scale, vert.co[1]*scale, vert.co[2]*scale)
                         comp_mesh = comp_mesh + (vert.co[0]*scale, vert.co[1]*scale, vert.co[2]*scale)
                         #add the uv coords to the vertex
@@ -987,7 +1007,7 @@ def load_md5(md5_filename, basepath):
                         comp_verts = comp_verts + [v]
                 frame['Vertices'] = comp_mesh
                 framesgroup.appenditem(frame)
-                # Make QuArK Tris here.
+                # QuArK Tris made here.
                 Tris = ''
                 for tri in mesh.tris:
                     #    f=NMesh.Face()
@@ -1419,7 +1439,12 @@ def loadmodel(root, filename, gamename, nomessage=0):
     undo = quarkx.action()
     for Component in ComponentList:
         undo.put(editor.Root, Component)
+        editor.Root.currentcomponent = Component
+        compframes = editor.Root.currentcomponent.findallsubitems("", ':mf')   # get all frames
+        for compframe in compframes:
+            compframe.compparent = editor.Root.currentcomponent # To allow frame relocation after editing.
         if QuArK_mesh_counter == 0:
+            editor.Root.currentcomponent.currentframe = compframes[0]
             for bone in range(len(QuArK_bone_list)): # Using list of ALL bones as they are created.
                 if bone == 0:
                     continue
@@ -1430,10 +1455,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
     #            print ""
     #            print "line 1426 QuArK_bone_list[bone].dictspec",QuArK_bone_list[bone].dictspec
                 undo.put(editor.Root.dictitems['Skeleton:bg'], QuArK_bone_list[bone])
-        editor.Root.currentcomponent = Component
-        compframes = editor.Root.currentcomponent.findallsubitems("", ':mf')   # get all frames
-        for compframe in compframes:
-            compframe.compparent = editor.Root.currentcomponent # To allow frame relocation after editing.
+                quarkpy.mdlutils.Make_BoneVtxList(editor, QuArK_bone_list[bone], Component)
          #   progressbar.progress() # un-comment this line once progress bar is set up
         QuArK_mesh_counter = QuArK_mesh_counter + 1
 
@@ -1701,6 +1723,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.10  2008/12/19 07:12:42  cdunde
+# File updates.
+#
 # Revision 1.9  2008/12/16 21:50:03  cdunde
 # Fixed UV color button setting from one import file to another.
 # Added the start for importing bones for this file.
