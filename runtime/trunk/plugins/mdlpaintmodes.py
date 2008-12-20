@@ -2054,7 +2054,7 @@ class SelectColors(quarkpy.dlgclasses.LiveEditDlg):
     "To open the Color Selection Dialog."
 
     dlgflags = FWF_KEEPFOCUS | FWF_NORESIZE # Keeps dialog box open & a fixed size.
-    size = (230,370)
+    size = (230,400)
     dfsep = 0.35    # sets 35% for labels and the rest for edit boxes
     dlgdef = """
     {
@@ -2824,6 +2824,9 @@ quarkpy.mdltoolbars.toolbars["tb_paintmodes"] = PaintModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.3  2008/03/20 05:57:43  cdunde
+# To update Infobase links.
+#
 # Revision 1.2  2008/02/23 20:07:45  cdunde
 # To fix code error.
 #

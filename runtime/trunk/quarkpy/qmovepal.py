@@ -139,7 +139,7 @@ class MdlConfigDialog(qmacro.dialogbox):
     dlgflags = FWF_NOESCCLOSE
     begincolor = RED
     endcolor = MAROON
-    size = (300,300)
+    size = (300,305)
     dlgdef = """
       {
         Style = "9"
@@ -401,6 +401,9 @@ class ToolMoveBar(ToolBar):
 #
 #
 #$Log$
+#Revision 1.21  2008/09/22 23:11:12  cdunde
+#Updates for Model Editor Linear and Bone handles.
+#
 #Revision 1.20  2008/05/01 19:15:24  danielpharos
 #Fix treeviewselchanged not updating.
 #

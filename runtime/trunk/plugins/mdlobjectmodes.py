@@ -73,7 +73,7 @@ class DistortionDlg(quarkpy.dlgclasses.LiveEditDlg):
     #
 
     endcolor = AQUA
-    size = (190,115)
+    size = (190,120)
     dlgflags = FWF_KEEPFOCUS   # keeps dialog box open
     dfsep = 0.57    # sets 57% for labels and the rest for edit boxes
     dlgdef = """
@@ -181,7 +181,7 @@ class TorusDistortionDlg(quarkpy.dlgclasses.LiveEditDlg):
 
     endcolor = AQUA
         # width,length add 40 for new button
-    size = (190,270)
+    size = (190,300)
     dlgflags = FWF_KEEPFOCUS   # keeps dialog box open
     dfsep = 0.52    # sets 52% for labels and the rest for edit boxes
     dlgdef = """
@@ -5608,6 +5608,9 @@ def ConvertPolyObject(editor, newobjectslist, flags, view, undomsg, option=1, nb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.16  2008/09/12 19:08:40  cdunde
+# Minor code cleanup.
+#
 # Revision 1.15  2008/05/01 14:03:31  danielpharos
 # Use local variable instead of redundant look-up.
 #
