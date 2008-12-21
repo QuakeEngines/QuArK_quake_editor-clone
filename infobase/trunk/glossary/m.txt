@@ -2,7 +2,7 @@ title: M...
 author: Decker
 
 <dl>
-<dt><a name="mailinglists">     </a>Mailinglists        <dd>(editing mailinglists) A specialized e-mailing list, which only those who subscribe to it can receive/send messages. For QuArK there exist these three mailinglists; QuArK-News, QuArK and QuArK-Python. To subscribe, go to the forums-page on <a href="http://quark.planetquake.gamespy.com/forums.php3">http://quark.planetquake.gamespy.com/forums.php3</a>, and follow the directions from there.
+<dt><a name="mailinglists">     </a>Mailinglists        <dd>(editing mailinglists) A specialized e-mailing list, which only those who subscribe to it can receive/send messages. For QuArK there exist these three mailinglists; QuArK-News, QuArK and QuArK-Python. To subscribe, go to the forums-page on <a href="http://quark.planetquake.gamespy.com/communication.php3">http://quark.planetquake.gamespy.com/communication.php3</a>, and follow the directions from there.
 <dt><a name="missionpack">      </a>Mission pack        <dd>(official-) A addon to a <a href="#fps">FPS-game</a> which usually contains new levels, monsters, weapons and other enhancements. Some mission packs are free to download, others you have to pay for.
 <dt><a name="mmb">              </a>MMB                 <dd>(abbreviation) <b>M</b>iddle <b>M</b>ouse <b>B</b>utton.
 <dt><a name="microsoft">        </a>Microsoft           <dd>Software company. Creator of Windows, Office, etc. QuArK runs natively on Windows. <a href="http://www.microsoft.com">http://www.microsoft.com</a>.
