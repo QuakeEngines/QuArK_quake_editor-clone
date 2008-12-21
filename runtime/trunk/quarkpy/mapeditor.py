@@ -87,7 +87,6 @@ class MapEditor(BaseEditor):
             # Creates the "Used Textures.txlist" to display in the Texture Browser.
             Folder = quarkx.newobj("Used Textures.txlist")
             Folder.flags = Folder.flags | qutils.OF_TVSUBITEM
-            print self.Root
             UsedTexturesList = quarkx.texturesof([self.Root])
         #   NoImageFile = None
             for UsedTextureName in UsedTexturesList:
@@ -381,8 +380,8 @@ def loadbbox(sender):
 def autosavetime():
   #  minutes, = quarkx.setupsubset(SS_MAP, "Building")["AutoSave"]
   #  return minutes * 60000.0
-    try: 
-        minutes = int(quarkx.setupsubset(SS_MAP, "Building")["AutoSave"])
+    try:
+        minutes = int(quarkx.setupsubset(SS_MAP, "Building")["AutoSave"][0])
     except:
         return 10 * 60000.0 # linux issue with single quote
     else:
@@ -411,6 +410,9 @@ def autosave(editor):
 #
 #
 #$Log$
+#Revision 1.20  2008/12/03 10:34:06  cdunde
+#Added functions for console logging and clearing of that log to the options menu.
+#
 #Revision 1.19  2008/11/17 19:10:23  danielpharos
 #Centralized and fixed BSP file detection.
 #
