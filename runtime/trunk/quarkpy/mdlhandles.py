@@ -3758,6 +3758,15 @@ class LinBoneCenterHandle(LinearBoneHandle):
                 bone = self.bone
             attach_bones_starts(editor, bone, editor.layout.explorer.sellist[1])
 
+        def attach_bones_ends_click(m, self=self, editor=editor, view=view):
+            import mdlmgr
+            mdlmgr.savefacesel = 1
+            if self.bone is None:
+                bone = editor.layout.explorer.sellist[0]
+            else:
+                bone = self.bone
+            attach_bones_ends(editor, bone, editor.layout.explorer.sellist[1])
+
         def detach_bones_click(m, self=self, editor=editor, view=view):
             import mdlmgr
             mdlmgr.savefacesel = 1
@@ -4667,16 +4676,17 @@ class LinBoneCenterHandle(LinearBoneHandle):
                 Update_Editor_Views(editor)
 
         Forcetogrid = qmenu.item("&Force to grid", force_to_grid_click,"|Force to grid:\n\nThis will cause a bone's center handle to 'snap' to the nearest location on the editor's grid for the view that the RMB click was made in.|intro.modeleditor.rmbmenus.html#bonecommands")
-        AddBone = qmenu.item("&Add Bone Here", add_bone_click, "|Add Bone Here:\n\nThis will add a single bone to the currently selected model component 'Skeleton' group.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
-        ContinueBones = qmenu.item("&Continue Bones", continue_bones_click, "|Continue Bones:\n\nThis will add a single bone, connected to the last bone, of the currently selected model component 'Skeleton' group.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
-        AttachStart2End = qmenu.item("A&ttach Start to End", attach_start2end_click, "|Attach Start to End:\n\nThis will attach the second selected bone's start handle to the first selected bone's end handle of the currently selected model component 'Skeleton' group.\n\nMoving the second bone above the first bone in the tree-view will reverse this movement.|intro.modeleditor.rmbmenus.html#bonecommands")
-        AttachBonesStarts = qmenu.item("Attach B&ones Starts", attach_bones_starts_click, "|Attach Bones Starts:\n\nThis will attach the second selected bone's start handle to the first selected bone's start handle of the currently selected model component 'Skeleton' group.\n\nMoving the second bone above the first bone in the tree-view will reverse this movement.|intro.modeleditor.rmbmenus.html#bonecommands")
-        DetachBones = qmenu.item("&Detach Bones", detach_bones_click, "|Detach Bones:\n\nThis will detach two selected bones attached handles from one another of the currently selected model component 'Skeleton' group.|intro.modeleditor.rmbmenus.html#bonecommands")
+        AddBone = qmenu.item("&Add Bone Here", add_bone_click, "|Add Bone Here:\n\nThis will add a single bone to the 'Skeleton' group.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
+        ContinueBones = qmenu.item("&Continue Bones", continue_bones_click, "|Continue Bones:\n\nThis will add a single bone, connected to the bone handle when the RMB was clicked, in the 'Skeleton' group.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
+        AttachStart2End = qmenu.item("A&ttach Start to End", attach_start2end_click, "|Attach Start to End:\n\nThis will attach the second selected bone's start handle to the first selected bone's end handle in the 'Skeleton' group.\n\nMoving the second bone above the first bone in the tree-view will reverse this movement.|intro.modeleditor.rmbmenus.html#bonecommands")
+        AttachBonesStarts = qmenu.item("Attach B&ones Starts", attach_bones_starts_click, "|Attach Bones Starts:\n\nThis will attach the second selected bone's start handle to the first selected bone's start handle in the 'Skeleton' group.\n\nMoving the second bone above the first bone in the tree-view will reverse this movement.|intro.modeleditor.rmbmenus.html#bonecommands")
+        AttachBonesEnds = qmenu.item("Attach B&ones Ends", attach_bones_ends_click, "|Attach Bones Ends:\n\nThis will attach the second selected bone's end handle to the first selected bone's end in the 'Skeleton' group.\n\nMoving the second bone above the first bone in the tree-view will reverse this movement.|intro.modeleditor.rmbmenus.html#bonecommands")
+        DetachBones = qmenu.item("&Detach Bones", detach_bones_click, "|Detach Bones:\n\nThis will detach two selected bones attached handles from one another in the 'Skeleton' group.|intro.modeleditor.rmbmenus.html#bonecommands")
         AlignStart2End = qmenu.item("Align Start to E&nd", align_start2end_click, "|Align Start to End:\n\nThis will align the second selected bone's start handle to first selected bone's end handle, but not attach them.\n\nMoving the second bone above the first bone in the tree-view will reverse this movement.|intro.modeleditor.rmbmenus.html#bonecommands")
         AlignBonesStarts = qmenu.item("Align &Bones Starts", align_bones_starts_click, "|Align Bones Starts:\n\nThis will align the second selected bone's start handle to first selected bone's end handle, but not attach them.\n\nMoving the second bone above the first bone in the tree-view will reverse this movement.|intro.modeleditor.rmbmenus.html#bonecommands")
         AlignBonesEnds = qmenu.item("Align Bones Ends", align_bones_ends_click, "|Align Bones Ends:\n\nThis will align the second selected bone's end handle to first selected bone's end handle, but not attach them.\n\nMoving the second bone above the first bone in the tree-view will reverse this movement.|intro.modeleditor.rmbmenus.html#bonecommands")
-        Assign2Start = qmenu.item("Ass&ign to Start", assign2start_click, "|Assign to Start:\n\nWhen only one bone and vertexes of that component are selected, click this item to assign them to the 'start_point' of that bone.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
-        Assign2End = qmenu.item("Assign to &End", assign2end_click, "|Assign to End:\n\nWhen only one bone and vertexes of that component are selected, and there is no continuing bone, click this item to assign them to the 'end_point' of that bone.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
+        Assign2Start = qmenu.item("Ass&ign to Start", assign2start_click, "|Assign to Start:\n\nWhen only one bone and vertexes of a component are selected, click this item to assign them to the 'start_point' of that bone.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
+        Assign2End = qmenu.item("Assign to &End", assign2end_click, "|Assign to End:\n\nWhen only one bone and vertexes of a component are selected, and there is no continuing bone, click this item to assign them to the 'end_point' of that bone.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
         SetHandlePosition = qmenu.item("Set Handle Position", set_handle_position_click, "|Set Handle Position:\n\nActive when one or more vertexes are selected that are assigned to that bone handle. Click this item to position and set that bone handle centered within those vertexes. An 'offset' can also be applied to this setting.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
         ReleaseStartVertexes = qmenu.item("&Release Start Vertexes", release_start_vertexes_click, "|Release Start Vertexes:\n\nWhen only one bone is selected with vertexes assigned to it, click this item to release all of them from that bone's start handle.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
         ReleaseEndVertexes = qmenu.item("Release End &Vertexes", release_end_vertexes_click, "|Release End Vertexes:\n\nWhen only one bone is selected with vertexes assigned to it, click this item to release all of them from that bone's end handle.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
@@ -4753,6 +4763,7 @@ class LinBoneCenterHandle(LinearBoneHandle):
             if count == 2:
                 AttachStart2End.state = qmenu.normal
                 AttachBonesStarts.state = qmenu.normal
+                AttachBonesEnds.state = qmenu.normal
                 DetachBones.state = qmenu.normal
                 AlignBonesStarts.state = qmenu.normal
                 AlignBonesEnds.state = qmenu.normal
@@ -4760,6 +4771,7 @@ class LinBoneCenterHandle(LinearBoneHandle):
             else:
                 AttachStart2End.state = qmenu.disabled
                 AttachBonesStarts.state = qmenu.disabled
+                AttachBonesEnds.state = qmenu.disabled
                 DetachBones.state = qmenu.disabled
                 AlignBonesStarts.state = qmenu.disabled
                 AlignBonesEnds.state = qmenu.disabled
@@ -4767,6 +4779,7 @@ class LinBoneCenterHandle(LinearBoneHandle):
         else:
             AttachStart2End.state = qmenu.disabled
             AttachBonesStarts.state = qmenu.disabled
+            AttachBonesEnds.state = qmenu.disabled
             DetachBones.state = qmenu.disabled
             AlignBonesStarts.state = qmenu.disabled
             AlignBonesEnds.state = qmenu.disabled
@@ -4843,7 +4856,7 @@ class LinBoneCenterHandle(LinearBoneHandle):
         if not MdlOption("GridActive") or editor.gridstep <= 0:
             Forcetogrid.state = qmenu.disabled
 
-        menu = [AddBone, ContinueBones, qmenu.sep, AttachStart2End, AttachBonesStarts, DetachBones, qmenu.sep, AlignStart2End, AlignBonesStarts, AlignBonesEnds, qmenu.sep, Assign2Start, Assign2End, SetHandlePosition, qmenu.sep, SelectHandleVertexes, SelectHandlePosVertexes, qmenu.sep, ReleaseStartVertexes, ReleaseEndVertexes, qmenu.sep, KeyframesRotation, qmenu.sep, SB1, HB1, qmenu.sep, Forcetogrid]
+        menu = [AddBone, ContinueBones, qmenu.sep, AttachStart2End, AttachBonesStarts, AttachBonesEnds, DetachBones, qmenu.sep, AlignStart2End, AlignBonesStarts, AlignBonesEnds, qmenu.sep, Assign2Start, Assign2End, SetHandlePosition, qmenu.sep, SelectHandleVertexes, SelectHandlePosVertexes, qmenu.sep, ReleaseStartVertexes, ReleaseEndVertexes, qmenu.sep, KeyframesRotation, qmenu.sep, SB1, HB1, qmenu.sep, Forcetogrid]
 
         return menu
 
@@ -6178,6 +6191,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.162  2008/12/19 07:13:20  cdunde
+#Minor change for bone name splitting to stop improper procedure of doing so.
+#
 #Revision 1.161  2008/12/09 11:04:07  cdunde
 #Fixed face mode not drawing selection outlines while rotating.
 #
