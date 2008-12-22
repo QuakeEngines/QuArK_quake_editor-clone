@@ -2004,6 +2004,31 @@ def attach_bones_starts(editor, bone1, bone2):
     editor.ok(undo, "attach start handles")
 
 #
+# This function attaches bone2 end_point to bone1 end_point.
+#
+def attach_bones_ends(editor, bone1, bone2):
+    new_o_bone = bone2.copy()
+    new_o_bone['end_point'] = bone1.dictspec['end_point']
+    if new_o_bone.dictspec.has_key("end_vtx_pos"):
+        new_o_bone['end_vtx_pos'] = ''
+    new_o_bone['bone_length'] = ((quarkx.vect(new_o_bone.dictspec['start_point']) - quarkx.vect(new_o_bone.dictspec['end_point']))*-1).tuple
+    common_handles_list, s_or_e_list = find_common_bone_handles(editor, new_o_bone.dictspec['end_point'])
+    for bone in range(len(common_handles_list)):
+        if common_handles_list[bone] == new_o_bone or common_handles_list[bone] == bone1:
+            continue
+        if s_or_e_list[bone] == 0:
+            if common_handles_list[bone].dictspec.has_key('start_vtx_pos'):
+                common_handles_list[bone]['start_vtx_pos'] = ''
+            common_handles_list[bone]['start_point'] = new_o_bone.dictspec['end_point']
+        else :
+            if common_handles_list[bone].dictspec.has_key('end_vtx_pos'):
+                common_handles_list[bone]['end_vtx_pos'] = ''
+            common_handles_list[bone]['end_point'] = new_o_bone.dictspec['end_point']
+    undo = quarkx.action()
+    undo.exchange(bone2, new_o_bone)
+    editor.ok(undo, "attach end handles")
+
+#
 # This function detaches bone1 and bone2.
 #
 def detach_bones(editor, bone1, bone2):
@@ -2344,9 +2369,17 @@ def Update_BoneObjs(bonevtxlist, selfbonename, comp):
 # for the bone and component that are sent to it.
 # Then it calls the Update_BoneObjs function to finish the process.
 #
-def Make_BoneVtxList(editor, bone, comp):
-    dict = {}
+def Make_BoneVtxList(editor, bone):
     if bone.dictspec.has_key('start_vtxlist'):
+        comp = editor.Root.currentcomponent
+        comp.currentframe = comp.dictitems['Frames:fg'].subitems[0]
+        dict = {}
+        if bone.dictspec['start_component'] != editor.Root.currentcomponent.name:
+            editor.Root.currentcomponent = editor.Root.dictitems[bone.dictspec['start_component']]
+            comp = editor.Root.currentcomponent
+            comp.currentframe = comp.dictitems['Frames:fg'].subitems[0]
+    #        compframes = comp.findallsubitems("", ':mf')   # get all frames
+    #        editor.Root.currentcomponent.currentframe = compframes[0]
         start_vtxlist = bone.dictspec['start_vtxlist'].split(" ")
         for vtx in range(len(start_vtxlist)):
             vtxinfo = {}
@@ -2354,7 +2387,27 @@ def Make_BoneVtxList(editor, bone, comp):
             vtxinfo['s_or_e'] = 0
             vtxinfo['color'] = bone.dictspec['start_color']
             dict[start_vtxlist[vtx]] = vtxinfo
+        # We need to do this once for each bone handle in case one has different components for each handle.
+        if editor.ModelComponentList.has_key(comp.name) and editor.ModelComponentList[comp.name].has_key('bonevtxlist'):
+            for vtx in dict:
+                editor.ModelComponentList[comp.name]['bonevtxlist'][vtx] = dict[vtx]
+            editor.ModelComponentList[comp.name]['boneobjlist'][bone.name] = Update_BoneObjs(editor.ModelComponentList[comp.name]['bonevtxlist'], bone.name, comp)
+        else:
+            editor.ModelComponentList[comp.name] = {}
+            editor.ModelComponentList[comp.name]['bonevtxlist'] = dict
+            editor.ModelComponentList[comp.name]['boneobjlist'] = {}
+            editor.ModelComponentList[comp.name]['boneobjlist'][bone.name] = Update_BoneObjs(editor.ModelComponentList[comp.name]['bonevtxlist'], bone.name, comp)
+
     if bone.dictspec.has_key('end_vtxlist'):
+        comp = editor.Root.currentcomponent
+        comp.currentframe = comp.dictitems['Frames:fg'].subitems[0]
+        dict = {}
+        if bone.dictspec['end_component'] != editor.Root.currentcomponent.name:
+            editor.Root.currentcomponent = editor.Root.dictitems[bone.dictspec['end_component']]
+            comp = editor.Root.currentcomponent
+            comp.currentframe = comp.dictitems['Frames:fg'].subitems[0]
+    #        compframes = comp.findallsubitems("", ':mf')   # get all frames
+    #        editor.Root.currentcomponent.currentframe = compframes[0]
         end_vtxlist = bone.dictspec['end_vtxlist'].split(" ")
         for vtx in range(len(end_vtxlist)):
             vtxinfo = {}
@@ -2362,16 +2415,18 @@ def Make_BoneVtxList(editor, bone, comp):
             vtxinfo['s_or_e'] = 1
             vtxinfo['color'] = bone.dictspec['end_color']
             dict[end_vtxlist[vtx]] = vtxinfo
+        # We need to do this once for each bone handle in case one has different components for each handle.
+        if editor.ModelComponentList.has_key(comp.name) and editor.ModelComponentList[comp.name].has_key('bonevtxlist'):
+            for vtx in dict:
+                editor.ModelComponentList[comp.name]['bonevtxlist'][vtx] = dict[vtx]
+            editor.ModelComponentList[comp.name]['boneobjlist'][bone.name] = Update_BoneObjs(editor.ModelComponentList[comp.name]['bonevtxlist'], bone.name, comp)
+        else:
+            editor.ModelComponentList[comp.name] = {}
+            editor.ModelComponentList[comp.name]['bonevtxlist'] = dict
+            editor.ModelComponentList[comp.name]['boneobjlist'] = {}
+            print "mdlutils line 2445 comp.name",comp.name, editor.Root.currentcomponent, editor.Root.currentcomponent.currentframe, bone.name
+            editor.ModelComponentList[comp.name]['boneobjlist'][bone.name] = Update_BoneObjs(editor.ModelComponentList[comp.name]['bonevtxlist'], bone.name, comp)
 
-    if editor.ModelComponentList.has_key(comp.name) and editor.ModelComponentList[comp.name].has_key('bonevtxlist'):
-        for vtx in dict:
-            editor.ModelComponentList[comp.name]['bonevtxlist'][vtx] = dict[vtx]
-        editor.ModelComponentList[comp.name]['boneobjlist'][bone.name] = Update_BoneObjs(editor.ModelComponentList[comp.name]['bonevtxlist'], bone.name, comp)
-    else:
-        editor.ModelComponentList[comp.name] = {}
-        editor.ModelComponentList[comp.name]['bonevtxlist'] = dict
-        editor.ModelComponentList[comp.name]['boneobjlist'] = {}
-        editor.ModelComponentList[comp.name]['boneobjlist'][bone.name] = Update_BoneObjs(editor.ModelComponentList[comp.name]['bonevtxlist'], bone.name, comp)
 
 
 ###############################
@@ -3323,6 +3378,10 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.94  2008/12/19 07:14:10  cdunde
+#Added new function to add newly imported bones to the editor.ModelComponentList sections properly
+#and made a change for the Skin-view updating that stops improper skin selection after a drag.
+#
 #Revision 1.93  2008/12/10 20:20:58  cdunde
 #Setup a utility to deal with the updating of the Skin-view easer.
 #
