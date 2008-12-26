@@ -19,26 +19,30 @@ for their support:
 QuArK 6.6.0 Beta 2 Donators
 ------------------------------------
 
-- zy_fireblade
+- warcus
+"Please keep on working on this great tool!
+                                       Quake 1 + QuArK 4ever :-)"
 
-
-- dbk2004
-                                        "Quake Army Knife rocks!"
-
-- ghostwolf1942
-                                         "Keep up the good work!"
-
-- eforhan
-                                         "Keep up the good work!"
-
-- jaimi
-                                                       "Have fun"
-
-- hardcoal
-            "Giving Force to the hands of cdunde and Dancing Dan"
+- fafhrd_pro
+            "Truly glad this project has remained active so long"
 
 - northwood21 / Quentin
                                                 "Happy Coding :$"
 
-- fafhrd_pro
-            "Truly glad this project has remained active so long"
+- hardcoal
+            "Giving Force to the hands of cdunde and Dancing Dan"
+
+- jaimi
+                                                       "Have fun"
+
+- eforhan
+                                         "Keep up the good work!"
+
+- ghostwolf1942
+                                         "Keep up the good work!"
+
+- dbk2004
+                                        "Quake Army Knife rocks!"
+
+- zy_fireblade
+
