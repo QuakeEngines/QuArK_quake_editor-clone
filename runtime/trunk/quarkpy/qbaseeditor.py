@@ -110,6 +110,10 @@ class BaseEditor:
             scale1=1.0
         import mdleditor
         if isinstance(self, mdleditor.ModelEditor):
+            # To try to set the correct skin if the Skin-view has not been opened yet, especially for a bone drag.
+            from mdlhandles import SkinView1
+            if SkinView1 is None:
+                self.Root.currentcomponent.currentskin = self.Root.currentcomponent.dictitems['Skins:sg'].subitems[0]
             # Stops duplicate drawing of handles in all views after a zoom in a 3D view.
             if view.info["type"] != "3D" and (view.info["viewname"] != "editors3Dview" and view.info["viewname"] != "3Dwindow"):
                 try:
@@ -1560,6 +1564,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.121  2008/12/01 04:53:54  cdunde
+#Update for component colors functions for OpenGL source code corrections.
+#
 #Revision 1.120  2008/11/29 06:56:25  cdunde
 #Setup new Component Colors and draw Textured View Tint Colors system.
 #
