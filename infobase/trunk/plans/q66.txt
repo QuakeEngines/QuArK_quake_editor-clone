@@ -10,7 +10,7 @@ to be delayed till 6.7, or never to happen at all.
 <br>status: never done!
 
 <LI>Fix all drawing issues still remaining (mostly with OpenGL) (DanielPharos)
-<br>status: envisioned
+<br>status: well underway
 
 <LI>Expand the model editor (cdunde)
 <br>status: well underway
