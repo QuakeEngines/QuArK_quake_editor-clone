@@ -1,10 +1,7 @@
 title: Releasing a Distribution
-author: Peter Brett
+author: Peter Brett, DanielPharos
 
-Before you'll be able to follow the process outlined below, you'll
-need to read <a href="http://sourceforge.net/docman/display_doc.php?docid=6841&group_id=1">Introduction
-to SSH on SourceForge.net</a>, and set up your system with PuTTY
-accordingly.  I'm going to assume that you're running Windows. 
+(I'm going to assume that you're running Windows.)
 
 In preparation for creating a distribution, you'll need to carry out a
 couple of preliminary steps.
@@ -30,69 +27,50 @@ discuss with other developers to decide what the state is going to be
 and whether to increment the the minor version, but for the sake of
 argument lets say the version number you come up with is '6.4.1beta3'.
 </li>
+<li>For a distribtion, it's necessary to update the version numbers
+in the QuArK executable. Go to the Project > Options > Version Info
+and update the numbers. Don't forget the copyright year!<br>
+Also, some const's in QkObjects need to be updated. Check out and
+update where needed:
+<code>
+  QuArKVersion
+  QuArKMinorVersion
+  QuArKCopyright
+  QuArKUsedCompiler
+  QuArKCompileDate
+</code></li>
 <li>Most of creating a distribution is similar to creating a snapshot.
-First, do steps 1 to 11 of <ref>src/distribution/snapshot</ref>, with
+First, do steps 1 to 3 of <ref>src/distribution/snapshot</ref>, with
 the difference that you name the files with the '6.4.1beta3' instead
 of the date, so <tt>quark-win32-20070831</tt> becomes
 <tt>quark-win32-6.4.1beta3</tt>.</li>
-<li>Move your <tt>quark-win32-6.4.1beta3.zip</tt> to your shell server home
-directory.
-<code>$ mv quark-win32-6.4.1beta3.zip ~/</code></li>
-<li>Upload the source and help distributions to the release system's
-incoming directory.
-<code>$ ftp
-ftp&gt; open upload.sourceforge.net
-ftp&gt; binary
-ftp&gt; put quark-src-6.4.1beta3.zip
-ftp&gt; put quark-help-6.4.1beta3.zip
-ftp&gt; put quark-win32-6.4.1beta3.zip
-ftp&gt; quit</code></li>
-<li>Use PSFTP to download your <tt>quark-win32-6.4.1beta3.zip</tt> to your
-own computer.
-<code>&gt; psftp shell.sourceforge.net
-psftp&gt; get quark-win32-6.4.1beta3.zip
-psftp&gt; quit</code></li>
-<li>Create a new directory somewhere on your system - let's say
-<tt>C:\qrkinstall</tt> - and copy the files from your checkout of
-<tt>utils/nsis-dist-tools</tt> to that directory.  You will need:
-<ul>
-<li>install_header.bmp</li>
-<li>install_splash.bmp</li>
-<li>license.rtf</li>
-<li>QuArK.nsi</li>
-</ul>
-Use your favourite archiving program to extract the files from your
-<tt>quark-win32-6.4.1beta3.zip</tt> to <tt>C:\qrkinstall\quark</tt>.
-</li>
-<li>Open <tt>QuArK.nsi</tt> and edit the "QuArK Version" section as
-applicable.  In this case, you'd want it to look something like this:
-<code>!define QRK_MAJOR_VER 6.4
-!define QRK_MINOR_VER 1
-!define QRK_STATE "beta"
-!define QRK_RELEASE 3
-</code>
-Save and close.
-</li>
-<li>Right click on <tt>QuArK.nsi</tt> in Windows Explorer and select "Compile
-NSI (with bz2)".  Please use BZ2 compression, as it provides much better
-compression ratios that ZIP (the default).</li>
-<li>Upload the newly created <tt>quark-win32-6.4.1beta3.exe</tt> to the
-incoming directory for the SourceForge release system.
-<code>&gt; ftp
-ftp&gt; open upload.sourceforge.net
-ftp&gt; binary
-ftp&gt; put quark-win32-6.4.1beta3.exe
-ftp&gt; quit</code></li>
-<li>All the distribution files (<tt>quark-src-6.4.1beta3.zip</tt>,
-<tt>quark-help-6.4.1beta3</tt>, and <tt>quark-win32-6.4.1beta3</tt>)
-are now ready for you to process them through the SourceForge release
-system.  Don't forget that the release system upload directory is
-flushed every 24 hours.</li>
+<li>Open up your local copy of <tt>QuArK.nsi</tt>. You'll need to
+make some changes there:
+<ol>
+<li>Update the version numbers:
+<code>!define INSTALLER_EXENAME "quark-win32-6.4.1beta3.exe"
+!define PRODUCT_VERSION "6.4.1 beta 3"
+InstallDir "$PROGRAMFILES\QuArK 6.4.1 beta 3"
+</code></li>
+<li>Set the path to the files to create the installer with:
+<code>!define BUILDDIR "C:\QuArK_installer_files"</code>
+It is advisable to simply create this directory and copy the files into
+it manually.</li>
+<li>Set the path to the installer images:
+<code>!define SPLASHDIR "C:\QuArK_installer_splash_image"</code></li>
 </ol>
-
-Once you've finished doing the release, it would probably be a good
-idea to update the main QuArK website and to post an announcement to the
-quark and quark-news mailing lists, as well as adding links to the
-snapshot webpage.
-
-TODO: Add instructions for actually using the SourceForge release system.
+</li>
+<li>Run the <tt>QuArK.nsi</tt> script. If you selected this option during
+the NSIS installation, right-clicking the file should provide you with
+that option. If not, open up <tt>QuArK.nsi</tt> in NSIS and create the
+installer there.</li>
+<li>It's not a bad idea to run some tests here. Test the installer, and
+make sure the new release does not have any show-stopping bugs.</li>
+<li>Zip up the source and infobase directories just as with the snapshot.
+Again: no fancy zip-compressions!</li>
+<li>Now create the release in SourceForge (see <ref>src/distribution/snapshot</ref>
+for more details about this).</li>
+<li>Create a news-announcement on the SourceForge-page.</li>
+<li>Tell the webmaster of the QuArK website to do the same. (It's probably
+smart to have the same text in both.)</li>
+</ol>

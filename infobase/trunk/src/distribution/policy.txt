@@ -28,8 +28,7 @@ versions, and the number after the state is the release number at that
 version/state. Examples:<ul><li><tt>6.4.0alpha1</tt>. Note also that version numbers should be <strong>unique</strong>.</li>
 <li><tt>6.3.0rel4</tt></li></ul>
 </li>
-<li>Snapshots are released on QuArK's SourceForge webspace (
-<a href="http://quark.sourceforge.net">http://quark.sourceforge.net</a>).
+<li>Snapshots are released on QuArK's SourceForge webspace (<a href="http://quark.sourceforge.net">http://quark.sourceforge.net</a>).
 A snapshot consists of the following files:
 <ul>
 <li><tt>quark-win32-date.zip</tt> - a zip archive containing the QuArK

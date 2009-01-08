@@ -1,86 +1,21 @@
 title: Releasing a Snapshot
-author: Peter Brett
+author: Peter Brett, DanielPharos
 
 Here's the process you might follow to prepare and release a snapshot.
 Before you'll be able to follow the process outlined below, you'll
-need to read <a href="http://sourceforge.net/docman/display_doc.php?docid=6841&group_id=1">Introduction
-to SSH on SourceForge.net</a>, and set up your system with PuTTY
-accordingly.
-
-I'm going to assume that the date is 31st August 2007.
+probably want to read <a href="http://alexandria.wiki.sourceforge.net/File+Release+System+-+Offering+Files+for+Download">File Release System - Offering Files for Download</a> to know how to work with the SourceForge File Release System.
 
 <ol>
-<li>Build a QuArK binary with <tt>PYTHON_BUNDLED</tt> and compress it
-using UPX (available from 
-<a href="http://upx.sourceforge.net/">http://upx.sourceforge.net/</a>).
-You should use:
-<code>&gt; upx -9 --compress-icons=0 QuArK.exe</code>
-</li>
-<li>Use PSFTP to upload it to your user account on the shell server.
-Also upload the latest micro-Python files.
-<code>&gt; psftp shell.sourceforge.net
-psftp&gt; put QuArK.exe
-psftp&gt; put micro-python22.zip
-psftp&gt; quit</code></li>
-<li>PuTTY to the shell server and change to the QuArK directory.
-<code>&gt; putty shell.sourceforge.net
-$ cd /home/groups/q/qu/quark</code></li>
-<li>Do a CVS export of the <tt>infobase</tt>, <tt>runtime</tt> and <tt>source</tt> modules.
-<code>$ cvs -z3 -Q -d:pserver:anonymous@cvs1:/cvsroot/quark export -rHEAD infobase
-$ cvs -z3 -Q -d:pserver:anonymous@cvs1:/cvsroot/quark export -rHEAD runtime
-$ cvs -z3 -Q -d:pserver:anonymous@cvs1:/cvsroot/quark export -rHEAD source
-</code>
-We use the CVS export command because that way we get a clean copy of
-the files without the CVS folders.</li>
-<li>Extract the micro-Python files.
-<code>$ unzip -q ~/micro-python22.zip</code></li>
-<li>Create folders for each of the three files you're
-going to need in the end.
-<code>$ mkdir quark-help-20070831
-$ mkdir quark-src-20070831
-$ mkdir quark-win32-20070831</code></li>
-<li>Build the Infobase, and copy the output to where it's needed.
-<code>$ mkdir quark-win32-20070831/help
-$ cd infobase
-$ python ./build.py -local
-$ cp -r output/* ../quark-help-20070831/
-$ cp -r output/* ../quark-win32-20070831/help
-$ rm -rf output
-$ cd ..</code></li>
-<li>Put together the files for the source snapshot.
-<code>$ cp -r infobase/ quark-src-20070831/
-$ cp -r source/ quark-src-20070831/
-$ cp -r runtime/ quark-src-20070831/
-$ cp -r micro-python22/ quark-src-20070831/</code></li>
-<li>Put together the files for the Windows binary snapshot.
-<code>$ cp ~/QuArK.exe quark-win32-20070831
-$ cp -r runtime/* quark-win32-20070831/
-$ rm -f quark-win32-20070831/dlls/d3dxas.dll
-$ rm -f quark-win32-20070831/dlls/readme.txt
-$ cp micro-python22/dlls/python.dll quark-win32-20070821/dlls/
-</code></li>
-<li>Zip up the files.
-<code>$ zip -9rq quark-help-20070831.zip quark-help-20070831/
-$ zip -9rq quark-src-20070831.zip quark-src-20070831/
-$ zip -9rq quark-win32-20070831.zip quark-win32-20070831/</code></li>
-<li>Remove working directories.
-<code>$ rm -rf source/ infobase/ runtime/ quark-src-20070831/
-$ rm -rf quark-help-20070831/ quark-win32-20070831/</code></li>
-<li>Move our snapshot files into the website's download directory and
-generate MD5 checksums.
-<code>$ mv quark*.zip htdocs/download/
-$ cd htdocs/download/
-$ md5sum quark-help-20070831.zip > quark-help-20070831.zip.md5
-$ md5sum quark-src-20070831.zip > quark-src-20070831.zip.md5
-$ md5sum quark-win32-20070831.zip > quark-win32-20070831.zip.md5
-</code></li>
-<li>You now need to edit the <tt>/home/q/qu/quark/htdocs/index.html</tt> file
-to add the new snapshot.  Use the text editor of your choice - I
-generally use Emacs.
+<li>Make a copy of the runtime, source and infobase directories you want to release.</li>
+<li>Build a QuArK binary from this source directory.</li>
+<li>Put the new QuArK binary in the main runtime directory (where it belongs).</li>
+<li>Zip up the directory, each to a different zip-file, using the scheme from <ref>src/distribution/policy</ref>. No fancy zip-compressions, please! Any plain old unzipper should be able to unzip the files.</li>
+<li>Create a new snapshot-release in the QuArK-package using the SourceForge File Release System. Name this release 'snapshot YYYY-MM-DD', and add the zip-files to that new release. Don't forget to set the 'specifics' on the files correctly!</li>
+<li>Make sure the new release is 'Active', and visible on the SourceForge website.</li>
 
 You should also e-mail a release announcement to the development
 mailing list (<a href="mailto:quark-python@yahoogroups.com">quark-python@yahoogroups.com</a>),
-something along the lines of:
+something along the lines of: (I'm going to assume that the date is 31st August 2007)
 
 <code>Subject: Snapshots 20070831
 
