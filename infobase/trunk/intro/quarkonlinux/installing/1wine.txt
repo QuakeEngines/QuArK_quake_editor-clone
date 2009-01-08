@@ -11,7 +11,7 @@ don't have Wine, you'll need to obtain it from
 used Wine release 20030911, but any of the newer versions will work.
 Wine release 20031118 is the most recent version at the time of this
 writing. Of course, you will need Wine to be compiled with OpenGL
-support, both for QuArk to display the OpenGL 3D window.  This
+support, both for QuArK to display the OpenGL 3D window.  This
 <a href="http://lhl.linuxgames.com/howto/half-life-HOWTO-0.5.html">article</a>
 at Linuxgames.com is the best I know of for compiling Wine with OpenGL
 support, and I am not going to take the time to re-write what has

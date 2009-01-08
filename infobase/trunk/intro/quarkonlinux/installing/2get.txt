@@ -3,12 +3,12 @@ author: slightcrazed, Peter Brett
 
 After following the above steps, you should have a
 working Wine install with OpenGL compiled and functioning. There are
-many versions of QuArk available, and most if not all will work with
+many versions of QuArK available, and most if not all will work with
 Wine. The one issue is that versions are available with an installer
 (.exe), or as a zip archive (.zip). The installer that comes with
-QuArk 6.4 does not work with Wine. The zip archive are simply a zipped
-up copy of the QuArk file tree, and these work perfectly. Some older
-versions of QuArk will work as well, but may require a separate
+QuArK 6.4 does not work with Wine. The zip archive are simply a zipped
+up copy of the QuArK file tree, and these work perfectly. Some older
+versions of QuArK will work as well, but may require a separate
 download of Python.
 
 If you need to download Python separately, ignore the link for
