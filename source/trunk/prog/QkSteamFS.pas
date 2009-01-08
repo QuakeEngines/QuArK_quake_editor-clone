@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.32  2008/10/23 22:39:19  danielpharos
+Fixed a typo.
+
 Revision 1.31  2008/10/08 19:44:16  danielpharos
 Fix some possible synchronization issues.
 
@@ -423,13 +426,12 @@ begin
   QSASStartupInfo.cb:=SizeOf(QSASStartupInfo);
   QSASStartupInfo.dwFlags:=STARTF_USESHOWWINDOW;
   QSASStartupInfo.wShowWindow:=SW_SHOWMINNOACTIVE;
+  if Windows.CreateProcess(nil, PChar(QSASPath + '\QuArKSAS.exe ' + QSASParameters + ' ' + FullFilename), nil, nil, false, 0, nil, PChar(QSASPath), QSASStartupInfo, QSASProcessInformation)=false then
+    LogAndRaiseError('Unable to extract file from Steam. Call to CreateProcess failed.');
   try
-    if Windows.CreateProcess(nil, PChar(QSASPath + '\QuArKSAS.exe ' + QSASParameters + ' ' + FullFilename), nil, nil, false, 0, nil, PChar(QSASPath), QSASStartupInfo, QSASProcessInformation)=false then
-      LogAndRaiseError('Unable to extract file from Steam. Call to CreateProcess failed.');
-
     //DanielPharos: Waiting for INFINITE is rather dangerous,
     //so let's wait only 10 seconds
-    if WaitForSingleObject(QSASProcessInformation.hProcess, 10000)<>WAIT_TIMEOUT then
+    if WaitForSingleObject(QSASProcessInformation.hProcess, 10000)=WAIT_FAILED then
       LogAndRaiseError('Unable to extract file from Steam. Call to WaitForSingleObject failed.');
   finally
     CloseHandle(QSASProcessInformation.hThread);
