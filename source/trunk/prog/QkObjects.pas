@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.116  2008/11/30 20:47:05  danielpharos
+TList --> TQList, and fix possible memory leak in a debug routine.
+
 Revision 1.115  2008/11/19 06:14:00  cdunde
 Bones system moved to outside of components for Model Editor completed.
 
@@ -766,7 +769,7 @@ implementation
 
 uses
   {$IFDEF Debug} MemTester, {$ENDIF}
-  QkObjectClassList, QkFileObjects, QkExplorer, Travail,
+  QkObjectClassList, QkFileObjects, QkExplorer, Travail, Game,
   PyObjects, PyImages, Quarkx, QkExceptions, Qk1, Logging{, ExtraFunctionality};
 
 var
@@ -785,7 +788,7 @@ var
  {S1, S,} FullName: String;
   Z: array[0..MAX_PATH] of Char;
 begin
-  FullName:=ExpandFileName(theFilename);
+  FullName:=ExpandFileName(QuickResolveFilename(theFilename));
 (*S1:=ExtractFilePath(FullName);
   SetLength(S, 511);
   if GetShortPathName(PChar(S1), PChar(S), 512) = 0 then
