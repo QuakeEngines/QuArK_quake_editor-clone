@@ -1872,6 +1872,31 @@ def addframe(editor):
 
 
 #
+# To have any bones, avoiding errors, this checks that at least one model component exist in the editor.
+#
+def allowbones(editor):
+    for item in editor.Root.dictitems:
+        if item.endswith(":mc"):
+            return 1
+    return 0
+
+#
+# This function removes all bones, CLEARS ALL selection lists and the editor.ModelComponentList
+# to avoid errors in case there are bones that exist but all components have been deleted.
+# Could be used with "allowbones" function above called first.
+#
+def clearbones(editor, undomsg):
+    editor.layout.explorer.sellist = []
+    editor.layout.explorer.uniquesel = None
+    editor.ModelComponentList = {}
+    undo = quarkx.action()
+    undo.exchange(editor.Root.dictitems['Skeleton:bg'], None)
+    skeletongroup = quarkx.newobj('Skeleton:bg')
+    skeletongroup['type'] = chr(5)
+    undo.put(editor.Root, skeletongroup)
+    editor.ok(undo, undomsg)
+
+#
 # This function adds a :bone-object to the skeleton-group of comp at position pos
 #
 def addbone(editor, comp, pos):
@@ -3378,6 +3403,10 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.95  2008/12/22 05:06:00  cdunde
+#Added new function to attach bones end handles.
+#Corrected the way the Make_BoneVtxList function works to process each bone's handle by its stored component name.
+#
 #Revision 1.94  2008/12/19 07:14:10  cdunde
 #Added new function to add newly imported bones to the editor.ModelComponentList sections properly
 #and made a change for the Skin-view updating that stops improper skin selection after a drag.
