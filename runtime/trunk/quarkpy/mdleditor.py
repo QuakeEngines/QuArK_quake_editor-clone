@@ -898,12 +898,12 @@ def modelaxis(view):
     if view.info["viewname"] == "editors3Dview" or view.info["viewname"] == "3Dwindow":
         mc = view.proj(view.info["center"])
         Xend = view.proj(view.info["center"]+quarkx.vect(10,0,0))
-        Yend = view.proj(view.info["center"]+quarkx.vect(0,-10,0))
+        Yend = view.proj(view.info["center"]+quarkx.vect(0,10,0))
         Zend = view.proj(view.info["center"]+quarkx.vect(0,0,10))
     else:
         mc = view.proj(modelcenter)
         Xend = view.proj(modelcenter+quarkx.vect(10,0,0))
-        Yend = view.proj(modelcenter+quarkx.vect(0,-10,0))
+        Yend = view.proj(modelcenter+quarkx.vect(0,10,0))
         Zend = view.proj(modelcenter+quarkx.vect(0,0,10))
     cv = view.canvas()
 
@@ -927,7 +927,7 @@ def modelaxis(view):
         cv.pencolor = MapColor("ModelAxisX", SS_MODEL)
         cv.fontcolor = MapColor("ModelAxisX", SS_MODEL)
         cv.line(int(mc.x), int(mc.y), int(Xend.x), int(Xend.y))
-        cv.textout(int(Xend.x-5), int(Xend.y+5), "X")
+        cv.textout(int(Xend.x-5), int(Xend.y-20), "X")
     if view.info["viewname"] == "XZ":
         pass
     else:
@@ -935,7 +935,7 @@ def modelaxis(view):
         cv.pencolor = MapColor("ModelAxisY", SS_MODEL)
         cv.fontcolor = MapColor("ModelAxisY", SS_MODEL)
         cv.line(int(mc.x), int(mc.y), int(Yend.x), int(Yend.y))
-        cv.textout(int(Yend.x-5), int(Yend.y+5), "Y")
+        cv.textout(int(Yend.x-5), int(Yend.y-20), "Y")
     if view.info["viewname"] == "XY":
         pass
     else:
@@ -966,16 +966,19 @@ def faceselfilllist(view, fillcolor=None):
         backfacecolor2 = MapColor("BackFaceColor2", SS_MODEL)
         filllist = [(None,None)]*len(comp.triangles)
         templist = None
-        for triangleindex in editor.ModelFaceSelList:
-            if quarkx.setupsubset(SS_MODEL,"Options")['NOSF'] == "1":
-                pass                                                   # This will not fill in either the front or back faces, only lets the selected model mesh faces outlines to show (if on).
-            elif quarkx.setupsubset(SS_MODEL,"Options")['FFONLY'] == "1":
-                templist = (fillcolor,None)                            # This only fills in the front face color of the selected model mesh faces.
-            elif quarkx.setupsubset(SS_MODEL,"Options")['BFONLY'] == "1":
-                templist = (None,(backfacecolor1,backfacecolor2))      # This only fills in the backface pattern of the selected model mesh faces.
-            else:
-                templist = (fillcolor,(backfacecolor1,backfacecolor2)) # This fills in both the front face color and backface pattern of the selected model mesh faces.
-            filllist[triangleindex] = templist
+        try:
+            for triangleindex in editor.ModelFaceSelList:
+                if quarkx.setupsubset(SS_MODEL,"Options")['NOSF'] == "1":
+                    pass                                                   # This will not fill in either the front or back faces, only lets the selected model mesh faces outlines to show (if on).
+                elif quarkx.setupsubset(SS_MODEL,"Options")['FFONLY'] == "1":
+                    templist = (fillcolor,None)                            # This only fills in the front face color of the selected model mesh faces.
+                elif quarkx.setupsubset(SS_MODEL,"Options")['BFONLY'] == "1":
+                    templist = (None,(backfacecolor1,backfacecolor2))      # This only fills in the backface pattern of the selected model mesh faces.
+                else:
+                    templist = (fillcolor,(backfacecolor1,backfacecolor2)) # This fills in both the front face color and backface pattern of the selected model mesh faces.
+                filllist[triangleindex] = templist
+        except:
+            pass
     return filllist
 
 
@@ -1683,6 +1686,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.113  2009/01/11 06:49:41  cdunde
+#Minor fix for error when Model Editor is in True 3D mode.
+#
 #Revision 1.112  2008/12/12 05:41:44  cdunde
 #To move all code for lwo UV Color Selection function into the lwo plugins\ie_lightwave_import.py file.
 #
