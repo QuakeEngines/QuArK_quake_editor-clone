@@ -2099,8 +2099,10 @@ def z_recenter(view3d, list):
     bmin = min(box1).z
     bmax = max(box1).z
     view3d.info["sfx"] = (bmax-bmin)*0.5 / view3d.info["scale"]
-  #  view3d.depth = (bmin, bmax+bmax-bmin)  # Caused view drifting during model rotation.
-    view3d.depth = (bmin, bmax)  # This fixes the drifting problem.
+    try:
+        view3d.depth = (bmin, bmax)  # This fixes the drifting problem when in regular 3D mode.
+    except:
+        pass # When we are in true 3D perspective mode to avoid error.
     
 
 def flat3Dview(view3d, layout, selonly=0):
@@ -2169,6 +2171,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.78  2008/12/19 17:23:21  cdunde
+#To stop the dupe drawing of vertex boxes in the Model Editor during a bone center handle drag.
+#
 #Revision 1.77  2008/10/20 22:23:52  danielpharos
 #Removed redundant variable.
 #

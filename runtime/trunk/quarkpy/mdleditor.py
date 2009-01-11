@@ -981,6 +981,8 @@ def faceselfilllist(view, fillcolor=None):
 
 
 def setsingleframefillcolor(self, view):
+    if self is None:
+        return
     if self.Root.currentcomponent is None and self.Root.name.endswith(":mr"):
         componentnames = []
         for item in self.Root.dictitems:
@@ -1681,6 +1683,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.112  2008/12/12 05:41:44  cdunde
+#To move all code for lwo UV Color Selection function into the lwo plugins\ie_lightwave_import.py file.
+#
 #Revision 1.111  2008/12/03 10:34:06  cdunde
 #Added functions for console logging and clearing of that log to the options menu.
 #
