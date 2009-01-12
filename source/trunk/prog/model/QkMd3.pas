@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.42  2008/10/09 14:34:14  danielpharos
+Fix missing skins preventing the model from loading.
+
 Revision 1.41  2008/09/14 09:50:35  danielpharos
 Use centralized function to retrieve ShadersPath.
 
@@ -840,6 +843,8 @@ begin
       org:=f.position;
       f.readbuffer(head, sizeof(head));
       org2:=f.position;
+      if (head.id='IDP3') and (CharModeJeu=mjSTVEF) then
+        ObjectGameCode := mjSTVEF;
       if (head.id='IDP3') and (CharModeJeu=mjEF2) then
         ObjectGameCode := mjEF2;
       if (head.id='IDP3') and (CharModeJeu=mjRTCWET) then
@@ -850,15 +855,19 @@ begin
         ObjectGameCode := mjWarsow;
       if (head.id='IDP3') and (head.version=15) then
       begin
-        if (CharModeJeu<mjQ3A) or (CharModeJeu=mjSTVEF) then
+        if (CharModeJeu<mjQ3A) then
           ObjectGameCode := mjQ3A
         else
           ObjectGameCode := CharModeJeu;
       end
-      else if (head.id='RDM5') and (head.version=2) then
-      begin
-        ObjectGameCode:=mjSTVEF;
-      end;
+      else if (head.id='RDM5') {and (head.version=2)} then
+        //FIXME
+        Raise exception.create('RDM5-md3s currently not supported')
+      else if (head.id='2LGM') then
+        //FIXME
+        Raise exception.create('2LGM-md3s currently not supported')
+      else
+        Raise exception.create('Unknown md3 format found ('+head.id+')');
       Root:=Loaded_Root;
       Misc:=Root.GetMisc;
       if head.BoundFrame_num<>0 then
