@@ -5370,6 +5370,16 @@ class LinBoneCornerHandle(LinearBoneHandle):
         if p.visible:
             cv.reset()
             cv.brushcolor = MapColor("LinearHandleCorners", SS_MODEL)
+            if self.s_or_e == 0:
+                startcolor = self.bone.dictspec['start_color']
+                quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
+                cv.brushcolor = MapColor("start_color", SS_MODEL)
+            else:
+                endcolor = self.bone.dictspec['end_color']
+                quarkx.setupsubset(SS_MODEL, "Colors")["end_color"] = endcolor
+                cv.brushcolor = MapColor("end_color", SS_MODEL)
+            if cv.brushcolor == MapColor("BoneHandles", SS_MODEL):
+                cv.brushcolor = MapColor("LinearHandleCorners", SS_MODEL)
             cv.pencolor = MapColor("LinearHandleOutline", SS_MODEL)
             cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
 
@@ -6191,6 +6201,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.163  2008/12/22 05:06:17  cdunde
+#Added new function to attach bones end handles.
+#
 #Revision 1.162  2008/12/19 07:13:20  cdunde
 #Minor change for bone name splitting to stop improper procedure of doing so.
 #
