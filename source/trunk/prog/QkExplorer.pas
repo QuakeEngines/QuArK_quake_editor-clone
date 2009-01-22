@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.21  2008/09/23 08:27:29  danielpharos
+Moved InternalE to QkExceptions.
+
 Revision 1.20  2008/08/12 00:24:51  cdunde
 DanielPharos added new quarkx function "getchangednames", see Infobase docs for what it does .
 
@@ -243,7 +246,7 @@ type
 
 implementation
 
-uses Qk1, QkExceptions, Undo, Travail, Quarkx;
+uses Qk1, QkExceptions, Undo, Travail, Quarkx, QkModelBone;
 
  {------------------------}
 
@@ -253,6 +256,7 @@ var
  FDragFlags: Integer;
  FUndoExplorers: TList = Nil;
  FAllExplorers: TList;
+ FDragObjectOthers: TQList = Nil;
 
 procedure SetDragObject(nDragObject: QExplorerGroup);
 begin
@@ -269,10 +273,35 @@ begin
 end;
 
 function DragObject: QExplorerGroup;
+var
+ I, MaxI: Integer;
 begin
  if (FDragObject=Nil) and Assigned(FGetFunc) then
   begin
    FDragObject:=FGetFunc;
+   // DanielPharos: We filter the list if there are model bones inside.
+   // MaxI is the number of bones found, and we delete all other items from the list.
+   // This so we can move bones even if we have other stuff selected too.
+   MaxI:=0;
+   for I:=0 to FDragObject.SubElements.Count-1 do
+    if FDragObject.SubElements[I] is QModelBone then
+      MaxI:=MaxI+1;
+   if MaxI<>0 then
+   begin
+    I:=0;
+    while I<=FDragObject.SubElements.Count-1 do
+     if not (FDragObject.SubElements[I] is QModelBone) then
+      begin
+       if FDragObjectOthers = Nil then
+        FDragObjectOthers:=TQList.Create;
+       FDragObjectOthers.Add(FDragObject.SubElements[I]);
+       FDragObject.SubElements.Delete(I)
+      end
+     else
+      I:=I+1;
+    FDragObject.SubElements.Capacity:=MaxI;
+   end;
+   // DanielPharos: End of filtering code
    FDragObject.AddRef(+1);
    FGetFunc:=Nil;
   end;
@@ -1715,6 +1744,14 @@ begin
   FreeAction(DropTarget)
  else
   FinAction(DropTarget, LoadStr1(Numero[Copier, Interne]));
+ if FDragObjectOthers <> Nil then
+  begin
+   for I:=0 to FDragObjectOthers.Count-1 do
+    FDragObjectOthers[I].SetSelMult;
+   FDragObjectOthers.Free;
+   FDragObjectOthers := Nil;
+   SelectionChanging;
+ end;
 end;
 
 procedure TQkExplorer.TestsDUsage(Preference: QObject; Spec: Integer);
