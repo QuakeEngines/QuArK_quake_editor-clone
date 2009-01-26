@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2008/11/17 21:54:25  danielpharos
+Fix vertices not being loaded correctly.
+
 Revision 1.18  2008/11/06 20:18:22  danielpharos
 Removed old stuff in preparation for new specifics code.
 
@@ -113,6 +116,11 @@ uses Quarkx, QkExceptions, PyObjects, QkObjectClassList, QkComponent, QkModelRoo
 
 function QFrame.IsAllowedParent(Parent: QObject) : Boolean;
 begin
+  try
+    if ParentComponent = Nil then ParentComponent := Self.FParent.FParent;
+  except
+    ParentComponent := Nil;
+  end;
   if (Parent=nil) or ((Parent is QFrameGroup) and (Parent.FParent = ParentComponent)) then
     Result:=true
   else
@@ -306,8 +314,8 @@ begin
     if currentFrame<>nil then begin
       bf:=QModelTag(modelRoot.getmisc.FindSubObject(myRoot.Specifics.Values['linked_to'], QModelTag, nil));
       bf2:=QModelTag(myRoot.getmisc.FindSubObject(myRoot.Specifics.Values['linked_to'], QModelTag, nil));
-      o_tag:=QTagFrame(bf2.FindSubObject('Tag Group '+inttostr(Round(currentFrame.GetFloatSpec('index',1))), QTagFrame, nil));
-      s_tag:=QTagFrame(bf.FindSubObject('Tag Group '+inttostr(Round(GetFloatSpec('index',1))), QTagFrame, nil));
+      o_tag:=QTagFrame(bf.FindSubObject('Tag Frame '+inttostr(Round(currentFrame.GetFloatSpec('index',1))), QTagFrame, nil));
+      s_tag:=QTagFrame(bf2.FindSubObject('Tag Frame '+inttostr(Round(GetFloatSpec('index',1))), QTagFrame, nil));
     end;
   end;
   S:=GetSpecArg(FloatSpecNameOf('Vertices'));
