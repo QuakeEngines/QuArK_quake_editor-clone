@@ -1741,7 +1741,7 @@ def create_objects(filename, polynames, clip_list, objspec_list, surf_list, base
         # which is used to draw the maodel's 'mesh' (shape) in the editor's views.
         # The Skin-view uses the model's 'Tris' to draw its nlines. 
         frame = quarkx.newobj('Base Frame:mf')
-        frame['index'] = (0,)
+        frame['index'] = (1.0,)
         mesh = ()
         vtxconvert = {}
         count = 0
@@ -2379,6 +2379,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.18  2008/12/16 21:49:05  cdunde
+# Fixed UV color button setting from one import file to another.
+#
 # Revision 1.17  2008/12/15 01:46:35  cdunde
 # Slight correction.
 #
