@@ -405,10 +405,10 @@ def load_md5(md5_filename, basepath):
             CompNbr = 1
 
         ComponentList = []
-        CompMeshNamesList = []
         message = ""
-        QuArK_bones = [] # # To store all bones created by each mesh (component), if any.
-        QuArK_bone_list = [] # To store all bones created by the .md5mesh file, if any, which can spread from component to component.
+        QuArK_bone_list = [] # To store all bones created by each mesh (component).
+        QuArK_bones = []     # To store all QuArK_bone_list of bones created by each mesh (component), if any.
+        Cdunde_QuArK_bones = []  # Temp, just to get it working, replace with above list.
 
         #read the file in
         file=open(md5_filename,"r")
@@ -420,6 +420,14 @@ def load_md5(md5_filename, basepath):
 
         num_lines=len(lines)
 
+        # QuArK to get our number of meshes (components) in this file that we need to make a set of bones for.
+        for line_counter in range(0,num_lines):
+            current_line=lines[line_counter]
+            words=current_line.split()
+            if words and words[0]=="numMeshes":
+                QuArK_group_counter=int(words[1])
+                break
+
         mesh_counter=0
         for line_counter in range(0,num_lines):
             current_line=lines[line_counter]
@@ -428,12 +436,15 @@ def load_md5(md5_filename, basepath):
             if words and words[0]=="numJoints":
                 #print "found a bunch of bones"
                 num_bones=int(words[1])
-                #print "num_bones: ", num_bones
+        #        print "num_bones: ", num_bones
             elif words and words[0]=="joints":
+                for QuArK_group in range(QuArK_group_counter):
+                    Cdunde_QuArK_bone_list = [] # To store all bones created by each mesh (component).
+                    Cdunde_QuArK_bones = Cdunde_QuArK_bones + [Cdunde_QuArK_bone_list]
                 for bone_counter in range(0,num_bones):
                     #make a new bone
                     md5_bones.append(md5_bone())
-		    #next line
+                    #next line
                     line_counter+=1
                     current_line=lines[line_counter]
                     words=current_line.split()
@@ -447,70 +458,73 @@ def load_md5(md5_filename, basepath):
                     temp_name=str(words[0])
                     temp_name=temp_name[1:-1]
                     ### QuArK note: this is where we start making our bones.
-                    new_bone = quarkx.newobj(temp_name + ":bone")
-                    new_bone['start_component'] = "None" # None for now and get the component name later.
-                    new_bone['start_vertex_count'] = "0"
-                    new_bone['start_point'] = (0, 0, 0) # Just in case this is not reset further below.
-                    new_bone['start_offset'] = (0, 0, 0)
-                    new_bone['start_scale'] = (1.0,)
-                    new_bone['end_component'] = "None" # None for now and get the component name later.
-                    new_bone['end_vertex_count'] = "0"
-                    new_bone['end_point'] = (0, 0, 0) # Just in case this is not reset further below.
-                    new_bone['end_offset'] = (0, 0, 0)
-                    new_bone['start_color'] = new_bone['end_color'] = MapColor("BoneHandles", 3)
-                    new_bone['end_scale'] = (1.0,)
-                    start_point = quarkx.vect(new_bone.dictspec['start_point']) + quarkx.vect(new_bone.dictspec['start_offset'])
-                    end_point = quarkx.vect(new_bone.dictspec['end_point']) + quarkx.vect(new_bone.dictspec['end_offset'])
-                    new_bone['bone_length'] = (start_point - end_point*-1).tuple
+                    for QuArK_group in range(QuArK_group_counter):
+                        new_bone = quarkx.newobj(str(QuArK_group) + "_" + temp_name + ":bone")
+                        new_bone['start_component'] = "None" # None for now and get the component name later.
+                        new_bone['start_vertex_count'] = "0"
+                        new_bone['start_point'] = (0, 0, 0) # Just in case this is not reset further below.
+                        new_bone['start_offset'] = (0, 0, 0)
+                        new_bone['start_scale'] = (1.0,)
+                        new_bone['end_component'] = "None" # None for now and get the component name later.
+                        new_bone['end_vertex_count'] = "0"
+                        new_bone['end_point'] = (0, 0, 0) # Just in case this is not reset further below.
+                        new_bone['end_offset'] = (0, 0, 0)
+                        new_bone['start_color'] = new_bone['end_color'] = MapColor("BoneHandles", 3)
+                        new_bone['end_scale'] = (1.0,)
+                        start_point = quarkx.vect(new_bone.dictspec['start_point']) + quarkx.vect(new_bone.dictspec['start_offset'])
+                        end_point = quarkx.vect(new_bone.dictspec['end_point']) + quarkx.vect(new_bone.dictspec['end_offset'])
+                        new_bone['bone_length'] = (start_point - end_point*-1).tuple
+                        
+                        new_bone['parent_index'] = words[1] # QuArK code, this is NOT an integer but a string of its integer value.
+                        new_bone['bindmat'] = (float(words[8]), float(words[9]), float(words[10])) # QuArK code, use these values to build this bones matrix (see "quaternion2matrix" code below).
+
+                        # QuArK code below, adjust to handles scale for other bones connecting to this one and so on.
+                        if bone_counter == 0:
+                            new_bone['start_point'] = (float(words[3]), float(words[4]), float(words[5]))
+                        else:
+                            # QuArK note: Even though the bone's parent name is not used anywhere else in this file,
+                            # we need to store it with the bone so it can be written easily to the export file.
+                            new_bone['parent'] = Cdunde_QuArK_bones[QuArK_group][int(new_bone.dictspec['parent_index'])].name
+                            new_bone['start_point'] = QuArK_bone_list[int(new_bone.dictspec['parent_index'])].dictspec['end_point']
+                            parent_bone_length = QuArK_bone_list[int(new_bone.dictspec['parent_index'])].dictspec['bone_length']
+                            if abs(parent_bone_length[0]) + abs(parent_bone_length[1]) + abs(parent_bone_length[2]) > 1:
+            #                    new_bone['start_scale'] = (QuArK_bone_list[int(new_bone.dictspec['parent_index'])].dictspec['end_scale'][0]*1.5,)
+                                new_bone['start_scale'] = (QuArK_bone_list[int(new_bone.dictspec['parent_index'])].dictspec['end_scale'][0],)
+                            if new_bone.dictspec['start_scale'][0] < 0.1: # Written this way because it is stored as a tuple.
+            #                    new_bone['start_scale'] = (0.1*1.5,)
+                                new_bone['start_scale'] = (0.1,) # Written this way to stored it as a tuple.
+                            new_bone['end_point'] = (float(words[3]), float(words[4]), float(words[5]))
+                            start_point = quarkx.vect(new_bone.dictspec['start_point'])
+                            end_point = quarkx.vect(new_bone.dictspec['end_point'])
+                            new_bone['bone_length'] = (start_point - end_point).tuple
+                            end_scale = 1.0
+                            if abs(new_bone.dictspec['bone_length'][0]) > abs(new_bone.dictspec['bone_length'][1]):
+                                if  abs(new_bone.dictspec['bone_length'][0]) > abs(new_bone.dictspec['bone_length'][2]):
+                                    testscale = abs(new_bone.dictspec['bone_length'][0])
+                                else:
+                                    testscale = abs(new_bone.dictspec['bone_length'][2])
+                            else:
+                                if  abs(new_bone.dictspec['bone_length'][1]) > abs(new_bone.dictspec['bone_length'][2]):
+                                    testscale = abs(new_bone.dictspec['bone_length'][1])
+                                else:
+                                    testscale = abs(new_bone.dictspec['bone_length'][2])
+                            if testscale < 8:
+                                end_scale = testscale * .08
+                            if end_scale < 0.1:
+                                new_bone['end_scale'] = (0.1,) # Written this way to stored it as a tuple.
+                            else:
+                                new_bone['end_scale'] = (end_scale,) # Written this way to stored it as a tuple.
+
+                        Cdunde_QuArK_bones[QuArK_group] = Cdunde_QuArK_bones[QuArK_group] + [new_bone]
 
                     md5_bones[bone_counter].name=temp_name
          #           print "found a bone: ", md5_bones[bone_counter].name
                     md5_bones[bone_counter].parent_index = int(words[1])
-                    new_bone['parent_index'] = words[1] # QuArK code, this is NOT an integer but a string of its integer value.
-         #           print "parent_index: ", md5_bones[bone_counter].parent_index
-                    # QuArK note: Even though the bone's parent name is not used anywhere else in this file,
-                    # we need to store it with the bone so it can be written easily to the export file.
                     if md5_bones[bone_counter].parent_index>=0:
-                        new_bone['parent'] = md5_bones[md5_bones[bone_counter].parent_index].name
                         md5_bones[bone_counter].parent = md5_bones[md5_bones[bone_counter].parent_index].name
                     md5_bones[bone_counter].bindpos[0]=float(words[3])
                     md5_bones[bone_counter].bindpos[1]=float(words[4])
                     md5_bones[bone_counter].bindpos[2]=float(words[5])
-                    # QuArK code below, adjust to handles scale for other bones connecting to this one and so on.
-                    if bone_counter == 0:
-                        new_bone['start_point'] = (float(words[3]), float(words[4]), float(words[5]))
-                    else:
-                        new_bone['start_point'] = QuArK_bone_list[int(new_bone.dictspec['parent_index'])].dictspec['end_point']
-                        parent_bone_length = QuArK_bone_list[int(new_bone.dictspec['parent_index'])].dictspec['bone_length']
-                        if abs(parent_bone_length[0]) + abs(parent_bone_length[1]) + abs(parent_bone_length[2]) > 1:
-                            new_bone['start_scale'] = QuArK_bone_list[int(new_bone.dictspec['parent_index'])].dictspec['end_scale']
-                        if new_bone.dictspec['start_scale'][0] < 0.1: # Written this way because it is stored as a tuple.
-                            new_bone['start_scale'] = (0.1,)
-                        new_bone['end_point'] = (float(words[3]), float(words[4]), float(words[5]))
-                        start_point = quarkx.vect(new_bone.dictspec['start_point'])
-                        end_point = quarkx.vect(new_bone.dictspec['end_point'])
-                        new_bone['bone_length'] = (start_point - end_point).tuple
-                        end_scale = 1.0
-                        if abs(new_bone.dictspec['bone_length'][0]) > abs(new_bone.dictspec['bone_length'][1]):
-                            if  abs(new_bone.dictspec['bone_length'][0]) > abs(new_bone.dictspec['bone_length'][2]):
-                                testscale = abs(new_bone.dictspec['bone_length'][0])
-                            else:
-                                testscale = abs(new_bone.dictspec['bone_length'][2])
-                        else:
-                            if  abs(new_bone.dictspec['bone_length'][1]) > abs(new_bone.dictspec['bone_length'][2]):
-                                testscale = abs(new_bone.dictspec['bone_length'][1])
-                            else:
-                                testscale = abs(new_bone.dictspec['bone_length'][2])
-                        if testscale < 8:
-                            end_scale = testscale * .08
-                        new_bone['end_scale'] = (end_scale,)
-                        if new_bone.dictspec['end_scale'][0] < 0.1: # Written this way because it is stored as a tuple.
-                            new_bone['end_scale'] = (0.1,)
-               #         print ""
-               #         print "line 488 new_bone.name, new_bone.dictspec['bone_length'] -->",new_bone.name, new_bone.dictspec['bone_length']
-               #         print "line 489 start setting, end setting -->",QuArK_bone_list[int(new_bone.dictspec['parent_index'])].dictspec['end_point'], (float(words[3]), float(words[4]), float(words[5]))
-               #         print "line 490 start_point, end_point -->",new_bone.dictspec['start_point'], new_bone.dictspec['end_point']
-
         #            print "bindpos: ", md5_bones[bone_counter].bindpos
                     qx = float(words[8])
                     qy = float(words[9])
@@ -524,22 +538,18 @@ def load_md5(md5_filename, basepath):
                     md5_bones[bone_counter].bindmat = quaternion2matrix([qx,qy,qz,qw])
        #             print "bindmat: ", md5_bones[bone_counter].bindmat
 
-                    # QuArK code below
-            #        new_bone['bindmat'] = quaternion2matrix([qx,qy,qz,qw]) # QuArK code THIS LINE BRAKE EVERYTHING
-                    new_bone['bindmat'] = (float(words[8]), float(words[9]), float(words[10])) # QuArK code, use these values to build this bones matrix (see code above).
                     QuArK_bone_list = QuArK_bone_list + [new_bone]
 
-                for bone in md5_bones:
-                    bone.dump()
+        #        for bone in md5_bones:
+        #            bone.dump()
 
 
             elif words and words[0]=="numMeshes":
                 num_meshes=int(words[1])
-       #         print "num_meshes: ", num_meshes
+        #        print "num_meshes: ", num_meshes
             elif words and words[0]=="mesh":
                 QuArK_bone_list_index = [] # To match which bones belong to which mesh (component).
                 QuArK_mesh_bone_list = []
-                mesh_name = "None"
                 #create a new mesh and name it
                 md5_model.append(md5_mesh())
                 #print "md5_mesh: ",md5_model
@@ -549,11 +559,6 @@ def load_md5(md5_filename, basepath):
                         line_counter+=1
                         current_line=lines[line_counter]
                         words=current_line.split()
-                        if current_line.find("meshes:") != -1:
-                            for word in range(len(words)):
-                                if words[word] == "meshes:":
-                                    mesh_name = words[word+1]
-                                    CompMeshNamesList = CompMeshNamesList + [mesh_name]
                         if words and words[0]=="shader":
                             #print "found a shader"
                             temp_name=str(words[1])
@@ -597,13 +602,12 @@ def load_md5(md5_filename, basepath):
                     QuArK_mesh_bone_list = QuArK_mesh_bone_list + [QuArK_bone_list[index]]
                 mesh_counter += 1
                 QuArK_bones = QuArK_bones + [QuArK_mesh_bone_list]
-                if mesh_name == "None":
-                    CompMeshNamesList = CompMeshNamesList + [mesh_name]
 
 	#figure out the base pose for each vertex from the weights
+  #      QuArK_mesh_counter = 0
         for mesh in md5_model:
                 #print "updating vertex info for mesh: ", mesh.mesh_index
-                mesh.dump()
+        #        mesh.dump()
                 bone_index_list = [] # QuArK code
                 bone_vtx_list = {}
                 for vert_counter in range(0, len(mesh.verts)):
@@ -612,7 +616,7 @@ def load_md5(md5_filename, basepath):
                                 #get the current weight info
                                 w=mesh.weights[blend_index+blend_counter]
                                 #print "w: "
-                                #w.dump()
+        #                        w.dump()
                                 #the bone that the current weight is refering to
                                 b=md5_bones[w.bone_index]
                                 if not w.bone_index in bone_index_list:
@@ -635,38 +639,49 @@ def load_md5(md5_filename, basepath):
                                 mesh.verts[vert_counter].co[0]+=pos[0]
                                 mesh.verts[vert_counter].co[1]+=pos[1]
                                 mesh.verts[vert_counter].co[2]+=pos[2]
-         #       print "line 629 bone_index_list, type",bone_index_list, type(bone_index_list[0])
-         #       for bone in range(len(QuArK_bone_list)):
+         #       print "line 652 bone_index_list, type",bone_index_list, type(bone_index_list[0])
+         #       print "line 653 bone_vtx_list, len(QuArK_bone_list)",bone_vtx_list, len(QuArK_bone_list)
                 for bone in range(len(bone_vtx_list)):
-                    bonenumber = bone_vtx_list.keys()[bone]
-                    if bonenumber == 0:
+                    jointnumber = bone_vtx_list.keys()[bone]
+                    if jointnumber == 0:
                         continue
-                    list = bone_vtx_list[bonenumber]
-                #    QuArK_bone_list[bone-1]['start_vertex_count'] = str(len(list))
-                    QuArK_bone_list[bonenumber]['end_vertex_count'] = str(len(list))
+                    list = bone_vtx_list[jointnumber]
+                    listcount = str(len(list))
                     list = str(list)
                     list = list.replace(",", "")
                     list = list.replace("[", "")
                     list = list.replace("]", "")
-                #    QuArK_bone_list[bone-1]['start_vtxlist'] = list
-                    QuArK_bone_list[bonenumber]['end_vtxlist'] = list
+                    if bone == len(bone_vtx_list)-1:
+                        Cdunde_QuArK_bones[mesh.mesh_index][jointnumber]['end_vtxlist'] = list
+                        Cdunde_QuArK_bones[mesh.mesh_index][jointnumber]['end_vertex_count'] = listcount
+                    else:
+                        found_a_bone = 0
+                        for jointnumber2 in range(0,num_bones):
+                            if md5_bones[jointnumber2].parent_index == jointnumber:
+                                Cdunde_QuArK_bones[mesh.mesh_index][jointnumber2]['start_vtxlist'] = list
+                                Cdunde_QuArK_bones[mesh.mesh_index][jointnumber2]['start_vertex_count'] = listcount
+                                found_a_bone = 1
+                                break
+                        if found_a_bone == 0:
+                            Cdunde_QuArK_bones[mesh.mesh_index][jointnumber]['end_vtxlist'] = list
+                            Cdunde_QuArK_bones[mesh.mesh_index][jointnumber]['end_vertex_count'] = listcount
 	#build the armature in blender
-  #      print "line 515 md5_filename",md5_filename
+  #      print "line 655 md5_filename",md5_filename
      #   translationtable = string.maketrans("\\", "/")
      #   tempstring = string.translate(md5_filename, translationtable)
      #   lindex = string.rfind(tempstring, "/")
      #   rindex = string.rfind(tempstring, ".")
         tempstring = md5_filename.replace("\\", "/")
-  #      print "line 521 tempstring",tempstring
+ #       print "line 661 tempstring",tempstring
         lindex = tempstring.rfind( "/")
         rindex = tempstring.rfind(".")
-  #      print "line 524 lindex, rindex",lindex, rindex
+ #       print "line 664 lindex, rindex",lindex, rindex
         if lindex==-1: lindex=0
     #    tempstring = string.rstrip(tempstring, ".md5mesh")
         tempstring = tempstring.rstrip(".md5mesh")
-    #    print "line 528 tempstring",tempstring
+ #       print "line 668 tempstring",tempstring
         tempstring = tempstring[lindex+1:len(tempstring)]
- #       print "line 530 tempstring",tempstring
+ #       print "line 670 tempstring",tempstring
     #    armObj = Object.New('Armature', tempstring)
     #    armData = Blender.Armature.Armature("MD5_ARM") 
     #    armData.drawAxes = True 
@@ -680,7 +695,7 @@ def load_md5(md5_filename, basepath):
     #        bone.blenderbone = Blender.Armature.Editbone() 
     #        headData = Blender.Mathutils.Vector(bone.bindpos[0]*scale, bone.bindpos[1]*scale, bone.bindpos[2]*scale)
             headData = quarkx.vect(bone.bindpos[0]*scale, bone.bindpos[1]*scale, bone.bindpos[2]*scale)
- #           print "line 653 bone start_point",headData, bone.name, bone.bone_index
+        #    print "line 684 bone start_point",headData, bone.name, bone.bone_index
     #        bone.blenderbone.head = headData 
     #        tailData = Blender.Mathutils.Vector(bone.bindpos[0]*scale+bonesize*scale*bone.bindmat[1][0], bone.bindpos[1]*scale+bonesize*scale*bone.bindmat[1][1], bone.bindpos[2]*scale+bonesize*scale*bone.bindmat[1][2])
             tailData = quarkx.vect(bone.bindpos[0]*scale+bonesize*scale*bone.bindmat[1][0], bone.bindpos[1]*scale+bonesize*scale*bone.bindmat[1][1], bone.bindpos[2]*scale+bonesize*scale*bone.bindmat[1][2])
@@ -694,7 +709,7 @@ def load_md5(md5_filename, basepath):
  #1               QuArK_bone_list[bonecounter+1]['start_point'] = headData.tuple
  #1               QuArK_bone_list[bonecounter]['bone_length'] = (quarkx.vect(QuArK_bone_list[bonecounter].dictspec['start_point']) - quarkx.vect(QuArK_bone_list[bonecounter].dictspec['end_point'])).tuple
  #1           bonecounter = bonecounter + 1
-       #     print "line 667 bone end_point",tailData, bone.name, bone.bone_index
+       #     print "line 698 bone end_point",tailData, bone.name, bone.bone_index
     #        bone.blenderbone.tail = tailData 
     #        if bone.parent != "": 
     #            bone.blenderbone.parent = md5_bones[bone.parent_index].blenderbone 
@@ -722,17 +737,17 @@ def load_md5(md5_filename, basepath):
 
 
 	#dump the meshes into blender
-  #      print "basepath",basepath # The full path to the game folder, ex: "C:\Program Files\Doom 3\base\"
-  #      print "md5_filename",md5_filename # The full path and file name of the .md5mesh file being imported, ex.
+    #    print "basepath",basepath # The full path to the game folder, ex: "C:\Program Files\Doom 3\base\"
+    #    print "md5_filename",md5_filename # The full path and file name of the .md5mesh file being imported, ex.
                                           # md5_filename "C:\Program Files\Doom 3\base\models\md5\monsters\pinky\pinky.md5mesh"
         firstcomp = str(CompNbr)
         lastcomp = str(CompNbr + len(md5_model)-1)
 
-        QuArK_mesh_counter = 0
+    #    QuArK_mesh_counter = 0
         for mesh in md5_model: # A new QuArK component needs to be made for each mesh.
-  #              print "making  Import Component ",CompNbr # The name of this component being created now, ex: "Import Component 1"
-  #              print "adding mesh ", mesh.mesh_index, " to blender"
-  #              print "it has ", len(mesh.verts), "verts"
+    #            print "making  Import Component ",CompNbr # The name of this component being created now, ex: "Import Component 1"
+    #            print "adding mesh ", mesh.mesh_index, " to blender"
+    #            print "it has ", len(mesh.verts), "verts"
                 ### Creates this component's Skins:sg group.
                 # Checks if the model has textures specified with it.
                 skinsize = (256, 256)
@@ -999,6 +1014,7 @@ def load_md5(md5_filename, basepath):
         #        blender_mesh=NMesh.New() # make this a QuArK component's frame verticies
                 framesgroup = quarkx.newobj('Frames:fg') # QuArK Frames group made here.
                 frame = quarkx.newobj('Base frame' + ':mf') # QuArK frame made here.
+                frame['index'] = (1.0,)
                 comp_mesh = () # QuArK code
                 comp_verts = [] # QuArK code
                 for vert in mesh.verts: # QuArK frame Vertices made here.
@@ -1091,16 +1107,22 @@ def load_md5(md5_filename, basepath):
         #        armObj.makeParentDeform([mesh_obj], 0, 0)
 
                 # Now we start creating our Import Component and name it.
-    #            print ""
-    #            print "line 1065 len(QuArK_bones), QuArK_mesh_counter",len(QuArK_bones), QuArK_mesh_counter
-    #            print "line 1066 len(QuArK_bone_list), len(QuArK_bones[QuArK_mesh_counter])",len(QuArK_bone_list), len(QuArK_bones[QuArK_mesh_counter])
-                if CompMeshNamesList[QuArK_mesh_counter] != "None":
-                    Component = quarkx.newobj(CompMeshNamesList[QuArK_mesh_counter] + ':mc')
+                if shader_name is not None:
+                    Comp_name = shader_name.split("/")
+                    Comp_name = Comp_name[len(Comp_name)-1]
+                    Component = quarkx.newobj(str(mesh.mesh_index) + "_" + Comp_name + ':mc')
                 else:
-                    Component = quarkx.newobj("Import Component " + str(CompNbr) + ':mc')
-                for bone in QuArK_bones[QuArK_mesh_counter]:
+                    Component = quarkx.newobj(str(mesh.mesh_index) + "_" + "Import Component " + str(CompNbr) + ':mc')
+                    CompNbr = CompNbr + 1
+                for bone in QuArK_bones[mesh.mesh_index]:
                     bone['start_component'] = Component.name
                     bone['end_component'] = Component.name
+                for Cdunde_bone in Cdunde_QuArK_bones[mesh.mesh_index]:
+                    Cdunde_bone['start_component'] = Component.name
+                    Cdunde_bone['end_component'] = Component.name
+                    # This section preserves origianl handle scale settings for each bone of a component.
+                    Cdunde_bone['org_start_scale'] = Cdunde_bone.dictspec['start_scale']
+                    Cdunde_bone['org_end_scale'] = Cdunde_bone.dictspec['end_scale']
                 if shader_file is not None:
                     Component['shader_file'] = shader_file
                 if shader_name is not None:
@@ -1120,14 +1142,34 @@ def load_md5(md5_filename, basepath):
             #        Strings[2454] = Strings[2454].replace("Processing Components " + firstcomp + " to " + lastcomp + "\n" + "Import Component " + str(CompNbr) + "\n\n", "")
             #    else:
             #        Strings[2454] = Strings[2454].replace("Import Component " + str(CompNbr) + "\n", "")
-                if mesh_name  != "None":
-                    pass
-                else:
-                    CompNbr = CompNbr + 1
-                QuArK_mesh_counter = QuArK_mesh_counter + 1
+
+      #          QuArK_mesh_counter = QuArK_mesh_counter + 1
 
     #    return armObj
-        return ComponentList, QuArK_bone_list, message # Gives a list of ALL bone as they are created, same as in the .md5mesh file.
+      #  for QuArK_group in range(QuArK_group_counter):
+      #      print "================================="
+      #      group = Cdunde_QuArK_bones[QuArK_group]
+      #      print "line 1154 QuArK_group ",QuArK_group
+      #      print "---------------------------------"
+      #      for bones in group:
+      #          print bones.name
+      #          print "-----------"
+      #          print bones.dictspec
+      #          print ""
+      #      print "================================="
+      #  print ""
+      #  print ""
+      #  print "line 1164 QuArK_bone_list"
+      #  print QuArK_bone_list
+      #  print ""
+      #  print ""
+      #  print "line 1168 ComponentList"
+      #  print ComponentList
+      #  print ""
+      #  print ""
+
+    #    return ComponentList, QuArK_bone_list, message # Gives a list of ALL bone as they are created, same as in the .md5mesh file.
+        return ComponentList, Cdunde_QuArK_bones, message # Gives a list of ALL bone as they are created, same as in the .md5mesh file.
 
 class md5anim_bone:
     name = ""
@@ -1183,21 +1225,21 @@ class md5anim:
 
             if words and words[0]=="numJoints":
                 self.num_bones=int(words[1])
-       #         print "num_bones: ", self.num_bones
+        #        print "num_bones: ", self.num_bones
                 
             elif words and words[0]=="numFrames":
                 self.numFrames=int(words[1])
-       #         print "num_frames: ", self.numFrames
+        #        print "num_frames: ", self.numFrames
                 #fill framedata array with numframes empty arrays
                 self.framedata = [[]]*self.numFrames
                 
             elif words and words[0]=="frameRate":
                 self.frameRate=int(words[1])
-       #         print "frameRate: ", self.frameRate
+        #        print "frameRate: ", self.frameRate
                 
             elif words and words[0]=="numAnimatedComponents":
                 self.numAnimatedComponents=int(words[1])
-       #         print "numAnimatedComponents: ", self.numAnimatedComponents
+        #        print "numAnimatedComponents: ", self.numAnimatedComponents
                 
             elif words and words[0]=="hierarchy":
                 for bone_counter in range(0,self.num_bones):
@@ -1218,7 +1260,7 @@ class md5anim:
                     temp_name=str(words[0])
                     temp_name=temp_name[1:-1]
                     self.md5anim_bones[bone_counter].name=temp_name
-         #           print "found bone: ", self.md5anim_bones[bone_counter].name
+            #        print "found bone: ", self.md5anim_bones[bone_counter].name
                     self.md5anim_bones[bone_counter].parent_index = int(words[1])
                     #if self.md5anim_bones[bone_counter].parent_index>=0:
                     #    self.md5anim_bones[bone_counter].parent = self.md5anim_bones[self.md5anim_bones[bone_counter].parent_index].name
@@ -1270,13 +1312,13 @@ class md5anim:
         b.invrestmat = Blender.Mathutils.Matrix(arm_obj.getData().bones[b.name].matrix['ARMATURESPACE']).invert()
         b.restmat = Blender.Mathutils.Matrix(arm_obj.getData().bones[b.name].matrix['ARMATURESPACE'])
       for currntframe in range(1, self.numFrames+1):
-   #     print "importing frame ", currntframe," of", self.numFrames
+    #    print "importing frame ", currntframe," of", self.numFrames
         Blender.Set("curframe", currntframe)
         for md5b in self.md5anim_bones:
           try:
             thebone = thepose.bones[md5b.name]
           except:
-   #         print "could not find bone ", md5b.name, " in armature"
+    #        print "could not find bone ", md5b.name, " in armature"
             continue
           (qx,qy,qz,qw) = md5b.bindquat
           lx,ly,lz = md5b.bindpos
@@ -1415,13 +1457,13 @@ def handle_button_event(evt):
 ########################
 
 def import_md5_model(basepath, md5_filename):
-    ComponentList, QuArK_bone_list, message = load_md5(md5_filename, basepath) # Loads the model using list of ALL bones as they are created.
+    RetComponentList, RetQuArK_bone_list, message = load_md5(md5_filename, basepath) # Loads the model using list of ALL bones as they are created.
 
     ### Use the 'ModelRoot' below to test opening the QuArK's Model Editor with, needs to be qualified with main menu item.
     ModelRoot = quarkx.newobj('Model:mr')
   #  ModelRoot.appenditem(Component)
 
-    return ModelRoot, ComponentList, QuArK_bone_list, message # Using list of ALL bones as they are created.
+    return ModelRoot, RetComponentList, RetQuArK_bone_list, message # Using list of ALL bones as they are created.
 
 
 def loadmodel(root, filename, gamename, nomessage=0):
@@ -1443,9 +1485,9 @@ def loadmodel(root, filename, gamename, nomessage=0):
     logging, tobj, starttime = ie_utils.default_start_logging(importername, textlog, filename, "IM") ### Use "EX" for exporter text, "IM" for importer text.
 
     ### Lines below here loads the model into the opened editor's current model.
-    ModelRoot, ComponentList, QuArK_bone_list, message = import_md5_model(basepath, filename) # Using list of ALL bones as they are created.
+    ModelRoot, RetComponentList, RetQuArK_bone_list, message = import_md5_model(basepath, filename) # Using list of ALL bones as they are created.
 
-    if ModelRoot is None or ComponentList is None or ComponentList == []:
+    if ModelRoot is None or RetComponentList is None or RetComponentList == []:
         quarkx.beep() # Makes the computer "Beep" once if a file is not valid. Add more info to message.
         quarkx.msgbox("Invalid .md5 model.\nEditor can not import it.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
         progressbar.close()
@@ -1453,23 +1495,25 @@ def loadmodel(root, filename, gamename, nomessage=0):
 
     QuArK_mesh_counter = 0
     undo = quarkx.action()
-    for Component in ComponentList:
+    for Component in RetComponentList:
         undo.put(editor.Root, Component)
         editor.Root.currentcomponent = Component
         compframes = editor.Root.currentcomponent.findallsubitems("", ':mf')   # get all frames
         for compframe in compframes:
             compframe.compparent = editor.Root.currentcomponent # To allow frame relocation after editing.
-        if QuArK_mesh_counter == 0:
-            for bone in range(len(QuArK_bone_list)): # Using list of ALL bones as they are created.
-                if bone == 0:
-                    continue
-                if QuArK_bone_list[bone].dictspec['start_component'] == "None":
-                    QuArK_bone_list[bone]['start_component'] = Component.name
-                if QuArK_bone_list[bone].dictspec['end_component'] == "None":
-                    QuArK_bone_list[bone]['end_component'] = Component.name
-    #            print ""
-    #            print "line 1426 QuArK_bone_list[bone].dictspec",QuArK_bone_list[bone].dictspec
-                undo.put(editor.Root.dictitems['Skeleton:bg'], QuArK_bone_list[bone])
+    #    if QuArK_mesh_counter == 0:
+        for bone in range(len(RetQuArK_bone_list[QuArK_mesh_counter])): # Using list of ALL bones as they are created.
+            if bone == 0:
+                continue
+     #       if RetQuArK_bone_list[QuArK_mesh_counter][bone].dictspec['start_vertex_count'] == "0" and RetQuArK_bone_list[QuArK_mesh_counter][bone].dictspec['end_vertex_count'] == "0":
+     #           continue
+            if RetQuArK_bone_list[QuArK_mesh_counter][bone].dictspec['start_component'] == "None":
+                RetQuArK_bone_list[QuArK_mesh_counter][bone]['start_component'] = Component.name
+            if RetQuArK_bone_list[QuArK_mesh_counter][bone].dictspec['end_component'] == "None":
+                RetQuArK_bone_list[QuArK_mesh_counter][bone]['end_component'] = Component.name
+     #       print ""
+     #       print "line 1516 ie_md5_import RetQuArK_bone_list[bone].dictspec",RetQuArK_bone_list[QuArK_mesh_counter][bone].dictspec
+            undo.put(editor.Root.dictitems['Skeleton:bg'], RetQuArK_bone_list[QuArK_mesh_counter][bone])
         QuArK_mesh_counter = QuArK_mesh_counter + 1
 
          #   progressbar.progress() # un-comment this line once progress bar is set up
@@ -1478,12 +1522,18 @@ def loadmodel(root, filename, gamename, nomessage=0):
     Strings[2454] = Strings[2454].replace(Component.shortname + "\n", "")
     ie_utils.default_end_logging(filename, "IM", starttime) ### Use "EX" for exporter text, "IM" for importer text.
 
-    editor.ok(undo, str(len(ComponentList)) + " .md5 Components imported") # Let the ok finish the new components before going on.
+    editor.ok(undo, str(len(RetComponentList)) + " .md5 Components imported") # Let the ok finish the new components before going on.
 
-    for bone in range(len(QuArK_bone_list)): # Using list of ALL bones as they are created.
-        quarkpy.mdlutils.Make_BoneVtxList(editor, QuArK_bone_list[bone])
+    QuArK_mesh_counter = 0
+    for nbr in range(len(RetComponentList)):
+        for bone in range(len(RetQuArK_bone_list[QuArK_mesh_counter])): # Using list of ALL bones as they are created.
+            # Test to be sure a bone has vertexes assigned to one of its handles (joint) to avoid any error.
+            if RetQuArK_bone_list[QuArK_mesh_counter][bone].dictspec['start_vertex_count'] == "0" and RetQuArK_bone_list[QuArK_mesh_counter][bone].dictspec['end_vertex_count'] == "0":
+                continue
+            quarkpy.mdlutils.Make_BoneVtxList(editor, RetQuArK_bone_list[QuArK_mesh_counter][bone])
+        QuArK_mesh_counter = QuArK_mesh_counter + 1
 
-    editor.Root.currentcomponent = ComponentList[0]  # Sets the current component.
+    editor.Root.currentcomponent = RetComponentList[0]  # Sets the current component.
     comp = editor.Root.currentcomponent
     skins = comp.findallsubitems("", ':sg')      # Gets the skin group.
     if len(skins[0].subitems) != 0:
@@ -1491,6 +1541,9 @@ def loadmodel(root, filename, gamename, nomessage=0):
         quarkpy.mdlutils.Update_Skin_View(editor, 2) # Sends the Skin-view for updating and center the texture in the view.
     else:
         comp.currentskin = None
+ #   print ""
+ #   print "line 1546 ie_md5_import editor.ModelComponentList",editor.ModelComponentList
+ #   print ""
 
     editor = None   #Reset the global again
     if message != "":
@@ -1509,6 +1562,21 @@ import quarkpy.qmdlbase
 import ie_md5_import # This imports itself to be passed along so it can be used in mdlmgr.py later for the Specifics page.
 quarkpy.qmdlbase.RegisterMdlImporter(".md5 Doom3\Quake4 Importer", ".md5mesh file", "*.md5mesh", loadmodel, ie_md5_import)
 
+
+def bonemodeclick(btn_menu_item):
+    global editor
+    import quarkpy.qmenu              # Get the menu functions to make the button with.
+    if editor is None:
+        editor = quarkpy.mdleditor.mdleditor # Get the editor.
+    BMbutton = editor.layout.buttons["bonemode"]
+    BMbutton.caption = "set bonemode" # to make sure the width of this button doesn't change
+    for i in range(0, len(BMbutton.menu)):
+        BMbutton.menu[i].state = 0
+    btn_menu_item.state = quarkpy.qmenu.checked
+    cap = btn_menu_item.bonemode
+    BMbutton.caption = cap[:len(cap)]
+    quarkx.update(editor.form)
+    editor.bonemode = btn_menu_item.bonemode
 
 def vtxcolorclick(btn):
     global editor
@@ -1541,6 +1609,196 @@ def colorclick(btn):
         btn.state = quarkpy.qtoolbar.normal
         quarkx.update(editor.form)
 
+def ScaleSelHandlesClick(m):
+    editor = m.editor
+    bonelist = []
+    bones = editor.Root.findallsubitems("", ':bone')  # get all bones
+    for item in editor.layout.explorer.sellist:
+        item_start_handle = []
+        item_end_handle = []
+        if item.type == ":bone" and not item in bonelist:
+            bonelist = bonelist + [item]
+            for bone in bones:
+                if (quarkpy.mdlutils.checktuplepos(bone.dictspec['start_point'], item.dictspec['start_point']) == 1) or (quarkpy.mdlutils.checktuplepos(bone.dictspec['end_point'], item.dictspec['start_point']) == 1):
+                    item_start_handle = item_start_handle + [bone]
+                if (quarkpy.mdlutils.checktuplepos(bone.dictspec['end_point'], item.dictspec['end_point']) == 1) or (quarkpy.mdlutils.checktuplepos(bone.dictspec['start_point'], item.dictspec['end_point']) == 1):
+                    item_end_handle = item_end_handle + [bone]
+
+            min_scale = 10000.0
+            for bone in item_start_handle:
+                if (quarkpy.mdlutils.checktuplepos(bone.dictspec['start_point'], item.dictspec['start_point']) == 1):
+                    if bone.dictspec['start_scale'][0] <= min_scale:
+                        min_scale = bone.dictspec['start_scale'][0]
+                if (quarkpy.mdlutils.checktuplepos(bone.dictspec['end_point'], item.dictspec['start_point']) == 1):
+                    if bone.dictspec['end_scale'][0] <= min_scale:
+                        min_scale = bone.dictspec['end_scale'][0]
+            for bone_count in range(len(item_start_handle)):
+                if (quarkpy.mdlutils.checktuplepos(item_start_handle[bone_count].dictspec['start_point'], item.dictspec['start_point']) == 1):
+                    start_scale = min_scale + (float(bone_count) * .25)
+                    item_start_handle[bone_count]['start_scale'] = (start_scale,)
+                if (quarkpy.mdlutils.checktuplepos(item_start_handle[bone_count].dictspec['end_point'], item.dictspec['start_point']) == 1):
+                    end_scale = min_scale + (float(bone_count) * .25)
+                    item_start_handle[bone_count]['end_scale'] = (end_scale,)
+
+            min_scale = 10000.0
+            for bone in item_end_handle:
+                if (quarkpy.mdlutils.checktuplepos(bone.dictspec['end_point'], item.dictspec['end_point']) == 1):
+                    if bone.dictspec['end_scale'][0] <= min_scale:
+                        min_scale = bone.dictspec['end_scale'][0]
+                if (quarkpy.mdlutils.checktuplepos(bone.dictspec['start_point'], item.dictspec['end_point']) == 1):
+                    if bone.dictspec['start_scale'][0] <= min_scale:
+                        min_scale = bone.dictspec['start_scale'][0]
+            for bone_count in range(len(item_end_handle)):
+                if (quarkpy.mdlutils.checktuplepos(item_end_handle[bone_count].dictspec['end_point'], item.dictspec['end_point']) == 1):
+                    end_scale = min_scale + (float(bone_count) * .25)
+                    item_end_handle[bone_count]['end_scale'] = (end_scale,)
+                if (quarkpy.mdlutils.checktuplepos(item_end_handle[bone_count].dictspec['start_point'], item.dictspec['end_point']) == 1):
+                    start_scale = min_scale + (float(bone_count) * .25)
+                    item_end_handle[bone_count]['start_scale'] = (start_scale,)
+    quarkpy.mdlutils.Update_Editor_Views(editor)
+
+def ResetSelHandleScalesClick(m):
+    editor = m.editor
+    bonelist = []
+    bones = editor.Root.findallsubitems("", ':bone')  # get all bones
+    for item in editor.layout.explorer.sellist:
+        item_start_handle = []
+        item_end_handle = []
+        if item.type == ":bone" and not item in bonelist:
+            bonelist = bonelist + [item]
+            for bone in bones:
+                if (quarkpy.mdlutils.checktuplepos(bone.dictspec['start_point'], item.dictspec['start_point']) == 1) or (quarkpy.mdlutils.checktuplepos(bone.dictspec['end_point'], item.dictspec['start_point']) == 1):
+                    item_start_handle = item_start_handle + [bone]
+                if (quarkpy.mdlutils.checktuplepos(bone.dictspec['end_point'], item.dictspec['end_point']) == 1) or (quarkpy.mdlutils.checktuplepos(bone.dictspec['start_point'], item.dictspec['end_point']) == 1):
+                    item_end_handle = item_end_handle + [bone]
+
+            for bone_count in range(len(item_start_handle)):
+                if (quarkpy.mdlutils.checktuplepos(item_start_handle[bone_count].dictspec['start_point'], item.dictspec['start_point']) == 1):
+                    if item_start_handle[bone_count].dictspec.has_key('org_start_scale'):
+                        item_start_handle[bone_count]['start_scale'] = item_start_handle[bone_count].dictspec['org_start_scale']
+                if (quarkpy.mdlutils.checktuplepos(item_start_handle[bone_count].dictspec['end_point'], item.dictspec['start_point']) == 1):
+                    if item_start_handle[bone_count].dictspec.has_key('org_end_scale'):
+                        item_start_handle[bone_count]['end_scale'] = item_start_handle[bone_count].dictspec['org_end_scale']
+
+            for bone_count in range(len(item_end_handle)):
+                if (quarkpy.mdlutils.checktuplepos(item_end_handle[bone_count].dictspec['end_point'], item.dictspec['end_point']) == 1):
+                    if item_end_handle[bone_count].dictspec.has_key('org_end_scale'):
+                        item_end_handle[bone_count]['end_scale'] = item_end_handle[bone_count].dictspec['org_end_scale']
+                if (quarkpy.mdlutils.checktuplepos(item_end_handle[bone_count].dictspec['start_point'], item.dictspec['end_point']) == 1):
+                    if item_end_handle[bone_count].dictspec.has_key('org_start_scale'):
+                        item_end_handle[bone_count]['start_scale'] = item_end_handle[bone_count].dictspec['org_start_scale']
+    quarkpy.mdlutils.Update_Editor_Views(editor)
+
+
+def ScaleHandlesClick(m):
+    editor = m.editor
+    bonelist = []
+    allbones = bones = editor.Root.findallsubitems("", ':bone')  # get all bones
+    for item in allbones:
+        item_start_handle = []
+        item_end_handle = []
+        if not item in bonelist:
+            bonelist = bonelist + [item]
+            for bone in bones:
+                if (quarkpy.mdlutils.checktuplepos(bone.dictspec['start_point'], item.dictspec['start_point']) == 1) or (quarkpy.mdlutils.checktuplepos(bone.dictspec['end_point'], item.dictspec['start_point']) == 1):
+                    item_start_handle = item_start_handle + [bone]
+                if (quarkpy.mdlutils.checktuplepos(bone.dictspec['end_point'], item.dictspec['end_point']) == 1) or (quarkpy.mdlutils.checktuplepos(bone.dictspec['start_point'], item.dictspec['end_point']) == 1):
+                    item_end_handle = item_end_handle + [bone]
+
+            min_scale = 10000.0
+            for bone in item_start_handle:
+                if (quarkpy.mdlutils.checktuplepos(bone.dictspec['start_point'], item.dictspec['start_point']) == 1):
+                    if bone.dictspec['start_scale'][0] <= min_scale:
+                        min_scale = bone.dictspec['start_scale'][0]
+                if (quarkpy.mdlutils.checktuplepos(bone.dictspec['end_point'], item.dictspec['start_point']) == 1):
+                    if bone.dictspec['end_scale'][0] <= min_scale:
+                        min_scale = bone.dictspec['end_scale'][0]
+            for bone_count in range(len(item_start_handle)):
+                if (quarkpy.mdlutils.checktuplepos(item_start_handle[bone_count].dictspec['start_point'], item.dictspec['start_point']) == 1):
+                    start_scale = min_scale + (float(bone_count) * .25)
+                    item_start_handle[bone_count]['start_scale'] = (start_scale,)
+                if (quarkpy.mdlutils.checktuplepos(item_start_handle[bone_count].dictspec['end_point'], item.dictspec['start_point']) == 1):
+                    end_scale = min_scale + (float(bone_count) * .25)
+                    item_start_handle[bone_count]['end_scale'] = (end_scale,)
+
+            min_scale = 10000.0
+            for bone in item_end_handle:
+                if (quarkpy.mdlutils.checktuplepos(bone.dictspec['end_point'], item.dictspec['end_point']) == 1):
+                    if bone.dictspec['end_scale'][0] <= min_scale:
+                        min_scale = bone.dictspec['end_scale'][0]
+                if (quarkpy.mdlutils.checktuplepos(bone.dictspec['start_point'], item.dictspec['end_point']) == 1):
+                    if bone.dictspec['start_scale'][0] <= min_scale:
+                        min_scale = bone.dictspec['start_scale'][0]
+            for bone_count in range(len(item_end_handle)):
+                if (quarkpy.mdlutils.checktuplepos(item_end_handle[bone_count].dictspec['end_point'], item.dictspec['end_point']) == 1):
+                    end_scale = min_scale + (float(bone_count) * .25)
+                    item_end_handle[bone_count]['end_scale'] = (end_scale,)
+                if (quarkpy.mdlutils.checktuplepos(item_end_handle[bone_count].dictspec['start_point'], item.dictspec['end_point']) == 1):
+                    start_scale = min_scale + (float(bone_count) * .25)
+                    item_end_handle[bone_count]['start_scale'] = (start_scale,)
+    quarkpy.mdlutils.Update_Editor_Views(editor)
+
+def ResetHandleScalesClick(m):
+    bones = m.editor.Root.findallsubitems("", ':bone')  # get all bones
+    for bone in bones:
+        if bone.dictspec.has_key('org_start_scale'):
+            bone['start_scale'] = bone.dictspec['org_start_scale']
+        if bone.dictspec.has_key('org_end_scale'):
+            bone['end_scale'] = bone.dictspec['org_end_scale']
+    quarkpy.mdlutils.Update_Editor_Views(m.editor)
+            
+
+def handlescalemenu(m):
+    scale_sel_handles = quarkpy.qmenu.item("Scale selected bone handles", ScaleSelHandlesClick, "|Scale selected bone handles:\n\nIf this menu item is checked, all bones that are currently selected, and their attached bones, will have both their start and end handles set to different scale sizes for easer access.|intro.modeleditor.editelements.html#specificsettings")
+    reset_sel_handle_scales = quarkpy.qmenu.item("Reset selected bone handles", ResetSelHandleScalesClick, "|Reset selected bone handles:\n\nIf this menu item is checked, all bones that are currently selected, and their attached bones, will have both their start and end handles reset to their original imported scale sizes.|intro.modeleditor.editelements.html#specificsettings")
+    scale_handles = quarkpy.qmenu.item("Scale all bone handles", ScaleHandlesClick, "|Scale all bone handles:\n\nIf this menu item is checked, all bones will have both their start and end handles set to different scale sizes for easer access.|intro.modeleditor.editelements.html#specificsettings")
+    reset_handle_scales = quarkpy.qmenu.item("Reset all bone handles", ResetHandleScalesClick, "|Reset all bone handles:\n\nIf this menu item is checked, all bones will have both their start and end handles reset to their original imported scale sizes.|intro.modeleditor.editelements.html#specificsettings")
+    menulist = [scale_sel_handles, reset_sel_handle_scales, quarkpy.qmenu.sep, scale_handles, reset_handle_scales]
+    return menulist
+
+def DefaultModeClick(m):
+    try:
+        btn = m.editor.layout.buttons["bonemode"]
+    except:
+        return
+    bonemodeclick(btn.menu[0])
+
+def SingleSetClick(m):
+    try:
+        btn = m.editor.layout.buttons["bonemode"]
+    except:
+        return
+    bonemodeclick(btn.menu[1])
+
+def MultiSetsClick(m):
+    try:
+        btn = m.editor.layout.buttons["bonemode"]
+    except:
+        return
+    bonemodeclick(btn.menu[2])
+
+def newmenuitems(editor, extra):
+    "To add new menu items to other RMB menus. 'extra' is the current list of RMB menu items."
+
+    m = quarkpy.qmenu.item
+    m.editor = editor
+    handlescalepop = quarkpy.qmenu.popup("Handle Scaling", handlescalemenu(m), None, "|Handle Scaling:\n\nThese functions deal with setting the scale size of the bone handles for easer access.", "intro.modeleditor.editelements.html#specificsettings")
+    for item in extra:
+        if item is not None and item.text == "Bone Commands":
+            item.items = [handlescalepop, quarkpy.qmenu.sep] + item.items
+        if item is not None and item.text == "Bone Options":
+            default_mode = quarkpy.qmenu.item("default mode", DefaultModeClick, "|md5 models can have a single component mesh and set of bones or more then one of each. If one bone mode does not work well try switching to the other.|intro.modeleditor.dataforms.html#specsargsview")
+            single_set = quarkpy.qmenu.item("single set", SingleSetClick, "|md5 models can have a single component mesh and set of bones or more then one of each. If one bone mode does not work well try switching to the other.|intro.modeleditor.dataforms.html#specsargsview")
+            multi_sets = quarkpy.qmenu.item("multi sets", MultiSetsClick, "|md5 models can have a single component mesh and set of bones or more then one of each. If one bone mode does not work well try switching to the other.|intro.modeleditor.dataforms.html#specsargsview")
+            item.items = item.items + [quarkpy.qmenu.sep, default_mode, single_set, multi_sets]
+            if not editor.layout.buttons.has_key("bonemode"):
+                default_mode.state = quarkpy.qmenu.checked
+            else:
+                default_mode.state = editor.layout.buttons["bonemode"].menu[0].state
+                single_set.state = editor.layout.buttons["bonemode"].menu[1].state
+                multi_sets.state = editor.layout.buttons["bonemode"].menu[2].state
+
+    return extra
 
 def dataformname(o):
     "Returns the data form for this type of object 'o' (a model's skin texture) to use for the Specific/Args page."
@@ -1617,6 +1875,20 @@ def dataformname(o):
         vtxcolorbtn.state = quarkpy.qtoolbar.normal
     icon_btns['color'] = vtxcolorbtn     # Put our button in the above list to return.
 
+    # Creating the bonemode selection button
+    BMTexts = ['default mode', 'single set', 'multi sets']
+    mnu = []
+    import quarkpy.qmenu              # Get the menu functions to make the button with.
+    BMbutton = quarkpy.qtoolbar.menubutton(mnu, "bone mode||md5 models can have a single component mesh and set of bones or more then one of each. If one bone mode does not work well try switching to the other.|intro.modeleditor.dataforms.html#specsargsview", ico_mdlskv, 6)
+    for i in range(0, len(BMTexts)):
+        item = quarkpy.qmenu.item(BMTexts[i], bonemodeclick)
+        item.bonemode = BMTexts[i]
+        if BMTexts[i] == editor.bonemode:
+            item.state = quarkpy.qmenu.checked
+            cap = BMTexts[i]
+            BMbutton.caption = cap[:len(BMTexts[i])]
+        mnu.append(item)
+
     if o.name == editor.Root.currentcomponent.currentskin.name: # If this is not done it will cause looping through multiple times.
         if o.parent.parent.dictspec.has_key("shader_keyword") and o.dictspec.has_key("shader_keyword"):
             if o.parent.parent.dictspec['shader_keyword'] != o.dictspec['shader_keyword']:
@@ -1649,7 +1921,9 @@ def dataformname(o):
     DummyItem = o
     while (DummyItem.type != ":mc"): # Gets the object's model component.
         DummyItem = DummyItem.parent
-    if DummyItem.type == ":mc":
+        if DummyItem is None:
+            break
+    if DummyItem is not None and DummyItem.type == ":mc":
         comp = DummyItem
         # This sections handles the data for this model type skin page form.
         # This makes sure what is selected is a model skin, if so it returns the Skin page data to make the form with.
@@ -1657,8 +1931,9 @@ def dataformname(o):
             formobj = quarkx.newobj("md5_mc:form")
             formobj.loadtext(skin_dlgdef)
             return formobj, icon_btns
-    else:
-        return None, None
+    if o == editor.Root.dictitems['Skeleton:bg'] or o in editor.Root.dictitems['Skeleton:bg'].subitems:
+        return None, {"bonemode": BMbutton}
+    return None, None
 
 
 def macro_opentexteditor(btn):
@@ -1741,6 +2016,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.12  2008/12/22 05:04:40  cdunde
+# Bone vertex assignment update and use of mesh names from imported file.
+#
 # Revision 1.11  2008/12/20 01:49:49  cdunde
 # Update to bones to start assigning vertexes to bone handles,
 # only works for single component models with this version.
@@ -1779,4 +2057,5 @@ def dataforminput(o):
 # Added setup file for Doom3 Quake4 .md5mesh and .md5anim model importing.
 #
 #
+
 
