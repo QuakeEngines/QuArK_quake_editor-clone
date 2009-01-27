@@ -15,6 +15,12 @@ $Id$
 6.6.0 Beta 2
 ============
 
+* [cdunde]: Revamp of bones Linear handle creation to increase drawing speed and easer color recognition.
+
+* [cdunde/DanielPharos]: Full support for .md5mesh bone importing with weight assignment and various
+          - methods of bone rotation for QuArK Default, single set and multi sets of bones.
+          - Various menu functions for bone handle scaling and reset for selected bones and all bones.
+
 * [DanielPharos]: Model Editor - Now bones can be moved around in the treeview even though other items
           - are also selected.
 
@@ -24,7 +30,7 @@ $Id$
 
 * [cdunde]: Model Editor - Fixed face mode not drawing selection outlines while rotating.
 
-* [cdunde/DanielPharos]: Added setup file for Doom3 Quake4 .md5mesh and .md5anim model importing.
+* [cdunde/DanielPharos]: Added setup file for Doom3 Quake4 .md5mesh (and .md5anim but not yet) model importing.
 
 * [cdunde]: Setup new Component Colors and draw Textured View Tint Colors system.
 
