@@ -300,6 +300,9 @@ def edit_dup(editor, m=None):
                 itemtomoveparent = itemtomove.parent
                 itemtomoveparent.removeitem(itemtomove)
                 itemtomoveparent.insertitem(count, itemtomove)
+                # Fixes up the frame indexing.
+                for frame in range(len(itemtomoveparent.subitems)):
+                    itemtomoveparent.subitems[frame]['index'] = (frame+1,)
 
 
 def edit_newgroup(editor, m=None):
@@ -486,6 +489,9 @@ def groupcolor(m):
 #
 #
 #$Log$
+#Revision 1.22  2008/11/17 23:56:04  danielpharos
+#Compensate for accidental change in behaviour in QkObjects rev 1.112.
+#
 #Revision 1.21  2008/07/25 22:57:24  cdunde
 #Updated component error checking and added frame matching and\or
 #duplicating with independent names to avoid errors with other functions.
