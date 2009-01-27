@@ -1854,8 +1854,9 @@ def addframe(editor):
     new_comp.dictitems['Frames:fg'].insertitem(count, newframe)
     compframes = new_comp.dictitems['Frames:fg'].subitems   # all frames
     # To allow frame relocation after editing.
-    for compframe in compframes:
-        compframe.compparent = new_comp
+    for compframe in range(len(compframes)):
+        compframes[compframe]['index'] = (compframe+1,)
+        compframes[compframe].compparent = new_comp
     undo = quarkx.action()
     undo.exchange(comp, None)
     undo.put(editor.Root, new_comp)
@@ -1918,35 +1919,33 @@ def addbone(editor, comp, pos):
     if name is None:
         name = "NewBone1"
     new_o_bone = quarkx.newobj(name + ":bone")
-  #  new_o_bone['start_component'] = "None"
     new_o_bone['start_component'] = editor.Root.currentcomponent.name
-    new_o_bone['start_vertex_count'] = "0"
     new_o_bone['start_point'] = pos.tuple
-  #  new_o_bone['end_component'] = "None"
+    new_o_bone['start_offset'] = (0, 0, 0)
+    new_o_bone['start_vertex_count'] = "0"
+    new_o_bone['start_scale'] = (1.0,)
     new_o_bone['end_component'] = editor.Root.currentcomponent.name
-    new_o_bone['end_vertex_count'] = "0"
     endpoint = pos + quarkx.vect(8,2,2)
     new_o_bone['end_point'] = endpoint.tuple
-    new_o_bone['bone_length'] = (8,2,2)
-    new_o_bone['start_scale'] = (1.0,)
+    new_o_bone['end_offset'] = (0, 0, 0)
+    new_o_bone['end_vertex_count'] = "0"
     new_o_bone['end_scale'] = (1.0,)
     new_o_bone['start_color'] = new_o_bone['end_color'] = MapColor("BoneHandles", SS_MODEL)
-    new_o_bone['start_offset'] = (0, 0, 0)
-    new_o_bone['end_offset'] = (0, 0, 0)
+    new_o_bone['bone_length'] = (8,2,2)
     compskeleton = editor.Root.findallsubitems("", ':bg')[0]
     undo = quarkx.action()
     undo.put(compskeleton, new_o_bone)
     editor.ok(undo, "add bone")
 
 #
-# This function creates a new bone at the start or end (s_or_e) of bone
+# This function creates a new bone at the start or end (s_or_e) of a bone.
 #
 def continue_bone(editor, bone, s_or_e = 0):
-    compskeleton = bone.parent  # get the bones group
+    skeleton = editor.Root.dictitems['Skeleton:bg']  # get the bones group
     name = None
     comparenbr = 0
-    compbones = compskeleton.findallsubitems("", ':bone')      # get all bones
-    for item in compbones:
+    bones = skeleton.findallsubitems("", ':bone')      # get all bones
+    for item in bones:
         if item.shortname.startswith('NewBone'):
             getnbr = item.shortname
             getnbr = getnbr.replace('NewBone', '')
@@ -1962,32 +1961,35 @@ def continue_bone(editor, bone, s_or_e = 0):
         name = "NewBone1"
     new_o_bone = quarkx.newobj(name + ":bone")
     if s_or_e == 0:
-        new_o_bone['start_component'] = bone['start_component']
-        new_o_bone['start_point'] = bone['start_point']
+        new_o_bone['start_component'] = bone.dictspec['start_component']
+        new_o_bone['start_point'] = bone.dictspec['start_point']
+        new_o_bone['start_offset'] = bone.dictspec['start_offset']
     else:
-        new_o_bone['start_component'] = bone['end_component']
-        new_o_bone['start_point'] = bone['end_point']
-    new_o_bone['end_component'] = editor.Root.currentcomponent.name
+        new_o_bone['start_component'] = bone.dictspec['end_component']
+        new_o_bone['start_point'] = bone.dictspec['end_point']
+        new_o_bone['start_offset'] = bone.dictspec['end_offset']
     new_o_bone['start_vertex_count'] = "0"
-    new_o_bone['end_vertex_count'] = "0"
-    endpoint = quarkx.vect(new_o_bone['start_point']) + quarkx.vect(8,2,2)
-    new_o_bone['end_point'] = endpoint.tuple
-    new_o_bone['bone_length'] = (8,2,2)
     new_o_bone['start_scale'] = (1.0,)
+    new_o_bone['end_component'] = editor.Root.currentcomponent.name
+    endpoint = quarkx.vect(new_o_bone.dictspec['start_point']) + quarkx.vect(8,2,2)
+    new_o_bone['end_point'] = endpoint.tuple
+    new_o_bone['end_offset'] = (0, 0, 0)
+    new_o_bone['end_vertex_count'] = "0"
     new_o_bone['end_scale'] = (1.0,)
     new_o_bone['start_color'] = new_o_bone['end_color'] = MapColor("BoneHandles", SS_MODEL)
-    new_o_bone['start_offset'] = (0, 0, 0)
-    new_o_bone['end_offset'] = (0, 0, 0)
+    new_o_bone['bone_length'] = (8,2,2)
     common_handles_list, s_or_e_list = find_common_bone_handles(editor, new_o_bone.dictspec['start_point'])
     for bone in range(len(common_handles_list)):
         if common_handles_list[bone] == new_o_bone:
             continue
         if s_or_e_list[bone] == 0 and common_handles_list[bone].dictspec.has_key('start_vtx_pos'):
+            new_o_bone['start_component'] = common_handles_list[bone].dictspec['start_component']
             new_o_bone['start_vtx_pos'] = common_handles_list[bone].dictspec['start_vtx_pos']
         elif common_handles_list[bone].dictspec.has_key('end_vtx_pos'):
+            new_o_bone['start_component'] = common_handles_list[bone].dictspec['end_component']
             new_o_bone['start_vtx_pos'] = common_handles_list[bone].dictspec['end_vtx_pos']
     undo = quarkx.action()
-    undo.put(compskeleton, new_o_bone)
+    undo.put(skeleton, new_o_bone)
     editor.ok(undo, "continue bone")
 
 #
@@ -1995,35 +1997,72 @@ def continue_bone(editor, bone, s_or_e = 0):
 #
 def attach_start2end(editor, bone1, bone2):
     new_o_bone = bone2.copy()
-    new_o_bone['start_point'] = bone1['end_point']
+    new_o_bone['start_point'] = bone1.dictspec['end_point']
+    new_o_bone['start_offset'] = bone1.dictspec['end_offset']
     new_o_bone['bone_length'] = ((quarkx.vect(new_o_bone.dictspec['start_point']) - quarkx.vect(new_o_bone.dictspec['end_point']))*-1).tuple
-    common_handles_list, s_or_e_list = find_common_bone_handles(editor, new_o_bone.dictspec['start_point'])
-    for bone in range(len(common_handles_list)):
-        if common_handles_list[bone] == new_o_bone:
-            continue
-        if s_or_e_list[bone] == 0 and common_handles_list[bone].dictspec.has_key('start_vtx_pos'):
-            new_o_bone['start_vtx_pos'] = common_handles_list[bone].dictspec['start_vtx_pos']
-        elif common_handles_list[bone].dictspec.has_key('end_vtx_pos'):
-            new_o_bone['start_vtx_pos'] = common_handles_list[bone].dictspec['end_vtx_pos']
+    if new_o_bone.dictspec.has_key('start_vtx_pos'):
+        new_o_bone['start_vtx_pos'] = ''
+    if not new_o_bone.dictspec.has_key('start_vtxlist'):
+        common_handles_list, s_or_e_list = find_common_bone_handles(editor, new_o_bone.dictspec['start_point'])
+        for bone in range(len(common_handles_list)):
+            if common_handles_list[bone] == new_o_bone:
+                continue
+            if s_or_e_list[bone] == 0 and common_handles_list[bone].dictspec.has_key('start_vtx_pos'):
+                new_o_bone['start_component'] = common_handles_list[bone].dictspec['start_component']
+                new_o_bone['start_vtx_pos'] = common_handles_list[bone].dictspec['start_vtx_pos']
+            elif common_handles_list[bone].dictspec.has_key('end_vtx_pos'):
+                new_o_bone['start_component'] = common_handles_list[bone].dictspec['end_component']
+                new_o_bone['start_vtx_pos'] = common_handles_list[bone].dictspec['end_vtx_pos']
     undo = quarkx.action()
     undo.exchange(bone2, new_o_bone)
     editor.ok(undo, "attach start2end handles")
+
+#
+# This function attaches bone2 end_point to bone1 start_point.
+#
+def attach_end2start(editor, bone1, bone2):
+    new_o_bone = bone2.copy()
+    new_o_bone['end_point'] = bone1.dictspec['start_point']
+    new_o_bone['end_offset'] = bone1.dictspec['start_offset']
+    new_o_bone['bone_length'] = ((quarkx.vect(new_o_bone.dictspec['start_point']) - quarkx.vect(new_o_bone.dictspec['end_point']))*-1).tuple
+    if new_o_bone.dictspec.has_key('end_vtx_pos'):
+        new_o_bone['end_vtx_pos'] = ''
+    if not new_o_bone.dictspec.has_key('end_vtxlist'):
+        common_handles_list, s_or_e_list = find_common_bone_handles(editor, new_o_bone.dictspec['end_point'])
+        for bone in range(len(common_handles_list)):
+            if common_handles_list[bone] == new_o_bone:
+                continue
+            if s_or_e_list[bone] == 0 and common_handles_list[bone].dictspec.has_key('start_vtx_pos'):
+                new_o_bone['end_component'] = common_handles_list[bone].dictspec['start_component']
+                new_o_bone['end_vtx_pos'] = common_handles_list[bone].dictspec['start_vtx_pos']
+            elif common_handles_list[bone].dictspec.has_key('end_vtx_pos'):
+                new_o_bone['end_component'] = common_handles_list[bone].dictspec['end_component']
+                new_o_bone['end_vtx_pos'] = common_handles_list[bone].dictspec['end_vtx_pos']
+    undo = quarkx.action()
+    undo.exchange(bone2, new_o_bone)
+    editor.ok(undo, "attach end2start handles")
 
 #
 # This function attaches bone2 start_point to bone1 start_point.
 #
 def attach_bones_starts(editor, bone1, bone2):
     new_o_bone = bone2.copy()
-    new_o_bone['start_point'] = bone1['start_point']
+    new_o_bone['start_point'] = bone1.dictspec['start_point']
+    new_o_bone['start_offset'] = bone1.dictspec['start_offset']
     new_o_bone['bone_length'] = ((quarkx.vect(new_o_bone.dictspec['start_point']) - quarkx.vect(new_o_bone.dictspec['end_point']))*-1).tuple
-    common_handles_list, s_or_e_list = find_common_bone_handles(editor, new_o_bone.dictspec['start_point'])
-    for bone in range(len(common_handles_list)):
-        if common_handles_list[bone] == new_o_bone:
-            continue
-        if s_or_e_list[bone] == 0 and common_handles_list[bone].dictspec.has_key('start_vtx_pos'):
-            new_o_bone['start_vtx_pos'] = common_handles_list[bone].dictspec['start_vtx_pos']
-        elif common_handles_list[bone].dictspec.has_key('end_vtx_pos'):
-            new_o_bone['start_vtx_pos'] = common_handles_list[bone].dictspec['end_vtx_pos']
+    if new_o_bone.dictspec.has_key('start_vtx_pos'):
+        new_o_bone['start_vtx_pos'] = ''
+    if not new_o_bone.dictspec.has_key('start_vtxlist'):
+        common_handles_list, s_or_e_list = find_common_bone_handles(editor, new_o_bone.dictspec['start_point'])
+        for bone in range(len(common_handles_list)):
+            if common_handles_list[bone] == new_o_bone:
+                continue
+            if s_or_e_list[bone] == 0 and common_handles_list[bone].dictspec.has_key('start_vtx_pos'):
+                new_o_bone['start_component'] = common_handles_list[bone].dictspec['start_component']
+                new_o_bone['start_vtx_pos'] = common_handles_list[bone].dictspec['start_vtx_pos']
+            elif common_handles_list[bone].dictspec.has_key('end_vtx_pos'):
+                new_o_bone['start_component'] = common_handles_list[bone].dictspec['end_component']
+                new_o_bone['start_vtx_pos'] = common_handles_list[bone].dictspec['end_vtx_pos']
     undo = quarkx.action()
     undo.exchange(bone2, new_o_bone)
     editor.ok(undo, "attach start handles")
@@ -2034,21 +2073,21 @@ def attach_bones_starts(editor, bone1, bone2):
 def attach_bones_ends(editor, bone1, bone2):
     new_o_bone = bone2.copy()
     new_o_bone['end_point'] = bone1.dictspec['end_point']
-    if new_o_bone.dictspec.has_key("end_vtx_pos"):
-        new_o_bone['end_vtx_pos'] = ''
+    new_o_bone['end_offset'] = bone1.dictspec['end_offset']
     new_o_bone['bone_length'] = ((quarkx.vect(new_o_bone.dictspec['start_point']) - quarkx.vect(new_o_bone.dictspec['end_point']))*-1).tuple
-    common_handles_list, s_or_e_list = find_common_bone_handles(editor, new_o_bone.dictspec['end_point'])
-    for bone in range(len(common_handles_list)):
-        if common_handles_list[bone] == new_o_bone or common_handles_list[bone] == bone1:
-            continue
-        if s_or_e_list[bone] == 0:
-            if common_handles_list[bone].dictspec.has_key('start_vtx_pos'):
-                common_handles_list[bone]['start_vtx_pos'] = ''
-            common_handles_list[bone]['start_point'] = new_o_bone.dictspec['end_point']
-        else :
-            if common_handles_list[bone].dictspec.has_key('end_vtx_pos'):
-                common_handles_list[bone]['end_vtx_pos'] = ''
-            common_handles_list[bone]['end_point'] = new_o_bone.dictspec['end_point']
+    if new_o_bone.dictspec.has_key('end_vtx_pos'):
+        new_o_bone['end_vtx_pos'] = ''
+    if not new_o_bone.dictspec.has_key('end_vtxlist'):
+        common_handles_list, s_or_e_list = find_common_bone_handles(editor, new_o_bone.dictspec['end_point'])
+        for bone in range(len(common_handles_list)):
+            if common_handles_list[bone] == new_o_bone:
+                continue
+            if s_or_e_list[bone] == 0 and common_handles_list[bone].dictspec.has_key('start_vtx_pos'):
+                new_o_bone['end_component'] = common_handles_list[bone].dictspec['start_component']
+                new_o_bone['end_vtx_pos'] = common_handles_list[bone].dictspec['start_vtx_pos']
+            elif common_handles_list[bone].dictspec.has_key('end_vtx_pos'):
+                new_o_bone['end_component'] = common_handles_list[bone].dictspec['end_component']
+                new_o_bone['end_vtx_pos'] = common_handles_list[bone].dictspec['end_vtx_pos']
     undo = quarkx.action()
     undo.exchange(bone2, new_o_bone)
     editor.ok(undo, "attach end handles")
@@ -2057,48 +2096,65 @@ def attach_bones_ends(editor, bone1, bone2):
 # This function detaches bone1 and bone2.
 #
 def detach_bones(editor, bone1, bone2):
-    if (checktuplepos(bone1['start_point'], bone2['start_point']) == 1):
+    if checktuplepos(bone1.dictspec['start_point'], bone2.dictspec['start_point']) == 1:
         undo = quarkx.action()
         if bone2.dictspec.has_key('start_vtx_pos') and not (bone2.dictspec.has_key('start_vtxlist')):
             new_o_bone = bone2.copy()
-            new_o_bone['start_point'] = (quarkx.vect(bone2['start_point']) + quarkx.vect(.01,.01,.01)).tuple
-            new_o_bone['start_vtx_pos'] = ''
-            undo.exchange(bone2, new_o_bone)
-        else:
-            new_o_bone = bone1.copy()
-            new_o_bone['start_point'] = (quarkx.vect(bone1['start_point']) + quarkx.vect(.01,.01,.01)).tuple
-            new_o_bone['start_vtx_pos'] = ''
-            undo.exchange(bone1, new_o_bone)
-        editor.ok(undo, "detach bones")
-    elif checktuplepos(bone1['end_point'], bone2['start_point']) == 1:
-        undo = quarkx.action()
-        if bone2.dictspec.has_key('start_vtx_pos') and not (bone2.dictspec.has_key('start_vtxlist')):
-            new_o_bone = bone2.copy()
-            new_o_bone['start_point'] = (quarkx.vect(bone2['start_point']) + quarkx.vect(.01,.01,.01)).tuple
+            new_o_bone['start_point'] = (quarkx.vect(bone2.dictspec['start_point']) + quarkx.vect(.01,.01,.01)).tuple
             if new_o_bone.dictspec.has_key('start_vtx_pos'):
                 new_o_bone['start_vtx_pos'] = ''
             undo.exchange(bone2, new_o_bone)
         else:
             new_o_bone = bone1.copy()
-            new_o_bone['end_point'] = (quarkx.vect(bone1['end_point']) + quarkx.vect(.01,.01,.01)).tuple
+            new_o_bone['start_point'] = (quarkx.vect(bone1.dictspec['start_point']) + quarkx.vect(.01,.01,.01)).tuple
+            if new_o_bone.dictspec.has_key('start_vtx_pos'):
+                new_o_bone['start_vtx_pos'] = ''
+            undo.exchange(bone1, new_o_bone)
+        editor.ok(undo, "detach bones")
+    elif checktuplepos(bone1.dictspec['end_point'], bone2.dictspec['start_point']) == 1:
+        undo = quarkx.action()
+        if bone2.dictspec.has_key('start_vtx_pos') and not (bone2.dictspec.has_key('start_vtxlist')):
+            new_o_bone = bone2.copy()
+            new_o_bone['start_point'] = (quarkx.vect(bone2.dictspec['start_point']) + quarkx.vect(.01,.01,.01)).tuple
+            if new_o_bone.dictspec.has_key('start_vtx_pos'):
+                new_o_bone['start_vtx_pos'] = ''
+            undo.exchange(bone2, new_o_bone)
+        else:
+            new_o_bone = bone1.copy()
+            new_o_bone['end_point'] = (quarkx.vect(bone1.dictspec['end_point']) + quarkx.vect(.01,.01,.01)).tuple
             if new_o_bone.dictspec.has_key('end_vtx_pos'):
                 new_o_bone['end_vtx_pos'] = ''
             undo.exchange(bone1, new_o_bone)
         editor.ok(undo, "detach bones")
-    elif checktuplepos(bone1['start_point'], bone2['end_point']) == 1:
+    elif checktuplepos(bone1.dictspec['start_point'], bone2.dictspec['end_point']) == 1:
         undo = quarkx.action()
         if bone1.dictspec.has_key('start_vtx_pos') and not (bone1.dictspec.has_key('start_vtxlist')):
             new_o_bone = bone1.copy()
-            new_o_bone['start_point'] = (quarkx.vect(bone1['start_point']) + quarkx.vect(.01,.01,.01)).tuple
+            new_o_bone['start_point'] = (quarkx.vect(bone1.dictspec['start_point']) + quarkx.vect(.01,.01,.01)).tuple
             if new_o_bone.dictspec.has_key('start_vtx_pos'):
                 new_o_bone['start_vtx_pos'] = ''
             undo.exchange(bone1, new_o_bone)
         else:
             new_o_bone = bone2.copy()
-            new_o_bone['end_point'] = (quarkx.vect(bone2['end_point']) + quarkx.vect(.01,.01,.01)).tuple
+            new_o_bone['end_point'] = (quarkx.vect(bone2.dictspec['end_point']) + quarkx.vect(.01,.01,.01)).tuple
             if new_o_bone.dictspec.has_key('end_vtx_pos'):
                 new_o_bone['end_vtx_pos'] = ''
             undo.exchange(bone2, new_o_bone)
+        editor.ok(undo, "detach bones")
+    elif checktuplepos(bone1.dictspec['end_point'], bone2.dictspec['end_point']) == 1:
+        undo = quarkx.action()
+        if bone2.dictspec.has_key('end_vtx_pos') and not (bone2.dictspec.has_key('end_vtxlist')):
+            new_o_bone = bone2.copy()
+            new_o_bone['end_point'] = (quarkx.vect(bone2.dictspec['end_point']) + quarkx.vect(.01,.01,.01)).tuple
+            if new_o_bone.dictspec.has_key('end_vtx_pos'):
+                new_o_bone['end_vtx_pos'] = ''
+            undo.exchange(bone2, new_o_bone)
+        else:
+            new_o_bone = bone1.copy()
+            new_o_bone['end_point'] = (quarkx.vect(bone1.dictspec['end_point']) + quarkx.vect(.01,.01,.01)).tuple
+            if new_o_bone.dictspec.has_key('end_vtx_pos'):
+                new_o_bone['end_vtx_pos'] = ''
+            undo.exchange(bone1, new_o_bone)
         editor.ok(undo, "detach bones")
     try:
         new_o_bone['bone_length'] = ((quarkx.vect(new_o_bone.dictspec['start_point']) - quarkx.vect(new_o_bone.dictspec['end_point']))*-1).tuple
@@ -2111,8 +2167,9 @@ def detach_bones(editor, bone1, bone2):
 #
 def align_start2end(editor, bone1, bone2):
     new_o_bone = bone2.copy()
-    newpoint = quarkx.vect(bone1['end_point']) + quarkx.vect(.01,.01,.01)
+    newpoint = quarkx.vect(bone1.dictspec['end_point']) + quarkx.vect(.01,.01,.01)
     new_o_bone['start_point'] = newpoint.tuple
+    new_o_bone['start_offset'] = bone1.dictspec['end_offset']
     new_o_bone['bone_length'] = ((quarkx.vect(new_o_bone.dictspec['start_point']) - quarkx.vect(new_o_bone.dictspec['end_point']))*-1).tuple
     undo = quarkx.action()
     undo.exchange(bone2, new_o_bone)
@@ -2123,8 +2180,9 @@ def align_start2end(editor, bone1, bone2):
 #
 def align_bones_starts(editor, bone1, bone2):
     new_o_bone = bone2.copy()
-    newpoint = quarkx.vect(bone1['start_point']) + quarkx.vect(.01,.01,.01)
+    newpoint = quarkx.vect(bone1.dictspec['start_point']) + quarkx.vect(.01,.01,.01)
     new_o_bone['start_point'] = newpoint.tuple
+    new_o_bone['start_offset'] = bone1.dictspec['start_offset']
     new_o_bone['bone_length'] = ((quarkx.vect(new_o_bone.dictspec['start_point']) - quarkx.vect(new_o_bone.dictspec['end_point']))*-1).tuple
     undo = quarkx.action()
     undo.exchange(bone2, new_o_bone)
@@ -2135,8 +2193,9 @@ def align_bones_starts(editor, bone1, bone2):
 #
 def align_bones_ends(editor, bone1, bone2):
     new_o_bone = bone2.copy()
-    newpoint = quarkx.vect(bone1['end_point']) + quarkx.vect(.01,.01,.01)
+    newpoint = quarkx.vect(bone1.dictspec['end_point']) + quarkx.vect(.01,.01,.01)
     new_o_bone['end_point'] = newpoint.tuple
+    new_o_bone['end_offset'] = bone1.dictspec['end_offset']
     new_o_bone['bone_length'] = ((quarkx.vect(new_o_bone.dictspec['start_point']) - quarkx.vect(new_o_bone.dictspec['end_point']))*-1).tuple
     undo = quarkx.action()
     undo.exchange(bone2, new_o_bone)
@@ -2165,7 +2224,7 @@ def keyframes_rotation(editor, bonesgroup, frame1, frame2):
     for bone in bonesgroup.subitems:
         # Gives us just bones with vertexes assigned to their start handle.
         if bone.dictspec.has_key('start_vtxlist') and bone.dictspec.has_key('start_vtx_pos') and bone.dictspec['start_vtx_pos'] is not None:
-            common_handles_list, s_or_e_list = find_common_bone_handles(editor, bone['start_point'])
+            common_handles_list, s_or_e_list = find_common_bone_handles(editor, bone.dictspec['start_point'])
             for common_handle in range(len(common_handles_list)):
                 if s_or_e_list[common_handle] == 1:
                     basebonehandle = common_handles_list[common_handle].start_handle
@@ -2245,8 +2304,8 @@ def keyframes_rotation(editor, bonesgroup, frame1, frame2):
 def find_common_bone_handles(editor, handle_pos):
     common_handles_list = []
     s_or_e_list = []
-    compbones = editor.Root.findallsubitems("", ':bone')      # get all bones
-    for bone in compbones:
+    bones = editor.Root.findallsubitems("", ':bone')      # get all bones
+    for bone in bones:
         # Handles the "Start of Bone".
         if checktuplepos(bone.dictspec['start_point'], handle_pos) == 1:
             common_handles_list = common_handles_list + [bone]
@@ -2296,8 +2355,8 @@ def Update_BoneALLLists(editor, component, vertices_to_remove):
     ###  This is wrong also,  we should be checking end handle as well for comp name and updating its vertexes if same comp.
         bone = editor.Root.dictitems['Skeleton:bg'].dictitems[bonename]
         if bone.dictspec['start_component'] == component.name and bone.dictspec.has_key('start_vtxlist'):
-            Old_vtxlist = bone['start_vtxlist'].split(" ")
-            Old_vtx_pos = bone['start_vtx_pos'].split(" ")
+            Old_vtxlist = bone.dictspec['start_vtxlist'].split(" ")
+            Old_vtx_pos = bone.dictspec['start_vtx_pos'].split(" ")
             New_vtxlist = []
             New_vtx_pos = []
             for vtx in range(len(Old_vtxlist)):
@@ -2327,8 +2386,8 @@ def Update_BoneALLLists(editor, component, vertices_to_remove):
                     if common_handles_list[handle].dictspec.has_key('end_vtx_pos'):
                         common_handles_list[handle]['end_vtx_pos'] = bone.dictspec['start_vtx_pos']
         if bone.dictspec['end_component'] == component.name and bone.dictspec.has_key('end_vtxlist'):
-            Old_vtxlist = bone['end_vtxlist'].split(" ")
-            Old_vtx_pos = bone['end_vtx_pos'].split(" ")
+            Old_vtxlist = bone.dictspec['end_vtxlist'].split(" ")
+            Old_vtx_pos = bone.dictspec['end_vtx_pos'].split(" ")
             New_vtxlist = []
             New_vtx_pos = []
             for vtx in range(len(Old_vtxlist)):
@@ -2368,6 +2427,8 @@ def Update_BoneObjs(bonevtxlist, selfbonename, comp):
     vtxlist = [[], []]
     tristodrawlist = [[], []]
     selvtxlist = [[], []]
+    if comp.currentframe is None:
+        comp.currentframe = comp.dictitems['Frames:fg'].subitems[0]
     for key in bonevtxlist:
         if bonevtxlist[key]['bonename'] == selfbonename:
             vtx = int(key)
@@ -2403,8 +2464,6 @@ def Make_BoneVtxList(editor, bone):
             editor.Root.currentcomponent = editor.Root.dictitems[bone.dictspec['start_component']]
             comp = editor.Root.currentcomponent
             comp.currentframe = comp.dictitems['Frames:fg'].subitems[0]
-    #        compframes = comp.findallsubitems("", ':mf')   # get all frames
-    #        editor.Root.currentcomponent.currentframe = compframes[0]
         start_vtxlist = bone.dictspec['start_vtxlist'].split(" ")
         for vtx in range(len(start_vtxlist)):
             vtxinfo = {}
@@ -2431,8 +2490,6 @@ def Make_BoneVtxList(editor, bone):
             editor.Root.currentcomponent = editor.Root.dictitems[bone.dictspec['end_component']]
             comp = editor.Root.currentcomponent
             comp.currentframe = comp.dictitems['Frames:fg'].subitems[0]
-    #        compframes = comp.findallsubitems("", ':mf')   # get all frames
-    #        editor.Root.currentcomponent.currentframe = compframes[0]
         end_vtxlist = bone.dictspec['end_vtxlist'].split(" ")
         for vtx in range(len(end_vtxlist)):
             vtxinfo = {}
@@ -3454,6 +3511,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.97  2009/01/27 05:03:00  cdunde
+#Full support for .md5mesh bone importing with weight assignment and other improvements.
+#
 #Revision 1.96  2009/01/09 08:33:26  cdunde
 #New function added "allowbones", checks for at least one component to allowing bones.
 #New function added "clearbones", remakes "Skeleton" folder with NO bones to clear them.

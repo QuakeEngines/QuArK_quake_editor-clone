@@ -250,6 +250,11 @@ class ModelEditor(BaseEditor):
             componentnames.sort()
         try:
             self.Root.currentcomponent = self.Root.dictitems[componentnames[0]]
+            self.Root.currentcomponent.currentframe = self.Root.currentcomponent.dictitems['Frames:fg'].subitems[0]
+            try: # In case a model does not have any skins.
+                self.Root.currentcomponent.currentskin = self.Root.currentcomponent.dictitems['Skins:sg'].subitems[0]
+            except:
+                pass
         except:
             pass
 
@@ -1684,6 +1689,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.115  2009/01/27 05:03:01  cdunde
+#Full support for .md5mesh bone importing with weight assignment and other improvements.
+#
 #Revision 1.114  2009/01/11 09:51:42  cdunde
 #Fix Model Axis to reflect true editor headings and
 #stop face selection error if click show for another component.

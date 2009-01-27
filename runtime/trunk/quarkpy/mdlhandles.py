@@ -1768,12 +1768,20 @@ def BuildCommonHandles(editor, explorer, option=1):
     if len(explorer.sellist) >= 0:
         if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] != "1" and quarkx.setupsubset(SS_MODEL, "Options")['HideBones'] is None:
 
-            # Checks if something has changed the frame selection, if so then bones need to be rebuilt.
-            if int(editor.Root.currentcomponent.currentframe.dictspec['index'][0]-1) != editor.bone_frame:
-                editor.bone_frame_changed = 1
-                editor.bone_frame = int(editor.Root.currentcomponent.currentframe.dictspec['index'][0]-1)
-
             bones = editor.Root.dictitems['Skeleton:bg']
+            if len(bones.subitems) != 0:
+                # Checks if something has changed the frame selection, if so then bones need to be rebuilt.
+                try:
+                    if int(editor.Root.currentcomponent.currentframe.dictspec['index'][0]-1) != editor.bone_frame:
+                        editor.bone_frame_changed = 1
+                        editor.bone_frame = int(editor.Root.currentcomponent.currentframe.dictspec['index'][0]-1)
+                except:
+                    frames = editor.Root.currentcomponent.dictitems['Frames:fg'].subitems
+                    for frame in range(len(frames)):
+                        if frames[frame] == editor.Root.currentcomponent.currentframe and frame != editor.bone_frame:
+                            editor.bone_frame_changed = 1
+                            editor.bone_frame = frame
+                            break
 
             for item in editor.Root.subitems:
                 if item.type == ':bg':
@@ -1866,10 +1874,21 @@ def BuildHandles(editor, explorer, view, option=1):
 
     if len(explorer.sellist) >= 0 and quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] != "1":
         if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] != "1" and quarkx.setupsubset(SS_MODEL, "Options")['HideBones'] is None:
-            # Checks if something has changed the frame selection, if so then bones need to be rebuilt.
-            if int(editor.Root.currentcomponent.currentframe.dictspec['index'][0]-1) != editor.bone_frame:
-                editor.bone_frame_changed = 1
-                editor.bone_frame = int(editor.Root.currentcomponent.currentframe.dictspec['index'][0]-1)
+
+            bones = editor.Root.dictitems['Skeleton:bg']
+            if len(bones.subitems) != 0:
+                # Checks if something has changed the frame selection, if so then bones need to be rebuilt.
+                try:
+                    if int(editor.Root.currentcomponent.currentframe.dictspec['index'][0]-1) != editor.bone_frame:
+                        editor.bone_frame_changed = 1
+                        editor.bone_frame = int(editor.Root.currentcomponent.currentframe.dictspec['index'][0]-1)
+                except:
+                    frames = editor.Root.currentcomponent.dictitems['Frames:fg'].subitems
+                    for frame in range(len(frames)):
+                        if frames[frame] == editor.Root.currentcomponent.currentframe and frame != editor.bone_frame:
+                            editor.bone_frame_changed = 1
+                            editor.bone_frame = frame
+                            break
 
             for item in editor.Root.subitems:
                 if item.type == ':bg':
@@ -3417,8 +3436,6 @@ class LinearBoneHandle(qhandles.GenericHandle):
                 for bone in compbones:
                     if bone in self.oldbones_start or bone in self.oldbones_end:
                         continue
-           #         if bone == self.bone:
-           #             continue
 
                     # Stops improper corner handle drags of multi bone "sets" like for .md5mesh model files.
                     if isinstance(self, LinBoneCornerHandle) and self.mgr.editor.bonemode == "single sets":
@@ -3717,6 +3734,15 @@ class LinBoneCenterHandle(LinearBoneHandle):
             else:
                 bone = self.bone
             attach_start2end(editor, bone, editor.layout.explorer.sellist[1])
+
+        def attach_end2start_click(m, self=self, editor=editor, view=view):
+            import mdlmgr
+            mdlmgr.savefacesel = 1
+            if self.bone is None:
+                bone = editor.layout.explorer.sellist[0]
+            else:
+                bone = self.bone
+            attach_end2start(editor, bone, editor.layout.explorer.sellist[1])
 
         def attach_bones_starts_click(m, self=self, editor=editor, view=view):
             import mdlmgr
@@ -4666,8 +4692,9 @@ class LinBoneCenterHandle(LinearBoneHandle):
         AddBone = qmenu.item("&Add Bone Here", add_bone_click, "|Add Bone Here:\n\nThis will add a single bone to the 'Skeleton' group.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
         ContinueBones = qmenu.item("&Continue Bones", continue_bones_click, "|Continue Bones:\n\nThis will add a single bone, connected to the bone handle when the RMB was clicked, in the 'Skeleton' group.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
         AttachStart2End = qmenu.item("A&ttach Start to End", attach_start2end_click, "|Attach Start to End:\n\nThis will attach the second selected bone's start handle to the first selected bone's end handle in the 'Skeleton' group.\n\nMoving the second bone above the first bone in the tree-view will reverse this movement.|intro.modeleditor.rmbmenus.html#bonecommands")
+        AttachEnd2Start = qmenu.item("Attach End to Start", attach_end2start_click, "|Attach End to Start:\n\nThis will attach the second selected bone's end handle to the first selected bone's start handle in the 'Skeleton' group.\n\nMoving the second bone above the first bone in the tree-view will reverse this movement.|intro.modeleditor.rmbmenus.html#bonecommands")
         AttachBonesStarts = qmenu.item("Attach B&ones Starts", attach_bones_starts_click, "|Attach Bones Starts:\n\nThis will attach the second selected bone's start handle to the first selected bone's start handle in the 'Skeleton' group.\n\nMoving the second bone above the first bone in the tree-view will reverse this movement.|intro.modeleditor.rmbmenus.html#bonecommands")
-        AttachBonesEnds = qmenu.item("Attach B&ones Ends", attach_bones_ends_click, "|Attach Bones Ends:\n\nThis will attach the second selected bone's end handle to the first selected bone's end in the 'Skeleton' group.\n\nMoving the second bone above the first bone in the tree-view will reverse this movement.|intro.modeleditor.rmbmenus.html#bonecommands")
+        AttachBonesEnds = qmenu.item("Attach Bones Ends", attach_bones_ends_click, "|Attach Bones Ends:\n\nThis will attach the second selected bone's end handle to the first selected bone's end in the 'Skeleton' group.\n\nMoving the second bone above the first bone in the tree-view will reverse this movement.|intro.modeleditor.rmbmenus.html#bonecommands")
         DetachBones = qmenu.item("&Detach Bones", detach_bones_click, "|Detach Bones:\n\nThis will detach two selected bones attached handles from one another in the 'Skeleton' group.|intro.modeleditor.rmbmenus.html#bonecommands")
         AlignStart2End = qmenu.item("Align Start to E&nd", align_start2end_click, "|Align Start to End:\n\nThis will align the second selected bone's start handle to first selected bone's end handle, but not attach them.\n\nMoving the second bone above the first bone in the tree-view will reverse this movement.|intro.modeleditor.rmbmenus.html#bonecommands")
         AlignBonesStarts = qmenu.item("Align &Bones Starts", align_bones_starts_click, "|Align Bones Starts:\n\nThis will align the second selected bone's start handle to first selected bone's end handle, but not attach them.\n\nMoving the second bone above the first bone in the tree-view will reverse this movement.|intro.modeleditor.rmbmenus.html#bonecommands")
@@ -4721,12 +4748,12 @@ class LinBoneCenterHandle(LinearBoneHandle):
                 AddBone.state = qmenu.normal
                 ContinueBones.state = qmenu.disabled
         except:
-            AddBone.state = qmenu.normal
+            if allowbones(editor) == 0:
+                if len(editor.Root.dictitems['Skeleton:bg'].subitems) == 0:
+                    AddBone.state = qmenu.disabled
+            else:
+                AddBone.state = qmenu.normal
             ContinueBones.state = qmenu.disabled
-
-    #    if len(editor.layout.explorer.sellist) == 1 and (editor.layout.explorer.sellist[0].type == ":fg" or editor.layout.explorer.sellist[0].type == ":bg"):
-    #        AddBone.state = qmenu.disabled
-    #        ContinueBones.state = qmenu.disabled
 
         if len(editor.layout.explorer.sellist) == 3:
             count = 0
@@ -4749,6 +4776,7 @@ class LinBoneCenterHandle(LinearBoneHandle):
                     count = count + 1
             if count == 2:
                 AttachStart2End.state = qmenu.normal
+                AttachEnd2Start.state = qmenu.normal
                 AttachBonesStarts.state = qmenu.normal
                 AttachBonesEnds.state = qmenu.normal
                 DetachBones.state = qmenu.normal
@@ -4757,6 +4785,7 @@ class LinBoneCenterHandle(LinearBoneHandle):
                 AlignStart2End.state = qmenu.normal
             else:
                 AttachStart2End.state = qmenu.disabled
+                AttachEnd2Start.state = qmenu.disabled
                 AttachBonesStarts.state = qmenu.disabled
                 AttachBonesEnds.state = qmenu.disabled
                 DetachBones.state = qmenu.disabled
@@ -4765,6 +4794,7 @@ class LinBoneCenterHandle(LinearBoneHandle):
                 AlignStart2End.state = qmenu.disabled
         else:
             AttachStart2End.state = qmenu.disabled
+            AttachEnd2Start.state = qmenu.disabled
             AttachBonesStarts.state = qmenu.disabled
             AttachBonesEnds.state = qmenu.disabled
             DetachBones.state = qmenu.disabled
@@ -4843,7 +4873,7 @@ class LinBoneCenterHandle(LinearBoneHandle):
         if not MdlOption("GridActive") or editor.gridstep <= 0:
             Forcetogrid.state = qmenu.disabled
 
-        menu = [AddBone, ContinueBones, qmenu.sep, AttachStart2End, AttachBonesStarts, AttachBonesEnds, DetachBones, qmenu.sep, AlignStart2End, AlignBonesStarts, AlignBonesEnds, qmenu.sep, Assign2Start, Assign2End, SetHandlePosition, qmenu.sep, SelectHandleVertexes, SelectHandlePosVertexes, qmenu.sep, ReleaseStartVertexes, ReleaseEndVertexes, qmenu.sep, KeyframesRotation, qmenu.sep, SB1, HB1, qmenu.sep, Forcetogrid]
+        menu = [AddBone, ContinueBones, qmenu.sep, AttachStart2End, AttachEnd2Start, AttachBonesStarts, AttachBonesEnds, DetachBones, qmenu.sep, AlignStart2End, AlignBonesStarts, AlignBonesEnds, qmenu.sep, Assign2Start, Assign2End, SetHandlePosition, qmenu.sep, SelectHandleVertexes, SelectHandlePosVertexes, qmenu.sep, ReleaseStartVertexes, ReleaseEndVertexes, qmenu.sep, KeyframesRotation, qmenu.sep, SB1, HB1, qmenu.sep, Forcetogrid]
 
         return menu
 
@@ -6209,6 +6239,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.165  2009/01/27 05:03:02  cdunde
+#Full support for .md5mesh bone importing with weight assignment and other improvements.
+#
 #Revision 1.164  2009/01/14 09:36:22  cdunde
 #Added LinBoneCornerHandle color to match bone color if set for easer ID.
 #
