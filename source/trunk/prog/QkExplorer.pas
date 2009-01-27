@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.22  2009/01/22 22:59:51  danielpharos
+Now bones can be moved around in the treeview even though other items are also selected.
+
 Revision 1.21  2008/09/23 08:27:29  danielpharos
 Moved InternalE to QkExceptions.
 
@@ -246,7 +249,7 @@ type
 
 implementation
 
-uses Qk1, QkExceptions, Undo, Travail, Quarkx, QkModelBone;
+uses Qk1, QkExceptions, Undo, Travail, Quarkx, QkModelBone, QkFrame;
 
  {------------------------}
 
@@ -257,6 +260,7 @@ var
  FUndoExplorers: TList = Nil;
  FAllExplorers: TList;
  FDragObjectOthers: TQList = Nil;
+ GlobalDragObject: QObject = Nil;
 
 procedure SetDragObject(nDragObject: QExplorerGroup);
 begin
@@ -275,6 +279,7 @@ end;
 function DragObject: QExplorerGroup;
 var
  I, MaxI: Integer;
+ BoneOrFrame: (bofNone, bofBone, bofFrame);
 begin
  if (FDragObject=Nil) and Assigned(FGetFunc) then
   begin
@@ -282,24 +287,68 @@ begin
    // DanielPharos: We filter the list if there are model bones inside.
    // MaxI is the number of bones found, and we delete all other items from the list.
    // This so we can move bones even if we have other stuff selected too.
-   MaxI:=0;
-   for I:=0 to FDragObject.SubElements.Count-1 do
-    if FDragObject.SubElements[I] is QModelBone then
-      MaxI:=MaxI+1;
-   if MaxI<>0 then
+   if GlobalDragObject is QModelBone then
+    BoneOrFrame:=bofBone
+   else if GlobalDragObject is QFrame then
+    BoneOrFrame:=bofFrame
+   else
    begin
-    I:=0;
-    while I<=FDragObject.SubElements.Count-1 do
-     if not (FDragObject.SubElements[I] is QModelBone) then
-      begin
-       if FDragObjectOthers = Nil then
-        FDragObjectOthers:=TQList.Create;
-       FDragObjectOthers.Add(FDragObject.SubElements[I]);
-       FDragObject.SubElements.Delete(I)
-      end
-     else
-      I:=I+1;
-    FDragObject.SubElements.Capacity:=MaxI;
+    BoneOrFrame:=bofNone;
+    //DanielPharos: This causes weird stuff... Left in for fun :)
+(*    for I:=0 to FDragObject.SubElements.Count-1 do
+     begin
+      if FDragObject.SubElements[I] is QModelBone then
+       begin
+        BoneOrFrame:=bofBone;
+        break;
+       end;
+      if FDragObject.SubElements[I] is QFrame then
+       begin
+        BoneOrFrame:=bofFrame;
+        break;
+       end;
+     end;*)
+   end;
+   case BoneOrFrame of
+   bofBone:
+   begin
+     MaxI:=0;
+     for I:=0 to FDragObject.SubElements.Count-1 do
+       if FDragObject.SubElements[I] is QModelBone then
+         MaxI:=MaxI+1;
+     I:=0;
+     while I<=FDragObject.SubElements.Count-1 do
+      if not (FDragObject.SubElements[I] is QModelBone) then
+       begin
+        if FDragObjectOthers = Nil then
+         FDragObjectOthers:=TQList.Create;
+        FDragObjectOthers.Add(FDragObject.SubElements[I]);
+        FDragObject.SubElements.Delete(I)
+        end
+      else
+       I:=I+1;
+     FDragObject.SubElements.Capacity:=MaxI;
+   end;
+   bofFrame:
+   begin
+     // DanielPharos: Same deal, but now for the frames
+     MaxI:=0;
+     for I:=0 to FDragObject.SubElements.Count-1 do
+      if FDragObject.SubElements[I] is QFrame then
+        MaxI:=MaxI+1;
+     I:=0;
+     while I<=FDragObject.SubElements.Count-1 do
+      if not (FDragObject.SubElements[I] is QFrame) then
+       begin
+        if FDragObjectOthers = Nil then
+         FDragObjectOthers:=TQList.Create;
+        FDragObjectOthers.Add(FDragObject.SubElements[I]);
+        FDragObject.SubElements.Delete(I)
+       end
+      else
+       I:=I+1;
+     FDragObject.SubElements.Capacity:=MaxI;
+     end;
    end;
    // DanielPharos: End of filtering code
    FDragObject.AddRef(+1);
@@ -1505,12 +1554,14 @@ end;
 
 procedure TQkExplorer.StartDragEvt;
 begin
+ GlobalDragObject:=TMFocus;
  PostMessage(Handle, wm_InternalMessage, tm_BeginDrag, 0);
 end;
 
 procedure TQkExplorer.EndDragEvt;
 begin
  PostMessage(ValidParentForm(Self).Handle, wm_InternalMessage, wp_EndDrag, 0);
+ GlobalDragObject:=Nil;
 end;
 
 procedure TQkExplorer.DragOverEvt;
@@ -1692,7 +1743,12 @@ var
  Copier, Interne: Boolean;
  U: TQObjectUndo;
  L: TList;
+ LowerIndex, HigherIndex, CurrentIndex: Integer;
+ ShadowList: TList;
+ El2: QObject;
+ DeselectThem: TQList;
 begin
+ DeselectThem := Nil;
  I:=(Sender as TMenuItem).Tag;
  Interne:=I and dfCopyToOutside = 0;
  Copier:=I and not dfCopyToOutside <> 0;
@@ -1723,9 +1779,67 @@ begin
      L.Free;
     end;
    end;
+  //DanielPharos: Broken workaround to update frame's 'index'-dictspec. We should
+  //remove this dictspec, and use IndexOf-style statements instead.
+  if SourceQ.SubElements[0] is QFrame then
+   begin
+    //Let's find all the frames-indices to change
+    LowerIndex:=DropTarget.FParent.SubElements.IndexOf(DropTarget);
+    HigherIndex:=LowerIndex;
+    for I:=0 to SourceQ.SubElements.Count-1 do
+     begin
+      El := SourceQ.SubElements[I];
+      CurrentIndex := SourceQ.SubElements[0].FParent.SubElements.IndexOf(El);
+      if CurrentIndex < LowerIndex then
+        LowerIndex := CurrentIndex;
+      if CurrentIndex > HigherIndex then
+        HigherIndex := CurrentIndex;
+     end;
+    //Create a list reflecting the move
+    ShadowList:=TList.Create;
+    try
+     CurrentIndex := DropTarget.FParent.SubElements.IndexOf(DropTarget);
+     for I:=LowerIndex to CurrentIndex-1 do
+      begin
+       El := DropTarget.FParent.SubElements[I];
+       if SourceQ.SubElements.IndexOf(El)=-1 then
+        ShadowList.Add(El);
+      end;
+     if (SourceQ.SubElements.IndexOf(DropTarget)=-1) and (CurrentIndex=HigherIndex) then
+      ShadowList.Add(DropTarget);
+     for I:=0 to SourceQ.SubElements.Count-1 do
+      ShadowList.Add(SourceQ.SubElements[I]);
+     if (SourceQ.SubElements.IndexOf(DropTarget)=-1) and (CurrentIndex<>HigherIndex) then
+      ShadowList.Add(DropTarget);
+     for I:=CurrentIndex+1 to HigherIndex do
+      begin
+       El := DropTarget.FParent.SubElements[I];
+       if SourceQ.SubElements.IndexOf(El)=-1 then
+        ShadowList.Add(El);
+      end;
+     //Update all the 'index's
+     for J:=0 to ShadowList.Count-1 do
+      begin
+       El := DropTarget.FParent.SubElements[LowerIndex+J];
+       El2 := QObject(ShadowList[J]).Clone(El.FParent, False);
+       El2.SetFloatSpec('index', LowerIndex+J+1);
+       U:=TQObjectUndo.Create('', El, El2);
+       g_ListeActions.Add(U);
+       if SourceQ.SubElements.IndexOf(ShadowList[J])=-1 then
+        begin
+         if DeselectThem = Nil then
+          DeselectThem := TQList.Create;
+         DeselectThem.Add(El2);
+        end;
+      end;
+    finally
+     ShadowList.Free;
+    end;
+   end;
   for I:=0 to SourceQ.SubElements.Count-1 do
    begin
     El:=SourceQ.SubElements[I];
+    if not(El is QFrame) then
     if ieCanDrop in DropTarget.TvParent.IsExplorerItem(El) then
      if Copier or not Interne then
       begin
@@ -1744,6 +1858,13 @@ begin
   FreeAction(DropTarget)
  else
   FinAction(DropTarget, LoadStr1(Numero[Copier, Interne]));
+ if DeselectThem <> Nil then
+  begin
+   for I:=0 to DeselectThem.Count-1 do
+    DeselectThem[I].SelMult:=0;
+   DeselectThem.Free;
+   SelectionChanging;
+  end;
  if FDragObjectOthers <> Nil then
   begin
    for I:=0 to FDragObjectOthers.Count-1 do
