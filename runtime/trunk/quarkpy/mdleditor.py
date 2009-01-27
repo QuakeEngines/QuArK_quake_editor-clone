@@ -42,6 +42,8 @@ class ModelEditor(BaseEditor):
     MouseDragMode = mdlhandles.RectSelDragObject
     findtargetdlg = None
     bone_frame = 0
+    bone_frame_changed = 0
+    bonemode = "default mode" # Available modes = default mode, single set, multi sets.
 
     ### Different lists of the Model Editor.
     ###|--- contence ---|-------- format -------|----------------------- discription -----------------------|
@@ -610,10 +612,6 @@ class ModelEditor(BaseEditor):
                     break
                 if selection[item].type == ':mf':
                     frames = frames + 1
-                    if frames == 1:
-                        for frame in range(len(self.Root.currentcomponent.dictitems['Frames:fg'].subitems)):
-                            if selection[item] == self.Root.currentcomponent.dictitems['Frames:fg'].subitems[frame]:
-                                self.bone_frame = frame
                 if selection[item].type == ':bg':
                     bonegroup = bonegroup + 1
                 if selection[item].type == ':bone':
@@ -944,8 +942,8 @@ def modelaxis(view):
         cv.fontcolor = MapColor("ModelAxisZ", SS_MODEL)
         cv.line(int(mc.x), int(mc.y), int(Zend.x), int(Zend.y))
         cv.textout(int(Zend.x-5), int(Zend.y-20), "Z")
-        
-        
+
+
 def faceselfilllist(view, fillcolor=None):
     editor = mdleditor
     if view.info["viewname"] == "XY":
@@ -1686,6 +1684,10 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.114  2009/01/11 09:51:42  cdunde
+#Fix Model Axis to reflect true editor headings and
+#stop face selection error if click show for another component.
+#
 #Revision 1.113  2009/01/11 06:49:41  cdunde
 #Minor fix for error when Model Editor is in True 3D mode.
 #

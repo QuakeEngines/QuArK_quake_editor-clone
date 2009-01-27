@@ -421,20 +421,19 @@ def mBFONLY(m):
     quarkx.reloadsetup()
 
 
-def BoneMenu(editor):
+def BoneMenu():
     Xmblines_color = qmenu.item("&Match Bone Lines Color", mMBLines_Color, "|Match Bone Lines Color:\n\nWhen checked the bone lines color displayed during a drag will match the handle color being dragged.|intro.modeleditor.menu.html#optionsmenu")
     Xmbhandles_only = qmenu.item("&Draw Bone Handles Only", mBHandles_Only, "|Draw Bone Handles Only:\n\nWhen checked only the bone handles are displayed to increase drawing speed during and after a drag.|intro.modeleditor.menu.html#optionsmenu")
 
     menulist = [Xmblines_color, Xmbhandles_only]
-    
-    items = menulist
+
     Xmblines_color.state = quarkx.setupsubset(SS_MODEL,"Options").getint("MBLines_Color")
     Xmbhandles_only.state = quarkx.setupsubset(SS_MODEL,"Options").getint("BHandles_Only")
 
     return menulist
 
 
-def FaceMenu(editor):
+def FaceMenu():
     Xsync_isv = qmenu.item("&Sync Skin-view with Editor views ", mSYNC_ISV, "|Sync Skin-view with Editor views:\n\nWhen checked this will synchronize the Skin-view with the Editor views for either of the active selection options below.|intro.modeleditor.menu.html#optionsmenu")
     Xsfsisv = qmenu.item("S&how selection in Skin-view", mSFSISV, "|Show selection in Skin-view:\n\nBecause the Skin-view and the rest of the editor views work independently, this will pass selected editor model mesh triangle faces to the 'Skin-view' to be outlined and distinguish them.\n\nHowever, it does not actually select them in the 'Skin-view'.\n\nAny selections or deselections will not show in the 'Skin-view' until the mouse buttons have been released.\n\nThe 'Skin-view' outline color can be changed in the 'Configuration Model Colors' section.\n\nPress the 'F1' key again or click the button below for further details.|intro.modeleditor.menu.html#optionsmenu")
     Xpfstsv = qmenu.item("&Pass selection to Skin-view", mPFSTSV, "|Pass selection to Skin-view:\n\nThis function will pass selected editor model mesh triangle faces and select the coordinated skin triangles in the 'Skin-view' where they can be used for editing purposes.\n\nOnce the selection has been passed, if this function is turned off, the selection will remain in the 'Skin-view' for its use there.\n\nAny selections or deselections will not show in the 'Skin-view' until the mouse buttons have been released.\n\nThe 'Skin-view' selected face outline color can be changed in the 'Configuration Model Colors' section.\n\nPress the 'F1' key again or click the button below for further details.|intro.modeleditor.menu.html#optionsmenu")
@@ -446,8 +445,7 @@ def FaceMenu(editor):
     Xbfonly = qmenu.item("&Back faces only", mBFONLY, "|Back faces only:\n\nThis will only allow the drawing of the backface pattern to be drawn for any of the models mesh faces that are selected. The front faces will be outlined allowing the models texture to be displayed if the view is in 'Textured' mode.\n\nThis will not apply for any view that has its 'Fill in Mesh' function active (checked) in the 'Views Options' dialog.|intro.modeleditor.menu.html#optionsmenu")
 
     menulist = [Xsync_isv, Xsfsisv, Xpfstsv, qmenu.sep, Xnfdl, Xnfo, Xnfowm, qmenu.sep, Xnosf, Xffonly, Xbfonly]
-    
-    items = menulist
+
     Xsync_isv.state = quarkx.setupsubset(SS_MODEL,"Options").getint("SYNC_ISV")
     Xsfsisv.state = quarkx.setupsubset(SS_MODEL,"Options").getint("SFSISV")
     Xpfstsv.state = quarkx.setupsubset(SS_MODEL,"Options").getint("PFSTSV")
@@ -461,7 +459,7 @@ def FaceMenu(editor):
     return menulist
 
 
-def VertexMenu(editor):
+def VertexMenu():
     # Sync Skin-view with Editor views function.
     def mSYNC_SVwED(m):
         editor = mdleditor.mdleditor
@@ -528,8 +526,7 @@ def VertexMenu(editor):
     Xnvdl = qmenu.item("No vertex &drag lines", mNVDL, "|No vertex drag lines:\n\nThis stops the multi selected Editor model mesh vertexes drag lines from being drawn, but not the vertex outlines.\n\nSingle vertex drag lines will also still be drawn.|intro.modeleditor.menu.html#optionsmenu")
 
     menulist = [Xsync_svwed, Xpvstsv, qmenu.sep, Xnvdl]
-    
-    items = menulist
+
     Xsync_svwed.state = quarkx.setupsubset(SS_MODEL,"Options").getint("SYNC_SVwED")
     Xpvstsv.state = quarkx.setupsubset(SS_MODEL,"Options").getint("PVSTSV")
     Xnvdl.state = quarkx.setupsubset(SS_MODEL,"Options").getint("NVDL")
@@ -537,7 +534,7 @@ def VertexMenu(editor):
     return menulist
 
 
-def TicksViewingMenu(editor):
+def TicksViewingMenu():
     # Rectangle Drag Ticks_Method 1
     def mRDT_M1(m):
         if not MdlOption("RDT_M1"):
@@ -559,14 +556,13 @@ def TicksViewingMenu(editor):
 
     menulist = [Xrdt_m1, Xrdt_m2]
 
-    items = menulist
     Xrdt_m1.state = quarkx.setupsubset(SS_MODEL,"Options").getint("RDT_M1")
     Xrdt_m2.state = quarkx.setupsubset(SS_MODEL,"Options").getint("RDT_M2")
 
     return menulist
 
 
-def SkinViewOptionsMenu(editor):
+def SkinViewOptionsMenu():
     # Sync Editor views with Skin-view function.
     def mSYNC_EDwSV(m):
         editor = mdleditor.mdleditor
@@ -640,7 +636,6 @@ def SkinViewOptionsMenu(editor):
 
     menulist = [Xsync_edwsv, Xpvstev, Xcsf, qmenu.sep, TicksViewing]
 
-    items = menulist
     Xsync_edwsv.state = quarkx.setupsubset(SS_MODEL,"Options").getint("SYNC_EDwSV")
     Xpvstev.state = quarkx.setupsubset(SS_MODEL,"Options").getint("PVSTEV")
 
@@ -649,24 +644,19 @@ def SkinViewOptionsMenu(editor):
 
 # ****************** Creates the Popup menu ********************
 def BoneOptionsClick(m):
-    editor = mdleditor.mdleditor
-    m.items = BoneMenu(editor)
+    m.items = BoneMenu()
 
 def FaceSelOptionsClick(m):
-    editor = mdleditor.mdleditor
-    m.items = FaceMenu(editor)
+    m.items = FaceMenu()
 
 def VertexSelOptionsClick(m):
-    editor = mdleditor.mdleditor
-    m.items = VertexMenu(editor)
+    m.items = VertexMenu()
 
 def TicksViewingClick(m):
-    editor = mdleditor.mdleditor
-    m.items = TicksViewingMenu(editor)
+    m.items = TicksViewingMenu()
 
 def SkinViewOptionsClick(m):
-    editor = mdleditor.mdleditor
-    m.items = SkinViewOptionsMenu(editor)
+    m.items = SkinViewOptionsMenu()
 
 
 # ****************** menu def's for Global items ********************
@@ -849,16 +839,19 @@ def OptionsMenu():
 def OptionsMenuRMB():
     "The Options RMB menu items."
 
-    BoneOptions = qmenu.popup("Bone Options", [], BoneOptionsClick, "|Bone Options:\n\nThese functions deal with the Model Bone visual tools to work with.", "intro.modeleditor.menu.html#optionsmenu")
-    FaceSelOptions = qmenu.popup("Editor Face Options", [], FaceSelOptionsClick, "|Editor Face Selection Options:\n\nThese functions deal with the Model Mesh selection methods available and various visual tools to work with.", "intro.mapeditor.menu.html#optionsmenu")
-    VertexSelOptions = qmenu.popup("Editor Vertex Options", [], VertexSelOptionsClick, "|Editor Vertex Selection Options:\n\nThese functions deal with the Model Mesh selection methods available and various visual tools to work with.", "intro.mapeditor.menu.html#optionsmenu")
-    return BoneOptions, FaceSelOptions, VertexSelOptions
+    BoneOptions = qmenu.popup("Bone Options", BoneMenu(), None, "|Bone Options:\n\nThese functions deal with the Model Bone visual tools to work with.", "intro.modeleditor.menu.html#optionsmenu")
+    FaceSelOptions = qmenu.popup("Editor Face Options", FaceMenu(), None, "|Editor Face Selection Options:\n\nThese functions deal with the Model Mesh selection methods available and various visual tools to work with.", "intro.mapeditor.menu.html#optionsmenu")
+    VertexSelOptions = qmenu.popup("Editor Vertex Options", VertexMenu(), None, "|Editor Vertex Selection Options:\n\nThese functions deal with the Model Mesh selection methods available and various visual tools to work with.", "intro.mapeditor.menu.html#optionsmenu")
+    return [BoneOptions, FaceSelOptions, VertexSelOptions]
 
 
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.42  2008/12/05 07:44:06  cdunde
+#Small update.
+#
 #Revision 1.41  2008/12/04 21:15:11  cdunde
 #Minor update to work with the function properly.
 #

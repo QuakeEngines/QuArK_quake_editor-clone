@@ -237,6 +237,18 @@ def MdlBackgroundMenu(editor, view=None, origin=None):
             skinviewcommands = qmenu.popup("Vertex Commands", mdlhandles.SkinHandle(origin, None, None, None, None, None, None).menu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
             skinviewoptions = qmenu.popup("Skin-view Options", mdlhandles.SkinHandle(origin, None, None, None, None, None, None).optionsmenu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
             extra = [qmenu.sep, ResetSkinView, qmenu.sep, skinviewcommands, skinviewoptions]
+
+        # Add importer/exporter specific menu items
+        from mdlmgr import SFTexts, IEfile
+        sfbtn = editor.layout.buttons["sf"]
+        for filetype in range(len(SFTexts)):
+            if sfbtn.caption == SFTexts[filetype]:
+                try:
+                    filename = IEfile[filetype]
+                    extra = filename.newmenuitems(editor, extra)
+                except:
+                    pass
+
     return [Undo1] + extra
 
 
@@ -285,6 +297,9 @@ def BaseMenu(sellist, editor):
 #
 #
 #$Log$
+#Revision 1.37  2008/11/19 06:16:23  cdunde
+#Bones system moved to outside of components for Model Editor completed.
+#
 #Revision 1.36  2008/10/04 05:48:06  cdunde
 #Updates for Model Editor Bones system.
 #

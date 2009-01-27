@@ -445,11 +445,20 @@ class ModelLayout(BaseLayout):
         "This function fills in the Default values of the Specifics/Args page form"
         "and changes the form's values when a setting is made."
         global check_start_component, check_end_component, check_start_vertex_count, check_end_vertex_count, checkstart_pos, checkend_pos, checkbone_length, checkbone_start_offset, checkbone_end_offset, checkbone_start_scale, checkbone_end_scale
-            
+
         sl = self.explorer.sellist
         if len(sl) == 0 and self.explorer.uniquesel is not None:
             sl = [self.explorer.uniquesel]
         sfbtn = self.buttons["sf"]
+        # Resets the editor's bonemode back to the default value.
+        try:
+            if self.sfbtn.caption == SFTexts[m.skill]:
+                pass
+            else:
+                self.editor.bonemode = "default mode"
+        except:
+            pass
+
         if m is not None:
             self.sfbtn.caption = "set model type" # to make sure the width of this button doesn't change
             self.buttons.update({"help": self.helpbtn, "sf": self.sfbtn})
@@ -457,8 +466,8 @@ class ModelLayout(BaseLayout):
             self.bb.margins = (0,0)
             for i in range(0, len(sfbtn.menu)):
                 sfbtn.menu[i].state = 0
-                m.state = qmenu.checked
-                cap = SFTexts[m.skill]
+            m.state = qmenu.checked
+            cap = SFTexts[m.skill]
         else:
             cap = "set model type"
         sfbtn.caption = cap
@@ -524,7 +533,7 @@ class ModelLayout(BaseLayout):
                         formobj = None
                 else:
                     for filetype in range(len(SFTexts)):
-                        if sfbtn.caption == SFTexts[filetype] and DummyItem.type == ':mc':
+                        if sfbtn.caption == SFTexts[filetype]: #  and DummyItem.type == ':mc'
                             filename = IEfile[filetype]
                             formobj, icon_btns = filename.dataformname(sl[0])
                             break
@@ -544,11 +553,16 @@ class ModelLayout(BaseLayout):
             self.sfbtn.caption = "set model type" # to make sure the width of this button doesn't change
             specifics_btns = {"help": self.helpbtn, "sf": self.sfbtn}
             self.bb.buttons = [self.sfbtn, qtoolbar.widegap, self.helpbtn]
+            tempcaptions = {}
             for btn in icon_btns.keys():
+                tempcaptions[btn] = icon_btns[btn].caption
+                icon_btns[btn].caption = "set model type" # to make sure the width of this button doesn't change
                 specifics_btns[btn] = icon_btns[btn]
                 self.bb.buttons = self.bb.buttons + [icon_btns[btn]]
             self.buttons.update(specifics_btns)
             self.bb.margins = (0,0)
+            for btn in icon_btns.keys():
+                icon_btns[btn].caption = tempcaptions[btn]
         try:
             help = ((formobj is not None) and formobj["Help"]) or ""
         except:
@@ -667,6 +681,15 @@ class ModelLayout(BaseLayout):
         if len(sl) == 0 and self.explorer.uniquesel is not None:
             sl = [self.explorer.uniquesel]
         sfbtn = self.buttons["sf"]
+        # Resets the editor's bonemode back to the default value.
+        try:
+            if self.sfbtn.caption == SFTexts[m.skill]:
+                pass
+            else:
+                self.editor.bonemode = "default mode"
+        except:
+            pass
+
         DummyItem = None
         formobj = None
         try:
@@ -1017,6 +1040,15 @@ class ModelLayout(BaseLayout):
         if len(sl) == 0 and self.explorer.uniquesel is not None:
             sl = [self.explorer.uniquesel]
         sfbtn = self.buttons["sf"]
+        # Resets the editor's bonemode back to the default value.
+        try:
+            if self.sfbtn.caption == SFTexts[m.skill]:
+                pass
+            else:
+                self.editor.bonemode = "default mode"
+        except:
+            pass
+
         DummyItem = None
         formobj = None
         try:
@@ -1462,6 +1494,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.94  2008/12/19 07:13:37  cdunde
+#Minor adjustment to the top of the Skin-view page for recent fix of item over lapping by Dan.
+#
 #Revision 1.93  2008/12/14 22:08:27  cdunde
 #Added Skin group Specifics page to allow importing of skins to that group.
 #Added default skin Specifics page and default model type to list.

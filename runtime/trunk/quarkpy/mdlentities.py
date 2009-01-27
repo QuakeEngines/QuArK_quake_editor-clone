@@ -769,50 +769,40 @@ class BoneType(EntityManager):
         from qbaseeditor import currentview
 
         h = []
-        if quarkx.setupsubset(SS_MODEL, "Options")['HideBones'] is not None:
-            return h
+        comp = editor.Root.currentcomponent
         s = None
         index = ""
-        if o.dictspec.has_key("start_vtx_pos") or o.dictspec.has_key("end_vtx_pos"):
-            comp = editor.Root.currentcomponent
-            if comp.currentframe is not None:
-                start_frame = end_frame = comp.currentframe
-            else:
-                start_frame = end_frame = comp.dictitems['Frames:fg'].subitems[0]
-            if o.dictspec.has_key("start_vtx_pos") and o.dictspec['start_vtx_pos'] is not None:
-                if o.dictspec['start_component'] != "None":
-                    try:
-                        start_frame = editor.Root.dictitems[o.dictspec['start_component']].dictitems['Frames:fg'].subitems[editor.bone_frame]
-                    except:
-                        quarkx.msgbox("FRAME COUNT ERROR !\n\nNot all components using these bones\nhave the same number of frames.\n\nCorrect and try again.", qutils.MT_ERROR, qutils.MB_OK)
-                        editor.layout.explorer.sellist = [comp.dictitems['Frames:fg'].subitems[0]]
-                        return
-                vtxlist = o.dictspec['start_vtx_pos']
-                vtxlist = vtxlist.split(" ")
-                start_vtxpos = quarkx.vect(0, 0, 0)
-                for start_vtx in vtxlist:
-                    start_vtxpos = start_vtxpos + start_frame.vertices[int(start_vtx)]
-                start_vtxpos = start_vtxpos/ float(len(vtxlist))
-                start_point = start_vtxpos + quarkx.vect(o.dictspec['start_offset'])
-                o['start_point'] = start_point.tuple
-                o['bone_length'] = (start_point - quarkx.vect(o.dictspec['end_point'])*-1).tuple
-            if o.dictspec.has_key("end_vtx_pos") and o.dictspec['end_vtx_pos'] is not None:
-                if o.dictspec['end_component'] != "None":
-                    try:
-                        end_frame = editor.Root.dictitems[o.dictspec['end_component']].dictitems['Frames:fg'].subitems[editor.bone_frame]
-                    except:
-                        quarkx.msgbox("FRAME COUNT ERROR !\n\nNot all components using these bones\nhave the same number of frames.\n\nCorrect and try again.", qutils.MT_ERROR, qutils.MB_OK)
-                        editor.layout.explorer.sellist = [comp.dictitems['Frames:fg'].subitems[0]]
-                        return
-                vtxlist = o.dictspec['end_vtx_pos']
-                vtxlist = vtxlist.split(" ")
-                end_vtxpos = quarkx.vect(0, 0, 0)
-                for end_vtx in vtxlist:
-                    end_vtxpos = end_vtxpos + end_frame.vertices[int(end_vtx)]
-                end_vtxpos = end_vtxpos/ float(len(vtxlist))
-                end_point = end_vtxpos + quarkx.vect(o.dictspec['end_offset'])
-                o['end_point'] = end_point.tuple
-                o['bone_length'] = ((quarkx.vect(o.dictspec['start_point']) - end_point)*-1).tuple
+
+        # In case there are bones but all components have been deleted,
+        # we need to remove the bones as well.
+        # If neither then just clear the selections lists and return.
+        if allowbones(editor) == 0:
+            if len(editor.Root.dictitems['Skeleton:bg'].subitems) == 0:
+                editor.layout.explorer.sellist = []
+                editor.layout.explorer.uniquesel = None
+                return h
+            o = None
+            clearbones(editor, "no components - bones cleared")
+            return h
+
+        if quarkx.setupsubset(SS_MODEL, "Options")['HideBones'] is not None or comp is None:
+            return h
+
+        # Checks that at least the needed frame count for a component is there to avoid vertex selection error later on.
+        try:
+            start_frame = editor.Root.dictitems[o.dictspec['start_component']].dictitems['Frames:fg'].subitems[editor.bone_frame]
+        except:
+            quarkx.msgbox("FRAME COUNT ERROR !\n\nNot all components using these bones\nhave the same number of frames.\n\nCorrect and try again.", qutils.MT_ERROR, qutils.MB_OK)
+            editor.layout.explorer.sellist = [comp.dictitems['Frames:fg'].subitems[0]]
+            return
+        try:
+            end_frame = editor.Root.dictitems[o.dictspec['end_component']].dictitems['Frames:fg'].subitems[editor.bone_frame]
+        except:
+            quarkx.msgbox("FRAME COUNT ERROR !\n\nNot all components using these bones\nhave the same number of frames.\n\nCorrect and try again.", qutils.MT_ERROR, qutils.MB_OK)
+            editor.layout.explorer.sellist = [comp.dictitems['Frames:fg'].subitems[0]]
+            return
+        if editor.bone_frame_changed == 1:
+            Rebuild_Bone(o, start_frame, end_frame)
 
         scenter = quarkx.vect(o.dictspec['start_point'])
         sbbox = (scenter + quarkx.vect(-0.9, -0.9, -0.9)*o.dictspec['start_scale'][0], scenter + quarkx.vect(0.9, 0.9, 0.9)*o.dictspec['start_scale'][0])
@@ -1266,6 +1256,10 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.37  2008/12/14 22:08:27  cdunde
+#Added Skin group Specifics page to allow importing of skins to that group.
+#Added default skin Specifics page and default model type to list.
+#
 #Revision 1.36  2008/12/01 04:53:54  cdunde
 #Update for component colors functions for OpenGL source code corrections.
 #

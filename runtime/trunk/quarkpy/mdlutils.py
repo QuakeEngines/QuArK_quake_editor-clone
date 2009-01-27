@@ -2449,8 +2449,59 @@ def Make_BoneVtxList(editor, bone):
             editor.ModelComponentList[comp.name] = {}
             editor.ModelComponentList[comp.name]['bonevtxlist'] = dict
             editor.ModelComponentList[comp.name]['boneobjlist'] = {}
-            print "mdlutils line 2445 comp.name",comp.name, editor.Root.currentcomponent, editor.Root.currentcomponent.currentframe, bone.name
             editor.ModelComponentList[comp.name]['boneobjlist'][bone.name] = Update_BoneObjs(editor.ModelComponentList[comp.name]['bonevtxlist'], bone.name, comp)
+
+#
+# This fixes (resets) the 1st set of attached bone handles to the drag handle position
+# after a rotation drag, which causes a small position difference making them detached.
+#
+def Fix_Attached_Handles(self_bone, oldobjectslist, newobjectslist):
+    for obj in range(len(oldobjectslist)):
+        if oldobjectslist[obj].type == ":bone" and oldobjectslist[obj].name == self_bone.name:
+            old_self_bone = oldobjectslist[obj]
+            new_self_bone = newobjectslist[obj]
+            break
+    for obj in range(len(oldobjectslist)):
+        if oldobjectslist[obj].type == ":bone":
+            oldbone = oldobjectslist[obj]
+            newbone = newobjectslist[obj]
+            if oldbone.dictspec['start_point'] == old_self_bone.dictspec['start_point']:
+                newbone['start_point'] = new_self_bone.dictspec['start_point']
+            if oldbone.dictspec['end_point'] == old_self_bone.dictspec['start_point']:
+                newbone['end_point'] = new_self_bone.dictspec['start_point']
+            if oldbone.dictspec['end_point'] == old_self_bone.dictspec['end_point']:
+                newbone['end_point'] = new_self_bone.dictspec['end_point']
+            if oldbone.dictspec['start_point'] == old_self_bone.dictspec['end_point']:
+                newbone['start_point'] = new_self_bone.dictspec['end_point']
+            newbone['bone_length'] = ((quarkx.vect(newbone.dictspec['start_point']) - quarkx.vect(newbone.dictspec['end_point']))*-1).tuple
+
+#
+# This recreates both of the bone's drag handles, o being the bone object (the bone).
+# start_frame = editor.Root.dictitems[o.dictspec['start_component']].dictitems['Frames:fg'].subitems[editor.bone_frame]
+# end_frame = editor.Root.dictitems[o.dictspec['end_component']].dictitems['Frames:fg'].subitems[editor.bone_frame]
+# This does not need to be returned since it is changing the object itself.
+#
+def Rebuild_Bone(o, start_frame, end_frame):
+    if o.dictspec.has_key("start_vtx_pos") and o.dictspec['start_vtx_pos'] is not None:
+        vtxlist = o.dictspec['start_vtx_pos']
+        vtxlist = vtxlist.split(" ")
+        start_vtxpos = quarkx.vect(0, 0, 0)
+        for start_vtx in vtxlist:
+            start_vtxpos = start_vtxpos + start_frame.vertices[int(start_vtx)]
+        start_vtxpos = start_vtxpos/ float(len(vtxlist))
+        start_point = start_vtxpos + quarkx.vect(o.dictspec['start_offset'])
+        o['start_point'] = start_point.tuple
+        o['bone_length'] = (start_point - quarkx.vect(o.dictspec['end_point'])*-1).tuple
+    if o.dictspec.has_key("end_vtx_pos") and o.dictspec['end_vtx_pos'] is not None:
+        vtxlist = o.dictspec['end_vtx_pos']
+        vtxlist = vtxlist.split(" ")
+        end_vtxpos = quarkx.vect(0, 0, 0)
+        for end_vtx in vtxlist:
+            end_vtxpos = end_vtxpos + end_frame.vertices[int(end_vtx)]
+        end_vtxpos = end_vtxpos/ float(len(vtxlist))
+        end_point = end_vtxpos + quarkx.vect(o.dictspec['end_offset'])
+        o['end_point'] = end_point.tuple
+        o['bone_length'] = ((quarkx.vect(o.dictspec['start_point']) - end_point)*-1).tuple
 
 
 
@@ -3403,6 +3454,10 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.96  2009/01/09 08:33:26  cdunde
+#New function added "allowbones", checks for at least one component to allowing bones.
+#New function added "clearbones", remakes "Skeleton" folder with NO bones to clear them.
+#
 #Revision 1.95  2008/12/22 05:06:00  cdunde
 #Added new function to attach bones end handles.
 #Corrected the way the Make_BoneVtxList function works to process each bone's handle by its stored component name.
