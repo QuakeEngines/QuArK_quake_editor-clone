@@ -183,6 +183,10 @@ class ModelEditor(BaseEditor):
                 if item.endswith(":mc"):
                     comp = self.Root.dictitems[item]
                     componentnames.append(item)
+                    # Makes sure all models that are loaded by QuArK have frame indexing.
+                    compframes = comp.dictitems['Frames:fg'].subitems   # all frames
+                    for compframe in range(len(compframes)):
+                        compframes[compframe]['index'] = (compframe+1,)
 
                     ### Start of bone data creation.
                     foundbone = 0
@@ -1689,6 +1693,11 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.116  2009/01/27 20:56:24  cdunde
+#Update for frame indexing.
+#Added new bone function 'Attach End to Start'.
+#Code reorganization for consistency of items being created.
+#
 #Revision 1.115  2009/01/27 05:03:01  cdunde
 #Full support for .md5mesh bone importing with weight assignment and other improvements.
 #
