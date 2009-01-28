@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.69  2008/11/06 19:29:51  danielpharos
+Renamed function to concatenate paths, and start using it.
+
 Revision 1.68  2008/11/06 19:19:57  danielpharos
 Moved GameShaderList to correct location, and removed unused variable.
 
@@ -992,12 +995,16 @@ function GetGameFileBase(const BaseDir, FileName, PakFileName: String; LookInCD:
  begin
    Result:='';
    GetDir(0, CurDir);
-   try
-     ChDir(GetQPath(pQuArK));
-     NewPath:=ExpandFileName(Path);
-   finally
-     ChDir(CurDir);
-   end;
+   if IncludeTrailingPathDelimiter(CurDir) = GetQPath(pQuArK) then
+     //Delphi doesn't like ChDir-ing to the same directory...
+     NewPath:=ExpandFileName(Path)
+   else
+     try
+       ChDir(GetQPath(pQuArK));
+       NewPath:=ExpandFileName(Path);
+     finally
+       ChDir(CurDir);
+     end;
    if CompareText(NewPath, Path) <> 0 then
      Result:=NewPath;
  end;
