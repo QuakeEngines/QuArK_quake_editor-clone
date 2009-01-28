@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.471  2008/12/16 21:48:33  cdunde
+//Made the model editor texture window read only to stop the Specifics page from messing up.
+//
 //Revision 1.470  2008/12/06 19:26:49  cdunde
 //To make specific texture browser for the Model Editor import\export files use, non-game dependent.
 //
@@ -11198,6 +11201,7 @@ QQRKSRC1
           type = $01
           newframe:mf =
           {
+            index = '1'
             Vertices = ''
           }
         }
