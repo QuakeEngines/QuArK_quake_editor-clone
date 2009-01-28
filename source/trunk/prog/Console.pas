@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2008/12/04 12:13:11  danielpharos
+Fixed ClearConsoleLog not always working.
+
 Revision 1.14  2008/12/02 16:18:33  danielpharos
 Cleanup for ConsoleLog. Should now always appear in main directory.
 
@@ -77,7 +80,7 @@ type
     ToolbarButton971: TToolbarButton97;
     EnterComboBox1: TEnterComboBox;
     Timer1: TTimer;
-    procedure DisplayPaint(Sender: TObject; DC: Integer; const rcPaint: TRect);
+    procedure DisplayPaint(Sender: TObject; DC: HDC; const rcPaint: TRect);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word;
@@ -471,7 +474,7 @@ begin
   inherited;
 end;
 
-procedure TConsoleForm.DisplayPaint(Sender: TObject; DC: Integer; const rcPaint: TRect);
+procedure TConsoleForm.DisplayPaint(Sender: TObject; DC: HDC; const rcPaint: TRect);
 var
  Str: String;
  Size: TSize;
