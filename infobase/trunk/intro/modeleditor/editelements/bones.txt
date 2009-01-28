@@ -5,6 +5,11 @@ author: cdunde
 <g>Skeleton</g> bones are. The editor has one <a href="intro.modeleditor.dataforms.html#treeview">Skeleton folder</a>
 where these bones are kept, if there are any. They can be applied to a single model <g>Component</g>,
 multipul components of a single model or components of another model that has been imported.
+
+There can also be <g>multiple sets of bones</g> such as in the case for <g>.md5mesh</g> type models where they are
+distinguished by the <g>required</g> (or the system will not work) component number followed by an under score line
+in front of the <g>identical bone name</g> for each <g>component</g> of that model (ex: 0_Head, 1_Head).
+
 Even though a model may not come with its own bones, you can still create your own set of bones and store them
 in a QuArK Model <g>.qkl</g> Work File.
 
@@ -134,9 +139,10 @@ need to use your <g>Ctrl</g> key to maneuver in the selection of these items, th
 or any single bone without having to use your <g>Ctrl</g> key, that frame will remain selected.
 <li> You can select another single frame and the <a href="intro.modeleditor.dataforms.html#treeview">Skeleton Group folder</a>
 or single bone will remain selected.
-<li> With a single frame selected, you can bounch from the <a href="intro.modeleditor.dataforms.html#treeview">Skeleton Group folder</a>
+<li> With a single frame selected, you can bounce from the <a href="intro.modeleditor.dataforms.html#treeview">Skeleton Group folder</a>
 to any single bone, or from one bone to another without having to use your <g>Ctrl</g> key
-<li> or you can bounch from frame to frame without having to use your <g>Ctrl</g> key.
+<li> or you can bounce from frame to frame without having to use your <g>Ctrl</g> key.
+<li> You can make single or multiple bone or frame relocation movements without having to deselect the other item type.
 
 <li> To cancel this action, click on the <a href="intro.modeleditor.dataforms.html#treeview">Frames Group folder</a>
 <li> or any blank unused area in one of the editor's views or the model itself

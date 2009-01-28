@@ -1,4 +1,4 @@
-title: Adding Specifics Page Items
+title: Adding Specifics Page & Menu Items
 author: cdunde
 
 <table border=0 cellspacing=0>
@@ -65,37 +65,33 @@ That is so when the button is active it will be more noticeable then the others.
 Not all buttons will need to remain active but all three files still need to have the new icon to keep things straight.
 
 The reason there are three related image files in this set is because the mdlskv-1.bmp is used as a pass over highlighted look
-when used with the proper button function type.
-
+when used with the proper button function type.<br>
 There are also other kinds of buttons that you can use. See the <g>quarkpy\qtoolbar</g> file or other <g>mdl</g> files for those.
+
+<i><u><b>Menu items</b></u></i> :<br>
+These types of items apply to the <a href="intro.modeleditor.rmbmenus.html">RMB menus</a>. Using this type of method,
+complete functions can be written within the import file to perform special tasks required by that type of model format.<br>
+The results can then be stored within the model component and used for its exporting. The only requirement is that of
+using explicit function names to add items to the RMB menus.<br>
+One good example to look at is the <g>ie_md5_import.py</g> file. Some of these function names are given below along with
+a brief description of what they are for.<br>
+Others may be added later, so if you see something special used, it is a good idea to look at the code for that particular
+model import file for how it was done.
 </td></tr>
 </table>
+<code>
+def dataformname(o):
+    "Returns the data form for this type of object 'o' to use for the Specific/Args page."
 
+def dataforminput(o):
+    "Returns the default settings or input data for this type of object 'o' to use for the Specific/Args page."
 
+def newmenuitems(editor, extra):
+    "To add new menu items to other RMB menus. 'extra' is the current list of RMB menu items."
 
+def bonemodeclick(btn_menu_item):
+    "To add new menu mode items to this RMB menu, use editor.layout.buttons['bonemode'] to get the base menu."
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+def macro_opentexteditor(btn):
+    "To open an object, such as a shader text object or skin texture object, in an outside editor."
+</code>

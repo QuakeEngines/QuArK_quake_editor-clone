@@ -27,9 +27,11 @@ although it is also used throughout QuArK's internal code.
 This data must be read in from the imported model file and added for each component
 <a href="intro.modeleditor.importexport.html#componentcreation">when it is created</a> in
 the Python import file <a href="intro.modeleditor.importexport.html#componentcreation">shown futher above</a>.<br>
-If a model consist of multiple parts, or components, then the bones need to be created and added when each
-component is. This is because each bone has two handles,<br>
-a start and end handle, which can be assigned to different components by that components name.<br>
+
+If a model consist of multiple parts, or components, then the bones need to be created and added in a fashion that
+addresses this issue.<br>
+This is because each bone has two handles, a start and end handle, which can be assigned to different components by that components name.
+
 In addition, each bone must have its own individual name to avoid errors from occurring in the editor.
 
 <u><i>Data within the Bone </i></u>&nbsp;:
@@ -46,17 +48,17 @@ names, such as <g>start_component</g>, are used to retrieve the data as it is ne
 <code>
 {
 'start_component': 'autopsy:mc'
-'start_vertex_count': '4',
-'start_scale': (1.50,),
 'start_point': (-23.702332855224609, -4.4704371452331543, 2.0622565078735352),
 'start_offset': (0.0, 0.0, 0.0),
+'start_vertex_count': '4',
+'start_scale': (1.50,),
+'start_color': '\xff\x00\xff',
 'end_component': 'deadeye:mc',
-'end_vertex_count': '2',
-'end_scale': (1.0,),
 'end_point': (-18.0043323783874512, -0.5604371452331543, 4.0622565078735352),
 'end_offset': (0.0, 0.0, 0.0),
+'end_vertex_count': '2',
+'end_scale': (1.0,),
 'bone_length': (5.70, 3.91, 2.0),
-'start_color': '\xff\x00\xff',
 'end_color': '\x80\x00\x80'
 }
 </code>
@@ -72,6 +74,9 @@ If a bone has vertexes assign to it already these items must be added to the abo
 'end_vtxlist': '18 34',
 'end_vtx_pos': '18 34'
 </code>
+The <g>start</g> and <g>end_vtx_pos</g> are specific vertex indexes from their respective <g>_vtxlist</g>.<br>
+Theses are used to reposition the handle from frame to frame by averaging those vertex positions and applying
+that to the bone handle.
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a name="baseitems"><g><i>Sample Code </i></g></a>&nbsp;:
 
@@ -102,13 +107,12 @@ following example to write your own code. Also you can see more by opening the <
 
     skeletongroup.appenditem(new_o_bone) # Each bone must be appended (added) to the skeletongroup here.
 </code>
-If the end handle of a bone has vertexes assigned to it then that is handled a little differently.
-For another very good detailed example of that and the code above look in the<br>
-<g>QuArK\quarkpy\mdlentities.py</g> file and word search for &nbsp;<g>class BoneType(</g>
-&nbsp;&nbsp;then look at the <g>def handlesopt</g> function there.
+For another very good detailed example to go by, and the code above, look in the
+<g>QuArK\quarkpy\mdlutils.py</g> file and word search for the &nbsp;<g>def Rebuild_Bone</g> function there.
 
-Once again, the bone creation code must be added to the import python file further above
-<a href="intro.modeleditor.importexport.html#componentcreation">where each component is created</a>.
+Once again, the bone creation code must be added to the import python file, further above,
+<a href="intro.modeleditor.importexport.html#componentcreation">where each component is created</a>
+or some other fashion if more then one component (mesh) exist.
 
 <a name="bones2"></a>
 <u><i>QuArK's ModelComponentList </i></u>&nbsp;:

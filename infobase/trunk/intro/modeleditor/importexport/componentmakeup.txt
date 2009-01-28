@@ -17,7 +17,11 @@ elements are broken down.
 <b><g>subitems</g> :</b> This is a list of <b>QuArK Internal Objects</b> that make up a component and controls the order
 that they are displayed in the <a href="intro.modeleditor.overview.html#overview">editor's tree-view</a>.<br>
 They consist of the <g>Skins</g> group (its texture images), <g>Frames</g> group (its animation\<g>vertexes</g> frames)
-and <g>Skeleton</g> group (its <g>bones</g> if any).<br>
+and, <g>SDO</g> group (SkinDrawObject) which is not really used at this time but still needs to be created.
+
+A <a href="intro.modeleditor.importexport.html#bones">Skeleton</a> group (its bones if any) is created outside of,and shaired by,
+the components. This group is covered in detail <a href="intro.modeleditor.importexport.html#bones">further below</a>.
+
 The creation of the <g>subitems</g> list is not something you need to be concerned about when writing an
 <g>importer or exporter file</g>.<br>
 QuArK takes care of that internally using the component's <g>dictitems</g> below.
@@ -30,7 +34,6 @@ will use to create a <g>QuArK editor component</g>, for example:
 {
  'SDO:sdo': <QuArK Internal object at 0x0165FE7C>, # stands for SkinDrawObject
  'Skins:sg': <QuArK Internal object at 0x0166D48C>,
- 'Skeleton:bg': <QuArK Internal object at 0x0166DC54>,
  'Frames:fg': <QuArK Internal object at 0x0166D864>
 }
 </code>
@@ -44,7 +47,8 @@ its <g>subitems</g> as a whole and are only QuArK editor related.<br>
 They are individual dictionary items that contain settings for that component. Some of these settings are used and reset
 by simply moving things around in the editor, such as <g>vertexes</g>, while others are used to fill in the values
 on the <g>editor's Specifics/Args</g> page where they can be viewed and\or reset there. The <g>importer</g> file will
-create these items (<a href="#dictspec2">covered in detail later<a>), for example:
+create these items (<a href="#dictspec2">covered in detail later<a>), for example:<br>
+<u>dictspec items of a model component</u> :
 <code>{'skinsize': (128.0, 64.0), 'Tris': '\x00\x00\x7f\...(a bunch more), 'show': '\x01'}</code>
 <g>'skinsize'</g> is the size of a component's first skin image or a default size of <g>(256, 256)</g> can be used if
 there are no skins.<br>
@@ -60,6 +64,16 @@ a <g>vert_index</g> (vertex index number), a <g>U</g> texture position value and
 <g>2D</g> x , y position of that vertex on the model's skin (in <g>pixels</g>) and the <g>vert_index</g> points to that vertex.<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Each vertex can have more then one
 <g>U, V</g> value and this is a key point to remember. But more will be covered on that later.
+
+<u>dictspec items of a frame</u> :
+<code>{'index': (17.0,), 'Vertices': (-1.859375, 31.234375, ...(a bunch more), 54.078125)}</code>
+<g>'index'</g> It is <b><g>critical</g></b>, for the QuArK Model Editor to work efficiently,
+that each frame has its own index number starting with the count of <g>(1.0,)</g> and continue in numerical order.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Note the comma after the number. It must be written this way to make it a <g>tuple</g> in the <g>Python</g> code.<br>
+<g>'Vertices'</g> This is a continuous list of float values that give the <g>x,y,z position</g> for each vertex of a model's
+component mesh. QuArK's internal code breaks these into groups of three to accomplish this, and of course it takes three
+vertexes, most of which are shared, to make a single triangle of a models mesh.
 
 So there you have it, the breakdown of a component...which can be a bit bewildering at first, but just remember,<br>
 you have a <g>dictionary</g> inside a <g>dictionary</g> inside a <g>dictionary</g>.... 
