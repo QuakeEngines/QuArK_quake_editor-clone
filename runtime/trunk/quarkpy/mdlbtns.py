@@ -173,6 +173,13 @@ def deleteitems(root, list):
         quarkx.beep()
     else:
         undo.ok(root, text)
+        for item in root.dictitems:
+            if item.endswith(":mc"):
+                comp = root.dictitems[item]
+                # To fix all models frame indexing that are currently loaded into QuArK.
+                compframes = comp.dictitems['Frames:fg'].subitems   # all frames
+                for compframe in range(len(compframes)):
+                    compframes[compframe]['index'] = (compframe+1,)
 
 
 def edit_del(editor, m=None):
@@ -489,6 +496,9 @@ def groupcolor(m):
 #
 #
 #$Log$
+#Revision 1.23  2009/01/27 23:28:21  cdunde
+#Update for frame indexing.
+#
 #Revision 1.22  2008/11/17 23:56:04  danielpharos
 #Compensate for accidental change in behaviour in QkObjects rev 1.112.
 #
