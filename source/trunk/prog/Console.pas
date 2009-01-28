@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2009/01/28 20:12:20  danielpharos
+Correct Integer to HDC.
+
 Revision 1.15  2008/12/04 12:13:11  danielpharos
 Fixed ClearConsoleLog not always working.
 
@@ -174,12 +177,14 @@ begin
   if ConsoleFileOpened then
     Exit;
   FullFilename:=ConcatPaths([GetQPath(pQuArK), ConsoleFilename]);
+  {$I-}
   AssignFile(ConsoleFile, FullFilename);
   SetLineBreakStyle(ConsoleFile, tlbsCRLF);
   if not FileExists(FullFilename) then
     Rewrite(ConsoleFile)
   else
     Append(ConsoleFile);
+  {$I+}
   ConsoleFileOpened:=True;
 end;
 
@@ -187,7 +192,9 @@ procedure CloseConsoleFile;
 begin
   if not ConsoleFileOpened then
     Exit;
+  {$I-}
   CloseFile(ConsoleFile);
+  {$I+}
   ConsoleFileOpened:=False;
 end;
 
@@ -198,7 +205,9 @@ begin
   OldConsoleFileStatus:=ConsoleFileOpened;
   if ConsoleFileOpened then
     CloseConsoleFile;
+  {$I-}
   Erase(ConsoleFile);
+  {$I+}
   if OldConsoleFileStatus then
     OpenConsoleFile;
 end;
@@ -207,8 +216,10 @@ procedure WriteConsoleFile(const Text: String);
 begin
   if not ConsoleFileOpened then
     Exit;
+  {$I-}
   Write(ConsoleFile, Text);
   Flush(ConsoleFile);
+  {$I+}  
 end;
 
 procedure InitBuffer(var Buffer: PPipeBuffer; Width: Integer; Height: Integer);
