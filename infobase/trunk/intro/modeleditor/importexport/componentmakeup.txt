@@ -66,11 +66,7 @@ a <g>vert_index</g> (vertex index number), a <g>U</g> texture position value and
 <g>U, V</g> value and this is a key point to remember. But more will be covered on that later.
 
 <u>dictspec items of a frame</u> :
-<code>{'index': (17.0,), 'Vertices': (-1.859375, 31.234375, ...(a bunch more), 54.078125)}</code>
-<g>'index'</g> It is <b><g>critical</g></b>, for the QuArK Model Editor to work efficiently,
-that each frame has its own index number starting with the count of <g>(1.0,)</g> and continue in numerical order.<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-Note the comma after the number. It must be written this way to make it a <g>tuple</g> in the <g>Python</g> code.<br>
+<code>{'Vertices': (-1.859375, 31.234375, ...(a bunch more), 54.078125)}</code>
 <g>'Vertices'</g> This is a continuous list of float values that give the <g>x,y,z position</g> for each vertex of a model's
 component mesh. QuArK's internal code breaks these into groups of three to accomplish this, and of course it takes three
 vertexes, most of which are shared, to make a single triangle of a models mesh.
