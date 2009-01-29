@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2008/12/12 12:47:52  danielpharos
+Moved GlobalWarning to QkExceptions, and added QkTextBoxForm.
+
 Revision 1.11  2008/11/19 06:14:00  cdunde
 Bones system moved to outside of components for Model Editor completed.
 
@@ -239,16 +242,19 @@ begin
   Skins:=Component.SkinGroup;
   Result:=QPCX.Create(name, skins);
   bmp:=TBitmap.Create;
-  if SZ.X<>0 then bmp.Width:=SZ.X else bmp.Width:=50;
-  if SZ.Y<>0 then bmp.Height:=SZ.Y else bmp.Height:=50;
-  bmp.canvas.brush.color:=clWhite;
-  bmp.canvas.FloodFill(bmp.Width div 2,bmp.Height div 2, clBlack, fsBorder);
-  bmp.Canvas.brush.color:=clBlack;
-  bmp.canvas.brush.bitmap:=xoxox;
-  bmp.canvas.FloodFill(bmp.Width div 2,bmp.Height div 2, clBlack, fsBorder);
-  result.PasteBitmap(GameBuffer(ObjectGameCode), bmp);
-  Skins.SubElements.Add(Result);
-  bmp.free;
+  try
+    if SZ.X<>0 then bmp.Width:=SZ.X else bmp.Width:=50;
+    if SZ.Y<>0 then bmp.Height:=SZ.Y else bmp.Height:=50;
+    bmp.canvas.brush.color:=clWhite;
+    bmp.canvas.FloodFill(bmp.Width div 2,bmp.Height div 2, clBlack, fsBorder);
+    bmp.Canvas.brush.color:=clBlack;
+    bmp.canvas.brush.bitmap:=xoxox;
+    bmp.canvas.FloodFill(bmp.Width div 2,bmp.Height div 2, clBlack, fsBorder);
+    result.PasteBitmap(GameBuffer(ObjectGameCode), bmp);
+    Skins.SubElements.Add(Result);
+  finally
+    bmp.free;
+  end;
 end;
 
 end.

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23  2009/01/27 00:14:16  danielpharos
+Model Editor - Fixed a lot of moving-things-about not working as they should.
+
 Revision 1.22  2009/01/22 22:59:51  danielpharos
 Now bones can be moved around in the treeview even though other items are also selected.
 
@@ -1743,12 +1746,7 @@ var
  Copier, Interne: Boolean;
  U: TQObjectUndo;
  L: TList;
- LowerIndex, HigherIndex, CurrentIndex: Integer;
- ShadowList: TList;
- El2: QObject;
- DeselectThem: TQList;
 begin
- DeselectThem := Nil;
  I:=(Sender as TMenuItem).Tag;
  Interne:=I and dfCopyToOutside = 0;
  Copier:=I and not dfCopyToOutside <> 0;
@@ -1779,67 +1777,9 @@ begin
      L.Free;
     end;
    end;
-  //DanielPharos: Broken workaround to update frame's 'index'-dictspec. We should
-  //remove this dictspec, and use IndexOf-style statements instead.
-  if SourceQ.SubElements[0] is QFrame then
-   begin
-    //Let's find all the frames-indices to change
-    LowerIndex:=DropTarget.FParent.SubElements.IndexOf(DropTarget);
-    HigherIndex:=LowerIndex;
-    for I:=0 to SourceQ.SubElements.Count-1 do
-     begin
-      El := SourceQ.SubElements[I];
-      CurrentIndex := SourceQ.SubElements[0].FParent.SubElements.IndexOf(El);
-      if CurrentIndex < LowerIndex then
-        LowerIndex := CurrentIndex;
-      if CurrentIndex > HigherIndex then
-        HigherIndex := CurrentIndex;
-     end;
-    //Create a list reflecting the move
-    ShadowList:=TList.Create;
-    try
-     CurrentIndex := DropTarget.FParent.SubElements.IndexOf(DropTarget);
-     for I:=LowerIndex to CurrentIndex-1 do
-      begin
-       El := DropTarget.FParent.SubElements[I];
-       if SourceQ.SubElements.IndexOf(El)=-1 then
-        ShadowList.Add(El);
-      end;
-     if (SourceQ.SubElements.IndexOf(DropTarget)=-1) and (CurrentIndex=HigherIndex) then
-      ShadowList.Add(DropTarget);
-     for I:=0 to SourceQ.SubElements.Count-1 do
-      ShadowList.Add(SourceQ.SubElements[I]);
-     if (SourceQ.SubElements.IndexOf(DropTarget)=-1) and (CurrentIndex<>HigherIndex) then
-      ShadowList.Add(DropTarget);
-     for I:=CurrentIndex+1 to HigherIndex do
-      begin
-       El := DropTarget.FParent.SubElements[I];
-       if SourceQ.SubElements.IndexOf(El)=-1 then
-        ShadowList.Add(El);
-      end;
-     //Update all the 'index's
-     for J:=0 to ShadowList.Count-1 do
-      begin
-       El := DropTarget.FParent.SubElements[LowerIndex+J];
-       El2 := QObject(ShadowList[J]).Clone(El.FParent, False);
-       El2.SetFloatSpec('index', LowerIndex+J+1);
-       U:=TQObjectUndo.Create('', El, El2);
-       g_ListeActions.Add(U);
-       if SourceQ.SubElements.IndexOf(ShadowList[J])=-1 then
-        begin
-         if DeselectThem = Nil then
-          DeselectThem := TQList.Create;
-         DeselectThem.Add(El2);
-        end;
-      end;
-    finally
-     ShadowList.Free;
-    end;
-   end;
   for I:=0 to SourceQ.SubElements.Count-1 do
    begin
     El:=SourceQ.SubElements[I];
-    if not(El is QFrame) then
     if ieCanDrop in DropTarget.TvParent.IsExplorerItem(El) then
      if Copier or not Interne then
       begin
@@ -1858,13 +1798,6 @@ begin
   FreeAction(DropTarget)
  else
   FinAction(DropTarget, LoadStr1(Numero[Copier, Interne]));
- if DeselectThem <> Nil then
-  begin
-   for I:=0 to DeselectThem.Count-1 do
-    DeselectThem[I].SelMult:=0;
-   DeselectThem.Free;
-   SelectionChanging;
-  end;
  if FDragObjectOthers <> Nil then
   begin
    for I:=0 to FDragObjectOthers.Count-1 do

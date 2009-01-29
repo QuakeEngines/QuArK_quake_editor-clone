@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.20  2009/01/26 21:08:38  danielpharos
+Fix Frame parentcomponent not being set causing problems, and a small tweak to revive MD3 tags (still broken though).
+
 Revision 1.19  2008/11/17 21:54:25  danielpharos
 Fix vertices not being loaded correctly.
 
@@ -290,12 +293,12 @@ const
   RefSpec = Length('RefFrame=');
 var
   S: String;
-  currentFrame: QFrame;
+  currentModelComponent: QComponent;
+  currentFrameNumber: Integer;
   bf,bf2: QModelTag;
   o_tag,s_tag: QTagFrame;
   myRoot, modelRoot: QModelRoot;
   m,m1: PMatrixTransformation;
-  x, x1: vec3_p;
   new: vec3_p;
   s0: string;
 //  sc: double;
@@ -310,12 +313,18 @@ begin
   if myRoot<>modelRoot then
   begin
     //This only happens if a model is loaded INSIDE another model using (MD3-)tagging.
-    currentFrame:=modelRoot.GetComponentFromIndex(0).CurrentFrame;
-    if currentFrame<>nil then begin
-      bf:=QModelTag(modelRoot.getmisc.FindSubObject(myRoot.Specifics.Values['linked_to'], QModelTag, nil));
-      bf2:=QModelTag(myRoot.getmisc.FindSubObject(myRoot.Specifics.Values['linked_to'], QModelTag, nil));
-      o_tag:=QTagFrame(bf.FindSubObject('Tag Frame '+inttostr(Round(currentFrame.GetFloatSpec('index',1))), QTagFrame, nil));
-      s_tag:=QTagFrame(bf2.FindSubObject('Tag Frame '+inttostr(Round(GetFloatSpec('index',1))), QTagFrame, nil));
+    CurrentModelComponent:=modelRoot.CurrentComponent;
+    if CurrentModelComponent=nil then
+      CurrentModelComponent:=modelRoot.GetComponentFromIndex(0);
+    if CurrentModelComponent<>nil then
+    begin
+      currentFrameNumber:=CurrentModelComponent.FrameGroup.SubElements.IndexOf(CurrentModelComponent.CurrentFrame);
+      if currentFrameNumber<>-1 then begin
+        bf:=QModelTag(modelRoot.getmisc.FindSubObject(myRoot.Specifics.Values['linked_to'], QModelTag, nil));
+        bf2:=QModelTag(myRoot.getmisc.FindSubObject(myRoot.Specifics.Values['linked_to'], QModelTag, nil));
+        o_tag:=QTagFrame(bf.GetTagFrameFromIndex(currentFrameNumber));
+        s_tag:=QTagFrame(bf2.GetTagFrameFromIndex(FParent.SubElements.IndexOf(Self)));
+      end;
     end;
   end;
   S:=GetSpecArg(FloatSpecNameOf('Vertices'));
@@ -337,20 +346,8 @@ begin
     P:=New;
     s_Tag.GetRotMatrix(m);
     o_Tag.GetRotMatrix(m1);
-    x:=o_Tag.GetPosition;
-    if s_tag<>nil then
-    begin
-      x1:=s_Tag.GetPosition;
-//      sc:=bf2.GetQ3A_Scale;
-    end
-    else
-    begin
-      getmem(x1, sizeof(vec3_t));
-      fillchar(x1^, sizeof(vec3_t), #0);
-//      sc:=0;
-    end;
-    TranslateVecs(vec3_t_sub(vec3_t_sub(s_Tag.GetPosition^, o_tag.getPosition^), vec3_t_sub(X1^,X^)), P, Result);
     RotateVecs(MultiplieMatrices(M^,M1^), P, Result);
+    TranslateVecs(vec3_t_sub(o_Tag.GetPosition^, s_tag.getPosition^), P, Result);
 //    ScaleVecs(P, Result, sc-bf.GetQ3A_Scale);
     if Specifics.IndexOfName(S0)<>-1 then
       Specifics.Delete(Specifics.IndexofName(S0));

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.24  2008/10/09 14:34:14  danielpharos
+Fix missing skins preventing the model from loading.
+
 Revision 1.23  2008/09/06 15:57:37  danielpharos
 Moved exception code into separate file.
 
@@ -834,7 +837,6 @@ texcoord:=@texbox;
   for i:=1 to MeshFrame_num do
   begin
     Frame:=Loaded_Frame(Comp, format('Frame %d',[i]));
-    Frame.SetFloatSpec('index', i);
 //    GetMem(Vertexes, vertex_Num * Sizeof(TMD3Vertex));
     try
 

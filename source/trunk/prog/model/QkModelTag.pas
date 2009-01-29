@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2008/07/17 14:47:57  danielpharos
+Big (experimental) change to model bones, tags and boundframes
+
 Revision 1.8  2007/09/10 10:24:15  danielpharos
 Build-in an Allowed Parent check. Items shouldn't be able to be dropped somewhere where they don't belong.
 
@@ -47,7 +50,7 @@ unit QkModelTag;
 interface
 
 uses
-  QkObjects, QkMdlObject;
+  QkObjects, QkMdlObject, QkTagFrame;
 
 type
   QModelTag = Class(QMdlObject)
@@ -55,6 +58,8 @@ type
     class function TypeInfo: String; override;
     function IsAllowedParent(Parent: QObject) : Boolean; override;
     procedure ObjectState(var E: TEtatObjet); override;
+    function GetTagFrameFromIndex(N: Integer) : QTagFrame;
+    function GetTagFrameFromName(const nName: String) : QTagFrame;
   end;
 
 implementation
@@ -78,6 +83,31 @@ procedure QModelTag.ObjectState(var E: TEtatObjet);
 begin
   inherited;
   E.IndexImage:=iiModelTag;
+end;
+
+function QModelTag.GetTagFrameFromName(const nName: String) : QTagFrame;
+begin
+  Result:=FindSubObject(nName, QTagFrame, Nil) as QTagFrame;
+end;
+
+function QModelTag.GetTagFrameFromIndex(N: Integer) : QTagFrame;
+var
+  L: TQList;
+begin
+  if N<0 then
+  begin
+    Result:=Nil;
+    Exit;
+  end;
+  L:=TQList.Create; try
+  FindAllSubObjects('', QTagFrame, Nil, L);
+  if N>=L.Count then
+    Result:=Nil
+  else
+    Result:=L[N] as QTagFrame;
+  finally
+    L.Free;
+  end;
 end;
 
 initialization

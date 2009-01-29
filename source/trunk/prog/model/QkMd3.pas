@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.43  2009/01/12 23:39:47  danielpharos
+Fixed misdetection of STVEF MD3 files.
+
 Revision 1.42  2008/10/09 14:34:14  danielpharos
 Fix missing skins preventing the model from loading.
 
@@ -678,7 +681,6 @@ begin
   for i:=1 to mhead.Frame_num do
   begin
     Frame:=Loaded_Frame(Comp, format('Frame %d',[i]));
-    Frame.SetFloatSpec('index', i);
     GetMem(Vertexes, mhead.vertex_Num * Sizeof(TMD3Vertex));
     try
       fs.readbuffer(Vertexes^, mhead.vertex_Num * Sizeof(TMD3Vertex));
