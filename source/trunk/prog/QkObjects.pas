@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.117  2009/01/08 18:51:51  danielpharos
+Resolve all filenames going through FileaccessQ.
+
 Revision 1.116  2008/11/30 20:47:05  danielpharos
 TList --> TQList, and fix possible memory leak in a debug routine.
 
@@ -374,10 +377,10 @@ uses Windows, SysUtils, Messages, Classes, Clipbrd,
 
 const
   QuArKVersion            = 'QuArK 6.6 Beta';
-  QuArKMinorVersion       = 'Beta 1';
-  QuArKCopyright          = 'Copyright (C) 1996-2007 Armin Rigo and others';
-  QuArKUsedCompiler       = 'Delphi 6.0';
-  QuArKCompileDate        = 39573;   //This is the compiled date
+  QuArKMinorVersion       = 'Beta 2';
+  QuArKCopyright          = 'Copyright (C) 1996-2009 Armin Rigo and others';
+  QuArKUsedCompiler       = 'Delphi 7.0';
+  QuArKCompileDate        = 39843;   //This is the compiled date
   { Amount of days that have passed after 30 Dec 1899 (Delphi 2+).
     You can use EncodeDate(Year, Month, Day) to compute it, but this value
     really needs to be a constant, so put the resulting value in here.
