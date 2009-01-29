@@ -134,7 +134,7 @@ def writefile(filename):
             # "meshname" is the component's single frame's name, its 'key' which is used next.
             meshname = objects[obj_index].dictitems['Frames:fg'].subitems[0].name
 
-        # "mesh" is the component's single frame's actual data 'dictspec' items, ['index'] and ['Vertices'].
+        # "mesh" is the component's single frame's actual data 'dictspec' item ['Vertices'].
         # So mesh.dictspec['Vertices'] will return one CONTINIOUS list of all the vertexes x,y,z 3D positions
         # that make up that component's shape (mesh). They are NOT grouped into smaller lists, QuArK does that.
         mesh = objects[obj_index].dictitems['Frames:fg'].dictitems[meshname]
@@ -930,6 +930,11 @@ quarkpy.qmdlbase.RegisterMdlExporter(".lwo LightWave Exporter", ".lwo file", "*.
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.8  2008/07/21 18:06:13  cdunde
+# Moved all the start and end logging code to ie_utils.py in two functions,
+# "default_start_logging" and "default_end_logging" for easer use and consistency.
+# Also added logging and progress bars where needed and cleaned up files.
+#
 # Revision 1.7  2008/07/17 00:28:15  cdunde
 # Added option for error checking of selected components before exporting.
 #

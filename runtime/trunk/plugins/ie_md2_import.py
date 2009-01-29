@@ -409,7 +409,6 @@ def animate_md2(md2): # The Frames Group is made here & returned to be added to 
             tobj.logcon (str(i) + ": " + md2.frames[i].name)
 
         frame = quarkx.newobj(md2.frames[i].name + ':mf')
-        frame['index'] = (i+1,)
         mesh = ()
         #update the vertices
         for j in xrange(0,md2.num_vertices):
@@ -578,6 +577,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".md2 Quake2 Importer", ".md2 file", "*.md2
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.7  2009/01/26 18:29:12  cdunde
+# Update for correct frame index setting.
+#
 # Revision 1.6  2008/12/10 20:21:25  cdunde
 # To display proper skin once model is imported.
 #

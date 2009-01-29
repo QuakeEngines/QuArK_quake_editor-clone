@@ -1752,7 +1752,8 @@ def BuildCommonHandles(editor, explorer, option=1):
     "option=2: Does NOT clear the list but adds to it to allow a combination of view handles to use."
 
   # For future, handles are being killed right now, if we just don't draw them then we can use this below to just send them back, much faster.
-  #  if int(editor.Root.currentcomponent.currentframe.dictspec['index'][0]-1) == editor.bone_frame:
+  #  currentindex = operator.indexOf(editor.Root.currentcomponent.dictitems['Frames:fg'].subitems, editor.Root.currentcomponent.currentframe)
+  #  if currentindex == editor.bone_frame:
   #      import qbaseeditor
   #      from qbaseeditor import currentview
   #      print "mdlhandles line 1757 len(currentview.handles)",len(currentview.handles)
@@ -1771,17 +1772,11 @@ def BuildCommonHandles(editor, explorer, option=1):
             bones = editor.Root.dictitems['Skeleton:bg']
             if len(bones.subitems) != 0:
                 # Checks if something has changed the frame selection, if so then bones need to be rebuilt.
-                try:
-                    if int(editor.Root.currentcomponent.currentframe.dictspec['index'][0]-1) != editor.bone_frame:
-                        editor.bone_frame_changed = 1
-                        editor.bone_frame = int(editor.Root.currentcomponent.currentframe.dictspec['index'][0]-1)
-                except:
-                    frames = editor.Root.currentcomponent.dictitems['Frames:fg'].subitems
-                    for frame in range(len(frames)):
-                        if frames[frame] == editor.Root.currentcomponent.currentframe and frame != editor.bone_frame:
-                            editor.bone_frame_changed = 1
-                            editor.bone_frame = frame
-                            break
+                import operator
+                currentindex = operator.indexOf(editor.Root.currentcomponent.dictitems['Frames:fg'].subitems, editor.Root.currentcomponent.currentframe)
+                if currentindex != editor.bone_frame:
+                    editor.bone_frame_changed = 1
+                    editor.bone_frame = currentindex
 
             for item in editor.Root.subitems:
                 if item.type == ':bg':
@@ -1860,7 +1855,8 @@ def BuildHandles(editor, explorer, view, option=1):
     "option=2: Does NOT clear the list but adds to it to allow a combination of view handles to use."
 
   # For future, handles are being killed right now, if we just don't draw them then we can use this below to just send them back, much faster.
-  #  if int(editor.Root.currentcomponent.currentframe.dictspec['index'][0]-1) == editor.bone_frame:
+  #  currentindex = operator.indexOf(editor.Root.currentcomponent.dictitems['Frames:fg'].subitems, editor.Root.currentcomponent.currentframe)
+  #  if currentindex == editor.bone_frame:
   #      print "mdlhandles line 1757 len(currentview.handles)",len(currentview.handles)
   #      h = view.handles
   #      return h
@@ -1878,17 +1874,11 @@ def BuildHandles(editor, explorer, view, option=1):
             bones = editor.Root.dictitems['Skeleton:bg']
             if len(bones.subitems) != 0:
                 # Checks if something has changed the frame selection, if so then bones need to be rebuilt.
-                try:
-                    if int(editor.Root.currentcomponent.currentframe.dictspec['index'][0]-1) != editor.bone_frame:
-                        editor.bone_frame_changed = 1
-                        editor.bone_frame = int(editor.Root.currentcomponent.currentframe.dictspec['index'][0]-1)
-                except:
-                    frames = editor.Root.currentcomponent.dictitems['Frames:fg'].subitems
-                    for frame in range(len(frames)):
-                        if frames[frame] == editor.Root.currentcomponent.currentframe and frame != editor.bone_frame:
-                            editor.bone_frame_changed = 1
-                            editor.bone_frame = frame
-                            break
+                import operator
+                currentindex = operator.indexOf(editor.Root.currentcomponent.dictitems['Frames:fg'].subitems, editor.Root.currentcomponent.currentframe)
+                if currentindex != editor.bone_frame:
+                    editor.bone_frame_changed = 1
+                    editor.bone_frame = currentindex
 
             for item in editor.Root.subitems:
                 if item.type == ':bg':
@@ -6239,6 +6229,11 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.166  2009/01/27 20:56:24  cdunde
+#Update for frame indexing.
+#Added new bone function 'Attach End to Start'.
+#Code reorganization for consistency of items being created.
+#
 #Revision 1.165  2009/01/27 05:03:02  cdunde
 #Full support for .md5mesh bone importing with weight assignment and other improvements.
 #

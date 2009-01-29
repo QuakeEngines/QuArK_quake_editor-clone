@@ -56,7 +56,6 @@ def matchframesclick(m):
                             framecount = framecount + 1
                             continue
                         newframe = quarkx.newobj(frame.name)
-                        newframe['index'] = (framecount,)
                         newframe['Vertices'] = complastframe.dictspec['Vertices']
                         compframesgroup.appenditem(newframe)
                         framecount = framecount + 1
@@ -228,6 +227,9 @@ onclick = commandsclick
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.21  2008/07/26 03:37:38  cdunde
+# Minor correction for frames matching count.
+#
 # Revision 1.20  2008/07/25 22:57:23  cdunde
 # Updated component error checking and added frame matching and\or
 # duplicating with independent names to avoid errors with other functions.

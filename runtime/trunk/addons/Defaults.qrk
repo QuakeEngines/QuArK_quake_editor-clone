@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.472  2009/01/28 01:36:55  cdunde
+//Update for frame indexing.
+//
 //Revision 1.471  2008/12/16 21:48:33  cdunde
 //Made the model editor texture window read only to stop the Specifics page from messing up.
 //
@@ -11201,7 +11204,6 @@ QQRKSRC1
           type = $01
           newframe:mf =
           {
-            index = '1'
             Vertices = ''
           }
         }

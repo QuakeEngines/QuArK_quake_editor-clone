@@ -1854,9 +1854,8 @@ def addframe(editor):
     new_comp.dictitems['Frames:fg'].insertitem(count, newframe)
     compframes = new_comp.dictitems['Frames:fg'].subitems   # all frames
     # To allow frame relocation after editing.
-    for compframe in range(len(compframes)):
-        compframes[compframe]['index'] = (compframe+1,)
-        compframes[compframe].compparent = new_comp
+    for compframe in compframes:
+        compframe.compparent = new_comp
     undo = quarkx.action()
     undo.exchange(comp, None)
     undo.put(editor.Root, new_comp)
@@ -3511,6 +3510,11 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.98  2009/01/27 20:56:24  cdunde
+#Update for frame indexing.
+#Added new bone function 'Attach End to Start'.
+#Code reorganization for consistency of items being created.
+#
 #Revision 1.97  2009/01/27 05:03:00  cdunde
 #Full support for .md5mesh bone importing with weight assignment and other improvements.
 #

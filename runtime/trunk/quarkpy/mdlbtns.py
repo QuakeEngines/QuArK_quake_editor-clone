@@ -173,13 +173,6 @@ def deleteitems(root, list):
         quarkx.beep()
     else:
         undo.ok(root, text)
-        for item in root.dictitems:
-            if item.endswith(":mc"):
-                comp = root.dictitems[item]
-                # To fix all models frame indexing that are currently loaded into QuArK.
-                compframes = comp.dictitems['Frames:fg'].subitems   # all frames
-                for compframe in range(len(compframes)):
-                    compframes[compframe]['index'] = (compframe+1,)
 
 
 def edit_del(editor, m=None):
@@ -307,9 +300,6 @@ def edit_dup(editor, m=None):
                 itemtomoveparent = itemtomove.parent
                 itemtomoveparent.removeitem(itemtomove)
                 itemtomoveparent.insertitem(count, itemtomove)
-                # Fixes up the frame indexing.
-                for frame in range(len(itemtomoveparent.subitems)):
-                    itemtomoveparent.subitems[frame]['index'] = (frame+1,)
 
 
 def edit_newgroup(editor, m=None):
@@ -496,6 +486,9 @@ def groupcolor(m):
 #
 #
 #$Log$
+#Revision 1.24  2009/01/28 01:10:09  cdunde
+#Update for frame indexing, for another function.
+#
 #Revision 1.23  2009/01/27 23:28:21  cdunde
 #Update for frame indexing.
 #

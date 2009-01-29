@@ -1014,7 +1014,6 @@ def load_md5(md5_filename, basepath):
         #        blender_mesh=NMesh.New() # make this a QuArK component's frame verticies
                 framesgroup = quarkx.newobj('Frames:fg') # QuArK Frames group made here.
                 frame = quarkx.newobj('Base frame' + ':mf') # QuArK frame made here.
-                frame['index'] = (1.0,)
                 comp_mesh = () # QuArK code
                 comp_verts = [] # QuArK code
                 for vert in mesh.verts: # QuArK frame Vertices made here.
@@ -2016,6 +2015,10 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.13  2009/01/26 18:29:54  cdunde
+# Update for correct frame index setting.
+# Major update of importing.
+#
 # Revision 1.12  2008/12/22 05:04:40  cdunde
 # Bone vertex assignment update and use of mesh names from imported file.
 #
