@@ -249,6 +249,9 @@ corrisponding buttons on the
 
 <i>Draw Bone Handles Only </i>&nbsp;: When checked only the bone handles are displayed to increase drawing speed during and after a drag.
 
+<i>Make All Draglines </i>&nbsp;: When checked allows all bone handles draglines to be created but will decrease drawing speed & increase model importing time.<br>
+Only applies at time of model importing and will have no effect once it has. If not used sufficient draglines to see what is being moved and how will still be drawn.
+
 <tr><td valign=top><br>
 <img border=1 align=right valign=top>viewsrmbmenus4.png</img>
 

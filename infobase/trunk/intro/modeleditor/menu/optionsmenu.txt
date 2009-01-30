@@ -2,27 +2,27 @@ title: Options menu
 author: cdunde
 editortrue3dmode
 <map name="optionsmenuMap0">
-<area href="#drawhandleswhilerotating" shape="rect" coords="2, 208, 250, 222">
-<area href="#editortrue3dmode" shape="rect" coords="2, 225, 250, 238">
-<area href="#full3dtrue3dmode" shape="rect" coords="2, 241, 250, 254">
-<area href="#modelaxisinviews" shape="rect" coords="2, 268, 250, 282">
-<area href="#drawbackfaces" shape="rect" coords="2, 285, 250, 299">
-<area href="#setlinethickness" shape="rect" coords="2, 302, 250, 316">
-<area href="#boneoptions" shape="rect" coords="2, 327, 250, 341">
-<area href="#boneoptions" shape="rect" coords="261, 293, 417, 328">
-<area href="#editorfaceselectionoptions" shape="rect" coords="2, 344, 250, 358">
-<area href="#editorfaceselectionoptions" shape="rect" coords="261, 332, 497, 504">
-<area href="#editorvertexselectionoptions" shape="rect" coords="2, 361, 250, 375">
-<area href="#editorvertexselectionoptions" shape="rect" coords="261, 512, 452, 572">
-<area href="#skinviewoptions" shape="rect" coords="2, 378, 250, 392">
-<area href="#skinviewoptions" shape="rect" coords="261, 577, 452, 654">
-<area href="#skinviewoptionsdrawticks" shape="rect" coords="100, 616, 256, 650">
-<area href="#pasteobjectsatscreencenter" shape="rect" coords="2, 404, 250, 418">
-<area href="#enlargeverticesticks" shape="rect" coords="2, 421, 250, 435">
-<area href="#rebuild3dviews" shape="rect" coords="2, 438, 250, 452">
-<area href="#axisxyzletters" shape="rect" coords="2, 455, 250, 469">
-<area href="#listofplugins" shape="rect" coords="2, 481, 250, 495">
-<area href="#configuration" shape="rect" coords="2, 498, 250, 512">
+<area href="#drawhandleswhilerotating" shape="rect" coords="2, 228, 250, 242">
+<area href="#editortrue3dmode" shape="rect" coords="2, 245, 250, 258">
+<area href="#full3dtrue3dmode" shape="rect" coords="2, 261, 250, 274">
+<area href="#modelaxisinviews" shape="rect" coords="2, 288, 250, 302">
+<area href="#drawbackfaces" shape="rect" coords="2, 305, 250, 319">
+<area href="#setlinethickness" shape="rect" coords="2, 322, 250, 336">
+<area href="#boneoptions" shape="rect" coords="2, 347, 250, 361">
+<area href="#boneoptions" shape="rect" coords="261, 297, 417, 348">
+<area href="#editorfaceselectionoptions" shape="rect" coords="2, 364, 250, 378">
+<area href="#editorfaceselectionoptions" shape="rect" coords="261, 352, 497, 524">
+<area href="#editorvertexselectionoptions" shape="rect" coords="2, 381, 250, 395">
+<area href="#editorvertexselectionoptions" shape="rect" coords="261, 532, 452, 592">
+<area href="#skinviewoptions" shape="rect" coords="2, 398, 250, 412">
+<area href="#skinviewoptions" shape="rect" coords="261, 597, 452, 674">
+<area href="#skinviewoptionsdrawticks" shape="rect" coords="100, 636, 256, 670">
+<area href="#pasteobjectsatscreencenter" shape="rect" coords="2, 424, 250, 438">
+<area href="#enlargeverticesticks" shape="rect" coords="2, 441, 250, 455">
+<area href="#rebuild3dviews" shape="rect" coords="2, 458, 250, 472">
+<area href="#axisxyzletters" shape="rect" coords="2, 475, 250, 489">
+<area href="#listofplugins" shape="rect" coords="2, 501, 250, 515">
+<area href="#configuration" shape="rect" coords="2, 518, 250, 532">
 </map>
 
 <img border=0 align=right usemap="#optionsmenuMap0">options.png</img>
@@ -104,6 +104,9 @@ such as the outlining of selected model mesh faces and the models axis lines.
 <a href="intro.modeleditor.rmbmenus.html#viewsrmbmenus">Editor Views RMB menus</a>, please click on the menu link for this functions full description.
 
 <u><i>Draw Bone Handles Only </i></u>&nbsp;: This funciton is also located on the
+<a href="intro.modeleditor.rmbmenus.html#viewsrmbmenus">Editor Views RMB menus</a>, please click on the menu link for this functions full description.
+
+<u><i>Make All Draglines </i></u>&nbsp;: This funciton is also located on the
 <a href="intro.modeleditor.rmbmenus.html#viewsrmbmenus">Editor Views RMB menus</a>, please click on the menu link for this functions full description.
 
 <a name="editorfaceselectionoptions"></a>
