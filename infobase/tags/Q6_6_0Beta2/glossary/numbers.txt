@@ -1,0 +1,6 @@
+title: #0 - #9...
+author: Decker
+
+<dl>
+<dt><a name="3dfx">    </a>3Dfx       <dd>Company. Creator of <a href="#glide">Glide</a>. Now bankrupt.
+</dl>

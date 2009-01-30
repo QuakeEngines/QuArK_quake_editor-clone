@@ -1,0 +1,13 @@
+title: Python
+desc: learning notes gotchas
+
+Python is a very flexible, interpreted language that much of
+QuArK is written in.  QuArK (versions 6.4 and higher) includes
+a Python compiler, so all you have to do to change to the python
+code is edit a *.py file in a text editor, save it, and run QuArK:
+compilation of changed .py files into .pyc files is automatic.
+
+If you want to develop in Python however, you will probably
+want the full distribution from
+<a href="http://www.python.org">www.python.org</a>, since this includes documentation including
+a tutorial, command-line listener for testing out what functions do, etc.

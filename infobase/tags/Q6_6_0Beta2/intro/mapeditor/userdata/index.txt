@@ -1,0 +1,15 @@
+title: Userdata panel
+desc: qtxfolder
+desc: txlist
+desc: objects
+desc: texture
+
+<img border=0 align=right>userdata.png</img>
+This panel will primarly contain all folders from new map items window, all
+texture-folders from the texture browser, and a 'used textures in this
+map'-folder.
+
+Else its up to you, to drop other objects into this panel. Objects that you use
+very often, would be a very good idea to put into this panel.
+
+You can always remove objects from the panel, by dragging it to the trashcan.

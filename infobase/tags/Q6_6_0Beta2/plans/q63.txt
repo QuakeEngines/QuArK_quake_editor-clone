@@ -1,0 +1,179 @@
+title: QuArK 6.3 (stable)
+author: tiglari, etc.
+
+QuArK 6.3.0 has been released; there is also an update patch, and there
+will very likely be a 6.3.1 with some minor bugfixes and improvements.
+Probabl that will be that.
+
+First, what what has been implemented in QuArK 6.3.0, at least as much of it
+as we remembered to record!  The now uninformative 'status' info (e.g.
+'done') has been removed, but some of the more contentful ones have been
+left.  Feel free to add additional features to this list that QuArK actually
+acquired but got left out.
+
+<ul>
+<li>6DX Engine Support: (decker, Jacob Marner)
+
+<li>Crystal Space Support: (tiglari, funkiedamouse)
+
+<li>Linear Matrix editor: (tiglari, lots of design from Rolf Hulsbergen)
+<br>crank out matrices for rotation, scaling
+etc. from intelligible parameters (from pushbutton in duplicator
+forms).
+
+<li>Extruder: (tiglari)
+<br>generate brushes etc. from 2d outlines.
+<br>status: done (integrates with path duplicator); some extensions
+currently being added.
+
+<li>'New Copy One' duplicator: (tiglari)
+<br> put copies of a structure where you want it.  Inspired
+by a suggestion by Meatball402 on Quake3World editing forum.
+
+<li>User-configurable hot keys: (tiglari)
+<br>What additional ones should be added?
+
+<li>User-specifible rotation/linear mapping origin: (tiglari)
+<br>Do they really need to be persistent properties of groups?
+(as opposed say to a tagged point)
+<br>what about axis? No, wouldn't integrate with the buttons.
+<br>status: redone as handle (old origin duplicator removed
+from interface).  Works as fixpoint for scale/rotate linear specifics
+in some duplicators.
+
+<li>Merge Polys: (tiglari)
+<br>bugs fixed, merge all mergeable polys in group
+
+<li>Form-editing: (Andy)
+<br> Includes create capacity.
+
+<li> Entity Extractor: (Andy)
+<br> Entities extracted from .bsp's in many formats
+(including Q3(T)A).  Runs out of memory on some maps in some .pk3's.
+This can be worked around by extracting the .bsps to individual
+files.
+
+<li>Selection modes: (tiglari)
+<br>Configuragle 'Aux Keys', by default 'F' for face, 'B' for brush,
+'C' for curve, 'E' for entity (point or brush).  'P' and 'F' don't have
+drilldown, this is a bit asymmetrical but I don't think it really matters.
+
+<li>L-square enhancements: (tiglari, ax2grind)
+<br>status: started, align & glue to tagged done.  I intend
+to leave further enhancements as an exercise for someone who
+wants to learn more about QuArK-Python programming.
+
+<LI>Tree navigation: (tiglari, design from Decker, realdespair)
+<br> home, pg up, pg down for parent, next prev in group, cycling.
+Plus some kind of option for getting next-of-same-type in group.
+<br>status: basic stuff done.  Perhaps add more refined same-type
+option (=classname for point entities, brush entities, =macro
+for duplicators)
+
+<li> Entity Lump Extractor: (tiglari)
+<br> extracts entity lumps from .bsp's in a .pak to independent files.
+<br> status: done but seems to fail with STVEF .bsp's whose names
+begin with underscore.  More thought about easy preparation of
+entity addons is needed.
+
+<li>3point cutting plane: (tiglari)
+
+<li>Pythonify entity def converters: (Andy)
+
+<li>texture search facility: (Andy, suggestions from quantum_red)
+
+<li>storable camera positions: (tiglari, design from quantum_red)
+
+<li>group selection movement commands: (tiglari, design from Alan Donald and quantum_red)
+<br>exchange position & align (WC-style)
+
+<li>incrementable specifics in duplicators: (subnoodle, tiglari)
+<br>status: done except for radial duplicator.
+
+<li>texture-replacement specifics for duplicators: (tiglari)
+<br>status: done except for radial.
+
+<li>promotion/demotion of submenus: (tiglari)
+<br>status: done for texture & tagging (not intended
+for all submenus, just some of the more useful ones)
+
+<li>Code specifics for toolbar buttons: (Andy)
+
+<li>Support for Gunman, Blue Shift & other HL derivatives: (Decker)
+
+<li>Arg Replacer: (decker)
+
+<li>Show/edit entities for supported games bsp's: (tiglari)
+<br>status: done except for Sin (a fourth bsp structure
+probably over-strains the present code structure).
+
+<li>Inspect nodes & planes in bsps: (tiglari)
+
+<li>Object snapper: (tiglari, idea from quantum red)
+<br> align/move object w.r.t. face so that face and
+a face of the object are paralell.
+
+<li>Object slider enhancement: (tiglari)
+<br>Now moves object over plane and along normal.
+
+<li> Don't draw restricted out stuff: (tiglari)
+<br>when hide-out-of-view is checkd.
+
+<li> Search for defective textures: (tiglari)
+<br>whose scales are too small (request from rust QuArK forum)
+
+<li>'Move containing' item on the vertex RMB: (tiglari)
+<br>that moves the parent item selected from the submenu so that
+the vertex becomes on-grid (solution to problem from the RQF)
+
+<li>'Output Map Format' field in game configs: (tiglari)
+<br>replacing some of the Map Options.
+
+<li>various selection modes: (tiglari)
+<br>frozen selections (shift RMB) that don't change until another
+frozen selection is made, selection of brush, face, patch, entity only,
+done via 'auxiliary keys' (hold down during mouseclick).  Frozen
+selections appear to be at least a partial implementation of a suggestion
+by rd.
+
+<li>bilinear filtering option in texture views: (tiglari)
+<br>prodding from aguir_re.
+
+<li>Support RTCW, JKII, Torque, partial support for Mohaa.
+
+<li>bilinear filtering option added to OGL view: (tiglari)
+<br>prodding from aguir_re, facilitated by a nice intro OGL
+tutorial from which some code could be cribbed, also I suspect
+some previous cleanup by Decker.
+
+<li>Fixed problem with 2-monitor usage of QuArK:
+<br>breakthru insights from quantum_red and Decker.
+
+<li>Radiant-style dragging, with frozen selections: (tiglari)
+<br>The justification for this is that I think it might be fast
+and convenient in certain cirucmstances. (Also a 'how it was done'
+story might be a good QuArK-Python tutorial on handling mouse stuff.)
+<br>status: <strong>done</strong>
+
+<li>Basic SoF2 support: (tiglari, CHK Shoot)
+
+<li>jump-pad trajectory calculator: (decker)
+
+<li>non-integral face finder-fixer: (tiglari)
+
+<li>liner mappings work on path duplicator: (tiglari)
+</ul>
+
+And in future updates + 6.3.1.
+<UL>
+<LI> enhanced wallmaker: (tiglari)
+<br>status: done in current update patch
+<LI> target finder: (tiglari)
+<br> status: done in current update patch
+<LI> enhanced prism builder: (ax2grind, cdunde)
+<br>status: done in current update patch
+<LI> tagging commands toolbar: (cdunde)
+<status>done as plugin
+<LI> more flexible vertex movement: (milifaar)
+<status>done as plugin
+</ul>

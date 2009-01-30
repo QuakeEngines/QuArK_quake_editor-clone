@@ -1,0 +1,102 @@
+title: QuArK-specific functions of the module quarkx
+author: Armin Rigo
+
+<table border=1 cellspacing=0 cellpadding=4>
+
+<tr><td class="doccode">
+Setup1(...)
+</td><td>
+Must be called at start-up for initialization only. See <tt>quark.py</tt>.
+</td></tr>
+
+<tr><td class="doccode">
+action()
+</td><td>
+Starts an undoable user action. Returns a copy of the <tt>undo</tt> module described below.
+</td></tr>
+
+<tr><td class="doccode">
+getchangednames()
+</td><td>
+Returns a list with, one or more, tuple lists <tt>(oldname, newname)</tt> inside it, each consisting of two string items that give the old and new names of an object that was renamed.
+Do not call this function directly or it will clear the list, call it using a variable to be set by it.<br>
+For example: <g>changednames = quarkx.getchangednames()</g><br>
+Then use the variable to work with. If nothing has been renamed then this function will only return <g>None</g>, but not as a string item.
+</td></tr>
+
+<tr><td class="doccode">
+undostate(obj)
+</td><td>
+Returns a tuple <tt>(undostr, redostr)</tt> with two strings that give the next operation that can be undone (resp. redone) on the object <tt>obj</tt>. <tt>undostr</tt> and <tt>redostr</tt> are set to <tt>None</tt> if there is no operation to undo (resp. redo).
+</td></tr>
+
+<tr><td class="doccode">
+boundingboxof(list)
+</td><td>
+Returns a bounding box <tt>(vmin, vmax)</tt> for the given <tt>list</tt> of map objects, or <tt>None</tt>. <tt>vmin</tt> and <tt>vmax</tt> are 3D vector objects. The list may also contain (non-projected) 3D vector objects that will be included in the returned bounding box.
+</td></tr>
+
+<tr><td class="doccode">
+texturesof(list)
+</td><td>
+Returns a sorted list of all texture names used in the given <tt>list</tt> of map objects.
+</td></tr>
+
+<tr><td class="doccode">
+extendcoplanar(list, lookin)<br>
+extendcoplanar(list, lookin, side)
+</td><td>
+<tt>list</tt> should be a list of polyhedron faces. This routine searches for faces in the objects in the list <tt>lookin</tt> that are coplanar and adjacent to the given faces, and appends them to <tt>list</tt>. All given faces must already be coplanar. <tt>side</tt> controls whether two faces of opposite normal vector match; <tt>1</tt> must be the same direction, <tt>-1</tt> must be opposite, <tt>0 </tt>(default) both. Note that the resulting <tt>list</tt> may contain a face more than once if it is shared by several polyhedron or if it was originally both in <tt>list</tt> and <tt>lookin</tt>.
+</td></tr>
+
+<tr><td class="doccode">
+forms()<br>
+forms(1)<br>
+forms(2)
+</td><td>
+Returns a list of all opened windows. Note that this is currently not very useful, because only Python-controlled windows are included. In the second form of the call, Floating windows are included as well. In the 3rd form of the call, non-Python windows are included as <tt>None</tt> in the list, and the order is such as the first item in the list represents the active window.
+</td></tr>
+
+<tr><td class="doccode">
+newform()
+</td><td>
+Opens a new window. Don’t use this. To create floating toolbox windows, see <tt>newfloating()</tt>.
+</td></tr>
+
+<tr><td class="doccode">
+update()<br>
+update(form)
+</td><td>
+Updates the window <tt>form</tt>, or all windows if not specified. Menu bars, toolbars, and buttons are updated. See below for more information.
+</td></tr>
+
+<tr><td class="doccode">
+opentoolbox(toolbox)<br>
+opentoolbox(toolbox, select)
+</td><td>
+Opens the toolbox given by name. If <tt>toolbox</tt> is empty, this function opens the texture browser. If <tt>select</tt> is specified, attempts to find and select this Internal object in the toolbox. If <tt>select</tt> is <tt>None</tt>, and if some objects were previously selected in the toolbox, they are unselected.
+</td></tr>
+
+<tr><td class="doccode">
+findtoolboxes()<br>
+findtoolboxes(tb)
+</td><td>
+Find all toolbox data objects. Returns a list of couples <tt>("toolbox name", rootofdata)</tt>. If <tt>tb</tt> is specified, it must be a string and <tt>findtoolboxes</tt> will only return data for this toolbox.
+</td></tr>
+
+<tr><td class="doccode">
+openconfigdlg()<br>
+openconfigdlg(path)<br>
+openconfigdlg(caption, obj, newobjlist)
+</td><td>
+Opens the Configuration dialog box. If <tt>path</tt> is given, the corresponding folder or subfolder is opened, e.g. "<tt>Map:Options</tt>", or "<tt>:</tt>" for the current game’s configuration page. In the third form, <tt>obj</tt> is a <tt>:config</tt> object that gives alternate configuration data to display, and <tt>caption</tt> is the window caption. In this case, the dialog box is modal and <tt>openconfigdlg</tt> returns <tt>1</tt> or <tt>0</tt> to let you know if the user clicked on Ok or Cancel. <tt>newobjlist</tt> is a list of objects that the user can insert from buttons, or <tt>None</tt> if no editing of the object hierarchy is allowed.
+</td></tr>
+
+<tr><td class="doccode">
+globalaccept()<br>
+globalaccept(ok)
+</td><td>
+Ends pending user editing (e.g. in yellow edit boxes). If <tt>ok</tt> is <tt>True</tt> or omitted, the changes are accepted; otherwise, they are cancelled.
+</td></tr>
+
+</table>

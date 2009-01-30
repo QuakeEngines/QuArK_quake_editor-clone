@@ -1,0 +1,29 @@
+title: How is QuArK different from other map editors?
+author: tiglari (total replacement of Gryphon's original)
+
+One difference between QuArK and many other editors is a consistent
+emphasis on an easy-to-use and intuitive interface, with extensive
+flyover hints and other forms of in-program documentation.  No need
+to remember 50 combinations of hot keys to produce a map.  Initial
+configuration is simply a matter of filling in fields indicating where
+the games you're editing and their compiling tools are located, and when
+you start the map editor for the first time, you're presented with a
+basic map than you can run by hitting the 'GO' button.
+
+There has also been extensive development of tools such as 'duplicators'
+and 'shape builders' to help in creating complex patterns such as stairs,
+arches and other sophisticated architecture.  If you know you need a row
+of pillars but can't make up your mind about what texture to use on them,
+you can use a duplicator, and changing the texture on the original will
+automatically update the copies.
+
+A final difference is that QuArK is as far as we know the only GPL (Gnu Public
+License) game editor that is being actively developed, and is easy to extend to
+accomodate a wide range of different games.  The GPL means, among other things,
+that the QuArK developers can't impose any restrictions at all on what
+you do with it, unlike editors supported by games companies, which can't
+be used for games produced by other companies.  So if you are an aspiring
+game-developer you can adapt QuArK for your own project, without
+having to reveal editor source until you release the editing tools for
+your game (actually you don't even have to do that, though we would certainly
+hope that you would).

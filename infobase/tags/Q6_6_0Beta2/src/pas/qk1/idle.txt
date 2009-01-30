@@ -1,0 +1,13 @@
+title: Idle jobs
+author: Armin Rigo
+
+The 'idle job' is what runs when the application is idle, i.e. has nothing else
+to do. Qk1.pas defines general methods to register new idle jobs, which will be
+performed step-by-step -- every time the application is idle, a little bit of
+the job is performed (through the AppIdle method). This is only used for the
+texture browser, whose idle job consists of filling the texture pages (in
+QkWad.pas), one texture at a time. This is done as an idle job so that it can
+be interrupted by the user. I found it more convenient to do it like this
+instead of starting a new thread that would load textures in parallel with
+normal program execution, mainly because there are a number of issues with
+multiple threads accessing the same internal data at the same time.

@@ -1,0 +1,32 @@
+title: Python Interpreters & Versions
+author: tiglari, Peter Brett, DanielPharos
+
+Python support and versioning is implemented in
+'source/python/Python.pas' and 'source/python/PyVersions.inc'.
+
+QuArK first looks for the 'dlls/Python.dll', and if that is not
+found, it looks for the appropriate DLL using the default Windows
+search behaviour.  The following versions are supported with the
+appropriate defines set.
+<ul>
+<li>Python 2.6: 'PYTHON26' (python26.dll) (at the time of writing, only alpha versions have been released, so this version is not supported).</li>
+<li>Python 2.5: 'PYTHON25' (python25.dll) (not officially supported).</li>
+<li>Python 2.4: 'PYTHON24' (python24.dll) - this is the default.</li>
+<li>Python 2.3: 'PYTHON23' (python23.dll)</li>
+<li>Python 2.2: 'PYTHON22' (python22.dll)</li>
+<li>Python 2.1: 'PYTHON21' (python21.dll)</li>
+<li>Python 2.0: 'PYTHON20' (python20.dll)</li>
+<li>Python 1.x: Not supported anymore</li>
+</ul>
+
+Note that if you downloaded a source distribution of QuArK, the
+appropriate 'python.dll' should be included in the archive.
+
+The bundled Python support is to get around the fact that the version
+of Python supported can only be set at compile time.  It substantially
+simplifies the installation process for the end user, and makes only
+one download necessary.  It also ensures that all end users are
+running the same version of Python, removing a possible source of bugs
+(people using the wrong version of Python for the QuArK binary they
+have).  It also allows us to go ahead with writing code that requires
+features only available in more recent versions of Python.

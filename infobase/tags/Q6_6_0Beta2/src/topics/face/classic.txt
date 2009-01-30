@@ -1,0 +1,33 @@
+title: Classic Quake
+author: tiglari
+
+The 'Classic Quake' face format is three parenthesized 3-vectors to
+specify three points defining the plane, then the texture name,
+and then five numbers being texture shift (2) rotation (1) and scale (2).
+E.g.
+<code>
+  ( 432 0 96 ) ( 432 128 96 ) ( 560 0 96 ) bricka2_2 -432 0 0 1 1 
+</code>
+This is Quake; other games elaborate on this by putting various things
+after the five numbers, such as in Q2/3 the three fields (Content, Flags,
+Value) etc. (you can get an idea of the variations by studying the
+SaveAsMapTextTFace procedure in QkQuakeMap).
+The way the five numbers work is that one imagines the texture as being
+plastered onto whatever of the three axis-planes is closest to parallel
+to the face, and then as being projected on the face, after being shifted,
+rotated and scaled as specified by the numbers.
+
+This scheme has its advantages and disadvantages, which we will not go into
+here, but another question is why use nine numbers to specify a plane when four
+can actually do it? (three to specify a direction that the plane is
+perpendicular to, a fourth to specify the distance from the origin that you go
+in that direction to get to the plane).  The answer I think is that by
+using nine numbers you can specify a lot of different planes using only
+integers, whereas a four-number scheme would involve one in the tricky
+world of floating point and roundoff errors.
+
+Anyway, this texture positioning scheme has difficulties with certain kinds
+of configurations, such as unpredictable results for faces making 45 degree
+angles to the axes, amd also makes it difficult to cause textures to move
+with faces when objects are shifted (since the textures are basically
+connected with axis planes, and projected onto the faces). 

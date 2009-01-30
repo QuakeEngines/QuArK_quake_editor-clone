@@ -1,0 +1,63 @@
+title: The undo module
+author: Armin Rigo
+
+As a general rule, you must never directly modify map objects. This would prevent the user from undoing his actions. Instead,
+when you have changes to make, you must call quarkx.action() which returns a module object where you will find the functions
+described in the next table. Duplicate the objects you want to change using their copy() method, make changes in the copies,
+and use the following functions to give the new objects to QuArK’s undo mechanism.
+
+To finalize the undo call and action you must use the <g>undo.ok(</g>base, text<g>)</g> call. The <g>base</g> is the main
+object such as <g>editor.Root</g> and <g>text</g> is the string text message that will be posted to the editor's
+<g>Undo / Redo</g> list. One option does exist for this <g>ok</g> call for the <g>text</g>. In rare cases, the ability of the undo module to activate code
+that other functions do not, such as <g>invlaidateallviews</g>, the undo function can be called as described and finalized
+with its <g>text</g> argument like this <g>undo.ok(</g>base, <g>"")</g> giving no text within the two double quotes.
+This will still allow the acceptance of the undo action but will <b>NOT</b> post anything to the editor's <g>Undo / Redo</g> list.
+
+<table border=1 cellspacing=0 cellpadding=4>
+
+<tr><td class="doccode">
+put(parent, new)<br>
+put(parent, new, insertbefore)
+</td><td>
+Operation that puts the new object into the group parent. It is inserted at the end of the subitems list, unless insertbefore is specified. insertbefore must be an existing subitem of parent.
+</td></tr>
+
+<tr><td class="doccode">
+exchange(old, new)
+</td><td>
+Operation that replaces the old object with the new one. If new is None, the old object is simply deleted.
+</td></tr>
+
+<tr><td class="doccode">
+setspec(obj, spec, arg)<br>
+setspec(obj, spec, arg, position)
+</td><td>
+Operation that sets a Specific/Arg pair in the object obj. spec is a string, and arg can be a string, a tuple of floats, or an integer, as the command obj[spec]=arg would do. If position is specified, it controls the position relative to other Specifics.
+</td></tr>
+
+<tr><td class="doccode">
+rename(obj, name)
+</td><td>
+Operation that changes the shortname of an object.
+</td></tr>
+
+<tr><td class="doccode">
+move(obj, target)<br>
+move(obj, target, insertbefore)
+</td><td>
+Operation that moves the object obj into the group target, inserting it before the item insertbefore. Don’t use this to move objects outside the tree view they belong to, or even between roots of this tree view (tree view with multiple roots may be found in toolboxes, for example).
+</td></tr>
+
+<tr><td class="doccode">
+end(root, text)
+</td><td>
+Operations are queued and applied only when you call this function. root is any object belonging to the tree view where changes where made (usually, you will pass the root, hence the name of the parameter). text is a short string describing the action. This string is displayed in the Edit menu as well as in the Undo/Redo window. Once you called end, you cannot continue to use other functions of the module.
+</td></tr>
+
+<tr><td class="doccode">
+cancel()
+</td><td>
+Cancels all operations. You don’t really have to call this if you choose to cancel the action; it simply lets QuArK free associated memory immediately instead of when the next call to quarkx.action is made.
+</td></tr>
+
+</table>

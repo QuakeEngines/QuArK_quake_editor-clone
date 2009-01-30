@@ -1,0 +1,159 @@
+title: Writing QuArK Elements into the Code
+author: cdunde
+
+First off, a little bit of encouragement. When I first started developing for QuArK I knew absolutely nothing
+about Python code writing, not to mention C or C++ as well. So if you know anything about these languages
+at all, you are far ahead from where I started. And Python is one of the easiest languages for you to learn.
+
+To begin with, there a numbers of ways to get started. You can look for model importer\exporter files that
+someone else has already written to go by as a guide<br>
+(no I'm not suggesting that you steal code) or you can look for them written in other computer languages
+or you can start from scratch using a model's format doc.<br>
+No matter the choice, I highly recommend that you obtain a copy of the model's format documentation as a
+guide to go by as you create your own code because many times other files may have parts that have been
+left out, skipped over or completely incorrect to start with. The format doc will help you spot these
+kinds of situations and avoid a lot of wasted time. Conversely, having other code to go by as a guide,
+can help in understanding parts of the documentation when needed.
+
+The example that I am going to be working from is the Quake 2 .md2 model importer file named <g>ie_md2_import.py</g>
+which is located in your <g>QuArK\plugins</g> folder, so you should open that file now with any text editor as well.
+We won't be covering everything in that file, just certain points as needed.
+
+<a name="fileheader"></a>
+<u><b><i>File Header</i></b></u> :<br>
+At the very top and bottom of you file you should setup its version control code. This is used by us at QuArK when
+you send us a copy to go into the Official Set for distribution with furture releases....you ARE going to share
+it with us aren't you? At the very top the header would be as shown below:
+<code>
+#$Header$
+
+
+Info = {
+   "plug-in":       "ie_md2_importer",
+   "desc":          "This script imports a Quake 2 file (MD2), textures, and animations into QuArK for editing.
+                     Original code from Blender, md2_import.py, author - Bob Holcomb.",
+   "date":          "June 3 2008",
+   "author":        "cdunde & DanielPharos",
+   "author e-mail": "cdunde@sbcglobal.net",
+   "quark":         "Version 6.6.0 Beta 2" }
+</code>
+What you enter for the <g>Info</g> is up to you but we would like to know who made it and any acknowledgements to
+others that might have helped or were authors of files you used as a guide, that's only fair. Then at the very
+bottom add the following code for your files history:
+<code>
+# ----------- REVISION HISTORY ------------
+#
+# $Log$
+# Revision 1.1  2008/07/28 22:40:28  cdunde
+# Update
+#
+#
+</code>
+The file name <b>MUST</b> start with <b>ie_</b> or it will not show up on the QuArK Importer\Exporter menu,
+that is what QuArK uses to identify and load it by. Also, to be consistent with other files please use its
+file type, in this case <b>md2</b>, and whether it is an importer or exporter for the rest of its name and
+please make two separate files, one for each operation. That way users can tell at a glance that both operations
+exist and it's easer for any possible future additions and changes.
+
+<a name="fileimports"></a>
+<u><b><i>File Imports</i></b></u> :<br>
+The very next thing we need to do is to bring in (<g>import</g>) other files and <g>Python Modules</g> that
+we will be using through out this file. Below is the code which does that.
+<code>
+import struct, sys, os, time, operator
+import quarkx
+from types import *
+import ie_utils
+from ie_utils import tobj
+from quarkpy.qdictionnary import Strings
+</code>
+You will see how these are used later on as we go through the code writing process from section to section and
+at which time they will be covered as needed.
+
+<a name="logging"></a>
+<u><b><i>Logging Implementation</i></b></u> :<br>
+QuArK has a built in model importer\exporter logging system that should be added to your file.
+By adding this code, a log can be created in various ways, or not at all, depending on the settings you select in the
+<a href="intro.configuration.model.html#options">Configuration... > Model > Options > Importers \ Exporters</a>
+section. One point about logging, the more that you add the slower the operation of importing or exporting can
+become, so try to keep it to valid and critical areas only without repeating data logging. When the logging
+option is turned off it has very little effect on the operations.
+
+The working code for this system is in the <g>QuArK\plugins\ie_utils.py</g> file, where other useful functions and
+utilities should be added that strictly relate to the importers and exporters only.
+Now, for adding the code, this is also shown in the <g>QuArK\plugins\ie_utils.py</g> file. Be sure to change the
+names in step (1) for <g>exportername</g> and <g>textlog</g> to your file name and type.
+<code>
+1) To add logging to an importer or exporter put these lines near the top, under the file header, in this order:
+import os, time, operator
+import ie_utils
+from ie_utils import tobj
+
+# Globals
+logging = 0
+exportername = "ie_md2_export.py" (or importername = "ie_md2_import.py" depending on which one you're doing)
+textlog = "md2_ie_log.txt"
+
+2) Then add needed globals and calls to start and end the logging in your main file function like this:
+def save_md2(filename):
+    global tobj, logging, exportername, textlog ### Needed globals.
+    ### Next line starts the logging.
+    ### Use "EX" for exporter text, "IM" for importer text.
+    logging, tobj, starttime = ie_utils.default_start_logging(exportername, textlog, filename, "EX")
+
+    ### Line below here saves the model (just for this example---DO NOT COPY NEXT LINE).
+    fill_md2(md2, component)
+
+    ### Next line is optional, it adds additional text at the bottom of the default message,
+    ### with a blank line between them. If none then just exclude it from the function arguments below.
+    add_to_message = "Any used skin textures that are not a .pcx\nwill need to be created to go with the model"
+    ### Next line ends the logging.
+    ### Use "EX" for exporter text, "IM" for importer text.
+    ie_utils.default_end_logging(filename, "EX", starttime, add_to_message)
+
+
+3) Then in any function you want logging declair the global and call for tobj like this: (all items must be strings)
+def fill_md2(md2, component):
+    global tobj
+    if logging == 1:
+        tobj.logcon ("#####################################################################")
+        tobj.logcon ("Skins group data: " + str(md2.num_skins) + " skins")
+        tobj.logcon ("#####################################################################")
+        tobj.logcon ("")
+</code>
+You can use <g>tobj.logcon</g> for a word search in any of the importer\exporter files to see how step (3) is applied.
+
+<a name="pathchecking"></a>
+<u><b><i>Path Checking Implementation</i></b></u> :<br>
+Now to start the working part of your file. This is another function which is also located in the
+<g>QuArK\plugins\ie_utils.py</g> file. It's purpose is to test for a proper model path, meaning that games setup
+what you would call a folder path hierarchy for their files to keep things organized and working properly in the game.
+Some models store this information within the model file itself especially when it comes to the skin texture(s) they use.
+So it is always best to try and work under these same conditions when importing or exporting a model file.
+
+For example, say you have the game setup for <g>Quake 2</g>, its full path to the actual game files folder might be
+<g>C:\Program Files\Quake2\baseq2</g>. This is where you would find the <g>.pak</g> files for <g>Quake 2</g>.
+If you open a couple of those you would see more folders inside them shuch as <g>models/monsters/boss1</g>
+and finally the actual model file, <g>tris.md2</g>, inside that last folder. The <g>valid path</g> for that model
+would then be what is shown within the <g>.pak</g> file itself <g>models/monsters/boss1</g> and that is all that
+this function is checking for. To import or export a modle these folders <b>MUST</b> be extracted, copied, from the
+<g>.pak</g> file to the game folder exactly the same way they are arranged in the <g>.pak</g> file or things may not
+work right later. Therefore, you can have, what I call a dummy folder, anywhere else on your drive and do the same
+extraction to that folder to work from, but again using their same exact folder path hierarchy.
+This helps to ensure that things should work fine later.
+
+If you already did the <a href="#logging">Logging Implementation</a> above you do not need to do step (1) here.
+<code>
+1) To add path checking to an importer or exporter put this line near the top:
+import ie_utils
+
+2) Call for the path check like this:
+def loadmodel(root, filename, gamename, nomessage=0):
+    ### First we test for a valid (proper) model path.
+    basepath = ie_utils.validpath(filename)
+    if basepath is None:
+        return
+</code>
+If you look near the bottom of the <g>ie_md2_import.py</g> file you will see the above <g>def loadmodel</g> code
+along with some more code in that function. So now with the <a href="#fileheader">File Header</a> code in, <a href="#logging">Logging Implementation</a>
+and <a href="#pathchecking">Path Checking Implementation</a> from above completed, we can now go on to the actual importing code below.

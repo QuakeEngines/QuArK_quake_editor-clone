@@ -1,0 +1,73 @@
+title: Texturing the arch
+author: tiglari
+
+<pic border=0 align=right> arch6.png </pic>
+Arches get the textures for their front and back faces
+off the front and back faces of their guide brush.  So all
+we have to is to tag some face of the wall (assuming the other
+wall bits are properly aligned), then select the front face
+of the arch's guide brush, and then <act>RMB|Project Texture from Tagged</act>.
+and ditto for the back wall.  The results should look more or
+less as to the right (the red line is the part of the outline
+of the wall-face that the texture was projected from).
+
+If your arch's front or back textures are misaligned, you should fix them now;
+if they're not, mess them up and then fix them.
+
+The inside of the arch is unfortunately not so straightforward.  It
+would be nice if there was some way to wrap the texture on the front
+or back onto the inside curve, but there isn't, at least without using
+specially pre-prepared and proportioned textures.  So we basically
+are stuck with a misalignment here, which can be ameliorated
+by using some fairly bland, unpatterned texture on the inside
+faces.
+
+<table border=0 cellpadding=0>
+<tr><td valign=top>
+
+<pic border=0 align=right> arch7.png </pic>
+But what we can do is get the textures aligned around the inside
+of the archway.  The inside faces get
+their texture off the top face of the guide-brush.  So basically
+what we want to do is wrap that texture onto the two walls.
+But somehow everything has to get aligned.  What happens is
+that texture is compressed and positioned in such a way that
+if the same texture is projected to the top face of the hole
+and wrapped down the wall, everything lines up.  So first
+put a bland texture on the top face of the guide-brush.
+This will produce something like what's to the right, not
+very good because of the different texture appearing at
+the very top and sides:
+
+</td></tr>
+<tr><td valign=top>
+
+<pic border=0 align=right> arch8.png </pic>
+So Next, tag the top face of  guide brush, then the bottom
+face of the brush that's at the top of the whole, and
+<act>RMB|Texture|Project from tagged</act>.  Then the quickest way to wrap
+down the sides is to select the sides of the whole, and
+<act>RMB|Texture|Wrapping|Wrap from tagged mirror</act>.  The result
+ought to look like this:
+
+</td></tr>
+</table>
+
+In the game, the joins may be unpleasantly visible, due to light
+effects, but if there is an arghrad-like editing tool, this can
+be fixed by putting the same lightvalue (or equivalent property)
+onto the top face of the guide brush and the other faces forming
+the opening.  The top-brush's lightvalue (& all other specifics)
+will be copied onto the inner faces of the generated brushes.
+
+If you put an appropriately patterned texture around the inside
+of the arch, and look closely, you'll see
+that the texture scale is compressed somewhat on the curved portion;
+that's because its being positioned and scaled on the curve so
+that it will join up smoothly with what's on the walls, but
+the distance around the flat wall face is longer than on the
+smooth curve-face.  This is because of a bit of tricky coding
+in the duplicator, whereby the texture scale is compressed
+just enough so that the distance in texture-space around
+the curve equals the distance, w.r.t the top-face scale, around
+the three faces defining the arch.

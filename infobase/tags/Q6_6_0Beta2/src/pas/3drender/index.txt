@@ -1,0 +1,8 @@
+title: The 3D-Render classes
+subdir: edsceneobject fullscreenwnd
+
+What are the files in \SOURCE\3DFX all about?
+
+There is information located in the 3d 'code review.txt' file
+in the source directory. That information should however be
+moved to here.

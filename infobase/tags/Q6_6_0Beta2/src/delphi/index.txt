@@ -1,0 +1,6 @@
+title: Borland Delphi - getting, installing, configuring and using
+desc: getting installing configuring using
+
+This is by no means a fully comprehensive tutorial on how to use Delphi.  It is basically the steps you need to follow, including screen dumps, to install the extra components which QuArK needs, setting a few options, and a couple of hints to make compiling easier.  There are lots of tutorials for Delphi on the web (altho none spring to mind at the moment).  The steps below will get you started using Delphi to help develop QuArK, after that it is up to you to experiment and explore the Delphi IDE and the QuArK source.
+
+Remember, if you totally stuff things up you can always delete your QuArK source directory and do another checkout from CVS without breaking anything.

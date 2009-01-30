@@ -1,0 +1,194 @@
+title: Options menu
+author: cdunde
+editortrue3dmode
+<map name="optionsmenuMap0">
+<area href="#drawhandleswhilerotating" shape="rect" coords="2, 228, 250, 242">
+<area href="#editortrue3dmode" shape="rect" coords="2, 245, 250, 258">
+<area href="#full3dtrue3dmode" shape="rect" coords="2, 261, 250, 274">
+<area href="#modelaxisinviews" shape="rect" coords="2, 288, 250, 302">
+<area href="#drawbackfaces" shape="rect" coords="2, 305, 250, 319">
+<area href="#setlinethickness" shape="rect" coords="2, 322, 250, 336">
+<area href="#boneoptions" shape="rect" coords="2, 347, 250, 361">
+<area href="#boneoptions" shape="rect" coords="261, 297, 417, 348">
+<area href="#editorfaceselectionoptions" shape="rect" coords="2, 364, 250, 378">
+<area href="#editorfaceselectionoptions" shape="rect" coords="261, 352, 497, 524">
+<area href="#editorvertexselectionoptions" shape="rect" coords="2, 381, 250, 395">
+<area href="#editorvertexselectionoptions" shape="rect" coords="261, 532, 452, 592">
+<area href="#skinviewoptions" shape="rect" coords="2, 398, 250, 412">
+<area href="#skinviewoptions" shape="rect" coords="261, 597, 452, 674">
+<area href="#skinviewoptionsdrawticks" shape="rect" coords="100, 636, 256, 670">
+<area href="#pasteobjectsatscreencenter" shape="rect" coords="2, 424, 250, 438">
+<area href="#enlargeverticesticks" shape="rect" coords="2, 441, 250, 455">
+<area href="#rebuild3dviews" shape="rect" coords="2, 458, 250, 472">
+<area href="#axisxyzletters" shape="rect" coords="2, 475, 250, 489">
+<area href="#listofplugins" shape="rect" coords="2, 501, 250, 515">
+<area href="#configuration" shape="rect" coords="2, 518, 250, 532">
+</map>
+
+<img border=0 align=right usemap="#optionsmenuMap0">options.png</img>
+<i><b>Grid scale in 2D views</b> </i>&nbsp;: These functions allow you to display a scale and tick mark guides
+of the current grid setting in any one, combination, or all of the 2D views of the Editor, as
+shown in the top sub-menu. You can also center any one or combination of the scales for
+each view. If ' All 2D views '  or ' all scales centered '  is checked, it will deactivate this
+menu's individual items.
+
+<a name="rulerguide"></a>
+<i><b>Ruler guide in 2D views</b> </i>&nbsp;: These functions allow you to display a line with the unit distance
+of total selected items in any one, combination, or all of the 2D views of the Editor. Much like
+the&nbsp;'Grid scale in 2D views'&nbsp; function above, this feature also has its own list of selections,
+as shown in the far right sub-menu. If one of these sub-menu items is active, checked, then when ever a single
+<g>face</g>, <g>object</g> or <g>component</g> is selected a&nbsp;'Ruler'&nbsp; will be displayed above and/or
+beside them from the starting point to the end point of the selected items along with&nbsp;'0'&nbsp; at the
+starting point and the total amount of their distance at the end point.
+
+<i><b>3D Rotation Options</b> - submenu items </i>&nbsp;:<br>
+<u><i>Original 3Dview rotation </i></u>&nbsp;: This is the way QuArK's model rotation has worked in the past.
+As long as the model drag is started flat (z at 0) it rotates and tilts during rotation fine.
+But if it does a hiccup during the drag with the model tilted that is when it starts to drift
+off center and possibly out of the view eventually. The model can be placed anywhere in the view and
+rotated from that location.
+
+<u><i>Lock to center of 3Dview </i></u>&nbsp;: This method 'locks' the center of the grid to the center of the 3D view
+and rotates from the 0,0,0, point of the grid, its center. If the grid is off to another location of
+the view it will 'snap' back to the views center. The cursor location does not matter for dragging,
+the grid will remain in the views center. This makes the rotation very consistent.
+You can rotate and zoom in for close detail work on the model. But if you start another rotation
+it will jump back to the grids center and probably throw your up close position off.
+
+<u><i>Lock to center of model </i></u>&nbsp;: This function 'locks' the center of the model to the center of the view.
+It functions just like the 'Lock to center of 3Dview' method above
+based on the center of the model. However, because not all models are created at the center of their grid
+the method above could cause it to be near the edge of the view or completely out of view.
+This option compensates for that and will put the model in the proper center location of the view.
+The same situation will exist for up close detail work if a new rotation is started.
+
+<u><i>Rotate at start position </i></u>&nbsp;: This function is designed to give far more rotation consistency based on
+where the cursor is at the time it is clicked to start a rotation at some place on the model.
+It will then re-center that position to the center of the view to start rotating from.
+Unlike the 'Original 3Dview rotation' method, this would allow close up detail rotation without
+the model jumping back to some other location as in all of the above cases.
+
+<a name="drawhandleswhilerotating"></a>
+<i><b><a href="#rulerguide">Draw handles while rotating</a></b> </i>&nbsp;: This allows the models vertex handles (if active) to be drawn during
+rotation, but this will slow down the redrawing process and can make rotation seem jerky.
+
+<a name="editortrue3dmode"></a>
+<i><b><a href="#rulerguide">Editor True 3D mode</a></b> </i>&nbsp;: This causes the Model Editor's 3D view to operate the same as
+the Map Editor when maneuvering and also allows passing through a component. This is very useful when working on scenes
+to see ' into ' the model and work on other components within it.
+
+<a name="full3dtrue3dmode"></a>
+<i><b><a href="#rulerguide">Full3D True 3D mode</a></b> </i>&nbsp;: This causes the FIRST Full 3D view opened only, to operate the same as
+the Map Editor when maneuvering and also allows passing through a component. This is very useful when working on scenes
+to see ' into ' the model and work on other components within it. All other floating Full 3D views will operate as usual.
+If the first is closed and the next uses this option the last camera position of the first one will still be in effect.
+
+<a name="modelaxisinviews"></a>
+<i><b><a href="#rulerguide">Model Axis in views</a></b> </i>&nbsp;: This displays the models axis on which it was built in all views,
+showing its X, Y and Z direction. The size of its letter indicators and line thickness can be increased or
+decreased by using the '<g>Set Line Thickness</g>' function, a little further down. Their individual colors can
+be changedin the <a href="intro.modeleditor.toolpalettes.viewselection.html#coloroptions">Colors Options</a> settings.
+
+<a name="drawbackfaces"></a>
+<i><b><a href="#rulerguide">Draw back faces</a></b> </i>&nbsp;: This allows the back face checkerboard pattern to be drawn in all view modes when the
+<g>'Views Options', 'Mesh in Frames'</g> of the <a href="intro.modeleditor.toolpalettes.viewselection.html#viewoptions">Views Options</a>
+is checked for that view. Using the option in this manner will help to distinguish which direction the faces are facing for proper construction.
+
+<a name="setlinethickness"></a>
+<i><b><a href="#rulerguide">Set Line Thickness</a></b> </i>&nbsp;: This lets you set the thickness of certain lines that are drawn on the Editor's views,
+such as the outlining of selected model mesh faces and the models axis lines.
+
+<a name="boneoptions"></a>
+<i><b><a href="#rulerguide">Bone Options</a></b> - submenu items </i>&nbsp;:<br>
+<u><i>Match Bone Lines Color </i></u>&nbsp;: This funciton is also located on the
+<a href="intro.modeleditor.rmbmenus.html#viewsrmbmenus">Editor Views RMB menus</a>, please click on the menu link for this functions full description.
+
+<u><i>Draw Bone Handles Only </i></u>&nbsp;: This funciton is also located on the
+<a href="intro.modeleditor.rmbmenus.html#viewsrmbmenus">Editor Views RMB menus</a>, please click on the menu link for this functions full description.
+
+<u><i>Make All Draglines </i></u>&nbsp;: This funciton is also located on the
+<a href="intro.modeleditor.rmbmenus.html#viewsrmbmenus">Editor Views RMB menus</a>, please click on the menu link for this functions full description.
+
+<a name="editorfaceselectionoptions"></a>
+<i><b><a href="#rulerguide">Editor Face Selection Options</a></b> - submenu items </i>&nbsp;:<br>
+<u><i>Sync Skin-view with Editor views </i></u>&nbsp;: This funciton is also located on the
+<a href="intro.modeleditor.rmbmenus.html#viewsrmbmenus">Editor Views RMB menus</a>, please click on the menu link for this functions full description.
+
+<u><i>Show selection in Skin-view </i></u>&nbsp;: This funciton is also located on the
+<a href="intro.modeleditor.rmbmenus.html#viewsrmbmenus">Editor Views RMB menus</a>, please click on the menu link for this functions full description.
+
+<u><i>Pass selection to Skin-view </i></u>&nbsp;: This funciton is also located on the
+<a href="intro.modeleditor.rmbmenus.html#viewsrmbmenus">Editor Views RMB menus</a>, please click on the menu link for this functions full description.
+
+<u><i>No face drag lines </i></u>&nbsp;: This funciton is also located on the
+<a href="intro.modeleditor.rmbmenus.html#viewsrmbmenus">Editor Views RMB menus</a>, please click on the menu link for this functions full description.
+
+<u><i>No face outlines </i></u>&nbsp;: This funciton is also located on the
+<a href="intro.modeleditor.rmbmenus.html#viewsrmbmenus">Editor Views RMB menus</a>, please click on the menu link for this functions full description.
+
+<u><i>No face outlines while moving in 2D views </i></u>&nbsp;: This funciton is also located on the
+<a href="intro.modeleditor.rmbmenus.html#viewsrmbmenus">Editor Views RMB menus</a>, please click on the menu link for this functions full description.
+
+<u><i>No selection fill </i></u>&nbsp;: This funciton is also located on the
+<a href="intro.modeleditor.rmbmenus.html#viewsrmbmenus">Editor Views RMB menus</a>, please click on the menu link for this functions full description.
+
+<u><i>Front faces only </i></u>&nbsp;: This funciton is also located on the
+<a href="intro.modeleditor.rmbmenus.html#viewsrmbmenus">Editor Views RMB menus</a>, please click on the menu link for this functions full description.
+
+<u><i>Back faces only </i></u>&nbsp;: This funciton is also located on the
+<a href="intro.modeleditor.rmbmenus.html#viewsrmbmenus">Editor Views RMB menus</a>, please click on the menu link for this functions full description.
+
+<a name="editorvertexselectionoptions"></a>
+<i><b><a href="#rulerguide">Editor Vertex Selection Options</a></b> - submenu items </i>&nbsp;:<br>
+<u><i>Sync Skin-view with Editor views </i></u>&nbsp;: This funciton is also located on the
+<a href="intro.modeleditor.rmbmenus.html#viewsrmbmenus">Editor Views RMB menus</a>, please click on the menu link for this functions full description.
+
+<u><i>Pass selection to Skin-view </i></u>&nbsp;: This funciton is also located on the
+<a href="intro.modeleditor.rmbmenus.html#viewsrmbmenus">Editor Views RMB menus</a>, please click on the menu link for this functions full description.
+
+<u><i>No vertex drag lines </i></u>&nbsp;: This funciton is also located on the
+<a href="intro.modeleditor.rmbmenus.html#viewsrmbmenus">Editor Views RMB menus</a>, please click on the menu link for this functions full description.
+
+
+<a name="skinviewoptions"></a>
+<i><b><a href="#rulerguide">Skin-view Options</a></b> - submenu items </i>&nbsp;:<br>
+<u><i>Sync Editor views with Skin-view </i></u>&nbsp;: This funciton is also located on the
+<a href="intro.modeleditor.skinview.html#funcsnmenus">Skin-view RMB menu</a>, please click on the menu link for this functions full description.
+
+<u><i>Pass selection to Editor views </i></u>&nbsp;: This funciton is also located on the
+<a href="intro.modeleditor.skinview.html#funcsnmenus">Skin-view RMB menu</a>, please click on the menu link for this functions full description.
+
+<u><i>Clear Selected Faces </i></u>&nbsp;: This function will clear all faces in the <a href="intro.modeleditor.skinview.html">Skin-view</a>
+that have been drawn as <g>Selected</g> or <g>Show</g> but any related selected vertexes will remain that way for editing
+purposes. The <a href="intro.modeleditor.skinview.html">Skin-view</a> selected face, show face and selected vertex colors
+can be changed in the <a href="intro.modeleditor.toolpalettes.viewselection.html#coloroptions">Colors Options</a> settings.
+
+<a name="skinviewoptionsdrawticks"></a>
+<u><i><a href="#rulerguide">Draw Ticks During Drag </a></i></u>&nbsp;: These functions give various methods for drawing the Models Skin Mesh Vertex Ticks while doing a drag.<br>
+The 1st &nbsp;<g><u>Rectangle drag-method 1</u> &nbsp;</g>: This function will draw the Skin-view mesh vertex 'Ticks' during a rectangle drag with<br>
+a minimum amount of flickering, but is a slower drawing method.<br>
+The 2nd <g><u>Rectangle drag-method 2</u> &nbsp;</g>: This function will draw the Skin-view mesh vertex 'Ticks', using the fastest method,<br>
+during a rectangle drag, but will cause the greatest amount of flickering.
+
+<a name="pasteobjectsatscreencenter"></a>
+<i><b><a href="#rulerguide">Paste objects at screen center</a></b> </i>&nbsp;: Check this if you
+want objects that you paste into the editor's views to appear in the center of the current editor's view.
+Uncheck it, and it will paste it at the exact position as the original.
+
+<a name="enlargeverticesticks"></a>
+<i><b><a href="#rulerguide">Enlarge Vertices Ticks</a></b> </i>&nbsp;: This makes the model's ticks 1 size larger for easer viewing.
+
+<a name="rebuild3dviews"></a>
+<i><b><a href="#rulerguide">Rebuild 3D views</a></b> </i>&nbsp;: This rebuilds the 3D views (actually all views) in the Model Editor
+in case of a lockup. You may have to do this a few times to clear the views up. The easiest way is to just push the HotKey 'Tab' until the views unlock and clear up.
+
+<a name="axisxyzletters"></a>
+<i><b><a href="#rulerguide">Axis XYZ letter indicator in view windows</a></b> </i>&nbsp;: This display s the X Y or Z indicator letter
+per view to associate the rotation menu buttons. These are for reference only and are not selectable
+with the mouse.
+
+<a name="listofplugins"></a>
+<i><b><a href="#rulerguide">List of Plug-ins</a></b> </i>&nbsp;: Opens a window which shows what plug-ins QuArK has loaded.
+
+<a name="configuration"></a>
+<i><b><a href="#rulerguide">Configuration</a></b> </i>&nbsp;: Takes you to the <ref> intro/configuration </ref>.

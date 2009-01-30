@@ -1,0 +1,34 @@
+title: Game menu
+author: Decker
+
+<img border=0 align=right>game.png</img>
+<i>Menu Overview</i> The commands in this menu lets you run your map with the game. The most common commands are the first few ones, which lets you try your map as a one-step operation.
+Before a map can be played, it must be compiled (translated into a .bsp file). This is done by other programs that QuArK will call for you. See the Configuration dialog box, under the page of the game you wish to map for, where you must tell QuArK where these build programs are installed. The programs themselves are available in Tool Packs, one for each game you want to make maps for, and that can be downloaded from <a href="http://quark.planetquake.gamespy.com/download_tools.php3">QuArK's download tools-page</a>. 
+
+<i>GO!</i> does the whole sheebang.
+
+<i>QuickGO!</i> a faster version, which should only be used when testing your
+map.
+
+<i>Fastest (full bright)</i>, this is the fastest build for testing your map, but it will not show any lighting effects.
+
+<i>Fastest on selection only</i>, same as 'Fastest' but only builds what you have selected.
+
+<i>Prepare used textures</i> creates a <g>.WAD</g> texture-file, with the
+textures used in the map.
+
+<i>Complete rebuild</i> will build everything, except running the FPS-game.
+
+<i>Run FPS-game</i> starts the game with the current map.
+
+The next menuitems varies from FPS-game to FPS-game. Familiarize yourself with
+these <g>build tools</g>, for the FPS-game you're building a map to.
+
+<i>Load Leak file</i> If you have a 'Leak' (hole) in your map you will see a <FONT COLOR="#FF0000">red line</FONT> running through the effected area and QuArK will generate a 'Point' file which creates this line. This feature allows you to reload that file to see the line again, as long as the map is not recompiled after the hole is fixed. If it is fixed and recommpiled, QuArK will eleminate the error which turns this function off.
+
+<i>Load Portal file</i> This feature will show the 'Portals' of your map outlined with <FONT COLOR="#4184D7">blue lines</FONT>. What the blue lines indicate is the 'windows' between the convex ('leaf nodes') that the bsp process carves the visible spaces of your map into. So you can investigate the effects of using detail and hint-brushes, etc to make your map more efficient and run better. However if there was a 'Hole' in your map the last time it was compiled, this menu item will be turned off until the map is recompiled after the 'Hole' is fixed (see 'Load Leak file' above).
+
+<i>Select Brush Number</i> Tries to find brushes by Entity and Brush number, as specified in the <a href="maped.builderrors.console.html#mixed_face">Python-console</a> compile tool error messages (the use of duplicators, etc. might subvert this).
+
+<i>Customize menu</i> opens a window, in where you can add, change and remove
+the above menuitems and their functionality.

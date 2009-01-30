@@ -1,0 +1,22 @@
+title: Creating brushes (polyhedrons)
+author: Decker
+
+<img width=178 height=73 align=right>image8.png</img>
+I presume you have deleted the default room completely, because we need a blank
+sheet in this section.
+
+A <g>brush</g> is like a brick. You use them to build floors, walls and
+ceilings with.
+Even the sky and water are build with brushes. The word <tt>brush</tt> is not
+really a good word, but it has become commonly known as; "the object with which
+to build levels with, for a <g>Quake-engine</g> game". QuArK also uses the word
+<g>polyhedron</g> or the shorter <g>poly</g>, to indicate a brush. You may even
+see the word <g>cube</g>, but it is still a brush/polyhedron.
+
+So to create a brush, click on the icon shown in the image. This will create a
+cube with a <ref> intro/configuration/map/building \ default size</ref> and
+<ref> intro/configuration/games \ default texture </ref> in your map.
+
+Your new brush will be shown as selected in the 2D-views, by showing it in
+<ref> intro/configuration/map/colors \ a shade of blue </ref> and with movement
+handles.

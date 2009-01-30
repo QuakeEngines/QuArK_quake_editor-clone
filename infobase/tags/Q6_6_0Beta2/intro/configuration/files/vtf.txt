@@ -1,0 +1,23 @@
+title: VTF
+author: DanielPharos
+
+<img align=right>vtf.png</img>
+
+<i>Select library for loading VTF files</i>. Here you can select the library you
+want to use to load VTF files.
+
+<i>Select library for saving VTF files</i>. Here you can select the library you
+want to use to save VTF files.
+
+
+<u>Additional saving settings</u>
+
+<i>Format of exported non-alpha VTF textures</i>. With this you can select a
+texture format in which textures without transparancy are saved.
+
+<i>Format of exported alpha VTF textures</i>. With this you can select a
+texture format in which textures with transparancy are saved.
+
+<i>Version of exported VTF textures</i>. With this you can select the VTF file
+version in which textures are to be saved. 7.2 is the most common/portable
+version.

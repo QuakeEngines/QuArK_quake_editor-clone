@@ -1,0 +1,9 @@
+title: New group
+author: Decker
+
+<img border=0 align=right>newgroup.png</img>
+Creates a new group in the tree-view, where you can place other objects in,
+so they are neatly grouped together.
+
+Once you have created a group, you can keep your mouse-cursor in the dataform
+display, mark the group and press <b>F2</b> to rename it.

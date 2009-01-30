@@ -1,0 +1,9 @@
+title: Overview
+author: cdunde
+desc: overview
+desc: selection
+desc: hintbox
+
+The <a href="intro.modeleditor.html">Model-editor in QuArK</a> is laid out and functions
+very much in the same way that the 
+<a href="intro.mapeditor.overview.html">Map-editor in QuArK</a> does for constancy in its use.

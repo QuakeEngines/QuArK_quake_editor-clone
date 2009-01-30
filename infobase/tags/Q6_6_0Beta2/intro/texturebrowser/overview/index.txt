@@ -1,0 +1,8 @@
+title: Overview
+desc: overview
+
+There are many ways of getting into the texture-browser. The most common are
+from the polyhedron-view or face-view when you are looking at an object and
+want to select a texture for it.
+See <ref> maped/tutorial/polyhedrons/texturing </ref> for details on how to get
+to the texture-browser.

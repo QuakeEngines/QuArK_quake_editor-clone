@@ -1,0 +1,17 @@
+title: Important Notes
+author: DanielPharos
+
+<table border=0 cellspacing=0>
+<tr><td valign=top align=left>
+Here are a few things everybody should keep in mind when setting up Half-Life 2:
+<ul>
+<li>You will need the Source SDK installed. To do this, open Steam's Tools tab
+and install it. The Source SDK contains the compilers needed to create the map
+files.
+<li>After an update to either Steam or the Source SDK, the SDK files might not
+be in a consistent state anymore. Launch the Source SDK; this should refresh
+the files. You can also use the 'Refresh Source SDK files' option to make sure
+everything is OK.
+<li>You will need to have run the game at least once, for the data files to be
+properly extracted, so QuArK can find them.
+</ul>

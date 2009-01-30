@@ -1,0 +1,22 @@
+title: Flyover help
+author: tiglari
+
+Help is the easiest.  In the third position of qmenu.item, we can
+put a string which is displayed at the bottom-left of the screen when
+the cursor sits on the menu item.  Or if the text is too long to be
+likely to fit into the window down there, begin it with a `|', then
+there's a message to press &lt;F1&gt; for help in the little window, and the
+string will appear in a popup window in the middle of the screen when
+&lt;F1&gt; is pressed.
+
+So we might replace our current menu-adding commands with something
+like this:
+<code>
+quarkpy.mapcommands.items.append(quarkpy.qmenu.item("&Tag Side", tagSideClick, "|`Tags' the selected side so that another side can be snapped to it by a later `Glue to Tagged' command.\n\nJust the thing for making sure the legs of the table are actually touching the ground."))
+quarkpy.mapcommands.items.append(quarkpy.qmenu.item("&Glue to Tagged", glueSideClick, "Snap selected to tagged side"))
+</code>
+Note that these strings get rather long in the text-editor (and
+the browser!!), but they
+wrap around nicely in the display window.
+
+

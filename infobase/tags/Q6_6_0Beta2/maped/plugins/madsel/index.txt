@@ -1,0 +1,12 @@
+title: Mad Selector
+author: tiglari
+desc: extend
+desc: contain
+desc: move
+
+<img border=1 align=right> contextmenu.png </img>
+The Mad Selector plugin is oriented towards making it easier to
+select the stuff you want, tho it has tended to spread into
+the related area of organizing the group structure. It puts
+three main items onto the face, poly, group and entity menus
+(not all available for all menus).

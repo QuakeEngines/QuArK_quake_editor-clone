@@ -1,0 +1,27 @@
+title: Introduction to screen controls and panels
+author: Armin Rigo
+
+Screen controls are the various units of a window design with which users interact. All screen controls - - map views, tree
+views, image displayers, data-entry forms, floating windows, etc. - - are distinct built-in object types, but they share common
+attributes. Note that toolbars are not screen controls in QuArK 5.0.c2, so they don’t have all these attributes, but this may
+change in a future version.
+
+Controls are not positionned on screen by setting coordinates. They are put into panels, which are screen controls themselves.
+Panels are dummy gray rectangles that can contains other screen controls and that know how to set their position. Usually,
+panels are nested, starting from the main panel, which covers the whole window except its border, its caption, and its menu
+bar. For example, in the map editor’s Classical layout, the main panel contains three controls: the two map view and a
+left-aligned panel, which in turn contains other panels, and so on.
+
+Panels are the only kind of screen controls that can contain other screen controls. Each panel knows how to align its own
+controls. There are two kinds of alignments a panel can perform: “ full-size sections ” and “ padded to a border ”. Within a
+panel, only subpanels can be padded to a border; other controls are always full-sized.
+
+A panel can be divided into sections, i.e. rows and columns, like a table. By default, there is only one row and one column,
+taking up the whole panel size. For each subcontrols, you choose in which section it goes, and it takes the whole size of the
+section. Row and column size is given with a percentage of the total width or height. This keeps the same proportions when the
+window is resized. The user can manually resize the sections.
+
+A panels can also contain border-padded subpanels. These subpanels are aligned so that they go along the whole left, top, right
+or bottom border. For left- and right-padded subpanels, you choose only the panel width, in pixels; for top- and bottom-padded
+subpanels, you choose only the panel height. The user can also resize these panels. The sizes are given in pixels and don’t
+change when the window is resized. Border-padded subpanels shrink the screen space allocated to sections.

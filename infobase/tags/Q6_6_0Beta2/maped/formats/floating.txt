@@ -1,0 +1,47 @@
+title: Floating Point Issues
+author: tiglari
+
+In Quake-engine games, the faces of brushes are defined by three points, which can
+be located anywhere on the face of the plane, as long as they don't sit on one
+line (note especially: they do <strong>not</strong> have to be vertexes of the
+face, although they can be).  Early Quake editors and the build-tools required
+these points to have integer coordinates, but QuArK introduced floating point
+coordinates, which allow precise placement of rotated brushes, and are also
+necessary for its 'enhanced texture positioning' scheme, which provides more more
+flexible texture-positioning than the original 'Classic Quake' system.
+
+Unfortunately, floating-point coordinates can also introduce various problem,
+especially in conjunction with build-tools that can't read them.  The way they
+were involved with enhanced texture positioning is particularly problematic, since
+repositioning textures involved moving the face-coordinates, and so could drag
+face vertices subtly and unfixably off grid, which tends to drives people crazy,
+whether or not it caused real problems.  And furthermore, build-tools that
+can't read floating point coordinates are very likely to have problems with maps
+written by QuArK, even if floating-point coordinate writing is suppressed (since
+the truncations shift the faces around, and thereby can cause leaks).
+
+So QuArK 6.3 has a different internal representation for texture-scales than
+earlier versions (called 'tv6', since it involves a 'tv6' specific on faces
+that specifies 6 numbers), so that moving textures doesn't shift the face
+threepoints, and also has some tools for finding and fixing faces with
+non-integral threepoints.  The finder, on the search menu, is the 'Find
+Non-integral Threepoints' command, and will produce a list of faces with
+non-integral coordinates.  Then the fixer, on the commands menu, 'Integralize
+Selected Faces', will attempt to fix the selected faces automatically,
+by forcing threepoints that are slightly off-integer to integral values,
+and also coopting integral vertexes of the faces, if it can find enough.
+On exit, it leaves selected the faces it has fixed, so that they can be
+inspected (conveniently with 'Browse Multiple Selection' on the Selection
+menu) for bad effects on texture-scales, etc.  Then you can run the finder
+again to see the recalcitrant cases, and decide what to do about them by
+hand.
+
+It is quite plausible that you might want to allow certain vertexes to
+be non-integral (for decorations, etc); if a group has a 'nonintegral'
+specific, the finder will ignore the nonintegral faces within it.
+
+With these tools, and the 'Don't Write Floating Point Coordinates' map
+option, it will hopefully be possible to control floating point issues
+adequately.
+
+

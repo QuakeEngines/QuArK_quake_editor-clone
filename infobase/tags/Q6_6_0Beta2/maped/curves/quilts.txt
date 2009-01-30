@@ -1,0 +1,45 @@
+title: Quilts
+author: tiglari
+
+A basic patch has nine control points, arranged in 3 rows of 3
+elements each.  Given essential limitations on what these
+('quadratic bezier') patches can do, to make a full range of
+shapes, you need multiple 3x3 patches.  A semi-decent approximation
+to a circle for example needs at least four (although it's noticeably
+squarish, and to make it rounder you'd need more).  Typically
+lots of these patches will share edges, so it's natural to think
+of 'quilts' of 3x3 patches, sharing edges.
+
+The Q3A engine provides direct support for such quilts, as long
+as they are rectangular.  If you think about the math you'll
+see that thanks to the edge sharing, a quilt of four patches
+in a square will have 5x5 = 25 different control points, and
+a strip of four patches that might be arranged in a row to be
+wrapped around to make a columns will be a 3x9 quilt. And
+that in these quilts, control points on odd-numbered rows/columns
+will lie on (basic) patch edges, and if the point is in an
+odd-numbered row <strong>and</strong> column it will be a patch
+corner.
+
+In Q3Radiant documentation, quilts are called 'meshes', but there
+are lots of different kinds of meshes, and these quilts, or
+more precisely, quadratic quilts, have special properties,
+so we'll call them quilts to distinguish them from whatever
+amazing stuff might come next.
+
+Currently you can make quilts by RMB on a patch control point,
+then <act>Thicken|Add Row/Column</act>.  This has the effect of replacing
+one row or column of patches with two (and so adding two additional
+strips of control points).  Another way to make quilts is to dissociate
+the images from one of the shapebuilders, such as column.  Playing
+around with the quilts you can see the difference between the
+odd and even numbered rows and colums.  The column for example has
+a square of control points with the odd-numbered ones in the
+middle of the sides and the evens at the corners; if this were
+reversed the shape would be a rectangular rather than a rounded
+column.
+
+QuArK definitely needs more elaborate facilities for creating and
+shaping quilts, hopefully these will develop over time.
+
+

@@ -1,0 +1,49 @@
+title: Creating entities
+author: Decker
+
+<img width=113 height=97 align=right>image21.png</img>
+<img width=132 height=68 align=right>image20.png</img>
+To create a entity in QuArK, you choose it from either the
+<ref> intro/mapeditor/userdata \ prefabs / userdata panel</ref> or by clicking
+on the <tt>new item</tt> icon which will bring up the
+<ref> intro/mapeditor/misctools/newmapitem \ New map items...</ref> window,
+from where you also can choose between the different entities.
+
+Let's try it out. Create a <tt>info_player_start</tt> point-entity, by clicking
+on the <tt>new item</tt> icon, and find the entity in the folder named
+something like 'Player starts'. Then double-click on it, to bring it into the
+map.
+
+<img width=159 height=164 align=right>image22.png</img>
+Some of the point-entities have a <g>bounding-box</g>. This usually indicates,
+that the monster, player or 3D-model is that large, and the point-entity should
+not be embedded (either partly or whole) into brushes, as the monster/player
+will then get stuck.
+
+As the info_player_start entity has such a bounding-box, you should carefully
+place it inside your room. Make sure it does not touch any of the walls or the
+floor/ceiling. You may need to
+<ref> intro/mapeditor/toolpalettes/display/zoom \ zoom in </ref> and change the
+<ref> intro/mapeditor/toolpalettes/display/grid \ grid size </ref> to place it
+just right.
+
+Whenever you have marked an entity, and if the entity requires it, you might
+see an <tt>entity pointing angle</tt> handle, or <tt>ball-handle</tt> as some
+call it. This will allow you to quickly control in what direction the entity
+should face, or move at. The ball-handle can be set in these positions; 0-360
+degrees (0-360), upwards (-1) or downwards (-2), all depending on the game.
+
+<img width=162 height=85 align=right>image23.png</img>
+When you create a <tt>brush-entity</tt>, QuArK will automatically create a new
+brush and assign it to the newly created entity.
+
+If you do not want that brush, you can <tt>expand</tt> the brush-entity object
+in the tree-view, by clicking on the little
+<img width=11 height=11 align=absmiddle>image23b.png</img> icon (Just like in
+Windows' File-explorer), then select the brush in the brush-entity and delete
+it.
+
+This is also the way to add more brushes to a brush-entity. The entity has to
+be expanded, or empty (not having brushes assigned to it), for you to be able
+to drag and drop a brush into it. All this can only be done in the
+<ref> intro/mapeditor/dataforms/treeview </ref>.

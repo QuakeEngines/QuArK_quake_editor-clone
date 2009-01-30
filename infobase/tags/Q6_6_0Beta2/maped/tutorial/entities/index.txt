@@ -1,0 +1,15 @@
+title: Using entities
+author: Decker
+desc: twotypes
+desc: creating
+desc: values
+desc: gamerelated
+desc: nextpart
+
+This is the third part of four, which guides you through the methods and
+functions of creating a map in QuArK's map-editor. You should have read
+<ref> ../starting \ the first part </ref> and
+<ref> ../polyhedrons \ second part </ref> before going through this third part.
+
+Once you've completed this section, proceed to <ref> ../advanced </ref>
+(optional).

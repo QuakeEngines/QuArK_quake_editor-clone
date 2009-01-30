@@ -1,0 +1,323 @@
+title: Understanding OOP
+author: Tiglari/cdunde
+
+1. Intro
+
+OOP, or object-oriented programming, is a programming methodology
+developed in the 70s that became popular in the 80s for building
+large and complex programs, such as especially GUI applications,
+of which QuArK is a fine instance.  Popular OOP languages include
+C++, Java, Object Pascal/Delphi and Python.  There are both subtle
+and obvious differences between the approaches taken by all of these
+languages, but there is also a lot of commonality, such that someone
+already familiar with OOP from the first three mentioned languages
+can probably pick up what they need to know about Python OOP from
+the documentation and QuArK code.
+
+2.  Basic Objects
+
+An object is basically a chunk of the computer's memory that has been
+organized to provide storage for some data, and methods for
+changing it and reading it.  So it's like a 'struct' in C,
+or a 'record' in Pascal, but more powerful.  For a simple example
+that's not totally irrelevant to a geometry-managing program such
+as QuArK, suppose we have circles to manage.  A circle can be
+characterized by the three coordinates of its center, and by its
+radius:
+
+<code>
+  class Circle:
+      x = 1
+      y = 0
+      z = 5
+      r = 1.5
+</code>
+
+(Important: watch your letters, they are case sensitive.)
+
+Or you can just create the object by writing:
+
+<code>
+  class Circle:
+      pass
+</code>
+
+and add the data later:
+
+<code>
+  Circle.x = 1
+  Circle.y = 0
+  Circle.z = 5
+  Circle.r = 1.5
+</code>
+The '.' separates the name of the class itself from its 'attributes'.
+
+Whichever you've done, you can get the data back later (Delphi users
+take note: there's no 'with' statement, since Guido van Rossum, Python's
+creator, finds them harmful to programs' maintainability).  So if
+either of the above is in a file 'circles.py', in the Python
+interpreter you can write:
+<code>
+>>> import plugins.circles         [you type]
+>>> plugins.circles.Circle.r       [ditto]
+1.5                        [Python answers]
+</code>
+
+Note that Python is <strong>much</strong> more liberal than C++,
+Object Pascal/Delphi, or Java, since in these languages you'd have
+to declare your object as belonging to a 'type', and say what kinds
+of 'data members' it could have, in advance of using it.
+
+This rather minimalistic sort of class has its uses (for example
+as a package for passing bundles of data round in the 'live edit dialog'
+facility (LiveEditDlg in quarkpy.dlgclasses), but to make classes
+really worthwhile several closely related new ideas are needed, first
+instances and methods, and later, inheritance.
+
+2. Methods and Instances
+
+A method is basically a function, closely associated with an object,
+for doing something involving its data (adding data, reading it,
+performing some calculation involving it and returning the result,
+or whatever).   For example having created a circle, we might
+want to access its circumference and area; the idea is that
+we'll write things like
+<code>
+answer =  plugins.circle.circumference()
+</code>
+(plugins because that is the folder in which the circles.py file will be located.)
+
+(Parentheses because this is going to be produced by a kind of function,
+and functions are marked in Python by parentheses.)
+
+But to do this in a sensible way we need to distinguish two slightly
+different notions, 'circle' as a particular object, and 'circle' as
+a template for making objects.  Different circles will have different
+centers and radii, but use the same method to make them.  So we need a way to
+define both a template and a method for making things that fit it.  Templates
+for objects are what 'classes' are really supposed to be, and the methods
+for making particular objects, 'instances', are called 'constructors.
+
+In Python, constructors all have the same name, '__init__': the double
+underscores on either side are a signal that something with special
+meaning for Python is involved.  All methods, including constructors,
+are defined as functions internal to the class, so their definitions
+start with 'def'.  And these functions have 'self' as their first
+argument, which always refers to the object (being created, if the
+function is a constructor).  So the revised definition for the circle
+class might look like this:
+<code>
+import math
+
+class Circle:
+    def __init__(self, x, y, z, r):
+        self.x = x
+        self.y = y
+        self.z = z
+        self.radius = r
+        
+    def circumference(self):
+        return self.radius*math.pi
+        
+    def radius(self):
+        return self.radius
+</code>
+The constructor <b>attaches</b> the three coordinates and the radius as
+'data members' of the object <b>self</b> it creates, and there are two methods
+to write this; the second is included to help people who can't remember whether
+to write circle.radius or circle.radius() (pretty much anybody who's
+focused on content rather than punctuation).  We've used uppercase
+for the name of our class, in accord with a sensible but not always
+obeyed convention to use uppercase to start 'template' names,
+lowercase for 'instance names'.
+
+At this point, we have completed the creation of our class.
+Because we write this code in a text editor we need to save it as a
+Python file, in this case as 'circles.py', and include 'import math'
+(because we have used its <b>pi</b> function in our 'def circumference')
+in front of the 'circles' definition, before we save it. We then need to
+move the 'circles.py' file to the plugins folder. As a matter of good
+coding practice, the 'import' and 'from' statements are usually grouped
+together at the beginning of the Python file.
+
+At this point we could continue to add more code, to this file, to apply
+(or use) the 'class Circle' and its definitions we just created, or we can
+create another Python 'plugin' file and 'import circles' to there, which is
+what we will do now just to demonstrate how files can pass data and functions.
+
+So we will now write another simple 'plugin' Python file (and save that to the
+plugins folder as well) with the following code to see the effect of the
+Circle class in the circles.py file:
+<code>
+import quarkpy.qmacro   # to bring in qmacro functions we need
+import quarkx           # to bring in quarkx functions we need
+from circles import *   # to bring in all of our circle class
+
+def printcir(self):
+    circle = Circle(1,0,3,1.5)  # assigns values to the attributes
+    circle.circumference()      # passes the values to circle class
+    answer = circle.circumference()  # collects the 'return' data
+    print answer                # prints the answer to the console
+</code>
+This will pass the three coordinates of 1,0,3 (for x,y,z) and
+the radius of 1.5 to the Circle class which will process it then
+'return' the 'answer' of 4.71238898038 that will be printed to the console.
+
+But before we can save this file, we need to add some code to create a
+menu item, that we can use to activate (or call) the 'printcir' function:
+<code>
+def WindowClick(self):
+    import quarkpy.mapoptions   # brings in the 'Options' menu
+    printcir(self)              # calls our function
+    quarkx.console(1)           # brings the console into view
+
+quarkpy.mapoptions.items.append(quarkpy.qmenu.item("&Print Cir.", 
+WindowClick)) # adds it to the 'Options' menu
+</code>
+Now we can save this 'plugin' file as well, calling it something like ' mapcircles.py ',
+to the plugins folder. You can either cut-n-paste these scripts to a text editor
+to create your own files as we have discussed, or use the ones provided here,
+<a href="zips">OOP_examples.zip</a>, of working examples for this tutorial (and others)
+in the 'zips' sub-folder of your QuArK-help folder on your hard drive.
+
+For a concrete example of some rather basic classes, look at the
+two kinds of menu items defined in quarkpy.qmenu, 'item', and 'popup'.
+These classes have only constructors, and no other methods, and all
+the constructors do is attach the same parameters as data members,
+and add in some extra default stuff, such as 'normal' as a value
+of 'state'.    Note that functions, such as 'onclick'. can be attached
+to objects by constructors (but these aren't methods).
+
+
+3. Inheritance
+
+The final thing we need for a real OOP system is inheritance, which
+is basing classes on other classes.  In a real geometry-managing
+program we'd have lots of different shapes, with various features.
+For example points wouldn't have radius or circumference (perhaps),
+but they would have a 'center' or 'origin', like all other figures.
+So we might define:
+
+<code>
+class Figure
+    def __init__(self, x, y ,z):
+        self.x = x
+        self.y = y
+        self.z = z
+        
+    def origin(self):
+    def origin(self):
+        return self.x, self.y, self.z
+</code>
+Now we might want at least two 'derived classes', or 'subclasses', Point
+and Circle, so we might write something like this:
+<code>
+class Point(Figure):
+    pass
+
+class Circle(Figure)
+    def __init__(x, y, z, r):
+        Figure.__init__(self, x, y, z)
+        self.radius = r
+        
+    def circumference(self):
+        return self.radius*math.pi
+        
+    def radius(self):
+        return self.radius
+</code>
+The Point class is strictly cosmetic: there's a sensible opinion to the
+effect that subclasses ought to be more specialized than their parents,
+not just different (golden lab is a good subclass of dog, but not of cat).
+Circles aren't kinds of points, but the point class doesn't add anything
+to our Figure concept (at least yet).  So we define it as a subclass
+of Figure with no new content; note that the 'base class' <b>(Figure)</b>
+is put in parentheses.
+
+A derived class 'inherits' all methods and data members from its parent, so we
+can write something like:
+<code>
+>>>from Figures import *
+>>>point = Point(1,1,1)
+>>>point.origin()
+</code>
+and get
+<code>
+(1,1,1)
+</code>
+in reply.
+
+In addition to being inherited, methods (and data members) can be 'overridden':
+if the derived class defines a method or data member with the same name as
+one of the parent class, then the definition in the derived class is normally
+used rather than in the parent, for instances of the derived class.  This is
+illustrated with the second constructor __init__() of class Circle with the code
+line of Figure.__init__(self, x, y, z) as shown above in the script.
+
+However, sometimes we need to get at the parent method, which is also illustrated
+in this constructor: when one name is put in front of another with '.', we say
+that the first name is a qualifier of the second.  So to get at the parent's definition,
+we qualify the method name with the name of the parent class, but when we do
+this we have to provide the 'self' argument explicitly.  Indeed, any method of
+any class can be used in this way, qualifying it with the class name and providing
+the first argument.
+
+So what is the difference between a method and a function that just happens to
+have been attached to an object, such as the onclick function for qmenu.item?
+First, only methods participate in inheritance, and second, only methods can be
+called via the shortcut technique with an instance as qualifier, and automatically
+supplied as first argument (but you could write something like Circle.circumference(mycircle)
+instead of mycircle.circumference(), if you wanted to).
+
+Unfortunately I haven't been able to find any really simple example of a base class
+and some subclasses in the QuArK code.  Some important ones are the dialog boxes,
+base class dialogbox in quarkpy.qmacro, and the handles, base class GenericHandle
+in qhandles.py.  But there's lots of stuff in them.  An example of a subclass of
+dialogbox is SimpleCancelDlgBox defined in quarkpy.qeditor; you can find further
+subclasses of SimpleCancelDlgBox by searching for 'CancelDlgBox)' (the final
+parenthesis picks up that it's being used as a base class in a class statement).
+There is much more to Python classes than this; it wouldn't be a bad idea to
+look over the classes section in the tutorial, although there's a fair amount
+of stuff that wouldn't make much sense to beginners (but also some reasonably 
+straightforward examples.
+
+4.  Classes, Builtin types and Extension types.
+
+There's one more basic topic that really has to be covered, which is the difference
+between classes, builtin types, and extension types.  Classes are the things we've
+just covered, whereas builtin types are the basic types such as int, string etc.
+provided by Python.  A basic difference between them is that you can't add random
+new stuff to a builtin type.  For example, if you write:
+<code>
+myinteger = 2
+myinteger.tag = 'this cool one I just invented'
+</code>
+you'll get an error, whereas:
+<code>
+mycircle = Circle(0,0,0,3)
+mycircle.tag= 'this cool one I just invented'
+</code>
+will work fine (assuming you've imported the definition of Circle, etc.).
+
+Extension types are types which have been defined in extensions to Python, which in
+the case of QuArK Python will have been written in Delphi.  Some important extension
+types for QuArK Python are vector and qobject, created by calls such as:
+<code>
+myvector = quarkx.vect(1, 0 , 10)
+face = quarkx.newobj("top:f")
+</code>
+Like classes, extension types have methods (followed by ()) and data members
+(not followed by ()), but unlike classes, and like builtin types, you can't
+attach random stuff to them. (Note: in recent versions of Python, these differences
+have been largely eliminated, but rewriting QuArK to take advantage of this would
+be a major enterprise).  The various extension classes that Delphi provides
+to QuArK Python are described in the quarkx section of the infobase.
+
+An especially noteworthy feature is, that the QObject type in particular is
+defined by means of a rather large Delphi class hierarchy; Delphi classes are
+also OOP, but different in various ways from Python.  The 'suffixes' to the string
+argument passed to quarkx.newobj (":f", ":b", etc.) determine what Delphi type
+is used to make the instance of the extension class, and this then determines what
+data members and methods are available from Python (e.g. .normal is available for
+faces (suffix ":f"), but not polys (suffix ":p").
+

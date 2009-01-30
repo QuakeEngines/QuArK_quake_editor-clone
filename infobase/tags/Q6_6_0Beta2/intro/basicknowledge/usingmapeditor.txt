@@ -1,0 +1,18 @@
+title: Using the map editor
+author: Armin Rigo / Decker
+
+The map editor is the most widely used part of QuArK. When you first try to use it, you might have troubles in understanding
+what's going on. The basic idea is that you build polyhedrons (cubes or more complex) to make the shape of the map (walls,
+floors, ceilings...), and then you put entities to populate it (monsters, lights, doors...).
+
+It is important to distinguish between what is related to QuArK's map editor and what is related to the game you are making
+maps for. For example, how you give complex shapes to polyhedrons or how you change the attributes of entities is related to
+the map editor. On the other hand, what all these entity attributes actually mean is related to the game only, and so is the
+list of entities and textures you can use; see <ref> ./entitiesforgame </ref> below.
+
+For the basic QuArK-related operations, you can get help from one of the available tutorials. A basic one is found in the
+<a href="../help/maps/index.html">documentation of the map editor</a> (included in the QuArK distribution).
+Other ones are found on the <a href="http://quark.planetquake.gamespy.com/">QuArK web site</a>.
+
+Questions about this subject are welcome in the <a href="http://quark.planetquake.gamespy.com/forums/">QuArK forum</a>.
+See also the <a href="http://www.planetquake.com/quark/help/index.html">on-line docs</a> on the web site.

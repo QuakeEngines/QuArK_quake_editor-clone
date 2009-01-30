@@ -1,0 +1,44 @@
+title: Commands menu
+author: cdunde
+
+<img border=0 align=right>commands.png</img>
+
+<i>Duplicate Current Frame </i>&nbsp;: This copies a single frame that is currently selected and
+adds that copy to that model component's animation frames list.
+For multiple frame copies use the 'Duplicate' function on the 'Edit' menu.
+
+<i>Match Frame Count </i>&nbsp;: This will duplicate the number of frames in the selected components
+with the one that has the most frames in it. It will not copy the frames, only how many there are.
+
+<i>Add Triangle </i>&nbsp;: This adds a new triangle to the currently selected component. It works
+in conjunction with the <b>Pick Vertex</b> function on the
+<a href="intro.modeleditor.rmbmenus.html#vertexrmbmenu">Vertex RMB menu</a> described below. See that
+function for more details.
+
+<i>Reverse Direction </i>&nbsp;: Normally, in QuArK, creating a new triangles vertexes in a 'clockwise' direction
+will produce a triangle that faces 'outwards'. But sometimes this does not work for adding new triangles to existing
+ones. Activating this function (checking it) will reverse that direction causing the triangle to face the opposite way.
+If needed after you have created the new triangle, simply check this item, click on the 'Delete Triangle' function below,
+electing 'No' to remove the 3 vertexes, reselect those vertexes and recreate the new triangle.
+It will then be facing the correct direction. The same thing can be done using the 'Undo' function on the 'Edit' or
+<g>RMB</g> menus.
+
+<i>Delete Triangle </i>&nbsp;: This removes a triangle from the currently selected component. It works
+in conjunction with the <b>Pick Vertex</b> function on the
+<a href="intro.modeleditor.rmbmenus.html#vertexrmbmenu">Vertex RMB menu</a> described below. See that
+function for more details.
+
+<i>Check Components </i>&nbsp;: This checks components for any errors in them that might exist.
+
+<i>Auto Assemble </i>&nbsp;: Some models are made up of seperate model files for example .md3 files.
+This function attempts to auto-load those related models model files and attach them using what is known
+as tags to match them up correctly.
+
+<i>X Y Z Axis locks </i>&nbsp;: All three of these items work in the same manor but are independent from one another.
+They restrict any <g>vertex</g> movement in their related direction for all views and are interactive with their
+corrisponding buttons on the
+<a href="intro.modeleditor.toolpalettes.viewselection.html">View Selection tool-palette</a>.
+
+All of these commands are dupelicated as a sub-menu of the
+<a href="intro.modeleditor.rmbmenus.html#viewsrmbmenus">Editor Views RMB menus</a>.
+

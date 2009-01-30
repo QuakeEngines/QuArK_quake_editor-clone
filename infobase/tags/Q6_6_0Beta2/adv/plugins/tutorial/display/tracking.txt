@@ -1,0 +1,67 @@
+title: Tracking the tagged face
+author: tiglari
+
+But there is still a problem.  Tag a face, and then move it.  The blue
+line will probably stay behind in its original position.  And if you
+use the Glue to Tagged command, you'll see the glued side snapping
+to the original position of the the moved face, not the present
+position.  These aren't really show-stopping bugs, but it's still
+goofy behavior.    What's going on is that
+the editor's tagging.tagged attribute is storing the old face, while
+the effect of the movement was to subsitute a new one; QuArK doesn't
+do a very good job of keeping track of identity of map objects as we
+tend to construe it.
+
+What we want to do is check that the tagged object is still in
+the map, before doing things that depend on its being there.
+For this we first utility function `checktree', defined in
+quarkpy.maputils.py, which tests whether one object is
+inside another.
+What we want to do is, at some strategic point, make sure that
+the tagged face (the thing sitting in editor.tagging.tagged)
+is still sitting in the map structure (inside editor.Root).
+We can do this with a little function `checktagged', defined
+inside of tagfinishdrawing, right after we've gotten the tagged
+face, which we then check the value of before proceeding:
+<code>
+    ...
+    tagged = gettagged(editor)
+    if tagged is None: return
+</code>
+<code>
+    def checktagged(tagged=tagged, editor=editor):
+        if not checktree(editor.Root, tagged):
+            cleartag(editor)
+            return 0
+        return 1
+</code>
+<code>
+    if tagged is None or not checktagged():
+        return
+    ...
+</code>
+This function utilizes the extremely useful technique of `default
+arguments, in the definition of the function, the variables to
+the right of the equalities in the function's argument-list
+are evaluated in the context where
+the function is defined, and then used as the values of the
+variables on the left in subsequent calls.  Here the usage
+of this technique is trivial,
+just making an `if' statement a bit shorter, but things can get
+more serious.  It would also seem to be a good idea to get rid
+of the tagging attribute when it's useless; this is accomplished
+by the `cleartag' function that's invoked above and defined here:
+<code>
+def cleartag(editor):
+    try:
+       del editor.tagging
+    except (AttributeError):
+       pass
+</code>
+Now as a pleasant side effect of all this,
+when we move the tagged side, the Glue item should become
+disabled on the menu.
+
+Finally, as an easy exercise, you should implement a `Clear tag"
+command.  Sample final results in <tt>maptagside3.py</tt>.
+

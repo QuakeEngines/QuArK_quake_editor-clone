@@ -1,0 +1,16 @@
+title: Delay loading
+author: Tiglari / Armin
+
+If FFlags contains the bit <tt>ofNotLoadedToMemory</tt> then FNode points to
+data that give the file and the position of the object inside the file. This is
+for the delay-loading mechanism. With this mechanism, when an object is loaded,
+the <tt>FSpecifics</tt> and <tt>FSubElements</tt> fields are filled, but the
+children in <tt>FSubElements</tt> are "empty" : they are QObject which still
+sit on the disk. Their FNode fields give the position for later reading. The
+method <tt>Acces</tt> must be called on them when they need to be actually
+loaded. You must never try to read <tt>FSpecifics</tt> or <tt>FSubElements</tt>
+before the object is actually loaded; if you're unsure call <tt>Acces</tt>
+first.
+
+In the map editor this is often not necessary because the complete subtree of
+"worldspawn" is always loaded when the map editor opens.

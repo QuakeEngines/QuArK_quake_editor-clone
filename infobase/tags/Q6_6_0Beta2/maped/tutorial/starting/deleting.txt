@@ -1,0 +1,24 @@
+title: Deleting the default room
+author: Decker
+
+<img width=184 height=104 align=right> image3.png </img>
+The default room is okay for test purposes, but usually you don't want to use
+it at all, so how do you get rid of it?
+
+Easy, by deleting it! Mark the three items in the
+<ref> intro/mapeditor/dataforms/treeview </ref>, as shown in the
+image, and either press the Delete key on your keyboard, or <tt>drag</tt> them
+to the <ref> intro/mapeditor/misctools/trashcan \ trashcan </ref> icon
+<img width=23 height=23 align=absmiddle>image4.png</img> and <tt>drop</tt>.
+
+You must not, and can not, delete the 'worldspawn' item. This must exist in all
+maps.
+
+To select multiple items, QuArK's tree-view understands the common method as
+every other Windows' program do. By holding down the Ctrl key on your keyboard,
+and click on items will toggle between selected and unselected. (Just like in
+Windows' File-Explorer.)
+
+You can also select the first item of a list, then hold down the Shift key and
+click on the last item, all items in between will be selected. (Just like in
+Windows' File-Explorer.)

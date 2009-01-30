@@ -1,0 +1,112 @@
+title: Attributes common to all screen controls
+author: Armin Rigo
+
+<table border=1 cellspacing=0 cellpadding=4>
+
+<tr><td class="doccode">
+owner
+</td><td>
+The Window that owns this control (read-only)
+</td></tr>
+
+<tr><td class="doccode">
+parent
+</td><td>
+The Panel that owns this control, or None for the main panel (read-only)
+</td></tr>
+
+<tr><td class="doccode">
+visible
+</td><td>
+To show or hide the control
+</td></tr>
+
+<tr><td class="doccode">
+section
+</td><td>
+If the parent Panel has several sections, this is the section for this control. Format: (column, row) where column and row range between 0 included and the total number of columns (resp. rows) of the parent Panel, excluded.
+</td></tr>
+
+<tr><td class="doccode">
+clientarea
+</td><td>
+The (x,y) size of the control (read-only). If the control has a border around it, it is excluded from this size.
+</td></tr>
+
+<tr><td class="doccode">
+hint
+</td><td>
+A string that pops up when the user leaves the mouse over the control
+</td></tr>
+
+<tr><td class="doccode">
+info
+</td><td>
+Reserved for Python code use
+</td></tr>
+
+<tr><td class="doccode">
+type
+</td><td>
+String describing the control type. (read-only)
+</td></tr>
+
+<tr><td class="doccode">
+close()
+</td><td>
+Closes (destroys) the control. You cannot use it any longer once it has been closed, much like you cannot use Python files any longer once you called their close() method.
+</td></tr>
+
+<tr><td class="doccode">
+show()
+</td><td>
+visible = 1
+</td></tr>
+
+<tr><td class="doccode">
+hide()
+</td><td>
+visible = 0
+</td></tr>
+
+<tr><td class="doccode">
+invalidate()
+invalidate(rebuild)
+</td><td>
+Forces a control to display itself again. For map views in textured mode, this also forces a rebuild of the scene if rebuild is present and not egal to 0. (note that this default behavior is new from QuArK 5.9.) The control is not repainted immediately.
+</td></tr>
+
+<tr><td class="doccode">
+invalidaterect<br>
+(ULx, ULy, LRx, LRy)
+</td><td>
+Forces a control (view area) to display (redraw) itself again within the given max. and min. rectangle area positions<br>(upper left x , upper left y , lower right x , lower right y).
+</td></tr>
+
+<tr><td class="doccode">
+repaint()
+</td><td>
+Repaint the control immediately.
+</td></tr>
+
+<tr><td class="doccode">
+update()
+</td><td>
+Immediately repaint the regions of the control that needs to be, if any.
+</td></tr>
+
+<tr><td class="doccode">
+popupmenu(list)
+popupmenu(list,dblclk)
+popupmenu(list,x, y)
+</td><td>
+Displays a pop-up menu with the items of the list. If x,y are specified, they give the position of the pop-up menu within the screen control. The default position is at the current mouse location. If only a second argument dblclk is specified, and is non-zero, the menu is not displayed, and its default item (if any) is clicked instead.
+</td></tr>
+
+<tr><td class="doccode">
+ondrop
+</td><td>
+Callback function. Called when the user drops objects on the screen control, with 5 arguments: the screen control itself, a list of objects dropped (which you should copy, not use directly), the x,y coordinates of the drop, and the source control or button. Note that the ondrop of Tree Views differs from this one. Also note that, when dropping objects onto a button, QuArK will call that button's ondrop callback instead if it has one.
+</td></tr>
+
+</table>

@@ -1,0 +1,68 @@
+title: Linking
+author: tiglari
+
+Linking is also new and rough around the edges; it's purpose to
+make 'permanent glue', so that faces that are meant to stay stuck
+together are more likely to do so.  The 'Glue to tagged' command
+will link the glued and glued-to faces if the 'Link on Glue'
+option from the Options menu is checked (by default it isn't,
+since this is new behavior).  When faces are linked, various
+things happen:
+
+<UL>
+<LI>If one of the faces, or a poly, group or entity containing
+one of the faces, is dragged, then all of the faces linked to
+that face are dragged along too.
+
+<LI>If some operations other than dragging result in some linked
+faces no longer being coplanar, they are all drawn in dotted
+red (and it's easy to get the coplanar again).  If one of them
+is selected, then it and those coplanar with it are drawn in
+dotted blue instead (doesn't always work).
+</UL>
+
+The 'Linking' submenu for faces provides control over linking
+effects.  Its commands are:
+
+<UL>
+<LI>Glue linked faces - all faces linked to the selected one are
+glued to it.  This is the basic technique for fixing things up
+when linked faces become unaligned (there are many different
+things that can cause faces to move in QuArK, and it's probably
+not sensible to try to track them all automatically, and very
+un-sensible to assume that you're doing it successfully ..).
+
+<LI>Select linked faces - all the faces that are linked to
+the selected one become a multi-selection.  This gives quick
+access to the face-rotating handles.
+
+<LI>Unlink face - the selected face is detached from the others
+it's linked to.
+
+<LI>Unlink all - all the faces linked to the selected face are
+unlinked from each other.
+
+<LI>Link face to tagged - links the selected face to the tagged
+one, without moving it (so the dotted red lines appear).  I'm not
+sure if this one has a legitimate use, maybe it will disappear.
+</UL>
+
+There are also two more options in the Options menu:
+
+<UL>
+<LI>Glue linked on drag - when something is dragged, things linked
+are dragged with it.  On by default.  If it's off, dragging
+something away from what it's linked to produces the dotted
+red lines.
+
+<LI>Multiselect on linked drag - if this is checked, the stuff
+that's dragged on a linked drag becomes the multiselection (QuArK
+does spontaneously for some reason, I'm not sure if it's useful,
+but I decided to make turning it off optional).
+</ul>
+
+<A name="later"></a>There is also a linking item on the speed menu for polys, groups
+and brush-entities, 'Glue Linked'.  This causes all the faces
+linked to some face in the group or whatever to snap to that
+face (for fixing things up when movements get linked faces out
+of alignment).

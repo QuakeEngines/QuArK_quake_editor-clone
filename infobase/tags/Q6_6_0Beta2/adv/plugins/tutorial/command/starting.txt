@@ -1,0 +1,16 @@
+title: Setting up
+author: tiglari
+
+What we'll be doing is making a replacement maptagside plugin.
+The real one is interconnected with some other plugins
+which we'll have to disable, & it would not be a good
+idea to mess with your regular QuArK installation, so
+you should make a second one, and in that installation,
+remove the files `plugins\mb2caulk' and `plugins\maptagside'.
+
+Since we're going to be making a series of new maptagside
+plugins, it might be convenient to call them maptagside0.py,
+maptagside01.py; you can disable the older ones and keep
+them from loading by renaming them `tagside0.py', etc
+(since plugins are only loaded by the mapeditor if their
+names begin with q- or map-, or mb2- for Q3 engine games).

@@ -1,0 +1,65 @@
+title: Color Selector & Paint Settings
+author: cdunde
+
+<img  border=0 align=right>colorselector1.png</img>
+
+This button opens the dialog to select colors manually from either a palette,
+if the model uses one, or the RGB color selector.
+
+There are also various other settings for all of the paint brush tools.
+
+
+Basically, all of the painting tools and functions are still very much in the development stages
+(which we could use assistance with).<br>
+Meaning, you may get some strange results at times so be sure to have a backup of your skin textures.
+Although, unless you save the model or texture, any painting changes will not be saved automatically.
+Still, it is a matter of good editing practice to get into. Now to cover the specific items of this dialog.
+</td></tr>
+</table>
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+<img border=1 align=right valign=top>colorselector2.png</img>
+<I><u>current skin</u></I> : This will display what ever skin is currently selected and it will update
+itself if another skin should be selected.<br>
+<I><u>reach through</u></I> : Because a model may have other components on top or below your work area
+and other factors, using this function will allow you to <g>reach through</g> those laired faces and
+get to the ones you want to paint.
+
+<b>Solid:</b> These are primarily the settings for the
+<a href="intro.modeleditor.toolpalettes.paintmodes.html#solidcolor">Solid Color Paint</a> tool.
+However, they also apply to the
+<a href="intro.modeleditor.toolpalettes.paintmodes.html#airbrush">Airbrush Paint</a> tool.
+<I><u>Palette color</u></I>&nbsp; and <I><u>RGB color</u></I> : If a model texture has a palette,
+such as <g>Quake 2</g> models do, the <g>Palette color</g> will be active, if not then the
+<g>RGB color</g> will be active. Both are never active at the same time, the program makes the selection.
+
+<I><u>Brush Width</u></I>&nbsp; and <I><u>Brush Shape</u></I> : These are the settings for the
+<a href="intro.modeleditor.toolpalettes.paintmodes.html#solidcolor">Solid Color Paint</a> tool only
+with a preset list for its shapes.
+
+<b>Airbrush:</b> These are settings strictly for the
+<a href="intro.modeleditor.toolpalettes.paintmodes.html#airbrush">Airbrush Paint</a> tool appling to
+its <g>secondary color</g>, its <g>primary color</g> is above.<br>
+<I><u>Palette color</u></I>&nbsp; and <I><u>RGB color</u></I> : If a model texture has a palette,
+such as <g>Quake 2</g> models do, the <g>Palette color</g> will be active, if not then the
+<g>RGB color</g> will be active. Both are never active at the same time, the program makes the selection.
+
+<I><u>Spray Width</u></I>&nbsp; and <I><u>Spray Shape</u></I> : These are the settings for the
+<a href="intro.modeleditor.toolpalettes.paintmodes.html#airbrush">Airbrush Paint</a> tool only
+with a preset list for its shapes.
+
+<I><u>Spray Style</u></I>&nbsp; and <I><u>Opacity %</u></I> : At this point <g>Spray Style</g> is purely
+experimental which can result in some rather unpredictable results, use this with caution.
+The test settings are <g>Spray Width</g> at an even value number, <g>Spray Shape</g> set to <g>RECTANGLE</g>,
+<g>Opacity %</g> set to a low numeric value (10 or less) and with the painting being done in the
+<a href="intro.modeleditor.skinview.html">Skin-view</a>.
+
+<I><u>Opacity %</u></I> : This is very useful in spreading a color blend between the
+<g>primary (start)</g> and <g>secondary (end)</g> color spread.
+</td></tr>
+</table>
+
+The QuArK Development Team is very interested in the assistance of others either in the way of pixel color
+formulas, methods and\or coding to further enhance and improve these functions. If you feel you can
+contribute please contact us.

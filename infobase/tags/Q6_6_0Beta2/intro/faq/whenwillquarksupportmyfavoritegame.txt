@@ -1,0 +1,22 @@
+title: When will QuArK to support my favorite game?
+author: tiglari
+
+That depends.  If the game is a Quake 1/2/3 engine game, it might happen
+pretty quickly if you ask.  If it's a non-Quake engine 'corridor shooter'
+(Unreal, Serious Sam, Max Payne), it would depend on how much of the work
+you are able and willing to do.  It's fair to say that the QuArK coders do
+not have time to fossick around in forums and web sites collecting technical
+specifications and map format information, so if you can do that and present
+a nice package, that would improve the chances (there's also the issue of
+whether the game developers themselves impose restrictions on editing
+their content).
+
+<!--
+If it's a landscape-based game such as Giants, the answer is probably no
+(nullpointer at  <a href=http://www.planetcitizenkabuto.com>
+http://www.planetcitizenkabuto.com</a> is planning to extend his
+GiantsEdit to cover more games of that nature).
+-->
+
+If you're interested in extending QuArK to deal with a new kind of
+game, post a request on the <a href="http://quark.planetquake.gamespy.com/forums/">QuArK forum</a>.

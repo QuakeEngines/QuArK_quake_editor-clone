@@ -1,0 +1,5 @@
+title: Single texture
+author: Decker
+
+<img border=0 align=right>texture.png</img>
+You can even put in a single texture in the userdata panel.

@@ -1,0 +1,15 @@
+title: Move and Lock Vertex
+author: tiglari
+
+This plugin is responseible for the vertex RMB commands Move Vertex,
+Lock Vertex, and Clear Locks.  Move Vertex starts an extremely slow and
+deliberate key-driven vertex-movement scheme, and Lock Vertex 'freezes'
+certain vertexes for its operation.  Unfortunately, Lock Vertex has no
+effect on ordinary vertex dragging because I haven't managed to grok
+the vertex dragging code well enough to merge it in.  Clear Locks of
+course clears the locks.
+
+This isn't as good as Worldcraft/Hammer vertex movement mode, but it
+can help with some problems (thanks to discussions with quantum_red,
+I've got some ideas about real vertex-movement; maybe it will appear
+in QuArK 6.4).

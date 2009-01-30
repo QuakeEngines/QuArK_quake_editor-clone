@@ -1,0 +1,7 @@
+title: Saving files
+author: Armin Rigo
+
+Saving files is the exact inverse of loading them. The method <tt>SaveFile</tt> must turn the Specific/Args and the subobjects
+structure back into a file.
+
+If the <tt>LoadFile</tt> method used LoadSibling, <tt>SaveFile</tt> calls Info.WriteSibling (see QkMdl.pas).

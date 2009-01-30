@@ -1,0 +1,15 @@
+title: Plugin Tutorial
+subdir: blather command tagging help display mouse
+
+In this tutorial we slowly construct an oversimplified
+version of the maptagside plugin.
+A significant general point is that these tutorials don't
+represent the maptagside plugin as it actually is, but rather
+what I currently think it should have been.  It uses some
+Java-style coding conventions, such as initial caps for
+classes and lowercase for functions & variables.
+
+The actual maptagside plugin is a sprawling mess, since it
+was my first, & embodies many errors in design.  Perhaps
+I will clean it up some day, but otoh, if it ain't broke,
+don't fix it.

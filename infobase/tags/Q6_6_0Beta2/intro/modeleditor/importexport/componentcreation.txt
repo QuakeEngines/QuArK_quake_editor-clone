@@ -1,0 +1,43 @@
+title: Creating a Component in the Code
+author: cdunde
+
+In one of our previous functions, <a href="#import_md2_model2">import_md2_model</a>,
+we had the data to create a component returned to that function.
+Here we will look at its code, which is shown below, to see exactly how that is written.
+<code>
+    # Now we can name our component that will be imported.
+    Component = quarkx.newobj(name + ':mc')
+    Component['skinsize'] = skinsize
+    Component['Tris'] = Tris
+    Component['show'] = chr(1)
+    sdogroup = quarkx.newobj('SDO:sdo')
+    Component.appenditem(sdogroup)
+    Component.appenditem(skingroup)
+    Component.appenditem(framesgroup)
+</code>
+<g><b>A special note here :</b></g><br>
+If you were also importing <a href="intro.modeleditor.editelements.html#bones">Bones</a>
+from the model this is the first of
+<a href="intro.modeleditor.importexport.html#undo1">two places</a>
+where that code would need to be added if there is only <b>ONE</b> component used for the model.
+If there is more then one then they would need to be added as <b>EACH</b> component is created.
+The additional line of code should be placed just below <g>Component.appenditem(framesgroup)</g>
+above and can be copied from below just as it is shown.
+<code>
+    editor.Root.dictitems['Skeleton:bg'].appenditem(skeletongroup)
+</code>
+See the section below covering
+<a href="intro.modeleditor.importexport.html#bones1">Bones Structure, Data within the Bone</a>
+for the needed code to create individual bones for the <g>skeletongroup</g> <b>before</b>
+the line above is called.
+
+Just under the above code in the <g>QuArK\plugins\ie_md2_import.py</g> file you will see this code.
+<code>
+    ### Use the 'ModelRoot' below to test opening the QuArK's Model Editor with,
+    ### needs to be qualified with main menu item.
+    ModelRoot = quarkx.newobj('Model:mr')
+  #  ModelRoot.appenditem(Component)
+</code>
+Right now that last line is <g>commented out</g> to keep it from actually working to avoid any errors.
+But as mentioned some time ago, this will be used in the future to open the editor with directly
+using an imported model and should therefore be added to your code now.

@@ -1,0 +1,14 @@
+title: DirectX
+author: DanielPharos
+
+<img align=right>directx.png</img>
+Settings in this folder are only usable if you have a DirectX
+graphics-card.
+
+<i>Back buffer format</i>. The format of the back buffer used by
+DirectX. This is the color format of the pixels. The higher the better
+the quality, but not all formats might be supported.
+
+<i>Depth buffer bits</i>. The amount of bits per pixel in the depth
+buffer. The higher the number, the less chance of objects being rendered
+overlapping while they're not. Not all modes might supported.

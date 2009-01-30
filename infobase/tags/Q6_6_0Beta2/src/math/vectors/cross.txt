@@ -1,0 +1,72 @@
+title: The Cross Product
+author: tiglari
+
+Now we move on to a rather more complicated operation,
+the cross product.  What this is useful for is finding
+vectors that are perpendicular to other vectors.
+Unfortunately most of the applications of this
+in the code seem to be involved with more advanced things
+such as matrices, but hopefully these basic facts
+will be useful, especially that when a cross product
+is used, the motive is generally to find a vector
+that's perpendicular to two that are already in hand.
+
+The full algebraic definition of the cross product is
+rather complicated, and for QuArK programming, there's
+no real reason to know it, since it's computed by the
+'^' operation:  'u^v' is the cross-product of u and v.
+But although we don't need to know how to compute it,
+we do have to know something about its properties.
+
+The most important property is that if u and v don't
+lie on the same line (which implies that neither is the
+<b>0</b> vector), then u^v is perpendicular to both u and v.
+Otherwise u^v is the <b>0</b> vector (and isn't really useful
+for anything, afaik).  Another useful fact is that if
+u and v are the unit vectors along the x and y axes,
+respectively, then u^v is the unit vector along the z
+axis.  Since these unit vectors are standardly
+designated <b>i</b>, <b>j</b> and <b>k</b>, we have:
+<code>
+i ^ j = k
+</code>
+
+More generally, we'd like to know how to tell:
+<UL>
+<LI>how long u^v is
+<LI>which way it points
+</UL>
+The length turns out to be abs(sin(th))*abs(u)*abs(v),
+where th is the angle between u and v.   More relevant
+for QuArK is the direction: there is a principle called
+the 'right hand rule' for figuring out the direction
+of a cross-product: if v goes perpendicularly through
+the palm of your right hand, with your fingurs curling
+around so that they point towards u, then your thumb
+points in the direction of u^v.
+
+If you work through this you'll see that there is a
+consequence that u^v does not equal v^u, but point in
+the opposite direction, so we have:
+<code>
+u^v = -(v^u)
+</code>
+There are other algebraic facts about the cross product
+to be found in math books, but I have yet to find them
+useful for QuArK Python.
+
+The cross product can not only be used to manufacture a
+z axis from suitable x and y axes, but it can also be
+used to make an orthonormal basis from any two non-colinear
+vectors.  Suppose we have u and v, and want u to be the
+x axis, and v to lie in the xy plane.  Then we can get
+the direction of the z axis by taking u^v, and given
+the z axis, we can get the direction of the y axis
+as (u^v)^u.  Symbolically, using <b>i</b>, <b>j</b>,
+<b>k</b> as the unit vectors for the three axes:
+<code>
+i = u.normalized
+j = (u^v).normalized
+k = j^k  (normalization not needed here)
+</code>
+

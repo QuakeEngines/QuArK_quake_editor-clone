@@ -1,0 +1,9 @@
+title: A...
+author: Decker
+
+<dl>
+<dt><a name="aas">     </a>AAS     <dd>(abbreviation) Area Awareness System. This allows <a href="#bot">bots</a> in <a href="#quake3">Quake 3</a> to find their way through a map.
+<dt><a name="addon">   </a>Add-on  <dd>A <a href="#.QRK">.QRK</a> file which consists of usefull data, typically new <a href="#entities">entities</a> and/or <a href="#textures">textures</a>.
+<dt><a name="arg">     </a>Arg     <dd>See <a href="#argument">argument</a>.
+<dt><a name="argument"></a>Argument<dd>(value) A value or values seperated by space, that belong to a <a href="#specific">specific</a>. Can be either numeric or text.
+</dl>

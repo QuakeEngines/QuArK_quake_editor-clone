@@ -1,0 +1,10 @@
+title: Grid settings
+author: cdunde
+
+<img border=1 align=right>grid.png</img>
+There are two parts to this button. The left will bring down the menu, where
+you will be able to select what grid-scale you want to work in. The right part
+will enable/disable the grid, so you can work freely if needed.
+
+You can also use keys to increase or decrease the grid. See
+<ref> intro/configuration/map/keys </ref> for these.

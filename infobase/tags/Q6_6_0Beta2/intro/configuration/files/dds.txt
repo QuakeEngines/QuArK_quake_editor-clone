@@ -1,0 +1,29 @@
+title: DDS
+author: DanielPharos
+
+<img align=right>dds.png</img>
+
+<i>Select library for loading DDS files</i>. Here you can select the library you
+want to use to load DDS files.
+
+<i>Select library for saving DDS files</i>. Here you can select the library you
+want to use to save DDS files. The NVDXT option uses DevIL to save the image as
+a TGA file, and then converts that file to a DDS using the NVDXT tool.
+
+
+<u>Additional NVDXT settings</u>
+
+<i>Format of exported non-alpha DDS textures</i>. With this you can select a
+texture format in which textures without transparancy are saved.
+
+<i>Format of exported alpha DDS textures</i>. With this you can select a
+texture format in which textures with transparancy are saved.
+
+<i>Quality of exported DDS textures</i>. Here you can select the quality of the
+saved texture. The higher the better the quality, but also the larger the file
+and the longer saving (and loading the texture in-game) will take.
+
+<u>Additional DevIL settings</u>
+
+<i>Format of exported DDS textures</i>.  With this you can select a
+texture format in which textures are saved.

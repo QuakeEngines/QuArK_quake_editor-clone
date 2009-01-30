@@ -1,0 +1,64 @@
+title: Tree-view RMB menus
+author: cdunde
+
+There are a number of <g>RMB menus</g> that apply specifically to the <g>Tree-view</g> and are pretty
+well self explanatory so we will only cover a couple of them that need it.
+
+<img border=1 align=right>treeviewrmbmenus1.png</img>
+
+<i>Force to grid </i>&nbsp;: This will cause any vertex to <g>snap</g> to the nearest location on
+the editor's grid.
+
+<i>Cut </i>&nbsp;: Cut the selection to the clipboard.
+
+<i>Copy </i>&nbsp;: Copy the selection to the clipboard.
+
+<i>Paste </i>&nbsp;: Paste a model object from the clipboard.
+
+<i>Duplicate </i>&nbsp;: This makes a copy of the selected object(s), but not all of them.
+Primarily components and frames, it gives each new item its own name by adding the next
+numerical sequence of its group. With frames it drops it at the end of its group.
+This avoids errors with other functions. Also handles skins, but no renaming,
+and multiple items, even in different groups and components.
+
+<i>Delete </i>&nbsp;: Delete the selection.
+
+<i>Show Component </i>&nbsp;: This works in conjunction with the <g>Hide Component</g> function below.
+It will redisplay the selected model component in the editor's view and cause it to become active again.
+
+<i>Hide Component </i>&nbsp;: This works in conjunction with the <g>Show Component</g> function above.
+When the selected model component is in this state it will not be drawn in the editor's view and becomes
+inactive for various functions.
+
+<i>Save Skin File </i>&nbsp;: Opens a file save window and allows you to save the selected skin as various
+types of image files.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><u>NOTE</u></b>: You can NOT save another type as a .pcx 
+file because they do not have a <g>palette</g> like .pcx files do, this will only cause an error.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;You CAN save a .pcx file to another file type like .tga though.
+
+<img border=1 align=right>treeviewrmbmenus2.png</img>
+
+<i>Match Frame Count </i>&nbsp;: This will duplicate the number of frames in the selected components with the one
+that has the most frames in it. It will not copy the frames, only how many there are.
+
+<i>Check Components </i>&nbsp;: This checks components for any errors in them that might exist. At this time just
+for <g>Match Frame Count</g> but more will be added in the future. However it does give more info about them.
+
+<i>Duplicate Current Frame </i>&nbsp;: This copies a single frame that is currently selected and adds
+that copy to that model component's animation frames list just below the frame being copied.
+This can be used multiple times for the same single original frame. For multiple frame copies use the
+<g>Duplicate</g> function on the <g>Edit</g> menu.
+
+<i>Face Commands </i>&nbsp;: Performs the same as the
+<a href="intro.modeleditor.rmbmenus.html#viewsrmbmenus">Editor Views RMB menus</a> item.
+Please click the menu link for a detail description and its use.
+
+<i>Force to grid </i>&nbsp;: Performs the same as the above <g>RMB menu</g> item.
+
+<i>Cut </i>&nbsp;: Performs the same as the above <g>RMB menu</g> item.
+
+<i>Copy </i>&nbsp;: Performs the same as the above <g>RMB menu</g> item.
+
+<i>Paste </i>&nbsp;: Performs the same as the above <g>RMB menu</g> item.
+
+<i>Delete </i>&nbsp;: Performs the same as the above <g>RMB menu</g> item.

@@ -1,0 +1,19 @@
+title: Bugs or unexpected behavior in the map editor
+author: Armin Rigo / Decker, DanielPharos
+
+An unexpected behavior is a QuArK bug unless it enters the category of <ref> ./compilingmaps </ref>
+A typical bug comes as an error message with a button "More>>" that will let you copy and paste a detailled bug report.
+Then send the bug to
+<a href="http://quark.planetquake.gamespy.com/forums/">the QuArK-forum</a>, including the bug report and what you were doing
+when the bug occurred. If the bug can be reproduced, please give a step-by-step procedure to follow to reproduce it.
+
+In the recent versions of QuArK 5 and 6, there are some known problems; please don't report them. These include troubles with
+the 3D viewers on some 3DFX graphic cards. A description of these troubles and proposed solutions are discussed in the
+<a href="http://quark.planetquake.gamespy.com/forums/">forum</a>.
+Cdunde also writes news about important bug fixes and workarounds on the
+<a href="http://quark.planetquake.gamespy.com/news.php3">news page</a> of the web site.
+
+Here is one of the most common known bugs (please don't report it again, we're working on it!): I've heard that QuArK
+often has troubles with the most recent Glide drivers. Try using older drivers. Find an old driver, get its file "GLIDE2X.DLL",
+and put it into the QuArK directory. Doing it this way won't prevent other programs and games to use the already-installed
+recent drivers; only QuArK will use the old ones.

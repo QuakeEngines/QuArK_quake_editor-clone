@@ -1,0 +1,46 @@
+title: QuArK Conversion Tools
+desc: conversiontool
+desc: qeradiant
+desc: worldcraft
+desc: conversiontoolsys
+
+<img border=1 align=right>conversion1.png</img>
+There are three conversion tools in QuArK:
+<ul>
+<li><a href="adv.conversion.html#conversiontool">Conversion Tool</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(makes multiple types of .qrk files)
+<li><a href="adv.conversion.html#qeradiant">QERadiant .def file</a> &nbsp;(only works with this type of file)
+<li><a href="adv.conversion.html#worldcraft">Worldcraft .fgd file</a> &nbsp;&nbsp;&nbsp;(only works with this type of file)
+</ul>
+All of these tools will convert other files into <a href="adv.intro.html#qrk">.qrk</a>
+files that QuArK can use for game <a href="adv.addons.html">Add-Ons</a> files that
+provide specific elements to work with in the
+<a href="intro.mapeditor.overview.html#overview">QuArK Map Editor</a>.
+
+But the <g>QERadiant</g> and <g>Worldcraft</g> tools will only make one of the needed
+files, the entities.qrk file.
+The <a href="adv.conversion.html#conversiontool">Conversion Tool</a> can make one or all
+of the needed files.
+<ul>
+<li><g>Data(gamename).qrk</g>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Used to setup basic things such as the <a href="maped.tutorial.starting.html#defaultroom">default room</a> for <a href="maped.tutorial.starting.html">NewMap</a>,
+<li><g>UserData (gamename).qrk</g> &nbsp;Used to setup items for the QuArK <a href="intro.mapeditor.userdata.html">Userdata panel</a> and the <a href="intro.mapeditor.menu.html#gamemenu">Games menu</a> items.
+<li><g>(gamename)Entities.qrk</g> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Used to create the <a href="intro.mapeditor.dataforms.html#specsargsview">games entities and entities :form sections</a>.
+<li><g>(gamename)Textures.qrk</g> &nbsp;&nbsp;&nbsp;&nbsp;Used to setup the games textures to be displayed in the QuArK <a href="intro.texturebrowser.overview.html">Texture Browser</a>.
+<li><g>(gamename)Shaders.qrk</g> &nbsp;&nbsp;&nbsp;&nbsp;Used to setup the games shaders, scrips, materials (if used) to be displayed in the QuArK <a href="intro.texturebrowser.overview.html">Texture Browser</a>.
+<li><g>(gamename)ModelEntities.qrk</g> &nbsp;&nbsp;&nbsp;Used to setup special <a href="intro.mapeditor.dataforms.html#specsargsview">model entities</a> if the game has these.
+<li><g>(gamename)(special)Lists.qrk</g> &nbsp;&nbsp;&nbsp;&nbsp;Used to setup other special lists of items that the game uses.
+</ul>
+
+The reasoning behind the above structure is that in the <b>OLD</b> days when games were small it didn't matter....<br>
+so everything was purtty much thrown into one file.... that's just the way it was done....<br>
+But now that games are 10 times bigger (and all their editing items) that way just doesn't work anymore.<br>
+Try updating just the entities in a file that has all of that other different stuff in it.....
+ and you will see what I mean.  ???<br>
+(what a mess!) ....makes your hair stand on end....!
+
+Now, the above individual files (for a basic game like HL2) are added to the "<g>AddOns</g>"
+in the "<g>(gamename):config =</g>" section of the <g>Defaults.qrk</g> file so they get registered
+and loaded right out of the box..... which also makes it easer for the end user.
+Other addons for that game are registered by the user as desired.<br>
+See how all of that works together now?
+It keeps things simple, more directly related and easer to update a single component of a games
+editing item individually without having to thrash through a bunch of different formatted code for other items.

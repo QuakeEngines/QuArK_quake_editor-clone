@@ -1,0 +1,45 @@
+title: Delphi for C(++) programmers
+author: Tiglari
+
+Delphi is a system built on Object Pascal.  The difference
+between O.P. and C++ is mostly syntax, but there are some
+substantive matters:
+
+<ul>
+<li>case doesn't matter: string = String
+<li>@variable gives the address of variable.
+<li>The OP class system is based on RTTI, and has inherently
+    greater flexibility than C++ (tho a lot less than Python).
+<li>Casts are done with what looks like a C++ constructor.
+    so if you want to cast a QObject as QFileObject, you write:
+    <tt>QFileObject(Obj)</tt> where Obj is your QObject.
+<li>OP constructors are by convention called Create, but
+    can be called anything.  So MyClass.Create('bozo') would
+    probably be a constructor.
+<li>A significant innovation is `properties' (basically
+    the same thing as `ties' in PERL).  A property is a class
+    attribute that looks like an ordinary data member
+    externally, but has associated with it <tt>read</tt> and <tt>write</tt>
+    methods that are invoked at the appropriate times.
+    So something like: <tt>thing.size := 10;</tt>
+    can set off an arbitrarily large amount of processing,
+    if <tt>size</tt> is a property of <tt>thing</tt>'s class.  Convenient
+    for coding, but sometimes deceptive when reading the
+    results ...
+<li>HORRIBLE GOTCHA:  in an <tt>if begin ... end else ...</tt>
+    statmement, if you put a semicolon after end, it will
+    compile but the else block will never execute.
+    [Note by Armin: wrong, a ';' before an 'else' will never compile]
+    The semicolon rules are different than in C(++).
+    Semicolons suck.
+<li>OP doesn't use header files.  The essential work of
+    C(++) .h files is done in the <tt>interface</tt> section of
+    a module, whereas the work of the .c(pp) files is done
+    in the following <tt>implementation</tt> section.  It wouldn't
+    be a bad a idea to read the delphi help on <tt>interface</tt>,
+    <tt>implementation</tt> and <tt>initialization</tt>.
+<li>programs, modules, etc end with <tt>end.</tt>  This also sucks.
+<li>In spite of the semicolons, in general, as far as I can
+    make out, O.P. has everything you need to make real programs,
+    without the annoying limitiations of 'textbook Pascal'.
+</ul>

@@ -1,0 +1,47 @@
+title: Using Delphi
+author: Rowdy
+
+Here are a few notes about using Delphi.
+
+<dl>
+<dt><a name="files"></a>Delphi file types<dd>
+A project consists of a .dpr file (Delphi project), a number of .pas files (Object Pascal source files) and .dfm files (Delphi forms).
+
+There are a few other files containing resources (.res files), project configuration (.dof and .cfg), and possibly assembler files (.asm).
+
+When Delphi compiles a .pas file, it creates a corresponding .dcu file (Delphi compiled unit).
+
+Also every .dfm file will have a corresponding .pas file (but not necessarily the other way around), and every .pas file will produce a .dcu file.
+
+<dt><a name="compiling"></a>Compiling with Delphi<dd>
+.dcu files are temporary and can be deleted at any time.  However, if you delete a .dcu file then Delphi has to compile the corresponding .pas file again, whether it has changed since the last compile or not.
+
+If you do a compile in Delphi (by selecting Project - Compile from the menu or by pressing Ctrl-F9) Delphi checks all the .pas files and all the .dcu files, and only compiles those .pas files which have been changed since the corresponding .dcu file was last compiled.  This is also true for .pas files which have been changed inside the Delphi IDE but not yet saved - they are considered as changed by the compiler.  I also suspect that Delphi will recompile .pas files which rely on other .pas files e.g. if file1.pas uses file2.pas, and file2.pas has been changed, then both file1.pas and file2.pas will be recompiled.
+
+Alternatively you can force a full recompile of everything by selecting Project - Build from the menu.
+
+Another compile-type option which takes a lot less time to process is to "syntax check" the source without actually compiling anything.  This acts like a Ctrl-F9 by parsing all source files which have been changed since the last proper compile, but does not generate any new .dcu files, nor does it generate a .exe file.  This can be used if you very quickly want to check whether they syntax of something you changed is correct.  A full rebuild of QuArK on my PC takes around 12 seconds, a syntax check takes about 2 seconds, most of which is Delphi checking file modification times to see how much it has to check.
+<dt><a name="editor_config"></a>Configuring the IDE<dd>
+Select Tools - Editor Options from the menu, and the editor options dialog will appear.  There are a number of options you can set here to customise the appearance and operation of the editor, including changing the font use to display text, and also the colours used for syntax hiliting.  Experiment with the options to find a setting that you like - it does make a huge difference in programming if you are reading code with nice colours and a nice font and with key strokes that you are familiar with rather than struggling to read poorly coloured text using unfamiliar keystrokes.  A few minutes investigating the editor configuration could save you lots of frustration later on.
+
+<pic>editor_options.png</pic>
+<dt><a name="keystrokes"></a>Common keystrokes<dd>
+Here are a few common keystrokes I have found useful.  Note that these assume that the standard Delphi key mappings are selected.
+
+<ul>
+<li>Ctrl-F9 - compiles only those units (.pas files) which have been changed, produces a new QuArK.exe
+<li>F9 - build and run - does a compile (like Ctrl-F9) and then runs QuArK
+<li>F11 - toggles between the Object Inspector (where you can set component properties such as label captions, button names, panel colours etc.) and the form or code view
+
+<pic>object_inspector.png</pic>
+<li>F12 - toggles between showing the form and the Object Pascal code (toggles the .dfm and .pas views, if there is a .dfm associated with the .pas)
+<li>Ctrl-F - find
+<li>F3 - find next
+<li>F5 - sets a breakpoint (indicated by a red dot and, by default, a red line hiliting a line of code).  Note: if the internal debugger stops at a break point you can press F9 to start running again, which will keep running until it hits the next breakpoint
+
+<pic>breakpoint.png</pic>
+<li>F7 - step into - runs a single line of Delphi code in the integrated debugger, if the line of code calls a procedure/function then run the first line of code inside that proc/func
+<li>F8 - step over - runs a single line of Delphi code in the integrated debugger, if the line of code calls a procedure/functoin then run the entire proc/func as if it were a single line of code (i.e. does not single-step thru each line in the proc/func)
+<li>Ctrl-LMB - if you hold down the Ctrl key and move the mouse over the Delphi source code, each identifier will be underlined.  If you click the left mouse button (LMB) Delphi will do it's best to open the source file where the identifier is declared and position the cursor on the declaration
+</ul>
+</dl>

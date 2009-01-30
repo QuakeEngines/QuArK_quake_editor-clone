@@ -1,0 +1,247 @@
+title: Basic Configuration with Crystal Space
+author: Andrew/cdunde
+
+<b>Question:</b><br>
+How do I configure to use Quark with Crystal Space.
+
+<b>Answer:</b><br>
+The documentation below comes from Andrew Watt on 2-Oct-2003.
+
+<b><u>Python</u></b><br>
+
+Unless you are using the latest release of QuArK you are going to need to get Mini-Python
+<a href="http://www.python.org/">( www.python.org )</a> to run it.
+
+<b><u>Environmental Variables</u></b><br>
+
+The first part of the setup will be to add a variable to our system. The screen shot below shows the windows we'll use to do just that.<br>
+
+<table border=0 cellspacing=0><tr><td>
+<img width=664 heigth=412>image001.png</img>
+</td></tr></table>
+
+Open <b>Control Panel ></b> then <b>System ></b> select the <b>Advanced Tab ></b> click on <b>Environmental Variables ></b> in the upper <b>“User Variables for ...”</b> area click <b>NEW</b>. We're now looking at a <b>“New User Variable”</b> box. Under <b>“Variable name”</b> enter <b>“CRYSTAL”</b> and for <b>“Variable Value”</b> enter your <b>CS path</b>  e.g. C:\programs\CS (without any quotes for either box). Click <b>OK</b> in your windows until you're back down to the <b>Control Panel</b> and close it too.<br>
+
+<b><u>Map2cs.cfg Configuration</u></b><br>
+
+There is a <b>“map2cs.cfg”</b> file that must now be changed slightly. Open up <b>Notepad</b> and open the .cfg file with it (it should be located in your CS folder\data\config\). It should similar to below (this is not the original):
+
+<code>
+Map2CS.TextureSettings.DefaultTexture = liquids/bubbles
+Map2CS.TextureSettings.zip1 = <FONT COLOR="red">X:\xxxxxxxxxxxxx\</FONT>CS\data\stdtex.zip 
+Map2CS.TextureSettings.wad1 = <FONT COLOR="red">X:\xxxxxxxxxxxxx\</FONT>CS\data\cstex_1.wad
+Map2CS.TextureSettings.wad2 = <FONT COLOR="red">X:\xxxxxxxxxxxxx\</FONT>CS\data\cstex_2.wad
+
+Map2CS.General.Scaling = 0.025
+Map2CS.General.UseBSP = 1
+Map2CS.General.RemoveHidden = 0
+Map2CS.General.LightScale=30
+
+System.ApplicationID = Map2CS
+</code>
+
+Change whatever you have for <FONT COLOR="red">X:\xxxxxxxxxxxxx\</FONT> into the valid CS path followed by the specific data paths making it look something like “C:\programs\CS\data\cstex_1.wad” (without the quotes). Remember, if you add more texture packs later, they must be included here (another wad would be “.wad3 =”) Save the changes but keep <b>Notepad</b> open.
+
+<b><u>Creating the Movefile.bat</u></b>
+
+In a blank <b>Notepad</b> enter the following line:
+
+<code>
+move /Y %2\maps\%~n1.zip %2
+</code>
+
+Save this as <b>“movefile.bat”</b> (without the quotes) in your CS directory. This will move the file from 
+./data/maps to ./data where it can be located by the program.
+
+<b><u>Getting QuArK Ready</u></b><br>
+
+<table border=0 cellspacing=0>
+<tr><td width=300 valign=top>Start up <b>QuArK</b> and we'll get a screen very much like the one to the right.<br>
+
+If not, you've probably started the wrong program, try again! First we will make some configuration changes:<br>
+
+-Go <b>Games</b> > select   <b>Crystal Space</b><br>
+
+-Go <b>Games</b> again > select <b>Configuration</b>
+</td>
+
+
+<td align=right><img>image002.png</img><br></td></tr></table><br>
+
+Next we'll pick <b>Crystal Space</b> from the configuration list and see a screen like the one below. The highlighted parts are what must be added, deleted or modified but all input is displayed beside the image for you. The red bars that end with \CS should be your Crystal Space directory; e.g. C:\programs\CS. Once that is done it's time to get some texture going.
+
+<table border=0 cellspacing=0>
+<tr><td width=300 valign=top>
+<br>
+
+<br>
+WalkTest.exe -relight<br>
+[your CS directory]<br>
+<br>
+
+........................<br>
+numgrid256<br>
+512<br>........................
+
+[CHECKED]<br>
+[your CS directory]<br>
+Classic Quake<br>
+
+map2cs.exe<br>
+%mapfile% %file%.zip<br>
+
+levtool.exe<br>
+-list %file%.zip<br>
+
+movefile.bat<br>
+%file% %basepath%\data
+</td>
+<td><img>image003.png</img></td></tr></table><br>
+
+<b><u>Texture Add-on</u></b><br>
+
+<table border=0 cellspacing=0>
+<tr><td width=300 valign=top>
+Our next goal is to now make the textures available to <b>QuArK.</b> As displayed in this window, we go <b>Toolboxes</b> from the toolbar > then select <b>Texture Browser...</b> This will open the <b>Texture Browser</b> window.
+</td>
+
+
+<td align=right><img>image004.png</img><br></td></tr></table><br>
+
+<table border=0 cellspacing=0>
+<tr><td width=340 valign=top>
+On the Texture Browser window we will now create an add-on. It's probably easier than you think. From the toolbar pick <b>Folders > New Main Folder.</b>
+
+Another window will now open from which we want <b>“In a new Add-on”</b> so select it and click <b>OK.</b> We will be prompted to save it first (in the main <b>QuArK</b> folder, nowhere else is allowed and if you move it, it will no longer work).
+
+Now we're back at the <b>Texture Browser</b> window but with a slight change: there is a <b>“New Folder”</b> (where the red bar is shown) in the tree which we can rename (probably to whatever you saved it as).
+
+There's nothing in it yet, but we're about to fix that. Make sure the “New Folder” is selected and, from the toolbar again, go <b>Edit > Import Files > Import (copy) Files.</b> Goto wherever your texture file(s) are located and select it/them. If they are not visible and you are sure you are in the correct folder they may be in an unsupported format and you'll have to change them. We'll assume all is well and you've got your textures and clicked <b>OK.</b> They will now be available to use in <b>QuArK.</b>
+</td>
+<td align=right valign=top><img>image005.png</img><br></td></tr></table><br>
+
+
+You might want to exit and restart <b>QuArK</b> now to get the Save dialog box.<br>
+
+A quick note on removing folders. If you decide that you've made a mistake or no longer want a certain add-on and want to remove it you must do the following: select the folder > from toolbar's <b>Folders</b> > click <b>Delete Folder</b> then <b>Folders</b> from the bar again > click <b>Add-Ons...</b> > select the appropriate add-on from the list and click <b>Remove</b> then <b>OK.</b> There will now be a message along the lines of “cs_texadd.qrk” has been modified save the changes?” click <b>Yes.</b> You can now go into your <b>QuArK</b> folder and delete the “cs_texadd.qrk” completely.
+
+<b><u>Configuring the Crystal Space Menu</u></b><br>
+
+<table border=0 cellspacing=0>
+<tr><td width=300 valign=top>
+Open a new CS map using the button circled in the window to the right and a new window (shown below) will open allowing map creation, editing, etc.
+</td>
+
+
+<td align=right><img>image006.png</img><br></td></tr></table><br>
+
+<table border=0 cellspacing=0>
+<tr><td width=300 valign=top>
+To get to the next part where we will change the menu; select <b>Crystal Space</b> from the tool bar and click <b>“Customize menu...”</b> as shown in the figure to the right here.
+</td>
+
+
+<td align=right><img>image007.png</img><br></td></tr></table><br>
+
+
+The <b>“Customize Crystal Space menu”</b> window (similar to the one shown below but initially blank) will now be open. Select the first item in the tree, which should be <b>“&GO ! (build+Walktest)”</b> and make the displayed changes.<br>
+
+<table border=0 cellspacing=0>
+<tr><td width=300 valign=top><br>
+
+.<br>
+
+Ctrl+R<br>
+[CHECKED]<br>
+...................<br>
+
+[CHECKED]<br>
+[CHECKED]<br>
+[CHECKED]<br>
+...................<br>
+
+[CHECKED]<br>
+
+[CHECKED]<br>
+
+[CHECKED]
+
+</td>
+
+<td align=right><img>image008.png</img><br></td></tr></table><br>
+
+Now do the same for the <b>“&Complete rebuild”</b> and <b>“&Run Walktest”</b> items as well.<br>The screens and inputs are below in Fig 9 and Fig 10.<br>
+
+<table border=0 cellspacing=0>
+<tr><td width=300 valign=top><br>
+
+.<br>
+
+.<br>
+.
+
+[CHECKED]<br>
+...................<br>
+[CHECKED]<br>
+[CHECKED]<br>
+[NOT CHECKED]<br>
+...................<br>
+
+[CHECKED]<br>
+.<br>
+
+[CHECKED]<br>
+.<br>
+
+[CHECKED]
+
+</td>
+
+<td align=center><b>Fig 9</b><br>
+
+<img>image009.png</img><br></td></tr></table><br>
+
+<table border=0 cellspacing=0>
+<tr><td width=300 valign=top><br>
+
+.<br>
+
+.<br>
+.<br>
+
+[CHECKED]<br>
+...................<br>
+
+[NOT CHECKED]<br>
+[NOT CHECKED]<br>
+[CHECKED]<br>
+...................<br>
+.
+
+[NOT CHECKED]<br>
+.<br>
+
+[NOT CHECKED]<br>
+.<br>
+
+[NOT CHECKED]
+
+</td>
+
+<td align=center><b>Fig 10</b><br>
+
+<img>image010.png</img><br></td></tr></table><br>
+
+Note that there is nothing highlighted in Fig 10, we shouldn't have to make any changes to it, but was included just-in-case.<br>
+
+Quake Army Knife should now be configured. Test it out; from the <b>QuArK Explorer</b> create a new map as before. From the map window you can either select <b>Crystal Space</b> from the toolbar > then <b>GO!</b> Or just hit <b>CTRL + R .</b><br>
+
+<table border=0 cellspacing=0>
+<tr><td width=300><br>
+
+Have fun!<br>
+-AW</td>
+
+<td align=center>
+<img>image011.png</img><br></td></tr></table><br>
+

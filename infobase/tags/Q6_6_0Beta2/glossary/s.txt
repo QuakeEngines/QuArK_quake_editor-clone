@@ -1,0 +1,13 @@
+title: S...
+author: Decker
+
+<dl>
+<dt><a name="shapebuilders">            </a>Shape Builders                      <dd>Are the exact same thing as a <a href="#duplicator">Duplicator</a> which allow the map-designer to duplicate objects many times, but are used for individual shapes sometimes in this case.
+<dt><a name="sin">                      </a>SiN                                 <dd>[SIN] (game) A <a href="#fps">FPS-game</a> by <a href="http://www.ritual.com">Ritual Entertainment</a>. Based upon the <a href="#quake2">Quake-2</a> graphics engine.
+<dt><a name="skin mesh">                </a>Skin Mesh                           <dd>(model editor item) A flat, 2D view, group of triangles of a model's shape.
+<dt><a name="skin texture">             </a>Skin Texture                        <dd>(model editor item) A flat, 2D view, group of triangles of a model's shape, placed over a <a href="#texture">texture</a> image file to give a finished look.
+<dt><a name="sof">                      </a>Soldier of Fortune                  <dd>[SOF] (game) A <a href="#fps">FPS-game</a> by <a href="http://www.ravensoft.com">Raven Software</a>. Based upon the <a href="#quake2">Quake-2</a> graphics engine.
+<dt><a name="source">                   </a>Source engine                       <dd>A <a href="#fps">FPS-game</a> engine developed by <a href="#valvesoftware">Valve Software</a>.
+<dt><a name="specific">                 </a>Specific                            <dd>(key) In QuArK, an entity's key/value pairs are called specifics/args. See also <a href="#argument">argument</a>.
+<dt><a name="startrekvoyagereliteforce"></a>Star Trek: Voyager - Elite Force    <dd>[STVEF] (game) A <a href="#fps">FPS-game</a> by <a href="http://www.ravensoft.com">Raven Software</a>. Based upon the <a href="#quake3">Quake-3:Arena</a> graphics engine.
+</dl>

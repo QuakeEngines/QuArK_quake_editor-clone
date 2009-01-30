@@ -1,0 +1,74 @@
+title: Macros expected by QuArK in the module qmacro.py
+author: Armin Rigo
+
+<table border=1 cellspacing=0 cellpadding=4>
+
+<tr><td class="doccode">
+MACRO_displaymap(self)
+</td><td>
+Called by QuArK when there is a map to display. self is the map as an Internal File Object. This is not the root of the map (“ worldspawn ”). See mapeditor.py for more information.
+</td></tr>
+
+<tr><td class="doccode">
+MACRO_displaybsp(self)
+</td><td>
+Called by QuArK when there is a BSP file to display. self is an Internal File Object. This is not the root of the map (“ worldspawn ”). See qmacro.py for more information.
+</td></tr>
+
+<tr><td class="doccode">
+MACRO_displaymdl(self)
+</td><td>
+Called by QuArK when there is a Model to display. self is an Internal File Object. This is not the root of the Model.
+</td></tr>
+
+<tr><td class="doccode">
+MACRO_duplicator(dup)
+</td><td>
+Called by QuArK to build the images of the Duplicator dup. Must return a list of new map objects. See qduplicator.py for more information.
+</td></tr>
+
+<tr><td class="doccode">
+MACRO_applylinear(entity, matrix)
+</td><td>
+Called whenever a linear operation is applied on an entity or a Duplicator. This lets Python code change Specifics accordingly. For example, upon rotation, the angle Specific of entities should be modified so that the entity appears to rotate.
+</td></tr>
+
+<tr><td class="doccode">
+MACRO_hint(form)<br>
+MACRO_hint(form, text)
+</td><td>
+Called to set or retrive the current help text.
+</td></tr>
+
+<tr><td class="doccode">
+MACRO_buildmaps(maps, mode, extracted [,cfgfile[,defaultbsp]])
+</td><td>
+Called to build maps and run Quake. maps is a list of Internal File Objects, each as the parameter self of MACRO_displaymap. mode is an integer describing the type of build required, as an index in the list quarkx.buildmodes. extracted is the list of all files already extracted: maps that would produce .BSP files with the corresponding names need not be rebuilt. cfg is the content of the configuration file to produce. The last parameter defaultbsp is the name of the first bsp found, if before a map. The last two parameters may be omitted.
+</td></tr>
+
+<tr><td class="doccode">
+MACRO_helpmenu(text)
+</td><td>
+Called when the user selects an item in the '?' menu. text is the string describing this item.
+</td></tr>
+
+<tr><td class="doccode">
+externaledit(obj)
+</td><td>
+A special quarkx function call allowing any (obj) object, such as text or a texture image, to be passed to it causing that object to be opened in an external editor, and would be used like this:
+<code>
+    obj = quarkx.newfileobj("temp.txt")
+    obj['Data'] = editor.Root.currentcomponent.dictspec['mesh_shader']
+    quarkx.externaledit(obj)
+</code>
+This can be used in conjunction with <a href="adv.intro.html#typ">a form button of Typ "P"</a>
+which uses its <b>Macro = "the macro name"</b> to call the <b>def macro_the macro name(btn)</b> that contains the
+<b>quarkx.externaledit(obj)</b> function call. This def of the macro is then registered with the quarkpy\qmacro.py
+file attaching itself to the other macros in that file, that code looks like this:
+<code>
+quarkpy.qmacro.MACRO_opentexteditor = macro_opentexteditor
+</code>
+For the complete code of the above examples see the plugins\ie_md5_import.py file.
+</td></tr>
+
+</table>

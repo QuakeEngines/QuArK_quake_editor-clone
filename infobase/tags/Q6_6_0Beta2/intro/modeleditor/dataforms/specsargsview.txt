@@ -1,0 +1,56 @@
+title: Specifics/Args-view
+author: cdunde
+
+<img border=1 align=right>specsargsview.png</img>
+This page is used for a variety of different elements that have a set of
+parameters to set, so they act in a certain way. These parameters are called
+<i>specifics</i> in QuArK. Each specific can have an argument (arg) attached to it.
+At this time primarily <a href="intro.modeleditor.editelements.html#bones">Bones</a>
+and <a href="intro.modeleditor.importexport.html">Python Model Importers\Exporters</a> use it.
+Selecting the <g>Frames</g> folder or a number of frames only will display the
+<g>model type page</g>, while selecting a single frame will display settings for that
+type of model, is any exist, and\or a single bone will display the
+<a href="intro.modeleditor.editelements.html#bones">bone's page</a>.
+Selecting a single component displays its page where you can set a <g>tint</g> color for each
+component that will be applied over that component's texture and lines when a
+<a href="intro.modeleditor.rmbmenus.html#viewsrmbmenus">view's RMB menu</a> item
+<a href="intro.modeleditor.rmbmenus.html#viewsrmbmenus">Use Component Colors</a>
+is active (checked) to help distinguish one component from another.
+
+If you do not know what permitted values an arg can have, place your
+mouse-cursor over that item for a second and a blue 'flyover' help-box will appear,
+if there is any help for that specific/arg pair.
+
+Sometimes there may be a dropdown-listbox which contain valid args, or most
+used args. Some specifics are only possible to turn on/off, these looks like
+checkboxes. There might even be pushbuttons which opens another window, with
+more specific/arg settings.
+
+The above icons from left to right:
+
+<table border=1 cellspacing=0 cellpadding=2>
+<tr>
+  <td valign=top align=center>
+    <i>SF<br>set model type</i>
+  </td>
+  <td>
+    Click on this icon to display supported Python Import\Exporters
+    and select one you wish to use for exporting your model as and\or
+    specifics of that type of model format, any of which can use this page.<br>
+    See the section about <ref>intro/modeleditor/importexport</ref>
+  </td>
+</tr>
+<tr>
+  <td valign=top align=center>
+    <i>HelpBook</i>
+  </td>
+  <td>
+    Keep your mouse-cursor steady on this icon to get a blue 'flyover'
+    help-box, which will contain specific description/help for the selected
+    item, and not just a single specific/arg pair. Press the icon to display
+    this help in a window. Some elements that use this page may provide additional
+    detail, pressing your <b>F1</b> key will take you to a page which contains more
+    information about its use, if there is such a page.
+  </td>
+</tr>
+</table>

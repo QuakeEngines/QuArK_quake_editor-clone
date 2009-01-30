@@ -1,0 +1,15 @@
+title: Worldcraft .fgd file
+author: cdunde
+
+<img border=1 align=right>worldcraft1.png</img>
+This tool only works with <g>.fgd</g> files that come with different versions of Worldcraft, another map editor.
+
+Also, it will only work with one of these files at a time and it will not setup any of the entity’s <g>Specifics</g>,
+optional items to set for an entity. Those would need to be done by hand. At this time, the
+<a href="adv.conversion.html#conversiontool">Conversion Tool</a> above does not process these types of files.
+
+When its menu item is selected, a file selection window will open that is used to navigate to the <g>.fgd</g>
+file location and select it. This will start the conversion and give further instructions.
+
+Another tool that exist in <g>QuArK</g> is the <a href="adv.addons.html#entitytool">Entity Extractor</a> which
+will search through a game's <g>.bsp</g> files to get the entities.

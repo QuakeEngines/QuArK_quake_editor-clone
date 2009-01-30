@@ -1,0 +1,60 @@
+title: Basic Selector & Dialog Box
+author: cdunde
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+Our next two buttons on the <b>Terrain modes</b> toolbar are really two functions acting as one for the time being. The first one is the <b>Selector Dialog Input</b> button and the second is the <b?Basic Selector</b> button which uses the first one, our <b>Basic Selector</b>.
+</td>
+<td valign=top align=middle>
+<img border=0>basicselector1.png</img>
+</td></tr>
+</table>
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+The <b>Basic Selector</b> is the one we have been using through out these demonstrations. So you should be fairly familiar with its operation by now. The <b>Selector Dialog Input</b> function however, is a whole other matter that's adds real punch to the <b>Basic Selector's</b> functionality and capabilities.
+
+Once a selection has been made, using the <b>Basic Selector</b>, the <b>Selector Dialog Input</b> button becomes active, or usable for that particular function button, and by clicking it, will now open the dialog box. As you have probably figured out by now, these are <b>adjusters</b> that can be applied to the <b>Basic Selector</b> to cause it to render different shapes to the dragging process. And because they are virtually unlimited, so are the possibilities that it can give.
+</td>
+<td valign=top align=right>
+<img border=1>basicselector2.png</img>
+</td></tr>
+</table>
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+The very first time the <b>Dialog Box</b> is used its <b>default</b> values will be preset and show in the two input areas. These values are also shown in the <b>'hint pop-up box'</b> of the <b>Basic Selector's</b> button and can be viewed by holding your mouse cursor over that button for a second. As a general note, sense they work together, if one value is set to zero then the other will have no effect.
+
+The <b>first input box</b> of the dialog, in this case, effects the <b>very top</b> of the selection, which means where one point of each face meets the center handle when looking at it in the <b>Top View</b> of the editor, and is shown slightly darker in the screen shot above.
+
+The <b>second input box</b> will deal with the rest of the selection in the same manner. Each <b>input box</b> takes <b>two</b> individual values. The <b>first</b> value represents a percentage factor that will be applied to the <b>second</b> value, which is the amount of <b>units</b> that will be added to the <b>Basic Selector's</b> movement during a <b>particular</b> drag. Meaning, that you can start a drag, pause, set a different set of values and then continue the drag once again. <b>Or</b>, you can do the same process <b>but</b> this time make a <b>new</b> selection of an area and apply the new settings just to those faces. So as you can see now, <b>the possibilities are virtually unlimited !</b>
+
+The <b>third check box</b> is an entirely different setting. This function is used for special situations when faces will <b>not</b> move as sometimes occurs with <a href="intro.terraingenerator.selection.html#importconverter">Imported Terrains</a> or you wish to move faces that normally would not move. When this tool is activated the above <b>adjusters</b> will also influence its movement and it too is an item you can use on the <b>fly</b> like the ones above. When using this feature on the <b>down</b> faces set one of the two entered amounts as a <b>negative</b> because you are working in a revered direction. A little experimentation will help a lot.
+
+To make things easer while using the <b>Dialog Box</b> it has its own built in features. It will remain open and stay focused on top of the editor until you decide to close it so changes can be made on the <b>fly</b>. It can also be <b>resized</b> like any other window and <b>moved</b> to any location of your choosing by simply putting your mouse cursor over the <b>blue title area</b> at the top, and while holding down your <g>LMB</g> drag it to its new location.
+
+One final feature is that once the <b>dialog box</b> settings are changed they are stored and saved to keep them the same until you change them again in another session of QuArK. Also, it can remain either open or closed during the dragging process and its settings will still take effect.
+
+The reason I said it <b>''becomes active, or usable for that particular function button''</b> earlier is because as new selectors, or even tools, are added for <a href="intro.terraingenerator.html">QuArK's Terrain Generator</a> they too can have their <b>own</b> dialog input boxes to further enhance the features that they will provide as well.
+
+A few items that need to be covered about the <b>Basic Selector</b> are these. Like the <a href="intro.mapeditor.toolpalettes.mousemodes.html">QuArK's Standard Selectors</a>, it can select <b>individually</b> other types of items like the <ref> ../setup </ref> , it can also drag them or their side handles in the editor's views. But it can <b>not</b> select a group of other standard items such as regular <g>polys</g> and <g>entities</g> using the drag selection method. To do this you will need to use one of the <a href="intro.mapeditor.toolpalettes.mousemodes.html">QuArK Standard Selectors</a>. On the other hand, it can do things that the standard selectors can not do. The most important being the ability to select terrain surface <b>right through</b> every thing else, like other <g>polys</g> and <g>entities</g>. This means that you do <b>not</b> need to hide, move or work around these other items. That was the whole bases of why <a href="intro.terraingenerator.html">QuArK's Terrain Generator</a> was developed. The ability to create and edit terrain <b>around</b> all other mapping items while they are being displayed in the editor.
+</td></tr>
+</table>
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+The selection process itself is also different for a very specific reason. Where the <a href="intro.mapeditor.toolpalettes.mousemodes.html">QuArK Standard Selectors</a> will select any <g>poly</g> that it touches, the <b>Basic Selector</b> will <b>not</b>. Instead, it only selects a face if the <b>center</b> point of that face is within the selector's <b>red rectangular selection box</b>. It was designed this way so that <b>odd</b> and <b>ill regular</b> selections could be made.
+</td></tr>
+</table>
+
+<table width=100% cellspacing=0>
+<tr><td valign=top align=middle>
+<img border=1  align=middle>basicselector3.png</img>
+</td></tr>
+</table>
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+Another nice feature of the <b>Basic Selector</b> is its ability to select only surface faces to aid in the process of texturing the terrain. More on the subject of using the <b>Basic Selector</b> for texturing techniques is covered on the <ref>../texture</ref> page.
+</td></tr>
+</table>

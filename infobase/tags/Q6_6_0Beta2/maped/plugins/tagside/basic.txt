@@ -1,0 +1,69 @@
+title: Basic Tag and Glue
+author: tiglari
+
+<img border=1 align=right> contextmenu.png </img>
+The most basic operation is to first tag a face, with the right
+mouse menu for faces, and then select another face, and click
+on the 'glue to tagged' command on the right mouse menu.  The
+selected face will then snap to the position of the tagged one.
+This command is useful for getting things into alignment, especially
+off the grid.
+
+Below the 'Glue to Tagged' item is a submenu 'More Tagging',
+which offers additional commands:
+
+<ul>
+<LI>Add to tagged - the selected face will join the currently
+tagged face(s) to form or enlarge a set of tagged faces, which
+is useful for various things.
+
+<LI>Removed from tagged - the selected face is removed from the
+tagged set.
+
+<LI>Clear tag - all tags are erased
+
+<LI>Select tagged list - the tagged list becomes the multi-selection.
+This can be useful if you want to make a multi-selection of faces
+from different brushes, since you otherwise you need the tree-view
+to do this (if you have a face selected, to select one from another
+brush you have to select that brush, which looses your face selection).
+</ul>
+
+So far we've only looked at the face menu.  Tag Side also puts commands
+on the speedmenus for other things, such as vertices.
+
+Vertices have Tag Point and Glue to Tagged, and vertices can be
+glued to each other and to faces, and vice-versa.  For example,
+if you have a downward-sloping brush that is functioning as
+a ramp, and you want to align level surfaces precisely with
+the top and bottom of the ramp, you can tag the upper vertices,
+and glue the top of a brush to them.
+Empty points in
+space can also be tagged (the background menu), tho I'm not sure at
+this point how useful this really is.
+
+A more complicated command on the vertex menu is 'align face to tagged'.
+If you tag a face, then select a side (left mouseclick its handle),
+then the 'align selection to tagged' command will appear on the
+speedmenu of the face's vertices.  This will swivel the face around
+the vertex so that it is parallel to the tagged face.  This can
+be used to align the ceiling of a sloping tunnel exactly
+parallel to the floor.
+
+Finally there are some commands on the speedmenu for polys:
+
+<ul>
+<LI>Glue Linked Faces - covered <a href="#later">later</a>,
+when we talk about <ref> ./linking </ref>.
+
+<LI>Merge Polys - you can merge brushes that 'kiss' at a face
+(the polys each have a brush with the same location, orientiation,
+size and shape, but pointing in opposite directions), as long as
+this won't change the overall shape or create an invalid poly.
+To use it, tag the kissing face in one of the brushes, and select
+the other brush, and if everything is cool the menu item should
+become enabled.
+
+<LI>Cut poly along along tagged - So you can use some face of
+a brush as a cutting plane for other polys.
+</UL>

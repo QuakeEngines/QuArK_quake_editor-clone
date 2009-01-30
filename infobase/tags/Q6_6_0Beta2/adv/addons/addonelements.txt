@@ -1,0 +1,96 @@
+title: Elements of an add-on (unfinished)
+author: Decker
+
+Also see the '.Qrk files'-section in <ref> ../intro </ref> for more info.
+
+<code>
+<b>QQRKSRC1
+{
+  QuArKProtected = "1"
+  Description = "</b><i>add-on name</i><b>"</b>
+
+  <i>gamename</i> <b>setup.qctx =
+  {
+    Game = "</b><i>gamename</i><b>"
+    HTML = "help\index.html"</b>
+    <i>...misc other things</i>
+  <b>}</b>
+
+  <i>...other .qtx structures</i>
+  <i>...other .qctx structures</i>
+<b>}</b>
+</code>
+
+An add-on which contain new entities, must have these two .qtx and .qctx structures:
+
+
+<code>
+// Structure which declares what entities are available
+<i>gamename</i>Entities<b>.qtx =
+{</b>
+  <b>ToolBox = "New map items..."</b>
+  <b>Root = "</b><i>gamename</i> Entities<b>.qtxfolder"</b>
+
+  <i>gamename</i> Entities<b>.qtxfolder =
+  {</b>
+    <b>;desc = "</b><i>short one-line description for this folder</i><b>"</b>
+
+    <i>foldername</i><b>.qtxfolder =
+    {</b>
+      // point-<u>e</u>ntity
+      <i>classname</i><b>:e =
+      {</b>
+        <b>;desc = "</b><i>short one-line description of the entity</i><b>"</b>
+        <b>origin = "0 0 0"</b> // If the point-entity uses a origin-point, this must be present.
+        <b>angle = "360"</b> // If the point-entity uses an angle, this must be present.
+        <i>...other initial spec/arg values</i>
+      <b>}</b>
+
+      // <u>b</u>rush-entity
+      <i>classname</i><b>:b =
+      {</b>
+        <b>;desc = "</b><i>short one-line description of the entity</i><b>"</b>
+        <b>;incl = "defpoly"</b> // This instructs QuArK that a default-polygon is to be created too.
+        <b>angle = "360"</b> // If the brush-entity uses an angle, this must be present.
+        // A brush-entity does not uses an 'origin' specific.
+        <i>...other initial spec/arg values</i>
+      <b>}</b>
+
+      <i>...more entity declarations</i>
+    <b>}</b>
+
+    <i>...more folders containing entities</i>
+  <b>}</b>
+<b>}</b>
+
+// Structure which defines the contents of available entities
+<b>Entity forms.qctx =
+{</b>
+  // Every entity declared above, must have a :form too,
+  // which defines what the entity will show in QuArK's spec/arg-view.
+  <i>classname</i><b>:form =
+  {</b>
+    <b>help = "</b><i>general help description for this entity</i><b>"</b>
+    <b>html = "</b><i>URL statement</i><b>"</b> // Activates the default browser, which this link
+    <b>bbox = '</b><i>x1 y1 z1  x2 y2 z2</i><b>'</b> // If the point-entity has a bounding-box (Only point-entities)
+
+    // Specifics with possible argument-values
+    <i>specificname</i><b>: =</b> // Notice the specific-name is suffixed with a colon ':'. This is important!
+    <b>{</b>
+      <i>...specific control statements</i>
+    <b>}</b>
+
+    // Example
+    targetname<b>: =</b> // Notice the specific-name is suffixed with a colon ':'. This is important!
+    <b>{</b>
+      <b>typ = "E"</b> // What type of control should be used in the spec/arg-view. E = Editcontrol.
+      <b>txt = "&"</b> // What is the leading text. & = use the specificname.
+      <b>hint = "</b>The targetname of this entity, so others can trigger it<b>"</b> // Flyover-hint
+    <b>}</b>
+
+    <i>...more specific definitions for this entity</i>
+  <b>}</b>
+
+  <i>...more :form definitions</i>
+<b>}</b>
+</code>

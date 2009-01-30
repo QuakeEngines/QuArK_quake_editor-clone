@@ -1,0 +1,16 @@
+title: Linear handle
+author: Decker
+
+<img border=0 align=right>linearcircle.png</img>
+<img border=0 align=right>linear.png</img>
+If you have selected more than one object in the map-views, you have already
+seen the red linear handle circle. This 'handle' allows you to resize, rotate,
+shear and move your selection.
+
+If you want this linear handle circle to appear when you select only one
+object, you must mark this icon.
+
+It is <b>highly advisable</b> that you try to use the linear handle circle, at
+least once, so you know what it can do. Keep in mind that holding the
+mouse-cursor steady for a moment on one of the many small handles in the
+circle, will bring up a little 'flyover' help.

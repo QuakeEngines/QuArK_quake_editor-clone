@@ -1,0 +1,41 @@
+title: Attributes common to Internal objects of class "3DObject"
+author: Armin Rigo
+
+Here are the additionnal attributes of Internal objects with "3DObject" in their class tuple. The Internal 3D Objects are the
+ones that have some kind of 3D position or shape. All objects present in the map editor’s tree view are Internal 3D Objects.
+This includes groups because you can move and resize whole groups.
+
+<table border=1 cellspacing=0 cellpadding=4>
+
+<tr><td class="doccode">
+origin
+</td><td>
+The origin point for the object, as a read-only 3D Vector.
+</td></tr>
+
+<tr><td class="doccode">
+translate(v)<br>
+translate(v, grid)
+</td><td>
+Translates (moves) the object by adding the vector <tt>v</tt>. If <tt>grid</tt> is set and is not zero, the origin of all objects is then forced to this grid. Note that the vector <tt>v</tt> does not have to be on the grid. To move an object by a distance which is a multiple of the grid step, first round <tt>v</tt> to the grid and then call <tt>translate</tt> with no <tt>grid</tt> argument.
+</td></tr>
+
+<tr><td class="doccode">
+forcetogrid(grid)
+</td><td>
+Forces the object to the grid. If the object is a group, all objects in this group are individually forced to the grid.
+</td></tr>
+
+<tr><td class="doccode">
+linear(v, m)
+</td><td>
+Applies the linear operation given by the matrix <tt>m</tt> by using the point <tt>v</tt> as center (fixed). See <tt>qeditor.py</tt> for functions that build matrices for common operations such as rotations.
+</td></tr>
+
+<tr><td class="doccode">
+inflate(z)
+</td><td>
+Inflates the polyhedron(s) by <tt>z</tt> pixels. <tt>z</tt> can be negative. When applied to a single face, the face is simply scrolled by <tt>z</tt> pixels perpendicularly to its plane.
+</td></tr>
+
+</table>

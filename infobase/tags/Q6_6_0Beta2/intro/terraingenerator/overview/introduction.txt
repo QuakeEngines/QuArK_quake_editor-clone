@@ -1,0 +1,12 @@
+title: Introduction
+author: cdunde
+
+There are four fundamental steps in using <a href="intro.terraingenerator.html">QuArK's Terrain Generator</a>. They are <a href="intro.terraingenerator.selection.html">Selection</a>, <a href="intro.terraingenerator.setup.html">Setup</a>, <a href="intro.terraingenerator.shaping.html">Shaping</a>, and <a href="intro.terraingenerator.texture.html">Texture</a>.
+
+<b>More detail</b> about these steps, additional features and functions are given on their <a href="intro.terraingenerator.html">individual Infobase pages</a>.<br>
+But for now we just want to go over a general highlight of its operation.
+
+As a general note, <b>none</b> of the <a href="intro.terraingenerator.selection.html">Terrain Generator Selectors</a> or the <a href="intro.terraingenerator.selection.html#paintbrush">Texture Applicator</a> will have any effect on terrain surface areas that are placed in a separate folder that is <b>hidden</b> by using that function which can be accessed using the 
+<a href="intro.mapeditor.menu.html#editmenu">Edit menu-View Group</a> on QuArK's main Menubar or by clicking the <g>LMB,</g> with the mouse cursor over that particular folder and selecting <b>Group is hidden</b> from the pop-up menu.
+
+This feature is especially useful when working on terrain areas that are close to, above or below other sections of terrain.

@@ -1,0 +1,11 @@
+title: Turret combined with other entities
+author: Armin Rigo
+
+<b>Question:</b><br>
+Can I use other entities in conjunction with this turret?
+
+<b>Answer:</b><br>
+I don't think so. Maybe you can try putting other monsters over the
+rotating objects; but they would still behave as normal monsters. I think
+the turret_driver cannot be changed into something else. I don't think
+you can have other func_xxx objects work together with the turret at all.

@@ -1,0 +1,19 @@
+title: Display
+author: Decker, DanielPharos
+
+<img align=right>display.png</img>
+<i>Gamma correction</i>. To adjust the brightness of colors in textures.
+
+<i>Window captions</i>. Whether or not you want colorful caption-bars. Just for
+presentation.
+
+<i>Activate windows on mouseover</i>. Whether or not you want to have windows
+auto-activated, when the mouse-pointer is inside them.
+
+<i>If not selected</i> and <i>If selected</i>. Affects with what color, blue or
+brown, icons that are selected, should be shown with.
+
+<i>Icon size</i>. The size of the icons in QuArK.
+
+<i>Multi-pages panels</i>. Wheter the buttons of the multi-pages panels are
+displayed below or above the panel.

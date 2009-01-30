@@ -1,0 +1,13 @@
+title: How to give my level a name
+author: Decker / Armin Rigo
+
+<b>Question:</b><br>
+How can I set the description that is displayed in the game-console while
+loading the map? Like set "The Hall of Mirrors by XYZ" instead of just the name of my .BSP file?
+
+<b>Answer:</b><br>
+Double-click on 'worldspawn' in the map editor. Yes, this is also an
+entity, and it also have Specific/Args. Find the 'message' specific, its the one you are looking for:
+<code>
+message         A Fab Map by XYZ
+</code>

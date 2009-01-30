@@ -1,0 +1,7 @@
+title: Deactivation
+author: cdunde
+
+<img border=1 align=middle>objects1a.png</img>
+<I><u>Deactivator button</u></I>:  To return to regular operation mode you must click this button to turn 'Off' the 'Quick Object Maker'.
+
+To reactivate it simply click on any of the 'Quick Object Maker' shapes you wish to use.

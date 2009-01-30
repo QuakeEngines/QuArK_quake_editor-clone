@@ -1,0 +1,29 @@
+title: QuArK Information Base
+subdir: intro
+subdir: maped
+subdir: adv
+subdir: src
+subdir: plans
+subdir: glossary
+extrafiles_text: standard.css
+extrafiles_binary: quarkicon.png
+
+<b>Welcome to QuArK's Information Base</b>
+
+The goal of this database is to give a centralized place which stores all
+information about QuArK in a coherent way. With time, information found in
+other places should be moved here.
+
+These pages can also be downloaded for offline viewing. 
+Go to the <a href="http://quark.planetquake.gamespy.com/download.php3#help">QuArK's download-page</a>
+to find the zip-archive.
+
+<!--
+Currently, the main source of information for mappers is Decker's
+<a href="http://www.planetquake.com/quark/help/index.html">Online documentation</a>.
+-->
+<!--
+This database currently focuses on aspects of QuArK less
+directly interesting to mappers, from advanced mapping questions to plug-ins
+programming to in-depth information about the QuArK source code.
+-->

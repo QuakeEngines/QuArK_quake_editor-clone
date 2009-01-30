@@ -1,0 +1,126 @@
+title: The Model's Mesh(s)
+author: cdunde
+
+A model is constructed from a mesh, which is a list of triangles grouped together to create its shape.
+The model can be a single mesh or it can consist of a number of meshes. In QuArK we call these meshes <g>components</g>.
+And therefore, each <g>component</g> of a model has its own group of triangles which are known as a components
+<a href="src.quarkx.html#objectsmodeleditor">Tris Specific</a> as stated in the
+<a href="src.quarkx.html#objectsmodeleditor">Quarkx Model Editor section</a> of these Infobase docs.
+<g>Tris</g> is an abbreviation for triangles.
+
+Even though you can think of a component's Tris as a very complex poly, like those used in the QuArK Map Editor,
+and each triangle as a face of that poly, these triangles are handled differently in the Model Editor.
+However, like a poly face, each triangle has three <g>vertexes</g> arranged in a specific order which tells which side of that triangle face is facing outwards.
+
+Instead of a set of 3 <g>tuples</g> of 3 values each (x, y and z) that give the 3 points of a triangle,
+the triangle of a component gives these values for its 3 <g>tuples</g>:<br>
+
+&nbsp;&nbsp;<i>1st item:</i> The triangle’s <g>vertexnumber</g>, also known as its <g>index number</g>, which can be used to call a specific triangle.<br>
+&nbsp;&nbsp;<i>2nd item:</i> The <g>skin_s</g> value for the horizontal position location of the models triangle on its skin texture image.<br>
+&nbsp;&nbsp;<i>3rd item:</i> The <g>skin_t</g> value for the vertical position location of the models triangle on its skin texture image.
+
+This can be misleading if you do not understand the differences between the 3 <g>tuples</g> of a
+standard poly triangle and the triangle of a models component mesh or Tris. This is also discribed in the
+<a href="src.quarkx.html#objectsmodeleditor">Quarkx Model Editor section</a> of these Infobase docs.
+
+The actual 3 point positions of a components triangle are given by calling the triangle's <g>vertexnumber</g>
+to retrieve its <g>vertices</g> list which is a set of 3 <g>tuples</g> of 3 values each (x, y and z)
+that give the 3 points for that triangle. Again, this is briefly covered in the
+<a href="src.quarkx.html#objectsmodeleditor">Quarkx Model Editor section</a> of these Infobase docs.
+
+I realize all of this can be confusing, so let me give you an example using some actual code that is
+located in two related sections of the <g>quarkpy\mdlhandles.py</g> file that create and draw the handle for each vertex.
+
+
+In this first section of code we start off by setting up a list that will be used to store all of the handles (line 1), as they are created and drawn.<br>
+Next we can see how the <g>component.triangles</g> is called to retrieve its Tris list and their <g>tuple</g> values (line 2).<br>
+Now we can call for the <g>vertices</g> of each triangle, in a loop function, by its index <g>vertexnumber</g> (lines 3 and 4).<br>
+Once we get one vertices of a triangle, we then go into another loop to retrieve each of the 3 vertex point values (x, y and z)<br>
+for one of the 3 points of that triangel (lines 5 and 6).<br>
+We then do two things as one, pass the data to the second section of code, which is covered further down,<br>
+and <g>append</g> (add) the returned handle to our <g>h</g> handle list (line 7). Which in this case is for the Skin-view handles.
+
+<g>(line 1) &nbsp;&nbsp;&nbsp;h = [ ]</g><br>
+<g>(line 2) &nbsp;&nbsp;&nbsp;tris = component.triangles</g><br>
+<g>(line 3) &nbsp;&nbsp;&nbsp;for i in range(len(tris)):</g><br>
+<g>(line 4) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tri = tris[i]</g><br>
+<g>(line 5) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for j in range(len(tri)):</g><br>
+<g>(line 6) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vtx = tri[j]</g><br>
+<g>(line 7) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;h.append(SkinHandle(quarkx.vect(vtx[1]-int(texWidth*.5), vtx[2]-int(texHeight*.5), 0), i, j, component, texWidth, texHeight, tri))</g>
+
+A print statement you can use to print it to the QuArK console is this:
+<code>print "SkinHandle ",quarkx.vect(vtx[1], vtx[2], 0), i, j</code>
+placed just under the code line above. The console will display  3 vertexes for each face like this:
+
+SkinHandle &nbsp;&nbsp;40 46 0 74 0<br>
+SkinHandle &nbsp;&nbsp;59 48 0 74 1<br>
+SkinHandle &nbsp;&nbsp;55 34 0 74 2<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;|<br>
+&nbsp;&nbsp;2D pix. pos.&nbsp;&nbsp;x&nbsp;&nbsp;&nbsp;&nbsp;y&nbsp;&nbsp;z&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;|<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;|<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;face index number&nbsp;&nbsp;&nbsp;|<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vertex order in a clockwise direction
+
+One final thing you might want to notice is the very last item, or argument, that we pass to the <g>class SkinHandle</g> code section is <g>the list of triangle vertices</g> or <g>tri</g> itself.<br>
+This we will use in that code to do one other function, that of drawing the <g>movement</g> lines of a vertex handle, as a guide, while it is being dragged to change the position of the vertex and skin appearance on the model.
+
+Now for the <g>class SkinHandle</g> part of the code, located above this code, in the same <g>quarkpy\mdlhandles.py</g> file, but I won't go through all of it here, for simplicity.
+
+The <g>class SkinHandle</g> section consist of two main parts, the <g>def draw</g> and the <g>def drag</g> sections, the first of the two being simpler and more direct to the point I am making to the code. So we will take
+a look at the <g>def draw</g> section in part. One basic point about classes here is that we do not pass all of the above <g>arguments</g> directly to the <g>def drag</g> section itself, but to the class that it lies within.
+From the base class we can then pass it on to the actual <g>def draw</g> section by attaching the word <g>self</g>, meaning the class itself, and because the <g>def draw</g> is within that class we can then use <g>self.triangle</g>
+and use that arguments data in the draw section. Note how we also changed the arguments variable name from just <g>tri</g> to <g>triangle</g> to make it more clear in the code as to what that item really represents (or actually contains).
+
+Now , in the <g>def draw</g> section of code, we will just look at a few lines intermittently to see how it uses this particular argument.
+
+First we obtain it from the base class arguments that it receives and redefine it with a new name (line 1).<br>
+Next, because it already is <g>the list of triangle vertices</g> that we need, we simply use a loop to go through that list, one vertex at a time, and get the data for each vertex of the triangle that we need to draw the vertex dragging guide lines (line 2).<br>
+
+This next part is a little bit tricky to understand, so bear with me.<br>
+In the <g>def draw</g> section, it receives an argument <g>self</g> also, which in the <g>def draw</g> case, <b>IS</b> the vertex handle that we are dragging, and also position 0 of the triangle.<br>
+It is also located in <g>the list of triangle vertices</g> along with the triangles two other vertex positions, 1 and 2. Items like this start with a count of 0 instead of 1 when it comes to programming. So the two other vertexes represent the <g>stationary</g>
+vertexes of the triangle that are <b>NOT</b> being dragged, but are needed to draw the lines from the one that is being dragged, and to give us our guide line fixed positions for drawing in a lime green color so they are easily seen in the Skin-view as shown in the screen shot.
+
+So with that out of the way, we pull those stationary vertexes out of the list, which is a <g>tuple</g> of 3 vertexes (pos 0, 1 and 2), and define each vertex as a <g>vector</g> called <g>fixedvertex</g> (line 10), skipping the first one (lines 3-6) because that is our <g>self</g> drag handle.
+Which we already have and will be drawing our guide lines from.
+
+Something else you might have noticed here is that we <b>do not</b> use position 0 and 1 (x and y) here as you might think, but positions 1 and 2 (y and z) instead.<br>
+<g>vertex[1]...vertex[2]</g><br>
+Don't ask me why, it's just the way the <g>quarkx.vect</g> function works.
+
+Once we have defined our <g>vector</g> it also becomes a <g>tuple</g>, so now we need to pull out that vertex's positions for X , Y and Z (line 11).<br>
+Because these positions are actually pixels on a flat 2D screen (your monitor), with 0,0 being at the upper left hand corner of the Skin-view, the value for Z is not needed.<br>
+So we just ignore that one and use the X and Y positions for the fixed end of a line and the X and Y positions of our vertex handle for the other end( line 12).
+
+Remember, this is done for each line that is drawn as the handle vertex and its triangle are passed to the <g>class  SkinHandle</g> from the first section of code.
+Looking at the actual and complete code in the file will fill in the gaps and help answer any questions of other items shown below.
+
+<g>(line 1) &nbsp;&nbsp;&nbsp;triangle = self.triangle</g>
+
+(skipping a few lines of code)
+
+<g>(line 2) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for vertex in triangle:</g><br>
+<g>(line 3) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if self.ver_index == 0:</g><br>
+<g>(line 4) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if  count != 0: break</g><br>
+<g>(line 5) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;count = count + 1</g><br>
+<g>(line 6) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pass</g><br>
+<g>(line 7) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else:</g><br>
+<g>(line 8) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if  count > 2: break</g><br>
+<g>(line 9) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;count = count + 1</g><br>
+<g>(line 10)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fixedvertex = quarkx.vect(vertex[1]-int(texWidth*.5), vertex[2]-int(texHeight*.5), 0)</g><br>
+<g>(line 11)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fixedX, fixedY,fixedZ = view.proj(fixedvertex).tuple</g><br>
+<g>(line 12)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cv.line(int(pv2[0]), int(pv2[1]), int(fixedX), int(fixedY))</g><br>
+
+And in the screen shot below you can see these vertex handles for the component <g>deadeye</g> Tris as they
+are displayed in both the Model Editors views and its <ref> intro/modeleditor/skinview </ref>. Just remember though, the handles in the
+Model Editor views, which move the components mesh for the models shape, are NOT the same handles that are shown on the <ref> intro/modeleditor/skinview </ref>,
+which move the <g>unwrapped</g> components mesh for skinning purposes. So one handle type will NOT effect the other.
+But both are created and drawn in the same way, they just wind up in different <g>handle lists</g>.
+
+<table width=100% cellspacing=0>
+<tr><td valign=top align=middle>
+<img border=0 align=middle>mesh1.png</img>
+</td></tr>
+</table>
+

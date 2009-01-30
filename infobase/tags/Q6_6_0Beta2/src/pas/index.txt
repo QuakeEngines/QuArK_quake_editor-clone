@@ -1,0 +1,5 @@
+title: File-by-file descriptions
+subdir: qk1 qkobjects qkexceptions bezier qkmap qkq3a logging
+subdir: 3drender
+
+This section contains detailled description of some of the Delphi source files.

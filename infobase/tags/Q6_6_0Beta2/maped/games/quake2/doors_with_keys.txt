@@ -1,0 +1,24 @@
+title: Security-/locked doors with keys
+author:
+
+<b>Question:</b><br>
+How do I use keys and doors in Quake-2?
+
+<b>Answer:</b><br>
+The keys are the "key_<i>xxx</i>&nbsp;" entities.
+Countrary to the good old Quake-1,
+you cannot simply tell a door it must not open unless the player carries
+some key.
+
+The entity that knows whether the player carries a key or not
+is "trigger_key". This entity is a 'relay trigger', which means that it
+must be fired by something else, and it will then fire its own targets
+if the triggering player carries the correct key.
+
+You can use it between a button and a door, for example. When the button is pressed, it doesn't
+directly fire the door, but the trigger_key, which in turn fires the door
+if the player has the correct key.
+
+If you don't want a button, you can
+replace it with a trigger_multiple just in front of the door, so that the
+door opens when the player approaches.

@@ -1,0 +1,36 @@
+title: Releasing a Snapshot
+author: Peter Brett, DanielPharos
+
+Here's the process you might follow to prepare and release a snapshot.
+Before you'll be able to follow the process outlined below, you'll
+probably want to read <a href="http://alexandria.wiki.sourceforge.net/File+Release+System+-+Offering+Files+for+Download">File Release System - Offering Files for Download</a> to know how to work with the SourceForge File Release System.
+
+<ol>
+<li>Make a copy of the runtime, source and infobase directories you want to release.</li>
+<li>Build a QuArK binary from this source directory.</li>
+<li>Put the new QuArK binary in the main runtime directory (where it belongs).</li>
+<li>Zip up the directory, each to a different zip-file, using the scheme from <ref>src/distribution/policy</ref>. No fancy zip-compressions, please! Any plain old unzipper should be able to unzip the files.</li>
+<li>Create a new snapshot-release in the QuArK-package using the SourceForge File Release System. Name this release 'snapshot YYYY-MM-DD', and add the zip-files to that new release. Don't forget to set the 'specifics' on the files correctly!</li>
+<li>Make sure the new release is 'Active', and visible on the SourceForge website.</li>
+
+You should also e-mail a release announcement to the development
+mailing list (<a href="mailto:quark-python@yahoogroups.com">quark-python@yahoogroups.com</a>),
+something along the lines of: (I'm going to assume that the date is 31st August 2007)
+
+<code>Subject: Snapshots 20070831
+
+New QuArK snapshots are now available from
+http://quark.sourceforge.net/
+ 
+- Compiled Infobase:
+http://quark.sourceforge.net/download/quark-help-20070831.zip
+- Full source code with Python 2.2.3:
+http://quark.sourceforge.net/download/quark-src-20070831.zip
+- Win32 binaries with Python 2.2.3:
+http://quark.sourceforge.net/download/quark-win32-20070831.zip
+</code>
+
+It's also a good idea only to have four snapshots on the site at a
+time, so as to be sure not to exceed the storage quota.  So delete the
+oldest snapshots if you need to.
+</ol>

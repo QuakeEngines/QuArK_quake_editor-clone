@@ -1,0 +1,22 @@
+title: elbows
+author: tiglari
+
+Sometimes you might want to create some sort of complicated sub-assembly to
+connect the segments of the path duplicator (for example to solve texture
+alignment problems by having custom textures on the joins).  Elbow-space can
+be created with the 'squarend' and 'setback' specifics (of the duplicator itself,
+not the containing group).
+
+Next, if the angles of the joins are all the same, you can use the 'elbow'
+duplicator to make multiple copies of the joining structure, suitably
+rotated.  Pushing the elbow button drops an elbow duplicator into the group,
+which uses the same path points as the path duplicator itself.  Into this duplicator
+put the structure you want to be replicated at the elbows, locating it at the
+first elbow (space between first and second path segments).  It might be easier
+to line things up if you dissociate the images of the path duplicator first; then
+you can use tag & glue operations to join things up (I have tested that the results
+can seal against the void).
+
+Combined use of the elbows and the 'level' specific could be a reasonable way to
+deal with the problem of making a corridor or path that both rises and turns
+(horizonatally) at the joints, without twisiting.

@@ -1,0 +1,58 @@
+title: Sound Editing
+author: cdunde
+
+<table border=0 cellspacing=0>
+<tr><td valign=top align=left>
+There are various ways in QuArK to deal with sound editing by using .wav files. But because all
+of these files are stored in the games .pak files, they can not be used directly in QuArK. So in
+that case their path and full file name would need to be typed in where needed by hand.
+This is not only cumbersome but leaves a lot of room for errors. Because of this, we have setup
+"sound file selectors" where they are needed in the DataET.qrk file for various entities when
+they use sound input settings. The only requirement to use this feature is that the "sound" folder
+needs to be extracted from the games .pak files.
+
+<b>Extracting .pak files & their placement</b>
+
+The games .pak files are nothing more than a type of .zip compression file and can easily be accessed
+to extract individual files or entire folders by either using a program that can extract ZIP files,
+<a href="http://quark.planetquake.gamespy.com/download_tools.php3">PakScape v0.11</a> (my personal
+favorite) or any other archive program.
+
+Once you have opened the .pak file, select the "sound" folder and drag it into your RTCW-ET "etmain" folder.
+You can now go to that "sound" folder by simply clicking on the "sound file selectors" button that looks
+like this ... and just select that sound.wav file that you want to use for any entity that has a selector.
+
+<b>Custom Sounds and Functions</b>
+
+By having the "sound" folder extracted and placed, as described above, you can now place any .wav file
+in that folder and select it for sound editing use. There is one important criteria though. The name of the
+.wav file must NOT have any blank spaces in its name or it will not be located and played in the game.
+You can, however, use lower dashes _ instead of spaces to separate words in its name.
+
+If you wish to distribute any custom sound files with your map, just create a .pak file
+(using any ZIP-capible program and then renaming the ZIP-file to .pk3 or
+<a href="http://quark.planetquake.gamespy.com/download_tools.php3">PakScape v0.11</a>) and place a folder
+called "sound" in it with your custom.wav files located in that folder.
+
+When using a "sound file selector", there are a couple of nice functions that are available to you by clicking
+your <g>RMB</g> while you have your mouse cursor over a particular .wav file. This will bring up a standard
+system pop-up menu where you can select to either <b>Play</b> it before you actually select it (very handy), <b>Rename</b>
+it, change it's <b>Properties</b> or even <b>Delete</b> it, among other things.
+
+Once a .wav file has been selected, QuArK will automatically trim its path and make other necessary changes
+so that the sound will now play properly in the game.
+
+<b>If a Sound Does Not Play</b>
+
+There is ONE exception to the rule here that I have found only with the "worldspawn" entity sound setting which will
+NOT play when your map is first loaded into the game after a build sometimes. If that should be the case for ANY sound
+file, the first thing you want to try is reloading your map while still in the game.
+
+To do this just press the <b>~</b> Tilde key to bring down the game console then type in <b>\map (your map name)</b>
+ press <b>Enter</b> and it should solve the problem when your map reloads. If that does not work, then something else is
+causing this issue such as improper format <b>Properties</b> of the .wav file itself, which you can check
+by comparing those to another .wav file that does play and changing it to that type of format,
+using the <g>RMB</g> method I described above. That pretty well covers it for sound editing.
+</td></tr>
+</table>
+

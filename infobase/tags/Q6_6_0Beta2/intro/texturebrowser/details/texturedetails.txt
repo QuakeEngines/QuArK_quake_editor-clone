@@ -1,0 +1,10 @@
+title: Texture details
+author: Rowdy
+
+This view appears when you select a texture in the treeview or click one of the
+new texture buttons.  The top of the window shows the image type and size, the
+middle panel shows four different sized previews of the texture, and the bottom
+contains some additional information about the texture.
+<center>
+<img border=0>texturedetails.png</img>
+</center>

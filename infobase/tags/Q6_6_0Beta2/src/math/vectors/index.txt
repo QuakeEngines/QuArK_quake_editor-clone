@@ -1,0 +1,13 @@
+title: Vectors 
+desc: intro coords cross
+
+
+Here is a rather short introduction to vectors, in certain
+respects rather philosophical, but also with reference
+to QuArK's vector facilities.  The first few chapters of
+books on 'vector calculus' are a good source for this
+kind of material, although fortunately there's little need
+to wade very far into them (I learned a lot from
+Marsen & Tromba (1976) <U>Vector Calculus</U>, Freeman
+and Co., the material here being covered in Chapter 1).
+
