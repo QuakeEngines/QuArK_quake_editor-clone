@@ -2428,14 +2428,18 @@ def Update_BoneObjs(bonevtxlist, selfbonename, comp):
     selvtxlist = [[], []]
     if comp.currentframe is None:
         comp.currentframe = comp.dictitems['Frames:fg'].subitems[0]
+    verts = comp.currentframe.vertices
     for key in bonevtxlist:
         if bonevtxlist[key]['bonename'] == selfbonename:
             vtx = int(key)
             s_or_e = bonevtxlist[key]['s_or_e']
-            if s_or_e == 0 or s_or_e == 1:   # Sanity check
-                vtxlist[s_or_e] = vtxlist[s_or_e] + [[vtx, comp.currentframe.vertices[vtx]]]
+            if s_or_e == 0 or s_or_e == 1:   # Checking if the s_or_e number is something other then 0 or 1.
+                vtxlist[s_or_e] = vtxlist[s_or_e] + [[vtx, verts[vtx]]]
                 selvtxlist[s_or_e] = selvtxlist[s_or_e] + [vtx]
-                tristodrawlist[s_or_e] = tristodrawlist[s_or_e] + findTrianglesAndIndexes(comp, vtx, comp.currentframe.vertices[vtx])
+                if len(bonevtxlist) > 800 and not vtx&1:
+                    tristodrawlist[s_or_e] = tristodrawlist[s_or_e] + findTrianglesAndIndexes(comp, vtx, verts[vtx]) #THIS LINE BOGS DRAWING DOWN!
+                if len(bonevtxlist) <= 800:
+                    tristodrawlist[s_or_e] = tristodrawlist[s_or_e] + findTrianglesAndIndexes(comp, vtx, verts[vtx]) #THIS LINE BOGS DRAWING DOWN!
     boneobjs = {}
     if vtxlist[0] <> []:
         boneobjs['s_or_e0'] = {}
@@ -3510,6 +3514,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.99  2009/01/29 02:13:51  cdunde
+#To reverse frame indexing and fix it a better way by DanielPharos.
+#
 #Revision 1.98  2009/01/27 20:56:24  cdunde
 #Update for frame indexing.
 #Added new bone function 'Attach End to Start'.
