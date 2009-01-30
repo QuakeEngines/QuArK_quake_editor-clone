@@ -2436,9 +2436,11 @@ def Update_BoneObjs(bonevtxlist, selfbonename, comp):
             if s_or_e == 0 or s_or_e == 1:   # Checking if the s_or_e number is something other then 0 or 1.
                 vtxlist[s_or_e] = vtxlist[s_or_e] + [[vtx, verts[vtx]]]
                 selvtxlist[s_or_e] = selvtxlist[s_or_e] + [vtx]
-                if len(bonevtxlist) > 800 and not vtx&1:
+                if quarkx.setupsubset(SS_MODEL, "Options")['BMake_All_Draglines'] is not None:
                     tristodrawlist[s_or_e] = tristodrawlist[s_or_e] + findTrianglesAndIndexes(comp, vtx, verts[vtx]) #THIS LINE BOGS DRAWING DOWN!
-                if len(bonevtxlist) <= 800:
+                elif len(bonevtxlist) > 800 and not vtx&1:
+                    tristodrawlist[s_or_e] = tristodrawlist[s_or_e] + findTrianglesAndIndexes(comp, vtx, verts[vtx]) #THIS LINE BOGS DRAWING DOWN!
+                elif len(bonevtxlist) <= 800:
                     tristodrawlist[s_or_e] = tristodrawlist[s_or_e] + findTrianglesAndIndexes(comp, vtx, verts[vtx]) #THIS LINE BOGS DRAWING DOWN!
     boneobjs = {}
     if vtxlist[0] <> []:
@@ -3514,6 +3516,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.100  2009/01/30 08:32:58  cdunde
+#To put limits on tristodraw function call due to massive slowdown with large models.
+#
 #Revision 1.99  2009/01/29 02:13:51  cdunde
 #To reverse frame indexing and fix it a better way by DanielPharos.
 #

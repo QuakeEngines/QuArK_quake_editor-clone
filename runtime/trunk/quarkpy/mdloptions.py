@@ -275,6 +275,14 @@ def mBHandles_Only(m):
         quarkx.setupsubset(SS_MODEL, "Options")['BHandles_Only'] = None
     quarkx.reloadsetup()
 
+def mBMake_All_Draglines(m):
+    # Allows all bone handles draglines to be created but will decrease drawing speed & increase model importing time.
+    if not MdlOption("BMake_All_Draglines"):
+        quarkx.setupsubset(SS_MODEL, "Options")['BMake_All_Draglines'] = "1"
+    else:
+        quarkx.setupsubset(SS_MODEL, "Options")['BMake_All_Draglines'] = None
+    quarkx.reloadsetup()
+
 def mSYNC_ISV(m):
     # Sync editor selection in Skin-view function.
     editor = mdleditor.mdleditor
@@ -424,11 +432,13 @@ def mBFONLY(m):
 def BoneMenu():
     Xmblines_color = qmenu.item("&Match Bone Lines Color", mMBLines_Color, "|Match Bone Lines Color:\n\nWhen checked the bone lines color displayed during a drag will match the handle color being dragged.|intro.modeleditor.menu.html#optionsmenu")
     Xmbhandles_only = qmenu.item("&Draw Bone Handles Only", mBHandles_Only, "|Draw Bone Handles Only:\n\nWhen checked only the bone handles are displayed to increase drawing speed during and after a drag.|intro.modeleditor.menu.html#optionsmenu")
+    Xmball_draglines = qmenu.item("Make &All Draglines", mBMake_All_Draglines, "|Make All Draglines:\n\nWhen checked allows all bone handles draglines to be created but will decrease drawing speed & increase model importing time.\n\nOnly applies at time of model importing and will have no effect once it has. If not used sufficient draglines to see what is being moved and how will still be drawn.|intro.modeleditor.menu.html#optionsmenu")
 
-    menulist = [Xmblines_color, Xmbhandles_only]
+    menulist = [Xmblines_color, Xmbhandles_only, Xmball_draglines]
 
     Xmblines_color.state = quarkx.setupsubset(SS_MODEL,"Options").getint("MBLines_Color")
     Xmbhandles_only.state = quarkx.setupsubset(SS_MODEL,"Options").getint("BHandles_Only")
+    Xmball_draglines.state = quarkx.setupsubset(SS_MODEL,"Options").getint("BMake_All_Draglines")
 
     return menulist
 
@@ -849,6 +859,9 @@ def OptionsMenuRMB():
 #
 #
 #$Log$
+#Revision 1.43  2009/01/27 05:02:59  cdunde
+#Full support for .md5mesh bone importing with weight assignment and other improvements.
+#
 #Revision 1.42  2008/12/05 07:44:06  cdunde
 #Small update.
 #
