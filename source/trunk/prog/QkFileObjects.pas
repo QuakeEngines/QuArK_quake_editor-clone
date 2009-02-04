@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.64  2008/12/12 12:47:52  danielpharos
+Moved GlobalWarning to QkExceptions, and added QkTextBoxForm.
+
 Revision 1.63  2008/11/19 06:14:00  cdunde
 Bones system moved to outside of components for Model Editor completed.
 
@@ -1120,7 +1123,7 @@ begin
  GetTempPath(SizeOf(Z), Z);
  GetTempFileName(Z, PChar(Tag), 0, R);
  if R[0]=#0 then
-  Raise Exception.Create(LoadStr1(5659));
+  Raise EError(5659);
  Result:=StrPas(R);
 end;
 
