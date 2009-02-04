@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.21  2008/10/07 21:05:25  danielpharos
+Added another VMT-key.
+
 Revision 1.20  2008/09/15 21:07:04  danielpharos
 Workarounded VMT files not finding any textures.
 
@@ -123,13 +126,6 @@ uses SysUtils, Setup, Quarkx, QkExceptions, QkObjectClassList, Game, Logging,
 
 var
   VMTLoaded: Boolean;
-
-procedure Fatal(x:string);
-begin
-  Log(LOG_CRITICAL,'load vmt %s',[x]);
-  Windows.MessageBox(0, pchar(X), PChar(LoadStr1(401)), MB_TASKMODAL or MB_ICONERROR or MB_OK);
-  Raise Exception.Create(x);
-end;
 
 class function QVMTStage.TypeInfo: String;
 begin
@@ -392,83 +388,85 @@ begin
       F.ReadBuffer(Pointer(RawBuffer)^, FSize);
 
       if vlCreateMaterial(@VMTMaterial)=false then
-        Fatal('Unable to load VMT file. Call to vlCreateMaterial failed.');
+        LogAndRaiseError('Unable to load VMT file. Call to vlCreateMaterial failed.');
 
-      if vlBindMaterial(VMTMaterial)=false then
-      begin
-        vlDeleteMaterial(VMTMaterial);
-        Fatal('Unable to load VMT file. Call to vlBindMaterial failed.');
-      end;
-
-      if vlMaterialLoadLump(Pointer(RawBuffer), Length(RawBuffer), false)=false then
-      begin
-        vlDeleteMaterial(VMTMaterial);
-        Fatal('Unable to load VMT file. Call to vlMaterialLoadLump failed. Please make sure the file is a valid VMT file, and not damaged or corrupt.');
-      end;
-
-      if vlMaterialGetFirstNode=false then
-      begin
-        vlDeleteMaterial(VMTMaterial);
-        Fatal('Unable to load VMT file. Call to vlMaterialGetFirstNode failed.');
-      end;
-
-      NodeLevel:=0;
-      SetLength(StageList, NodeLevel+1);
-      StageList[NodeLevel]:=Self;
-      GroupEndWorkaround:=false;
-      { DanielPharos:
-        We need a workaround for the fact that VTFLib reports a GROUP with
-        exactly the same name AFTER each GROUPEND (unless it's the last one
-        of the file). So we will simply ignore the first GROUP after any
-        GROUPEND if it has the same name as the GROUPEND.}
-
-      repeat
-        NodeName:=vlMaterialGetNodeName;
-        NodeType:=vlMaterialGetNodeType;
-        case NodeType of
-        NODE_TYPE_GROUP:
-          begin
-            if (GroupEndWorkaround=false) or (NodeName<>GroupEndWorkaroundName) then
-            begin
-              NodeLevel:=NodeLevel+1;
-              Stage:=QVMTStage.Create(NodeName, StageList[NodeLevel-1]);
-              StageList[NodeLevel-1].SubElements.Add(Stage);
-              SetLength(StageList, NodeLevel+1);
-              StageList[NodeLevel]:=Stage;
-            end;
-          end;
-        NODE_TYPE_GROUP_END:
-          begin
-            NodeLevel:=NodeLevel-1;
-            SetLength(StageList, NodeLevel+1);
-          end;
-        NODE_TYPE_STRING:
-          begin
-            NodeValueString:=vlMaterialGetNodeString;
-            StageList[NodeLevel].Specifics.Add(NodeName+'='+NodeValueString);
-          end;
-        NODE_TYPE_INTEGER:
-          begin
-            NodeValueInteger:=vlMaterialGetNodeInteger;
-            StageList[NodeLevel].Specifics.Add(NodeName+'='+IntToStr(NodeValueInteger));
-          end;
-        NODE_TYPE_SINGLE:
-          begin
-            NodeValueSingle:=vlMaterialGetNodeSingle;
-            StageList[NodeLevel].Specifics.Add(NodeName+'='+FloatToStr(NodeValueSingle));
-          end;
+      try
+        if vlBindMaterial(VMTMaterial)=false then
+        begin
+          vlDeleteMaterial(VMTMaterial);
+          LogAndRaiseError('Unable to load VMT file. Call to vlBindMaterial failed.');
         end;
 
-        if NodeType=NODE_TYPE_GROUP_END then
+        if vlMaterialLoadLump(Pointer(RawBuffer), Length(RawBuffer), false)=false then
         begin
-          GroupEndWorkaround:=true;
-          GroupEndWorkaroundName:=NodeName;
-        end
-        else
-          GroupEndWorkaround:=false;
-      until vlMaterialGetNextNode=false;
+          vlDeleteMaterial(VMTMaterial);
+          LogAndRaiseError('Unable to load VMT file. Call to vlMaterialLoadLump failed. Please make sure the file is a valid VMT file, and not damaged or corrupt.');
+        end;
 
-      vlDeleteMaterial(VMTMaterial);
+        if vlMaterialGetFirstNode=false then
+        begin
+          vlDeleteMaterial(VMTMaterial);
+          LogAndRaiseError('Unable to load VMT file. Call to vlMaterialGetFirstNode failed.');
+        end;
+
+        NodeLevel:=0;
+        SetLength(StageList, NodeLevel+1);
+        StageList[NodeLevel]:=Self;
+        GroupEndWorkaround:=false;
+        { DanielPharos:
+          We need a workaround for the fact that VTFLib reports a GROUP with
+          exactly the same name AFTER each GROUPEND (unless it's the last one
+          of the file). So we will simply ignore the first GROUP after any
+          GROUPEND if it has the same name as the GROUPEND.}
+
+        repeat
+          NodeName:=vlMaterialGetNodeName;
+          NodeType:=vlMaterialGetNodeType;
+          case NodeType of
+          NODE_TYPE_GROUP:
+            begin
+              if (GroupEndWorkaround=false) or (NodeName<>GroupEndWorkaroundName) then
+              begin
+                NodeLevel:=NodeLevel+1;
+                Stage:=QVMTStage.Create(NodeName, StageList[NodeLevel-1]);
+                StageList[NodeLevel-1].SubElements.Add(Stage);
+                SetLength(StageList, NodeLevel+1);
+                StageList[NodeLevel]:=Stage;
+              end;
+            end;
+          NODE_TYPE_GROUP_END:
+            begin
+              NodeLevel:=NodeLevel-1;
+              SetLength(StageList, NodeLevel+1);
+            end;
+          NODE_TYPE_STRING:
+            begin
+              NodeValueString:=vlMaterialGetNodeString;
+              StageList[NodeLevel].Specifics.Add(NodeName+'='+NodeValueString);
+            end;
+          NODE_TYPE_INTEGER:
+            begin
+              NodeValueInteger:=vlMaterialGetNodeInteger;
+              StageList[NodeLevel].Specifics.Add(NodeName+'='+IntToStr(NodeValueInteger));
+            end;
+          NODE_TYPE_SINGLE:
+            begin
+              NodeValueSingle:=vlMaterialGetNodeSingle;
+              StageList[NodeLevel].Specifics.Add(NodeName+'='+FloatToStr(NodeValueSingle));
+            end;
+          end;
+
+          if NodeType=NODE_TYPE_GROUP_END then
+          begin
+            GroupEndWorkaround:=true;
+            GroupEndWorkaroundName:=NodeName;
+          end
+          else
+            GroupEndWorkaround:=false;
+        until vlMaterialGetNextNode=false;
+      finally
+        vlDeleteMaterial(VMTMaterial);
+      end;
     end;
     else
       inherited;
@@ -495,34 +493,36 @@ begin
     end;
 
     if vlCreateMaterial(@VMTMaterial)=false then
-      Fatal('Unable to save VMT file. Call to vlCreateMaterial failed.');
+      LogAndRaiseError('Unable to save VMT file. Call to vlCreateMaterial failed.');
 
-    if vlBindMaterial(VMTMaterial)=false then
-      Fatal('Unable to save VMT file. Call to vlBindMaterial failed.');
+    try
+      if vlBindMaterial(VMTMaterial)=false then
+        LogAndRaiseError('Unable to save VMT file. Call to vlBindMaterial failed.');
 
-    for I:=0 to SubElements.Count-1 do
-    begin
-      Q:=SubElements[I];
-      if Q is QVMTStage then
+      for I:=0 to SubElements.Count-1 do
       begin
-        //DanielPharos: There should only one subelement: the root
-        if vlMaterialCreate(PChar(Q.name))=false then
-          Fatal('Unable to save VMT file. Call to vlMaterialCreate failed.');
-        if vlMaterialGetFirstNode=false then
-          Fatal('Unable to save VMT file. Call to vlMaterialGetFirstNode failed.');
+        Q:=SubElements[I];
+        if Q is QVMTStage then
+        begin
+          //DanielPharos: There should only one subelement: the root
+          if vlMaterialCreate(PChar(Q.name))=false then
+            LogAndRaiseError('Unable to save VMT file. Call to vlMaterialCreate failed.');
+          if vlMaterialGetFirstNode=false then
+            LogAndRaiseError('Unable to save VMT file. Call to vlMaterialGetFirstNode failed.');
 
-        QVMTStage(Q).DumpData;
-        break;
+          QVMTStage(Q).DumpData;
+          break;
+        end;
       end;
+
+      SetLength(RawBuffer, 1024);     //FIXME: 1024 is just a number. We need a better way!
+      if vlMaterialSaveLump(Pointer(RawBuffer), Length(RawBuffer), @OutputSize)=false then
+        LogAndRaiseError('Unable to save VMT file. Call to vlMaterialSaveLump failed.');
+
+      F.WriteBuffer(Pointer(RawBuffer)^,OutputSize);
+    finally
+      vlDeleteMaterial(VMTMaterial);
     end;
-
-    SetLength(RawBuffer, 1024);     {1024 is just a number. We need a better way!}
-    if vlMaterialSaveLump(Pointer(RawBuffer), Length(RawBuffer), @OutputSize)=false then
-      Fatal('Unable to save VMT file. Call to vlMaterialSaveLump failed.');
-
-    F.WriteBuffer(Pointer(RawBuffer)^,OutputSize);
-
-    vlDeleteMaterial(VMTMaterial);
   end
  else inherited;
  end;
