@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.35  2008/12/02 15:38:45  danielpharos
+Small fixes.
+
 Revision 1.34  2008/09/23 08:27:29  danielpharos
 Moved InternalE to QkExceptions.
 
@@ -137,6 +140,8 @@ unit Python;
 
 interface
 
+uses SystemDetails;
+
 // Comments:
 (* This file has been hacked by Rowdy and tiglari to make QuArK work
 with Python 2.X.
@@ -151,8 +156,7 @@ in here! YOU HAVE BEEN WARNED!
 
 type
  CFILE = Pointer;
- 
- size_t = Cardinal;   //This appears to be true in Delphi
+
  Py_ssize_t = size_t;
 
  PyObjectPtr = ^PyObject;
@@ -592,7 +596,7 @@ implementation
 uses
  {$IFDEF Debug} QkObjects, {$ENDIF}
   Windows, Forms, Registry, SysUtils, StrUtils, QkObjects, QkExceptions,
-  SystemDetails, QkApplPaths, ExtraFunctionality, Logging;
+  QkApplPaths, ExtraFunctionality, Logging;
 
  {-------------------}
 

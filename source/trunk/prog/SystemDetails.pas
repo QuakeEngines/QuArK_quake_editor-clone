@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.39  2008/12/02 16:16:28  danielpharos
+Moved some consts to ExtraFunctionality where they belong.
+
 Revision 1.38  2008/12/02 15:38:15  danielpharos
 Fixed a wrong type and a possible memory leak.
 
@@ -141,6 +144,9 @@ interface
 
 uses
   SysUtils, StrUtils, Windows, Classes, Registry;
+
+type
+  size_t = Cardinal;  //This appears to be true in (32-bit) Delphi
 
 var
   g_CxScreen, g_CyScreen: Integer;
