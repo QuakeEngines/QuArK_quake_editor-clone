@@ -342,6 +342,9 @@ The Cap="..." controls the text in the pushbutton.
 L<br>
 [4]<br>
 
+LI<br>
+[4]<br>
+
 LN<br>
 [4]<br>
 
@@ -350,7 +353,8 @@ LP<br>
 </td><td valign=top>
 <b>Color-picker pushbutton</b>.<br>
 A pushbutton which shows the choosen color, and when activated, will bring up a color dialog.<br>
-If only Typ="L" is given, the resulting RGB values, will be in range 0 - 255.<br>
+If only Typ="L" is given, the resulting RGB values will be in range 0 - 255.<br>
+If Typ="LI" is given, the resulting RGB values will be in range 0 - 255 and will be packed into a single integer.<br>
 If Typ="LN" is given, the RGB values will be normalized to range 0.0 - 1.0.<br>
 If Typ="LP" is given, you will only be able to pick from the game's palette (i.e. Quake palette)
 </td><td>
@@ -365,6 +369,9 @@ _lightbright: = { Typ="LN4" Txt="&" }
 color: = { Txt="&" Typ="L" } //Pushbutton
 color: = { Txt="&" } //Entryfield
 </pre><br>
+
+<u><i>Typ = "LI"</i></u><br>
+The "LI" type works like "L", except that the values are stored in a single integer that can be directly used for canvas.pencolor functions and similars.
 
 <u><i>Specifics:</i></u><br>
 If the additional 4 is given, for example Typ="LN4" or Typ="L 4", there will be created a fourth value, which controls the brightness of the light. This however, must be changed using a second spec/arg pair, with Typ="E".
