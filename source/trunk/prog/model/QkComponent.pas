@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.33  2009/02/05 21:36:54  danielpharos
+Add colorboxes in treeview for Model Editor bones to display start_color and end_color.
+
 Revision 1.32  2009/02/05 21:00:18  danielpharos
 Fixed a division by zero if a component had no triangles.
 
@@ -1311,7 +1314,9 @@ end;
 function QComponent.TreeViewColorBoxes : TColorBoxList;
 begin
   Result:=TColorBoxList.Create;
-  Result.Add('_color', 'L');
+  Result.Add('comp_color1', 'LI');
+  if Specifics.Values['usecolor2'] = '1' then
+    Result.Add('comp_color2', 'LI');
 end;
 
 initialization
