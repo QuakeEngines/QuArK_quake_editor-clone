@@ -12,6 +12,11 @@ $Id$
        #####
         #####       Quake Army Knife 6.6 Changelog
 
+6.6.0 Beta 3
+============
+
+* [DanielPharos]: Add colorboxes in treeview for Model Editor bones to display start_color and end_color.
+
 6.6.0 Beta 2
 ============
 

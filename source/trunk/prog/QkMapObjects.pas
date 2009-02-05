@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.52  2008/12/19 23:30:41  danielpharos
+Reduced dependancy on CurrentMapView to something more logical; made it a call-parameter.
+
 Revision 1.51  2008/09/06 15:57:13  danielpharos
 Moved exception code into separate file.
 
@@ -331,6 +334,7 @@ type
                    procedure AddTo3DScene(Scene: TObject); override;
                    procedure AnalyseClic(Liste: PyObject); override;
                   {function SingleLevel: Boolean; virtual;}
+                   function TreeViewColorBoxes : TColorBoxList; override;
                  protected
                    procedure Compute3DDiggers;
                  end;
@@ -2369,6 +2373,12 @@ begin
   Polyedres.Free;
   Negatifs.Free;
  end;
+end;
+
+function TTreeMapGroup.TreeViewColorBoxes : TColorBoxList;
+begin
+  Result:=TColorBoxList.Create;
+  Result.Add('_color', 'L');
 end;
 
  {------------------------}

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.32  2009/02/05 21:00:18  danielpharos
+Fixed a division by zero if a component had no triangles.
+
 Revision 1.31  2008/12/19 23:30:41  danielpharos
 Reduced dependancy on CurrentMapView to something more logical; made it a call-parameter.
 
@@ -183,6 +186,7 @@ type
     Function FindRoot: QObject;
     function GetOriginOfComponent(mode: Integer): TVect;
     (*function FindRefFrame: QFrame;*)
+    function TreeViewColorBoxes : TColorBoxList; override;
   end;
 
 implementation
@@ -1304,6 +1308,11 @@ begin
 end;
 *)
 
+function QComponent.TreeViewColorBoxes : TColorBoxList;
+begin
+  Result:=TColorBoxList.Create;
+  Result.Add('_color', 'L');
+end;
 
 initialization
   RegisterQObject(QComponent, 'a');

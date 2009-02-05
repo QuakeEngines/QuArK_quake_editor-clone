@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.17  2008/03/14 10:02:50  danielpharos
+Removed previous workaround: probably found and fixed the real problem.
+
 Revision 1.16  2008/03/10 14:56:05  danielpharos
 Fix a big crash when exiting the explorer (or saving a map/model-file)
 
@@ -86,8 +89,6 @@ uses Windows, SysUtils, Messages, Classes, ExtCtrls, Forms, Graphics,
 
 const
   SpecDesc = ';desc';
-  ColorType1 = ':g';
-  ColorType2 = ':mc';
 
 type
   TMyTVEnterEdit = class(TEnterEdit)
@@ -171,7 +172,7 @@ type
     property TMSelFocus : QObject read GetTMSelFocus;
     property TMSelUnique: QObject read GetSelUnique write ChangeSelection;
    {function EnumSel(var Q: QObject) : Boolean;}
-    function ListSel(Maximum: Integer) : TList;
+    function ListSel(Maximum: Integer) : TQList;
     function VisibleInExplorer(Q: QObject) : Boolean;
     function Editing: Boolean;
     procedure EndEdit(Accept: Boolean);
@@ -292,7 +293,7 @@ begin
   with Item.SubElements do
    for J:=0 to Count-1 do
     begin
-     Result:=QObject(Item.SubElements[J]);
+     Result:=Item.SubElements[J];
      if Result.Flags and (ofTreeViewSubElement or ofTreeViewInvisible) = ofTreeViewSubElement then
       Exit;
     end;
@@ -302,7 +303,7 @@ end;
 function TMyTreeView.GetNextVisibleNode(Source: QObject) : QObject;
 var
  I, J: Integer;
- L: TList;
+ L: TQList;
 begin
  if Source=Nil then
   begin
@@ -327,7 +328,7 @@ begin
   begin
    for J:=I to L.Count-1 do
     begin
-     Result:=QObject(L[J]);
+     Result:=L[J];
      if Result.Flags and (ofTreeViewSubElement or ofTreeViewInvisible) = ofTreeViewSubElement then
       Exit;
     end;
@@ -342,7 +343,7 @@ begin
    I:=L.IndexOf(Result)+1;
   end;
  if I<L.Count then
-  Result:=QObject(L[I])
+  Result:=L[I]
  else
   Result:=Nil;
 end;
@@ -363,13 +364,13 @@ begin
  I:=L.IndexOf(Result)-1;
  if (Source=Nil) and (I>=0) then
   begin
-   Source:=QObject(L[I]);
+   Source:=L[I];
    L:=Source.SubElements;
    I:=L.Count-1;
   end;
  while I>=0 do
   begin
-   Result:=QObject(L[I]);
+   Result:=L[I];
    if Result.Flags and (ofTreeViewSubElement or ofTreeViewInvisible) = ofTreeViewSubElement then
     begin
      if Result.Flags and ofTreeViewExpanded = 0 then
@@ -415,14 +416,14 @@ var
  FocusItem: QObject;
  DotColors: array[Boolean] of TColorRef;
 
-  function DisplayItems(X: Integer; List: TList; Expected: Integer; Flags: Integer) : Boolean;
+  function DisplayItems(X: Integer; List: TQList; Expected: Integer; Flags: Integer) : Boolean;
   const
    Mode: array[Boolean] of Integer = (0, ILD_BLEND50);
    DescMargin = 19;
   var
    Item: QObject;
    Etat: TDisplayDetails;
-   J, K: Integer;
+   J, K, M: Integer;
    R, LRect: TRect;
    Sign: HDC;
    TextSize: TSize;
@@ -432,7 +433,10 @@ var
    FDescriptionLeft: Integer;
    FDescLeftOk: Boolean;
    Image1: PyImage1;
-   C: TColor;
+   C: array of TColor;
+   L: TColorBoxList;
+   FoundAColor: Boolean;
+   NumberOfColorsDrawn: Integer;
   begin
    Result:=False;
    Sign:=0;
@@ -441,7 +445,7 @@ var
    LRect.Top:=Y;
    for J:=0 to List.Count-1 do
     begin
-     Item:=QObject(List[J]);
+     Item:=List[J];
      if Item.Flags and (ofTreeViewSubElement or ofTreeViewInvisible) = Expected then
       begin
        Result:=True;
@@ -489,7 +493,7 @@ var
              FDescriptionLeft:=0;
              for K:=0 to List.Count-1 do
               begin
-               S:=QObject(List[K]).Name;
+               S:=List[K].Name;
                GetTextExtentPoint32(DC, PChar(S), Length(S), TextSize);
                if TextSize.cx > FDescriptionLeft then
                 FDescriptionLeft:=TextSize.cx;
@@ -532,18 +536,32 @@ var
           with PyImage1(InternalImages[iiLinkOverlay,0])^ do
            ImageList_DrawEx(ImageList^.Handle, Index, DC, X,Y, 16,16, CLR_NONE, CLR_DEFAULT, ILD_TRANSPARENT);
          R.Left:=X+16;
-         C:=clNone;
-         if (Item.TypeInfo = ColorType1) or (Item.TypeInfo = ColorType2) then
-          begin
-           S:=Item.Specifics.Values['_color'];
-           if S<>'' then
-            try
-             C:=vtocol(ReadVector(S));
-            except
-             {rien}
+         FoundAColor:=False;
+         L:=Item.TreeViewColorBoxes;
+         if L<>nil then
+          try
+           SetLength(C, L.Count);
+           for M:=0 to L.Count-1 do
+            begin
+             C[M]:=clNone;
+             S:=Item.Specifics.Values[L[M]];
+             if S<>'' then
+              try
+               if L.ColorType[M] = 'L' then
+                 C[M]:=vtocol(ReadVector(S))
+               else if L.ColorType[M] = 'LI' then
+                 C[M]:=PackedStrToInt(S);
+               FoundAColor:=True;
+              except
+               {rien}
+              end;
             end;
-          end;
-         if Odd(Item.SelMult) or (FocusItem=Item) or (C<>clNone) then
+          finally
+           L.free;
+          end
+         else
+          SetLength(C, 0);
+         if Odd(Item.SelMult) or (FocusItem=Item) or (FoundAColor) then
           GetTextExtentPoint32(DC, PChar(Item.Name), Length(Item.Name), TextSize);
          if Odd(Item.SelMult) and (Flags and eoParentSel = 0) then
           begin
@@ -579,13 +597,19 @@ var
            R.Right:=R.Left+TextSize.cx+4;
            DrawFocusRect(DC, R);
           end;
-         if C<>clNone then
-          begin
-           R.Left:=X+22+TextSize.cx;
-           Pen1:=SelectObject(DC, CreatePen(ps_Solid, 1, TextColor)); // Pen1 is the OLD object, while CreatePen() makes a NEW object
-           Brush1:=SelectObject(DC, CreateSolidBrush(C)); // Brush1 is the OLD object, while CreateSolidBrush() makes a NEW object
-           Rectangle(DC, R.Left+4, R.Top+3, R.Left+16, R.Bottom-3);
-           DeleteObject(SelectObject(DC, Brush1)); //Decker 2002-06-05, select the OLD object, returning the NEW object to the DeleteObject() function.
+          Pen1:=SelectObject(DC, CreatePen(ps_Solid, 1, TextColor)); // Pen1 is the OLD object, while CreatePen() makes a NEW object
+          try
+           NumberOfColorsDrawn:=0;
+           for M:=0 to Length(C)-1 do
+            if C[M]<>clNone then
+             begin
+              NumberOfColorsDrawn:=NumberOfColorsDrawn+1;
+              R.Left:=X+6+TextSize.cx+(16*NumberOfColorsDrawn);
+              Brush1:=SelectObject(DC, CreateSolidBrush(C[M])); // Brush1 is the OLD object, while CreateSolidBrush() makes a NEW object
+              Rectangle(DC, R.Left+4, R.Top+3, R.Left+16, R.Bottom-3);
+              DeleteObject(SelectObject(DC, Brush1)); //Decker 2002-06-05, select the OLD object, returning the NEW object to the DeleteObject() function.
+            end;
+          finally
            DeleteObject(SelectObject(DC, Pen1)); //Decker 2002-06-05, select the OLD object, returning the NEW object to the DeleteObject() function.
           end;
         end
@@ -744,7 +768,7 @@ end;
 
 function TMyTreeView.GetFocused1(NoExpand: Boolean) : QObject;
 var
- L: TList;
+ L: TQList;
  I, OldJ, J: Integer;
  Test: TObject;
 begin
@@ -766,7 +790,7 @@ begin
        FFocusList[I]:=TObject(OldJ);
       end;
      if OldJ>=0 then
-      Result:=QObject(L[OldJ]);
+      Result:=L[OldJ];
      Exit;
     end;
    if J<>OldJ then
@@ -805,18 +829,21 @@ end;
 function TMyTreeView.GetTMSelFocus : QObject;
 var
  Test, Focused: QObject;
- L: TList;
+ L: TQList;
 begin
  Result:=Nil;
  Focused:=TMFocus;
  if (Focused=Nil) or not Odd(Focused.SelMult) then
   begin
    L:=ListSel(1);
-   if L.Count=0 then
-    Result:=Nil
-   else
-    Result:=QObject(L[0]);
-   L.Free;
+   try
+    if L.Count=0 then
+     Result:=Nil
+    else
+     Result:=L[0];
+   finally
+    L.Free;
+   end;
   end
  else
   begin
@@ -832,20 +859,24 @@ end;
 
 function TMyTreeView.GetSelUnique;
 var
- L: TList;
+ L: TQList;
 begin
  L:=ListSel(2);
- if L.Count=1 then
-  Result:=QObject(L[0])
- else
-  Result:=Nil;
- L.Free;
+ try
+  if L.Count=1 then
+   Result:=L[0]
+  else
+   Result:=Nil;
+ finally
+  L.Free;
+ end;
 end;
 
 function TMyTreeView.EffacerSelection;
   function Effacer(T: QObject) : Boolean;
   var
-   Sm, I: Integer;
+   Sm: Byte;
+   I: Integer;
    Q: QObject;
   begin
    Sm:=T.SelMult;
@@ -884,9 +915,9 @@ begin
  {InvalidatePaintBoxes(1);} SelectionChanging;
 end;
 
-function TMyTreeView.ListSel(Maximum: Integer) : TList;
+function TMyTreeView.ListSel(Maximum: Integer) : TQList;
 var
- L: TList;
+ L: TQList;
  I: Integer;
 
   function Enum(Test: QObject) : Integer;
@@ -950,7 +981,7 @@ var
   end;
 
 begin
- L:=TList.Create;
+ L:=TQList.Create;
  try
   for I:=0 to Roots.Count-1 do
    if Roots[I].SelMult<>smSousSelVide then
@@ -1149,7 +1180,7 @@ begin
  Result:=Roots.IndexOf(Q)>=0;
 end;
 
-function CountVisibleItems(L: TList; Ignore: Integer) : Integer;
+function CountVisibleItems(L: TQList; Ignore: Integer) : Integer;
 var
  I: Integer;
  Q: QObject;
@@ -1157,7 +1188,7 @@ begin
  Result:=0;
  for I:=0 to L.Count-1 do
   begin
-   Q:=QObject(L[I]);
+   Q:=L[I];
    case (Q.Flags and (ofTreeViewExpanded or ofTreeViewSubElement or ofTreeViewInvisible)) or Ignore of
     ofTreeViewSubElement: Inc(Result);
     ofTreeViewSubElement or ofTreeViewExpanded:
@@ -1574,7 +1605,7 @@ begin
    Expanding(Q);
    for I:=0 to Q.SubElements.Count-1 do
     begin
-     Test:=QObject(Q.SubElements[I]);
+     Test:=Q.SubElements[I];
      if Test.Flags and (ofTreeViewSubElement or ofTreeViewInvisible) = ofTreeViewSubElement then
       begin
        Test.Flags:=Test.Flags and not ofTreeViewExpanded;
@@ -1612,7 +1643,7 @@ begin
      Inc(Level);
      for I:=0 to Test.SubElements.Count-1 do
       begin
-       Q:=QObject(Test.SubElements[I]);
+       Q:=Test.SubElements[I];
        if Odd(Q.Flags) and SearchNode1(Q, LookFor, Index, Level) then
         begin
          Result:=True;
@@ -1634,7 +1665,7 @@ begin
  Index:=0;
  Level:=0;
  for I:=0 to Roots.Count-1 do
-  if SearchNode1(QObject(Roots[I]), Item, Index, Level) then
+  if SearchNode1(Roots[I], Item, Index, Level) then
    begin
     if Level=0 then
      BoldFace:=FW_BOLD
@@ -1677,14 +1708,14 @@ begin
  VertScrollBar.Position:=VSB;
 end;
 
-(*procedure ClearSelection1(L: TList);
+(*procedure ClearSelection1(L: TQList);
 var
  I: Integer;
  Q: QObject;
 begin
  for I:=0 to L.Count-1 do
   begin
-   Q:=QObject(L[I]);
+   Q:=L[I];
    if Q.SelMult<>smSousSelVide then
     begin
      Q.SelMult:=smSousSelVide;
@@ -1829,7 +1860,7 @@ procedure TMyTreeView.KeyDown(var Key: Word; Shift: TShiftState);
    Expanding(Q);
    for I:=0 to Q.SubElements.Count-1 do
     begin
-     Test:=QObject(Q.SubElements[I]);
+     Test:=Q.SubElements[I];
      if Test.Flags and (ofTreeViewSubElement or ofTreeViewInvisible) = ofTreeViewSubElement then
       ExpandAllRec(Test);
     end;

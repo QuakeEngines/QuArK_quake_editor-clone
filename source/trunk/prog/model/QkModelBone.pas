@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2008/11/19 06:14:00  cdunde
+Bones system moved to outside of components for Model Editor completed.
+
 Revision 1.18  2008/10/09 21:34:12  danielpharos
 We want to be able to store handles with the bones.
 
@@ -129,6 +132,7 @@ type
     function PyGetAttr(attr: PChar) : PyObject; override;
     function PySetAttr(attr: PChar; value: PyObject) : Boolean; override;
     Function GetLength: Single;
+    function TreeViewColorBoxes : TColorBoxList; override;
   end;
 
  {------------------------}
@@ -260,6 +264,13 @@ begin
 
   inherited;
 end;*)
+
+function QModelBone.TreeViewColorBoxes : TColorBoxList;
+begin
+  Result:=TColorBoxList.Create;
+  Result.Add('start_color', 'LI');
+  Result.Add('end_color', 'LI');
+end;
 
 function QModelBone.PyGetAttr(attr: PChar) : PyObject;
 var

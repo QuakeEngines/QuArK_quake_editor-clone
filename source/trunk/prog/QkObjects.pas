@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.119  2009/02/05 21:34:31  danielpharos
+Fixed an exception raising method and set a warning to its proper log level.
+
 Revision 1.118  2009/01/29 23:52:28  danielpharos
 Updated for QuArK 6.6 Beta 2 release.
 
@@ -530,6 +533,21 @@ type
                       Flags: Integer;   { eoXXX }
                     end;
 
+  TColorBoxList = class
+                  private
+                    nSpecName: array of String;
+                    nColorType: array of String;
+                    function GetSpecName(I: Integer) : String;
+                    procedure SetSpecName(I: Integer; const SpecName: String);
+                    function GetColorType(I: Integer) : String;
+                    procedure SetColorType(I: Integer; const ColorType: String);
+                  public
+                    procedure Add(const SpecName, ColorType: String);
+                    function Count : Integer;
+                    property SpecName[I: Integer] : String read GetSpecName write SetSpecName; default;
+                    property ColorType[I: Integer] : String read GetColorType write SetColorType;
+                  end;
+
   PQStreamRef = ^TQStreamRef;
   TQStreamRef = record
                   Self: TQStream;
@@ -674,6 +692,7 @@ type
     function WriteSubelements : Boolean; virtual;
     function ClassList : TStringList;
     function IsAllowedParent(Parent: QObject) : Boolean; virtual;
+    function TreeViewColorBoxes : TColorBoxList; virtual;
   end;
 
   TQList = class(TList)
@@ -2072,6 +2091,11 @@ begin
   Result:=true;
 end;
 
+function QObject.TreeViewColorBoxes : TColorBoxList;
+begin
+  Result:=nil;
+end;
+
 procedure QObject.SaveFile(Info: TInfoEnreg1);
 var
   Origin, I, J, FileItemCount, Size, Size2: Integer;
@@ -3221,6 +3245,56 @@ begin
   end;
 
   FParent:=nParent;
+end;
+
+ {------------------------}
+
+function TColorBoxList.GetSpecName(I: Integer) : String;
+begin
+  if (I<0) or (I>=Count) then
+   Exit;
+
+  Result:=nSpecName[I];
+end;
+
+procedure TColorBoxList.SetSpecName(I: Integer; const SpecName: String);
+begin
+  if (I<0) or (I>=Count) then
+   Exit;
+
+  nSpecName[I]:=SpecName;
+end;
+
+function TColorBoxList.GetColorType(I: Integer) : String;
+begin
+  if (I<0) or (I>=Count) then
+   Exit;
+
+  Result:=nColorType[I];
+end;
+
+procedure TColorBoxList.SetColorType(I: Integer; const ColorType: String);
+begin
+  if (I<0) or (I>=Count) then
+   Exit;
+
+  nColorType[I]:=ColorType;
+end;
+
+procedure TColorBoxList.Add(const SpecName, ColorType: String);
+var
+  nCount: Integer;
+begin
+  nCount:=Count+1;
+  SetLength(nSpecName, nCount);
+  nSpecName[nCount-1]:=SpecName;
+  SetLength(nColorType, nCount);
+  nColorType[nCount-1]:=ColorType;
+end;
+
+function TColorBoxList.Count : Integer;
+begin
+  Result:=Length(nSpecName);
 end;
 
  {------------------------}
