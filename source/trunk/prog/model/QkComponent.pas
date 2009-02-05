@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.31  2008/12/19 23:30:41  danielpharos
+Reduced dependancy on CurrentMapView to something more logical; made it a call-parameter.
+
 Revision 1.30  2008/11/19 06:14:00  cdunde
 Bones system moved to outside of components for Model Editor completed.
 
@@ -1120,6 +1123,8 @@ begin
     end;
     1: begin  // st vertices
       numtris:=triangles(tris_o);
+      if numtris = 0 then
+       exit;
       tris:=tris_o;
       result.z:=0;
       for i:=0 to numtris-1 do begin
