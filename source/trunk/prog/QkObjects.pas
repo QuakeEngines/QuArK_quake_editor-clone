@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.118  2009/01/29 23:52:28  danielpharos
+Updated for QuArK 6.6 Beta 2 release.
+
 Revision 1.117  2009/01/08 18:51:51  danielpharos
 Resolve all filenames going through FileaccessQ.
 
@@ -807,7 +810,7 @@ begin
       Exit;
     end
     else
-      Raise Exception.Create(FmtLoadStr1(5188, [FullName]));
+      Raise EErrorFmt(5188, [FullName]);
   end;
   SetString(FullName, Z, StrLen(Z));
 
@@ -1237,7 +1240,7 @@ begin
   FSubElements:=TQList.Create;
 
   if not IsAllowedParent(nParent) then
-    Log(LOG_VERBOSE, 'Object '+nName+' is being created in a non-allowed parent! This might produce errors!');
+    Log(LOG_WARNING, 'Object '+nName+' is being created in a non-allowed parent! This might produce errors!');
 end;
 
 destructor QObject.Destroy;
