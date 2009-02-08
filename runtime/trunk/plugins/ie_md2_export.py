@@ -466,10 +466,18 @@ def fill_md2(md2, component):
 
     # Get the skin information.
     user_skins_list = component.dictitems['Skins:sg']
-    size = component.dictspec['skinsize']
-    md2.skin_width = size[0]
-    md2.skin_height = size[1]
-    md2.num_skins = len(user_skins_list.subitems) # Number of skins.
+    try:
+        size = component.dictspec['skinsize']
+        md2.skin_width = size[0]
+        md2.skin_height = size[1]
+    except:
+        if len(user_skins_list.subitems) == 0:
+            md2.num_skins = 0 # If no skins exist.
+        else:
+            md2.num_skins = len(user_skins_list.subitems) # Number of skins.
+            size = user_skins_list.subitems[0].dictspec['Size']
+            md2.skin_width = size[0]
+            md2.skin_height = size[1]
     if logging == 1:
         tobj.logcon ("")
         tobj.logcon ("#####################################################################")
@@ -838,8 +846,12 @@ def build_GL_commands(md2):
                 #calc and put S/T coords in the structure
                 s=md2.tex_coords[index].u
                 t=md2.tex_coords[index].v
-                s=(s+0.5)/md2.skin_width
-                t=(t+0.5)/md2.skin_height
+                try:
+                    s=(s+0.5)/md2.skin_width
+                    t=(t+0.5)/md2.skin_height
+                except:
+                    s=(s+0.5)/1
+                    t=(t+0.5)/1
                 cmd.s=s
                 cmd.t=t
                 cmd.vert_index=best_vert[command_counter]
@@ -878,6 +890,13 @@ def save_md2(filename):
     if len(objects) > 1:
         quarkx.msgbox(str(len(objects)) + " Components have been selected for exporting.\nYou can ONLY select one component folder at a time for exporting.\n\nComponents can be combined or copied into one,\nbut only one skin can be used at a time.\n\nCorrect and try again.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
         return
+    else:
+        if not objects[0].dictitems['Frames:fg'] or len(objects[0].dictitems['Frames:fg'].subitems) == 0:
+            quarkx.msgbox("No frames exist for exporting.\nCan not create model.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
+            return
+        if len(objects[0].dictitems['Frames:fg'].subitems[0].dictspec['Vertices']) == 0:
+            quarkx.msgbox("Nothing exist for exporting.\nCan not create model.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
+            return
 
     logging, tobj, starttime = ie_utils.default_start_logging(exportername, textlog, filename, "EX") ### Use "EX" for exporter text, "IM" for importer text.
 
@@ -921,6 +940,11 @@ quarkpy.qmdlbase.RegisterMdlExporter(".md2 Quake 2 Exporter", ".md2 file", "*.md
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.2  2008/07/21 18:06:13  cdunde
+# Moved all the start and end logging code to ie_utils.py in two functions,
+# "default_start_logging" and "default_end_logging" for easer use and consistency.
+# Also added logging and progress bars where needed and cleaned up files.
+#
 # Revision 1.1  2008/07/17 00:45:19  cdunde
 # Added new .md2 exporter with progress bar and logging capabilities.
 #
