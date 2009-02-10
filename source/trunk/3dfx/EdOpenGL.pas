@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.82  2008/12/04 12:14:00  danielpharos
+Fixed a redraw-clipping problem, removed a redundant file and cleaned-up the constructor of the EdSceneObjects.
+
 Revision 1.81  2008/12/03 11:08:10  danielpharos
 Removed two redundant variables.
 
@@ -1188,7 +1191,7 @@ begin
           CheckOpenGLError('WinSwapHint');
         end;
         if Windows.SwapBuffers(ViewDC)=false then
-          raise exception.create(LoadStr1(6315));
+          raise EError(6315);
       finally
         wglMakeCurrent(0, 0);
       end;
