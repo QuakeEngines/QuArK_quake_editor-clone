@@ -64,7 +64,7 @@ FOOTER = """
   <tr class="headline">
     <td width=99%% align=middle>
       <p class="sm">
-        Copyright (c) 2008, GNU General Public License by The QuArK (Quake Army Knife) Community - <a target="_blank" href="http://quark.planetquake.gamespy.com/">http://quark.planetquake.gamespy.com/</a><br>
+        Copyright (c) 2009, GNU General Public License by The QuArK (Quake Army Knife) Community - <a target="_blank" href="http://quark.planetquake.gamespy.com/">http://quark.planetquake.gamespy.com/</a><br>
       </p>
     </td>
     <td width=1%% align=right nowrap>
