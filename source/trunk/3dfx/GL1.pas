@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.35  2008/12/01 22:34:03  danielpharos
+Cleaned up the clipping routines.
+
 Revision 1.34  2008/11/20 23:45:50  danielpharos
 Big update to renderers: mostly cleanup, and stabilized Direct3D a bit more.
 
@@ -155,6 +158,7 @@ type
   GLdouble   = Double;
   GLclampd   = Double;
   PGLvoid    = ^GLvoid;
+  PGLenum    = ^GLenum;
   PGLboolean = ^GLboolean;
   PGLint     = ^GLint;
   PGLfloat   = ^GLfloat;

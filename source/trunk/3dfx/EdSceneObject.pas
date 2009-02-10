@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.49  2008/12/04 12:14:00  danielpharos
+Fixed a redraw-clipping problem, removed a redundant file and cleaned-up the constructor of the EdSceneObjects.
+
 Revision 1.48  2008/11/24 23:26:25  danielpharos
 Fix some RGB <--> BGR confusion.
 
@@ -227,8 +230,6 @@ type
  TDisplayType = (dtXY, dtXZ, dtYZ, dt2D, dt3D);
  TRenderMode = (rmWireframe, rmSolidColor, rmTextured);
 
- POpenGLLightingList = ^LongInt;
-
  PModel3DInfo = ^TModel3DInfo;
  TModel3DInfo = record
                   Base: QComponent;
@@ -252,7 +253,8 @@ type
                Normale: vec3_t;          { not defined if GL_TRI_STRIP }
                Dist: scalar_t;           { not defined if GL_TRI_STRIP }
                GlideRadius: scalar_t;
-               OpenGLLightList: POpenGLLightingList;
+               OpenGLLights: Integer;
+               OpenGLLightList: PGLenum; //GLenum = type of GL_LIGHT0. Together with OpenGLLights, this is just an array, but we can't use array here since SizeOf(TSurface3D) needs to be constant and we're GetMem-constructing this record all the time.
                OpenGLAveragePosition: vec3_t;
                VertexCount: Integer;    { < 0 for a Bezier's GL_TRI_STRIP (OpenGL only) }
                AlphaColor: TColorRef;
@@ -516,14 +518,12 @@ begin
          with Surf^ do
           begin
            Inc(Surf);
-           if not (OpenGLLightList = nil) then
-            begin
+           if OpenGLLightList<>nil then
+           begin
              FreeMem(OpenGLLightList);
-             OpenGLLightList := nil;
-             {DanielPharos: This should be done in the EdOpenGL,
-             then the Vertex3D-type above can also be removed,
-             and the link to EdOpenGL.}
-            end;
+             OpenGLLightList:=nil;
+             OpenGLLights:=0;
+           end;
            if VertexCount>=0 then
              Inc(PVertex3D(Surf), VertexCount)
            else
@@ -734,7 +734,8 @@ var
 
         Dist:=vp0^[0]*Normale[0] + vp0^[1]*Normale[1] + vp0^[2]*Normale[2];
 
-        OpenGLLightList:=nil;
+        OpenGLLights := 0;
+        OpenGLLightList := nil;
         if nRadius2>Radius2 then
           GlideRadius:=Sqrt(nRadius2)
         else
@@ -1034,7 +1035,8 @@ begin
 
            Dist:=F.Dist;
            VertexCount:=prvVertexCount;
-           OpenGLLightList:=nil;
+           OpenGLLights := 0;
+           OpenGLLightList := nil;
 
            AlphaColor:=CurrentColor or ($FF000000);
            TextureMode:=0;
@@ -1252,7 +1254,8 @@ begin
                Normale[2]:=DeltaV.Z*dd;
 
                Dist:=v3p[0]^[0]*Normale[0] + v3p[0]^[1]*Normale[1] + v3p[0]^[2]*Normale[2];
-               OpenGLLightList:=nil;
+               OpenGLLights := 0;
+               OpenGLLightList := nil;
 
                if (Mode=bmSoftware) or (Mode=bmGlide) then
                begin
@@ -1368,7 +1371,8 @@ begin
                Normale[2]:=DeltaV.Z*dd;
 
                Dist:=v3p[0]^[0]*Normale[0] + v3p[0]^[1]*Normale[1] + v3p[0]^[2]*Normale[2];
-               OpenGLLightList:=nil;
+               OpenGLLights := 0;
+               OpenGLLightList := nil;
 
                if (Mode=bmSoftware) or (Mode=bmGlide) then
                begin
@@ -1480,7 +1484,8 @@ begin
              begin
                with Surf3D^ do
                begin
-                 OpenGLLightList:=nil;
+                 OpenGLLights := 0;
+                 OpenGLLightList := nil;
                  VertexCount:=-(2*BezierBuf.W);
                  AlphaColor:=ObjectColor;
                  TextureMode:=NewRenderMode;

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.83  2009/02/10 21:53:06  danielpharos
+Fixed an exception raising method.
+
 Revision 1.82  2008/12/04 12:14:00  danielpharos
 Fixed a redraw-clipping problem, removed a redundant file and cleaned-up the constructor of the EdSceneObjects.
 
@@ -295,6 +298,7 @@ uses Windows, Classes,
 
 const
  kScaleCos = 0.5;
+ cFaintLightFactor = 0.05;
 
 var
  glAddSwapHintRectWIN: procedure (x: GLint; y: GLint; width: GLsizei; height: GLsizei) stdcall;
@@ -322,7 +326,7 @@ type
    MakeSections: Boolean;
    VCorrection2: Single;
    Lights: PLightList;
-   NumberOfLights: LongInt;
+   NumberOfLights: GLint;
    DisplayLists: Boolean;
    LightParams: TLightParams;
    FullBright: TLightParams;
@@ -1285,24 +1289,28 @@ begin
 end;
 
 procedure TGLSceneObject.EndBuildScene;
+type
+ TLightingList = record
+                  LightNumber: GLenum;
+                  LightBrightness: TDouble;
+                 end;
+
 var
  PS: PSurfaces;
- PO: POpenGLLightingList;
+ TempLightList: array of TLightingList;
  Surf: PSurface3D;
  SurfEnd: PChar;
  SurfAveragePosition: vec3_t;
  PAveragePosition: vec3_t;
- TempDistance: Double;
- TempLight: LongInt;
  VertexNR: Integer;
  PV: PVertex3D;
  Sz: Integer;
  PL: PLightList;
- DistanceList: array of Double;
- LightNR: LongInt;
- LightCurrent: LongInt;
- LightList: LongInt;
- Distance: Double;
+ LightNR, LightNR2: GLint;
+ LightCurrent: GLint;
+ Distance2, Brightness: Double;
+ LightListIndex: PGLenum;
+ NumberOfLightsInList: Integer;
 begin
   if (Lighting and (LightingQuality=0)) or Transparency then
   begin
@@ -1360,6 +1368,7 @@ begin
 
   if Lighting and (LightingQuality=0) then
   begin
+    SetLength(TempLightList, MaxLights);
     PS:=FListSurfaces;
     while Assigned(PS) do
     begin
@@ -1370,59 +1379,77 @@ begin
         with Surf^ do
         begin
           Inc(Surf);
-          if not (OpenGLLightList = nil) then
+          for LightNR:=0 to MaxLights-1 do
+            TempLightList[LightNR].LightBrightness:=-1.0; //Using -1 to mark as empty
+          LightCurrent:=0;
+          PL:=Lights;
+          while Assigned(PL) do
+          begin
+            Distance2:=(OpenGLAveragePosition[0]-PL.Position[0])*(OpenGLAveragePosition[0]-PL.Position[0])+(OpenGLAveragePosition[1]-PL.Position[1])*(OpenGLAveragePosition[1]-PL.Position[1])+(OpenGLAveragePosition[2]-PL.Position[2])*(OpenGLAveragePosition[2]-PL.Position[2]);
+            //Distance2 = distance squared.
+            Brightness:=PL.Brightness/Distance2; //FIXME: Not sure if this is right!
+            for LightNR:=0 to MaxLights-1 do
+            begin
+              if TempLightList[LightNR].LightBrightness < 0 then
+              begin
+                // Empty spot in the list; drop in this light
+                TempLightList[LightNR].LightNumber:=LightCurrent;
+                TempLightList[LightNR].LightBrightness:=Brightness;
+                break;
+              end;
+              if Brightness > TempLightList[LightNR].LightBrightness then
+              begin
+                // This light is brighter than the one in this spot in the list
+                for LightNR2:=MaxLights-1 downto LightNR+1 do
+                  // Move the rest over
+                  TempLightList[LightNR2]:=TempLightList[LightNR2-1];
+                // Drop in this light
+                TempLightList[LightNR].LightNumber:=LightCurrent;
+                TempLightList[LightNR].LightBrightness:=Brightness;
+                break;
+              end;
+            end;
+            LightCurrent:=LightCurrent+1;
+            PL:=PL^.Next;
+          end;
+          NumberOfLightsInList:=0;
+          // We make the surface's list of lights as large as possible for now...
+          if OpenGLLightList<>nil then
           begin
             FreeMem(OpenGLLightList);
             OpenGLLightList := nil;
+            OpenGLLights := 0;
           end;
-          if (NumberOfLights<MaxLights) then
-          begin
-            GetMem(OpenGLLightList, NumberOfLights*sizeof(LongInt));
-            PO:=OpenGLLightList;
-            for LightNR := 0 to NumberOfLights-1 do
-            begin
-              PO^:=LightNR;
-              Inc(PO);
-            end;
-          end
-          else
-          begin
-            SetLength(DistanceList, MaxLights);
+          OpenGLLights := MaxLights;
+          GetMem(OpenGLLightList, OpenGLLights * SizeOf(GLenum));
+          try
+            LightListIndex:=OpenGLLightList;
             for LightNR:=0 to MaxLights-1 do
             begin
-              DistanceList[LightNR]:=-1;
+              // If this spot in the list is empty: stop
+              if TempLightList[LightNR].LightBrightness < 0 then
+                break;
+              // If this light is fainter than cFaintLightFactor times the brightest light: stop
+              // This is to reduce the amount of lights used per surface in a consistent manner
+              if TempLightList[LightNR].LightBrightness < TempLightList[0].LightBrightness * cFaintLightFactor then
+                break;
+              // Found a light we want; add it to the list
+              LightListIndex^:=TempLightList[LightNR].LightNumber;
+              NumberOfLightsInList:=NumberOfLightsInList+1;
+              Inc(LightListIndex);
             end;
-            GetMem(OpenGLLightList, MaxLights*sizeof(LongInt));
-            PL:=Lights;
-            LightCurrent:=0;
-            while Assigned(PL) do
+          finally
+            if NumberOfLightsInList<>0 then
             begin
-              Distance:=(OpenGLAveragePosition[0]-PL.Position[0])*(OpenGLAveragePosition[0]-PL.Position[0])+(OpenGLAveragePosition[1]-PL.Position[1])*(OpenGLAveragePosition[1]-PL.Position[1])+(OpenGLAveragePosition[2]-PL.Position[2])*(OpenGLAveragePosition[2]-PL.Position[2]);
-              //DanielPharos: Actually, this is distance squared. But we're only comparing, not calculating!
-              LightList:=LightCurrent;
-              PO:=OpenGLLightList;
-              for LightNR:=0 to MaxLights-1 do
-              begin
-                if DistanceList[LightNR] = -1 then
-                begin
-                  DistanceList[LightNR]:=Distance;
-                  PO^:=LightList;
-                  break;
-                end;
-                if Distance < DistanceList[LightNR] then
-                begin
-                  TempDistance:=Distance;
-                  Distance:=DistanceList[LightNR];
-                  DistanceList[LightNR]:=TempDistance;
-                  TempLight:=PO^;
-                  PO^:=LightList;
-                  LightList:=TempLight;
-                end;
-                Inc(PO);
-              end;
-              PL:=PL^.Next;
-              LightCurrent:=LightCurrent+1;
-            end;
+              OpenGLLights:=NumberOfLightsInList;
+              ReAllocMem(OpenGLLightList, OpenGLLights * SizeOf(GLenum));
+            end
+            else
+            begin
+              FreeMem(OpenGLLightList);
+              OpenGLLightList := nil;
+              OpenGLLights := 0;
+            end
           end;
           if VertexCount>=0 then
             Inc(PVertex3D(Surf), VertexCount)
@@ -2014,11 +2041,9 @@ var
  PV, PVBase, PV2, PV3: PVertex3D;
  NeedTex, NeedColor: Boolean;
  I: Integer;
- MaxLightNumber: LongInt;
- LightIndex: LongInt;
  PL: PLightList;
- PO: POpenGLLightingList;
- LightNR: LongInt;
+ PO: PGLenum;
+ LightNR, LightNR2: GLint;
  LightParam: GLfloat4;
  GLColor: GLfloat4;
  PSD: TPixelSetDescription;
@@ -2054,10 +2079,6 @@ begin
     glEnable(GL_LIGHTING);
     CheckOpenGLError('RenderPList: GL_LIGHTING');
 
-    if (NumberOfLights<MaxLights) then
-      MaxLightNumber:=NumberOfLights
-    else
-      MaxLightNumber:=MaxLights;
     for LightNR := 0 to MaxLights-1 do
     begin
       if (LightNR<NumberOfLights) then
@@ -2192,38 +2213,35 @@ begin
 
       if Lighting and (LightingQuality=0) then
       begin
-        if not(OpenGLLightList = nil) then
+        for LightNR := 0 to OpenGLLights-1 do
         begin
-          for LightNR := 0 to MaxLightNumber-1 do
-          begin
-            PO:=OpenGLLightList;
-            for LightIndex := 1 to LightNR do
-              Inc(PO);
-            PL:=Lights;
-            for LightIndex := 0 to PO^-1 do
-              PL:=PL^.Next;
-            LightParam[0]:=PL.Position[0];
-            LightParam[1]:=PL.Position[1];
-            LightParam[2]:=PL.Position[2];
-            LightParam[3]:=1.0;
+          PO:=OpenGLLightList;
+          for I := 0 to LightNR-1 do
+            Inc(PO);
+          PL:=Lights;
+          for LightNR2 := 0 to PO^-1 do
+            PL:=PL^.Next;
+          LightParam[0]:=PL.Position[0];
+          LightParam[1]:=PL.Position[1];
+          LightParam[2]:=PL.Position[2];
+          LightParam[3]:=1.0;
 
-            glLightfv(GL_LIGHT0+LightNR, GL_POSITION, @LightParam);
-            CheckOpenGLError('RenderPList: GL_LIGHT: GL_POSITION');
+          glLightfv(GL_LIGHT0+LightNR, GL_POSITION, @LightParam);
+          CheckOpenGLError('RenderPList: GL_LIGHT: GL_POSITION');
 
-            UnpackColor(PL.Color, GLColor);
-            LightParam[0]:=GLColor[0];
-            LightParam[1]:=GLColor[1];
-            LightParam[2]:=GLColor[2];
-            //LightParam[3]:=GLColor[3];
-            LightParam[3]:=1.0;
-            glLightfv(GL_LIGHT0+LightNR, GL_DIFFUSE, @LightParam);
-            CheckOpenGLError('RenderPList: GL_LIGHTING: glLightfv');
+          UnpackColor(PL.Color, GLColor);
+          LightParam[0]:=GLColor[0];
+          LightParam[1]:=GLColor[1];
+          LightParam[2]:=GLColor[2];
+          //LightParam[3]:=GLColor[3];
+          LightParam[3]:=1.0;
+          glLightfv(GL_LIGHT0+LightNR, GL_DIFFUSE, @LightParam);
+          CheckOpenGLError('RenderPList: GL_LIGHTING: glLightfv');
 
-            glLightf(GL_LIGHT0+LightNR, GL_CONSTANT_ATTENUATION, 1.0);
-            glLightf(GL_LIGHT0+LightNR, GL_LINEAR_ATTENUATION, 0.0);
-            glLightf(GL_LIGHT0+LightNR, GL_QUADRATIC_ATTENUATION, 5.0/PL.Brightness2);
-            CheckOpenGLError('RenderPList: GL_LIGHT: glLightf');
-          end;
+          glLightf(GL_LIGHT0+LightNR, GL_CONSTANT_ATTENUATION, 1.0);
+          glLightf(GL_LIGHT0+LightNR, GL_LINEAR_ATTENUATION, 0.0);
+          glLightf(GL_LIGHT0+LightNR, GL_QUADRATIC_ATTENUATION, 5.0/PL.Brightness2);
+          CheckOpenGLError('RenderPList: GL_LIGHT: glLightf');
         end;
       end;
 
