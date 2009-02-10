@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.65  2009/02/04 10:13:47  danielpharos
+Fixed an exception raising method.
+
 Revision 1.64  2008/12/12 12:47:52  danielpharos
 Moved GlobalWarning to QkExceptions, and added QkTextBoxForm.
 
@@ -2278,7 +2281,7 @@ begin
   begin
    if Filename='' then Exit;
    S:=ExtractFilePath(Filename)+nName;
-   StringReplace(S,'/','\',[rfReplaceAll]);
+   S:=ConvertPath(S);
    if FileExists(S) then
     Result:=ExactFileLink(S, Nil, False);
   end;
