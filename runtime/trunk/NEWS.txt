@@ -15,6 +15,8 @@ $Id$
 6.6.0 Beta 3
 ============
 
+* [DanielPharos]: Removed Quake 3's Call of Duty addon. People should switch to CoD gamemode.
+
 * [DanielPharos]: Add colorboxes in treeview for Model Editor bones to display start_color and end_color.
 
 6.6.0 Beta 2
