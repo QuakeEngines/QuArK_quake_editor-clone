@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.473  2009/01/29 02:13:51  cdunde
+//To reverse frame indexing and fix it a better way by DanielPharos.
+//
 //Revision 1.472  2009/01/28 01:36:55  cdunde
 //Update for frame indexing.
 //
@@ -3934,6 +3937,7 @@ QQRKSRC1
         SaveLibrary = "FreeImage"
         SaveFormatDevIL = "0"
         SaveQualityDevIL = '99'
+        SaveProgressiveDevIL = ""
         LoadQualityFreeImage = "2"
         SaveQualityFreeImage = "4"
         SaveProgressiveFreeImage = ""
@@ -8150,6 +8154,7 @@ QQRKSRC1
         Hint = "The format the JPG texture will be saved in when using the DevIL library"
       }
       SaveQualityDevIL: = {Txt="Saving quality" Typ="EF1" Hint="The quality the JPG texture will be saved in when using the DevIL library (any number between 0 and 99"}
+      SaveProgressiveDevIL: = { Typ="X" Txt="Save Progressive" Cap="Enabled" Hint="Save the JPG texture as a progressive image."}
       sep: = {Typ="S" Txt="---- Advanced FreeImage Settings ----"}
       LoadQualityFreeImage: =
       {
@@ -8249,8 +8254,8 @@ QQRKSRC1
       {
         Txt="Select library for loading VTF files"
         Typ="CL"
-        Items  = "VTFLib"
-        Values = "VTFLib"
+        Items  = "VTFLib" $0D "DevIL"
+        Values = "VTFLib" $0D "DevIL"
         Hint="Select the library QuArK will use to load files of this type."
       }
       SaveLibrary: =

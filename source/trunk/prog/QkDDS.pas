@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23  2008/10/13 19:12:42  danielpharos
+Fix nvdxt not working with non-multiples of 4.
+
 Revision 1.22  2008/10/08 19:44:16  danielpharos
 Fix some possible synchronization issues.
 
@@ -356,7 +359,7 @@ begin
             FreeMem(RawPal);
           end;
 
-          Dest:=ilGetPalette;
+          Dest:=PByte(ilGetPalette);
           CheckDevILError(ilGetError);
           SourcePal:=PChar(PSD.ColorPalette);
           pSourcePal:=SourcePal;
@@ -369,7 +372,7 @@ begin
             Inc(Dest, 3);
           end;
 
-          Dest:=ilGetData;
+          Dest:=PByte(ilGetData);
           CheckDevILError(ilGetError);
           SourceImg:=PChar(PSD.Data);
           pSourceImg:=SourceImg;
@@ -393,7 +396,7 @@ begin
         begin
           if PSD.AlphaBits=psa8bpp then
           begin
-            Dest:=ilGetData;
+            Dest:=PByte(ilGetData);
             CheckDevILError(ilGetError);
             SourceImg:=PChar(PSD.Data);
             SourceAlpha:=PChar(PSD.AlphaData);
@@ -421,7 +424,7 @@ begin
           end
           else
           begin
-            Dest:=ilGetData;
+            Dest:=PByte(ilGetData);
             CheckDevILError(ilGetError);
             SourceImg:=PChar(PSD.Data);
             pSourceImg:=SourceImg;

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2008/10/15 21:58:06  danielpharos
+Corrected a changed function call.
+
 Revision 1.18  2008/09/26 19:36:56  danielpharos
 Small code clean-up.
 
@@ -83,11 +86,11 @@ unit QkDevIL;
 
 interface
 
-uses Windows, SysUtils;
+uses Windows, SysUtils, SystemDetails;
 
 const
-  IL_FALSE =$0;
-  IL_TRUE  =$1;
+  IL_FALSE =0;
+  IL_TRUE  =1;
 
 // Palette types
   IL_PAL_NONE   =$0400;
@@ -135,6 +138,13 @@ const
   IL_HDR          =$043F;
   IL_ICNS         =$0440;
   IL_JP2          =$0441;
+  IL_EXR          =$0442;
+  IL_WDP          =$0443;
+  IL_VTF          =$0444;
+  IL_WBMP         =$0445;
+  IL_SUN          =$0446;
+  IL_IFF          =$0447;
+  IL_TPL          =$0448;
 
   IL_JASC_PAL     =$0475;
 
@@ -166,6 +176,7 @@ const
   IL_PALETTE_BPP           =$0DEE;
   IL_PALETTE_NUM_COLS      =$0DEF;
   IL_PALETTE_BASE_TYPE     =$0DF0;
+  IL_NUM_FACES             =$0DE1; //Warning: Out of order here!
   IL_NUM_IMAGES            =$0DF1;
   IL_NUM_MIPMAPS           =$0DF2;
   IL_NUM_LAYERS            =$0DF3;
@@ -212,6 +223,7 @@ const
   IL_CHEAD_HEADER_STRING     =$0722;
   IL_PCD_PICNUM              =$0723;
   IL_PNG_ALPHA_INDEX         =$0724;
+  IL_JPG_PROGRESSIVE         =$0725;
 
 // DXTC definitions
   IL_DXTC_FORMAT      =$0705;
@@ -226,34 +238,37 @@ const
   IL_3DC              =$070E;
   IL_RXGB             =$070F;
   IL_ATI1N            =$0710;
+  IL_DXT1A            =$0711;
 
 // Error types
-  IL_NO_ERROR=             $0000;
-  IL_INVALID_ENUM=         $0501;
-  IL_OUT_OF_MEMORY=        $0502;
-  IL_FORMAT_NOT_SUPPORTED= $0503;
-  IL_INTERNAL_ERROR=       $0504;
-  IL_INVALID_VALUE=        $0505;
-  IL_ILLEGAL_OPERATION=    $0506;
-  IL_ILLEGAL_FILE_VALUE=   $0507;
-  IL_INVALID_FILE_HEADER=  $0508;
-  IL_INVALID_PARAM=        $0509;
-  IL_COULD_NOT_OPEN_FILE=  $050A;
-  IL_INVALID_EXTENSION=    $050B;
-  IL_FILE_ALREADY_EXISTS=  $050C;
-  IL_OUT_FORMAT_SAME=      $050D;
-  IL_STACK_OVERFLOW=       $050E;
-  IL_STACK_UNDERFLOW=      $050F;
-  IL_INVALID_CONVERSION=   $0510;
-  IL_BAD_DIMENSIONS=       $0511;
-  IL_FILE_READ_ERROR=      $0512;
-  IL_FILE_WRITE_ERROR=     $0512;
-  IL_LIB_GIF_ERROR=  $05E1;
-  IL_LIB_JPEG_ERROR= $05E2;
-  IL_LIB_PNG_ERROR=  $05E3;
-  IL_LIB_TIFF_ERROR= $05E4;
-  IL_LIB_MNG_ERROR=  $05E5;
-  IL_UNKNOWN_ERROR=  $05FF;
+  IL_NO_ERROR             =$0000;
+  IL_INVALID_ENUM         =$0501;
+  IL_OUT_OF_MEMORY        =$0502;
+  IL_FORMAT_NOT_SUPPORTED =$0503;
+  IL_INTERNAL_ERROR       =$0504;
+  IL_INVALID_VALUE        =$0505;
+  IL_ILLEGAL_OPERATION    =$0506;
+  IL_ILLEGAL_FILE_VALUE   =$0507;
+  IL_INVALID_FILE_HEADER  =$0508;
+  IL_INVALID_PARAM        =$0509;
+  IL_COULD_NOT_OPEN_FILE  =$050A;
+  IL_INVALID_EXTENSION    =$050B;
+  IL_FILE_ALREADY_EXISTS  =$050C;
+  IL_OUT_FORMAT_SAME      =$050D;
+  IL_STACK_OVERFLOW       =$050E;
+  IL_STACK_UNDERFLOW      =$050F;
+  IL_INVALID_CONVERSION   =$0510;
+  IL_BAD_DIMENSIONS       =$0511;
+  IL_FILE_READ_ERROR      =$0512;
+  IL_FILE_WRITE_ERROR     =$0512;
+  IL_LIB_GIF_ERROR  =$05E1;
+  IL_LIB_JPEG_ERROR =$05E2;
+  IL_LIB_PNG_ERROR  =$05E3;
+  IL_LIB_TIFF_ERROR =$05E4;
+  IL_LIB_MNG_ERROR  =$05E5;
+  IL_LIB_JP2_ERROR  =$05E6;
+  IL_LIB_EXR_ERROR  =$05E7;
+  IL_UNKNOWN_ERROR  =$05FF;
 
 // Format types:
   IL_COLOUR_INDEX     =$1900;
@@ -274,55 +289,82 @@ const
   IL_UNSIGNED_INT   =$1405;
   IL_FLOAT          =$1406;
   IL_DOUBLE         =$140A;
+  IL_HALF           =$140B;
 
 type
-  DevILType = Cardinal;
-  DevILMode = Cardinal;
-  DevILError = Cardinal;
-  DevILHint = Cardinal;
-  DevILFormat = Cardinal;
-  DevILFormatType = Cardinal;
-  DevILFormatPalette = Cardinal;
+  ILenum     = Cardinal;
+  ILboolean  = Byte;
+  ILbitfield = Cardinal;
+  ILbyte     = Char;
+  ILshort    = SmallInt;
+  ILint      = Integer;
+  ILsizei    = size_t;
+  ILubyte    = Byte;
+  ILushort   = Word;
+  ILuint     = Cardinal;
+  ILfloat    = Single;
+  ILclampf   = Single;
+  ILdouble   = Double;
+  ILclampd   = Double;
+
+(*  if UNICODE:
+  ILchar     = WideChar;
+  ILstring   = PWideChar;
+  ILconst_string = {const} PWideChar;*)
+  ILchar     = Char;
+  ILstring   = PChar;
+	ILconst_string = {const} PChar;
+
+  PILboolean  = ^ILboolean;
+  PILint      = ^ILint;
+  PILubyte    = ^ILubyte;
+  PILuint     = ^ILuint;
+
+  DevILType = ILenum;
+  DevILMode = ILenum;
+  DevILError = ILenum;
+  DevILHint = ILenum;
+  DevILFormat = ILenum;
+  DevILFormatType = ILenum;
+  DevILFormatPalette = ILenum;
 
 var
   ilInit: procedure; stdcall;
   ilShutDown: procedure; stdcall;
   ilGetError: function : DevILError; stdcall;
-  ilGetBoolean: function (Mode : DevILMode) : SmallInt; stdcall;
-  //ilGetBooleanv: procedure (Mode : DevILMode; Param : PSmallInt); stdcall;
-  ilGetInteger: function (Mode : DevILMode) : Integer; stdcall;
-  //ilGetIntegerv: procedure (Mode : DevILMode; Param : PInteger); stdcall;
-  ilSetInteger: procedure (Mode : DevILMode; Param : Integer); stdcall;
+  ilGetBoolean: function (Mode : DevILMode) : ILboolean; stdcall;
+  //ilGetBooleanv: procedure (Mode : DevILMode; Param : PILboolean); stdcall;
+  ilGetInteger: function (Mode : DevILMode) : ILint; stdcall;
+  //ilGetIntegerv: procedure (Mode : DevILMode; Param : PILint); stdcall;
+  ilSetInteger: procedure (Mode : DevILMode; Param : ILint); stdcall;
   ilHint: procedure (Target : DevILHint; Mode : DevILMode); stdcall;
 
-  //DanielPharos: Versions earlier than the latest 1.7.2 release have this returntype defined as
-  //an Integer, but this has been corrected after an email from me:
-  //ilGenImage: function : Cardinal; stdcall;
-  ilGenImages: procedure (Num : Integer; Images : PCardinal); stdcall;
-  ilBindImage: procedure (Image : Cardinal); stdcall;
-  //ilDeleteImage: procedure (const Num : Cardinal); stdcall;
-  ilDeleteImages: procedure (const Num : Integer; Images : PCardinal); stdcall;
+  //ilGenImage: function : ILuint; stdcall;
+  ilGenImages: procedure (Num : ILsizei; Images : PILuint); stdcall;
+  ilBindImage: procedure (Image : ILuint); stdcall;
+  //ilDeleteImage: procedure (const Num : ILuint); stdcall;
+  ilDeleteImages: procedure (Num : ILsizei; const Images : PILuint); stdcall;
 
   { DanielPharos: The first parameter should be named Type, but since this is
   a statement in Delphi, we can't use that name }
-  //ilLoad: function (xType : DevILType; const FileName : PChar) : Boolean; stdcall;
-  ilSave: function (xType : DevILType; FileName : PChar) : SmallInt; stdcall;
-  ilLoadL: function (xType : DevILType; Lump : PByte; Size : Cardinal) : SmallInt; stdcall;
-  ilSaveL: function (xType : DevILType; Lump : PByte; Size : Cardinal) : Cardinal; stdcall;
-  ilConvertImage: function (DestFormat : DevILFormat; DestType : DevILFormatType) : SmallInt; stdcall;
-  ilConvertPal: function (DestFormat : DevILFormatPalette) : SmallInt; stdcall;
-  ilGetData: function : PByte; stdcall;
-  //ilSetData: function (Data : PByte) : SmallInt; stdcall;
-  ilGetPalette: function : PByte; stdcall;
-  //ilCopyPixels: procedure (XOff : Cardinal; YOff : Cardinal; ZOff : Cardinal; Width : Cardinal; Height : Cardinal; Depth : Cardinal; Format : DevILFormat; xType : DevILFormatType; Data : PByte); stdcall;
-  //ilSetPixels: procedure (XOff : Integer; YOff : Integer; ZOff : Integer; Width : Cardinal; Height : Cardinal; Depth : Cardinal; Format : DevILFormat; xType : DevILFormatType; Data : PByte); stdcall; //DanielPharos: I suspect these should be unsigned integers too! 
-  ilTexImage: function (Width : Cardinal; Height : Cardinal; Depth : Cardinal; numChannels : Byte; Format : DevILFormat; xType : DevILType; Data : PByte) : SmallInt; stdcall;
-  ilDisable: function (Mode : DevILMode) : SmallInt; stdcall;
-  ilEnable: function (Mode : DevILMode) : SmallInt; stdcall;
-  //ilFormatFunc: function (Mode : DevILMode) : SmallInt; stdcall;
-  ilOriginFunc: function (Mode : DevILMode) : SmallInt; stdcall;
-  ilClearImage: function : SmallInt; stdcall;
-  ilRegisterPal: procedure (Pal : PByte; Size : Cardinal; xType : DevILFormatPalette); stdcall;
+  //ilLoad: function (xType : DevILType; FileName : ILconst_string) : ILboolean; stdcall;
+  ilSave: function (xType : DevILType; FileName : ILstring) : ILboolean; stdcall;
+  ilLoadL: function (xType : DevILType; Lump : PByte; Size : ILuint) : ILboolean; stdcall;
+  ilSaveL: function (xType : DevILType; Lump : PByte; Size : ILuint) : ILuint; stdcall;
+  ilConvertImage: function (DestFormat : DevILFormat; DestType : DevILFormatType) : ILboolean; stdcall;
+  ilConvertPal: function (DestFormat : DevILFormatPalette) : ILboolean; stdcall;
+  ilGetData: function : PILubyte; stdcall;
+  //ilSetData: function (Data : PByte) : ILboolean; stdcall;
+  ilGetPalette: function : PILubyte; stdcall;
+  //ilCopyPixels: function (XOff : ILuint; YOff : ILuint; ZOff : ILuint; Width : ILuint; Height : ILuint; Depth : ILuint; Format : DevILFormat; xType : DevILFormatType; Data : PByte): ILuint; stdcall;
+  //ilSetPixels: procedure (XOff : ILint; YOff : ILint; ZOff : ILint; Width : ILuint; Height : ILuint; Depth : ILuint; Format : DevILFormat; xType : DevILFormatType; Data : PByte); stdcall; //DanielPharos: I suspect these should be unsigned integers too!
+  ilTexImage: function (Width : ILuint; Height : ILuint; Depth : ILuint; numChannels : ILubyte; Format : DevILFormat; xType : DevILType; Data : PByte) : ILboolean; stdcall;
+  ilDisable: function (Mode : DevILMode) : ILboolean; stdcall;
+  ilEnable: function (Mode : DevILMode) : ILboolean; stdcall;
+  //ilFormatFunc: function (Mode : DevILMode) : ILboolean; stdcall;
+  ilOriginFunc: function (Mode : DevILMode) : ILboolean; stdcall;
+  ilClearImage: function : ILboolean; stdcall;
+  ilRegisterPal: procedure (Pal : PByte; Size : ILuint; xType : DevILFormatPalette); stdcall;
 
 function LoadDevIL : Boolean;
 procedure UnloadDevIL(ForceUnload: boolean);
@@ -395,7 +437,7 @@ begin
       ilClearImage      := InitDllPointer(HDevIL, 'ilClearImage');
       ilRegisterPal     := InitDllPointer(HDevIL, 'ilRegisterPal');
 
-      if ilGetInteger(IL_VERSION_NUM) < 168 then
+      if ilGetInteger(IL_VERSION_NUM) < 175 then
       begin
         LogAndRaiseError('DevIL library version mismatch!');
         Exit;
@@ -535,6 +577,8 @@ begin
     IL_LIB_PNG_ERROR: Raise EErrorFmt(5731, ['DevIL library', 'IL_LIB_PNG_ERROR']);
     IL_LIB_TIFF_ERROR: Raise EErrorFmt(5731, ['DevIL library', 'IL_LIB_TIFF_ERROR']);
     IL_LIB_MNG_ERROR: Raise EErrorFmt(5731, ['DevIL library', 'IL_LIB_MNG_ERROR']);
+    IL_LIB_JP2_ERROR: Raise EErrorFmt(5731, ['DevIL library', 'IL_LIB_JP2_ERROR']);
+    IL_LIB_EXR_ERROR: Raise EErrorFmt(5731, ['DevIL library', 'IL_LIB_EXR_ERROR']);
     IL_UNKNOWN_ERROR: Raise EErrorFmt(5731, ['DevIL library', 'IL_UNKNOWN_ERROR']);
     else
       Raise EErrorFmt(5731, ['DevIL library', 'Unknown error code']);

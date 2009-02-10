@@ -83,6 +83,7 @@ The developers of used libraries/programs
 - DevIL:
                         Denton Woods
                         Nicolas Weber
+                        Matej Týc
                         http://openil.sourceforge.net/
 
 - FreeImage:

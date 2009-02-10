@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.26  2008/10/04 13:50:55  danielpharos
+Start using LogAndRaiseError instead of local Fatal's.
+
 Revision 1.25  2008/10/04 13:47:26  danielpharos
 Fixed some copy-paste mistakes.
 
@@ -187,6 +190,20 @@ begin
     Flag:=99;
 
   ilSetInteger(IL_JPG_QUALITY, Flag);
+  CheckDevILError(ilGetError);
+
+  try
+    if Setup.Specifics.Values['SaveProgressiveDevIL']<>'' then
+      Flag:=IL_TRUE
+    else
+      Flag:=IL_FALSE;
+  except
+    Flag:=IL_FALSE;
+  end;
+  if Flag=IL_TRUE then
+    ilEnable(IL_JPG_PROGRESSIVE)
+  else
+    ilDisable(IL_JPG_PROGRESSIVE);
   CheckDevILError(ilGetError);
 end;
 
