@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.76  2008/09/20 21:07:43  danielpharos
+Removed MarsCaption option and added nice FirstRun dialogbox.
+
 Revision 1.75  2008/09/20 20:45:28  danielpharos
 Added GetQPath functions to Defaults.qrk and Setup.qrk loading.
 
@@ -331,8 +334,8 @@ comparison between gamemodes.}
  mjQuake4       = 'm';  { Quake 4 }
  mjRTCWET       = 'n';  { Return To Castle Wolfenstein - Enemy Territory }
  mjEF2          = 'o';  { Star Trek: Elite Force 2 }
- mjCOD          = 'p';  { Call of Duty }
- mjCOD2         = 'q';  { Call of Duty 2 }
+ mjCoD          = 'p';  { Call of Duty }
+ mjCoD2         = 'q';  { Call of Duty 2 }
  mjPrey         = 'r';  { Prey }
  mjFAKK2        = 's';  { Heavy Metal - FAKK2 }
  mjWarsow       = 'v';  { Warsow }
