@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.71  2008/11/17 19:42:13  danielpharos
+Removed redundant GameCode, and fixed Quake 3 lump names.
+
 Revision 1.70  2008/11/17 19:11:37  danielpharos
 Added and fixed some BSP file format detections, and fixed surfacetype determination for Quake 3-like engines.
 
@@ -1448,7 +1451,6 @@ begin
             Y:=Pozzie[1];
             Z:=Pozzie[2];
           end;
-         { is this really necessary? }
           Inc(PQ3);
           Inc(Dest);
         end;
@@ -1457,10 +1459,6 @@ begin
       FStructure.AddRef(+1);
       Q:=BspEntry[eEntities, lump_entities, eBsp3_entities];
       Q.Acces;
-   {   if CharModeJeu>=mjQ3A then
-         ShowMessage('Sorry, no bsp editing for this game')
-      else
-    }
       NonFaces:=0;
       ReadEntityList(FStructure, Q.Specifics.Values['Data'], Self);
       if NonFaces>0 then
@@ -1477,13 +1475,16 @@ var
  Dest: TStringList;
  Q: QObject;
  S: String;
+ MapSaveSettings: TMapSaveSettings;
 begin
  if FStructure<>Nil then
   begin
    FStructure.LoadAll;
+   MapSaveSettings:=GetDefaultMapSaveSettings;
+   MapSaveSettings.GameCode:=NeedObjectGameCode;
    Dest:=TStringList.Create;
    try
-    SaveAsMapText(FStructure, NeedObjectGameCode, -1, Nil, Dest, soBSP, Nil);
+    SaveAsMapText(FStructure, MapSaveSettings, Nil, Dest, soBSP, Nil);
     S:=Dest.Text;
    finally
     Dest.Free;

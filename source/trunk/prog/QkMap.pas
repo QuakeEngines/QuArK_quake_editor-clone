@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.86  2009/02/11 14:53:22  danielpharos
+TList --> TQList
+
 Revision 1.85  2009/02/11 14:44:45  danielpharos
 Read in two additional MOHAA surface flags.
 
@@ -298,13 +301,24 @@ uses
 {$DEFINE RemoveEmptySpecs}
 
 type
- MapFormatTypes = (
+ TMapFormatTypes = (
      CQType, { Classic Quake1/2/3 }
      QetpType,  { Quark Enhanced Texture Positioning }
      V220Type,  { Valve Mapformat 220 }
      BPType,     { Brush Primitives }
-     HL2Type     {that one used in hl2 tools}
+     HL2Type,    {that one used in hl2 tools}
+     CoD2Type,   { Call of Duty 2 }
+     UnknownType
   );
+
+  TMapSaveSettings = record
+    GameCode: Char;
+    MapFormat: TMapFormatTypes;
+    MapVersion: Integer;
+    DecimalPlaces: Integer;
+    BrushDefVersion: Integer;
+    PatchDefVersion: Integer;
+  end;
 
  QMap = class(QFileObject)
         protected
@@ -354,17 +368,17 @@ type
 
  {------------------------}
 
-function GetMapFormatType : MapFormatTypes;
+function GetDefaultMapSaveSettings : TMapSaveSettings;
 function ReadEntityList(Racine: TTreeMapBrush; const SourceFile: String; BSP: QBsp) : Char;
-procedure SaveAsMapText(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Negatif: TQList; Texte: TStrings; Flags2: Integer; HxStrings: TStrings);
-procedure SaveAsMapTextTTreeMapBrush(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Negatif: TQList; Texte: TStrings; Flags2: Integer; HxStrings: TStrings);
-procedure SaveAsMapTextTTreeMapSpec(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Dest, HxStrings: TStrings; Flags2: Integer; EntityNumber: Integer);
-procedure SaveAsMapTextTTreeMapEntity(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Negatif: TQList; Texte: TStrings; Flags2: Integer; HxStrings: TStrings);
-procedure SaveAsMapTextTTreeMapGroup(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Negatif: TQList; Texte: TStrings; Flags2: Integer; HxStrings: TStrings);
-procedure SaveAsMapTextTPolygon(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Brush: TStrings; OriginBrush: PVect; Flags2: Integer);
-procedure SaveAsMapTextTFace(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Brush: TStrings; OriginBrush: PVect; Flags2: Integer; MapFormat: MapFormatTypes);
-procedure SaveAsMapTextTBezier(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Target: TStrings);
-procedure SaveAsMapTextTDuplicator(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Negatif: TQList; Texte: TStrings; Flags2: Integer; HxStrings: TStrings);
+procedure SaveAsMapText(ObjectToSave: QObject; MapSaveSettings: TMapSaveSettings; Negatif: TQList; Texte: TStrings; Flags2: Integer; HxStrings: TStrings);
+procedure SaveAsMapTextTTreeMapBrush(ObjectToSave: QObject; MapSaveSettings: TMapSaveSettings; Negatif: TQList; Texte: TStrings; Flags2: Integer; HxStrings: TStrings);
+procedure SaveAsMapTextTTreeMapSpec(ObjectToSave: QObject; MapSaveSettings: TMapSaveSettings; Dest, HxStrings: TStrings; Flags2: Integer; EntityNumber: Integer);
+procedure SaveAsMapTextTTreeMapEntity(ObjectToSave: QObject; MapSaveSettings: TMapSaveSettings; Negatif: TQList; Texte: TStrings; Flags2: Integer; HxStrings: TStrings);
+procedure SaveAsMapTextTTreeMapGroup(ObjectToSave: QObject; MapSaveSettings: TMapSaveSettings; Negatif: TQList; Texte: TStrings; Flags2: Integer; HxStrings: TStrings);
+procedure SaveAsMapTextTPolygon(ObjectToSave: QObject; MapSaveSettings: TMapSaveSettings; Brush: TStrings; OriginBrush: PVect; Flags2: Integer);
+procedure SaveAsMapTextTFace(ObjectToSave: QObject; MapSaveSettings: TMapSaveSettings; Brush: TStrings; OriginBrush: PVect; Flags2: Integer);
+procedure SaveAsMapTextTBezier(ObjectToSave: QObject; MapSaveSettings: TMapSaveSettings; Target: TStrings);
+procedure SaveAsMapTextTDuplicator(ObjectToSave: QObject; MapSaveSettings: TMapSaveSettings; Negatif: TQList; Texte: TStrings; Flags2: Integer; HxStrings: TStrings);
 
  {------------------------}
 
@@ -397,7 +411,20 @@ begin
  Result := EntityNoCounting;
 end;
 
-function FindGameDecimalPlaces: integer;
+function GetDefaultMapSaveSettings : TMapSaveSettings;
+begin
+  with Result do
+  begin
+    GameCode := mjAny;
+    MapFormat := UnknownType;
+    MapVersion := -1;
+    DecimalPlaces := -1;
+    BrushDefVersion := -1;
+    PatchDefVersion := -1;
+  end;
+end;
+       
+function GetDecimalPlaces(GameCode: Char): Integer;
 begin
  // Rowdy: 17-Feb-2005 it seems that Torque wants more decimal places in .map files,
  //        something to do with an idiosyncracy in Torque's map2dif utility that
@@ -414,28 +441,83 @@ begin
  //        more than 40 decimal places is ludicrously insanely stupendously
  //        silly :-P  So there.  Does this make the longest single comment in the
  //        QuArK source???
- Result := Trunc(SetupGameSet.GetFloatSpec('DecimalPlaces', 5));
+ Result := Round(SetupSubSet(ssGames, GameCode).GetFloatSpec('DecimalPlaces', 5));
  if Result <= 0 then
-  Result := 5
+  Result := 0
  else if Result > 40 then
   Result := 40;
 end;
 
-function GetMapFormatType : MapFormatTypes;
+function GetMapFormat(GameCode : Char) : TMapFormatTypes;
 var
   S : PChar;
 begin
-  S:=PChar(SetupGameSet.Specifics.Values['OutputMapFormat']);
+  S:=PChar(SetupSubSet(ssGames, GameCode).Specifics.Values['OutputMapFormat']);
   if      StrComp(S, 'Classic Quake')    = 0 then Result := CQType
   else if StrComp(S, 'Quark etp')        = 0 then Result := QetpType
   else if StrComp(S, 'Valve 220')        = 0 then Result := V220Type
   else if StrComp(S, 'Brush Primitives') = 0 then Result := BPType
   else if StrComp(S, 'HL2')              = 0 then Result := HL2Type
+  else if StrComp(S, 'CoD2')             = 0 then Result := CoD2Type
   else
   begin
     Log(LOG_WARNING,LoadStr1(5702)+'\nDefaulting to Classic Quake',[S]);
     //Raise EErrorFmt(5702, [S]);
     Result:=CQType
+  end;
+end;
+
+procedure ResolveMapSaveSettings(var MapSaveSettings: TMapSaveSettings);
+var
+  MapOptionSpecs : TSpecificsList;
+begin
+  with MapSaveSettings do
+  begin
+    //Resolve GameCode
+    //FIXME: if GameCode=''?
+
+    //Resolve MapVersion
+    if MapVersion=-1 then
+    begin
+      MapVersion:=0;
+      if GameCode=mjDoom3 then
+      begin
+        MapOptionSpecs:=SetupSubSet(ssMap,'Options').Specifics;
+        if MapOptionSpecs.Values['SaveMapVersion'] = '1' then
+          MapVersion:=1
+        else if MapOptionSpecs.Values['SaveMapVersion'] = '2' then
+          MapVersion:=2
+        else
+          MapVersion:=2;
+      end;
+      if GameCode=mjQuake4 then
+        MapVersion:=3;
+    end;
+
+    //Resolve DecimalPlaces
+    if DecimalPlaces=-1 then
+      DecimalPlaces:=GetDecimalPlaces(GameCode);
+
+    //Resolve BrushDefVersion
+    BrushDefVersion:=0;
+    if MapVersion>0 then
+      BrushDefVersion:=3
+    else
+      if GameCode=mjCoD then
+        BrushDefVersion:=0
+      else if GameCode>=mjQ3A then
+        //DanielPharos: This should select all Quake3 and better games.
+        BrushDefVersion:=1;
+
+    //DanielPharos: At the moment, the only one supported!
+    if BrushDefVersion>1 then
+      BrushDefVersion:=1;
+
+    //Resolve PatchDefVersion
+    PatchDefVersion:=2;
+    if MapVersion>2 then
+      PatchDefVersion:=3;
+
   end;
 end;
 
@@ -2541,7 +2623,7 @@ begin
     GlobalWarning(FmtLoadStr1(256, [InvPoly]));
 end;
 
-procedure Valve220MapParams( HL2: bool; const Normale: TVect; const F: TFace; var S: String);
+procedure Valve220MapParams(MapSaveSettings: TMapSaveSettings; HL2: boolean; const Normale: TVect; const F: TFace; var S: String);
 var
   Plan: Char;
   Axis, P0, P1, P2, PP0, PP1, PP2, Origin, D1, D2:TVect;
@@ -2549,7 +2631,7 @@ var
   S1, S2, UOff, VOff : Double;
   Dot22, Dot23, Dot33, Mdet,aa, bb, dd : Double; // from zoner's
   QV0, QV1, UAxis, VAxis : TVect; // from Zoners
-  DecimalPlaces: integer;
+  DecimalPlaces : Integer;
 
   procedure write4vect(const V: TVect; D : Double; var S: String);
   begin
@@ -2572,9 +2654,7 @@ var
   end;
 
 begin
-  // Rowdy: this is an attempt to write more decimal places (but configurable) to
-  //        help Torque mappers
-  DecimalPlaces := FindGameDecimalPlaces;
+  DecimalPlaces := MapSaveSettings.DecimalPlaces;
 
   Plan:=PointsToPlane(Normale);
   case Plan of
@@ -2711,8 +2791,37 @@ begin
 
 end;
 
+procedure CoD2MapParams(MapSaveSettings: TMapSaveSettings; const Normale: TVect; const F: TFace; var S: String);
+var
+  PT: TThreePoints;
+  Mirror: Boolean;
+  DecimalPlaces: Integer;
+begin
+  DecimalPlaces := MapSaveSettings.DecimalPlaces;
 
-procedure ApproximateParams(const Normale: TVect; const V: TThreePoints; var Params: TFaceParams; Mirror: Boolean; GameCode: char);
+  with F do
+   begin
+    SimulateEnhTex(PT[1], PT[3], PT[2], Mirror); {doesn't scale}
+
+    //FIXME: WRONG!
+    S:=S+' ';
+    S:=S+FloatToStrF(PT[1].X, ffFixed, 20, DecimalPlaces);
+    S:=S+' ';
+    S:=S+FloatToStrF(PT[1].Y, ffFixed, 20, DecimalPlaces);
+    S:=S+' ';
+    S:=S+FloatToStrF(PT[2].X, ffFixed, 20, DecimalPlaces);
+    S:=S+' ';
+    S:=S+FloatToStrF(PT[2].Y, ffFixed, 20, DecimalPlaces);
+    S:=S+' ';
+    S:=S+FloatToStrF(PT[3].X, ffFixed, 20, DecimalPlaces);
+    S:=S+' ';
+    S:=S+FloatToStrF(PT[3].Y, ffFixed, 20, DecimalPlaces);
+   end;
+  //FIXME: ...
+end;
+
+
+procedure ApproximateParams(MapSaveSettings: TMapSaveSettings; const Normale: TVect; const V: TThreePoints; var Params: TFaceParams; Mirror: Boolean);
 var
   PX, PY: array[1..3] of TDouble;
   A, P2, S, C: TDouble;
@@ -2762,7 +2871,7 @@ begin
     PY[1]:=PY[1]*C - P2*S;
   end;
   Params[4]:=PX[2] / EchelleTexture;
-  if GameCode=mjGenesis3d then
+  if MapSaveSettings.GameCode=mjGenesis3d then
   begin
     Params[3]:=Round(Params[3]);
     if Plan='Y' then
@@ -2773,7 +2882,7 @@ begin
   Params[1]:=-PX[1]*A;
   if Abs(Params[5])<rien2 then A:=1 else A:=1/Params[5];
   Params[2]:=PY[1]*A;
-  if GameCode=mjGenesis3d then
+  if MapSaveSettings.GameCode=mjGenesis3d then
   begin
     if Plan='X' then
       Params[4]:=-Params[4]
@@ -2815,7 +2924,7 @@ var
  List: TQList;
  saveflags : Integer;
  MapOptionSpecs : TSpecificsList;
- MapVersion: Integer;
+ MapSaveSettings: TMapSaveSettings;
 begin
  with Info do case Format of
   1: begin  { as stand-alone file }
@@ -2840,7 +2949,9 @@ begin
        Dest.Add(CommentMapLine(FmtLoadStr1(178, [])));
        Dest.Add('');
 
-       MapVersion:=0;
+       MapSaveSettings:=GetDefaultMapSaveSettings;
+       MapSaveSettings.GameCode:=CharModeJeu;
+       MapSaveSettings.MapVersion:=0;
        MapOptionSpecs:=SetupSubSet(ssMap,'Options').Specifics;
        if CharModeJeu=mjDoom3 then
        begin
@@ -2848,25 +2959,29 @@ begin
          // format or Doom 3's default version 2.
          if MapOptionSpecs.Values['SaveMapVersion'] = '1' then
          begin
-           MapVersion:=1;
+           MapSaveSettings.MapVersion:=1;
            Dest.Add('Version 1');
          end
          else if MapOptionSpecs.Values['SaveMapVersion'] = '2' then
          begin
-           MapVersion:=2;
+           MapSaveSettings.MapVersion:=2;
            Dest.Add('Version 2');
          end
          else
          begin
-           MapVersion:=2;
+           MapSaveSettings.MapVersion:=2;
            Dest.Add('Version 2');  //Default to map version 2
          end;
          Dest.Add('');
-       end;
-       if CharModeJeu=mjQuake4 then
+       end
+       else if CharModeJeu=mjQuake4 then
        begin
-         MapVersion:=3;
+         MapSaveSettings.MapVersion:=3;
          Dest.Add('Version 3');
+       end
+       else if CharModeJeu=mjCoD2 then
+       begin
+         Dest.Add('iwmap 4');
        end;
        Dest.Text:=Dest.Text;   { #13 -> #13#10 }
 
@@ -2879,8 +2994,8 @@ begin
          saveflags:=saveflags or soUseIntegralVertices;
        saveflags:=saveflags or IntSpec['saveflags']; {merge in selonly}
 
-       // ObjectGameCode is not always defined...
-       SaveAsMapText(Root, CharModeJeu, MapVersion, List, Dest, saveflags, HxStrings);
+       //FIXME: ObjectGameCode is not always defined...
+       SaveAsMapText(Root, MapSaveSettings, List, Dest, saveflags, HxStrings);
        Dest.SaveToStream(F);
        if HxStrings<>Nil then
         Specifics.Values['hxstrings']:=HxStrings.Text;
@@ -2985,46 +3100,30 @@ end;
 
  {------------------------}
 
-procedure SaveAsMapText(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Negatif: TQList; Texte: TStrings; Flags2: Integer; HxStrings: TStrings);
-var
-  MapOptionSpecs : TSpecificsList;
+procedure SaveAsMapText(ObjectToSave: QObject; MapSaveSettings: TMapSaveSettings; Negatif: TQList; Texte: TStrings; Flags2: Integer; HxStrings: TStrings);
 begin
-  if MapVersion=-1 then
-  begin
-    MapVersion:=0;
-    if GameCode=mjDoom3 then
-    begin
-      MapOptionSpecs:=SetupSubSet(ssMap,'Options').Specifics;
-      if MapOptionSpecs.Values['SaveMapVersion'] = '1' then
-        MapVersion:=1
-      else if MapOptionSpecs.Values['SaveMapVersion'] = '2' then
-        MapVersion:=2
-      else
-        MapVersion:=2;
-    end;
-    if GameCode=mjQuake4 then
-      MapVersion:=3;
-  end;
+  ResolveMapSaveSettings(MapSaveSettings);
+
   if ObjectToSave is TTreeMapBrush then
-    SaveAsMapTextTTreeMapBrush(ObjectToSave, GameCode, MapVersion, Negatif, Texte, Flags2, HxStrings)
+    SaveAsMapTextTTreeMapBrush(ObjectToSave, MapSaveSettings, Negatif, Texte, Flags2, HxStrings)
   else if ObjectToSave is TDuplicator then
     //TDuplicator needs to be checked before TTreeMapEntity, because it is a child of it!
-    SaveAsMapTextTDuplicator(ObjectToSave, GameCode, MapVersion, Negatif, Texte, Flags2, HxStrings)
+    SaveAsMapTextTDuplicator(ObjectToSave, MapSaveSettings, Negatif, Texte, Flags2, HxStrings)
   else if ObjectToSave is TTreeMapEntity then
-    SaveAsMapTextTTreeMapEntity(ObjectToSave, GameCode, MapVersion, Negatif, Texte, Flags2, HxStrings)
+    SaveAsMapTextTTreeMapEntity(ObjectToSave, MapSaveSettings, Negatif, Texte, Flags2, HxStrings)
   else if ObjectToSave is TTreeMapGroup then
-    SaveAsMapTextTTreeMapGroup(ObjectToSave, GameCode, MapVersion, Negatif, Texte, Flags2, HxStrings)
+    SaveAsMapTextTTreeMapGroup(ObjectToSave, MapSaveSettings, Negatif, Texte, Flags2, HxStrings)
   else if ObjectToSave is TPolyedre then
-    //SaveAsMapTextTPolygon(ObjectToSave, GameCode, MapVersion, Texte, OriginBrush, Flags2)
+    //SaveAsMapTextTPolygon(ObjectToSave, MapSaveSettings, Texte, OriginBrush, Flags2)
   else if ObjectToSave is TFace then
-    //SaveAsMapTextTFace(ObjectToSave, GameCode, MapVersion, Texte, OriginBrush, Flags2, MapFormat)
+    //SaveAsMapTextTFace(ObjectToSave, MapSaveSettings, Texte, OriginBrush, Flags2)
   else if ObjectToSave is TBezier then
-    //SaveAsMapTextTBezier(ObjectToSave, GameCode, MapVersion, Texte)
+    //SaveAsMapTextTBezier(ObjectToSave, MapSaveSettings, Texte)
   else
     raise InternalE(LoadStr1(5525));
 end;
 
-procedure SaveAsMapTextTTreeMapBrush(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Negatif: TQList; Texte: TStrings; Flags2: Integer; HxStrings: TStrings);
+procedure SaveAsMapTextTTreeMapBrush(ObjectToSave: QObject; MapSaveSettings: TMapSaveSettings; Negatif: TQList; Texte: TStrings; Flags2: Integer; HxStrings: TStrings);
 var
  Polyedres: TQList;
  I, J: Integer;
@@ -3049,7 +3148,7 @@ begin
   if (Specifics.Values['mapversion']='6DX') or (Specifics.Values[';mapversion']='6DX') then
     Flags2:=Flags2 + soWrite6DXHierarky;
 
-  if GetMapFormatType=V220Type then
+  if MapSaveSettings.MapFormat=V220Type then
     Specifics.Values['mapversion']:='220';
   I := GetFirstEntityNo;
  end
@@ -3057,7 +3156,7 @@ begin
   I := GetNextEntityNo;
  if Flags2 and soBSP = 0 then
    Texte.Add(CommentMapLine('Entity '+IntToStr(I)));
- SaveAsMapTextTTreeMapSpec(ObjectToSave, GameCode, MapVersion, Texte, HxStrings, Flags, I);
+ SaveAsMapTextTTreeMapSpec(ObjectToSave, MapSaveSettings, Texte, HxStrings, Flags, I);
  if Flags2 and soBSP = 0 then
   begin
    Polyedres:=TQList.Create;
@@ -3089,7 +3188,7 @@ begin
     for I:=0 to Polyedres.Count-1 do
      begin
       Texte.Add(CommentMapLine('Brush '+IntToStr(I)));
-      SaveAsMapTextTPolygon(TPolyedre(Polyedres[I]), GameCode, MapVersion, Texte, OriginBrush, Flags2);
+      SaveAsMapTextTPolygon(TPolyedre(Polyedres[I]), MapSaveSettings, Texte, OriginBrush, Flags2);
      end;
     { proceed with Bezier patches }
     I:=Polyedres.Count-1;
@@ -3099,7 +3198,7 @@ begin
     begin
      I:=I+1;
      Texte.Add(CommentMapLine('Bezier '+IntToStr(J)+' (Brush '+IntToStr(I)+')'));
-     SaveAsMapTextTBezier(TBezier(Polyedres[J]), GameCode, MapVersion, Texte);
+     SaveAsMapTextTBezier(TBezier(Polyedres[J]), MapSaveSettings, Texte);
     end;
    finally
     Polyedres.Free;
@@ -3112,24 +3211,24 @@ begin
     if (Flags2 and soOutsideWorldspawn) = 0 then
     begin
       Texte.Add('}');
-      SaveAsMapTextTTreeMapGroup(ObjectToSave, GameCode, MapVersion, Negatif, Texte, Flags2 or soOutsideWorldspawn, HxStrings);
+      SaveAsMapTextTTreeMapGroup(ObjectToSave, MapSaveSettings, Negatif, Texte, Flags2 or soOutsideWorldspawn, HxStrings);
     end
     else
     begin
-      SaveAsMapTextTTreeMapGroup(ObjectToSave, GameCode, MapVersion, Negatif, Texte, Flags2 or soOutsideWorldspawn, HxStrings);
+      SaveAsMapTextTTreeMapGroup(ObjectToSave, MapSaveSettings, Negatif, Texte, Flags2 or soOutsideWorldspawn, HxStrings);
       Texte.Add('}');
     end;
   end
   else
   begin
     Texte.Add('}');
-    SaveAsMapTextTTreeMapGroup(ObjectToSave, GameCode, MapVersion, Negatif, Texte, Flags2 or soOutsideWorldspawn, HxStrings);
+    SaveAsMapTextTTreeMapGroup(ObjectToSave, MapSaveSettings, Negatif, Texte, Flags2 or soOutsideWorldspawn, HxStrings);
   end;
 
  end;
 end;
 
-procedure SaveAsMapTextTTreeMapSpec(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Dest, HxStrings: TStrings; Flags2: Integer; EntityNumber: Integer);
+procedure SaveAsMapTextTTreeMapSpec(ObjectToSave: QObject; MapSaveSettings: TMapSaveSettings; Dest, HxStrings: TStrings; Flags2: Integer; EntityNumber: Integer);
 const
  LineStarts: array[Boolean] of String = (' "', '"');
 var
@@ -3144,7 +3243,7 @@ begin
  DoneNameSpecific:=False;
  if Flags2 and soBsp=0 then
    Dest.Add(CommentMapLine(Ancestry));
- if (GetMapFormatType=HL2Type) then
+ if (MapSaveSettings.MapFormat=HL2Type) then
    if (Name = 'worldspawn') then
      Dest.Add(LineStart+'world')
    else
@@ -3159,7 +3258,7 @@ begin
 
    // process untyped specifics
    hashpos:=Pos('#', S);
-   if (GetMapFormatType<>HL2Type) or ((hashpos=0) or (hashpos=1)) then
+   if (MapSaveSettings.MapFormat<>HL2Type) or ((hashpos=0) or (hashpos=1)) then
    begin
      if (S<>'') and (S[1]<>';') and (Ord(S[1])<chrFloatSpec) then
      begin
@@ -3238,7 +3337,7 @@ begin
  end;
 end;
 
-procedure SaveAsMapTextTTreeMapEntity(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Negatif: TQList; Texte: TStrings; Flags2: Integer; HxStrings: TStrings);
+procedure SaveAsMapTextTTreeMapEntity(ObjectToSave: QObject; MapSaveSettings: TMapSaveSettings; Negatif: TQList; Texte: TStrings; Flags2: Integer; HxStrings: TStrings);
 var
  EntityNumber: Integer;
 begin
@@ -3251,13 +3350,13 @@ begin
    EntityNumber:=GetNextEntityNo;
    Texte.Add(CommentMapLine('Entity '+IntToStr(EntityNumber)));
   end;
- SaveAsMapTextTTreeMapSpec(ObjectToSave, GameCode, MapVersion, Texte, HxStrings, Flags2, EntityNumber);
+ SaveAsMapTextTTreeMapSpec(ObjectToSave, MapSaveSettings, Texte, HxStrings, Flags2, EntityNumber);
  Texte.Add('}');
 
  end;
 end;
 
-procedure SaveAsMapTextTTreeMapGroup(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Negatif: TQList; Texte: TStrings; Flags2: Integer; HxStrings: TStrings);
+procedure SaveAsMapTextTTreeMapGroup(ObjectToSave: QObject; MapSaveSettings: TMapSaveSettings; Negatif: TQList; Texte: TStrings; Flags2: Integer; HxStrings: TStrings);
 var
  I: Integer;
  T: TTreeMap;
@@ -3276,60 +3375,29 @@ begin
    // Is this right?
    if not ((Flags2 and soSelOnly <> 0) and ControleSelection(T)) then
    begin
-    SaveAsMapText(T, GameCode, MapVersion, Negatif, Texte, Flags2, HxStrings);
+    SaveAsMapText(T, MapSaveSettings, Negatif, Texte, Flags2, HxStrings);
    end;
   end;
 
  end;
 end;
 
-procedure SaveAsMapTextTPolygon(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Brush: TStrings; OriginBrush: PVect; Flags2: Integer);
+procedure SaveAsMapTextTPolygon(ObjectToSave: QObject; MapSaveSettings: TMapSaveSettings; Brush: TStrings; OriginBrush: PVect; Flags2: Integer);
 var
  J: Integer;
  Q: QObject;
  S:String;
  { BrushPrim, Valve220Map : Boolean }
- MapFormat: MapFormatTypes;
- MapOptionSpecs : TSpecificsList;
- BrushDefVersion: Integer;
+ MapFormat: TMapFormatTypes;
 begin
-  if MapVersion=-1 then
-  begin
-    MapVersion:=0;
-    if GameCode=mjDoom3 then
-    begin
-      MapOptionSpecs:=SetupSubSet(ssMap,'Options').Specifics;
-      if MapOptionSpecs.Values['SaveMapVersion'] = '1' then
-        MapVersion:=1
-      else if MapOptionSpecs.Values['SaveMapVersion'] = '2' then
-        MapVersion:=2
-      else
-        MapVersion:=2;
-    end;
-    if GameCode=mjQuake4 then
-      MapVersion:=3;
-  end;
-
-  BrushDefVersion:=0;
-  if MapVersion>0 then
-    BrushDefVersion:=3
-  else
-    if GameCode=mjCoD then
-      BrushDefVersion:=0
-    else if GameCode>=mjQ3A then
-      //DanielPharos: This should select all Quake3 and better games.
-      BrushDefVersion:=1;
-
-  //DanielPharos: At the moment, the only one supported!
-  if BrushDefVersion>1 then
-    BrushDefVersion:=1;
+ ResolveMapSaveSettings(MapSaveSettings);
 
  with TPolyhedron(ObjectToSave) do
  begin
 
  if g_DrawInfo.ConstruirePolyedres and not CheckPolyhedron then Exit;
  { these means brutally round off the threepoints, whatever they are }
- MapFormat:=GetMapFormatType;
+ MapFormat:=MapSaveSettings.MapFormat;
  Brush.Add(CommentMapLine(Ancestry));
 
  if MapFormat=HL2Type then
@@ -3339,7 +3407,7 @@ begin
 
  if MapFormat=BPType then
  begin
-  case BrushDefVersion of
+  case MapSaveSettings.BrushDefVersion of
   0: ;
   1: Brush.Add(' brushDef');
   2: Brush.Add(' brushDef2');
@@ -3352,7 +3420,7 @@ begin
   begin
    if MapFormat=HL2Type then
      Brush.Add(' side {');
-   SaveAsMapTextTFace(PSurface(Faces[J])^.F, GameCode, MapVersion, Brush, OriginBrush, Flags2, MapFormat);
+   SaveAsMapTextTFace(PSurface(Faces[J])^.F, MapSaveSettings, Brush, OriginBrush, Flags2);
    if MapFormat=HL2Type then
    begin
      S:=PSurface(Faces[J])^.F.Specifics.values['lightmapscale'];
@@ -3368,7 +3436,7 @@ begin
    begin
     Q:=SubElements[J];
     if Q is TFace then
-     SaveAsMapTextTFace(TFace(Q), GameCode, MapVersion, Brush, OriginBrush, Flags2, MapFormat);
+     SaveAsMapTextTFace(TFace(Q), MapSaveSettings, Brush, OriginBrush, Flags2);
    end;
  if MapFormat=BPType then
    Brush.Add(' }');
@@ -3377,7 +3445,7 @@ begin
  end;
 end;
 
-procedure SaveAsMapTextTFace(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Brush: TStrings; OriginBrush: PVect; Flags2: Integer; MapFormat: MapFormatTypes);
+procedure SaveAsMapTextTFace(ObjectToSave: QObject; MapSaveSettings: TMapSaveSettings; Brush: TStrings; OriginBrush: PVect; Flags2: Integer);
 const
  TxField: array[Boolean, Boolean] of String =
   ((' //TX1', ' //TX2'),
@@ -3398,7 +3466,7 @@ var
  rval : Single; { for Value/lightvalue }
  Q: QPixelSet;
  Mirror, EtpMirror: Boolean;
- DecimalPlaces: integer;
+ DecimalPlaces: Integer;
  type
    FlagDef = record
     name: Pchar;
@@ -3548,9 +3616,7 @@ var
   end;
 
 begin
- // Rowdy: this is an attempt to write more decimal places (but configurable) to
- //        help Torque mappers
- DecimalPlaces := FindGameDecimalPlaces;
+ DecimalPlaces := MapSaveSettings.DecimalPlaces;
  
  F:=TFace(ObjectToSave);
  if F.GetThreePoints(P[1], P[3], P[2]) and F.LoadData then
@@ -3560,7 +3626,7 @@ begin
 }
   begin
 
-   if (MapFormat=QetpType) or (MapFormat=V220Type) then
+   if (MapSaveSettings.MapFormat=QetpType) or (MapSaveSettings.MapFormat=V220Type) then
    begin
      F.SimulateEnhTex(P[1], P[3], P[2], EtpMirror); {doesn't scale}
 
@@ -3581,7 +3647,7 @@ begin
 // UseIntegralVertices:=(MapFormat=BPType) or (MapFormat=V220Type) or (Flags2 and soDisableEnhTex<>0);
 // ExpandThreePoints:=WriteIntegers and UseIntegralVertices;
 
- UseIntegralVertices:=(MapFormat<>QetpType) and (Flags2 and soUseIntegralVertices<>0);
+ UseIntegralVertices:=(MapSaveSettings.MapFormat<>QetpType) and (Flags2 and soUseIntegralVertices<>0);
  ExpandThreePoints:=false; { abandon this heroic but foolish measure.  The
    idea was to force threepoints to integers with less distortion, in aid
    of easier commerce between QuArK and Radiant, but it's just a Bad Idea. }
@@ -3676,13 +3742,13 @@ begin
 
    {start writing out a face}
 
-   if MapFormat=HL2Type then
+   if MapSaveSettings.MapFormat=HL2Type then
      S:= S+ '"plane" "';
 
    for I:=1 to 3 do
     with P[I] do
      begin
-      if MapFormat=HL2Type then
+      if MapSaveSettings.MapFormat=HL2Type then
         S:=S+'('
       else
         S:=S+'( ';
@@ -3705,18 +3771,18 @@ begin
       else
        S:=S+FloatToStrF(Z, ffFixed, 20, DecimalPlaces);
 
-      if MapFormat=HL2Type then
+      if MapSaveSettings.MapFormat=HL2Type then
         S:=S+')'
       else
         S:=S+' ) ';
 
      end;
 
-   if MapFormat=HL2Type then
+   if MapSaveSettings.MapFormat=HL2Type then
      S:= S+'"';
 
    {start writing out a texture coordinates}
-   if MapFormat=BPType then
+   if MapSaveSettings.MapFormat=BPType then
     with F do
      begin
       GetThreePointsUserTex(PT[1], PT[2], PT[3],Nil);
@@ -3733,47 +3799,49 @@ begin
     begin
 
      {texture name}
-     if MapFormat=HL2Type then
+     if MapSaveSettings.MapFormat=HL2Type then
        S:= S+#13#10'  "material" "';
 
      {$IFDEF TexUpperCase}
-     if MapVersion>1 then
+     if MapSaveSettings.MapVersion>1 then
        S:=S+'"TEXTURES/'+UpperCase(NomTex)+'"'
      else
        S:=S+UpperCase(NomTex);
      {$ELSE}
-     if MapVersion>1 then
+     if MapSaveSettings.MapVersion>1 then
      begin
-       if GameCode=mjHalfLife then
+       if MapSaveSettings.GameCode=mjHalfLife then
          S:=S+'"TEXTURES/'+UpperCase(NomTex)+'"'   // This is actually impossible...
        else
          S:=S+'"textures/'+NomTex+'"';
      end
      else
      begin
-       if GameCode=mjHalfLife then
+       if MapSaveSettings.GameCode=mjHalfLife then
          S:=S+UpperCase(NomTex)
        else
          S:=S+NomTex;
      end;
      {$ENDIF}
 
-     if MapFormat=HL2Type then
+     if MapSaveSettings.MapFormat=HL2Type then
        S:= S+'"';
 
      {texture coordinates}
-     case MapFormat of
+     case MapSaveSettings.MapFormat of
       V220Type:
-        Valve220MapParams(False,Normale, F, S);
+        Valve220MapParams(MapSaveSettings,False,Normale, F, S);
       HL2Type:
-        Valve220MapParams(True,Normale, F, S);
+        Valve220MapParams(MapSaveSettings,True,Normale, F, S);
+      CoD2Type:
+        CoD2MapParams(MapSaveSettings,Normale, F, S);
 
       else {case}
-        if not (MapFormat=BPType) then
+        if not (MapSaveSettings.MapFormat=BPType) then
         begin
           SimulateEnhTex(PT[1], PT[3], PT[2], Mirror); {doesn't scale}
 
-          ApproximateParams(Normale, PT, Params, Mirror, GameCode); {does scale}
+          ApproximateParams(MapSaveSettings, Normale, PT, Params, Mirror); {does scale}
           for I:=1 to 2 do
             S:=S+' '+IntToStr(Round(Params[I]));
           for I:=3 to 5 do
@@ -3788,10 +3856,10 @@ begin
      end;{case MapFormat}
    end; {with f}
 
-   if GameCode=mjHexen then
+   if MapSaveSettings.GameCode=mjHexen then
      S:=S+' -1'
    else
-   if GameCode=mjSin then
+   if MapSaveSettings.GameCode=mjSin then
    { tiglari: Sin/KP/SOF/Q2 code below manages the content/
       flags/value information in textures.  It's complicated
       because there is in general default info in the textures
@@ -3840,7 +3908,7 @@ begin
    else  { kp seems to need field values
              written into the map.  Alex write code to
              put the c, f, v flags into the texture link }
-   if (GameCode=mjKingPin) then
+   if (MapSaveSettings.GameCode=mjKingPin) then
    begin
      Q := GlobalFindTexture(F.NomTex,Nil);  { find the Texture Link object }
      if Q<>Nil then Q.Acces;              { load it (but not the texture it points to !) }
@@ -3852,7 +3920,7 @@ begin
    else {for me, SOF seems to behave like Q2, but for other
       people, default flags seem to be written into the map
       to work, so that's what happens here }
-   if (GameCode=mjSOF) then
+   if (MapSaveSettings.GameCode=mjSOF) then
    begin
       Q := GlobalFindTexture(F.NomTex,Nil);  { find the Texture Link object }
       if Q<>Nil then Q:=Q.LoadPixelSet;      { load it, since the default flags
@@ -3862,10 +3930,17 @@ begin
       S3:=CheckFieldDefault('Value','Value', Q);
       S:=S+' '+S1+' '+S2+' '+S3;
    end
-   else if (GameCode=mjCOD) then
+   else
+   if (MapSaveSettings.GameCode=mjCOD) then
    begin
      //FIXME: Output right flags
      S:=S+' 0 0 0 0';
+   end
+   else
+   if (MapSaveSettings.GameCode=mjCOD2) then
+   begin
+     //FIXME: Output right flags
+     S:=S+' X 0 0 0 0 0 0';
    end
    else
     { and in Q2, default flags get written into the map
@@ -3887,7 +3962,7 @@ begin
         if S3='' then S3:='0';
         S:=S+' '+S1+' '+S2+' '+S3;
 //<mohaa>
-        if GameCode=mjMOHAA then
+        if MapSaveSettings.GameCode=mjMOHAA then
         begin
           Q := GlobalFindTexture(F.NomTex,Nil);  { find the Texture Link object }
           if Q<>Nil then Q:=Q.LoadPixelSet;      { load it }
@@ -3934,29 +4009,22 @@ begin
       end;
    end;
 
-   if (MapFormat=QetpType) then
-     S:=S+TxField[(GameCode>='A') and (GameCode<='Z'), EtpMirror];
+   if (MapSaveSettings.MapFormat=QetpType) then
+     S:=S+TxField[(MapSaveSettings.GameCode>='A') and (MapSaveSettings.GameCode<='Z'), EtpMirror];
 
    Brush.Add(S);
   end;
 end;
 
-procedure SaveAsMapTextTBezier(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Target: TStrings);
+procedure SaveAsMapTextTBezier(ObjectToSave: QObject; MapSaveSettings: TMapSaveSettings; Target: TStrings);
 var
  cp: TBezierMeshBuf5;
  I, J, K, R: Integer;
  S: String;
  Value: PSingle;
- PatchDefVersion: Integer;
  DecimalPlaces: Integer;
 begin
- PatchDefVersion:=2;
- if MapVersion>2 then
-   PatchDefVersion:=3;
-
- // Rowdy: this is an attempt to write more decimal places (but configurable) to
- //        help Torque mappers
- DecimalPlaces := FindGameDecimalPlaces;
+ DecimalPlaces := MapSaveSettings.DecimalPlaces;
 
  with TBezier(ObjectToSave) do
  begin
@@ -3966,26 +4034,26 @@ begin
   begin   { ignore Bezier lines (with only 1 row or 1 column of control points) }
    Target.Add(CommentMapLine(Ancestry));
    Target.Add(' {');
-   case PatchDefVersion of
+   case MapSaveSettings.PatchDefVersion of
    2: Target.Add('  patchDef2');
    3: Target.Add('  patchDef3');
    end;
    Target.Add('  {');
 
    {$IFDEF TexUpperCase}
-   if MapVersion>1 then
+   if MapSaveSettings.MapVersion>1 then
      Target.Add('   "TEXTURES/' + UpperCase(NomTex) + '"')
    else
      Target.Add('   ' + UpperCase(NomTex));
    {$ELSE}
-   if MapVersion>1 then
+   if MapSaveSettings.MapVersion>1 then
      Target.Add('   "textures/' + NomTex + '"')
    else
      Target.Add('   ' + NomTex);
    {$ENDIF}
    { We should start saving the other values too, once we've
      figured out what they actually are... }
-   case PatchDefVersion of
+   case MapSaveSettings.PatchDefVersion of
    2: Target.Add(Format('   ( %d %d 0 0 0 )', [cp.W, cp.H]));
    3: Target.Add(Format('   ( %d %d 0 0 0 0 0 )', [cp.W, cp.H]));
    end;
@@ -4019,7 +4087,7 @@ begin
  end;
 end;
 
-procedure SaveAsMapTextTDuplicator(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Negatif: TQList; Texte: TStrings; Flags2: Integer; HxStrings: TStrings);
+procedure SaveAsMapTextTDuplicator(ObjectToSave: QObject; MapSaveSettings: TMapSaveSettings; Negatif: TQList; Texte: TStrings; Flags2: Integer; HxStrings: TStrings);
 var
  I: Integer;
 begin
@@ -4030,7 +4098,7 @@ begin
  and (FParent<>Nil) and (TvParent.TvParent=Nil) then
   GlobalWarning(LoadStr1(230));}  { FIXME: do various map tests globally }
  for I:=0 to LengthBuildImages-1 do
-   SaveAsMapText(ItemToSave(I), GameCode, MapVersion, Negatif, Texte, Flags2, HxStrings);
+   SaveAsMapText(ItemToSave(I), MapSaveSettings, Negatif, Texte, Flags2, HxStrings);
   
  end;
 end;

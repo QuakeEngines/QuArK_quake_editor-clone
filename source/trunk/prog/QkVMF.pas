@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.25  2008/11/06 21:11:50  danielpharos
+Made type Specifics soft-coded: Will lated be changed into a new, yet-to-be-defined type.
+
 Revision 1.24  2008/10/13 21:34:14  danielpharos
 Handle VMF formatversion.
 
@@ -995,6 +998,7 @@ var
  List: TQList;
  saveflags : Integer;
  MapOptionSpecs : TSpecificsList;
+ MapSaveSettings : TMapSaveSettings;
 begin
  with Info do case Format of
   1: begin  { as stand-alone file }
@@ -1034,7 +1038,9 @@ begin
        Dest.Add('{');
        Dest.Add('  "formatversion" "100"');
        Dest.Add('}');
-       SaveAsMapText(TTreeMap(Root), ObjectGameCode, -1, List, Dest, saveflags, HxStrings);
+       MapSaveSettings:=GetDefaultMapSaveSettings;
+       MapSaveSettings.GameCode := ObjectGameCode;
+       SaveAsMapText(TTreeMap(Root), MapSaveSettings, List, Dest, saveflags, HxStrings);
        Dest.SaveToStream(F);
        if HxStrings<>Nil then
         Specifics.Values['hxstrings']:=HxStrings.Text;

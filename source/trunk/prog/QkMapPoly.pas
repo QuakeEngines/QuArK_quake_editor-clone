@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.94  2008/12/19 23:30:41  danielpharos
+Reduced dependancy on CurrentMapView to something more logical; made it a call-parameter.
+
 Revision 1.93  2008/10/12 11:31:32  danielpharos
 Moved 6DX map format to separate file, and re-factored QkMap and QkQuakeMap.
 
@@ -1401,6 +1404,7 @@ var
  Err1, Extra: String;
  L: TStringList;
  CP: Boolean;
+ MapSaveSettings: TMapSaveSettings;
 begin
   if not ConstructVertices1(rien2, Err1, Extra)
     and not ConstructVertices1(rien, Err1, Extra) then
@@ -1409,10 +1413,12 @@ begin
      try
        // 4618 = '"//Description of the invalid polygon :"
        L.Add(LoadStr1(4618));
+       MapSaveSettings:=GetDefaultMapSaveSettings;
+       MapSaveSettings.GameCode:=CharModeJeu;
        CP:=g_DrawInfo.ConstruirePolyedres;
        try
          g_DrawInfo.ConstruirePolyedres:=False;
-         SaveAsMapTextTPolygon(self, CharModeJeu, -1, L, Nil, soErrorMessageFlags);
+         SaveAsMapTextTPolygon(self, MapSaveSettings, L, Nil, soErrorMessageFlags);
        finally
          g_DrawInfo.ConstruirePolyedres:=CP;
        end;
