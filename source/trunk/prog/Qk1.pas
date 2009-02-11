@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.80  2008/12/12 12:47:52  danielpharos
+Moved GlobalWarning to QkExceptions, and added QkTextBoxForm.
+
 Revision 1.79  2008/12/02 16:17:34  danielpharos
 Removed unneeded SetApplicationPath function.
 
@@ -1992,7 +1995,7 @@ end;
 
 procedure TForm1.MenuCopyAs;
 var
- QL: TList;
+ QL: TQList;
  Q: QObject;
  L: TStringList;
  Info: TFileObjectClassInfo;
@@ -2054,7 +2057,7 @@ end;
 
 procedure TForm1.CopyAsClick(Sender: TObject);
 var
- List: TList;
+ List: TQList;
  Q: QObject;
  S: String;
  Info: TFileObjectClassInfo;
@@ -2480,7 +2483,7 @@ end;
 
 function TForm1.GetObjMenu(Control: TControl; Extra: Boolean) : TPopupMenu;
 var
- Q: TList;
+ Q: TQList;
  I, Flags: Integer;
  Form: TQkForm;
 begin
@@ -2496,8 +2499,11 @@ begin
  OpenSel2.Enabled:= Flags and edOpen     = edOpen;
 
  Q:=HasGotObjects(Form.ProcessEditMsg(edGetObject));
- Properties2.Enabled:=Q.Count>0;
- Q.Free;
+ try
+   Properties2.Enabled:=Q.Count>0;
+ finally
+   Q.Free;
+ end;
 
  Result:=ObjMenu;
  for I:=ObjSep1.MenuIndex-1 downto 0 do

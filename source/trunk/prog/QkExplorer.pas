@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.24  2009/01/29 14:50:23  danielpharos
+Removed 'index' dictspec from QFrames, and small fixes to get MD3 tagging working again (partially).
+
 Revision 1.23  2009/01/27 00:14:16  danielpharos
 Model Editor - Fixed a lot of moving-things-about not working as they should.
 
@@ -129,7 +132,7 @@ type
 
   TQkExplorer = class(TMyTreeView)
   private
-    CuttedNodes: TList;
+    CuttedNodes: TQList;
   (*function SetSelection1(nSelection: QObject; Spec: Integer) : QObject;
     procedure SetTMFocus(nSelection: QObject);
     function GetSelUnique: QObject;
@@ -861,7 +864,7 @@ begin
       and (ieListView in El.IsExplorerItem(Q)) and not LoadAllAuto then
        begin  { delayed add - only an empty, "cut"ted node is added now }
         if CuttedNodes=Nil then
-         CuttedNodes:=TList.Create;
+         CuttedNodes:=TQList.Create;
         CuttedNodes.Add(Q);
        end
       else
@@ -1021,11 +1024,14 @@ end;
 *)
 function TQkExplorer.SelectionVide;
 var
- L: TList;
+ L: TQList;
 begin
  L:=ListSel(1);
- SelectionVide:=L.Count=0;
- L.Free;
+ try
+  SelectionVide:=L.Count=0;
+ finally
+  L.Free;
+ end;
 end;
 
 (*function TQkExplorer.SetSelection1;
@@ -1541,7 +1547,7 @@ end;}
 
 function TQkExplorer.GroupeSelection : QExplorerGroup;
 var
- L: TList;
+ L: TQList;
  I: Integer;
 begin
  Result:=ClipboardGroup;
@@ -1549,7 +1555,7 @@ begin
  try
   Result.SubElements.Capacity:=L.Count;
   for I:=0 to L.Count-1 do
-   Result.SubElements.Add(QObject(L[I]));
+   Result.SubElements.Add(L[I]);
  finally
   L.Free;
  end;
@@ -1745,7 +1751,7 @@ var
  El, SourceQ, InsererAvant: QObject;
  Copier, Interne: Boolean;
  U: TQObjectUndo;
- L: TList;
+ L: TQList;
 begin
  I:=(Sender as TMenuItem).Tag;
  Interne:=I and dfCopyToOutside = 0;
@@ -1811,7 +1817,7 @@ end;
 procedure TQkExplorer.TestsDUsage(Preference: QObject; Spec: Integer);
 var
  T: QObject;
- L: TList;
+ L: TQList;
 begin
  if Preference<>Nil then
   T:=Preference
@@ -1819,10 +1825,13 @@ begin
   begin
    T:=TMFocus;
    L:=ListSel(2);
-   if L.Count>0 then
-    if (T=Nil) or (L.Count=1) then
-     T:=QObject(L[0]);
-   L.Free;
+   try
+    if L.Count>0 then
+     if (T=Nil) or (L.Count=1) then
+      T:=QObject(L[0]);
+   finally
+    L.Free;
+   end;
   end;
 {if Spec<0 then}
   TMFocus:=T
@@ -1951,7 +1960,7 @@ procedure TQkExplorer.DeleteSelection(NoTexte: Integer);
 var
  T, AnyObj: QObject;
  S: String;
- L: TList;
+ L: TQList;
  I: Integer;
 begin
  L:=ListSel(MaxInt);

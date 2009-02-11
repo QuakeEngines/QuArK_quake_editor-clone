@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2008/09/06 15:57:12  danielpharos
+Moved exception code into separate file.
+
 Revision 1.9  2005/09/28 10:48:31  peter-b
 Revert removal of Log and Header keywords
 
@@ -82,7 +85,7 @@ type
 
  {------------------------}
 
-procedure ObjectProperties(QL: TList; nPasteTo: TQkForm);  { assume QL is non-empty }
+procedure ObjectProperties(QL: TQList; nPasteTo: TQkForm);  { assume QL is non-empty }
 
  {------------------------}
 
@@ -94,7 +97,7 @@ uses Qk1, QkGroup, Quarkx, QkExceptions, PyImages, Python, Travail, QkPixelSet;
 
  {------------------------}
 
-procedure ObjectProperties(QL: TList; nPasteTo: TQkForm);
+procedure ObjectProperties(QL: TQList; nPasteTo: TQkForm);
 var
  nQ: QObject;
  FormObjProp: TFormObjProp;
@@ -105,6 +108,10 @@ var
  Sz: TPoint;
  CommonType: QObjectClass;
 begin
+ {$IFDEF Debug}
+ if QL=nil then
+  Raise InternalE('ObjectProperties');
+ {$ENDIF}
  if QL.Count=1 then
   nQ:=QL[0]
  else
@@ -135,13 +142,13 @@ begin
     Label1.Caption:=FmtLoadStr1(5407, [QL.Count]);
    Total:=0;
    for I:=0 to QL.Count-1 do
-    Inc(Total, QObject(QL[I]).GetObjectSize(Nil, False));
+    Inc(Total, QL[I].GetObjectSize(Nil, False));
    Label5.Caption:=FmtLoadStr1(5392, [(Total+512) div 1024]);
    SaveBtn.Enabled:=nQ is QFileObject;
 
-   CommonType:=QObjectClass(QObject(QL[0]).ClassType);
+   CommonType:=QObjectClass(QL[0].ClassType);
    for I:=1 to QL.Count-1 do
-    if QObject(QL[I]).ClassType <> CommonType then
+    if QL[I].ClassType <> CommonType then
      begin
       CommonType:=Nil;
       Break;
@@ -174,7 +181,7 @@ begin
      ListBox1.Enabled:=False;
     end;
   {ListBox1Click(Nil);}
-   List:=TQList.Create;
+   List.Clear;
    for I:=0 to QL.Count-1 do List.Add(QL[I]);
 
    if Assigned(nPasteTo) then
@@ -198,6 +205,7 @@ begin
  MarsCap.ActiveEndColor:=clTeal;
  UpdateMarsCap;
 {SetFormIcon(}
+ List:=TQList.Create;
 end;
 
 procedure TFormObjProp.OkBtnClick(Sender: TObject);

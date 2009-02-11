@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.85  2009/02/11 14:44:45  danielpharos
+Read in two additional MOHAA surface flags.
+
 Revision 1.84  2008/11/06 21:11:50  danielpharos
 Made type Specifics soft-coded: Will lated be changed into a new, yet-to-be-defined type.
 
@@ -552,7 +555,7 @@ var
  LineNoBeingParsed: Integer;
  Juste13{, EndOfLine}, Q2Tex, ReadSymbolForceToText: Boolean;
  HullNum, BrushNum, FaceNum: Integer;
- HullList: TList;
+ HullList: TQList;
  Source, Prochain: PChar;
  Entities, MapStructure {Rowdy}, MapStructureB {/Rowdy}: TTreeMapGroup;
  Params: TFaceParams;
@@ -2296,7 +2299,7 @@ begin
          if HullNum>=0 then
           begin
            if HullList=Nil then
-            HullList:=TList.Create;
+            HullList:=TQList.Create;
            for I:=HullList.Count to HullNum do
             HullList.Add(Nil);
            HullList[HullNum]:=EntitePoly;

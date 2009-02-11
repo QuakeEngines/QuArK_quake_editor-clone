@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.20  2008/09/20 21:07:42  danielpharos
+Removed MarsCaption option and added nice FirstRun dialogbox.
+
 Revision 1.19  2008/09/14 12:52:27  danielpharos
 Changes to Help system: All forms now have a customizable help-link. Also, added an fallback option to the online infobase docs.
 
@@ -245,7 +248,7 @@ procedure SetMarsCapActive(nActive: Boolean);
 function GetObjectResult(Q: QObject) : LongInt;
 function GetObjectsResult(QList: TList) : LongInt;
 function HasGotObject(L: LongInt; FirstOk: Boolean) : QObject;
-function HasGotObjects(L: LongInt) : TList;
+function HasGotObjects(L: LongInt) : TQList;
 
 function GetDockColor: TColor;
 
@@ -294,34 +297,34 @@ end;
 
 function GetObjectsResult(QList: TList) : LongInt;
 var
- L: TList;
+ L: TQList;
  I: Integer;
 begin
- L:=TList.Create;
+ L:=TQList.Create;
  for I:=0 to QList.Count-1 do L.Add(QList[I]);
  Result:=LongInt(L);
 end;
 
 function HasGotObject(L: LongInt; FirstOk: Boolean) : QObject;
 var
- List: TList;
+ List: TQList;
 begin
  Result:=Nil;
  if L<>0 then
   begin
-   List:=TList(L);
+   List:=TQList(L);
    if (List.Count=1) or ((List.Count>1) and FirstOk) then
     Result:=List[0];
    List.Free;
   end;
 end;
 
-function HasGotObjects(L: LongInt) : TList;
+function HasGotObjects(L: LongInt) : TQList;
 begin
  if L=0 then
   Result:=TQList.Create
  else
-  Result:=TList(L);
+  Result:=TQList(L);
 end;
 
  {------------------------}
@@ -1091,7 +1094,7 @@ end;
 function TQkForm.MacroCommand(Cmd: Integer) : Boolean;
 var
  Q, Q2: QObject;
- List: TList;
+ List: TQList;
  R: PUndoRoot;
  I: Integer;
 begin
