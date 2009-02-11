@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.35  2008/12/19 23:30:41  danielpharos
+Reduced dependancy on CurrentMapView to something more logical; made it a call-parameter.
+
 Revision 1.34  2008/09/06 15:57:27  danielpharos
 Moved exception code into separate file.
 
@@ -1217,6 +1220,7 @@ var
  W1, W2, Normale: TVect;
  d0, d1, dv, f: TDouble;
  backside: boolean;
+ Pts: TPointProj;
 begin
  Triangles:=Nil; try
  TriCount:=ListBezierTriangles(Triangles, Nil{, lbtmFast});
@@ -1263,11 +1267,14 @@ begin
        W1.X:=g_DrawInfo.Clic.X + W1.X*f;
        W1.Y:=g_DrawInfo.Clic.Y + W1.Y*f;
        W1.Z:=g_DrawInfo.Clic.Z + W1.Z*f;
+       Pts:=CCoord.Proj(W1);
+       CCoord.CheckVisible(Pts);
 
-        { the clic occurs on this patch }
-       ResultatAnalyseClic(Liste, CCoord.Proj(W1), Nil);
-        { go on (no "exit") because the same clic could also match another, nearer triangle
-           of this same patch. }
+       if (Pts.OffScreen=0) then
+          { the clic occurs on this patch }
+         ResultatAnalyseClic(Liste, Pts, Nil);
+          { go on (no "exit") because the same clic could also match another, nearer triangle
+             of this same patch. }
       end;
     end;
    Inc(TriPtr);
