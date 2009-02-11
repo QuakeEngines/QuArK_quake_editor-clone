@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.28  2009/02/11 16:55:37  danielpharos
+Corrected some variable types.
+
 Revision 1.27  2009/02/10 21:59:35  danielpharos
 Updated to DevIL 1.7.7.
 
@@ -747,7 +750,7 @@ begin
     OutputSize:=ilSaveL(FileTypeDevIL, Nil, OutputSize);
     CheckDevILError(ilGetError);
     SetLength(RawBuffer, OutputSize);
-    OutputSize:=ilSaveL(FileTypeDevIL, Pointer(RawBuffer), OutputSize);
+    ilSaveL(FileTypeDevIL, Pointer(RawBuffer), OutputSize); //FIXME: Not checking for Return value: bug in DevIL 1.7.7
     CheckDevILError(ilGetError);
   finally
     ilDeleteImages(1, @DevILImage);
