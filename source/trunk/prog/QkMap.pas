@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.84  2008/11/06 21:11:50  danielpharos
+Made type Specifics soft-coded: Will lated be changed into a new, yet-to-be-defined type.
+
 Revision 1.83  2008/11/06 20:18:22  danielpharos
 Removed old stuff in preparation for new specifics code.
 
@@ -1207,7 +1210,7 @@ expected one.
        end;
      end
      else
-     // surfaceLight (int), surfaceColor (3f), surfaceAngle (int), tesselation (1f)
+     // surfaceLight (int), surfaceColor (3f), surfaceAngle (int), surfaceDensity (int), subdivisions (1f), tesselation (1f)
      if S='surfaceLight' then
      begin
        ReadSymbol(sStringToken);
@@ -1231,6 +1234,20 @@ expected one.
      begin
        ReadSymbol(sStringToken);
        Surface.Specifics.Values['surfaceAngle']:=S;
+       ReadSymbol(sNumValueToken);
+     end
+     else
+     if s='surfaceDensity' then
+     begin
+       ReadSymbol(sStringToken);
+       Surface.Specifics.Values['surfaceDensity']:=S;
+       ReadSymbol(sNumValueToken);
+     end
+     else
+     if s='subdivisions' then
+     begin
+       ReadSymbol(sStringToken);
+       Surface.SetFloatSpec('subdivisions',NumericValue);
        ReadSymbol(sNumValueToken);
      end
      else
