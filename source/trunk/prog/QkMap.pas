@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.89  2009/02/11 15:26:31  danielpharos
+Figured out what the fallback gamecode needs to be.
+
 Revision 1.88  2009/02/11 15:18:56  danielpharos
 Oops.
 
@@ -482,6 +485,10 @@ begin
     //Resolve GameCode
     if GameCode=mjAny then
       GameCode:=CharModeJeu;
+
+    //Resolve MapFormat
+    if MapFormat=UnknownType then
+      MapFormat:=GetMapFormat(GameCode);
 
     //Resolve MapVersion
     if MapVersion=-1 then
