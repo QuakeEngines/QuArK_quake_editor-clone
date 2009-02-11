@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.20  2009/02/05 21:36:54  danielpharos
+Add colorboxes in treeview for Model Editor bones to display start_color and end_color.
+
 Revision 1.19  2008/11/19 06:14:00  cdunde
 Bones system moved to outside of components for Model Editor completed.
 
@@ -292,6 +295,7 @@ begin
     else if StrComp(attr, 'start_handle')=0 then
     begin
       Result:=FStartHandle;
+      Py_INCREF(Result);
       Exit;
     end;
     'e': if StrComp(attr, 'end_point')=0 then
@@ -306,6 +310,7 @@ begin
     else if StrComp(attr, 'end_handle')=0 then
     begin
       Result:=FEndHandle;
+      Py_INCREF(Result);
       Exit;
     end;
     'b': if StrComp(attr, 'bone_length')=0 then
@@ -355,9 +360,9 @@ begin
       end
       else if StrComp(attr, 'start_handle')=0 then
       begin
-        Py_XDECREF(FStartHandle);
+        Py_DECREF(FStartHandle);
         FStartHandle:=value;
-        Py_XINCREF(value);
+        Py_INCREF(value);
         Result:=True;
         Exit;
       end;
@@ -383,9 +388,9 @@ begin
       end
       else if StrComp(attr, 'end_handle')=0 then
       begin
-        Py_XDECREF(FEndHandle);
+        Py_DECREF(FEndHandle);
         FEndHandle:=value;
-        Py_XINCREF(value);
+        Py_INCREF(value);
         Result:=True;
         Exit;
       end;
