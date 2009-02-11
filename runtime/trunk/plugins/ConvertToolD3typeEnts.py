@@ -658,7 +658,7 @@ def D3typeEntList(root, QuArKpath, gamename, gamefileslocation,
                 shaders.sort()
                 o.write('      s_shader: =\n')
                 o.write('      {\n')
-                o.write('        typ = "C"\n')
+                o.write('        typ = "CL"\n')
                 file = name.replace(SoundListFileType, "")
                 o.write('        txt = "' + file + '"\n')
                 o.write('        items =\n')
@@ -703,7 +703,7 @@ def D3typeEntList(root, QuArKpath, gamename, gamefileslocation,
             if modelfiletype.lower() in name.lower():
                 o.write('      model: =\n')
                 o.write('      {\n')
-                o.write('        typ = "C"\n')
+                o.write('        typ = "CL"\n')
                 foldername = foldername.replace(gamefileslocation + "\\", "")
                 foldername = foldername.replace("\\", "/")
                 o.write('        txt = "' + foldername + '"\n')
@@ -762,7 +762,7 @@ def D3typeEntList(root, QuArKpath, gamename, gamefileslocation,
             if ClipMdlFileType.lower() in name.lower():
                 o.write('      clipmodel: =\n')
                 o.write('      {\n')
-                o.write('        typ = "C"\n')
+                o.write('        typ = "CL"\n')
                 foldername = foldername.replace(gamefileslocation + "\\", "")
                 foldername = foldername.replace("\\", "/")
                 o.write('        txt = "' + foldername + '"\n')
@@ -863,6 +863,9 @@ def D3typeEntList(root, QuArKpath, gamename, gamefileslocation,
     
 #
 #$Log$
+#Revision 1.3  2008/04/12 18:16:19  cdunde
+#Removed color picker for all editor_color keyword entities.
+#
 #Revision 1.2  2008/04/12 18:11:48  cdunde
 #Added color picker for all editor_color keyword entities.
 #
