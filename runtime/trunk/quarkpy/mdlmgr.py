@@ -383,13 +383,13 @@ class ModelLayout(BaseLayout):
             item = qmenu.item(SFTexts[i], self.makesettingclick)
             item.skill = sfskills[i]
             mnu.append(item)
-        self.sfbtn = qtoolbar.menubutton(mnu, "model type||Set the type of model format you plan to export to. Some models have 'Specific' settings and others do not, in which case only general items will be displayed.|intro.modeleditor.dataforms.html", ico_maped, 10)
+        sfbtn = qtoolbar.menubutton(mnu, "model type||Set the type of model format you plan to export to. Some models have 'Specific' settings and others do not, in which case only general items will be displayed.|intro.modeleditor.dataforms.html", ico_maped, 10)
         cap = "set model type"
-        self.sfbtn.caption = cap[:len(cap)]
-        self.helpbtn = qtoolbar.button(self.helpbtnclick, "", ico_maped, 13)
-        self.helpbtn.local = 1
-        self.buttons.update({"help": self.helpbtn, "sf": self.sfbtn})
-        self.bb = self.fp.newtoppanel(ico_maped_y,0).newbtnpanel([self.sfbtn, qtoolbar.widegap, self.helpbtn])
+        sfbtn.caption = cap[:len(cap)]
+        helpbtn = qtoolbar.button(self.helpbtnclick, "", ico_maped, 13)
+        helpbtn.local = 1
+        self.buttons.update({"help": helpbtn, "sf": sfbtn})
+        self.bb = self.fp.newtoppanel(ico_maped_y,0).newbtnpanel([sfbtn, qtoolbar.widegap, helpbtn])
         self.bb.margins = (0,0)
         df = self.fp.newdataform()
         df.allowedit = 1
@@ -450,9 +450,10 @@ class ModelLayout(BaseLayout):
         if len(sl) == 0 and self.explorer.uniquesel is not None:
             sl = [self.explorer.uniquesel]
         sfbtn = self.buttons["sf"]
+        helpbtn = self.buttons["help"]
         # Resets the editor's bonemode back to the default value.
         try:
-            if self.sfbtn.caption == SFTexts[m.skill]:
+            if sfbtn.caption == SFTexts[m.skill]:
                 pass
             else:
                 self.editor.bonemode = "default mode"
@@ -460,9 +461,9 @@ class ModelLayout(BaseLayout):
             pass
 
         if m is not None:
-            self.sfbtn.caption = "set model type" # to make sure the width of this button doesn't change
-            self.buttons.update({"help": self.helpbtn, "sf": self.sfbtn})
-            self.bb.buttons = [self.sfbtn, qtoolbar.widegap, self.helpbtn]
+            sfbtn.caption = "set model type" # to make sure the width of this button doesn't change
+            self.buttons.update({"help": helpbtn, "sf": sfbtn})
+            self.bb.buttons = [sfbtn, qtoolbar.widegap, helpbtn]
             self.bb.margins = (0,0)
             for i in range(0, len(sfbtn.menu)):
                 sfbtn.menu[i].state = 0
@@ -526,7 +527,7 @@ class ModelLayout(BaseLayout):
                 selitem = sl[0]
                 self.dataform.setdata(selitem, formobj) # Tries to use the data returned to make the component's form again.
             else:
-                if self.sfbtn.caption == "set model type" or self.sfbtn.caption == "default":
+                if sfbtn.caption == "set model type" or sfbtn.caption == "default":
                     try:
                         formobj = mdlentities.CallManager("dataformname", sl[0])
                     except:
@@ -550,9 +551,9 @@ class ModelLayout(BaseLayout):
             self.dataform.setdata(sl, formobj)
 
         if m is not None and icon_btns is not None: # This allows the option of an importer\exporter to use the vertex color button on its form.
-            self.sfbtn.caption = "set model type" # to make sure the width of this button doesn't change
-            specifics_btns = {"help": self.helpbtn, "sf": self.sfbtn}
-            self.bb.buttons = [self.sfbtn, qtoolbar.widegap, self.helpbtn]
+            sfbtn.caption = "set model type" # to make sure the width of this button doesn't change
+            specifics_btns = {"help": helpbtn, "sf": sfbtn}
+            self.bb.buttons = [sfbtn, qtoolbar.widegap, helpbtn]
             tempcaptions = {}
             for btn in icon_btns.keys():
                 tempcaptions[btn] = icon_btns[btn].caption
@@ -683,7 +684,7 @@ class ModelLayout(BaseLayout):
         sfbtn = self.buttons["sf"]
         # Resets the editor's bonemode back to the default value.
         try:
-            if self.sfbtn.caption == SFTexts[m.skill]:
+            if sfbtn.caption == SFTexts[m.skill]:
                 pass
             else:
                 self.editor.bonemode = "default mode"
@@ -1042,7 +1043,7 @@ class ModelLayout(BaseLayout):
         sfbtn = self.buttons["sf"]
         # Resets the editor's bonemode back to the default value.
         try:
-            if self.sfbtn.caption == SFTexts[m.skill]:
+            if sfbtn.caption == SFTexts[m.skill]:
                 pass
             else:
                 self.editor.bonemode = "default mode"
@@ -1494,6 +1495,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.95  2009/01/27 05:03:01  cdunde
+#Full support for .md5mesh bone importing with weight assignment and other improvements.
+#
 #Revision 1.94  2008/12/19 07:13:37  cdunde
 #Minor adjustment to the top of the Skin-view page for recent fix of item over lapping by Dan.
 #
