@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.27  2009/02/10 21:59:35  danielpharos
+Updated to DevIL 1.7.7.
+
 Revision 1.26  2008/10/04 13:50:55  danielpharos
 Start using LogAndRaiseError instead of local Fatal's.
 
@@ -350,7 +353,7 @@ var
   V: array[1..2] of Single;
 
   //DevIL:
-  DevILImage: Cardinal;
+  DevILImage: ILuint;
   PaletteType: DevILFormatPalette;
   PaletteSize: Integer;
 begin
@@ -566,12 +569,12 @@ var
   Width, Height: Integer;
   PaddingSource, PaddingDest: Integer;
   I, J: Integer;
-  OutputSize: Cardinal;
+  OutputSize: ILuint;
   RawPal: PByte;
 
   //DevIL:
-  DevILImage: Cardinal;
-  ImageBpp: Byte;
+  DevILImage: ILuint;
+  ImageBpp: ILubyte;
   ImageFormat: DevILFormat;
 begin
   if (not DevILLoaded) then
@@ -952,12 +955,12 @@ var
   Width, Height: Integer;
   PaddingSource, PaddingDest: Integer;
   I, J: Integer;
-  OutputSize: Cardinal;
+  OutputSize: LongInt;
 
   //FreeImage:
   FIBuffer: FIMEMORY;
   FIImage: FIBITMAP;
-  FIbpp: Cardinal;
+  FIbpp: Integer;
 begin
   if (not FreeImageLoaded) then
   begin
