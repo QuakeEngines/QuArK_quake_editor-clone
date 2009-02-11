@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.87  2009/02/11 14:59:57  danielpharos
+Restructure some .map file saving code, and added some code for CoD2 (still not working properly though).
+
 Revision 1.86  2009/02/11 14:53:22  danielpharos
 TList --> TQList
 
@@ -441,7 +444,7 @@ begin
  //        more than 40 decimal places is ludicrously insanely stupendously
  //        silly :-P  So there.  Does this make the longest single comment in the
  //        QuArK source???
- Result := Round(SetupSubSet(ssGames, GameCode).GetFloatSpec('DecimalPlaces', 5));
+ Result := Round(SetupSubSet(ssGames, GetGameName(GameCode)).GetFloatSpec('DecimalPlaces', 5));
  if Result <= 0 then
   Result := 0
  else if Result > 40 then
@@ -452,7 +455,7 @@ function GetMapFormat(GameCode : Char) : TMapFormatTypes;
 var
   S : PChar;
 begin
-  S:=PChar(SetupSubSet(ssGames, GameCode).Specifics.Values['OutputMapFormat']);
+  S:=PChar(SetupSubSet(ssGames, GetGameName(GameCode)).Specifics.Values['OutputMapFormat']);
   if      StrComp(S, 'Classic Quake')    = 0 then Result := CQType
   else if StrComp(S, 'Quark etp')        = 0 then Result := QetpType
   else if StrComp(S, 'Valve 220')        = 0 then Result := V220Type
