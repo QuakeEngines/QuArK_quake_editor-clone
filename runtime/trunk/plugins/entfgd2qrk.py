@@ -815,7 +815,7 @@ def makeqrk(root, filename, gamename, nomessage=0):
         root.removeitem(item)
 
     if nomessage == 0:
-        quarkx.msgbox("Please note, this is not always 100% accurate may duplicate\nexisting entities and possibly miss some out.\n\nYou may need to handedit the .qrk file. For help with this,\nfeel free to ask questions at the QuArK forum:\n\nhttp://groups.yahoo.com/group/quark/messages", quarkpy.qutils.MT_INFORMATION, quarkpy.qutils.MB_OK)
+        quarkx.msgbox("Please note, this is not always 100% accurate may duplicate\nexisting entities and possibly miss some out.\n\nYou may need to handedit the .qrk file. For help with this,\nfeel free to ask questions on the QuArK forum.", quarkpy.qutils.MT_INFORMATION, quarkpy.qutils.MB_OK)
     srcstring = readentirefile(filename)
     state = 'STATE_UNKNOWN'
     while (len(srcstring) > 1):
@@ -899,6 +899,14 @@ quarkpy.qentbase.RegisterEntityConverter("Worldcraft .fgd file", "Worldcraft .fg
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.16  2008/05/04 07:30:41  cdunde
+#Changes by Adam Quest (aka Who Gives A Dam)
+#Replaced GenerateFolder in Class Entity with
+#  one from entdef2qrk.py v1.11 in order to
+#  output toolbox alphabetically
+#Minor modifications to makeqrk function to
+#  make it more resemble entdef2qrk.py v1.11's
+#
 #Revision 1.15  2008/05/01 16:01:22  cdunde
 #Changes by 'Who Gives A Dam'
 #Look for comments dated 4/30/2008 in code.

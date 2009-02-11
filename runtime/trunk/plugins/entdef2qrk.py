@@ -493,7 +493,7 @@ def makeqrk(root, filename, gamename, nomessage=0):
         root.removeitem(item)
 
     if nomessage == 0:
-        quarkx.msgbox("Please note, this is not always 100% accurate and will duplicate\nexisting entities and possibly miss some out.\n\nYou may need to handedit the .qrk file. For help with this,\nfeel free to ask questions at the QuArK forum:\n\nhttp://groups.yahoo.com/group/quark/messages\n", quarkpy.qutils.MT_INFORMATION, quarkpy.qutils.MB_OK)
+        quarkx.msgbox("Please note, this is not always 100% accurate and will duplicate\nexisting entities and possibly miss some out.\n\nYou may need to handedit the .qrk file. For help with this,\nfeel free to ask questions on the QuArK forum.", quarkpy.qutils.MT_INFORMATION, quarkpy.qutils.MB_OK)
     srcstring = readentirefile(filename)
     state = 'STATE_UNKNOWN'
     while (len(srcstring) > 1):
@@ -574,6 +574,9 @@ quarkpy.qentbase.RegisterEntityConverter("QERadiant .def file", "QERadiant .def 
 
 #
 #$Log$
+#Revision 1.11  2008/04/04 20:19:30  cdunde
+#Added a new Conversion Tools for making game support QuArK .qrk files.
+#
 #Revision 1.10  2008/03/19 06:05:16  cdunde
 #Added character to CHARS_ALFABETIC items
 #to stop spawnflags name from being spit up incorrectly.
