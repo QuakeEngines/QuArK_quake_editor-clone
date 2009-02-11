@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.21  2009/02/11 22:13:16  danielpharos
+Fixed a reference counter bug.
+
 Revision 1.20  2009/02/05 21:36:54  danielpharos
 Add colorboxes in treeview for Model Editor bones to display start_color and end_color.
 
@@ -360,7 +363,7 @@ begin
       end
       else if StrComp(attr, 'start_handle')=0 then
       begin
-        Py_DECREF(FStartHandle);
+        Py_XDECREF(FStartHandle);
         FStartHandle:=value;
         Py_INCREF(value);
         Result:=True;
@@ -388,7 +391,7 @@ begin
       end
       else if StrComp(attr, 'end_handle')=0 then
       begin
-        Py_DECREF(FEndHandle);
+        Py_XDECREF(FEndHandle);
         FEndHandle:=value;
         Py_INCREF(value);
         Result:=True;
