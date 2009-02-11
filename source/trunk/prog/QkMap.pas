@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.88  2009/02/11 15:18:56  danielpharos
+Oops.
+
 Revision 1.87  2009/02/11 14:59:57  danielpharos
 Restructure some .map file saving code, and added some code for CoD2 (still not working properly though).
 
@@ -477,7 +480,8 @@ begin
   with MapSaveSettings do
   begin
     //Resolve GameCode
-    //FIXME: if GameCode=''?
+    if GameCode=mjAny then
+      GameCode:=CharModeJeu;
 
     //Resolve MapVersion
     if MapVersion=-1 then
