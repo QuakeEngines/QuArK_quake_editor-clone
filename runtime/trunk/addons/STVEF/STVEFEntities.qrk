@@ -4,6 +4,15 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.3  2008/05/21 18:15:19  cdunde
+//To add and\or activate Half-Life 2 functions: (all original code by Alexander)
+//1) to create extra Specifics setting handles for func_useableladder function (point0 & point1)
+//      func_breakable_glass and func_breakable_surf functions
+//      (lowerleft, upperleft, lowerright and upperright)
+//2) to draw special light entity lines for functions like light_spot that have the Specifics
+//      (angles, _cone, spotlightwidth and\or _inner_cone)
+//3) face displacement. Commented out at this time. believe bezier type code should be used instead.
+//
 //Revision 1.2  2008/05/14 20:38:16  cdunde
 //Fixed basic lighting in all games and a few other small typo errors.
 //
@@ -3698,7 +3707,7 @@ QQRKSRC1
     t_NPC_editor_models_form:form =
     {
       NPC_editor_model: =
-      { typ="C"
+      { typ="CL"
         txt="Voyager Crew"
         items=
           "VC Alexandria"$0D
@@ -3741,7 +3750,7 @@ QQRKSRC1
       }
 
       NPC_editor_model: =
-      { typ="C"
+      { typ="CL"
         txt="Haz Team"
         items=
           "HT AlexaScav"$0D
@@ -3784,7 +3793,7 @@ QQRKSRC1
       }
 
       NPC_editor_model: =
-      { typ="C"
+      { typ="CL"
         txt="Extras"
         items=
           "Ext Buster"$0D
@@ -3817,7 +3826,7 @@ QQRKSRC1
       }
 
       NPC_editor_model: =
-      { typ="C"
+      { typ="CL"
         txt="Generic"
         items=
           "Gen GreenF1"$0D
@@ -3894,7 +3903,7 @@ QQRKSRC1
       }
 
       NPC_editor_model: =
-      { typ="C"
+      { typ="CL"
         txt="Enemies"
         items=
           "Ene Avatar"$0D
@@ -3993,7 +4002,7 @@ QQRKSRC1
       }
 
       NPC_editor_model: =
-      { typ="C"
+      { typ="CL"
         txt="Holodeck Enemies"
         items=
           "HE Desperado"$0D
@@ -4007,7 +4016,7 @@ QQRKSRC1
     t_AI_IBIscripts_form:form =
     {
       spawnscript: =
-      { typ="C"
+      { typ="CL"
         txt="custom ai script"
         hint = "Enter a custom script foldername/filename to run in the blank area,"$0D
                "or select from a pre-existing 'real_scripts' game scripts in the lists below."
@@ -4020,7 +4029,7 @@ QQRKSRC1
       }
 
       spawnscript: =
-      { typ="C"
+      { typ="CL"
         txt="_holodeck_highnoon"
         items=
           "guardspawn"$0D
@@ -4037,7 +4046,7 @@ QQRKSRC1
       }
 
       spawnscript: =
-      { typ="C"
+      { typ="CL"
         txt="borg1"
         items=
           "2for1"$0D
@@ -4146,7 +4155,7 @@ QQRKSRC1
       }
 
       spawnscript: =
-      { typ="C"
+      { typ="CL"
         txt="borg2"
         items=
           "attack"$0D
@@ -4191,7 +4200,7 @@ QQRKSRC1
       }
 
       spawnscript: =
-      { typ="C"
+      { typ="CL"
         txt="borg3"
         items=
           "adapted"$0D
@@ -4416,7 +4425,7 @@ QQRKSRC1
       }
 
       spawnscript: =
-      { typ="C"
+      { typ="CL"
         txt="borg4"
         items=
           "1000brushes_removesunshine"$0D
@@ -4499,7 +4508,7 @@ QQRKSRC1
       }
 
       spawnscript: =
-      { typ="C"
+      { typ="CL"
         txt="borg5"
         items=
           "antitrust"$0D
@@ -4560,7 +4569,7 @@ QQRKSRC1
       }
 
       spawnscript: =
-      { typ="C"
+      { typ="CL"
         txt="borg6"
         items=
           "attack"$0D
@@ -4599,7 +4608,7 @@ QQRKSRC1
       }
 
       spawnscript: =
-      { typ="C"
+      { typ="CL"
         txt="common"
         items=
           "alarm"$0D
@@ -4674,7 +4683,7 @@ QQRKSRC1
       }
 
       spawnscript: =
-      { typ="C"
+      { typ="CL"
         txt="dn1"
         items=
           "beamin"$0D
@@ -4747,7 +4756,7 @@ QQRKSRC1
       }
 
       spawnscript: =
-      { typ="C"
+      { typ="CL"
         txt="dn2"
         items=
           "afterbattle"$0D
@@ -4778,7 +4787,7 @@ QQRKSRC1
       }
 
       spawnscript: =
-      { typ="C"
+      { typ="CL"
         txt="dn3"
         items=
           "binky"$0D
@@ -4837,7 +4846,7 @@ QQRKSRC1
       }
 
       spawnscript: =
-      { typ="C"
+      { typ="CL"
         txt="dn4"
         items=
           "block1"$0D
@@ -4890,7 +4899,7 @@ QQRKSRC1
       }
 
       spawnscript: =
-      { typ="C"
+      { typ="CL"
         txt="dn5"
         items=
           "csatdies"$0D
@@ -4929,7 +4938,7 @@ QQRKSRC1
       }
 
       spawnscript: =
-      { typ="C"
+      { typ="CL"
         txt="dn6"
         items=
           "anger_melvin"$0D
@@ -5062,7 +5071,7 @@ QQRKSRC1
       }
 
       spawnscript: =
-      { typ="C"
+      { typ="CL"
         txt="dn8"
         items=
           "battle_entrance_begin"$0D
@@ -5133,7 +5142,7 @@ QQRKSRC1
       }
 
       spawnscript: =
-      { typ="C"
+      { typ="CL"
         txt="forge1"
         items=
           "afterme"$0D
@@ -5186,7 +5195,7 @@ QQRKSRC1
       }
 
       spawnscript: =
-      { typ="C"
+      { typ="CL"
         txt="forge2"
         items=
           "chellblab"$0D
@@ -5233,7 +5242,7 @@ QQRKSRC1
       }
 
       spawnscript: =
-      { typ="C"
+      { typ="CL"
         txt="forge3"
         items=
           "battle_death_drawbridgespawn"$0D
@@ -5336,7 +5345,7 @@ QQRKSRC1
       }
 
       spawnscript: =
-      { typ="C"
+      { typ="CL"
         txt="forge4"
         items=
           "attack"$0D
@@ -5403,7 +5412,7 @@ QQRKSRC1
       }
 
       spawnscript: =
-      { typ="C"
+      { typ="CL"
         txt="forge5"
         items=
           "ambush1"$0D
@@ -5512,7 +5521,7 @@ QQRKSRC1
       }
 
       spawnscript: =
-      { typ="C"
+      { typ="CL"
         txt="forgeboss"
         items=
           "borgbattle"$0D
@@ -5575,7 +5584,7 @@ QQRKSRC1
       }
 
       spawnscript: =
-      { typ="C"
+      { typ="CL"
         txt="holodeck"
         items=
           "consolework"$0D
@@ -5600,7 +5609,7 @@ QQRKSRC1
       }
 
       spawnscript: =
-      { typ="C"
+      { typ="CL"
         txt="scav1"
         items=
           "fostergo"$0D
@@ -5631,7 +5640,7 @@ QQRKSRC1
       }
 
       spawnscript: =
-      { typ="C"
+      { typ="CL"
         txt="scav2"
         items=
           "angrynow"$0D
@@ -5824,7 +5833,7 @@ QQRKSRC1
       }
 
       spawnscript: =
-      { typ="C"
+      { typ="CL"
         txt="scav3"
         items=
           "OdellDead"$0D
@@ -5937,7 +5946,7 @@ QQRKSRC1
       }
 
       spawnscript: =
-      { typ="C"
+      { typ="CL"
         txt="scav4"
         items=
           "alertchessplayers"$0D
@@ -6020,7 +6029,7 @@ QQRKSRC1
       }
 
       spawnscript: =
-      { typ="C"
+      { typ="CL"
         txt="scav5"
         items=
           "alertallguards"$0D
@@ -6119,7 +6128,7 @@ QQRKSRC1
       }
 
       spawnscript: =
-      { typ="C"
+      { typ="CL"
         txt="scavboss"
         items=
           "attack"$0D
@@ -6154,7 +6163,7 @@ QQRKSRC1
       }
 
       spawnscript: =
-      { typ="C"
+      { typ="CL"
         txt="stasis1"
         items=
           "afterheads"$0D
@@ -6225,7 +6234,7 @@ QQRKSRC1
       }
 
       spawnscript: =
-      { typ="C"
+      { typ="CL"
         txt="stasis2"
         items=
           "chellport"$0D
@@ -6300,7 +6309,7 @@ QQRKSRC1
       }
 
       spawnscript: =
-      { typ="C"
+      { typ="CL"
         txt="stasis3"
         items=
           "battle_catwalk_beginspawn"$0D
@@ -6369,7 +6378,7 @@ QQRKSRC1
       }
 
       spawnscript: =
-      { typ="C"
+      { typ="CL"
         txt="tutorial"
         items=
           "bigplatform"$0D
@@ -6428,7 +6437,7 @@ QQRKSRC1
       }
 
       spawnscript: =
-      { typ="C"
+      { typ="CL"
         txt="voy1"
         items=
           "chakotay"$0D
@@ -6463,7 +6472,7 @@ QQRKSRC1
       }
 
       spawnscript: =
-      { typ="C"
+      { typ="CL"
         txt="voy13"
         items=
           "armory"$0D
@@ -6514,7 +6523,7 @@ QQRKSRC1
       }
 
       spawnscript: =
-      { typ="C"
+      { typ="CL"
         txt="voy14"
         items=
           "Chang"$0D
@@ -6571,7 +6580,7 @@ QQRKSRC1
       }
 
       spawnscript: =
-      { typ="C"
+      { typ="CL"
         txt="voy15"
         items=
           "accdenied"$0D
@@ -6662,7 +6671,7 @@ QQRKSRC1
       }
 
       spawnscript: =
-      { typ="C"
+      { typ="CL"
         txt="voy16"
         items=
           "beamin"$0D
@@ -6799,7 +6808,7 @@ QQRKSRC1
       }
 
       spawnscript: =
-      { typ="C"
+      { typ="CL"
         txt="voy17"
         items=
           "brief_sitting"$0D
@@ -6824,7 +6833,7 @@ QQRKSRC1
       }
 
       spawnscript: =
-      { typ="C"
+      { typ="CL"
         txt="voy2"
         items=
           "chell_1"$0D
@@ -6881,7 +6890,7 @@ QQRKSRC1
       }
 
       spawnscript: =
-      { typ="C"
+      { typ="CL"
         txt="voy20"
         items=
           "epilogue"$0D
@@ -6898,7 +6907,7 @@ QQRKSRC1
       }
 
       spawnscript: =
-      { typ="C"
+      { typ="CL"
         txt="voy3"
         items=
           "accesscode"$0D
@@ -6969,7 +6978,7 @@ QQRKSRC1
       }
 
       spawnscript: =
-      { typ="C"
+      { typ="CL"
         txt="voy4"
         items=
           "BoxDefender1a"$0D
@@ -7130,7 +7139,7 @@ QQRKSRC1
       }
 
       spawnscript: =
-      { typ="C"
+      { typ="CL"
         txt="voy5"
         items=
           "allset"$0D
@@ -7237,7 +7246,7 @@ QQRKSRC1
       }
 
       spawnscript: =
-      { typ="C"
+      { typ="CL"
         txt="voy6"
         items=
           "Chellspawn"$0D
@@ -7292,7 +7301,7 @@ QQRKSRC1
       }
 
       spawnscript: =
-      { typ="C"
+      { typ="CL"
         txt="voy7"
         items=
           "4manpokerloop"$0D
@@ -7397,7 +7406,7 @@ QQRKSRC1
       }
 
       spawnscript: =
-      { typ="C"
+      { typ="CL"
         txt="voy8"
         items=
           "careful"$0D
@@ -7482,7 +7491,7 @@ QQRKSRC1
       }
 
       spawnscript: =
-      { typ="C"
+      { typ="CL"
         txt="voy9"
         items=
           "biesskick"$0D

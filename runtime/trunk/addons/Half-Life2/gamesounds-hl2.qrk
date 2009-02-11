@@ -10,7 +10,7 @@ QQRKSRC1
 
       message: = 
       { 
-        typ="C"
+        typ="CL"
         txt="All Game Sounds"
         items=
 					"AI_BaseNPC.BodyDrop_Heavy"

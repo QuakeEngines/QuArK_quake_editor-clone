@@ -10,7 +10,7 @@ QQRKSRC1
 
       soundscape: = 
       {
-        typ="C"
+        typ="CL"
         txt="All Soundscapes"
         items=
           "Nothing"

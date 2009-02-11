@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.6  2008/09/27 15:44:00  danielpharos
+//Fixed some typo's.
+//
 //Revision 1.5  2008/05/21 18:15:23  cdunde
 //To add and\or activate Half-Life 2 functions: (all original code by Alexander)
 //1) to create extra Specifics setting handles for func_useableladder function (point0 & point1)
@@ -646,7 +649,7 @@ QQRKSRC1
     {
       noise: =
       {
-        typ = "C"
+        typ = "CL"
         txt = "Feedback"
         items = "1_frag"$0D
             "1_minute"$0D
@@ -722,7 +725,7 @@ QQRKSRC1
       }
       noise: =
       {
-        typ = "C"
+        typ = "CL"
         txt = "Items"
         items =
         "Airout"$0D
@@ -773,7 +776,7 @@ QQRKSRC1
       }
       noise: =
       {
-        typ = "C"
+        typ = "CL"
         txt = "Misc"
         items =
         "Am_pkup"$0D
@@ -802,7 +805,7 @@ QQRKSRC1
       }
       noise: =
       {
-        typ = "C"
+        typ = "CL"
         txt = "Movers"
         items =
         "Doors: Dr1_end"$0D
@@ -815,7 +818,7 @@ QQRKSRC1
       }
       noise: =
       {
-        typ = "C"
+        typ = "CL"
         txt = "Players"
         items =
         "Anarki: Death1"$0D
@@ -1443,7 +1446,7 @@ QQRKSRC1
 
     noise: =
       {
-        typ = "C"
+        typ = "CL"
         txt = "Announcer"
         items =
         "Announce: Anarki"$0D
@@ -1582,7 +1585,7 @@ QQRKSRC1
 
     noise: =
       {
-        typ = "C"
+        typ = "CL"
         txt = "Footsteps"
         items =
         "Footsteps: Boot1"$0D
@@ -1647,7 +1650,7 @@ QQRKSRC1
 
     noise: =
       {
-        typ = "C"
+        typ = "CL"
         txt = "Teamplay"
         items =
         "Flagcap Blue"$0D
@@ -1669,7 +1672,7 @@ QQRKSRC1
 
     noise: =
       {
-        typ = "C"
+        typ = "CL"
         txt = "Weapons"
         items =
         "BFG: Fire"$0D
@@ -1742,7 +1745,7 @@ QQRKSRC1
 
     noise: =
       {
-        typ = "C"
+        typ = "CL"
         txt = "World"
         items =
         "Drone Boys"$0D
