@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.474  2009/02/10 21:55:18  danielpharos
+//Updated to DevIL 1.7.7.
+//
 //Revision 1.473  2009/01/29 02:13:51  cdunde
 //To reverse frame indexing and fix it a better way by DanielPharos.
 //
@@ -3413,8 +3416,9 @@ QQRKSRC1
         Game = "SOF"
         Code = "E" // Hardcoded value in Setup.PAS
 
-        Program = "sof.EXE"
+        BaseMenu = "Soldier of Fortune"
 
+        Program = "sof.EXE"
         Directory = "\SOF"
         CheckDirectory = "SOF.EXE"
 
@@ -3467,8 +3471,10 @@ QQRKSRC1
       {
         Game = "SoF2"
         Code = "h" // Hardcoded value in Setup.PAS
-        Program = "SoF2MP.EXE +set sv_pure 0"
 
+        BaseMenu = "Soldier of Fortune"
+
+        Program = "SoF2MP.EXE +set sv_pure 0"
         Directory = "\SoF2"
         CheckDirectory = "SoF2MP.EXE"
 
