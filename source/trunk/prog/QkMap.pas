@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.90  2009/02/11 15:54:09  danielpharos
+Figured out how to resolve MapFormat.
+
 Revision 1.89  2009/02/11 15:26:31  danielpharos
 Figured out what the fallback gamecode needs to be.
 
@@ -3144,6 +3147,8 @@ var
  V1, V2: TVect;
  OriginBrush: PVect;
 begin
+ ResolveMapSaveSettings(MapSaveSettings);
+
  with TTreeMapBrush(ObjectToSave) do
  begin
 
@@ -3251,7 +3256,9 @@ var
  typedspecs:Bool;
  DoneNameSpecific: boolean; // Rowdy: for Doom 3
 begin
- with ObjectToSave do
+ ResolveMapSaveSettings(MapSaveSettings);
+
+ with TTreeMapSpec(ObjectToSave) do
  begin
 
  DoneNameSpecific:=False;
@@ -3355,6 +3362,8 @@ procedure SaveAsMapTextTTreeMapEntity(ObjectToSave: QObject; MapSaveSettings: TM
 var
  EntityNumber: Integer;
 begin
+ ResolveMapSaveSettings(MapSaveSettings);
+
  with TTreeMapEntity(ObjectToSave) do
  begin
 
@@ -3375,6 +3384,8 @@ var
  I: Integer;
  T: TTreeMap;
 begin
+ ResolveMapSaveSettings(MapSaveSettings);
+
  with TTreeMapGroup(ObjectToSave) do
  begin
 
@@ -3630,6 +3641,8 @@ var
   end;
 
 begin
+ ResolveMapSaveSettings(MapSaveSettings);
+
  DecimalPlaces := MapSaveSettings.DecimalPlaces;
  
  F:=TFace(ObjectToSave);
@@ -4038,6 +4051,8 @@ var
  Value: PSingle;
  DecimalPlaces: Integer;
 begin
+ ResolveMapSaveSettings(MapSaveSettings);
+
  DecimalPlaces := MapSaveSettings.DecimalPlaces;
 
  with TBezier(ObjectToSave) do
@@ -4105,6 +4120,8 @@ procedure SaveAsMapTextTDuplicator(ObjectToSave: QObject; MapSaveSettings: TMapS
 var
  I: Integer;
 begin
+ ResolveMapSaveSettings(MapSaveSettings);
+
  with TDuplicator(ObjectToSave) do
  begin
 
