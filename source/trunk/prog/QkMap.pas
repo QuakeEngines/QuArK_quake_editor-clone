@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.91  2009/02/11 15:59:09  danielpharos
+Added missing ResolveMapSaveSettings-calls.
+
 Revision 1.90  2009/02/11 15:54:09  danielpharos
 Figured out how to resolve MapFormat.
 
@@ -646,7 +649,6 @@ var
  NumericValue: Double;
  V: array[1..3] of TVect;
  P: TPolyhedron;
- Surface: TFace;
  I, J, K, NumericValue1, ContentsFlags: Integer;
  WorldSpawn: Boolean;
  Entite, EntitePoly: TTreeMapSpec;
@@ -684,6 +686,9 @@ var
 
  { Rowdy, for Doom 3 and Quake 4 stuff}
  MapVersion: Integer;
+
+ //For MOHAA's patchDef2 detection:
+ MOHAAPatchDef2Detected: Boolean;
 
  function ReadInt(str : string) : LongInt;
  begin
@@ -1172,7 +1177,7 @@ expected one.
    ReadSymbolForceToText:=False;
  end;
 
- procedure ReadSinSurfaceFlags;
+ procedure ReadSinSurfaceFlags(Surface: TFace);
  begin
    { tiglari[, sin surf info reading }
 
@@ -1267,7 +1272,7 @@ expected one.
                   Surface.SetFloatSpec('translucence', LastValue)
                 end
               else
-              if S1 =  'trans_mag' then
+              if S1 = 'trans_mag' then
                 begin
                   Surface.SetFloatSpec('trans_mag', LastValue)
                 end
@@ -1289,7 +1294,7 @@ expected one.
  { sort of like Sin, but simpler; we just read the flags without
    bothering to check that they're not the same as the defaults }
 
- procedure ReadMohaaSurfaceParms;
+ procedure ReadMohaaSurfaceParms(Surface: TTreeMap);
  var
    Val: String;
  begin
@@ -1400,7 +1405,7 @@ expected one.
   divide by the scale to get the .bsp-version of the axis.
   (Zoner's HL tools source, textures.cpp) *)
 
- procedure WC33Params;
+ procedure WC33Params(Surface: TFace);
  var
   PP0, PP1, PP2, NP0, NP1, NP2, PlanePoint, TexNorm : TVect;
  begin
@@ -1502,7 +1507,27 @@ expected one.
    // now comes 5 numbers which tell how many control points there are
    // use ReadVect5 which is the same as ReadVect but expects 5 numbers
    // and we only need the X and Y values
-   V5:=ReadVect5(False);
+   //V5:=ReadVect5(False);
+   //Can't use ReadVect5 here, since MOHAA dumps surface flags inside the vector...!
+    ReadSymbol(sBracketLeft);
+   V5.X:=NumericValue;
+   ReadSymbol(sNumValueToken);
+   V5.Y:=NumericValue;
+   ReadSymbol(sNumValueToken);
+   V5.Z:=NumericValue;
+   ReadSymbol(sNumValueToken);
+   V5.S:=NumericValue;
+   ReadSymbol(sNumValueToken);
+   V5.T:=NumericValue;
+   ReadSymbol(sNumValueToken);
+   if SymbolType = sStringToken then
+   begin
+     MOHAAPatchDef2Detected := True;
+     ReadMohaaSurfaceParms(B);
+   end
+   else
+     MOHAAPatchDef2Detected := False;
+   ReadSymbol(sBracketRight);
    // Nr 1: Width (many lines of control points there are)
    // Nr 2: Height (how many control points on each line)
    // Nr 3: HorzSubdivisions (?)
@@ -1792,6 +1817,7 @@ expected one.
  procedure ReadBrush;
  var
    I: Integer;
+   Surface: TFace;
  begin
   P:=TPolyhedron.Create(LoadStr1(138), EntitePoly);
   EntitePoly.SubElements.Add(P);
@@ -1869,13 +1895,17 @@ expected one.
           ReadSymbol(sNumValueToken);
           Surface.Specifics.Values['Value']:=IntToStr(Round(NumericValue));
           ReadSymbol(sNumValueToken);
-          Result:=mjNotQuake1;
+          if Result=mjQuake then
+            Result:=mjNotQuake1;
           if SymbolType=sStringToken then // Mohaa
-            ReadMohaaSurfaceParms
+          begin
+            Result:=mjMOHAA;
+            ReadMohaaSurfaceParms(Surface);
+          end
           else if SymbolType=sNumValueToken then //CoD1
           begin
-            //FIXME: We need to set the gametype (+ above)
-            //Also, interprete these values!
+            Result:=mjCoD;
+            //FIXME: What does this number mean?
             ReadSymbol(sNumValueToken);
           end;
          end;
@@ -1884,7 +1914,7 @@ expected one.
        if SymbolType=sStringToken then
         begin  { Sin : extra surface flags as text }
          Result:=mjSin;
-         ReadSinSurfaceFlags(); {DECKER - moved to procedure to increase readability}
+         ReadSinSurfaceFlags(Surface); {DECKER - moved to procedure to increase readability}
         end;
     end;
     if not Surface.LoadData then
@@ -1895,7 +1925,7 @@ expected one.
       '2': Surface.TextureMirror:=True;
      else
       if WC33Map then
-        WC33Params
+        WC33Params(Surface)
       else
        with Surface do
         SetFaceFromParams(Normale, Dist, Params);
@@ -1917,6 +1947,7 @@ expected one.
    R1, R2, TexS, TexT, Tex0, P0, P1, P2, ZVect : TVect;
    Denom : Double;
    Matrix : TMatrixTransformation;
+   Surface: TFace;
  begin
   ReadSymbol(sStringToken); // lbrace follows "brushDef"
   ReadSymbol(sCurlyBracketLeft); // data follows lbrace
@@ -2008,6 +2039,7 @@ expected one.
    dist : double;
    texparm : TFaceParams;
    Matrix : TMatrixTransformation;
+   Surface: TFace;
  begin
   ReadSymbol(sStringToken); // lbrace follows "brushDef3"
   ReadSymbol(sCurlyBracketLeft); // texture follows lbrace
@@ -2425,6 +2457,8 @@ begin
                  EntiteBezier:=MapStructureB;
                end;
                ReadPatchDef2();
+               if MOHAAPatchDef2Detected then
+                 Result:=mjMOHAA;
              end
              else if LowerCase(s)='patchdef3' then
              begin
@@ -2788,22 +2822,22 @@ begin
   else
   begin
 //  if (veclength(qv0)>1) or (veclength(qv1)>1) then
-//    ShowMessage('oops');
-  write4vect(QV0, UOff, S);
-  write4vect(QV1, VOff, S);
+//    Raise InternalE('veclength(qv0)>1) or (veclength(qv1)>1');
+    write4vect(QV0, UOff, S);
+    write4vect(QV1, VOff, S);
 
 (*
-  write4vect(D1, -PP0.X/S1, S);
-  write4vect(D2, PP0.Y/S2, S);
+    write4vect(D1, -PP0.X/S1, S);
+    write4vect(D2, PP0.Y/S2, S);
 *)
 
-  S1:=1.0/S1;
-  S2:=1.0/S2;
+    S1:=1.0/S1;
+    S2:=1.0/S2;
 
-  S:=S+' 0 ';
-  S:=S+' '+FloatToStrF(S1, ffFixed, 20, DecimalPlaces);
-  { sign flip engineered into Scale }
-  S:=S+' '+FloatToStrF(S2, ffFixed, 20, DecimalPlaces);
+    S:=S+' 0 ';
+    S:=S+' '+FloatToStrF(S1, ffFixed, 20, DecimalPlaces);
+    { sign flip engineered into Scale }
+    S:=S+' '+FloatToStrF(S2, ffFixed, 20, DecimalPlaces);
   end;
 
 end;
@@ -4027,6 +4061,12 @@ begin
           S1:=F.Specifics.Values['surfaceAngle'];
           if (S1<>'') then
             S:=S+' surfaceAngle '+S1;
+          S1:=F.Specifics.Values['surfaceDensity'];
+          if (S1<>'') then
+            S:=S+' surfaceDensity '+S1;
+          rval:=F.GetFloatSpec('subdivisions',0);
+          if (rval<>0) then
+            S:=S+' subdivisions '+FloatToStrF(rval, ffFixed, 20, 6);
           rval:=F.GetFloatSpec('tesselation',0);
           if (rval<>0) then
             S:=S+' tesselation '+FloatToStrF(rval, ffFixed, 20, 6);
@@ -4086,6 +4126,7 @@ begin
    2: Target.Add(Format('   ( %d %d 0 0 0 )', [cp.W, cp.H]));
    3: Target.Add(Format('   ( %d %d 0 0 0 0 0 )', [cp.W, cp.H]));
    end;
+   //FIXME: Need to save MOHAA surfaceparms!
    Target.Add('   (');
    for J:=0 to cp.W-1 do
     begin
