@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.35  2008/12/04 12:14:00  danielpharos
+Fixed a redraw-clipping problem, removed a redundant file and cleaned-up the constructor of the EdSceneObjects.
+
 Revision 1.34  2008/12/01 22:34:03  danielpharos
 Cleaned up the clipping routines.
 
@@ -402,11 +405,9 @@ begin
   TTextureManager.AddScene(Self);
 
   try
-   Setup:=SetupSubSet(ssGames, g_SetupSet[ssGames].Specifics.Values['GameCfg']);
-   MapLimit:=Setup.VectSpec['MapLimit'];
+   MapLimit:=SetupGameSet.VectSpec['MapLimit'];
   except
-   Setup:=SetupSubSet(ssMap, 'Display');
-   MapLimit:=Setup.VectSpec['MapLimit'];
+   MapLimit:=SetupSubSet(ssMap, 'Display').VectSpec['MapLimit'];
   end;
   if (MapLimit.X=OriginVectorZero.X) and (MapLimit.Y=OriginVectorZero.Y) and (MapLimit.Z=OriginVectorZero.Z) then
    begin

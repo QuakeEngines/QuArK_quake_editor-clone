@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.84  2009/02/10 22:02:35  danielpharos
+Improved OpenGL lighting to use brightest lights down to a 5 percent lighting-effect.
+
 Revision 1.83  2009/02/10 21:53:06  danielpharos
 Fixed an exception raising method.
 
@@ -966,11 +969,9 @@ begin
   TTextureManager.AddScene(Self);
 
   try
-   Setup:=SetupSubSet(ssGames, g_SetupSet[ssGames].Specifics.Values['GameCfg']);
-   MapLimit:=Setup.VectSpec['MapLimit'];
+   MapLimit:=SetupGameSet.VectSpec['MapLimit'];
   except
-   Setup:=SetupSubSet(ssMap, 'Display');
-   MapLimit:=Setup.VectSpec['MapLimit'];
+   MapLimit:=SetupSubSet(ssMap, 'Display').VectSpec['MapLimit'];
   end;
   if (MapLimit.X=OriginVectorZero.X) and (MapLimit.Y=OriginVectorZero.Y) and (MapLimit.Z=OriginVectorZero.Z) then
    begin
