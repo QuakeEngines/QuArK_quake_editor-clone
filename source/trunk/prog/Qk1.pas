@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.81  2009/02/11 14:53:22  danielpharos
+TList --> TQList
+
 Revision 1.80  2008/12/12 12:47:52  danielpharos
 Moved GlobalWarning to QkExceptions, and added QkTextBoxForm.
 
@@ -774,6 +777,11 @@ begin
  with g_SetupSet[ssGames] do
    for I:=0 to SubElements.Count-1 do
    begin
+     if SubElements[I].Specifics.Values['Game']='' then
+      continue;
+     if SubElements[I].Specifics.Values['NotInstalled']<>'' then
+      //Gamemode not installed; do not display in menu
+      continue;
      S:=SubElements[I].Specifics.Values['Code'];
      if S<>'' then
      begin

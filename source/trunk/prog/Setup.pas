@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.77  2009/02/11 14:50:13  danielpharos
+COD --> CoD
+
 Revision 1.76  2008/09/20 21:07:43  danielpharos
 Removed MarsCaption option and added nice FirstRun dialogbox.
 
@@ -395,8 +398,8 @@ const  { for SetupChanged }
 
 procedure InitSetup;
 procedure SetupChanged(Level: Integer);
-function SetupSubSet(Root: TSetupSet; SubSet: String) : QObject;
-function SetupSubSetEx(Root: TSetupSet; SubSet: String; Create: Boolean) : QObject;
+function SetupSubSet(Root: TSetupSet; const SubSet: String) : QObject;
+function SetupSubSetEx(Root: TSetupSet; const SubSet: String; Create: Boolean) : QObject;
 function SetupGameSet : QObject;
 procedure UpdateSetup(Level: Integer);
 procedure SaveSetupNow;
@@ -478,7 +481,7 @@ end;
 
  {------------------------}
 
-function SetupSubSetEx(Root: TSetupSet; SubSet: String; Create: Boolean) : QObject;
+function SetupSubSetEx(Root: TSetupSet; const SubSet: String; Create: Boolean) : QObject;
 begin
  Result:=g_SetupSet[Root].SubElements.FindName(SubSet+':config');
  if (Result=Nil) and Create then
@@ -488,7 +491,7 @@ begin
   end;
 end;
 
-function SetupSubSet(Root: TSetupSet; SubSet: String) : QObject;
+function SetupSubSet(Root: TSetupSet; const SubSet: String) : QObject;
 begin
  Result:=g_SetupSet[Root].SubElements.FindName(SubSet+':config');
  if Result=Nil then
@@ -659,6 +662,7 @@ var
  V1, V2: String;
  T: TSetupSet;
  Version: TDouble;
+ I: Integer;
 begin
  for T:=High(T) downto Low(T) do
   if g_SetupSet[T]<>Nil then
@@ -730,6 +734,42 @@ begin
   RefreshAssociations(True);
  g_SetupSet[ssGeneral].SetFloatSpec('RunVersion', Version);
  g_SetupSet[ssGeneral].Specifics.Values['Date']:=DateToStr(Date);
+ if SetupGameSet.Specifics.Values['Game'] = '' then
+  Raise EErrorFmt(4623, [g_SetupSet[ssGames].Specifics.Values['GameCfg']]);
+
+ //Search through the addons directory to find all installed games
+ for I:=0 to g_SetupSet[ssGames].SubElements.Count-1 do
+  with g_SetupSet[ssGames].SubElements[I] do
+   if Specifics.Values['Game']<>'' then
+    if DirectoryExists(GetQPath(pQuArKGameAddon, Specifics.Values['Game'])) then
+     Specifics.Values['NotInstalled']:=''
+    else
+     Specifics.Values['NotInstalled']:='1';
+
+ //Make sure we're trying to load a gamemode that is installed.
+ //If not, find an installed one
+ if SetupGameSet.Specifics.Values['NotInstalled'] <> '' then
+  begin
+   Log(LOG_INFO, 'Not installed gamecode (%s) in Setup.qrk. Trying to find an installed one...', [ g_SetupSet[ssGames].Specifics.Values['GameCfg']]);
+   with g_SetupSet[ssGames] do
+    begin
+     Specifics.Values['GameCfg']:='';
+     for I:=0 to SubElements.Count-1 do
+      if SubElements[I].Specifics.Values['NotInstalled']='' then
+       begin
+        Specifics.Values['GameCfg']:=SubElements[I].Specifics.Values['Game'];
+        if Specifics.Values['GameCfg']<> '' then
+          //There is at least one gamemode without being an actual gamemode: Steam!
+          //So only break if it has a gamename (and thus is a valid gamemode)
+          break;
+       end;
+     if Specifics.Values['GameCfg']='' then
+      begin
+       MessageDlg(LoadStr1(4624), mtError, [mbOk], 0);
+       Halt(1);   { missing ":config" object }
+      end;
+    end;
+  end;
  SetupChanged({scMaximal} {scMinimal} scInit);
 end;
 
@@ -1149,6 +1189,10 @@ begin
    begin
     if g_SetupSet[ssGames].SubElements.FindName(nMode+':config')=Nil then
      Raise EErrorFmt(5547, [nMode]);
+    if SetupSubSet(ssGames, nMode).Specifics.Values['Game'] = '' then
+     Raise EErrorFmt(4623, [nMode]);
+    if SetupSubSet(ssGames, nMode).Specifics.Values['NotInstalled'] <> '' then
+     Raise EErrorFmt(4622, [nMode]);
     if Screen.ActiveForm is TToolBoxForm then
      Raise EErrorFmt(5599, [nMode]);
     if Confirm and (MessageDlg(FmtLoadStr1(5543, [nMode]), mtWarning, mbOkCancel, 0) <> mrOk) then
@@ -1205,8 +1249,6 @@ begin
  if S='' then
   Raise EErrorFmt(5542, [CharModeJeu+nMode]);
  ChangeGameModeStr(S, Confirm);
- StoreTexExtensions; {--Convex--}
- StorePakExtensions; {--Convex--}
 end;
 
 function GameModeOk(nMode: Char) : Boolean;

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2008/12/02 16:17:34  danielpharos
+Removed unneeded SetApplicationPath function.
+
 Revision 1.14  2008/11/06 19:29:51  danielpharos
 Renamed function to concatenate paths, and start using it.
 
@@ -101,13 +104,14 @@ type
 
 function ConvertPath(const S: string): string;
 function ConcatPaths(const Paths: array of String) : String;
-function GetQPath(const PathToGet : TQPathType) : String;
+function GetQPath(const PathToGet : TQPathType) : String; overload;
+function GetQPath(const PathToGet : TQPathType; const GameName: String) : String; overload;
 
  { ------------------- }
 
 implementation
 
-uses SysUtils, Windows, Forms, Setup, ExtraFunctionality;
+uses SysUtils, Windows, Forms, Setup, QkExceptions, ExtraFunctionality;
 
 const
   ADDONS_SUBDIRECTORY = 'addons';
@@ -156,7 +160,31 @@ function GetQPath(const PathToGet : TQPathType) : String;
   end;
 begin
   if ApplicationPath = '' then
-    raise exception.create('Error: Application path not yet loaded!');
+    raise InternalE('Error: Application path not yet loaded!');
+
+  case PathToGet of
+  pQuArK: Result:=ApplicationPath;
+  pQuArKAddon: Result:=ConcatPaths([GetQPath(pQuArK), ADDONS_SUBDIRECTORY]);
+  pQuArKGameAddon: Result:=ConcatPaths([GetQPath(pQuArKAddon), UnderscoredGamename]);
+  pQuArKDll: Result:=ConcatPaths([GetQPath(pQuArK), DLL_SUBDIRECTORY]);
+  pQuArKHelp: Result:=ConcatPaths([GetQPath(pQuArK), HELP_SUBDIRECTORY]);
+  //FIXME: Currently, these return the same as pQuArKAddon and pQuArKGameAddon.
+  //In the future, these should be changed to a my documents path, or even a AppData path!
+  pUserData: Result:=ConcatPaths([GetQPath(pQuArK), ADDONS_SUBDIRECTORY]);
+  pUserGameData: Result:=ConcatPaths([GetQPath(pQuArKAddon), UnderscoredGamename]);
+  end;
+  Result:=IncludeTrailingPathDelimiter(Result);
+end;
+
+function GetQPath(const PathToGet : TQPathType; const GameName: String) : String;
+  function UnderscoredGamename : String;
+  begin
+    { If game-name contains spaces, convert them to underscores. }
+    Result:=StringReplace(SetupSubSet(ssGames, GameName).Name,' ','_',[rfReplaceAll]);
+  end;
+begin
+  if ApplicationPath = '' then
+    raise InternalE('Error: Application path not yet loaded!');
 
   case PathToGet of
   pQuArK: Result:=ApplicationPath;

@@ -536,6 +536,9 @@ Strings = {
     4618: "//Description of the invalid polygon :",
     4620: "Impossible to create the surface for a polygon//Three aligned points don't define a plane.",
     4621: "Cannot set this as a background image: This is not a valid image file, or an unsupported format.",
+    4622: "QuArK could not switch to '%s' game mode : this game support is currently not installed",
+    4623: "QuArK could not switch to '%s' game mode : this game cannot be switched to",
+    4624: "No installed game supports found. QuArK cannot start.",
 
     5119: "(new)",
     5120: "Explorer Group",
@@ -1061,6 +1064,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.138  2008/11/20 23:45:53  danielpharos
+#Big update to renderers: mostly cleanup, and stabilized Direct3D a bit more.
+#
 #Revision 1.137  2008/10/14 00:07:12  danielpharos
 #Add an integer list as a specific type.
 #
