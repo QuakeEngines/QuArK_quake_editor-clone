@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.7  2009/02/11 15:51:55  danielpharos
+//Corrected combobox types.
+//
 //Revision 1.6  2008/09/27 15:44:00  danielpharos
 //Fixed some typo's.
 //
@@ -1882,7 +1885,7 @@ QQRKSRC1
     }
     t_models_form:form =
     {
-      model: = { typ="C" txt="Ammo"
+      model: = { typ="CL" txt="Ammo"
       items=
         "grenade1.md3"$0D
         "rocket/rocket.md3"
@@ -1891,7 +1894,7 @@ QQRKSRC1
         "/models/ammo/rocket/rocket.md3"
       }
 
-      model: = { typ="C" txt="Flags"
+      model: = { typ="CL" txt="Flags"
       items=
         "b_flag.md3"$0D
         "r_flag.md3"
@@ -1900,7 +1903,7 @@ QQRKSRC1
         "/models/flags/r_flag.md3"
       }
 
-      model: = { typ="C" txt="Gibs"
+      model: = { typ="CL" txt="Gibs"
       items=
         "abdomen.md3"$0D
         "arm.md3"$0D
@@ -1925,7 +1928,7 @@ QQRKSRC1
         "/models/gibs/skull.md3"
       }
 
-      model: = { typ="C" txt="MapObjects"
+      model: = { typ="CL" txt="MapObjects"
       items=
         "banner/banner5.md3"$0D
         "baph/baphomet_gold.md3"$0D
@@ -2010,14 +2013,14 @@ QQRKSRC1
         "/models/mapobjects/walllamp3.md3"
       }
 
-      model: = { typ="C" txt="Misc"
+      model: = { typ="CL" txt="Misc"
       items=
         "telep.md3"
       values=
         "/models/misc/telep.md3"
       }
 
-      model: = { typ="C" txt="Players"
+      model: = { typ="CL" txt="Players"
       items=
         "anarki/head.md3"$0D
         "anarki/head_1.md3"$0D
@@ -2430,7 +2433,7 @@ QQRKSRC1
         "/models/players/xaero/upper_2.md3"
       }
 
-      model: = { typ="C" txt="Powerups"
+      model: = { typ="CL" txt="Powerups"
       items=
         "ammo/bfgam.md3"$0D
         "ammo/bfgam_1.md3"$0D
@@ -2571,7 +2574,7 @@ QQRKSRC1
         "/models/powerups/instant/regen_ring_1.md3"
       }
 
-      model: = { typ="C" txt="WeapHits"
+      model: = { typ="CL" txt="WeapHits"
       items=
         "bfg.md3"$0D
         "boom01.md3"$0D
@@ -2586,7 +2589,7 @@ QQRKSRC1
         "/models/weaphits/ring02.md3"
       }
 
-      model: = { typ="C" txt="Weapons2"
+      model: = { typ="CL" txt="Weapons2"
       items=
         "bfg/bfg.md3"$0D
         "bfg/bfg_1.md3"$0D
@@ -2701,7 +2704,7 @@ QQRKSRC1
     }
     t_models2_form:form =
       {
-      model2: = { typ="C" txt="Ammo"
+      model2: = { typ="CL" txt="Ammo"
       items=
     "grenade1.md3"$0D
     "rocket/rocket.md3"
@@ -2710,7 +2713,7 @@ QQRKSRC1
     "/models/ammo/rocket/rocket.md3"
       }
 
-      model2: = { typ="C" txt="Flags"
+      model2: = { typ="CL" txt="Flags"
       items=
     "b_flag.md3"$0D
     "r_flag.md3"
@@ -2719,7 +2722,7 @@ QQRKSRC1
     "/models/flags/r_flag.md3"
       }
 
-      model2: = { typ="C" txt="Gibs"
+      model2: = { typ="CL" txt="Gibs"
       items=
     "abdomen.md3"$0D
     "arm.md3"$0D
@@ -2744,7 +2747,7 @@ QQRKSRC1
     "/models/gibs/skull.md3"
       }
 
-      model2: = { typ="C" txt="MapObjects"
+      model2: = { typ="CL" txt="MapObjects"
       items=
     "banner/banner5.md3"$0D
     "baph/baphomet_gold.md3"$0D
@@ -2829,14 +2832,14 @@ QQRKSRC1
     "/models/mapobjects/walllamp3.md3"
       }
 
-      model2: = { typ="C" txt="Misc"
+      model2: = { typ="CL" txt="Misc"
       items=
     "telep.md3"
       values=
     "/models/misc/telep.md3"
       }
 
-      model2: = { typ="C" txt="Players"
+      model2: = { typ="CL" txt="Players"
       items=
     "anarki/head.md3"$0D
     "anarki/head_1.md3"$0D
@@ -3249,7 +3252,7 @@ QQRKSRC1
     "/models/players/xaero/upper_2.md3"
       }
 
-      model2: = { typ="C" txt="Powerups"
+      model2: = { typ="CL" txt="Powerups"
       items=
     "ammo/bfgam.md3"$0D
     "ammo/bfgam_1.md3"$0D
@@ -3390,7 +3393,7 @@ QQRKSRC1
     "/models/powerups/instant/regen_ring_1.md3"
       }
 
-      model2: = { typ="C" txt="WeapHits"
+      model2: = { typ="CL" txt="WeapHits"
       items=
     "bfg.md3"$0D
     "boom01.md3"$0D
@@ -3405,7 +3408,7 @@ QQRKSRC1
     "/models/weaphits/ring02.md3"
       }
 
-      model2: = { typ="C" txt="Weapons2"
+      model2: = { typ="CL" txt="Weapons2"
       items=
     "bfg/bfg.md3"$0D
     "bfg/bfg_1.md3"$0D
