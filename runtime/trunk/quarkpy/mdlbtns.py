@@ -43,7 +43,7 @@ def droptarget(editor, newitem):
           if c is None:
             c=editor.Root.currentcomponent
           return c.group_frame, None
-      elif newitem.type in ('.jpg', '.pcx', '.tga'):
+      elif newitem.type in ('.pcx', '.tga', '.dds', '.png', '.jpg', '.bmp'):
         if not fs is None:
           c=componentof(fs)
           if c is None:
@@ -486,6 +486,9 @@ def groupcolor(m):
 #
 #
 #$Log$
+#Revision 1.25  2009/01/29 02:13:51  cdunde
+#To reverse frame indexing and fix it a better way by DanielPharos.
+#
 #Revision 1.24  2009/01/28 01:10:09  cdunde
 #Update for frame indexing, for another function.
 #
