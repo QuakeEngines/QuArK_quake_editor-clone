@@ -3410,7 +3410,6 @@ class LinearBoneHandle(qhandles.GenericHandle):
     # "option" is set to 1 for automatic drags, such as Keyframe drags, to take place.
     #
     def start_drag(self, view, x, y, option=0):
-        view.handles = []
         compbones = self.mgr.editor.Root.findallsubitems("", ':bone')      # get all bones
         if (self.mgr.editor.layout.explorer.sellist != [] and len(self.mgr.editor.layout.explorer.sellist) <= 2) or (option == 1):
             self.mgr.list = []
@@ -6229,6 +6228,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.167  2009/01/29 02:13:51  cdunde
+#To reverse frame indexing and fix it a better way by DanielPharos.
+#
 #Revision 1.166  2009/01/27 20:56:24  cdunde
 #Update for frame indexing.
 #Added new bone function 'Attach End to Start'.
