@@ -1,0 +1,30 @@
+QQRKSRC1
+// RTCW textures file for Quark
+
+//$Header$
+// ----------- REVISION HISTORY ------------
+//$Log$
+//Revision 1.1  2008/03/28 19:11:49  cdunde
+//Cleaned up, fixed if needed and brought into sync with all QuArK addons.
+//
+//
+
+{
+  QuArKProtected = "1"
+  Description = "RTCW Textures"
+
+  Textures.qtx =
+  {
+    Toolbox = "Texture Browser..."
+    Root = "RTCW Textures and Shaders.qtxfolder"
+    HTML = "intro.texturebrowser.html"
+
+    RTCW Textures and Shaders.qtxfolder =
+    {
+      Main (GtkRadiant clean).osfolder =
+      {
+        path = "Main"
+      }
+    }
+  }
+}
