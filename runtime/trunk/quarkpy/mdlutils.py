@@ -829,6 +829,8 @@ def MakeEditorVertexPolyObject(editor, option=0, otherlist=None, name=None):
                 thiscomp = name.split("-b-")[0]
                 comp = editor.Root.dictitems[thiscomp]
             group = quarkx.newobj(name + ":g");
+        if comp.currentframe is None:
+            return []
         for vtx in range (len(comp.currentframe.vertices)):
             for ver_index in range (len(VertexList)):
                 if vtx == VertexList[ver_index][0]:
@@ -3516,6 +3518,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.101  2009/01/30 20:38:46  cdunde
+#Added option for creation of all bone handle draglines when importing.
+#
 #Revision 1.100  2009/01/30 08:32:58  cdunde
 #To put limits on tristodraw function call due to massive slowdown with large models.
 #
