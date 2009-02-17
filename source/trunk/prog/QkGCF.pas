@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2008/09/06 15:57:01  danielpharos
+Moved exception code into separate file.
+
 Revision 1.18  2008/05/29 21:36:31  danielpharos
 Imported new features of GCFs from Adam Quest, and some generic cleaning up.
 
@@ -151,18 +154,11 @@ var
   GCFSubElementName   : function   (pkgfile: PChar): PChar; cdecl;
   GCFPrepList         : function   (packagefile: PChar; textfile: PChar) : Integer; cdecl;
 
-procedure Fatal(x:string);
-begin
-  Log(LOG_CRITICAL,'Error during operation on GCF file: %s',[x]);
-  Windows.MessageBox(0, pchar(X), FatalErrorCaption, MB_TASKMODAL or MB_ICONERROR or MB_OK);
-  Raise InternalE(x);
-end;
-
 function InitDllPointer(DLLHandle: HINST;APIFuncname:PChar):Pointer;
 begin
    result:= GetProcAddress(DLLHandle, APIFuncname);
    if result=Nil then
-     Fatal('API Func "'+APIFuncname+ '" not found in dlls/QuArKGCF.dll');
+     LogAndRaiseError('API Func "'+APIFuncname+ '" not found in dlls/QuArKGCF.dll');
 end;
 
 procedure initdll;
@@ -171,16 +167,16 @@ begin
   begin
     Hhllibwrap := LoadLibrary(PChar(GetQPath(pQuArKDll)+'HLLib.dll'));
     if Hhllibwrap = 0 then
-      Fatal('Unable to load dlls/HLLib.dll');
+      LogAndRaiseError('Unable to load dlls/HLLib.dll');
 
     Hgcfwrap := LoadLibrary(PChar(GetQPath(pQuArKDll)+'QuArKGCF.dll'));
     if Hgcfwrap = 0 then
-      Fatal('Unable to load dlls/QuArKGCF.dll')
+      LogAndRaiseError('Unable to load dlls/QuArKGCF.dll')
     else
     begin
       APIVersion      := InitDllPointer(Hgcfwrap, 'APIVersion');
       if APIVersion<>RequiredGCFAPI then
-        Fatal('dlls/QuArKGCF.dll API version mismatch');
+        LogAndRaiseError('dlls/QuArKGCF.dll API version mismatch');
       GCFOpen         := InitDllPointer(Hgcfwrap, 'GCFOpen');
       GCFClose        := InitDllPointer(Hgcfwrap, 'GCFClose');
       GCFOpenElement  := InitDllPointer(Hgcfwrap, 'GCFOpenElement');
@@ -201,7 +197,7 @@ begin
   if Hgcfwrap <> 0 then
   begin
     if FreeLibrary(Hgcfwrap)=false then
-      Fatal('Unable to unload dlls/QuArKGCF.dll');
+      LogAndRaiseError('Unable to unload dlls/QuArKGCF.dll');
     Hgcfwrap := 0;
     APIVersion      := nil;
     GCFOpen         := nil;
@@ -220,7 +216,7 @@ begin
   if Hhllibwrap <> 0 then
   begin
     if FreeLibrary(Hhllibwrap)=false then
-      Fatal('Unable to unload dlls/HLLib.dll');
+      LogAndRaiseError('Unable to unload dlls/HLLib.dll');
     Hhllibwrap := 0;
   end;
 end;
@@ -447,7 +443,7 @@ begin
  else
    GCFResult:=GCFPrepList(packagefile, textfile);
  if GCFResult = 3 then
-   Fatal('Error Loading "' + packagefile + '": Unsupported package type.');
+   LogAndRaiseError('Error Loading "' + packagefile + '": Unsupported package type.');
 end;
 
  {------------------------}

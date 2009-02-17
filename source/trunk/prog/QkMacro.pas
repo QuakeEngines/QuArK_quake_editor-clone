@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2008/09/06 15:56:58  danielpharos
+Moved exception code into separate file.
+
 Revision 1.9  2005/09/28 10:48:32  peter-b
 Revert removal of Log and Header keywords
 
@@ -146,12 +149,6 @@ begin
 end;*)
 
 function Process1(Q, Source: QObject; const S: String) : String;
-
- procedure Error(No: Integer);
- begin
-  Raise EError(No);
- end;
-
 var
  I, J: Integer;
  S1, MacroStr: String;
@@ -164,8 +161,8 @@ begin
      begin
       MacroStr:=Copy(S, I+2, MaxInt);
       J:=Pos('>', MacroStr);
-      if J=0 then Error(5580);
-      if S[J+1]<>']' then Error(5581);
+      if J=0 then Raise EError(5580);
+      if S[J+1]<>']' then Raise EError(5581);
       Result:=Copy(S,1,I-1)+Copy(MacroStr,1,J-1)+Process1(Q, Source, Copy(MacroStr,J+2,MaxInt));
       Exit;
      end
@@ -173,7 +170,7 @@ begin
      begin
       MacroStr:=Process1(Q, Source, Copy(S, I+2, MaxInt));
       J:=Pos(']', MacroStr);
-      if J=0 then Error(5578);
+      if J=0 then Raise EError(5578);
       Result:=Copy(MacroStr, J+1, MaxInt);
       MacroStr:=Copy(MacroStr, 1, J-1);
       case S[I+1] of
@@ -185,7 +182,7 @@ begin
        '£': FindFreeMacro(MacroStr, False);}
        '~': MacroStr:=Source.Specifics.Values[MacroStr];
       else
-       Error(5579);
+       Raise EError(5579);
       end;
       Result:=Copy(S,1,I-1)+MacroStr+Result;
       Exit;

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.21  2009/02/17 17:06:15  danielpharos
+Removed redundant Exit's.
+
 Revision 1.20  2009/02/10 21:59:35  danielpharos
 Updated to DevIL 1.7.7.
 
@@ -396,8 +399,6 @@ function LoadDevIL : Boolean;
 begin
   if (TimesLoaded=0) then
   begin
-    Result:=False;
-
     if (HDevIL = 0) then
     begin
       HDevIL := LoadLibrary(PChar(GetQPath(pQuArKDll)+'DevIL.dll'));
