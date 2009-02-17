@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2008/09/26 19:36:56  danielpharos
+Small code clean-up.
+
 Revision 1.8  2008/09/08 18:08:51  danielpharos
 Added some more general exception functions.
 
@@ -227,7 +230,7 @@ var
   FreeImage_ConvertFromRawBits: function (bits : PByte; width : Integer; height : Integer; pitch : Integer; bbp : Cardinal; red_mask : Cardinal; green_mask : Cardinal; blue_mask : Cardinal; topdown : BOOL) : FIBITMAP; stdcall;
   FreeImage_ConvertToRawBits: procedure (bits : PByte; dib : FIBITMAP; pitch : integer; bbp : Cardinal; red_mask : Cardinal; green_mask : Cardinal; blue_mask : Cardinal; topdown : BOOL); stdcall;
   FreeImage_IsTransparent: function (dib : FIBITMAP) : BOOL; stdcall;
-  FreeImage_Allocate: function (width : integer; height : integer; bbp : Integer; red_mask : Cardinal; green_mask : Cardinal; blue_mask : Cardinal) : FIBITMAP; stdcall;
+  FreeImage_Allocate: function (width : Integer; height : Integer; bbp : Integer; red_mask : Cardinal; green_mask : Cardinal; blue_mask : Cardinal) : FIBITMAP; stdcall;
   
 function LoadFreeImage : Boolean;
 procedure UnloadFreeImage(ForceUnload: boolean);
@@ -258,16 +261,11 @@ function LoadFreeImage : Boolean;
 begin
   if (TimesLoaded=0) then
   begin
-    Result:=False;
-
     if (HFreeImage = 0) then
     begin
       HFreeImage := LoadLibrary(PChar(GetQPath(pQuArKDll)+'FreeImage.dll'));
       if HFreeImage = 0 then
-      begin
         LogAndRaiseError('Unable to load dlls/FreeImage.dll');
-        Exit;
-      end;
 
       //FreeImage_Initialise   := InitDllPointer(HFreeImage, '_FreeImage_Initialise@4');
       //FreeImage_DeInitialise := InitDllPointer(HFreeImage, '_FreeImage_DeInitialise@0');
@@ -302,10 +300,7 @@ begin
 
       //DanielPharos: This is an ugly string comparison, but it should work.
       if FreeImage_GetVersion < '3.9.3' then
-      begin
         LogAndRaiseError('FreeImage library version mismatch!');
-        Exit;
-      end;
 
       FreeImage_SetOutputMessage(FreeImageErrorHandler);
     end;
