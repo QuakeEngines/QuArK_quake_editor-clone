@@ -118,11 +118,11 @@ class ModelLayout(BaseLayout):
             else:
                 slist.append(None)
                 return slist
-            if s.name.endswith(".pcx") or s.name.endswith(".jpg") or s.name.endswith(".tga"):
+            if s.name.endswith(".pcx") or s.name.endswith(".tga") or s.name.endswith(".dds") or s.name.endswith(".png") or s.name.endswith(".jpg") or s.name.endswith(".bmp"):
                 slist.append(s)
         else:
             for s in self.explorer.sellist:
-                if s.name.endswith(".pcx") or s.name.endswith(".jpg") or s.name.endswith(".tga"):
+                if s.name.endswith(".pcx") or s.name.endswith(".tga") or s.name.endswith(".dds") or s.name.endswith(".png") or s.name.endswith(".jpg") or s.name.endswith(".bmp"):
                     slist.append(s)
                     return slist
                 else:
@@ -150,7 +150,7 @@ class ModelLayout(BaseLayout):
                                 if dictitem == saveskin:
                                     slist.append(dictitem)
                                     return slist
-                                if dictitem.endswith(".pcx") or dictitem.endswith(".jpg") or dictitem.endswith(".tga"):
+                                if dictitem.endswith(".pcx") or dictitem.endswith(".tga") or dictitem.endswith(".dds") or dictitem.endswith(".png") or dictitem.endswith(".jpg") or dictitem.endswith(".bmp"):
                                     if count == 1:
                                         holddictitem = item.dictitems[dictitem]
                                     if len(item.dictitems) > 1:
@@ -835,6 +835,7 @@ class ModelLayout(BaseLayout):
                     self.comp_color2 = selitem.dictspec['comp_color2']
                     for view in self.views:
                         view.invalidate(1)
+                self.explorer.invalidate()
             ### This section handles the Bones default settings and data input for the Specifics/Args page.
             # Updates all vertexes 'color' that are assigned to a bone handle when that handle color is changed.
             if (sl[0].type == ":bone") and (not isinstance(reserved, qtoolbar.button)):
@@ -1495,6 +1496,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.96  2009/02/11 15:38:49  danielpharos
+#Don't store buttons inside the layout object itself.
+#
 #Revision 1.95  2009/01/27 05:03:01  cdunde
 #Full support for .md5mesh bone importing with weight assignment and other improvements.
 #
