@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.20  2009/02/10 21:59:35  danielpharos
+Updated to DevIL 1.7.7.
+
 Revision 1.19  2008/10/15 21:58:06  danielpharos
 Corrected a changed function call.
 
@@ -399,10 +402,7 @@ begin
     begin
       HDevIL := LoadLibrary(PChar(GetQPath(pQuArKDll)+'DevIL.dll'));
       if HDevIL = 0 then
-      begin
         LogAndRaiseError('Unable to load dlls/DevIL.dll');
-        Exit;
-      end;
 
       ilInit            := InitDllPointer(HDevIL, 'ilInit');
       ilShutDown        := InitDllPointer(HDevIL, 'ilShutDown');
@@ -438,10 +438,7 @@ begin
       ilRegisterPal     := InitDllPointer(HDevIL, 'ilRegisterPal');
 
       if ilGetInteger(IL_VERSION_NUM) < 175 then
-      begin
         LogAndRaiseError('DevIL library version mismatch!');
-        Exit;
-      end;
 
       ilInit;
     end;
