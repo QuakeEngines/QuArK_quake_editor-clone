@@ -6,12 +6,20 @@ author: DanielPharos
 Here are a few things everybody should keep in mind when setting up Half-Life 2:
 <ul>
 <li>You will need the Source SDK installed. To do this, open Steam's Tools tab
-and install it. The Source SDK contains the compilers needed to create the map
-files.
-<li>After an update to either Steam or the Source SDK, the SDK files might not
-be in a consistent state anymore. Launch the Source SDK; this should refresh
-the files. You can also use the 'Refresh Source SDK files' option to make sure
-everything is OK.
-<li>You will need to have run the game at least once, for the data files to be
-properly extracted, so QuArK can find them.
+and install the <b>Source SDK</b> Tools. The Source SDK contains the compilers needed.
+Installing all 3 will allow to make a map for any source engine game.
+Once installed, you need to run the <b>Source SDK</b> from your steam list,
+then run <b>Hammer</b>, that finishes the tool installation.
+
+<li>Every once in a while Valve updates the tools and you will have to repeat the above
+steps for it to work again (you will know when to do this cause you wont be able to compile a map).
+Launch the Source SDK; this should refresh the files. You can also use the <b>Refresh Source SDK files</b>
+option to make sure everything is OK. Then since you changed them you will need to fix the setup,
+under the Half-Life 2 Configuration do the following:
+
+1) In default directory of build programs change to "%steampath%\SteamApps\%steamuser%\%sourcesdkdir%".<br>
+2) Change the first 3 programs back to "vbsp.exe", "vvis.exe", and "vrad.exe" respectively.
+
+<li>You will need to have run the game at least once, for the data files to be properly extracted,
+so QuArK can find them.
 </ul>
