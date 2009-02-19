@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.54  2008/12/19 23:30:41  danielpharos
+Reduced dependancy on CurrentMapView to something more logical; made it a call-parameter.
+
 Revision 1.53  2008/12/04 20:56:33  danielpharos
 Fixed gray-out view when initing Scene.
 
@@ -298,7 +301,6 @@ type
                  function ConfigSubSrc : QObject;
                  procedure ReadSetupInformation(Inv: Boolean);
                  procedure UpdateCoords(Inv: Boolean);
-                 procedure SetScreenSize(SX, SY: Integer);
                  procedure ClearPanel(const S: String);
                  function GetKey3D(Key: Word; var Key3D: TKey3D) : Boolean;
                  procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
@@ -701,6 +703,7 @@ begin
       Scene.SetViewWnd(Self.Handle);
       Scene.SetDrawRect(GetClientRect);
       Scene.Init(MapViewProj, DisplayMode, DisplayType, RenderMode, Specifics.Values['Lib'], AllowsGDI);
+      Scene.SetViewSize(ClientWidth, ClientHeight);
 
       if AllowsGDI then
        Drawing:=Drawing and not dfNoGDI
@@ -722,7 +725,6 @@ begin
        Perform(wm_InternalMessage, wp_PyInvalidate, 0);
       end;
 
-     SetScreenSize(ClientWidth, ClientHeight);
     end;
 
   {Focus3D:=Focus3D;}
@@ -773,12 +775,6 @@ begin
 
     end;
   end;
-end;
-
-procedure TPyMapView.SetScreenSize(SX, SY: Integer);
-begin
- if (Scene<>Nil) and (Scene.ErrorMsg='') then
-   Scene.SetViewSize(SX, SY);
 end;
 
 procedure TPyMapView.ClearPanel(const S: String);
@@ -1190,7 +1186,9 @@ begin
      DisplayVPos:=DisplayVPos + MapViewProj.ScrCenter.Y - ClientHeight div 2;
     end;
    MapViewProj.Resize(ClientWidth, ClientHeight);
-   SetScreenSize(ClientWidth, ClientHeight);
+   if (Scene<>Nil) then
+     Scene.SetViewSize(ClientWidth, ClientHeight);
+
   end;
  SetRedLines;
 end;
