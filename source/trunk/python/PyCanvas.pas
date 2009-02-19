@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2008/09/06 15:57:34  danielpharos
+Moved exception code into separate file.
+
 Revision 1.11  2007/11/20 21:29:39  danielpharos
 Moved most of the DIB-calls to PixelSet, and added padding there. This should fix the few remaining image drawing issues.
 
@@ -753,6 +756,7 @@ begin
   PyErr_SetString(QuarkxError, PChar(LoadStr1(4429)));
  except
   EBackToPython;
+  Result:=-1;
  end;
 end;
 
