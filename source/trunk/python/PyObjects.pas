@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.24  2008/11/19 06:14:00  cdunde
+Bones system moved to outside of components for Model Editor completed.
+
 Revision 1.23  2008/11/06 20:18:22  danielpharos
 Removed old stuff in preparation for new specifics code.
 
@@ -266,25 +269,14 @@ function ObjRepr(self: PyObject) : PyObject; cdecl;
 var
  Q: QObject;
  s, s1: string;
- L: TStringList;
- I: Integer;
 begin
  try
   Q:=QkObjFromPyObj(self);
-  L:=Q.ClassList;
-  try
-    if L.Count = 0 then
-      s1:=''
-    else
-    begin
-      s1:=L[0];
-      for I:=1 to L.Count-1 do
-        s1:=s1+', '+L[I];
-    end;
-  finally
-    L.Free;
-  end;
-  s:=Format('<%s object at %p, name: "%s", class: "%s">', [self.ob_type.tp_name, @self, Q.Name+Q.TypeInfo, s1]);
+  if Q=nil then
+   S1:=''
+  else
+   S1:=QObjectClass(Q.ClassType).ClassName;
+  s:=Format('<%s object at 0x%p, name: "%s", class: "%s">', [self.ob_type.tp_name, self, Q.Name+Q.TypeInfo, s1]);
   Result:=PyString_FromString(PChar(s));
  except
   EBackToPython;
