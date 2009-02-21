@@ -1,6 +1,6 @@
 (**************************************************************************
 QuArK -- Quake Army Knife -- 3D game editor
-Copyright (C) Armin Rigo
+Copyright (C) QuArK Development Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -14,15 +14,18 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
+http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 **************************************************************************)
 
 {
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.29  2008/10/23 21:49:54  danielpharos
+Ignore everything we don't understand from CoD1 maps.
+
 Revision 1.28  2008/10/23 18:55:50  danielpharos
 Added partial support for loading Call of Duty 2 maps.
 
@@ -104,7 +107,6 @@ Englishification
 Revision 1.2  2000/06/03 10:46:49  alexander
 added cvs headers
 }
-
 
 unit qmath;
 

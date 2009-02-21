@@ -1,6 +1,6 @@
 (**************************************************************************
 QuArK -- Quake Army Knife -- 3D game editor
-Copyright (C) 1996-99 Armin Rigo
+Copyright (C) QuArK Development Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -14,17 +14,18 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-Contact the author Armin Rigo by e-mail: arigo@planetquake.com
-or by mail: Armin Rigo, La Cure, 1854 Leysin, Switzerland.
-See also http://www.planetquake.com/quark
+http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 **************************************************************************)
 
 {
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2007/09/12 15:39:51  danielpharos
+Small file cleanup.
+
 Revision 1.5  2007/02/06 13:08:47  danielpharos
 Fixes for transparency. It should now work (more or less) correctly in all renderers that support it.
 
@@ -33,7 +34,6 @@ Revert removal of Log and Header keywords
 
 Revision 1.2  2003/01/01 13:49:56  decker_dk
 added cvs headers
-
 }
 
 unit QkKingPin;

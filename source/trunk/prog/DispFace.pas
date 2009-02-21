@@ -1,6 +1,6 @@
 (**************************************************************************
-QuArK -- Quake Army Knife -- 3D game editor - Face Displacement code
-Copyright (C) Alexander Haarer
+QuArK -- Quake Army Knife -- 3D game editor
+Copyright (C) QuArK Development Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -14,23 +14,26 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
+http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 **************************************************************************)
 
 {
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2007/02/02 00:47:49  danielpharos
+Fixed a few copyright headers
+
 Revision 1.3  2005/09/28 10:48:31  peter-b
 Revert removal of Log and Header keywords
 
 Revision 1.1  2005/07/30 23:04:44  alexander
 introduced dispface class for faces with displacement mapping
 vmf loader sets some displacement info
-
 }
+
 unit DispFace;
 
 interface

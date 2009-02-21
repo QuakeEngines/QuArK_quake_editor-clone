@@ -1,6 +1,6 @@
 (**************************************************************************
 QuArK -- Quake Army Knife -- 3D game editor
-Copyright (C) Armin Rigo
+Copyright (C) QuArK Development Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -14,15 +14,18 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
+http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 **************************************************************************)
 
 {
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.17  2008/12/15 22:20:58  danielpharos
+Fixed the right-click popup menu in the configuration not enabling all the usable menu-options.
+
 Revision 1.16  2008/09/14 21:51:25  danielpharos
 Changes to Help system: All forms now have a customizable help-link. Also, added an fallback option to the online infobase docs.
 
@@ -65,7 +68,6 @@ Englishification and a little layout
 Revision 1.2  2000/06/03 10:46:49  alexander
 added cvs headers
 }
-
 
 unit Config;
 

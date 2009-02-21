@@ -1,6 +1,6 @@
 (**************************************************************************
 QuArK -- Quake Army Knife -- 3D game editor
-Copyright (C) Armin Rigo
+Copyright (C) QuArK Development Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -14,15 +14,18 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
+http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 **************************************************************************)
 
 {
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.24  2009/02/10 21:59:34  danielpharos
+Updated to DevIL 1.7.7.
+
 Revision 1.23  2008/10/13 19:12:42  danielpharos
 Fix nvdxt not working with non-multiples of 4.
 
@@ -91,9 +94,6 @@ Big changes to allow DDS file saving, although it seems DevIL doesn't support th
 
 Revision 1.1  2007/05/02 22:34:49  danielpharos
 Added DDS file support. Fixed wrong (but unused then) DevIL DDL interface. DDS file saving not supported at the moment.
-
-
-
 }
 
 unit QkDDS;

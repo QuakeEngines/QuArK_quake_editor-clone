@@ -1,4 +1,3 @@
-
 (* Pre-2.0 versions of Python are no longer supported*)
 {$DEFINE PYTHON24}
 

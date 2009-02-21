@@ -7,7 +7,7 @@ inherited FQImages: TFQImages
     Left = 9
     Top = 13
     Width = 409
-    Height = 246
+    Height = 239
     Align = alClient
     BevelOuter = bvNone
     BorderStyle = bsSingle
@@ -15,7 +15,7 @@ inherited FQImages: TFQImages
     TabOrder = 4
     object Panel2: TPanel
       Left = 0
-      Top = 201
+      Top = 194
       Width = 405
       Height = 41
       Align = alBottom

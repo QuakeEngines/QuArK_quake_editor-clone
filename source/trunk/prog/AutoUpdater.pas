@@ -1,6 +1,6 @@
 (**************************************************************************
 QuArK -- Quake Army Knife -- 3D game editor
-Copyright (C) Armin Rigo
+Copyright (C) QuArK Development Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -14,15 +14,18 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
+http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 **************************************************************************)
 
 {
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2008/12/12 12:47:52  danielpharos
+Moved GlobalWarning to QkExceptions, and added QkTextBoxForm.
+
 Revision 1.13  2008/10/04 13:33:25  danielpharos
 Added Check for Updates option to ? menu and added some dialog icons.
 
@@ -61,7 +64,6 @@ Fix a problem downloading files in the AutoUpdater, and disabled it and hidden i
 
 Revision 1.1  2007/09/12 15:35:40  danielpharos
 Moved update settings to seperate config section and added beginnings of online update check.
-
 }
 
 unit AutoUpdater;

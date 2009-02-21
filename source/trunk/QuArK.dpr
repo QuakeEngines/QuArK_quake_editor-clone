@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.61  2008/12/12 12:47:52  danielpharos
+Moved GlobalWarning to QkExceptions, and added QkTextBoxForm.
+
 Revision 1.60  2008/12/04 12:14:00  danielpharos
 Fixed a redraw-clipping problem, removed a redundant file and cleaned-up the constructor of the EdSceneObjects.
 
@@ -250,7 +253,7 @@ uses
   QkExplorer in 'prog\QkExplorer.pas',
   QkFileExplorer in 'prog\QkFileExplorer.pas',
   QkFileObjects in 'prog\QkFileObjects.pas' {QForm1},
-  QkFTX in 'prog\QkFTX.pas',
+  QkFtx in 'prog\QkFtx.pas',
   QkForm in 'prog\QkForm.pas',
   QkFormCfg in 'prog\QkFormCfg.pas',
   QkFormVw in 'prog\QkFormVw.pas' {FQFormVw},

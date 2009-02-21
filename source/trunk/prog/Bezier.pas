@@ -1,6 +1,6 @@
 (**************************************************************************
 QuArK -- Quake Army Knife -- 3D game editor
-Copyright (C) Armin Rigo
+Copyright (C) QuArK Development Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -14,15 +14,18 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
+http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 **************************************************************************)
 
 {
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.36  2009/02/11 13:12:48  danielpharos
+Grayed out beziers can now not be selected in views anymore.
+
 Revision 1.35  2008/12/19 23:30:41  danielpharos
 Reduced dependancy on CurrentMapView to something more logical; made it a call-parameter.
 
@@ -118,7 +121,6 @@ Englishification
 Revision 1.14  2000/06/03 10:46:49  alexander
 added cvs headers
 }
-
 
 unit Bezier;
 

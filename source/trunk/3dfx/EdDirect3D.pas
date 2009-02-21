@@ -1,6 +1,6 @@
 (**************************************************************************
 QuArK -- Quake Army Knife -- 3D game editor
-Copyright (C) Armin Rigo
+Copyright (C) QuArK Development Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -14,15 +14,18 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
+http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 **************************************************************************)
 
 {
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.36  2009/02/14 16:30:19  danielpharos
+Compacted some code a bit by using SetupGameSet.
+
 Revision 1.35  2008/12/04 12:14:00  danielpharos
 Fixed a redraw-clipping problem, removed a redundant file and cleaned-up the constructor of the EdSceneObjects.
 
@@ -144,7 +147,6 @@ Revision 1.1  2000/12/30 15:22:19  decker_dk
 - Moved TSceneObject and TTextureManager from Ed3DFX.pas into EdSceneObject.Pas
 - Created Ed3DEditors.pas which contains close/free calls
 - Created EdDirect3D.pas with minimal contents
-
 }
 
 unit EdDirect3D;

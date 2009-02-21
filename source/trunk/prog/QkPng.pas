@@ -1,6 +1,6 @@
 (**************************************************************************
 QuArK -- Quake Army Knife -- 3D game editor
-Copyright (C) Armin Rigo
+Copyright (C) QuArK Development Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -14,15 +14,18 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
+http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 **************************************************************************)
 
 {
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2008/10/04 13:50:55  danielpharos
+Start using LogAndRaiseError instead of local Fatal's.
+
 Revision 1.18  2008/08/28 22:15:34  danielpharos
 Added DevIL PNG interlace option.
 
@@ -74,7 +77,6 @@ Removed QImages, as it was just another name for QImage
 Revision 1.1  2002/02/24 13:46:32  decker_dk
 Moved here from Andy's QkTribes2.PAS code, and altered slightly.
 Currently any non-8-bits PNG images will be converted to 8-bits/paletted-image somewhere else in QuArK's code. This is considered a bug which must be solved somehow.
-
 }
 
 unit QkPng;

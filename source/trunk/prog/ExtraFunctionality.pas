@@ -1,6 +1,6 @@
 (**************************************************************************
 QuArK -- Quake Army Knife -- 3D game editor
-Copyright (C) Armin Rigo   
+Copyright (C) QuArK Development Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -14,15 +14,18 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
+http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 **************************************************************************)
 
 {
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2008/12/03 11:04:06  danielpharos
+Fixed Delphi 6 problem introduced in last rev.
+
 Revision 1.15  2008/12/02 16:16:28  danielpharos
 Moved some consts to ExtraFunctionality where they belong.
 
@@ -49,7 +52,6 @@ Cleaned up all Hints and warnings declared by Delphi 5.
 
 Revision 1.6  2003/08/12 15:14:46  silverpaladin
 Added Pre-Delphi6  multi platform support routines.
-
 }
 
 unit ExtraFunctionality;

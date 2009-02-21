@@ -1,6 +1,6 @@
 (**************************************************************************
 QuArK -- Quake Army Knife -- 3D game editor
-Copyright (C) Armin Rigo
+Copyright (C) QuArK Development Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -14,15 +14,18 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
+http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 **************************************************************************)
 
 {
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.41  2009/02/10 21:59:35  danielpharos
+Updated to DevIL 1.7.7.
+
 Revision 1.40  2008/10/10 19:48:42  danielpharos
 Fix filetype sorting order being way off.
 
@@ -146,8 +149,6 @@ use maximum texture size of 128 pixels for quark to reduce mem use
 
 Revision 1.1  2004/11/07 16:24:23  alexander
 new: support for vtf file loading
-
-
 }
 
 unit QkVTF;
