@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2009/02/21 17:09:53  danielpharos
+Changed all source files to use CRLF text format, updated copyright and GPL text.
+
 Revision 1.1  2008/07/17 14:47:58  danielpharos
 Big (experimental) change to model bones, tags and boundframes
 }
@@ -34,7 +37,6 @@ interface
 uses QkMdlObject, QkObjects, qmath, qmatrices;
 
 type
-  PMatrixTransformation = ^TMatrixTransformation;
   QTagFrame = class(QMdlObject)
   public
     class function TypeInfo: String; override;

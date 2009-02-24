@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23  2009/02/21 17:09:53  danielpharos
+Changed all source files to use CRLF text format, updated copyright and GPL text.
+
 Revision 1.22  2009/02/11 22:48:03  danielpharos
 Second attempt.
 
@@ -88,59 +91,21 @@ unit QkModelBone;
 
 interface
 
-uses Sysutils, qmath, QkMdlObject, QkObjects, Graphics, Python, QkBoneGroup;
+uses SysUtils, QkMdlObject, QkObjects, qmath, qmatrices, Python, QkBoneGroup;
 
-{
-Internal Format:
-  Start_Point: Vec3_t;
-  End_Point: Vec3_t;
-  Length: Single (Float);
-
-Bones are Connected End to Start of sub objects i.e.:
-
-In Treeview                          #  In Real Life   ( O specifies bone connection)
-                                     #
-Skeleton                             #                |
-|                                    #                |
-+ Neck                               #           O----O----O
-   |                                 #          /     |     \
-   +RightArm                         #                |
-   |   |                             #                |
-   |   + RightHand                   #                |
-   |                                 #                |
-   +LeftArm                          #                O
-   |   |                             #               / \
-   |   + LeftHand                    #              /   \
-   |                                 #             /     \
-   +Spine                            #          --O       O--
-       |                             #
-       + RightLeg                    #
-       |   |                         #
-       |   + RightFoot               #
-       |                             #
-       + LeftLeg                     #
-           |                         #
-           + LeftLeg                 #
-
-}
 type
   QModelBone = class(QMdlObject)
-  private
-    //Workaround: We want to be able to store handles with the bones:
-    FStartHandle, FEndHandle: PyObject;
   public
     function IsAllowedParent(Parent: QObject) : Boolean; override;
     class function TypeInfo: String; override;
     procedure ObjectState(var E: TEtatObjet); override;
-    constructor Create(const nName: String; nParent: QObject);
-    destructor Destroy; override;
 //    procedure Dessiner; override;
-    Function GetEndPoint(var endpoint: vec3_p): boolean;
-    Function GetStartPoint(var startpoint: vec3_p): boolean;
-    Function GetStartEnd(var startpoint, endpoint: vec3_p): Boolean;
+    Procedure SetPosition(p: vec3_t);
+    Function GetPosition: vec3_p;
+    procedure SetRotMatrix(P: TMatrixTransformation);
+    procedure GetRotMatrix(var P: PMatrixTransformation);
     function PyGetAttr(attr: PChar) : PyObject; override;
     function PySetAttr(attr: PChar; value: PyObject) : Boolean; override;
-    Function GetLength: Single;
     function TreeViewColorBoxes : TColorBoxList; override;
   end;
 
@@ -171,73 +136,58 @@ begin
   E.IndexImage:=iiModelBone;
 end;
 
-constructor QModelBone.Create(const nName: String; nParent: QObject);
-begin
-  inherited;
-  FStartHandle:=PyNoResult;
-  FEndHandle:=PyNoResult;
-end;
-
-destructor QModelBone.Destroy;
-begin
-  Py_XDECREF(FStartHandle);
-  Py_XDECREF(FEndHandle);
-  inherited;
-end;
-
 const
-  StartSpec = 'start_point';
-  StartSpecLen = length(StartSpec+'=');
-  EndSpec = 'end_point';
-  EndSpecLen = length(EndSpec+'=');
+  PosSpec = 'origin';
+  PosSpecLen = length(PosSpec+'=');
+  RotSpec = 'rotmatrix';
+  RotSpecLen = length(RotSpec+'=');
 
-Function QModelBone.GetStartPoint(var startpoint: vec3_p): boolean;
+procedure QModelBone.SetPosition(P: vec3_t);
 var
-  S: String;
+  CVert: vec3_p;
+  s: string;
 begin
-  S:=GetSpecArg(FloatSpecNameOf(StartSpec));
-  if S='' then begin
-    result:=false;
-    exit;
-  end;
-  Result:=(Length(S) - StartSpecLen)=sizeof(vec3_t);
-  if not Result then
-    Exit;
-  PChar(startpoint):=PChar(S) + StartSpecLen;
+  S:=FloatSpecNameOf(PosSpec);
+  SetLength(S, PosSpecLen+SizeOf(vec3_t));
+  PChar(CVert):=PChar(S)+PosSpecLen;
+  CVert^[0]:=P[0];
+  CVert^[1]:=P[1];
+  CVert^[2]:=P[2];
+  Specifics.Add(s);
 end;
 
-Function QModelBone.GetEndPoint(var endpoint: vec3_p): boolean;
+function QModelBone.GetPosition: vec3_p;
 var
-  S: String;
+  s: string;
 begin
-  S:=GetSpecArg(FloatSpecNameOf(EndSpec));
-  if S='' then begin
-    Result:=false;
+  Result:=nil;
+  S:=GetSpecArg(FloatSpecNameOf(PosSpec));
+  if S='' then
     Exit;
-  end;
-  Result:=(Length(S) - EndSpecLen)=sizeof(vec3_t);
-  if not Result then
-    Exit;
-  PChar(endpoint):=PChar(S) + EndSpecLen;
+  PChar(Result):=PChar(S) + PosSpecLen;
 end;
 
-Function QModelBone.GetLength: Single;
+procedure QModelBone.SetRotMatrix(P: TMatrixTransformation);
 var
-  s,e: vec3_p;
-  r: boolean;
+  CVert: vec3_p;
+  s: string;
 begin
-  Result:=GetFloatSpec('length', 0);
-  if Result=0 then begin
-    r:=GetStartEnd(s, e);
-    if not r then exit;
-    result:=Vec3Length(Vec3Diff(s^,e^));
-    SetFloatSpec('length', result);
-  end;
+  S:=FloatSpecNameOf(RotSpec);
+  SetLength(S, RotSpecLen+SizeOf(TMatrixTransformation));
+  PChar(CVert):=PChar(S)+RotSpecLen;
+  Move(P, CVert^, Sizeof(TMatrixTransformation));
+  Specifics.Add(s);
 end;
 
-Function QModelBone.GetStartEnd(var startpoint, endpoint: vec3_p): Boolean;
+procedure QModelBone.GetRotMatrix(var P: PMatrixTransformation);
+var
+  s: string;
 begin
-  Result:=GetStartPoint(startpoint) and GetEndPoint(endpoint);
+  P:=nil;
+  S:=GetSpecArg(FloatSpecNameOf(RotSpec));
+  if S='' then
+    Exit;
+  PChar(P):=PChar(S) + RotSpecLen;
 end;
 
 (*procedure QModelBone.Dessiner;
@@ -277,51 +227,27 @@ end;*)
 function QModelBone.TreeViewColorBoxes : TColorBoxList;
 begin
   Result:=TColorBoxList.Create;
-  Result.Add('start_color', 'LI');
-  Result.Add('end_color', 'LI');
+  Result.Add('_color', 'LI');
 end;
 
 function QModelBone.PyGetAttr(attr: PChar) : PyObject;
 var
   P: vec3_p;
-  R: Boolean;
+  M: PMatrixTransformation;
 begin
   Result:=inherited PyGetAttr(attr);
   if Result<>Nil then Exit;
   case attr[0] of
-    's': if StrComp(attr, 'start_point')=0 then
+    'p': if StrComp(attr, 'position')=0 then
     begin
-      R:=GetStartPoint(P);
-      if R then
-        Result:=MakePyVectv(P^)
-      else
-        Result:=Py_None;
-      Exit;
-    end
-    else if StrComp(attr, 'start_handle')=0 then
-    begin
-      Result:=FStartHandle;
-      Py_INCREF(Result);
+      P:=GetPosition;
+      Result:=MakePyVectv(P^);
       Exit;
     end;
-    'e': if StrComp(attr, 'end_point')=0 then
+    'r': if StrComp(attr, 'rotmatrix')=0 then
     begin
-      R:=GetEndPoint(P);
-      if R then
-        Result:=MakePyVectv(P^)
-      else
-        Result:=Py_None;
-      Exit;
-    end
-    else if StrComp(attr, 'end_handle')=0 then
-    begin
-      Result:=FEndHandle;
-      Py_INCREF(Result);
-      Exit;
-    end;
-    'b': if StrComp(attr, 'bone_length')=0 then
-    begin
-      Result:=PyFloat_FromDouble(GetLength);
+      GetRotMatrix(M);
+      Result:=MakePyMatrix(M^);
       Exit;
     end;
   end;
@@ -330,73 +256,55 @@ end;
 function QModelBone.PySetAttr(attr: PChar; value: PyObject) : Boolean;
 var
   P: PyVect;
+  M: PyMatrix;
   S, S0: String;
-  Dest: vec3_p;
-  length: single;
+  DestP: vec3_p;
+  DestM: PMatrixTransformation;
 begin
   Result:=inherited PySetAttr(attr, value);
   if not Result then begin
     case attr[0] of
-      'b': if StrComp(attr, 'bone_length')=0 then begin
-        if not PyArg_ParseTupleX(value, 'f', [@length]) then
-         Exit;
-        SetFloatSpec('length',length);
-        Result:=True;
-        Exit;
-      end;
-      's': if StrComp(attr, 'start_point')=0 then begin
-        S0:=FloatSpecNameOf(StartSpec);
+      'p': if StrComp(attr, 'position')=0 then begin
+        S0:=FloatSpecNameOf(PosSpec);
         S:=S0+'=';
-        SetLength(S, StartSpecLen+SizeOf(vec3_t));
-        PChar(Dest):=PChar(S)+StartSpecLen;
+        SetLength(S, PosSpecLen+SizeOf(vec3_t));
+        PChar(DestP):=PChar(S)+PosSpecLen;
         P:=PyVect(value);
         if P=Nil then
           Exit;
         if P^.ob_type <> @TyVect_Type then
           Raise EError(4441);
         with P^.V do begin
-          Dest^[0]:=X;
-          Dest^[1]:=Y;
-          Dest^[2]:=Z;
+          DestP^[0]:=X;
+          DestP^[1]:=Y;
+          DestP^[2]:=Z;
         end;
-        Specifics.Delete(Specifics.IndexofName(S0));
         Specifics.Add(S);
-        Result:=True;
-        Exit;
-      end
-      else if StrComp(attr, 'start_handle')=0 then
-      begin
-        Py_XDECREF(FStartHandle);
-        FStartHandle:=value;
-        Py_INCREF(value);
         Result:=True;
         Exit;
       end;
-      'e': if StrComp(attr, 'end_point')=0 then begin
-        S0:=FloatSpecNameOf(EndSpec);
+      'r': if StrComp(attr, 'rotmatrix')=0 then begin
+        S0:=FloatSpecNameOf(RotSpec);
         S:=S0+'=';
-        SetLength(S, EndSpecLen+SizeOf(vec3_t));
-        PChar(Dest):=PChar(S)+EndSpecLen;
-        P:=PyVect(value);
-        if P=Nil then
+        SetLength(S, RotSpecLen+SizeOf(TMatrixTransformation));
+        PChar(DestM):=PChar(S)+RotSpecLen;
+        M:=PyMatrix(value);
+        if M=Nil then
           Exit;
-        if P^.ob_type <> @TyVect_Type then
-          Raise EError(4441);
-        with P^.V do begin
-          Dest^[0]:=X;
-          Dest^[1]:=Y;
-          Dest^[2]:=Z;
+        if M^.ob_type <> @TyMatrix_Type then
+          Raise EError(4462);
+        with M^ do begin
+          DestM^[1][1]:=M[1][1];
+          DestM^[1][2]:=M[1][2];
+          DestM^[1][3]:=M[1][3];
+          DestM^[2][1]:=M[2][1];
+          DestM^[2][2]:=M[2][2];
+          DestM^[2][3]:=M[2][3];
+          DestM^[3][1]:=M[3][1];
+          DestM^[3][2]:=M[3][2];
+          DestM^[3][3]:=M[3][3];
         end;
-        Specifics.Delete(Specifics.IndexofName(S0));
         Specifics.Add(S);
-        Result:=True;
-        Exit;
-      end
-      else if StrComp(attr, 'end_handle')=0 then
-      begin
-        Py_XDECREF(FEndHandle);
-        FEndHandle:=value;
-        Py_INCREF(value);
         Result:=True;
         Exit;
       end;
