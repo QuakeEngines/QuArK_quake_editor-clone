@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23.2.1  2009/02/24 23:57:35  danielpharos
+Initial changes.
+
 Revision 1.23  2009/02/21 17:09:53  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -153,6 +156,9 @@ begin
   CVert^[0]:=P[0];
   CVert^[1]:=P[1];
   CVert^[2]:=P[2];
+  if Specifics.IndexofName(FloatSpecNameOf(PosSpec))<>-1 then
+    //@ BAD CODING TACTIC!
+    Specifics.Delete(Specifics.IndexofName(FloatSpecNameOf(PosSpec)));
   Specifics.Add(s);
 end;
 
@@ -176,6 +182,9 @@ begin
   SetLength(S, RotSpecLen+SizeOf(TMatrixTransformation));
   PChar(CVert):=PChar(S)+RotSpecLen;
   Move(P, CVert^, Sizeof(TMatrixTransformation));
+  if Specifics.IndexofName(FloatSpecNameOf(RotSpec))<>-1 then
+    //@ BAD CODING TACTIC!
+    Specifics.Delete(Specifics.IndexofName(FloatSpecNameOf(RotSpec)));
   Specifics.Add(s);
 end;
 
@@ -279,6 +288,9 @@ begin
           DestP^[1]:=Y;
           DestP^[2]:=Z;
         end;
+        if Specifics.IndexofName(FloatSpecNameOf(PosSpec))<>-1 then
+          //@ BAD CODING TACTIC!
+          Specifics.Delete(Specifics.IndexofName(FloatSpecNameOf(PosSpec)));
         Specifics.Add(S);
         Result:=True;
         Exit;
@@ -304,6 +316,9 @@ begin
           DestM^[3][2]:=M[3][2];
           DestM^[3][3]:=M[3][3];
         end;
+        if Specifics.IndexofName(FloatSpecNameOf(RotSpec))<>-1 then
+          //@ BAD CODING TACTIC!
+          Specifics.Delete(Specifics.IndexofName(FloatSpecNameOf(RotSpec)));
         Specifics.Add(S);
         Result:=True;
         Exit;
