@@ -380,7 +380,7 @@ class ModelLayout(BaseLayout):
                 sfskills = s
         mnu = []
         for i in range(0, len(sfskills)):
-            item = qmenu.item(SFTexts[i], self.makesettingclick)
+            item = qmenu.item(SFTexts[i], self.modeltypeclick)
             item.skill = sfskills[i]
             mnu.append(item)
         sfbtn = qtoolbar.menubutton(mnu, "model type||Set the type of model format you plan to export to. Some models have 'Specific' settings and others do not, in which case only general items will be displayed.|intro.modeleditor.dataforms.html", ico_maped, 10)
@@ -402,8 +402,7 @@ class ModelLayout(BaseLayout):
         df.flags = DF_AUTOFOCUS
         df.bluehint = 1
         self.dataform = df
-        self.dataform.onchange = self.filldataform # Causes form to reload the currently selected object to update
-                                                   # any selection changes correctly, mainly for color selection.
+        self.dataform.onchange = self.dataformchange
         return self.fp
 
 
@@ -429,249 +428,21 @@ class ModelLayout(BaseLayout):
 
     def actionmpp(self):
         "Switch or update the multi-pages-panel for the current selection."
-        if (self.mpp.n<4): # and not (self.mpp.lock.state & qtoolbar.selected):
+        if (self.mpp.n<2): # and not (self.mpp.lock.state & qtoolbar.selected):
             fs = self.explorer.focussel
             if fs is None:
                 self.mpp.viewpage(0)
             elif fs.type == ':bone' and self.mpp.pagebtns[1].state == 2:
                 self.mpp.viewpage(1)
-        #    elif fs.type == ':p':
-        #        self.mpp.viewpage(2)
-        #    elif fs.type == ':f':
-        #        self.mpp.viewpage(3)
-        
 
-    def makesettingclick(self, m):
-        "This function fills in the Default values of the Specifics/Args page form"
-        "and changes the form's values when a setting is made."
-        global check_start_component, check_end_component, check_start_vertex_count, check_end_vertex_count, checkstart_pos, checkend_pos, checkbone_length, checkbone_start_offset, checkbone_end_offset, checkbone_start_scale, checkbone_end_scale
-
-        sl = self.explorer.sellist
-        if len(sl) == 0 and self.explorer.uniquesel is not None:
-            sl = [self.explorer.uniquesel]
-        sfbtn = self.buttons["sf"]
-        helpbtn = self.buttons["help"]
-        # Resets the editor's bonemode back to the default value.
-        try:
-            if sfbtn.caption == SFTexts[m.skill]:
-                pass
-            else:
-                self.editor.bonemode = "default mode"
-        except:
-            pass
-
-        if m is not None:
-            sfbtn.caption = "set model type" # to make sure the width of this button doesn't change
-            self.buttons.update({"help": helpbtn, "sf": sfbtn})
-            self.bb.buttons = [sfbtn, qtoolbar.widegap, helpbtn]
-            self.bb.margins = (0,0)
-            for i in range(0, len(sfbtn.menu)):
-                sfbtn.menu[i].state = 0
-            m.state = qmenu.checked
-            cap = SFTexts[m.skill]
-        else:
-            cap = "set model type"
-        sfbtn.caption = cap
-        DummyItem = None
-        formobj = None
-        try:
-            # Gets the selected item's type "form" if the "if" test is passed.
-            import mdlentities
-            if sl[0].type == ":bound":
-                formobj = mdlentities.CallManager("dataformname", sl[0])
-            elif sl[0].type == ":tagframe":
-                formobj = mdlentities.CallManager("dataformname", sl[0])
-            elif sl[0].type == ":bone":
-                formobj = mdlentities.CallManager("dataformname", sl[0])
-            elif sl[0].type == ":mc":
-                formobj = mdlentities.CallManager("dataformname", sl[0])
-            elif sl[0].type == ":sg":
-                formobj = mdlentities.CallManager("dataformname", sl[0])
-            else:
-                # This tries to use a filetype:form, in a Python model importer or exporter (plugins ie_ type) file to create this form.
-                DummyItem = sl[0]
-                while (DummyItem is not None):
-                    if DummyItem.type == ":mr":
-                        DummyItem = None
-                        break
-                    if DummyItem.type == ":mc":
-                        break
-                    else:
-                        DummyItem = DummyItem.parent
-                if DummyItem is None:
-                    formobj = None
-                else:
-                    try: # Tries to get a form for the "model format type" setting in a Python model importer or exporter (plugins ie_ type) file.
-                        formobj = quarkx.getqctxlist(':form', sfbtn.caption.strip(".") + DummyItem.type.replace(":","_"))[-1]
-                    except:
-                        formobj = None
-        except:
-            formobj = None
-
-        icon_btns = None # This allows the option of an importer\exporter to use the vertex color button on its form.
-        try:
-            # Tries to use the data returned to make the selected item's type form again.
-            if sl[0].type == ":bound": # Sets the bound frame form items.
-                selitem = sl[0]
-                self.dataform.setdata(selitem, formobj) # Tries to use the data returned to make the bound frame's form again.
-            elif sl[0].type == ":tagframe": # Sets the tag frame form items.
-                selitem = sl[0]
-                self.dataform.setdata(selitem, formobj) # Tries to use the data returned to make the tag frame's form again.
-            elif sl[0].type == ":bone": # Sets the bone form items.
-                selitem = sl[0]
-                self.dataform.setdata(selitem, formobj) # Tries to use the data returned to make the bone's form again.
-            elif sl[0].type == ":mc": # Sets the component form items.
-                selitem = sl[0]
-                self.dataform.setdata(selitem, formobj) # Tries to use the data returned to make the skins group form again.
-            elif sl[0].type == ":sg": # Sets the skins group form items.
-                selitem = sl[0]
-                self.dataform.setdata(selitem, formobj) # Tries to use the data returned to make the component's form again.
-            else:
-                if sfbtn.caption == "set model type" or sfbtn.caption == "default":
-                    try:
-                        formobj = mdlentities.CallManager("dataformname", sl[0])
-                    except:
-                        formobj = None
-                else:
-                    for filetype in range(len(SFTexts)):
-                        if sfbtn.caption == SFTexts[filetype]: #  and DummyItem.type == ':mc'
-                            filename = IEfile[filetype]
-                            formobj, icon_btns = filename.dataformname(sl[0])
-                            break
-                        else:
-                            formobj = None
-                if DummyItem is not None and formobj is not None:
-                    self.dataform.setdata([DummyItem], formobj) # Tries to use data returned from an import or export file to make the model format form.
-                else:
-                    formobj = None
-                    self.dataform.setdata(sl, formobj)
-
-        except:
-            formobj = None # If no form data is found, then set to None and just go on, there is no form for this item.
-            self.dataform.setdata(sl, formobj)
-
-        if m is not None and icon_btns is not None: # This allows the option of an importer\exporter to use the vertex color button on its form.
-            sfbtn.caption = "set model type" # to make sure the width of this button doesn't change
-            specifics_btns = {"help": helpbtn, "sf": sfbtn}
-            self.bb.buttons = [sfbtn, qtoolbar.widegap, helpbtn]
-            tempcaptions = {}
-            for btn in icon_btns.keys():
-                tempcaptions[btn] = icon_btns[btn].caption
-                icon_btns[btn].caption = "set model type" # to make sure the width of this button doesn't change
-                specifics_btns[btn] = icon_btns[btn]
-                self.bb.buttons = self.bb.buttons + [icon_btns[btn]]
-            self.buttons.update(specifics_btns)
-            self.bb.margins = (0,0)
-            for btn in icon_btns.keys():
-                icon_btns[btn].caption = tempcaptions[btn]
-        try:
-            help = ((formobj is not None) and formobj["Help"]) or ""
-        except:
-            formobj = None
-            self.dataform.setdata(sl, formobj)
-            help = ((formobj is not None) and formobj["Help"]) or ""
-        if help:
-            help = "?" + help   # This trick displays a blue hint.
-        self.buttons["help"].hint = help + "||This button gives you the description of the selected entity, and how to use it.\n\nYou are given help in two manners : by simply moving the mouse over the button, a 'hint' text appears with the description; if you click the button, you are sent to an HTML document about the entity, if available, or you are shown the same text as previously, if nothing more is available.\n\nNote that there is currently not a lot of info available as HTML documents."
-        if sl:
-            icon = qutils.EntityIconSel(sl[0])
-            for s in sl[1:]:
-                icon2 = qutils.EntityIconSel(s)
-                if not (icon is icon2):
-                    icon = ico_objects[1][iiEntity]
-                    break
-            for i in range(0, len(sfbtn.menu)):
-                m = sfbtn.menu[i]
-                if m.state != qmenu.checked:
-                    m.state = 0
-                else:
-                    cap = SFTexts[i]
-            if not cap:
-                cap = "set model type"
-        sfbtn.caption = cap
-        btnlist = self.mpp.btnpanel.buttons
-        # Fills the model format form items.
-        if (DummyItem is not None and len(sl) == 1 and sl[0].type != ":bound" and sl[0].type != ":tagframe" and sl[0].type != ":bone" and sl[0].type != ":mc") or (DummyItem is not None and len(sl) > 1 and sl[0].type != ":bound" and sl[0].type != ":tagframe" and sl[0].type != ":bone" and sl[1].type != ":bone" and (sl[0].type != ":mc")):
-            ### This section handles the model importer\exporter default settings and data input for the Specifics/Args page.
-            if sfbtn.caption == "set model type" or sfbtn.caption == "default":
-                try:
-                    mdlentities.CallManager("dataforminput", sl[0])
-                except:
-                    pass
-            else:
-                for filetype in range(len(SFTexts)):
-                    if sfbtn.caption == SFTexts[filetype]:
-                       filename = IEfile[filetype]
-                       filename.dataforminput(sl[0])
-        ### This section handles the Bones default settings and data input for the Specifics/Args page..
-        # Sets self.xxxx_color to a bone's handles colors, when selected,
-        # for comparison , in the "filldataform" function, if a handle color is changed.
-        # Same goes for checkbone_length, checkbone_start_offset and checkbone_end_offset.
-        if len(sl) != 0 and sl[0].type == ":bound": # Sets the bound frame form items.
-            selitem = sl[0]
-            try:
-                self.position = quarkx.vect(selitem['position']).tuple
-            except:
-                self.position = '0 0 0'
-            try:
-                self.scale = str(selitem['scale'][0])
-            except:
-                self.scale = '0'
-            try:
-                self.maxs = quarkx.vect(selitem['maxs']).tuple
-            except:
-                self.maxs = '0 0 0'
-            try:
-                self.mins = quarkx.vect(selitem['mins']).tuple
-            except:
-                self.mins = '0 0 0'
-        elif len(sl) != 0 and sl[0].type == ":tagframe": # Sets the tag frame form items.
-            selitem = sl[0]
-            try:
-                self.origin = quarkx.vect(selitem['origin']).tuple
-            except:
-                self.origin = '0 0 0'
-        elif len(sl) != 0 and sl[0].type == ":bone": # Sets the bone form items.
-            selitem = sl[0]
-            # Globals are set here for comparison in filldataform function later.
-            self.start_color = selitem['start_color']
-            self.end_color = selitem['end_color']
-            try:
-                check_start_component = selitem['start_component']
-                check_start_vertex_count = selitem['start_vertex_count']
-            except:
-                check_start_component = "None"
-                check_start_vertex_count = selitem['start_vertex_count'] = "0"
-            try:
-                check_end_component = selitem['end_component']
-                check_end_vertex_count = selitem['end_vertex_count']
-            except:
-                check_end_component = "None"
-                check_end_vertex_count = selitem['end_vertex_count'] = "0"
-            checkstart_pos = selitem.dictspec['start_point']
-            checkend_pos = selitem.dictspec['end_point']
-            selitem['bone_length'] = checkbone_length = ((quarkx.vect(selitem.dictspec['start_point']) - quarkx.vect(selitem.dictspec['end_point']))*-1).tuple
-            checkbone_start_offset = quarkx.vect(selitem.dictspec['start_offset']).tuple
-            checkbone_end_offset = quarkx.vect(selitem.dictspec['end_offset']).tuple
-            checkbone_start_scale = selitem.dictspec['start_scale']
-            checkbone_end_scale = selitem.dictspec['end_scale']
-            self.dataform.setdata([selitem], formobj)
-
-        elif len(sl) != 0 and sl[0].type == ":mc": # Sets the component form items.
-            selitem = sl[0]
-            try:
-                self.comp_color1 = selitem.dictspec['comp_color1']
-            except:
-                selitem['comp_color1'] = '\x00'
-                self.comp_color1 = selitem.dictspec['comp_color1']
-            try:
-                self.comp_color2 = selitem.dictspec['comp_color2']
-            except:
-                selitem['comp_color2'] = '\x00'
-                self.comp_color2 = selitem.dictspec['comp_color2']
-
-        quarkx.update(self.editor.form)
-
+    def getbonelists(self):
+        slist = self.explorer.sellist
+        blist = []
+        for s in slist:
+            for b in s.findallsubitems("", ':bone'):   # find all bones
+                if not (b in blist):
+                    blist.append(b)
+        return blist
 
     def filldataform(self, reserved):
         "This function creates the Specifics/Args page form (formobj) for the first time"
@@ -682,14 +453,6 @@ class ModelLayout(BaseLayout):
         if len(sl) == 0 and self.explorer.uniquesel is not None:
             sl = [self.explorer.uniquesel]
         sfbtn = self.buttons["sf"]
-        # Resets the editor's bonemode back to the default value.
-        try:
-            if sfbtn.caption == SFTexts[m.skill]:
-                pass
-            else:
-                self.editor.bonemode = "default mode"
-        except:
-            pass
 
         DummyItem = None
         formobj = None
@@ -781,6 +544,7 @@ class ModelLayout(BaseLayout):
         if help:
             help = "?" + help   # This trick displays a blue hint.
         self.buttons["help"].hint = help + "||This button gives you the description of the selected entity, and how to use it.\n\nYou are given help in two manners : by simply moving the mouse over the button, a 'hint' text appears with the description; if you click the button, you are sent to an HTML document about the entity, if available, or you are shown the same text as previously, if nothing more is available.\n\nNote that there is currently not a lot of info available as HTML documents."
+        cap = "set model type"
         if sl:
             icon = qutils.EntityIconSel(sl[0])
             for s in sl[1:]:
@@ -788,20 +552,14 @@ class ModelLayout(BaseLayout):
                 if not (icon is icon2):
                     icon = ico_objects[1][iiEntity]
                     break
-            cap = ""
             for i in range(0, len(sfbtn.menu)):
                 m = sfbtn.menu[i]
                 if m.state != qmenu.checked:
                     m.state = 0
                 else:
                     cap = SFTexts[i]
-            if cap == "":
-                cap = "set model type"
         icon = ico_objects[1][iiEntity]
-        try:
-            sfbtn.caption = cap
-        except:
-            pass # Stops the Skin-view, when opened, from changing the Specifics/Args page model format setting.
+        sfbtn.caption = cap
         # Sets which page to switch to when a hot key is pressed:
         # 1 key = 0 = tree-view, 2 key = 1 = Specifics/Args page, 3 key = 2 = Skin-view
         btnlist = self.mpp.btnpanel.buttons
@@ -812,30 +570,6 @@ class ModelLayout(BaseLayout):
             btnlist[1].icons = tuple(l)
             self.mpp.btnpanel.buttons = btnlist
         if sl:
-            ### This section handles the component color default settings,
-            ### the model importer\exporter default settings
-            ### and any data input for the Specifics/Args page.
-            if sl[0].type == ":mc":
-                selitem = sl[0]
-                try:
-                    self.comp_color1 = selitem.dictspec['comp_color1']
-                    for view in self.views:
-                        view.invalidate(1)
-                except:
-                    selitem['comp_color1'] = '\x00'
-                    self.comp_color1 = selitem.dictspec['comp_color1']
-                    for view in self.views:
-                        view.invalidate(1)
-                try:
-                    self.comp_color2 = selitem.dictspec['comp_color2']
-                    for view in self.views:
-                        view.invalidate(1)
-                except:
-                    selitem['comp_color2'] = '\x00'
-                    self.comp_color2 = selitem.dictspec['comp_color2']
-                    for view in self.views:
-                        view.invalidate(1)
-                self.explorer.invalidate()
             ### This section handles the Bones default settings and data input for the Specifics/Args page.
             # Updates all vertexes 'color' that are assigned to a bone handle when that handle color is changed.
             if (sl[0].type == ":bone") and (not isinstance(reserved, qtoolbar.button)):
@@ -1034,6 +768,27 @@ class ModelLayout(BaseLayout):
                     check_end_component = self.end_component = "None"
                     check_end_vertex_count = self.end_vertexes = selitem["end_vertex_count"] = "0"
 
+    def dataformchange(self, src):
+        blist = self.getbonelists()
+        undo = quarkx.action()
+
+        q = src.linkedobjects[0]
+        norigin = q["origin"]
+        if norigin is not None:
+            norigin = quarkx.vect(norigin)   # tuple->vect
+            for b in blist:
+                org = b.position
+                if (org is not None) and (norigin-org):
+                    new = b.copy()
+                    new.translate(norigin-org)
+                    blist[blist.index(b)] = new
+                    undo.exchange(b, new)
+        txt = "@@@"
+        #@
+        self.editor.ok(undo, txt)
+
+    def modeltypeclick(self, m):
+        self.dataform.setspec("", m.skill) #@
 
     def helpbtnclick(self, m):
         "Brings up the help window of a form or the InfoBase Docs if there is none."
@@ -1041,15 +796,6 @@ class ModelLayout(BaseLayout):
         sl = self.explorer.sellist
         if len(sl) == 0 and self.explorer.uniquesel is not None:
             sl = [self.explorer.uniquesel]
-        sfbtn = self.buttons["sf"]
-        # Resets the editor's bonemode back to the default value.
-        try:
-            if sfbtn.caption == SFTexts[m.skill]:
-                pass
-            else:
-                self.editor.bonemode = "default mode"
-        except:
-            pass
 
         DummyItem = None
         formobj = None
@@ -1280,7 +1026,7 @@ class ModelLayout(BaseLayout):
                     try:
                         if flagsmouse == 2060 and (isinstance(self.editor.dragobject.handle, mdlhandles.LinRedHandle) or isinstance(self.editor.dragobject.handle, mdlhandles.LinSideHandle) or isinstance(self.editor.dragobject.handle, mdlhandles.LinCornerHandle)):
                             pass
-                        elif (isinstance(self.editor.dragobject.handle, mdlhandles.LinBoneCenterHandle) or isinstance(self.editor.dragobject.handle, mdlhandles.LinBoneCornerHandle)):
+                        elif (isinstance(self.editor.dragobject.handle, mdlhandles.BoneCenterHandle) or isinstance(self.editor.dragobject.handle, mdlhandles.BoneCornerHandle)):
                             pass
                         else:
                             if savefacesel == 1:
@@ -1420,7 +1166,6 @@ class ModelLayout(BaseLayout):
             if m.state == qmenu.checked:
                 menuitem = m
                 break
-        self.makesettingclick(menuitem) # Updates the Specifics/Args page correctly.
         if fs is not None:
             treeviewselchanged = 1
             if fs.type == ':mf':       # frame
@@ -1496,6 +1241,10 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.97  2009/02/17 04:59:15  cdunde
+#To expand on types of image texture files that can be applied from the Texture Browser to the Model editor.
+#To update the tree-view when component color is changed.
+#
 #Revision 1.96  2009/02/11 15:38:49  danielpharos
 #Don't store buttons inside the layout object itself.
 #

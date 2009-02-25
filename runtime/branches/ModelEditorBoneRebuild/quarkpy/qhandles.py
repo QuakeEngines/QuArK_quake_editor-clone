@@ -195,12 +195,6 @@ class GenericHandle:
         return None, None    # abstract
 
     #
-    # For setting stuff up at the beginning of a drag
-    #
-    def start_drag(self, view, x, y):
-      pass
-
-    #
     # old, new allow plugins etc to define extra stuff
     #  to be done before committal of changes
     #
@@ -288,9 +282,6 @@ class Rotate3DHandle(GenericHandle):
             editor = mapeditor()
         else:
             editor = saveeditor
-        import mdleditor
-        if isinstance(editor, mdleditor.ModelEditor):
-            return
         if editor is not None and editor.layout is not None:
             tb2 = editor.layout.toolbars["tb_terrmodes"]
             if view.info["type"] == "3D":
@@ -1012,7 +1003,7 @@ class RedImageDragObject(DragObject):
             if isinstance(editor.dragobject.handle, mdlhandles.VertexHandle):
                 ### Stops Model Editor Vertex drag handles from drawing if not returned.
                 return
-            if isinstance(editor.dragobject.handle, mdlhandles.LinRedHandle) or isinstance(editor.dragobject.handle, mdlhandles.LinSideHandle) or isinstance(editor.dragobject.handle, mdlhandles.LinCornerHandle) or isinstance(editor.dragobject.handle, mdlhandles.LinBoneCornerHandle) or isinstance(editor.dragobject.handle, mdlhandles.LinBoneCenterHandle):
+            if isinstance(editor.dragobject.handle, mdlhandles.LinRedHandle) or isinstance(editor.dragobject.handle, mdlhandles.LinSideHandle) or isinstance(editor.dragobject.handle, mdlhandles.LinCornerHandle):
                 ### Stops Model Editor Linear drag handles from drawing redline drag objects incorrectly.
                 return
             # Draws rectangle selector and Skin-view lines much faster this way.
@@ -1093,7 +1084,6 @@ class RedImageDragObject(DragObject):
                                 # Really slows down the editors 2D view rectangle selection
                                 # when the view handles are being drawn if we don't kill them here.
                                 # They do still exist at the end of the drag though.
-                                view.handles = []
                                 for r in self.redimages:
                                     view.drawmap(r, mode, reccolor)
                                 if self.handle is not None:
@@ -1213,7 +1203,6 @@ class HandleDragObject(RedImageDragObject):
         RedImageDragObject.__init__(self, view, x, y, view.proj(handle.pos).z, redcolor)
         self.pt0 = handle.pos
         self.handle = handle
-        handle.start_drag(view, x, y)
 
     def buildredimages(self, x, y, flags):
         pt1 = self.view.space(x, y, self.z0)
@@ -1818,9 +1807,9 @@ def MouseDragging(editor, view, x, y, s, handle, redcolor):
         
         if "C" in s:
             if view.info["type"]=="3D":
-                return CircleStrafeDragObject(editor, view, x, y) 
+                return CircleStrafeDragObject(editor, view, x, y)
             else:
-                return SideStepDragObject(editor, view, x, y)           
+                return SideStepDragObject(editor, view, x, y)
         elif "R" in s:     # display a rectangle
             if ("+" in s) or ("-" in s):
                 if view.info["type"]=="3D":
@@ -2171,6 +2160,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.79  2009/01/11 06:49:41  cdunde
+#Minor fix for error when Model Editor is in True 3D mode.
+#
 #Revision 1.78  2008/12/19 17:23:21  cdunde
 #To stop the dupe drawing of vertex boxes in the Model Editor during a bone center handle drag.
 #

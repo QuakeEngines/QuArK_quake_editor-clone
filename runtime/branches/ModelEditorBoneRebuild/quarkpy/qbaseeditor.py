@@ -84,10 +84,6 @@ class BaseEditor:
 
     def drawmap(self, view):
         "Draws the map/model on the given view."
-        try:
-            list = self.list
-        except:
-            pass
 
         #
         # Stop any pending timer that would cause this view to be redrawn later.
@@ -420,151 +416,6 @@ class BaseEditor:
         else:
             draghandle = self.dragobject.handle
 
-        import mdleditor
-        if isinstance(self, mdleditor.ModelEditor):
-            try:
-                if view.info["viewname"] == "skinview":
-                    if (flagsmouse != 536 or flagsmouse != 1048 or flagsmouse != 2072) and (view.info["viewname"] == "skinview"):
-
-                        cv = view.canvas()
-                        tex = self.Root.currentcomponent.currentskin
-                        if tex is not None:
-                            texWidth,texHeight = tex["Size"]
-                        else:
-                            texWidth,texHeight = view.clientarea
-                        if flagsmouse == 520 or flagsmouse == 1032:
-                            import mdlhandles # Needed for 'Ticks' drawing methods further below.
-                            pass
-
-                        else:
-                            if (quarkx.setupsubset(SS_MODEL, "Options")["SFSISV"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")["PFSTSV"] == "1"):
-                                if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_ISV'] == "1":
-                                    self.SkinFaceSelList = self.ModelFaceSelList
-                                else:
-                                    self.SkinFaceSelList = self.SkinFaceSelList + self.ModelFaceSelList
-
-                        tricount = -1
-                        cv.pencolor = MapColor("SkinLines", SS_MODEL)
-                        for triangle in self.Root.currentcomponent.triangles:
-                            faceselected = 0
-                            tricount = tricount + 1
-                            if flagsmouse == 520 or flagsmouse == 1032:
-                                pass
-                            else:
-                                if self.SkinFaceSelList != []:
-                                    for triangleindex in self.SkinFaceSelList:
-                                        if tricount == triangleindex:
-                                            if quarkx.setupsubset(SS_MODEL, "Options")["SFSISV"] == "1":
-                                                cv.pencolor = MapColor("SkinViewFaceOutline", SS_MODEL)
-                                                faceselected = 1
-                                                break
-                                            elif quarkx.setupsubset(SS_MODEL, "Options")["PFSTSV"] == "1":
-                                                cv.pencolor = MapColor("SkinViewFaceSelected", SS_MODEL)
-                                                faceselected = 1
-                                                break
-                                            else:
-                                                cv.pencolor = MapColor("SkinViewFaceSelected", SS_MODEL)
-                                                faceselected = 1
-                                                break
-                            vertex0 = triangle[0]
-                            vertex1 = triangle[1]
-                            vertex2 = triangle[2]
-                            trivertex0 = quarkx.vect(vertex0[1]-int(texWidth*.5), vertex0[2]-int(texHeight*.5), 0)
-                            trivertex1 = quarkx.vect(vertex1[1]-int(texWidth*.5), vertex1[2]-int(texHeight*.5), 0)
-                            trivertex2 = quarkx.vect(vertex2[1]-int(texWidth*.5), vertex2[2]-int(texHeight*.5), 0)
-                            vertex0X, vertex0Y, vertex0Z = view.proj(trivertex0).tuple
-                            vertex1X, vertex1Y, vertex1Z = view.proj(trivertex1).tuple
-                            vertex2X, vertex2Y, vertex2Z = view.proj(trivertex2).tuple
-                            cv.line(int(vertex0X), int(vertex0Y), int(vertex1X), int(vertex1Y))
-                            cv.line(int(vertex1X), int(vertex1Y), int(vertex2X), int(vertex2Y))
-                            cv.line(int(vertex2X), int(vertex2Y), int(vertex0X), int(vertex0Y))
-                            if faceselected != 0:
-                                cv.pencolor = MapColor("SkinLines", SS_MODEL)
-                        # No Ticks drawn during RecSelDrag or Method 1, Ticks drawn during RecSelDrag.
-                            if (flagsmouse == 16384) or (flagsmouse == 1032 and isinstance(self.dragobject, mdlhandles.RectSelDragObject) and quarkx.setupsubset(SS_MODEL, "Options")["RDT_M1"] == "1"):
-                                if MdlOption("Ticks") == "1":
-                                    cv.brushcolor = WHITE
-                                    cv.ellipse(int(vertex0X)-2, int(vertex0Y)-2, int(vertex0X)+2, int(vertex0Y)+2)
-                                    cv.ellipse(int(vertex1X)-2, int(vertex1Y)-2, int(vertex1X)+2, int(vertex1Y)+2)
-                                    cv.ellipse(int(vertex2X)-2, int(vertex2Y)-2, int(vertex2X)+2, int(vertex2Y)+2)
-                                else:
-                                    cv.ellipse(int(vertex0X)-1, int(vertex0Y)-1, int(vertex0X)+1, int(vertex0Y)+1)
-                                    cv.ellipse(int(vertex1X)-1, int(vertex1Y)-1, int(vertex1X)+1, int(vertex1Y)+1)
-                                    cv.ellipse(int(vertex2X)-1, int(vertex2Y)-1, int(vertex2X)+1, int(vertex2Y)+1)
-                        # Draws the Skin-view grid dots.
-                        if MapOption("SkinGridVisible", self.MODE):
-                            setup = quarkx.setupsubset(self.MODE, "Display")
-                            skingridstep = setup["SkinGridStep"][0]
-                            if skingridstep>0.0:
-                                view.drawgrid(quarkx.vect((skingridstep*skingridstep*(texWidth/skingridstep)/texWidth*view.info["scale"]),0,0), quarkx.vect(0,(skingridstep*skingridstep*(texHeight/skingridstep)/texHeight*view.info["scale"]),0), MapColor("SkinGridDots", SS_MODEL))
-                        # Method 2, Ticks drawn during RecSelDrag.
-                        if (flagsmouse == 1032 and isinstance(self.dragobject, mdlhandles.RectSelDragObject) and quarkx.setupsubset(SS_MODEL, "Options")["RDT_M2"] == "1"):
-                            cv.pencolor = MapColor("Vertices", SS_MODEL)
-                            for triangle in self.Root.currentcomponent.triangles:
-                                vertex0 = triangle[0]
-                                vertex1 = triangle[1]
-                                vertex2 = triangle[2]
-                                trivertex0 = quarkx.vect(vertex0[1]-int(texWidth*.5), vertex0[2]-int(texHeight*.5), 0)
-                                trivertex1 = quarkx.vect(vertex1[1]-int(texWidth*.5), vertex1[2]-int(texHeight*.5), 0)
-                                trivertex2 = quarkx.vect(vertex2[1]-int(texWidth*.5), vertex2[2]-int(texHeight*.5), 0)
-                                vertex0X, vertex0Y, vertex0Z = view.proj(trivertex0).tuple
-                                vertex1X, vertex1Y, vertex1Z = view.proj(trivertex1).tuple
-                                vertex2X, vertex2Y, vertex2Z = view.proj(trivertex2).tuple
-                                if MdlOption("Ticks") == "1":
-                                    cv.brushcolor = WHITE
-                                    cv.ellipse(int(vertex0X)-2, int(vertex0Y)-2, int(vertex0X)+2, int(vertex0Y)+2)
-                                    cv.ellipse(int(vertex1X)-2, int(vertex1Y)-2, int(vertex1X)+2, int(vertex1Y)+2)
-                                    cv.ellipse(int(vertex2X)-2, int(vertex2Y)-2, int(vertex2X)+2, int(vertex2Y)+2)
-                                else:
-                                    cv.ellipse(int(vertex0X)-1, int(vertex0Y)-1, int(vertex0X)+1, int(vertex0Y)+1)
-                                    cv.ellipse(int(vertex1X)-1, int(vertex1Y)-1, int(vertex1X)+1, int(vertex1Y)+1)
-                                    cv.ellipse(int(vertex2X)-1, int(vertex2Y)-1, int(vertex2X)+1, int(vertex2Y)+1)
-                        if flagsmouse == 16384:
-                            if self.SkinVertexSelList != []:
-                                for h in view.handles:
-                                    h.draw(view, cv, draghandle)
-                            if isinstance(self.dragobject, qhandles.FreeZoomDragObject) or isinstance(self.dragobject, qhandles.ScrollViewDragObject):
-                                self.dragobject = None
-                    return
-                else:
-                    import mdlhandles
-                    if quarkx.setupsubset(SS_MODEL, "Options")["MAIV"] == "1":
-                        mdleditor.modelaxis(view)
-                    if flagsmouse == 16384 and (isinstance(self.dragobject, qhandles.FreeZoomDragObject) or isinstance(self.dragobject, mdlhandles.RectSelDragObject)):
-                        self.dragobject = None
-                        return
-            ### Don't put back in will cause dupe draw of handles. Had to move handle drawing code
-            ### to mdlhandles.py, class VertexHandle, def menu, def pick_cleared funciton, see notes there.
-                    elif flagsmouse == 2064 and (view.info["viewname"] == "XY" or view.info["viewname"] == "YZ" or view.info["viewname"] == "XZ"):
-                        return
-                    elif flagsmouse == 1032:
-                        cv = view.canvas()
-                        for h in view.handles:
-                            h.draw(view, cv, draghandle)
-                        return
-                    elif flagsmouse == 2072:
-                        from mdlhandles import SkinView1
-                        if SkinView1 is not None:
-                            if ( quarkx.setupsubset(SS_MODEL, "Options")["PFSTSV"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")["SFSISV"] == "1"):
-                                if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_ISV'] == "1" and self.ModelFaceSelList == []:
-                                    self.SkinVertexSelList = []
-                                SkinView1.invalidate(1)
-                        return
-                 ### To fix the hint control redraw area.
-                    import mdlmgr
-                    if flagsmouse == 1056 or flagsmouse == 2056 or flagsmouse == 2080 or mdlmgr.treeviewselchanged != 0:
-                        # This stops dupe handle drawing from the hintcontrol redraw section below.
-                        return
-
-                    if self.layout.hintcontrol is not None and not isinstance(self.dragobject, mdlhandles.RectSelDragObject) and not isinstance(self.dragobject, qhandles.HandleDragObject):
-                        mdleditor.setsingleframefillcolor(self, view)
-                        cv = view.canvas()
-                        for h in view.handles:
-                            h.draw(view, cv, self.layout.hintcontrol)
-                        return
-                return
-            except:
-                pass
         #
         # Draw all handles.
         #
@@ -1013,7 +864,7 @@ class BaseEditor:
                         import mdlhandles
                         try:
                             # This returns during Linear Handle drag so that actual drag hints will appear properly in the 'Help box'.
-                            if isinstance(editor.dragobject.handle, mdlhandles.LinRedHandle) or isinstance(self.dragobject.handle, mdlhandles.LinCornerHandle) or isinstance(self.dragobject.handle, mdlhandles.LinSideHandle) or isinstance(self.dragobject.handle, mdlhandles.LinBoneCornerHandle):
+                            if isinstance(editor.dragobject.handle, mdlhandles.LinRedHandle) or isinstance(self.dragobject.handle, mdlhandles.LinCornerHandle) or isinstance(self.dragobject.handle, mdlhandles.LinSideHandle) or isinstance(self.dragobject.handle, mdlhandles.BoneCornerHandle):
                                 return
                         except:
                             pass
@@ -1120,7 +971,7 @@ class BaseEditor:
                                 s = quarkx.getlonghint(handle.hint)
                         else:
                             s = "Skin tri \\ vertex " + str(handle.tri_index) + " \\ " + str(handle.ver_index) + " x:%s"%ftoss(x) + " y:%s"%ftoss(y)
-                    elif (isinstance(handle, mdlhandles.LinRedHandle)) or (isinstance(handle, mdlhandles.LinSideHandle)) or (isinstance(handle, mdlhandles.LinCornerHandle)) or (isinstance(handle, mdlhandles.LinBoneCornerHandle)):
+                    elif (isinstance(handle, mdlhandles.LinRedHandle)) or (isinstance(handle, mdlhandles.LinSideHandle)) or (isinstance(handle, mdlhandles.LinCornerHandle)) or (isinstance(handle, mdlhandles.BoneCornerHandle)):
                         if view.info["viewname"] == "XY":
                             s = "Linear handle pos " + " x:%s"%ftoss(handle.pos.x) + " y:%s"%ftoss(handle.pos.y)
                         elif view.info["viewname"] == "XZ":
@@ -1282,7 +1133,7 @@ class BaseEditor:
                                 skindrawobject = None
                             mdlhandles.buildskinvertices(self, view, self.layout, self.Root.currentcomponent, skindrawobject)
                         else:
-                            if (isinstance(self.dragobject, mdlhandles.LinBoneCenterHandle) or isinstance(self.dragobject, mdlhandles.LinBoneCornerHandle)) and (flagsmouse == 520 or flagsmouse == 524):
+                            if (isinstance(self.dragobject, mdlhandles.BoneCenterHandle) or isinstance(self.dragobject, mdlhandles.BoneCornerHandle)) and (flagsmouse == 520 or flagsmouse == 524):
                                 from mdleditor import NewSellist
                                 if len(self.layout.explorer.sellist) == 0:
                                     NewSellist = []
@@ -1560,6 +1411,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.124  2009/01/29 02:12:41  cdunde
+#Fix by DanielPharos for skins not changing before Skin-view is opened.
+#
 #Revision 1.123  2009/01/10 03:54:42  cdunde
 #Minor error fix in case there are no skins.
 #

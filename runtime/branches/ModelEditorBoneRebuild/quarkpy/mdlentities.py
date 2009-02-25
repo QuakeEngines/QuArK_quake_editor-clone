@@ -766,92 +766,39 @@ class BoneType(EntityManager):
     "Bone, type = :bone"
 
     def handlesopt(o, editor):
-        from qbaseeditor import currentview
 
         h = []
-        comp = editor.Root.currentcomponent
-        s = None
-        index = ""
 
         # In case there are bones but all components have been deleted,
         # we need to remove the bones as well.
         # If neither then just clear the selections lists and return.
         if allowbones(editor) == 0:
-            if len(editor.Root.dictitems['Skeleton:bg'].subitems) == 0:
+            if len(editor.Root.bone_group.subitems) == 0:
                 editor.layout.explorer.sellist = []
                 editor.layout.explorer.uniquesel = None
                 return h
-            o = None
             clearbones(editor, "no components - bones cleared")
             return h
 
-        if quarkx.setupsubset(SS_MODEL, "Options")['HideBones'] is not None or comp is None:
+        if quarkx.setupsubset(SS_MODEL, "Options")['HideBones'] is not None:
             return h
 
-        # Checks that at least the needed frame count for a component is there to avoid vertex selection error later on.
-        try:
-            start_frame = editor.Root.dictitems[o.dictspec['start_component']].dictitems['Frames:fg'].subitems[editor.bone_frame]
-        except:
-            quarkx.msgbox("FRAME COUNT ERROR !\n\nNot all components using these bones\nhave the same number of frames.\n\nCorrect and try again.", qutils.MT_ERROR, qutils.MB_OK)
-            editor.layout.explorer.sellist = [comp.dictitems['Frames:fg'].subitems[0]]
-            return
-        try:
-            end_frame = editor.Root.dictitems[o.dictspec['end_component']].dictitems['Frames:fg'].subitems[editor.bone_frame]
-        except:
-            quarkx.msgbox("FRAME COUNT ERROR !\n\nNot all components using these bones\nhave the same number of frames.\n\nCorrect and try again.", qutils.MT_ERROR, qutils.MB_OK)
-            editor.layout.explorer.sellist = [comp.dictitems['Frames:fg'].subitems[0]]
-            return
-        if editor.bone_frame_changed == 1:
-            Rebuild_Bone(o, start_frame, end_frame)
+        bbox = (o.position - quarkx.vect(1.0, 1.0, 1.0)*o.dictspec['scale'][0], o.position + quarkx.vect(1.0, 1.0, 1.0)*o.dictspec['scale'][0])
+        manager = mdlhandles.ModelEditorBoneHandlesManager(editor, o.getint('_color'), bbox, o)
+        handles = manager.BuildHandles(o.position)
 
-        scenter = quarkx.vect(o.dictspec['start_point'])
-        sbbox = (scenter + quarkx.vect(-0.9, -0.9, -0.9)*o.dictspec['start_scale'][0], scenter + quarkx.vect(0.9, 0.9, 0.9)*o.dictspec['start_scale'][0])
-        startcolor = o.dictspec['start_color']
-        quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
-        scolor = MapColor("start_color", SS_MODEL)
-
-        ecenter = quarkx.vect(o.dictspec['end_point'])
-        ebbox = (ecenter + quarkx.vect(-0.9, -0.9, -0.9)*o.dictspec['end_scale'][0], ecenter + quarkx.vect(0.9, 0.9, 0.9)*o.dictspec['end_scale'][0])
-        endcolor = o.dictspec['end_color']
-        quarkx.setupsubset(SS_MODEL, "Colors")["end_color"] = endcolor
-        ecolor = MapColor("end_color", SS_MODEL)
-
-        svtxlist = []
-        start_vtxlist = []
-        evtxlist = []
-        end_vtxlist = []
-        sh = mdlhandles.ModelEditorBoneLinHandlesManager(scolor, sbbox, svtxlist, o, start_vtxlist, 0).BuildHandles(scenter) # s is a LinBoneCenterHandle instance.
-        eh = mdlhandles.ModelEditorBoneLinHandlesManager(ecolor, ebbox, evtxlist, o, end_vtxlist, 1).BuildHandles(ecenter) # e is a LinBoneCenterHandle instance.
-
-        for s in sh:
+        for s in handles:
             if s is None:
-                return h
-            if isinstance(s, mdlhandles.LinBoneCenterHandle):
+                continue
+            if isinstance(s, mdlhandles.BoneCenterHandle):
                 if MapOption("HandleHints", SS_MODEL):
-                    s.hint = "Start of %s"%o.shortname
-                s.name = "BoneStartCenter"
-            if isinstance(s, mdlhandles.LinBoneCornerHandle):
+                    s.hint = "Center of %s"%o.shortname
+                s.name = "BoneCenter"
+            if isinstance(s, mdlhandles.BoneCornerHandle):
                 if MapOption("HandleHints", SS_MODEL):
                     s.hint = "Start rotate of %s"%o.shortname
-                s.name = "BoneStartCorner"
-            s.s_or_e = 0
-            s.index = index
+                s.name = "BoneCorner"
             h = h + [s]
-        # Finishes the end handle.
-        for e in eh:
-            if isinstance(e, mdlhandles.LinBoneCenterHandle):
-                if MapOption("HandleHints", SS_MODEL):
-                    e.hint = "End of %s"%o.shortname
-                e.name = "BoneEndCenter"
-            if isinstance(e, mdlhandles.LinBoneCornerHandle):
-                if MapOption("HandleHints", SS_MODEL):
-                    e.hint = "End rotate of %s"%o.shortname
-                e.name = "BoneEndCorner"
-            e.s_or_e = 1
-            e.index = index
-            h = h + [e]
-        o.start_handle = sh
-        o.end_handle = eh
         return h
 
     def dataformname(o):
@@ -861,76 +808,32 @@ class BoneType(EntityManager):
         {
           Help = "These are the Specific settings for a component's Bones."$0D0D22
                  "classname"$22" - The name of the bone currently selected for setting."$0D22
-                 "Start color"$22" - Color to use for this bones Start handle's vertex group color."$0D
+                 "_color"$22" - Color to use for this bones handle's vertex group color."$0D
                  "          Click the color selector button to the right and pick a color."$0D22
-                 "End color"$22" - Color to use for this bones End handle's vertex group color."$0D
-                 "          Click the color selector button to the right and pick a color."
-          bone_length: = {
-              Typ="EF003" 
-              Txt="Bone Length"
-              Hint="You must enter three values here."$0D"They have an accuracy of two digits."
-                 }
-          length_locked: = {
-              Typ="X1" 
-              Txt="Length Locked"
-              Hint="When checked, the length of this bone will"$0D"not change by the dragging of either handle."
-                 }
 
           sep: = { Typ="S" Txt="" }
 
-          sep: = {
-              Typ="S"
-              Txt="Bone Start Handle"
-                 }
+          component: = {Typ="E R" Txt="component" Hint="The component this"$0D"handle is assigned to."}
 
-          start_component: = {Typ="E R" Txt="component" Hint="The component this"$0D"handle is assigned to."}
+          vertex_count: = {Typ="E R" Txt="vertexes" Hint="Number of vertexes"$0D"assigned to this handle."}
 
-          start_vertex_count: = {Typ="E R" Txt="vertexes" Hint="Number of vertexes"$0D"assigned to this handle."}
-
-          start_color: = {Typ="LI"   Txt="color"  Hint="Color to use for this bones Start handle's vertex group color."$0D"Click the color selector button to the right and pick a color."}
-          start_point: = {
+          _color: = {Typ="LI"   Txt="color"  Hint="Color to use for this bones Start handle's vertex group color."$0D"Click the color selector button to the right and pick a color."}
+          position: = {
               Typ="EF003" 
               Txt="position"
-              Hint="You must enter three values here."$0D"They have an accuracy of two digits."
+              Hint="You must enter three values here."
                  }
-          start_offset: = {
+          offset: = {
               Typ="EF003" 
               Txt="offset"
-              Hint="You must enter three values here."$0D"They have an accuracy of two digits."$0D"Not all models use this."
+              Hint="The offset used to draw the handle. You must enter three values here."
                  }
-          start_scale: = {
+          scale: = {
               Typ="EF001" 
               Txt="scale"
-              Hint="You must enter one positive float value here."$0D"It has an accuracy of two digits."$0D"Larger value = bigger handle size."$0D"Smaller value = smaller handle size."$0D"The default value for normal size = 1.00"
+              Hint="You must enter one positive float value here."$0D"Larger value = bigger handle size."$0D"Smaller value = smaller handle size."$0D"The default value for normal size = 1.00"
                  }
 
-          sep: = { Typ="S" Txt="" }
-
-          sep: = {
-              Typ="S"
-              Txt="Bone End Handle"
-                 }
-
-          end_component: = {Typ="E R" Txt="component" Hint="The component this"$0D"handle is assigned to."}
-
-          end_vertex_count: = {Typ="E R" Txt="vertexes" Hint="Number of vertexes"$0D"assigned to this handle."}
-
-          end_color: = {Typ="LI"   Txt="color"    Hint="Color to use for this bones End handle's vertex group color."$0D"Click the color selector button to the right and pick a color."}
-          end_point: = {
-              Typ="EF003" 
-              Txt="position"
-              Hint="You must enter three values here."$0D"They have an accuracy of two digits."
-                 }
-          end_offset: = {
-              Typ="EF003" 
-              Txt="offset"
-              Hint="You must enter three values here."$0D"They have an accuracy of two digits."$0D"Not all models use this."
-                 }
-          end_scale: = {
-              Typ="EF001" 
-              Txt="scale"
-              Hint="You must enter one positive float value here."$0D"It has an accuracy of two digits."$0D"Larger value = bigger handle size."$0D"Smaller value = smaller handle size."$0D"The default value for normal size = 1.00"
-                 }
         }
         """
 
@@ -1256,6 +1159,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.38  2009/01/27 05:03:01  cdunde
+#Full support for .md5mesh bone importing with weight assignment and other improvements.
+#
 #Revision 1.37  2008/12/14 22:08:27  cdunde
 #Added Skin group Specifics page to allow importing of skins to that group.
 #Added default skin Specifics page and default model type to list.

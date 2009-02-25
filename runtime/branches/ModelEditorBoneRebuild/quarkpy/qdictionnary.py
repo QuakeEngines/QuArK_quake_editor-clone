@@ -529,6 +529,7 @@ Strings = {
     4459: "positive integer expected",
     4460: "Cannot find '%s', using '%s' instead",
     4461: "Unknown value '%s' for setting '%s'",
+    4462: "expected a 3D matrix",
 
     4614: "&More >>",
     4616: "                     *** EXCEPTION REPORT ***\n\n%s       Address in the program : %p (%p)\n",
@@ -1064,6 +1065,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.139  2009/02/14 17:35:41  danielpharos
+#You can now "uninstall" gamemodes: just delete the addons-directory of that game. Also, small code changes to accommodate this.
+#
 #Revision 1.138  2008/11/20 23:45:53  danielpharos
 #Big update to renderers: mostly cleanup, and stabilized Direct3D a bit more.
 #

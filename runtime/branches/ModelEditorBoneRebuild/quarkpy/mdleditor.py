@@ -327,6 +327,12 @@ class ModelEditor(BaseEditor):
         quarkx.setupsubset(SS_MODEL, "Colors")['start_color'] = None
         quarkx.setupsubset(SS_MODEL, "Colors")['end_color'] = None
 
+    def finishdrawing(self, view):
+        "Additionnal map view drawings, e.g. handles."
+        setsingleframefillcolor(self, view)
+        BaseEditor.finishdrawing(self, view)
+        modelaxis(view)
+
 
     def initmenu(self, form):
         "Builds the menu bar."
@@ -353,30 +359,6 @@ class ModelEditor(BaseEditor):
         "Build the handles for all model views."
         "This builds all the model mesh handles when the Model Editor is first opened."
         " It is also used to rebuild the handles by various functions later."
-        from qbaseeditor import flagsmouse, currentview
-        try:
- ### This is a problem area, if 1032 is added back in it causes multiple redraws.
- ### But with it out like this drag handles do not get drawn in the 2D views if you
- ### do a drag immediately after doing a zoom in the 3D view and will now straighten out
- ### until you do a slight zoom in one of the 2D views.
- ### Update, believe this is pretty well resolved. Redraws now come from other areas.
-            if flagsmouse is None:
-                return
-            if flagsmouse == 1032 or flagsmouse == 1048 or flagsmouse == 2072:
-                return
-            elif (flagsmouse == 536 or flagsmouse == 544 or flagsmouse == 1056) and currentview.info["viewname"] != "skinview":
-                pass
-            #elif currentview.info["viewname"] == "skinview" and flagsmouse == 2056:
-            #    for v in self.layout.views:
-            #        v.handles = v.handles
-            else:
-            # This was killing the handles for the Skin-view,
-            #    currentview.handles = mdlhandles.BuildHandles(self, self.layout.explorer, currentview)
-                pass
-
-        except:
-            for v in self.layout.views:
-                v.handles = mdlhandles.BuildHandles(self, self.layout.explorer, v)
 
          #   delay, = quarkx.setupsubset(SS_MODEL, "Display")["HandlesDelay"]
          # linux issue with single quote
@@ -564,7 +546,7 @@ class ModelEditor(BaseEditor):
         if qbaseeditor.flagsmouse == 1032:
             return
         try:
-            if (qbaseeditor.flagsmouse == 520) or (qbaseeditor.flagsmouse == 16384 and isinstance(self.dragobject.handle, mdlhandles.LinBoneCornerHandle)):
+            if (qbaseeditor.flagsmouse == 520) or (qbaseeditor.flagsmouse == 16384 and isinstance(self.dragobject.handle, mdlhandles.BoneCornerHandle)):
                 skipbuild = 1
         except:
             pass
@@ -985,10 +967,7 @@ def faceselfilllist(view, fillcolor=None):
     return filllist
 
 
-
 def setsingleframefillcolor(self, view):
-    if self is None:
-        return
     if self.Root.currentcomponent is None and self.Root.name.endswith(":mr"):
         componentnames = []
         for item in self.Root.dictitems:
@@ -1293,112 +1272,55 @@ def paintframefill(self, v):
 
 
 def commonhandles(self, redraw=1):
-    if quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] == "1":
-        return
     from qbaseeditor import flagsmouse, currentview
     import qhandles
     import mdlhandles
     import mdlmgr
-    try:
-        if flagsmouse == 536:
-            return
-            
-        if flagsmouse == 2072 and isinstance(self.dragobject, qhandles.FreeZoomDragObject):
-            self.dragobject = None
-        
-        if flagsmouse == 2072 and isinstance(self.dragobject, mdlhandles.VertexHandle):
-            return
 
-        if currentview.info["viewname"] =="3Dwindow":
-            if flagsmouse == 1048 or flagsmouse == 1056:
-                cv = currentview.canvas()
-                for h in currentview.handles:
-                    h.draw(currentview, cv, None)
-                return
-
-        if flagsmouse == 16384:
-            if isinstance(self.dragobject, mdlhandles.RectSelDragObject):
-                return
-            if isinstance(self.dragobject, qhandles.ScrollViewDragObject):
-                    self.dragobject = None
-            if isinstance(self.dragobject, qhandles.FreeZoomDragObject):
-                if mdlmgr.treeviewselchanged == 1:
-                    self.dragobject = None
-                else:
-                    return
-
-        if flagsmouse == 16384:
-            if self.dragobject is None:
-                pass
-            else:
-                if isinstance(self.dragobject.handle, mdlhandles.SkinHandle):
-                    pass
-                elif isinstance(self.dragobject, qhandles.HandleDragObject):
-                    pass
-                else:
-                    if currentview.info["viewname"] == "XY" or currentview.info["viewname"] == "XZ" or currentview.info["viewname"] == "YZ" or currentview.info["viewname"] == "editors3Dview" or currentview.info["viewname"] == "3Dwindow" or currentview.info["viewname"] == "skinview":
-                        pass
-                    else:
-                        return
-    except:
-        pass
-
+    for v in self.layout.views:
+        v.handles = mdlhandles.BuildHandles(self, self.layout.explorer, v)
 
 ### 3D Views ONLY Section for special needs:
 ### =======================================
-    try:
-        if isinstance(self.dragobject, qhandles.HandleDragObject):
-            pass
-        else:
-            if (flagsmouse == 1032 or flagsmouse == 1040 or flagsmouse == 1048 or flagsmouse == 1056 or flagsmouse == 2056 or flagsmouse == 2064 or flagsmouse == 2080):
-                if currentview.info["viewname"] == "editors3Dview":
-                    if (quarkx.setupsubset(SS_MODEL, "Options")["DHWR"] == "1") and (flagsmouse == 2056):
+    if isinstance(self.dragobject, qhandles.HandleDragObject):
+        pass
+    else:
+        if (flagsmouse == 1032 or flagsmouse == 1040 or flagsmouse == 1048 or flagsmouse == 1056 or flagsmouse == 2056 or flagsmouse == 2064 or flagsmouse == 2080):
+            if currentview.info["viewname"] == "editors3Dview":
+                if (quarkx.setupsubset(SS_MODEL, "Options")["DHWR"] == "1") and (flagsmouse == 2056):
+                    return
+                else:
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] == "1":
+                        currentview.handles = []
                         return
                     else:
-                        if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] == "1":
-                            currentview.handles = []
-                            return
+                        if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
+                            hlist = mdlhandles.BuildHandles(self, self.layout.explorer, currentview)
                         else:
-                            if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
-                                hlist = mdlhandles.BuildHandles(self, self.layout.explorer, currentview)
-                            else:
-                                hlist = mdlhandles.BuildCommonHandles(self, self.layout.explorer)   # model handles
-                        currentview.handles = hlist
-                        cv = currentview.canvas()
-                        for h in hlist:
-                            h.draw(currentview, cv, None)
-                        return
-                else:
-                    pass
-    except:
-        pass
+                            hlist = mdlhandles.BuildCommonHandles(self, self.layout.explorer)   # model handles
+                    return
+            else:
+                pass
 
-    try:
-        if isinstance(self.dragobject, qhandles.HandleDragObject):
-            pass
-        else:
-            if (flagsmouse == 1032 or flagsmouse == 1040 or flagsmouse == 1048 or flagsmouse == 1056 or flagsmouse == 2056 or flagsmouse == 2064 or flagsmouse == 2080):
-                if currentview.info["viewname"] == "3Dwindow":
-                    if (quarkx.setupsubset(SS_MODEL, "Options")["DHWR"] == "1") and (flagsmouse == 2056):
+    if isinstance(self.dragobject, qhandles.HandleDragObject):
+        pass
+    else:
+        if (flagsmouse == 1032 or flagsmouse == 1040 or flagsmouse == 1048 or flagsmouse == 1056 or flagsmouse == 2056 or flagsmouse == 2064 or flagsmouse == 2080):
+            if currentview.info["viewname"] == "3Dwindow":
+                if (quarkx.setupsubset(SS_MODEL, "Options")["DHWR"] == "1") and (flagsmouse == 2056):
+                    return
+                else:
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] == "1":
+                        currentview.handles = []
                         return
                     else:
-                        if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] == "1":
-                            currentview.handles = []
-                            return
+                        if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
+                            hlist = mdlhandles.BuildHandles(self, self.layout.explorer, currentview)
                         else:
-                            if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
-                                hlist = mdlhandles.BuildHandles(self, self.layout.explorer, currentview)
-                            else:
-                                hlist = mdlhandles.BuildCommonHandles(self, self.layout.explorer)   # model handles
-                        currentview.handles = hlist
-                        cv = currentview.canvas()
-                        for h in hlist:
-                            h.draw(currentview, cv, None)
-                        return
-                else:
-                    pass
-    except:
-        pass
+                            hlist = mdlhandles.BuildCommonHandles(self, self.layout.explorer)   # model handles
+                    return
+            else:
+                pass
 
 ### Draw No Handles Setting Section:
 ### ===============================
@@ -1427,14 +1349,11 @@ def commonhandles(self, redraw=1):
         if v.info["viewname"] == "skinview":
             continue
         ### To update only those views that are in 'Textured' mode after a Skin-view drag has been done.
-        try:
-            if flagsmouse == 16384 and currentview.info["viewname"] == "skinview":
-                if v.viewmode != "tex":
-                    continue
-                else:
-                    v.invalidate(1)
-        except:
-            pass
+        if flagsmouse == 16384 and currentview.info["viewname"] == "skinview":
+            if v.viewmode != "tex":
+                continue
+            else:
+                v.invalidate(1)
 
 ### Set Views Fill Color and Repaint Section:
 ### ========================================
@@ -1506,59 +1425,53 @@ def commonhandles(self, redraw=1):
                     comp.filltris = [(None,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
                 v.repaint()
 
-        try:
-            if (currentview.info["viewname"] != "editors3Dview") and flagsmouse == 1040:
-                pass
-            else:
-                if v.info["viewname"] == "editors3Dview" and flagsmouse != 2064:
-                    fillcolor = MapColor("Options3Dviews_fillColor1", SS_MODEL)
-                    backfacecolor1 = MapColor("BackFaceColor1", SS_MODEL)
-                    backfacecolor2 = MapColor("BackFaceColor2", SS_MODEL)
-                    if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh1"] == "1":
-    # The line below can be used later if we want an option to draw the back faces as well.
-    #2                    comp.filltris = [(fillcolor,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
-                        comp.filltris = [(fillcolor,None)]*len(comp.triangles)
-                        v.repaint()
-                    else:
-                        if quarkx.setupsubset(SS_MODEL, "Options")["DBF"] != "1":
-                            if self.ModelFaceSelList != []:
-                                comp.filltris = faceselfilllist(v)
-                            else:
-                                comp.filltris = [(None,None)]*len(comp.triangles)
-                        else:
-                            comp.filltris = [(None,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
-                        v.repaint()
-                else:
-                    pass
-        except:
+        if (currentview.info["viewname"] != "editors3Dview") and flagsmouse == 1040:
             pass
+        else:
+            if v.info["viewname"] == "editors3Dview" and flagsmouse != 2064:
+                fillcolor = MapColor("Options3Dviews_fillColor1", SS_MODEL)
+                backfacecolor1 = MapColor("BackFaceColor1", SS_MODEL)
+                backfacecolor2 = MapColor("BackFaceColor2", SS_MODEL)
+                if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh1"] == "1":
+    # Thne below can be used later if we want an option to draw the back faces as well.
+    #2                comp.filltris = [(fillcolor,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
+                    comp.filltris = [(fillcolor,None)]*len(comp.triangles)
+                    v.repaint()
+                else:
+                    if quarkx.setupsubset(SS_MODEL, "Options")["DBF"] != "1":
+                        if self.ModelFaceSelList != []:
+                            comp.filltris = faceselfilllist(v)
+                        else:
+                            comp.filltris = [(None,None)]*len(comp.triangles)
+                    else:
+                        comp.filltris = [(None,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
+                    v.repaint()
+            else:
+                pass
 
-        try:
-            if (currentview.info["viewname"] != "3Dwindow") and (flagsmouse == 1040 or flagsmouse == 1048 or flagsmouse == 1056 or flagsmouse == 2080):
-                pass
-            else:
-                if v.info["viewname"] == "3Dwindow" and flagsmouse != 2064:
-                    fillcolor = MapColor("Options3Dviews_fillColor5", SS_MODEL)
-                    backfacecolor1 = MapColor("BackFaceColor1", SS_MODEL)
-                    backfacecolor2 = MapColor("BackFaceColor2", SS_MODEL)
-                    if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh5"] == "1":
-    # The line below can be used later if we want an option to draw the back faces as well.
-    #2                    comp.filltris = [(fillcolor,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
-                        comp.filltris = [(fillcolor,None)]*len(comp.triangles)
-                        v.repaint()
-                    else:
-                        if quarkx.setupsubset(SS_MODEL, "Options")["DBF"] != "1":
-                            if self.ModelFaceSelList != []:
-                                comp.filltris = faceselfilllist(v)
-                            else:
-                                comp.filltris = [(None,None)]*len(comp.triangles)
-                        else:
-                            comp.filltris = [(None,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
-                        v.repaint()
-                else:
-                    pass
-        except:
+        if (currentview.info["viewname"] != "3Dwindow") and (flagsmouse == 1040 or flagsmouse == 1048 or flagsmouse == 1056 or flagsmouse == 2080):
             pass
+        else:
+            if v.info["viewname"] == "3Dwindow" and flagsmouse != 2064:
+                fillcolor = MapColor("Options3Dviews_fillColor5", SS_MODEL)
+                backfacecolor1 = MapColor("BackFaceColor1", SS_MODEL)
+                backfacecolor2 = MapColor("BackFaceColor2", SS_MODEL)
+                if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh5"] == "1":
+    # Thne below can be used later if we want an option to draw the back faces as well.
+    #2                comp.filltris = [(fillcolor,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
+                    comp.filltris = [(fillcolor,None)]*len(comp.triangles)
+                    v.repaint()
+                else:
+                    if quarkx.setupsubset(SS_MODEL, "Options")["DBF"] != "1":
+                        if self.ModelFaceSelList != []:
+                            comp.filltris = faceselfilllist(v)
+                        else:
+                            comp.filltris = [(None,None)]*len(comp.triangles)
+                    else:
+                        comp.filltris = [(None,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
+                    v.repaint()
+            else:
+                pass
 
 ### Rebuild View Handles & Selected Faces Section:
 ### =============================================
@@ -1570,113 +1483,9 @@ def commonhandles(self, redraw=1):
         else:
             hlist = mdlhandles.BuildCommonHandles(self, self.layout.explorer)   # model handles common to all views
 
-### Draw Needed Views GrigScale and AxisIcons Section:
-### =================================================
-    for v in self.layout.views:
-        if v.info["viewname"] == "editors3Dview" or v.info["viewname"] == "3Dwindow" or v.info["viewname"] == "skinview":
-            continue
-        else:
-            plugins.mdlgridscale.gridfinishdrawing(self, v)
-            plugins.mdlaxisicons.newfinishdrawing(self, v)
+    if currentview.info["viewname"] == "skinview":
+        self.dragobject = None
 
-
-### Draw View Handles & Selected Faces Section:
-### ==========================================
-    try:
-        for v in self.layout.views:
-            if v.info["viewname"] == "skinview":
-                continue
-    
-            ### To update only those views that are in 'Textured' mode after a Skin-view drag has been done.
-            try:
-                if flagsmouse == 16384 and currentview.info["viewname"] == "skinview":
-                    if v.viewmode != "tex":
-                        v.handles = hlist
-                        continue
-                    else:
-                        if quarkx.setupsubset(SS_MODEL, "Options")["MAIV"] == "1":
-                            modelaxis(v)
-            except:
-                pass
-            
-            try:
-                if (currentview.info["viewname"] != "editors3Dview") and (flagsmouse == 1040 or flagsmouse == 1048 or flagsmouse == 1056):
-                    pass
-                else:
-                    if v.info["viewname"] == "editors3Dview" and flagsmouse != 2064:
-                        if currentview is None or currentview.info["viewname"] == "editors3Dview" or self.layout.selchange or flagsmouse == 2080:
-                            if self.ModelFaceSelList != []:
-                                mdlhandles.ModelFaceHandle(qhandles.GenericHandle).draw(self, v, self.EditorObjectList)
-                            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] == "1":
-                                v.handles = []
-                            else:
-                                v.handles = hlist
-                                cv = v.canvas()
-                                for h in hlist:
-                                    h.draw(v, cv, None)
-
-                            if quarkx.setupsubset(SS_MODEL, "Options")["MAIV"] == "1":
-                                modelaxis(v)
-            except:
-                pass    
-
-            if v.info["viewname"] == "XY":
-                if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles2"] == "1":
-                    v.handles = []
-                else:
-                    v.handles = hlist
-                    cv = v.canvas()
-                    for h in hlist:
-                        h.draw(v, cv, None)
-                if quarkx.setupsubset(SS_MODEL, "Options")["MAIV"] == "1":
-                    modelaxis(v)
-
-            if v.info["viewname"] == "YZ":
-                if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles3"] == "1":
-                    v.handles = []
-                else:
-                    v.handles = hlist
-                    cv = v.canvas()
-                    for h in hlist:
-                        h.draw(v, cv, None)
-                if quarkx.setupsubset(SS_MODEL, "Options")["MAIV"] == "1":
-                    modelaxis(v)
-
-            if v.info["viewname"] == "XZ":
-                if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles4"] == "1":
-                    v.handles = []
-                else:
-                    v.handles = hlist
-                    cv = v.canvas()
-                    for h in hlist:
-                        h.draw(v, cv, None)
-                if quarkx.setupsubset(SS_MODEL, "Options")["MAIV"] == "1":
-                    modelaxis(v)
-
-            try:
-                if (currentview.info["viewname"] != "3Dwindow") and (flagsmouse == 1040 or flagsmouse == 1048 or flagsmouse == 1056 or flagsmouse == 2080):
-                    pass
-                else:
-                    if v.info["viewname"] == "3Dwindow" and flagsmouse != 2064:
-                        if currentview is None or currentview.info["viewname"] == "3Dwindow" or self.layout.selchange:
-                            if self.ModelFaceSelList != []:
-                                mdlhandles.ModelFaceHandle(qhandles.GenericHandle).draw(self, v, self.EditorObjectList)
-                            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] == "1":
-                                v.handles = []
-                            else:
-                                v.handles = hlist
-                                cv = v.canvas()
-                                for h in hlist:
-                                    h.draw(v, cv, None)
-                            if quarkx.setupsubset(SS_MODEL, "Options")["MAIV"] == "1":
-                                modelaxis(v)
-            except:
-                pass
-        if currentview.info["viewname"] == "skinview":
-            self.dragobject = None
-    except:
-        pass
-        
     if mdlmgr.treeviewselchanged == 1:
         mdlmgr.treeviewselchanged = 0
 
@@ -1689,6 +1498,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.118  2009/01/29 02:13:51  cdunde
+#To reverse frame indexing and fix it a better way by DanielPharos.
+#
 #Revision 1.117  2009/01/27 22:24:11  cdunde
 #To make sure that all models loaded by QuArK have frame indexing.
 #
