@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2009/02/21 17:10:20  danielpharos
+Changed all source files to use CRLF text format, updated copyright and GPL text.
+
 Revision 1.3  2008/09/06 15:57:05  danielpharos
 Moved exception code into separate file.
 
@@ -42,6 +45,7 @@ uses Classes, QkPixelSet, QkImages, QkObjects, QkFileObjects;
 type
  QFtx = class(QImage)
         protected
+          class function FormatName : String; override;
           procedure SaveFile(Info: TInfoEnreg1); override;
           procedure LoadFile(F: TStream; FSize: Integer); override;
         public
@@ -62,7 +66,10 @@ type
                has_alpha: Longint;
               end;
 
- {------------------------}
+class function QFtx.FormatName : String;
+begin
+ Result:='FTX';
+end;
 
 class function QFtx.TypeInfo: String;
 begin

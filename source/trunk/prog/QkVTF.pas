@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.42  2009/02/21 17:06:18  danielpharos
+Changed all source files to use CRLF text format, updated copyright and GPL text.
+
 Revision 1.41  2009/02/10 21:59:35  danielpharos
 Updated to DevIL 1.7.7.
 
@@ -162,6 +165,7 @@ type
   QVTF = class(QImage)
   protected
     class function FileTypeDevIL : DevILType; override;
+    class function FormatName : String; override;
     procedure SaveFile(Info: TInfoEnreg1); override;
     procedure LoadFile(F: TStream; FSize: Integer); override;
   public
@@ -178,6 +182,13 @@ uses SysUtils, StrUtils, Setup, Quarkx, QkExceptions, QkObjectClassList,
 
 var
   VTFLoaded: Boolean;
+
+{-------------------}
+
+class function QVTF.FormatName : String;
+begin
+ Result:='VTF';
+end;
 
 class function QVTF.TypeInfo: String;
 begin
@@ -224,7 +235,7 @@ begin
   Log(LOG_VERBOSE,'Loading VTF file: %s',[self.name]);;
   case ReadFormat of
     1: begin  { as stand-alone file }
-      LibraryToUse:=SetupSubSet(ssFiles, 'JPG').Specifics.Values['LoadLibrary'];
+      LibraryToUse:=SetupSubSet(ssFiles, 'VTF').Specifics.Values['LoadLibrary'];
       if LibraryToUse='DevIL' then
         LoadFileDevIL(F, FSize)
       else if LibraryToUse='VTFLib' then
