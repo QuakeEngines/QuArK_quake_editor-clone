@@ -2,19 +2,21 @@ title: C...
 author: Decker
 
 <dl>
+<dt><a name="cod">           </a>Call of Duty    <dd>[CoD] (game) A <a href="#fps">FPS-game</a> by Infinity Ward.
+<dt><a name="cod2">          </a>Call of Duty 2  <dd>[CoD2] (game) A <a href="#fps">FPS-game</a> by Infinity Ward.
 <dt><a name="capturetheflag"></a>Capture The Flag<dd>[CTF] A team based modification widely played in <a href="#quake1">Quake-1</a> and later games. Two teams have each their own flag, which they must protect from the other team, but at the same time try to steal the other team's flag, and carry it home to score. Many later modifications have been based upon the same Capture The Flag concept, but 'Threewave Capture the Flag' was the first.
 <dt><a name="carve">         </a>Carve           <dd>(to carve) See <a href="#brushsubtraction">Brush subtraction</a>.
 <dt><a name="carving">       </a>Carving         <dd>See <a href="#brushsubtraction">Brush subtraction</a>.
 <dt><a name="classname">     </a>Classname       <dd>The name of an <a href="#entity">entity</a>.
 <dt><a name="compile">       </a>Compile         <dd>(map/level) The action that must be performed to create a file of the map which the <a href="#fps">FPS-game</a> can understand as a level. Typically this includes execution of one or more <a href="#buildtools">build tools</a>.
-<dt><a name="component">     </a>Component       <dd>(model editor item) A group of triangles, or <a href="#tris">Tris</a>, that make up part or all of <a href="intro.modeleditor.model.html#components">a model's actual shape</a>.
+<dt><a name="component">     </a>Component       <dd>(model editor item) A group of triangles, or <a href="#tris">Tris</a>, that make up part or all of a <ref>intro/modeleditor/model/components \ model's actual shape</ref>.
 <dt><a name="concave">       </a>Concave         <dd>When an 2D/3D-object is concave, you can draw a straight line through it, and it can enter the 2D/3D-object many times on its route through, and leaves it just as many times. The opposite of concave is <a href="#convex">convex</a>.<br>
                                                      <pic>convex_concave.png</pic>
-<dt><a name="console">       </a>Console         <dd>In most <a href="#idsoftware">id Software</a> licensed games, you can bring down a console, in which different commands can be typed to perform actions which will affect the game. In most <a href="#fps">FPS-games</a>, to bring down the console, press the key that is just below the ESCAPE-key on the keyboard. On US-style keyboards its the <b>~</b> (tilde) character.
+<dt><a name="console">       </a>Console         <dd>In most <a href="#idsoftware">id Software</a> licensed games, you can bring down a console, in which different commands can be typed to perform actions which will affect the game. In most <a href="#fps">FPS-games</a>, to bring down the console, press the key that is just below the ESCAPE-key on the keyboard. On US-style keyboards it's the <b>~</b> (tilde) character.
 <dt><a name="convex">        </a>Convex          <dd>When an 2D/3D-object is convex, you can draw a straight line through it, and it enters the 2D/3D-object only one time on its route through, and leaves it only one time. The opposite of convex is <a href="#concave">concave</a>.<br>
                                                      <pic>convex_concave.png</pic>
 <dt><a name="counterstrike"> </a>Counter-Strike  <dd>[CS] (modification) A multiplayer modification for <a href="#halflife">Half-Life</a>, that uses realistic damage and weapons. Two teams fight for supremacy, and when all members of the opposing team are dead, or the timelimit hits, the round is won.
 <dt><a name="crystalspace">  </a>Crystal Space   <dd>[CS] (3D game engine)
-<dt><a name="cube">          </a>Cube            <dd>See <a href="#polyhedron">polyhedron</a>.
 <dt><a name="ctf">           </a>CTF             <dd>(abbreviation) See <a href="#capturetheflag">Capture The Flag</a>.
+<dt><a name="cube">          </a>Cube            <dd>See <a href="#polyhedron">polyhedron</a>.
 </dl>
