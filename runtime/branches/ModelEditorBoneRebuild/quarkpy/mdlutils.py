@@ -1937,7 +1937,7 @@ def continue_bone(editor, bone, pos):
 #
 # This function attaches bone to basebone.
 #
-def attach_bones(editor, basebone, bone):
+def attach_bone(editor, basebone, bone):
     import operator
     skeletongroup = editor.Root.group_bone
     new_bone = bone.copy()
@@ -1947,11 +1947,31 @@ def attach_bones(editor, basebone, bone):
     editor.ok(undo, "attach bones")
 
 #
-# This function detaches bone1 and bone2.
+# This function detaches bone from its parent bone.
 #
-def detach_bones(editor, bone):
+def detach_bone(editor, bone):
     new_bone = bone.copy()
     new_bone['parent'] = (-1,)
+    undo = quarkx.action()
+    undo.exchange(bone, new_bone)
+    editor.ok(undo, "detach bones")
+
+#
+# This function assigned vertices of comp to bone.
+#
+def assign_vertices(editor, bone, comp, vertices):
+    new_bone = bone.copy()
+    old_vertices = new_bone.vertices
+    if old_vertices.has_key(comp.name):
+        old_vertices_comp = old_vertices[comp.name]
+    else:
+        old_vertices_comp = []
+    for vtx in vertices:
+        if not(vtx in old_vertices_comp):
+            old_vertices_comp = old_vertices_comp + [vtx]
+    old_vertices_comp.sort()
+    old_vertices[comp.name] = old_vertices_comp
+    new_bone.vertices = old_vertices
     undo = quarkx.action()
     undo.exchange(bone, new_bone)
     editor.ok(undo, "detach bones")
@@ -3201,6 +3221,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.102.2.1  2009/02/25 20:46:37  danielpharos
+#Initial changes.
+#
 #Revision 1.102  2009/02/17 04:57:00  cdunde
 #To fix another error situation cause.
 #

@@ -74,11 +74,10 @@ class ModelLayout(BaseLayout):
         self.reset()
         from qbaseeditor import currentview
         currentview = None
-        from mdlhandles import mdleditorsave, mdleditorview, cursorposatstart, cursordragstartpos, lastmodelfaceremovedlist, SkinView1
+        from mdlhandles import mdleditorsave, mdleditorview, cursorposatstart, lastmodelfaceremovedlist, SkinView1
         mdleditorsave = None
         mdleditorview = None
         cursorposatstart = None
-        cursordragstartpos = None
         lastmodelfaceremovedlist = []
         SkinView1 = None
         BaseLayout.clearrefs(self)
@@ -1241,6 +1240,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.97.2.1  2009/02/25 20:46:36  danielpharos
+#Initial changes.
+#
 #Revision 1.97  2009/02/17 04:59:15  cdunde
 #To expand on types of image texture files that can be applied from the Texture Browser to the Model editor.
 #To update the tree-view when component color is changed.
