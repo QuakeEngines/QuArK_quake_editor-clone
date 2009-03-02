@@ -60,7 +60,7 @@ texture filenames ready at hand.
 Another way of setting up access to textures for Mods and Custom Textures
 is to use the blanket command name "build" with a value of "1" setting.
 This is covered in detail in the 
-<a href="adv.newgame.html#gamedata">Game Data Addons</a> section.
+<ref>adv/newgame/gamedata \ Game Data Addons</ref> section.
 
 Basically what this does is tell QuArK to search the given path folder for
 all texture folders and files in all .pak files, no matter what their name
@@ -72,7 +72,7 @@ that are placed in the "textures" and "scripts" folders or in their own
 sub-folder placed in these folders, with any name you wish to give them.
 These custom sub-folders can also have sub-folder within them as well for
 a better grouping of files. All of the folders will then be grouped in the
-<a href="intro.texturebrowser.overview.html">Texture Browser</a> under the
+<ref>intro/texturebrowser/overview \ Texture Browser</ref> under the
 caption "Directories" and will be displayed by their individual folder and
 sub-folder names.
 
