@@ -19,15 +19,18 @@ and exporters to QuArK's Main Files - Import menu.
 # ImporterFile and ExporterFile = imports the plugin file itself (without the .py) so it can be used in mdlmgr.py later.
 def RegisterMdlImporter(Text, Ext, Desc, Proc, ImporterFile=None):
     import qmacro
-    import quarkx
     if ImporterFile is not None:
         import mdlmgr
         from mdlmgr import SFTexts, mdltypes, IEfile
         mdlmgr.SFTexts = mdlmgr.SFTexts + [Desc.strip("*")]
         mdlmgr.mdltypes = mdlmgr.mdltypes + [len(mdltypes)]
         mdlmgr.IEfile = mdlmgr.IEfile + [ImporterFile]
-    qmacro.mdlimport.update( { Text: ([Ext, Desc],  Proc) } )
-    quarkx.mdlimportmenu(Text)
+    qmacro.mdlimport.update( { Text: ([Ext, Desc], Proc) } )
+    MenuSortName = Proc.__module__
+    if qmacro.mdlimportmenuorder.has_key(MenuSortName):
+        qmacro.mdlimportmenuorder[MenuSortName] = qmacro.mdlimportmenuorder[MenuSortName] + [Text]
+    else:
+        qmacro.mdlimportmenuorder[MenuSortName] = [Text]
 
 def RegisterMdlExporter(Text, Ext, Desc, Proc, ExporterFile=None):
     import qmacro
@@ -37,10 +40,18 @@ def RegisterMdlExporter(Text, Ext, Desc, Proc, ExporterFile=None):
         mdlmgr.SFTexts = mdlmgr.SFTexts + [Desc.strip("*")]
         mdlmgr.mdltypes = mdlmgr.mdltypes + [len(mdltypes)]
         mdlmgr.IEfile = mdlmgr.IEfile + [ExporterFile]
-    qmacro.mdlexport.update( { Text: ([Ext, Desc],  Proc) } )
+    qmacro.mdlexport.update( { Text: ([Ext, Desc], Proc) } )
+    MenuSortName = Proc.__module__
+    if qmacro.mdlexportmenuorder.has_key(MenuSortName):
+        qmacro.mdlexportmenuorder[MenuSortName] = qmacro.mdlexportmenuorder[MenuSortName] + [Text]
+    else:
+        qmacro.mdlexportmenuorder[MenuSortName] = [Text]
     
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.4  2008/10/26 00:07:09  cdunde
+# Moved all of the Specifics/Args page code for the Python importers\exports to the importer files.
+#
 # Revision 1.3  2008/07/10 23:43:44  cdunde
 # Added detail info to the file comments.
 #

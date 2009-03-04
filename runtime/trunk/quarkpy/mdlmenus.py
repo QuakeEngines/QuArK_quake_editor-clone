@@ -78,21 +78,25 @@ def BuildMenuBar(editor):
     import mdloptions
 
     def modelimporters():
-        from qmacro import mdlimport
+        from qmacro import mdlimport, mdlimportmenuorder
         mdlimportmenu = []
-        for menuitem in mdlimport:
-            mdlimportmenu = mdlimportmenu + [qmenu.item(menuitem, runimporter, "load an "+str(menuitem))]
+        orderedlist = mdlimportmenuorder.keys()
+        orderedlist.sort()
+        for menuindex in orderedlist:
+            for importer in mdlimportmenuorder[menuindex]:
+                mdlimportmenu = mdlimportmenu + [qmenu.item(importer, runimporter, "load an "+str(importer))]
         if mdlimportmenu == []:
             mdlimportmenu = mdlimportmenu + [qmenu.item("none available", None, "no importers available")]
         return mdlimportmenu
 
     def modelexporters():
-        from qmacro import mdlexport
-        import qutils
-        mdlexport = qutils.sortdictionary(mdlexport)
+        from qmacro import mdlexport, mdlexportmenuorder
         mdlexportmenu = []
-        for menuitem in mdlexport:
-            mdlexportmenu = mdlexportmenu + [qmenu.item(menuitem, runexporter, "load an "+str(menuitem))]
+        orderedlist = mdlexportmenuorder.keys()
+        orderedlist.sort()
+        for menuindex in orderedlist:
+            for exporter in mdlexportmenuorder[menuindex]:
+                mdlexportmenu = mdlexportmenu + [qmenu.item(exporter, runexporter, "load an "+str(exporter))]
         if mdlexportmenu == []:
             mdlexportmenu = mdlexportmenu + [qmenu.item("none available", None, "no exporters available")]
         return mdlexportmenu
@@ -297,6 +301,9 @@ def BaseMenu(sellist, editor):
 #
 #
 #$Log$
+#Revision 1.38  2009/01/27 05:03:01  cdunde
+#Full support for .md5mesh bone importing with weight assignment and other improvements.
+#
 #Revision 1.37  2008/11/19 06:16:23  cdunde
 #Bones system moved to outside of components for Model Editor completed.
 #

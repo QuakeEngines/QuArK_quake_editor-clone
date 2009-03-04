@@ -294,6 +294,12 @@ def MACRO_loadentityplugins(self):
 def MACRO_loadmdlimportexportplugins(self):
     import plugins
     plugins.LoadPlugins("IE_")
+    # Fill the importer menu with menu items
+    orderedlist = mdlimportmenuorder.keys()
+    orderedlist.sort()
+    for menuindex in orderedlist:
+        for importer in mdlimportmenuorder[menuindex]:
+            quarkx.mdlimportmenu(importer)
     global MACRO_loadmdlimportexportplugins
     MACRO_loadmdlimportexportplugins = lambda x: None    # next calls to loadmdleditor() do nothing
 
@@ -324,6 +330,7 @@ def MACRO_ent_convertfrom(text):
 ### A list, used below, to pass items to for the main QuArK menu 'Model Importers' section.
 ### See the plugins files that start with "ie_" for its use.
 mdlimport = {}
+mdlimportmenuorder = {}
 
 def MACRO_mdl_pythonimporter(text):
     import qeditor
@@ -337,17 +344,18 @@ def MACRO_mdl_pythonimporter(text):
     if mdlf is not None and mdlf[0][0] is not None:
         files = quarkx.filedialogbox("Select File", text, mdlf[0], 0)
         if len(files) != 0:
-            file = files[0]
-            gn = a[0]["GameDir"]
-            if (gn is None) or (gn == ""):
-                gn = file
-            mdlf[1](a[0].parent, file, gn)
+            filename = files[0]
+            gamename = a[0]["GameDir"]
+            if (gamename is None) or (gamename == ""):
+                gamename = filename
+            mdlf[1](a[0].parent, filename, gamename)
     if mdlf[0][0] is None and mdlf[1] is not None:
         mdlf[1](a[0].parent) # This calls the function that is stored in the "mdlimport" list above.
 
 ### A list, used below, to pass items to for the main QuArK menu 'Model Exporters' section.
 ### See the plugins files that start with "ie_" for its use.
 mdlexport = {}
+mdlexportmenuorder = {}
 
 def MACRO_mdl_pythonexporter(text):
     import qeditor
@@ -373,6 +381,9 @@ def MACRO_mdl_pythonexporter(text):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.31  2008/08/21 12:01:30  danielpharos
+#Removed a magic number
+#
 #Revision 1.30  2008/06/28 14:44:52  cdunde
 #Some minor corrections.
 #
