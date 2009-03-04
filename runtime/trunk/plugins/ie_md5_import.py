@@ -46,6 +46,10 @@ from quarkpy.qeditor import MapColor # Strictly needed for QuArK bones MapColor 
 if not hasattr(sys, "argv"): sys.argv = ["???"]
 
 # Globals for QuArK
+md5_mesh_path = None
+md5_anim_path = None
+md5_model = None
+md5_model_comps = []
 logging = 0
 importername = "ie_md5_import.py"
 textlog = "md5_ie_log.txt"
@@ -379,7 +383,7 @@ class md5_mesh:
 
 
 def load_md5(md5_filename, basepath):
-        global progressbar, tobj, logging, Strings
+        global md5_model, md5_model_comps, progressbar, tobj, logging, Strings
 
     ### This area is where we make the different elements of a QuArK Component, for each Component.
         # First we check for any other "Import Component"s,
@@ -658,8 +662,8 @@ def load_md5(md5_filename, basepath):
                         found_a_bone = 0
                         for jointnumber2 in range(0,num_bones):
                             if md5_bones[jointnumber2].parent_index == jointnumber:
-                                Cdunde_QuArK_bones[mesh.mesh_index][jointnumber2]['start_vtxlist'] = list
-                                Cdunde_QuArK_bones[mesh.mesh_index][jointnumber2]['start_vertex_count'] = listcount
+                                Cdunde_QuArK_bones[mesh.mesh_index][jointnumber2-1]['end_vtxlist'] = list
+                                Cdunde_QuArK_bones[mesh.mesh_index][jointnumber2-1]['end_vertex_count'] = listcount
                                 found_a_bone = 1
                                 break
                         if found_a_bone == 0:
@@ -691,7 +695,7 @@ def load_md5(md5_filename, basepath):
     #    armData.makeEditable() 
         # QuArK, make bones here.
  #1       bonecounter = 0 # For trying Blinder's code way, but doesn't link the bones up right for QuArK.
-        for bone in md5_bones: 
+        for bone in md5_bones:
     #        bone.blenderbone = Blender.Armature.Editbone() 
     #        headData = Blender.Mathutils.Vector(bone.bindpos[0]*scale, bone.bindpos[1]*scale, bone.bindpos[2]*scale)
             headData = quarkx.vect(bone.bindpos[0]*scale, bone.bindpos[1]*scale, bone.bindpos[2]*scale)
@@ -1013,7 +1017,7 @@ def load_md5(md5_filename, basepath):
 
         #        blender_mesh=NMesh.New() # make this a QuArK component's frame verticies
                 framesgroup = quarkx.newobj('Frames:fg') # QuArK Frames group made here.
-                frame = quarkx.newobj('Base frame' + ':mf') # QuArK frame made here.
+                frame = quarkx.newobj('meshframe' + ':mf') # QuArK frame made here.
                 comp_mesh = () # QuArK code
                 comp_verts = [] # QuArK code
                 for vert in mesh.verts: # QuArK frame Vertices made here.
@@ -1113,6 +1117,7 @@ def load_md5(md5_filename, basepath):
                 else:
                     Component = quarkx.newobj(str(mesh.mesh_index) + "_" + "Import Component " + str(CompNbr) + ':mc')
                     CompNbr = CompNbr + 1
+                md5_model_comps = md5_model_comps + [Component.name]
                 for bone in QuArK_bones[mesh.mesh_index]:
                     bone['start_component'] = Component.name
                     bone['end_component'] = Component.name
@@ -1211,7 +1216,7 @@ class md5anim:
         baseframe = []
         framedata = []
         
-    def load_md5anim(self, md5_filename):
+    def load_md5anim(self, md5_filename, bones=None): # bones = QuArK's "Skeleton:bg" folder to get our current bones from.
         file=open(md5_filename,"r")
         lines=file.readlines()
         file.close()
@@ -1261,13 +1266,26 @@ class md5anim:
                     self.md5anim_bones[bone_counter].name=temp_name
             #        print "found bone: ", self.md5anim_bones[bone_counter].name
                     self.md5anim_bones[bone_counter].parent_index = int(words[1])
-                    #if self.md5anim_bones[bone_counter].parent_index>=0:
-                    #    self.md5anim_bones[bone_counter].parent = self.md5anim_bones[self.md5anim_bones[bone_counter].parent_index].name
+                    if self.md5anim_bones[bone_counter].parent_index>=0:
+                        self.md5anim_bones[bone_counter].parent = self.md5anim_bones[self.md5anim_bones[bone_counter].parent_index].name
                     self.md5anim_bones[bone_counter].flags = int(words[2])
                     self.md5anim_bones[bone_counter].frameDataIndex=int(words[3])
+                    for compbone in range(len(md5_model)):
+                        if self.md5anim_bones[bone_counter].parent_index>=0:
+                            bones.dictitems[str(compbone) + "_" + temp_name + ":bone"]['parent_index'] = words[1]
+                            bones.dictitems[str(compbone) + "_" + temp_name + ":bone"]['parent'] = str(compbone) + "_" + self.md5anim_bones[bone_counter].parent + ":bone"
+                            bones.dictitems[str(compbone) + "_" + temp_name + ":bone"]['flags'] = words[2]
+                            bones.dictitems[str(compbone) + "_" + temp_name + ":bone"]['frameDataIndex'] = words[3]
+                        
 
 
             elif words and words[0]=="baseframe":
+                comp_baseframes = []
+                for comp in range(len(md5_model)):
+                    newframe = editor.Root.dictitems[md5_model_comps[comp]].dictitems['Frames:fg'].dictitems['meshframe:mf']
+                    baseframe = newframe.copy()
+                    baseframe.shortname = "baseframe"
+                    comp_baseframes = comp_baseframes + [baseframe]
                 for bone_counter in range(0,self.num_bones):
                     line_counter+=1
                     current_line=lines[line_counter]
@@ -1290,6 +1308,19 @@ class md5anim:
                         qw = -sqrt(qw)
                     self.md5anim_bones[bone_counter].bindquat = [qx,qy,qz,qw]
 
+                    if bone_counter == 0: # Send it back for the next bone which is our first QuArK bone 0 (zero).
+                        continue
+
+                    if bone_counter < self.num_bones:
+                        for compbone in range(len(md5_model)):
+                            baseframe = comp_baseframes[compbone]
+                            bones.dictitems[str(compbone) + "_" + self.md5anim_bones[bone_counter].name + ":bone"]['bindpos'] = (float(words[1]), float(words[2]), float(words[3])) # QuArK code, use these values as the baseframe's bone end_handle .md5anim file positions. (see "apply" function code below for its use).
+                            bones.dictitems[str(compbone) + "_" + self.md5anim_bones[bone_counter].name + ":bone"]['bindquat'] = (float(words[6]), float(words[7]), float(words[8])) # QuArK code, use these values to build this bones matrix (see "(qx,qy,qz,qw) = md5b.bindquat" in "apply" function code below for its use).
+
+                for compbone in range(len(md5_model)):
+                    newframe = comp_baseframes[compbone]
+                    editor.Root.dictitems[md5_model_comps[compbone]].dictitems['Frames:fg'].appenditem(newframe)
+
             elif words and words[0]=="frame":
                 framenumber = int(words[1])
                 self.framedata[framenumber]=[]
@@ -1303,89 +1334,186 @@ class md5anim:
                     current_line=lines[line_counter]
                     words=current_line.split()
 
-    def apply(self, arm_obj, actionname):
-      action = Blender.Armature.NLA.NewAction(actionname)
-      action.setActive(arm_obj)
-      thepose = arm_obj.getPose()
-      for b in self.md5anim_bones:
-        b.invrestmat = Blender.Mathutils.Matrix(arm_obj.getData().bones[b.name].matrix['ARMATURESPACE']).invert()
-        b.restmat = Blender.Mathutils.Matrix(arm_obj.getData().bones[b.name].matrix['ARMATURESPACE'])
-      for currntframe in range(1, self.numFrames+1):
-    #    print "importing frame ", currntframe," of", self.numFrames
-        Blender.Set("curframe", currntframe)
-        for md5b in self.md5anim_bones:
-          try:
-            thebone = thepose.bones[md5b.name]
-          except:
-    #        print "could not find bone ", md5b.name, " in armature"
-            continue
-          (qx,qy,qz,qw) = md5b.bindquat
-          lx,ly,lz = md5b.bindpos
-          frameDataIndex = md5b.frameDataIndex
-          if (md5b.flags & 1):
-            lx = self.framedata[currntframe-1][frameDataIndex]
-            frameDataIndex+=1
-          if (md5b.flags & 2):
-            ly = self.framedata[currntframe-1][frameDataIndex]
-            frameDataIndex+=1          
-          if (md5b.flags & 4):
-            lz = self.framedata[currntframe-1][frameDataIndex]
-            frameDataIndex+=1
-          if (md5b.flags & 8):
-            qx = self.framedata[currntframe-1][frameDataIndex]
-            frameDataIndex+=1
-          if (md5b.flags & 16):
-            qy = self.framedata[currntframe-1][frameDataIndex]
-            frameDataIndex+=1                     
-          if (md5b.flags & 32):
-            qz = self.framedata[currntframe-1][frameDataIndex]
-          qw = 1 - qx*qx - qy*qy - qz*qz
-          if qw<0:
-            qw=0
-          else:
-            qw = -sqrt(qw)
-          lmat = quaternion2matrix([qx,qy,qz,qw])
-          lmat[3][0] = lx*scale
-          lmat[3][1] = ly*scale
-          lmat[3][2] = lz*scale
-          lmat = Blender.Mathutils.Matrix(lmat[0], lmat[1], lmat[2], lmat[3])
-          #if md5b.parent_index>=0:
-          #  md5b.posemat = lmat*self.md5anim_bones[md5b.parent_index].posemat
-          #else:
-          #  md5b.posemat = lmat
-          if md5b.parent_index>=0:
-            thebone.localMatrix = Blender.Mathutils.Matrix(lmat) * (md5b.restmat * self.md5anim_bones[md5b.parent_index].invrestmat).invert()
-          else:
-            thebone.localMatrix = lmat * md5b.invrestmat
-          thepose.update()
-          thebone.insertKey(arm_obj, currntframe, [Blender.Object.Pose.ROT, Blender.Object.Pose.LOC])
-          thepose.update()
-      Blender.Set("curframe", 1)
+    def apply(self, bones, animfile):   # (for Blender) "bones" is a "joint" or bone, "animfile" is the full ,md5anim file name only.
+                                        # (for QuArK)   "bones" is QuArK's "Skeleton:bg" folder.
+        from quarkpy.qbaseeditor import currentview
+        frames_per_component = []
+        for comp in md5_model_comps:
+            component_frames = []
+            compcount = comp.split("_", 1)[0]
+            editor.Root.currentcomponent = editor.Root.dictitems[comp]
+            baseframe = editor.Root.currentcomponent.dictitems['Frames:fg'].dictitems['meshframe:mf']
+            editor.Root.currentcomponent.currentframe = baseframe
+            for frame in range(1, self.numFrames+1):
+                newframe = baseframe.copy()
+                newframe.shortname = "frame" + str(frame)
+                l_base = None
+                q_base = None
+                for bone in range(len(bones.subitems)):
+                    if bones.subitems[bone].name.split("_", 1)[0] != compcount:
+                        continue
+                    origin_flags = self.md5anim_bones[0].flags
+                    origin_frameDataIndex = self.md5anim_bones[0].frameDataIndex
+                    origin_bindpos = self.md5anim_bones[0].bindpos
+                    origin_bindquat = self.md5anim_bones[0].bindquat
+                    # Changing to "bone" causes eyebrows to move with rest of model.
+                    qx,qy,qz = bones.subitems[bone].dictspec['bindquat']
+                    # Changing to "bones" causes eyebrows to remain fixed in one spot.
+         #1           qx,qy,qz = bones.subitems[0].dictspec['bindquat']
+                    if int(bones.subitems[bone].dictspec['frameDataIndex']) == 0 and q_base is not None:
+                        qx,qy,qz = q_base
+                    qw = 1 - qx*qx - qy*qy - qz*qz
+                    if qw<0:
+                        qw=0
+                    else:
+                        qw = -sqrt(qw)
+                    lx,ly,lz = bones.subitems[0].dictspec['bindpos']
+    #                lx,ly,lz = bones.subitems[0].dictspec['end_point']
+             #       lx,ly,lz = bones.subitems[0].dictspec['start_point']
+        #1            frameDataIndex = int(bones.subitems[0].dictspec['frameDataIndex'])
+                    frameDataIndex = int(bones.subitems[bone].dictspec['frameDataIndex'])
+                    usebone = 0
+                    if int(bones.subitems[bone].dictspec['frameDataIndex']) != 0:
+                        usebone = 1
+                 #   print ""
+                 #   print ""
+                 #   print ""
+                 #   print newframe.shortname
+                 #   print "bone.name -->",bones.subitems[bone].name
+                 #   print "bone bindpos -->",bones.subitems[bone].dictspec['bindpos']
+                 #   print "bone bindquat -->",bones.subitems[bone].dictspec['bindquat']
+                 #   print "bone frameDataIndex -->",bones.subitems[bone].dictspec['frameDataIndex']
+                 #   print "ACTUAL frameDataIndex -->",frameDataIndex
+                 #   print "bone flags -->",int(bones.subitems[bone].dictspec['flags'])
+                 #   print "bone flags & 1 -->",(int(bones.subitems[bone].dictspec['flags']) & 1)
+                 #   print "bone flags & 2 -->",(int(bones.subitems[bone].dictspec['flags']) & 2)
+                 #   print "bone flags & 4 -->",(int(bones.subitems[bone].dictspec['flags']) & 4)
+                 #   print "bone flags & 8 -->",(int(bones.subitems[bone].dictspec['flags']) & 8)
+                 #   print "bone flags & 16 -->",(int(bones.subitems[bone].dictspec['flags']) & 16)
+                 #   print "bone flags & 32 -->",(int(bones.subitems[bone].dictspec['flags']) & 32)
+                 #   print "self.framedata[frame-1] -->",frame-1
+                 #   print self.framedata[frame-1]
+                 #   print ""
+       #1             if (int(bones.subitems[0].dictspec['flags']) & 1): # Tx
+                    if (int(bones.subitems[bone].dictspec['flags']) & 1): # Tx
+                        lx = self.framedata[frame-1][frameDataIndex]
+                        frameDataIndex+=1
+                 #       print "in flags 1 bone, frameDataIndex",bones.subitems[bone].name, frameDataIndex
+       #1             if (int(bones.subitems[0].dictspec['flags']) & 2): # Ty
+                    if (int(bones.subitems[bone].dictspec['flags']) & 2): # Ty
+                        ly = self.framedata[frame-1][frameDataIndex]
+                        frameDataIndex+=1
+                 #       print "in flags 2 bone, frameDataIndex",bones.subitems[bone].name, frameDataIndex
+       #1             if (int(bones.subitems[0].dictspec['flags']) & 4): # Tz
+                    if (int(bones.subitems[bone].dictspec['flags']) & 4): # Tz
+                        lz = self.framedata[frame-1][frameDataIndex]
+                        frameDataIndex+=1
+                 #   print "md5import line 1407 bone, lx, ly, lz",bones.subitems[bone].name, lx, ly, lz
+       #1             if (int(bones.subitems[0].dictspec['flags']) & 8): # Qx
+                    if (int(bones.subitems[bone].dictspec['flags']) & 8): # Qx
+                 #       print "md5import line 1410 bone, flags, frameDataIndex",bones.subitems[bone].name, bones.subitems[bone].dictspec['flags'], frameDataIndex
+                        try:
+                            if usebone != 0:
+                                frameDataIndex = int(bones.subitems[bone].dictspec['frameDataIndex'])
+                 #               print "line 1414 frameDataIndex",frameDataIndex
+                                qy = self.framedata[frame-1][frameDataIndex]
+                            else:
+                                qx = self.framedata[frame-1][frameDataIndex]*-1
+                            frameDataIndex+=1
+                        except:
+                            pass
+       #1             if (int(bones.subitems[0].dictspec['flags']) & 16): # Qy
+                    if (int(bones.subitems[bone].dictspec['flags']) & 16): # Qy
+                        try:
+                            if usebone != 0:
+                 #               print "line 1425 frameDataIndex",frameDataIndex
+                                qz = self.framedata[frame-1][frameDataIndex]*-1
+                            else:
+                                qy = self.framedata[frame-1][frameDataIndex]
+                            frameDataIndex+=1
+                        except:
+                            pass
+       #1             if (int(bones.subitems[0].dictspec['flags']) & 32): # Qz
+                    if (int(bones.subitems[bone].dictspec['flags']) & 32): # Qz
+                        try:
+                            if usebone != 0:
+                 #               print "line 1436 frameDataIndex",frameDataIndex
+                                qx = self.framedata[frame-1][frameDataIndex]*-1
+                            else:
+                                qz = self.framedata[frame-1][frameDataIndex]*-1
+                        except:
+                            pass
+                 #   print "md5import line 1442 qx, qy, qz, frameDataIndex",qx, qy, qz, frameDataIndex
+                    if int(bones.subitems[bone].dictspec['flags']) != 0 and int(bones.subitems[bone].dictspec['frameDataIndex']) == 0:
+                        q_base = (qx, qy, qz)
+                    qw = 1 - qx*qx - qy*qy - qz*qz
+                    if qw<0:
+                        qw=0
+                    else:
+                        qw = -sqrt(qw)
+                    lmat = quaternion2matrix([qx,qy,qz,qw])
+                    lmat[3][0] = lx*scale
+                    lmat[3][1] = ly*scale
+                    lmat[3][2] = lz*scale
+                #    print ""
+                #    print "md5_import line 1453 HELP! QuArK needs matrix work here --> lmat -->",lmat
+                #    print ""
+                #    print "md5_import line 1455 matrix2quaternion(m)",matrix2quaternion(lmat)
+                #    print "lmat",lmat
+                #    print ""
+     #               m = ((-lmat[0][0],lmat[0][1],-lmat[0][2]), (-lmat[2][0],-lmat[2][1],lmat[2][2]), (-lmat[1][0],lmat[1][1],-lmat[1][2]))
+      #              m = ((-lmat[1][2],lmat[1][0],lmat[1][1]), (lmat[0][2],-lmat[0][0],lmat[0][1]), (lmat[2][2],lmat[2][0],-lmat[2][1]))
+       #             m = ((-lmat[1][2],lmat[1][0],-lmat[1][1]), (lmat[0][2],-lmat[0][0],-lmat[0][1]), (lmat[2][2],lmat[2][0],-lmat[2][1]))
+        #            m = ((-lmat[1][2],lmat[1][0],-lmat[1][1]), (-lmat[0][2],-lmat[0][0],-lmat[0][1]), (lmat[2][2],lmat[2][0],-lmat[2][1]))
+         #           m = ((-lmat[1][2],-lmat[1][0],lmat[1][1]), (-lmat[0][2],-lmat[0][0],-lmat[0][1]), (lmat[2][2],lmat[2][0],-lmat[2][1]))
+          #          m = ((-lmat[1][2],-lmat[1][0],lmat[1][1]), (-lmat[0][2],-lmat[0][0],-lmat[0][1]), (lmat[2][2],-lmat[2][0],-lmat[2][1]))
+           #         m = ((-lmat[1][2],-lmat[1][0],lmat[1][1]), (-lmat[0][2],-lmat[0][0],-lmat[0][1]), (lmat[2][2],-lmat[2][0],-lmat[2][1]))
+
+                    m = ((-lmat[0][2],-lmat[0][0],-lmat[0][1]), (lmat[2][2],lmat[2][0],lmat[2][1]), (-lmat[1][2],-lmat[1][0],-lmat[1][1]))
+
+                #    print ""
+                #    print "md5_import line 1474 m",m
+                #    print ""
+                #    print "md5_import line 1476 quarkx matrix",quarkx.matrix(m)
+                #    print ""
+                    if bones.subitems[bone].dictspec.has_key('end_vtxlist') and editor.ModelComponentList[bones.subitems[bone].dictspec['end_component']]['boneobjlist'][bones.subitems[bone].name].has_key('s_or_e1'):
+                        name = bones.subitems[bone].dictspec['end_component'] + "-b-" + bones.subitems[bone].shortname + "_1"
+                        selvtxlist = editor.ModelComponentList[bones.subitems[bone].dictspec['end_component']]['boneobjlist'][bones.subitems[bone].name]['s_or_e1']['selvtxlist']
+                        vtxlist = []
+                        for vtx in selvtxlist:
+                            vtxpos = quarkx.vect(0,0,0)
+                            vtxlist = vtxlist + [[vtx, vtxpos]]
+                        try:
+                            obj = quarkpy.mdlutils.MakeEditorVertexPolyObject(editor, 0, vtxlist, name)[0]
+                        except:
+                            continue
+
+                        obj.linear(quarkx.vect(bones.subitems[0].dictspec['end_point']), quarkx.matrix(m))
+                        old_vtxs = newframe.vertices
+                        for poly in range(len(obj.subitems)):
+                            vtxnbr = int(obj.subitems[poly].shortname)
+                            face = obj.subitems[poly].subitems[0]
+                            vertex = quarkx.vect(face["v"][0] , face["v"][1], face["v"][2]) - quarkx.vect(1.0,0.0,0.0)/currentview.info["scale"]*2
+                            delta = vertex - old_vtxs[vtxnbr]
+                            old_vtxs[vtxnbr] = vertex
+                        newframe.vertices = old_vtxs
+                editor.Root.currentcomponent.dictitems['Frames:fg'].appenditem(newframe)
       
 
-#armobj is either an armature object or None
-def load_md5anim(md5anim_filename, armobj):
-  theanim = md5anim()
-  theanim.load_md5anim(md5anim_filename)
-  if (armobj):
-    obj = armobj
-  else:
-    obj = None
-    for armobj in Blender.Object.Get():
-      data = armobj.getData()
-      if type(data) is Blender.Types.ArmatureType:
-        obj = armobj
-        break
-  if obj:
-    print "applying animation to armature: ", obj.getName()
-    pth, actionname = os.path.split(md5anim_filename)
-    theanim.apply(obj, actionname)
-    scn = Blender.Scene.GetCurrent()
-    context = scn.getRenderingContext()
-    context.endFrame(theanim.numFrames+1)
-  else:
-    print "couldn't apply animation, no armature in the scene"    
-  return
+# (for Blinder) bones is either an armature object or None
+# (for QuArK) md5anim_filename = full path and file name, bones = QuArK's "Skeleton:bg" folder to get our current bones from.
+def load_md5anim(md5anim_filename, bones):
+    theanim = md5anim() # Making an "instance" of this class.
+    theanim.load_md5anim(md5anim_filename, bones) # Calling this class function to open and completely read the .md5_anim file.
+
+    if bones:
+        pth, actionname = os.path.split(md5anim_filename)
+        theanim.apply(bones, actionname) # Calling this class function to create the amimation frames,
+                                         # "bones" is QuArK's "Skeleton:bg" folder, "actionname" is the full ,md5anim file name only.
+    else:
+        quarkx.beep() # Makes the computer "Beep" once if a file is not valid. Add more info to message.
+        quarkx.msgbox("Could not apply animation.\nNo bones in the scene.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
+    return
 
 ######################################################
 # GUI STUFF
@@ -1456,22 +1584,30 @@ def handle_button_event(evt):
 ########################
 
 def import_md5_model(basepath, md5_filename):
-    RetComponentList, RetQuArK_bone_list, message = load_md5(md5_filename, basepath) # Loads the model using list of ALL bones as they are created.
+    # md5_filename is the full path and file name.
+    # basepath just the path to the "game" folder.
+    if md5_filename.endswith(".md5mesh"): # Calls to load the .md5_mesh file.
+        RetComponentList, RetQuArK_bone_list, message = load_md5(md5_filename, basepath) # Loads the model using list of ALL bones as they are created.
+        ### Use the 'ModelRoot' below to test opening the QuArK's Model Editor with, needs to be qualified with main menu item.
+        ModelRoot = quarkx.newobj('Model:mr')
+      #  ModelRoot.appenditem(Component)
 
-    ### Use the 'ModelRoot' below to test opening the QuArK's Model Editor with, needs to be qualified with main menu item.
-    ModelRoot = quarkx.newobj('Model:mr')
-  #  ModelRoot.appenditem(Component)
-
-    return ModelRoot, RetComponentList, RetQuArK_bone_list, message # Using list of ALL bones as they are created.
+        return ModelRoot, RetComponentList, RetQuArK_bone_list, message # Using list of ALL bones as they are created.
+    else: # Calls to load the .md5_anim file.
+       #   md5anim.load_md5anim(anim, md5_filename)
+        editor = quarkpy.mdleditor.mdleditor
+        bones = editor.Root.dictitems['Skeleton:bg']
+        frames_per_component = load_md5anim(md5_filename, bones)
+        # return
 
 
 def loadmodel(root, filename, gamename, nomessage=0):
     "Loads the model file: root is the actual file,"
-    "filename is the full path and name of the .md5mesh file selected."
+    "filename is the full path and name of the .md5mesh or .md5anim file selected."
     "gamename is None."
     "For example:  C:\Program Files\Doom 3\base\models\md5\monsters\pinky\pinky.md5mesh"
 
-    global editor, progressbar, tobj, logging, importername, textlog, Strings
+    global md5_mesh_path, md5_anim_path, editor, progressbar, tobj, logging, importername, textlog, Strings
     if editor is None:
         editor = quarkpy.mdleditor.mdleditor
 
@@ -1479,87 +1615,119 @@ def loadmodel(root, filename, gamename, nomessage=0):
     basepath = ie_utils.validpath(filename)
     basepath = basepath.replace("\\", "/")
     if basepath is None:
+        editor = None   #Reset the global again
         return
 
-    logging, tobj, starttime = ie_utils.default_start_logging(importername, textlog, filename, "IM") ### Use "EX" for exporter text, "IM" for importer text.
+    if filename.endswith(".md5mesh"): # Calls to load the .md5_mesh file.
+        logging, tobj, starttime = ie_utils.default_start_logging(importername, textlog, filename, "IM") ### Use "EX" for exporter text, "IM" for importer text.
 
     ### Lines below here loads the model into the opened editor's current model.
-    ModelRoot, RetComponentList, RetQuArK_bone_list, message = import_md5_model(basepath, filename) # Using list of ALL bones as they are created.
+        ModelRoot, RetComponentList, RetQuArK_bone_list, message = import_md5_model(basepath, filename)
 
-    if ModelRoot is None or RetComponentList is None or RetComponentList == []:
-        quarkx.beep() # Makes the computer "Beep" once if a file is not valid. Add more info to message.
-        quarkx.msgbox("Invalid .md5 model.\nEditor can not import it.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
-        progressbar.close()
-        return
+        if ModelRoot is None or RetComponentList is None or RetComponentList == []:
+            quarkx.beep() # Makes the computer "Beep" once if a file is not valid.
+            quarkx.msgbox("Invalid .md5 model.\n\n    " + filename + "\n\nEditor can not import it.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
+            try:
+                progressbar.close()
+            except:
+                pass
+            editor = None   #Reset the global again
+            return
 
-    QuArK_mesh_counter = 0
-    undo = quarkx.action()
-    for Component in RetComponentList:
-        undo.put(editor.Root, Component)
-        editor.Root.currentcomponent = Component
-        compframes = editor.Root.currentcomponent.findallsubitems("", ':mf')   # get all frames
-        for compframe in compframes:
-            compframe.compparent = editor.Root.currentcomponent # To allow frame relocation after editing.
-    #    if QuArK_mesh_counter == 0:
-        for bone in range(len(RetQuArK_bone_list[QuArK_mesh_counter])): # Using list of ALL bones as they are created.
-            if bone == 0:
-                continue
-     #       if RetQuArK_bone_list[QuArK_mesh_counter][bone].dictspec['start_vertex_count'] == "0" and RetQuArK_bone_list[QuArK_mesh_counter][bone].dictspec['end_vertex_count'] == "0":
-     #           continue
-            if RetQuArK_bone_list[QuArK_mesh_counter][bone].dictspec['start_component'] == "None":
-                RetQuArK_bone_list[QuArK_mesh_counter][bone]['start_component'] = Component.name
-            if RetQuArK_bone_list[QuArK_mesh_counter][bone].dictspec['end_component'] == "None":
-                RetQuArK_bone_list[QuArK_mesh_counter][bone]['end_component'] = Component.name
-     #       print ""
-     #       print "line 1516 ie_md5_import RetQuArK_bone_list[bone].dictspec",RetQuArK_bone_list[QuArK_mesh_counter][bone].dictspec
-            undo.put(editor.Root.dictitems['Skeleton:bg'], RetQuArK_bone_list[QuArK_mesh_counter][bone])
-        QuArK_mesh_counter = QuArK_mesh_counter + 1
+        QuArK_mesh_counter = 0
+        undo = quarkx.action()
+        for Component in RetComponentList:
+            undo.put(editor.Root, Component)
+            editor.Root.currentcomponent = Component
+            compframes = editor.Root.currentcomponent.findallsubitems("", ':mf')   # get all frames
+            for compframe in compframes:
+                compframe.compparent = editor.Root.currentcomponent # To allow frame relocation after editing.
 
-         #   progressbar.progress() # un-comment this line once progress bar is set up
+            for bone in range(len(RetQuArK_bone_list[QuArK_mesh_counter])): # Using list of ALL bones per component (mesh).
+                if bone == 0:
+                    continue
+                if RetQuArK_bone_list[QuArK_mesh_counter][bone].dictspec['start_component'] == "None":
+                    RetQuArK_bone_list[QuArK_mesh_counter][bone]['start_component'] = Component.name
+                if RetQuArK_bone_list[QuArK_mesh_counter][bone].dictspec['end_component'] == "None":
+                    RetQuArK_bone_list[QuArK_mesh_counter][bone]['end_component'] = Component.name
+         #       print ""
+         #       print "line 1542 ie_md5_import RetQuArK_bone_list[bone].dictspec",RetQuArK_bone_list[QuArK_mesh_counter][bone].dictspec
+                undo.put(editor.Root.dictitems['Skeleton:bg'], RetQuArK_bone_list[QuArK_mesh_counter][bone])
+            QuArK_mesh_counter = QuArK_mesh_counter + 1
 
-  #  progressbar.close() # un-comment this line once progress bar is set up
-    Strings[2454] = Strings[2454].replace(Component.shortname + "\n", "")
-    ie_utils.default_end_logging(filename, "IM", starttime) ### Use "EX" for exporter text, "IM" for importer text.
+             #   progressbar.progress() # un-comment this line once progress bar is set up
 
-    editor.ok(undo, str(len(RetComponentList)) + " .md5 Components imported") # Let the ok finish the new components before going on.
+            try:
+                progressbar.close()
+                Strings[2454] = Strings[2454].replace(Component.shortname + "\n", "")
+                ie_utils.default_end_logging(filename, "IM", starttime) ### Use "EX" for exporter text, "IM" for importer text.
+            except:
+                pass
 
-    QuArK_mesh_counter = 0
-    for nbr in range(len(RetComponentList)):
-        for bone in range(len(RetQuArK_bone_list[QuArK_mesh_counter])): # Using list of ALL bones as they are created.
-            # Test to be sure a bone has vertexes assigned to one of its handles (joint) to avoid any error.
-            if RetQuArK_bone_list[QuArK_mesh_counter][bone].dictspec['start_vertex_count'] == "0" and RetQuArK_bone_list[QuArK_mesh_counter][bone].dictspec['end_vertex_count'] == "0":
-                continue
-            quarkpy.mdlutils.Make_BoneVtxList(editor, RetQuArK_bone_list[QuArK_mesh_counter][bone])
-        QuArK_mesh_counter = QuArK_mesh_counter + 1
+        editor.ok(undo, str(len(RetComponentList)) + " .md5 Components imported") # Let the ok finish the new components before going on.
 
-    editor.Root.currentcomponent = RetComponentList[0]  # Sets the current component.
-    comp = editor.Root.currentcomponent
-    skins = comp.findallsubitems("", ':sg')      # Gets the skin group.
-    if len(skins[0].subitems) != 0:
-        comp.currentskin = skins[0].subitems[0]      # To try and set to the correct skin.
-        quarkpy.mdlutils.Update_Skin_View(editor, 2) # Sends the Skin-view for updating and center the texture in the view.
-    else:
-        comp.currentskin = None
- #   print ""
- #   print "line 1546 ie_md5_import editor.ModelComponentList",editor.ModelComponentList
- #   print ""
+        QuArK_mesh_counter = 0
+        for nbr in range(len(RetComponentList)):
+            for bone in range(len(RetQuArK_bone_list[QuArK_mesh_counter])): # Using list of ALL bones per component (mesh).
+                # Test to be sure a bone has vertexes assigned to one of its handles (joint) to avoid any error.
+                if RetQuArK_bone_list[QuArK_mesh_counter][bone].dictspec['start_vertex_count'] == "0" and RetQuArK_bone_list[QuArK_mesh_counter][bone].dictspec['end_vertex_count'] == "0":
+                    continue
+                quarkpy.mdlutils.Make_BoneVtxList(editor, RetQuArK_bone_list[QuArK_mesh_counter][bone])
+            QuArK_mesh_counter = QuArK_mesh_counter + 1
 
-    editor = None   #Reset the global again
-    if message != "":
-        message = message + "================================\r\n\r\n"
-        message = message + "You need to find and supply the proper texture(s) and folder(s) above.\r\n"
-        message = message + "Extract the required folder(s) and file(s) to the 'game' folder.\r\n\r\n"
-        message = message + "If a texture does not exist it may be a .dds or some other type of image file.\r\n"
-        message = message + "If so then you need to make a .tga file copy of that texture, perhaps in PaintShop Pro.\r\n\r\n"
-        message = message + "You may also need to rename it to match the exact name above.\r\n"
-        message = message + "Either case, it would be for editing purposes only and should be placed in the proper folder.\r\n\r\n"
-        message = message + "Once this is done, then delete the imported components and re-import the model."
-        quarkx.textbox("WARNING", "Missing Skin Textures:\r\n\r\n================================\r\n" + message, quarkpy.qutils.MT_WARNING)
+        editor.Root.currentcomponent = RetComponentList[0]  # Sets the current component.
+        comp = editor.Root.currentcomponent
+        skins = comp.findallsubitems("", ':sg')      # Gets the skin group.
+        if len(skins[0].subitems) != 0:
+            comp.currentskin = skins[0].subitems[0]      # To try and set to the correct skin.
+            quarkpy.mdlutils.Update_Skin_View(editor, 2) # Sends the Skin-view for updating and center the texture in the view.
+        else:
+            comp.currentskin = None
+
+        editor = None   #Reset the global again
+        if message != "":
+            message = message + "================================\r\n\r\n"
+            message = message + "You need to find and supply the proper texture(s) and folder(s) above.\r\n"
+            message = message + "Extract the required folder(s) and file(s) to the 'game' folder.\r\n\r\n"
+            message = message + "If a texture does not exist it may be a .dds or some other type of image file.\r\n"
+            message = message + "If so then you need to make a .tga file copy of that texture, perhaps in PaintShop Pro.\r\n\r\n"
+            message = message + "You may also need to rename it to match the exact name above.\r\n"
+            message = message + "Either case, it would be for editing purposes only and should be placed in the proper folder.\r\n\r\n"
+            message = message + "Once this is done, then delete the imported components and re-import the model."
+            quarkx.textbox("WARNING", "Missing Skin Textures:\r\n\r\n================================\r\n" + message, quarkpy.qutils.MT_WARNING)
+
+        md5_mesh_path = filename.rsplit('\\', 1)
+
+    else: # Calls to load the .md5_anim file.
+        md5_anim_path = filename.rsplit('\\', 1)
+        if md5_mesh_path is None:
+            quarkx.beep() # Makes the computer "Beep" once if a file is not valid. Add more info to message.
+            quarkx.msgbox(".md5mesh file not loaded\n\nFirst load .md5mesh file in:\n    " + md5_anim_path[0] + "\n\nbefore any .md5anim files from that same folder.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
+            try:
+                progressbar.close()
+            except:
+                pass
+            editor = None   #Reset the global again
+            return
+        if md5_anim_path[0].find(md5_mesh_path[0]) == -1:
+            quarkx.beep() # Makes the computer "Beep" once if a file is not valid. Add more info to message.
+            quarkx.msgbox(".md5mesh and .md5anim files incompatible.\nThey need to come from same model folder.\n\nLast .md5mesh loaded from:\n    " + md5_mesh_path[0] + "\n\nYou selected:\n    " + md5_anim_path[0] + "\\" + md5_anim_path[1], quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
+            try:
+                progressbar.close()
+            except:
+                pass
+            editor = None   #Reset the global again
+            return
+        import_md5_model(basepath, filename)
+        pass # Just here for now, need to add ok function call for importing anim frames.
+        quarkpy.mdlutils.Update_Editor_Views(editor)
+        editor = None   #Reset the global again
 
 ### To register this Python plugin and put it on the importers menu.
 import quarkpy.qmdlbase
 import ie_md5_import # This imports itself to be passed along so it can be used in mdlmgr.py later for the Specifics page.
-quarkpy.qmdlbase.RegisterMdlImporter(".md5 Doom3\Quake4 Importer", ".md5mesh file", "*.md5mesh", loadmodel, ie_md5_import)
+quarkpy.qmdlbase.RegisterMdlImporter(".md5mesh Doom3\Quake4 Importer", ".md5mesh file", "*.md5mesh", loadmodel, ie_md5_import)
+quarkpy.qmdlbase.RegisterMdlImporter(".md5anim Doom3\Quake4 Importer", ".md5anim file", "*.md5anim", loadmodel, ie_md5_import)
 
 
 def bonemodeclick(btn_menu_item):
@@ -2015,6 +2183,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.14  2009/01/29 02:13:51  cdunde
+# To reverse frame indexing and fix it a better way by DanielPharos.
+#
 # Revision 1.13  2009/01/26 18:29:54  cdunde
 # Update for correct frame index setting.
 # Major update of importing.
