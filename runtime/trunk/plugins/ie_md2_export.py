@@ -470,10 +470,13 @@ def fill_md2(md2, component):
         size = component.dictspec['skinsize']
         md2.skin_width = size[0]
         md2.skin_height = size[1]
+        # Use line below as option, embeds skin names into model, none if left out.
+        md2.num_skins = len(user_skins_list.subitems) # Number of skins.
     except:
         if len(user_skins_list.subitems) == 0:
             md2.num_skins = 0 # If no skins exist.
         else:
+            # Use line below as option, embeds skin names into model, none if left out.
             md2.num_skins = len(user_skins_list.subitems) # Number of skins.
             size = user_skins_list.subitems[0].dictspec['Size']
             md2.skin_width = size[0]
@@ -940,6 +943,9 @@ quarkpy.qmdlbase.RegisterMdlExporter(".md2 Quake 2 Exporter", ".md2 file", "*.md
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.3  2009/02/08 13:57:10  cdunde
+# Some minor possible error fixing.
+#
 # Revision 1.2  2008/07/21 18:06:13  cdunde
 # Moved all the start and end logging code to ie_utils.py in two functions,
 # "default_start_logging" and "default_end_logging" for easer use and consistency.
