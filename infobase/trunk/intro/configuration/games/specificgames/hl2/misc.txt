@@ -10,9 +10,9 @@ Half-Life 2 does strange things sometimes but if you know that the game runs off
 
 Select the Source SDK from your steam game menu and double click it.
 
-Now you should see the window shown to the right. Choose your preferred game from the "Current Game:" list and click the Close button. But you will no longer need to copy the two dll files to QuArK's main folder.
+Now you should see the window shown to the right. Choose your preferred game from the "Current Game:" list and click the Close button.
  
-You are now ready to do the rest of your <a href="intro.configuration.games.specificgames.hl2.html#config">Configurations</a> for QuArK as covered above. But you will no longer need to copy the two dll files to QuArK's main folder and you will always be using to most current version of those files as long as you go online and let them update periodically.
+You are now ready to do the rest of your <ref>./config \ Configurations</ref> for QuArK as covered above.
 </td>
 <td>
 <img valign=top align=right>hl2_misc.png</img>
@@ -28,9 +28,7 @@ keep people that compile a map for the first time having other people popping in
 
 It's quite a shock when you compile your first map and while looking at it, someone
 else suddenly appears.
-</ul>
 
-<ul>
 <li><u>How to insert entities in HL2 maps:</u>
 
 Make sure you are in HL2 mode, and create a new map, then do the following:
@@ -42,33 +40,24 @@ click on "Add", and then browse on your computer to where these are
 (they should be in the QuArK folder, in another folder called "addons"). After you do this, you
 should see two blue cube buttons in the upper left of QuArK's window. The one on
 the right should be a list of entities when you click it.
-</ul>
 
-<ul>
 <li><u>I can't see the textures inside QuArK for Half-life 2, what is wrong?</u>
 
 There can be many problems , here are somethings you can do.
 
 <li>1: The account name must be written in lower case only. User = user.  - Reported by Matrikular
-<li>2: Check if steam is running, close QuArK close steam. Load steam again then start QuArK
-<li>3: SDK content needs to be installed, from steam.
-</ul>
+<li>2: Close QuArK and close Steam. Load Steam again, let it do its thing, and then start QuArK
+<li>3: SDK content needs to be installed, from Steam. See <ref>./important</ref>.
 
-<ul>
-<li><u>Everything was working perfectly, but then steam did an update and I cant use QuArK anymore
-?</u>
+<li><u>Everything was working perfectly, but then Steam did an update and I cant use QuArK anymore?</u>
 
-Refresh the Source SDK files, as described above in the <a href="intro.configuration.games.specificgames.hl2.html#important">Important Notes</a> section. If that doesn't work,
-delete the SDK content folder, and let steam reload these ones.
-</ul>
+Refresh the Source SDK files, as described above in the <ref>./important</ref> section. If that doesn't work,
+delete the SDK content folder, and let Steam reload them.
 
-<ul>
 <li><u>QuArK says, it can load some basic models, but where are they?</u>
 
-Go to addons folders, and plugins. Choose Half-life 2 models.
-</ul>
+Go to addons folders, and plugins. Add the one called 'Half-life 2 models'.
 
-<ul>
 <li><u>When I adjust the scale of a brush instead of following the grid snap
 I'm finding its adding an extra unit proportionally to the size
 of the brush (e.g. +64.02, rather than +64)?</u>

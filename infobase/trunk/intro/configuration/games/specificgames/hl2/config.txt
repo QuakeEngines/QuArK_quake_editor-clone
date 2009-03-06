@@ -8,22 +8,22 @@ of its modifications you must have the latest version of the <a href="http://dev
 
 <table border=0 cellspacing=0>
 <tr><td valign=top align=left>
-<b>Part 1 – Setting up QuArK to work with Steam</b>
+<b>Part 1 - Setting up QuArK to work with Steam</b>
 
 First we need to setup QuArK to work with Steam. Start QuArK, and you should be
 greeted with the 'QuArK Explorer' panel. The QuArK Explorer allows you to define
 which game environment you wish to work in, as well as doing many other things.
 
 We need to select the game we want to map for. We do this by simply going to the
-'Games' button located on the top right of the Explorer panel, once pressed it will
+<tt>Games</tt> button located on the top right of the Explorer panel, once pressed it will
 present you with a drop list of all the currently available games, select
 Half-Life 2 as shown in the screen shot to the right.
 
-Next we need to setup QuArK to work with Steam, to do so go back to the 'Games'
-button and press the 'Configuration' button at the bottom of the list.
+Next we need to setup QuArK to work with Steam, to do so go back to the <tt>Games</tt>
+button and press the <tt>Configuration</tt> button at the bottom of the list.
 
-Once selected a new window will be opened called 'Configuration', making sure you have
-Steam selected on the left navigation panel, (under the Games Tab) as we now need
+Once selected a new window will be opened called <tt>Configuration</tt>. Select the item
+Steam selected on the left navigation panel; it's located under the Games folder. We now need
 to fill out some of the necessary settings on the right of the Configuration panel.
 
 </td>
@@ -48,7 +48,7 @@ settings are probably best.
 
 <img border=1 valign=top align=middle>steam_config.png</img>
 
-<b>Part 2 – Setting up QuArK to work with Half-Life 2</b>
+<b>Part 2 - Setting up QuArK to work with Half-Life 2</b>
 
 In this section we will quickly go over how to setup QuArK to work with Half-Life 2.
 
@@ -87,7 +87,8 @@ are unsure on any of the settings, hold your mouse cursor over the white
 box and it will come up with a quick example.
 
 Note: If you change to any other game than Half-Life 2, be sure to also change the
-Addons used to make sure you're not using Half-Life 2 items in other games.
+Addons used to make sure you're not using Half-Life 2 items in other games, and that
+you have that games entities available to you too.
 </td></tr>
 <tr><td valign=top align=middle>
 <img border=1 valign=top align=middle>hl2_config2.png</img>
@@ -103,12 +104,12 @@ Once you have finished setting QuArK to work with the HL2 compiler, simply press
 
 <table border=0 cellspacing=0>
 <tr><td valign=top align=left>
-<b>Part 3 – Compiling</b>
+<b>Part 3 - Compiling</b>
 </td></tr>
 
 <tr><td valign=top align=left>
 In the section above we setup QuArK to work with the HL2 compiler. Now it's time to do something more exciting.
-First we need to create a new map. To do this click on the 'New Map' icon which is the 2nd button to the left of the
+First we need to create a new map. To do this click on the 'New Map' icon which is the leftmost button on the toolbar with the
 'Games' button. You should now be confronted with the map editor itself with some pre-made structures and entities as shown below.
 </td><td valign=top>
 <img border=1 valign=top align=right>hl2_config3.png</img>
@@ -122,7 +123,7 @@ First we need to create a new map. To do this click on the 'New Map' icon which 
 
 <tr><td>
 (Your QuArK Map editor may look slightly different to mine, this is because I have Quad view ports set, and the colors have been
-slightly adjusted to my own personnel taste)
+slightly adjusted to my own personal taste.)
 
 If we compile the map as it stands, it will work fine in game though you may not be able to spawn (only look around). 
 To compile the map simply go up to the 'Half-Life 2' button at the top of the page, and on the drop down list select the
@@ -141,12 +142,11 @@ following text at the bottom of the Console window:
 <li>/quark.cfg: exists
 <li>/maps/newmap.bsp: ready
 <li>/maps/newmap.pts: ignored
-<li>Files stored in C:\Program Files\Valve\Steam\SteamApps\...\counte
-<li>r-strike source\cstrike\
+<li>Files stored in C:\Program Files\Valve\Steam\SteamApps\...\counte<br>r-strike source\cstrike\
 <li>Operation finished.
 </ul>
 The Console outputs what the Valve compiler is doing, and you should always
-review the output regarding any error reports such as Map Leaks.
+review the output regarding any error reports such as <g>leaks</g>.
 
 With the map now compiled, you can either load up Counter-Strike: Source, and
 create a server making sure you have select your map from the CS:S Map list (as

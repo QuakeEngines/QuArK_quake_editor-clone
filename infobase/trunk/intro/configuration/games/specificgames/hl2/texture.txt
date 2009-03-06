@@ -3,9 +3,9 @@ author: cdunde/Sven
 
 This section covers how to get your own custom textures to work in Half-Life 2, Half-Life 2 Deathmatch and Counterstrike Source.
 
-It's good to know how "materials", what texture files are called, are used in the game and how they are handled by the Half-Life 2 game engine. A good place to look for information on this is the <a href="http://www.valve-erc.com/srcsdk/Materials/materials_creation.html">materials section</a> of the sdk itself.
+It's good to know how "materials", what texture files are called, are used in the game and how they are handled by the Half-Life 2 game engine. A good place to look for information on this is the <a href="http://www.valve-erc.com/srcsdk/Materials/materials_creation.html">materials section</a> of the SDK itself.
 
-Material or texture files are spitted into two parts, first your texture itself, a picture at any kind of file type, which later have to be converted into the .tga file type and then into .vtf with the vtex compiler from the sdk. We'll get to that later,...
+Material or texture files are split into two parts: first your texture itself, a picture of any kind of file type, which later have to be converted into the .tga file type and then into .vtf with the vtex compiler from the sdk. We'll get to that later...
 
 The second part of our texture is the .vmt file, a script file which tells the engine how to render and handle the materials. Most settings in the .vmt file are based on variables for shaders and values which describe the material, like wood, glass, stone and so on,... it also flags the sound behavior of our texture,  mostly automatically.
 
@@ -95,7 +95,7 @@ Brilliant ! Our texture is done if you set every kind of behavior you would like
 
 If you are more into the other settings you see documented in the sdk, I'll explain them too, but for now let's just make a "default shader – metalpenal" and save it.
 
-<b>Quark is waiting,...</b>
+<b>QuArK is waiting,...</b>
 
 - Start the sharpest Army Knife on Earth and open the Texture Browser<br>
 - Create a new main folder and select "in a new Addon"
@@ -112,8 +112,7 @@ Give it a good name, may be your mapfilename and save it.<br>
 <b>Note ! Sometimes it could be that you have to save the file in <i>Quark\Addons\whatyouwant</i> !</b>
 
 Okidoki,...</br>
-- Select your new main folder and make a new "texture list" in it then -> edit -> import files by "copy" or "make file links"</br>
-to this texture list.
+- Select your new main folder and make a new "texture list" in it then -> edit -> import files by "copy" or "make file links" to this texture list.
 
 "I use copy and haven't figured out what's better, lazy me =)"
 
@@ -137,8 +136,8 @@ on a few points,...
 I'll try to find some time to get an addon file ready where you can select all gametype textures
 ( css textures for hldm and vice versa )
 
-Last thing, if you quit Quark you'll be asked to save the changes to your addon file,...
-Then a message prompts that quark don't support that right now. Just add the textures you want in your map before start mapping with the texture browser / import them again,...
+Last thing, if you quit QuArK you'll be asked to save the changes to your addon file,...
+Then a message prompts that QuArK doesn't support that right now. Just add the textures you want in your map before start mapping with the texture browser / import them again,...
 
 Changed during update alpha3, custom textures now will be saved ! NICE, THX !
 
