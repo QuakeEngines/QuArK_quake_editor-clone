@@ -108,7 +108,7 @@ def writefile(filename):
     material_names = get_used_material_names(objects)
 
     tags = generate_tags(material_names) # "tags" is just a regular list of the skin names only.
-    surfs = generate_surfs(material_names, objects) # Just 'SURF' keys list. Writes the "Surface data for TAG (Model Component\Texture)"
+    surfs = generate_surfs(material_names) # Just 'SURF' keys list. Writes the "Surface data for TAG (Model Component\Texture)"
 
     # Used later to write the above items to the model file.
 #1    chunks = [text, desc, icon, tags]
@@ -197,8 +197,9 @@ def writefile(filename):
     #        chunks.append(clip)
 
         # Writes the vert_index, u,v data to the model file.
-        write_chunk(meshdata, "VMAP", vmap_uv)
-        chunks.append(vmap_uv)
+ # Next two line breaks working in the game.
+ #       write_chunk(meshdata, "VMAP", vmap_uv)
+ #       chunks.append(vmap_uv)
         write_chunk(meshdata, "VMAD", vmad_uv)
         chunks.append(vmad_uv)
 
@@ -283,23 +284,26 @@ def generate_tags(material_names):
 # ========================
 # === Generate Surface ===
 # ========================
-def generate_surface(surf_index, texture_name, object):
+def generate_surface(surf_index, texture_name):
     if texture_name.find("\251 Per-") == 0:
         return generate_vcol_surf(surf_index)
     elif texture_name == "\251 QuArK Default":
         return generate_default_surf()
     else:
-        return generate_surf(texture_name, object)
+        return generate_surf(texture_name)
 
 # =================================================================
 # ======================== Generate Surfs =========================
 # ===================== Just 'SURF' keys list. ====================
 # == Writes the "Surface data for TAG (Model Component\Texture)" ==
 # =================================================================
-def generate_surfs(material_names, objects):
-    surfaces = []
+def generate_surfs(material_names):
+    surf_indexes = []
+    texture_names = []
     for index in range(len(material_names)):
-        surfaces = surfaces + [generate_surface(index, material_names[index], objects[index])]
+        surf_indexes = surf_indexes + [index]
+        texture_names = texture_names + [material_names[index]]
+    surfaces = map(generate_surface, surf_indexes, texture_names)
     return surfaces
 
 # ===================================
@@ -319,7 +323,6 @@ def generate_layr(skinname, surf_index): # Here the surf_index and the obj_index
 # ==========================================================================
 # These are a single component's 'Frames:fg' 'Base Frame:mf' (there's only one) 'Vertices'.
 def generate_pnts(mesh, name):
-    global Strings
     verts = len(mesh.dictspec['Vertices'])
     # setup a progress-indicator
     Strings[2452] = name + "\n" + Strings[2452]
@@ -496,7 +499,7 @@ def generate_vmad_uv(object, my_uv_dict, my_facesuv_list, name): # "object" is o
     data.write("TXUV")                                       # type
     data.write(struct.pack(">H", 2))                         # dimension
     skinname = object.dictitems['Skins:sg'].subitems[0].name # texture skin name
-    skinname = skinname.split(".")[0]
+    skinname.split(".")[0]
     data.write(generate_nstring(skinname)) # texture skin name, Should be the "UVNAME"
     if logging == 1:
         tobj.logcon ("")
@@ -509,14 +512,19 @@ def generate_vmad_uv(object, my_uv_dict, my_facesuv_list, name): # "object" is o
         tobj.logcon ("#####################################################################")
         tobj.logcon ("dict:{")
         uvlist = []
-    for item in range(len(my_facesuv_list)):
-        i, v, newindex = my_facesuv_list[item]
-        U, V = my_uv_dict[newindex]
-        if logging == 1:
-            uvlist = uvlist + [[i, v, newindex]]
-        data.write(struct.pack(">H", v)) # vertex index
-        data.write(struct.pack(">H", i)) # face index
-        data.write(struct.pack(">ff", U, V))
+    for tri in range(len(object.triangles)):
+        face = object.triangles[tri]
+        for j in xrange(len(face)):
+  #          print "line 423 face[j][0]",face[j][0], my_uv_dict[face[j][0]]
+       #     U, V = my_uv_dict[face[j][0]]
+  #          print "line 423 U, V",U, V
+       #     v = face[j][0]
+            i, v, newindex = my_facesuv_list[(tri*3)+j]
+            U, V = my_uv_dict[newindex]
+  #          print "line 425 i, v, U, V",i, v, U, V
+            data.write(struct.pack(">H", v)) # vertex index
+            data.write(struct.pack(">H", i)) # face index
+            data.write(struct.pack(">ff", U, V))
         progressbar.progress()
     if logging == 1:
         tobj.logcon (skinname + " : " + str(uvlist))
@@ -576,13 +584,9 @@ def generate_pols(object, name): # "object" is one of the selected components be
             u = face[j][1] / TexWidth
             v = -face[j][2]
             v = (v / TexHeight) + 1
-            if my_uv_dict.has_key(index):
-                if (u != my_uv_dict[index][0]) or (v != my_uv_dict[index][1]):
-                    my_uv_dict[newindex] = (u, v)
-                    my_facesuv_list.append([i, index, newindex])
-                    newindex += 1
-            else:
-                my_uv_dict[index] = (u, v)
+            my_uv_dict[newindex] = (u, v)
+            my_facesuv_list.append([i, index, newindex])
+            newindex += 1
             data.write(generate_vx(index))
         if logging == 1:
             tobj.logcon (str(i) + ": " + str(facelist))
@@ -684,19 +688,18 @@ def generate_vcol_surf(mesh):
 # === Generate Surface Definition (SURF Chunk) ===
 # ======= Makes up the 'SURF' detatil data =======
 # ================================================
-def generate_surf(material_name, object):
+def generate_surf(material_name):
     data = cStringIO.StringIO()
     data.write(generate_nstring(material_name))
     data.write("\0\0")
-    print "exporter line 600 generate_surf object.name", object.name, object.dictspec.keys()
 
  #   R,G,B = material.R, material.G, material.B
-    if object.dictspec.has_key('lwo_COLR'):
-        color = object['lwo_COLR'].split(" ")
-        R, G, B = float(color[0]), float(color[1]), float(color[2])
-        print "line 606 R, G, B",R, G, B, type(R)
-    else:
-        R = G = B = 0.78431373834609985
+    R = G = B = 0.78431373834609985
+  #1  if object.dictspec.has_key('lwo_COLR'):
+  #1      color = object['lwo_COLR'].split(" ")
+  #1      R, G, B = float(color[0]), float(color[1]), float(color[2])
+  #1  else:
+  #1      R = G = B = 0.78431373834609985
     data.write("COLR")
     data.write(struct.pack(">H", 14))
     data.write(struct.pack(">fffH", R, G, B, 0))
@@ -766,7 +769,7 @@ def generate_surf(material_name, object):
         #    data.write("PROJ")
         #    data.write(struct.pack(">HH", 2, 5)) # UV projection
 
-            data.write("TMAP")
+            data.write("VMAP")
             uvname = generate_nstring(material_name)
             data.write(struct.pack(">H", len(uvname)))
             data.write(uvname)
@@ -930,6 +933,9 @@ quarkpy.qmdlbase.RegisterMdlExporter(".lwo LightWave Exporter", ".lwo file", "*.
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.9  2009/01/29 02:13:51  cdunde
+# To reverse frame indexing and fix it a better way by DanielPharos.
+#
 # Revision 1.8  2008/07/21 18:06:13  cdunde
 # Moved all the start and end logging code to ie_utils.py in two functions,
 # "default_start_logging" and "default_end_logging" for easer use and consistency.
