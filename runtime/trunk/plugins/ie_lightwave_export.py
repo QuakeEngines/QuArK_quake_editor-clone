@@ -108,7 +108,7 @@ def writefile(filename):
     material_names = get_used_material_names(objects)
 
     tags = generate_tags(material_names) # "tags" is just a regular list of the skin names only.
-    surfs = generate_surfs(material_names) # Just 'SURF' keys list. Writes the "Surface data for TAG (Model Component\Texture)"
+    surfs = generate_surfs(material_names, objects) # Just 'SURF' keys list. Writes the "Surface data for TAG (Model Component\Texture)"
 
     # Used later to write the above items to the model file.
 #1    chunks = [text, desc, icon, tags]
@@ -284,26 +284,23 @@ def generate_tags(material_names):
 # ========================
 # === Generate Surface ===
 # ========================
-def generate_surface(surf_index, texture_name):
+def generate_surface(surf_index, texture_name, object):
     if texture_name.find("\251 Per-") == 0:
         return generate_vcol_surf(surf_index)
     elif texture_name == "\251 QuArK Default":
         return generate_default_surf()
     else:
-        return generate_surf(texture_name)
+        return generate_surf(texture_name, object)
 
 # =================================================================
 # ======================== Generate Surfs =========================
 # ===================== Just 'SURF' keys list. ====================
 # == Writes the "Surface data for TAG (Model Component\Texture)" ==
 # =================================================================
-def generate_surfs(material_names):
-    surf_indexes = []
-    texture_names = []
+def generate_surfs(material_names, objects):
+    surfaces = []
     for index in range(len(material_names)):
-        surf_indexes = surf_indexes + [index]
-        texture_names = texture_names + [material_names[index]]
-    surfaces = map(generate_surface, surf_indexes, texture_names)
+        surfaces = surfaces + [generate_surface(index, material_names[index], objects[index])]
     return surfaces
 
 # ===================================
@@ -323,6 +320,7 @@ def generate_layr(skinname, surf_index): # Here the surf_index and the obj_index
 # ==========================================================================
 # These are a single component's 'Frames:fg' 'Base Frame:mf' (there's only one) 'Vertices'.
 def generate_pnts(mesh, name):
+    global Strings
     verts = len(mesh.dictspec['Vertices'])
     # setup a progress-indicator
     Strings[2452] = name + "\n" + Strings[2452]
@@ -499,7 +497,7 @@ def generate_vmad_uv(object, my_uv_dict, my_facesuv_list, name): # "object" is o
     data.write("TXUV")                                       # type
     data.write(struct.pack(">H", 2))                         # dimension
     skinname = object.dictitems['Skins:sg'].subitems[0].name # texture skin name
-    skinname.split(".")[0]
+    skinname = skinname.split(".")[0]
     data.write(generate_nstring(skinname)) # texture skin name, Should be the "UVNAME"
     if logging == 1:
         tobj.logcon ("")
@@ -688,18 +686,17 @@ def generate_vcol_surf(mesh):
 # === Generate Surface Definition (SURF Chunk) ===
 # ======= Makes up the 'SURF' detatil data =======
 # ================================================
-def generate_surf(material_name):
+def generate_surf(material_name, object):
     data = cStringIO.StringIO()
     data.write(generate_nstring(material_name))
     data.write("\0\0")
 
  #   R,G,B = material.R, material.G, material.B
-    R = G = B = 0.78431373834609985
-  #1  if object.dictspec.has_key('lwo_COLR'):
-  #1      color = object['lwo_COLR'].split(" ")
-  #1      R, G, B = float(color[0]), float(color[1]), float(color[2])
-  #1  else:
-  #1      R = G = B = 0.78431373834609985
+    if object.dictspec.has_key('lwo_COLR'):
+        color = object['lwo_COLR'].split(" ")
+        R, G, B = float(color[0]), float(color[1]), float(color[2])
+    else:
+        R = G = B = 0.78431373834609985
     data.write("COLR")
     data.write(struct.pack(">H", 14))
     data.write(struct.pack(">fffH", R, G, B, 0))
@@ -933,6 +930,11 @@ quarkpy.qmdlbase.RegisterMdlExporter(".lwo LightWave Exporter", ".lwo file", "*.
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.10  2009/03/07 08:22:13  cdunde
+# Update for models to show up in games.
+# UVs are not correct and Doom3 requires a .cm collision model file to work.
+# Also, only shows one component in games but all components in QuArK.
+#
 # Revision 1.9  2009/01/29 02:13:51  cdunde
 # To reverse frame indexing and fix it a better way by DanielPharos.
 #
