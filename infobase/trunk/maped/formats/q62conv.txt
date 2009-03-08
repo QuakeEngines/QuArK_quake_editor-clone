@@ -8,7 +8,7 @@ that the scales look correct, and that it builds correctly.  Then, as
 you further edit the map, faces that are operated on will shift their
 texture-representation to the new one, so keep an eye on things to make
 sure nothing is going wrong.  If problems occur, announce them to the
-<a href=http://groups.yahoo.com/group/quark>QuArK forum</a>, so we can
+<a href="http://quark.planetquake.gamespy.com/forums/">QuArK forum</a>, so we can
 figure out what has gone wrong.
 
 QuArK 6.2 will not correctly read .qrk's and .qkm's written by QuArK 6.3,
