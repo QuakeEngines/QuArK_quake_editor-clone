@@ -22,5 +22,5 @@ under the Half-Life 2 Configuration do the following:
 2) Change the first 3 programs back to "vbsp.exe", "vvis.exe", and "vrad.exe" respectively.
 
 <li>You will need to have run the game at least once, for the data files to be properly extracted,
-so QuArK can find them.
+so QuArK can find them. Same probably goes for the Hammer editor.
 </ul>
