@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.475  2009/02/11 13:52:38  danielpharos
+//Move SoF's into their own game-submenu.
+//
 //Revision 1.474  2009/02/10 21:55:18  danielpharos
 //Updated to DevIL 1.7.7.
 //
@@ -8310,6 +8313,7 @@ QQRKSRC1
              $0D "RGB323232F"
              $0D "RGBA32323232F"
         Hint = "The format the VTF texture will be saved in"
+        Rows = "16"
       }
       SaveFormatA: =
       {
@@ -8348,6 +8352,7 @@ QQRKSRC1
              $0D "RGB323232F"
              $0D "RGBA32323232F"
         Hint = "The format the VTF texture with alpha will be saved in"
+        Rows = "16"
       }
       SaveVersion: =
       {

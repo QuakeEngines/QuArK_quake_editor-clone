@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.52  2009/02/21 17:06:18  danielpharos
+Changed all source files to use CRLF text format, updated copyright and GPL text.
+
 Revision 1.51  2009/02/11 15:45:39  danielpharos
 Removed a workaround; problem is now fixed properly.
 
@@ -1785,6 +1788,8 @@ var
  sTextRows: String;
  TextRows: Integer;
  sScrollBars: String;
+ sDropDownCount: String;
+ DropDownCount: Integer;
 begin
  if Form=Nil then Exit;
  case Msg.wParam of
@@ -2020,6 +2025,13 @@ begin
                   csEverywhere: Icone:=0;  { normally found }
                  end;
                  ComboBox:=TEnterComboBox.Create(Self);
+                 sDropDownCount := Values['Rows'];
+                 if sDropDownCount<>'' then
+                 begin
+                   DropDownCount := StrToIntDef(sDropDownCount, 0);
+                   if DropDownCount > 1 then
+                     ComboBox.DropDownCount:=DropDownCount;
+                 end;
                  if S[2]='L' then
                   ComboBox.Style:=csDropDownList;
                 {if GrayForm and gfGray = 0 then

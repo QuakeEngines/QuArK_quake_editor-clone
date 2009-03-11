@@ -314,8 +314,9 @@ mylist: = { Typ="C" Txt="&"
     }
 </pre>
 <u><i>Specifics:</i></u><br>
-<u>items</u> - The list will be filled with these items. Separate them with a new line character ($0D).
-<u>values</u> - In many cases a program can not work with the displayed items. To have a more 'computer friendly' version you can set this specific. This list must be as long as the items list. Most used are numbers or names of variables. 
+<u>items</u> - The list will be filled with these items. Separate them with a new line character ($0D).<br>
+<u>values</u> - In many cases a program can not work with the displayed items. To have a more 'computer friendly' version you can set this specific. This list must be as long as the items list. Most used are numbers or names of variables.<br>
+<u>Rows</u> - This specifies the maximum number of items to show in the dropdown list.
 </td></tr>
 
 <tr><td align=center>----</td>
@@ -432,10 +433,7 @@ centering: = {
 <u><i>Specifics:</i></u><br>
 <u>Cap</u> - button caption<br>
 <u>Macro</u> - macro to be fired. Most of the items called in the macro are pre-coded in the source code.<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;But using the
-<a href="src.quarkx.html#qmacro_py">quarkx.externaledit(obj)</a>
-function, any object, such as text or a texture image,<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+But using the <ref>src/quarkx/qmacro_py \ quarkx.externaledit(obj)</ref> function, any object, such as text or a texture image,<br>
 can be passed to it causing that object to be opened in an external editor.
 </td></tr>
 
