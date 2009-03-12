@@ -1230,7 +1230,19 @@ class BaseEditor:
                     #    if not then if something IS selected already in the tree-view it clears all selections.
                     choice = mdlhandles.ClickOnView(self, view, x, y)
                     if choice != [] and flagsmouse == 264:
-                        self.layout.explorer.uniquesel = choice[0][1].subitems[0].parent
+                        if self.layout.explorer.uniquesel == None:
+                            self.layout.explorer.uniquesel = choice[0][1].subitems[0].parent
+                        else:
+                            for item in range(len(choice)):
+                                if (choice[item][1].subitems[0].parent == self.layout.explorer.uniquesel):
+                                    try:
+                                        self.layout.explorer.uniquesel = choice[item+1][1].subitems[0].parent
+                                        break
+                                    except:
+                                        self.layout.explorer.uniquesel = choice[0][1].subitems[0].parent
+                                        break
+                                if item == len(choice)-1:
+                                    self.layout.explorer.uniquesel = choice[0][1].subitems[0].parent
                         import mdlutils
                         mdlutils.Update_Editor_Views(self, 4)
                     if choice == [] and flagsmouse == 264:
@@ -1560,6 +1572,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.124  2009/01/29 02:12:41  cdunde
+#Fix by DanielPharos for skins not changing before Skin-view is opened.
+#
 #Revision 1.123  2009/01/10 03:54:42  cdunde
 #Minor error fix in case there are no skins.
 #
