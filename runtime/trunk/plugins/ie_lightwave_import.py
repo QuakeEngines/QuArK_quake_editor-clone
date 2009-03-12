@@ -1714,6 +1714,9 @@ def create_objects(filename, polynames, clip_list, objspec_list, surf_list, base
                         if foundshader is not None and lines[line].find("}") != -1:
                             left_cur_braket = left_cur_braket - 1
                         if foundshader is not None:
+                            testline = lines[line].strip()
+                            if testline.startswith("//"):
+                                continue
                             if lines[line].find("qer_editorimage") != -1 or lines[line].find("diffusemap") != -1:
                                 words = lines[line].split()
                                 for word in words:
@@ -1739,13 +1742,14 @@ def create_objects(filename, polynames, clip_list, objspec_list, surf_list, base
                                     if os.path.isfile(basepath + foundtexture):
                                         foundimage = basepath + foundtexture
                                         image = quarkx.openfileobj(foundimage)
-                                        skin['Image1'] = image.dictspec['Image1']
-                                        skin['Size'] = image.dictspec['Size']
-                                        skin['shader_keyword'] = shader_keyword
-                                        skingroup.appenditem(skin)
-                                        if skinsize == (256, 256):
-                                            skinsize = skin['Size']
-                                        foundtexture = None
+                                        if (not skin.name in skingroup.dictitems.keys()) and (not skin.shortname in skingroup.dictitems.keys()):
+                                            skin['Image1'] = image.dictspec['Image1']
+                                            skin['Size'] = image.dictspec['Size']
+                                            skin['shader_keyword'] = shader_keyword
+                                            skingroup.appenditem(skin)
+                                            if skinsize == (256, 256):
+                                                skinsize = skin['Size']
+                                            foundtexture = None
                                     else: # Keep looking in the shader files, the shader may be in another one.
                                         imagefile = basepath + foundtexture
                                         noimage = noimage + "\r\nFound needed shader for Import Component " + str(CompNbr) + ":\r\n    " + poly + "\r\n" + "in\r\n    " + shaderspath+"/"+shaderfile + "\r\n" + "and the 'diffusemap' image to display.\r\n    " + foundtexture + "\r\n" + "But that image file does not exist.\r\n"
@@ -1812,13 +1816,14 @@ def create_objects(filename, polynames, clip_list, objspec_list, surf_list, base
                                         words = words.replace(")"," ")
                                         words = words.replace(","," ")
                                         words = words.split()
-                                        image = None
+                                        image = imagename = None
                                         for word in words:
                                             if word.endswith(".tga") and (word.startswith("models") or word.startswith("textures")) and ((not word.endswith("_dis.tga") and not word.endswith("_dis")) and (not word.endswith("dis2.tga") and not word.endswith("dis2"))):
-                                                image = word
+                                                image = imagename = word
                                             elif word.find("/") != -1 and (word.startswith("models") or word.startswith("textures")) and ((not word.endswith("_dis.tga") and not word.endswith("_dis")) and (not word.endswith("dis2.tga") and not word.endswith("dis2"))):
+                                                imagename = word
                                                 image = word + ".tga"
-                                        if (image is not None) and (not image in skingroup.dictitems.keys()):
+                                        if (image is not None) and (not image in skingroup.dictitems.keys()) and (not imagename in skingroup.dictitems.keys()):
                                             words = lines[line-1].replace("("," ")
                                             words = words.replace(")"," ")
                                             words = words.replace(","," ")
@@ -1826,7 +1831,7 @@ def create_objects(filename, polynames, clip_list, objspec_list, surf_list, base
                                             keys = [qer_editorimage, diffusemap, bumpmap, addnormals, heightmap, specularmap, map]
                                             words.reverse() # Work our way backwards to get the last key name first.
                                             for word in range(len(words)):
-                                                if words[word] in keys:
+                                                if (words[word] in keys) and (not skin.name in skingroup.dictitems.keys()) and (not skin.shortname in skingroup.dictitems.keys()):
                                                     imagefile = basepath + image
                                                     if os.path.isfile(basepath + image):
                                                         skinname = image
@@ -1896,9 +1901,10 @@ def create_objects(filename, polynames, clip_list, objspec_list, surf_list, base
                                 skin['Image1'] = image.dictspec['Image1']
                                 skin['Size'] = image.dictspec['Size']
                                 skin['shader_keyword'] = shader_keyword
-                                skingroup.appenditem(skin)
-                                if skinsize == (256, 256):
-                                    skinsize = skin['Size']
+                                if (not skin.name in skingroup.dictitems.keys()) and (not skin.shortname in skingroup.dictitems.keys()):
+                                    skingroup.appenditem(skin)
+                                    if skinsize == (256, 256):
+                                        skinsize = skin['Size']
                             else:
                                 noimage = noimage + "\r\nFound needed shader for Import Component " + str(CompNbr) + ":\r\n    " + poly + "\r\n" + "in\r\n    " + shaderspath+"/"+shaderfile + "\r\n" + "but the texture image file it calls to display\r\n    " + imagefile + "\r\nis not there or has a different name.\r\nMake a copy of the file and rename it or\r\ncheck the shader and make a correction to add it.\r\n"
                         if specularmap is not None:
@@ -1909,13 +1915,14 @@ def create_objects(filename, polynames, clip_list, objspec_list, surf_list, base
                                 shader_keyword = "specularmap"
                                 # Make the skin and add it.
                                 skin = quarkx.newobj(skinname)
-                                image = quarkx.openfileobj(foundimage)
-                                skin['Image1'] = image.dictspec['Image1']
-                                skin['Size'] = image.dictspec['Size']
-                                skin['shader_keyword'] = shader_keyword
-                                skingroup.appenditem(skin)
-                                if skinsize == (256, 256):
-                                    skinsize = skin['Size']
+                                if (not skin.name in skingroup.dictitems.keys()) and (not skin.shortname in skingroup.dictitems.keys()):
+                                    image = quarkx.openfileobj(foundimage)
+                                    skin['Image1'] = image.dictspec['Image1']
+                                    skin['Size'] = image.dictspec['Size']
+                                    skin['shader_keyword'] = shader_keyword
+                                    skingroup.appenditem(skin)
+                                    if skinsize == (256, 256):
+                                        skinsize = skin['Size']
                             else:
                                 noimage = noimage + "\r\nFound needed shader for Import Component " + str(CompNbr) + ":\r\n    " + poly + "\r\n" + "in\r\n    " + shaderspath+"/"+shaderfile + "\r\n" + "but the texture image file it calls to display\r\n    " + imagefile + "\r\nis not there or has a different name.\r\nMake a copy of the file and rename it or\r\ncheck the shader and make a correction to add it.\r\n"
                         if imagefile is None:
@@ -2719,6 +2726,10 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.21  2009/03/11 15:37:09  cdunde
+# Added importing of multiple textures for material shader files.
+# Added Specifics page display and editing of skins and shaders.
+#
 # Revision 1.20  2009/01/29 02:13:51  cdunde
 # To reverse frame indexing and fix it a better way by DanielPharos.
 #
