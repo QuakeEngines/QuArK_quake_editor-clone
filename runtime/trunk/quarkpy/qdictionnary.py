@@ -539,6 +539,7 @@ Strings = {
     4622: "QuArK could not switch to '%s' game mode : this game support is currently not installed",
     4623: "QuArK could not switch to '%s' game mode : this game cannot be switched to",
     4624: "No installed game supports found. QuArK cannot start.",
+    4625: "Restoring default setting will overwrite all changes made. Are you sure?",
 
     5119: "(new)",
     5120: "Explorer Group",
@@ -1064,6 +1065,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.139  2009/02/14 17:35:41  danielpharos
+#You can now "uninstall" gamemodes: just delete the addons-directory of that game. Also, small code changes to accommodate this.
+#
 #Revision 1.138  2008/11/20 23:45:53  danielpharos
 #Big update to renderers: mostly cleanup, and stabilized Direct3D a bit more.
 #
