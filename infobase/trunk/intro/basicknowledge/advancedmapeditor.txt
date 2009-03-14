@@ -6,6 +6,6 @@ necessary but that will still help you a lot, particularily on large maps. These
 sharing, group masking, etc. Some features also come from plug-ins written by other people.
 
 The main source of information for advanced map editor features are my
-<a href="http://www.planetquake.com/quark/armin/advanced.html">Advanced Features pages</a>.
+<a href="http://quark.planetquake.gamespy.com/armin/advanced.html">Advanced Features pages</a>.
 
 For textures and prefabs, see <ref> ./otherparts </ref> below.

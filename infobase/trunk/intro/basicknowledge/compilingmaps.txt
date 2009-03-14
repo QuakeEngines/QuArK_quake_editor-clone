@@ -6,7 +6,7 @@ Map compiling is the process of translating a map you made in the editor into so
 whatever the game is). This is what occurs in the black window with scrolling text. The map compilers are programs written by
 the authors of the game (e.g. id Software) and not by the QuArK developers, so our knowledge about them is limited. (These
 tools are found in the "Build Pack" corresponding to your game; see the
-<a href="http://www.planetquake.com/quark/download.php3">download page</a> on the web site.)
+<link download>download page</link> on the web site.)
 
 There are tons of problems that can occur at map compiling time. You will often get a cryptic error message at the bottom of
 the black window. This is 99% of the time not related to QuArK itself; either you made an "error" in your map, or you ran into
@@ -22,7 +22,7 @@ with it you can put virtually any kind of polyhedron or entity in it. What the m
 these polyhedrons and entities is no longer related to the map editor.
 
 Map compiling is a complex subject and you can find a lot of information about it (not related to QuArK) at
-<a href="http://www.planetquake.com">PlanetQuake</a>. See also the links (right column in the current design)
-<a href="http://www.planetquake.com/quark">on the QuArK site</a>, as well as the
-<a href="./index.html">on-line docs</a>. See also
-<a href="http://www.planetquake.com/quark/armin/adv-qbsp.html">this page about compiling</a>.
+<a target="_blank" href="http://www.planetquake.com">PlanetQuake</a>. See also the links (right column in the current design)
+<link website>on the QuArK site</link>, as well as the
+<link infobase>on-line docs</link>. See also
+<a href="http://quark.planetquake.gamespy.com/armin/adv-qbsp.html">this page about compiling</a>.

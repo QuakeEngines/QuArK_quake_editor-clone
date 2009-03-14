@@ -32,7 +32,7 @@ at the top of the window, like "new sub-folder", "new texture list", "new textur
 <li><strong>Example 3: making & using templates.</strong><br>
   Templates are somewhat like prefabs but far more powerful. There is also a specific setting for selecting a Templates
   folder for each game that QuArK supports in the Games Configuration section of every game. For a complete
-  understanding of templates please see its own section in <a href="intro.mapeditor.misctools.html#templates">Misc tools</a>.
+  understanding of templates please see its own section in <ref> intro/mapeditor/misctools/templates \ Misc tools </ref>.
 
 </ul>
 

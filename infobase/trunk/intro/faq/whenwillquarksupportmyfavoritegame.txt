@@ -19,4 +19,4 @@ GiantsEdit to cover more games of that nature).
 -->
 
 If you're interested in extending QuArK to deal with a new kind of
-game, post a request on the <a href="http://quark.planetquake.gamespy.com/forums/">QuArK forum</a>.
+game, post a request on the <link forums>QuArK forum</link>.

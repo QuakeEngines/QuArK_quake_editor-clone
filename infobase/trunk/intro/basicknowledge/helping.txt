@@ -3,7 +3,7 @@ author: Armin Rigo, Decker, tiglari
 
 If you want to help with QuArK's development, here is how you can do various things. You don't have to be a programmer to
 give some help! If you need help about these ways of helping, see the
-<a href="http://quark.planetquake.gamespy.com/forums/">QuArK forum</a> on the web site.
+<link forums>QuArK forum</link> on the web site.
 
 <ul>
 <li><strong>Testing</strong>:<br>
@@ -29,7 +29,7 @@ give some help! If you need help about these ways of helping, see the
   "DataQ2.qrk" for Quake 2, etc. The format of these files is the same as for the add-ons for the support of a mod,
   with a single difference: For performance, these large files are not directly editable with a text editor; instead,
   they are stored in a binary format. You can get the original full-text files from <ref> src/sf </ref>
-  in the directory <a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/quark/runtime/addons/">runtime/addons</a>.
+  in the directory <a target="_blank" href="http://quark.cvs.sourceforge.net/viewvc/quark/runtime/addons/">runtime/addons</a>.
 
 <li><strong>A Python plug-in</strong>:<br>
   A large part of the map editor is written in a scripting language called Python.
@@ -47,17 +47,17 @@ give some help! If you need help about these ways of helping, see the
   More ambitious projects might involve changes to the quarkpy
   Python modules, or even the Delphi source code, but it's best to do a simple
   plugin first.  For more information about Python, you can refer to the
-  <a href="http://www.python.org">Python home page</a>, and for Python in the
+  <a target="_blank" href="http://www.python.org">Python home page</a>, and for Python in the
   context of QuArK, <ref> adv </ref>.
 
 <li><strong>Direct changes in the source code</strong>:<br>
   The source code of QuArK is freely available, by various forms of access from
-  <a href="http://www.sourceforge.net/projects/quark">project QuArK</a> on SourceForge (anonymous
+  <link project>project QuArK</link> on SourceForge (anonymous
   CVS/WinCVS is probably the most convenient, once you can get it working).
 
   The main programming language is Borland Delphi, either 5 or 6 will do.  Personal Version 6
   is quite adequate, and is available as a free download from
-  <a href="http://www.borland.com">Borland</a>.  If you want to program a new interface feature (such as
+  <a target="_blank" href="http://www.borland.com">Borland</a>.  If you want to program a new interface feature (such as
   a dialog box to hunt for things in the map having some properties, or maybe a new map layout
   such as perhaps something that works like the XY view in Radiant, with the vertical Z window,
   etc.), most or very likely all of the coding would be in Python.  Reading and
@@ -66,7 +66,7 @@ give some help! If you need help about these ways of helping, see the
 </ul>
 
 As stated above, you can find more help about this subject in the
-<a href="http://quark.planetquake.gamespy.com/forums/">QuArK forum</a> on the web site.
+<link forums>QuArK forum</link> on the web site.
 
 The <ref>src</ref> section of the infobase is gradually coming to contain more information
 about how the Delphi code works and how it relates to the Python.

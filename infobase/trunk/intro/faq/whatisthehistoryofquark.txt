@@ -27,6 +27,6 @@ longer have the time to continue QuArK development, and released the source code
 under the GPL, and begin to help various enthusiasts to begin to learn to maintain and
 extend it.
 
-It is now maintained at SourceForge as the project <a target="_blank" href="http://sourceforge.net/projects/quark">
-QuArK</a>, and has expanded its scope from just Quake to 31 different games
-at time of writing (maybe more by the time you are reading this).
+It is now maintained at SourceForge as the project <link project>QuArK</link>, and has
+expanded its scope from just Quake to 31 different games at time of writing (maybe more
+by the time you are reading this).

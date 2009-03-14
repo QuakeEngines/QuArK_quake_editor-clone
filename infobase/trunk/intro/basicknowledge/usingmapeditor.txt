@@ -11,8 +11,8 @@ the map editor. On the other hand, what all these entity attributes actually mea
 list of entities and textures you can use; see <ref> ./entitiesforgame </ref> below.
 
 For the basic QuArK-related operations, you can get help from one of the available tutorials. A basic one is found in the
-<a href="../help/maps/index.html">documentation of the map editor</a> (included in the QuArK distribution).
-Other ones are found on the <a href="http://quark.planetquake.gamespy.com/">QuArK web site</a>.
+<ref>maped \ documentation of the map editor</ref> (included in the QuArK distribution).
+Other ones are found on the <link website>QuArK web site</link>.
 
-Questions about this subject are welcome in the <a href="http://quark.planetquake.gamespy.com/forums/">QuArK forum</a>.
-See also the <a href="http://www.planetquake.com/quark/help/index.html">on-line docs</a> on the web site.
+Questions about this subject are welcome in the <link forums>QuArK forum</link>.
+See also the <link infobase>on-line docs</link> on the web site.
