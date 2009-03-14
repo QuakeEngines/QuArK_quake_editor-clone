@@ -112,6 +112,15 @@ def proc_g(kw, words):
         namelink = string.lower(words[:1])
     return "<a href=\"glossary.html#%s\">%s</a>" % (namelink, words)
 
+def proclink(kw, targetname, extraargs):  #DanielPharos
+    # I know <link> exists in HTML, but we're not using it here, and it just seemed the best name of this!
+    from links import linksdict
+    if linksdict.has_key(extraargs):
+        link = linksdict[extraargs]
+    else:
+        raise "unknown link: "+extraargs
+    return "<a target=\"_blank\" href=\"%s\">%s</a>" % (link, targetname)
+
 def procpic(kw, path, extraargs):  #tiglari
     if (string.find(path, "/") > -1) or (string.find(path, "\\") > -1) or (path[:1] == "."):
         raise "Illegal picture filename: [%s]" % path
@@ -176,6 +185,9 @@ def processtext(root, self, data):
                 refname = "";
             return findref(root, pathname, refname, kw, string.strip(extraargs))
 
+        def perform_link_action(extraargs, datastring, root, kw):
+            return proclink(kw, string.strip(datastring), string.strip(extraargs))
+
         def perform_pic_action(extraargs, datastring, root, kw):
             return procpic(kw, string.strip(datastring), string.strip(extraargs))
 
@@ -210,6 +222,13 @@ def processtext(root, self, data):
                 raise "<ref>-tag without any </ref>-tag on same line! <File>.TXT title: \"%s\"" % kw["title"]
             replacewith = perform_ref_action(tag[4:-1], line[:end_tag], root, kw)
             line = line[end_tag+len("</ref>"):]
+        elif (tag[:5] == "<link"):
+            end_tag = string.find(line, "</link>")
+            if end_tag == -1:
+                # A <link>-tag must have a </link>-tag on the same line, else this code won't work.
+                raise "<link>-tag without any </link>-tag on same line! <File>.TXT title: \"%s\"" % kw["title"]
+            replacewith = perform_link_action(tag[5:-1], line[:end_tag], root, kw)
+            line = line[end_tag+len("</link>"):]
         elif (tag[:4] == "<img"):
             end_tag = string.find(line, "</img>")
             if end_tag == -1:
@@ -587,6 +606,9 @@ run(defaultwriter)
 
 #
 # $Log$
+# Revision 1.29  2008/09/20 17:19:28  danielpharos
+# Fix climbing path all the way back to main path not working.
+#
 # Revision 1.28  2008/08/09 19:50:08  danielpharos
 # Fixed a double space appearing in img-tags
 #
