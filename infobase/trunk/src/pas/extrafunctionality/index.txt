@@ -1,0 +1,10 @@
+title: ExtraFunctionality.pas
+author: DanielPharos
+
+This file adds stuff that's missing in certain versions of Delphi. For instance, the function <tt>IsPathDelimiter</tt> was introduced in Delphi 6, but that would mean QuArK wouldn't be able to compile on Delphi 5 and lower. To solve this problem, an entry for this function has been added to ExtraFunctionality.
+
+The version-definitions of Delphi all come from a single file: <tt>DelphiVer.inc</tt>.
+
+Then there are compiler if-checks. Inside them is the missing stuff. Most of it has been taken directly from Delphi source files, with their comment.
+
+Note: All Delphi files that use any of the functions that are declared here or use any of the constants in ExtraFunctionality, should have a ExtraFunctionality in their uses, so when a lower version of Delphi is used, ExtraFunctionality's version is used.
