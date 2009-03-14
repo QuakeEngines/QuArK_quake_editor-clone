@@ -12,17 +12,17 @@ QuArK development can be carried out at three levels:
 The first two require just a text-editor, since a functioning QuArK
 installation includes the Python interpreter, while the last requires
 Delphi (Borland's version of Pascal, enhanced with visual development
-tools).  The current developers seem to be using versions 4 or 5;
+tools).  The current developers seem to be using versions 6 or 7;
 it's possible that older versions such as 3 or even 2, might work.
 Older versions can sometimes be acquired free on computer magazine
 CD's.  The Delphi is written in a mixture of French and English,
-and the French is slowing being converted to English (so there is
+and the French is slowly being converted to English (so there is
 a possibility that some references to things in the Delphi here
 will be outdated).
 
 TC's can typically be supported by creating new *.qrk files in the
 form of `addons', while supporting a new game usually requires some
-delphi coding (mostly because each game tends to introduce some quirks
+Delphi coding (mostly because each game tends to introduce some quirks
 into the texture and map formats, and the read/write code for these
 needs to be reasonably fast).  Interface ideas on the other hand can
 often be supported just in Python, with maybe a little bit of Delphi
