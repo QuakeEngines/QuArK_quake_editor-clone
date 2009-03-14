@@ -3,11 +3,13 @@ author: Tiglari
 
 QuArK development can be carried out at three levels:
 
-  the *.qrk configuration files
+<ul>
+<li>the *.qrk configuration files
 
-  the Python code
+<li>the Python code
 
-  the Delphi code.
+<li>the Delphi code.
+</ul>
 
 The first two require just a text-editor, since a functioning QuArK
 installation includes the Python interpreter, while the last requires
