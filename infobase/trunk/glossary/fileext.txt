@@ -34,7 +34,7 @@ author: Decker
 <dt><a name=".QRK">   </a>.QRK   <dd>(binary/text)          QuArK data file. Can contain all kinds of data. Is saved in either binary- or text-format.
 <dt><a name=".QVM">   </a>.QVM   <dd>(binary)               Probably stands for <b>Q</b>uake <b>V</b>itrual <b>M</b>achine. Its a Quake-3:Arena "game-rules" program, as we know from Quake-1's PROGS.DAT file.
 <dt><a name=".RAR">   </a>.RAR   <dd>(binary)               A compressed archive of files. See <a target=_blank href="http://www.rarlabs.com">http://www.rarlabs.com</a>.
-<dt><a name=".RMF">   </a>.RMF   <dd>(binary)               WorldCraft map file. Can <u>not</u> be read by QuArK.
+<dt><a name=".RMF">   </a>.RMF   <dd>(binary)               WorldCraft <b>R</b>ich <b>M</b>ap <b>F</b>ormat file. Can <u>not</u> be read by QuArK.
 <dt><a name=".SHADER"></a>.SHADER<dd>(text)                 A Quake-3:Arena "texture"-definition file.
 <dt><a name=".TGA">   </a>.TGA   <dd>(binary)               A graphics image file format. Supports up to 24/32bit-color (<a href="#rgba">RGBA</a>).
 <dt><a name=".VMF">   </a>.VMF   <dd>(binary)               <a href="#valvesoftware">Valve</a>'s Map Format. Used by the Source Engine.
