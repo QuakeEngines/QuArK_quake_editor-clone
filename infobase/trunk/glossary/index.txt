@@ -7,7 +7,6 @@ desc: a b c d e f g h i j k l m n o p q r s t u v w x y z
 To search in this page, use your browser's text-search capability.
 
 Other glossaries:
-<a href="http://www.bluesnews.com/guide/qe/">BluesNews - "Guide through 3D gaming jargon"</a>
+<a target="_blank" href="http://www.bluesnews.com/guide/qe/">BluesNews - "Guide through 3D gaming jargon"</a>
 
-Please post new additions and/or corrections on the QuArK forum:
-<a href="http://quark.planetquake.gamespy.com/forums/">http://quark.planetquake.gamespy.com/forums/</a>.
+Please post new additions and/or corrections on the <link forums>QuArK forum</link>.
