@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.93  2009/02/21 17:10:12  danielpharos
+Changed all source files to use CRLF text format, updated copyright and GPL text.
+
 Revision 1.92  2009/02/13 22:30:59  danielpharos
 Save the two additional MOHAA flags, and restructure code a bit to allow MOHAA's patchDef2 surfaceparms. MOHAA maps should now load properly!
 
@@ -1296,7 +1299,7 @@ expected one.
  { sort of like Sin, but simpler; we just read the flags without
    bothering to check that they're not the same as the defaults }
 
- procedure ReadMohaaSurfaceParms(Surface: TTreeMap);
+ procedure ReadMohaaSurfaceParms(Surface: TTexturedTreeMap);
  var
    Val: String;
  begin
@@ -1511,7 +1514,7 @@ expected one.
    // and we only need the X and Y values
    //V5:=ReadVect5(False);
    //Can't use ReadVect5 here, since MOHAA dumps surface flags inside the vector...!
-    ReadSymbol(sBracketLeft);
+   ReadSymbol(sBracketLeft);
    V5.X:=NumericValue;
    ReadSymbol(sNumValueToken);
    V5.Y:=NumericValue;
@@ -3151,6 +3154,61 @@ begin
    PY[3]:=(-P0.X*P1.Y+P0.Y*P1.X)/D;
 end;
 
+procedure MohaaSurfaceParms(F: TTexturedTreeMap; var S: String);
+var
+  Q: QPixelSet;
+  S1, SpecStr, Spec, Val, Val2: String;
+  I, Pozzie: Integer;
+  Single3: array[1..3] of Single;
+  { tiglari }
+  rval : Single; { for Value/lightvalue }
+begin
+  Q := GlobalFindTexture(F.NomTex,Nil);  { find the Texture Link object }
+  if Q<>Nil then Q:=Q.LoadPixelSet;      { load it }
+  for I := 0 to F.Specifics.Count-1 do
+  begin
+    SpecStr:=F.Specifics.Strings[I];
+    if Copy(SpecStr,0,5)='_esp_' then
+    begin
+      Pozzie:=Pos('=', SpecStr);
+      Spec:=Copy(SpecStr,6,Pozzie-6);
+      Val:=Copy(SpecStr,Pozzie+1,Maxint);
+      { we only want to write it if it's different from the shader's spec }
+      Val2:=Q.Specifics.Values['_esp_'+Spec];
+      if Val='1' then  // the face is positively specified
+      begin
+        if Val2<>'1' then  // the shader is not specified
+          S:=S+' +surfaceparm '+Spec
+      end
+      else
+      if Val2='1' then //the face is not positively specified and the shader is
+          S:=S+' -surfaceparm '+Spec;
+    end;
+  end;
+  { tiglari - now write the other face properties }
+  S1:=F.Specifics.Values['surfaceLight'];
+  if (S1<>'') then
+    S:=S+' surfaceLight '+S1;
+  if F.GetFloatsSpec('surfaceColor',Single3) then
+  begin
+    S:=S+' surfaceColor '+FloatToStrF(Single3[1], ffFixed, 20, 6);
+    S:=S+' '+FloatToStrF(Single3[2], ffFixed, 20, 6);
+    S:=S+' '+FloatToStrF(Single3[3], ffFixed, 20, 6);
+  end;
+  S1:=F.Specifics.Values['surfaceAngle'];
+  if (S1<>'') then
+    S:=S+' surfaceAngle '+S1;
+  S1:=F.Specifics.Values['surfaceDensity'];
+  if (S1<>'') then
+    S:=S+' surfaceDensity '+S1;
+  rval:=F.GetFloatSpec('subdivisions',0);
+  if (rval<>0) then
+    S:=S+' subdivisions '+FloatToStrF(rval, ffFixed, 20, 6);
+  rval:=F.GetFloatSpec('tesselation',0);
+  if (rval<>0) then
+    S:=S+' tesselation '+FloatToStrF(rval, ffFixed, 20, 6);
+end;
+
  {------------------------}
 
 procedure SaveAsMapText(ObjectToSave: QObject; MapSaveSettings: TMapSaveSettings; Negatif: TQList; Texte: TStrings; Flags2: Integer; HxStrings: TStrings);
@@ -3514,15 +3572,14 @@ const
 var
  F: TFace;
  WriteIntegers, UseIntegralVertices, ExpandThreePoints : Boolean;
- S, S1, S2, S3, SpecStr, Spec, Val, Val2: String;
- I, R, J, K, Pozzie : Integer;
+ S, S1, S2, S3: String;
+ I, R, J, K : Integer;
  P, PT, VT: TThreePoints;
  Params: TFaceParams;
  Delta1, V, V2: TVect;
  Facteur: TDouble;
  FS: PSurface;
  PX, PY: array[1..3] of Double;
- Single3: array[1..3] of Single;
  { tiglari }
  rval : Single; { for Value/lightvalue }
  Q: QPixelSet;
@@ -4024,57 +4081,10 @@ begin
         if S2='' then S2:='0';
         if S3='' then S3:='0';
         S:=S+' '+S1+' '+S2+' '+S3;
-//<mohaa>
-        if MapSaveSettings.GameCode=mjMOHAA then
-        begin
-          Q := GlobalFindTexture(F.NomTex,Nil);  { find the Texture Link object }
-          if Q<>Nil then Q:=Q.LoadPixelSet;      { load it }
-          for I := 0 to F.Specifics.Count-1 do
-          begin
-            SpecStr:=F.Specifics.Strings[I];
-            if Copy(SpecStr,0,5)='_esp_' then
-            begin
-              Pozzie:=Pos('=', SpecStr);
-              Spec:=Copy(SpecStr,6,Pozzie-6);
-              Val:=Copy(SpecStr,Pozzie+1,Maxint);
-              { we only want to write it if it's different from the
-                shader's spec }
-              Val2:=Q.Specifics.Values['_esp_'+Spec];
-              if Val='1' then  // the face is positively specified
-              begin
-                if Val2<>'1' then  // the shader is not specified
-                  S:=S+' +surfaceparm '+Spec
-              end
-              else
-              if Val2='1' then //the face is not positively specified and the shader is
-                  S:=S+' -surfaceparm '+Spec;
-            end;
-          end;
-         { tiglari - now write the other face properties }
-          S1:=F.Specifics.Values['surfaceLight'];
-          if (S1<>'') then
-            S:=S+' surfaceLight '+S1;
-          if F.GetFloatsSpec('surfaceColor',Single3) then
-          begin
-            S:=S+' surfaceColor '+FloatToStrF(Single3[1], ffFixed, 20, 6);
-            S:=S+' '+FloatToStrF(Single3[2], ffFixed, 20, 6);
-            S:=S+' '+FloatToStrF(Single3[3], ffFixed, 20, 6);
-          end;
-          S1:=F.Specifics.Values['surfaceAngle'];
-          if (S1<>'') then
-            S:=S+' surfaceAngle '+S1;
-          S1:=F.Specifics.Values['surfaceDensity'];
-          if (S1<>'') then
-            S:=S+' surfaceDensity '+S1;
-          rval:=F.GetFloatSpec('subdivisions',0);
-          if (rval<>0) then
-            S:=S+' subdivisions '+FloatToStrF(rval, ffFixed, 20, 6);
-          rval:=F.GetFloatSpec('tesselation',0);
-          if (rval<>0) then
-            S:=S+' tesselation '+FloatToStrF(rval, ffFixed, 20, 6);
-        end;
 
-//</mohaa>
+        if MapSaveSettings.GameCode=mjMOHAA then
+          MohaaSurfaceParms(F, S);
+
       end;
    end;
 
@@ -4124,10 +4134,21 @@ begin
    {$ENDIF}
    { We should start saving the other values too, once we've
      figured out what they actually are... }
-   case MapSaveSettings.PatchDefVersion of
-   2: Target.Add(Format('   ( %d %d 0 0 0 )', [cp.W, cp.H]));
-   3: Target.Add(Format('   ( %d %d 0 0 0 0 0 )', [cp.W, cp.H]));
-   end;
+   if MapSaveSettings.GameCode=mjMOHAA then
+   begin
+     case MapSaveSettings.PatchDefVersion of
+     2: S:=Format('   ( %d %d 0 0 0 ', [cp.W, cp.H]);
+     3: S:=Format('   ( %d %d 0 0 0 0 0 ', [cp.W, cp.H]);
+     end;
+     MohaaSurfaceParms(TBezier(ObjectToSave), S);
+     S:=S+' )';
+     Target.Add(S);
+   end
+   else
+     case MapSaveSettings.PatchDefVersion of
+     2: Target.Add(Format('   ( %d %d 0 0 0 )', [cp.W, cp.H]));
+     3: Target.Add(Format('   ( %d %d 0 0 0 0 0 )', [cp.W, cp.H]));
+     end;
    //FIXME: Need to save MOHAA surfaceparms!
    Target.Add('   (');
    for J:=0 to cp.W-1 do
