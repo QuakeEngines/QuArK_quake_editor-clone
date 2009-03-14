@@ -19,3 +19,5 @@ subdir: sof2
 subdir: wildwest
 
 Here you will find information and frequently asked questions about the QuArK-supported games.
+
+Don't forget to also check <ref> intro/configuration/games/specificgames </ref> if you have a question about the configuration of a game.
