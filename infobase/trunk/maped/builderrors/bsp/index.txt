@@ -1,6 +1,6 @@
 title: BSP - Binary Space Partition
 author: Decker
-desc: error_parsing newportal pointoffplane
+desc: error_parsing newportal pointoffplane exceeded
 
 This page lists various encountered errors, that may occur during the BSP map-compiling phase.
 
