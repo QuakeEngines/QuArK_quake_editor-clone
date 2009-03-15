@@ -99,7 +99,7 @@ Displays a text box form. See qutils.py for a list of available MT_ flags for ty
 beep()<br>
 beep(kind)
 </td><td>
-Beeps.
+Beeps. Use <tt>kind</tt> with <tt>MB_*</tt> constants to change the kind of beep-noise made.
 </td></tr>
 
 <tr><td class="doccode">
