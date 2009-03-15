@@ -178,8 +178,8 @@ SUBFILES_TABLEEND = """
 #
 REFFILE      = """<a href="%(htmlfile)s#%(hrefaname)s">'%(title)s'</a>"""
 REFDIR       = """<a href="%(htmlfile)s">'%(title)s'</a>"""
-REFFILE_NAME = """<a href="%(htmlfile)s#%(hrefaname)s">'%(refname)s'</a>"""
-REFDIR_NAME  = """<a href="%(htmlfile)s">'%(refname)s'</a>"""
+REFFILE_NAME = """<a href="%(htmlfile)s#%(hrefaname)s">%(refname)s</a>"""
+REFDIR_NAME  = """<a href="%(htmlfile)s">%(refname)s</a>"""
 REFPIC       = """<img src="%(imgfile)s">"""
 
 #
