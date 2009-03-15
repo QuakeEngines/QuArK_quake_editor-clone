@@ -21,7 +21,7 @@ getchangednames()
 Returns a list with, one or more, tuple lists <tt>(oldname, newname)</tt> inside it, each consisting of two string items that give the old and new names of an object that was renamed.
 Do not call this function directly or it will clear the list, call it using a variable to be set by it.<br>
 For example: <g>changednames = quarkx.getchangednames()</g><br>
-Then use the variable to work with. If nothing has been renamed then this function will only return <g>None</g>, but not as a string item.
+Then use the variable to work with. If nothing has been renamed then this function will only return <tt>None</tt>, but not as a string item.
 </td></tr>
 
 <tr><td class="doccode">

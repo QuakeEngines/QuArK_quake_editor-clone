@@ -1,7 +1,7 @@
 title: Leakhunt
 desc: tools open map dicts event popup
 
-User reports and the use of Atanas Stoyanov's <a href=www.automatedqa.com>
+User reports and the use of Atanas Stoyanov's <a target="_blank" href="http://www.automatedqa.com">
 Memproof<a> reveals a substantial assortment of resource and memory
 leaks.  Unfortunately it's not entirely clear which ones are genuine
 and which ones are Memproof misreports or Delphi bugs, but it is possible

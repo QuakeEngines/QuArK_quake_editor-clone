@@ -12,7 +12,7 @@ only be applied when searching for leaks the hard way, or for
 locating crashes.
 
 Website:
-<a target=_blank href="http://www.microsoft.com/whdc/devtools/debugging/default.mspx">www.microsoft.com/whdc/devtools/debugging/default.mspx</a>
+<a target="_blank" href="http://www.microsoft.com/whdc/devtools/debugging/default.mspx">http://www.microsoft.com/whdc/devtools/debugging/default.mspx</a>
 
 <strong>MemProof</strong><br>
 A program that monitors the executable realtime, and lists
@@ -20,7 +20,7 @@ memory usage.  When the program finishes, all the memory still
 being used has obviously leaked.
 
 Website:
-<a target=_blank href="http://www.automatedqa.com/products/memproof/">www.automatedqa.com/products/memproof/</a>
+<a target="_blank" href="http://www.automatedqa.com/products/memproof/">http://www.automatedqa.com/products/memproof/</a>
 
 <strong>MemCheck</strong><br>
 Being an alternative memory manager, this replaces the old
@@ -30,7 +30,7 @@ source directory, comment out MemTester, comment in MemCheck
 AND the MemChk below at the end of the file, and you're done.
 
 Website:
-<a target=_blank href="http://v.mahon.free.fr/pro/freeware/memcheck/">v.mahon.free.fr/pro/freeware/memcheck/</a>
+<a target="_blank" href="http://v.mahon.free.fr/pro/freeware/memcheck/">http://v.mahon.free.fr/pro/freeware/memcheck/</a>
 
 <strong>FastMM</strong><br>
 Another alternative memory manager.  This one is actually so
@@ -45,10 +45,10 @@ into your runtime directory.  See the FastMM readme file for
 more information.
 
 Website:
-<a target=_blank href="http://sourceforge.net/projects/fastmm/">sourceforge.net/projects/fastmm/</a>
+<a target="_blank" href="http://sourceforge.net/projects/fastmm/">http://sourceforge.net/projects/fastmm/</a>
 
 
-The alternative memory managers have already been installed into QuArK. You can enable them by editing the QuArK.dpr file and switch the comment-tags. You'll find them at the top of the listing (memory managers must be the first to load). Note: Only one can be enabled at a time!
+The alternative memory managers have already been installed into QuArK. You can enable them by editing the QuArK.dpr file and switching the comment-tags. You'll find them at the top of the listing of units (a memory manager must be the first unit to load). Note: Only one can be enabled at a time!
 
 Also, don't forget:<br>
 There are a lot of debugging options already present in
