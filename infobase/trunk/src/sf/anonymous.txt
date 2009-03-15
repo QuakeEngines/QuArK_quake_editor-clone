@@ -4,12 +4,12 @@ author: Armin Rigo
 Once WinCVS is installed, you can anonymously download the QuArK source. Configure WinCVS (from the Admin menu) as follows:
 
 <code>
-CVS Root:              anonymous@cvs.quark.sourceforge.net:/cvsroot/quark
+CVS Root:              anonymous@quark.cvs.sourceforge.net:/cvsroot/quark
 Authentication method: pserver (password-based)
 </code>
 
 You can then checkout one or several of the modules "source", "runtime" and "infobase". If you are prompted for a password, type enter (no password).
 
-Look on the <ref>src/sf/eclipse</ref> page in the Terminology section for a small description of terms used by CVS.
+Look on the <ref>src/sf/eclipse/terminology</ref> page for a small description of terms used by CVS.
 
 Be careful, it seems that if you checkout modules anonymously, you might not be able to commit changes later even if you officially register. To prevent problems, avoid modifying files that you downloaded anonymously. If you want to modify these files, first officially register and checkout the modules under your official name.
