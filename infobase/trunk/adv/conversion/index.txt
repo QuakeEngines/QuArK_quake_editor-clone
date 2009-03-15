@@ -7,30 +7,30 @@ desc: conversiontoolsys
 <img border=1 align=right>conversion1.png</img>
 There are three conversion tools in QuArK:
 <ul>
-<li><a href="adv.conversion.html#conversiontool">Conversion Tool</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(makes multiple types of .qrk files)
-<li><a href="adv.conversion.html#qeradiant">QERadiant .def file</a> &nbsp;(only works with this type of file)
-<li><a href="adv.conversion.html#worldcraft">Worldcraft .fgd file</a> &nbsp;&nbsp;&nbsp;(only works with this type of file)
+<li><ref>adv/conversion/conversiontool \ Conversion Tool</ref> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(makes multiple types of .qrk files)
+<li><ref>adv/conversion/qeradiant \ QERadiant .def file</ref> &nbsp;(only works with this type of file)
+<li><ref>adv/conversion/worldcraft \ Worldcraft .fgd file</ref> &nbsp;&nbsp;&nbsp;(only works with this type of file)
 </ul>
-All of these tools will convert other files into <a href="adv.intro.html#qrk">.qrk</a>
-files that QuArK can use for game <a href="adv.addons.html">Add-Ons</a> files that
+All of these tools will convert other files into <ref>adv/intro/qrk \ .qrk</ref>
+files that QuArK can use for game <ref>adv/addons \ Add-Ons</ref> files that
 provide specific elements to work with in the
-<a href="intro.mapeditor.overview.html#overview">QuArK Map Editor</a>.
+<ref>intro/mapeditor/overview/overview \ QuArK Map Editor</ref>.
 
 But the <g>QERadiant</g> and <g>Worldcraft</g> tools will only make one of the needed
 files, the entities.qrk file.
-The <a href="adv.conversion.html#conversiontool">Conversion Tool</a> can make one or all
+The <ref>adv/conversion/conversiontool \ Conversion Tool</ref> can make one or all
 of the needed files.
 <ul>
-<li><g>Data(gamename).qrk</g>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Used to setup basic things such as the <a href="maped.tutorial.starting.html#defaultroom">default room</a> for <a href="maped.tutorial.starting.html">NewMap</a>,
-<li><g>UserData (gamename).qrk</g> &nbsp;Used to setup items for the QuArK <a href="intro.mapeditor.userdata.html">Userdata panel</a> and the <a href="intro.mapeditor.menu.html#gamemenu">Games menu</a> items.
-<li><g>(gamename)Entities.qrk</g> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Used to create the <a href="intro.mapeditor.dataforms.html#specsargsview">games entities and entities :form sections</a>.
-<li><g>(gamename)Textures.qrk</g> &nbsp;&nbsp;&nbsp;&nbsp;Used to setup the games textures to be displayed in the QuArK <a href="intro.texturebrowser.overview.html">Texture Browser</a>.
-<li><g>(gamename)Shaders.qrk</g> &nbsp;&nbsp;&nbsp;&nbsp;Used to setup the games shaders, scrips, materials (if used) to be displayed in the QuArK <a href="intro.texturebrowser.overview.html">Texture Browser</a>.
-<li><g>(gamename)ModelEntities.qrk</g> &nbsp;&nbsp;&nbsp;Used to setup special <a href="intro.mapeditor.dataforms.html#specsargsview">model entities</a> if the game has these.
+<li><g>Data(gamename).qrk</g>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Used to setup basic things such as the <ref>maped/tutorial/starting/defaultroom \ default room</ref> for <ref>maped/tutorial/starting \ NewMap</ref>,
+<li><g>UserData (gamename).qrk</g> &nbsp;Used to setup items for the QuArK <ref>intro/mapeditor/userdata \ Userdata panel</ref> and the <ref>intro/mapeditor/menu/gamemenu \ Games menu</ref> items.
+<li><g>(gamename)Entities.qrk</g> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Used to create the <ref>intro/mapeditor/dataforms/specsargsview \ games entities and entities :form sections</ref>.
+<li><g>(gamename)Textures.qrk</g> &nbsp;&nbsp;&nbsp;&nbsp;Used to setup the games textures to be displayed in the QuArK <ref>intro/texturebrowser/overview \ Texture Browser</ref>.
+<li><g>(gamename)Shaders.qrk</g> &nbsp;&nbsp;&nbsp;&nbsp;Used to setup the games shaders, scrips, materials (if used) to be displayed in the QuArK <ref>intro/texturebrowser/overview \ Texture Browser</ref>.
+<li><g>(gamename)ModelEntities.qrk</g> &nbsp;&nbsp;&nbsp;Used to setup special <ref>intro/mapeditor/dataforms/specsargsview \ model entities</ref> if the game has these.
 <li><g>(gamename)(special)Lists.qrk</g> &nbsp;&nbsp;&nbsp;&nbsp;Used to setup other special lists of items that the game uses.
 </ul>
 
-The reasoning behind the above structure is that in the <b>OLD</b> days when games were small it didn't matter....<br>
+The reasoning behind the above structure is that in the <b>OLD</b> days when games were small it didn't matter...<br>
 so everything was purtty much thrown into one file.... that's just the way it was done....<br>
 But now that games are 10 times bigger (and all their editing items) that way just doesn't work anymore.<br>
 Try updating just the entities in a file that has all of that other different stuff in it.....
