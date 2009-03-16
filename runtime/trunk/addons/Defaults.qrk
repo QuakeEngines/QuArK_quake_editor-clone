@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.477  2009/03/16 08:46:00  danielpharos
+//Updated to DevIL 1.7.8, added IWI loading, and added many new image loading/saving options.
+//
 //Revision 1.476  2009/03/11 16:14:27  danielpharos
 //Added 'Rows' specific to ComboBox.
 //
@@ -3929,8 +3932,8 @@ QQRKSRC1
       }
       BMP:config =
       {
-        LoadLibrary = "FreeImage"
-        SaveLibrary = "FreeImage"
+        LoadLibrary = "DevIL"
+        SaveLibrary = "DevIL"
         SaveRLEDevIL = ""
         SaveRLEFreeImage = ""
         Form = "FilesBMP"
@@ -3947,8 +3950,8 @@ QQRKSRC1
       }
       JPG:config =
       {
-        LoadLibrary = "FreeImage"
-        SaveLibrary = "FreeImage"
+        LoadLibrary = "DevIL"
+        SaveLibrary = "DevIL"
         SaveFormatDevIL = "0"
         SaveQualityDevIL = '99'
         SaveProgressiveDevIL = ""
@@ -3966,15 +3969,15 @@ QQRKSRC1
       }
       PNG:config =
       {
-        LoadLibrary = "FreeImage"
-        SaveLibrary = "FreeImage"
+        LoadLibrary = "DevIL"
+        SaveLibrary = "DevIL"
         InterlaceDevIL = ""
         Form = "FilesPNG"
       }
       TGA:config =
       {
-        LoadLibrary = "FreeImage"
-        SaveLibrary = "FreeImage"
+        LoadLibrary = "DevIL"
+        SaveLibrary = "DevIL"
         SaveRLEDevIL = ""
         CreateStampDevIL = ""
         Form = "FilesTGA"
