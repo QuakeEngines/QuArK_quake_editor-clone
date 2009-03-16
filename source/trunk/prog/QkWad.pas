@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.31  2009/02/21 17:06:18  danielpharos
+Changed all source files to use CRLF text format, updated copyright and GPL text.
+
 Revision 1.30  2008/11/30 20:49:04  danielpharos
 TList --> TQList
 
@@ -818,7 +821,7 @@ begin
     if (TexDimension < 32) then
       TexDimension := 32; { Minimum dimension is 32x32 }
     if (TexDimension > 256) then
-      TexDimension := 256; { Maximum dimension is 128x128 - so memory consumption is kept low }
+      TexDimension := 256; { Maximum dimension is 256x256 - so memory consumption is kept low }
 
     ImageList1.Clear;
     ImageList1.Width:=TexDimension;  {DECKER - Ahh! So this is the place to change the scale of }
