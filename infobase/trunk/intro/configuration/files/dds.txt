@@ -11,7 +11,7 @@ want to use to save DDS files. The NVDXT option uses DevIL to save the image as
 a TGA file, and then converts that file to a DDS using the NVDXT tool.
 
 
-<u>Additional NVDXT settings</u>
+<u>Advanced NVDXT settings</u>
 
 <i>Format of exported non-alpha DDS textures</i>. With this you can select a
 texture format in which textures without transparancy are saved.
@@ -23,7 +23,7 @@ texture format in which textures with transparancy are saved.
 saved texture. The higher the better the quality, but also the larger the file
 and the longer saving (and loading the texture in-game) will take.
 
-<u>Additional DevIL settings</u>
+<u>Advanced DevIL settings</u>
 
 <i>Format of exported DDS textures</i>.  With this you can select a
 texture format in which textures are saved.

@@ -10,7 +10,7 @@ want to use to load VTF files.
 want to use to save VTF files.
 
 
-<u>Additional saving settings</u>
+<u>Advanced VTFLib settings</u>
 
 <i>Format of exported non-alpha VTF textures</i>. With this you can select a
 texture format in which textures without transparancy are saved.
@@ -21,3 +21,17 @@ texture format in which textures with transparancy are saved.
 <i>Version of exported VTF textures</i>. With this you can select the VTF file
 version in which textures are to be saved. 7.2 is the most common/portable
 version.
+
+<i>Quality of DXT compression</i>. The quality used for the DXT compression
+when saving a VTF file with a DXT compression. The higher the quality, the
+better the result, but the slow the saving will be, and the larger the resulting
+file will be.
+
+
+<u>Advanced DevIL settings</u>
+
+<i>Format of exported non-alpha VTF textures</i>. With this you can select a
+texture format in which textures without transparancy are saved.
+
+<i>Format of exported alpha VTF textures</i>. With this you can select a
+texture format in which textures with transparancy are saved.

@@ -7,6 +7,7 @@ desc: jpg
 desc: pcx
 desc: png
 desc: tga
+desc: vmt
 desc: vtf
 
 In QuArK, many different types of files can be loaded and saved. The most

@@ -9,6 +9,6 @@ want to use to load PNG files.
 <i>Select library for saving PNG files</i>. Here you can select the library you
 want to use to save PNG files.
 
-<u>Additional FreeImage settings</u>
+<u>Advanced DevIL settings</u>
 
 <i>Save interlaced</i>.  Save the PNG texture as an interlaced image.

@@ -8,3 +8,11 @@ want to use to load TGA files.
 
 <i>Select library for saving TGA files</i>. Here you can select the library you
 want to use to save TGA files.
+
+
+<u>Advanced DevIL settings</u>
+
+<i>Save with RLE compression</i>. When enabled, BMP files are saved with <g>RLE</g>
+compression. Warning: Not all games support this!
+
+<i>Create Stamp</i>. Create a postage stamp (thumbnail).
