@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.25  2009/02/21 17:06:18  danielpharos
+Changed all source files to use CRLF text format, updated copyright and GPL text.
+
 Revision 1.24  2009/02/10 21:59:34  danielpharos
 Updated to DevIL 1.7.7.
 
@@ -157,7 +160,7 @@ end;
 procedure QDDS.SaveFileDevILSettings;
 var
   Setup: QObject;
-  Flag: Cardinal;
+  Flag: ILint;
 begin
   inherited;
 

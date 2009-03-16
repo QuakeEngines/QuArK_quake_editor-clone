@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2009/02/21 17:06:18  danielpharos
+Changed all source files to use CRLF text format, updated copyright and GPL text.
+
 Revision 1.10  2009/02/17 17:14:04  danielpharos
 Removed redundant Exit's.
 
@@ -57,56 +60,57 @@ Added FreeImage as an alternative for DevIL. PNG and JPEG file handling now also
 unit QkFreeImage;
 
 interface
+
 uses Windows, SysUtils;
 
 const
 //FREE_IMAGE_FORMAT
   FIF_UNKNOWN = -1;
-  FIF_BMP    = 0;
-  FIF_ICO    = 1;
-  FIF_JPEG  = 2;
-  FIF_JNG    = 3;
-  FIF_KOALA  = 4;
-  FIF_LBM    = 5;
-  FIF_IFF   = FIF_LBM;
-  FIF_MNG    = 6;
-  FIF_PBM    = 7;
+  FIF_BMP     = 0;
+  FIF_ICO     = 1;
+  FIF_JPEG    = 2;
+  FIF_JNG     = 3;
+  FIF_KOALA   = 4;
+  FIF_LBM     = 5;
+  FIF_IFF     = FIF_LBM;
+  FIF_MNG     = 6;
+  FIF_PBM     = 7;
   FIF_PBMRAW  = 8;
-  FIF_PCD    = 9;
-  FIF_PCX    = 10;
-  FIF_PGM    = 11;
+  FIF_PCD     = 9;
+  FIF_PCX     = 10;
+  FIF_PGM     = 11;
   FIF_PGMRAW  = 12;
-  FIF_PNG    = 13;
-  FIF_PPM    = 14;
+  FIF_PNG     = 13;
+  FIF_PPM     = 14;
   FIF_PPMRAW  = 15;
-  FIF_RAS    = 16;
-  FIF_TARGA  = 17;
-  FIF_TIFF  = 18;
-  FIF_WBMP  = 19;
-  FIF_PSD    = 20;
-  FIF_CUT    = 21;
-  FIF_XBM    = 22;
-  FIF_XPM    = 23;
-  FIF_DDS    = 24;
-  FIF_GIF   = 25;
-  FIF_HDR    = 26;
-  FIF_FAXG3  = 27;
-  FIF_SGI    = 28;
+  FIF_RAS     = 16;
+  FIF_TARGA   = 17;
+  FIF_TIFF    = 18;
+  FIF_WBMP    = 19;
+  FIF_PSD     = 20;
+  FIF_CUT     = 21;
+  FIF_XBM     = 22;
+  FIF_XPM     = 23;
+  FIF_DDS     = 24;
+  FIF_GIF     = 25;
+  FIF_HDR     = 26;
+  FIF_FAXG3   = 27;
+  FIF_SGI     = 28;
 
 //FREE_IMAGE_TYPE
   FIT_UNKNOWN = 0;  // unknown type
   FIT_BITMAP  = 1;  // standard image      : 1-, 4-, 8-, 16-, 24-, 32-bit
   FIT_UINT16  = 2;  // array of unsigned short  : unsigned 16-bit
-  FIT_INT16    = 3;  // array of short      : signed 16-bit
+  FIT_INT16   = 3;  // array of short      : signed 16-bit
   FIT_UINT32  = 4;  // array of unsigned long  : unsigned 32-bit
-  FIT_INT32    = 5;  // array of long      : signed 32-bit
-  FIT_FLOAT    = 6;  // array of float      : 32-bit IEEE floating point
+  FIT_INT32   = 5;  // array of long      : signed 32-bit
+  FIT_FLOAT   = 6;  // array of float      : 32-bit IEEE floating point
   FIT_DOUBLE  = 7;  // array of double      : 64-bit IEEE floating point
-  FIT_COMPLEX  = 8;  // array of FICOMPLEX    : 2 x 64-bit IEEE floating point
-  FIT_RGB16    = 9;  // 48-bit RGB image      : 3 x 16-bit
+  FIT_COMPLEX = 8;  // array of FICOMPLEX    : 2 x 64-bit IEEE floating point
+  FIT_RGB16   = 9;  // 48-bit RGB image      : 3 x 16-bit
   FIT_RGBA16  = 10;  // 64-bit RGBA image    : 4 x 16-bit
   FIT_RGBF    = 11;  // 96-bit RGB float image  : 3 x 32-bit IEEE floating point
-  FIT_RGBAF    = 12;  // 128-bit RGBA float image  : 4 x 32-bit IEEE floating point
+  FIT_RGBAF   = 12;  // 128-bit RGBA float image  : 4 x 32-bit IEEE floating point
 
 //FREE_IMAGE_COLOR_TYPE
   FIC_MINISWHITE = 0;    // min value is white
@@ -117,36 +121,36 @@ const
   FIC_CMYK       = 5;   // CMYK color model
 
 //Assuming Little Endian (Windows)
-  FI_RGBA_RED       = 2;
-  FI_RGBA_GREEN     = 1;
-  FI_RGBA_BLUE     = 0;
-  FI_RGBA_ALPHA     = 3;
-  FI_RGBA_RED_MASK     = $00FF0000;
-  FI_RGBA_GREEN_MASK   = $0000FF00;
-  FI_RGBA_BLUE_MASK     = $000000FF;
-  FI_RGBA_ALPHA_MASK   = $FF000000;
-  FI_RGBA_RED_SHIFT     = 16;
-  FI_RGBA_GREEN_SHIFT   = 8;
-  FI_RGBA_BLUE_SHIFT   = 0;
-  FI_RGBA_ALPHA_SHIFT   = 24;
+  FI_RGBA_RED         = 2;
+  FI_RGBA_GREEN       = 1;
+  FI_RGBA_BLUE        = 0;
+  FI_RGBA_ALPHA       = 3;
+  FI_RGBA_RED_MASK    = $00FF0000;
+  FI_RGBA_GREEN_MASK  = $0000FF00;
+  FI_RGBA_BLUE_MASK   = $000000FF;
+  FI_RGBA_ALPHA_MASK  = $FF000000;
+  FI_RGBA_RED_SHIFT   = 16;
+  FI_RGBA_GREEN_SHIFT = 8;
+  FI_RGBA_BLUE_SHIFT  = 0;
+  FI_RGBA_ALPHA_SHIFT = 24;
 
 // Load / Save flag constants
   BMP_DEFAULT         =0;
   BMP_SAVE_RLE        =1;
   CUT_DEFAULT         =0;
-  DDS_DEFAULT      =0;
-  FAXG3_DEFAULT    =0;
-  GIF_DEFAULT      =0;
-  GIF_LOAD256      =1;    // Load the image as a 256 color image with ununsed palette entries, if it's 16 or 2 color
-  GIF_PLAYBACK    =2;    // 'Play' the GIF to generate each frame (as 32bpp) instead of returning raw frame data when loading
-  HDR_DEFAULT      =0;
-  ICO_DEFAULT     =0;
-  ICO_MAKEALPHA    =1;    // convert to 32bpp and create an alpha channel from the AND-mask when loading
-  IFF_DEFAULT     =0;
-  JPEG_DEFAULT    =0;    // loading (see JPEG_FAST); saving (see JPEG_QUALITYGOOD)
-  JPEG_FAST       =$0001;  // load the file as fast as possible, sacrificing some quality
-  JPEG_ACCURATE   =$0002;  // load the file with the best quality, sacrificing some speed
-  JPEG_CMYK        =$0004;  // load separated CMYK "as is" (use | to combine with other load flags)
+  DDS_DEFAULT         =0;
+  FAXG3_DEFAULT       =0;
+  GIF_DEFAULT         =0;
+  GIF_LOAD256         =1;    // Load the image as a 256 color image with ununsed palette entries, if it's 16 or 2 color
+  GIF_PLAYBACK        =2;    // 'Play' the GIF to generate each frame (as 32bpp) instead of returning raw frame data when loading
+  HDR_DEFAULT         =0;
+  ICO_DEFAULT         =0;
+  ICO_MAKEALPHA       =1;    // convert to 32bpp and create an alpha channel from the AND-mask when loading
+  IFF_DEFAULT         =0;
+  JPEG_DEFAULT        =0;    // loading (see JPEG_FAST); saving (see JPEG_QUALITYGOOD)
+  JPEG_FAST           =$0001;  // load the file as fast as possible, sacrificing some quality
+  JPEG_ACCURATE       =$0002;  // load the file with the best quality, sacrificing some speed
+  JPEG_CMYK           =$0004;  // load separated CMYK "as is" (use | to combine with other load flags)
   JPEG_QUALITYSUPERB  =$80;  // save with superb quality (100:1)
   JPEG_QUALITYGOOD    =$0100;  // save with good quality (75:1)
   JPEG_QUALITYNORMAL  =$0200;  // save with normal quality (50:1)
@@ -162,33 +166,33 @@ const
   PCD_BASEDIV16       =3;    // load the bitmap sized 192 x 128
   PCX_DEFAULT         =0;
   PNG_DEFAULT         =0;
-  PNG_IGNOREGAMMA      =1;    // avoid gamma correction
+  PNG_IGNOREGAMMA     =1;    // avoid gamma correction
   PNM_DEFAULT         =0;
   PNM_SAVE_RAW        =0;       // If set the writer saves in RAW format (i.e. P4, P5 or P6)
   PNM_SAVE_ASCII      =1;       // If set the writer saves in ASCII format (i.e. P1, P2 or P3)
   PSD_DEFAULT         =0;
   RAS_DEFAULT         =0;
-  SGI_DEFAULT          =0;
+  SGI_DEFAULT         =0;
   TARGA_DEFAULT       =0;
   TARGA_LOAD_RGB888   =1;       // If set the loader converts RGB555 and ARGB8888 -> RGB888.
   TIFF_DEFAULT        =0;
-  TIFF_CMYK            =$0001;  // reads/stores tags for separated CMYK (use | to combine with compression flags)
+  TIFF_CMYK           =$0001;  // reads/stores tags for separated CMYK (use | to combine with compression flags)
   TIFF_PACKBITS       =$0100;  // save using PACKBITS compression
   TIFF_DEFLATE        =$0200;  // save using DEFLATE compression (a.k.a. ZLIB compression)
   TIFF_ADOBE_DEFLATE  =$0400;  // save using ADOBE DEFLATE compression
   TIFF_NONE           =$0800;  // save without any compression
-  TIFF_CCITTFAX3       =$1000;  // save using CCITT Group 3 fax encoding
+  TIFF_CCITTFAX3      =$1000;  // save using CCITT Group 3 fax encoding
   TIFF_CCITTFAX4      =$2000;  // save using CCITT Group 4 fax encoding
-  TIFF_LZW        =$4000;  // save using LZW compression
-  TIFF_JPEG        =$8000;  // save using JPEG compression
-  WBMP_DEFAULT    =0;
-  XBM_DEFAULT      =0;
-  XPM_DEFAULT      =0;
+  TIFF_LZW            =$4000;  // save using LZW compression
+  TIFF_JPEG           =$8000;  // save using JPEG compression
+  WBMP_DEFAULT        =0;
+  XBM_DEFAULT         =0;
+  XPM_DEFAULT         =0;
 
 //Constants for SeekMemory
-  SEEK_SET  =0;
-  SEEK_CUR  =1;
-  SEEK_END  =2;
+  SEEK_SET =0;
+  SEEK_CUR =1;
+  SEEK_END =2;
 
 type
   FREE_IMAGE_FORMAT = Integer;
@@ -201,7 +205,7 @@ type
 
 var
   //DanielPharos: Not needed, are done automatically in the Windows version of FreeImage.
-  //FreeImage_Initialise: procedure (load_local_plugins_only : boolean); stdcall;
+  //FreeImage_Initialise: procedure (load_local_plugins_only : BOOL); stdcall;
   //FreeImage_DeInitialise: procedure; stdcall;
   FreeImage_GetVersion: function : PChar; stdcall;
   //FreeImage_GetCopyrightMessage: function : PChar; stdcall;

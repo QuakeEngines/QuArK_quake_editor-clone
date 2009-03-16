@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.20  2009/02/21 17:10:33  danielpharos
+Changed all source files to use CRLF text format, updated copyright and GPL text.
+
 Revision 1.19  2008/10/04 13:50:55  danielpharos
 Start using LogAndRaiseError instead of local Fatal's.
 
@@ -139,7 +142,7 @@ end;
 procedure QPng.SaveFileDevILSettings;
 var
   Setup: QObject;
-  Flag: Cardinal;
+  Flag: ILint;
 begin
   inherited;
 

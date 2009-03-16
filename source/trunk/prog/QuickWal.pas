@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.47  2009/02/21 17:06:18  danielpharos
+Changed all source files to use CRLF text format, updated copyright and GPL text.
+
 Revision 1.46  2008/11/06 19:29:51  danielpharos
 Renamed function to concatenate paths, and start using it.
 
@@ -279,7 +282,7 @@ end;
 
 function Link1(var ResultFolder: QObject; const FolderName, Name, Spec, Arg: String; Index: Integer) : QObject; overload
 begin
-   if ResultFolder=Nil then
+  if ResultFolder=Nil then
   begin
     ResultFolder:=QTextureList.Create(Copy(FolderName, 1, Length(FolderName)-1), Nil);
     Index:=0;
@@ -393,7 +396,16 @@ begin
  if CompareText(ExtractFileExt(Name), '.png') = 0 then
   Link1(ResultFolder, FolderName, Copy(Name, 1, Length(Name)-4), 'a', Base)
  else
+ if CompareText(ExtractFileExt(Name), '.ftx') = 0 then
+  Link1(ResultFolder, FolderName, Copy(Name, 1, Length(Name)-4), 'a', Base)
+ else
+ if CompareText(ExtractFileExt(Name), '.bmp') = 0 then
+  Link1(ResultFolder, FolderName, Copy(Name, 1, Length(Name)-4), 'a', Base)
+ else
  if CompareText(ExtractFileExt(Name), '.dds') = 0 then
+  Link1(ResultFolder, FolderName, Copy(Name, 1, Length(Name)-4), 'a', Base)
+ else
+ if CompareText(ExtractFileExt(Name), '.iwi') = 0 then
   Link1(ResultFolder, FolderName, Copy(Name, 1, Length(Name)-4), 'a', Base)
  else
  if CompareText(ExtractFileExt(Name), '.shader') = 0 then

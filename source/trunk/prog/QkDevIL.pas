@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23  2009/02/21 17:10:20  danielpharos
+Changed all source files to use CRLF text format, updated copyright and GPL text.
+
 Revision 1.22  2009/02/17 17:13:53  danielpharos
 Improved some bad error raising.
 
@@ -153,18 +156,29 @@ const
   IL_SUN          =$0446;
   IL_IFF          =$0447;
   IL_TPL          =$0448;
+  IL_FITS         =$0449;
+  IL_DICOM        =$044A;
+  IL_IWI          =$044B;
+  IL_BLP          =$044C;
+  IL_FTX          =$044D;
+  IL_ROT          =$044E;
+  IL_TEXTURE      =$044F;
+  IL_DPX          =$0450;
+  IL_UTX          =$0451;
+  IL_MP3          =$0452;
 
   IL_JASC_PAL     =$0475;
 
 // Mode types
   IL_ORIGIN_SET            =$0600;
-  IL_ORIGIN_MODE           =$0603;
   IL_ORIGIN_LOWER_LEFT     =$0601;
   IL_ORIGIN_UPPER_LEFT     =$0602;
+  IL_ORIGIN_MODE           =$0603;
   IL_FORMAT_SET            =$0610;
   IL_FORMAT_MODE           =$0611;
   IL_TYPE_SET              =$0612;
   IL_TYPE_MODE             =$0613;
+  IL_FILE_OVERWRITE        =$0620;
   IL_FILE_MODE             =$0621;
   IL_CONV_PAL              =$0630;
   IL_USE_KEY_COLOUR        =$0635;
@@ -184,13 +198,14 @@ const
   IL_PALETTE_BPP           =$0DEE;
   IL_PALETTE_NUM_COLS      =$0DEF;
   IL_PALETTE_BASE_TYPE     =$0DF0;
-  IL_NUM_FACES             =$0DE1; //Warning: Out of order here!
+  IL_NUM_FACES             =$0DE1;
   IL_NUM_IMAGES            =$0DF1;
   IL_NUM_MIPMAPS           =$0DF2;
   IL_NUM_LAYERS            =$0DF3;
   IL_ACTIVE_IMAGE          =$0DF4;
   IL_ACTIVE_MIPMAP         =$0DF5;
   IL_ACTIVE_LAYER          =$0DF6;
+  IL_ACTIVE_FACE           =$0E00;
   IL_CUR_IMAGE             =$0DF7;
   IL_IMAGE_DURATION        =$0DF8;
   IL_IMAGE_PLANESIZE       =$0DF9;
@@ -232,6 +247,7 @@ const
   IL_PCD_PICNUM              =$0723;
   IL_PNG_ALPHA_INDEX         =$0724;
   IL_JPG_PROGRESSIVE         =$0725;
+  IL_VTF_COMP                =$0726;
 
 // DXTC definitions
   IL_DXTC_FORMAT      =$0705;
@@ -269,6 +285,7 @@ const
   IL_BAD_DIMENSIONS       =$0511;
   IL_FILE_READ_ERROR      =$0512;
   IL_FILE_WRITE_ERROR     =$0512;
+
   IL_LIB_GIF_ERROR  =$05E1;
   IL_LIB_JPEG_ERROR =$05E2;
   IL_LIB_PNG_ERROR  =$05E3;
@@ -281,6 +298,7 @@ const
 // Format types:
   IL_COLOUR_INDEX     =$1900;
   IL_COLOR_INDEX      =$1900;
+  IL_ALPHA            =$1906;
   IL_RGB              =$1907;
   IL_RGBA             =$1908;
   IL_BGR              =$80E0;
@@ -440,7 +458,7 @@ begin
       ilClearImage      := InitDllPointer(HDevIL, 'ilClearImage');
       ilRegisterPal     := InitDllPointer(HDevIL, 'ilRegisterPal');
 
-      if ilGetInteger(IL_VERSION_NUM) < 175 then
+      if ilGetInteger(IL_VERSION_NUM) < 178 then
         LogAndRaiseError('DevIL library version mismatch!');
 
       ilInit;

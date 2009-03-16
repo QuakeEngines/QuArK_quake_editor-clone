@@ -283,6 +283,7 @@ Strings = {
     821: "Call of Duty 2 Pak Files (.iwd)|*.iwd",
     822: "Sylphis Map File (*.cmap)|*.cmap",
     823: "Doom 3 Material File (*.mtr)|*.mtr",
+    824: "Call of Duty 2 Image Files (.iwi)|*.iwi",
 
     2368: "Skins",
     2369: "Frames",
@@ -650,6 +651,8 @@ Strings = {
     5227: "Cannot save image as FTX file: it has a palette, which is not supported by FTX files. Please convert before saving.",
     5228: "Unable to open link: Cannot find file: '%s'",
     5229: "integer or floating-point value expected - '%s' is not an integer value",
+    5230: "Custom Add-on",
+    5231: "IWI image",
 
     5248: "Cancel",
     5249: "&Move here",
@@ -663,7 +666,6 @@ Strings = {
     5257: "Name your new Add-on",
     5258: "Toolbox Folders",
     5259: "New Folder",
-    5230: "Custom Add-on",
 
     5376: "Configuration",
     # 5376: "The minimal value is %s",
@@ -1065,6 +1067,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.140  2009/03/13 09:15:10  danielpharos
+#Added a Reset-button to the configuration window.
+#
 #Revision 1.139  2009/02/14 17:35:41  danielpharos
 #You can now "uninstall" gamemodes: just delete the addons-directory of that game. Also, small code changes to accommodate this.
 #

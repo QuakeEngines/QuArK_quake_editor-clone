@@ -1,6 +1,6 @@
 (**************************************************************************
 QuArK -- Quake Army Knife -- 3D game editor
-Copyright (C) Armin Rigo
+Copyright (C) QuArK Development Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -14,15 +14,18 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
+http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 **************************************************************************)
 
 {
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.62  2009/02/21 17:09:36  danielpharos
+Changed all source files to use CRLF text format, updated copyright and GPL text.
+
 Revision 1.61  2008/12/12 12:47:52  danielpharos
 Moved GlobalWarning to QkExceptions, and added QkTextBoxForm.
 
@@ -166,7 +169,6 @@ Added QkPNG.PAS and QkTribes2.PAS
 Revision 1.17  2001/06/12 18:31:34  decker_dk
 Forgot a global-prefix to 'g_Form1'
 Added revision-log.
-
 }
 
 program QuArK;
@@ -264,6 +266,7 @@ uses
   QkHr2 in 'prog\QkHr2.pas',
   QkImages in 'prog\QkImages.pas' {FQImages},
   QkInclude in 'prog\QkInclude.pas',
+  QkIwi in 'prog\QkIwi.pas',
   QkJpg in 'prog\QkJpg.pas',
   QkListView in 'prog\QkListView.pas' {QForm2},
   QkMacro in 'prog\QkMacro.pas',

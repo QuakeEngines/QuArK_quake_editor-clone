@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.476  2009/03/11 16:14:27  danielpharos
+//Added 'Rows' specific to ComboBox.
+//
 //Revision 1.475  2009/02/11 13:52:38  danielpharos
 //Move SoF's into their own game-submenu.
 //
@@ -3928,6 +3931,8 @@ QQRKSRC1
       {
         LoadLibrary = "FreeImage"
         SaveLibrary = "FreeImage"
+        SaveRLEDevIL = ""
+        SaveRLEFreeImage = ""
         Form = "FilesBMP"
       }
       DDS:config =
@@ -3948,6 +3953,7 @@ QQRKSRC1
         SaveQualityDevIL = '99'
         SaveProgressiveDevIL = ""
         LoadQualityFreeImage = "2"
+        LoadCMYKFreeImage = ""
         SaveQualityFreeImage = "4"
         SaveProgressiveFreeImage = ""
         Form = "FilesJPG"
@@ -3969,15 +3975,25 @@ QQRKSRC1
       {
         LoadLibrary = "FreeImage"
         SaveLibrary = "FreeImage"
+        SaveRLEDevIL = ""
+        CreateStampDevIL = ""
         Form = "FilesTGA"
+      }
+      VMT:config =
+      {
+        ParseMode = "1"
+        Form = "FilesVMT"
       }
       VTF:config =
       {
         LoadLibrary = "VTFLib"
         SaveLibrary = "VTFLib"
-        SaveFormat  = "3"
-        SaveFormatA = "15"
-        SaveVersion = "7.2"
+        SaveFormatVTFLib = "3"
+        SaveFormatAVTFLib = "15"
+        SaveVersionVTFLib = "7.2"
+        DXTQualityVTFLib = "2"
+        SaveFormatDevIL = "0"
+        SaveFormatADevIL = "1"
         Form = "FilesVTF"
       }
     }
@@ -8045,6 +8061,10 @@ QQRKSRC1
         Values = "DevIL" $0D "FreeImage"
         Hint="Select the library QuArK will use to save files of this type."
       }
+      sep: = {Typ="S" Txt="---- Advanced DevIL Settings ----"}
+      SaveRLEDevIL: = { Typ="X" Txt="Save with RLE compression" Cap="Enabled" Hint="Save the BMP texture with RLE (run-length encoding) compression."}
+      sep: = {Typ="S" Txt="---- Advanced FreeImage Settings ----"}
+      SaveRLEFreeImage: = { Typ="X" Txt="Save with RLE compression" Cap="Enabled" Hint="Save the BMP texture with RLE (run-length encoding) compression."}
     }
     FilesDDS:form =
     {
@@ -8175,6 +8195,7 @@ QQRKSRC1
              $0D "Accurate"
         Hint = "The quality the JPG texture will be loaded in when using the FreeImage library"
       }
+      LoadCMYKFreeImage: = { Typ="X" Txt="Load CMYK" Cap="Enabled" Hint="Load separated CMYK 'as is'."}
       SaveQualityFreeImage: =
       {
         Typ = "CL"
@@ -8254,6 +8275,23 @@ QQRKSRC1
         Values = "DevIL" $0D "FreeImage"
         Hint="Select the library QuArK will use to save files of this type."
       }
+      sep: = {Typ="S" Txt="---- Advanced DevIL Settings ----"}
+      SaveRLEDevIL: = { Typ="X" Txt="Save with RLE compression" Cap="Enabled" Hint="Save the TGA texture with RLE (run-length encoding) compression."}
+      CreateStampDevIL: = { Typ="X" Txt="Create Stamp" Cap="Enabled" Hint="Save a stamp with the TGA texture."}
+    }
+    FilesVMT:form =
+    {
+      Style = "7"
+      sep: = {Typ="S" Txt="---- Advanced VTFLib Settings ----"}
+      ParseMode: =
+      {
+        Typ = "CL"
+        Txt = "Parse mode"
+        Values =  "0"$0D "1"
+        Items = "Strict"
+             $0D "Loose"
+        Hint = "The mode used when parsing VMT files. Basically, this is an error-tolerance setting."
+      }
     }
     FilesVTF:form =
     {
@@ -8271,18 +8309,19 @@ QQRKSRC1
       {
         Txt="Select library for saving VTF files"
         Typ="CL"
-        Items  = "VTFLib"
-        Values = "VTFLib"
+        Items  = "VTFLib" $0D "DevIL"
+        Values = "VTFLib" $0D "DevIL"
         Hint="Select the library QuArK will use to save files of this type."
       }
-      sep: = {Typ="S" Txt="---- Advanced Saving Settings ----"}
-      SaveFormat: =
+      sep: = {Typ="S" Txt="---- Advanced VTFLib Settings ----"}
+      SaveFormatVTFLib: =
       {
         Typ = "CL"
         Txt = "Format of exported non-alpha VTF textures"
         Values =  "0"$0D "1"$0D "2"$0D "3"$0D "4"$0D "5"$0D "6"$0D "7"$0D "8"$0D "9"$0D
                  "10"$0D"11"$0D"12"$0D"13"$0D"14"$0D"15"$0D"16"$0D"17"$0D"18"$0D"19"$0D
-                 "20"$0D"21"$0D"22"$0D"23"$0D"24"$0D"25"$0D"26"$0D"27"$0D"28"
+                 "20"$0D"21"$0D"22"$0D"23"$0D"24"$0D"25"$0D"26"$0D"27"$0D"28"$0D"29"$0D
+                 "30"$0D"31"$0D"32"$0D"33"$0D"34"$0D"35"$0D"36"$0D"37"
         Items = "RGBA8888"
              $0D "ABGR8888"
              $0D "RGB888"
@@ -8312,16 +8351,26 @@ QQRKSRC1
              $0D "I32F"
              $0D "RGB323232F"
              $0D "RGBA32323232F"
+             $0D "NV_DST16"
+             $0D "NV_DST24"
+             $0D "NV_INTZ"
+             $0D "NV_RAWZ"
+             $0D "ATI_DST16"
+             $0D "ATI_DST24"
+             $0D "NV_NULL"
+             $0D "ATI2N"
+             $0D "ATI1N"
         Hint = "The format the VTF texture will be saved in"
         Rows = "16"
       }
-      SaveFormatA: =
+      SaveFormatAVTFLib: =
       {
         Typ = "CL"
         Txt = "Format of exported alpha VTF textures"
         Values =  "0"$0D "1"$0D "2"$0D "3"$0D "4"$0D "5"$0D "6"$0D "7"$0D "8"$0D "9"$0D
                  "10"$0D"11"$0D"12"$0D"13"$0D"14"$0D"15"$0D"16"$0D"17"$0D"18"$0D"19"$0D
-                 "20"$0D"21"$0D"22"$0D"23"$0D"24"$0D"25"$0D"26"$0D"27"$0D"28"
+                 "20"$0D"21"$0D"22"$0D"23"$0D"24"$0D"25"$0D"26"$0D"27"$0D"28"$0D"29"$0D
+                 "30"$0D"31"$0D"32"$0D"33"$0D"34"$0D"35"$0D"36"$0D"37"
         Items = "RGBA8888"
              $0D "ABGR8888"
              $0D "RGB888"
@@ -8351,10 +8400,19 @@ QQRKSRC1
              $0D "I32F"
              $0D "RGB323232F"
              $0D "RGBA32323232F"
+             $0D "NV_DST16"
+             $0D "NV_DST24"
+             $0D "NV_INTZ"
+             $0D "NV_RAWZ"
+             $0D "ATI_DST16"
+             $0D "ATI_DST24"
+             $0D "NV_NULL"
+             $0D "ATI2N"
+             $0D "ATI1N"
         Hint = "The format the VTF texture with alpha will be saved in"
         Rows = "16"
       }
-      SaveVersion: =
+      SaveVersionVTFLib: =
       {
         Typ = "CL"
         Txt = "Version of exported VTF textures"
@@ -8365,6 +8423,42 @@ QQRKSRC1
              $0D "7.3"
              $0D "7.4"
         Hint = "The file version the VTF texture will be saved in"
+      }
+      DXTQualityVTFLib: =
+      {
+        Typ = "CL"
+        Txt = "Quality of DXT compression"
+        Values =  "0"$0D "1"$0D "2"$0D "3"
+        Items = "Low"
+             $0D "Medium"
+             $0D "High"
+             $0D "Highest"
+        Hint = "The quality used for the DXT compression when saving"
+      }
+      sep: = {Typ="S" Txt="---- Advanced DevIL Settings ----"}
+      SaveFormatDevIL: =
+      {
+        Typ = "CL"
+        Txt = "Format of exported non-alpha VTF textures"
+        Values =  "0"$0D "1"$0D "2"$0D "3"$0D "4"
+        Items = "DXT1"
+              $0D"DXT5"
+              $0D"DXT3"
+              $0D"DXT1A"
+              $0D"No DXT Compression"
+        Hint = "The format the VTF texture will be saved in"
+      }
+      SaveFormatADevIL: =
+      {
+        Typ = "CL"
+        Txt = "Format of exported alpha VTF textures"
+        Values =  "0"$0D "1"$0D "2"$0D "3"$0D "4"
+        Items = "DXT1"
+              $0D"DXT5"
+              $0D"DXT3"
+              $0D"DXT1A"
+              $0D"No DXT Compression"
+        Hint = "The format the VTF texture with alpha will be saved in"
       }
     }
 
