@@ -3362,6 +3362,18 @@ class BoneHandle(qhandles.GenericHandle):
                     comp = editor.Root.dictitems[compname]
                     self.newverticespos[compname] = comp.currentframe.vertices
 
+    def ok(self, editor, undo, old, new):
+        undomsg = "move bone"
+        if self.newverticespos is not None:
+            editor = self.mgr.editor
+            for meshname in self.newverticespos:
+                oldmesh = editor.Root.dictitems[meshname]
+                newmesh = oldmesh.copy()
+                newmesh.currentframe = newmesh.dictitems["Frames:fg"].dictitems[oldmesh.currentframe.name]
+                newmesh.currentframe.vertices = self.newverticespos[meshname]
+                undo.exchange(oldmesh, newmesh)
+        editor.ok(undo, undomsg)
+
 def DrawBoneHandle(p, cv, scale, handle_scale):
     global bonehandlesize
     bonehalfsize = bonehandlesize*scale*handle_scale
@@ -3657,14 +3669,7 @@ class BoneCornerHandle(BoneHandle):
             cv.ellipse(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
 
     def drawred(self, redimages, view, redcolor):
-        if self.newrot is not None:
-            newrot = self.newrot
-        else:
-            if self.rotmatrix is not None:
-                newrot = self.rotmatrix
-            else:
-                newrot = quarkx.matrix((1,0,0),(0,1,0),(0,0,1))
-        p = view.proj(self.center + newrot * quarkx.vect(bonenormallength * self.bone.dictspec['scale'][0], 0, 0))
+        p = view.proj(self.center + self.rotmatrix * quarkx.vect(bonenormallength * self.bone.dictspec['scale'][0], 0, 0))
         if p.visible:
             cv = view.canvas()
             cv.reset()
@@ -3726,10 +3731,8 @@ class BoneCornerHandle(BoneHandle):
             angle = self.linoperation(new, delta, g1, view)
             self.draghint = "rotate %d deg." % angle
             #@
-            self.newrot = new[0].rotmatrix
         else:
             new = None
-            self.newrot = None
 
         return old, new
 
@@ -3750,9 +3753,17 @@ class BoneCornerHandle(BoneHandle):
         #    changedradius = 1.0
         changedradius = 1.0
 
-        #@
         for obj in list:
             obj.rotmatrix = changedradius * m * obj.rotmatrix
+            if obj != self.bone:
+                changedpos = obj.position - self.bone.position
+                changedpos = changedradius * m * changedpos
+                obj.position = changedpos + self.bone.position
+
+        vertices = self.bone.vertices
+        for compname in vertices:
+            for vtx in vertices[compname]:
+                self.newverticespos[compname][vtx] = self.newverticespos[compname][vtx] + delta
 
         return (math.acos(m[0,0])*180.0/math.pi)
 
@@ -3836,6 +3847,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.168.2.4  2009/03/16 18:33:31  danielpharos
+#Fix red-drawing of BoneCenterHandle.
+#
 #Revision 1.168.2.3  2009/03/11 15:50:36  danielpharos
 #Added vertex assigning and some draw-n-drag code.
 #
