@@ -3522,13 +3522,6 @@ class BoneCenterHandle(BoneHandle):
             DrawBoneHandle(p, cv, scale, handle_scale)
 
     def drawred(self, redimages, view, redcolor):
-        if self.newpos is not None:
-            p = view.proj(self.newpos)
-        else:
-            if self.pos is not None:
-                p = view.proj(self.pos)
-            else:
-                p = view.proj(quarkx.vect(0,0,0))
         cv = view.canvas()
         cv.penwidth = 1
         cv.penstyle = PS_INSIDEFRAME
@@ -3537,26 +3530,34 @@ class BoneCenterHandle(BoneHandle):
         handle_scale = self.bone.dictspec['scale'][0]
         handle_color = self.bone.getint('_color')
         cv.brushstyle = BS_CLEAR
-        if p.visible:
-            try:
-                parentID = int(self.bone.dictspec['parent'][0])
-            except:
-                parentID = -1
-            if parentID != -1:
-                parentbone = self.mgr.editor.Root.group_bone.subitems[parentID]
-                parent_handle_scale = parentbone['scale'][0]
-                p2 = view.proj(parentbone.position)
-                DrawBoneLine(p, p2, cv, scale, parent_handle_scale)
-            DrawBoneHandle(p, cv, scale, handle_scale)
-        editor = self.mgr.editor
-        vertices = self.bone.vertices
-        for compname in vertices:
-            compvtx = self.newverticespos[compname]
-            for vtx in vertices[compname]:
-                p = view.proj(compvtx[vtx])
-                if p.visible:
-                    #@
-                    cv.ellipse(int(p.x)-2, int(p.y)-2, int(p.x)+2, int(p.y)+2)
+        for obj in redimages:
+            if obj.type != ":bone":
+                continue
+            p = view.proj(obj.position)
+            if p.visible:
+                try:
+                    parentID = int(obj.dictspec['parent'][0])
+                except:
+                    parentID = -1
+                if parentID != -1:
+                    parentbone = self.mgr.editor.Root.group_bone.subitems[parentID]
+                    for obj2 in redimages:
+                        # If the bone is in redimages, it's also moving, and we need to use the moving bone instead
+                        if parentbone.name == obj2.name:
+                            parentbone = obj2
+                            break
+                    parent_handle_scale = parentbone['scale'][0]
+                    p2 = view.proj(parentbone.position)
+                    DrawBoneLine(p, p2, cv, scale, parent_handle_scale)
+                DrawBoneHandle(p, cv, scale, handle_scale)
+            vertices = obj.vertices
+            for compname in vertices:
+                compvtx = self.newverticespos[compname]
+                for vtx in vertices[compname]:
+                    p = view.proj(compvtx[vtx])
+                    if p.visible:
+                        #@
+                        cv.ellipse(int(p.x)-2, int(p.y)-2, int(p.x)+2, int(p.y)+2)
 
     def drag(self, v1, v2, flags, view):
         delta = v2-v1
@@ -3594,10 +3595,8 @@ class BoneCenterHandle(BoneHandle):
                 newbone = bone.copy()
                 new = new + [newbone]
             self.linoperation(new, delta, g1, view)
-            self.newpos = new[0].position
         else:
             new = None
-            self.newpos = None
 
         return old, new
 
@@ -3605,11 +3604,10 @@ class BoneCenterHandle(BoneHandle):
         for obj in list:
             obj.position = obj.position + delta
 
-        if self.bone is not None:
-            vertices = self.bone.vertices
-            for compname in vertices:
-                for vtx in vertices[compname]:
-                    self.newverticespos[compname][vtx] = self.newverticespos[compname][vtx] + delta
+        vertices = self.bone.vertices
+        for compname in vertices:
+            for vtx in vertices[compname]:
+                self.newverticespos[compname][vtx] = self.newverticespos[compname][vtx] + delta
 
         return delta
 
@@ -3679,6 +3677,14 @@ class BoneCornerHandle(BoneHandle):
             cv.brushcolor = handle_color
             cv.brushstyle = BS_SOLID
             cv.ellipse(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
+        vertices = self.bone.vertices
+        for compname in vertices:
+            compvtx = self.newverticespos[compname]
+            for vtx in vertices[compname]:
+                p = view.proj(compvtx[vtx])
+                if p.visible:
+                    #@
+                    cv.ellipse(int(p.x)-2, int(p.y)-2, int(p.x)+2, int(p.y)+2)
 
     def drag(self, v1, v2, flags, view): # for BoneCornerHandle
         delta = v2-v1
@@ -3830,6 +3836,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.168.2.3  2009/03/11 15:50:36  danielpharos
+#Added vertex assigning and some draw-n-drag code.
+#
 #Revision 1.168.2.2  2009/03/02 22:50:07  danielpharos
 #Added vertex assigning code.
 #
