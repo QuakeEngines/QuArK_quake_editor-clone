@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2009/02/21 17:06:18  danielpharos
+Changed all source files to use CRLF text format, updated copyright and GPL text.
+
 Revision 1.13  2008/11/06 20:18:22  danielpharos
 Removed old stuff in preparation for new specifics code.
 
@@ -76,8 +79,8 @@ unit QkHL;
 interface
 
 uses Windows, SysUtils, Classes, Graphics, Dialogs, Controls,
-     QkObjects, QkFileObjects, QkTextures, QkWad
-     ,QkQ1;
+     QkObjects, QkFileObjects, QkTextures, QkWad,
+     QkQ1;
 
 type
  QTextureHL = class(QTexture1)
