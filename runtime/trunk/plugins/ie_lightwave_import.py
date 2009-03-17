@@ -2640,7 +2640,7 @@ def dataformname(o):
     if o.name == editor.Root.currentcomponent.currentskin.name: # If this is not done it will cause looping through multiple times.
         if o.parent.parent.dictspec.has_key("shader_keyword") and o.dictspec.has_key("shader_keyword"):
             if o.parent.parent.dictspec['shader_keyword'] != o.dictspec['shader_keyword']:
-                o['shader_keyword'] = o.parent.parent.dictspec['shader_keyword']
+                o.parent.parent['shader_keyword'] = o.dictspec['shader_keyword']
 
     DummyItem = o
     while (DummyItem.type != ":mc"): # Gets the object's model component.
@@ -2684,6 +2684,7 @@ quarkpy.qmacro.MACRO_opentexteditor = macro_opentexteditor
 def dataforminput(o):
     "Returns the default settings or input data for this type of object 'o' (a model component & others) to use for the Specific/Args page."
 
+    editor = quarkpy.mdleditor.mdleditor # Get the editor.
     DummyItem = Item = o
     while (DummyItem.type != ":mc"): # Gets the object's model component.
         DummyItem = DummyItem.parent
@@ -2702,16 +2703,11 @@ def dataforminput(o):
             o['shader_file'] = "None"
         if not o.dictspec.has_key('shader_name'):
             o['shader_name'] = "None"
-        if not o.dictspec.has_key('shader_keyword'):
+        if Item.name == editor.Root.currentcomponent.currentskin.name:
             if Item.dictspec.has_key("shader_keyword"):
                 o['shader_keyword'] = Item.dictspec['shader_keyword']
-            else:
-                o['shader_keyword'] = Item['shader_keyword'] = "None"
         else:
-            if Item.dictspec.has_key("shader_keyword"):
-                o['shader_keyword'] = Item.dictspec['shader_keyword']
-            else:
-                o['shader_keyword'] = Item['shader_keyword'] = "None"
+            o['shader_keyword'] = "None"
         if not o.dictspec.has_key('shader_lines'):
             if quarkx.setupsubset(3, "Options")["NbrOfShaderLines"] is not None:
                 o['shader_lines'] = quarkx.setupsubset(3, "Options")["NbrOfShaderLines"]
@@ -2726,6 +2722,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.22  2009/03/12 19:39:24  cdunde
+# Improvements for multiple skin importing.
+#
 # Revision 1.21  2009/03/11 15:37:09  cdunde
 # Added importing of multiple textures for material shader files.
 # Added Specifics page display and editing of skins and shaders.
