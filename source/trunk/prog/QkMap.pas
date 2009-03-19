@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.95  2009/03/19 18:23:10  danielpharos
+Fixed a double space in bezier MOHAA surfaceparams output.
+
 Revision 1.94  2009/03/14 13:13:53  danielpharos
 MOHAA beziers now also output their surfaceparams.
 
@@ -4152,7 +4155,6 @@ begin
      2: Target.Add(Format('   ( %d %d 0 0 0 )', [cp.W, cp.H]));
      3: Target.Add(Format('   ( %d %d 0 0 0 0 0 )', [cp.W, cp.H]));
      end;
-   //FIXME: Need to save MOHAA surfaceparms!
    Target.Add('   (');
    for J:=0 to cp.W-1 do
     begin
