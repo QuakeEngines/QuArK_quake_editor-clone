@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.478  2009/03/16 09:11:07  danielpharos
+//Switch to DevIL as default instead of FreeImage.
+//
 //Revision 1.477  2009/03/16 08:46:00  danielpharos
 //Updated to DevIL 1.7.8, added IWI loading, and added many new image loading/saving options.
 //
@@ -1743,6 +1746,7 @@ QQRKSRC1
         .jpg = ""      ijpg = '7'
         .png = ""      ipng = '7'
         .dds = ""      idds = '7'
+        .iwi = ""      iiwi = '7'
         .vtf = ""      ivtf = '7'
         .ftx = ""      iftx = '7'
         .spr = ""
@@ -1795,6 +1799,7 @@ QQRKSRC1
         .jpg = ""
         .png = ""
         .dds = ""
+        .iwi = ""
         .vtf = ""
         .ftx = ""
         .spr = ""
@@ -9188,6 +9193,7 @@ QQRKSRC1
       .jpg: = { Txt="JPEG images" externaledit = ! }
       .png: = { Txt="PNG images" externaledit = ! }
       .dds: = { Txt="DDS images" externaledit = ! }
+      .iwi: = { Txt="IWI images" externaledit = ! }
       .vtf: = { Txt="VTF images" externaledit = ! }
       .ftx: = { Txt="FTX images" externaledit = ! }
       .spr: = { Txt="SPR sprites" externaledit = ! }
@@ -9264,6 +9270,7 @@ QQRKSRC1
       .jpg: = {Typ="X" Cap=".jpg" Txt="JPEG Images"}
       .png: = {Typ="X" Cap=".png" Txt="PNG Images"}
       .dds: = {Typ="X" Cap=".dds" Txt="DDS Images"}
+      .iwi: = {Typ="X" Cap=".iwi" Txt="IWI Images"}
       .vtf: = {Typ="X" Cap=".vtf" Txt="VTF Images"}
       .ftx: = {Typ="X" Cap=".ftx" Txt="FTX Images"}
       .spr: = {Typ="X" Cap=".spr" Txt="SPR Sprites"}
