@@ -327,7 +327,7 @@ def read_file(file, lines, basepath, filename):
             me.vcFaces.append(fc)
 
         PBidx += 1.0
-  #  print "line 323 materials_list",materials_list, basepath, filename
+  #  print "line 330 materials_list",materials_list, basepath, filename
     ComponentList, message = spawn_main(objects, basepath, filename)
 
     return ComponentList, message
@@ -385,7 +385,7 @@ def spawn_mesh(obj, basepath, filename, ComponentList, message, CompNbr):
     material = filename.replace("\\", "/")
     material = material.replace(basepath, "")
     material = material.rsplit(".")[0]
-  #  print "line 381 material",material
+  #  print "line 388 material",material
     ### For the Skins:sg group.
     skinsize = (128, 128)
     skingroup = quarkx.newobj('Skins:sg')
@@ -700,18 +700,22 @@ def spawn_mesh(obj, basepath, filename, ComponentList, message, CompNbr):
         gamefolder = basepath.split("/")
         gamefolder = gamefolder[len(gamefolder)-2]
         filefolder = filename.replace("\\", "/")
-        filefolder = filefolder.split("/" + gamefolder + "/")
-  #      print "line 702 filefolder",filefolder
-  #      print "line 703 obj.material_ref",obj.material_ref
+        filefolder = filefolder.split("/" + gamefolder + "/", 1)
+  #      print "line 704 gamefolder",gamefolder
+  #      print "line 705 filefolder",filefolder
+  #      print "line 706 obj.material_ref",obj.material_ref
         filefolder = filefolder[1]
         filefolder = filefolder.rsplit("/", 1)[0] + "/"
         possible_names = filename.rsplit("\\", 1)[1]
         possible_names = possible_names.split(".")[0]
         possible_names = possible_names.split("_")
+  #      print "line 712 possible_names",possible_names
         # If no skins exist, tries to find main one to load first based on model materials.
         if (materials_list[obj.material_ref] is not None):
-            look4file = materials_list[obj.material_ref].split(gamefolder + "/")[1]
+            look4file = materials_list[obj.material_ref].split(gamefolder + "/", 1)[1]
             file_type = "." + materials_list[obj.material_ref].rsplit(".", 1)[1]
+  #          print "line 717 basepath",basepath
+  #          print "line 718 look4file",look4file
             if (os.path.exists(basepath + look4file)) and (file_type in image_type_list):
                 skin = quarkx.newobj(look4file)
                 image = quarkx.openfileobj(basepath + look4file)
@@ -723,6 +727,8 @@ def spawn_mesh(obj, basepath, filename, ComponentList, message, CompNbr):
             for key in materials_list.keys():
                 if (materials_list[key] is not None) and (materials_list[key].find(filefolder) != -1):
                     look4file = materials_list[key].split(filefolder)[1]
+  #                  print "line 730 filefolder",filefolder
+  #                  print "line 731 look4file",look4file
                     for name in possible_names:
                         if look4file.find(name) != -1:
                             file_type = look4file.split(".")[1]
@@ -738,14 +744,14 @@ def spawn_mesh(obj, basepath, filename, ComponentList, message, CompNbr):
         # If no skins exist, tries to find rest to load based on model materials.
         for key in materials_list.keys():
             if (materials_list[key] is not None):
-                look4file = materials_list[key].split(gamefolder + "/")[1]
+                look4file = materials_list[key].split(gamefolder + "/", 1)[1]
                 file_type = "." + materials_list[key].rsplit(".", 1)[1]
-  #              print "line 726 basepath + look4file",basepath + look4file
+  #              print "line 749 basepath + look4file",basepath + look4file
                 if (os.path.exists(basepath + look4file)) and (file_type in image_type_list):
-  #                  print "line 728 gamefolder",gamefolder
-  #                  print "line 729 basepath",basepath
-  #                  print "line 730 look4file",look4file
-  #                  print "line 731 filefolder",filefolder
+  #                  print "line 751 gamefolder",gamefolder
+  #                  print "line 752 basepath",basepath
+  #                  print "line 753 look4file",look4file
+  #                  print "line 754 filefolder",filefolder
                     if not (look4file) in skingroup.dictitems.keys():
                         skin = quarkx.newobj(look4file)
                         image = quarkx.openfileobj(basepath + look4file)
@@ -769,8 +775,8 @@ def spawn_mesh(obj, basepath, filename, ComponentList, message, CompNbr):
 
     objMe = obj.obj
     #normal_flag = 1
- #   print "line 324 obj",obj
- #   print "line 325 objMe",objMe
+ #   print "line 778 obj",obj
+ #   print "line 779 objMe",objMe
 
     row0 = obj.row0x, obj.row0y, obj.row0z
     row1 = obj.row1x, obj.row1y, obj.row1z
@@ -787,14 +793,14 @@ def spawn_mesh(obj, basepath, filename, ComponentList, message, CompNbr):
  #   newMesh = Blender.Mesh.New(obj.objName)
  #   newMesh.getFromObject(newObj.name)
     newMesh = quarkx.newobj(obj.objName + ':mf')
- #   print "line 709 obj.objName",obj.objName
- #   print "line 710 newMesh.name",newMesh.name
+ #   print "line 796 obj.objName",obj.objName
+ #   print "line 797 newMesh.name",newMesh.name
 
 
     # Verts
     for v in objMe.meVerts: # QuArK frame Vertices made here.
         comp_mesh = comp_mesh + (float(v.x), float(v.y), float(v.z))
- #       print "line 713 Vector",(float(v.x), float(v.y), float(v.z))
+ #       print "line 803 Vector",(float(v.x), float(v.y), float(v.z))
  #      vert = Blender.Mathutils.Vector(float(v.x), float(v.y), float(v.z))
  #       newMesh.verts.extend(vert)
     frame['Vertices'] = comp_mesh
@@ -808,15 +814,15 @@ def spawn_mesh(obj, basepath, filename, ComponentList, message, CompNbr):
         uv2 = (int(float(objMe.uvVerts[objMe.uvFaces[f].uv2].u)*TexWidth), TexHeight-(int(float(objMe.uvVerts[objMe.uvFaces[f].uv2].v)*TexHeight)))
         uv3 = (int(float(objMe.uvVerts[objMe.uvFaces[f].uv3].u)*TexWidth), TexHeight-(int(float(objMe.uvVerts[objMe.uvFaces[f].uv3].v)*TexHeight)))
 
- #       print "line 734 uv1",uv1
- #       print "line 735 uv2",uv2
- #       print "line 736 uv3",uv3
+ #       print "line 817 uv1",uv1
+ #       print "line 816 uv2",uv2
+ #       print "line 817 uv3",uv3
         Tris = Tris + struct.pack("Hhh", objMe.meFaces[f].v3,uv3[0],uv3[1])
         Tris = Tris + struct.pack("Hhh", objMe.meFaces[f].v2,uv2[0],uv2[1])
         Tris = Tris + struct.pack("Hhh", objMe.meFaces[f].v1,uv1[0],uv1[1])
- #       print "line 740 v1",(objMe.meFaces[f].v3,uv3[0],uv3[1])
- #       print "line 741 v2",(objMe.meFaces[f].v2,uv2[0],uv2[1])
- #       print "line 742 v3",(objMe.meFaces[f].v1,uv1[0],uv1[1])
+ #       print "line 823 v1",(objMe.meFaces[f].v3,uv3[0],uv3[1])
+ #       print "line 824 v2",(objMe.meFaces[f].v2,uv2[0],uv2[1])
+ #       print "line 825 v3",(objMe.meFaces[f].v1,uv1[0],uv1[1])
   #      newMesh.faces.extend(newMesh.verts[objMe.meFaces[f].v1], newMesh.verts[objMe.meFaces[f].v2], newMesh.verts[objMe.meFaces[f].v3])
 
     #VertCol
@@ -861,7 +867,7 @@ def spawn_mesh(obj, basepath, filename, ComponentList, message, CompNbr):
 
     counts['verts'] += objMe.vCount
     counts['tris'] += objMe.fCount
- #   print 'line 787 Imported Mesh-Object: ', obj.name
+ #   print 'line 870 Imported Mesh-Object: ', obj.name
 
     # Now we start creating our Import Component and name it.
     if obj.objName != 'Name':
@@ -1199,4 +1205,7 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.1  2009/03/18 00:04:21  cdunde
+# Added asi model format importing plugin.
+#
 #
