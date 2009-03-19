@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.94  2009/03/14 13:13:53  danielpharos
+MOHAA beziers now also output their surfaceparams.
+
 Revision 1.93  2009/02/21 17:10:12  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -4137,8 +4140,8 @@ begin
    if MapSaveSettings.GameCode=mjMOHAA then
    begin
      case MapSaveSettings.PatchDefVersion of
-     2: S:=Format('   ( %d %d 0 0 0 ', [cp.W, cp.H]);
-     3: S:=Format('   ( %d %d 0 0 0 0 0 ', [cp.W, cp.H]);
+     2: S:=Format('   ( %d %d 0 0 0', [cp.W, cp.H]);
+     3: S:=Format('   ( %d %d 0 0 0 0 0', [cp.W, cp.H]);
      end;
      MohaaSurfaceParms(TBezier(ObjectToSave), S);
      S:=S+' )';
