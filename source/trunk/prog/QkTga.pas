@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.21  2009/03/16 08:47:21  danielpharos
+Updated to DevIL 1.7.8, added IWI loading, and added many new image loading/saving options.
+
 Revision 1.20  2009/02/21 17:06:18  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -154,9 +157,10 @@ begin
   CheckDevILError(ilGetError);
 
   if Setup.Specifics.Values['CreateStampDevIL']<>'' then
-    ilEnable(IL_TGA_CREATE_STAMP)
+    Flag:=IL_TRUE
   else
-    ilDisable(IL_TGA_CREATE_STAMP);
+    Flag:=IL_FALSE;
+  ilSetInteger(IL_TGA_RLE, Flag);
   CheckDevILError(ilGetError);
 end;
 
