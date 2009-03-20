@@ -14,6 +14,15 @@ locating crashes.
 Website:
 <a target="_blank" href="http://www.microsoft.com/whdc/devtools/debugging/default.mspx">http://www.microsoft.com/whdc/devtools/debugging/default.mspx</a>
 
+<strong>VMMap</strong><br>
+Another useful tool is VMMap.  This tool displays all memory
+allocations from a process, so memory leaks should be easy
+to spot.  It even can search from strings in specific memory
+block, so it's possible to identify what exactly is leaking.
+
+Website:
+<a target="_blank" href="http://technet.microsoft.com/en-us/sysinternals/dd535533.aspx">http://technet.microsoft.com/en-us/sysinternals/dd535533.aspx</a>
+
 <strong>MemProof</strong><br>
 A program that monitors the executable realtime, and lists
 memory usage.  When the program finishes, all the memory still
