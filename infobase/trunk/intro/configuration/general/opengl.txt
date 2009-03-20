@@ -66,3 +66,7 @@ moving', but now when moving the camera. Rendering light can take much
 time, especially in larger scenes with many lights. Disabling lighting
 when moving will speed up rendering when the camera is moving, and thus
 make the movement much less jerky.
+
+Note: Use an utility like <a target="_blank" href="http://www.realtech-vr.com/glview/">OpenGL Viewer</a>
+to make sure your video card and video drivers support all the OpenGL
+features QuArK needs.

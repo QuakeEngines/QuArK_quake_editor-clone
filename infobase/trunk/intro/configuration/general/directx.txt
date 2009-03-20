@@ -12,3 +12,6 @@ the quality, but not all formats might be supported.
 <i>Depth buffer bits</i>. The amount of bits per pixel in the depth
 buffer. The higher the number, the less chance of objects being rendered
 overlapping while they're not. Not all modes might supported.
+
+Note: Use the <a target="_blank" href="http://support.microsoft.com/kb/157730">DirectX Diagnostic Tool</a> to make sure you have the right
+version of DirectX installed. See <a target="_blank" href="http://support.microsoft.com/kb/157730">this article</a>.
