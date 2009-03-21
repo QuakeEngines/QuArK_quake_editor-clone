@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.479  2009/03/19 09:28:33  danielpharos
+//Added IWI file association options.
+//
 //Revision 1.478  2009/03/16 09:11:07  danielpharos
 //Switch to DevIL as default instead of FreeImage.
 //
@@ -8910,7 +8913,7 @@ QQRKSRC1
       sep: = {Typ="S" Txt="Button and object icon colors"}
       Unsel: = {Typ="X" Txt="If not selected" Cap="display blue icons" Hint="Check this to display blue icons instead of brown ones for 'unselected' icons"}
       Sel: =   {Typ="X" Txt="If selected"     Cap="display blue icons" Hint="Uncheck this to display brown icons instead of blue ones for 'selected' icons"}
-      IconPath: = {Typ="CL" Txt="Icon size"   Values="images\\"$0D"lgicons\\"  Items="Normal"$0D"Large (LGIcons needed !)" Hint="Large icons require you to download first the 'LGIcons' pack from the web site."}
+      IconPath: = {Typ="CL" Txt="Icon size"   Values="images\\"$0D"lgicons\\"  Items="Normal"$0D"Large (LGIcons needed !)" Hint="Large icons require you to first download the 'LGIcons' pack from the website."}
       sep: = {Typ="S" Bold="0" Txt="(restart QuArK to reload icons with the new colors"}
       sep: = {Typ="S" Bold="0" Txt="  and size after you made changes here)"}
       sep: = {Typ="S" Txt = ""}
@@ -8918,7 +8921,7 @@ QQRKSRC1
       MaxRecentFiles = {Txt="Maximum number of recent files" Typ="EF1" Hint="Maximum amount of recent files to keep track of (0 .. 20)"}
       //ConsoleWidth = {Txt="Width of console" Typ="EF1" Hint="Amount of character per line in the console (80 .. 80)"}
       ConsoleHeight = {Txt="Height of console" Typ="EF1" Hint="Maximum amount of lines in the console (60 .. 600)"}
-      OnlineHelp = {Txt="Online help" Typ="X" Cap="Enabled" Hint="This will cause QuArK to open up the online help when the wanted file is not available locally."}
+      OnlineHelp = {Txt="Online help" Typ="X" Cap="Enabled" Hint="This will cause QuArK to open up the online help when the wanted help file is not available locally."}
     }
     General3DView:form =
     {
