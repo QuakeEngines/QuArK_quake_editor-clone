@@ -1683,14 +1683,14 @@ def create_objects(filename, polynames, clip_list, objspec_list, surf_list, base
 
         polyname = poly.split(".")
         name_list = load_image(basepath,polyname[0])
+        foundshader = foundtexture = foundimage = imagefile = None
+        mesh_shader = shader_file = shader_name = shader_keyword = qer_editorimage = diffusemap = map = bumpmap = addnormals = heightmap = specularmap = None
         for file in range(len(name_list)):
             if os.path.exists(basepath + "materials") == 1:
                 shaderspath = basepath + "materials"
                 shaderfiles = os.listdir(shaderspath)
                 for shaderfile in shaderfiles:
                     noimage = ""
-                    foundshader = foundtexture = foundimage = imagefile = None
-                    mesh_shader = shader_file = shader_name = shader_keyword = qer_editorimage = diffusemap = map = bumpmap = addnormals = heightmap = specularmap = None
                     #read the file in
                     try: # To by pass sub-folders, should make this to check those also.
                         file=open(shaderspath+"/"+shaderfile,"r")
@@ -2722,6 +2722,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.23  2009/03/17 23:41:01  cdunde
+# To fix possible error for shader keyword if any.
+#
 # Revision 1.22  2009/03/12 19:39:24  cdunde
 # Improvements for multiple skin importing.
 #
