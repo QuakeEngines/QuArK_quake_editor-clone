@@ -1681,7 +1681,7 @@ def create_objects(filename, polynames, clip_list, objspec_list, surf_list, base
         if polyuvlist == {}:
             polyuvlist = None
 
-        polyname = poly.split(".")
+        polyname = poly.split(".")[0]
         name_list = load_image(basepath,polyname[0])
         foundshader = foundtexture = foundimage = imagefile = None
         mesh_shader = shader_file = shader_name = shader_keyword = qer_editorimage = diffusemap = map = bumpmap = addnormals = heightmap = specularmap = None
@@ -1693,20 +1693,20 @@ def create_objects(filename, polynames, clip_list, objspec_list, surf_list, base
                     noimage = ""
                     #read the file in
                     try: # To by pass sub-folders, should make this to check those also.
-                        file=open(shaderspath+"/"+shaderfile,"r")
+                        read_shader_file=open(shaderspath+"/"+shaderfile,"r")
                     except:
                         continue
-                    lines=file.readlines()
-                    file.close()
+                    lines=read_shader_file.readlines()
+                    read_shader_file.close()
                     left_cur_braket = 0
                     for line in range(len(lines)):
-                        if foundshader is None and lines[line].startswith(poly+"\n"):
+                        if foundshader is None and lines[line].startswith(polyname+"\n"):
                             shaderline = lines[line].replace(chr(9), "    ")
                             shaderline = shaderline.rstrip()
                             mesh_shader = "\r\n" + shaderline + "\r\n"
                             shader_file = shaderspath + "/" + shaderfile
-                            shader_name = poly
-                            foundshader = poly
+                            shader_name = polyname
+                            foundshader = polyname
                             left_cur_braket = 0
                             continue
                         if foundshader is not None and lines[line].find("{") != -1:
@@ -1717,6 +1717,7 @@ def create_objects(filename, polynames, clip_list, objspec_list, surf_list, base
                             testline = lines[line].strip()
                             if testline.startswith("//"):
                                 continue
+                            lines[line] = lines[line].replace("\\", "/")
                             if lines[line].find("qer_editorimage") != -1 or lines[line].find("diffusemap") != -1:
                                 words = lines[line].split()
                                 for word in words:
@@ -1752,7 +1753,7 @@ def create_objects(filename, polynames, clip_list, objspec_list, surf_list, base
                                             foundtexture = None
                                     else: # Keep looking in the shader files, the shader may be in another one.
                                         imagefile = basepath + foundtexture
-                                        noimage = noimage + "\r\nFound needed shader for Import Component " + str(CompNbr) + ":\r\n    " + poly + "\r\n" + "in\r\n    " + shaderspath+"/"+shaderfile + "\r\n" + "and the 'diffusemap' image to display.\r\n    " + foundtexture + "\r\n" + "But that image file does not exist.\r\n"
+                                        noimage = noimage + "\r\nFound needed shader for Import Component " + str(CompNbr) + ":\r\n    " + polyname + "\r\n" + "in\r\n    " + shaderspath+"/"+shaderfile + "\r\n" + "and the 'diffusemap' image to display.\r\n    " + foundtexture + "\r\n" + "But that image file does not exist.\r\n"
                             if lines[line].find("bumpmap") != -1 and (not lines[line].find("addnormals") != -1 and not lines[line].find("heightmap") != -1):
                                 words = lines[line].replace("("," ")
                                 words = words.replace(")"," ")
@@ -1808,7 +1809,7 @@ def create_objects(filename, polynames, clip_list, objspec_list, surf_list, base
                                         if skinsize == (256, 256):
                                             skinsize = skin['Size']
                                     else:
-                                        noimage = noimage + "\r\nFound needed shader for Import Component " + str(CompNbr) + ":\r\n    " + poly + "\r\n" + "in\r\n    " + shaderspath+"/"+shaderfile + "\r\n" + "but the texture image file it calls to display\r\n    " + imagefile + "\r\nis not there or has a different name.\r\nMake a copy of the file and rename it or\r\ncheck the shader and make a correction to add it.\r\n"
+                                        noimage = noimage + "\r\nFound needed shader for Import Component " + str(CompNbr) + ":\r\n    " + polyname + "\r\n" + "in\r\n    " + shaderspath+"/"+shaderfile + "\r\n" + "but the texture image file it calls to display\r\n    " + imagefile + "\r\nis not there or has a different name.\r\nMake a copy of the file and rename it or\r\ncheck the shader and make a correction to add it.\r\n"
                             else:
                                 if lines[line].find("/") != -1:
                                     if lines[line-1].find("qer_editorimage") != -1 or lines[line-1].find("diffusemap") != -1 or lines[line-1].find("bumpmap") != -1 or lines[line-1].find("addnormals") != -1 or lines[line-1].find("heightmap") != -1 or lines[line-1].find("specularmap") != -1 or lines[line].find(chr(32)+"map") != -1 or lines[line].find(chr(9)+"map") != -1:
@@ -1847,7 +1848,7 @@ def create_objects(filename, polynames, clip_list, objspec_list, surf_list, base
                                                         if skinsize == (256, 256):
                                                             skinsize = skin['Size']
                                                     else:
-                                                        noimage = noimage + "\r\nFound needed shader for Import Component " + str(CompNbr) + ":\r\n    " + poly + "\r\n" + "in\r\n    " + shaderspath+"/"+shaderfile + "\r\n" + "but the texture image file it calls to display\r\n    " + imagefile + "\r\nis not there or has a different name.\r\nMake a copy of the file and rename it or\r\ncheck the shader and make a correction to add it.\r\n"
+                                                        noimage = noimage + "\r\nFound needed shader for Import Component " + str(CompNbr) + ":\r\n    " + polyname + "\r\n" + "in\r\n    " + shaderspath+"/"+shaderfile + "\r\n" + "but the texture image file it calls to display\r\n    " + imagefile + "\r\nis not there or has a different name.\r\nMake a copy of the file and rename it or\r\ncheck the shader and make a correction to add it.\r\n"
                             shaderline = lines[line].replace(chr(9), "    ")
                             shaderline = shaderline.rstrip()
                             if mesh_shader is not None:
@@ -1871,7 +1872,7 @@ def create_objects(filename, polynames, clip_list, objspec_list, surf_list, base
                                 if skinsize == (256, 256):
                                     skinsize = skin['Size']
                             else:
-                                noimage = noimage + "\r\nFound needed shader for Import Component " + str(CompNbr) + ":\r\n    " + poly + "\r\n" + "in\r\n    " + shaderspath+"/"+shaderfile + "\r\n" + "but the texture image file it calls to display\r\n    " + imagefile + "\r\nis not there or has a different name.\r\nMake a copy of the file and rename it or\r\ncheck the shader and make a correction to add it.\r\n"
+                                noimage = noimage + "\r\nFound needed shader for Import Component " + str(CompNbr) + ":\r\n    " + polyname + "\r\n" + "in\r\n    " + shaderspath+"/"+shaderfile + "\r\n" + "but the texture image file it calls to display\r\n    " + imagefile + "\r\nis not there or has a different name.\r\nMake a copy of the file and rename it or\r\ncheck the shader and make a correction to add it.\r\n"
                         if addnormals is not None:
                             imagefile = basepath + addnormals
                             if os.path.isfile(basepath + addnormals):
@@ -1888,7 +1889,7 @@ def create_objects(filename, polynames, clip_list, objspec_list, surf_list, base
                                 if skinsize == (256, 256):
                                     skinsize = skin['Size']
                             else:
-                                noimage = noimage + "\r\nFound needed shader for Import Component " + str(CompNbr) + ":\r\n    " + poly + "\r\n" + "in\r\n    " + shaderspath+"/"+shaderfile + "\r\n" + "but the texture image file it calls to display\r\n    " + imagefile + "\r\nis not there or has a different name.\r\nMake a copy of the file and rename it or\r\ncheck the shader and make a correction to add it.\r\n"
+                                noimage = noimage + "\r\nFound needed shader for Import Component " + str(CompNbr) + ":\r\n    " + polyname + "\r\n" + "in\r\n    " + shaderspath+"/"+shaderfile + "\r\n" + "but the texture image file it calls to display\r\n    " + imagefile + "\r\nis not there or has a different name.\r\nMake a copy of the file and rename it or\r\ncheck the shader and make a correction to add it.\r\n"
                         if heightmap is not None:
                             imagefile = basepath + heightmap
                             if os.path.isfile(basepath + heightmap):
@@ -1906,7 +1907,7 @@ def create_objects(filename, polynames, clip_list, objspec_list, surf_list, base
                                     if skinsize == (256, 256):
                                         skinsize = skin['Size']
                             else:
-                                noimage = noimage + "\r\nFound needed shader for Import Component " + str(CompNbr) + ":\r\n    " + poly + "\r\n" + "in\r\n    " + shaderspath+"/"+shaderfile + "\r\n" + "but the texture image file it calls to display\r\n    " + imagefile + "\r\nis not there or has a different name.\r\nMake a copy of the file and rename it or\r\ncheck the shader and make a correction to add it.\r\n"
+                                noimage = noimage + "\r\nFound needed shader for Import Component " + str(CompNbr) + ":\r\n    " + polyname + "\r\n" + "in\r\n    " + shaderspath+"/"+shaderfile + "\r\n" + "but the texture image file it calls to display\r\n    " + imagefile + "\r\nis not there or has a different name.\r\nMake a copy of the file and rename it or\r\ncheck the shader and make a correction to add it.\r\n"
                         if specularmap is not None:
                             imagefile = basepath + specularmap
                             if os.path.isfile(basepath + specularmap):
@@ -1924,7 +1925,7 @@ def create_objects(filename, polynames, clip_list, objspec_list, surf_list, base
                                     if skinsize == (256, 256):
                                         skinsize = skin['Size']
                             else:
-                                noimage = noimage + "\r\nFound needed shader for Import Component " + str(CompNbr) + ":\r\n    " + poly + "\r\n" + "in\r\n    " + shaderspath+"/"+shaderfile + "\r\n" + "but the texture image file it calls to display\r\n    " + imagefile + "\r\nis not there or has a different name.\r\nMake a copy of the file and rename it or\r\ncheck the shader and make a correction to add it.\r\n"
+                                noimage = noimage + "\r\nFound needed shader for Import Component " + str(CompNbr) + ":\r\n    " + polyname + "\r\n" + "in\r\n    " + shaderspath+"/"+shaderfile + "\r\n" + "but the texture image file it calls to display\r\n    " + imagefile + "\r\nis not there or has a different name.\r\nMake a copy of the file and rename it or\r\ncheck the shader and make a correction to add it.\r\n"
                         if imagefile is None:
                             imagefile = "NO IMAGE FILE FOUND AT ALL, CHECK THE SHADER."
                         break
@@ -1933,19 +1934,18 @@ def create_objects(filename, polynames, clip_list, objspec_list, surf_list, base
                 if len(noimage) > 0:
                     message = message + noimage
                 if poly is not None and foundshader is None: # This component has an image but no shader was found, so...
-                    texturepath = basepath + "/" + poly + ".tga"
-                    if os.path.isfile(texturepath): # May not be a shader so we look for a texture with the same image name.
-                        skinname = poly + ".tga"
+                    texturepath = basepath + polyname + ".tga"
+                    if os.path.exists(texturepath) == 1: # May not be a shader so we look for a texture with the same image name.
+                        skinname = polyname + ".tga"
                         skin = quarkx.newobj(skinname)
-                        foundimage = basepath + skinname
-                        image = quarkx.openfileobj(foundimage)
+                        image = quarkx.openfileobj(texturepath)
                         skin['Image1'] = image.dictspec['Image1']
                         skin['Size'] = image.dictspec['Size']
                         skingroup.appenditem(skin)
                         if skinsize == (256, 256):
                             skinsize = skin['Size']
                     else: # If no texture is found then we are missing the shader.
-                        message = message + "\r\nImport Component " + str(CompNbr) + " calls for the shader:\r\n    " + poly + "\r\n" + "but it could not be located in\r\n    " + shaderspath + "\r\n" + "Extract shader file to this folder\r\nor create a shader file if needed.\r\n"
+                        message = message + "\r\nImport Component " + str(CompNbr) + " calls for the shader:\r\n    " + polyname + "\r\n" + "but it could not be located in\r\n    " + shaderspath + "\r\n" + "Extract shader file to this folder\r\nor create a shader file if needed.\r\n"
                 try:
                     skinsize = skingroup.subitems[0].dictspec['Size']
                 except:
@@ -2722,6 +2722,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.24  2009/03/22 22:02:25  cdunde
+# Small error fix.
+#
 # Revision 1.23  2009/03/17 23:41:01  cdunde
 # To fix possible error for shader keyword if any.
 #
