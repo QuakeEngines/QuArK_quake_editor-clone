@@ -11,12 +11,13 @@ subdir: sof
 subdir: quake3
 subdir: stvef
 subdir: ef2
-subdir: crystalspace
 subdir: rtcw
 subdir: jk2
 subdir: mohaa
 subdir: sof2
 subdir: wildwest
+subdir: fakk2
+subdir: crystalspace
 
 Here you will find information and frequently asked questions about the QuArK-supported games.
 
