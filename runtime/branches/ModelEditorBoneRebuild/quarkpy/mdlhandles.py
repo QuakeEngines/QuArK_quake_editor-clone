@@ -3318,7 +3318,7 @@ class BoneHandle(qhandles.GenericHandle):
     def start_drag(self):
         if self.attachedbones is None:
             self.attachedbones = []
-            editor = mapeditor()
+            editor = self.mgr.editor
             bones = editor.Root.group_bone.subitems      # get all bones
             connectedlist = [0] * len(bones)
             import operator
@@ -3355,9 +3355,9 @@ class BoneHandle(qhandles.GenericHandle):
 
         if self.newverticespos is None:
             self.newverticespos = {}
-            if self.bone is not None:
-                editor = self.mgr.editor
-                oldvertices = self.bone.vertices
+            editor = self.mgr.editor
+            for bone in [self.bone] + self.attachedbones:
+                oldvertices = bone.vertices
                 for compname in oldvertices.keys():
                     comp = editor.Root.dictitems[compname]
                     self.newverticespos[compname] = comp.currentframe.vertices
@@ -3422,16 +3422,16 @@ class BoneCenterHandle(BoneHandle):
             import mdlmgr
             mdlmgr.savefacesel = 1
             if self.bone is None:
-                bone = editor.layout.explorer.sellist[0]
+                bone = editor.layout.explorer.sellist[0] #@
             else:
                 bone = self.bone
-            attach_bone(editor, bone, editor.layout.explorer.sellist[1])
+            attach_bone(editor, bone, editor.layout.explorer.sellist[1]) #2
 
         def detach_bone_click(m, self=self, editor=editor, view=view):
             import mdlmgr
             mdlmgr.savefacesel = 1
             if self.bone is None:
-                bone = editor.layout.explorer.sellist[0]
+                bone = editor.layout.explorer.sellist[0] #@
             else:
                 bone = self.bone
             detach_bone(editor, bone)
@@ -3440,11 +3440,17 @@ class BoneCenterHandle(BoneHandle):
             import mdlmgr
             mdlmgr.savefacesel = 1
             if self.bone is None:
-                bone = editor.layout.explorer.sellist[0]
+                bone = editor.layout.explorer.sellist[0] #2
             else:
                 bone = self.bone
             vertices = map(lambda x: x[0], editor.ModelVertexSelList)
-            assign_vertices(editor, bone, editor.layout.explorer.sellist[1].parent.parent, vertices)
+            sellist = editor.layout.explorer.sellist
+            for item in sellist:
+                if item.type == ":mf":
+                    break
+                # There ought to be at least one, so no need to check for the end of the loop
+            comp = item.parent.parent
+            assign_vertices(editor, bone, comp, vertices)
 
         def force_to_grid_click(m, self=self, editor=editor, view=view):
             self.Action(editor, self.pos, self.pos, MB_CTRL, view, Strings[560])
@@ -3457,16 +3463,6 @@ class BoneCenterHandle(BoneHandle):
         #@
         Forcetogrid = qmenu.item("&Force to grid", force_to_grid_click,"|Force to grid:\n\nThis will cause a bone's center handle to 'snap' to the nearest location on the editor's grid for the view that the RMB click was made in.|intro.modeleditor.rmbmenus.html#bonecommands")
 
-        def GotSelected(editor, TypeOfObjects):
-            import operator
-            sellist = editor.layout.explorer.sellist
-            for item in sellist:
-                index = operator.indexOf(TypeOfObjects, item.type)
-                if index == -1:
-                    return 0
-                TypeOfObjects[index] = None
-            return 1
-
         AddBone.state = qmenu.normal
         if self.bone is None:
             ContinueBone.state = qmenu.disabled
@@ -3478,7 +3474,7 @@ class BoneCenterHandle(BoneHandle):
                 DetachBone.state = qmenu.disabled
             else:
                 DetachBone.state = qmenu.normal
-            if editor.ModelVertexSelList != [] and GotSelected(editor, [":bone", ":mf"]):
+            if editor.ModelVertexSelList != [] and (":mf" in map(lambda x: x.type, editor.layout.explorer.sellist)):
                 AssignVertices.state = qmenu.normal
             else:
                 AssignVertices.state = qmenu.disabled
@@ -3533,15 +3529,13 @@ class BoneCenterHandle(BoneHandle):
                 DrawBoneLine(p, p2, cv, scale, parent_handle_scale)
             DrawBoneHandle(p, cv, scale, handle_scale)
 
-    def drawred(self, redimages, view, redcolor):
+    def drawred(self, redimages, view, redcolor): # for BoneCenterHandle
         cv = view.canvas()
         cv.penwidth = 1
         cv.penstyle = PS_INSIDEFRAME
         cv.pencolor = redcolor
-        scale = view.scale()
-        handle_scale = self.bone.dictspec['scale'][0]
-        handle_color = self.bone.getint('_color')
         cv.brushstyle = BS_CLEAR
+        scale = view.scale()
         for obj in redimages:
             if obj.type != ":bone":
                 continue
@@ -3561,6 +3555,7 @@ class BoneCenterHandle(BoneHandle):
                     parent_handle_scale = parentbone['scale'][0]
                     p2 = view.proj(parentbone.position)
                     DrawBoneLine(p, p2, cv, scale, parent_handle_scale)
+                handle_scale = obj.dictspec['scale'][0]
                 DrawBoneHandle(p, cv, scale, handle_scale)
             vertices = obj.vertices
             for compname in vertices:
@@ -3571,7 +3566,7 @@ class BoneCenterHandle(BoneHandle):
                         #@
                         cv.ellipse(int(p.x)-2, int(p.y)-2, int(p.x)+2, int(p.y)+2)
 
-    def drag(self, v1, v2, flags, view):
+    def drag(self, v1, v2, flags, view): # for BoneCenterHandle
         delta = v2-v1
         if flags&MB_CTRL:
             g1 = 1
@@ -3613,13 +3608,18 @@ class BoneCenterHandle(BoneHandle):
         return old, new
 
     def linoperation(self, list, delta, g1, view): # for BoneCenterHandle
+        # Reset the self.newverticespos list
+        editor = self.mgr.editor
+        for compname in self.newverticespos:
+            comp = editor.Root.dictitems[compname]
+            self.newverticespos[compname] = comp.currentframe.vertices
+
         for obj in list:
             obj.position = obj.position + delta
-
-        vertices = self.bone.vertices
-        for compname in vertices:
-            for vtx in vertices[compname]:
-                self.newverticespos[compname][vtx] = self.newverticespos[compname][vtx] + delta
+            vertices = obj.vertices
+            for compname in vertices:
+                for vtx in vertices[compname]:
+                    self.newverticespos[compname][vtx] = self.newverticespos[compname][vtx] + delta
 
         return delta
 
@@ -3668,28 +3668,54 @@ class BoneCornerHandle(BoneHandle):
             cv.brushstyle = BS_SOLID
             cv.ellipse(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
 
-    def drawred(self, redimages, view, redcolor):
-        p = view.proj(self.center + self.rotmatrix * quarkx.vect(bonenormallength * self.bone.dictspec['scale'][0], 0, 0))
-        if p.visible:
-            cv = view.canvas()
-            cv.reset()
-            cv.penwidth = 1
-            cv.penstyle = PS_INSIDEFRAME
-            cv.pencolor = MapColor("LinearHandleOutline", SS_MODEL)
-            p2 = view.proj(self.center)
-            cv.line(p2, p)
-            handle_color = self.bone.getint('_color')
-            cv.brushcolor = handle_color
-            cv.brushstyle = BS_SOLID
-            cv.ellipse(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
-        vertices = self.bone.vertices
-        for compname in vertices:
-            compvtx = self.newverticespos[compname]
-            for vtx in vertices[compname]:
-                p = view.proj(compvtx[vtx])
+    def drawred(self, redimages, view, redcolor): # for BoneCornerHandle
+        cv = view.canvas()
+        cv.reset()
+        cv.penwidth = 1
+        cv.penstyle = PS_INSIDEFRAME
+        cv.pencolor = redcolor
+        cv.brushstyle = BS_CLEAR
+        scale = view.scale()
+        for obj in redimages:
+            if obj.type != ":bone":
+                continue
+            if obj is not self.bone:
+                p = view.proj(obj.position)
                 if p.visible:
-                    #@
-                    cv.ellipse(int(p.x)-2, int(p.y)-2, int(p.x)+2, int(p.y)+2)
+                    try:
+                        parentID = int(obj.dictspec['parent'][0])
+                    except:
+                        parentID = -1
+                    if parentID != -1:
+                        parentbone = self.mgr.editor.Root.group_bone.subitems[parentID]
+                        for obj2 in redimages:
+                            # If the bone is in redimages, it's also moving, and we need to use the moving bone instead
+                            if parentbone.name == obj2.name:
+                                parentbone = obj2
+                                break
+                        parent_handle_scale = parentbone['scale'][0]
+                        p2 = view.proj(parentbone.position)
+                        DrawBoneLine(p, p2, cv, scale, parent_handle_scale)
+                    #FIXME: There is an INVALID FLOATING POINT error happening exactly ABOVE here (sometimes)!!!
+                    handle_scale = obj.dictspec['scale'][0]
+                    DrawBoneHandle(p, cv, scale, handle_scale)
+            p = view.proj(obj.position + obj.rotmatrix * quarkx.vect(bonenormallength * obj.dictspec['scale'][0], 0, 0))
+            if p.visible:
+                p2 = view.proj(obj.position)
+                cv.line(p2, p)
+                handle_color = obj.getint('_color')
+                cv.brushcolor = handle_color
+                cv.brushstyle = BS_SOLID
+                cv.ellipse(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
+            cv.brushstyle = BS_CLEAR
+            vertices = obj.vertices
+            for compname in vertices:
+                compvtx = self.newverticespos[compname]
+                for vtx in vertices[compname]:
+                    p = view.proj(compvtx[vtx])
+                    if p.visible:
+                        #@
+                        cv.ellipse(int(p.x)-2, int(p.y)-2, int(p.x)+2, int(p.y)+2)
 
     def drag(self, v1, v2, flags, view): # for BoneCornerHandle
         delta = v2-v1
@@ -3737,7 +3763,13 @@ class BoneCornerHandle(BoneHandle):
         return old, new
 
     def linoperation(self, list, delta, g1, view): # for BoneCornerHandle
-        rotationorigin = self.bone.position
+        # Reset the self.newverticespos list
+        editor = self.mgr.editor
+        for compname in self.newverticespos:
+            comp = editor.Root.dictitems[compname]
+            self.newverticespos[compname] = comp.currentframe.vertices
+
+        rotationorigin = self.center
         oldpos = self.pos - rotationorigin
         newpos = (self.pos + delta) - rotationorigin
         normal = view.vector("Z").normalized
@@ -3756,14 +3788,16 @@ class BoneCornerHandle(BoneHandle):
         for obj in list:
             obj.rotmatrix = changedradius * m * obj.rotmatrix
             if obj != self.bone:
-                changedpos = obj.position - self.bone.position
+                changedpos = obj.position - rotationorigin
                 changedpos = changedradius * m * changedpos
-                obj.position = changedpos + self.bone.position
+                obj.position = changedpos + rotationorigin
 
-        vertices = self.bone.vertices
-        for compname in vertices:
-            for vtx in vertices[compname]:
-                self.newverticespos[compname][vtx] = self.newverticespos[compname][vtx] + delta
+            vertices = obj.vertices
+            for compname in vertices:
+                for vtx in vertices[compname]:
+                    changedpos = self.newverticespos[compname][vtx] - rotationorigin
+                    changedpos = changedradius * m * changedpos
+                    self.newverticespos[compname][vtx] = changedpos + rotationorigin
 
         return (math.acos(m[0,0])*180.0/math.pi)
 
@@ -3847,6 +3881,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.168.2.5  2009/03/16 21:10:28  danielpharos
+#Final result now being applied to vertices.
+#
 #Revision 1.168.2.4  2009/03/16 18:33:31  danielpharos
 #Fix red-drawing of BoneCenterHandle.
 #
