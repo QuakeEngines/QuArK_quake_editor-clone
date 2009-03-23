@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.481  2009/03/23 16:01:57  danielpharos
+//Tweaks and fixes to get FAKK2 build tools working again.
+//
 //Revision 1.480  2009/03/21 21:46:40  danielpharos
 //Small text fixes.
 //
@@ -2135,18 +2138,18 @@ QQRKSRC1
         LightingOuterConeKeyword = ""    // <-- ex: "" if game does not use or ex: "_cone2" is the specifics name that gives the spotlight outer size.
 
         Console = "1"
-        BuildPgmsDir = "C:\Program Files\Activision\EF2"
+        BuildPgmsDir = "C:\Program Files\Activision\EF2\QuArk files\bspc"
         StupidBuildToolKludge = "1" // Run tools from base directory setting
         OutputMapFormat = "Classic Quake"
         ForceFaceFlags = "1"
         AlwaysWriteThreeFields = "1"
         BuildPgm1  = "UBERMAP.EXE"
-        BuildArgs1 = ""
+        BuildArgs1 = "-gamedir "$22"%basepath%\%gamedir%"$22" "$22"%mapfile%"$22
         BuildCheck1= "+BSP,-LIN{LoadLinFile}"
         BuildPgm2  = "UBERMAP.EXE"
-        BuildArgs2 = "-vis"
+        BuildArgs2 = "-vis -gamedir "$22"%basepath%\%gamedir%"$22" "$22"%mapfile%"$22
         BuildPgm3  = "UBERMAP.EXE"
-        BuildArgs3 = "-light"
+        BuildArgs3 = "-light -gamedir "$22"%basepath%\%gamedir%"$22" "$22"%mapfile%"$22
         BuildPgm4  = "BSPC.EXE"
         BuildArgs4 = "-bsp2aas"
         BuildCheck4= "+AAS"
@@ -2213,19 +2216,19 @@ QQRKSRC1
         ForceFaceFlags = "1"
         AlwaysWriteThreeFields = "1"
         BuildPgm1  = "q3map.exe"
-        BuildArgs1 = "-gamedir "$22"%basepath%\%gamedir%"$22" "$22"%file%"$22
+        BuildArgs1 = "-gamedir "$22"%basepath%\%gamedir%"$22" "$22"%mapfile%"$22
         BuildCheck1 = "+BSP,-LIN{LoadLinFile}"
         BuildPgm2  = "q3map.exe"
-        BuildArgs2 = "-vis -gamedir "$22"%basepath%\%gamedir%"$22" "$22"%file%"$22
+        BuildArgs2 = "-vis -gamedir "$22"%basepath%\%gamedir%"$22" "$22"%mapfile%"$22
         BuildPgm3  = "q3map.exe"
-        BuildArgs3 = "-light -gamedir "$22"%basepath%\%gamedir%"$22" "$22"%file%"$22
+        BuildArgs3 = "-light -gamedir "$22"%basepath%\%gamedir%"$22" "$22"%mapfile%"$22
         BuildPgm4  = "newq3map.exe"
-        BuildArgs4 = "-gamedir "$22"%basepath%\%gamedir%"$22" "$22"%file%"$22
+        BuildArgs4 = "-gamedir "$22"%basepath%\%gamedir%"$22" "$22"%mapfile%"$22
         BuildCheck4 = "+BSP,-LIN{LoadLinFile}"
         BuildPgm5  = "newq3map.exe"
-        BuildArgs5 = "-vis -gamedir "$22"%basepath%\%gamedir%"$22" "$22"%file%"$22
+        BuildArgs5 = "-vis -gamedir "$22"%basepath%\%gamedir%"$22" "$22"%mapfile%"$22
         BuildPgm6  = "newq3map.exe"
-        BuildArgs6 = "-light -gamedir "$22"%basepath%\%gamedir%"$22" "$22"%file%"$22
+        BuildArgs6 = "-light -gamedir "$22"%basepath%\%gamedir%"$22" "$22"%mapfile%"$22
 
         MapCommentsPrefix = "//"
 
