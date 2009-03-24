@@ -1681,8 +1681,8 @@ def create_objects(filename, polynames, clip_list, objspec_list, surf_list, base
         if polyuvlist == {}:
             polyuvlist = None
 
-        polyname = poly.split(".")[0]
-        name_list = load_image(basepath,polyname[0])
+        polyname = poly.rsplit(".")[0]
+        name_list = load_image(basepath,polyname)
         foundshader = foundtexture = foundimage = imagefile = None
         mesh_shader = shader_file = shader_name = shader_keyword = qer_editorimage = diffusemap = map = bumpmap = addnormals = heightmap = specularmap = None
         for file in range(len(name_list)):
@@ -1966,10 +1966,10 @@ def create_objects(filename, polynames, clip_list, objspec_list, surf_list, base
                         message = message + "================================\r\n"
                     temppath = basepath
                     message = message + "Import Component " + str(CompNbr) + " needs the skin texture\r\n"
-                    message = message + (temppath.replace("\\", "/") + polyname[0] + '\r\n')
+                    message = message + (temppath.replace("\\", "/") + polyname + '\r\n')
                     message = message + "But the texture is not in that location.\r\n"
                     message = message + "Look for:\r\n"
-                    message = message + ('    ' + polyname[0] + '\r\n')
+                    message = message + ('    ' + polyname + '\r\n')
                     polyuvlist = None
                 else:
                     temppath = filename
@@ -2724,6 +2724,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.26  2009/03/24 19:45:14  cdunde
+# Help and Hint updates.
+#
 # Revision 1.25  2009/03/23 19:52:47  cdunde
 # Corrections for obtaining shaders and skins properly.
 #
