@@ -2578,7 +2578,9 @@ def dataformname(o):
     {
       Help = "These are the Specific settings for Lightwave (.lwo) model types."$0D
              "Lightwave uses 'levels' the same way that QuArK uses 'components'."$0D
-             "Each can have its own special Surface level (or skin texture) settings."$0D0D22
+             "Each can have its own special Surface level (or skin texture) settings."$0D0D
+             "NOTE: Some games do NOT allow 'TEXTURE TILING' for MODELS, only for SCENES."$0D
+             "            Meaning spreading the model faces over repeated image areas of a texture."$0D0D22
              "NAME"$22" - Surface level control name, which is its skin texture name."$0D22
              "edit skin"$22" - Opens this skin texture in an external editor."$0D22
              "UVNAME"$22" - Special UV process control name (over rides 'NAME')."$0D
@@ -2597,7 +2599,7 @@ def dataformname(o):
              "edit shader"$22" - Opens shader below in a text editor."$0D22
              "mesh shader"$22" - Contains the full text of this skin texture's shader, if any."$0D
              "          This can be copied to a text file, changed and saved."
-      lwo_NAME:   = {t_ModelEditor_texturebrowser = ! Txt="NAME"    Hint="Surface level control name,"$0D"which is its main skin texture name."}
+      lwo_NAME:   = {t_ModelEditor_texturebrowser = ! Txt="NAME"    Hint="Surface level control name,"$0D"which is its main skin texture name."$0D0D"NOTE: Some games do NOT allow 'TEXTURE TILING'"$0D"for MODELS, only for SCENES."$0D"Meaning spreading the model faces over"$0D"repeated image areas of a texture."}
       edit_skin:  = {
                      Typ = "P"
                      Txt = "edit skin ---->"
@@ -2722,6 +2724,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.25  2009/03/23 19:52:47  cdunde
+# Corrections for obtaining shaders and skins properly.
+#
 # Revision 1.24  2009/03/22 22:02:25  cdunde
 # Small error fix.
 #
