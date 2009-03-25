@@ -328,7 +328,6 @@ def read_file(file, lines, basepath, filename):
             me.vcFaces.append(fc)
 
         PBidx += 1.0
-  #  print "line 330 materials_list",materials_list, basepath, filename
     ComponentList, message = spawn_main(objects, basepath, filename)
 
     return ComponentList, message
@@ -386,7 +385,7 @@ def spawn_mesh(obj, basepath, filename, ComponentList, message, CompNbr):
     material = filename.replace("\\", "/")
     material = material.replace(basepath, "")
     material = material.rsplit(".")[0]
-  #  print "line 388 material",material
+
     ### For the Skins:sg group.
     skinsize = (128, 128)
     skingroup = quarkx.newobj('Skins:sg')
@@ -797,15 +796,15 @@ def spawn_mesh(obj, basepath, filename, ComponentList, message, CompNbr):
         comp_name = comp_name + ':mc'
         if not editor.ModelComponentList.has_key(comp_name):
             editor.ModelComponentList[comp_name] = {}
-        if not editor.ModelComponentList[comp_name].has_key('vtxlist'):
-            editor.ModelComponentList[comp_name]['vtxlist'] = {}
+        if not editor.ModelComponentList[comp_name].has_key('colorvtxlist'):
+            editor.ModelComponentList[comp_name]['colorvtxlist'] = {}
             
     for f in range(len(objMe.meFaces)): # QuArK Tris made here.
         uv1 = (int(float(objMe.uvVerts[objMe.uvFaces[f].uv1].u)*TexWidth), TexHeight-(int(float(objMe.uvVerts[objMe.uvFaces[f].uv1].v)*TexHeight)))
         uv2 = (int(float(objMe.uvVerts[objMe.uvFaces[f].uv2].u)*TexWidth), TexHeight-(int(float(objMe.uvVerts[objMe.uvFaces[f].uv2].v)*TexHeight)))
         uv3 = (int(float(objMe.uvVerts[objMe.uvFaces[f].uv3].u)*TexWidth), TexHeight-(int(float(objMe.uvVerts[objMe.uvFaces[f].uv3].v)*TexHeight)))
 
-        if objMe.hasVC == 1: # QuArK note: Makes up the editor.ModelComponentList[mesh.name]['vtxlist'] section for ['vtx_color'].
+        if objMe.hasVC == 1: # QuArK note: Makes up the editor.ModelComponentList[mesh.name]['colorvtxlist'] section for ['vtx_color'].
             try:
                 c = objMe.vcFaces[f]
                 v1r = int(objMe.vcVerts[c.c1].r)
@@ -820,17 +819,17 @@ def spawn_mesh(obj, basepath, filename, ComponentList, message, CompNbr):
                 v3g = int(objMe.vcVerts[c.c3].g)
                 v3b = int(objMe.vcVerts[c.c3].b)
                 rgb3 = struct.pack('i', quarkpy.qutils.RGBToColor([v3r, v3g, v3b]))
- #               print "line 843 v3",str(objMe.meFaces[f].v3), type(str(objMe.meFaces[f].v3))
- #               print "line 844 v2",str(objMe.meFaces[f].v2)
- #               print "line 845 v1",str(objMe.meFaces[f].v1)
-                editor.ModelComponentList[comp_name]['vtxlist'][str(objMe.meFaces[f].v3)] = {}
-                editor.ModelComponentList[comp_name]['vtxlist'][str(objMe.meFaces[f].v3)]['vtx_color'] = rgb3
-                editor.ModelComponentList[comp_name]['vtxlist'][str(objMe.meFaces[f].v2)] = {}
-                editor.ModelComponentList[comp_name]['vtxlist'][str(objMe.meFaces[f].v2)]['vtx_color'] = rgb2
-                editor.ModelComponentList[comp_name]['vtxlist'][str(objMe.meFaces[f].v1)] = {}
-                editor.ModelComponentList[comp_name]['vtxlist'][str(objMe.meFaces[f].v1)]['vtx_color'] = rgb1
- #               print "line 849 v3 vtx_color -->",editor.ModelComponentList[comp_name]['vtxlist']
- #               print "line 850 v2 vtx_color -->",editor.ModelComponentList[comp_name]['vtxlist'][str(objMe.meFaces[f].v2)]
+ #               print "line 822 v3",str(objMe.meFaces[f].v3), type(str(objMe.meFaces[f].v3))
+ #               print "line 823 v2",str(objMe.meFaces[f].v2)
+ #               print "line 824 v1",str(objMe.meFaces[f].v1)
+                editor.ModelComponentList[comp_name]['colorvtxlist'][str(objMe.meFaces[f].v3)] = {}
+                editor.ModelComponentList[comp_name]['colorvtxlist'][str(objMe.meFaces[f].v3)]['vtx_color'] = rgb3
+                editor.ModelComponentList[comp_name]['colorvtxlist'][str(objMe.meFaces[f].v2)] = {}
+                editor.ModelComponentList[comp_name]['colorvtxlist'][str(objMe.meFaces[f].v2)]['vtx_color'] = rgb2
+                editor.ModelComponentList[comp_name]['colorvtxlist'][str(objMe.meFaces[f].v1)] = {}
+                editor.ModelComponentList[comp_name]['colorvtxlist'][str(objMe.meFaces[f].v1)]['vtx_color'] = rgb1
+ #               print "line 831 v3 vtx_color -->",editor.ModelComponentList[comp_name]['colorvtxlist']
+ #               print "line 832 v2 vtx_color -->",editor.ModelComponentList[comp_name]['colorvtxlist'][str(objMe.meFaces[f].v2)]
             except:
                 pass
 
@@ -881,7 +880,6 @@ def spawn_mesh(obj, basepath, filename, ComponentList, message, CompNbr):
 
     counts['verts'] += objMe.vCount
     counts['tris'] += objMe.fCount
- #   print 'line 870 Imported Mesh-Object: ', obj.name
 
     # Now we start creating our Import Component and name it.
     if obj.objName != 'Name':
@@ -1229,6 +1227,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.3  2009/03/25 05:30:19  cdunde
+# Added vertex color support.
+#
 # Revision 1.2  2009/03/19 06:43:48  cdunde
 # Minor improvement to avoid improper path splitting.
 #

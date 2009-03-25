@@ -811,8 +811,8 @@ class VertexHandle(qhandles.GenericHandle):
             if editor.ModelComponentList.has_key(editor.Root.currentcomponent.name):
                 # Here "color" is just a dummy item to pass the vertex's
                 # color to so we can use the MapColor function to set the cv.pencolor correctly.
-                if quarkx.setupsubset(3, "Options")['ShowVertexColor'] is not None and editor.ModelComponentList[editor.Root.currentcomponent.name].has_key('vtxlist') and editor.ModelComponentList[editor.Root.currentcomponent.name]['vtxlist'].has_key(str(self.index)):
-                    color = editor.ModelComponentList[editor.Root.currentcomponent.name]['vtxlist'][str(self.index)]['vtx_color']
+                if quarkx.setupsubset(3, "Options")['ShowVertexColor'] is not None and editor.ModelComponentList[editor.Root.currentcomponent.name].has_key('colorvtxlist') and editor.ModelComponentList[editor.Root.currentcomponent.name]['colorvtxlist'].has_key(str(self.index)):
+                    color = editor.ModelComponentList[editor.Root.currentcomponent.name]['colorvtxlist'][str(self.index)]['vtx_color']
                     quarkx.setupsubset(SS_MODEL, "Colors")["color"] = color
                     cv.pencolor = cv.brushcolor = MapColor("color", SS_MODEL)
                     cv.brushstyle = BS_SOLID
@@ -6249,6 +6249,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.169  2009/03/25 05:30:20  cdunde
+#Added vertex color support.
+#
 #Revision 1.168  2009/02/17 04:58:03  cdunde
 #Removed line of code causing problem by killing the view handles.
 #
