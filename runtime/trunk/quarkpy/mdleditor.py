@@ -324,6 +324,7 @@ class ModelEditor(BaseEditor):
         quarkx.setupsubset(SS_MODEL, "Options")['VertexUVColor'] = None
         quarkx.setupsubset(SS_MODEL, "Options")['HideBones'] = None
         quarkx.setupsubset(SS_MODEL, "Options")['ConsoleLog'] = None
+        quarkx.setupsubset(SS_MODEL, "Options")['ShowVertexColor'] = None
         quarkx.setupsubset(SS_MODEL, "Colors")['start_color'] = None
         quarkx.setupsubset(SS_MODEL, "Colors")['end_color'] = None
 
@@ -1689,6 +1690,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.118  2009/01/29 02:13:51  cdunde
+#To reverse frame indexing and fix it a better way by DanielPharos.
+#
 #Revision 1.117  2009/01/27 22:24:11  cdunde
 #To make sure that all models loaded by QuArK have frame indexing.
 #

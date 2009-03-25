@@ -808,17 +808,36 @@ class VertexHandle(qhandles.GenericHandle):
 
         p = view.proj(self.pos)
         if p.visible:
-            if editor.ModelComponentList.has_key(editor.Root.currentcomponent.name) and editor.ModelComponentList[editor.Root.currentcomponent.name].has_key('bonevtxlist') and editor.ModelComponentList[editor.Root.currentcomponent.name]['bonevtxlist'].has_key(str(self.index)):
-                # Here "startcolor" is just a dummy item (it could be an end color) to pass the vertex's
+            if editor.ModelComponentList.has_key(editor.Root.currentcomponent.name):
+                # Here "color" is just a dummy item to pass the vertex's
                 # color to so we can use the MapColor function to set the cv.pencolor correctly.
-                startcolor = editor.ModelComponentList[editor.Root.currentcomponent.name]['bonevtxlist'][str(self.index)]['color']
-                quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
-                cv.pencolor = cv.brushcolor = MapColor("start_color", SS_MODEL)
-                cv.brushstyle = BS_SOLID
-                if MdlOption("Ticks") == "1":
-                    cv.ellipse(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
+                if quarkx.setupsubset(3, "Options")['ShowVertexColor'] is not None and editor.ModelComponentList[editor.Root.currentcomponent.name].has_key('vtxlist') and editor.ModelComponentList[editor.Root.currentcomponent.name]['vtxlist'].has_key(str(self.index)):
+                    color = editor.ModelComponentList[editor.Root.currentcomponent.name]['vtxlist'][str(self.index)]['vtx_color']
+                    quarkx.setupsubset(SS_MODEL, "Colors")["color"] = color
+                    cv.pencolor = cv.brushcolor = MapColor("color", SS_MODEL)
+                    cv.brushstyle = BS_SOLID
+                    if MdlOption("Ticks") == "1":
+                        cv.ellipse(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
+                    else:
+                        cv.ellipse(int(p.x)-2, int(p.y)-2, int(p.x)+2, int(p.y)+2)
+                elif editor.ModelComponentList[editor.Root.currentcomponent.name].has_key('bonevtxlist') and editor.ModelComponentList[editor.Root.currentcomponent.name]['bonevtxlist'].has_key(str(self.index)):
+                    color = editor.ModelComponentList[editor.Root.currentcomponent.name]['bonevtxlist'][str(self.index)]['color']
+                    quarkx.setupsubset(SS_MODEL, "Colors")["color"] = color
+                    cv.pencolor = cv.brushcolor = MapColor("color", SS_MODEL)
+                    cv.brushstyle = BS_SOLID
+                    if MdlOption("Ticks") == "1":
+                        cv.ellipse(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
+                    else:
+                        cv.ellipse(int(p.x)-2, int(p.y)-2, int(p.x)+2, int(p.y)+2)
                 else:
-                    cv.ellipse(int(p.x)-2, int(p.y)-2, int(p.x)+2, int(p.y)+2)
+                    cv.pencolor = vertexdotcolor
+                    cv.brushstyle = BS_SOLID
+                    if MdlOption("Ticks") == "1":
+                        cv.brushcolor = WHITE
+                        cv.ellipse(int(p.x)-2, int(p.y)-2, int(p.x)+2, int(p.y)+2)
+                    else:
+                        cv.brushcolor = vertexdotcolor
+                        cv.ellipse(int(p.x)-1, int(p.y)-1, int(p.x)+1, int(p.y)+1)
             else:
                 cv.pencolor = vertexdotcolor
                 cv.brushstyle = BS_SOLID
@@ -4091,7 +4110,8 @@ class LinBoneCenterHandle(LinearBoneHandle):
                     editor.ModelComponentList[comp.name]['bonevtxlist'][vtx] = self.dict[vtx]
                 editor.ModelComponentList[comp.name]['boneobjlist'][selbone.name] = Update_BoneObjs(editor.ModelComponentList[comp.name]['bonevtxlist'], self.bone.name, comp)
             else:
-                editor.ModelComponentList[comp.name] = {}
+                if not editor.ModelComponentList.has_key(comp.name):
+                    editor.ModelComponentList[comp.name] = {}
                 editor.ModelComponentList[comp.name]['bonevtxlist'] = self.dict
                 editor.ModelComponentList[comp.name]['boneobjlist'] = {}
                 editor.ModelComponentList[comp.name]['boneobjlist'][selbone.name] = Update_BoneObjs(editor.ModelComponentList[comp.name]['bonevtxlist'], self.bone.name, comp)
@@ -4418,7 +4438,8 @@ class LinBoneCenterHandle(LinearBoneHandle):
                     editor.ModelComponentList[comp.name]['bonevtxlist'][vtx] = self.dict[vtx]
                 editor.ModelComponentList[comp.name]['boneobjlist'][selbone.name] = Update_BoneObjs(editor.ModelComponentList[comp.name]['bonevtxlist'], self.bone.name, comp)
             else:
-                editor.ModelComponentList[comp.name] = {}
+                if not editor.ModelComponentList.has_key(comp.name):
+                    editor.ModelComponentList[comp.name] = {}
                 editor.ModelComponentList[comp.name]['bonevtxlist'] = self.dict
                 editor.ModelComponentList[comp.name]['boneobjlist'] = {}
                 editor.ModelComponentList[comp.name]['boneobjlist'][selbone.name] = Update_BoneObjs(editor.ModelComponentList[comp.name]['bonevtxlist'], self.bone.name, comp)
@@ -6228,6 +6249,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.168  2009/02/17 04:58:03  cdunde
+#Removed line of code causing problem by killing the view handles.
+#
 #Revision 1.167  2009/01/29 02:13:51  cdunde
 #To reverse frame indexing and fix it a better way by DanielPharos.
 #

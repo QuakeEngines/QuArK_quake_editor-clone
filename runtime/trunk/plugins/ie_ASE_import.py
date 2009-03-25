@@ -41,6 +41,7 @@ Info = {
 import time, os, struct, operator, sys as osSys
 import quarkx
 import quarkpy.mdleditor
+import quarkpy.qutils
 import ie_utils
 from ie_utils import tobj
 from quarkpy.qdictionnary import Strings
@@ -314,9 +315,9 @@ def read_file(file, lines, basepath, filename):
         elif words[0] == '*MESH_VERTCOL':
             c = mesh_vcVert()
             c.index = int(words[1])
-            c.r = round(float(words[2])*256)
-            c.g = round(float(words[3])*256)
-            c.b = round(float(words[4])*256)
+            c.r = round(float(words[2])*255)
+            c.g = round(float(words[3])*255)
+            c.b = round(float(words[4])*255)
             me.vcVerts.append(c)
         elif words[0] == '*MESH_CFACE':
             fc = mesh_vcFace()
@@ -403,11 +404,11 @@ def spawn_mesh(obj, basepath, filename, ComponentList, message, CompNbr):
             noimage = ""
             #read the file in
             try: # To by pass sub-folders, should make this to check those also.
-                file=open(shaderspath+"/"+shaderfile,"r")
+                read_shader_file=open(shaderspath+"/"+shaderfile,"r")
             except:
                 continue
-            lines=file.readlines()
-            file.close()
+            lines=read_shader_file.readlines()
+            read_shader_file.close()
             left_cur_braket = 0
             for line in range(len(lines)):
                 if foundshader is None and lines[line].startswith(material+"\n"):
@@ -643,12 +644,11 @@ def spawn_mesh(obj, basepath, filename, ComponentList, message, CompNbr):
         if len(noimage) > 0:
             message = message + noimage
         if material is not None and foundshader is None: # This component has an image but no shader was found, so...
-            texturepath = basepath + "/" + material + ".tga"
-            if os.path.isfile(texturepath): # May not be a shader so we look for a texture with the same image name.
+            texturepath = basepath + material + ".tga"
+            if os.path.exists(texturepath) == 1: # May not be a shader so we look for a texture with the same image name.
                 skinname = material + ".tga"
                 skin = quarkx.newobj(skinname)
-                foundimage = basepath + skinname
-                image = quarkx.openfileobj(foundimage)
+                image = quarkx.openfileobj(texturepath)
                 skin['Image1'] = image.dictspec['Image1']
                 skin['Size'] = image.dictspec['Size']
                 skingroup.appenditem(skin)
@@ -681,7 +681,6 @@ def spawn_mesh(obj, basepath, filename, ComponentList, message, CompNbr):
                     message = message + "But the texture is not in that location.\r\n"
                     message = message + "Look for:\r\n"
                     message = message + ('    ' + material + '\r\n')
-                    polyuvlist = None
                 else:
                     temppath = filename
                     temppath = temppath.replace(basepath, "")
@@ -701,21 +700,16 @@ def spawn_mesh(obj, basepath, filename, ComponentList, message, CompNbr):
         gamefolder = gamefolder[len(gamefolder)-2]
         filefolder = filename.replace("\\", "/")
         filefolder = filefolder.split("/" + gamefolder + "/", 1)
-  #      print "line 704 gamefolder",gamefolder
-  #      print "line 705 filefolder",filefolder
-  #      print "line 706 obj.material_ref",obj.material_ref
         filefolder = filefolder[1]
         filefolder = filefolder.rsplit("/", 1)[0] + "/"
         possible_names = filename.rsplit("\\", 1)[1]
         possible_names = possible_names.split(".")[0]
         possible_names = possible_names.split("_")
-  #      print "line 712 possible_names",possible_names
+
         # If no skins exist, tries to find main one to load first based on model materials.
         if (materials_list[obj.material_ref] is not None):
             look4file = materials_list[obj.material_ref].split(gamefolder + "/", 1)[1]
             file_type = "." + materials_list[obj.material_ref].rsplit(".", 1)[1]
-  #          print "line 717 basepath",basepath
-  #          print "line 718 look4file",look4file
             if (os.path.exists(basepath + look4file)) and (file_type in image_type_list):
                 skin = quarkx.newobj(look4file)
                 image = quarkx.openfileobj(basepath + look4file)
@@ -727,8 +721,6 @@ def spawn_mesh(obj, basepath, filename, ComponentList, message, CompNbr):
             for key in materials_list.keys():
                 if (materials_list[key] is not None) and (materials_list[key].find(filefolder) != -1):
                     look4file = materials_list[key].split(filefolder)[1]
-  #                  print "line 730 filefolder",filefolder
-  #                  print "line 731 look4file",look4file
                     for name in possible_names:
                         if look4file.find(name) != -1:
                             file_type = look4file.split(".")[1]
@@ -746,12 +738,7 @@ def spawn_mesh(obj, basepath, filename, ComponentList, message, CompNbr):
             if (materials_list[key] is not None):
                 look4file = materials_list[key].split(gamefolder + "/", 1)[1]
                 file_type = "." + materials_list[key].rsplit(".", 1)[1]
-  #              print "line 749 basepath + look4file",basepath + look4file
                 if (os.path.exists(basepath + look4file)) and (file_type in image_type_list):
-  #                  print "line 751 gamefolder",gamefolder
-  #                  print "line 752 basepath",basepath
-  #                  print "line 753 look4file",look4file
-  #                  print "line 754 filefolder",filefolder
                     if not (look4file) in skingroup.dictitems.keys():
                         skin = quarkx.newobj(look4file)
                         image = quarkx.openfileobj(basepath + look4file)
@@ -775,8 +762,6 @@ def spawn_mesh(obj, basepath, filename, ComponentList, message, CompNbr):
 
     objMe = obj.obj
     #normal_flag = 1
- #   print "line 778 obj",obj
- #   print "line 779 objMe",objMe
 
     row0 = obj.row0x, obj.row0y, obj.row0z
     row1 = obj.row1x, obj.row1y, obj.row1z
@@ -793,58 +778,87 @@ def spawn_mesh(obj, basepath, filename, ComponentList, message, CompNbr):
  #   newMesh = Blender.Mesh.New(obj.objName)
  #   newMesh.getFromObject(newObj.name)
     newMesh = quarkx.newobj(obj.objName + ':mf')
- #   print "line 796 obj.objName",obj.objName
- #   print "line 797 newMesh.name",newMesh.name
 
 
     # Verts
     for v in objMe.meVerts: # QuArK frame Vertices made here.
         comp_mesh = comp_mesh + (float(v.x), float(v.y), float(v.z))
- #       print "line 803 Vector",(float(v.x), float(v.y), float(v.z))
- #      vert = Blender.Mathutils.Vector(float(v.x), float(v.y), float(v.z))
- #       newMesh.verts.extend(vert)
     frame['Vertices'] = comp_mesh
     framesgroup.appenditem(frame)
 
     # Faces
     Tris = ''
     TexWidth, TexHeight = skinsize
+    if objMe.hasVC == 1:
+        if obj.objName != 'Name':
+            comp_name = obj.objName.replace('"', "")
+        else:
+            comp_name = "Import Component " + str(CompNbr)
+        comp_name = comp_name + ':mc'
+        if not editor.ModelComponentList.has_key(comp_name):
+            editor.ModelComponentList[comp_name] = {}
+        if not editor.ModelComponentList[comp_name].has_key('vtxlist'):
+            editor.ModelComponentList[comp_name]['vtxlist'] = {}
+            
     for f in range(len(objMe.meFaces)): # QuArK Tris made here.
         uv1 = (int(float(objMe.uvVerts[objMe.uvFaces[f].uv1].u)*TexWidth), TexHeight-(int(float(objMe.uvVerts[objMe.uvFaces[f].uv1].v)*TexHeight)))
         uv2 = (int(float(objMe.uvVerts[objMe.uvFaces[f].uv2].u)*TexWidth), TexHeight-(int(float(objMe.uvVerts[objMe.uvFaces[f].uv2].v)*TexHeight)))
         uv3 = (int(float(objMe.uvVerts[objMe.uvFaces[f].uv3].u)*TexWidth), TexHeight-(int(float(objMe.uvVerts[objMe.uvFaces[f].uv3].v)*TexHeight)))
 
- #       print "line 817 uv1",uv1
- #       print "line 816 uv2",uv2
- #       print "line 817 uv3",uv3
+        if objMe.hasVC == 1: # QuArK note: Makes up the editor.ModelComponentList[mesh.name]['vtxlist'] section for ['vtx_color'].
+            try:
+                c = objMe.vcFaces[f]
+                v1r = int(objMe.vcVerts[c.c1].r)
+                v1g = int(objMe.vcVerts[c.c1].g)
+                v1b = int(objMe.vcVerts[c.c1].b)
+                rgb1 = struct.pack('i', quarkpy.qutils.RGBToColor([v1r, v1g, v1b]))
+                v2r = int(objMe.vcVerts[c.c2].r)
+                v2g = int(objMe.vcVerts[c.c2].g)
+                v2b = int(objMe.vcVerts[c.c2].b)
+                rgb2 = struct.pack('i', quarkpy.qutils.RGBToColor([v2r, v2g, v2b]))
+                v3r = int(objMe.vcVerts[c.c3].r)
+                v3g = int(objMe.vcVerts[c.c3].g)
+                v3b = int(objMe.vcVerts[c.c3].b)
+                rgb3 = struct.pack('i', quarkpy.qutils.RGBToColor([v3r, v3g, v3b]))
+ #               print "line 843 v3",str(objMe.meFaces[f].v3), type(str(objMe.meFaces[f].v3))
+ #               print "line 844 v2",str(objMe.meFaces[f].v2)
+ #               print "line 845 v1",str(objMe.meFaces[f].v1)
+                editor.ModelComponentList[comp_name]['vtxlist'][str(objMe.meFaces[f].v3)] = {}
+                editor.ModelComponentList[comp_name]['vtxlist'][str(objMe.meFaces[f].v3)]['vtx_color'] = rgb3
+                editor.ModelComponentList[comp_name]['vtxlist'][str(objMe.meFaces[f].v2)] = {}
+                editor.ModelComponentList[comp_name]['vtxlist'][str(objMe.meFaces[f].v2)]['vtx_color'] = rgb2
+                editor.ModelComponentList[comp_name]['vtxlist'][str(objMe.meFaces[f].v1)] = {}
+                editor.ModelComponentList[comp_name]['vtxlist'][str(objMe.meFaces[f].v1)]['vtx_color'] = rgb1
+ #               print "line 849 v3 vtx_color -->",editor.ModelComponentList[comp_name]['vtxlist']
+ #               print "line 850 v2 vtx_color -->",editor.ModelComponentList[comp_name]['vtxlist'][str(objMe.meFaces[f].v2)]
+            except:
+                pass
+
         Tris = Tris + struct.pack("Hhh", objMe.meFaces[f].v3,uv3[0],uv3[1])
         Tris = Tris + struct.pack("Hhh", objMe.meFaces[f].v2,uv2[0],uv2[1])
         Tris = Tris + struct.pack("Hhh", objMe.meFaces[f].v1,uv1[0],uv1[1])
- #       print "line 823 v1",(objMe.meFaces[f].v3,uv3[0],uv3[1])
- #       print "line 824 v2",(objMe.meFaces[f].v2,uv2[0],uv2[1])
- #       print "line 825 v3",(objMe.meFaces[f].v1,uv1[0],uv1[1])
   #      newMesh.faces.extend(newMesh.verts[objMe.meFaces[f].v1], newMesh.verts[objMe.meFaces[f].v2], newMesh.verts[objMe.meFaces[f].v3])
 
     #VertCol
-    """if guiTable['VC'] == 1 and objMe.hasVC == 1: # QuArK note: Make up the editor.ModelComponentList[mesh.name]['boneobjlist'] section for ['color'].
-        newMesh.vertexColors = 1
-        for c in objMe.vcFaces:
+  #  if guiTable['VC'] == 1 and objMe.hasVC == 1: # QuArK note: Make up the editor.ModelComponentList[mesh.name]['boneobjlist'] section for ['color'].
+      #  newMesh.vertexColors = 1
+      #  for c in objMe.vcFaces:
 
-            FCol0 = newMesh.faces[c.index].col[0]
-            FCol1 = newMesh.faces[c.index].col[1]
-            FCol2 = newMesh.faces[c.index].col[2]
+        #    FCol0 = newMesh.faces[c.index].col[0]
+        #    FCol1 = newMesh.faces[c.index].col[1]
+        #    FCol2 = newMesh.faces[c.index].col[2]
 
-            FCol0.r = int(objMe.vcVerts[c.c1].r)
-            FCol0.g = int(objMe.vcVerts[c.c1].g)
-            FCol0.b = int(objMe.vcVerts[c.c1].b)
+        #    FCol0.r = int(objMe.vcVerts[c.c1].r)
+        #    FCol0.g = int(objMe.vcVerts[c.c1].g)
+        #    FCol0.b = int(objMe.vcVerts[c.c1].b)
 
-            FCol1.r = int(objMe.vcVerts[c.c2].r)
-            FCol1.g = int(objMe.vcVerts[c.c2].g)
-            FCol1.b = int(objMe.vcVerts[c.c2].b)
+        #    FCol1.r = int(objMe.vcVerts[c.c2].r)
+        #    FCol1.g = int(objMe.vcVerts[c.c2].g)
+        #    FCol1.b = int(objMe.vcVerts[c.c2].b)
 
-            FCol2.r = int(objMe.vcVerts[c.c3].r)
-            FCol2.g = int(objMe.vcVerts[c.c3].g)
-            FCol2.b = int(objMe.vcVerts[c.c3].b)"""
+        #    FCol2.r = int(objMe.vcVerts[c.c3].r)
+        #    FCol2.g = int(objMe.vcVerts[c.c3].g)
+        #    FCol2.b = int(objMe.vcVerts[c.c3].b)
 
     # UV
    # for f in objMe.uvFaces: # QuArK does NOT need this section, it is handled above, can be removed.
@@ -1018,7 +1032,6 @@ def vtxcolorclick(btn):
     else:
         if editor.ModelVertexSelList != []:
             editor.ModelVertexSelList = []
-            import quarkpy.mdlutils
             quarkpy.mdlutils.Update_Editor_Views(editor)
 
             
@@ -1066,7 +1079,9 @@ def dataformname(o):
     {
       Help = "These are the Specific settings for .ase model types."$0D
              "ASE uses 'meshes' the same way that QuArK uses 'components'."$0D
-             "Each can have its own special Surface level (or skin texture) settings."$0D0D22
+             "Each can have its own special Surface level (or skin texture) settings."$0D0D
+             "NOTE: Some games do NOT allow 'TEXTURE TILING' for MODELS, only for SCENES."$0D
+             "            Meaning spreading the model faces over repeated image areas of a texture."$0D0D22
              "NAME"$22" - Surface level control name, which is its skin texture name."$0D22
              "edit skin"$22" - Opens this skin texture in an external editor."$0D22
              "UVNAME"$22" - Special UV process control name (over rides 'NAME')."$0D
@@ -1085,7 +1100,7 @@ def dataformname(o):
              "edit shader"$22" - Opens shader below in a text editor."$0D22
              "mesh shader"$22" - Contains the full text of this skin texture's shader, if any."$0D
              "          This can be copied to a text file, changed and saved."
-      ase_NAME:   = {t_ModelEditor_texturebrowser = ! Txt="NAME"    Hint="Surface level control name,"$0D"which is its main skin texture name."}
+      ase_NAME:   = {t_ModelEditor_texturebrowser = ! Txt="NAME"    Hint="Surface level control name,"$0D"which is its main skin texture name."$0D0D"NOTE: Some games do NOT allow 'TEXTURE TILING'"$0D"for MODELS, only for SCENES."$0D"Meaning spreading the model faces over"$0D"repeated image areas of a texture."}
       edit_skin:  = {
                      Typ = "P"
                      Txt = "edit skin ---->"
@@ -1097,6 +1112,7 @@ def dataformname(o):
       ase_COLR:   = {          Txt="COLR"                                                                          }
       ase_COLR:   = {Typ="L"   Txt="COLR"    Hint="Color to use for this components uv vertex color mapping."$0D"Click the color selector button to the right and pick a color."}
       ase_IMAG:   = {Typ="X"   Txt="IMAG"    Hint="Image Map Image. Indicates that this surface is an image map."$0D"Check this if 'CHAN' & 'IMAG' are checked and 'OPAC' is NOT checked."}
+      show_vtx_color: = {Typ="X"   Txt="Show Vertex Color"    Hint="When checked, if component has vertex coloring they will show."$0D"If NOT checked and it has bones with vetexes, those will show."}
       shader_file:    = {Typ="E"   Txt="shader file"  Hint="Gives the full path and name of the .mtr material"$0D"shader file that the selected skin texture uses, if any."}
       shader_name:    = {Typ="E"   Txt="shader name"  Hint="Gives the name of the shader located in the above file"$0D"that the selected skin texture uses, if any."}
       shader_keyword: = {Typ="E"   Txt="shader keyword"  Hint="Gives the above shader 'keyword' that is used to identify"$0D"the currently selected skin texture used in the shader, if any."}
@@ -1134,6 +1150,14 @@ def dataformname(o):
     while (DummyItem.type != ":mc"): # Gets the object's model component.
         DummyItem = DummyItem.parent
     o = DummyItem
+
+    if not o.dictspec.has_key('show_vtx_color') and quarkx.setupsubset(3, "Options")['ShowVertexColor'] is not None:
+        quarkx.setupsubset(3, "Options")['ShowVertexColor'] = None
+        quarkpy.mdlutils.Update_Editor_Views(editor)
+    if o.dictspec.has_key('show_vtx_color') and quarkx.setupsubset(3, "Options")['ShowVertexColor'] is None:
+        quarkx.setupsubset(3, "Options")['ShowVertexColor'] = o.dictspec['show_vtx_color']
+        quarkpy.mdlutils.Update_Editor_Views(editor)
+
     if o.type == ":mc": # Just makes sure what we have is a model component.
         formobj = quarkx.newobj("ase_mc:form")
         formobj.loadtext(dlgdef)
@@ -1205,6 +1229,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.2  2009/03/19 06:43:48  cdunde
+# Minor improvement to avoid improper path splitting.
+#
 # Revision 1.1  2009/03/18 00:04:21  cdunde
 # Added asi model format importing plugin.
 #
