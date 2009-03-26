@@ -642,7 +642,6 @@ def read_ptags(lwochunk, tag_list):
         return {}
     ptag_dict = {}
     i = 0
-    testindex = 50
     while(i < lwochunk.chunksize-4): #4 bytes polygon type already read
         poln, poln_size = read_vx(data)
         i += poln_size
@@ -653,8 +652,6 @@ def read_ptags(lwochunk, tag_list):
             return {}
         i += 2
         tag_key = tag_list[surface_index]
-        if surface_index != testindex:
-            testindex = surface_index
         if not(ptag_dict.has_key(tag_key)):
             ptag_dict[tag_list[surface_index]] = [poln]
         else:
@@ -2724,6 +2721,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.27  2009/03/24 21:46:56  cdunde
+# Minor file cleanup.
+#
 # Revision 1.26  2009/03/24 19:45:14  cdunde
 # Help and Hint updates.
 #
