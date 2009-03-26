@@ -1974,7 +1974,7 @@ def assign_vertices(editor, bone, comp, vertices):
     new_bone.vertices = old_vertices
     undo = quarkx.action()
     undo.exchange(bone, new_bone)
-    editor.ok(undo, "detach bones")
+    editor.ok(undo, "assign vertices")
 
 #
 # This function does the rotation movement of all bones between two selected "Key frames".
@@ -3221,6 +3221,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.102.2.2  2009/03/02 22:50:07  danielpharos
+#Added vertex assigning code.
+#
 #Revision 1.102.2.1  2009/02/25 20:46:37  danielpharos
 #Initial changes.
 #
