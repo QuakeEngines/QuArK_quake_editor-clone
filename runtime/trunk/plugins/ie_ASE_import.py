@@ -818,6 +818,7 @@ def spawn_mesh(obj, basepath, filename, ComponentList, message, CompNbr):
                 v3r = int(objMe.vcVerts[c.c3].r)
                 v3g = int(objMe.vcVerts[c.c3].g)
                 v3b = int(objMe.vcVerts[c.c3].b)
+ #               print "line 821 v3",v3r, v3g, v3b, type(v3r)
                 rgb3 = struct.pack('i', quarkpy.qutils.RGBToColor([v3r, v3g, v3b]))
  #               print "line 822 v3",str(objMe.meFaces[f].v3), type(str(objMe.meFaces[f].v3))
  #               print "line 823 v2",str(objMe.meFaces[f].v2)
@@ -1084,10 +1085,8 @@ def dataformname(o):
              "edit skin"$22" - Opens this skin texture in an external editor."$0D22
              "UVNAME"$22" - Special UV process control name (over rides 'NAME')."$0D
              "          type in any name you want to use."$0D22
-             "COLR"$22" - Color to use for this components uv vertex color mapping."$0D
-             "          Click the color selector button to the right and pick a color."$0D22
-             "IMAG"$22" - Image Map Image. Indicates that this surface is an image map."$0D
-             "        Check this if 'CHAN' & 'IMAG' are checked and 'OPAC' is NOT checked."$0D22
+             "Vertex Color"$22" - Color to use for this components vertex color mapping."$0D
+             "            Click the color display button to select a color."$0D22
              "shader file"$22" - Gives the full path and name of the .mtr material"$0D
              "           shader file that the selected skin texture uses, if any."$0D22
              "shader name"$22" - Gives the name of the shader located in the above file"$0D
@@ -1107,10 +1106,26 @@ def dataformname(o):
                      Cap = "edit skin"
                     }
       ase_UVNAME: = {Typ="E"   Txt="UVNAME"  Hint="Special UV process control name (over rides 'NAME'),"$0D"type in any name you want to use."}
-      ase_COLR:   = {          Txt="COLR"                                                                          }
-      ase_COLR:   = {Typ="L"   Txt="COLR"    Hint="Color to use for this components uv vertex color mapping."$0D"Click the color selector button to the right and pick a color."}
-      ase_IMAG:   = {Typ="X"   Txt="IMAG"    Hint="Image Map Image. Indicates that this surface is an image map."$0D"Check this if 'CHAN' & 'IMAG' are checked and 'OPAC' is NOT checked."}
+      Sep:            = {Typ="S"   Txt = ""}
+      Sep:            = {Typ="S"   Txt = "Vertex Coloring"}
+      ase_COLR:       = {          Txt="Vertex Color"                                                                          }
+      ase_COLR:       = {Typ="L"   Txt="Vertex Color"    Hint="Color to use for this components vertex color mapping."$0D"Click the color display button to select a color."}
       show_vtx_color: = {Typ="X"   Txt="Show Vertex Color"    Hint="When checked, if component has vertex coloring they will show."$0D"If NOT checked and it has bones with vetexes, those will show."}
+      apply_color:    = {
+                         Typ = "P"
+                         Txt = "apply vertex color ---->"
+                         Macro = "apply_vtx_color"
+                         Hint = "Applies the selected 'Vertex Color'"$0D"to the currently selected vertexes."
+                         Cap = "apply color"
+                        }
+      remove_color:    = {
+                         Typ = "P"
+                         Txt = "remove vertex color ---->"
+                         Macro = "remove_vtx_color"
+                         Hint = "Removes all of the vertex color"$0D"from the currently selected vertexes."
+                         Cap = "remove color"
+                        }
+      Sep:            = {Typ="S"   Txt = ""}
       shader_file:    = {Typ="E"   Txt="shader file"  Hint="Gives the full path and name of the .mtr material"$0D"shader file that the selected skin texture uses, if any."}
       shader_name:    = {Typ="E"   Txt="shader name"  Hint="Gives the name of the shader located in the above file"$0D"that the selected skin texture uses, if any."}
       shader_keyword: = {Typ="E"   Txt="shader keyword"  Hint="Gives the above shader 'keyword' that is used to identify"$0D"the currently selected skin texture used in the shader, if any."}
@@ -1163,10 +1178,42 @@ def dataformname(o):
     else:
         return None, None
 
+def macro_apply_vtx_color(btn):
+    editor = quarkpy.mdleditor.mdleditor # Get the editor.
+    o = editor.Root.currentcomponent
+    if o.dictspec.has_key('ase_COLR'):
+        R, G, B = o.dictspec['ase_COLR'].split(" ")
+        R = round(float(R)*255)
+        G = round(float(G)*255)
+        B = round(float(B)*255)
+        rgb = struct.pack('i', quarkpy.qutils.RGBToColor([R, G, B]))
+        if len(editor.ModelVertexSelList) != 0:
+            if not editor.ModelComponentList.has_key(o.name):
+                editor.ModelComponentList[o.name] = {}
+            if not editor.ModelComponentList[o.name].has_key('colorvtxlist'):
+                editor.ModelComponentList[o.name]['colorvtxlist'] = {}
+            for vtx in editor.ModelVertexSelList:
+                if not editor.ModelComponentList[o.name]['colorvtxlist'].has_key(str(vtx[0])):
+                    editor.ModelComponentList[o.name]['colorvtxlist'][str(vtx[0])] = {}
+                editor.ModelComponentList[o.name]['colorvtxlist'][str(vtx[0])]['vtx_color'] = rgb
+    quarkpy.mdlutils.Update_Editor_Views(editor)
 
+def macro_remove_vtx_color(btn):
+    editor = quarkpy.mdleditor.mdleditor # Get the editor.
+    o = editor.Root.currentcomponent
+    if len(editor.ModelVertexSelList) != 0:
+        if editor.ModelComponentList[o.name].has_key('colorvtxlist'):
+            for vtx in editor.ModelVertexSelList:
+                if editor.ModelComponentList[o.name]['colorvtxlist'].has_key(str(vtx[0])):
+                    if editor.ModelComponentList[o.name]['colorvtxlist'][str(vtx[0])].has_key('vtx_color'):
+                        if len(editor.ModelComponentList[o.name]['colorvtxlist'][str(vtx[0])]) == 1:
+                            del editor.ModelComponentList[o.name]['colorvtxlist'][str(vtx[0])]
+                        else:
+                            del editor.ModelComponentList[o.name]['colorvtxlist'][str(vtx[0])]['vtx_color']
+    quarkpy.mdlutils.Update_Editor_Views(editor)
+        
 def macro_opentexteditor(btn):
     editor = quarkpy.mdleditor.mdleditor # Get the editor.
-
     if btn.name == "edit_skin:":
         newImage = editor.Root.currentcomponent.currentskin
         quarkx.externaledit(editor.Root.currentcomponent.currentskin) # Opens skin in - external editor for this texture file type.
@@ -1183,6 +1230,8 @@ def macro_opentexteditor(btn):
         obj['Data'] = editor.Root.currentcomponent.dictspec['mesh_shader']
         quarkx.externaledit(obj)
 
+quarkpy.qmacro.MACRO_apply_vtx_color = macro_apply_vtx_color
+quarkpy.qmacro.MACRO_remove_vtx_color = macro_remove_vtx_color
 quarkpy.qmacro.MACRO_opentexteditor = macro_opentexteditor
 
 
@@ -1224,9 +1273,13 @@ def dataforminput(o):
         if not o.dictspec.has_key('mesh_shader'):
             o['mesh_shader'] = "None"
 
+
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.4  2009/03/25 19:46:00  cdunde
+# Changed dictionary list keyword to be more specific.
+#
 # Revision 1.3  2009/03/25 05:30:19  cdunde
 # Added vertex color support.
 #
