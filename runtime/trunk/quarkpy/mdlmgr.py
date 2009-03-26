@@ -451,12 +451,18 @@ class ModelLayout(BaseLayout):
             sl = [self.explorer.uniquesel]
         sfbtn = self.buttons["sf"]
         helpbtn = self.buttons["help"]
-        # Resets the editor's bonemode back to the default value.
+        # Resets the editor's default values for forms to avoid confusion between model format types .
         try:
             if sfbtn.caption == SFTexts[m.skill]:
                 pass
             else:
                 self.editor.bonemode = "default mode"
+                quarkx.setupsubset(SS_MODEL, "Options")['ShowVertexColor'] = None
+                for item in self.editor.Root.subitems:
+                    if item.type == ":mc":
+                        if item.dictspec.has_key('show_vtx_color'):
+                            item['show_vtx_color'] = ""
+                            Update_Editor_Views(self.editor)
         except:
             pass
 
@@ -1496,6 +1502,10 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.97  2009/02/17 04:59:15  cdunde
+#To expand on types of image texture files that can be applied from the Texture Browser to the Model editor.
+#To update the tree-view when component color is changed.
+#
 #Revision 1.96  2009/02/11 15:38:49  danielpharos
 #Don't store buttons inside the layout object itself.
 #
