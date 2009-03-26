@@ -46,6 +46,21 @@ def checktree(root, obj):
 
 
 #
+# This function sets black colors on components that don't have any colors set
+#
+def fixColorComps(editor):
+    for comp in editor.Root.subitems:
+        if comp.type != ":mc":
+            continue
+        if not comp.dictspec.has_key('comp_color1'):
+            comp['comp_color1'] = '\x00'
+        if not comp.dictspec.has_key('comp_color2'):
+            comp['comp_color2'] = '\x00'
+    if editor.layout is not None:
+        editor.layout.explorer.invalidate()
+
+
+#
 # The UserDataPanel class, overridden to be model-specific.
 #
 class MdlUserDataPanel(UserDataPanel):
@@ -3518,6 +3533,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.102  2009/02/17 04:57:00  cdunde
+#To fix another error situation cause.
+#
 #Revision 1.101  2009/01/30 20:38:46  cdunde
 #Added option for creation of all bone handle draglines when importing.
 #

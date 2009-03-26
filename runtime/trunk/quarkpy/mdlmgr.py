@@ -663,18 +663,8 @@ class ModelLayout(BaseLayout):
             checkbone_end_scale = selitem.dictspec['end_scale']
             self.dataform.setdata([selitem], formobj)
 
-        elif len(sl) != 0 and sl[0].type == ":mc": # Sets the component form items.
-            selitem = sl[0]
-            try:
-                self.comp_color1 = selitem.dictspec['comp_color1']
-            except:
-                selitem['comp_color1'] = '\x00'
-                self.comp_color1 = selitem.dictspec['comp_color1']
-            try:
-                self.comp_color2 = selitem.dictspec['comp_color2']
-            except:
-                selitem['comp_color2'] = '\x00'
-                self.comp_color2 = selitem.dictspec['comp_color2']
+        elif len(sl) != 0: # Sets the component form items.
+            fixColorComps(self.editor)
 
         quarkx.update(self.editor.form)
 
@@ -1502,6 +1492,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.98  2009/03/26 21:16:03  cdunde
+#Added new item needing a default resetting when changing model formats.
+#
 #Revision 1.97  2009/02/17 04:59:15  cdunde
 #To expand on types of image texture files that can be applied from the Texture Browser to the Model editor.
 #To update the tree-view when component color is changed.

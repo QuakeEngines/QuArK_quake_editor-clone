@@ -290,6 +290,7 @@ class ModelEditor(BaseEditor):
         for UsedTextureName in UsedTexturesList:
             UsedTexture.appenditem(UsedTexturesList[UsedTextureName].copy())
         ToolBox.appenditem(UsedTexture)
+        fixColorComps(self)
 
 
     def CloseRoot(self):
@@ -1690,6 +1691,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.119  2009/03/25 05:30:20  cdunde
+#Added vertex color support.
+#
 #Revision 1.118  2009/01/29 02:13:51  cdunde
 #To reverse frame indexing and fix it a better way by DanielPharos.
 #
