@@ -1,0 +1,41 @@
+package VCLAR40;
+{$R *.res}
+{$R 'Tb97.dcr'}
+{$ALIGN 8}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO ON}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO ON}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES ON}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST OFF}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DESCRIPTION 'QuArK 3rd Party Components'}
+{$IMPLICITBUILD OFF}
+
+requires
+  vcl;
+
+contains
+  TB97 in 'Tb97.pas',
+  EnterEditCtrl in 'EnterEditCtrl.pas',
+  PaintPanel in 'PaintPanel.pas',
+  QSplitter in 'QSplitter.pas',
+  SyntaxMemo in 'SyntaxMemo.pas',
+  CursorScrollBox in 'CursorScrollBox.pas',
+  marsCap in 'Marscap.pas',
+  SmArrowBtn in 'SmArrowBtn.pas';
+
+end.
