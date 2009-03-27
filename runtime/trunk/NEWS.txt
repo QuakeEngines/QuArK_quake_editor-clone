@@ -15,6 +15,8 @@ $Id$
 6.6.0 Beta 3
 ============
 
+* [DanielPharos]: Fix a major slowdown in the progressbar drawing routine.
+
 * [DanielPharos]: Fixed the treeview color boxes for components not showing up the first time.
 
 * [cdunde/DanielPharos]: Added vertex color support.

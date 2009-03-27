@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2009/02/21 17:06:18  danielpharos
+Changed all source files to use CRLF text format, updated copyright and GPL text.
+
 Revision 1.11  2008/07/07 19:53:46  danielpharos
 Reworked the code. Should make it easier to understand, and should never allow a larger than 100 percent value!
 
@@ -127,7 +130,7 @@ begin
           Label1.Caption:=IntToStr(nPos)+'%';
           BringToFront;
           Update;
-          Sleep(1);
+          GdiFlush;
         end;
       end;
     end;
