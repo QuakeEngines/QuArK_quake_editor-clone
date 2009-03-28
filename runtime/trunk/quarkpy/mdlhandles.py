@@ -2297,7 +2297,7 @@ class RectSelDragObject(qhandles.RectangleDragObject):
 # Classes that manage and create the linear handle, its center box, corner & side handles and its circle.
 # The normal redimages, drawn in the Map Editor, needed to be stopped for the Model Editor since we use triangles
 #   instead of rectangles and that is all it will draw until a new drawing function can be added to the source code.
-# The redimages drawing is stopped in the qhandels.py "def drawredimages" function for the "class RedImageDragObject".
+# The redimages drawing is stopped in the qhandles.py "def drawredimages" function for the "class RedImageDragObject".
 # Each Linear handle must be stopped there using that handles class name specifically. See the qhandels code that does that.
 #
 
@@ -6199,7 +6199,7 @@ def ClickOnView(editor, view, x, y):
     "in the view and returns those items if any."
 
     #
-    # defined in QkPyMapview.pas
+    # defined in PyMapview.pas
     #
     return view.clicktarget(editor.Root, int(x), int(y))
 
@@ -6249,6 +6249,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.171  2009/03/26 07:17:20  cdunde
+#Update for editing vertex color support.
+#
 #Revision 1.170  2009/03/25 19:46:03  cdunde
 #Changed dictionary list keyword to be more specific.
 #
