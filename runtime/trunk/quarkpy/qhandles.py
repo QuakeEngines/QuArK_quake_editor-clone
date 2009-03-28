@@ -1818,9 +1818,9 @@ def MouseDragging(editor, view, x, y, s, handle, redcolor):
         
         if "C" in s:
             if view.info["type"]=="3D":
-                return CircleStrafeDragObject(editor, view, x, y) 
+                return CircleStrafeDragObject(editor, view, x, y)
             else:
-                return SideStepDragObject(editor, view, x, y)           
+                return SideStepDragObject(editor, view, x, y)
         elif "R" in s:     # display a rectangle
             if ("+" in s) or ("-" in s):
                 if view.info["type"]=="3D":
@@ -2171,6 +2171,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.79  2009/01/11 06:49:41  cdunde
+#Minor fix for error when Model Editor is in True 3D mode.
+#
 #Revision 1.78  2008/12/19 17:23:21  cdunde
 #To stop the dupe drawing of vertex boxes in the Model Editor during a bone center handle drag.
 #
