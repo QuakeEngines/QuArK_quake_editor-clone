@@ -326,6 +326,7 @@ class ModelEditor(BaseEditor):
         quarkx.setupsubset(SS_MODEL, "Options")['HideBones'] = None
         quarkx.setupsubset(SS_MODEL, "Options")['ConsoleLog'] = None
         quarkx.setupsubset(SS_MODEL, "Options")['ShowVertexColor'] = None
+        quarkx.setupsubset(SS_MODEL, "Options")['CompColors'] = None
         quarkx.setupsubset(SS_MODEL, "Colors")['start_color'] = None
         quarkx.setupsubset(SS_MODEL, "Colors")['end_color'] = None
 
@@ -1691,6 +1692,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.120  2009/03/26 22:32:33  danielpharos
+#Fixed the treeview color boxes for components not showing up the first time.
+#
 #Revision 1.119  2009/03/25 05:30:20  cdunde
 #Added vertex color support.
 #
