@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.21  2009/02/21 17:06:18  danielpharos
+Changed all source files to use CRLF text format, updated copyright and GPL text.
+
 Revision 1.20  2008/09/08 18:08:51  danielpharos
 Added some more general exception functions.
 
@@ -157,6 +160,7 @@ new: support for vtf file loading
 unit QkVTFLib;
 
 interface
+
 uses Windows, SysUtils, QkObjects;
 
 function LoadVTFLib : Boolean;
@@ -165,8 +169,39 @@ procedure UnloadVTFLib(ForceUnload: boolean);
 {-------------------}
 
 const
+  vlFalse = 0;
+  vlTrue = 1;
+
   VTF_MAJOR_VERSION	= 7;
   VTF_MINOR_VERSION	= 4;
+
+//VTFLibOption:
+  VTFLIB_DXT_QUALITY = 0;
+
+  VTFLIB_LUMINANCE_WEIGHT_R = 1;
+  VTFLIB_LUMINANCE_WEIGHT_G = 2;
+  VTFLIB_LUMINANCE_WEIGHT_B = 3;
+
+  VTFLIB_BLUESCREEN_MASK_R = 4;
+  VTFLIB_BLUESCREEN_MASK_G = 5;
+  VTFLIB_BLUESCREEN_MASK_B = 6;
+
+  VTFLIB_BLUESCREEN_CLEAR_R = 7;
+  VTFLIB_BLUESCREEN_CLEAR_G = 8;
+  VTFLIB_BLUESCREEN_CLEAR_B = 9;
+
+  VTFLIB_FP16_HDR_KEY = 10;
+  VTFLIB_FP16_HDR_SHIFT = 11;
+  VTFLIB_FP16_HDR_GAMMA = 12;
+
+  VTFLIB_UNSHARPEN_RADIUS = 13;
+  VTFLIB_UNSHARPEN_AMOUNT = 14;
+  VTFLIB_UNSHARPEN_THRESHOLD = 15;
+
+  VTFLIB_XSHARPEN_STRENGTH = 16;
+  VTFLIB_XSHARPEN_THRESHOLD = 17;
+
+  VTFLIB_VMT_PARSE_MODE = 18;
 
 //VTFImageFormat:
   IMAGE_FORMAT_RGBA8888= 0;
@@ -199,7 +234,16 @@ const
   IMAGE_FORMAT_I32F= 26;
   IMAGE_FORMAT_RGB323232F= 27;
   IMAGE_FORMAT_RGBA32323232F= 28;
-  IMAGE_FORMAT_COUNT= 29;
+  IMAGE_FORMAT_NV_DST16= 29;
+  IMAGE_FORMAT_NV_DST24= 30;
+  IMAGE_FORMAT_NV_INTZ= 31;
+  IMAGE_FORMAT_NV_RAWZ= 32;
+  IMAGE_FORMAT_ATI_DST16= 33;
+  IMAGE_FORMAT_ATI_DST24= 34;
+  IMAGE_FORMAT_NV_NULL= 35;
+  IMAGE_FORMAT_ATI2N= 36;
+  IMAGE_FORMAT_ATI1N= 37;
+  IMAGE_FORMAT_COUNT= 38;
   IMAGE_FORMAT_NONE= -1;
 
 //VTFImageFlag:
@@ -209,7 +253,7 @@ const
   TEXTUREFLAGS_CLAMPT                        = $00000008;
   TEXTUREFLAGS_ANISOTROPIC                   = $00000010;
   TEXTUREFLAGS_HINT_DXT5                     = $00000020;
-  TEXTUREFLAGS_NOCOMPRESS                    = $00000040;
+  TEXTUREFLAGS_SRGB                          = $00000040;
   TEXTUREFLAGS_NORMAL                        = $00000080;
   TEXTUREFLAGS_NOMIP                         = $00000100;
   TEXTUREFLAGS_NOLOD                         = $00000200;
@@ -222,15 +266,19 @@ const
   TEXTUREFLAGS_DEPTHRENDERTARGET             = $00010000;
   TEXTUREFLAGS_NODEBUGOVERRIDE               = $00020000;
   TEXTUREFLAGS_SINGLECOPY                    = $00040000;
-  TEXTUREFLAGS_ONEOVERMIPLEVELINALPHA        = $00080000;
-  TEXTUREFLAGS_PREMULTCOLORBYONEOVERMIPLEVEL = $00100000;
-  TEXTUREFLAGS_NORMALTODUDV                  = $00200000;
-  TEXTUREFLAGS_ALPHATESTMIPGENERATION        = $00400000;
+  TEXTUREFLAGS_UNUSED0                       = $00080000;
+  TEXTUREFLAGS_UNUSED1                       = $00100000;
+  TEXTUREFLAGS_UNUSED2                       = $00200000;
+  TEXTUREFLAGS_UNUSED3                       = $00400000;
   TEXTUREFLAGS_NODEPTHBUFFER                 = $00800000;
-  TEXTUREFLAGS_NICEFILTERED                  = $01000000;
+  TEXTUREFLAGS_UNUSED4                       = $01000000;
   TEXTUREFLAGS_CLAMPU                        = $02000000;
-  TEXTUREFLAGS_LAST                          = $02000000;
-  TEXTUREFLAGS_COUNT= 26;
+  TEXTUREFLAGS_VERTEXTEXTURE                 = $04000000;
+  TEXTUREFLAGS_SSBUMP                        = $08000000;
+  TEXTUREFLAGS_UNUSED5                       = $10000000;
+  TEXTUREFLAGS_BORDER                        = $20000000;
+  TEXTUREFLAGS_LAST                          = $20000000;
+  TEXTUREFLAGS_COUNT= 30;
 
 {  MIPMAP_FILTER_POINT = 0;
   MIPMAP_FILTER_BOX = 1;
@@ -265,10 +313,17 @@ typedef enum tagVTFSharpenFilter    ALL THESE typedef'S STILL NEED TO BE CONVERT
 	SHARPEN_FILTER_EDGEDETECTSOFT,
 	SHARPEN_FILTER_EMBOSS,
 	SHARPEN_FILTER_MEANREMOVAL,
-    SHARPEN_FILTER_UNSHARP,
-    SHARPEN_FILTER_XSHARPEN,
-    SHARPEN_FILTER_WARPSHARP,
+	SHARPEN_FILTER_UNSHARP,
+	SHARPEN_FILTER_XSHARPEN,
+	SHARPEN_FILTER_WARPSHARP,
 	SHARPEN_FILTER_COUNT}
+
+//VTFDXTQuality:
+  DXT_QUALITY_LOW = 0;
+  DXT_QUALITY_MEDIUM = 1;
+  DXT_QUALITY_HIGH = 2;
+  DXT_QUALITY_HIGHEST = 3;
+  DXT_QUALITY_COUNT = 4;
 
 {  typedef enum tagVTFResizeMethod
     RESIZE_NEAREST_POWER2 = 0,
@@ -305,6 +360,11 @@ typedef enum tagVTFSharpenFilter    ALL THESE typedef'S STILL NEED TO BE CONVERT
     NORMAL_ALPHA_RESULT_WHITE,
 	NORMAL_ALPHA_RESULT_COUNT}
 
+//VMTParseMode
+  PARSE_MODE_STRICT = 0;
+  PARSE_MODE_LOOSE = 1;
+  PARSE_MODE_COUNT = 2;
+
 //VMTNodeType:
   NODE_TYPE_GROUP = 0;
   NODE_TYPE_GROUP_END = 1;
@@ -314,6 +374,27 @@ typedef enum tagVTFSharpenFilter    ALL THESE typedef'S STILL NEED TO BE CONVERT
   NODE_TYPE_COUNT = 5;
 
 type
+  vlBool = Byte;
+  vlChar = Char; //ShortInt;
+  vlByte = Byte;
+  vlShort = SmallInt;
+  vlUShort = Word;
+  vlInt = Integer;
+  vlUInt = Cardinal;
+  vlLong = LongInt;
+  vlULong = LongWord;
+  vlSingle = Single;
+  vlDouble = Double;
+  vlVoid = Byte;
+
+  vlFloat = vlSingle;
+
+  PvlChar = ^vlChar;
+  PvlByte = ^vlByte;
+  PvlUInt = ^vlUInt;
+  PvlVoid = ^vlVoid;
+
+  VTFLibOption = Integer;
   VTFImageFormat = Integer;
   VMTNodeType = Integer;
   VTFMipmapFilter = Integer;
@@ -323,101 +404,124 @@ type
   VTFHeightConversionMethod = Integer;
   VTFNormalAlphaResult = Integer;
 
-  SVTFCreateOptions = record
-  	uiVersion : array[0..1] of Cardinal;								//!< Output image version.
-	  ImageFormat : VTFImageFormat;							//!< Output image output storage format.
+  SVTFCreateOptions = packed record
+    uiVersion : array[0..1] of vlUInt;								//!< Output image version.
+    ImageFormat : VTFImageFormat;							//!< Output image output storage format.
 
-  	uiFlags : Cardinal;										//!< Output image header flags.
-  	uiStartFrame : Cardinal;								//!< Output image start frame.
-  	sBumpScale : Single;								//!< Output image bump scale.
-  	sReflectivity : array[0..2] of Single;							//!< Output image reflectivity. (Only used if bReflectivity is false.)
+    uiFlags : vlUInt;										//!< Output image header flags.
+    uiStartFrame : vlUInt;								//!< Output image start frame.
+    sBumpScale : vlSingle;								//!< Output image bump scale.
+    sReflectivity : array[0..2] of vlSingle;							//!< Output image reflectivity. (Only used if bReflectivity is false.)
 
-  	bMipmaps : Boolean;									//!< Generate MIPmaps. (Space is always allocated.)
-  	MipmapFilter : VTFMipmapFilter;						//!< MIP map re-size filter.
-  	MipmapSharpenFilter : VTFSharpenFilter;				//!< MIP map sharpen filter.
+    bMipmaps : vlBool;									//!< Generate MIPmaps. (Space is always allocated.)
+    MipmapFilter : VTFMipmapFilter;						//!< MIP map re-size filter.
+    MipmapSharpenFilter : VTFSharpenFilter;				//!< MIP map sharpen filter.
 
-	  bThumbnail : Boolean;									//!< Generate thumbnail image.
-  	bReflectivity : Boolean;								//!< Compute image reflectivity.
+    bThumbnail : vlBool;									//!< Generate thumbnail image.
+    bReflectivity : vlBool;								//!< Compute image reflectivity.
 
-  	bResize : Boolean;										//!< Resize the input image.
-  	ResizeMethod : VTFResizeMethod;						//!< New size compution method.
-  	ResizeFilter : VTFMipmapFilter;						//!< Re-size filter.
-  	ResizeSharpenFilter : VTFSharpenFilter;				//!< Sharpen filter.
-  	uiResizeWidth : Cardinal;								//!< New width after re-size if method is RESIZE_SET.
-  	uiResizeHeight : Cardinal;								//!< New height after re-size if method is RESIZE_SET.
+    bResize : vlBool;										//!< Resize the input image.
+    ResizeMethod : VTFResizeMethod;						//!< New size compution method.
+    ResizeFilter : VTFMipmapFilter;						//!< Re-size filter.
+    ResizeSharpenFilter : VTFSharpenFilter;				//!< Sharpen filter.
+    uiResizeWidth : vlUInt;								//!< New width after re-size if method is RESIZE_SET.
+    uiResizeHeight : vlUInt;								//!< New height after re-size if method is RESIZE_SET.
 
-  	bResizeClamp : Boolean;								//!< Clamp re-size size.
-  	uiResizeClampWidth : Cardinal;							//!< Maximum width to re-size to.
-  	uiResizeClampHeight : Cardinal;							//!< Maximum height to re-size to.
+    bResizeClamp : vlBool;								//!< Clamp re-size size.
+    uiResizeClampWidth : vlUInt;							//!< Maximum width to re-size to.
+    uiResizeClampHeight : vlUInt;							//!< Maximum height to re-size to.
 
-  	bGammaCorrection : Boolean;							//!< Gamma correct input image.
-  	sGammaCorrection : Single;							//!< Gamma correction to apply.
+    bGammaCorrection : vlBool;							//!< Gamma correct input image.
+    sGammaCorrection : vlSingle;							//!< Gamma correction to apply.
 
-  	bNormalMap : Boolean;									//!< Convert input image to a normal map.
-  	KernelFilter : VTFKernelFilter;						//!< Normal map generation kernel.
-  	HeightConversionMethod : VTFHeightConversionMethod;	//!< Method or determining height from input image during normal map creation.
-  	NormalAlphaResult : VTFNormalAlphaResult;				//!< How to handle output image alpha channel, post normal map creation.
-  	bNormalMinimumZ : Byte;								//!< Minimum normal Z value.
-  	sNormalScale : Single;								//!< Normal map scale.
-  	bNormalWrap : Boolean;									//!< Wrap the normal map.
-  	bNormalInvertX : Boolean;								//!< Invert the normal X component.
-  	bNormalInvertY : Boolean;								//!< Invert the normal Y component.
-  	bNormalInvertZ : Boolean;								//!< Invert the normal Z component.
+    bNormalMap : vlBool;									//!< Convert input image to a normal map.
+    KernelFilter : VTFKernelFilter;						//!< Normal map generation kernel.
+    HeightConversionMethod : VTFHeightConversionMethod;	//!< Method or determining height from input image during normal map creation.
+    NormalAlphaResult : VTFNormalAlphaResult;				//!< How to handle output image alpha channel, post normal map creation.
+    bNormalMinimumZ : vlByte;								//!< Minimum normal Z value.
+    sNormalScale : vlSingle;								//!< Normal map scale.
+    bNormalWrap : vlBool;									//!< Wrap the normal map.
+    bNormalInvertX : vlBool;								//!< Invert the normal X component.
+    bNormalInvertY : vlBool;								//!< Invert the normal Y component.
+    bNormalInvertZ : vlBool;								//!< Invert the normal Z component.
 
-  	bSphereMap : Boolean;									//!< Generate a sphere map for six faced environment maps.
+    bSphereMap : vlBool;									//!< Generate a sphere map for six faced environment maps.
   end;
 
   PSVTFCreateOptions = ^SVTFCreateOptions;
 
 var
-  vlGetVersion: function : Cardinal; cdecl;
-  //vlGetVersionString: function : PChar; cdecl;
-  //vlGetLastError: function : PChar; cdecl;
-  vlInitialize: function : Boolean; cdecl;
+  vlGetVersion: function : vlUInt; cdecl;
+  //vlGetVersionString: function : PvlChar; cdecl;
+  //vlGetLastError: function : PvlChar; cdecl;
+  vlInitialize: function : vlBool; cdecl;
   vlShutdown: procedure; cdecl;
-  vlCreateImage: function (uiImage : PCardinal) : Boolean; cdecl;
-  vlBindImage: function (uiImage : Cardinal) : Boolean; cdecl;
-  vlDeleteImage: procedure (uiImage : Cardinal); cdecl;
-  //vlImageLoad: function (const cFileName : string; bHeaderOnly : Boolean) : Boolean; cdecl;
-  vlImageLoadLump: function (lpData : PByte; uiBufferSize : Cardinal; bHeaderOnly : Boolean) : Boolean; cdecl;
-  vlImageSaveLump: function (lpData : PByte; uiBufferSize : Cardinal; uiSize : PCardinal) : Boolean; cdecl;
-  vlImageGetFlags: function : Cardinal; cdecl;
+
+  vlGetBoolean: function (Option : VTFLibOption) : vlBool; cdecl;
+  vlSetBoolean: procedure (Option : VTFLibOption; bValue : vlBool); cdecl;
+
+  vlGetInteger: function (Option : VTFLibOption) : vlInt; cdecl;
+  vlSetInteger: procedure (Option : VTFLibOption; iValue : vlInt); cdecl;
+
+  vlGetFloat: function (Option : VTFLibOption) : vlSingle; cdecl;
+  vlSetFloat: procedure (Option : VTFLibOption; sValue : vlSingle); cdecl;
+
+  vlBindImage: function (uiImage : vlUInt) : vlBool; cdecl;
+
+  vlCreateImage: function (uiImage : PvlUInt) : vlBool; cdecl;
+  vlDeleteImage: procedure (uiImage : vlUInt); cdecl;
+
+  vlImageLoadLump: function (lpData : PvlVoid; uiBufferSize : vlUInt; bHeaderOnly : vlBool) : vlBool; cdecl;
+  vlImageSaveLump: function (lpData : PvlVoid; uiBufferSize : vlUInt; uiSize : PvlUInt) : vlBool; cdecl;
+
+  vlImageGetFlags: function : vlUInt; cdecl;
   vlImageGetFormat: function : VTFImageFormat; cdecl;
-  vlImageGetWidth: function : Cardinal; cdecl;
-  vlImageGetHeight: function : Cardinal; cdecl;
-  vlImageConvert: function (lpSource : PByte; lpDest : PByte; uiWidth : Cardinal; uiHeight : Cardinal; SourceFormat : VTFImageFormat; DestFormat : VTFImageFormat) : Boolean; cdecl;
-  vlImageConvertToRGBA8888: function (lpSource : PByte; lpDest : PByte; uiWidth : Cardinal; uiHeight : Cardinal; SourceFormat : VTFImageFormat) : Boolean; cdecl;
-  //vlImageConvertFromRGBA8888: function (lpSource : PByte; lpDest : PByte; uiWidth : Cardinal; uiHeight : Cardinal; DestFormat : VTFImageFormat) : Boolean; cdecl;
-  vlImageComputeImageSize: function (uiWidth : Cardinal; uiHeight : Cardinal; uiDepth : Cardinal; uiMipmaps : Cardinal; ImageFormat : VTFImageFormat) : Cardinal; cdecl;
-  vlImageGetSize: function : Cardinal; cdecl;
-  vlImageGetData: function (uiFrame : Cardinal; uiFace : Cardinal; uiSlice : Cardinal; uiMipmapLevel : Cardinal) : PByte; cdecl;
-  //vlImageSetData: procedure (uiFrame : Cardinal; uiFace : Cardinal; uiSlice : Cardinal; uiMipmapLevel : Cardinal; lpData : PByte); cdecl;
-  //vlImageCreate: function (uiWidth : Cardinal; uiHeight : Cardinal; uiFrames : Cardinal; uiFaces : Cardinal; uiSlices : Cardinal; ImageFormat :VTFImageFormat; bThumbnail : Boolean; bMipmaps: Boolean; bNullImageData : Boolean) : Boolean; cdecl;
-  vlImageCreateSingle: function (uiWidth : Cardinal; uiHeight : Cardinal; lpImageDataRGBA8888 : PByte; VTFCreateOptions : PSVTFCreateOptions) : Boolean; cdecl;
+  vlImageGetWidth: function : vlUInt; cdecl;
+  vlImageGetHeight: function : vlUInt; cdecl;
+  
+  vlImageConvert: function (lpSource : PvlByte; lpDest : PvlByte; uiWidth : vlUInt; uiHeight : vlUInt; SourceFormat : VTFImageFormat; DestFormat : VTFImageFormat) : vlBool; cdecl;
+  vlImageConvertToRGBA8888: function (lpSource : PvlByte; lpDest : PvlByte; uiWidth : vlUInt; uiHeight : vlUInt; SourceFormat : VTFImageFormat) : vlBool; cdecl;
+  //vlImageConvertFromRGBA8888: function (lpSource : PvlByte; lpDest : PvlByte; uiWidth : vlUInt; uiHeight : vlUInt; DestFormat : VTFImageFormat) : vlBool; cdecl;
+  vlImageComputeImageSize: function (uiWidth : vlUInt; uiHeight : vlUInt; uiDepth : vlUInt; uiMipmaps : Cardinal; ImageFormat : VTFImageFormat) : vlBool; cdecl;
+  vlImageGetSize: function : vlUInt; cdecl;
+  
+  vlImageGetData: function (uiFrame : vlUInt; uiFace : vlUInt; uiSlice : vlUInt; uiMipmapLevel : vlUInt) : PvlByte; cdecl;
+  //vlImageSetData: procedure (uiFrame : vlUInt; uiFace : vlUInt; uiSlice : vlUInt; uiMipmapLevel : vlUInt; lpData : PvlByte); cdecl;
+  
+  //vlImageCreate: function (uiWidth : vlUInt; uiHeight : vlUInt; uiFrames : vlUInt; uiFaces : vlUInt; uiSlices : vlUInt; ImageFormat : VTFImageFormat; bThumbnail : vlBool; bMipmaps: vlBool; bNullImageData : vlBool) : vlBool; cdecl;
+  vlImageCreateSingle: function (uiWidth : vlUInt; uiHeight : vlUInt; lpImageDataRGBA8888 : PvlByte; VTFCreateOptions : PSVTFCreateOptions) : vlBool; cdecl;
   vlImageCreateDefaultCreateStructure: procedure (VTFCreateOptions : PSVTFCreateOptions); cdecl;
-  vlCreateMaterial: function (uiMaterial : PCardinal) : Boolean; cdecl;
-  vlBindMaterial: function (uiMaterial : Cardinal) : Boolean; cdecl;
-  vlDeleteMaterial: procedure (uiMaterial : Cardinal); cdecl;
-  vlMaterialLoadLump: function (lpData : PByte; uiBufferSize : Cardinal; bHeaderOnly : Boolean) : Boolean; cdecl;
-  vlMaterialSaveLump: function (lpData : PByte; uiBufferSize : Cardinal; uiSize : PCardinal) : Boolean; cdecl;
-  vlMaterialGetFirstNode: function : Boolean; cdecl;
-  vlMaterialGetNextNode: function : Boolean; cdecl;
-  vlMaterialGetNodeName: function : PChar; cdecl;
+
+  vlBindMaterial: function (uiMaterial : vlUInt) : vlBool; cdecl;
+
+  vlCreateMaterial: function (uiMaterial : PvlUInt) : vlBool; cdecl;
+  vlDeleteMaterial: procedure (uiMaterial : vlUInt); cdecl;
+  
+  vlMaterialLoadLump: function (lpData : PvlVoid; uiBufferSize : vlUInt) : vlBool; cdecl;
+  vlMaterialSaveLump: function (lpData : PvlVoid; uiBufferSize : vlUInt; uiSize : PvlUInt) : vlBool; cdecl;
+
+  vlMaterialGetFirstNode: function : vlBool; cdecl;
+  //vlMaterialGetLastNode: function : vlBool; cdecl;
+  vlMaterialGetNextNode: function : vlBool; cdecl;
+  //vlMaterialGetPreviousNode: function : vlBool; cdecl;
+
+  vlMaterialGetNodeName: function : PvlChar; cdecl;
   vlMaterialGetNodeType: function : VMTNodeType; cdecl;
-  vlMaterialGetNodeString: function : PChar; cdecl;
-  vlMaterialGetNodeInteger: function : Cardinal; cdecl;
-  vlMaterialGetNodeSingle: function : Single; cdecl;
-  vlMaterialSetNodeName: procedure (cName : PChar); cdecl;
-  vlMaterialSetNodeString: procedure (cValue : PChar); cdecl;
-  vlMaterialSetNodeInteger: procedure (iValue : Cardinal); cdecl;
-  vlMaterialSetNodeSingle: procedure (sValue : Single); cdecl;
-  vlMaterialAddNodeGroup: procedure (cName : PChar); cdecl;
-  vlMaterialAddNodeString: procedure (cName : PChar; cValue : PChar); cdecl;
-  vlMaterialAddNodeInteger: procedure (cName : PChar; iValue : Cardinal); cdecl;
-  vlMaterialAddNodeSingle: procedure (cName : PChar; sValue : Single); cdecl;
-  vlMaterialCreate: function (cRoot : PChar) : Boolean; cdecl;
-  vlMaterialGetParentNode: procedure; cdecl;
-  vlMaterialGetChildNode: procedure (cName : PChar); cdecl;
+  vlMaterialGetNodeString: function : PvlChar; cdecl;
+  vlMaterialGetNodeInteger: function : vlUInt; cdecl;
+  vlMaterialGetNodeSingle: function : vlFloat; cdecl;
+  vlMaterialSetNodeName: procedure (cName : PvlChar); cdecl;
+  vlMaterialSetNodeString: procedure (cValue : PvlChar); cdecl;
+  vlMaterialSetNodeInteger: procedure (iValue : vlUInt); cdecl;
+  vlMaterialSetNodeSingle: procedure (sValue : vlFloat); cdecl;
+  vlMaterialAddNodeGroup: procedure (cName : PvlChar); cdecl;
+  vlMaterialAddNodeString: procedure (cName : PvlChar; cValue : PvlChar); cdecl;
+  vlMaterialAddNodeInteger: procedure (cName : PvlChar; iValue : vlUInt); cdecl;
+  vlMaterialAddNodeSingle: procedure (cName : PvlChar; sValue : vlFloat); cdecl;
+
+  vlMaterialCreate: function (cRoot : PvlChar) : vlBool; cdecl;
+  vlMaterialGetParentNode: function : vlBool; cdecl;
+  vlMaterialGetChildNode: function (cName : PvlChar) : vlBool; cdecl;
 
 implementation
 
@@ -438,54 +542,63 @@ function LoadVTFLib : Boolean;
 begin
   if (TimesLoaded=0) then
   begin
-    Result:=False;
-
     if HVTFLib = 0 then
     begin
       HVTFLib := LoadLibrary(PChar(GetQPath(pQuArKDll)+'VTFLib.dll'));
       if HVTFLib = 0 then
-      begin
         LogAndRaiseError('Unable to load dlls/VTFLib.dll');
-        Exit;
-      end;
 
-      //General calls:
       vlGetVersion        := InitDllPointer(HVTFLib, 'vlGetVersion');
       //vlGetVersionString  := InitDllPointer(HVTFLib, 'vlGetVersionString');
       //vlGetLastError      := InitDllPointer(HVTFLib, 'vlGetLastError');
       vlInitialize        := InitDllPointer(HVTFLib, 'vlInitialize');
       vlShutdown          := InitDllPointer(HVTFLib, 'vlShutdown');
 
-      //Calls for VTF file handling:
-      vlCreateImage     := InitDllPointer(HVTFLib, 'vlCreateImage');
+      vlGetBoolean        := InitDllPointer(HVTFLib, 'vlGetBoolean');
+      vlSetBoolean        := InitDllPointer(HVTFLib, 'vlSetBoolean');
+      vlGetInteger        := InitDllPointer(HVTFLib, 'vlGetInteger');
+      vlSetInteger        := InitDllPointer(HVTFLib, 'vlSetInteger');
+      vlGetFloat          := InitDllPointer(HVTFLib, 'vlGetFloat');
+      vlSetFloat          := InitDllPointer(HVTFLib, 'vlSetFloat');
+
       vlBindImage       := InitDllPointer(HVTFLib, 'vlBindImage');
+
+      vlCreateImage     := InitDllPointer(HVTFLib, 'vlCreateImage');
       vlDeleteImage     := InitDllPointer(HVTFLib, 'vlDeleteImage');
-      //vlImageLoad       := InitDllPointer(HVTFLib, 'vlImageLoad');
+
       vlImageLoadLump   := InitDllPointer(HVTFLib, 'vlImageLoadLump');
       vlImageSaveLump   := InitDllPointer(HVTFLib, 'vlImageSaveLump');
+
       vlImageGetFlags   := InitDllPointer(HVTFLib, 'vlImageGetFlags');
       vlImageGetFormat  := InitDllPointer(HVTFLib, 'vlImageGetFormat');
       vlImageGetWidth   := InitDllPointer(HVTFLib, 'vlImageGetWidth');
       vlImageGetHeight  := InitDllPointer(HVTFLib, 'vlImageGetHeight');
+
       vlImageConvert    := InitDllPointer(HVTFLib, 'vlImageConvert');
       vlImageConvertToRGBA8888   := InitDllPointer(HVTFLib, 'vlImageConvertToRGBA8888');
       //vlImageConvertFromRGBA8888 := InitDllPointer(HVTFLib, 'vlImageConvertFromRGBA8888');
       vlImageComputeImageSize    := InitDllPointer(HVTFLib, 'vlImageComputeImageSize');
       vlImageGetSize    := InitDllPointer(HVTFLib, 'vlImageGetSize');
+
       vlImageGetData    := InitDllPointer(HVTFLib, 'vlImageGetData');
       //vlImageSetData    := InitDllPointer(HVTFLib, 'vlImageSetData');
       //vlImageCreate     := InitDllPointer(HVTFLib, 'vlImageCreate');
       vlImageCreateSingle        := InitDllPointer(HVTFLib, 'vlImageCreateSingle');
       vlImageCreateDefaultCreateStructure      := InitDllPointer(HVTFLib, 'vlImageCreateDefaultCreateStructure');
 
-      //Calls for VMT file handling:
-      vlCreateMaterial    := InitDllPointer(HVTFLib, 'vlCreateMaterial');
       vlBindMaterial      := InitDllPointer(HVTFLib, 'vlBindMaterial');
+
+      vlCreateMaterial    := InitDllPointer(HVTFLib, 'vlCreateMaterial');
       vlDeleteMaterial    := InitDllPointer(HVTFLib, 'vlDeleteMaterial');
+
       vlMaterialLoadLump  := InitDllPointer(HVTFLib, 'vlMaterialLoadLump');
       vlMaterialSaveLump  := InitDllPointer(HVTFLib, 'vlMaterialSaveLump');
+
       vlMaterialGetFirstNode    := InitDllPointer(HVTFLib, 'vlMaterialGetFirstNode');
+      //vlMaterialGetLastNode     := InitDllPointer(HVTFLib, 'vlMaterialGetLastNode');
       vlMaterialGetNextNode     := InitDllPointer(HVTFLib, 'vlMaterialGetNextNode');
+      //vlMaterialGetPreviousNode := InitDllPointer(HVTFLib, 'vlMaterialGetPreviousNode');
+
       vlMaterialGetNodeName     := InitDllPointer(HVTFLib, 'vlMaterialGetNodeName');
       vlMaterialGetNodeType     := InitDllPointer(HVTFLib, 'vlMaterialGetNodeType');
       vlMaterialGetNodeString   := InitDllPointer(HVTFLib, 'vlMaterialGetNodeString');
@@ -499,23 +612,18 @@ begin
       vlMaterialAddNodeString   := InitDllPointer(HVTFLib, 'vlMaterialAddNodeString');
       vlMaterialAddNodeInteger  := InitDllPointer(HVTFLib, 'vlMaterialAddNodeInteger');
       vlMaterialAddNodeSingle   := InitDllPointer(HVTFLib, 'vlMaterialAddNodeSingle');
+
       vlMaterialCreate          := InitDllPointer(HVTFLib, 'vlMaterialCreate');
       vlMaterialGetParentNode   := InitDllPointer(HVTFLib, 'vlMaterialGetParentNode');
       vlMaterialGetChildNode    := InitDllPointer(HVTFLib, 'vlMaterialGetChildNode');
 
       //DanielPharos: If one of the API func's fails, we should stop loading, and return False!
 
-      if vlGetVersion<125 then
-      begin
+      if vlGetVersion<127 then
         LogAndRaiseError('VTFLib version mismatch!');
-        Exit;
-      end;
 
-      if vlInitialize=false then
-      begin
+      if vlInitialize=vlFalse then
         LogAndRaiseError('Unable to initialize VTFLib!');
-        Exit;
-      end;
     end;
 
     TimesLoaded := 1;
@@ -545,33 +653,53 @@ begin
       //vlGetLastError    := nil;
       vlInitialize      := nil;
       vlShutdown        := nil;
+
+      vlGetBoolean      := nil;
+      vlSetBoolean      := nil;
+      vlGetInteger      := nil;
+      vlSetInteger      := nil;
+      vlGetFloat        := nil;
+      vlSetFloat        := nil;
+
+      vlBindImage       := nil;
+
       vlCreateImage     := nil;
       vlBindImage       := nil;
-      vlDeleteImage     := nil;
-      //vlImageLoad       := nil;
+
       vlImageLoadLump   := nil;
       vlImageSaveLump   := nil;
+
       vlImageGetFlags   := nil;
       vlImageGetFormat  := nil;
       vlImageGetWidth   := nil;
       vlImageGetHeight  := nil;
+
       vlImageConvert    := nil;
       vlImageConvertToRGBA8888   := nil;
       //vlImageConvertFromRGBA8888 := nil;
       vlImageComputeImageSize    := nil;
       vlImageGetSize    := nil;
+
       vlImageGetData    := nil;
       //vlImageSetData    := nil;
+
       //vlImageCreate     := nil;
       vlImageCreateSingle        := nil;
       vlImageCreateDefaultCreateStructure      := nil;
-      vlCreateMaterial    := nil;
+
       vlBindMaterial      := nil;
+
+      vlCreateMaterial    := nil;
       vlDeleteMaterial    := nil;
+
       vlMaterialLoadLump  := nil;
       vlMaterialSaveLump  := nil;
+
       vlMaterialGetFirstNode    := nil;
+      //vlMaterialGetLastNode     := nil;
       vlMaterialGetNextNode     := nil;
+      //vlMaterialGetPreviousNode := nil;
+
       vlMaterialGetNodeName     := nil;
       vlMaterialGetNodeType     := nil;
       vlMaterialGetNodeString   := nil;
@@ -585,6 +713,7 @@ begin
       vlMaterialAddNodeString   := nil;
       vlMaterialAddNodeInteger  := nil;
       vlMaterialAddNodeSingle   := nil;
+
       vlMaterialCreate          := nil;
       vlMaterialGetParentNode   := nil;
       vlMaterialGetChildNode    := nil;

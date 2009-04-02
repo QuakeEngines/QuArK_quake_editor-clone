@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.17  2009/02/21 17:10:12  danielpharos
+Changed all source files to use CRLF text format, updated copyright and GPL text.
+
 Revision 1.16  2008/11/06 20:18:22  danielpharos
 Removed old stuff in preparation for new specifics code.
 
@@ -80,6 +83,7 @@ uses SysUtils, Classes, QkObjects, QkFileObjects, QkImages, Dialogs;
 type
  QM32 = class(QImage)
         protected
+          class function FormatName : String; override;
           procedure SaveFile(Info: TInfoEnreg1); override;
           procedure LoadFile(F: TStream; FSize: Integer); override;
         public
@@ -331,6 +335,11 @@ begin
      end;
  else inherited;
  end;
+end;
+
+class function QM32.FormatName : String;
+begin
+ Result:='M32';
 end;
 
 class function QM32.Typeinfo: String;

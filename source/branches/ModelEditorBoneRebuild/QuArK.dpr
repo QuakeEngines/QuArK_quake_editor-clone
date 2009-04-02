@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.62  2009/02/21 17:09:36  danielpharos
+Changed all source files to use CRLF text format, updated copyright and GPL text.
+
 Revision 1.61  2008/12/12 12:47:52  danielpharos
 Moved GlobalWarning to QkExceptions, and added QkTextBoxForm.
 
@@ -264,6 +267,7 @@ uses
   QkHr2 in 'prog\QkHr2.pas',
   QkImages in 'prog\QkImages.pas' {FQImages},
   QkInclude in 'prog\QkInclude.pas',
+  QkIwi in 'prog\QkIwi.pas',
   QkJpg in 'prog\QkJpg.pas',
   QkListView in 'prog\QkListView.pas' {QForm2},
   QkMacro in 'prog\QkMacro.pas',

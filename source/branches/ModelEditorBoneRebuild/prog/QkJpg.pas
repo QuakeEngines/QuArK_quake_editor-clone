@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.28  2009/02/21 17:10:20  danielpharos
+Changed all source files to use CRLF text format, updated copyright and GPL text.
+
 Revision 1.27  2009/02/10 21:59:35  danielpharos
 Updated to DevIL 1.7.7.
 
@@ -165,7 +168,7 @@ end;
 procedure QJpeg.SaveFileDevILSettings;
 var
   Setup: QObject;
-  Flag: Cardinal;
+  Flag: ILint;
 begin
   inherited;
 
@@ -225,6 +228,13 @@ begin
     end;
   except
     Result:=JPEG_ACCURATE;
+  end;
+
+  try
+    if Setup.Specifics.Values['LoadCMYKFreeImage']<>'' then
+      Result:=Result or JPEG_CMYK;
+  except
+    ;
   end;
 end;
 

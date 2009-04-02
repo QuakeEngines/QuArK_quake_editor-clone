@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.30  2009/02/21 17:06:18  danielpharos
+Changed all source files to use CRLF text format, updated copyright and GPL text.
+
 Revision 1.29  2009/02/11 22:48:30  danielpharos
 Workaround a (now known) DevIL bug.
 
@@ -206,8 +209,8 @@ function TestConversionImages(var I: Integer{; Exclude: QImage}) : QImageClass;
 
 implementation
 
-uses QkPcx, QkBmp, QkTga, QkDDS, QkFTX, QkJpg, QkPng, QkSoF, QkVTF, TbPalette,
-     qmath, Quarkx, QkExceptions, CCode, Undo, Travail, Setup, Logging;
+uses QkPcx, QkBmp, QkTga, QkDDS, QkFTX, QkIwi, QkJpg, QkPng, QkSoF, QkVTF,
+     TbPalette, qmath, Quarkx, QkExceptions, CCode, Undo, Travail, Setup, Logging;
 
 {$R *.DFM}
 
@@ -232,7 +235,7 @@ end;*)
 
 function TestConversionImages(var I: Integer) : QImageClass;
 const
- IntlImages: array[1..9] of QImageClass = (QPcx, QTga, QDDS, QBmp, QJPeg, QPng, QM32, QFTX, QVTF);
+ IntlImages: array[1..10] of QImageClass = (QPcx, QTga, QDDS, QBmp, QJPeg, QPng, QM32, QFTX, QVTF, QIWI);
 begin
  if I>High(IntlImages) then
   begin
@@ -291,7 +294,7 @@ end;
 procedure QImage.SetupDevILSettings;
 var
   Setup: QObject;
-  Flag: Cardinal;
+  Flag: ILint;
 begin
   ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
   CheckDevILError(ilGetError);
@@ -744,20 +747,21 @@ begin
           end;
         end;
       end;
-    finally
-      PSD.Done;
-    end;
 
-    //Determine the size of the buffer needed
-    OutputSize:=0;
-    OutputSize:=ilSaveL(FileTypeDevIL, Nil, OutputSize);
-    CheckDevILError(ilGetError);
-    SetLength(RawBuffer, OutputSize);
-    ilSaveL(FileTypeDevIL, Pointer(RawBuffer), OutputSize); //FIXME: Not checking for Return value: bug in DevIL 1.7.7
-    CheckDevILError(ilGetError);
+      //Determine the size of the buffer needed
+      OutputSize:=0;
+      OutputSize:=ilSaveL(FileTypeDevIL, Nil, OutputSize);
+      CheckDevILError(ilGetError);
+      SetLength(RawBuffer, OutputSize);
+      OutputSize:=ilSaveL(FileTypeDevIL, Pointer(RawBuffer), OutputSize);
+      CheckDevILError(ilGetError);
+
+    finally
+      ilDeleteImages(1, @DevILImage);
+      CheckDevILError(ilGetError);
+    end;
   finally
-    ilDeleteImages(1, @DevILImage);
-    CheckDevILError(ilGetError);
+    PSD.Done;
   end;
 
   Info.F.WriteBuffer(Pointer(RawBuffer)^,OutputSize);

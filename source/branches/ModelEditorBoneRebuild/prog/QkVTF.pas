@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.42  2009/02/21 17:06:18  danielpharos
+Changed all source files to use CRLF text format, updated copyright and GPL text.
+
 Revision 1.41  2009/02/10 21:59:35  danielpharos
 Updated to DevIL 1.7.7.
 
@@ -162,6 +165,8 @@ type
   QVTF = class(QImage)
   protected
     class function FileTypeDevIL : DevILType; override;
+    procedure SaveFileDevILSettings; override;
+    class function FormatName : String; override;
     procedure SaveFile(Info: TInfoEnreg1); override;
     procedure LoadFile(F: TStream; FSize: Integer); override;
   public
@@ -178,6 +183,13 @@ uses SysUtils, StrUtils, Setup, Quarkx, QkExceptions, QkObjectClassList,
 
 var
   VTFLoaded: Boolean;
+
+{-------------------}
+
+class function QVTF.FormatName : String;
+begin
+ Result:='VTF';
+end;
 
 class function QVTF.TypeInfo: String;
 begin
@@ -197,6 +209,58 @@ begin
   Result:=IL_VTF;
 end;
 
+procedure QVTF.SaveFileDevILSettings;
+var
+  Setup: QObject;
+  Flag: ILint;
+
+  PSD: TPixelSetDescription;
+begin
+  inherited;
+
+  Setup:=SetupSubSet(ssFiles, 'VTF');
+  PSD:=Description;
+  try
+    if PSD.AlphaBits=psa8bpp then
+    begin
+      try
+        case StrToInt(Setup.Specifics.Values['SaveFormatADevIL']) of
+        0: Flag:=IL_DXT1;
+        1: Flag:=IL_DXT5;
+        2: Flag:=IL_DXT3;
+        3: Flag:=IL_DXT1A;
+        4: Flag:=IL_DXT_NO_COMP;
+        else
+          Flag:=IL_DXT5;
+        end;
+      except
+        Flag:=IL_DXT5;
+      end;
+    end
+    else
+    begin
+      try
+        case StrToInt(Setup.Specifics.Values['SaveFormatDevIL']) of
+        0: Flag:=IL_DXT1;
+        1: Flag:=IL_DXT5;
+        2: Flag:=IL_DXT3;
+        3: Flag:=IL_DXT1A;
+        4: Flag:=IL_DXT_NO_COMP;
+        else
+          Flag:=IL_DXT1;
+        end;
+      except
+        Flag:=IL_DXT1;
+      end;
+    end;
+  finally
+    PSD.Done;
+  end;
+
+  ilSetInteger(IL_VTF_COMP, Flag);
+  CheckDevILError(ilGetError);
+end;
+
 procedure QVTF.LoadFile(F: TStream; FSize: Integer);
 const
   Spec1 = 'Image1=';
@@ -207,6 +271,8 @@ type
   TRGB = array[0..2] of Byte;
 var
   LibraryToUse: string;
+  Setup: QObject;
+  Flag: vlInt;
 
   RawBuffer: String;
   Source, DestAlpha, DestImg, pSource, pDestAlpha, pDestImg: PChar;
@@ -217,14 +283,14 @@ var
   ImageFormat: VTFImageFormat;
   Width, Height: Cardinal;
   NumberOfPixels: Integer;
-  RawData, RawData2: PByte;
+  RawData, RawData2: PvlByte;
   HasAlpha: Boolean;
   V: array[1..2] of Single;
 begin
   Log(LOG_VERBOSE,'Loading VTF file: %s',[self.name]);;
   case ReadFormat of
     1: begin  { as stand-alone file }
-      LibraryToUse:=SetupSubSet(ssFiles, 'JPG').Specifics.Values['LoadLibrary'];
+      LibraryToUse:=SetupSubSet(ssFiles, 'VTF').Specifics.Values['LoadLibrary'];
       if LibraryToUse='DevIL' then
         LoadFileDevIL(F, FSize)
       else if LibraryToUse='VTFLib' then
@@ -239,14 +305,29 @@ begin
         SetLength(RawBuffer, FSize);
         F.ReadBuffer(Pointer(RawBuffer)^, FSize);
 
-        if vlCreateImage(@VTFImage)=false then
+        Setup:=SetupSubSet(ssFiles, 'VTF');
+        try
+          case StrToInt(Setup.Specifics.Values['DXTQualityVTFLib']) of
+          0: Flag:=DXT_QUALITY_LOW;
+          1: Flag:=DXT_QUALITY_MEDIUM;
+          2: Flag:=DXT_QUALITY_HIGH;
+          3: Flag:=DXT_QUALITY_HIGHEST;
+          else
+            Flag:=DXT_QUALITY_HIGH;
+          end;
+        except
+          Flag:=DXT_QUALITY_HIGH;
+        end;
+        vlSetInteger(VTFLIB_DXT_QUALITY, Flag);
+
+        if vlCreateImage(@VTFImage)=vlFalse then
           LogAndRaiseError('Unable to load VTF file. Call to vlCreateImage failed.');
 
         try
-          if vlBindImage(VTFImage)=false then
+          if vlBindImage(VTFImage)=vlFalse then
             LogAndRaiseError('Unable to load VTF file. Call to vlBindImage failed.');
 
-          if vlImageLoadLump(Pointer(RawBuffer), Length(RawBuffer), false)=false then
+          if vlImageLoadLump(Pointer(RawBuffer), Length(RawBuffer), vlFalse)=vlFalse then
             LogAndRaiseError('Unable to load VTF file. Call to vlImageLoadLump failed. Please make sure the file is a valid VTF file, and not damaged or corrupt.');
 
           HasAlpha := (vlImageGetFlags() and (TEXTUREFLAGS_ONEBITALPHA or TEXTUREFLAGS_EIGHTBITALPHA))<>0;
@@ -266,7 +347,7 @@ begin
           GetMem(RawData,vlImageComputeImageSize(Width, Height, 1, 1, ImageFormat));
           try
             RawData2:=vlImageGetData(0, 0, 0, 0);
-            if vlImageConvert(RawData2, RawData, Width, Height, vlImageGetFormat(), ImageFormat)=false then
+            if vlImageConvert(RawData2, RawData, Width, Height, vlImageGetFormat(), ImageFormat)=vlFalse then
               LogAndRaiseError('Unable to load VTF file. Call to vlImageConvert failed.');
 
             if HasAlpha then
@@ -354,12 +435,14 @@ type
   PRGB = ^TRGB;
   TRGB = array[0..2] of char;
 var
+  LibraryToUse: string;
+
   NeedToFreeDummy: Boolean;
   DummyImage: QImage;
   PSD: TPixelSetDescription;
   TexSize : longword;
   S, RawBuffer: String;
-  RawData, RawData2: PByte;
+  RawData, RawData2: PvlByte;
   SourceImg, SourceAlpha, Dest, pSourceImg, pSourceAlpha, pDest: PChar;
   Width, Height: Integer;
 
@@ -376,170 +459,178 @@ begin
   case Format of
   1:
   begin  { as stand-alone file }
-    if not VTFLoaded then
+    LibraryToUse:=SetupSubSet(ssFiles, 'JPG').Specifics.Values['LoadLibrary'];
+    if LibraryToUse='DevIL' then
+      SaveFileDevIL(Info)
+    else if LibraryToUse='VTFLib' then
     begin
-      if not LoadVTFLib then
-        Raise EErrorFmt(5718, [GetLastError]);
-      VTFLoaded:=true;
-    end;
-
-    if vlCreateImage(@VTFImage)=false then
-      LogAndRaiseError('Unable to save VTF file. Call to vlCreateImage failed.');
-
-    try
-      if vlBindImage(VTFImage)=false then
-        LogAndRaiseError('Unable to save VTF file. Call to vlBindImage failed.');
-
-      TexFormat := IMAGE_FORMAT_DXT5;
-
-      if not IsTrueColor then
+      if not VTFLoaded then
       begin
-        NeedToFreeDummy:=True;
-        DummyImage:=ConvertToTrueColor;
-      end
-      else
-      begin
-        NeedToFreeDummy:=False;
-        DummyImage:=Self;
+        if not LoadVTFLib then
+          Raise EErrorFmt(5718, [GetLastError]);
+        VTFLoaded:=true;
       end;
 
-      PSD:=DummyImage.Description;
+      if vlCreateImage(@VTFImage)=vlFalse then
+        LogAndRaiseError('Unable to save VTF file. Call to vlCreateImage failed.');
+
       try
-        Width:=PSD.size.x;
-        Height:=PSD.size.y;
+        if vlBindImage(VTFImage)=vlFalse then
+          LogAndRaiseError('Unable to save VTF file. Call to vlBindImage failed.');
 
-        if PSD.AlphaBits = psa8bpp then
+        TexFormat := IMAGE_FORMAT_DXT5;
+
+        if not IsTrueColor then
         begin
-          S:=SetupSubSet(ssFiles, 'VTF').Specifics.Values['SaveFormatA'];
-          if S<>'' then
-          begin
-            try
-              TexFormat:=strtoint(S);
-              if (TexFormat < 0) or (TexFormat >= IMAGE_FORMAT_COUNT) then
-                TexFormat := IMAGE_FORMAT_DXT5;
-            except
-              TexFormat := IMAGE_FORMAT_DXT5;
-            end;
-          end;
-          ImageFormat:=IMAGE_FORMAT_RGBA8888;
-          GetMem(RawData2, Width * Height * 4);
-          try
-            SourceImg:=PChar(PSD.Data) + Width * Height * 3;
-            SourceAlpha:=PChar(PSD.AlphaData) + Width * Height;
-            Dest:=PChar(RawData2);
-            for J:=1 to Height do
-            begin
-              Dec(SourceImg, 3 * Width);
-              pSourceAlpha:=SourceAlpha;
-              pSourceImg:=SourceImg;
-              pDest:=Dest;
-              for I:=1 to Width do
-              begin
-                PRGBA(pDest)^[2]:=PRGB(pSourceImg)^[0];  { rgb }
-                PRGBA(pDest)^[1]:=PRGB(pSourceImg)^[1];  { rgb }
-                PRGBA(pDest)^[0]:=PRGB(pSourceImg)^[2];  { rgb }
-                PRGBA(pDest)^[3]:=pSourceAlpha^;          { alpha }
-                Inc(pDest, 4);
-                Inc(pSourceImg, 3);
-                Inc(pSourceAlpha);
-              end;
-              Inc(Dest, 4 * Width);
-            end;
-            TexSize:=vlImageComputeImageSize(Width, Height, 1, 1, IMAGE_FORMAT_RGBA8888);
-            GetMem(RawData, TexSize);
-
-            if vlImageConvertToRGBA8888(RawData2, RawData, Width, Height, ImageFormat)=false then
-              LogAndRaiseError('Unable to save VTF file. Call to vlImageConvert failed.');
-            finally
-              FreeMem(RawData2);
-            end;
+          NeedToFreeDummy:=True;
+          DummyImage:=ConvertToTrueColor;
         end
         else
         begin
-          S:=SetupSubSet(ssFiles, 'VTF').Specifics.Values['SaveFormat'];
-          if S<>'' then
+          NeedToFreeDummy:=False;
+          DummyImage:=Self;
+        end;
+
+        PSD:=DummyImage.Description;
+        try
+          Width:=PSD.size.x;
+          Height:=PSD.size.y;
+
+          if PSD.AlphaBits = psa8bpp then
           begin
-            try
-              TexFormat:=strtoint(S);
-              if (TexFormat < 0) or (TexFormat >= IMAGE_FORMAT_COUNT) then
-                TexFormat := IMAGE_FORMAT_DXT5;
-            except
-              TexFormat := IMAGE_FORMAT_DXT5;
-            end;
-          end;
-          ImageFormat:=IMAGE_FORMAT_RGB888;
-          GetMem(RawData2, Width * Height * 3);
-          try
-            SourceImg:=PChar(PSD.Data) + Width * Height * 3;
-            Dest:=PChar(RawData2);
-            for J:=1 to Height do
+            S:=SetupSubSet(ssFiles, 'VTF').Specifics.Values['SaveFormatA'];
+            if S<>'' then
             begin
-              Dec(SourceImg, 3 * Width);
-              pSourceImg:=SourceImg;
-              pDest:=Dest;
-              for I:=1 to Width do
-              begin
-                PRGB(pDest)^[0]:=PRGB(pSourceImg)^[2];  { rgb }
-                PRGB(pDest)^[1]:=PRGB(pSourceImg)^[1];  { rgb }
-                PRGB(pDest)^[2]:=PRGB(pSourceImg)^[0];  { rgb }
-                Inc(pDest, 3);
-                Inc(pSourceImg, 3);
+              try
+                TexFormat:=strtoint(S);
+                if (TexFormat < 0) or (TexFormat >= IMAGE_FORMAT_COUNT) then
+                  TexFormat := IMAGE_FORMAT_DXT5;
+              except
+                TexFormat := IMAGE_FORMAT_DXT5;
               end;
-              Inc(Dest, 3 * Width);
             end;
-            TexSize:=vlImageComputeImageSize(Width, Height, 1, 1, IMAGE_FORMAT_RGBA8888);
-            GetMem(RawData, TexSize);
+            ImageFormat:=IMAGE_FORMAT_RGBA8888;
+            GetMem(RawData2, Width * Height * 4);
+            try
+              SourceImg:=PChar(PSD.Data) + Width * Height * 3;
+              SourceAlpha:=PChar(PSD.AlphaData) + Width * Height;
+              Dest:=PChar(RawData2);
+              for J:=1 to Height do
+              begin
+                Dec(SourceImg, 3 * Width);
+                pSourceAlpha:=SourceAlpha;
+                pSourceImg:=SourceImg;
+                pDest:=Dest;
+                for I:=1 to Width do
+                begin
+                  PRGBA(pDest)^[2]:=PRGB(pSourceImg)^[0];  { rgb }
+                  PRGBA(pDest)^[1]:=PRGB(pSourceImg)^[1];  { rgb }
+                  PRGBA(pDest)^[0]:=PRGB(pSourceImg)^[2];  { rgb }
+                  PRGBA(pDest)^[3]:=pSourceAlpha^;          { alpha }
+                  Inc(pDest, 4);
+                  Inc(pSourceImg, 3);
+                  Inc(pSourceAlpha);
+                end;
+                Inc(Dest, 4 * Width);
+              end;
+              TexSize:=vlImageComputeImageSize(Width, Height, 1, 1, IMAGE_FORMAT_RGBA8888);
+              GetMem(RawData, TexSize);
 
-            if vlImageConvertToRGBA8888(RawData2, RawData, Width, Height, ImageFormat)=false then
-              LogAndRaiseError('Unable to save VTF file. Call to vlImageConvert failed.');
-          finally
-            FreeMem(RawData2);
+              if vlImageConvertToRGBA8888(RawData2, RawData, Width, Height, ImageFormat)=vlFalse then
+                LogAndRaiseError('Unable to save VTF file. Call to vlImageConvert failed.');
+              finally
+                FreeMem(RawData2);
+              end;
+          end
+          else
+          begin
+            S:=SetupSubSet(ssFiles, 'VTF').Specifics.Values['SaveFormat'];
+            if S<>'' then
+            begin
+              try
+                TexFormat:=strtoint(S);
+                if (TexFormat < 0) or (TexFormat >= IMAGE_FORMAT_COUNT) then
+                  TexFormat := IMAGE_FORMAT_DXT5;
+              except
+                TexFormat := IMAGE_FORMAT_DXT5;
+              end;
+            end;
+            ImageFormat:=IMAGE_FORMAT_RGB888;
+            GetMem(RawData2, Width * Height * 3);
+            try
+              SourceImg:=PChar(PSD.Data) + Width * Height * 3;
+              Dest:=PChar(RawData2);
+              for J:=1 to Height do
+              begin
+                Dec(SourceImg, 3 * Width);
+                pSourceImg:=SourceImg;
+                pDest:=Dest;
+                for I:=1 to Width do
+                begin
+                  PRGB(pDest)^[0]:=PRGB(pSourceImg)^[2];  { rgb }
+                  PRGB(pDest)^[1]:=PRGB(pSourceImg)^[1];  { rgb }
+                  PRGB(pDest)^[2]:=PRGB(pSourceImg)^[0];  { rgb }
+                  Inc(pDest, 3);
+                  Inc(pSourceImg, 3);
+                end;
+                Inc(Dest, 3 * Width);
+              end;
+              TexSize:=vlImageComputeImageSize(Width, Height, 1, 1, IMAGE_FORMAT_RGBA8888);
+              GetMem(RawData, TexSize);
+
+              if vlImageConvertToRGBA8888(RawData2, RawData, Width, Height, ImageFormat)=vlFalse then
+                LogAndRaiseError('Unable to save VTF file. Call to vlImageConvert failed.');
+            finally
+              FreeMem(RawData2);
+            end;
           end;
+        finally
+          PSD.Done;
         end;
-      finally
-        PSD.Done;
-      end;
-      if NeedToFreeDummy then
-        DummyImage.Free;
+        if NeedToFreeDummy then
+          DummyImage.Free;
 
-      //Find out which version of VTF file we want to save
-      VTFSaveVersion:=SetupSubSet(ssFiles, 'VTF').Specifics.Values['SaveVersion'];
-      I:=Pos('.', VTFSaveVersion);
-      if I>0 then
-      begin
-        try
-          VTFMajorVersion:=strtoint(LeftStr(VTFSaveVersion, I-1));
-        except
+        //Find out which version of VTF file we want to save
+        VTFSaveVersion:=SetupSubSet(ssFiles, 'VTF').Specifics.Values['SaveVersion'];
+        I:=Pos('.', VTFSaveVersion);
+        if I>0 then
+        begin
+          try
+            VTFMajorVersion:=strtoint(LeftStr(VTFSaveVersion, I-1));
+          except
+            VTFMajorVersion:=VTF_MAJOR_VERSION;
+          end;
+          try
+            VTFMinorVersion:=strtoint(RightStr(VTFSaveVersion, Length(VTFSaveVersion)-I));
+          except
+            VTFMinorVersion:=VTF_MINOR_VERSION;
+          end;
+        end
+        else
+        begin
           VTFMajorVersion:=VTF_MAJOR_VERSION;
-        end;
-        try
-          VTFMinorVersion:=strtoint(RightStr(VTFSaveVersion, Length(VTFSaveVersion)-I));
-        except
           VTFMinorVersion:=VTF_MINOR_VERSION;
         end;
-      end
-      else
-      begin
-        VTFMajorVersion:=VTF_MAJOR_VERSION;
-        VTFMinorVersion:=VTF_MINOR_VERSION;
+
+        vlImageCreateDefaultCreateStructure(@VTFOptions);
+        VTFOptions.uiVersion[0]:=VTFMajorVersion;
+        VTFOptions.uiVersion[1]:=VTFMinorVersion;
+        VTFOptions.ImageFormat:=TexFormat;
+
+        if vlImageCreateSingle(Width, Height, RawData, @VTFOptions)=vlFalse then
+          LogAndRaiseError('Unable to load VTF file. Call to vlImageCreateSingle failed.');
+        SetLength(RawBuffer, vlImageGetSize);
+        if vlImageSaveLump(Pointer(RawBuffer), Length(RawBuffer), @OutputSize)=vlFalse then
+          LogAndRaiseError('Unable to save VTF file. Call to vlImageSaveLump failed.');
+
+        F.WriteBuffer(Pointer(RawBuffer)^,OutputSize);
+        FreeMem(RawData); //FIXME: Put inside try..finally
+      finally
+        vlDeleteImage(VTFImage);
       end;
-
-      vlImageCreateDefaultCreateStructure(@VTFOptions);
-      VTFOptions.uiVersion[0]:=VTFMajorVersion;
-      VTFOptions.uiVersion[1]:=VTFMinorVersion;
-      VTFOptions.ImageFormat:=TexFormat;
-
-      if vlImageCreateSingle(Width, Height, RawData, @VTFOptions)=false then
-        LogAndRaiseError('Unable to load VTF file. Call to vlImageCreateSingle failed.');
-      SetLength(RawBuffer, vlImageGetSize);
-      if vlImageSaveLump(Pointer(RawBuffer), Length(RawBuffer), @OutputSize)=false then
-        LogAndRaiseError('Unable to save VTF file. Call to vlImageSaveLump failed.');
-
-      F.WriteBuffer(Pointer(RawBuffer)^,OutputSize);
-      FreeMem(RawData); //FIXME: Put inside try..finally
-    finally
-      vlDeleteImage(VTFImage);
-    end;
+    end
+    else
+      LogAndRaiseError('Unable to load VTF file. No valid saving library selected.');
   end
   else
     inherited;

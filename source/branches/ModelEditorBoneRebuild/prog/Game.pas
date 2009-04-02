@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.71  2009/02/21 17:06:18  danielpharos
+Changed all source files to use CRLF text format, updated copyright and GPL text.
+
 Revision 1.70  2009/01/28 21:10:05  danielpharos
 Fix a path IO error 103 crash.
 
@@ -610,15 +613,13 @@ var
 begin
  Result:=IncludeTrailingPathDelimiter(BaseOutputPath); //To make sure there already is a trailing slash
  I:=Length(Result)+1;
- if ExtractFileName(FileName) <> '' then
- begin
+ Result:=ConcatPaths([Result, FileName]);
+ if ExtractFileName(Result) <> '' then
    //It's a filename, so we can't add a trailing slash, and we can't send the filename-part to CreateAllDirs
-   Result:=ConcatPaths([Result, FileName]);
-   CreateAllDirs(IncludeTrailingPathDelimiter(ExtractFileDir(Result)), I);
- end
+   CreateAllDirs(IncludeTrailingPathDelimiter(ExtractFileDir(Result)), I)
  else
  begin
-   Result:=IncludeTrailingPathDelimiter(ConcatPaths([Result, FileName]));
+   Result:=IncludeTrailingPathDelimiter(Result);
    CreateAllDirs(Result, I);
  end;
 end;
@@ -774,7 +775,10 @@ begin
     begin
       // stupid program that wants to run in the base dir
       Result.Workdir := ConcatPaths([setupdirectory, setupbasedir]);
-      argument_mappath := ConcatPaths(['..', setuptmpquark, GameMapPath]);
+      if setupbasedir = setuptmpquark then
+        argument_mappath := GameMapPath
+      else
+        argument_mappath := ConcatPaths(['..', setuptmpquark, GameMapPath]);
     end
     else
     begin
@@ -822,7 +826,7 @@ begin
   Result.Filename:=StringReplace(Result.Filename, '%filename%', argument_filename, [rfReplaceAll]);
   Result.Filename:=StringReplace(Result.Filename, '%fullfilename%', argument_fullfilename, [rfReplaceAll]);
   Result.Filename:=StringReplace(Result.Filename, '%basepath%', setupdirectory, [rfReplaceAll]);
-  Result.Filename:=StringReplace(Result.Filename, '%gamedir%', GettmpQuArK, [rfReplaceAll]);
+  Result.Filename:=StringReplace(Result.Filename, '%gamedir%', setuptmpquark, [rfReplaceAll]);
   Result.Filename:=StringReplace(Result.Filename, '%quarkpath%', GetQPath(pQuArK), [rfReplaceAll]);
 
   //Steam replacers:

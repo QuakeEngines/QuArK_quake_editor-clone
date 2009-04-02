@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.79  2009/02/21 17:06:18  danielpharos
+Changed all source files to use CRLF text format, updated copyright and GPL text.
+
 Revision 1.78  2009/02/14 17:35:35  danielpharos
 You can now "uninstall" gamemodes: just delete the addons-directory of that game. Also, small code changes to accommodate this.
 
@@ -406,6 +409,7 @@ function SetupSubSetEx(Root: TSetupSet; const SubSet: String; Create: Boolean) :
 function SetupGameSet : QObject;
 procedure UpdateSetup(Level: Integer);
 procedure SaveSetupNow;
+function GetFreshDefaultsFile : QObject;
 function MakeAddOnsList : QFileObject;  { includes the file loaded in g_Form1 }
 procedure UpdateForm1Root;
 procedure UpdateAddOnsContent;
@@ -950,6 +954,14 @@ end;
 procedure SaveSetupNow;
 begin
  SaveSetup(rf_AsText);   { save as text }
+end;
+
+function GetFreshDefaultsFile : QObject;
+begin
+ Result:=Nil;
+ if LoadedDefaultsFileName='' then
+  Exit;
+ Result:=BindFileQObject(LoadedDefaultsFileName, Nil, False);
 end;
 
 procedure UpdateForm1Root;

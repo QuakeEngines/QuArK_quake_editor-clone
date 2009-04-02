@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.475  2009/02/11 13:52:38  danielpharos
+//Move SoF's into their own game-submenu.
+//
 //Revision 1.474  2009/02/10 21:55:18  danielpharos
 //Updated to DevIL 1.7.7.
 //
@@ -1734,6 +1737,7 @@ QQRKSRC1
         .jpg = ""      ijpg = '7'
         .png = ""      ipng = '7'
         .dds = ""      idds = '7'
+        .iwi = ""      iiwi = '7'
         .vtf = ""      ivtf = '7'
         .ftx = ""      iftx = '7'
         .spr = ""
@@ -1786,6 +1790,7 @@ QQRKSRC1
         .jpg = ""
         .png = ""
         .dds = ""
+        .iwi = ""
         .vtf = ""
         .ftx = ""
         .spr = ""
@@ -2121,12 +2126,12 @@ QQRKSRC1
         ForceFaceFlags = "1"
         AlwaysWriteThreeFields = "1"
         BuildPgm1  = "UBERMAP.EXE"
-        BuildArgs1 = ""
+        BuildArgs1 = "-gamedir "$22"%basepath%\%gamedir%"$22" "$22"%mapfile%"$22
         BuildCheck1= "+BSP,-LIN{LoadLinFile}"
         BuildPgm2  = "UBERMAP.EXE"
-        BuildArgs2 = "-vis"
+        BuildArgs2 = "-vis -gamedir "$22"%basepath%\%gamedir%"$22" "$22"%mapfile%"$22
         BuildPgm3  = "UBERMAP.EXE"
-        BuildArgs3 = "-light"
+        BuildArgs3 = "-light -gamedir "$22"%basepath%\%gamedir%"$22" "$22"%mapfile%"$22
         BuildPgm4  = "BSPC.EXE"
         BuildArgs4 = "-bsp2aas"
         BuildCheck4= "+AAS"
@@ -2193,23 +2198,19 @@ QQRKSRC1
         ForceFaceFlags = "1"
         AlwaysWriteThreeFields = "1"
         BuildPgm1  = "q3map.exe"
-        BuildArgs1 = " -v -gamedir   "$22"%basepath%"$22"  "$22"%file%"$22" "
+        BuildArgs1 = "-gamedir "$22"%basepath%\%gamedir%"$22" "$22"%mapfile%"$22
         BuildCheck1 = "+BSP,-LIN{LoadLinFile}"
         BuildPgm2  = "q3map.exe"
-        BuildArgs2 = "-vis -gamedir   "$22"%basepath%"$22"  "$22"%file%"$22" "
-        BuildCheck2 = "+BSP,-LIN{LoadLinFile}"
+        BuildArgs2 = "-vis -gamedir "$22"%basepath%\%gamedir%"$22" "$22"%mapfile%"$22
         BuildPgm3  = "q3map.exe"
-        BuildArgs3 = "-light -gamedir   "$22"%basepath%"$22"  "$22"%file%"$22" "
-        BuildCheck3 = "+BSP,-LIN{LoadLinFile}"
+        BuildArgs3 = "-light -gamedir "$22"%basepath%\%gamedir%"$22" "$22"%mapfile%"$22
         BuildPgm4  = "newq3map.exe"
-        BuildArgs4 = " -v -gamedir   "$22"%basepath%"$22"  "$22"%file%"$22" "
+        BuildArgs4 = "-gamedir "$22"%basepath%\%gamedir%"$22" "$22"%mapfile%"$22
         BuildCheck4 = "+BSP,-LIN{LoadLinFile}"
         BuildPgm5  = "newq3map.exe"
-        BuildArgs5 = "-vis -gamedir   "$22"%basepath%"$22"  "$22"%file%"$22" "
-        BuildCheck5 = "+BSP,-LIN{LoadLinFile}"
+        BuildArgs5 = "-vis -gamedir "$22"%basepath%\%gamedir%"$22" "$22"%mapfile%"$22
         BuildPgm6  = "newq3map.exe"
-        BuildArgs6 = "-light -gamedir   "$22"%basepath%"$22"  "$22"%file%"$22" "
-        BuildCheck6 = "+BSP,-LIN{LoadLinFile}"
+        BuildArgs6 = "-light -gamedir "$22"%basepath%\%gamedir%"$22" "$22"%mapfile%"$22
 
         MapCommentsPrefix = "//"
 
@@ -3923,8 +3924,10 @@ QQRKSRC1
       }
       BMP:config =
       {
-        LoadLibrary = "FreeImage"
-        SaveLibrary = "FreeImage"
+        LoadLibrary = "DevIL"
+        SaveLibrary = "DevIL"
+        SaveRLEDevIL = ""
+        SaveRLEFreeImage = ""
         Form = "FilesBMP"
       }
       DDS:config =
@@ -3939,12 +3942,13 @@ QQRKSRC1
       }
       JPG:config =
       {
-        LoadLibrary = "FreeImage"
-        SaveLibrary = "FreeImage"
+        LoadLibrary = "DevIL"
+        SaveLibrary = "DevIL"
         SaveFormatDevIL = "0"
         SaveQualityDevIL = '99'
         SaveProgressiveDevIL = ""
         LoadQualityFreeImage = "2"
+        LoadCMYKFreeImage = ""
         SaveQualityFreeImage = "4"
         SaveProgressiveFreeImage = ""
         Form = "FilesJPG"
@@ -3957,24 +3961,34 @@ QQRKSRC1
       }
       PNG:config =
       {
-        LoadLibrary = "FreeImage"
-        SaveLibrary = "FreeImage"
+        LoadLibrary = "DevIL"
+        SaveLibrary = "DevIL"
         InterlaceDevIL = ""
         Form = "FilesPNG"
       }
       TGA:config =
       {
-        LoadLibrary = "FreeImage"
-        SaveLibrary = "FreeImage"
+        LoadLibrary = "DevIL"
+        SaveLibrary = "DevIL"
+        SaveRLEDevIL = ""
+        CreateStampDevIL = ""
         Form = "FilesTGA"
+      }
+      VMT:config =
+      {
+        ParseMode = "1"
+        Form = "FilesVMT"
       }
       VTF:config =
       {
         LoadLibrary = "VTFLib"
         SaveLibrary = "VTFLib"
-        SaveFormat  = "3"
-        SaveFormatA = "15"
-        SaveVersion = "7.2"
+        SaveFormatVTFLib = "3"
+        SaveFormatAVTFLib = "15"
+        SaveVersionVTFLib = "7.2"
+        DXTQualityVTFLib = "2"
+        SaveFormatDevIL = "0"
+        SaveFormatADevIL = "1"
         Form = "FilesVTF"
       }
     }
@@ -8042,6 +8056,10 @@ QQRKSRC1
         Values = "DevIL" $0D "FreeImage"
         Hint="Select the library QuArK will use to save files of this type."
       }
+      sep: = {Typ="S" Txt="---- Advanced DevIL Settings ----"}
+      SaveRLEDevIL: = { Typ="X" Txt="Save with RLE compression" Cap="Enabled" Hint="Save the BMP texture with RLE (run-length encoding) compression."}
+      sep: = {Typ="S" Txt="---- Advanced FreeImage Settings ----"}
+      SaveRLEFreeImage: = { Typ="X" Txt="Save with RLE compression" Cap="Enabled" Hint="Save the BMP texture with RLE (run-length encoding) compression."}
     }
     FilesDDS:form =
     {
@@ -8172,6 +8190,7 @@ QQRKSRC1
              $0D "Accurate"
         Hint = "The quality the JPG texture will be loaded in when using the FreeImage library"
       }
+      LoadCMYKFreeImage: = { Typ="X" Txt="Load CMYK" Cap="Enabled" Hint="Load separated CMYK 'as is'."}
       SaveQualityFreeImage: =
       {
         Typ = "CL"
@@ -8251,6 +8270,23 @@ QQRKSRC1
         Values = "DevIL" $0D "FreeImage"
         Hint="Select the library QuArK will use to save files of this type."
       }
+      sep: = {Typ="S" Txt="---- Advanced DevIL Settings ----"}
+      SaveRLEDevIL: = { Typ="X" Txt="Save with RLE compression" Cap="Enabled" Hint="Save the TGA texture with RLE (run-length encoding) compression."}
+      CreateStampDevIL: = { Typ="X" Txt="Create Stamp" Cap="Enabled" Hint="Save a stamp with the TGA texture."}
+    }
+    FilesVMT:form =
+    {
+      Style = "7"
+      sep: = {Typ="S" Txt="---- Advanced VTFLib Settings ----"}
+      ParseMode: =
+      {
+        Typ = "CL"
+        Txt = "Parse mode"
+        Values =  "0"$0D "1"
+        Items = "Strict"
+             $0D "Loose"
+        Hint = "The mode used when parsing VMT files. Basically, this is an error-tolerance setting."
+      }
     }
     FilesVTF:form =
     {
@@ -8268,18 +8304,19 @@ QQRKSRC1
       {
         Txt="Select library for saving VTF files"
         Typ="CL"
-        Items  = "VTFLib"
-        Values = "VTFLib"
+        Items  = "VTFLib" $0D "DevIL"
+        Values = "VTFLib" $0D "DevIL"
         Hint="Select the library QuArK will use to save files of this type."
       }
-      sep: = {Typ="S" Txt="---- Advanced Saving Settings ----"}
-      SaveFormat: =
+      sep: = {Typ="S" Txt="---- Advanced VTFLib Settings ----"}
+      SaveFormatVTFLib: =
       {
         Typ = "CL"
         Txt = "Format of exported non-alpha VTF textures"
         Values =  "0"$0D "1"$0D "2"$0D "3"$0D "4"$0D "5"$0D "6"$0D "7"$0D "8"$0D "9"$0D
                  "10"$0D"11"$0D"12"$0D"13"$0D"14"$0D"15"$0D"16"$0D"17"$0D"18"$0D"19"$0D
-                 "20"$0D"21"$0D"22"$0D"23"$0D"24"$0D"25"$0D"26"$0D"27"$0D"28"
+                 "20"$0D"21"$0D"22"$0D"23"$0D"24"$0D"25"$0D"26"$0D"27"$0D"28"$0D"29"$0D
+                 "30"$0D"31"$0D"32"$0D"33"$0D"34"$0D"35"$0D"36"$0D"37"
         Items = "RGBA8888"
              $0D "ABGR8888"
              $0D "RGB888"
@@ -8309,15 +8346,26 @@ QQRKSRC1
              $0D "I32F"
              $0D "RGB323232F"
              $0D "RGBA32323232F"
+             $0D "NV_DST16"
+             $0D "NV_DST24"
+             $0D "NV_INTZ"
+             $0D "NV_RAWZ"
+             $0D "ATI_DST16"
+             $0D "ATI_DST24"
+             $0D "NV_NULL"
+             $0D "ATI2N"
+             $0D "ATI1N"
         Hint = "The format the VTF texture will be saved in"
+        Rows = "16"
       }
-      SaveFormatA: =
+      SaveFormatAVTFLib: =
       {
         Typ = "CL"
         Txt = "Format of exported alpha VTF textures"
         Values =  "0"$0D "1"$0D "2"$0D "3"$0D "4"$0D "5"$0D "6"$0D "7"$0D "8"$0D "9"$0D
                  "10"$0D"11"$0D"12"$0D"13"$0D"14"$0D"15"$0D"16"$0D"17"$0D"18"$0D"19"$0D
-                 "20"$0D"21"$0D"22"$0D"23"$0D"24"$0D"25"$0D"26"$0D"27"$0D"28"
+                 "20"$0D"21"$0D"22"$0D"23"$0D"24"$0D"25"$0D"26"$0D"27"$0D"28"$0D"29"$0D
+                 "30"$0D"31"$0D"32"$0D"33"$0D"34"$0D"35"$0D"36"$0D"37"
         Items = "RGBA8888"
              $0D "ABGR8888"
              $0D "RGB888"
@@ -8347,9 +8395,19 @@ QQRKSRC1
              $0D "I32F"
              $0D "RGB323232F"
              $0D "RGBA32323232F"
+             $0D "NV_DST16"
+             $0D "NV_DST24"
+             $0D "NV_INTZ"
+             $0D "NV_RAWZ"
+             $0D "ATI_DST16"
+             $0D "ATI_DST24"
+             $0D "NV_NULL"
+             $0D "ATI2N"
+             $0D "ATI1N"
         Hint = "The format the VTF texture with alpha will be saved in"
+        Rows = "16"
       }
-      SaveVersion: =
+      SaveVersionVTFLib: =
       {
         Typ = "CL"
         Txt = "Version of exported VTF textures"
@@ -8360,6 +8418,42 @@ QQRKSRC1
              $0D "7.3"
              $0D "7.4"
         Hint = "The file version the VTF texture will be saved in"
+      }
+      DXTQualityVTFLib: =
+      {
+        Typ = "CL"
+        Txt = "Quality of DXT compression"
+        Values =  "0"$0D "1"$0D "2"$0D "3"
+        Items = "Low"
+             $0D "Medium"
+             $0D "High"
+             $0D "Highest"
+        Hint = "The quality used for the DXT compression when saving"
+      }
+      sep: = {Typ="S" Txt="---- Advanced DevIL Settings ----"}
+      SaveFormatDevIL: =
+      {
+        Typ = "CL"
+        Txt = "Format of exported non-alpha VTF textures"
+        Values =  "0"$0D "1"$0D "2"$0D "3"$0D "4"
+        Items = "DXT1"
+              $0D"DXT5"
+              $0D"DXT3"
+              $0D"DXT1A"
+              $0D"No DXT Compression"
+        Hint = "The format the VTF texture will be saved in"
+      }
+      SaveFormatADevIL: =
+      {
+        Typ = "CL"
+        Txt = "Format of exported alpha VTF textures"
+        Values =  "0"$0D "1"$0D "2"$0D "3"$0D "4"
+        Items = "DXT1"
+              $0D"DXT5"
+              $0D"DXT3"
+              $0D"DXT1A"
+              $0D"No DXT Compression"
+        Hint = "The format the VTF texture with alpha will be saved in"
       }
     }
 
@@ -8803,7 +8897,7 @@ QQRKSRC1
       sep: = {Typ="S" Txt="Button and object icon colors"}
       Unsel: = {Typ="X" Txt="If not selected" Cap="display blue icons" Hint="Check this to display blue icons instead of brown ones for 'unselected' icons"}
       Sel: =   {Typ="X" Txt="If selected"     Cap="display blue icons" Hint="Uncheck this to display brown icons instead of blue ones for 'selected' icons"}
-      IconPath: = {Typ="CL" Txt="Icon size"   Values="images\\"$0D"lgicons\\"  Items="Normal"$0D"Large (LGIcons needed !)" Hint="Large icons require you to download first the 'LGIcons' pack from the web site."}
+      IconPath: = {Typ="CL" Txt="Icon size"   Values="images\\"$0D"lgicons\\"  Items="Normal"$0D"Large (LGIcons needed !)" Hint="Large icons require you to first download the 'LGIcons' pack from the website."}
       sep: = {Typ="S" Bold="0" Txt="(restart QuArK to reload icons with the new colors"}
       sep: = {Typ="S" Bold="0" Txt="  and size after you made changes here)"}
       sep: = {Typ="S" Txt = ""}
@@ -8811,7 +8905,7 @@ QQRKSRC1
       MaxRecentFiles = {Txt="Maximum number of recent files" Typ="EF1" Hint="Maximum amount of recent files to keep track of (0 .. 20)"}
       //ConsoleWidth = {Txt="Width of console" Typ="EF1" Hint="Amount of character per line in the console (80 .. 80)"}
       ConsoleHeight = {Txt="Height of console" Typ="EF1" Hint="Maximum amount of lines in the console (60 .. 600)"}
-      OnlineHelp = {Txt="Online help" Typ="X" Cap="Enabled" Hint="This will cause QuArK to open up the online help when the wanted file is not available locally."}
+      OnlineHelp = {Txt="Online help" Typ="X" Cap="Enabled" Hint="This will cause QuArK to open up the online help when the wanted help file is not available locally."}
     }
     General3DView:form =
     {
@@ -9086,6 +9180,7 @@ QQRKSRC1
       .jpg: = { Txt="JPEG images" externaledit = ! }
       .png: = { Txt="PNG images" externaledit = ! }
       .dds: = { Txt="DDS images" externaledit = ! }
+      .iwi: = { Txt="IWI images" externaledit = ! }
       .vtf: = { Txt="VTF images" externaledit = ! }
       .ftx: = { Txt="FTX images" externaledit = ! }
       .spr: = { Txt="SPR sprites" externaledit = ! }
@@ -9162,6 +9257,7 @@ QQRKSRC1
       .jpg: = {Typ="X" Cap=".jpg" Txt="JPEG Images"}
       .png: = {Typ="X" Cap=".png" Txt="PNG Images"}
       .dds: = {Typ="X" Cap=".dds" Txt="DDS Images"}
+      .iwi: = {Typ="X" Cap=".iwi" Txt="IWI Images"}
       .vtf: = {Typ="X" Cap=".vtf" Txt="VTF Images"}
       .ftx: = {Typ="X" Cap=".ftx" Txt="FTX Images"}
       .spr: = {Typ="X" Cap=".spr" Txt="SPR Sprites"}

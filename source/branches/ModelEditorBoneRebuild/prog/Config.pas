@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2009/02/21 17:06:18  danielpharos
+Changed all source files to use CRLF text format, updated copyright and GPL text.
+
 Revision 1.17  2008/12/15 22:20:58  danielpharos
 Fixed the right-click popup menu in the configuration not enabling all the usable menu-options.
 
@@ -91,6 +94,7 @@ type
     CancelBtn: TToolbarButton97;
     OkBtn: TToolbarButton97;
     ApplyBtn: TToolbarButton97;
+    ResetBtn: TToolbarButton97;
     Button1: TButton;
     Button2: TButton;
     TrashBtn: TToolbarButton97;
@@ -101,6 +105,7 @@ type
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure OkBtnClick(Sender: TObject);
     procedure CancelBtnClick(Sender: TObject);
+    procedure ResetBtnClick(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word;
@@ -163,6 +168,14 @@ begin
  g_ConfigDlg.Timer1Timer(Nil);
 end;
 
+function LatestConfigInfo(T: TSetupSet): QObject;
+begin
+ if (g_ConfigDlg=Nil) or not g_ConfigDlg.ApplyBtn.Enabled then
+  Result:=g_SetupSet[T]
+ else
+  Result:=g_ConfigDlg.Explorer.Roots[Ord(T)];
+end;
+
 function ShowAltConfigDlg(Racine: QObject; const Titre: String; NewObjList: TQList) : Boolean;
 var
  CfgDlg: TConfigDlg;
@@ -201,21 +214,6 @@ begin
   end;
  Result:=CfgDlg.ClickedOk;
  finally CfgDlg.Free; end;
-end;
-
-procedure TConfigDlg.InsertNewObj(Sender: TObject);
-var
- Q: QObject;
- Gr: QExplorerGroup;
-begin
- LongInt(Q):=(Sender as TControl).Tag;
- Gr:=ClipboardGroup;
- Gr.AddRef(+1); try
- Q:=Q.Clone(Nil, False);
- Gr.SubElements.Add(Q);
- Q.Specifics.Values[';desc']:='';
- Explorer.DropObjectsNow(Gr, '', True);
- finally Gr.AddRef(-1); end;
 end;
 
  {------------------------}
@@ -299,6 +297,21 @@ begin
  Explorer.TMSelUnique:=SourceSel;
 end;
 
+procedure TConfigDlg.InsertNewObj(Sender: TObject);
+var
+ Q: QObject;
+ Gr: QExplorerGroup;
+begin
+ LongInt(Q):=(Sender as TControl).Tag;
+ Gr:=ClipboardGroup;
+ Gr.AddRef(+1); try
+ Q:=Q.Clone(Nil, False);
+ Gr.SubElements.Add(Q);
+ Q.Specifics.Values[';desc']:='';
+ Explorer.DropObjectsNow(Gr, '', True);
+ finally Gr.AddRef(-1); end;
+end;
+
 procedure TConfigDlg.Timer1Timer(Sender: TObject);
 begin
   if not DisableTimer then
@@ -321,7 +334,7 @@ begin
    S:=T.Specifics.Values['Form'];
    if S<>'' then
     begin
-         { builds a FormCfg based on this form }
+     { builds a FormCfg based on this form }
      Q:=SetupQrk.FindSubObject(S, QFormCfg, QFileObject);
      if FormCfg1=Nil then
       begin
@@ -341,6 +354,7 @@ begin
      finally L.Free; end;
     {nFormCfg.Left:=-ScrollBox1.HorzScrollBar.Position;
      nFormCfg.Top:=-ScrollBox1.VertScrollBar.Position;}
+     ResetBtn.Enabled:=True;
      Exit;
     end;
   end;
@@ -351,6 +365,7 @@ begin
   end;
 {FormCfg1.Free;
  FormCfg1:=nFormCfg;}
+ ResetBtn.Enabled:=False;
 end;
 
 procedure TConfigDlg.FormDestroy(Sender: TObject);
@@ -430,14 +445,6 @@ begin
   end;
 end;
 
-function LatestConfigInfo(T: TSetupSet): QObject;
-begin
- if (g_ConfigDlg=Nil) or not g_ConfigDlg.ApplyBtn.Enabled then
-  Result:=g_SetupSet[T]
- else
-  Result:=g_ConfigDlg.Explorer.Roots[Ord(T)];
-end;
-
 procedure TConfigDlg.CancelOff;
 begin
  if ApplyBtn.Enabled then
@@ -501,6 +508,79 @@ procedure TConfigDlg.CancelBtnClick(Sender: TObject);
 begin
  CancelNow;
  Close;
+end;
+
+procedure TConfigDlg.ResetBtnClick(Sender: TObject);
+var
+ I, J: Integer;
+ Defaults: QObject;
+ ParentNameChain: TStringList;
+ Q, Q2, Q3: QObject;
+ T: TSetupSet;
+begin
+ if Application.MessageBox(PChar(LoadStr1(4625)), 'QuArK', MB_ICONEXCLAMATION or MB_YESNO or MB_DEFBUTTON2 or MB_SYSTEMMODAL) <> IDYES then
+   Exit;
+ Defaults:=GetFreshDefaultsFile;
+ Defaults.AddRef(+1);
+ try
+  for I:=0 to FormCfg1.LinkedObjects.Count div 2 - 1 do
+   begin
+    Q:=FormCfg1.LinkedObjects[I*2];
+    //Walk through the parents of Q, making a list of their names.
+    ParentNameChain:=TStringList.Create;
+    try
+     ParentNameChain.Add(Q.Name);
+     while Q.FParent<>nil do
+      begin
+       ParentNameChain.Add(Q.FParent.Name);
+       Q:=Q.FParent;
+      end;
+     //The first item is the setup root. We need a special way to find that.
+     Q:=nil;
+     for T:=Low(T) to High(T) do
+      begin
+       if Explorer.Roots[Ord(T)].Name = ParentNameChain[ParentNameChain.Count-1] then
+        begin
+         Q:=Explorer.Roots[Ord(T)];
+         break;
+        end;
+      end;
+     if Q = nil then
+      continue;
+     Q2:=Defaults.FindSubObject(ParentNameChain[ParentNameChain.Count-1], QConfig, nil);
+     if Q2 = nil then
+      continue;
+     //The rest is just standard setup QObjects. So trace those normally.
+     for J:=ParentNameChain.Count-2 downto 0 do
+      begin
+       Q:=Q.FindSubObject(ParentNameChain[J], QObject, nil);
+       if Q = nil then
+        break;
+       Q2:=Q2.FindSubObject(ParentNameChain[J], QObject, nil);
+       if Q2 = nil then
+        break;
+      end;
+     if Q = nil then
+      continue;
+     if Q2 = nil then
+      continue;
+     //Found the corresponding item. Let's exchange...
+     Q3:=Q.FParent;
+     J:=Q3.SubElements.IndexOf(Q);
+     Q3.SubElements.Delete(J);
+     Q:=Q2.Clone(Q3, False);
+     Q3.SubElements.Insert(J, Q);
+     Q.TvParent:=Q3;
+     Explorer.TMSelUnique:=Q;
+     FillExplorer(False);
+     CancelOff;
+    finally
+     ParentNameChain.Free;
+    end;
+   end;
+ finally
+  Defaults.AddRef(-1);
+ end;
 end;
 
 procedure TConfigDlg.Button1Click(Sender: TObject);

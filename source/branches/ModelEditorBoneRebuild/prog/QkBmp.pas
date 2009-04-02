@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.21  2009/02/21 17:06:18  danielpharos
+Changed all source files to use CRLF text format, updated copyright and GPL text.
+
 Revision 1.20  2008/10/04 13:50:55  danielpharos
 Start using LogAndRaiseError instead of local Fatal's.
 
@@ -78,6 +81,7 @@ type
         protected
           class function FileTypeDevIL : DevILType; override;
           class function FileTypeFreeImage : FREE_IMAGE_FORMAT; override;
+          procedure SaveFileDevILSettings; override;
           function LoadFileFreeImageSettings : Integer; override;
           function SaveFileFreeImageSettings : Integer; override;
           class function FormatName : String; override;
@@ -173,9 +177,31 @@ begin
   Result:=BMP_DEFAULT;
 end;
 
-function QBmp.SaveFileFreeImageSettings : Integer;
+procedure QBMP.SaveFileDevILSettings;
+var
+  Setup: QObject;
+  Flag: ILint;
 begin
-  Result:=BMP_DEFAULT;
+  inherited;
+
+  Setup:=SetupSubSet(ssFiles, 'BMP');
+  if Setup.Specifics.Values['SaveRLEDevIL']<>'' then
+    Flag:=IL_TRUE
+  else
+    Flag:=IL_FALSE;
+  ilSetInteger(IL_BMP_RLE, Flag);
+  CheckDevILError(ilGetError);
+end;
+
+function QBmp.SaveFileFreeImageSettings : Integer;
+var
+  Setup: QObject;
+begin
+  Setup:=SetupSubSet(ssFiles, 'BMP');
+  if Setup.Specifics.Values['SaveRLEFreeImage']<>'' then
+    Result:=BMP_SAVE_RLE
+  else
+    Result:=BMP_DEFAULT;
 end;
 
 procedure QBmp.LoadFile(F: TStream; FSize: Integer);

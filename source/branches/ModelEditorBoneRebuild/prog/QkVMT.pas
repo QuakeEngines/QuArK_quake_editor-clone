@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23  2009/02/21 17:06:18  danielpharos
+Changed all source files to use CRLF text format, updated copyright and GPL text.
+
 Revision 1.22  2009/02/04 10:13:08  danielpharos
 Use QkExceptions instead of local Fatal procedure.
 
@@ -138,7 +141,7 @@ function QVMTStage.DumpData : String;
 const
   NumberChars: string = '0123456789-';
 type
-  vlDataType = (vlString, vlInteger, vlSingle);
+  vlDataType = (vlDTString, vlDTInteger, vlDTSingle);
 var
   I, J, K: Integer;
   Q: QObject;
@@ -155,11 +158,11 @@ begin
     Spec:=RightStr(Spec,Length(Spec)-J);
 
     //DanielPharos: Ugly, slow and inaccurate way of determining the type...
-    SpecDataType:=vlInteger;
+    SpecDataType:=vlDTInteger;
     for J:=0 to Length(Spec) do
     begin
       CharFound:=false;
-      for K:=0 to 10 do
+      for K:=0 to Length(NumberChars)-1 do
       begin
         if NumberChars[K]=Spec[J] then
         begin
@@ -169,21 +172,21 @@ begin
       end;
       if CharFound=false then
       begin
-        SpecDataType:=vlString;
+        SpecDataType:=vlDTString;
         break;
       end;
     end;
-    if SpecDataType=vlInteger then
+    if SpecDataType=vlDTInteger then
     begin
       K:=Pos(Spec,'.');
       if K>0 then
-        SpecDataType:=vlSingle;
+        SpecDataType:=vlDTSingle;
     end;
 
     case SpecDataType of
-    vlString: vlMaterialAddNodeString(PChar(SpecName),PChar(Spec));
-    vlInteger: vlMaterialAddNodeInteger(PChar(SpecName),StrToInt(Spec));
-    vlSingle: vlMaterialAddNodeSingle(PChar(SpecName),StrToFloat(Spec));
+    vlDTString: vlMaterialAddNodeString(PvlChar(SpecName),PvlChar(Spec));
+    vlDTInteger: vlMaterialAddNodeInteger(PvlChar(SpecName),StrToInt(Spec));
+    vlDTSingle: vlMaterialAddNodeSingle(PvlChar(SpecName),StrToFloat(Spec));
     end;
   end;
 
@@ -192,10 +195,12 @@ begin
     Q:=SubElements[I];
     if Q is QVMTStage then
     begin
-      vlMaterialAddNodeGroup(PChar(Q.name));
-      vlMaterialGetChildNode(PChar(Q.name));
+      vlMaterialAddNodeGroup(PvlChar(Q.name));
+      if vlMaterialGetChildNode(PvlChar(Q.name))=vlFalse then
+        raise Exception.Create('Unable to parse VMT file. Call to vlMaterialGetChildNode failed.');
       QVMTStage(Q).DumpData;
-      vlMaterialGetParentNode;
+      if vlMaterialGetParentNode=vlFalse then
+        raise Exception.Create('Unable to parse VMT file. Call to vlMaterialGetParentNode failed.');
     end;
   end;
 end;
@@ -362,19 +367,21 @@ end;
 
 procedure QVMTFile.LoadFile(F: TStream; FSize: Integer);
 var
+  Setup: QObject;
+
   RawBuffer: String;
   VMTMaterial: Cardinal;
   Stage: QVMTStage;
   StageList: array of QObject;
   GroupEndWorkaround: Boolean;
-  GroupEndWorkaroundName: String;
+  GroupEndWorkaroundName: PvlChar;
 
   NodeLevel: Cardinal;
   NodeType: VMTNodeType;
-  NodeName: String;
-  NodeValueString: String;
-  NodeValueInteger: Cardinal;
-  NodeValueSingle: Single;
+  NodeName: PvlChar;
+  NodeValueString: PvlChar;
+  NodeValueInteger: vlUInt;
+  NodeValueSingle: vlFloat;
 begin
   Log(LOG_VERBOSE,'load vmt %s',[self.name]);;
   case ReadFormat of
@@ -389,27 +396,30 @@ begin
       SetLength(RawBuffer, FSize);
       F.ReadBuffer(Pointer(RawBuffer)^, FSize);
 
-      if vlCreateMaterial(@VMTMaterial)=false then
+      if vlCreateMaterial(@VMTMaterial)=vlFalse then
         LogAndRaiseError('Unable to load VMT file. Call to vlCreateMaterial failed.');
 
       try
-        if vlBindMaterial(VMTMaterial)=false then
-        begin
-          vlDeleteMaterial(VMTMaterial);
+        if vlBindMaterial(VMTMaterial)=vlFalse then
           LogAndRaiseError('Unable to load VMT file. Call to vlBindMaterial failed.');
+
+        Setup:=SetupSubSet(ssFiles, 'VMT');
+        try
+          case StrToInt(Setup.Specifics.Values['ParseMode']) of
+          0: vlSetInteger(VTFLIB_VMT_PARSE_MODE, PARSE_MODE_STRICT);
+          1: vlSetInteger(VTFLIB_VMT_PARSE_MODE, PARSE_MODE_LOOSE);
+          else
+            vlSetInteger(VTFLIB_VMT_PARSE_MODE, PARSE_MODE_LOOSE);
+          end;
+        except
+          vlSetInteger(VTFLIB_VMT_PARSE_MODE, PARSE_MODE_LOOSE);
         end;
 
-        if vlMaterialLoadLump(Pointer(RawBuffer), Length(RawBuffer), false)=false then
-        begin
-          vlDeleteMaterial(VMTMaterial);
+        if vlMaterialLoadLump(Pointer(RawBuffer), Length(RawBuffer))=vlFalse then
           LogAndRaiseError('Unable to load VMT file. Call to vlMaterialLoadLump failed. Please make sure the file is a valid VMT file, and not damaged or corrupt.');
-        end;
 
-        if vlMaterialGetFirstNode=false then
-        begin
-          vlDeleteMaterial(VMTMaterial);
+        if vlMaterialGetFirstNode=vlFalse then
           LogAndRaiseError('Unable to load VMT file. Call to vlMaterialGetFirstNode failed.');
-        end;
 
         NodeLevel:=0;
         SetLength(StageList, NodeLevel+1);
@@ -430,7 +440,7 @@ begin
               if (GroupEndWorkaround=false) or (NodeName<>GroupEndWorkaroundName) then
               begin
                 NodeLevel:=NodeLevel+1;
-                Stage:=QVMTStage.Create(NodeName, StageList[NodeLevel-1]);
+                Stage:=QVMTStage.Create(PChar(NodeName), StageList[NodeLevel-1]);
                 StageList[NodeLevel-1].SubElements.Add(Stage);
                 SetLength(StageList, NodeLevel+1);
                 StageList[NodeLevel]:=Stage;
@@ -444,17 +454,17 @@ begin
           NODE_TYPE_STRING:
             begin
               NodeValueString:=vlMaterialGetNodeString;
-              StageList[NodeLevel].Specifics.Add(NodeName+'='+NodeValueString);
+              StageList[NodeLevel].Specifics.Add(PChar(NodeName)+'='+PChar(NodeValueString));
             end;
           NODE_TYPE_INTEGER:
             begin
               NodeValueInteger:=vlMaterialGetNodeInteger;
-              StageList[NodeLevel].Specifics.Add(NodeName+'='+IntToStr(NodeValueInteger));
+              StageList[NodeLevel].Specifics.Add(PChar(NodeName)+'='+IntToStr(NodeValueInteger));
             end;
           NODE_TYPE_SINGLE:
             begin
               NodeValueSingle:=vlMaterialGetNodeSingle;
-              StageList[NodeLevel].Specifics.Add(NodeName+'='+FloatToStr(NodeValueSingle));
+              StageList[NodeLevel].Specifics.Add(PChar(NodeName)+'='+FloatToStr(NodeValueSingle));
             end;
           end;
 
@@ -465,7 +475,7 @@ begin
           end
           else
             GroupEndWorkaround:=false;
-        until vlMaterialGetNextNode=false;
+        until vlMaterialGetNextNode=vlFalse;
       finally
         vlDeleteMaterial(VMTMaterial);
       end;
@@ -494,11 +504,11 @@ begin
       VMTLoaded:=true;
     end;
 
-    if vlCreateMaterial(@VMTMaterial)=false then
+    if vlCreateMaterial(@VMTMaterial)=vlFalse then
       LogAndRaiseError('Unable to save VMT file. Call to vlCreateMaterial failed.');
 
     try
-      if vlBindMaterial(VMTMaterial)=false then
+      if vlBindMaterial(VMTMaterial)=vlFalse then
         LogAndRaiseError('Unable to save VMT file. Call to vlBindMaterial failed.');
 
       for I:=0 to SubElements.Count-1 do
@@ -507,9 +517,9 @@ begin
         if Q is QVMTStage then
         begin
           //DanielPharos: There should only one subelement: the root
-          if vlMaterialCreate(PChar(Q.name))=false then
+          if vlMaterialCreate(PvlChar(Q.name))=vlFalse then
             LogAndRaiseError('Unable to save VMT file. Call to vlMaterialCreate failed.');
-          if vlMaterialGetFirstNode=false then
+          if vlMaterialGetFirstNode=vlFalse then
             LogAndRaiseError('Unable to save VMT file. Call to vlMaterialGetFirstNode failed.');
 
           QVMTStage(Q).DumpData;
@@ -517,8 +527,8 @@ begin
         end;
       end;
 
-      SetLength(RawBuffer, 1024);     //FIXME: 1024 is just a number. We need a better way!
-      if vlMaterialSaveLump(Pointer(RawBuffer), Length(RawBuffer), @OutputSize)=false then
+      SetLength(RawBuffer, 2048);     //FIXME: 2048 is just a number. We need a better way!
+      if vlMaterialSaveLump(Pointer(RawBuffer), Length(RawBuffer), @OutputSize)=vlFalse then
         LogAndRaiseError('Unable to save VMT file. Call to vlMaterialSaveLump failed.');
 
       F.WriteBuffer(Pointer(RawBuffer)^,OutputSize);
