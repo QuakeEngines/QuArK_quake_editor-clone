@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23.2.3  2009/03/02 22:50:11  danielpharos
+Added vertex assigning code.
+
 Revision 1.23.2.2  2009/02/25 15:41:07  danielpharos
 Fixed specifics not updating correctly.
 
@@ -143,12 +146,14 @@ begin
 end;
 
 const
-  PosSpec = 'origin';
+  PosSpec = 'position';
   PosSpecLen = length(PosSpec+'=');
   RotSpec = 'rotmatrix';
   RotSpecLen = length(RotSpec+'=');
-  VertSpec = 'vertices';
+  VertSpec = 'vtxlist';
   VertSpecLen = length(VertSpec+'=');
+  VertPosSpec = 'vtx_pos';
+  VertPosSpecLen = length(VertPosSpec+'=');
 
 procedure QModelBone.SetPosition(P: vec3_t);
 var
@@ -270,13 +275,41 @@ begin
       Result:=MakePyMatrix(M^);
       Exit;
     end;
-    'v': if StrComp(attr, 'vertices')=0 then
+    'v': if StrComp(attr, 'vtxlist')=0 then
     begin
       S:=GetSpecArg(VertSpec);
       Result:=PyDict_New;
       if Length(S)<=VertSpecLen then
         Exit;
       P2:=PChar(S)+VertSpecLen;
+      N:=PInteger(P2)^;
+      Inc(P2, SizeOf(Integer));
+      for I:=0 to N-1 do
+      begin
+        S2:=StrPas(P2);
+        Inc(P2, Length(S2)+1);
+        N2:=PInteger(P2)^;
+        Inc(P2, SizeOf(Integer));
+        o:=PyList_New(N2);
+        for I2:=0 to N2-1 do
+        begin
+          I3:=PInteger(P2)^;
+          Inc(P2, SizeOf(Integer));
+          o2:=PyInt_FromLong(I3);
+          PyList_SetItem(o, I2, o2);
+        end;
+        PyDict_SetItemString(Result, PChar(S2), o);
+      end;
+      //@ FIXME: Check for ref counters bugs!
+      Exit;
+    end
+    else if StrComp(attr, 'vtx_pos')=0 then
+    begin
+      S:=GetSpecArg(VertPosSpec);
+      Result:=PyDict_New;
+      if Length(S)<=VertPosSpecLen then
+        Exit;
+      P2:=PChar(S)+VertPosSpecLen;
       N:=PInteger(P2)^;
       Inc(P2, SizeOf(Integer));
       for I:=0 to N-1 do
@@ -370,7 +403,7 @@ begin
         Result:=True;
         Exit;
       end;
-      'v': if StrComp(attr, 'vertices')=0 then begin
+      'v': if StrComp(attr, 'vtxlist')=0 then begin
         S0:=VertSpec;
         S:=S0+'=';
         SetLength(S, VertSpecLen);
@@ -408,6 +441,48 @@ begin
         if Specifics.IndexofName(VertSpec)<>-1 then
           //@ BAD CODING TACTIC!
           Specifics.Delete(Specifics.IndexofName(VertSpec));
+        Specifics.Add(S);
+        Result:=True;
+        Exit;
+      end
+      else if StrComp(attr, 'vtx_pos')=0 then begin
+        S0:=VertPosSpec;
+        S:=S0+'=';
+        SetLength(S, VertPosSpecLen);
+        I:=VertPosSpecLen;
+        PChar(DestV):=PChar(S)+I;
+        N:=PyObject_Length(value);
+        SetLength(S, I+SizeOf(Integer));
+        PChar(DestV):=PChar(S)+I;
+        Move(N, DestV^, SizeOf(Integer));
+        I:=I+SizeOf(Integer);
+        DictLen:=0;
+        while (PyDict_Next(value, Py_ssize_tPtr(@DictLen), @DictKey, @DictValue)<>0) do
+        begin
+          S2:=PyString_AsString(DictKey);
+          SetLength(S, I+Length(S2)+1);
+          PChar(DestV):=PChar(S)+I;
+          StrCopy(DestV, PChar(S2));
+          I:=I+Length(S2)+1;
+          N2:=PyObject_Length(DictValue);
+          SetLength(S, I+SizeOf(Integer));
+          PChar(DestV):=PChar(S)+I;
+          Move(N2, DestV^, SizeOf(Integer));
+          I:=I+SizeOf(Integer);
+          for I2:=0 to N2-1 do
+          begin
+            o2:=PyList_GetItem(DictValue, I2);
+            I3:=PyInt_AsLong(o2);
+            SetLength(S, I+SizeOf(Integer));
+            PChar(DestV):=PChar(S)+I;
+            Move(I3, DestV^, SizeOf(Integer));
+            I:=I+SizeOf(Integer);
+          end;
+        end;
+        //@ FIXME: Check for ref counters bugs!
+        if Specifics.IndexofName(VertPosSpec)<>-1 then
+          //@ BAD CODING TACTIC!
+          Specifics.Delete(Specifics.IndexofName(VertPosSpec));
         Specifics.Add(S);
         Result:=True;
         Exit;
