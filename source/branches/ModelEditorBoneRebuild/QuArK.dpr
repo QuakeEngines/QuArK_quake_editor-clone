@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.62.2.1  2009/04/02 19:02:59  danielpharos
+Synced with HEAD source changes.
+
 Revision 1.62  2009/02/21 17:09:36  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -294,6 +297,7 @@ uses
   QkSpr in 'prog\QkSpr.pas',
   QkSteamFS in 'prog\QkSteamFS.pas',
   QkSylphis in 'prog\QkSylphis.pas',
+  QkSysData in 'prog\QkSysData.pas',
   QkText in 'prog\QkText.pas',
   QkTextBoxForm in 'prog\QkTextBoxForm.pas' {FQTextBoxForm},
   QkTextures in 'prog\QkTextures.pas' {FQTexture},
