@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2009/02/21 17:09:53  danielpharos
+Changed all source files to use CRLF text format, updated copyright and GPL text.
+
 Revision 1.8  2008/12/19 23:30:41  danielpharos
 Reduced dependancy on CurrentMapView to something more logical; made it a call-parameter.
 
@@ -85,7 +88,7 @@ type
 
 implementation
 
-uses qkskindrawobject;
+uses qkskindrawobject, QkSysData;
 
 class function QMdlObject.TypeInfo;
 begin
@@ -100,7 +103,7 @@ end;
 
 function QMdlObject.IsExplorerItem(Q: QObject) : TIsExplorerItem;
 begin
-  if (Q is QSkinDrawObject) then
+  if (Q is QSkinDrawObject) or (Q is QSysData) then
     Result:=[]
   else
     if Q.IsAllowedParent(Self) then

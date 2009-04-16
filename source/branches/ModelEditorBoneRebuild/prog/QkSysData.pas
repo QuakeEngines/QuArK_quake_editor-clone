@@ -23,6 +23,8 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.1.2.1  2009/04/14 22:15:24  danielpharos
+Create new :sd type for storing generic data.
 }
 
 unit QkSysData;
@@ -36,7 +38,6 @@ type
   public
     class function TypeInfo: String; override;
     function IsAllowedParent(Parent: QObject) : Boolean; override;
-    function IsExplorerItem(Q: QObject) : TIsExplorerItem; override;
   end;
 
 implementation
@@ -54,11 +55,6 @@ end;
 class function QSysData.Typeinfo: String;
 begin
   result:=':sd';
-end;
-
-function QSysData.IsExplorerItem(Q: QObject) : TIsExplorerItem;
-begin
-  Result:=[];
 end;
 
 initialization
