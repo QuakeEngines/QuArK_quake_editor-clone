@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2009/02/21 17:06:18  danielpharos
+Changed all source files to use CRLF text format, updated copyright and GPL text.
+
 Revision 1.18  2009/02/05 21:36:54  danielpharos
 Add colorboxes in treeview for Model Editor bones to display start_color and end_color.
 
@@ -935,7 +938,7 @@ var
    Q: QObject;
   begin
    repeat
-    if Odd(Test.SelMult) then
+    if Test.ShowInListSel and Odd(Test.SelMult) then
      begin
       L.Add(Test);
       Dec(Maximum);

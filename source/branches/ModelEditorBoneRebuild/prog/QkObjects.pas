@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.121  2009/02/21 17:06:18  danielpharos
+Changed all source files to use CRLF text format, updated copyright and GPL text.
+
 Revision 1.120  2009/02/05 21:36:54  danielpharos
 Add colorboxes in treeview for Model Editor bones to display start_color and end_color.
 
@@ -645,6 +648,7 @@ type
     { properties concerning display in a tree-view }
     property SelMult: Byte read FSelMult write FSelMult;
     property SelUnique: Boolean read GetSelUnique write SetSelUnique;
+    class function ShowInListSel : Boolean; virtual;
    {function AjouterElement(Items: TTreeNodes; nParent, nInsert: TTreeNode) : TTreeNode;}
    {procedure SetNode(nNode, ParentNode: TTreeNode);}
     property TvParent: QObject read GetTvParent write SetTvParent;
@@ -2470,6 +2474,11 @@ begin
   end
   else
     SelMult:=smNonSel;
+end;
+
+class function QObject.ShowInListSel: Boolean;
+begin
+  Result:=True;
 end;
 
 function QObject.NextInGroup(): QObject;

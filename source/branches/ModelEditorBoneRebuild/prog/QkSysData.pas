@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.1.2.2  2009/04/16 16:57:34  danielpharos
+Fixed QSysData not being invisible in the Model Editor.
+
 Revision 1.1.2.1  2009/04/14 22:15:24  danielpharos
 Create new :sd type for storing generic data.
 }
@@ -38,6 +41,7 @@ type
   public
     class function TypeInfo: String; override;
     function IsAllowedParent(Parent: QObject) : Boolean; override;
+    class function ShowInListSel : Boolean; override;
   end;
 
 implementation
@@ -55,6 +59,11 @@ end;
 class function QSysData.Typeinfo: String;
 begin
   result:=':sd';
+end;
+
+class function QSysData.ShowInListSel : Boolean;
+begin
+  Result:=False;
 end;
 
 initialization

@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23.2.4  2009/04/07 08:39:27  cdunde
+Updated vertex assigning code by danielpharos.
+
 Revision 1.23.2.3  2009/03/02 22:50:11  danielpharos
 Added vertex assigning code.
 
@@ -128,7 +131,7 @@ uses qk3d, pymath, quarkx, QkExceptions, QkObjectClassList, QkMiscGroup;
 
 function QModelBone.IsAllowedParent(Parent: QObject) : Boolean;
 begin
-  if (Parent=nil) or (Parent is QBoneGroup) then
+  if (Parent=nil) or (Parent is QBoneGroup) or (Parent is QModelBone) then
     Result:=true
   else
     Result:=false;
@@ -180,6 +183,8 @@ begin
   S:=GetSpecArg(FloatSpecNameOf(PosSpec));
   if S='' then
     Exit;
+  if Length(S) < PosSpecLen + SizeOf(vec3_t) then
+    Exit;
   PChar(Result):=PChar(S) + PosSpecLen;
 end;
 
@@ -205,6 +210,8 @@ begin
   P:=nil;
   S:=GetSpecArg(FloatSpecNameOf(RotSpec));
   if S='' then
+    Exit;
+  if Length(S) < RotSpecLen + SizeOf(TMatrixTransformation) then
     Exit;
   PChar(P):=PChar(S) + RotSpecLen;
 end;
@@ -266,12 +273,22 @@ begin
     'p': if StrComp(attr, 'position')=0 then
     begin
       P:=GetPosition;
+      if P=nil then
+      begin
+        Result:=MakePyVect(OriginVectorZero);
+        Exit;
+      end;
       Result:=MakePyVectv(P^);
       Exit;
     end;
     'r': if StrComp(attr, 'rotmatrix')=0 then
     begin
       GetRotMatrix(M);
+      if M=nil then
+      begin
+        Result:=MakePyMatrix(MatriceIdentite);
+        Exit;
+      end;
       Result:=MakePyMatrix(M^);
       Exit;
     end;
