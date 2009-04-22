@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23.2.5  2009/04/21 20:27:19  danielpharos
+Hide QSysData from treeview, fix access violations in QModelBone if specifics not set, and allow bones-in-bones.
+
 Revision 1.23.2.4  2009/04/07 08:39:27  cdunde
 Updated vertex assigning code by danielpharos.
 
@@ -105,6 +108,36 @@ interface
 
 uses SysUtils, QkMdlObject, QkObjects, qmath, qmatrices, Python, QkBoneGroup;
 
+{
+Internal Format:
+
+Bones are Connected End to Start of sub objects i.e.:
+
+In Treeview                          #  In Real Life   ( O specifies bone connection)
+                                     #
+Skeleton                             #                |
+|                                    #                |
++ Neck                               #           O----O----O
+   |                                 #          /     |     \
+   +RightArm                         #                |
+   |   |                             #                |
+   |   + RightHand                   #                |
+   |                                 #                |
+   +LeftArm                          #                O
+   |   |                             #               / \
+   |   + LeftHand                    #              /   \
+   |                                 #             /     \
+   +Spine                            #          --O       O--
+       |                             #
+       + RightLeg                    #
+       |   |                         #
+       |   + RightFoot               #
+       |                             #
+       + LeftLeg                     #
+           |                         #
+           + LeftLeg                 #
+
+}
 type
   QModelBone = class(QMdlObject)
   public
