@@ -1,0 +1,26 @@
+QQRKSRC1
+// OpenArena textures file for Quark
+
+//$Header$
+// ----------- REVISION HISTORY ------------
+//$Log$
+//
+
+{
+  QuArKProtected = "1"
+  Description = "OpenArena Textures"
+
+ Textures.qtx =
+  {
+    Toolbox = "Texture Browser..."
+    Root = "All OA Textures and shaders.qtxfolder"
+    All OA Textures and shaders.qtxfolder =
+    {
+    All OA Textures and shaders.osfolder =
+      {
+      path = "baseoa"
+      build = "1"
+      }
+    }
+  }
+}

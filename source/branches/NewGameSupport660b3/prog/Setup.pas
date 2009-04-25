@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.80  2009/03/12 21:07:25  danielpharos
+Added a Reset-button to the configuration window.
+
 Revision 1.79  2009/02/21 17:06:18  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -347,6 +350,7 @@ comparison between gamemodes.}
  mjCoD2         = 'q';  { Call of Duty 2 }
  mjPrey         = 'r';  { Prey }
  mjFAKK2        = 's';  { Heavy Metal - FAKK2 }
+ mjOA           = 't';  { OpenArena }
  mjWarsow       = 'v';  { Warsow }
  mjWildWest     = 'w';  { WildWest }
  mjNEXUIZ       = 'z';  { NEXUIZ }
