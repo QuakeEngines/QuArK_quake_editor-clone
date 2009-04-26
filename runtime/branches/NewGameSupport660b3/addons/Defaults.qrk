@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.482.2.1  2009/04/25 16:43:38  danielpharos
+//Added initial support for OpenArena.
+//
 //Revision 1.482  2009/03/23 21:22:48  danielpharos
 //Fix compiler problem with FAKK2 and EF2, producing bad BSP filenames.
 //
@@ -2904,7 +2907,7 @@ QQRKSRC1
       OpenArena:config =
       {
         Game = "OpenArena"
-        Code = "t" // Hardcoded value in Setup.PAS
+        Code = "u" // Hardcoded value in Setup.PAS
 
         Program = "openarena.EXE +set sv_pure 0"
         Directory = "C:\openarena-0.8.1"
@@ -3858,6 +3861,79 @@ QQRKSRC1
         //   DefaultTextureScale = "0.5"
 
         Form = "GameTorque"
+      }
+
+      Tremulous:config =
+      {
+        Game = "Tremulous"
+        Code = "t" // Hardcoded value in Setup.PAS
+
+        Program = "tremulous.exe +set sv_pure 0"
+        Directory = "C:\Program Files\Tremulous"
+        CheckDirectory = "tremulous.exe"
+
+        CD = ""
+        CDDir = "\Tremulous\base"
+
+        MapLimit = '65536 65536 65536'
+
+        MapCommentsPrefix = "//"
+        OutputMapFormat = "Brush Primitives"
+        ForceFaceFlags = ""
+        StupidBuildToolKludge = "1" //those guys should get shot for that
+        AlwaysWriteThreeFields = "1"
+        SupportsBrushPrim = "1"
+        BuildPgm1  = "Q3MAP.EXE"
+        BuildArgs1 = ""
+        BuildCheck1= "+BSP,-LIN{LoadLinFile}"
+        BuildPgm2  = "Q3MAP.EXE"
+        BuildArgs2 = "-vis -saveprt"
+        BuildPgm3  = "Q3MAP.EXE"
+        BuildArgs3 = "-light"
+        BuildPgm4  = "BSPC.EXE"
+        BuildArgs4 = "-bsp2aas %file%.BSP -output %mappath%"
+        BuildCheck4= "+AAS"
+
+        TexturesPath = "textures/"
+        ShadersPath = "scripts/"
+        Q2TexFlags = "1"
+        ShadersType = "a"                       // This game has Quake 3-type shaders
+
+        BezierPatchSupport = "1" // this game supports bezier-patches
+        BezierPatchPluginPrefixes = "MB2" // Prefix of the MB2*.PY files. You can also specify the value: "MB2"$0D"MB3"$0D"MB4"
+
+        DefaultTexture = "base_wall/basewall03"
+        DefaultTextureTrigger = "common/trigger"
+        DefaultTextureOrigin = "common/origin"
+        DefaultTextureClip = "common/clip"
+        DefaultTextureCaulk = "common/caulk"
+        DefaultTextureScale = "0.5"
+        LightingInnerConeKeyword = "radius"    // <-- ex: "" if game does not use or ex: "_cone" is the specifics name that gives the spotlight inter size.
+        LightingOuterConeKeyword = ""    // <-- ex: "" if game does not use or ex: "_cone2" is the specifics name that gives the spotlight outer size.
+
+        TextureFormat = ".jpg"                  // primary texture fileextension
+        TextureFileExtensions = ".tga,.jpg,.png"     // possible texture fileextensions
+        TextureWriteFormat = ".jpg"
+        TextureShaders = "scripts/quark.shader"
+
+        BaseDir = "base"
+        tmpQuArK = "tmpQuArK"
+
+        Palette = ":pics/colormap.pcx"
+        ExtraCmdLine = "+set fs_game %gamedir%"
+        RunMapCmdLine = "+devmap %filename%"
+        AddOns = "Bezier_Library.qrk"$0D"Q3ArchLib.qrk"$0D"DataTrem.qrk"$0D"TremEntities.qrk"$0D"TremTextures.qrk"$0D"Tremmodels.qrk"
+        AlwaysPak = ""
+        PakExt = ".pk3"
+        PakFormat = "*.PK3"
+        PakMaxNumber = "99"
+        Console = "1"
+        LightFactor = '0.9'
+        3DLight = '512'
+        PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas)
+        DecimalPlaces = '5'
+
+        Form = "GameTremulous"
       }
 
       Warsow:config =
@@ -6564,7 +6640,7 @@ QQRKSRC1
                $66602C2AA478887866602C4A24787F78666022AC48778878666022CC47888878
                $666000407787877866608777777777784448444844487F785C77CF77CC487778
                $5CC7C777CC488880055555555548870666608888888800666666666666666666
-        cmd:macro = {Typ="M" Msg="GAMt"}    // switches to OpenArena (cmd=GAM, game=t)
+        cmd:macro = {Typ="M" Msg="GAMu"}    // switches to OpenArena (cmd=GAM, game=u)
         cmd:macro = {Typ="M" Msg="ADDO"}    // opens Add-ons configuration dialog box
       }
       Outp:tbbtn =
@@ -6576,7 +6652,7 @@ QQRKSRC1
                $FA0603303332ABB0FBA003303332AAB0FBB0033033222AA0FBB0033022AA
                $A220FBB00322022AA2022AA002AA2022002AA2A00AAAA20022AAAA20602A
                $0022002A200666002AAAA20006666666002A200666666666660006666666
-        cmd:macro = {Typ="M" Msg="GAMt"}    // switches to OpenArena (cmd=GAM, game=t)
+        cmd:macro = {Typ="M" Msg="GAMu"}    // switches to OpenArena (cmd=GAM, game=u)
         cmd:macro = {Typ="M" Msg="OUTP"}    // opens "Output directories" dialog box
       }
       sep: = {Typ="S" Txt = ""}
@@ -8016,6 +8092,111 @@ QQRKSRC1
              "Note the double quotes that MUST be used also."$0D
              "Once set, you do not need to remove the above. Just check this box to use it."
       }
+      t_GameBuildPgms=!
+    }
+
+    GameTremulous:form =
+    {
+      Style = "3"
+      sep: = {Typ="S" Txt="---- Game Settings ----"}
+      Program: = {
+        Typ = "C"     // combo box
+        Txt = "Tremulous command-line"
+        Items = "tremulous.exe +set sv_pure 0"
+        t_ProgramHint=!
+      }
+      Directory: =
+      {
+        Txt = "Directory of Tremulous"
+        Typ = "ED"      // Edit Directory
+        Hint = "Path to the game executable"
+        CheckFile = "tremulous.exe"
+      }
+      Templates: =
+      {
+        Txt = "Directory of Templates"
+        Typ = "ED"
+        Hint = "Path to the templates folder. A folder must be chosen"$0D"before any template functions can be used."
+      }
+      CD: =
+      {
+        Txt = "Tremulous CD-ROM drive"
+        Typ = "ED"      // Edit Directory
+        Hint = "If you installed Tremulous minimally, this is the drive of the CD-ROM."
+        //CheckFile = "Tremulous\BASE\data-1.1.0.PK3"
+        CheckFile = "PAK0.PK3"
+      }
+      AddOns:tbbtn =       // button (don't forget :tbbtn for all the action buttons !)
+      {
+        Typ = "+"
+        Txt = "Installed Add-ons"
+        Cap = "Add-ons..."
+        Icon = $666008881111111866604441999799916660CCC1101111116660244404555548
+               $66602C2AA478887866602C4A24787F78666022AC48778878666022CC47888878
+               $666000407787877866608777777777784448444844487F785C77CF77CC487778
+               $5CC7C777CC488880055555555548870666608888888800666666666666666666
+        cmd:macro = {Typ="M" Msg="GAMt"}    // switches to Tremulous (cmd=GAM, game=t)
+        cmd:macro = {Typ="M" Msg="ADDO"}    // opens Add-ons configuration dialog box
+      }
+      Outp:tbbtn =
+      {
+        Typ = "+"
+        Txt = "Paths and files to create"
+        Cap = "Output directories..."
+        Icon = $666660000066666666660232AA20666660003332ABA0206602303332ABB0
+               $FA0603303332ABB0FBA003303332AAB0FBB0033033222AA0FBB0033022AA
+               $A220FBB00322022AA2022AA002AA2022002AA2A00AAAA20022AAAA20602A
+               $0022002A200666002AAAA20006666666002A200666666666660006666666
+        cmd:macro = {Typ="M" Msg="GAMt"}    // switches to Tremulous (cmd=GAM, game=t)
+        cmd:macro = {Typ="M" Msg="OUTP"}    // opens "Output directories" dialog box
+      }
+      sep: = {Typ="S" Txt = ""}
+      sep: = {Typ="S" Txt="---- Map-editor Settings ----"}
+      DefaultTexture: =
+      {
+        t_DefaultTexture = !
+        GameCfg = "Tremulous"
+      }
+      DefaultTextureTerrain: =
+      {
+        t_DefaultTextureTerrain = !
+        GameCfg = "Tremulous"
+      }
+      DefaultTextureTrigger: =
+      {
+        t_DefaultTextureTrigger = !
+        GameCfg = "Tremulous"
+      }
+      DefaultTextureClip: =
+      {
+        t_DefaultTextureClip = !
+        GameCfg = "Tremulous"
+      }
+      DefaultTextureOrigin: =
+      {
+        t_DefaultTextureOrigin = !
+        GameCfg = "Tremulous"
+      }
+      DefaultTextureCaulk: =
+      {
+        t_DefaultTextureCaulk = !
+        GameCfg = "Tremulous"
+      }
+      3DLight: =
+      {
+        Txt = "Game Light saturation"
+        Typ = "EF1"
+        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
+      }
+      DecimalPlaces: = {
+        Txt = "No. of decimal places for brushes and beziers."
+        Typ = "EF1"
+        Hint="Set for the number of decimals to write to the map file."$0D"The default is for this game is 5 places."
+        Min = '1'
+        Max = '40'
+      }
+      sep:        = {Typ="S" Txt = ""}
+      sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
       t_GameBuildPgms=!
     }
 

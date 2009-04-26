@@ -1,0 +1,26 @@
+QQRKSRC1
+// Tremulous textures file for Quark
+
+//$Header$
+// ----------- REVISION HISTORY ------------
+//$Log$
+//
+
+{
+  QuArKProtected = "1"
+  Description = "Tremulous Textures"
+
+ Textures.qtx =
+  {
+    Toolbox = "Texture Browser..."
+    Root = "All Trem Textures and shaders.qtxfolder"
+    All Trem Textures and shaders.qtxfolder =
+    {
+    All Trem Textures and shaders.osfolder =
+      {
+      path = "base"
+      build = "1"
+      }
+    }
+  }
+}

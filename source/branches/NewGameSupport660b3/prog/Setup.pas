@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.80.2.1  2009/04/25 16:43:43  danielpharos
+Added initial support for OpenArena.
+
 Revision 1.80  2009/03/12 21:07:25  danielpharos
 Added a Reset-button to the configuration window.
 
@@ -350,7 +353,8 @@ comparison between gamemodes.}
  mjCoD2         = 'q';  { Call of Duty 2 }
  mjPrey         = 'r';  { Prey }
  mjFAKK2        = 's';  { Heavy Metal - FAKK2 }
- mjOA           = 't';  { OpenArena }
+ mjTREM         = 't';  { Tremulous }
+ mjOA           = 'u';  { OpenArena }
  mjWarsow       = 'v';  { Warsow }
  mjWildWest     = 'w';  { WildWest }
  mjNEXUIZ       = 'z';  { NEXUIZ }

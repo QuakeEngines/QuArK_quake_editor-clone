@@ -53,7 +53,8 @@ Code    abbreviation            Name          or Screen name    taken
  q      CoD2            Call of Duty 2        DanielPharos      05/22/07
  r      Prey            Prey                  DanielPharos      07/05/07
  s      FAKK2           Heavy Metal - FAKK2   cdunde            02/23/08
- t      OA              OpenArena             DanielPharos      04/25/09
+ t      TREM            Tremulous             DanielPharos      04/26/09
+ u      OA              OpenArena             DanielPharos      04/26/09
  v      Warsow          Warsow                cdunde            04/21/08
  w      WildWest        WildWest              Silverpaladin     08/31/03
  z      NEXUIZ          NEXUIZ                cdunde            04/03/08
