@@ -55,6 +55,7 @@ logging = 0
 exportername = "ie_lightwave_export.py"
 textlog = "lwo_ie_log.txt"
 progressbar = None
+MeshValid = 0
 oldminX = 1000000
 oldminY = 1000000
 oldminZ = 1000000
@@ -80,19 +81,22 @@ months = [
 # === Write LightWave Format ===
 # ==============================
 def writefile(filename):
-    global progressbar, tobj, Strings
+    global progressbar, tobj, Strings, MeshValid
     editor = quarkpy.mdleditor.mdleditor
     if editor is None:
+        MeshValid = 0
         return
     # "objects" is a list of one or more selected model components for exporting.
     objects = editor.layout.explorer.sellist
 
     if not objects:
         quarkx.msgbox("No Components have been selected for exporting.", quarkpy.qutils.MT_INFORMATION, quarkpy.qutils.MB_OK)
+        MeshValid = 0
         return
     for object in objects:
         if not object.name.endswith(":mc"):
             quarkx.msgbox("Improper Selection !\n\nYou can ONLY select\ncomponent folders for exporting.\n\nAn item that is not\na component folder\nis in your selections.\nDeselect it and try again.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
+            MeshValid = 0
             return
 
     file = open(filename, "wb")
@@ -116,95 +120,107 @@ def writefile(filename):
 
     meshdata = cStringIO.StringIO() # Creates this to write chunks of data in memory then written to the model file later for each component.
 
+    meshes = []
+    mesh_names = []
+    MeshValid = 0
     for obj_index in range(len(objects)):
+        if len(objects[obj_index].dictitems['Frames:fg'].dictitems) == 0:
+            quarkx.msgbox("Invalid Component !\n\nThe component '" + objects[obj_index].shortname + "'\ndoes not have a frame in its 'Frames' group\nand will not be included in the model file.\n\nClick 'OK' to continue exporting.", quarkpy.qutils.MT_INFORMATION, quarkpy.qutils.MB_OK)
+            continue
+
+        MeshValid = 1
+
+        # "meshname" is the component's single frame's name, its 'key' which is used next.
+        meshname = objects[obj_index].dictitems['Frames:fg'].subitems[0].name
+
         # "obj_index" is the index to a single model component being processed,
         # The obj_index corresponds with its surf_index in the material_names dictionary control list.
-        skinname = objects[obj_index].dictitems['Skins:sg'].subitems[0].name
-        skinname = skinname.split(".")[0] # Components are controlled by their skin name,
-                                          # which in turn is controlled by their surf_index in the material_names list.
-
-        if len(objects[obj_index].dictitems['Frames:fg'].dictitems) == 0:
-            if len(objects) < 2:
-                quarkx.msgbox("Invalid Component !\n\nThe component '" + objects[obj_index].shortname + "'\ndoes not have a frame in its 'Frames' group\nand can not be exported to make a model file.\n\nCorrect or delete this component and try again.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
-                return
-            else:
-                quarkx.msgbox("Invalid Component !\n\nThe component '" + objects[obj_index].shortname + "'\ndoes not have a frame in its 'Frames' group\nand will not be included in the model file.\n\nClick 'OK' to continue exporting.", quarkpy.qutils.MT_INFORMATION, quarkpy.qutils.MB_OK)
-                continue
-        else:
-            # "meshname" is the component's single frame's name, its 'key' which is used next.
-            meshname = objects[obj_index].dictitems['Frames:fg'].subitems[0].name
-
         # "mesh" is the component's single frame's actual data 'dictspec' item ['Vertices'].
         # So mesh.dictspec['Vertices'] will return one CONTINIOUS list of all the vertexes x,y,z 3D positions
         # that make up that component's shape (mesh). They are NOT grouped into smaller lists, QuArK does that.
-        mesh = objects[obj_index].dictitems['Frames:fg'].dictitems[meshname]
-        name = objects[obj_index].shortname
+        meshes = meshes + [objects[obj_index].dictitems['Frames:fg'].dictitems[meshname]]
+        mesh_names = mesh_names + [objects[obj_index].shortname]
 
-        # The Surface layer data for each component's skin texture and its related Specifics and Arguments.
-        layr = generate_layr(skinname, obj_index)
+    if MeshValid == 0:
+        # No valid mesh found to export!
+        return
 
-        # pnts is the "frame.vertecies" x,y,z position of each vertex, objspec_list[2]
-        # meshvectors are the "Bounding Box" minimum and maximum x,y,z coords for all selected components combined.
-        pnts, meshvectors = generate_pnts(mesh, name)
+    # The Surface layer data for each component's skin texture and its related Specifics and Arguments.
+    layr = generate_layr(0)
 
-        # Creation of the bounding box.
-        bbox = generate_bbox(meshvectors)
+    # 'SURF' specifics and their settings, by texture name as key, the "surf_list" ALSO
+    # Makes the list of "tri_index numbers", by texture name as key, objspec_list[5]
+    ptag = generate_ptag(objects, material_names)
 
-        # pols is a list of the three vertex_index numbers for each face for all Components combined, objspec_list[3]
-        # my_uv_dict and my_facesuv_list are dictionary lists with the vertex_index as the 'key' and its related u,v values, used further below.
-        pols, my_uv_dict, my_facesuv_list = generate_pols(objects[obj_index], name)
+    # pnts is the "frame.vertices" x,y,z position of each vertex, objspec_list[2]
+    # meshvectors are the "Bounding Box" minimum and maximum x,y,z coords for all selected components combined.
+    pnts, meshvectors = generate_pnts(meshes, mesh_names)
 
-        # 'SURF' specifics and their settings, by texture name as key, the "surf_list" ALSO
-        # Makes the list of "tri_index numbers", by texture name as key, objspec_list[5]
-        ptag = generate_ptag(objects[obj_index], material_names, obj_index, name)
+    # Creation of the bounding box.
+    bbox = generate_bbox(meshvectors)
 
-        # Creation of the clip data, not active in QuArK right now.
-        clip = generate_clip(mesh, material_names)
+    # pols is a list of the three vertex_index numbers for each face for all Components combined, objspec_list[3]
+    # my_uv_dict and my_facesuv_list are dictionary lists with the vertex_index as the 'key' and its related u,v values, used further below.
+    pols, full_uv_dict, full_facesuv_list = generate_pols(objects, mesh_names)
 
+    # Creation of the clip data, not active in QuArK right now.
+    clip = generate_clip(meshes, material_names)
+
+    write_chunk(meshdata, "LAYR", layr); chunks.append(layr) # The Surface layer data for each component's skin texture and its related Specifics and Arguments.
+    write_chunk(meshdata, "PNTS", pnts); chunks.append(pnts) # The "frame.vertices" x,y,z position of each vertex, objspec_list[2]
+    write_chunk(meshdata, "BBOX", bbox); chunks.append(bbox) # The "Bounding Box" minimum and maximum x,y,z coords for all selected components combined.
+    write_chunk(meshdata, "POLS", pols); chunks.append(pols) # List of the three vertex_index numbers for each face for all Components combined, objspec_list[3]
+    write_chunk(meshdata, "PTAG", ptag); chunks.append(ptag) # Makes the list of "tri_index numbers", by texture name as key, objspec_list[5]
+
+    vmap_uv_list = []
+    vmad_uv_list = []
+    for object_nr in range(len(objects)):
+        object = objects[object_nr]
+        name = mesh_names[object_nr]
         # Creation of the UVMAP u,v data, using the my_uv_dict (objspec_list[7]) list from above.
-        vmap_uv = generate_vmap_uv(objects[obj_index], my_uv_dict, name)
+        vmap_uv_list = vmap_uv_list + [generate_vmap_uv(object, full_uv_dict[object_nr], name)]
 
         # Creation of the UVMAD u,v data, using the my_uv_dict (objspec_list[8]) lists from above and my_facesuv_list.
-        vmad_uv = generate_vmad_uv(objects[obj_index], my_uv_dict, my_facesuv_list, name)
+        vmad_uv_list = vmad_uv_list + [generate_vmad_uv(object, full_uv_dict[object_nr], full_facesuv_list[object_nr], name)]
 
-        # Sense QuArK does not have these things right now
-        # we are commenting them out until it does.
-      #  if meshtools.has_vertex_colors(mesh):
-      #      if meshtools.average_vcols:
-      #          vmap_vc = generate_vmap_vc(mesh)  # per vert
-      #      else:
-      #          vmad_vc = generate_vmad_vc(mesh)  # per face
+    # Sense QuArK does not have these things right now
+    # we are commenting them out until it does.
+    # if meshtools.has_vertex_colors(mesh):
+    #     if meshtools.average_vcols:
+    #         vmap_vc = generate_vmap_vc(mesh)  # per vert
+    #     else:
+    #         vmad_vc = generate_vmad_vc(mesh)  # per face
 
-        write_chunk(meshdata, "LAYR", layr); chunks.append(layr) # The Surface layer data for each component's skin texture and its related Specifics and Arguments.
-        write_chunk(meshdata, "PNTS", pnts); chunks.append(pnts) # The "frame.vertecies" x,y,z position of each vertex, objspec_list[2]
-        write_chunk(meshdata, "BBOX", bbox); chunks.append(bbox) # The "Bounding Box" minimum and maximum x,y,z coords for all selected components combined.
-        write_chunk(meshdata, "POLS", pols); chunks.append(pols) # List of the three vertex_index numbers for each face for all Components combined, objspec_list[3]
-        write_chunk(meshdata, "PTAG", ptag); chunks.append(ptag) # Makes the list of "tri_index numbers", by texture name as key, objspec_list[5]
+    # Original code but not being qualified right now, for future reference only.
+    # if meshtools.has_vertex_colors(mesh):
+    #     if meshtools.average_vcols:
+    #         write_chunk(meshdata, "VMAP", vmap_vc)
+    #         chunks.append(vmap_vc)
+    #     else:
+    #         write_chunk(meshdata, "VMAD", vmad_vc)
+    #         chunks.append(vmad_vc)
 
-        # Original code but not being qualified right now, for future reference only.
-    #    if meshtools.has_vertex_colors(mesh):
-    #        if meshtools.average_vcols:
-    #            write_chunk(meshdata, "VMAP", vmap_vc)
-    #            chunks.append(vmap_vc)
-    #        else:
-    #            write_chunk(meshdata, "VMAD", vmad_vc)
-    #            chunks.append(vmad_vc)
+    # if mesh.hasFaceUV():
+    #     write_chunk(meshdata, "VMAD", vmad_uv)
+    #     chunks.append(vmad_uv)
+    #     write_chunk(meshdata, "CLIP", clip)
+    #     chunks.append(clip)
 
-    #    if mesh.hasFaceUV():
-    #        write_chunk(meshdata, "VMAD", vmad_uv)
-    #        chunks.append(vmad_uv)
-    #        write_chunk(meshdata, "CLIP", clip)
-    #        chunks.append(clip)
-
-        # Writes the vert_index, u,v data to the model file.
+    # Writes the vert_index, u,v data to the model file.
+    for vmap_uv in vmap_uv_list:
         write_chunk(meshdata, "VMAP", vmap_uv)
         chunks.append(vmap_uv)
+    for vmad_uv in vmad_uv_list:
         write_chunk(meshdata, "VMAD", vmad_uv)
         chunks.append(vmad_uv)
 
     # Writes the surface data, for each components texture, to the model file.
     for surf in surfs:
         chunks.append(surf)
+
+    date = time.localtime()
+    date_chunk = generate_nstring(str(months[date[1]-1]) + " " + str(date[2]) + ", " + str(date[0]))
+    chunks.append(date_chunk)
 
     # Writes the header and previous defined chunks of data (see by name above) to the model file.
     write_header(file, chunks)
@@ -215,8 +231,7 @@ def writefile(filename):
     file.write(meshdata.getvalue()); meshdata.close()
     for surf in surfs:
         write_chunk(file, "SURF", surf)
-    date = time.localtime()
-    write_chunk(file, "DATE", str(months[date[1]-1]) + " " + str(date[2]) + ", " + str(date[0]))
+    write_chunk(file, "DATE", date_chunk)
 
     file.close()
 
@@ -305,12 +320,12 @@ def generate_surfs(material_names, objects):
 # ===================================
 # === Generate Layer (LAYR Chunk) ===
 # ===================================
-def generate_layr(skinname, surf_index): # Here the surf_index and the obj_index are one in the same.
+def generate_layr(layer_index): # Here the surf_index and the obj_index are one in the same.
     data = cStringIO.StringIO()
-    data.write(struct.pack(">h", surf_index))   # layer index number
+    data.write(struct.pack(">h", layer_index))   # layer index number
     data.write(struct.pack(">h", 0))            # flags (not being used right now)
     data.write(struct.pack(">fff", 0, 0, 0))    # model origin (could be set by the bbox averaged)
-    data.write(generate_nstring(skinname))      # skin texture name
+    data.write(generate_nstring("layer "+str(layer_index)))      # skin texture name
     return data.getvalue()
 
 # ==========================================================================
@@ -318,12 +333,8 @@ def generate_layr(skinname, surf_index): # Here the surf_index and the obj_index
 # == The "frame.vertices" x,y,z position of each vertex, objspec_list[2] ===
 # ==========================================================================
 # These are a single component's 'Frames:fg' 'Base Frame:mf' (there's only one) 'Vertices'.
-def generate_pnts(mesh, name):
+def generate_pnts(meshes, mesh_names):
     global Strings
-    verts = len(mesh.dictspec['Vertices'])
-    # setup a progress-indicator
-    Strings[2452] = name + "\n" + Strings[2452]
-    progressbar = quarkx.progressbar(2452, verts)
     data = cStringIO.StringIO()
     meshvectors = []
     if logging == 1:
@@ -334,28 +345,30 @@ def generate_pnts(mesh, name):
         tobj.logcon ("(Each item is a list of 3 positions (x, y, z) of one vertex.)")
         tobj.logcon ("(Each items position in the list corresponds with their)")
         tobj.logcon ("(vertex_index in the 'faces' list, objspec_list[3].)")
-        tobj.logcon ("read " + str(verts/3) + " total 'frame' vertexes.")
+        #tobj.logcon ("read " + str(verts/3) + " total 'frame' vertexes.")
         tobj.logcon ("#####################################################################")
         tobj.logcon ("list:[")
-    for i in xrange(verts):
-        count = i
-        i = i * 3
-        if i > verts-1:
-            break
-        x, y, z = (mesh.dictspec['Vertices'][i], mesh.dictspec['Vertices'][i+1], mesh.dictspec['Vertices'][i+2])
-        if logging == 1:
-            if count < verts-1:
-                tobj.logcon (str(count) + ": (" + str(x) + ", " + str(y) + ", " + str(z) + "),")
-            else:
+        count = 0
+    for mesh_nr in range(len(meshes)):
+        mesh = meshes[mesh_nr]
+        vertices = mesh.dictspec['Vertices']
+        verts = int(len(vertices) / 3)
+        # setup a progress-indicator
+        Strings[2452] = mesh_names[mesh_nr] + "\n" + Strings[2452]
+        progressbar = quarkx.progressbar(2452, verts)
+        for i in xrange(verts):
+            x, y, z = (vertices[i*3], vertices[i*3+1], vertices[i*3+2])
+            if logging == 1:
                 tobj.logcon (str(count) + ": (" + str(x) + ", " + str(y) + ", " + str(z) + ")")
-                
-        meshvectors = meshvectors + [[x, y, z]]
-        data.write(struct.pack(">fff", x, z, y))
-        progressbar.progress()
+                count = count + 1
+
+            meshvectors = meshvectors + [[x, y, z]]
+            data.write(struct.pack(">fff", x, z, y))
+            progressbar.progress()
+        progressbar.close()
+        Strings[2452] = Strings[2452].replace(mesh_names[mesh_nr] + "\n", "")
     if logging == 1:
         tobj.logcon ("]")
-    progressbar.close()
-    Strings[2452] = Strings[2452].replace(name + "\n", "")
     return data.getvalue(), meshvectors
 
 # ==========================================
@@ -503,17 +516,17 @@ def generate_vmad_uv(object, my_uv_dict, my_facesuv_list, name): # "object" is o
         tobj.logcon ("#####################################################################")
         tobj.logcon ("in generate_vmad_uv function, objspec_list[8] (facesuv_dict)")
         tobj.logcon ("(dict list (uses ['UVNAME'] as key) of standard lists of [tri, vert, uv] indexes.)")
-        tobj.logcon ("(VMAD only uses this. No sub-keys, itterate using:)")
+        tobj.logcon ("(VMAD only uses this. No sub-keys, iterate using:)")
         tobj.logcon ("(if tri_index = [0] and vert_index = [1]: uv_index = [2] -> for objspec_list[7])")
         tobj.logcon ("read " + str(len(my_facesuv_list)) + " total index lists.")
         tobj.logcon ("#####################################################################")
         tobj.logcon ("dict:{")
         uvlist = []
     for item in range(len(my_facesuv_list)):
-        i, v, newindex = my_facesuv_list[item]
-        U, V = my_uv_dict[newindex]
+        i, v, newUV = my_facesuv_list[item]
+        U, V = newUV
         if logging == 1:
-            uvlist = uvlist + [[i, v, newindex]]
+            uvlist = uvlist + [[i, v, newUV]]
         data.write(struct.pack(">H", v)) # vertex index
         data.write(struct.pack(">H", i)) # face index
         data.write(struct.pack(">ff", U, V))
@@ -540,83 +553,99 @@ def generate_vx(index):
 # == List of the three vertex_index numbers for each face for all Components combined, objspec_list[3] ==
 # === And makes the uv_dict of each triangles vertex u,v position values for all Components combined. ===
 # =======================================================================================================
-def generate_pols(object, name): # "object" is one of the selected components being exported.
+def generate_pols(object_list, mesh_names): # "object_list" are all of the selected components being exported.
     global Strings
-    # setup a progress-indicator
-    Strings[2450] = name + "\n" + Strings[2450]
-    progressbar = quarkx.progressbar(2450, len(object.triangles))
     data = cStringIO.StringIO()
     data.write("FACE")
-    maxfacenum = len(object.triangles)
-    frame = object.dictitems['Frames:fg'].subitems[0].name
-    maxvertnum = len(object.dictitems['Frames:fg'].dictitems[frame].dictspec['Vertices'])
-    my_uv_dict = {}      # start a brand new  objspec_list[7]
-    my_facesuv_list = [] # start a brand new  objspec_list[8]
-    newindex = maxvertnum + 10 #why +10? Why not?
-    skinname = object.dictitems['Skins:sg'].subitems[0].name
-    TexWidth, TexHeight = object.dictitems['Skins:sg'].dictitems[skinname].dictspec['Size']
-    if logging == 1:
-        tobj.logcon ("")
-        tobj.logcon ("#####################################################################")
-        tobj.logcon ("objspec_list[3] ('faces' list)")
-        tobj.logcon ("Gives the three vertex_index numbers for each face.")
-        tobj.logcon ("Use tri_index to get one set.")
-        tobj.logcon ("read " + str(len(object.triangles)) + " total faces for " + skinname.split(".")[0])
-        tobj.logcon ("#####################################################################")
-        tobj.logcon ("list:[")
-    for i in range(len(object.triangles)):
-        face = object.triangles[i]
-        data.write(struct.pack(">H", len(face))) # Number of vertexes per face.
+    full_uv_dict = []      # start a brand new  objspec_list[7]
+    full_facesuv_list = [] # start a brand new  objspec_list[8]
+    maxverts_list = []
+    count = 0
+    for object_nr in range(len(object_list)):
+        full_uv_dict = full_uv_dict + [{}]
+        my_uv_dict = full_uv_dict[object_nr]
+        full_facesuv_list = full_facesuv_list + [[]]
+        my_facesuv_list = full_facesuv_list[object_nr]
+        object = object_list[object_nr]
+        # setup a progress-indicator
+        Strings[2450] = mesh_names[object_nr] + "\n" + Strings[2450]
+        progressbar = quarkx.progressbar(2450, len(object.triangles))
+        tris = object.triangles
+        frame = object.dictitems['Frames:fg'].subitems[0].name
+        maxverts = len(object.dictitems['Frames:fg'].dictitems[frame].vertices)
+        if object_nr == 0:
+            maxverts_list = maxverts_list + [maxverts]
+            start_index = 0
+        else:
+            maxverts_list = maxverts_list + [maxverts_list[object_nr-1] + maxverts]
+            start_index = maxverts_list[object_nr-1]
+
+        skinname = object.dictitems['Skins:sg'].subitems[0].name
+        TexWidth, TexHeight = object.dictitems['Skins:sg'].dictitems[skinname].dictspec['Size']
         if logging == 1:
-            facelist = []
-        for j in xrange(len(face)):
-            index = face[j][0]
+            tobj.logcon ("")
+            tobj.logcon ("#####################################################################")
+            tobj.logcon ("objspec_list[3] ('faces' list)")
+            tobj.logcon ("Gives the three vertex_index numbers for each face.")
+            tobj.logcon ("Use tri_index to get one set.")
+            tobj.logcon ("read " + str(len(tris)) + " total faces for " + skinname.split(".")[0])
+            tobj.logcon ("#####################################################################")
+            tobj.logcon ("list:[")
+        for i in range(len(tris)):
+            face = tris[i]
+            data.write(struct.pack(">H", len(face))) # Number of vertexes per face.
             if logging == 1:
-                facelist = facelist + [index]
-            u = face[j][1] / TexWidth
-            v = -face[j][2]
-            v = (v / TexHeight) + 1
-            if my_uv_dict.has_key(index):
-                if (u != my_uv_dict[index][0]) or (v != my_uv_dict[index][1]):
-                    my_uv_dict[newindex] = (u, v)
-                    my_facesuv_list.append([i, index, newindex])
-                    newindex += 1
-            else:
-                my_uv_dict[index] = (u, v)
-            data.write(generate_vx(index))
+                facelist = []
+            for j in xrange(len(face)):
+                index = start_index + face[j][0]
+                if logging == 1:
+                    facelist = facelist + [index]
+                u = face[j][1] / TexWidth
+                v = -face[j][2]
+                v = (v / TexHeight) + 1
+                if my_uv_dict.has_key(index):
+                    if (u != my_uv_dict[index][0]) or (v != my_uv_dict[index][1]):
+                        my_facesuv_list.append([count, index, (u, v)])
+                else:
+                    my_uv_dict[index] = (u, v)
+                data.write(generate_vx(index))
+            if logging == 1:
+                tobj.logcon (str(i) + ": " + str(facelist))
+            count = count + 1
+            progressbar.progress()
         if logging == 1:
-            tobj.logcon (str(i) + ": " + str(facelist))
-        progressbar.progress()
-    if logging == 1:
-        tobj.logcon ("]")
-    progressbar.close()
-    Strings[2450] = Strings[2450].replace(name + "\n", "")
-    return data.getvalue(), my_uv_dict, my_facesuv_list
+            tobj.logcon ("]")
+        progressbar.close()
+        Strings[2450] = Strings[2450].replace(mesh_names[object_nr] + "\n", "")
+    return data.getvalue(), full_uv_dict, full_facesuv_list
 
 # =============================================================================================
 # ========================= Generate Polygon Tag Mapping (PTAG Chunk) =========================
 # ======== 'SURF' specifics and their settings, by texture name as key, the "surf_list" =======
 # == The "polytag_dict" list of "tri_index numbers", by texture name as key, objspec_list[5] ==
 # =============================================================================================
-def generate_ptag(object, material_names, obj_index, name): # "object" is one of the selected components being exported.
+def generate_ptag(object_list, material_names): # "object_list" is a list of the selected components being exported.
     global Strings
-    # setup a progress-indicator
-    Strings[2453] = name + "\n" + Strings[2453]
-    progressbar = quarkx.progressbar(2453, len(object.triangles))
     data = cStringIO.StringIO()
     data.write("SURF")
-    if logging == 1:
-        tobj.logcon ("")
-        tobj.logcon ("#####################################################################")
-        tobj.logcon ("---- PTAG, objspec_list[5] (polytag_dict) tri_index list")
-        tobj.logcon ("(dict list, uses Component\Texture name as 'key'.)")
-        tobj.logcon ("read " + str(len(object.triangles)) + " tri_indexes.")
-        tobj.logcon ("#####################################################################")
-        facelist = []
-    for i in range(len(object.triangles)):
+    count = 0
+    for obj_index in range(len(object_list)):
+        object = object_list[obj_index]
+        # setup a progress-indicator
+        Strings[2453] = object_list[obj_index].shortname + "\n" + Strings[2453]
+        progressbar = quarkx.progressbar(2453, len(object.triangles))
         if logging == 1:
-            facelist = facelist + [i]
-        data.write(generate_vx(i)) # Makes the list of "tri_index numbers", by texture name as key.
+            tobj.logcon ("")
+            tobj.logcon ("#####################################################################")
+            tobj.logcon ("---- PTAG, objspec_list[5] (polytag_dict) tri_index list")
+            tobj.logcon ("(dict list, uses Component\Texture name as 'key'.)")
+            tobj.logcon ("read " + str(len(object.triangles)) + " tri_indexes.")
+            tobj.logcon ("#####################################################################")
+            facelist = []
+        for i in range(len(object.triangles)):
+            if logging == 1:
+                facelist = facelist + [count]
+            data.write(generate_vx(count)) # Makes the list of "tri_index numbers", by texture name as key.
     # Sence QuArK does not have this type of face material support, we comment it out until it does.
       #  if (not mesh.materials) and (meshtools.has_vertex_colors(mesh)):        # vcols only
       #      if meshtools.average_vcols:
@@ -634,14 +663,15 @@ def generate_ptag(object, material_names, obj_index, name): # "object" is one of
       #  names = material_names.keys()
       #  surfidx = names.index(name)
 
-        data.write(struct.pack(">H", obj_index)) # obj_index and surf_index are one in the same.
-        progressbar.progress()
-    if logging == 1:
-        tobj.logcon ("dict:{")
-        tobj.logcon ("[" + material_names[obj_index] + "] -> " + str(facelist))
-        tobj.logcon ("}")
-    progressbar.close()
-    Strings[2453] = Strings[2453].replace(name + "\n", "")
+            data.write(struct.pack(">H", obj_index)) # obj_index and surf_index are one in the same.
+            count = count + 1
+            progressbar.progress()
+        if logging == 1:
+            tobj.logcon ("dict:{")
+            tobj.logcon ("[" + material_names[obj_index] + "] -> " + str(facelist))
+            tobj.logcon ("}")
+        progressbar.close()
+        Strings[2453] = Strings[2453].replace(object_list[obj_index].shortname + "\n", "")
     return data.getvalue()
 
 # ===================================================
@@ -688,28 +718,26 @@ def generate_surf(material_name, object):
     data = cStringIO.StringIO()
     data.write(generate_nstring(material_name))
     data.write("\0\0")
-    print "exporter line 600 generate_surf object.name", object.name, object.dictspec.keys()
 
  #   R,G,B = material.R, material.G, material.B
     if object.dictspec.has_key('lwo_COLR'):
         color = object['lwo_COLR'].split(" ")
         R, G, B = float(color[0]), float(color[1]), float(color[2])
-        print "line 606 R, G, B",R, G, B, type(R)
     else:
         R = G = B = 0.78431373834609985
     data.write("COLR")
     data.write(struct.pack(">H", 14))
     data.write(struct.pack(">fffH", R, G, B, 0))
 
-    data.write("DIFF")
-    data.write(struct.pack(">H", 6))
- #   data.write(struct.pack(">fH", material.ref, 0))
-    data.write(struct.pack(">fH", 1.0, 0))
-
     data.write("LUMI")
     data.write(struct.pack(">H", 6))
   #  data.write(struct.pack(">fH", material.emit, 0))
     data.write(struct.pack(">fH", 0.0, 0))
+
+    data.write("DIFF")
+    data.write(struct.pack(">H", 6))
+ #   data.write(struct.pack(">fH", material.ref, 0))
+    data.write(struct.pack(">fH", 1.0, 0))
 
     data.write("SPEC")
     data.write(struct.pack(">H", 6))
@@ -766,7 +794,7 @@ def generate_surf(material_name, object):
         #    data.write("PROJ")
         #    data.write(struct.pack(">HH", 2, 5)) # UV projection
 
-            data.write("TMAP")
+            data.write("VMAP")
             uvname = generate_nstring(material_name)
             data.write(struct.pack(">H", len(uvname)))
             data.write(uvname)
@@ -894,7 +922,7 @@ def write_header(file, chunks):
 # gamename is None."
 # For example:  C:\Doom 3\base\models\mapobjects\chairs\kitchenchair\kitchenchair.lwo
 def savemodel(root, filename, gamename, nomessage=0):
-    global tobj, logging, exportername, textlog
+    global tobj, logging, exportername, textlog, MeshValid
     import quarkpy.qutils
     editor = quarkpy.mdleditor.mdleditor
     if editor is None:
@@ -918,9 +946,9 @@ def savemodel(root, filename, gamename, nomessage=0):
     logging, tobj, starttime = ie_utils.default_start_logging(exportername, textlog, filename, "EX") ### Use "EX" for exporter text, "IM" for importer text.
 
     writefile(filename)
-
-    add_to_message = "Any used skin textures that are not a\n.tga, .dds, .png, .jpg or .bmp\nwill need to be created to go with the model"
-    ie_utils.default_end_logging(filename, "EX", starttime, add_to_message) ### Use "EX" for exporter text, "IM" for importer text.
+    if MeshValid != 0:
+        add_to_message = "Any used skin textures that are not a\n.tga, .dds, .png, .jpg or .bmp\nwill need to be created to go with the model"
+        ie_utils.default_end_logging(filename, "EX", starttime, add_to_message) ### Use "EX" for exporter text, "IM" for importer text.
 
 
 ### To register this Python plugin and put it on the exporters menu.
@@ -930,6 +958,21 @@ quarkpy.qmdlbase.RegisterMdlExporter(".lwo LightWave Exporter", ".lwo file", "*.
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.12  2009/03/10 08:00:39  cdunde
+# Updates by DanielPharos to fix multiple component models
+# to work correctly in game and uv positioning.
+#
+# Revision 1.11  2009/03/08 04:48:52  cdunde
+# To reinstate functions previously removed to get models to show in games.
+#
+# Revision 1.10  2009/03/07 08:22:13  cdunde
+# Update for models to show up in games.
+# UVs are not correct and Doom3 requires a .cm collision model file to work.
+# Also, only shows one component in games but all components in QuArK.
+#
+# Revision 1.9  2009/01/29 02:13:51  cdunde
+# To reverse frame indexing and fix it a better way by DanielPharos.
+#
 # Revision 1.8  2008/07/21 18:06:13  cdunde
 # Moved all the start and end logging code to ie_utils.py in two functions,
 # "default_start_logging" and "default_end_logging" for easer use and consistency.
