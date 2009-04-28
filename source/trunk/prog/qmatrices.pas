@@ -23,6 +23,12 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14.2.1  2009/02/24 23:57:35  danielpharos
+Initial changes.
+
+Revision 1.14  2009/02/21 17:06:18  danielpharos
+Changed all source files to use CRLF text format, updated copyright and GPL text.
+
 Revision 1.13  2005/09/28 10:48:32  peter-b
 Revert removal of Log and Header keywords
 
@@ -64,6 +70,7 @@ interface
 uses SysUtils, qmath;
 
 type
+ PMatrixTransformation = ^TMatrixTransformation;
  TMatrixTransformation = array[1..3, 1..3] of TDouble;
 
 const

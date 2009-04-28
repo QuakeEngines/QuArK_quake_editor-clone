@@ -23,6 +23,12 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.26.2.1  2009/04/22 22:59:18  cdunde
+Old version committed in error, updating back to newest version.
+
+Revision 1.26  2009/02/21 17:06:18  danielpharos
+Changed all source files to use CRLF text format, updated copyright and GPL text.
+
 Revision 1.25  2009/02/11 14:53:22  danielpharos
 TList --> TQList
 
@@ -229,6 +235,7 @@ const
  dfOk          = 4;
  dfInsertGr    = 8;
  dfMoveHere    = 16;
+ dfBoneMove    = 32;
  dfCopyToOutside = 256;
 
 type
@@ -336,6 +343,8 @@ begin
       else
        I:=I+1;
      FDragObject.SubElements.Capacity:=MaxI;
+
+     FDragFlags:=FDragFlags or dfBoneMove;
    end;
    bofFrame:
    begin
@@ -1638,6 +1647,22 @@ begin
    Exit;
   end;
 
+ if Flags and dfBoneMove <> 0 then
+  begin
+   if RightButtonDrag then
+    begin
+     //Insert into group
+     Flags:=Flags and not dfMoveHere;
+     Flags:=Flags or dfInsertGr;
+    end
+   else
+    begin
+     //Move here
+     Flags:=Flags and not dfInsertGr;
+     Flags:=Flags or dfMoveHere;
+    end;
+  end;
+
  Popup:=TPopupMenu.Create(Self);
  try
   for B:=Flags and dfMustCopy to 1 do
@@ -1667,8 +1692,8 @@ begin
   end;
   B:=Ord((Flags and (dfInsertGr or dfMoveHere) = dfInsertGr or dfMoveHere)
    and TargetClosed);
-  if (FInternalDrop and dfCopyToOutside = 0)
-  and not RightButtonDrag then
+  if ((FInternalDrop and dfCopyToOutside = 0)
+  and not RightButtonDrag) or (Flags and dfBoneMove <> 0) then
    begin  { no menu - choose the default item }
     Popup.Items[B].Click;
     Exit;

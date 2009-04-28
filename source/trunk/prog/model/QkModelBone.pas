@@ -23,6 +23,28 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23.2.6  2009/04/22 19:05:11  cdunde
+To put the model structure description back into the file.
+Needs more updating.
+
+Revision 1.23.2.5  2009/04/21 20:27:19  danielpharos
+Hide QSysData from treeview, fix access violations in QModelBone if specifics not set, and allow bones-in-bones.
+
+Revision 1.23.2.4  2009/04/07 08:39:27  cdunde
+Updated vertex assigning code by danielpharos.
+
+Revision 1.23.2.3  2009/03/02 22:50:11  danielpharos
+Added vertex assigning code.
+
+Revision 1.23.2.2  2009/02/25 15:41:07  danielpharos
+Fixed specifics not updating correctly.
+
+Revision 1.23.2.1  2009/02/24 23:57:35  danielpharos
+Initial changes.
+
+Revision 1.23  2009/02/21 17:09:53  danielpharos
+Changed all source files to use CRLF text format, updated copyright and GPL text.
+
 Revision 1.22  2009/02/11 22:48:03  danielpharos
 Second attempt.
 
@@ -88,13 +110,10 @@ unit QkModelBone;
 
 interface
 
-uses Sysutils, qmath, QkMdlObject, QkObjects, Graphics, Python, QkBoneGroup;
+uses SysUtils, QkMdlObject, QkObjects, qmath, qmatrices, Python, QkBoneGroup;
 
 {
 Internal Format:
-  Start_Point: Vec3_t;
-  End_Point: Vec3_t;
-  Length: Single (Float);
 
 Bones are Connected End to Start of sub objects i.e.:
 
@@ -125,22 +144,17 @@ Skeleton                             #                |
 }
 type
   QModelBone = class(QMdlObject)
-  private
-    //Workaround: We want to be able to store handles with the bones:
-    FStartHandle, FEndHandle: PyObject;
   public
     function IsAllowedParent(Parent: QObject) : Boolean; override;
     class function TypeInfo: String; override;
     procedure ObjectState(var E: TEtatObjet); override;
-    constructor Create(const nName: String; nParent: QObject);
-    destructor Destroy; override;
 //    procedure Dessiner; override;
-    Function GetEndPoint(var endpoint: vec3_p): boolean;
-    Function GetStartPoint(var startpoint: vec3_p): boolean;
-    Function GetStartEnd(var startpoint, endpoint: vec3_p): Boolean;
+    Procedure SetPosition(p: vec3_t);
+    Function GetPosition: vec3_p;
+    procedure SetRotMatrix(P: TMatrixTransformation);
+    procedure GetRotMatrix(var P: PMatrixTransformation);
     function PyGetAttr(attr: PChar) : PyObject; override;
     function PySetAttr(attr: PChar; value: PyObject) : Boolean; override;
-    Function GetLength: Single;
     function TreeViewColorBoxes : TColorBoxList; override;
   end;
 
@@ -154,7 +168,7 @@ uses qk3d, pymath, quarkx, QkExceptions, QkObjectClassList, QkMiscGroup;
 
 function QModelBone.IsAllowedParent(Parent: QObject) : Boolean;
 begin
-  if (Parent=nil) or (Parent is QBoneGroup) then
+  if (Parent=nil) or (Parent is QBoneGroup) or (Parent is QModelBone) then
     Result:=true
   else
     Result:=false;
@@ -171,73 +185,72 @@ begin
   E.IndexImage:=iiModelBone;
 end;
 
-constructor QModelBone.Create(const nName: String; nParent: QObject);
-begin
-  inherited;
-  FStartHandle:=PyNoResult;
-  FEndHandle:=PyNoResult;
-end;
-
-destructor QModelBone.Destroy;
-begin
-  Py_XDECREF(FStartHandle);
-  Py_XDECREF(FEndHandle);
-  inherited;
-end;
-
 const
-  StartSpec = 'start_point';
-  StartSpecLen = length(StartSpec+'=');
-  EndSpec = 'end_point';
-  EndSpecLen = length(EndSpec+'=');
+  PosSpec = 'position';
+  PosSpecLen = length(PosSpec+'=');
+  RotSpec = 'rotmatrix';
+  RotSpecLen = length(RotSpec+'=');
+  VertSpec = 'vtxlist';
+  VertSpecLen = length(VertSpec+'=');
+  VertPosSpec = 'vtx_pos';
+  VertPosSpecLen = length(VertPosSpec+'=');
 
-Function QModelBone.GetStartPoint(var startpoint: vec3_p): boolean;
+procedure QModelBone.SetPosition(P: vec3_t);
 var
-  S: String;
+  CVert: vec3_p;
+  s: string;
 begin
-  S:=GetSpecArg(FloatSpecNameOf(StartSpec));
-  if S='' then begin
-    result:=false;
-    exit;
-  end;
-  Result:=(Length(S) - StartSpecLen)=sizeof(vec3_t);
-  if not Result then
-    Exit;
-  PChar(startpoint):=PChar(S) + StartSpecLen;
+  S:=FloatSpecNameOf(PosSpec);
+  SetLength(S, PosSpecLen+SizeOf(vec3_t));
+  PChar(CVert):=PChar(S)+PosSpecLen;
+  CVert^[0]:=P[0];
+  CVert^[1]:=P[1];
+  CVert^[2]:=P[2];
+  if Specifics.IndexofName(FloatSpecNameOf(PosSpec))<>-1 then
+    //@ BAD CODING TACTIC!
+    Specifics.Delete(Specifics.IndexofName(FloatSpecNameOf(PosSpec)));
+  Specifics.Add(s);
 end;
 
-Function QModelBone.GetEndPoint(var endpoint: vec3_p): boolean;
+function QModelBone.GetPosition: vec3_p;
 var
-  S: String;
+  s: string;
 begin
-  S:=GetSpecArg(FloatSpecNameOf(EndSpec));
-  if S='' then begin
-    Result:=false;
+  Result:=nil;
+  S:=GetSpecArg(FloatSpecNameOf(PosSpec));
+  if S='' then
     Exit;
-  end;
-  Result:=(Length(S) - EndSpecLen)=sizeof(vec3_t);
-  if not Result then
+  if Length(S) < PosSpecLen + SizeOf(vec3_t) then
     Exit;
-  PChar(endpoint):=PChar(S) + EndSpecLen;
+  PChar(Result):=PChar(S) + PosSpecLen;
 end;
 
-Function QModelBone.GetLength: Single;
+procedure QModelBone.SetRotMatrix(P: TMatrixTransformation);
 var
-  s,e: vec3_p;
-  r: boolean;
+  CVert: vec3_p;
+  s: string;
 begin
-  Result:=GetFloatSpec('length', 0);
-  if Result=0 then begin
-    r:=GetStartEnd(s, e);
-    if not r then exit;
-    result:=Vec3Length(Vec3Diff(s^,e^));
-    SetFloatSpec('length', result);
-  end;
+  S:=FloatSpecNameOf(RotSpec);
+  SetLength(S, RotSpecLen+SizeOf(TMatrixTransformation));
+  PChar(CVert):=PChar(S)+RotSpecLen;
+  Move(P, CVert^, Sizeof(TMatrixTransformation));
+  if Specifics.IndexofName(FloatSpecNameOf(RotSpec))<>-1 then
+    //@ BAD CODING TACTIC!
+    Specifics.Delete(Specifics.IndexofName(FloatSpecNameOf(RotSpec)));
+  Specifics.Add(s);
 end;
 
-Function QModelBone.GetStartEnd(var startpoint, endpoint: vec3_p): Boolean;
+procedure QModelBone.GetRotMatrix(var P: PMatrixTransformation);
+var
+  s: string;
 begin
-  Result:=GetStartPoint(startpoint) and GetEndPoint(endpoint);
+  P:=nil;
+  S:=GetSpecArg(FloatSpecNameOf(RotSpec));
+  if S='' then
+    Exit;
+  if Length(S) < RotSpecLen + SizeOf(TMatrixTransformation) then
+    Exit;
+  PChar(P):=PChar(S) + RotSpecLen;
 end;
 
 (*procedure QModelBone.Dessiner;
@@ -277,51 +290,99 @@ end;*)
 function QModelBone.TreeViewColorBoxes : TColorBoxList;
 begin
   Result:=TColorBoxList.Create;
-  Result.Add('start_color', 'LI');
-  Result.Add('end_color', 'LI');
+  Result.Add('_color', 'LI');
 end;
 
 function QModelBone.PyGetAttr(attr: PChar) : PyObject;
 var
   P: vec3_p;
-  R: Boolean;
+  M: PMatrixTransformation;
+  S, S2: String;
+  P2: PChar;
+  o, o2: PyObject;
+  N, I: Integer;
+  N2, I2: Integer;
+  I3: Integer;
 begin
   Result:=inherited PyGetAttr(attr);
   if Result<>Nil then Exit;
   case attr[0] of
-    's': if StrComp(attr, 'start_point')=0 then
+    'p': if StrComp(attr, 'position')=0 then
     begin
-      R:=GetStartPoint(P);
-      if R then
-        Result:=MakePyVectv(P^)
-      else
-        Result:=Py_None;
-      Exit;
-    end
-    else if StrComp(attr, 'start_handle')=0 then
-    begin
-      Result:=FStartHandle;
-      Py_INCREF(Result);
+      P:=GetPosition;
+      if P=nil then
+      begin
+        Result:=MakePyVect(OriginVectorZero);
+        Exit;
+      end;
+      Result:=MakePyVectv(P^);
       Exit;
     end;
-    'e': if StrComp(attr, 'end_point')=0 then
+    'r': if StrComp(attr, 'rotmatrix')=0 then
     begin
-      R:=GetEndPoint(P);
-      if R then
-        Result:=MakePyVectv(P^)
-      else
-        Result:=Py_None;
-      Exit;
-    end
-    else if StrComp(attr, 'end_handle')=0 then
-    begin
-      Result:=FEndHandle;
-      Py_INCREF(Result);
+      GetRotMatrix(M);
+      if M=nil then
+      begin
+        Result:=MakePyMatrix(MatriceIdentite);
+        Exit;
+      end;
+      Result:=MakePyMatrix(M^);
       Exit;
     end;
-    'b': if StrComp(attr, 'bone_length')=0 then
+    'v': if StrComp(attr, 'vtxlist')=0 then
     begin
-      Result:=PyFloat_FromDouble(GetLength);
+      S:=GetSpecArg(VertSpec);
+      Result:=PyDict_New;
+      if Length(S)<=VertSpecLen then
+        Exit;
+      P2:=PChar(S)+VertSpecLen;
+      N:=PInteger(P2)^;
+      Inc(P2, SizeOf(Integer));
+      for I:=0 to N-1 do
+      begin
+        S2:=StrPas(P2);
+        Inc(P2, Length(S2)+1);
+        N2:=PInteger(P2)^;
+        Inc(P2, SizeOf(Integer));
+        o:=PyList_New(N2);
+        for I2:=0 to N2-1 do
+        begin
+          I3:=PInteger(P2)^;
+          Inc(P2, SizeOf(Integer));
+          o2:=PyInt_FromLong(I3);
+          PyList_SetItem(o, I2, o2);
+        end;
+        PyDict_SetItemString(Result, PChar(S2), o);
+      end;
+      //@ FIXME: Check for ref counters bugs!
+      Exit;
+    end
+    else if StrComp(attr, 'vtx_pos')=0 then
+    begin
+      S:=GetSpecArg(VertPosSpec);
+      Result:=PyDict_New;
+      if Length(S)<=VertPosSpecLen then
+        Exit;
+      P2:=PChar(S)+VertPosSpecLen;
+      N:=PInteger(P2)^;
+      Inc(P2, SizeOf(Integer));
+      for I:=0 to N-1 do
+      begin
+        S2:=StrPas(P2);
+        Inc(P2, Length(S2)+1);
+        N2:=PInteger(P2)^;
+        Inc(P2, SizeOf(Integer));
+        o:=PyList_New(N2);
+        for I2:=0 to N2-1 do
+        begin
+          I3:=PInteger(P2)^;
+          Inc(P2, SizeOf(Integer));
+          o2:=PyInt_FromLong(I3);
+          PyList_SetItem(o, I2, o2);
+        end;
+        PyDict_SetItemString(Result, PChar(S2), o);
+      end;
+      //@ FIXME: Check for ref counters bugs!
       Exit;
     end;
   end;
@@ -330,73 +391,153 @@ end;
 function QModelBone.PySetAttr(attr: PChar; value: PyObject) : Boolean;
 var
   P: PyVect;
+  M: PyMatrix;
   S, S0: String;
-  Dest: vec3_p;
-  length: single;
+  DictLen: Py_ssize_t;
+  DestP: vec3_p;
+  DestM: PMatrixTransformation;
+  DestV: PChar;
+  DictKey, DictValue: PyObject;
+  N, I: Integer;
+  o2: PyObject;
+  N2, I2: Integer;
+  S2: String;
+  I3: Integer;
 begin
   Result:=inherited PySetAttr(attr, value);
   if not Result then begin
     case attr[0] of
-      'b': if StrComp(attr, 'bone_length')=0 then begin
-        if not PyArg_ParseTupleX(value, 'f', [@length]) then
-         Exit;
-        SetFloatSpec('length',length);
-        Result:=True;
-        Exit;
-      end;
-      's': if StrComp(attr, 'start_point')=0 then begin
-        S0:=FloatSpecNameOf(StartSpec);
+      'p': if StrComp(attr, 'position')=0 then begin
+        S0:=FloatSpecNameOf(PosSpec);
         S:=S0+'=';
-        SetLength(S, StartSpecLen+SizeOf(vec3_t));
-        PChar(Dest):=PChar(S)+StartSpecLen;
+        SetLength(S, PosSpecLen+SizeOf(vec3_t));
+        PChar(DestP):=PChar(S)+PosSpecLen;
         P:=PyVect(value);
         if P=Nil then
           Exit;
         if P^.ob_type <> @TyVect_Type then
           Raise EError(4441);
         with P^.V do begin
-          Dest^[0]:=X;
-          Dest^[1]:=Y;
-          Dest^[2]:=Z;
+          DestP^[0]:=X;
+          DestP^[1]:=Y;
+          DestP^[2]:=Z;
         end;
-        Specifics.Delete(Specifics.IndexofName(S0));
+        if Specifics.IndexofName(FloatSpecNameOf(PosSpec))<>-1 then
+          //@ BAD CODING TACTIC!
+          Specifics.Delete(Specifics.IndexofName(FloatSpecNameOf(PosSpec)));
         Specifics.Add(S);
-        Result:=True;
-        Exit;
-      end
-      else if StrComp(attr, 'start_handle')=0 then
-      begin
-        Py_XDECREF(FStartHandle);
-        FStartHandle:=value;
-        Py_INCREF(value);
         Result:=True;
         Exit;
       end;
-      'e': if StrComp(attr, 'end_point')=0 then begin
-        S0:=FloatSpecNameOf(EndSpec);
+      'r': if StrComp(attr, 'rotmatrix')=0 then begin
+        S0:=FloatSpecNameOf(RotSpec);
         S:=S0+'=';
-        SetLength(S, EndSpecLen+SizeOf(vec3_t));
-        PChar(Dest):=PChar(S)+EndSpecLen;
-        P:=PyVect(value);
-        if P=Nil then
+        SetLength(S, RotSpecLen+SizeOf(TMatrixTransformation));
+        PChar(DestM):=PChar(S)+RotSpecLen;
+        M:=PyMatrix(value);
+        if M=Nil then
           Exit;
-        if P^.ob_type <> @TyVect_Type then
-          Raise EError(4441);
-        with P^.V do begin
-          Dest^[0]:=X;
-          Dest^[1]:=Y;
-          Dest^[2]:=Z;
+        if M^.ob_type <> @TyMatrix_Type then
+          Raise EError(4462);
+        with M^ do begin
+          DestM^[1][1]:=M[1][1];
+          DestM^[1][2]:=M[1][2];
+          DestM^[1][3]:=M[1][3];
+          DestM^[2][1]:=M[2][1];
+          DestM^[2][2]:=M[2][2];
+          DestM^[2][3]:=M[2][3];
+          DestM^[3][1]:=M[3][1];
+          DestM^[3][2]:=M[3][2];
+          DestM^[3][3]:=M[3][3];
         end;
-        Specifics.Delete(Specifics.IndexofName(S0));
+        if Specifics.IndexofName(FloatSpecNameOf(RotSpec))<>-1 then
+          //@ BAD CODING TACTIC!
+          Specifics.Delete(Specifics.IndexofName(FloatSpecNameOf(RotSpec)));
+        Specifics.Add(S);
+        Result:=True;
+        Exit;
+      end;
+      'v': if StrComp(attr, 'vtxlist')=0 then begin
+        S0:=VertSpec;
+        S:=S0+'=';
+        SetLength(S, VertSpecLen);
+        I:=VertSpecLen;
+        PChar(DestV):=PChar(S)+I;
+        N:=PyObject_Length(value);
+        SetLength(S, I+SizeOf(Integer));
+        PChar(DestV):=PChar(S)+I;
+        Move(N, DestV^, SizeOf(Integer));
+        I:=I+SizeOf(Integer);
+        DictLen:=0;
+        while (PyDict_Next(value, Py_ssize_tPtr(@DictLen), @DictKey, @DictValue)<>0) do
+        begin
+          S2:=PyString_AsString(DictKey);
+          SetLength(S, I+Length(S2)+1);
+          PChar(DestV):=PChar(S)+I;
+          StrCopy(DestV, PChar(S2));
+          I:=I+Length(S2)+1;
+          N2:=PyObject_Length(DictValue);
+          SetLength(S, I+SizeOf(Integer));
+          PChar(DestV):=PChar(S)+I;
+          Move(N2, DestV^, SizeOf(Integer));
+          I:=I+SizeOf(Integer);
+          for I2:=0 to N2-1 do
+          begin
+            o2:=PyList_GetItem(DictValue, I2);
+            I3:=PyInt_AsLong(o2);
+            SetLength(S, I+SizeOf(Integer));
+            PChar(DestV):=PChar(S)+I;
+            Move(I3, DestV^, SizeOf(Integer));
+            I:=I+SizeOf(Integer);
+          end;
+        end;
+        //@ FIXME: Check for ref counters bugs!
+        if Specifics.IndexofName(VertSpec)<>-1 then
+          //@ BAD CODING TACTIC!
+          Specifics.Delete(Specifics.IndexofName(VertSpec));
         Specifics.Add(S);
         Result:=True;
         Exit;
       end
-      else if StrComp(attr, 'end_handle')=0 then
-      begin
-        Py_XDECREF(FEndHandle);
-        FEndHandle:=value;
-        Py_INCREF(value);
+      else if StrComp(attr, 'vtx_pos')=0 then begin
+        S0:=VertPosSpec;
+        S:=S0+'=';
+        SetLength(S, VertPosSpecLen);
+        I:=VertPosSpecLen;
+        PChar(DestV):=PChar(S)+I;
+        N:=PyObject_Length(value);
+        SetLength(S, I+SizeOf(Integer));
+        PChar(DestV):=PChar(S)+I;
+        Move(N, DestV^, SizeOf(Integer));
+        I:=I+SizeOf(Integer);
+        DictLen:=0;
+        while (PyDict_Next(value, Py_ssize_tPtr(@DictLen), @DictKey, @DictValue)<>0) do
+        begin
+          S2:=PyString_AsString(DictKey);
+          SetLength(S, I+Length(S2)+1);
+          PChar(DestV):=PChar(S)+I;
+          StrCopy(DestV, PChar(S2));
+          I:=I+Length(S2)+1;
+          N2:=PyObject_Length(DictValue);
+          SetLength(S, I+SizeOf(Integer));
+          PChar(DestV):=PChar(S)+I;
+          Move(N2, DestV^, SizeOf(Integer));
+          I:=I+SizeOf(Integer);
+          for I2:=0 to N2-1 do
+          begin
+            o2:=PyList_GetItem(DictValue, I2);
+            I3:=PyInt_AsLong(o2);
+            SetLength(S, I+SizeOf(Integer));
+            PChar(DestV):=PChar(S)+I;
+            Move(I3, DestV^, SizeOf(Integer));
+            I:=I+SizeOf(Integer);
+          end;
+        end;
+        //@ FIXME: Check for ref counters bugs!
+        if Specifics.IndexofName(VertPosSpec)<>-1 then
+          //@ BAD CODING TACTIC!
+          Specifics.Delete(Specifics.IndexofName(VertPosSpec));
+        Specifics.Add(S);
         Result:=True;
         Exit;
       end;
