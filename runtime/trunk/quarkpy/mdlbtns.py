@@ -42,24 +42,24 @@ def droptarget(editor, newitem):
           c=componentof(fs)
           if c is None:
             c=editor.Root.currentcomponent
-          return c.group_frame, None
+          return c.dictitems['Frames:fg'], None
       elif newitem.type in ('.pcx', '.tga', '.dds', '.png', '.jpg', '.bmp'):
         if not fs is None:
           c=componentof(fs)
           if c is None:
             c=editor.Root.currentcomponent
-          return c.group_skin, None
+          return c.dictitems['Skins:sg'], None
       elif newitem.type==(':tag'):
-        return editor.Root.group_misc, None
+        return editor.Root.dictitems['Misc:mg'], None
       elif newitem.type==(':bone'):
         if editor.Root["no_skeleton"]=='1':
-          return editor.Root.group_misc, None
+          return editor.Root.dictitems['Misc:mg'], None
         else: 
           if not fs is None:
             c=componentof(fs)
             if c is None:
               c=editor.Root.currentcomponent
-            return c.group_bone, None
+            return c.dictitems['Skeleton:bg'], None
 #    if editor.Root.acceptitem(newitem):
 #        return editor.Root, None   # in the root, at the end
     # cannot insert new item at all...
@@ -486,6 +486,9 @@ def groupcolor(m):
 #
 #
 #$Log$
+#Revision 1.26  2009/02/17 04:58:46  cdunde
+#To expand on types of image texture files that can be applied from the Texture Browser to the Model editor.
+#
 #Revision 1.25  2009/01/29 02:13:51  cdunde
 #To reverse frame indexing and fix it a better way by DanielPharos.
 #

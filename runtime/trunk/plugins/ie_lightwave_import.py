@@ -2490,6 +2490,8 @@ def loadmodel(root, filename, gamename, nomessage=0):
         compframes = editor.Root.currentcomponent.findallsubitems("", ':mf')   # get all frames
         for compframe in compframes:
             compframe.compparent = editor.Root.currentcomponent # To allow frame relocation after editing.
+        # This needs to be done for each component or bones will not work if used in the editor.
+        quarkpy.mdlutils.make_tristodraw_dict(editor, Component)
     editor.ok(undo, str(len(ComponentList)) + " .lwo Components imported")
 
     editor = None   #Reset the global again
@@ -2721,6 +2723,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.28  2009/03/26 19:53:12  danielpharos
+# Removed redundant variable.
+#
 # Revision 1.27  2009/03/24 21:46:56  cdunde
 # Minor file cleanup.
 #

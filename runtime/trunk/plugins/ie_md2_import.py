@@ -559,6 +559,8 @@ def loadmodel(root, filename, gamename, nomessage=0):
     Strings[2454] = Strings[2454].replace(Component.shortname + "\n", "")
     ie_utils.default_end_logging(filename, "IM", starttime) ### Use "EX" for exporter text, "IM" for importer text.
 
+    # This needs to be done for each component or bones will not work if used in the editor.
+    quarkpy.mdlutils.make_tristodraw_dict(editor, Component)
     editor.ok(undo, Component.shortname + " created")
 
     comp = editor.Root.currentcomponent
@@ -577,6 +579,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".md2 Quake2 Importer", ".md2 file", "*.md2
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.8  2009/01/29 02:13:51  cdunde
+# To reverse frame indexing and fix it a better way by DanielPharos.
+#
 # Revision 1.7  2009/01/26 18:29:12  cdunde
 # Update for correct frame index setting.
 #

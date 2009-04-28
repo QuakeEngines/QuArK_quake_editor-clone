@@ -25,7 +25,137 @@ keyframesrotation = 0
 ###############################
 
 
+#
+# Creates the editor.ModelComponentList 'tristodraw' dictionary list for the "component" sent to this function.
+#
+def make_tristodraw_dict(editor, comp):
+    if not editor.ModelComponentList.has_key("tristodraw"):
+        editor.ModelComponentList['tristodraw'] = {}
+    if comp.dictitems.has_key("Frames:fg") and len(comp.dictitems['Frames:fg'].subitems) != 0:
+        if (len(comp.dictitems['Frames:fg'].subitems[0].vertices) == 0) and (editor.ModelComponentList['tristodraw'].has_key(comp.name)):
+            del editor.ModelComponentList['tristodraw'][comp.name]
+        else:
+            if not editor.ModelComponentList['tristodraw'].has_key(comp.name):
+                editor.ModelComponentList['tristodraw'][comp.name] = {}
+            tristodraw = {}
+            tris = comp.triangles
+            for vtx in range(len(comp.dictitems['Frames:fg'].subitems[0].vertices)):
+                tristodraw[vtx] = []
+            for tri in tris:
+                for vertex in tri:
+                    vtx = vertex[0]
+                    for vertex2 in tri:
+                        vtx2 = vertex2[0]
+                        if vtx == vtx2:
+                            continue
+                        if not vtx2 in tristodraw[vtx]:
+                            tristodraw[vtx] = tristodraw[vtx] + [vtx2]
+            for vtx in range(len(comp.dictitems['Frames:fg'].subitems[0].vertices)):
+                if len(tristodraw[vtx]) == 0:
+                    del tristodraw[vtx]
+                    continue
+                tristodraw[vtx].sort()
+                tristodraw[vtx].reverse()
+            if len(tristodraw) == 0:
+                del editor.ModelComponentList['tristodraw'][comp.name]
+            else:
+                editor.ModelComponentList['tristodraw'][comp.name] = tristodraw
+    else:
+        if editor.ModelComponentList['tristodraw'].has_key(comp.name):
+            del editor.ModelComponentList['tristodraw'][comp.name]
 
+#
+# Updates the editor.ModelComponentList for a component's bonevtxlist when any vertex is removed,
+# and it needs an undo action sent to it as well for updating the bones needed.
+#
+def update_bonevtxlist(editor, comp, vertices_to_remove):
+    Old_dictionary_list = editor.ModelComponentList[comp.name]['bonevtxlist'].copy()
+    old = []
+    new = []
+    for bone in editor.ModelComponentList[comp.name]['bonevtxlist']:
+        old_bone = findbone(editor, bone)
+        old = old +[old_bone]
+        new_bone = old_bone.copy()
+        new = new + [new_bone]
+        old_vertices = new_bone.vtxlist.copy()
+        for mesh in new_bone.vtxlist:
+            Old_vtxlist = old_vertices[mesh]
+            old_vertices[mesh] = update_vertex_list(Old_vtxlist, vertices_to_remove)
+            if old_vertices[mesh] is None:
+                del old_vertices[mesh]
+        new_bone.vtxlist = old_vertices
+        old_vertices = new_bone.vtx_pos.copy()
+        for mesh in new_bone.vtx_pos:
+            Old_vtxlist = old_vertices[mesh]
+            old_vertices[mesh] = update_vertex_list(Old_vtxlist, vertices_to_remove)
+            if old_vertices[mesh] is None:
+                del old_vertices[mesh]
+        new_bone.vtx_pos = old_vertices
+        Old_dictionary_list[bone] = update_vertex_keys(Old_dictionary_list[bone], vertices_to_remove)
+        if len(Old_dictionary_list[bone]) == 0:
+            del Old_dictionary_list[bone]
+    undo = quarkx.action()
+    def replacebone(oldskelgroup, newskelgroup, old, new):
+        import operator
+        for checkbone in range(len(oldskelgroup.subitems)):
+            try:
+                itemindex = operator.indexOf(old, oldskelgroup.subitems[checkbone])
+            except:
+                pass
+            else:
+                newskelgroup.removeitem(checkbone)
+                copybone = new[itemindex].copy()
+                newskelgroup.insertitem(checkbone, copybone)
+            replacebone(oldskelgroup.subitems[checkbone], newskelgroup.subitems[checkbone], old, new)
+    oldskelgroup = editor.Root.dictitems['Skeleton:bg']
+    newskelgroup = oldskelgroup.copy()
+    replacebone(oldskelgroup, newskelgroup, old, new)
+    if len(Old_dictionary_list) == 0:
+        del editor.ModelComponentList[comp.name]['bonevtxlist']
+    else:
+        editor.ModelComponentList[comp.name]['bonevtxlist'] = Old_dictionary_list
+    if len(editor.ModelComponentList[comp.name]) == 0:
+        del editor.ModelComponentList[comp.name]
+    undo.exchange(oldskelgroup, newskelgroup)
+    editor.ok(undo, "")
+
+#
+# Updates the editor.ModelComponentList for a component's colorvtxlist when any vertex is removed.
+#
+def update_colorvtxlist(editor, comp, vertices_to_remove):
+    Old_dictionary_list = editor.ModelComponentList[comp.name]['colorvtxlist']
+    editor.ModelComponentList[comp.name]['colorvtxlist'] = update_vertex_keys(Old_dictionary_list, vertices_to_remove)
+    if len(editor.ModelComponentList[comp.name]['colorvtxlist']) == 0:
+        del editor.ModelComponentList[comp.name]['colorvtxlist']
+    if len(editor.ModelComponentList[comp.name]) == 0:
+        del editor.ModelComponentList[comp.name]
+
+#
+# Flattens the ModelComponentList using cPickle into a single string
+#
+def FlattenModelComponentList(editor):
+    # Based on http://docs.python.org/library/pickle.html
+    import cPickle
+    from cStringIO import StringIO
+    src = StringIO()
+    p = cPickle.Pickler(src)
+    p.dump(editor.ModelComponentList)
+    return src.getvalue()
+
+#
+# Unflattens a single string into the ModelComponentList using cPickle
+#
+def UnflattenModelComponentList(editor, datastream):
+    # Based on http://docs.python.org/library/pickle.html
+    import cPickle
+    from cStringIO import StringIO
+    dst = StringIO(datastream)
+    up = cPickle.Unpickler(dst)
+    editor.ModelComponentList = up.load()
+
+#
+# Checks a triangle index to see if it is in the list of triangles to be removed, 0 = no, 1= yes.
+#
 def checkinlist(tri, toberemoved):
   for tbr in toberemoved:
     if (tri == tbr):
@@ -424,6 +554,7 @@ def replacevertexes(editor, comp, vertexlist, flags, view, undomsg, option=1, me
         editor.ModelVertexSelList = []
         undo = quarkx.action()
         undo.exchange(comp, new_comp)
+        make_tristodraw_dict(editor, new_comp)
         editor.ok(undo, undomsg)
 
 
@@ -508,14 +639,63 @@ def removevertex(comp, index, all3=0):
     undo = quarkx.action()
     undo.exchange(comp, new_comp)
     if all3 == 1:
+        make_tristodraw_dict(editor, new_comp)
         editor.ok(undo, "remove triangle")
         editor.ModelVertexSelList = []
     else:
+        make_tristodraw_dict(editor, new_comp)
         editor.ok(undo, "remove vertex")
         editor.ModelVertexSelList = []
 
 
+#
+# Creates a new dictionary of vertex index keys with deleted ones removed
+# and the old vertex key numbers corrected (updated).
+#
+def update_vertex_keys(Old_dictionary_list, vertices_to_remove):
+    old_keys = Old_dictionary_list.keys() # List of 'bonevtxlist' keys as vertex_index integer items.
+    NewVertexNumbers = []
+    for vtx in range(len(old_keys)):
+        if old_keys[vtx] in vertices_to_remove:
+            # This vertex index is completely removed because it was combined with another, moved to another component or deleted.
+            NewVertexNumbers = NewVertexNumbers + [-1]
+        else:
+            for remove in range(len(vertices_to_remove)):
+                if vertices_to_remove[remove] > old_keys[vtx]:
+                    NewVertexNumbers = NewVertexNumbers + [old_keys[vtx] - (remove)]
+                    break
+                if remove == len(vertices_to_remove)-1:
+                    NewVertexNumbers = NewVertexNumbers + [old_keys[vtx] - len(vertices_to_remove)]
+    # Now create the new dictionary list
+    New_dictionary_list = {}
+    for vtx in range(len(Old_dictionary_list)):
+        if NewVertexNumbers[vtx] <> -1:
+            New_dictionary_list[NewVertexNumbers[vtx]] = Old_dictionary_list[Old_dictionary_list.keys()[vtx]]
+    return New_dictionary_list
 
+
+#
+# Creates a new list of vertex indexes with deleted ones removed
+# and the old vertex numbers corrected (updated).
+#
+def update_vertex_list(Old_vtxlist, vertices_to_remove):
+    New_vtxlist = []
+    for vtx in range(len(Old_vtxlist)):
+        if Old_vtxlist[vtx] in vertices_to_remove:
+            continue
+        else:
+            for remove in range(len(vertices_to_remove)):
+                if vertices_to_remove[remove] > Old_vtxlist[vtx]:
+                    New_vtxlist = New_vtxlist + [Old_vtxlist[vtx] - remove]
+                    break
+                if remove == len(vertices_to_remove)-1:
+                    New_vtxlist = New_vtxlist + [Old_vtxlist[vtx] - len(vertices_to_remove)]
+    if New_vtxlist == []:
+        return None
+    return New_vtxlist
+
+
+    
 ###############################
 #
 # Triangle & Face functions
@@ -553,19 +733,19 @@ def addtriangle(editor):
             texWidth,texHeight = SkinView1.clientarea
             SkinViewScale = 1
     if quarkx.setupsubset(SS_MODEL, "Options")['SkinFrom3Dview'] == "1" or SkinView1 is None:
-        s1 = int(cordsview.proj(editor.ModelVertexSelList[0][1]).tuple[0])*.025
-        t1 = -int(cordsview.proj(editor.ModelVertexSelList[0][1]).tuple[1])*.025
-        s2 = int(cordsview.proj(editor.ModelVertexSelList[1][1]).tuple[0])*.025
-        t2 = -int(cordsview.proj(editor.ModelVertexSelList[1][1]).tuple[1])*.025
-        s3 = int(cordsview.proj(editor.ModelVertexSelList[2][1]).tuple[0])*.025
-        t3 = -int(cordsview.proj(editor.ModelVertexSelList[2][1]).tuple[1])*.025
+        s1 = int(cordsview.proj(editor.ModelVertexSelList[0][1]).tuple[0]*.025)
+        t1 = -int(cordsview.proj(editor.ModelVertexSelList[0][1]).tuple[1]*.025)
+        s2 = int(cordsview.proj(editor.ModelVertexSelList[1][1]).tuple[0]*.025)
+        t2 = -int(cordsview.proj(editor.ModelVertexSelList[1][1]).tuple[1]*.025)
+        s3 = int(cordsview.proj(editor.ModelVertexSelList[2][1]).tuple[0]*.025)
+        t3 = -int(cordsview.proj(editor.ModelVertexSelList[2][1]).tuple[1]*.025)
     else:
-        s1 = int(editor.ModelVertexSelList[0][1].tuple[0]+int(texWidth*.5))*SkinViewScale
-        t1 = int(editor.ModelVertexSelList[0][1].tuple[1]-int(texHeight*.5))*SkinViewScale
-        s2 = int(editor.ModelVertexSelList[1][1].tuple[0]+int(texWidth*.5))*SkinViewScale
-        t2 = int(editor.ModelVertexSelList[1][1].tuple[1]-int(texHeight*.5))*SkinViewScale
-        s3 = int(editor.ModelVertexSelList[2][1].tuple[0]+int(texWidth*.5))*SkinViewScale
-        t3 = int(editor.ModelVertexSelList[2][1].tuple[1]-int(texHeight*.5))*SkinViewScale
+        s1 = int(editor.ModelVertexSelList[0][1].tuple[0]+int(texWidth*.5)*SkinViewScale)
+        t1 = int(editor.ModelVertexSelList[0][1].tuple[1]-int(texHeight*.5)*SkinViewScale)
+        s2 = int(editor.ModelVertexSelList[1][1].tuple[0]+int(texWidth*.5)*SkinViewScale)
+        t2 = int(editor.ModelVertexSelList[1][1].tuple[1]-int(texHeight*.5)*SkinViewScale)
+        s3 = int(editor.ModelVertexSelList[2][1].tuple[0]+int(texWidth*.5)*SkinViewScale)
+        t3 = int(editor.ModelVertexSelList[2][1].tuple[1]-int(texHeight*.5)*SkinViewScale)
 
     if findTriangle(comp, v1, v2, v3) is not None:
         quarkx.msgbox("Improper Selection!\n\nA triangle using these 3 vertexes already exist.\n\nSelect at least one different vertex\nto make a new triangle with.\n\nTo 'Un-pick' a vertex from the 'Pick' list\nplace your cursor over that vertex,\nRMB click and select 'Pick Vertex'.\nThen you can pick another vertex to replace it.", MT_ERROR, MB_OK)
@@ -584,6 +764,7 @@ def addtriangle(editor):
         compframe.compparent = new_comp # To allow frame relocation after editing.
     undo = quarkx.action()
     undo.exchange(comp, new_comp)
+    make_tristodraw_dict(editor, new_comp)
     editor.Root.currentcomponent = new_comp
     editor.ok(undo, "add triangle")
     if SkinView1 is not None:
@@ -626,6 +807,7 @@ def removeTriangle(editor, comp, index):
         compframe.compparent = new_comp # To allow frame relocation after editing.
     undo = quarkx.action()
     undo.exchange(comp, new_comp)
+    make_tristodraw_dict(editor, new_comp)
     editor.ok(undo, "remove triangle")
 
 
@@ -659,7 +841,7 @@ def movefaces(editor, movetocomponent, option=2):
     # These are things that we need to setup first for use later on.
     temp_list = []
     remove_triangle_list = []
-    remove_vertices_list = []
+    vertices_to_remove = []
 
     # Now we start creating our data copies to work with and the final "ok" swapping function at the end.
     tris = comp.triangles
@@ -678,7 +860,7 @@ def movefaces(editor, movetocomponent, option=2):
         else:
             remove_triangle_list = remove_triangle_list + [tri_index]
 
-    # This section creates the "remove_vertices_list" to be used
+    # This section creates the "vertices_to_remove" to be used
     #    to re-create the current component's frame.vertices.
     # It also skips over any duplicated vertex_index numbers of the triangles to be moved
     #    to the new_comp and\or removed from the original component if 'option' calls to.
@@ -689,11 +871,11 @@ def movefaces(editor, movetocomponent, option=2):
             else:
                 temp_list.append(tris[tri_index][vtx][0])
 
-    # This section sorts the "remove_vertices_list" numerically in ascending order then
+    # This section sorts the "vertices_to_remove" numerically in ascending order then
     # recreates it in descending order for the same reason that the triangles above were done.
     temp_list.sort()
     for item in reversed(temp_list):
-        remove_vertices_list.append(item)
+        vertices_to_remove.append(item)
 
     ###### NEW COMPONENT SECTION ######
     if option < 3:
@@ -710,8 +892,8 @@ def movefaces(editor, movetocomponent, option=2):
         nbr_of_new_comp_vtxs_before_adding = len(new_comp.dictitems['Frames:fg'].subitems[0].vertices)
         for frame in range(len(comp.dictitems['Frames:fg'].subitems)):
             newframe_vertices = new_comp.dictitems['Frames:fg'].subitems[frame].vertices
-            for vert_index in range(len(remove_vertices_list)):
-                newframe_vertices = newframe_vertices + [comp.dictitems['Frames:fg'].subitems[frame].vertices[remove_vertices_list[vert_index]]]
+            for vert_index in range(len(vertices_to_remove)):
+                newframe_vertices = newframe_vertices + [comp.dictitems['Frames:fg'].subitems[frame].vertices[vertices_to_remove[vert_index]]]
             new_comp.dictitems['Frames:fg'].subitems[frame].vertices = newframe_vertices
 
     # This third part fixes up the 'new_comp.triangles', NEW triangles vertex index numbers
@@ -719,8 +901,8 @@ def movefaces(editor, movetocomponent, option=2):
         temptris = []
         for tri in range(len(newtris)):
             for index in range(len(newtris[tri])):
-                for vert_index in range(len(remove_vertices_list)):
-                    if newtris[tri][index][0] == remove_vertices_list[vert_index]:
+                for vert_index in range(len(vertices_to_remove)):
+                    if newtris[tri][index][0] == vertices_to_remove[vert_index]:
                         if index == 0:
                             tri0 = (nbr_of_new_comp_vtxs_before_adding + vert_index, newtris[tri][index][1], newtris[tri][index][2])
                             break
@@ -741,6 +923,8 @@ def movefaces(editor, movetocomponent, option=2):
         undo = quarkx.action()
         undo.exchange(editor.Root.dictitems[movetocomponent + ':mc'], None)
         undo.put(editor.Root, new_comp)
+        # Updates the editor.ModelComponentList 'tristodraw', for this component. This needs to be done for each component or bones will not work if used in the editor.
+        make_tristodraw_dict(editor, new_comp)
         if option == 1:
             editor.ok(undo, "faces copied to " + new_comp.shortname)
         else:
@@ -749,9 +933,9 @@ def movefaces(editor, movetocomponent, option=2):
     ###### ORIGINAL COMPONENT SECTION ######
     if option > 1:
 
-    # This section checks and takes out, from the remove_vertices_list, any vert_index that is being used by a
+    # This section checks and takes out, from the vertices_to_remove, any vert_index that is being used by a
     #    triangle that is not being removed, in the remove_triangle_list, to avoid any invalid triangle errors.
-        dumylist = remove_vertices_list
+        dumylist = vertices_to_remove
         for tri in range(len(change_comp.triangles)):
             if tri in remove_triangle_list:
                 continue
@@ -759,7 +943,7 @@ def movefaces(editor, movetocomponent, option=2):
                 for vtx in range(len(change_comp.triangles[tri])):
                     if change_comp.triangles[tri][vtx][0] in dumylist:
                         dumylist.remove(change_comp.triangles[tri][vtx][0])
-        remove_vertices_list = dumylist
+        vertices_to_remove = dumylist
 
     # This section uses the "remove_triangle_list" to recreate the original
     #    component.triangles without the selected faces.
@@ -770,11 +954,11 @@ def movefaces(editor, movetocomponent, option=2):
             old_tris = old_tris[:index] + old_tris[index+1:]
         change_comp.triangles = old_tris
 
-    # This section uses the "remove_vertices_list" to recreate the
+    # This section uses the "vertices_to_remove" to recreate the
     #    original component's frames without any unused vertexes.
         new_tris = change_comp.triangles
         compframes = change_comp.findallsubitems("", ':mf')   # find all frames
-        for index in remove_vertices_list:
+        for index in vertices_to_remove:
             enew_tris = fixUpVertexNos(new_tris, index)
             new_tris = enew_tris
             for compframe in compframes: 
@@ -784,16 +968,25 @@ def movefaces(editor, movetocomponent, option=2):
         change_comp.triangles = new_tris
 
     # This updates the original component finishing the process for that.
+        vertices_to_remove.sort()
         compframes = change_comp.findallsubitems("", ':mf')   # get all frames
         for compframe in compframes:
             compframe.compparent = change_comp # To allow frame relocation after editing.
         undo = quarkx.action()
         undo.exchange(comp, None)
         undo.put(editor.Root, change_comp)
+        # Updates the editor.ModelComponentList 'tristodraw', for this component. This needs to be done for each component or bones will not work if used in the editor.
+        make_tristodraw_dict(editor, change_comp)
         if option == 2:
             editor.ok(undo, "faces moved from " + change_comp.shortname)
         else:
             editor.ok(undo, "faces deleted from " + change_comp.shortname)
+        # Updates the editor.ModelComponentList, for this component, 'bonevtxlist' and 'colorvtxlist' if one or both exist. 
+        if len(vertices_to_remove) != 0:
+            if  (editor.ModelComponentList.has_key(change_comp.name)) and (editor.ModelComponentList[change_comp.name].has_key('bonevtxlist')):
+                update_bonevtxlist(editor, change_comp, vertices_to_remove)
+            if  (editor.ModelComponentList.has_key(change_comp.name)) and ( editor.ModelComponentList[change_comp.name].has_key('colorvtxlist')):
+                update_colorvtxlist(editor, change_comp, vertices_to_remove)
 
 
 
@@ -1233,6 +1426,7 @@ def ConvertVertexPolyObject(editor, newobjectslist, flags, view, undomsg, option
 
         undo = quarkx.action()
         undo.exchange(comp, new_comp)
+        make_tristodraw_dict(editor, new_comp)
         editor.ok(undo, undomsg)
         editor.ModelVertexSelList = newvertexselection
 
@@ -1579,6 +1773,7 @@ def ConvertEditorFaceObject(editor, newobjectslist, flags, view, undomsg, option
 
         undo = quarkx.action()
         undo.exchange(comp, new_comp)
+        make_tristodraw_dict(editor, new_comp)
         editor.ok(undo, undomsg)
         editor.ModelFaceSelList = newfaceselection
 
@@ -1632,7 +1827,7 @@ def addcomponent(editor, option=2):
     if option == 2:
         temp_list = []
         remove_triangle_list = []
-        remove_vertices_list = []
+        vertices_to_remove = []
 
     # Now we start creating our data copies to work with and the final "ok" swapping function at the end.
     # But first we check for any other "new component"s, if so we name this one 1 more then the largest number.
@@ -1691,7 +1886,7 @@ def addcomponent(editor, option=2):
             else:
                 remove_triangle_list = remove_triangle_list + [tri_index]
 
-    # This section creates the "remove_vertices_list" to be used
+    # This section creates the "vertices_to_remove" to be used
     #    to re-create the current component's frame.vertices.
     # It also skips over any vertexes of the triangles to be removed but should not be included
     #    because they are "common" vertexes and still being used by other remaining triangles.
@@ -1703,7 +1898,7 @@ def addcomponent(editor, option=2):
                     temp_list.append(tris[tri_index][vtx][0])
         temp_list.sort()
         for item in reversed(temp_list):
-            remove_vertices_list.append(item)
+            vertices_to_remove.append(item)
 
     # This creates the new component and places it under the main Model Root with the other components.
     ## This first part sets up the new_comp.triangles, which are the ones that have been selected, using the
@@ -1719,15 +1914,15 @@ def addcomponent(editor, option=2):
     ##    to coordinate with those frame.vertices lists.
         for compframe in range(len(comp.dictitems['Frames:fg'].subitems)):
             newframe_vertices = []
-            for vert_index in range(len(remove_vertices_list)):
-                newframe_vertices = newframe_vertices + [comp.dictitems['Frames:fg'].subitems[compframe].vertices[remove_vertices_list[vert_index]]]
+            for vert_index in range(len(vertices_to_remove)):
+                newframe_vertices = newframe_vertices + [comp.dictitems['Frames:fg'].subitems[compframe].vertices[vertices_to_remove[vert_index]]]
             new_comp.dictitems['Frames:fg'].subitems[compframe].vertices = newframe_vertices
 
         newtris = []
         for tri in range(len(new_comp.triangles)):
             for index in range(len(new_comp.triangles[tri])):
-                for vert_index in range(len(remove_vertices_list)):
-                    if new_comp.triangles[tri][index][0] == remove_vertices_list[vert_index]:
+                for vert_index in range(len(vertices_to_remove)):
+                    if new_comp.triangles[tri][index][0] == vertices_to_remove[vert_index]:
                         if index == 0:
                             tri0 = (vert_index, new_comp.triangles[tri][index][1], new_comp.triangles[tri][index][2])
                             break
@@ -1750,15 +1945,18 @@ def addcomponent(editor, option=2):
         compframe.compparent = new_comp # To allow frame relocation after editing.
     undo = quarkx.action()
     undo.put(editor.Root, new_comp)
+    # Updates the editor.ModelComponentList 'tristodraw', for this component. This needs to be done for each component or bones will not work if used in the editor.
+    make_tristodraw_dict(editor, new_comp)
     editor.ok(undo, new_comp.shortname + " created")
     if option == 1:
         return
 
+
     ###### ORIGINAL COMPONENT SECTION ######
 
-    # This section checks and takes out, from the remove_vertices_list, any vert_index that is being used by a
+    # This section checks and takes out, from the vertices_to_remove, any vert_index that is being used by a
     # triangle that is not being removed, in the remove_triangle_list, to avoid any invalid triangle errors.
-    dumylist = remove_vertices_list
+    dumylist = vertices_to_remove
     for tri in range(len(change_comp.triangles)):
         if tri in remove_triangle_list:
             continue
@@ -1766,7 +1964,7 @@ def addcomponent(editor, option=2):
             for vtx in range(len(change_comp.triangles[tri])):
                 if change_comp.triangles[tri][vtx][0] in dumylist:
                     dumylist.remove(change_comp.triangles[tri][vtx][0])
-    remove_vertices_list = dumylist
+    vertices_to_remove = dumylist
     
     # This section uses the "remove_triangle_list" to recreate the original
     # component.triangles without the selected faces.
@@ -1777,11 +1975,11 @@ def addcomponent(editor, option=2):
         old_tris = old_tris[:index] + old_tris[index+1:]
     change_comp.triangles = old_tris
 
-    # This section uses the "remove_vertices_list" to recreate the
+    # This section uses the "vertices_to_remove" to recreate the
     # original component's frames without any unused vertexes.
     new_tris = change_comp.triangles
     compframes = change_comp.findallsubitems("", ':mf')   # find all frames
-    for index in remove_vertices_list:
+    for index in vertices_to_remove:
         enew_tris = fixUpVertexNos(new_tris, index)
         new_tris = enew_tris
         for compframe in compframes: 
@@ -1792,10 +1990,7 @@ def addcomponent(editor, option=2):
 
     # This section updates any bones in the original component and the editor.ModelComponentList,
     # if any vertexes that are being removed have been assigned to a bone's handle.
-    remove_vertices_list.sort()
-    BonesToUpdate = None
-    if editor.ModelComponentList.has_key(comp.name):
-        BonesToUpdate = Update_BoneALLLists(editor, comp, remove_vertices_list)
+    vertices_to_remove.sort()
 
     # This last section updates the original component finishing the process for it.
     compframes = change_comp.findallsubitems("", ':mf')   # get all frames
@@ -1804,11 +1999,16 @@ def addcomponent(editor, option=2):
     undo = quarkx.action()
     undo.exchange(comp, None)
     undo.put(editor.Root, change_comp)
+    # Updates the editor.ModelComponentList 'tristodraw', for this component.  This needs to be done for each component or bones will not work if used in the editor.
+    make_tristodraw_dict(editor, change_comp)
     editor.ok(undo, change_comp.shortname + " updated")
+    # Updates the editor.ModelComponentList, for this component, 'bonevtxlist' and 'colorvtxlist' if one or both exist. 
+    if len(vertices_to_remove) != 0:
+        if  (editor.ModelComponentList.has_key(change_comp.name)) and (editor.ModelComponentList[change_comp.name].has_key('bonevtxlist')):
+            update_bonevtxlist(editor, change_comp, vertices_to_remove)
+        if  (editor.ModelComponentList.has_key(change_comp.name)) and ( editor.ModelComponentList[change_comp.name].has_key('colorvtxlist')):
+            update_colorvtxlist(editor, change_comp, vertices_to_remove)
     Update_Editor_Views(editor)
-    if BonesToUpdate is not None:
-        for bonename in BonesToUpdate:
-            editor.ModelComponentList[change_comp.name]['boneobjlist'][bonename] = Update_BoneObjs(editor.ModelComponentList[change_comp.name]['bonevtxlist'], bonename, change_comp)
 
 #
 # Add a frame to a given component (ie duplicate last one)
@@ -1889,6 +2089,16 @@ def addframe(editor):
 
 
 #
+# Finds and returns the bone name sent to this function.
+#
+def findbone(editor, bone_name):
+    bones = editor.Root.dictitems['Skeleton:bg'].findallsubitems("", ':bone') # Get all bones.
+    for this_bone in bones:
+        if this_bone.name == bone_name:
+            return this_bone
+    return None
+
+#
 # To have any bones, avoiding errors, this checks that at least one model component exist in the editor.
 #
 def allowbones(editor):
@@ -1907,10 +2117,9 @@ def clearbones(editor, undomsg):
     editor.layout.explorer.uniquesel = None
     editor.ModelComponentList = {}
     undo = quarkx.action()
-    undo.exchange(editor.Root.dictitems['Skeleton:bg'], None)
     skeletongroup = quarkx.newobj('Skeleton:bg')
     skeletongroup['type'] = chr(5)
-    undo.put(editor.Root, skeletongroup)
+    undo.exchange(editor.Root.dictitems['Skeleton:bg'], skeletongroup)
     editor.ok(undo, undomsg)
 
 #
@@ -1919,48 +2128,8 @@ def clearbones(editor, undomsg):
 def addbone(editor, comp, pos):
     name = None
     comparenbr = 0
-    compbones = editor.Root.findallsubitems("", ':bone')      # get all bones
-    for item in compbones:
-        if item.shortname.startswith('NewBone'):
-            getnbr = item.shortname
-            getnbr = getnbr.replace('NewBone', '')
-            if getnbr == "":
-                nbr = 0
-            else:
-                nbr = int(getnbr)
-            if nbr > comparenbr:
-                comparenbr = nbr
-            nbr = comparenbr + 1
-            name = "NewBone" + str(nbr)
-    if name is None:
-        name = "NewBone1"
-    new_o_bone = quarkx.newobj(name + ":bone")
-    new_o_bone['start_component'] = editor.Root.currentcomponent.name
-    new_o_bone['start_point'] = pos.tuple
-    new_o_bone['start_offset'] = (0, 0, 0)
-    new_o_bone['start_vertex_count'] = "0"
-    new_o_bone['start_scale'] = (1.0,)
-    new_o_bone['end_component'] = editor.Root.currentcomponent.name
-    endpoint = pos + quarkx.vect(8,2,2)
-    new_o_bone['end_point'] = endpoint.tuple
-    new_o_bone['end_offset'] = (0, 0, 0)
-    new_o_bone['end_vertex_count'] = "0"
-    new_o_bone['end_scale'] = (1.0,)
-    new_o_bone['start_color'] = new_o_bone['end_color'] = MapColor("BoneHandles", SS_MODEL)
-    new_o_bone['bone_length'] = (8,2,2)
-    compskeleton = editor.Root.findallsubitems("", ':bg')[0]
-    undo = quarkx.action()
-    undo.put(compskeleton, new_o_bone)
-    editor.ok(undo, "add bone")
-
-#
-# This function creates a new bone at the start or end (s_or_e) of a bone.
-#
-def continue_bone(editor, bone, s_or_e = 0):
-    skeleton = editor.Root.dictitems['Skeleton:bg']  # get the bones group
-    name = None
-    comparenbr = 0
-    bones = skeleton.findallsubitems("", ':bone')      # get all bones
+    skeletongroup = editor.Root.dictitems['Skeleton:bg']    # get the bones group
+    bones = skeletongroup.findallsubitems("", ':bone')      # get all bones
     for item in bones:
         if item.shortname.startswith('NewBone'):
             getnbr = item.shortname
@@ -1975,247 +2144,206 @@ def continue_bone(editor, bone, s_or_e = 0):
             name = "NewBone" + str(nbr)
     if name is None:
         name = "NewBone1"
-    new_o_bone = quarkx.newobj(name + ":bone")
-    if s_or_e == 0:
-        new_o_bone['start_component'] = bone.dictspec['start_component']
-        new_o_bone['start_point'] = bone.dictspec['start_point']
-        new_o_bone['start_offset'] = bone.dictspec['start_offset']
+    new_bone = quarkx.newobj(name + ":bone")
+    new_bone['component'] = editor.Root.currentcomponent.name
+    new_bone['parent_name'] = "None"
+    new_bone['position'] = pos.tuple
+    from math import sqrt
+    new_bone.rotmatrix = quarkx.matrix((sqrt(2)/2, -sqrt(2)/2, 0), (sqrt(2)/2, sqrt(2)/2, 0), (0, 0, 1))
+    new_bone['draw_offset'] = (0.0,0.0,0.0)
+    new_bone['scale'] = (1.0,)
+    new_bone['_color'] = MapColor("BoneHandles", SS_MODEL)
+    new_bone['bone_length'] = (0.0,0.0,0.0)
+    undo = quarkx.action()
+    undo.put(skeletongroup, new_bone)
+    editor.ok(undo, "add bone")
+
+#
+# This function creates a new bone at position pos attached to bone.
+#
+def continue_bone(editor, bone, pos):
+    skeletongroup = editor.Root.dictitems['Skeleton:bg']  # get the bones group
+    name = None
+    comparenbr = 0
+    bones = skeletongroup.findallsubitems("", ':bone')      # get all bones
+    for item in bones:
+        if item.shortname.startswith('NewBone'):
+            getnbr = item.shortname
+            getnbr = getnbr.replace('NewBone', '')
+            if getnbr == "":
+                nbr = 0
+            else:
+                nbr = int(getnbr)
+            if nbr > comparenbr:
+                comparenbr = nbr
+            nbr = comparenbr + 1
+            name = "NewBone" + str(nbr)
+    if name is None:
+        name = "NewBone1"
+    new_bone = quarkx.newobj(name + ":bone")
+    new_bone['component'] = editor.Root.currentcomponent.name
+    new_bone['parent_name'] = bone.name
+    pos = quarkx.vect(bone.dictspec['position']) + quarkx.vect(8.0,2.0,2.0)
+    new_bone['position'] = pos.tuple
+    new_bone.rotmatrix = bone.rotmatrix
+    new_bone['draw_offset'] = (0, 0, 0)
+    new_bone['scale'] = (1.0,)
+    new_bone['_color'] = MapColor("BoneHandles", SS_MODEL)
+    new_bone['bone_length'] = (8.0,2.0,2.0)
+    undo = quarkx.action()
+    undo.put(skeletongroup, new_bone)
+    editor.ok(undo, "add bone")
+
+#
+# This function attaches 1st bone selected (based on tree-view order) to 2nd bone selected as its parent.
+#
+def attach_bone1to2(editor, bone1, bone2):
+    new_bone = bone1.copy()
+    new_bone['parent_name'] = bone2.name
+    bone_length = (bone1.position - bone2.position)
+    new_bone['bone_length'] = bone_length.tuple
+    undo = quarkx.action()
+    undo.exchange(bone1, new_bone)
+    if bone2['parent_name'] == bone1.name:
+        new_bone = bone2.copy()
+        new_bone['parent_name'] = "None"
+        new_bone['bone_length'] = (0.0,0.0,0.0)
+        undo.exchange(bone2, new_bone)
+    editor.ok(undo, "attach bone 1 to 2")
+
+#
+# This function attaches 2nd bone selected (based on tree-view order) to 1st bone selected as its parent.
+#
+def attach_bone2to1(editor, bone1, bone2):
+    new_bone = bone2.copy()
+    new_bone['parent_name'] = bone1.name
+    bone_length = (bone2.position - bone1.position)
+    new_bone['bone_length'] = bone_length.tuple
+    undo = quarkx.action()
+    undo.exchange(bone2, new_bone)
+    if bone1['parent_name'] == bone2.name:
+        new_bone = bone1.copy()
+        new_bone['parent_name'] = "None"
+        new_bone['bone_length'] = (0.0,0.0,0.0)
+        undo.exchange(bone1, new_bone)
+    editor.ok(undo, "attach bone 2 to 1")
+
+#
+# This function detaches bone from its parent bone.
+#
+def detach_bone(editor, bone):
+    new_bone = bone.copy()
+    new_bone['parent_name'] = "None"
+    new_bone['bone_length'] = (0.0,0.0,0.0)
+    undo = quarkx.action()
+    undo.exchange(bone, new_bone)
+    editor.ok(undo, "detach bones")
+
+#
+# This function aligns 1st bone selected (based on tree-view order) to 2nd selected bones position.
+#
+def align__bone1to2(editor, bone1, bone2):
+    undo = quarkx.action()
+    skeletongroup = editor.Root.dictitems['Skeleton:bg']  # get the bones group
+    bones = skeletongroup.findallsubitems("", ':bone')    # get all bones
+    new_bone = bone1.copy()
+    newpoint = bone2.position
+    new_bone['position'] = newpoint.tuple
+    new_bone['draw_offset'] = bone2.dictspec['draw_offset']
+    if new_bone.dictspec.has_key("parent_name"):
+        for bone in bones:
+            if bone.name == new_bone.dictspec['parent_name']:
+                new_bone['bone_length'] = (new_bone.position - bone.position).tuple
+    undo.exchange(bone1, new_bone)
+    for bone in bones:
+        if bone.dictspec.has_key("parent_name") and bone.dictspec['parent_name'] == bone1.name:
+            new_bone = bone.copy()
+            new_bone['bone_length'] = (new_bone.position - bone2.position).tuple
+            undo.exchange(bone, new_bone)
+    editor.ok(undo, "align bone 1 to 2")
+
+#
+# This function aligns 2nd bone selected (based on tree-view order) to 1st selected bones position.
+#
+def align__bone2to1(editor, bone1, bone2):
+    undo = quarkx.action()
+    skeletongroup = editor.Root.dictitems['Skeleton:bg']  # get the bones group
+    bones = skeletongroup.findallsubitems("", ':bone')    # get all bones
+    new_bone = bone2.copy()
+    newpoint = bone1.position
+    new_bone['position'] = newpoint.tuple
+    new_bone['draw_offset'] = bone1.dictspec['draw_offset']
+    if new_bone.dictspec.has_key("parent_name"):
+        for bone in bones:
+            if bone.name == new_bone.dictspec['parent_name']:
+                new_bone['bone_length'] = (new_bone.position - bone.position).tuple
+    undo.exchange(bone2, new_bone)
+    for bone in bones:
+        if bone.dictspec.has_key("parent_name") and bone.dictspec['parent_name'] == bone2.name:
+            new_bone = bone.copy()
+            new_bone['bone_length'] = (new_bone.position - bone1.position).tuple
+            undo.exchange(bone, new_bone)
+    editor.ok(undo, "align bone 2 to 1")
+
+#
+# This function assigns\releases vertices of the currently seledted comp for the bone RMB clicked on.
+#
+def assign_release_vertices(editor, bone, comp, vtxsellist):
+    new_bone = bone.copy()
+    old_vertices = new_bone.vtxlist
+    if old_vertices.has_key(comp.name):
+        old_vertices_comp = old_vertices[comp.name]
     else:
-        new_o_bone['start_component'] = bone.dictspec['end_component']
-        new_o_bone['start_point'] = bone.dictspec['end_point']
-        new_o_bone['start_offset'] = bone.dictspec['end_offset']
-    new_o_bone['start_vertex_count'] = "0"
-    new_o_bone['start_scale'] = (1.0,)
-    new_o_bone['end_component'] = editor.Root.currentcomponent.name
-    endpoint = quarkx.vect(new_o_bone.dictspec['start_point']) + quarkx.vect(8,2,2)
-    new_o_bone['end_point'] = endpoint.tuple
-    new_o_bone['end_offset'] = (0, 0, 0)
-    new_o_bone['end_vertex_count'] = "0"
-    new_o_bone['end_scale'] = (1.0,)
-    new_o_bone['start_color'] = new_o_bone['end_color'] = MapColor("BoneHandles", SS_MODEL)
-    new_o_bone['bone_length'] = (8,2,2)
-    common_handles_list, s_or_e_list = find_common_bone_handles(editor, new_o_bone.dictspec['start_point'])
-    for bone in range(len(common_handles_list)):
-        if common_handles_list[bone] == new_o_bone:
+        old_vertices_comp = []
+    if not editor.ModelComponentList.has_key(comp.name):
+        editor.ModelComponentList[comp.name] = {}
+    if not editor.ModelComponentList[comp.name].has_key('bonevtxlist'):
+        editor.ModelComponentList[comp.name]['bonevtxlist'] = {}
+    for vtx in vtxsellist:
+        if (vtx in old_vertices_comp) and (editor.ModelComponentList[comp.name]['bonevtxlist'].has_key(bone.name)) and (vtx in editor.ModelComponentList[comp.name]['bonevtxlist'][bone.name].keys()):
+            old_vertices_comp.remove(vtx)
+            del editor.ModelComponentList[comp.name]['bonevtxlist'][bone.name][vtx]
             continue
-        if s_or_e_list[bone] == 0 and common_handles_list[bone].dictspec.has_key('start_vtx_pos'):
-            new_o_bone['start_component'] = common_handles_list[bone].dictspec['start_component']
-            new_o_bone['start_vtx_pos'] = common_handles_list[bone].dictspec['start_vtx_pos']
-        elif common_handles_list[bone].dictspec.has_key('end_vtx_pos'):
-            new_o_bone['start_component'] = common_handles_list[bone].dictspec['end_component']
-            new_o_bone['start_vtx_pos'] = common_handles_list[bone].dictspec['end_vtx_pos']
-    undo = quarkx.action()
-    undo.put(skeleton, new_o_bone)
-    editor.ok(undo, "continue bone")
-
-#
-# This function attaches bone2 start_point to bone1 end_point.
-#
-def attach_start2end(editor, bone1, bone2):
-    new_o_bone = bone2.copy()
-    new_o_bone['start_point'] = bone1.dictspec['end_point']
-    new_o_bone['start_offset'] = bone1.dictspec['end_offset']
-    new_o_bone['bone_length'] = ((quarkx.vect(new_o_bone.dictspec['start_point']) - quarkx.vect(new_o_bone.dictspec['end_point']))*-1).tuple
-    if new_o_bone.dictspec.has_key('start_vtx_pos'):
-        new_o_bone['start_vtx_pos'] = ''
-    if not new_o_bone.dictspec.has_key('start_vtxlist'):
-        common_handles_list, s_or_e_list = find_common_bone_handles(editor, new_o_bone.dictspec['start_point'])
-        for bone in range(len(common_handles_list)):
-            if common_handles_list[bone] == new_o_bone:
-                continue
-            if s_or_e_list[bone] == 0 and common_handles_list[bone].dictspec.has_key('start_vtx_pos'):
-                new_o_bone['start_component'] = common_handles_list[bone].dictspec['start_component']
-                new_o_bone['start_vtx_pos'] = common_handles_list[bone].dictspec['start_vtx_pos']
-            elif common_handles_list[bone].dictspec.has_key('end_vtx_pos'):
-                new_o_bone['start_component'] = common_handles_list[bone].dictspec['end_component']
-                new_o_bone['start_vtx_pos'] = common_handles_list[bone].dictspec['end_vtx_pos']
-    undo = quarkx.action()
-    undo.exchange(bone2, new_o_bone)
-    editor.ok(undo, "attach start2end handles")
-
-#
-# This function attaches bone2 end_point to bone1 start_point.
-#
-def attach_end2start(editor, bone1, bone2):
-    new_o_bone = bone2.copy()
-    new_o_bone['end_point'] = bone1.dictspec['start_point']
-    new_o_bone['end_offset'] = bone1.dictspec['start_offset']
-    new_o_bone['bone_length'] = ((quarkx.vect(new_o_bone.dictspec['start_point']) - quarkx.vect(new_o_bone.dictspec['end_point']))*-1).tuple
-    if new_o_bone.dictspec.has_key('end_vtx_pos'):
-        new_o_bone['end_vtx_pos'] = ''
-    if not new_o_bone.dictspec.has_key('end_vtxlist'):
-        common_handles_list, s_or_e_list = find_common_bone_handles(editor, new_o_bone.dictspec['end_point'])
-        for bone in range(len(common_handles_list)):
-            if common_handles_list[bone] == new_o_bone:
-                continue
-            if s_or_e_list[bone] == 0 and common_handles_list[bone].dictspec.has_key('start_vtx_pos'):
-                new_o_bone['end_component'] = common_handles_list[bone].dictspec['start_component']
-                new_o_bone['end_vtx_pos'] = common_handles_list[bone].dictspec['start_vtx_pos']
-            elif common_handles_list[bone].dictspec.has_key('end_vtx_pos'):
-                new_o_bone['end_component'] = common_handles_list[bone].dictspec['end_component']
-                new_o_bone['end_vtx_pos'] = common_handles_list[bone].dictspec['end_vtx_pos']
-    undo = quarkx.action()
-    undo.exchange(bone2, new_o_bone)
-    editor.ok(undo, "attach end2start handles")
-
-#
-# This function attaches bone2 start_point to bone1 start_point.
-#
-def attach_bones_starts(editor, bone1, bone2):
-    new_o_bone = bone2.copy()
-    new_o_bone['start_point'] = bone1.dictspec['start_point']
-    new_o_bone['start_offset'] = bone1.dictspec['start_offset']
-    new_o_bone['bone_length'] = ((quarkx.vect(new_o_bone.dictspec['start_point']) - quarkx.vect(new_o_bone.dictspec['end_point']))*-1).tuple
-    if new_o_bone.dictspec.has_key('start_vtx_pos'):
-        new_o_bone['start_vtx_pos'] = ''
-    if not new_o_bone.dictspec.has_key('start_vtxlist'):
-        common_handles_list, s_or_e_list = find_common_bone_handles(editor, new_o_bone.dictspec['start_point'])
-        for bone in range(len(common_handles_list)):
-            if common_handles_list[bone] == new_o_bone:
-                continue
-            if s_or_e_list[bone] == 0 and common_handles_list[bone].dictspec.has_key('start_vtx_pos'):
-                new_o_bone['start_component'] = common_handles_list[bone].dictspec['start_component']
-                new_o_bone['start_vtx_pos'] = common_handles_list[bone].dictspec['start_vtx_pos']
-            elif common_handles_list[bone].dictspec.has_key('end_vtx_pos'):
-                new_o_bone['start_component'] = common_handles_list[bone].dictspec['end_component']
-                new_o_bone['start_vtx_pos'] = common_handles_list[bone].dictspec['end_vtx_pos']
-    undo = quarkx.action()
-    undo.exchange(bone2, new_o_bone)
-    editor.ok(undo, "attach start handles")
-
-#
-# This function attaches bone2 end_point to bone1 end_point.
-#
-def attach_bones_ends(editor, bone1, bone2):
-    new_o_bone = bone2.copy()
-    new_o_bone['end_point'] = bone1.dictspec['end_point']
-    new_o_bone['end_offset'] = bone1.dictspec['end_offset']
-    new_o_bone['bone_length'] = ((quarkx.vect(new_o_bone.dictspec['start_point']) - quarkx.vect(new_o_bone.dictspec['end_point']))*-1).tuple
-    if new_o_bone.dictspec.has_key('end_vtx_pos'):
-        new_o_bone['end_vtx_pos'] = ''
-    if not new_o_bone.dictspec.has_key('end_vtxlist'):
-        common_handles_list, s_or_e_list = find_common_bone_handles(editor, new_o_bone.dictspec['end_point'])
-        for bone in range(len(common_handles_list)):
-            if common_handles_list[bone] == new_o_bone:
-                continue
-            if s_or_e_list[bone] == 0 and common_handles_list[bone].dictspec.has_key('start_vtx_pos'):
-                new_o_bone['end_component'] = common_handles_list[bone].dictspec['start_component']
-                new_o_bone['end_vtx_pos'] = common_handles_list[bone].dictspec['start_vtx_pos']
-            elif common_handles_list[bone].dictspec.has_key('end_vtx_pos'):
-                new_o_bone['end_component'] = common_handles_list[bone].dictspec['end_component']
-                new_o_bone['end_vtx_pos'] = common_handles_list[bone].dictspec['end_vtx_pos']
-    undo = quarkx.action()
-    undo.exchange(bone2, new_o_bone)
-    editor.ok(undo, "attach end handles")
-
-#
-# This function detaches bone1 and bone2.
-#
-def detach_bones(editor, bone1, bone2):
-    if checktuplepos(bone1.dictspec['start_point'], bone2.dictspec['start_point']) == 1:
-        undo = quarkx.action()
-        if bone2.dictspec.has_key('start_vtx_pos') and not (bone2.dictspec.has_key('start_vtxlist')):
-            new_o_bone = bone2.copy()
-            new_o_bone['start_point'] = (quarkx.vect(bone2.dictspec['start_point']) + quarkx.vect(.01,.01,.01)).tuple
-            if new_o_bone.dictspec.has_key('start_vtx_pos'):
-                new_o_bone['start_vtx_pos'] = ''
-            undo.exchange(bone2, new_o_bone)
         else:
-            new_o_bone = bone1.copy()
-            new_o_bone['start_point'] = (quarkx.vect(bone1.dictspec['start_point']) + quarkx.vect(.01,.01,.01)).tuple
-            if new_o_bone.dictspec.has_key('start_vtx_pos'):
-                new_o_bone['start_vtx_pos'] = ''
-            undo.exchange(bone1, new_o_bone)
-        editor.ok(undo, "detach bones")
-    elif checktuplepos(bone1.dictspec['end_point'], bone2.dictspec['start_point']) == 1:
-        undo = quarkx.action()
-        if bone2.dictspec.has_key('start_vtx_pos') and not (bone2.dictspec.has_key('start_vtxlist')):
-            new_o_bone = bone2.copy()
-            new_o_bone['start_point'] = (quarkx.vect(bone2.dictspec['start_point']) + quarkx.vect(.01,.01,.01)).tuple
-            if new_o_bone.dictspec.has_key('start_vtx_pos'):
-                new_o_bone['start_vtx_pos'] = ''
-            undo.exchange(bone2, new_o_bone)
-        else:
-            new_o_bone = bone1.copy()
-            new_o_bone['end_point'] = (quarkx.vect(bone1.dictspec['end_point']) + quarkx.vect(.01,.01,.01)).tuple
-            if new_o_bone.dictspec.has_key('end_vtx_pos'):
-                new_o_bone['end_vtx_pos'] = ''
-            undo.exchange(bone1, new_o_bone)
-        editor.ok(undo, "detach bones")
-    elif checktuplepos(bone1.dictspec['start_point'], bone2.dictspec['end_point']) == 1:
-        undo = quarkx.action()
-        if bone1.dictspec.has_key('start_vtx_pos') and not (bone1.dictspec.has_key('start_vtxlist')):
-            new_o_bone = bone1.copy()
-            new_o_bone['start_point'] = (quarkx.vect(bone1.dictspec['start_point']) + quarkx.vect(.01,.01,.01)).tuple
-            if new_o_bone.dictspec.has_key('start_vtx_pos'):
-                new_o_bone['start_vtx_pos'] = ''
-            undo.exchange(bone1, new_o_bone)
-        else:
-            new_o_bone = bone2.copy()
-            new_o_bone['end_point'] = (quarkx.vect(bone2.dictspec['end_point']) + quarkx.vect(.01,.01,.01)).tuple
-            if new_o_bone.dictspec.has_key('end_vtx_pos'):
-                new_o_bone['end_vtx_pos'] = ''
-            undo.exchange(bone2, new_o_bone)
-        editor.ok(undo, "detach bones")
-    elif checktuplepos(bone1.dictspec['end_point'], bone2.dictspec['end_point']) == 1:
-        undo = quarkx.action()
-        if bone2.dictspec.has_key('end_vtx_pos') and not (bone2.dictspec.has_key('end_vtxlist')):
-            new_o_bone = bone2.copy()
-            new_o_bone['end_point'] = (quarkx.vect(bone2.dictspec['end_point']) + quarkx.vect(.01,.01,.01)).tuple
-            if new_o_bone.dictspec.has_key('end_vtx_pos'):
-                new_o_bone['end_vtx_pos'] = ''
-            undo.exchange(bone2, new_o_bone)
-        else:
-            new_o_bone = bone1.copy()
-            new_o_bone['end_point'] = (quarkx.vect(bone1.dictspec['end_point']) + quarkx.vect(.01,.01,.01)).tuple
-            if new_o_bone.dictspec.has_key('end_vtx_pos'):
-                new_o_bone['end_vtx_pos'] = ''
-            undo.exchange(bone1, new_o_bone)
-        editor.ok(undo, "detach bones")
-    try:
-        new_o_bone['bone_length'] = ((quarkx.vect(new_o_bone.dictspec['start_point']) - quarkx.vect(new_o_bone.dictspec['end_point']))*-1).tuple
-    except:
-        quarkx.msgbox("INVALID SELECTION !\n\nThe two selected bones\n" + bone1.shortname + " and " + bone2.shortname + "\nare not attached\nand therefore can not be detached.", qutils.MT_WARNING, qutils.MB_OK)
-        return
-
-#
-# This function aligns bone2 start_point to bone1 end_point.
-#
-def align_start2end(editor, bone1, bone2):
-    new_o_bone = bone2.copy()
-    newpoint = quarkx.vect(bone1.dictspec['end_point']) + quarkx.vect(.01,.01,.01)
-    new_o_bone['start_point'] = newpoint.tuple
-    new_o_bone['start_offset'] = bone1.dictspec['end_offset']
-    new_o_bone['bone_length'] = ((quarkx.vect(new_o_bone.dictspec['start_point']) - quarkx.vect(new_o_bone.dictspec['end_point']))*-1).tuple
+            if not editor.ModelComponentList[comp.name]['bonevtxlist'].has_key(bone.name):
+                editor.ModelComponentList[comp.name]['bonevtxlist'][bone.name] = {}
+            if not editor.ModelComponentList[comp.name]['bonevtxlist'][bone.name].has_key(vtx):
+                editor.ModelComponentList[comp.name]['bonevtxlist'][bone.name][vtx] = {}
+            editor.ModelComponentList[comp.name]['bonevtxlist'][bone.name][vtx]['color'] = new_bone["_color"]
+            editor.ModelComponentList[comp.name]['bonevtxlist'][bone.name][vtx]['weight'] = 1.0
+            old_vertices_comp = old_vertices_comp + [vtx]
+    if len(editor.ModelComponentList[comp.name]['bonevtxlist'][bone.name]) == 0:
+        del editor.ModelComponentList[comp.name]['bonevtxlist'][bone.name]
+    old_vertices_comp.sort()
+    old_vertices[comp.name] = old_vertices_comp
+    if len(old_vertices[comp.name]) == 0:
+        if new_bone.vtx_pos.has_key(comp.name):
+            new_bone.vtx_pos ={}
+        del old_vertices[comp.name]
+    if len(editor.ModelComponentList[comp.name]['bonevtxlist']) == 0:
+        del editor.ModelComponentList[comp.name]['bonevtxlist']
+    if len(editor.ModelComponentList[comp.name]) == 0:
+        del editor.ModelComponentList[comp.name]
+    new_bone.vtxlist = old_vertices
+    if len(new_bone.vtx_pos) == 0:
+        new_bone.vtx_pos = old_vertices
+        new_bone['component'] = comp.name
+        Rebuild_Bone(new_bone, editor.Root.currentcomponent.currentframe)
+    # This section updates the "Vertex Weights Dialog" if it is opened and needs to update.
+    formlist = quarkx.forms(1)
+    for f in formlist:
+        try:
+            if f.caption == "Vertex Weights Dialog":
+                panel = f.mainpanel.controls()
+                weightsdataform = panel[0].linkedobjects[0]
+                if editor.Root.currentcomponent.name == weightsdataform["comp_name"].strip():
+                    import mdlentities
+                    mdlentities.WeightsClick(editor)
+        except:
+            pass
     undo = quarkx.action()
-    undo.exchange(bone2, new_o_bone)
-    editor.ok(undo, "align start2end handles")
-
-#
-# This function aligns the two selected bones start_points.
-#
-def align_bones_starts(editor, bone1, bone2):
-    new_o_bone = bone2.copy()
-    newpoint = quarkx.vect(bone1.dictspec['start_point']) + quarkx.vect(.01,.01,.01)
-    new_o_bone['start_point'] = newpoint.tuple
-    new_o_bone['start_offset'] = bone1.dictspec['start_offset']
-    new_o_bone['bone_length'] = ((quarkx.vect(new_o_bone.dictspec['start_point']) - quarkx.vect(new_o_bone.dictspec['end_point']))*-1).tuple
-    undo = quarkx.action()
-    undo.exchange(bone2, new_o_bone)
-    editor.ok(undo, "align start handles")
-
-#
-# This function aligns the two selected bones end_points.
-#
-def align_bones_ends(editor, bone1, bone2):
-    new_o_bone = bone2.copy()
-    newpoint = quarkx.vect(bone1.dictspec['end_point']) + quarkx.vect(.01,.01,.01)
-    new_o_bone['end_point'] = newpoint.tuple
-    new_o_bone['end_offset'] = bone1.dictspec['end_offset']
-    new_o_bone['bone_length'] = ((quarkx.vect(new_o_bone.dictspec['start_point']) - quarkx.vect(new_o_bone.dictspec['end_point']))*-1).tuple
-    undo = quarkx.action()
-    undo.exchange(bone2, new_o_bone)
-    editor.ok(undo, "align end handles")
+    undo.exchange(bone, new_bone)
+    editor.ok(undo, "assign vertices")
 
 #
 # This function does the rotation movement of all bones between two selected "Key frames".
@@ -2246,7 +2374,7 @@ def keyframes_rotation(editor, bonesgroup, frame1, frame2):
                     basebonehandle = common_handles_list[common_handle].start_handle
                     import mdlhandles
                     for item in basebonehandle:
-                        if isinstance(item, mdlhandles.LinBoneCornerHandle):
+                        if isinstance(item, mdlhandles.BoneCornerHandle):
                             handle = item
                             break
                     view = editor.layout.views[0]
@@ -2257,7 +2385,7 @@ def keyframes_rotation(editor, bonesgroup, frame1, frame2):
                     basebonehandle = common_handles_list[common_handle].end_handle
                     import mdlhandles
                     for item in basebonehandle:
-                        if isinstance(item, mdlhandles.LinBoneCornerHandle):
+                        if isinstance(item, mdlhandles.BoneCornerHandle):
                             handle = item
                             break
                     view = editor.layout.views[0]
@@ -2314,273 +2442,18 @@ def keyframes_rotation(editor, bonesgroup, frame1, frame2):
     keyframesrotation = 0
 
 #
-# This function finds all bone handles start_points and end_points that are
-# the same as the handle_pos provided, primarily used for specific settings drags.
-#
-def find_common_bone_handles(editor, handle_pos):
-    common_handles_list = []
-    s_or_e_list = []
-    bones = editor.Root.findallsubitems("", ':bone')      # get all bones
-    for bone in bones:
-        # Handles the "Start of Bone".
-        if checktuplepos(bone.dictspec['start_point'], handle_pos) == 1:
-            common_handles_list = common_handles_list + [bone]
-            s_or_e_list = s_or_e_list + [0]
-        # Handles the "End of Bone".
-        elif checktuplepos(bone.dictspec['end_point'], handle_pos) == 1:
-            common_handles_list = common_handles_list + [bone]
-            s_or_e_list = s_or_e_list + [1]
-    return common_handles_list, s_or_e_list
-
-#
-# When any vertexes are removed from the component, this function updates all bone handles
-# associated with those vertexes, common handles included, for the new vertex numbers that changed or removed.
-# It also updates their data in the editor.ModelComponentList bonevtxlist section
-# then calls on the Update_BoneObjs utilitis function to do the same for the boneobjlist section.
-#
-def Update_BoneALLLists(editor, component, vertices_to_remove):
-    # First, let's create a list of new indices
-    old_bonevtxlist = editor.ModelComponentList[component.name]['bonevtxlist']
-    NewVertexNumbers = []
-    BonesToUpdate = []
-    old_bonevtxlistkeys = old_bonevtxlist.keys() # List of 'bonevtxlist' keys as string items.
-    for vtx in range(len(old_bonevtxlistkeys)):
-        bonename = old_bonevtxlist[old_bonevtxlistkeys[vtx]]['bonename'] # List of bone names for above keys.
-        if not (bonename in BonesToUpdate):
-            # Adding this bone to the list of bones we need to update
-            BonesToUpdate = BonesToUpdate + [bonename]
-        if int(old_bonevtxlistkeys[vtx]) in vertices_to_remove:
-            # This vertex index is completely removed because it was combined with another, moved to another component or deleted.
-            NewVertexNumbers = NewVertexNumbers + [-1]
-        else:
-            for remove in range(len(vertices_to_remove)):
-                if vertices_to_remove[remove] > int(old_bonevtxlistkeys[vtx]):
-                    NewVertexNumbers = NewVertexNumbers + [int(old_bonevtxlistkeys[vtx]) - (remove)]
-                    break
-                if remove == len(vertices_to_remove)-1:
-                    NewVertexNumbers = NewVertexNumbers + [int(old_bonevtxlistkeys[vtx]) - len(vertices_to_remove)]
-    # Now create the new list
-    newbonevtxlist = {}
-
-    for vtx in range(len(old_bonevtxlist)):
-        if NewVertexNumbers[vtx] <> -1:
-            newbonevtxlist[str(NewVertexNumbers[vtx])] = old_bonevtxlist[old_bonevtxlist.keys()[vtx]]
-    editor.ModelComponentList[component.name]['bonevtxlist'] = newbonevtxlist
-
-    for bonename in editor.Root.dictitems['Skeleton:bg'].dictitems:
-    ###  This is wrong also,  we should be checking end handle as well for comp name and updating its vertexes if same comp.
-        bone = editor.Root.dictitems['Skeleton:bg'].dictitems[bonename]
-        if bone.dictspec['start_component'] == component.name and bone.dictspec.has_key('start_vtxlist'):
-            Old_vtxlist = bone.dictspec['start_vtxlist'].split(" ")
-            Old_vtx_pos = bone.dictspec['start_vtx_pos'].split(" ")
-            New_vtxlist = []
-            New_vtx_pos = []
-            for vtx in range(len(Old_vtxlist)):
-                if int(Old_vtxlist[vtx]) in vertices_to_remove:
-                    continue
-                else:
-                    for remove in range(len(vertices_to_remove)):
-                        if vertices_to_remove[remove] > int(Old_vtxlist[vtx]):
-                            New_vtxlist = New_vtxlist + [str(int(Old_vtxlist[vtx]) - remove)]
-                            if Old_vtxlist[vtx] in Old_vtx_pos:
-                                New_vtx_pos = New_vtx_pos + [str(int(Old_vtxlist[vtx]) - remove)]
-                            break
-                        if remove == len(vertices_to_remove)-1:
-                            New_vtxlist = New_vtxlist + [str(int(Old_vtxlist[vtx]) - len(vertices_to_remove))]
-                            if Old_vtxlist[vtx] in Old_vtx_pos:
-                                New_vtx_pos = New_vtx_pos + [str(int(Old_vtxlist[vtx]) - len(vertices_to_remove))]
-
-            bone['start_vertex_count'] = str(len(New_vtxlist))
-            bone['start_vtxlist'] = " ".join(New_vtxlist)
-            bone['start_vtx_pos'] = " ".join(New_vtx_pos)
-            common_handles_list, s_or_e_list = find_common_bone_handles(editor, editor.Root.dictitems['Skeleton:bg'].dictitems[bone.name].dictspec['start_point'])
-            for handle in range(len(common_handles_list)):
-                if s_or_e_list[handle] == 0:
-                    if common_handles_list[handle].dictspec.has_key('start_vtx_pos'):
-                        common_handles_list[handle]['start_vtx_pos'] = bone.dictspec['start_vtx_pos']
-                else:
-                    if common_handles_list[handle].dictspec.has_key('end_vtx_pos'):
-                        common_handles_list[handle]['end_vtx_pos'] = bone.dictspec['start_vtx_pos']
-        if bone.dictspec['end_component'] == component.name and bone.dictspec.has_key('end_vtxlist'):
-            Old_vtxlist = bone.dictspec['end_vtxlist'].split(" ")
-            Old_vtx_pos = bone.dictspec['end_vtx_pos'].split(" ")
-            New_vtxlist = []
-            New_vtx_pos = []
-            for vtx in range(len(Old_vtxlist)):
-                if int(Old_vtxlist[vtx]) in vertices_to_remove:
-                    continue
-                else:
-                    for remove in range(len(vertices_to_remove)):
-                        if vertices_to_remove[remove] > int(Old_vtxlist[vtx]):
-                            New_vtxlist = New_vtxlist + [str(int(Old_vtxlist[vtx]) - remove)]
-                            if Old_vtxlist[vtx] in Old_vtx_pos:
-                                New_vtx_pos = New_vtx_pos + [str(int(Old_vtxlist[vtx]) - remove)]
-                            break
-                        if remove == len(vertices_to_remove)-1:
-                            New_vtxlist = New_vtxlist + [str(int(Old_vtxlist[vtx]) - len(vertices_to_remove))]
-                            if Old_vtxlist[vtx] in Old_vtx_pos:
-                                New_vtx_pos = New_vtx_pos + [str(int(Old_vtxlist[vtx]) - len(vertices_to_remove))]
-
-            bone['end_vertex_count'] = str(len(New_vtxlist))
-            bone['end_vtxlist'] = " ".join(New_vtxlist)
-            bone['end_vtx_pos'] = " ".join(New_vtx_pos)
-            common_handles_list, s_or_e_list = find_common_bone_handles(editor, editor.Root.dictitems['Skeleton:bg'].dictitems[bone.name].dictspec['end_point'])
-            for handle in range(len(common_handles_list)):
-                if s_or_e_list[handle] == 0:
-                    if common_handles_list[handle].dictspec.has_key('start_vtx_pos'):
-                        common_handles_list[handle]['start_vtx_pos'] = bone.dictspec['end_vtx_pos']
-                else:
-                    if common_handles_list[handle].dictspec.has_key('end_vtx_pos'):
-                        common_handles_list[handle]['end_vtx_pos'] = bone.dictspec['end_vtx_pos']
-
-    return BonesToUpdate
-
-#
-# This function updates the editor.ModelComponentList boneobjlist section
-# for vertex index numbers in the bonevtxlist of the bone and component that are sent to it.
-#
-def Update_BoneObjs(bonevtxlist, selfbonename, comp):
-    vtxlist = [[], []]
-    tristodrawlist = [[], []]
-    selvtxlist = [[], []]
-    if comp.currentframe is None:
-        comp.currentframe = comp.dictitems['Frames:fg'].subitems[0]
-    verts = comp.currentframe.vertices
-    for key in bonevtxlist:
-        if bonevtxlist[key]['bonename'] == selfbonename:
-            vtx = int(key)
-            s_or_e = bonevtxlist[key]['s_or_e']
-            if s_or_e == 0 or s_or_e == 1:   # Checking if the s_or_e number is something other then 0 or 1.
-                vtxlist[s_or_e] = vtxlist[s_or_e] + [[vtx, verts[vtx]]]
-                selvtxlist[s_or_e] = selvtxlist[s_or_e] + [vtx]
-                if quarkx.setupsubset(SS_MODEL, "Options")['BMake_All_Draglines'] is not None:
-                    tristodrawlist[s_or_e] = tristodrawlist[s_or_e] + findTrianglesAndIndexes(comp, vtx, verts[vtx]) #THIS LINE BOGS DRAWING DOWN!
-                elif len(bonevtxlist) > 800 and not vtx&1:
-                    tristodrawlist[s_or_e] = tristodrawlist[s_or_e] + findTrianglesAndIndexes(comp, vtx, verts[vtx]) #THIS LINE BOGS DRAWING DOWN!
-                elif len(bonevtxlist) <= 800:
-                    tristodrawlist[s_or_e] = tristodrawlist[s_or_e] + findTrianglesAndIndexes(comp, vtx, verts[vtx]) #THIS LINE BOGS DRAWING DOWN!
-    boneobjs = {}
-    if vtxlist[0] <> []:
-        boneobjs['s_or_e0'] = {}
-        boneobjs['s_or_e0']['vtxlist'] = vtxlist[0]
-        boneobjs['s_or_e0']['tristodrawlist'] = tristodrawlist[0]
-        boneobjs['s_or_e0']['selvtxlist'] = selvtxlist[0]
-    if vtxlist[1] <> []:
-        boneobjs['s_or_e1'] = {}
-        boneobjs['s_or_e1']['vtxlist'] = vtxlist[1]
-        boneobjs['s_or_e1']['tristodrawlist'] = tristodrawlist[1]
-        boneobjs['s_or_e1']['selvtxlist'] = selvtxlist[1]
-    return boneobjs
-
-#
-# This creates the editor.ModelComponentList bonevtxlist section
-# for the bone and component that are sent to it.
-# Then it calls the Update_BoneObjs function to finish the process.
-#
-def Make_BoneVtxList(editor, bone):
-    if bone.dictspec.has_key('start_vtxlist'):
-        comp = editor.Root.currentcomponent
-        comp.currentframe = comp.dictitems['Frames:fg'].subitems[0]
-        dict = {}
-        if bone.dictspec['start_component'] != editor.Root.currentcomponent.name:
-            editor.Root.currentcomponent = editor.Root.dictitems[bone.dictspec['start_component']]
-            comp = editor.Root.currentcomponent
-            comp.currentframe = comp.dictitems['Frames:fg'].subitems[0]
-        start_vtxlist = bone.dictspec['start_vtxlist'].split(" ")
-        for vtx in range(len(start_vtxlist)):
-            vtxinfo = {}
-            vtxinfo['bonename'] = bone.name
-            vtxinfo['s_or_e'] = 0
-            vtxinfo['color'] = bone.dictspec['start_color']
-            dict[start_vtxlist[vtx]] = vtxinfo
-        # We need to do this once for each bone handle in case one has different components for each handle.
-        if editor.ModelComponentList.has_key(comp.name) and editor.ModelComponentList[comp.name].has_key('bonevtxlist'):
-            for vtx in dict:
-                editor.ModelComponentList[comp.name]['bonevtxlist'][vtx] = dict[vtx]
-            editor.ModelComponentList[comp.name]['boneobjlist'][bone.name] = Update_BoneObjs(editor.ModelComponentList[comp.name]['bonevtxlist'], bone.name, comp)
-        else:
-            editor.ModelComponentList[comp.name] = {}
-            editor.ModelComponentList[comp.name]['bonevtxlist'] = dict
-            editor.ModelComponentList[comp.name]['boneobjlist'] = {}
-            editor.ModelComponentList[comp.name]['boneobjlist'][bone.name] = Update_BoneObjs(editor.ModelComponentList[comp.name]['bonevtxlist'], bone.name, comp)
-
-    if bone.dictspec.has_key('end_vtxlist'):
-        comp = editor.Root.currentcomponent
-        comp.currentframe = comp.dictitems['Frames:fg'].subitems[0]
-        dict = {}
-        if bone.dictspec['end_component'] != editor.Root.currentcomponent.name:
-            editor.Root.currentcomponent = editor.Root.dictitems[bone.dictspec['end_component']]
-            comp = editor.Root.currentcomponent
-            comp.currentframe = comp.dictitems['Frames:fg'].subitems[0]
-        end_vtxlist = bone.dictspec['end_vtxlist'].split(" ")
-        for vtx in range(len(end_vtxlist)):
-            vtxinfo = {}
-            vtxinfo['bonename'] = bone.name
-            vtxinfo['s_or_e'] = 1
-            vtxinfo['color'] = bone.dictspec['end_color']
-            dict[end_vtxlist[vtx]] = vtxinfo
-        # We need to do this once for each bone handle in case one has different components for each handle.
-        if editor.ModelComponentList.has_key(comp.name) and editor.ModelComponentList[comp.name].has_key('bonevtxlist'):
-            for vtx in dict:
-                editor.ModelComponentList[comp.name]['bonevtxlist'][vtx] = dict[vtx]
-            editor.ModelComponentList[comp.name]['boneobjlist'][bone.name] = Update_BoneObjs(editor.ModelComponentList[comp.name]['bonevtxlist'], bone.name, comp)
-        else:
-            editor.ModelComponentList[comp.name] = {}
-            editor.ModelComponentList[comp.name]['bonevtxlist'] = dict
-            editor.ModelComponentList[comp.name]['boneobjlist'] = {}
-            editor.ModelComponentList[comp.name]['boneobjlist'][bone.name] = Update_BoneObjs(editor.ModelComponentList[comp.name]['bonevtxlist'], bone.name, comp)
-
-#
-# This fixes (resets) the 1st set of attached bone handles to the drag handle position
-# after a rotation drag, which causes a small position difference making them detached.
-#
-def Fix_Attached_Handles(self_bone, oldobjectslist, newobjectslist):
-    for obj in range(len(oldobjectslist)):
-        if oldobjectslist[obj].type == ":bone" and oldobjectslist[obj].name == self_bone.name:
-            old_self_bone = oldobjectslist[obj]
-            new_self_bone = newobjectslist[obj]
-            break
-    for obj in range(len(oldobjectslist)):
-        if oldobjectslist[obj].type == ":bone":
-            oldbone = oldobjectslist[obj]
-            newbone = newobjectslist[obj]
-            if oldbone.dictspec['start_point'] == old_self_bone.dictspec['start_point']:
-                newbone['start_point'] = new_self_bone.dictspec['start_point']
-            if oldbone.dictspec['end_point'] == old_self_bone.dictspec['start_point']:
-                newbone['end_point'] = new_self_bone.dictspec['start_point']
-            if oldbone.dictspec['end_point'] == old_self_bone.dictspec['end_point']:
-                newbone['end_point'] = new_self_bone.dictspec['end_point']
-            if oldbone.dictspec['start_point'] == old_self_bone.dictspec['end_point']:
-                newbone['start_point'] = new_self_bone.dictspec['end_point']
-            newbone['bone_length'] = ((quarkx.vect(newbone.dictspec['start_point']) - quarkx.vect(newbone.dictspec['end_point']))*-1).tuple
-
-#
-# This recreates both of the bone's drag handles, o being the bone object (the bone).
-# start_frame = editor.Root.dictitems[o.dictspec['start_component']].dictitems['Frames:fg'].subitems[editor.bone_frame]
-# end_frame = editor.Root.dictitems[o.dictspec['end_component']].dictitems['Frames:fg'].subitems[editor.bone_frame]
+# This recreates the bone's drag handle, o being the bone object (the bone).
+# frame = editor.Root.dictitems[o.dictspec['component']].dictitems['Frames:fg'].subitems[editor.bone_frame]
 # This does not need to be returned since it is changing the object itself.
-#
-def Rebuild_Bone(o, start_frame, end_frame):
-    if o.dictspec.has_key("start_vtx_pos") and o.dictspec['start_vtx_pos'] is not None:
-        vtxlist = o.dictspec['start_vtx_pos']
-        vtxlist = vtxlist.split(" ")
-        start_vtxpos = quarkx.vect(0, 0, 0)
-        for start_vtx in vtxlist:
-            start_vtxpos = start_vtxpos + start_frame.vertices[int(start_vtx)]
-        start_vtxpos = start_vtxpos/ float(len(vtxlist))
-        start_point = start_vtxpos + quarkx.vect(o.dictspec['start_offset'])
-        o['start_point'] = start_point.tuple
-        o['bone_length'] = (start_point - quarkx.vect(o.dictspec['end_point'])*-1).tuple
-    if o.dictspec.has_key("end_vtx_pos") and o.dictspec['end_vtx_pos'] is not None:
-        vtxlist = o.dictspec['end_vtx_pos']
-        vtxlist = vtxlist.split(" ")
-        end_vtxpos = quarkx.vect(0, 0, 0)
-        for end_vtx in vtxlist:
-            end_vtxpos = end_vtxpos + end_frame.vertices[int(end_vtx)]
-        end_vtxpos = end_vtxpos/ float(len(vtxlist))
-        end_point = end_vtxpos + quarkx.vect(o.dictspec['end_offset'])
-        o['end_point'] = end_point.tuple
-        o['bone_length'] = ((quarkx.vect(o.dictspec['start_point']) - end_point)*-1).tuple
+def Rebuild_Bone(o, frame):
+    if len(o.vtx_pos) != 0:
+        vtxlist = o.vtx_pos[o.dictspec['component']]
+        vtxpos = quarkx.vect(0.0, 0.0, 0.0)
+        for vtx in vtxlist:
+            vtxpos = vtxpos + frame.vertices[vtx]
+        vtxpos = vtxpos/ float(len(vtxlist))
+        o.position = vtxpos + quarkx.vect(o.dictspec['draw_offset'])
+        o['position'] = o.position.tuple
 
 
 
@@ -3241,6 +3114,7 @@ def ReverseFaces(editor):
     if (len(editor.ModelFaceSelList) < 1) or (comp is None):
         quarkx.msgbox("No selection has been made\n\nYou must first select some faces of a\nmodel component to flip their direction", MT_ERROR, MB_OK)
         return
+    new_comp = comp.copy()
     new_tris = comp.triangles
     for tri in editor.ModelFaceSelList:
         vtxs = comp.triangles[tri]
@@ -3248,8 +3122,21 @@ def ReverseFaces(editor):
             new_tris[tri] = (vtxs[1],vtxs[0],vtxs[2])
         else:
             new_tris[tri] = (vtxs[2],vtxs[1],vtxs[0])
-    comp.triangles = new_tris
-    Update_Editor_Views(editor)
+    new_comp.triangles = new_tris
+    new_comp.currentskin = editor.Root.currentcomponent.currentskin
+    compframes = new_comp.findallsubitems("", ':mf')   # get all frames
+    curframe = comp.currentframe
+    curframeNR = 0
+    for frames in comp.findallsubitems("", ':mf'):
+        if frames == curframe:
+            break
+        curframeNR = curframeNR + 1
+    new_comp.currentframe = compframes[curframeNR]
+    undo = quarkx.action()
+    undo.exchange(comp, new_comp)
+    editor.Root.currentcomponent = new_comp
+    editor.ok(undo, "Reversed Faces")
+ #   Update_Editor_Views(editor)
 
 
 
@@ -3382,6 +3269,7 @@ def SubdivideFaces(editor, pieces=None):
         new_comp.currentframe = compframes[curframeNR]
         undo = quarkx.action()
         undo.exchange(comp, new_comp)
+        make_tristodraw_dict(editor, new_comp)
         editor.Root.currentcomponent = new_comp
         editor.ok(undo, "face Subdivision 2")
         editor.ModelFaceSelList = editor.ModelFaceSelList + newfaceselection
@@ -3419,6 +3307,7 @@ def SubdivideFaces(editor, pieces=None):
         new_comp.currentframe = compframes[curframeNR]
         undo = quarkx.action()
         undo.exchange(comp, new_comp)
+        make_tristodraw_dict(editor, new_comp)
         editor.Root.currentcomponent = new_comp
         editor.ok(undo, "face Subdivision 3")
         editor.ModelFaceSelList = editor.ModelFaceSelList + newfaceselection
@@ -3515,6 +3404,7 @@ def SubdivideFaces(editor, pieces=None):
         new_comp.currentframe = compframes[curframeNR]
         undo = quarkx.action()
         undo.exchange(comp, new_comp)
+        make_tristodraw_dict(editor, new_comp)
         editor.Root.currentcomponent = new_comp
         editor.ok(undo, "face Subdivision 4")
         editor.ModelFaceSelList = editor.ModelFaceSelList + newfaceselection
@@ -3533,6 +3423,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.103  2009/03/26 22:32:30  danielpharos
+#Fixed the treeview color boxes for components not showing up the first time.
+#
 #Revision 1.102  2009/02/17 04:57:00  cdunde
 #To fix another error situation cause.
 #

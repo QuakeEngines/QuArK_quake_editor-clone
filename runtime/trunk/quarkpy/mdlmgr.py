@@ -45,25 +45,18 @@ SFTexts   = ['default'] # Supported model types for import\exporting.
 mdltypes = [0] # Control list that corresponds with the "SFTexts" list above.
 IEfile = ['default'] # Actual imported .py Importer\Exporter file list that corresponds with the "SFTexts" list above.
 SFLetters = "set model type"
-check_start_component = "None"
-check_end_component = "None"
-check_start_vertex_count = "0"
-check_end_vertex_count = "0"
-checkstart_pos = None
-checkend_pos = None
+check_comp_list = None
+check_pos = None
+check_color = None
 checkbone_length = None
-checkbone_start_offset = None
-checkbone_end_offset = None
-checkbone_start_scale = None
-checkbone_end_scale = None
+check_offset = None
+checkbone_scale = None
 
 class ModelLayout(BaseLayout):
     "An abstract base class for Model Editor screen layouts."
 
     MODE = SS_MODEL
     MAXAUTOZOOM = 10.0
-    start_color = ''
-    end_color = ''
 
     def clearrefs(self):
         global startup, saveskin, savedskins, skincount
@@ -74,21 +67,22 @@ class ModelLayout(BaseLayout):
         self.reset()
         from qbaseeditor import currentview
         currentview = None
-        from mdlhandles import mdleditorsave, mdleditorview, cursorposatstart, cursordragstartpos, lastmodelfaceremovedlist, SkinView1
-        mdleditorsave = None
-        mdleditorview = None
+        from mdlhandles import cursorposatstart, lastmodelfaceremovedlist, SkinView1
         cursorposatstart = None
-        cursordragstartpos = None
         lastmodelfaceremovedlist = []
         SkinView1 = None
         BaseLayout.clearrefs(self)
         self.skinform = None
         self.skinview = None
-        self.start_color = ''
-        self.end_color = ''
 
     def readtoolbars(self, config):
         readtoolbars(mdltoolbars.toolbars, self, self.editor.form, config)
+        # Sets up 'pickle module' and its storage of the ModelComponentList for saving and undos.
+        if not self.editor.Root.dictitems.has_key('ModelComponentList:sd'):
+            newsd = quarkx.newobj('ModelComponentList:sd')
+            newsd['data'] = FlattenModelComponentList(self.editor)
+            self.editor.Root.appenditem(newsd)
+        
 
     def getskin(self):
         "Use currentskin or find new selected skin."
@@ -429,7 +423,8 @@ class ModelLayout(BaseLayout):
 
     def actionmpp(self):
         "Switch or update the multi-pages-panel for the current selection."
-        if (self.mpp.n<4): # and not (self.mpp.lock.state & qtoolbar.selected):
+      #  if (self.mpp.n<4): # and not (self.mpp.lock.state & qtoolbar.selected):
+        if (self.mpp.n<2): # and not (self.mpp.lock.state & qtoolbar.selected):
             fs = self.explorer.focussel
             if fs is None:
                 self.mpp.viewpage(0)
@@ -444,7 +439,7 @@ class ModelLayout(BaseLayout):
     def makesettingclick(self, m):
         "This function fills in the Default values of the Specifics/Args page form"
         "and changes the form's values when a setting is made."
-        global check_start_component, check_end_component, check_start_vertex_count, check_end_vertex_count, checkstart_pos, checkend_pos, checkbone_length, checkbone_start_offset, checkbone_end_offset, checkbone_start_scale, checkbone_end_scale
+        global check_comp_list, check_pos, check_color, checkbone_length, check_offset, checkbone_scale
 
         sl = self.explorer.sellist
         if len(sl) == 0 and self.explorer.uniquesel is not None:
@@ -456,6 +451,7 @@ class ModelLayout(BaseLayout):
             if sfbtn.caption == SFTexts[m.skill]:
                 pass
             else:
+                #### Taking this line below out breaks the ie_md5_import.py file, fix it. ####
                 self.editor.bonemode = "default mode"
                 quarkx.setupsubset(SS_MODEL, "Options")['ShowVertexColor'] = None
                 for item in self.editor.Root.subitems:
@@ -525,6 +521,7 @@ class ModelLayout(BaseLayout):
                 self.dataform.setdata(selitem, formobj) # Tries to use the data returned to make the tag frame's form again.
             elif sl[0].type == ":bone": # Sets the bone form items.
                 selitem = sl[0]
+                selitem['comp_list'] = self.editor.Root.currentcomponent.shortname
                 self.dataform.setdata(selitem, formobj) # Tries to use the data returned to make the bone's form again.
             elif sl[0].type == ":mc": # Sets the component form items.
                 selitem = sl[0]
@@ -560,16 +557,16 @@ class ModelLayout(BaseLayout):
             sfbtn.caption = "set model type" # to make sure the width of this button doesn't change
             specifics_btns = {"help": helpbtn, "sf": sfbtn}
             self.bb.buttons = [sfbtn, qtoolbar.widegap, helpbtn]
-            tempcaptions = {}
+    #        tempcaptions = {}
             for btn in icon_btns.keys():
-                tempcaptions[btn] = icon_btns[btn].caption
-                icon_btns[btn].caption = "set model type" # to make sure the width of this button doesn't change
+    #            tempcaptions[btn] = icon_btns[btn].caption
+    #            icon_btns[btn].caption = "set model type" # to make sure the width of this button doesn't change (do this in the plugins files.)
                 specifics_btns[btn] = icon_btns[btn]
                 self.bb.buttons = self.bb.buttons + [icon_btns[btn]]
             self.buttons.update(specifics_btns)
             self.bb.margins = (0,0)
-            for btn in icon_btns.keys():
-                icon_btns[btn].caption = tempcaptions[btn]
+    #        for btn in icon_btns.keys():
+    #            icon_btns[btn].caption = tempcaptions[btn]
         try:
             help = ((formobj is not None) and formobj["Help"]) or ""
         except:
@@ -610,9 +607,9 @@ class ModelLayout(BaseLayout):
                        filename = IEfile[filetype]
                        filename.dataforminput(sl[0])
         ### This section handles the Bones default settings and data input for the Specifics/Args page..
-        # Sets self.xxxx_color to a bone's handles colors, when selected,
+        # Sets self._color to a bone's handles colors, when selected,
         # for comparison , in the "filldataform" function, if a handle color is changed.
-        # Same goes for checkbone_length, checkbone_start_offset and checkbone_end_offset.
+        # Same goes for checkbone_length, check_offset and others.
         if len(sl) != 0 and sl[0].type == ":bound": # Sets the bound frame form items.
             selitem = sl[0]
             try:
@@ -640,27 +637,12 @@ class ModelLayout(BaseLayout):
         elif len(sl) != 0 and sl[0].type == ":bone": # Sets the bone form items.
             selitem = sl[0]
             # Globals are set here for comparison in filldataform function later.
-            self.start_color = selitem['start_color']
-            self.end_color = selitem['end_color']
-            try:
-                check_start_component = selitem['start_component']
-                check_start_vertex_count = selitem['start_vertex_count']
-            except:
-                check_start_component = "None"
-                check_start_vertex_count = selitem['start_vertex_count'] = "0"
-            try:
-                check_end_component = selitem['end_component']
-                check_end_vertex_count = selitem['end_vertex_count']
-            except:
-                check_end_component = "None"
-                check_end_vertex_count = selitem['end_vertex_count'] = "0"
-            checkstart_pos = selitem.dictspec['start_point']
-            checkend_pos = selitem.dictspec['end_point']
-            selitem['bone_length'] = checkbone_length = ((quarkx.vect(selitem.dictspec['start_point']) - quarkx.vect(selitem.dictspec['end_point']))*-1).tuple
-            checkbone_start_offset = quarkx.vect(selitem.dictspec['start_offset']).tuple
-            checkbone_end_offset = quarkx.vect(selitem.dictspec['end_offset']).tuple
-            checkbone_start_scale = selitem.dictspec['start_scale']
-            checkbone_end_scale = selitem.dictspec['end_scale']
+            check_comp_list = selitem['comp_list']
+            check_pos = selitem.dictspec['position']
+            check_color = selitem.dictspec['_color']
+            checkbone_length = selitem.dictspec['bone_length']
+            check_offset = selitem.dictspec['draw_offset']
+            checkbone_scale = selitem.dictspec['scale']
             self.dataform.setdata([selitem], formobj)
 
         elif len(sl) != 0: # Sets the component form items.
@@ -672,20 +654,12 @@ class ModelLayout(BaseLayout):
     def filldataform(self, reserved):
         "This function creates the Specifics/Args page form (formobj) for the first time"
         "or when selecting another item in the tree-view that uses a form."
-        global check_start_component, check_end_component, check_start_vertex_count, check_end_vertex_count, checkstart_pos, checkend_pos, checkbone_length, checkbone_start_offset, checkbone_end_offset, checkbone_start_scale, checkbone_end_scale
+        global check_comp_list, check_pos, check_color, checkbone_length, check_offset, checkbone_scale
 
         sl = self.explorer.sellist
         if len(sl) == 0 and self.explorer.uniquesel is not None:
             sl = [self.explorer.uniquesel]
         sfbtn = self.buttons["sf"]
-        # Resets the editor's bonemode back to the default value.
-        try:
-            if sfbtn.caption == SFTexts[m.skill]:
-                pass
-            else:
-                self.editor.bonemode = "default mode"
-        except:
-            pass
 
         DummyItem = None
         formobj = None
@@ -833,203 +807,151 @@ class ModelLayout(BaseLayout):
                         view.invalidate(1)
                 self.explorer.invalidate()
             ### This section handles the Bones default settings and data input for the Specifics/Args page.
-            # Updates all vertexes 'color' that are assigned to a bone handle when that handle color is changed.
+            # Updates all vertexes U,V '_color' that are assigned to a bone handle when that handle color is changed.
             if (sl[0].type == ":bone") and (not isinstance(reserved, qtoolbar.button)):
                 selitem = sl[0]
-                if self.start_color != selitem["start_color"]:
-                    if selitem.dictspec.has_key("start_vtxlist"):
-                        vtxlist = selitem.dictspec['start_vtxlist']
-                        start_vtxlist = vtxlist.split(" ")
-                        for vtx in start_vtxlist:
-                            comp = self.editor.Root.dictitems[selitem["start_component"]]
-                            if self.editor.ModelComponentList[comp.name]['bonevtxlist'].has_key(vtx):
-                                if self.editor.ModelComponentList[comp.name]['bonevtxlist'][vtx]['s_or_e'] == 0:
-                                    self.editor.ModelComponentList[comp.name]['bonevtxlist'][vtx]['color'] = selitem["start_color"]
-                    self.start_color = selitem["start_color"]
-                    Update_Editor_Views(self.editor) # Updates the Specifics/Args page and views correctly.
+                if check_comp_list != selitem["comp_list"]:
+                    check_comp_list = selitem['comp_list']
+                    self.editor.layout.explorer.sellist = [selitem] + [self.editor.Root.dictitems[selitem.dictspec['comp_list']].dictitems['Frames:fg'].subitems[self.editor.bone_frame]]
+                    self.selchange()
+                    if selitem.dictspec.has_key("frame_autoexpand") and selitem.dictspec['frame_autoexpand'] == "1":
+                        item = self.editor.Root.currentcomponent.currentframe
+                        self.editor.layout.explorer.expand(item.parent.parent)
+                        self.editor.layout.explorer.expand(item.parent)
 
-                elif self.end_color != selitem["end_color"]:
-                    if selitem.dictspec.has_key("end_vtxlist"):
-                        vtxlist = selitem.dictspec['end_vtxlist']
-                        end_vtxlist = vtxlist.split(" ")
-                        for vtx in end_vtxlist:
-                            comp = self.editor.Root.dictitems[selitem["end_component"]]
-                            if self.editor.ModelComponentList[comp.name]['bonevtxlist'].has_key(vtx):
-                                if self.editor.ModelComponentList[comp.name]['bonevtxlist'][vtx]['s_or_e'] == 1:
-                                    self.editor.ModelComponentList[comp.name]['bonevtxlist'][vtx]['color'] = selitem["end_color"]
-                    self.end_color = selitem["end_color"]
-                    Update_Editor_Views(self.editor) # Updates the Specifics/Args page and views correctly.
-
-                elif checktuplepos(checkbone_start_offset, selitem['start_offset']) != 1:
-                    new_start_offset = selitem['start_offset']
-                    offset_dif = quarkx.vect(selitem['start_offset']) - quarkx.vect(checkbone_start_offset)
-                    checkstart_pos = (quarkx.vect(selitem['start_point']) + offset_dif).tuple
-                    checkbone_length = ((quarkx.vect(selitem['start_point']) + offset_dif - quarkx.vect(selitem['end_point']))*-1).tuple
-                    selitem['start_offset'] = checkbone_start_offset
-                    checkbone_start_offset = new_start_offset
-                    common_handles_list, s_or_e_list = find_common_bone_handles(self.editor, selitem['start_point'])
-                    start_point = checkstart_pos
+                if check_offset != selitem["draw_offset"]:
+                    if len(selitem.vtxlist) == 0:
+                        quarkx.msgbox("Improper Action!\n\nThis bone has no vertexes assigned to it.\nIt must have at lease one to use this function.", MT_ERROR, MB_OK)
+                        selitem["draw_offset"] = check_offset
+                        self.dataform.setdata([selitem], formobj)
+                        quarkx.update(self.editor.form)
+                        return
+                    old_pos = check_offset
+                    check_offset = selitem['draw_offset']
+                    selitem['draw_offset'] = old_pos
                     undo = quarkx.action()
-                    for old_bone in range(len(common_handles_list)):
-                        new_bone = common_handles_list[old_bone].copy()
-                        if s_or_e_list[old_bone] == 0:
-                            new_bone['start_point'] = start_point
-                            new_bone['start_offset'] = new_start_offset
-                        else:
-                            new_bone['end_point'] = start_point
-                            new_bone['end_offset'] = new_start_offset
-                        new_bone['bone_length'] = ((quarkx.vect(new_bone['start_point']) + quarkx.vect(new_start_offset) - quarkx.vect(new_bone['end_point']))*-1).tuple
-                        undo.exchange(common_handles_list[old_bone], new_bone)
-                    self.editor.ok(undo, 'bone joint move')
+                    new_bone = sl[0].copy()
+                    new_bone['draw_offset'] = check_offset
+                    undo.exchange(sl[0], new_bone)
+                    self.editor.ok(undo, 'bone offset changed')
 
-                elif checktuplepos(checkbone_end_offset, selitem['end_offset']) != 1:
-                    new_end_offset = selitem['end_offset']
-                    offset_dif = quarkx.vect(selitem['end_offset']) - quarkx.vect(checkbone_end_offset)
-                    checkend_pos = (quarkx.vect(selitem['end_point']) + offset_dif).tuple
-                    checkbone_length = ((quarkx.vect(selitem['start_point']) + offset_dif - quarkx.vect(selitem['end_point']))*-1).tuple
-                    selitem['end_offset'] = checkbone_end_offset
-                    checkbone_end_offset = new_end_offset
-                    common_handles_list, s_or_e_list = find_common_bone_handles(self.editor, selitem['end_point'])
-                    end_point = checkend_pos
+                elif check_pos != selitem["position"]:
+                    if len(selitem.vtxlist) != 0:
+                        foundframe = 0
+                        for item in self.explorer.sellist:
+                            if item.type == ":mf":
+                                foundframe = 1
+                                break
+                        if foundframe == 0:
+                            quarkx.msgbox("Improper Action!\n\nThis bone has vertexes assigned to it.\nYou must also select a frame to use this function.", MT_ERROR, MB_OK)
+                            selitem["position"] = check_pos
+                            self.dataform.setdata([selitem], formobj)
+                            quarkx.update(self.editor.form)
+                            return
+                    old_pos = check_pos
+                    check_pos = selitem['position']
+                    selitem['position'] = old_pos
                     undo = quarkx.action()
-                    for old_bone in range(len(common_handles_list)):
-                        new_bone = common_handles_list[old_bone].copy()
-                        if s_or_e_list[old_bone] == 0:
-                            new_bone['start_point'] = end_point
-                            new_bone['start_offset'] = new_end_offset
-                        else:
-                            new_bone['end_point'] = end_point
-                            new_bone['end_offset'] = new_end_offset
-                        new_bone['bone_length'] = ((quarkx.vect(new_bone['start_point']) + quarkx.vect(new_end_offset) - quarkx.vect(new_bone['end_point']))*-1).tuple
-                        undo.exchange(common_handles_list[old_bone], new_bone)
-                    self.editor.ok(undo, 'bone joint move')
+                    new_bone = sl[0].copy()
+                    new_bone['position'] = check_pos
+                    movediff = quarkx.vect(new_bone['position']) - quarkx.vect(old_pos)
+                    for comp in new_bone.vtxlist.keys():
+                        new_comp = self.editor.Root.dictitems[comp].copy()
+                        new_frame = new_comp.dictitems['Frames:fg'].subitems[self.editor.bone_frame]
+                        old_comp = self.editor.Root.dictitems[comp]
+                        old_vtxs = old_comp.dictitems['Frames:fg'].subitems[self.editor.bone_frame].vertices
+                        new_vtxs = new_frame.vertices
+                        for vtx in range(len(new_bone.vtxlist[comp])):
+                            new_vtxs[new_bone.vtxlist[comp][vtx]] = old_vtxs[new_bone.vtxlist[comp][vtx]] + movediff
+                        new_frame.vertices = new_vtxs
+                        new_frame.compparent = new_comp
+                        undo.exchange(old_comp, new_comp)
+                    undo.exchange(sl[0], new_bone)
+                    skeletongroup = self.editor.Root.dictitems['Skeleton:bg']  # get the bones group
+                    bones = skeletongroup.findallsubitems("", ':bone')    # get all bones
+                    for bone in bones:
+                        if new_bone.dictspec.has_key("parent_name") and bone.name == new_bone.dictspec['parent_name']:
+                            new_bone['bone_length'] = (new_bone.position - bone.position).tuple
+                        if bone.dictspec.has_key("parent_name") and bone.dictspec['parent_name'] == new_bone.name:
+                            new_bone2 = bone.copy()
+                            new_bone2['bone_length'] = (new_bone2.position - new_bone.position).tuple
+                            undo.exchange(bone, new_bone2)
+                    self.editor.ok(undo, 'bone position changed')
 
-                elif checktuplepos(checkstart_pos, selitem['start_point']) != 1:
-                    oldstart_pos = checkstart_pos
-                    checkstart_pos = selitem['start_point']
-                    checkbone_length = ((quarkx.vect(selitem['start_point']) - quarkx.vect(selitem['end_point']))*-1).tuple
-                    selitem['start_point'] = oldstart_pos
-                    common_handles_list, s_or_e_list = find_common_bone_handles(self.editor, oldstart_pos)
-                    start_point = checkstart_pos
+                elif checktuplepos(checkbone_scale, selitem["scale"]) != 1:
+                    old_scale = checkbone_scale
+                    checkbone_scale = self.scale = selitem["scale"] = (abs(selitem["scale"][0]),)
+                    selitem['scale'] = old_scale
                     undo = quarkx.action()
-                    for old_bone in range(len(common_handles_list)):
-                        new_bone = common_handles_list[old_bone].copy()
-                        if s_or_e_list[old_bone] == 0:
-                            new_bone['start_point'] = start_point
-                            if new_bone.dictspec.has_key('start_vtxlist'):
-                                movediff = quarkx.vect(new_bone['start_point']) - quarkx.vect(oldstart_pos)
-                                old_vtxs = self.editor.Root.currentcomponent.currentframe.vertices
-                                selvtxlist = self.editor.ModelComponentList[self.editor.Root.currentcomponent.name]['boneobjlist'][new_bone.name]['s_or_e0']['selvtxlist']
-                                vtxlist = self.editor.ModelComponentList[self.editor.Root.currentcomponent.name]['boneobjlist'][new_bone.name]['s_or_e0']['vtxlist']
-                                for vtx in range(len(selvtxlist)):
-                                    old_vtxs[selvtxlist[vtx]] = self.editor.Root.currentcomponent.currentframe.vertices[selvtxlist[vtx]] + movediff
-                                    vtxlist[vtx][1] = old_vtxs[selvtxlist[vtx]]
-                                self.editor.Root.currentcomponent.currentframe.vertices = old_vtxs
-                        else:
-                            new_bone['end_point'] = start_point
-                        new_bone['bone_length'] = ((quarkx.vect(new_bone['start_point']) - quarkx.vect(new_bone['end_point']))*-1).tuple
-                        undo.exchange(common_handles_list[old_bone], new_bone)
-                    self.editor.ok(undo, 'bone joint move')
+                    new_bone = sl[0].copy()
+                    new_bone['scale'] = checkbone_scale
+                    undo.exchange(sl[0], new_bone)
+                    self.editor.ok(undo, 'bone scale changed')
 
-                elif checktuplepos(checkend_pos, selitem['end_point']) != 1:
-                    oldend_pos = checkend_pos
-                    checkend_pos = selitem['end_point']
-                    checkbone_length = ((quarkx.vect(selitem['start_point']) - quarkx.vect(selitem['end_point']))*-1).tuple
-                    selitem['end_point'] = oldend_pos
-                    common_handles_list, s_or_e_list = find_common_bone_handles(self.editor, oldend_pos)
-                    end_point = checkend_pos
+                elif check_color != selitem["_color"]:
+                    old_color = check_color
+                    check_color = selitem["_color"]
+                    selitem['_color'] = old_color
+                    new_bone = sl[0].copy()
+                    new_bone['_color'] = check_color
+                    if len(sl[0].vtxlist) != 0:
+                        for comp in sl[0].vtxlist.keys():
+                            for vtx in sl[0].vtxlist[comp]:
+                                self.editor.ModelComponentList[comp]['bonevtxlist'][sl[0].name][vtx]['color'] = new_bone["_color"]
                     undo = quarkx.action()
-                    for old_bone in range(len(common_handles_list)):
-                        new_bone = common_handles_list[old_bone].copy()
-                        if s_or_e_list[old_bone] == 0:
-                            new_bone['start_point'] = end_point
-                            if new_bone.dictspec.has_key('start_vtxlist'):
-                                movediff = quarkx.vect(new_bone['start_point']) - quarkx.vect(oldend_pos)
-                                old_vtxs = self.editor.Root.currentcomponent.currentframe.vertices
-                                selvtxlist = self.editor.ModelComponentList[self.editor.Root.currentcomponent.name]['boneobjlist'][new_bone.name]['s_or_e0']['selvtxlist']
-                                vtxlist = self.editor.ModelComponentList[self.editor.Root.currentcomponent.name]['boneobjlist'][new_bone.name]['s_or_e0']['vtxlist']
-                                for vtx in range(len(selvtxlist)):
-                                    old_vtxs[selvtxlist[vtx]] = self.editor.Root.currentcomponent.currentframe.vertices[selvtxlist[vtx]] + movediff
-                                    vtxlist[vtx][1] = old_vtxs[selvtxlist[vtx]]
-                                self.editor.Root.currentcomponent.currentframe.vertices = old_vtxs
-                        else:
-                            new_bone['end_point'] = end_point
-                            if new_bone.dictspec.has_key('end_vtxlist'):
-                                movediff = quarkx.vect(new_bone['end_point']) - quarkx.vect(oldend_pos)
-                                old_vtxs = self.editor.Root.currentcomponent.currentframe.vertices
-                                selvtxlist = self.editor.ModelComponentList[self.editor.Root.currentcomponent.name]['boneobjlist'][new_bone.name]['s_or_e1']['selvtxlist']
-                                vtxlist = self.editor.ModelComponentList[self.editor.Root.currentcomponent.name]['boneobjlist'][new_bone.name]['s_or_e1']['vtxlist']
-                                for vtx in range(len(selvtxlist)):
-                                    old_vtxs[selvtxlist[vtx]] = self.editor.Root.currentcomponent.currentframe.vertices[selvtxlist[vtx]] + movediff
-                                    vtxlist[vtx][1] = old_vtxs[selvtxlist[vtx]]
-                                self.editor.Root.currentcomponent.currentframe.vertices = old_vtxs
-                        new_bone['bone_length'] = ((quarkx.vect(new_bone['start_point']) - quarkx.vect(new_bone['end_point']))*-1).tuple
-                        undo.exchange(common_handles_list[old_bone], new_bone)
-                    self.editor.ok(undo, 'bone joint move')
+                    undo.exchange(sl[0], new_bone)
+                    self.editor.ok(undo, 'bone joint color changed')
+                    self.explorer.invalidate()
 
-                elif checktuplepos(checkbone_length, selitem['bone_length']) != 1:
-                    oldbone_length = checkbone_length
-                    checkend_pos = (quarkx.vect(selitem['start_point']) + quarkx.vect(selitem['bone_length'])).tuple
+                elif checkbone_length != selitem["bone_length"]:
+                    if selitem.dictspec['parent_name'] == "None":
+                        quarkx.msgbox("Improper Action!\n\nYou can not set the length of\na bone joint that has no parent.\n\nIt must be attached to another joint to\nmake a completed bone and have a length.", MT_ERROR, MB_OK)
+                        selitem["bone_length"] = checkbone_length
+                        self.dataform.setdata([selitem], formobj)
+                        quarkx.update(self.editor.form)
+                        return
+                    if len(selitem.vtxlist) != 0:
+                        foundframe = 0
+                        for item in self.explorer.sellist:
+                            if item.type == ":mf":
+                                foundframe = 1
+                                break
+                        if foundframe == 0:
+                            quarkx.msgbox("Improper Action!\n\nThis bone has vertexes assigned to it.\nYou must also select a frame to use this function.", MT_ERROR, MB_OK)
+                            selitem["bone_length"] = checkbone_length
+                            self.dataform.setdata([selitem], formobj)
+                            quarkx.update(self.editor.form)
+                            return
+                    old_pos = checkbone_length
                     checkbone_length = selitem['bone_length']
-                    common_handles_list, s_or_e_list = find_common_bone_handles(self.editor, selitem['end_point'])
-                    end_point = checkend_pos
+                    selitem['bone_length'] = old_pos
                     undo = quarkx.action()
-                    for old_bone in range(len(common_handles_list)):
-                        new_bone = common_handles_list[old_bone].copy()
-                        if s_or_e_list[old_bone] == 0:
-                            if new_bone == selitem:
-                                continue
-                            new_bone['start_point'] = end_point
-                            if new_bone.dictspec.has_key('start_vtxlist'):
-                                movediff = quarkx.vect(selitem['bone_length']) - quarkx.vect(oldbone_length)
-                                old_vtxs = self.editor.Root.currentcomponent.currentframe.vertices
-                                selvtxlist = self.editor.ModelComponentList[self.editor.Root.currentcomponent.name]['boneobjlist'][new_bone.name]['s_or_e0']['selvtxlist']
-                                vtxlist = self.editor.ModelComponentList[self.editor.Root.currentcomponent.name]['boneobjlist'][new_bone.name]['s_or_e0']['vtxlist']
-                                for vtx in range(len(selvtxlist)):
-                                    old_vtxs[selvtxlist[vtx]] = self.editor.Root.currentcomponent.currentframe.vertices[selvtxlist[vtx]] + movediff
-                                    vtxlist[vtx][1] = old_vtxs[selvtxlist[vtx]]
-                                self.editor.Root.currentcomponent.currentframe.vertices = old_vtxs
-                        else:
-                            new_bone['end_point'] = end_point
-                            if new_bone.dictspec.has_key('end_vtxlist'):
-                                movediff = quarkx.vect(selitem['bone_length']) - quarkx.vect(oldbone_length)
-                                old_vtxs = self.editor.Root.currentcomponent.currentframe.vertices
-                                selvtxlist = self.editor.ModelComponentList[self.editor.Root.currentcomponent.name]['boneobjlist'][new_bone.name]['s_or_e1']['selvtxlist']
-                                vtxlist = self.editor.ModelComponentList[self.editor.Root.currentcomponent.name]['boneobjlist'][new_bone.name]['s_or_e1']['vtxlist']
-                                for vtx in range(len(selvtxlist)):
-                                    old_vtxs[selvtxlist[vtx]] = self.editor.Root.currentcomponent.currentframe.vertices[selvtxlist[vtx]] + movediff
-                                    vtxlist[vtx][1] = old_vtxs[selvtxlist[vtx]]
-                                self.editor.Root.currentcomponent.currentframe.vertices = old_vtxs
-                        new_bone['bone_length'] = ((quarkx.vect(new_bone['start_point']) - quarkx.vect(new_bone['end_point']))*-1).tuple
-                        undo.exchange(common_handles_list[old_bone], new_bone)
-                    self.editor.ok(undo, 'bone joint move')
-
-                elif checktuplepos(checkbone_start_scale, selitem["start_scale"]) != 1:
-                    checkbone_start_scale = self.start_scale = selitem["start_scale"] = (abs(selitem["start_scale"][0]),)
-                    Update_Editor_Views(self.editor) # Updates the Specifics/Args page and views correctly.
-
-                elif checktuplepos(checkbone_end_scale, selitem["end_scale"]) != 1:
-                    checkbone_end_scale = self.end_scale = selitem["end_scale"] = (abs(selitem["end_scale"][0]),)
-                    Update_Editor_Views(self.editor) # Updates the Specifics/Args page and views correctly.
-
-                try:
-                    if check_start_component != selitem['start_component']:
-                        check_start_component = self.start_component = selitem['start_component']
-                    if check_start_vertex_count != selitem['start_vertex_count']:
-                        check_start_vertex_count = self.start_vertexes = selitem['start_vertex_count']
-                except:
-                    check_start_component = self.start_component = "None"
-                    check_start_vertex_count = self.start_vertexes = selitem["start_vertex_count"] = "0"
-
-                try:
-                    if check_end_component != selitem['end_component']:
-                        check_end_component = self.end_component = selitem['end_component']
-                    if check_end_vertex_count != selitem['end_vertex_count']:
-                        check_end_vertex_count = self.end_vertexes = selitem["end_vertex_count"]
-                except:
-                    check_end_component = self.end_component = "None"
-                    check_end_vertex_count = self.end_vertexes = selitem["end_vertex_count"] = "0"
-
+                    new_bone = sl[0].copy()
+                    new_bone['bone_length'] = checkbone_length
+                    movediff = quarkx.vect(new_bone['bone_length']) - quarkx.vect(old_pos)
+                    new_bone['position'] = (sl[0].position + movediff).tuple
+                    for comp in new_bone.vtxlist.keys():
+                        new_comp = self.editor.Root.dictitems[comp].copy()
+                        new_frame = new_comp.dictitems['Frames:fg'].subitems[self.editor.bone_frame]
+                        old_comp = self.editor.Root.dictitems[comp]
+                        old_vtxs = old_comp.dictitems['Frames:fg'].subitems[self.editor.bone_frame].vertices
+                        new_vtxs = new_frame.vertices
+                        for vtx in range(len(new_bone.vtxlist[comp])):
+                            new_vtxs[new_bone.vtxlist[comp][vtx]] = old_vtxs[new_bone.vtxlist[comp][vtx]] + movediff
+                        new_frame.vertices = new_vtxs
+                        new_frame.compparent = new_comp
+                        undo.exchange(old_comp, new_comp)
+                    undo.exchange(sl[0], new_bone)
+                    skeletongroup = self.editor.Root.dictitems['Skeleton:bg']  # get the bones group
+                    bones = skeletongroup.findallsubitems("", ':bone')    # get all bones
+                    for bone in bones:
+                        if new_bone.dictspec.has_key("parent_name") and bone.name == new_bone.dictspec['parent_name']:
+                            new_bone['bone_length'] = (new_bone.position - bone.position).tuple
+                        if bone.dictspec.has_key("parent_name") and bone.dictspec['parent_name'] == new_bone.name:
+                            new_bone2 = bone.copy()
+                            new_bone2['bone_length'] = (new_bone2.position - new_bone.position).tuple
+                            undo.exchange(bone, new_bone2)
+                    self.editor.ok(undo, 'bone length changed')
 
     def helpbtnclick(self, m):
         "Brings up the help window of a form or the InfoBase Docs if there is none."
@@ -1038,14 +960,6 @@ class ModelLayout(BaseLayout):
         if len(sl) == 0 and self.explorer.uniquesel is not None:
             sl = [self.explorer.uniquesel]
         sfbtn = self.buttons["sf"]
-        # Resets the editor's bonemode back to the default value.
-        try:
-            if sfbtn.caption == SFTexts[m.skill]:
-                pass
-            else:
-                self.editor.bonemode = "default mode"
-        except:
-            pass
 
         DummyItem = None
         formobj = None
@@ -1237,20 +1151,62 @@ class ModelLayout(BaseLayout):
 
         # This section preserves, and passes on, data in the ModelComponentList (if any) when a component is renamed.
         changednames = quarkx.getchangednames()
-        if self.editor.ModelComponentList.has_key(self.editor.Root.currentcomponent.name) and changednames is not None:
+        if changednames is not None:
+            undo = quarkx.action()
             if changednames[0][0].endswith(":mc"):
+                undo_msg = "USE UNDO BELOW - " + changednames[0][1].replace(":mc", "") + " data updated"
+
+                tempdata = self.editor.ModelComponentList['tristodraw'][changednames[0][0]]
+                del self.editor.ModelComponentList['tristodraw'][changednames[0][0]]
+                self.editor.ModelComponentList['tristodraw'][changednames[0][1]] = tempdata
+
                 if self.editor.ModelComponentList.has_key(changednames[0][0]):
                     tempdata = self.editor.ModelComponentList[changednames[0][0]]
                     del self.editor.ModelComponentList[changednames[0][0]]
                     self.editor.ModelComponentList[changednames[0][1]] = tempdata
-            if changednames[0][0].endswith(":bone"):
-                if self.editor.ModelComponentList[comp.name]['boneobjlist'].has_key(changednames[0][0]):
-                    tempdata = self.editor.ModelComponentList[comp.name]['boneobjlist'][changednames[0][0]]
-                    del self.editor.ModelComponentList[comp.name]['boneobjlist'][changednames[0][0]]
-                    self.editor.ModelComponentList[comp.name]['boneobjlist'][changednames[0][1]] = tempdata
-                if self.editor.ModelComponentList[comp.name].has_key('bonevtxlist'):
-                    for key in self.editor.ModelComponentList[comp.name]['bonevtxlist'].keys():
-                        self.editor.ModelComponentList[comp.name]['bonevtxlist'][key]['bonename'] = changednames[0][1]
+
+                if len(self.editor.Root.dictitems['Skeleton:bg'].subitems) != 0:
+                    oldskelgroup = self.editor.Root.dictitems['Skeleton:bg']
+                    old = oldskelgroup.findallsubitems("", ':bone') # Get all bones in the old group.
+                    newskelgroup = oldskelgroup.copy()
+                    new = newskelgroup.findallsubitems("", ':bone') # Get all bones in the new group.
+                    def replacebone(oldskelgroup, newskelgroup, old, new):
+                        import operator
+                        for checkbone in range(len(oldskelgroup.subitems)):
+                            try:
+                                itemindex = operator.indexOf(old, oldskelgroup.subitems[checkbone])
+                            except:
+                                pass
+                            else:
+                                newskelgroup.removeitem(checkbone)
+                                copybone = new[itemindex].copy()
+                                newskelgroup.insertitem(checkbone, copybone)
+                            replacebone(oldskelgroup.subitems[checkbone], newskelgroup.subitems[checkbone], old, new)
+                    replacebone(oldskelgroup, newskelgroup, old, new)
+                    new = newskelgroup.findallsubitems("", ':bone') # Get all bones in the new UPDATED group.
+                    for bone in new:
+                        if bone.dictspec['component'] == changednames[0][0]:
+                            bone['component'] = changednames[0][1]
+                        tempdata = {}
+                        for component in bone.vtxlist.keys():
+                            if component == changednames[0][0]:
+                                tempdata[changednames[0][1]] = bone.vtxlist[component]
+                            else:
+                                tempdata[component] = bone.vtxlist[component]
+                        bone.vtxlist = {}
+                        bone.vtxlist = tempdata
+                        tempdata = {}
+                        for component in bone.vtx_pos.keys():
+                            if component == changednames[0][0]:
+                                tempdata[changednames[0][1]] = bone.vtx_pos[component]
+                            else:
+                                tempdata[component] = bone.vtx_pos[component]
+                        bone.vtx_pos = {}
+                        bone.vtx_pos = tempdata
+                    undo.exchange(oldskelgroup, newskelgroup)
+
+            self.editor.ok(undo, undo_msg)
+
         if comp != self.editor.Root.currentcomponent:
             self.reset()
             if currentview.info["viewname"] == "skinview":
@@ -1276,7 +1232,7 @@ class ModelLayout(BaseLayout):
                     try:
                         if flagsmouse == 2060 and (isinstance(self.editor.dragobject.handle, mdlhandles.LinRedHandle) or isinstance(self.editor.dragobject.handle, mdlhandles.LinSideHandle) or isinstance(self.editor.dragobject.handle, mdlhandles.LinCornerHandle)):
                             pass
-                        elif (isinstance(self.editor.dragobject.handle, mdlhandles.LinBoneCenterHandle) or isinstance(self.editor.dragobject.handle, mdlhandles.LinBoneCornerHandle)):
+                        elif (isinstance(self.editor.dragobject.handle, mdlhandles.BoneCenterHandle) or isinstance(self.editor.dragobject.handle, mdlhandles.BoneCornerHandle)):
                             pass
                         else:
                             if savefacesel == 1:
@@ -1316,10 +1272,10 @@ class ModelLayout(BaseLayout):
             comp.currentskin = savedskins[self.editor.Root.currentcomponent.shortname]
 ##########
 
-        # This section updates the skin in the "Color Selector Dialog" if it is opened and needs to update.
         formlist = quarkx.forms(1)
         for f in formlist:
             try:
+                # This section updates the skin in the "Color Selector Dialog" if it is opened and needs to update.
                 if f.caption == "Color Selector & Paint Settings":
                     panel = f.mainpanel.controls()
                     paintdataform = panel[0].linkedobjects[0]
@@ -1327,6 +1283,13 @@ class ModelLayout(BaseLayout):
                         paintdataform["SkinName"] = comp.currentskin.name
                         m = qmenu.item("Dummy", None, "")
                         plugins.mdlpaintmodes.ColorSelectorClick(m)
+                # This section updates the "Vertex Weights Dialog" if it is opened and needs to update.
+                if f.caption == "Vertex Weights Dialog":
+                    panel = f.mainpanel.controls()
+                    weightsdataform = panel[0].linkedobjects[0]
+                    if self.editor.Root.currentcomponent.name != weightsdataform["comp_name"].strip():
+                        import mdlentities
+                        mdlentities.WeightsClick(self.editor)
             except:
                 pass
 
@@ -1334,8 +1297,8 @@ class ModelLayout(BaseLayout):
         try:
             if NewSellist != [] and (NewSellist[0].name.endswith(":mr") or NewSellist[0].name.endswith(":mg") or NewSellist[0].name.endswith(":bone")):
                 self.editor.layout.explorer.sellist = NewSellist
-                for item in editor.layout.explorer.sellist:
-                    editor.layout.explorer.expand(item.parent)
+                for item in self.editor.layout.explorer.sellist:
+                    self.editor.layout.explorer.expand(item.parent)
                 return
         except:
             pass
@@ -1352,11 +1315,43 @@ class ModelLayout(BaseLayout):
     def selectbone(self, bone):
         "This is when you select a particular bone(s) in the 'Skeleton' group of the Tree-view."
 
-        c = self.componentof(bone)
-        if c is not None:
-            self.selectcomponent(c)
-            c.setframe(bone)
-            c.setparentframes(bone)
+        changednames = quarkx.getchangednames()
+        if changednames is not None:
+            undo = quarkx.action()
+            undo_msg = "USE UNDO BELOW - bone name changed"
+            comp = self.editor.Root.currentcomponent
+
+            if self.editor.ModelComponentList[comp.name].has_key('bonevtxlist'):
+                if self.editor.ModelComponentList[comp.name]['bonevtxlist'].has_key(changednames[0][0]):
+                    tempdata = self.editor.ModelComponentList[comp.name]['bonevtxlist'][changednames[0][0]]
+                    del self.editor.ModelComponentList[comp.name]['bonevtxlist'][changednames[0][0]]
+                    self.editor.ModelComponentList[comp.name]['bonevtxlist'][changednames[0][1]] = tempdata
+
+            if len(self.editor.Root.dictitems['Skeleton:bg'].subitems) != 0:
+                oldskelgroup = self.editor.Root.dictitems['Skeleton:bg']
+                old = oldskelgroup.findallsubitems("", ':bone') # Get all bones in the old group.
+                newskelgroup = oldskelgroup.copy()
+                new = newskelgroup.findallsubitems("", ':bone') # Get all bones in the new group.
+                for bone in new:
+                    if bone.dictspec['parent_name'] == changednames[0][0]:
+                        bone['parent_name'] = changednames[0][1]
+                def replacebone(oldskelgroup, newskelgroup, old, new):
+                    import operator
+                    for checkbone in range(len(oldskelgroup.subitems)):
+                        try:
+                            itemindex = operator.indexOf(old, oldskelgroup.subitems[checkbone])
+                        except:
+                            pass
+                        else:
+                            newskelgroup.removeitem(checkbone)
+                            copybone = new[itemindex].copy()
+                            newskelgroup.insertitem(checkbone, copybone)
+                        replacebone(oldskelgroup.subitems[checkbone], newskelgroup.subitems[checkbone], old, new)
+                replacebone(oldskelgroup, newskelgroup, old, new)
+                undo.exchange(oldskelgroup, newskelgroup)
+            
+            self.editor.ok(undo, undo_msg)
+
 
     def selectframe(self, frame):
         "This is when you select a particular frame in the 'Frames' group of the Tree-view."
@@ -1393,6 +1388,10 @@ class ModelLayout(BaseLayout):
     def selchange(self):
         "This calls for what ever selection def you are using above."
         global treeviewselchanged
+
+        # Updates the editor.ModelComponentList
+        if self.editor.Root.dictitems.has_key('ModelComponentList:sd'):
+            UnflattenModelComponentList(self.editor, self.editor.Root.dictitems['ModelComponentList:sd']['data'])
 
         # Updates the models textures in the Texture Browser's 'Used Textures' to be displayed.
         self.putskinsintexturebrowser()
@@ -1492,6 +1491,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.99  2009/03/26 22:32:32  danielpharos
+#Fixed the treeview color boxes for components not showing up the first time.
+#
 #Revision 1.98  2009/03/26 21:16:03  cdunde
 #Added new item needing a default resetting when changing model formats.
 #

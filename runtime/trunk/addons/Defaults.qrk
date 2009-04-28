@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.482  2009/03/23 21:22:48  danielpharos
+//Fix compiler problem with FAKK2 and EF2, producing bad BSP filenames.
+//
 //Revision 1.481  2009/03/23 16:01:57  danielpharos
 //Tweaks and fixes to get FAKK2 build tools working again.
 //
@@ -1817,7 +1820,7 @@ QQRKSRC1
         .cin = "<open>"
         .cfg = ""
         .qme = ""
-        .txt = ""
+        .txt = "Notepad.exe"
         .zip = ""
       }
       HotKeys:config =
@@ -4302,6 +4305,7 @@ QQRKSRC1
         LinearWarning     = "1"
         LinearSetting     = '4'
         SkinLinearSetting = '4'
+        RotationHandleLength = '1'
         Form = "MdlBuilding"
       }
       Display:config =

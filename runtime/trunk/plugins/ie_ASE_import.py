@@ -45,8 +45,10 @@ import quarkpy.qutils
 import ie_utils
 from ie_utils import tobj
 from quarkpy.qdictionnary import Strings
+import quarkpy.dlgclasses
 
 # Globals
+SS_MODEL = 3
 logging = 0
 importername = "ie_ASE_import.py"
 textlog = "ase_ie_log.txt"
@@ -818,19 +820,13 @@ def spawn_mesh(obj, basepath, filename, ComponentList, message, CompNbr):
                 v3r = int(objMe.vcVerts[c.c3].r)
                 v3g = int(objMe.vcVerts[c.c3].g)
                 v3b = int(objMe.vcVerts[c.c3].b)
- #               print "line 821 v3",v3r, v3g, v3b, type(v3r)
                 rgb3 = struct.pack('i', quarkpy.qutils.RGBToColor([v3r, v3g, v3b]))
- #               print "line 822 v3",str(objMe.meFaces[f].v3), type(str(objMe.meFaces[f].v3))
- #               print "line 823 v2",str(objMe.meFaces[f].v2)
- #               print "line 824 v1",str(objMe.meFaces[f].v1)
-                editor.ModelComponentList[comp_name]['colorvtxlist'][str(objMe.meFaces[f].v3)] = {}
-                editor.ModelComponentList[comp_name]['colorvtxlist'][str(objMe.meFaces[f].v3)]['vtx_color'] = rgb3
-                editor.ModelComponentList[comp_name]['colorvtxlist'][str(objMe.meFaces[f].v2)] = {}
-                editor.ModelComponentList[comp_name]['colorvtxlist'][str(objMe.meFaces[f].v2)]['vtx_color'] = rgb2
-                editor.ModelComponentList[comp_name]['colorvtxlist'][str(objMe.meFaces[f].v1)] = {}
-                editor.ModelComponentList[comp_name]['colorvtxlist'][str(objMe.meFaces[f].v1)]['vtx_color'] = rgb1
- #               print "line 831 v3 vtx_color -->",editor.ModelComponentList[comp_name]['colorvtxlist']
- #               print "line 832 v2 vtx_color -->",editor.ModelComponentList[comp_name]['colorvtxlist'][str(objMe.meFaces[f].v2)]
+                editor.ModelComponentList[comp_name]['colorvtxlist'][objMe.meFaces[f].v3] = {}
+                editor.ModelComponentList[comp_name]['colorvtxlist'][objMe.meFaces[f].v3]['vtx_color'] = rgb3
+                editor.ModelComponentList[comp_name]['colorvtxlist'][objMe.meFaces[f].v2] = {}
+                editor.ModelComponentList[comp_name]['colorvtxlist'][objMe.meFaces[f].v2]['vtx_color'] = rgb2
+                editor.ModelComponentList[comp_name]['colorvtxlist'][objMe.meFaces[f].v1] = {}
+                editor.ModelComponentList[comp_name]['colorvtxlist'][objMe.meFaces[f].v1]['vtx_color'] = rgb1
             except:
                 pass
 
@@ -994,6 +990,9 @@ def loadmodel(root, filename, gamename, nomessage=0):
         compframes = editor.Root.currentcomponent.findallsubitems("", ':mf')   # get all frames
         for compframe in compframes:
             compframe.compparent = editor.Root.currentcomponent # To allow frame relocation after editing.
+
+        # This needs to be done for each component or bones will not work if used in the editor.
+        quarkpy.mdlutils.make_tristodraw_dict(editor, Component)
     editor.ok(undo, str(len(ComponentList)) + " .ase Components imported")
 
     editor = None   #Reset the global again
@@ -1014,45 +1013,10 @@ import ie_ASE_import # This imports itself to be passed along so it can be used 
 quarkpy.qmdlbase.RegisterMdlImporter(".ase Importer", ".ase file", "*.ase", loadmodel, ie_ASE_import)
 
 
-def vtxcolorclick(btn):
-  #  TODO list
-  #  =========
-  #  1) Should clear the editor.ModelVertexSelList when clicked both on or off.
-
-  #  2) Should use the editor.ModelVertexSelList while button is active to pass selected
-  #        vertexes to the current model component and store them as its own vtxcolorlist.
-    import quarkx
-    import quarkpy.mdleditor
-    editor = quarkpy.mdleditor.mdleditor # Get the editor.
-    if quarkx.setupsubset(3, "Options")["LinearBox"] == "1":
-        editor.ModelVertexSelList = []
-        editor.linearbox = "True"
-        editor.linear1click(btn)
-    else:
-        if editor.ModelVertexSelList != []:
-            editor.ModelVertexSelList = []
-            quarkpy.mdlutils.Update_Editor_Views(editor)
-
-            
-def colorclick(btn):
-    import quarkx
-    import quarkpy.qtoolbar              # Get the toolbar functions to make the button with.
-    editor = quarkpy.mdleditor.mdleditor # Get the editor.
-    if not quarkx.setupsubset(3, "Options")['VertexUVColor'] or quarkx.setupsubset(3, "Options")['VertexUVColor'] == "0":
-        quarkx.setupsubset(3, "Options")['VertexUVColor'] = "1"
-        quarkpy.qtoolbar.toggle(btn)
-        btn.state = quarkpy.qtoolbar.selected
-        quarkx.update(editor.form)
-        vtxcolorclick(btn)
-    else:
-        quarkx.setupsubset(3, "Options")['VertexUVColor'] = "0"
-        quarkpy.qtoolbar.toggle(btn)
-        btn.state = quarkpy.qtoolbar.normal
-        quarkx.update(editor.form)
-
 
 def dataformname(o):
     "Returns the data form for this type of object 'o' (a model component & others) to use for the Specific/Args page."
+    import quarkpy.mdlentities # Used further down in a couple of places.
 
     if o.parent.parent.type == ":mc":
         item = o.parent.parent
@@ -1064,15 +1028,18 @@ def dataformname(o):
         if int(item.dictspec['shader_lines']) > 35:
             item['shader_lines'] = "35"
         NbrOfShaderLines = item.dictspec['shader_lines']
-        quarkx.setupsubset(3, "Options")["NbrOfShaderLines"] = NbrOfShaderLines
+        quarkx.setupsubset(SS_MODEL, "Options")["NbrOfShaderLines"] = NbrOfShaderLines
     else:
-        if quarkx.setupsubset(3, "Options")["NbrOfShaderLines"] is not None:
-            NbrOfShaderLines = quarkx.setupsubset(3, "Options")["NbrOfShaderLines"]
+        if quarkx.setupsubset(SS_MODEL, "Options")["NbrOfShaderLines"] is not None:
+            NbrOfShaderLines = quarkx.setupsubset(SS_MODEL, "Options")["NbrOfShaderLines"]
             item.dictspec['shader_lines'] = NbrOfShaderLines
         else:
             NbrOfShaderLines = "8"
             item.dictspec['shader_lines'] = NbrOfShaderLines
-            quarkx.setupsubset(3, "Options")["NbrOfShaderLines"] = NbrOfShaderLines
+            quarkx.setupsubset(SS_MODEL, "Options")["NbrOfShaderLines"] = NbrOfShaderLines
+
+    # Next line calls for the Vertex U,V Color system in mdlentities.py to be used.
+    vtx_UVcolor_dialog_plugin = quarkpy.mdlentities.UseVertexUVColors()
 
     dlgdef = """
     {
@@ -1106,25 +1073,7 @@ def dataformname(o):
                      Cap = "edit skin"
                     }
       ase_UVNAME: = {Typ="E"   Txt="UVNAME"  Hint="Special UV process control name (over rides 'NAME'),"$0D"type in any name you want to use."}
-      Sep:            = {Typ="S"   Txt = ""}
-      Sep:            = {Typ="S"   Txt = "Vertex Coloring"}
-      ase_COLR:       = {          Txt="Vertex Color"                                                                          }
-      ase_COLR:       = {Typ="L"   Txt="Vertex Color"    Hint="Color to use for this components vertex color mapping."$0D"Click the color display button to select a color."}
-      show_vtx_color: = {Typ="X"   Txt="Show Vertex Color"    Hint="When checked, if component has vertex coloring they will show."$0D"If NOT checked and it has bones with vetexes, those will show."}
-      apply_color:    = {
-                         Typ = "P"
-                         Txt = "apply vertex color ---->"
-                         Macro = "apply_vtx_color"
-                         Hint = "Applies the selected 'Vertex Color'"$0D"to the currently selected vertexes."
-                         Cap = "apply color"
-                        }
-      remove_color:    = {
-                         Typ = "P"
-                         Txt = "remove vertex color ---->"
-                         Macro = "remove_vtx_color"
-                         Hint = "Removes all of the vertex color"$0D"from the currently selected vertexes."
-                         Cap = "remove color"
-                        }
+      """ + vtx_UVcolor_dialog_plugin + """
       Sep:            = {Typ="S"   Txt = ""}
       shader_file:    = {Typ="E"   Txt="shader file"  Hint="Gives the full path and name of the .mtr material"$0D"shader file that the selected skin texture uses, if any."}
       shader_name:    = {Typ="E"   Txt="shader name"  Hint="Gives the name of the shader located in the above file"$0D"that the selected skin texture uses, if any."}
@@ -1132,7 +1081,7 @@ def dataformname(o):
       shader_lines:   = {Typ="EU"  Txt="shader lines"    Hint="Number of lines to display in window below, max. = 35."}
       edit_shader:    = {
                          Typ = "P"
-                         Txt = "edit shader ---->"
+                         Txt = "edit shader -->"
                          Macro = "opentexteditor"
                          Hint = "Opens shader below"$0D"in a text editor."
                          Cap = "edit shader"
@@ -1146,15 +1095,13 @@ def dataformname(o):
     editor = quarkpy.mdleditor.mdleditor # Get the editor.
     ico_mdlskv = ico_dict['ico_mdlskv']  # Just to shorten our call later.
     icon_btns = {}                       # Setup our button list, as a dictionary list, to return at the end.
-    vtxcolorbtn = quarkpy.qtoolbar.button(colorclick, "Color UV Vertex mode||When active, puts the editor vertex selection into this mode and uses the 'COLR' specific setting as the color to designate these types of vertexes.\n\nIt also places the editor into Vertex Selection mode if not there already and clears any selected vertexes to protect from including unwanted ones by mistake.\n\nAny vertexes selected in this mode will become Color UV Vertexes and added to the component as such. Click the InfoBase button or press F1 again for more detail.|intro.modeleditor.dataforms.html#specsargsview", ico_mdlskv, 5)
-    # Sets the button to its current status, that might be effected by another importer file, either on or off.
-    if quarkx.setupsubset(3, "Options")['VertexUVColor'] == "1":
-        vtxcolorbtn.state = quarkpy.qtoolbar.selected
-    else:
-        vtxcolorbtn.state = quarkpy.qtoolbar.normal
-    icon_btns['color'] = vtxcolorbtn     # Put our button in the above list to return.
+    # Next line calls for the Vertex Weights system in mdlentities.py to be used.
+    vtxweightsbtn = quarkpy.qtoolbar.button(quarkpy.mdlentities.UseVertexWeights, "Open or Update\nVertex Weights Dialog||When clicked, this button opens the dialog to allow the 'weight' movement setting of single vertexes that have been assigned to more then one bone handle.\n\nClick the InfoBase button or press F1 again for more detail.|intro.modeleditor.dataforms.html#specsargsview", ico_mdlskv, 5)
+    vtxweightsbtn.state = quarkpy.qtoolbar.normal
+    vtxweightsbtn.caption = "" # Texts shows next to button and keeps the width of this button so it doesn't change.
+    icon_btns['vtxUVcolor'] = vtxweightsbtn   # Put our button in the above list to return.
 
-    if o.name == editor.Root.currentcomponent.currentskin.name: # If this is not done it will cause looping through multiple times.
+    if (editor.Root.currentcomponent.currentskin is not None) and (o.name == editor.Root.currentcomponent.currentskin.name): # If this is not done it will cause looping through multiple times.
         if o.parent.parent.dictspec.has_key("shader_keyword") and o.dictspec.has_key("shader_keyword"):
             if o.parent.parent.dictspec['shader_keyword'] != o.dictspec['shader_keyword']:
                 o.parent.parent['shader_keyword'] = o.dictspec['shader_keyword']
@@ -1164,11 +1111,11 @@ def dataformname(o):
         DummyItem = DummyItem.parent
     o = DummyItem
 
-    if not o.dictspec.has_key('show_vtx_color') and quarkx.setupsubset(3, "Options")['ShowVertexColor'] is not None:
-        quarkx.setupsubset(3, "Options")['ShowVertexColor'] = None
+    if not o.dictspec.has_key('show_vtx_color') and quarkx.setupsubset(SS_MODEL, "Options")['ShowVertexColor'] is not None:
+        quarkx.setupsubset(SS_MODEL, "Options")['ShowVertexColor'] = None
         quarkpy.mdlutils.Update_Editor_Views(editor)
-    if o.dictspec.has_key('show_vtx_color') and quarkx.setupsubset(3, "Options")['ShowVertexColor'] is None:
-        quarkx.setupsubset(3, "Options")['ShowVertexColor'] = o.dictspec['show_vtx_color']
+    if o.dictspec.has_key('show_vtx_color') and quarkx.setupsubset(SS_MODEL, "Options")['ShowVertexColor'] is None:
+        quarkx.setupsubset(SS_MODEL, "Options")['ShowVertexColor'] = o.dictspec['show_vtx_color']
         quarkpy.mdlutils.Update_Editor_Views(editor)
 
     if o.type == ":mc": # Just makes sure what we have is a model component.
@@ -1177,43 +1124,13 @@ def dataformname(o):
         return formobj, icon_btns
     else:
         return None, None
-
-def macro_apply_vtx_color(btn):
-    editor = quarkpy.mdleditor.mdleditor # Get the editor.
-    o = editor.Root.currentcomponent
-    if o.dictspec.has_key('ase_COLR'):
-        R, G, B = o.dictspec['ase_COLR'].split(" ")
-        R = round(float(R)*255)
-        G = round(float(G)*255)
-        B = round(float(B)*255)
-        rgb = struct.pack('i', quarkpy.qutils.RGBToColor([R, G, B]))
-        if len(editor.ModelVertexSelList) != 0:
-            if not editor.ModelComponentList.has_key(o.name):
-                editor.ModelComponentList[o.name] = {}
-            if not editor.ModelComponentList[o.name].has_key('colorvtxlist'):
-                editor.ModelComponentList[o.name]['colorvtxlist'] = {}
-            for vtx in editor.ModelVertexSelList:
-                if not editor.ModelComponentList[o.name]['colorvtxlist'].has_key(str(vtx[0])):
-                    editor.ModelComponentList[o.name]['colorvtxlist'][str(vtx[0])] = {}
-                editor.ModelComponentList[o.name]['colorvtxlist'][str(vtx[0])]['vtx_color'] = rgb
-    quarkpy.mdlutils.Update_Editor_Views(editor)
-
-def macro_remove_vtx_color(btn):
-    editor = quarkpy.mdleditor.mdleditor # Get the editor.
-    o = editor.Root.currentcomponent
-    if len(editor.ModelVertexSelList) != 0:
-        if editor.ModelComponentList[o.name].has_key('colorvtxlist'):
-            for vtx in editor.ModelVertexSelList:
-                if editor.ModelComponentList[o.name]['colorvtxlist'].has_key(str(vtx[0])):
-                    if editor.ModelComponentList[o.name]['colorvtxlist'][str(vtx[0])].has_key('vtx_color'):
-                        if len(editor.ModelComponentList[o.name]['colorvtxlist'][str(vtx[0])]) == 1:
-                            del editor.ModelComponentList[o.name]['colorvtxlist'][str(vtx[0])]
-                        else:
-                            del editor.ModelComponentList[o.name]['colorvtxlist'][str(vtx[0])]['vtx_color']
-    quarkpy.mdlutils.Update_Editor_Views(editor)
         
 def macro_opentexteditor(btn):
     editor = quarkpy.mdleditor.mdleditor # Get the editor.
+    if editor.Root.currentcomponent.currentskin is None:
+        quarkx.beep() # Makes the computer "Beep" once.
+        quarkx.msgbox("No model skin texture !\n\nYou must provide one\nto use this function.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
+        return
     if btn.name == "edit_skin:":
         newImage = editor.Root.currentcomponent.currentskin
         quarkx.externaledit(editor.Root.currentcomponent.currentskin) # Opens skin in - external editor for this texture file type.
@@ -1229,11 +1146,8 @@ def macro_opentexteditor(btn):
         obj = quarkx.newfileobj("temp.txt")
         obj['Data'] = editor.Root.currentcomponent.dictspec['mesh_shader']
         quarkx.externaledit(obj)
-
-quarkpy.qmacro.MACRO_apply_vtx_color = macro_apply_vtx_color
-quarkpy.qmacro.MACRO_remove_vtx_color = macro_remove_vtx_color
+    
 quarkpy.qmacro.MACRO_opentexteditor = macro_opentexteditor
-
 
 def dataforminput(o):
     "Returns the default settings or input data for this type of object 'o' (a model component & others) to use for the Specific/Args page."
@@ -1251,25 +1165,25 @@ def dataforminput(o):
                o['ase_NAME'] = "no skins exist"
       #  if not o.dictspec.has_key('ase_UVNAME'):
       #      o['ase_UVNAME'] = o.dictitems['Skins:sg'].subitems[0].name
-        if not o.dictspec.has_key('ase_COLR'):
-            o['ase_COLR'] = "0.75 0.75 0.75"
+        if not o.dictspec.has_key('vtx_color'):
+            o['vtx_color'] = "0.75 0.75 0.75"
         if not o.dictspec.has_key('shader_file'):
             o['shader_file'] = "None"
         if not o.dictspec.has_key('shader_name'):
             o['shader_name'] = "None"
-        if Item.name == editor.Root.currentcomponent.currentskin.name:
+        if (editor.Root.currentcomponent.currentskin is not None) and (Item.name == editor.Root.currentcomponent.currentskin.name):
             if Item.dictspec.has_key("shader_keyword"):
                 o['shader_keyword'] = Item.dictspec['shader_keyword']
         else:
             o['shader_keyword'] = "None"
         if not o.dictspec.has_key('shader_lines'):
-            if quarkx.setupsubset(3, "Options")["NbrOfShaderLines"] is not None:
-                o['shader_lines'] = quarkx.setupsubset(3, "Options")["NbrOfShaderLines"]
+            if quarkx.setupsubset(SS_MODEL, "Options")["NbrOfShaderLines"] is not None:
+                o['shader_lines'] = quarkx.setupsubset(SS_MODEL, "Options")["NbrOfShaderLines"]
             else:
                 o['shader_lines'] = "8"
-                quarkx.setupsubset(3, "Options")["NbrOfShaderLines"] = o.dictspec['shader_lines']
+                quarkx.setupsubset(SS_MODEL, "Options")["NbrOfShaderLines"] = o.dictspec['shader_lines']
         else:
-            quarkx.setupsubset(3, "Options")["NbrOfShaderLines"] = o.dictspec['shader_lines']
+            quarkx.setupsubset(SS_MODEL, "Options")["NbrOfShaderLines"] = o.dictspec['shader_lines']
         if not o.dictspec.has_key('mesh_shader'):
             o['mesh_shader'] = "None"
 
@@ -1277,6 +1191,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.5  2009/03/26 07:17:17  cdunde
+# Update for editing vertex color support.
+#
 # Revision 1.4  2009/03/25 19:46:00  cdunde
 # Changed dictionary list keyword to be more specific.
 #

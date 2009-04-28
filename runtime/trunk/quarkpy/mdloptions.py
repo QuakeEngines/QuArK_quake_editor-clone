@@ -587,19 +587,9 @@ def SkinViewOptionsMenu():
             if editor.SkinVertexSelList != []:
                 editor.ModelVertexSelList = []
                 mdlutils.PassSkinSel2Editor(editor)
-                handles = mdlhandles.BuildHandles(editor, editor.layout.explorer, editor.layout.views[0])
-                for v in editor.layout.views:
-                    if v.info["viewname"] == "skinview":
-                        continue
-                    v.handles = handles
                 mdlutils.Update_Editor_Views(editor, 1)
             else:
                 editor.ModelVertexSelList = []
-                handles = mdlhandles.BuildHandles(editor, editor.layout.explorer, editor.layout.views[0])
-                for v in editor.layout.views:
-                    if v.info["viewname"] == "skinview":
-                        continue
-                    v.handles = handles
                 mdlutils.Update_Editor_Views(editor, 1)
         else:
             quarkx.setupsubset(SS_MODEL, "Options")['SYNC_EDwSV'] = None
@@ -617,11 +607,6 @@ def SkinViewOptionsMenu():
             import mdlhandles
             if editor.SkinVertexSelList != []:
                 mdlutils.PassSkinSel2Editor(editor)
-                handles = mdlhandles.BuildHandles(editor, editor.layout.explorer, editor.layout.views[0])
-                for v in editor.layout.views:
-                    if v.info["viewname"] == "skinview":
-                        continue
-                    v.handles = handles
                 mdlutils.Update_Editor_Views(editor, 5)
         else:
             quarkx.setupsubset(SS_MODEL, "Options")['PVSTEV'] = None
@@ -859,6 +844,9 @@ def OptionsMenuRMB():
 #
 #
 #$Log$
+#Revision 1.44  2009/01/30 20:38:46  cdunde
+#Added option for creation of all bone handle draglines when importing.
+#
 #Revision 1.43  2009/01/27 05:02:59  cdunde
 #Full support for .md5mesh bone importing with weight assignment and other improvements.
 #

@@ -139,7 +139,7 @@ class MdlConfigDialog(qmacro.dialogbox):
     dlgflags = FWF_NOESCCLOSE
     begincolor = RED
     endcolor = MAROON
-    size = (300,305)
+    size = (300,345)
     dlgdef = """
       {
         Style = "9"
@@ -179,6 +179,13 @@ class MdlConfigDialog(qmacro.dialogbox):
           Min="0.01"
           Hint="larger value makes the handle bigger & visa-versa, default is 4"
         }
+        sep: = {Typ="S" Txt="Bone Handle settings"}    // designator title
+        RotationHandleLength: = {
+          Txt="Rotation Handle Length :"
+          Typ="EF"
+          Min="0.01"
+          Hint="larger value makes the handle longer & visa-versa, default is 1"
+        }
         sep: = {Typ="S" Txt=" "}    // some space
         sep: = {Typ="S" Txt=""}    // a separator line
         applychange:py = {Txt="" }
@@ -208,7 +215,8 @@ class MdlConfigDialog(qmacro.dialogbox):
             setup.copyalldata(self.src)
             import mdlmgr
             mdlmgr.treeviewselchanged = 1
-            if len(self.editor.ModelVertexSelList) > 1 or len(self.editor.ModelFaceSelList) > 1 or len(self.editor.SkinVertexSelList) > 1:
+            bones = self.editor.Root.dictitems['Skeleton:bg'].findallsubitems("", ':bone')   # get all bones
+            if len(bones) != 0 or len(self.editor.ModelVertexSelList) > 1 or len(self.editor.ModelFaceSelList) > 1 or len(self.editor.SkinVertexSelList) > 1:
                 quarkx.reloadsetup()
                 from mdlhandles import SkinView1
                 if SkinView1 is not None:
@@ -226,7 +234,8 @@ class MdlConfigDialog(qmacro.dialogbox):
             setup.copyalldata(self.src)
             import mdlmgr
             mdlmgr.treeviewselchanged = 1
-            if len(self.editor.ModelVertexSelList) > 1 or len(self.editor.ModelFaceSelList) > 1 or len(self.editor.SkinVertexSelList) > 1:
+            bones = self.editor.Root.dictitems['Skeleton:bg'].findallsubitems("", ':bone')   # get all bones
+            if len(bones) != 0 or len(self.editor.ModelVertexSelList) > 1 or len(self.editor.ModelFaceSelList) > 1 or len(self.editor.SkinVertexSelList) > 1:
                 quarkx.reloadsetup()
                 from mdlhandles import SkinView1
                 if SkinView1 is not None:
@@ -401,6 +410,9 @@ class ToolMoveBar(ToolBar):
 #
 #
 #$Log$
+#Revision 1.22  2008/12/20 08:39:34  cdunde
+#Minor adjustment to various Model Editor dialogs for recent fix of item over lapping by Dan.
+#
 #Revision 1.21  2008/09/22 23:11:12  cdunde
 #Updates for Model Editor Linear and Bone handles.
 #

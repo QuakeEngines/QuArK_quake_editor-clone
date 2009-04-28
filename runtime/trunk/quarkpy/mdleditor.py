@@ -42,7 +42,7 @@ class ModelEditor(BaseEditor):
     MouseDragMode = mdlhandles.RectSelDragObject
     findtargetdlg = None
     bone_frame = 0
-    bone_frame_changed = 0
+         #### Taking this line below out breaks the ie_md5_import.py file, fix it. ####
     bonemode = "default mode" # Available modes = default mode, single set, multi sets.
 
     ### Different lists of the Model Editor.
@@ -158,6 +158,7 @@ class ModelEditor(BaseEditor):
     def OpenRoot(self):
         global mdleditor
         mdleditor = self
+        self.ModelComponentList = {}
 
         setup = quarkx.setupsubset(self.MODE, "Display")
         self.skingridstep, = setup["SkinGridStep"]
@@ -183,69 +184,8 @@ class ModelEditor(BaseEditor):
                 if item.endswith(":mc"):
                     comp = self.Root.dictitems[item]
                     componentnames.append(item)
-
-                    ### Start of bone data creation.
-                    foundbone = 0
-                    for bone in range(len(bones)):
-                        if (bones[bone].dictspec['start_component'] == item and bones[bone].dictspec.has_key("start_vtxlist")) or (bones[bone].dictspec['end_component'] == item and bones[bone].dictspec.has_key("end_vtxlist")):
-                            self.ModelComponentList[item] = {}
-                            self.ModelComponentList[item]['bonevtxlist'] = {}
-                            self.ModelComponentList[item]['boneobjlist'] = {}
-                            foundbone = 1
-                            break
-
-                    if foundbone == 0:
-                        continue
-                    for bone in bones:
-                        boneobjs = {}
-                        frame = self.Root.dictitems[item].dictitems['Frames:fg'].subitems[0]
-                        if bone.dictspec['start_component'] == item and bone.dictspec.has_key("start_vtxlist"):
-                            boneobjs['s_or_e0'] = {}
-                            bone_vtxlist = []
-                            tristodrawlist = []
-                            selvtxlist = []
-                            vtxlist = bone.dictspec['start_vtxlist'].split(" ")
-                            for vtx in vtxlist:
-                                vtxinfo = {}
-                                vtxinfo['bonename'] = bone.name
-                                vtxinfo['s_or_e'] = 0
-                                vtxinfo['color'] = bone['start_color']
-                                self.ModelComponentList[item]['bonevtxlist'][vtx] = vtxinfo
-                                vtx = int(vtx)
-                                bone_vtxlist = bone_vtxlist + [[vtx, frame.vertices[vtx]]]
-                                if vtx in selvtxlist:
-                                    pass
-                                else:
-                                    selvtxlist = selvtxlist + [vtx]
-                                    tristodrawlist = tristodrawlist + findTrianglesAndIndexes(comp, vtx, frame.vertices[vtx])
-                            boneobjs['s_or_e0']['vtxlist'] = bone_vtxlist
-                            boneobjs['s_or_e0']['tristodrawlist'] = tristodrawlist
-                            boneobjs['s_or_e0']['selvtxlist'] = selvtxlist
-                        if bone.dictspec['end_component'] == item and bone.dictspec.has_key("end_vtxlist"):
-                            boneobjs['s_or_e1'] = {}
-                            bone_vtxlist = []
-                            tristodrawlist = []
-                            selvtxlist = []
-                            vtxlist = bone.dictspec['end_vtxlist'].split(" ")
-                            for vtx in vtxlist:
-                                vtxinfo = {}
-                                vtxinfo['bonename'] = bone.name
-                                vtxinfo['s_or_e'] = 1
-                                vtxinfo['color'] = bone['end_color']
-                                self.ModelComponentList[item]['bonevtxlist'][vtx] = vtxinfo
-                                vtx = int(vtx)
-                                bone_vtxlist = bone_vtxlist + [[vtx, frame.vertices[vtx]]]
-                                if vtx in selvtxlist:
-                                    pass
-                                else:
-                                    selvtxlist = selvtxlist + [vtx]
-                                    tristodrawlist = tristodrawlist + findTrianglesAndIndexes(comp, vtx, frame.vertices[vtx])
-                            boneobjs['s_or_e1']['vtxlist'] = bone_vtxlist
-                            boneobjs['s_or_e1']['tristodrawlist'] = tristodrawlist
-                            boneobjs['s_or_e1']['selvtxlist'] = selvtxlist
-                        if (bone.dictspec['start_component'] == item and bone.dictspec.has_key("start_vtxlist")) or (bone.dictspec['end_component'] == item and bone.dictspec.has_key("end_vtxlist")):
-                            self.ModelComponentList[item]['boneobjlist'][bone.name] = boneobjs
-                    ### End of bone data creation.
+                    ### Creates the editor.ModelComponentList 'tristodraw' dictionary list for the "component" sent to this function.
+                    make_tristodraw_dict(self, comp)
 
             componentnames.sort()
         try:
@@ -378,8 +318,9 @@ class ModelEditor(BaseEditor):
                 pass
 
         except:
+            viewhandles = BuildHandles(self, self.layout.explorer, self.layout.views[0])
             for v in self.layout.views:
-                v.handles = mdlhandles.BuildHandles(self, self.layout.explorer, v)
+                v.handles = viewhandles
 
          #   delay, = quarkx.setupsubset(SS_MODEL, "Display")["HandlesDelay"]
          # linux issue with single quote
@@ -422,24 +363,44 @@ class ModelEditor(BaseEditor):
         HoldObject = None
         NewSellist = []
         HoldObjectList = []
-        ObjectState = {}
-        for Object in self.layout.explorer.sellist:
-            HoldObject = Object
-            if HoldObject is None:
-                ParentNames = []
-            else:
-                ParentNames = [HoldObject.name]
-                while HoldObject.parent is not None:
-                    HoldObject = HoldObject.parent
-                    ParentNames.append(HoldObject.name)
-
-            HoldObjectList.append(ParentNames)
-            ObjectState[Object.name] = (Object.flags & qutils.OF_TVEXPANDED)
+        ObjectExpanded = {}
+        ObjectSelected = {}
+        def storestate(parent):
+            for Object in parent.subitems:
+                HoldObject = Object
+                ObjectUniqueName = HoldObject.name
+                ObjectUniqueNameStore = 1
+                if HoldObject is None:
+                    ParentNames = []
+                else:
+                    ParentNames = [HoldObject.name]
+                    while HoldObject.parent is not None:
+                        HoldObject = HoldObject.parent
+                        ParentNames.append(HoldObject.name)
+                        if ObjectUniqueNameStore == 1:
+                            if HoldObject == self.Root:
+                                ObjectUniqueNameStore = 0
+                            else:
+                                ObjectUniqueName = ObjectUniqueName + HoldObject.name
+                HoldObjectList.append(ParentNames)
+                ObjectExpanded[ObjectUniqueName] = (Object.flags & qutils.OF_TVEXPANDED)
+                if Object in self.layout.explorer.sellist:
+                    ObjectSelected[ObjectUniqueName] = 1
+                else:
+                    ObjectSelected[ObjectUniqueName] = 0
+                storestate(Object)
+        storestate(self.Root)
+        # Puts the 'pickle module' copy of ModelComponentList into the undo & for .qkl files saving.
+        oldsd = self.Root.dictitems['ModelComponentList:sd']
+        newsd = self.Root.dictitems['ModelComponentList:sd'].copy()
+        newsd['data'] = FlattenModelComponentList(self)
+        undo.exchange(oldsd, newsd)
 
         undo.ok(self.Root, msg)
 
         for ParentNames in HoldObjectList:
             HoldObject = self.Root
+            ObjectUniqueName = ""
             ParentNames.reverse()
             if len(ParentNames) == 0:
                 EditorRoot = 0
@@ -448,35 +409,20 @@ class ModelEditor(BaseEditor):
 
             for x in range(len(ParentNames)-EditorRoot-1):
                 HoldObject = HoldObject.findname(ParentNames[EditorRoot+x+1])
+                ObjectUniqueName = HoldObject.name + ObjectUniqueName
+
+            if ObjectExpanded[ObjectUniqueName] <> 0:
+                self.layout.explorer.expand(HoldObject)
 
            ### Line below moved to mdlmgr.py, def selectcomponent, using HoldObject as global
            ### to allow Skin-view to complete its new undo mesh and handles, was not working from here.
-            self.layout.explorer.sellist = [HoldObject]
+            #self.layout.explorer.sellist = [HoldObject]
 
-            NewSellist.append(HoldObject)
-        try:
-            if (NewSellist[0].name.endswith(":mr") or NewSellist[0].name.endswith(":mg")):
-                pass
-            else:
-                self.layout.explorer.sellist = NewSellist  # go around if bone is in the list
-        except:
-            pass
+            if ObjectSelected[ObjectUniqueName] <> 0:
+                NewSellist.append(HoldObject)
 
-        if len(NewSellist) <= 1:
-            if len(NewSellist) == 1 and (NewSellist[0].name.endswith(":mr") or NewSellist[0].name.endswith(":mg")):
-                pass
-            else:
-                for item in self.layout.explorer.sellist:
-                    self.layout.explorer.expand(item.parent)
-                    if item.name.endswith(":bg"):
-                        if ObjectState[item.name]<>0:
-                            self.layout.explorer.expand(item)
-        else:
-            for item in self.layout.explorer.sellist:
-                self.layout.explorer.expand(item.parent)
-                if item.name.endswith(":bg"):
-                    if ObjectState[item.name]<>0:
-                        self.layout.explorer.expand(item)
+        self.layout.explorer.sellist = NewSellist
+
         NewSellist = []
 
     def dropmap(self, view, newlist, x, y, src):
@@ -567,7 +513,7 @@ class ModelEditor(BaseEditor):
         if qbaseeditor.flagsmouse == 1032:
             return
         try:
-            if (qbaseeditor.flagsmouse == 520) or (qbaseeditor.flagsmouse == 16384 and isinstance(self.dragobject.handle, mdlhandles.LinBoneCornerHandle)):
+            if (qbaseeditor.flagsmouse == 520) or (qbaseeditor.flagsmouse == 16384 and isinstance(self.dragobject.handle, mdlhandles.BoneCornerHandle)):
                 skipbuild = 1
         except:
             pass
@@ -1362,13 +1308,13 @@ def commonhandles(self, redraw=1):
                             currentview.handles = []
                             return
                         else:
-                            if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
-                                hlist = mdlhandles.BuildHandles(self, self.layout.explorer, currentview)
-                            else:
-                                hlist = mdlhandles.BuildCommonHandles(self, self.layout.explorer)   # model handles
-                        currentview.handles = hlist
+                            if len(currentview.handles) == 0:
+                                if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
+                                    currentview.handles = mdlhandles.BuildHandles(self, self.layout.explorer, currentview)
+                                else:
+                                    currentview.handles = mdlhandles.BuildCommonHandles(self, self.layout.explorer)   # model handles
                         cv = currentview.canvas()
-                        for h in hlist:
+                        for h in currentview.handles:
                             h.draw(currentview, cv, None)
                         return
                 else:
@@ -1389,19 +1335,22 @@ def commonhandles(self, redraw=1):
                             currentview.handles = []
                             return
                         else:
-                            if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
-                                hlist = mdlhandles.BuildHandles(self, self.layout.explorer, currentview)
-                            else:
-                                hlist = mdlhandles.BuildCommonHandles(self, self.layout.explorer)   # model handles
-                        currentview.handles = hlist
+                            if len(currentview.handles) == 0:
+                                if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
+                                    currentview.handles = mdlhandles.BuildHandles(self, self.layout.explorer, currentview)
+                                else:
+                                    currentview.handles = mdlhandles.BuildCommonHandles(self, self.layout.explorer)   # model handles
                         cv = currentview.canvas()
-                        for h in hlist:
+                        for h in currentview.handles:
                             h.draw(currentview, cv, None)
                         return
                 else:
                     pass
     except:
         pass
+
+    if (currentview.info["viewname"] == "editors3Dview" or currentview.info["viewname"] == "3Dwindow") and (flagsmouse == 2064 or flagsmouse == 2080):
+        return
 
 ### Draw No Handles Setting Section:
 ### ===============================
@@ -1692,6 +1641,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.121  2009/03/30 08:08:39  cdunde
+#To clear a nasty setting when closing the editor.
+#
 #Revision 1.120  2009/03/26 22:32:33  danielpharos
 #Fixed the treeview color boxes for components not showing up the first time.
 #

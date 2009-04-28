@@ -1012,7 +1012,7 @@ class RedImageDragObject(DragObject):
             if isinstance(editor.dragobject.handle, mdlhandles.VertexHandle):
                 ### Stops Model Editor Vertex drag handles from drawing if not returned.
                 return
-            if isinstance(editor.dragobject.handle, mdlhandles.LinRedHandle) or isinstance(editor.dragobject.handle, mdlhandles.LinSideHandle) or isinstance(editor.dragobject.handle, mdlhandles.LinCornerHandle) or isinstance(editor.dragobject.handle, mdlhandles.LinBoneCornerHandle) or isinstance(editor.dragobject.handle, mdlhandles.LinBoneCenterHandle):
+            if isinstance(editor.dragobject.handle, mdlhandles.LinRedHandle) or isinstance(editor.dragobject.handle, mdlhandles.LinSideHandle) or isinstance(editor.dragobject.handle, mdlhandles.LinCornerHandle):
                 ### Stops Model Editor Linear drag handles from drawing redline drag objects incorrectly.
                 return
             # Draws rectangle selector and Skin-view lines much faster this way.
@@ -2171,6 +2171,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.80  2009/03/28 20:03:57  cdunde
+#To remove unwanted white spaces.
+#
 #Revision 1.79  2009/01/11 06:49:41  cdunde
 #Minor fix for error when Model Editor is in True 3D mode.
 #

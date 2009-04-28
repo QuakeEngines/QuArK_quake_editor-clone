@@ -28,11 +28,7 @@ import mdleditor
 #py2.4 indicates upgrade change for python 2.4
 
 # Globals
-
-mdleditorsave = None
-mdleditorview = None
 cursorposatstart = None
-cursordragstartpos = None
 lastmodelfaceremovedlist = []
 SkinView1 = None  # Used to get the Skin-view at any time because
                   # it is not in the "editors.layout.views" list.
@@ -362,7 +358,7 @@ class ModelFaceHandle(qhandles.GenericHandle):
         if (flagsmouse == 2056 or flagsmouse == 2060):
             return
         if (flagsmouse == 1032 or flagsmouse == 1036):
-            if ((isinstance(editor.dragobject.handle, LinSideHandle)) or (isinstance(editor.dragobject.handle, LinCornerHandle)) or (isinstance(editor.dragobject.handle, LinBoneCornerHandle)) or (quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1" and not isinstance(editor.dragobject, qhandles.Rotator2D))) and quarkx.setupsubset(SS_MODEL, "Options")['NFDL'] is None:
+            if ((isinstance(editor.dragobject.handle, LinSideHandle)) or (isinstance(editor.dragobject.handle, LinCornerHandle)) or (isinstance(editor.dragobject.handle, BoneCornerHandle)) or (quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1" and not isinstance(editor.dragobject, qhandles.Rotator2D))) and quarkx.setupsubset(SS_MODEL, "Options")['NFDL'] is None:
                 return
 
         if (flagsmouse == 1040 or flagsmouse == 1056):
@@ -532,6 +528,7 @@ class VertexHandle(qhandles.GenericHandle):
                     SkinView1.invalidate(1)
 
         def pick_vertex(m, self=self, editor=editor, view=view):
+            viewhandles = BuildCommonHandles(editor, editor.layout.explorer)
             itemcount = 0
             if editor.ModelVertexSelList == []:
                 editor.ModelVertexSelList = editor.ModelVertexSelList + [(self.index, view.proj(self.pos))]
@@ -554,7 +551,7 @@ class VertexHandle(qhandles.GenericHandle):
                             elif v.info["viewname"] == "3Dwindow" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] == "1":
                                 v.handles = []
                             else:
-                                v.handles = BuildCommonHandles(editor, editor.layout.explorer)
+                                v.handles = viewhandles
                             mdleditor.setsingleframefillcolor(editor, v)
                             v.repaint()
                             plugins.mdlgridscale.gridfinishdrawing(editor, v)
@@ -594,7 +591,7 @@ class VertexHandle(qhandles.GenericHandle):
                 elif v.info["viewname"] == "3Dwindow" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] == "1":
                     v.handles = []
                 else:
-                    v.handles = BuildCommonHandles(editor, editor.layout.explorer)
+                    v.handles = viewhandles
 
             Update_Editor_Views(editor, 4)
             if (quarkx.setupsubset(SS_MODEL, "Options")["PVSTSV"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")['SYNC_SVwED'] == "1") and SkinView1 is not None:
@@ -631,6 +628,7 @@ class VertexHandle(qhandles.GenericHandle):
                     editor.ModelVertexSelList.remove(editor.ModelVertexSelList[1])
 
         def pick_cleared(m, editor=editor, view=view):
+            viewhandles = BuildCommonHandles(editor, editor.layout.explorer)
             editor.ModelVertexSelList = []
             editor.dragobject = None
             for v in editor.layout.views:
@@ -647,7 +645,7 @@ class VertexHandle(qhandles.GenericHandle):
                 elif v.info["viewname"] == "3Dwindow" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] == "1":
                     v.handles = []
                 else:
-                    v.handles = BuildCommonHandles(editor, editor.layout.explorer)
+                    v.handles = viewhandles
                 mdleditor.setsingleframefillcolor(editor, v)
                 v.repaint()
                 ### Needed to move finishdrawing functions and handle drawing here
@@ -717,6 +715,33 @@ class VertexHandle(qhandles.GenericHandle):
             mdlmgr.savefacesel = 1
             replacevertexes(editor, comp, editor.ModelVertexSelList, 0, view, "merged 2 vertexes", 2)
 
+        def addtriclick(m, self=self, editor=editor, view=view):
+            if len(editor.ModelVertexSelList) == 3:
+                if (editor.ModelVertexSelList[0][0] < editor.ModelVertexSelList[1][0]) or (editor.ModelVertexSelList[0][0] < editor.ModelVertexSelList[2][0]):
+                    if editor.ModelVertexSelList[1][0] > editor.ModelVertexSelList[2][0]:
+                        quarkx.msgbox("You need to select\nvertex "+str(editor.ModelVertexSelList[1][0])+" first.", MT_ERROR, MB_OK)
+                        return
+                    else:
+                        quarkx.msgbox("You need to select\nvertex "+str(editor.ModelVertexSelList[2][0])+" first.", MT_ERROR, MB_OK)
+                        return
+                else:
+                  ### This will reverse the direction the triangle face is facing, when it is created, if the "Reverse Direction" command is active (checked).
+                    templist = editor.ModelVertexSelList
+                    if quarkx.setupsubset(SS_MODEL, "Options")["RevDir"] == "1":
+                        editor.ModelVertexSelList = [templist[0], templist[2], templist[1]]
+                    addtriangle(editor)
+
+        def revdir(m, self=self, editor=editor, view=view):
+            if not MdlOption("RevDir"):
+                quarkx.setupsubset(SS_MODEL, "Options")['RevDir'] = "1"
+            else:
+                quarkx.setupsubset(SS_MODEL, "Options")['RevDir'] = None
+            ReverseDirection.state = quarkx.setupsubset(SS_MODEL,"Options").getint("RevDir")
+
+        def remtriclick(m, self=self, editor=editor, view=view):
+            if len(editor.ModelVertexSelList) == 3:
+                removeTriangle_v3(editor)
+
         Forcetogrid = qmenu.item("&Force to grid", force_to_grid_click,"|Force to grid:\n\nThis will cause any vertex to 'snap' to the nearest location on the editor's grid for the view that the RMB click was made in.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
         AddVertex = qmenu.item("&Add Vertex Here", add_vertex_click, "|Add Vertex Here:\n\nThis will add a single vertex to the currently selected model component (and all of its animation frames) to make a new triangle.\n\nYou need 3 new vertexes to make a triangle.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
         RemoveVertex = qmenu.item("&Remove Vertex", remove_vertex_click, "|Remove Vertex:\n\nThis will remove a vertex from the component and all of its animation frames.\n\nWARNING, if the vertex is part of an existing triangle it will ALSO remove that triangle as well. If this does happen and is an unwanted action, simply use the Undo function to reverse its removal.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
@@ -727,6 +752,20 @@ class VertexHandle(qhandles.GenericHandle):
         ClearPicklist = qmenu.item("&Clear Pick list", pick_cleared, "|Clear Pick list:\n\nThis Clears the 'Pick Vertex' list of all vertexes and it becomes active when one or more vertexes have been selected.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
         AlignVertOpsPop = qmenu.popup("Align Vertex Options", [], align_vert_ops_click, "|Align Vertex Options:\n\nThis menu gives different methods of aligning 'Picked' vertexes to the 'Base' vertex.\n\nSee the help for each method for detail on how they work.", "intro.modeleditor.rmbmenus.html#vertexrmbmenu")
         MergeVertexes = qmenu.item("&Merge Vertexes", merge_vertexes_click,"|Merge Vertexes:\n\nWhen two or more vertexes have been 'Picked' in one of the editor views this function becomes active allowing the 'picked' vertexes be moved to the 'Base' (stationary) vertex (the first one selected) location and aligned with that 'Base' vertex where they will then be merged into the one 'Base' vertex.\n\nTwo vertexes of the same face (triangle) can not be selected.\n\nThis function also works in conjunction with the 'Clear Pick list' above it.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
+        AddTriangle = qmenu.item("&Add Triangle", addtriclick, "|Add Triangle:\n\nThis adds a new triangle to the currently selected component.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.menu.html#commandsmenu")
+        ReverseDirection = qmenu.item("Reverse Direction", revdir, "|Reverse Direction:\n\nNormally, in QuArK, creating a new triangles vertexes in a 'clockwise' direction will produce a triangle that faces 'outwards'.\n\nBut sometimes this does not work for adding new triangles to existing ones.\n\nActivating this function (checking it) will reverse that direction causing the triangle to face the opposite way.\n\nClick on the 'InfoBase' button for more detail.|intro.modeleditor.menu.html#commandsmenu")
+        RemoveTriangle = qmenu.item("&Delete Triangle", remtriclick, "|Delete Triangle:\n\nThis removes a triangle from the currently selected component.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.menu.html#commandsmenu")
+
+        AddTriangle.state = qmenu.disabled
+        ReverseDirection.state = quarkx.setupsubset(SS_MODEL,"Options").getint("RevDir")
+        RemoveTriangle.state = qmenu.disabled
+
+        if len(editor.ModelVertexSelList) == 3:
+            AddTriangle.state = qmenu.normal
+            RemoveTriangle.state = qmenu.normal
+        else:
+            AddTriangle.state = qmenu.disabled
+            RemoveTriangle.state = qmenu.disabled
 
         if not MdlOption("GridActive") or editor.gridstep <= 0:
             Forcetogrid.state = qmenu.disabled
@@ -762,7 +801,7 @@ class VertexHandle(qhandles.GenericHandle):
             if len(editor.ModelVertexSelList) < 2:
                 AlignVertexes.state = qmenu.disabled
                 MergeVertexes.state = qmenu.disabled
-            menu = [AddVertex, qmenu.sep, ClearPicklist, qmenu.sep, AlignVertexes, AlignVertOpsPop, qmenu.sep, MergeVertexes]
+            menu = [AddVertex, qmenu.sep, ClearPicklist, qmenu.sep, AlignVertexes, AlignVertOpsPop, qmenu.sep, MergeVertexes, qmenu.sep, AddTriangle, ReverseDirection, RemoveTriangle]
 
         return menu
 
@@ -811,8 +850,8 @@ class VertexHandle(qhandles.GenericHandle):
             if editor.ModelComponentList.has_key(editor.Root.currentcomponent.name):
                 # Here "color" is just a dummy item to pass the vertex's
                 # color to so we can use the MapColor function to set the cv.pencolor correctly.
-                if quarkx.setupsubset(3, "Options")['ShowVertexColor'] is not None and editor.ModelComponentList[editor.Root.currentcomponent.name].has_key('colorvtxlist') and editor.ModelComponentList[editor.Root.currentcomponent.name]['colorvtxlist'].has_key(str(self.index)) and editor.ModelComponentList[editor.Root.currentcomponent.name]['colorvtxlist'][str(self.index)].has_key('vtx_color'):
-                    color = editor.ModelComponentList[editor.Root.currentcomponent.name]['colorvtxlist'][str(self.index)]['vtx_color']
+                if quarkx.setupsubset(3, "Options")['ShowVertexColor'] is not None and editor.ModelComponentList[editor.Root.currentcomponent.name].has_key('colorvtxlist') and editor.ModelComponentList[editor.Root.currentcomponent.name]['colorvtxlist'].has_key(self.index) and editor.ModelComponentList[editor.Root.currentcomponent.name]['colorvtxlist'][self.index].has_key('vtx_color'):
+                    color = editor.ModelComponentList[editor.Root.currentcomponent.name]['colorvtxlist'][self.index]['vtx_color']
                     quarkx.setupsubset(SS_MODEL, "Colors")["color"] = color
                     cv.pencolor = cv.brushcolor = MapColor("color", SS_MODEL)
                     cv.brushstyle = BS_SOLID
@@ -820,15 +859,33 @@ class VertexHandle(qhandles.GenericHandle):
                         cv.ellipse(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
                     else:
                         cv.ellipse(int(p.x)-2, int(p.y)-2, int(p.x)+2, int(p.y)+2)
-                elif editor.ModelComponentList[editor.Root.currentcomponent.name].has_key('bonevtxlist') and editor.ModelComponentList[editor.Root.currentcomponent.name]['bonevtxlist'].has_key(str(self.index)):
-                    color = editor.ModelComponentList[editor.Root.currentcomponent.name]['bonevtxlist'][str(self.index)]['color']
-                    quarkx.setupsubset(SS_MODEL, "Colors")["color"] = color
-                    cv.pencolor = cv.brushcolor = MapColor("color", SS_MODEL)
-                    cv.brushstyle = BS_SOLID
-                    if MdlOption("Ticks") == "1":
-                        cv.ellipse(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
+                elif editor.ModelComponentList[editor.Root.currentcomponent.name].has_key('bonevtxlist'):
+                    color = None
+                    for bone in editor.ModelComponentList[editor.Root.currentcomponent.name]['bonevtxlist'].keys():
+                        if editor.layout.explorer.sellist[0].type == ":bone":
+                            if bone == editor.layout.explorer.sellist[0].name:
+                                if editor.ModelComponentList[editor.Root.currentcomponent.name]['bonevtxlist'][bone].has_key(self.index):
+                                    color = editor.ModelComponentList[editor.Root.currentcomponent.name]['bonevtxlist'][bone][self.index]['color']
+                                break
+                        elif editor.ModelComponentList[editor.Root.currentcomponent.name]['bonevtxlist'][bone].has_key(self.index):
+                            color = editor.ModelComponentList[editor.Root.currentcomponent.name]['bonevtxlist'][bone][self.index]['color']
+                    if color is not None:
+                        quarkx.setupsubset(SS_MODEL, "Colors")["color"] = color
+                        cv.pencolor = cv.brushcolor = MapColor("color", SS_MODEL)
+                        cv.brushstyle = BS_SOLID
+                        if MdlOption("Ticks") == "1":
+                            cv.ellipse(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
+                        else:
+                            cv.ellipse(int(p.x)-2, int(p.y)-2, int(p.x)+2, int(p.y)+2)
                     else:
-                        cv.ellipse(int(p.x)-2, int(p.y)-2, int(p.x)+2, int(p.y)+2)
+                        cv.pencolor = vertexdotcolor
+                        cv.brushstyle = BS_SOLID
+                        if MdlOption("Ticks") == "1":
+                            cv.brushcolor = WHITE
+                            cv.ellipse(int(p.x)-2, int(p.y)-2, int(p.x)+2, int(p.y)+2)
+                        else:
+                            cv.brushcolor = vertexdotcolor
+                            cv.ellipse(int(p.x)-1, int(p.y)-1, int(p.x)+1, int(p.y)+1)
                 else:
                     cv.pencolor = vertexdotcolor
                     cv.brushstyle = BS_SOLID
@@ -1017,11 +1074,14 @@ class SkinHandle(qhandles.GenericHandle):
                             skindrawobject = None
                         buildskinvertices(editor, SkinView1, editor.layout, editor.Root.currentcomponent, skindrawobject)
                         SkinView1.invalidate(1)
-                        handles = BuildHandles(editor, editor.layout.explorer, editor.layout.views[0])
+                        if len(view.handles) == 0:
+                            viewhandles = BuildHandles(editor, editor.layout.explorer, editor.layout.views[0])
+                        else:
+                            viewhandles = view.handles
                         for v in editor.layout.views:
                             if v.info["viewname"] == "skinview":
                                 continue
-                            v.handles = handles
+                            v.handles = viewhandles
                     Update_Editor_Views(editor, 4)
             view.invalidate()
 
@@ -1055,11 +1115,14 @@ class SkinHandle(qhandles.GenericHandle):
                                 if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_EDwSV'] == "1":
                                     editor.ModelVertexSelList = []
                                     PassSkinSel2Editor(editor)
-                                    handles = BuildHandles(editor, editor.layout.explorer, editor.layout.views[0])
+                                    if editor.layout.views[0].handles == 0:
+                                        viewhandles = BuildHandles(editor, editor.layout.explorer, editor.layout.views[0])
+                                    else:
+                                        viewhandles = editor.layout.views[0].handles
                                     for v in editor.layout.views:
                                         if v.info["viewname"] == "skinview":
                                             continue
-                                        v.handles = handles
+                                        v.handles = viewhandles
                                     Update_Editor_Views(editor, 1)
                                 return
                             itemcount = itemcount + 1
@@ -1075,11 +1138,14 @@ class SkinHandle(qhandles.GenericHandle):
                         if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_EDwSV'] == "1":
                             editor.ModelVertexSelList = []
                             PassSkinSel2Editor(editor)
-                            handles = BuildHandles(editor, editor.layout.explorer, editor.layout.views[0])
+                            if editor.layout.views[0].handles == 0:
+                                viewhandles = BuildHandles(editor, editor.layout.explorer, editor.layout.views[0])
+                            else:
+                                viewhandles = editor.layout.views[0].handles
                             for v in editor.layout.views:
                                 if v.info["viewname"] == "skinview":
                                     continue
-                                v.handles = handles
+                                v.handles = viewhandles
                             Update_Editor_Views(editor, 1)
                         return
                     else:
@@ -1107,11 +1173,14 @@ class SkinHandle(qhandles.GenericHandle):
                 if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_EDwSV'] == "1":
                     editor.ModelVertexSelList = []
                 PassSkinSel2Editor(editor)
-                handles = BuildHandles(editor, editor.layout.explorer, editor.layout.views[0])
+                if editor.layout.views[0].handles == 0:
+                    viewhandles = BuildHandles(editor, editor.layout.explorer, editor.layout.views[0])
+                else:
+                    viewhandles = editor.layout.views[0].handles
                 for v in editor.layout.views:
                     if v.info["viewname"] == "skinview":
                         continue
-                    v.handles = handles
+                    v.handles = viewhandles
                 Update_Editor_Views(editor, 1)
 
         def alignskinvertexesclick(m, self=self, editor=editor, view=view):
@@ -1139,11 +1208,14 @@ class SkinHandle(qhandles.GenericHandle):
             view.invalidate()
             if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_EDwSV'] == "1":
                 editor.ModelVertexSelList = []
-                handles = BuildHandles(editor, editor.layout.explorer, editor.layout.views[0])
+                if editor.layout.views[0].handles == 0:
+                    viewhandles = BuildHandles(editor, editor.layout.explorer, editor.layout.views[0])
+                else:
+                    viewhandles = editor.layout.views[0].handles
                 for v in editor.layout.views:
                     if v.info["viewname"] == "skinview":
                         continue
-                    v.handles = handles
+                    v.handles = viewhandles
                 Update_Editor_Views(editor, 4)
 
         setup = quarkx.setupsubset(SS_MODEL, "Options")
@@ -1199,22 +1271,24 @@ class SkinHandle(qhandles.GenericHandle):
                 quarkx.setupsubset(SS_MODEL, "Options")['PVSTEV'] = None
                 quarkx.setupsubset(SS_MODEL, "Options")['PVSTSV'] = None
                 quarkx.setupsubset(SS_MODEL, "Options")['PFSTSV'] = None
+                if editor.layout.views[0].handles == 0:
+                    viewhandles = BuildHandles(editor, editor.layout.explorer, editor.layout.views[0])
+                else:
+                    viewhandles = editor.layout.views[0].handles
                 if editor.SkinVertexSelList != []:
                     editor.ModelVertexSelList = []
                     PassSkinSel2Editor(editor)
-                    handles = BuildHandles(editor, editor.layout.explorer, editor.layout.views[0])
                     for v in editor.layout.views:
                         if v.info["viewname"] == "skinview":
                             continue
-                        v.handles = handles
+                        v.handles = viewhandles
                     Update_Editor_Views(editor, 1)
                 else:
                     editor.ModelVertexSelList = []
-                    handles = BuildHandles(editor, editor.layout.explorer, editor.layout.views[0])
                     for v in editor.layout.views:
                         if v.info["viewname"] == "skinview":
                             continue
-                        v.handles = handles
+                        v.handles = viewhandles
                     Update_Editor_Views(editor, 1)
             else:
                 quarkx.setupsubset(SS_MODEL, "Options")['SYNC_EDwSV'] = None
@@ -1229,11 +1303,14 @@ class SkinHandle(qhandles.GenericHandle):
                 quarkx.setupsubset(SS_MODEL, "Options")['PVSTSV'] = None
                 if editor.SkinVertexSelList != []:
                     PassSkinSel2Editor(editor)
-                    handles = BuildHandles(editor, editor.layout.explorer, editor.layout.views[0])
+                    if editor.layout.views[0].handles == 0:
+                        viewhandles = BuildHandles(editor, editor.layout.explorer, editor.layout.views[0])
+                    else:
+                        viewhandles = editor.layout.views[0].handles
                     for v in editor.layout.views:
                         if v.info["viewname"] == "skinview":
                             continue
-                        v.handles = handles
+                        v.handles = viewhandles
                     Update_Editor_Views(editor, 5)
             else:
                 quarkx.setupsubset(SS_MODEL, "Options")['PVSTEV'] = None
@@ -1590,7 +1667,7 @@ class SkinHandle(qhandles.GenericHandle):
 
 
 #    def ok(self, editor, undo, old, new):
-#        undo.ok(editor.Root, self.undomsg)
+#        editor.undo.ok(editor.Root, self.undomsg)
 
 
 
@@ -1775,7 +1852,7 @@ def BuildCommonHandles(editor, explorer, option=1):
   #  if currentindex == editor.bone_frame:
   #      import qbaseeditor
   #      from qbaseeditor import currentview
-  #      print "mdlhandles line 1757 len(currentview.handles)",len(currentview.handles)
+  #      print "mdlhandles line 1795 len(currentview.handles)",len(currentview.handles)
   #      h = currentview.handles
   #      return h
 
@@ -1788,30 +1865,20 @@ def BuildCommonHandles(editor, explorer, option=1):
     if len(explorer.sellist) >= 0:
         if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] != "1" and quarkx.setupsubset(SS_MODEL, "Options")['HideBones'] is None:
 
-            bones = editor.Root.dictitems['Skeleton:bg']
-            if len(bones.subitems) != 0:
-                # Checks if something has changed the frame selection, if so then bones need to be rebuilt.
+            bones = editor.Root.dictitems['Skeleton:bg'].findallsubitems("", ':bone') # Get all bones.
+            if len(bones) != 0:
+                # Checks if something has changed the frame selection.
                 import operator
-                currentindex = operator.indexOf(editor.Root.currentcomponent.dictitems['Frames:fg'].subitems, editor.Root.currentcomponent.currentframe)
-                if currentindex != editor.bone_frame:
-                    editor.bone_frame_changed = 1
-                    editor.bone_frame = currentindex
+                try:
+                    currentindex = operator.indexOf(editor.Root.currentcomponent.dictitems['Frames:fg'].subitems, editor.Root.currentcomponent.currentframe)
+                    if currentindex != editor.bone_frame:
+                        editor.bone_frame = currentindex
+                except:
+                    pass
 
-            for item in editor.Root.subitems:
-                if item.type == ':bg':
-                    for bone in item.subitems:
-                        bh = bh + mdlentities.CallManager("handlesopt", bone, editor)
-                else:
-                    bones = editor.Root.findallsubitems("", ':bone')   # get all bones
-                    for bone in bones:
-                        try:
-                            bh = bh + mdlentities.CallManager("handlesopt", bone, editor)
-                        except:
-                            break
-                break
-            # This setting caused bones to be rebuilt, so now that has been done it needs to be reset.
-            if editor.bone_frame_changed == 1:
-                editor.bone_frame_changed = 0
+            for bone in bones:
+                bh = bh + mdlentities.CallManager("handlesopt", bone, editor)
+            bh.reverse() # Stops connecting bone lines from drawing over rotation handles.
     else:
         return bh
     h = bh
@@ -1876,7 +1943,7 @@ def BuildHandles(editor, explorer, view, option=1):
   # For future, handles are being killed right now, if we just don't draw them then we can use this below to just send them back, much faster.
   #  currentindex = operator.indexOf(editor.Root.currentcomponent.dictitems['Frames:fg'].subitems, editor.Root.currentcomponent.currentframe)
   #  if currentindex == editor.bone_frame:
-  #      print "mdlhandles line 1757 len(currentview.handles)",len(currentview.handles)
+  #      print "mdlhandles line 1888 len(currentview.handles)",len(currentview.handles)
   #      h = view.handles
   #      return h
 
@@ -1890,27 +1957,20 @@ def BuildHandles(editor, explorer, view, option=1):
     if len(explorer.sellist) >= 0 and quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] != "1":
         if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] != "1" and quarkx.setupsubset(SS_MODEL, "Options")['HideBones'] is None:
 
-            bones = editor.Root.dictitems['Skeleton:bg']
-            if len(bones.subitems) != 0:
-                # Checks if something has changed the frame selection, if so then bones need to be rebuilt.
+            bones = editor.Root.dictitems['Skeleton:bg'].findallsubitems("", ':bone') # Get all bones.
+            if len(bones) != 0:
+                # Checks if something has changed the frame selection.
                 import operator
-                currentindex = operator.indexOf(editor.Root.currentcomponent.dictitems['Frames:fg'].subitems, editor.Root.currentcomponent.currentframe)
-                if currentindex != editor.bone_frame:
-                    editor.bone_frame_changed = 1
-                    editor.bone_frame = currentindex
+                try:
+                    currentindex = operator.indexOf(editor.Root.currentcomponent.dictitems['Frames:fg'].subitems, editor.Root.currentcomponent.currentframe)
+                    if currentindex != editor.bone_frame:
+                        editor.bone_frame = currentindex
+                except:
+                    pass
 
-            for item in editor.Root.subitems:
-                if item.type == ':bg':
-                    for bone in item.subitems:
-                        bh = bh + mdlentities.CallManager("handlesopt", bone, editor)
-                else:
-                    bones = editor.Root.findallsubitems("", ':bone')   # get all bones
-                    for bone in bones:
-                        bh = bh + mdlentities.CallManager("handlesopt", bone, editor)
-                break
-            # This setting caused bones to be rebuilt, so now that has been done it needs to be reset.
-            if editor.bone_frame_changed == 1:
-                editor.bone_frame_changed = 0
+            for bone in bones:
+                bh = bh + mdlentities.CallManager("handlesopt", bone, editor)
+                bh.reverse() # Stops connecting bone lines from drawing over rotation handles.
     h = bh
     if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
         #
@@ -1986,12 +2046,13 @@ class RectSelDragObject(qhandles.RectangleDragObject):
     def rectanglesel(self, editor, x,y, rectangle, view):
         import mdleditor
         comp = editor.Root.currentcomponent
+        cursordragstartpos = (self.x0, self.y0)
         cursordragendpos = (x, y)
         ### To stop selection or selection change if nothing, or something
         ### other then a components "frame(s)" is selected in the tree-view.
         ### And to retain existing selected items, if any, in the ModelVertexSelList.
         if view.info["viewname"] != "skinview":
-            if len(editor.Root.dictitems['Skeleton:bg'].subitems) != 0 and len(view.handles) == 0:
+            if len(editor.Root.dictitems['Skeleton:bg'].findallsubitems("", ':bone')) != 0 and len(view.handles) == 0:
                 view.handles = BuildCommonHandles(editor, editor.layout.explorer)
             if len(editor.layout.explorer.sellist) == 0:
                 mdleditor.setsingleframefillcolor(editor, view)
@@ -2028,7 +2089,7 @@ class RectSelDragObject(qhandles.RectangleDragObject):
                 texWidth,texHeight = view.clientarea
             for vertex in range(len(view.handles)):
                 # Below passes up any non-vertex handles in the view.handles list so we don't cause an error.
-                if (isinstance(view.handles[vertex], LinRedHandle)) or (isinstance(view.handles[vertex], LinSideHandle)) or (isinstance(view.handles[vertex], LinCornerHandle)) or (isinstance(view.handles[vertex], LinBoneCornerHandle)):
+                if (isinstance(view.handles[vertex], LinRedHandle)) or (isinstance(view.handles[vertex], LinSideHandle)) or (isinstance(view.handles[vertex], LinCornerHandle)) or (isinstance(view.handles[vertex], BoneCornerHandle)):
                     continue
                 pos = view.handles[vertex].pos
                 handle = view.handles[vertex]
@@ -2093,11 +2154,14 @@ class RectSelDragObject(qhandles.RectangleDragObject):
                 if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_EDwSV'] == "1":
                     editor.ModelVertexSelList = []
                 PassSkinSel2Editor(editor)
-                handles = BuildHandles(editor, editor.layout.explorer, editor.layout.views[0])
+                if editor.layout.views[0].handles == 0:
+                    viewhandles = BuildHandles(editor, editor.layout.explorer, editor.layout.views[0])
+                else:
+                    viewhandles = editor.layout.views[0].handles
                 for v in editor.layout.views:
                     if v.info["viewname"] == "skinview" or v == view:
                         continue
-                    v.handles = handles
+                    v.handles = viewhandles
                 Update_Editor_Views(editor, 4)
             return
 
@@ -2146,7 +2210,8 @@ class RectSelDragObject(qhandles.RectangleDragObject):
                 elif view.info["viewname"] == "3Dwindow" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] == "1":
                     view.handles = []
                 else:
-                    view.handles = BuildHandles(editor, editor.layout.explorer, view)
+                    if len(view.handles) == 0:
+                        view.handles = BuildHandles(editor, editor.layout.explorer, view)
                 return
 
             removeditem = 0
@@ -2198,7 +2263,10 @@ class RectSelDragObject(qhandles.RectangleDragObject):
                             elif itemcount == len(editor.ModelVertexSelList):
                                 editor.ModelVertexSelList = editor.ModelVertexSelList + [vertex]
             if removeditem != 0:
-                handles = BuildHandles(editor, editor.layout.explorer, view)
+                if len(view.handles) == 0:
+                    viewhandles = BuildHandles(editor, editor.layout.explorer, view)
+                else:
+                    viewhandles = view.handles
                 for v in editor.layout.views:
                     if v.info["viewname"] == "skinview":
                         continue
@@ -2218,7 +2286,7 @@ class RectSelDragObject(qhandles.RectangleDragObject):
                         v.handles = []
                         continue
                     else:
-                        v.handles = handles
+                        v.handles = viewhandles
                     mdleditor.setsingleframefillcolor(editor, v)
                     v.repaint()
                     plugins.mdlgridscale.gridfinishdrawing(editor, v)
@@ -3334,17 +3402,15 @@ class LinCornerHandle(LinearHandle):
 
 
 
-class ModelEditorBoneLinHandlesManager:
-    "Linear Handle manager. This is the class called to manage and build"
-    "the Linear Bone Handle by calling its other related classes below this one."
+class ModelEditorBoneHandlesManager:
+    "Bone Handle manager. This is the class called to manage and build"
+    "the Bone Handles by calling its other related classes below this one."
 
-    def __init__(self, color, bbox, list, bone, vtxlist, s_or_e, view=None):
-
-        self.editor = mdleditor.mdleditor
+    def __init__(self, editor, color, bbox, bone):
+        self.editor = editor
         self.color = color # The start or end handle color, which ever is being called.
         self.bbox = bbox # The min and max size of the handle linear circle, set in mdlentities.py, handlesopt function.
         self.bone = bone # The bone object itself.
-        self.tristodrawlist = []
         bmin, bmax = bbox
         bmin1 = bmax1 = ()
         for dir in "xyz":
@@ -3355,26 +3421,13 @@ class ModelEditorBoneLinHandlesManager:
             bmax1 = bmax1 + (cmax,)
         self.bmin = quarkx.vect(bmin1)
         self.bmax = quarkx.vect(bmax1)
-        self.list = list # A list of the above actual vertex objects, to create poly objects to draw.
-        self.vtxlist = vtxlist # A "string" list of vert_index numbers assigned to the handle, if any.
-        self.s_or_e = s_or_e
+        self.list = [bone]
 
-        # To get all the triangles that need to be drawn during the drag
-        # including ones that have vertexes that will be stationary.
-        comp = self.editor.Root.currentcomponent
-        if view is not None and view.info["viewname"] == "skinview":
-            pass
-        else:
-            self.tristodrawlist = []
-            self.selvtxlist = []
+    def BuildHandles(self, center=None, minimal=None): # for ModelEditorBoneHandlesManager
+        "Build a list of handles to put around the bone handle."
 
-    def BuildHandles(self, center=None, minimal=None): # for ModelEditorBoneLinHandlesManager
-        "Build a list of handles to put around the circle for linear distortion."
-
-        if center is None and self.s_or_e == 0:
-            center = quarkx.vect(self.bone.dictspec['start_point'])
-        elif center is None and self.s_or_e == 1:
-            center = quarkx.vect(self.bone.dictspec['end_point'])
+        if center is None:
+            center = self.bone.position
 
         self.center = center # The handle's center position with any "offset" applied in mdlentities.py, handlesopt function.
         if minimal is not None:
@@ -3395,14 +3448,15 @@ class ModelEditorBoneLinHandlesManager:
         h = []
         mX, mY, mZ = self.bmin.tuple
         X, Y, Z = self.bmax.tuple
-    # To make all the normal linear corner handles. (for just 1 set put a break under h.append)
-    #    for x in (X,mX):
-    #        for y in (Y,mY):
-    #            for z in (Z,mZ):
-    #                h.append(LinBoneCornerHandle(center, quarkx.vect(x,y,z), self, self.bone, self.s_or_e))
-        # To only make 1 corner handle. (making a .vect value negative, flips its position in the view)
-        h.append(LinBoneCornerHandle(center, quarkx.vect((X,mX)[0],(Y,mY)[0],(Z,mZ)[0]), self, self.bone, self.s_or_e))
-        return h + [LinBoneCenterHandle(center, self, self.bone, self.s_or_e)]
+        try:
+            handle_scale = self.bone.dictspec['scale'][0]
+        except:
+            handle_scale = 1.0
+
+        from math import sqrt
+        bonenormallength = quarkx.setupsubset(SS_MODEL,"Building")['RotationHandleLength'][0]
+        h.append(BoneCornerHandle(center, center + quarkx.matrix((sqrt(2)/2, -sqrt(2)/2, 0), (sqrt(2)/2, sqrt(2)/2, 0), (0, 0, 1)) * quarkx.vect(bonenormallength * handle_scale, 0, 0), self, self.bone))
+        return h + [BoneCenterHandle(center, self, self.bone)]
 
     def drawbox(self, view):
         return
@@ -3412,314 +3466,177 @@ class ModelEditorBoneLinHandlesManager:
 # Linear Bone Drag Handle Circle's handles.
 #
 
-class LinearBoneHandle(qhandles.GenericHandle):
-    "Linear Bone Circle handles."
+class BoneHandle(qhandles.GenericHandle):
+    "Bone Circle handles."
 
-    def __init__(self, pos, mgr):
+    def __init__(self, pos, mgr, bone):
         qhandles.GenericHandle.__init__(self, pos)
-        self.mgr = mgr    # a ModelEditorBoneLinHandlesManager instance
-        self.oldbones_start = []
-        self.oldbones_end = []
-        self.fixedbones = []
-        self.groupselection = 0
+        self.mgr = mgr    # a ModelEditorBoneHandlesManager instance
+        self.bone = bone
+        self.attachedbones = None
+        self.newverticespos = None
 
     #
-    # Creates the vertex polys at the beginning of a drag.
-    # Doing it this way keeps from slowing down the program, a lot.
+    # This function finds any attached bones that should also be dragged
+    # and stationary bones that should not be included in the drag.
+    # It also checks if a frame is selected if any of the drag bones have vertexes assigned to them.
+    # If so, and a frame is not selected then it stops the drag from occurring.
     # "option" is set to 1 for automatic drags, such as Keyframe drags, to take place.
     #
     def start_drag(self, view, x, y, option=0):
-        compbones = self.mgr.editor.Root.findallsubitems("", ':bone')      # get all bones
-        if (self.mgr.editor.layout.explorer.sellist != [] and len(self.mgr.editor.layout.explorer.sellist) <= 2) or (option == 1):
-            self.mgr.list = []
-            self.mgr.vtxlist = []
-            # Single bone selection.
-            if (len(self.mgr.editor.layout.explorer.sellist) == 1 and self.mgr.editor.layout.explorer.sellist[0].type == ':bone' and self.mgr.editor.layout.explorer.sellist[0] != self.bone):
-                self.mgr.editor.layout.explorer.sellist = [self.bone]
-            elif (self.mgr.editor.layout.explorer.sellist[0].type == ':bone' and self.mgr.editor.layout.explorer.sellist[0] != self.bone and self.mgr.editor.layout.explorer.sellist[1].type == ':mf'):
-                self.mgr.editor.layout.explorer.sellist = [self.bone, self.mgr.editor.layout.explorer.sellist[1]]
-            if (len(self.mgr.editor.layout.explorer.sellist) == 1 and self.mgr.editor.layout.explorer.sellist[0] == self.bone) or (self.mgr.editor.layout.explorer.sellist[0] == self.bone and self.mgr.editor.layout.explorer.sellist[1].type == ':mf'):
-                self.groupselection = 0
-                # Gets and sorts all bones that will be dragged.
-                for bone in compbones:
-                    if bone in self.oldbones_start or bone in self.oldbones_end:
+        editor = self.mgr.editor
+        bones = editor.Root.dictitems['Skeleton:bg'].findallsubitems("", ':bone') # Get all bones.
+        if self.attachedbones is None:
+            self.attachedbones = []
+            connectedlist = {}
+            connectedlist[self.bone] = 1 #Bone counts as connected to itself
+
+            if (isinstance(self, BoneCornerHandle)) or (self.mgr.editor.layout.explorer.sellist[0] != self.bone and isinstance(self, BoneCenterHandle)):
+                def isconnected(bone):
+                    if bone.dictspec['parent_name'] == "None":
+                        connectedlist[bone] = -1 #Not connected
+                    else:
+                        for parentbone in bones:
+                            if parentbone.name == bone.dictspec['parent_name']:
+                                # found parentbone
+                                break
+                        if not connectedlist.has_key(parentbone):
+                            isconnected(parentbone) #Recursive call
+                        connectedlist[bone] = connectedlist[parentbone]
+
+                for bone in bones:
+                    if not connectedlist.has_key(bone):
+                        isconnected(bone)
+                for bone in bones:
+                    if bone is self.bone:
+                        #Skip own bone
                         continue
-
-                    # Stops improper corner handle drags of multi bone "sets" like for .md5mesh model files.
-                    if isinstance(self, LinBoneCornerHandle) and self.mgr.editor.bonemode == "single sets":
-                        try:
-                            self_test_name = self.bone.name.split("_")[1]
-                            bone_test_name = bone.name.split("_")[1]
-                            if self_test_name == bone_test_name and bone != self.bone:
-                                continue
-                        except:
-                            pass
-
-                    if (self.s_or_e == 0): # Handles the "Start of Bone".
-                        if (mdlutils.checktuplepos(bone.dictspec['start_point'], self.bone.dictspec['start_point']) == 1) and (mdlutils.checktuplepos(bone.dictspec['start_point'], bone.dictspec['end_point']) != 1):
-                            self.oldbones_start = self.oldbones_start + [bone]
-                            if isinstance(self, LinBoneCornerHandle):
-                                for nextbone in compbones:
-                                    if nextbone == self.bone or nextbone == bone:
-                                        continue
-                                    if nextbone in self.oldbones_start or nextbone in self.oldbones_end:
-                                        continue
-                                    if mdlutils.checktuplepos(nextbone.dictspec['start_point'], bone.dictspec['end_point']) == 1:
-                                        self.oldbones_end = self.oldbones_end + [nextbone]
-                            continue
-                        if isinstance(self, LinBoneCornerHandle):
-                            if mdlutils.checktuplepos(bone.dictspec['start_point'], self.bone.dictspec['end_point']) == 1:
-                                self.oldbones_end = self.oldbones_end + [bone]
-                                if isinstance(self, LinBoneCornerHandle) and bone.dictspec.has_key('start_vtxlist'):
-                                    name = bone.dictspec['start_component'] + "-b-" + bone.shortname + "_0"
-                                    list = self.mgr.editor.ModelComponentList[bone.dictspec['start_component']]['boneobjlist'][bone.name]['s_or_e0']['selvtxlist']
-                                    if list != []:
-                                        for vtx in list:
-                                            vtxpos = quarkx.vect(0,0,0)
-                                            self.mgr.vtxlist = self.mgr.vtxlist + [[vtx, vtxpos]]
-                                        self.mgr.list = self.mgr.list + MakeEditorVertexPolyObject(self.mgr.editor, 0, self.mgr.vtxlist, name)
-                                        self.mgr.vtxlist = []
-                        else:
-                            if mdlutils.checktuplepos(bone.dictspec['end_point'], self.bone.dictspec['start_point']) == 1:
-                                self.oldbones_end = self.oldbones_end + [bone]
-                    else: # Handles the "End of Bone".
-                        if mdlutils.checktuplepos(bone.dictspec['start_point'], self.bone.dictspec['end_point']) == 1:
-                            self.oldbones_start = self.oldbones_start + [bone]
-                        elif mdlutils.checktuplepos(bone.dictspec['end_point'], self.bone.dictspec['end_point']) == 1:
-                            self.oldbones_end = self.oldbones_end + [bone]
-       #         if (self.s_or_e == 0): # Handles the "Start of Bone".
-       #             self.oldbones_start = self.oldbones_start + [self.bone]
-       #         else: # Handles the "End of Bone".
-       #             self.oldbones_end = self.oldbones_end + [self.bone]
-
-                # Makes the vertex polys to draw during drag (these make the mesh change).
-                if self.s_or_e == 0:
-                    if self.bone.dictspec.has_key('start_vtxlist') and self.mgr.editor.ModelComponentList[self.bone.dictspec['start_component']]['boneobjlist'][self.bone.name].has_key('s_or_e0'):
-                        name = self.bone.dictspec['start_component'] + "-b-" + self.bone.shortname + "_0"
-                        selvtxlist = self.mgr.editor.ModelComponentList[self.bone.dictspec['start_component']]['boneobjlist'][self.bone.name]['s_or_e0']['selvtxlist']
-                        self.mgr.vtxlist = []
-                        for vtx in selvtxlist:
-                            vtxpos = quarkx.vect(0,0,0)
-                            self.mgr.vtxlist = self.mgr.vtxlist + [[vtx, vtxpos]]
-                        self.mgr.list = self.mgr.list + MakeEditorVertexPolyObject(self.mgr.editor, 0, self.mgr.vtxlist, name)
-                        self.mgr.vtxlist = []
-                    if isinstance(self, LinBoneCornerHandle) and self.bone.dictspec.has_key('end_vtxlist') and self.mgr.editor.ModelComponentList[self.bone.dictspec['end_component']]['boneobjlist'][self.bone.name].has_key('s_or_e1'):
-                        name = self.bone.dictspec['end_component'] + "-b-" + self.bone.shortname + "_1"
-                        selvtxlist = self.mgr.editor.ModelComponentList[self.bone.dictspec['end_component']]['boneobjlist'][self.bone.name]['s_or_e1']['selvtxlist']
-                        self.mgr.vtxlist = []
-                        for vtx in selvtxlist:
-                            vtxpos = quarkx.vect(0,0,0)
-                            self.mgr.vtxlist = self.mgr.vtxlist + [[vtx, vtxpos]]
-                        self.mgr.list = self.mgr.list + MakeEditorVertexPolyObject(self.mgr.editor, 0, self.mgr.vtxlist, name)
-                        self.mgr.vtxlist = []
-                    for bone in self.oldbones_start:
-                        if bone.dictspec.has_key('start_vtxlist') and self.mgr.editor.ModelComponentList[bone.dictspec['start_component']]['boneobjlist'][bone.name].has_key('s_or_e0') and bone.name != self.bone.name:
-                            self.mgr.vtxlist = self.mgr.editor.ModelComponentList[bone.dictspec['start_component']]['boneobjlist'][bone.name]['s_or_e0']['vtxlist']
-                            name = bone.dictspec['start_component'] + "-b-" + bone.shortname + "_0" # Used to identify which bone handle they are for.
-                            self.mgr.list = self.mgr.list + MakeEditorVertexPolyObject(self.mgr.editor, 0, self.mgr.vtxlist, name)
-                        if isinstance(self, LinBoneCornerHandle) and bone.dictspec.has_key('end_vtxlist') and self.mgr.editor.ModelComponentList[bone.dictspec['end_component']]['boneobjlist'][bone.name].has_key('s_or_e1') and bone.name != self.bone.name:
-                            self.mgr.vtxlist = self.mgr.editor.ModelComponentList[bone.dictspec['end_component']]['boneobjlist'][bone.name]['s_or_e1']['vtxlist']
-                            name = bone.dictspec['end_component'] + "-b-" + bone.shortname + "_1" # Used to identify which bone handle they are for.
-                            self.mgr.list = self.mgr.list + MakeEditorVertexPolyObject(self.mgr.editor, 0, self.mgr.vtxlist, name)
-                    for bone in self.oldbones_end:
-                        if isinstance(self, LinBoneCornerHandle):
-                            break
-                        if bone.dictspec.has_key('end_vtxlist') and self.mgr.editor.ModelComponentList[bone.dictspec['end_component']]['boneobjlist'][bone.name].has_key('s_or_e1') and bone.name != self.bone.name:
-                            self.mgr.vtxlist = self.mgr.editor.ModelComponentList[bone.dictspec['end_component']]['boneobjlist'][bone.name]['s_or_e1']['vtxlist']
-                            name = bone.dictspec['end_component'] + "-b-" + bone.shortname + "_1" # Used to identify which bone handle they are for.
-                            self.mgr.list = self.mgr.list + MakeEditorVertexPolyObject(self.mgr.editor, 0, self.mgr.vtxlist, name)
-                if self.s_or_e == 1:
-                    if self.bone.dictspec.has_key('end_vtxlist') and self.mgr.editor.ModelComponentList[self.bone.dictspec['end_component']]['boneobjlist'][self.bone.name].has_key('s_or_e1'):
-                        name = self.bone.dictspec['end_component'] + "-b-" + self.bone.shortname + "_1"
-                        selvtxlist = self.mgr.editor.ModelComponentList[self.bone.dictspec['end_component']]['boneobjlist'][self.bone.name]['s_or_e1']['selvtxlist']
-                        for vtx in selvtxlist:
-                            vtxpos = quarkx.vect(0,0,0)
-                            self.mgr.vtxlist = self.mgr.vtxlist + [[vtx, vtxpos]]
-                        self.mgr.list = MakeEditorVertexPolyObject(self.mgr.editor, 0, self.mgr.vtxlist, name)
-                    for bone in self.oldbones_start:
-                        if bone.dictspec.has_key('start_vtxlist') and self.mgr.editor.ModelComponentList[bone.dictspec['start_component']]['boneobjlist'][bone.name].has_key('s_or_e0'):
-                            self.mgr.vtxlist = self.mgr.editor.ModelComponentList[bone.dictspec['start_component']]['boneobjlist'][bone.name]['s_or_e0']['vtxlist']
-                            name = bone.dictspec['start_component'] + "-b-" + bone.shortname + "_0" # Used to identify which bone handle they are for.
-                            self.mgr.list = self.mgr.list + MakeEditorVertexPolyObject(self.mgr.editor, 0, self.mgr.vtxlist, name)
-
-            # Bone group selection.
-            elif (len(self.mgr.editor.layout.explorer.sellist) == 1 and self.mgr.editor.layout.explorer.sellist[0].type == ':bg') or (self.mgr.editor.layout.explorer.sellist[0].type == ':bg' and self.mgr.editor.layout.explorer.sellist[1].type == ':mf') or (option == 1):
-                self.groupselection = 1
-                for bone in compbones:
-                    if bone in self.oldbones_start or bone in self.oldbones_end:
+                    if self.mgr.editor.layout.explorer.sellist[0] == self.bone and bone.dictspec['parent_name'] != self.bone.name:
                         continue
+                    if connectedlist[bone] == 1: #Connected
+                        self.attachedbones = self.attachedbones + [bone]
 
-                    # Stops improper corner handle drags of single bone "sets" like for .md5mesh model files.
-                    if isinstance(self, LinBoneCornerHandle) and self.mgr.editor.bonemode == "single set":
-                        try:
-                            self_test_name = self.bone.name.split("_")[1]
-                            bone_test_name = bone.name.split("_")[1]
-                            if self_test_name == bone_test_name and bone != self.bone:
-                                continue
-                        except:
-                            pass
-
-                    if (self.s_or_e == 0): # Handles the "Start of Bone".
-                        if mdlutils.checktuplepos(self.bone.dictspec['start_point'], bone.dictspec['start_point']) == 1:
-                            self.oldbones_start = self.oldbones_start + [bone]
-                            continue
-                        if mdlutils.checktuplepos(self.bone.dictspec['end_point'], bone.dictspec['start_point']) == 1:
-                            self.oldbones_start = self.oldbones_start + [bone]
-                            continue
-                        if isinstance(self, LinBoneCornerHandle):
-                            pass
-                        else:
-                            if mdlutils.checktuplepos(self.bone.dictspec['start_point'], bone.dictspec['end_point']) == 1:
-                                self.oldbones_end = self.oldbones_end + [bone]
-                    if (self.s_or_e == 1): # Handles the "End of Bone".
-                        if mdlutils.checktuplepos(self.bone.dictspec['end_point'], bone.dictspec['end_point']) == 1:
-                            self.oldbones_end = self.oldbones_end + [bone]
-                        elif mdlutils.checktuplepos(self.bone.dictspec['end_point'], bone.dictspec['start_point']) == 1:
-                            self.oldbones_end = self.oldbones_end + [bone]
-                        for bone in compbones:
-                            if bone in self.oldbones_start or bone in self.oldbones_end:
-                                continue
-                            for commstart in self.oldbones_end:
-                                if mdlutils.checktuplepos(commstart.dictspec['end_point'], bone.dictspec['start_point']) == 1:
-                                    self.oldbones_end = self.oldbones_end + [bone]
-
-                FoundNew = 1
-                while FoundNew:
-                    FoundNew = 0
-                    for bone in compbones:
-                        if bone in self.oldbones_start or bone in self.oldbones_end:
-                            continue
-                        for commstart in self.oldbones_start:
-                            if mdlutils.checktuplepos(commstart.dictspec['end_point'], bone.dictspec['start_point']) == 1:
-                                self.oldbones_start = self.oldbones_start + [bone]
-                                FoundNew = 1
-
-                # Makes the vertex polys to draw during drag (these make the mesh change).
-                if self.s_or_e == 0:
-                    self.mgr.list = []
-                    for bone in self.oldbones_start:
-                        if bone.dictspec.has_key('start_vtxlist') and self.mgr.editor.ModelComponentList[bone.dictspec['start_component']]['boneobjlist'][bone.name].has_key('s_or_e0'):
-                            self.mgr.vtxlist = self.mgr.editor.ModelComponentList[bone.dictspec['start_component']]['boneobjlist'][bone.name]['s_or_e0']['vtxlist']
-                            name = bone.dictspec['start_component'] + "-b-" + bone.shortname + "_0" # Used in poly group name to identify which bone handle they are for.
-                            self.mgr.list = self.mgr.list + MakeEditorVertexPolyObject(self.mgr.editor, 0, self.mgr.vtxlist, name)
-                        if bone.dictspec.has_key('end_vtxlist') and self.mgr.editor.ModelComponentList[bone.dictspec['end_component']]['boneobjlist'][bone.name].has_key('s_or_e1'):
-                            self.mgr.vtxlist = self.mgr.editor.ModelComponentList[bone.dictspec['end_component']]['boneobjlist'][bone.name]['s_or_e1']['vtxlist']
-                            name = bone.dictspec['end_component'] + "-b-" + bone.shortname + "_1" # Used in poly group name to identify which bone handle they are for.
-                            self.mgr.list = self.mgr.list + MakeEditorVertexPolyObject(self.mgr.editor, 0, self.mgr.vtxlist, name)
-                    for bone in self.oldbones_end:
-                        if bone.dictspec.has_key('end_vtxlist') and self.mgr.editor.ModelComponentList[bone.dictspec['end_component']]['boneobjlist'][bone.name].has_key('s_or_e1'):
-                            if bone == self.bone and isinstance(self, LinBoneCornerHandle):
-                                continue
-                            self.mgr.vtxlist = self.mgr.editor.ModelComponentList[bone.dictspec['end_component']]['boneobjlist'][bone.name]['s_or_e1']['vtxlist']
-                            name = bone.dictspec['end_component'] + "-b-" + bone.shortname + "_1"
-                            self.mgr.list = self.mgr.list + MakeEditorVertexPolyObject(self.mgr.editor, 0, self.mgr.vtxlist, name)
-                if self.s_or_e == 1:
-                    self.mgr.list = []
-                    for bone in self.oldbones_start:
-                        if bone.dictspec.has_key('start_vtxlist') and self.mgr.editor.ModelComponentList[bone.dictspec['start_component']]['boneobjlist'][bone.name].has_key('s_or_e0'):
-                            self.mgr.vtxlist = self.mgr.editor.ModelComponentList[bone.dictspec['start_component']]['boneobjlist'][bone.name]['s_or_e0']['vtxlist']
-                            name = bone.dictspec['start_component'] + "-b-" + bone.shortname + "_0" # Used in poly group name to identify which bone handle they are for.
-                            self.mgr.list = self.mgr.list + MakeEditorVertexPolyObject(self.mgr.editor, 0, self.mgr.vtxlist, name)
-                    for bone in self.oldbones_end:
-                        if bone.dictspec.has_key('start_vtxlist') and self.mgr.editor.ModelComponentList[bone.dictspec['start_component']]['boneobjlist'][bone.name].has_key('s_or_e0') and bone.name != self.bone.name:
-                            self.mgr.vtxlist = self.mgr.editor.ModelComponentList[bone.dictspec['start_component']]['boneobjlist'][bone.name]['s_or_e0']['vtxlist']
-                            name = bone.dictspec['start_component'] + "-b-" + bone.shortname + "_0" # Used in poly group name to identify which bone handle they are for.
-                            self.mgr.list = self.mgr.list + MakeEditorVertexPolyObject(self.mgr.editor, 0, self.mgr.vtxlist, name)
-                        if bone.dictspec.has_key('end_vtxlist') and self.mgr.editor.ModelComponentList[bone.dictspec['end_component']]['boneobjlist'][bone.name].has_key('s_or_e1'):
-                            self.mgr.vtxlist = self.mgr.editor.ModelComponentList[bone.dictspec['end_component']]['boneobjlist'][bone.name]['s_or_e1']['vtxlist']
-                            name = bone.dictspec['end_component'] + "-b-" + bone.shortname + "_1" # Used in poly group name to identify which bone handle they are for.
-                            self.mgr.list = self.mgr.list + MakeEditorVertexPolyObject(self.mgr.editor, 0, self.mgr.vtxlist, name)
-
-        # Gets all bones that are stationary, not being moved.
-        for bone in compbones:
-            if bone in self.oldbones_start or bone in self.oldbones_end:
-                continue
+        if self.newverticespos is None:
+            self.newverticespos = {}
+            editor = self.mgr.editor
+            for bone in [self.bone] + self.attachedbones:
+                oldvertices = bone.vtxlist
+                for compname in oldvertices.keys():
+                    comp = editor.Root.dictitems[compname]
+                    self.newverticespos[compname] = comp.currentframe.vertices
+        # Gets all bones that are stationary, not being moved
+        foundframe = 0
+        for item in editor.layout.explorer.sellist:
+            if item.type == ":mf":
+                foundframe = 1
+                break
+        self.fixedbones = []
+        for bone in bones:
+            if bone in self.attachedbones:
+                if len(bone.vtxlist) != 0 and foundframe == 0:
+                    self.attachedbones = None
+                    self.fixedbones = []
+                    return
+                else:
+                    continue
+            if bone == self.bone and len(bone.vtxlist) != 0 and foundframe == 0:
+                self.attachedbones = None
+                self.fixedbones = []
+                return
             self.fixedbones = self.fixedbones + [bone]
 
-    def drag(self, v1, v2, flags, view): # for LinearBoneHandle
-        if view.info["viewname"] == "skinview":
-            pass
-        delta = v2-v1
-        if flags&MB_CTRL:
-            g1 = 1
-            delta = qhandles.aligntogrid(delta, 0)
+    def sortbonelist(self, oldobjectslist, newobjectslist):
+        # Sort the list to stop re-arranging in the tree-view
+        compbones = self.mgr.editor.Root.findallsubitems("", ':bone')      # get all bones
+        tempoldlist = []
+        if newobjectslist is None:
+            tempnewlist = None
         else:
-            if view.info["viewname"] == "skinview":
+            tempnewlist = []
+        for bone in compbones:
+            try:
+                i = oldobjectslist.index(bone)
+            except ValueError:
                 pass
             else:
-                g1 = 0
-        if delta or (flags&MB_REDIMAGE):
-            new = map(lambda obj: obj.copy(), self.mgr.list)
-            if isinstance(self, LinBoneCenterHandle):
-                oldbones, newbones = self.centerdrag(v1, v2, flags, view)
-                if flags == 2056 or flags == 2060:
-                    self.mgr.list = self.mgr.list + oldbones
-                    new = new + newbones
-            else:
-                oldbones, newbones = self.cornerdrag(v1, v2, flags, view)
-                if flags == 2056 or flags == 2060:
-                    self.mgr.list = self.mgr.list + oldbones
-                    new = new + newbones
+                tempoldlist = tempoldlist + [oldobjectslist[i]]
+                if newobjectslist is not None:
+                    tempnewlist = tempnewlist + [newobjectslist[i]]
+        for i in range(len(oldobjectslist)):
+            if not oldobjectslist[i] in tempoldlist:
+                tempoldlist = tempoldlist + [oldobjectslist[i]]
+                if newobjectslist is not None:
+                    tempnewlist = tempnewlist + [newobjectslist[i]]
+        return tempoldlist, tempnewlist
 
-            if not self.linoperation(new, delta, g1, view):
-                if not flags&MB_REDIMAGE:
-                    new = None
-        else:
-            new = None
-
-        # The Linear Bone handles are drawn in their:
-        # class LinBoneCenterHandle, "centerdrag" function and
-        # class LinBoneCornerHandle, "cornerdrag" function.
-        # Their drag lines and vertex polys are drawn in
-        # the center handle class LinBoneCenterHandle, linoperation function and
-        # the corner handle class LinBoneCornerHandle, linoperation function.
-        cv = view.canvas()
-        for h in view.handles:
-            h.draw(view, cv, h)
-        return self.mgr.list, new
-
+    def ok(self, editor, undo, old, new): # for BoneHandle
+        undomsg = "bone dragged"
+        undo = quarkx.action()
+        def replacebone(oldskelgroup, newskelgroup, old, new):
+            import operator
+            for checkbone in range(len(oldskelgroup.subitems)):
+                try:
+                    itemindex = operator.indexOf(old, oldskelgroup.subitems[checkbone])
+                except:
+                    pass
+                else:
+                    newskelgroup.removeitem(checkbone)
+                    copybone = new[itemindex].copy()
+                    newskelgroup.insertitem(checkbone, copybone)
+                replacebone(oldskelgroup.subitems[checkbone], newskelgroup.subitems[checkbone], old, new)
+        oldskelgroup = editor.Root.dictitems['Skeleton:bg']
+        newskelgroup = oldskelgroup.copy()
+        replacebone(oldskelgroup, newskelgroup, old, new)
+        undo.exchange(oldskelgroup, newskelgroup)
+        newbones = newskelgroup.findallsubitems("", ':bone')    # get all bones
+        for parent in newbones:
+            for old_bone in newbones:
+                if old_bone.dictspec.has_key("parent_name") and old_bone.dictspec['parent_name'] == parent.name:
+                    new_bone = old_bone.copy()
+                    new_bone['bone_length'] = (new_bone.position - parent.position).tuple
+                    undo.exchange(old_bone, new_bone)
+        if self.newverticespos is not None:
+            editor = self.mgr.editor
+            for meshname in self.newverticespos:
+                oldmesh = editor.Root.dictitems[meshname]
+                newmesh = oldmesh.copy()
+                newmesh.currentframe = newmesh.dictitems["Frames:fg"].dictitems[oldmesh.currentframe.name]
+                newmesh.currentframe.vertices = self.newverticespos[meshname]
+                undo.exchange(oldmesh, newmesh)
+        editor.ok(undo, undomsg)
 
 def DrawBoneHandle(p, cv, color, scale, handle_scale):
+    bonehalfsize = 1.0*scale*handle_scale
     cv.pencolor = color
-    cv.ellipse(int(p.x-1.25*scale*handle_scale[0]), int(p.y-1.25*scale*handle_scale[0]), int(p.x+1.25*scale*handle_scale[0]), int(p.y+1.25*scale*handle_scale[0])) # Start of bone circle
-    cv.line(int(p.x-1.25*scale*handle_scale[0]), int(p.y), int(p.x+1.25*scale*handle_scale[0]), int(p.y)) # Start of bone x line
-    cv.line(int(p.x), int(p.y-1.25*scale*handle_scale[0]), int(p.x), int(p.y+1.25*scale*handle_scale[0])) # Start of bone y line
+    cv.ellipse(int(p.x-bonehalfsize), int(p.y-bonehalfsize), int(p.x+bonehalfsize), int(p.y+bonehalfsize))
+    cv.line(int(p.x-bonehalfsize), int(p.y), int(p.x+bonehalfsize), int(p.y))
+    cv.line(int(p.x), int(p.y-bonehalfsize), int(p.x), int(p.y+bonehalfsize))
 
-def DrawBoneLine(p1, p2, cv, color, scale, handle_scale):
+def DrawBoneLine(p, p2, cv, color, scale, handle_scale):
+    bonehalfsize = 1.0*scale*handle_scale
     cv.pencolor = color
-    cv.line(int(p1.x), int(p1.y-1.25*scale*handle_scale[0]), int(p2.x), int(p2.y)) # Top line
-    cv.line(int(p1.x+1.25*scale*handle_scale[0]), int(p1.y), int(p2.x), int(p2.y)) # Right line
-    cv.line(int(p1.x), int(p1.y+1.25*scale*handle_scale[0]), int(p2.x), int(p2.y)) # Bottom line
-    cv.line(int(p1.x-1.25*scale*handle_scale[0]), int(p1.y), int(p2.x), int(p2.y)) # Left line
+    cv.line(int(p2.x), int(p2.y-bonehalfsize), int(p.x), int(p.y))
+    cv.line(int(p2.x+bonehalfsize), int(p2.y), int(p.x), int(p.y))
+    cv.line(int(p2.x), int(p2.y+bonehalfsize), int(p.x), int(p.y))
+    cv.line(int(p2.x-bonehalfsize), int(p2.y), int(p.x), int(p.y))
 
 
-class LinBoneCenterHandle(LinearBoneHandle):
-    "Center Bone Handle,  handle at the center."
+class BoneCenterHandle(BoneHandle):
+    "Center Bone Handle, handle at the center."
 
-    from qbaseeditor import currentview
     size = (3,3)
-    def __init__(self, pos, mgr, bone, s_or_e):
-        LinearBoneHandle.__init__(self, pos, mgr)
+    def __init__(self, pos, mgr, bone):
+        BoneHandle.__init__(self, pos, mgr, bone)
         self.cursor = CR_CROSSH
         self.undomsg = "bone joint move"
-        self.editor = mdleditor.mdleditor
 
         if bone is None:
-            self.component = self.editor.Root.currentcomponent
+            self.component = None
         else:
-            if s_or_e == 0:
-                self.component = self.editor.Root.dictitems[bone.dictspec['start_component']]
-            else:
-                self.component = self.editor.Root.dictitems[bone.dictspec['end_component']]
-        self.bone = bone
-        self.s_or_e = s_or_e
+            self.component = bone.dictspec['component']
         self.dict = {}
-    try:
-        self.start_drag(currentview, self.pos.x, self.pos.y)
-    except:
-        pass
 
-    def menu(self, editor, view): # for LinBoneCenterHandle
+    def menu(self, editor, view): # for BoneCenterHandle
 
         def force_to_grid_click(m, self=self, editor=editor, view=view):
             self.Action(editor, self.pos, self.pos, MB_CTRL, view, Strings[560])
@@ -3732,43 +3649,25 @@ class LinBoneCenterHandle(LinearBoneHandle):
         def continue_bones_click(m, self=self, editor=editor, view=view):
             import mdlmgr
             mdlmgr.savefacesel = 1
-            continue_bone(editor, self.bone, self.s_or_e)
+            continue_bone(editor, self.bone, self.pos)
 
-        def attach_start2end_click(m, self=self, editor=editor, view=view):
+        def attach_bone1to2_click(m, self=self, editor=editor, view=view):
             import mdlmgr
             mdlmgr.savefacesel = 1
             if self.bone is None:
                 bone = editor.layout.explorer.sellist[0]
             else:
                 bone = self.bone
-            attach_start2end(editor, bone, editor.layout.explorer.sellist[1])
+            attach_bone1to2(editor, bone, editor.layout.explorer.sellist[1])
 
-        def attach_end2start_click(m, self=self, editor=editor, view=view):
+        def attach_bone2to1_click(m, self=self, editor=editor, view=view):
             import mdlmgr
             mdlmgr.savefacesel = 1
             if self.bone is None:
                 bone = editor.layout.explorer.sellist[0]
             else:
                 bone = self.bone
-            attach_end2start(editor, bone, editor.layout.explorer.sellist[1])
-
-        def attach_bones_starts_click(m, self=self, editor=editor, view=view):
-            import mdlmgr
-            mdlmgr.savefacesel = 1
-            if self.bone is None:
-                bone = editor.layout.explorer.sellist[0]
-            else:
-                bone = self.bone
-            attach_bones_starts(editor, bone, editor.layout.explorer.sellist[1])
-
-        def attach_bones_ends_click(m, self=self, editor=editor, view=view):
-            import mdlmgr
-            mdlmgr.savefacesel = 1
-            if self.bone is None:
-                bone = editor.layout.explorer.sellist[0]
-            else:
-                bone = self.bone
-            attach_bones_ends(editor, bone, editor.layout.explorer.sellist[1])
+            attach_bone2to1(editor, bone, editor.layout.explorer.sellist[1])
 
         def detach_bones_click(m, self=self, editor=editor, view=view):
             import mdlmgr
@@ -3777,788 +3676,57 @@ class LinBoneCenterHandle(LinearBoneHandle):
                 bone = editor.layout.explorer.sellist[0]
             else:
                 bone = self.bone
-            detach_bones(editor, bone, editor.layout.explorer.sellist[1])
+            detach_bone(editor, bone)
 
-        def align_start2end_click(m, self=self, editor=editor, view=view):
+        def align__bone1to2_click(m, self=self, editor=editor, view=view):
             import mdlmgr
             mdlmgr.savefacesel = 1
             if self.bone is None:
                 bone = editor.layout.explorer.sellist[0]
             else:
                 bone = self.bone
-            align_start2end(editor, bone, editor.layout.explorer.sellist[1])
+            align__bone1to2(editor, bone, editor.layout.explorer.sellist[1])
 
-        def align_bones_starts_click(m, self=self, editor=editor, view=view):
+        def align__bone2to1_click(m, self=self, editor=editor, view=view):
             import mdlmgr
             mdlmgr.savefacesel = 1
             if self.bone is None:
                 bone = editor.layout.explorer.sellist[0]
             else:
                 bone = self.bone
-            align_bones_starts(editor, bone, editor.layout.explorer.sellist[1])
+            align__bone2to1(editor, bone, editor.layout.explorer.sellist[1])
 
-        def align_bones_ends_click(m, self=self, editor=editor, view=view):
+        def assign_release_vertices_click(m, self=self, editor=editor, view=view):
             import mdlmgr
             mdlmgr.savefacesel = 1
             if self.bone is None:
                 bone = editor.layout.explorer.sellist[0]
             else:
                 bone = self.bone
-            align_bones_ends(editor, bone, editor.layout.explorer.sellist[1])
-
-        def assign2start_click(m, self=self, editor=editor, view=view):
-            comp = editor.Root.currentcomponent
-            for item in range(len(editor.layout.explorer.sellist)):
-                if editor.layout.explorer.sellist[item].type == ":bone":
-                    selbone = editor.layout.explorer.sellist[item]
-            # Sets all the common bone handles, including itself, to this same currentcomponent's name that they will belong to.
-            common_handles_list, s_or_e_list = find_common_bone_handles(editor, selbone.dictspec['start_point'])
-            for bone in range(len(common_handles_list)):
-                if s_or_e_list[bone] == 0:
-                    common_handles_list[bone]['start_component'] = comp.name
-                else:
-                    common_handles_list[bone]['end_component'] = comp.name
-            # Updates various list if the selbone is already in them.
-            if selbone.dictspec.has_key('start_vtxlist'):
-                vtxlist = selbone.dictspec['start_vtxlist']
-                start_vtxlist = vtxlist.split(" ")
-                for vtx in range(len(editor.ModelVertexSelList)):
-                    if str(editor.ModelVertexSelList[vtx][0]) in start_vtxlist:
-                        start_vtxlist.remove(str(editor.ModelVertexSelList[vtx][0]))
-                        if editor.ModelComponentList.has_key(comp.name):
-                            del editor.ModelComponentList[comp.name]['bonevtxlist'][str(editor.ModelVertexSelList[vtx][0])]
-                        continue
-                    else:
-                        vtxinfo = {}
-                        vtxinfo['bonename'] = selbone.name
-                        vtxinfo['s_or_e'] = 0
-                        vtxinfo['color'] = selbone.dictspec['start_color']
-                        self.dict[str(editor.ModelVertexSelList[vtx][0])] = vtxinfo
-                        # To fix up the editor.ModelComponentList.
-                        if editor.ModelComponentList.has_key(comp.name) and editor.ModelComponentList[comp.name]['bonevtxlist'].has_key(str(editor.ModelVertexSelList[vtx][0])):
-                            removefrom = editor.ModelComponentList[comp.name]['bonevtxlist'][str(editor.ModelVertexSelList[vtx][0])]
-                            bonename = removefrom['bonename']
-                            s_or_e = removefrom['s_or_e']
-                            boneobjlist = editor.ModelComponentList[comp.name]['boneobjlist']
-                            if s_or_e == 0:
-                                removefrom_bone_vtxlist = editor.Root.dictitems['Skeleton:bg'].dictitems[bonename].dictspec['start_vtxlist']
-                                removefrom_start_vtxlist = removefrom_bone_vtxlist.split(" ")
-                                removefrom_start_vtxlist.remove(str(editor.ModelVertexSelList[vtx][0]))
-                                common_handles_list, s_or_e_list = find_common_bone_handles(editor, editor.Root.dictitems['Skeleton:bg'].dictitems[bonename].dictspec['start_point'])
-                                for bone in range(len(common_handles_list)):
-                                    if s_or_e_list[bone] == 0:
-                                        if common_handles_list[bone].dictspec.has_key('start_vtx_pos'):
-                                            removefrom_bone_vtx_pos = common_handles_list[bone]['start_vtx_pos']
-                                            removefrom_start_vtx_pos = removefrom_bone_vtx_pos.split(" ")
-                                            if str(editor.ModelVertexSelList[vtx][0]) in removefrom_start_vtx_pos:
-                                                removefrom_start_vtx_pos.remove(str(editor.ModelVertexSelList[vtx][0]))
-                                            newvtx_poslist = ''
-                                            for startposvtx in range(len(removefrom_start_vtx_pos)):
-                                                if startposvtx == 0:
-                                                    newvtx_poslist = newvtx_poslist + removefrom_start_vtx_pos[startposvtx]
-                                                else:
-                                                    newvtx_poslist = newvtx_poslist + " " + removefrom_start_vtx_pos[startposvtx]
-                                            common_handles_list[bone]['start_vtx_pos'] = newvtx_poslist
-                                    else:
-                                        if common_handles_list[bone].dictspec.has_key('end_vtx_pos'):
-                                            removefrom_bone_vtx_pos = common_handles_list[bone]['end_vtx_pos']
-
-                                            removefrom_end_vtx_pos = removefrom_bone_vtx_pos.split(" ")
-                                            if str(editor.ModelVertexSelList[vtx][0]) in removefrom_end_vtx_pos:
-                                                removefrom_end_vtx_pos.remove(str(editor.ModelVertexSelList[vtx][0]))
-                                            newvtx_poslist = ''
-                                            for endposvtx in range(len(removefrom_end_vtx_pos)):
-                                                if endposvtx == 0:
-                                                    newvtx_poslist = newvtx_poslist + removefrom_end_vtx_pos[endposvtx]
-                                                else:
-                                                    newvtx_poslist = newvtx_poslist + " " + removefrom_end_vtx_pos[endposvtx]
-                                            common_handles_list[bone]['end_vtx_pos'] = newvtx_poslist
-                                for item in boneobjlist[bonename]['s_or_e0']['vtxlist']:
-                                    if item[0] == editor.ModelVertexSelList[vtx][0]:
-                                        boneobjlist[bonename]['s_or_e0']['vtxlist'].remove(item)
-                                boneobjlist[bonename]['s_or_e0']['selvtxlist'].remove(editor.ModelVertexSelList[vtx][0])
-                                templist = boneobjlist[bonename]['s_or_e0']['tristodrawlist']
-                                for item in boneobjlist[bonename]['s_or_e0']['tristodrawlist']:
-                                    if item[0] == editor.ModelVertexSelList[vtx][0]:
-                                        templist.remove(item)
-                                boneobjlist[bonename]['s_or_e0']['tristodrawlist'] = templist
-                                newvtxlist = ''
-                                for startlistvtx in range(len(removefrom_start_vtxlist)):
-                                    if startlistvtx == 0:
-                                        newvtxlist = newvtxlist + removefrom_start_vtxlist[startlistvtx]
-                                    else:
-                                        newvtxlist = newvtxlist + " " + removefrom_start_vtxlist[startlistvtx]
-                                editor.Root.dictitems['Skeleton:bg'].dictitems[bonename]['start_vtxlist'] = newvtxlist
-                                editor.Root.dictitems['Skeleton:bg'].dictitems[bonename]['start_vertex_count'] = str(len(removefrom_start_vtxlist))
-                                if boneobjlist[bonename]['s_or_e0']['selvtxlist'] == []:
-                                    common_handles_list, s_or_e_list = find_common_bone_handles(editor, editor.Root.dictitems['Skeleton:bg'].dictitems[bonename].dictspec['start_point'])
-                                    for bone in range(len(common_handles_list)):
-                                        if s_or_e_list[bone] == 0:
-                                            if common_handles_list[bone].dictspec.has_key('start_vtx_pos'):
-                                                common_handles_list[bone]['start_vtx_pos'] = None
-                                        else:
-                                            if common_handles_list[bone].dictspec.has_key('end_vtx_pos'):
-                                                common_handles_list[bone]['end_vtx_pos'] = None
-                            else:
-                                removefrom_bone_vtxlist = editor.Root.dictitems['Skeleton:bg'].dictitems[bonename].dictspec['end_vtxlist']
-                                removefrom_end_vtxlist = removefrom_bone_vtxlist.split(" ")
-                                removefrom_end_vtxlist.remove(str(editor.ModelVertexSelList[vtx][0]))
-                                common_handles_list, s_or_e_list = find_common_bone_handles(editor, editor.Root.dictitems['Skeleton:bg'].dictitems[bonename].dictspec['end_point'])
-                                for bone in range(len(common_handles_list)):
-                                    if s_or_e_list[bone] == 0:
-                                        if common_handles_list[bone].dictspec.has_key('start_vtx_pos'):
-                                            removefrom_bone_vtx_pos = common_handles_list[bone]['start_vtx_pos']
-                                            removefrom_start_vtx_pos = removefrom_bone_vtx_pos.split(" ")
-                                            if str(editor.ModelVertexSelList[vtx][0]) in removefrom_start_vtx_pos:
-                                                removefrom_start_vtx_pos.remove(str(editor.ModelVertexSelList[vtx][0]))
-                                            newvtx_poslist = ''
-                                            for startposvtx in range(len(removefrom_start_vtx_pos)):
-                                                if startposvtx == 0:
-                                                    newvtx_poslist = newvtx_poslist + removefrom_start_vtx_pos[startposvtx]
-                                                else:
-                                                    newvtx_poslist = newvtx_poslist + " " + removefrom_start_vtx_pos[startposvtx]
-                                            common_handles_list[bone]['start_vtx_pos'] = newvtx_poslist
-                                    else:
-                                        if common_handles_list[bone].dictspec.has_key('end_vtx_pos'):
-                                            removefrom_bone_vtx_pos = common_handles_list[bone]['end_vtx_pos']
-
-                                            removefrom_end_vtx_pos = removefrom_bone_vtx_pos.split(" ")
-                                            if str(editor.ModelVertexSelList[vtx][0]) in removefrom_end_vtx_pos:
-                                                removefrom_end_vtx_pos.remove(str(editor.ModelVertexSelList[vtx][0]))
-                                            newvtx_poslist = ''
-                                            for endposvtx in range(len(removefrom_end_vtx_pos)):
-                                                if endposvtx == 0:
-                                                    newvtx_poslist = newvtx_poslist + removefrom_end_vtx_pos[endposvtx]
-                                                else:
-                                                    newvtx_poslist = newvtx_poslist + " " + removefrom_end_vtx_pos[endposvtx]
-                                            common_handles_list[bone]['end_vtx_pos'] = newvtx_poslist
-                                for item in boneobjlist[bonename]['s_or_e1']['vtxlist']:
-                                    if item[0] == editor.ModelVertexSelList[vtx][0]:
-                                        boneobjlist[bonename]['s_or_e1']['vtxlist'].remove(item)
-                                boneobjlist[bonename]['s_or_e1']['selvtxlist'].remove(editor.ModelVertexSelList[vtx][0])
-                                templist = boneobjlist[bonename]['s_or_e1']['tristodrawlist']
-                                for item in boneobjlist[bonename]['s_or_e1']['tristodrawlist']:
-                                    if item[0] == editor.ModelVertexSelList[vtx][0]:
-                                        templist.remove(item)
-                                boneobjlist[bonename]['s_or_e1']['tristodrawlist'] = templist
-                                newvtxlist = ''
-                                for endlistvtx in range(len(removefrom_end_vtxlist)):
-                                    if endlistvtx == 0:
-                                        newvtxlist = newvtxlist + removefrom_end_vtxlist[endlistvtx]
-                                    else:
-                                        newvtxlist = newvtxlist + " " + removefrom_end_vtxlist[endlistvtx]
-                                editor.Root.dictitems['Skeleton:bg'].dictitems[bonename]['end_vtxlist'] = newvtxlist
-                                editor.Root.dictitems['Skeleton:bg'].dictitems[bonename]['end_vertex_count'] = str(len(removefrom_end_vtxlist))
-                                if boneobjlist[bonename]['s_or_e1']['selvtxlist'] == []:
-                                    common_handles_list, s_or_e_list = find_common_bone_handles(editor, editor.Root.dictitems['Skeleton:bg'].dictitems[bonename].dictspec['start_point'])
-                                    for bone in range(len(common_handles_list)):
-                                        if s_or_e_list[bone] == 0:
-                                            if common_handles_list[bone].dictspec.has_key('start_vtx_pos'):
-                                                common_handles_list[bone]['start_vtx_pos'] = None
-                                        else:
-                                            if common_handles_list[bone].dictspec.has_key('end_vtx_pos'):
-                                                common_handles_list[bone]['end_vtx_pos'] = None
-                            del editor.ModelComponentList[comp.name]['bonevtxlist'][str(editor.ModelVertexSelList[vtx][0])]
-                        start_vtxlist = start_vtxlist + [str(editor.ModelVertexSelList[vtx][0])]
-                vtxlist = ''
-                for startlistvtx in range(len(start_vtxlist)):
-                    if startlistvtx == 0:
-                        vtxlist = vtxlist + start_vtxlist[startlistvtx]
-                    else:
-                        vtxlist = vtxlist + " " + start_vtxlist[startlistvtx]
-            else:
-                vtxlist = ''
-                for vtx in range(len(editor.ModelVertexSelList)):
-                    vtxinfo = {}
-                    vtxinfo['bonename'] = selbone.name
-                    vtxinfo['s_or_e'] = 0
-                    vtxinfo['color'] = selbone.dictspec['start_color']
-                    self.dict[str(editor.ModelVertexSelList[vtx][0])] = vtxinfo
-                    if vtx == 0:
-                        vtxlist = vtxlist + str(editor.ModelVertexSelList[vtx][0])
-                    else:
-                        vtxlist = vtxlist + " " + str(editor.ModelVertexSelList[vtx][0])
-                    # To fix up the editor.ModelComponentList.
-                    if editor.ModelComponentList.has_key(comp.name) and editor.ModelComponentList[comp.name].has_key('bonevtxlist') and editor.ModelComponentList[comp.name]['bonevtxlist'].has_key(str(editor.ModelVertexSelList[vtx][0])):
-                        removefrom = editor.ModelComponentList[comp.name]['bonevtxlist'][str(editor.ModelVertexSelList[vtx][0])]
-                        bonename = removefrom['bonename']
-                        s_or_e = removefrom['s_or_e']
-                        boneobjlist = editor.ModelComponentList[comp.name]['boneobjlist']
-                        if s_or_e == 0:
-                            removefrom_bone_vtxlist = editor.Root.dictitems['Skeleton:bg'].dictitems[bonename].dictspec['start_vtxlist']
-                            removefrom_start_vtxlist = removefrom_bone_vtxlist.split(" ")
-                            removefrom_start_vtxlist.remove(str(editor.ModelVertexSelList[vtx][0]))
-                            common_handles_list, s_or_e_list = find_common_bone_handles(editor, editor.Root.dictitems['Skeleton:bg'].dictitems[bonename].dictspec['start_point'])
-                            for bone in range(len(common_handles_list)):
-                                if s_or_e_list[bone] == 0:
-                                    if common_handles_list[bone].dictspec.has_key('start_vtx_pos'):
-                                        removefrom_bone_vtx_pos = common_handles_list[bone]['start_vtx_pos']
-                                        removefrom_start_vtx_pos = removefrom_bone_vtx_pos.split(" ")
-                                        if str(editor.ModelVertexSelList[vtx][0]) in removefrom_start_vtx_pos:
-                                            removefrom_start_vtx_pos.remove(str(editor.ModelVertexSelList[vtx][0]))
-                                        newvtx_poslist = ''
-                                        for startposvtx in range(len(removefrom_start_vtx_pos)):
-                                            if startposvtx == 0:
-                                                newvtx_poslist = newvtx_poslist + removefrom_start_vtx_pos[startposvtx]
-                                            else:
-                                                newvtx_poslist = newvtx_poslist + " " + removefrom_start_vtx_pos[startposvtx]
-                                        common_handles_list[bone]['start_vtx_pos'] = newvtx_poslist
-                                else:
-                                    if common_handles_list[bone].dictspec.has_key('end_vtx_pos'):
-                                        removefrom_bone_vtx_pos = common_handles_list[bone]['end_vtx_pos']
-
-                                        removefrom_end_vtx_pos = removefrom_bone_vtx_pos.split(" ")
-                                        if str(editor.ModelVertexSelList[vtx][0]) in removefrom_end_vtx_pos:
-                                            removefrom_end_vtx_pos.remove(str(editor.ModelVertexSelList[vtx][0]))
-                                        newvtx_poslist = ''
-                                        for endposvtx in range(len(removefrom_end_vtx_pos)):
-                                            if endposvtx == 0:
-                                                newvtx_poslist = newvtx_poslist + removefrom_end_vtx_pos[endposvtx]
-                                            else:
-                                                newvtx_poslist = newvtx_poslist + " " + removefrom_end_vtx_pos[endposvtx]
-                                        common_handles_list[bone]['end_vtx_pos'] = newvtx_poslist
-                            for item in boneobjlist[bonename]['s_or_e0']['vtxlist']:
-                                if item[0] == editor.ModelVertexSelList[vtx][0]:
-                                    boneobjlist[bonename]['s_or_e0']['vtxlist'].remove(item)
-                            boneobjlist[bonename]['s_or_e0']['selvtxlist'].remove(editor.ModelVertexSelList[vtx][0])
-                            templist = boneobjlist[bonename]['s_or_e0']['tristodrawlist']
-                            for item in boneobjlist[bonename]['s_or_e0']['tristodrawlist']:
-                                if item[0] == editor.ModelVertexSelList[vtx][0]:
-                                    templist.remove(item)
-                            boneobjlist[bonename]['s_or_e0']['tristodrawlist'] = templist
-                            newvtxlist = ''
-                            for startlistvtx in range(len(removefrom_start_vtxlist)):
-                                if startlistvtx == 0:
-                                    newvtxlist = newvtxlist + removefrom_start_vtxlist[startlistvtx]
-                                else:
-                                    newvtxlist = newvtxlist + " " + removefrom_start_vtxlist[startlistvtx]
-                            editor.Root.dictitems['Skeleton:bg'].dictitems[bonename]['start_vtxlist'] = newvtxlist
-                            editor.Root.dictitems['Skeleton:bg'].dictitems[bonename]['start_vertex_count'] = str(len(removefrom_start_vtxlist))
-                            if boneobjlist[bonename]['s_or_e0']['selvtxlist'] == []:
-                                common_handles_list, s_or_e_list = find_common_bone_handles(editor, editor.Root.dictitems['Skeleton:bg'].dictitems[bonename].dictspec['start_point'])
-                                for bone in range(len(common_handles_list)):
-                                    if s_or_e_list[bone] == 0:
-                                        if common_handles_list[bone].dictspec.has_key('start_vtx_pos'):
-                                            common_handles_list[bone]['start_vtx_pos'] = None
-                                    else:
-                                        if common_handles_list[bone].dictspec.has_key('end_vtx_pos'):
-                                            common_handles_list[bone]['end_vtx_pos'] = None
-                        else:
-                            removefrom_bone_vtxlist = editor.Root.dictitems['Skeleton:bg'].dictitems[bonename].dictspec['end_vtxlist']
-                            removefrom_end_vtxlist = removefrom_bone_vtxlist.split(" ")
-                            removefrom_end_vtxlist.remove(str(editor.ModelVertexSelList[vtx][0]))
-                            common_handles_list, s_or_e_list = find_common_bone_handles(editor, editor.Root.dictitems['Skeleton:bg'].dictitems[bonename].dictspec['end_point'])
-                            for bone in range(len(common_handles_list)):
-                                if s_or_e_list[bone] == 0:
-                                    if common_handles_list[bone].dictspec.has_key('start_vtx_pos'):
-                                        removefrom_bone_vtx_pos = common_handles_list[bone]['start_vtx_pos']
-                                        removefrom_start_vtx_pos = removefrom_bone_vtx_pos.split(" ")
-                                        if str(editor.ModelVertexSelList[vtx][0]) in removefrom_start_vtx_pos:
-                                            removefrom_start_vtx_pos.remove(str(editor.ModelVertexSelList[vtx][0]))
-                                        newvtx_poslist = ''
-                                        for startposvtx in range(len(removefrom_start_vtx_pos)):
-                                            if startposvtx == 0:
-                                                newvtx_poslist = newvtx_poslist + removefrom_start_vtx_pos[startposvtx]
-                                            else:
-                                                newvtx_poslist = newvtx_poslist + " " + removefrom_start_vtx_pos[startposvtx]
-                                        common_handles_list[bone]['start_vtx_pos'] = newvtx_poslist
-                                else:
-                                    if common_handles_list[bone].dictspec.has_key('end_vtx_pos'):
-                                        removefrom_bone_vtx_pos = common_handles_list[bone]['end_vtx_pos']
-
-                                        removefrom_end_vtx_pos = removefrom_bone_vtx_pos.split(" ")
-                                        if str(editor.ModelVertexSelList[vtx][0]) in removefrom_end_vtx_pos:
-                                            removefrom_end_vtx_pos.remove(str(editor.ModelVertexSelList[vtx][0]))
-                                        newvtx_poslist = ''
-                                        for endposvtx in range(len(removefrom_end_vtx_pos)):
-                                            if endposvtx == 0:
-                                                newvtx_poslist = newvtx_poslist + removefrom_end_vtx_pos[endposvtx]
-                                            else:
-                                                newvtx_poslist = newvtx_poslist + " " + removefrom_end_vtx_pos[endposvtx]
-                                        common_handles_list[bone]['end_vtx_pos'] = newvtx_poslist
-                            for item in boneobjlist[bonename]['s_or_e1']['vtxlist']:
-                                if item[0] == editor.ModelVertexSelList[vtx][0]:
-                                    boneobjlist[bonename]['s_or_e1']['vtxlist'].remove(item)
-                            boneobjlist[bonename]['s_or_e1']['selvtxlist'].remove(editor.ModelVertexSelList[vtx][0])
-                            templist = boneobjlist[bonename]['s_or_e1']['tristodrawlist']
-                            for item in boneobjlist[bonename]['s_or_e1']['tristodrawlist']:
-                                if item[0] == editor.ModelVertexSelList[vtx][0]:
-                                    templist.remove(item)
-                            boneobjlist[bonename]['s_or_e1']['tristodrawlist'] = templist
-                            newvtxlist = ''
-                            for endlistvtx in range(len(removefrom_end_vtxlist)):
-                                if endlistvtx == 0:
-                                    newvtxlist = newvtxlist + removefrom_end_vtxlist[endlistvtx]
-                                else:
-                                    newvtxlist = newvtxlist + " " + removefrom_end_vtxlist[endlistvtx]
-                            editor.Root.dictitems['Skeleton:bg'].dictitems[bonename]['end_vtxlist'] = newvtxlist
-                            editor.Root.dictitems['Skeleton:bg'].dictitems[bonename]['end_vertex_count'] = str(len(removefrom_end_vtxlist))
-                            if boneobjlist[bonename]['s_or_e1']['selvtxlist'] == []:
-                                common_handles_list, s_or_e_list = find_common_bone_handles(editor, editor.Root.dictitems['Skeleton:bg'].dictitems[bonename].dictspec['start_point'])
-                                for bone in range(len(common_handles_list)):
-                                    if s_or_e_list[bone] == 0:
-                                        if common_handles_list[bone].dictspec.has_key('start_vtx_pos'):
-                                            common_handles_list[bone]['start_vtx_pos'] = None
-                                    else:
-                                        if common_handles_list[bone].dictspec.has_key('end_vtx_pos'):
-                                            common_handles_list[bone]['end_vtx_pos'] = None
-                        del editor.ModelComponentList[comp.name]['bonevtxlist'][str(editor.ModelVertexSelList[vtx][0])]
-
-            selbone['start_vtxlist'] = vtxlist
-            if editor.ModelComponentList.has_key(comp.name) and editor.ModelComponentList[comp.name].has_key('bonevtxlist'):
-                for vtx in self.dict:
-                    editor.ModelComponentList[comp.name]['bonevtxlist'][vtx] = self.dict[vtx]
-                editor.ModelComponentList[comp.name]['boneobjlist'][selbone.name] = Update_BoneObjs(editor.ModelComponentList[comp.name]['bonevtxlist'], self.bone.name, comp)
-            else:
-                if not editor.ModelComponentList.has_key(comp.name):
-                    editor.ModelComponentList[comp.name] = {}
-                editor.ModelComponentList[comp.name]['bonevtxlist'] = self.dict
-                editor.ModelComponentList[comp.name]['boneobjlist'] = {}
-                editor.ModelComponentList[comp.name]['boneobjlist'][selbone.name] = Update_BoneObjs(editor.ModelComponentList[comp.name]['bonevtxlist'], self.bone.name, comp)
-
-            for bone in editor.Root.dictitems['Skeleton:bg'].subitems:
-                editor.ModelComponentList[comp.name]['boneobjlist'][bone.name] = Update_BoneObjs(editor.ModelComponentList[comp.name]['bonevtxlist'], bone.name, comp)
-
-            if not selbone.dictspec.has_key('start_vtxlist') and selbone.dictspec.has_key('start_vtx_pos'):
-                release_start_vertexes_click(m, self)
-            else:
-                if selbone.dictspec.has_key("start_vtx_pos") and selbone.dictspec['start_vtx_pos'] is not None:
-                    Update_Editor_Views(editor)
-                else:
-                    set_handle_position_click(m, self)
-            try:
-                selbone['start_vertex_count'] = str(len(editor.ModelComponentList[comp.name]['boneobjlist'][selbone.name]['s_or_e0']['vtxlist']))
-            except:
-                selbone['start_vertex_count'] = "0"
-    #            selbone['start_component'] = "None"
-            editor.layout.makesettingclick(None)
-
-        def assign2end_click(m, self=self, editor=editor, view=view):
-            comp = editor.Root.currentcomponent
-            for item in range(len(editor.layout.explorer.sellist)):
-                if editor.layout.explorer.sellist[item].type == ":bone":
-                    selbone = editor.layout.explorer.sellist[item]
-            # Sets all the common bone handles, including itself, to this same currentcomponent's name that they will belong to.
-            common_handles_list, s_or_e_list = find_common_bone_handles(editor, selbone.dictspec['end_point'])
-            for bone in range(len(common_handles_list)):
-                if s_or_e_list[bone] == 0:
-                    common_handles_list[bone]['start_component'] = comp.name
-                else:
-                    common_handles_list[bone]['end_component'] = comp.name
-            # Updates various list if the selbone is already in them.
-            if selbone.dictspec.has_key('end_vtxlist'):
-                vtxlist = selbone.dictspec['end_vtxlist']
-                end_vtxlist = vtxlist.split(" ")
-                for vtx in range(len(editor.ModelVertexSelList)):
-                    if editor.ModelComponentList.has_key(comp.name) and str(editor.ModelVertexSelList[vtx][0]) in end_vtxlist:
-                        end_vtxlist.remove(str(editor.ModelVertexSelList[vtx][0]))
-                        del editor.ModelComponentList[comp.name]['bonevtxlist'][str(editor.ModelVertexSelList[vtx][0])]
-                        continue
-                    else:
-                        vtxinfo = {}
-                        vtxinfo['bonename'] = selbone.name
-                        vtxinfo['s_or_e'] = 1
-                        vtxinfo['color'] = selbone.dictspec['end_color']
-                        self.dict[str(editor.ModelVertexSelList[vtx][0])] = vtxinfo
-                        # To fix up the editor.ModelComponentList.
-                        if editor.ModelComponentList.has_key(comp.name) and editor.ModelComponentList[comp.name]['bonevtxlist'].has_key(str(editor.ModelVertexSelList[vtx][0])):
-                            removefrom = editor.ModelComponentList[comp.name]['bonevtxlist'][str(editor.ModelVertexSelList[vtx][0])]
-                            bonename = removefrom['bonename']
-                            s_or_e = removefrom['s_or_e']
-                            boneobjlist = editor.ModelComponentList[comp.name]['boneobjlist']
-                            if s_or_e == 0:
-                                removefrom_bone_vtxlist = editor.Root.dictitems['Skeleton:bg'].dictitems[bonename].dictspec['start_vtxlist']
-                                removefrom_start_vtxlist = removefrom_bone_vtxlist.split(" ")
-                                removefrom_start_vtxlist.remove(str(editor.ModelVertexSelList[vtx][0]))
-                                common_handles_list, s_or_e_list = find_common_bone_handles(editor, editor.Root.dictitems['Skeleton:bg'].dictitems[bonename].dictspec['start_point'])
-                                for bone in range(len(common_handles_list)):
-                                    if s_or_e_list[bone] == 0:
-                                        if common_handles_list[bone].dictspec.has_key('start_vtx_pos'):
-                                            removefrom_bone_vtx_pos = common_handles_list[bone]['start_vtx_pos']
-                                            removefrom_start_vtx_pos = removefrom_bone_vtx_pos.split(" ")
-                                            if str(editor.ModelVertexSelList[vtx][0]) in removefrom_start_vtx_pos:
-                                                removefrom_start_vtx_pos.remove(str(editor.ModelVertexSelList[vtx][0]))
-                                            newvtx_poslist = ''
-                                            for startposvtx in range(len(removefrom_start_vtx_pos)):
-                                                if startposvtx == 0:
-                                                    newvtx_poslist = newvtx_poslist + removefrom_start_vtx_pos[startposvtx]
-                                                else:
-                                                    newvtx_poslist = newvtx_poslist + " " + removefrom_start_vtx_pos[startposvtx]
-                                            common_handles_list[bone]['start_vtx_pos'] = newvtx_poslist
-                                    else:
-                                        if common_handles_list[bone].dictspec.has_key('end_vtx_pos'):
-                                            removefrom_bone_vtx_pos = common_handles_list[bone]['end_vtx_pos']
-
-                                            removefrom_end_vtx_pos = removefrom_bone_vtx_pos.split(" ")
-                                            if str(editor.ModelVertexSelList[vtx][0]) in removefrom_end_vtx_pos:
-                                                removefrom_end_vtx_pos.remove(str(editor.ModelVertexSelList[vtx][0]))
-                                            newvtx_poslist = ''
-                                            for endposvtx in range(len(removefrom_end_vtx_pos)):
-                                                if endposvtx == 0:
-                                                    newvtx_poslist = newvtx_poslist + removefrom_end_vtx_pos[endposvtx]
-                                                else:
-                                                    newvtx_poslist = newvtx_poslist + " " + removefrom_end_vtx_pos[endposvtx]
-                                            common_handles_list[bone]['end_vtx_pos'] = newvtx_poslist
-                                for item in boneobjlist[bonename]['s_or_e0']['vtxlist']:
-                                    if item[0] == editor.ModelVertexSelList[vtx][0]:
-                                        boneobjlist[bonename]['s_or_e0']['vtxlist'].remove(item)
-                                boneobjlist[bonename]['s_or_e0']['selvtxlist'].remove(editor.ModelVertexSelList[vtx][0])
-                                templist = []
-                                for item in boneobjlist[bonename]['s_or_e0']['tristodrawlist']:
-                                    if item[0] == editor.ModelVertexSelList[vtx][0]:
-                                        continue
-                                    templist = templist + item
-                                boneobjlist[bonename]['s_or_e0']['tristodrawlist'] = templist
-                                newvtxlist = ''
-                                for startlistvtx in range(len(removefrom_start_vtxlist)):
-                                    if startlistvtx == 0:
-                                        newvtxlist = newvtxlist + removefrom_start_vtxlist[startlistvtx]
-                                    else:
-                                        newvtxlist = newvtxlist + " " + removefrom_start_vtxlist[startlistvtx]
-                                editor.Root.dictitems['Skeleton:bg'].dictitems[bonename]['start_vtxlist'] = newvtxlist
-                                editor.Root.dictitems['Skeleton:bg'].dictitems[bonename]['start_vertex_count'] = str(len(removefrom_start_vtxlist))
-                                if boneobjlist[bonename]['s_or_e0']['selvtxlist'] == []:
-                                    common_handles_list, s_or_e_list = find_common_bone_handles(editor, editor.Root.dictitems['Skeleton:bg'].dictitems[bonename].dictspec['start_point'])
-                                    for bone in range(len(common_handles_list)):
-                                        if s_or_e_list[bone] == 0:
-                                            if common_handles_list[bone].dictspec.has_key('start_vtx_pos'):
-                                                common_handles_list[bone]['start_vtx_pos'] = None
-                                        else:
-                                            if common_handles_list[bone].dictspec.has_key('end_vtx_pos'):
-                                                common_handles_list[bone]['end_vtx_pos'] = None
-                            else:
-                                removefrom_bone_vtxlist = editor.Root.dictitems['Skeleton:bg'].dictitems[bonename].dictspec['end_vtxlist']
-                                removefrom_end_vtxlist = removefrom_bone_vtxlist.split(" ")
-                                removefrom_end_vtxlist.remove(str(editor.ModelVertexSelList[vtx][0]))
-                                common_handles_list, s_or_e_list = find_common_bone_handles(editor, editor.Root.dictitems['Skeleton:bg'].dictitems[bonename].dictspec['end_point'])
-                                for bone in range(len(common_handles_list)):
-                                    if s_or_e_list[bone] == 0:
-                                        if common_handles_list[bone].dictspec.has_key('start_vtx_pos'):
-                                            removefrom_bone_vtx_pos = common_handles_list[bone]['start_vtx_pos']
-                                            removefrom_start_vtx_pos = removefrom_bone_vtx_pos.split(" ")
-                                            if str(editor.ModelVertexSelList[vtx][0]) in removefrom_start_vtx_pos:
-                                                removefrom_start_vtx_pos.remove(str(editor.ModelVertexSelList[vtx][0]))
-                                            newvtx_poslist = ''
-                                            for startposvtx in range(len(removefrom_start_vtx_pos)):
-                                                if startposvtx == 0:
-                                                    newvtx_poslist = newvtx_poslist + removefrom_start_vtx_pos[startposvtx]
-                                                else:
-                                                    newvtx_poslist = newvtx_poslist + " " + removefrom_start_vtx_pos[startposvtx]
-                                            common_handles_list[bone]['start_vtx_pos'] = newvtx_poslist
-                                    else:
-                                        if common_handles_list[bone].dictspec.has_key('end_vtx_pos'):
-                                            removefrom_bone_vtx_pos = common_handles_list[bone]['end_vtx_pos']
-
-                                            removefrom_end_vtx_pos = removefrom_bone_vtx_pos.split(" ")
-                                            if str(editor.ModelVertexSelList[vtx][0]) in removefrom_end_vtx_pos:
-                                                removefrom_end_vtx_pos.remove(str(editor.ModelVertexSelList[vtx][0]))
-                                            newvtx_poslist = ''
-                                            for endposvtx in range(len(removefrom_end_vtx_pos)):
-                                                if endposvtx == 0:
-                                                    newvtx_poslist = newvtx_poslist + removefrom_end_vtx_pos[endposvtx]
-                                                else:
-                                                    newvtx_poslist = newvtx_poslist + " " + removefrom_end_vtx_pos[endposvtx]
-                                            common_handles_list[bone]['end_vtx_pos'] = newvtx_poslist
-                                for item in boneobjlist[bonename]['s_or_e1']['vtxlist']:
-                                    if item[0] == editor.ModelVertexSelList[vtx][0]:
-                                        boneobjlist[bonename]['s_or_e1']['vtxlist'].remove(item)
-                                boneobjlist[bonename]['s_or_e1']['selvtxlist'].remove(editor.ModelVertexSelList[vtx][0])
-                                templist = []
-                                for item in boneobjlist[bonename]['s_or_e1']['tristodrawlist']:
-                                    if item[0] == editor.ModelVertexSelList[vtx][0]:
-                                        continue
-                                    templist = templist + item
-                                boneobjlist[bonename]['s_or_e1']['tristodrawlist'] = templist
-                                newvtxlist = ''
-                                for endlistvtx in range(len(removefrom_end_vtxlist)):
-                                    if endlistvtx == 0:
-                                        newvtxlist = newvtxlist + removefrom_end_vtxlist[endlistvtx]
-                                    else:
-                                        newvtxlist = newvtxlist + " " + removefrom_end_vtxlist[endlistvtx]
-                                editor.Root.dictitems['Skeleton:bg'].dictitems[bonename]['end_vtxlist'] = newvtxlist
-                                editor.Root.dictitems['Skeleton:bg'].dictitems[bonename]['end_vertex_count'] = str(len(removefrom_end_vtxlist))
-                                if boneobjlist[bonename]['s_or_e1']['selvtxlist'] == []:
-                                    common_handles_list, s_or_e_list = find_common_bone_handles(editor, editor.Root.dictitems['Skeleton:bg'].dictitems[bonename].dictspec['end_point'])
-                                    for bone in range(len(common_handles_list)):
-                                        if s_or_e_list[bone] == 0:
-                                            if common_handles_list[bone].dictspec.has_key('start_vtx_pos'):
-                                                common_handles_list[bone]['start_vtx_pos'] = None
-                                        else:
-                                            if common_handles_list[bone].dictspec.has_key('end_vtx_pos'):
-                                                common_handles_list[bone]['end_vtx_pos'] = None
-                            del editor.ModelComponentList[comp.name]['bonevtxlist'][str(editor.ModelVertexSelList[vtx][0])]
-                        end_vtxlist = end_vtxlist + [str(editor.ModelVertexSelList[vtx][0])]
-                vtxlist = ''
-                for endlistvtx in range(len(end_vtxlist)):
-                    if endlistvtx == 0:
-                        vtxlist = vtxlist + end_vtxlist[endlistvtx]
-                    else:
-                        vtxlist = vtxlist + " " + end_vtxlist[endlistvtx]
-            else:
-                vtxlist = ''
-                for vtx in range(len(editor.ModelVertexSelList)):
-                    vtxinfo = {}
-                    vtxinfo['bonename'] = selbone.name
-                    vtxinfo['s_or_e'] = 1
-                    vtxinfo['color'] = selbone.dictspec['end_color']
-                    self.dict[str(editor.ModelVertexSelList[vtx][0])] = vtxinfo
-                    if vtx == 0:
-                        vtxlist = vtxlist + str(editor.ModelVertexSelList[vtx][0])
-                    else:
-                        vtxlist = vtxlist + " " + str(editor.ModelVertexSelList[vtx][0])
-                    # To fix up the editor.ModelComponentList.
-                    if editor.ModelComponentList.has_key(comp.name) and editor.ModelComponentList[comp.name].has_key('bonevtxlist') and editor.ModelComponentList[comp.name]['bonevtxlist'].has_key(str(editor.ModelVertexSelList[vtx][0])):
-                        removefrom = editor.ModelComponentList[comp.name]['bonevtxlist'][str(editor.ModelVertexSelList[vtx][0])]
-                        bonename = removefrom['bonename']
-                        s_or_e = removefrom['s_or_e']
-                        boneobjlist = editor.ModelComponentList[comp.name]['boneobjlist']
-                        if s_or_e == 0:
-                            removefrom_bone_vtxlist = editor.Root.dictitems['Skeleton:bg'].dictitems[bonename].dictspec['start_vtxlist']
-                            removefrom_start_vtxlist = removefrom_bone_vtxlist.split(" ")
-                            removefrom_start_vtxlist.remove(str(editor.ModelVertexSelList[vtx][0]))
-                            common_handles_list, s_or_e_list = find_common_bone_handles(editor, editor.Root.dictitems['Skeleton:bg'].dictitems[bonename].dictspec['start_point'])
-                            for bone in range(len(common_handles_list)):
-                                if s_or_e_list[bone] == 0:
-                                    if common_handles_list[bone].dictspec.has_key('start_vtx_pos'):
-                                        removefrom_bone_vtx_pos = common_handles_list[bone]['start_vtx_pos']
-                                        removefrom_start_vtx_pos = removefrom_bone_vtx_pos.split(" ")
-                                        if str(editor.ModelVertexSelList[vtx][0]) in removefrom_start_vtx_pos:
-                                            removefrom_start_vtx_pos.remove(str(editor.ModelVertexSelList[vtx][0]))
-                                        newvtx_poslist = ''
-                                        for startposvtx in range(len(removefrom_start_vtx_pos)):
-                                            if startposvtx == 0:
-                                                newvtx_poslist = newvtx_poslist + removefrom_start_vtx_pos[startposvtx]
-                                            else:
-                                                newvtx_poslist = newvtx_poslist + " " + removefrom_start_vtx_pos[startposvtx]
-                                        common_handles_list[bone]['start_vtx_pos'] = newvtx_poslist
-                                else:
-                                    if common_handles_list[bone].dictspec.has_key('end_vtx_pos'):
-                                        removefrom_bone_vtx_pos = common_handles_list[bone]['end_vtx_pos']
-
-                                        removefrom_end_vtx_pos = removefrom_bone_vtx_pos.split(" ")
-                                        if str(editor.ModelVertexSelList[vtx][0]) in removefrom_end_vtx_pos:
-                                            removefrom_end_vtx_pos.remove(str(editor.ModelVertexSelList[vtx][0]))
-                                        newvtx_poslist = ''
-                                        for endposvtx in range(len(removefrom_end_vtx_pos)):
-                                            if endposvtx == 0:
-                                                newvtx_poslist = newvtx_poslist + removefrom_end_vtx_pos[endposvtx]
-                                            else:
-                                                newvtx_poslist = newvtx_poslist + " " + removefrom_end_vtx_pos[endposvtx]
-                                        common_handles_list[bone]['end_vtx_pos'] = newvtx_poslist
-                            for item in boneobjlist[bonename]['s_or_e0']['vtxlist']:
-                                if item[0] == editor.ModelVertexSelList[vtx][0]:
-                                    boneobjlist[bonename]['s_or_e0']['vtxlist'].remove(item)
-                            boneobjlist[bonename]['s_or_e0']['selvtxlist'].remove(editor.ModelVertexSelList[vtx][0])
-                            templist = boneobjlist[bonename]['s_or_e0']['tristodrawlist']
-                            for item in boneobjlist[bonename]['s_or_e0']['tristodrawlist']:
-                                if item[0] == editor.ModelVertexSelList[vtx][0]:
-                                    templist.remove(item)
-                            boneobjlist[bonename]['s_or_e0']['tristodrawlist'] = templist
-                            newvtxlist = ''
-                            for startlistvtx in range(len(removefrom_start_vtxlist)):
-                                if startlistvtx == 0:
-                                    newvtxlist = newvtxlist + removefrom_start_vtxlist[startlistvtx]
-                                else:
-                                    newvtxlist = newvtxlist + " " + removefrom_start_vtxlist[startlistvtx]
-                            editor.Root.dictitems['Skeleton:bg'].dictitems[bonename]['start_vtxlist'] = newvtxlist
-                            editor.Root.dictitems['Skeleton:bg'].dictitems[bonename]['start_vertex_count'] = str(len(removefrom_start_vtxlist))
-                            if boneobjlist[bonename]['s_or_e0']['selvtxlist'] == []:
-                                common_handles_list, s_or_e_list = find_common_bone_handles(editor, editor.Root.dictitems['Skeleton:bg'].dictitems[bonename].dictspec['start_point'])
-                                for bone in range(len(common_handles_list)):
-                                    if s_or_e_list[bone] == 0:
-                                        if common_handles_list[bone].dictspec.has_key('start_vtx_pos'):
-                                            common_handles_list[bone]['start_vtx_pos'] = None
-                                    else:
-                                        if common_handles_list[bone].dictspec.has_key('end_vtx_pos'):
-                                            common_handles_list[bone]['end_vtx_pos'] = None
-                        else:
-                            removefrom_bone_vtxlist = editor.Root.dictitems['Skeleton:bg'].dictitems[bonename].dictspec['end_vtxlist']
-                            removefrom_end_vtxlist = removefrom_bone_vtxlist.split(" ")
-                            removefrom_end_vtxlist.remove(str(editor.ModelVertexSelList[vtx][0]))
-                            common_handles_list, s_or_e_list = find_common_bone_handles(editor, editor.Root.dictitems['Skeleton:bg'].dictitems[bonename].dictspec['end_point'])
-                            for bone in range(len(common_handles_list)):
-                                if s_or_e_list[bone] == 0:
-                                    if common_handles_list[bone].dictspec.has_key('start_vtx_pos'):
-                                        removefrom_bone_vtx_pos = common_handles_list[bone]['start_vtx_pos']
-                                        removefrom_start_vtx_pos = removefrom_bone_vtx_pos.split(" ")
-                                        if str(editor.ModelVertexSelList[vtx][0]) in removefrom_start_vtx_pos:
-                                            removefrom_start_vtx_pos.remove(str(editor.ModelVertexSelList[vtx][0]))
-                                        newvtx_poslist = ''
-                                        for startposvtx in range(len(removefrom_start_vtx_pos)):
-                                            if startposvtx == 0:
-                                                newvtx_poslist = newvtx_poslist + removefrom_start_vtx_pos[startposvtx]
-                                            else:
-                                                newvtx_poslist = newvtx_poslist + " " + removefrom_start_vtx_pos[startposvtx]
-                                        common_handles_list[bone]['start_vtx_pos'] = newvtx_poslist
-                                else:
-                                    if common_handles_list[bone].dictspec.has_key('end_vtx_pos'):
-                                        removefrom_bone_vtx_pos = common_handles_list[bone]['end_vtx_pos']
-
-                                        removefrom_end_vtx_pos = removefrom_bone_vtx_pos.split(" ")
-                                        if str(editor.ModelVertexSelList[vtx][0]) in removefrom_end_vtx_pos:
-                                            removefrom_end_vtx_pos.remove(str(editor.ModelVertexSelList[vtx][0]))
-                                        newvtx_poslist = ''
-                                        for endposvtx in range(len(removefrom_end_vtx_pos)):
-                                            if endposvtx == 0:
-                                                newvtx_poslist = newvtx_poslist + removefrom_end_vtx_pos[endposvtx]
-                                            else:
-                                                newvtx_poslist = newvtx_poslist + " " + removefrom_end_vtx_pos[endposvtx]
-                                        common_handles_list[bone]['end_vtx_pos'] = newvtx_poslist
-                            for item in boneobjlist[bonename]['s_or_e1']['vtxlist']:
-                                if item[0] == editor.ModelVertexSelList[vtx][0]:
-                                    boneobjlist[bonename]['s_or_e1']['vtxlist'].remove(item)
-                            boneobjlist[bonename]['s_or_e1']['selvtxlist'].remove(editor.ModelVertexSelList[vtx][0])
-                            templist = boneobjlist[bonename]['s_or_e1']['tristodrawlist']
-                            for item in boneobjlist[bonename]['s_or_e1']['tristodrawlist']:
-                                if item[0] == editor.ModelVertexSelList[vtx][0]:
-                                    templist.remove(item)
-                            boneobjlist[bonename]['s_or_e1']['tristodrawlist'] = templist
-                            newvtxlist = ''
-                            for endlistvtx in range(len(removefrom_end_vtxlist)):
-                                if endlistvtx == 0:
-                                    newvtxlist = newvtxlist + removefrom_end_vtxlist[endlistvtx]
-                                else:
-                                    newvtxlist = newvtxlist + " " + removefrom_end_vtxlist[endlistvtx]
-                            editor.Root.dictitems['Skeleton:bg'].dictitems[bonename]['end_vtxlist'] = newvtxlist
-                            editor.Root.dictitems['Skeleton:bg'].dictitems[bonename]['end_vertex_count'] = str(len(removefrom_end_vtxlist))
-                            if boneobjlist[bonename]['s_or_e1']['selvtxlist'] == []:
-                                common_handles_list, s_or_e_list = find_common_bone_handles(editor, editor.Root.dictitems['Skeleton:bg'].dictitems[bonename].dictspec['start_point'])
-                                for bone in range(len(common_handles_list)):
-                                    if s_or_e_list[bone] == 0:
-                                        if common_handles_list[bone].dictspec.has_key('start_vtx_pos'):
-                                            common_handles_list[bone]['start_vtx_pos'] = None
-                                    else:
-                                        if common_handles_list[bone].dictspec.has_key('end_vtx_pos'):
-                                            common_handles_list[bone]['end_vtx_pos'] = None
-                        del editor.ModelComponentList[comp.name]['bonevtxlist'][str(editor.ModelVertexSelList[vtx][0])]
-
-            selbone['end_vtxlist'] = vtxlist
-            if editor.ModelComponentList.has_key(comp.name) and editor.ModelComponentList[comp.name].has_key('bonevtxlist'):
-                for vtx in self.dict:
-                    editor.ModelComponentList[comp.name]['bonevtxlist'][vtx] = self.dict[vtx]
-                editor.ModelComponentList[comp.name]['boneobjlist'][selbone.name] = Update_BoneObjs(editor.ModelComponentList[comp.name]['bonevtxlist'], self.bone.name, comp)
-            else:
-                if not editor.ModelComponentList.has_key(comp.name):
-                    editor.ModelComponentList[comp.name] = {}
-                editor.ModelComponentList[comp.name]['bonevtxlist'] = self.dict
-                editor.ModelComponentList[comp.name]['boneobjlist'] = {}
-                editor.ModelComponentList[comp.name]['boneobjlist'][selbone.name] = Update_BoneObjs(editor.ModelComponentList[comp.name]['bonevtxlist'], self.bone.name, comp)
-
-            for bone in editor.Root.dictitems['Skeleton:bg'].subitems:
-                editor.ModelComponentList[comp.name]['boneobjlist'][bone.name] = Update_BoneObjs(editor.ModelComponentList[comp.name]['bonevtxlist'], bone.name, comp)
-
-            if not selbone.dictspec.has_key('end_vtxlist') and selbone.dictspec.has_key('end_vtx_pos'):
-                release_end_vertexes_click(m, self)
-            else:
-                if selbone.dictspec.has_key("end_vtx_pos") and selbone.dictspec['end_vtx_pos'] is not None:
-                    Update_Editor_Views(editor)
-                else:
-                    set_handle_position_click(m, self)
-            try:
-                selbone['end_vertex_count'] = str(len(editor.ModelComponentList[comp.name]['boneobjlist'][selbone.name]['s_or_e1']['vtxlist']))
-            except:
-                selbone['end_vertex_count'] = "0"
-    #            selbone['end_component'] = "None"
-            editor.layout.makesettingclick(None)
+            vtxsellist = map(lambda x: x[0], editor.ModelVertexSelList)
+            comp = item.parent.parent
+            assign_release_vertices(editor, bone, comp, vtxsellist)
 
         def set_handle_position_click(m, self=self, editor=editor, view=view):
             import mdlmgr
             mdlmgr.savefacesel = 1
-            if self.s_or_e == 0:
-                start_vtx_pos = ''
-                start_vtxpos = quarkx.vect(0, 0, 0)
-                start_frame = editor.Root.dictitems[self.bone.dictspec['start_component']].dictitems['Frames:fg'].subitems[editor.bone_frame]
-                common_handles_list, s_or_e_list = find_common_bone_handles(editor, self.bone.dictspec['start_point'])
-                for vtx in range(len(editor.ModelVertexSelList)):
-                    start_vtxpos = start_vtxpos + start_frame.vertices[editor.ModelVertexSelList[vtx][0]]
-                    if vtx == 0:
-                        start_vtx_pos = start_vtx_pos + str(editor.ModelVertexSelList[vtx][0])
-                    else:
-                        start_vtx_pos = start_vtx_pos + " " + str(editor.ModelVertexSelList[vtx][0])
-                start_vtxpos = start_vtxpos/ float(len(editor.ModelVertexSelList))
-                start_point = start_vtxpos + quarkx.vect(self.bone.dictspec['start_offset'])
-                self.bone['start_point'] = start_point.tuple
-                self.bone['bone_length'] = (start_point - quarkx.vect(self.bone.dictspec['end_point'])*-1).tuple
-                for bone in range(len(common_handles_list)):
-                    if s_or_e_list[bone] == 0:
-                        common_handles_list[bone]['start_vtx_pos'] = start_vtx_pos
-                        common_handles_list[bone]['start_point'] = start_point.tuple
-                    else:
-                        common_handles_list[bone]['end_vtx_pos'] = start_vtx_pos
-                        common_handles_list[bone]['end_point'] = start_point.tuple
-            else:
-                end_vtx_pos = ''
-                end_vtxpos = quarkx.vect(0, 0, 0)
-                end_frame = editor.Root.dictitems[self.bone.dictspec['end_component']].dictitems['Frames:fg'].subitems[editor.bone_frame]
-                common_handles_list, s_or_e_list = find_common_bone_handles(editor, self.bone.dictspec['end_point'])
-                for vtx in range(len(editor.ModelVertexSelList)):
-                    end_vtxpos = end_vtxpos + end_frame.vertices[editor.ModelVertexSelList[vtx][0]]
-                    if vtx == 0:
-                        end_vtx_pos = end_vtx_pos + str(editor.ModelVertexSelList[vtx][0])
-                    else:
-                        end_vtx_pos = end_vtx_pos + " " + str(editor.ModelVertexSelList[vtx][0])
-                end_vtxpos = end_vtxpos/ float(len(editor.ModelVertexSelList))
-                end_point = end_vtxpos + quarkx.vect(self.bone.dictspec['start_offset'])
-                self.bone['end_point'] = end_point.tuple
-                self.bone['bone_length'] = ((quarkx.vect(self.bone.dictspec['start_point']) - end_point)*-1).tuple
-                for bone in range(len(common_handles_list)):
-                    if s_or_e_list[bone] == 0:
-                        common_handles_list[bone]['start_vtx_pos'] = end_vtx_pos
-                        common_handles_list[bone]['start_point'] = end_point.tuple
-                    else:
-                        common_handles_list[bone]['end_vtx_pos'] = end_vtx_pos
-                        common_handles_list[bone]['end_point'] = end_point.tuple
-            Update_Editor_Views(editor)
-
-        def release_start_vertexes_click(m, self=self, editor=editor, view=view):
             comp = editor.Root.currentcomponent
-            for item in range(len(editor.layout.explorer.sellist)):
-                if editor.layout.explorer.sellist[item].type == ":bone":
-                    selbone = editor.layout.explorer.sellist[item]
-            common_handles_list, s_or_e_list = find_common_bone_handles(editor, selbone.dictspec['start_point'])
-            for bone in range(len(common_handles_list)):
-                if s_or_e_list[bone] == 0:
-                    if common_handles_list[bone].dictspec.has_key('start_vtx_pos'):
-                        common_handles_list[bone]['start_vtx_pos'] = None
-                else:
-                    if common_handles_list[bone].dictspec.has_key('end_vtx_pos'):
-                        common_handles_list[bone]['end_vtx_pos'] = None
-            if selbone.dictspec.has_key('start_vtxlist'):
-                vtxlist = selbone.dictspec['start_vtxlist']
-                start_vtxlist = vtxlist.split(" ")
-                for vtx in start_vtxlist:
-                    del editor.ModelComponentList[comp.name]['bonevtxlist'][vtx]
-                selbone['start_vtxlist'] = ''
-                del editor.ModelComponentList[comp.name]['boneobjlist'][selbone.name]['s_or_e0']
+            old_vertices = self.bone.vtx_pos
+            vtx_pos = []
+            vtxpos = quarkx.vect(0, 0, 0)
+            frame = editor.Root.dictitems[comp.name].dictitems['Frames:fg'].subitems[editor.bone_frame]
+            for vtx in range(len(editor.ModelVertexSelList)):
+                vtxpos = vtxpos + frame.vertices[editor.ModelVertexSelList[vtx][0]]
+                vtx_pos = vtx_pos + [editor.ModelVertexSelList[vtx][0]]
+            vtx_pos.sort()
+            old_vertices[comp.name] = vtx_pos
+            self.bone.vtx_pos = old_vertices
+            vtxpos = vtxpos/ float(len(editor.ModelVertexSelList))
+            start_point = vtxpos + quarkx.vect(self.bone.dictspec['draw_offset'])
+            self.bone['position'] = start_point.tuple
+            self.bone['component'] = comp.name
             Update_Editor_Views(editor)
-            selbone['start_vertex_count'] = "0"
-    #        selbone['start_component'] = "None"
-            editor.layout.makesettingclick(None)
-
-        def release_end_vertexes_click(m, self=self, editor=editor, view=view):
-            comp = editor.Root.currentcomponent
-            for item in range(len(editor.layout.explorer.sellist)):
-                if editor.layout.explorer.sellist[item].type == ":bone":
-                    selbone = editor.layout.explorer.sellist[item]
-            common_handles_list, s_or_e_list = find_common_bone_handles(editor, selbone.dictspec['end_point'])
-            for bone in range(len(common_handles_list)):
-                if s_or_e_list[bone] == 0:
-                    if common_handles_list[bone].dictspec.has_key('start_vtx_pos'):
-                        common_handles_list[bone]['start_vtx_pos'] = None
-                else:
-                    if common_handles_list[bone].dictspec.has_key('end_vtx_pos'):
-                        common_handles_list[bone]['end_vtx_pos'] = None
-            if selbone.dictspec.has_key('end_vtxlist'):
-                vtxlist = selbone.dictspec['end_vtxlist']
-                end_vtxlist = vtxlist.split(" ")
-                for vtx in end_vtxlist:
-                    del editor.ModelComponentList[comp.name]['bonevtxlist'][vtx]
-                selbone['end_vtxlist'] = ''
-                del editor.ModelComponentList[comp.name]['boneobjlist'][selbone.name]['s_or_e1']
-            Update_Editor_Views(editor)
-            selbone['end_vertex_count'] = "0"
-    #        selbone['end_component'] = "None"
-            editor.layout.makesettingclick(None)
+            editor.layout.mpp.resetpage()
 
         def keyframes_rotation_click(m, self=self, editor=editor, view=view):
             frame1 = frame2 = None
@@ -4585,31 +3753,20 @@ class LinBoneCenterHandle(LinearBoneHandle):
             mdlutils.Update_Editor_Views(editor)
 
         def select_handle_vertexes_click(m, self=self, editor=editor, view=view):
+            sel_comp = m.text.split("for ")[1] + ":mc"
             comp = editor.Root.currentcomponent
             compchanged = None
             frame = comp.currentframe
-            if self.s_or_e == 0:
-                if (self.bone.dictspec['start_component'] != comp.name) or (len(editor.layout.explorer.sellist) == 0):
-                    for item in range(len(comp.dictitems['Frames:fg'].subitems)):
-                        if comp.dictitems['Frames:fg'].subitems[item] == frame:
-                            framenbr = item
-                    comp = editor.Root.dictitems[self.bone.dictspec['start_component']]
-                    editor.layout.explorer.sellist = [self.bone, comp.dictitems['Frames:fg'].subitems[framenbr]]
-                    frame = editor.layout.explorer.sellist[1]
-                    editor.layout.selchange()
-                    compchanged = 1
-                handle = self.bone.dictspec['start_point']
-            else:
-                if (self.bone.dictspec['end_component'] != comp.name) or (len(editor.layout.explorer.sellist) == 0):
-                    for item in range(len(comp.dictitems['Frames:fg'].subitems)):
-                        if comp.dictitems['Frames:fg'].subitems[item] == frame:
-                            framenbr = item
-                    comp = editor.Root.dictitems[self.bone.dictspec['end_component']]
-                    editor.layout.explorer.sellist = [self.bone, comp.dictitems['Frames:fg'].subitems[framenbr]]
-                    frame = editor.layout.explorer.sellist[1]
-                    editor.layout.selchange()
-                    compchanged = 1
-                handle = self.bone.dictspec['end_point']
+            if (sel_comp != comp.name) or (len(editor.layout.explorer.sellist) == 0):
+                for item in range(len(comp.dictitems['Frames:fg'].subitems)):
+                    if comp.dictitems['Frames:fg'].subitems[item] == frame:
+                        framenbr = item
+                comp = editor.Root.dictitems[sel_comp]
+                editor.layout.explorer.sellist = [self.bone, comp.dictitems['Frames:fg'].subitems[framenbr]]
+                frame = editor.layout.explorer.sellist[1]
+                editor.layout.selchange()
+                compchanged = 1
+            handle = self.bone.dictspec['position']
             if not editor.Root.dictitems['Skeleton:bg'] in editor.layout.explorer.sellist:
                 editor.layout.explorer.sellist = [self.bone, frame]
                 editor.layout.selchange()
@@ -4617,54 +3774,29 @@ class LinBoneCenterHandle(LinearBoneHandle):
                 editor.layout.explorer.expand(self.bone.parent)
             editor.layout.explorer.expand(comp)
             editor.layout.explorer.expand(frame.parent)
-            common_handles_list, s_or_e_list = find_common_bone_handles(editor, handle)
-            for bone in range(len(common_handles_list)):
-                bonename = common_handles_list[bone].name
-                if s_or_e_list[bone] == 0:
-                    if common_handles_list[bone].dictspec.has_key('start_vtxlist'):
-                        bone_vtxlist = []
-                        vtxlist = editor.ModelComponentList[comp.name]['boneobjlist'][bonename]['s_or_e0']['selvtxlist']
-                        for vtx in vtxlist:
-                            bone_vtxlist = bone_vtxlist + [[vtx, frame.vertices[vtx]]]
-                        editor.ModelVertexSelList = bone_vtxlist
-                        break
-                else:
-                    if common_handles_list[bone].dictspec.has_key('end_vtxlist'):
-                        bone_vtxlist = []
-                        vtxlist = editor.ModelComponentList[comp.name]['boneobjlist'][bonename]['s_or_e1']['selvtxlist']
-                        for vtx in vtxlist:
-                            bone_vtxlist = bone_vtxlist + [[vtx, frame.vertices[vtx]]]
-                        editor.ModelVertexSelList = bone_vtxlist
-                        break
+            bone_vtxlist = []
+            vtxlist = self.bone.vtxlist[sel_comp]
+            for vtx in vtxlist:
+                bone_vtxlist = bone_vtxlist + [[vtx, frame.vertices[vtx]]]
+            editor.ModelVertexSelList = bone_vtxlist
             if compchanged is None:
                 Update_Editor_Views(editor)
 
         def select_handle_pos_vertexes_click(m, self=self, editor=editor, view=view):
+            sel_comp = self.bone.dictspec['component']
             comp = editor.Root.currentcomponent
             compchanged = None
             frame = comp.currentframe
-            if self.s_or_e == 0:
-                if (self.bone.dictspec['start_component'] != comp.name) or (len(editor.layout.explorer.sellist) == 0):
-                    for item in range(len(comp.dictitems['Frames:fg'].subitems)):
-                        if comp.dictitems['Frames:fg'].subitems[item] == frame:
-                            framenbr = item
-                    comp = editor.Root.dictitems[self.bone.dictspec['start_component']]
-                    editor.layout.explorer.sellist = [self.bone, comp.dictitems['Frames:fg'].subitems[framenbr]]
-                    frame = editor.layout.explorer.sellist[1]
-                    editor.layout.selchange()
-                    compchanged = 1
-                handle = self.bone.dictspec['start_point']
-            else:
-                if (self.bone.dictspec['end_component'] != comp.name) or (len(editor.layout.explorer.sellist) == 0):
-                    for item in range(len(comp.dictitems['Frames:fg'].subitems)):
-                        if comp.dictitems['Frames:fg'].subitems[item] == frame:
-                            framenbr = item
-                    comp = editor.Root.dictitems[self.bone.dictspec['end_component']]
-                    editor.layout.explorer.sellist = [self.bone, comp.dictitems['Frames:fg'].subitems[framenbr]]
-                    frame = editor.layout.explorer.sellist[1]
-                    editor.layout.selchange()
-                    compchanged = 1
-                handle = self.bone.dictspec['end_point']
+            if (sel_comp != comp.name) or (len(editor.layout.explorer.sellist) == 0):
+                for item in range(len(comp.dictitems['Frames:fg'].subitems)):
+                    if comp.dictitems['Frames:fg'].subitems[item] == frame:
+                        framenbr = item
+                comp = editor.Root.dictitems[sel_comp]
+                editor.layout.explorer.sellist = [self.bone, comp.dictitems['Frames:fg'].subitems[framenbr]]
+                frame = editor.layout.explorer.sellist[1]
+                editor.layout.selchange()
+                compchanged = 1
+            handle = self.bone.dictspec['position']
             if not editor.Root.dictitems['Skeleton:bg'] in editor.layout.explorer.sellist:
                 editor.layout.explorer.sellist = [self.bone, frame]
                 editor.layout.selchange()
@@ -4672,48 +3804,25 @@ class LinBoneCenterHandle(LinearBoneHandle):
                 editor.layout.explorer.expand(self.bone.parent)
             editor.layout.explorer.expand(comp)
             editor.layout.explorer.expand(frame.parent)
-            common_handles_list, s_or_e_list = find_common_bone_handles(editor, handle)
-            for bone in range(len(common_handles_list)):
-                bonename = common_handles_list[bone].name
-                if s_or_e_list[bone] == 0:
-                    if common_handles_list[bone].dictspec.has_key('start_vtxlist'):
-                        bone_vtxlist = []
-                        vtxlist = common_handles_list[bone].dictspec['start_vtx_pos']
-                        vtxlist = vtxlist.split(" ")
-                        for vtx in vtxlist:
-                            vtx = int(vtx)
-                            bone_vtxlist = bone_vtxlist + [[vtx, frame.vertices[vtx]]]
-                        editor.ModelVertexSelList = bone_vtxlist
-                        break
-                else:
-                    if common_handles_list[bone].dictspec.has_key('end_vtxlist'):
-                        bone_vtxlist = []
-                        vtxlist = common_handles_list[bone].dictspec['end_vtx_pos']
-                        vtxlist = vtxlist.split(" ")
-                        for vtx in vtxlist:
-                            vtx = int(vtx)
-                            bone_vtxlist = bone_vtxlist + [[vtx, frame.vertices[vtx]]]
-                        editor.ModelVertexSelList = bone_vtxlist
-                        break
+            bone_vtxlist = []
+            vtxlist = self.bone.vtx_pos[sel_comp]
+            for vtx in vtxlist:
+                bone_vtxlist = bone_vtxlist + [[vtx, frame.vertices[vtx]]]
+            editor.ModelVertexSelList = bone_vtxlist
             if compchanged is None:
                 Update_Editor_Views(editor)
 
         Forcetogrid = qmenu.item("&Force to grid", force_to_grid_click,"|Force to grid:\n\nThis will cause a bone's center handle to 'snap' to the nearest location on the editor's grid for the view that the RMB click was made in.|intro.modeleditor.rmbmenus.html#bonecommands")
         AddBone = qmenu.item("&Add Bone Here", add_bone_click, "|Add Bone Here:\n\nThis will add a single bone to the 'Skeleton' group.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
         ContinueBones = qmenu.item("&Continue Bones", continue_bones_click, "|Continue Bones:\n\nThis will add a single bone, connected to the bone handle when the RMB was clicked, in the 'Skeleton' group.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
-        AttachStart2End = qmenu.item("A&ttach Start to End", attach_start2end_click, "|Attach Start to End:\n\nThis will attach the second selected bone's start handle to the first selected bone's end handle in the 'Skeleton' group.\n\nMoving the second bone above the first bone in the tree-view will reverse this movement.|intro.modeleditor.rmbmenus.html#bonecommands")
-        AttachEnd2Start = qmenu.item("Attach End to Start", attach_end2start_click, "|Attach End to Start:\n\nThis will attach the second selected bone's end handle to the first selected bone's start handle in the 'Skeleton' group.\n\nMoving the second bone above the first bone in the tree-view will reverse this movement.|intro.modeleditor.rmbmenus.html#bonecommands")
-        AttachBonesStarts = qmenu.item("Attach B&ones Starts", attach_bones_starts_click, "|Attach Bones Starts:\n\nThis will attach the second selected bone's start handle to the first selected bone's start handle in the 'Skeleton' group.\n\nMoving the second bone above the first bone in the tree-view will reverse this movement.|intro.modeleditor.rmbmenus.html#bonecommands")
-        AttachBonesEnds = qmenu.item("Attach Bones Ends", attach_bones_ends_click, "|Attach Bones Ends:\n\nThis will attach the second selected bone's end handle to the first selected bone's end in the 'Skeleton' group.\n\nMoving the second bone above the first bone in the tree-view will reverse this movement.|intro.modeleditor.rmbmenus.html#bonecommands")
+        AttachBone1to2 = qmenu.item("Attach Bone &1 to 2", attach_bone1to2_click, "|Attach Bone 1 to 2:\n\nThis will attach the first selected bone in the tree-view to the second selected bone in the tree-view.|intro.modeleditor.rmbmenus.html#bonecommands")
+        AttachBone2to1 = qmenu.item("Attach Bone &2 to 1", attach_bone2to1_click, "|Attach Bone 2 to 1:\n\nThis will attach the second selected bone in the tree-view to the first selected bone in the tree-view.|intro.modeleditor.rmbmenus.html#bonecommands")
         DetachBones = qmenu.item("&Detach Bones", detach_bones_click, "|Detach Bones:\n\nThis will detach two selected bones attached handles from one another in the 'Skeleton' group.|intro.modeleditor.rmbmenus.html#bonecommands")
-        AlignStart2End = qmenu.item("Align Start to E&nd", align_start2end_click, "|Align Start to End:\n\nThis will align the second selected bone's start handle to first selected bone's end handle, but not attach them.\n\nMoving the second bone above the first bone in the tree-view will reverse this movement.|intro.modeleditor.rmbmenus.html#bonecommands")
-        AlignBonesStarts = qmenu.item("Align &Bones Starts", align_bones_starts_click, "|Align Bones Starts:\n\nThis will align the second selected bone's start handle to first selected bone's end handle, but not attach them.\n\nMoving the second bone above the first bone in the tree-view will reverse this movement.|intro.modeleditor.rmbmenus.html#bonecommands")
-        AlignBonesEnds = qmenu.item("Align Bones Ends", align_bones_ends_click, "|Align Bones Ends:\n\nThis will align the second selected bone's end handle to first selected bone's end handle, but not attach them.\n\nMoving the second bone above the first bone in the tree-view will reverse this movement.|intro.modeleditor.rmbmenus.html#bonecommands")
-        Assign2Start = qmenu.item("Ass&ign to Start", assign2start_click, "|Assign to Start:\n\nWhen only one bone and vertexes of a component are selected, click this item to assign them to the 'start_point' of that bone.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
-        Assign2End = qmenu.item("Assign to &End", assign2end_click, "|Assign to End:\n\nWhen only one bone and vertexes of a component are selected, and there is no continuing bone, click this item to assign them to the 'end_point' of that bone.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
+        AssignReleaseVertices = qmenu.item("Assign \ Release &Vertices", assign_release_vertices_click, "|Assign \ Release Vertices:\n\nWhen vertices of a component are selected, RMB click on the center of a bone, then click this item to assign them to, or release them from ,that bone.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
+        AlignBone1to2 = qmenu.item("Align  Bone 1 to 2", align__bone1to2_click, "|Align Bone 1 to 2:\n\nThis will align the first selected bone in the tree-view to the second selected bone in the tree-view, but not attach them.|intro.modeleditor.rmbmenus.html#bonecommands")
+        AlignBone2to1 = qmenu.item("Align  Bone 2 to 1", align__bone2to1_click, "|Align Bone 2 to 1:\n\nThis will align the second selected bone in the tree-view to the first selected bone in the tree-view, but not attach them.|intro.modeleditor.rmbmenus.html#bonecommands")
         SetHandlePosition = qmenu.item("Set Handle Position", set_handle_position_click, "|Set Handle Position:\n\nActive when one or more vertexes are selected that are assigned to that bone handle. Click this item to position and set that bone handle centered within those vertexes. An 'offset' can also be applied to this setting.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
-        ReleaseStartVertexes = qmenu.item("&Release Start Vertexes", release_start_vertexes_click, "|Release Start Vertexes:\n\nWhen only one bone is selected with vertexes assigned to it, click this item to release all of them from that bone's start handle.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
-        ReleaseEndVertexes = qmenu.item("Release End &Vertexes", release_end_vertexes_click, "|Release End Vertexes:\n\nWhen only one bone is selected with vertexes assigned to it, click this item to release all of them from that bone's end handle.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
+        SetHandlePosition.state = qmenu.disabled
         KeyframesRotation = qmenu.item("&Key frames Rotation move", keyframes_rotation_click, "|Key frames Rotation move:\n\nWhen the 'Skeleton' folder and two frames that have bone movement are selected, this movement will be spread from the 1st frames positions across all frames in between them to the 2nd frames positions using rotation and in the direction of the smallest angle (clockwise or counterclockwise).|intro.modeleditor.rmbmenus.html#bonecommands")
         SB1 = qmenu.item("&Show Bones", ShowBones, "|Show Bones:\n\nThis allows all bones to be displayed in the editor's views.|intro.modeleditor.rmbmenus.html#bonecommands")
         HB1 = qmenu.item("&Hide Bones", HideBones, "|Hide Bones:\n\nThis stops all bones from being displayed in the editor's views.|intro.modeleditor.rmbmenus.html#bonecommands")
@@ -4722,48 +3831,43 @@ class LinBoneCenterHandle(LinearBoneHandle):
         SelectHandlePosVertexes = qmenu.item("Select Handle &Position Vertexes", select_handle_pos_vertexes_click, "|Select (bone handle name) handle position Vertexes:\n\nWhen the cursor is over a bone's Center handle with vertexes assigned to it, click this item to select the vertexes used to set that bone's handle position.\n\nOr, if another handle is attached that has the vertexes assigned to it instead, then those are the position vertexes for that handle that will be selected.\n\nIf no vertexes have been assigned to any handle at that location, then the menu item will show disabled.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
         SelectHandlePosVertexes.state = qmenu.disabled
         try:
-            if isinstance(self, LinBoneCenterHandle):
-                if self.s_or_e == 0:
-                    handle = self.bone.dictspec['start_point']
+            if (len(self.bone.vtxlist) != 0) and (len(editor.ModelVertexSelList) != 0) and (editor.Root.currentcomponent.name in self.bone.vtxlist.keys()):
+                SetHandlePosition.state = qmenu.normal
+        except:
+            pass
+        sel_vtx_list = [SelectHandleVertexes, SelectHandlePosVertexes]
+        try:
+            if isinstance(self, BoneCenterHandle):
+                if len(self.bone.vtxlist) == 0:
+                    pass
                 else:
-                    handle = self.bone.dictspec['end_point']
-                common_handles_list, s_or_e_list = find_common_bone_handles(editor, handle)
-                for bone in range(len(common_handles_list)):
-                    name = common_handles_list[bone].shortname + " "
-                    if s_or_e_list[bone] == 0:
-                        if common_handles_list[bone].dictspec.has_key('start_vtxlist'):
-                            pos = "Start Handle "
-                            SelectHandleVertexes = qmenu.item("Se&lect " + name + pos + "Vertexes", select_handle_vertexes_click, "|Select (bone handle name) Vertexes:\n\nWhen the cursor is over a bone's Center handle with vertexes assigned to it, click this item to select all of them from that bone's handle.\n\nOr, if another handle is attached that has the vertexes assigned to it instead, then those are the vertexes that will be selected.\n\nIf no vertexes have been assigned to any handle at that location, then the menu item will show disabled.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
-                            SelectHandlePosVertexes = qmenu.item("Select " + name + "Handle &Position Vertexes", select_handle_pos_vertexes_click, "|Select (bone handle name) handle position Vertexes:\n\nWhen the cursor is over a bone's Center handle with vertexes assigned to it, click this item to select the vertexes used to set that bone's handle position.\n\nOr, if another handle is attached that has the vertexes assigned to it instead, then those are the position vertexes for that handle that will be selected.\n\nIf no vertexes have been assigned to any handle at that location, then the menu item will show disabled.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
-                            break
-                    else:
-                        if common_handles_list[bone].dictspec.has_key('end_vtxlist'):
-                            pos = "End Handle "
-                            SelectHandleVertexes = qmenu.item("Se&lect " + name + pos + "Vertexes", select_handle_vertexes_click, "|Select (bone handle name) Vertexes:\n\nWhen the cursor is over a bone's Center handle with vertexes assigned to it, click this item to select all of them from that bone's handle.\n\nOr, if another handle is attached that has the vertexes assigned to it instead, then those are the vertexes that will be selected.\n\nIf no vertexes have been assigned to any handle at that location, then the menu item will show disabled.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
-                            SelectHandlePosVertexes = qmenu.item("Select " + name + "Handle &Position Vertexes", select_handle_pos_vertexes_click, "|Select (bone handle name) handle position Vertexes:\n\nWhen the cursor is over a bone's Center handle with vertexes assigned to it, click this item to select the vertexes used to set that bone's handle position.\n\nOr, if another handle is attached that has the vertexes assigned to it instead, then those are the position vertexes for that handle that will be selected.\n\nIf no vertexes have been assigned to any handle at that location, then the menu item will show disabled.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
-                            break
-                    if bone == len(common_handles_list)-1:
-                        SelectHandleVertexes = qmenu.item("Se&lect Handle Vertexes", select_handle_vertexes_click, "|Select (bone handle name) Vertexes:\n\nWhen the cursor is over a bone's Center handle with vertexes assigned to it, click this item to select all of them from that bone's handle.\n\nOr, if another handle is attached that has the vertexes assigned to it instead, then those are the vertexes that will be selected.\n\nIf no vertexes have been assigned to any handle at that location, then the menu item will show disabled.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
-                        SelectHandleVertexes.state = qmenu.disabled
-                        SelectHandlePosVertexes = qmenu.item("Select Handle &Position Vertexes", select_handle_pos_vertexes_click, "|Select (bone handle name) handle position Vertexes:\n\nWhen the cursor is over a bone's Center handle with vertexes assigned to it, click this item to select the vertexes used to set that bone's handle position.\n\nOr, if another handle is attached that has the vertexes assigned to it instead, then those are the position vertexes for that handle that will be selected.\n\nIf no vertexes have been assigned to any handle at that location, then the menu item will show disabled.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
+                    name = self.bone.shortname
+                    sel_vtx_list = []
+                    for comp in self.bone.vtxlist.keys():
+                        compname = comp.split(":")[0]
+                        sel_vtx_list = sel_vtx_list + [qmenu.item("Se&lect " + name + " Vertexes for " + compname, select_handle_vertexes_click, "|Select (bone handle name) Vertexes:\n\nWhen the cursor is over a bone's Center handle with vertexes assigned to it, click this item to select all of them from that bone's handle.\n\nOr, if another handle is attached that has the vertexes assigned to it instead, then those are the vertexes that will be selected.\n\nIf no vertexes have been assigned to any handle at that location, then the menu item will show disabled.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")]
+                    SelectHandlePosVertexes = qmenu.item("Select " + name + " Handle &Position Vertexes", select_handle_pos_vertexes_click, "|Select (bone handle name) handle position Vertexes:\n\nWhen the cursor is over a bone's Center handle with vertexes assigned to it, click this item to select the vertexes used to set that bone's handle position.\n\nOr, if another handle is attached that has the vertexes assigned to it instead, then those are the position vertexes for that handle that will be selected.\n\nIf no vertexes have been assigned to any handle at that location, then the menu item will show disabled.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
+                    sel_vtx_list = sel_vtx_list + [SelectHandlePosVertexes]
+                    if len(self.bone.vtx_pos) == 0:
                         SelectHandlePosVertexes.state = qmenu.disabled
         except:
             pass
 
-        try:
-            if self.bone.parent:
-                AddBone.state = qmenu.disabled
-                ContinueBones.state = qmenu.normal
-            else:
-                AddBone.state = qmenu.normal
-                ContinueBones.state = qmenu.disabled
-        except:
-            if allowbones(editor) == 0:
-                if len(editor.Root.dictitems['Skeleton:bg'].subitems) == 0:
-                    AddBone.state = qmenu.disabled
-            else:
-                AddBone.state = qmenu.normal
+        AddBone.state = qmenu.normal
+        if self.bone is None:
             ContinueBones.state = qmenu.disabled
+            DetachBones.state = qmenu.disabled
+            AssignReleaseVertices.state = qmenu.disabled
+        else:
+            ContinueBones.state = qmenu.normal
+            if self.bone.dictspec['parent_name'] == "None":
+                DetachBones.state = qmenu.disabled
+            else:
+                DetachBones.state = qmenu.normal
+            if editor.ModelVertexSelList != [] and (":mf" in map(lambda x: x.type, editor.layout.explorer.sellist)):
+                AssignReleaseVertices.state = qmenu.normal
+            else:
+                AssignReleaseVertices.state = qmenu.disabled
 
         if len(editor.layout.explorer.sellist) == 3:
             count = 0
@@ -4779,99 +3883,19 @@ class LinBoneCenterHandle(LinearBoneHandle):
         else:
             KeyframesRotation.state = qmenu.disabled
 
-        if len(editor.layout.explorer.sellist) == 2:
-            count = 0
-            for item in editor.layout.explorer.sellist:
-                if item.type == ":bone":
-                    count = count + 1
-            if count == 2:
-                AttachStart2End.state = qmenu.normal
-                AttachEnd2Start.state = qmenu.normal
-                AttachBonesStarts.state = qmenu.normal
-                AttachBonesEnds.state = qmenu.normal
-                DetachBones.state = qmenu.normal
-                AlignBonesStarts.state = qmenu.normal
-                AlignBonesEnds.state = qmenu.normal
-                AlignStart2End.state = qmenu.normal
-            else:
-                AttachStart2End.state = qmenu.disabled
-                AttachEnd2Start.state = qmenu.disabled
-                AttachBonesStarts.state = qmenu.disabled
-                AttachBonesEnds.state = qmenu.disabled
-                DetachBones.state = qmenu.disabled
-                AlignBonesStarts.state = qmenu.disabled
-                AlignBonesEnds.state = qmenu.disabled
-                AlignStart2End.state = qmenu.disabled
-        else:
-            AttachStart2End.state = qmenu.disabled
-            AttachEnd2Start.state = qmenu.disabled
-            AttachBonesStarts.state = qmenu.disabled
-            AttachBonesEnds.state = qmenu.disabled
-            DetachBones.state = qmenu.disabled
-            AlignBonesStarts.state = qmenu.disabled
-            AlignBonesEnds.state = qmenu.disabled
-            AlignStart2End.state = qmenu.disabled
-
-        Assign2Start.state = qmenu.disabled
-        Assign2End.state = qmenu.disabled
-        SetHandlePosition.state = qmenu.disabled
-        try:
-            if len(editor.layout.explorer.sellist) == 2 and editor.ModelVertexSelList != []:
-                count = 0
-                for item in editor.layout.explorer.sellist:
-                    if item.type == ":bone":
-                        selbone = item
-                        count = count + 5
-                    if item.type == ":mf" and (count == 0 or count == 5):
-                        count = count + 1
-                if count == 6:
-                    if self.s_or_e == 0 and selbone == self.bone:
-                        Assign2Start.state = qmenu.normal
-                    elif self.s_or_e == 1 and selbone == self.bone:
-                        Assign2End.state = qmenu.normal
-
-                    if self.s_or_e == 0 and self.bone.dictspec.has_key('start_vtxlist') and selbone == self.bone:
-                        start_vtx = self.bone['start_vtxlist'].split(' ')
-                        count = 0
-                        for vtx in editor.ModelVertexSelList:
-                            if str(vtx[0]) in start_vtx:
-                                count = count + 1
-                        if count == len(editor.ModelVertexSelList):
-                            SetHandlePosition.state = qmenu.normal
-                    elif self.s_or_e == 1 and self.bone.dictspec.has_key('end_vtxlist') and selbone == self.bone:
-                        end_vtx = self.bone['end_vtxlist'].split(' ')
-                        count = 0
-                        for vtx in editor.ModelVertexSelList:
-                            if str(vtx[0]) in end_vtx:
-                                count = count + 1
-                        if count == len(editor.ModelVertexSelList):
-                            SetHandlePosition.state = qmenu.normal
-        except:
-            pass
-
-        ReleaseStartVertexes.state = qmenu.disabled
-        ReleaseEndVertexes.state = qmenu.disabled
-        if len(editor.layout.explorer.sellist) <= 2 and editor.layout.explorer.sellist != []:
-            count = 0
-            if len(editor.layout.explorer.sellist) == 1 and editor.layout.explorer.sellist[0] == self.bone:
-                count = 6
-                if editor.layout.explorer.sellist[0].dictspec.has_key('start_vtxlist') and len(editor.layout.explorer.sellist[0].dictspec['start_vtxlist']) > 0:
-                    ReleaseStartVertexes.state = qmenu.normal
-                if editor.layout.explorer.sellist[0].dictspec.has_key('end_vtxlist') and len(editor.layout.explorer.sellist[0].dictspec['end_vtxlist']) > 0:
-                    ReleaseEndVertexes.state = qmenu.normal
-            else:
-                for item in editor.layout.explorer.sellist:
-                    if item == self.bone and (item.dictspec.has_key('start_vtxlist') or item.dictspec.has_key('end_vtxlist')):
-                        if item.dictspec.has_key('start_vtxlist') and len(item.dictspec['start_vtxlist']) > 0:
-                             ReleaseStartVertexes.state = qmenu.normal
-                        if item.dictspec.has_key('end_vtxlist') and len(item.dictspec['end_vtxlist']) > 0:
-                             ReleaseEndVertexes.state = qmenu.normal
-                        count = count + 5
-                    if item.type == ":mf" and (count == 0 or count == 5):
-                        count = count + 1
-            if count != 6:
-                ReleaseStartVertexes.state = qmenu.disabled
-                ReleaseEndVertexes.state = qmenu.disabled
+        AttachBone1to2.state = qmenu.disabled
+        AttachBone2to1.state = qmenu.disabled
+        AlignBone1to2.state = qmenu.disabled
+        AlignBone2to1.state = qmenu.disabled
+        count = 0
+        for item in editor.layout.explorer.sellist:
+            if item.type == ":bone":
+                count = count + 1
+        if count == 2:
+            AttachBone1to2.state = qmenu.normal
+            AttachBone2to1.state = qmenu.normal
+            AlignBone1to2.state = qmenu.normal
+            AlignBone2to1.state = qmenu.normal
 
         if quarkx.setupsubset(SS_MODEL, "Options")['HideBones'] is not None:
             SB1.state = qmenu.normal
@@ -4883,29 +3907,21 @@ class LinBoneCenterHandle(LinearBoneHandle):
         if not MdlOption("GridActive") or editor.gridstep <= 0:
             Forcetogrid.state = qmenu.disabled
 
-        menu = [AddBone, ContinueBones, qmenu.sep, AttachStart2End, AttachEnd2Start, AttachBonesStarts, AttachBonesEnds, DetachBones, qmenu.sep, AlignStart2End, AlignBonesStarts, AlignBonesEnds, qmenu.sep, Assign2Start, Assign2End, SetHandlePosition, qmenu.sep, SelectHandleVertexes, SelectHandlePosVertexes, qmenu.sep, ReleaseStartVertexes, ReleaseEndVertexes, qmenu.sep, KeyframesRotation, qmenu.sep, SB1, HB1, qmenu.sep, Forcetogrid]
+        menu = [AddBone, ContinueBones, qmenu.sep, AttachBone1to2, AttachBone2to1, qmenu.sep, DetachBones, qmenu.sep, AlignBone1to2, AlignBone2to1, qmenu.sep, AssignReleaseVertices, qmenu.sep, SetHandlePosition, qmenu.sep] + sel_vtx_list + [qmenu.sep, KeyframesRotation, qmenu.sep, SB1, HB1, qmenu.sep, Forcetogrid]
 
         return menu
 
 
-    def draw(self, view, cv, draghandle=None): # for LinBoneCenterHandle
-        editor = self.editor
-        from qbaseeditor import flagsmouse, currentview # To stop all drawing, causing slowdown, during zoom or pan.
-        import qhandles
+    def draw(self, view, cv, draghandle=None): # for BoneCenterHandle
+        editor = self.mgr.editor
+        from qbaseeditor import flagsmouse
         if quarkx.setupsubset(SS_MODEL, "Options")['HideBones'] is not None:
             return
-        try:
-            # Allows all linear handles to draw at end of rotation drag.
-            if isinstance(editor.dragobject.handle, LinBoneCornerHandle) and (flagsmouse == 1032 or flagsmouse == 2056 or flagsmouse == 2060):
-                return
-        except:
-            pass
 
         if isinstance(editor.dragobject, qhandles.ScrollViewDragObject) and flagsmouse == 1040:
             return # RMB pressed or dragging to pan (scroll) in the view.
 
         if view.info["viewname"] == "editors3Dview":
-            if (flagsmouse == 1048 or flagsmouse == 1056) and currentview.info["viewname"] != "editors3Dview": return # Doing zoom in a 2D view, stop drawing the Editors 3D view handles.
             if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles1"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] == "1":
                 return
         if view.info["viewname"] == "XY":
@@ -4921,47 +3937,128 @@ class LinBoneCenterHandle(LinearBoneHandle):
             if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles5"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] == "1":
                 return
 
-        p = None
-        if self.pos is None:
-            pass
-        else:
+        if self.pos is not None:
             p = view.proj(self.pos)
-        if p is None:
+        else:
             p = view.proj(0,0,0)
 
         if p.visible:
-            if (self.s_or_e == 0): # Handles the "Start of Bone".
-                bonecount = 0
-                for item in editor.layout.explorer.sellist:
-                    if item.type == ":bone":
-                        bonecount = bonecount + 1
-                cv.penwidth = 1
-                cv.penstyle = PS_INSIDEFRAME
-                cv.brushstyle = BS_CLEAR
-                if view.info['type'] != "3D":
-                    scale = view.scale()
-                    handle_start_scale = self.bone.dictspec['start_scale']
-                    handle_end_scale = self.bone.dictspec['end_scale']
-                    p2 = view.proj(quarkx.vect(self.bone.dictspec['end_point']))
-                    if (bonecount == 1 and self.bone in editor.layout.explorer.sellist) or (bonecount == len(editor.layout.explorer.sellist) and self.bone in editor.layout.explorer.sellist):
-                        cv.pencolor = MapColor("BoneHandles", SS_MODEL)
+            bonecount = 0
+            for item in editor.layout.explorer.sellist:
+                if item.type == ":bone" or item.type == ":mf":
+                    bonecount = bonecount + 1
+            cv.reset()
+            cv.penwidth = 1
+            cv.penstyle = PS_INSIDEFRAME
+            cv.brushstyle = BS_CLEAR
+            scale = view.scale()
+            handle_scale = self.bone.dictspec['scale'][0]
+            if (bonecount == 1 and self.bone in editor.layout.explorer.sellist) or (bonecount == len(editor.layout.explorer.sellist) and self.bone in editor.layout.explorer.sellist):
+                line_color = MapColor("BoneHandles", SS_MODEL)
+            else:
+                line_color = MapColor("BoneLines", SS_MODEL)
+            handle_color = self.bone.getint('_color')
+
+            if self.bone.dictspec['parent_name'] != "None":
+                parentbone = findbone(self.mgr.editor, self.bone.dictspec['parent_name'])
+                parent_handle_scale = parentbone['scale'][0]
+                p2 = view.proj(parentbone.position)
+                DrawBoneLine(p, p2, cv, line_color, scale, parent_handle_scale)
+            DrawBoneHandle(p, cv, handle_color, scale, handle_scale)
+
+    def drawred(self, redimages, view, redcolor): # for BoneCenterHandle
+        view.repaint()
+        cv = view.canvas()
+        cv.penwidth = 1
+        cv.penstyle = PS_INSIDEFRAME
+        cv.brushstyle = BS_CLEAR
+        scale = view.scale()
+        # Draws all the bones in their original positions first.
+        bones = self.mgr.editor.Root.dictitems['Skeleton:bg'].findallsubitems("", ':bone') # Get all bones.
+        for bone in bones:
+            p = view.proj(bone.position)
+            if p.visible:
+                if bone.dictspec['parent_name'] != "None":
+                    parentbone = findbone(self.mgr.editor, bone.dictspec['parent_name'])
+                    parent_handle_scale = parentbone['scale'][0]
+                    p2 = view.proj(parentbone.position)
+                    line_color = MapColor("BoneLines", SS_MODEL)
+                    DrawBoneLine(p, p2, cv, line_color, scale, parent_handle_scale)
+                handle_scale = bone.dictspec['scale'][0]
+                handle_color = bone.dictspec['_color']
+                quarkx.setupsubset(SS_MODEL, "Colors")["handle_color"] = handle_color
+                handle_color = MapColor("handle_color", SS_MODEL)
+                DrawBoneHandle(p, cv, handle_color, scale, handle_scale)
+                if (self.mgr.editor.layout.explorer.sellist[0] == self.bone) and (bone.dictspec['parent_name'] == self.bone.name):
+                    parentbone = self.bone
+                    for obj2 in redimages:
+                        if parentbone.name == obj2.name:
+                            parentbone = obj2
+                            break
+                    parent_handle_scale = parentbone['scale'][0]
+                    p2 = view.proj(parentbone.position)
+                    
+                    handle_color = self.bone.dictspec['_color']
+                    quarkx.setupsubset(SS_MODEL, "Colors")["handle_color"] = handle_color
+                    handle_color = MapColor("handle_color", SS_MODEL)
+                    if quarkx.setupsubset(SS_MODEL, "Options")['MBLines_Color'] is not None:
+                        line_color = handle_color
                     else:
-                        cv.pencolor = MapColor("BoneLines", SS_MODEL)
-                    DrawBoneLine(p, p2, cv, cv.pencolor, scale, handle_start_scale)
-                    startcolor = self.bone.dictspec['start_color']
-                    quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
-                    DrawBoneHandle(p, cv, MapColor("start_color", SS_MODEL), scale, handle_start_scale)
+                        line_color = MapColor("BoneHandles", SS_MODEL)
+                    DrawBoneLine(p, p2, cv, line_color, scale, parent_handle_scale)
+                    
+        for obj in redimages:
+            if obj.type != ":bone":
+                continue
+            handle_color = self.bone.dictspec['_color']
+            quarkx.setupsubset(SS_MODEL, "Colors")["handle_color"] = handle_color
+            handle_color = MapColor("handle_color", SS_MODEL)
+            if quarkx.setupsubset(SS_MODEL, "Options")['MBLines_Color'] is not None:
+                line_color = handle_color
+            else:
+                line_color = MapColor("BoneHandles", SS_MODEL)
+            p = view.proj(obj.position)
+            if p.visible:
+                if obj.dictspec['parent_name'] != "None":
+                    parentbone = findbone(self.mgr.editor, obj.dictspec['parent_name'])
+                    for obj2 in redimages:
+                        # If the bone is in redimages, it's also moving, and we need to use the moving bone instead
+                        if parentbone.name == obj2.name:
+                            parentbone = obj2
+                            break
+                    parent_handle_scale = parentbone['scale'][0]
+                    p2 = view.proj(parentbone.position)
+                    if obj.name == self.bone.name:
+                        if (self.mgr.editor.layout.explorer.sellist[0] == self.bone):
+                            pass
+                        else:
+                            line_color = MapColor("BoneHandles", SS_MODEL)
+                    DrawBoneLine(p, p2, cv, line_color, scale, parent_handle_scale)
+                handle_scale = obj.dictspec['scale'][0]
+                DrawBoneHandle(p, cv, handle_color, scale, handle_scale)
+            vertices = obj.vtxlist
+            cv.pencolor = redcolor
+            # Draws the vertexes assigned to the bone joint DURING the drag.
+            for compname in vertices:
+                compvtx = self.newverticespos[compname]
+                tristodraw = self.mgr.editor.ModelComponentList['tristodraw'][compname]
+                for vtx in vertices[compname]:
+                    p = view.proj(compvtx[vtx])
+                    if vtx in tristodraw:
+                        for vtx2 in tristodraw[vtx]:
+                            p2 = view.proj(compvtx[vtx2])
+                            cv.line(p, p2)
+                    if p.visible:
+                        cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
 
-                    endcolor = self.bone.dictspec['end_color']
-                    quarkx.setupsubset(SS_MODEL, "Colors")["end_color"] = endcolor
-                    DrawBoneHandle(p2, cv, MapColor("end_color", SS_MODEL), scale, handle_end_scale)
-
-    def linoperation(self, list, delta, g1, view): # for LinBoneCenterHandle, draws its drag lines and vertex polys.
-        from qbaseeditor import flagsmouse
+    def drag(self, v1, v2, flags, view): # for BoneCenterHandle
+        delta = v2-v1
+        if flags&MB_CTRL:
+            g1 = 1
+            delta = qhandles.aligntogrid(delta, 1)
+        else:
+            g1 = 0
         editor = self.mgr.editor
-
-        mdleditor.setsingleframefillcolor(editor, view)
-
         if editor is not None:
             if editor.lock_x==1:
                 delta = quarkx.vect(0, delta.y, delta.z)
@@ -4970,1114 +4067,307 @@ class LinBoneCenterHandle(LinearBoneHandle):
             if editor.lock_z==1:
                 delta = quarkx.vect(delta.x, delta.y, 0)
 
-        cv = view.canvas()
-        cv.pencolor = MapColor("BoneHandles", SS_MODEL)
-
-        # Multipal components method. This section draws the selected vertexes drag lines for all bones that are being dragged.
-        if quarkx.setupsubset(SS_MODEL, "Options")['NVDL'] is None: # NVDL = no vertex drag lines.
-            comp_list = []
-            for obj in list:
-                if obj.name.endswith(":g"):
-                    thiscomp, bone_name = obj.name.split("-b-")
-                    if thiscomp in comp_list:
-                        continue
-                    comp_list = comp_list + [thiscomp]
-            comp_count = len(comp_list)
-            count = 0
-            while 1:
-                if comp_count == 0:
-                    break
-                selvtxlist = tristodrawlist = []
-                for obj in list:
-                    if obj.name.endswith(":g"):
-                        pass
-                    else:
-                        continue
-                    thiscomp, bone_name = obj.name.split("-b-")
-                    if thiscomp != comp_list[count]:
-                        continue
-                    bone_name, s_or_e = bone_name.rsplit("_", 1)
-                    bone_name = bone_name + ":bone"
-                    s_or_e = "s_or_e" + s_or_e.replace(":g", "")
-                    selvtxlist = selvtxlist + editor.ModelComponentList[comp_list[count]]['boneobjlist'][bone_name][s_or_e]['selvtxlist']
-                    tristodrawlist = tristodrawlist + editor.ModelComponentList[comp_list[count]]['boneobjlist'][bone_name][s_or_e]['tristodrawlist']
-                
-                frame = editor.Root.dictitems[comp_list[count]].dictitems['Frames:fg'].subitems[editor.bone_frame]
-                framevtxs = frame.vertices
-                for tri in tristodrawlist:
-                    dragprojvtx = view.proj(framevtxs[tri[0]]+delta)
-                    for vtx in range(len(tri[4])):
-                        if tri[4][vtx][0] == tri[0]:
-                            continue
-                        else:
-                            if tri[4][vtx][0] in selvtxlist:
-                                projvtx = view.proj(framevtxs[tri[4][vtx][0]]+delta)
-                            else:
-                                projvtx = view.proj(framevtxs[tri[4][vtx][0]])
-                            cv.line(int(dragprojvtx.tuple[0]), int(dragprojvtx.tuple[1]), int(projvtx.tuple[0]), int(projvtx.tuple[1]))
-                if count == comp_count-1:
-                    break
-                count = count + 1
-
-        # This section draws the selected vertexes for all bones that are being dragged.
-        for obj in list:
-            obj.translate(delta)
-            if obj.name.endswith(":g"):
-                dragcolor = vertexsellistcolor
-                view.drawmap(obj, DM_OTHERCOLOR, dragcolor)
-
-        if view.info["type"] == "XY":
+        if view.info["viewname"] == "XY":
             s = "was " + ftoss(self.pos.x) + " " + ftoss(self.pos.y) + " now " + ftoss(self.pos.x+delta.x) + " " + ftoss(self.pos.y+delta.y)
-        elif view.info["type"] == "XZ":
-            s = "was " + ftoss(self.pos.x) + " " + ftoss(self.pos.z) + " now " + ftoss(self.pos.x+delta.x) + " " + " " + ftoss(self.pos.z+delta.z)
-        elif view.info["type"] == "YZ":
+        elif view.info["viewname"] == "XZ":
+            s = "was " + ftoss(self.pos.x) + " " + ftoss(self.pos.z) + " now " + ftoss(self.pos.x+delta.x) + " " + ftoss(self.pos.z+delta.z)
+        elif view.info["viewname"] == "YZ":
+            s = "was " + ftoss(self.pos.y) + " " + ftoss(self.pos.z) + " now " + ftoss(self.pos.y+delta.y) + " " + ftoss(self.pos.z+delta.z)
+        else:
+            s = "was %s"%self.pos + " now " + ftoss(self.pos.x+delta.x) + " " + ftoss(self.pos.y+delta.y) + " " + ftoss(self.pos.z+delta.z)
+        self.draghint = s # If we get all the rotation hints to work for the YZ view below these "s" lines can be deleted.
+
+        old = [self.bone]
+        new = None
+        if delta or (flags&MB_REDIMAGE):
+            newbone = self.bone.copy()
+            new = [newbone]
+            for bone in self.attachedbones:
+                old = old + [bone]
+                newbone = bone.copy()
+                new = new + [newbone]
+            self.linoperation(new, delta, g1, view)
+        else:
+            new = None
+        old, new = self.sortbonelist(old, new)
+
+        return old, new
+
+    def linoperation(self, list, delta, g1, view): # for BoneCenterHandle
+        # Reset the self.newverticespos list
+        editor = self.mgr.editor
+        for compname in self.newverticespos:
+            comp = editor.Root.dictitems[compname]
+            self.newverticespos[compname] = comp.currentframe.vertices
+
+        for obj in list:
+            obj.position = obj.position + delta
+            vertices = obj.vtxlist
+            for compname in vertices:
+                for vtx in vertices[compname]:
+                    self.newverticespos[compname][vtx] = self.newverticespos[compname][vtx] + delta
+
+        return delta
+
+
+class BoneCornerHandle(BoneHandle):
+    "handle to rotate bone."
+
+    undomsg = "bone joint rotation"
+    def __init__(self, center, pos1, mgr, bone, realpoint=None):
+        BoneHandle.__init__(self, pos1, mgr, bone)
+        if realpoint is None:
+            self.pos0 = pos1
+        else:
+            self.pos0 = realpoint
+        self.center = center
+        self.cursor = CR_CROSSH
+
+    def draw(self, view, cv, draghandle=None): # for BoneCornerHandle
+        editor = self.mgr.editor
+        from qbaseeditor import flagsmouse
+        if quarkx.setupsubset(SS_MODEL, "Options")['HideBones'] is not None:
+            return
+
+        if isinstance(editor.dragobject, qhandles.ScrollViewDragObject) and flagsmouse == 1040:
+            return # RMB pressed or dragging to pan (scroll) in the view.
+
+        if view.info["viewname"] == "editors3Dview":
+            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles1"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] == "1":
+                return
+        if view.info["viewname"] == "XY":
+            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles2"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles2"] == "1":
+                return
+        if view.info["viewname"] == "YZ":
+            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles3"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles3"] == "1":
+                return
+        if view.info["viewname"] == "XZ":
+            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles4"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles4"] == "1":
+                return
+        if view.info["viewname"] == "3Dwindow":
+            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles5"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] == "1":
+                return
+        # Draws the line and ball (p) at the end of the rotation handle and fills in its color.
+        p = view.proj(self.pos)
+        if p.visible:
+            cv.reset()
+            cv.penwidth = 1
+            cv.penstyle = PS_INSIDEFRAME
+            cv.pencolor = MapColor("LinearHandleOutline", SS_MODEL)
+            p2 = view.proj(self.center)
+            cv.line(p2, p)
+            handle_color = self.bone.getint('_color')
+            cv.brushcolor = handle_color
+            cv.brushstyle = BS_SOLID
+            cv.ellipse(int(p.x)-5, int(p.y)-3, int(p.x)+5, int(p.y)+3)
+
+    def linoperation(self, list, delta, g1, view): # for BoneCornerHandle
+        # Reset the self.newverticespos list
+        editor = self.mgr.editor
+        for compname in self.newverticespos:
+            comp = editor.Root.dictitems[compname]
+            self.newverticespos[compname] = comp.currentframe.vertices
+
+        rotationorigin = self.center
+        oldpos = self.pos - rotationorigin
+        newpos = (self.pos + delta) - rotationorigin
+        normal = view.vector("Z").normalized
+        oldpos = oldpos - normal*(normal*oldpos)
+        newpos = newpos - normal*(normal*newpos)
+        m = qhandles.UserRotationMatrix(normal, newpos, oldpos, 0)
+        if m is None:
+            m = quarkx.matrix(quarkx.vect(1, 0, 0), quarkx.vect(0, 1, 0), quarkx.vect(0, 0, 1))
+        # Use this if the radius should also be changed:
+        #try:
+        #    changedradius = sqrt(pow(newpos.x, 2) + pow(newpos.y, 2) + pow(newpos.z, 2)) / sqrt(pow(oldpos.x, 2) + pow(oldpos.y, 2) + pow(oldpos.z, 2))
+        #except:
+        #    changedradius = 1.0
+        changedradius = 1.0
+
+        for obj in list:
+            from math import sqrt
+            # m in the line below causes the floating error.
+        #    obj.rotmatrix = changedradius * m * quarkx.matrix((sqrt(2)/2, -sqrt(2)/2, 0), (sqrt(2)/2, sqrt(2)/2, 0), (0, 0, 1))
+            obj.rotmatrix = changedradius * quarkx.matrix((sqrt(2)/2, -sqrt(2)/2, 0), (sqrt(2)/2, sqrt(2)/2, 0), (0, 0, 1))
+            if obj != self.bone:
+                changedpos = obj.position - rotationorigin
+                changedpos = changedradius * m * changedpos
+                obj.position = changedpos + rotationorigin
+
+            vertices = obj.vtxlist
+            for compname in vertices:
+                for vtx in vertices[compname]:
+                    changedpos = self.newverticespos[compname][vtx] - rotationorigin
+                    changedpos = changedradius * m * changedpos
+                    self.newverticespos[compname][vtx] = changedpos + rotationorigin
+
+        return (math.acos(m[0,0])*180.0/math.pi)
+
+    def drawred(self, redimages, view, redcolor): # for BoneCornerHandle
+        view.repaint()
+        cv = view.canvas()
+        cv.reset()
+        cv.penwidth = 1
+        cv.penstyle = PS_INSIDEFRAME
+        cv.brushstyle = BS_CLEAR
+        scale = view.scale()
+        # Draw all of the stationary bone joints first.
+        for bone in self.fixedbones:
+            p = view.proj(bone.position)
+            if bone.dictspec['parent_name'] != "None":
+                if (self.mgr.editor.layout.explorer.sellist[0] == self.bone):
+                    parentbone = bone.dictspec['parent_name']
+                    drewlines = 0
+                    for obj2 in range(len(redimages)):
+                        if parentbone == redimages[obj2].name:
+                            parentbone = redimages[obj2]
+                            parent_handle_scale = parentbone['scale'][0]
+                            p2 = view.proj(parentbone.position)
+                            if quarkx.setupsubset(SS_MODEL, "Options")['MBLines_Color'] is not None:
+                                line_color = self.bone.dictspec['_color']
+                                quarkx.setupsubset(SS_MODEL, "Colors")["line_color"] = line_color
+                                line_color = MapColor("line_color", SS_MODEL)
+                            else:
+                                line_color = MapColor("BoneHandles", SS_MODEL)
+                            DrawBoneLine(p, p2, cv, line_color, scale, parent_handle_scale)
+                            drewlines = 1
+                            break
+                    if drewlines == 1:
+                        try:
+                            handle_scale = bone.dictspec['scale'][0]
+                        except:
+                            handle_scale = 1.0
+                        handle_color = bone.dictspec['_color']
+                        quarkx.setupsubset(SS_MODEL, "Colors")["handle_color"] = handle_color
+                        handle_color = MapColor("handle_color", SS_MODEL)
+                        DrawBoneHandle(p, cv, handle_color, scale, handle_scale)
+                        continue
+                bone_parent = findbone(self.mgr.editor, bone.dictspec['parent_name'])
+                bone_parent_handle_scale = bone_parent['scale'][0]
+                p2 = view.proj(bone_parent.position)
+                line_color = MapColor("BoneLines", SS_MODEL)
+                DrawBoneLine(p, p2, cv, line_color, scale, bone_parent_handle_scale)
+                try:
+                    handle_scale = bone_parent.dictspec['scale'][0]
+                except:
+                    handle_scale = 1.0
+                handle_color = bone_parent.dictspec['_color']
+                quarkx.setupsubset(SS_MODEL, "Colors")["handle_color"] = handle_color
+                handle_color = MapColor("handle_color", SS_MODEL)
+                DrawBoneHandle(p2, cv, handle_color, scale, handle_scale)
+            try:
+                handle_scale = bone.dictspec['scale'][0]
+            except:
+                handle_scale = 1.0
+            handle_color = bone.dictspec['_color']
+            quarkx.setupsubset(SS_MODEL, "Colors")["handle_color"] = handle_color
+            handle_color = MapColor("handle_color", SS_MODEL)
+            DrawBoneHandle(p, cv, handle_color, scale, handle_scale)
+        if quarkx.setupsubset(SS_MODEL, "Options")['MBLines_Color'] is not None:
+            line_color = self.bone.dictspec['_color']
+            quarkx.setupsubset(SS_MODEL, "Colors")["line_color"] = line_color
+            line_color = MapColor("line_color", SS_MODEL)
+        else:
+            line_color = MapColor("BoneHandles", SS_MODEL)
+        for obj in redimages:
+            if obj.type != ":bone":
+                continue
+            try:
+                handle_scale = obj.dictspec['scale'][0]
+            except:
+                handle_scale = 1.0
+            if obj.name != self.bone.name:
+                p = view.proj(obj.position)
+                if p.visible:
+                    if obj.dictspec['parent_name'] != "None":
+                        parentbone = findbone(self.mgr.editor, obj.dictspec['parent_name'])
+                        for obj2 in redimages:
+                            # If the bone is in redimages, it's also moving, and we need to use the moving bone instead
+                            if parentbone.name == obj2.name:
+                                parentbone = obj2
+                                break
+                        parent_handle_scale = parentbone['scale'][0]
+                        p2 = view.proj(parentbone.position)
+                        DrawBoneLine(p, p2, cv, line_color, scale, parent_handle_scale)
+                    handle_color = self.bone.dictspec['_color']
+                    quarkx.setupsubset(SS_MODEL, "Colors")["handle_color"] = handle_color
+                    handle_color = MapColor("handle_color", SS_MODEL)
+                    DrawBoneHandle(p, cv, handle_color, scale, handle_scale)
+            bonenormallength = quarkx.setupsubset(SS_MODEL,"Building")['RotationHandleLength'][0]
+            if obj.name == self.bone.name:
+                p = view.proj(obj.position + obj.rotmatrix * quarkx.vect(bonenormallength * handle_scale, 0, 0))
+            else:
+                from math import sqrt
+                p = view.proj(obj.position + quarkx.matrix((sqrt(2)/2, -sqrt(2)/2, 0), (sqrt(2)/2, sqrt(2)/2, 0), (0, 0, 1)) * quarkx.vect(bonenormallength * handle_scale, 0, 0))
+            # Draws the line and ball ( p) at the end of the rotation handle and fills in its color.
+            if p.visible:
+                cv.penstyle = PS_INSIDEFRAME
+                cv.pencolor = MapColor("LinearHandleOutline", SS_MODEL)
+                p2 = view.proj(obj.position)
+                cv.line(p2, p)
+                handle_color = obj.getint('_color')
+                cv.brushcolor = handle_color
+                cv.brushstyle = BS_SOLID
+                cv.ellipse(int(p.x)-5, int(p.y)-3, int(p.x)+5, int(p.y)+3)
+            cv.brushstyle = BS_CLEAR
+            vertices = obj.vtxlist
+            cv.pencolor = redcolor
+            # Draws the vertexes assigned to the bone joint DURING the drag.
+            for compname in vertices:
+                compvtx = self.newverticespos[compname]
+                tristodraw = self.mgr.editor.ModelComponentList['tristodraw'][compname]
+                for vtx in vertices[compname]:
+                    p = view.proj(compvtx[vtx])
+                    if vtx in tristodraw:
+                        for vtx2 in tristodraw[vtx]:
+                            p2 = view.proj(compvtx[vtx2])
+                            cv.line(p, p2)
+                    if p.visible:
+                        cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
+
+    def drag(self, v1, v2, flags, view): # for BoneCornerHandle
+        delta = v2-v1
+        if flags&MB_CTRL:
+            g1 = 1
+            delta = qhandles.aligntogrid(delta, 1)
+        else:
+            g1 = 0
+        editor = self.mgr.editor
+        if editor is not None:
+            if editor.lock_x==1:
+                delta = quarkx.vect(0, delta.y, delta.z)
+            if editor.lock_y==1:
+                delta = quarkx.vect(delta.x, 0, delta.z)
+            if editor.lock_z==1:
+                delta = quarkx.vect(delta.x, delta.y, 0)
+
+        if view.info["viewname"] == "XY":
+            s = "was " + ftoss(self.pos.x) + " " + ftoss(self.pos.y) + " now " + ftoss(self.pos.x+delta.x) + " " + ftoss(self.pos.y+delta.y)
+        elif view.info["viewname"] == "XZ":
+            s = "was " + ftoss(self.pos.x) + " " + ftoss(self.pos.z) + " now " + ftoss(self.pos.x+delta.x) + " " + ftoss(self.pos.z+delta.z)
+        elif view.info["viewname"] == "YZ":
             s = "was " + ftoss(self.pos.y) + " " + ftoss(self.pos.z) + " now " + ftoss(self.pos.y+delta.y) + " " + ftoss(self.pos.z+delta.z)
         else:
             s = "was %s"%self.pos + " now " + ftoss(self.pos.x+delta.x) + " " + ftoss(self.pos.y+delta.y) + " " + ftoss(self.pos.z+delta.z)
         self.draghint = s
 
-        return delta
-
-
-    def ok(self, editor, undo, oldobjectslist, newobjectslist): # for LinBoneCenterHandle
-        "Returned final lists of objects to convert back into Model mesh vertexes."
-
-        from qbaseeditor import currentview
-        undomsg = "bone center handle move"
-
-        # This stops the LinBoneCornerHandle from using this section.
-        if isinstance(self, LinBoneCenterHandle):
-            newobject = []
-            for i in range(len(oldobjectslist)):
-                if oldobjectslist[i].type == ":g":
-                    vtxgroup = newobjectslist[i].copy()
-                    newobject = newobject + [vtxgroup]
-            if newobject == []:
-                undo = quarkx.action()
-                for i in range(len(oldobjectslist)):
-                    new_o_bone = oldobjectslist[i].copy()
-                    new_o_bone['start_point'] = newobjectslist[i].dictspec['start_point']
-                    new_o_bone['end_point'] = newobjectslist[i].dictspec['end_point']
-                    new_o_bone['bone_length'] = newobjectslist[i].dictspec['bone_length']
-                    new_o_bone['start_offset'] = newobjectslist[i].dictspec['start_offset']
-                    new_o_bone['end_offset'] = newobjectslist[i].dictspec['end_offset']
-                    undo.exchange(oldobjectslist[i], new_o_bone)
-                editor.ok(undo, "bone handle move")
-            else:
-                undo = quarkx.action()
-                for i in range(len(oldobjectslist)):
-                    if oldobjectslist[i].type == ":g":
-                        continue
-                    new_o_bone = oldobjectslist[i].copy()
-                    new_o_bone['start_point'] = newobjectslist[i].dictspec['start_point']
-                    new_o_bone['end_point'] = newobjectslist[i].dictspec['end_point']
-                    new_o_bone['bone_length'] = newobjectslist[i].dictspec['bone_length']
-                    new_o_bone['start_offset'] = newobjectslist[i].dictspec['start_offset']
-                    new_o_bone['end_offset'] = newobjectslist[i].dictspec['end_offset']
-                    undo.exchange(oldobjectslist[i], new_o_bone)
-                editor.ok(undo, "")
-                ConvertVertexPolyObject(editor, newobject, currentview.flags, currentview, undomsg, 0)
-        else:
-            ConvertVertexPolyObject(editor, newobjectslist, currentview.flags, currentview, undomsg, 0)
-
-
-    # for LinBoneCenterHandle. Draws the bone handles and lines only, drag lines are drawn in the linoperation function above.
-    def centerdrag(self, v1, v2, flags, view):
-        p0 = view.proj(self.pos)
-        if not p0.visible: return
-        if flags&MB_CTRL:
-            v2 = qhandles.aligntogrid(v2, 0)
-        delta = v2-v1
-        editor = mapeditor()
-        if editor is not None:
-            if editor.lock_x==1:
-                delta = quarkx.vect(0, delta.y, delta.z)
-            if editor.lock_y==1:
-                delta = quarkx.vect(delta.x, 0, delta.z)
-            if editor.lock_z==1:
-                delta = quarkx.vect(delta.x, delta.y, 0)
-        if editor.dragobject is None:
-            editor.dragobject = RectSelDragObject(view, p0.tuple[0], p0.tuple[1], RED, None)
-            editor.dragobject.handle = self
-        elif editor.dragobject.handle != self: # Allows a linear drag to use this code to draw the bones.
-            delta = quarkx.vect(0, 0, 0)
-
-        if view.info["viewname"] == "XY":
-            s = "was " + ftoss(self.pos.x) + " " + ftoss(self.pos.y) + " now " + ftoss(self.pos.x+delta.x) + " " + ftoss(self.pos.y+delta.y)
-        elif view.info["viewname"] == "XZ":
-            s = "was " + ftoss(self.pos.x) + " " + ftoss(self.pos.z) + " now " + ftoss(self.pos.x+delta.x) + " " + " " + ftoss(self.pos.z+delta.z)
-        elif view.info["viewname"] == "YZ":
-            s = "was " + ftoss(self.pos.y) + " " + ftoss(self.pos.z) + " now " + ftoss(self.pos.y+delta.y) + " " + ftoss(self.pos.z+delta.z)
-        else:
-            s = "was %s"%self.pos + " now " + ftoss(self.pos.x+delta.x) + " " + ftoss(self.pos.y+delta.y) + " " + ftoss(self.pos.z+delta.z)
-        self.draghint = s # If we get all the rotation hints to work for the YZ view below these "s" lines can be deleted.
-
-        newbones_start = []
-        newbones_end = []
-        for bone in self.oldbones_start:
-            newbone = bone.copy()
-            newbones_start = newbones_start + [newbone]
-        for bone in self.oldbones_end:
-            newbone = bone.copy()
-            newbones_end = newbones_end + [newbone]
-
+        old = [self.bone]
+        new = None
         if delta or (flags&MB_REDIMAGE):
-            view.repaint()
-            cv = view.canvas()
-            cv.penwidth = 1
-            if (self.s_or_e == 0): # Handles the "Start of Bone".
-                if self.groupselection == 0: # Single bone selection.
-                    if self.bone["length_locked"]=="1":
-                        # If the bone_length is locked, change the delta so the length of the bone doesn't get changed.
-                        startpoint = quarkx.vect(self.bone.dictspec['start_point'])
-                        endpoint = quarkx.vect(self.bone.dictspec['end_point'])
-                        bone_length = quarkx.vect(self.bone["bone_length"])
-                        bonelength = sqrt(pow(bone_length.x, 2) + pow(bone_length.y, 2) + pow(bone_length.z, 2))
-                        delta = mdlutils.ProjectKeepingLength(endpoint, startpoint + delta, bonelength) - startpoint
-                    for bone in range(len(self.oldbones_end)):
-                        endpoint = delta + quarkx.vect(self.oldbones_end[bone].dictspec['end_point'])
-                        newbones_end[bone]['end_point'] = endpoint.tuple
-                    for bone in range(len(self.oldbones_start)):
-                        startpoint = delta + quarkx.vect(self.oldbones_start[bone].dictspec['start_point'])
-                        newbones_start[bone]['start_point'] = startpoint.tuple
-                else: # Bone group selection.
-                    for bone in range(len(self.oldbones_end)):
-                        endpoint = delta + quarkx.vect(self.oldbones_end[bone].dictspec['end_point'])
-                        newbones_end[bone]['end_point'] = endpoint.tuple
-                    for bone in range(len(self.oldbones_start)):
-                        startpoint = delta + quarkx.vect(self.oldbones_start[bone].dictspec['start_point'])
-                        newbones_start[bone]['start_point'] = startpoint.tuple
-                        endpoint = delta + quarkx.vect(self.oldbones_start[bone].dictspec['end_point'])
-                        newbones_start[bone]['end_point'] = endpoint.tuple
+            newbone = self.bone.copy()
+            new = [newbone]
+            for bone in self.attachedbones:
+                old = old + [bone]
+                newbone = bone.copy()
+                new = new + [newbone]
 
-                if view.info['type'] != "3D":
-                    scale = view.scale()
-                    # Draws all the stationary bones first.
-                    for compbone in self.fixedbones:
-                        p1 = view.proj(quarkx.vect(compbone.dictspec['start_point']))
-                        p2 = view.proj(quarkx.vect(compbone.dictspec['end_point']))
-                        handle_start_scale = compbone.dictspec['start_scale']
-                        handle_end_scale = compbone.dictspec['end_scale']
-                        cv.penstyle = PS_INSIDEFRAME
-                        cv.brushstyle = BS_CLEAR
-                        DrawBoneLine(p1, p2, cv, MapColor("BoneLines", SS_MODEL), scale, handle_start_scale)
-                        cv.penstyle = PS_INSIDEFRAME
-                        cv.brushstyle = BS_CLEAR
-                        startcolor = compbone.dictspec['start_color']
-                        quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
-                        DrawBoneHandle(p1, cv, MapColor("start_color", SS_MODEL), scale, handle_start_scale)
-
-                        endcolor = compbone.dictspec['end_color']
-                        quarkx.setupsubset(SS_MODEL, "Colors")["end_color"] = endcolor
-                        DrawBoneHandle(p2, cv, MapColor("end_color", SS_MODEL), scale, handle_end_scale)
-                    # Now draws the bone being dragged.
-                    for bone in range(len(self.oldbones_end)):
-                        p1 = view.proj(quarkx.vect(newbones_end[bone].dictspec['start_point']))
-                        p2 = view.proj(quarkx.vect(newbones_end[bone].dictspec['end_point']))
-                        cv.penstyle = PS_INSIDEFRAME
-                        cv.brushstyle = BS_CLEAR
-                        if quarkx.setupsubset(SS_MODEL, "Options")['MBLines_Color'] is not None:
-                            endcolor = newbones_end[bone].dictspec['end_color']
-                            quarkx.setupsubset(SS_MODEL, "Colors")["end_color"] = endcolor
-                            endcolor = MapColor("end_color", SS_MODEL)
-                        else:
-                            endcolor = MapColor("BoneHandles", SS_MODEL)
-                        handle_start_scale = newbones_end[bone].dictspec['start_scale']
-                        handle_end_scale = newbones_end[bone].dictspec['end_scale']
-                        DrawBoneLine(p1, p2, cv, endcolor, scale, handle_start_scale)
-                        cv.penstyle = PS_INSIDEFRAME
-                        cv.brushstyle = BS_CLEAR
-                        if self.bone.dictspec['start_scale'] != newbones_end[bone].dictspec['end_scale']:
-                            endcolor = newbones_end[bone].dictspec['end_color']
-                            quarkx.setupsubset(SS_MODEL, "Colors")["end_color"] = endcolor
-                            DrawBoneHandle(p2, cv, MapColor("end_color", SS_MODEL), scale, handle_end_scale)
-                        startcolor = newbones_end[bone].dictspec['start_color']
-                        quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
-                        DrawBoneHandle(p1, cv, MapColor("start_color", SS_MODEL), scale, handle_start_scale)
-                    for bone in range(len(newbones_start)):
-                        p1 = view.proj(quarkx.vect(newbones_start[bone].dictspec['start_point']))
-                        p2 = view.proj(quarkx.vect(newbones_start[bone].dictspec['end_point']))
-                        cv.penstyle = PS_INSIDEFRAME
-                        cv.brushstyle = BS_CLEAR
-                        if quarkx.setupsubset(SS_MODEL, "Options")['MBLines_Color'] is not None:
-                            startcolor = self.bone.dictspec['start_color']
-                            quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
-                            startcolor = MapColor("start_color", SS_MODEL)
-                        else:
-                            startcolor = MapColor("BoneHandles", SS_MODEL)
-                        handle_start_scale = newbones_start[bone].dictspec['start_scale']
-                        handle_end_scale = newbones_start[bone].dictspec['end_scale']
-                        DrawBoneLine(p1, p2, cv, startcolor, scale, handle_start_scale)
-                        cv.penstyle = PS_INSIDEFRAME
-                        cv.brushstyle = BS_CLEAR
-                        startcolor = self.bone.dictspec['start_color']
-                        quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
-                        DrawBoneHandle(p1, cv, MapColor("start_color", SS_MODEL), scale, handle_start_scale)
-                        cv.penstyle = PS_INSIDEFRAME
-                        cv.brushstyle = BS_CLEAR
-                        endcolor = self.bone.dictspec['end_color']
-                        quarkx.setupsubset(SS_MODEL, "Colors")["end_color"] = endcolor
-                        DrawBoneHandle(p2, cv, MapColor("end_color", SS_MODEL), scale, handle_end_scale)
-                else:
-                    pass
-            else: # Handles the "End of Bone".
-                if self.groupselection == 0: # Single bone selection.
-                    if self.bone["length_locked"]=="1":
-                        # If the bone_length is locked, change the delta so the length of the bone doesn't get changed.
-                        startpoint = quarkx.vect(newbone.dictspec['start_point'])
-                        endpoint = quarkx.vect(newbone.dictspec['end_point'])
-                        bone_length = quarkx.vect(self.bone["bone_length"])
-                        bonelength = sqrt(pow(bone_length.x, 2) + pow(bone_length.y, 2) + pow(bone_length.z, 2))
-                        delta = mdlutils.ProjectKeepingLength(startpoint, endpoint + delta, bonelength) - endpoint
-                    for bone in range(len(self.oldbones_start)):
-                        startpoint = delta + quarkx.vect(self.oldbones_start[bone].dictspec['start_point'])
-                        newbones_start[bone]['start_point'] = startpoint.tuple
-                    for bone in range(len(self.oldbones_end)):
-                        endpoint = delta + quarkx.vect(self.oldbones_end[bone].dictspec['end_point'])
-                        newbones_end[bone]['end_point'] = endpoint.tuple
-                else: # Bone group selection.
-                    for bone in range(len(self.oldbones_end)):
-                        if self.oldbones_end[bone].name == self.bone.name:
-                            pass
-                        else:
-                            startpoint = delta + quarkx.vect(self.oldbones_end[bone].dictspec['start_point'])
-                            newbones_end[bone]['start_point'] = startpoint.tuple
-                        endpoint = delta + quarkx.vect(self.oldbones_end[bone].dictspec['end_point'])
-                        newbones_end[bone]['end_point'] = endpoint.tuple
-                    for bone in range(len(self.oldbones_start)):
-                        startpoint = delta + quarkx.vect(self.oldbones_start[bone].dictspec['start_point'])
-                        newbones_start[bone]['start_point'] = startpoint.tuple
-                        endpoint = delta + quarkx.vect(self.oldbones_start[bone].dictspec['end_point'])
-                        newbones_start[bone]['end_point'] = endpoint.tuple
-
-                if view.info['type'] != "3D":
-                    scale = view.scale()
-                    # Draws all the stationary bones first.
-                    for compbone in self.fixedbones:
-                        p1 = view.proj(quarkx.vect(compbone.dictspec['start_point']))
-                        p2 = view.proj(quarkx.vect(compbone.dictspec['end_point']))
-                        handle_start_scale = compbone.dictspec['start_scale']
-                        handle_end_scale = compbone.dictspec['end_scale']
-                        cv.penstyle = PS_INSIDEFRAME
-                        cv.brushstyle = BS_CLEAR
-                        cv.pencolor = MapColor("BoneLines", SS_MODEL)
-                        DrawBoneLine(p1, p2, cv, MapColor("BoneLines", SS_MODEL), scale, handle_start_scale)
-                        cv.penstyle = PS_INSIDEFRAME
-                        cv.brushstyle = BS_CLEAR
-                        startcolor = compbone.dictspec['start_color']
-                        quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
-                        DrawBoneHandle(p1, cv, MapColor("start_color", SS_MODEL), scale, handle_start_scale)
-
-                        endcolor = compbone.dictspec['end_color']
-                        quarkx.setupsubset(SS_MODEL, "Colors")["end_color"] = endcolor
-                        DrawBoneHandle(p2, cv, MapColor("end_color", SS_MODEL), scale, handle_end_scale)
-                    # Now draws the bone being dragged.
-                    for bone in range(len(self.oldbones_end)):
-                        p1 = view.proj(quarkx.vect(newbones_end[bone].dictspec['start_point']))
-                        p2 = view.proj(quarkx.vect(newbones_end[bone].dictspec['end_point']))
-                        cv.penstyle = PS_INSIDEFRAME
-                        cv.brushstyle = BS_CLEAR
-                        if quarkx.setupsubset(SS_MODEL, "Options")['MBLines_Color'] is not None:
-                            endcolor = self.bone.dictspec['end_color']
-                            quarkx.setupsubset(SS_MODEL, "Colors")["end_color"] = endcolor
-                            endcolor = MapColor("end_color", SS_MODEL)
-                        else:
-                            endcolor = MapColor("BoneHandles", SS_MODEL)
-                        handle_start_scale = newbones_end[bone].dictspec['start_scale']
-                        handle_end_scale = newbones_end[bone].dictspec['end_scale']
-                        DrawBoneLine(p1, p2, cv, endcolor, scale, handle_start_scale)
-                        cv.penstyle = PS_INSIDEFRAME
-                        cv.brushstyle = BS_CLEAR
-                        endcolor = self.bone.dictspec['end_color']
-                        quarkx.setupsubset(SS_MODEL, "Colors")["end_color"] = endcolor
-                        DrawBoneHandle(p2, cv, MapColor("end_color", SS_MODEL), scale, handle_end_scale)
-                        cv.penstyle = PS_INSIDEFRAME
-                        cv.brushstyle = BS_CLEAR
-                        startcolor = self.bone.dictspec['end_color']
-                        if self.oldbones_end[bone].name == self.bone.name:
-                            startcolor = self.bone.dictspec['start_color']
-                        if self.groupselection == 0:
-                            startcolor = newbones_end[bone].dictspec['start_color']
-                        quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
-                        DrawBoneHandle(p1, cv, MapColor("start_color", SS_MODEL), scale, handle_start_scale)
-                    for bone in range(len(newbones_start)):
-                        p1 = view.proj(quarkx.vect(newbones_start[bone].dictspec['start_point']))
-                        p2 = view.proj(quarkx.vect(newbones_start[bone].dictspec['end_point']))
-                        cv.penstyle = PS_INSIDEFRAME
-                        cv.brushstyle = BS_CLEAR
-                        if quarkx.setupsubset(SS_MODEL, "Options")['MBLines_Color'] is not None:
-                            startcolor = newbones_start[bone].dictspec['start_color']
-                            quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
-                            startcolor = MapColor("start_color", SS_MODEL)
-                        else:
-                            startcolor = MapColor("BoneHandles", SS_MODEL)
-                        handle_start_scale = newbones_start[bone].dictspec['start_scale']
-                        handle_end_scale = newbones_start[bone].dictspec['end_scale']
-                        DrawBoneLine(p1, p2, cv, startcolor, scale, handle_start_scale)
-                        cv.penstyle = PS_INSIDEFRAME
-                        cv.brushstyle = BS_CLEAR
-                        cv.pencolor = MapColor("BoneLines", SS_MODEL)
-                        endcolor = self.bone.dictspec['end_color']
-                        if self.groupselection == 0:
-                            endcolor = newbones_start[bone].dictspec['end_color']
-                            if self.bone.dictspec['end_scale'] != newbones_start[bone].dictspec['start_scale']:
-                                startcolor = newbones_start[bone].dictspec['start_color']
-                                quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
-                                DrawBoneHandle(p1, cv, MapColor("start_color", SS_MODEL), scale, handle_start_scale)
-                        quarkx.setupsubset(SS_MODEL, "Colors")["end_color"] = endcolor
-                        DrawBoneHandle(p2, cv, MapColor("end_color", SS_MODEL), scale, handle_end_scale)
-                else:
-                    pass
-        if (self.s_or_e == 0): # Handles the "Start of Bone".
-            oldbones = self.oldbones_end + self.oldbones_start
-            newbones = newbones_end + newbones_start
-        else: # Handles the "End of Bone".
-            oldbones = self.oldbones_start + self.oldbones_end
-            newbones = newbones_start + newbones_end
-        return oldbones, newbones
-
-
-class LinBoneCornerHandle(LinearBoneHandle):
-    "Linear Circle: handles at the corners for rotating."
-
-    def __init__(self, center, pos1, mgr, bone, s_or_e, realpoint=None):
-        LinearBoneHandle.__init__(self, pos1, mgr)
-        if realpoint is None:
-            self.pos0 = pos1
+            angle = self.linoperation(new, delta, g1, view)
+            self.draghint = "rotate %d deg." % angle
         else:
-            self.pos0 = realpoint
-        self.center = center - (pos1-center)
-        self.cursor = CR_CROSSH
-        self.undomsg = "bone joint rotation"
-        self.editor = mgr.editor
-        self.component = self.editor.Root.currentcomponent
-        self.bone = bone
-        self.s_or_e = s_or_e
+            new = None
+        old, new = self.sortbonelist(old, new)
 
-    # Only draws all of the LinBoneCornerHandle handles even during a drag, which we stop it from doing below.
-    def draw(self, view, cv, draghandle=None): # for LinBoneCornerHandle
-        editor = self.mgr.editor
-        from qbaseeditor import flagsmouse, currentview
-
-        try:
-            if isinstance(editor.dragobject.handle, VertexHandle) and (flagsmouse == 1032 or flagsmouse == 1036):
-                return
-        except:
-            pass
-        if quarkx.setupsubset(SS_MODEL, "Options")['HideBones'] is not None:
-            return
-        try:
-            # Allows all linear handles to draw at end of rotation drag
-            # when it comes through with flagsmouse at 16384.
-            if isinstance(editor.dragobject.handle, LinBoneCornerHandle) and (flagsmouse == 1032 or flagsmouse == 2056 or flagsmouse == 2060):
-                return
-        except:
-            pass
-
-        if isinstance(editor.dragobject, qhandles.ScrollViewDragObject) and flagsmouse == 1040:
-            return # RMB pressed or dragging to pan (scroll) in the view.
-
-        if view.info["viewname"] == "editors3Dview":
-            if (flagsmouse == 1048 or flagsmouse == 1056) and currentview.info["viewname"] != "editors3Dview": return # Doing zoom in a 2D view, stop drawing the Editors 3D view handles.
-            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles1"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] == "1":
-                return
-        if view.info["viewname"] == "XY":
-            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles2"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles2"] == "1":
-                return
-        if view.info["viewname"] == "YZ":
-            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles3"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles3"] == "1":
-                return
-        if view.info["viewname"] == "XZ":
-            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles4"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles4"] == "1":
-                return
-        if view.info["viewname"] == "3Dwindow":
-            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles5"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] == "1":
-                return
-
-        p = view.proj(self.pos)
-        if p.visible:
-            cv.reset()
-            cv.brushcolor = MapColor("LinearHandleCorners", SS_MODEL)
-            if self.s_or_e == 0:
-                startcolor = self.bone.dictspec['start_color']
-                quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
-                cv.brushcolor = MapColor("start_color", SS_MODEL)
-            else:
-                endcolor = self.bone.dictspec['end_color']
-                quarkx.setupsubset(SS_MODEL, "Colors")["end_color"] = endcolor
-                cv.brushcolor = MapColor("end_color", SS_MODEL)
-            if cv.brushcolor == MapColor("BoneHandles", SS_MODEL):
-                cv.brushcolor = MapColor("LinearHandleCorners", SS_MODEL)
-            cv.pencolor = MapColor("LinearHandleOutline", SS_MODEL)
-            cv.ellipse(int(p.x)-5, int(p.y)-3, int(p.x)+5, int(p.y)+3)
-
-    def linoperation(self, list, delta, g1, view): # for LinBoneCornerHandle, causes the vertex polys to move then draws its drag lines and vertex polys last.
-        from qbaseeditor import flagsmouse
-        editor = self.mgr.editor
-        mdleditor.setsingleframefillcolor(editor, view)
-        if editor is not None:
-            if editor.lock_x==1:
-                delta = quarkx.vect(0, delta.y, delta.z)
-            if editor.lock_y==1:
-                delta = quarkx.vect(delta.x, 0, delta.z)
-            if editor.lock_z==1:
-                delta = quarkx.vect(delta.x, delta.y, 0)
-
-        comp_list = []
-        for obj in list:
-            if obj.name.endswith(":g"):
-                thiscomp, bone_name = obj.name.split("-b-")
-                if thiscomp in comp_list:
-                    continue
-                comp_list = comp_list + [thiscomp]
-        comp_count = len(comp_list)
-        count = 0
-        while 1:
-            if comp_count == 0:
-                break
-            selvtxlist = tristodrawlist = []
-            newobjlist = []
-            for obj in list: # Draws the models triangles or vertexes, that are being dragged, correctly during a drag in all views.
-                if obj.name.endswith(":g"):
-                    pass
-                else:
-                    continue
-                thiscomp, bone_name = obj.name.split("-b-")
-                if thiscomp != comp_list[count]:
-                    continue
-                bone_name, s_or_e = bone_name.rsplit("_", 1)
-                bone_name = bone_name + ":bone"
-                s_or_e = "s_or_e" + s_or_e.replace(":g", "")
-                selvtxlist = selvtxlist + editor.ModelComponentList[comp_list[count]]['boneobjlist'][bone_name][s_or_e]['selvtxlist']
-                tristodrawlist = tristodrawlist + editor.ModelComponentList[comp_list[count]]['boneobjlist'][bone_name][s_or_e]['tristodrawlist']
-                frame = editor.Root.dictitems[comp_list[count]].dictitems['Frames:fg'].subitems[editor.bone_frame]
-                framevtxs = frame.vertices
-                for bone in range(len(self.newbones_start)):
-                    if editor.ModelComponentList[self.newbones_start[bone]['start_component']]['boneobjlist'].has_key(self.newbones_start[bone].name):
-                        if editor.ModelComponentList[self.newbones_start[bone]['start_component']]['boneobjlist'][self.newbones_start[bone].name].has_key('s_or_e0') and obj.shortname.split("-b-")[1] == self.newbones_start[bone].shortname + "_0":
-                            oldpos = quarkx.vect(self.oldbones_start[bone]['start_point'])
-                            newpos = quarkx.vect(self.newbones_start[bone]['start_point'])
-                            if self.s_or_e == 1: # Handles the "Start of Bone".
-                                if self.groupselection == 0: # Single bone selection.
-                                    oldposother = quarkx.vect(self.oldbones_start[bone]['start_point'])
-                                    newposother = quarkx.vect(self.newbones_start[bone]['start_point'])
-                                    break
-                            oldposother = quarkx.vect(self.oldbones_start[bone]['end_point'])
-                            newposother = quarkx.vect(self.newbones_start[bone]['end_point'])
-                            break
-                    if editor.ModelComponentList[self.newbones_start[bone]['end_component']]['boneobjlist'].has_key(self.newbones_start[bone].name):
-                        if editor.ModelComponentList[self.newbones_start[bone]['end_component']]['boneobjlist'][self.newbones_start[bone].name].has_key('s_or_e1') and obj.shortname.split("-b-")[1] == self.newbones_start[bone].shortname + "_1":
-                            oldpos = quarkx.vect(self.oldbones_start[bone]['end_point'])
-                            newpos = quarkx.vect(self.newbones_start[bone]['end_point'])
-                            if self.s_or_e == 0: # Handles the "Start of Bone".
-                                if self.groupselection == 0: # Single bone selection.
-                                    oldposother = quarkx.vect(self.oldbones_start[bone]['end_point'])
-                                    newposother = quarkx.vect(self.newbones_start[bone]['end_point'])
-                                    break
-                            oldposother = quarkx.vect(self.oldbones_start[bone]['start_point'])
-                            newposother = quarkx.vect(self.newbones_start[bone]['start_point'])
-                            break
-                for bone in range(len(self.newbones_end)):
-                    if editor.ModelComponentList.has_key(self.component.name):
-                        if editor.ModelComponentList[self.component.name]['boneobjlist'].has_key(self.newbones_end[bone].name):
-                            if editor.ModelComponentList[self.component.name]['boneobjlist'][self.newbones_end[bone].name].has_key('s_or_e0') and obj.shortname.split("-b-")[1] == self.newbones_end[bone].shortname + "_0":
-                                oldpos = quarkx.vect(self.oldbones_end[bone]['start_point'])
-                                newpos = quarkx.vect(self.newbones_end[bone]['start_point'])
-                                if self.s_or_e == 0: # Handles the "Start of Bone".
-                                    if self.groupselection == 0: # Single bone selection.
-                                        oldposother = quarkx.vect(self.oldbones_end[bone]['start_point'])
-                                        newposother = quarkx.vect(self.newbones_end[bone]['start_point'])
-                                        break
-                                oldposother = quarkx.vect(self.oldbones_end[bone]['end_point'])
-                                newposother = quarkx.vect(self.newbones_end[bone]['end_point'])
-                                break
-                            if editor.ModelComponentList[self.component.name]['boneobjlist'][self.newbones_end[bone].name].has_key('s_or_e1') and obj.shortname.split("-b-")[1] == self.newbones_end[bone].shortname + "_1":
-                                oldpos = quarkx.vect(self.oldbones_end[bone]['end_point'])
-                                newpos = quarkx.vect(self.newbones_end[bone]['end_point'])
-                                oldposother = quarkx.vect(self.oldbones_end[bone]['start_point'])
-                                newposother = quarkx.vect(self.newbones_end[bone]['start_point'])
-                                break
-                    if editor.ModelComponentList.has_key(self.newbones_end[bone]['start_component']):
-                        if editor.ModelComponentList[self.newbones_end[bone]['start_component']]['boneobjlist'].has_key(self.newbones_end[bone].name):
-                            if editor.ModelComponentList[self.newbones_end[bone]['start_component']]['boneobjlist'][self.newbones_end[bone].name].has_key('s_or_e0') and obj.shortname.split("-b-")[1] == self.newbones_end[bone].shortname + "_0":
-                                oldpos = quarkx.vect(self.oldbones_end[bone]['start_point'])
-                                newpos = quarkx.vect(self.newbones_end[bone]['start_point'])
-                                if self.s_or_e == 0: # Handles the "Start of Bone".
-                                    if self.groupselection == 0: # Single bone selection.
-                                        oldposother = quarkx.vect(self.oldbones_end[bone]['start_point'])
-                                        newposother = quarkx.vect(self.newbones_end[bone]['start_point'])
-                                        break
-                                oldposother = quarkx.vect(self.oldbones_end[bone]['end_point'])
-                                newposother = quarkx.vect(self.newbones_end[bone]['end_point'])
-                                break
-                            if editor.ModelComponentList.has_key(self.component.name):
-                                if editor.ModelComponentList[self.component.name]['boneobjlist'].has_key(self.newbones_end[bone].name):
-                                    if editor.ModelComponentList[self.component.name]['boneobjlist'][self.newbones_end[bone].name].has_key('s_or_e1') and obj.shortname.split("-b-")[1] == self.newbones_end[bone].shortname + "_1":
-                                        oldpos = quarkx.vect(self.oldbones_end[bone]['end_point'])
-                                        newpos = quarkx.vect(self.newbones_end[bone]['end_point'])
-                                        oldposother = quarkx.vect(self.oldbones_end[bone]['start_point'])
-                                        newposother = quarkx.vect(self.newbones_end[bone]['start_point'])
-                                        break
-                                    if editor.ModelComponentList[self.component.name]['boneobjlist'][self.newbones_end[bone].name].has_key('s_or_e0') and obj.shortname.split("-b-")[1] == self.newbones_end[bone].shortname + "_0":
-                                        oldpos = quarkx.vect(self.oldbones_end[bone]['end_point'])
-                                        newpos = quarkx.vect(self.newbones_end[bone]['end_point'])
-                                        if self.s_or_e == 0: # Handles the "Start of Bone".
-                                            if self.groupselection == 0: # Single bone selection.
-                                                oldposother = quarkx.vect(self.oldbones_end[bone]['end_point'])
-                                                newposother = quarkx.vect(self.newbones_end[bone]['end_point'])
-                                                break
-                                        oldposother = quarkx.vect(self.oldbones_end[bone]['start_point'])
-                                        newposother = quarkx.vect(self.newbones_end[bone]['start_point'])
-                                        break
-                    if editor.ModelComponentList.has_key(self.newbones_end[bone]['end_component']):
-                        if editor.ModelComponentList[self.newbones_end[bone]['end_component']]['boneobjlist'].has_key(self.newbones_end[bone].name):
-                            if editor.ModelComponentList[self.newbones_end[bone]['end_component']]['boneobjlist'][self.newbones_end[bone].name].has_key('s_or_e1') and obj.shortname.split("-b-")[1] == self.newbones_end[bone].shortname + "_1":
-                                oldpos = quarkx.vect(self.oldbones_end[bone]['end_point'])
-                                newpos = quarkx.vect(self.newbones_end[bone]['end_point'])
-                                oldposother = quarkx.vect(self.oldbones_end[bone]['start_point'])
-                                newposother = quarkx.vect(self.newbones_end[bone]['start_point'])
-                                break
-             
-                normal = view.vector("Z").normalized
-                try:
-                    oldvector = oldpos - oldposother
-                    oldvector = oldvector - normal*(normal*oldvector)
-                    newvector = newpos - newposother
-                    newvector = newvector - normal*(normal*newvector)
-                except:
-                    quarkx.msgbox("INVALID VERTEX ASSIGNMENT !\n\nThe bone named: " + bone_name.replace(":bone", "") + "\nis attached to another bone's handle\nthat has vertexes assigned to it.\n(Its end handle most likely)\n\nTry moving those vertexes to " + bone_name.replace(":bone", "") + " start handle\nand try your drag movement again.", qutils.MT_ERROR, qutils.MB_OK)
-                    return
-                obj.translate(-oldposother)
-                m = qhandles.UserRotationMatrix(normal, newvector, oldvector, 0)
-                if m is not None:
-                    obj.linear(quarkx.vect(0, 0, 0), m)
-                obj.translate(newposother)
-                newobjlist = newobjlist + [obj]
-
-                # This section draws the vertex polys.
-                if quarkx.setupsubset(SS_MODEL, "Options")['NVDL'] is None: # NVDL = no vertex drag lines.
-                    try:
-                        for poly in obj.subitems:
-                            box = quarkx.boundingboxof([poly])
-                            box = (box[0] + box[1]) * .5
-                            framevtxs[int(poly.shortname)] = box
-                    except:
-                        if (self.s_or_e == 0):
-                            if (editor.layout.explorer.sellist[0].type == ":bg"):
-                                try:
-                                    framevtxs = editor.Root.dictitems[self.bone.dictspec['end_component']].dictitems['Frames:fg'].subitems[editor.bone_frame].vertices
-                                    for poly in obj.subitems:
-                                        box = quarkx.boundingboxof([poly])
-                                        box = (box[0] + box[1]) * .5
-                                        framevtxs[int(poly.shortname)] = box
-                                except:
-                                    framevtxs = editor.Root.dictitems[self.bone.dictspec['start_component']].dictitems['Frames:fg'].subitems[editor.bone_frame].vertices
-                                    for poly in obj.subitems:
-                                        box = quarkx.boundingboxof([poly])
-                                        box = (box[0] + box[1]) * .5
-                                        framevtxs[int(poly.shortname)] = box
-                            else:
-                                try:
-                                    framevtxs = editor.Root.dictitems[self.bone.dictspec['start_component']].dictitems['Frames:fg'].subitems[editor.bone_frame].vertices
-                                    for poly in obj.subitems:
-                                        box = quarkx.boundingboxof([poly])
-                                        box = (box[0] + box[1]) * .5
-                                        framevtxs[int(poly.shortname)] = box
-                                except:
-                                    framevtxs = editor.Root.dictitems[self.bone.dictspec['end_component']].dictitems['Frames:fg'].subitems[editor.bone_frame].vertices
-                                    for poly in obj.subitems:
-                                        box = quarkx.boundingboxof([poly])
-                                        box = (box[0] + box[1]) * .5
-                                        framevtxs[int(poly.shortname)] = box
-
-            # This section draws the selected vertexes drag lines for all bones that are being dragged.
-            from mdlutils import keyframesrotation
-            if keyframesrotation == 1:
-                pass
-            else:
-                if quarkx.setupsubset(SS_MODEL, "Options")['NVDL'] is None: # NVDL = no vertex drag lines.
-                    cv = view.canvas()
-                    cv.pencolor = MapColor("BoneHandles", SS_MODEL)
-
-                    for obj in newobjlist:
-                        for poly in obj.subitems:
-                            box = quarkx.boundingboxof([poly])
-                            box = (box[0] + box[1]) * .5
-                            framevtxs[int(poly.shortname)] = box
-                            
-                    for tri in tristodrawlist:
-                        dragprojvtx = view.proj(framevtxs[tri[0]])
-                        for vtx in range(len(tri[4])):
-                            if tri[4][vtx][0] == tri[0]:
-                                continue
-                            else:
-                                projvtx = view.proj(framevtxs[tri[4][vtx][0]])
-                            cv.line(int(dragprojvtx.tuple[0]), int(dragprojvtx.tuple[1]), int(projvtx.tuple[0]), int(projvtx.tuple[1]))
-
-                dragcolor = vertexsellistcolor
-                for obj in newobjlist:
-                    view.drawmap(obj, DM_OTHERCOLOR, dragcolor)
-
-            if count == comp_count-1:
-                break
-            count = count + 1
-
-        return delta
-
-    def ok(self, editor, undo, oldobjectslist, newobjectslist): # for LinBoneCornerHandle
-        "Returned final lists of objects to convert back into Model mesh vertexes."
-
-        Fix_Attached_Handles(self.bone, oldobjectslist, newobjectslist)
-        # Sort the list to stop re-arranging in the tree-view
-        compbones = self.mgr.editor.Root.findallsubitems("", ':bone')      # get all bones
-        tempoldlist = []
-        tempnewlist = []
-        for bone in compbones:
-            try:
-                i = oldobjectslist.index(bone)
-            except ValueError:
-                pass
-            else:
-                tempoldlist = tempoldlist + [oldobjectslist[i]]
-                tempnewlist = tempnewlist + [newobjectslist[i]]
-        for i in range(len(oldobjectslist)):
-            if not oldobjectslist[i] in tempoldlist:
-                tempoldlist = tempoldlist + [oldobjectslist[i]]
-                tempnewlist = tempnewlist + [newobjectslist[i]]
-        oldobjectslist = tempoldlist
-        newobjectslist = tempnewlist
-
-        from qbaseeditor import currentview
-        undomsg = "bone rotation handle move"
-        if isinstance(self, LinBoneCornerHandle):
-            newobject = []
-            for i in range(len(oldobjectslist)):
-                if oldobjectslist[i].type == ":g":
-                    vtxgroup = newobjectslist[i].copy()
-                    newobject = newobject + [vtxgroup]
-            if newobject == []:
-                undo = quarkx.action()
-                for i in range(len(oldobjectslist)):
-                    new_o_bone = oldobjectslist[i].copy()
-                    new_o_bone['start_point'] = newobjectslist[i].dictspec['start_point']
-                    new_o_bone['end_point'] = newobjectslist[i].dictspec['end_point']
-                    new_o_bone['bone_length'] = newobjectslist[i].dictspec['bone_length']
-                    new_o_bone['start_offset'] = newobjectslist[i].dictspec['start_offset']
-                    new_o_bone['end_offset'] = newobjectslist[i].dictspec['end_offset']
-                    undo.exchange(oldobjectslist[i], new_o_bone)
-                editor.ok(undo, "bone handle rotation")
-            else:
-                undo = quarkx.action()
-                for i in range(len(oldobjectslist)):
-                    if oldobjectslist[i].type == ":g":
-                        continue
-                    new_o_bone = oldobjectslist[i].copy()
-                    new_o_bone['start_point'] = newobjectslist[i].dictspec['start_point']
-                    new_o_bone['end_point'] = newobjectslist[i].dictspec['end_point']
-                    new_o_bone['bone_length'] = newobjectslist[i].dictspec['bone_length']
-                    new_o_bone['start_offset'] = newobjectslist[i].dictspec['start_offset']
-                    new_o_bone['end_offset'] = newobjectslist[i].dictspec['end_offset']
-                    undo.exchange(oldobjectslist[i], new_o_bone)
-                editor.ok(undo, "")
-                ConvertVertexPolyObject(editor, newobject, currentview.flags, currentview, undomsg, 0)
-        else:
-            ConvertVertexPolyObject(editor, newobjectslist, currentview.flags, currentview, undomsg, 0)
-
-
-    def cornerdrag(self, v1, v2, flags, view): # for LinBoneCornerHandle
-        p0 = view.proj(self.pos)
-        if not p0.visible: return
-        if flags&MB_CTRL:
-            v2 = qhandles.aligntogrid(v2, 0)
-        delta = v2-v1
-        editor = mapeditor()
-        if editor is not None:
-            if editor.lock_x==1:
-                delta = quarkx.vect(0, delta.y, delta.z)
-            if editor.lock_y==1:
-                delta = quarkx.vect(delta.x, 0, delta.z)
-            if editor.lock_z==1:
-                delta = quarkx.vect(delta.x, delta.y, 0)
-        if editor.dragobject is None:
-            editor.dragobject = RectSelDragObject(view, p0.tuple[0], p0.tuple[1], RED, None)
-            editor.dragobject.handle = self
-        elif editor.dragobject.handle != self: # Allows a linear drag to use this code to draw the bones.
-            delta = quarkx.vect(0, 0, 0)
-
-        if view.info["viewname"] == "XY":
-            s = "was " + ftoss(self.pos.x) + " " + ftoss(self.pos.y) + " now " + ftoss(self.pos.x+delta.x) + " " + ftoss(self.pos.y+delta.y)
-        elif view.info["viewname"] == "XZ":
-            s = "was " + ftoss(self.pos.x) + " " + ftoss(self.pos.z) + " now " + ftoss(self.pos.x+delta.x) + " " + " " + ftoss(self.pos.z+delta.z)
-        elif view.info["viewname"] == "YZ":
-            s = "was " + ftoss(self.pos.y) + " " + ftoss(self.pos.z) + " now " + ftoss(self.pos.y+delta.y) + " " + ftoss(self.pos.z+delta.z)
-        else:
-            s = "was %s"%self.pos + " now " + ftoss(self.pos.x+delta.x) + " " + ftoss(self.pos.y+delta.y) + " " + ftoss(self.pos.z+delta.z)
-        self.draghint = s # If we get all the rotation hints to work for the YZ view below these "s" lines can be deleted.
-
-        self.newbones_start = []
-        self.newbones_end = []
-        for bone in self.oldbones_start:
-            newbone = bone.copy()
-            self.newbones_start = self.newbones_start + [newbone]
-        for bone in self.oldbones_end:
-            newbone = bone.copy()
-            self.newbones_end = self.newbones_end + [newbone]
-
-        if delta or (flags&MB_REDIMAGE):
-            from mdlutils import keyframesrotation
-            if keyframesrotation == 1:
-                pass
-            else:
-                view.repaint()
-            cv = view.canvas()
-            cv.penwidth = 1
-            if self.s_or_e == 0: # Handles the "Start of Bone".
-                if self.groupselection == 0: # Single bone selection.
-                    # Does movement of the handles and rotation of their assigned vertexes, if any.
-                    rotationorigin = quarkx.vect(self.bone.dictspec['start_point'])
-                    change1 = self.pos - rotationorigin
-                    change2 = (self.pos + delta) - rotationorigin
-                    if view.info['type'] == "XY":
-                        change1 = quarkx.vect(change1.x, change1.y, 0)
-                        change2 = quarkx.vect(change2.x, change2.y, 0)
-                    elif view.info['type'] == "XZ":
-                        change1 = quarkx.vect(change1.x, 0, change1.z)
-                        change2 = quarkx.vect(change2.x, 0, change2.z)
-                    elif view.info['type'] == "YZ":
-                        change1 = quarkx.vect(0, change1.y, change1.z)
-                        change2 = quarkx.vect(0, change2.y, change2.z)
-                    normal = view.vector("Z").normalized
-                    change1 = change1 - normal*(normal*change1)
-                    change2 = change2 - normal*(normal*change2)
-                    m = qhandles.UserRotationMatrix(normal, change2, change1, 0)
-                    if m is None:
-                        m = quarkx.matrix(quarkx.vect(1, 0, 0), quarkx.vect(0, 1, 0), quarkx.vect(0, 0, 1))
-                    self.draghint = "rotate %d deg." % (math.acos(m[0,0])*180.0/math.pi)
-                    # Use this if the radius should also be changed:
-                    #changedradius = sqrt(pow(change2.x, 2) + pow(change2.y, 2) + pow(change2.z, 2)) - sqrt(pow(change1.x, 2) + pow(change1.y, 2) + pow(change1.z, 2))
-                    changedradius = 0
-                    for bone in range(len(self.oldbones_start)):
-                        endpoint = quarkx.vect(self.oldbones_start[bone].dictspec['end_point'])
-                        change2 = (endpoint - rotationorigin)
-                        newchange2 = m * change2
-                        endpoint = endpoint + (newchange2 - change2) + newchange2.normalized * changedradius
-                        self.newbones_start[bone]['end_point'] = endpoint.tuple
-                    for bone in range(len(self.oldbones_end)):
-                        startpoint = quarkx.vect(self.oldbones_end[bone].dictspec['start_point'])
-                        change1 = (startpoint - rotationorigin)
-                        newchange1 = m * change1
-                        startpoint = startpoint + (newchange1 - change1) + newchange1.normalized * changedradius
-                        self.newbones_end[bone]['start_point'] = startpoint.tuple
-                        if self.oldbones_end[bone].dictspec.has_key('start_vtxlist'):
-                            if self.oldbones_end[bone] != self.bone:
-                                self.newbones_end[bone]['bone_length'] = ((startpoint - quarkx.vect(self.oldbones_end[bone].dictspec['end_point']))*-1).tuple
-                                continue
-                else: # Bone group selection.
-                    # Does movement of the handles and rotation of their assigned vertexes, if any.
-                    rotationorigin = quarkx.vect(self.bone.dictspec['start_point'])
-                    change1 = self.pos - rotationorigin
-                    change2 = (self.pos + delta) - rotationorigin
-                    if view.info['type'] == "XY":
-                        change1 = quarkx.vect(change1.x, change1.y, 0)
-                        change2 = quarkx.vect(change2.x, change2.y, 0)
-                    elif view.info['type'] == "XZ":
-                        change1 = quarkx.vect(change1.x, 0, change1.z)
-                        change2 = quarkx.vect(change2.x, 0, change2.z)
-                    elif view.info['type'] == "YZ":
-                        change1 = quarkx.vect(0, change1.y, change1.z)
-                        change2 = quarkx.vect(0, change2.y, change2.z)
-                    normal = view.vector("Z").normalized
-                    change1 = change1 - normal*(normal*change1)
-                    change2 = change2 - normal*(normal*change2)
-                    m = qhandles.UserRotationMatrix(normal, change2, change1, 0)
-                    if m is None:
-                        m = quarkx.matrix(quarkx.vect(1, 0, 0), quarkx.vect(0, 1, 0), quarkx.vect(0, 0, 1))
-                    self.draghint = "rotate %d deg." % (math.acos(m[0,0])*180.0/math.pi)
-                    # Use this if the radius should also be changed:
-                    #changedradius = sqrt(pow(change2.x, 2) + pow(change2.y, 2) + pow(change2.z, 2)) - sqrt(pow(change1.x, 2) + pow(change1.y, 2) + pow(change1.z, 2))
-                    changedradius = 0
-                    for bone in range(len(self.oldbones_start)):
-                        startpoint = quarkx.vect(self.oldbones_start[bone].dictspec['start_point'])
-                        endpoint = quarkx.vect(self.oldbones_start[bone].dictspec['end_point'])
-                        change1 = (startpoint - rotationorigin)
-                        newchange1 = m * change1
-                        startpoint = startpoint + (newchange1 - change1) + newchange1.normalized * changedradius
-                        change2 = (endpoint - rotationorigin)
-                        newchange2 = m * change2
-                        endpoint = endpoint + (newchange2 - change2) + newchange2.normalized * changedradius
-                        self.newbones_start[bone]['start_point'] = startpoint.tuple
-                        self.newbones_start[bone]['end_point'] = endpoint.tuple
-                    for bone in range(len(self.oldbones_end)):
-                        startpoint = quarkx.vect(self.oldbones_end[bone].dictspec['start_point'])
-                        endpoint = quarkx.vect(self.oldbones_end[bone].dictspec['end_point'])
-                        change1 = (startpoint - rotationorigin)
-                        newchange1 = m * change1
-                        startpoint = startpoint + (newchange1 - change1) + newchange1.normalized * changedradius
-                        change2 = (endpoint - rotationorigin)
-                        newchange2 = m * change2
-                        endpoint = endpoint + (newchange2 - change2) + newchange2.normalized * changedradius
-                        self.newbones_end[bone]['start_point'] = startpoint.tuple
-                        self.newbones_end[bone]['end_point'] = endpoint.tuple
-
-                from mdlutils import keyframesrotation
-                if keyframesrotation == 1:
-                    pass
-                else:
-                    if view.info['type'] != "3D":
-                        scale = view.scale()
-                        # Draws all the stationary bones first.
-                        for compbone in self.fixedbones:
-                            p1 = view.proj(quarkx.vect(compbone.dictspec['start_point']))
-                            p2 = view.proj(quarkx.vect(compbone.dictspec['end_point']))
-                            handle_start_scale = compbone.dictspec['start_scale']
-                            handle_end_scale = compbone.dictspec['end_scale']
-                            cv.penstyle = PS_INSIDEFRAME
-                            cv.brushstyle = BS_CLEAR
-                            DrawBoneLine(p1, p2, cv, MapColor("BoneLines", SS_MODEL), scale, handle_start_scale)
-                            startcolor = compbone.dictspec['start_color']
-                            quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
-                            DrawBoneHandle(p1, cv, MapColor("start_color", SS_MODEL), scale, handle_start_scale)
-                            endcolor = compbone.dictspec['end_color']
-                            quarkx.setupsubset(SS_MODEL, "Colors")["end_color"] = endcolor
-                            DrawBoneHandle(p2, cv, MapColor("end_color", SS_MODEL), scale, handle_end_scale)
-                        # Now draws the bone being dragged.
-                        for bone in range(len(self.newbones_start)):
-                            p1 = view.proj(quarkx.vect(self.newbones_start[bone].dictspec['start_point']))
-                            p2 = view.proj(quarkx.vect(self.newbones_start[bone].dictspec['end_point']))
-                            cv.penstyle = PS_INSIDEFRAME
-                            cv.brushstyle = BS_CLEAR
-                            if quarkx.setupsubset(SS_MODEL, "Options")['MBLines_Color'] is not None:
-                                startcolor = self.bone.dictspec['start_color']
-                                quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
-                                startcolor = MapColor("start_color", SS_MODEL)
-                            else:
-                                startcolor = MapColor("BoneHandles", SS_MODEL)
-                            handle_start_scale = self.newbones_start[bone].dictspec['start_scale']
-                            handle_end_scale = self.newbones_start[bone].dictspec['end_scale']
-                            DrawBoneLine(p1, p2, cv, startcolor, scale, handle_start_scale)
-                            cv.penstyle = PS_INSIDEFRAME
-                            cv.brushstyle = BS_CLEAR
-                            startcolor = self.bone.dictspec['start_color']
-                            quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
-                            startcolor = MapColor("start_color", SS_MODEL)
-                            DrawBoneHandle(p1, cv, MapColor("start_color", SS_MODEL), scale, handle_start_scale)
-                            cv.penstyle = PS_INSIDEFRAME
-                            cv.brushstyle = BS_CLEAR
-                            endcolor = self.bone.dictspec['end_color']
-                            quarkx.setupsubset(SS_MODEL, "Colors")["end_color"] = endcolor
-                            DrawBoneHandle(p2, cv, MapColor("end_color", SS_MODEL), scale, handle_end_scale)
-
-                        for bone in range(len(self.newbones_end)):
-                            p1 = view.proj(quarkx.vect(self.newbones_end[bone].dictspec['start_point']))
-                            p2 = view.proj(quarkx.vect(self.newbones_end[bone].dictspec['end_point']))
-                            cv.penstyle = PS_INSIDEFRAME
-                            cv.brushstyle = BS_CLEAR
-                            if quarkx.setupsubset(SS_MODEL, "Options")['MBLines_Color'] is not None:
-                                startcolor = self.newbones_end[bone].dictspec['start_color']
-                                quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
-                                startcolor = MapColor("start_color", SS_MODEL)
-                            else:
-                                startcolor = MapColor("BoneHandles", SS_MODEL)
-                            quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
-                            if self.groupselection == 0:
-                                p2 = view.proj(quarkx.vect(self.oldbones_end[bone].dictspec['end_point']))
-                            handle_start_scale = self.newbones_end[bone].dictspec['start_scale']
-                            handle_end_scale = self.newbones_end[bone].dictspec['end_scale']
-                            DrawBoneLine(p1, p2, cv, MapColor("start_color", SS_MODEL), scale, handle_start_scale)
-                            cv.penstyle = PS_INSIDEFRAME
-                            cv.brushstyle = BS_CLEAR
-                            if self.groupselection == 0:
-                                endcolor = self.newbones_end[bone].dictspec['end_color']
-                                quarkx.setupsubset(SS_MODEL, "Colors")["end_color"] = endcolor
-                                endcolor = MapColor("end_color", SS_MODEL)
-                                p2 = view.proj(quarkx.vect(self.oldbones_end[bone].dictspec['end_point']))
-                                DrawBoneHandle(p2, cv, MapColor("end_color", SS_MODEL), scale, handle_end_scale)
-                            startcolor = self.newbones_end[bone].dictspec['start_color']
-                            quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
-                            DrawBoneHandle(p1, cv, MapColor("start_color", SS_MODEL), scale, handle_start_scale)
-                    else:
-                        pass
-            else: # Handles the "End of Bone".
-                if self.groupselection == 0: # Single bone selection.
-                    # Does movement of the handles and rotation of their assigned vertexes, if any.
-                    rotationorigin = quarkx.vect(self.bone.dictspec['start_point'])
-                    change1 = self.pos - rotationorigin
-                    change2 = (self.pos + delta) - rotationorigin
-                    if view.info['type'] == "XY":
-                        change1 = quarkx.vect(change1.x, change1.y, 0)
-                        change2 = quarkx.vect(change2.x, change2.y, 0)
-                    elif view.info['type'] == "XZ":
-                        change1 = quarkx.vect(change1.x, 0, change1.z)
-                        change2 = quarkx.vect(change2.x, 0, change2.z)
-                    elif view.info['type'] == "YZ":
-                        change1 = quarkx.vect(0, change1.y, change1.z)
-                        change2 = quarkx.vect(0, change2.y, change2.z)
-                    normal = view.vector("Z").normalized
-                    change1 = change1 - normal*(normal*change1)
-                    change2 = change2 - normal*(normal*change2)
-                    m = qhandles.UserRotationMatrix(normal, change2, change1, 0)
-                    if m is None:
-                        m = quarkx.matrix(quarkx.vect(1, 0, 0), quarkx.vect(0, 1, 0), quarkx.vect(0, 0, 1))
-                    self.draghint = "rotate %d deg." % (math.acos(m[0,0])*180.0/math.pi)
-                    # Use this if the radius should also be changed:
-                    #changedradius = sqrt(pow(change2.x, 2) + pow(change2.y, 2) + pow(change2.z, 2)) - sqrt(pow(change1.x, 2) + pow(change1.y, 2) + pow(change1.z, 2))
-                    changedradius = 0
-                    for bone in range(len(self.oldbones_start)):
-                        startpoint = quarkx.vect(self.oldbones_start[bone].dictspec['start_point'])
-                        change1 = (startpoint - rotationorigin)
-                        newchange1 = m * change1
-                        startpoint = startpoint + (newchange1 - change1) + newchange1.normalized * changedradius
-                        self.newbones_start[bone]['start_point'] = startpoint.tuple
-                        if self.oldbones_start[bone].dictspec.has_key('start_vtxlist'):
-                            if self.oldbones_start[bone] != self.bone:
-                                self.newbones_start[bone]['bone_length'] = ((startpoint - quarkx.vect(self.oldbones_start[bone].dictspec['end_point']))*-1).tuple
-                                continue
-                    for bone in range(len(self.oldbones_end)):
-                        endpoint = quarkx.vect(self.oldbones_end[bone].dictspec['end_point'])
-                        change2 = (endpoint - rotationorigin)
-                        newchange2 = m * change2
-                        endpoint = endpoint + (newchange2 - change2) + newchange2.normalized * changedradius
-                        self.newbones_end[bone]['end_point'] = endpoint.tuple
-                else: # Bone group selection.
-                    # Does movement of the handles and rotation of their assigned vertexes, if any.
-                    rotationorigin = quarkx.vect(self.bone.dictspec['end_point'])
-                    change1 = self.pos - rotationorigin
-                    change2 = (self.pos + delta) - rotationorigin
-                    if view.info['type'] == "XY":
-                        change1 = quarkx.vect(change1.x, change1.y, 0)
-                        change2 = quarkx.vect(change2.x, change2.y, 0)
-                    elif view.info['type'] == "XZ":
-                        change1 = quarkx.vect(change1.x, 0, change1.z)
-                        change2 = quarkx.vect(change2.x, 0, change2.z)
-                    elif view.info['type'] == "YZ":
-                        change1 = quarkx.vect(0, change1.y, change1.z)
-                        change2 = quarkx.vect(0, change2.y, change2.z)
-                    normal = view.vector("Z").normalized
-                    change1 = change1 - normal*(normal*change1)
-                    change2 = change2 - normal*(normal*change2)
-                    m = qhandles.UserRotationMatrix(normal, change2, change1, 0)
-                    if m is None:
-                        m = quarkx.matrix(quarkx.vect(1, 0, 0), quarkx.vect(0, 1, 0), quarkx.vect(0, 0, 1))
-                    self.draghint = "rotate %d deg." % (math.acos(m[0,0])*180.0/math.pi)
-                    # Use this if the radius should also be changed:
-                    #changedradius = sqrt(pow(change2.x, 2) + pow(change2.y, 2) + pow(change2.z, 2)) - sqrt(pow(change1.x, 2) + pow(change1.y, 2) + pow(change1.z, 2))
-                    changedradius = 0
-                    for bone in range(len(self.oldbones_end)):
-                        endpoint = quarkx.vect(self.oldbones_end[bone].dictspec['end_point'])
-                        change2 = (endpoint - rotationorigin)
-                        newchange2 = m * change2
-                        endpoint = endpoint + (newchange2 - change2) + newchange2.normalized * changedradius
-                        self.newbones_end[bone]['end_point'] = endpoint.tuple
-                        if self.oldbones_end[bone] != self.bone:
-                            startpoint = quarkx.vect(self.oldbones_end[bone].dictspec['start_point'])
-                            change1 = (startpoint - rotationorigin)
-                            newchange1 = m * change1
-                            startpoint = startpoint + (newchange1 - change1) + newchange1.normalized * changedradius
-                            self.newbones_end[bone]['start_point'] = startpoint.tuple
-
-                if view.info['type'] != "3D":
-                    from mdlutils import keyframesrotation
-                    if keyframesrotation == 1:
-                        pass
-                    else:
-                        scale = view.scale()
-                        # Draws all the stationary bones first.
-                        for compbone in self.fixedbones:
-                            p1 = view.proj(quarkx.vect(compbone.dictspec['start_point']))
-                            p2 = view.proj(quarkx.vect(compbone.dictspec['end_point']))
-                            cv.penstyle = PS_INSIDEFRAME
-                            cv.brushstyle = BS_CLEAR
-                            handle_start_scale = compbone.dictspec['start_scale']
-                            handle_end_scale = compbone.dictspec['end_scale']
-                            DrawBoneLine(p1, p2, cv, MapColor("BoneLines", SS_MODEL), scale, handle_start_scale)
-                            cv.penstyle = PS_INSIDEFRAME
-                            cv.brushstyle = BS_CLEAR
-                            startcolor = compbone.dictspec['start_color']
-                            quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
-                            DrawBoneHandle(p1, cv, MapColor("start_color", SS_MODEL), scale, handle_start_scale)
-
-                            endcolor = compbone.dictspec['end_color']
-                            quarkx.setupsubset(SS_MODEL, "Colors")["end_color"] = endcolor
-                            DrawBoneHandle(p2, cv, MapColor("end_color", SS_MODEL), scale, handle_end_scale)
-                        # Now draws the bone being dragged.
-                        for bone in range(len(self.oldbones_end)):
-                            if self.groupselection == 0:
-                                pass
-                            else:
-                                if self.oldbones_end[bone] == self.bone:
-                                    p1 = view.proj(quarkx.vect(self.oldbones_end[bone].dictspec['start_point']))
-                                    p2 = view.proj(quarkx.vect(self.oldbones_end[bone].dictspec['end_point']))
-                                    handle_start_scale = self.oldbones_end[bone].dictspec['start_scale']
-                                    handle_end_scale = self.oldbones_end[bone].dictspec['end_scale']
-                                    DrawBoneLine(p1, p2, cv, MapColor("BoneLines", SS_MODEL), scale, handle_start_scale)
-                                    startcolor = self.oldbones_end[bone].dictspec['start_color']
-                                    quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
-                                    DrawBoneHandle(p1, cv, MapColor("start_color", SS_MODEL), scale, handle_start_scale)
-                                    endcolor = self.oldbones_end[bone].dictspec['end_color']
-                                    quarkx.setupsubset(SS_MODEL, "Colors")["end_color"] = endcolor
-                                    DrawBoneHandle(p2, cv, MapColor("end_color", SS_MODEL), scale, handle_end_scale)
-                                    continue
-                            p1 = view.proj(quarkx.vect(self.newbones_end[bone].dictspec['start_point']))
-                            p2 = view.proj(quarkx.vect(self.newbones_end[bone].dictspec['end_point']))
-                            cv.penstyle = PS_INSIDEFRAME
-                            cv.brushstyle = BS_CLEAR
-                            if quarkx.setupsubset(SS_MODEL, "Options")['MBLines_Color'] is not None:
-                                endcolor = self.bone.dictspec['end_color']
-                                quarkx.setupsubset(SS_MODEL, "Colors")["end_color"] = endcolor
-                                endcolor = MapColor("end_color", SS_MODEL)
-                            else:
-                                endcolor = MapColor("BoneHandles", SS_MODEL)
-                            handle_start_scale = self.newbones_end[bone].dictspec['start_scale']
-                            handle_end_scale = self.newbones_end[bone].dictspec['end_scale']
-                            DrawBoneLine(p1, p2, cv, endcolor, scale, handle_start_scale)
-                            cv.penstyle = PS_INSIDEFRAME
-                            cv.brushstyle = BS_CLEAR
-                            endcolor = self.bone.dictspec['end_color']
-                            quarkx.setupsubset(SS_MODEL, "Colors")["end_color"] = endcolor
-                            DrawBoneHandle(p2, cv, MapColor("end_color", SS_MODEL), scale, handle_end_scale)
-                            cv.penstyle = PS_INSIDEFRAME
-                            cv.brushstyle = BS_CLEAR
-                            endcolor = self.bone.dictspec['end_color']
-                            quarkx.setupsubset(SS_MODEL, "Colors")["end_color"] = endcolor
-                            DrawBoneHandle(p1, cv, MapColor("end_color", SS_MODEL), scale, handle_start_scale)
-                        for bone in range(len(self.newbones_start)):
-                            p1 = view.proj(quarkx.vect(self.newbones_start[bone].dictspec['start_point']))
-                            p2 = view.proj(quarkx.vect(self.newbones_start[bone].dictspec['end_point']))
-                            handle_start_scale = self.newbones_start[bone].dictspec['start_scale']
-                            handle_end_scale = self.newbones_start[bone].dictspec['end_scale']
-                            if self.groupselection == 0:
-                                p2 = view.proj(quarkx.vect(self.oldbones_start[bone].dictspec['end_point']))
-                                if self.bone.dictspec['end_scale'] != self.newbones_start[bone].dictspec['start_scale']:
-                                    startcolor = self.newbones_start[bone].dictspec['start_color']
-                                    quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
-                                    DrawBoneHandle(p1, cv, MapColor("start_color", SS_MODEL), scale, handle_start_scale)
-                            cv.penstyle = PS_INSIDEFRAME
-                            cv.brushstyle = BS_CLEAR
-                            if quarkx.setupsubset(SS_MODEL, "Options")['MBLines_Color'] is not None:
-                                startcolor = self.newbones_start[bone].dictspec['start_color']
-                                quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
-                                startcolor = MapColor("start_color", SS_MODEL)
-                            else:
-                                startcolor = MapColor("BoneHandles", SS_MODEL)
-                            DrawBoneLine(p1, p2, cv, startcolor, scale, handle_start_scale)
-                            cv.penstyle = PS_INSIDEFRAME
-                            cv.brushstyle = BS_CLEAR
-                            endcolor = self.newbones_start[bone].dictspec['end_color']
-                            quarkx.setupsubset(SS_MODEL, "Colors")["end_color"] = endcolor
-                            DrawBoneHandle(p2, cv, MapColor("end_color", SS_MODEL), scale, handle_end_scale)
-                else:
-                    pass
-        if (self.s_or_e == 0): # Handles the "Start of Bone".
-            if self.groupselection == 0: # Single bone selection.
-                oldbones = self.oldbones_start + self.oldbones_end
-                newbones = self.newbones_start + self.newbones_end
-            else:
-                oldbones = self.oldbones_end + self.oldbones_start
-                newbones = self.newbones_end + self.newbones_start
-        else: # Handles the "End of Bone".
-            oldbones = self.oldbones_start + self.oldbones_end
-            newbones = self.newbones_start + self.newbones_end
-        return oldbones, newbones
+        return old, new
 
 
 #
@@ -6085,96 +4375,36 @@ class LinBoneCornerHandle(LinearBoneHandle):
 #
 
 def MouseDragging(self, view, x, y, s, handle):
-    "Mouse Drag on a Model View."
-    global mdleditorsave, mdleditorview, cursorposatstart, cursordragstartpos
-    cursordragstartpos = (x, y) # Used for start where clicked for Model Editor RectSelDragObject just above here.
-    mdleditorsave = self
-    mdleditorview = view
-    if isinstance(handle, LinBoneCenterHandle) or isinstance(handle, LinBoneCornerHandle):
-        if (len(mdleditorsave.layout.explorer.sellist) == 0):
-            mdleditorsave.dragobject = None
+    "Mouse Drag on a Model View, self is an instance of the model editor."
+    global cursorposatstart
+
+    if isinstance(handle, BoneCenterHandle) or isinstance(handle, BoneCornerHandle): # Used for auto selection feature.
+        if (len(self.layout.explorer.sellist) == 0):
+            self.dragobject = None
+            quarkx.beep()
             return None
-        elif (len(mdleditorsave.layout.explorer.sellist) == 1) and (mdleditorsave.layout.explorer.sellist[0].type == ':bone'):
-            if mdleditorsave.layout.explorer.sellist[0] != handle.bone:
-                mdleditorsave.layout.explorer.sellist = [handle.bone]
-                Update_Editor_Views(mdleditorsave)
-            compbones = mdleditorsave.Root.findallsubitems("", ':bone')      # get all bones
-            if handle.s_or_e == 0: # Handles the "Start of Bone".
-                if handle.bone.dictspec.has_key('end_vtxlist') and isinstance(handle, LinBoneCornerHandle):
-                    mdleditorsave.dragobject = None
-                    return None
-                for bone in compbones:
-                    if (mdlutils.checktuplepos(bone.dictspec['start_point'], handle.bone.dictspec['start_point']) == 1) and (mdlutils.checktuplepos(bone.dictspec['start_point'], bone.dictspec['end_point']) != 1):
-                        if bone.dictspec.has_key('start_vtxlist'):
-                            mdleditorsave.dragobject = None
-                            return None
-                    if isinstance(handle, LinBoneCornerHandle):
-                        if mdlutils.checktuplepos(bone.dictspec['start_point'], handle.bone.dictspec['end_point']) == 1:
-                            if bone.dictspec.has_key('start_vtxlist'):
-                                mdleditorsave.dragobject = None
-                                return None
-                    else:
-                        if mdlutils.checktuplepos(bone.dictspec['end_point'], handle.bone.dictspec['start_point']) == 1:
-                            if bone.dictspec.has_key('end_vtxlist'):
-                                mdleditorsave.dragobject = None
-                                return None
-            else: # Handles the "End of Bone".
-                for bone in compbones:
-                    if mdlutils.checktuplepos(bone.dictspec['start_point'], handle.bone.dictspec['end_point']) == 1:
-                        if bone.dictspec.has_key('start_vtxlist'):
-                            mdleditorsave.dragobject = None
-                            return None
-                    elif mdlutils.checktuplepos(bone.dictspec['end_point'], handle.bone.dictspec['end_point']) == 1:
-                        if bone.dictspec.has_key('end_vtxlist'):
-                            mdleditorsave.dragobject = None
-                            return None
-        elif (len(mdleditorsave.layout.explorer.sellist) == 1) and (mdleditorsave.layout.explorer.sellist[0].type == ':bg'):
-            compbones = mdleditorsave.Root.findallsubitems("", ':bone')      # get all bones
+        elif (len(self.layout.explorer.sellist) == 1) and (self.layout.explorer.sellist[0].type == ':bone'):
+            if self.layout.explorer.sellist[0] != handle.bone:
+                self.layout.explorer.sellist = [handle.bone]
+                Update_Editor_Views(self)
+                self.layout.mpp.resetpage()
+    #        compbones = self.Root.findallsubitems("", ':bone')      # get all bones
+        elif (len(self.layout.explorer.sellist) == 1) and (self.layout.explorer.sellist[0].type == ':bg'):
+            compbones = self.Root.findallsubitems("", ':bone')      # get all bones
             allow = 1
             for bone in compbones:
                 if bone == handle.bone:
                     allow = 0
                 if allow == 1:
                     continue
-                if (handle.s_or_e == 0): # Handles the "Start of Bone".
-                    if (mdlutils.checktuplepos(handle.bone.dictspec['start_point'], bone.dictspec['start_point']) == 1) or (mdlutils.checktuplepos(handle.bone.dictspec['end_point'], bone.dictspec['start_point']) == 1):
-                        if bone.dictspec.has_key('start_vtxlist') and allow == 0:
-                            mdleditorsave.dragobject = None
-                            return None
-                    if isinstance(self, LinBoneCornerHandle):
-                        pass
-                    else:
-                        if mdlutils.checktuplepos(handle.bone.dictspec['start_point'], bone.dictspec['end_point']) == 1:
-                            if bone.dictspec.has_key('end_vtxlist') and allow == 0:
-                                mdleditorsave.dragobject = None
-                                return None
-                    for commstart in compbones:
-                        if bone == handle.bone or commstart == handle.bone:
-                            allow = 1
-                        if mdlutils.checktuplepos(bone.dictspec['end_point'], commstart.dictspec['start_point']) == 1:
-                            if commstart.dictspec.has_key('start_vtxlist') or commstart.dictspec.has_key('end_vtxlist') and allow == 0:
-                                mdleditorsave.dragobject = None
-                                return None
-                if (handle.s_or_e == 1): # Handles the "End of Bone".
-                    if mdlutils.checktuplepos(handle.bone.dictspec['end_point'], bone.dictspec['end_point']) == 1:
-                        if bone.dictspec.has_key('end_vtxlist') and allow == 0:
-                            mdleditorsave.dragobject = None
-                            return None
-                    elif mdlutils.checktuplepos(handle.bone.dictspec['end_point'], bone.dictspec['start_point']) == 1:
-                        if bone.dictspec.has_key('start_vtxlist') and allow == 0:
-                            mdleditorsave.dragobject = None
-                            return None
-                    for commend in compbones:
-                        if bone == handle.bone or commstart == handle.bone:
-                            allow = 1
-                        if mdlutils.checktuplepos(commend.dictspec['end_point'], bone.dictspec['start_point']) == 1:
-                            if bone.dictspec.has_key('start_vtxlist') and allow == 0:
-                                mdleditorsave.dragobject = None
-                                return None
-        elif len(mdleditorsave.layout.explorer.sellist) == 2 and ((mdleditorsave.layout.explorer.sellist[0].type == ':bg' and mdleditorsave.layout.explorer.sellist[1].type == ':mf') or (mdleditorsave.layout.explorer.sellist[0].type == ':bone' and mdleditorsave.layout.explorer.sellist[1].type == ':mf')):
-            pass
+        elif len(self.layout.explorer.sellist) == 2 and ((self.layout.explorer.sellist[0].type == ':bg' and self.layout.explorer.sellist[1].type == ':mf') or (self.layout.explorer.sellist[0].type == ':bone' and self.layout.explorer.sellist[1].type == ':mf')):
+            if self.layout.explorer.sellist[0].type == ':bone' and self.layout.explorer.sellist[0] != handle.bone:
+                self.layout.explorer.sellist = [handle.bone] + [self.layout.explorer.sellist[1]]
+                Update_Editor_Views(self)
+                self.layout.mpp.resetpage()
         else:
-            mdleditorsave.dragobject = None
+            self.dragobject = None
+            quarkx.beep()
             return None
     for item in view.info:
         if item == 'center':
@@ -6189,6 +4419,16 @@ def MouseDragging(self, view, x, y, s, handle):
         s = handle.click(self)
         if s and ("S" in s):
             self.layout.actionmpp()  # update the multi-pages-panel
+
+    if handle is not None:
+        if isinstance(handle, BoneHandle):
+            handle.start_drag(view, x, y)
+            if handle.attachedbones is None:
+                self.dragobject = None
+                quarkx.beep()
+                # Why does the msgbox below cause a freezeup ? That should not happen.
+            #    quarkx.msgbox("Improper Action!\n\nA bone in this drag has assigned vertexes.\nYou must also select a frame to do this drag.", MT_ERROR, MB_OK)
+                return None
 
     return qhandles.MouseDragging(self, view, x, y, s, handle, MapColor("DragImage", SS_MODEL))
 
@@ -6249,6 +4489,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.172  2009/03/28 20:24:42  cdunde
+#Minor comment corrections.
+#
 #Revision 1.171  2009/03/26 07:17:20  cdunde
 #Update for editing vertex color support.
 #
@@ -6257,6 +4500,24 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #Revision 1.169  2009/03/25 05:30:20  cdunde
 #Added vertex color support.
+#
+#Revision 1.168.2.6  2009/03/23 20:01:26  danielpharos
+#All vertices should now move properly!
+#
+#Revision 1.168.2.5  2009/03/16 21:10:28  danielpharos
+#Final result now being applied to vertices.
+#
+#Revision 1.168.2.4  2009/03/16 18:33:31  danielpharos
+#Fix red-drawing of BoneCenterHandle.
+#
+#Revision 1.168.2.3  2009/03/11 15:50:36  danielpharos
+#Added vertex assigning and some draw-n-drag code.
+#
+#Revision 1.168.2.2  2009/03/02 22:50:07  danielpharos
+#Added vertex assigning code.
+#
+#Revision 1.168.2.1  2009/02/25 20:46:37  danielpharos
+#Initial changes.
 #
 #Revision 1.168  2009/02/17 04:58:03  cdunde
 #Removed line of code causing problem by killing the view handles.

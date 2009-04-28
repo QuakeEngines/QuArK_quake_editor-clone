@@ -32,6 +32,7 @@ from math import pi, sin, cos, fmod
 import mapdragmodes
 import quarkpy.qbaseeditor
 import quarkpy.dlgclasses
+import quarkpy.mdlutils
 import mdlgridscale
 # For hollowing Torus
 import quarkpy.mapcommands
@@ -5263,6 +5264,8 @@ def ConvertPolyObject(editor, newobjectslist, flags, view, undomsg, option=1, nb
         # Finally the undo exchange is made and ok called to finish the function.
         undo = quarkx.action()
         undo.exchange(comp, new_comp)
+        # This needs to be done for each component or bones will not work if used in the editor.
+        quarkpy.mdlutils.make_tristodraw_dict(editor, new_comp)
         if rings == 0:
             editor.ok(undo, undomsg+" with "+str(nbroffaces)+" faces")
         elif rings == 1:
@@ -5407,6 +5410,8 @@ def ConvertPolyObject(editor, newobjectslist, flags, view, undomsg, option=1, nb
             new_comp.triangles = comp.triangles + newtris
         undo = quarkx.action()
         undo.exchange(comp, new_comp)
+        # This needs to be done for each component or bones will not work if used in the editor.
+        quarkpy.mdlutils.make_tristodraw_dict(editor, new_comp)
         editor.ok(undo, undomsg+" with "+str(nbroffaces)+" faces \\ "+str(nbrofpolys)+" sections")
 
 
@@ -5597,6 +5602,8 @@ def ConvertPolyObject(editor, newobjectslist, flags, view, undomsg, option=1, nb
         # Finally the undo exchange is made and ok called to finish the function.
         undo = quarkx.action()
         undo.exchange(comp, new_comp)
+        # This needs to be done for each component or bones will not work if used in the editor.
+        quarkpy.mdlutils.make_tristodraw_dict(editor, new_comp)
         if rings == 0:
             editor.ok(undo, undomsg+" with "+str(nbroffaces)+" faces")
         elif rings == 1:
@@ -5608,6 +5615,9 @@ def ConvertPolyObject(editor, newobjectslist, flags, view, undomsg, option=1, nb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.17  2008/12/20 08:39:34  cdunde
+# Minor adjustment to various Model Editor dialogs for recent fix of item over lapping by Dan.
+#
 # Revision 1.16  2008/09/12 19:08:40  cdunde
 # Minor code cleanup.
 #

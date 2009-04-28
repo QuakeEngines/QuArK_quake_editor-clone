@@ -530,6 +530,7 @@ Strings = {
     4459: "positive integer expected",
     4460: "Cannot find '%s', using '%s' instead",
     4461: "Unknown value '%s' for setting '%s'",
+    4462: "expected a 3D matrix",
 
     4614: "&More >>",
     4616: "                     *** EXCEPTION REPORT ***\n\n%s       Address in the program : %p (%p)\n",
@@ -1067,6 +1068,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.141  2009/03/16 08:46:00  danielpharos
+#Updated to DevIL 1.7.8, added IWI loading, and added many new image loading/saving options.
+#
 #Revision 1.140  2009/03/13 09:15:10  danielpharos
 #Added a Reset-button to the configuration window.
 #

@@ -875,11 +875,6 @@ class BaseEditor:
                 self.EditorObjectList = []
                 self.SelCommonTriangles = []
                 self.SelVertexes = []
-                for v in self.layout.views:
-                    v.handles = []
-                    mdleditor.setsingleframefillcolor(self, v)
-                    v.repaint()
-                    plugins.mdlgridscale.gridfinishdrawing(self, v)
 
              # This is the first call at the start of the selection drag\or causes only one item to be selected.
             if modelfacelist != [] and flagsmouse == 536:
@@ -898,10 +893,17 @@ class BaseEditor:
                 mdleditor.commonhandles(self)
 
         if flags & MB_DRAGEND: ### This is when the mouse button(s) is ACTUALLY released.
+            if isinstance(self, mdleditor.ModelEditor) and view.info["viewname"] == "skinview" and (flagsmouse == 2072 or flagsmouse == 2088):
+                try:
+                    skindrawobject = self.Root.currentcomponent.currentskin
+                except:
+                    skindrawobject = None
+                mdlhandles.buildskinvertices(self, view, self.layout, self.Root.currentcomponent, skindrawobject)
+                self.finishdrawing(view)
             if self.dragobject is not None:
                 if isinstance(self, mdleditor.ModelEditor):
                     if view.info["viewname"] == "skinview":
-                        if flagsmouse == 2064 or flagsmouse == 2072 or flagsmouse == 2080:
+                        if flagsmouse == 2064 or flagsmouse == 2080 or flagsmouse == 2096:
                             if self.Root.currentcomponent is None and self.Root.name.endswith(":mr"):
                                 componentnames = []
                                 for item in self.Root.dictitems:
@@ -1013,7 +1015,7 @@ class BaseEditor:
                         import mdlhandles
                         try:
                             # This returns during Linear Handle drag so that actual drag hints will appear properly in the 'Help box'.
-                            if isinstance(editor.dragobject.handle, mdlhandles.LinRedHandle) or isinstance(self.dragobject.handle, mdlhandles.LinCornerHandle) or isinstance(self.dragobject.handle, mdlhandles.LinSideHandle) or isinstance(self.dragobject.handle, mdlhandles.LinBoneCornerHandle):
+                            if isinstance(editor.dragobject.handle, mdlhandles.LinRedHandle) or isinstance(self.dragobject.handle, mdlhandles.LinCornerHandle) or isinstance(self.dragobject.handle, mdlhandles.LinSideHandle) or isinstance(self.dragobject.handle, mdlhandles.BoneCornerHandle):
                                 return
                         except:
                             pass
@@ -1120,7 +1122,7 @@ class BaseEditor:
                                 s = quarkx.getlonghint(handle.hint)
                         else:
                             s = "Skin tri \\ vertex " + str(handle.tri_index) + " \\ " + str(handle.ver_index) + " x:%s"%ftoss(x) + " y:%s"%ftoss(y)
-                    elif (isinstance(handle, mdlhandles.LinRedHandle)) or (isinstance(handle, mdlhandles.LinSideHandle)) or (isinstance(handle, mdlhandles.LinCornerHandle)) or (isinstance(handle, mdlhandles.LinBoneCornerHandle)):
+                    elif (isinstance(handle, mdlhandles.LinRedHandle)) or (isinstance(handle, mdlhandles.LinSideHandle)) or (isinstance(handle, mdlhandles.LinCornerHandle)) or (isinstance(handle, mdlhandles.BoneCornerHandle)):
                         if view.info["viewname"] == "XY":
                             s = "Linear handle pos " + " x:%s"%ftoss(handle.pos.x) + " y:%s"%ftoss(handle.pos.y)
                         elif view.info["viewname"] == "XZ":
@@ -1216,7 +1218,6 @@ class BaseEditor:
                             tb2 = self.layout.toolbars["tb_paintmodes"]
                             if tb2.tb.buttons[4].state == 2:
                                 self.dragobject = None
-
                                 modelfacelist = mdlhandles.ClickOnView(self, view, x, y)
                                 plugins.mdlpaintmodes.ColorPicker(self, view, x, y, flagsmouse, modelfacelist)
                                 return
@@ -1294,7 +1295,7 @@ class BaseEditor:
                                 skindrawobject = None
                             mdlhandles.buildskinvertices(self, view, self.layout, self.Root.currentcomponent, skindrawobject)
                         else:
-                            if (isinstance(self.dragobject, mdlhandles.LinBoneCenterHandle) or isinstance(self.dragobject, mdlhandles.LinBoneCornerHandle)) and (flagsmouse == 520 or flagsmouse == 524):
+                            if (isinstance(self.dragobject, mdlhandles.BoneCenterHandle) or isinstance(self.dragobject, mdlhandles.BoneCornerHandle)) and (flagsmouse == 520 or flagsmouse == 524):
                                 from mdleditor import NewSellist
                                 if len(self.layout.explorer.sellist) == 0:
                                     NewSellist = []
@@ -1572,6 +1573,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.125  2009/03/12 22:22:46  cdunde
+#To cycle through layered items in the Model Editor's views to click and select a component.
+#
 #Revision 1.124  2009/01/29 02:12:41  cdunde
 #Fix by DanielPharos for skins not changing before Skin-view is opened.
 #

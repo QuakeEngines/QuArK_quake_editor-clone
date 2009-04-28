@@ -72,30 +72,7 @@ def matchframesclick(m):
             undo.put(editor.Root, new_comps[i])
         editor.ok(undo, "Match Frame Count")
         editor.layout.explorer.sellist = newsellist + new_comps
-   
 
-def addtriclick(m):
-    editor = mapeditor()
-    if len(editor.ModelVertexSelList) == 3:
-        if (editor.ModelVertexSelList[0][0] < editor.ModelVertexSelList[1][0]) or (editor.ModelVertexSelList[0][0] < editor.ModelVertexSelList[2][0]):
-            if editor.ModelVertexSelList[1][0] > editor.ModelVertexSelList[2][0]:
-                quarkx.msgbox("You need to select\nvertex "+str(editor.ModelVertexSelList[1][0])+" first.", MT_ERROR, MB_OK)
-                return
-            else:
-                quarkx.msgbox("You need to select\nvertex "+str(editor.ModelVertexSelList[2][0])+" first.", MT_ERROR, MB_OK)
-                return
-        else:
-          ### This will reverse the direction the triangle face is facing, when it is created, if the "Reverse Direction" command is active (checked).
-            templist = editor.ModelVertexSelList
-            if quarkx.setupsubset(SS_MODEL, "Options")["RevDir"] == "1":
-                editor.ModelVertexSelList = [templist[0], templist[2], templist[1]]
-            addtriangle(editor)
-
-
-def remtriclick(m):
-    editor = mapeditor()
-    if len(editor.ModelVertexSelList) == 3:
-        removeTriangle_v3(editor)
 
 def checkcomponents(m):
     editor = mapeditor()
@@ -142,23 +119,10 @@ def autobuild(m):
     editor.Root.tryautoloadparts()
     editor.fileobject = editor.fileobject
 
-def revdir(m):
-    if not MdlOption("RevDir"):
-        quarkx.setupsubset(SS_MODEL, "Options")['RevDir'] = "1"
-    else:
-        quarkx.setupsubset(SS_MODEL, "Options")['RevDir'] = None
-    ReverseDirection.state = quarkx.setupsubset(SS_MODEL,"Options").getint("RevDir")
-
 
 NewFrame = qmenu.item("&Duplicate Current Frame", newframeclick, "|Duplicate Current Frame:\n\nThis copies a single frame that is currently selected and adds that copy to that model component's animation frames list.\n\nFor multiple frame copies use the 'Duplicate' function on the 'Edit' menu.|intro.modeleditor.menu.html#commandsmenu")
 
 MatchFrameCount = qmenu.item("&Match Frame Count", matchframesclick, "|Match Frame Count:\n\nThis will duplicate the number of frames in the selected components with the one that has the most frames in it. It will not copy the frames, only how many there are.|intro.modeleditor.menu.html#commandsmenu")
-
-AddTriangle = qmenu.item("&Add Triangle", addtriclick, "|Add Triangle:\n\nThis adds a new triangle to the currently selected component.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.menu.html#commandsmenu")
-
-ReverseDirection = qmenu.item("Reverse Direction", revdir, "|Reverse Direction:\n\nNormally, in QuArK, creating a new triangles vertexes in a 'clockwise' direction will produce a triangle that faces 'outwards'.\n\nBut sometimes this does not work for adding new triangles to existing ones.\n\nActivating this function (checking it) will reverse that direction causing the triangle to face the opposite way.\n\nClick on the 'InfoBase' button for more detail.|intro.modeleditor.menu.html#commandsmenu")
-
-RemoveTriangle = qmenu.item("&Delete Triangle", remtriclick, "|Delete Triangle:\n\nThis removes a triangle from the currently selected component.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.menu.html#commandsmenu")
 
 CheckC = qmenu.item("Check Components", checkcomponents, "|Check Components:\n\nThis checks components for any errors in them that might exist.|intro.modeleditor.menu.html#commandsmenu")
 
@@ -166,16 +130,13 @@ AutoBuild = qmenu.item("Auto Assemble", autobuild, "|Auto Assemble:\n\nSome mode
 
 NewFrame.state = qmenu.disabled
 MatchFrameCount.state = qmenu.disabled
-AddTriangle.state = qmenu.disabled
-RemoveTriangle.state = qmenu.disabled
 CheckC.state = qmenu.disabled
-ReverseDirection.state = quarkx.setupsubset(SS_MODEL,"Options").getint("RevDir")
 
 #
 # Global variables to update from plug-ins.
 #
 
-items = [NewFrame, MatchFrameCount, qmenu.sep, AddTriangle, ReverseDirection, RemoveTriangle, qmenu.sep, CheckC, AutoBuild]
+items = [NewFrame, MatchFrameCount, qmenu.sep, CheckC, AutoBuild]
 shortcuts = {"Ins": NewFrame}
 
 
@@ -212,12 +173,6 @@ def commandsclick(menu, oldcommand=onclick):
             else:
                 MatchFrameCount.state = qmenu.disabled
                 CheckC.state = qmenu.disabled
-        if len(editor.ModelVertexSelList) == 3:
-            AddTriangle.state = qmenu.normal
-            RemoveTriangle.state = qmenu.normal
-        else:
-            AddTriangle.state = qmenu.disabled
-            RemoveTriangle.state = qmenu.disabled
     except AttributeError:
         pass
 
@@ -227,6 +182,9 @@ onclick = commandsclick
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.22  2009/01/29 02:13:51  cdunde
+# To reverse frame indexing and fix it a better way by DanielPharos.
+#
 # Revision 1.21  2008/07/26 03:37:38  cdunde
 # Minor correction for frames matching count.
 #

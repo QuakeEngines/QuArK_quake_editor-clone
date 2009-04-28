@@ -195,7 +195,7 @@ def MdlBackgroundMenu(editor, view=None, origin=None):
     if view is not None:
         if view.info["viewname"] != "skinview":
             import mdloptions
-            bonepop = qmenu.popup("Bone Commands", mdlhandles.LinBoneCenterHandle(origin,None,None,0).menu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
+            bonepop = qmenu.popup("Bone Commands", mdlhandles.BoneCenterHandle(origin,None,None).menu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
             mdlfacepop = qmenu.popup("Face Commands", mdlhandles.ModelFaceHandle(origin).menu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
             vertexpop = qmenu.popup("Vertex Commands", mdlhandles.VertexHandle(origin).menu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
             if len(editor.layout.explorer.sellist) >= 1:
@@ -301,6 +301,9 @@ def BaseMenu(sellist, editor):
 #
 #
 #$Log$
+#Revision 1.39  2009/03/04 23:32:16  cdunde
+#For proper importer exporter listing one menus, code by DanielPharos.
+#
 #Revision 1.38  2009/01/27 05:03:01  cdunde
 #Full support for .md5mesh bone importing with weight assignment and other improvements.
 #

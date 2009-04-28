@@ -16,6 +16,8 @@ Model Editor Entities manager
 import quarkx
 from mdlutils import *
 import mdlhandles
+import dlgclasses
+import mdleditor
 
 #
 # Classes that implement operations on all types of Model Objects.
@@ -36,9 +38,480 @@ MT_TAGGROUP    = 4      # AiV
 MT_BONEGROUP   = 5      # AiV
 MT_MISCGROUP   = 6      # AiV
 
+###############################
+#
+# Entity \ Component General Functions.
+#
+###############################
+
+def ShowHideComp(x):
+    editor = mdleditor.mdleditor
+    if editor is None: return
+    editor.ModelFaceSelList = []
+    editor.EditorObjectList = []
+    editor.SkinFaceSelList = []
+    editor.SelCommonTriangles = []
+    editor.SelVertexes = []
+    obj = editor.layout.explorer.uniquesel
+    if obj is None: return
+    obj.showhide(x)
+    editor.layout.explorer.uniquesel = None
+
+    if x == 0:
+        for view in editor.layout.views:
+            view.handles = []
+            if view.viewmode == "wire":
+                view.invalidate()
+            else:
+                view.invalidate(1)
+    else:
+        import mdlhandles
+        from mdlhandles import SkinView1
+        if SkinView1 is not None:
+            q = editor.layout.skinform.linkedobjects[0]
+            q["triangles"] = str(len(editor.Root.currentcomponent.triangles))
+            editor.layout.skinform.setdata(q, editor.layout.skinform.form)
+            SkinView1.invalidate()
+            try:
+                skindrawobject = editor.Root.currentcomponent.currentskin
+            except:
+                skindrawobject = None
+            mdlhandles.buildskinvertices(editor, SkinView1, editor.layout, editor.Root.currentcomponent, skindrawobject)
+            editor.finishdrawing(SkinView1)
+
+        for view in editor.layout.views:
+            if view.viewmode == "wire":
+                pass
+            else:
+                view.invalidate(1)
+            mdleditor.setsingleframefillcolor(editor, view)
+            view.repaint()
+
+def ShowComp(m):
+    ShowHideComp(1)
+
+
+def HideComp(m):
+    ShowHideComp(0)
+
+###############################
+#
+# Vertex U,V Color Module
+#
+###############################
+
+# Imports & Globals for Vertex U,V Color Module ONLY.
+import struct
+
+#
+# Main function to be called from other files such as the
+# plugins\ie_ASE_import.py file using a button (see file)
+# to return a "dialog_plugin section" that will be used
+# in that files dialog definition or "dlgdef".
+#
+def UseVertexUVColors():
+    vtx_UVcolor_dialog_plugin =  """
+      Sep:            = {Typ="S"   Txt = ""}
+      Sep:            = {Typ="S"   Txt = "UV Vertex Colors"}
+      vtx_color:      = {          Txt="Vertex Color"                                                                          }
+      vtx_color:      = {Typ="L"   Txt="Vertex Color"    Hint="Color to use for this components vertex color mapping."$0D"Click the color display button to select a color."}
+      show_vtx_color: = {Typ="X"   Txt="Show Vertex Color"    Hint="When checked, if component has vertex coloring they will show."$0D"If NOT checked and it has bones with vetexes, those will show."}
+      apply_color:    = {
+                         Typ = "P"
+                         Txt = "apply vertex color ---->"
+                         Macro = "apply_vtx_color"
+                         Hint = "Applies the selected 'Vertex Color'"$0D"to the currently selected vertexes."
+                         Cap = "apply color"
+                        }
+      remove_color:   = {
+                         Typ = "P"
+                         Txt = "remove vertex color -->"
+                         Macro = "remove_vtx_color"
+                         Hint = "Removes all of the vertex color"$0D"from the currently selected vertexes."
+                         Cap = "remove color"
+                        }
+    """
+
+    return vtx_UVcolor_dialog_plugin
+
+def macro_apply_vtx_color(btn):
+    editor = mdleditor.mdleditor # Get the editor.
+    if len(editor.ModelVertexSelList) == 0:
+        quarkx.beep() # Makes the computer "Beep" once .
+        quarkx.msgbox("No vertex selection !\n\nYou must select some vertexes\nbefore using this function.", qutils.MT_ERROR, qutils.MB_OK)
+        return
+    o = editor.Root.currentcomponent
+    if o.dictspec.has_key('vtx_color'):
+        R, G, B = o.dictspec['vtx_color'].split(" ")
+        R = round(float(R)*255)
+        G = round(float(G)*255)
+        B = round(float(B)*255)
+        rgb = struct.pack('i', qutils.RGBToColor([R, G, B]))
+        if len(editor.ModelVertexSelList) != 0:
+            if not editor.ModelComponentList.has_key(o.name):
+                editor.ModelComponentList[o.name] = {}
+            if not editor.ModelComponentList[o.name].has_key('colorvtxlist'):
+                editor.ModelComponentList[o.name]['colorvtxlist'] = {}
+            for vtx in editor.ModelVertexSelList:
+                if not editor.ModelComponentList[o.name]['colorvtxlist'].has_key(vtx[0]):
+                    editor.ModelComponentList[o.name]['colorvtxlist'][vtx[0]] = {}
+                editor.ModelComponentList[o.name]['colorvtxlist'][vtx[0]]['vtx_color'] = rgb
+    undo = quarkx.action()
+    newframe = o.currentframe.copy()
+    undo.exchange(o.currentframe, newframe)
+    editor.ok(undo, 'applied vertex color')
+
+def macro_remove_vtx_color(btn):
+    editor = mdleditor.mdleditor # Get the editor.
+    if len(editor.ModelVertexSelList) == 0:
+        quarkx.beep() # Makes the computer "Beep" once .
+        quarkx.msgbox("No UV Color vertexes\nselected to remove.", qutils.MT_ERROR, qutils.MB_OK)
+        return
+    o = editor.Root.currentcomponent
+    if not (editor.ModelComponentList[o.name].has_key('colorvtxlist')):
+        quarkx.msgbox("No UV Color vertexes\nassigned to this component.", qutils.MT_INFORMATION, qutils.MB_OK)
+        return
+    else:
+        for vtx in editor.ModelVertexSelList:
+            if editor.ModelComponentList[o.name]['colorvtxlist'].has_key(vtx[0]):
+                if editor.ModelComponentList[o.name]['colorvtxlist'][vtx[0]].has_key('vtx_color'):
+                    if len(editor.ModelComponentList[o.name]['colorvtxlist'][vtx[0]]) == 1:
+                        del editor.ModelComponentList[o.name]['colorvtxlist'][vtx[0]]
+                    else:
+                        del editor.ModelComponentList[o.name]['colorvtxlist'][vtx[0]]['vtx_color']
+                if len(editor.ModelComponentList[o.name]['colorvtxlist']) == 0:
+                    del editor.ModelComponentList[o.name]['colorvtxlist']
+                if len(editor.ModelComponentList[o.name]) == 0:
+                    del editor.ModelComponentList[o.name]
+    undo = quarkx.action()
+    newframe = o.currentframe.copy()
+    undo.exchange(o.currentframe, newframe)
+    editor.ok(undo, 'removed vertex color')
+
+qmacro.MACRO_apply_vtx_color = macro_apply_vtx_color
+qmacro.MACRO_remove_vtx_color = macro_remove_vtx_color
+
+
+###############################
+#
+# Vertex Weights Module
+#
+###############################
+
+# Imports & Globals for Vertex Weights Module ONLY.
+WeightedVTXlist = []
+SpecsList = """ """
+SRClables = {}
+SRCsList = {}
+
+#
+# Main function to be called from other files such as the
+# plugins\ie_ASE_import.py file using a button (see file).
+# Setup so it can also be called as a menu item.
+#
+def UseVertexWeights(btn=None):
+    if btn == None:
+        from qeditor import ico_dict # Get the dictionary list of all icon image files available.
+        import qtoolbar              # Get the toolbar functions to make the button with.
+        ico_mdlskv = ico_dict['ico_mdlskv']  # Just to shorten our call later.
+        btn = qtoolbar.button(vtxweightsclick, "Open or Update\nVertex Weights Dialog||When clicked, this button opens the dialog to allow the 'weight' movement setting of single vertexes that have been assigned to more then one bone handle.\n\nClick the InfoBase button or press F1 again for more detail.|intro.modeleditor.dataforms.html#specsargsview", ico_mdlskv, 5)
+    vtxweightsclick(btn)
+
+def AddStuff(editor):
+    global WeightedVTXlist, SpecsList, SRClables, SRCsList
+    SpecsList = """ """
+    SRClables = {}
+    SRCsList = {}
+    if editor is not None and editor.Root.currentcomponent is not None:
+        comp = editor.Root.currentcomponent
+        if editor.ModelComponentList.has_key(comp.name) and editor.ModelComponentList[comp.name].has_key('bonevtxlist'):
+            bonevtxlist = editor.ModelComponentList[comp.name]['bonevtxlist']
+            getlist = []
+            vtxnbrs = []
+            bones = editor.Root.dictitems['Skeleton:bg'].findallsubitems("", ':bone')   # get all bones 
+            for bone1 in bonevtxlist.keys():
+                for bone2 in bonevtxlist.keys():
+                    if bone2 == bone1:
+                        continue
+                    bone1keys = bonevtxlist[bone1].keys()
+                    bone2keys = bonevtxlist[bone2].keys()
+                    for vtx1 in bone1keys:
+                        if vtx1 in bone2keys:
+                            if not vtx1 in vtxnbrs:
+                                vtxnbrs = vtxnbrs + [vtx1]
+                            if not [vtx1, bone1] in getlist:
+                                getlist = getlist + [[vtx1, bone1]]
+                            if not [vtx1, bone2] in getlist:
+                                getlist = getlist + [[vtx1, bone2]]
+            vtxnbrs.sort()
+            WeightedVTXlist = []
+            while len(WeightedVTXlist) < len(getlist):
+                for vtxnbr in vtxnbrs:
+                    for bone in bones:
+                        for item in getlist:
+                            if item[0] == vtxnbr and item[1] == bone.name:
+                                WeightedVTXlist = WeightedVTXlist + [item]
+            for vtx in vtxnbrs:
+                for item in range(len(WeightedVTXlist)):
+                    if WeightedVTXlist[item][0] == vtx:
+                        bone_shortname = WeightedVTXlist[item][1].replace(":bone","")
+                        specific = str(vtx) + "_" + bone_shortname
+                        SpecsList = SpecsList + specific + "_lable" + """: = {Txt = "Vtx \ Bone:" Typ = "E R" Hint = ""}"""
+                        SRClables[specific + "_lable"] = " " + str(vtx) + " \ " + bone_shortname
+                        SpecsList = SpecsList + specific + "_weight" + """: = {Txt = "Weight value:" Typ = "EU" Hint = "Set this vertex's weight here."$0D"Total values for this vertex MUST = 1.0"}"""
+                        weight_value = bonevtxlist[WeightedVTXlist[item][1]][vtx]['weight']
+                        SRCsList[specific + "_weight"] = str(weight_value)
+                if item == len(WeightedVTXlist)-1:
+                    SpecsList = SpecsList + """sep: = { Typ="S" Txt=""}"""
+
+
+class WeightsDlg(dlgclasses.LiveEditDlg):
+    # Dialog layout
+    size = (290, 300)
+    dlgflags = qutils.FWF_KEEPFOCUS
+    dfsep = 0.4      # Separation at 40% between labels and edit boxes
+    dlgdef = """ """ # The dialog is created in the setup function to allow self generated items.
+
+def WeightsClick(editor):
+    if editor is None: return
+    AddStuff(editor)
+  
+    def setup(self, editor=editor):
+        editor.weightsdlg = self
+        self.SRClables = SRClables
+        self.SRCsList = SRCsList
+        # Rebuilds this dialog's form with the current, self generated, data in SpecsList.
+        self.dlgdef = """
+        {
+        Style = "15"
+        Caption = "Vertex Weights Dialog"
+        sep: =
+            {
+            Typ="S"
+            Txt="Instructions: place curser here"
+            Hint = "This dialog displays all vertexes for the selected component"$0D
+                   "    that have been assigned to more then one bone."$0D
+                   "All of the 'Weight' values for a particular vertex MUST add up to 1.0"$0D
+                   "They are used to restrict the amount of their movement for each bone."
+            }
+        comp_name: =
+            {
+            Txt = "Component:"
+            Typ = "E R"
+            Hint = "The component these vertexes belong to."
+            }
+        sep: = { Typ="S" Txt=""}
+        """ + SpecsList + """
+        sel_vertexes: =
+            {
+            Typ = "P"
+            Txt = "select vertexes -->"
+            Macro = "selectvtxs"
+            Hint = "If a bone is selected only its"$0D"weighted vertexes will be selected."$0D"If not, all weighted vertexes will be selected."
+            Cap = "select vertexes"
+            }
+        update_dialog: =
+            {
+            Typ = "P"
+            Txt = "update dialog -->"
+            Macro = "updatedialog"
+            Hint = "When more vertexes are assigned between bones"$0D"you need to click this button to display"$0D"the newly shared vertexes and their listing."
+            Cap = "update dialog"
+            }
+        sep: = { Typ="S" Txt=""}
+        apply_changes: =
+            {
+            Typ = "P"
+            Txt = "apply changes -->"
+            Macro = "applychanges"
+            Hint = "You MUST click this button to ensure that"$0D"settings made thus far are saved."$0D"This will also place them on the"$0D"'undo' list for easy interval reversal."$0D"After an 'undo' you MUST click the"$0D"'update dialog' button to reload the old settings."
+            Cap = "apply changes"
+            }
+        sep: = { Typ="S" Txt=""}
+        exit:py = {Txt="" }
+        }
+        """
+
+        src = self.src
+      ### To populate settings...
+        comp = editor.Root.currentcomponent
+        if editor.ModelComponentList.has_key(comp.name) and editor.ModelComponentList[comp.name].has_key('bonevtxlist'):
+            bonevtxlist = editor.ModelComponentList[comp.name]['bonevtxlist']
+        else:
+            bonevtxlist = None
+        src["comp_name"] = " " + comp.name
+        for key in self.SRClables.keys():
+            src[key] = self.SRClables[key]
+        for key in self.SRCsList.keys():
+            if (quarkx.setupsubset(SS_MODEL, "Options")["vtx_" + str(key)] is None):
+                src[str(key)] = self.SRCsList[key]
+                quarkx.setupsubset(SS_MODEL, "Options")["vtx_" + str(key)] = src[str(key)]
+                src[str(key)] = "%.2f"%(float(src[str(key)]))
+            else:
+                src[str(key)] = quarkx.setupsubset(SS_MODEL, "Options")["vtx_" + str(key)]
+                src[str(key)] = "%.2f"%(float(src[str(key)]))
+                vtx, bone, lable = str(key).split("_")
+                bonevtxlist[bone + ":bone"][int(vtx)][lable] = round(float(src[str(key)]), 2)
+
+    def action(self, editor=editor):
+        comp = editor.Root.currentcomponent
+        if editor.ModelComponentList.has_key(comp.name) and editor.ModelComponentList[comp.name].has_key('bonevtxlist'):
+            bonevtxlist = editor.ModelComponentList[comp.name]['bonevtxlist']
+        else:
+            bonevtxlist = None
+        for key in self.SRCsList.keys():
+            if not (self.src[str(key)] is None):
+                if quarkx.setupsubset(SS_MODEL, "Options")["vtx_" + str(key)] is None:
+                    if float(self.src[str(key)]) > 0:
+                        if float(self.src[str(key)]) > 1:
+                            quarkx.setupsubset(SS_MODEL, "Options")["vtx_" + str(key)] = str(round(float(self.src[str(key)]),2) - 0.95)
+                        else:
+                            quarkx.setupsubset(SS_MODEL, "Options")["vtx_" + str(key)] = str(round(float(self.src[str(key)]),2))
+                    else:
+                        quarkx.setupsubset(SS_MODEL, "Options")["vtx_" + str(key)] = str(round(float(self.src[str(key)]),2) + 0.95)
+                if float(self.src[str(key)]) > float(quarkx.setupsubset(SS_MODEL, "Options")["vtx_" + str(key)]):
+                    if float(self.src[str(key)]) > 1:
+                        vtxkey = round(float(self.src[str(key)]),2) - 0.95
+                    else:
+                        vtxkey = round(float(self.src[str(key)]),2)
+                elif float(self.src[str(key)]) < float(quarkx.setupsubset(SS_MODEL, "Options")["vtx_" + str(key)]):
+                    fixed = 0
+                    if abs(float(self.src[str(key)])) + float(quarkx.setupsubset(SS_MODEL, "Options")["vtx_" + str(key)]) == 1.0:
+                        vtxkey = round(float(self.src[str(key)]),2) + 0.95
+                        fixed = 1
+                    if (round(abs(float(self.src[str(key)])),2) + round(float(quarkx.setupsubset(SS_MODEL, "Options")["vtx_" + str(key)]),2)) == 0.95:
+                        vtxkey = round(float(self.src[str(key)]),2) + 0.95
+                        fixed = 1
+                    if float(self.src[str(key)]) < -1:
+                        vtxkey = round(float(self.src[str(key)]),2) + 0.95
+                        fixed = 1
+                    if fixed == 0:
+                        vtxkey = round(float(self.src[str(key)]),2)
+                else:
+                    vtxkey = round(float(self.src[str(key)]),2)
+                if vtxkey >= 1.00:
+                    vtxkey = str(1.00)
+                elif vtxkey <= 0.05:
+                    vtxkey = str(0.05)
+                else:
+                    vtxkey = str(vtxkey)
+                quarkx.setupsubset(SS_MODEL, "Options")["vtx_" + str(key)] = vtxkey
+                self.src[str(key)] = quarkx.setupsubset(SS_MODEL, "Options")["vtx_" + str(key)]
+            else: # don't need this part, never happens.
+                self.src[str(key)] = "1.0"
+                vtxkey = (self.src[str(key)])
+                quarkx.setupsubset(SS_MODEL, "Options")["vtx_" + str(key)] = vtxkey
+
+    def onclosing(self, editor=editor):
+        for key in self.SRCsList.keys():
+            quarkx.setupsubset(SS_MODEL, "Options")["vtx_" + str(key)] = None
+
+    WeightsDlg(quarkx.clickform, 'weightsdlg', editor, setup, action, onclosing)
+
+def vtxweightsclick(btn):
+    editor = mdleditor.mdleditor # Get the editor.
+    try: # Updates the dialog.
+        for key in SRCsList.keys():
+            quarkx.setupsubset(SS_MODEL, "Options")["vtx_" + str(key)] = None
+        AddStuff(editor)
+        name = editor.weightsdlg.name or editor.weightsdlg.__class__.__name__
+        editor.weightsdlg.setup(editor.weightsdlg)
+        f = quarkx.newobj("Dlg:form")
+        f.loadtext(editor.weightsdlg.dlgdef)
+        editor.weightsdlg.f = f
+        for pybtn in f.findallsubitems("", ':py'):
+            pybtn["sendto"] = name
+        editor.weightsdlg.df.setdata(editor.weightsdlg.src, editor.weightsdlg.f)
+    except: # Opens this dialog.
+        WeightsClick(editor)
+        for key in SRCsList.keys():
+            quarkx.setupsubset(SS_MODEL, "Options")["vtx_" + str(key)] = None
+        if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
+            editor.ModelVertexSelList = []
+            editor.linearbox = "True"
+            editor.linear1click(btn)
+        
+def macro_selectvtxs(btn):
+    editor = mdleditor.mdleditor # Get the editor.
+    if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
+        quarkx.beep() # Makes the computer "Beep" once.
+        quarkx.msgbox("You are in Face mode !\n\nYou must switch to Vertex\nmode to use this function.", qutils.MT_ERROR, qutils.MB_OK)
+        return
+    foundvtxs = 0
+    foundframe = 0
+    for item in editor.layout.explorer.sellist:
+        if item.type == ":mf":
+            foundframe = 1
+            break
+    if foundframe == 1 and len(WeightedVTXlist) != 0 and editor.layout.explorer.sellist[0].type == ":bone":
+        for item in editor.layout.explorer.sellist:
+            if item.type == ":bone":
+                for weight in WeightedVTXlist:
+                    if item.name == weight[1]:
+                        if foundvtxs == 0:
+                            editor.ModelVertexSelList = []
+                            foundvtxs = 1
+                        if not [weight[0], quarkx.vect(0, 0, 0)] in editor.ModelVertexSelList:
+                            editor.ModelVertexSelList = editor.ModelVertexSelList + [[weight[0], quarkx.vect(0, 0, 0)]]
+    else:
+        if foundframe == 1 and len(WeightedVTXlist) != 0:
+            if foundvtxs == 0:
+                editor.ModelVertexSelList = []
+                foundvtxs = 1
+            for weight in WeightedVTXlist:
+                if not [weight[0], quarkx.vect(0, 0, 0)] in editor.ModelVertexSelList:
+                    editor.ModelVertexSelList = editor.ModelVertexSelList + [[weight[0], quarkx.vect(0, 0, 0)]]
+    if foundframe == 1 and foundvtxs == 0:
+        quarkx.msgbox("No weighted \ shared vertexes found.", qutils.MT_INFORMATION, qutils.MB_OK)
+    elif foundframe == 0:
+        quarkx.beep() # Makes the computer "Beep" once.
+        quarkx.msgbox("No model frame selected !\n\nYou must select one\nto use this function.", qutils.MT_ERROR, qutils.MB_OK)
+    else:
+        Update_Editor_Views(editor)
+
+def macro_updatedialog(btn):
+    editor = mdleditor.mdleditor # Get the editor.
+    for key in SRCsList.keys():
+        quarkx.setupsubset(SS_MODEL, "Options")["vtx_" + str(key)] = None
+    AddStuff(editor)
+    name = editor.weightsdlg.name or editor.weightsdlg.__class__.__name__
+    editor.weightsdlg.setup(editor.weightsdlg)
+    f = quarkx.newobj("Dlg:form")
+    f.loadtext(editor.weightsdlg.dlgdef)
+    editor.weightsdlg.f = f
+    for pybtn in f.findallsubitems("", ':py'):
+        pybtn["sendto"] = name
+    editor.weightsdlg.df.setdata(editor.weightsdlg.src, editor.weightsdlg.f)
+
+def macro_applychanges(btn):
+    editor = mdleditor.mdleditor # Get the editor.
+    foundframe = 0
+    for item in editor.layout.explorer.sellist:
+        if item.type == ":mf":
+            foundframe = 1
+            break
+    if foundframe == 0:
+        quarkx.beep() # Makes the computer "Beep" once.
+        quarkx.msgbox("No model frame selected !\n\nYou must select one\nto save these settings.", qutils.MT_ERROR, qutils.MB_OK)
+    if len(WeightedVTXlist) == 0:
+        quarkx.msgbox("No weighted \ shared vertexes found.", qutils.MT_INFORMATION, qutils.MB_OK)
+    else:
+        o = editor.Root.currentcomponent
+        undo = quarkx.action()
+        newframe = o.currentframe.copy()
+        undo.exchange(o.currentframe, newframe)
+        editor.ok(undo, 'weight settings saved')
+
+qmacro.MACRO_selectvtxs = macro_selectvtxs
+qmacro.MACRO_updatedialog = macro_updatedialog
+qmacro.MACRO_applychanges = macro_applychanges
+
+
+###############################
 #
 # Entity Manager base class, followed by subclasses.
 #
+###############################
 
 class EntityManager:
     "Base class for entity managers."
@@ -527,7 +1000,6 @@ class EntityManager:
         editor = mdleditor.mdleditor
         if view.info["viewname"] == "XY":
             if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh2"] == "1":
-     #           if (o.type == ":mr") or (o.type == ":mg") or( o.type == ":bone"):
                 if (o.type == ":mr") or (o.type == ":mg"):
                     o = editor.Root
                 else:
@@ -539,7 +1011,6 @@ class EntityManager:
 
         elif view.info["viewname"] == "XZ":
             if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh4"] == "1":
-    #            if (o.type == ":mr") or (o.type == ":mg") or( o.type == ":bone"):
                 if (o.type == ":mr") or (o.type == ":mg"):
                     o = editor.Root
                 else:
@@ -551,7 +1022,6 @@ class EntityManager:
 
         elif view.info["viewname"] == "YZ":
             if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh3"] == "1":
-    #            if (o.type == ":mr") or (o.type == ":mg") or( o.type == ":bone"):
                 if (o.type == ":mr") or (o.type == ":mg"):
                     o = editor.Root
                 else:
@@ -562,7 +1032,6 @@ class EntityManager:
                 view.drawmap(o, mode)  # draws default color for model mesh lines
 
         elif view.info["viewname"] == "editors3Dview":
-    #        if (o.type == ":mr") or (o.type == ":mg") or( o.type == ":bone"):
             if (o.type == ":mr") or (o.type == ":mg"):
                 o = editor.Root
             else:
@@ -578,7 +1047,6 @@ class EntityManager:
                     mdlhandles.ModelFaceHandle(mode).draw(editor, view, editor.EditorObjectList)
 
         elif view.info["viewname"] == "3Dwindow":
-    #        if (o.type == ":mr") or (o.type == ":mg") or( o.type == ":bone"):
             if (o.type == ":mr") or (o.type == ":mg"):
                 o = editor.Root
             else:
@@ -618,59 +1086,6 @@ class EntityManager:
 
     def menubegin(o, editor):
         return []
-
-
-
-def ShowHideComp(x):
-    editor = mapeditor()
-    if editor is None: return
-    import mdleditor
-    editor.ModelFaceSelList = []
-    editor.EditorObjectList = []
-    editor.SkinFaceSelList = []
-    editor.SelCommonTriangles = []
-    editor.SelVertexes = []
-    obj = editor.layout.explorer.uniquesel
-    if obj is None: return
-    obj.showhide(x)
-    editor.layout.explorer.uniquesel = None
-
-    if x == 0:
-        for view in editor.layout.views:
-            view.handles = []
-            if view.viewmode == "wire":
-                view.invalidate()
-            else:
-                view.invalidate(1)
-    else:
-        import mdlhandles
-        from mdlhandles import SkinView1
-        if SkinView1 is not None:
-            q = editor.layout.skinform.linkedobjects[0]
-            q["triangles"] = str(len(editor.Root.currentcomponent.triangles))
-            editor.layout.skinform.setdata(q, editor.layout.skinform.form)
-            SkinView1.invalidate()
-            try:
-                skindrawobject = editor.Root.currentcomponent.currentskin
-            except:
-                skindrawobject = None
-            mdlhandles.buildskinvertices(editor, SkinView1, editor.layout, editor.Root.currentcomponent, skindrawobject)
-            editor.finishdrawing(SkinView1)
-
-        for view in editor.layout.views:
-            if view.viewmode == "wire":
-                pass
-            else:
-                view.invalidate(1)
-            mdleditor.setsingleframefillcolor(editor, view)
-            view.repaint()
-
-def ShowComp(m):
-    ShowHideComp(1)
-
-
-def HideComp(m):
-    ShowHideComp(0)
 
 
 class GroupType(EntityManager):
@@ -766,7 +1181,6 @@ class BoneType(EntityManager):
     "Bone, type = :bone"
 
     def handlesopt(o, editor):
-        from qbaseeditor import currentview
 
         h = []
         comp = editor.Root.currentcomponent
@@ -777,7 +1191,7 @@ class BoneType(EntityManager):
         # we need to remove the bones as well.
         # If neither then just clear the selections lists and return.
         if allowbones(editor) == 0:
-            if len(editor.Root.dictitems['Skeleton:bg'].subitems) == 0:
+            if len(editor.Root.dictitems['Skeleton:bg'].findallsubitems("", ':bone')) == 0:
                 editor.layout.explorer.sellist = []
                 editor.layout.explorer.uniquesel = None
                 return h
@@ -790,149 +1204,147 @@ class BoneType(EntityManager):
 
         # Checks that at least the needed frame count for a component is there to avoid vertex selection error later on.
         try:
-            start_frame = editor.Root.dictitems[o.dictspec['start_component']].dictitems['Frames:fg'].subitems[editor.bone_frame]
+            frame = editor.Root.dictitems[o.dictspec['component']].dictitems['Frames:fg'].subitems[editor.bone_frame]
         except:
             quarkx.msgbox("FRAME COUNT ERROR !\n\nNot all components using these bones\nhave the same number of frames.\n\nCorrect and try again.", qutils.MT_ERROR, qutils.MB_OK)
             editor.layout.explorer.sellist = [comp.dictitems['Frames:fg'].subitems[0]]
             return
-        try:
-            end_frame = editor.Root.dictitems[o.dictspec['end_component']].dictitems['Frames:fg'].subitems[editor.bone_frame]
-        except:
-            quarkx.msgbox("FRAME COUNT ERROR !\n\nNot all components using these bones\nhave the same number of frames.\n\nCorrect and try again.", qutils.MT_ERROR, qutils.MB_OK)
-            editor.layout.explorer.sellist = [comp.dictitems['Frames:fg'].subitems[0]]
-            return
-        if editor.bone_frame_changed == 1:
-            Rebuild_Bone(o, start_frame, end_frame)
 
-        scenter = quarkx.vect(o.dictspec['start_point'])
-        sbbox = (scenter + quarkx.vect(-0.9, -0.9, -0.9)*o.dictspec['start_scale'][0], scenter + quarkx.vect(0.9, 0.9, 0.9)*o.dictspec['start_scale'][0])
-        startcolor = o.dictspec['start_color']
-        quarkx.setupsubset(SS_MODEL, "Colors")["start_color"] = startcolor
-        scolor = MapColor("start_color", SS_MODEL)
+        Rebuild_Bone(o, frame)
 
-        ecenter = quarkx.vect(o.dictspec['end_point'])
-        ebbox = (ecenter + quarkx.vect(-0.9, -0.9, -0.9)*o.dictspec['end_scale'][0], ecenter + quarkx.vect(0.9, 0.9, 0.9)*o.dictspec['end_scale'][0])
-        endcolor = o.dictspec['end_color']
-        quarkx.setupsubset(SS_MODEL, "Colors")["end_color"] = endcolor
-        ecolor = MapColor("end_color", SS_MODEL)
+        bbox = (o.position - quarkx.vect(1.0, 1.0, 1.0)*o.dictspec['scale'][0], o.position + quarkx.vect(1.0, 1.0, 1.0)*o.dictspec['scale'][0])
+        manager = mdlhandles.ModelEditorBoneHandlesManager(editor, o.getint('_color'), bbox, o)
+        handles = manager.BuildHandles(o.position)
 
-        svtxlist = []
-        start_vtxlist = []
-        evtxlist = []
-        end_vtxlist = []
-        sh = mdlhandles.ModelEditorBoneLinHandlesManager(scolor, sbbox, svtxlist, o, start_vtxlist, 0).BuildHandles(scenter) # s is a LinBoneCenterHandle instance.
-        eh = mdlhandles.ModelEditorBoneLinHandlesManager(ecolor, ebbox, evtxlist, o, end_vtxlist, 1).BuildHandles(ecenter) # e is a LinBoneCenterHandle instance.
-
-        for s in sh:
+        for s in handles:
             if s is None:
-                return h
-            if isinstance(s, mdlhandles.LinBoneCenterHandle):
+                continue
+            if isinstance(s, mdlhandles.BoneCenterHandle):
                 if MapOption("HandleHints", SS_MODEL):
-                    s.hint = "Start of %s"%o.shortname
-                s.name = "BoneStartCenter"
-            if isinstance(s, mdlhandles.LinBoneCornerHandle):
+                    s.hint = "       Center of %s"%o.shortname
+                s.name = "BoneCenter"
+            if isinstance(s, mdlhandles.BoneCornerHandle):
                 if MapOption("HandleHints", SS_MODEL):
-                    s.hint = "Start rotate of %s"%o.shortname
-                s.name = "BoneStartCorner"
-            s.s_or_e = 0
-            s.index = index
+                    s.hint = "       Rotate for %s"%o.shortname
+                s.name = "BoneCorner"
             h = h + [s]
-        # Finishes the end handle.
-        for e in eh:
-            if isinstance(e, mdlhandles.LinBoneCenterHandle):
-                if MapOption("HandleHints", SS_MODEL):
-                    e.hint = "End of %s"%o.shortname
-                e.name = "BoneEndCenter"
-            if isinstance(e, mdlhandles.LinBoneCornerHandle):
-                if MapOption("HandleHints", SS_MODEL):
-                    e.hint = "End rotate of %s"%o.shortname
-                e.name = "BoneEndCorner"
-            e.s_or_e = 1
-            e.index = index
-            h = h + [e]
-        o.start_handle = sh
-        o.end_handle = eh
         return h
 
     def dataformname(o):
         "Returns the data form for this type of object 'o' (a bone) to use for the Specific/Args page."
 
+        import mdleditor
+        editor = mdleditor.mdleditor
+        comp = editor.Root.currentcomponent.name
+        if not comp in o.vtxlist.keys():
+            items = ['"0 - ' + comp.replace(":mc","") + '"' + "$0D"]
+            values = ['"' + comp + '"' + "$0D"]
+        else:
+            items = []
+            values = []
+
+        for comp in o.vtxlist.keys():
+            items = items + ['"' + str(len(o.vtxlist[comp])) + " - " + comp.replace(":mc","") + '"' + "$0D"]
+            values = values + ['"' + comp + '"' + "$0D"]
+
+        SpecsList = """comp_list: = {Typ="C" Txt="comp list" items = """
+
+        for item in items:
+            SpecsList = SpecsList + item 
+
+        SpecsList = SpecsList + """ values = """
+
+        for value in values:
+            SpecsList = SpecsList + value
+
+        SpecsList = SpecsList + """ Hint="List of components and number of"$0D"their vertexes assigned to this bone."$0D"If the current comonent does not use this bone"$0D"then 'None' will be displayed as the default item."}"""
+
         dlgdef = """
         {
-          Help = "These are the Specific settings for a component's Bones."$0D0D22
-                 "classname"$22" - The name of the bone currently selected for setting."$0D22
-                 "Start color"$22" - Color to use for this bones Start handle's vertex group color."$0D
-                 "          Click the color selector button to the right and pick a color."$0D22
-                 "End color"$22" - Color to use for this bones End handle's vertex group color."$0D
-                 "          Click the color selector button to the right and pick a color."
-          bone_length: = {
+          Help = "These are the Specific settings for a Bone."$0D0D22
+                 "classname"$22" - The name of the bone"$0D
+                 "                           currently selected for setting."$0D22
+                 "bone length"$22" - You must enter three values here,"$0D
+                 "                              they have an accuracy of two digits."$0D22
+                 "comp list"$22" - List of components and number of"$0D
+                 "                        their vertexes assigned to this bone."$0D22
+                 "auto expand"$22" - When checked, opens the 'Frames'"$0D
+                 "                         folder, if closed, when the component"$0D
+                 "                         in the 'comp list' is clicked on,"$0D
+                 "                         each bone is set separately."$0D22
+                 "parent"$22" - The handle name that this"$0D
+                 "                    one is attached to, if any."$0D22
+                 "color"$22" - Color to use for this bones handle's vertex group,"$0D
+                 "                  click the color selector button to the right."$0D22
+                 "position"$22" - You must enter three values here,"$0D
+                 "                      they have an accuracy of two digits."$0D22
+                 "offset"$22" -   You must enter three values here,"$0D
+                 "                     they have an accuracy of two digits,"$0D
+                 "                     not all models use this."$0D22
+                 "scale"$22" - You must enter one positive float value here,"$0D
+                 "                   they have an accuracy of two digits,"$0D
+                 "                   larger value = bigger handle size,"$0D
+                 "                   smaller value = smaller handle size,"$0D
+                 "                   the default value for normal size = 1.00"
+          bone_length: = 
+            {
               Typ="EF003" 
               Txt="Bone Length"
-              Hint="You must enter three values here."$0D"They have an accuracy of two digits."
-                 }
-          length_locked: = {
+              Hint="You must enter three values here."$0D
+                   "They have an accuracy of two digits."
+            }
+          sep: = { Typ="S" Txt="" }
+          """ + SpecsList + """
+          frame_autoexpand: = 
+            {
               Typ="X1" 
-              Txt="Length Locked"
-              Hint="When checked, the length of this bone will"$0D"not change by the dragging of either handle."
-                 }
-
-          sep: = { Typ="S" Txt="" }
-
-          sep: = {
-              Typ="S"
-              Txt="Bone Start Handle"
-                 }
-
-          start_component: = {Typ="E R" Txt="component" Hint="The component this"$0D"handle is assigned to."}
-
-          start_vertex_count: = {Typ="E R" Txt="vertexes" Hint="Number of vertexes"$0D"assigned to this handle."}
-
-          start_color: = {Typ="LI"   Txt="color"  Hint="Color to use for this bones Start handle's vertex group color."$0D"Click the color selector button to the right and pick a color."}
-          start_point: = {
+              Txt="auto expand"
+              Hint="When checked, opens the 'Frames'"$0D
+                   "folder, if closed, when the component"$0D
+                   "in the 'comp list' is clicked on,"$0D
+                   "each bone is set separately."
+            }
+          parent_name: = 
+            {
+              Typ="E R"
+              Txt="parent"
+              Hint="The handle name that this"$0D
+                   "one is attached to, if any."
+            }
+          _color: = 
+            {
+              Typ="LI"
+              Txt="color"
+              Hint="Color to use for this bones Start handle's vertex group color."$0D
+                   "Click the color selector button to the right and pick a color."
+            }
+          position: = 
+            {
               Typ="EF003" 
               Txt="position"
               Hint="You must enter three values here."$0D"They have an accuracy of two digits."
-                 }
-          start_offset: = {
+            }
+          draw_offset: = 
+            {
               Typ="EF003" 
               Txt="offset"
-              Hint="You must enter three values here."$0D"They have an accuracy of two digits."$0D"Not all models use this."
-                 }
-          start_scale: = {
+              Hint="You must enter three values here."$0D"They have an accuracy of two digits."$0D
+                   "Not all models use this."
+            }
+          scale: = 
+            {
               Typ="EF001" 
               Txt="scale"
-              Hint="You must enter one positive float value here."$0D"It has an accuracy of two digits."$0D"Larger value = bigger handle size."$0D"Smaller value = smaller handle size."$0D"The default value for normal size = 1.00"
-                 }
-
-          sep: = { Typ="S" Txt="" }
-
-          sep: = {
-              Typ="S"
-              Txt="Bone End Handle"
-                 }
-
-          end_component: = {Typ="E R" Txt="component" Hint="The component this"$0D"handle is assigned to."}
-
-          end_vertex_count: = {Typ="E R" Txt="vertexes" Hint="Number of vertexes"$0D"assigned to this handle."}
-
-          end_color: = {Typ="LI"   Txt="color"    Hint="Color to use for this bones End handle's vertex group color."$0D"Click the color selector button to the right and pick a color."}
-          end_point: = {
-              Typ="EF003" 
-              Txt="position"
-              Hint="You must enter three values here."$0D"They have an accuracy of two digits."
-                 }
-          end_offset: = {
-              Typ="EF003" 
-              Txt="offset"
-              Hint="You must enter three values here."$0D"They have an accuracy of two digits."$0D"Not all models use this."
-                 }
-          end_scale: = {
-              Typ="EF001" 
-              Txt="scale"
-              Hint="You must enter one positive float value here."$0D"It has an accuracy of two digits."$0D"Larger value = bigger handle size."$0D"Smaller value = smaller handle size."$0D"The default value for normal size = 1.00"
-                 }
+              Hint="You must enter one positive float value here."$0D
+                   "It has an accuracy of two digits."$0D"Larger value = bigger handle size."$0D
+                   "Smaller value = smaller handle size."$0D
+                   "The default value for normal size = 1.00"
+            }
         }
         """
+
+        if o['frame_autoexpand'] is None:
+            o['frame_autoexpand'] = "1"
 
         formobj = quarkx.newobj("bone:form")
         formobj.loadtext(dlgdef)
@@ -1256,6 +1668,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.38  2009/01/27 05:03:01  cdunde
+#Full support for .md5mesh bone importing with weight assignment and other improvements.
+#
 #Revision 1.37  2008/12/14 22:08:27  cdunde
 #Added Skin group Specifics page to allow importing of skins to that group.
 #Added default skin Specifics page and default model type to list.

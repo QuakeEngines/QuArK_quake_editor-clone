@@ -1664,6 +1664,8 @@ def loadmodel(root, filename, gamename, nomessage=0):
             except:
                 pass
 
+            # This needs to be done for each component or bones will not work if used in the editor.
+            quarkpy.mdlutils.make_tristodraw_dict(editor, Component)
         editor.ok(undo, str(len(RetComponentList)) + " .md5 Components imported") # Let the ok finish the new components before going on.
 
         QuArK_mesh_counter = 0
@@ -2034,12 +2036,13 @@ def dataformname(o):
         editor = quarkpy.mdleditor.mdleditor # Get the editor.
     ico_mdlskv = ico_dict['ico_mdlskv']  # Just to shorten our call later.
     icon_btns = {}                       # Setup our button list, as a dictionary list, to return at the end.
-    vtxcolorbtn = quarkpy.qtoolbar.button(colorclick, "Color UV Vertex mode||When active, puts the editor vertex selection into this mode and uses the 'COLR' specific setting as the color to designate these types of vertexes.\n\nIt also places the editor into Vertex Selection mode if not there already and clears any selected vertexes to protect from including unwanted ones by mistake.\n\nAny vertexes selected in this mode will become Color UV Vertexes and added to the component as such. Click the InfoBase button or press F1 again for more detail.|intro.modeleditor.dataforms.html#specsargsview", ico_mdlskv, 5)
+    vtxcolorbtn = quarkpy.qtoolbar.button(colorclick, "Color mode||When active, puts the editor vertex selection into this mode and uses the 'COLR' specific setting as the color to designate these types of vertexes.\n\nIt also places the editor into Vertex Selection mode if not there already and clears any selected vertexes to protect from including unwanted ones by mistake.\n\nAny vertexes selected in this mode will become Color UV Vertexes and added to the component as such. Click the InfoBase button or press F1 again for more detail.|intro.modeleditor.dataforms.html#specsargsview", ico_mdlskv, 5)
     # Sets the button to its current status, that might be effected by another importer file, either on or off.
     if quarkx.setupsubset(3, "Options")['VertexUVColor'] == "1":
         vtxcolorbtn.state = quarkpy.qtoolbar.selected
     else:
         vtxcolorbtn.state = quarkpy.qtoolbar.normal
+    vtxcolorbtn.caption = "" # Texts shows next to button and keeps the width of this button so it doesn't change.
     icon_btns['color'] = vtxcolorbtn     # Put our button in the above list to return.
 
     # Creating the bonemode selection button
@@ -2098,7 +2101,7 @@ def dataformname(o):
             formobj = quarkx.newobj("md5_mc:form")
             formobj.loadtext(skin_dlgdef)
             return formobj, icon_btns
-    if o == editor.Root.dictitems['Skeleton:bg'] or o in editor.Root.dictitems['Skeleton:bg'].subitems:
+    if o == editor.Root.dictitems['Skeleton:bg'] or quarkpy.mdlutils.findbone(editor, o.name) is not None:
         return None, {"bonemode": BMbutton}
     return None, None
 
@@ -2183,6 +2186,10 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.15  2009/03/04 23:33:14  cdunde
+# For proper importer exporter listing one menus, code by DanielPharos.
+# Start of code for importing md5anim files.
+#
 # Revision 1.14  2009/01/29 02:13:51  cdunde
 # To reverse frame indexing and fix it a better way by DanielPharos.
 #
