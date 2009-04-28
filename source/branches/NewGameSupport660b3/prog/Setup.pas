@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.80.2.2  2009/04/26 11:41:15  danielpharos
+Added initial Tremulous support.
+
 Revision 1.80.2.1  2009/04/25 16:43:43  danielpharos
 Added initial support for OpenArena.
 
@@ -357,6 +360,7 @@ comparison between gamemodes.}
  mjOA           = 'u';  { OpenArena }
  mjWarsow       = 'v';  { Warsow }
  mjWildWest     = 'w';  { WildWest }
+ mjAlice        = 'x';  { American McGee's Alice }
  mjNEXUIZ       = 'z';  { NEXUIZ }
 
  mjAny          = #1;

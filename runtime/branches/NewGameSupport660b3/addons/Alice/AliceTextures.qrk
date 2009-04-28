@@ -1,0 +1,29 @@
+QQRKSRC1
+// Alice Textures file for Quark
+
+//$Header$
+// ----------- REVISION HISTORY ------------
+//$Log$
+//
+
+{
+  QuArKProtected = "1"
+  Description = "Alice Textures"
+
+  Textures.qtx =
+  {
+    Toolbox = "Texture Browser..."
+    Root = "Alice Textures and shaders.qtxfolder"
+
+    t_main:incl =      { a = "Base" }
+
+    Alice Textures and shaders.qtxfolder =
+    {
+      Alice Textures and shaders.osfolder =
+      {
+        path = "Base"
+        build = "1"
+      }
+    }
+  }
+}

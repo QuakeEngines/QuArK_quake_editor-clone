@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.73  2009/02/21 17:06:18  danielpharos
+Changed all source files to use CRLF text format, updated copyright and GPL text.
+
 Revision 1.72  2009/02/11 14:59:57  danielpharos
 Restructure some .map file saving code, and added some code for CoD2 (still not working properly though).
 
@@ -1138,11 +1141,11 @@ begin
         cSignatureBspQ3:
         begin
           case Version of
-            cVersionBspJK2JA: { Jedi Knight II or Jedi Academy}
+            cVersionBspJK2JA: { Jedi Knight II or Jedi Academy }
             begin
               LoadBsp3(F, StreamSize); {Decker - try using the Q3 .BSP loader for JK2/JA maps}
-              if CharModeJeu<mjQ3A then
-                ObjectGameCode := mjQ3A
+              if (CharModeJeu <> mjJA) and (CharModeJeu <> mjJA) then
+                ObjectGameCode := mjJK2
               else
                 ObjectGameCode := CharModeJeu;
             end;
@@ -1169,6 +1172,27 @@ begin
           ObjectGameCode := mjMohaa;
 *)
         end;
+
+(* Currently not supported
+        cSignatureBspFAKK:
+        begin
+          case Version of
+            cVersionBspFAKK: { Heavy Metal: FAKK2 }
+            begin
+              LoadBsp3(F, StreamSize); {Decker - try using the Q3 .BSP loader for JK2/JA maps}
+              ObjectGameCode := mjFAKK2;
+            end;
+
+            cVersionBspAlice: { American McGee's Alice }
+            begin
+              LoadBsp3(F, StreamSize); {Decker - try using the Q3 .BSP loader for JK2/JA maps}
+              ObjectGameCode := mjAlice;
+            end;
+
+            else {version unknown}
+              Raise EErrorFmt(5572, [LoadName, Version, cVersionBspFAKK]);
+            end;
+        end;*)
 
         cSignatureHL2: { HL2 }
         begin

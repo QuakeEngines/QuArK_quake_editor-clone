@@ -57,6 +57,8 @@ Code    abbreviation            Name          or Screen name    taken
  u      OA              OpenArena             DanielPharos      04/26/09
  v      Warsow          Warsow                cdunde            04/21/08
  w      WildWest        WildWest              Silverpaladin     08/31/03
+ x      ALICE           American McGee's Alice
+                                              DanielPharos      04/28/09
  z      NEXUIZ          NEXUIZ                cdunde            04/03/08
 
 Note: Some of the above Authors and dates may not be correct
