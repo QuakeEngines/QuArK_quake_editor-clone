@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.482.2.2  2009/04/26 11:41:25  danielpharos
+//Added initial Tremulous support.
+//
 //Revision 1.482.2.1  2009/04/25 16:43:38  danielpharos
 //Added initial support for OpenArena.
 //
@@ -1937,7 +1940,7 @@ QQRKSRC1
 
         Program = "CoDSP.exe +set sv_pure 0"
         Directory = "C:\Program Files\Call of Duty"
-  //      CheckDirectory = "CoDSP.exe"   // hidden setting
+        CheckDirectory = "CoDSP.exe"   // hidden setting
 
         CD = ""
         CDDir = "Setup\Main"   // hidden setting
@@ -2003,6 +2006,81 @@ QQRKSRC1
         Form = "GameCoD1"
       }
 
+      CoD2:config =
+      {
+        Game = "CoD2"
+        Code = "q" // Hardcoded value in Setup.PAS
+
+        BaseMenu = "Call of Duty"
+
+        Program = "CoD2SP_s.exe +set sv_pure 0"
+        Directory = "C:\Program Files\Activision\Call of Duty 2"
+        CheckDirectory = "CoD2SP_s.exe"   // hidden setting
+
+        CD = ""
+        CDDir = "Setup\Main"   // hidden setting
+
+        MapLimit = '65536 65536 65536'
+        
+        Console = "1"                  // "Run these build-programs..." setting
+        BuildPgmsDir = "C:\Program Files\Activision\Call of Duty 2\bin"
+        MapCommentsPrefix = "//"
+        OutputMapFormat = "CoD2"
+        ForceFaceFlags = ""
+        StupidBuildToolKludge = "1" //those guys should get shot for that
+        AlwaysWriteThreeFields = "1"
+        SupportsBrushPrim = "1"
+        BuildPgm1  = "COD2MAP.EXE"
+        BuildArgs1 = "-platform pc"
+        BuildCheck1= "+BSP,-LIN{LoadLinFile}"
+        BuildPgm2  = "COD2MAP.EXE"
+        BuildArgs2 = "-vis"
+        BuildPgm3  = "COD2RAD.EXE"
+        BuildArgs3 = "-extra -sundiffusesamples 10"
+        BuildPgm4  = "..\CoD2SP_s.EXE"
+        BuildArgs4 = "+set g_connectpaths 2 +set dedicated 1 +devmap %file%"
+
+        TexturesPath = "images/"
+        ShadersPath = "scripts/"
+        Q2TexFlags = "1"
+        ShadersType = "a"                       // This game has Quake 3-type shaders
+
+        BezierPatchSupport = "1" // this game supports bezier-patches
+        BezierPatchPluginPrefixes = "MB2" // Prefix of the MB2*.PY files. You can also specify the value: "MB2"$0D"MB3"$0D"MB4"
+
+        DefaultTexture = "austria/unique/dirt_clampy@roadrev1"
+        DefaultTextureTrigger = "common/nodraw"
+        DefaultTextureOrigin = "common/origin"
+        DefaultTextureClip = "common/clip"
+        DefaultTextureCaulk = "common/caulk"
+        DefaultTextureScale = "0.5"
+        LightingInnerConeKeyword = "radius"    // <-- ex: "" if game does not use or ex: "_cone" is the specifics name that gives the spotlight inter size.
+        LightingOuterConeKeyword = ""    // <-- ex: "" if game does not use or ex: "_cone2" is the specifics name that gives the spotlight outer size.
+
+        TextureFormat = ".iwi"                  // primary texture fileextension
+        TextureFileExtensions = ".iwi"     // possible texture fileextensions
+        TextureWriteFormat = ".iwi"
+        TextureShaders = "scripts/quark.shader"
+
+        BaseDir = "Main"
+        tmpQuArK = "tmpQuArK"
+
+        Palette = ":pics/colormap.pcx"
+        ExtraCmdLine = "+set fs_game %gamedir%" // +set r_vc_compile 2
+        RunMapCmdLine = "+devmap %filename%"
+        //AddOns = "Bezier_Library.qrk"$0D"Q3ArchLib.qrk"$0D"DataCoD2.qrk" //$0D"CoD2Entities.qrk"$0D"CoD2Textures.qrk"
+        AddOns = "Bezier_Library.qrk"$0D"Q3ArchLib.qrk"$0D"DataCoD2.qrk"$0D"CoD2Textures.qrk"
+        AlwaysPak = ""
+        PakExt = ".iwd"
+        PakFormat = "*.IWD"
+        PakMaxNumber = "99"
+        Console = "1"
+        LightFactor = '0.9'
+        3DLight = '512'
+        PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas)
+        DecimalPlaces = '5'
+        Form = "GameCoD2"
+      }
 
       Crystal Space:config =
       {
@@ -4960,7 +5038,7 @@ QQRKSRC1
         Txt = "Directory of Call of Duty"
         Typ = "ED"      // Edit Directory
         Hint = "Path to the game executable"
-   //     CheckFile = "CoDSP.exe"
+        CheckFile = "CoDSP.exe"
       }
       Templates: =
       {
@@ -5031,6 +5109,112 @@ QQRKSRC1
       {
         t_DefaultTextureCaulk = !
         GameCfg = "CoD1"
+      }
+      3DLight: =
+      {
+        Txt = "Game Light saturation"
+        Typ = "EF1"
+        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
+      }
+      DecimalPlaces: = {
+        Txt = "No. of decimal places for brushes and beziers."
+        Typ = "EF1"
+        Hint="Set for the number of decimals to write to the map file."$0D"The default is for this game is 5 places."
+        Min = '1'
+        Max = '40'
+      }
+      sep:        = {Typ="S" Txt = ""}
+      sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
+      t_GameBuildPgms=!
+    }
+
+    GameCoD2:form =
+    {
+      Style = "3"
+      sep: = {Typ="S" Txt="---- Game Settings ----"}
+      Program: = {
+        Typ = "C"     // combo box
+        Txt = "Call of Duty 2 command-line"
+        Items = "CoD2MP_s.exe +set sv_pure 0"
+             $0D"CoD2MP_s.exe +set sv_pure 0"
+        t_ProgramHint=!
+      }
+      Directory: =
+      {
+        Txt = "Directory of Call of Duty 2"
+        Typ = "ED"      // Edit Directory
+        Hint = "Path to the game executable"
+        CheckFile = "CoD2MP_s.exe"
+      }
+      Templates: =
+      {
+        Txt = "Directory of Templates"
+        Typ = "ED"
+        Hint = "Path to the templates folder. A folder must be chosen"$0D"before any template functions can be used."
+      }
+      CD: =
+      {
+        Txt = "Call of Duty 2 CD-ROM drive"
+        Typ = "ED"      // Edit Directory
+        Hint = "If you installed Call of Duty 2 minimally, this is the drive of the CD-ROM."
+        //CheckFile = "Call of Duty 2\main\iw_00.iwd"
+        CheckFile = "iw_00.iwd"
+      }
+      AddOns:tbbtn =       // button (don't forget :tbbtn for all the action buttons !)
+      {
+        Typ = "+"
+        Txt = "Installed Add-ons"
+        Cap = "Add-ons..."
+        Icon = $666008881111111866604441999799916660CCC1101111116660244404555548
+               $66602C2AA478887866602C4A24787F78666022AC48778878666022CC47888878
+               $666000407787877866608777777777784448444844487F785C77CF77CC487778
+               $5CC7C777CC488880055555555548870666608888888800666666666666666666
+        cmd:macro = {Typ="M" Msg="GAMq"}    // switches to Call of Duty 2 (cmd=GAM, game=q)
+        cmd:macro = {Typ="M" Msg="ADDO"}    // opens Add-ons configuration dialog box
+      }
+      Outp:tbbtn =
+      {
+        Typ = "+"
+        Txt = "Paths and files to create"
+        Cap = "Output directories..."
+        Icon = $666660000066666666660232AA20666660003332ABA0206602303332ABB0
+               $FA0603303332ABB0FBA003303332AAB0FBB0033033222AA0FBB0033022AA
+               $A220FBB00322022AA2022AA002AA2022002AA2A00AAAA20022AAAA20602A
+               $0022002A200666002AAAA20006666666002A200666666666660006666666
+        cmd:macro = {Typ="M" Msg="GAMq"}    // switches to Call of Duty 2 (cmd=GAM, game=q)
+        cmd:macro = {Typ="M" Msg="OUTP"}    // opens "Output directories" dialog box
+      }
+      sep: = {Typ="S" Txt = ""}
+      sep: = {Typ="S" Txt="---- Map-editor Settings ----"}
+      DefaultTexture: =
+      {
+        t_DefaultTexture = !
+        GameCfg = "CoD2"
+      }
+      DefaultTextureTerrain: =
+      {
+        t_DefaultTextureTerrain = !
+        GameCfg = "CoD2"
+      }
+      DefaultTextureTrigger: =
+      {
+        t_DefaultTextureTrigger = !
+        GameCfg = "CoD2"
+      }
+      DefaultTextureClip: =
+      {
+        t_DefaultTextureClip = !
+        GameCfg = "CoD2"
+      }
+      DefaultTextureOrigin: =
+      {
+        t_DefaultTextureOrigin = !
+        GameCfg = "CoD2"
+      }
+      DefaultTextureCaulk: =
+      {
+        t_DefaultTextureCaulk = !
+        GameCfg = "CoD2"
       }
       3DLight: =
       {
@@ -10458,10 +10642,10 @@ QQRKSRC1
       Game: = {
         Txt = "Based on game"
         Typ = "CL"
-        Items = "6DX"$0D"Crystal Space"$0D"Doom 3"$0D"EF2"$0D"FAKK2"$0D"Genesis3D"$0D"Half-Life"$0D"Half-Life2"
-             $0D"Heretic II"$0D"Hexen II"$0D"JA"$0D"JK2"$0D"KingPin"$0D"MOHAA"$0D"NEXUIZ"$0D"Prey"
+        Items = "6DX"$0D"CoD1"$0D"CoD2"$0D"Crystal Space"$0D"Doom 3"$0D"EF2"$0D"FAKK2"$0D"Genesis3D"$0D"Half-Life"$0D"Half-Life2"
+             $0D"Heretic II"$0D"Hexen II"$0D"JA"$0D"JK2"$0D"KingPin"$0D"MOHAA"$0D"NEXUIZ"$0D"OpenArena"$0D"Prey"
              $0D"Quake 1"$0D"Quake 2"$0D"Quake 3"$0D"Quake 4"$0D"RTCW"$0D"RTCW-ET"$0D"Sin"$0D"SOF"$0D"SoF2"
-             $0D"STVEF"$0D"Sylphis"$0D"Torque"$0D"Warsow"$0D"WildWest"
+             $0D"STVEF"$0D"Sylphis"$0D"Tremulous"$0D"Torque"$0D"Warsow"$0D"WildWest"
         Hint = "the game this TC is based on"
       }
       SourceDir: = {

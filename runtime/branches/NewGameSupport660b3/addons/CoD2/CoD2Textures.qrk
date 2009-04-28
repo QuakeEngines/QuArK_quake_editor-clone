@@ -1,0 +1,29 @@
+QQRKSRC1
+// CoD2 Textures file for Quark
+
+//$Header$
+// ----------- REVISION HISTORY ------------
+//$Log$
+//
+
+{
+  QuArKProtected = "1"
+  Description = "CoD2 Textures"
+
+  Textures.qtx =
+  {
+    Toolbox = "Texture Browser..."
+    Root = "CoD2 Textures and shaders.qtxfolder"
+
+    t_main:incl =      { a = "Main" }
+
+    CoD2 Textures and shaders.qtxfolder =
+    {
+      CoD2 Textures and shaders.osfolder =
+      {
+        path = "Main"
+        build = "1"
+      }
+    }
+  }
+}
