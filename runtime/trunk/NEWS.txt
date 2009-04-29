@@ -15,6 +15,14 @@ $Id$
 6.6.0 Beta 3
 ============
 
+* [cdunde/DanielPharos]: Added full Vertex Weights support with its own dialog display
+          - with either manual or auto updating and saving for each model component.
+
+* [cdunde/DanielPharos]: Added full Vertex U,V Coloring support to the bones Specifics page.
+
+* [cdunde/DanielPharos]: Completely rebuilt the Model Editor's bones system to coincide more
+          - more with games and other model editor systems.
+
 * [DanielPharos]: Fix a major slowdown in the progressbar drawing routine.
 
 * [DanielPharos]: Fixed the treeview color boxes for components not showing up the first time.
