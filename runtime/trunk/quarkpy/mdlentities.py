@@ -272,6 +272,11 @@ class WeightsDlg(dlgclasses.LiveEditDlg):
     dfsep = 0.4      # Separation at 40% between labels and edit boxes
     dlgdef = """ """ # The dialog is created in the setup function to allow self generated items.
 
+    def cancel(self, dlg):
+        # Modified from dlgclasses.py
+        qmacro.dialogbox.close(self, dlg)
+        self.src = None
+
 def WeightsClick(editor):
     if editor is None: return
     AddStuff(editor)
@@ -288,7 +293,7 @@ def WeightsClick(editor):
         sep: =
             {
             Typ="S"
-            Txt="Instructions: place curser here"
+            Txt="Instructions: place cursor here"
             Hint = "This dialog displays all vertexes for the selected component"$0D
                    "    that have been assigned to more then one bone."$0D
                    "All of the 'Weight' values for a particular vertex MUST add up to 1.0"$0D
@@ -315,7 +320,7 @@ def WeightsClick(editor):
             Typ = "P"
             Txt = "update dialog -->"
             Macro = "updatedialog"
-            Hint = "When more vertexes are assigned between bones"$0D"you need to click this button to display"$0D"the newly shared vertexes and their listing."
+            Hint = "When more vertexes are assigned between bones,"$0D"or other actions take place that would effect these items,"$0D"this dialog will update automatically."$0D"Or you can click this button to update it any time you wish."
             Cap = "update dialog"
             }
         sep: = { Typ="S" Txt=""}
@@ -326,6 +331,12 @@ def WeightsClick(editor):
             Macro = "applychanges"
             Hint = "You MUST click this button to ensure that"$0D"settings made thus far are saved."$0D"This will also place them on the"$0D"'undo' list for easy interval reversal."$0D"After an 'undo' you MUST click the"$0D"'update dialog' button to reload the old settings."
             Cap = "apply changes"
+            }
+        auto_save_weights: =
+            {
+            Typ="X"
+            Txt="auto save"
+            Hint="When checked, all displayed settings will be saved"$0D"when ever this dialog is closed or switches components."
             }
         sep: = { Typ="S" Txt=""}
         exit:py = {Txt="" }
@@ -339,7 +350,14 @@ def WeightsClick(editor):
             bonevtxlist = editor.ModelComponentList[comp.name]['bonevtxlist']
         else:
             bonevtxlist = None
-        src["comp_name"] = " " + comp.name
+        src["comp_name"] = comp.name
+        if comp.dictspec.has_key("auto_save_weights"):
+            if comp.dictspec["auto_save_weights"] == "1":
+                src["auto_save_weights"] = ""
+            else:
+                src["auto_save_weights"] = "1"
+        else:
+            src["auto_save_weights"] = "1"
         for key in self.SRClables.keys():
             src[key] = self.SRClables[key]
         for key in self.SRCsList.keys():
@@ -351,10 +369,18 @@ def WeightsClick(editor):
                 src[str(key)] = quarkx.setupsubset(SS_MODEL, "Options")["vtx_" + str(key)]
                 src[str(key)] = "%.2f"%(float(src[str(key)]))
                 vtx, bone, lable = str(key).split("_")
-                bonevtxlist[bone + ":bone"][int(vtx)][lable] = round(float(src[str(key)]), 2)
+                try: # Need this to avoid an error in case we are in "Face mode"
+                     # which means the bones are being hidden, thus causing an error.
+                    bonevtxlist[bone + ":bone"][int(vtx)][lable] = round(float(src[str(key)]), 2)
+                except:
+                    pass
 
     def action(self, editor=editor):
         comp = editor.Root.currentcomponent
+        if self.src["auto_save_weights"] == "1":
+            comp["auto_save_weights"] = "0"
+        else:
+            comp["auto_save_weights"] = "1"
         if editor.ModelComponentList.has_key(comp.name) and editor.ModelComponentList[comp.name].has_key('bonevtxlist'):
             bonevtxlist = editor.ModelComponentList[comp.name]['bonevtxlist']
         else:
@@ -403,8 +429,27 @@ def WeightsClick(editor):
                 quarkx.setupsubset(SS_MODEL, "Options")["vtx_" + str(key)] = vtxkey
 
     def onclosing(self, editor=editor):
-        for key in self.SRCsList.keys():
-            quarkx.setupsubset(SS_MODEL, "Options")["vtx_" + str(key)] = None
+        prev_comp = self.src["comp_name"]
+        if editor.Root.dictitems[prev_comp].dictspec.has_key("auto_save_weights") and editor.Root.dictitems[prev_comp].dictspec['auto_save_weights'] != "1":
+            if editor.ModelComponentList.has_key(prev_comp):
+                bonevtxlist = editor.ModelComponentList[prev_comp]['bonevtxlist']
+                for key in self.SRCsList.keys():
+                    vtx, bone, lable = key.split("_")
+                    if quarkx.setupsubset(SS_MODEL, "Options")["vtx_" + key] is not None:
+                        try:
+                            bonevtxlist[bone + ":bone"][int(vtx)][lable] = float(quarkx.setupsubset(SS_MODEL, "Options")["vtx_" + key])
+                        except:
+                            pass
+                        quarkx.setupsubset(SS_MODEL, "Options")["vtx_" + key] = None
+                o = editor.Root.currentcomponent
+                undo = quarkx.action()
+                newframe = o.currentframe.copy()
+                undo.exchange(o.currentframe, newframe)
+                prev_comp = prev_comp.replace(":mc", "")
+                editor.ok(undo, prev_comp + ' weight settings saved')
+        else:
+            for key in self.SRCsList.keys():
+                quarkx.setupsubset(SS_MODEL, "Options")["vtx_" + key] = None
 
     WeightsDlg(quarkx.clickform, 'weightsdlg', editor, setup, action, onclosing)
 
@@ -500,7 +545,8 @@ def macro_applychanges(btn):
         undo = quarkx.action()
         newframe = o.currentframe.copy()
         undo.exchange(o.currentframe, newframe)
-        editor.ok(undo, 'weight settings saved')
+        compname = o.shortname
+        editor.ok(undo, compname + ' weight settings saved')
 
 qmacro.MACRO_selectvtxs = macro_selectvtxs
 qmacro.MACRO_updatedialog = macro_updatedialog
@@ -1668,6 +1714,10 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.39  2009/04/28 21:30:56  cdunde
+#Model Editor Bone Rebuild merge to HEAD.
+#Complete change of bone system.
+#
 #Revision 1.38  2009/01/27 05:03:01  cdunde
 #Full support for .md5mesh bone importing with weight assignment and other improvements.
 #

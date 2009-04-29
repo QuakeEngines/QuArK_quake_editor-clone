@@ -816,8 +816,9 @@ class ModelLayout(BaseLayout):
                     self.selchange()
                     if selitem.dictspec.has_key("frame_autoexpand") and selitem.dictspec['frame_autoexpand'] == "1":
                         item = self.editor.Root.currentcomponent.currentframe
-                        self.editor.layout.explorer.expand(item.parent.parent)
-                        self.editor.layout.explorer.expand(item.parent)
+                        if item is not None:
+                            self.editor.layout.explorer.expand(item.parent.parent)
+                            self.editor.layout.explorer.expand(item.parent)
 
                 if check_offset != selitem["draw_offset"]:
                     if len(selitem.vtxlist) == 0:
@@ -1287,7 +1288,8 @@ class ModelLayout(BaseLayout):
                 if f.caption == "Vertex Weights Dialog":
                     panel = f.mainpanel.controls()
                     weightsdataform = panel[0].linkedobjects[0]
-                    if self.editor.Root.currentcomponent.name != weightsdataform["comp_name"].strip():
+                    oldcomp = weightsdataform["comp_name"]
+                    if self.editor.Root.currentcomponent.name != oldcomp:
                         import mdlentities
                         mdlentities.WeightsClick(self.editor)
             except:
@@ -1491,6 +1493,10 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.100  2009/04/28 21:30:56  cdunde
+#Model Editor Bone Rebuild merge to HEAD.
+#Complete change of bone system.
+#
 #Revision 1.99  2009/03/26 22:32:32  danielpharos
 #Fixed the treeview color boxes for components not showing up the first time.
 #

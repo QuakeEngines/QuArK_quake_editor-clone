@@ -118,6 +118,15 @@ def update_bonevtxlist(editor, comp, vertices_to_remove):
         del editor.ModelComponentList[comp.name]
     undo.exchange(oldskelgroup, newskelgroup)
     editor.ok(undo, "")
+    # This section updates the "Vertex Weights Dialog" if it is opened and needs to update.
+    formlist = quarkx.forms(1)
+    for f in formlist:
+        try:
+            if f.caption == "Vertex Weights Dialog":
+                import mdlentities
+                mdlentities.WeightsClick(editor)
+        except:
+            pass
 
 #
 # Updates the editor.ModelComponentList for a component's colorvtxlist when any vertex is removed.
@@ -2336,7 +2345,7 @@ def assign_release_vertices(editor, bone, comp, vtxsellist):
             if f.caption == "Vertex Weights Dialog":
                 panel = f.mainpanel.controls()
                 weightsdataform = panel[0].linkedobjects[0]
-                if editor.Root.currentcomponent.name == weightsdataform["comp_name"].strip():
+                if editor.Root.currentcomponent.name == weightsdataform["comp_name"]:
                     import mdlentities
                     mdlentities.WeightsClick(editor)
         except:
@@ -3423,6 +3432,10 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.104  2009/04/28 21:30:56  cdunde
+#Model Editor Bone Rebuild merge to HEAD.
+#Complete change of bone system.
+#
 #Revision 1.103  2009/03/26 22:32:30  danielpharos
 #Fixed the treeview color boxes for components not showing up the first time.
 #
