@@ -23,6 +23,12 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.37.2.1  2009/03/02 22:50:11  danielpharos
+Added vertex assigning code.
+
+Revision 1.37  2009/02/21 17:09:44  danielpharos
+Changed all source files to use CRLF text format, updated copyright and GPL text.
+
 Revision 1.36  2009/02/04 23:14:52  danielpharos
 Moved size_t declaration to SystemDetails.
 
@@ -161,6 +167,7 @@ type
  CFILE = Pointer;
 
  Py_ssize_t = size_t;
+ Py_ssize_tPtr = ^Py_ssize_t;
 
  PyObjectPtr = ^PyObject;
  PyTypeObject = ^TyTypeObject;
@@ -526,6 +533,7 @@ PyDict_Keys: function (dict: PyObject) : PyObject; cdecl;
 PyDict_Values: function (dict: PyObject) : PyObject; cdecl;
 //function PyDict_Items(dict: PyObject) : PyObject; cdecl;
 //function PyDict_DelItemString(dict: PyObject; key: PChar) : Integer; cdecl;
+PyDict_Next: function (dict: PyObject; pos : Py_ssize_tPtr; key : PyObjectPtr; value : PyObjectPtr) : Integer; cdecl;
 
 PyString_FromString: function (str: PChar) : PyObject; cdecl;
 PyString_AsString: function (o: PyObject) : PChar; cdecl;
@@ -604,7 +612,7 @@ uses
  {-------------------}
 
 const
-  PythonProcList: array[0..57] of record
+  PythonProcList: array[0..58] of record
                                     Variable: Pointer;
                                     Name: PChar;
                                     MinimalVersion: Integer;
@@ -663,6 +671,7 @@ const
     (Variable: @@PyDict_GetItem;             Name: 'PyDict_GetItem';             MinimalVersion: 0  ),
     (Variable: @@PyDict_Keys;                Name: 'PyDict_Keys';                MinimalVersion: 0  ),
     (Variable: @@PyDict_Values;              Name: 'PyDict_Values';              MinimalVersion: 0  ),
+    (Variable: @@PyDict_Next;                Name: 'PyDict_Next';                MinimalVersion: 0  ),
     (Variable: @@PyString_FromString;        Name: 'PyString_FromString';        MinimalVersion: 0  ),
     (Variable: @@PyString_AsString;          Name: 'PyString_AsString';          MinimalVersion: 0  ),
     (Variable: @@PyString_FromStringAndSize; Name: 'PyString_FromStringAndSize'; MinimalVersion: 0  ),
