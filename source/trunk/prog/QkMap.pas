@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.96  2009/03/19 18:31:22  danielpharos
+Argl! Removed bad comment.
+
 Revision 1.95  2009/03/19 18:23:10  danielpharos
 Fixed a double space in bezier MOHAA surfaceparams output.
 
@@ -2823,10 +2826,10 @@ begin
     S1:=1.0/S1;
     S2:=1.0/S2;
 
-    S:=S+#13#10'  "uaxis" "';
+    S:=S+#13#10'    "uaxis" "';
     write4vectHL2(QV0, UOff, S);
     S:=S+' '+FloatToStrF(S1, ffFixed, 20, DecimalPlaces)+'"';
-    S:=S+#13#10'  "vaxis" "';
+    S:=S+#13#10'    "vaxis" "';
     write4vectHL2(QV1, VOff, S);
     S:=S+' '+FloatToStrF(S2, ffFixed, 20, DecimalPlaces)+'"';
   end
@@ -3526,7 +3529,7 @@ begin
  Brush.Add(CommentMapLine(Ancestry));
 
  if MapFormat=HL2Type then
-  Brush.Add('solid');
+  Brush.Add(' solid');
 
  Brush.Add(' {');
 
@@ -3544,16 +3547,16 @@ begin
   for J:=0 to Faces.Count-1 do
   begin
    if MapFormat=HL2Type then
-     Brush.Add(' side {');
+     Brush.Add('   side'#13#10'   {');
    SaveAsMapTextTFace(PSurface(Faces[J])^.F, MapSaveSettings, Brush, OriginBrush, Flags2);
    if MapFormat=HL2Type then
    begin
      S:=PSurface(Faces[J])^.F.Specifics.values['lightmapscale'];
      if S<>'' then
-       Brush.Add('  "lightmapscale" "'+S+'"')
+       Brush.Add('    "lightmapscale" "'+S+'"')
      else
-       Brush.Add('  "lightmapscale" "16"');
-     Brush.Add(' }');
+       Brush.Add('    "lightmapscale" "16"');
+     Brush.Add('   }');
    end
   end
  else
@@ -3869,7 +3872,7 @@ begin
    {start writing out a face}
 
    if MapSaveSettings.MapFormat=HL2Type then
-     S:= S+ '"plane" "';
+     S:= S+ '  "plane" "';
 
    for I:=1 to 3 do
     with P[I] do
@@ -3898,14 +3901,14 @@ begin
        S:=S+FloatToStrF(Z, ffFixed, 20, DecimalPlaces);
 
       if MapSaveSettings.MapFormat=HL2Type then
-        S:=S+')'
+        S:=S+') '
       else
         S:=S+' ) ';
 
      end;
 
    if MapSaveSettings.MapFormat=HL2Type then
-     S:= S+'"';
+     S[Length(S)]:='"'; //Change last space into quote
 
    {start writing out a texture coordinates}
    if MapSaveSettings.MapFormat=BPType then
@@ -3926,7 +3929,7 @@ begin
 
      {texture name}
      if MapSaveSettings.MapFormat=HL2Type then
-       S:= S+#13#10'  "material" "';
+       S:= S+#13#10'    "material" "';
 
      {$IFDEF TexUpperCase}
      if MapSaveSettings.MapVersion>1 then
