@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2009/02/21 17:06:18  danielpharos
+Changed all source files to use CRLF text format, updated copyright and GPL text.
+
 Revision 1.17  2009/01/28 21:09:13  danielpharos
 Ignore IO errors in console file handling.
 
@@ -313,7 +316,7 @@ begin
     NewConsoleWidth:=MaxConsoleWidth;
   if NewConsoleHeight>MaxConsoleHeight then
     NewConsoleHeight:=MaxConsoleHeight;
-  if (NewConsoleHeight<>ConsoleHeight) or (NewConsoleHeight<>ConsoleHeight) then
+  if (NewConsoleWidth<>ConsoleWidth) or (NewConsoleHeight<>ConsoleHeight) then
   begin
     NewBuffer:=nil;
     InitBuffer(NewBuffer, NewConsoleWidth, NewConsoleHeight);
