@@ -11,55 +11,55 @@ Please review the above page before proceeding.
 Please add to the appropriate section for Game Codes you use
 and recommit this file to the archives. Also see "Additional Notes" below.
 
-                                                                Mo/Dy/Yr
+                                                                Dy/Mo/Yr
 Game    Game name or         Full Game         Authors Name     Date
 Code    abbreviation            Name          or Screen name    taken
-====    ============    ==================    ==============    ======
+====    ============    ==================    ==============    ==========
 
  1      Q1              Quake 1               SpaceDog          unknown
- 2      Hexen II        Hexen 2               Tiglari           11/17/98
- 3      Half-Life       Half-Life             Decker            01/30/01
+ 2      Hexen II        Hexen 2               Tiglari           17/11/1998
+ 3      Half-Life       Half-Life             Decker            30/01/2001
  4      Genesis3D       Genesis3D             SpaceDog          unknown
 
 
  A      Q2              Quake 2               SpaceDog/Akuma    unknown
- B      Heretic II      Heretic 2             Tiglari           11/29/98
- C      Sin             Sin                   Tiglari           02/02/01
- D      KingPin         KingPin               Alexander         04/26/00
- E      SOF             Solder of Fortune     Decker            02/11/01
- Z      6DX             6DX game engine       Jacob Marner      03/06/01
+ B      Heretic II      Heretic 2             Tiglari           29/11/1998
+ C      Sin             Sin                   Tiglari           02/02/2001
+ D      KingPin         KingPin               Alexander         26/04/2000
+ E      SOF             Solder of Fortune     Decker            11/02/2001
+ Z      6DX             6DX game engine       Jacob Marner      06/03/2001
 
 
- a      Q3              Quake 3: Arena        Alexander         05/06/00
- b      STVEF           Star Trek: Voyager    Decker            02/11/01
+ a      Q3              Quake 3: Arena        Alexander         06/05/2000
+ b      STVEF           Star Trek: Voyager    Decker            11/02/2001
                         Elite Force
- c      Crystal Space   Crystal Space engine  unknown           02/11/01
- d      RTCW            Return to Castle      Decker            12/05/01
+ c      Crystal Space   Crystal Space engine  unknown           11/02/2001
+ d      RTCW            Return to Castle      Decker            05/12/2001
                         Wolfenstein
- e      MOHAA           Medal of Honor        Decker            02/05/02
+ e      MOHAA           Medal of Honor        Decker            05/02/2002
                         Allied Assault
- f      JK2             Jedi Knight 2         Decker            04/04/02
- g      Torque          Torque game engine    Desmond Fletcher  04/08/02
- h      SoF2            Solder of Fortune 2   Tiglari           06/09/02
- i      Sylphis         Sylphis game engine   Harry Kalogirou   05/21/04
- j      D3              Doom 3                Rowdy             11/07/04
- k      HL2             Half-Life 2           Alexander         11/08/04
- l      JA              Jedi Academy          Nazar             11/29/04
- m      Quake 4         Quake 4               cdunde            04/27/06
- n      RTCW-ET         RTCW-Enemy Territory  cdunde            25/06/06
- o      EF2             Star Trek: Elite      DanielPharos      04/16/07
+ f      JK2             Jedi Knight 2         Decker            04/04/2002
+ g      Torque          Torque game engine    Desmond Fletcher  08/04/2002
+ h      SoF2            Solder of Fortune 2   Tiglari           09/06/2002
+ i      Sylphis         Sylphis game engine   Harry Kalogirou   21/05/2004
+ j      D3              Doom 3                Rowdy             07/11/2004
+ k      HL2             Half-Life 2           Alexander         08/11/2004
+ l      JA              Jedi Academy          Nazar             29/11/2004
+ m      Quake 4         Quake 4               cdunde            27/04/2006
+ n      RTCW-ET         RTCW-Enemy Territory  cdunde            06/25/2006
+ o      EF2             Star Trek: Elite      DanielPharos      16/04/2007
                         Force 2
- p      CoD1            Call of Duty          DanielPharos      05/22/07
- q      CoD2            Call of Duty 2        DanielPharos      05/22/07
- r      Prey            Prey                  DanielPharos      07/05/07
- s      FAKK2           Heavy Metal - FAKK2   cdunde            02/23/08
- t      TREM            Tremulous             DanielPharos      04/26/09
- u      OA              OpenArena             DanielPharos      04/26/09
- v      Warsow          Warsow                cdunde            04/21/08
- w      WildWest        WildWest              Silverpaladin     08/31/03
+ p      CoD1            Call of Duty          DanielPharos      22/05/2007
+ q      CoD2            Call of Duty 2        DanielPharos      22/05/2007
+ r      Prey            Prey                  DanielPharos      05/07/2007
+ s      FAKK2           Heavy Metal - FAKK2   cdunde            23/02/2008
+ t      TREM            Tremulous             DanielPharos      26/04/2009
+ u      OA              OpenArena             DanielPharos      26/04/2009
+ v      Warsow          Warsow                cdunde            21/04/2008
+ w      WildWest        WildWest              Silverpaladin     31/08/2003
  x      ALICE           American McGee's Alice
-                                              DanielPharos      04/28/09
- z      NEXUIZ          NEXUIZ                cdunde            04/03/08
+                                              DanielPharos      28/04/2009
+ z      NEXUIZ          NEXUIZ                cdunde            03/04/2008
 
 Note: Some of the above Authors and dates may not be correct
 due to full documentation was not available for older,
