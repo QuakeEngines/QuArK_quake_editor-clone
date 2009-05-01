@@ -15,6 +15,8 @@ $Id$
 6.6.0 Beta 3
 ============
 
+* [cdunde/DanielPharos]: Model Editor - Added bone handle scaling functions and selection option.
+
 * [cdunde/DanielPharos]: Added full Vertex Weights support with its own dialog display
           - with either manual or auto updating and saving for each model component.
 
