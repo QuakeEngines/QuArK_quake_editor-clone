@@ -3572,21 +3572,8 @@ class BoneHandle(qhandles.GenericHandle):
     def ok(self, editor, undo, old, new): # for BoneHandle
         undomsg = "bone dragged"
         undo = quarkx.action()
-        def replacebone(oldskelgroup, newskelgroup, old, new):
-            import operator
-            for checkbone in range(len(oldskelgroup.subitems)):
-                try:
-                    itemindex = operator.indexOf(old, oldskelgroup.subitems[checkbone])
-                except:
-                    pass
-                else:
-                    newskelgroup.removeitem(checkbone)
-                    copybone = new[itemindex].copy()
-                    newskelgroup.insertitem(checkbone, copybone)
-                replacebone(oldskelgroup.subitems[checkbone], newskelgroup.subitems[checkbone], old, new)
         oldskelgroup = editor.Root.dictitems['Skeleton:bg']
-        newskelgroup = oldskelgroup.copy()
-        replacebone(oldskelgroup, newskelgroup, old, new)
+        newskelgroup = boneundo(editor, old, new)
         undo.exchange(oldskelgroup, newskelgroup)
         newbones = newskelgroup.findallsubitems("", ':bone')    # get all bones
         for parent in newbones:
@@ -3637,6 +3624,285 @@ class BoneCenterHandle(BoneHandle):
         self.dict = {}
 
     def menu(self, editor, view): # for BoneCenterHandle
+
+        def CalcBoneScaleValue(bone, parent_bone_scale):
+            scale = 1.0
+            if abs(bone.dictspec['bone_length'][0]) > abs(bone.dictspec['bone_length'][1]):
+                if  abs(bone.dictspec['bone_length'][0]) > abs(bone.dictspec['bone_length'][2]):
+                    testscale = abs(bone.dictspec['bone_length'][0])
+                else:
+                    testscale = abs(bone.dictspec['bone_length'][2])
+            else:
+                if  abs(bone.dictspec['bone_length'][1]) > abs(bone.dictspec['bone_length'][2]):
+                    testscale = abs(bone.dictspec['bone_length'][1])
+                else:
+                    testscale = abs(bone.dictspec['bone_length'][2])
+            if testscale < 8:
+                scale = scale - (testscale * .08)
+
+            if scale < 0.1:
+                scale = 0.1
+            elif scale > parent_bone_scale:
+                scale = parent_bone_scale
+            return scale
+
+        def CalcBoneScale(bone_index, bonelist, bones, new_scales):
+            bone = bonelist[bone_index]
+            if bone.dictspec['parent_name'] == 'None':
+                # Bone has no parent. (Poor orphaned bone!)
+                new_scales[bone_index] = bone.dictspec['scale'][0]
+            else:
+                parent_bone_index = -1
+                for bone_index2 in range(len(bonelist)):
+                    bone2 = bonelist[bone_index2]
+                    if bone2.name == bone.dictspec['parent_name']:
+                        # Found it!
+                        parent_bone_index = bone_index2
+                        break
+                if parent_bone_index == -1:
+                    # Parent bone is not in bonelist. Use the original one.
+                    parent_bone = None
+                    for bone_index2 in range(len(bones)):
+                        bone2 = bones[bone_index2]
+                        if bone2.name == bone.dictspec['parent_name']:
+                            # Found it!
+                            parent_bone = bone2
+                            break
+                    new_scales[bone_index] = CalcBoneScaleValue(bone, parent_bone.dictspec['scale'][0])
+                else:
+                    # Parent bone is in bonelist.
+                    parent_bone = bonelist[parent_bone_index]
+                    if new_scales[parent_bone_index] is None:
+                        CalcBoneScale(parent_bone_index, bonelist, bones, new_scales)
+                    new_scales[bone_index] = CalcBoneScaleValue(bone, new_scales[parent_bone_index])
+            return
+
+        def ScaleSelHandlesClick(m, self=self, editor=editor, view=view):
+            bonelist = []
+            bones = editor.Root.findallsubitems("", ':bone')  # get all bones
+
+            for item in editor.layout.explorer.sellist:
+                if item.type == ":bone" and not item in bonelist:
+                    bonelist = addtolist(bonelist, item)
+
+            new_scales = []
+            for bone in bonelist:
+                new_scales = new_scales + [None]
+
+            bone_index = 0
+            while bone_index < len(bonelist):
+                if new_scales[bone_index] == None:
+                    CalcBoneScale(bone_index, bonelist, bones, new_scales)
+                bone_index = bone_index + 1
+
+            undo = quarkx.action()
+            undo_msg = "sel bone handle scaling"
+            oldskelgroup = editor.Root.dictitems['Skeleton:bg']
+            old = bonelist
+            new = []
+            for bone_index in range(len(old)):
+                bone = old[bone_index]
+                new_bone = bone.copy()
+                new_bone['scale'] = (new_scales[bone_index],) # Written this way to store it as a tuple.
+                new = new + [new_bone]
+            newskelgroup = boneundo(editor, old, new)
+            undo.exchange(oldskelgroup, newskelgroup)
+            editor.ok(undo, undo_msg)
+
+        def ResetSelHandleScalesClick(m, self=self, editor=editor, view=view):
+            bonelist = []
+            bones = editor.Root.findallsubitems("", ':bone')  # get all bones
+
+            for item in editor.layout.explorer.sellist:
+                if item.type == ":bone" and not item in bonelist:
+                    bonelist = addtolist(bonelist, item)
+            old = bonelist
+            new = []
+            for bone_index in range(len(old)):
+                bone = old[bone_index]
+                new_bone = bone.copy()
+                new = new + [new_bone]
+
+            for bone in new:
+                if bone.dictspec.has_key("org_scale"):
+                    bone['scale'] = bone.dictspec['org_scale']
+                else:
+                    bone['scale'] = (1.0,) # Written this way to store it as a tuple.
+
+            undo = quarkx.action()
+            undo_msg = "sel bone handle scaling reset"
+            oldskelgroup = editor.Root.dictitems['Skeleton:bg']
+            newskelgroup = boneundo(editor, old, new)
+            undo.exchange(oldskelgroup, newskelgroup)
+            editor.ok(undo, undo_msg)
+
+        def SetSelHandleScalesTo1Click(m, self=self, editor=editor, view=view):
+            bonelist = []
+            bones = editor.Root.findallsubitems("", ':bone')  # get all bones
+
+            for item in editor.layout.explorer.sellist:
+                if item.type == ":bone" and not item in bonelist:
+                    bonelist = addtolist(bonelist, item)
+            old = bonelist
+            new = []
+            for bone_index in range(len(old)):
+                bone = old[bone_index]
+                new_bone = bone.copy()
+                new = new + [new_bone]
+
+            for bone in new:
+                bone['scale'] = (1.0,) # Written this way to store it as a tuple.
+
+            undo = quarkx.action()
+            undo_msg = "sel bone handle scales set to 1"
+            oldskelgroup = editor.Root.dictitems['Skeleton:bg']
+            newskelgroup = boneundo(editor, old, new)
+            undo.exchange(oldskelgroup, newskelgroup)
+            editor.ok(undo, undo_msg)
+
+        def SaveSelHandleScalesClick(m, self=self, editor=editor, view=view):
+            bonelist = []
+            bones = editor.Root.findallsubitems("", ':bone')  # get all bones
+
+            for item in editor.layout.explorer.sellist:
+                if item.type == ":bone" and not item in bonelist:
+                    bonelist = addtolist(bonelist, item)
+            old = bonelist
+            new = []
+            for bone_index in range(len(old)):
+                bone = old[bone_index]
+                new_bone = bone.copy()
+                new = new + [new_bone]
+
+            for bone in new:
+                bone['org_scale'] = bone.dictspec['scale']
+
+            undo = quarkx.action()
+            undo_msg = "sel handle scales saved"
+            oldskelgroup = editor.Root.dictitems['Skeleton:bg']
+            newskelgroup = boneundo(editor, old, new)
+            undo.exchange(oldskelgroup, newskelgroup)
+            editor.ok(undo, undo_msg)
+
+        def ScaleHandlesClick(m, self=self, editor=editor, view=view):
+            bonelist = bones = editor.Root.findallsubitems("", ':bone')  # get all bones
+
+            new_scales = []
+            for bone in bonelist:
+                new_scales = new_scales + [None]
+
+            bone_index = 0
+            while bone_index < len(bonelist):
+                if new_scales[bone_index] == None:
+                    CalcBoneScale(bone_index, bonelist, bones, new_scales)
+                bone_index = bone_index + 1
+
+            undo = quarkx.action()
+            undo_msg = "all bone handles scaled"
+            oldskelgroup = editor.Root.dictitems['Skeleton:bg']
+            old = bonelist
+            new = []
+            for bone_index in range(len(old)):
+                bone = old[bone_index]
+                new_bone = bone.copy()
+                new_bone['scale'] = (new_scales[bone_index],) # Written this way to store it as a tuple.
+                new = new + [new_bone]
+            newskelgroup = boneundo(editor, old, new)
+            undo.exchange(oldskelgroup, newskelgroup)
+            editor.ok(undo, undo_msg)
+
+        def ResetHandleScalesClick(m, self=self, editor=editor, view=view):
+            bonelist = bones = editor.Root.findallsubitems("", ':bone')  # get all bones
+            old = bonelist
+            new = []
+            for bone_index in range(len(old)):
+                bone = old[bone_index]
+                new_bone = bone.copy()
+                new = new + [new_bone]
+
+            for bone in new:
+                if bone.dictspec.has_key("org_scale"):
+                    bone['scale'] = bone.dictspec['org_scale']
+                else:
+                    bone['scale'] = (1.0,) # Written this way to store it as a tuple.
+
+            undo = quarkx.action()
+            undo_msg = "all bone handle scaling reset"
+            oldskelgroup = editor.Root.dictitems['Skeleton:bg']
+            newskelgroup = boneundo(editor, old, new)
+            undo.exchange(oldskelgroup, newskelgroup)
+            editor.ok(undo, undo_msg)
+
+        def SetHandleScalesTo1Click(m, self=self, editor=editor, view=view):
+            bonelist = bones = editor.Root.findallsubitems("", ':bone')  # get all bones
+            old = bonelist
+            new = []
+            for bone_index in range(len(old)):
+                bone = old[bone_index]
+                new_bone = bone.copy()
+                new = new + [new_bone]
+
+            for bone in new:
+                bone['scale'] = (1.0,) # Written this way to store it as a tuple.
+
+            undo = quarkx.action()
+            undo_msg = "all bone handle scales set to 1"
+            oldskelgroup = editor.Root.dictitems['Skeleton:bg']
+            newskelgroup = boneundo(editor, old, new)
+            undo.exchange(oldskelgroup, newskelgroup)
+            editor.ok(undo, undo_msg)
+
+        def SaveHandleScalesClick(m, self=self, editor=editor, view=view):
+            bonelist = bones = editor.Root.findallsubitems("", ':bone')  # get all bones
+            old = bonelist
+            new = []
+            for bone_index in range(len(old)):
+                bone = old[bone_index]
+                new_bone = bone.copy()
+                new = new + [new_bone]
+
+            for bone in new:
+                bone['org_scale'] = bone.dictspec['scale']
+
+            undo = quarkx.action()
+            undo_msg = "all bone handle scaling saved"
+            oldskelgroup = editor.Root.dictitems['Skeleton:bg']
+            newskelgroup = boneundo(editor, old, new)
+            undo.exchange(oldskelgroup, newskelgroup)
+            editor.ok(undo, undo_msg)
+
+        def IndividualBonesSel(m, self=self, editor=editor, view=view):
+            if not MdlOption("IndividualBonesSel"):
+                quarkx.setupsubset(SS_MODEL, "Options")['IndividualBonesSel'] = "1"
+            else:
+                quarkx.setupsubset(SS_MODEL, "Options")['IndividualBonesSel'] = None
+
+        def handlescalemenu(m):
+            scale_sel_handles = qmenu.item("Scale selected bone handles", ScaleSelHandlesClick, "|Scale selected bone handles:\n\nIf this menu item is checked, all bones that are currently selected, and their attached bones, will have their handles set to different scale sizes for easer access.\n\nSee 'Individual Bones Selection' below for additional option.|intro.modeleditor.editelements.html#specificsettings")
+            scale_sel_handles.state = qmenu.disabled
+            reset_sel_handle_scales = qmenu.item("Reset selected handles to org. scale", ResetSelHandleScalesClick, "|Reset selected bone handles to org. scale:\n\nIf this menu item is checked, all bones that are currently selected, and their attached bones, will have their handles reset to their original imported or saved scale sizes.\n\nSee 'Individual Bones Selection' below for additional option.|intro.modeleditor.editelements.html#specificsettings")
+            reset_sel_handle_scales.state = qmenu.disabled
+            set_sel_handle_scales_to1 = qmenu.item("Set selected bone handles to 1.0", SetSelHandleScalesTo1Click, "|Set selected bone handles to 1.0:\n\nIf this menu item is checked, all bones that are currently selected, and their attached bones, will have their handles reset to the default scale size of 1.0.\n\nSee 'Individual Bones Selection' below for additional option.|intro.modeleditor.editelements.html#specificsettings")
+            set_sel_handle_scales_to1.state = qmenu.disabled
+            save_sel_handle_scales = qmenu.item("Save selected handle scales", SaveSelHandleScalesClick, "|Save selected handle scales:\n\nIf this menu item is checked, all bones that are currently selected, and their attached bones, will have their handles scale sizes saved, becoming their original setting.\n\nSee 'Individual Bones Selection' below for additional option.|intro.modeleditor.editelements.html#specificsettings")
+            save_sel_handle_scales.state = qmenu.disabled
+            scale_handles = qmenu.item("Scale all bone handles", ScaleHandlesClick, "|Scale all bone handles:\n\nIf this menu item is checked, all bones will have their handles set to different scale sizes for easer access.|intro.modeleditor.editelements.html#specificsettings")
+            reset_handle_scales = qmenu.item("Reset all handles to org. scale", ResetHandleScalesClick, "|Reset all handles to org. scale:\n\nIf this menu item is checked, all bones will have their handles reset to their original imported or saved scale sizes.|intro.modeleditor.editelements.html#specificsettings")
+            set_handle_scales_to1 = qmenu.item("Set all handles to 1.0", SetHandleScalesTo1Click, "|Set all handles to 1.0:\n\nIf this menu item is checked, all bones will have their handles reset to the default scale size of 1.0.|intro.modeleditor.editelements.html#specificsettings")
+            save_handle_scales = qmenu.item("Save all handle scales", SaveHandleScalesClick, "|Save all handle scales:\n\nIf this menu item is checked, all bones will have their handles scale sizes saved, becoming their original setting.|intro.modeleditor.editelements.html#specificsettings")
+            individual_bones_sel = qmenu.item("Individual Bones Selection", IndividualBonesSel, "|Individual Bones Selection:\n\nWhen this item is checked ONLY the INDIVIDUAL bone handles that are selected will be effected and NOT any sub-bones that are NOT specifically selected, Which IS the case if this is un-checked.|intro.modeleditor.editelements.html#specificsettings")
+
+            for item in editor.layout.explorer.sellist:
+                if item.type == ":bone":
+                    scale_sel_handles.state = qmenu.normal
+                    reset_sel_handle_scales.state = qmenu.normal
+                    set_sel_handle_scales_to1.state = qmenu.normal
+                    save_sel_handle_scales.state = qmenu.normal
+                    break
+
+            individual_bones_sel.state = quarkx.setupsubset(SS_MODEL,"Options").getint("IndividualBonesSel")
+            menulist = [scale_sel_handles, reset_sel_handle_scales, set_sel_handle_scales_to1, qmenu.sep, save_sel_handle_scales, qmenu.sep, scale_handles, reset_handle_scales, set_handle_scales_to1, qmenu.sep, save_handle_scales, qmenu.sep, individual_bones_sel]
+            return menulist
 
         def force_to_grid_click(m, self=self, editor=editor, view=view):
             self.Action(editor, self.pos, self.pos, MB_CTRL, view, Strings[560])
@@ -3813,6 +4079,9 @@ class BoneCenterHandle(BoneHandle):
                 Update_Editor_Views(editor)
 
         Forcetogrid = qmenu.item("&Force to grid", force_to_grid_click,"|Force to grid:\n\nThis will cause a bone's center handle to 'snap' to the nearest location on the editor's grid for the view that the RMB click was made in.|intro.modeleditor.rmbmenus.html#bonecommands")
+        m = qmenu.item
+        m.editor = editor
+        handlescalepop = qmenu.popup("Handle Scaling", handlescalemenu(m), None, "|Handle Scaling:\n\nThese functions deal with setting the scale size of the bone handles for better work size.", "intro.modeleditor.editelements.html#specificsettings")
         AddBone = qmenu.item("&Add Bone Here", add_bone_click, "|Add Bone Here:\n\nThis will add a single bone to the 'Skeleton' group.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
         ContinueBones = qmenu.item("&Continue Bones", continue_bones_click, "|Continue Bones:\n\nThis will add a single bone, connected to the bone handle when the RMB was clicked, in the 'Skeleton' group.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
         AttachBone1to2 = qmenu.item("Attach Bone &1 to 2", attach_bone1to2_click, "|Attach Bone 1 to 2:\n\nThis will attach the first selected bone in the tree-view to the second selected bone in the tree-view.|intro.modeleditor.rmbmenus.html#bonecommands")
@@ -3907,7 +4176,7 @@ class BoneCenterHandle(BoneHandle):
         if not MdlOption("GridActive") or editor.gridstep <= 0:
             Forcetogrid.state = qmenu.disabled
 
-        menu = [AddBone, ContinueBones, qmenu.sep, AttachBone1to2, AttachBone2to1, qmenu.sep, DetachBones, qmenu.sep, AlignBone1to2, AlignBone2to1, qmenu.sep, AssignReleaseVertices, qmenu.sep, SetHandlePosition, qmenu.sep] + sel_vtx_list + [qmenu.sep, KeyframesRotation, qmenu.sep, SB1, HB1, qmenu.sep, Forcetogrid]
+        menu = [AddBone, ContinueBones, qmenu.sep, AttachBone1to2, AttachBone2to1, qmenu.sep, DetachBones, qmenu.sep, AlignBone1to2, AlignBone2to1, qmenu.sep, AssignReleaseVertices, qmenu.sep, SetHandlePosition, qmenu.sep] + sel_vtx_list + [qmenu.sep, handlescalepop, qmenu.sep, KeyframesRotation, qmenu.sep, SB1, HB1, qmenu.sep, Forcetogrid]
 
         return menu
 
@@ -4489,6 +4758,10 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.173  2009/04/28 21:30:56  cdunde
+#Model Editor Bone Rebuild merge to HEAD.
+#Complete change of bone system.
+#
 #Revision 1.172  2009/03/28 20:24:42  cdunde
 #Minor comment corrections.
 #
