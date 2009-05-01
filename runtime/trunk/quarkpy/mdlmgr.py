@@ -1169,22 +1169,9 @@ class ModelLayout(BaseLayout):
                 if len(self.editor.Root.dictitems['Skeleton:bg'].subitems) != 0:
                     oldskelgroup = self.editor.Root.dictitems['Skeleton:bg']
                     old = oldskelgroup.findallsubitems("", ':bone') # Get all bones in the old group.
-                    newskelgroup = oldskelgroup.copy()
-                    new = newskelgroup.findallsubitems("", ':bone') # Get all bones in the new group.
-                    def replacebone(oldskelgroup, newskelgroup, old, new):
-                        import operator
-                        for checkbone in range(len(oldskelgroup.subitems)):
-                            try:
-                                itemindex = operator.indexOf(old, oldskelgroup.subitems[checkbone])
-                            except:
-                                pass
-                            else:
-                                newskelgroup.removeitem(checkbone)
-                                copybone = new[itemindex].copy()
-                                newskelgroup.insertitem(checkbone, copybone)
-                            replacebone(oldskelgroup.subitems[checkbone], newskelgroup.subitems[checkbone], old, new)
-                    replacebone(oldskelgroup, newskelgroup, old, new)
-                    new = newskelgroup.findallsubitems("", ':bone') # Get all bones in the new UPDATED group.
+                    new = []
+                    for bone in old:
+                        new = new + [bone.copy()]
                     for bone in new:
                         if bone.dictspec['component'] == changednames[0][0]:
                             bone['component'] = changednames[0][1]
@@ -1204,6 +1191,7 @@ class ModelLayout(BaseLayout):
                                 tempdata[component] = bone.vtx_pos[component]
                         bone.vtx_pos = {}
                         bone.vtx_pos = tempdata
+                    newskelgroup = boneundo(self.editor, old, new)
                     undo.exchange(oldskelgroup, newskelgroup)
 
             self.editor.ok(undo, undo_msg)
@@ -1321,35 +1309,26 @@ class ModelLayout(BaseLayout):
         if changednames is not None:
             undo = quarkx.action()
             undo_msg = "USE UNDO BELOW - bone name changed"
-            comp = self.editor.Root.currentcomponent
 
-            if self.editor.ModelComponentList[comp.name].has_key('bonevtxlist'):
-                if self.editor.ModelComponentList[comp.name]['bonevtxlist'].has_key(changednames[0][0]):
-                    tempdata = self.editor.ModelComponentList[comp.name]['bonevtxlist'][changednames[0][0]]
-                    del self.editor.ModelComponentList[comp.name]['bonevtxlist'][changednames[0][0]]
-                    self.editor.ModelComponentList[comp.name]['bonevtxlist'][changednames[0][1]] = tempdata
+            comps = self.editor.Root.findallsubitems("", ':mc')   # find all components
+            for comp in comps:
+                if self.editor.ModelComponentList.has_key(comp.name):
+                    if self.editor.ModelComponentList[comp.name].has_key('bonevtxlist'):
+                        if self.editor.ModelComponentList[comp.name]['bonevtxlist'].has_key(changednames[0][0]):
+                            tempdata = self.editor.ModelComponentList[comp.name]['bonevtxlist'][changednames[0][0]]
+                            del self.editor.ModelComponentList[comp.name]['bonevtxlist'][changednames[0][0]]
+                            self.editor.ModelComponentList[comp.name]['bonevtxlist'][changednames[0][1]] = tempdata
 
             if len(self.editor.Root.dictitems['Skeleton:bg'].subitems) != 0:
                 oldskelgroup = self.editor.Root.dictitems['Skeleton:bg']
                 old = oldskelgroup.findallsubitems("", ':bone') # Get all bones in the old group.
-                newskelgroup = oldskelgroup.copy()
-                new = newskelgroup.findallsubitems("", ':bone') # Get all bones in the new group.
+                new = []
+                for bone in old:
+                    new = new + [bone.copy()]
                 for bone in new:
                     if bone.dictspec['parent_name'] == changednames[0][0]:
                         bone['parent_name'] = changednames[0][1]
-                def replacebone(oldskelgroup, newskelgroup, old, new):
-                    import operator
-                    for checkbone in range(len(oldskelgroup.subitems)):
-                        try:
-                            itemindex = operator.indexOf(old, oldskelgroup.subitems[checkbone])
-                        except:
-                            pass
-                        else:
-                            newskelgroup.removeitem(checkbone)
-                            copybone = new[itemindex].copy()
-                            newskelgroup.insertitem(checkbone, copybone)
-                        replacebone(oldskelgroup.subitems[checkbone], newskelgroup.subitems[checkbone], old, new)
-                replacebone(oldskelgroup, newskelgroup, old, new)
+                newskelgroup = boneundo(self.editor, old, new)
                 undo.exchange(oldskelgroup, newskelgroup)
             
             self.editor.ok(undo, undo_msg)
@@ -1493,6 +1472,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.101  2009/04/29 23:50:03  cdunde
+#Added auto saving and updating features for weights dialog data.
+#
 #Revision 1.100  2009/04/28 21:30:56  cdunde
 #Model Editor Bone Rebuild merge to HEAD.
 #Complete change of bone system.

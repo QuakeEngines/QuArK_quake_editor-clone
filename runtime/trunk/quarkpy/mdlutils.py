@@ -95,21 +95,8 @@ def update_bonevtxlist(editor, comp, vertices_to_remove):
         if len(Old_dictionary_list[bone]) == 0:
             del Old_dictionary_list[bone]
     undo = quarkx.action()
-    def replacebone(oldskelgroup, newskelgroup, old, new):
-        import operator
-        for checkbone in range(len(oldskelgroup.subitems)):
-            try:
-                itemindex = operator.indexOf(old, oldskelgroup.subitems[checkbone])
-            except:
-                pass
-            else:
-                newskelgroup.removeitem(checkbone)
-                copybone = new[itemindex].copy()
-                newskelgroup.insertitem(checkbone, copybone)
-            replacebone(oldskelgroup.subitems[checkbone], newskelgroup.subitems[checkbone], old, new)
     oldskelgroup = editor.Root.dictitems['Skeleton:bg']
-    newskelgroup = oldskelgroup.copy()
-    replacebone(oldskelgroup, newskelgroup, old, new)
+    newskelgroup = boneundo(editor, old, new)
     if len(Old_dictionary_list) == 0:
         del editor.ModelComponentList[comp.name]['bonevtxlist']
     else:
@@ -2098,6 +2085,19 @@ def addframe(editor):
 
 
 #
+# Finds and gets all bones within another bone in the explorer.sellist.
+# "bonelist" is an empty list to start with for ex.: bonelist = []
+# "item" is each item within the explorer.sellist from a "for" loop, calling this function for each item.
+#
+def addtolist(bonelist, item):
+    if (not MdlOption("IndividualBonesSel")) or (item.selected != 0):
+        bonelist = bonelist + [item]
+    for subbone in item.subitems:
+        if subbone.type == ":bone" and not subbone in bonelist:
+            bonelist = addtolist(bonelist, subbone)
+    return bonelist
+
+#
 # Finds and returns the bone name sent to this function.
 #
 def findbone(editor, bone_name):
@@ -2130,6 +2130,28 @@ def clearbones(editor, undomsg):
     skeletongroup['type'] = chr(5)
     undo.exchange(editor.Root.dictitems['Skeleton:bg'], skeletongroup)
     editor.ok(undo, undomsg)
+
+#
+# Creates a new Skeleton group to undo.exchange the old with. The 'old' list contains the old bones
+# and the 'new' list the new bones in the same order to put inside the new skeleton group.
+#
+def boneundo(editor, old, new):
+    def replacebone(oldskelgroup, newskelgroup, old, new):
+        import operator
+        for checkbone in range(len(oldskelgroup.subitems)):
+            try:
+                itemindex = operator.indexOf(old, oldskelgroup.subitems[checkbone])
+            except:
+                pass
+            else:
+                newskelgroup.removeitem(checkbone)
+                copybone = new[itemindex].copy()
+                newskelgroup.insertitem(checkbone, copybone)
+            replacebone(oldskelgroup.subitems[checkbone], newskelgroup.subitems[checkbone], old, new)
+    oldskelgroup = editor.Root.dictitems['Skeleton:bg']
+    newskelgroup = oldskelgroup.copy()
+    replacebone(oldskelgroup, newskelgroup, old, new)
+    return newskelgroup
 
 #
 # This function adds a :bone-object to the skeleton-group of comp at position pos
@@ -3432,6 +3454,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.105  2009/04/29 23:50:03  cdunde
+#Added auto saving and updating features for weights dialog data.
+#
 #Revision 1.104  2009/04/28 21:30:56  cdunde
 #Model Editor Bone Rebuild merge to HEAD.
 #Complete change of bone system.
