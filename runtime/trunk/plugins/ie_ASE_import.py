@@ -1018,28 +1018,14 @@ def dataformname(o):
     "Returns the data form for this type of object 'o' (a model component & others) to use for the Specific/Args page."
     import quarkpy.mdlentities # Used further down in a couple of places.
 
-    if o.parent.parent.type == ":mc":
-        item = o.parent.parent
-    if o.parent.type == ":mc":
-        item = o.parent
-    if item.dictspec.has_key("shader_lines"):
-        if int(item.dictspec['shader_lines']) < 3:
-            item['shader_lines'] = "3"
-        if int(item.dictspec['shader_lines']) > 35:
-            item['shader_lines'] = "35"
-        NbrOfShaderLines = item.dictspec['shader_lines']
-        quarkx.setupsubset(SS_MODEL, "Options")["NbrOfShaderLines"] = NbrOfShaderLines
-    else:
-        if quarkx.setupsubset(SS_MODEL, "Options")["NbrOfShaderLines"] is not None:
-            NbrOfShaderLines = quarkx.setupsubset(SS_MODEL, "Options")["NbrOfShaderLines"]
-            item.dictspec['shader_lines'] = NbrOfShaderLines
-        else:
-            NbrOfShaderLines = "8"
-            item.dictspec['shader_lines'] = NbrOfShaderLines
-            quarkx.setupsubset(SS_MODEL, "Options")["NbrOfShaderLines"] = NbrOfShaderLines
+    # Next line calls for the Shader Module in mdlentities.py to be used.
+    external_skin_editor_dialog_plugin = quarkpy.mdlentities.UseExternalSkinEditor()
 
-    # Next line calls for the Vertex U,V Color system in mdlentities.py to be used.
+    # Next line calls for the Vertex U,V Color Module in mdlentities.py to be used.
     vtx_UVcolor_dialog_plugin = quarkpy.mdlentities.UseVertexUVColors()
+
+    # Next line calls for the Shader Module in mdlentities.py to be used.
+    Shader_dialog_plugin = quarkpy.mdlentities.UseShaders()
 
     dlgdef = """
     {
@@ -1052,7 +1038,7 @@ def dataformname(o):
              "edit skin"$22" - Opens this skin texture in an external editor."$0D22
              "UVNAME"$22" - Special UV process control name (over rides 'NAME')."$0D
              "          type in any name you want to use."$0D22
-             "Vertex Color"$22" - Color to use for this components vertex color mapping."$0D
+             "Vertex Color"$22" - Color to use for this component's u,v vertex color mapping."$0D
              "            Click the color display button to select a color."$0D22
              "shader file"$22" - Gives the full path and name of the .mtr material"$0D
              "           shader file that the selected skin texture uses, if any."$0D22
@@ -1065,28 +1051,10 @@ def dataformname(o):
              "mesh shader"$22" - Contains the full text of this skin texture's shader, if any."$0D
              "          This can be copied to a text file, changed and saved."
       ase_NAME:   = {t_ModelEditor_texturebrowser = ! Txt="NAME"    Hint="Surface level control name,"$0D"which is its main skin texture name."$0D0D"NOTE: Some games do NOT allow 'TEXTURE TILING'"$0D"for MODELS, only for SCENES."$0D"Meaning spreading the model faces over"$0D"repeated image areas of a texture."}
-      edit_skin:  = {
-                     Typ = "P"
-                     Txt = "edit skin ---->"
-                     Macro = "opentexteditor"
-                     Hint = "Opens this skin texture"$0D"in an external editor."
-                     Cap = "edit skin"
-                    }
+      """ + external_skin_editor_dialog_plugin + """
       ase_UVNAME: = {Typ="E"   Txt="UVNAME"  Hint="Special UV process control name (over rides 'NAME'),"$0D"type in any name you want to use."}
       """ + vtx_UVcolor_dialog_plugin + """
-      Sep:            = {Typ="S"   Txt = ""}
-      shader_file:    = {Typ="E"   Txt="shader file"  Hint="Gives the full path and name of the .mtr material"$0D"shader file that the selected skin texture uses, if any."}
-      shader_name:    = {Typ="E"   Txt="shader name"  Hint="Gives the name of the shader located in the above file"$0D"that the selected skin texture uses, if any."}
-      shader_keyword: = {Typ="E"   Txt="shader keyword"  Hint="Gives the above shader 'keyword' that is used to identify"$0D"the currently selected skin texture used in the shader, if any."}
-      shader_lines:   = {Typ="EU"  Txt="shader lines"    Hint="Number of lines to display in window below, max. = 35."}
-      edit_shader:    = {
-                         Typ = "P"
-                         Txt = "edit shader -->"
-                         Macro = "opentexteditor"
-                         Hint = "Opens shader below"$0D"in a text editor."
-                         Cap = "edit shader"
-                        }
-      mesh_shader:    = {Typ="M"  Rows = """ + chr(34) + NbrOfShaderLines + chr(34) + """ Scrollbars="1" Txt = "mesh shader"  Hint="Contains the full text of this skin texture's shader, if any."$0D"This can be copied to a text file, changed and saved."}
+      """ + Shader_dialog_plugin + """
     }
     """
 
@@ -1124,30 +1092,6 @@ def dataformname(o):
         return formobj, icon_btns
     else:
         return None, None
-        
-def macro_opentexteditor(btn):
-    editor = quarkpy.mdleditor.mdleditor # Get the editor.
-    if editor.Root.currentcomponent.currentskin is None:
-        quarkx.beep() # Makes the computer "Beep" once.
-        quarkx.msgbox("No model skin texture !\n\nYou must provide one\nto use this function.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
-        return
-    if btn.name == "edit_skin:":
-        newImage = editor.Root.currentcomponent.currentskin
-        quarkx.externaledit(editor.Root.currentcomponent.currentskin) # Opens skin in - external editor for this texture file type.
-        editor.Root.currentcomponent.currentskin = newImage
-        skin = editor.Root.currentcomponent.currentskin
-        editor.layout.skinview.background = quarkx.vect(-int(skin["Size"][0]*.5),-int(skin["Size"][1]*.5),0), 1.0, 0, 1
-        editor.layout.skinview.backgroundimage = skin,
-        editor.layout.skinview.repaint()
-        for v in editor.layout.views:
-            if v.viewmode == "tex":
-                v.invalidate(1)
-    else:
-        obj = quarkx.newfileobj("temp.txt")
-        obj['Data'] = editor.Root.currentcomponent.dictspec['mesh_shader']
-        quarkx.externaledit(obj)
-    
-quarkpy.qmacro.MACRO_opentexteditor = macro_opentexteditor
 
 def dataforminput(o):
     "Returns the default settings or input data for this type of object 'o' (a model component & others) to use for the Specific/Args page."
@@ -1191,6 +1135,10 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.6  2009/04/28 21:30:56  cdunde
+# Model Editor Bone Rebuild merge to HEAD.
+# Complete change of bone system.
+#
 # Revision 1.5  2009/03/26 07:17:17  cdunde
 # Update for editing vertex color support.
 #

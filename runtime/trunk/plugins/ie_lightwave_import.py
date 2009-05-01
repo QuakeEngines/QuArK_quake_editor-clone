@@ -68,6 +68,7 @@ from quarkpy.qdictionnary import Strings
 # ===========================================================
 
 # Globals
+SS_MODEL = 3
 logging = 0
 importername = "ie_lightwave_import.py"
 textlog = "lwo_ie_log.txt"
@@ -2110,7 +2111,7 @@ def create_objects(filename, polynames, clip_list, objspec_list, surf_list, base
                 if list.has_key('UVNAME'):
                     Component['lwo_UVNAME'] = list['UVNAME']
                 if list.has_key('COLR'):
-                    Component['lwo_COLR'] = str(quarkx.vect(list['COLR'][0], list['COLR'][1], list['COLR'][2]))
+                    Component['COLR'] = str(quarkx.vect(list['COLR'][0], list['COLR'][1], list['COLR'][2]))
         sdogroup = quarkx.newobj('SDO:sdo')
         Component.appenditem(sdogroup)
         Component.appenditem(skingroup)
@@ -2552,26 +2553,16 @@ def colorclick(btn):
 
 def dataformname(o):
     "Returns the data form for this type of object 'o' (a model component & others) to use for the Specific/Args page."
+    import quarkpy.mdlentities # Used further down in a couple of places.
 
-    if o.parent.parent.type == ":mc":
-        item = o.parent.parent
-    if o.parent.type == ":mc":
-        item = o.parent
-    if item.dictspec.has_key("shader_lines"):
-        if int(item.dictspec['shader_lines']) < 3:
-            item['shader_lines'] = "3"
-        if int(item.dictspec['shader_lines']) > 35:
-            item['shader_lines'] = "35"
-        NbrOfShaderLines = item.dictspec['shader_lines']
-        quarkx.setupsubset(3, "Options")["NbrOfShaderLines"] = NbrOfShaderLines
-    else:
-        if quarkx.setupsubset(3, "Options")["NbrOfShaderLines"] is not None:
-            NbrOfShaderLines = quarkx.setupsubset(3, "Options")["NbrOfShaderLines"]
-            item.dictspec['shader_lines'] = NbrOfShaderLines
-        else:
-            NbrOfShaderLines = "8"
-            item.dictspec['shader_lines'] = NbrOfShaderLines
-            quarkx.setupsubset(3, "Options")["NbrOfShaderLines"] = NbrOfShaderLines
+    # Next line calls for the Shader Module in mdlentities.py to be used.
+    external_skin_editor_dialog_plugin = quarkpy.mdlentities.UseExternalSkinEditor()
+
+    # Next line calls for the Vertex U,V Color Module in mdlentities.py to be used.
+    vtx_UVcolor_dialog_plugin = quarkpy.mdlentities.UseVertexUVColors()
+
+    # Next line calls for the Shader Module in mdlentities.py to be used.
+    Shader_dialog_plugin = quarkpy.mdlentities.UseShaders()
 
     dlgdef = """
     {
@@ -2584,10 +2575,12 @@ def dataformname(o):
              "edit skin"$22" - Opens this skin texture in an external editor."$0D22
              "UVNAME"$22" - Special UV process control name (over rides 'NAME')."$0D
              "          type in any name you want to use."$0D22
-             "COLR"$22" - Color to use for this components uv vertex color mapping."$0D
+             "COLR"$22" - Color to use for this components 'mapped on color'."$0D
              "          Click the color selector button to the right and pick a color."$0D22
              "IMAG"$22" - Image Map Image. Indicates that this surface is an image map."$0D
              "        Check this if 'CHAN' & 'IMAG' are checked and 'OPAC' is NOT checked."$0D22
+             "Vertex Color"$22" - Color to use for this component's u,v vertex color mapping."$0D
+             "            Click the color display button to select a color."$0D22
              "shader file"$22" - Gives the full path and name of the .mtr material"$0D
              "           shader file that the selected skin texture uses, if any."$0D22
              "shader name"$22" - Gives the name of the shader located in the above file"$0D
@@ -2599,29 +2592,13 @@ def dataformname(o):
              "mesh shader"$22" - Contains the full text of this skin texture's shader, if any."$0D
              "          This can be copied to a text file, changed and saved."
       lwo_NAME:   = {t_ModelEditor_texturebrowser = ! Txt="NAME"    Hint="Surface level control name,"$0D"which is its main skin texture name."$0D0D"NOTE: Some games do NOT allow 'TEXTURE TILING'"$0D"for MODELS, only for SCENES."$0D"Meaning spreading the model faces over"$0D"repeated image areas of a texture."}
-      edit_skin:  = {
-                     Typ = "P"
-                     Txt = "edit skin ---->"
-                     Macro = "opentexteditor"
-                     Hint = "Opens this skin texture"$0D"in an external editor."
-                     Cap = "edit skin"
-                    }
+      """ + external_skin_editor_dialog_plugin + """
       lwo_UVNAME: = {Typ="E"   Txt="UVNAME"  Hint="Special UV process control name (over rides 'NAME'),"$0D"type in any name you want to use."}
-      lwo_COLR:   = {          Txt="COLR"                                                                          }
-      lwo_COLR:   = {Typ="L"   Txt="COLR"    Hint="Color to use for this components uv vertex color mapping."$0D"Click the color selector button to the right and pick a color."}
+      COLR:   = {          Txt="COLR"                                                                          }
+      COLR:   = {Typ="L"   Txt="COLR"    Hint="Color to use for this components 'mapped on color'."$0D"Click the color selector button to the right and pick a color."}
       lwo_IMAG:   = {Typ="X"   Txt="IMAG"    Hint="Image Map Image. Indicates that this surface is an image map."$0D"Check this if 'CHAN' & 'IMAG' are checked and 'OPAC' is NOT checked."}
-      shader_file:    = {Typ="E"   Txt="shader file"  Hint="Gives the full path and name of the .mtr material"$0D"shader file that the selected skin texture uses, if any."}
-      shader_name:    = {Typ="E"   Txt="shader name"  Hint="Gives the name of the shader located in the above file"$0D"that the selected skin texture uses, if any."}
-      shader_keyword: = {Typ="E"   Txt="shader keyword"  Hint="Gives the above shader 'keyword' that is used to identify"$0D"the currently selected skin texture used in the shader, if any."}
-      shader_lines:   = {Typ="EU"  Txt="shader lines"    Hint="Number of lines to display in window below, max. = 35."}
-      edit_shader:    = {
-                         Typ = "P"
-                         Txt = "edit shader ---->"
-                         Macro = "opentexteditor"
-                         Hint = "Opens shader below"$0D"in a text editor."
-                         Cap = "edit shader"
-                        }
-      mesh_shader:    = {Typ="M"  Rows = """ + chr(34) + NbrOfShaderLines + chr(34) + """ Scrollbars="1" Txt = "mesh shader"  Hint="Contains the full text of this skin texture's shader, if any."$0D"This can be copied to a text file, changed and saved."}
+      """ + vtx_UVcolor_dialog_plugin + """
+      """ + Shader_dialog_plugin + """
     }
     """
 
@@ -2630,15 +2607,20 @@ def dataformname(o):
     editor = quarkpy.mdleditor.mdleditor # Get the editor.
     ico_mdlskv = ico_dict['ico_mdlskv']  # Just to shorten our call later.
     icon_btns = {}                       # Setup our button list, as a dictionary list, to return at the end.
-    vtxcolorbtn = quarkpy.qtoolbar.button(colorclick, "Color UV Vertex mode||When active, puts the editor vertex selection into this mode and uses the 'COLR' specific setting as the color to designate these types of vertexes.\n\nIt also places the editor into Vertex Selection mode if not there already and clears any selected vertexes to protect from including unwanted ones by mistake.\n\nAny vertexes selected in this mode will become Color UV Vertexes and added to the component as such. Click the InfoBase button or press F1 again for more detail.|intro.modeleditor.dataforms.html#specsargsview", ico_mdlskv, 5)
+    vtxcolorbtn = quarkpy.qtoolbar.button(colorclick, "Test button for now.||This button is just for testing purposes for right now, does not do anything.|intro.modeleditor.dataforms.html#specsargsview", ico_mdlskv, 5)
     # Sets the button to its current status, that might be effected by another importer file, either on or off.
-    if quarkx.setupsubset(3, "Options")['VertexUVColor'] == "1":
+    if quarkx.setupsubset(SS_MODEL, "Options")['VertexUVColor'] == "1":
         vtxcolorbtn.state = quarkpy.qtoolbar.selected
     else:
         vtxcolorbtn.state = quarkpy.qtoolbar.normal
     icon_btns['color'] = vtxcolorbtn     # Put our button in the above list to return.
+    # Next line calls for the Vertex Weights system in mdlentities.py to be used.
+    vtxweightsbtn = quarkpy.qtoolbar.button(quarkpy.mdlentities.UseVertexWeights, "Open or Update\nVertex Weights Dialog||When clicked, this button opens the dialog to allow the 'weight' movement setting of single vertexes that have been assigned to more then one bone handle.\n\nClick the InfoBase button or press F1 again for more detail.|intro.modeleditor.dataforms.html#specsargsview", ico_mdlskv, 5)
+    vtxweightsbtn.state = quarkpy.qtoolbar.normal
+    vtxweightsbtn.caption = "" # Texts shows next to button and keeps the width of this button so it doesn't change.
+    icon_btns['vtxUVcolor'] = vtxweightsbtn   # Put our button in the above list to return.
 
-    if o.name == editor.Root.currentcomponent.currentskin.name: # If this is not done it will cause looping through multiple times.
+    if (editor.Root.currentcomponent.currentskin is not None) and (o.name == editor.Root.currentcomponent.currentskin.name): # If this is not done it will cause looping through multiple times.
         if o.parent.parent.dictspec.has_key("shader_keyword") and o.dictspec.has_key("shader_keyword"):
             if o.parent.parent.dictspec['shader_keyword'] != o.dictspec['shader_keyword']:
                 o.parent.parent['shader_keyword'] = o.dictspec['shader_keyword']
@@ -2647,40 +2629,20 @@ def dataformname(o):
     while (DummyItem.type != ":mc"): # Gets the object's model component.
         DummyItem = DummyItem.parent
     o = DummyItem
+
+    if not o.dictspec.has_key('show_vtx_color') and quarkx.setupsubset(SS_MODEL, "Options")['ShowVertexColor'] is not None:
+        quarkx.setupsubset(SS_MODEL, "Options")['ShowVertexColor'] = None
+        quarkpy.mdlutils.Update_Editor_Views(editor)
+    if o.dictspec.has_key('show_vtx_color') and quarkx.setupsubset(SS_MODEL, "Options")['ShowVertexColor'] is None:
+        quarkx.setupsubset(SS_MODEL, "Options")['ShowVertexColor'] = o.dictspec['show_vtx_color']
+        quarkpy.mdlutils.Update_Editor_Views(editor)
+
     if o.type == ":mc": # Just makes sure what we have is a model component.
         formobj = quarkx.newobj("lwo_mc:form")
         formobj.loadtext(dlgdef)
         return formobj, icon_btns
     else:
         return None, None
-
-
-def macro_opentexteditor(btn):
-    editor = quarkpy.mdleditor.mdleditor # Get the editor.
-
-    if btn.name == "edit_skin:":
-        newImage = editor.Root.currentcomponent.currentskin
-        quarkx.externaledit(editor.Root.currentcomponent.currentskin) # Opens skin in - external editor for this texture file type.
-        editor.Root.currentcomponent.currentskin = newImage
-        skin = editor.Root.currentcomponent.currentskin
-        editor.layout.skinview.background = quarkx.vect(-int(skin["Size"][0]*.5),-int(skin["Size"][1]*.5),0), 1.0, 0, 1
-        editor.layout.skinview.backgroundimage = skin,
-        editor.layout.skinview.repaint()
-        for v in editor.layout.views:
-            if v.viewmode == "tex":
-                v.invalidate(1)
-    else:
-      #  shader_text = quarkx.newfileobj("tempdata:material")
-      #  shader_text['Data'] = editor.Root.currentcomponent.dictspec['mesh_shader']
-      #  obj = quarkx.newfileobj("temp.mtr")
-      #  obj.appenditem(shader_text)
-      #  quarkx.externaledit(obj)
-        obj = quarkx.newfileobj("temp.txt")
-        obj['Data'] = editor.Root.currentcomponent.dictspec['mesh_shader']
-        quarkx.externaledit(obj)
-
-quarkpy.qmacro.MACRO_opentexteditor = macro_opentexteditor
-
 
 def dataforminput(o):
     "Returns the default settings or input data for this type of object 'o' (a model component & others) to use for the Specific/Args page."
@@ -2698,31 +2660,37 @@ def dataforminput(o):
                o['lwo_NAME'] = "no skins exist"
       #  if not o.dictspec.has_key('lwo_UVNAME'):
       #      o['lwo_UVNAME'] = o.dictitems['Skins:sg'].subitems[0].name
-        if not o.dictspec.has_key('lwo_COLR'):
-            o['lwo_COLR'] = "0.75 0.75 0.75"
+        if not o.dictspec.has_key('COLR'):
+            o['COLR'] = "0.75 0.75 0.75"
+        if not o.dictspec.has_key('vtx_color'):
+            o['vtx_color'] = "0.75 0.75 0.75"
         if not o.dictspec.has_key('shader_file'):
             o['shader_file'] = "None"
         if not o.dictspec.has_key('shader_name'):
             o['shader_name'] = "None"
-        if Item.name == editor.Root.currentcomponent.currentskin.name:
+        if (editor.Root.currentcomponent.currentskin is not None) and (Item.name == editor.Root.currentcomponent.currentskin.name):
             if Item.dictspec.has_key("shader_keyword"):
                 o['shader_keyword'] = Item.dictspec['shader_keyword']
         else:
             o['shader_keyword'] = "None"
         if not o.dictspec.has_key('shader_lines'):
-            if quarkx.setupsubset(3, "Options")["NbrOfShaderLines"] is not None:
-                o['shader_lines'] = quarkx.setupsubset(3, "Options")["NbrOfShaderLines"]
+            if quarkx.setupsubset(SS_MODEL, "Options")["NbrOfShaderLines"] is not None:
+                o['shader_lines'] = quarkx.setupsubset(SS_MODEL, "Options")["NbrOfShaderLines"]
             else:
                 o['shader_lines'] = "8"
-                quarkx.setupsubset(3, "Options")["NbrOfShaderLines"] = o.dictspec['shader_lines']
+                quarkx.setupsubset(SS_MODEL, "Options")["NbrOfShaderLines"] = o.dictspec['shader_lines']
         else:
-            quarkx.setupsubset(3, "Options")["NbrOfShaderLines"] = o.dictspec['shader_lines']
+            quarkx.setupsubset(SS_MODEL, "Options")["NbrOfShaderLines"] = o.dictspec['shader_lines']
         if not o.dictspec.has_key('mesh_shader'):
             o['mesh_shader'] = "None"
 
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.29  2009/04/28 21:30:56  cdunde
+# Model Editor Bone Rebuild merge to HEAD.
+# Complete change of bone system.
+#
 # Revision 1.28  2009/03/26 19:53:12  danielpharos
 # Removed redundant variable.
 #

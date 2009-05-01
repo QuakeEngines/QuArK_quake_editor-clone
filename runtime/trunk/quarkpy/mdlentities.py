@@ -94,6 +94,139 @@ def ShowComp(m):
 def HideComp(m):
     ShowHideComp(0)
 
+
+###############################
+#
+# Shader Module
+#
+###############################
+
+# Imports & Globals for Vertex U,V Color Module ONLY.
+SS_MODEL = 3 # The Model Editor mode.
+
+#
+# Main function to be called from other files such as the
+# plugins\ie_ASE_import.py file using a button (see file)
+# to return a "dialog_plugin section" that will be used
+# in that files dialog definition or "dlgdef".
+#
+
+def ShaderLines():
+    editor = mdleditor.mdleditor # Get the editor.
+    comp = editor.Root.currentcomponent
+    if comp.dictspec.has_key("shader_lines"):
+        if int(comp.dictspec['shader_lines']) < 3:
+            comp['shader_lines'] = "3"
+        if int(comp.dictspec['shader_lines']) > 35:
+            comp['shader_lines'] = "35"
+        NbrOfShaderLines = comp.dictspec['shader_lines']
+        quarkx.setupsubset(SS_MODEL, "Options")["NbrOfShaderLines"] = NbrOfShaderLines
+    else:
+        if quarkx.setupsubset(SS_MODEL, "Options")["NbrOfShaderLines"] is not None:
+            NbrOfShaderLines = quarkx.setupsubset(SS_MODEL, "Options")["NbrOfShaderLines"]
+            comp.dictspec['shader_lines'] = NbrOfShaderLines
+        else:
+            NbrOfShaderLines = "8"
+            comp.dictspec['shader_lines'] = NbrOfShaderLines
+            quarkx.setupsubset(SS_MODEL, "Options")["NbrOfShaderLines"] = NbrOfShaderLines
+    return NbrOfShaderLines
+
+def UseShaders():
+    Shader_dialog_plugin =  """
+      Sep:            = {Typ="S"   Txt = ""}
+      shader_file:    = {
+                         Typ="E"
+                         Txt="shader file"
+                         Hint="Gives the full path and name of the .mtr material"$0D"shader file that the selected skin texture uses, if any."
+                        }
+      shader_name:    = {
+                         Typ="E"
+                         Txt="shader name"
+                         Hint="Gives the name of the shader located in the above file"$0D"that the selected skin texture uses, if any."
+                        }
+      shader_keyword: = {
+                         Typ="E"
+                         Txt="shader keyword"
+                         Hint="Gives the above shader 'keyword' that is used to identify"$0D"the currently selected skin texture used in the shader, if any."
+                        }
+      shader_lines:   = {
+                         Typ="EU"
+                         Txt="shader lines"
+                         Hint="Number of lines to display in window below, max. = 35."
+                        }
+      edit_shader:    = {
+                         Typ = "P"
+                         Txt = "edit shader -->"
+                         Macro = "opentexteditor"
+                         Hint = "Opens shader below"$0D"in a text editor."
+                         Cap = "edit shader"
+                        }
+      mesh_shader:    = {
+                         Typ="M"
+                         Rows = """ + chr(34) + ShaderLines() + chr(34) + """
+                         Scrollbars="1"
+                         Txt = "mesh shader"
+                         Hint="Contains the full text of this skin texture's shader, if any."$0D"This can be copied to a text file, changed and saved."
+                        }
+    """
+
+    return Shader_dialog_plugin
+
+
+###############################
+#
+# External Skin Editor Module
+#
+###############################
+
+# Imports & Globals for Vertex U,V Color Module ONLY.
+
+#
+# Main function to be called from other files such as the
+# plugins\ie_ASE_import.py file using a button (see file)
+# to return a "dialog_plugin section" that will be used
+# in that files dialog definition or "dlgdef".
+#
+
+def UseExternalSkinEditor():
+    external_skin_editor_dialog_plugin =  """
+      edit_skin:  = {
+                     Typ = "P"
+                     Txt = "edit skin ---->"
+                     Macro = "opentexteditor"
+                     Hint = "Opens this skin texture"$0D"in an external editor."
+                     Cap = "edit skin"
+                    }
+    """
+
+    return external_skin_editor_dialog_plugin
+
+### Used by more then one module above.
+def macro_opentexteditor(btn):
+    editor = mdleditor.mdleditor # Get the editor.
+    if btn.name == "edit_skin:":
+        if editor.Root.currentcomponent.currentskin is None:
+            quarkx.beep() # Makes the computer "Beep" once.
+            quarkx.msgbox("No model skin texture !\n\nYou must provide one\nto use this function.", qutils.MT_ERROR, qutils.MB_OK)
+            return
+        newImage = editor.Root.currentcomponent.currentskin
+        quarkx.externaledit(editor.Root.currentcomponent.currentskin) # Opens skin in - external editor for this texture file type.
+        editor.Root.currentcomponent.currentskin = newImage
+        skin = editor.Root.currentcomponent.currentskin
+        editor.layout.skinview.background = quarkx.vect(-int(skin["Size"][0]*.5),-int(skin["Size"][1]*.5),0), 1.0, 0, 1
+        editor.layout.skinview.backgroundimage = skin,
+        editor.layout.skinview.repaint()
+        for v in editor.layout.views:
+            if v.viewmode == "tex":
+                v.invalidate(1)
+    else:
+        obj = quarkx.newfileobj("temp.txt")
+        obj['Data'] = editor.Root.currentcomponent.dictspec['mesh_shader']
+        quarkx.externaledit(obj)
+    
+qmacro.MACRO_opentexteditor = macro_opentexteditor
+
+
 ###############################
 #
 # Vertex U,V Color Module
@@ -113,8 +246,8 @@ def UseVertexUVColors():
     vtx_UVcolor_dialog_plugin =  """
       Sep:            = {Typ="S"   Txt = ""}
       Sep:            = {Typ="S"   Txt = "UV Vertex Colors"}
-      vtx_color:      = {          Txt="Vertex Color"                                                                          }
-      vtx_color:      = {Typ="L"   Txt="Vertex Color"    Hint="Color to use for this components vertex color mapping."$0D"Click the color display button to select a color."}
+      vtx_color:      = {          Txt="Vertex Color"      }
+      vtx_color:      = {Typ="L"   Txt="Vertex Color"    Hint="Color to use for this component's u,v vertex color mapping."$0D"Click the color display button to select a color."}
       show_vtx_color: = {Typ="X"   Txt="Show Vertex Color"    Hint="When checked, if component has vertex coloring they will show."$0D"If NOT checked and it has bones with vetexes, those will show."}
       apply_color:    = {
                          Typ = "P"
@@ -1597,24 +1730,6 @@ class SkinType(EntityManager):
             return None
 
 
-    def macro_opentexteditor(btn):
-        import mdleditor
-        editor = mdleditor.mdleditor # Get the editor.
-        if btn.name == "edit_skin:":
-            newImage = editor.Root.currentcomponent.currentskin
-            quarkx.externaledit(editor.Root.currentcomponent.currentskin) # Opens skin in - external editor for this texture file type.
-            editor.Root.currentcomponent.currentskin = newImage
-            skin = editor.Root.currentcomponent.currentskin
-            editor.layout.skinview.background = quarkx.vect(-int(skin["Size"][0]*.5),-int(skin["Size"][1]*.5),0), 1.0, 0, 1
-            editor.layout.skinview.backgroundimage = skin,
-            editor.layout.skinview.repaint()
-            for v in editor.layout.views:
-                if v.viewmode == "tex":
-                    v.invalidate(1)
-
-    qmacro.MACRO_opentexteditor = macro_opentexteditor
-
-
     def dataforminput(o):
         "Returns the default settings or input data for this type of object 'o' (a model's skin texture) to use for the Specific/Args page."
 
@@ -1714,6 +1829,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.41  2009/05/01 05:54:46  cdunde
+#Small fix to stop errors.
+#
 #Revision 1.40  2009/04/29 23:50:03  cdunde
 #Added auto saving and updating features for weights dialog data.
 #
