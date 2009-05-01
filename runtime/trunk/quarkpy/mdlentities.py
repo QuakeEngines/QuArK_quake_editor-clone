@@ -1254,7 +1254,7 @@ class BoneType(EntityManager):
         except:
             quarkx.msgbox("FRAME COUNT ERROR !\n\nNot all components using these bones\nhave the same number of frames.\n\nCorrect and try again.", qutils.MT_ERROR, qutils.MB_OK)
             editor.layout.explorer.sellist = [comp.dictitems['Frames:fg'].subitems[0]]
-            return
+            return h
 
         Rebuild_Bone(o, frame)
 
@@ -1714,6 +1714,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.40  2009/04/29 23:50:03  cdunde
+#Added auto saving and updating features for weights dialog data.
+#
 #Revision 1.39  2009/04/28 21:30:56  cdunde
 #Model Editor Bone Rebuild merge to HEAD.
 #Complete change of bone system.
