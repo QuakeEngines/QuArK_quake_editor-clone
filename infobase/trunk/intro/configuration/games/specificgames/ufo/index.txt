@@ -1,2 +1,2 @@
-title: UFO
+title: UFO: Alien Invasion
 desc: config
