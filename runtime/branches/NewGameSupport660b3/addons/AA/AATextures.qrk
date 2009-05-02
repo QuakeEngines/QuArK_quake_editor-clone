@@ -1,0 +1,29 @@
+QQRKSRC1
+// Alien Arena Textures file for Quark
+
+//$Header$
+// ----------- REVISION HISTORY ------------
+//$Log$
+//
+
+{
+  QuArKProtected = "1"
+  Description = "Alien Arena Textures"
+
+  Textures.qtx =
+  {
+    Toolbox = "Texture Browser..."
+    Root = "Alien Arena Textures and shaders.qtxfolder"
+
+    t_main:incl =      { a = "data1" }
+
+    Alien Arena Textures and shaders.qtxfolder =
+    {
+      Alien Arena Textures and shaders.osfolder =
+      {
+        path = "data1"
+        build = "1"
+      }
+    }
+  }
+}

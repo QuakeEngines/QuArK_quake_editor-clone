@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.80.2.3  2009/04/28 20:40:38  danielpharos
+Added initial support for American McGee's Alice.
+
 Revision 1.80.2.2  2009/04/26 11:41:15  danielpharos
 Added initial Tremulous support.
 
@@ -334,6 +337,7 @@ comparison between gamemodes.}
  mjSin          = 'C';
  mjKingPin      = 'D';
  mjSOF          = 'E';  { Soldier Of Fortune }
+ mjAA           = 'F';  { Alien Arena }
  {..space for more Quake-2 style games..}
  mj6DX          = 'Z';
 
