@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.1.2.1  2009/05/02 11:30:24  danielpharos
+//Added initial Alien Arena support.
+//
 //
 
 {
@@ -108,7 +111,7 @@ QQRKSRC1
     Root = "Alien Arena file types.qtxfolder"
     Alien Arena file types.qtxfolder =
     {
-      Pk3.pk3 = { }
+      Pak.pak = { }
     }
   }
   walltex:incl =
