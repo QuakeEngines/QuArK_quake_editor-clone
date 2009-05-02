@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.482.2.7  2009/05/02 12:59:05  danielpharos
+//Added initial support for UFO: Alien Invasion.
+//
 //Revision 1.482.2.6  2009/05/02 11:32:41  danielpharos
 //Added cheats command line for AA.
 //
@@ -4217,7 +4220,7 @@ QQRKSRC1
         TextureShaders = "scripts/quark.shader"
 
         BaseDir = "base"
-        tmpQuArK = "tmpQuArK"
+        tmpQuArK = "base"
 
         Palette = ":pics/colormap.pcx"
         ExtraCmdLine = "+set fs_game %gamedir%"
