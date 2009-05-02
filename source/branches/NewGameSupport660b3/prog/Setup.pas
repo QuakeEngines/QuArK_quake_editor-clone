@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.80.2.4  2009/05/02 11:30:14  danielpharos
+Added initial Alien Arena support.
+
 Revision 1.80.2.3  2009/04/28 20:40:38  danielpharos
 Added initial support for American McGee's Alice.
 
@@ -365,6 +368,7 @@ comparison between gamemodes.}
  mjWarsow       = 'v';  { Warsow }
  mjWildWest     = 'w';  { WildWest }
  mjAlice        = 'x';  { American McGee's Alice }
+ mjUFO          = 'y';  { UFO: Alien Invasion }
  mjNEXUIZ       = 'z';  { NEXUIZ }
 
  mjAny          = #1;

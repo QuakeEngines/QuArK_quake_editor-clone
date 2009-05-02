@@ -60,6 +60,7 @@ Code    abbreviation            Name          or Screen name    taken
  w      WildWest        WildWest              Silverpaladin     31/08/2003
  x      ALICE           American McGee's Alice
                                               DanielPharos      28/04/2009
+ y      UFO             UFO: Alien Invasion   DanielPharos      02/05/2009
  z      NEXUIZ          NEXUIZ                cdunde            03/04/2008
 
 Note: Some of the above Authors and dates may not be correct

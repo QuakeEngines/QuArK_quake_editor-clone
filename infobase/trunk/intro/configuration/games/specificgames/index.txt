@@ -6,6 +6,7 @@ subdir: rtcw
 subdir: rtcw-et
 subdir: stvef
 subdir: torque
+subdir: ufo
 author: Decker
 
 <img align=right>specificgames.png</img>

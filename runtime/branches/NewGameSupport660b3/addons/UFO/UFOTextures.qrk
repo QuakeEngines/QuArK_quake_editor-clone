@@ -1,0 +1,29 @@
+QQRKSRC1
+// UFO: Alien Invasion Textures file for Quark
+
+//$Header$
+// ----------- REVISION HISTORY ------------
+//$Log$
+//
+
+{
+  QuArKProtected = "1"
+  Description = "UFO: Alien Invasion Textures"
+
+  Textures.qtx =
+  {
+    Toolbox = "Texture Browser..."
+    Root = "UFO: Alien Invasion Textures and shaders.qtxfolder"
+
+    t_main:incl =      { a = "base" }
+
+    UFO: Alien Invasion Textures and shaders.qtxfolder =
+    {
+      UFO: Alien Invasion Textures and shaders.osfolder =
+      {
+        path = "base"
+        build = "1"
+      }
+    }
+  }
+}
