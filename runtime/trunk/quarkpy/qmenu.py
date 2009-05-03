@@ -163,7 +163,7 @@ def DefaultEditMenu(editor):
     Delete1 = item("&Delete", editor.editcmdclick, "|delete the selection", infobaselink)
     Delete1.cmd = "del"
     Edit1 = popup("&Edit", [Undo1, Redo1, UndoRedo1, sep,
-     Cut1, Copy1, Paste1, sep, Duplicate1, Delete1], Edit1Click)
+     Duplicate1, sep, Cut1, Copy1, Paste1, sep, Delete1], Edit1Click)
     Edit1.Root = editor.Root
     Edit1.Undo1 = Undo1
     Edit1.Redo1 = Redo1
@@ -187,6 +187,9 @@ def DefaultEditMenu(editor):
 #
 #
 #$Log$
+#Revision 1.10  2007/09/05 18:43:10  cdunde
+#Minor comment addition and grammar corrections.
+#
 #Revision 1.9  2005/10/15 00:47:57  cdunde
 #To reinstate headers and history
 #

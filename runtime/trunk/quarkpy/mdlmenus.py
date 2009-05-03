@@ -295,12 +295,16 @@ def BaseMenu(sellist, editor):
     Delete1 = qmenu.item("&Delete", editor.editcmdclick)
     Delete1.cmd = "del"
 
-    return [Force1, qmenu.sep, Cut1, Copy1, paste1, qmenu.sep, Duplicate1, Delete1]
+    return [Force1, qmenu.sep, Duplicate1, qmenu.sep, Cut1, Copy1, paste1, qmenu.sep, Delete1]
 
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.40  2009/04/28 21:30:56  cdunde
+#Model Editor Bone Rebuild merge to HEAD.
+#Complete change of bone system.
+#
 #Revision 1.39  2009/03/04 23:32:16  cdunde
 #For proper importer exporter listing one menus, code by DanielPharos.
 #
