@@ -1898,6 +1898,8 @@ def BuildCommonHandles(editor, explorer, option=1):
         else:
             h = ModelEditorLinHandlesManager(MapColor("LinearHandleCircle", SS_MODEL), box, list).BuildHandles()
     else:
+        if editor.Root.currentcomponent.dictspec['show'] == "\x00": # Component is hidden.
+            return h
         #
         # Call the Entity Manager in mdlentities.py to build the Vertex handles.
         #
@@ -1988,6 +1990,8 @@ def BuildHandles(editor, explorer, view, option=1):
         else:
             h = ModelEditorLinHandlesManager(MapColor("LinearHandleCircle", SS_MODEL), box, list, view).BuildHandles()
     else:
+        if editor.Root.currentcomponent.dictspec['show'] == "\x00": # Component is hidden.
+            return h
         #
         # Call the Entity Manager in mdlentities.py to build the Vertex handles.
         #
@@ -3890,7 +3894,6 @@ class BoneCenterHandle(BoneHandle):
             reset_handle_scales = qmenu.item("Reset all handles to org. scale", ResetHandleScalesClick, "|Reset all handles to org. scale:\n\nIf this menu item is checked, all bones will have their handles reset to their original imported or saved scale sizes.|intro.modeleditor.editelements.html#specificsettings")
             set_handle_scales_to1 = qmenu.item("Set all handles to 1.0", SetHandleScalesTo1Click, "|Set all handles to 1.0:\n\nIf this menu item is checked, all bones will have their handles reset to the default scale size of 1.0.|intro.modeleditor.editelements.html#specificsettings")
             save_handle_scales = qmenu.item("Save all handle scales", SaveHandleScalesClick, "|Save all handle scales:\n\nIf this menu item is checked, all bones will have their handles scale sizes saved, becoming their original setting.|intro.modeleditor.editelements.html#specificsettings")
-            individual_bones_sel = qmenu.item("Individual Bones Selection", IndividualBonesSel, "|Individual Bones Selection:\n\nWhen this item is checked ONLY the INDIVIDUAL bone handles that are selected will be effected and NOT any sub-bones that are NOT specifically selected, Which IS the case if this is un-checked.|intro.modeleditor.editelements.html#specificsettings")
 
             for item in editor.layout.explorer.sellist:
                 if item.type == ":bone":
@@ -3900,8 +3903,7 @@ class BoneCenterHandle(BoneHandle):
                     save_sel_handle_scales.state = qmenu.normal
                     break
 
-            individual_bones_sel.state = quarkx.setupsubset(SS_MODEL,"Options").getint("IndividualBonesSel")
-            menulist = [scale_sel_handles, reset_sel_handle_scales, set_sel_handle_scales_to1, qmenu.sep, save_sel_handle_scales, qmenu.sep, scale_handles, reset_handle_scales, set_handle_scales_to1, qmenu.sep, save_handle_scales, qmenu.sep, individual_bones_sel]
+            menulist = [scale_sel_handles, reset_sel_handle_scales, set_sel_handle_scales_to1, qmenu.sep, save_sel_handle_scales, qmenu.sep, scale_handles, reset_handle_scales, set_handle_scales_to1, qmenu.sep, save_handle_scales]
             return menulist
 
         def force_to_grid_click(m, self=self, editor=editor, view=view):
@@ -4081,6 +4083,8 @@ class BoneCenterHandle(BoneHandle):
         Forcetogrid = qmenu.item("&Force to grid", force_to_grid_click,"|Force to grid:\n\nThis will cause a bone's center handle to 'snap' to the nearest location on the editor's grid for the view that the RMB click was made in.|intro.modeleditor.rmbmenus.html#bonecommands")
         m = qmenu.item
         m.editor = editor
+        individual_bones_sel = qmenu.item("Individual Bones Selection", IndividualBonesSel, "|Individual Bones Selection:\n\n(Unless a function specifically deals with all bones)\n\nWhen this item is checked ONLY the INDIVIDUAL bone handles that are selected will be effected and NOT any sub-bones that are NOT specifically selected, Which IS the case if this is un-checked.|intro.modeleditor.editelements.html#specificsettings")
+        individual_bones_sel.state = quarkx.setupsubset(SS_MODEL,"Options").getint("IndividualBonesSel")
         handlescalepop = qmenu.popup("Handle Scaling", handlescalemenu(m), None, "|Handle Scaling:\n\nThese functions deal with setting the scale size of the bone handles for better work size.", "intro.modeleditor.editelements.html#specificsettings")
         AddBone = qmenu.item("&Add Bone Here", add_bone_click, "|Add Bone Here:\n\nThis will add a single bone to the 'Skeleton' group.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
         ContinueBones = qmenu.item("&Continue Bones", continue_bones_click, "|Continue Bones:\n\nThis will add a single bone, connected to the bone handle when the RMB was clicked, in the 'Skeleton' group.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
@@ -4176,7 +4180,7 @@ class BoneCenterHandle(BoneHandle):
         if not MdlOption("GridActive") or editor.gridstep <= 0:
             Forcetogrid.state = qmenu.disabled
 
-        menu = [AddBone, ContinueBones, qmenu.sep, AttachBone1to2, AttachBone2to1, qmenu.sep, DetachBones, qmenu.sep, AlignBone1to2, AlignBone2to1, qmenu.sep, AssignReleaseVertices, qmenu.sep, SetHandlePosition, qmenu.sep] + sel_vtx_list + [qmenu.sep, handlescalepop, qmenu.sep, KeyframesRotation, qmenu.sep, SB1, HB1, qmenu.sep, Forcetogrid]
+        menu = [AddBone, ContinueBones, qmenu.sep, AttachBone1to2, AttachBone2to1, qmenu.sep, DetachBones, qmenu.sep, AlignBone1to2, AlignBone2to1, qmenu.sep, AssignReleaseVertices, qmenu.sep, SetHandlePosition, qmenu.sep] + sel_vtx_list + [qmenu.sep, individual_bones_sel] + [qmenu.sep, handlescalepop, qmenu.sep, KeyframesRotation, qmenu.sep, SB1, HB1, qmenu.sep, Forcetogrid]
 
         return menu
 
@@ -4647,7 +4651,11 @@ def MouseDragging(self, view, x, y, s, handle):
     "Mouse Drag on a Model View, self is an instance of the model editor."
     global cursorposatstart
 
-    if isinstance(handle, BoneCenterHandle) or isinstance(handle, BoneCornerHandle): # Used for auto selection feature.
+    if self.Root.currentcomponent.dictspec['show'] == "\x00": # Component is hidden.
+        self.dragobject = None
+        quarkx.beep()
+        return None
+    if isinstance(handle, BoneCenterHandle) or isinstance(handle, BoneCornerHandle) or self.Root.currentcomponent.dictspec['show'] == "\x00": # Used for auto selection feature.
         if (len(self.layout.explorer.sellist) == 0):
             self.dragobject = None
             quarkx.beep()
@@ -4758,6 +4766,10 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.174  2009/05/01 06:07:03  cdunde
+#Moved bones undo function to mdlutils.py for generic use elsewhere.
+#Added bone handle scaling functions and selection option.
+#
 #Revision 1.173  2009/04/28 21:30:56  cdunde
 #Model Editor Bone Rebuild merge to HEAD.
 #Complete change of bone system.
