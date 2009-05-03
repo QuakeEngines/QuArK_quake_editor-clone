@@ -466,6 +466,13 @@ class ModelEditor(BaseEditor):
             extra = []
         else:
             extra = [qmenu.sep] + mdlmenus.TexModeMenu(self, view)
+        def expand_subitems_click(m):
+            focus_item = reserved.focus
+            self.expand_subitems(focus_item)
+        m = qmenu.item
+        m.reserved = reserved
+        expand_subitems = qmenu.item("Expand Sub-items", expand_subitems_click, "|Expand Sub-items:\n\nThis will expand all of this items sub-folders and their sub-folders on down.|intro.modeleditor.rmbmenus.html#bonecommands")
+        extra = extra + [qmenu.sep , expand_subitems]
         if len(sellist)==1:
             if sellist[0].type == ':mf':
                 import mdlcommands
@@ -491,6 +498,15 @@ class ModelEditor(BaseEditor):
                     mdlcommands.CheckC.state = qmenu.normal
                     return [mdlcommands.MatchFrameCount, mdlcommands.CheckC, qmenu.sep] + mdlmenus.MultiSelMenu(sellist, self) + extra
         return mdlmenus.MultiSelMenu(sellist, self) + extra
+
+
+    def expand_subitems(self, focus_item):
+        "Expands all sub-items and their sub-items on down in the tree-view."
+
+        self.layout.explorer.expand(focus_item)
+        for subitem in focus_item.subitems:
+            self.layout.explorer.expand(subitem)
+            self.expand_subitems(subitem)
 
 
     def explorerdrop(self, ex, list, text):
@@ -1641,6 +1657,10 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.122  2009/04/28 21:30:56  cdunde
+#Model Editor Bone Rebuild merge to HEAD.
+#Complete change of bone system.
+#
 #Revision 1.121  2009/03/30 08:08:39  cdunde
 #To clear a nasty setting when closing the editor.
 #
