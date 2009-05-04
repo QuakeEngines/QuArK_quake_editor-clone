@@ -23,6 +23,10 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.38  2009/04/29 19:55:58  cdunde
+Model Editor Bone Rebuild merge to HEAD.
+Complete change of bone system.
+
 Revision 1.37.2.1  2009/03/02 22:50:11  danielpharos
 Added vertex assigning code.
 
@@ -606,7 +610,7 @@ implementation
 
 uses
  {$IFDEF Debug} QkObjects, {$ENDIF}
-  Windows, Forms, Registry, SysUtils, StrUtils, QkObjects, QkExceptions,
+  Windows, Forms, Registry, SysUtils, StrUtils, QkExceptions,
   QkApplPaths, ExtraFunctionality, Logging;
 
  {-------------------}
