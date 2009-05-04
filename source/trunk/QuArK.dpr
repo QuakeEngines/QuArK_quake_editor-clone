@@ -23,6 +23,10 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.64  2009/04/28 20:54:03  cdunde
+Model Editor Bone Rebuild merge to HEAD.
+Complete change of bone system.
+
 Revision 1.63  2009/03/16 08:47:21  danielpharos
 Updated to DevIL 1.7.8, added IWI loading, and added many new image loading/saving options.
 
@@ -180,10 +184,18 @@ Added revision-log.
 program QuArK;
 {%File '..\Runtime\addons\Defaults.qrk'}
 
+{$INCLUDE MemManager.inc}
+
 uses
+{$IFDEF MemTester}
   MemTester in 'prog\MemTester.pas',
-  (*FastMM4 in 'prog\FastMM4.pas',*)     (*Enable for FastMM, copy the debug DLL to the runtime directory when debugging*)
-  (*MemCheck in 'prog\MemCheck.pas',*)     (*Enable for MemCheck, also see below*)
+{$ENDIF}
+{$IFDEF FastMM}
+  FastMM4 in 'prog\FastMM4.pas',
+{$ENDIF}
+{$IFDEF MemCheck}
+  MemCheck in 'prog\MemCheck.pas',
+{$ENDIF}
   Forms,
   DWM in '3dfx\DWM.pas',
   DX9 in '3dfx\DX9.pas',
@@ -359,19 +371,20 @@ uses
 
 
 (*DanielPharos: Set the support-for-larger-than-2GB-flag, so we can use up to 4 GB!*)
+(*NOT SUPPORTED THOUGH*)
 {.$IFDEF Delphi7orNewerCompiler}
   {.$SetPEFlags $20}
 {.$ENDIF}
+
 {$R *.RES}
 
 begin
-  (*MemChk;*)     (*Enable for MemCheck*)
+{$IFDEF MemCheck}
+  MemChk;
+{$ENDIF}
   Application.Initialize;
   Application.Title:='Quake Army Knife';
   Application.CreateForm(TForm1, Form1);
   Application.Run;
-
-(* In case of compile error  "Missing $ENDIF",
-    add {$ENDIF} at the top, after "'prog\MemTester.pas'," *)
 
 end.
