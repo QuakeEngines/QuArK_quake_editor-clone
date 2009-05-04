@@ -27,6 +27,10 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.483  2009/04/28 21:30:56  cdunde
+//Model Editor Bone Rebuild merge to HEAD.
+//Complete change of bone system.
+//
 //Revision 1.482  2009/03/23 21:22:48  danielpharos
 //Fix compiler problem with FAKK2 and EF2, producing bad BSP filenames.
 //
@@ -8947,7 +8951,7 @@ QQRKSRC1
       VAngle: = {Txt="Vertical view angle" Typ="EF1" Min="5" Max="80" Hint="Angle between the horizon and the higher and lower points you can see - larger numbers mean smaller image"}
       FogColor: = {Txt="Fade color" Typ="LI" Hint="Fade color (recommended : either black or white)"}
       FrameColor: = {Txt="Frame color" Typ="LI" Hint="Color displayed besides the image if the window is too large"}
-      TextureMaxDimension: = {Txt="Textures max-dimension" Typ="C"
+      TextureMaxDimension: = {Txt="Textures max-dimension" Typ="CL"
         Items ="4096"$0D"2048"$0D"1024"$0D"512"$0D"256"$0D"128"$0D"64"$0D"32"$0D"16"$0D"8"
         Values=  "12"$0D  "11"$0D  "10"$0D  "9"$0D  "8"$0D  "7"$0D "6"$0D "5"$0D "4"$0D"3"
         Hint="A lower value uses less memory for texture-images,"$0D"but will also decrease the texture quality in the 3D-views"
@@ -9473,7 +9477,7 @@ QQRKSRC1
         Txt="Dimension of textures in texture-list"
         Hint="The bigger the dimension, more memory is needed, so make sure you don't overdo it."
           $0D"Only dimensions 16 to 256 in steps of 16 are allowed."
-        Typ="C"
+        Typ="CL"
         items  = "16  (16x16)"
               $0D"32  (32x32)"
               $0D"48  (48x48)"
