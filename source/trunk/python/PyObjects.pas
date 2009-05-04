@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.26  2009/02/21 17:09:44  danielpharos
+Changed all source files to use CRLF text format, updated copyright and GPL text.
+
 Revision 1.25  2009/02/19 18:13:20  danielpharos
 Printing Python objects: only list one class, and fix broken pointer number.
 
@@ -97,6 +100,10 @@ unit PyObjects;
 interface
 
 uses SysUtils, Classes, Python, QkObjects;
+
+{$IFDEF DEBUG}
+{$DEFINE PyObjDEBUG}
+{$ENDIF}
 
  {-------------------}
 
@@ -270,15 +277,19 @@ end;
 function ObjRepr(self: PyObject) : PyObject; cdecl;
 var
  Q: QObject;
- s, s1: string;
+ s {$IFDEF PyObjDEBUG}, s1 {$ENDIF}: string;
 begin
  try
   Q:=QkObjFromPyObj(self);
+{$IFDEF PyObjDEBUG}
   if Q=nil then
-   S1:=''
+   s1:=''
   else
-   S1:=QObjectClass(Q.ClassType).ClassName;
+   s1:=QObjectClass(Q.ClassType).ClassName;
   s:=Format('<%s object at 0x%p, name: "%s", class: "%s">', [self.ob_type.tp_name, self, Q.Name+Q.TypeInfo, s1]);
+{$ELSE}
+  s:=Format('<%s object, name: "%s">', [self.ob_type.tp_name, Q.Name+Q.TypeInfo]);
+{$ENDIF}
   Result:=PyString_FromString(PChar(s));
  except
   EBackToPython;
