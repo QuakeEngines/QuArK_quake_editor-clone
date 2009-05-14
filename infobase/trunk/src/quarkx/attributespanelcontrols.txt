@@ -1,4 +1,4 @@
-title: Additionnal attributes of Panel controls
+title: Additional attributes of Panel controls
 author: Armin Rigo
 
 <table border=1 cellspacing=0 cellpadding=4>
