@@ -1,0 +1,7 @@
+title: MAP
+author: DanielPharos
+
+<img align=right>map.png</img>
+
+<i>Map version to use for Doom 3</i>. Doom 3 works with two different
+map versions. Map version 2 should be used.

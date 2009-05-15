@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.97  2009/04/30 18:25:07  danielpharos
+Fixed some small layouting issues with saved VMF files.
+
 Revision 1.96  2009/03/19 18:31:22  danielpharos
 Argl! Removed bad comment.
 
@@ -516,7 +519,7 @@ begin
       MapVersion:=0;
       if GameCode=mjDoom3 then
       begin
-        MapOptionSpecs:=SetupSubSet(ssMap,'Options').Specifics;
+        MapOptionSpecs:=SetupSubSet(ssFiles,'MAP').Specifics;
         if MapOptionSpecs.Values['SaveMapVersion'] = '1' then
           MapVersion:=1
         else if MapOptionSpecs.Values['SaveMapVersion'] = '2' then
@@ -3017,7 +3020,7 @@ begin
        MapSaveSettings:=GetDefaultMapSaveSettings;
        MapSaveSettings.GameCode:=CharModeJeu;
        MapSaveSettings.MapVersion:=0;
-       MapOptionSpecs:=SetupSubSet(ssMap,'Options').Specifics;
+       MapOptionSpecs:=SetupSubSet(ssFiles,'MAP').Specifics;
        if CharModeJeu=mjDoom3 then
        begin
          // Rowdy: write an extra line to indicate we are using version 1 .map file

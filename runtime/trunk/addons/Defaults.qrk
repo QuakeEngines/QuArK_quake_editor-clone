@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.484  2009/05/04 19:48:10  danielpharos
+//No manual typing in of texture dimensions.
+//
 //Revision 1.483  2009/04/28 21:30:56  cdunde
 //Model Editor Bone Rebuild merge to HEAD.
 //Complete change of bone system.
@@ -3978,6 +3981,11 @@ QQRKSRC1
         SaveProgressiveFreeImage = ""
         Form = "FilesJPG"
       }
+      MAP:config =
+      {
+        SaveMapVersion = "2"
+        Form = "FilesMAP"
+      }
       PCX:config =
       {
         LoadLibrary = "QuArK"
@@ -4134,7 +4142,6 @@ QQRKSRC1
       //DisableEnhTex           = ""
         DisableFPCoord          = ""
         UseIntetralVertices     = ""
-        SaveMapVersion          = "2"
         CompassNumbers          = "1"
         ComputePolys            = "1"
         HideMouseDrag           = "1"
@@ -8232,6 +8239,19 @@ QQRKSRC1
       }
       SaveProgressiveFreeImage: = { Typ="X" Txt="Save Progressive" Cap="Enabled" Hint="Save the JPG texture as a progressive image."}
     }
+    FilesMAP:form = 
+    {
+      Style = "7"
+      SaveMapVersion: = {
+        Typ = "CL"
+        Txt     = "Map version to use for Doom 3"
+        Items   = "Map version 1"
+               $0D"Map version 2"
+        Values =  "1"
+               $0D"2"
+        Hint    = "Doom 3 works with two different map versions. Map version 2 should be used."
+      }
+    }
     FilesPCX:form =
     {
       Style = "7"
@@ -9343,15 +9363,6 @@ QQRKSRC1
     //DisableEnhTex:            = {Typ="X" Txt="   ``"                          Cap="Don't write //TX# in .map files"      }
       DisableFPCoord:           = {Typ="X" Txt="   ``"                          Cap="Don't write floating-point coords"    }
       UseIntegralVertices:      = {Typ="X" Txt="   ``"                          Cap="Use Integral Vertices as Threepoints" }
-      SaveMapVersion: = {
-        Typ = "CL"
-        Txt     = "Map version to use for Doom 3"
-        Items   = "Map version 1"
-               $0D"Map version 2"
-        Values =  "1"
-               $0D"2"
-        Hint    = "Doom 3 works with two different map versions. Map version 2 should be used."
-      }
     }
     MdlOptions:form =
     {
