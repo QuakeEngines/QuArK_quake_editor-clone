@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.55  2009/02/19 17:20:42  danielpharos
+Always call SetViewSize (even with scene error), and integrated SetScreenSize-function.
+
 Revision 1.54  2008/12/19 23:30:41  danielpharos
 Reduced dependancy on CurrentMapView to something more logical; made it a call-parameter.
 
@@ -372,7 +375,7 @@ var
 
 implementation
 
-uses PyCanvas, QkTextures, Game, PyForms, FullScreenWnd, FullScr1, RedLines, Qk1,
+uses PyCanvas, QkTextures, Game, PyForms, FullScreenWnd, FullScr1, RedLines, Logging, Qk1,
      EdSoftware, EdGlide, EdOpenGL, EdDirect3D, SystemDetails, QkFileObjects, QkExceptions;
 
  {------------------------}
@@ -711,7 +714,10 @@ begin
        Drawing:=Drawing or dfNoGDI;
      except
       on E: Exception do
-       Scene.ErrorMsg:=GetExceptionMessage(E);
+       begin
+        Scene.ErrorMsg:=GetExceptionMessage(E);
+        Log(LOG_WARNING, 'Error in scene: '+Scene.ErrorMsg);
+       end;
      end;
 
      if FullScreen and (Scene.ErrorMsg='') then
@@ -770,7 +776,10 @@ begin
 
      except
       on E: Exception do
-       Scene.ErrorMsg:=GetExceptionMessage(E);
+       begin
+        Scene.ErrorMsg:=GetExceptionMessage(E);
+        Log(LOG_WARNING, 'Error in scene: '+Scene.ErrorMsg);
+       end;
      end;
 
     end;
@@ -1388,6 +1397,7 @@ const
 var
  P, Delta, SSize: TPoint;
  HiddenMouse: Integer;
+ CurrentHandleX: PyObject; //Send handle for mbDragging
 
   function TargetPosition : TPoint;
   begin
@@ -1405,7 +1415,19 @@ begin
      MouseTimerTimer(Nil);
     end;
    g_DrawInfo.ShiftState:=Shift;
-   HiddenMouse:=CallMouseEvent(MapViewObject, FOnMouse, X+CorrectionX, Y+CorrectionY, mbDragging, Shift, CurrentHandle);
+   if CurrentHandle = PyNoResult then
+   begin
+     CurrentHandleX:=GetHandle(X+CorrectionX, Y+CorrectionY, False, nil);
+     Py_INCREF(CurrentHandleX);
+   end
+   else
+     CurrentHandleX:=CurrentHandle;
+   HiddenMouse:=CallMouseEvent(MapViewObject, FOnMouse, X+CorrectionX, Y+CorrectionY, mbDragging, Shift, CurrentHandleX);
+   if CurrentHandle = PyNoResult then
+   begin
+     Py_DECREF(CurrentHandleX);
+     CurrentHandleX:=PyNoResult;
+   end;
    if (HiddenMouse>=1) and GetCursorPos(P) then
     begin  { hide and recenter the mouse }
     (*if Screen.Cursor<>crNone then
