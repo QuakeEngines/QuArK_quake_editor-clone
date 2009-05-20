@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2009/02/21 17:09:53  danielpharos
+Changed all source files to use CRLF text format, updated copyright and GPL text.
+
 Revision 1.8  2008/11/06 20:16:06  danielpharos
 Renamed function to concatenate paths, and start using it.
 
@@ -63,7 +66,7 @@ type
 
 implementation
 
-uses QkQkl, QkMdl, QkMd2, QkMd3, form_model, QkHr2, QkApplPaths;
+uses QkQkl, QkMdl, QkMd2, QkMd3, form_model, QkHr2, QkApplPaths, Setup;
 
 function QModel.TestConversionType(I: Integer) : QFileObjectClass;
 begin
@@ -93,6 +96,10 @@ end;
 
 function QModel.OpenWindow;
 begin
+  //DanielPharos: Workaround: Set the gamemode (if not set yet)
+  //to the current gamemode, so that annoying warning doesn't show
+  if Specifics.Values['Game'] = '' then
+    Specifics.Values['Game'] := GetGameName(CharModeJeu);
   if nOwner=Application then
     Result:=NewPyForm(Self)
   else
