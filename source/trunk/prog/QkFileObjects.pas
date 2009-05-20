@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.67  2009/02/21 17:06:18  danielpharos
+Changed all source files to use CRLF text format, updated copyright and GPL text.
+
 Revision 1.66  2009/02/10 22:18:41  danielpharos
 Use ConvertPath.
 
@@ -399,6 +402,7 @@ implementation
 
 uses Qk1, Undo, QkExplorer, Setup, qmath, QkGroup, Travail, QkOwnExplorer,
   QkFileExplorer, QkUnknown, Toolbar1, Quarkx, QkExceptions, QkInclude, PyObjects,
+  QkModel, QkMap,
   PyForms, QkTreeView, Game, QkObjectClassList, QkApplPaths, ExtraFunctionality;
 
 {$R *.DFM}
@@ -1975,7 +1979,12 @@ begin
      if Info.QuArKFileObject then
       FileName:=Info.DefaultExt  { can save directly as text }
      else
-      FileName:='qrk';   { must wrap into a .qrk to save as text }
+      if FFileObject is QModel then
+       FileName:='qkl'
+      else if FFileObject is QMap then
+       FileName:='qkm'
+      else
+       FileName:='qrk';   { must wrap into a .qrk to save as text }
      S:=S+FmtLoadStr1(769, [FileName]);
      SaveDialog1:=TSaveDialog.Create(Application); try
      SaveDialog1.Title:=LoadStr1(770);
