@@ -23,6 +23,10 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.20  2009/04/28 20:54:03  cdunde
+Model Editor Bone Rebuild merge to HEAD.
+Complete change of bone system.
+
 Revision 1.19.2.1  2009/04/21 20:27:19  danielpharos
 Hide QSysData from treeview, fix access violations in QModelBone if specifics not set, and allow bones-in-bones.
 
@@ -142,6 +146,7 @@ type
     procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
   protected
     EditInfo: PTVEditing;
+    MaxPixelWidth: Integer; //DanielPharos: A workaround to get the horizontal scrollbar working
     procedure WMPaint(var Message: TMessage); message WM_PAINT;
     procedure Expanding(Q: QObject); dynamic;
     procedure Accessing(Q: QObject); dynamic;
@@ -251,8 +256,10 @@ begin
   ParentColor := False;
   Color := clWindow;
   TabStop := True;
+  HorzScrollBar.Increment:=MyTVLineStep;
   VertScrollBar.Tracking:=True;
   VertScrollBar.Increment:=MyTVLineStep;
+  MaxPixelWidth:=0;
 end;
 
 destructor TMyTreeView.Destroy;
@@ -424,6 +431,11 @@ var
  FocusItem: QObject;
  DotColors: array[Boolean] of TColorRef;
 
+  procedure UpdateMaxPixelWidth(NewWidth: Integer);
+  begin
+    if (NewWidth > MaxPixelWidth) then MaxPixelWidth := NewWidth;
+  end;
+
   function DisplayItems(X: Integer; List: TQList; Expected: Integer; Flags: Integer) : Boolean;
   const
    Mode: array[Boolean] of Integer = (0, ILD_BLEND50);
@@ -443,7 +455,7 @@ var
    Image1: PyImage1;
    C: array of TColor;
    L: TColorBoxList;
-   FoundAColor: Boolean;
+//   FoundAColor: Boolean;
    NumberOfColorsDrawn: Integer;
   begin
    Result:=False;
@@ -459,6 +471,7 @@ var
        Result:=True;
        R.Top:=Y;
        R.Bottom:=Y+MyTVLineStep;
+       R.Right:=0;
        if I >= IMin then
         begin
          if I=IFocus then
@@ -544,7 +557,7 @@ var
           with PyImage1(InternalImages[iiLinkOverlay,0])^ do
            ImageList_DrawEx(ImageList^.Handle, Index, DC, X,Y, 16,16, CLR_NONE, CLR_DEFAULT, ILD_TRANSPARENT);
          R.Left:=X+16;
-         FoundAColor:=False;
+//         FoundAColor:=False;
          L:=Item.TreeViewColorBoxes;
          if L<>nil then
           try
@@ -559,7 +572,7 @@ var
                  C[M]:=vtocol(ReadVector(S))
                else if L.ColorType[M] = 'LI' then
                  C[M]:=PackedStrToInt(S);
-               FoundAColor:=True;
+//               FoundAColor:=True;
               except
                {rien}
               end;
@@ -569,17 +582,19 @@ var
           end
          else
           SetLength(C, 0);
-         if Odd(Item.SelMult) or (FocusItem=Item) or (FoundAColor) then
-          GetTextExtentPoint32(DC, PChar(Item.Name), Length(Item.Name), TextSize);
+//         if Odd(Item.SelMult) or (FocusItem=Item) or (FoundAColor) then
+         GetTextExtentPoint32(DC, PChar(Item.Name), Length(Item.Name), TextSize);
          if Odd(Item.SelMult) and (Flags and eoParentSel = 0) then
           begin
            SetBkColor(DC, SelBkColor);
            SetTextColor(DC, SelTextColor);
            R.Right:=X+18;
+           UpdateMaxPixelWidth(R.Right);
            FillRect(DC, R, Brush);
            R.Left:=R.Right;
            Inc(R.Right, TextSize.cx+4);
            ExtTextOut(DC, X+20, Y+1, eto_Opaque, @R, PChar(Item.Name), Length(Item.Name), Nil);
+           UpdateMaxPixelWidth(X+20+TextSize.cx);
            R.Left:=R.Right;
            R.Right:=FDescriptionLeft;
            FillRect(DC, R, Brush);
@@ -590,11 +605,13 @@ var
           begin
            R.Right:=FDescriptionLeft;
            ExtTextOut(DC, X+20, Y+1, eto_Opaque, @R, PChar(Item.Name), Length(Item.Name), Nil);
+           UpdateMaxPixelWidth(X+20+TextSize.cx);
            if Odd(Item.SelMult) then
             begin
              Pen1:=SelectObject(DC, CreatePen(ps_Solid, 1, SelBkColor));
              Brush1:=SelectObject(DC, GetStockObject(Null_brush));
              Rectangle(DC, X+18, R.Top, X+TextSize.cx+(18+4), R.Bottom);
+             UpdateMaxPixelWidth(X+TextSize.cx+18+4);
              SelectObject(DC, Brush1);
              DeleteObject(SelectObject(DC, Pen1));
             end;
@@ -603,6 +620,7 @@ var
           begin
            R.Left:=X+18;
            R.Right:=R.Left+TextSize.cx+4;
+           UpdateMaxPixelWidth(R.Right);
            DrawFocusRect(DC, R);
           end;
           Pen1:=SelectObject(DC, CreatePen(ps_Solid, 1, TextColor)); // Pen1 is the OLD object, while CreatePen() makes a NEW object
@@ -614,6 +632,7 @@ var
               NumberOfColorsDrawn:=NumberOfColorsDrawn+1;
               R.Left:=X+6+TextSize.cx+(16*NumberOfColorsDrawn);
               Brush1:=SelectObject(DC, CreateSolidBrush(C[M])); // Brush1 is the OLD object, while CreateSolidBrush() makes a NEW object
+              UpdateMaxPixelWidth(R.Left+16);
               Rectangle(DC, R.Left+4, R.Top+3, R.Left+16, R.Bottom-3);
               DeleteObject(SelectObject(DC, Brush1)); //Decker 2002-06-05, select the OLD object, returning the NEW object to the DeleteObject() function.
             end;
@@ -685,6 +704,7 @@ var
   end;
 
 begin
+ MaxPixelWidth := 0;
  if HasFocus then
   FocusItem:=GetFocused1(True)
  else
@@ -1229,6 +1249,13 @@ begin
      Inv1:=False;
      VertScrollBar.Range:=CountVisibleItems(Roots, ofTreeViewSubElement)*MyTVLineStep;
      Repaint;
+     if HorzScrollBar.Range <> MaxPixelWidth then
+     begin
+       HorzScrollBar.Range:=MaxPixelWidth;
+       Repaint;
+       //DanielPharos: Double repaint, because repaint recalcs the MaxPixelWidth,
+       //and now we need to draw the changes.
+     end;
     end;
   wp_InPlaceEditClose:
     if EditInfo<>Nil then
