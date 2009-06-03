@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.485  2009/05/15 11:06:07  danielpharos
+//Moved SaveMapVersion setting to seperate Files section.
+//
 //Revision 1.484  2009/05/04 19:48:10  danielpharos
 //No manual typing in of texture dimensions.
 //
@@ -4308,14 +4311,16 @@ QQRKSRC1
       }
       Building:config =
       {
-        WallWidth         = '-8'
-        mpOffset          = '0 0 64'
-        mpZoom            = '2'
-        mpRotate          = '15'
-        ForceAngleStep    = '15'
-        LinearWarning     = "1"
-        LinearSetting     = '4'
-        SkinLinearSetting = '4'
+        WallWidth            = '-8'
+        mpOffset             = '0 0 64'
+        mpZoom               = '2'
+        mpRotate             = '15'
+        ForceAngleStep       = '15'
+        LinearWarning        = "1"
+        LinearSetting        = '4'
+        LinearSelected       = '5'
+        SkinLinearSetting    = '4'
+        SkinLinearSelected   = '5'
         RotationHandleLength = '1'
         Form = "MdlBuilding"
       }

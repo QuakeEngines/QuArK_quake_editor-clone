@@ -20,7 +20,46 @@ keyframesrotation = 0
 
 ###############################
 #
-# Operational functions
+# Color functions
+#
+###############################
+
+
+#
+# Takes a float value from 0.0 to 1.0 and returns the Hex value (as a string)
+# for its color to be stored and used for drawing the item in that color.
+# These are only color going across the top of the custom color chart from yellow to red.
+#
+def weights_color(editor, weight_value):
+    if weight_value <= .2:
+        R = round(255-(weight_value*100*10.2))
+        G = 255
+        B = 51
+    elif weight_value <= .4:
+        R = 51
+        G = 255
+        B = round(51+((weight_value-.2)*100*10.2))
+    elif weight_value <= .6:
+        R = 51
+        G = round(255-((weight_value-.4)*100*10.2))
+        B = 255
+    elif weight_value <= .8:
+        R = round(51+((weight_value-.6)*100*10.2))
+        G = 51
+        B = 255
+    elif weight_value <= 1.0:
+        R = 255
+        G = 51
+        B = round(255-((weight_value-.8)*100*10.2))
+    quarkx.setupsubset(SS_MODEL, "Colors")["temp_color"] = int(qutils.RGBToColor([R,G,B]))
+    color = quarkx.setupsubset(SS_MODEL, "Colors")["temp_color"]
+    return color
+
+
+
+###############################
+#
+# ModelComponentList functions
 #
 ###############################
 
@@ -125,6 +164,41 @@ def update_colorvtxlist(editor, comp, vertices_to_remove):
         del editor.ModelComponentList[comp.name]['colorvtxlist']
     if len(editor.ModelComponentList[comp.name]) == 0:
         del editor.ModelComponentList[comp.name]
+
+#
+# Updates the editor.ModelComponentList for a component's colorvtxlist when any vertex is removed.
+#
+def update_weightvtxlist(editor, vertex_index):
+    comp = editor.Root.currentcomponent
+    if not editor.ModelComponentList.has_key(comp.name):
+        editor.ModelComponentList[comp.name] = {}
+    if not editor.ModelComponentList[comp.name].has_key("weightvtxlist"):
+        editor.ModelComponentList[comp.name]['weightvtxlist'] = {}
+    if not editor.ModelComponentList[comp.name]['weightvtxlist'].has_key(vertex_index):
+        editor.ModelComponentList[comp.name]['weightvtxlist'][vertex_index] = {}
+        Old_dictionary_list = editor.ModelComponentList[comp.name]['weightvtxlist'][vertex_index]
+        weight_count = 0
+    else:
+        Old_dictionary_list = editor.ModelComponentList[comp.name]['weightvtxlist'][vertex_index]
+        weight_count = len(Old_dictionary_list)
+    for item in editor.layout.explorer.sellist:
+        if item.type == ":bone":
+            if item.dictspec.has_key(item.shortname + "_weight_value"):
+                if not Old_dictionary_list.has_key(item.name):
+                    Old_dictionary_list[item.name] = {}
+                    Old_dictionary_list[item.name]['weight_index'] = vertex_index + weight_count
+                    weight_count = weight_count + 1
+                Old_dictionary_list[item.name]['color'] = item.dictspec[item.shortname + "_weight_color"]
+                Old_dictionary_list[item.name]['weight_value'] = float(item.dictspec[item.shortname + "_weight_value"])
+
+
+
+###############################
+#
+# Operational functions
+#
+###############################
+
 
 #
 # Flattens the ModelComponentList using cPickle into a single string
@@ -993,7 +1067,6 @@ def movefaces(editor, movetocomponent, option=2):
 ###############################
 
 
-
 #
 # Creates a QuArK Internal Group Object which consist of QuArK internal Poly Objects
 # created from each selected vertex in the
@@ -1797,6 +1870,50 @@ def ConvertEditorFaceObject(editor, newobjectslist, flags, view, undomsg, option
 
 
 #
+# Actually done through the Delete and Cut functions on a menu.
+# This function removes all data that may exist for the removed
+# component from the editor's ModelComponentList and Bones, if any.
+#
+def removecomp(editor, compname, undo):
+    components = editor.Root.findallsubitems("", ':mc')
+    if len(components) == 1:
+        editor.ModelComponentList = {}
+    else:
+        del editor.ModelComponentList['tristodraw'][compname]
+        if editor.ModelComponentList.has_key(compname):
+            del editor.ModelComponentList[compname]
+        for comp in components:
+            if comp.name != compname:
+                newbonecomp = comp.name
+                break
+        oldskelgroup = editor.Root.dictitems['Skeleton:bg']
+        old = oldskelgroup.findallsubitems("", ':bone') # Get all bones in the old group.
+        new = []
+        for bone in old:
+            new = new + [bone.copy()]
+        for bone in new:
+            if bone.dictspec['component'] == compname:
+                bone['component'] = newbonecomp
+            tempdata = {}
+            for component in bone.vtxlist.keys():
+                if component == compname:
+                    continue
+                else:
+                    tempdata[component] = bone.vtxlist[component]
+            bone.vtxlist = {}
+            bone.vtxlist = tempdata
+            tempdata = {}
+            for component in bone.vtx_pos.keys():
+                if component == compname:
+                    continue
+                else:
+                    tempdata[component] = bone.vtx_pos[component]
+            bone.vtx_pos = {}
+            bone.vtx_pos = tempdata
+        newskelgroup = boneundo(editor, old, new)
+        undo.exchange(oldskelgroup, newskelgroup)
+
+#
 # The 'option' value of 1 MAKES a "clean" brand new component with NO triangles, frame.vertecies (only frames) or bones.
 # The 'option' value of 2 ADDS a new component to the model using currently selected faces of another component.
 #    This function will also remove the selected faces and unused vertexes from the original component.
@@ -2063,6 +2180,11 @@ def addframe(editor):
     else:
         name = newframe.shortname
     newframe.shortname = name
+    for frame in range(len(new_comp.dictitems['Frames:fg'].subitems)):
+        if frame == len(new_comp.dictitems['Frames:fg'].subitems)-1 and count == 0:
+            count = frame + 1
+        if new_comp.dictitems['Frames:fg'].subitems[frame].shortname.startswith(itembasename):
+            count = frame + 1
     # Places the new frame at the end of its group of frames of the same name.
     new_comp.dictitems['Frames:fg'].insertitem(count, newframe)
     compframes = new_comp.dictitems['Frames:fg'].subitems   # all frames
@@ -2083,16 +2205,81 @@ def addframe(editor):
 ###############################
 
 
+#
+# Actually done through the "Delete" and "Cut" functions on a menu.
+# This function removes all data that may exist for the removed
+# bonename from the editor's ModelComponentList and other bones, if any.
+# If bonename is the "parent" of any other bones then their dictspec['parent_name']
+# is set to "None" and they are moved outside of that parent bone so they are NOT
+# removed or deleted. But if they are also in the "list" to be removed then nothing is done
+# which allows them to be removed and deleted properly when the time comes.
+#
+def removebone(editor, bonename, undo, list, bonelist):
+    def UpdateSubBones(bone, newbone, list):
+        import operator
+        try:
+            bone_index = operator.indexOf(list, bone)
+        except:
+            pass
+        else:
+            list[bone_index] = newbone
+        for sub_bone in range(len(bone.subitems)):
+            list = UpdateSubBones(bone.subitems[sub_bone], newbone.subitems[sub_bone], list)
+        return list
+
+    for comp in editor.ModelComponentList.keys():
+        if not comp.endswith(":mc"):
+            continue
+        if editor.ModelComponentList[comp].has_key("bonevtxlist"):
+            if editor.ModelComponentList[comp]['bonevtxlist'].has_key(bonename):
+                del editor.ModelComponentList[comp]['bonevtxlist'][bonename]
+                if len(editor.ModelComponentList[comp]['bonevtxlist']) == 0:
+                    del editor.ModelComponentList[comp]['bonevtxlist']
+                if len(editor.ModelComponentList[comp.name]) == 0:
+                    del editor.ModelComponentList[comp.name]
+    group = editor.Root.dictitems['Skeleton:bg']
+    for bone in bonelist:
+        if bone.dictspec['parent_name'] == "None":
+            change_parent_name = 0
+        else:
+            if bone.dictspec['parent_name'] == bonename:
+                # "parent_name" bone is going to be removed
+                change_parent_name = 1
+            else:
+                change_parent_name = 0
+        if bone.parent.name == bonename:
+            # bone.parent is going to be removed
+            move_to_root = 1
+        else:
+            move_to_root = 0
+        if change_parent_name or move_to_root:
+            if move_to_root:
+                newbone = bone.copy(group)
+            else:
+                newbone = bone.copy()
+            if change_parent_name:
+                newbone['parent_name'] = "None"
+            if move_to_root:
+                undo.exchange(bone, None)
+                undo.put(group, newbone) # Move newbone to root.
+            else:
+                undo.exchange(bone, newbone) # Move newbone to root.
+            list = UpdateSubBones(bone, newbone, list) # Updates the list and makes it our Current list.
+            bonelist = UpdateSubBones(bone, newbone, bonelist) # Updates the list and makes a New list.
+
+    return list, bonelist
+
 
 #
 # Finds and gets all bones within another bone in the explorer.sellist.
 # "bonelist" is an empty list to start with for ex.: bonelist = []
-# "item" is each item within the explorer.sellist from a "for" loop, calling this function for each item.
+# "bone" is each bone within the explorer.sellist from a "for" loop, calling this function for each bone.
+# If "option" is "0" the original "bone" is added to the "bonelist", if set to another value then it is NOT included.
 #
-def addtolist(bonelist, item):
-    if (not MdlOption("IndividualBonesSel")) or (item.selected != 0):
-        bonelist = bonelist + [item]
-    for subbone in item.subitems:
+def addtolist(bonelist, bone, option=0):
+    if ((not MdlOption("IndividualBonesSel")) or (bone.selected != 0)) and option == 0:
+        bonelist = bonelist + [bone]
+    for subbone in bone.subitems:
         if subbone.type == ":bone" and not subbone in bonelist:
             bonelist = addtolist(bonelist, subbone)
     return bonelist
@@ -2341,7 +2528,6 @@ def assign_release_vertices(editor, bone, comp, vtxsellist):
             if not editor.ModelComponentList[comp.name]['bonevtxlist'][bone.name].has_key(vtx):
                 editor.ModelComponentList[comp.name]['bonevtxlist'][bone.name][vtx] = {}
             editor.ModelComponentList[comp.name]['bonevtxlist'][bone.name][vtx]['color'] = new_bone["_color"]
-            editor.ModelComponentList[comp.name]['bonevtxlist'][bone.name][vtx]['weight'] = 1.0
             old_vertices_comp = old_vertices_comp + [vtx]
     if len(editor.ModelComponentList[comp.name]['bonevtxlist'][bone.name]) == 0:
         del editor.ModelComponentList[comp.name]['bonevtxlist'][bone.name]
@@ -2495,7 +2681,6 @@ def Rebuild_Bone(o, frame):
 ###############################
 
 
-
 def SkinVertexSel(editor, sellist):
     "Used when a single or multiple vertexes are selected in the Skin-view"
     "by 'picking' them individually or by using the Red Rectangle Selector."
@@ -2581,14 +2766,17 @@ def PassSkinSel2Editor(editor):
 
     tris = editor.Root.currentcomponent.triangles
     for vtx in editor.SkinVertexSelList:
-        if editor.ModelVertexSelList == []:
-            editor.ModelVertexSelList = editor.ModelVertexSelList + [[tris[vtx[2]][vtx[3]][0], vtx[0]]]
-        else:
-            for vertex in range(len(editor.ModelVertexSelList)):
-                if tris[vtx[2]][vtx[3]][0] == editor.ModelVertexSelList[[vertex][0]][0]:
-                    break
-                if vertex == len(editor.ModelVertexSelList)-1:
-                    editor.ModelVertexSelList = editor.ModelVertexSelList + [[tris[vtx[2]][vtx[3]][0], vtx[0]]]
+        try: # Needs to be in this try statement in case the component has no vertexes.
+            if editor.ModelVertexSelList == []:
+                editor.ModelVertexSelList = editor.ModelVertexSelList + [[tris[vtx[2]][vtx[3]][0], vtx[0]]]
+            else:
+                for vertex in range(len(editor.ModelVertexSelList)):
+                    if tris[vtx[2]][vtx[3]][0] == editor.ModelVertexSelList[[vertex][0]][0]:
+                        break
+                    if vertex == len(editor.ModelVertexSelList)-1:
+                        editor.ModelVertexSelList = editor.ModelVertexSelList + [[tris[vtx[2]][vtx[3]][0], vtx[0]]]
+        except:
+            continue
 
 
 
@@ -3025,7 +3213,6 @@ def TexturePixelLocation(editor, view, x, y, object=None):
 ###############################
 
 
-
 def Update_Skin_View(editor, option=1):
     "Updates the Skin-view using virous option settings."
     "option = 0 updates just the upper section."
@@ -3095,22 +3282,27 @@ def Update_Editor_Views(editor, option=4):
     mdlmgr.treeviewselchanged = 1
     editorview = editor.layout.views[0]
     newhandles = mdlhandles.BuildHandles(editor, editor.layout.explorer, editorview)
+    if option == 7:
+        import qbaseeditor
+        from qbaseeditor import currentview
     for v in editor.layout.views:
         if v.info["viewname"] == "skinview":
             pass
         if (option == 6 and v.info["viewname"] == "editors3Dview") or (option == 6 and v.info["viewname"] == "3Dwindow"):
             pass
+        if option == 7 and v.info["viewname"] != currentview.info["viewname"]:
+            pass
         else:
             if option == 1:
                 v.invalidate(1)
-            if option <= 6:
+            if option <= 7:
                 mdleditor.setsingleframefillcolor(editor, v)
-            if option <= 6:
+            if option <= 7:
                 v.repaint()
-            if option <= 6:
+            if option <= 7:
                 plugins.mdlgridscale.gridfinishdrawing(editor, v)
                 plugins.mdlaxisicons.newfinishdrawing(editor, v)
-            if option <= 6 or option == 5:
+            if option <= 7 or option == 5:
                 if v.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] == "1":
                     v.handles = []
                 elif v.info["viewname"] == "XY" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles2"] == "1":
@@ -3454,6 +3646,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.106  2009/05/01 06:06:15  cdunde
+#Moved bones undo function to mdlutils.py for generic use elsewhere.
+#
 #Revision 1.105  2009/04/29 23:50:03  cdunde
 #Added auto saving and updating features for weights dialog data.
 #

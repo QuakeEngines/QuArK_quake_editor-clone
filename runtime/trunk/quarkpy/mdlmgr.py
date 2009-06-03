@@ -44,13 +44,17 @@ treeviewselchanged = 0 ### This global is set to 1 when any new item is selected
 SFTexts   = ['default'] # Supported model types for import\exporting.
 mdltypes = [0] # Control list that corresponds with the "SFTexts" list above.
 IEfile = ['default'] # Actual imported .py Importer\Exporter file list that corresponds with the "SFTexts" list above.
-SFLetters = "set model type"
+check_currentcomponent = None
 check_comp_list = None
 check_pos = None
 check_color = None
 checkbone_length = None
 check_offset = None
 checkbone_scale = None
+check_show_vtx_color = None
+check_use_weights = None
+check_show_weight_color = None
+check_apply_vtx_weights = None
 
 class ModelLayout(BaseLayout):
     "An abstract base class for Model Editor screen layouts."
@@ -439,31 +443,30 @@ class ModelLayout(BaseLayout):
     def makesettingclick(self, m):
         "This function fills in the Default values of the Specifics/Args page form"
         "and changes the form's values when a setting is made."
-        global check_comp_list, check_pos, check_color, checkbone_length, check_offset, checkbone_scale
+        global check_currentcomponent, check_comp_list, check_pos, check_color, checkbone_length, check_offset, checkbone_scale, check_show_vtx_color, check_show_weight_color, check_apply_vtx_weights, check_use_weights
+
+        check_currentcomponent = self.editor.Root.currentcomponent.name
 
         sl = self.explorer.sellist
         if len(sl) == 0 and self.explorer.uniquesel is not None:
             sl = [self.explorer.uniquesel]
+        if len(sl) == 0:
+            selitem = sl
+        else:
+            selitem = sl[0]
         sfbtn = self.buttons["sf"]
         helpbtn = self.buttons["help"]
+        icon_btns = None # This allows the option of an importer\exporter or mdlentities.py items to add other icon buttons to its form.
         # Resets the editor's default values for forms to avoid confusion between model format types .
         try:
             if sfbtn.caption == SFTexts[m.skill]:
                 pass
             else:
-                #### Taking this line below out breaks the ie_md5_import.py file, fix it. ####
-                self.editor.bonemode = "default mode"
-                quarkx.setupsubset(SS_MODEL, "Options")['ShowVertexColor'] = None
-                for item in self.editor.Root.subitems:
-                    if item.type == ":mc":
-                        if item.dictspec.has_key('show_vtx_color'):
-                            item['show_vtx_color'] = ""
-                            Update_Editor_Views(self.editor)
+                pass # This is where other items can be added to the dropdown menu like different bone modes...default, single, multiple,....
         except:
             pass
 
         if m is not None:
-            sfbtn.caption = "set model type" # to make sure the width of this button doesn't change
             self.buttons.update({"help": helpbtn, "sf": sfbtn})
             self.bb.buttons = [sfbtn, qtoolbar.widegap, helpbtn]
             self.bb.margins = (0,0)
@@ -476,22 +479,43 @@ class ModelLayout(BaseLayout):
         sfbtn.caption = cap
         DummyItem = None
         formobj = None
+
+        if selitem != [] and selitem.type == ":bone":
+            #  Handles the special selection mode of bones for 'Vertex Weight Colors' for the components and the bones, if any.
+            skeletongroup = self.editor.Root.dictitems['Skeleton:bg']  # get the bones group
+            bones = skeletongroup.findallsubitems("", ':bone')    # get all bones
+            if self.editor.Root.currentcomponent.dictspec.has_key("use_weights") and not selitem.dictspec.has_key("use_weights"):
+                for bone in bones:
+                    bone['use_weights'] = self.editor.Root.currentcomponent.dictspec['use_weights']
+            elif not self.editor.Root.currentcomponent.dictspec.has_key("use_weights") and selitem.dictspec.has_key("use_weights"):
+                for bone in bones:
+                    bone['use_weights'] = ""
+            #  Handles the displaying of the 'Vertex Weight Colors', if any, for the components and the bones, if any.
+            if self.editor.Root.currentcomponent.dictspec.has_key("show_weight_color") and not selitem.dictspec.has_key("show_weight_color"):
+                selitem['show_weight_color'] = self.editor.Root.currentcomponent.dictspec['show_weight_color']
+            elif not self.editor.Root.currentcomponent.dictspec.has_key("show_weight_color") and selitem.dictspec.has_key("show_weight_color"):
+                selitem['show_weight_color'] = ""
+            # Handles the auto appling and saving of vertex weights, for the components and the bones, if the linear handle is use to select them.
+            if self.editor.Root.currentcomponent.dictspec.has_key("apply_vtx_weights") and not selitem.dictspec.has_key("apply_vtx_weights"):
+                selitem['apply_vtx_weights'] = self.editor.Root.currentcomponent.dictspec['apply_vtx_weights']
+            elif not self.editor.Root.currentcomponent.dictspec.has_key("apply_vtx_weights") and selitem.dictspec.has_key("apply_vtx_weights"):
+                selitem['apply_vtx_weights'] = ""
         try:
             # Gets the selected item's type "form" if the "if" test is passed.
             import mdlentities
-            if sl[0].type == ":bound":
-                formobj = mdlentities.CallManager("dataformname", sl[0])
-            elif sl[0].type == ":tagframe":
-                formobj = mdlentities.CallManager("dataformname", sl[0])
-            elif sl[0].type == ":bone":
-                formobj = mdlentities.CallManager("dataformname", sl[0])
-            elif sl[0].type == ":mc":
-                formobj = mdlentities.CallManager("dataformname", sl[0])
-            elif sl[0].type == ":sg":
-                formobj = mdlentities.CallManager("dataformname", sl[0])
+            if selitem.type == ":bound":
+                formobj = mdlentities.CallManager("dataformname", selitem)
+            elif selitem.type == ":tagframe":
+                formobj = mdlentities.CallManager("dataformname", selitem)
+            elif selitem.type == ":bone":
+                formobj, icon_btns = mdlentities.CallManager("dataformname", selitem)
+            elif selitem.type == ":mc":
+                formobj = mdlentities.CallManager("dataformname", selitem)
+            elif selitem.type == ":sg":
+                formobj = mdlentities.CallManager("dataformname", selitem)
             else:
                 # This tries to use a filetype:form, in a Python model importer or exporter (plugins ie_ type) file to create this form.
-                DummyItem = sl[0]
+                DummyItem = selitem
                 while (DummyItem is not None):
                     if DummyItem.type == ":mr":
                         DummyItem = None
@@ -510,36 +534,33 @@ class ModelLayout(BaseLayout):
         except:
             formobj = None
 
-        icon_btns = None # This allows the option of an importer\exporter to use the vertex color button on its form.
         try:
             # Tries to use the data returned to make the selected item's type form again.
-            if sl[0].type == ":bound": # Sets the bound frame form items.
-                selitem = sl[0]
+            if selitem.type == ":bound": # Sets the bound frame form items.
                 self.dataform.setdata(selitem, formobj) # Tries to use the data returned to make the bound frame's form again.
-            elif sl[0].type == ":tagframe": # Sets the tag frame form items.
-                selitem = sl[0]
+            elif selitem.type == ":tagframe": # Sets the tag frame form items.
                 self.dataform.setdata(selitem, formobj) # Tries to use the data returned to make the tag frame's form again.
-            elif sl[0].type == ":bone": # Sets the bone form items.
-                selitem = sl[0]
+            elif selitem.type == ":bone": # Sets the bone form items.
                 selitem['comp_list'] = self.editor.Root.currentcomponent.shortname
                 self.dataform.setdata(selitem, formobj) # Tries to use the data returned to make the bone's form again.
-            elif sl[0].type == ":mc": # Sets the component form items.
-                selitem = sl[0]
+            elif selitem.type == ":mc": # Sets the component form items.
                 self.dataform.setdata(selitem, formobj) # Tries to use the data returned to make the skins group form again.
-            elif sl[0].type == ":sg": # Sets the skins group form items.
-                selitem = sl[0]
+            elif selitem.type == ":sg": # Sets the skins group form items.
                 self.dataform.setdata(selitem, formobj) # Tries to use the data returned to make the component's form again.
             else:
                 if sfbtn.caption == "set model type" or sfbtn.caption == "default":
                     try:
-                        formobj = mdlentities.CallManager("dataformname", sl[0])
+                        formobj = mdlentities.CallManager("dataformname", selitem)
                     except:
-                        formobj = None
+                        try:
+                            formobj, icon_btns = mdlentities.CallManager("dataformname", selitem)
+                        except:
+                            formobj = None
                 else:
                     for filetype in range(len(SFTexts)):
                         if sfbtn.caption == SFTexts[filetype]: #  and DummyItem.type == ':mc'
                             filename = IEfile[filetype]
-                            formobj, icon_btns = filename.dataformname(sl[0])
+                            formobj, icon_btns = filename.dataformname(selitem)
                             break
                         else:
                             formobj = None
@@ -553,20 +574,21 @@ class ModelLayout(BaseLayout):
             formobj = None # If no form data is found, then set to None and just go on, there is no form for this item.
             self.dataform.setdata(sl, formobj)
 
-        if m is not None and icon_btns is not None: # This allows the option of an importer\exporter to use the vertex color button on its form.
-            sfbtn.caption = "set model type" # to make sure the width of this button doesn't change
+        if icon_btns is not None: # This allows the option of an importer\exporter to use the vertex color button on its form.
+            sfbtn.caption = "set model type" # To make sure the width of this button doesn't change.
             specifics_btns = {"help": helpbtn, "sf": sfbtn}
             self.bb.buttons = [sfbtn, qtoolbar.widegap, helpbtn]
-    #        tempcaptions = {}
             for btn in icon_btns.keys():
-    #            tempcaptions[btn] = icon_btns[btn].caption
-    #            icon_btns[btn].caption = "set model type" # to make sure the width of this button doesn't change (do this in the plugins files.)
                 specifics_btns[btn] = icon_btns[btn]
                 self.bb.buttons = self.bb.buttons + [icon_btns[btn]]
             self.buttons.update(specifics_btns)
             self.bb.margins = (0,0)
-    #        for btn in icon_btns.keys():
-    #            icon_btns[btn].caption = tempcaptions[btn]
+        else:
+            specifics_btns = {"help": helpbtn, "sf": sfbtn}
+            specifics_btns["sf"].caption = "set model type" # To make sure the width of this button doesn't change.
+            self.bb.buttons = [sfbtn, qtoolbar.widegap, helpbtn]
+            self.buttons.update(specifics_btns)
+            self.bb.margins = (0,0)
         try:
             help = ((formobj is not None) and formobj["Help"]) or ""
         except:
@@ -577,7 +599,7 @@ class ModelLayout(BaseLayout):
             help = "?" + help   # This trick displays a blue hint.
         self.buttons["help"].hint = help + "||This button gives you the description of the selected entity, and how to use it.\n\nYou are given help in two manners : by simply moving the mouse over the button, a 'hint' text appears with the description; if you click the button, you are sent to an HTML document about the entity, if available, or you are shown the same text as previously, if nothing more is available.\n\nNote that there is currently not a lot of info available as HTML documents."
         if sl:
-            icon = qutils.EntityIconSel(sl[0])
+            icon = qutils.EntityIconSel(selitem)
             for s in sl[1:]:
                 icon2 = qutils.EntityIconSel(s)
                 if not (icon is icon2):
@@ -594,24 +616,26 @@ class ModelLayout(BaseLayout):
         sfbtn.caption = cap
         btnlist = self.mpp.btnpanel.buttons
         # Fills the model format form items.
-        if (DummyItem is not None and len(sl) == 1 and sl[0].type != ":bound" and sl[0].type != ":tagframe" and sl[0].type != ":bone" and sl[0].type != ":mc") or (DummyItem is not None and len(sl) > 1 and sl[0].type != ":bound" and sl[0].type != ":tagframe" and sl[0].type != ":bone" and sl[1].type != ":bone" and (sl[0].type != ":mc")):
+        if (DummyItem is not None and len(sl) == 1 and selitem.type != ":bound" and selitem.type != ":tagframe" and selitem.type != ":bone" and selitem.type != ":mc") or (DummyItem is not None and len(sl) > 1 and selitem.type != ":bound" and selitem.type != ":tagframe" and selitem.type != ":bone" and sl[1].type != ":bone" and (selitem.type != ":mc")):
             ### This section handles the model importer\exporter default settings and data input for the Specifics/Args page.
             if sfbtn.caption == "set model type" or sfbtn.caption == "default":
                 try:
-                    mdlentities.CallManager("dataforminput", sl[0])
+                    mdlentities.CallManager("dataforminput", selitem)
                 except:
-                    pass
+                    try:
+                        formobj, icon_btns = mdlentities.CallManager("dataformname", selitem)
+                    except:
+                        pass
             else:
                 for filetype in range(len(SFTexts)):
                     if sfbtn.caption == SFTexts[filetype]:
                        filename = IEfile[filetype]
-                       filename.dataforminput(sl[0])
+                       filename.dataforminput(selitem)
         ### This section handles the Bones default settings and data input for the Specifics/Args page..
         # Sets self._color to a bone's handles colors, when selected,
         # for comparison , in the "filldataform" function, if a handle color is changed.
         # Same goes for checkbone_length, check_offset and others.
-        if len(sl) != 0 and sl[0].type == ":bound": # Sets the bound frame form items.
-            selitem = sl[0]
+        if len(sl) != 0 and selitem.type == ":bound": # Sets the bound frame form items.
             try:
                 self.position = quarkx.vect(selitem['position']).tuple
             except:
@@ -628,14 +652,12 @@ class ModelLayout(BaseLayout):
                 self.mins = quarkx.vect(selitem['mins']).tuple
             except:
                 self.mins = '0 0 0'
-        elif len(sl) != 0 and sl[0].type == ":tagframe": # Sets the tag frame form items.
-            selitem = sl[0]
+        elif len(sl) != 0 and selitem.type == ":tagframe": # Sets the tag frame form items.
             try:
                 self.origin = quarkx.vect(selitem['origin']).tuple
             except:
                 self.origin = '0 0 0'
-        elif len(sl) != 0 and sl[0].type == ":bone": # Sets the bone form items.
-            selitem = sl[0]
+        elif len(sl) != 0 and selitem.type == ":bone": # Sets the bone form items.
             # Globals are set here for comparison in filldataform function later.
             check_comp_list = selitem['comp_list']
             check_pos = selitem.dictspec['position']
@@ -654,29 +676,54 @@ class ModelLayout(BaseLayout):
     def filldataform(self, reserved):
         "This function creates the Specifics/Args page form (formobj) for the first time"
         "or when selecting another item in the tree-view that uses a form."
-        global check_comp_list, check_pos, check_color, checkbone_length, check_offset, checkbone_scale
+        global treeviewselchanged, check_currentcomponent, check_comp_list, check_pos, check_color, checkbone_length, check_offset, checkbone_scale, check_show_vtx_color, check_show_weight_color, check_apply_vtx_weights, check_use_weights
+
+        if check_currentcomponent != self.editor.Root.currentcomponent.name:
+            check_currentcomponent = self.editor.Root.currentcomponent.name
+            if self.editor.Root.currentcomponent.dictspec.has_key("show_vtx_color"):
+                check_show_vtx_color = self.editor.Root.currentcomponent.dictspec['show_vtx_color']
+            else:
+                check_show_vtx_color = None
+            if self.editor.Root.currentcomponent.dictspec.has_key("use_weights"):
+                check_use_weights = self.editor.Root.currentcomponent.dictspec['use_weights']
+            else:
+                check_use_weights = None
+            if self.editor.Root.currentcomponent.dictspec.has_key("show_weight_color"):
+                check_show_weight_color = self.editor.Root.currentcomponent.dictspec['show_weight_color']
+            else:
+                check_show_weight_color = None
+            if self.editor.Root.currentcomponent.dictspec.has_key("apply_vtx_weights"):
+                check_apply_vtx_weights = self.editor.Root.currentcomponent.dictspec['apply_vtx_weights']
+            else:
+                check_apply_vtx_weights = None
 
         sl = self.explorer.sellist
         if len(sl) == 0 and self.explorer.uniquesel is not None:
             sl = [self.explorer.uniquesel]
+        if len(sl) == 0:
+            selitem = sl
+        else:
+            selitem = sl[0]
         sfbtn = self.buttons["sf"]
 
         DummyItem = None
         formobj = None
+
         try:
             import mdlentities
-            if sl[0].type == ":bound": # Gets the "bound frame form" if the "if" test is passed.
-                formobj = mdlentities.CallManager("dataformname", sl[0])
-            elif sl[0].type == ":tagframe": # Gets the "tag frame form" if the "if" test is passed.
-                formobj = mdlentities.CallManager("dataformname", sl[0])
-            elif sl[0].type == ":bone": # Gets the "bone form" if the "if" test is passed.
-                formobj = mdlentities.CallManager("dataformname", sl[0])
-            elif sl[0].type == ":mc": # Gets the "component form" if the "if" test is passed.
-                formobj = mdlentities.CallManager("dataformname", sl[0])
-            elif sl[0].type == ":sg": # Gets the "skins group form" if the "if" test is passed.
-                formobj = mdlentities.CallManager("dataformname", sl[0])
+            if selitem.type == ":bound": # Gets the "bound frame form" if the "if" test is passed.
+                formobj = mdlentities.CallManager("dataformname", selitem)
+            elif selitem.type == ":tagframe": # Gets the "tag frame form" if the "if" test is passed.
+                formobj = mdlentities.CallManager("dataformname", selitem)
+            elif selitem.type == ":bone": # Gets the "bone form" if the "if" test is passed.
+                formobj, icon_btns = mdlentities.CallManager("dataformname", selitem)
+                mdlentities.CallManager("dataforminput", selitem)
+            elif selitem.type == ":mc": # Gets the "component form" if the "if" test is passed.
+                formobj = mdlentities.CallManager("dataformname", selitem)
+            elif selitem.type == ":sg": # Gets the "skins group form" if the "if" test is passed.
+                formobj = mdlentities.CallManager("dataformname", selitem)
             else:
-                DummyItem = sl[0]
+                DummyItem = selitem
                 while (DummyItem is not None):
                     if DummyItem.type == ":mr":
                         DummyItem = None
@@ -692,46 +739,45 @@ class ModelLayout(BaseLayout):
                 else:
                     try:
                         # Tries to get the :form data from the Defaults.qrk file.
-                        formobj = quarkx.getqctxlist(sl[0], sfbtn.caption.strip(".") + DummyItem.type.replace(":","_"))[-1]
+                        formobj = quarkx.getqctxlist(selitem, sfbtn.caption.strip(".") + DummyItem.type.replace(":","_"))[-1]
                     except:
                         formobj = None
-            if sl[0].type == ":bound": # Sets the bound frame form items.
+            if selitem.type == ":bound": # Sets the bound frame form items.
                 # Uses the data returned from the mdlentities.py file, class BoundType, def dataformname function
                 # to create the Specifics/Args page form for bound frames.
-                selitem = sl[0]
+                selitem = selitem
                 self.dataform.setdata(selitem, formobj) # Tries to use the data returned to make the bound frame's form again.
-            elif sl[0].type == ":tagframe": # Sets the tag frame form items.
+            elif selitem.type == ":tagframe": # Sets the tag frame form items.
                 # Uses the data returned from the mdlentities.py file, class TagFrameType, def dataformname function
                 # to create the Specifics/Args page form for tag frames.
-                selitem = sl[0]
                 self.dataform.setdata(selitem, formobj) # Tries to use the data returned to make the tag frame's form again.
-            elif sl[0].type == ":bone": # Sets the bone form items.
+            elif selitem.type == ":bone": # Sets the bone form items.
                 # Uses the data returned from the mdlentities.py file, class BoneType, def dataformname function
                 # to create the Specifics/Args page form for bones.
-                selitem = sl[0]
                 self.dataform.setdata(selitem, formobj) # Tries to use the data returned to make the bone's form again.
-            elif sl[0].type == ":mc": # Sets the component form items.
+            elif selitem.type == ":mc": # Sets the component form items.
                 # Uses the data returned from the mdlentities.py file, class ComponentType, def dataformname function
                 # to create the Specifics/Args page form for components.
-                selitem = sl[0]
                 self.dataform.setdata(selitem, formobj) # Tries to use the data returned to make the component's form again.
-            elif sl[0].type == ":sg": # Sets the skins group form items.
+            elif selitem.type == ":sg": # Sets the skins group form items.
                 # Uses the data returned from the mdlentities.py file, class SkinGroupType, def dataformname function
                 # to create the Specifics/Args page form for a component's Skins group.
-                selitem = sl[0]
                 self.dataform.setdata(selitem, formobj) # Tries to use the data returned to make the component's form again.
             else:
                 # Tries to use a file type:form data returned from an import or export file to create this form.
                 if sfbtn.caption == "set model type" or sfbtn.caption == "default":
                     try:
-                        formobj = mdlentities.CallManager("dataformname", sl[0])
+                        formobj = mdlentities.CallManager("dataformname", selitem)
                     except:
-                        formobj = None
+                        try:
+                            formobj, icon_btns = mdlentities.CallManager("dataformname", selitem)
+                        except:
+                            formobj = None
                 else:
                     for filetype in range(len(SFTexts)):
                         if sfbtn.caption == SFTexts[filetype] and DummyItem.type == ':mc':
                             filename = IEfile[filetype]
-                            formobj, icon_btns = filename.dataformname(sl[0])
+                            formobj, icon_btns = filename.dataformname(selitem)
                             break
                         else:
                             formobj = None
@@ -742,17 +788,19 @@ class ModelLayout(BaseLayout):
         except:
             formobj = None # If no form data is found, then set to None and just go on, there is no form for this item.
             self.dataform.setdata(sl, formobj)
+
         try:
             help = ((formobj is not None) and formobj["Help"]) or ""
         except:
             formobj = None
             self.dataform.setdata(sl, formobj)
             help = ((formobj is not None) and formobj["Help"]) or ""
+
         if help:
             help = "?" + help   # This trick displays a blue hint.
         self.buttons["help"].hint = help + "||This button gives you the description of the selected entity, and how to use it.\n\nYou are given help in two manners : by simply moving the mouse over the button, a 'hint' text appears with the description; if you click the button, you are sent to an HTML document about the entity, if available, or you are shown the same text as previously, if nothing more is available.\n\nNote that there is currently not a lot of info available as HTML documents."
         if sl:
-            icon = qutils.EntityIconSel(sl[0])
+            icon = qutils.EntityIconSel(selitem)
             for s in sl[1:]:
                 icon2 = qutils.EntityIconSel(s)
                 if not (icon is icon2):
@@ -781,12 +829,12 @@ class ModelLayout(BaseLayout):
             l[4] = icon
             btnlist[1].icons = tuple(l)
             self.mpp.btnpanel.buttons = btnlist
+
         if sl:
             ### This section handles the component color default settings,
             ### the model importer\exporter default settings
             ### and any data input for the Specifics/Args page.
-            if sl[0].type == ":mc":
-                selitem = sl[0]
+            if selitem.type == ":mc":
                 try:
                     self.comp_color1 = selitem.dictspec['comp_color1']
                     for view in self.views:
@@ -806,10 +854,83 @@ class ModelLayout(BaseLayout):
                     for view in self.views:
                         view.invalidate(1)
                 self.explorer.invalidate()
+
+            #  Handles the displaying of the 'UV Vertex Colors', if any, for the components.
+            if self.editor.Root.currentcomponent.dictspec.has_key("show_vtx_color") and check_show_vtx_color is None:
+                check_show_vtx_color = self.editor.Root.currentcomponent.dictspec['show_vtx_color']
+                if treeviewselchanged == 1:
+                    treeviewselchanged = 0
+                for v in self.editor.layout.views:
+                    v.invalidate()
+            elif not self.editor.Root.currentcomponent.dictspec.has_key("show_vtx_color") and check_show_vtx_color is not None:
+                check_show_vtx_color = None
+                if treeviewselchanged == 1:
+                    treeviewselchanged = 0
+                for v in self.editor.layout.views:
+                    v.invalidate()
+
+            #  Handles the special selection mode of bones for 'Vertex Weight Colors' for the components and the bones, if any.
+            if selitem.type == ":bone":
+                skeletongroup = self.editor.Root.dictitems['Skeleton:bg']  # get the bones group
+                bones = skeletongroup.findallsubitems("", ':bone')    # get all bones
+                if self.editor.Root.currentcomponent.dictspec.has_key("use_weights") and not selitem.dictspec.has_key("use_weights"):
+                    self.editor.Root.currentcomponent['use_weights'] = ""
+                    for bone in bones:
+                        if bone.dictspec.has_key("use_weights"):
+                            bone['use_weights'] = ""
+                elif not self.editor.Root.currentcomponent.dictspec.has_key("use_weights") and selitem.dictspec.has_key("use_weights"):
+                    self.editor.Root.currentcomponent['use_weights'] = selitem.dictspec['use_weights']
+                    for bone in bones:
+                        bone['use_weights'] = self.editor.Root.currentcomponent.dictspec['use_weights']
+
+            if self.editor.Root.currentcomponent.dictspec.has_key("use_weights") and check_use_weights is None:
+                check_use_weights = self.editor.Root.currentcomponent.dictspec['use_weights']
+            elif not self.editor.Root.currentcomponent.dictspec.has_key("use_weights") and check_use_weights is not None:
+                check_use_weights = None
+
+            #  Handles the displaying of the 'Vertex Weight Colors', if any, for the components and the bones, if any.
+            if selitem.type == ":bone":
+                if self.editor.Root.currentcomponent.dictspec.has_key("show_weight_color") and not selitem.dictspec.has_key("show_weight_color"):
+                    self.editor.Root.currentcomponent['show_weight_color'] = ""
+                elif not self.editor.Root.currentcomponent.dictspec.has_key("show_weight_color") and selitem.dictspec.has_key("show_weight_color"):
+                    self.editor.Root.currentcomponent['show_weight_color'] = selitem.dictspec['show_weight_color']
+
+            if self.editor.Root.currentcomponent.dictspec.has_key("show_weight_color") and check_show_weight_color is None:
+                check_show_weight_color = self.editor.Root.currentcomponent.dictspec['show_weight_color']
+                if treeviewselchanged == 1:
+                    treeviewselchanged = 0
+                for v in self.editor.layout.views:
+                    v.invalidate()
+            elif not self.editor.Root.currentcomponent.dictspec.has_key("show_weight_color") and check_show_weight_color is not None:
+                check_show_weight_color = None
+                if treeviewselchanged == 1:
+                    treeviewselchanged = 0
+                for v in self.editor.layout.views:
+                    v.invalidate()
+
+            # Handles the auto appling and saving of vertex weights, for the components and the bones, if the linear handle is use to select them.
+            if selitem.type == ":bone":
+                if self.editor.Root.currentcomponent.dictspec.has_key("apply_vtx_weights") and not selitem.dictspec.has_key("apply_vtx_weights"):
+                    self.editor.Root.currentcomponent['apply_vtx_weights'] = ""
+                elif not self.editor.Root.currentcomponent.dictspec.has_key("apply_vtx_weights") and selitem.dictspec.has_key("apply_vtx_weights"):
+                    if len(self.explorer.sellist) == 0 or self.explorer.sellist[len(self.explorer.sellist)-1].type != ":mf":
+                        selitem['apply_vtx_weights'] = ""
+                        check_apply_vtx_weights = None
+                        self.dataform.setdata(selitem, formobj)
+                        quarkx.update(self.editor.form)
+                        quarkx.beep() # Makes the computer "Beep" once.
+                        quarkx.msgbox("No model frame selected !\n\nYou must select one\nto save these settings.", qutils.MT_ERROR, qutils.MB_OK)
+                        return
+                    self.editor.Root.currentcomponent['apply_vtx_weights'] = selitem.dictspec['apply_vtx_weights']
+
+            if self.editor.Root.currentcomponent.dictspec.has_key("apply_vtx_weights") and check_apply_vtx_weights is None:
+                check_apply_vtx_weights = self.editor.Root.currentcomponent.dictspec['apply_vtx_weights']
+            elif not self.editor.Root.currentcomponent.dictspec.has_key("apply_vtx_weights") and check_apply_vtx_weights is not None:
+                check_apply_vtx_weights = None
+
             ### This section handles the Bones default settings and data input for the Specifics/Args page.
             # Updates all vertexes U,V '_color' that are assigned to a bone handle when that handle color is changed.
-            if (sl[0].type == ":bone") and (not isinstance(reserved, qtoolbar.button)):
-                selitem = sl[0]
+            if (selitem.type == ":bone") and (not isinstance(reserved, qtoolbar.button)):
                 if check_comp_list != selitem["comp_list"]:
                     check_comp_list = selitem['comp_list']
                     self.editor.layout.explorer.sellist = [selitem] + [self.editor.Root.dictitems[selitem.dictspec['comp_list']].dictitems['Frames:fg'].subitems[self.editor.bone_frame]]
@@ -831,9 +952,9 @@ class ModelLayout(BaseLayout):
                     check_offset = selitem['draw_offset']
                     selitem['draw_offset'] = old_pos
                     undo = quarkx.action()
-                    new_bone = sl[0].copy()
+                    new_bone = selitem.copy()
                     new_bone['draw_offset'] = check_offset
-                    undo.exchange(sl[0], new_bone)
+                    undo.exchange(selitem, new_bone)
                     self.editor.ok(undo, 'bone offset changed')
 
                 elif check_pos != selitem["position"]:
@@ -853,7 +974,7 @@ class ModelLayout(BaseLayout):
                     check_pos = selitem['position']
                     selitem['position'] = old_pos
                     undo = quarkx.action()
-                    new_bone = sl[0].copy()
+                    new_bone = selitem.copy()
                     new_bone['position'] = check_pos
                     movediff = quarkx.vect(new_bone['position']) - quarkx.vect(old_pos)
                     for comp in new_bone.vtxlist.keys():
@@ -867,7 +988,7 @@ class ModelLayout(BaseLayout):
                         new_frame.vertices = new_vtxs
                         new_frame.compparent = new_comp
                         undo.exchange(old_comp, new_comp)
-                    undo.exchange(sl[0], new_bone)
+                    undo.exchange(selitem, new_bone)
                     skeletongroup = self.editor.Root.dictitems['Skeleton:bg']  # get the bones group
                     bones = skeletongroup.findallsubitems("", ':bone')    # get all bones
                     for bone in bones:
@@ -884,23 +1005,23 @@ class ModelLayout(BaseLayout):
                     checkbone_scale = self.scale = selitem["scale"] = (abs(selitem["scale"][0]),)
                     selitem['scale'] = old_scale
                     undo = quarkx.action()
-                    new_bone = sl[0].copy()
+                    new_bone = selitem.copy()
                     new_bone['scale'] = checkbone_scale
-                    undo.exchange(sl[0], new_bone)
+                    undo.exchange(selitem, new_bone)
                     self.editor.ok(undo, 'bone scale changed')
 
                 elif check_color != selitem["_color"]:
                     old_color = check_color
                     check_color = selitem["_color"]
                     selitem['_color'] = old_color
-                    new_bone = sl[0].copy()
+                    new_bone = selitem.copy()
                     new_bone['_color'] = check_color
-                    if len(sl[0].vtxlist) != 0:
-                        for comp in sl[0].vtxlist.keys():
-                            for vtx in sl[0].vtxlist[comp]:
-                                self.editor.ModelComponentList[comp]['bonevtxlist'][sl[0].name][vtx]['color'] = new_bone["_color"]
+                    if len(selitem.vtxlist) != 0:
+                        for comp in selitem.vtxlist.keys():
+                            for vtx in selitem.vtxlist[comp]:
+                                self.editor.ModelComponentList[comp]['bonevtxlist'][selitem.name][vtx]['color'] = new_bone["_color"]
                     undo = quarkx.action()
-                    undo.exchange(sl[0], new_bone)
+                    undo.exchange(selitem, new_bone)
                     self.editor.ok(undo, 'bone joint color changed')
                     self.explorer.invalidate()
 
@@ -927,10 +1048,10 @@ class ModelLayout(BaseLayout):
                     checkbone_length = selitem['bone_length']
                     selitem['bone_length'] = old_pos
                     undo = quarkx.action()
-                    new_bone = sl[0].copy()
+                    new_bone = selitem.copy()
                     new_bone['bone_length'] = checkbone_length
                     movediff = quarkx.vect(new_bone['bone_length']) - quarkx.vect(old_pos)
-                    new_bone['position'] = (sl[0].position + movediff).tuple
+                    new_bone['position'] = (selitem.position + movediff).tuple
                     for comp in new_bone.vtxlist.keys():
                         new_comp = self.editor.Root.dictitems[comp].copy()
                         new_frame = new_comp.dictitems['Frames:fg'].subitems[self.editor.bone_frame]
@@ -942,7 +1063,7 @@ class ModelLayout(BaseLayout):
                         new_frame.vertices = new_vtxs
                         new_frame.compparent = new_comp
                         undo.exchange(old_comp, new_comp)
-                    undo.exchange(sl[0], new_bone)
+                    undo.exchange(selitem, new_bone)
                     skeletongroup = self.editor.Root.dictitems['Skeleton:bg']  # get the bones group
                     bones = skeletongroup.findallsubitems("", ':bone')    # get all bones
                     for bone in bones:
@@ -960,24 +1081,28 @@ class ModelLayout(BaseLayout):
         sl = self.explorer.sellist
         if len(sl) == 0 and self.explorer.uniquesel is not None:
             sl = [self.explorer.uniquesel]
+        if len(sl) == 0:
+            selitem = sl
+        else:
+            selitem = sl[0]
         sfbtn = self.buttons["sf"]
 
         DummyItem = None
         formobj = None
         try:
             import mdlentities
-            if sl[0].type == ":bound": # Gets the "bound frame form" if the "if" test is passed.
-                formobj = mdlentities.CallManager("dataformname", sl[0])
-            elif sl[0].type == ":tagframe": # Gets the "tag frame form" if the "if" test is passed.
-                formobj = mdlentities.CallManager("dataformname", sl[0])
-            elif sl[0].type == ":bone": # Gets the "bone form" if the "if" test is passed.
-                formobj = mdlentities.CallManager("dataformname", sl[0])
-            elif sl[0].type == ":mc": # Gets the "component form" if the "if" test is passed.
-                formobj = mdlentities.CallManager("dataformname", sl[0])
-            elif sl[0].type == ":sg": # Gets the "skins group form" if the "if" test is passed.
-                formobj = mdlentities.CallManager("dataformname", sl[0])
+            if selitem.type == ":bound": # Gets the "bound frame form" if the "if" test is passed.
+                formobj = mdlentities.CallManager("dataformname", selitem)
+            elif selitem.type == ":tagframe": # Gets the "tag frame form" if the "if" test is passed.
+                formobj = mdlentities.CallManager("dataformname", selitem)
+            elif selitem.type == ":bone": # Gets the "bone form" if the "if" test is passed.
+                formobj, icon_btns = mdlentities.CallManager("dataformname", selitem)
+            elif selitem.type == ":mc": # Gets the "component form" if the "if" test is passed.
+                formobj = mdlentities.CallManager("dataformname", selitem)
+            elif selitem.type == ":sg": # Gets the "skins group form" if the "if" test is passed.
+                formobj = mdlentities.CallManager("dataformname", selitem)
             else:
-                DummyItem = sl[0]
+                DummyItem = selitem
                 while (DummyItem is not None):
                     if DummyItem.type == ":mr":
                         DummyItem = None
@@ -994,14 +1119,17 @@ class ModelLayout(BaseLayout):
                     except:
                         if sfbtn.caption == "set model type" or sfbtn.caption == "default":
                             try:
-                                formobj = mdlentities.CallManager("dataformname", sl[0])
+                                formobj = mdlentities.CallManager("dataformname", selitem)
                             except:
-                                formobj = None
+                                try:
+                                    formobj, icon_btns = mdlentities.CallManager("dataformname", selitem)
+                                except:
+                                    formobj = None
                         else:
                             for filetype in range(len(SFTexts)):
                                 if sfbtn.caption == SFTexts[filetype] and DummyItem.type == ':mc':
                                     filename = IEfile[filetype]
-                                    formobj, icon_btns = filename.dataformname(sl[0])
+                                    formobj, icon_btns = filename.dataformname(selitem)
                                     break
                                 else:
                                     formobj = None
@@ -1153,8 +1281,8 @@ class ModelLayout(BaseLayout):
         # This section preserves, and passes on, data in the ModelComponentList (if any) when a component is renamed.
         changednames = quarkx.getchangednames()
         if changednames is not None:
-            undo = quarkx.action()
             if changednames[0][0].endswith(":mc"):
+                undo = quarkx.action()
                 undo_msg = "USE UNDO BELOW - " + changednames[0][1].replace(":mc", "") + " data updated"
 
                 tempdata = self.editor.ModelComponentList['tristodraw'][changednames[0][0]]
@@ -1194,7 +1322,7 @@ class ModelLayout(BaseLayout):
                     newskelgroup = boneundo(self.editor, old, new)
                     undo.exchange(oldskelgroup, newskelgroup)
 
-            self.editor.ok(undo, undo_msg)
+                self.editor.ok(undo, undo_msg)
 
         if comp != self.editor.Root.currentcomponent:
             self.reset()
@@ -1244,9 +1372,8 @@ class ModelLayout(BaseLayout):
                         self.editor.SelCommonTriangles = []
                         self.editor.SelVertexes = []
                     self.editor.Root.currentcomponent.filltris = []
-            for view in self.editor.layout.views:
-                if view.info["viewname"] == "skinview":
-                    view.invalidate()
+            if currentview.info["viewname"] == "skinview" and len(comp.triangles) == 0:
+                currentview.invalidate()
         for component in self.editor.Root.findallsubitems("", ':mc'):   # find all components
             self.editor.Root.setcomponent(component)
             self.editor.Root.currentcomponent.currentframe = self.editor.Root.currentcomponent.dictitems['Frames:fg'].subitems[0]
@@ -1279,6 +1406,8 @@ class ModelLayout(BaseLayout):
                     oldcomp = weightsdataform["comp_name"]
                     if self.editor.Root.currentcomponent.name != oldcomp:
                         import mdlentities
+                        from mdlentities import WeightsDlgPage
+                        mdlentities.WeightsDlgPage = 0
                         mdlentities.WeightsClick(self.editor)
             except:
                 pass
@@ -1369,6 +1498,19 @@ class ModelLayout(BaseLayout):
     def selchange(self):
         "This calls for what ever selection def you are using above."
         global treeviewselchanged
+
+        # Checks to see if the dictspec item exist, if so clears all other bones of it and related items for proper bone weights system use.
+        skeletongroup = self.editor.Root.dictitems['Skeleton:bg']  # get the bones group
+        bones = skeletongroup.findallsubitems("", ':bone')    # get all bones
+        for bone2 in bones:
+            for item in bone2.dictspec:
+                if item.endswith("_weight_value"):
+                    if item.startswith(bone2.shortname):
+                        continue
+                    else:
+                        bonename = item.replace('_weight_value', '')
+                        bone2[bonename + "_weight_value"] = ""
+                        bone2[bonename + "_weight_color"] = ""
 
         # Updates the editor.ModelComponentList
         if self.editor.Root.dictitems.has_key('ModelComponentList:sd'):
@@ -1472,6 +1614,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.102  2009/05/01 06:06:15  cdunde
+#Moved bones undo function to mdlutils.py for generic use elsewhere.
+#
 #Revision 1.101  2009/04/29 23:50:03  cdunde
 #Added auto saving and updating features for weights dialog data.
 #

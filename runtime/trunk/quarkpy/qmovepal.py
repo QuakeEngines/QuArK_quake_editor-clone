@@ -139,7 +139,7 @@ class MdlConfigDialog(qmacro.dialogbox):
     dlgflags = FWF_NOESCCLOSE
     begincolor = RED
     endcolor = MAROON
-    size = (300,345)
+    size = (300,390)
     dlgdef = """
       {
         Style = "9"
@@ -173,11 +173,23 @@ class MdlConfigDialog(qmacro.dialogbox):
           Min="0.01"
           Hint="larger value makes the handle bigger & visa-versa, default is 4"
         }
+        LinearSelected: = {
+          Txt="Linear Items Size :"
+          Typ="EF"
+          Min="0.01"
+          Hint="larger value makes the selected items bigger & visa-versa, default is 5"
+        }
         SkinLinearSetting: = {
           Txt="Skin-view Linear Setting :"
           Typ="EF"
           Min="0.01"
           Hint="larger value makes the handle bigger & visa-versa, default is 4"
+        }
+        SkinLinearSelected: = {
+          Txt="Skin-view Items Size :"
+          Typ="EF"
+          Min="0.01"
+          Hint="larger value makes the selected items & visa-versa, default is 5"
         }
         sep: = {Typ="S" Txt="Bone Handle settings"}    // designator title
         RotationHandleLength: = {
@@ -410,6 +422,10 @@ class ToolMoveBar(ToolBar):
 #
 #
 #$Log$
+#Revision 1.23  2009/04/28 21:30:56  cdunde
+#Model Editor Bone Rebuild merge to HEAD.
+#Complete change of bone system.
+#
 #Revision 1.22  2008/12/20 08:39:34  cdunde
 #Minor adjustment to various Model Editor dialogs for recent fix of item over lapping by Dan.
 #

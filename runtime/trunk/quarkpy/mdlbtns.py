@@ -78,7 +78,17 @@ def dropitemsnow(editor, newlist, text=Strings[544], center="S"):
     if len(newlist)==0:
         return
 
-    undo = quarkx.action()
+    incompatible_items = 0 # To filter out components from other items.
+    for item in newlist:
+        if item.type == ":mc":
+            incompatible_items = 1
+        if item.type != ":mc" and incompatible_items == 1:
+            msg = Strings[-107]
+            quarkx.msgbox(msg, MT_ERROR, MB_OK)
+            return
+
+    if incompatible_items == 0:
+        undo = quarkx.action()
     delta = None
     if str(center) != "0":
         recenter = MapOption("Recenter", editor.MODE)
@@ -121,8 +131,11 @@ def dropitemsnow(editor, newlist, text=Strings[544], center="S"):
                 new.translate(delta)
         except:
             pass
-        undo.put(nparent, new, nib)
-    undo.ok(editor.Root, text)
+        if incompatible_items == 0:
+            undo.put(nparent, new, nib)
+
+    if incompatible_items == 0:
+        undo.ok(editor.Root, text)
     if newlist[0].type == ":mf":
         compframes = editor.Root.currentcomponent.findallsubitems("", ':mf')   # get all frames
         for compframe in compframes:
@@ -158,25 +171,50 @@ def mdlbuttonclick(self):
 # General editing commands.
 #
 
-def deleteitems(root, list):
+def deleteitems(editor, root, list):
     undo = quarkx.action()
     text = None
+    bonelist = []
+    listcopy = []
+    for item in list:
+        if item.type != ":bone":
+            listcopy = listcopy + [item]
     for s in list:
-        if (s is not root) and checktree(root, s):    # only delete items that are childs of 'root'
-            if text is None:
-                text = Strings[582] % s.shortname
+        if s.type == ":bone":
+            bonelist = addtolist(bonelist, s)
+    list = listcopy + bonelist
+    import operator
+    group = editor.Root.dictitems['Skeleton:bg']
+    bonelist = group.findallsubitems("", ':bone') # Get all bones in the old group.
+    for s in list:
+        if s.type == ":mc":
+            removecomp(editor, s.name, undo)
+        if s.type == ":bone":
+            if not s in group.subitems:
+                bone_index = operator.indexOf(list, s)
+                list, bonelist = removebone(editor, s.name, undo, list, bonelist)
+                s = list[bone_index]
             else:
-                text = Strings[579]   # multiple items selected
-            undo.exchange(s, None)   # replace all selected objects with None
+                for bone in group.subitems:
+                    if (bone.dictspec['parent_name'] == s.name) and (not bone in list):
+                        newbone = bone.copy()
+                        newbone['parent_name'] = "None"
+                        undo.exchange(bone, None)
+                        undo.put(group, newbone)
+        if text is None:
+            text = Strings[582] % s.shortname
+        else:
+            text = Strings[579]   # multiple items selected
+        undo.exchange(s, None)   # replace all selected objects with None
     if text is None:
         undo.cancel()
         quarkx.beep()
     else:
-        undo.ok(root, text)
+        editor.ok(undo, text)
 
 
 def edit_del(editor, m=None):
-    deleteitems(editor.Root, editor.visualselection())
+    deleteitems(editor, editor.Root, editor.visualselection())
 
 
 def edit_copy(editor, m=None):
@@ -189,6 +227,7 @@ def edit_cut(editor, m=None):
 
 
 def edit_paste(editor, m=None):
+
     newitems = quarkx.pasteobj(1)
     try:
         origin = m.origin
@@ -204,6 +243,7 @@ def edit_dup(editor, m=None):
     else:
         for item in range(len(editor.visualselection())):
             if editor.visualselection()[item].type == ":mc":
+                comp_copied_name = editor.visualselection()[item].name
                 # Checks for component names matching any new components and changes the new one's
                 # name(s) if needed to avoid dupes which cause problems in other functions.
                 components = editor.Root.findallsubitems("", ':mc')   # find all components
@@ -225,6 +265,7 @@ def edit_dup(editor, m=None):
 
                 name = None
                 comparenbr = 0
+                new_comp = editor.layout.explorer.sellist[0].copy()
                 for comp in components:
                     if not itembasename.endswith(" ") and comp.shortname.startswith(itembasename + " "):
                         continue
@@ -242,10 +283,14 @@ def edit_dup(editor, m=None):
                     pass
                 else:
                     name = editor.visualselection()[item].shortname
-                editor.visualselection()[item].shortname = name
-                compframes = editor.visualselection()[item].dictitems['Frames:fg'].subitems   # all frames
+                new_comp.shortname = name
+                editor.ModelComponentList['tristodraw'][new_comp.name] = editor.ModelComponentList['tristodraw'][comp_copied_name]
+                undo = quarkx.action()
+                undo.put(editor.Root, new_comp)
+                editor.ok(undo, "duplicate")
+                compframes = new_comp.dictitems['Frames:fg'].subitems   # all frames
                 for compframe in compframes:
-                    compframe.compparent = editor.visualselection()[item] # To allow frame relocation after editing.
+                    compframe.compparent = new_comp # To allow frame relocation after editing.
 
             if editor.visualselection()[item].type == ":mf":
                 # Checks for component frame names matching any new components frame names and changes
@@ -486,6 +531,10 @@ def groupcolor(m):
 #
 #
 #$Log$
+#Revision 1.27  2009/04/28 21:30:56  cdunde
+#Model Editor Bone Rebuild merge to HEAD.
+#Complete change of bone system.
+#
 #Revision 1.26  2009/02/17 04:58:46  cdunde
 #To expand on types of image texture files that can be applied from the Texture Browser to the Model editor.
 #

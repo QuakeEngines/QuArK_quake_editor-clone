@@ -1058,6 +1058,7 @@ Strings = {
     -104: "This command uses the 3D viewer selected in options. Note that if you get a black screen it probably means you are looking at a part of your map where there is no light. In case of trouble (or to disable light computation) see the viewer section of the configuration dialog box and try again.\n\nIt is recommended to save your work first. Ok to load 3D viewer now ?",
     -105: "Note: when this button is pressed, the normal handles around the objects in your map are replaced by pink handles that let you do 'linear mapping' operations.\n\n'Linear mapping' operations include rotations, zooms, and various distortions.\n\nClick again on this button to get the normal handles.",
     -106: "Cannot drop this item here.",
+    -107: "Incompatible items.",
     -151: "Cannot drop this item into model component.",
 
     -409: "Bezier",
@@ -1068,6 +1069,10 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.142  2009/04/28 21:30:56  cdunde
+#Model Editor Bone Rebuild merge to HEAD.
+#Complete change of bone system.
+#
 #Revision 1.141  2009/03/16 08:46:00  danielpharos
 #Updated to DevIL 1.7.8, added IWI loading, and added many new image loading/saving options.
 #

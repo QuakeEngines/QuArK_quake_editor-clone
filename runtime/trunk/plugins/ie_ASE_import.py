@@ -1024,6 +1024,9 @@ def dataformname(o):
     # Next line calls for the Vertex U,V Color Module in mdlentities.py to be used.
     vtx_UVcolor_dialog_plugin = quarkpy.mdlentities.UseVertexUVColors()
 
+    # Next line calls for the Vertex Weights Specifics Module in mdlentities.py to be used.
+    vertex_weights_specifics_plugin = quarkpy.mdlentities.UseVertexWeightsSpecifics()
+
     # Next line calls for the Shader Module in mdlentities.py to be used.
     Shader_dialog_plugin = quarkpy.mdlentities.UseShaders()
 
@@ -1040,6 +1043,8 @@ def dataformname(o):
              "          type in any name you want to use."$0D22
              "Vertex Color"$22" - Color to use for this component's u,v vertex color mapping."$0D
              "            Click the color display button to select a color."$0D22
+             "show weight colors"$22" - When checked, if component has vertex weight coloring they will show."$0D
+             "          If NOT checked and it has bones with vetexes, those will show."$0D
              "shader file"$22" - Gives the full path and name of the .mtr material"$0D
              "           shader file that the selected skin texture uses, if any."$0D22
              "shader name"$22" - Gives the name of the shader located in the above file"$0D
@@ -1054,6 +1059,7 @@ def dataformname(o):
       """ + external_skin_editor_dialog_plugin + """
       ase_UVNAME: = {Typ="E"   Txt="UVNAME"  Hint="Special UV process control name (over rides 'NAME'),"$0D"type in any name you want to use."}
       """ + vtx_UVcolor_dialog_plugin + """
+      """ + vertex_weights_specifics_plugin + """
       """ + Shader_dialog_plugin + """
     }
     """
@@ -1067,7 +1073,7 @@ def dataformname(o):
     vtxweightsbtn = quarkpy.qtoolbar.button(quarkpy.mdlentities.UseVertexWeights, "Open or Update\nVertex Weights Dialog||When clicked, this button opens the dialog to allow the 'weight' movement setting of single vertexes that have been assigned to more then one bone handle.\n\nClick the InfoBase button or press F1 again for more detail.|intro.modeleditor.dataforms.html#specsargsview", ico_mdlskv, 5)
     vtxweightsbtn.state = quarkpy.qtoolbar.normal
     vtxweightsbtn.caption = "" # Texts shows next to button and keeps the width of this button so it doesn't change.
-    icon_btns['vtxUVcolor'] = vtxweightsbtn   # Put our button in the above list to return.
+    icon_btns['vtxweights'] = vtxweightsbtn   # Put our button in the above list to return.
 
     if (editor.Root.currentcomponent.currentskin is not None) and (o.name == editor.Root.currentcomponent.currentskin.name): # If this is not done it will cause looping through multiple times.
         if o.parent.parent.dictspec.has_key("shader_keyword") and o.dictspec.has_key("shader_keyword"):
@@ -1077,16 +1083,9 @@ def dataformname(o):
     DummyItem = o
     while (DummyItem.type != ":mc"): # Gets the object's model component.
         DummyItem = DummyItem.parent
-    o = DummyItem
+    comp = DummyItem
 
-    if not o.dictspec.has_key('show_vtx_color') and quarkx.setupsubset(SS_MODEL, "Options")['ShowVertexColor'] is not None:
-        quarkx.setupsubset(SS_MODEL, "Options")['ShowVertexColor'] = None
-        quarkpy.mdlutils.Update_Editor_Views(editor)
-    if o.dictspec.has_key('show_vtx_color') and quarkx.setupsubset(SS_MODEL, "Options")['ShowVertexColor'] is None:
-        quarkx.setupsubset(SS_MODEL, "Options")['ShowVertexColor'] = o.dictspec['show_vtx_color']
-        quarkpy.mdlutils.Update_Editor_Views(editor)
-
-    if o.type == ":mc": # Just makes sure what we have is a model component.
+    if comp.type == ":mc": # Just makes sure what we have is a model component.
         formobj = quarkx.newobj("ase_mc:form")
         formobj.loadtext(dlgdef)
         return formobj, icon_btns
@@ -1135,6 +1134,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.7  2009/05/01 20:39:34  cdunde
+# Moved additional Specific page systems to mdlentities.py as modules.
+#
 # Revision 1.6  2009/04/28 21:30:56  cdunde
 # Model Editor Bone Rebuild merge to HEAD.
 # Complete change of bone system.

@@ -805,19 +805,19 @@ def FilterHandles(handlelist, mode):
 # Function that computes a rotation matrix out of a mouse movement.
 #
 
-def UserRotationMatrix(normal, texpdest, texp4, g1, rotationspeed=1.0):
+def UserRotationMatrix(normal, newpos, oldpos, g1, rotationspeed=1.0):
     # normal: normal vector for the view plane
-    # texpdest: new position of the reference vector texp4
-    # texp4: reference vector (handle position minus rotation center)
+    # newpos: new position of the reference vector oldpos
+    # oldpos: reference vector (handle position minus rotation center)
     # g1: if True, snap angle to grid
     # rotationspeed, example .5 = half rotation speed, 2.0 = twice as fast.
     if not normal: return
     SNAP = 0.998
-    if not texp4: return
-    norme1 = abs(texp4)
-    if not texpdest: return
-    norme2 = abs(texpdest)
-    sinangle = (normal*(texp4^texpdest)) / (norme1*norme2)
+    if not oldpos: return
+    norme1 = abs(oldpos)
+    if not newpos: return
+    norme2 = abs(newpos)
+    sinangle = (normal*(oldpos^newpos)) / (norme1*norme2)
     if rotationspeed != 1.0:
         sinangle = math.sin(math.asin(sinangle) * rotationspeed)
     norme1 = sinangle*sinangle
@@ -833,7 +833,7 @@ def UserRotationMatrix(normal, texpdest, texp4, g1, rotationspeed=1.0):
             sinangle, cosangle = 0, 1
         else:
             cosangle = math.sqrt(cosangle)
-        if texpdest * texp4 < 0:
+        if newpos * oldpos < 0:
             cosangle = -cosangle
         if cosangle == 1:
             return
@@ -2171,6 +2171,10 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.81  2009/04/28 21:30:56  cdunde
+#Model Editor Bone Rebuild merge to HEAD.
+#Complete change of bone system.
+#
 #Revision 1.80  2009/03/28 20:03:57  cdunde
 #To remove unwanted white spaces.
 #

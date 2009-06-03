@@ -105,11 +105,9 @@ def checkcomponents(m):
                     continue
                 list = list + "   " + i[0].shortname + " = " + str(i[1]) + " frames\n"
             return list
-        todo = quarkx.msgbox("Selected components frames counts do not match.\n\n" + donorcomp.shortname + " has the most frames = " + str(framecount) + "\n\n" + showlist() + "\nDo you want to match these frames for all components?\n             ('Cancel' will abort any further checking)",MT_CONFIRMATION, MB_YES_NO_CANCEL)
-        if todo == MR_CANCEL:
+        if quarkx.msgbox("Selected components frames counts do not match.\n\n" + donorcomp.shortname + " has the most frames = " + str(framecount) + "\n\n" + showlist() + "\nDo you want to match these frames\nfor the other selected components?",MT_CONFIRMATION, MB_OK_CANCEL) != MR_OK:
             return
-        if todo == MR_YES:
-            matchframesclick(m)
+        matchframesclick(m)
 
     quarkx.msgbox("Component checking completed.", MT_INFORMATION, MB_OK)
 
@@ -182,6 +180,10 @@ onclick = commandsclick
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.23  2009/04/28 21:30:56  cdunde
+# Model Editor Bone Rebuild merge to HEAD.
+# Complete change of bone system.
+#
 # Revision 1.22  2009/01/29 02:13:51  cdunde
 # To reverse frame indexing and fix it a better way by DanielPharos.
 #

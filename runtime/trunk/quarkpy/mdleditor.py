@@ -42,8 +42,7 @@ class ModelEditor(BaseEditor):
     MouseDragMode = mdlhandles.RectSelDragObject
     findtargetdlg = None
     bone_frame = 0
-         #### Taking this line below out breaks the ie_md5_import.py file, fix it. ####
-    bonemode = "default mode" # Available modes = default mode, single set, multi sets.
+
 
     ### Different lists of the Model Editor.
     ###|--- contence ---|-------- format -------|----------------------- discription -----------------------|
@@ -56,27 +55,36 @@ class ModelEditor(BaseEditor):
     #                                                 Its triangle number in the Model component mesh "triangles" list
     #                                                    of the Models "currentcomponent".
 
-    # This is a dictionary list using each component's full name as its key, ex: editor.ModelComponentList[component's full name][sub-dict key].
+    # This is a dictionary list using each component's full name as its key (except 'tristodraw'), ex: editor.ModelComponentList[component's full name][sub-dict key].
     # Each component's list can then store anything relating to that component
     # and can be any type of item, another dictionary, tuple or standard list, object....
     ModelComponentList = {}
-    # Current uses for Bones:
-    # ['bonevtxlist'] = {'22': {'color': '\xff\x00\xff', 's_or_e': 0, 'bonename': 'NewBone2'}}
-    #                               Use:    Stores vertex frame index, color and other data when assigned to a bone handle for faster drawing of those vertexes.
-    #                     Created using:    Each component's full name.dictitems['Skeleton:bg'].subitems or "bones".
-    #                               key   : Its "Frame" "vertices" number, which is the same number as a triangles "ver_index" number.
+    # Current uses for Bones, Vertex Coloring and Vertex Weights Coloring:
+    # ['tristodraw'] = {'compname:mc': {22: [35, 34, 21, 2, 1] }}
+    #                               Use:    Stores all the vertexes that a single vertex needs to draw drag lines to during a drag.
+    #                     Created using:    the model component data after the model is read in and using the 'make_tristodraw_dict' function in mdlutils.py.
+    #                               key1   : 'compname' = full name of the model component and its 'type' or :mc.
+    #                               key2   : Its "Frame" "vertices" number (an integer), which is the same number as a triangles "ver_index" number.
+    #                               key2 value :  A list of other vertex indexes (as integers) used for drawing drag lines to during a drag.
+    # ['bonevtxlist'] = {'bonename:bone': {22: {'color': '\xff\x00\xff'}}}      Can be cross referenced to the 'weightvtxlist' below.
+    #                               Use:    Stores assigned vertex frame index (as an integer) and color (same as bone handle) for faster drawing of those vertexes. Can be used for other data later on if needed.
+    #                     Created using:    Each component's full name.dictitems['Skeleton:bg'].findallsubitems("", ':bone') or "bones".
+    #                               key1   : 'bonename' = full name of the bone that frame vertex is assigned to.
+    #                               key2   : Its "Frame" "vertices" number (an integer), which is the same number as a triangles "ver_index" number.
     #                               item 0: key = 'color', value = bone handle and assigned vertex color in hex format.
-    #                               item 1: key = 's_or_e', value = 0 or 1 (bone start = 0 or end = 1 handle) that frame vertex is assigned to.
-    #                               item 2: key = 'bonename', value = full name of the bone that frame vertex is assigned to.
-    # ['boneobjlist'] = {bone's full name {'s_or_e0' or 's_or_e1'{'vtxlist': }}}
-    #                               Use:    A list of integers of assigned vertexes for each bone handle for the creation of the 'tristodrawlist' dictionary item below.
-    #                     Created using:    Each component's full name.dictitems['Skeleton:bg'].subitems or "bones" ['start_vtxlist'] and ['end_vtxlist'] dictspec items.
-    # ['boneobjlist'] = {bone's full name {'s_or_e0' or 's_or_e1'{'tristodrawlist': }}}
-    #                               Use:    Stores assigned vertex data, for each bone handle, of all triangles that vertex is used in for faster drawing of those triangles "drag lines".
-    #                     Created using:    Each component's full name.dictitems['Skeleton:bg'].subitems or "bones" and data returned from mdlutils.py "findTrianglesAndIndexes" function.
-    # ['boneobjlist'] = {bone's full name {'s_or_e0' or 's_or_e1'{'selvtxlist': }}}
-    #                               Use:    Stores assigned frame vertex_index numbers, for each bone handle, without duplication of them. Used with 'tristodrawlist' above to avoid dupe drawing.
-    #                     Created using:    The 'tristodrawlist' dictionary item above.
+    # ['colorvtxlist'] = {22: {'vtx_color': '\xff\x00\xff'}}
+    #                               Use:    Stores the color assigned to numerous vertices of a component's mesh, by vertex index.
+    #                     Created using:    the "Vertex Coloring" dialog in the Model Editor.
+    #                               key   : Its "Frame" "vertices" number (an integer), which is the same number as a triangles "ver_index" number.
+    #                               item 0: key = 'vtx_color', value = the color assigned, by the editor's tool, to that vertex in hex format.
+    # ['weightvtxlist'] = {22: {'bonename:bone': {'weight_value': 0.8, 'color': 'x00\xb7', 'weight_index': 18}}}      Can be cross referenced to the 'bonevtxlist' above.
+    #                               Use:    Stores data for applying 'weight values' from 0.0 to 1.0 to govern the movement of vertexes assigned to bone handles when dragged.
+    #                     Created using:    the "Vertex Weight System" in the Model Editor.
+    #                               key1   : Its "Frame" "vertices" number (an integer), which is the same number as a triangles "ver_index" number.
+    #                               key2   : 'bonename' = full name of the bone that frame vertex is assigned to.
+    #                               item 0: key = 'weight_value', value = the percentage value of movement for that vertex with that bone, must add up to 1.0, the remaining amount is given to another bone(s).
+    #                               item 1: key = 'color', value = the color to dispaly for that vertex, calculated based on its 'weight_value' by the editor.
+    #                               item 2: key = 'weight_index', value = (an integer) because a vertex's "total weight value" of 1.0 is spread across numinous bones, model files use this indexing system.
 
     ModelVertexSelList = []
     # Editor vertexes    (frame_vertices_index, view.proj(pos))
@@ -258,6 +266,7 @@ class ModelEditor(BaseEditor):
             pass
         quarkx.setupsubset(SS_MODEL, "Building")["ObjectMode"] = 0
         quarkx.setupsubset(SS_MODEL, "Building")["PaintMode"] = 0
+        quarkx.setupsubset(SS_MODEL, "Colors")["temp_color"] = None
         quarkx.setupsubset(SS_MODEL, "Options")["AnimationActive"] = None
         quarkx.setupsubset(SS_MODEL, "Options")["AnimationPaused"] = None
         quarkx.setupsubset(SS_MODEL, "Options")["ExtrudeFaces"] = None
@@ -265,10 +274,8 @@ class ModelEditor(BaseEditor):
         quarkx.setupsubset(SS_MODEL, "Options")['VertexUVColor'] = None
         quarkx.setupsubset(SS_MODEL, "Options")['HideBones'] = None
         quarkx.setupsubset(SS_MODEL, "Options")['ConsoleLog'] = None
-        quarkx.setupsubset(SS_MODEL, "Options")['ShowVertexColor'] = None
         quarkx.setupsubset(SS_MODEL, "Options")['CompColors'] = None
-        quarkx.setupsubset(SS_MODEL, "Colors")['start_color'] = None
-        quarkx.setupsubset(SS_MODEL, "Colors")['end_color'] = None
+        quarkx.setupsubset(SS_MODEL, "Options")['VertexPaintMode'] = None
 
 
     def initmenu(self, form):
@@ -298,28 +305,23 @@ class ModelEditor(BaseEditor):
         " It is also used to rebuild the handles by various functions later."
         from qbaseeditor import flagsmouse, currentview
         try:
- ### This is a problem area, if 1032 is added back in it causes multiple redraws.
- ### But with it out like this drag handles do not get drawn in the 2D views if you
- ### do a drag immediately after doing a zoom in the 3D view and will now straighten out
- ### until you do a slight zoom in one of the 2D views.
- ### Update, believe this is pretty well resolved. Redraws now come from other areas.
             if flagsmouse is None:
                 return
             if flagsmouse == 1032 or flagsmouse == 1048 or flagsmouse == 2072:
                 return
             elif (flagsmouse == 536 or flagsmouse == 544 or flagsmouse == 1056) and currentview.info["viewname"] != "skinview":
                 pass
-            #elif currentview.info["viewname"] == "skinview" and flagsmouse == 2056:
-            #    for v in self.layout.views:
-            #        v.handles = v.handles
             else:
+            # pass here may seem redundant, but leave it in anyway. (If it ain't broke DON'T fix it !)
             # This was killing the handles for the Skin-view,
             #    currentview.handles = mdlhandles.BuildHandles(self, self.layout.explorer, currentview)
                 pass
 
         except:
-            viewhandles = BuildHandles(self, self.layout.explorer, self.layout.views[0])
             for v in self.layout.views:
+                viewhandles = v.handles
+                if len(v.handles) == 0:
+                    viewhandles = BuildHandles(self, self.layout.explorer, self.layout.views[0])
                 v.handles = viewhandles
 
          #   delay, = quarkx.setupsubset(SS_MODEL, "Display")["HandlesDelay"]
@@ -383,7 +385,13 @@ class ModelEditor(BaseEditor):
                             else:
                                 ObjectUniqueName = ObjectUniqueName + HoldObject.name
                 HoldObjectList.append(ParentNames)
-                ObjectExpanded[ObjectUniqueName] = (Object.flags & qutils.OF_TVEXPANDED)
+                if Object.type == ":bg" or Object.type == ":bone":
+                    ObjectExpanded[ObjectUniqueName] = (Object.flags & qutils.OF_TVEXPANDED)
+                else:
+                    if len(Object.subitems) == 0:
+                        ObjectExpanded[ObjectUniqueName] = 0
+                    else:
+                        ObjectExpanded[ObjectUniqueName] = (Object.flags & qutils.OF_TVEXPANDED)
                 if Object in self.layout.explorer.sellist:
                     ObjectSelected[ObjectUniqueName] = 1
                 else:
@@ -408,18 +416,21 @@ class ModelEditor(BaseEditor):
                 EditorRoot = ParentNames.index(HoldObject.name)
 
             for x in range(len(ParentNames)-EditorRoot-1):
-                HoldObject = HoldObject.findname(ParentNames[EditorRoot+x+1])
-                ObjectUniqueName = HoldObject.name + ObjectUniqueName
+                if HoldObject is not None:
+                    HoldObject = HoldObject.findname(ParentNames[EditorRoot+x+1])
+                    if HoldObject is not None:
+                        ObjectUniqueName = HoldObject.name + ObjectUniqueName
 
-            if ObjectExpanded[ObjectUniqueName] <> 0:
-                self.layout.explorer.expand(HoldObject)
+            if ObjectUniqueName != "" and HoldObject is not None:
+                if ObjectExpanded[ObjectUniqueName] <> 0:
+                    self.layout.explorer.expand(HoldObject)
 
-           ### Line below moved to mdlmgr.py, def selectcomponent, using HoldObject as global
-           ### to allow Skin-view to complete its new undo mesh and handles, was not working from here.
-            #self.layout.explorer.sellist = [HoldObject]
+               ### Line below moved to mdlmgr.py, def selectcomponent, using HoldObject as global
+               ### to allow Skin-view to complete its new undo mesh and handles, was not working from here.
+                #self.layout.explorer.sellist = [HoldObject]
 
-            if ObjectSelected[ObjectUniqueName] <> 0:
-                NewSellist.append(HoldObject)
+                if ObjectSelected[ObjectUniqueName] <> 0:
+                    NewSellist.append(HoldObject)
 
         self.layout.explorer.sellist = NewSellist
 
@@ -472,21 +483,24 @@ class ModelEditor(BaseEditor):
         m = qmenu.item
         m.reserved = reserved
         expand_subitems = qmenu.item("Expand Sub-items", expand_subitems_click, "|Expand Sub-items:\n\nThis will expand all of this items sub-folders and their sub-folders on down.|intro.modeleditor.rmbmenus.html#bonecommands")
-        extra = extra + [qmenu.sep , expand_subitems]
         if len(sellist)==1:
             if sellist[0].type == ':mf':
                 import mdlcommands
                 mdlcommands.NewFrame.state = qmenu.normal
                 if self.ModelFaceSelList != []:
                     mdlfacepop = qmenu.popup("Face Commands", mdlhandles.ModelFaceHandle(origin).menu(self, view), hint="")
-                    return [mdlcommands.NewFrame , qmenu.sep , mdlfacepop, qmenu.sep] + mdlentities.CallManager("menu", sellist[0], self) + extra
-                return [mdlcommands.NewFrame , qmenu.sep] + mdlentities.CallManager("menu", sellist[0], self) + extra
+                    return [expand_subitems, qmenu.sep] + [mdlcommands.NewFrame , qmenu.sep , mdlfacepop, qmenu.sep] + mdlentities.CallManager("menu", sellist[0], self) + extra
+                return [expand_subitems, qmenu.sep] + [mdlcommands.NewFrame , qmenu.sep] + mdlentities.CallManager("menu", sellist[0], self) + extra
             elif sellist[0].parent.type == ':sg':
                 obj = sellist[0]
                 saveskinfile = qmenu.item("&Save Skin File", SaveSkinFile, "|Save Skin File:\n\nOpens a file save window and allows you to save the selected skin as various types of image files.\n\nNOTE:\n   You can NOT save another type as a .pcx file because they do not have a 'palette' like .pcx files do, this will only cause an error.\n\nYou CAN save a .pcx file to another file type like .tga though.|intro.modeleditor.rmbmenus.html#treeviewrmbmenus")
-                return mdlentities.CallManager("menu", sellist[0], self) + extra + [qmenu.sep , saveskinfile]
+                return [expand_subitems, qmenu.sep] + [saveskinfile, qmenu.sep] + mdlentities.CallManager("menu", sellist[0], self) + extra
+            elif sellist[0].type == ':bg' or sellist[0].type == ':bone':
+                import mdlhandles
+                BoneExtras = mdlhandles.BoneCenterHandle(origin,None,None).extrasmenu(self)
+                return [expand_subitems, qmenu.sep] + BoneExtras + [qmenu.sep] + mdlentities.CallManager("menu", sellist[0], self) + extra
             else:
-                return mdlentities.CallManager("menu", sellist[0], self) + extra
+                return [expand_subitems, qmenu.sep] + mdlentities.CallManager("menu", sellist[0], self) + extra
         elif len(sellist)>1:
             mc_count = 0
             for item in sellist:
@@ -496,8 +510,8 @@ class ModelEditor(BaseEditor):
                     import mdlcommands
                     mdlcommands.MatchFrameCount.state = qmenu.normal
                     mdlcommands.CheckC.state = qmenu.normal
-                    return [mdlcommands.MatchFrameCount, mdlcommands.CheckC, qmenu.sep] + mdlmenus.MultiSelMenu(sellist, self) + extra
-        return mdlmenus.MultiSelMenu(sellist, self) + extra
+                    return [expand_subitems, qmenu.sep] + [mdlcommands.MatchFrameCount, mdlcommands.CheckC, qmenu.sep] + mdlmenus.MultiSelMenu(sellist, self) + extra
+        return [expand_subitems, qmenu.sep] + mdlmenus.MultiSelMenu(sellist, self) + extra
 
 
     def expand_subitems(self, focus_item):
@@ -540,81 +554,131 @@ class ModelEditor(BaseEditor):
                 for item in BonesSellist:
                     if item.type == ':bone':
                         BonesSellist.remove(item)
-                selmatch = 0
-                for item in BonesSellist:
-                    if item.type == ':bg':
-                        if item == self.layout.explorer.sellist[0]:
-                            selmatch = 1
-                        BonesSellist.remove(item)
-                        break
-                if BonesSellist != []:
-                    if selmatch == 0:
-                        self.layout.explorer.sellist = self.layout.explorer.sellist + BonesSellist
+                skeletongroup = self.Root.dictitems['Skeleton:bg']  # get the bones group
+                bones = skeletongroup.findallsubitems("", ':bone')    # get all bones
+                from mdlmgr import check_use_weights
+                mdlmgr.check_use_weights = None
+                for bone in bones:
+                    if bone.dictspec.has_key("use_weights"):
+                        bone['use_weights'] = ""
+                for item in self.Root.dictitems:
+                    if self.Root.dictitems[item].type == ':mc' and self.Root.dictitems[item].dictspec.has_key("use_weights"):
+                        self.Root.dictitems[item]['use_weights'] = ""
+            if (len(self.layout.explorer.sellist) != 0 and self.layout.explorer.sellist[0].dictspec.has_key("use_weights")) or (len(self.layout.explorer.sellist) != 0 and self.layout.explorer.sellist[0].type == ':mf' and len(BonesSellist) != 0 and BonesSellist[0].dictspec.has_key("use_weights")):
+                listschanged = 0
+                if len(self.layout.explorer.sellist) == 1 and self.layout.explorer.sellist[0].type == ':mf':
+                    if not self.layout.explorer.sellist[0] in BonesSellist:
+                        for item in BonesSellist:
+                            if item.type == ':mf':
+                                BonesSellist.remove(item)
+                        BonesSellist = BonesSellist + [self.layout.explorer.sellist[0]]
+                        listschanged = 1
                     else:
-                        self.layout.explorer.sellist = BonesSellist
-            elif len(self.layout.explorer.sellist) == 1 and self.layout.explorer.sellist[0].type == ':bone':
-                for item in BonesSellist:
-                    if item.type == ':bg':
-                        BonesSellist.remove(item)
-                        break
-                selmatch = 0
-                for item in BonesSellist:
-                    if item.type == ':bone':
-                        if item == self.layout.explorer.sellist[0]:
-                            selmatch = 1
-                        BonesSellist.remove(item)
-                if BonesSellist != []:
-                    if selmatch == 0:
-                        self.layout.explorer.sellist = self.layout.explorer.sellist + BonesSellist
-                    else:
-                        self.layout.explorer.sellist = BonesSellist
-            testcount = 0
-            selection = []
-            if len(self.layout.explorer.sellist) != 0:
-                selection = self.layout.explorer.sellist
+                        for item in BonesSellist:
+                            if item.type == ':mf':
+                                BonesSellist.remove(item)
+                        listschanged = 1
+                else:
+                    for item in self.layout.explorer.sellist:
+                        if not item in BonesSellist:
+                            BonesSellist = BonesSellist + [item]
+                            listschanged = 1
+                if listschanged == 0:
+                    if len(self.layout.explorer.sellist) == 1 and len(BonesSellist) > 1:
+                        itemnr = 0
+                        while itemnr < len(BonesSellist):
+                            if BonesSellist[itemnr] in self.layout.explorer.sellist:
+                                BonesSellist.pop(itemnr)
+                                listschanged = 1
+                            else:
+                                itemnr = itemnr + 1
+                if listschanged == 1:
+                    self.layout.explorer.sellist = BonesSellist
+            else:
+                if len(self.layout.explorer.sellist) == 1 and self.layout.explorer.sellist[0].type == ':bg':
+                    for item in BonesSellist:
+                        if item.type == ':bone':
+                            BonesSellist.remove(item)
+                    selmatch = 0
+                    for item in BonesSellist:
+                        if item.type == ':bg':
+                            if item == self.layout.explorer.sellist[0]:
+                                selmatch = 1
+                            BonesSellist.remove(item)
+                            break
+                    if BonesSellist != []:
+                        if selmatch == 0:
+                            self.layout.explorer.sellist = self.layout.explorer.sellist + BonesSellist
+                        else:
+                            self.layout.explorer.sellist = BonesSellist
+                elif len(self.layout.explorer.sellist) == 1 and self.layout.explorer.sellist[0].type == ':bone':
+                    for item in BonesSellist:
+                        if item.type == ':bg':
+                            BonesSellist.remove(item)
+                            break
+                    selmatch = 0
+                    itemnr = 0
+                    while itemnr < len(BonesSellist):
+                        if len(BonesSellist) == 0 or (len(BonesSellist) == 1 and BonesSellist[0].type == ":mf"):
+                            break
+                        if BonesSellist[itemnr].type == ':bone':
+                            if BonesSellist[itemnr] == self.layout.explorer.sellist[0]:
+                                selmatch = 1
+                            BonesSellist.remove(BonesSellist[itemnr])
+                        else:
+                            itemnr = itemnr + 1
+                    if BonesSellist != []:
+                        if selmatch == 0:
+                            self.layout.explorer.sellist = self.layout.explorer.sellist + BonesSellist
+                        else:
+                            self.layout.explorer.sellist = BonesSellist
+                testcount = 0
+                selection = []
+                if len(self.layout.explorer.sellist) != 0:
+                    selection = self.layout.explorer.sellist
 
-            frames = 0
-            bonegroup = 0
-            bone = 0
-            for item in range(len(selection)):
-                if selection[item].type != ':mf' and selection[item].type != ':bg' and selection[item].type != ':bone':
-                    BonesSellist = []
-                    break
-                if selection[item].type == ':mf':
-                    frames = frames + 1
-                if selection[item].type == ':bg':
-                    bonegroup = bonegroup + 1
-                if selection[item].type == ':bone':
-                    bone = bone + 1
-                    testcount = testcount + 1
-                if item == len(selection)-1:
-                    if testcount > 1:
+                frames = 0
+                bonegroup = 0
+                bone = 0
+                for item in range(len(selection)):
+                    if selection[item].type != ':mf' and selection[item].type != ':bg' and selection[item].type != ':bone':
                         BonesSellist = []
                         break
-                    if bonegroup != 0:
-                        BonesSellist = selection
-                        break
-                    if bone != 0:
-                        BonesSellist = selection
-                        break
-                    if frames != 0:
-                        nobones = 0
-                        for thing in BonesSellist:
-                            if thing.type == ':bg':
-                                self.layout.explorer.sellist = self.layout.explorer.sellist + [thing]
-                                BonesSellist = self.layout.explorer.sellist
-                                nobones = 1
-                                
-                            if thing.type == ':bone':
-                                self.layout.explorer.sellist = selection + [thing]
-                                BonesSellist = self.layout.explorer.sellist
-                                nobones = 1
-                                break
-                        if nobones == 0:
-                            if len(self.layout.explorer.sellist) != 0:
-                                BonesSellist = self.layout.explorer.sellist
-                            else:
-                                BonesSellist = selection
+                    if selection[item].type == ':mf':
+                        frames = frames + 1
+                    if selection[item].type == ':bg':
+                        bonegroup = bonegroup + 1
+                    if selection[item].type == ':bone':
+                        bone = bone + 1
+                        testcount = testcount + 1
+                    if item == len(selection)-1:
+                        if testcount > 1:
+                            BonesSellist = []
+                            break
+                        if bonegroup != 0:
+                            BonesSellist = selection
+                            break
+                        if bone != 0: # selection[0].dictspec.has_key("use_weights")
+                            BonesSellist = selection
+                            break
+                        if frames != 0:
+                            nobones = 0
+                            for thing in BonesSellist:
+                                if thing.type == ':bg':
+                                    self.layout.explorer.sellist = self.layout.explorer.sellist + [thing]
+                                    BonesSellist = self.layout.explorer.sellist
+                                    nobones = 1
+                                    
+                                if thing.type == ':bone':
+                                    self.layout.explorer.sellist = selection + [thing]
+                                    BonesSellist = self.layout.explorer.sellist
+                                    nobones = 1
+                                    break
+                            if nobones == 0:
+                                if len(self.layout.explorer.sellist) != 0:
+                                    BonesSellist = self.layout.explorer.sellist
+                                else:
+                                    BonesSellist = selection
         if skipbuild == 1:
             pass
         else:
@@ -1287,10 +1351,8 @@ def commonhandles(self, redraw=1):
             if isinstance(self.dragobject, qhandles.ScrollViewDragObject):
                     self.dragobject = None
             if isinstance(self.dragobject, qhandles.FreeZoomDragObject):
-                if mdlmgr.treeviewselchanged == 1:
-                    self.dragobject = None
-                else:
-                    return
+                self.dragobject = None
+                return
 
         if flagsmouse == 16384:
             if self.dragobject is None:
@@ -1657,6 +1719,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.123  2009/05/03 07:25:20  cdunde
+#Added tree-view RMB menu item to expand all sub-items of the clicked item for quick access to them.
+#
 #Revision 1.122  2009/04/28 21:30:56  cdunde
 #Model Editor Bone Rebuild merge to HEAD.
 #Complete change of bone system.

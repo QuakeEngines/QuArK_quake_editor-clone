@@ -848,10 +848,38 @@ class VertexHandle(qhandles.GenericHandle):
         p = view.proj(self.pos)
         if p.visible:
             if editor.ModelComponentList.has_key(editor.Root.currentcomponent.name):
+                from mdlentities import vtxpaint
                 # Here "color" is just a dummy item to pass the vertex's
                 # color to so we can use the MapColor function to set the cv.pencolor correctly.
-                if quarkx.setupsubset(3, "Options")['ShowVertexColor'] is not None and editor.ModelComponentList[editor.Root.currentcomponent.name].has_key('colorvtxlist') and editor.ModelComponentList[editor.Root.currentcomponent.name]['colorvtxlist'].has_key(self.index) and editor.ModelComponentList[editor.Root.currentcomponent.name]['colorvtxlist'][self.index].has_key('vtx_color'):
+                if editor.Root.currentcomponent.dictspec.has_key("show_vtx_color") and editor.ModelComponentList[editor.Root.currentcomponent.name].has_key('colorvtxlist') and editor.ModelComponentList[editor.Root.currentcomponent.name]['colorvtxlist'].has_key(self.index) and editor.ModelComponentList[editor.Root.currentcomponent.name]['colorvtxlist'][self.index].has_key('vtx_color'):
                     color = editor.ModelComponentList[editor.Root.currentcomponent.name]['colorvtxlist'][self.index]['vtx_color']
+                    quarkx.setupsubset(SS_MODEL, "Colors")["color"] = color
+                    cv.pencolor = cv.brushcolor = MapColor("color", SS_MODEL)
+                    cv.brushstyle = BS_SOLID
+                    if MdlOption("Ticks") == "1":
+                        cv.ellipse(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
+                    else:
+                        cv.ellipse(int(p.x)-2, int(p.y)-2, int(p.x)+2, int(p.y)+2)
+                elif vtxpaint == 0 and quarkx.setupsubset(3, "Options")['VertexPaintMode'] is not None and quarkx.setupsubset(3, "Options")['VertexPaintMode'] == "1" and (flagsmouse == 552 or flagsmouse == 1064 or flagsmouse == 2088) and self == draghandle:
+                    for item in editor.layout.explorer.sellist:
+                        if item.type == ":bone":
+                            if item.dictspec.has_key(item.shortname + "_weight_color"):
+                                color = item.dictspec[item.shortname + "_weight_color"]
+                                break
+                    quarkx.setupsubset(SS_MODEL, "Colors")["color"] = color
+                    cv.pencolor = cv.brushcolor = MapColor("color", SS_MODEL)
+                    cv.brushstyle = BS_SOLID
+                    if MdlOption("Ticks") == "1":
+                        cv.ellipse(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
+                    else:
+                        cv.ellipse(int(p.x)-2, int(p.y)-2, int(p.x)+2, int(p.y)+2)
+                    update_weightvtxlist(editor, self.index) # Updates the ModelComponentList weightvtxlist HERE.
+                elif editor.Root.currentcomponent.dictspec.has_key("show_weight_color") and editor.ModelComponentList[editor.Root.currentcomponent.name].has_key('weightvtxlist') and editor.ModelComponentList[editor.Root.currentcomponent.name]['weightvtxlist'].has_key(self.index):
+                    if len(editor.layout.explorer.sellist) != 0 and editor.layout.explorer.sellist[0].type == ":bone" and editor.ModelComponentList[editor.Root.currentcomponent.name]['weightvtxlist'][self.index].has_key(editor.layout.explorer.sellist[0].name):
+                        color = editor.ModelComponentList[editor.Root.currentcomponent.name]['weightvtxlist'][self.index][editor.layout.explorer.sellist[0].name]['color']
+                    else:
+                        bones = editor.ModelComponentList[editor.Root.currentcomponent.name]['weightvtxlist'][self.index].keys()
+                        color = editor.ModelComponentList[editor.Root.currentcomponent.name]['weightvtxlist'][self.index][bones[0]]['color']
                     quarkx.setupsubset(SS_MODEL, "Colors")["color"] = color
                     cv.pencolor = cv.brushcolor = MapColor("color", SS_MODEL)
                     cv.brushstyle = BS_SOLID
@@ -908,13 +936,35 @@ class VertexHandle(qhandles.GenericHandle):
             editor = mdleditor.mdleditor
             if editor is not None:
                 if editor.ModelVertexSelList != []:
-                    cv.brushcolor = vertexsellistcolor
-                    for item in editor.ModelVertexSelList:
-                        if self.index == item[0] and item == editor.ModelVertexSelList[0]:
-                            cv.brushcolor = drag3Dlines
-                            cv.rectangle(int(p.x)-4, int(p.y)-4, int(p.x)+4, int(p.y)+4)
-                        elif self.index == item[0]:
-                            cv.rectangle(int(p.x)-4, int(p.y)-4, int(p.x)+4, int(p.y)+4)
+                    if quarkx.setupsubset(3, "Options")['VertexPaintMode'] is not None and quarkx.setupsubset(3, "Options")['VertexPaintMode'] == "1":
+                        cv.brushcolor = vertexsellistcolor
+        #                selsize = int(quarkx.setupsubset(SS_MODEL,"Building")['LinearSelected'][0])
+                        for item in editor.ModelVertexSelList:
+                            if self.index == item[0]:
+                                color = None
+                                for sel in editor.layout.explorer.sellist:
+                                    if sel.type == ":bone":
+                                        if sel.dictspec.has_key(sel.shortname + "_weight_color"):
+                                            color = sel.dictspec[sel.shortname + "_weight_color"]
+                                            break
+                                if color is not None:
+                                    quarkx.setupsubset(SS_MODEL, "Colors")["color"] = color
+                                    cv.pencolor = cv.brushcolor = MapColor("color", SS_MODEL)
+                                cv.brushstyle = BS_SOLID
+                                if MdlOption("Ticks") == "1":
+                                    cv.ellipse(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
+                                else:
+                                    cv.ellipse(int(p.x)-2, int(p.y)-2, int(p.x)+2, int(p.y)+2)
+                                update_weightvtxlist(editor, item[0]) # Updates the ModelComponentList weightvtxlist HERE.
+                    else:
+                        cv.brushcolor = vertexsellistcolor
+                        selsize = int(quarkx.setupsubset(SS_MODEL,"Building")['LinearSelected'][0])
+                        for item in editor.ModelVertexSelList:
+                            if self.index == item[0] and item == editor.ModelVertexSelList[0]:
+                                cv.brushcolor = drag3Dlines
+                                cv.rectangle(int(p.x)-selsize, int(p.y)-selsize, int(p.x)+selsize, int(p.y)+selsize)
+                            elif self.index == item[0]:
+                                cv.rectangle(int(p.x)-selsize, int(p.y)-selsize, int(p.x)+selsize, int(p.y)+selsize)
 
 
   #  For setting stuff up at the beginning of a drag
@@ -1463,7 +1513,7 @@ class SkinHandle(qhandles.GenericHandle):
 
         ### shows the true vertex position in relation to each tile section of the texture.
         if MapOption("HandleHints", SS_MODEL):
-            self.hint = "      Skin tri \\ vertex " + quarkx.ftos(self.tri_index) + " \\ " + quarkx.ftos(self.ver_index)
+            self.hint = "      Skin tri \\ vertex " + quarkx.ftos(self.tri_index) + " \\ " + quarkx.ftos((self.tri_index*3) + self.ver_index)
 
         p = view.proj(self.pos)
         if p.visible:
@@ -1493,15 +1543,16 @@ class SkinHandle(qhandles.GenericHandle):
                 if editor is not None:
                     if editor.SkinVertexSelList != []:
                         itemcount = len(editor.SkinVertexSelList)
+                        selsize = int(quarkx.setupsubset(SS_MODEL,"Building")['SkinLinearSelected'][0])
                         for item in editor.SkinVertexSelList:
                             if (self.tri_index == item[2] and self.ver_index == item[3] and itemcount == len(editor.SkinVertexSelList)):
                                 cv.brushcolor = skinviewdraglines
-                                cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
+                                cv.rectangle(int(p.x)-selsize, int(p.y)-selsize, int(p.x)+selsize, int(p.y)+selsize)
                             else:
                                 if len(editor.SkinVertexSelList) > 1 and itemcount != 0:
                                     if (self.tri_index == item[2] and self.ver_index == item[3]):
                                         cv.brushcolor = skinvertexsellistcolor
-                                        cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
+                                        cv.rectangle(int(p.x)-selsize, int(p.y)-selsize, int(p.x)+selsize, int(p.y)+selsize)
                                     itemcount = itemcount - 1
             except:
                 pass
@@ -1922,11 +1973,14 @@ def BuildCommonHandles(editor, explorer, option=1):
                         h = mdlentities.CallManager("handlesopt", compairframe, editor) + h
                     break
             if option == 2: # Makes the vertex linear handle, if any, and adds before any bone handles.
-                box = quarkx.boundingboxof(vtxlist)
-                if len(box) != 2:
-                    editor.ModelVertexSelList = []
-                else:
-                    h = vh + ModelEditorLinHandlesManager(MapColor("LinearHandleCircle", SS_MODEL), box, vtxlist).BuildHandles() + bh
+                try: # Need to do it in a try statement in case the component's current frame has no vertexes to avoid an error.
+                    box = quarkx.boundingboxof(vtxlist)
+                    if len(box) != 2:
+                        editor.ModelVertexSelList = []
+                    else:
+                        h = vh + ModelEditorLinHandlesManager(MapColor("LinearHandleCircle", SS_MODEL), box, vtxlist).BuildHandles() + bh
+                except:
+                    pass
             
     try:
         return qhandles.FilterHandles(h, SS_MODEL)
@@ -2014,11 +2068,14 @@ def BuildHandles(editor, explorer, view, option=1):
                         h = mdlentities.CallManager("handlesopt", compairframe, editor) + h
                     break
             if option == 2: # Makes the vertex linear handle, if any, and adds before any bone handles.
-                box = quarkx.boundingboxof(vtxlist)
-                if len(box) != 2:
-                    editor.ModelVertexSelList = []
-                else:
-                    h = vh + ModelEditorLinHandlesManager(MapColor("LinearHandleCircle", SS_MODEL), box, vtxlist, view).BuildHandles() + bh
+                try: # Need to do it in a try statement in case the component's current frame has no vertexes to avoid an error.
+                    box = quarkx.boundingboxof(vtxlist)
+                    if len(box) != 2:
+                        editor.ModelVertexSelList = []
+                    else:
+                        h = vh + ModelEditorLinHandlesManager(MapColor("LinearHandleCircle", SS_MODEL), box, vtxlist, view).BuildHandles() + bh
+                except:
+                    pass
     #
     # The 3D view "eyes".
     #
@@ -2069,6 +2126,8 @@ class RectSelDragObject(qhandles.RectangleDragObject):
                 return
             else:
                 if editor.layout.explorer.sellist[0].type == ":mf":
+                    pass
+                elif quarkx.setupsubset(3, "Options")['VertexPaintMode'] is not None and editor.layout.explorer.sellist[0].type == ":bone" and editor.layout.explorer.sellist[len(editor.layout.explorer.sellist)-1].type == ":mf":
                     pass
                 elif (len(editor.layout.explorer.sellist) == 2) and (editor.layout.explorer.sellist[0].type == ":bg" or editor.layout.explorer.sellist[0].type == ":bone") and (editor.layout.explorer.sellist[1].type == ":mf"):
                     pass
@@ -2349,6 +2408,20 @@ class RectSelDragObject(qhandles.RectangleDragObject):
                             v.handles = []
                         elif v.info["viewname"] == "3Dwindow" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] == "1":
                             v.handles = []
+
+            from qbaseeditor import flagsmouse
+            if flagsmouse == 2056 and quarkx.setupsubset(3, "Options")['VertexPaintMode'] is not None and len(editor.layout.explorer.sellist) != 0 and editor.layout.explorer.sellist[0].type == ":bone":
+                # This section calls to save the vertex weights to the undo list if set to do so.
+                if editor.Root.currentcomponent.dictspec.has_key("apply_vtx_weights"):
+                    mdlentities.macro_applychanges(None)
+                # This section updates the the "Vertex Weights Dialog" if it is opened.
+                formlist = quarkx.forms(1)
+                for f in formlist:
+                    try:
+                        if f.caption == "Vertex Weights Dialog":
+                            mdlentities.macro_updatedialog(None)
+                    except:
+                        pass
 
         ### This section test to see if there are only 3 vertexes selected.
         ### If so, then it sorts them for proper order based on if the face
@@ -3233,7 +3306,7 @@ class LinSideHandle(LinearHandle): # for LinSideHandle
             cv.reset()
             cv.brushcolor = MapColor("LinearHandleSides", SS_MODEL)
             cv.pencolor = MapColor("LinearHandleOutline", SS_MODEL)
-            cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+4, int(p.y)+4)
+            cv.ellipse(int(p.x)-5, int(p.y)-3, int(p.x)+5, int(p.y)+3)
 
     def buildmatrix(self, delta, g1, view): # for LinSideHandle
 
@@ -3626,6 +3699,45 @@ class BoneCenterHandle(BoneHandle):
         else:
             self.component = bone.dictspec['component']
         self.dict = {}
+
+
+    def extrasmenu(self, editor, bone=None, view=None):
+        "This is the Bone's extras menu for items that can be placed on other menus."
+
+        def StructureBones(m, editor=editor, bone=bone):
+            bones = editor.Root.findallsubitems("", ':bone')  # get all bones
+            parentbones = bones
+            undo = quarkx.action()
+            undo_msg = "structured bones"
+            for parent in parentbones:
+                for bone in bones:
+                    if bone.dictspec['parent_name'] != "None":
+                        if parent.name == bone.dictspec['parent_name']:
+                            undo.move(bone, parent)
+            editor.ok(undo, undo_msg)
+            editor.layout.explorer.invalidate()
+
+        def ExtractBones(m, editor=editor, bone=bone):
+            bones = editor.Root.findallsubitems("", ':bone')  # get all bones
+            skeletongroup = editor.Root.dictitems['Skeleton:bg']
+            undo = quarkx.action()
+            undo_msg = "extracted bones"
+            for bone in bones:
+                undo.move(bone, skeletongroup)
+            editor.ok(undo, undo_msg)
+            editor.layout.explorer.invalidate()
+
+        structure_bones = qmenu.item("Structure Bones", StructureBones, "|Structure Bones:\n\nWhen clicked this function will place all bones\ninside their 'parent' bones in the 'tree-view'.|intro.modeleditor.editelements.html#specificsettings")
+        extract_bones = qmenu.item("Extract Bones", ExtractBones, "|Extract Bones:\n\nWhen clicked this function will move all bones\noutside of their 'parent' bones in the 'tree-view'.|intro.modeleditor.editelements.html#specificsettings")
+
+        bones = editor.Root.findallsubitems("", ':bone')  # get all bones
+        if len(bones) == 0:
+            structure_bones.state = qmenu.disabled
+            extract_bones.state = qmenu.disabled
+
+        menulist = [structure_bones, extract_bones]
+        return menulist
+
 
     def menu(self, editor, view): # for BoneCenterHandle
 
@@ -4103,6 +4215,7 @@ class BoneCenterHandle(BoneHandle):
         SelectHandleVertexes.state = qmenu.disabled
         SelectHandlePosVertexes = qmenu.item("Select Handle &Position Vertexes", select_handle_pos_vertexes_click, "|Select (bone handle name) handle position Vertexes:\n\nWhen the cursor is over a bone's Center handle with vertexes assigned to it, click this item to select the vertexes used to set that bone's handle position.\n\nOr, if another handle is attached that has the vertexes assigned to it instead, then those are the position vertexes for that handle that will be selected.\n\nIf no vertexes have been assigned to any handle at that location, then the menu item will show disabled.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
         SelectHandlePosVertexes.state = qmenu.disabled
+        BoneExtras = self.extrasmenu(editor)
         try:
             if (len(self.bone.vtxlist) != 0) and (len(editor.ModelVertexSelList) != 0) and (editor.Root.currentcomponent.name in self.bone.vtxlist.keys()):
                 SetHandlePosition.state = qmenu.normal
@@ -4180,7 +4293,7 @@ class BoneCenterHandle(BoneHandle):
         if not MdlOption("GridActive") or editor.gridstep <= 0:
             Forcetogrid.state = qmenu.disabled
 
-        menu = [AddBone, ContinueBones, qmenu.sep, AttachBone1to2, AttachBone2to1, qmenu.sep, DetachBones, qmenu.sep, AlignBone1to2, AlignBone2to1, qmenu.sep, AssignReleaseVertices, qmenu.sep, SetHandlePosition, qmenu.sep] + sel_vtx_list + [qmenu.sep, individual_bones_sel] + [qmenu.sep, handlescalepop, qmenu.sep, KeyframesRotation, qmenu.sep, SB1, HB1, qmenu.sep, Forcetogrid]
+        menu = [AddBone, ContinueBones, qmenu.sep, AttachBone1to2, AttachBone2to1, qmenu.sep, DetachBones, qmenu.sep, AlignBone1to2, AlignBone2to1, qmenu.sep, AssignReleaseVertices, qmenu.sep, SetHandlePosition, qmenu.sep] + sel_vtx_list + [qmenu.sep, individual_bones_sel] + [qmenu.sep, handlescalepop, qmenu.sep, KeyframesRotation, qmenu.sep, SB1, HB1, qmenu.sep] + BoneExtras + [qmenu.sep, Forcetogrid]
 
         return menu
 
@@ -4429,7 +4542,10 @@ class BoneCornerHandle(BoneHandle):
             cv.pencolor = MapColor("LinearHandleOutline", SS_MODEL)
             p2 = view.proj(self.center)
             cv.line(p2, p)
-            handle_color = self.bone.getint('_color')
+            if self.bone.getint('_color') == MapColor("BoneHandles", SS_MODEL):
+                handle_color = MapColor("LinearHandleCorners", SS_MODEL)
+            else:
+                handle_color = self.bone.getint('_color')
             cv.brushcolor = handle_color
             cv.brushstyle = BS_SOLID
             cv.ellipse(int(p.x)-5, int(p.y)-3, int(p.x)+5, int(p.y)+3)
@@ -4766,6 +4882,10 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.175  2009/05/03 20:49:57  cdunde
+#Moved menu item for individual bone handle selection and
+#stopped all vertexes from being drawn and assigned bone movement if component is hidden.
+#
 #Revision 1.174  2009/05/01 06:07:03  cdunde
 #Moved bones undo function to mdlutils.py for generic use elsewhere.
 #Added bone handle scaling functions and selection option.

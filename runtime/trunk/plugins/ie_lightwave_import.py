@@ -2618,7 +2618,7 @@ def dataformname(o):
     vtxweightsbtn = quarkpy.qtoolbar.button(quarkpy.mdlentities.UseVertexWeights, "Open or Update\nVertex Weights Dialog||When clicked, this button opens the dialog to allow the 'weight' movement setting of single vertexes that have been assigned to more then one bone handle.\n\nClick the InfoBase button or press F1 again for more detail.|intro.modeleditor.dataforms.html#specsargsview", ico_mdlskv, 5)
     vtxweightsbtn.state = quarkpy.qtoolbar.normal
     vtxweightsbtn.caption = "" # Texts shows next to button and keeps the width of this button so it doesn't change.
-    icon_btns['vtxUVcolor'] = vtxweightsbtn   # Put our button in the above list to return.
+    icon_btns['vtxweights'] = vtxweightsbtn   # Put our button in the above list to return.
 
     if (editor.Root.currentcomponent.currentskin is not None) and (o.name == editor.Root.currentcomponent.currentskin.name): # If this is not done it will cause looping through multiple times.
         if o.parent.parent.dictspec.has_key("shader_keyword") and o.dictspec.has_key("shader_keyword"):
@@ -2629,13 +2629,6 @@ def dataformname(o):
     while (DummyItem.type != ":mc"): # Gets the object's model component.
         DummyItem = DummyItem.parent
     o = DummyItem
-
-    if not o.dictspec.has_key('show_vtx_color') and quarkx.setupsubset(SS_MODEL, "Options")['ShowVertexColor'] is not None:
-        quarkx.setupsubset(SS_MODEL, "Options")['ShowVertexColor'] = None
-        quarkpy.mdlutils.Update_Editor_Views(editor)
-    if o.dictspec.has_key('show_vtx_color') and quarkx.setupsubset(SS_MODEL, "Options")['ShowVertexColor'] is None:
-        quarkx.setupsubset(SS_MODEL, "Options")['ShowVertexColor'] = o.dictspec['show_vtx_color']
-        quarkpy.mdlutils.Update_Editor_Views(editor)
 
     if o.type == ":mc": # Just makes sure what we have is a model component.
         formobj = quarkx.newobj("lwo_mc:form")
@@ -2687,6 +2680,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.30  2009/05/01 20:39:34  cdunde
+# Moved additional Specific page systems to mdlentities.py as modules.
+#
 # Revision 1.29  2009/04/28 21:30:56  cdunde
 # Model Editor Bone Rebuild merge to HEAD.
 # Complete change of bone system.

@@ -74,6 +74,7 @@ def runexporter(m):
 def BuildMenuBar(editor):
     import mdlmgr
     import mdlcommands
+    import mdlsearch
     import mdltoolbars
     import mdloptions
 
@@ -140,6 +141,9 @@ def BuildMenuBar(editor):
         Edit1.items = Edit1.items + [qmenu.sep] + l1
     sc1.update(MdlEditMenuShortcuts)   # merge shortcuts
 
+    Search1, sc2 = mdlsearch.SearchMenu()
+    sc1.update(sc2)   # merge shortcuts
+
     Commands1, sc2 = mdlcommands.CommandsMenu()
     sc1.update(sc2)   # merge shortcuts
 
@@ -156,7 +160,7 @@ def BuildMenuBar(editor):
         Options1.items = l1 + l2 + l3 + l4 + Options1.items
         sc1.update(sc2)   # merge shortcuts
 
-    return [File1, Layout1, Edit1, quarkx.toolboxmenu, Commands1, Tools1, Options1], sc1
+    return [File1, Layout1, Edit1, quarkx.toolboxmenu, Search1, Commands1, Tools1, Options1], sc1
 
 
 
@@ -165,10 +169,12 @@ def MdlBackgroundMenu(editor, view=None, origin=None):
     "editor views or Skin-view or on something or nothing in the tree-view."
 
     import mdlhandles
+    import mdlsearch
     import mdlcommands
     import mdloptions
 
     File1, sc1 = qmenu.DefaultFileMenu()
+    Search1, sc2 = mdlsearch.SearchMenu()
     Commands1, sc2 = mdlcommands.CommandsMenu()
     sc1.update(sc2)   # merge shortcuts
     BoneOptions, FaceSelOptions, VertexSelOptions = mdloptions.OptionsMenuRMB()
@@ -216,9 +222,9 @@ def MdlBackgroundMenu(editor, view=None, origin=None):
                 qbackbmp.MdlBackBmpDlg(form, view)
             backbmp1 = qmenu.item("Background image...", backbmp1click, "|Background image:\n\nWhen selected, this will open a dialog box where you can choose a .bmp image file to place and display in the 2D view that the cursor was in when the RMB was clicked.\n\nClick on the 'InfoBase' button below for full detailed information about its functions and settings.|intro.mapeditor.rmb_menus.noselectionmenu.html#background")
             if editor.ModelFaceSelList != []:
-                extra = extra + [qmenu.sep, bonepop, mdlfacepop, vertexpop, Commands1, qmenu.sep, BoneOptions, FaceSelOptions, VertexSelOptions, qmenu.sep] + TexModeMenu(editor, view) + [qmenu.sep, backbmp1]
+                extra = extra + [qmenu.sep, bonepop, mdlfacepop, vertexpop, Search1, Commands1, qmenu.sep, BoneOptions, FaceSelOptions, VertexSelOptions, qmenu.sep] + TexModeMenu(editor, view) + [qmenu.sep, backbmp1]
             else:
-                extra = extra + [qmenu.sep, bonepop, vertexpop, Commands1, qmenu.sep, BoneOptions, FaceSelOptions, VertexSelOptions, qmenu.sep] + TexModeMenu(editor, view) + [qmenu.sep, backbmp1]
+                extra = extra + [qmenu.sep, bonepop, vertexpop, Search1, Commands1, qmenu.sep, BoneOptions, FaceSelOptions, VertexSelOptions, qmenu.sep] + TexModeMenu(editor, view) + [qmenu.sep, backbmp1]
         else:
             def resetSkinview(menu, editor=editor, view=view):
                 viewWidth, viewHeight = view.clientarea
@@ -295,12 +301,16 @@ def BaseMenu(sellist, editor):
     Delete1 = qmenu.item("&Delete", editor.editcmdclick)
     Delete1.cmd = "del"
 
-    return [Force1, qmenu.sep, Duplicate1, qmenu.sep, Cut1, Copy1, paste1, qmenu.sep, Delete1]
+  #  return [Force1, qmenu.sep, Duplicate1, qmenu.sep, Cut1, Copy1, paste1, qmenu.sep, Delete1]
+    return [Duplicate1, qmenu.sep, Cut1, Copy1, paste1, qmenu.sep, Delete1]
 
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.41  2009/05/03 08:06:06  cdunde
+#Edit menu, moved Duplicate and separated Delete from other items.
+#
 #Revision 1.40  2009/04/28 21:30:56  cdunde
 #Model Editor Bone Rebuild merge to HEAD.
 #Complete change of bone system.

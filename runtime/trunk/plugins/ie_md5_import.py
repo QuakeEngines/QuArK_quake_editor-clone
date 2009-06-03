@@ -26,10 +26,12 @@ Info = {
 # Importing modules
 ######################################################
 
-
+# Python specific modules import.
 import sys, struct, os
 from types import *
 import quarkx
+import quarkpy.qutils
+import quarkpy.qhandles
 import quarkpy.mdleditor
 import quarkpy.mdlhandles
 import quarkpy.mdlutils
@@ -41,21 +43,18 @@ from math import *
 from quarkpy.qdictionnary import Strings
 from quarkpy.qeditor import MapColor # Strictly needed for QuArK bones MapColor call.
 
-# HACK -- it seems that some Blender versions don't define sys.argv,
-# which may crash Python if a warning occurs.
-if not hasattr(sys, "argv"): sys.argv = ["???"]
-
-# Globals for QuArK
+# Globals
+SS_MODEL = 3
 md5_mesh_path = None
 md5_anim_path = None
 md5_model = None
+md5_bones = None
 md5_model_comps = []
 logging = 0
 importername = "ie_md5_import.py"
 textlog = "md5_ie_log.txt"
 editor = None
 progressbar = None
-scale = 1.0 # Blender uses a slide to set this scale, word search for uses.
 
 
 
@@ -64,209 +63,228 @@ scale = 1.0 # Blender uses a slide to set this scale, word search for uses.
 # Jiba's blender2cal3d script
 ######################################################
 
-
 def quaternion2matrix(q):
-  xx = q[0] * q[0]
-  yy = q[1] * q[1]
-  zz = q[2] * q[2]
-  xy = q[0] * q[1]
-  xz = q[0] * q[2]
-  yz = q[1] * q[2]
-  wx = q[3] * q[0]
-  wy = q[3] * q[1]
-  wz = q[3] * q[2]
-  return [[1.0 - 2.0 * (yy + zz),       2.0 * (xy + wz),       2.0 * (xz - wy), 0.0],
-          [      2.0 * (xy - wz), 1.0 - 2.0 * (xx + zz),       2.0 * (yz + wx), 0.0],
-          [      2.0 * (xz + wy),       2.0 * (yz - wx), 1.0 - 2.0 * (xx + yy), 0.0],
-          [0.0                  , 0.0                  , 0.0                  , 1.0]]
+    xx = q[0] * q[0]
+    yy = q[1] * q[1]
+    zz = q[2] * q[2]
+    xy = q[0] * q[1]
+    xz = q[0] * q[2]
+    yz = q[1] * q[2]
+    wx = q[3] * q[0]
+    wy = q[3] * q[1]
+    wz = q[3] * q[2]
+    return [[1.0 - 2.0 * (yy + zz),       2.0 * (xy + wz),       2.0 * (xz - wy), 0.0],
+            [      2.0 * (xy - wz), 1.0 - 2.0 * (xx + zz),       2.0 * (yz + wx), 0.0],
+            [      2.0 * (xz + wy),       2.0 * (yz - wx), 1.0 - 2.0 * (xx + yy), 0.0],
+            [0.0                  , 0.0                  , 0.0                  , 1.0]]
 
 def matrix2quaternion(m):
-  s = math.sqrt(abs(m[0][0] + m[1][1] + m[2][2] + m[3][3]))
-  if s == 0.0:
-    x = abs(m[2][1] - m[1][2])
-    y = abs(m[0][2] - m[2][0])
-    z = abs(m[1][0] - m[0][1])
-    if   (x >= y) and (x >= z): return 1.0, 0.0, 0.0, 0.0
-    elif (y >= x) and (y >= z): return 0.0, 1.0, 0.0, 0.0
-    else:                       return 0.0, 0.0, 1.0, 0.0
-  return quaternion_normalize([
-    -(m[2][1] - m[1][2]) / (2.0 * s),
-    -(m[0][2] - m[2][0]) / (2.0 * s),
-    -(m[1][0] - m[0][1]) / (2.0 * s),
-    0.5 * s,
-    ])
+    s = math.sqrt(abs(m[0][0] + m[1][1] + m[2][2] + m[3][3]))
+    if s == 0.0:
+        x = abs(m[2][1] - m[1][2])
+        y = abs(m[0][2] - m[2][0])
+        z = abs(m[1][0] - m[0][1])
+        if   (x >= y) and (x >= z):
+            return 1.0, 0.0, 0.0, 0.0
+        elif (y >= x) and (y >= z):
+            return 0.0, 1.0, 0.0, 0.0
+        else:
+            return 0.0, 0.0, 1.0, 0.0
+    return quaternion_normalize([
+        -(m[2][1] - m[1][2]) / (2.0 * s),
+        -(m[0][2] - m[2][0]) / (2.0 * s),
+        -(m[1][0] - m[0][1]) / (2.0 * s),
+        0.5 * s,
+        ])
 
 def quaternion_normalize(q):
-  l = math.sqrt(q[0] * q[0] + q[1] * q[1] + q[2] * q[2] + q[3] * q[3])
-  return q[0] / l, q[1] / l, q[2] / l, q[3] / l
+    l = math.sqrt(q[0] * q[0] + q[1] * q[1] + q[2] * q[2] + q[3] * q[3])
+    return q[0] / l, q[1] / l, q[2] / l, q[3] / l
 
 def quaternion_multiply(q1, q2):
-  r = [
-    q2[3] * q1[0] + q2[0] * q1[3] + q2[1] * q1[2] - q2[2] * q1[1],
-    q2[3] * q1[1] + q2[1] * q1[3] + q2[2] * q1[0] - q2[0] * q1[2],
-    q2[3] * q1[2] + q2[2] * q1[3] + q2[0] * q1[1] - q2[1] * q1[0],
-    q2[3] * q1[3] - q2[0] * q1[0] - q2[1] * q1[1] - q2[2] * q1[2],
-    ]
-  d = math.sqrt(r[0] * r[0] + r[1] * r[1] + r[2] * r[2] + r[3] * r[3])
-  r[0] /= d
-  r[1] /= d
-  r[2] /= d
-  r[3] /= d
-  return r
+    r = [
+            q2[3] * q1[0] + q2[0] * q1[3] + q2[1] * q1[2] - q2[2] * q1[1],
+            q2[3] * q1[1] + q2[1] * q1[3] + q2[2] * q1[0] - q2[0] * q1[2],
+            q2[3] * q1[2] + q2[2] * q1[3] + q2[0] * q1[1] - q2[1] * q1[0],
+            q2[3] * q1[3] - q2[0] * q1[0] - q2[1] * q1[1] - q2[2] * q1[2],
+        ]
+    d = math.sqrt(r[0] * r[0] + r[1] * r[1] + r[2] * r[2] + r[3] * r[3])
+    r[0] /= d
+    r[1] /= d
+    r[2] /= d
+    r[3] /= d
+    return r
 
 def matrix_translate(m, v):
-  m[3][0] += v[0]
-  m[3][1] += v[1]
-  m[3][2] += v[2]
-  return m
+    v = v.tuple
+    m[3][0] += v[0]
+    m[3][1] += v[1]
+    m[3][2] += v[2]
+    return m
 
 def matrix_multiply(b, a):
-  return [ [
-    a[0][0] * b[0][0] + a[0][1] * b[1][0] + a[0][2] * b[2][0],
-    a[0][0] * b[0][1] + a[0][1] * b[1][1] + a[0][2] * b[2][1],
-    a[0][0] * b[0][2] + a[0][1] * b[1][2] + a[0][2] * b[2][2],
-    0.0,
-    ], [
-    a[1][0] * b[0][0] + a[1][1] * b[1][0] + a[1][2] * b[2][0],
-    a[1][0] * b[0][1] + a[1][1] * b[1][1] + a[1][2] * b[2][1],
-    a[1][0] * b[0][2] + a[1][1] * b[1][2] + a[1][2] * b[2][2],
-    0.0,
-    ], [
-    a[2][0] * b[0][0] + a[2][1] * b[1][0] + a[2][2] * b[2][0],
-    a[2][0] * b[0][1] + a[2][1] * b[1][1] + a[2][2] * b[2][1],
-    a[2][0] * b[0][2] + a[2][1] * b[1][2] + a[2][2] * b[2][2],
-     0.0,
-    ], [
-    a[3][0] * b[0][0] + a[3][1] * b[1][0] + a[3][2] * b[2][0] + b[3][0],
-    a[3][0] * b[0][1] + a[3][1] * b[1][1] + a[3][2] * b[2][1] + b[3][1],
-    a[3][0] * b[0][2] + a[3][1] * b[1][2] + a[3][2] * b[2][2] + b[3][2],
-    1.0,
-    ] ]
+    return [ [
+        a[0][0] * b[0][0] + a[0][1] * b[1][0] + a[0][2] * b[2][0],
+        a[0][0] * b[0][1] + a[0][1] * b[1][1] + a[0][2] * b[2][1],
+        a[0][0] * b[0][2] + a[0][1] * b[1][2] + a[0][2] * b[2][2],
+        0.0,
+        ], [
+        a[1][0] * b[0][0] + a[1][1] * b[1][0] + a[1][2] * b[2][0],
+        a[1][0] * b[0][1] + a[1][1] * b[1][1] + a[1][2] * b[2][1],
+        a[1][0] * b[0][2] + a[1][1] * b[1][2] + a[1][2] * b[2][2],
+        0.0,
+        ], [
+        a[2][0] * b[0][0] + a[2][1] * b[1][0] + a[2][2] * b[2][0],
+        a[2][0] * b[0][1] + a[2][1] * b[1][1] + a[2][2] * b[2][1],
+        a[2][0] * b[0][2] + a[2][1] * b[1][2] + a[2][2] * b[2][2],
+         0.0,
+        ], [
+        a[3][0] * b[0][0] + a[3][1] * b[1][0] + a[3][2] * b[2][0] + b[3][0],
+        a[3][0] * b[0][1] + a[3][1] * b[1][1] + a[3][2] * b[2][1] + b[3][1],
+        a[3][0] * b[0][2] + a[3][1] * b[1][2] + a[3][2] * b[2][2] + b[3][2],
+        1.0,
+        ] ]
 
 def matrix_invert(m):
-  det = (m[0][0] * (m[1][1] * m[2][2] - m[2][1] * m[1][2])
-       - m[1][0] * (m[0][1] * m[2][2] - m[2][1] * m[0][2])
-       + m[2][0] * (m[0][1] * m[1][2] - m[1][1] * m[0][2]))
-  if det == 0.0: return None
-  det = 1.0 / det
-  r = [ [
-      det * (m[1][1] * m[2][2] - m[2][1] * m[1][2]),
-    - det * (m[0][1] * m[2][2] - m[2][1] * m[0][2]),
-      det * (m[0][1] * m[1][2] - m[1][1] * m[0][2]),
-      0.0,
-    ], [
-    - det * (m[1][0] * m[2][2] - m[2][0] * m[1][2]),
-      det * (m[0][0] * m[2][2] - m[2][0] * m[0][2]),
-    - det * (m[0][0] * m[1][2] - m[1][0] * m[0][2]),
-      0.0
-    ], [
-      det * (m[1][0] * m[2][1] - m[2][0] * m[1][1]),
-    - det * (m[0][0] * m[2][1] - m[2][0] * m[0][1]),
-      det * (m[0][0] * m[1][1] - m[1][0] * m[0][1]),
-      0.0,
-    ] ]
-  r.append([
-    -(m[3][0] * r[0][0] + m[3][1] * r[1][0] + m[3][2] * r[2][0]),
-    -(m[3][0] * r[0][1] + m[3][1] * r[1][1] + m[3][2] * r[2][1]),
-    -(m[3][0] * r[0][2] + m[3][1] * r[1][2] + m[3][2] * r[2][2]),
-    1.0,
-    ])
-  return r
+    det = (m[0][0] * (m[1][1] * m[2][2] - m[2][1] * m[1][2])
+         - m[1][0] * (m[0][1] * m[2][2] - m[2][1] * m[0][2])
+         + m[2][0] * (m[0][1] * m[1][2] - m[1][1] * m[0][2]))
+    if det == 0.0:
+        return None
+    det = 1.0 / det
+    r = [ [
+        det * (m[1][1] * m[2][2] - m[2][1] * m[1][2]),
+      - det * (m[0][1] * m[2][2] - m[2][1] * m[0][2]),
+        det * (m[0][1] * m[1][2] - m[1][1] * m[0][2]),
+        0.0,
+      ], [
+      - det * (m[1][0] * m[2][2] - m[2][0] * m[1][2]),
+        det * (m[0][0] * m[2][2] - m[2][0] * m[0][2]),
+      - det * (m[0][0] * m[1][2] - m[1][0] * m[0][2]),
+        0.0
+      ], [
+        det * (m[1][0] * m[2][1] - m[2][0] * m[1][1]),
+      - det * (m[0][0] * m[2][1] - m[2][0] * m[0][1]),
+        det * (m[0][0] * m[1][1] - m[1][0] * m[0][1]),
+        0.0,
+      ] ]
+    r.append([
+      -(m[3][0] * r[0][0] + m[3][1] * r[1][0] + m[3][2] * r[2][0]),
+      -(m[3][0] * r[0][1] + m[3][1] * r[1][1] + m[3][2] * r[2][1]),
+      -(m[3][0] * r[0][2] + m[3][1] * r[1][2] + m[3][2] * r[2][2]),
+      1.0,
+      ])
+    return r
 
 def matrix_rotate_x(angle):
-  cos = math.cos(angle)
-  sin = math.sin(angle)
-  return [
-    [1.0,  0.0, 0.0, 0.0],
-    [0.0,  cos, sin, 0.0],
-    [0.0, -sin, cos, 0.0],
-    [0.0,  0.0, 0.0, 1.0],
+    cos = math.cos(angle)
+    sin = math.sin(angle)
+    return [
+        [1.0,  0.0, 0.0, 0.0],
+        [0.0,  cos, sin, 0.0],
+        [0.0, -sin, cos, 0.0],
+        [0.0,  0.0, 0.0, 1.0],
     ]
 
 def matrix_rotate_y(angle):
-  cos = math.cos(angle)
-  sin = math.sin(angle)
-  return [
-    [cos, 0.0, -sin, 0.0],
-    [0.0, 1.0,  0.0, 0.0],
-    [sin, 0.0,  cos, 0.0],
-    [0.0, 0.0,  0.0, 1.0],
+    cos = math.cos(angle)
+    sin = math.sin(angle)
+    return [
+        [cos, 0.0, -sin, 0.0],
+        [0.0, 1.0,  0.0, 0.0],
+        [sin, 0.0,  cos, 0.0],
+        [0.0, 0.0,  0.0, 1.0],
     ]
 
 def matrix_rotate_z(angle):
-  cos = math.cos(angle)
-  sin = math.sin(angle)
-  return [
-    [ cos, sin, 0.0, 0.0],
-    [-sin, cos, 0.0, 0.0],
-    [ 0.0, 0.0, 1.0, 0.0],
-    [ 0.0, 0.0, 0.0, 1.0],
+    cos = math.cos(angle)
+    sin = math.sin(angle)
+    return [
+        [ cos, sin, 0.0, 0.0],
+        [-sin, cos, 0.0, 0.0],
+        [ 0.0, 0.0, 1.0, 0.0],
+        [ 0.0, 0.0, 0.0, 1.0],
     ]
 
 def matrix_rotate(axis, angle):
-  vx  = axis[0]
-  vy  = axis[1]
-  vz  = axis[2]
-  vx2 = vx * vx
-  vy2 = vy * vy
-  vz2 = vz * vz
-  cos = math.cos(angle)
-  sin = math.sin(angle)
-  co1 = 1.0 - cos
-  return [
-    [vx2 * co1 + cos,          vx * vy * co1 + vz * sin, vz * vx * co1 - vy * sin, 0.0],
-    [vx * vy * co1 - vz * sin, vy2 * co1 + cos,          vy * vz * co1 + vx * sin, 0.0],
-    [vz * vx * co1 + vy * sin, vy * vz * co1 - vx * sin, vz2 * co1 + cos,          0.0],
-    [0.0, 0.0, 0.0, 1.0],
+    vx  = axis[0]
+    vy  = axis[1]
+    vz  = axis[2]
+    vx2 = vx * vx
+    vy2 = vy * vy
+    vz2 = vz * vz
+    cos = math.cos(angle)
+    sin = math.sin(angle)
+    co1 = 1.0 - cos
+    return [
+        [vx2 * co1 + cos,          vx * vy * co1 + vz * sin, vz * vx * co1 - vy * sin, 0.0],
+        [vx * vy * co1 - vz * sin, vy2 * co1 + cos,          vy * vz * co1 + vx * sin, 0.0],
+        [vz * vx * co1 + vy * sin, vy * vz * co1 - vx * sin, vz2 * co1 + cos,          0.0],
+        [0.0, 0.0, 0.0, 1.0],
     ]
 
 def matrix_scale(fx, fy, fz):
   return [
-    [ fx, 0.0, 0.0, 0.0],
-    [0.0,  fy, 0.0, 0.0],
-    [0.0, 0.0,  fz, 0.0],
-    [0.0, 0.0, 0.0, 1.0],
+        [ fx, 0.0, 0.0, 0.0],
+        [0.0,  fy, 0.0, 0.0],
+        [0.0, 0.0,  fz, 0.0],
+        [0.0, 0.0, 0.0, 1.0],
     ]
 
 def point_by_matrix(p, m):
-  return [p[0] * m[0][0] + p[1] * m[1][0] + p[2] * m[2][0] + m[3][0],
-          p[0] * m[0][1] + p[1] * m[1][1] + p[2] * m[2][1] + m[3][1],
-          p[0] * m[0][2] + p[1] * m[1][2] + p[2] * m[2][2] + m[3][2]]
+  return [
+        p[0] * m[0][0] + p[1] * m[1][0] + p[2] * m[2][0] + m[3][0],
+        p[0] * m[0][1] + p[1] * m[1][1] + p[2] * m[2][1] + m[3][1],
+        p[0] * m[0][2] + p[1] * m[1][2] + p[2] * m[2][2] + m[3][2]
+    ]
 
 def point_distance(p1, p2):
   return math.sqrt((p2[0] - p1[0]) ** 2 + (p2[1] - p1[1]) ** 2 + (p2[2] - p1[2]) ** 2)
 
 def vector_by_matrix(p, m):
-  return [p[0] * m[0][0] + p[1] * m[1][0] + p[2] * m[2][0],
-          p[0] * m[0][1] + p[1] * m[1][1] + p[2] * m[2][1],
-          p[0] * m[0][2] + p[1] * m[1][2] + p[2] * m[2][2]]
+  return [
+        p[0] * m[0][0] + p[1] * m[1][0] + p[2] * m[2][0],
+        p[0] * m[0][1] + p[1] * m[1][1] + p[2] * m[2][1],
+        p[0] * m[0][2] + p[1] * m[1][2] + p[2] * m[2][2]
+    ]
 
 def vector_length(v):
-  return math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2])
+    v = v.tuple
+    length = math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2])
+    if length == 0.0:
+        length = 1.0
+    return length
 
 def vector_normalize(v):
-  l = math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2])
-  try:
-    return v[0] / l, v[1] / l, v[2] / l
-  except:
-    return 1, 0, 0
+    v = v.tuple
+    l = math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2])
+    try:
+        return v[0] / l, v[1] / l, v[2] / l
+    except:
+        return 1, 0, 0
 
 def vector_dotproduct(v1, v2):
-  return v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2]
+    v1 = v1.tuple
+    v2 = v2.tuple
+    return v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2]
 
 def vector_crossproduct(v1, v2):
-  return [
-    v1[1] * v2[2] - v1[2] * v2[1],
-    v1[2] * v2[0] - v1[0] * v2[2],
-    v1[0] * v2[1] - v1[1] * v2[0],
+    v1 = v1.tuple
+    v2 = v2.tuple
+    return [
+        v1[1] * v2[2] - v1[2] * v2[1],
+        v1[2] * v2[0] - v1[0] * v2[2],
+        v1[0] * v2[1] - v1[1] * v2[0],
     ]
 
 def vector_angle(v1, v2):
-  s = vector_length(v1) * vector_length(v2)
-  f = vector_dotproduct(v1, v2) / s
-  if f >=  1.0: return 0.0
-  if f <= -1.0: return math.pi / 2.0
-  return math.atan(-f / math.sqrt(1.0 - f * f)) + math.pi / 2.0
+    s = vector_length(v1) * vector_length(v2)
+    f = vector_dotproduct(v1, v2) / s
+    if f >=  1.0:
+        return 0.0
+    if f <= -1.0:
+        return math.pi / 2.0
+    return math.atan(-f / math.sqrt(1.0 - f * f)) + math.pi / 2.0
 
 
 ######################################################
@@ -275,905 +293,715 @@ def vector_angle(v1, v2):
 
 
 class md5_vert:
-	vert_index=0
-	co=[]
-	uvco=[]
-	blend_index=0
-	blend_count=0
+    vert_index=0
+    co=[]
+    uvco=[]
+    blend_index=0
+    blend_count=0
 
-	def __init__(self):
-		self.vert_index=0
-		self.co=[0.0]*3
-		self.uvco=[0.0]*2
-		self.blend_index=0
-		self.blend_count=0
+    def __init__(self):
+        self.vert_index=0
+        self.co=[0.0]*3
+        self.uvco=[0.0]*2
+        self.blend_index=0
+        self.blend_count=0
 
-	def dump(self):
-		print "vert index: ", self.vert_index
-		print "co: ", self.co
-		print "uvco: ", self.uvco
-		print "blend index: ", self.blend_index
-		print "belnd count: ", self.blend_count
+    def dump(self):
+        print "vert index: ", self.vert_index
+        print "co: ", self.co
+        print "uvco: ", self.uvco
+        print "blend index: ", self.blend_index
+        print "belnd count: ", self.blend_count
 
 class md5_weight:
-	weight_index=0
-	bone_index=0
-	bias=0.0
-	weights=[]
+    weight_index=0
+    bone_index=0
+    bias=0.0
+    weights=[]
 
-	def __init__(self):
-		self.weight_index=0
-		self.bone_index=0
-		self.bias=0.0
-		self.weights=[0.0]*3
+    def __init__(self):
+        self.weight_index=0
+        self.bone_index=0
+        self.bias=0.0
+        self.weights=[0.0]*3
 
-	def dump(self):
-		print "weight index: ", self.weight_index
-		print "bone index: ", self.bone_index
-		print "bias: ", self.bias
-		print "weighst: ", self.weights
+    def dump(self):
+        print "weight index: ", self.weight_index
+        print "bone index: ", self.bone_index
+        print "bias: ", self.bias
+        print "weighst: ", self.weights
 
 class md5_bone:
-	bone_index=0
-	name=""
-	bindpos=[]
-	bindmat=[]
-	parent=""
-	parent_index=0
-	blenderbone=None
-	roll=0
+    bone_index=0
+    name=""
+    bindpos=[]
+    bindmat=[]
+    parent=""
+    parent_index=0
+    blenderbone=None
+    roll=0
 
-	def __init__(self):
-		self.bone_index=0
-		self.name=""
-		self.bindpos=[0.0]*3
-		self.bindmat=[None]*3  #is this how you initilize a 2d-array
-		for i in range(3):
-			self.bindmat[i] = [0.0]*3
-		self.parent=""
-		self.parent_index=0
-		self.blenderbone=None
+    def __init__(self):
+        self.bone_index=0
+        self.name=""
+        self.bindpos=[0.0]*3
+        self.bindmat=[None]*3 # This how you initilize a 2d-array.
+        for i in range(3):
+            self.bindmat[i] = [0.0]*3
+        self.parent=""
+        self.parent_index=0
+        self.blenderbone=None
 
-	def dump(self):
-		print "bone index: ", self.bone_index
-		print "name: ", self.name
-		print "bind position: ", self.bindpos
-		print "bind translation matrix (mat): ", self.bindmat
-		print "parent: ", self.parent
-		print "parent index: ", self.parent_index
-		print "blenderbone: ", self.blenderbone
+    def dump(self):
+        print "bone index: ", self.bone_index
+        print "name: ", self.name
+        print "bind position: ", self.bindpos
+        print "bind translation matrix (mat): ", self.bindmat
+        print "parent: ", self.parent
+        print "parent index: ", self.parent_index
+        print "blenderbone: ", self.blenderbone
 
 
 class md5_tri:
-	tri_index=0
-	vert_index=[]
+    tri_index=0
+    vert_index=[]
 
-	def __init__(self):
-		self.tri_index=0;
-		self.vert_index=[0]*3
+    def __init__(self):
+        self.tri_index=0;
+        self.vert_index=[0]*3
 
-	def dump(self):
-		print "tri index: ", self.tri_index
-		print "vert index: ", self.vert_index
+    def dump(self):
+        print "tri index: ", self.tri_index
+        print "vert index: ", self.vert_index
 
 class md5_mesh:
-	mesh_index=0
-	verts=[]
-	tris=[]
-	weights=[]
-	shader=""
+    mesh_index=0
+    verts=[]
+    tris=[]
+    weights=[]
+    shader=""
 
-	def __init__(self):
-		self.mesh_index=0
-		self.verts=[]
-		self.tris=[]
-		self.weights=[]
-		self.shader=""
+    def __init__(self):
+        self.mesh_index=0
+        self.verts=[]
+        self.tris=[]
+        self.weights=[]
+        self.shader=""
 
-	def dump(self):
-		print "mesh index: ", self.mesh_index
-		print "verts: ", self.verts
-		print "tris: ", self.tris
-		print "weights: ", self.weights
-		print "shader: ", self.shader
+    def dump(self):
+        print "mesh index: ", self.mesh_index
+        print "verts: ", self.verts
+        print "tris: ", self.tris
+        print "weights: ", self.weights
+        print "shader: ", self.shader
 
 ######################################################
-# IMPORT
+# IMPORT A FILE
 ######################################################
 
 
 def load_md5(md5_filename, basepath):
-        global md5_model, md5_model_comps, progressbar, tobj, logging, Strings
+    global md5_model, md5_model_comps, md5_bones, progressbar, tobj, logging, Strings
 
     ### This area is where we make the different elements of a QuArK Component, for each Component.
-        # First we check for any other "Import Component"s,
-        # if so we name the first component 1 more then the largest number
-        # and increase each following component by 1.
-        CompNbr = "None"
-        comparenbr = 0
-        for item in editor.Root.dictitems:
-            if editor.Root.dictitems[item].shortname.startswith('Import Component'):
-                getnbr = editor.Root.dictitems[item].shortname
-                getnbr = getnbr.replace('Import Component', '')
-                if getnbr == "":
-                   nbr = 0
-                else:
-                    nbr = int(getnbr)
-                if nbr > comparenbr:
-                    comparenbr = nbr
-                nbr = comparenbr + 1
-                CompNbr = nbr
-        if CompNbr != "None":
-            pass
-        else:
-            CompNbr = 1
+    # First we check for any other "Import Component"s,
+    # if so we name the first component 1 more then the largest number
+    # and increase each following component by 1.
+    CompNbr = "None"
+    comparenbr = 0
+    for item in editor.Root.dictitems:
+        if editor.Root.dictitems[item].shortname.startswith('Import Component'):
+            getnbr = editor.Root.dictitems[item].shortname
+            getnbr = getnbr.replace('Import Component', '')
+            if getnbr == "":
+               nbr = 0
+            else:
+                nbr = int(getnbr)
+            if nbr > comparenbr:
+                comparenbr = nbr
+            nbr = comparenbr + 1
+            CompNbr = nbr
+    if CompNbr != "None":
+        pass
+    else:
+        CompNbr = 1
 
-        ComponentList = []
-        message = ""
-        QuArK_bone_list = [] # To store all bones created by each mesh (component).
-        QuArK_bones = []     # To store all QuArK_bone_list of bones created by each mesh (component), if any.
-        Cdunde_QuArK_bones = []  # Temp, just to get it working, replace with above list.
+    ComponentList = []
+    message = ""
+    QuArK_bones = []         # A list to store all QuArK bones created from the .md5mesh file "joints" section.
+                             # [ bone1, bone2,...]
+    QuArK_weights_list = {}  # A list to store all QuArK  "weights" created from the .md5mesh "verts" section for each mesh.
+                             # {mesh_index : vert_index :[weight_index, nbr_of_weights]}
 
-        #read the file in
-        file=open(md5_filename,"r")
-        lines=file.readlines()
-        file.close()
+    #read the file in
+    # md5_filename = the full path and file name of the .md5mesh file being imported, ex.
+    # "C:\Program Files\Doom 3\base\models\md5\monsters\pinky\pinky.md5mesh"
+    file=open(md5_filename,"r")
+    lines=file.readlines()
+    file.close()
 
-        md5_model=[]
-        md5_bones=[]
+    md5_model=[]
+    md5_bones=[]
 
-        num_lines=len(lines)
+    num_lines=len(lines)
 
-        # QuArK to get our number of meshes (components) in this file that we need to make a set of bones for.
-        for line_counter in range(0,num_lines):
-            current_line=lines[line_counter]
-            words=current_line.split()
-            if words and words[0]=="numMeshes":
-                QuArK_group_counter=int(words[1])
-                break
+    for line_counter in range(0,num_lines):
+        current_line=lines[line_counter]
+        words=current_line.split()
 
-        mesh_counter=0
-        for line_counter in range(0,num_lines):
-            current_line=lines[line_counter]
-            words=current_line.split()
-            ### BONES start here., see class md5_bone above.
-            if words and words[0]=="numJoints":
-                #print "found a bunch of bones"
-                num_bones=int(words[1])
-        #        print "num_bones: ", num_bones
-            elif words and words[0]=="joints":
-                for QuArK_group in range(QuArK_group_counter):
-                    Cdunde_QuArK_bone_list = [] # To store all bones created by each mesh (component).
-                    Cdunde_QuArK_bones = Cdunde_QuArK_bones + [Cdunde_QuArK_bone_list]
-                for bone_counter in range(0,num_bones):
-                    #make a new bone
-                    md5_bones.append(md5_bone())
-                    #next line
+    mesh_counter=0
+    for line_counter in range(0,num_lines):
+        current_line=lines[line_counter]
+        words=current_line.split()
+        ### BONES start here., see class md5_bone above.
+        if words and words[0]=="numJoints":
+            num_bones=int(words[1])
+        elif words and words[0]=="joints":
+            for bone_counter in range(0,num_bones): # num_bones = "numJoints" in md5mesh file (including "origin") as an integer.
+                #make a new bone
+                md5_bones.append(md5_bone())
+                #next line
+                line_counter+=1
+                current_line=lines[line_counter]
+                words=current_line.split()
+                #skip over blank lines
+                while not words:
                     line_counter+=1
                     current_line=lines[line_counter]
                     words=current_line.split()
-                    #skip over blank lines
-                    while not words:
-                        line_counter+=1
-                        current_line=lines[line_counter]
-                        words=current_line.split()
-                    md5_bones[bone_counter].bone_index=bone_counter
-                    #get rid of the quotes on either side
-                    temp_name=str(words[0])
-                    temp_name=temp_name[1:-1]
-                    ### QuArK note: this is where we start making our bones.
-                    for QuArK_group in range(QuArK_group_counter):
-                        new_bone = quarkx.newobj(str(QuArK_group) + "_" + temp_name + ":bone")
-                        new_bone['start_component'] = "None" # None for now and get the component name later.
-                        new_bone['start_vertex_count'] = "0"
-                        new_bone['start_point'] = (0, 0, 0) # Just in case this is not reset further below.
-                        new_bone['start_offset'] = (0, 0, 0)
-                        new_bone['start_scale'] = (1.0,)
-                        new_bone['end_component'] = "None" # None for now and get the component name later.
-                        new_bone['end_vertex_count'] = "0"
-                        new_bone['end_point'] = (0, 0, 0) # Just in case this is not reset further below.
-                        new_bone['end_offset'] = (0, 0, 0)
-                        new_bone['start_color'] = new_bone['end_color'] = MapColor("BoneHandles", 3)
-                        new_bone['end_scale'] = (1.0,)
-                        start_point = quarkx.vect(new_bone.dictspec['start_point']) + quarkx.vect(new_bone.dictspec['start_offset'])
-                        end_point = quarkx.vect(new_bone.dictspec['end_point']) + quarkx.vect(new_bone.dictspec['end_offset'])
-                        new_bone['bone_length'] = (start_point - end_point*-1).tuple
-                        
-                        new_bone['parent_index'] = words[1] # QuArK code, this is NOT an integer but a string of its integer value.
-                        new_bone['bindmat'] = (float(words[8]), float(words[9]), float(words[10])) # QuArK code, use these values to build this bones matrix (see "quaternion2matrix" code below).
-
-                        # QuArK code below, adjust to handles scale for other bones connecting to this one and so on.
-                        if bone_counter == 0:
-                            new_bone['start_point'] = (float(words[3]), float(words[4]), float(words[5]))
-                        else:
-                            # QuArK note: Even though the bone's parent name is not used anywhere else in this file,
-                            # we need to store it with the bone so it can be written easily to the export file.
-                            new_bone['parent'] = Cdunde_QuArK_bones[QuArK_group][int(new_bone.dictspec['parent_index'])].name
-                            new_bone['start_point'] = QuArK_bone_list[int(new_bone.dictspec['parent_index'])].dictspec['end_point']
-                            parent_bone_length = QuArK_bone_list[int(new_bone.dictspec['parent_index'])].dictspec['bone_length']
-                            if abs(parent_bone_length[0]) + abs(parent_bone_length[1]) + abs(parent_bone_length[2]) > 1:
-            #                    new_bone['start_scale'] = (QuArK_bone_list[int(new_bone.dictspec['parent_index'])].dictspec['end_scale'][0]*1.5,)
-                                new_bone['start_scale'] = (QuArK_bone_list[int(new_bone.dictspec['parent_index'])].dictspec['end_scale'][0],)
-                            if new_bone.dictspec['start_scale'][0] < 0.1: # Written this way because it is stored as a tuple.
-            #                    new_bone['start_scale'] = (0.1*1.5,)
-                                new_bone['start_scale'] = (0.1,) # Written this way to stored it as a tuple.
-                            new_bone['end_point'] = (float(words[3]), float(words[4]), float(words[5]))
-                            start_point = quarkx.vect(new_bone.dictspec['start_point'])
-                            end_point = quarkx.vect(new_bone.dictspec['end_point'])
-                            new_bone['bone_length'] = (start_point - end_point).tuple
-                            end_scale = 1.0
-                            if abs(new_bone.dictspec['bone_length'][0]) > abs(new_bone.dictspec['bone_length'][1]):
-                                if  abs(new_bone.dictspec['bone_length'][0]) > abs(new_bone.dictspec['bone_length'][2]):
-                                    testscale = abs(new_bone.dictspec['bone_length'][0])
-                                else:
-                                    testscale = abs(new_bone.dictspec['bone_length'][2])
-                            else:
-                                if  abs(new_bone.dictspec['bone_length'][1]) > abs(new_bone.dictspec['bone_length'][2]):
-                                    testscale = abs(new_bone.dictspec['bone_length'][1])
-                                else:
-                                    testscale = abs(new_bone.dictspec['bone_length'][2])
-                            if testscale < 8:
-                                end_scale = testscale * .08
-                            if end_scale < 0.1:
-                                new_bone['end_scale'] = (0.1,) # Written this way to stored it as a tuple.
-                            else:
-                                new_bone['end_scale'] = (end_scale,) # Written this way to stored it as a tuple.
-
-                        Cdunde_QuArK_bones[QuArK_group] = Cdunde_QuArK_bones[QuArK_group] + [new_bone]
-
-                    md5_bones[bone_counter].name=temp_name
-         #           print "found a bone: ", md5_bones[bone_counter].name
-                    md5_bones[bone_counter].parent_index = int(words[1])
-                    if md5_bones[bone_counter].parent_index>=0:
-                        md5_bones[bone_counter].parent = md5_bones[md5_bones[bone_counter].parent_index].name
-                    md5_bones[bone_counter].bindpos[0]=float(words[3])
-                    md5_bones[bone_counter].bindpos[1]=float(words[4])
-                    md5_bones[bone_counter].bindpos[2]=float(words[5])
-        #            print "bindpos: ", md5_bones[bone_counter].bindpos
-                    qx = float(words[8])
-                    qy = float(words[9])
-                    qz = float(words[10])
-        #            print "qx,qy,qz: ",qx,qy,qz
-                    qw = 1 - qx*qx - qy*qy - qz*qz
-                    if qw<0:
-                        qw=0
-                    else:
-                        qw = -sqrt(qw)
-                    md5_bones[bone_counter].bindmat = quaternion2matrix([qx,qy,qz,qw])
-       #             print "bindmat: ", md5_bones[bone_counter].bindmat
-
-                    QuArK_bone_list = QuArK_bone_list + [new_bone]
-
-        #        for bone in md5_bones:
-        #            bone.dump()
-
-
-            elif words and words[0]=="numMeshes":
-                num_meshes=int(words[1])
-        #        print "num_meshes: ", num_meshes
-            elif words and words[0]=="mesh":
-                QuArK_bone_list_index = [] # To match which bones belong to which mesh (component).
-                QuArK_mesh_bone_list = []
-                #create a new mesh and name it
-                md5_model.append(md5_mesh())
-                #print "md5_mesh: ",md5_model
-                md5_model[mesh_counter].mesh_index = mesh_counter
-                #print "mesh_index: ",md5_model[mesh_counter].mesh_index
-                while (not words or (words and words[0]!="}")):
-                        line_counter+=1
-                        current_line=lines[line_counter]
-                        words=current_line.split()
-                        if words and words[0]=="shader":
-                            #print "found a shader"
-                            temp_name=str(words[1])
-                            temp_name=temp_name[1:-1]
-                            md5_model[mesh_counter].shader=temp_name
-                        if words and words[0]=="vert":
-			    #print "found a vert"
-                            md5_model[mesh_counter].verts.append(md5_vert())
-                            vert_counter=len(md5_model[mesh_counter].verts)-1
-			    #load it with the raw data
-                            md5_model[mesh_counter].verts[vert_counter].vert_index=int(words[1])
-                            md5_model[mesh_counter].verts[vert_counter].uvco[0]=float(words[3])
-                            md5_model[mesh_counter].verts[vert_counter].uvco[1]=(1-float(words[4]))
-                            md5_model[mesh_counter].verts[vert_counter].blend_index=int(words[6])
-                            md5_model[mesh_counter].verts[vert_counter].blend_count=int(words[7])
-                        if words and words[0]=="tri":
-                            #print "found a tri"
-                            md5_model[mesh_counter].tris.append(md5_tri())
-                            tri_counter=len(md5_model[mesh_counter].tris)-1
-                            #load it with raw data
-                            md5_model[mesh_counter].tris[tri_counter].tri_index=int(words[1])
-                            md5_model[mesh_counter].tris[tri_counter].vert_index[0]=int(words[2])
-                            md5_model[mesh_counter].tris[tri_counter].vert_index[1]=int(words[3])
-                            md5_model[mesh_counter].tris[tri_counter].vert_index[2]=int(words[4])
-                        if words and words[0]=="weight":
-                            #print "found a weight"
-                            md5_model[mesh_counter].weights.append(md5_weight())
-                            weight_counter=len(md5_model[mesh_counter].weights)-1
-                            #load it with raw data
-                            md5_model[mesh_counter].weights[weight_counter].weight_index=int(words[1])
-                            md5_model[mesh_counter].weights[weight_counter].bone_index=int(words[2])
-                            if int(words[2]) not in QuArK_bone_list_index: # To match which bones belong to which mesh (component).
-                                QuArK_bone_list_index = QuArK_bone_list_index + [int(words[2])]
-                            md5_model[mesh_counter].weights[weight_counter].bias=float(words[3])
-                            md5_model[mesh_counter].weights[weight_counter].weights[0]=float(words[5])
-                            md5_model[mesh_counter].weights[weight_counter].weights[1]=float(words[6])
-                            md5_model[mesh_counter].weights[weight_counter].weights[2]=float(words[7])
-                            #md5_model[mesh_counter].weights[weight_counter].dump()
-                #print "end of this mesh structure"
-                for index in QuArK_bone_list_index:
-                    QuArK_mesh_bone_list = QuArK_mesh_bone_list + [QuArK_bone_list[index]]
-                mesh_counter += 1
-                QuArK_bones = QuArK_bones + [QuArK_mesh_bone_list]
-
-	#figure out the base pose for each vertex from the weights
-  #      QuArK_mesh_counter = 0
-        for mesh in md5_model:
-                #print "updating vertex info for mesh: ", mesh.mesh_index
-        #        mesh.dump()
-                bone_index_list = [] # QuArK code
-                bone_vtx_list = {}
-                for vert_counter in range(0, len(mesh.verts)):
-                        blend_index=mesh.verts[vert_counter].blend_index
-                        for blend_counter in range(0, mesh.verts[vert_counter].blend_count):
-                                #get the current weight info
-                                w=mesh.weights[blend_index+blend_counter]
-                                #print "w: "
-        #                        w.dump()
-                                #the bone that the current weight is refering to
-                                b=md5_bones[w.bone_index]
-                                if not w.bone_index in bone_index_list:
-                                    bone_index_list = bone_index_list + [w.bone_index] # QuArK code
-                                    bone_vtx_list[w.bone_index] = []
-                                if not vert_counter in bone_vtx_list[w.bone_index]:
-                                    bone_vtx_list[w.bone_index] = bone_vtx_list[w.bone_index] + [vert_counter]
-                                #print "b: "
-                                #b.dump()
-                                #a position is the weight position * bone transform matrix (or position)
-                                pos=[0.0]*3
-                                #print "pos: ", pos
-                                pos= vector_by_matrix(w.weights, b.bindmat)
-                                #print "pos: ", pos
-                                #print "w.bias: ", w.bias
-                                #print "b.bindpos: ", b.bindpos
-                                pos=((pos[0]+b.bindpos[0])*w.bias, (pos[1]+b.bindpos[1])*w.bias, (pos[2]+b.bindpos[2])*w.bias)
-                                #print "pos: ", pos
-                                #vertex position is sum of all weight info adjusted for bias
-                                mesh.verts[vert_counter].co[0]+=pos[0]
-                                mesh.verts[vert_counter].co[1]+=pos[1]
-                                mesh.verts[vert_counter].co[2]+=pos[2]
-         #       print "line 652 bone_index_list, type",bone_index_list, type(bone_index_list[0])
-         #       print "line 653 bone_vtx_list, len(QuArK_bone_list)",bone_vtx_list, len(QuArK_bone_list)
-                for bone in range(len(bone_vtx_list)):
-                    jointnumber = bone_vtx_list.keys()[bone]
-                    if jointnumber == 0:
-                        continue
-                    list = bone_vtx_list[jointnumber]
-                    listcount = str(len(list))
-                    list = str(list)
-                    list = list.replace(",", "")
-                    list = list.replace("[", "")
-                    list = list.replace("]", "")
-                    if bone == len(bone_vtx_list)-1:
-                        Cdunde_QuArK_bones[mesh.mesh_index][jointnumber]['end_vtxlist'] = list
-                        Cdunde_QuArK_bones[mesh.mesh_index][jointnumber]['end_vertex_count'] = listcount
-                    else:
-                        found_a_bone = 0
-                        for jointnumber2 in range(0,num_bones):
-                            if md5_bones[jointnumber2].parent_index == jointnumber:
-                                Cdunde_QuArK_bones[mesh.mesh_index][jointnumber2-1]['end_vtxlist'] = list
-                                Cdunde_QuArK_bones[mesh.mesh_index][jointnumber2-1]['end_vertex_count'] = listcount
-                                found_a_bone = 1
-                                break
-                        if found_a_bone == 0:
-                            Cdunde_QuArK_bones[mesh.mesh_index][jointnumber]['end_vtxlist'] = list
-                            Cdunde_QuArK_bones[mesh.mesh_index][jointnumber]['end_vertex_count'] = listcount
-	#build the armature in blender
-  #      print "line 655 md5_filename",md5_filename
-     #   translationtable = string.maketrans("\\", "/")
-     #   tempstring = string.translate(md5_filename, translationtable)
-     #   lindex = string.rfind(tempstring, "/")
-     #   rindex = string.rfind(tempstring, ".")
-        tempstring = md5_filename.replace("\\", "/")
- #       print "line 661 tempstring",tempstring
-        lindex = tempstring.rfind( "/")
-        rindex = tempstring.rfind(".")
- #       print "line 664 lindex, rindex",lindex, rindex
-        if lindex==-1: lindex=0
-    #    tempstring = string.rstrip(tempstring, ".md5mesh")
-        tempstring = tempstring.rstrip(".md5mesh")
- #       print "line 668 tempstring",tempstring
-        tempstring = tempstring[lindex+1:len(tempstring)]
- #       print "line 670 tempstring",tempstring
-    #    armObj = Object.New('Armature', tempstring)
-    #    armData = Blender.Armature.Armature("MD5_ARM") 
-    #    armData.drawAxes = True 
-    #    armObj.link(armData) 
-    #    scene = Blender.Scene.getCurrent() 
-    #    scene.link(armObj) 
-    #    armData.makeEditable() 
-        # QuArK, make bones here.
- #1       bonecounter = 0 # For trying Blinder's code way, but doesn't link the bones up right for QuArK.
-        for bone in md5_bones:
-    #        bone.blenderbone = Blender.Armature.Editbone() 
-    #        headData = Blender.Mathutils.Vector(bone.bindpos[0]*scale, bone.bindpos[1]*scale, bone.bindpos[2]*scale)
-            headData = quarkx.vect(bone.bindpos[0]*scale, bone.bindpos[1]*scale, bone.bindpos[2]*scale)
-        #    print "line 684 bone start_point",headData, bone.name, bone.bone_index
-    #        bone.blenderbone.head = headData 
-    #        tailData = Blender.Mathutils.Vector(bone.bindpos[0]*scale+bonesize*scale*bone.bindmat[1][0], bone.bindpos[1]*scale+bonesize*scale*bone.bindmat[1][1], bone.bindpos[2]*scale+bonesize*scale*bone.bindmat[1][2])
-            tailData = quarkx.vect(bone.bindpos[0]*scale+bonesize*scale*bone.bindmat[1][0], bone.bindpos[1]*scale+bonesize*scale*bone.bindmat[1][1], bone.bindpos[2]*scale+bonesize*scale*bone.bindmat[1][2])
- #1           if bonecounter == 0:
- #1               QuArK_bone_list[bonecounter+1]['start_point'] = headData.tuple
- #1           elif bonecounter == len(md5_bones)-1:
- #1               QuArK_bone_list[bonecounter]['end_point'] = tailData.tuple
- #1               QuArK_bone_list[bonecounter]['bone_length'] = (quarkx.vect(QuArK_bone_list[bonecounter].dictspec['start_point']) - quarkx.vect(QuArK_bone_list[bonecounter].dictspec['end_point'])).tuple
- #1           else:
- #1               QuArK_bone_list[bonecounter]['end_point'] = headData.tuple
- #1               QuArK_bone_list[bonecounter+1]['start_point'] = headData.tuple
- #1               QuArK_bone_list[bonecounter]['bone_length'] = (quarkx.vect(QuArK_bone_list[bonecounter].dictspec['start_point']) - quarkx.vect(QuArK_bone_list[bonecounter].dictspec['end_point'])).tuple
- #1           bonecounter = bonecounter + 1
-       #     print "line 698 bone end_point",tailData, bone.name, bone.bone_index
-    #        bone.blenderbone.tail = tailData 
-    #        if bone.parent != "": 
-    #            bone.blenderbone.parent = md5_bones[bone.parent_index].blenderbone 
-
-            #rotate the bones correctly through this HACK (yeah it's ridiculous ;) 
-            #could probably be optimized a bit... 
- #           boneisaligned=False 
- #           for i in range(0, 359): 
- #               boneisaligned=False 
- #               m = Blender.Mathutils.Matrix(bone.blenderbone.matrix) 
- #               mb = bone.bindmat 
- #               cos = vector_dotproduct(vector_normalize(m[0]), vector_normalize(mb[0])) 
- #               if cos > 0.9999: 
- #                   boneisaligned=True 
-                    #print m[0], mb[0] 
- #                   break 
- #               bone.blenderbone.roll = i 
- #           if not boneisaligned: 
- #               print "Eeek!! ", bone.name, boneisaligned 
- #           armData.bones[bone.name]=bone.blenderbone 
- #       armData.update() 
- #       armObj.makeDisplayList() 
- #       scene.update(); 
- #       Blender.Window.RedrawAll()
-
-
-	#dump the meshes into blender
-    #    print "basepath",basepath # The full path to the game folder, ex: "C:\Program Files\Doom 3\base\"
-    #    print "md5_filename",md5_filename # The full path and file name of the .md5mesh file being imported, ex.
-                                          # md5_filename "C:\Program Files\Doom 3\base\models\md5\monsters\pinky\pinky.md5mesh"
-        firstcomp = str(CompNbr)
-        lastcomp = str(CompNbr + len(md5_model)-1)
-
-    #    QuArK_mesh_counter = 0
-        for mesh in md5_model: # A new QuArK component needs to be made for each mesh.
-    #            print "making  Import Component ",CompNbr # The name of this component being created now, ex: "Import Component 1"
-    #            print "adding mesh ", mesh.mesh_index, " to blender"
-    #            print "it has ", len(mesh.verts), "verts"
-                ### Creates this component's Skins:sg group.
-                # Checks if the model has textures specified with it.
-                skinsize = (256, 256)
-                skingroup = quarkx.newobj('Skins:sg')
-                skingroup['type'] = chr(2)
-                if(mesh.shader!=""): # Make the QuArK Skins here
-                        path = mesh.shader.split("\\")
-                        path = path[len(path)-1] # This is the full shader we are looking for, ex: "models/monsters/pinky/pinky_metal"
-                        shaderspath = basepath + "materials"
-                        shaderfiles = os.listdir(shaderspath)
-                        for shaderfile in shaderfiles:
-                            noimage = ""
-                            foundshader = foundtexture = foundimage = imagefile = None
-                            mesh_shader = shader_file = shader_name = shader_keyword = qer_editorimage = diffusemap = map = bumpmap = addnormals = heightmap = specularmap = None
-                            #read the file in
-                            try: # To by pass sub-folders, should make this to check those also.
-                                file=open(shaderspath+"/"+shaderfile,"r")
-                            except:
-                                continue
-                            lines=file.readlines()
-                            file.close()
-                            left_cur_braket = 0
-                            for line in range(len(lines)):
-                                if foundshader is None and lines[line].startswith(mesh.shader+"\n"):
-                                    shaderline = lines[line].replace(chr(9), "    ")
-                                    shaderline = shaderline.rstrip()
-                                    mesh_shader = "\r\n" + shaderline + "\r\n"
-                                    shader_file = shaderspath + "/" + shaderfile
-                                    shader_name = mesh.shader
-                                    foundshader = mesh.shader
-                                    left_cur_braket = 0
-                                    continue
-                                if foundshader is not None and lines[line].find("{") != -1:
-                                    left_cur_braket = left_cur_braket + 1
-                                if foundshader is not None and lines[line].find("}") != -1:
-                                    left_cur_braket = left_cur_braket - 1
-                                if foundshader is not None:
-                                    if lines[line].find("qer_editorimage") != -1 or lines[line].find("diffusemap") != -1:
-                                        words = lines[line].split()
-                                        for word in words:
-                                            if word.endswith(".tga"):
-                                                foundtexture = word
-                                                if lines[line].find("qer_editorimage") != -1:
-                                                    shader_keyword = "qer_editorimage"
-                                                else:
-                                                    shader_keyword = "diffusemap"
-                                                skinname = foundtexture
-                                                skin = quarkx.newobj(skinname)
-                                                break
-                                            elif word.find("/") != -1 and (word.startswith("models") or word.startswith("textures")):
-                                                foundtexture = word + ".tga"
-                                                if lines[line].find("qer_editorimage") != -1:
-                                                    shader_keyword = "qer_editorimage"
-                                                else:
-                                                    shader_keyword = "diffusemap"
-                                                skinname = foundtexture
-                                                skin = quarkx.newobj(skinname)
-                                                break
-                                        if foundtexture is not None:
-                                            if os.path.isfile(basepath + foundtexture):
-                                                foundimage = basepath + foundtexture
-                                                image = quarkx.openfileobj(foundimage)
-                                                skin['Image1'] = image.dictspec['Image1']
-                                                skin['Size'] = image.dictspec['Size']
-                                                skin['shader_keyword'] = shader_keyword
-                                                skingroup.appenditem(skin)
-                                                if skinsize == (256, 256):
-                                                    skinsize = skin['Size']
-                                                foundtexture = None
-                                            else: # Keep looking in the shader files, the shader may be in another one.
-                                                imagefile = basepath + foundtexture
-                                                noimage = noimage + "\r\nFound needed shader for Import Component " + str(CompNbr) + ":\r\n    " + mesh.shader + "\r\n" + "in\r\n    " + shaderspath+"/"+shaderfile + "\r\n" + "and the 'diffusemap' image to display.\r\n    " + foundtexture + "\r\n" + "But that image file does not exist.\r\n"
-                                    if lines[line].find("bumpmap") != -1 and (not lines[line].find("addnormals") != -1 and not lines[line].find("heightmap") != -1):
-                                        words = lines[line].replace("("," ")
-                                        words = words.replace(")"," ")
-                                        words = words.replace(","," ")
-                                        words = words.split()
-                                        for word in words:
-                                            if word.endswith(".tga"):
-                                                bumpmap = word
-                                            elif word.find("/") != -1 and (word.startswith("models") or word.startswith("textures")):
-                                                bumpmap = word + ".tga"
-                                    if lines[line].find("addnormals") != -1 or lines[line].find("heightmap") != -1:
-                                        words = lines[line].replace("("," ")
-                                        words = words.replace(")"," ")
-                                        words = words.replace(","," ")
-                                        words = words.split()
-                                        for word in range(len(words)):
-                                            if words[word].find("addnormals") != -1 and words[word+1].find("/") != -1 and (words[word+1].startswith("models") or words[word+1].startswith("textures")):
-                                                addnormals = words[word+1]
-                                                if not addnormals.endswith(".tga"):
-                                                    addnormals = addnormals + ".tga"
-                                            if words[word].find("heightmap") != -1 and words[word+1].find("/") != -1 and (words[word+1].startswith("models") or words[word+1].startswith("textures")):
-                                                heightmap = words[word+1]
-                                                if not heightmap.endswith(".tga"):
-                                                    heightmap = heightmap + ".tga"
-                                    elif lines[line].find("specularmap") != -1:
-                                        words = lines[line].split()
-                                        for word in words:
-                                            if word.endswith(".tga"):
-                                                specularmap = word
-                                            elif word.find("/") != -1 and (word.startswith("models") or word.startswith("textures")):
-                                                specularmap = word + ".tga"
-                                    # Dec character code for space = chr(32), for tab = chr(9)
-                                    elif lines[line].find(chr(32)+"map") != -1 or lines[line].find(chr(9)+"map") != -1:
-                                        words = lines[line].split()
-                                        for word in words:
-                                            if word.endswith(".tga") and (word.startswith("models") or word.startswith("textures")) and ((not word.endswith("_dis.tga") and not word.endswith("_dis")) and (not word.endswith("dis2.tga") and not word.endswith("dis2"))):
-                                                map = word
-                                            elif word.find("/") != -1 and (word.startswith("models") or word.startswith("textures")) and ((not word.endswith("_dis.tga") and not word.endswith("_dis")) and (not word.endswith("dis2.tga") and not word.endswith("dis2"))):
-                                                map = word + ".tga"
-                                        if map is not None and not map in skingroup.dictitems.keys():
-                                            imagefile = basepath + map
-                                            if os.path.isfile(basepath + map):
-                                                skinname = map
-                                                foundimage = basepath + skinname
-                                                shader_keyword = "map"
-                                                # Make the skin and add it.
-                                                skin = quarkx.newobj(skinname)
-                                                image = quarkx.openfileobj(foundimage)
-                                                skin['Image1'] = image.dictspec['Image1']
-                                                skin['Size'] = image.dictspec['Size']
-                                                skin['shader_keyword'] = shader_keyword
-                                                skingroup.appenditem(skin)
-                                                if skinsize == (256, 256):
-                                                    skinsize = skin['Size']
-                                            else:
-                                                noimage = noimage + "\r\nFound needed shader for Import Component " + str(CompNbr) + ":\r\n    " + mesh.shader + "\r\n" + "in\r\n    " + shaderspath+"/"+shaderfile + "\r\n" + "but the texture image file it calls to display\r\n    " + imagefile + "\r\nis not there or has a different name.\r\nMake a copy of the file and rename it or\r\ncheck the shader and make a correction to add it.\r\n"
-                                    else:
-                                        if lines[line].find("/") != -1:
-                                            if lines[line-1].find("qer_editorimage") != -1 or lines[line-1].find("diffusemap") != -1 or lines[line-1].find("bumpmap") != -1 or lines[line-1].find("addnormals") != -1 or lines[line-1].find("heightmap") != -1 or lines[line-1].find("specularmap") != -1 or lines[line].find(chr(32)+"map") != -1 or lines[line].find(chr(9)+"map") != -1:
-                                                words = lines[line].replace("("," ")
-                                                words = words.replace(")"," ")
-                                                words = words.replace(","," ")
-                                                words = words.split()
-                                                image = None
-                                                for word in words:
-                                                    if word.endswith(".tga") and (word.startswith("models") or word.startswith("textures")) and ((not word.endswith("_dis.tga") and not word.endswith("_dis")) and (not word.endswith("dis2.tga") and not word.endswith("dis2"))):
-                                                        image = word
-                                                    elif word.find("/") != -1 and (word.startswith("models") or word.startswith("textures")) and ((not word.endswith("_dis.tga") and not word.endswith("_dis")) and (not word.endswith("dis2.tga") and not word.endswith("dis2"))):
-                                                        image = word + ".tga"
-                                                if (image is not None) and (not image in skingroup.dictitems.keys()):
-                                                    words = lines[line-1].replace("("," ")
-                                                    words = words.replace(")"," ")
-                                                    words = words.replace(","," ")
-                                                    words = words.split()
-                                                    keys = [qer_editorimage, diffusemap, bumpmap, addnormals, heightmap, specularmap, map]
-                                                    words.reverse() # Work our way backwards to get the last key name first.
-                                                    for word in range(len(words)):
-                                                        if words[word] in keys:
-                                                            imagefile = basepath + image
-                                                            if os.path.isfile(basepath + image):
-                                                                skinname = image
-                                                                foundimage = basepath + skinname
-                                                                shader_keyword = words[word]
-                                                                # Make the skin and add it.
-                                                                skin = quarkx.newobj(skinname)
-                                                                image = quarkx.openfileobj(foundimage)
-                                                                skin['Image1'] = image.dictspec['Image1']
-                                                                skin['Size'] = image.dictspec['Size']
-                                                                skin['shader_keyword'] = shader_keyword
-                                                                skingroup.appenditem(skin)
-                                                                if skinsize == (256, 256):
-                                                                    skinsize = skin['Size']
-                                                            else:
-                                                                noimage = noimage + "\r\nFound needed shader for Import Component " + str(CompNbr) + ":\r\n    " + mesh.shader + "\r\n" + "in\r\n    " + shaderspath+"/"+shaderfile + "\r\n" + "but the texture image file it calls to display\r\n    " + imagefile + "\r\nis not there or has a different name.\r\nMake a copy of the file and rename it or\r\ncheck the shader and make a correction to add it.\r\n"
-                                    shaderline = lines[line].replace(chr(9), "    ")
-                                    shaderline = shaderline.rstrip()
-                                    if mesh_shader is not None:
-                                        mesh_shader = mesh_shader + shaderline + "\r\n"
-                                    if lines[line].find("}") != -1 and left_cur_braket == 0: # Done reading shader so break out of reading this file.
-                                        break
-                            if mesh_shader is not None:
-                                if bumpmap is not None:
-                                    imagefile = basepath + bumpmap
-                                    if os.path.isfile(basepath + bumpmap):
-                                        skinname = bumpmap
-                                        foundimage = basepath + skinname
-                                        shader_keyword = "bumpmap"
-                                        # Make the skin and add it.
-                                        skin = quarkx.newobj(skinname)
-                                        image = quarkx.openfileobj(foundimage)
-                                        skin['Image1'] = image.dictspec['Image1']
-                                        skin['Size'] = image.dictspec['Size']
-                                        skin['shader_keyword'] = shader_keyword
-                                        skingroup.appenditem(skin)
-                                        if skinsize == (256, 256):
-                                            skinsize = skin['Size']
-                                    else:
-                                        noimage = noimage + "\r\nFound needed shader for Import Component " + str(CompNbr) + ":\r\n    " + mesh.shader + "\r\n" + "in\r\n    " + shaderspath+"/"+shaderfile + "\r\n" + "but the texture image file it calls to display\r\n    " + imagefile + "\r\nis not there or has a different name.\r\nMake a copy of the file and rename it or\r\ncheck the shader and make a correction to add it.\r\n"
-                                if addnormals is not None:
-                                    imagefile = basepath + addnormals
-                                    if os.path.isfile(basepath + addnormals):
-                                        skinname = addnormals
-                                        foundimage = basepath + skinname
-                                        shader_keyword = "addnormals"
-                                        # Make the skin and add it.
-                                        skin = quarkx.newobj(skinname)
-                                        image = quarkx.openfileobj(foundimage)
-                                        skin['Image1'] = image.dictspec['Image1']
-                                        skin['Size'] = image.dictspec['Size']
-                                        skin['shader_keyword'] = shader_keyword
-                                        skingroup.appenditem(skin)
-                                        if skinsize == (256, 256):
-                                            skinsize = skin['Size']
-                                    else:
-                                        noimage = noimage + "\r\nFound needed shader for Import Component " + str(CompNbr) + ":\r\n    " + mesh.shader + "\r\n" + "in\r\n    " + shaderspath+"/"+shaderfile + "\r\n" + "but the texture image file it calls to display\r\n    " + imagefile + "\r\nis not there or has a different name.\r\nMake a copy of the file and rename it or\r\ncheck the shader and make a correction to add it.\r\n"
-                                if heightmap is not None:
-                                    imagefile = basepath + heightmap
-                                    if os.path.isfile(basepath + heightmap):
-                                        skinname = heightmap
-                                        foundimage = basepath + skinname
-                                        shader_keyword = "heightmap"
-                                        # Make the skin and add it.
-                                        skin = quarkx.newobj(skinname)
-                                        image = quarkx.openfileobj(foundimage)
-                                        skin['Image1'] = image.dictspec['Image1']
-                                        skin['Size'] = image.dictspec['Size']
-                                        skin['shader_keyword'] = shader_keyword
-                                        skingroup.appenditem(skin)
-                                        if skinsize == (256, 256):
-                                            skinsize = skin['Size']
-                                    else:
-                                        noimage = noimage + "\r\nFound needed shader for Import Component " + str(CompNbr) + ":\r\n    " + mesh.shader + "\r\n" + "in\r\n    " + shaderspath+"/"+shaderfile + "\r\n" + "but the texture image file it calls to display\r\n    " + imagefile + "\r\nis not there or has a different name.\r\nMake a copy of the file and rename it or\r\ncheck the shader and make a correction to add it.\r\n"
-                                if specularmap is not None:
-                                    imagefile = basepath + specularmap
-                                    if os.path.isfile(basepath + specularmap):
-                                        skinname = specularmap
-                                        foundimage = basepath + skinname
-                                        shader_keyword = "specularmap"
-                                        # Make the skin and add it.
-                                        skin = quarkx.newobj(skinname)
-                                        image = quarkx.openfileobj(foundimage)
-                                        skin['Image1'] = image.dictspec['Image1']
-                                        skin['Size'] = image.dictspec['Size']
-                                        skin['shader_keyword'] = shader_keyword
-                                        skingroup.appenditem(skin)
-                                        if skinsize == (256, 256):
-                                            skinsize = skin['Size']
-                                    else:
-                                        noimage = noimage + "\r\nFound needed shader for Import Component " + str(CompNbr) + ":\r\n    " + mesh.shader + "\r\n" + "in\r\n    " + shaderspath+"/"+shaderfile + "\r\n" + "but the texture image file it calls to display\r\n    " + imagefile + "\r\nis not there or has a different name.\r\nMake a copy of the file and rename it or\r\ncheck the shader and make a correction to add it.\r\n"
-                                if imagefile is None:
-                                    imagefile = "NO IMAGE FILE FOUND AT ALL, CHECK THE SHADER."
-                                break
-                            if foundshader is not None: # Found the shader so break out of the shader files loop.
-                                break
-                        if len(noimage) > 0:
-                            message = message + noimage
-                        if mesh.shader is not None and foundshader is None: # This component has an image but no shader was found, so...
-                            texturepath = basepath + "/" + mesh.shader + ".tga"
-                            if os.path.isfile(texturepath): # May not be a shader so we look for a texture with the same image name.
-                                skinname = mesh.shader + ".tga"
-                                skin = quarkx.newobj(skinname)
-                                foundimage = basepath + skinname
-                                image = quarkx.openfileobj(foundimage)
-                                skin['Image1'] = image.dictspec['Image1']
-                                skin['Size'] = image.dictspec['Size']
-                                skingroup.appenditem(skin)
-                                if skinsize == (256, 256):
-                                    skinsize = skin['Size']
-                            else: # If no texture is found then we are missing the shader.
-                                message = message + "\r\nImport Component " + str(CompNbr) + " calls for the shader:\r\n    " + mesh.shader + "\r\n" + "but it could not be located in\r\n    " + shaderspath + "\r\n" + "Extract shader file to this folder\r\nor create a shader file if needed.\r\n"
-
-        #        blender_mesh=NMesh.New() # make this a QuArK component's frame verticies
-                framesgroup = quarkx.newobj('Frames:fg') # QuArK Frames group made here.
-                frame = quarkx.newobj('meshframe' + ':mf') # QuArK frame made here.
-                comp_mesh = () # QuArK code
-                comp_verts = [] # QuArK code
-                for vert in mesh.verts: # QuArK frame Vertices made here.
-       #                 v=NMesh.Vert(vert.co[0]*scale, vert.co[1]*scale, vert.co[2]*scale)
-                        comp_mesh = comp_mesh + (vert.co[0]*scale, vert.co[1]*scale, vert.co[2]*scale)
-                        #add the uv coords to the vertex
-                        # As a percentage of the QuArK Skinview1.clientarea for X and Y.
-        #                v.uvco[0]=vert.uvco[0]
-        #                v.uvco[1]=vert.uvco[1]
-                        U = int(skinsize[0] * vert.uvco[0])
-                        V = int(skinsize[1] * vert.uvco[1])
-                        V = -V + skinsize[1]
-                        v = (U, V)
-                        #add the vertex to the blender mesh
-            #            blender_mesh.verts.append(v)
-                        comp_verts = comp_verts + [v]
-                frame['Vertices'] = comp_mesh
-                framesgroup.appenditem(frame)
-                # QuArK Tris made here.
-                Tris = ''
-                for tri in mesh.tris:
-                    #    f=NMesh.Face()
-                        #tell it which blender verts to use for faces
-                    #    f.v.append(blender_mesh.verts[tri.vert_index[0]])
-                    #    f.v.append(blender_mesh.verts[tri.vert_index[2]])
-                    #    f.v.append(blender_mesh.verts[tri.vert_index[1]])
-                    #    f.uv.append((blender_mesh.verts[tri.vert_index[0]].uvco[0],blender_mesh.verts[tri.vert_index[0]].uvco[1]))
-                    #    f.uv.append((blender_mesh.verts[tri.vert_index[2]].uvco[0],blender_mesh.verts[tri.vert_index[2]].uvco[1]))
-                    #    f.uv.append((blender_mesh.verts[tri.vert_index[1]].uvco[0],blender_mesh.verts[tri.vert_index[1]].uvco[1]))
-                        Tris = Tris + struct.pack("Hhh", tri.vert_index[0],comp_verts[tri.vert_index[0]][0],comp_verts[tri.vert_index[0]][1])
-                        Tris = Tris + struct.pack("Hhh", tri.vert_index[1],comp_verts[tri.vert_index[1]][0],comp_verts[tri.vert_index[1]][1])
-                        Tris = Tris + struct.pack("Hhh", tri.vert_index[2],comp_verts[tri.vert_index[2]][0],comp_verts[tri.vert_index[2]][1])
-                    #    f.smooth = 1 # smooth the face, since md5 has smoothing for all faces. There's no such thing as smoothgroups in an md5.
-                    #    if mesh_image!=None:
-                    #            f.image=mesh_image
-                        #add the face
-                    #    blender_mesh.faces.append(f)
-                #blender_mesh.hasVertexUV(1)
-
-
-		#build the vertex groups from the bone names
-		#loop through the verts and if they are influced by a bone, then they are a member of that vertex group
-		#percentage by weight bias
-
-		#put the object into blender
-    #            if 0: #mesh.shader!="":  # NMesh.PutRaw() will fail if the given name is already used for another mesh...
-    #                translationtable = string.maketrans("\\", "/")
-    #                tempstring = string.translate(mesh.shader, translationtable)
-    #                lindex = string.rfind(tempstring, "/")
-    #                tempstring = string.rstrip(tempstring, ".tga")
-    #                if lindex==-1: lindex=0
-    #                tempstring = tempstring[lindex+1:len(tempstring)]
-    #                mesh_obj=NMesh.PutRaw(blender_mesh, tempstring)
-    #            else:
-    #                mesh_obj=NMesh.PutRaw(blender_mesh)
-		# this line would put it to the cursor location
-		#cursor_pos=Blender.Window.GetCursorPos()
-		#mesh_obj.setLocation(float(cursor_pos[0]),float(cursor_pos[1]),float(cursor_pos[2]))
-
-    #            blender_mesh = mesh_obj.getData() # this seems unnecessary but the Blender documentation recommends it
-    #            if mesh.shader!="":
-    #                translationtable = string.maketrans("\\", "/")
-    #                tempstring = string.translate(mesh.shader, translationtable)
-    #                lindex = string.rfind(tempstring, "/")
-    #                tempstring = string.rstrip(tempstring, ".tga")
-    #                if lindex==-1: lindex=0
-    #                tempstring = tempstring[lindex+1:len(tempstring)]
-    #                mesh_obj.setName(tempstring)
-
-                #vertgroup_created is an array that stores for each bone if the vertex group was already created.
-                # it's used to speed up the weight creation. The alternative would have been to use NMesh.getVertGroupNames()
-                ### Make the QuArK Bones here
-        #        vertgroup_created=[]
-        #        for b in md5_bones:
-        #            vertgroup_created.append(0)
-
-                ### Effect the QuArK Bones here also
-        #        for vert in mesh.verts:
-        #            weight_index=vert.blend_index
-        #            for weight_counter in range(vert.blend_count):
-        #                #get the current weight info
-        #                w=mesh.weights[weight_index+weight_counter]
-        #                #check if vertex group was already created
-        #                if vertgroup_created[w.bone_index]==0:
-        #                    vertgroup_created[w.bone_index]=1
-        #                    blender_mesh.addVertGroup(md5_bones[w.bone_index].name)
-        #                #assign the weight for this vertex
-        #                blender_mesh.assignVertsToGroup(md5_bones[w.bone_index].name, [vert.vert_index], w.bias, 'replace')
-
-        #        armObj.makeParentDeform([mesh_obj], 0, 0)
-
-                # Now we start creating our Import Component and name it.
-                if shader_name is not None:
-                    Comp_name = shader_name.split("/")
-                    Comp_name = Comp_name[len(Comp_name)-1]
-                    Component = quarkx.newobj(str(mesh.mesh_index) + "_" + Comp_name + ':mc')
+                md5_bones[bone_counter].bone_index=bone_counter
+                #get rid of the quotes on either side
+                temp_name=str(words[0])
+                temp_name=temp_name[1:-1]
+                ### QuArK note: this is where we start making our bones.
+                new_bone = quarkx.newobj(temp_name + ":bone")
+                new_bone['position'] = (float(words[3]), float(words[4]), float(words[5]))
+                new_bone.position = quarkx.vect(new_bone.dictspec['position'])
+                new_bone['parent_index'] = words[1] # QuArK code, this is NOT an integer but a string of its integer value.
+                if bone_counter == 0:
+                    new_bone['parent_name'] = "None"
+                    new_bone['bone_length'] = (0.0, 0.0, 0.0)
                 else:
-                    Component = quarkx.newobj(str(mesh.mesh_index) + "_" + "Import Component " + str(CompNbr) + ':mc')
-                    CompNbr = CompNbr + 1
-                md5_model_comps = md5_model_comps + [Component.name]
-                for bone in QuArK_bones[mesh.mesh_index]:
-                    bone['start_component'] = Component.name
-                    bone['end_component'] = Component.name
-                for Cdunde_bone in Cdunde_QuArK_bones[mesh.mesh_index]:
-                    Cdunde_bone['start_component'] = Component.name
-                    Cdunde_bone['end_component'] = Component.name
-                    # This section preserves origianl handle scale settings for each bone of a component.
-                    Cdunde_bone['org_start_scale'] = Cdunde_bone.dictspec['start_scale']
-                    Cdunde_bone['org_end_scale'] = Cdunde_bone.dictspec['end_scale']
-                if shader_file is not None:
-                    Component['shader_file'] = shader_file
-                if shader_name is not None:
-                    Component['shader_name'] = shader_name
+                    new_bone['parent_name'] = QuArK_bones[int(new_bone.dictspec['parent_index'])].name
+                    new_bone['bone_length'] = (-quarkx.vect(QuArK_bones[int(new_bone.dictspec['parent_index'])].dictspec['position']) + quarkx.vect(new_bone.dictspec['position'])).tuple
+                new_bone['rotmatrix'] = "None"
+                new_bone['scale'] = (1.0,)
+                new_bone['component'] = "None" # None for now and get the component name later.
+                new_bone['draw_offset'] = (0.0, 0.0, 0.0)
+                new_bone['_color'] = MapColor("BoneHandles", 3)
+                new_bone['bindmat'] = (float(words[8]), float(words[9]), float(words[10])) # QuArK code, use these values to build this bones matrix (see "quaternion2matrix" code below).
+                new_bone['draw_offset'] = (0.0, 0.0, 0.0)
+                new_bone.rotmatrix = quarkx.matrix((1, 0, 0), (0, 1, 0), (0, 0, 1))
+                new_bone.vtxlist = {}
+                new_bone.vtx_pos = {}
+
+                # QuArK code below, adjust to handles jointscale for other bones connecting to this one and so on.
+                jointscale = 1.0
+                if bone_counter == 0:
+                    parent_bone_scale = jointscale
+                else:
+                    parent_bone_scale = QuArK_bones[int(new_bone.dictspec['parent_index'])].dictspec['scale'][0]
+                if abs(new_bone.dictspec['bone_length'][0]) > abs(new_bone.dictspec['bone_length'][1]):
+                    if  abs(new_bone.dictspec['bone_length'][0]) > abs(new_bone.dictspec['bone_length'][2]):
+                        testscale = abs(new_bone.dictspec['bone_length'][0])
+                    else:
+                        testscale = abs(new_bone.dictspec['bone_length'][2])
+                else:
+                    if  abs(new_bone.dictspec['bone_length'][1]) > abs(new_bone.dictspec['bone_length'][2]):
+                        testscale = abs(new_bone.dictspec['bone_length'][1])
+                    else:
+                        testscale = abs(new_bone.dictspec['bone_length'][2])
+                if testscale < 8:
+                    jointscale = jointscale - (testscale * .08)
+
+                if jointscale < 0.1:
+                    jointscale = 0.1
+                elif jointscale > parent_bone_scale:
+                    jointscale = parent_bone_scale
+
+                new_bone['scale'] = (jointscale,) # Written this way to store it as a tuple.
+
+                md5_bones[bone_counter].name=temp_name
+                md5_bones[bone_counter].parent_index = int(words[1])
+                if md5_bones[bone_counter].parent_index>=0:
+                    md5_bones[bone_counter].parent = md5_bones[md5_bones[bone_counter].parent_index].name
+                md5_bones[bone_counter].bindpos[0]=float(words[3])
+                md5_bones[bone_counter].bindpos[1]=float(words[4])
+                md5_bones[bone_counter].bindpos[2]=float(words[5])
+                qx = float(words[8])
+                qy = float(words[9])
+                qz = float(words[10])
+                qw = 1 - qx*qx - qy*qy - qz*qz
+                if qw<0:
+                    qw=0
+                else:
+                    qw = -sqrt(qw)
+                md5_bones[bone_counter].bindmat = quaternion2matrix([qx,qy,qz,qw])
+
+                QuArK_bones = QuArK_bones + [new_bone]
+
+           # for bone in md5_bones:
+           #     bone.dump()
+
+        elif words and words[0]=="numMeshes":
+            num_meshes=int(words[1])
+
+        elif words and words[0]=="mesh":
+            # Create a new mesh and name it.
+            md5_model.append(md5_mesh())
+            md5_model[mesh_counter].mesh_index = mesh_counter
+            while (not words or (words and words[0]!="}")):
+                line_counter+=1
+                current_line=lines[line_counter]
+                words=current_line.split()
+                if words and words[0]=="shader":
+                    temp_name=str(words[1])
+                    temp_name=temp_name[1:-1]
+                    md5_model[mesh_counter].shader=temp_name
+                if words and words[0]=="vert":
+                    md5_model[mesh_counter].verts.append(md5_vert())
+                    vert_counter=len(md5_model[mesh_counter].verts)-1
+                    #load it with the raw data
+                    md5_model[mesh_counter].verts[vert_counter].vert_index=int(words[1])
+                    md5_model[mesh_counter].verts[vert_counter].uvco[0]=float(words[3])
+                    md5_model[mesh_counter].verts[vert_counter].uvco[1]=(1-float(words[4]))
+                    md5_model[mesh_counter].verts[vert_counter].blend_index=int(words[6])
+                    md5_model[mesh_counter].verts[vert_counter].blend_count=int(words[7])
+                if words and words[0]=="tri":
+                    md5_model[mesh_counter].tris.append(md5_tri())
+                    tri_counter=len(md5_model[mesh_counter].tris)-1
+                    #load it with raw data
+                    md5_model[mesh_counter].tris[tri_counter].tri_index=int(words[1])
+                    md5_model[mesh_counter].tris[tri_counter].vert_index[0]=int(words[2])
+                    md5_model[mesh_counter].tris[tri_counter].vert_index[1]=int(words[3])
+                    md5_model[mesh_counter].tris[tri_counter].vert_index[2]=int(words[4])
+                if words and words[0]=="weight":
+                    md5_model[mesh_counter].weights.append(md5_weight())
+                    weight_counter=len(md5_model[mesh_counter].weights)-1
+                    #load it with raw data
+                    md5_model[mesh_counter].weights[weight_counter].weight_index=int(words[1])
+                    md5_model[mesh_counter].weights[weight_counter].bone_index=int(words[2])
+                    md5_model[mesh_counter].weights[weight_counter].bias=float(words[3])
+                    md5_model[mesh_counter].weights[weight_counter].weights[0]=float(words[5])
+                    md5_model[mesh_counter].weights[weight_counter].weights[1]=float(words[6])
+                    md5_model[mesh_counter].weights[weight_counter].weights[2]=float(words[7])
+                    #md5_model[mesh_counter].weights[weight_counter].dump()
+
+            mesh_counter += 1
+
+    #figure out the base pose for each vertex from the weights
+    bone_vtx_list = {} # { bone_index : { mesh_index : [ vtx, vtx, vtx ...] } }
+    ModelComponentList = {} # { mesh_index : { bone_index : {vtx_index : {'color': '\x00\x00\xff', weight: 1.0} } } }
+    for mesh in md5_model:
+       # mesh.dump()
+        for vert_counter in range(0, len(mesh.verts)):
+            blend_index=mesh.verts[vert_counter].blend_index
+            for blend_counter in range(0, mesh.verts[vert_counter].blend_count):
+                #get the current weight info
+                w=mesh.weights[blend_index+blend_counter]
+                weight_index = blend_index+blend_counter
+                weight_value = md5_model[mesh.mesh_index].weights[weight_index].bias
+                bonename = md5_bones[w.bone_index].name + ":bone"
+                # QuArK code.
+                if md5_model[mesh.mesh_index].verts[vert_counter].blend_count != 1:
+                    if not QuArK_weights_list.has_key(mesh.mesh_index):
+                        QuArK_weights_list[mesh.mesh_index] = {}
+                    if not QuArK_weights_list[mesh.mesh_index].has_key(vert_counter):
+                        QuArK_weights_list[mesh.mesh_index][vert_counter] = {}
+                    QuArK_weights_list[mesh.mesh_index][vert_counter][bonename] = {}
+                    QuArK_weights_list[mesh.mesh_index][vert_counter][bonename]['weight_value'] = weight_value
+                    color = quarkpy.mdlutils.weights_color(editor, weight_value)
+                    QuArK_weights_list[mesh.mesh_index][vert_counter][bonename]['color'] = color
+                    QuArK_weights_list[mesh.mesh_index][vert_counter][bonename]['weight_index'] = weight_index
+
+                #w.dump()
+                #the bone that the current weight is refering to
+                b=md5_bones[w.bone_index]
+                if not mesh.mesh_index in ModelComponentList.keys():
+                    ModelComponentList[mesh.mesh_index] = {}
+                if not w.bone_index in ModelComponentList[mesh.mesh_index].keys():
+                    ModelComponentList[mesh.mesh_index][w.bone_index] = {}
+                if not vert_counter in ModelComponentList[mesh.mesh_index][w.bone_index].keys():
+                    ModelComponentList[mesh.mesh_index][w.bone_index][vert_counter] = {}
+                if not w.bone_index in bone_vtx_list.keys():
+                    bone_vtx_list[w.bone_index] = {}
+                if not mesh.mesh_index in bone_vtx_list[w.bone_index].keys():
+                    bone_vtx_list[w.bone_index][mesh.mesh_index] = []
+                if not vert_counter in bone_vtx_list[w.bone_index][mesh.mesh_index]:
+                    bone_vtx_list[w.bone_index][mesh.mesh_index] = bone_vtx_list[w.bone_index][mesh.mesh_index] + [vert_counter]
+                #print "b: "
+                #b.dump()
+                #a position is the weight position * bone transform matrix (or position)
+                pos=[0.0]*3
+                #print "pos: ", pos
+                pos= vector_by_matrix(w.weights, b.bindmat)
+                #print "pos: ", pos
+                #print "w.bias: ", w.bias
+                #print "b.bindpos: ", b.bindpos
+                pos=((pos[0]+b.bindpos[0])*w.bias, (pos[1]+b.bindpos[1])*w.bias, (pos[2]+b.bindpos[2])*w.bias)
+                #print "pos: ", pos
+                #vertex position is sum of all weight info adjusted for bias
+                mesh.verts[vert_counter].co[0]+=pos[0]
+                mesh.verts[vert_counter].co[1]+=pos[1]
+                mesh.verts[vert_counter].co[2]+=pos[2]
+
+    # Used for QuArK progressbar.
+    firstcomp = str(CompNbr)
+    lastcomp = str(CompNbr + len(md5_model)-1)
+
+    # basepath = The full path to the game folder, ex: "C:\Program Files\Doom 3\base\"
+    for mesh in md5_model: # A new QuArK component needs to be made for each mesh.
+        ### Creates this component's Skins:sg group.
+        # Checks if the model has textures specified with it.
+        skinsize = (256, 256)
+        skingroup = quarkx.newobj('Skins:sg')
+        skingroup['type'] = chr(2)
+        if(mesh.shader!=""): # Make the QuArK Skins here
+            path = mesh.shader.split("\\")
+            path = path[len(path)-1] # This is the full shader we are looking for, ex: "models/monsters/pinky/pinky_metal"
+            shaderspath = basepath + "materials"
+            shaderfiles = os.listdir(shaderspath)
+            for shaderfile in shaderfiles:
+                noimage = ""
+                foundshader = foundtexture = foundimage = imagefile = None
+                mesh_shader = shader_file = shader_name = shader_keyword = qer_editorimage = diffusemap = map = bumpmap = addnormals = heightmap = specularmap = None
+                #read the file in
+                try: # To by pass sub-folders, should make this to check those also.
+                    file=open(shaderspath+"/"+shaderfile,"r")
+                except:
+                    continue
+                lines=file.readlines()
+                file.close()
+                left_cur_braket = 0
+                for line in range(len(lines)):
+                    if foundshader is None and lines[line].startswith(mesh.shader+"\n"):
+                        shaderline = lines[line].replace(chr(9), "    ")
+                        shaderline = shaderline.rstrip()
+                        mesh_shader = "\r\n" + shaderline + "\r\n"
+                        shader_file = shaderspath + "/" + shaderfile
+                        shader_name = mesh.shader
+                        foundshader = mesh.shader
+                        left_cur_braket = 0
+                        continue
+                    if foundshader is not None and lines[line].find("{") != -1:
+                        left_cur_braket = left_cur_braket + 1
+                    if foundshader is not None and lines[line].find("}") != -1:
+                        left_cur_braket = left_cur_braket - 1
+                    if foundshader is not None:
+                        if lines[line].find("qer_editorimage") != -1 or lines[line].find("diffusemap") != -1:
+                            words = lines[line].split()
+                            for word in words:
+                                if word.endswith(".tga"):
+                                    foundtexture = word
+                                    if lines[line].find("qer_editorimage") != -1:
+                                        shader_keyword = "qer_editorimage"
+                                    else:
+                                        shader_keyword = "diffusemap"
+                                    skinname = foundtexture
+                                    skin = quarkx.newobj(skinname)
+                                    break
+                                elif word.find("/") != -1 and (word.startswith("models") or word.startswith("textures")):
+                                    foundtexture = word + ".tga"
+                                    if lines[line].find("qer_editorimage") != -1:
+                                        shader_keyword = "qer_editorimage"
+                                    else:
+                                        shader_keyword = "diffusemap"
+                                    skinname = foundtexture
+                                    skin = quarkx.newobj(skinname)
+                                    break
+                            if foundtexture is not None:
+                                if os.path.isfile(basepath + foundtexture):
+                                    foundimage = basepath + foundtexture
+                                    image = quarkx.openfileobj(foundimage)
+                                    skin['Image1'] = image.dictspec['Image1']
+                                    skin['Size'] = image.dictspec['Size']
+                                    skin['shader_keyword'] = shader_keyword
+                                    skingroup.appenditem(skin)
+                                    if skinsize == (256, 256):
+                                        skinsize = skin['Size']
+                                    foundtexture = None
+                                else: # Keep looking in the shader files, the shader may be in another one.
+                                    imagefile = basepath + foundtexture
+                                    noimage = noimage + "\r\nFound needed shader for Import Component " + str(CompNbr) + ":\r\n    " + mesh.shader + "\r\n" + "in\r\n    " + shaderspath+"/"+shaderfile + "\r\n" + "and the 'diffusemap' image to display.\r\n    " + foundtexture + "\r\n" + "But that image file does not exist.\r\n"
+                        if lines[line].find("bumpmap") != -1 and (not lines[line].find("addnormals") != -1 and not lines[line].find("heightmap") != -1):
+                            words = lines[line].replace("("," ")
+                            words = words.replace(")"," ")
+                            words = words.replace(","," ")
+                            words = words.split()
+                            for word in words:
+                                if word.endswith(".tga"):
+                                    bumpmap = word
+                                elif word.find("/") != -1 and (word.startswith("models") or word.startswith("textures")):
+                                    bumpmap = word + ".tga"
+                        if lines[line].find("addnormals") != -1 or lines[line].find("heightmap") != -1:
+                            words = lines[line].replace("("," ")
+                            words = words.replace(")"," ")
+                            words = words.replace(","," ")
+                            words = words.split()
+                            for word in range(len(words)):
+                                if words[word].find("addnormals") != -1 and words[word+1].find("/") != -1 and (words[word+1].startswith("models") or words[word+1].startswith("textures")):
+                                    addnormals = words[word+1]
+                                    if not addnormals.endswith(".tga"):
+                                        addnormals = addnormals + ".tga"
+                                if words[word].find("heightmap") != -1 and words[word+1].find("/") != -1 and (words[word+1].startswith("models") or words[word+1].startswith("textures")):
+                                    heightmap = words[word+1]
+                                    if not heightmap.endswith(".tga"):
+                                        heightmap = heightmap + ".tga"
+                        elif lines[line].find("specularmap") != -1:
+                            words = lines[line].split()
+                            for word in words:
+                                if word.endswith(".tga"):
+                                    specularmap = word
+                                elif word.find("/") != -1 and (word.startswith("models") or word.startswith("textures")):
+                                    specularmap = word + ".tga"
+                        # Dec character code for space = chr(32), for tab = chr(9)
+                        elif lines[line].find(chr(32)+"map") != -1 or lines[line].find(chr(9)+"map") != -1:
+                            words = lines[line].split()
+                            for word in words:
+                                if word.endswith(".tga") and (word.startswith("models") or word.startswith("textures")) and ((not word.endswith("_dis.tga") and not word.endswith("_dis")) and (not word.endswith("dis2.tga") and not word.endswith("dis2"))):
+                                    map = word
+                                elif word.find("/") != -1 and (word.startswith("models") or word.startswith("textures")) and ((not word.endswith("_dis.tga") and not word.endswith("_dis")) and (not word.endswith("dis2.tga") and not word.endswith("dis2"))):
+                                    map = word + ".tga"
+                            if map is not None and not map in skingroup.dictitems.keys():
+                                imagefile = basepath + map
+                                if os.path.isfile(basepath + map):
+                                    skinname = map
+                                    foundimage = basepath + skinname
+                                    shader_keyword = "map"
+                                    # Make the skin and add it.
+                                    skin = quarkx.newobj(skinname)
+                                    image = quarkx.openfileobj(foundimage)
+                                    skin['Image1'] = image.dictspec['Image1']
+                                    skin['Size'] = image.dictspec['Size']
+                                    skin['shader_keyword'] = shader_keyword
+                                    skingroup.appenditem(skin)
+                                    if skinsize == (256, 256):
+                                        skinsize = skin['Size']
+                                else:
+                                    noimage = noimage + "\r\nFound needed shader for Import Component " + str(CompNbr) + ":\r\n    " + mesh.shader + "\r\n" + "in\r\n    " + shaderspath+"/"+shaderfile + "\r\n" + "but the texture image file it calls to display\r\n    " + imagefile + "\r\nis not there or has a different name.\r\nMake a copy of the file and rename it or\r\ncheck the shader and make a correction to add it.\r\n"
+                        else:
+                            if lines[line].find("/") != -1:
+                                if lines[line-1].find("qer_editorimage") != -1 or lines[line-1].find("diffusemap") != -1 or lines[line-1].find("bumpmap") != -1 or lines[line-1].find("addnormals") != -1 or lines[line-1].find("heightmap") != -1 or lines[line-1].find("specularmap") != -1 or lines[line].find(chr(32)+"map") != -1 or lines[line].find(chr(9)+"map") != -1:
+                                    words = lines[line].replace("("," ")
+                                    words = words.replace(")"," ")
+                                    words = words.replace(","," ")
+                                    words = words.split()
+                                    image = None
+                                    for word in words:
+                                        if word.endswith(".tga") and (word.startswith("models") or word.startswith("textures")) and ((not word.endswith("_dis.tga") and not word.endswith("_dis")) and (not word.endswith("dis2.tga") and not word.endswith("dis2"))):
+                                            image = word
+                                        elif word.find("/") != -1 and (word.startswith("models") or word.startswith("textures")) and ((not word.endswith("_dis.tga") and not word.endswith("_dis")) and (not word.endswith("dis2.tga") and not word.endswith("dis2"))):
+                                            image = word + ".tga"
+                                    if (image is not None) and (not image in skingroup.dictitems.keys()):
+                                        words = lines[line-1].replace("("," ")
+                                        words = words.replace(")"," ")
+                                        words = words.replace(","," ")
+                                        words = words.split()
+                                        keys = [qer_editorimage, diffusemap, bumpmap, addnormals, heightmap, specularmap, map]
+                                        words.reverse() # Work our way backwards to get the last key name first.
+                                        for word in range(len(words)):
+                                            if words[word] in keys:
+                                                imagefile = basepath + image
+                                                if os.path.isfile(basepath + image):
+                                                    skinname = image
+                                                    foundimage = basepath + skinname
+                                                    shader_keyword = words[word]
+                                                    # Make the skin and add it.
+                                                    skin = quarkx.newobj(skinname)
+                                                    image = quarkx.openfileobj(foundimage)
+                                                    skin['Image1'] = image.dictspec['Image1']
+                                                    skin['Size'] = image.dictspec['Size']
+                                                    skin['shader_keyword'] = shader_keyword
+                                                    skingroup.appenditem(skin)
+                                                    if skinsize == (256, 256):
+                                                        skinsize = skin['Size']
+                                                else:
+                                                    noimage = noimage + "\r\nFound needed shader for Import Component " + str(CompNbr) + ":\r\n    " + mesh.shader + "\r\n" + "in\r\n    " + shaderspath+"/"+shaderfile + "\r\n" + "but the texture image file it calls to display\r\n    " + imagefile + "\r\nis not there or has a different name.\r\nMake a copy of the file and rename it or\r\ncheck the shader and make a correction to add it.\r\n"
+                        shaderline = lines[line].replace(chr(9), "    ")
+                        shaderline = shaderline.rstrip()
+                        if mesh_shader is not None:
+                            mesh_shader = mesh_shader + shaderline + "\r\n"
+                        if lines[line].find("}") != -1 and left_cur_braket == 0: # Done reading shader so break out of reading this file.
+                            break
                 if mesh_shader is not None:
-                    Component['mesh_shader'] = mesh_shader
-                Component['skinsize'] = skinsize
-                Component['Tris'] = Tris
-                Component['show'] = chr(1)
-                sdogroup = quarkx.newobj('SDO:sdo')
-                Component.appenditem(sdogroup)
-                Component.appenditem(skingroup)
-                Component.appenditem(framesgroup)
-                ComponentList = ComponentList + [Component]
-            #    progressbar.close() # un-comment this line once progress bar is set up
-            #    if len(polynames) > 1:
-            #        Strings[2454] = Strings[2454].replace("Processing Components " + firstcomp + " to " + lastcomp + "\n" + "Import Component " + str(CompNbr) + "\n\n", "")
-            #    else:
-            #        Strings[2454] = Strings[2454].replace("Import Component " + str(CompNbr) + "\n", "")
+                    if bumpmap is not None:
+                        imagefile = basepath + bumpmap
+                        if os.path.isfile(basepath + bumpmap):
+                            skinname = bumpmap
+                            foundimage = basepath + skinname
+                            shader_keyword = "bumpmap"
+                            # Make the skin and add it.
+                            skin = quarkx.newobj(skinname)
+                            image = quarkx.openfileobj(foundimage)
+                            skin['Image1'] = image.dictspec['Image1']
+                            skin['Size'] = image.dictspec['Size']
+                            skin['shader_keyword'] = shader_keyword
+                            skingroup.appenditem(skin)
+                            if skinsize == (256, 256):
+                                skinsize = skin['Size']
+                        else:
+                            noimage = noimage + "\r\nFound needed shader for Import Component " + str(CompNbr) + ":\r\n    " + mesh.shader + "\r\n" + "in\r\n    " + shaderspath+"/"+shaderfile + "\r\n" + "but the texture image file it calls to display\r\n    " + imagefile + "\r\nis not there or has a different name.\r\nMake a copy of the file and rename it or\r\ncheck the shader and make a correction to add it.\r\n"
+                    if addnormals is not None:
+                        imagefile = basepath + addnormals
+                        if os.path.isfile(basepath + addnormals):
+                            skinname = addnormals
+                            foundimage = basepath + skinname
+                            shader_keyword = "addnormals"
+                            # Make the skin and add it.
+                            skin = quarkx.newobj(skinname)
+                            image = quarkx.openfileobj(foundimage)
+                            skin['Image1'] = image.dictspec['Image1']
+                            skin['Size'] = image.dictspec['Size']
+                            skin['shader_keyword'] = shader_keyword
+                            skingroup.appenditem(skin)
+                            if skinsize == (256, 256):
+                                skinsize = skin['Size']
+                        else:
+                            noimage = noimage + "\r\nFound needed shader for Import Component " + str(CompNbr) + ":\r\n    " + mesh.shader + "\r\n" + "in\r\n    " + shaderspath+"/"+shaderfile + "\r\n" + "but the texture image file it calls to display\r\n    " + imagefile + "\r\nis not there or has a different name.\r\nMake a copy of the file and rename it or\r\ncheck the shader and make a correction to add it.\r\n"
+                    if heightmap is not None:
+                        imagefile = basepath + heightmap
+                        if os.path.isfile(basepath + heightmap):
+                            skinname = heightmap
+                            foundimage = basepath + skinname
+                            shader_keyword = "heightmap"
+                            # Make the skin and add it.
+                            skin = quarkx.newobj(skinname)
+                            image = quarkx.openfileobj(foundimage)
+                            skin['Image1'] = image.dictspec['Image1']
+                            skin['Size'] = image.dictspec['Size']
+                            skin['shader_keyword'] = shader_keyword
+                            skingroup.appenditem(skin)
+                            if skinsize == (256, 256):
+                                skinsize = skin['Size']
+                        else:
+                            noimage = noimage + "\r\nFound needed shader for Import Component " + str(CompNbr) + ":\r\n    " + mesh.shader + "\r\n" + "in\r\n    " + shaderspath+"/"+shaderfile + "\r\n" + "but the texture image file it calls to display\r\n    " + imagefile + "\r\nis not there or has a different name.\r\nMake a copy of the file and rename it or\r\ncheck the shader and make a correction to add it.\r\n"
+                    if specularmap is not None:
+                        imagefile = basepath + specularmap
+                        if os.path.isfile(basepath + specularmap):
+                            skinname = specularmap
+                            foundimage = basepath + skinname
+                            shader_keyword = "specularmap"
+                            # Make the skin and add it.
+                            skin = quarkx.newobj(skinname)
+                            image = quarkx.openfileobj(foundimage)
+                            skin['Image1'] = image.dictspec['Image1']
+                            skin['Size'] = image.dictspec['Size']
+                            skin['shader_keyword'] = shader_keyword
+                            skingroup.appenditem(skin)
+                            if skinsize == (256, 256):
+                                skinsize = skin['Size']
+                        else:
+                            noimage = noimage + "\r\nFound needed shader for Import Component " + str(CompNbr) + ":\r\n    " + mesh.shader + "\r\n" + "in\r\n    " + shaderspath+"/"+shaderfile + "\r\n" + "but the texture image file it calls to display\r\n    " + imagefile + "\r\nis not there or has a different name.\r\nMake a copy of the file and rename it or\r\ncheck the shader and make a correction to add it.\r\n"
+                    if imagefile is None:
+                        imagefile = "NO IMAGE FILE FOUND AT ALL, CHECK THE SHADER."
+                    break
+                if foundshader is not None: # Found the shader so break out of the shader files loop.
+                    break
+            if len(noimage) > 0:
+                message = message + noimage
+            if mesh.shader is not None and foundshader is None: # This component has an image but no shader was found, so...
+                texturepath = basepath + "/" + mesh.shader + ".tga"
+                if os.path.isfile(texturepath): # May not be a shader so we look for a texture with the same image name.
+                    skinname = mesh.shader + ".tga"
+                    skin = quarkx.newobj(skinname)
+                    foundimage = basepath + skinname
+                    image = quarkx.openfileobj(foundimage)
+                    skin['Image1'] = image.dictspec['Image1']
+                    skin['Size'] = image.dictspec['Size']
+                    skingroup.appenditem(skin)
+                    if skinsize == (256, 256):
+                        skinsize = skin['Size']
+                else: # If no texture is found then we are missing the shader.
+                    message = message + "\r\nImport Component " + str(CompNbr) + " calls for the shader:\r\n    " + mesh.shader + "\r\n" + "but it could not be located in\r\n    " + shaderspath + "\r\n" + "Extract shader file to this folder\r\nor create a shader file if needed.\r\n"
 
-      #          QuArK_mesh_counter = QuArK_mesh_counter + 1
+        # QuArK Frames group, frames and frame vertices section.
+        framesgroup = quarkx.newobj('Frames:fg') # QuArK Frames group made here.
+        frame = quarkx.newobj('meshframe' + ':mf') # QuArK frame made here.
+        comp_mesh = ()
+        comp_verts = []
+        for vert in mesh.verts: # QuArK frame Vertices made here.
+                comp_mesh = comp_mesh + (vert.co[0], vert.co[1], vert.co[2])
+                #add the uv coords to the vertex
+                # As a percentage of the QuArK Skinview1.clientarea for X and Y.
+                U = int(skinsize[0] * vert.uvco[0])
+                V = int(skinsize[1] * vert.uvco[1])
+                V = -V + skinsize[1]
+                v = (U, V)
+                #add the vertex to the mesh
+                comp_verts = comp_verts + [v]
+        frame['Vertices'] = comp_mesh
+        framesgroup.appenditem(frame)
+        # QuArK Tris made here.
+        Tris = ''
+        for tri in mesh.tris:
+                Tris = Tris + struct.pack("Hhh", tri.vert_index[0],comp_verts[tri.vert_index[0]][0],comp_verts[tri.vert_index[0]][1])
+                Tris = Tris + struct.pack("Hhh", tri.vert_index[1],comp_verts[tri.vert_index[1]][0],comp_verts[tri.vert_index[1]][1])
+                Tris = Tris + struct.pack("Hhh", tri.vert_index[2],comp_verts[tri.vert_index[2]][0],comp_verts[tri.vert_index[2]][1])
 
-    #    return armObj
-      #  for QuArK_group in range(QuArK_group_counter):
-      #      print "================================="
-      #      group = Cdunde_QuArK_bones[QuArK_group]
-      #      print "line 1154 QuArK_group ",QuArK_group
-      #      print "---------------------------------"
-      #      for bones in group:
-      #          print bones.name
-      #          print "-----------"
-      #          print bones.dictspec
-      #          print ""
-      #      print "================================="
-      #  print ""
-      #  print ""
-      #  print "line 1164 QuArK_bone_list"
-      #  print QuArK_bone_list
-      #  print ""
-      #  print ""
-      #  print "line 1168 ComponentList"
-      #  print ComponentList
-      #  print ""
-      #  print ""
+        # Now we start creating our Import Component and name it.
+        if shader_name is not None:
+            Comp_name = shader_name.split("/")
+            Comp_name = Comp_name[len(Comp_name)-1]
+            Component = quarkx.newobj(Comp_name + ':mc')
+        else:
+            Component = quarkx.newobj("Import Component " + str(CompNbr) + ':mc')
+            CompNbr = CompNbr + 1
+        md5_model_comps = md5_model_comps + [Component.name]
+        if mesh.mesh_index == 0:
+            for bone in QuArK_bones:
+                bone['component'] = Component.name
+                # This next line preserves origianl handle scale setting for each bone.
+                bone['org_scale'] = bone.dictspec['scale']
+        if shader_file is not None:
+            Component['shader_file'] = shader_file
+        if shader_name is not None:
+            Component['shader_name'] = shader_name
+        if mesh_shader is not None:
+            Component['mesh_shader'] = mesh_shader
+        Component['skinsize'] = skinsize
+        Component['Tris'] = Tris
+        Component['show'] = chr(1)
+        sdogroup = quarkx.newobj('SDO:sdo')
+        Component.appenditem(sdogroup)
+        Component.appenditem(skingroup)
+        Component.appenditem(framesgroup)
+        ComponentList = ComponentList + [Component]
+    #    progressbar.close() # un-comment this line once progress bar is set up
+    #    if len(polynames) > 1:
+    #        Strings[2454] = Strings[2454].replace("Processing Components " + firstcomp + " to " + lastcomp + "\n" + "Import Component " + str(CompNbr) + "\n\n", "")
+    #    else:
+    #        Strings[2454] = Strings[2454].replace("Import Component " + str(CompNbr) + "\n", "")
 
-    #    return ComponentList, QuArK_bone_list, message # Gives a list of ALL bone as they are created, same as in the .md5mesh file.
-        return ComponentList, Cdunde_QuArK_bones, message # Gives a list of ALL bone as they are created, same as in the .md5mesh file.
+    # Section below gives all the bones their bone.vtxlist and bone.vtx_pos is set to an empty dictionary to keep from pulling the bone off of its set position.
+    for bone_index in range(len(QuArK_bones)):
+        if bone_vtx_list.has_key(bone_index):
+            temp_vtxlist = {}
+            for mesh_index in bone_vtx_list[bone_index].keys():
+                compkey = ComponentList[mesh_index].name
+                temp_vtxlist[compkey] = bone_vtx_list[bone_index][mesh_index]
+            QuArK_bones[bone_index].vtxlist = temp_vtxlist
+            QuArK_bones[bone_index].vtx_pos = {}
+    # Section below sets up the QuArK editor.ModelComponentList for each mesh.
+    for mesh_index in ModelComponentList.keys():
+        compname = ComponentList[mesh_index].name
+        if not editor.ModelComponentList.has_key(compname):
+            editor.ModelComponentList[compname] = {}
+            editor.ModelComponentList[compname]['bonevtxlist'] = {}
+        for bone_index in ModelComponentList[mesh_index].keys():
+            bonename = QuArK_bones[bone_index].name
+            if not editor.ModelComponentList[compname]['bonevtxlist'].has_key(bonename):
+                editor.ModelComponentList[compname]['bonevtxlist'][bonename] = {}
+            for vtx_index in ModelComponentList[mesh_index][bone_index].keys():
+                editor.ModelComponentList[compname]['bonevtxlist'][bonename][vtx_index] = ModelComponentList[mesh_index][bone_index][vtx_index]
+                editor.ModelComponentList[compname]['bonevtxlist'][bonename][vtx_index]['color'] = QuArK_bones[bone_index].dictspec['_color']
+        if QuArK_weights_list.has_key(mesh_index) and len(QuArK_weights_list[mesh_index].keys()) != 0:
+            if not editor.ModelComponentList[compname].has_key("weightvtxlist"):
+                editor.ModelComponentList[compname]['weightvtxlist'] = {}
+            for vertex in QuArK_weights_list[mesh_index].keys():
+                if not editor.ModelComponentList[compname]['weightvtxlist'].has_key(vertex):
+                    editor.ModelComponentList[compname]['weightvtxlist'][vertex] = QuArK_weights_list[mesh_index][vertex]
+
+    return ComponentList, QuArK_bones, message # Gives a list of ALL bone as they are created, same as in the .md5mesh file.
 
 class md5anim_bone:
     name = ""
@@ -1182,23 +1010,14 @@ class md5anim_bone:
     frameDataIndex = 0
     bindpos = []
     bindquat = []
-    #bindmat = []
-    posemat = None #armature-space pose matrix, needed to import animation
-    restmat = None
-    invrestmat = None
     
     def __init__(self):
         name = ""
         self.bindpos=[0.0]*3
         self.bindquat=[0.0]*4
-        #self.bindmat=[None]*3  #is this how you initilize a 2d-array
-        #for i in range(3): self.bindmat[i] = [0.0]*3
         self.parent_index = 0
         self.flags = 0
         self.frameDataIndex = 0
-        self.restmat = None
-        self.invrestmat = None
-        self.posemat = None
 
         
 class md5anim:
@@ -1229,27 +1048,22 @@ class md5anim:
 
             if words and words[0]=="numJoints":
                 self.num_bones=int(words[1])
-        #        print "num_bones: ", self.num_bones
-                
+
             elif words and words[0]=="numFrames":
                 self.numFrames=int(words[1])
-        #        print "num_frames: ", self.numFrames
-                #fill framedata array with numframes empty arrays
                 self.framedata = [[]]*self.numFrames
-                
+
             elif words and words[0]=="frameRate":
                 self.frameRate=int(words[1])
-        #        print "frameRate: ", self.frameRate
-                
+
             elif words and words[0]=="numAnimatedComponents":
                 self.numAnimatedComponents=int(words[1])
-        #        print "numAnimatedComponents: ", self.numAnimatedComponents
-                
+
             elif words and words[0]=="hierarchy":
                 for bone_counter in range(0,self.num_bones):
                     #make a new bone
                     self.md5anim_bones.append(md5anim_bone())
-		    #next line
+                    #next line
                     line_counter+=1
                     current_line=lines[line_counter]
                     words=current_line.split()
@@ -1259,33 +1073,15 @@ class md5anim:
                         current_line=lines[line_counter]
                         words=current_line.split()
 
-                    #self.md5anim_bones[bone_counter].bone_index=bone_counter
                     #get rid of the quotes on either side
                     temp_name=str(words[0])
                     temp_name=temp_name[1:-1]
                     self.md5anim_bones[bone_counter].name=temp_name
-            #        print "found bone: ", self.md5anim_bones[bone_counter].name
                     self.md5anim_bones[bone_counter].parent_index = int(words[1])
-                    if self.md5anim_bones[bone_counter].parent_index>=0:
-                        self.md5anim_bones[bone_counter].parent = self.md5anim_bones[self.md5anim_bones[bone_counter].parent_index].name
                     self.md5anim_bones[bone_counter].flags = int(words[2])
                     self.md5anim_bones[bone_counter].frameDataIndex=int(words[3])
-                    for compbone in range(len(md5_model)):
-                        if self.md5anim_bones[bone_counter].parent_index>=0:
-                            bones.dictitems[str(compbone) + "_" + temp_name + ":bone"]['parent_index'] = words[1]
-                            bones.dictitems[str(compbone) + "_" + temp_name + ":bone"]['parent'] = str(compbone) + "_" + self.md5anim_bones[bone_counter].parent + ":bone"
-                            bones.dictitems[str(compbone) + "_" + temp_name + ":bone"]['flags'] = words[2]
-                            bones.dictitems[str(compbone) + "_" + temp_name + ":bone"]['frameDataIndex'] = words[3]
-                        
-
 
             elif words and words[0]=="baseframe":
-                comp_baseframes = []
-                for comp in range(len(md5_model)):
-                    newframe = editor.Root.dictitems[md5_model_comps[comp]].dictitems['Frames:fg'].dictitems['meshframe:mf']
-                    baseframe = newframe.copy()
-                    baseframe.shortname = "baseframe"
-                    comp_baseframes = comp_baseframes + [baseframe]
                 for bone_counter in range(0,self.num_bones):
                     line_counter+=1
                     current_line=lines[line_counter]
@@ -1308,19 +1104,6 @@ class md5anim:
                         qw = -sqrt(qw)
                     self.md5anim_bones[bone_counter].bindquat = [qx,qy,qz,qw]
 
-                    if bone_counter == 0: # Send it back for the next bone which is our first QuArK bone 0 (zero).
-                        continue
-
-                    if bone_counter < self.num_bones:
-                        for compbone in range(len(md5_model)):
-                            baseframe = comp_baseframes[compbone]
-                            bones.dictitems[str(compbone) + "_" + self.md5anim_bones[bone_counter].name + ":bone"]['bindpos'] = (float(words[1]), float(words[2]), float(words[3])) # QuArK code, use these values as the baseframe's bone end_handle .md5anim file positions. (see "apply" function code below for its use).
-                            bones.dictitems[str(compbone) + "_" + self.md5anim_bones[bone_counter].name + ":bone"]['bindquat'] = (float(words[6]), float(words[7]), float(words[8])) # QuArK code, use these values to build this bones matrix (see "(qx,qy,qz,qw) = md5b.bindquat" in "apply" function code below for its use).
-
-                for compbone in range(len(md5_model)):
-                    newframe = comp_baseframes[compbone]
-                    editor.Root.dictitems[md5_model_comps[compbone]].dictitems['Frames:fg'].appenditem(newframe)
-
             elif words and words[0]=="frame":
                 framenumber = int(words[1])
                 self.framedata[framenumber]=[]
@@ -1334,174 +1117,131 @@ class md5anim:
                     current_line=lines[line_counter]
                     words=current_line.split()
 
-    def apply(self, bones, animfile):   # (for Blender) "bones" is a "joint" or bone, "animfile" is the full ,md5anim file name only.
-                                        # (for QuArK)   "bones" is QuArK's "Skeleton:bg" folder.
-        from quarkpy.qbaseeditor import currentview
-        frames_per_component = []
-        for comp in md5_model_comps:
-            component_frames = []
-            compcount = comp.split("_", 1)[0]
-            editor.Root.currentcomponent = editor.Root.dictitems[comp]
-            baseframe = editor.Root.currentcomponent.dictitems['Frames:fg'].dictitems['meshframe:mf']
-            editor.Root.currentcomponent.currentframe = baseframe
-            for frame in range(1, self.numFrames+1):
-                newframe = baseframe.copy()
-                newframe.shortname = "frame" + str(frame)
-                l_base = None
-                q_base = None
-                for bone in range(len(bones.subitems)):
-                    if bones.subitems[bone].name.split("_", 1)[0] != compcount:
-                        continue
-                    origin_flags = self.md5anim_bones[0].flags
-                    origin_frameDataIndex = self.md5anim_bones[0].frameDataIndex
-                    origin_bindpos = self.md5anim_bones[0].bindpos
-                    origin_bindquat = self.md5anim_bones[0].bindquat
-                    # Changing to "bone" causes eyebrows to move with rest of model.
-                    qx,qy,qz = bones.subitems[bone].dictspec['bindquat']
-                    # Changing to "bones" causes eyebrows to remain fixed in one spot.
-         #1           qx,qy,qz = bones.subitems[0].dictspec['bindquat']
-                    if int(bones.subitems[bone].dictspec['frameDataIndex']) == 0 and q_base is not None:
-                        qx,qy,qz = q_base
-                    qw = 1 - qx*qx - qy*qy - qz*qz
-                    if qw<0:
-                        qw=0
-                    else:
-                        qw = -sqrt(qw)
-                    lx,ly,lz = bones.subitems[0].dictspec['bindpos']
-    #                lx,ly,lz = bones.subitems[0].dictspec['end_point']
-             #       lx,ly,lz = bones.subitems[0].dictspec['start_point']
-        #1            frameDataIndex = int(bones.subitems[0].dictspec['frameDataIndex'])
-                    frameDataIndex = int(bones.subitems[bone].dictspec['frameDataIndex'])
-                    usebone = 0
-                    if int(bones.subitems[bone].dictspec['frameDataIndex']) != 0:
-                        usebone = 1
-                 #   print ""
-                 #   print ""
-                 #   print ""
-                 #   print newframe.shortname
-                 #   print "bone.name -->",bones.subitems[bone].name
-                 #   print "bone bindpos -->",bones.subitems[bone].dictspec['bindpos']
-                 #   print "bone bindquat -->",bones.subitems[bone].dictspec['bindquat']
-                 #   print "bone frameDataIndex -->",bones.subitems[bone].dictspec['frameDataIndex']
-                 #   print "ACTUAL frameDataIndex -->",frameDataIndex
-                 #   print "bone flags -->",int(bones.subitems[bone].dictspec['flags'])
-                 #   print "bone flags & 1 -->",(int(bones.subitems[bone].dictspec['flags']) & 1)
-                 #   print "bone flags & 2 -->",(int(bones.subitems[bone].dictspec['flags']) & 2)
-                 #   print "bone flags & 4 -->",(int(bones.subitems[bone].dictspec['flags']) & 4)
-                 #   print "bone flags & 8 -->",(int(bones.subitems[bone].dictspec['flags']) & 8)
-                 #   print "bone flags & 16 -->",(int(bones.subitems[bone].dictspec['flags']) & 16)
-                 #   print "bone flags & 32 -->",(int(bones.subitems[bone].dictspec['flags']) & 32)
-                 #   print "self.framedata[frame-1] -->",frame-1
-                 #   print self.framedata[frame-1]
-                 #   print ""
-       #1             if (int(bones.subitems[0].dictspec['flags']) & 1): # Tx
-                    if (int(bones.subitems[bone].dictspec['flags']) & 1): # Tx
-                        lx = self.framedata[frame-1][frameDataIndex]
-                        frameDataIndex+=1
-                 #       print "in flags 1 bone, frameDataIndex",bones.subitems[bone].name, frameDataIndex
-       #1             if (int(bones.subitems[0].dictspec['flags']) & 2): # Ty
-                    if (int(bones.subitems[bone].dictspec['flags']) & 2): # Ty
-                        ly = self.framedata[frame-1][frameDataIndex]
-                        frameDataIndex+=1
-                 #       print "in flags 2 bone, frameDataIndex",bones.subitems[bone].name, frameDataIndex
-       #1             if (int(bones.subitems[0].dictspec['flags']) & 4): # Tz
-                    if (int(bones.subitems[bone].dictspec['flags']) & 4): # Tz
-                        lz = self.framedata[frame-1][frameDataIndex]
-                        frameDataIndex+=1
-                 #   print "md5import line 1407 bone, lx, ly, lz",bones.subitems[bone].name, lx, ly, lz
-       #1             if (int(bones.subitems[0].dictspec['flags']) & 8): # Qx
-                    if (int(bones.subitems[bone].dictspec['flags']) & 8): # Qx
-                 #       print "md5import line 1410 bone, flags, frameDataIndex",bones.subitems[bone].name, bones.subitems[bone].dictspec['flags'], frameDataIndex
-                        try:
-                            if usebone != 0:
-                                frameDataIndex = int(bones.subitems[bone].dictspec['frameDataIndex'])
-                 #               print "line 1414 frameDataIndex",frameDataIndex
-                                qy = self.framedata[frame-1][frameDataIndex]
-                            else:
-                                qx = self.framedata[frame-1][frameDataIndex]*-1
-                            frameDataIndex+=1
-                        except:
-                            pass
-       #1             if (int(bones.subitems[0].dictspec['flags']) & 16): # Qy
-                    if (int(bones.subitems[bone].dictspec['flags']) & 16): # Qy
-                        try:
-                            if usebone != 0:
-                 #               print "line 1425 frameDataIndex",frameDataIndex
-                                qz = self.framedata[frame-1][frameDataIndex]*-1
-                            else:
-                                qy = self.framedata[frame-1][frameDataIndex]
-                            frameDataIndex+=1
-                        except:
-                            pass
-       #1             if (int(bones.subitems[0].dictspec['flags']) & 32): # Qz
-                    if (int(bones.subitems[bone].dictspec['flags']) & 32): # Qz
-                        try:
-                            if usebone != 0:
-                 #               print "line 1436 frameDataIndex",frameDataIndex
-                                qx = self.framedata[frame-1][frameDataIndex]*-1
-                            else:
-                                qz = self.framedata[frame-1][frameDataIndex]*-1
-                        except:
-                            pass
-                 #   print "md5import line 1442 qx, qy, qz, frameDataIndex",qx, qy, qz, frameDataIndex
-                    if int(bones.subitems[bone].dictspec['flags']) != 0 and int(bones.subitems[bone].dictspec['frameDataIndex']) == 0:
-                        q_base = (qx, qy, qz)
-                    qw = 1 - qx*qx - qy*qy - qz*qz
-                    if qw<0:
-                        qw=0
-                    else:
-                        qw = -sqrt(qw)
-                    lmat = quaternion2matrix([qx,qy,qz,qw])
-                    lmat[3][0] = lx*scale
-                    lmat[3][1] = ly*scale
-                    lmat[3][2] = lz*scale
-                #    print ""
-                #    print "md5_import line 1453 HELP! QuArK needs matrix work here --> lmat -->",lmat
-                #    print ""
-                #    print "md5_import line 1455 matrix2quaternion(m)",matrix2quaternion(lmat)
-                #    print "lmat",lmat
-                #    print ""
-     #               m = ((-lmat[0][0],lmat[0][1],-lmat[0][2]), (-lmat[2][0],-lmat[2][1],lmat[2][2]), (-lmat[1][0],lmat[1][1],-lmat[1][2]))
-      #              m = ((-lmat[1][2],lmat[1][0],lmat[1][1]), (lmat[0][2],-lmat[0][0],lmat[0][1]), (lmat[2][2],lmat[2][0],-lmat[2][1]))
-       #             m = ((-lmat[1][2],lmat[1][0],-lmat[1][1]), (lmat[0][2],-lmat[0][0],-lmat[0][1]), (lmat[2][2],lmat[2][0],-lmat[2][1]))
-        #            m = ((-lmat[1][2],lmat[1][0],-lmat[1][1]), (-lmat[0][2],-lmat[0][0],-lmat[0][1]), (lmat[2][2],lmat[2][0],-lmat[2][1]))
-         #           m = ((-lmat[1][2],-lmat[1][0],lmat[1][1]), (-lmat[0][2],-lmat[0][0],-lmat[0][1]), (lmat[2][2],lmat[2][0],-lmat[2][1]))
-          #          m = ((-lmat[1][2],-lmat[1][0],lmat[1][1]), (-lmat[0][2],-lmat[0][0],-lmat[0][1]), (lmat[2][2],-lmat[2][0],-lmat[2][1]))
-           #         m = ((-lmat[1][2],-lmat[1][0],lmat[1][1]), (-lmat[0][2],-lmat[0][0],-lmat[0][1]), (lmat[2][2],-lmat[2][0],-lmat[2][1]))
+    def apply(self, skelgroup, animfile):
+        global editor
+        filename = animfile.replace(".md5anim", "")
+        #Construct baseframe data
+        QuArK_baseframe_position_raw = [[]]*self.num_bones
+        QuArK_baseframe_matrix_raw = [[]]*self.num_bones
+        for bone_counter in range(0,self.num_bones):
+            QuArK_baseframe_position_raw[bone_counter] = quarkx.vect((self.md5anim_bones[bone_counter].bindpos[0], self.md5anim_bones[bone_counter].bindpos[1], self.md5anim_bones[bone_counter].bindpos[2]))
+            tempmatrix = quaternion2matrix(self.md5anim_bones[bone_counter].bindquat)
+            QuArK_baseframe_matrix_raw[bone_counter] = quarkx.matrix(((tempmatrix[0][0], tempmatrix[1][0], tempmatrix[2][0]), (tempmatrix[0][1], tempmatrix[1][1], tempmatrix[2][1]), (tempmatrix[0][2], tempmatrix[1][2], tempmatrix[2][2])))
+        #Construct animation frame data
+        QuArK_frame_position_raw = [[]]*self.numFrames
+        QuArK_frame_matrix_raw = [[]]*self.numFrames
+        for frame_counter in range(0,self.numFrames):
+            QuArK_frame_position_raw[frame_counter] = [[]]*self.num_bones
+            QuArK_frame_matrix_raw[frame_counter] = [[]]*self.num_bones
+            for bone_counter in range(0,self.num_bones):
+                currentbone = self.md5anim_bones[bone_counter]
+                lx, ly, lz = currentbone.bindpos
+                (qx, qy, qz, qw) = currentbone.bindquat
+                frameDataIndex = currentbone.frameDataIndex
+                if (currentbone.flags & 1):
+                    lx = self.framedata[frame_counter][frameDataIndex]
+                    frameDataIndex+=1
+                if (currentbone.flags & 2):
+                    ly = self.framedata[frame_counter][frameDataIndex]
+                    frameDataIndex+=1
+                if (currentbone.flags & 4):
+                    lz = self.framedata[frame_counter][frameDataIndex]
+                    frameDataIndex+=1
+                if (currentbone.flags & 8):
+                    qx = self.framedata[frame_counter][frameDataIndex]
+                    frameDataIndex+=1
+                if (currentbone.flags & 16):
+                    qy = self.framedata[frame_counter][frameDataIndex]
+                    frameDataIndex+=1
+                if (currentbone.flags & 32):
+                    qz = self.framedata[frame_counter][frameDataIndex]
+                qw = 1 - qx*qx - qy*qy - qz*qz
+                if qw<0:
+                    qw=0
+                else:
+                    qw = -sqrt(qw)
+                QuArK_frame_position_raw[frame_counter][bone_counter] = quarkx.vect((lx, ly, lz))
+                tempmatrix = quaternion2matrix([qx, qy, qz, qw])
+                QuArK_frame_matrix_raw[frame_counter][bone_counter] = quarkx.matrix(((tempmatrix[0][0], tempmatrix[1][0], tempmatrix[2][0]), (tempmatrix[0][1], tempmatrix[1][1], tempmatrix[2][1]), (tempmatrix[0][2], tempmatrix[1][2], tempmatrix[2][2])))
+        #Process baseframe data
+        QuArK_baseframe_position = [[]]*self.num_bones
+        QuArK_baseframe_matrix = [[]]*self.num_bones
+        for bone_counter in range(0,self.num_bones):
+            currentbone = self.md5anim_bones[bone_counter]
+            if currentbone.parent_index < 0:
+                QuArK_baseframe_position[bone_counter] = QuArK_baseframe_position_raw[bone_counter]
+                QuArK_baseframe_matrix[bone_counter] = QuArK_baseframe_matrix_raw[bone_counter]
+            else:
+                MatrixParent = QuArK_baseframe_matrix[currentbone.parent_index]
+                temppos = MatrixParent * QuArK_baseframe_position_raw[bone_counter]
+                QuArK_baseframe_position[bone_counter] = QuArK_baseframe_position[currentbone.parent_index] + temppos
+                QuArK_baseframe_matrix[bone_counter] = MatrixParent * QuArK_baseframe_matrix_raw[bone_counter]
+        #Process animation frame data
+        QuArK_frame_position = [[]]*self.numFrames
+        QuArK_frame_matrix = [[]]*self.numFrames
+        for frame_counter in range(0,self.numFrames):
+            QuArK_frame_position[frame_counter] = [[]]*self.num_bones
+            QuArK_frame_matrix[frame_counter] = [[]]*self.num_bones
+            for bone_counter in range(0,self.num_bones):
+                currentbone = self.md5anim_bones[bone_counter]
+                if currentbone.parent_index < 0:
+                    QuArK_frame_position[frame_counter][bone_counter] = QuArK_frame_position_raw[frame_counter][bone_counter]
+                    QuArK_frame_matrix[frame_counter][bone_counter] = QuArK_frame_matrix_raw[frame_counter][bone_counter]
+                else:
+                    MatrixParent = QuArK_frame_matrix[frame_counter][currentbone.parent_index]
+                    temppos = MatrixParent * QuArK_frame_position_raw[frame_counter][bone_counter]
+                    QuArK_frame_position[frame_counter][bone_counter] = QuArK_frame_position[frame_counter][currentbone.parent_index] + temppos
+                    QuArK_frame_matrix[frame_counter][bone_counter] = MatrixParent * QuArK_frame_matrix_raw[frame_counter][bone_counter]
+        #Create baseframe
+        for mesh_counter in range(len(md5_model)):
+            currentmesh = md5_model[mesh_counter]
+            oldframe = editor.Root.dictitems[md5_model_comps[mesh_counter]].dictitems['Frames:fg'].dictitems['meshframe:mf']
+            baseframe = oldframe.copy()
+            baseframe.shortname = filename + " baseframe"
+            oldverts = baseframe.vertices
+            if len(oldverts) != len(currentmesh.verts):
+                #Invalid frame! Wrong number of vertices! Skip it...
+                continue
+            newverts = oldverts
+            for vert_counter in range(len(currentmesh.verts)):
+                currentvertex = currentmesh.verts[vert_counter]
+                newpos = quarkx.vect((0.0, 0.0, 0.0))
+                for blend_counter in range(0, currentvertex.blend_count):
+                    weight_counter = currentvertex.blend_index + blend_counter
+                    currentweight = currentmesh.weights[weight_counter]
+                    tempmatrix = md5_bones[currentweight.bone_index].bindmat
+                    temppos = QuArK_baseframe_matrix[currentweight.bone_index] * quarkx.vect((currentweight.weights[0], currentweight.weights[1], currentweight.weights[2]))
+                    newpos = newpos + ((QuArK_baseframe_position[currentweight.bone_index] + temppos) * currentweight.bias)
+                newverts[vert_counter] = newpos
+            baseframe.vertices = newverts
+            editor.Root.dictitems[md5_model_comps[mesh_counter]].dictitems['Frames:fg'].appenditem(baseframe)
+        #Apply animation data to frame vertices
+        for frame_counter in range(0,self.numFrames):
+            for mesh_counter in range(len(md5_model)):
+                currentmesh = md5_model[mesh_counter]
+                oldframe = editor.Root.dictitems[md5_model_comps[mesh_counter]].dictitems['Frames:fg'].dictitems['meshframe:mf']
+                newframe = oldframe.copy()
+                newframe.shortname = filename + " frame "+str(frame_counter+1)
+                oldverts = newframe.vertices
+                if len(oldverts) != len(currentmesh.verts):
+                    #Invalid frame! Wrong number of vertices! Skip it...
+                    continue
+                newverts = oldverts
+                for vert_counter in range(len(currentmesh.verts)):
+                    currentvertex = md5_model[mesh_counter].verts[vert_counter]
+                    newpos = quarkx.vect((0.0, 0.0, 0.0))
+                    for blend_counter in range(0, currentmesh.verts[vert_counter].blend_count):
+                        weight_counter = currentvertex.blend_index + blend_counter
+                        currentweight = md5_model[mesh_counter].weights[weight_counter]
+                        temppos = QuArK_frame_matrix[frame_counter][currentweight.bone_index] * quarkx.vect((currentweight.weights[0], currentweight.weights[1], currentweight.weights[2]))
+                        newpos = newpos + ((QuArK_frame_position[frame_counter][currentweight.bone_index] + temppos) * currentweight.bias)
+                    newverts[vert_counter] = newpos
+                newframe.vertices = newverts
+                editor.Root.dictitems[md5_model_comps[mesh_counter]].dictitems['Frames:fg'].appenditem(newframe)
 
-                    m = ((-lmat[0][2],-lmat[0][0],-lmat[0][1]), (lmat[2][2],lmat[2][0],lmat[2][1]), (-lmat[1][2],-lmat[1][0],-lmat[1][1]))
 
-                #    print ""
-                #    print "md5_import line 1474 m",m
-                #    print ""
-                #    print "md5_import line 1476 quarkx matrix",quarkx.matrix(m)
-                #    print ""
-                    if bones.subitems[bone].dictspec.has_key('end_vtxlist') and editor.ModelComponentList[bones.subitems[bone].dictspec['end_component']]['boneobjlist'][bones.subitems[bone].name].has_key('s_or_e1'):
-                        name = bones.subitems[bone].dictspec['end_component'] + "-b-" + bones.subitems[bone].shortname + "_1"
-                        selvtxlist = editor.ModelComponentList[bones.subitems[bone].dictspec['end_component']]['boneobjlist'][bones.subitems[bone].name]['s_or_e1']['selvtxlist']
-                        vtxlist = []
-                        for vtx in selvtxlist:
-                            vtxpos = quarkx.vect(0,0,0)
-                            vtxlist = vtxlist + [[vtx, vtxpos]]
-                        try:
-                            obj = quarkpy.mdlutils.MakeEditorVertexPolyObject(editor, 0, vtxlist, name)[0]
-                        except:
-                            continue
-
-                        obj.linear(quarkx.vect(bones.subitems[0].dictspec['end_point']), quarkx.matrix(m))
-                        old_vtxs = newframe.vertices
-                        for poly in range(len(obj.subitems)):
-                            vtxnbr = int(obj.subitems[poly].shortname)
-                            face = obj.subitems[poly].subitems[0]
-                            vertex = quarkx.vect(face["v"][0] , face["v"][1], face["v"][2]) - quarkx.vect(1.0,0.0,0.0)/currentview.info["scale"]*2
-                            delta = vertex - old_vtxs[vtxnbr]
-                            old_vtxs[vtxnbr] = vertex
-                        newframe.vertices = old_vtxs
-                editor.Root.currentcomponent.dictitems['Frames:fg'].appenditem(newframe)
-      
-
-# (for Blinder) bones is either an armature object or None
-# (for QuArK) md5anim_filename = full path and file name, bones = QuArK's "Skeleton:bg" folder to get our current bones from.
+# md5anim_filename = QuArK's full path and file name.
+# bones = QuArK's "Skeleton:bg" folder to get our current bones from.
 def load_md5anim(md5anim_filename, bones):
     theanim = md5anim() # Making an "instance" of this class.
     theanim.load_md5anim(md5anim_filename, bones) # Calling this class function to open and completely read the .md5_anim file.
@@ -1515,77 +1255,14 @@ def load_md5anim(md5anim_filename, bones):
         quarkx.msgbox("Could not apply animation.\nNo bones in the scene.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
     return
 
-######################################################
-# GUI STUFF
-######################################################
-
-draw_busy_screen = 0
-EVENT_NOEVENT = 1
-EVENT_IMPORT = 2
-EVENT_QUIT = 3
-EVENT_MESHFILENAME = 4
-EVENT_ANIMFILENAME = 5
-EVENT_MESHFILENAME_STRINGBUTTON = 6
-EVENT_ANIMFILENAME_STRINGBUTTON = 7
-
-
-# scale_slider = Blender.Draw.Create(1.0)
-scale = 1.0
-# bonesize_slider = Blender.Draw.Create(3.0)
-bonesize = 3.0
-
-######################################################
-# Callbacks for Window functions
-######################################################
-def md5meshname_callback(filename):
-  global md5mesh_filename
-  md5mesh_filename.val=filename
-
-def md5animname_callback(filename):
-  global md5anim_filename
-  md5anim_filename.val=filename
-# Imports the animation file, using its file name here.
-def md5camanimname_callback(filename):
-  global md5camanim_filename
-  md5camanim_filename.val=filename
-  
-######################################################
-# GUI Functions
-######################################################
-def handle_event(evt, val):
-#  if evt == Blender.Draw.ESCKEY:
-#    Blender.Draw.Exit()
-    return
-
-def handle_button_event(evt):
-  global EVENT_NOEVENT, EVENT_IMPORT, EVENT_QUIT, EVENT_MESHFILENAME, EVENT_ANIMFILENAME, EVENT_MESHFILENAME_STRINGBUTTON, EVENT_ANIMFILENAME_STRINGBUTTON
-  global draw_busy_screen, md5mesh_filename, md5anim_filename, scale_slider, scale, bonesize_slider, bonesize
-  if evt == EVENT_IMPORT:
-    scale = scale_slider.val
-    bonesize = bonesize_slider.val
-    draw_busy_screen = 1
-#     Blender.Draw.Draw()
-    if len(md5mesh_filename.val)>0:
-      armObj = load_md5(md5mesh_filename.val)
-      if len(md5anim_filename.val)>0:
-        load_md5anim(md5anim_filename.val, armObj) #load anim onto newly imported skel
-    else:
-      if len(md5anim_filename.val)>0:
-  #      armObj = Blender.Scene.GetCurrent().getActiveObject()
-        if (armObj):
-          data = armObj.getData()
-  #        if not (type(data) is Blender.Types.ArmatureType):
-  #          armObj = None
-        load_md5anim(md5anim_filename.val, armObj)
-          
-
 ########################
 # To run this file
 ########################
 
 def import_md5_model(basepath, md5_filename):
-    # md5_filename is the full path and file name.
     # basepath just the path to the "game" folder.
+    # md5_filename is the full path and file name.
+    editor = quarkpy.mdleditor.mdleditor
     if md5_filename.endswith(".md5mesh"): # Calls to load the .md5_mesh file.
         RetComponentList, RetQuArK_bone_list, message = load_md5(md5_filename, basepath) # Loads the model using list of ALL bones as they are created.
         ### Use the 'ModelRoot' below to test opening the QuArK's Model Editor with, needs to be qualified with main menu item.
@@ -1595,17 +1272,14 @@ def import_md5_model(basepath, md5_filename):
         return ModelRoot, RetComponentList, RetQuArK_bone_list, message # Using list of ALL bones as they are created.
     else: # Calls to load the .md5_anim file.
        #   md5anim.load_md5anim(anim, md5_filename)
-        editor = quarkpy.mdleditor.mdleditor
         bones = editor.Root.dictitems['Skeleton:bg']
-        frames_per_component = load_md5anim(md5_filename, bones)
-        # return
-
+        load_md5anim(md5_filename, bones)
 
 def loadmodel(root, filename, gamename, nomessage=0):
-    "Loads the model file: root is the actual file,"
-    "filename is the full path and name of the .md5mesh or .md5anim file selected."
-    "gamename is None."
-    "For example:  C:\Program Files\Doom 3\base\models\md5\monsters\pinky\pinky.md5mesh"
+    #   Loads the model file: root is the actual file,
+    #   filename is the full path and name of the .md5mesh or .md5anim file selected,
+    #   for example:  C:\Program Files\Doom 3\base\models\md5\monsters\pinky\pinky.md5mesh
+    #   gamename is None.
 
     global md5_mesh_path, md5_anim_path, editor, progressbar, tobj, logging, importername, textlog, Strings
     if editor is None:
@@ -1636,6 +1310,16 @@ def loadmodel(root, filename, gamename, nomessage=0):
 
         QuArK_mesh_counter = 0
         undo = quarkx.action()
+        newbones = []
+        for bone in range(len(RetQuArK_bone_list)): # Using list of ALL bones.
+            boneobj = RetQuArK_bone_list[bone]
+            parent_index = int(boneobj.dictspec['parent_index'])
+            if parent_index < 0:
+                newbones = newbones + [boneobj]
+            else:
+                RetQuArK_bone_list[parent_index].appenditem(boneobj)
+        for bone in newbones:
+            undo.put(editor.Root.dictitems['Skeleton:bg'], bone)
         for Component in RetComponentList:
             undo.put(editor.Root, Component)
             editor.Root.currentcomponent = Component
@@ -1643,16 +1327,6 @@ def loadmodel(root, filename, gamename, nomessage=0):
             for compframe in compframes:
                 compframe.compparent = editor.Root.currentcomponent # To allow frame relocation after editing.
 
-            for bone in range(len(RetQuArK_bone_list[QuArK_mesh_counter])): # Using list of ALL bones per component (mesh).
-                if bone == 0:
-                    continue
-                if RetQuArK_bone_list[QuArK_mesh_counter][bone].dictspec['start_component'] == "None":
-                    RetQuArK_bone_list[QuArK_mesh_counter][bone]['start_component'] = Component.name
-                if RetQuArK_bone_list[QuArK_mesh_counter][bone].dictspec['end_component'] == "None":
-                    RetQuArK_bone_list[QuArK_mesh_counter][bone]['end_component'] = Component.name
-         #       print ""
-         #       print "line 1542 ie_md5_import RetQuArK_bone_list[bone].dictspec",RetQuArK_bone_list[QuArK_mesh_counter][bone].dictspec
-                undo.put(editor.Root.dictitems['Skeleton:bg'], RetQuArK_bone_list[QuArK_mesh_counter][bone])
             QuArK_mesh_counter = QuArK_mesh_counter + 1
 
              #   progressbar.progress() # un-comment this line once progress bar is set up
@@ -1667,15 +1341,6 @@ def loadmodel(root, filename, gamename, nomessage=0):
             # This needs to be done for each component or bones will not work if used in the editor.
             quarkpy.mdlutils.make_tristodraw_dict(editor, Component)
         editor.ok(undo, str(len(RetComponentList)) + " .md5 Components imported") # Let the ok finish the new components before going on.
-
-        QuArK_mesh_counter = 0
-        for nbr in range(len(RetComponentList)):
-            for bone in range(len(RetQuArK_bone_list[QuArK_mesh_counter])): # Using list of ALL bones per component (mesh).
-                # Test to be sure a bone has vertexes assigned to one of its handles (joint) to avoid any error.
-                if RetQuArK_bone_list[QuArK_mesh_counter][bone].dictspec['start_vertex_count'] == "0" and RetQuArK_bone_list[QuArK_mesh_counter][bone].dictspec['end_vertex_count'] == "0":
-                    continue
-                quarkpy.mdlutils.Make_BoneVtxList(editor, RetQuArK_bone_list[QuArK_mesh_counter][bone])
-            QuArK_mesh_counter = QuArK_mesh_counter + 1
 
         editor.Root.currentcomponent = RetComponentList[0]  # Sets the current component.
         comp = editor.Root.currentcomponent
@@ -1732,26 +1397,11 @@ quarkpy.qmdlbase.RegisterMdlImporter(".md5mesh Doom3\Quake4 Importer", ".md5mesh
 quarkpy.qmdlbase.RegisterMdlImporter(".md5anim Doom3\Quake4 Importer", ".md5anim file", "*.md5anim", loadmodel, ie_md5_import)
 
 
-def bonemodeclick(btn_menu_item):
-    global editor
-    import quarkpy.qmenu              # Get the menu functions to make the button with.
-    if editor is None:
-        editor = quarkpy.mdleditor.mdleditor # Get the editor.
-    BMbutton = editor.layout.buttons["bonemode"]
-    BMbutton.caption = "set bonemode" # to make sure the width of this button doesn't change
-    for i in range(0, len(BMbutton.menu)):
-        BMbutton.menu[i].state = 0
-    btn_menu_item.state = quarkpy.qmenu.checked
-    cap = btn_menu_item.bonemode
-    BMbutton.caption = cap[:len(cap)]
-    quarkx.update(editor.form)
-    editor.bonemode = btn_menu_item.bonemode
-
 def vtxcolorclick(btn):
     global editor
     if editor is None:
         editor = quarkpy.mdleditor.mdleditor # Get the editor.
-    if quarkx.setupsubset(3, "Options")["LinearBox"] == "1":
+    if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
         editor.ModelVertexSelList = []
         editor.linearbox = "True"
         editor.linear1click(btn)
@@ -1763,233 +1413,39 @@ def vtxcolorclick(btn):
 
 def colorclick(btn):
     global editor
-    import quarkpy.qtoolbar              # Get the toolbar functions to make the button with.
+    import quarkpy.qtoolbar # Get the toolbar functions to make the button with.
     if editor is None:
         editor = quarkpy.mdleditor.mdleditor # Get the editor.
-    if not quarkx.setupsubset(3, "Options")['VertexUVColor'] or quarkx.setupsubset(3, "Options")['VertexUVColor'] == "0":
-        quarkx.setupsubset(3, "Options")['VertexUVColor'] = "1"
+    if not quarkx.setupsubset(SS_MODEL, "Options")['VertexUVColor'] or quarkx.setupsubset(SS_MODEL, "Options")['VertexUVColor'] == "0":
+        quarkx.setupsubset(SS_MODEL, "Options")['VertexUVColor'] = "1"
         quarkpy.qtoolbar.toggle(btn)
         btn.state = quarkpy.qtoolbar.selected
         quarkx.update(editor.form)
         vtxcolorclick(btn)
     else:
-        quarkx.setupsubset(3, "Options")['VertexUVColor'] = "0"
+        quarkx.setupsubset(SS_MODEL, "Options")['VertexUVColor'] = "0"
         quarkpy.qtoolbar.toggle(btn)
         btn.state = quarkpy.qtoolbar.normal
         quarkx.update(editor.form)
 
-def ScaleSelHandlesClick(m):
-    editor = m.editor
-    bonelist = []
-    bones = editor.Root.findallsubitems("", ':bone')  # get all bones
-    for item in editor.layout.explorer.sellist:
-        item_start_handle = []
-        item_end_handle = []
-        if item.type == ":bone" and not item in bonelist:
-            bonelist = bonelist + [item]
-            for bone in bones:
-                if (quarkpy.mdlutils.checktuplepos(bone.dictspec['start_point'], item.dictspec['start_point']) == 1) or (quarkpy.mdlutils.checktuplepos(bone.dictspec['end_point'], item.dictspec['start_point']) == 1):
-                    item_start_handle = item_start_handle + [bone]
-                if (quarkpy.mdlutils.checktuplepos(bone.dictspec['end_point'], item.dictspec['end_point']) == 1) or (quarkpy.mdlutils.checktuplepos(bone.dictspec['start_point'], item.dictspec['end_point']) == 1):
-                    item_end_handle = item_end_handle + [bone]
-
-            min_scale = 10000.0
-            for bone in item_start_handle:
-                if (quarkpy.mdlutils.checktuplepos(bone.dictspec['start_point'], item.dictspec['start_point']) == 1):
-                    if bone.dictspec['start_scale'][0] <= min_scale:
-                        min_scale = bone.dictspec['start_scale'][0]
-                if (quarkpy.mdlutils.checktuplepos(bone.dictspec['end_point'], item.dictspec['start_point']) == 1):
-                    if bone.dictspec['end_scale'][0] <= min_scale:
-                        min_scale = bone.dictspec['end_scale'][0]
-            for bone_count in range(len(item_start_handle)):
-                if (quarkpy.mdlutils.checktuplepos(item_start_handle[bone_count].dictspec['start_point'], item.dictspec['start_point']) == 1):
-                    start_scale = min_scale + (float(bone_count) * .25)
-                    item_start_handle[bone_count]['start_scale'] = (start_scale,)
-                if (quarkpy.mdlutils.checktuplepos(item_start_handle[bone_count].dictspec['end_point'], item.dictspec['start_point']) == 1):
-                    end_scale = min_scale + (float(bone_count) * .25)
-                    item_start_handle[bone_count]['end_scale'] = (end_scale,)
-
-            min_scale = 10000.0
-            for bone in item_end_handle:
-                if (quarkpy.mdlutils.checktuplepos(bone.dictspec['end_point'], item.dictspec['end_point']) == 1):
-                    if bone.dictspec['end_scale'][0] <= min_scale:
-                        min_scale = bone.dictspec['end_scale'][0]
-                if (quarkpy.mdlutils.checktuplepos(bone.dictspec['start_point'], item.dictspec['end_point']) == 1):
-                    if bone.dictspec['start_scale'][0] <= min_scale:
-                        min_scale = bone.dictspec['start_scale'][0]
-            for bone_count in range(len(item_end_handle)):
-                if (quarkpy.mdlutils.checktuplepos(item_end_handle[bone_count].dictspec['end_point'], item.dictspec['end_point']) == 1):
-                    end_scale = min_scale + (float(bone_count) * .25)
-                    item_end_handle[bone_count]['end_scale'] = (end_scale,)
-                if (quarkpy.mdlutils.checktuplepos(item_end_handle[bone_count].dictspec['start_point'], item.dictspec['end_point']) == 1):
-                    start_scale = min_scale + (float(bone_count) * .25)
-                    item_end_handle[bone_count]['start_scale'] = (start_scale,)
-    quarkpy.mdlutils.Update_Editor_Views(editor)
-
-def ResetSelHandleScalesClick(m):
-    editor = m.editor
-    bonelist = []
-    bones = editor.Root.findallsubitems("", ':bone')  # get all bones
-    for item in editor.layout.explorer.sellist:
-        item_start_handle = []
-        item_end_handle = []
-        if item.type == ":bone" and not item in bonelist:
-            bonelist = bonelist + [item]
-            for bone in bones:
-                if (quarkpy.mdlutils.checktuplepos(bone.dictspec['start_point'], item.dictspec['start_point']) == 1) or (quarkpy.mdlutils.checktuplepos(bone.dictspec['end_point'], item.dictspec['start_point']) == 1):
-                    item_start_handle = item_start_handle + [bone]
-                if (quarkpy.mdlutils.checktuplepos(bone.dictspec['end_point'], item.dictspec['end_point']) == 1) or (quarkpy.mdlutils.checktuplepos(bone.dictspec['start_point'], item.dictspec['end_point']) == 1):
-                    item_end_handle = item_end_handle + [bone]
-
-            for bone_count in range(len(item_start_handle)):
-                if (quarkpy.mdlutils.checktuplepos(item_start_handle[bone_count].dictspec['start_point'], item.dictspec['start_point']) == 1):
-                    if item_start_handle[bone_count].dictspec.has_key('org_start_scale'):
-                        item_start_handle[bone_count]['start_scale'] = item_start_handle[bone_count].dictspec['org_start_scale']
-                if (quarkpy.mdlutils.checktuplepos(item_start_handle[bone_count].dictspec['end_point'], item.dictspec['start_point']) == 1):
-                    if item_start_handle[bone_count].dictspec.has_key('org_end_scale'):
-                        item_start_handle[bone_count]['end_scale'] = item_start_handle[bone_count].dictspec['org_end_scale']
-
-            for bone_count in range(len(item_end_handle)):
-                if (quarkpy.mdlutils.checktuplepos(item_end_handle[bone_count].dictspec['end_point'], item.dictspec['end_point']) == 1):
-                    if item_end_handle[bone_count].dictspec.has_key('org_end_scale'):
-                        item_end_handle[bone_count]['end_scale'] = item_end_handle[bone_count].dictspec['org_end_scale']
-                if (quarkpy.mdlutils.checktuplepos(item_end_handle[bone_count].dictspec['start_point'], item.dictspec['end_point']) == 1):
-                    if item_end_handle[bone_count].dictspec.has_key('org_start_scale'):
-                        item_end_handle[bone_count]['start_scale'] = item_end_handle[bone_count].dictspec['org_start_scale']
-    quarkpy.mdlutils.Update_Editor_Views(editor)
-
-
-def ScaleHandlesClick(m):
-    editor = m.editor
-    bonelist = []
-    allbones = bones = editor.Root.findallsubitems("", ':bone')  # get all bones
-    for item in allbones:
-        item_start_handle = []
-        item_end_handle = []
-        if not item in bonelist:
-            bonelist = bonelist + [item]
-            for bone in bones:
-                if (quarkpy.mdlutils.checktuplepos(bone.dictspec['start_point'], item.dictspec['start_point']) == 1) or (quarkpy.mdlutils.checktuplepos(bone.dictspec['end_point'], item.dictspec['start_point']) == 1):
-                    item_start_handle = item_start_handle + [bone]
-                if (quarkpy.mdlutils.checktuplepos(bone.dictspec['end_point'], item.dictspec['end_point']) == 1) or (quarkpy.mdlutils.checktuplepos(bone.dictspec['start_point'], item.dictspec['end_point']) == 1):
-                    item_end_handle = item_end_handle + [bone]
-
-            min_scale = 10000.0
-            for bone in item_start_handle:
-                if (quarkpy.mdlutils.checktuplepos(bone.dictspec['start_point'], item.dictspec['start_point']) == 1):
-                    if bone.dictspec['start_scale'][0] <= min_scale:
-                        min_scale = bone.dictspec['start_scale'][0]
-                if (quarkpy.mdlutils.checktuplepos(bone.dictspec['end_point'], item.dictspec['start_point']) == 1):
-                    if bone.dictspec['end_scale'][0] <= min_scale:
-                        min_scale = bone.dictspec['end_scale'][0]
-            for bone_count in range(len(item_start_handle)):
-                if (quarkpy.mdlutils.checktuplepos(item_start_handle[bone_count].dictspec['start_point'], item.dictspec['start_point']) == 1):
-                    start_scale = min_scale + (float(bone_count) * .25)
-                    item_start_handle[bone_count]['start_scale'] = (start_scale,)
-                if (quarkpy.mdlutils.checktuplepos(item_start_handle[bone_count].dictspec['end_point'], item.dictspec['start_point']) == 1):
-                    end_scale = min_scale + (float(bone_count) * .25)
-                    item_start_handle[bone_count]['end_scale'] = (end_scale,)
-
-            min_scale = 10000.0
-            for bone in item_end_handle:
-                if (quarkpy.mdlutils.checktuplepos(bone.dictspec['end_point'], item.dictspec['end_point']) == 1):
-                    if bone.dictspec['end_scale'][0] <= min_scale:
-                        min_scale = bone.dictspec['end_scale'][0]
-                if (quarkpy.mdlutils.checktuplepos(bone.dictspec['start_point'], item.dictspec['end_point']) == 1):
-                    if bone.dictspec['start_scale'][0] <= min_scale:
-                        min_scale = bone.dictspec['start_scale'][0]
-            for bone_count in range(len(item_end_handle)):
-                if (quarkpy.mdlutils.checktuplepos(item_end_handle[bone_count].dictspec['end_point'], item.dictspec['end_point']) == 1):
-                    end_scale = min_scale + (float(bone_count) * .25)
-                    item_end_handle[bone_count]['end_scale'] = (end_scale,)
-                if (quarkpy.mdlutils.checktuplepos(item_end_handle[bone_count].dictspec['start_point'], item.dictspec['end_point']) == 1):
-                    start_scale = min_scale + (float(bone_count) * .25)
-                    item_end_handle[bone_count]['start_scale'] = (start_scale,)
-    quarkpy.mdlutils.Update_Editor_Views(editor)
-
-def ResetHandleScalesClick(m):
-    bones = m.editor.Root.findallsubitems("", ':bone')  # get all bones
-    for bone in bones:
-        if bone.dictspec.has_key('org_start_scale'):
-            bone['start_scale'] = bone.dictspec['org_start_scale']
-        if bone.dictspec.has_key('org_end_scale'):
-            bone['end_scale'] = bone.dictspec['org_end_scale']
-    quarkpy.mdlutils.Update_Editor_Views(m.editor)
-            
-
-def handlescalemenu(m):
-    scale_sel_handles = quarkpy.qmenu.item("Scale selected bone handles", ScaleSelHandlesClick, "|Scale selected bone handles:\n\nIf this menu item is checked, all bones that are currently selected, and their attached bones, will have both their start and end handles set to different scale sizes for easer access.|intro.modeleditor.editelements.html#specificsettings")
-    reset_sel_handle_scales = quarkpy.qmenu.item("Reset selected bone handles", ResetSelHandleScalesClick, "|Reset selected bone handles:\n\nIf this menu item is checked, all bones that are currently selected, and their attached bones, will have both their start and end handles reset to their original imported scale sizes.|intro.modeleditor.editelements.html#specificsettings")
-    scale_handles = quarkpy.qmenu.item("Scale all bone handles", ScaleHandlesClick, "|Scale all bone handles:\n\nIf this menu item is checked, all bones will have both their start and end handles set to different scale sizes for easer access.|intro.modeleditor.editelements.html#specificsettings")
-    reset_handle_scales = quarkpy.qmenu.item("Reset all bone handles", ResetHandleScalesClick, "|Reset all bone handles:\n\nIf this menu item is checked, all bones will have both their start and end handles reset to their original imported scale sizes.|intro.modeleditor.editelements.html#specificsettings")
-    menulist = [scale_sel_handles, reset_sel_handle_scales, quarkpy.qmenu.sep, scale_handles, reset_handle_scales]
-    return menulist
-
-def DefaultModeClick(m):
-    try:
-        btn = m.editor.layout.buttons["bonemode"]
-    except:
-        return
-    bonemodeclick(btn.menu[0])
-
-def SingleSetClick(m):
-    try:
-        btn = m.editor.layout.buttons["bonemode"]
-    except:
-        return
-    bonemodeclick(btn.menu[1])
-
-def MultiSetsClick(m):
-    try:
-        btn = m.editor.layout.buttons["bonemode"]
-    except:
-        return
-    bonemodeclick(btn.menu[2])
-
-def newmenuitems(editor, extra):
-    "To add new menu items to other RMB menus. 'extra' is the current list of RMB menu items."
-
-    m = quarkpy.qmenu.item
-    m.editor = editor
-    handlescalepop = quarkpy.qmenu.popup("Handle Scaling", handlescalemenu(m), None, "|Handle Scaling:\n\nThese functions deal with setting the scale size of the bone handles for easer access.", "intro.modeleditor.editelements.html#specificsettings")
-    for item in extra:
-        if item is not None and item.text == "Bone Commands":
-            item.items = [handlescalepop, quarkpy.qmenu.sep] + item.items
-        if item is not None and item.text == "Bone Options":
-            default_mode = quarkpy.qmenu.item("default mode", DefaultModeClick, "|md5 models can have a single component mesh and set of bones or more then one of each. If one bone mode does not work well try switching to the other.|intro.modeleditor.dataforms.html#specsargsview")
-            single_set = quarkpy.qmenu.item("single set", SingleSetClick, "|md5 models can have a single component mesh and set of bones or more then one of each. If one bone mode does not work well try switching to the other.|intro.modeleditor.dataforms.html#specsargsview")
-            multi_sets = quarkpy.qmenu.item("multi sets", MultiSetsClick, "|md5 models can have a single component mesh and set of bones or more then one of each. If one bone mode does not work well try switching to the other.|intro.modeleditor.dataforms.html#specsargsview")
-            item.items = item.items + [quarkpy.qmenu.sep, default_mode, single_set, multi_sets]
-            if not editor.layout.buttons.has_key("bonemode"):
-                default_mode.state = quarkpy.qmenu.checked
-            else:
-                default_mode.state = editor.layout.buttons["bonemode"].menu[0].state
-                single_set.state = editor.layout.buttons["bonemode"].menu[1].state
-                multi_sets.state = editor.layout.buttons["bonemode"].menu[2].state
-
-    return extra
-
 def dataformname(o):
     "Returns the data form for this type of object 'o' (a model's skin texture) to use for the Specific/Args page."
     global editor
+    import quarkpy.mdlentities # Used further down in a couple of places.
 
-    if o.parent.parent.dictspec.has_key("shader_lines"):
-        if int(o.parent.parent.dictspec['shader_lines']) < 3:
-            o.parent.parent['shader_lines'] = "3"
-        if int(o.parent.parent.dictspec['shader_lines']) > 35:
-            o.parent.parent['shader_lines'] = "35"
-        NbrOfShaderLines = o.parent.parent.dictspec['shader_lines']
-        quarkx.setupsubset(3, "Options")["NbrOfShaderLines"] = NbrOfShaderLines
-    else:
-        if quarkx.setupsubset(3, "Options")["NbrOfShaderLines"] is not None:
-            NbrOfShaderLines = quarkx.setupsubset(3, "Options")["NbrOfShaderLines"]
-            o.parent.parent.dictspec['shader_lines'] = NbrOfShaderLines
-        else:
-            NbrOfShaderLines = "8"
-            o.parent.parent.dictspec['shader_lines'] = NbrOfShaderLines
-            quarkx.setupsubset(3, "Options")["NbrOfShaderLines"] = NbrOfShaderLines
+    # Next line calls for the Shader Module in mdlentities.py to be used.
+    external_skin_editor_dialog_plugin = quarkpy.mdlentities.UseExternalSkinEditor()
 
-    skin_dlgdef = """
+    # Next line calls for the Vertex U,V Color Module in mdlentities.py to be used.
+    vtx_UVcolor_dialog_plugin = quarkpy.mdlentities.UseVertexUVColors()
+
+    # Next line calls for the Vertex Weights Specifics Module in mdlentities.py to be used.
+    vertex_weights_specifics_plugin = quarkpy.mdlentities.UseVertexWeightsSpecifics()
+
+    # Next line calls for the Shader Module in mdlentities.py to be used.
+    Shader_dialog_plugin = quarkpy.mdlentities.UseShaders()
+
+    dlgdef = """
     {
       Help = "These are the Specific settings for Doom3\Quake4 (.md5mesh) model types."$0D
              "md5 models use 'meshes' the same way that QuArK uses 'components'."$0D
@@ -1997,6 +1453,10 @@ def dataformname(o):
              "These textures may or may not have 'shaders' that they use for special effects."$0D0D22
              "skin name"$22" - The currently selected skin texture name."$0D22
              "edit skin"$22" - Opens this skin texture in an external editor."$0D22
+             "Vertex Color"$22" - Color to use for this component's u,v vertex color mapping."$0D
+             "            Click the color display button to select a color."$0D22
+             "show weight colors"$22" - When checked, if component has vertex weight coloring they will show."$0D
+             "          If NOT checked and it has bones with vetexes, those will show."$0D
              "shader file"$22" - Gives the full path and name of the .mtr material"$0D
              "           shader file that the selected skin texture uses, if any."$0D22
              "shader name"$22" - Gives the name of the shader located in the above file"$0D
@@ -2005,61 +1465,36 @@ def dataformname(o):
              "          the currently selected skin texture used in the shader, if any."$0D22
              "shader lines"$22" - Number of lines to display in window below, max. = 35."$0D22
              "edit shader"$22" - Opens shader below in a text editor."$0D22
-             "mesh shader"$22" - Contains the full text of this skin texture's shader, if any."$0D
+             "mesh shader"$22" - Contains the full text of this skin texture's shader, if any."$0D22
              "          This can be copied to a text file, changed and saved."
       skin_name:      = {t_ModelEditor_texturebrowser = ! Txt="skin name"    Hint="The currently selected skin texture name."}
-      edit_skin:      = {
-                         Typ = "P"
-                         Txt = "edit skin ---->"
-                         Macro = "opentexteditor"
-                         Hint = "Opens this skin texture"$0D"in an external editor."
-                         Cap = "edit skin"
-                        }
-      shader_file:    = {Typ="E"   Txt="shader file"  Hint="Gives the full path and name of the .mtr material"$0D"shader file that the selected skin texture uses, if any."}
-      shader_name:    = {Typ="E"   Txt="shader name"  Hint="Gives the name of the shader located in the above file"$0D"that the selected skin texture uses, if any."}
-      shader_keyword: = {Typ="E"   Txt="shader keyword"  Hint="Gives the above shader 'keyword' that is used to identify"$0D"the currently selected skin texture used in the shader, if any."}
-      shader_lines:   = {Typ="EU"  Txt="shader lines"    Hint="Number of lines to display in window below, max. = 35."}
-      edit_shader:    = {
-                         Typ = "P"
-                         Txt = "edit shader ---->"
-                         Macro = "opentexteditor"
-                         Hint = "Opens shader below"$0D"in a text editor."
-                         Cap = "edit shader"
-                        }
-      mesh_shader:    = {Typ="M"  Rows = """ + chr(34) + NbrOfShaderLines + chr(34) + """ Scrollbars="1" Txt = "mesh shader"  Hint="Contains the full text of this skin texture's shader, if any."$0D"This can be copied to a text file, changed and saved."}
+      """ + external_skin_editor_dialog_plugin + """
+      """ + vtx_UVcolor_dialog_plugin + """
+      """ + vertex_weights_specifics_plugin + """
+      """ + Shader_dialog_plugin + """
     }
     """
 
     from quarkpy.qeditor import ico_dict # Get the dictionary list of all icon image files available.
     import quarkpy.qtoolbar              # Get the toolbar functions to make the button with.
-    if editor is None:
-        editor = quarkpy.mdleditor.mdleditor # Get the editor.
+    editor = quarkpy.mdleditor.mdleditor # Get the editor.
     ico_mdlskv = ico_dict['ico_mdlskv']  # Just to shorten our call later.
     icon_btns = {}                       # Setup our button list, as a dictionary list, to return at the end.
     vtxcolorbtn = quarkpy.qtoolbar.button(colorclick, "Color mode||When active, puts the editor vertex selection into this mode and uses the 'COLR' specific setting as the color to designate these types of vertexes.\n\nIt also places the editor into Vertex Selection mode if not there already and clears any selected vertexes to protect from including unwanted ones by mistake.\n\nAny vertexes selected in this mode will become Color UV Vertexes and added to the component as such. Click the InfoBase button or press F1 again for more detail.|intro.modeleditor.dataforms.html#specsargsview", ico_mdlskv, 5)
     # Sets the button to its current status, that might be effected by another importer file, either on or off.
-    if quarkx.setupsubset(3, "Options")['VertexUVColor'] == "1":
+    if quarkx.setupsubset(SS_MODEL, "Options")['VertexUVColor'] == "1":
         vtxcolorbtn.state = quarkpy.qtoolbar.selected
     else:
         vtxcolorbtn.state = quarkpy.qtoolbar.normal
     vtxcolorbtn.caption = "" # Texts shows next to button and keeps the width of this button so it doesn't change.
-    icon_btns['color'] = vtxcolorbtn     # Put our button in the above list to return.
+    icon_btns['color'] = vtxcolorbtn # Put our button in the above list to return.
+    # Next line calls for the Vertex Weights system in mdlentities.py to be used.
+    vtxweightsbtn = quarkpy.qtoolbar.button(quarkpy.mdlentities.UseVertexWeights, "Open or Update\nVertex Weights Dialog||When clicked, this button opens the dialog to allow the 'weight' movement setting of single vertexes that have been assigned to more then one bone handle.\n\nClick the InfoBase button or press F1 again for more detail.|intro.modeleditor.dataforms.html#specsargsview", ico_mdlskv, 5)
+    vtxweightsbtn.state = quarkpy.qtoolbar.normal
+    vtxweightsbtn.caption = "" # Texts shows next to button and keeps the width of this button so it doesn't change.
+    icon_btns['vtxweights'] = vtxweightsbtn # Put our button in the above list to return.
 
-    # Creating the bonemode selection button
-    BMTexts = ['default mode', 'single set', 'multi sets']
-    mnu = []
-    import quarkpy.qmenu              # Get the menu functions to make the button with.
-    BMbutton = quarkpy.qtoolbar.menubutton(mnu, "bone mode||md5 models can have a single component mesh and set of bones or more then one of each. If one bone mode does not work well try switching to the other.|intro.modeleditor.dataforms.html#specsargsview", ico_mdlskv, 6)
-    for i in range(0, len(BMTexts)):
-        item = quarkpy.qmenu.item(BMTexts[i], bonemodeclick)
-        item.bonemode = BMTexts[i]
-        if BMTexts[i] == editor.bonemode:
-            item.state = quarkpy.qmenu.checked
-            cap = BMTexts[i]
-            BMbutton.caption = cap[:len(BMTexts[i])]
-        mnu.append(item)
-
-    if o.name == editor.Root.currentcomponent.currentskin.name: # If this is not done it will cause looping through multiple times.
+    if (editor.Root.currentcomponent.currentskin is not None) and (o.name == editor.Root.currentcomponent.currentskin.name): # If this is not done it will cause looping through multiple times.
         if o.parent.parent.dictspec.has_key("shader_keyword") and o.dictspec.has_key("shader_keyword"):
             if o.parent.parent.dictspec['shader_keyword'] != o.dictspec['shader_keyword']:
                 o['shader_keyword'] = o.parent.parent.dictspec['shader_keyword']
@@ -2091,50 +1526,14 @@ def dataformname(o):
     DummyItem = o
     while (DummyItem.type != ":mc"): # Gets the object's model component.
         DummyItem = DummyItem.parent
-        if DummyItem is None:
-            break
-    if DummyItem is not None and DummyItem.type == ":mc":
-        comp = DummyItem
-        # This sections handles the data for this model type skin page form.
-        # This makes sure what is selected is a model skin, if so it returns the Skin page data to make the form with.
-        if len(comp.dictitems['Skins:sg'].subitems) == 0 or o in comp.dictitems['Skins:sg'].subitems:
-            formobj = quarkx.newobj("md5_mc:form")
-            formobj.loadtext(skin_dlgdef)
-            return formobj, icon_btns
-    if o == editor.Root.dictitems['Skeleton:bg'] or quarkpy.mdlutils.findbone(editor, o.name) is not None:
-        return None, {"bonemode": BMbutton}
-    return None, None
+    comp = DummyItem
 
-
-def macro_opentexteditor(btn):
-    global editor
-    if editor is None:
-        editor = quarkpy.mdleditor.mdleditor # Get the editor.
-
-    if btn.name == "edit_skin:":
-        newImage = editor.Root.currentcomponent.currentskin
-        quarkx.externaledit(editor.Root.currentcomponent.currentskin) # Opens skin in - external editor for this texture file type.
-        editor.Root.currentcomponent.currentskin = newImage
-        skin = editor.Root.currentcomponent.currentskin
-        editor.layout.skinview.background = quarkx.vect(-int(skin["Size"][0]*.5),-int(skin["Size"][1]*.5),0), 1.0, 0, 1
-        editor.layout.skinview.backgroundimage = skin,
-        editor.layout.skinview.repaint()
-        for v in editor.layout.views:
-            if v.viewmode == "tex":
-                v.invalidate(1)
+    if comp.type == ":mc": # Just makes sure what we have is a model component.
+        formobj = quarkx.newobj("md5_mc:form")
+        formobj.loadtext(dlgdef)
+        return formobj, icon_btns
     else:
-      #  shader_text = quarkx.newfileobj("tempdata:material")
-      #  shader_text['Data'] = editor.Root.currentcomponent.dictspec['mesh_shader']
-      #  obj = quarkx.newfileobj("temp.mtr")
-      #  obj.appenditem(shader_text)
-      #  quarkx.externaledit(obj)
-        obj = quarkx.newfileobj("temp.txt")
-        obj['Data'] = editor.Root.currentcomponent.dictspec['mesh_shader']
-        quarkx.externaledit(obj)
-
-quarkpy.qmacro.MACRO_opentexteditor = macro_opentexteditor
-
-
+        return None, None
 
 def dataforminput(o):
     "Returns the default settings or input data for this type of object 'o' (a model's skin texture) to use for the Specific/Args page."
@@ -2144,8 +1543,11 @@ def dataforminput(o):
         DummyItem = DummyItem.parent
     if DummyItem.type == ":mc":
         comp = DummyItem
+        if not comp.dictspec.has_key('vtx_color'):
+            comp['vtx_color'] = "0.75 0.75 0.75"
         # This sections handles the data for this model type skin page form.
         # This makes sure what is selected is a model skin, if so it fills the Skin page data and adds the items to the component.
+        # It also handles the shader file which its name is the full path and name of the skin texture.
         if len(comp.dictitems['Skins:sg'].subitems) == 0 or o in comp.dictitems['Skins:sg'].subitems:
             if not comp.dictspec.has_key('shader_file'):
                 comp['shader_file'] = "None"
@@ -2172,13 +1574,13 @@ def dataforminput(o):
                 else:
                     comp['shader_keyword'] = o['shader_keyword'] = "None"
             if not comp.dictspec.has_key('shader_lines'):
-                if quarkx.setupsubset(3, "Options")["NbrOfShaderLines"] is not None:
-                    comp['shader_lines'] = quarkx.setupsubset(3, "Options")["NbrOfShaderLines"]
+                if quarkx.setupsubset(SS_MODEL, "Options")["NbrOfShaderLines"] is not None:
+                    comp['shader_lines'] = quarkx.setupsubset(SS_MODEL, "Options")["NbrOfShaderLines"]
                 else:
                     comp['shader_lines'] = "8"
-                    quarkx.setupsubset(3, "Options")["NbrOfShaderLines"] = comp.dictspec['shader_lines']
+                    quarkx.setupsubset(SS_MODEL, "Options")["NbrOfShaderLines"] = comp.dictspec['shader_lines']
             else:
-                quarkx.setupsubset(3, "Options")["NbrOfShaderLines"] = comp.dictspec['shader_lines']
+                quarkx.setupsubset(SS_MODEL, "Options")["NbrOfShaderLines"] = comp.dictspec['shader_lines']
             if not comp.dictspec.has_key('mesh_shader'):
                 comp['mesh_shader'] = "None"
 
@@ -2186,6 +1588,10 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.16  2009/04/28 21:30:56  cdunde
+# Model Editor Bone Rebuild merge to HEAD.
+# Complete change of bone system.
+#
 # Revision 1.15  2009/03/04 23:33:14  cdunde
 # For proper importer exporter listing one menus, code by DanielPharos.
 # Start of code for importing md5anim files.

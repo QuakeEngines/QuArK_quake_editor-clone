@@ -845,9 +845,10 @@ class BaseEditor:
         import mdleditor                           ### Used for the Model Editor only.
         import mdlhandles                          ### Used for the Model Editor only.
         import mdlmgr                              ### Used for the Model Editor only.
+        import mdlentities                         ### Used for the Model Editor only.
 
-         ### This section just for Model Editor face selection and editor views drawing manipulation
-         ### and to free up L & RMB combo dragging for Model Editor Face selection use.
+        ### This section just for Model Editor face selection and editor views drawing manipulation
+        ### and to free up L & RMB combo dragging for Model Editor Face selection use.
         if isinstance(self, mdleditor.ModelEditor):
             if (flagsmouse == 560 or flagsmouse == 1072) and (view.info["viewname"] == "editors3Dview" or view.info["viewname"] == "3Dwindow"):
                 if flagsmouse == 560 and self.dragobject is None:
@@ -861,6 +862,42 @@ class BaseEditor:
                         self.dragobject = mdlhandles.RectSelDragObject(view, x, y, RED, None)
                         self.dragobject.view = view
 
+            # This section handles the Vertex Weights Painting paint brush function.
+            if (flagsmouse == 552 or flagsmouse == 1064 or flagsmouse == 2088) and len(self.layout.explorer.sellist) != 0 and self.layout.explorer.sellist[0].type == ":bone":
+                if quarkx.setupsubset(3, "Options")['VertexPaintMode'] is not None and quarkx.setupsubset(SS_MODEL, "Options")['VertexPaintMode'] == "1":
+                    self.dragobject = None
+                    if flagsmouse == 2088:
+                        mdlentities.PaintManager(self, view, x, y, flagsmouse, None)
+                    else:
+                        if handle is not None and isinstance(handle, mdlhandles.VertexHandle):
+                            mdlentities.PaintManager(self, view, x, y, flagsmouse, handle.index)
+                            s = view.info["viewname"] + " view"
+                            if view.info["viewname"] == "XY":
+                                s = handle.name + " " + "%s "%handle.index + "Zview" + " x: %s"%ftoss(handle.pos.tuple[0]) + " y: %s"%ftoss(handle.pos.tuple[1])
+                            elif view.info["viewname"] == "XZ":
+                                s = handle.name + " " + "%s "%handle.index + "Yview" + " x: %s"%ftoss(handle.pos.tuple[0]) + " z: %s"%ftoss(handle.pos.tuple[2])
+                            elif view.info["viewname"] == "YZ":
+                                s = handle.name + " " + "%s "%handle.index + "Xview" + " y: %s"%ftoss(handle.pos.tuple[1]) + " z: %s"%ftoss(handle.pos.tuple[2])
+                            else:
+                                s = handle.name + " " + "%s "%handle.index + " x,y,z: %s"%handle.pos
+                        else:
+                            try:
+                                min, max = view.depth
+                            except:
+                                min, max = (0, 0)
+                            list = map(quarkx.ftos, self.aligntogrid(view.space(quarkx.vect(x, y, min))).tuple + self.aligntogrid(view.space(quarkx.vect(x, y, max))).tuple)
+                            tag = 0
+                            if list[0]==list[3]: tag = 1
+                            if list[1]==list[4]: tag = tag + 2
+                            if list[2]==list[5]: tag = tag + 4
+                            if view.info["type"] == "2D":
+                                s = view.info["viewname"]
+                            if   tag==6: s = "Xview" + " y:" + list[1] + " z:" + list[2]
+                            elif tag==5: s = "Yview" + " x:" + list[0] + " z:" + list[2]
+                            elif tag==3: s = "Zview" + " x:" + list[0] + " y:" + list[1]
+                        self.showhint(s)
+
+            # This section handles the Skin-view Painting paint brush function.
             modelfacelist = mdlhandles.ClickOnView(self, view, x, y)
             if self.layout.toolbars["tb_paintmodes"] is not None:
                 tb2 = self.layout.toolbars["tb_paintmodes"]
@@ -878,10 +915,6 @@ class BaseEditor:
 
              # This is the first call at the start of the selection drag\or causes only one item to be selected.
             if modelfacelist != [] and flagsmouse == 536:
-                ### Below causes all handles to be erased at start of selection, but very blipping.
-             #   for v in self.layout.views:
-             #       mdleditor.setsingleframefillcolor(self, v)
-             #       v.repaint()
                 mdlhandles.ModelFaceHandle(qhandles.GenericHandle).selection(self, view, modelfacelist, flagsmouse)
 
              # This loops through calling the selection function.
@@ -919,6 +952,8 @@ class BaseEditor:
                             self.finishdrawing(view)
                             return
                         else:
+                            if len(self.layout.explorer.sellist) == 0:
+                                self.layout.explorer.sellist = [self.Root.currentcomponent]
                             holdflagsmouse = flagsmouse
                             self.dragobject.ok(self, x, y, flags)
                             flagsmouse = holdflagsmouse
@@ -927,12 +962,10 @@ class BaseEditor:
                 holdflagsmouse = flagsmouse
                 try:
                     last,x,y=self.dragobject.lastdrag
-#                    debug('last yes')
                     self.dragobject.ok(self, x, y, flags)
                     self.dragobject = None
                     flagsmouse = holdflagsmouse
                 except:
-#                    debug('last no')
                     self.dragobject.ok(self, x, y, flags)
                     flagsmouse = holdflagsmouse
 
@@ -947,8 +980,8 @@ class BaseEditor:
         #
         # If the mouse is simply being moved around inside one of the editor's views.
         #
-
         elif flags & MB_MOUSEMOVE:
+            s = ""
             if handle is None:
                 if mapeditor() is not None:
                     editor = mapeditor()
@@ -958,7 +991,10 @@ class BaseEditor:
                     return
                 else:
                     if isinstance(editor, mdleditor.ModelEditor):
-                        if editor.layout.toolbars["tb_paintmodes"] is not None:
+                        if flagsmouse == 16384 and quarkx.setupsubset(SS_MODEL, "Options")['VertexPaintMode'] is not None and quarkx.setupsubset(SS_MODEL, "Options")['VertexPaintMode'] == "1":
+                            import mdlentities
+                            mdlentities.vtxpaintcursor(editor)
+                        elif editor.layout.toolbars["tb_paintmodes"] is not None:
                             plugins.mdlpaintmodes.paintcursor(editor)
                     elif editor.layout.toolbars["tb_terrmodes"] is not None:
                         tb2 = editor.layout.toolbars["tb_terrmodes"]
@@ -1048,20 +1084,20 @@ class BaseEditor:
                         else:
                             triangle = mdlhandles.ClickOnView(self, view, x, y)
                             if triangle != []:
-                                if   tag==6: s = s + " view y:" + list[1] + " z:" + list[2] + " triangle: " + str(triangle[0][2])
-                                elif tag==5: s = s + " view x:" + list[0] + " z:" + list[2] + " triangle: " + str(triangle[0][2])
-                                elif tag==3: s = s + " view x:" + list[0] + " y:" + list[1] + " triangle: " + str(triangle[0][2])
+                                if   tag==6: s = "Xview y:" + list[1] + " z:" + list[2] + " triangle: " + str(triangle[0][2])
+                                elif tag==5: s = "Yview x:" + list[0] + " z:" + list[2] + " triangle: " + str(triangle[0][2])
+                                elif tag==3: s = "Zview x:" + list[0] + " y:" + list[1] + " triangle: " + str(triangle[0][2])
                                 else:
                                     s = s + " triangle: " + str(triangle[0][2])
                             else:
-                                if   tag==6: s = s + " view y:" + list[1] + " z:" + list[2]
-                                elif tag==5: s = s + " view x:" + list[0] + " z:" + list[2]
-                                elif tag==3: s = s + " view x:" + list[0] + " y:" + list[1]
+                                if   tag==6: s = "Xview y:" + list[1] + " z:" + list[2]
+                                elif tag==5: s = "Yview x:" + list[0] + " z:" + list[2]
+                                elif tag==3: s = "Zview x:" + list[0] + " y:" + list[1]
                     else:
                         s = view.info["type"] + " view"
-                        if   tag==6: s = s + " y:" + list[1] + " z:" + list[2]
-                        elif tag==5: s = s + " x:" + list[0] + " z:" + list[2]
-                        elif tag==3: s = s + " x:" + list[0] + " y:" + list[1]
+                        if   tag==6: s = "Xview y:" + " y:" + list[1] + " z:" + list[2]
+                        elif tag==5: s = "Yview x:" + " x:" + list[0] + " z:" + list[2]
+                        elif tag==3: s = "Zview x:" + " x:" + list[0] + " y:" + list[1]
             else:
                 if isinstance(self, mdleditor.ModelEditor):
                     if view.info["viewname"] == "skinview":
@@ -1117,12 +1153,12 @@ class BaseEditor:
                                     Ystartpos = -handle.pos.y
 
                                 ### shows the true vertex position in relation to each tile section of the texture.
-                                s = "Skin tri \\ vertex " + str(handle.tri_index) + " \\ " + str(handle.ver_index) + " x:%s"%ftoss(Xstartpos) + " y:%s"%ftoss(Ystartpos)
+                                s = "Skin tri \\ vertex " + str(handle.tri_index) + " \\ " + str((handle.tri_index*3) + handle.ver_index) + " x:%s"%ftoss(Xstartpos) + " y:%s"%ftoss(Ystartpos)
                             except:
                                 s = quarkx.getlonghint(handle.hint)
                         else:
-                            s = "Skin tri \\ vertex " + str(handle.tri_index) + " \\ " + str(handle.ver_index) + " x:%s"%ftoss(x) + " y:%s"%ftoss(y)
-                    elif (isinstance(handle, mdlhandles.LinRedHandle)) or (isinstance(handle, mdlhandles.LinSideHandle)) or (isinstance(handle, mdlhandles.LinCornerHandle)) or (isinstance(handle, mdlhandles.BoneCornerHandle)):
+                            s = "Skin tri \\ vertex " + str(handle.tri_index) + " \\ " + str((handle.tri_index*3) + handle.ver_index) + " x:%s"%ftoss(x) + " y:%s"%ftoss(y)
+                    elif (isinstance(handle, mdlhandles.LinRedHandle)) or (isinstance(handle, mdlhandles.LinSideHandle)) or (isinstance(handle, mdlhandles.LinCornerHandle)):
                         if view.info["viewname"] == "XY":
                             s = "Linear handle pos " + " x:%s"%ftoss(handle.pos.x) + " y:%s"%ftoss(handle.pos.y)
                         elif view.info["viewname"] == "XZ":
@@ -1135,13 +1171,25 @@ class BaseEditor:
                         try:
                             s = view.info["viewname"] + " view"
                             if view.info["viewname"] == "XY":
-                                s = handle.name + " " + "%s "%handle.index + s + " x: %s"%ftoss(handle.pos.tuple[0]) + " y: %s"%ftoss(handle.pos.tuple[1])
+                                try:
+                                    s = handle.name + " " + "%s "%handle.index + "Zview" + " x: %s"%ftoss(handle.pos.tuple[0]) + " y: %s"%ftoss(handle.pos.tuple[1])
+                                except:
+                                    s = handle.hint.strip() + " " + "Zview" + " x: %s"%ftoss(handle.pos.tuple[0]) + " y: %s"%ftoss(handle.pos.tuple[1])
                             elif view.info["viewname"] == "XZ":
-                                s = handle.name + " " + "%s "%handle.index + s + " x: %s"%ftoss(handle.pos.tuple[0]) + " z: %s"%ftoss(handle.pos.tuple[2])
+                                try:
+                                    s = handle.name + " " + "%s "%handle.index + "Yview" + " x: %s"%ftoss(handle.pos.tuple[0]) + " z: %s"%ftoss(handle.pos.tuple[2])
+                                except:
+                                    s = handle.hint.strip() + " " + "Yview" + " x: %s"%ftoss(handle.pos.tuple[0]) + " z: %s"%ftoss(handle.pos.tuple[2])
                             elif view.info["viewname"] == "YZ":
-                                s = handle.name + " " + "%s "%handle.index + s + " y: %s"%ftoss(handle.pos.tuple[1]) + " z: %s"%ftoss(handle.pos.tuple[2])
+                                try:
+                                    s = handle.name + " " + "%s "%handle.index + "Xview" + " y: %s"%ftoss(handle.pos.tuple[1]) + " z: %s"%ftoss(handle.pos.tuple[2])
+                                except:
+                                    s = handle.hint.strip() + " " + "Xview" + " y: %s"%ftoss(handle.pos.tuple[1]) + " z: %s"%ftoss(handle.pos.tuple[2])
                             else:
-                                s = handle.name + " " + "%s "%handle.index + " x,y,z: %s"%handle.pos
+                                try:
+                                    s = handle.name + " " + "%s "%handle.index + " x,y,z: %s"%handle.pos
+                                except:
+                                    s = handle.hint.strip() + "  x,y,z: %s"%handle.pos
                         except:
                             pass
                 else:
@@ -1153,23 +1201,20 @@ class BaseEditor:
         #
 
         elif flags & MB_DRAGGING:
+
             if self.dragobject is not None:
                 ### To free up L & RMB combo dragging for Model Editor face selection use.
                 if isinstance(self, mdleditor.ModelEditor) and isinstance(self.dragobject, qhandles.FreeZoomDragObject) and flagsmouse == 1048:
                     pass
                 ### Need to do something here, stops Zoom drag handle when selecting faces but does not always remake handles at end of drag.
                 elif isinstance(self, mdleditor.ModelEditor) and isinstance(self.dragobject, qhandles.HandleDragObject) and (flagsmouse == 1048):
-           #         self.dragobject = dragobject = None
                     pass
-        #        elif flagsmouse == 2072 and isinstance(self.dragobject, mdlhandles.ModelFaceHandle):
                     self.dragobject = dragobject = None
-        #            mdleditor.commonhandles(self)
                 elif flagsmouse == 16384 and isinstance(self.dragobject, mdlhandles.ModelFaceHandle):
                     self.dragobject = dragobject = None
                     mdleditor.commonhandles(self)
                 else:
                     if isinstance(self, mdleditor.ModelEditor) and isinstance(self.dragobject.handle, mdlhandles.SkinHandle):
-             #           self.dragobject.handle.drag(self.dragobject.handle.pos, quarkx.vect(x,y,0), flags, view)
                         self.dragobject.dragto(x, y, flags)
                     else:
                         self.dragobject.dragto(x, y, flags)
@@ -1573,6 +1618,10 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.126  2009/04/28 21:30:56  cdunde
+#Model Editor Bone Rebuild merge to HEAD.
+#Complete change of bone system.
+#
 #Revision 1.125  2009/03/12 22:22:46  cdunde
 #To cycle through layered items in the Model Editor's views to click and select a component.
 #
