@@ -15,6 +15,10 @@ $Id$
 6.6.0 Beta 3
 ============
 
+* [cdunde/DanielPharos]: Model Editor - massive improvements in many areas including bones,
+          - functions, specific setting capabilities and importers including single and
+          - multiple md5anim file loading, manipulation and successive animation viewing.
+
 * [DanielPharos]: Added a horizontal scrollbar in the treeview.
 
 * [cdunde]: Model Editor - Setup QuArK Specific page modules for easy use with importers.
