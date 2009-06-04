@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.21  2009/05/26 20:43:59  danielpharos
+Added a horizontal scrollbar in the treeview.
+
 Revision 1.20  2009/04/28 20:54:03  cdunde
 Model Editor Bone Rebuild merge to HEAD.
 Complete change of bone system.
@@ -256,6 +259,7 @@ begin
   ParentColor := False;
   Color := clWindow;
   TabStop := True;
+  HorzScrollBar.Tracking:=True;
   HorzScrollBar.Increment:=MyTVLineStep;
   VertScrollBar.Tracking:=True;
   VertScrollBar.Increment:=MyTVLineStep;
@@ -1479,11 +1483,13 @@ procedure TMyTreeView.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: 
 var
  Q: QObject;
  R: TRect;
- W,H, Y0: Integer;
+ W,H, X0, Y0: Integer;
 begin
  {$IFDEF Debug} CheckInternalState; {$ENDIF}
  SetFocus;
+ X0:=X;
  Y0:=Y;
+ Inc(X, HorzScrollBar.Position);
  Inc(Y, VertScrollBar.Position);
  Q:=GetNodeAt(X,Y);
  if Q=Nil then
@@ -1520,7 +1526,7 @@ begin
       New(DragInfo);
      W:=GetSystemMetrics(sm_CxDoubleClk);
      H:=GetSystemMetrics(sm_CyDoubleClk);
-     DragInfo^.ExcludeRect:=Bounds(X-W, Y0-H, 2*W, 2*H);
+     DragInfo^.ExcludeRect:=Bounds(X0-W, Y0-H, 2*W, 2*H);
     end;
   end
  else
