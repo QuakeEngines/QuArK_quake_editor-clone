@@ -483,6 +483,9 @@ class ModelEditor(BaseEditor):
         m = qmenu.item
         m.reserved = reserved
         expand_subitems = qmenu.item("Expand Sub-items", expand_subitems_click, "|Expand Sub-items:\n\nThis will expand all of this items sub-folders and their sub-folders on down.|intro.modeleditor.rmbmenus.html#bonecommands")
+        bones = self.Root.findallsubitems("", ':bone')  # get all bones
+        if len(bones) == 0:
+            expand_subitems.state = qmenu.disabled
         if len(sellist)==1:
             if sellist[0].type == ':mf':
                 import mdlcommands
@@ -1719,6 +1722,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.124  2009/06/03 05:16:22  cdunde
+#Over all updating of Model Editor improvements, bones and model importers.
+#
 #Revision 1.123  2009/05/03 07:25:20  cdunde
 #Added tree-view RMB menu item to expand all sub-items of the clicked item for quick access to them.
 #
