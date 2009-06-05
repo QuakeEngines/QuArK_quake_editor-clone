@@ -483,8 +483,7 @@ class ModelEditor(BaseEditor):
         m = qmenu.item
         m.reserved = reserved
         expand_subitems = qmenu.item("Expand Sub-items", expand_subitems_click, "|Expand Sub-items:\n\nThis will expand all of this items sub-folders and their sub-folders on down.|intro.modeleditor.rmbmenus.html#bonecommands")
-        bones = self.Root.findallsubitems("", ':bone')  # get all bones
-        if len(bones) == 0:
+        if len(sellist) != 0 and len(sellist[0].subitems) == 0:
             expand_subitems.state = qmenu.disabled
         if len(sellist)==1:
             if sellist[0].type == ':mf':
@@ -514,6 +513,10 @@ class ModelEditor(BaseEditor):
                     mdlcommands.MatchFrameCount.state = qmenu.normal
                     mdlcommands.CheckC.state = qmenu.normal
                     return [expand_subitems, qmenu.sep] + [mdlcommands.MatchFrameCount, mdlcommands.CheckC, qmenu.sep] + mdlmenus.MultiSelMenu(sellist, self) + extra
+            if sellist[0].type == ':bg' or sellist[0].type == ':bone':
+                import mdlhandles
+                BoneExtras = mdlhandles.BoneCenterHandle(origin,None,None).extrasmenu(self)
+                return [expand_subitems, qmenu.sep] + BoneExtras + [qmenu.sep] + mdlentities.CallManager("menu", sellist[0], self) + extra
         return [expand_subitems, qmenu.sep] + mdlmenus.MultiSelMenu(sellist, self) + extra
 
 
@@ -1722,6 +1725,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.125  2009/06/05 00:54:23  cdunde
+#Menu update.
+#
 #Revision 1.124  2009/06/03 05:16:22  cdunde
 #Over all updating of Model Editor improvements, bones and model importers.
 #
