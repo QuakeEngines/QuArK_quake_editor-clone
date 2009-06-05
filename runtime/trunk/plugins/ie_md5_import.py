@@ -980,7 +980,28 @@ def load_md5(md5_filename, basepath):
                 compkey = ComponentList[mesh_index].name
                 temp_vtxlist[compkey] = bone_vtx_list[bone_index][mesh_index]
             QuArK_bones[bone_index].vtxlist = temp_vtxlist
-            QuArK_bones[bone_index].vtx_pos = {}
+            vtxcount = 0
+            usekey = None
+            for key in QuArK_bones[bone_index].vtxlist.keys():
+                if len(QuArK_bones[bone_index].vtxlist[key]) > vtxcount:
+                    usekey = key
+                    vtxcount = len(QuArK_bones[bone_index].vtxlist[key])
+            if usekey is not None:
+                temp = {}
+                temp[usekey] = QuArK_bones[bone_index].vtxlist[usekey]
+                QuArK_bones[bone_index].vtx_pos = temp
+                for item in ComponentList:
+                    if item.name == usekey:
+                        comp = item
+                        break
+                vtxpos = quarkx.vect(0, 0, 0)
+                frame = comp.dictitems['Frames:fg'].subitems[0]
+                for vtx in range(len(QuArK_bones[bone_index].vtx_pos[usekey])):
+                    vtxpos = vtxpos + frame.vertices[QuArK_bones[bone_index].vtx_pos[usekey][vtx]]
+                vtxpos = vtxpos/float(len(QuArK_bones[bone_index].vtx_pos[usekey]))
+                QuArK_bones[bone_index]['draw_offset'] = (QuArK_bones[bone_index].position - vtxpos).tuple
+                QuArK_bones[bone_index]['component'] = usekey
+                    
     # Section below sets up the QuArK editor.ModelComponentList for each mesh.
     for mesh_index in ModelComponentList.keys():
         compname = ComponentList[mesh_index].name
@@ -1588,6 +1609,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.17  2009/06/03 05:16:22  cdunde
+# Over all updating of Model Editor improvements, bones and model importers.
+#
 # Revision 1.16  2009/04/28 21:30:56  cdunde
 # Model Editor Bone Rebuild merge to HEAD.
 # Complete change of bone system.
