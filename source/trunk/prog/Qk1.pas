@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.83  2009/05/04 21:18:50  danielpharos
+Changed all source files to use CRLF text format, updated copyright and GPL text.
+
 Revision 1.82  2009/02/14 17:35:35  danielpharos
 You can now "uninstall" gamemodes: just delete the addons-directory of that game. Also, small code changes to accommodate this.
 
@@ -720,7 +723,10 @@ begin
        S:=S+'This check can be disabled (at own risk!) in the configuration settings.'#13#10#13#10;
        S:=S+'Are you sure you want to start a new instance of QuArK?';
        if Windows.MessageBox(0, PChar(S), PChar('QuArK'), MB_TASKMODAL or MB_YESNO or MB_ICONWARNING or MB_DEFBUTTON2) = idNo then
-         Halt(0);
+       begin
+         Application.Terminate;
+         Exit;
+       end;
      end;
  end;
 
