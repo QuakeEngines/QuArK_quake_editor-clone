@@ -475,6 +475,7 @@ def load_md5(md5_filename, basepath):
                 temp_name=temp_name[1:-1]
                 ### QuArK note: this is where we start making our bones.
                 new_bone = quarkx.newobj(temp_name + ":bone")
+                new_bone['show'] = (1.0,)
                 new_bone['position'] = (float(words[3]), float(words[4]), float(words[5]))
                 new_bone.position = quarkx.vect(new_bone.dictspec['position'])
                 new_bone['parent_index'] = words[1] # QuArK code, this is NOT an integer but a string of its integer value.
@@ -1609,6 +1610,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.18  2009/06/05 02:24:23  cdunde
+# To get bones to move with md5.anim model frames.
+#
 # Revision 1.17  2009/06/03 05:16:22  cdunde
 # Over all updating of Model Editor improvements, bones and model importers.
 #

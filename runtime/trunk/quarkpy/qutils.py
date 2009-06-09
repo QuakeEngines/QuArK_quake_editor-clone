@@ -430,6 +430,8 @@ def ModelIcon(modelobj, iconset):
     if modelobj.type ==":fg":
         return icons[1]
     if modelobj.type ==":bg":
+        if quarkx.setupsubset(SS_MODEL, "Options")['HideBones'] is not None:
+            return icons[7]
         return icons[5]
 
     #
@@ -475,6 +477,29 @@ def ComponentIconSel(obj):
 
 def ComponentIconUnsel(obj):
     return ComponentIcon(obj, 0)
+
+#
+# Variable icons handlers for Model bone objects
+#
+
+def BoneIcon(bone, iconset):
+    #
+    # Sets the default icons for each entity type, by figuring out their type from their name.
+    #
+    if not ico_dict.has_key('ico_objects'):
+        ico_dict['ico_objects'] = LoadIconSet("images\\objects", 16)
+    icons = ico_dict['ico_objects'][iconset]
+
+    if bone['show'][0] == 1.0:
+        return icons[47]
+    else:
+        return icons[51]
+
+def BoneIconSel(bone):
+    return BoneIcon(bone, 1)
+
+def BoneIconUnsel(bone):
+    return BoneIcon(bone, 0)
 
 
 # quarkx.msgbox
@@ -839,6 +864,9 @@ def sortdictionary(dictionary):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.47  2008/11/25 00:22:40  cdunde
+#Added new function by DanielPharos to swap RGB color and make a BGR color.
+#
 #Revision 1.46  2008/10/29 04:29:31  cdunde
 #Minor error fix.
 #

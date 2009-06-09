@@ -2363,6 +2363,7 @@ def addbone(editor, comp, pos):
     if name is None:
         name = "NewBone1"
     new_bone = quarkx.newobj(name + ":bone")
+    new_bone['show'] = (1.0,)
     new_bone['component'] = editor.Root.currentcomponent.name
     new_bone['parent_name'] = "None"
     new_bone['position'] = pos.tuple
@@ -2375,6 +2376,14 @@ def addbone(editor, comp, pos):
     undo = quarkx.action()
     undo.put(skeletongroup, new_bone)
     editor.ok(undo, "add bone")
+ ### Code below if we just want to draw new bones without redrawing all handles.
+ #   import mdlentities
+ #   handle = mdlentities.CallManager("handlesopt", new_bone, editor)
+ #   for v in editor.layout.views:
+ #       cv = v.canvas()
+ #       v.handles = v.handles + handle
+ #       for h in handle:
+ #           h.draw(v, cv, h)
 
 #
 # This function creates a new bone at position pos attached to bone.
@@ -2399,6 +2408,7 @@ def continue_bone(editor, bone, pos):
     if name is None:
         name = "NewBone1"
     new_bone = quarkx.newobj(name + ":bone")
+    new_bone['show'] = (1.0,)
     new_bone['component'] = editor.Root.currentcomponent.name
     new_bone['parent_name'] = bone.name
     pos = quarkx.vect(bone.dictspec['position']) + quarkx.vect(8.0,2.0,2.0)
@@ -2411,6 +2421,14 @@ def continue_bone(editor, bone, pos):
     undo = quarkx.action()
     undo.put(skeletongroup, new_bone)
     editor.ok(undo, "add bone")
+ ### Code below if we just want to draw new bones without redrawing all handles.
+ #   import mdlentities
+ #   handle = mdlentities.CallManager("handlesopt", new_bone, editor)
+ #   for v in editor.layout.views:
+ #       cv = v.canvas()
+ #       v.handles = v.handles + handle
+ #       for h in handle:
+ #           h.draw(v, cv, h)
 
 #
 # This function attaches 1st bone selected (based on tree-view order) to 2nd bone selected as its parent.
@@ -3646,6 +3664,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.107  2009/06/03 05:16:22  cdunde
+#Over all updating of Model Editor improvements, bones and model importers.
+#
 #Revision 1.106  2009/05/01 06:06:15  cdunde
 #Moved bones undo function to mdlutils.py for generic use elsewhere.
 #

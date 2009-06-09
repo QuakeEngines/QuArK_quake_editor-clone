@@ -4125,12 +4125,14 @@ class BoneCenterHandle(BoneHandle):
             SB1.state = qmenu.disabled
             HB1.state = qmenu.normal
             mdlutils.Update_Editor_Views(editor)
+            editor.layout.explorer.invalidate()
 
         def HideBones(m, self=self, editor=editor, view=view):
             quarkx.setupsubset(SS_MODEL, "Options")['HideBones'] = "1"
             SB1.state = qmenu.normal
             HB1.state = qmenu.disabled
             mdlutils.Update_Editor_Views(editor)
+            editor.layout.explorer.invalidate()
 
         def select_handle_vertexes_click(m, self=self, editor=editor, view=view):
             sel_comp = m.text.split("for ")[1] + ":mc"
@@ -4882,6 +4884,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.176  2009/06/03 05:16:22  cdunde
+#Over all updating of Model Editor improvements, bones and model importers.
+#
 #Revision 1.175  2009/05/03 20:49:57  cdunde
 #Moved menu item for individual bone handle selection and
 #stopped all vertexes from being drawn and assigned bone movement if component is hidden.

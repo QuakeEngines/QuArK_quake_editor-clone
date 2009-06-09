@@ -95,6 +95,7 @@ def RunQuArK():
     quarkx.seticons(qutils.iiDuplicator, qutils.DuplicatorIconSel, qutils.DuplicatorIconUnsel)
     quarkx.seticons(qutils.iiModelGroup, qutils.ModelGroupIconSel, qutils.ModelGroupIconUnsel)
     quarkx.seticons(qutils.iiComponent,  qutils.ComponentIconSel,  qutils.ComponentIconUnsel)
+    quarkx.seticons(qutils.iiMD3Bone,    qutils.BoneIconSel,       qutils.BoneIconUnsel)
     s = "&Contextual help"
     qmacro.helpfn[s] = "Help1"
     quarkx.helpmenuitem(s)
@@ -117,6 +118,9 @@ def RunQuArK():
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.13  2008/07/10 21:21:58  danielpharos
+#The model component icon changes to an X when you hide the component.
+#
 #Revision 1.12  2005/10/15 00:46:30  cdunde
 #To reinstate headers and history
 #

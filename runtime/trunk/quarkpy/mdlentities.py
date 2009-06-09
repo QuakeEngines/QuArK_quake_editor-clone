@@ -48,6 +48,29 @@ MT_MISCGROUP   = 6      # AiV
 #
 ###############################
 
+def ShowHideBones(x):
+    editor = mdleditor.mdleditor
+    if editor is None: return
+    templist = editor.layout.explorer.sellist
+    for obj in range(len(editor.layout.explorer.sellist)):
+        if editor.layout.explorer.sellist[obj].type == ":bone":
+            def bone_subitems(subitems, x=x):
+                for bone in subitems:
+                    bone['show'] = (x,)
+                    bone_subitems(bone.subitems)
+            editor.layout.explorer.sellist[obj]['show'] = (x,)
+            bone_subitems(editor.layout.explorer.sellist[obj].subitems)
+            templist.remove(editor.layout.explorer.sellist[obj])
+    editor.layout.explorer.sellist = templist
+    editor.explorerselchange()
+
+def ShowTheseBones(m):
+    ShowHideBones(1.0)
+
+def HideTheseBones(m):
+    ShowHideBones(0.0)
+
+
 def ShowHideComp(x):
     editor = mdleditor.mdleditor
     if editor is None: return
@@ -93,7 +116,6 @@ def ShowHideComp(x):
 
 def ShowComp(m):
     ShowHideComp(1)
-
 
 def HideComp(m):
     ShowHideComp(0)
@@ -1548,9 +1570,24 @@ class TagFrameType(EntityManager):
 class BoneType(EntityManager):
     "Bone, type = :bone"
 
+    def menu(o, editor):
+        import qmenu
+        STB = qmenu.item("&Show these bones", ShowTheseBones)
+        HTB = qmenu.item("&Hide these bones", HideTheseBones)
+
+        if o.dictspec['show'][0] == 1.0:
+            STB.state = qmenu.disabled
+        else:
+            HTB.state = qmenu.disabled
+
+        import mdlmenus
+        return [STB, HTB, qmenu.sep] + CallManager("menubegin", o, editor) + mdlmenus.BaseMenu([o], editor)
+
     def handlesopt(o, editor):
 
         h = []
+        if o.dictspec['show'][0] != 1.0:
+            return h
         comp = editor.Root.currentcomponent
         s = None
         index = ""
@@ -2094,6 +2131,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.43  2009/06/03 05:16:22  cdunde
+#Over all updating of Model Editor improvements, bones and model importers.
+#
 #Revision 1.42  2009/05/01 20:39:34  cdunde
 #Moved additional Specific page systems to mdlentities.py as modules.
 #
