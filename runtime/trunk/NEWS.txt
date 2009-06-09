@@ -15,6 +15,9 @@ $Id$
 6.6.0 Beta 3
 ============
 
+* [cdunde/DanielPharos]: Updated to better display the Model Editor's Skeleton group and
+          - individual bones and their sub-bones when they are hidden.
+
 * [cdunde/DanielPharos]: Model Editor - massive improvements in many areas including bones,
           - functions, specific setting capabilities and importers including single and
           - multiple md5anim file loading, manipulation and successive animation viewing.
