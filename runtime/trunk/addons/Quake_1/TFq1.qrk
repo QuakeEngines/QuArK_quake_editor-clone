@@ -3,6 +3,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.4  2005/10/15 01:00:27  cdunde
+//To reinstate headers and history
+//
 //Revision 1.1  2001/02/11 11:07:05  decker_dk
 //Moved from addons directory
 //
@@ -125,7 +128,6 @@ QQRKSRC1
 			Help = "This is the spawn points for members of specific teams"
 			bbox = '-16 -16 -24 16 16 32'
 			mdl = "progs/player.mdl"
-                        mdlskin = '2'
 			team_no:=
 			{	Txt="&"
 				Typ="E"
@@ -146,7 +148,8 @@ QQRKSRC1
 		info_tfgoal:form =
 		{
 			Help = "Team's goal info"
-			bbox = '-5 -7 -25 21 18 52'
+			bbox = '-16 -16 -24 16 16 24'
+			mdl = "progs/invisibl.mdl"
 			goal_no:=
 			{	Txt="&"
 				Typ="E"
