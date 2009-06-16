@@ -193,7 +193,8 @@ class LineThickDlg(SimpleCancelDlgBox):
     #
     # dialog layout
     #
-    size = (160, 75)
+    size = (160, 80)
+    dlgflags = FWF_NORESIZE
     dfsep = 0.7 
     
     dlgdef = """
@@ -844,6 +845,10 @@ def OptionsMenuRMB():
 #
 #
 #$Log$
+#Revision 1.45  2009/04/28 21:30:56  cdunde
+#Model Editor Bone Rebuild merge to HEAD.
+#Complete change of bone system.
+#
 #Revision 1.44  2009/01/30 20:38:46  cdunde
 #Added option for creation of all bone handle draglines when importing.
 #
