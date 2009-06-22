@@ -411,6 +411,7 @@ def find_skin_faces_click(m):
             if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_EDwSV'] == "1":
                 editor.ModelVertexSelList = []
             PassSkinSel2Editor(editor)
+    # Use this code below, with other files changes, to draw the view handles without rebuilding them for faster drawing and no flickering of the views.
     #        viewhandles = mdlhandles.BuildHandles(editor, editor.layout.explorer, editor.layout.views[0])
     #        for v in editor.layout.views:
     #            v.handles = viewhandles
@@ -446,14 +447,15 @@ class SearchDlg(qmacro.dialogbox):
             src ["scope$Items"] = "Selection\nWhole editor"
             src ["scope$Values"] = "S\nW"
 
-        src["kind"] = "e,b"
-        slist = ["All entities"]
-        klist = ["e,b"]
+        slist = ["All objects"]
+        klist = []
+        all = []
         for key, value in mdlentities.Mapping.items():
             klist.append(key)
             slist.append("'%s' objects" % key)
-        slist.append("All objects")
-        klist.append(",".join(klist[1:]))
+        all.append(",".join(klist[1:]))
+        klist[:0] = all
+        src["kind"] = klist[0]
         src["kind$Items"] = "\015".join(slist)
         src["kind$Values"] = "\015".join(klist)
 
@@ -461,7 +463,7 @@ class SearchDlg(qmacro.dialogbox):
             src[key]=value
 
         qmacro.dialogbox.__init__(self, quarkx.clickform, src,
-          ok = qtoolbar.button(self.search, "search for the given classname", ico_editor, 1, " Search ", 1),
+          ok = qtoolbar.button(self.search, "search for the given selections", ico_editor, 1, " Search ", 1),
           cancel = qtoolbar.button(self.close, "close this box", ico_editor, 0, " Cancel ", 1))
         self.editor = editor
 
@@ -499,22 +501,25 @@ class SearchByName(SearchDlg):
     dlgdef = """
       {
         Style = "15"
-        Caption = "Search by classname"
+        Caption = "Search for object"
         sep: = {Typ="S" Txt=" "}
         classname: = {
           Txt = " Search for :"
           Typ = "E"
+          Hint = "First select the 'Object type :' below to look in"$0D"then enter the 'name' of the object here."
           SelectMe = "1"
         }
         scope: = {
           Typ = "CL"
           Txt = " Search in :"
+          Hint = "There's only one selection here."
           Items = "%s"
           Values = "%s"
         }
         kind: = {
           Typ = "CL"
           Txt = " Object type :"
+          Hint = "Select the 'Object type :'"$0D"to find all of that type of item."
           Items = "%s"
           Values = "%s"
         }
@@ -617,7 +622,7 @@ def SearchMenu():
     findface = qmenu.item('Find &Faces', find_faces_click, "|Find Faces:\n\nThis function selects the faces entered\nfor the component currently selected\nor selected from the drop down box.\nPlace a comma between each face entered to find more then one.", "intro.mapeditor.menu.html#searchmenu")
     findskinvertex = qmenu.item('Find &Skin Vertices', find_skin_vertices_click, "|Find Skin Vertices:\n\nThis function selects the Skin-view vertexes entered\nfor the component currently selected\nor selected from the drop down box.\nPlace a comma between each face entered to find more then one.", "intro.mapeditor.menu.html#searchmenu")
     findskinface = qmenu.item('Find S&kin Faces', find_skin_faces_click, "|Find Skin Faces:\n\nThis function selects the Skin-view face vertexes for\nthe faces entered of the component currently selected\nor selected from the drop down box.\nPlace a comma between each face entered to find more then one.", "intro.mapeditor.menu.html#searchmenu")
-    ByName = qmenu.item("Object by &name", SearchByName, "|Object by name:\n\nThis function will search for an object (which are also called Entities) by its 'classname' (the type of game entity it represents, a particular monster, weapon, item...).", "intro.mapeditor.menu.html#searchmenu")
+    ByName = qmenu.item("Find &Objects", SearchByName, "|Find Objects:\n\nThis function will search for objects by their 'type'\n(the type of model object it represents, a bone, skin, frame...).", "intro.mapeditor.menu.html#searchmenu")
     
     it1 = items + [findvertex, findface, qmenu.sep, findskinvertex, findskinface, qmenu.sep, ByName] + checkitems + allchecks
     return qmenu.popup("&Search", it1, onclick), shortcuts
@@ -625,5 +630,8 @@ def SearchMenu():
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.1  2009/06/03 05:33:45  cdunde
+#Over all updating of Model Editor improvements, bones and model importers.
+#
 #
 #
