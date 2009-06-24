@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.486  2009/06/03 05:16:22  cdunde
+//Over all updating of Model Editor improvements, bones and model importers.
+//
 //Revision 1.485  2009/05/15 11:06:07  danielpharos
 //Moved SaveMapVersion setting to seperate Files section.
 //
@@ -1669,6 +1672,7 @@ QQRKSRC1
         Fog = "1"
         Transparency = "1"
         Lights = "1"
+        Dither = "1"
         Bilinear = "1"
         DoubleBuffer = "1"
         SupportsGDI = ""
@@ -9099,6 +9103,7 @@ QQRKSRC1
       L3: = {Typ="S" Txt="---- additional options ----"}
       Bilinear: = { Typ="X" Txt="Bilinear filtering" Cap="Enabled" }
       DoubleBuffer: = { Typ="X" Txt="Double buffering" Cap="Enabled" Hint="Reduces the flickering noticed when the view redraws."}
+      Dither: = { Typ="X" Txt="Color dithering" Cap="Enabled" }
       SupportsGDI:  = { Typ="X" Txt="'Supports GDI' flag" Cap="Enabled" }
       AllowsGDI:    = { Typ="X" Txt="Over-the-scene lines+icons" Cap="Enabled" }
       ColorBits: = { Typ="EF1" Txt="Color bits (0=current)" Hint="The amount of bits per pixel. The higher, the better the quality."

@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.86  2009/02/21 17:06:18  danielpharos
+Changed all source files to use CRLF text format, updated copyright and GPL text.
+
 Revision 1.85  2009/02/14 16:30:19  danielpharos
 Compacted some code a bit by using SetupGameSet.
 
@@ -325,6 +328,7 @@ type
  private
    RC: HGLRC;
    DoubleBuffered: Boolean;
+   Dithering: Boolean;
    Fog: Boolean;
    Transparency: Boolean;
    Lighting: Boolean;
@@ -1032,6 +1036,7 @@ begin
     LightParams.BrightnessSaturation:=256;
     LightParams.LightFactor:=(1.0-LightParams.ZeroLight)/LightParams.BrightnessSaturation;
   end;
+  Dithering:=Setup.Specifics.Values['Dither']<>'';
   FullBright.ZeroLight:=1;
   FullBright.BrightnessSaturation:=0;
   FullBright.LightFactor:=0;
@@ -1097,6 +1102,11 @@ begin
     {glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);}
     {glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);}
     {glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);}
+
+    if Dithering then
+      glEnable(GL_DITHER)
+    else
+      glDisable(GL_DITHER);
 
     { set up fog }
     if Fog then
