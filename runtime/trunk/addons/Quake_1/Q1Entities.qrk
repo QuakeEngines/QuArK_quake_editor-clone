@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.5  2009/06/14 23:02:31  cdunde
+//Another one for the teleporter by hardkore.
+//
 //Revision 1.4  2009/06/13 18:37:28  cdunde
 //Another one for light by hardkore, keep'em coming.
 //
@@ -1578,6 +1581,8 @@ QQRKSRC1
     info_intermission:form =
     {
     Help = "This is the camera point for the intermission." $0D "Use 'mangle' instead of angle, so you can set pitch, yaw and roll." $0D $0D "Pitch is vertical angle (-90 degrees up to 90 down), 0 being horizontal and with positive values pointing down." $0D "Yaw is horizontal angle (0 to 360 degrees around the Z-axis), 0 being east and 90 being north." $0D "Roll is rotation around the direction axis (-180 to 180), 0 being straight and positive values tilting right." $0D $0D "Example: '30 135 0' means the camera is facing downwards at a 30 degree angle, straight northwest and with no tilt."
+    bbox = '-16 -16 -24 16 16 32'
+    mdl = "progs/player.mdl"
     mangle: =
     {Txt="&"
     Hint="Angles for the intermission camera; 'pitch yaw roll'"
