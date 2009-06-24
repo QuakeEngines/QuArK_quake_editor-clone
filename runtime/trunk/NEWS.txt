@@ -15,6 +15,8 @@ $Id$
 6.6.0 Beta 3
 ============
 
+* [DanielPharos]: Disabled changing the classname specific: it blew up the Model Editor.
+
 * [cdunde/DanielPharos]: Updated to better display the Model Editor's Skeleton group and
           - individual bones and their sub-bones when they are hidden.
 

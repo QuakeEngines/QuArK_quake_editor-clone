@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.53  2009/03/11 16:14:39  danielpharos
+Added 'Rows' specific to ComboBox.
+
 Revision 1.52  2009/02/21 17:06:18  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -2712,7 +2715,7 @@ begin
       begin  { adds a field to edit the name of the object(s) }
        Q:=QInternal.Create('', Form);
        Q.Specifics.Add('Txt='+EditNames);
-       Q.Specifics.Add('Typ=EN');
+       Q.Specifics.Add('Typ=ENR');
        Form.SubElements.Insert(0, Q);
       end;
      if AddRemaining then
