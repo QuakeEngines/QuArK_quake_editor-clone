@@ -641,7 +641,11 @@ def hintPlusInfobaselink(hint, url):
 
 # Converts separate Red, Green, Blue color components into a long integer color.
 def RGBToColor(RGB):
-    return (65536 * RGB[2]) + (256 * RGB[1]) + RGB[0]
+    RGB = (65536 * RGB[2]) + (256 * RGB[1]) + RGB[0]
+    if RGB > 999999999:
+        RGB = int(RGB*.1)
+        quarkx.msgbox("RGB caused a long integer !\n\nThe file or function you have\njust used is causing this error\nin converting three R,G,B values\ninto a color integer number.\nThese values should range from 0 to 1.0\nas a percentage of 256 color per channel.\nCheck the file or function code and correct.", MT_ERROR, MB_OK)
+    return RGB
 
 # Converts long integer color number into separate color components Red Green Blue (RGB)
 # Returns those components as a list of three integer numbers but backwards BGR
@@ -864,6 +868,10 @@ def sortdictionary(dictionary):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.48  2009/06/09 05:51:48  cdunde
+#Updated to better display the Model Editor's Skeleton group and
+#individual bones and their sub-bones when they are hidden.
+#
 #Revision 1.47  2008/11/25 00:22:40  cdunde
 #Added new function by DanielPharos to swap RGB color and make a BGR color.
 #
