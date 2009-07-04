@@ -1874,7 +1874,7 @@ def ConvertEditorFaceObject(editor, newobjectslist, flags, view, undomsg, option
 # This function removes all data that may exist for the removed
 # component from the editor's ModelComponentList and Bones, if any.
 #
-def removecomp(editor, compname, undo):
+def removecomp(editor, compname, undo, multi_comps=0):
     components = editor.Root.findallsubitems("", ':mc')
     if len(components) == 1:
         editor.ModelComponentList = {}
@@ -1885,6 +1885,7 @@ def removecomp(editor, compname, undo):
         for comp in components:
             if comp.name != compname:
                 newbonecomp = comp.name
+                editor.Root.currentcomponent = comp
                 break
         oldskelgroup = editor.Root.dictitems['Skeleton:bg']
         old = oldskelgroup.findallsubitems("", ':bone') # Get all bones in the old group.
@@ -1894,6 +1895,7 @@ def removecomp(editor, compname, undo):
         for bone in new:
             if bone.dictspec['component'] == compname:
                 bone['component'] = newbonecomp
+                bone['comp_list'] = newbonecomp
             tempdata = {}
             for component in bone.vtxlist.keys():
                 if component == compname:
@@ -1910,8 +1912,13 @@ def removecomp(editor, compname, undo):
                     tempdata[component] = bone.vtx_pos[component]
             bone.vtx_pos = {}
             bone.vtx_pos = tempdata
-        newskelgroup = boneundo(editor, old, new)
-        undo.exchange(oldskelgroup, newskelgroup)
+        if multi_comps == 0:
+            newskelgroup = boneundo(editor, old, new)
+            undo.exchange(oldskelgroup, newskelgroup)
+        else:
+            for bone in new:
+                oldskelgroup.dictitems[bone.name]['component'] = bone.dictspec['component']
+                oldskelgroup.dictitems[bone.name]['comp_list'] = bone.dictspec['component'].replace(":mc", "")
 
 #
 # The 'option' value of 1 MAKES a "clean" brand new component with NO triangles, frame.vertecies (only frames) or bones.
@@ -3664,6 +3671,10 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.108  2009/06/09 05:51:48  cdunde
+#Updated to better display the Model Editor's Skeleton group and
+#individual bones and their sub-bones when they are hidden.
+#
 #Revision 1.107  2009/06/03 05:16:22  cdunde
 #Over all updating of Model Editor improvements, bones and model importers.
 #

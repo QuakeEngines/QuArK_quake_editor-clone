@@ -186,9 +186,14 @@ def deleteitems(editor, root, list):
     import operator
     group = editor.Root.dictitems['Skeleton:bg']
     bonelist = group.findallsubitems("", ':bone') # Get all bones in the old group.
+    multi_comps = -1
     for s in list:
         if s.type == ":mc":
-            removecomp(editor, s.name, undo)
+            multi_comps = multi_comps + 1
+    for s in list:
+        if s.type == ":mc":
+            removecomp(editor, s.name, undo, multi_comps)
+            multi_comps = multi_comps - 1
         if s.type == ":bone":
             if not s in group.subitems:
                 bone_index = operator.indexOf(list, s)
@@ -531,6 +536,9 @@ def groupcolor(m):
 #
 #
 #$Log$
+#Revision 1.28  2009/06/03 05:16:22  cdunde
+#Over all updating of Model Editor improvements, bones and model importers.
+#
 #Revision 1.27  2009/04/28 21:30:56  cdunde
 #Model Editor Bone Rebuild merge to HEAD.
 #Complete change of bone system.
