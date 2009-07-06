@@ -25,7 +25,7 @@ class BackBmpDlg(qmacro.dialogbox):
 
     dfsep = 0.5
     dlgflags = FWF_KEEPFOCUS
-    size = (300,300)
+    size = (300,310)
 
     dlgdef = """
       {
@@ -352,6 +352,9 @@ class MdlBackBmpDlg(qmacro.dialogbox):
 #
 #
 #$Log$
+#Revision 1.12  2008/02/06 00:12:44  danielpharos
+#The skinview now properly updates to reflect changes made to textures.
+#
 #Revision 1.11  2007/11/22 05:13:47  cdunde
 #Separated editors background image dialogs and setup to save all of their settings.
 #
