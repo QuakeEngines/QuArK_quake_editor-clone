@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.80  2009/03/12 21:07:25  danielpharos
+Added a Reset-button to the configuration window.
+
 Revision 1.79  2009/02/21 17:06:18  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -748,10 +751,11 @@ begin
  for I:=0 to g_SetupSet[ssGames].SubElements.Count-1 do
   with g_SetupSet[ssGames].SubElements[I] do
    if Specifics.Values['Game']<>'' then
-    if DirectoryExists(GetQPath(pQuArKGameAddon, Specifics.Values['Game'])) then
-     Specifics.Values['NotInstalled']:=''
-    else
-     Specifics.Values['NotInstalled']:='1';
+    if Specifics.Values['CheckAddonInstalled']<>'' then
+     if DirectoryExists(GetQPath(pQuArKGameAddon, Specifics.Values['Game'])) then
+      Specifics.Values['NotInstalled']:=''
+     else
+      Specifics.Values['NotInstalled']:='1';
 
  //Make sure we're trying to load a gamemode that is installed.
  //If not, find an installed one

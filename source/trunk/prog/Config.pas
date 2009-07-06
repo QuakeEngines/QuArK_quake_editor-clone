@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2009/03/11 16:06:35  danielpharos
+Added a Reset-button to the configuration window.
+
 Revision 1.18  2009/02/21 17:06:18  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -259,6 +262,7 @@ var
  SourceSel, Q: QObject;
  DestSel: TQList;
  Source: String;
+ CloneQ: array[Low(T)..High(T)] of QObject;
 begin
  Source:='';
  SourceSel:=Explorer.TMSelUnique;
@@ -277,8 +281,22 @@ begin
  SetupQrk:=MakeAddOnsList;
  if IsModal then
   Exit;
+ //Removed 'NotInstalled' games, so they don't show up:
  for T:=Low(T) to High(T) do
-  Explorer.AddRoot(g_SetupSet[T].Clone(Nil, False));
+  CloneQ[T]:=g_SetupSet[T].Clone(Nil, False);
+ with CloneQ[ssGames] do
+ begin
+   I:=0;
+   while I<SubElements.Count-1 do
+   begin
+     if SubElements[I].Specifics.Values['NotInstalled']<>'' then
+       SubElements.Delete(I)
+     else
+       Inc(I);
+   end;
+ end;
+ for T:=Low(T) to High(T) do
+  Explorer.AddRoot(CloneQ[T]);
  Source:=AncienSel;
  if Source='' then
   Source:=g_SetupSet[Low(g_SetupSet)].Name;
