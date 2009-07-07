@@ -20,7 +20,7 @@ starts out like this:
 where 'flags' is a string containing information about what buttons were
 depressed, and handle is any handle that the mouse is over.  The flags
 string doesn't indicate directly what key was pressed, but rather codes
-functions, mediated by the Map|Mouse setup options.
+functions, mediated by the <act>Map|Mouse</act> setup options.
 
 For clicks, the real processing is done by the MouseClicked function,
 which is defined by the editor's HandlesModule (maphandles for the
