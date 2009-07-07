@@ -52,7 +52,7 @@ you will get 'name' as caption for this entry field. This is often used for the 
 component on a dialog only, as it may be confusing to have input directed<br>to a component in the middle from the beginning. 
 
 <b>Note:</b> The first character of Typ works as a flag. If you use a lower-case character the button/entry field will fill<br>all available space
-it's caption (Txt) does not occupy.
+its caption (Txt) does not occupy.
 
 <table border=1 cellpadding=2 cellspacing=0>
 

@@ -5,9 +5,6 @@ subdir: polyhedrons
 subdir: entities
 subdir: advanced
 
-This tutorial will guide you through the way theQuArK map-editor works, and
-how you should use it.
+This tutorial will guide you through the way the QuArK map-editor works, and how you should use it.
 
-Before starting this tutorial, you should check out the
-<ref> intro/configuration </ref> section first, to setup QuArK with correct
-paths to the build-tools and game for texture-images and alike.
+Before starting this tutorial, you should check out the <ref> intro/configuration </ref> section first, to setup QuArK with correct paths to the build-tools and game for texture-images and alike.

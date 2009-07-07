@@ -29,7 +29,7 @@ the Python core expects it so, and the Delphi code doesn't
 do it right :-(  So always explicitely compare with None.
 
 <strong>Vector equality</strong>:
-Don't try to compare Quarkx vectors with equality,
+Don't try to compare QuarkX vectors with equality,
 rather test their difference for being zero.  Armin discusses
 this in the <ref> src/quarkx </ref> document.
 

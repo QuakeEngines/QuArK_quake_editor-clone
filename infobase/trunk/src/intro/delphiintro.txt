@@ -27,7 +27,7 @@ substantive matters:
     for coding, but sometimes deceptive when reading the
     results ...
 <li>HORRIBLE GOTCHA:  in an <tt>if begin ... end else ...</tt>
-    statmement, if you put a semicolon after end, it will
+    statement, if you put a semicolon after end, it will
     compile but the else block will never execute.
     [Note by Armin: wrong, a ';' before an 'else' will never compile]
     The semicolon rules are different than in C(++).
@@ -36,9 +36,9 @@ substantive matters:
     C(++) .h files is done in the <tt>interface</tt> section of
     a module, whereas the work of the .c(pp) files is done
     in the following <tt>implementation</tt> section.  It wouldn't
-    be a bad a idea to read the delphi help on <tt>interface</tt>,
+    be a bad a idea to read the Delphi help on <tt>interface</tt>,
     <tt>implementation</tt> and <tt>initialization</tt>.
-<li>programs, modules, etc end with <tt>end.</tt>  This also sucks.
+<li>Programs, modules, etc end with <tt>end.</tt>  This also sucks.
 <li>In spite of the semicolons, in general, as far as I can
     make out, O.P. has everything you need to make real programs,
     without the annoying limitiations of 'textbook Pascal'.

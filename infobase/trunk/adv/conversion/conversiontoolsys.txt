@@ -65,7 +65,7 @@ has not been closed. Other wise it will reset the entire system and clear all se
 <li><b>ConvertToolQ3typeEnts.py :</b> This creates the <g>(gamename)Entities.qrk</g> file for a
 <a href="adv.conversion.html#conversiontool">Quake 3 type game engine</a>.<br>
 It can use <g>.def, .cpp</g> or any other entity definition file that uses the <b>keyword</b> <g>/*Quaked</g>
-to disignate a new entity.<br>
+to designate a new entity.<br>
 It also produces its own dialog input for selection of aditional items to include in that
 <a href="adv.intro.html#qrk">.qrk</a> file.<br>
 It then calls on the <g>AddSpecificsList.py</g> and <g>entdef2qrk.py</g> 3rd level files below to add the
@@ -78,7 +78,7 @@ as well as create its own <g>Color Setting</g> and <g>Selection Lists</g> code f
 <li><b>ConvertToolD3typeEnts.py :</b> This creates the <g>(gamename)Entities.qrk</g> file for a
 <a href="adv.conversion.html#conversiontool">Doom 3 type game engine</a>.<br>
 It can use <g>.def, .cpp</g> or any other entity definition file that uses the <b>keyword</b> <g>entityDef</g>
-to disignate a new entity.<br>
+to designate a new entity.<br>
 It also produces its own dialog input for selection of aditional items to include in that
 <a href="adv.intro.html#qrk">.qrk</a> file.<br>
 It then calls on the <g>ConvertToolGet_tokens.py</g> 3rd level file below to assist in creating the
@@ -113,7 +113,7 @@ to create the final <g>(gamename)Entities.qrk</g> file.
 </ul>
 
 As you can see, all of these modular files, including the control file, can be updated, improved upon
-or add to for any future QuArK game file support neededs.
+or added to for any future QuArK game file support needs.
 
 In addition, the code has been written to process multiple levels of folders and their sub-folders
 as well as allowing the input for multiple texture and sound type files in the dialogs. All of this

@@ -4,7 +4,7 @@ author: Decker
 <dl>
 <dt><a name="value">            </a>Value               <dd>See <a href="#argument">argument</a>.
 <dt><a name="valvesoftware">    </a>Valve Software      <dd>Software company. Creator of <a href="#halflife">Half-Life</a>. <a href="http://www.valvesoftware.com">http://www.valvesoftware.com</a>.
-<dt><a name="vertex">           </a>Vertex              <dd>A single corner of a polyhedron. A dice has 8 vertexes. See also <a href="#edge">edge</a> and <a href="#face">face</a><br>
+<dt><a name="vertex">           </a>Vertex              <dd>A single corner of a polyhedron. A dice has 8 vertexes. See also <a href="#edge">edge</a> and <a href="#face">face</a>.<br>
                                                             <pic>dice.gif</pic>
 <dt><a name="view">             </a>View                <dd>See <a href="#viewport">viewport</a>.
 <dt><a name="viewport">         </a>Viewport            <dd>A rectangular area containing a representation of the map/model.
