@@ -51,7 +51,6 @@ choosen game, and correct the problem.
 Other errors can come from the build process, and here you have to find out
 what is wrong, and try to fix it yourself
 (see also <ref> intro/basicknowledge/compilingmaps </ref>). Of course, if its way
-over your head, you can write a message to the
-<a href="http://quark.planetquake.gamespy.com/forums/">QuArK-forum</a> asking
+over your head, you can write a message to the <link forums>QuArK-forum</link> asking
 for help. Just make sure you have supplied enough documentation on the error
 you get, so others can understand your problem.

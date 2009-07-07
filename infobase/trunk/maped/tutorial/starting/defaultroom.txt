@@ -11,8 +11,7 @@ selected in the QuArK-explorer games menu.
 If you have any problems calling the build-programs, first check the
 <ref> intro/basicknowledge </ref>, next the <ref> intro/configuration/games \ Configuration </ref>
 then the <ref> maped/games </ref> and lastly if you simply can't get it to work,
-mail your problem to the
-<a href="http://quark.planetquake.gamespy.com/forums/">QuArK-forum</a>; stating
+mail your problem to the <link forums>QuArK-forum</link>; stating
 for what game you are developing, and a good description of your problem.
 
 There are different views and panels in the map-editor, each with their
