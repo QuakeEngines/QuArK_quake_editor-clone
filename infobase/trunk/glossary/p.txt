@@ -8,4 +8,5 @@ author: Decker
 <dt><a name="polyhedron">               </a>Polyhedron          <dd>Most basicly its a solid cube which is <a href="#convex">convex</a>. A polyhedron consists of at least 4 <a href="#faces">faces</a> so they create a 3-sided pyramid, and up to several hundred faces which probably will be something like a sphere. Synonyms that are commonly used for polyhedrons are; <a href="#brush">brush</a>, <a href="#cube">cube</a>.
 <dt><a name="project">                  </a>Project             <dd>A QuArK project can consist of several maps, models, sound-files, graphics-files, etc.
 <dt><a name="pull">                     </a>Pull                <dd>To move, adjust or resize a side of an object using its adjustment handle.
+<dt><a name="python">                   </a>Python              <dd>The language which much of the map-editor is written, and the major components of the Python portion of the editor. See <a target=_blank href="http://www.python.org">http://www.python.org</a>.
 </dl>
