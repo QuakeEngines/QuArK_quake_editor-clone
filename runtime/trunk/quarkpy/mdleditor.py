@@ -10,19 +10,20 @@ Core of the Model editor.
 
 #$Header$
 
-import mdlhandles
-import qhandles
-import mdlmgr
+import mdlmenus
 from qbaseeditor import BaseEditor
+from qeditor import *
+import qmacro
+import qmenu
+import qhandles
+import qtoolbar
 import mdlbtns
+import mdlcommands
 import mdlentities
-import mdlutils
+import mdlhandles
+import mdlmgr
 from mdlutils import *
 
-import qmenu
-import qtoolbar
-import qmacro
-from qeditor import *
 #from qdictionnary import Strings
 
 # Globals
@@ -280,7 +281,6 @@ class ModelEditor(BaseEditor):
 
     def initmenu(self, form):
         "Builds the menu bar."
-        import mdlmenus
         form.menubar, form.shortcuts = mdlmenus.BuildMenuBar(self)
         quarkx.update(form)
         self.initquickkeys(mdlmenus.MdlQuickKeys)
@@ -321,7 +321,7 @@ class ModelEditor(BaseEditor):
             for v in self.layout.views:
                 viewhandles = v.handles
                 if len(v.handles) == 0:
-                    viewhandles = BuildHandles(self, self.layout.explorer, self.layout.views[0])
+                    viewhandles = mdlhandles.BuildHandles(self, self.layout.explorer, self.layout.views[0])
                 v.handles = viewhandles
 
          #   delay, = quarkx.setupsubset(SS_MODEL, "Display")["HandlesDelay"]
@@ -444,8 +444,6 @@ class ModelEditor(BaseEditor):
     def explorermenu(self, reserved, view=None, origin=None):
         "The pop-up menu for the Explorer and views."
 
-        import mdlmenus
-
         def SaveSkinFile(m):
             quarkx.savefileobj(obj, FM_SaveAsFile, 0, None, 0)
 
@@ -487,7 +485,6 @@ class ModelEditor(BaseEditor):
             expand_subitems.state = qmenu.disabled
         if len(sellist)==1:
             if sellist[0].type == ':mf':
-                import mdlcommands
                 mdlcommands.NewFrame.state = qmenu.normal
                 if self.ModelFaceSelList != []:
                     mdlfacepop = qmenu.popup("Face Commands", mdlhandles.ModelFaceHandle(origin).menu(self, view), hint="")
@@ -498,7 +495,6 @@ class ModelEditor(BaseEditor):
                 saveskinfile = qmenu.item("&Save Skin File", SaveSkinFile, "|Save Skin File:\n\nOpens a file save window and allows you to save the selected skin as various types of image files.\n\nNOTE:\n   You can NOT save another type as a .pcx file because they do not have a 'palette' like .pcx files do, this will only cause an error.\n\nYou CAN save a .pcx file to another file type like .tga though.|intro.modeleditor.rmbmenus.html#treeviewrmbmenus")
                 return [expand_subitems, qmenu.sep] + [saveskinfile, qmenu.sep] + mdlentities.CallManager("menu", sellist[0], self) + extra
             elif sellist[0].type == ':bg' or sellist[0].type == ':bone':
-                import mdlhandles
                 BoneExtras = mdlhandles.BoneCenterHandle(origin,None,None).extrasmenu(self)
                 return [expand_subitems, qmenu.sep] + BoneExtras + [qmenu.sep] + mdlentities.CallManager("menu", sellist[0], self) + extra
             else:
@@ -509,12 +505,10 @@ class ModelEditor(BaseEditor):
                 if item.type == ":mc":
                     mc_count = mc_count + 1
                 if mc_count > 1:
-                    import mdlcommands
                     mdlcommands.MatchFrameCount.state = qmenu.normal
                     mdlcommands.CheckC.state = qmenu.normal
                     return [expand_subitems, qmenu.sep] + [mdlcommands.MatchFrameCount, mdlcommands.CheckC, qmenu.sep] + mdlmenus.MultiSelMenu(sellist, self) + extra
             if sellist[0].type == ':bg' or sellist[0].type == ':bone':
-                import mdlhandles
                 BoneExtras = mdlhandles.BoneCenterHandle(origin,None,None).extrasmenu(self)
                 return [expand_subitems, qmenu.sep] + BoneExtras + [qmenu.sep] + mdlentities.CallManager("menu", sellist[0], self) + extra
         return [expand_subitems, qmenu.sep] + mdlmenus.MultiSelMenu(sellist, self) + extra
@@ -541,7 +535,6 @@ class ModelEditor(BaseEditor):
     def explorerselchange(self, ex=None):
         global BonesSellist
         import qbaseeditor
-        import mdlmgr
         from qbaseeditor import flagsmouse
 
         mdlmgr.savefacesel = 1
@@ -690,7 +683,6 @@ class ModelEditor(BaseEditor):
         else:
             self.buildhandles()
         self.layout.selchange()
-        import mdlmgr
         mdlmgr.treeviewselchanged = 1
         self.invalidateviews(1)
 
@@ -716,7 +708,6 @@ class ModelEditor(BaseEditor):
 
         editorview = self.layout.views[0]
         newhandles = []
-        import mdlmgr
         mdlmgr.treeviewselchanged = 1
         if not self.linearbox: # Turns Linear Handles mode on.
             if len(self.layout.explorer.sellist) != 0:
@@ -733,7 +724,6 @@ class ModelEditor(BaseEditor):
             setup = quarkx.setupsubset(self.MODE, "Building")
             self.linearbox = True
             if len(self.ModelFaceSelList) or len(self.ModelVertexSelList):
-                import mdlhandles
                 newhandles = mdlhandles.BuildHandles(self, self.layout.explorer, editorview)
                 for view in self.layout.views:
                     if view.info["viewname"] == "skinview":
@@ -777,7 +767,6 @@ class ModelEditor(BaseEditor):
                             modelaxis(view)
         else: # Turns Linear Handles mode off.
             quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] = "0"
-            import mdlhandles
             if len(self.layout.explorer.sellist) >= 1:
                 newhandles = mdlhandles.BuildHandles(self, self.layout.explorer, editorview)
             for view in self.layout.views:
@@ -1331,9 +1320,6 @@ def commonhandles(self, redraw=1):
     if quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] == "1":
         return
     from qbaseeditor import flagsmouse, currentview
-    import qhandles
-    import mdlhandles
-    import mdlmgr
     try:
         if flagsmouse == 536:
             return
@@ -1725,6 +1711,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.126  2009/06/05 02:18:38  cdunde
+#Menu update 2.
+#
 #Revision 1.125  2009/06/05 00:54:23  cdunde
 #Menu update.
 #
