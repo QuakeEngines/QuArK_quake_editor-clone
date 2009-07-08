@@ -15,6 +15,9 @@ $Id$
 6.6.0 Beta 3
 ============
 
+* [cdunde/DanielPharos]: Added ASE model exporter and completely revamped the ASE importer
+          - to make all setting editable and to export for game, UnrealEd and 3DSMax usage.
+
 * [DanielPharos]: Disabled changing the classname specific: it blew up the Model Editor.
 
 * [cdunde/DanielPharos]: Updated to better display the Model Editor's Skeleton group and

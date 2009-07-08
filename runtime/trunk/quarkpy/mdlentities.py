@@ -131,21 +131,37 @@ def HideComp(m):
 
 def ShaderLines():
     editor = mdleditor.mdleditor # Get the editor.
-    comp = editor.Root.currentcomponent
-    if comp.dictspec.has_key("shader_lines"):
-        if int(comp.dictspec['shader_lines']) < 3:
+    if len(editor.layout.explorer.sellist) == 0:
+        return
+    if editor.layout.explorer.sellist[0].type.startswith(".") and editor.layout.buttons["sf"].caption == ".ase":
+        obj = editor.layout.explorer.sellist[0]
+        if obj.parent.parent != editor.Root.currentcomponent:
+            return
+        comp = editor.Root.currentcomponent
+    else:
+        obj = comp = editor.Root.currentcomponent
+    if obj.dictspec.has_key("shader_lines"):
+        if int(obj.dictspec['shader_lines']) < 3:
             comp['shader_lines'] = "3"
-        if int(comp.dictspec['shader_lines']) > 35:
+            obj['shader_lines'] = "3"
+        if int(obj.dictspec['shader_lines']) > 35:
             comp['shader_lines'] = "35"
-        NbrOfShaderLines = str(int(comp.dictspec['shader_lines']))
+            obj['shader_lines'] = "35"
+        NbrOfShaderLines = str(int(obj.dictspec['shader_lines']))
         quarkx.setupsubset(SS_MODEL, "Options")["NbrOfShaderLines"] = NbrOfShaderLines
+        if obj.type.startswith("."):
+            comp['shader_lines'] = NbrOfShaderLines
+        for skin in comp.dictitems['Skins:sg'].subitems:
+            skin['shader_lines'] = NbrOfShaderLines
     else:
         if quarkx.setupsubset(SS_MODEL, "Options")["NbrOfShaderLines"] is not None:
             NbrOfShaderLines = quarkx.setupsubset(SS_MODEL, "Options")["NbrOfShaderLines"]
             comp['shader_lines'] = NbrOfShaderLines
+            obj['shader_lines'] = NbrOfShaderLines
         else:
             NbrOfShaderLines = "8"
             comp['shader_lines'] = NbrOfShaderLines
+            obj['shader_lines'] = NbrOfShaderLines
             quarkx.setupsubset(SS_MODEL, "Options")["NbrOfShaderLines"] = NbrOfShaderLines
     return NbrOfShaderLines
 
@@ -158,6 +174,7 @@ def ShaderLines():
 def UseShaders():
     Shader_dialog_plugin =  """
       Sep:            = {Typ = "S"   Txt = ""}
+      Sep:            = {Typ = "S"   Txt = "Shader File"  Hint = "Special effects code by use of textures."}
       shader_file:    = {
                          Typ = "E"
                          Txt = "shader file"
@@ -235,7 +252,14 @@ def macro_opentexteditor(btn):
             quarkx.msgbox("No model skin texture !\n\nYou must provide one\nto use this function.", qutils.MT_ERROR, qutils.MB_OK)
             return
         newImage = editor.Root.currentcomponent.currentskin
+        save_dictspecs = {}
+        for key in newImage.dictspec.keys():
+            if key == "Image1" or key == "Size":
+                continue
+            save_dictspecs[key] = newImage.dictspec[key]
         quarkx.externaledit(editor.Root.currentcomponent.currentskin) # Opens skin in - external editor for this texture file type.
+        for key in save_dictspecs.keys():
+            newImage[key] = save_dictspecs[key]
         editor.Root.currentcomponent.currentskin = newImage
         skin = editor.Root.currentcomponent.currentskin
         editor.layout.skinview.background = quarkx.vect(-int(skin["Size"][0]*.5),-int(skin["Size"][1]*.5),0), 1.0, 0, 1
@@ -270,7 +294,7 @@ import struct
 def UseVertexUVColors():
     vtx_UVcolor_dialog_plugin =  """
       Sep:            = {Typ = "S"   Txt = ""}
-      Sep:            = {Typ = "S"   Txt = "UV Vertex Colors"}
+      Sep:            = {Typ = "S"   Txt = "UV Vertex Colors"  Hint = "Texture lighting characteristics of a model."}
       vtx_color:      = {            Txt = "vertex color"      }
       vtx_color:      = {
                          Typ = "L"
@@ -477,7 +501,7 @@ vtxnbrs = []
 def UseVertexWeightsSpecifics():
     vertex_weights_specifics_plugin =  """
       Sep:            = {Typ = "S"   Txt = ""}
-      Sep:            = {Typ = "S"   Txt = "Vertex Weight Colors"}
+      Sep:            = {Typ = "S"   Txt = "Vertex Weight Colors"  Hint = "Bone's weighted vertex movement by color."}
       use_weights: =        {
                              Typ = "X"
                              Txt = "use weight bone sel"
@@ -493,7 +517,7 @@ def UseVertexWeightsSpecifics():
       apply_vtx_weights: =  {
                              Typ = "X"
                              Txt = "auto apply changes"
-                             Hint = "When checked, applies all bone weight settings below for any currently or"$0D
+                             Hint = "When checked, applies all bone weight settings for any currently or"$0D
                                     "additional selected vertexes using the linear handle or applied by the paint brush."
                             }
     """
@@ -1650,7 +1674,9 @@ class BoneType(EntityManager):
             items = []
             values = []
 
-        for comp in o.vtxlist.keys():
+        keys = o.vtxlist.keys()
+        keys.sort()
+        for comp in keys:
             items = items + ['"' + str(len(o.vtxlist[comp])) + " - " + comp.replace(":mc","") + '"' + "$0D"]
             values = values + ['"' + comp + '"' + "$0D"]
 
@@ -1664,7 +1690,7 @@ class BoneType(EntityManager):
         for value in values:
             SpecsList = SpecsList + value
 
-        SpecsList = SpecsList + """ Hint="List of components and number of"$0D"their vertexes assigned to this bone."$0D"If the current comonent does not use this bone"$0D"then 'None' will be displayed as the default item."}"""
+        SpecsList = SpecsList + """ Hint="List of components and number of"$0D"their vertexes assigned to this bone."$0D"If the current component does not use this bone"$0D"then 'None' will be displayed as the default item."}"""
 
         bonelist = 'Sep: = {Typ = "S"   Txt = ""}'
         for item in editor.layout.explorer.sellist:
@@ -2131,6 +2157,10 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.44  2009/06/09 05:51:48  cdunde
+#Updated to better display the Model Editor's Skeleton group and
+#individual bones and their sub-bones when they are hidden.
+#
 #Revision 1.43  2009/06/03 05:16:22  cdunde
 #Over all updating of Model Editor improvements, bones and model importers.
 #

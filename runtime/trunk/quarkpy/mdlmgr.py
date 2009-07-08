@@ -565,7 +565,10 @@ class ModelLayout(BaseLayout):
                         else:
                             formobj = None
                 if DummyItem is not None and formobj is not None:
-                    self.dataform.setdata([DummyItem], formobj) # Tries to use data returned from an import or export file to make the model format form.
+                    if selitem.type.startswith(".") and sfbtn.caption == ".ase":
+                        self.dataform.setdata([selitem], formobj) # Tries to use data returned from an import or export file to make the model format form.
+                    else:
+                        self.dataform.setdata([DummyItem], formobj) # Tries to use data returned from an import or export file to make the model format form.
                 else:
                     formobj = None
                     self.dataform.setdata(sl, formobj)
@@ -667,10 +670,10 @@ class ModelLayout(BaseLayout):
             checkbone_scale = selitem.dictspec['scale']
             self.dataform.setdata([selitem], formobj)
 
-        elif len(sl) != 0: # Sets the component form items.
+        elif len(sl) != 0:
             fixColorComps(self.editor)
 
-        quarkx.update(self.editor.form)
+        quarkx.update(self.editor.form) # Sets the component form items.
 
 
     def filldataform(self, reserved):
@@ -678,8 +681,10 @@ class ModelLayout(BaseLayout):
         "or when selecting another item in the tree-view that uses a form."
         global treeviewselchanged, check_currentcomponent, check_comp_list, check_pos, check_color, checkbone_length, check_offset, checkbone_scale, check_show_vtx_color, check_show_weight_color, check_apply_vtx_weights, check_use_weights
 
-        if check_currentcomponent != self.editor.Root.currentcomponent.name:
-            check_currentcomponent = self.editor.Root.currentcomponent.name
+        currentcomp = self.editor.Root.currentcomponent
+
+        if check_currentcomponent != currentcomp.name:
+            check_currentcomponent = currentcomp.name
             if self.editor.Root.currentcomponent.dictspec.has_key("show_vtx_color"):
                 check_show_vtx_color = self.editor.Root.currentcomponent.dictspec['show_vtx_color']
             else:
@@ -720,8 +725,16 @@ class ModelLayout(BaseLayout):
                 mdlentities.CallManager("dataforminput", selitem)
             elif selitem.type == ":mc": # Gets the "component form" if the "if" test is passed.
                 formobj = mdlentities.CallManager("dataformname", selitem)
+                if sfbtn.caption == ".ase":
+                    if currentcomp.dictspec.has_key('SCENE_BACKGROUND_STATIC') and quarkx.setupsubset(qutils.SS_GENERAL, "3D view")["FogColor"] != currentcomp.dictspec['SCENE_BACKGROUND_STATIC']:
+                        quarkx.setupsubset(qutils.SS_GENERAL, "3D view")["FogColor"] = currentcomp.dictspec['SCENE_BACKGROUND_STATIC']
+                        quarkx.reloadsetup()
             elif selitem.type == ":sg": # Gets the "skins group form" if the "if" test is passed.
                 formobj = mdlentities.CallManager("dataformname", selitem)
+                if sfbtn.caption == ".ase":
+                    if currentcomp.dictspec.has_key('SCENE_BACKGROUND_STATIC') and quarkx.setupsubset(qutils.SS_GENERAL, "3D view")["FogColor"] != currentcomp.dictspec['SCENE_BACKGROUND_STATIC']:
+                        quarkx.setupsubset(qutils.SS_GENERAL, "3D view")["FogColor"] = currentcomp.dictspec['SCENE_BACKGROUND_STATIC']
+                        quarkx.reloadsetup()
             else:
                 DummyItem = selitem
                 while (DummyItem is not None):
@@ -782,7 +795,10 @@ class ModelLayout(BaseLayout):
                         else:
                             formobj = None
                 if DummyItem is not None and formobj is not None:
-                    self.dataform.setdata([DummyItem], formobj) # Tries to use the data returned from an import or export file to make the model format form.
+                    if selitem.type.startswith(".") and sfbtn.caption == ".ase":
+                        self.dataform.setdata([selitem], formobj) # Tries to use the data returned from an import or export file to make the model format form.
+                    else:
+                        self.dataform.setdata([DummyItem], formobj) # Tries to use the data returned from an import or export file to make the model format form.
                 else:
                     self.dataform.setdata(sl, formobj) # Tries to use the data returned to make the model format form again.
         except:
@@ -1614,6 +1630,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.103  2009/06/03 05:16:22  cdunde
+#Over all updating of Model Editor improvements, bones and model importers.
+#
 #Revision 1.102  2009/05/01 06:06:15  cdunde
 #Moved bones undo function to mdlutils.py for generic use elsewhere.
 #
