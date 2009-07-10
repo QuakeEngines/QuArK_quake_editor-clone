@@ -10,7 +10,7 @@ The documentation below comes from Andrew Watt on 2-Oct-2003.
 <b><u>Python</u></b><br>
 
 Unless you are using the latest release of QuArK you are going to need to get Mini-Python
-<a href="http://www.python.org/">( www.python.org )</a> to run it.
+(<a href="http://www.python.org/">www.python.org</a>) to run it.
 
 <b><u>Environmental Variables</u></b><br>
 
