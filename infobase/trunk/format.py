@@ -24,7 +24,7 @@ HEADER_BEGIN = """
 <table width=100%% border=0 cellspacing=0>
   <tr>
     <td width=213>
-      <a target="_blank" href="http://quark.planetquake.gamespy.com/"><img src="quarkicon.png" width=213 height=90 border=0 alt="Go to QuArK Web Site"></a>
+      <a target="_blank" href="http://quark.sourceforge.net/"><img src="quarkicon.png" width=213 height=90 border=0 alt="Go to QuArK Web Site"></a>
     </td>
     <td width=70%% align=center>
       <div class="topheadline">%(title)s</div>
@@ -64,7 +64,7 @@ FOOTER = """
   <tr class="headline">
     <td width=99%% align=middle>
       <p class="sm">
-        Copyright (c) 2009, GNU General Public License by The QuArK (Quake Army Knife) Community - <a target="_blank" href="http://quark.planetquake.gamespy.com/">http://quark.planetquake.gamespy.com/</a><br>
+        Copyright (c) 2009, GNU General Public License by The QuArK (Quake Army Knife) Community - <a target="_blank" href="http://quark.sourceforge.net/">http://quark.sourceforge.net/</a><br>
       </p>
     </td>
     <td width=1%% align=right nowrap>
