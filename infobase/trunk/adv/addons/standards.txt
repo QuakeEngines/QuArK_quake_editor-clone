@@ -17,8 +17,8 @@ QuArK, there are some basic standards you must include in the add-on:
 <u>The Default Room</u><br>
 Make sure the add-on contains a default room. You know, the one that appears
 when the user wants to create a new map. The default room must be made of 4
-walls, one floor and one sky/ceiling. It must also have a one spawn-point
-for the player and a single white light in the center of the room.
+walls, one floor and one sky/ceiling. It must also have one spawn-point for
+the player and a single white light in the center of the room.
 
 
 It is utterly important that you remember to place the player spawn-point

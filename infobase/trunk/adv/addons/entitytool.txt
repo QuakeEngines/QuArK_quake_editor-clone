@@ -1,9 +1,9 @@
-title: Using the entity extractor.
+title: Using the entity extractor
 author: Andy
 
-The easiest & probably the quickest way to create a QuArK addon for an existing mod is to use the entity extractor. This basically searches thourgh the existing <g>.bsp</g> files and creates an addon based upon any new entities found.<br>
+The easiest & probably the quickest way to create a QuArK addon for an existing mod is to use the entity extractor. This basically searches through the existing <g>.bsp</g> files and creates an addon based upon any new entities found.<br>
 <br>
-It is best to use a "Game Context" which tell QuArK which game the addon if for and which directories to look in for game files. To create on of these, first create a new file <act>File|New File</act>, then create a "Game Context", <act>Toolboxes|New Files...</act> and double click on "Game Context". Your QuArK window should look something like this:<br>
+It is best to use a "Game Context" which tell QuArK which game the addon if for and which directories to look in for game files. To create one of these, first create a new file <act>File|New File</act>, then create a "Game Context", <act>Toolboxes|New Files...</act> and double click on "Game Context". Your QuArK window should look something like this:<br>
 <img>gamecontext.png</img>
 <br>
 <br>

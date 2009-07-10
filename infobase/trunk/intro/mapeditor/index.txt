@@ -11,7 +11,7 @@ subdir: maplayout
 subdir: floating3dview
 
 The map editor is the main part of QuArK. A map is a 3D world in which you can
-play; the map editor lets you build your own 3D worlds, and you can use the
+play; the map editor let's you build your own 3D worlds, and you can use the
 <g>FPS-game</g> to play in the worlds you built.
 
 Basically, a map is made out of mathematical <g>polyhedrons</g> in 3D space.

@@ -21,7 +21,7 @@ Also see the '.Qrk files'-section in <ref> ../intro </ref> for more info.
 <b>}</b>
 </code>
 
-An add-on which contain new entities, must have these two .qtx and .qctx structures:
+An add-on which contains new entities, must have these two .qtx and .qctx structures:
 
 
 <code>
