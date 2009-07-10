@@ -18,7 +18,7 @@ covering all aspects of QuArK usage and development.
 
 In raw form, the Infobase is a tree of raw pseudo-HTML fragments (see
 '3.8. Documenting QuArK' within the Infobase).  To be to use the
-Infobase properly, you will need to compile it.  
+Infobase properly, you will need to compile it.
 
 The compilation script is the file `build.py` in this directory.  You
 will need the full Python development kit (version 2 or higher)
@@ -27,6 +27,6 @@ build.py -local` in order to have the examples files locally
 available.
 
 Should you not wish to have to compile the Infobase yourself, you can
-view it online at http://quark.planetquake.gamespy.com/infobase/ or
+view it online at http://quark.sourceforge.net/infobase/ or
 you can download a compiled version as an archive from
-http://quark.planetquake.gamespy.com/download.php3#help.
+http://quark.sourceforge.net/download.php#help.
