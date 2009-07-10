@@ -20,4 +20,4 @@ However, not all QuArK supported games use the same build phases. Some might con
 and maybe also in a different sequence.
 
 If you have any questions, problems or find solutions regarding these topics, please post them in the
-<a href="http://quark.planetquake.gamespy.com/communication.php3">QuArK forum/mailing-list</a>.
+<link communication>QuArK forum/mailing-list</link>.
