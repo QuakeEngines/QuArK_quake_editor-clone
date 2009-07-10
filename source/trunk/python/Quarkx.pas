@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.91  2009/02/21 17:09:44  danielpharos
+Changed all source files to use CRLF text format, updated copyright and GPL text.
+
 Revision 1.90  2008/12/12 12:47:52  danielpharos
 Moved GlobalWarning to QkExceptions, and added QkTextBoxForm.
 
@@ -881,7 +884,7 @@ begin
        Exit;
       end;
     end;
-   Log(LOG_PYTHON, 'Loading image: '+Filename);
+   Log(LOG_PYTHON, LOG_VERBOSE, 'Loading image: '+Filename);
    Result:=NewImageList(Bitmap, cx, MaskX, MaskY, cratio);
   finally
    Bitmap.Free;
