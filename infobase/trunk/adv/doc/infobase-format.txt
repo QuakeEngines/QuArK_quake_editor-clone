@@ -95,6 +95,12 @@ Some special tags, that <tt>build.py</tt> checks for:
       or execute something, you can use these tags.
   <br>Notice that the ending &lt;/act&gt;-tag must be on the same line as the
       start-tag!
+<dt>&lt;link <i>link-name</i> &gt; <i>link-text</i> &lt;/link&gt;
+  <dd>Creates a link to an external website. The links are listed in `links.py',
+      with <i>link-name</i> being the key to the dictionary, and <i>link-text</i>
+      is the link's text to display.
+  <br>Notice that the ending &lt;/link&gt;-tag must be on the same line as the
+      start-tag!
 </dl>
 
 List of examples:
