@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.37  2009/02/21 17:06:18  danielpharos
+Changed all source files to use CRLF text format, updated copyright and GPL text.
+
 Revision 1.36  2009/02/10 22:02:35  danielpharos
 Improved OpenGL lighting to use brightest lights down to a 5 percent lighting-effect.
 
@@ -830,7 +833,7 @@ implementation
 
 uses Classes, StrUtils, Quarkx, QkExceptions, Logging, Setup, QkObjects,
      EdOpenGL, QkDummyWindow,
-     ExtraFunctionality;
+     SystemDetails, ExtraFunctionality;
 
 const
   OpenGL32DLL_FuncList : array[0..55] of
@@ -1050,6 +1053,7 @@ begin
         OpenGL32Lib := LoadLibrary('OPENGL32.DLL');
         if OpenGL32Lib=0 then
           Exit;
+        Log(LOG_INFO, 'Loading OpenGL DLL: '+RetrieveModuleFilename(OpenGL32Lib));
       end;
 
       if Glu32Lib = 0 then
@@ -1057,6 +1061,7 @@ begin
         Glu32Lib := LoadLibrary('GLU32.DLL');
         if Glu32Lib=0 then
           Exit;
+        Log(LOG_INFO, 'Loading GLU32 DLL: '+RetrieveModuleFilename(Glu32Lib));
       end;
 
       for I:=Low(OpenGL32DLL_FuncList) to High(OpenGL32DLL_FuncList) do

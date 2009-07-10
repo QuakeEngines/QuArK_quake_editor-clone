@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2009/02/21 17:06:18  danielpharos
+Changed all source files to use CRLF text format, updated copyright and GPL text.
+
 Revision 1.18  2008/11/24 22:24:14  danielpharos
 Oops
 
@@ -1202,7 +1205,7 @@ procedure UnloadGlide;
 
 implementation
 
-uses QkExceptions, QkDummyWindow, QkApplPaths;
+uses QkExceptions, QkDummyWindow, QkApplPaths, Logging, SystemDetails;
 
 type
   TFuncRequirement =  { Specifies which DLL, the function should exist in: }
@@ -1303,6 +1306,7 @@ begin
         if GlideLib=0 then
           Exit;
       end;
+      Log(LOG_INFO, 'Loading Glide DLL: '+RetrieveModuleFilename(GlideLib));
 
       if qrkGlideState<>nil then
       begin
