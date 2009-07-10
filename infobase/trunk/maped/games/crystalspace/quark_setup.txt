@@ -2,7 +2,7 @@ title: Basic Configuration with Crystal Space
 author: Andrew/cdunde
 
 <b>Question:</b><br>
-How do I configure to use Quark with Crystal Space.
+How do I configure to use QuArK with Crystal Space.
 
 <b>Answer:</b><br>
 The documentation below comes from Andrew Watt on 2-Oct-2003.
