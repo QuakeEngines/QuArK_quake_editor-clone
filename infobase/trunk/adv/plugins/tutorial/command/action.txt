@@ -63,5 +63,5 @@ module, and to import them into a file outside of quarkpy
 you need the quarkpy. qualification.  Inside quarkpy you don't,
 so the statement that <tt>maputils.py</tt> uses to import <tt>qeditor.py</tt> is just:
 <code>
-from qeditors import *
+from qeditor import *
 </code>
