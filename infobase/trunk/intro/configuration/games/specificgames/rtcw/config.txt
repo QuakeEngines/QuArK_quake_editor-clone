@@ -89,7 +89,7 @@ exactly what the added items are that follow the WOLFSP.EXE entry, the entire li
 <ul>wolfsp.exe  +set sv_cheats 1 +set fs_homepath main +set fs_game tmpQuArK +set nextmap
 "spdevmap %filename%" +exec
 
-<li>(two spaces)<b>+set sv_cheats 1</b> lets you use the game console (by pressing the ~ Tilley key)
+<li>(two spaces)<b>+set sv_cheats 1</b> lets you use the game console (by pressing the ~ Tilde key)
 developer commands like /noclip, /god and /give all.
 <li><b>+set fs_homepath main</b> gives the path to the <b>Main</b> game sub-folder in the RTCW folder,
 where the .pak files are.

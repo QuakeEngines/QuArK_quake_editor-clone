@@ -11,7 +11,7 @@ author: cdunde
 
 <i>Remove menu items:</i> Use this function to remove the desired custom menu items that have been added.
 
-<i>Shape programs:</i>  These are programs that can make different shapes to use in your maps. One that I recommend is 'MGS-object builder' and can be downloaded from the  <a href="http://groups.yahoo.com/group/quark/files/">Yahoo Quark group site</a>. If you find any programs that may help others, please let us know by making a posting to the <a href="http://groups.yahoo.com/group/quark/">Quark groups site</a>.
+<i>Shape programs:</i>  These are programs that can make different shapes to use in your maps. One that I recommend is 'MGS-object builder' and can be downloaded from the  <a href="http://groups.yahoo.com/group/quark/files/">Yahoo QuArK group site</a>. If you find any programs that may help others, please let us know by making a posting to the <a href="http://groups.yahoo.com/group/quark/">QuArK groups site</a>.
 
 <i>Terrain programs:</i>  This category is for your terrain programs for making landscape layouts in your maps. One that I recommend is <a href="http://countermap.counter-strike.net/Nemesis/index.php?p=1"> 'Terrain Generator'</a> and can be downloaded from its own site.
 

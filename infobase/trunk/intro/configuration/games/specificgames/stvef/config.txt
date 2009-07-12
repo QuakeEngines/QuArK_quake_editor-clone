@@ -1,7 +1,7 @@
 title: Configuration
 author: cdunde
 
-In this short tutorial I will be showing you how to quickly setup Quark to compile and
+In this short tutorial I will be showing you how to quickly setup QuArK to compile and
 run maps for the StarTrek Voyager Elite Force or STVEF game engine. This particular games
 configuration is a bit more involved than most because it actually deals with two different
 compiler programs. Because of this, we have strived to preset as much of this as possible
@@ -13,9 +13,9 @@ located in the RTCW addons folder. But I will cover that in more detail a little
 
 <b>Part 1 – Setting up QuArK to work with STVEF</b>
 
-In this section we will quickly go over how to setup Quark to work with STVEF.
-To start with load up Quark, you should be greeted with the 'Quark Explorer' panel.
-The Quark Explorer allows you to define which game environment you wish to work in,
+In this section we will quickly go over how to setup QuArK to work with STVEF.
+To start with load up QuArK, you should be greeted with the 'QuArK Explorer' panel.
+The QuArK Explorer allows you to define which game environment you wish to work in,
 as well as doing many other things.
 
 First we need to select the game we want to map for. We do this by simply going
@@ -23,7 +23,7 @@ to the 'Games' button located on the top right of the Explorer panel, once press
 will present you with a drop list of all the currently available games, select
 STVEF as shown in the screen shot to the right.
 
-Next we need to setup Quark to work with the STVEF game engine, which is actually a variation
+Next we need to setup QuArK to work with the STVEF game engine, which is actually a variation
 of the Quake 3 engine. To do so go back to the 'Games' button and press the 'Configuration'
 button at the bottom of the list. 
 
@@ -88,7 +88,7 @@ exactly what the added item is that follows the STVoy.EXE entry, the entire line
 
 <ul>STVoy.EXE  +set sv_pure 0
 
-<li>(two spaces)<b>+set sv_pure 0</b> lets you use the game console (by pressing the ~ Tilley key)
+<li>(two spaces)<b>+set sv_pure 0</b> lets you use the game console (by pressing the ~ Tilde key)
 developer commands like /noclip, /god and /give all.
 </ul>
 
@@ -115,9 +115,9 @@ developer commands like /noclip, /god and /give all.
 
 <i><u>4th program</u></i>: Again, self explanatory, just make sure the "BSPC.EXE" path is set correctly, which was done above for the <i>Default directory of build-programs</i>.
 
-After you have finished setting Quark to work with the STVEF engine, simply hit the 'Apply'
+After you have finished setting QuArK to work with the STVEF engine, simply hit the 'Apply'
 button, and then press the 'OK' button to close the Configuration panel. This will put you
-back in the Quark Explorer. Now is also a good time to close QuArK completely, this will
+back in the QuArK Explorer. Now is also a good time to close QuArK completely, this will
 save your settings in the Setup.qrk file. You're done!
 
 <b>Part 4 – Compiling</b>

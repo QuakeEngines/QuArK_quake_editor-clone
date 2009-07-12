@@ -81,7 +81,7 @@ exactly what the added items are that follow the ET.EXE entry, the entire line i
 
 <ul>ET.EXE +set sv_cheats 1 +set sv_pure 0 +set g_gametype 2 +set fs_homepath etmain +set fs_game tmpQuArK +devmap "%filename%" +exec
 
-<li><b>+set sv_cheats 1</b> lets you use the game console (by pressing the ~ Tilley key)
+<li><b>+set sv_cheats 1</b> lets you use the game console (by pressing the ~ Tilde key)
 developer commands like /noclip, /god and /give all.
 <li><b>+set sv_pure 0</b> this causes your map to be loaded directly into the game engine, bypassing all the normal startup movies.
 <li><b>+set g_gametype 2</b> this tells the engine to accept your map as a developers game type 2 map and starts a local server for it to run.

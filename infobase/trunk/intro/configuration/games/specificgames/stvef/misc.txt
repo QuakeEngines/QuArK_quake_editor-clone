@@ -17,9 +17,9 @@ a map, for a couple of reasons.<br>
 First it's a lot easer to see around to view something in the
 editor that you might be concentrating on with your work.<br>
 The other is being able to jump back
-and forth between the editor and the game running by simply pressing the <b>~</b> Tilley key.
+and forth between the editor and the game running by simply pressing the <b>~</b> Tilde key.
 This will release you from the game and back into QuArK or any other program you want to use.
-Then just click on the game window to go back into it and the Tilley key again to cancel the console.
+Then just click on the game window to go back into it and the Tilde key again to cancel the console.
 It seems less confusing that way.
 
 Unfortunately it does not have the ability to make changes in your map while the game is still running

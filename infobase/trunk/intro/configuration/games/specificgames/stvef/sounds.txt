@@ -48,7 +48,7 @@ There is ONE exception to the rule here that I have found only with the "worldsp
 NOT play when your map is first loaded into the game after a build. If that should be the case for ANY sound
 file, the first thing you want to try is reloading your map while still in the game.
 
-To do this just press the <b>~</b> Tilley key to bring down the game console then type in <b>map YourMapName</b>
+To do this just press the <b>~</b> Tilde key to bring down the game console then type in <b>map YourMapName</b>
 press Enter and that should solve the problem when your map reloads. If that does not work, then something else is
 causing this issue such as improper format <b>Properties</b> of the .wav or .mp3 file itself, which you can check
 by comparing those to another .wav file that does play and changing it to that type of format,

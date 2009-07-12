@@ -81,7 +81,7 @@ when you go to build and run your maps in Quake 4.
 <i><u>Quake 4 command-line</u></i>: Even though this is pre-set for you, I wanted to explain
 exactly what the added items are that follow the quake4.exe entry.
 
-The "+seta com_allowconsole 1" lets you bring down the Game Console by pressing the ~ Tilley
+The "+seta com_allowconsole 1" lets you bring down the Game Console by pressing the ~ Tilde
 key, instead of Ctrl+Alt+~ keys as you would normally have to do.
 The "+dmap %filename%" is the command that is fed into the Quake 4 Game Console automatically to
 build your map, %filename% is a variable that fills in the current map name you are editing.

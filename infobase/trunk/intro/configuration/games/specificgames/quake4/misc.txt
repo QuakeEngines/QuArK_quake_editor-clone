@@ -13,7 +13,7 @@ pressing the Tab key to switch. It seems less confusing that way.
 
 Another nice feature is the ability to make changes in your map while the game is still running
 and then simply rebuild and reload the map. This is done by clicking the same menu item in QuArK
-to export the map, then click on the game, press the Tilley ~ key and enter the two commands to
+to export the map, then click on the game, press the Tilde ~ key and enter the two commands to
 build and run it again. If you stayed with the default name they would look like this:
 
 <i>dmap newmap
