@@ -15,7 +15,7 @@ class.
 
 The main function calls into this abstract class are the following:
 
-<tt>procedure Init( ... ); virtual; abstract;</tt>
+<code>procedure Init( ... ); virtual; abstract;</code>
 
 This function must initialize the window, setup default data-structures and
 options, and ready the 3D-render API calls by for instance load a DLL. It also
@@ -25,35 +25,35 @@ It is not defined in the TSceneObject class, as can be seen on the
 <tt>abstract</tt> keyword. So all classes that inherit from TSceneObject, must
 define the contents of this function themselves.
 
-<tt>procedure BuildScene( ... );</tt>
+<code>procedure BuildScene( ... );</code>
 
 <i>info missing...</i>
 
-<tt>procedure Render3DView; virtual; abstract;</tt>
+<code>procedure Render3DView; virtual; abstract;</code>
 
 This procedure has to render the image data. It's also possible it has to
 output the actual image to the screen, I'm not sure.
 
-<tt>procedure AddPolyFace( ... );</tt>
+<code>procedure AddPolyFace( ... );</code>
 
 <i>info missing...</i>
 
-<tt>procedure AddModel( ... );</tt>
+<code>procedure AddModel( ... );</code>
 
 <i>info missing...</i>
 
-<tt>procedure AddBezier( ... );</tt>
+<code>procedure AddBezier( ... );</code>
 
 <i>info missing...</i>
 
-<tt>procedure AddLight( ... ); virtual;</tt>
+<code>procedure AddLight( ... ); virtual;</code>
 
 <i>info missing...</i>
 
-<tt>function StartBuildScene( ... ) : TBuildMode; virtual; abstract;</tt>
+<code>function StartBuildScene( ... ) : TBuildMode; virtual; abstract;</code>
 
 <i>info missing...</i>
 
-<tt>procedure EndBuildScene; virtual;</tt>
+<code>procedure EndBuildScene; virtual;</code>
 
 <i>info missing...</i>
