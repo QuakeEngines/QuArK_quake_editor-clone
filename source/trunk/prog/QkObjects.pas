@@ -23,6 +23,10 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.122  2009/04/28 20:54:03  cdunde
+Model Editor Bone Rebuild merge to HEAD.
+Complete change of bone system.
+
 Revision 1.121.2.1  2009/04/21 20:27:19  danielpharos
 Hide QSysData from treeview, fix access violations in QModelBone if specifics not set, and allow bones-in-bones.
 
@@ -403,12 +407,12 @@ const
   QuArKDaysOld            = 270;     //About a 9 month difference...
   { This is the amount of days after which a certain build is considered
     old by the update-check. }
-  QuArKWebsite            = 'http://quark.planetquake.gamespy.com/';
+  QuArKWebsite            = 'http://quark.sourceforge.net/';
   QuArKRepository         = 'http://sourceforge.net/projects/quark/';
-  QuArKForum              = 'http://quark.planetquake.gamespy.com/forums/';
-  QuArKInfobase           = 'http://quark.planetquake.gamespy.com/infobase/';
+  QuArKForum              = 'http://quark.sourceforge.net/forums/';
+  QuArKInfobase           = 'http://quark.sourceforge.net/infobase/';
   QuArKDefaultHelpPage    = 'index.html'; 
-  QuArKUpdateSite         = 'quark.planetquake.gamespy.com';
+  QuArKUpdateSite         = 'quark.sourceforge.net';
   QuArKUpdateFile         = '/update/index.dat';
 
 
