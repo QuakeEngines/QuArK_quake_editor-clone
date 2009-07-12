@@ -8,5 +8,5 @@ again; QuArK was developed by a different person then the present
 maintainers, and we are gradually learning how to do more thing with
 it.
 
-Also, you could try to make it yourself. The sourecode to QuArK is
+Also, you could try to make it yourself. The sourcecode to QuArK is
 freely available, and we will always welcome a new developer :-)
