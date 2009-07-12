@@ -21,31 +21,31 @@ HEADER_BEGIN = """
 
 <body>
 <a name="__top__"></a>
-<table width=100%% border=0 cellspacing=0>
+<table width="100%%" border=0 cellspacing=0>
   <tr>
     <td width=213>
       <a target="_blank" href="http://quark.sourceforge.net/"><img src="quarkicon.png" width=213 height=90 border=0 alt="Go to QuArK Web Site"></a>
     </td>
-    <td width=70%% align=center>
+    <td width="70%%" align=center>
       <div class="topheadline">%(title)s</div>
       <div class="sm">Updated&nbsp;%(updateday)s</div>
     </td>
-    <td width=30%% valign=bottom nowrap>
+    <td width="30%%" valign=bottom nowrap>
       %(headerlvl)s
     </td>
   </tr>
 </table>
-<table width=100%% border=0 cellspacing=0>
+<table width="100%%" border=0 cellspacing=0>
   <tr class="headline">
-    <td width=99%%>
+    <td width="99%%">
       <p class="headline">&nbsp;%(classif)s%(title)s</p>
     </td>
-    <td width=1%% align=right nowrap>
+    <td width="1%%" align=right nowrap>
       &nbsp;%(navprev)s%(navup)s%(navnext)s&nbsp;
     </td>
   </tr>
 </table>
-<table border=0 width=100%% cellspacing=10><tr><td>"""
+<table border=0 width="100%%" cellspacing=10><tr><td>"""
 HEADER_END = """
 </td></tr></table>
 <br>
@@ -60,14 +60,14 @@ SUBHEADERLVL  = """Upper&nbsp;levels:<br>"""
 HEADERLVL     = """-&nbsp;<a href="%(htmlfile)s">%(classif)s%(htmltitleshort)s</a><br>"""
 
 FOOTER = """
-<table width=100%% border=0 cellspacing=0>
+<table width="100%%" border=0 cellspacing=0>
   <tr class="headline">
-    <td width=99%% align=middle>
+    <td width="99%%" align=middle>
       <p class="sm">
         Copyright (c) 2009, GNU General Public License by The QuArK (Quake Army Knife) Community - <a target="_blank" href="http://quark.sourceforge.net/">http://quark.sourceforge.net/</a><br>
       </p>
     </td>
-    <td width=1%% align=right nowrap>
+    <td width="1%%" align=right nowrap>
       &nbsp;%(navprev)s-&nbsp;<a href="#__top__">Top</a>&nbsp;-%(navnext)s&nbsp;
     </td>
   </tr>
@@ -79,9 +79,9 @@ FOOTER = """
 # Formatting: List of folders
 #
 SUBDIR_BEGIN = """
-<table width=100%% border=0 cellspacing=0>
+<table width="100%%" border=0 cellspacing=0>
   <tr class="headline">
-    <td width=100%%>
+    <td width="100%%">
       <p class="headline">&nbsp;Sections</p>
     </td>
   </tr>
@@ -98,9 +98,9 @@ SUBDIR_END = """
 # Formatting: List of files (first an index with titles only, then with detailed answers)
 #
 FILES_BEGIN = """
-<table width=100%% border=0 cellspacing=0>
+<table width="100%%" border=0 cellspacing=0>
   <tr class="headline">
-    <td width=100%%>
+    <td width="100%%">
       <p class="subheadline">&nbsp;Index</p>
     </td>
   </tr>
@@ -123,7 +123,7 @@ FILES_END = """
 
 FILE_BEGIN = """
 <a name="%(hrefaname)s"></a>
-  <table width=100%% border=0 cellspacing=0>
+  <table width="100%%" border=0 cellspacing=0>
     <tr class="headline">
       <td>
         <p class="item">&nbsp;%(title)s</p>
@@ -131,12 +131,12 @@ FILE_BEGIN = """
       <td align=right>
         <font size=-2>%(author)s&nbsp;-&nbsp;%(updateday)s</font>
       </td>
-      <td width=1%% align=right nowrap>
+      <td width="1%%" align=right nowrap>
         &nbsp;&nbsp;[&nbsp;<a href="#__top__">Top</a>&nbsp;]&nbsp;
       </td>
     </tr>
   </table>
-  <table border=0 width=100%% cellspacing=10><tr><td>
+  <table border=0 width="100%%" cellspacing=10><tr><td>
 """
 FILE_END = """
   </td></tr></table>
@@ -167,9 +167,9 @@ SUBFILES_END   = """
 # Split up into two columns
 #
 SUBFILES_TABLEBEGIN = """
-  <table border=0><tr><td width=50%% valign=top>"""
+  <table border=0><tr><td width="50%%" valign=top>"""
 SUBFILES_TABLEMIDDLE = """
-  </td><td width=50%% valign=top>"""
+  </td><td width="50%%" valign=top>"""
 SUBFILES_TABLEEND = """
   </td></tr></table>"""
 
