@@ -9,9 +9,8 @@ EXTENSION = ".txt"
 #
 ZIPLOC = "ftp://ftp.fileplanet.com/"
 
-HEADER_BEGIN = """
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"  "http://www.w3.org/TR/html4/loose.dtd">
-<html>
+HEADER_BEGIN = """<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"  "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
 <head>
   <title>%(title)s</title>
   <meta name="Description" content="QuArK Information Database - Page: %(classif)s%(title)s">
@@ -62,7 +61,7 @@ HEADERLVL     = """-&nbsp;<a href="%(htmlfile)s">%(classif)s%(htmltitleshort)s</
 FOOTER = """
 <table width="100%%" border=0 cellspacing=0>
   <tr class="headline">
-    <td width="99%%" align=middle>
+    <td width="99%%" align=center>
       <p class="sm">
         Copyright (c) 2009, GNU General Public License by The QuArK (Quake Army Knife) Community - <a target="_blank" href="http://quark.sourceforge.net/">http://quark.sourceforge.net/</a><br>
       </p>
