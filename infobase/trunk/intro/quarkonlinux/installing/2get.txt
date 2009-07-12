@@ -14,5 +14,5 @@ download of Python.
 If you need to download Python separately, ignore the link for
 <tt>python1.5b.exe</tt> given on the QuArK home page.  The installer
 does not work with Wine.  Instead you'll need the full Python 1.5.2
-libraries from <a target=_blank href="http://www.python.org/">the
+libraries from the <a target=_blank href="http://www.python.org/">
 official Python website</a>.
