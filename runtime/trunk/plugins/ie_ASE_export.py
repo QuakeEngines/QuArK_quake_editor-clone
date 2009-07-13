@@ -35,7 +35,8 @@ textlog = "ase_ie_log.txt"
 progressbar = None
 user_frame_list=[]
 g_scale = 1.0
-
+ColTab = "\t"
+Colidnt = 1
 
 #============================================
 #                   Setup Section
@@ -522,6 +523,45 @@ def map_uvw(file, idnt):
 
 
 def write_mesh(self, file, component, exp_list, matTable, total):
+    global Colidnt
+    if self.colfile is not None:
+        # Collision file header section.
+        self.colfile.write('CM "1.00"\n\n')
+        self.colfile.write('0\n\n')
+        name = self.filename.replace("\\", "/").split("/models/", 1)[1]
+        name = "models/" + name
+        self.colfile.write('collisionModel "%s" {\n' % (name))
+        # Collision file vertices section.
+        vertices_count = 9 # Replace hard coded variable with len count of vertices.
+        self.colfile.write('%svertices { /* numVertices = */ %d\n' % ((ColTab*Colidnt), vertices_count))
+        # Put for loop here to write the vertices section.
+        self.colfile.write('%s}\n' % ((ColTab*Colidnt)))
+        # Collision file edges section.
+        edges_count = 17 # Replace hard coded variable with len count of edges.
+        self.colfile.write('%sedges { /* numEdges = */ %d\n' % ((ColTab*Colidnt), edges_count))
+        # Put for loop here to write the edges section.
+        self.colfile.write('%s}\n' % ((ColTab*Colidnt)))
+        # Collision file nodes section.
+        self.colfile.write('%snodes {\n' % ((ColTab*Colidnt)))
+        self.colfile.write('%s( -1 0 )\n' % ((ColTab*Colidnt)))
+        self.colfile.write('%s}\n' % ((ColTab*Colidnt)))
+        # Collision file polygons section.
+        self.colfile.write('%spolygons {\n' % ((ColTab*Colidnt)))
+        # Put for loop here to write the polygons section.
+        self.colfile.write('%s}\n' % ((ColTab*Colidnt)))
+        # Collision file brushes section.
+        self.colfile.write('%sbrushes {\n' % ((ColTab*Colidnt)))
+        # Put for loop here to write the brushes section.
+        brushes_count = 5 # Replace hard coded variable with len count of brushes.
+        self.colfile.write('%s%d {\n' % ((ColTab*Colidnt), brushes_count))
+        Colidnt = Colidnt + 1
+        # Put for loop within above loop here to write the brushes for EACH brush section.
+        Colidnt = Colidnt - 1
+        self.colfile.write('%s}\n' % ((ColTab*Colidnt)))
+        self.colfile.write('%s}\n' % ((ColTab*Colidnt)))
+        self.colfile.write('}\n') # End of Collision file.
+    #    self.colfile.write("%s*MESH_VERTEX %d\t%.4f\t%.4f\t%.4f\n" % ((Tab*idnt), vIndex, vertex[0], vertex[1], vertex[2]))
+
     for current_container in exp_list:
         TransTable = {'SizeX': 1, 'SizeY': 1, 'SizeZ': 1}
         nameMe = {'objName': 'obj', 'meName': 'me'}
@@ -1074,6 +1114,9 @@ def save_ASE(self):
     write_mesh(self, file, component, exp_list, matTable, total)
 
     file.close()
+    if self.colfile is not None:
+        self.colfile.close()
+
     if self.src['Shaders'] is not None and worldTable['mat_type'] == 1:
         write_shaders(filename, exp_list)
     if self.src['Skins'] is not None:
@@ -1253,7 +1296,8 @@ class ExportSettingsDlg(quarkpy.qmacro.dialogbox):
         self.newfiles_folder = newfiles_folder
         self.editor = editor
         self.asefile = None
-        self.aseCollisionfile = None
+        self.colfile = None
+        self.colfilename = None
         self.exportpath = filename.replace('\\', '/')
         self.exportpath = self.exportpath.rsplit('/', 1)[0]
         src = quarkx.newobj(":")
@@ -1308,8 +1352,21 @@ class ExportSettingsDlg(quarkpy.qmacro.dialogbox):
                     quarkx.msgbox("PROCESS CANCELED:\n\nNothing was written to the\n    " + self.filename + "\nfile and it remains unchanged.", quarkpy.qutils.MT_INFORMATION, quarkpy.qutils.MB_OK)
                     return
 
+        if self.src["Collision"] is not None:
+            self.colfilename = self.filename.rsplit('.', 1)[0] + ".cm"
+            if not os.path.exists(self.colfilename):
+                pass
+            else:
+                result = quarkx.msgbox("A Collision file of the same name\n    " + self.colfilename + "\nalready exist at that location.\n\nCAUTION:\nIf you click 'YES' the current file will be overwritten.\nIf you click 'NO' the current file will remain as is.\n\nDo you wish to rewrite this file?", quarkpy.qutils.MT_WARNING, quarkpy.qutils.MB_YES | quarkpy.qutils.MB_NO)
+                if result == MR_YES:
+                    pass
+                else:
+                    self.colfilename = None
+
         # Open the output file for writing the .ase file to disk.
         self.asefile = open(self.filename,"w")
+        if self.colfilename is not None:
+            self.colfile = open(self.colfilename,"w")
         save_ASE(self)
 
 
@@ -1322,5 +1379,8 @@ def UIExportDialog(root, filename, editor):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.1  2009/07/08 18:53:39  cdunde
+# Added ASE model exporter and completely revamped the ASE importer.
+#
 #
 #
