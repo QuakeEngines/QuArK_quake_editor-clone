@@ -943,6 +943,10 @@ class RedImageDragObject(DragObject):
                 import mdleditor
                 editor = mdleditor.mdleditor
         self.editor = editor
+        self.view = view
+        self.newx = x
+        self.newy = y
+        self.newz = z
 ## the lines above where added for the Terrain Generator
 
     def buildredimages(self, x, y, flags):
@@ -952,6 +956,10 @@ class RedImageDragObject(DragObject):
         return None, refreshtimer     # default behaviour
 
     def dragto(self, x, y, flags):
+        self.xmin is None
+        self.xmax is None
+        self.ymin is None
+        self.ymax is None
         self.flags = flags
         if x < self.xmin or self.xmin is None:
             self.xmin = x
@@ -2171,6 +2179,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.82  2009/06/03 05:16:22  cdunde
+#Over all updating of Model Editor improvements, bones and model importers.
+#
 #Revision 1.81  2009/04/28 21:30:56  cdunde
 #Model Editor Bone Rebuild merge to HEAD.
 #Complete change of bone system.
