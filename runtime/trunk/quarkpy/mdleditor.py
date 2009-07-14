@@ -88,17 +88,21 @@ class ModelEditor(BaseEditor):
     #                               item 2: key = 'weight_index', value = (an integer) because a vertex's "total weight value" of 1.0 is spread across numinous bones, model files use this indexing system.
 
     ModelVertexSelList = []
-    # Editor vertexes    (frame_vertices_index, view.proj(pos))
+    # Editor vertexes    (frame_vertices_index, ..., ...)
     #                               Use:    To handle editor views model mesh vertex selections and passing to the Skin-view's SkinVertexSelList.
     #                     Created using:    editor.Root.currentcomponent.currentframe.vertices
     #                                         (see Infobase docs help/src.quarkx.html#objectsmodeleditor)
-    #                               item 0: Its "Frame" "vertices" number, which is the same number as a triangles "ver_index" number.
-    #                               item 1: Its 3D grid pos "projected" to a x,y 2D view position.
-    #                                       This list can also be used more effectively by adding all of the
-    #                                       tri_index numbers (after the frame_vertices_index and pos) that use this vertex,
-    #                                       allowing direct call of those "component.triangles" by the tri_index(s).
-    #                                       The "pos" needs to be a projected position for a decent size application
-    #                                       to the "Skin-view" when a new triangle is made in the editor.
+    #                               each item : Its "Frame" "vertices" number, which is the same number as a triangles "ver_index" number.
+
+    ModelVertexSelListPos = []
+    # Editor vertex pos  (frame_vertices_position)
+    #                               Use:    To create the "ModelVertexSelListBbox" below for making the Linear Handles.
+    #                     Created using:    editor.Root.currentcomponent.currentframe.vertices and the vertex_indexes in the "ModelVertexSelList" above.
+
+    ModelVertexSelListBbox = None
+    #                             (min_vector, max_vector)
+    #                               Use:    To store the max. and min. values for the selected vertexes bounding box for making the Linear Handles.
+    #                     Created using:    the "ModelVertexSelListPos" list above.
 
     SkinVertexSelList = []
     # Skin-view vertexes [pos, self, tri_index, ver_index_order_pos]
@@ -1711,6 +1715,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.127  2009/07/08 18:49:34  cdunde
+#Code cleanup.
+#
 #Revision 1.126  2009/06/05 02:18:38  cdunde
 #Menu update 2.
 #

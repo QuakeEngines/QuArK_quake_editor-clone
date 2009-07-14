@@ -117,7 +117,7 @@ def find_vertices_click(m):
             vertex = int(vertex.strip())
             if vertex > len(frame.vertices)-1:
                 continue
-            editor.ModelVertexSelList = editor.ModelVertexSelList + [(vertex, quarkx.vect(0, 0, 0))]
+            editor.ModelVertexSelList = editor.ModelVertexSelList + [vertex]
         if frame is not None:
             editor.layout.explorer.expand(frame.parent.parent)
             editor.layout.explorer.expand(frame.parent)
@@ -630,6 +630,9 @@ def SearchMenu():
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.2  2009/06/22 22:14:06  cdunde
+#Search functions update.
+#
 #Revision 1.1  2009/06/03 05:33:45  cdunde
 #Over all updating of Model Editor improvements, bones and model importers.
 #

@@ -345,9 +345,9 @@ def macro_apply_vtx_color(btn):
             if not editor.ModelComponentList[o.name].has_key('colorvtxlist'):
                 editor.ModelComponentList[o.name]['colorvtxlist'] = {}
             for vtx in editor.ModelVertexSelList:
-                if not editor.ModelComponentList[o.name]['colorvtxlist'].has_key(vtx[0]):
-                    editor.ModelComponentList[o.name]['colorvtxlist'][vtx[0]] = {}
-                editor.ModelComponentList[o.name]['colorvtxlist'][vtx[0]]['vtx_color'] = rgb
+                if not editor.ModelComponentList[o.name]['colorvtxlist'].has_key(vtx):
+                    editor.ModelComponentList[o.name]['colorvtxlist'][vtx] = {}
+                editor.ModelComponentList[o.name]['colorvtxlist'][vtx]['vtx_color'] = rgb
     undo = quarkx.action()
     newframe = o.currentframe.copy()
     undo.exchange(o.currentframe, newframe)
@@ -365,12 +365,12 @@ def macro_remove_vtx_color(btn):
         return
     else:
         for vtx in editor.ModelVertexSelList:
-            if editor.ModelComponentList[o.name]['colorvtxlist'].has_key(vtx[0]):
-                if editor.ModelComponentList[o.name]['colorvtxlist'][vtx[0]].has_key('vtx_color'):
-                    if len(editor.ModelComponentList[o.name]['colorvtxlist'][vtx[0]]) == 1:
-                        del editor.ModelComponentList[o.name]['colorvtxlist'][vtx[0]]
+            if editor.ModelComponentList[o.name]['colorvtxlist'].has_key(vtx):
+                if editor.ModelComponentList[o.name]['colorvtxlist'][vtx].has_key('vtx_color'):
+                    if len(editor.ModelComponentList[o.name]['colorvtxlist'][vtx]) == 1:
+                        del editor.ModelComponentList[o.name]['colorvtxlist'][vtx]
                     else:
-                        del editor.ModelComponentList[o.name]['colorvtxlist'][vtx[0]]['vtx_color']
+                        del editor.ModelComponentList[o.name]['colorvtxlist'][vtx]['vtx_color']
                 if len(editor.ModelComponentList[o.name]['colorvtxlist']) == 0:
                     del editor.ModelComponentList[o.name]['colorvtxlist']
                 if len(editor.ModelComponentList[o.name]) == 0:
@@ -854,16 +854,16 @@ def macro_selectvtxs(btn):
                         if foundvtxs == 0:
                             editor.ModelVertexSelList = []
                             foundvtxs = 1
-                        if not [weight[0], quarkx.vect(0, 0, 0)] in editor.ModelVertexSelList:
-                            editor.ModelVertexSelList = editor.ModelVertexSelList + [[weight[0], quarkx.vect(0, 0, 0)]]
+                        if not weight[0] in editor.ModelVertexSelList:
+                            editor.ModelVertexSelList = editor.ModelVertexSelList + [weight[0]]
     else:
         if foundframe == 1 and len(WeightedVTXlist) != 0:
             if foundvtxs == 0:
                 editor.ModelVertexSelList = []
                 foundvtxs = 1
             for weight in WeightedVTXlist:
-                if not [weight[0], quarkx.vect(0, 0, 0)] in editor.ModelVertexSelList:
-                    editor.ModelVertexSelList = editor.ModelVertexSelList + [[weight[0], quarkx.vect(0, 0, 0)]]
+                if not weight[0] in editor.ModelVertexSelList:
+                    editor.ModelVertexSelList = editor.ModelVertexSelList + [weight[0]]
     if foundframe == 1 and foundvtxs == 0:
         quarkx.msgbox("No weighted \ shared vertexes found.", qutils.MT_INFORMATION, qutils.MB_OK)
         return
@@ -2157,6 +2157,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.45  2009/07/08 18:53:38  cdunde
+#Added ASE model exporter and completely revamped the ASE importer.
+#
 #Revision 1.44  2009/06/09 05:51:48  cdunde
 #Updated to better display the Model Editor's Skeleton group and
 #individual bones and their sub-bones when they are hidden.

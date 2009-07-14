@@ -1290,10 +1290,13 @@ class BaseEditor:
                                 if item == len(choice)-1:
                                     self.layout.explorer.uniquesel = choice[0][1].subitems[0].parent
                         import mdlutils
-                        mdlutils.Update_Editor_Views(self, 4)
+                        mdlutils.Update_Editor_Views(self)
                     if choice == [] and flagsmouse == 264:
-                        self.layout.explorer.sellist = []
-                        self.layout.explorer.uniquesel = None
+                        if len(self.layout.explorer.sellist) != 0 or self.layout.explorer.uniquesel is not None:
+                            self.layout.explorer.sellist = []
+                            self.layout.explorer.uniquesel = None
+                            import mdlutils
+                            mdlutils.Update_Editor_Views(self)
                 #
                 # Send the click to MouseClicked
                 #
@@ -1618,6 +1621,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.127  2009/06/03 05:16:22  cdunde
+#Over all updating of Model Editor improvements, bones and model importers.
+#
 #Revision 1.126  2009/04/28 21:30:56  cdunde
 #Model Editor Bone Rebuild merge to HEAD.
 #Complete change of bone system.

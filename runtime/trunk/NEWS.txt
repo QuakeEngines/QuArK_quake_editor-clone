@@ -15,6 +15,11 @@ $Id$
 6.6.0 Beta 3
 ============
 
+* [cdunde/DanielPharos]: Completely revamped Model Editor vertex Linear draglines system,
+          - increasing its reaction and drawing time to twenty times faster.
+
+* [cdunde/DanielPharos]: Started ASE model exporter .cm collision model file creation support.
+
 * [cdunde/DanielPharos]: Added ASE model exporter and completely revamped the ASE importer
           - to make all setting editable and to export for game, UnrealEd and 3DSMax usage.
 

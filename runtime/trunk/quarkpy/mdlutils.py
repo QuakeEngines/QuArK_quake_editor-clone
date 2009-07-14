@@ -533,15 +533,15 @@ def replacevertexes(editor, comp, vertexlist, flags, view, undomsg, option=1, me
                 if compframe.name == listframe.name:
                     old_vtxs = compframe.vertices
                     if quarkx.setupsubset(SS_MODEL, "Options")['APVexs_Method1'] == "1":
-                        newpos = old_vtxs[vertexlist[0][0]]
+                        newpos = old_vtxs[vertexlist[0]]
                     elif quarkx.setupsubset(SS_MODEL, "Options")['APVexs_Method2'] == "1":
-                        newpos = compairframe.vertices[vertexlist[0][0]]
+                        newpos = compairframe.vertices[vertexlist[0]]
                     else:
-                        newpos = old_vtxs[vertexlist[0][0]]
+                        newpos = old_vtxs[vertexlist[0]]
                     for vtx in vertexlist:
                         if vtx == vertexlist[0]:
                             continue
-                        old_vtxs[vtx[0]] = newpos
+                        old_vtxs[vtx] = newpos
                         compframe.vertices = old_vtxs
             compframe.compparent = new_comp # To allow frame relocation after editing.
         undo = quarkx.action()
@@ -640,7 +640,7 @@ def removevertex(comp, index, all3=0):
     tris = new_comp.triangles
     #### 1) find all triangles that use vertex 'index' and delete them.
     if all3 == 1:
-        index = editor.ModelVertexSelList[0][0]
+        index = editor.ModelVertexSelList[0]
     toBeRemoved = findTriangles(comp, index)
     new_tris = []
     for tri in tris:
@@ -651,23 +651,23 @@ def removevertex(comp, index, all3=0):
     if all3 == 1:
         new_tris = []
         for tri in tris:
-            if (editor.ModelVertexSelList[0][0] == tri[0][0]) and (editor.ModelVertexSelList[1][0] == tri[1][0]) and (editor.ModelVertexSelList[2][0] == tri[2][0]):
-                index = editor.ModelVertexSelList[0][0]
+            if (editor.ModelVertexSelList[0] == tri[0][0]) and (editor.ModelVertexSelList[1] == tri[1][0]) and (editor.ModelVertexSelList[2] == tri[2][0]):
+                index = editor.ModelVertexSelList[0]
                 continue
-            elif (editor.ModelVertexSelList[0][0] == tri[0][0]) and (editor.ModelVertexSelList[2][0] == tri[1][0]) and (editor.ModelVertexSelList[1][0] == tri[2][0]):
-                index = editor.ModelVertexSelList[0][0]
+            elif (editor.ModelVertexSelList[0] == tri[0][0]) and (editor.ModelVertexSelList[2] == tri[1][0]) and (editor.ModelVertexSelList[1] == tri[2][0]):
+                index = editor.ModelVertexSelList[0]
                 continue
-            elif (editor.ModelVertexSelList[1][0] == tri[0][0]) and (editor.ModelVertexSelList[2][0] == tri[1][0]) and (editor.ModelVertexSelList[0][0] == tri[2][0]):
-                index = editor.ModelVertexSelList[1][0]
+            elif (editor.ModelVertexSelList[1] == tri[0][0]) and (editor.ModelVertexSelList[2] == tri[1][0]) and (editor.ModelVertexSelList[0] == tri[2][0]):
+                index = editor.ModelVertexSelList[1]
                 continue
-            elif (editor.ModelVertexSelList[1][0] == tri[0][0]) and (editor.ModelVertexSelList[0][0] == tri[1][0]) and (editor.ModelVertexSelList[2][0] == tri[2][0]):
-                index = editor.ModelVertexSelList[1][0]
+            elif (editor.ModelVertexSelList[1] == tri[0][0]) and (editor.ModelVertexSelList[0] == tri[1][0]) and (editor.ModelVertexSelList[2] == tri[2][0]):
+                index = editor.ModelVertexSelList[1]
                 continue
-            elif (editor.ModelVertexSelList[2][0] == tri[0][0]) and (editor.ModelVertexSelList[1][0] == tri[1][0]) and (editor.ModelVertexSelList[0][0] == tri[2][0]):
-                index = editor.ModelVertexSelList[2][0]
+            elif (editor.ModelVertexSelList[2] == tri[0][0]) and (editor.ModelVertexSelList[1] == tri[1][0]) and (editor.ModelVertexSelList[0] == tri[2][0]):
+                index = editor.ModelVertexSelList[2]
                 continue
-            elif (editor.ModelVertexSelList[2][0] == tri[0][0]) and (editor.ModelVertexSelList[0][0] == tri[1][0]) and (editor.ModelVertexSelList[1][0] == tri[2][0]):
-                index = editor.ModelVertexSelList[2][0]
+            elif (editor.ModelVertexSelList[2] == tri[0][0]) and (editor.ModelVertexSelList[0] == tri[1][0]) and (editor.ModelVertexSelList[1] == tri[2][0]):
+                index = editor.ModelVertexSelList[2]
                 continue
             else:
                 new_tris = new_tris + [ tri ]
@@ -679,7 +679,7 @@ def removevertex(comp, index, all3=0):
             vtxcount = 0
             for tri in tris:
                 for vtx in tri:
-                    if vtx[0] == vertex[0]:
+                    if vtx[0] == vertex:
                         vtxcount = vtxcount + 1
             if vtxcount > 1:
                 pass
@@ -687,7 +687,7 @@ def removevertex(comp, index, all3=0):
                 vertexestoremove = vertexestoremove + [vertex]
         compframes = new_comp.findallsubitems("", ':mf')   # find all frames
         for unusedvertex in vertexestoremove:
-            unusedindex = unusedvertex[0]
+            unusedindex = unusedvertex
             for compframe in compframes: 
                 old_vtxs = compframe.vertices
                 vtxs = old_vtxs[:unusedindex]
@@ -781,9 +781,9 @@ def addtriangle(editor):
     if (comp is None):
         return
 
-    v1 = editor.ModelVertexSelList[0][0]
-    v2 = editor.ModelVertexSelList[1][0]
-    v3 = editor.ModelVertexSelList[2][0]
+    v1 = editor.ModelVertexSelList[0]
+    v2 = editor.ModelVertexSelList[1]
+    v3 = editor.ModelVertexSelList[2]
 
     from mdlhandles import SkinView1
     if quarkx.setupsubset(SS_MODEL, "Options")['SkinFrom3Dview'] == "1" or SkinView1 is None:
@@ -802,20 +802,21 @@ def addtriangle(editor):
         except:
             texWidth,texHeight = SkinView1.clientarea
             SkinViewScale = 1
+    vertices = comp.currentframe.vertices
     if quarkx.setupsubset(SS_MODEL, "Options")['SkinFrom3Dview'] == "1" or SkinView1 is None:
-        s1 = int(cordsview.proj(editor.ModelVertexSelList[0][1]).tuple[0]*.025)
-        t1 = -int(cordsview.proj(editor.ModelVertexSelList[0][1]).tuple[1]*.025)
-        s2 = int(cordsview.proj(editor.ModelVertexSelList[1][1]).tuple[0]*.025)
-        t2 = -int(cordsview.proj(editor.ModelVertexSelList[1][1]).tuple[1]*.025)
-        s3 = int(cordsview.proj(editor.ModelVertexSelList[2][1]).tuple[0]*.025)
-        t3 = -int(cordsview.proj(editor.ModelVertexSelList[2][1]).tuple[1]*.025)
+        s1 = int(cordsview.proj(vertices[editor.ModelVertexSelList[0]]).tuple[0]*.025)
+        t1 = -int(cordsview.proj(vertices[editor.ModelVertexSelList[0]]).tuple[1]*.025)
+        s2 = int(cordsview.proj(vertices[editor.ModelVertexSelList[1]]).tuple[0]*.025)
+        t2 = -int(cordsview.proj(vertices[editor.ModelVertexSelList[1]]).tuple[1]*.025)
+        s3 = int(cordsview.proj(vertices[editor.ModelVertexSelList[2]]).tuple[0]*.025)
+        t3 = -int(cordsview.proj(vertices[editor.ModelVertexSelList[2]]).tuple[1]*.025)
     else:
-        s1 = int(editor.ModelVertexSelList[0][1].tuple[0]+int(texWidth*.5)*SkinViewScale)
-        t1 = int(editor.ModelVertexSelList[0][1].tuple[1]-int(texHeight*.5)*SkinViewScale)
-        s2 = int(editor.ModelVertexSelList[1][1].tuple[0]+int(texWidth*.5)*SkinViewScale)
-        t2 = int(editor.ModelVertexSelList[1][1].tuple[1]-int(texHeight*.5)*SkinViewScale)
-        s3 = int(editor.ModelVertexSelList[2][1].tuple[0]+int(texWidth*.5)*SkinViewScale)
-        t3 = int(editor.ModelVertexSelList[2][1].tuple[1]-int(texHeight*.5)*SkinViewScale)
+        s1 = int(vertices[editor.ModelVertexSelList[0]].tuple[0]+int(texWidth*.5)*SkinViewScale)
+        t1 = int(vertices[editor.ModelVertexSelList[0]].tuple[1]-int(texHeight*.5)*SkinViewScale)
+        s2 = int(vertices[editor.ModelVertexSelList[1]].tuple[0]+int(texWidth*.5)*SkinViewScale)
+        t2 = int(vertices[editor.ModelVertexSelList[1]].tuple[1]-int(texHeight*.5)*SkinViewScale)
+        s3 = int(vertices[editor.ModelVertexSelList[2]].tuple[0]+int(texWidth*.5)*SkinViewScale)
+        t3 = int(vertices[editor.ModelVertexSelList[2]].tuple[1]-int(texHeight*.5)*SkinViewScale)
 
     if findTriangle(comp, v1, v2, v3) is not None:
         quarkx.msgbox("Improper Selection!\n\nA triangle using these 3 vertexes already exist.\n\nSelect at least one different vertex\nto make a new triangle with.\n\nTo 'Un-pick' a vertex from the 'Pick' list\nplace your cursor over that vertex,\nRMB click and select 'Pick Vertex'.\nThen you can pick another vertex to replace it.", MT_ERROR, MB_OK)
@@ -857,7 +858,7 @@ def removeTriangle(editor, comp, index):
             tris = comp.triangles
             for tri in tris:
                 for vtx in tri:
-                    if vtx[0] == vertex[0]:
+                    if vtx[0] == vertex:
                         vtxcount = vtxcount + 1
             if vtxcount > 1:
                 pass
@@ -886,9 +887,9 @@ def removeTriangle(editor, comp, index):
 #
 def removeTriangle_v3(editor):
     comp = editor.Root.currentcomponent
-    v1 = editor.ModelVertexSelList[0][0]
-    v2 = editor.ModelVertexSelList[1][0]
-    v3 = editor.ModelVertexSelList[2][0]
+    v1 = editor.ModelVertexSelList[0]
+    v2 = editor.ModelVertexSelList[1]
+    v3 = editor.ModelVertexSelList[2]
     removeTriangle(editor, comp, findTriangle(comp, v1,v2,v3))
 
 
@@ -1110,7 +1111,7 @@ def MakeEditorVertexPolyObject(editor, option=0, otherlist=None, name=None):
             return []
         for vtx in range (len(comp.currentframe.vertices)):
             for ver_index in range (len(VertexList)):
-                if vtx == VertexList[ver_index][0]:
+                if vtx == VertexList[ver_index]:
                     vertex = comp.currentframe.vertices[vtx]
                     p = quarkx.newobj(str(vtx)+":p");
                     face = quarkx.newobj("east:f")
@@ -1259,6 +1260,144 @@ def MakeEditorVertexPolyObject(editor, option=0, otherlist=None, name=None):
         polylist = polylist + [group]
         return polylist
 
+# For the Linear Handles New Method of drag lines and movement.
+# option=0 for the Editor, called from mdlhandles.py class LinRedHandle, ok function.
+# option=1 for the Skin-view.
+# option=2 for the Editor, called from mdlhandles.py class LinRedHandle, ok function
+#   and is for the editor's selected vertexes extrusion functions of that handle.
+# option=3 for the Editor, called from mdlhandles.py class LinCornerHandle and LinSideHandle, ok functions.
+#
+def UpdateFramesVertexes(editor, delta, view, undomsg, option=0):
+    if option == 0:
+        undo = quarkx.action()
+        comp = editor.Root.currentcomponent
+        new_comp = comp.copy()
+        for item in editor.layout.explorer.sellist:
+            if item.type == ":mf":
+                compframe = new_comp.dictitems['Frames:fg'].dictitems[item.name]
+                old_vtxs = compframe.vertices
+                for vtx_index in editor.ModelVertexSelList:
+                    vertex = old_vtxs[vtx_index]
+                    old_vtxs[vtx_index] = vertex + delta
+                compframe.vertices = old_vtxs
+                compframe.compparent = new_comp # To allow frame relocation after editing.
+        undo.exchange(comp, new_comp)
+        editor.ok(undo, undomsg)
+
+    if option == 2:
+        comp = editor.Root.currentcomponent
+        new_comp = comp.copy()
+        newtris = new_comp.triangles
+        newtri_index = len(comp.triangles)
+        newvertexselection = []
+        compframes = new_comp.findallsubitems("", ':mf')   # get all frames
+        currentvertices = len(compframes[0].vertices)
+        for compframe in range(len(compframes)):
+            if compframes[compframe].name == comp.currentframe.name:
+                current = compframe
+                break
+        for vtx_index in range(len(editor.ModelVertexSelList)):
+            old_vtxs = compframes[current].vertices
+            vtxnbr = editor.ModelVertexSelList[vtx_index]
+            newver_index = currentvertices + vtx_index
+            newvertexselection = newvertexselection + [newver_index]
+            for compframe in compframes:
+                old_vtxs = compframe.vertices
+                newvertex = old_vtxs[vtxnbr] + delta
+                old_vtxs = old_vtxs + [newvertex]
+                compframe.vertices = old_vtxs
+                compframe.compparent = new_comp # To allow frame relocation after editing.
+
+        from mdlhandles import SkinView1
+        if quarkx.setupsubset(SS_MODEL, "Options")['SkinFrom3Dview'] == "1" or SkinView1 is None:
+            for v in editor.layout.views:
+                if v.info["viewname"] == "editors3Dview":
+                    cordsview = v
+        else:
+            try:
+                tex = comp.currentskin
+                texWidth,texHeight = tex["Size"]
+                if quarkx.setupsubset(SS_MODEL, "Options")['UseSkinViewScale'] == "1":
+                    SkinViewScale = SkinView1.info["scale"]
+                else:
+                    SkinViewScale = 1
+            except:
+                texWidth,texHeight = SkinView1.clientarea
+                SkinViewScale = 1
+        for tri in editor.SelCommonTriangles:
+            if len(tri) == 3:
+                oldtri, oldver1 ,oldver0 = tri
+            else:
+                oldtri, oldver1 ,oldver0 ,oldver2 = tri
+            for vtx_index in range(len(editor.ModelVertexSelList)):
+                if editor.ModelVertexSelList[vtx_index] == oldver1:
+                    newver_index0 = currentvertices + vtx_index
+                    if quarkx.setupsubset(SS_MODEL, "Options")['SkinFrom3Dview'] == "1" or SkinView1 is None:
+                        newuv0u = int(cordsview.proj(compframes[current].vertices[newver_index0]).tuple[0])
+                        newuv0v = int(cordsview.proj(compframes[current].vertices[newver_index0]).tuple[1])
+                        olduv0u = int(cordsview.proj(compframes[current].vertices[oldver0]).tuple[0])
+                        olduv0v = int(cordsview.proj(compframes[current].vertices[oldver0]).tuple[1])
+                    else:
+                        newuv0u = int(compframes[current].vertices[newver_index0].tuple[0]-int(texWidth*.5))*SkinViewScale
+                        newuv0v = int(compframes[current].vertices[newver_index0].tuple[1]-int(texHeight*.5))*SkinViewScale
+                        olduv0u = int(compframes[current].vertices[oldver0].tuple[0]+int(texWidth*.5))*SkinViewScale
+                        olduv0v = int(compframes[current].vertices[oldver0].tuple[1]+int(texHeight*.5))*SkinViewScale
+                if editor.ModelVertexSelList[vtx_index] == oldver0:
+                    newver_index1 = currentvertices + vtx_index
+                    if quarkx.setupsubset(SS_MODEL, "Options")['SkinFrom3Dview'] == "1" or SkinView1 is None:
+                        newuv1u = int(cordsview.proj(compframes[current].vertices[newver_index1]).tuple[0])
+                        newuv1v = int(cordsview.proj(compframes[current].vertices[newver_index1]).tuple[1])
+                        olduv1u = int(cordsview.proj(compframes[current].vertices[oldver1]).tuple[0])
+                        olduv1v = int(cordsview.proj(compframes[current].vertices[oldver1]).tuple[1])
+                    else:
+                        newuv1u = int(compframes[current].vertices[newver_index1].tuple[0]+int(texWidth*.5))*SkinViewScale
+                        newuv1v = int(compframes[current].vertices[newver_index1].tuple[1]-int(texHeight*.5))*SkinViewScale
+                        olduv1u = int(compframes[current].vertices[oldver1].tuple[0]-int(texWidth*.5))*SkinViewScale
+                        olduv1v = int(compframes[current].vertices[oldver1].tuple[1]+int(texHeight*.5))*SkinViewScale
+                if len(tri) == 4:
+                    if editor.ModelVertexSelList[vtx_index] == oldver2:
+                        newver_index2 = currentvertices + vtx_index
+                        if quarkx.setupsubset(SS_MODEL, "Options")['SkinFrom3Dview'] == "1" or SkinView1 is None:
+                            newuv2u = int(cordsview.proj(compframes[current].vertices[newver_index2]).tuple[0])
+                            newuv2v = int(cordsview.proj(compframes[current].vertices[newver_index2]).tuple[1])
+                            olduv2u = int(cordsview.proj(compframes[current].vertices[oldver2]).tuple[0])
+                            olduv2v = int(cordsview.proj(compframes[current].vertices[oldver2]).tuple[1])
+                        else:
+                            newuv2u = int(compframes[current].vertices[newver_index2].tuple[0]+int(texWidth*.5))*SkinViewScale
+                            newuv2v = int(compframes[current].vertices[newver_index2].tuple[1]-int(texHeight*.5))*SkinViewScale
+                            olduv2u = int(compframes[current].vertices[oldver2].tuple[0]-int(texWidth*.5))*SkinViewScale
+                            olduv2v = int(compframes[current].vertices[oldver2].tuple[1]+int(texHeight*.5))*SkinViewScale
+
+            newtris = newtris + [((newver_index0, newuv0u, newuv0v), (newver_index1, newuv1u, newuv1v), (oldver0, olduv0u, olduv0v))]
+            newtris = newtris + [((newver_index0, newuv0u, newuv0v), (oldver0, olduv0u, olduv0v), (oldver1, olduv1u, olduv1v))]
+        new_comp.triangles = newtris
+
+        if quarkx.setupsubset(SS_MODEL, "Options")["ExtrudeBulkHeads"] is not None:
+            undomsg = "editor-linear all edges extrusion"
+        else:
+            undomsg = "editor-linear outside edges extrusion"
+
+        undo = quarkx.action()
+        undo.exchange(comp, new_comp)
+        make_tristodraw_dict(editor, new_comp)
+        editor.ok(undo, undomsg)
+        editor.ModelVertexSelList = newvertexselection
+
+    if option == 3:
+        undo = quarkx.action()
+        comp = editor.Root.currentcomponent
+        new_comp = comp.copy()
+        for item in editor.layout.explorer.sellist:
+            if item.type == ":mf":
+                compframe = new_comp.dictitems['Frames:fg'].dictitems[item.name]
+                old_vtxs = compframe.vertices
+                for vtx_index in editor.ModelVertexSelList:
+                    old_vtxs[vtx_index] = delta[vtx_index]
+                compframe.vertices = old_vtxs
+                compframe.compparent = new_comp # To allow frame relocation after editing.
+        undo.exchange(comp, new_comp)
+        editor.ok(undo, undomsg)
+                
 
 #
 # Does the opposite of the 'MakeEditorVertexPolyObject' (just above this function) to convert a list
@@ -1416,7 +1555,7 @@ def ConvertVertexPolyObject(editor, newobjectslist, flags, view, undomsg, option
             face = newobjectslist[0].subitems[poly].subitems[0]
             newvertex = quarkx.vect(face["v"][0] , face["v"][1], face["v"][2]) - quarkx.vect(1.0,0.0,0.0)/view.info["scale"]*2
             delta = newvertex - old_vtxs[vtxnbr]
-            newvertexselection = newvertexselection + [(newver_index, view.proj(newvertex))]
+            newvertexselection = newvertexselection + [newver_index]
             for compframe in compframes:
                 old_vtxs = compframe.vertices
                 newvertex = old_vtxs[vtxnbr] + delta
@@ -1540,9 +1679,9 @@ def MakeEditorFaceObject(editor, option=0):
         editor.ModelFaceSelList = []
         editor.SelCommonTriangles = []
         editor.SelVertexes = []
-    v0 = editor.ModelVertexSelList[0][0] # Gives the index number of the 1st vertex in the list.
-    v1 = editor.ModelVertexSelList[1][0] # Gives the index number of the 2nd vertex in the list.
-    v2 = editor.ModelVertexSelList[2][0] # Gives the index number of the 3rd vertex in the list.
+    v0 = editor.ModelVertexSelList[0] # Gives the index number of the 1st vertex in the list.
+    v1 = editor.ModelVertexSelList[1] # Gives the index number of the 2nd vertex in the list.
+    v2 = editor.ModelVertexSelList[2] # Gives the index number of the 3rd vertex in the list.
     
     if option == 1: # Returns only one object (face) & tri_index for the 3 selected vertexes used by the same triangle.
                     # This object can then be used with other Map Editor and Quarkx functions.
@@ -2793,13 +2932,13 @@ def PassSkinSel2Editor(editor):
     for vtx in editor.SkinVertexSelList:
         try: # Needs to be in this try statement in case the component has no vertexes.
             if editor.ModelVertexSelList == []:
-                editor.ModelVertexSelList = editor.ModelVertexSelList + [[tris[vtx[2]][vtx[3]][0], vtx[0]]]
+                editor.ModelVertexSelList = editor.ModelVertexSelList + [tris[vtx[2]][vtx[3]][0]]
             else:
                 for vertex in range(len(editor.ModelVertexSelList)):
-                    if tris[vtx[2]][vtx[3]][0] == editor.ModelVertexSelList[[vertex][0]][0]:
+                    if tris[vtx[2]][vtx[3]][0] == editor.ModelVertexSelList[vertex]:
                         break
                     if vertex == len(editor.ModelVertexSelList)-1:
-                        editor.ModelVertexSelList = editor.ModelVertexSelList + [[tris[vtx[2]][vtx[3]][0], vtx[0]]]
+                        editor.ModelVertexSelList = editor.ModelVertexSelList + [tris[vtx[2]][vtx[3]][0]]
         except:
             continue
 
@@ -2868,8 +3007,9 @@ def PassEditorSel2Skin(editor, option=1):
             editor.Root.currentcomponent = editor.Root.dictitems[componentnames[0]]
         comp = editor.Root.currentcomponent
         commontris = []
+        vertices = comp.currentframe.vertices
         for vert in vertexlist:
-            commontris = commontris + findTrianglesAndIndexes(comp, vert[0], vert[1])
+            commontris = commontris + findTrianglesAndIndexes(comp, vert, vertices[vert])
 
     if option == 2:
         vertexlist = []
@@ -3671,6 +3811,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.109  2009/07/04 03:02:40  cdunde
+#Fix to stop multiple Skeleton folders from being created when multiple components are deleted.
+#
 #Revision 1.108  2009/06/09 05:51:48  cdunde
 #Updated to better display the Model Editor's Skeleton group and
 #individual bones and their sub-bones when they are hidden.

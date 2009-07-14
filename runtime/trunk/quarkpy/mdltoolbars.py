@@ -69,10 +69,10 @@ def extrudeclick(m):
                 editor.SelCommonTriangles = []
                 comp = editor.Root.currentcomponent
                 for vtx in editor.ModelVertexSelList:
-                    if vtx[0] in editor.SelVertexes:
+                    if vtx in editor.SelVertexes:
                         pass
                     else:
-                        editor.SelVertexes = editor.SelVertexes + [vtx[0]]
+                        editor.SelVertexes = editor.SelVertexes + [vtx]
                 for vtx in editor.SelVertexes:
                     checktris = findTrianglesAndIndexes(comp, vtx, None)
                     for tri in checktris:
@@ -139,7 +139,7 @@ def extrudeclick(m):
                     editor.SelVertexes = edgevtxs
                     templist = []
                     for vtx in editor.ModelVertexSelList:
-                       if not (vtx[0] in editor.SelVertexes):
+                       if not (vtx in editor.SelVertexes):
                            pass
                        else:
                            templist = templist + [vtx]
@@ -185,10 +185,10 @@ def extrudebulkheadsclick(m):
                 editor.SelCommonTriangles = []
                 comp = editor.Root.currentcomponent
                 for vtx in editor.ModelVertexSelList:
-                    if vtx[0] in editor.SelVertexes:
+                    if vtx in editor.SelVertexes:
                         pass
                     else:
-                        editor.SelVertexes = editor.SelVertexes + [vtx[0]]
+                        editor.SelVertexes = editor.SelVertexes + [vtx]
                 for vtx in editor.SelVertexes:
                     checktris = findTrianglesAndIndexes(comp, vtx, None)
                     for tri in checktris:
@@ -234,7 +234,7 @@ def extrudebulkheadsclick(m):
                     editor.SelVertexes = keepvtx
                     templist = []
                     for vtx in editor.ModelVertexSelList:
-                       if not (vtx[0] in editor.SelVertexes):
+                       if not (vtx in editor.SelVertexes):
                            pass
                        else:
                            templist = templist + [vtx]
@@ -317,6 +317,9 @@ toolbars = {"tb_display": DisplayBar, "tb_edittools": EditToolsBar, "tb_movepal"
 #
 #
 #$Log$
+#Revision 1.14  2008/08/21 12:11:53  danielpharos
+#Fixed an import failure.
+#
 #Revision 1.13  2008/07/15 23:16:27  cdunde
 #To correct typo error from MldOption to MdlOption in all files.
 #
