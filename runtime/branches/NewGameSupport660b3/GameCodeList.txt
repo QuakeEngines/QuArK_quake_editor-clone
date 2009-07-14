@@ -62,6 +62,7 @@ Code    abbreviation            Name          or Screen name    taken
                                               DanielPharos      28/04/2009
  y      UFO             UFO: Alien Invasion   DanielPharos      02/05/2009
  z      NEXUIZ          NEXUIZ                cdunde            03/04/2008
+ ~      WoP             World of Padman       DanielPharos      07/15/09
 
 Note: Some of the above Authors and dates may not be correct
 due to full documentation was not available for older,

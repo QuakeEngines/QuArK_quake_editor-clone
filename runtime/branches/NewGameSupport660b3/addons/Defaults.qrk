@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.482.2.8  2009/05/02 13:14:08  danielpharos
+//UFO: Fixed maps not loading. Apparently, UFO has no mod support?
+//
 //Revision 1.482.2.7  2009/05/02 12:59:05  danielpharos
 //Added initial support for UFO: Alien Invasion.
 //
@@ -4380,6 +4383,79 @@ QQRKSRC1
         PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas)
         DecimalPlaces = '5'
         Form = "GameWildWest"
+      }
+
+      World of Padman:config =
+      {
+        Game = "World of Padman"
+        Code = "~" // Hardcoded value in Setup.PAS
+
+        Program = "wop.exe +set sv_pure 0"
+        Directory = "C:\World of Padman"
+        CheckDirectory = "WOP.EXE"
+
+        CD = ""
+        CDDir = "\World of Padman\wop"
+
+        MapLimit = '65536 65536 65536'
+
+        MapCommentsPrefix = "//"
+        OutputMapFormat = "Brush Primitives"
+        ForceFaceFlags = ""
+        StupidBuildToolKludge = "1" //those guys should get shot for that
+        AlwaysWriteThreeFields = "1"
+        SupportsBrushPrim = "1"
+        BuildPgm1  = "Q3MAP.EXE"
+        BuildArgs1 = ""
+        BuildCheck1= "+BSP,-LIN{LoadLinFile}"
+        BuildPgm2  = "Q3MAP.EXE"
+        BuildArgs2 = "-vis -saveprt"
+        BuildPgm3  = "Q3MAP.EXE"
+        BuildArgs3 = "-light"
+        BuildPgm4  = "BSPC.EXE"
+        BuildArgs4 = "-bsp2aas %file%.BSP -output %mappath%"
+        BuildCheck4= "+AAS"
+
+        TexturesPath = "textures/"
+        ShadersPath = "scripts/"
+        Q2TexFlags = "1"
+        ShadersType = "a"                       // This game has Quake 3-type shaders
+
+        BezierPatchSupport = "1" // this game supports bezier-patches
+        BezierPatchPluginPrefixes = "MB2" // Prefix of the MB2*.PY files. You can also specify the value: "MB2"$0D"MB3"$0D"MB4"
+
+        DefaultTexture = "base_wall/basewall03"
+        DefaultTextureTrigger = "common/trigger"
+        DefaultTextureOrigin = "common/origin"
+        DefaultTextureClip = "common/clip"
+        DefaultTextureCaulk = "common/caulk"
+        DefaultTextureScale = "0.5"
+        LightingInnerConeKeyword = "radius"    // <-- ex: "" if game does not use or ex: "_cone" is the specifics name that gives the spotlight inter size.
+        LightingOuterConeKeyword = ""    // <-- ex: "" if game does not use or ex: "_cone2" is the specifics name that gives the spotlight outer size.
+
+        TextureFormat = ".jpg"                  // primary texture fileextension
+        TextureFileExtensions = ".tga,.jpg,.png"     // possible texture fileextensions
+        TextureWriteFormat = ".jpg"
+        TextureShaders = "scripts/quark.shader"
+
+        BaseDir = "wop"
+        tmpQuArK = "tmpQuArK"
+
+        Palette = ":pics/colormap.pcx"
+        ExtraCmdLine = "+set fs_game %gamedir%"
+        RunMapCmdLine = "+devmap %filename%"
+        AddOns = "Bezier_Library.qrk"$0D"Q3ArchLib.qrk"$0D"DataWoP.qrk"$0D"WoPEntities.qrk"$0D"WoPTextures.qrk"
+        AlwaysPak = ""
+        PakExt = ".pk3"
+        PakFormat = "*.PK3"
+        PakMaxNumber = "99"
+        Console = "1"
+        LightFactor = '0.9'
+        3DLight = '512'
+        PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas)
+        DecimalPlaces = '5'
+
+        Form = "GameWorldOfPadman"
       }
     }
 
@@ -9091,6 +9167,111 @@ QQRKSRC1
       {
         t_DefaultTextureCaulk = !
         GameCfg = "WildWest"
+      }
+      3DLight: =
+      {
+        Txt = "Game Light saturation"
+        Typ = "EF1"
+        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
+      }
+      DecimalPlaces: = {
+        Txt = "No. of decimal places for brushes and beziers."
+        Typ = "EF1"
+        Hint="Set for the number of decimals to write to the map file."$0D"The default is for this game is 5 places."
+        Min = '1'
+        Max = '40'
+      }
+      sep:        = {Typ="S" Txt = ""}
+      sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
+      t_GameBuildPgms=!
+    }
+
+    GameWorldOfPadman:form =
+    {
+      Style = "3"
+      sep: = {Typ="S" Txt="---- Game Settings ----"}
+      Program: = {
+        Typ = "C"     // combo box
+        Txt = "World of Padman command-line"
+        Items = "wop.EXE +set sv_pure 0"
+        t_ProgramHint=!
+      }
+      Directory: =
+      {
+        Txt = "Directory of World of Padman"
+        Typ = "ED"      // Edit Directory
+        Hint = "Path to the game executable"
+        CheckFile = "WOP.EXE"
+      }
+      Templates: =
+      {
+        Txt = "Directory of Templates"
+        Typ = "ED"
+        Hint = "Path to the templates folder. A folder must be chosen"$0D"before any template functions can be used."
+      }
+      CD: =
+      {
+        Txt = "World of Padman CD-ROM drive"
+        Typ = "ED"      // Edit Directory
+        Hint = "If you installed World of Padman minimally, this is the drive of the CD-ROM."
+        //CheckFile = "World of Padman\wop\wop_001.PK3"
+        CheckFile = "wop_001.PK3"
+      }
+      AddOns:tbbtn =       // button (don't forget :tbbtn for all the action buttons !)
+      {
+        Typ = "+"
+        Txt = "Installed Add-ons"
+        Cap = "Add-ons..."
+        Icon = $666008881111111866604441999799916660CCC1101111116660244404555548
+               $66602C2AA478887866602C4A24787F78666022AC48778878666022CC47888878
+               $666000407787877866608777777777784448444844487F785C77CF77CC487778
+               $5CC7C777CC488880055555555548870666608888888800666666666666666666
+        cmd:macro = {Typ="M" Msg="GAM~"}    // switches to World of Padman (cmd=GAM, game=~)
+        cmd:macro = {Typ="M" Msg="ADDO"}    // opens Add-ons configuration dialog box
+      }
+      Outp:tbbtn =
+      {
+        Typ = "+"
+        Txt = "Paths and files to create"
+        Cap = "Output directories..."
+        Icon = $666660000066666666660232AA20666660003332ABA0206602303332ABB0
+               $FA0603303332ABB0FBA003303332AAB0FBB0033033222AA0FBB0033022AA
+               $A220FBB00322022AA2022AA002AA2022002AA2A00AAAA20022AAAA20602A
+               $0022002A200666002AAAA20006666666002A200666666666660006666666
+        cmd:macro = {Typ="M" Msg="GAM~"}    // switches to World of Padman (cmd=GAM, game=~)
+        cmd:macro = {Typ="M" Msg="OUTP"}    // opens "Output directories" dialog box
+      }
+      sep: = {Typ="S" Txt = ""}
+      sep: = {Typ="S" Txt="---- Map-editor Settings ----"}
+      DefaultTexture: =
+      {
+        t_DefaultTexture = !
+        GameCfg = "World of Padman"
+      }
+      DefaultTextureTerrain: =
+      {
+        t_DefaultTextureTerrain = !
+        GameCfg = "World of Padman"
+      }
+      DefaultTextureTrigger: =
+      {
+        t_DefaultTextureTrigger = !
+        GameCfg = "World of Padman"
+      }
+      DefaultTextureClip: =
+      {
+        t_DefaultTextureClip = !
+        GameCfg = "World of Padman"
+      }
+      DefaultTextureOrigin: =
+      {
+        t_DefaultTextureOrigin = !
+        GameCfg = "World of Padman"
+      }
+      DefaultTextureCaulk: =
+      {
+        t_DefaultTextureCaulk = !
+        GameCfg = "World of Padman"
       }
       3DLight: =
       {

@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.80.2.5  2009/05/02 12:59:11  danielpharos
+Added initial support for UFO: Alien Invasion.
+
 Revision 1.80.2.4  2009/05/02 11:30:14  danielpharos
 Added initial Alien Arena support.
 
@@ -370,6 +373,7 @@ comparison between gamemodes.}
  mjAlice        = 'x';  { American McGee's Alice }
  mjUFO          = 'y';  { UFO: Alien Invasion }
  mjNEXUIZ       = 'z';  { NEXUIZ }
+ mjWoP          = '~';  { World of Padman }
 
  mjAny          = #1;
  mjNotQuake2    = #2;
