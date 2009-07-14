@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2009/03/27 19:59:57  danielpharos
+Fix a major slowdown in the progressbar drawing routine.
+
 Revision 1.12  2009/02/21 17:06:18  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -203,7 +206,7 @@ end;
 
 procedure ProgressIndicatorIncrement(Delta: Integer = 1);
 var
- FormLoaded, Stop: Boolean;
+ NotFormLoaded, Stop: Boolean;
  Msg: TMsg;
  Pt: TPoint;
  R: TRect;
@@ -225,9 +228,9 @@ begin
       end;
     end;
 
-    FormLoaded := FForm = Nil;
+    NotFormLoaded := FForm = Nil;
 
-    if FormLoaded then
+    if NotFormLoaded then
     begin
       //DanielPharos: Might overflow,
       //but you'd have to wait 49.7 days for it!
@@ -262,7 +265,7 @@ begin
       end;
     end;
 
-    if FormLoaded then
+    if NotFormLoaded then
     begin
       FForm.Show;
       FForm.Update;
