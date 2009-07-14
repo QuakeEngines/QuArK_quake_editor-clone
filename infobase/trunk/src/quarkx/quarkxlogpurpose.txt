@@ -7,9 +7,9 @@ The default filename for the console log file is 'Console.txt'.<br>
 <table border=1 cellspacing=0 cellpadding=4>
 
 <tr><td class="doccode">
-log(string)
+log(string [, level])
 </td><td>
-Writes a line of text to the main log file. It'll be marked with 'PythonLog'.
+Writes a line of text to the main log file. It'll be marked with 'PythonLog'. <tt>level</tt> is the loglevel used for this output.
 </td></tr>
 
 <tr><td class="doccode">

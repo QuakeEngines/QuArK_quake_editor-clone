@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.92  2009/07/10 09:15:04  danielpharos
+Made Python 'Loading image' verbose output, so it doesn't polute the normal log-file.
+
 Revision 1.91  2009/02/21 17:09:44  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -2842,14 +2845,19 @@ end;
 function xLog(self, args: PyObject) : PyObject; cdecl;
 var
   P: PChar;
+  i: Integer;
 begin
   try
     Result:=Nil;
-    if not PyArg_ParseTupleX(args, 's', [@P]) then
+    i:=-1;
+    if not PyArg_ParseTupleX(args, 's|i', [@P, @i]) then
       Exit;
     if P=Nil then
       Exit;
-    Log(LOG_PYTHON, P);
+    if i=-1 then
+      Log(LOG_PYTHON, P)
+    else
+      Log(LOG_PYTHON, i, P);
     Result:=PyNoResult;
   except
     EBackToPython;

@@ -24,6 +24,7 @@ Plug-ins Launcher
 
 import nt     # note: this is not portable, but I want to avoid
               # to include os.py in the MiniPython distribution.
+import quarkx
 
 LoadedPlugins = []
 
@@ -32,6 +33,7 @@ def LoadPlugins(beginning):
         for file in nt.listdir(dir):
             f = file.upper()
             if (f[-3:]=='.PY') and (f[:len(beginning)]==beginning):
+                quarkx.log("Loading plugin: %s" % (file))
                 module = __import__(file[:-3], globals(), locals(), [])
                 if not (module in LoadedPlugins):
                     LoadedPlugins.append(module)
@@ -45,6 +47,9 @@ LoadPlugins("Q_")   # immediately loads plug-ins whose name
 #
 #
 # $Log$
+# Revision 1.8  2006/11/30 01:17:47  cdunde
+# To fix for filtering purposes, we do NOT want to use capital letters for cvs.
+#
 # Revision 1.7  2006/11/29 06:58:35  cdunde
 # To merge all runtime files that had changes from DanielPharos branch
 # to HEAD for QuArK 6.5.0 Beta 1.
