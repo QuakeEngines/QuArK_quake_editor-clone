@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.22  2009/06/04 20:26:02  cdunde
+Horizontal scrollbar fix by danielpharos for smooth scrolling and ability to select items in the tree-view.
+
 Revision 1.21  2009/05/26 20:43:59  danielpharos
 Added a horizontal scrollbar in the treeview.
 
@@ -233,7 +236,7 @@ type
 
 implementation
 
-uses QkFileObjects, Python, PyImages, qmath, QkMapObjects;
+uses QkFileObjects, Python, PyImages, qmath, QkMapObjects {$IFDEF Debug}, QkExceptions{$ENDIF};
 
  {------------------------}
 
