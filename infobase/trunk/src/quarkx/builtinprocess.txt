@@ -19,5 +19,5 @@ Set a callback function that is called when the program terminates, or immediate
 
 </table>
 
-Note that this object might become obsolete in a future version of QuArK. Don’t rely on it. The stdout and stderr mecanism can
+Note that this object might become obsolete in a future version of QuArK. Don’t rely on it. The stdout and stderr mechanism can
 be used to know when console processes terminate.
