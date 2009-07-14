@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.42  2009/07/14 11:45:44  danielpharos
+Added some new CPUVendorIDs.
+
 Revision 1.41  2009/02/21 17:06:18  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -219,18 +222,18 @@ type
 
   TMemory = class(TPersistent)
   private
-    FMemoryLoad: longword;    //DanielPharos: This is not 64-bit compatible. Some are Size_T, which will be 64 bit variables.
-    FPhysicalTotal: longword;
-    FPhysicalFree: longword;
-    FVirtualTotal: longword;
-    FVirtualFree: longword;
-    FPageFileTotal: longword;
-    FPageFileFree: longword;
+    FMemoryLoad: DWORD;
+    FPhysicalTotal: SIZE_T;
+    FPhysicalFree: SIZE_T;
+    FPageFileTotal: SIZE_T;
+    FPageFileFree: SIZE_T;
+    FVirtualTotal: SIZE_T;
+    FVirtualFree: SIZE_T;
 
-    FAllocGranularity: integer;
-    FMinAppAddress: integer;
-    FMaxAppAddress: integer;
-    FPageSize: integer;
+    FAllocGranularity: DWORD;
+    FMinAppAddress: Integer;
+    FMaxAppAddress: Integer;
+    FPageSize: DWORD;
     FGDIRes: Byte;
     FUserRes: Byte;
     FSystemRes: Byte;
@@ -241,17 +244,17 @@ type
     procedure GetInfo;
     procedure Report(var sl :TStringList);
   published
-    property MemoryLoad :longword read FMemoryLoad write FMemoryLoad stored false;
-    property PhysicalTotal :longword read FPhysicalTotal write FPhysicalTotal stored false;
-    property PhysicalFree :longword read FPhysicalFree write FPhysicalFree stored false;
-    property VirtualTotal :longword read FVirtualTotal write FVirtualTotal stored false;
-    property VirtualFree :longword read FVirtualFree write FVirtualFree stored false;
-    property PageFileTotal :longword read FPageFileTotal write FPageFileTotal stored false;
-    property PageFileFree :longword read FPageFileFree write FPageFileFree stored false;
-    property AllocGranularity :integer read FAllocGranularity write FAllocGranularity stored false;
-    property MaxAppAddress :integer read FMaxAppAddress write FMaxAppAddress stored false;
-    property MinAppAddress :integer read FMinAppAddress write FMinAppAddress stored false;
-    property PageSize :integer read FPageSize write FPageSize stored false;
+    property MemoryLoad :DWORD read FMemoryLoad write FMemoryLoad stored false;
+    property PhysicalTotal :SIZE_T read FPhysicalTotal write FPhysicalTotal stored false;
+    property PhysicalFree :SIZE_T read FPhysicalFree write FPhysicalFree stored false;
+    property PageFileTotal :SIZE_T read FPageFileTotal write FPageFileTotal stored false;
+    property PageFileFree :SIZE_T read FPageFileFree write FPageFileFree stored false;
+    property VirtualTotal :SIZE_T read FVirtualTotal write FVirtualTotal stored false;
+    property VirtualFree :SIZE_T read FVirtualFree write FVirtualFree stored false;
+    property AllocGranularity :DWORD read FAllocGranularity write FAllocGranularity stored false;
+    property MaxAppAddress :Integer read FMaxAppAddress write FMaxAppAddress stored false;
+    property MinAppAddress :Integer read FMinAppAddress write FMinAppAddress stored false;
+    property PageSize :DWORD read FPageSize write FPageSize stored false;
     property Win9x_SystemRes :Byte read FSystemRes write FSystemRes stored false;
     property Win9x_GDIRes :Byte read FGDIRes write FGDIRes stored false;
     property Win9x_UserRes :Byte read FUserRes write FUserRes stored false;
@@ -259,9 +262,9 @@ type
 
   TOperatingSystem = class(TPersistent)
   private
-    FBuildNumber: integer;
-    FMajorVersion: integer;
-    FMinorVersion: integer;
+    FBuildNumber: DWORD;
+    FMajorVersion: DWORD;
+    FMinorVersion: DWORD;
     FPlatform: string;
     FCSD: string;
     FVersion: string;
@@ -278,9 +281,9 @@ type
     procedure GetInfo;
     procedure Report(var sl :TStringList);
   published
-    property MajorVersion :integer read FMajorVersion write FMajorVersion stored false;
-    property MinorVersion :integer read FMinorVersion write FMinorVersion stored false;
-    property BuildNumber :integer read FBuildNumber write FBuildNumber stored false;
+    property MajorVersion :DWORD read FMajorVersion write FMajorVersion stored false;
+    property MinorVersion :DWORD read FMinorVersion write FMinorVersion stored false;
+    property BuildNumber :DWORD read FBuildNumber write FBuildNumber stored false;
     property Platform :string read FPlatform write FPlatform stored false;
     property Version :string read FVersion write FVersion stored false;
     property CSD :string read FCSD write FCSD stored false;
@@ -942,10 +945,11 @@ begin
   FDirs.Clear;
   ZeroMemory(@OS,SizeOf(OS));
   OS.dwOSVersionInfoSize:=SizeOf(OS);
-  GetVersionEx(OS);
+  if not GetVersionEx(OS) then
+    raise exception.create('Unable to retrieve system details. Call to GetVersionEx failed!');
   MajorVersion:=OS.dwMajorVersion;
   MinorVersion:=OS.dwMinorVersion;
-  BuildNumber:=word(OS.dwBuildNumber);
+  BuildNumber:=OS.dwBuildNumber;
   case OS.dwPlatformId of
     VER_PLATFORM_WIN32s:
      begin
@@ -1223,9 +1227,9 @@ begin
   ZeroMemory(@SI,SizeOf(SI));
   GetSystemInfo(SI);
   AllocGranularity:=SI.dwAllocationGranularity;
-  MaxAppAddress:=DWORD(SI.lpMaximumApplicationAddress);
-  MinAppAddress:=DWORD(SI.lpMinimumApplicationAddress);
-  PageSize:=DWORD(SI.dwPageSize);
+  MaxAppAddress:=Integer(SI.lpMaximumApplicationAddress);
+  MinAppAddress:=Integer(SI.lpMinimumApplicationAddress);
+  PageSize:=SI.dwPageSize;
   FSystemRes:=GetSystemRes;
   FGDIRes:=GetGDIRes;
   FUserRes:=GetUserRes;
