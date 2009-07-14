@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.24  2009/02/21 17:10:42  danielpharos
+Changed all source files to use CRLF text format, updated copyright and GPL text.
+
 Revision 1.23  2008/12/02 16:17:34  danielpharos
 Removed unneeded SetApplicationPath function.
 
@@ -268,7 +271,8 @@ initialization
     Windows.MessageBox(0, 'Environmental variable QUARK_LOG_PATCHNAME found. QuArK will use its value.', 'Environmental variable found', MB_TASKMODAL or MB_ICONINFORMATION or MB_OK);
   LogLevelEnv:=GetEnvironmentVariable('QUARK_LOG_LEVEL');
   if LogLevelEnv='' then
-    LogLevel:=20
+    //Default level is 'warning'
+    LogLevel:=LOG_WARNING
   else
   begin
     Windows.MessageBox(0, 'Environmental variable QUARK_LOG_LEVEL found. QuArK will use its value.', 'Environmental variable found', MB_TASKMODAL or MB_ICONINFORMATION or MB_OK);
