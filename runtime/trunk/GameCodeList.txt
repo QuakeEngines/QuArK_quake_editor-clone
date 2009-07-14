@@ -1,6 +1,6 @@
 $Id$
 
-As covered in the QuArK\help\adv.newgame.html page this is a detailed 
+As covered in the infobase\adv.newgame.html page this is a detailed 
 listing of New Games supported by QuArK and their categories.
 Please review the above page before proceeding.
 
@@ -65,9 +65,9 @@ Additional Notes:
 ================
 
 When setting up for new game support please place the (game name):config and 
-Game(game name):form sections, in the Default.qrk file, in alphabetical order 
+Game(game name):form sections, in the Defaults.qrk file, in alphabetical order 
 so they will show up on the Games menu and config sections that way. This 
-allows for easer and more consistency in location of these sections.
+allows for easier and more consistency in location of these sections.
 
 Also, be sure to update your copy before making any changes to ensure that 
 a file(s) you have been working on have not been changed during your work. I 

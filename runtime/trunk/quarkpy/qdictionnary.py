@@ -280,10 +280,10 @@ Strings = {
     818: "Steam FS (*.SteamFS)|*.SteamFS",
     819: "DDS image (*.dds)|*.dds",
     820: "FTX image (*.ftx)|*.ftx",
-    821: "Call of Duty 2 Pak Files (.iwd)|*.iwd",
+    821: "Call of Duty 2 Pak Files (*.iwd)|*.iwd",
     822: "Sylphis Map File (*.cmap)|*.cmap",
     823: "Doom 3 Material File (*.mtr)|*.mtr",
-    824: "Call of Duty 2 Image Files (.iwi)|*.iwi",
+    824: "Call of Duty 2 Image Files (*.iwi)|*.iwi",
 
     2368: "Skins",
     2369: "Frames",
@@ -1069,6 +1069,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.143  2009/06/03 05:16:22  cdunde
+#Over all updating of Model Editor improvements, bones and model importers.
+#
 #Revision 1.142  2009/04/28 21:30:56  cdunde
 #Model Editor Bone Rebuild merge to HEAD.
 #Complete change of bone system.
