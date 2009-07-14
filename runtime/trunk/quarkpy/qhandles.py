@@ -1315,6 +1315,20 @@ def refreshtimer(self):
                   # goes off one time, but does not recreate the handles if nothing is selected at end of drag.
                   #      self.view.handles = []
                         self.view.invalidaterect(self.xmin, self.ymin, self.xmax, self.ymax)
+                        newxmin = newxmax = self.x
+                        newymin = newymax = self.y
+                        if self.newx < newxmin:
+                            newxmin = self.xmin
+                        if self.newx > newxmax:
+                            newxmax = self.xmax
+                        if self.newy < newymin:
+                            newymin = self.ymin
+                        if self.newy > newymax:
+                            newymax = self.ymax
+                        self.xmin = newxmin
+                        self.xmax = newxmax
+                        self.ymin = newymin
+                        self.ymax = newymax
             else:
                 if not isinstance(editor.dragobject, mdlhandles.LinearHandle):
                     return
@@ -2179,6 +2193,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.83  2009/07/13 23:53:55  cdunde
+#Improvement by DanielPharos of vertex redrawing with rectangle selection movement.
+#
 #Revision 1.82  2009/06/03 05:16:22  cdunde
 #Over all updating of Model Editor improvements, bones and model importers.
 #
