@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.43  2009/07/14 12:06:59  danielpharos
+Fixed some variable types.
+
 Revision 1.42  2009/07/14 11:45:44  danielpharos
 Added some new CPUVendorIDs.
 
@@ -1076,6 +1079,8 @@ begin
         end;
        end;
       end;
+    else
+      raise exception.create('Unknown Windows platform detected!');
   end;
   case WindowsPlatformCompatibility of
   osWin95Comp:
