@@ -114,6 +114,14 @@ FT_GAME = 1;
 FT_TOOL = 2;
 FT_PATH = 3;
 
+# log constants
+# !! Must match the constants in Logging.PAS !!
+LOG_ALWAYS   = 0;
+LOG_CRITICAL = 10;
+LOG_WARNING  = 20;
+LOG_INFO     = 30;
+LOG_VERBOSE  = 40;
+
 # icon indexes of internal objects (to be used with quarkx.seticons)
 iiUnknownFile           = 0
 iiExplorerGroup         = 1
@@ -868,6 +876,9 @@ def sortdictionary(dictionary):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.49  2009/06/24 05:49:03  cdunde
+#To give long integer error warning and steps for correction.
+#
 #Revision 1.48  2009/06/09 05:51:48  cdunde
 #Updated to better display the Model Editor's Skeleton group and
 #individual bones and their sub-bones when they are hidden.
