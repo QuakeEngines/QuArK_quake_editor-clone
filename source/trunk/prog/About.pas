@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.32  2009/02/21 17:06:18  danielpharos
+Changed all source files to use CRLF text format, updated copyright and GPL text.
+
 Revision 1.31  2008/10/08 19:44:16  danielpharos
 Fix some possible synchronization issues.
 
@@ -286,7 +289,7 @@ begin
     + 'for details, see below.'
     + #13#10#13#10
     + 'QuArK is protected by the GNU General Public License; text below is part of this Licence. '
-    + 'The complete Licence is found in file COPYING.TXT.'
+    + 'The complete Licence can be found in the file COPYING.TXT.'
     + #13#10#13#10
     + 'NO WARRANTY'
     + #13#10#13#10
