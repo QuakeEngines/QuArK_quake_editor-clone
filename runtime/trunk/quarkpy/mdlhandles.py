@@ -855,35 +855,6 @@ class VertexHandle(qhandles.GenericHandle):
                     else:
                         cv.brushcolor = vertexdotcolor
                         cv.ellipse(int(p.x)-1, int(p.y)-1, int(p.x)+1, int(p.y)+1)
-            elif editor.ModelVertexSelList != []:
-                cv.pencolor = vertexdotcolor
-                cv.brushstyle = BS_SOLID
-                cv.brushcolor = vertexsellistcolor
-                if quarkx.setupsubset(3, "Options")['VertexPaintMode'] is not None and quarkx.setupsubset(3, "Options")['VertexPaintMode'] == "1":
-                    for item in editor.ModelVertexSelList:
-                        if self.index == item:
-                            color = None
-                            for sel in editor.layout.explorer.sellist:
-                                if sel.type == ":bone":
-                                    if sel.dictspec.has_key(sel.shortname + "_weight_color"):
-                                        color = sel.dictspec[sel.shortname + "_weight_color"]
-                                        break
-                            if color is not None:
-                                quarkx.setupsubset(SS_MODEL, "Colors")["color"] = color
-                                cv.pencolor = cv.brushcolor = MapColor("color", SS_MODEL)
-                            if MdlOption("Ticks") == "1":
-                                cv.ellipse(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
-                            else:
-                                cv.ellipse(int(p.x)-2, int(p.y)-2, int(p.x)+2, int(p.y)+2)
-                            update_weightvtxlist(editor, item) # Updates the ModelComponentList weightvtxlist HERE.
-                else:
-                    selsize = int(quarkx.setupsubset(SS_MODEL,"Building")['LinearSelected'][0])
-                    for item in editor.ModelVertexSelList:
-                        if self.index == item and item == editor.ModelVertexSelList[0]:
-                            cv.brushcolor = drag3Dlines
-                            cv.rectangle(int(p.x)-selsize, int(p.y)-selsize, int(p.x)+selsize, int(p.y)+selsize)
-                        elif self.index == item:
-                            cv.rectangle(int(p.x)-selsize, int(p.y)-selsize, int(p.x)+selsize, int(p.y)+selsize)
             else:
                 cv.pencolor = vertexdotcolor
                 cv.brushstyle = BS_SOLID
@@ -893,6 +864,39 @@ class VertexHandle(qhandles.GenericHandle):
                 else:
                     cv.brushcolor = vertexdotcolor
                     cv.ellipse(int(p.x)-1, int(p.y)-1, int(p.x)+1, int(p.y)+1)
+
+            editor = mdleditor.mdleditor
+            if editor is not None:
+                if editor.ModelVertexSelList != []:
+                    if quarkx.setupsubset(3, "Options")['VertexPaintMode'] is not None and quarkx.setupsubset(3, "Options")['VertexPaintMode'] == "1":
+                        cv.brushcolor = vertexsellistcolor
+        #                selsize = int(quarkx.setupsubset(SS_MODEL,"Building")['LinearSelected'][0])
+                        for item in editor.ModelVertexSelList:
+                            if self.index == item:
+                                color = None
+                                for sel in editor.layout.explorer.sellist:
+                                    if sel.type == ":bone":
+                                        if sel.dictspec.has_key(sel.shortname + "_weight_color"):
+                                            color = sel.dictspec[sel.shortname + "_weight_color"]
+                                            break
+                                if color is not None:
+                                    quarkx.setupsubset(SS_MODEL, "Colors")["color"] = color
+                                    cv.pencolor = cv.brushcolor = MapColor("color", SS_MODEL)
+                                cv.brushstyle = BS_SOLID
+                                if MdlOption("Ticks") == "1":
+                                    cv.ellipse(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
+                                else:
+                                    cv.ellipse(int(p.x)-2, int(p.y)-2, int(p.x)+2, int(p.y)+2)
+                                update_weightvtxlist(editor, item) # Updates the ModelComponentList weightvtxlist HERE.
+                    else:
+                        cv.brushcolor = vertexsellistcolor
+                        selsize = int(quarkx.setupsubset(SS_MODEL,"Building")['LinearSelected'][0])
+                        for item in editor.ModelVertexSelList:
+                            if self.index == item and item == editor.ModelVertexSelList[0]:
+                                cv.brushcolor = drag3Dlines
+                                cv.rectangle(int(p.x)-selsize, int(p.y)-selsize, int(p.x)+selsize, int(p.y)+selsize)
+                            elif self.index == item:
+                                cv.rectangle(int(p.x)-selsize, int(p.y)-selsize, int(p.x)+selsize, int(p.y)+selsize)
 
 
   #  For setting stuff up at the beginning of a drag
@@ -4987,6 +4991,10 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.178  2009/07/14 00:27:33  cdunde
+#Completely revamped Model Editor vertex Linear draglines system,
+#increasing its reaction and drawing time to twenty times faster.
+#
 #Revision 1.177  2009/06/09 05:51:48  cdunde
 #Updated to better display the Model Editor's Skeleton group and
 #individual bones and their sub-bones when they are hidden.
