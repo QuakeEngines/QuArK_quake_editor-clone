@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.41  2009/02/21 17:06:18  danielpharos
+Changed all source files to use CRLF text format, updated copyright and GPL text.
+
 Revision 1.40  2009/02/04 23:14:52  danielpharos
 Moved size_t declaration to SystemDetails.
 
@@ -437,27 +440,33 @@ end;
 const
   ID_Bit = $200000;    // EFLAGS ID bit
 
-  CPUVendorIDs :array[0..9] of string = ('GenuineIntel',
-                                         'UMC UMC UMC',
-                                         'AuthenticAMD',
-                                         'CyrixInstead',
-                                         'NexGenDriven',
-                                         'CentaurHauls',
-                                         'RiseRiseRise',
-                                         'SiS SiS SiS',
-                                         'GenuineTMx86',
-                                         'Geode by NSC');
+  CPUVendorIDs :array[0..12] of string = ('GenuineIntel',
+                                          'UMC UMC UMC',
+                                          'AuthenticAMD',
+                                          'CyrixInstead',
+                                          'NexGenDriven',
+                                          'CentaurHauls',
+                                          'RiseRiseRise',
+                                          'SiS SiS SiS',
+                                          'GenuineTMx86',
+                                          'Geode by NSC',
+                                          'VIA VIA VIA ',
+                                          'AMDisbetter!',
+                                          'TransmetaCPU');
 
-  CPUVendors :array[0..9] of string = ('Intel',
-                                       'UMC',
-                                       'AMD',
-                                       'Cyrix',
-                                       'NexGen',
-                                       'CentaurHauls',
-                                       'Rise Technology',
-                                       'SiS',
-                                       'Transmeta',
-                                       'National Semiconductor');
+  CPUVendors :array[0..12] of string = ('Intel',
+                                        'UMC',
+                                        'AMD',
+                                        'Cyrix',
+                                        'NexGen',
+                                        'CentaurHauls',
+                                        'Rise Technology',
+                                        'SiS',
+                                        'Transmeta',
+                                        'National Semiconductor',
+                                        'VIA',
+                                        'AMD',
+                                        'Transmeta');
 
 function TCPU.CPUIDExists: boolean; register;
 asm
@@ -623,7 +632,7 @@ begin
     inc(i);
   until i>11;
   FVendorNo:=-1;
-  for i:=0 to high(CPUVendorIDs) do
+  for i:=low(CPUVendorIDs) to high(CPUVendorIDs) do
   begin
     if result=CPUVendorIDs[i] then
     begin
