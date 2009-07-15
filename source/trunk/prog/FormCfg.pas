@@ -16,13 +16,16 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
+http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
 
 {
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.54  2009/06/24 14:36:45  danielpharos
+Disabled changing the classname specific: it blew up the Model Editor.
+
 Revision 1.53  2009/03/11 16:14:39  danielpharos
 Added 'Rows' specific to ComboBox.
 

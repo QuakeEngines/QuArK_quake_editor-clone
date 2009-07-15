@@ -16,13 +16,16 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
+http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
 
 {
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.98  2009/05/15 11:05:59  danielpharos
+Moved SaveMapVersion setting to seperate Files section.
+
 Revision 1.97  2009/04/30 18:25:07  danielpharos
 Fixed some small layouting issues with saved VMF files.
 

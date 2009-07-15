@@ -16,13 +16,16 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
+http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
 
 {
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2009/02/21 17:06:18  danielpharos
+Changed all source files to use CRLF text format, updated copyright and GPL text.
+
 Revision 1.8  2007/12/21 01:09:48  danielpharos
 Undo objects without any text are now invisible in the Undo menu
 

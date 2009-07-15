@@ -16,13 +16,17 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
+http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
 
 {
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2009/04/28 20:54:03  cdunde
+Model Editor Bone Rebuild merge to HEAD.
+Complete change of bone system.
+
 Revision 1.9.2.1  2009/04/16 16:57:34  danielpharos
 Fixed QSysData not being invisible in the Model Editor.
 

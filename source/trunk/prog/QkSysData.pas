@@ -16,13 +16,17 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
+http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
 
 {
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2009/04/29 19:55:58  cdunde
+Model Editor Bone Rebuild merge to HEAD.
+Complete change of bone system.
+
 
 Revision 1.1.2.3  2009/04/21 20:27:19  danielpharos
 Hide QSysData from treeview, fix access violations in QModelBone if specifics not set, and allow bones-in-bones.

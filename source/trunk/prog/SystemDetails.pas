@@ -16,13 +16,16 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
+http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
 
 {
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.44  2009/07/14 12:07:52  danielpharos
+Don't allow unknown Windows platforms.
+
 Revision 1.43  2009/07/14 12:06:59  danielpharos
 Fixed some variable types.
 

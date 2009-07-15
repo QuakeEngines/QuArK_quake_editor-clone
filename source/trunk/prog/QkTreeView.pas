@@ -16,13 +16,16 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
+http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
 
 {
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23  2009/07/14 11:40:18  danielpharos
+Fixed debug not compiling.
+
 Revision 1.22  2009/06/04 20:26:02  cdunde
 Horizontal scrollbar fix by danielpharos for smooth scrolling and ability to select items in the tree-view.
 

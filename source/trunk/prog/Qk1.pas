@@ -16,13 +16,16 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
+http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
 
 {
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.84  2009/06/08 20:44:28  danielpharos
+Fix ugliness in shutdown when single-instance check fires.
+
 Revision 1.83  2009/05/04 21:18:50  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 

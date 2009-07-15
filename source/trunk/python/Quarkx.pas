@@ -16,13 +16,16 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
+http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
 
 {
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.93  2009/07/14 11:29:16  danielpharos
+Added logging of plugin loading.
+
 Revision 1.92  2009/07/10 09:15:04  danielpharos
 Made Python 'Loading image' verbose output, so it doesn't polute the normal log-file.
 

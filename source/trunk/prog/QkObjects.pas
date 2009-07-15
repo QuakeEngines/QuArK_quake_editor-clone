@@ -16,13 +16,16 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
+http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
 
 {
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.123  2009/07/12 12:43:32  danielpharos
+Updated links to website for new website address.
+
 Revision 1.122  2009/04/28 20:54:03  cdunde
 Model Editor Bone Rebuild merge to HEAD.
 Complete change of bone system.

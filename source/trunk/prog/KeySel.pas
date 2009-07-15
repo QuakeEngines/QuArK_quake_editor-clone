@@ -16,13 +16,16 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
+http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
 
 {
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2009/02/21 17:11:44  danielpharos
+Changed all source files to use CRLF text format, updated copyright and GPL text.
+
 Revision 1.5  2005/09/28 10:48:31  peter-b
 Revert removal of Log and Header keywords
 
