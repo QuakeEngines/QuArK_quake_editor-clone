@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.40  2009/07/15 10:38:10  danielpharos
+Updated website link.
+
 Revision 1.39  2009/05/04 18:33:33  danielpharos
 Moved InternalE to QkExceptions.
 
@@ -594,8 +597,6 @@ procedure Py_XDECREF(o: PyObject);
 function PySeq_Item(o: PyObject; index: Integer) : PyObject;}
 
 var
- PythonLib: THandle;
- PythonDll: String;
  PyInt_Type:    PyTypeObject;
  PyType_Type:   PyTypeObject;
  PyList_Type:   PyTypeObject;
@@ -692,6 +693,8 @@ const
     (Variable: @@PyGC_Collect;               Name: 'PyGC_Collect';               MinimalVersion: 235));
 
 var
+  PythonLib: HMODULE;
+  PythonDll: String;
   PythonCurrentVersion: Integer;
 
  {-------------------}
