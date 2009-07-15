@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.17  2009/02/21 17:06:18  danielpharos
+Changed all source files to use CRLF text format, updated copyright and GPL text.
+
 Revision 1.16  2008/12/03 11:04:06  danielpharos
 Fixed Delphi 6 problem introduced in last rev.
 
@@ -99,7 +102,7 @@ const
   DriveDelim = {$IFDEF MSWINDOWS} ':'; {$ELSE} '';  {$ENDIF}
   PathSep    = {$IFDEF MSWINDOWS} ';'; {$ELSE} ':'; {$ENDIF}
 
-function StrToFloatDef(const S: String; const Def: TDouble) : TDouble;
+function StrToFloatDef(const S: String; const Default: Extended) : Extended;
 
 { Returns the reverse of a specified string. }
 function ReverseString(const AText: string): string;
@@ -153,15 +156,15 @@ begin
     Result := Result + PathDelim;
 end;
 
-function StrToFloatDef(const S: String; const Def: TDouble) : TDouble;
+function StrToFloatDef(const S: String; const Default: Extended) : Extended;
 begin
  if S='' then
-  Result:=Def
+  Result:=Default
  else
   try
    Result:=StrToFloat(S);
   except
-   Result:=Def;
+   Result:=Default;
   end;
 end;
 
