@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2009/07/15 10:38:01  danielpharos
+Updated website link.
+
 Revision 1.18  2009/07/15 10:30:46  danielpharos
 Fixed wrong variable type.
 
@@ -66,7 +69,7 @@ interface
 
 {$I DelphiVer.inc}
 
-uses SysUtils, StrUtils;
+uses SysUtils{$IFDEF Delphi6orNewerCompiler}, StrUtils{$ENDIF};
 
 {$ifndef Delphi7orNewerCompiler} // Pre-dates Delphi 7
 const
@@ -106,6 +109,12 @@ const
   PathSep    = {$IFDEF MSWINDOWS} ';'; {$ELSE} ':'; {$ENDIF}
 
 function StrToFloatDef(const S: String; const Default: Extended) : Extended;
+
+function RightStr(Const Str: String; Size: Word): String;
+
+function MidStr(Const Str: String; From, Size: Word): String;
+
+function LeftStr(Const Str: String; Size: Word): String;
 
 { Returns the reverse of a specified string. }
 function ReverseString(const AText: string): string;
@@ -169,6 +178,22 @@ begin
   except
    Result:=Default;
   end;
+end;
+
+function RightStr(Const Str: String; Size: Word): String;
+begin
+  if Size > Length(Str) then Size := Length(Str) ;
+  RightStr := Copy(Str, Length(Str)-Size+1, Size)
+end;
+
+function MidStr(Const Str: String; From, Size: Word): String;
+begin
+  MidStr := Copy(Str, From, Size)
+end;
+
+function LeftStr(Const Str: String; Size: Word): String;
+begin
+  LeftStr := Copy(Str, 1, Size)
 end;
 
 function ReverseString(const AText: string): string;
