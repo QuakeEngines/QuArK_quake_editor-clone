@@ -23,6 +23,8 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.1  2009/03/16 08:47:21  danielpharos
+Updated to DevIL 1.7.8, added IWI loading, and added many new image loading/saving options.
 }
 
 unit QkIwi;
