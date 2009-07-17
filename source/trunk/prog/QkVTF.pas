@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.45  2009/07/15 10:38:00  danielpharos
+Updated website link.
+
 Revision 1.44  2009/03/16 08:47:21  danielpharos
 Updated to DevIL 1.7.8, added IWI loading, and added many new image loading/saving options.
 
@@ -164,7 +167,7 @@ unit QkVTF;
 
 interface
 
-uses Classes, QkImages, QkPixelSet, QkObjects, QkFileObjects,
+uses Windows, Classes, QkImages, QkPixelSet, QkObjects, QkFileObjects,
   QkVTFLib, QkDevIL;
 
 type
