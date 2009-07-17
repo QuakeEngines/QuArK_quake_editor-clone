@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.39  2009/07/15 10:38:06  danielpharos
+Updated website link.
+
 Revision 1.38  2009/07/10 09:21:10  danielpharos
 Added some loaded DLL filename log output.
 
@@ -1040,8 +1043,6 @@ begin
 end;
 
 function LoadOpenGl : Boolean;
-type
- PPointer = ^Pointer;
 var
  I: Integer;
  P: Pointer;
@@ -1115,8 +1116,6 @@ begin
 end;
 
 procedure UnloadOpenGl;
-type
- PPointer = ^Pointer;
 var
  I: Integer;
 begin

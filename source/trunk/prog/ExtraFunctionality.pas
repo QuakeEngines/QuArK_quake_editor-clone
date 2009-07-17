@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.20  2009/07/15 10:54:51  danielpharos
+Added missing string handling functions for Delphi 5 and older.
+
 Revision 1.19  2009/07/15 10:38:01  danielpharos
 Updated website link.
 
@@ -95,6 +98,9 @@ function CompareMem(P1, P2: Pointer; Length: Integer): Boolean; assembler;
 {$endif}
 
 {$ifndef Delphi6orNewerCompiler} // Pre-dates Delphi 6
+type
+  PPointer = ^Pointer;
+
 { IsPathDelimiter returns True if the character at byte S[Index]
   is a PathDelimiter ('\' or '/'), and it is not a MBCS lead or trail byte. }
 function IsPathDelimiter(const S: string; Index: Integer): Boolean;

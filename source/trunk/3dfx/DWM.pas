@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2009/07/15 10:38:06  danielpharos
+Updated website link.
+
 Revision 1.3  2009/02/21 17:06:18  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -52,7 +55,7 @@ procedure UnloadDWM;
 
 implementation
 
-//uses ;
+uses ExtraFunctionality;
 
 const
   DWMDLL_FuncList : array[0..1] of
@@ -70,8 +73,6 @@ var
   DWMLib: THandle;
 
 function LoadDWM : Boolean;
-type
- PPointer = ^Pointer;
 var
  I: Integer;
  P: Pointer;

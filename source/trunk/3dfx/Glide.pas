@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.21  2009/07/15 10:38:06  danielpharos
+Updated website link.
+
 Revision 1.20  2009/07/10 09:21:10  danielpharos
 Added some loaded DLL filename log output.
 
@@ -1208,7 +1211,7 @@ procedure UnloadGlide;
 
 implementation
 
-uses QkExceptions, QkDummyWindow, QkApplPaths, Logging, SystemDetails;
+uses QkExceptions, QkDummyWindow, QkApplPaths, Logging, SystemDetails, ExtraFunctionality;
 
 type
   TFuncRequirement =  { Specifies which DLL, the function should exist in: }
@@ -1289,8 +1292,6 @@ end;
 function LoadGlide(const LibName, SearchDir: String) : Boolean;
 const
   softgQuArK_Identifier_FuncName = '_softgQuArK@0'; { Function-name which identifices that it is the QRKSOFTG.DLL thats loaded }
-type
-  PPointer = ^Pointer;
 var
   I: Integer;
   P: Pointer;
