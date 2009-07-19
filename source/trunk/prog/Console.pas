@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.20  2009/07/15 10:38:01  danielpharos
+Updated website link.
+
 Revision 1.19  2009/04/30 18:28:27  danielpharos
 Fixed silly copy-paste mistake.
 
@@ -76,6 +79,8 @@ added cvs headers
 }
 
 unit Console;
+
+{$I DelphiVer.inc}
 
 interface
 
@@ -146,7 +151,7 @@ implementation
 
 {$R *.DFM}
 
-uses Qk1, QkObjects, Quarkx, PyProcess, Setup, QkApplPaths;
+uses Qk1, QkObjects, Quarkx, PyProcess, Setup, QkApplPaths, ExtraFunctionality;
 
 var
   ConsoleFile: TextFile;
@@ -187,7 +192,9 @@ begin
   FullFilename:=ConcatPaths([GetQPath(pQuArK), ConsoleFilename]);
   {$I-}
   AssignFile(ConsoleFile, FullFilename);
+  {$IFDEF Delphi6orNewerCompiler}
   SetLineBreakStyle(ConsoleFile, tlbsCRLF);
+  {$ENDIF}
   if not FileExists(FullFilename) then
     Rewrite(ConsoleFile)
   else

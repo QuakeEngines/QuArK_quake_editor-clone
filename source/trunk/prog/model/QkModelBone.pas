@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.25  2009/07/15 10:38:06  danielpharos
+Updated website link.
+
 Revision 1.24  2009/04/28 20:54:03  cdunde
 Model Editor Bone Rebuild merge to HEAD.
 Complete change of bone system.
@@ -166,7 +169,7 @@ type
 
 implementation
 
-uses qk3d, pymath, quarkx, QkExceptions, QkObjectClassList, QkMiscGroup;
+uses qk3d, pymath, quarkx, QkExceptions, QkObjectClassList, QkMiscGroup, ExtraFunctionality;
 
  {------------------------}
 

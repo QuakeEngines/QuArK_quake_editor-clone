@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2009/07/15 10:38:01  danielpharos
+Updated website link.
+
 Revision 1.5  2009/02/27 12:37:51  danielpharos
 Added missing FormatName's to some QImage descendants, and fixed VTF reading JPG settings (copy-paste bug).
 
@@ -60,7 +63,7 @@ type
 
 implementation
 
-uses Quarkx, QkExceptions, QkObjectClassList;
+uses Quarkx, QkExceptions, QkObjectClassList, ExtraFunctionality;
 
 type
  TFtxHeader = record

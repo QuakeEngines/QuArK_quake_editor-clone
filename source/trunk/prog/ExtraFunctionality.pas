@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.21  2009/07/17 10:52:09  danielpharos
+Moved PPointer to ExtraFunctionality.
+
 Revision 1.20  2009/07/15 10:54:51  danielpharos
 Added missing string handling functions for Delphi 5 and older.
 
@@ -99,6 +102,8 @@ function CompareMem(P1, P2: Pointer; Length: Integer): Boolean; assembler;
 
 {$ifndef Delphi6orNewerCompiler} // Pre-dates Delphi 6
 type
+  PByte = ^Byte;
+  PInteger = ^Integer;
   PPointer = ^Pointer;
 
 { IsPathDelimiter returns True if the character at byte S[Index]
@@ -113,6 +118,7 @@ const
   PathDelim  = {$IFDEF MSWINDOWS} '\'; {$ELSE} '/'; {$ENDIF}
   DriveDelim = {$IFDEF MSWINDOWS} ':'; {$ELSE} '';  {$ENDIF}
   PathSep    = {$IFDEF MSWINDOWS} ';'; {$ELSE} ':'; {$ENDIF}
+  sLineBreak = {$IFDEF LINUX} #10 {$ENDIF} {$IFDEF MSWINDOWS} #13#10 {$ENDIF};
 
 function StrToFloatDef(const S: String; const Default: Extended) : Extended;
 
