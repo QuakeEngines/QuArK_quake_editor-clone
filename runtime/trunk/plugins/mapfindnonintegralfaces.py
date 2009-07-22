@@ -171,7 +171,7 @@ def integralizeFaces(m):
     editor.invalidateviews()
         
 
-
+import quarkpy.mapsearch
 quarkpy.mapsearch.items.append(qmenu.item('Find &Non-integral Faces', findNonIntegralFaces,
  "|Find Non-integral Faces:\n\nThis finds faces that don't have integral threepoints.\n\nUse integralize Selected Faces on the command menu to try to automatically fix them.\n\nIf you want a particular group to be allowed to contain faces with non-integral threepoints, give it a nonintegral specific with a value such as 1.|intro.mapeditor.menu.html#searchmenu"))
 
@@ -184,6 +184,9 @@ quarkpy.mapcommands.items.append(qmenu.item('Integralize Selected Faces', integr
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.8  2005/10/15 00:49:51  cdunde
+# To reinstate headers and history
+#
 # Revision 1.5  2003/03/24 08:57:15  cdunde
 # To update info and link to infobase
 #
