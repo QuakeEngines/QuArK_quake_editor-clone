@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.488  2009/07/06 10:14:02  danielpharos
+//Auto-remove NotInstalled games from the Configuration window.
+//
 //Revision 1.487  2009/06/24 14:30:11  danielpharos
 //Added option for color dithering in OpenGL.
 //
@@ -4540,7 +4543,7 @@ QQRKSRC1
       }
       AnimationFPS: =
       {
-        Txt = "Fames Per Second"
+        Txt = "Frames Per Second"
         Typ = "EF1"    // Edit Float, 1 value
         Min = '0'
       }
