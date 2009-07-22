@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.6  2009/06/24 20:32:22  cdunde
+//Another one for the teleporter by hardkore.
+//
 //Revision 1.5  2009/06/14 23:02:31  cdunde
 //Another one for the teleporter by hardkore.
 //
@@ -1956,6 +1959,12 @@ QQRKSRC1
     Help = "Ammo for Thunderbolt."
     bbox='0 0 0 32 32 56'
     mdl="maps/b_batt0.bsp"
+    spawnflags: =
+    {Txt="&"
+    Typ="X1"
+    Cap="big"
+    Hint="Big Box of Rockets"
+    }
     }
 
             //Monsters
