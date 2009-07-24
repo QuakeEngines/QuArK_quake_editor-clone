@@ -524,43 +524,6 @@ def map_uvw(file, idnt):
 
 def write_mesh(self, file, component, exp_list, matTable, total):
     global Colidnt
-    if self.colfile is not None:
-        # Collision file header section.
-        self.colfile.write('CM "1.00"\n\n')
-        self.colfile.write('0\n\n')
-        name = self.filename.replace("\\", "/").split("/models/", 1)[1]
-        name = "models/" + name
-        self.colfile.write('collisionModel "%s" {\n' % (name))
-        # Collision file vertices section.
-        vertices_count = 9 # Replace hard coded variable with len count of vertices.
-        self.colfile.write('%svertices { /* numVertices = */ %d\n' % ((ColTab*Colidnt), vertices_count))
-        # Put for loop here to write the vertices section.
-        self.colfile.write('%s}\n' % ((ColTab*Colidnt)))
-        # Collision file edges section.
-        edges_count = 17 # Replace hard coded variable with len count of edges.
-        self.colfile.write('%sedges { /* numEdges = */ %d\n' % ((ColTab*Colidnt), edges_count))
-        # Put for loop here to write the edges section.
-        self.colfile.write('%s}\n' % ((ColTab*Colidnt)))
-        # Collision file nodes section.
-        self.colfile.write('%snodes {\n' % ((ColTab*Colidnt)))
-        self.colfile.write('%s( -1 0 )\n' % ((ColTab*Colidnt)))
-        self.colfile.write('%s}\n' % ((ColTab*Colidnt)))
-        # Collision file polygons section.
-        self.colfile.write('%spolygons {\n' % ((ColTab*Colidnt)))
-        # Put for loop here to write the polygons section.
-        self.colfile.write('%s}\n' % ((ColTab*Colidnt)))
-        # Collision file brushes section.
-        self.colfile.write('%sbrushes {\n' % ((ColTab*Colidnt)))
-        # Put for loop here to write the brushes section.
-        brushes_count = 5 # Replace hard coded variable with len count of brushes.
-        self.colfile.write('%s%d {\n' % ((ColTab*Colidnt), brushes_count))
-        Colidnt = Colidnt + 1
-        # Put for loop within above loop here to write the brushes for EACH brush section.
-        Colidnt = Colidnt - 1
-        self.colfile.write('%s}\n' % ((ColTab*Colidnt)))
-        self.colfile.write('%s}\n' % ((ColTab*Colidnt)))
-        self.colfile.write('}\n') # End of Collision file.
-    #    self.colfile.write("%s*MESH_VERTEX %d\t%.4f\t%.4f\t%.4f\n" % ((Tab*idnt), vIndex, vertex[0], vertex[1], vertex[2]))
 
     for current_container in exp_list:
         TransTable = {'SizeX': 1, 'SizeY': 1, 'SizeZ': 1}
@@ -661,7 +624,7 @@ def write_mesh(self, file, component, exp_list, matTable, total):
         file.write("%s*MESH_NUMFACES %i\n" % ((Tab*idnt), count['face']))
 
         idnt = 2
-        mesh_vertexList(file, idnt, verts, count)
+        mesh_vertexList(self, file, idnt, verts, count)
         idnt = 2
         mesh_faceList(self, file, idnt, me, materials, sGroups, faces, matTable, hasTable, count, mat_ref)
 
@@ -719,6 +682,124 @@ def write_mesh(self, file, component, exp_list, matTable, total):
         # Close *GEOMOBJECT
         file.write("}\n")
 
+    # Section below writes the .cm collision model file if set to do so.
+    if self.colfile is not None:
+        # Collision file header section.
+        self.colfile.write('CM "1.00"\n\n')
+        self.colfile.write('0\n\n')
+        name = self.filename.replace("\\", "/").split("/models/", 1)[1]
+        name = "models/" + name
+        self.colfile.write('collisionModel "%s" {\n' % (name))
+        # Collision file vertices section.
+        vertices_count = 0
+        for group in self.colvertices:
+            vertices_count = vertices_count + len(group)
+        self.colfile.write('%svertices { /* numVertices = */ %d\n' % ((ColTab*Colidnt), vertices_count))
+        # Put for loop here to write the vertices section.
+        vertex_counter = 0
+        output_vertices = []
+        for group in range(len(self.colvertices)):
+            for vertex in range(len(self.colvertices[group])):
+                vtx = self.colvertices[group][vertex]
+                X, Y, Z = vtx[0], vtx[1], vtx[2]
+                X =int(round(X))
+                Y =int(round(Y))
+                Z =int(round(Z))
+                output_vertices = output_vertices + [[X, Y, Z]]
+                self.colfile.write('%s/* %d */ ( %d %d %d )\n' % ((ColTab*Colidnt), (vertex_counter), X, Y, Z))
+                vertex_counter = vertex_counter + 1
+        self.colfile.write('%s}\n' % ((ColTab*Colidnt)))
+        # Collision file edges section.
+        edges_count = len(self.edges)
+        self.colfile.write('%sedges { /* numEdges = */ %d\n' % ((ColTab*Colidnt), edges_count))
+        for edge in range(len(self.edges)):
+            if edge == 0:
+                self.colfile.write('%s/* %d */ ( %d %d ) 0 0\n' % ((ColTab*Colidnt), edge, self.edges[edge][0], self.edges[edge][1]))
+            else:
+                self.colfile.write('%s/* %d */ ( %d %d ) 0 2\n' % ((ColTab*Colidnt), edge, self.edges[edge][0], self.edges[edge][1]))
+        self.colfile.write('%s}\n' % ((ColTab*Colidnt)))
+        # Collision file nodes section.
+        self.colfile.write('%snodes {\n' % ((ColTab*Colidnt)))
+        self.colfile.write('%s( -1 0 )\n' % ((ColTab*Colidnt)))
+        self.colfile.write('%s}\n' % ((ColTab*Colidnt)))
+        # Collision file polygons section.
+        self.colfile.write('%spolygons {\n' % ((ColTab*Colidnt)))
+        for face in range(len(self.polygons)):
+            poly = self.polygons[face]
+            edges = len(poly[0])
+            face_verts = [[], [], []]
+            face_vert_nr = 0
+            min = [10000, 10000, 10000]
+            max = [-10000, -10000, -10000]
+            for edge in range(edges):
+                # Only check first vertex of edge, since other vertex will come through with next edge
+                if poly[0][edge] < 0:
+                    vertex_to_check = self.edges[abs(poly[0][edge])][1]
+                else:
+                    vertex_to_check = self.edges[poly[0][edge]][0]
+                if face_vert_nr < 2:
+                    face_verts[face_vert_nr] = output_vertices[vertex_to_check]
+                    face_vert_nr += 1
+                else:
+                    face_verts[face_vert_nr] = output_vertices[vertex_to_check]
+                for i in [0, 1, 2]:
+                    if output_vertices[vertex_to_check][i] < min[i]:
+                        min[i] = output_vertices[vertex_to_check][i]
+                    if output_vertices[vertex_to_check][i] > max[i]:
+                        max[i] = output_vertices[vertex_to_check][i]
+            for i in [0, 1, 2]:
+                face_verts[i] = quarkx.vect(face_verts[i][0], face_verts[i][1], face_verts[i][2])
+            face_normal = (face_verts[1] - face_verts[0]) ^ (face_verts[2] - face_verts[0])
+            face_normal = face_normal.normalized
+            face_normal = face_normal.tuple
+            dist_to_origin = 0
+            for i in [0, 1, 2]:
+                dist_to_origin = dist_to_origin + ((((face_normal[i] * min[i]) + (face_normal[i] * max[i])) / 2) ** 2)
+            dist_to_origin = math.sqrt(dist_to_origin)
+            self.colfile.write('%s%d ( %d %d %d %d ) ( %f %f %f ) %f ( %f %f %f ) ( %f %f %f ) "textures/common/moveableclipmodel"\n' % ((ColTab*Colidnt), edges, poly[0][0], poly[0][1], poly[0][2], poly[0][3], face_normal[0], face_normal[1], face_normal[2], dist_to_origin, min[0], min[1], min[2], max[0], max[1], max[2]))
+            self.polygons[face] = self.polygons[face] + [[face_normal[0], face_normal[1], face_normal[2]]] + [[dist_to_origin]] + [[[min[0], min[1], min[2]], [max[0], max[1], max[2]]]]
+        self.colfile.write('%s}\n' % ((ColTab*Colidnt)))
+        # Collision file brushes section.
+        self.colfile.write('%sbrushes {\n' % ((ColTab*Colidnt)))
+        def startpoly(face, pmin, pmax):
+            global Colidnt
+            brushes_count = 6 # Hard coded variable since this code for QuArK only makes cube polys.
+            self.colfile.write('%s%d {\n' % ((ColTab*Colidnt), brushes_count))
+            Colidnt = Colidnt + 1
+            self.colfile.write('%s( 0 0 1 ) %f\n' % ((ColTab*Colidnt), pmax[2]))
+        def finishpoly(face, pmin, pmax):
+            global Colidnt
+            if face > 5:
+                self.colfile.write('%s( 0 0 -1 ) %f\n' % ((ColTab*Colidnt), pmin[2]))
+            Colidnt = Colidnt - 1
+            self.colfile.write('%s} ( %f %f %f ) ( %f %f %f ) "solid"\n' % ((ColTab*Colidnt), pmin[0], pmin[1], pmin[2], pmax[0], pmax[1], pmax[2]))
+        polycount = 0
+        prevpoly = -1
+        facecount = 4
+        for face in range(len(self.polygons)-1):
+            poly = self.polygons[face]
+            if polycount != prevpoly:
+                pmin = [10000., 10000., 10000.]
+                pmax = [-10000., -10000., -10000.]
+                for face2 in range(face, face+4):
+                    poly2 = self.polygons[face2]
+                    for i in [0, 1, 2]:
+                        if poly2[3][0][i] < pmin[i]:
+                            pmin[i] = poly2[3][0][i]
+                        if poly2[3][1][i] > pmax[i]:
+                            pmax[i] = poly2[3][1][i]
+                prevpoly = polycount
+                startpoly(face, pmin, pmax)
+            self.colfile.write('%s( %f %f %f ) %f\n' % ((ColTab*Colidnt), poly[1][0], poly[1][1], poly[1][2], poly[2][0]))
+            if face == facecount:
+                # write the last face of this poly here
+                finishpoly(face, pmin, pmax)
+                if face != len(self.polygons)-2:
+                    facecount = facecount + 4
+                    polycount = polycount + 1
+        self.colfile.write('%s}\n' % ((ColTab*Colidnt)))
+        self.colfile.write('}\n') # End of Collision file.
+
 
 def mesh_matrix(file, idnt, obj, nameMe, TransTable):
     bbox = quarkx.boundingboxof(obj.dictitems['Frames:fg'].subitems[0].vertices)
@@ -757,25 +838,260 @@ def mesh_matrix(file, idnt, obj, nameMe, TransTable):
     file.write("%s}\n" % (Tab*idnt))
 
 
-def mesh_vertexList(file, idnt, verts, count):
+def mesh_vertexList(self, file, idnt, verts, count):
     file.write("%s*MESH_VERTEX_LIST {\n" % (Tab*idnt))
 
     idnt += 1
 
    # Blender.Window.DrawProgressBar(0.0, "Writing vertices")
 
+    # Setup for collision file data.
+    Zminmax = [10000., -10000.]
+    ZmaxXminmax = [10000., -10000.]
+    ZmaxYminmax = [10000., -10000.]
+    ZminXminmax = [10000., -10000.]
+    ZminYminmax = [10000., -10000.]
+
     for current_vert in range(len(verts)):
-        vIndex = current_vert
         vertex = verts[current_vert].tuple
 
-       # if (vIndex % 1000) == 0:
-       #     Blender.Window.DrawProgressBar((vIndex+1.0) / count['vert'], "Writing vertices")
+       # if (current_vert % 1000) == 0:
+       #     Blender.Window.DrawProgressBar((current_vert+1.0) / count['vert'], "Writing vertices")
 
-        file.write("%s*MESH_VERTEX %d\t%.4f\t%.4f\t%.4f\n" % ((Tab*idnt), vIndex, vertex[0], vertex[1], vertex[2]))
+        file.write("%s*MESH_VERTEX %d\t%.4f\t%.4f\t%.4f\n" % ((Tab*idnt), current_vert, vertex[0], vertex[1], vertex[2]))
+        # Section below collects max & min Z data for the collision model .cm file if selected to write one.
+        if self.colfile is not None:
+            if vertex[2] >= Zminmax[1]:
+                Zminmax[1] = vertex[2]
+            if vertex[2] <= Zminmax[0]:
+                Zminmax[0] = vertex[2]
 
     idnt -= 1
     file.write("%s}\n" % (Tab*idnt))
 
+    # Section below builds the data for the collision model .cm file if selected to write one.
+    if self.colfile is not None:
+        # Creates the "vertices" data section of the collision file.
+        for vert in verts:
+            vertex = vert.tuple
+            if vertex[2] <= Zminmax[0] + 4.0:
+                if vertex[0] < ZminXminmax[0]:
+                    ZminXminmax[0] = vertex[0]
+                if vertex[0] > ZminXminmax[1]:
+                    ZminXminmax[1] = vertex[0]
+                if vertex[1] < ZminYminmax[0]:
+                    ZminYminmax[0] = vertex[1]
+                if vertex[1] > ZminYminmax[1]:
+                    ZminYminmax[1] = vertex[1]
+            if vertex[2] >= Zminmax[1] - 4.0:
+                if vertex[0] < ZmaxXminmax[0]:
+                    ZmaxXminmax[0] = vertex[0]
+                if vertex[0] > ZmaxXminmax[1]:
+                    ZmaxXminmax[1] = vertex[0]
+                if vertex[1] < ZmaxYminmax[0]:
+                    ZmaxYminmax[0] = vertex[1]
+                if vertex[1] > ZmaxYminmax[1]:
+                    ZmaxYminmax[1] = vertex[1]
+        Zsection = (Zminmax[1] - Zminmax[0]) / 3.0
+        Zblock0 = round(Zminmax[0])
+        Zblock1 = Zminmax[0] + Zsection
+        Zblock2 = Zminmax[0] + (Zsection*2)
+        Zblock3 = round(Zminmax[1])
+        Zblock0vtxs = []
+        Zblock1vtxs = []
+        Zblock2vtxs = []
+        Zblock3vtxs = []
+        for vert in verts:
+            vertex = vert.tuple
+            if vertex[2] <= Zblock0:
+                Zblock0vtxs = Zblock0vtxs + [vert]
+            if vertex[2] > Zblock0 and vertex[2] <= Zblock1:
+                Zblock1vtxs = Zblock1vtxs + [vert]
+            if vertex[2] > Zblock1 and vertex[2] <= Zblock2:
+                Zblock2vtxs = Zblock2vtxs + [vert]
+            if vertex[2] > Zblock2 and vertex[2] <= Zblock3:
+                Zblock3vtxs = Zblock3vtxs + [vert]
+        Zblock0Xminmax = [10000., -10000.]
+        Zblock0XminYminmax = [10000., -10000.]
+        Zblock0XmaxYminmax = [10000., -10000.]
+        for vert in Zblock0vtxs:
+            vertex = vert.tuple
+            if vertex[0] <= Zblock0Xminmax[0]:
+                Zblock0Xminmax[0] = vertex[0]
+                if vertex[1] < Zblock0XminYminmax[0]:
+                    Zblock0XminYminmax[0] = vertex[1]
+                if vertex[1] > Zblock0XminYminmax[1]:
+                    Zblock0XminYminmax[1] = vertex[1]
+            if vertex[0] >= Zblock0Xminmax[1]:
+                Zblock0Xminmax[1] = vertex[0]
+                if vertex[1] < Zblock0XmaxYminmax[0]:
+                    Zblock0XmaxYminmax[0] = vertex[1]
+                if vertex[1] > Zblock0XmaxYminmax[1]:
+                    Zblock0XmaxYminmax[1] = vertex[1]
+        if Zblock0Xminmax[0] > ZminXminmax[0]:
+            Zblock0Xminmax[0] = ZminXminmax[0]
+        if Zblock0Xminmax[1] < ZminXminmax[1]:
+            Zblock0Xminmax[1] = ZminXminmax[1]
+        if Zblock0XminYminmax[0] > ZminYminmax[0]:
+            Zblock0XminYminmax[0] = ZminYminmax[0]
+        if Zblock0XminYminmax[1] < ZminYminmax[1]:
+            Zblock0XminYminmax[1] = ZminYminmax[1]
+        if Zblock0XmaxYminmax[0] > ZminYminmax[0]:
+            Zblock0XmaxYminmax[0] = ZminYminmax[0]
+        if Zblock0XmaxYminmax[1] < ZminYminmax[1]:
+            Zblock0XmaxYminmax[1] = ZminYminmax[1]
+        Zblock1Xminmax = [10000., -10000.]
+        Zblock1Yminmax = [10000., -10000.]
+        for vert in Zblock1vtxs:
+            vertex = vert.tuple
+            if vertex[0] <= Zblock1Xminmax[0]:
+                Zblock1Xminmax[0] = vertex[0]
+            if vertex[0] >= Zblock1Xminmax[1]:
+                Zblock1Xminmax[1] = vertex[0]
+            if vertex[1] < Zblock1Yminmax[0]:
+                Zblock1Yminmax[0] = vertex[1]
+            if vertex[1] > Zblock1Yminmax[1]:
+                Zblock1Yminmax[1] = vertex[1]
+        Zblock2Xminmax = [10000., -10000.]
+        Zblock2Yminmax = [10000., -10000.]
+        for vert in Zblock2vtxs:
+            vertex = vert.tuple
+            if vertex[0] <= Zblock2Xminmax[0]:
+                Zblock2Xminmax[0] = vertex[0]
+            if vertex[0] >= Zblock2Xminmax[1]:
+                Zblock2Xminmax[1] = vertex[0]
+            if vertex[1] < Zblock2Yminmax[0]:
+                Zblock2Yminmax[0] = vertex[1]
+            if vertex[1] > Zblock2Yminmax[1]:
+                Zblock2Yminmax[1] = vertex[1]
+        Zblock3Xminmax = [10000., -10000.]
+        Zblock3Yminmax = [10000., -10000.]
+        for vert in Zblock3vtxs:
+            vertex = vert.tuple
+            if vertex[0] <= Zblock3Xminmax[0]:
+                Zblock3Xminmax[0] = vertex[0]
+            if vertex[0] >= Zblock3Xminmax[1]:
+                Zblock3Xminmax[1] = vertex[0]
+            if vertex[1] < Zblock3Yminmax[0]:
+                Zblock3Yminmax[0] = vertex[1]
+            if vertex[1] > Zblock3Yminmax[1]:
+                Zblock3Yminmax[1] = vertex[1]
+        self.colvertices = self.colvertices + [[[Zblock0Xminmax[0],Zblock0XminYminmax[0],Zblock0], [Zblock0Xminmax[0],Zblock0XminYminmax[1],Zblock0], [Zblock0Xminmax[1],Zblock0XmaxYminmax[1],Zblock0], [Zblock0Xminmax[1],Zblock0XmaxYminmax[0],Zblock0]]]
+        if Zblock2Xminmax[0] == 10000.:
+            Zblock2Xminmax[0] = Zblock3Xminmax[0]
+        if Zblock2Xminmax[1] == -10000.:
+            Zblock2Xminmax[1] = Zblock3Xminmax[1]
+        if Zblock2Yminmax[0] == 10000.:
+            Zblock2Yminmax[0] = Zblock3Yminmax[0]
+        if Zblock2Yminmax[1] == -10000.:
+            Zblock2Yminmax[1] = Zblock3Yminmax[1]
+
+        if Zblock1Xminmax[0] == 10000.:
+            Zblock1Xminmax[0] = Zblock2Xminmax[0]
+        if Zblock1Xminmax[1] == -10000.:
+            Zblock1Xminmax[1] = Zblock2Xminmax[1]
+        if Zblock1Yminmax[0] == 10000.:
+            Zblock1Yminmax[0] = Zblock2Yminmax[0]
+        if Zblock1Yminmax[1] == -10000.:
+            Zblock1Yminmax[1] = Zblock2Yminmax[1]
+
+        self.colvertices = self.colvertices + [[[Zblock1Xminmax[0],Zblock1Yminmax[0],Zblock1], [Zblock1Xminmax[0],Zblock1Yminmax[1],Zblock1], [Zblock1Xminmax[1],Zblock1Yminmax[1],Zblock1], [Zblock1Xminmax[1],Zblock1Yminmax[0],Zblock1]]]
+        self.colvertices = self.colvertices + [[[Zblock2Xminmax[0],Zblock2Yminmax[0],Zblock2], [Zblock2Xminmax[0],Zblock2Yminmax[1],Zblock2], [Zblock2Xminmax[1],Zblock2Yminmax[1],Zblock2], [Zblock2Xminmax[1],Zblock2Yminmax[0],Zblock2]]]
+        self.colvertices = self.colvertices + [[[Zblock3Xminmax[0],Zblock3Yminmax[0],Zblock3], [Zblock3Xminmax[0],Zblock3Yminmax[1],Zblock3], [Zblock3Xminmax[1],Zblock3Yminmax[1],Zblock3], [Zblock3Xminmax[1],Zblock3Yminmax[0],Zblock3]]]
+
+        # Stores the "edges" data section of the collision file.
+        def record(self, group, edgelist, add1, add2, vtx=None):
+            if (not [add1, add2] in self.edges) and (not [add2, add1] in self.edges):
+                self.edges = self.edges + [[add1, add2]]
+                edgelist = edgelist + [len(self.edges)-1]
+            else:
+                for edge in range(len(self.edges)):
+                    if [add1, add2] == self.edges[edge]:
+                        edgelist = edgelist + [edge]
+                        break
+                    if [add2, add1] == self.edges[edge]:
+                        edgelist = edgelist + [-edge]
+                        break
+            if len(edgelist) == 4:
+                self.polygons = self.polygons + [[edgelist]]
+                edgelist.reverse()
+                temp = [[]]
+                for edge in edgelist:
+                    if edge < 0:
+                        edge = edge*-1
+                        edge = self.edges[edge]
+                        edge.reverse()
+                        temp[0] = temp[0] + [self.polytemplist[edge[0]]]
+                        edge.reverse()
+                    else:
+                        edge = self.edges[edge]
+                        temp[0] = temp[0] + [self.polytemplist[edge[0]]]
+                if len(temp[0]) != 0:
+                    self.polydata[group-1] = self.polydata[group-1] + temp
+                edgelist.reverse()
+                edgelist = []
+                if (group == len(self.colvertices)-1) and (vtx is not None):
+                    edgelist = [-(len(self.edges)-1), -(len(self.edges)-3), -(len(self.edges)-5), -(len(self.edges)-7)]
+                    self.polygons = self.polygons + [[edgelist]]
+                    edgelist.reverse()
+                    temp = [[]]
+                    for edge in edgelist:
+                        if edge < 0:
+                            edge = edge*-1
+                            edge = self.edges[edge]
+                            edge.reverse()
+                            temp[0] = temp[0] + [self.polytemplist[edge[0]]]
+                            edge.reverse()
+                        else:
+                            edge = self.edges[edge]
+                            temp[0] = temp[0] + [self.polytemplist[edge[0]]]
+                    if len(temp[0]) != 0:
+                        self.polydata = self.polydata + [[]]
+                        self.polydata[group] = self.polydata[group] + temp
+                    edgelist.reverse()
+                    edgelist = []
+            return edgelist
+        for group in range(len(self.colvertices)):
+            for vtx in self.colvertices[group]:
+                self.polytemplist = self.polytemplist + [vtx]
+        for group in range(len(self.colvertices)):
+            # Creates the "edges" data section of the collision file.
+            if group == 0:
+                self.edges = self.edges + [[0, 0], [0, 1], [1, 2], [2, 3], [3, 0]]
+                self.polygons = self.polygons + [[[1,2,3,4]]]
+                self.polydata = self.polydata + [[[self.colvertices[group][3],self.colvertices[group][2],self.colvertices[group][1],self.colvertices[group][0]]]]
+                continue
+            edgelist = []
+            for vtx in range(len(self.colvertices[group])):
+                if vtx == 3:
+                    add1 = vtx + 4*(group-1) #          3 :             7  :                11
+                    add2 = vtx + 4*group     #          7 :             11 :                15
+                    edgelist = record(self, group, edgelist, add1, add2)
+                    add1 = add2              #          7 :             11 :                15
+                    add2 = add1 - 3          #          4 :             8  :                12
+                    edgelist = record(self, group, edgelist, add1, add2)
+                    add1 = add2              #          4 :             8  :                12
+                    add2 = add1 - 4          #          0 :             4  :                8
+                    edgelist = record(self, group, edgelist, add1, add2)
+                    add1 = add2              #          0 :             4  :                8
+                    add2 = add1 + 3          #          3 :             7  :                11
+                    edgelist = record(self, group, edgelist, add1, add2, vtx)
+                else:
+                    add1 = vtx + 4*(group-1) # 0, 1, 2,  :  4, 5, 6    :   8,   9, 10
+                    add2 = vtx + 4*group     # 4, 5, 6,  :  8, 9, 10  :  12, 13, 14
+                    edgelist = record(self, group, edgelist, add1, add2)
+                    add1 = add2              # 4, 5, 6,  :  8, 9, 10  :  12, 13, 14
+                    add2 = add1 + 1          # 5, 6, 7,  :  9, 10, 11 :  13, 14, 15
+                    edgelist = record(self, group, edgelist, add1, add2)
+                    add1 = add2              # 5, 6, 7,  :  9, 10, 11 :  13, 14, 15
+                    add2 = add1 - 4          # 1, 2, 3,  :  5,  6,  7  :   9, 10,  11
+                    edgelist = record(self, group, edgelist, add1, add2)
+                    add1 = add2              # 1, 2, 3,  :  5,  6,  7  :   9, 10,  11
+                    add2 = add1 - 1          # 0, 1, 2,  :  4,  5,  6  :   8,   9, 10
+                    edgelist = record(self, group, edgelist, add1, add2)
+            if group != len(self.colvertices)-1:
+                self.polydata = self.polydata + [[]]
+                    
 
 def mesh_faceList(self, file, idnt, me, materials, sGroups, faces, matTable, hasTable, count, mat_ref):
     file.write("%s*MESH_FACE_LIST {\n" % (Tab*idnt))
@@ -1298,6 +1614,12 @@ class ExportSettingsDlg(quarkpy.qmacro.dialogbox):
         self.asefile = None
         self.colfile = None
         self.colfilename = None
+        self.colvertices = []
+        self.edges = []
+        self.polygons = []
+        self.polydata = []
+        self.polytemplist = []
+        self.brushes = []
         self.exportpath = filename.replace('\\', '/')
         self.exportpath = self.exportpath.rsplit('/', 1)[0]
         src = quarkx.newobj(":")
@@ -1379,6 +1701,9 @@ def UIExportDialog(root, filename, editor):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.2  2009/07/13 23:55:03  cdunde
+# Start of collision model file creation support.
+#
 # Revision 1.1  2009/07/08 18:53:39  cdunde
 # Added ASE model exporter and completely revamped the ASE importer.
 #
