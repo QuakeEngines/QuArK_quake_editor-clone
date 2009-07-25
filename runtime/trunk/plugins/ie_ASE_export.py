@@ -892,112 +892,91 @@ def mesh_vertexList(self, file, idnt, verts, count):
                     ZmaxYminmax[0] = vertex[1]
                 if vertex[1] > ZmaxYminmax[1]:
                     ZmaxYminmax[1] = vertex[1]
-        Zsection = (Zminmax[1] - Zminmax[0]) / 3.0
-        Zblock0 = round(Zminmax[0])
-        Zblock1 = Zminmax[0] + Zsection
-        Zblock2 = Zminmax[0] + (Zsection*2)
-        Zblock3 = round(Zminmax[1])
-        Zblock0vtxs = []
-        Zblock1vtxs = []
-        Zblock2vtxs = []
-        Zblock3vtxs = []
+        Zsection = (Zminmax[1] - Zminmax[0]) / int(float(self.src['ColSections']))
+        Zblocks = {}
+        Zblocks["Zblock0"] = []
+        # Zblock 0 is a list that contain that "groups" or "sections" [heigth value, [list of its vertexes], [Xminmax values], [XminYminmax values], [XmaxYminmax values]]
+        Zblocks["Zblock0"] = Zblocks["Zblock0"] + [round(Zminmax[0])] + [[]] + [[10000., -10000.]] + [[10000., -10000.]] + [[10000., -10000.]]
+        # Each Zblock is a list that contain that "groups" or "sections" [heigth value, [list of its vertexes], [Xminmax values], [Yminmax values]]
+        for section in range(1, int(float(self.src['ColSections']))):
+            name = "Zblock" + str(section)
+            Zblocks[name] = []
+            Zblocks[name] = Zblocks[name] + [Zminmax[0] + (Zsection*section)] + [[]] + [[10000., -10000.]] + [[10000., -10000.]]
+        Zblock0 = round(Zminmax[0]) # remove
+        Zblock1 = Zminmax[0] + Zsection # remove
+        Zblock2 = Zminmax[0] + (Zsection*2) # remove
+        Zblock3 = round(Zminmax[1]) # remove
+        name = "Zblock" + str(int(float(self.src['ColSections'])))
+        Zblocks[name] = []
+        # Last Zblock is a list that contain that "groups" or "sections" [heigth value, [list of its vertexes], [Xminmax values], [Yminmax values]]
+        Zblocks[name] = Zblocks[name] + [round(Zminmax[1])]
+        Zblocks[name] = Zblocks[name] + [[]] + [[10000., -10000.]] + [[10000., -10000.]]
+        Zblockkeys = Zblocks.keys()
+        Zblockkeys.sort()
         for vert in verts:
             vertex = vert.tuple
-            if vertex[2] <= Zblock0:
-                Zblock0vtxs = Zblock0vtxs + [vert]
-            if vertex[2] > Zblock0 and vertex[2] <= Zblock1:
-                Zblock1vtxs = Zblock1vtxs + [vert]
-            if vertex[2] > Zblock1 and vertex[2] <= Zblock2:
-                Zblock2vtxs = Zblock2vtxs + [vert]
-            if vertex[2] > Zblock2 and vertex[2] <= Zblock3:
-                Zblock3vtxs = Zblock3vtxs + [vert]
-        Zblock0Xminmax = [10000., -10000.]
-        Zblock0XminYminmax = [10000., -10000.]
-        Zblock0XmaxYminmax = [10000., -10000.]
-        for vert in Zblock0vtxs:
+            for key in range(len(Zblockkeys)):
+                if (key == 0) and (vertex[2] <= Zblocks[Zblockkeys[key]][0]):
+                    Zblocks[Zblockkeys[key]][1] = Zblocks[Zblockkeys[key]][1] + [vert]
+                    continue
+                if (vertex[2] > Zblocks[Zblockkeys[key-1]][0]) and (vertex[2] <= Zblocks[Zblockkeys[key]][0]):
+                    Zblocks[Zblockkeys[key]][1] = Zblocks[Zblockkeys[key]][1] + [vert]
+        for vert in Zblocks[Zblockkeys[0]][1]:
             vertex = vert.tuple
-            if vertex[0] <= Zblock0Xminmax[0]:
-                Zblock0Xminmax[0] = vertex[0]
-                if vertex[1] < Zblock0XminYminmax[0]:
-                    Zblock0XminYminmax[0] = vertex[1]
-                if vertex[1] > Zblock0XminYminmax[1]:
-                    Zblock0XminYminmax[1] = vertex[1]
-            if vertex[0] >= Zblock0Xminmax[1]:
-                Zblock0Xminmax[1] = vertex[0]
-                if vertex[1] < Zblock0XmaxYminmax[0]:
-                    Zblock0XmaxYminmax[0] = vertex[1]
-                if vertex[1] > Zblock0XmaxYminmax[1]:
-                    Zblock0XmaxYminmax[1] = vertex[1]
-        if Zblock0Xminmax[0] > ZminXminmax[0]:
-            Zblock0Xminmax[0] = ZminXminmax[0]
-        if Zblock0Xminmax[1] < ZminXminmax[1]:
-            Zblock0Xminmax[1] = ZminXminmax[1]
-        if Zblock0XminYminmax[0] > ZminYminmax[0]:
-            Zblock0XminYminmax[0] = ZminYminmax[0]
-        if Zblock0XminYminmax[1] < ZminYminmax[1]:
-            Zblock0XminYminmax[1] = ZminYminmax[1]
-        if Zblock0XmaxYminmax[0] > ZminYminmax[0]:
-            Zblock0XmaxYminmax[0] = ZminYminmax[0]
-        if Zblock0XmaxYminmax[1] < ZminYminmax[1]:
-            Zblock0XmaxYminmax[1] = ZminYminmax[1]
-        Zblock1Xminmax = [10000., -10000.]
-        Zblock1Yminmax = [10000., -10000.]
-        for vert in Zblock1vtxs:
-            vertex = vert.tuple
-            if vertex[0] <= Zblock1Xminmax[0]:
-                Zblock1Xminmax[0] = vertex[0]
-            if vertex[0] >= Zblock1Xminmax[1]:
-                Zblock1Xminmax[1] = vertex[0]
-            if vertex[1] < Zblock1Yminmax[0]:
-                Zblock1Yminmax[0] = vertex[1]
-            if vertex[1] > Zblock1Yminmax[1]:
-                Zblock1Yminmax[1] = vertex[1]
-        Zblock2Xminmax = [10000., -10000.]
-        Zblock2Yminmax = [10000., -10000.]
-        for vert in Zblock2vtxs:
-            vertex = vert.tuple
-            if vertex[0] <= Zblock2Xminmax[0]:
-                Zblock2Xminmax[0] = vertex[0]
-            if vertex[0] >= Zblock2Xminmax[1]:
-                Zblock2Xminmax[1] = vertex[0]
-            if vertex[1] < Zblock2Yminmax[0]:
-                Zblock2Yminmax[0] = vertex[1]
-            if vertex[1] > Zblock2Yminmax[1]:
-                Zblock2Yminmax[1] = vertex[1]
-        Zblock3Xminmax = [10000., -10000.]
-        Zblock3Yminmax = [10000., -10000.]
-        for vert in Zblock3vtxs:
-            vertex = vert.tuple
-            if vertex[0] <= Zblock3Xminmax[0]:
-                Zblock3Xminmax[0] = vertex[0]
-            if vertex[0] >= Zblock3Xminmax[1]:
-                Zblock3Xminmax[1] = vertex[0]
-            if vertex[1] < Zblock3Yminmax[0]:
-                Zblock3Yminmax[0] = vertex[1]
-            if vertex[1] > Zblock3Yminmax[1]:
-                Zblock3Yminmax[1] = vertex[1]
-        self.colvertices = self.colvertices + [[[Zblock0Xminmax[0],Zblock0XminYminmax[0],Zblock0], [Zblock0Xminmax[0],Zblock0XminYminmax[1],Zblock0], [Zblock0Xminmax[1],Zblock0XmaxYminmax[1],Zblock0], [Zblock0Xminmax[1],Zblock0XmaxYminmax[0],Zblock0]]]
-        if Zblock2Xminmax[0] == 10000.:
-            Zblock2Xminmax[0] = Zblock3Xminmax[0]
-        if Zblock2Xminmax[1] == -10000.:
-            Zblock2Xminmax[1] = Zblock3Xminmax[1]
-        if Zblock2Yminmax[0] == 10000.:
-            Zblock2Yminmax[0] = Zblock3Yminmax[0]
-        if Zblock2Yminmax[1] == -10000.:
-            Zblock2Yminmax[1] = Zblock3Yminmax[1]
+            if vertex[0] <= Zblocks[Zblockkeys[0]][2][0]:
+                Zblocks[Zblockkeys[0]][2][0] = vertex[0]
+                if vertex[1] < Zblocks[Zblockkeys[0]][3][0]:
+                    Zblocks[Zblockkeys[0]][3][0] = vertex[1]
+                if vertex[1] > Zblocks[Zblockkeys[0]][3][1]:
+                    Zblocks[Zblockkeys[0]][3][1] = vertex[1]
+            if vertex[0] >= Zblocks[Zblockkeys[0]][2][1]:
+                Zblocks[Zblockkeys[0]][2][1] = vertex[0]
+                if vertex[1] < Zblocks[Zblockkeys[0]][4][0]:
+                    Zblocks[Zblockkeys[0]][4][0] = vertex[1]
+                if vertex[1] > Zblocks[Zblockkeys[0]][4][1]:
+                    Zblocks[Zblockkeys[0]][4][1] = vertex[1]
+        if Zblocks[Zblockkeys[0]][2][0] > ZminXminmax[0]:
+            Zblocks[Zblockkeys[0]][2][0] = ZminXminmax[0]
+        if Zblocks[Zblockkeys[0]][2][1] < ZminXminmax[1]:
+            Zblocks[Zblockkeys[0]][2][1] = ZminXminmax[1]
+        if Zblocks[Zblockkeys[0]][3][0] > ZminYminmax[0]:
+            Zblocks[Zblockkeys[0]][3][0] = ZminYminmax[0]
+        if Zblocks[Zblockkeys[0]][3][1] < ZminYminmax[1]:
+            Zblocks[Zblockkeys[0]][3][1] = ZminYminmax[1]
+        if Zblocks[Zblockkeys[0]][4][0] > ZminYminmax[0]:
+            Zblocks[Zblockkeys[0]][4][0] = ZminYminmax[0]
+        if Zblocks[Zblockkeys[0]][4][1] < ZminYminmax[1]:
+            Zblocks[Zblockkeys[0]][4][1] = ZminYminmax[1]
+        for section in range(1, len(Zblockkeys)):
+            name = "Zblock" + str(section)
+            for vert in Zblocks[name][1]:
+                vertex = vert.tuple
+                if vertex[0] <= Zblocks[name][2][0]:
+                    Zblocks[name][2][0] = vertex[0]
+                if vertex[0] >= Zblocks[name][2][1]:
+                    Zblocks[name][2][1] = vertex[0]
+                if vertex[1] < Zblocks[name][3][0]:
+                    Zblocks[name][3][0] = vertex[1]
+                if vertex[1] > Zblocks[name][3][1]:
+                    Zblocks[name][3][1] = vertex[1]
+        self.colvertices = self.colvertices + [[[Zblocks[Zblockkeys[0]][2][0],Zblocks[Zblockkeys[0]][3][0],Zblock0], [Zblocks[Zblockkeys[0]][2][0],Zblocks[Zblockkeys[0]][3][1],Zblock0], [Zblocks[Zblockkeys[0]][2][1],Zblocks[Zblockkeys[0]][4][1],Zblock0], [Zblocks[Zblockkeys[0]][2][1],Zblocks[Zblockkeys[0]][4][0],Zblock0]]]
 
-        if Zblock1Xminmax[0] == 10000.:
-            Zblock1Xminmax[0] = Zblock2Xminmax[0]
-        if Zblock1Xminmax[1] == -10000.:
-            Zblock1Xminmax[1] = Zblock2Xminmax[1]
-        if Zblock1Yminmax[0] == 10000.:
-            Zblock1Yminmax[0] = Zblock2Yminmax[0]
-        if Zblock1Yminmax[1] == -10000.:
-            Zblock1Yminmax[1] = Zblock2Yminmax[1]
+        Zblockkeys.reverse()
+        for section in range(1, len(Zblockkeys)-1):
+            name = Zblockkeys[section]
+            if Zblocks[name][2][0] == 10000.:
+                Zblocks[name][2][0] = Zblocks[Zblockkeys[section-1]][2][0]
+            if Zblocks[name][2][1] == -10000.:
+                Zblocks[name][2][1] = Zblocks[Zblockkeys[section-1]][2][1]
+            if Zblocks[name][3][0] == 10000.:
+                Zblocks[name][3][0] = Zblocks[Zblockkeys[section-1]][3][0]
+            if Zblocks[name][3][1] == -10000.:
+                Zblocks[name][3][1] = Zblocks[Zblockkeys[section-1]][3][1]
 
-        self.colvertices = self.colvertices + [[[Zblock1Xminmax[0],Zblock1Yminmax[0],Zblock1], [Zblock1Xminmax[0],Zblock1Yminmax[1],Zblock1], [Zblock1Xminmax[1],Zblock1Yminmax[1],Zblock1], [Zblock1Xminmax[1],Zblock1Yminmax[0],Zblock1]]]
-        self.colvertices = self.colvertices + [[[Zblock2Xminmax[0],Zblock2Yminmax[0],Zblock2], [Zblock2Xminmax[0],Zblock2Yminmax[1],Zblock2], [Zblock2Xminmax[1],Zblock2Yminmax[1],Zblock2], [Zblock2Xminmax[1],Zblock2Yminmax[0],Zblock2]]]
-        self.colvertices = self.colvertices + [[[Zblock3Xminmax[0],Zblock3Yminmax[0],Zblock3], [Zblock3Xminmax[0],Zblock3Yminmax[1],Zblock3], [Zblock3Xminmax[1],Zblock3Yminmax[1],Zblock3], [Zblock3Xminmax[1],Zblock3Yminmax[0],Zblock3]]]
+        Zblockkeys.reverse()
+        for section in range(1, len(Zblockkeys)):
+            name = "Zblock" + str(section)
+            self.colvertices = self.colvertices + [[[Zblocks[name][2][0],Zblocks[name][3][0],Zblocks[name][0]], [Zblocks[name][2][0],Zblocks[name][3][1],Zblocks[name][0]], [Zblocks[name][2][1],Zblocks[name][3][1],Zblocks[name][0]], [Zblocks[name][2][1],Zblocks[name][3][0],Zblocks[name][0]]]]
 
         # Stores the "edges" data section of the collision file.
         def record(self, group, edgelist, add1, add2, vtx=None):
@@ -1492,7 +1471,7 @@ quarkpy.qmdlbase.RegisterMdlExporter(".ase Exporter", ".ase file", "*.ase", save
 class ExportSettingsDlg(quarkpy.qmacro.dialogbox):
     endcolor = AQUA
     size = (200, 300)
-    dfsep = 0.8     # sets 80% for labels and the rest for edit boxes
+    dfsep = 0.6     # sets 80% for labels and the rest for edit boxes
     dlgflags = FWF_KEEPFOCUS + FWF_NORESIZE
     dlgdef = """
         {
@@ -1586,7 +1565,19 @@ class ExportSettingsDlg(quarkpy.qmacro.dialogbox):
             Txt = "Make Collision file:"
             Typ = "X"
             Hint = "Check this box to make and export a .cm collision"$0D
-                   "model file to go along with the exported .ase file."
+                   "model file to go along with the exported .ase file."$0D0D
+                   "For Doom3, to see the collision model bring down the game console,"$0D
+                   "type in g_showCollisionModels 1"$0D
+                   "press Enter, close the game console and move toward the model."
+            }
+
+        ColSections: =
+            {
+            Txt = "   Collision sections:"
+            Typ = "EU"
+            Hint = "Number of collision sections to create."$0D
+                   "Greater the number, the more detailed the collision."$0D
+                   "Min = 1, Max = 3, Default = 3"
             }
 
         makefolder: =
@@ -1619,7 +1610,6 @@ class ExportSettingsDlg(quarkpy.qmacro.dialogbox):
         self.polygons = []
         self.polydata = []
         self.polytemplist = []
-        self.brushes = []
         self.exportpath = filename.replace('\\', '/')
         self.exportpath = self.exportpath.rsplit('/', 1)[0]
         src = quarkx.newobj(":")
@@ -1632,6 +1622,7 @@ class ExportSettingsDlg(quarkpy.qmacro.dialogbox):
         src['Skins'] = None
         src['Shaders'] = None
         src['Collision'] = None
+        src['ColSections'] = "3"
         src['makefolder'] = None
         self.src = src
         self.root = root
@@ -1643,7 +1634,17 @@ class ExportSettingsDlg(quarkpy.qmacro.dialogbox):
             )
 
     def datachange(self, df):
-        pass
+        self.src['ColSections'] = str(int(float(self.src['ColSections'])))
+        if int(self.src['ColSections']) < 1:
+            self.src['ColSections'] = "1"
+        if int(self.src['ColSections']) > 3:
+            self.src['ColSections'] = "3"
+        self.colvertices = []
+        self.edges = []
+        self.polygons = []
+        self.polydata = []
+        self.polytemplist = []
+        df.setdata(self.src, self.f) # This line updates the dialog.
 
     def MakeFiles(self, btn):
         # Accepts all entries then starts making the processing function calls.
@@ -1701,6 +1702,9 @@ def UIExportDialog(root, filename, editor):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.3  2009/07/24 00:50:16  cdunde
+# ASE model exporter can now export .cm collision model files.
+#
 # Revision 1.2  2009/07/13 23:55:03  cdunde
 # Start of collision model file creation support.
 #
