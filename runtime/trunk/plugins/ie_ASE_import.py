@@ -1987,9 +1987,14 @@ def dataforminput(o):
         if o.type == ":mc": # Just makes sure what we have is a model component.
             if not o.dictspec.has_key('ase_NAME'):
                 if len(o.dictitems['Skins:sg'].subitems) != 0:
-                   o['ase_NAME'] = o.currentskin.name
+                    o['ase_NAME'] = o.dictitems['Skins:sg'].subitems[0].name
                 else:
-                   o['ase_NAME'] = "no skins exist"
+                    o['ase_NAME'] = "no skins exist"
+            if o.currentskin is None:
+                if len(o.dictitems['Skins:sg'].subitems) != 0:
+                    o.currentskin = o.dictitems['Skins:sg'].subitems[0]
+                else:
+                    o['ase_NAME'] = "no skins exist"
             if o.dictspec['ase_NAME'] != "no skins exist" and o.dictspec['ase_NAME'] != o.currentskin.name:
                 o['ase_NAME'] = o.currentskin.name
             if not o.dictspec.has_key('vtx_color'):
@@ -2013,6 +2018,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.9  2009/07/08 18:53:38  cdunde
+# Added ASE model exporter and completely revamped the ASE importer.
+#
 # Revision 1.8  2009/06/03 05:16:22  cdunde
 # Over all updating of Model Editor improvements, bones and model importers.
 #
