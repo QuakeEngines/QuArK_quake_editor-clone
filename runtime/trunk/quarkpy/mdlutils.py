@@ -166,7 +166,7 @@ def update_colorvtxlist(editor, comp, vertices_to_remove):
         del editor.ModelComponentList[comp.name]
 
 #
-# Updates the editor.ModelComponentList for a component's colorvtxlist when any vertex is removed.
+# Updates the editor.ModelComponentList for a component's weightvtxlist.
 #
 def update_weightvtxlist(editor, vertex_index):
     comp = editor.Root.currentcomponent
@@ -3811,6 +3811,10 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.110  2009/07/14 00:27:33  cdunde
+#Completely revamped Model Editor vertex Linear draglines system,
+#increasing its reaction and drawing time to twenty times faster.
+#
 #Revision 1.109  2009/07/04 03:02:40  cdunde
 #Fix to stop multiple Skeleton folders from being created when multiple components are deleted.
 #
