@@ -607,6 +607,7 @@ def WeightsClick(editor):
               Txt = "Vertex weights page"
               Typ = "C"
               Items = """
+            prevlast = vtxnbrs[0]
             for page in range(int(floor((len(weightvtxlist)+9)/10))):
                 pagenbr = page + 1
                 testcount = pagenbr * 11
@@ -2157,6 +2158,10 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.46  2009/07/14 00:27:33  cdunde
+#Completely revamped Model Editor vertex Linear draglines system,
+#increasing its reaction and drawing time to twenty times faster.
+#
 #Revision 1.45  2009/07/08 18:53:38  cdunde
 #Added ASE model exporter and completely revamped the ASE importer.
 #
