@@ -1,0 +1,7 @@
+title: Vertex Coloring and Weights
+desc: vertexcoloring
+desc: vertexweights
+
+Some model formats use additional, more advanced, special display and movement systems.<br>
+These are <g>Vertex Coloring</g>, using different colors to give special lighting effects to a model,<br>
+and\or <g>Vertex Weights</g>, which is done by a numerical setting from 0 to 1.0 to give a more natural movement to a model's animation.

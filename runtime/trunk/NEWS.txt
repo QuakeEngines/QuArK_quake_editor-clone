@@ -15,6 +15,8 @@ $Id$
 6.6.0 Beta 3
 ============
 
+* [cdunde]: Completely updated the InfoBase Docs for the new Bones, Vertex Color and Weights.
+
 * [cdunde/DanielPharos]: ASE model exporter can now export .cm collision model files.
 
 * [cdunde/DanielPharos]: Completely revamped Model Editor vertex Linear draglines system,

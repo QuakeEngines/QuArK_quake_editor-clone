@@ -8,6 +8,7 @@ subdir: toolpalettes
 subdir: dataforms
 subdir: skinview
 subdir: editelements
+subdir: vertexcolorandweights
 
 The model editor is the secondary part of QuArK. A model can represent a number of things
 depending on the game it is being created for. It can be an object like a prop, a table or chair.

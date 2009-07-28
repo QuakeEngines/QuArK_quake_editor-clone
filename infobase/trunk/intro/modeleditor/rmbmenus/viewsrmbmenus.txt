@@ -11,6 +11,10 @@ author: cdunde
 <area href="#editorvertexoptions" shape="rect" coords="2, 170, 155, 184">
 </map>
 
+<map name="rmbmenusMap1">
+<area href="#handlescaling" shape="rect" coords="3, 277, 192, 294">
+</map>
+
 <img border=1 align=right usemap="#rmbmenusMap0">viewsrmbmenus1.png</img>
 
 <i>Undo </i>&nbsp;: This will display the last Undo\Redo action item that has taken place if any.
@@ -21,7 +25,7 @@ one of the editors views if it can be.
 <i>Bone Commands </i>&nbsp;: This is the link to the Bone Commands sub-menu that will appear
 when your courser is over it. To activate this menu item you must have the
 <a href="intro.modeleditor.toolpalettes.display.html">Linear Drag Handles</a> button
-de-activated (in vertex mode) and select either a model component's <g>Frames</g> or <g>Skeleton</g> folder,
+de-activated (in vertex mode) and select either the <g>Skeleton</g> folder or a model component's <g>Frames</g> folder
 or at least one frame or bone within one of those folders, then this menu item will activate.
 Individual items will become active on its sub-menu depending on your selections and cursor placement over a bone handle.
 These are strictly bone related and are covered in detail below.
@@ -76,41 +80,40 @@ about its functions and settings.
 
 <table border=0 cellspacing=0>
 <tr><td valign=top>
-<img border=1 align=right>bonermbmenu1.png</img>
+<img border=1 align=right usemap="#rmbmenusMap1">bonermbmenu1.png</img>
 
 <a name="bonecommands"></a>
 <b><u><a href="#viewsrmbmenus">Bone Commands sub-menu :</a></u></b> This is the sub-menu described above and its functions.
 
-<i>Add Bone Here </i>&nbsp;: This will add a single bone to the currently selected model component <g>Skeleton</g> group.
+<i>Add Bone Here </i>&nbsp;: This will add a single bone to the editor's <g>Skeleton</g> group.
 
-<i>Continue Bones </i>&nbsp;: This will add a single bone, connected to the last bone, of the currently selected model component <g>Skeleton</g> group.
+<i>Continue Bones </i>&nbsp;: This will add a single bone, connected to the last bone, in the editor's <g>Skeleton</g> group.
 
-<i>Attach Start to End </i>&nbsp;: This will attach the second selected bone's start handle to the first selected bone's
-end handle of the currently selected model component <g>Skeleton</g> group.
-Moving the second bone above the first bone in the <g>tree-view</g> will reverse this movement.
+<i>Attach Bone 1 to 2 </i>&nbsp;: This will attach the first selected bone in the
+<a href="intro.modeleditor.dataforms.html#treeview">tree-view</a>
+to the second selected bone in the <a href="intro.modeleditor.dataforms.html#treeview">tree-view</a>.
 
-<i>Attach Bones Starts </i>&nbsp;: This will attach the second selected bone's start handle to the first selected bone's
-start handle of the currently selected model component <g>Skeleton</g> group.
-Moving the second bone above the first bone in the <g>tree-view</g> will reverse this movement.
+<i>Attach Bone 2 to 1 </i>&nbsp;: This will attach the second selected bone in the
+<a href="intro.modeleditor.dataforms.html#treeview">tree-view</a>
+to the first selected bone in the <a href="intro.modeleditor.dataforms.html#treeview">tree-view</a>.
 
 <i>Detach Bones </i>&nbsp;: This will detach two selected bones attached handles from one another
-of the currently selected model component <g>Skeleton</g> group.
+in the <g>Skeleton</g> group.
 
-<i>Align Start to End </i>&nbsp;: This will align the second selected bone's start handle to first selected bone's end handle,
-but not attach them. Moving the second bone above the first bone in the <g>tree-view</g> will reverse this movement.
+<i>Align Bone 1 to 2 </i>&nbsp;: This will align the first selected bone in the
+<a href="intro.modeleditor.dataforms.html#treeview">tree-view</a>
+to the second selected bone in the <a href="intro.modeleditor.dataforms.html#treeview">tree-view</a>, but not attach them.
 
-<i>Align Bones Starts </i>&nbsp;: This will attach the second selected bone's start handle to the first selected bone's
-start handle of the currently selected model component <g>Skeleton</g> group.
-Moving the second bone above the first bone in the <g>tree-view</g> will reverse this movement.
+<i>Align Bone 2 to 1 </i>&nbsp;: This will align the second selected bone in the
+<a href="intro.modeleditor.dataforms.html#treeview">tree-view</a>
+to the first selected bone in the <a href="intro.modeleditor.dataforms.html#treeview">tree-view</a>, but not attach them.
 
-<i>Align Bones Ends </i>&nbsp;: This will align the second selected bone's end handle to first selected bone's end handle,
-but not attach them. Moving the second bone above the first bone in the <g>tree-view</g> will reverse this movement.
+<i>Assign \ Release Vertices </i>&nbsp;: When vertices of a component are selected, RMB click on the center of a bone,
+then click this item to assign them to, or release them from ,that bone. Combinations of both can be done at the same time.
 
-<i>Assign to Start </i>&nbsp;: When only one bone and vertexes of that component are selected,
-click this item to assign them to the <g>start_point</g> of that bone.
-
-<i>Assign to End </i>&nbsp;: When only one bone and vertexes of that component are selected,
-and there is no continuing bone, click this item to assign them to the <g>end_point</g> of that bone.
+<i>Set Handle Position </i>&nbsp;: Active when one or more vertexes are selected that are assigned to that bone handle.
+Click this item to position and set that bone handle centered within those vertexes.
+An 'offset' can also be applied to this setting.
 
 <i>Select (bone handle name) Vertexes </i>&nbsp;: When the cursor is over a bone's Center handle with vertexes assigned to it,
 click this item to select all of them from that bone's handle. Or, if another handle is attached that has the vertexes
@@ -122,11 +125,13 @@ assigned to it, click this item to select the vertexes used to set that bone's h
 attached that has the vertexes assigned to it instead, then those are the position vertexes for that handle that will be
 selected. If no vertexes have been assigned to any handle at that location, then the menu item will show disabled.
 
-<i>Release Start Vertexes </i>&nbsp;: When only one bone is selected with vertexes assigned to it,
-click this item to release all of them from that bone's start handle.
+<a name="bonesselection"></a>
+<i>Individual Bones Selection </i>&nbsp;: (Unless a function specifically deals with all bones)
+When this item is checked ONLY the INDIVIDUAL bone handles that are selected will be effected
+and NOT any sub-bones that are NOT specifically selected, Which IS the case if this is un-checked.
 
-<i>Release End Vertexes </i>&nbsp;: When only one bone is selected with vertexes assigned to it,
-click this item to release all of them from that bone's end handle.
+<i>Handle Scaling </i>&nbsp;: These functions deal with setting the scale size of the bone handles for better work size.
+These are covered in detail below. Click on this menu item, shown in blue above, to see the sub-menu and its items below.
 
 <i>Key frames Rotation move </i>&nbsp;: When the <g>Skeleton</g> folder and two frames that have bone movement are selected,
 this movement will be spread from the 1st frames positions across all frames in between them to the 2nd frames positions
@@ -136,8 +141,49 @@ using rotation and in the direction of the smallest angle (clockwise or counterc
 
 <i>Hide Bones </i>&nbsp;: This stops all bones from being displayed in the editor's views.
 
+<i>Structure Bones </i>&nbsp;: When clicked this function will place all bones
+inside their 'parent' bones in the <a href="intro.modeleditor.dataforms.html#treeview">tree-view</a>.
+
+<i>Extract Bones </i>&nbsp;: When clicked this function will move all bones
+outside of their 'parent' bones in the <a href="intro.modeleditor.dataforms.html#treeview">tree-view</a>.
+
 <i>Force to grid </i>&nbsp;: This will cause a bone's center handle to <g>snap</g> to the nearest location on the
 editor's grid for the view that the RMB click was made in.
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+<img border=1 align=right>bonermbmenu3.png</img>
+
+<a name="handlescaling"></a>
+<b><u><a href="#bonecommands">Handle Scaling sub-menu :</a></u></b> This is the sub-menu described above and its functions.
+
+<i>Scale selected bone handles </i>&nbsp;: If this menu item is checked, all bones that are currently selected,
+and their attached bones, will have their handles set to different scale sizes for easer access.
+See <a href="#bonesselection">Individual Bones Selection</a> on main Bones menu for additional option.
+
+<i>Reset selected handles to org. scale </i>&nbsp;: If this menu item is checked, all bones that are currently selected,
+and their attached bones, will have their handles reset to their original imported or saved scale sizes.
+See <a href="#bonesselection">Individual Bones Selection</a> on main Bones menu for additional option.
+
+<i>Set selected bone handles to 1.0 </i>&nbsp;: If this menu item is checked, all bones that are currently selected,
+and their attached bones, will have their handles reset to the default scale size of 1.0.
+See <a href="#bonesselection">Individual Bones Selection</a> on main Bones menu for additional option.
+
+<i>Save selected handle scales </i>&nbsp;: If this menu item is checked, all bones that are currently selected,
+and their attached bones, will have their handles scale sizes saved, becoming their original setting.
+See <a href="#bonesselection">Individual Bones Selection</a> on main Bones menu for additional option.
+
+<i>Scale all bone handles </i>&nbsp;: If this menu item is checked, all bones will have their handles set to
+different scale sizes for easer access.
+
+<i>Reset all handles to org. scale </i>&nbsp;: If this menu item is checked, all bones will have their handles reset
+to their original imported or saved scale sizes.
+
+<i>Set all handles to 1.0 </i>&nbsp;: If this menu item is checked, all bones will have their handles reset
+to the default scale size of 1.0.
+
+<i>Save all handle scales </i>&nbsp;: If this menu item is checked, all bones will have their handles scale sizes saved,
+becoming their original setting.
 
 <tr><td valign=top>
 <img border=1 align=right>facermbmenu1.png</img>
