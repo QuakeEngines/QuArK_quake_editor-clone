@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.490  2009/07/29 22:53:05  danielpharos
+//Added TextureWriteFormatA: some games want textures with Alpha in a different format (for instance, Quake 3).
+//
 //Revision 1.489  2009/07/22 19:12:30  danielpharos
 //Fixed a typo
 //
@@ -1959,7 +1962,7 @@ QQRKSRC1
 
         Program = "CoDSP.exe +set sv_pure 0"
         Directory = "C:\Program Files\Call of Duty"
-  //      CheckDirectory = "CoDSP.exe"   // hidden setting
+        CheckDirectory = "CoDSP.exe"   // hidden setting
 
         CD = ""
         CDDir = "Setup\Main"   // hidden setting
@@ -4879,7 +4882,7 @@ QQRKSRC1
         Txt = "Directory of Call of Duty"
         Typ = "ED"      // Edit Directory
         Hint = "Path to the game executable"
-   //     CheckFile = "CoDSP.exe"
+        CheckFile = "CoDSP.exe"
       }
       Templates: =
       {
@@ -10171,7 +10174,7 @@ QQRKSRC1
       Game: = {
         Txt = "Based on game"
         Typ = "CL"
-        Items = "6DX"$0D"Crystal Space"$0D"Doom 3"$0D"EF2"$0D"FAKK2"$0D"Genesis3D"$0D"Half-Life"$0D"Half-Life2"
+        Items = "6DX"$0D"CoD1"$0D"Crystal Space"$0D"Doom 3"$0D"EF2"$0D"FAKK2"$0D"Genesis3D"$0D"Half-Life"$0D"Half-Life2"
              $0D"Heretic II"$0D"Hexen II"$0D"JA"$0D"JK2"$0D"KingPin"$0D"MOHAA"$0D"NEXUIZ"$0D"Prey"
              $0D"Quake 1"$0D"Quake 2"$0D"Quake 3"$0D"Quake 4"$0D"RTCW"$0D"RTCW-ET"$0D"Sin"$0D"SOF"$0D"SoF2"
              $0D"STVEF"$0D"Sylphis"$0D"Torque"$0D"Warsow"$0D"WildWest"
