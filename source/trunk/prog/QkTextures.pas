@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.71  2009/07/15 10:38:01  danielpharos
+Updated website link.
+
 Revision 1.70  2009/02/21 17:06:18  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -620,13 +623,14 @@ var
   TexWad: String;
   TexList: TQList;
 
-  procedure CreateTexListWithDependencies(TexList:TQList);
+  procedure CreateTexListWithDependencies(TexList: TQList);
   var
     TextureDependencyNames: TStringList;
     AlreadyProcessedTextureNames: TStringList;
     I: Integer;
     Warning: Boolean;
     Tex1, Tex: QPixelSet;
+    TexFormat2: String;
     TexFormat1: QObjectClass;
     TexFormat: QPixelSetClass;
     TexName: String;
@@ -636,12 +640,6 @@ var
     try
       ProgressIndicatorStart(5453, L.Count);
       try
-        { Figure out what (file-)format the textures should be written in }
-        TexFormat1:=RequestClassOfType(SetupGameSet.Specifics.Values['TextureWriteFormat']);
-        if (TexFormat1=Nil) or not TexFormat1.InheritsFrom(QPixelSet) then
-          raise EError(5688);
-        TexFormat:=QPixelSetClass(TexFormat1);
-
         for I:=0 to L.Count-1 do
         begin
           Warning:=True;
@@ -683,7 +681,22 @@ var
                   if TexName[1]=#255 then
                     TexList.Add(GetTexAsNameAndFormat(Tex, TexName, Nil))   { same remark for files directly form the disk }
                   else
+                  begin
+                    { Figure out what (file-)format the textures should be written in }
+                    if Tex.Description.AlphaBits = psa8bpp then
+                    begin
+                      TexFormat2:=SetupGameSet.Specifics.Values['TextureWriteFormatA'];
+                      if TexFormat2 = '' then
+                        TexFormat2:=SetupGameSet.Specifics.Values['TextureWriteFormat'];
+                    end
+                    else
+                      TexFormat2:=SetupGameSet.Specifics.Values['TextureWriteFormat'];
+                    TexFormat1:=RequestClassOfType(TexFormat2);
+                    if (TexFormat1=Nil) or not TexFormat1.InheritsFrom(QPixelSet) then
+                      raise EError(5688);
+                    TexFormat:=QPixelSetClass(TexFormat1);
                     TexList.Add(GetTexAsNameAndFormat(Tex, TexName, TexFormat));
+                  end;
                 end;
 
                 Tex.ListDependencies(TextureDependencyNames);  { add dependencies into "TextureDependencyNames" }

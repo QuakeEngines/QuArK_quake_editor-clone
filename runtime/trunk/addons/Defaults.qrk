@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.489  2009/07/22 19:12:30  danielpharos
+//Fixed a typo
+//
 //Revision 1.488  2009/07/06 10:14:02  danielpharos
 //Auto-remove NotInstalled games from the Configuration window.
 //
@@ -2709,7 +2712,8 @@ QQRKSRC1
 
         TextureFormat = ".tga"                  // primary texture fileextension
         TextureFileExtensions = ".tga,.jpg"     // possible texture fileextensions
-        TextureWriteFormat = ".tga"
+        TextureWriteFormat = ".jpg"
+        TextureWriteFormatA = ".tga"
         TextureShaders = "shaders/quark.shader"
 
         BaseDir = "base"
@@ -2842,8 +2846,9 @@ QQRKSRC1
         LightingOuterConeKeyword = ""    // <-- ex: "" if game does not use or ex: "_cone2" is the specifics name that gives the spotlight outer size.
 
         TextureFormat = ".tga"                  // primary texture fileextension
-        TextureFileExtensions = ".tga,.jpg"     // possible texture fileextensions
-        TextureWriteFormat = ".tga"
+        TextureFileExtensions = ".tga,.jpg,.dds"// possible texture fileextensions
+        TextureWriteFormat = ".jpg"
+        TextureWriteFormatA = ".tga"
         TextureShaders = "scripts/quark.shader"
 
         BaseDir = "main"
@@ -2995,9 +3000,9 @@ QQRKSRC1
         Q2TexFlags = "1"
         ShadersType = "j"                       // This game has Doom 3-type shaders
 
-        TextureFormat = ".dds"                  // primary texture file extension
-        TextureFileExtensions = ".dds,.tga"     // possible texture file extensions
-        TextureWriteFormat = ".dds"
+        TextureFormat = ".tga"                  // primary texture file extension
+        TextureFileExtensions = ".tga,.dds"     // possible texture file extensions
+        TextureWriteFormat = ".tga"
         TextureShaders = "materials/quark.mtr"  // TextureMaterials?
         DefaultTextureScale = "0.5"
 
@@ -3174,6 +3179,7 @@ QQRKSRC1
         TextureFormat = ".jpg"                  // primary texture fileextension
         TextureFileExtensions = ".tga,.jpg,.png"     // possible texture fileextensions
         TextureWriteFormat = ".jpg"
+        TextureWriteFormatA = ".tga"
         TextureShaders = "scripts/quark.shader"
 
         BaseDir = "baseq3"
@@ -3266,9 +3272,10 @@ QQRKSRC1
         Q2TexFlags = "1"
         ShadersType = "j"                       // This game has Doom 3-type shaders
 
-        TextureFormat = ".tga"                  // primary texture file extension
-        TextureFileExtensions = ".tga,.jpg"     // possible texture file extensions
+        TextureFormat = ".dds"                  // primary texture file extension
+        TextureFileExtensions = ".dds,.tga"     // possible texture file extensions
         TextureWriteFormat = ".tga"
+        TextureWriteFormatA = ".dds"
         TextureShaders = "materials/quark.mtr"  // TextureMaterials?
         DefaultTextureScale = "0.5"
 
@@ -3328,7 +3335,8 @@ QQRKSRC1
 
         TextureFormat = ".tga"                  // primary texture fileextension
         TextureFileExtensions = ".tga,.jpg"     // possible texture fileextensions
-        TextureWriteFormat = ".tga"
+        TextureWriteFormat = ".jpg"
+        TextureWriteFormatA = ".tga"
         TextureShaders = "scripts/quark.shader"
 
         BaseDir = "main"
@@ -3414,7 +3422,8 @@ QQRKSRC1
 
         TextureFormat = ".tga"                  // primary texture fileextension
         TextureFileExtensions = ".tga,.jpg"     // possible texture fileextensions
-        TextureWriteFormat = ".tga"
+        TextureWriteFormat = ".jpg"
+        TextureWriteFormatA = ".tga"
         TextureShaders = "scripts/quark.shader"
         DefaultTextureScale = "0.5"
 
@@ -3584,9 +3593,10 @@ QQRKSRC1
         LightingInnerConeKeyword = ""    // <-- ex: "" if game does not use or ex: "_cone" is the specifics name that gives the spotlight inter size.
         LightingOuterConeKeyword = ""    // <-- ex: "" if game does not use or ex: "_cone2" is the specifics name that gives the spotlight outer size.
 
-        TextureFormat = ".tga"                  // primary texture fileextension
-        TextureFileExtensions = ".tga,.jpg"     // possible texture fileextensions
-        TextureWriteFormat = ".tga"
+        TextureFormat = ".png"                  // primary texture fileextension
+        TextureFileExtensions = ".png,.jpg"     // possible texture fileextensions
+        TextureWriteFormat = ".jpg"
+        TextureWriteFormatA = ".png"
         TextureShaders = "shaders/quark.shader"
 
         BaseDir = "base"
@@ -3681,7 +3691,8 @@ QQRKSRC1
 
         TextureFormat = ".tga"                  // primary texture fileextension
         TextureFileExtensions = ".tga,.jpg"     // possible texture fileextensions
-        TextureWriteFormat = ".tga"
+        TextureWriteFormat = ".jpg"
+        TextureWriteFormatA = ".tga"
         TextureShaders = "scripts/quark.shader"
 
         BaseDir = "BaseEF"
@@ -3880,8 +3891,9 @@ QQRKSRC1
         LightingOuterConeKeyword = ""    // <-- ex: "" if game does not use or ex: "_cone2" is the specifics name that gives the spotlight outer size.
 
         TextureFormat = ".tga"
-        TextureFileExtensions = ".tga,.jpg"
-        TextureWriteFormat = ".tga"
+        TextureFileExtensions = ".tga,.jpg,.pcx"
+        TextureWriteFormat = ".jpg"
+        TextureWriteFormatA = ".tga"
         TextureShaders = "scripts/quark.shader"
 
         BaseDir = "basewsw"
