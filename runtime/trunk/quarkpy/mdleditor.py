@@ -192,7 +192,6 @@ class ModelEditor(BaseEditor):
         self.Root = Root
         if self.Root.currentcomponent is None and self.Root.name.endswith(":mr"):
             componentnames = []
-            bones = self.Root.dictitems['Skeleton:bg'].findallsubitems("", ':bone')   # get all bones
             for item in self.Root.dictitems:
                 if item.endswith(":mc"):
                     comp = self.Root.dictitems[item]
@@ -1715,6 +1714,10 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.128  2009/07/14 00:27:33  cdunde
+#Completely revamped Model Editor vertex Linear draglines system,
+#increasing its reaction and drawing time to twenty times faster.
+#
 #Revision 1.127  2009/07/08 18:49:34  cdunde
 #Code cleanup.
 #
