@@ -1,6 +1,6 @@
 (**************************************************************************
 QuArK -- Quake Army Knife -- 3D game editor
-Copyright (C) Armin Rigo
+Copyright (C) QuArK Development Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -14,15 +14,18 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
+http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
 
 {
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23  2008/09/06 15:57:34  danielpharos
+Moved exception code into separate file.
+
 Revision 1.22  2008/08/07 22:53:14  danielpharos
 A massive overhaul and clean-up: should make the Python interface more robust and future-proof
 

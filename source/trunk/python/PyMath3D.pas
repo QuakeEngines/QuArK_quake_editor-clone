@@ -1,6 +1,6 @@
 (**************************************************************************
 QuArK -- Quake Army Knife -- 3D game editor
-Copyright (C) Armin Rigo
+Copyright (C) QuArK Development Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -14,15 +14,18 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
+http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
 
 {
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2007/07/24 13:54:47  danielpharos
+Revert maphandles 1.60: Fixed the underlying problem in PyMath3D.
+
 Revision 1.7  2006/11/30 00:44:55  cdunde
 To merge all source files that had changes from DanielPharos branch
 to HEAD for QuArK 6.5.0 Beta 1.
