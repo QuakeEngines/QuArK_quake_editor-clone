@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.57  2009/07/30 09:39:58  danielpharos
+Updated website link.
+
 Revision 1.56  2009/05/19 08:02:18  cdunde
 DanielPharos changed mouse dragging to return handle data passed over during the drag for the Model Editor.
 
@@ -719,7 +722,7 @@ begin
       on E: Exception do
        begin
         Scene.ErrorMsg:=GetExceptionMessage(E);
-        Log(LOG_WARNING, 'Error in scene: '+Scene.ErrorMsg);
+        Log(LOG_WARNING, 'Error in scene: %s', [Scene.ErrorMsg]);
        end;
      end;
 
@@ -781,7 +784,7 @@ begin
       on E: Exception do
        begin
         Scene.ErrorMsg:=GetExceptionMessage(E);
-        Log(LOG_WARNING, 'Error in scene: '+Scene.ErrorMsg);
+        Log(LOG_WARNING, 'Error in scene: %s', [Scene.ErrorMsg]);
        end;
      end;
 

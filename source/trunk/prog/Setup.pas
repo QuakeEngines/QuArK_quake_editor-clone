@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.82  2009/07/15 10:38:01  danielpharos
+Updated website link.
+
 Revision 1.81  2009/07/06 10:13:45  danielpharos
 Auto-remove NotInstalled games from the Configuration window.
 
@@ -779,9 +782,11 @@ begin
        end;
      if Specifics.Values['GameCfg']='' then
       begin
+       Log(LOG_CRITICAL, LoadStr1(4624));
        MessageDlg(LoadStr1(4624), mtError, [mbOk], 0);
        Halt(1);   { missing ":config" object }
       end;
+     Log(LOG_INFO, 'Found gamemode: %s', [Specifics.Values['GameCfg']]);
     end;
   end;
  SetupChanged({scMaximal} {scMinimal} scInit);
@@ -1219,6 +1224,7 @@ begin
      Raise EErrorFmt(5599, [nMode]);
     if Confirm and (MessageDlg(FmtLoadStr1(5543, [nMode]), mtWarning, mbOkCancel, 0) <> mrOk) then
      Abort;
+    Log(LOG_INFO, 'Switching to gamemode: %s', [nMode]);
     ClearGameBuffers(True);
     g_SetupSet[ssGames].Specifics.Values['GameCfg']:=nMode;
    {SetupModified:=True;}

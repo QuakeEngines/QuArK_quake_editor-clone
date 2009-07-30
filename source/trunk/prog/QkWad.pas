@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.33  2009/07/15 10:38:01  danielpharos
+Updated website link.
+
 Revision 1.32  2009/03/16 08:42:22  danielpharos
 Fix comment.
 
@@ -202,7 +205,7 @@ type
 implementation
 
 uses QkUnknown, Travail, Qk1, Setup, Quarkx, QkExceptions, QkHL,
-     QkQ1, QkObjectClassList;
+     QkQ1, QkObjectClassList, Logging;
 
 {$R *.DFM}
 
@@ -961,6 +964,7 @@ begin
             if J=0 then
              TextureTitle:=Q.Name;
    DECKER*)
+            Log(LOG_WARNING, 'Error in texture browser: %s', [ErrorMsg]);
           end;
         end;
        {if ScreenColors<>0 then

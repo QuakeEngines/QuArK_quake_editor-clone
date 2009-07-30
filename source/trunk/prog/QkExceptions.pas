@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2009/07/15 10:38:01  danielpharos
+Updated website link.
+
 Revision 1.7  2009/02/21 17:10:20  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -123,6 +126,7 @@ var
 procedure GlobalWarning(const Texte: String);
 begin
  if Texte='' then Exit;
+ Log(LOG_WARNING, 'Global warning: %s', [Texte]);
  if GlobalWarnings=Nil then
   begin
    GlobalWarnings:=TStringList.Create;
