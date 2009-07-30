@@ -15,6 +15,9 @@ $Id$
 6.6.0 Beta 3
 ============
 
+* [DanielPharos]: Added TextureWriteFormatA: some games want textures with Alpha in a
+          - different format (for instance, Quake 3).
+
 * [cdunde]: Completely updated the InfoBase Docs for the new Bones, Vertex Color and Weights.
 
 * [cdunde/DanielPharos]: ASE model exporter can now export .cm collision model files.
