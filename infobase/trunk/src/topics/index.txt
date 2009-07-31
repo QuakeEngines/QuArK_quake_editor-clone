@@ -1,4 +1,4 @@
 title: Specific Topics
-subdir: face beziers mapviewmouse mapsave mapread pyversions logging sceneobjects
+subdir: face beziers scale mapviewmouse mapsave mapread pyversions logging sceneobjects
 
 Here are discussions of various specific topics.
