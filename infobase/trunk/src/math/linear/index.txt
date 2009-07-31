@@ -1,5 +1,5 @@
 title: Linear Mappings and Matrices
-desc: bases mappings examples
+desc: bases mappings examples points
 
 Linear mappings are functions taking vectors as input
 and producing vectors as output, which provide an

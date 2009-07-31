@@ -1,3 +1,5 @@
+title: Points
+author: tiglari
 
 For more sophisticated applications, we need to get straight
 on the difference between 'points' and 'vectors'.  Although
