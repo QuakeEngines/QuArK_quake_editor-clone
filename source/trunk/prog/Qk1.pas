@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.85  2009/07/15 10:38:01  danielpharos
+Updated website link.
+
 Revision 1.84  2009/06/08 20:44:28  danielpharos
 Fix ugliness in shutdown when single-instance check fires.
 
@@ -2591,12 +2594,7 @@ end;
 
 procedure TForm1.About1Click(Sender: TObject);
 begin
- with TAboutBox.Create(Application) do
-  try
-   ShowModal;
-  finally
-   Free;
-  end;
+ OpenAboutBox;
 end;
 
 procedure TForm1.Addons1Click(Sender: TObject);

@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.34  2009/07/15 10:38:01  danielpharos
+Updated website link.
+
 Revision 1.33  2009/07/14 11:44:18  danielpharos
 Fixed bad wording.
 
@@ -85,11 +88,8 @@ type
   end;
 
 function OpenSplashScreen : TForm;
+procedure OpenAboutBox;
 function DisclaimerThread(F: TForm): THandle;
-
-const
-  MAX_DELAY = 10;
-  MIN_FLASH_COUNT = 2; //Must be larger than zero!
 
 implementation
 
@@ -109,6 +109,10 @@ type
   TSplashScreen = class(TForm)
     procedure RedrawSplashScreen(Sender : Tobject);
   end;
+
+const
+  MAX_DELAY = 10;
+  MIN_FLASH_COUNT = 2; //Must be larger than zero!
 
 var RedrawDisclaimer: Boolean;
 
@@ -260,6 +264,38 @@ begin
   Result := GetDisclaimer(Info);
 end;
 
+function OpenSplashScreen : TForm;
+var
+ SplashScreen: TSplashScreen;
+ Image1: TImage;
+begin
+ SplashScreen:=TSplashScreen.CreateNew(Application);
+ SplashScreen.Position:=poScreenCenter;
+ SplashScreen.BorderStyle:=bsNone;
+ SplashScreen.Color:=clWhite;
+ {SplashScreen.FormStyle:=fsStayOnTop;}
+ Image1:=TImage.Create(SplashScreen);
+ Image1.Parent:=SplashScreen;
+ Image1.Picture.Bitmap.LoadFromResourceName(HInstance, 'QUARKLOGO');
+ Image1.AutoSize:=True;
+ SplashScreen.ClientWidth:=Image1.Width;
+ SplashScreen.ClientHeight:=Image1.Height;
+ SplashScreen.OnPaint:=SplashScreen.RedrawSplashScreen;
+ SplashScreen.Show;
+ SplashScreen.Update;
+ Result:=TForm(SplashScreen);
+end;
+
+procedure OpenAboutBox;
+begin
+ with TAboutBox.Create(Application) do
+  try
+   ShowModal
+  finally
+   Free;
+  end;
+end;
+
  {-------------------}
 
 procedure TAboutBox.FormCreate(Sender: TObject);
@@ -322,17 +358,6 @@ begin
     + #13#10#13#10
     + 'You may charge a fee for the physical act of transferring a copy, and '
     + 'you may at your option offer warranty protection in exchange for a fee.';
-
-(*
-  Contributors.Text :=
-               'Armin Rigo (arigo@planetquake.com)'
-    + #13#10 + 'tiglari (tiglari@planetquake.com)'
-    + #13#10 + 'Decker (decker@planetquake.com)'
-    + #13#10 + 'Andy Vincent (andyvinc@hotmail.com)'
-    + #13#10 + 'Alexander Haarer (mac.@gmx.net)'
-    + #13#10 + 'Rowdy (david@fielden.com)'
-    // and others, this list is basically too hard to maintain
- *)
 end;
 
 procedure TAboutBox.OKButtonClick(Sender: TObject);
@@ -396,28 +421,6 @@ end;
 procedure TSplashScreen.RedrawSplashScreen(Sender : Tobject);
 begin
  RedrawDisclaimer:=true;
-end;
-
-function OpenSplashScreen : TForm;
-var
- SplashScreen: TSplashScreen;
- Image1: TImage;
-begin
- SplashScreen:=TSplashScreen.CreateNew(Application);
- SplashScreen.Position:=poScreenCenter;
- SplashScreen.BorderStyle:=bsNone;
- SplashScreen.Color:=clWhite;
- {SplashScreen.FormStyle:=fsStayOnTop;}
- Image1:=TImage.Create(SplashScreen);
- Image1.Parent:=SplashScreen;
- Image1.Picture.Bitmap.LoadFromResourceName(HInstance, 'QUARKLOGO');
- Image1.AutoSize:=True;
- SplashScreen.ClientWidth:=Image1.Width;
- SplashScreen.ClientHeight:=Image1.Height;
- SplashScreen.OnPaint:=SplashScreen.RedrawSplashScreen;
- SplashScreen.Show;
- SplashScreen.Update;
- Result:=TForm(SplashScreen);
 end;
 
 end.
