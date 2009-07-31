@@ -1,0 +1,10 @@
+title: OpenAboutBox
+author: DanielPharos
+
+<code>
+procedure OpenAboutBox;
+</code>
+
+OpenAboutBox creates QuArK's About form, and displays it modal, so it has to be closed by the user before anything else can be done.
+
+Also, please don't open the about window without a good reason to do so.

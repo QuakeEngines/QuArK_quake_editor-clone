@@ -1,5 +1,5 @@
 title: File-by-file descriptions
-subdir: bezier extrafunctionality logging
+subdir: about bezier extrafunctionality logging
 subdir: qk1 qkexceptions qkmap qkobjects qkq3a
 subdir: 3drender
 

@@ -1,0 +1,8 @@
+title: TSplashScreen
+author: DanielPharos
+
+<code>
+TSplashScreen = class(TForm)
+</code>
+
+TAboutBox is QuArK's Splash screen class. Note that this class does not have its own Delphi unit; it is purely created in 'runtime-code'. It cannot depend on any deeper QuArK functions, since the splash screen is one of the first things we display (before anything has been initialized).

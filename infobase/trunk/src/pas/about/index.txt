@@ -1,0 +1,4 @@
+title: About.pas
+desc: taboutbox opensplashscreen openaboutbox disclaimerthread tdisclaimerinfo tsplashscreen redrawdisclaimer
+
+This file contains everything dealing with the About form and intro splash screen.
