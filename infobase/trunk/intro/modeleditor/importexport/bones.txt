@@ -12,27 +12,32 @@ to get an understanding of how it works<br>
 and its capabilities.
 
 <a name="bones1"></a>
-<g><i><b><u>What's in a Bone</u></b></i></g>&nbsp;:<br>
+<g><i><b><u>Creating a Bone</u></b></i></g>&nbsp;:<br>
+Beside the description below, a good summery of the code to make a bone can be seen in the <g>quarkpy\mdlutils.py</g>
+file's <g>def addbone</g> function.
 
 Basically the bone data is split up into two areas, that which is
 <a href="intro.modeleditor.importexport.html#componentcreation">kept within the bone</a> object itself
 <a href="intro.modeleditor.importexport.html#componentcreation">when it is created</a>
 and that which is created by QuArK when the model is read into<br>
-the editor and kept in a <g>Python Dictionary List</g> named <a href="#bones2">ModelComponentList</a>.
+the editor and kept in a <g>Python Dictionary List</g> named <a href="#bones2">editor.ModelComponentList</a>.
 
-The data that is <a href="#bones1">kept within the bone</a> primarily is what is displayed on a bones
-<a href="intro.modeleditor.dataforms.html#specsargsview">Specifics/Args page</a>, shown to the right here,
-although it is also used throughout QuArK's internal code.
+The data that is <a href="#bones1">kept within the bone</a> primarily is what is displayed on a
+<a href="intro.modeleditor.editelements.html#specificsettings">Bones Specifics/ Args</a> page,
+shown to the right here, although it is also used throughout QuArK's internal code.
 
-This data must be read in from the imported model file and added for each component
-<a href="intro.modeleditor.importexport.html#componentcreation">when it is created</a> in
+This data must be read in from the imported model file and added to the
+<a href="intro.modeleditor.importexport.html#componentcreation">editor.Root.dictitems['Skeleton:bg']</a> when the
+<a href="intro.modeleditor.importexport.html#componentcreation">component is created</a> in
 the Python import file <a href="intro.modeleditor.importexport.html#componentcreation">shown futher above</a>.<br>
 
 If a model consist of multiple parts, or components, then the bones need to be created and added in a fashion that
 addresses this issue.<br>
-This is because each bone has two handles, a start and end handle, which can be assigned to different components by that components name.
+This is because the editor only has one set of bones, the <g>Skeleton:bg</g> which can be used,
+and\or added to, by more then one component.
 
-In addition, each bone must have its own individual name to avoid errors from occurring in the editor.
+In addition, each bone must have its own individual name to avoid errors from occurring in the editor
+by over writing other bones.
 
 <u><i>Data within the Bone </i></u>&nbsp;:
 
@@ -42,40 +47,32 @@ Data that must be added for a models imported bones consist of two groups,
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a name="baseitems"><g><i>Base Items </i></g></a>&nbsp;:
 The minimum items to construct a bone are shown below and are stored in a <g>Python Dictionary List</g>.<br>
 With this type of list, the order of their arrangement does not matter because their <g>keys</g>
-names, such as <g>start_component</g>, are used to retrieve the data as it is needed.
+names, such as <g>component</g>, are used to retrieve the data as it is needed.
 </td></tr>
 </table>
 <code>
 {
-'start_component': 'autopsy:mc'
-'start_point': (-23.702332855224609, -4.4704371452331543, 2.0622565078735352),
-'start_offset': (0.0, 0.0, 0.0),
-'start_vertex_count': '4',
-'start_scale': (1.50,),
-'start_color': '\xff\x00\xff',
-'end_component': 'deadeye:mc',
-'end_point': (-18.0043323783874512, -0.5604371452331543, 4.0622565078735352),
-'end_offset': (0.0, 0.0, 0.0),
-'end_vertex_count': '2',
-'end_scale': (1.0,),
-'bone_length': (5.70, 3.91, 2.0),
-'end_color': '\x80\x00\x80'
+'show': (1.0,),
+'parent_name': 'NewBone1:bone',
+'position': (-23.702332855224609, -4.4704371452331543, 2.0622565078735352),
+'rotmatrix': (3.0132664570972154e+023, 1.801776647567749, 3.0132664570972154e+023, -1.801776647567749, 0.0, 0.0, 3.0132664570972154e+023, 1.801776647567749, 3.0132664570972154e+023, 1.801776647567749, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.875),
+'scale': (1.0,),
+'bone_length': (0.0, 0.0, 0.0),
+'component': 'h_head:mc',
+'draw_offset': (0.0, 0.0, 0.0),
+'_color': '\x00\xff\xff'
 }
 </code>
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a name="otheritems"><g><i>Other Items </i></g></a>&nbsp;:
-If a bone has vertexes assign to it already these items must be added to the above dictionary list.<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<b>Note :</b> All of these are <b>long string</b> values for each key, not individual integers.
+If a bone has vertexes assigned to it already these items must be added to the bone itself as an <g>attribute</g>.<br>
+
 <code>
-'start_vtxlist': '22 23 31 33',
-'start_vtx_pos': '22 31',
-'end_vtxlist': '18 34',
-'end_vtx_pos': '18 34'
+new_bone.vtxlist = { 'mesh1:mc' : [0, 18, 34, 36, 7, 8] , 'mesh2:mc' : [0, 3, 45, 88] }
+new_bone.vtx_pos = {} or { 'mesh1:mc' : [0, 18, 34] } # Sets the bones custom position by those vertexes.
 </code>
-The <g>start</g> and <g>end_vtx_pos</g> are specific vertex indexes from their respective <g>_vtxlist</g>.<br>
-Theses are used to reposition the handle from frame to frame by averaging those vertex positions and applying
+The <g>new_bone.vtx_pos</g> are specific vertex indexes (of a single component) from their respective <g>new_bone.vtxlist</g>.<br>
+These are used to reposition the handle from frame to frame by averaging those vertex positions and applying
 that to the bone handle.
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a name="baseitems"><g><i>Sample Code </i></g></a>&nbsp;:
@@ -84,205 +81,159 @@ Because the values are read in from the model file being imported we can not giv
 following example to write your own code. Also you can see more by opening the <g>QuArK\quarkpy\mdlutils.py</g> file, use any text editor like <g>WordPad</g> and do a word search for<br>
 <g>def addbone(</g>. You will also find many other functions there in the <g># Skeleton & Bone functions</g> area.
 <code>
-    new_o_bone = quarkx.newobj(bonename + ":bone") # Each bone must be created as a new object.
-    new_o_bone['start_component'] = component.name # The component name that this handle is assigned to.
-    new_o_bone['start_point'] = (-23.702332855224609, -4.4704371452331543, 2.0622565078735352) # As a tuple as shown for x,y,z.
-    new_o_bone['start_offset'] = (0.0, 0.0, 0.0) # Or a value can be read in here if one exist, but as a tuple as shown for x,y,z.
-    startpoint = quarkx.vect(new_o_bone['start_point']) + quarkx.vect(new_o_bone['start_offset'])
-    new_o_bone['end_component'] = component.name # The component name that this handle is assigned to.
-    new_o_bone['end_point'] = (-18.0043323783874512, -0.5604371452331543, 4.0622565078735352) # As a tuple as shown for x,y,z.
-    new_o_bone['end_offset'] = (0.0, 0.0, 0.0) # Or a value can be read in here if one exist, but as a tuple as shown for x,y,z.
-    endpoint = quarkx.vect(new_o_bone['end_point']) + quarkx.vect(new_o_bone['end_offset'])
-    new_o_bone['bone_length'] = ((startpoint - endpoint)*-1).tuple # *-1 must be used or things will come out backwards.
-    new_o_bone['end_scale'] = (1.0,) # Or a value can be read in here if one exist, but as a tuple as shown.
-    new_o_bone['start_color'] = new_o_bone['end_color'] = MapColor("BoneHandles", SS_MODEL) # Default QuArK function call.
-    new_o_bone['end_color'] = str(\x80\x00\x80) # Or a Hex value converted to a string.
+    skeletongroup = editor.Root.dictitems['Skeleton:bg']  # gets the bones group.
+    bones = skeletongroup.findallsubitems("", ':bone')    # get all bones (because bones can have other bones inside them it MUST be called this way).
+    name = "NewBone1" # Can be any string item.
+    new_bone = quarkx.newobj(name + ":bone") # Creates the bone as a QuArK Internal Object.
+    new_bone['show'] = (1.0,) # Sets the bone to be drawn (displayed) in the editor, 0.0, would hide the bone.
+    new_bone['component'] = component.name # The component name that this handle is assigned to. # Can be any component.
+    new_bone['parent_name'] = "None" # Or "parent bonename:bone" if attached to another bone.
+    new_bone['position'] = (-23.702332855224609, -4.4704371452331543, 2.0622565078735352) # As a tuple as shown for x,y,z.
+    from math import sqrt
+    new_bone.rotmatrix = quarkx.matrix((sqrt(2)/2, -sqrt(2)/2, 0), (sqrt(2)/2, sqrt(2)/2, 0), (0, 0, 1)) # Sets the Default or other rotation matrix.
+    new_bone['draw_offset'] = (0.0,0.0,0.0) # Or a value can be read in here if one exist, but as a tuple as shown for x,y,z.
+    new_bone['scale'] = (1.0,) # Or a value can be read in here if one exist, but as a tuple as shown.
+    new_bone['_color'] = MapColor("BoneHandles", SS_MODEL) # Default QuArK function call.
+         (or)
+    new_bone['_color'] = str(\x80\x00\x80) # A Hex value of a color converted to a string.
+    new_bone['bone_length'] = (0.0,0.0,0.0) # If no other bones are attached to this one...
+         (or as in most cases, needs to be calculated using another bone's position)
+    startpoint = quarkx.vect(new_bone['position']))
+    endpoint = quarkx.vect(attached_bone['position']
+    new_bone['bone_length'] = ((startpoint - endpoint)*-1).tuple # *-1 must be used or things will come out backwards.
 
-    start_vtxlist = ''
-    for vtx in list: # "list" being what you have read in from the model file, each item in the list must be an integer.
-        start_vtxlist = start_vtxlist + str(vtx) # This will build a single "Long String", which is needed to be that way.
-    new_o_bone['start_vtxlist'] = start_vtxlist
-    new_o_bone['start_vertex_count'] = str(len(list)) # Same applies for the end handle using its key names.
-    new_o_bone['end_vertex_count'] = "0" # Or if no vertexes are assigned to the end handle, same for the start key name.
+    vtxlist = {}
+    list = []
+    for vtx in vertexes: # "list" being assigned vertex indexes you read in (by component) from the model file, each vertex index must be an integer.
+        list = list + [vtx] # This will build a single "list of vertexes", which is needed to be that way.
+    vtxlist[components name + ":mc"] = list # Puts each component in a dictionary with that component's name as the key (NOTE the ":mc" added as its type).
+    new_bone.vtxlist = vtxlist # Needs to be done this way to work right.
 
-    skeletongroup.appenditem(new_o_bone) # Each bone must be appended (added) to the skeletongroup here.
+    skeletongroup.appenditem(new_bone) # Each bone must be appended (added) to the skeletongroup here.
 </code>
-For another very good detailed example to go by, and the code above, look in the
-<g>QuArK\quarkpy\mdlutils.py</g> file and word search for the &nbsp;<g>def Rebuild_Bone</g> function there.
 
 Once again, the bone creation code must be added to the import python file, further above,
-<a href="intro.modeleditor.importexport.html#componentcreation">where each component is created</a>
+<a href="intro.modeleditor.importexport.html#componentcreation">where each component is created</a><br>
 or some other fashion if more then one component (mesh) exist.
 
 <a name="bones2"></a>
 <u><i>QuArK's ModelComponentList </i></u>&nbsp;:
 
+Because the <a href="intro.modeleditor.html">QuArK Model Editor</a>
+has been setup to handle a variety of different model formats, and more of them in the future,<br>
+a means of storing different types and structures of data for them was needed. That is what this <g>dictionary list</g> was created for.<br>
+It was made as a <g>dictionary list</g>, (primarily) using the component's full name and type, for three reasons:
+
+<g>1)</g> To make it easy to have access to a particular component's data.<br>
+<g>2)</g> To allow different items and structures for each component, allowing different model formats to be imported at the same time.<br>
+<g>3)</g> To provide a means for additional specialized data lists to be added as the editor is developed further.
+
 If you open the <g>QuArK\quarkpy\mdleditor.py</g> file, use any text editor like <g>WordPad</g> and do a word
-search for<br>
-<g>### Start of bone data creation.</g> you will see how this code is written.
-It stops at <g>### End of bone data creation.</g><br>
-This data is stored in a list named <g>ModelComponentList</g> as part of the editor and can therefore be called
-easily by simply using <g>editor.ModelComponentList</g>.<br>
-Doing a word search of its name in this same file near the very top, you will see a description of what kind of
-data is stored in it and its structure, which is in a <g>Python Dictionary List</g> format.
-
-Normally this is done by QuArK automatically when opening a <g>.qkl</g> QuArK Model work file that has bones.
-However, because a model importer is not the same as opening a model<br>
-directly using <a href="intro.modeleditor.menu.html#filemenu">QuArK's File menu Open...</a> function,
-this code needs to be copied from below and pasted right after the code for the
-<a href="intro.modeleditor.importexport.html#undo1">undo function</a> in the Python import file
-<a href="intro.modeleditor.importexport.html#undo1">above</a>.<br>
-This will add them to the list, which may contain others, as each component is imported, keeping them separated
-by the <g>Component.name</g> which is being used as a <g>Key</g> in this<br>
-<g>Python Dictionary List</g>.
-<code>
-    ### Start of bone data creation.
-    from quarkpy.mdlutils import *
-    bones = editor.Root.dictitems['Skeleton:bg'].findallsubitems("", ':bone')   # get all bones
-    for item in editor.Root.dictitems:
-        if item.endswith(":mc"):
-            comp = editor.Root.dictitems[item]
-            foundbone = 0
-            for bone in range(len(bones)):
-                if (bones[bone].dictspec['start_component'] == item and bones[bone].dictspec.has_key("start_vtxlist")) or (bones[bone].dictspec['end_component'] == item and bones[bone].dictspec.has_key("end_vtxlist")):
-                    editor.ModelComponentList[item] = {}
-                    editor.ModelComponentList[item]['bonevtxlist'] = {}
-                    editor.ModelComponentList[item]['boneobjlist'] = {}
-                    foundbone = 1
-                    break
-
-            if foundbone == 0:
-                continue
-            for bone in bones:
-                boneobjs = {}
-                frame = editor.Root.dictitems[item].dictitems['Frames:fg'].subitems[0]
-                if bone.dictspec['start_component'] == item and bone.dictspec.has_key("start_vtxlist"):
-                    boneobjs['s_or_e0'] = {}
-                    bone_vtxlist = []
-                    tristodrawlist = []
-                    selvtxlist = []
-                    vtxlist = bone.dictspec['start_vtxlist'].split(" ")
-                    for vtx in vtxlist:
-                        vtxinfo = {}
-                        vtxinfo['bonename'] = bone.name
-                        vtxinfo['s_or_e'] = 0
-                        vtxinfo['color'] = bone['start_color']
-                        editor.ModelComponentList[item]['bonevtxlist'][vtx] = vtxinfo
-                        vtx = int(vtx)
-                        bone_vtxlist = bone_vtxlist + [[vtx, frame.vertices[vtx]]]
-                        if vtx in selvtxlist:
-                            pass
-                        else:
-                            selvtxlist = selvtxlist + [vtx]
-                            tristodrawlist = tristodrawlist + findTrianglesAndIndexes(comp, vtx, frame.vertices[vtx])
-                    boneobjs['s_or_e0']['vtxlist'] = bone_vtxlist
-                    boneobjs['s_or_e0']['tristodrawlist'] = tristodrawlist
-                    boneobjs['s_or_e0']['selvtxlist'] = selvtxlist
-                if bone.dictspec['end_component'] == item and bone.dictspec.has_key("end_vtxlist"):
-                    boneobjs['s_or_e1'] = {}
-                    bone_vtxlist = []
-                    tristodrawlist = []
-                    selvtxlist = []
-                    vtxlist = bone.dictspec['end_vtxlist'].split(" ")
-                    for vtx in vtxlist:
-                        vtxinfo = {}
-                        vtxinfo['bonename'] = bone.name
-                        vtxinfo['s_or_e'] = 1
-                        vtxinfo['color'] = bone['end_color']
-                        editor.ModelComponentList[item]['bonevtxlist'][vtx] = vtxinfo
-                        vtx = int(vtx)
-                        bone_vtxlist = bone_vtxlist + [[vtx, frame.vertices[vtx]]]
-                        if vtx in selvtxlist:
-                            pass
-                        else:
-                            selvtxlist = selvtxlist + [vtx]
-                            tristodrawlist = tristodrawlist + findTrianglesAndIndexes(comp, vtx, frame.vertices[vtx])
-                    boneobjs['s_or_e1']['vtxlist'] = bone_vtxlist
-                    boneobjs['s_or_e1']['tristodrawlist'] = tristodrawlist
-                    boneobjs['s_or_e1']['selvtxlist'] = selvtxlist
-                if (bone.dictspec['start_component'] == item and bone.dictspec.has_key("start_vtxlist")) or (bone.dictspec['end_component'] == item and bone.dictspec.has_key("end_vtxlist")):
-                    editor.ModelComponentList[item]['boneobjlist'][bone.name] = boneobjs
-    ### End of bone data creation.
-</code>
+search for <g>ModelComponentList</g><br>
+you will find a description of everything that is stored in this list and the structure as how the data is stored in detail.<br>
+Below is an example of those data structures.
 
 <u><i>What's in ModelComponentList </i></u>&nbsp;:
 
-This is a sample of what is stored in the editor.ModelComponentList and what its data is used for.
+The first item <g>['tristodraw']</g> does <b>not</b> use a component's name as its <g>key</g> because it is used for <b>all</b> components to store data<br>
+for drawing the correct triangles (<g>faces</g>) when a drag operation takes place. As shown below, its data is created from the:
 <code>
- (component's full name as the key, for example <b>Component1:mc</b>)
-
-editor.ModelComponentList[component.name]
-{
-  'boneobjlist':
-  {'NewBone3:bone':
-    {'s_or_e0':
-      {'vtxlist': [[92, <vect 211.72 197.40 -14.58>],
-                   [90, <vect 210.12 203.39 -21.97>],
-                   [91, <vect 211.92 209.79 -14.98>]
-                  ],
-       'selvtxlist': [92, 90, 91],
-       'tristodrawlist': [[92, <vect 211.72 197.40 -14.58>, 130, 2, ((90, 128, 8), (91, 124, 20), (92, 124, 20))],
-                          [92, <vect 211.72 197.40 -14.58>, 131, 0, ((92, 124, 20), (91, 124, 20), (98, 90, 17))],
-                          [92, <vect 211.72 197.40 -14.58>, 132, 0, ((92, 124, 20), (98, 90, 17), (99, 91, 12))],
-                          [92, <vect 211.72 197.40 -14.58>, 138, 1, ((90, 128, 8), (92, 124, 20), (93, 95, 2))],
-                          [92, <vect 211.72 197.40 -14.58>, 139, 1, ((93, 95, 2), (92, 124, 20), (99, 91, 12))],
-                          [90, <vect 210.12 203.39 -21.97>, 128, 2, ((93, 95, 2), (96, 91, 12), (90, 128, 8))],
-                          [90, <vect 210.12 203.39 -21.97>, 129, 0, ((90, 128, 8), (96, 91, 12), (91, 124, 20))],
-                          [90, <vect 210.12 203.39 -21.97>, 130, 0, ((90, 128, 8), (91, 124, 20), (92, 124, 20))],
-                          [90, <vect 210.12 203.39 -21.97>, 138, 0, ((90, 128, 8), (92, 124, 20), (93, 95, 2))],
-                          [91, <vect 211.92 209.79 -14.98>, 129, 2, ((90, 128, 8), (96, 91, 12), (91, 124, 20))],
-                          [91, <vect 211.92 209.79 -14.98>, 130, 1, ((90, 128, 8), (91, 124, 20), (92, 124, 20))],
-                          [91, <vect 211.92 209.79 -14.98>, 131, 1, ((92, 124, 20), (91, 124, 20), (98, 90, 17))],
-                          [91, <vect 211.92 209.79 -14.98>, 137, 2, ((96, 91, 12), (98, 90, 17), (91, 124, 20))]
-                         ]
-      }
-    }
-  },
-  'bonevtxlist':
-  {'91': {'color': '\x00\x00\xff', 's_or_e': 0, 'bonename': 'NewBone3:bone'},
-   '90': {'color': '\x00\x00\xff', 's_or_e': 0, 'bonename': 'NewBone3:bone'},
-   '92': {'color': '\x00\x00\xff', 's_or_e': 0, 'bonename': 'NewBone3:bone'}
-  }
-}
+editor.ModelVertexSelList
+    [
+        [92, &lt;vect 211.72 197.40 -14.58>],
+        [90, &lt;vect 210.12 203.39 -21.97>],
+        [91, &lt;vect 211.92 209.79 -14.98>]
+    ]
 </code>
-<table border=0 cellspacing=0>
-<tr><td valign=top>
-<img border=1 align=right>bones1.png</img>
-As you can see, each component has its own section and within it there are other <g>Python Dictionary Lists</g>, which are <g>'boneobjlist'</g> and<br>
-<g>'bonevtxlist'</g>, each of which have other <g>Python Dictionary Lists</g>. Doing it this way accomplishes two things:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1) New data and list can be created for future development easily and consistently,
-giving far more flexibility.<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2) Not everything can be stored with the bone as we would like, the <b>Delphi code</b>
-is not setup to allow it.
+And a sample of what it looks like in the list is this:
+<code>
+editor.ModelComponentList['tristodraw']
+    {
+    'h_head:mc':
+        {
+         0: [35, 34, 21, 2, 1],
+         1: [21, 20, 2, 0],
+         2: [39, 35, 1, 0],
+         3: [27, 25, 17,13, 12, 5, 4],
+         ....
+         90: [91, 92, 5, 3],
+         91: [28, 92, 90, 3],
+         92: [28, 26, 25, 91, 90]
+        }
+    }
+</code>
+The component's full names and types are used as keys within the <g>'tristodraw'</g> list for its own mesh which is made up of individual vertexes.<br>
+Then each vertex <g>index</g> (number) is, in turn, used as a key with its own list of other vertex indexes needed to draw its triangles or faces.
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<g><i>boneobjlist </i></g>&nbsp;:
-<ul>
-<li> Each bone has its own sub-dictionary list using its full name as the key.
-<li> <b>'s_or_e0'</b> stores data for that bones start handle and <b>'s_or_e1'</b> for the end handle, which again are dictionary list.
-<li> <b>'vtxlist'</b> stores a number of small <b>tuple</b> list, of vertex indexes assigned to that handle, within another list, which is used<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;to create the <b>'tristodrawlist'</b> below.
-<li> <b>'selvtxlist'</b> also stores the vertex indexes assigned to that handle, but in a different way and is used with the <b>'tristodrawlist'</b>
-below to help avoid duplicate drawing of triangle drag lines to<br>
-increase the programs speed.
-<li> <b>'tristodrawlist'</b> stores various lists for any triangle that the assigned vertexes are used in to draw their
-drag lines when needed.<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Each sub-list contains:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the vertex index, triangle index, that vertex's position of that triangle
-(point 0, 1 or 2)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;and another list of all the vertex indexes that
-make up that triangle along with their <b>U, V</b> texture positions.
-</ul>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<g><i>bonevtxlist </i></g>&nbsp;:
-<ul>
-<li> Another dictionary list, uses the vertex index (as a string) for each key which in turn stores...
-<li> the <b>'color'</b> of the handle it is assigned to, in Hex format,
-<li> the <b>'s_or_e'</b> value of 0 or 1, indicating which bone handle it is assigned to and
-<li> the <b>'bonename'</b> that the vertex is assigned to.<br>
-The above data is used to quickly get the correct bone handle color to draw each vertex in
-and when reassigning or releasing vertexes.
-</ul>
-</td></tr>
+All the other items in the <g>editor.ModelComponentList</g> <b>do</b> use the component's full name and type (<b><g>:mc</g></b>) as its primary key, for example <g><b>Component1:mc</b></g>.
+
+The first item we'll cover for components is the <g>'bonevtxlist'</g> which stores data for the
+<a href="intro.modeleditor.editelements.html#bones">Bones System</a> (using the full bone name and type) for a component.<br>
+Its sub-keys are vertex indexes (from that component, as intigers), that are assigned to that bone<br>
+and the value (what goes with that key) is that bone's handle color as a <g>hex value</g> converted to a <g>string</g> stored under the <g>key</g> of <b>color</b>.<br>
+This dictionary list is used to draw each assigned vertex (of that component) in the bone's handle color that the vertex is assigned to.<br>
+We do it this way because not everything can be stored with the bones as we would like, the <b>Delphi code</b> is not setup to allow it.
+
+<table border=0 cellspacing=0>
+<tr>
+<td>
+<code>
+editor.ModelComponentList[Component1:mc]['bonevtxlist']
+    {
+    'NewBone2:bone':
+        {
+         18: {'color': '\xa4\x00\xa4'},
+         34: {'color': '\xa4\x00\xa4'},
+         ....
+         90: {'color': '\x00\x00\xff'}
+        }
+    'NewBone3:bone':
+        {
+         92: {'color': '\x00\x00\xff'},
+         90: {'color': '\x00\x00\xff'},
+         ....
+         91: {'color': '\x00\x00\xff'}
+        }
+    }
+</code>
+</td><td align=right valign=top>
+<img border=1 align=right>bones1.png</img>
+</td>
+</tr>
 </table>
+
+The next item we'll cover for components is the <g>'colorvtxlist'</g> which stores a component's data for its
+<a href="intro.modeleditor.vertexcolorandweights.html#vertexcoloring">Vertex Coloring System</a>, if one exist.<br>
+Here again, its sub-keys are vertex indexes (from that component, as integers) but this time the value for each vertex key<br>
+is another dictionary list where the key is <g>vtx_color</g> and again a color as a <g>hex value</g> converted to a <g>string</g>.<br>
+But this color is used independently from the bone handle color described above and is for this particular system only.
+<code>
+editor.ModelComponentList[Component1:mc]['colorvtxlist']
+    {
+     39: {'vtx_color': '\xbf\xbf\xbf\x00'},
+     38: {'vtx_color': '\xbf\xbf\xbf\x00'},
+     49: {'vtx_color': '\xbf\xbf\xbf\x00'},
+     ....
+     51: {'vtx_color': '\xbf\xbf\xbf\x00'},
+     57: {'vtx_color': '\xbf\xbf\xbf\x00'},
+     ....
+    }
+</code>
+The final item we'll cover for components is the <g>'weightvtxlist'</g> which stores a component's data for its
+<a href="intro.modeleditor.vertexcolorandweights.html#vertexweights">Vertex Weights System</a>, if one exist.<br>
+Once more, its sub-keys are vertex indexes (from that component, as integers) yet this time the value for each vertex key<br>
+are a number of different items, all strictly pertaining to this particular system. You will notice that a single vertex<br>
+can have more then one full bone name as its sub-keys. That is because a vertex can be shared between more then one bone.<br>
+And then the bone sub-keys have sub-keys values of their own for each item needed in that system.
+<code>
+editor.ModelComponentList[Component1:mc]['weightvtxlist']
+    {
+     18: {'NewBone2:bone': {'weight_value': 0.8, 'color': 'x00\xb7', 'weight_index': 18}}
+         {'NewBone3:bone': {'weight_value': 0.2, 'color': 'x00\xa4', 'weight_index': 19}}
+    }
+</code>
+As stated above, more items can be added to these component dictionary lists as needed in the future without disrupting what is already there<br>
+as well as entirely new component dictionary list making the editor very flexible and expandable for future development.
 
 
 

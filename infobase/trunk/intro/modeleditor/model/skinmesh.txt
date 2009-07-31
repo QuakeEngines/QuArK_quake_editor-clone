@@ -77,8 +77,7 @@ synchronized or added 'skin mesh' vertex selections. It can also be used to just
 <g>MakeEditorFaceObject</g>:&nbsp; Creates a QuArK Internal Face Object from 3 selected vertexes in the ModelVertexSelList.
 This one is unique to the <b>Model Editor</b> in that it uses the same structure as a <b>Map Editor</b> QuArK Internal Face Object,
 Which should allow the calling of various Map Editor files and functions in the Python code files to use in the Model Editor once
-the returned items from those functions are converted back into usable data in the Model Editor required format. This is still
-experimental at this point and the re-conversion code still needs to be written, but basically it would be the reverse of this function.
+the returned items from those functions are converted back into usable data in the Model Editor required format.
 
 Both of the above functions have various <g>option</g> settings that can be applied for more specific uses and those option
 settings and descriptions are in each of their related function description section.
@@ -94,7 +93,7 @@ One last item to cover are the various <g>selection lists</g> that I have setup 
 <g>SkinFaceSelList</g>:&nbsp; Used for <g>passing and retaining</g> individual and multi selected Model Editor component mesh triangles (faces) to the Skin-view page at this time.
 
 Complete detailed descriptions of each one of these <g>selection lists</g> are given near the top of the <g>quarkpy\mdleditor.py</g> file along with their related list item formats
-as to what data they require and carry as well as to what their purpose are. It would be a good idea to review that information.
+as to what data they require and carry as well as to what their purpose are. It would be a good idea to review that information as more will be added during future development of this editor.
 
 <b>One vital point about the <g>SkinVertexSelList</g> list is that it <g>must</g> be <g>changeable</g>, or <g>mutable</g> in Python terms,
 and the added data within it, or the list will become ineffective and objects will not be able to be updated when moved to work with QuArK.

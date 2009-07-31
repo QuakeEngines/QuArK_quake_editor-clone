@@ -17,7 +17,7 @@ elements are broken down.
 <b><g>subitems</g> :</b> This is a list of <b>QuArK Internal Objects</b> that make up a component and controls the order
 that they are displayed in the <a href="intro.modeleditor.overview.html#overview">editor's tree-view</a>.<br>
 They consist of the <g>Skins</g> group (its texture images), <g>Frames</g> group (its animation\<g>vertexes</g> frames)
-and, <g>SDO</g> group (SkinDrawObject) which is not really used at this time but still needs to be created.
+and, <g>SDO</g> group (SystemDataObject) which is not really used at this time but still needs to be created.
 
 A <a href="intro.modeleditor.importexport.html#bones">Skeleton</a> group (its bones if any) is created outside of,and shaired by,
 the components. This group is covered in detail <a href="intro.modeleditor.importexport.html#bones">further below</a>.
@@ -32,7 +32,7 @@ same items as its <g>subitems</g> and each one is a <g>key</g> <b>:</b> <g>value
 will use to create a <g>QuArK editor component</g>, for example:
 <code>
 {
- 'SDO:sdo': <QuArK Internal object at 0x0165FE7C>, # stands for SkinDrawObject
+ 'SDO:sdo': <QuArK Internal object at 0x0165FE7C>, # stands for SystemDataObject
  'Skins:sg': <QuArK Internal object at 0x0166D48C>,
  'Frames:fg': <QuArK Internal object at 0x0166D864>
 }
@@ -46,7 +46,8 @@ Each of these <g>dictitems</g> brake down into their own <g>dictspecs</g> items,
 its <g>subitems</g> as a whole and are only QuArK editor related.<br>
 They are individual dictionary items that contain settings for that component. Some of these settings are used and reset
 by simply moving things around in the editor, such as <g>vertexes</g>, while others are used to fill in the values
-on the <g>editor's Specifics/Args</g> page where they can be viewed and\or reset there. The <g>importer</g> file will
+on the <a href="intro.modeleditor.dataforms.html#specsargsview">editor's Specifics/Args</a> page
+where they can be viewed and\or reset there. The <g>importer</g> file will
 create these items (<a href="#dictspec2">covered in detail later<a>), for example:<br>
 <u>dictspec items of a model component</u> :
 <code>{'skinsize': (128.0, 64.0), 'Tris': '\x00\x00\x7f\...(a bunch more), 'show': '\x01'}</code>
@@ -166,5 +167,6 @@ animation, while <b>Quake 4</b> models use <g>Lightwave model formats</g> which 
 <g>.md5anim</g> files. The <g>.lwo</g> is a <g>static</g> model, meaning it only has one <g>frame</g> and it does
 not have any animation movement to it. While the <g>.md5mesh</g> and <g>.md5anim</g> files (which are text files)
 are used together to create a moving model. The <g>.md5mesh</g> is a <g>static</g> model that gives
-the model its base shape and the <g>.md5anim</g> file gives the vertex movement for its animation.
+the model its base shape and <a href="intro.modeleditor.editelements.html#bones">Bones System</a> hierarchy.
+The <g>.md5anim</g> file gives the vertex movement for its animation using that <a href="intro.modeleditor.editelements.html#bones">Bones System</a>.
 It gets a bit more complicated then that as to how they work exactly, but that is the basic method used for that format.

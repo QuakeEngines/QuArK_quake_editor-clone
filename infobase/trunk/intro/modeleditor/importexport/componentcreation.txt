@@ -18,16 +18,17 @@ Here we will look at its code, which is shown below, to see exactly how that is 
 <g><b>A special note here :</b></g><br>
 If you were also importing <a href="intro.modeleditor.editelements.html#bones">Bones</a>
 from the model this is the first of
-<a href="intro.modeleditor.importexport.html#undo1">two places</a>
-where that code would need to be added if there is only <b>ONE</b> component used for the model.
-If there is more then one then they would need to be added as <b>EACH</b> component is created.
-The additional line of code should be placed just below <g>Component.appenditem(framesgroup)</g>
+<a href="intro.modeleditor.importexport.html#bones">two places</a>
+where that code <b>COULD</b> be added if there is only <b>ONE</b> component used for the model.
+If there is more then one then they would need to be added at
+<a href="intro.modeleditor.importexport.html#bones">the second location</a> as a mater of code consistency.
+The additional line of code should be placed just <b>before</b> the <g>Component</g> lines
 above and can be copied from below just as it is shown.
 <code>
     editor.Root.dictitems['Skeleton:bg'].appenditem(skeletongroup)
 </code>
 See the section below covering
-<a href="intro.modeleditor.importexport.html#bones1">Bones Structure, Data within the Bone</a>
+<a href="intro.modeleditor.importexport.html#bones">Bones Structure, Data within the Bone</a>
 for the needed code to create individual bones for the <g>skeletongroup</g> <b>before</b>
 the line above is called.
 

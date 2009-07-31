@@ -21,29 +21,34 @@ This code structures these items in the same way they are displayed in the QuArK
 
 <g>fs = self.explorer.uniquesel</g><br>(what is selected at the moment.)<br>
 <g>if fs is not None:</g><br>(to test that something IS selected.)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<g>fs.type == ':mg':</g><br>(<b>misc. group</b> [contains the <b>:bone</b> items shown within it])<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<g>fs.type == ':mg':</g><br>(<b>misc. group</b> [contains the <b>:bound and :tag</b> items shown further below within it])<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<g>fs.type == ':tag':</g><br>(<b>tag group</b> [contains the individual <b>:tagframe</b> items shown further below within it if they exist])<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<g>fs.type == ':bg':</g><br>(<b>bone group</b> [contains the bones, if they exist])<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<g>fs.type == ':bone':</g><br>&nbsp;&nbsp;&nbsp;(<b>bones</b> [if they exist])<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<g>self.selectcgroup(fs)</g><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<g>fs.type == ':mc':</g><br>(<b>model component</b> [contains the <b>element groups</b> shown within it])<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<g>self.selectcomponent(fs)</g><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<g>fs.type == ':sg':</g><br>(<b>skin group</b> [contains the individual skins shown within it])<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<g>fs.type == ':sg':</g><br>(<b>skin group</b> [contains skins shown within it])<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<g>self.selectcgroup(fs)</g><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<g>fs.type == '.pcx':</g><br>&nbsp;&nbsp;&nbsp;(<b>skin</b> [texture file])<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<g>self.selectskin(fs)</g><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<g>fs.type == '.tga':</g><br>&nbsp;&nbsp;&nbsp;(<b>skin</b> [texture file])<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<g>self.selectskin(fs)</g><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<g>fs.type == '.dds':</g><br>&nbsp;&nbsp;&nbsp;(<b>skin</b> [texture file])<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<g>self.selectskin(fs)</g><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<g>fs.type == '.png':</g><br>&nbsp;&nbsp;&nbsp;(<b>skin</b> [texture file])<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<g>self.selectskin(fs)</g><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<g>fs.type == '.jpg':</g><br>&nbsp;&nbsp;&nbsp;(<b>skin</b> [texture file])<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<g>self.selectskin(fs)</g><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<g>fs.type == '.bmp':</g><br>&nbsp;&nbsp;&nbsp;(<b>skin</b> [texture file])<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<g>self.selectskin(fs)</g><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<g>elif fs.type == ':fg':</g><br>(<b>frame group</b> [contains the individual frames shown within it])<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<g>self.selectcgroup(fs)</g><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<g>fs.type == ':bg':</g><br>(<b>bone group</b> [contains the individual bones, if they exist])<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<g>self.selectcgroup(fs)</g><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<g>fs.type == '.pcx':</g><br>(<b>skin</b> [texture file])<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<g>self.selectskin(fs)</g><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<g>fs.type == '.jpg':</g><br>(<b>skin</b> [texture file])<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<g>self.selectskin(fs)</g><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<g>fs.type == '.tga':</g><br>(<b>skin</b> [texture file])<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<g>self.selectskin(fs)</g><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<g>fs.type == ':mf':</g><br>(<b>frame group</b> [for animation])<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<g>self.selectframe(fs)</g><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<g>fs.type == ':mf':</g><br>&nbsp;&nbsp;&nbsp;(<b>model frames</b> [for animation])<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<g>self.selectframe(fs)</g><br>
 
-the rest of this models <g>types</g>, not being displayed in the tree-view are:
-
-&nbsp;&nbsp;&nbsp;&nbsp;<g>fs.type == ':sdo':</g>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(not sure what this stands for)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<g>":tag"</g>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(TagType())<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<g>":bone"</g>&nbsp;&nbsp;&nbsp;&nbsp;(BoneType())<br>
+the rest of this models <g>types</g>, not being displayed in the tree-view are:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<g>fs.type == ':sdo':</g>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(system data object, not really used at this time)<br>
 
 The key name can be any arbitrary name, even the short path and name of the model skin file itself, as shown below:
 <code>{'models/characters/autopsy_d.tga': &lt;QuArK Internal object at 0x01390F78>}</code>
