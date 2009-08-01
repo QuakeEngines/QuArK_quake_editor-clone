@@ -320,6 +320,7 @@ def quark_mat_map(file, idnt, material, subnbr):
     tex_map_subno = material.dictspec[subnbr + 'MAP_SUBNO']
     tex_map_amount = float(material.dictspec[subnbr + 'MAP_AMOUNT'])
     tex_map_bitmap = material.dictspec[subnbr + 'BITMAP']
+    tex_map_bitmap = tex_map_bitmap.split(".")[0] + ".tga"
     tex_map_type = material.dictspec[subnbr + 'MAP_TYPE']
     tex_map_uvw_u_offset = float(material.dictspec[subnbr + 'UVW_U_OFFSET'])
     tex_map_uvw_v_offset = float(material.dictspec[subnbr + 'UVW_V_OFFSET'])
@@ -418,6 +419,7 @@ def map_image(file, idnt, MTexCon, subNo, tex, mapType):
     img = tex.getImage()
     #path = sys.expandpath(img.getFilename()).replace('/', '\\')
     path = img.filename #or img.getFilename()
+    path = path.split(".")[0] + ".tga"
     tex_class = 'Bitmap'
     tex_mapType = 'Screen'
     tex_filter = 'Pyramidal'
@@ -481,6 +483,7 @@ def map_uv(file, idnt, uv_image, uv_name):
 
     #replace "/" with "\" in image path
     uv_filename = uv_image.getFilename().replace('/', '\\')
+    uv_filename = uv_filename.split(".")[0] + ".tga"
 
     file.write("%s%s {\n" % ((Tab*idnt), map_type))
 
@@ -1431,7 +1434,7 @@ def save_ASE(self):
     #cleanup
     ase = 0
 
-    add_to_message = "Any used skin textures will need to be\nexported sepperatly to go with the model.\n\nRMB click on the skin in the tree-view.\nSelect 'Save Skin File' and chose a destination."
+    add_to_message = "Any skin textures used as a material\nwill need to be converted to a .tga file.\n\nThis can be done in an image editor\nsuch as 'PaintShopPro' or 'PhotoShop'."
     ie_utils.default_end_logging(filename, "EX", starttime, add_to_message) ### Use "EX" for exporter text, "IM" for importer text.
 
 # Saves the model file: root is the actual file,
@@ -1702,6 +1705,9 @@ def UIExportDialog(root, filename, editor):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.4  2009/07/25 10:24:29  cdunde
+# Improved .cm collision model code for simple to more detail model setting capability.
+#
 # Revision 1.3  2009/07/24 00:50:16  cdunde
 # ASE model exporter can now export .cm collision model files.
 #

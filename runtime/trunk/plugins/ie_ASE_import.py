@@ -1322,7 +1322,10 @@ def loadmodel(root, filename, gamename, nomessage=0):
 
     ### First we test for a valid (proper) model path.
     basepath = ie_utils.validpath(filename)
-    basepath = basepath.replace("\\", "/")
+    try:
+        basepath = basepath.replace("\\", "/")
+    except:
+        return
     if basepath is None:
         return
 
@@ -1872,7 +1875,7 @@ def dataformname(o):
     for value in values:
         MATList = MATList + value
 
-    MATList = MATList + """ Hint="List of materials that this"$0D"component can reference"$0D"as its currently active material."}"""
+    MATList = MATList + """ Hint="List of materials that this"$0D"component can reference"$0D"as its currently active material."$0D0D"To add a new texture to this list"$0D"you must add MAT(next number)/"$0D"to be beginning of its name."}"""
 
 
     dlgdef = """
@@ -1924,7 +1927,12 @@ def dataformname(o):
              "cast shadows"$22" - Indicates that this object should cast shadows if 1, and not if 0."$0D
              "           Ignored by UnrealEd. This is not shown in QuArK at this time."$0D22
              "receive shadows"$22" - Indicates that this object should receive shadows if 1, and not if 0."$0D
-             "           Ignored by UnrealEd. This is not shown in QuArK at this time."
+             "           Ignored by UnrealEd. This is not shown in QuArK at this time."$0D22
+             "material ref."$22" - List of materials that this component can"$0D
+             "           reference as its currently active material."$0D
+             "           To add a new texture to this list"$0D
+             "           you must add MAT(next number)/"$0D
+             "           to be beginning of its name."
       ase_NAME:                = {Typ="E R"  Txt="current skin"      Hint="Name of the skin texture material"$0D"that is currently selected and active."$0D0D"NOTE: Some games do NOT allow 'TEXTURE TILING'"$0D"for MODELS, only for SCENES."$0D"Meaning spreading the model faces over"$0D"repeated image areas of a texture."}
       """ + external_skin_editor_dialog_plugin + """
       """ + vtx_UVcolor_dialog_plugin + """
@@ -2018,6 +2026,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.10  2009/07/27 08:46:41  cdunde
+# Fix for error if no currentskin exist.
+#
 # Revision 1.9  2009/07/08 18:53:38  cdunde
 # Added ASE model exporter and completely revamped the ASE importer.
 #

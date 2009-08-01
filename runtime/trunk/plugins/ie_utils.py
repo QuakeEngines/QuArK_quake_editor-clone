@@ -285,7 +285,7 @@ def validpath(filename):
         basepath = basepath + word + "\\"
     if not filename.find(basepath + "models\\") != -1:
         quarkx.beep() # Makes the computer "Beep" once if folder structure is not valid.
-        quarkx.msgbox("Invalid Path Structure!\n\nThe location of a model must be in the\n    'gamefolder\\models' sub-folder.\n\nYour model selection to import shows this path:\n\n" + filename + "\n\nPlace this model's folder within the game's 'models' sub-folder\nor make a main folder with a 'models' sub-folder\nand place this model's folder in that sub-folder.\n\nThen re-select it for importing.\n\nAny added textures needed half to also be placed\nwithin the 'game' folder using their proper sub-folders.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
+        quarkx.msgbox("Invalid Path Structure!\n\nThe location of a model must be in the\n    'gamefolder\\models' sub-folder.\n\nYour model selection to import shows this path:\n\n" + filename + "\n\nPlace this model or model's folder within the game's 'models' sub-folder\nor make a main folder with a 'models' sub-folder\nand place this model or model's folder in that sub-folder.\n\nThen re-select it for importing.\n\nAny added textures needed half to also be placed\nwithin the 'game' folder using their proper sub-folders.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
         return None
     else:
         return basepath
@@ -295,6 +295,9 @@ def validpath(filename):
 #
 #
 #$Log$
+#Revision 1.8  2008/07/29 02:21:08  cdunde
+#Fixed comment typo error.
+#
 #Revision 1.7  2008/07/27 19:28:49  cdunde
 #Comment update.
 #
