@@ -783,6 +783,7 @@ class VertexHandle(qhandles.GenericHandle):
                 from mdlentities import vtxpaint
                 # Here "color" is just a dummy item to pass the vertex's
                 # color to so we can use the MapColor function to set the cv.pencolor correctly.
+                color = None
                 if editor.Root.currentcomponent.dictspec.has_key("show_vtx_color") and editor.ModelComponentList[editor.Root.currentcomponent.name].has_key('colorvtxlist') and editor.ModelComponentList[editor.Root.currentcomponent.name]['colorvtxlist'].has_key(self.index) and editor.ModelComponentList[editor.Root.currentcomponent.name]['colorvtxlist'][self.index].has_key('vtx_color'):
                     color = editor.ModelComponentList[editor.Root.currentcomponent.name]['colorvtxlist'][self.index]['vtx_color']
                     quarkx.setupsubset(SS_MODEL, "Colors")["color"] = color
@@ -793,10 +794,12 @@ class VertexHandle(qhandles.GenericHandle):
                     else:
                         cv.ellipse(int(p.x)-2, int(p.y)-2, int(p.x)+2, int(p.y)+2)
                 elif vtxpaint == 0 and quarkx.setupsubset(3, "Options")['VertexPaintMode'] is not None and quarkx.setupsubset(3, "Options")['VertexPaintMode'] == "1" and (flagsmouse == 552 or flagsmouse == 1064 or flagsmouse == 2088) and self == draghandle:
+                    foundbone = None
                     for item in editor.layout.explorer.sellist:
                         if item.type == ":bone":
                             if item.dictspec.has_key(item.shortname + "_weight_color"):
                                 color = item.dictspec[item.shortname + "_weight_color"]
+                                foundbone = 1
                                 break
                     quarkx.setupsubset(SS_MODEL, "Colors")["color"] = color
                     cv.pencolor = cv.brushcolor = MapColor("color", SS_MODEL)
@@ -805,15 +808,18 @@ class VertexHandle(qhandles.GenericHandle):
                         cv.ellipse(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
                     else:
                         cv.ellipse(int(p.x)-2, int(p.y)-2, int(p.x)+2, int(p.y)+2)
-                    update_weightvtxlist(editor, self.index) # Updates the ModelComponentList weightvtxlist HERE.
+                    if foundbone is not None:
+                        update_weightvtxlist(editor, self.index) # Updates the ModelComponentList weightvtxlist HERE.
                 elif editor.Root.currentcomponent.dictspec.has_key("show_weight_color") and editor.ModelComponentList[editor.Root.currentcomponent.name].has_key('weightvtxlist') and editor.ModelComponentList[editor.Root.currentcomponent.name]['weightvtxlist'].has_key(self.index):
                     if len(editor.layout.explorer.sellist) != 0 and editor.layout.explorer.sellist[0].type == ":bone" and editor.ModelComponentList[editor.Root.currentcomponent.name]['weightvtxlist'][self.index].has_key(editor.layout.explorer.sellist[0].name):
                         color = editor.ModelComponentList[editor.Root.currentcomponent.name]['weightvtxlist'][self.index][editor.layout.explorer.sellist[0].name]['color']
                     else:
                         bones = editor.ModelComponentList[editor.Root.currentcomponent.name]['weightvtxlist'][self.index].keys()
-                        color = editor.ModelComponentList[editor.Root.currentcomponent.name]['weightvtxlist'][self.index][bones[0]]['color']
-                    quarkx.setupsubset(SS_MODEL, "Colors")["color"] = color
-                    cv.pencolor = cv.brushcolor = MapColor("color", SS_MODEL)
+                        if len(bones) != 0:
+                            color = editor.ModelComponentList[editor.Root.currentcomponent.name]['weightvtxlist'][self.index][bones[0]]['color']
+                    if color is not None:
+                        quarkx.setupsubset(SS_MODEL, "Colors")["color"] = color
+                        cv.pencolor = cv.brushcolor = MapColor("color", SS_MODEL)
                     cv.brushstyle = BS_SOLID
                     if MdlOption("Ticks") == "1":
                         cv.ellipse(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
@@ -870,6 +876,7 @@ class VertexHandle(qhandles.GenericHandle):
                 if editor.ModelVertexSelList != []:
                     if quarkx.setupsubset(3, "Options")['VertexPaintMode'] is not None and quarkx.setupsubset(3, "Options")['VertexPaintMode'] == "1":
                         cv.brushcolor = vertexsellistcolor
+                        foundbone = None
         #                selsize = int(quarkx.setupsubset(SS_MODEL,"Building")['LinearSelected'][0])
                         for item in editor.ModelVertexSelList:
                             if self.index == item:
@@ -878,6 +885,7 @@ class VertexHandle(qhandles.GenericHandle):
                                     if sel.type == ":bone":
                                         if sel.dictspec.has_key(sel.shortname + "_weight_color"):
                                             color = sel.dictspec[sel.shortname + "_weight_color"]
+                                            foundbone = 1
                                             break
                                 if color is not None:
                                     quarkx.setupsubset(SS_MODEL, "Colors")["color"] = color
@@ -887,7 +895,8 @@ class VertexHandle(qhandles.GenericHandle):
                                     cv.ellipse(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
                                 else:
                                     cv.ellipse(int(p.x)-2, int(p.y)-2, int(p.x)+2, int(p.y)+2)
-                                update_weightvtxlist(editor, item) # Updates the ModelComponentList weightvtxlist HERE.
+                                if foundbone is not None:
+                                    update_weightvtxlist(editor, item) # Updates the ModelComponentList weightvtxlist HERE.
                     else:
                         cv.brushcolor = vertexsellistcolor
                         selsize = int(quarkx.setupsubset(SS_MODEL,"Building")['LinearSelected'][0])
@@ -4991,6 +5000,10 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.179  2009/07/14 09:43:03  cdunde
+#Attempt to speed up vertex drawing caused non-picked vertexes not to draw.
+#Reversing new code to previous code until this can be corrected.
+#
 #Revision 1.178  2009/07/14 00:27:33  cdunde
 #Completely revamped Model Editor vertex Linear draglines system,
 #increasing its reaction and drawing time to twenty times faster.
