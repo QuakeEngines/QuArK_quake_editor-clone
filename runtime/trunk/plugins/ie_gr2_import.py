@@ -11,7 +11,7 @@ QuArK Model Editor importer for Doom3\Quake4 .md5mesh and .md5anim model files.
 # FOUND IN FILE "COPYING.TXT"
 #
 
-$Header$
+#$Header$
 
 
 Info = {
@@ -1586,6 +1586,10 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.1  2009/08/02 12:02:54  cdunde
+# Support started for granny .gr2 model importing using QuArK's build and version of grnreader.exe.
+# Source code for exe in QuArK's src source\dllsource\QuArKgrnreader folder.
+#
 #
 #
 
