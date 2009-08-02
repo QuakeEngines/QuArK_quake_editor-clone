@@ -15,6 +15,10 @@ $Id$
 6.6.0 Beta 3
 ============
 
+* [cdunde/DanielPharos]: Support started for granny .gr2 model importing using
+          - QuArK's build and version of grnreader.exe.
+          - Source code for exe in QuArK's src source\dllsource\QuArKgrnreader folder.
+
 * [DanielPharos]: Added TextureWriteFormatA: some games want textures with Alpha in a
           - different format (for instance, Quake 3).
 
