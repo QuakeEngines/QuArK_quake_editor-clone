@@ -539,7 +539,10 @@ def AddStuff(editor):
         comp = editor.Root.currentcomponent
         if editor.ModelComponentList.has_key(comp.name) and editor.ModelComponentList[comp.name].has_key('weightvtxlist') and len(editor.ModelComponentList[comp.name]['weightvtxlist']) != 0:
             weightvtxlist = editor.ModelComponentList[comp.name]['weightvtxlist']
-            vtxnbrs = weightvtxlist.keys()
+            vtxnbrs = []
+            for key in weightvtxlist.keys():
+                if len(weightvtxlist[key]) != 1:
+                    vtxnbrs = vtxnbrs + [key]
             vtxnbrs.sort()
             if WeightsDlgPage > int(floor((len(vtxnbrs)+9)/10))-1:
                 WeightsDlgPage = int(floor((len(vtxnbrs)+9)/10))-1
@@ -600,18 +603,17 @@ def WeightsClick(editor):
         self.SRCsList = SRCsList
         # Rebuilds this dialog's form with the current, self generated, data in SpecsList.
         PageChanger = """ """
-        if editor.ModelComponentList.has_key(comp.name) and editor.ModelComponentList[comp.name].has_key("weightvtxlist"):
-            weightvtxlist = editor.ModelComponentList[comp.name]['weightvtxlist']
+        if len(vtxnbrs) != 0 and editor.ModelComponentList.has_key(comp.name) and editor.ModelComponentList[comp.name].has_key("weightvtxlist"):
             PageChanger = """
             page_changer: = {
               Txt = "Vertex weights page"
               Typ = "C"
               Items = """
             prevlast = vtxnbrs[0]
-            for page in range(int(floor((len(weightvtxlist)+9)/10))):
+            for page in range(int(floor((len(vtxnbrs)+9)/10))):
                 pagenbr = page + 1
                 testcount = pagenbr * 11
-                if testcount > len(weightvtxlist)+9:
+                if testcount > len(vtxnbrs)+9:
                     break
                 try:
                     firstvtx = vtxnbrs[page * 11]
@@ -621,20 +623,14 @@ def WeightsClick(editor):
                     firstvtx = prevlast
                     lastvtx = vtxnbrs[len(vtxnbrs)-1]
                 if page == 0:
-                    if len(weightvtxlist) == 0:
-                        pass
-                    else:
-                        PageChanger = PageChanger + "    \""+str(page + 1)+" ("+str(firstvtx)+" - "+str(lastvtx)+")\""
+                    PageChanger = PageChanger + "    \""+str(page + 1)+" ("+str(firstvtx)+" - "+str(lastvtx)+")\""
                 else:
                     PageChanger = PageChanger + "$0D \""+str(page + 1)+" ("+str(firstvtx)+" - "+str(lastvtx)+")\""
             PageChanger = PageChanger + """
               Values = """
-            for page in range(int(floor((len(weightvtxlist)+9)/10))):
+            for page in range(int(floor((len(vtxnbrs)+9)/10))):
                 if page == 0:
-                    if len(weightvtxlist) == 0:
-                        pass
-                    else:
-                        PageChanger = PageChanger + "    \""+str(page + 1)+"\""
+                    PageChanger = PageChanger + "    \""+str(page + 1)+"\""
                 else:
                     PageChanger = PageChanger + "$0D \""+str(page + 1)+"\""
             PageChanger = PageChanger + """
@@ -2158,6 +2154,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.47  2009/07/27 05:53:08  cdunde
+#To fix undefined variable.
+#
 #Revision 1.46  2009/07/14 00:27:33  cdunde
 #Completely revamped Model Editor vertex Linear draglines system,
 #increasing its reaction and drawing time to twenty times faster.
