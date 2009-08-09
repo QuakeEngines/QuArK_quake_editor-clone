@@ -692,6 +692,10 @@ def write_mesh(self, file, component, exp_list, matTable, total):
         self.colfile.write('0\n\n')
         name = self.filename.replace("\\", "/").split("/models/", 1)[1]
         name = "models/" + name
+        if self.src["makefolder"] is not None:
+            remove = self.newfiles_folder.rsplit('\\', 1)[1]
+            remove = "/" + remove + "/"
+            name = name.replace(remove, "/")
         self.colfile.write('collisionModel "%s" {\n' % (name))
         # Collision file vertices section.
         vertices_count = 0
@@ -1705,6 +1709,9 @@ def UIExportDialog(root, filename, editor):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.5  2009/08/01 05:31:13  cdunde
+# Update.
+#
 # Revision 1.4  2009/07/25 10:24:29  cdunde
 # Improved .cm collision model code for simple to more detail model setting capability.
 #
