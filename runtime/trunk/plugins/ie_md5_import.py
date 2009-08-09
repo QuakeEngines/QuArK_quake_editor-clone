@@ -539,6 +539,11 @@ def load_md5(md5_filename, basepath):
                     qw = -sqrt(qw)
                 md5_bones[bone_counter].bindmat = quaternion2matrix([qx,qy,qz,qw])
 
+                if not editor.ModelComponentList.has_key("bonelist"):
+                    editor.ModelComponentList['bonelist'] = {}
+                if not editor.ModelComponentList['bonelist'].has_key(new_bone.name):
+                    editor.ModelComponentList['bonelist'][new_bone.name] = {}
+                editor.ModelComponentList['bonelist'][new_bone.name]['bonematrix'] = md5_bones[bone_counter].bindmat
                 QuArK_bones = QuArK_bones + [new_bone]
 
            # for bone in md5_bones:
@@ -604,16 +609,15 @@ def load_md5(md5_filename, basepath):
                 weight_value = md5_model[mesh.mesh_index].weights[weight_index].bias
                 bonename = md5_bones[w.bone_index].name + ":bone"
                 # QuArK code.
-                if md5_model[mesh.mesh_index].verts[vert_counter].blend_count != 1:
-                    if not QuArK_weights_list.has_key(mesh.mesh_index):
-                        QuArK_weights_list[mesh.mesh_index] = {}
-                    if not QuArK_weights_list[mesh.mesh_index].has_key(vert_counter):
-                        QuArK_weights_list[mesh.mesh_index][vert_counter] = {}
-                    QuArK_weights_list[mesh.mesh_index][vert_counter][bonename] = {}
-                    QuArK_weights_list[mesh.mesh_index][vert_counter][bonename]['weight_value'] = weight_value
-                    color = quarkpy.mdlutils.weights_color(editor, weight_value)
-                    QuArK_weights_list[mesh.mesh_index][vert_counter][bonename]['color'] = color
-                    QuArK_weights_list[mesh.mesh_index][vert_counter][bonename]['weight_index'] = weight_index
+                if not QuArK_weights_list.has_key(mesh.mesh_index):
+                    QuArK_weights_list[mesh.mesh_index] = {}
+                if not QuArK_weights_list[mesh.mesh_index].has_key(vert_counter):
+                    QuArK_weights_list[mesh.mesh_index][vert_counter] = {}
+                QuArK_weights_list[mesh.mesh_index][vert_counter][bonename] = {}
+                QuArK_weights_list[mesh.mesh_index][vert_counter][bonename]['weight_value'] = weight_value
+                color = quarkpy.mdlutils.weights_color(editor, weight_value)
+                QuArK_weights_list[mesh.mesh_index][vert_counter][bonename]['color'] = color
+                QuArK_weights_list[mesh.mesh_index][vert_counter][bonename]['weight_index'] = weight_index
 
                 #w.dump()
                 #the bone that the current weight is refering to
@@ -636,11 +640,7 @@ def load_md5(md5_filename, basepath):
                 pos=[0.0]*3
                 #print "pos: ", pos
                 pos= vector_by_matrix(w.weights, b.bindmat)
-                #print "pos: ", pos
-                #print "w.bias: ", w.bias
-                #print "b.bindpos: ", b.bindpos
                 pos=((pos[0]+b.bindpos[0])*w.bias, (pos[1]+b.bindpos[1])*w.bias, (pos[2]+b.bindpos[2])*w.bias)
-                #print "pos: ", pos
                 #vertex position is sum of all weight info adjusted for bias
                 mesh.verts[vert_counter].co[0]+=pos[0]
                 mesh.verts[vert_counter].co[1]+=pos[1]
@@ -1610,6 +1610,10 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.19  2009/06/09 05:51:48  cdunde
+# Updated to better display the Model Editor's Skeleton group and
+# individual bones and their sub-bones when they are hidden.
+#
 # Revision 1.18  2009/06/05 02:24:23  cdunde
 # To get bones to move with md5.anim model frames.
 #
