@@ -1770,6 +1770,8 @@ class RectangleDragObject(RedImageDragObject):
 #
 
 def ZoomView(editor, view, zoom, clickpt):
+    if editor.dragobject is not None:
+        return
     center = clickpt + (view.screencenter-clickpt)/zoom
     if view.info.has_key("custom"):
         setviews([view], "scale", view.info["scale"]*zoom)
@@ -2207,6 +2209,10 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.85  2009/07/14 00:27:33  cdunde
+#Completely revamped Model Editor vertex Linear draglines system,
+#increasing its reaction and drawing time to twenty times faster.
+#
 #Revision 1.84  2009/07/14 00:00:11  cdunde
 #Missed part of last update.
 #
