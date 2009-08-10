@@ -149,6 +149,9 @@ def write_header(self, file, filename, component, worldTable):
     path_shortname = path_name.rsplit("/", 1)
     path, shortname = path_shortname[0], path_shortname[1]
     shortname = shortname.split(".")[0]
+    if self.src["makefolder"] is not None:
+        path = path.rsplit("/", 1)[0]
+    typepath = path.replace("/md5/", "/")
     if self.src['Doom3'] is not None:
         folder = "/cycles/"
         type = ".mb"
@@ -158,9 +161,9 @@ def write_header(self, file, filename, component, worldTable):
         type = ".ma"
         game = "Quake4"
     if filename.endswith(".md5mesh"):
-        file.write('commandline "mesh %s%s%s%s -dest %s -game %s"\n' % (path, folder, shortname, type, path_name, game))
+        file.write('commandline "mesh %s%s%s%s -dest %s/%s.md5mesh -game %s"\n' % (typepath, folder, shortname, type, path, shortname, game))
     else:
-        file.write('commandline "anim %s%s%s%s -dest %s -game %s"\n' % (path, folder, shortname, type, path_name, game))
+        file.write('commandline "anim %s%s%s%s -dest %s/%s.md5anim -game %s"\n' % (typepath, folder, shortname, type, path, shortname, game))
 
     file.write('\n')
 
@@ -204,7 +207,19 @@ def write_mesh(self, file, comp):
     # Starts the "mesh" section.
     file.write('mesh {\n')
     file.write('%s// meshes: %s\n' % (Tab, comp.shortname))
-    shader = comp.dictitems['Skins:sg'].subitems[0].shortname.rsplit("/", 1)[0] + "/" + comp.shortname
+    if comp.dictspec.has_key('shader_name') and comp.dictspec['shader_name'] != "None":
+        shader = comp.dictspec['shader_name']
+    elif comp.dictitems['Skins:sg'].subitems[0].shortname.startswith("models/"):
+        shader = comp.dictitems['Skins:sg'].subitems[0].shortname.rsplit("/", 1)[0] + "/" + comp.shortname
+    elif self.exportpath.find("\\models\\") != -1:
+        shader = self.exportpath.replace("\\", "/")
+        if shader.find("/md5/") != -1:
+            shader = shader.replace("/md5/", "/")
+        if self.src["makefolder"] is not None:
+            shader = shader.rsplit("/", 1)[0]
+        shader = "models/" + shader.split("/models/")[1] + "/" + comp.shortname
+    else:
+        shader = comp.dictitems['Skins:sg'].subitems[0].shortname.rsplit("/", 1)[0] + "/" + comp.shortname
     file.write('%sshader "%s"\n\n' % (Tab, shader))
 
     # Writes the "vert" section.
@@ -584,5 +599,8 @@ def UIExportDialog(root, filename, editor):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.1  2009/08/09 17:17:24  cdunde
+# Added .md5mesh and .md5anim model exporter including bones, skins and shaders.
+#
 #
 #
