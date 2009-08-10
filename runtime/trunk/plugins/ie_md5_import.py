@@ -940,7 +940,11 @@ def load_md5(md5_filename, basepath):
                 Tris = Tris + struct.pack("Hhh", tri.vert_index[2],comp_verts[tri.vert_index[2]][0],comp_verts[tri.vert_index[2]][1])
 
         # Now we start creating our Import Component and name it.
-        if shader_name is not None:
+        if mesh.shader != "":
+            Comp_name = mesh.shader.split("/")
+            Comp_name = Comp_name[len(Comp_name)-1]
+            Component = quarkx.newobj(Comp_name + ':mc')
+        elif shader_name is not None:
             Comp_name = shader_name.split("/")
             Comp_name = Comp_name[len(Comp_name)-1]
             Component = quarkx.newobj(Comp_name + ':mc')
@@ -1610,6 +1614,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.20  2009/08/09 17:17:24  cdunde
+# Added .md5mesh and .md5anim model exporter including bones, skins and shaders.
+#
 # Revision 1.19  2009/06/09 05:51:48  cdunde
 # Updated to better display the Model Editor's Skeleton group and
 # individual bones and their sub-bones when they are hidden.
