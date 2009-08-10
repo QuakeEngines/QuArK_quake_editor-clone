@@ -7,9 +7,8 @@ author: cdunde
 Some models have their own bone structure built into them for animation purposes.
 So those need to be imported\exported along with the other data.<br>
 This section covers how QuArK needs the data to work with its bone system.
-It would be a good idea to read about the <a href="intro.modeleditor.editelements.html#bones">Bones System<a>
-to get an understanding of how it works<br>
-and its capabilities.
+It would be a good idea to read about the <a href="intro.modeleditor.editelements.html#bones">Bones System<a><br>
+to get an understanding of how it works and its capabilities.
 
 <a name="bones1"></a>
 <g><i><b><u>Creating a Bone</u></b></i></g>&nbsp;:<br>
@@ -18,13 +17,13 @@ file's <g>def addbone</g> function.
 
 Basically the bone data is split up into two areas, that which is
 <a href="intro.modeleditor.importexport.html#componentcreation">kept within the bone</a> object itself
-<a href="intro.modeleditor.importexport.html#componentcreation">when it is created</a>
-and that which is created by QuArK when the model is read into<br>
-the editor and kept in a <g>Python Dictionary List</g> named <a href="#bones2">editor.ModelComponentList</a>.
+<a href="intro.modeleditor.importexport.html#componentcreation">when it is created</a><br>
+and that which is created by QuArK <b>and</b> the import file when the model is read into the editor.<br>
+This data is kept in a <g>Python Dictionary List</g> named the <a href="#bones2">editor.ModelComponentList</a>.
 
 The data that is <a href="#bones1">kept within the bone</a> primarily is what is displayed on a
-<a href="intro.modeleditor.editelements.html#specificsettings">Bones Specifics/ Args</a> page,
-shown to the right here, although it is also used throughout QuArK's internal code.
+<a href="intro.modeleditor.editelements.html#specificsettings">Bones Specifics/ Args</a> page, shown to the right here,<br>
+although it is also used throughout QuArK's internal code.
 
 This data must be read in from the imported model file and added to the
 <a href="intro.modeleditor.importexport.html#componentcreation">editor.Root.dictitems['Skeleton:bg']</a> when the
@@ -71,6 +70,14 @@ If a bone has vertexes assigned to it already these items must be added to the b
 new_bone.vtxlist = { 'mesh1:mc' : [0, 18, 34, 36, 7, 8] , 'mesh2:mc' : [0, 3, 45, 88] }
 new_bone.vtx_pos = {} or { 'mesh1:mc' : [0, 18, 34] } # Sets the bones custom position by those vertexes.
 </code>
+One last <g>attribute</g> that must be created is the
+<code>
+new_bone.rotmatrix = quarkx.matrix((1, 0, 0), (0, 1, 0), (0, 0, 1))
+</code>
+Doing this will automattically create the <g>new_bone.dictspec['rotmatrix']</g> item above, so that does <b>NOT</b>
+need to be coded into the import file.<br>
+Sorry for the confusion, but that's just the way the internal <g>Delphi</g> code works.
+
 The <g>new_bone.vtx_pos</g> are specific vertex indexes (of a single component) from their respective <g>new_bone.vtxlist</g>.<br>
 These are used to reposition the handle from frame to frame by averaging those vertex positions and applying
 that to the bone handle.
@@ -114,7 +121,11 @@ following example to write your own code. Also you can see more by opening the <
 
 Once again, the bone creation code must be added to the import python file, further above,
 <a href="intro.modeleditor.importexport.html#componentcreation">where each component is created</a><br>
-or some other fashion if more then one component (mesh) exist.
+or some other fashion if more then one component (mesh) exist.<br>
+A <b>reversal</b> of the bones code and <a href="#bones2">editor.ModelComponentList</a> use must <b>also</b> be added to its <b>export</b> file.
+
+The best thing for bones is to look at their sections in both the <g>plugins\ie_md5_import.py</g> and <g>plugins\ie_md5_export.py</g><br>
+files to really see, as an example, how the code should be written.
 
 <a name="bones2"></a>
 <u><i>QuArK's ModelComponentList </i></u>&nbsp;:
@@ -135,7 +146,37 @@ Below is an example of those data structures.
 
 <u><i>What's in ModelComponentList </i></u>&nbsp;:
 
-The first item <g>['tristodraw']</g> does <b>not</b> use a component's name as its <g>key</g> because it is used for <b>all</b> components to store data<br>
+The first item <g>['bonelist']</g> does <b>not</b> use a component's name as its <g>key</g> because it is used for <b>all</b> components to store <g>special</g> bone data<br>
+that can not be stored with the individual bones them selves because of code restrictions.<br>
+This data is created directly from the model import file when it is read in.<br>
+Below is a sample of what it looks like in the <g>ModelComponentList</g>:
+<code>
+editor.ModelComponentList['bonelist']
+    {
+    'origin:bone':
+        {'bonematrix':
+            [
+                [1.0, 0.0, 0.0, 0.0],
+                [0.0, 2.0276016521325602e-007, 0.99999999999997935, 0.0],
+                [0.0, -0.99999999999997935, 2.0276016521325602e-007, 0.0],
+                [0.0, 0.0, 0.0, 1.0]
+            ]
+        },
+    'Jaw:bone':
+        {'bonematrix':
+            [
+                [-0.000529303008452775, -0.99999985608851449, -8.7528713200168973e-005, 0.0],
+                [0.80618858053755937, -0.00037493098405372294, -0.59165854345018309, 0.0],
+                [0.59165842548649672, -0.00038373129607610634, 0.80618866296986091, 0.0],
+                [0.0, 0.0, 0.0, 1.0]
+            ]
+        }
+    }
+</code>
+The bone's full names and types are used as keys within the <g>'bonelist'</g> list for its own <b><g>special</g></b> data storage which,<br>
+at this time, is just the <g>['bonematrix']</g> dictionary list and must be saved for exporting purposes.
+
+The next item <g>['tristodraw']</g> also does <b>not</b> use a component's name as its <g>key</g> because it is used for <b>all</b> components to store data<br>
 for drawing the correct triangles (<g>faces</g>) when a drag operation takes place. As shown below, its data is created from the:
 <code>
 editor.ModelVertexSelList
