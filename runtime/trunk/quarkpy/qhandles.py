@@ -1771,7 +1771,9 @@ class RectangleDragObject(RedImageDragObject):
 
 def ZoomView(editor, view, zoom, clickpt):
     if editor.dragobject is not None:
-        return
+        if isinstance(editor.dragobject, FreeZoomDragObject):
+            editor.dragobject = None
+            return
     center = clickpt + (view.screencenter-clickpt)/zoom
     if view.info.has_key("custom"):
         setviews([view], "scale", view.info["scale"]*zoom)
@@ -2209,6 +2211,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.86  2009/08/10 19:45:33  cdunde
+#To stop involuntary and unwanted zoom jumps in the model editor.
+#
 #Revision 1.85  2009/07/14 00:27:33  cdunde
 #Completely revamped Model Editor vertex Linear draglines system,
 #increasing its reaction and drawing time to twenty times faster.
