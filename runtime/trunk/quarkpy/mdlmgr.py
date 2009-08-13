@@ -1539,7 +1539,8 @@ class ModelLayout(BaseLayout):
             if (len(self.explorer.sellist) >= 2) and (self.explorer.sellist[0].type == ':bg' or self.explorer.sellist[0].type == ':bone'):
                 for item in self.explorer.sellist:
                     if item.type == ':bg' or item.type == ':bone':
-                        pass
+                        if item.type == ':bone' and self.explorer.sellist[1].type == ':mf':
+                            Rebuild_Bone(item, self.explorer.sellist[1])
                     else:
                         fs = item
                         break
@@ -1630,6 +1631,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.104  2009/07/08 18:53:38  cdunde
+#Added ASE model exporter and completely revamped the ASE importer.
+#
 #Revision 1.103  2009/06/03 05:16:22  cdunde
 #Over all updating of Model Editor improvements, bones and model importers.
 #
