@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.99  2009/07/15 10:38:01  danielpharos
+Updated website link.
+
 Revision 1.98  2009/05/15 11:05:59  danielpharos
 Moved SaveMapVersion setting to seperate Files section.
 
@@ -3231,14 +3234,19 @@ begin
   ResolveMapSaveSettings(MapSaveSettings);
 
   if ObjectToSave is TTreeMapBrush then
+    //TTreeMapBrush needs to be checked before TTreeMapGroup, because it is a child of it!
     SaveAsMapTextTTreeMapBrush(ObjectToSave, MapSaveSettings, Negatif, Texte, Flags2, HxStrings)
   else if ObjectToSave is TDuplicator then
     //TDuplicator needs to be checked before TTreeMapEntity, because it is a child of it!
     SaveAsMapTextTDuplicator(ObjectToSave, MapSaveSettings, Negatif, Texte, Flags2, HxStrings)
   else if ObjectToSave is TTreeMapEntity then
+    //TTreeMapEntity needs to be checked before TTreeMapSpec, because it is a child of it!
     SaveAsMapTextTTreeMapEntity(ObjectToSave, MapSaveSettings, Negatif, Texte, Flags2, HxStrings)
   else if ObjectToSave is TTreeMapGroup then
+    //TTreeMapGroup needs to be checked before TTreeMapSpec, because it is a child of it!
     SaveAsMapTextTTreeMapGroup(ObjectToSave, MapSaveSettings, Negatif, Texte, Flags2, HxStrings)
+  else if ObjectToSave is TTreeMapSpec then
+    //SaveAsMapTextTTreeMapSpec(ObjectToSave, MapSaveSettings, Texte, HxStrings, Flags, I);
   else if ObjectToSave is TPolyedre then
     //SaveAsMapTextTPolygon(ObjectToSave, MapSaveSettings, Texte, OriginBrush, Flags2)
   else if ObjectToSave is TFace then
