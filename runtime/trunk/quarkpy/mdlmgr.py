@@ -1540,7 +1540,7 @@ class ModelLayout(BaseLayout):
                 for item in self.explorer.sellist:
                     if item.type == ':bg' or item.type == ':bone':
                         if item.type == ':bone' and self.explorer.sellist[1].type == ':mf':
-                            Rebuild_Bone(item, self.explorer.sellist[1])
+                            Rebuild_Bone(self.editor, item, self.explorer.sellist[1])
                     else:
                         fs = item
                         break
@@ -1631,6 +1631,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.105  2009/08/13 23:20:10  cdunde
+#To fix improper bone position on specifics page for different frame selection.
+#
 #Revision 1.104  2009/07/08 18:53:38  cdunde
 #Added ASE model exporter and completely revamped the ASE importer.
 #

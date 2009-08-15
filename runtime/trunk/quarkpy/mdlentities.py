@@ -1637,7 +1637,7 @@ class BoneType(EntityManager):
             quarkx.msgbox("FRAME COUNT ERROR !\n\nNot all components using these bones\nhave the same number of frames.\n\nCorrect and try again.", qutils.MT_ERROR, qutils.MB_OK)
             return h
 
-        Rebuild_Bone(o, frame)
+        Rebuild_Bone(editor, o, frame)
 
         bbox = (o.position - quarkx.vect(1.0, 1.0, 1.0)*o.dictspec['scale'][0], o.position + quarkx.vect(1.0, 1.0, 1.0)*o.dictspec['scale'][0])
         manager = mdlhandles.ModelEditorBoneHandlesManager(editor, o.getint('_color'), bbox, o)
@@ -2154,6 +2154,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.48  2009/08/06 17:41:05  cdunde
+#Weights Dialog update.
+#
 #Revision 1.47  2009/07/27 05:53:08  cdunde
 #To fix undefined variable.
 #

@@ -2709,7 +2709,7 @@ def assign_release_vertices(editor, bone, comp, vtxsellist):
     if len(new_bone.vtx_pos) == 0:
         new_bone.vtx_pos = old_vertices
         new_bone['component'] = comp.name
-        Rebuild_Bone(new_bone, editor.Root.currentcomponent.currentframe)
+        Rebuild_Bone(editor, new_bone, editor.Root.currentcomponent.currentframe)
     # This section updates the "Vertex Weights Dialog" if it is opened and needs to update.
     formlist = quarkx.forms(1)
     for f in formlist:
@@ -2826,8 +2826,13 @@ def keyframes_rotation(editor, bonesgroup, frame1, frame2):
 # This recreates the bone's drag handle, o being the bone object (the bone).
 # frame = editor.Root.dictitems[o.dictspec['component']].dictitems['Frames:fg'].subitems[editor.bone_frame]
 # This does not need to be returned since it is changing the object itself.
-def Rebuild_Bone(o, frame):
+def Rebuild_Bone(editor, o, frame):
     if len(o.vtx_pos) != 0:
+        frames = editor.Root.dictitems[o.dictspec['component']].dictitems['Frames:fg'].subitems
+        for frame2 in frames:
+            if frame2.name == frame.name:
+                frame = frame2
+                break
         vtxlist = o.vtx_pos[o.dictspec['component']]
         vtxpos = quarkx.vect(0.0, 0.0, 0.0)
         for vtx in vtxlist:
@@ -3811,6 +3816,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.111  2009/07/27 05:57:15  cdunde
+#To fix incorrect function description comment.
+#
 #Revision 1.110  2009/07/14 00:27:33  cdunde
 #Completely revamped Model Editor vertex Linear draglines system,
 #increasing its reaction and drawing time to twenty times faster.
