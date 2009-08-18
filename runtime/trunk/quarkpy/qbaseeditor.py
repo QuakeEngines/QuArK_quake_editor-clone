@@ -1282,15 +1282,19 @@ class BaseEditor:
                             for item in range(len(choice)):
                                 if (choice[item][1].subitems[0].parent == self.layout.explorer.uniquesel):
                                     try:
+                                        if choice[item+1][1].subitems[0].parent == self.Root.currentcomponent:
+                                            return
                                         self.layout.explorer.uniquesel = choice[item+1][1].subitems[0].parent
                                         break
                                     except:
+                                        if choice[0][1].subitems[0].parent == self.Root.currentcomponent:
+                                            return
                                         self.layout.explorer.uniquesel = choice[0][1].subitems[0].parent
                                         break
                                 if item == len(choice)-1:
+                                    if choice[0][1].subitems[0].parent == self.Root.currentcomponent:
+                                        return
                                     self.layout.explorer.uniquesel = choice[0][1].subitems[0].parent
-                        import mdlutils
-                        mdlutils.Update_Editor_Views(self, 4)
                     if choice == [] and flagsmouse == 264:
                         self.layout.explorer.sellist = []
                         self.layout.explorer.uniquesel = None
@@ -1618,6 +1622,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.129  2009/08/18 06:56:50  cdunde
+#To stop unnecessary drawing for LMB clicks to clear selections.
+#
 #Revision 1.128  2009/07/14 00:27:33  cdunde
 #Completely revamped Model Editor vertex Linear draglines system,
 #increasing its reaction and drawing time to twenty times faster.
