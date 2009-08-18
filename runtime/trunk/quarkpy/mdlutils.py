@@ -2833,10 +2833,11 @@ def Rebuild_Bone(editor, o, frame):
             if frame2.name == frame.name:
                 frame = frame2
                 break
+        vertices = frame.vertices
         vtxlist = o.vtx_pos[o.dictspec['component']]
         vtxpos = quarkx.vect(0.0, 0.0, 0.0)
         for vtx in vtxlist:
-            vtxpos = vtxpos + frame.vertices[vtx]
+            vtxpos = vtxpos + vertices[vtx]
         vtxpos = vtxpos/ float(len(vtxlist))
         o.position = vtxpos + quarkx.vect(o.dictspec['draw_offset'])
         o['position'] = o.position.tuple
@@ -3816,6 +3817,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.112  2009/08/15 09:37:14  cdunde
+#To fix improper bone position on specifics page for different frame selection.
+#
 #Revision 1.111  2009/07/27 05:57:15  cdunde
 #To fix incorrect function description comment.
 #
