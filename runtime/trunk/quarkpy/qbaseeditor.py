@@ -1290,13 +1290,10 @@ class BaseEditor:
                                 if item == len(choice)-1:
                                     self.layout.explorer.uniquesel = choice[0][1].subitems[0].parent
                         import mdlutils
-                        mdlutils.Update_Editor_Views(self)
+                        mdlutils.Update_Editor_Views(self, 4)
                     if choice == [] and flagsmouse == 264:
-                        if len(self.layout.explorer.sellist) != 0 or self.layout.explorer.uniquesel is not None:
-                            self.layout.explorer.sellist = []
-                            self.layout.explorer.uniquesel = None
-                            import mdlutils
-                            mdlutils.Update_Editor_Views(self)
+                        self.layout.explorer.sellist = []
+                        self.layout.explorer.uniquesel = None
                 #
                 # Send the click to MouseClicked
                 #
@@ -1621,6 +1618,10 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.128  2009/07/14 00:27:33  cdunde
+#Completely revamped Model Editor vertex Linear draglines system,
+#increasing its reaction and drawing time to twenty times faster.
+#
 #Revision 1.127  2009/06/03 05:16:22  cdunde
 #Over all updating of Model Editor improvements, bones and model importers.
 #
