@@ -1327,7 +1327,7 @@ def commonhandles(self, redraw=1):
         if flagsmouse == 536:
             return
             
-        if (flagsmouse == 2072 or flagsmouse == 2080) and isinstance(self.dragobject, qhandles.FreeZoomDragObject):
+        if flagsmouse == 2072 and isinstance(self.dragobject, qhandles.FreeZoomDragObject):
             self.dragobject = None
         
         if flagsmouse == 2072 and isinstance(self.dragobject, mdlhandles.VertexHandle):
@@ -1714,6 +1714,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.130  2009/08/11 01:03:09  cdunde
+#To stop involuntary and unwanted zoom jumps in the model editor.
+#
 #Revision 1.129  2009/07/30 22:54:08  cdunde
 #To remove line of unused code.
 #
