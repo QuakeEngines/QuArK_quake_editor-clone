@@ -400,9 +400,11 @@ class md5_mesh:
 ######################################################
 
 
-def load_md5(md5_filename, basepath):
+def load_md5(md5_filename, basepath, actionname):
     global md5_model, md5_model_comps, md5_bones, progressbar, tobj, logging, Strings
 
+    md5_model_comps = []
+    filename = actionname.replace(".md5mesh", "")
     ### This area is where we make the different elements of a QuArK Component, for each Component.
     # First we check for any other "Import Component"s,
     # if so we name the first component 1 more then the largest number
@@ -474,7 +476,8 @@ def load_md5(md5_filename, basepath):
                 temp_name=str(words[0])
                 temp_name=temp_name[1:-1]
                 ### QuArK note: this is where we start making our bones.
-                new_bone = quarkx.newobj(temp_name + ":bone")
+                new_bone = quarkx.newobj(filename + "_" + temp_name + ":bone")
+
                 new_bone['show'] = (1.0,)
                 new_bone['position'] = (float(words[3]), float(words[4]), float(words[5]))
                 new_bone.position = quarkx.vect(new_bone.dictspec['position'])
@@ -607,7 +610,7 @@ def load_md5(md5_filename, basepath):
                 w=mesh.weights[blend_index+blend_counter]
                 weight_index = blend_index+blend_counter
                 weight_value = md5_model[mesh.mesh_index].weights[weight_index].bias
-                bonename = md5_bones[w.bone_index].name + ":bone"
+                bonename = filename + "_" + md5_bones[w.bone_index].name + ":bone"
                 # QuArK code.
                 if not QuArK_weights_list.has_key(mesh.mesh_index):
                     QuArK_weights_list[mesh.mesh_index] = {}
@@ -1061,7 +1064,7 @@ class md5anim:
         baseframe = []
         framedata = []
         
-    def load_md5anim(self, md5_filename, bones=None): # bones = QuArK's "Skeleton:bg" folder to get our current bones from.
+    def load_md5anim(self, md5_filename, bones, actionname): # bones = A list of all the  bones in the QuArK's "Skeleton:bg" folder, in their proper tree-view order, to get our current bones from.
         file=open(md5_filename,"r")
         lines=file.readlines()
         file.close()
@@ -1108,6 +1111,7 @@ class md5anim:
                     self.md5anim_bones[bone_counter].frameDataIndex=int(words[3])
 
             elif words and words[0]=="baseframe":
+                filename = actionname.replace(".md5anim", "")
                 for bone_counter in range(0,self.num_bones):
                     line_counter+=1
                     current_line=lines[line_counter]
@@ -1117,9 +1121,9 @@ class md5anim:
                         line_counter+=1
                         current_line=lines[line_counter]
                         words=current_line.split()
-                    self.md5anim_bones[bone_counter].bindpos[0]=float(words[1])
-                    self.md5anim_bones[bone_counter].bindpos[1]=float(words[2])
-                    self.md5anim_bones[bone_counter].bindpos[2]=float(words[3])
+                    self.md5anim_bones[bone_counter].bindpos[0] = float(words[1])
+                    self.md5anim_bones[bone_counter].bindpos[1] = float(words[2])
+                    self.md5anim_bones[bone_counter].bindpos[2] = float(words[3])
                     qx = float(words[6])
                     qy = float(words[7])
                     qz = float(words[8])
@@ -1143,9 +1147,10 @@ class md5anim:
                     current_line=lines[line_counter]
                     words=current_line.split()
 
-    def apply(self, skelgroup, animfile):
+    def apply(self, bones, actionname):
         global editor
-        filename = animfile.replace(".md5anim", "")
+        filename = actionname.replace(".md5anim", "")
+
         #Construct baseframe data
         QuArK_baseframe_position_raw = [[]]*self.num_bones
         QuArK_baseframe_matrix_raw = [[]]*self.num_bones
@@ -1267,15 +1272,14 @@ class md5anim:
 
 
 # md5anim_filename = QuArK's full path and file name.
-# bones = QuArK's "Skeleton:bg" folder to get our current bones from.
-def load_md5anim(md5anim_filename, bones):
+# bones = A list of all the  bones in the QuArK's "Skeleton:bg" folder, in their proper tree-view order, to get our current bones from.
+def load_md5anim(md5anim_filename, bones, actionname):
     theanim = md5anim() # Making an "instance" of this class.
-    theanim.load_md5anim(md5anim_filename, bones) # Calling this class function to open and completely read the .md5_anim file.
+    theanim.load_md5anim(md5anim_filename, bones, actionname) # Calling this class function to open and completely read the .md5_anim file.
 
     if bones:
-        pth, actionname = os.path.split(md5anim_filename)
         theanim.apply(bones, actionname) # Calling this class function to create the amimation frames,
-                                         # "bones" is QuArK's "Skeleton:bg" folder, "actionname" is the full ,md5anim file name only.
+                                         # "bones" (see above), "actionname" is the full ,md5anim file name only.
     else:
         quarkx.beep() # Makes the computer "Beep" once if a file is not valid. Add more info to message.
         quarkx.msgbox("Could not apply animation.\nNo bones in the scene.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
@@ -1289,8 +1293,9 @@ def import_md5_model(basepath, md5_filename):
     # basepath just the path to the "game" folder.
     # md5_filename is the full path and file name.
     editor = quarkpy.mdleditor.mdleditor
+    pth, actionname = os.path.split(md5_filename)
     if md5_filename.endswith(".md5mesh"): # Calls to load the .md5_mesh file.
-        RetComponentList, RetQuArK_bone_list, message = load_md5(md5_filename, basepath) # Loads the model using list of ALL bones as they are created.
+        RetComponentList, RetQuArK_bone_list, message = load_md5(md5_filename, basepath, actionname) # Loads the model using list of ALL bones as they are created.
         ### Use the 'ModelRoot' below to test opening the QuArK's Model Editor with, needs to be qualified with main menu item.
         ModelRoot = quarkx.newobj('Model:mr')
       #  ModelRoot.appenditem(Component)
@@ -1298,8 +1303,9 @@ def import_md5_model(basepath, md5_filename):
         return ModelRoot, RetComponentList, RetQuArK_bone_list, message # Using list of ALL bones as they are created.
     else: # Calls to load the .md5_anim file.
        #   md5anim.load_md5anim(anim, md5_filename)
-        bones = editor.Root.dictitems['Skeleton:bg']
-        load_md5anim(md5_filename, bones)
+        skeletongroup = editor.Root.dictitems['Skeleton:bg']  # get the bones group
+        bones = skeletongroup.findallsubitems("", ':bone')    # get all bones
+        load_md5anim(md5_filename, bones, actionname)
 
 def loadmodel(root, filename, gamename, nomessage=0):
     #   Loads the model file: root is the actual file,
@@ -1404,7 +1410,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
             return
         if md5_anim_path[0].find(md5_mesh_path[0]) == -1:
             quarkx.beep() # Makes the computer "Beep" once if a file is not valid. Add more info to message.
-            quarkx.msgbox(".md5mesh and .md5anim files incompatible.\nThey need to come from same model folder.\n\nLast .md5mesh loaded from:\n    " + md5_mesh_path[0] + "\n\nYou selected:\n    " + md5_anim_path[0] + "\\" + md5_anim_path[1], quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
+            quarkx.msgbox(".md5mesh and .md5anim files incompatible.\nThey need to come from same model folder.\n\nLast .md5mesh loaded from:\n    " + md5_mesh_path[0] + "\n\nYou selected:\n    " + md5_anim_path[0] + "\\" + md5_anim_path[1] + "\n\nYou CAN do multiple model imports with their bones\nAND multiple animation files for that model.\n\nBUT all the animations MUST be imported right after\nyou have imported the '.md5mesh' file.\n\nYou can ONLY continue to import animation files\nfor the LAST mesh file loaded.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
             try:
                 progressbar.close()
             except:
@@ -1614,6 +1620,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.21  2009/08/10 01:08:36  cdunde
+# To improve on mesh "shader" name importing to properly naming components.
+#
 # Revision 1.20  2009/08/09 17:17:24  cdunde
 # Added .md5mesh and .md5anim model exporter including bones, skins and shaders.
 #

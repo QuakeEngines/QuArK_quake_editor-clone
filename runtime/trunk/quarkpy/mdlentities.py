@@ -1632,10 +1632,14 @@ class BoneType(EntityManager):
         try:
             frame = editor.Root.dictitems[o.dictspec['component']].dictitems['Frames:fg'].subitems[editor.bone_frame]
         except:
-            frame = editor.layout.explorer.sellist = [comp.dictitems['Frames:fg'].subitems[0]]
-            editor.bone_frame = 0
-            quarkx.msgbox("FRAME COUNT ERROR !\n\nNot all components using these bones\nhave the same number of frames.\n\nCorrect and try again.", qutils.MT_ERROR, qutils.MB_OK)
-            return h
+            try:
+                frame = editor.Root.dictitems[o.dictspec['component']].dictitems['Frames:fg'].subitems[0]
+                editor.bone_frame = 0
+            except:
+                frame = editor.layout.explorer.sellist = [comp.dictitems['Frames:fg'].subitems[0]]
+                editor.bone_frame = 0
+                quarkx.msgbox("FRAME COUNT ERROR !\n\nNot all components using these bones\nhave the same number of frames.\n\nCorrect and try again.", qutils.MT_ERROR, qutils.MB_OK)
+                return h
 
         Rebuild_Bone(editor, o, frame)
 
@@ -2154,6 +2158,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.49  2009/08/15 09:37:14  cdunde
+#To fix improper bone position on specifics page for different frame selection.
+#
 #Revision 1.48  2009/08/06 17:41:05  cdunde
 #Weights Dialog update.
 #

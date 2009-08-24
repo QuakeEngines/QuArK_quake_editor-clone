@@ -2509,6 +2509,7 @@ def addbone(editor, comp, pos):
     if name is None:
         name = "NewBone1"
     new_bone = quarkx.newobj(name + ":bone")
+    new_bone['flags'] = (0,0,0,0,0,0)
     new_bone['show'] = (1.0,)
     new_bone['component'] = editor.Root.currentcomponent.name
     new_bone['parent_name'] = "None"
@@ -2554,6 +2555,7 @@ def continue_bone(editor, bone, pos):
     if name is None:
         name = "NewBone1"
     new_bone = quarkx.newobj(name + ":bone")
+    new_bone['flags'] = (0,0,0,0,0,0)
     new_bone['show'] = (1.0,)
     new_bone['component'] = editor.Root.currentcomponent.name
     new_bone['parent_name'] = bone.name
@@ -2837,7 +2839,10 @@ def Rebuild_Bone(editor, o, frame):
         vtxlist = o.vtx_pos[o.dictspec['component']]
         vtxpos = quarkx.vect(0.0, 0.0, 0.0)
         for vtx in vtxlist:
-            vtxpos = vtxpos + vertices[vtx]
+            try:
+                vtxpos = vtxpos + vertices[vtx]
+            except:
+                return
         vtxpos = vtxpos/ float(len(vtxlist))
         o.position = vtxpos + quarkx.vect(o.dictspec['draw_offset'])
         o['position'] = o.position.tuple
@@ -3817,6 +3822,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.113  2009/08/18 23:21:36  cdunde
+#To increase Rebuild_Bone function processing speed.
+#
 #Revision 1.112  2009/08/15 09:37:14  cdunde
 #To fix improper bone position on specifics page for different frame selection.
 #

@@ -949,7 +949,11 @@ class ModelLayout(BaseLayout):
             if (selitem.type == ":bone") and (not isinstance(reserved, qtoolbar.button)):
                 if check_comp_list != selitem["comp_list"]:
                     check_comp_list = selitem['comp_list']
-                    self.editor.layout.explorer.sellist = [selitem] + [self.editor.Root.dictitems[selitem.dictspec['comp_list']].dictitems['Frames:fg'].subitems[self.editor.bone_frame]]
+                    try:
+                        self.editor.layout.explorer.sellist = [selitem] + [self.editor.Root.dictitems[selitem.dictspec['comp_list']].dictitems['Frames:fg'].subitems[self.editor.bone_frame]]
+                    except:
+                        self.editor.layout.explorer.sellist = [selitem] + [self.editor.Root.dictitems[selitem.dictspec['comp_list']].dictitems['Frames:fg'].subitems[0]]
+                        self.editor.bone_frame = 0
                     self.selchange()
                     if selitem.dictspec.has_key("frame_autoexpand") and selitem.dictspec['frame_autoexpand'] == "1":
                         item = self.editor.Root.currentcomponent.currentframe
@@ -1631,6 +1635,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.106  2009/08/15 09:37:14  cdunde
+#To fix improper bone position on specifics page for different frame selection.
+#
 #Revision 1.105  2009/08/13 23:20:10  cdunde
 #To fix improper bone position on specifics page for different frame selection.
 #
