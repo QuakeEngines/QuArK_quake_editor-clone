@@ -4609,7 +4609,11 @@ class BoneCenterHandle(BoneHandle):
             vertices = obj.vtxlist
             for compname in vertices:
                 for vtx in vertices[compname]:
-                    self.newverticespos[compname][vtx] = self.newverticespos[compname][vtx] + delta
+                    if editor.ModelComponentList.has_key(compname) and editor.ModelComponentList[compname]['weightvtxlist'].has_key(vtx) and editor.ModelComponentList[compname]['weightvtxlist'][vtx].has_key(obj.name):
+                        weight_value = editor.ModelComponentList[compname]['weightvtxlist'][vtx][obj.name]['weight_value']
+                    else:
+                        weight_value = 1.0
+                    self.newverticespos[compname][vtx] = self.newverticespos[compname][vtx] + (delta * weight_value)
 
         return delta
 
@@ -4704,8 +4708,12 @@ class BoneCornerHandle(BoneHandle):
             vertices = obj.vtxlist
             for compname in vertices:
                 for vtx in vertices[compname]:
+                    if obj == self.bone and editor.ModelComponentList.has_key(compname) and editor.ModelComponentList[compname]['weightvtxlist'].has_key(vtx) and editor.ModelComponentList[compname]['weightvtxlist'][vtx].has_key(obj.name):
+                        weight_value = editor.ModelComponentList[compname]['weightvtxlist'][vtx][obj.name]['weight_value']
+                    else:
+                        weight_value = 1.0
                     changedpos = self.newverticespos[compname][vtx] - rotationorigin
-                    changedpos = changedradius * m * changedpos
+                    changedpos = changedradius * m * changedpos * weight_value
                     self.newverticespos[compname][vtx] = changedpos + rotationorigin
 
         return (math.acos(m[0,0])*180.0/math.pi)
@@ -5000,6 +5008,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.180  2009/08/02 20:16:52  cdunde
+#Fix to avoid error of bone handle drawing.
+#
 #Revision 1.179  2009/07/14 09:43:03  cdunde
 #Attempt to speed up vertex drawing caused non-picked vertexes not to draw.
 #Reversing new code to previous code until this can be corrected.

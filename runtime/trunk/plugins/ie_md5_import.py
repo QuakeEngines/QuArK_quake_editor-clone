@@ -477,7 +477,7 @@ def load_md5(md5_filename, basepath, actionname):
                 temp_name=temp_name[1:-1]
                 ### QuArK note: this is where we start making our bones.
                 new_bone = quarkx.newobj(filename + "_" + temp_name + ":bone")
-
+                new_bone['flags'] = (0,0,0,0,0,0)
                 new_bone['show'] = (1.0,)
                 new_bone['position'] = (float(words[3]), float(words[4]), float(words[5]))
                 new_bone.position = quarkx.vect(new_bone.dictspec['position'])
@@ -1107,7 +1107,31 @@ class md5anim:
                     temp_name=temp_name[1:-1]
                     self.md5anim_bones[bone_counter].name=temp_name
                     self.md5anim_bones[bone_counter].parent_index = int(words[1])
-                    self.md5anim_bones[bone_counter].flags = int(words[2])
+                    flags = self.md5anim_bones[bone_counter].flags = int(words[2])
+                    if flags >= 32:
+                        flag = bones[bone_counter].dictspec['flags'][:5] + (32,)
+                        bones[bone_counter]['flags'] = flag
+                        flags = flags - 32
+                    if flags >= 16:
+                        flag = bones[bone_counter].dictspec['flags'][:4] + (16,) + bones[bone_counter].dictspec['flags'][5:]
+                        bones[bone_counter]['flags'] = flag
+                        flags = flags - 16
+                    if flags >= 8:
+                        flag = bones[bone_counter].dictspec['flags'][:3] + (8,) + bones[bone_counter].dictspec['flags'][4:]
+                        bones[bone_counter]['flags'] = flag
+                        flags = flags - 8
+                    if flags >= 4:
+                        flag = bones[bone_counter].dictspec['flags'][:2] + (4,) + bones[bone_counter].dictspec['flags'][3:]
+                        bones[bone_counter]['flags'] = flag
+                        flags = flags - 4
+                    if flags >= 2:
+                        flag = bones[bone_counter].dictspec['flags'][:1] + (2,) + bones[bone_counter].dictspec['flags'][2:]
+                        bones[bone_counter]['flags'] = flag
+                        flags = flags - 2
+                    if flags >= 1:
+                        flag = (1,) + bones[bone_counter].dictspec['flags'][1:]
+                        bones[bone_counter]['flags'] = flag
+
                     self.md5anim_bones[bone_counter].frameDataIndex=int(words[3])
 
             elif words and words[0]=="baseframe":
@@ -1620,6 +1644,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.22  2009/08/24 23:39:21  cdunde
+# Added support for multiple bone sets for imported models and their animations.
+#
 # Revision 1.21  2009/08/10 01:08:36  cdunde
 # To improve on mesh "shader" name importing to properly naming components.
 #
