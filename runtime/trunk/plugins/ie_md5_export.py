@@ -85,7 +85,12 @@ def inverse_matrix(self):
     for bone in range(len(self.bones)):
         bm = []
         worklist = [[0,0,0],[0,0,0],[0,0,0]]
-        for item in self.editor.ModelComponentList['bonelist'][self.bones[bone].name]['bonematrix']:
+        try:
+            bonematrix = self.editor.ModelComponentList['bonelist'][self.bones[bone].name]['bonematrix']
+        except:
+            bonematrix = self.bones[bone].rotmatrix.tuple
+
+        for item in bonematrix:
             temp = []
             for amt in item:
                 temp = temp + [amt]
@@ -232,11 +237,16 @@ def write_joints(self, file, filename, exp_list):
             parent_name = parent_name.replace(remove, "")
         if filename.endswith(".md5mesh"):
             bindpos = self.bones[bone].position.tuple
-            ### This does not work but it should.
-          #  w = ((0.0, 0.0, 0.0, 0.0),)
-          #  bone_rotmatrix = self.bones[bone].rotmatrix.tuple + w
-          #  bindmat = matrix2quaternion(bone_rotmatrix)
-            bindmat = self.bones[bone].dictspec['bindmat']
+            try:
+                bindmat = self.bones[bone].dictspec['bindmat']
+            except:
+               ### This does not work but it should.
+             #   w = ((0.0, 0.0, 0.0, 0.0),)
+             #   bone_rotmatrix = self.bones[bone].rotmatrix.tuple + w
+             #   bindmat = matrix2quaternion(bone_rotmatrix)
+                bindmat = self.bones[bone].rotmatrix.tuple[0]
+                self.bones[bone]['bindmat'] = bindmat
+
             file.write('%s"%s"%s%i ( %.10f %.10f %.10f ) ( %.10f %.10f %.10f )%s// %s\n' % (Tab, bonename, Tab, parent_index, bindpos[0], bindpos[1], bindpos[2], bindmat[0], bindmat[1], bindmat[2], Tab, parent_name))
         else:
             flags_count = 0
@@ -362,6 +372,7 @@ def write_mesh(self, file, comp):
     weight_index_list = []
     weights_list = {}
 
+    self.mesh_vtx_errors = []
     for vert_index in range(len(vertices)):
         # weight_value # see line 609 of ie_md5_import.py file.
         # pos= vector_by_matrix(w.weights, b.bindmat) # see line 642 of ie_md5_import.py file. ( w.weights = each weights x,y,z value in the file, b.bindmat = its bone's matrix. returns an x,y,z position.)
@@ -372,26 +383,49 @@ def write_mesh(self, file, comp):
         # mesh.verts[vert_counter].co[2]+=pos[2] # see line 647 of ie_md5_import.py file.
         # Also see lines 922, 923, 924 & 933 of ie_md5_import.py file.
         if weightvtxlist is not None:
-            for key in range(len(weightvtxlist[vert_index].keys())):
-                bonename = weightvtxlist[vert_index].keys()[key]
-                weight_index = weightvtxlist[vert_index][bonename]['weight_index']
-                if weight_index in weight_index_list:
-                    continue
-                else:
-                    weight_index_list = weight_index_list + [weight_index]
-                weight_value = weightvtxlist[vert_index][bonename]['weight_value']
-                for bone in range(len(self.bones)):
-                    if self.bones[bone].name == bonename:
-                        bone_index = bone
-                        # To compute the correct position for weights_list below.
-                        bone_handle_pos = self.bones[bone].position.tuple # For line 272 above.
-                        pos = vertices[vert_index].tuple # For lines 273-276 above.
-                        bone_matrix = self.bone_matrix_list[bonename]
-                        # Computation section.
-                        pos = ((pos[0]-bone_handle_pos[0]), (pos[1]-bone_handle_pos[1]), (pos[2]-bone_handle_pos[2]))
-                        pos = matrix_by_vector(pos, bone_matrix)
-                        break
-                weights_list[weight_index] = [bone_index, weight_value, pos[0], pos[1], pos[2]]
+            try:
+                for key in range(len(weightvtxlist[vert_index].keys())):
+                    bonename = weightvtxlist[vert_index].keys()[key]
+                    weight_index = weightvtxlist[vert_index][bonename]['weight_index']
+                    if weight_index in weight_index_list:
+                        continue
+                    else:
+                        weight_index_list = weight_index_list + [weight_index]
+                    weight_value = weightvtxlist[vert_index][bonename]['weight_value']
+                    for bone in range(len(self.bones)):
+                        if self.bones[bone].name == bonename:
+                            bone_index = bone
+                            # To compute the correct position for weights_list below.
+                            bone_handle_pos = self.bones[bone].position.tuple # For line 272 above.
+                            pos = vertices[vert_index].tuple # For lines 273-276 above.
+                            bone_matrix = self.bone_matrix_list[bonename]
+                            # Computation section.
+                            pos = ((pos[0]-bone_handle_pos[0]), (pos[1]-bone_handle_pos[1]), (pos[2]-bone_handle_pos[2]))
+                            pos = matrix_by_vector(pos, bone_matrix)
+                            break
+                    weights_list[weight_index] = [bone_index, weight_value, pos[0], pos[1], pos[2]]
+            except:
+                pos = vertices[vert_index].tuple
+                weights_list[vert_index] = [0, 1.0, -pos[1], -pos[0], -pos[2]]
+                self.mesh_vtx_errors = self.mesh_vtx_errors + [vert_index]
+        else:
+            pos = vertices[vert_index].tuple
+            weights_list[vert_index] = [0, 1.0, -pos[1], -pos[0], -pos[2]]
+            self.mesh_vtx_errors = self.mesh_vtx_errors + [vert_index]
+
+    if len(self.mesh_vtx_errors) != 0:
+        self.mesh_errors = self.mesh_errors + "\nVertexes not assigned to a bone and weight value applied\nfor component: " + comp.shortname + "\n\n"
+        vtxcount = 0
+        for vtx in range(len(self.mesh_vtx_errors)):
+            if vtx == len(self.mesh_vtx_errors)-1:
+                self.mesh_errors = self.mesh_errors + str(self.mesh_vtx_errors[vtx]) + "\n============================================\n"
+                break
+            if vtxcount == 10:
+                self.mesh_errors = self.mesh_errors + str(self.mesh_vtx_errors[vtx]) + ",\n"
+                vtxcount = 0
+                continue
+            self.mesh_errors = self.mesh_errors + str(self.mesh_vtx_errors[vtx]) + ", "
+            vtxcount = vtxcount + 1
 
     weightkeys = weights_list.keys()
     weightkeys.sort()
@@ -636,6 +670,14 @@ def save_md5(self):
     Strings[2455] = Strings[2455].replace(component.shortname + "\n", "")
 
     add_to_message = "Any skin textures used as a material\nwill need to be converted to a .tga file.\n\nThis can be done in an image editor\nsuch as 'PaintShopPro' or 'PhotoShop'."
+
+    if self.mesh_errors != "":
+        quarkx.beep()
+        add_to_message = add_to_message + "\n\nUNASSIGNED VERTEXES !\n\nA text file named 'MD5_unassigned_vertex_log' has been written to your main QuArK folder.\nRead that file for a listing of unassigned vertexes by component."
+        MD5_errorlog = open(quarkx.exepath + '\MD5_unassigned_vertex_log.txt',"w")
+        MD5_errorlog.write(self.mesh_errors)
+        MD5_errorlog.close()
+
     ie_utils.default_end_logging(filename, "EX", starttime, add_to_message) ### Use "EX" for exporter text, "IM" for importer text.
 
 # Saves the model file: root is the actual file,
@@ -794,6 +836,8 @@ class ExportSettingsDlg(quarkpy.qmacro.dialogbox):
             if foundbone == 0:
                 export_bones = export_bones + [bones[bone]]
         self.bones = export_bones
+        self.mesh_vtx_errors = []
+        self.mesh_errors = ""
         self.newfiles_folder = newfiles_folder
         self.md5file = None
         self.exportpath = filename.replace('\\', '/')
@@ -871,6 +915,9 @@ def UIExportDialog(root, filename, editor):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.4  2009/08/27 04:32:20  cdunde
+# Update for multiple bone sets for import and export to restrict export of bones for selected components only.
+#
 # Revision 1.3  2009/08/27 04:00:41  cdunde
 # To setup a bone's "flags" dictspec item for model importing and exporting support that use them.
 # Start of .md5anim exporting support.
