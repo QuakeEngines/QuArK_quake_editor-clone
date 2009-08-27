@@ -946,13 +946,13 @@ def load_md5(md5_filename, basepath, actionname):
         if mesh.shader != "":
             Comp_name = mesh.shader.split("/")
             Comp_name = Comp_name[len(Comp_name)-1]
-            Component = quarkx.newobj(Comp_name + ':mc')
+            Component = quarkx.newobj(filename + "_" + Comp_name + ':mc')
         elif shader_name is not None:
             Comp_name = shader_name.split("/")
             Comp_name = Comp_name[len(Comp_name)-1]
-            Component = quarkx.newobj(Comp_name + ':mc')
+            Component = quarkx.newobj(filename + "_" + Comp_name + ':mc')
         else:
-            Component = quarkx.newobj("Import Component " + str(CompNbr) + ':mc')
+            Component = quarkx.newobj(filename + "_" + "Import Component " + str(CompNbr) + ':mc')
             CompNbr = CompNbr + 1
         md5_model_comps = md5_model_comps + [Component.name]
         if mesh.mesh_index == 0:
@@ -1151,6 +1151,7 @@ class md5anim:
                     qx = float(words[6])
                     qy = float(words[7])
                     qz = float(words[8])
+                    bones[bone_counter][filename] = self.md5anim_bones[bone_counter].bindpos[0], self.md5anim_bones[bone_counter].bindpos[1], self.md5anim_bones[bone_counter].bindpos[2], qx,qy,qz
                     qw = 1 - qx*qx - qy*qy - qz*qz
                     if qw<0:
                         qw=0
@@ -1329,7 +1330,14 @@ def import_md5_model(basepath, md5_filename):
        #   md5anim.load_md5anim(anim, md5_filename)
         skeletongroup = editor.Root.dictitems['Skeleton:bg']  # get the bones group
         bones = skeletongroup.findallsubitems("", ':bone')    # get all bones
-        load_md5anim(md5_filename, bones, actionname)
+        mesh_bones = []
+        filename = md5_mesh_path[len(md5_mesh_path)-1]
+        filename = filename.replace(".md5mesh", "")
+        filename = filename + "_"
+        for bone in bones:
+            if bone.name.startswith(filename):
+                mesh_bones = mesh_bones + [bone]
+        load_md5anim(md5_filename, mesh_bones, actionname)
 
 def loadmodel(root, filename, gamename, nomessage=0):
     #   Loads the model file: root is the actual file,
@@ -1644,6 +1652,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.23  2009/08/27 03:59:31  cdunde
+# To setup a bone's "flags" dictspec item for model importing and exporting support that use them.
+#
 # Revision 1.22  2009/08/24 23:39:21  cdunde
 # Added support for multiple bone sets for imported models and their animations.
 #

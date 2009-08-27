@@ -201,9 +201,21 @@ def write_joints(self, file, filename, exp_list):
         bonename = self.bones[bone].shortname
         remove = bonename.split("_")[0]
         remove = remove + "_"
+        foundbone = 0
+        for comp in range(len(exp_list)):
+            if exp_list[comp][0].name.startswith(remove):
+                break
+            if comp == len(exp_list)-1:
+                for item in range(len(self.editor.Root.subitems)):
+                    if self.editor.Root.subitems[item].type == ":mc" and self.editor.Root.subitems[item].name.startswith(remove):
+                        foundbone = 1
+                        break
+                    if item == len(self.editor.Root.subitems)-1:
+                        break
+        if foundbone == 1:
+            continue
         bonename = bonename.replace(remove, "")
-        bindpos = self.bones[bone].position.tuple
-        if bone == 0:
+        if self.bones[bone].dictspec['parent_name'] == "None":
             parent_index = -1
         else:
             for parent_bone in range(len(self.bones)):
@@ -215,6 +227,9 @@ def write_joints(self, file, filename, exp_list):
             parent_name = ""
         else:
             parent_name = parent_name.split(":")[0]
+            remove = parent_name.split("_")[0]
+            remove = remove + "_"
+            parent_name = parent_name.replace(remove, "")
         if filename.endswith(".md5mesh"):
             bindpos = self.bones[bone].position.tuple
             ### This does not work but it should.
@@ -222,7 +237,7 @@ def write_joints(self, file, filename, exp_list):
           #  bone_rotmatrix = self.bones[bone].rotmatrix.tuple + w
           #  bindmat = matrix2quaternion(bone_rotmatrix)
             bindmat = self.bones[bone].dictspec['bindmat']
-            file.write('%s"%s"%s%i ( %.10f %.10f %.10f ) ( %.10f %.10f %.10f )%s// %s\n' % (Tab, self.bones[bone].shortname, Tab, parent_index, bindpos[0], bindpos[1], bindpos[2], bindmat[0], bindmat[1], bindmat[2], Tab, parent_name))
+            file.write('%s"%s"%s%i ( %.10f %.10f %.10f ) ( %.10f %.10f %.10f )%s// %s\n' % (Tab, bonename, Tab, parent_index, bindpos[0], bindpos[1], bindpos[2], bindmat[0], bindmat[1], bindmat[2], Tab, parent_name))
         else:
             flags_count = 0
             flags_total = 0
@@ -242,7 +257,7 @@ def write_joints(self, file, filename, exp_list):
                 frameDataIndexAmount = frameDataIndex
                 self.flagged_bones = self.flagged_bones + [self.bones[bone]]
 
-            anim_bone = [self.bones[bone].shortname, parent_index, flags_total, frameDataIndexAmount, parent_name, flags_list]
+            anim_bone = [bonename, parent_index, flags_total, frameDataIndexAmount, parent_name, flags_list]
 
             hierarchy_list = hierarchy_list + [anim_bone]
 
@@ -269,7 +284,11 @@ def write_joints(self, file, filename, exp_list):
 def write_mesh(self, file, comp):
     # Starts the "mesh" section.
     file.write('mesh {\n')
-    file.write('%s// meshes: %s\n' % (Tab, comp.shortname))
+    compname = comp.shortname
+    remove = compname.split("_")[0]
+    remove = remove + "_"
+    compname = compname.replace(remove, "")
+    file.write('%s// meshes: %s\n' % (Tab, compname))
     if comp.dictspec.has_key('shader_name') and comp.dictspec['shader_name'] != "None":
         shader = comp.dictspec['shader_name']
     elif comp.dictitems['Skins:sg'].subitems[0].shortname.startswith("models/"):
@@ -391,14 +410,16 @@ def write_mesh(self, file, comp):
 def write_bounds(self, file, exp_list):
     file.write('bounds {\n')
     # Maybe we can build a list to write all the frames in the write_frames function below since we half to go through all of them here, to save time.
+    self.mesh_data = [] # Used for the write_frames function below.
     self.baseframe_data = [] # Used for the write_frames function below.
     self.frames_data = [] # Used for the write_frames function below.
-    for frame in range(1, len(exp_list[0][0].dictitems['Frames:fg'].subitems)):
+    filename = exp_list[0][0].dictitems['Frames:fg'].subitems[1].name.split(" baseframe:mf")[0]
+    for frame in range(len(exp_list[0][0].dictitems['Frames:fg'].subitems)):
         bmin = [10000.0]*3
         bmax = [-10000.0]*3
         frame_data = [] # Used for the write_frames function below.
         flag_data = []
-        if frame == 1:
+        if frame < 2:
             for bone in self.bones:
                 flag_data = flag_data + [[quarkx.vect(0.0,0.0,0.0), 0.0]]
         else:
@@ -407,7 +428,7 @@ def write_bounds(self, file, exp_list):
         # Used for the write_frames function below and the bounds values.
         for comp in exp_list:
             vertices = comp[0].dictitems['Frames:fg'].subitems[frame].vertices
-            if frame == 1:
+            if frame < 2:
                 for bone in range(len(self.bones)):
                     if comp[0].name in self.bones[bone].vtx_pos.keys():
                         for vtx_index in self.bones[bone].vtx_pos[comp[0].name]:
@@ -433,22 +454,34 @@ def write_bounds(self, file, exp_list):
             if flag_data[item][1] > 0:
                 handle_pos = (flag_data[item][0]/flag_data[item][1]).tuple
             else:
-                if frame == 1:
+                if frame < 2:
                     handle_pos = self.bones[item].dictspec['position']
                 else:
                     handle_pos = self.flagged_bones[item].dictspec['position']
-            if frame == 1:
-                handle_offset = self.bones[item].dictspec['draw_offset']
-                flags = self.bones[item].dictspec['flags']
-                bindmat = self.bones[item].dictspec['bindmat']
-                item_data = item_data + [handle_pos[0] + handle_offset[0]]
-                item_data = item_data + [handle_pos[2] + handle_offset[2]]
-                item_data = item_data + [-handle_pos[1] - handle_offset[1]]
-                item_data = item_data + [bindmat[0]]
-                item_data = item_data + [bindmat[1]]
-                item_data = item_data + [bindmat[2]]
+            if frame < 2:
+                if frame == 0: # The "hierarchy" data.
+                    handle_offset = self.bones[item].dictspec['draw_offset']
+                    flags = self.bones[item].dictspec['flags']
+                    bindmat = self.bones[item].dictspec['bindmat']
+                    item_data = item_data + [handle_pos[0] + handle_offset[0]]
+                    item_data = item_data + [handle_pos[1] + handle_offset[1]]
+                    item_data = item_data + [handle_pos[2] + handle_offset[2]]
+                    item_data = item_data + [bindmat[0]]
+                    item_data = item_data + [bindmat[1]]
+                    item_data = item_data + [bindmat[2]]
+                else: # The "baseframe" data.
+                    try:
+                        baseframe_data = self.bones[item].dictspec[filename]
+                    except:
+                        continue
+                    for item in baseframe_data:
+                        item_data = item_data + [item]
             else:
                 handle_offset = self.flagged_bones[item].dictspec['draw_offset']
+                baseframe_data = self.flagged_bones[item].dictspec[filename]
+                dif0 = baseframe_data[0] - (handle_pos[0] + handle_offset[0])
+                dif1 = baseframe_data[1] - (handle_pos[1] + handle_offset[1])
+                dif2 = baseframe_data[2] - (handle_pos[2] + handle_offset[2])
                 flags = self.flagged_bones[item].dictspec['flags']
                 if flags[3] != 0 or flags[4] != 0 or flags[5] != 0:
                     qx = flags[3]
@@ -459,18 +492,17 @@ def write_bounds(self, file, exp_list):
                         qw=0
                     else:
                         qw = -sqrt(qw)
-                    print ""
-                    print "======================"
+
                     tempmatrix = quaternion2matrix([qx, qy, qz, qw])
-                    print "line 460 tempmatrix", tempmatrix
+
                     bindmat = self.flagged_bones[item].dictspec['bindmat']
             #        bindmat = matrix2quaternion(bindmat)
-                    print "line 463 bindmat", bindmat
+
                 if flags[0] != 0:
-                    item_data = item_data + [handle_pos[0] + handle_offset[0]]
-                if flags[2] != 0:
-                    item_data = item_data + [handle_pos[2] + handle_offset[2]]
+                    item_data = item_data + [handle_pos[0] + handle_offset[0] + dif0]
                 if flags[1] != 0:
+                    item_data = item_data + [handle_pos[2] + handle_offset[2]]
+                if flags[2] != 0:
                     item_data = item_data + [-handle_pos[1] - handle_offset[1]]
                 if flags[3] != 0:
                     item_data = item_data + [bindmat[0]]
@@ -481,9 +513,11 @@ def write_bounds(self, file, exp_list):
 
             frame_data = frame_data + [item_data]
 
+        if frame == 0:
+            self.mesh_data = self.mesh_data + [frame_data]
         if frame == 1:
             self.baseframe_data = self.baseframe_data + [frame_data]
-        else:
+        if frame > 1: 
             self.frames_data = self.frames_data + [frame_data]
         # Writes the bounds section lines.
         if frame > 1:   
@@ -498,16 +532,18 @@ def write_frames(self, file):
     # We still need all of this stuff corrected.
     # Writes the baseframe.
     file.write('baseframe {\n')
-    for line in self.baseframe_data[0]:
+    baseframe = self.baseframe_data[0]
+
+    for line in range(len(baseframe)):
         file.write('%s( ' % (Tab))
-        for value in range(len(line)):
-            if value == len(line)-4:
-                file.write('%.10f ) ( ' % (line[value]))
+        for value in range(len(baseframe[line])):
+            if value == len(baseframe[line])-4:
+                file.write('%.10f ) ( ' % (baseframe[line][value]))
                 continue
-            if value == len(line)-1:
-                file.write('%.10f )\n' % (line[value]))
+            if value == len(baseframe[line])-1:
+                file.write('%.10f )\n' % (baseframe[line][value]))
                 break
-            file.write('%.10f ' % (line[value]))
+            file.write('%.10f ' % (baseframe[line][value]))
     file.write('}\n\n')
     # Writes all the individual frames.
     for frame in range(len(self.frames_data)):
@@ -734,7 +770,30 @@ class ExportSettingsDlg(quarkpy.qmacro.dialogbox):
         self.filename = filename
         self.editor = editor
         skeletongroup = self.editor.Root.dictitems['Skeleton:bg']  # get the bones group
-        self.bones = skeletongroup.findallsubitems("", ':bone')    # get all bones
+        bones = skeletongroup.findallsubitems("", ':bone')    # get all bones
+        comp_list = []
+        for item in self.editor.layout.explorer.sellist:
+            if item.type == ":mc":
+                comp_list = comp_list + [item]
+        export_bones = []
+        for bone in range(len(bones)):
+            bonename = bones[bone].shortname
+            remove = bonename.split("_")[0]
+            remove = remove + "_"
+            foundbone = 0
+            for comp in range(len(comp_list)):
+                if comp_list[comp].name.startswith(remove):
+                    break
+                if comp == len(comp_list)-1:
+                    for item in range(len(self.editor.Root.subitems)):
+                        if self.editor.Root.subitems[item].type == ":mc" and self.editor.Root.subitems[item].name.startswith(remove):
+                            foundbone = 1
+                            break
+                        if item == len(self.editor.Root.subitems)-1:
+                            break
+            if foundbone == 0:
+                export_bones = export_bones + [bones[bone]]
+        self.bones = export_bones
         self.newfiles_folder = newfiles_folder
         self.md5file = None
         self.exportpath = filename.replace('\\', '/')
@@ -812,6 +871,10 @@ def UIExportDialog(root, filename, editor):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.3  2009/08/27 04:00:41  cdunde
+# To setup a bone's "flags" dictspec item for model importing and exporting support that use them.
+# Start of .md5anim exporting support.
+#
 # Revision 1.2  2009/08/10 01:31:15  cdunde
 # To improve on properly exporting mesh "shader" name.
 #
