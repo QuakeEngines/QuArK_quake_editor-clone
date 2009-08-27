@@ -470,13 +470,56 @@ def load_gr2mesh(gr2_filename, basepath):
     mesh_counter = 0
     comp_mesh = ()
     frame = framesgroup = skinsize = Tris = Component = sdogroup = skingroup = None
+    # Any .gr2 file can shuffle around the x,y,z order and give a factor to make the + or -.
+    # So the list below is setup for QuArK's default order and factors and is updated as the .gr2 file is read in at the beginning.
+    XYZlisting_factors = [[0,1], [1,1], [2,1]]
     for line_counter in range(0,num_lines):
         current_line = lines[line_counter]
         words = current_line.split()
         if len(words) < 3:
             continue
+        ### When starting to read in the output.ms file (created and read in the background then deleted)
+        ### some variables need to be store for use to apply to values later as they are read in from that file.
+        if words and words[1] == "tool":
+            if words[2] == "units":
+                unitsFactor = float(words[5])
+                continue
+            if words[2] == "origin:":
+                factors = words[3].replace("[", "")
+                factors = factors.replace("]", "")
+                factors = factors.split(",")
+                originFactor = [float(factors[0]), float(factors[1]), float(factors[2])]
+                continue
+            if words[2] == "right":
+                factor = words[4].replace("[", "")
+                factor = factor.replace("]", "")
+                factor = factor.split(",")
+                for value in range(len(factor)):
+                    amt = float(factor[value])
+                    if abs(amt) == 1:
+                        XYZlisting_factors[0][0], XYZlisting_factors[0][1] = value, float(amt)
+                        continue
+            if words[2] == "back":
+                factor = words[4].replace("[", "")
+                factor = factor.replace("]", "")
+                factor = factor.split(",")
+                for value in range(len(factor)):
+                    amt = float(factor[value])
+                    if abs(amt) == 1:
+                        XYZlisting_factors[1][0], XYZlisting_factors[1][1] = value, float(amt)
+                        continue
+            if words[2] == "up":
+                factor = words[4].replace("[", "")
+                factor = factor.replace("]", "")
+                factor = factor.split(",")
+                for value in range(len(factor)):
+                    amt = float(factor[value])
+                    if abs(amt) == 1:
+                        XYZlisting_factors[2][0], XYZlisting_factors[2][1] = value, float(amt)
+                        continue
+        
         ### New component starts here.
-        if words and words[2] == "mesh":
+        elif words and words[2] == "mesh":
             if frame is not None and len(frame_vertices) != 0:
                 frame['Vertices'] = frame_vertices
                 framesgroup.appenditem(frame)
@@ -512,12 +555,12 @@ def load_gr2mesh(gr2_filename, basepath):
             comp_vertsUV = comp_vertsUV + [v]
         # QuArK frame Vertices made here.
         elif words and words[0] == "setVert":
-            x, y, z = words[3].split(",")
-            x = x.replace("[", "")
-            z = z.replace("]", "")
-            x = float(x)
-            y = float(y)
-            z = float(z)
+            values = words[3].replace("[", "")
+            values = values.replace("]", "")
+            values = values.split(",")
+            x = float(values[XYZlisting_factors[0][0]]) * XYZlisting_factors[0][1]
+            y = float(values[XYZlisting_factors[1][0]]) * XYZlisting_factors[1][1]
+            z = float(values[XYZlisting_factors[2][0]]) * XYZlisting_factors[2][1]
             comp_mesh = comp_mesh + (x, y, z)
         # QuArK Tris made here.
         elif words and words[0] == "setFace":
@@ -548,6 +591,55 @@ def load_gr2mesh(gr2_filename, basepath):
             Tris = Tris + struct.pack("Hhh", fixed_vert_index0, comp_vertsUV[vert_index0][0], comp_vertsUV[vert_index0][1])
             Tris = Tris + struct.pack("Hhh", fixed_vert_index1, comp_vertsUV[vert_index1][0], comp_vertsUV[vert_index1][1])
             Tris = Tris + struct.pack("Hhh", fixed_vert_index2, comp_vertsUV[vert_index2][0], comp_vertsUV[vert_index2][1])
+
+        # QuArK Bones made in this section.
+        elif words and words[0] == "bone" and words[1] == "name:":
+            name = ""
+            for word in range(len(words)):
+                if word < 2:
+                    continue
+                if word == len(words)-1:
+                    name = name + words[word]
+                else:
+                    name = name + words[word] + " "
+            new_bone = quarkx.newobj(name + ":bone")
+            new_bone['flags'] = (0,0,0,0,0,0)
+            new_bone['show'] = (1.0,)
+        elif words and words[0] == "bone" and words[1] == "parentindex:":
+            new_bone['parent_index'] = words[2] # QuArK code, this is NOT an integer but a string of its integer value.
+            if words[2] == "-1":
+                new_bone['parent_name'] = "None"
+            else:
+                new_bone['parent_name'] = QuArK_bones[int(new_bone.dictspec['parent_index'])].name
+        elif words and words[0] == "bone" and words[2] == "origin:":
+            origin = words[3].replace("[", "")
+            origin = origin.replace("]", "")
+            origin = origin.split(",")
+            if new_bone.dictspec['parent_name'] == "None":
+                posX = float(origin[XYZlisting_factors[0][0]]) * XYZlisting_factors[0][1]
+                posY = float(origin[XYZlisting_factors[1][0]]) * XYZlisting_factors[1][1]
+                posZ = float(origin[XYZlisting_factors[2][0]]) * XYZlisting_factors[2][1]
+                new_bone['position'] = (posX, posY, posZ)
+            else:
+                parent_pos = QuArK_bones[int(new_bone.dictspec['parent_index'])].dictspec['position']
+                posX = (float(origin[XYZlisting_factors[0][0]]) * XYZlisting_factors[0][1]) + parent_pos[0]
+                posY = (float(origin[XYZlisting_factors[1][0]]) * XYZlisting_factors[1][1]) + parent_pos[1]
+                posZ = (float(origin[XYZlisting_factors[2][0]]) * XYZlisting_factors[2][1]) + parent_pos[2]
+                new_bone['position'] = (posX, posY, posZ)
+            new_bone.position = quarkx.vect(new_bone.dictspec['position'])
+            if new_bone.dictspec['parent_name'] == "None":
+                new_bone['bone_length'] = (0.0, 0.0, 0.0)
+            else:
+                new_bone['bone_length'] = (-quarkx.vect(QuArK_bones[int(new_bone.dictspec['parent_index'])].dictspec['position']) + quarkx.vect(new_bone.dictspec['position'])).tuple
+            new_bone['rotmatrix'] = "None"
+            new_bone['scale'] = (1.0,)
+            new_bone['component'] = ComponentList[0].name # Just use the 1st component created.
+            new_bone['draw_offset'] = (0.0, 0.0, 0.0)
+            new_bone['_color'] = MapColor("BoneHandles", 3)
+            new_bone.rotmatrix = quarkx.matrix((1, 0, 0), (0, 1, 0), (0, 0, 1))
+            new_bone.vtxlist = {}
+            new_bone.vtx_pos = {}
+            QuArK_bones = QuArK_bones + [new_bone]
 
    # os.remove(tempfile) ### Uncomment this line when importer is completed.
     ### Line below just temp while making importer.
@@ -945,9 +1037,6 @@ def load_gr2mesh(gr2_filename, basepath):
                     usekey = key
                     vtxcount = len(QuArK_bones[bone_index].vtxlist[key])
             if usekey is not None:
-                print "line 985 bone", QuArK_bones[bone_index].name
-                print "line 986 vtxlist", QuArK_bones[bone_index].vtxlist
-                print "line 987 vtxlist[usekey]", QuArK_bones[bone_index].vtxlist[usekey]
                 temp = {}
                 temp[usekey] = QuArK_bones[bone_index].vtxlist[usekey]
                 QuArK_bones[bone_index].vtx_pos = temp
@@ -957,17 +1046,11 @@ def load_gr2mesh(gr2_filename, basepath):
                         break
                 vtxpos = quarkx.vect(0, 0, 0)
                 frame = comp.dictitems['Frames:fg'].subitems[0]
-                print "line 995 bone", QuArK_bones[bone_index].name
-                print "line 996 vtx_pos", QuArK_bones[bone_index].vtx_pos
                 for vtx in range(len(QuArK_bones[bone_index].vtx_pos[usekey])):
                     vtxpos = vtxpos + frame.vertices[QuArK_bones[bone_index].vtx_pos[usekey][vtx]]
                 vtxpos = vtxpos/float(len(QuArK_bones[bone_index].vtx_pos[usekey]))
-                print "line 1002 vtxpos", vtxpos, type(vtxpos)
-                print "line 1003 position", QuArK_bones[bone_index].position, type(QuArK_bones[bone_index].position)
                 QuArK_bones[bone_index]['draw_offset'] = (QuArK_bones[bone_index].position - vtxpos).tuple
                 QuArK_bones[bone_index]['component'] = usekey
-                print "line 1006 draw_offset", QuArK_bones[bone_index].dictspec['draw_offset']
-                print "line 1007 component", QuArK_bones[bone_index].dictspec['component']
                     
     # Section below sets up the QuArK editor.ModelComponentList for each mesh.
     for mesh_index in ModelComponentList.keys():
@@ -1586,6 +1669,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.2  2009/08/02 12:24:05  cdunde
+# Slight error fix.
+#
 # Revision 1.1  2009/08/02 12:02:54  cdunde
 # Support started for granny .gr2 model importing using QuArK's build and version of grnreader.exe.
 # Source code for exe in QuArK's src source\dllsource\QuArKgrnreader folder.
