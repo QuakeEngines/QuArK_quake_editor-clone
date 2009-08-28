@@ -1002,11 +1002,11 @@ def load_gr2mesh(gr2_filename, basepath):
                 bone['component'] = Component.name
                 # This next line preserves origianl handle scale setting for each bone.
                 bone['org_scale'] = bone.dictspec['scale']
-        if shader_file is not None:
+        if shader_file is not None: # The path and name of the shader file.
             Component['shader_file'] = shader_file
-        if shader_name is not None:
+        if shader_name is not None: # The name of the shader in the shader file.
             Component['shader_name'] = shader_name
-        if mesh_shader is not None:
+        if mesh_shader is not None: # The actual text, to display, of the shader itself.
             Component['mesh_shader'] = mesh_shader
         Component['skinsize'] = skinsize
         Component['Tris'] = Tris
@@ -1669,6 +1669,10 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.3  2009/08/27 04:00:06  cdunde
+# To setup a bone's "flags" dictspec item for model importing and exporting support that use them.
+# Start of .gr2 bone importing support.
+#
 # Revision 1.2  2009/08/02 12:24:05  cdunde
 # Slight error fix.
 #

@@ -960,11 +960,11 @@ def load_md5(md5_filename, basepath, actionname):
                 bone['component'] = Component.name
                 # This next line preserves origianl handle scale setting for each bone.
                 bone['org_scale'] = bone.dictspec['scale']
-        if shader_file is not None:
+        if shader_file is not None: # The path and name of the shader file.
             Component['shader_file'] = shader_file
-        if shader_name is not None:
+        if shader_name is not None: # The name of the shader in the shader file.
             Component['shader_name'] = shader_name
-        if mesh_shader is not None:
+        if mesh_shader is not None: # The actual text, to display, of the shader itself.
             Component['mesh_shader'] = mesh_shader
         Component['skinsize'] = skinsize
         Component['Tris'] = Tris
@@ -1652,6 +1652,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.24  2009/08/27 04:32:20  cdunde
+# Update for multiple bone sets for import and export to restrict export of bones for selected components only.
+#
 # Revision 1.23  2009/08/27 03:59:31  cdunde
 # To setup a bone's "flags" dictspec item for model importing and exporting support that use them.
 #

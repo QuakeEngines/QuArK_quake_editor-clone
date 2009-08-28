@@ -2096,11 +2096,11 @@ def create_objects(filename, polynames, clip_list, objspec_list, surf_list, base
 
         # Now we start creating our Import Component and name it.
         Component = quarkx.newobj("Import Component " + str(CompNbr) + ':mc')
-        if shader_file is not None:
+        if shader_file is not None: # The path and name of the shader file.
             Component['shader_file'] = shader_file
-        if shader_name is not None:
+        if shader_name is not None: # The name of the shader in the shader file.
             Component['shader_name'] = shader_name
-        if mesh_shader is not None:
+        if mesh_shader is not None: # The actual text, to display, of the shader itself.
             Component['mesh_shader'] = mesh_shader
         Component['skinsize'] = skinsize
         Component['Tris'] = Tris
@@ -2680,6 +2680,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.31  2009/06/03 05:16:22  cdunde
+# Over all updating of Model Editor improvements, bones and model importers.
+#
 # Revision 1.30  2009/05/01 20:39:34  cdunde
 # Moved additional Specific page systems to mdlentities.py as modules.
 #

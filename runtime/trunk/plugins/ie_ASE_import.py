@@ -1237,11 +1237,11 @@ def spawn_mesh(obj, basepath, filename, ComponentList, message, CompNbr):
     else:
         Component = quarkx.newobj("Import Component " + str(CompNbr) + ':mc')
         CompNbr = CompNbr + 1
-    if shader_file is not None:
+    if shader_file is not None: # The path and name of the shader file.
         Component['shader_file'] = shader_file
-    if shader_name is not None:
+    if shader_name is not None: # The name of the shader in the shader file.
         Component['shader_name'] = shader_name
-    if mesh_shader is not None:
+    if mesh_shader is not None: # The actual text, to display, of the shader itself.
         Component['mesh_shader'] = mesh_shader
     Component['skinsize'] = skinsize
     Component['Tris'] = Tris
@@ -2026,6 +2026,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.11  2009/08/01 05:31:13  cdunde
+# Update.
+#
 # Revision 1.10  2009/07/27 08:46:41  cdunde
 # Fix for error if no currentskin exist.
 #
