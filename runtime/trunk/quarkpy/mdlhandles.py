@@ -1667,6 +1667,50 @@ def buildskinvertices(editor, view, layout, component, skindrawobject):
     "builds a list of handles to display on the skinview"
     global SkinView1
     from qbaseeditor import flagsmouse
+
+    ### This sets the location of the skin texture in the Skin-view when it is first opened
+    ### and I believe keeps it centered if the view is stretched to a different size.
+    center =  quarkx.vect(view.clientarea[0]/2, view.clientarea[1]/2, 0)
+    origin = center
+    viewscale = .5
+
+#DECKER - begin
+    #FIXME - Put a check for an option-switch here, so people can choose which they want (fixed-zoom/scroll, or reseting-zoom/scroll)
+    oldx, oldy, doautozoom = center.tuple
+    try:
+        oldorigin = view.info["origin"]
+        if not abs(origin - oldorigin):
+            oldscale = view.info["scale"]
+            if oldscale is None:
+                doautozoom = 1
+            oldx, oldy = view.scrollbars[0][0], view.scrollbars[1][0]
+        else:
+            doautozoom = 1
+    except:
+        doautozoom = 1
+
+    if doautozoom:  ### This sets the view.info scale for the Skin-view when first opened, see ###Decker below.
+        oldscale = viewscale
+#DECKER - end
+
+    # Line below to stop doautozoom.
+    if flagsmouse == 1056 or (flagsmouse == 16384 and view.info is None):
+     #   view.viewmode = "wire" # Don't know why, but making this "tex" causes it to mess up...bad!
+        view.info = {"type": "2D",
+                     "matrix": matrix_rot_z(pi2),
+                     "bbox": quarkx.boundingboxof(map(lambda h: h.pos, view.handles)),
+                     "scale": oldscale, ###DECKER This method leaves the scale unchanged from the last zoom (which is what sets the "scale" factor).
+                  #   "scale": viewscale, ###DECKER This method resets the texture size of a component to the size of the Skin-view
+                                          ### each time that component is re-selected, but not while any item within it is selected.
+                     "custom": singleskinzoom,
+                     "origin": origin,
+                     "noclick": None,
+                     "center": quarkx.vect(0,0,0),
+                     "viewname": "skinview",
+                     "mousemode": None
+                     }
+    SkinView1 = view
+
     if flagsmouse == 544 or flagsmouse == 552:
         return
   ### begin code from maphandles def viewsinglebezier
@@ -1674,7 +1718,7 @@ def buildskinvertices(editor, view, layout, component, skindrawobject):
         view.viewmode = "tex" # Don't know why, but if model HAS skin, making this "wire" causes black lines on zooms.
         try:
             tex = skindrawobject
-            texWidth,texHeight = tex["Size"]
+            texWidth, texHeight = tex["Size"]
             viewWidth,viewHeight = view.clientarea
                ### Calculates the "scale" factor of the Skin-view
                ### and sets the scale based on the largest size (Height or Width) of the texture
@@ -1689,9 +1733,12 @@ def buildskinvertices(editor, view, layout, component, skindrawobject):
             pass
         else:
             def draw1(view, finish=layout.editor.finishdrawing, texWidth=texWidth, texHeight=texHeight):
-                   ### This draws the lines from the center location point.
-                view.drawgrid(quarkx.vect(texWidth*view.info["scale"],0,0), quarkx.vect(0,texHeight*view.info["scale"],0), MAROON, DG_LINES, 0, quarkx.vect(-int(texWidth*.5),-int(texHeight*.5),0))
-                finish(view)
+                ### This draws the lines from the center location point.
+                try:
+                    view.drawgrid(quarkx.vect(texWidth*view.info["scale"],0,0), quarkx.vect(0,texHeight*view.info["scale"],0), MAROON, DG_LINES, 0, quarkx.vect(-int(texWidth*.5),-int(texHeight*.5),0))
+                    finish(view)
+                except:
+                    return None
 
             view.ondraw = draw1
             view.onmouse = layout.editor.mousemap
@@ -1716,30 +1763,6 @@ def buildskinvertices(editor, view, layout, component, skindrawobject):
         else:
             view.color = BLACK
 
-       ### This sets the location of the skin texture in the Skin-view when it is first opened
-       ### and I believe keeps it centered if the view is stretched to a different size.
-    center =  quarkx.vect(view.clientarea[0]/2, view.clientarea[1]/2, 0)
-    origin = center
-
-#DECKER - begin
-    #FIXME - Put a check for an option-switch here, so people can choose which they want (fixed-zoom/scroll, or reseting-zoom/scroll)
-    oldx, oldy, doautozoom = center.tuple
-    try:
-        oldorigin = view.info["origin"]
-        if not abs(origin - oldorigin):
-            oldscale = view.info["scale"]
-            if oldscale is None:
-                doautozoom = 1
-            oldx, oldy = view.scrollbars[0][0], view.scrollbars[1][0]
-        else:
-            doautozoom = 1
-    except:
-        doautozoom = 1
-
-    if doautozoom:  ### This sets the view.info scale for the Skin-view when first opened, see ###Decker below.
-        oldscale = viewscale
-#DECKER - end
-
     if component is None and editor.Root.name.endswith(":mr"):
         for item in editor.Root.dictitems:
             if item.endswith(":mc"):
@@ -1755,24 +1778,6 @@ def buildskinvertices(editor, view, layout, component, skindrawobject):
     n = quarkx.vect(1,1,1)
     v = orthogonalvect(n, view)
     view.flags = view.flags &~ (MV_HSCROLLBAR | MV_VSCROLLBAR)
-
-    # Line below to stop doautozoom.
-    if flagsmouse == 1056 or (flagsmouse == 16384 and view.info is None):
-     #   view.viewmode = "wire" # Don't know why, but making this "tex" causes it to mess up...bad!
-        view.info = {"type": "2D",
-                     "matrix": matrix_rot_z(pi2),
-                     "bbox": quarkx.boundingboxof(map(lambda h: h.pos, view.handles)),
-                     "scale": oldscale, ###DECKER This method leaves the scale unchanged from the last zoom (which is what sets the "scale" factor).
-                  #   "scale": viewscale, ###DECKER This method resets the texture size of a component to the size of the Skin-view
-                                          ### each time that component is re-selected, but not while any item within it is selected.
-                     "custom": singleskinzoom,
-                     "origin": origin,
-                     "noclick": None,
-                     "center": quarkx.vect(0,0,0),
-                     "viewname": "skinview",
-                     "mousemode": None
-                     }
-    SkinView1 = view
 
     if skindrawobject is None:
         editor.setupview(view, drawsingleskin, 0)
@@ -5008,6 +5013,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.181  2009/08/27 03:59:31  cdunde
+#To setup a bone's "flags" dictspec item for model importing and exporting support that use them.
+#
 #Revision 1.180  2009/08/02 20:16:52  cdunde
 #Fix to avoid error of bone handle drawing.
 #

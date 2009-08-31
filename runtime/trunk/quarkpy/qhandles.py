@@ -60,7 +60,10 @@ def aligntogrid(v, mode):
     if g<=0.0:
         return v   # no grid
     rnd = quarkx.rnd
-    return quarkx.vect(rnd(v.x/g)*g, rnd(v.y/g)*g, rnd(v.z/g)*g)
+    try:
+        return quarkx.vect(rnd(v.x/g)*g, rnd(v.y/g)*g, rnd(v.z/g)*g)
+    except:
+        return quarkx.vect(rnd(1/g)*g, rnd(1/g)*g, rnd(1/g)*g)
 
 def setupgrid(editor):
     #
@@ -2211,6 +2214,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.87  2009/08/11 01:03:09  cdunde
+#To stop involuntary and unwanted zoom jumps in the model editor.
+#
 #Revision 1.86  2009/08/10 19:45:33  cdunde
 #To stop involuntary and unwanted zoom jumps in the model editor.
 #
