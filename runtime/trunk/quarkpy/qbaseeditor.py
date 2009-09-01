@@ -1162,9 +1162,9 @@ class BaseEditor:
                         if view.info["viewname"] == "XY":
                             s = "Linear handle pos " + " x:%s"%ftoss(handle.pos.x) + " y:%s"%ftoss(handle.pos.y)
                         elif view.info["viewname"] == "XZ":
-                            s = "Linear handle pos " + " x:%s"%ftoss(handle.pos.x) + " y:%s"%ftoss(handle.pos.z)
+                            s = "Linear handle pos " + " x:%s"%ftoss(handle.pos.x) + " z:%s"%ftoss(handle.pos.z)
                         elif view.info["viewname"] == "YZ":
-                            s = "Linear handle pos " + " x:%s"%ftoss(handle.pos.y) + " y:%s"%ftoss(handle.pos.z)
+                            s = "Linear handle pos " + " y:%s"%ftoss(handle.pos.y) + " z:%s"%ftoss(handle.pos.z)
                         else:
                             s = "Linear handle pos " + " x,y,z: %s"%handle.pos
                     else:
@@ -1622,6 +1622,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.130  2009/08/18 07:47:54  cdunde
+#To stop Model Editor redraw of LMB selection of currentcomponent in views.
+#
 #Revision 1.129  2009/08/18 06:56:50  cdunde
 #To stop unnecessary drawing for LMB clicks to clear selections.
 #
