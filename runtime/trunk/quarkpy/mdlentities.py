@@ -1507,6 +1507,7 @@ class MiscGroupType(EntityManager):
     "Misc. Object Group, type = :mg"
 
 
+# Has no subitems or dictitems items, only dictspec items (position, mins, maxs and scale).
 class BoundType(EntityManager):
     "Bound Frame, type = :bound"
 
@@ -1556,10 +1557,12 @@ class BoundType(EntityManager):
         return formobj
 
 
+# Has no dictspec items, only subitems and dictitems (TagFrames).
 class TagType(EntityManager):
     "Tag, type = :tag"
 
 
+# Has no subitems or dictitems items, only dictspec items (origin and rotmatrix).
 class TagFrameType(EntityManager):
     "Tag Frame, type = :tagframe"
 
@@ -1571,10 +1574,6 @@ class TagFrameType(EntityManager):
           Help = "These are the Specific settings for a Tag Frame."$0D0D22
                  "origin"$22" - You must enter three values here."$0D
                  "          They have an accuracy of two digits."
-          sep: = {
-              Typ="S"
-              Txt="(Not funtional at this time)"
-                 }
           origin: = {
               Typ="EF003" 
               Txt="origin"
@@ -1897,6 +1896,8 @@ class ComponentType(EntityManager):
         dlgdef = """
         {
           Help = "These are the Specific settings for a Model Component."$0D0D22
+                 "triangles"$22" - Number of triangle faces of this component."$0D0D22
+                 "vertices"$22" - Number of vertices of this component."$0D0D22
                  "comp color 1"$22" - Color to use for this component's tint"$0D
                  "color in texture or solid mode or line color in wire mode."$0D
                  "                        Click the selector button to pick a color."$0D0D22
@@ -1913,6 +1914,18 @@ class ComponentType(EntityManager):
                  "color over their textured and solid views which can also"$0D
                  "display their mesh lines in a second color when a views"$0D
                  "'Mesh in Frames' option is checked on the 'Views Options' dialog."
+          tri_count: = 
+            {
+              Typ="E R"
+              Txt="triangles"
+              Hint="Number of triangle faces of this component."
+            }
+          vtx_count: = 
+            {
+              Typ="E R"
+              Txt="vertices"
+              Hint="Number of vertices of this component."
+            }
           comp_color1: = {
               Typ="LI"
               Txt="comp color 1"
@@ -1934,6 +1947,12 @@ class ComponentType(EntityManager):
                  }
         }
         """
+
+        o['tri_count'] = str(len(o.triangles))
+        if o.dictitems.has_key('Frames:fg') and len(o.dictitems['Frames:fg'].subitems) != 0:
+            o['vtx_count'] = str(len(o.dictitems['Frames:fg'].subitems[0].vertices))
+        else:
+            o['vtx_count'] = "0"
 
         formobj = quarkx.newobj("mc:form")
         formobj.loadtext(dlgdef)
@@ -2158,6 +2177,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.50  2009/08/24 23:39:21  cdunde
+#Added support for multiple bone sets for imported models and their animations.
+#
 #Revision 1.49  2009/08/15 09:37:14  cdunde
 #To fix improper bone position on specifics page for different frame selection.
 #
