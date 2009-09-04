@@ -15,6 +15,8 @@ $Id$
 6.6.0 Beta 3
 ============
 
+* [cdunde/DanielPharos]: Added Python .md3 import support with tags, animation, shader and skin files.
+
 * [cdunde]: Added support for multiple bone sets for imported models and their animations.
 
 * [cdunde/DanielPharos]: Added .md5mesh and .md5anim model exporter
