@@ -854,10 +854,10 @@ def loadmodel(root, filename, gamename, nomessage=0):
 
     undo = quarkx.action()
     editor_dictitems = editor.Root.dictitems
-    miscgroup = editor_dictitems['Misc Group:mg'].subitems
+    miscgroup = editor_dictitems['Misc:mg'].subitems
     for tag in range(len(tagsgroup)):
         if len(miscgroup) == 0:
-            undo.put(editor_dictitems['Misc Group:mg'], tagsgroup[tag])
+            undo.put(editor_dictitems['Misc:mg'], tagsgroup[tag])
         for item in range(len(miscgroup)):
             if tagsgroup[tag].name == miscgroup[item].name:
                 if ModelName.find("upper") != -1:
@@ -944,7 +944,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
                 else:
                     break
             if item == len(miscgroup)-1:
-                undo.put(editor_dictitems['Misc Group:mg'], tagsgroup[tag])
+                undo.put(editor_dictitems['Misc:mg'], tagsgroup[tag])
     for Component in ComponentList:
         undo.put(editor.Root, Component)
         editor.Root.currentcomponent = Component
@@ -1071,5 +1071,8 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.1  2009/09/04 07:11:28  cdunde
+# Added Python .md3 import support with tags, animation, shader and skin files.
+#
 #
 #
