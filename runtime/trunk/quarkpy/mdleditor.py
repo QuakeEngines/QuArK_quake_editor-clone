@@ -540,6 +540,43 @@ class ModelEditor(BaseEditor):
         import qbaseeditor
         from qbaseeditor import flagsmouse
 
+        tag_frame = None
+        tag_frame_index = -1
+        foundframe = None
+        for item in self.layout.explorer.sellist:
+            if item.type == ":tagframe" and tag_frame_index == -1:
+                tag_frame = item
+                for frame in item.parent.subitems:
+                    tag_frame_index = tag_frame_index + 1
+                    if frame.name == item.name:
+                        break
+                continue
+            if item.type == ":mf" and foundframe is None:
+                foundframe = item
+        if tag_frame_index != -1:
+            if foundframe is not None:
+                if len(foundframe.parent.subitems)-1 >= tag_frame_index:
+                    if foundframe != self.Root.currentcomponent.currentframe:
+                        self.Root.currentcomponent.currentframe = self.Root.currentcomponent.dictitems["Frames:fg"].subitems[tag_frame_index]
+                else:
+                    tag_name = tag_frame.parent.name.split("_")[0]
+                    for item in self.Root.subitems:
+                        if item.type == ":mc" and item.name.startswith(tag_name) and len(item.dictitems["Frames:fg"].subitems)-1 >= tag_frame_index:
+                            self.Root.currentcomponent = item
+                            self.Root.currentcomponent.currentframe = item.dictitems["Frames:fg"].subitems[tag_frame_index]
+                        #    frame = item.dictitems["Frames:fg"].subitems[tag_frame_index]
+                        #    if frame != self.Root.currentcomponent.currentframe:
+                        #        self.Root.currentcomponent.currentframe = item.dictitems["Frames:fg"].subitems[tag_frame_index]
+                        #        self.layout.explorer.sellist = [frame] + self.layout.explorer.sellist
+            else:
+                tag_name = tag_frame.parent.name.split("_")[0]
+                for item in self.Root.subitems:
+                    if item.type == ":mc" and item.name.startswith(tag_name) and len(item.dictitems["Frames:fg"].subitems)-1 >= tag_frame_index:
+                        if item == self.Root.currentcomponent and item.dictitems["Frames:fg"].subitems[tag_frame_index] == self.Root.currentcomponent.currentframe:
+                            break
+                        self.Root.currentcomponent = item
+                        self.Root.currentcomponent.currentframe = item.dictitems["Frames:fg"].subitems[tag_frame_index]
+
         mdlmgr.savefacesel = 1
         skipbuild = 0
         if qbaseeditor.flagsmouse == 1032:
@@ -1714,6 +1751,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.131  2009/08/18 05:33:35  cdunde
+#To remove code that caused multiple drawings of bone handles.
+#
 #Revision 1.130  2009/08/11 01:03:09  cdunde
 #To stop involuntary and unwanted zoom jumps in the model editor.
 #

@@ -466,6 +466,30 @@ class ModelFaceHandle(qhandles.GenericHandle):
 
 
 
+class TagFrameHandle(qhandles.GenericHandle):
+    "Frame Tag handle."
+
+    def __init__(self, pos, tagframe):
+        qhandles.GenericHandle.__init__(self, pos)
+        self.tagframe = tagframe
+        self.cursor = CR_CROSSH
+        self.undomsg = "mesh tag move"
+        self.editor = mdleditor.mdleditor
+        if not ico_dict.has_key('ico_objects'):
+            ico_dict['ico_objects'] = LoadIconSet("images\\objects", 16)
+
+    def draw(self, view, cv, draghandle=None):
+        editor = self.editor
+        if self.tagframe in editor.layout.explorer.sellist or self.tagframe.parent in editor.layout.explorer.sellist:
+            icon = ico_dict['ico_objects'][1][46]
+        else:
+            icon = ico_dict['ico_objects'][0][46]
+        if self.pos.visible:
+            point = view.proj(self.pos)
+            cv.draw(icon, int(point.x-7), int(point.y-7))
+
+
+
 class VertexHandle(qhandles.GenericHandle):
     "Frame Vertex handle."
 
@@ -1849,11 +1873,26 @@ def BuildCommonHandles(editor, explorer, option=1):
   #  if currentindex == editor.bone_frame:
   #      import qbaseeditor
   #      from qbaseeditor import currentview
-  #      print "mdlhandles line 1795 len(currentview.handles)",len(currentview.handles)
+  #      print "mdlhandles line 1876 len(currentview.handles)",len(currentview.handles)
   #      h = currentview.handles
   #      return h
+    th = []
+    tag_frame_index = -1
+    for frame in editor.Root.currentcomponent.dictitems['Frames:fg'].subitems:
+        tag_frame_index = tag_frame_index + 1
+        if frame.name == editor.Root.currentcomponent.currentframe.name:
+            break
+    if tag_frame_index != -1:
+        for item in editor.Root.dictitems["Misc:mg"].subitems:
+            if item.type == ":tag":
+                if len(item.subitems)-1 >= tag_frame_index:
+                    tag_frame = item.subitems[tag_frame_index]
+                    th = th + mdlentities.CallManager("handlesopt", tag_frame, editor)
+                else:
+                    tag_frame = item.subitems[0]
+                    th = th + mdlentities.CallManager("handlesopt", tag_frame, editor)
 
-    bh = []
+    bh = th
     if quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] == "1":
         if len(editor.ModelFaceSelList) != 0:
             MakeEditorFaceObject(editor)
@@ -1954,8 +1993,23 @@ def BuildHandles(editor, explorer, view, option=1):
   #      print "mdlhandles line 1888 len(currentview.handles)",len(currentview.handles)
   #      h = view.handles
   #      return h
+    th = []
+    tag_frame_index = -1
+    for frame in editor.Root.currentcomponent.dictitems['Frames:fg'].subitems:
+        tag_frame_index = tag_frame_index + 1
+        if frame.name == editor.Root.currentcomponent.currentframe.name:
+            break
+    if tag_frame_index != -1:
+        for item in editor.Root.dictitems["Misc:mg"].subitems:
+            if item.type == ":tag":
+                if len(item.subitems)-1 >= tag_frame_index:
+                    tag_frame = item.subitems[tag_frame_index]
+                    th = th + mdlentities.CallManager("handlesopt", tag_frame, editor)
+                else:
+                    tag_frame = item.subitems[0]
+                    th = th + mdlentities.CallManager("handlesopt", tag_frame, editor)
 
-    bh = []
+    bh = th
     if quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] == "1":
         view.handles = []
         if len(editor.ModelFaceSelList) != 0:
@@ -5013,6 +5067,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.182  2009/08/31 08:52:16  cdunde
+#To try and stop errors from opening the Model Editor Skin-view for the first time.
+#
 #Revision 1.181  2009/08/27 03:59:31  cdunde
 #To setup a bone's "flags" dictspec item for model importing and exporting support that use them.
 #

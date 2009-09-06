@@ -1566,6 +1566,18 @@ class TagType(EntityManager):
 class TagFrameType(EntityManager):
     "Tag Frame, type = :tagframe"
 
+    def handlesopt(o, editor):
+
+        h = []
+        if not o.dictspec.has_key("show"):
+            o['show'] = (1.0,)
+        if o.dictspec['show'][0] != 1.0:
+            return h
+
+        h = [mdlhandles.TagFrameHandle(quarkx.vect(o.dictspec['origin']), o)]
+        h[0].hint = o.parent.shortname + " " + o.shortname
+        return h
+
     def dataformname(o):
         "Returns the data form for this type of object 'o' (a Tag Frame) to use for the Specific/Args page."
 
@@ -2177,6 +2189,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.51  2009/09/03 18:47:54  cdunde
+#To add info to component specifics page.
+#
 #Revision 1.50  2009/08/24 23:39:21  cdunde
 #Added support for multiple bone sets for imported models and their animations.
 #

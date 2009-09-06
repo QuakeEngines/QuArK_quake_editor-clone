@@ -409,7 +409,8 @@ def Import(basepath, filename):
     # ModelsPath is just the path starting with the "models/" FOLDER on without the ".md3" file name or slash at the end of the path.
     ModelsPath = FolderPath.replace(BasePath+"/", "")
     # ModelName is just the .md3 model file name without any path or the ".md3" type.
-    ModelName = ModelName.split(".")[0]
+    ModelName = ModelName.rsplit(".", 1)[0]
+
     # PlayerModelName is just the .md3 player model file name, for special code handling, without any path or the ".md3" type.
     PlayerModelName = "None"
     if ModelsPath.find("/players/") != -1:
@@ -452,12 +453,27 @@ def Import(basepath, filename):
         skinsize = (0, 0)
         skingroup = quarkx.newobj('Skins:sg')
         skingroup['type'] = chr(2)
+        mesh_shader = None
 
+        def check4skin(skin, skingroup=skingroup):
+            checkname = skin.name.rsplit(".", 1)[0]
+            for keyname in skingroup.dictitems.keys():
+                for type in ImageTypes:
+                    if checkname + type == keyname:
+                        return keyname
+            return None
+
+        shaderlist = []
         for i in xrange(surface.numShaders):
+            # This is for the DUMMYS that can't do things right! 8-\
+            if surface.shaders[i].name in shaderlist:
+                continue
+            shaderlist = shaderlist + [surface.shaders[i].name]
             # Now it checks if the model has any shader textures specified with it
             # or any other textures if it does not use a shader file and trys to load those.
             foundshader = foundtexture = foundimage = imagefile = None
-            mesh_shader = shader_file = shader_name = shader_keyword = skin_file = map = clampmap = None
+            shader_file = shader_name = shader_keyword = None
+
             skinfiles = os.listdir(FolderPath) # Usually, only "player" models use ".skin" type files, like a shader. So we check for that.
             # If they exist we load the defalut.skin first, then all others.
             for file in skinfiles:
@@ -471,13 +487,13 @@ def Import(basepath, filename):
                         if len(line) == 2 and (PlayerModelName.find(line[0]) != -1 or surface.name.find(line[0]) != -1):
                             for type in ImageTypes:
                                 if line[1].find(type) != -1:
-                                    line = line[1].split(".")[0]
+                                    line = line[1].rsplit(".", 1)[0]
                                     foundtexture = line + type
                                     if os.path.isfile(BasePath + "/" + foundtexture):
                                         foundimage = BasePath + "/" + foundtexture
                                         skin = quarkx.newobj(foundtexture)
                                     else:
-                                        tryskin = foundtexture.split(".")[0]
+                                        tryskin = foundtexture.rsplit(".", 1)[0]
                                         for type in ImageTypes:
                                             if os.path.isfile(BasePath + "/" + tryskin + type):
                                                 foundimage = BasePath + "/" + tryskin + type
@@ -485,7 +501,8 @@ def Import(basepath, filename):
                                                 break
                                     if foundimage is not None:
                                         image = quarkx.openfileobj(foundimage)
-                                        if (not skin.name in skingroup.dictitems.keys()) and (not skin.shortname in skingroup.dictitems.keys()):
+                                        name = check4skin(skin)
+                                        if name is None:
                                             skin['Image1'] = image.dictspec['Image1']
                                             skin['Size'] = image.dictspec['Size']
                                             skin['shader_keyword'] = shader_keyword
@@ -494,7 +511,7 @@ def Import(basepath, filename):
                                                 skinsize = skin['Size']
                                             break
                                     else:
-                                        message = message + "Component: " + ModelFolder + "_" + surface.name + "\r\nuses the file:\r\n    " + FolderPath+"/"+file + "\r\nBut an image:\r\n    " + foundtexture + "\r\nit uses in that file does not exist in that folder.\r\nLocate image file and place in that folder.\r\n\r\n"
+                                        message = message + "Component: " + ModelFolder + "_" + surface.name + "\r\nuses the file:\r\n    " + FolderPath+"/"+file + "\r\nBut an image:\r\n    " + foundtexture + "\r\nit uses in that file does not exist in that folder or the folder has not been extracted.\r\nLocate image file and place in that extracted folder.\r\n\r\n"
                     break
             # If they exist we load all others.
             for file in skinfiles:
@@ -510,13 +527,13 @@ def Import(basepath, filename):
                         if len(line) == 2 and (PlayerModelName.find(line[0]) != -1 or surface.name.find(line[0]) != -1):
                             for type in ImageTypes:
                                 if line[1].find(type) != -1:
-                                    line = line[1].split(".")[0]
+                                    line = line[1].rsplit(".", 1)[0]
                                     foundtexture = line + type
                                     if os.path.isfile(BasePath + "/" + foundtexture):
                                         foundimage = BasePath + "/" + foundtexture
                                         skin = quarkx.newobj(foundtexture)
                                     else:
-                                        tryskin = foundtexture.split(".")[0]
+                                        tryskin = foundtexture.rsplit(".", 1)[0]
                                         for type in ImageTypes:
                                             if os.path.isfile(BasePath + "/" + tryskin + type):
                                                 foundimage = BasePath + "/" + tryskin + type
@@ -524,7 +541,8 @@ def Import(basepath, filename):
                                                 break
                                     if foundimage is not None:
                                         image = quarkx.openfileobj(foundimage)
-                                        if (not skin.name in skingroup.dictitems.keys()) and (not skin.shortname in skingroup.dictitems.keys()):
+                                        name = check4skin(skin)
+                                        if name is None:
                                             skin['Image1'] = image.dictspec['Image1']
                                             skin['Size'] = image.dictspec['Size']
                                             skin['shader_keyword'] = shader_keyword
@@ -534,11 +552,13 @@ def Import(basepath, filename):
                                             break
                                     else:
                                         message = message + "Component: " + ModelFolder + "_" + surface.name + "\r\nuses the file:\r\n    " + FolderPath+"/"+file + "\r\nBut an image:\r\n    " + foundtexture + "\r\nit uses in that file does not exist in that folder.\r\nLocate image file and place in that folder.\r\n\r\n"
+            imagefile = foundimage
 
             # Now we look for this component's texture directly if still no image but we have a "surface.shader.name".
             if foundimage is None:
                 if surface.shaders[i].name != "":
-                    foundtexture = surface.shaders[i].name.split(".")[0]
+
+                    foundtexture = surface.shaders[i].name.rsplit(".", 1)[0]
                     for type in ImageTypes:
                         findtexture = foundtexture + type
                         if os.path.isfile(BasePath + "/" + findtexture):
@@ -546,7 +566,8 @@ def Import(basepath, filename):
                             skinname = foundtexture = findtexture
                             skin = quarkx.newobj(skinname)
                             image = quarkx.openfileobj(foundimage)
-                            if (not skin.name in skingroup.dictitems.keys()) and (not skin.shortname in skingroup.dictitems.keys()):
+                            name = check4skin(skin)
+                            if name is None:
                                 skin['Image1'] = image.dictspec['Image1']
                                 skin['Size'] = image.dictspec['Size']
                                 skin['shader_keyword'] = shader_keyword
@@ -563,7 +584,8 @@ def Import(basepath, filename):
                                 skinname = foundtexture = findtexture
                                 skin = quarkx.newobj(skinname)
                                 image = quarkx.openfileobj(foundimage)
-                                if (not skin.name in skingroup.dictitems.keys()) and (not skin.shortname in skingroup.dictitems.keys()):
+                                name = check4skin(skin)
+                                if name is None:
                                     skin['Image1'] = image.dictspec['Image1']
                                     skin['Size'] = image.dictspec['Size']
                                     skin['shader_keyword'] = shader_keyword
@@ -571,12 +593,13 @@ def Import(basepath, filename):
                                     if skin['Size'][0] > skinsize[0] and skin['Size'][1] > skinsize[1]:
                                         skinsize = skin['Size']
                                     break
+                imagefile = foundimage
                 foundimage = None
 
             # Now we look for any shaders for this component'.
             if foundimage is None:
                 if surface.shaders[i].name != "":
-                    shader_name = surface.shaders[i].name.split(".")[0]
+                    shader_name = surface.shaders[i].name.rsplit(".", 1)[0]
                 else:
                     shader_name = ModelsPath
 
@@ -594,16 +617,20 @@ def Import(basepath, filename):
                             if foundshader is None and shaderlines[line].startswith(shader_name+"\n"):
                                 shaderline = shaderlines[line].replace(chr(9), "    ")
                                 shaderline = shaderline.rstrip()
-                                mesh_shader = "\r\n" + shaderline + "\r\n"
+                                if mesh_shader is None:
+                                    mesh_shader = ""
+                                mesh_shader = mesh_shader + "\r\n" + shaderline + "\r\n"
                                 shader_file = shaderspath + "/" + shaderfile
                                 foundshader = shader_name
                                 left_cur_braket = 0
                                 continue
-                            elif foundshader is None and shaderlines[line].find(surface.name) != -1:
+                            elif foundshader is None and shaderlines[line].find(surface.name) != -1 and (shaderlines[line].startswith("textures/") or shaderlines[line].startswith("models/")):
                                 shaderline = shaderlines[line].replace(chr(9), "    ")
                                 shaderline = shaderline.rstrip()
                                 shader_name = shaderline
-                                mesh_shader = "\r\n" + shaderline + "\r\n"
+                                if mesh_shader is None:
+                                    mesh_shader = ""
+                                mesh_shader = mesh_shader + "\r\n" + shaderline + "\r\n"
                                 shader_file = shaderspath + "/" + shaderfile
                                 foundshader = shader_name
                                 left_cur_braket = 0
@@ -624,35 +651,30 @@ def Import(basepath, filename):
                                 testline = shaderlines[line].strip()
                                 if testline.startswith("//"):
                                     continue
-                                if (shaderlines[line].find("map") != -1 or shaderlines[line].find("clampmap") != -1) and shaderlines[line].find(".tga") != -1:
+                                if shaderlines[line].find(".tga") != -1 or (shaderlines[line].find("/") != -1 and (shaderlines[line].find("models") != -1 or shaderlines[line].find("textures") != -1)):
                                     words = shaderlines[line].split()
                                     for word in words:
                                         if word.endswith(".tga"):
                                             foundtexture = word
-                                            if shaderlines[line].find("clampmap") != -1:
-                                                shader_keyword = "clampmap"
-                                            else:
-                                                shader_keyword = "map"
+                                            shader_keyword = words[0]
                                             skinname = foundtexture
                                             skin = quarkx.newobj(skinname)
                                             break
                                         elif word.find("/") != -1 and (word.startswith("models") or word.startswith("textures")):
                                             foundtexture = word
-                                            if shaderlines[line].find("clampmap") != -1:
-                                                shader_keyword = "clampmap"
-                                            else:
-                                                shader_keyword = "map"
+                                            shader_keyword = words[0]
                                             skinname = foundtexture
                                             skin = quarkx.newobj(skinname)
                                             break
                                     if foundtexture is not None:
-                                        foundtexture = foundtexture.split(".")[0]
+                                        foundtexture = foundtexture.rsplit(".", 1)[0]
                                         for type in ImageTypes:
                                             findtexture = foundtexture + type
                                             if os.path.isfile(BasePath + "/" + findtexture):
                                                 foundimage = BasePath + "/" + findtexture
                                                 image = quarkx.openfileobj(foundimage)
-                                                if (not skin.name in skingroup.dictitems.keys()) and (not skin.shortname in skingroup.dictitems.keys()):
+                                                name = check4skin(skin)
+                                                if name is None:
                                                     skin['Image1'] = image.dictspec['Image1']
                                                     skin['Size'] = image.dictspec['Size']
                                                     skin['shader_keyword'] = shader_keyword
@@ -661,14 +683,20 @@ def Import(basepath, filename):
                                                         skinsize = skin['Size']
                                                     break
                                                 else:
-                                                    if shader_keyword is not None and (not skingroup.dictitems[skin.name].dictspec.has_key('shader_keyword') or not skingroup.dictitems[skin.name].dictspec['shader_keyword'] == "None"):
-                                                        skingroup.dictitems[skin.name]['shader_keyword'] = shader_keyword
+                                                    if shader_keyword is not None and (not skingroup.dictitems[name].dictspec.has_key('shader_keyword') or not skingroup.dictitems[name].dictspec['shader_keyword'] == "None"):
+                                                        skingroup.dictitems[name]['shader_keyword'] = shader_keyword
                                         if foundimage is None:
-                                            message = message + "Component: " + ModelFolder + "_" + surface.name + "\r\nuses the shader:\r\n    " + shader_name + "\r\nin the file:\r\n    " + shaderspath+"/"+shaderfile + "\r\nBut the image it uses in that file:\r\n    " + foundtexture + "\r\ndoes not exist in that folder.\r\nLocate image file and place in that folder.\r\n\r\n"
+                                            message = message + "Component: " + ModelFolder + "_" + surface.name + "\r\nuses the shader:\r\n    " + shader_name + "\r\nin the file:\r\n    " + shaderspath+"/"+shaderfile + "\r\nBut the image it uses in that file:\r\n    " + foundtexture + "\r\ndoes not exist in that folder or the folder has not been extracted.\r\nLocate image file and place in that extracted folder.\r\n\r\n"
                     else:
                         if foundshader is not None:
                             break
+
             if foundshader is None:
+                if imagefile is None:
+                    if surface.shaders[i].name != "":
+                        message = message + "Component: " + ModelFolder + "_" + surface.name + "\r\nuses the texture:\r\n    " + surface.shaders[i].name + "\r\nBut the image does not exist in that folder\r\nand there are no shaders by that name.\r\nLocate image file and place in that folder.\r\n\r\n"
+                    else:
+                        message = message + "Component: " + ModelFolder + "_" + surface.name + "\r\ndid not give any shader or texture to use in its folder:\r\n    " + FolderPath + "\r\nYou will need to locate an image file,\r\nplace in that folder and skin the model.\r\n\r\n"
                 shader_name = None
 
         if skinsize == (0, 0):
@@ -702,7 +730,10 @@ def Import(basepath, filename):
         if shader_file is not None: # The path and name of the shader file.
             Component['shader_file'] = shader_file
         if shader_name is not None: # The name of the shader in the shader file.
-            Component['shader_name'] = shader_name
+            if len(shaderlist) == 1:
+                Component['shader_name'] = shader_name
+            else:
+                Component['shader_name'] = "multiple shaders - see mesh shader below"
         if mesh_shader is not None: # The actual text, to display, of the shader itself.
             Component['mesh_shader'] = mesh_shader
         Component['skinsize'] = skinsize
@@ -772,13 +803,14 @@ def Import(basepath, filename):
                 # Note: Quake3 uses left-hand geometry
               #  forward = [tag.axis[0], tag.axis[1], tag.axis[2]] # Blinder's way.
               #  left = [tag.axis[3], tag.axis[4], tag.axis[5]] # Blinder's way.
-                forward = [tag.axis[0], tag.axis[1], tag.axis[2]] # Quark's way.
-                left = [tag.axis[3], tag.axis[4], tag.axis[5]] # Quark's way.
+                forward = [tag.axis[3], tag.axis[4], tag.axis[5]] # Quark's way.
+                left = [tag.axis[0], tag.axis[1], tag.axis[2]] # Quark's way.
                 up = [tag.axis[6], tag.axis[7], tag.axis[8]]
                 p = tag.origin
                 m = [forward, left, up]
                 vector = vector_by_matrix(p, m)
                 tagframe = quarkx.newobj('Tag Frame ' + str(j+1) + ':tagframe')
+                tagframe['show'] = (1.0,)
                 tagframe['origin'] = (p[0], p[1], p[2])
                 tagframe['rotmatrix'] = (tag.axis[0], tag.axis[1], tag.axis[2], tag.axis[3], tag.axis[4], tag.axis[5], tag.axis[6], tag.axis[7], tag.axis[8])
                 newtag.appenditem(tagframe)
@@ -1071,6 +1103,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.2  2009/09/05 06:22:29  cdunde
+# To fix setup error.
+#
 # Revision 1.1  2009/09/04 07:11:28  cdunde
 # Added Python .md3 import support with tags, animation, shader and skin files.
 #
