@@ -531,6 +531,34 @@ class TagHandle(qhandles.GenericHandle):
 
     def draw(self, view, cv, draghandle=None):
         editor = self.editor
+        from qbaseeditor import flagsmouse
+        import qhandles
+
+        # This stops the drawing of all the vertex handles during a Linear drag to speed drawing up.
+        if flagsmouse == 1032:
+            if isinstance(editor.dragobject, qhandles.Rotator2D) or draghandle is None:
+                pass
+            else:
+                return
+
+        if flagsmouse == 528 or flagsmouse == 1040: return # RMB pressed or dragging to pan (scroll) in the view.
+
+        if view.info["viewname"] == "editors3Dview":
+            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles1"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] == "1":
+                return
+        elif view.info["viewname"] == "XY":
+            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles2"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles2"] == "1":
+                return
+        elif view.info["viewname"] == "YZ":
+            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles3"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles3"] == "1":
+                return
+        elif view.info["viewname"] == "XZ":
+            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles4"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles4"] == "1":
+                return
+        elif view.info["viewname"] == "3Dwindow":
+            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles5"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] == "1":
+                return
+
         if self.tagframe in editor.layout.explorer.sellist or self.tagframe.parent in editor.layout.explorer.sellist:
             icon = ico_dict['ico_objects'][1][46]
         else:
@@ -2749,6 +2777,9 @@ class ModelEditorLinHandlesManager:
     def drawbox(self, view): # for ModelEditorLinHandlesManager
         "Draws the circle around all objects. Started as a box, but didn't look right."
 
+        from qbaseeditor import flagsmouse
+        if flagsmouse == 528 or flagsmouse == 1040: return # RMB pressed or dragging to pan (scroll) in the view.
+
         if view.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] == "1":
             view.handles = []
             return
@@ -3129,6 +3160,9 @@ class LinRedHandle(LinearHandle): # for LinRedHandle, the center handle.
         self.undomsg = "linear center handle drag"
 
     def draw(self, view, cv, draghandle=None):
+        from qbaseeditor import flagsmouse
+        if flagsmouse == 528 or flagsmouse == 1040: return # RMB pressed or dragging to pan (scroll) in the view.
+
         if view.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] == "1":
             view.handles = []
             return
@@ -3457,6 +3491,9 @@ class LinSideHandle(LinearHandle): # for LinSideHandle
         self.side = side
 
     def draw(self, view, cv, draghandle=None): # for LinSideHandle
+        from qbaseeditor import flagsmouse
+        if flagsmouse == 528 or flagsmouse == 1040: return # RMB pressed or dragging to pan (scroll) in the view.
+
         if self.firstone:
             self.mgr.drawbox(view)   # Draws the full circle and all handles during drag and Ctrl key is NOT being held down.
 
@@ -3583,6 +3620,9 @@ class LinCornerHandle(LinearHandle):
         self.diff = 1.0  # pure rotation
 
     def draw(self, view, cv, draghandle=None): # for LinCornerHandle
+        from qbaseeditor import flagsmouse
+        if flagsmouse == 528 or flagsmouse == 1040: return # RMB pressed or dragging to pan (scroll) in the view.
+
         if view.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] == "1":
             view.handles = []
             return
@@ -5118,6 +5158,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.184  2009/09/07 01:38:45  cdunde
+#Setup of tag menus and icons.
+#
 #Revision 1.183  2009/09/06 11:54:44  cdunde
 #To setup, make and draw the TagFrameHandles. Also improve animation rotation.
 #
