@@ -277,6 +277,7 @@ class ModelEditor(BaseEditor):
         quarkx.setupsubset(SS_MODEL, "Options")["ExtrudeBulkHeads"] = None
         quarkx.setupsubset(SS_MODEL, "Options")['VertexUVColor'] = None
         quarkx.setupsubset(SS_MODEL, "Options")['HideBones'] = None
+        quarkx.setupsubset(SS_MODEL, "Options")['HideTags'] = None
         quarkx.setupsubset(SS_MODEL, "Options")['ConsoleLog'] = None
         quarkx.setupsubset(SS_MODEL, "Options")['CompColors'] = None
         quarkx.setupsubset(SS_MODEL, "Options")['VertexPaintMode'] = None
@@ -464,8 +465,8 @@ class ModelEditor(BaseEditor):
                 for face in self.ModelFaceSelList:
                     if item[2] == face:
                         return mdlhandles.ModelFaceHandle(qhandles.GenericHandle).menu(self, view)
-                    
-        
+
+
         sellist = self.layout.explorer.sellist
         if len(sellist)==0:
             return mdlmenus.MdlBackgroundMenu(self, view, origin)
@@ -497,6 +498,8 @@ class ModelEditor(BaseEditor):
                 obj = sellist[0]
                 saveskinfile = qmenu.item("&Save Skin File", SaveSkinFile, "|Save Skin File:\n\nOpens a file save window and allows you to save the selected skin as various types of image files.\n\nNOTE:\n   You can NOT save another type as a .pcx file because they do not have a 'palette' like .pcx files do, this will only cause an error.\n\nYou CAN save a .pcx file to another file type like .tga though.|intro.modeleditor.rmbmenus.html#treeviewrmbmenus")
                 return [expand_subitems, qmenu.sep] + [saveskinfile, qmenu.sep] + mdlentities.CallManager("menu", sellist[0], self) + extra
+            elif sellist[0].type == ':tag':
+                return [expand_subitems, qmenu.sep] + mdlentities.CallManager("menu", sellist[0], self)
             elif sellist[0].type == ':bg' or sellist[0].type == ':bone':
                 BoneExtras = mdlhandles.BoneCenterHandle(origin,None,None).extrasmenu(self)
                 return [expand_subitems, qmenu.sep] + BoneExtras + [qmenu.sep] + mdlentities.CallManager("menu", sellist[0], self) + extra
@@ -511,6 +514,8 @@ class ModelEditor(BaseEditor):
                     mdlcommands.MatchFrameCount.state = qmenu.normal
                     mdlcommands.CheckC.state = qmenu.normal
                     return [expand_subitems, qmenu.sep] + [mdlcommands.MatchFrameCount, mdlcommands.CheckC, qmenu.sep] + mdlmenus.MultiSelMenu(sellist, self) + extra
+            if sellist[0].type == ':tag':
+                return [expand_subitems, qmenu.sep] + mdlentities.CallManager("menu", sellist[0], self)
             if sellist[0].type == ':bg' or sellist[0].type == ':bone':
                 BoneExtras = mdlhandles.BoneCenterHandle(origin,None,None).extrasmenu(self)
                 return [expand_subitems, qmenu.sep] + BoneExtras + [qmenu.sep] + mdlentities.CallManager("menu", sellist[0], self) + extra
@@ -1751,6 +1756,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.132  2009/09/06 11:54:44  cdunde
+#To setup, make and draw the TagFrameHandles. Also improve animation rotation.
+#
 #Revision 1.131  2009/08/18 05:33:35  cdunde
 #To remove code that caused multiple drawings of bone handles.
 #

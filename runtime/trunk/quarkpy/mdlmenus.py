@@ -204,6 +204,7 @@ def MdlBackgroundMenu(editor, view=None, origin=None):
             bonepop = qmenu.popup("Bone Commands", mdlhandles.BoneCenterHandle(origin,None,None).menu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
             mdlfacepop = qmenu.popup("Face Commands", mdlhandles.ModelFaceHandle(origin).menu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
             vertexpop = qmenu.popup("Vertex Commands", mdlhandles.VertexHandle(origin).menu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
+            tagpop = qmenu.popup("Tag Commands", mdlhandles.TagHandle(origin).extrasmenu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
             if len(editor.layout.explorer.sellist) >= 1:
                 import mdlmgr
                 item = editor.layout.explorer.sellist[0]
@@ -222,9 +223,9 @@ def MdlBackgroundMenu(editor, view=None, origin=None):
                 qbackbmp.MdlBackBmpDlg(form, view)
             backbmp1 = qmenu.item("Background image...", backbmp1click, "|Background image:\n\nWhen selected, this will open a dialog box where you can choose a .bmp image file to place and display in the 2D view that the cursor was in when the RMB was clicked.\n\nClick on the 'InfoBase' button below for full detailed information about its functions and settings.|intro.mapeditor.rmb_menus.noselectionmenu.html#background")
             if editor.ModelFaceSelList != []:
-                extra = extra + [qmenu.sep, bonepop, mdlfacepop, vertexpop, Search1, Commands1, qmenu.sep, BoneOptions, FaceSelOptions, VertexSelOptions, qmenu.sep] + TexModeMenu(editor, view) + [qmenu.sep, backbmp1]
+                extra = extra + [qmenu.sep, tagpop, bonepop, mdlfacepop, vertexpop, Search1, Commands1, qmenu.sep, BoneOptions, FaceSelOptions, VertexSelOptions, qmenu.sep] + TexModeMenu(editor, view) + [qmenu.sep, backbmp1]
             else:
-                extra = extra + [qmenu.sep, bonepop, vertexpop, Search1, Commands1, qmenu.sep, BoneOptions, FaceSelOptions, VertexSelOptions, qmenu.sep] + TexModeMenu(editor, view) + [qmenu.sep, backbmp1]
+                extra = extra + [qmenu.sep, tagpop, bonepop, vertexpop, Search1, Commands1, qmenu.sep, BoneOptions, FaceSelOptions, VertexSelOptions, qmenu.sep] + TexModeMenu(editor, view) + [qmenu.sep, backbmp1]
         else:
             def resetSkinview(menu, editor=editor, view=view):
                 viewWidth, viewHeight = view.clientarea
@@ -308,6 +309,9 @@ def BaseMenu(sellist, editor):
 #
 #
 #$Log$
+#Revision 1.42  2009/06/03 05:16:22  cdunde
+#Over all updating of Model Editor improvements, bones and model importers.
+#
 #Revision 1.41  2009/05/03 08:06:06  cdunde
 #Edit menu, moved Duplicate and separated Delete from other items.
 #

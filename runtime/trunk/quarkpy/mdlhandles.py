@@ -466,10 +466,10 @@ class ModelFaceHandle(qhandles.GenericHandle):
 
 
 
-class TagFrameHandle(qhandles.GenericHandle):
-    "Frame Tag handle."
+class TagHandle(qhandles.GenericHandle):
+    "Tag handle, location based on tagrame.dictspec['origin']."
 
-    def __init__(self, pos, tagframe):
+    def __init__(self, pos, tagframe=None):
         qhandles.GenericHandle.__init__(self, pos)
         self.tagframe = tagframe
         self.cursor = CR_CROSSH
@@ -477,6 +477,57 @@ class TagFrameHandle(qhandles.GenericHandle):
         self.editor = mdleditor.mdleditor
         if not ico_dict.has_key('ico_objects'):
             ico_dict['ico_objects'] = LoadIconSet("images\\objects", 16)
+
+
+    def extrasmenu(self, editor, view):
+
+        def ShowTags(m, self=self, editor=editor, view=view):
+            quarkx.setupsubset(SS_MODEL, "Options")['HideTags'] = None
+            ST1.state = qmenu.disabled
+            HT1.state = qmenu.normal
+            mdlutils.Update_Editor_Views(editor)
+            editor.layout.explorer.invalidate()
+
+        def HideTags(m, self=self, editor=editor, view=view):
+            quarkx.setupsubset(SS_MODEL, "Options")['HideTags'] = "1"
+            ST1.state = qmenu.normal
+            HT1.state = qmenu.disabled
+            mdlutils.Update_Editor_Views(editor)
+            editor.layout.explorer.invalidate()
+        ST1 = qmenu.item("&Show Tags", ShowTags, "|Show Tags:\n\nThis allows all tags to be displayed in the editor's views.|intro.modeleditor.editelements.html#tags")
+        HT1 = qmenu.item("&Hide Tags", HideTags, "|Hide Tags:\n\nThis stops all tags from being displayed in the editor's views.|intro.modeleditor.editelements.html#tags")
+
+        if quarkx.setupsubset(SS_MODEL, "Options")['HideTags'] is not None:
+            ST1.state = qmenu.normal
+            HT1.state = qmenu.disabled
+        else:
+            ST1.state = qmenu.disabled
+            HT1.state = qmenu.normal
+
+        menu = [ST1, HT1]
+
+        return menu
+
+
+    def menu(self, editor, view):
+
+        def force_to_grid_click(m, self=self, editor=editor, view=view):
+            self.Action(editor, self.pos, self.pos, MB_CTRL, view, Strings[560])
+
+        def hide_this_tag_click(m, self=self, editor=editor, view=view):
+            self.tagframe.parent['show'] = (0.0,)
+            mdlutils.Update_Editor_Views(editor)
+            editor.layout.explorer.invalidate()
+
+        Forcetogrid = qmenu.item("&Force to grid", force_to_grid_click,"|Force to grid:\n\nThis will cause a tag to 'snap' to the nearest location on the editor's grid for the view that the RMB click was made in.|intro.modeleditor.rmbmenus.html#bonecommands")
+        m = qmenu.item
+        m.editor = editor
+        HTT = qmenu.item("&Hide this tag", hide_this_tag_click)
+
+        menu = [HTT, qmenu.sep, Forcetogrid]
+
+        return menu
+
 
     def draw(self, view, cv, draghandle=None):
         editor = self.editor
@@ -1873,7 +1924,7 @@ def BuildCommonHandles(editor, explorer, option=1):
   #  if currentindex == editor.bone_frame:
   #      import qbaseeditor
   #      from qbaseeditor import currentview
-  #      print "mdlhandles line 1876 len(currentview.handles)",len(currentview.handles)
+  #      print "mdlhandles line 1927 len(currentview.handles)",len(currentview.handles)
   #      h = currentview.handles
   #      return h
     th = []
@@ -5067,6 +5118,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.183  2009/09/06 11:54:44  cdunde
+#To setup, make and draw the TagFrameHandles. Also improve animation rotation.
+#
 #Revision 1.182  2009/08/31 08:52:16  cdunde
 #To try and stop errors from opening the Model Editor Skin-view for the first time.
 #

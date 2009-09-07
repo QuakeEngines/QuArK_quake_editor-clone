@@ -710,7 +710,7 @@ def Import(basepath, filename):
 
         ###  Create the Component's "Tris", this needs to be in binary so we use the 'struct' function.
         faces = []
-        faces.extend( [surface.triangles[i].indexes for i in xrange(surface.numTriangles)] )
+        faces.extend([surface.triangles[i].indexes for i in xrange(surface.numTriangles)])
         Tris = ''
         TexWidth, TexHeight = skinsize
         for face in faces:
@@ -1103,6 +1103,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.3  2009/09/06 11:54:44  cdunde
+# To setup, make and draw the TagFrameHandles. Also improve animation rotation.
+#
 # Revision 1.2  2009/09/05 06:22:29  cdunde
 # To fix setup error.
 #

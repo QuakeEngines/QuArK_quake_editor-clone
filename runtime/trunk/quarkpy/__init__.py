@@ -96,6 +96,7 @@ def RunQuArK():
     quarkx.seticons(qutils.iiModelGroup, qutils.ModelGroupIconSel, qutils.ModelGroupIconUnsel)
     quarkx.seticons(qutils.iiComponent,  qutils.ComponentIconSel,  qutils.ComponentIconUnsel)
     quarkx.seticons(qutils.iiMD3Bone,    qutils.BoneIconSel,       qutils.BoneIconUnsel)
+    quarkx.seticons(qutils.iiMD3Tag,     qutils.TagIconSel,        qutils.TagIconUnsel)
     s = "&Contextual help"
     qmacro.helpfn[s] = "Help1"
     quarkx.helpmenuitem(s)
@@ -118,6 +119,10 @@ def RunQuArK():
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.14  2009/06/09 05:51:48  cdunde
+#Updated to better display the Model Editor's Skeleton group and
+#individual bones and their sub-bones when they are hidden.
+#
 #Revision 1.13  2008/07/10 21:21:58  danielpharos
 #The model component icon changes to an X when you hide the component.
 #

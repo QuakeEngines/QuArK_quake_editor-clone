@@ -48,6 +48,24 @@ MT_MISCGROUP   = 6      # AiV
 #
 ###############################
 
+def ShowHideTags(x):
+    editor = mdleditor.mdleditor
+    if editor is None: return
+    templist = editor.layout.explorer.sellist
+    for obj in range(len(editor.layout.explorer.sellist)):
+        if editor.layout.explorer.sellist[obj].type == ":tag":
+            editor.layout.explorer.sellist[obj]['show'] = (x,)
+            templist.remove(editor.layout.explorer.sellist[obj])
+    editor.layout.explorer.sellist = templist
+    editor.explorerselchange()
+
+def ShowTheseTags(m):
+    ShowHideTags(1.0)
+
+def HideTheseTags(m):
+    ShowHideTags(0.0)
+
+
 def ShowHideBones(x):
     editor = mdleditor.mdleditor
     if editor is None: return
@@ -1561,6 +1579,21 @@ class BoundType(EntityManager):
 class TagType(EntityManager):
     "Tag, type = :tag"
 
+    def menu(o, editor):
+        import qmenu
+        STT = qmenu.item("&Show these tags", ShowTheseTags)
+        HTT = qmenu.item("&Hide these tags", HideTheseTags)
+
+        if not o.dictspec.has_key("show"):
+            o['show'] = (1.0,)
+        if o.dictspec['show'][0] == 1.0:
+            STT.state = qmenu.disabled
+        else:
+            HTT.state = qmenu.disabled
+
+        import mdlmenus
+        return [STT, HTT, qmenu.sep] + CallManager("menubegin", o, editor) + mdlmenus.BaseMenu([o], editor)
+
 
 # Has no subitems or dictitems items, only dictspec items (origin and rotmatrix).
 class TagFrameType(EntityManager):
@@ -1569,12 +1602,16 @@ class TagFrameType(EntityManager):
     def handlesopt(o, editor):
 
         h = []
-        if not o.dictspec.has_key("show"):
-            o['show'] = (1.0,)
-        if o.dictspec['show'][0] != 1.0:
+        if not o.parent.dictspec.has_key("show"):
+            o.parent['show'] = (1.0,)
+        if o.parent.dictspec['show'][0] != 1.0:
+            return h
+        comp = editor.Root.currentcomponent
+
+        if quarkx.setupsubset(SS_MODEL, "Options")['HideTags'] is not None or comp is None:
             return h
 
-        h = [mdlhandles.TagFrameHandle(quarkx.vect(o.dictspec['origin']), o)]
+        h = [mdlhandles.TagHandle(quarkx.vect(o.dictspec['origin']), o)]
         h[0].hint = o.parent.shortname + " " + o.shortname
         return h
 
@@ -2189,6 +2226,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.52  2009/09/06 11:54:44  cdunde
+#To setup, make and draw the TagFrameHandles. Also improve animation rotation.
+#
 #Revision 1.51  2009/09/03 18:47:54  cdunde
 #To add info to component specifics page.
 #

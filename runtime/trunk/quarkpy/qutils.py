@@ -509,6 +509,31 @@ def BoneIconSel(bone):
 def BoneIconUnsel(bone):
     return BoneIcon(bone, 0)
 
+#
+# Variable icons handlers for Model bone objects
+#
+
+def TagIcon(tag, iconset):
+    #
+    # Sets the default icons for each entity type, by figuring out their type from their name.
+    #
+    if not ico_dict.has_key('ico_objects'):
+        ico_dict['ico_objects'] = LoadIconSet("images\\objects", 16)
+    icons = ico_dict['ico_objects'][iconset]
+
+    if not tag.dictspec.has_key("show"):
+        tag['show'] = (1.0,)
+    if tag['show'][0] == 1.0 and quarkx.setupsubset(SS_MODEL, "Options")['HideTags'] is None:
+        return icons[46]
+    else:
+        return icons[52]
+
+def TagIconSel(tag):
+    return TagIcon(tag, 1)
+
+def TagIconUnsel(tag):
+    return TagIcon(tag, 0)
+
 
 # quarkx.msgbox
 MT_WARNING           = 0
@@ -876,6 +901,9 @@ def sortdictionary(dictionary):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.50  2009/07/14 12:14:54  danielpharos
+#Oops: uploaded version: Added logging of plugin loading.
+#
 #Revision 1.49  2009/06/24 05:49:03  cdunde
 #To give long integer error warning and steps for correction.
 #
