@@ -812,7 +812,9 @@ def Import(basepath, filename):
                 tagframe = quarkx.newobj('Tag Frame ' + str(j+1) + ':tagframe')
                 tagframe['show'] = (1.0,)
                 tagframe['origin'] = (p[0], p[1], p[2])
-                tagframe['rotmatrix'] = (tag.axis[0], tag.axis[1], tag.axis[2], tag.axis[3], tag.axis[4], tag.axis[5], tag.axis[6], tag.axis[7], tag.axis[8])
+                # We need to swap the matrix x and y sections when they are read in from the file
+                # because they are left handed computation method and QuArK uses right handed computation.
+                tagframe['rotmatrix'] = (tag.axis[3], tag.axis[4], tag.axis[5], tag.axis[0], tag.axis[1], tag.axis[2], tag.axis[6], tag.axis[7], tag.axis[8])
                 newtag.appenditem(tagframe)
 
               #  rotation = Blender.Mathutils.Matrix(forward, left, up)
@@ -906,8 +908,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
                                 comp_framecount = len(comp_frames)-1
                                 for frame in range(len(tag_subitems)):
                                     mt = tag_subitems[frame].dictspec['rotmatrix']
-                    #                mt = ((mt[0],mt[1],mt[2]), (mt[3],mt[4],mt[5]), (mt[6],mt[7],mt[8]))
-                                    mt = ((mt[3],mt[4],mt[5]), (mt[0],mt[1],mt[2]), (mt[6],mt[7],mt[8]))
+                                    mt = ((mt[0],mt[1],mt[2]), (mt[3],mt[4],mt[5]), (mt[6],mt[7],mt[8]))
                                     m = quarkx.matrix(mt)
                                     if frame >= comp_framecount:
                                         vtx_tag_adj = quarkx.vect(tag_subitems[frame].dictspec['origin']) - quarkx.vect(miscgroup_subitems[comp_framecount].dictspec['origin'])
@@ -942,8 +943,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
                                 newframesgroup = quarkx.newobj('Frames:fg')
                                 for frame in range(len(tag_subitems)):
                                     mt = tag_subitems[frame].dictspec['rotmatrix']
-                    #                mt = ((mt[0],mt[1],mt[2]), (mt[3],mt[4],mt[5]), (mt[6],mt[7],mt[8]))
-                                    mt = ((mt[3],mt[4],mt[5]), (mt[0],mt[1],mt[2]), (mt[6],mt[7],mt[8]))
+                                    mt = ((mt[0],mt[1],mt[2]), (mt[3],mt[4],mt[5]), (mt[6],mt[7],mt[8]))
                                     m = quarkx.matrix(mt)
                                     # To try and rotate upper components properly when they come through.
                                     if ModelName.find("upper") != -1:
@@ -1103,6 +1103,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.4  2009/09/07 01:38:45  cdunde
+# Setup of tag menus and icons.
+#
 # Revision 1.3  2009/09/06 11:54:44  cdunde
 # To setup, make and draw the TagFrameHandles. Also improve animation rotation.
 #
