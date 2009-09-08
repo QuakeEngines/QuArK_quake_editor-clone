@@ -38,32 +38,12 @@ textlog = "md3_ie_log.txt"
 editor = None
 
 # Matrix for QuArK.
+### Taken from source\prog\qmatrices.pas lines 139-141
 def vector_by_matrix(p, m):
-# Does NOT rotate anything.
- # return [
- #       p[0] * m[0][0] + p[1] * m[1][0] + p[2] * m[2][0],
- #       p[0] * m[0][1] + p[1] * m[1][1] + p[2] * m[2][1],
- #       p[0] * m[0][2] + p[1] * m[1][2] + p[2] * m[2][2]
- #   ]
- # Not quite right rotation.
- # return [
-        ### Taken from source\prog\qmatrices.pas lines 139-141
- #       p[0] * m[0][0] + p[1] * m[0][1] + p[2] * m[0][2],
- #       p[0] * m[1][0] + p[1] * m[1][1] + p[2] * m[1][2],
- #       p[0] * m[2][0] + p[1] * m[2][1] + p[2] * m[2][2]
- #   ]
-  x = p[0] * m[0][0] + p[1] * m[0][1] + p[2] * m[0][2]
-  y = p[0] * m[1][0] + p[1] * m[1][1] + p[2] * m[1][2]
-  z = p[0] * m[2][0] + p[1] * m[2][1] + p[2] * m[2][2]
-  return [
-        ### Taken from source\prog\qmatrices.pas lines 139-141
-      #  y,
-      #  -x,
-      #  z
-        x,
-        y,
-        z
-    ]
+    x = p[0] * m[0][0] + p[1] * m[0][1] + p[2] * m[0][2]
+    y = p[0] * m[1][0] + p[1] * m[1][1] + p[2] * m[1][2]
+    z = p[0] * m[2][0] + p[1] * m[2][1] + p[2] * m[2][2]
+    return [x, y, z]
 
 # Global .md3 file limits and values.
 MAX_QPATH = 64
@@ -745,7 +725,7 @@ def Import(basepath, filename):
         Component.appenditem(framesgroup)
         ComponentList = ComponentList + [Component]
      #   print ""
-     #   print "line 739 Component.dictspec"
+     #   print "line 728 Component.dictspec"
      #   print Component.dictspec
      #   print ""
 
@@ -769,10 +749,18 @@ def Import(basepath, filename):
 
     # create tags
     tagsgroup = []
+    tag_comp = ComponentList[len(ComponentList)-1]
+    for comp in ComponentList:
+        if comp.shortname.endswith("torso"):
+            tag_comp = comp
     for i in xrange(md3.numTags):
         tag = md3.tags[i]
         newtag = quarkx.newobj(ModelFolder + '_' + tag.name + ':tag')
         tagsgroup = tagsgroup + [newtag]
+        if i == 0:
+            tag_comp['Tags'] = tag.name
+        else:
+            tag_comp['Tags'] = tag_comp.dictspec['Tags'] + ", " + tag.name
 
         # this should be an Empty object
       #  blenderTag = Blender.Object.New("Empty", tag.name);
@@ -803,11 +791,11 @@ def Import(basepath, filename):
                 # Note: Quake3 uses left-hand geometry
               #  forward = [tag.axis[0], tag.axis[1], tag.axis[2]] # Blinder's way.
               #  left = [tag.axis[3], tag.axis[4], tag.axis[5]] # Blinder's way.
-                forward = [tag.axis[3], tag.axis[4], tag.axis[5]] # Quark's way.
-                left = [tag.axis[0], tag.axis[1], tag.axis[2]] # Quark's way.
+                right = [tag.axis[3], tag.axis[4], tag.axis[5]] # Quark's way.
+                forward = [tag.axis[0], tag.axis[1], tag.axis[2]] # Quark's way.
                 up = [tag.axis[6], tag.axis[7], tag.axis[8]]
                 p = tag.origin
-                m = [forward, left, up]
+                m = [forward, right, up]
                 vector = vector_by_matrix(p, m)
                 tagframe = quarkx.newobj('Tag Frame ' + str(j+1) + ':tagframe')
                 tagframe['show'] = (1.0,)
@@ -830,18 +818,6 @@ def Import(basepath, filename):
 
     ie_utils.default_end_logging(filename, "IM", starttime) ### Use "EX" for exporter text, "IM" for importer text.
 
-    ### Use the 'ModelRoot' below to test opening the QuArK's Model Editor with, needs to be qualified with main menu item.
-    ModelRoot = quarkx.newobj('Model:mr')
-  #  ModelRoot.appenditem(Component)
-
-    return ModelRoot, ComponentList, message, tagsgroup, ModelFolder, ModelName
-
-  #  return [None, None, ""] # just a filler to keep code from erroring out, move as you work down.
-  #  QuArKdummy = [] # just a filler to keep code from erroring out, move as you work down.
-  #  for k in QuArKdummy: # just a filler to keep code from erroring out, move as you work down.
-  #      for i in k: # just a filler to keep code from erroring out, move as you work down.
-  #       #   for i in k: # just a filler to keep code from erroring out, move as you work down.
-
     if ComponentList == []:
         if logging == 1:
             tobj.logcon ("Can't read file %s" %filename)
@@ -852,6 +828,7 @@ def Import(basepath, filename):
   #  ModelRoot.appenditem(Component)
 
     return ModelRoot, ComponentList, message, tagsgroup, ModelFolder, ModelName
+
 
 def loadmodel(root, filename, gamename, nomessage=0):
     "Loads the model file: root is the actual file,"
@@ -911,11 +888,12 @@ def loadmodel(root, filename, gamename, nomessage=0):
                                     mt = ((mt[0],mt[1],mt[2]), (mt[3],mt[4],mt[5]), (mt[6],mt[7],mt[8]))
                                     m = quarkx.matrix(mt)
                                     if frame >= comp_framecount:
-                                        vtx_tag_adj = quarkx.vect(tag_subitems[frame].dictspec['origin']) - quarkx.vect(miscgroup_subitems[comp_framecount].dictspec['origin'])
+                                        tag_adj_vect = quarkx.vect(tag_subitems[frame].dictspec['origin']) - quarkx.vect(miscgroup_subitems[comp_framecount].dictspec['origin'])
+
                                         comp_frame = comp_frames[comp_framecount].copy()
                                         comp_frame.shortname = "Frame " + str(frame+1)
                                     else:
-                                        vtx_tag_adj = quarkx.vect(tag_subitems[frame].dictspec['origin']) - quarkx.vect(miscgroup_subitems[frame].dictspec['origin'])
+                                        tag_adj_vect = quarkx.vect(tag_subitems[frame].dictspec['origin']) - quarkx.vect(miscgroup_subitems[frame].dictspec['origin'])
                                         comp_frame = comp_frames[frame]
                                         comp_frame.shortname = "Frame " + str(frame+1)
                                     vertices = []
@@ -925,7 +903,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
                                         comp_rotation = quarkx.vect(comp_rotation[0], comp_rotation[1], comp_rotation[2])
                                         vtx = m * comp_rotation
 
-                                        vertices = vertices + [vtx + vtx_tag_adj]
+                                        vertices = vertices + [vtx + tag_adj_vect]
                                     comp_frame.vertices = vertices
                                     newframe = comp_frame.copy()
                                     newframesgroup.appenditem(newframe)
@@ -955,7 +933,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
                                                 vtx = m * comp_rotation
                                                 vertices = vertices + [vtx]
                                             Component.dictitems['Frames:fg'].subitems[frame].vertices = vertices
-                                    vtx_tag_adj = quarkx.vect(tag_subitems[frame].dictspec['origin']) - quarkx.vect(miscgroup_subitems[frame].dictspec['origin'])
+                                    tag_adj_vect = quarkx.vect(tag_subitems[frame].dictspec['origin']) - quarkx.vect(miscgroup_subitems[frame].dictspec['origin'])
                                     vertices = []
                                     for vtx in comp_frames[frame].vertices:
                                         # To try and rotate lower components properly when they come through.
@@ -963,7 +941,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
                                         comp_rotation = quarkx.vect(comp_rotation[0], comp_rotation[1], comp_rotation[2])
                                         vtx = m * comp_rotation
 
-                                        vertices = vertices + [vtx + vtx_tag_adj]
+                                        vertices = vertices + [vtx + tag_adj_vect]
                                     comp_frames[frame].vertices = vertices
                                     newframe = comp_frames[frame].copy()
                                     newframesgroup.appenditem(newframe)
@@ -1103,6 +1081,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.5  2009/09/07 08:12:39  cdunde
+# Changed from left handed to right handed matrix values as they are read in.
+#
 # Revision 1.4  2009/09/07 01:38:45  cdunde
 # Setup of tag menus and icons.
 #

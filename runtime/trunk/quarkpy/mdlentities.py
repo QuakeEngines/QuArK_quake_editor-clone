@@ -1581,8 +1581,113 @@ class TagType(EntityManager):
 
     def menu(o, editor):
         import qmenu
-        STT = qmenu.item("&Show these tags", ShowTheseTags)
-        HTT = qmenu.item("&Hide these tags", HideTheseTags)
+
+        # Matrix for QuArK.
+        ### Taken from source\prog\qmatrices.pas lines 139-141
+        def vector_by_matrix(p, m):
+            x = p[0] * m[0][0] + p[1] * m[0][1] + p[2] * m[0][2]
+            y = p[0] * m[1][0] + p[1] * m[1][1] + p[2] * m[1][2]
+            z = p[0] * m[2][0] + p[1] * m[2][1] + p[2] * m[2][2]
+            return [x, y, z]
+
+        def AtachTags(m, editor=editor):
+            tag1model = m.tag1.shortname.split("_")[0]
+            tag2model = m.tag2.shortname.split("_")[0]
+            if tag1model == tag2model:
+                quarkx.msgbox("Invalid Selection!\n\nThe model tags can not\nbe from the same model.", MT_ERROR, MB_OK)
+                return
+            for item in editor.Root.subitems:
+                if item.type == ":mc" and item.name.startswith(tag1model) and item.dictspec.has_key("Tags"):
+                    tag1comp = item
+                    tag1comp_tags = tag1comp.dictspec['Tags'].split(", ")
+                if item.type == ":mc" and item.name.startswith(tag2model) and item.dictspec.has_key("Tags"):
+                    tag2comp = item
+                    tag2comp_tags = tag2comp.dictspec['Tags'].split(", ")
+            tagmatch = None
+            for tag1name in tag1comp_tags:
+                for tag2name in tag2comp_tags:
+                    if tag1name == tag2name:
+                        tagmatch = 1
+                        tag1name = tag1model + "_" + tag1name + ":tag"
+                        try:
+                            tag1 = editor.Root.dictitems['Misc:mg'].dictitems[tag1name]
+                        except:
+                            quarkx.msgbox("Tag Missing!\n\nThe needed model tag:\n    " + tag1name.replace(":tag", "") + "\ndoes not exist, may have been deleted.\nReload that same model and try again.", MT_ERROR, MB_OK)
+                            return
+                        tag2name = tag2model + "_" + tag2name + ":tag"
+                        try:
+                            tag2 = editor.Root.dictitems['Misc:mg'].dictitems[tag2name]
+                        except:
+                            quarkx.msgbox("Tag Missing!\n\nThe needed model tag:\n    " + tag2name.replace(":tag", "") + "\ndoes not exist, may have been deleted.\nReload that same model and try again.", MT_ERROR, MB_OK)
+                            return
+                        break
+            if tagmatch is None:
+                quarkx.msgbox("No Tag Match!\n\nThese models do not have matching tags\nor one has been deleted.\nThey can not be used together.", MT_ERROR, MB_OK)
+                return
+            attachtag_comps_list = []
+            if len(tag1.subitems) >= len(tag2.subitems):
+                basetag = tag1
+                basetag_comp = tag1comp
+                attachtag = tag2
+                attachtag_comp = tag2comp
+                for item in editor.Root.subitems:
+                    if item.type == ":mc" and item.name.startswith(tag2model):
+                        attachtag_comps_list = attachtag_comps_list + [item]
+            else:
+                basetag = tag2
+                basetag_comp = tag2comp
+                attachtag = tag1
+                attachtag_comp = tag1comp
+                for item in editor.Root.subitems:
+                    if item.type == ":mc" and item.name.startswith(tag1model):
+                        attachtag_comps_list = attachtag_comps_list + [item]
+            basetag_subitems = basetag.subitems
+            attachtag_subitems = attachtag.subitems
+            new_comps_list = []
+            for attachtag_comp in attachtag_comps_list:
+                newcomp = attachtag_comp.copy()
+                new_comps_list = new_comps_list + [newcomp]
+            undo = quarkx.action()
+            for newcomp in new_comps_list:
+                comp_frames = newcomp.dictitems["Frames:fg"].subitems
+                newframesgroup = quarkx.newobj('Frames:fg')
+                comp_framecount = len(comp_frames)-1
+                for frame in range(len(basetag_subitems)):
+                    if frame >= len(attachtag_subitems)-1:
+                        attachframe = attachtag_subitems[len(attachtag_subitems)-1]
+                    else:
+                        attachframe = attachtag_subitems[frame]
+                    tag_adj_vect = quarkx.vect(basetag_subitems[frame].dictspec['origin']) - quarkx.vect(attachframe.dictspec['origin'])
+                    if frame >= comp_framecount:
+                        comp_frame = comp_frames[comp_framecount].copy()
+                        comp_frame.shortname = "Frame " + str(frame+1)
+                    else:
+                        comp_frame = comp_frames[frame]
+                        comp_frame.shortname = "Frame " + str(frame+1)
+                    vertices = []
+                    for vtx in comp_frame.vertices:
+                        vertices = vertices + [vtx + tag_adj_vect]
+                    comp_frame.vertices = vertices
+                    newframe = comp_frame.copy()
+                    newframesgroup.appenditem(newframe)
+                undo.exchange(newcomp.dictitems['Frames:fg'], newframesgroup)
+            for i in range(len(new_comps_list)):
+                undo.exchange(attachtag_comps_list[i], new_comps_list[i])
+            editor.ok(undo, "Attach tags")
+
+        attach_tags = qmenu.item("&Attach tags", AtachTags, "|Attach Tags:\n\nWhen two tags are selected, clicking this item will attach them creating matching tag frames, based on the one that has the most frames, for animation.|intro.modeleditor.editelements.html#tags")
+        STT = qmenu.item("&Show these tags", ShowTheseTags, "|Show these tags:\n\nThis allows the selected tags to be displayed in the editor's views if the function 'Hide Tags' is not active.|intro.modeleditor.editelements.html#tags")
+        HTT = qmenu.item("&Hide these tags", HideTheseTags, "|Hide these tags:\n\nThis stops the selected tags from being displayed in the editor's views.|intro.modeleditor.editelements.html#tags")
+
+        attach_tags.tag1 = attach_tags.tag2 = None
+        for item in editor.layout.explorer.sellist:
+            if item.type == ":tag":
+                if attach_tags.tag1 is None:
+                    attach_tags.tag1 = item
+                else:
+                    attach_tags.tag2 = item
+        if attach_tags.tag1 is None or attach_tags.tag2 is None:
+            attach_tags.state = qmenu.disabled
 
         if not o.dictspec.has_key("show"):
             o['show'] = (1.0,)
@@ -1592,7 +1697,7 @@ class TagType(EntityManager):
             HTT.state = qmenu.disabled
 
         import mdlmenus
-        return [STT, HTT, qmenu.sep] + CallManager("menubegin", o, editor) + mdlmenus.BaseMenu([o], editor)
+        return [attach_tags, qmenu.sep, STT, HTT, qmenu.sep] + CallManager("menubegin", o, editor) + mdlmenus.BaseMenu([o], editor)
 
 
 # Has no subitems or dictitems items, only dictspec items (origin and rotmatrix).
@@ -2226,6 +2331,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.53  2009/09/07 01:38:45  cdunde
+#Setup of tag menus and icons.
+#
 #Revision 1.52  2009/09/06 11:54:44  cdunde
 #To setup, make and draw the TagFrameHandles. Also improve animation rotation.
 #
