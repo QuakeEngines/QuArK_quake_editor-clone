@@ -584,7 +584,11 @@ def Import(basepath, filename):
                     shader_name = ModelsPath
 
                 shaderspath = BasePath + "/scripts"
-                shaderfiles = os.listdir(shaderspath)
+                try:
+                    shaderfiles = os.listdir(shaderspath)
+                except:
+                    quarkx.msgbox("Folder Not Found!\n\nThe folder 'scripts' can not be found in the game folder:\n    " + BasePath + "\nExtract the 'scripts' folder to that location and try again.", MT_ERROR, MB_OK)
+                    return
                 for shaderfile in shaderfiles:
                     if shaderfile.endswith(".shader") and foundshader is None:
                         read_shader_file=open(shaderspath+"/"+shaderfile,"r")
@@ -956,7 +960,16 @@ def loadmodel(root, filename, gamename, nomessage=0):
             if item == len(miscgroup)-1:
                 undo.put(editor_dictitems['Misc:mg'], tagsgroup[tag])
     for Component in ComponentList:
-        undo.put(editor.Root, Component)
+        dupeitem = 0
+        for item in editor.Root.subitems:
+            if item.type == ":mc":
+                if item.name == Component.name:
+                    dupeitem = 1
+                    break
+        if dupeitem == 1:
+            undo.exchange(editor.Root.dictitems[item.name], Component)
+        else:
+            undo.put(editor.Root, Component)
         editor.Root.currentcomponent = Component
         if len(Component.dictitems['Skins:sg'].subitems) != 0:
             editor.Root.currentcomponent.currentskin = Component.dictitems['Skins:sg'].subitems[0] # To try and set to the correct skin.
@@ -1081,6 +1094,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.6  2009/09/08 06:45:12  cdunde
+# Setup function to attach tags for imported .md3 models, such as weapons.
+#
 # Revision 1.5  2009/09/07 08:12:39  cdunde
 # Changed from left handed to right handed matrix values as they are read in.
 #
