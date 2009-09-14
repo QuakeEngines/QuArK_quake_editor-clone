@@ -37,14 +37,6 @@ importername = "ie_md3_import.py"
 textlog = "md3_ie_log.txt"
 editor = None
 
-SuperTagList = {} #FIXME: NEED TO CHANGE THIS!!!
-TagToCompList = {} #FIXME: NEED TO CHANGE THIS!!!
-SuperTagToCompList = {} #FIXME: NEED TO CHANGE THIS!!!
-KnownTags = ('tag_torso:tag', 'tag_head:tag', 'tag_weapon:tag', 'tag_flash:tag')
-OtherTags = []
-PrimaryTags = {} #FIXME: NEED TO CHANGE THIS!!!
-UniqueID = 0 #FIXME: NEED TO CHANGE THIS!!!
-
 # Matrix for QuArK.
 ### Taken from source\prog\qmatrices.pas lines 139-141
 def vector_by_matrix(p, m):
@@ -336,21 +328,12 @@ class md3Object(object):
             self.frames[i].Load(file)
 
         # load the tags info
-        BadTags = []
         file.seek(self.ofsTags, 0)
         for i in xrange(self.numFrames):
             for j in xrange(self.numTags):
                 tag = md3Tag()
                 tag.Load(file)
-                if (tag.name == 'tag_weapon'):
-                    if file.name.split('\\')[-1].split('/')[-1].find('_flash') <> -1:
-                        BadTags = BadTags + [j]
                 self.tags.append(tag)
-        # Remove BAD tag_weapon tag from flash-model:
-        BadTags.reverse() # Remove in reverse order, to not screw up indexing
-        for TagToRemove in BadTags:
-            self.tags.pop(TagToRemove)
-            self.numTags = self.numTags - 1
 
         # load the surface info
         file.seek(self.ofsSurfaces, 0)
@@ -362,7 +345,6 @@ class md3Object(object):
 
 def Import(basepath, filename):
     global tobj, logging, importername, textlog
-    global SuperTagList, TagToCompList, SuperTagToCompList, KnownTags, OtherTags, PrimaryTags, UniqueID
 
     logging, tobj, starttime = ie_utils.default_start_logging(importername, textlog, filename, "IM") ### Use "EX" for exporter text, "IM" for importer text.
 
@@ -408,7 +390,6 @@ def Import(basepath, filename):
     ModelsPath = FolderPath.replace(BasePath+"/", "")
     # ModelName is just the .md3 model file name without any path or the ".md3" type.
     ModelName = ModelName.rsplit(".", 1)[0]
-
     # PlayerModelName is just the .md3 player model file name, for special code handling, without any path or the ".md3" type.
     PlayerModelName = "None"
     if ModelsPath.find("/players/") != -1:
@@ -426,6 +407,9 @@ def Import(basepath, filename):
         framesgroup = quarkx.newobj('Frames:fg')
         if surface.numFrames > 1 : # Make the animation frames if they exist for this model.
             for i in xrange(surface.numFrames):
+              #  print "line 422 frame name", i, md3.frames[i].name
+              #  print "line 423 mins, maxs", i, md3.frames[i].mins, md3.frames[i].maxs
+              #  print "line 424 localOrigin, radius", i, md3.frames[i].localOrigin, md3.frames[i].radius
                 frame = quarkx.newobj('Frame ' + str(i+1) + ':mf')
                 mesh = ()
                 for j in xrange(surface.numVerts):
@@ -747,7 +731,7 @@ def Import(basepath, filename):
         Component.appenditem(framesgroup)
         ComponentList = ComponentList + [Component]
      #   print ""
-     #   print "line 728 Component.dictspec"
+     #   print "line 739 Component.dictspec"
      #   print Component.dictspec
      #   print ""
 
@@ -775,54 +759,21 @@ def Import(basepath, filename):
     for comp in ComponentList:
         if comp.shortname.endswith("torso"):
             tag_comp = comp
+        # We need to put a list of component names in ALL components because some idiots can't get things in the right order.
+        for comp2 in range(len(ComponentList)):
+            if comp2 == 0:
+                comp['tag_components'] = ComponentList[comp2].name
+            else:
+                comp['tag_components'] = comp.dictspec['tag_components'] + ", " + ComponentList[comp2].name
     for i in xrange(md3.numTags):
         tag = md3.tags[i]
-        UniqueID = UniqueID + 1
-        for Comps in range(len(ComponentList)):
-            if TagToCompList.has_key(tag.name + ':tag'):
-                TagToCompList[tag.name + ':tag'] = TagToCompList[tag.name + ':tag'] + [ComponentList[Comps].name]
-            else:
-                TagToCompList[tag.name + ':tag'] = [ComponentList[Comps].name]
-            if SuperTagToCompList.has_key(UniqueID):
-                SuperTagToCompList[UniqueID] = SuperTagToCompList[UniqueID] + [ComponentList[Comps].name]
-            else:
-                SuperTagToCompList[UniqueID] = [ComponentList[Comps].name]
-        if not tag.name + ':tag' in KnownTags:
-            if not tag.name + ':tag' in OtherTags:
-                OtherTags = OtherTags + [tag.name + ':tag']
-        #print "line 770 i, tag.name", i, ModelFolder + "_" + ModelName + "_" + tag.name # We need to keep these sepperate for each complete model loaded.
-        #print "line 771 tag.origin", tag.origin
-        #print "line 772 tag.axis", tag.axis
-        #print "BY FRAME NOW"
+        # We need to keep these sepperate for each complete model loaded.
         newtag = quarkx.newobj(ModelFolder + '_' + tag.name + ':tag')
-        newtag["UniqueID"] = str(UniqueID)
         tagsgroup = tagsgroup + [newtag]
         if i == 0:
             tag_comp['Tags'] = tag.name
         else:
             tag_comp['Tags'] = tag_comp.dictspec['Tags'] + ", " + tag.name
-
-        mainfilename = filename.split('\\')[-1].split('/')[-1]
-        #Determine if this is a primary tag
-        #FIXME: Find a better way!
-        IsPrimaryTag = 0
-        if (tag.name + ':tag' == 'tag_torso:tag'):
-            if (mainfilename.find('lower') <> -1):
-                IsPrimaryTag = 1
-        elif (tag.name + ':tag' == 'tag_head:tag'):
-            if (mainfilename.find('upper') <> -1):
-                IsPrimaryTag = 1
-        elif (tag.name + ':tag' == 'tag_weapon:tag'):
-            if (mainfilename.find('upper') <> -1):
-                IsPrimaryTag = 1
-        elif (tag.name + ':tag' == 'tag_flash:tag'):
-            if (mainfilename.find('_flash') == -1):
-                IsPrimaryTag = 1
-        else:
-            # Don't recognize tag...
-            IsPrimaryTag = 1
-        if IsPrimaryTag:
-            PrimaryTags[tag.name + ':tag'] = newtag
 
         # this should be an Empty object
       #  blenderTag = Blender.Object.New("Empty", tag.name);
@@ -853,18 +804,23 @@ def Import(basepath, filename):
                 # Note: Quake3 uses left-hand geometry
               #  forward = [tag.axis[0], tag.axis[1], tag.axis[2]] # Blinder's way.
               #  left = [tag.axis[3], tag.axis[4], tag.axis[5]] # Blinder's way.
-                right = [tag.axis[3], tag.axis[4], tag.axis[5]] # Quark's way.
-                forward = [tag.axis[0], tag.axis[1], tag.axis[2]] # Quark's way.
-                up = [tag.axis[6], tag.axis[7], tag.axis[8]]
+              #  right = [tag.axis[3], tag.axis[4], tag.axis[5]] # Quark's way.
+              #  forward = [tag.axis[0], tag.axis[1], tag.axis[2]] # Quark's way.
+              #  up = [tag.axis[6], tag.axis[7], tag.axis[8]]
+              #  print "line 823 " + tag.name + " frame", j
+              #  print "   right", right
+              #  print "forward", forward
+              #  print "     up", up
                 p = tag.origin
-                m = [forward, right, up]
-                vector = vector_by_matrix(p, m)
+              #  m = [forward, right, up]
+              #  vector = vector_by_matrix(p, m)
+              #  print "vector_by_matrix", vector
+              #  print "p new tag origin", p
+            #    print "ORG tag origin", md3.tags[i].origin
+            #    print "ORG vector_by_matrix", vector_by_matrix(md3.tags[i].origin, m)
                 tagframe = quarkx.newobj('Tag Frame ' + str(j+1) + ':tagframe')
                 tagframe['show'] = (1.0,)
                 tagframe['origin'] = (p[0], p[1], p[2])
-                # We need to swap the matrix x and y sections when they are read in from the file
-                # because they are left handed computation method and QuArK uses right handed computation.
-                #tagframe['rotmatrix'] = (tag.axis[3], tag.axis[4], tag.axis[5], tag.axis[0], tag.axis[1], tag.axis[2], tag.axis[6], tag.axis[7], tag.axis[8])
                 tagframe['rotmatrix'] = (tag.axis[0], tag.axis[1], tag.axis[2], tag.axis[3], tag.axis[4], tag.axis[5], tag.axis[6], tag.axis[7], tag.axis[8])
                 newtag.appenditem(tagframe)
 
@@ -890,7 +846,6 @@ def Import(basepath, filename):
     ModelRoot = quarkx.newobj('Model:mr')
   #  ModelRoot.appenditem(Component)
 
-    SuperTagList[Component.name] = tagsgroup
     return ModelRoot, ComponentList, message, tagsgroup, ModelFolder, ModelName
 
 
@@ -921,195 +876,238 @@ def loadmodel(root, filename, gamename, nomessage=0):
     ### Lines below here loads the model into the opened editor's current model.
     ModelRoot, ComponentList, message, tagsgroup, ModelFolder, ModelName = Import(basepath, filename)
 
-    global SuperTagList, TagToCompList, SuperTagToCompList, KnownTags, OtherTags, PrimaryTags
-
     if ModelRoot is None or ComponentList is None or ComponentList == []:
         quarkx.beep() # Makes the computer "Beep" once if a file is not valid.
         quarkx.msgbox("Invalid .md3 model.\nEditor can not import it.", MT_ERROR, MB_OK)
         editor = None # Reset the global again.
         return
-    TagsToMove = []
+
     undo = quarkx.action()
-    NewFrameGroups = {}
+    editor_dictitems = editor.Root.dictitems
+    miscgroup = editor_dictitems['Misc:mg'].subitems
+    old_torso_tag_frames = new_torso_tag_frames = old_tag_subitems = None
     
-    AllComponents = {}
-    tmp_dictitems = editor.Root.dictitems
-    for item in tmp_dictitems.keys():
-        AllComponents[item] = tmp_dictitems[item]
-    for item in ComponentList:
-        AllComponents[item.name] = item
-
-    # Make one list with all the tag-names that exist
-    TagsToLoopOver = []
-    for tag in KnownTags:
-        TagsToLoopOver = TagsToLoopOver + [tag]
-    for tag in OtherTags:
-        TagsToLoopOver = TagsToLoopOver + [tag]
-
-    # Prepare tags for undo
- #   OldTags = editor.Root.dictitems['Misc:mg'].dictitems
-    OldTags = {}
-    NewTags = {}
-    for key in OldTags.keys():
-        NewTags[key] = None
-
-    for TagToDo in TagsToLoopOver:
-        if not TagToCompList.has_key(TagToDo):
-            continue
-
-        # Find the 'Primary Tag': the tag that stays stationary
-        PrimaryTag = None
-        if PrimaryTags.has_key(TagToDo):
-            PrimaryTag = PrimaryTags[TagToDo]
-        if PrimaryTag is None:
-            # No primary tag. Move along, nothing to see here...
-            continue
-        # Replace with newer tag frames, if needed.  NOTHING IS GOING THROUGH HERE if the tagframe groups are not being put into QuArK.
-        PrimaryTagFrames = PrimaryTag.subitems
-        for key in OldTags.keys():
-            if OldTags[key] == PrimaryTag:
-                if NewTags[key] is not None:
-                    PrimaryTagFrames = NewTags[key].subitems
-                    break
-
-        # Find matching tag (should only find one)
-        FoundTag = None
-        for comp_name in TagToCompList[TagToDo]:
-            if not SuperTagList.has_key(comp_name):
-                continue
-            for tag in SuperTagList[comp_name]:
-                if tag.name != PrimaryTag.name:
-                    # Wrong tag name...
-                    continue
-                if tag == PrimaryTag:
-                    # Can't move PrimaryTag, obviously
-                    continue
-                # Found it!
-                FoundTag = tag
-                break
-            if FoundTag is not None:
-                break
-        if FoundTag is None:
-            # We didn't find a matching tag. Probably not loaded yet
-            continue
-        # Replace with newer tag, if needed
-        for key in OldTags.keys(): # NOTHING IS GOING THROUGH HERE if the tagframe groups are not being put into QuArK.
-            if OldTags[key] == FoundTag:
-                if NewTags[key] is not None:
-                    FoundTag = NewTags[key]
-                    break
-        tag_frames = FoundTag.subitems
-        TagID = int(FoundTag.dictspec["UniqueID"]) # Its position in the tree-view components, as a string item.
-
-        # Move the components and their tags
-        for comp_name in SuperTagToCompList[TagID]:
-            comp = AllComponents[comp_name]
-            comp_frames = comp.dictitems['Frames:fg'].subitems
-            if not comp_name in NewFrameGroups.keys():
-                newframesgroup = quarkx.newobj('Frames:fg')
-                NewFrameGroups[comp_name] = newframesgroup
-            else:
-                newframesgroup = NewFrameGroups[comp_name]
-            if len(TagsToMove) != 0:
-                newlist = []
-                for tag in tagsgroup:
-                    for newtag in TagsToMove:
-                        if newtag.name == tag.name:
-                            tag = newtag
-            TagsToMove = []
-            if SuperTagList.has_key(comp_name):
-                for tag in SuperTagList[comp_name]:
-                    if tag.name == PrimaryTag.name:
+    if len(tagsgroup) > 1:
+        # To make sure the order of the tags is correct.
+        for tag in range(len(tagsgroup)):
+            if tagsgroup[tag].name.find("torso") != -1 and not tagsgroup[len(tagsgroup)-1].name.find("torso") != -1:
+                fixed_tagsgroup = []
+                for tag2 in range(len(tagsgroup)):
+                    if tagsgroup[tag2].name.find("torso") != -1:
+                        holdtag = tagsgroup[tag2]
                         continue
-                    TagsToMove = TagsToMove + [tag]
-            for primarytag_frame_index in range(len(PrimaryTagFrames)):
-                # Get the ORIGINALTag position and rotation data. This is the ORIGINAL TAGFRAMES GROUP imported.
-                primarytag_frame = PrimaryTagFrames[primarytag_frame_index]
-                main_origin = quarkx.vect(primarytag_frame.dictspec['origin']) # ORIGINAL TORSO TAGFRAME
-                mt = primarytag_frame.dictspec['rotmatrix']
-                mt = ((mt[0],mt[1],mt[2]), (mt[3],mt[4],mt[5]), (mt[6],mt[7],mt[8]))
-                main_rotation = quarkx.matrix(mt)
-                #FIXME: Frame number calcs currently wrong! Some animation cycles don't match each other!!!
-                # Find matching frame numbers. "tag_frames" is the NEW tagframes group being imported now.
-                if primarytag_frame_index > len(tag_frames)-1:
-                    tag_frame_index = len(tag_frames)-1
+                    fixed_tagsgroup = fixed_tagsgroup + [tagsgroup[tag2]]
+                    if tag2 == len(tagsgroup)-1:
+                        fixed_tagsgroup = fixed_tagsgroup + [holdtag]
+                        tagsgroup = fixed_tagsgroup
+        for tag in range(len(tagsgroup)):
+            if tagsgroup[tag].name.find("torso") != -1:
+                if editor_dictitems['Misc:mg'].dictitems.has_key(tagsgroup[tag].name):
+                    old_torso_tag_frames = editor_dictitems['Misc:mg'].dictitems[tagsgroup[tag].name].subitems
+                new_torso_tag_frames = tagsgroup[tag].subitems
+    for tag in range(len(tagsgroup)):
+        if len(miscgroup) == 0:
+            undo.put(editor_dictitems['Misc:mg'], tagsgroup[tag])
+        for item in range(len(miscgroup)):
+            if tagsgroup[tag].name == miscgroup[item].name:
+                if ModelName.find("upper") != -1:
+                    # This is where we need to update all of the model's components frames and vertex positions.
+                    # using "ModelFolder" which is the first part of each of its component's name to distinguish them.
+                    for key in editor_dictitems.keys():
+                        if editor_dictitems[key].type == ":mc" and editor_dictitems[key].name.startswith(ModelFolder):
+                            if tagsgroup[tag].name.find("head") != -1 and editor_dictitems[key].name.find("head") != -1:
+                                if old_torso_tag_frames is not None:
+                                    if editor_dictitems['Misc:mg'].dictitems.has_key(ModelFolder + "_tag_head:tag"):
+                                        old_taggroup = editor_dictitems['Misc:mg'].dictitems[ModelFolder + "_tag_head:tag"]
+                                        old_tag_subitems = old_taggroup.subitems
+                                tag_subitems = tagsgroup[tag].subitems
+                                miscgroup_subitems = miscgroup[item].subitems
+                                tag_comp = editor_dictitems[key]
+                                tag_comps_list = tag_comp.dictspec['tag_components'].split(", ")
+                                for comp in range(len(tag_comps_list)):
+                                    newcomp = editor_dictitems[tag_comps_list[comp]].copy()
+                                    comp_frames = newcomp.dictitems['Frames:fg'].subitems
+                                    newframesgroup = quarkx.newobj('Frames:fg')
+                                    comp_framecount = len(comp_frames)-1
+                                    for frame in range(len(tag_subitems)):
+                                        if old_torso_tag_frames is not None and old_tag_subitems is not None:
+                                            if frame >= len(old_tag_subitems)-1:
+                                                ot_r = old_tag_subitems[len(old_tag_subitems)-1].dictspec['rotmatrix'] # This is the ORIGINAL ROTATION matrix for the "head's" tag frame matrix.
+                                                ot_r = ((ot_r[0],ot_r[1],ot_r[2]), (ot_r[3],ot_r[4],ot_r[5]), (ot_r[6],ot_r[7],ot_r[8]))
+                                                old_tag_rotation = quarkx.matrix(ot_r)
+                                                old_tag_origin = old_tag_subitems[len(old_tag_subitems)-1].dictspec['origin'] # This is the ORIGINAL ORIGIN for the "head's" tag frame.
+                                            else:
+                                                ot_r = old_tag_subitems[frame].dictspec['rotmatrix'] # This is the ORIGINAL ROTATION matrix for the "head's" tag frame matrix.
+                                                ot_r = ((ot_r[0],ot_r[1],ot_r[2]), (ot_r[3],ot_r[4],ot_r[5]), (ot_r[6],ot_r[7],ot_r[8]))
+                                                old_tag_rotation = quarkx.matrix(ot_r)
+                                                old_tag_origin = old_tag_subitems[frame].dictspec['origin'] # This is the ORIGINAL ORIGIN for the "head's" tag frame.
+                                            o_r = old_torso_tag_frames[frame].dictspec['rotmatrix'] # This is the ORIGINAL ROTATION matrix for the "torso's" tag frame matrix.
+                                            o_r = ((o_r[0],o_r[1],o_r[2]), (o_r[3],o_r[4],o_r[5]), (o_r[6],o_r[7],o_r[8]))
+                                            org_rotation = quarkx.matrix(o_r)
+                                            org_origin = old_torso_tag_frames[frame].dictspec['origin'] # This is the ORIGINAL ORIGIN for the "torso's" tag frame.
+
+                                        n_r = tag_subitems[frame].dictspec['rotmatrix'] # This is the NEW ROTATION matrix for the "head's" tag frame matrix.
+                                        pre_n_r = n_r = ((n_r[0],n_r[1],n_r[2]), (n_r[3],n_r[4],n_r[5]), (n_r[6],n_r[7],n_r[8]))
+                                        new_rotation = quarkx.matrix(n_r)
+                                        new_origin = tag_subitems[frame].dictspec['origin'] # This is the NEW ORIGIN for the "head's" tag frame.
+
+                                        if comp == 0 and old_torso_tag_frames is not None and old_tag_subitems is not None:
+                                            # Now, move the tags.
+                                            tag_subitems[frame]['origin'] = (quarkx.vect(org_origin) + ((~org_rotation) * old_tag_rotation * (quarkx.vect(new_origin) - quarkx.vect(old_tag_origin)))).tuple
+                                            new_rotation = (org_rotation * (~old_tag_rotation)) * new_rotation
+                                            n_r = new_rotation.tuple
+                                            tag_subitems[frame]['rotmatrix'] = (n_r[0][0], n_r[0][1], n_r[0][2], n_r[1][0], n_r[1][1], n_r[1][2], n_r[2][0], n_r[2][1], n_r[2][2])
+                                        # Get the NEWTag position and rotation data.
+                                        if frame >= comp_framecount:
+                                            if old_torso_tag_frames is None or old_tag_subitems is None:
+                                                tag_adj_vect = quarkx.vect(tag_subitems[frame].dictspec['origin']) - quarkx.vect(miscgroup_subitems[comp_framecount].dictspec['origin'])
+                                            comp_frame = comp_frames[comp_framecount].copy()
+                                            comp_frame.shortname = "Frame " + str(frame+1)
+                                        else:
+                                            if old_torso_tag_frames is None or old_tag_subitems is None:
+                                                tag_adj_vect = quarkx.vect(tag_subitems[frame].dictspec['origin']) - quarkx.vect(miscgroup_subitems[frame].dictspec['origin'])
+                                            comp_frame = comp_frames[frame]
+                                            comp_frame.shortname = "Frame " + str(frame+1)
+                                        # Now, move the components.
+                                        vertices = []
+                                        for vtx in comp_frame.vertices:
+                                            # To rotate head components properly when they come through.
+                                            if old_torso_tag_frames is None or old_tag_subitems is None:
+                                                comp_rotation = vector_by_matrix(vtx.tuple, n_r)
+                                                comp_rotation = quarkx.vect(comp_rotation[0], comp_rotation[1], comp_rotation[2])
+                                                vtx = comp_rotation
+                                                vertices = vertices + [vtx + tag_adj_vect]
+                                            else:
+                                                comp_rotation = vector_by_matrix(vtx.tuple, pre_n_r)
+                                                comp_rotation = quarkx.vect(comp_rotation[0], comp_rotation[1], comp_rotation[2])
+                                                vtx = comp_rotation
+                                                vtx = vtx + quarkx.vect(tag_subitems[frame]['origin'])
+                                                vertices = vertices + [vtx]
+                                        comp_frame.vertices = vertices
+                                        newframe = comp_frame.copy()
+                                        newframesgroup.appenditem(newframe)
+                                    undo.exchange(newcomp.dictitems['Frames:fg'], newframesgroup)
+                                    undo.exchange(editor_dictitems[tag_comps_list[comp]], newcomp)
+                                break
+
+                            elif tagsgroup[tag].name.find("weapon") != -1 and editor_dictitems[key].name.find("weapon") != -1:
+                                tag_subitems = tagsgroup[tag].subitems
+                                for frame in range(len(tag_subitems)):
+                                    if old_torso_tag_frames is not None and new_torso_tag_frames is not None:
+                                        if frame >= len(new_torso_tag_frames)-1:
+                                            ntr = new_torso_tag_frames[len(new_torso_tag_frames)-1].dictspec['rotmatrix'] # This is the NEW ROTATION matrix for the "torso's" tag frame matrix.
+                                            ntr = ((ntr[0],ntr[1],ntr[2]), (ntr[3],ntr[4],ntr[5]), (ntr[6],ntr[7],ntr[8]))
+                                            new_torso_rotation = quarkx.matrix(ntr)
+                                            new_torso_origin = new_torso_tag_frames[len(new_torso_tag_frames)-1].dictspec['origin'] # This is the NEW ORIGIN for the "torso's" tag frame.
+                                        else:
+                                            ntr = new_torso_tag_frames[frame].dictspec['rotmatrix'] # This is the NEW ROTATION for the "torso's" tag frame.
+                                            ntr = ((ntr[0],ntr[1],ntr[2]), (ntr[3],ntr[4],ntr[5]), (ntr[6],ntr[7],ntr[8]))
+                                            new_torso_rotation = quarkx.matrix(ntr)
+                                            new_torso_origin = new_torso_tag_frames[frame].dictspec['origin'] # This is the NEW ORIGIN for the "torso's" tag frame.
+                                        otr = old_torso_tag_frames[frame].dictspec['rotmatrix'] # This is the ORIGINAL ROTATION matrix for the "torso's" tag frame matrix.
+                                        otr = ((otr[0],otr[1],otr[2]), (otr[3],otr[4],otr[5]), (otr[6],otr[7],otr[8]))
+                                        old_torso_rotation = quarkx.matrix(otr)
+                                        old_torso_origin = old_torso_tag_frames[frame].dictspec['origin'] # This is the ORIGINAL ORIGIN for the "torso's" tag frame.
+                                    n_r = tag_subitems[frame].dictspec['rotmatrix'] # This is the NEW ROTATION matrix for the "weapon's" tag frame matrix.
+                                    n_r = ((n_r[0],n_r[1],n_r[2]), (n_r[3],n_r[4],n_r[5]), (n_r[6],n_r[7],n_r[8]))
+                                    new_rotation = quarkx.matrix(n_r)
+                                    new_origin = tag_subitems[frame].dictspec['origin'] # This is the NEW ORIGIN for the "weapon's" tag frame.
+                                    if old_torso_tag_frames is not None and new_torso_tag_frames is not None:
+                                        # Now, move the tags.
+                                        tag_subitems[frame]['origin'] = (quarkx.vect(old_torso_origin) + ((~old_torso_rotation) * new_torso_rotation * (quarkx.vect(new_origin) - quarkx.vect(new_torso_origin)))).tuple
+                                        new_rotation = (old_torso_rotation * (~new_torso_rotation)) * new_rotation
+                                        n_r = new_rotation.tuple
+                                        tag_subitems[frame]['rotmatrix'] = (n_r[0][0], n_r[0][1], n_r[0][2], n_r[1][0], n_r[1][1], n_r[1][2], n_r[2][0], n_r[2][1], n_r[2][2])
+                                break
+                            elif tagsgroup[tag].name.find("torso") != -1:
+                                tag_subitems = tagsgroup[tag].subitems
+                                miscgroup_subitems = miscgroup[item].subitems
+                                newcomp = editor_dictitems[key].copy()
+                                comp_frames = newcomp.dictitems['Frames:fg'].subitems
+                                newframesgroup = quarkx.newobj('Frames:fg')
+                                for frame in range(len(tag_subitems)):
+                                    if old_torso_tag_frames is not None:
+                                        o_r = old_torso_tag_frames[frame].dictspec['rotmatrix'] # This is the ORIGINAL ROTATION matrix for the "torso's" tag frame matrix.
+                                        o_r = ((o_r[0],o_r[1],o_r[2]), (o_r[3],o_r[4],o_r[5]), (o_r[6],o_r[7],o_r[8]))
+                                        org_rotation = quarkx.matrix(o_r)
+                                        org_origin = old_torso_tag_frames[frame].dictspec['origin'] # This is the ORIGINAL ORIGIN for the "torso's" tag frame.
+                                    n_r = tag_subitems[frame].dictspec['rotmatrix'] # This is the NEW ROTATION matrix for the "torso's" tag frame matrix.
+                                    n_r = ((n_r[0],n_r[1],n_r[2]), (n_r[3],n_r[4],n_r[5]), (n_r[6],n_r[7],n_r[8]))
+                                    new_rotation = quarkx.matrix(n_r)
+                                    new_origin = tag_subitems[frame].dictspec['origin'] # This is the NEW ORIGIN for the "head's" tag frame.
+                                    if old_torso_tag_frames is not None:
+                                        # Now, move the tags
+                                        tag_subitems[frame]['origin'] = (quarkx.vect(org_origin) + ((~org_rotation) * new_rotation * (quarkx.vect(new_origin) - quarkx.vect(new_origin)))).tuple
+                                    # To try and rotate upper components properly when they come through.
+                                    if ModelName.find("upper") != -1:
+                                        for Component in ComponentList:
+                                            vertices = []
+                                            for vtx in Component.dictitems['Frames:fg'].subitems[frame].vertices:
+                                                if old_torso_tag_frames is None: # use OLD method.
+                                                    comp_rotation = vector_by_matrix(vtx.tuple, n_r)
+                                                    comp_rotation = quarkx.vect(comp_rotation[0], comp_rotation[1], comp_rotation[2])
+                                                    vtx = new_rotation * comp_rotation # new_rotation is the UPPER'S torso's" tag frame matrix.
+                                                else: # use NEW method.
+                                                    vtx = quarkx.vect(org_origin) + ((~org_rotation) * new_rotation * (vtx - quarkx.vect(new_origin)))
+                                                vertices = vertices + [vtx]
+                                            Component.dictitems['Frames:fg'].subitems[frame].vertices = vertices
+                                    tag_adj_vect = quarkx.vect(tag_subitems[frame].dictspec['origin']) - quarkx.vect(miscgroup_subitems[frame].dictspec['origin'])
+                                    vertices = []
+                                    for vtx in comp_frames[frame].vertices:
+                                        # To try and rotate lower components properly when they come through.
+                                        if old_torso_tag_frames is not None: # use OLD method.
+                                            comp_rotation = vector_by_matrix(vtx.tuple, n_r)
+                                            comp_rotation = quarkx.vect(comp_rotation[0], comp_rotation[1], comp_rotation[2])
+                                            vtx = comp_rotation
+                                            vertices = vertices + [vtx + tag_adj_vect]
+                                        else: # use NEW method.
+                                            vtx = quarkx.vect(org_origin) + ((~org_rotation) * new_rotation * (vtx - quarkx.vect(new_origin)))
+                                            vertices = vertices + [vtx]
+                                    comp_frames[frame].vertices = vertices
+                                    newframe = comp_frames[frame].copy()
+                                    newframesgroup.appenditem(newframe)
+                                undo.exchange(newcomp.dictitems['Frames:fg'], newframesgroup)
+                                undo.exchange(editor_dictitems[key], newcomp)
+                                break
+
+                    undo.exchange(miscgroup[item], tagsgroup[tag])
+                    break
                 else:
-                    tag_frame_index = primarytag_frame_index
-                # Get the NEWTag position and rotation data.
-                sub_origin = quarkx.vect(tag_frames[tag_frame_index].dictspec['origin'])
-                mt = tag_frames[tag_frame_index].dictspec['rotmatrix']
-                mt = ((mt[0],mt[1],mt[2]), (mt[3],mt[4],mt[5]), (mt[6],mt[7],mt[8]))
-                sub_rotation = quarkx.matrix(mt)
-                # Now, move the components
-                if primarytag_frame_index > len(comp_frames)-1:
-                    comp_frame_index = len(comp_frames)-1
-                else:
-                    comp_frame_index = primarytag_frame_index
-                newframe = comp_frames[comp_frame_index].copy()
-                newframe.shortname = "Frame " + str(primarytag_frame_index + 1)
-                vertices = newframe.vertices
-                new_vertices = []
-                for vtx in vertices:
-                    # Rotate head components properly when they come through.
-                    vtx_rotated = main_origin + ((~main_rotation) * sub_rotation * (vtx - sub_origin))
-                    new_vertices = new_vertices + [vtx_rotated]
-                newframe.vertices = new_vertices
-                newframesgroup.appenditem(newframe)
+                    break
+            if item == len(miscgroup)-1:
+                if tagsgroup[tag].name.find("weapon") != -1 and ModelName.find("upper") != -1:
+                    tag_subitems = tagsgroup[tag].subitems
+                    for frame in range(len(tag_subitems)):
+                        if old_torso_tag_frames is not None and new_torso_tag_frames is not None:
+                            if frame >= len(new_torso_tag_frames)-1:
+                                ntr = new_torso_tag_frames[len(new_torso_tag_frames)-1].dictspec['rotmatrix'] # This is the NEW ROTATION matrix for the "torso's" tag frame matrix.
+                                ntr = ((ntr[0],ntr[1],ntr[2]), (ntr[3],ntr[4],ntr[5]), (ntr[6],ntr[7],ntr[8]))
+                                new_torso_rotation = quarkx.matrix(ntr)
+                                new_torso_origin = new_torso_tag_frames[len(new_torso_tag_frames)-1].dictspec['origin'] # This is the NEW ORIGIN for the "torso's" tag frame.
+                            else:
+                                ntr = new_torso_tag_frames[frame].dictspec['rotmatrix'] # This is the NEW ROTATION for the "torso's" tag frame.
+                                ntr = ((ntr[0],ntr[1],ntr[2]), (ntr[3],ntr[4],ntr[5]), (ntr[6],ntr[7],ntr[8]))
+                                new_torso_rotation = quarkx.matrix(ntr)
+                                new_torso_origin = new_torso_tag_frames[frame].dictspec['origin'] # This is the NEW ORIGIN for the "torso's" tag frame.
+                            otr = old_torso_tag_frames[frame].dictspec['rotmatrix'] # This is the ORIGINAL ROTATION matrix for the "torso's" tag frame matrix.
+                            otr = ((otr[0],otr[1],otr[2]), (otr[3],otr[4],otr[5]), (otr[6],otr[7],otr[8]))
+                            old_torso_rotation = quarkx.matrix(otr)
+                            old_torso_origin = old_torso_tag_frames[frame].dictspec['origin'] # This is the ORIGINAL ORIGIN for the "torso's" tag frame.
+                        n_r = tag_subitems[frame].dictspec['rotmatrix'] # This is the NEW ROTATION matrix for the "weapon's" tag frame matrix.
+                        n_r = ((n_r[0],n_r[1],n_r[2]), (n_r[3],n_r[4],n_r[5]), (n_r[6],n_r[7],n_r[8]))
+                        new_rotation = quarkx.matrix(n_r)
+                        new_origin = tag_subitems[frame].dictspec['origin'] # This is the NEW ORIGIN for the "weapon's" tag frame.
+                        if old_torso_tag_frames is not None and new_torso_tag_frames is not None:
+                            # Now, move the tags.
+                            tag_subitems[frame]['origin'] = (quarkx.vect(old_torso_origin) + ((~old_torso_rotation) * new_torso_rotation * (quarkx.vect(new_origin) - quarkx.vect(new_torso_origin)))).tuple
+                            new_rotation = (old_torso_rotation * (~new_torso_rotation)) * new_rotation
+                            n_r = new_rotation.tuple
+                            tag_subitems[frame]['rotmatrix'] = (n_r[0][0], n_r[0][1], n_r[0][2], n_r[1][0], n_r[1][1], n_r[1][2], n_r[2][0], n_r[2][1], n_r[2][2])
 
-                # Now, move the tags
-                for tag in TagsToMove:
-                    if OldTags.has_key(tag.name):
-                        if NewTags[tag.name] is None:
-                            NewTags[tag.name] = OldTags[tag.name].copy()
-                        new_tag = NewTags[tag.name]
-                    else:
-                        new_tag = tag
-                    new_tag_frames = new_tag.subitems
-                    if primarytag_frame_index > len(new_tag_frames)-1:
-                        new_tag_frame_index = len(new_tag_frames)-1
-                    else:
-                        new_tag_frame_index = primarytag_frame_index
-                    # This is the tagframe, being looped through, for the NEW tag groups that need to be rotated, ex: head, weapon BUT NOT torso.
-                    sub2_origin = quarkx.vect(new_tag_frames[new_tag_frame_index].dictspec['origin']) # NEW HEAD TAGFRAME.
-                    mt = new_tag_frames[new_tag_frame_index].dictspec['rotmatrix']
-                    mt = ((mt[0],mt[1],mt[2]), (mt[3],mt[4],mt[5]), (mt[6],mt[7],mt[8]))
-                    sub2_rotation = quarkx.matrix(mt)
-                    sub2_origin = main_origin + ((~main_rotation) * sub_rotation * (sub2_origin - sub_origin))
-                    #sub2_rotation = ((~main_rotation) * sub_rotation) * sub2_rotation
-                    sub2_rotation = (main_rotation * (~sub_rotation)) * sub2_rotation
-                    mt = sub2_rotation.tuple
-                    new_tag_frames[new_tag_frame_index]['origin'] = sub2_origin.tuple
-                    new_tag_frames[new_tag_frame_index]['rotmatrix'] = (mt[0][0], mt[0][1], mt[0][2], mt[1][0], mt[1][1], mt[1][2], mt[2][0], mt[2][1], mt[2][2])
-                    #new_tag_frames[new_tag_frame_index]['rotmatrix'] = (mt[0][0], mt[1][0], mt[2][0], mt[0][1], mt[1][1], mt[2][1], mt[0][2], mt[1][2], mt[2][2])
-                    #@
-                    #FIXME: GOTTA UPDATE THE DAMN GLOBALS!!!
-                    #@
+                undo.put(editor_dictitems['Misc:mg'], tagsgroup[tag])
 
-    #Exchange changed components
-    for key in NewFrameGroups.keys():
-        comp = AllComponents[key]
-        if comp in editor.Root.subitems:
-            newcomp = comp.copy()
-            undo.exchange(newcomp.dictitems['Frames:fg'], NewFrameGroups[key])
-            undo.exchange(comp, newcomp)
-        else:
-            comp.removeitem(comp.dictitems['Frames:fg'])
-            comp.appenditem(NewFrameGroups[key])
 
-    #Exchange changed tags
-  #  for key in OldTags.keys():
-  #      if NewTags[key] is not None:
-  #          undo.exchange(OldTags[key], NewTags[key])
-  #          for key2 in PrimaryTags.keys():
-  #              if PrimaryTags[key2] == OldTags[key]:
-  #                  PrimaryTags[key2] = NewTags[key]
-    for tag in tagsgroup:
-        if not editor.Root.dictitems['Misc:mg'].dictitems.has_key(tag.name):
-            # Put this one into the treeview
-            undo.put(editor.Root.dictitems['Misc:mg'], tag)
-        else:
-            undo.exchange(editor.Root.dictitems['Misc:mg'].dictitems[tag.name], tag)
-
+    # Now we process the Components.
     for Component in ComponentList:
         dupeitem = 0
         for item in editor.Root.subitems:
@@ -1245,6 +1243,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.8  2009/09/14 20:02:55  cdunde
+# DanielPharos's method to improve upon this importer. Thank you Dan.
+#
 # Revision 1.7  2009/09/09 03:47:33  cdunde
 # Fix and message for script folder if not extracted when needed.
 # Fix to stop multiple duplicate components caused by imports of the same model file.
