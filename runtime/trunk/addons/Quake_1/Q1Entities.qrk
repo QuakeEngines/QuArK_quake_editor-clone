@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.7  2009/07/22 19:13:10  danielpharos
+//Added missing spawnflags for item_cells, found by randper, helped by hardkore and fixed by X7.
+//
 //Revision 1.6  2009/06/24 20:32:22  cdunde
 //Another one for the teleporter by hardkore.
 //
@@ -1963,7 +1966,7 @@ QQRKSRC1
     {Txt="&"
     Typ="X1"
     Cap="big"
-    Hint="Big Box of Rockets"
+    Hint="Big Box of Cells"
     }
     }
 
