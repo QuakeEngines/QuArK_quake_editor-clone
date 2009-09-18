@@ -924,40 +924,46 @@ def loadmodel(root, filename, gamename, nomessage=0):
                                 miscgroup_subitems = miscgroup[item].subitems
                                 tag_comp = editor_dictitems[key]
                                 tag_comps_list = tag_comp.dictspec['tag_components'].split(", ")
+                                editor_comps_frames = []
+                                newcomps = []
+                                newframesgroups = []
                                 for comp in range(len(tag_comps_list)):
+                                    editor_comps_frames = editor_comps_frames + [editor_dictitems[tag_comps_list[comp]].dictitems['Frames:fg'].subitems]
                                     newcomp = editor_dictitems[tag_comps_list[comp]].copy()
-                                    comp_frames = newcomp.dictitems['Frames:fg'].subitems
+                                    newcomps = newcomps + [newcomp]
                                     newframesgroup = quarkx.newobj('Frames:fg')
-                                    comp_framecount = len(comp_frames)-1
-                                    for frame in range(len(tag_subitems)):
-                                        if old_torso_tag_frames is not None and old_tag_subitems is not None:
-                                            if frame >= len(old_tag_subitems)-1:
-                                                ot_r = old_tag_subitems[len(old_tag_subitems)-1].dictspec['rotmatrix'] # This is the ORIGINAL ROTATION matrix for the "head's" tag frame matrix.
-                                                ot_r = ((ot_r[0],ot_r[1],ot_r[2]), (ot_r[3],ot_r[4],ot_r[5]), (ot_r[6],ot_r[7],ot_r[8]))
-                                                old_tag_rotation = quarkx.matrix(ot_r)
-                                                old_tag_origin = old_tag_subitems[len(old_tag_subitems)-1].dictspec['origin'] # This is the ORIGINAL ORIGIN for the "head's" tag frame.
-                                            else:
-                                                ot_r = old_tag_subitems[frame].dictspec['rotmatrix'] # This is the ORIGINAL ROTATION matrix for the "head's" tag frame matrix.
-                                                ot_r = ((ot_r[0],ot_r[1],ot_r[2]), (ot_r[3],ot_r[4],ot_r[5]), (ot_r[6],ot_r[7],ot_r[8]))
-                                                old_tag_rotation = quarkx.matrix(ot_r)
-                                                old_tag_origin = old_tag_subitems[frame].dictspec['origin'] # This is the ORIGINAL ORIGIN for the "head's" tag frame.
-                                            o_r = old_torso_tag_frames[frame].dictspec['rotmatrix'] # This is the ORIGINAL ROTATION matrix for the "torso's" tag frame matrix.
-                                            o_r = ((o_r[0],o_r[1],o_r[2]), (o_r[3],o_r[4],o_r[5]), (o_r[6],o_r[7],o_r[8]))
-                                            org_rotation = quarkx.matrix(o_r)
-                                            org_origin = old_torso_tag_frames[frame].dictspec['origin'] # This is the ORIGINAL ORIGIN for the "torso's" tag frame.
+                                    newframesgroups = newframesgroups + [newframesgroup]
+                                for frame in range(len(tag_subitems)):
+                                    if old_torso_tag_frames is not None and old_tag_subitems is not None:
+                                        if frame >= len(old_tag_subitems)-1:
+                                            ot_r = old_tag_subitems[len(old_tag_subitems)-1].dictspec['rotmatrix'] # This is the ORIGINAL ROTATION matrix for the "head's" tag frame matrix.
+                                            ot_r = ((ot_r[0],ot_r[1],ot_r[2]), (ot_r[3],ot_r[4],ot_r[5]), (ot_r[6],ot_r[7],ot_r[8]))
+                                            old_tag_rotation = quarkx.matrix(ot_r)
+                                            old_tag_origin = old_tag_subitems[len(old_tag_subitems)-1].dictspec['origin'] # This is the ORIGINAL ORIGIN for the "head's" tag frame.
+                                        else:
+                                            ot_r = old_tag_subitems[frame].dictspec['rotmatrix'] # This is the ORIGINAL ROTATION matrix for the "head's" tag frame matrix.
+                                            ot_r = ((ot_r[0],ot_r[1],ot_r[2]), (ot_r[3],ot_r[4],ot_r[5]), (ot_r[6],ot_r[7],ot_r[8]))
+                                            old_tag_rotation = quarkx.matrix(ot_r)
+                                            old_tag_origin = old_tag_subitems[frame].dictspec['origin'] # This is the ORIGINAL ORIGIN for the "head's" tag frame.
+                                        o_r = old_torso_tag_frames[frame].dictspec['rotmatrix'] # This is the ORIGINAL ROTATION matrix for the "torso's" tag frame matrix.
+                                        o_r = ((o_r[0],o_r[1],o_r[2]), (o_r[3],o_r[4],o_r[5]), (o_r[6],o_r[7],o_r[8]))
+                                        org_rotation = quarkx.matrix(o_r)
+                                        org_origin = old_torso_tag_frames[frame].dictspec['origin'] # This is the ORIGINAL ORIGIN for the "torso's" tag frame.
 
-                                        n_r = tag_subitems[frame].dictspec['rotmatrix'] # This is the NEW ROTATION matrix for the "head's" tag frame matrix.
-                                        pre_n_r = n_r = ((n_r[0],n_r[1],n_r[2]), (n_r[3],n_r[4],n_r[5]), (n_r[6],n_r[7],n_r[8]))
-                                        new_rotation = quarkx.matrix(n_r)
-                                        new_origin = tag_subitems[frame].dictspec['origin'] # This is the NEW ORIGIN for the "head's" tag frame.
-
+                                    n_r = tag_subitems[frame].dictspec['rotmatrix'] # This is the NEW ROTATION matrix for the "head's" tag frame matrix.
+                                    pre_n_r = n_r = ((n_r[0],n_r[1],n_r[2]), (n_r[3],n_r[4],n_r[5]), (n_r[6],n_r[7],n_r[8]))
+                                    pre_new_rotation = new_rotation = quarkx.matrix(n_r)
+                                    new_origin = tag_subitems[frame].dictspec['origin'] # This is the NEW ORIGIN for the "head's" tag frame.
+                                    for comp in range(len(tag_comps_list)):
+                                        comp_frames = editor_comps_frames[comp]
+                                        comp_framecount = len(comp_frames)-1
+                                        # Get the NEWTag position and rotation data.
                                         if comp == 0 and old_torso_tag_frames is not None and old_tag_subitems is not None:
-                                            # Now, move the tags.
                                             tag_subitems[frame]['origin'] = (quarkx.vect(org_origin) + ((~org_rotation) * old_tag_rotation * (quarkx.vect(new_origin) - quarkx.vect(old_tag_origin)))).tuple
                                             new_rotation = (org_rotation * (~old_tag_rotation)) * new_rotation
                                             n_r = new_rotation.tuple
                                             tag_subitems[frame]['rotmatrix'] = (n_r[0][0], n_r[0][1], n_r[0][2], n_r[1][0], n_r[1][1], n_r[1][2], n_r[2][0], n_r[2][1], n_r[2][2])
-                                        # Get the NEWTag position and rotation data.
+                                        # Now, move the tags.
                                         if frame >= comp_framecount:
                                             if old_torso_tag_frames is None or old_tag_subitems is None:
                                                 tag_adj_vect = quarkx.vect(tag_subitems[frame].dictspec['origin']) - quarkx.vect(miscgroup_subitems[comp_framecount].dictspec['origin'])
@@ -982,12 +988,16 @@ def loadmodel(root, filename, gamename, nomessage=0):
                                                 comp_rotation = quarkx.vect(comp_rotation[0], comp_rotation[1], comp_rotation[2])
                                                 vtx = comp_rotation
                                                 vtx = vtx + quarkx.vect(tag_subitems[frame]['origin'])
+                                                # Below method does the exact same movement as above, but may be faster drawing.
+                                               # vtx = pre_new_rotation * vtx
+                                               # vtx = vtx + quarkx.vect(tag_subitems[frame]['origin'])
                                                 vertices = vertices + [vtx]
                                         comp_frame.vertices = vertices
                                         newframe = comp_frame.copy()
-                                        newframesgroup.appenditem(newframe)
-                                    undo.exchange(newcomp.dictitems['Frames:fg'], newframesgroup)
-                                    undo.exchange(editor_dictitems[tag_comps_list[comp]], newcomp)
+                                        newframesgroups[comp].appenditem(newframe)
+                                for i in range(len(tag_comps_list)):
+                                    undo.exchange(newcomps[i].dictitems['Frames:fg'], newframesgroups[i])
+                                    undo.exchange(editor_dictitems[tag_comps_list[i]], newcomps[i])
                                 break
 
                             elif tagsgroup[tag].name.find("weapon") != -1 and editor_dictitems[key].name.find("weapon") != -1:
@@ -1243,6 +1253,10 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.9  2009/09/14 20:12:23  cdunde
+# Switch back to cdunde's coding with some of DanielPharos methods included.
+# Sorry Dan, you're so advanced I couldn't follow it. 8-)
+#
 # Revision 1.8  2009/09/14 20:02:55  cdunde
 # DanielPharos's method to improve upon this importer. Thank you Dan.
 #
