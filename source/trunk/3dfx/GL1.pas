@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.41  2009/09/22 17:58:33  danielpharos
+Fixed OpenGL extensions not being found at all, or the last one being missed.
+
 Revision 1.40  2009/07/17 10:52:09  danielpharos
 Moved PPointer to ExtraFunctionality.
 
@@ -824,10 +827,29 @@ var
   //Looks like a bug in the OpenGL specs: the last parameter is void, not GLvoid
  {gluBuild2DMipmaps: function (target: GLenum; components: GLint; width, height: GLint; format: GLenum; typ: GLenum; const data: PByte): GLint; stdcall;}
 
+  (*
+  ** Extensions
+  *)
+  //WARNING: DO *NOT* CALL THESE IMMEDIATELY! Always call LoadExtension first...!
+  glAddSwapHintRectWIN: procedure (x: GLint; y: GLint; width: GLsizei; height: GLsizei) stdcall;
+
+type
+  TGLExtensionList = array of
+    record
+      Name: String;
+      FuncName: PChar;
+      FuncPtr: Pointer;
+      Loaded: Boolean;
+      Address: Pointer;
+    end;
+
 function LoadOpenGl : Boolean;
 procedure UnloadOpenGl;
 function ExtensionSupported(const ExtensionName: String) : Boolean;
-function GetWinSwapHint : Pointer;
+procedure ResetExtensionList(var Extensions : TGLExtensionList);
+function LoadExtension(var Extension : TGLExtensionList; const ExtensionName: String) : Boolean;
+
+procedure CheckOpenGLError(const Location: String);
 
 function GetOpenGLDummyRC: HGLRC;
 function GetOpenGLDummyDC: HDC;
@@ -921,6 +943,15 @@ const
     end =
   ( (FuncPtr: @@gluPerspective;        FuncName: 'gluPerspective'        )
   {,(FuncPtr: @@gluBuild2DMipmaps;     FuncName: 'gluBuild2DMipmaps'     )});
+
+  ExtGL32DLL_FuncList : array[0..0] of
+    record
+      ExtName: String;
+      FuncName: PChar;
+      FuncPtr: Pointer;
+    end =
+  ( (ExtName: 'GL_WIN_swap_hint'; FuncName: 'glAddSwapHintRectWIN'; FuncPtr: @@glAddSwapHintRectWIN; )
+  );
 
 var
   TimesLoaded : Integer;
@@ -1228,28 +1259,53 @@ begin
   Result:=True;
 end;
 
-function GetWinSwapHint : Pointer;
+procedure ResetExtensionList(var Extensions : TGLExtensionList);
+var
+  ExtCount: Integer;
+  I: Integer;
 begin
-  if not WinSwapHintLoaded then
-  begin
-    if GLExtensions=nil then
-      if not LoadExtentionList then
-      begin
-        Log(LOG_WARNING, LoadStr1(6304));
-        Result:=nil;
-        Exit;
-      end;
-
-    //We need to check for GL_WIN_swap_hint before loading...
-    if GLExtensions.IndexOf('GL_WIN_swap_hint')=-1 then
+  ExtCount := High(ExtGL32DLL_FuncList)-Low(ExtGL32DLL_FuncList)+1;
+  SetLength(Extensions, ExtCount);
+  for I:=0 to ExtCount-1 do
+    with Extensions[I] do
     begin
-      Result:=nil;
+      Name := ExtGL32DLL_FuncList[I].ExtName;
+      FuncName := ExtGL32DLL_FuncList[I].FuncName;
+      FuncPtr := ExtGL32DLL_FuncList[I].FuncPtr;
+      Loaded := False;
+      Address := nil;
+    end;
+end;
+
+function LoadExtension(var Extension : TGLExtensionList; const ExtensionName: String) : Boolean;
+var
+  I: Integer;
+begin
+  Result := False;
+
+  if GLExtensions=nil then
+    if not LoadExtentionList then
+    begin
+      Log(LOG_WARNING, LoadStr1(6304));
       Exit;
     end;
-    WinSwapHint:=wglGetProcAddress('glAddSwapHintRectWIN');
-    WinSwapHintLoaded:=True;
-  end;
-  Result:=WinSwapHint;
+
+  if GLExtensions.IndexOf(ExtensionName)=-1 then
+    Exit;
+
+  for I:=0 to Length(Extension)-1 do
+    if Extension[I].Name = ExtensionName then
+      with Extension[I] do
+      begin
+        if not Loaded then
+        begin
+          Address:=wglGetProcAddress(Extension[I].FuncName);
+          Loaded:=True;
+        end;
+        PPointer(FuncPtr)^:=Address;
+      end;
+
+  Result := True;
 end;
 
 function ExtensionSupported(const ExtensionName: String) : Boolean;
@@ -1266,6 +1322,32 @@ begin
     Result:=false
   else
     Result:=true;
+end;
+
+procedure CheckOpenGLError(const Location: String);
+var
+  GlError: GLenum;
+  ErrorMessage: String;
+begin
+  ErrorMessage:='';
+  GlError:=glGetError;
+  while GlError<>GL_NO_ERROR do
+  begin
+    case GlError of
+    GL_INVALID_VALUE: ErrorMessage:=FmtLoadStr1(6303, ['GL_INVALID_VALUE', Location]);
+    GL_INVALID_ENUM: ErrorMessage:=FmtLoadStr1(6303, ['GL_INVALID_ENUM', Location]);
+    GL_INVALID_OPERATION: ErrorMessage:=FmtLoadStr1(6303, ['GL_INVALID_OPERATION', Location]);
+    GL_STACK_OVERFLOW: ErrorMessage:=FmtLoadStr1(6303, ['GL_STACK_OVERFLOW', Location]);
+    GL_STACK_UNDERFLOW: ErrorMessage:=FmtLoadStr1(6303, ['GL_STACK_UNDERFLOW', Location]);
+    GL_OUT_OF_MEMORY: ErrorMessage:=FmtLoadStr1(6303, ['GL_OUT_OF_MEMORY', Location]);
+    else
+      ErrorMessage:=FmtLoadStr1(6303, ['Unknown error code', Location]);
+    end;
+    Log(LOG_WARNING, ErrorMessage);
+    GlError:=glGetError;
+  end;
+  if ErrorMessage<>'' then
+    Raise Exception.Create(ErrorMessage);  
 end;
 
 initialization

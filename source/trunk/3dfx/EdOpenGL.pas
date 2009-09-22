@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.88  2009/07/15 10:38:06  danielpharos
+Updated website link.
+
 Revision 1.87  2009/06/24 14:30:03  danielpharos
 Added option for color dithering in OpenGL.
 
@@ -312,9 +315,6 @@ const
  kScaleCos = 0.5;
  cFaintLightFactor = 0.05;
 
-var
- glAddSwapHintRectWIN: procedure (x: GLint; y: GLint; width: GLsizei; height: GLsizei) stdcall;
-
 type
  PLightList = ^TLightList;
  TLightList = record
@@ -351,6 +351,7 @@ type
    LightingQuality: Integer;
    OpenGLDisplayLists: array[0..2] of GLuint;
    PixelFormat: PPixelFormatDescriptor;
+   Extensions: TGLExtensionList;
    procedure RenderPList(PList: PSurfaces; TransparentFaces: Boolean; SourceCoord: TCoordinates);
  protected
    Bilinear: boolean;
@@ -391,10 +392,6 @@ type  { this is the data shared by all existing TGLSceneObjects }
   
 var
   qrkGLState: TGlState;
-
- {------------------------}
-
-procedure CheckOpenGLError(const Location: String);
 
  {------------------------}
 
@@ -905,6 +902,13 @@ begin
     RC:=0;
   end;
 
+  for I:=0 to Length(Extensions)-1 do
+    with Extensions[I] do
+    begin
+      Loaded:=False;
+      Address:=nil;
+    end;
+
 end;
 
 constructor TGLSceneObject.Create;
@@ -912,6 +916,7 @@ begin
   inherited;
   RC:=0;
   PixelFormat:=nil;
+  ResetExtensionList(Extensions);
 end;
 
 destructor TGLSceneObject.Destroy;
@@ -1057,10 +1062,9 @@ begin
 
   SetViewDC(True);
   try
-
     GetMem(PixelFormat, SizeOf(TPixelFormatDescriptor));
     PixelFormat^:=FillPixelFormat(ViewDC);
-    if GetWinSwapHint<>nil then
+    if ExtensionSupported('GL_WIN_swap_hint') then
       if (DisplayMode=dmFullScreen) then
         PixelFormat^.dwFlags:=PixelFormat^.dwFlags or PFD_SWAP_EXCHANGE
       else
@@ -1191,8 +1195,7 @@ begin
       if wglMakeCurrent(ViewDC, RC) = false then
         raise EError(6310);
       try
-        @glAddSwapHintRectWIN:=GetWinSwapHint;
-        if @glAddSwapHintRectWIN<>nil then
+        if ExtensionSupported('GL_WIN_swap_hint') then
         begin
           if (DisplayMode=dmFullScreen) then
           begin
@@ -1208,6 +1211,8 @@ begin
             SwapHintWidth:=DrawRect.Right - DrawRect.Left;
             SwapHintHeight:=DrawRect.Bottom - DrawRect.Top;
           end;
+          if not LoadExtension(Extensions, 'GL_WIN_swap_hint') then
+            raise EErrorFmt(6316, ['GL_WIN_swap_hint']);
           glAddSwapHintRectWIN(SwapHintX, SwapHintY, SwapHintWidth, SwapHintHeight);
           CheckOpenGLError('WinSwapHint');
         end;
@@ -2017,6 +2022,7 @@ begin
 
     if Texture^.OpenGLName=0 then
       Raise InternalE(LoadStr(6314));
+
     glBindTexture(GL_TEXTURE_2D, Texture^.OpenGLName);
     CheckOpenGLError('glBindTexture');
 
@@ -2404,34 +2410,6 @@ begin
       if Tex^.OpenGLName<>0 then
         ClearTexture(Tex);
   end;
-end;
-
- {------------------------}
-
-procedure CheckOpenGLError(const Location: String);
-var
-  GlError: GLenum;
-  ErrorMessage: String;
-begin
-  ErrorMessage:='';
-  GlError:=glGetError;
-  while GlError<>GL_NO_ERROR do
-  begin
-    case GlError of
-    GL_INVALID_VALUE: ErrorMessage:=FmtLoadStr1(6303, ['GL_INVALID_VALUE', Location]);
-    GL_INVALID_ENUM: ErrorMessage:=FmtLoadStr1(6303, ['GL_INVALID_ENUM', Location]);
-    GL_INVALID_OPERATION: ErrorMessage:=FmtLoadStr1(6303, ['GL_INVALID_OPERATION', Location]);
-    GL_STACK_OVERFLOW: ErrorMessage:=FmtLoadStr1(6303, ['GL_STACK_OVERFLOW', Location]);
-    GL_STACK_UNDERFLOW: ErrorMessage:=FmtLoadStr1(6303, ['GL_STACK_UNDERFLOW', Location]);
-    GL_OUT_OF_MEMORY: ErrorMessage:=FmtLoadStr1(6303, ['GL_OUT_OF_MEMORY', Location]);
-    else
-      ErrorMessage:=FmtLoadStr1(6303, ['Unknown error code', Location]);
-    end;
-    Log(LOG_WARNING, ErrorMessage);
-    GlError:=glGetError;
-  end;
-  if ErrorMessage<>'' then
-    Raise Exception.Create(ErrorMessage);  
 end;
 
 initialization
