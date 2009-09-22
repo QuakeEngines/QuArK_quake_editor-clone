@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.40  2009/07/17 10:52:09  danielpharos
+Moved PPointer to ExtraFunctionality.
+
 Revision 1.39  2009/07/15 10:38:06  danielpharos
 Updated website link.
 
@@ -1186,7 +1189,14 @@ begin
     Result:=false;
     Exit;
   end;
-  P:=glGetString(GL_EXTENSIONS);
+  if wglMakeCurrent(GetOpenGLDummyDC, GetOpenGLDummyRC) = false then
+    raise EError(6310);
+  try
+    P:=glGetString(GL_EXTENSIONS);
+    CheckOpenGLError('LoadExtentionList');
+  finally
+    wglMakeCurrent(0, 0);
+  end;
   if P=nil then
   begin
     Result:=false;
@@ -1204,12 +1214,17 @@ begin
   while I>0 do
   begin
     Ext:=MidStr(S, OldPos+1, I - OldPos - 1);
+    Log(LOG_VERBOSE, 'OpenGL extension found: ' + Ext); //MOVE to dict!
     GLExtensions.Add(Ext);
     OldPos:=I;
     I:=PosEx(' ', S, OldPos + 1);
   end;
   if (OldPos<>Length(S)) and (OldPos<>0) then
-    GLExtensions.Add(RightStr(S, Length(S) - OldPos));
+  begin
+    Ext := RightStr(S, Length(S) - OldPos);
+    Log(LOG_VERBOSE, 'OpenGL extension found: ' + Ext); //MOVE to dict!
+    GLExtensions.Add(Ext);
+  end;
   Result:=True;
 end;
 
