@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.89  2009/09/22 18:03:26  danielpharos
+Moved some stuff around.
+
 Revision 1.88  2009/07/15 10:38:06  danielpharos
 Updated website link.
 
@@ -536,37 +539,40 @@ begin
   if MakeSections=False then
   begin
     glBegin(GL_QUADS);
-    light[0]:=LightParams.ZeroLight * Currentf[0];
-    light[1]:=LightParams.ZeroLight * Currentf[1];
-    light[2]:=LightParams.ZeroLight * Currentf[2];
-    light[3]:=Currentf[3];
-    glColor4fv(@light);
-    NormalVector[0]:=NormalePlan[0];
-    NormalVector[1]:=NormalePlan[1];
-    NormalVector[2]:=NormalePlan[2];
-    glNormal3fv(@NormalVector);
+    try
+      light[0]:=LightParams.ZeroLight * Currentf[0];
+      light[1]:=LightParams.ZeroLight * Currentf[1];
+      light[2]:=LightParams.ZeroLight * Currentf[2];
+      light[3]:=Currentf[3];
+      glColor4fv(@light);
+      NormalVector[0]:=NormalePlan[0];
+      NormalVector[1]:=NormalePlan[1];
+      NormalVector[2]:=NormalePlan[2];
+      glNormal3fv(@NormalVector);
 
-    //with PV1^ do
-    begin
-      glTexCoord2fv(@PV1^.st);
-      glVertex3fv(@PV1^.xyz);
+      //with PV1^ do
+      begin
+        glTexCoord2fv(@PV1^.st);
+        glVertex3fv(@PV1^.xyz);
+      end;
+      //with PV2^ do
+      begin
+        glTexCoord2fv(@PV2^.st);
+        glVertex3fv(@PV2^.xyz);
+      end;
+      //with PV3^ do
+      begin
+        glTexCoord2fv(@PV3^.st);
+        glVertex3fv(@PV3^.xyz);
+      end;
+      //with PV4^ do
+      begin
+        glTexCoord2fv(@PV4^.st);
+        glVertex3fv(@PV4^.xyz);
+      end;
+    finally
+      glEnd;
     end;
-    //with PV2^ do
-    begin
-      glTexCoord2fv(@PV2^.st);
-      glVertex3fv(@PV2^.xyz);
-    end;
-    //with PV3^ do
-    begin
-      glTexCoord2fv(@PV3^.st);
-      glVertex3fv(@PV3^.xyz);
-    end;
-    //with PV4^ do
-    begin
-      glTexCoord2fv(@PV4^.st);
-      glVertex3fv(@PV4^.xyz);
-    end;
-    glEnd;
   end
   else
   begin
@@ -689,30 +695,32 @@ begin
     while J<SectionsJ do
     begin
       glBegin(GL_QUAD_STRIP);
-      NormalVector[0]:=NormalePlan[0];
-      NormalVector[1]:=NormalePlan[1];
-      NormalVector[2]:=NormalePlan[2];
-      glNormal3fv(@NormalVector);
+      try
+        NormalVector[0]:=NormalePlan[0];
+        NormalVector[1]:=NormalePlan[1];
+        NormalVector[2]:=NormalePlan[2];
+        glNormal3fv(@NormalVector);
 
-      I:=0;
-      while I<=SectionsI do
-      begin
-        //with Points[J,I] do
+        I:=0;
+        while I<=SectionsI do
         begin
-          glColor4fv(@Points[J,I].light_rgb);
-          glTexCoord2fv(@Points[J,I].v.st);
-          glVertex3fv(@Points[J,I].v.xyz);
+          //with Points[J,I] do
+          begin
+            glColor4fv(@Points[J,I].light_rgb);
+            glTexCoord2fv(@Points[J,I].v.st);
+            glVertex3fv(@Points[J,I].v.xyz);
+          end;
+          //with Points[J+StepJ,I] do
+          begin
+            glColor4fv(@Points[J+StepJ,I].light_rgb);
+            glTexCoord2fv(@Points[J+StepJ,I].v.st);
+            glVertex3fv(@Points[J+StepJ,I].v.xyz);
+          end;
+          Inc(I, StepI);
         end;
-        //with Points[J+StepJ,I] do
-        begin
-          glColor4fv(@Points[J+StepJ,I].light_rgb);
-          glTexCoord2fv(@Points[J+StepJ,I].v.st);
-          glVertex3fv(@Points[J+StepJ,I].v.xyz);
-        end;
-        Inc(I, StepI);
+      finally
+        glEnd;
       end;
-
-      glEnd;
       Inc(J, StepJ);
     end;
   end;
@@ -738,22 +746,25 @@ begin
     LP1:=LP1^.SubLightList;
   end;
   glBegin(GL_TRIANGLE_STRIP);
-  NormalVector[0]:=NormalePlan[0];
-  NormalVector[1]:=NormalePlan[1];
-  NormalVector[2]:=NormalePlan[2];
-  glNormal3fv(@NormalVector);
+  try
+    NormalVector[0]:=NormalePlan[0];
+    NormalVector[1]:=NormalePlan[1];
+    NormalVector[2]:=NormalePlan[2];
+    glNormal3fv(@NormalVector);
 
-  for I:=1 to VertexCount do
-  begin
-    Point.v:=PV^;
-    Inc(PV);
-    LightAtPoint(Point, LP, Currentf, LightParams, vec3_p(PV)^);
-    Inc(vec3_p(PV));
-    glColor4fv(@Point.light_rgb);
-    glTexCoord2fv(@Point.v.st);
-    glVertex3fv(@Point.v.xyz);
+    for I:=1 to VertexCount do
+    begin
+      Point.v:=PV^;
+      Inc(PV);
+      LightAtPoint(Point, LP, Currentf, LightParams, vec3_p(PV)^);
+      Inc(vec3_p(PV));
+      glColor4fv(@Point.light_rgb);
+      glTexCoord2fv(@Point.v.st);
+      glVertex3fv(@Point.v.xyz);
+    end;
+  finally
+    glEnd;
   end;
-  glEnd;
   CheckOpenGLError('RenderQuadStrip');
 end;
 
@@ -1052,12 +1063,6 @@ begin
   AllowsGDI:=Setup.Specifics.Values['AllowsGDI']<>'';
   DisplayLists:=Setup.Specifics.Values['GLLists']<>'';
   Bilinear:=Setup.Specifics.Values['Bilinear']<>'';
-  if Lighting then
-    MakeSections:=True
-    {DanielPharos: Not configurable at the moment.
-    It creates small sections out of big poly's, so the lighting effects are better.}
-  else
-    MakeSections:=False;
   DoubleBuffered:=Setup.Specifics.Values['DoubleBuffer']<>'';
 
   SetViewDC(True);
@@ -1092,6 +1097,21 @@ begin
     glEnable(GL_NORMALIZE);
     glEdgeFlag(0);
     CheckOpenGLError('Init');
+
+    glGetIntegerv(GL_MAX_LIGHTS, @MaxLights);
+    CheckOpenGLError('Init: GL_MAX_LIGHTS');
+    if MaxLights<8 then
+    begin
+      Log(LOG_WARNING, 'Init: OpenGL is lying about GL_MAX_LIGHTS! Lighting disabled out of safety.'); //@MOVE to dict!
+      Lighting:=false;
+    end;
+
+    if Lighting then
+      MakeSections:=True
+      {DanielPharos: Not configurable at the moment.
+      It creates small sections out of big poly's, so the lighting effects are better.}
+    else
+      MakeSections:=False;
 
     if (DisplayMode=dmPanel) then
       glDisable(GL_DEPTH_TEST)
@@ -1166,11 +1186,6 @@ begin
     glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
     glEnable(GL_COLOR_MATERIAL);
     CheckOpenGLError('Init: GL_COLOR_MATERIAL');
-
-    glGetIntegerv(GL_MAX_LIGHTS, @MaxLights);
-    CheckOpenGLError('Init: GL_MAX_LIGHTS');
-    if MaxLights<=0 then
-      MaxLights:=8;
 
     finally
       wglMakeCurrent(0, 0);
@@ -1625,12 +1640,20 @@ begin
   end;
   CheckOpenGLError('Render3DView: RenderMode');
 
+
+  if Lighting and (LightingQuality=0) then
+    glEnable(GL_LIGHTING)
+  else
+    glDisable(GL_LIGHTING);
+  CheckOpenGLError('Render3DView: GL_LIGHTING');
+
   RebuildDisplayList:=False;
   if DisplayLists then
   begin
-    if (OpenGLDisplayLists[LightingQuality]=0) then
+    if OpenGLDisplayLists[LightingQuality]=0 then
     begin
       OpenGLDisplayLists[LightingQuality]:=glGenLists(1);
+      CheckOpenGLError('Render3DView: glGenLists');
       if OpenGLDisplayLists[LightingQuality] = 0 then
         raise EError(6313);
 
@@ -1641,14 +1664,17 @@ begin
     end;
   end;
 
-  if RebuildDisplayList or not (DisplayLists) then
+  try
+  try
+
+  if RebuildDisplayList or (not DisplayLists) then
   begin
     PList:=FListSurfaces;
     while Assigned(PList) do
     begin
       if Transparency then
       begin
-        if (PList^.Transparent=False) then
+        if PList^.Transparent=False then
           RenderPList(PList, False, Coord);
       end
       else
@@ -1659,17 +1685,29 @@ begin
       end;
       PList:=PList^.Next;
     end;
-
-    if RebuildDisplayList then
-    begin
-      glEndList;
-      CheckOpenGLError('Render3DView: glEndList');
-    end;
   end
   else
   begin
     glCallList(OpenGLDisplayLists[LightingQuality]);
     CheckOpenGLError('Render3DView: glCallList');
+  end;
+
+  finally
+    if RebuildDisplayList then
+    begin
+      glEndList;
+      CheckOpenGLError('Render3DView: glEndList');
+    end;
+  end;
+  except
+    if RebuildDisplayList then
+    begin
+      glDeleteLists(OpenGLDisplayLists[LightingQuality], 1);
+      CheckOpenGLError('Render3DView: glDeleteLists');
+
+      OpenGLDisplayLists[LightingQuality]:=0;
+    end;
+    raise;
   end;
 
   if Transparency then
@@ -2018,13 +2056,12 @@ begin
 
     {gluBuild2DMipmaps(GL_TEXTURE_2D, 3, W, H, GL_RGBA, GL_UNSIGNED_BYTE, TexData^);}
     glGenTextures(1, @Texture^.OpenGLName);
-    CheckOpenGLError('glGenTextures');
-
+    CheckOpenGLError('BuildTexture: glGenTextures');
     if Texture^.OpenGLName=0 then
       Raise InternalE(LoadStr(6314));
 
     glBindTexture(GL_TEXTURE_2D, Texture^.OpenGLName);
-    CheckOpenGLError('glBindTexture');
+    CheckOpenGLError('BuildTexture: glBindTexture');
 
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -2038,10 +2075,10 @@ begin
       glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
       glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     end;
-    CheckOpenGLError('glTexParameterf');
+    CheckOpenGLError('BuildTexture: glTexParameterf');
 
     glTexImage2D(GL_TEXTURE_2D, 0, NumberOfComponents, W, H, 0, BufferType, GL_UNSIGNED_BYTE, PGLvoid(TexData));
-    CheckOpenGLError('glTexImage2D');
+    CheckOpenGLError('BuildTexture: glTexImage2D');
     finally
       FreeMem(TexData);
     end;
@@ -2095,26 +2132,6 @@ begin
       NeedColor:=False;
       NeedTex:=True;
     end;
-  end;
-
-  if Lighting and (LightingQuality=0) then
-  begin
-    glEnable(GL_LIGHTING);
-    CheckOpenGLError('RenderPList: GL_LIGHTING');
-
-    for LightNR := 0 to MaxLights-1 do
-    begin
-      if (LightNR<NumberOfLights) then
-        glEnable(GL_LIGHT0+LightNR)
-      else
-        glDisable(GL_LIGHT0+LightNR);
-      CheckOpenGLError('RenderPList: GL_LIGHT');
-    end;
-  end
-  else
-  begin
-    glDisable(GL_LIGHTING);
-    CheckOpenGLError('RenderPList: GL_LIGHTING');
   end;
 
   //FIXME: Maybe we can store these values somewhere,
@@ -2239,8 +2256,7 @@ begin
         for LightNR := 0 to OpenGLLights-1 do
         begin
           PO:=OpenGLLightList;
-          for I := 0 to LightNR-1 do
-            Inc(PO);
+          Inc(PO, LightNR);
           PL:=Lights;
           for LightNR2 := 0 to PO^-1 do
             PL:=PL^.Next;
@@ -2249,8 +2265,12 @@ begin
           LightParam[2]:=PL.Position[2];
           LightParam[3]:=1.0;
 
+          CheckOpenGLError('RenderPList: TEST');
+          glDisable(GL_LIGHT0+LightNR);
+          CheckOpenGLError('RenderPList: DISABLE');
+
           glLightfv(GL_LIGHT0+LightNR, GL_POSITION, @LightParam);
-          CheckOpenGLError('RenderPList: GL_LIGHT: GL_POSITION');
+          CheckOpenGLError('RenderPList: glLightfv: GL_POSITION');
 
           UnpackColor(PL.Color, GLColor);
           LightParam[0]:=GLColor[0];
@@ -2259,12 +2279,22 @@ begin
           //LightParam[3]:=GLColor[3];
           LightParam[3]:=1.0;
           glLightfv(GL_LIGHT0+LightNR, GL_DIFFUSE, @LightParam);
-          CheckOpenGLError('RenderPList: GL_LIGHTING: glLightfv');
+          CheckOpenGLError('RenderPList: glLightf: GL_DIFFUSE');
 
           glLightf(GL_LIGHT0+LightNR, GL_CONSTANT_ATTENUATION, 1.0);
+          CheckOpenGLError('RenderPList: glLightf: GL_CONSTANT_ATTENUATION');
           glLightf(GL_LIGHT0+LightNR, GL_LINEAR_ATTENUATION, 0.0);
+          CheckOpenGLError('RenderPList: glLightf: GL_LINEAR_ATTENUATION');
           glLightf(GL_LIGHT0+LightNR, GL_QUADRATIC_ATTENUATION, 5.0/PL.Brightness2);
-          CheckOpenGLError('RenderPList: GL_LIGHT: glLightf');
+          CheckOpenGLError('RenderPList: glLightf: GL_QUADRATIC_ATTENUATION');
+
+          glEnable(GL_LIGHT0+LightNR);
+          CheckOpenGLError('RenderPList: GL_LIGHT');
+        end;
+        for LightNR := OpenGLLights to MaxLights-1 do
+        begin
+          glDisable(GL_LIGHT0+LightNR);
+          CheckOpenGLError('RenderPList: GL_LIGHT');
         end;
       end;
 
@@ -2304,6 +2334,7 @@ begin
       PV:=PVertex3D(CurrentSurf);
 
       glColor4fv(@Currentf);
+      CheckOpenGLError('RenderPList: glColor4fv');
 
       if Transparency and TransparentFaces then
       begin
