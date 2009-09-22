@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2009/07/15 10:38:01  danielpharos
+Updated website link.
+
 Revision 1.8  2009/02/21 17:10:12  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -53,7 +56,7 @@ uses Windows, Messages, SysUtils, Classes, Graphics, Controls, Dialogs,
 
 function GetTextureToolbar(nOwner: TComponent) : TWinControl;
 function MakeTextureToolbar(nOwner: TCustomForm; LocalAction: Integer) : TWinControl;
-procedure DynamicTextureToolbar(Tex: TWinControl; nLinks: TList);
+procedure DynamicTextureToolbar(Tex: TWinControl; nLinks: TQList);
 
  {------------------------}
 
@@ -139,7 +142,7 @@ begin
   end; *)
 end;
 
-procedure DynamicTextureToolbar(Tex: TWinControl; nLinks: TList);
+procedure DynamicTextureToolbar(Tex: TWinControl; nLinks: TQList);
 begin
  with TTbTex(Tex) do
   begin

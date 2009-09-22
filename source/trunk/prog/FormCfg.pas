@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.55  2009/07/15 10:38:00  danielpharos
+Updated website link.
+
 Revision 1.54  2009/06/24 14:36:45  danielpharos
 Disabled changing the classname specific: it blew up the Model Editor.
 
@@ -292,7 +295,7 @@ type
               TxtSpec, TxtArg: Integer;
               EditNames, HintPrefix: String;
               OnNeedGameInfo: TNeedGameInfoEvent;
-              procedure SetFormCfg(nLinks: TList; nForm: QFormCfg);
+              procedure SetFormCfg(nLinks: TQList; nForm: QFormCfg);
               destructor Destroy; override;
               constructor Create(AOwner: TComponent); override;
               property LinkedObjects: TQList read Links;
@@ -2647,7 +2650,7 @@ begin
    TCheckBox(Btn).State:=nState;
 end;
 
-procedure TFormCfg.SetFormCfg(nLinks: TList; nForm: QFormCfg);
+procedure TFormCfg.SetFormCfg(nLinks: TQList; nForm: QFormCfg);
 var
  I, J: Integer;
  S, MyName: String;
@@ -2684,7 +2687,7 @@ begin
     Links.Clear;
    if nLinks<>Nil then
     for J:=0 to nLinks.Count-1 do
-     Links.Add(QObject(nLinks[J]));
+     Links.Add(nLinks[J]);
   end;
 
   { removes Form }

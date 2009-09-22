@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.72  2009/07/29 22:52:57  danielpharos
+Added TextureWriteFormatA: some games want textures with Alpha in a different format (for instance, Quake 3).
+
 Revision 1.71  2009/07/15 10:38:01  danielpharos
 Updated website link.
 
@@ -2352,9 +2355,9 @@ end;
 
 procedure TFQTexture.DynamicTextureTb;
 var
-  L: TList;
+  L: TQList;
 begin
-  L:=TList.Create;
+  L:=TQList.Create;
   try
     L.Add((FileObject as QTexture).LoadPixelSet);
     L.Add(Nil);

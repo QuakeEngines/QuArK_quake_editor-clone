@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.21  2009/07/15 10:38:01  danielpharos
+Updated website link.
+
 Revision 1.20  2009/07/06 10:13:45  danielpharos
 Auto-remove NotInstalled games from the Configuration window.
 
@@ -346,7 +349,7 @@ var
 {nFormCfg: TFormCfg;}
  S: String;
  Q: QObject;
- L: TList;
+ L: TQList;
 begin
  Timer1.Enabled:=False;
 {nFormCfg:=Nil;}
@@ -368,7 +371,7 @@ begin
       {FormCfg1.Delta:=0.57;}
       end;
      FormCfg1.Show;
-     L:=TList.Create; try
+     L:=TQList.Create; try
      L.Add(T);
      L.Add(Nil);
      FormCfg1.SetFormCfg(L, Q as QFormCfg);
