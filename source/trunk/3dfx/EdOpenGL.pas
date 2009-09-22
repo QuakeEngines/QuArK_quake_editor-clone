@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.90  2009/09/22 18:06:02  danielpharos
+Made OpenGL renderer much more error-robust.
+
 Revision 1.89  2009/09/22 18:03:26  danielpharos
 Moved some stuff around.
 
@@ -2103,7 +2106,7 @@ var
  I: Integer;
  PL: PLightList;
  PO: PGLenum;
- LightNR, LightNR2: GLint;
+ LightNR, LightNR2: GLenum;
  LightParam: GLfloat4;
  GLColor: GLfloat4;
  PSD: TPixelSetDescription;
@@ -2258,16 +2261,19 @@ begin
           PO:=OpenGLLightList;
           Inc(PO, LightNR);
           PL:=Lights;
-          for LightNR2 := 0 to PO^-1 do
+          LightNR2:=0;
+          while LightNR2<PO^ do
+          begin
             PL:=PL^.Next;
+            LightNR2:=LightNR2+1;
+          end;
           LightParam[0]:=PL.Position[0];
           LightParam[1]:=PL.Position[1];
           LightParam[2]:=PL.Position[2];
           LightParam[3]:=1.0;
 
-          CheckOpenGLError('RenderPList: TEST');
           glDisable(GL_LIGHT0+LightNR);
-          CheckOpenGLError('RenderPList: DISABLE');
+          CheckOpenGLError('RenderPList: glDisable: GL_LIGHT0+LightNR');
 
           glLightfv(GL_LIGHT0+LightNR, GL_POSITION, @LightParam);
           CheckOpenGLError('RenderPList: glLightfv: GL_POSITION');
