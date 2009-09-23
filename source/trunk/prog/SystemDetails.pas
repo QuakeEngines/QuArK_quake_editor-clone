@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.45  2009/07/15 10:38:01  danielpharos
+Updated website link.
+
 Revision 1.44  2009/07/14 12:07:52  danielpharos
 Don't allow unknown Windows platforms.
 
@@ -1186,7 +1189,10 @@ begin
   with sl do
   begin
     add('Platform: '+Platform);
-    add(format('Version: %s %d.%d.%d',[Version,MajorVersion,MinorVersion,BuildNumber]));
+    if Length(Version)<>0 then
+     add(format('Version: %s %d.%d.%d',[Version,MajorVersion,MinorVersion,BuildNumber]))
+    else
+     add(format('Version: %d.%d.%d',[MajorVersion,MinorVersion,BuildNumber]));
   end;
 end;
 
