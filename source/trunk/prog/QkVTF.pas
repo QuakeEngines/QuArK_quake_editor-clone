@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.46  2009/07/17 10:48:09  danielpharos
+Added missing uses.
+
 Revision 1.45  2009/07/15 10:38:00  danielpharos
 Updated website link.
 
@@ -167,7 +170,7 @@ unit QkVTF;
 
 interface
 
-uses Windows, Classes, QkImages, QkPixelSet, QkObjects, QkFileObjects,
+uses Classes, QkImages, QkPixelSet, QkObjects, QkFileObjects,
   QkVTFLib, QkDevIL;
 
 type
