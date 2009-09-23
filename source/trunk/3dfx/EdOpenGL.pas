@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.91  2009/09/22 18:54:43  danielpharos
+Fix variable type, improve some code, and removed a test OpenGL error check.
+
 Revision 1.90  2009/09/22 18:06:02  danielpharos
 Made OpenGL renderer much more error-robust.
 
@@ -693,6 +696,13 @@ begin
       end;
       Inc(J, StepJ);
     end;
+
+    //FIXME: There is a very weird bug here... Something is very wrong
+    //with the way Points, StepI and StepJ are handled!
+    if StepI<SectionsI then
+      StepI:=StepI*2;
+    if StepJ<SectionsJ then
+      StepJ:=StepJ*2;
 
     J:=0;
     while J<SectionsJ do
