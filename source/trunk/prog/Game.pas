@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.73  2009/07/15 10:38:00  danielpharos
+Updated website link.
+
 Revision 1.72  2009/03/23 16:02:10  danielpharos
 Tweaks and fixes to get FAKK2 build tools working again.
 
@@ -325,6 +328,7 @@ procedure ReleaseGameFiles;
 procedure ListSourceDirs(Dirs: TStrings);
 function NeedGameFile(const FileName, PakFile: String) : QFileObject;
 function NeedGameFileBase(const BaseDir, FileName, PakFile: String) : QFileObject;
+function CheckForRelativePath(const Path: String) : String;
 procedure BuildCorrectFileName(var S: String);
 function GettmpQuArK : String;
 function GetBaseDir : String;
@@ -995,29 +999,29 @@ begin
     Raise EErrorFmt(5561, [SetupGameSet.Name, DisplayAllAlias(FileName), BaseDir]);
 end;
 
+//Returns an alternative path (from the QuArK dir) is the given path was a relative path
+function CheckForRelativePath(const Path: String) : String;
+var
+  CurDir, NewPath: String;
+begin
+  Result:='';
+  GetDir(0, CurDir);
+  if IncludeTrailingPathDelimiter(CurDir) = GetQPath(pQuArK) then
+    //Delphi doesn't like ChDir-ing to the same directory...
+    NewPath:=ExpandFileName(Path)
+  else
+    try
+      ChDir(GetQPath(pQuArK));
+      NewPath:=ExpandFileName(Path);
+    finally
+      ChDir(CurDir);
+    end;
+  if CompareText(NewPath, Path) <> 0 then
+    Result:=NewPath;
+end;
+
 {--Convex-begin-- : multi-alias texture file search }
 function GetGameFileBase(const BaseDir, FileName, PakFileName: String; LookInCD: Boolean) : QFileObject;
-
- //Returns an alternative path (from the QuArK dir) is the given path was a relative path
- function CheckForRelativePath(const Path: String) : String;
- var
-   CurDir, NewPath: String;
- begin
-   Result:='';
-   GetDir(0, CurDir);
-   if IncludeTrailingPathDelimiter(CurDir) = GetQPath(pQuArK) then
-     //Delphi doesn't like ChDir-ing to the same directory...
-     NewPath:=ExpandFileName(Path)
-   else
-     try
-       ChDir(GetQPath(pQuArK));
-       NewPath:=ExpandFileName(Path);
-     finally
-       ChDir(CurDir);
-     end;
-   if CompareText(NewPath, Path) <> 0 then
-     Result:=NewPath;
- end;
 
  function GetCDPath(const BaseDir, FileName: String): String;
  var

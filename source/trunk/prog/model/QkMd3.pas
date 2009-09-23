@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.46  2009/07/15 10:38:06  danielpharos
+Updated website link.
+
 Revision 1.45  2009/02/21 17:09:53  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -166,7 +169,7 @@ unit QkMd3;
 
 interface
 
-uses Windows, SysUtils, Classes, QkObjects, QkForm, Graphics,
+uses Windows, SysUtils, StrUtils, Classes, QkObjects, QkForm, Graphics,
      QkImages, qmath, QkTextures, QkFileObjects, QkPcx,
      QkModelFile, QkModelRoot, QkFrame, QkComponent, QkMdlObject, QkModelTag,
      QkTagFrame, QkBoundFrame, QkMiscGroup, {QkFrameGroup,} qmatrices;
@@ -181,8 +184,8 @@ type
       class function TypeInfo: String; override;
       class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
       function Loaded_ShaderFile(Comp: QComponent; tex_name: string): QImage;
-      function AttachModelToTag(Tag_Name: string; model: QModelFile): boolean;
-      function AttachModelToTagFromFileName(Tag_Name: string; Filename: string): boolean;
+      function AttachModelToTag(const Tag_Name: string; model: QModelFile): boolean;
+      function AttachModelToTagFromFileName(const Tag_Name: string; const Filename: string): boolean;
       function TryAutoLoadParts: boolean;
       Function GetFullFilename: string;
       procedure ChangeGameMode; virtual;
@@ -193,7 +196,7 @@ type
 implementation
 
 uses QuarkX, QkExceptions, Setup, QkObjectClassList, Game, QkQ3, QkPixelset,
-     Logging, Travail;
+     QkApplPaths, Logging, Travail;
 
 const
  MAX_QPATH = 64;
@@ -747,7 +750,8 @@ function QMd3File.TryAutoLoadParts: boolean;
 var
   tag: QModelTag;
   mg: QMiscGroup;
-  fname,x: string;
+  fname, TagFilename: string;
+  AbsolutePath: string;
   i: integer;
   TagList: TQList;
   z_result: boolean;
@@ -764,17 +768,25 @@ begin
         TagList.Add(tag);
       end;
     end;
+    AbsolutePath:=ConcatPaths([QuakeDir, GetBaseDir]);
     for i:=0 to TagList.count-1 do
     begin
       if TagList[i] is QModelTag then
       begin
         tag:=QModelTag(TagList[i]);
-        fname:=extractfilepath(GetFullFilename);
-        fname:=copy(fname, pos(PathDelim, fname)+1, length(fname)-pos(PathDelim,fname)+1);
-        x:=TagNameToMd3FileName(tag.name, name);
-        if x='' then
+        TagFilename:=TagNameToMd3FileName(tag.name, name);
+        if TagFilename='' then
           continue;
-        fname:=fname+x;
+        fname:=GetFullFilename;
+        fname:=extractfilepath(fname);
+        if CheckForRelativePath(fname)<>'' then
+          //Probably a pak-file; cut it off
+          fname:=copy(fname, pos(PathDelim, fname)+1, length(fname)-pos(PathDelim,fname)+1)
+        else
+          //Probably a full path... cut off the basedir
+          if LeftStr(fname, length(AbsolutePath)) = AbsolutePath then
+            fname:=RightStr(fname, length(fname) - length(AbsolutePath) - 1);
+        fname:=fname+TagFilename;
         z_result:=z_result and AttachModelToTagFromFilename(tag.name, fname);
       end;
     end;
@@ -784,7 +796,7 @@ begin
   result:=z_result;
 end;
 
-function QMd3File.AttachModelToTagFromFilename(Tag_Name: string; filename: string): boolean;
+function QMd3File.AttachModelToTagFromFilename(const Tag_Name: string; const filename: string): boolean;
 var
   FileObj2: QObject;
 begin
@@ -802,7 +814,7 @@ begin
   Result:=AttachModelToTag(Tag_Name, QModelFile(FileObj2));
 end;
 
-function QMd3File.AttachModelToTag(Tag_Name: string; model: QModelFile): boolean;
+function QMd3File.AttachModelToTag(const Tag_Name: string; model: QModelFile): boolean;
 var
   other_root: QModelRoot;
 begin
