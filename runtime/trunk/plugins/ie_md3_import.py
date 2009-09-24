@@ -99,9 +99,8 @@ class md3TexCoord(object):
     def Load(self, file):
         tmpData = file.read(struct.calcsize(self.binaryFormat))
         data = struct.unpack(self.binaryFormat, tmpData)
-        # for some reason quake3 texture maps are upside down, flip that
         self.u = data[0]
-        self.v = 1.0 - data[1]
+        self.v = data[1]
         return self
 
 
@@ -117,8 +116,8 @@ class md3Triangle(object):
         tmpData = file.read(struct.calcsize(self.binaryFormat))
         data = struct.unpack(self.binaryFormat, tmpData)
         self.indexes[0] = data[0]
-        self.indexes[1] = data[2] # reverse
-        self.indexes[2] = data[1] # reverse
+        self.indexes[1] = data[1]
+        self.indexes[2] = data[2]
         return self
 
 
@@ -222,8 +221,8 @@ class md3Tag(object):
 
     def __init__(self):
         self.name = ""
-        self.origin = [0, 0, 0]
-        self.axis = [0, 0, 0, 0, 0, 0, 0, 0, 0]
+        self.origin = [0.0, 0.0, 0.0]
+        self.axis = [1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]
 
     def Load(self, file):
         tmpData = file.read(struct.calcsize(self.binaryFormat))
@@ -407,9 +406,6 @@ def Import(basepath, filename):
         framesgroup = quarkx.newobj('Frames:fg')
         if surface.numFrames > 1 : # Make the animation frames if they exist for this model.
             for i in xrange(surface.numFrames):
-              #  print "line 422 frame name", i, md3.frames[i].name
-              #  print "line 423 mins, maxs", i, md3.frames[i].mins, md3.frames[i].maxs
-              #  print "line 424 localOrigin, radius", i, md3.frames[i].localOrigin, md3.frames[i].radius
                 frame = quarkx.newobj('Frame ' + str(i+1) + ':mf')
                 mesh = ()
                 for j in xrange(surface.numVerts):
@@ -417,7 +413,12 @@ def Import(basepath, filename):
                     x,y,z = surface.verts[(i * surface.numVerts) + j].xyz
                     mesh = mesh + (x,y,z)
                 frame['Vertices'] = mesh
+                if i == 0:
+                    baseframe = frame.copy()
+                    baseframe.shortname = 'Base Frame'
                 framesgroup.appenditem(frame)
+                if i == surface.numFrames-1:
+                    framesgroup.appenditem(baseframe)
         else: # Make a baseframe for this model if no animation frames.
             verts = []
             verts.extend( [surface.verts[i].xyz for i in xrange(surface.numVerts)] )
@@ -447,7 +448,7 @@ def Import(basepath, filename):
 
         shaderlist = []
         for i in xrange(surface.numShaders):
-            # This is for the DUMMYS that can't do things right! 8-\
+            # This is for removing duplicated shader names.
             if surface.shaders[i].name in shaderlist:
                 continue
             shaderlist = shaderlist + [surface.shaders[i].name]
@@ -680,7 +681,27 @@ def Import(basepath, filename):
             if foundshader is None:
                 if imagefile is None:
                     if surface.shaders[i].name != "":
-                        message = message + "Component: " + ModelFolder + "_" + surface.name + "\r\nuses the texture:\r\n    " + surface.shaders[i].name + "\r\nBut the image does not exist in that folder\r\nand there are no shaders by that name.\r\nLocate image file and place in that folder.\r\n\r\n"
+                        tryskin = surface.shaders[i].name.rsplit(".", 1)[0]
+                        tryskin = tryskin.rsplit("/", 1)[1]
+                        for type in ImageTypes:
+                            if os.path.isfile(FolderPath + "/" + tryskin + type):
+                                foundimage = FolderPath + "/" + tryskin + type
+                                tryskin = "models/" + FolderPath.split("/models/")[1] + "/" + tryskin
+                                skin = quarkx.newobj(tryskin + type)
+                                break
+                        if foundimage is not None:
+                            image = quarkx.openfileobj(foundimage)
+                            name = check4skin(skin)
+                            if name is None:
+                                skin['Image1'] = image.dictspec['Image1']
+                                skin['Size'] = image.dictspec['Size']
+                                skin['shader_keyword'] = shader_keyword
+                                skingroup.appenditem(skin)
+                                if skin['Size'][0] > skinsize[0] and skin['Size'][1] > skinsize[1]:
+                                    skinsize = skin['Size']
+                                break
+                        else:
+                            message = message + "Component: " + ModelFolder + "_" + surface.name + "\r\nuses the texture:\r\n    " + surface.shaders[i].name + "\r\nBut the image does not exist in that folder\r\nand there are no shaders by that name.\r\nLocate image file and place in that folder.\r\n\r\n"
                     else:
                         message = message + "Component: " + ModelFolder + "_" + surface.name + "\r\ndid not give any shader or texture to use in its folder:\r\n    " + FolderPath + "\r\nYou will need to locate an image file,\r\nplace in that folder and skin the model.\r\n\r\n"
                 shader_name = None
@@ -700,11 +721,10 @@ def Import(basepath, filename):
         Tris = ''
         TexWidth, TexHeight = skinsize
         for face in faces:
-            face.reverse()
             for vert_index in face:
                 u = TexWidth * surface.uv[vert_index].u
-                v = (TexHeight * surface.uv[vert_index].v) - TexHeight
-                Tris = Tris + struct.pack("Hhh", vert_index, u, -v)
+                v = TexHeight * surface.uv[vert_index].v
+                Tris = Tris + struct.pack("Hhh", vert_index, u, v)
 
         # Now we start creating our Import Component and name it.
         if surface.name != "":
@@ -730,10 +750,6 @@ def Import(basepath, filename):
         Component.appenditem(skingroup)
         Component.appenditem(framesgroup)
         ComponentList = ComponentList + [Component]
-     #   print ""
-     #   print "line 739 Component.dictspec"
-     #   print Component.dictspec
-     #   print ""
 
     #    if surface.numFrames > 1 :
     #        meshKey = mesh.key
@@ -759,16 +775,49 @@ def Import(basepath, filename):
     for comp in ComponentList:
         if comp.shortname.endswith("torso"):
             tag_comp = comp
-        # We need to put a list of component names in ALL components because some idiots can't get things in the right order.
+        # We need to put a list of component names in ALL components because some people may not have things in the right order.
         for comp2 in range(len(ComponentList)):
             if comp2 == 0:
                 comp['tag_components'] = ComponentList[comp2].name
             else:
                 comp['tag_components'] = comp.dictspec['tag_components'] + ", " + ComponentList[comp2].name
+
+    if ModelsPath.find("weapons") != -1: # And other people do not know how to setup things right at all.
+        if md3.numTags == 0:
+            tag_types = ("barrel", "flash")
+            tag = md3Tag()
+            tag.name = "tag_weapon"
+            md3.tags.append(tag)
+            tagnames = ModelName.split("_")
+            for name in range(len(tagnames)):
+                if tagnames[name] in tag_types:
+                    tagname = "tag_" + tagnames[name]
+                    break
+                if name == len(tagnames)-1:
+                    tagname = "tag_" + tagnames[len(tagnames)-1]
+            tag = md3Tag()
+            tag.name = tagname
+            md3.tags.append(tag)
+            md3.numTags = 2
+        else:
+            for i in xrange(md3.numTags):
+                if md3.tags[i].name == "tag_weapon":
+                    break
+                if i == md3.numTags-1:
+                    tag = md3Tag()
+                    tag.name = "tag_weapon"
+                    md3.tags.append(tag)
+                    md3.numTags = md3.numTags + 1
     for i in xrange(md3.numTags):
         tag = md3.tags[i]
         # We need to keep these sepperate for each complete model loaded.
         newtag = quarkx.newobj(ModelFolder + '_' + tag.name + ':tag')
+        tagname = tag.name.split("_", 1)[1]
+        if ModelName.find(tagname) != -1:
+            newtag['Component'] = tag_comp.name
+        elif editor.Root.dictitems['Misc:mg'].dictitems.has_key(newtag.name):
+            if editor.Root.dictitems['Misc:mg'].dictitems[newtag.name].dictspec.has_key("Component"):
+                newtag['Component'] = editor.Root.dictitems['Misc:mg'].dictitems[newtag.name].dictspec['Component']
         tagsgroup = tagsgroup + [newtag]
         if i == 0:
             tag_comp['Tags'] = tag.name
@@ -799,7 +848,10 @@ def Import(basepath, filename):
           #  blenderTag.setIpo(ipo)
 
             for j in xrange(md3.numFrames):
-                tag = md3.tags[j * md3.numTags + i]
+                try:
+                    tag = md3.tags[j * md3.numTags + i]
+                except:
+                    continue
 
                 # Note: Quake3 uses left-hand geometry
               #  forward = [tag.axis[0], tag.axis[1], tag.axis[2]] # Blinder's way.
@@ -807,22 +859,20 @@ def Import(basepath, filename):
               #  right = [tag.axis[3], tag.axis[4], tag.axis[5]] # Quark's way.
               #  forward = [tag.axis[0], tag.axis[1], tag.axis[2]] # Quark's way.
               #  up = [tag.axis[6], tag.axis[7], tag.axis[8]]
-              #  print "line 823 " + tag.name + " frame", j
-              #  print "   right", right
-              #  print "forward", forward
-              #  print "     up", up
                 p = tag.origin
-              #  m = [forward, right, up]
-              #  vector = vector_by_matrix(p, m)
-              #  print "vector_by_matrix", vector
-              #  print "p new tag origin", p
-            #    print "ORG tag origin", md3.tags[i].origin
-            #    print "ORG vector_by_matrix", vector_by_matrix(md3.tags[i].origin, m)
                 tagframe = quarkx.newobj('Tag Frame ' + str(j+1) + ':tagframe')
                 tagframe['show'] = (1.0,)
                 tagframe['origin'] = (p[0], p[1], p[2])
                 tagframe['rotmatrix'] = (tag.axis[0], tag.axis[1], tag.axis[2], tag.axis[3], tag.axis[4], tag.axis[5], tag.axis[6], tag.axis[7], tag.axis[8])
+                if j == 0:
+                    baseframe = tagframe.copy()
+                    baseframe.shortname = "Tag Base Frame"
+                    if surface.numFrames == 1:
+                        newtag.appenditem(baseframe)
+                        continue
                 newtag.appenditem(tagframe)
+                if j == md3.numFrames-1:
+                    newtag.appenditem(baseframe)
 
               #  rotation = Blender.Mathutils.Matrix(forward, left, up)
               #  rot_Euler=rotation.toEuler()
@@ -900,6 +950,8 @@ def loadmodel(root, filename, gamename, nomessage=0):
                     if tag2 == len(tagsgroup)-1:
                         fixed_tagsgroup = fixed_tagsgroup + [holdtag]
                         tagsgroup = fixed_tagsgroup
+
+        # To get to current torso tag frames that will be needed later if they exist in the editor already.
         for tag in range(len(tagsgroup)):
             if tagsgroup[tag].name.find("torso") != -1:
                 if editor_dictitems['Misc:mg'].dictitems.has_key(tagsgroup[tag].name):
@@ -914,8 +966,13 @@ def loadmodel(root, filename, gamename, nomessage=0):
                     # This is where we need to update all of the model's components frames and vertex positions.
                     # using "ModelFolder" which is the first part of each of its component's name to distinguish them.
                     for key in editor_dictitems.keys():
-                        if editor_dictitems[key].type == ":mc" and editor_dictitems[key].name.startswith(ModelFolder):
-                            if tagsgroup[tag].name.find("head") != -1 and editor_dictitems[key].name.find("head") != -1:
+                        tagname = None
+                        if editor_dictitems[key].dictspec.has_key("Tags"):
+                            tagname = editor_dictitems[key].dictspec['Tags']
+                        if tagname is None:
+                            continue
+                        if editor_dictitems[key].type == ":mc" and editor_dictitems[key].name.startswith(ModelFolder) and tagsgroup[tag].name.find(tagname) != -1:
+                            if tagsgroup[tag].name.find("head") != -1 and (editor_dictitems[key].name.find("head") != -1 or editor_dictitems[key].name.find("_h_") != -1):
                                 if old_torso_tag_frames is not None:
                                     if editor_dictitems['Misc:mg'].dictitems.has_key(ModelFolder + "_tag_head:tag"):
                                         old_taggroup = editor_dictitems['Misc:mg'].dictitems[ModelFolder + "_tag_head:tag"]
@@ -934,7 +991,10 @@ def loadmodel(root, filename, gamename, nomessage=0):
                                     newframesgroup = quarkx.newobj('Frames:fg')
                                     newframesgroups = newframesgroups + [newframesgroup]
                                 for frame in range(len(tag_subitems)):
-                                    if old_torso_tag_frames is not None and old_tag_subitems is not None:
+                                    if frame == len(tag_subitems)-1 and old_tag_subitems is not None:
+                                        tag_subitems[frame]['origin'] = old_tag_subitems[len(old_tag_subitems)-1].dictspec['origin']
+                                        tag_subitems[frame]['rotmatrix'] = old_tag_subitems[len(old_tag_subitems)-1].dictspec['rotmatrix']
+                                    elif old_torso_tag_frames is not None and old_tag_subitems is not None:
                                         if frame >= len(old_tag_subitems)-1:
                                             ot_r = old_tag_subitems[len(old_tag_subitems)-1].dictspec['rotmatrix'] # This is the ORIGINAL ROTATION matrix for the "head's" tag frame matrix.
                                             ot_r = ((ot_r[0],ot_r[1],ot_r[2]), (ot_r[3],ot_r[4],ot_r[5]), (ot_r[6],ot_r[7],ot_r[8]))
@@ -951,47 +1011,33 @@ def loadmodel(root, filename, gamename, nomessage=0):
                                         org_origin = old_torso_tag_frames[frame].dictspec['origin'] # This is the ORIGINAL ORIGIN for the "torso's" tag frame.
 
                                     n_r = tag_subitems[frame].dictspec['rotmatrix'] # This is the NEW ROTATION matrix for the "head's" tag frame matrix.
-                                    pre_n_r = n_r = ((n_r[0],n_r[1],n_r[2]), (n_r[3],n_r[4],n_r[5]), (n_r[6],n_r[7],n_r[8]))
-                                    pre_new_rotation = new_rotation = quarkx.matrix(n_r)
+                                    n_r = ((n_r[0],n_r[1],n_r[2]), (n_r[3],n_r[4],n_r[5]), (n_r[6],n_r[7],n_r[8]))
+                                    new_rotation = quarkx.matrix(n_r)
                                     new_origin = tag_subitems[frame].dictspec['origin'] # This is the NEW ORIGIN for the "head's" tag frame.
                                     for comp in range(len(tag_comps_list)):
                                         comp_frames = editor_comps_frames[comp]
                                         comp_framecount = len(comp_frames)-1
+                                        if frame == len(tag_subitems)-1:
+                                            newframesgroups[comp].appenditem(comp_frames[len(comp_frames)-1].copy())
+                                            continue
                                         # Get the NEWTag position and rotation data.
                                         if comp == 0 and old_torso_tag_frames is not None and old_tag_subitems is not None:
                                             tag_subitems[frame]['origin'] = (quarkx.vect(org_origin) + ((~org_rotation) * old_tag_rotation * (quarkx.vect(new_origin) - quarkx.vect(old_tag_origin)))).tuple
-                                            new_rotation = (org_rotation * (~old_tag_rotation)) * new_rotation
+                                            new_rotation = ~(((~org_rotation) * old_tag_rotation) * (~new_rotation))
                                             n_r = new_rotation.tuple
                                             tag_subitems[frame]['rotmatrix'] = (n_r[0][0], n_r[0][1], n_r[0][2], n_r[1][0], n_r[1][1], n_r[1][2], n_r[2][0], n_r[2][1], n_r[2][2])
                                         # Now, move the tags.
                                         if frame >= comp_framecount:
-                                            if old_torso_tag_frames is None or old_tag_subitems is None:
-                                                tag_adj_vect = quarkx.vect(tag_subitems[frame].dictspec['origin']) - quarkx.vect(miscgroup_subitems[comp_framecount].dictspec['origin'])
                                             comp_frame = comp_frames[comp_framecount].copy()
                                             comp_frame.shortname = "Frame " + str(frame+1)
                                         else:
-                                            if old_torso_tag_frames is None or old_tag_subitems is None:
-                                                tag_adj_vect = quarkx.vect(tag_subitems[frame].dictspec['origin']) - quarkx.vect(miscgroup_subitems[frame].dictspec['origin'])
                                             comp_frame = comp_frames[frame]
                                             comp_frame.shortname = "Frame " + str(frame+1)
-                                        # Now, move the components.
+                                        # Now, move the component's vertexes.
                                         vertices = []
                                         for vtx in comp_frame.vertices:
-                                            # To rotate head components properly when they come through.
-                                            if old_torso_tag_frames is None or old_tag_subitems is None:
-                                                comp_rotation = vector_by_matrix(vtx.tuple, n_r)
-                                                comp_rotation = quarkx.vect(comp_rotation[0], comp_rotation[1], comp_rotation[2])
-                                                vtx = comp_rotation
-                                                vertices = vertices + [vtx + tag_adj_vect]
-                                            else:
-                                                comp_rotation = vector_by_matrix(vtx.tuple, pre_n_r)
-                                                comp_rotation = quarkx.vect(comp_rotation[0], comp_rotation[1], comp_rotation[2])
-                                                vtx = comp_rotation
-                                                vtx = vtx + quarkx.vect(tag_subitems[frame]['origin'])
-                                                # Below method does the exact same movement as above, but may be faster drawing.
-                                               # vtx = pre_new_rotation * vtx
-                                               # vtx = vtx + quarkx.vect(tag_subitems[frame]['origin'])
-                                                vertices = vertices + [vtx]
+                                            vtx = (~new_rotation * vtx) + quarkx.vect(tag_subitems[frame]['origin'])
+                                            vertices = vertices + [vtx]
                                         comp_frame.vertices = vertices
                                         newframe = comp_frame.copy()
                                         newframesgroups[comp].appenditem(newframe)
@@ -1003,6 +1049,8 @@ def loadmodel(root, filename, gamename, nomessage=0):
                             elif tagsgroup[tag].name.find("weapon") != -1 and editor_dictitems[key].name.find("weapon") != -1:
                                 tag_subitems = tagsgroup[tag].subitems
                                 for frame in range(len(tag_subitems)):
+                                    if frame == len(tag_subitems)-1:
+                                        continue
                                     if old_torso_tag_frames is not None and new_torso_tag_frames is not None:
                                         if frame >= len(new_torso_tag_frames)-1:
                                             ntr = new_torso_tag_frames[len(new_torso_tag_frames)-1].dictspec['rotmatrix'] # This is the NEW ROTATION matrix for the "torso's" tag frame matrix.
@@ -1037,6 +1085,12 @@ def loadmodel(root, filename, gamename, nomessage=0):
                                 newframesgroup = quarkx.newobj('Frames:fg')
                                 for frame in range(len(tag_subitems)):
                                     if old_torso_tag_frames is not None:
+                                        if frame == len(tag_subitems)-1:
+                                            tag_subitems[frame]['origin'] = old_torso_tag_frames[len(old_torso_tag_frames)-1].dictspec['origin']
+                                            tag_subitems[frame]['rotmatrix'] = old_torso_tag_frames[len(old_torso_tag_frames)-1].dictspec['rotmatrix']
+                                            newframe = comp_frames[len(comp_frames)-1].copy()
+                                            newframesgroup.appenditem(newframe)
+                                            continue
                                         o_r = old_torso_tag_frames[frame].dictspec['rotmatrix'] # This is the ORIGINAL ROTATION matrix for the "torso's" tag frame matrix.
                                         o_r = ((o_r[0],o_r[1],o_r[2]), (o_r[3],o_r[4],o_r[5]), (o_r[6],o_r[7],o_r[8]))
                                         org_rotation = quarkx.matrix(o_r)
@@ -1052,7 +1106,8 @@ def loadmodel(root, filename, gamename, nomessage=0):
                                     if ModelName.find("upper") != -1:
                                         for Component in ComponentList:
                                             vertices = []
-                                            for vtx in Component.dictitems['Frames:fg'].subitems[frame].vertices:
+                                            comp_subitems = Component.dictitems['Frames:fg'].subitems # To fix slowdown.
+                                            for vtx in comp_subitems[frame].vertices:
                                                 if old_torso_tag_frames is None: # use OLD method.
                                                     comp_rotation = vector_by_matrix(vtx.tuple, n_r)
                                                     comp_rotation = quarkx.vect(comp_rotation[0], comp_rotation[1], comp_rotation[2])
@@ -1079,15 +1134,36 @@ def loadmodel(root, filename, gamename, nomessage=0):
                                 undo.exchange(newcomp.dictitems['Frames:fg'], newframesgroup)
                                 undo.exchange(editor_dictitems[key], newcomp)
                                 break
-
-                    undo.exchange(miscgroup[item], tagsgroup[tag])
+                    undo.exchange(miscgroup[item], tagsgroup[tag]) # This replaces the ORIGINAL Torso tag frames with FEWER tag frames.
                     break
-                else:
+                else: # This is where the weapons would come through.
+                    if tagsgroup[tag].dictspec.has_key("Component"):
+                        update_tag = miscgroup[item].copy()
+                        update_tag['Component'] = tagsgroup[tag].dictspec['Component']
+                        undo.exchange(miscgroup[item], update_tag)
+                        for comp in ComponentList:
+                            if comp.name == tagsgroup[tag].dictspec['Component']:
+                                for comp in ComponentList:
+                                    vertices = []
+                                    comp_frames = comp.dictitems['Frames:fg'].subitems
+                                    misc_tag_frames = miscgroup[item].subitems
+                                    tag_frames = tagsgroup[tag].subitems
+                                    for frame in range(len(comp_frames)):
+                                        try:
+                                            vtx_adj = quarkx.vect(misc_tag_frames[frame].dictspec['origin']) - quarkx.vect(tag_frames[frame].dictspec['origin'])
+                                            for vtx in comp_frames[frame].vertices:
+                                                vtx = vtx + vtx_adj
+                                                vertices = vertices + [vtx]
+                                            comp_frames[frame].vertices = vertices
+                                        except:
+                                            continue
                     break
             if item == len(miscgroup)-1:
                 if tagsgroup[tag].name.find("weapon") != -1 and ModelName.find("upper") != -1:
                     tag_subitems = tagsgroup[tag].subitems
                     for frame in range(len(tag_subitems)):
+                        if frame == len(tag_subitems)-1:
+                            continue
                         if old_torso_tag_frames is not None and new_torso_tag_frames is not None:
                             if frame >= len(new_torso_tag_frames)-1:
                                 ntr = new_torso_tag_frames[len(new_torso_tag_frames)-1].dictspec['rotmatrix'] # This is the NEW ROTATION matrix for the "torso's" tag frame matrix.
@@ -1115,7 +1191,6 @@ def loadmodel(root, filename, gamename, nomessage=0):
                             tag_subitems[frame]['rotmatrix'] = (n_r[0][0], n_r[0][1], n_r[0][2], n_r[1][0], n_r[1][1], n_r[1][2], n_r[2][0], n_r[2][1], n_r[2][2])
 
                 undo.put(editor_dictitems['Misc:mg'], tagsgroup[tag])
-
 
     # Now we process the Components.
     for Component in ComponentList:
@@ -1253,6 +1328,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.10  2009/09/18 03:29:09  cdunde
+# Added support to import and animate multiple components for player tag groups.
+#
 # Revision 1.9  2009/09/14 20:12:23  cdunde
 # Switch back to cdunde's coding with some of DanielPharos methods included.
 # Sorry Dan, you're so advanced I couldn't follow it. 8-)

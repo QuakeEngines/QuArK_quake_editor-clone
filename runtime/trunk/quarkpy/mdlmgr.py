@@ -505,6 +505,8 @@ class ModelLayout(BaseLayout):
             import mdlentities
             if selitem.type == ":bound":
                 formobj = mdlentities.CallManager("dataformname", selitem)
+            elif selitem.type == ":tag":
+                formobj = mdlentities.CallManager("dataformname", selitem)
             elif selitem.type == ":tagframe":
                 formobj = mdlentities.CallManager("dataformname", selitem)
             elif selitem.type == ":bone":
@@ -538,6 +540,8 @@ class ModelLayout(BaseLayout):
             # Tries to use the data returned to make the selected item's type form again.
             if selitem.type == ":bound": # Sets the bound frame form items.
                 self.dataform.setdata(selitem, formobj) # Tries to use the data returned to make the bound frame's form again.
+            elif selitem.type == ":tag": # Sets the tag form items.
+                self.dataform.setdata(selitem, formobj) # Tries to use the data returned to make the tag frame's form again.
             elif selitem.type == ":tagframe": # Sets the tag frame form items.
                 self.dataform.setdata(selitem, formobj) # Tries to use the data returned to make the tag frame's form again.
             elif selitem.type == ":bone": # Sets the bone form items.
@@ -619,7 +623,7 @@ class ModelLayout(BaseLayout):
         sfbtn.caption = cap
         btnlist = self.mpp.btnpanel.buttons
         # Fills the model format form items.
-        if (DummyItem is not None and len(sl) == 1 and selitem.type != ":bound" and selitem.type != ":tagframe" and selitem.type != ":bone" and selitem.type != ":mc") or (DummyItem is not None and len(sl) > 1 and selitem.type != ":bound" and selitem.type != ":tagframe" and selitem.type != ":bone" and sl[1].type != ":bone" and (selitem.type != ":mc")):
+        if (DummyItem is not None and len(sl) == 1 and selitem.type != ":bound" and selitem.type != ":tag" and selitem.type != ":tagframe" and selitem.type != ":bone" and selitem.type != ":mc") or (DummyItem is not None and len(sl) > 1 and selitem.type != ":bound" and selitem.type != ":tag" and selitem.type != ":tagframe" and selitem.type != ":bone" and sl[1].type != ":bone" and (selitem.type != ":mc")):
             ### This section handles the model importer\exporter default settings and data input for the Specifics/Args page.
             if sfbtn.caption == "set model type" or sfbtn.caption == "default":
                 try:
@@ -718,6 +722,8 @@ class ModelLayout(BaseLayout):
             import mdlentities
             if selitem.type == ":bound": # Gets the "bound frame form" if the "if" test is passed.
                 formobj = mdlentities.CallManager("dataformname", selitem)
+            elif selitem.type == ":tag": # Gets the "tag frame form" if the "if" test is passed.
+                formobj = mdlentities.CallManager("dataformname", selitem)
             elif selitem.type == ":tagframe": # Gets the "tag frame form" if the "if" test is passed.
                 formobj = mdlentities.CallManager("dataformname", selitem)
             elif selitem.type == ":bone": # Gets the "bone form" if the "if" test is passed.
@@ -760,6 +766,10 @@ class ModelLayout(BaseLayout):
                 # to create the Specifics/Args page form for bound frames.
                 selitem = selitem
                 self.dataform.setdata(selitem, formobj) # Tries to use the data returned to make the bound frame's form again.
+            elif selitem.type == ":tag": # Sets the tag frame form items.
+                # Uses the data returned from the mdlentities.py file, class TagFrameType, def dataformname function
+                # to create the Specifics/Args page form for tag frames.
+                self.dataform.setdata(selitem, formobj) # Tries to use the data returned to make the tag frame's form again.
             elif selitem.type == ":tagframe": # Sets the tag frame form items.
                 # Uses the data returned from the mdlentities.py file, class TagFrameType, def dataformname function
                 # to create the Specifics/Args page form for tag frames.
@@ -1112,6 +1122,8 @@ class ModelLayout(BaseLayout):
         try:
             import mdlentities
             if selitem.type == ":bound": # Gets the "bound frame form" if the "if" test is passed.
+                formobj = mdlentities.CallManager("dataformname", selitem)
+            elif selitem.type == ":tag": # Gets the "tag form" if the "if" test is passed.
                 formobj = mdlentities.CallManager("dataformname", selitem)
             elif selitem.type == ":tagframe": # Gets the "tag frame form" if the "if" test is passed.
                 formobj = mdlentities.CallManager("dataformname", selitem)
@@ -1635,6 +1647,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.107  2009/08/24 23:39:20  cdunde
+#Added support for multiple bone sets for imported models and their animations.
+#
 #Revision 1.106  2009/08/15 09:37:14  cdunde
 #To fix improper bone position on specifics page for different frame selection.
 #

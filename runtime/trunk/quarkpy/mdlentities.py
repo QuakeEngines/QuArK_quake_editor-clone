@@ -1677,17 +1677,20 @@ class TagType(EntityManager):
                     newframesgroup = quarkx.newobj('Frames:fg')
                     comp_framecount = len(comp_frames)-1
                     for frame in range(len(basetag_subitems)):
-                        if frame >= len(attachtag_subitems)-1:
+                        if frame == len(basetag_subitems)-1:
+                            baseframe = comp_frames[comp_framecount].copy()
+                            newframesgroup.appenditem(baseframe)
+                            break
+                        elif frame > len(attachtag_subitems)-1:
                             attachframe = attachtag_subitems[len(attachtag_subitems)-1]
                         else:
                             attachframe = attachtag_subitems[frame]
                         tag_adj_vect = quarkx.vect(basetag_subitems[frame].dictspec['origin']) - quarkx.vect(attachframe.dictspec['origin'])
                         if frame >= comp_framecount:
                             comp_frame = comp_frames[comp_framecount].copy()
-                            comp_frame.shortname = "Frame " + str(frame+1)
                         else:
                             comp_frame = comp_frames[frame]
-                            comp_frame.shortname = "Frame " + str(frame+1)
+                        comp_frame.shortname = "Frame " + str(frame+1)
                         vertices = []
                         for vtx in comp_frame.vertices:
                             vertices = vertices + [vtx + tag_adj_vect]
@@ -1707,15 +1710,16 @@ class TagType(EntityManager):
                         tag1comp_tags = tag1comp.dictspec['Tags'].split(", ")
                 tag1name = tag1model + "_" + tag1name + ":tag"
                 tag1 = editor.Root.dictitems['Misc:mg'].dictitems[tag1name]
-                for item in editor.Root.subitems:
-                    if item.type == ":mc" and item.name.startswith(tag1model) and item.dictspec.has_key("Tags"):
-                        tag1comp = item
-                        tag1comp_tags = tag1comp.dictspec['Tags'].split(", ")
+
                 def tag_selection_click(m=m, editor=editor, tag1=tag1, tag1comp=tag1comp, tag1comp_tags=tag1comp_tags):
                     global TagList, items
                     TagList = ""
                     items = []
                     values = []
+                    if not tag1.dictspec.has_key("Component"):
+                        quarkx.msgbox("No Tag Match!\n\nA model that uses this tag has not been loaded yet.", MT_ERROR, MB_OK)
+                        return
+                    tag_component = editor.Root.dictitems[tag1.dictspec['Component']]
                     for tag1 in tag1comp_tags:
                         items = items + ['"' + tag1.split("_")[1] + '"' + "$0D"]
                         values = values + ['"' + tag1 + '"' + "$0D"]
@@ -1759,7 +1763,8 @@ class TagType(EntityManager):
 
                         src = self.src
                         if src["tag_list"] is None:
-                            src["tag_list"] = self.items[0]
+                            tag = editor.layout.explorer.sellist[0].shortname.split("_", 1)
+                            src["tag_list"] = tag[len(tag)-1]
 
                     # When data is entered, this gets executed.
                     def action(self, editor=editor):
@@ -1798,6 +1803,26 @@ class TagType(EntityManager):
 
         import mdlmenus
         return [attach_tags, qmenu.sep, STT, HTT, qmenu.sep] + CallManager("menubegin", o, editor) + mdlmenus.BaseMenu([o], editor)
+
+    def dataformname(o):
+        "Returns the data form for this type of object 'o' (a Tag) to use for the Specific/Args page."
+
+        dlgdef = """
+        {
+          Help = "These are the Specific settings for a Tag."$0D0D22
+                 "component"$22" - The main component this"$0D
+                 "          tag belongs to. (read only)"
+          Component: = {
+              Typ="E R"
+              Txt="component"
+              Hint="The main component that this"$0D"tag belongs to. (read only)"
+                 }
+        }
+        """
+
+        formobj = quarkx.newobj("tagframe:form")
+        formobj.loadtext(dlgdef)
+        return formobj
 
 
 # Has no subitems or dictitems items, only dictspec items (origin and rotmatrix).
@@ -2431,6 +2456,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.55  2009/09/18 03:21:19  cdunde
+#Setup dialog for selection of tags to attach for .md3 items such as weapons.
+#
 #Revision 1.54  2009/09/08 06:45:12  cdunde
 #Setup function to attach tags for imported .md3 models, such as weapons.
 #
