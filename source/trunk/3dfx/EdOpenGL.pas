@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.93  2009/09/24 18:45:19  danielpharos
+Added some DirectX settings.
+
 Revision 1.92  2009/09/23 20:36:10  danielpharos
 Implemented workaround for weird bug...
 
@@ -1399,9 +1402,9 @@ begin
                 SurfAveragePosition[2]:=SurfAveragePosition[2]+PV^.xyz[2];
                 Inc(PChar(PV), Sz);
               end;
-              SurfAveragePosition[0]:=SurfAveragePosition[0]/VertexCount;
-              SurfAveragePosition[1]:=SurfAveragePosition[1]/VertexCount;
-              SurfAveragePosition[2]:=SurfAveragePosition[2]/VertexCount;
+              SurfAveragePosition[0]:=SurfAveragePosition[0]/Abs(VertexCount);
+              SurfAveragePosition[1]:=SurfAveragePosition[1]/Abs(VertexCount);
+              SurfAveragePosition[2]:=SurfAveragePosition[2]/Abs(VertexCount);
             end;
             PAveragePosition[0]:=PAveragePosition[0]+SurfAveragePosition[0];
             PAveragePosition[1]:=PAveragePosition[1]+SurfAveragePosition[1];
