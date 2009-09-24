@@ -469,7 +469,7 @@ def Import(basepath, filename):
                         line = line.split(",")
                         if len(line) == 2 and (PlayerModelName.find(line[0]) != -1 or surface.name.find(line[0]) != -1):
                             for type in ImageTypes:
-                                if line[1].find(type) != -1:
+                                if line[1].lower().find(type) != -1:
                                     line = line[1].rsplit(".", 1)[0]
                                     foundtexture = line + type
                                     if os.path.isfile(BasePath + "/" + foundtexture):
@@ -938,6 +938,19 @@ def loadmodel(root, filename, gamename, nomessage=0):
     old_torso_tag_frames = new_torso_tag_frames = old_tag_subitems = None
     
     if len(tagsgroup) > 1:
+        # To remove incorrect duplicate tags with the lowest tag_frame count.
+        fixed_tagsgroup = []
+        for tag in range(len(tagsgroup)):
+            if tagsgroup[tag] in fixed_tagsgroup:
+                for item in range(len(fixed_tagsgroup)):
+                    if tagsgroup[tag].name == fixed_tagsgroup[item].name:
+                        if len(tagsgroup[tag].subitems) > len(fixed_tagsgroup[item].subitems):
+                            fixed_tagsgroup[item] = tagsgroup[tag]
+                            break
+            else:
+                fixed_tagsgroup = fixed_tagsgroup + [tagsgroup[tag]]
+        tagsgroup = fixed_tagsgroup
+
         # To make sure the order of the tags is correct.
         for tag in range(len(tagsgroup)):
             if tagsgroup[tag].name.find("torso") != -1 and not tagsgroup[len(tagsgroup)-1].name.find("torso") != -1:
@@ -957,6 +970,8 @@ def loadmodel(root, filename, gamename, nomessage=0):
                 if editor_dictitems['Misc:mg'].dictitems.has_key(tagsgroup[tag].name):
                     old_torso_tag_frames = editor_dictitems['Misc:mg'].dictitems[tagsgroup[tag].name].subitems
                 new_torso_tag_frames = tagsgroup[tag].subitems
+
+    # Start importing the tags and making the animation frames.
     for tag in range(len(tagsgroup)):
         if len(miscgroup) == 0:
             undo.put(editor_dictitems['Misc:mg'], tagsgroup[tag])
@@ -1328,6 +1343,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.11  2009/09/24 06:46:02  cdunde
+# md3 rotation update, baseframe creation and proper connection of weapon tags.
+#
 # Revision 1.10  2009/09/18 03:29:09  cdunde
 # Added support to import and animate multiple components for player tag groups.
 #
