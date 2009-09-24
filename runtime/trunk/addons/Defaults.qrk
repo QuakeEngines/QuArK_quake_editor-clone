@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.493  2009/09/05 06:18:51  cdunde
+//To fix setup error.
+//
 //Revision 1.492  2009/07/30 23:22:36  cdunde
 //Last change for CoD1 broke it instead, reversing change.
 //
@@ -2932,6 +2935,7 @@ QQRKSRC1
         TextureFormat = ".tga"             // primary texture fileextension
         TextureFileExtensions = ".jpg,.tga"     // possible texture fileextensions
         TextureWriteFormat = ".jpg"
+        TextureWriteFormatA = ".tga"
         TextureShaders = "scripts/quark.shader"
 
         BaseDir = "data"
