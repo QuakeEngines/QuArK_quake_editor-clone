@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.92  2009/09/23 20:36:10  danielpharos
+Implemented workaround for weird bug...
+
 Revision 1.91  2009/09/22 18:54:43  danielpharos
 Fix variable type, improve some code, and removed a test OpenGL error check.
 
@@ -340,11 +343,11 @@ type
  private
    RC: HGLRC;
    DoubleBuffered: Boolean;
-   Dithering: Boolean;
    Fog: Boolean;
    Transparency: Boolean;
    Lighting: Boolean;
    Culling: Boolean;
+   Dithering: Boolean;
    MakeSections: Boolean;
    VCorrection2: Single;
    Lights: PLightList;

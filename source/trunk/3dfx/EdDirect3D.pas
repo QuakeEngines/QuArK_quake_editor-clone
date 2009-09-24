@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.38  2009/07/15 10:38:06  danielpharos
+Updated website link.
+
 Revision 1.37  2009/02/21 17:06:18  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -168,6 +171,7 @@ type
     Transparency: Boolean;
     Lighting: Boolean;
     Culling: Boolean;
+    Dithering: Boolean;
     Direct3DLoaded: Boolean;
     DWMLoaded: Boolean;
     MapLimit: TVect;
@@ -464,6 +468,7 @@ begin
     Lighting:=False;
     Culling:=False;
   end;
+  Dithering:=Setup.Specifics.Values['Dither']<>'';
 
   if (ScreenX = 0) or (ScreenY = 0) then
   begin
@@ -501,7 +506,7 @@ begin
   //These calls are for the SwapChain!!!
 
   DXFogColor:=D3DXColorToDWord(D3DXColor(nFogColor[0],nFogColor[1],nFogColor[2],nFogColor[3]));
-  D3DDevice.SetRenderState(D3DRS_AMBIENT, $ffffffff);
+  D3DDevice.SetRenderState(D3DRS_ZENABLE, 1);  //D3DZB_TRUE := 1
   if Fog then
   begin
     D3DDevice.SetRenderState(D3DRS_FOGENABLE, 1);  //True := 1
@@ -515,6 +520,29 @@ begin
   end
   else
     D3DDevice.SetRenderState(D3DRS_FOGENABLE, 0);  //False := 0
+
+  if Lighting then
+  begin
+    D3DDevice.SetRenderState(D3DRS_LIGHTING, 1);  //True := 1
+    D3DDevice.SetRenderState(D3DRS_AMBIENT, D3DXColorToDWord(D3DXColor(255, 255, 255, 0))); //FIXME!
+  end
+  else
+    D3DDevice.SetRenderState(D3DRS_LIGHTING, 0);  //False := 0
+
+  if Transparency then
+    D3DDevice.SetRenderState(D3DRS_ALPHABLENDENABLE, 1) //FIXME!
+  else
+    D3DDevice.SetRenderState(D3DRS_ALPHABLENDENABLE, 0); //FIXME!
+
+  if Culling then
+    D3DDevice.SetRenderState(D3DRS_CULLMODE, 1) //FIXME!
+  else
+    D3DDevice.SetRenderState(D3DRS_CULLMODE, 0); //FIXME!
+
+  if Dithering then
+    D3DDevice.SetRenderState(D3DRS_DITHERENABLE, 1) //FIXME!
+  else
+    D3DDevice.SetRenderState(D3DRS_DITHERENABLE, 0) //FIXME!
 
 {  // Create material
   FillChar(l_Material, SizeOf(l_Material), 0);

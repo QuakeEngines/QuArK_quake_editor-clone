@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.494  2009/09/24 18:43:14  danielpharos
+//Added Nexuiz TextureWriteFormatA
+//
 //Revision 1.493  2009/09/05 06:18:51  cdunde
 //To fix setup error.
 //
@@ -1710,8 +1713,13 @@ QQRKSRC1
       }
       DirectX:config =
       {
+        Fog = "1"
+        Transparency = "1"
+        Lights = "1"
+        Dither = ""
         BackBufferFormat = "1"
         StencilBufferBits = "0"
+        Culling = "1"
         Form = "GeneralDirectX"
       }
       Memory:config =
@@ -9202,7 +9210,31 @@ QQRKSRC1
     {
       Style = "3"
       L0: = {Typ="S" Txt="---- DirectX 9.0c hardware owners only ----"}
-      L1: = {Typ="S" Bold="0" Txt="This renderer has not been fully implemented yet."}
+      LX: = {Typ="S" Bold="0" Txt="This renderer has not been fully implemented yet."}
+      Fog: = {Typ="X" Txt="Fade" Cap="Enabled" Hint = "Enables fading for distant objects."}
+      Transparency: = {
+        Txt="Transparency"
+        Typ="X"
+        Cap="Enabled"
+        Hint = "Enables transparency."
+            $0D
+            $0D"For Half-Life and Half-Life 2:"
+            $0D"When checked brush-entities that have their"
+            $0D"'rendermode'and 'renderamt' set to transparency"
+            $0D"will be drawn transparent in the OpenGL window all"
+            $0D"though NOT exactly drawn as they will be in the game."
+      }
+      Lights: = {
+        Txt="Lighting"
+        Typ="X"
+        Cap="Enabled"
+        Hint="Levels with few lights will look black -- turn off lighting in this case."
+          $0D"For more options, see the lighting quality settings below."
+      }
+      L1: = {Typ="S" Bold="0" Txt="To change overall light brightness, see the"}
+      L2: = {Typ="S" Bold="0" Txt="configuration page for each game."}
+      Sep0: = {Typ="S" Txt = ""}
+      L3: = {Typ="S" Txt="---- additional options ----"}
       BackBufferFormat: =
       {
         Typ = "CL"
@@ -9231,6 +9263,9 @@ QQRKSRC1
         Hint="The amount of bits per pixel in the depth buffer. The higher,"
           $0D"the smaller the chance of non-overlapping faces starting to flicker at a distance."
       }
+      Dither: = { Typ="X" Txt="Color dithering" Cap="Enabled" }
+      Culling: = {Typ="X" Txt="Face culling" Cap="Enabled" Hint="Speeds up rendering by making all the backsides of faces invisible."
+                                                             $0D"This doesn't apply to transparent faces." }
     }
     GeneralMemory:form =
     {
