@@ -20,6 +20,7 @@ Info = {
    "quark":         "Version 5.1" }
 
 
+import quarkx
 import quarkpy.qmenu
 import quarkpy.qmacro
 import quarkpy.mapsearch
@@ -237,6 +238,9 @@ quarkpy.mapsearch.items.append(quarkpy.qmenu.item("&Broken polys and faces", Bro
 #
 #
 # $Log$
+# Revision 1.12  2005/10/15 00:51:24  cdunde
+# To reinstate headers and history
+#
 # Revision 1.9  2003/12/17 13:58:59  peter-b
 # - Rewrote defines for setting Python version
 # - Removed back-compatibility with Python 1.5

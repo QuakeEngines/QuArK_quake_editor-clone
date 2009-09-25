@@ -23,8 +23,8 @@ from quarkpy.maputils import *
 import quarkpy.mapmenus
 import quarkpy.mapcommands
 import quarkpy.dlgclasses
-from quarkpy import guiutils
 import quarkpy.mapsearch
+from quarkpy import guiutils
 
 import mapmadsel
 import quarkx
@@ -250,6 +250,10 @@ quarkpy.mapsearch.items.append(qmenu.item('Find Bad Tex Scale', badClick,
  "|Find Bad Tex Scale:\n\nThis finds faces whose texture axes are almost parallel.|intro.mapeditor.menu.html#searchmenu"))
 
 #$Log$
+#Revision 1.12  2005/11/27 05:56:33  cdunde
+#Fixed function error due to python reliant
+#conversion to python.dll, for string module.
+#
 #Revision 1.11  2005/10/15 00:49:51  cdunde
 #To reinstate headers and history
 #

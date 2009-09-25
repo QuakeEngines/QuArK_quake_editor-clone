@@ -22,6 +22,7 @@ Info = {
 from quarkpy.maputils import *
 import quarkpy.mapmenus
 import quarkpy.mapcommands
+import quarkpy.mapsearch
 import quarkpy.dlgclasses
 import mapmadsel
 import quarkx
@@ -287,6 +288,9 @@ quarkpy.mapsearch.items.append(qmenu.item('Find &Thin Faces', thinClick,
   "|Find Thin Faces:\n\nThis function will search for and identifies brushes with faces that are suspiciously thin.", "intro.mapeditor.menu.html#searchmenu"))
 
 #$Log$
+#Revision 1.9  2005/10/15 00:51:56  cdunde
+#To reinstate headers and history
+#
 #Revision 1.6  2003/12/18 21:51:46  peter-b
 #Removed reliance on external string library from Python scripts (second try ;-)
 #

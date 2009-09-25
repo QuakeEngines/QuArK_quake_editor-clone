@@ -39,8 +39,10 @@ Info = {
 from quarkpy.maputils import *
 import quarkpy.mapmenus
 import quarkpy.mapcommands
+import quarkpy.mapsearch
 import quarkpy.dlgclasses
 
+import quarkx
 
 def is_integral_float(p):
     if p==int(p):
@@ -171,7 +173,6 @@ def integralizeFaces(m):
     editor.invalidateviews()
         
 
-import quarkpy.mapsearch
 quarkpy.mapsearch.items.append(qmenu.item('Find &Non-integral Faces', findNonIntegralFaces,
  "|Find Non-integral Faces:\n\nThis finds faces that don't have integral threepoints.\n\nUse integralize Selected Faces on the command menu to try to automatically fix them.\n\nIf you want a particular group to be allowed to contain faces with non-integral threepoints, give it a nonintegral specific with a value such as 1.|intro.mapeditor.menu.html#searchmenu"))
 
@@ -184,6 +185,9 @@ quarkpy.mapcommands.items.append(qmenu.item('Integralize Selected Faces', integr
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.9  2009/07/22 09:46:46  danielpharos
+# Added missing import statement.
+#
 # Revision 1.8  2005/10/15 00:49:51  cdunde
 # To reinstate headers and history
 #

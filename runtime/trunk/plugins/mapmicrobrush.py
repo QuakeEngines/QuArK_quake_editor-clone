@@ -29,6 +29,7 @@ from quarkpy.maputils import *
 import quarkpy.mapmenus
 import quarkpy.mapcommands
 import quarkpy.dlgclasses
+import quarkpy.mapsearch
 import mapmadsel
 import quarkx
 
@@ -275,6 +276,9 @@ quarkpy.mapsearch.items.append(qmenu.item('Find &Microbrushes', thinClick,
  "|Find Microbrushes:\n\nThis function identifies brushes that are suspiciously small, at least in one dimension.", "intro.mapeditor.menu.html#searchmenu"))
 
 #$Log$
+#Revision 1.12  2005/10/15 00:51:24  cdunde
+#To reinstate headers and history
+#
 #Revision 1.9  2003/12/18 21:51:46  peter-b
 #Removed reliance on external string library from Python scripts (second try ;-)
 #
