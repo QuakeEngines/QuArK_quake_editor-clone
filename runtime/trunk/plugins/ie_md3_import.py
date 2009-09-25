@@ -400,6 +400,17 @@ def Import(basepath, filename):
     md3.Load(file)
     file.close()
 
+    # To get to current torso tag frames that will be needed later if they exist in the editor already.
+    old_torso_tag_frames = None
+    if ModelName.find("upper") != -1:
+        editor_dictitems = editor.Root.dictitems
+        for t in xrange(md3.numTags):
+            cktag = md3.tags[t]
+            if cktag.name.find("torso") != -1:
+                tag_name = ModelFolder + '_' + cktag.name + ':tag'
+                if editor_dictitems['Misc:mg'].dictitems.has_key(tag_name):
+                    old_torso_tag_frames = editor_dictitems['Misc:mg'].dictitems[tag_name].subitems
+
     for k in xrange(md3.numSurfaces):
         surface = md3.surfaces[k]
         ### Create the Frames:fg group and each "name:mf" frame.
@@ -418,7 +429,16 @@ def Import(basepath, filename):
                     baseframe.shortname = 'Base Frame'
                 framesgroup.appenditem(frame)
                 if i == surface.numFrames-1:
-                    framesgroup.appenditem(baseframe)
+                    if old_torso_tag_frames is not None:
+                        for old_frame in range(i+1, len(old_torso_tag_frames)):
+                            if old_frame == len(old_torso_tag_frames)-1:
+                                framesgroup.appenditem(baseframe)
+                            else:
+                                extra_frame = frame.copy()
+                                extra_frame.shortname = 'Frame ' + str(old_frame+1)
+                                framesgroup.appenditem(extra_frame)
+                    else:
+                        framesgroup.appenditem(baseframe)
         else: # Make a baseframe for this model if no animation frames.
             verts = []
             verts.extend( [surface.verts[i].xyz for i in xrange(surface.numVerts)] )
@@ -872,7 +892,16 @@ def Import(basepath, filename):
                         continue
                 newtag.appenditem(tagframe)
                 if j == md3.numFrames-1:
-                    newtag.appenditem(baseframe)
+                    if old_torso_tag_frames is not None:
+                        for frame in range(j+1, len(old_torso_tag_frames)):
+                            if frame == len(old_torso_tag_frames)-1:
+                                newtag.appenditem(baseframe)
+                            else:
+                                extra_tagframe = tagframe.copy()
+                                extra_tagframe.shortname = 'Tag Frame ' + str(frame+1)
+                                newtag.appenditem(extra_tagframe)
+                    else:
+                        newtag.appenditem(baseframe)
 
               #  rotation = Blender.Mathutils.Matrix(forward, left, up)
               #  rot_Euler=rotation.toEuler()
@@ -1101,9 +1130,9 @@ def loadmodel(root, filename, gamename, nomessage=0):
                                 for frame in range(len(tag_subitems)):
                                     if old_torso_tag_frames is not None:
                                         if frame == len(tag_subitems)-1:
-                                            tag_subitems[frame]['origin'] = old_torso_tag_frames[len(old_torso_tag_frames)-1].dictspec['origin']
-                                            tag_subitems[frame]['rotmatrix'] = old_torso_tag_frames[len(old_torso_tag_frames)-1].dictspec['rotmatrix']
-                                            newframe = comp_frames[len(comp_frames)-1].copy()
+                                            tag_subitems[frame]['origin'] = old_torso_tag_frames[frame].dictspec['origin']
+                                            tag_subitems[frame]['rotmatrix'] = old_torso_tag_frames[frame].dictspec['rotmatrix']
+                                            newframe = comp_frames[frame].copy()
                                             newframesgroup.appenditem(newframe)
                                             continue
                                         o_r = old_torso_tag_frames[frame].dictspec['rotmatrix'] # This is the ORIGINAL ROTATION matrix for the "torso's" tag frame matrix.
@@ -1343,6 +1372,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.12  2009/09/24 21:41:03  cdunde
+# Small update to remove duplicate tags.
+#
 # Revision 1.11  2009/09/24 06:46:02  cdunde
 # md3 rotation update, baseframe creation and proper connection of weapon tags.
 #
