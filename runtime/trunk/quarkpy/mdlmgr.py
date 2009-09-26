@@ -55,6 +55,7 @@ check_show_vtx_color = None
 check_use_weights = None
 check_show_weight_color = None
 check_apply_vtx_weights = None
+check_tag_pos = None
 
 class ModelLayout(BaseLayout):
     "An abstract base class for Model Editor screen layouts."
@@ -438,12 +439,12 @@ class ModelLayout(BaseLayout):
         #        self.mpp.viewpage(2)
         #    elif fs.type == ':f':
         #        self.mpp.viewpage(3)
-        
+
 
     def makesettingclick(self, m):
         "This function fills in the Default values of the Specifics/Args page form"
         "and changes the form's values when a setting is made."
-        global check_currentcomponent, check_comp_list, check_pos, check_color, checkbone_length, check_offset, checkbone_scale, check_show_vtx_color, check_show_weight_color, check_apply_vtx_weights, check_use_weights
+        global check_currentcomponent, check_comp_list, check_pos, check_color, checkbone_length, check_offset, checkbone_scale, check_show_vtx_color, check_show_weight_color, check_apply_vtx_weights, check_use_weights, check_tag_pos
 
         check_currentcomponent = self.editor.Root.currentcomponent.name
 
@@ -664,6 +665,7 @@ class ModelLayout(BaseLayout):
                 self.origin = quarkx.vect(selitem['origin']).tuple
             except:
                 self.origin = '0 0 0'
+            check_tag_pos = selitem.dictspec['origin']
         elif len(sl) != 0 and selitem.type == ":bone": # Sets the bone form items.
             # Globals are set here for comparison in filldataform function later.
             check_comp_list = selitem['comp_list']
@@ -683,7 +685,7 @@ class ModelLayout(BaseLayout):
     def filldataform(self, reserved):
         "This function creates the Specifics/Args page form (formobj) for the first time"
         "or when selecting another item in the tree-view that uses a form."
-        global treeviewselchanged, check_currentcomponent, check_comp_list, check_pos, check_color, checkbone_length, check_offset, checkbone_scale, check_show_vtx_color, check_show_weight_color, check_apply_vtx_weights, check_use_weights
+        global treeviewselchanged, check_currentcomponent, check_comp_list, check_pos, check_color, checkbone_length, check_offset, checkbone_scale, check_show_vtx_color, check_show_weight_color, check_apply_vtx_weights, check_use_weights, check_tag_pos
 
         currentcomp = self.editor.Root.currentcomponent
 
@@ -1104,6 +1106,24 @@ class ModelLayout(BaseLayout):
                             new_bone2['bone_length'] = (new_bone2.position - new_bone.position).tuple
                             undo.exchange(bone, new_bone2)
                     self.editor.ok(undo, 'bone length changed')
+
+            ### This section handles the Tag Frames default settings and data input for the Specifics/Args page.
+            if (selitem.type == ":tagframe") and (not isinstance(reserved, qtoolbar.button)):
+                if check_tag_pos != selitem["origin"]:
+                    old_pos = check_tag_pos
+                    check_tag_pos = selitem['origin']
+                    selitem['origin'] = old_pos
+                    undo = quarkx.action()
+                    movediff = quarkx.vect(check_tag_pos) - quarkx.vect(old_pos)
+                    old_tag = selitem.parent
+                    new_tag = old_tag.copy()
+                    tag_frames = new_tag.subitems # Get all its tag frames.
+                    for frame in tag_frames:
+                        new_frame = frame.copy()
+                        new_frame['origin'] = (quarkx.vect(new_frame.dictspec['origin']) + movediff).tuple
+                        undo.exchange(frame, new_frame)
+                    undo.exchange(old_tag, new_tag)
+                    self.editor.ok(undo, new_tag.shortname + ' origin changed')
 
     def helpbtnclick(self, m):
         "Brings up the help window of a form or the InfoBase Docs if there is none."
@@ -1647,6 +1667,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.108  2009/09/24 06:46:02  cdunde
+#md3 rotation update, baseframe creation and proper connection of weapon tags.
+#
 #Revision 1.107  2009/08/24 23:39:20  cdunde
 #Added support for multiple bone sets for imported models and their animations.
 #
