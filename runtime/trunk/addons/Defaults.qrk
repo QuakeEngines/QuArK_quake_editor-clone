@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.495  2009/09/24 18:45:17  danielpharos
+//Added some DirectX settings.
+//
 //Revision 1.494  2009/09/24 18:43:14  danielpharos
 //Added Nexuiz TextureWriteFormatA
 //
@@ -4381,6 +4384,7 @@ QQRKSRC1
         IELogging          = "0"
         IELogAll           = ""
         IELogByFileType    = ""
+        IEMaxTagFrames     = "1"
         Form = "MdlOptions"
       }
       Building:config =
@@ -9525,7 +9529,8 @@ QQRKSRC1
       IELogging:                = {Typ="CL" Txt="Logging" Hint="Not all importer\exporter files will have this feature."$0D"The 'Text Log' will be written to QuArK's main folder"$0D"and will give details about the file being loaded."
                           items = "No Logging"$0D "Text Log Only"$0D "Text Log & Console"    values = "0"$0D "1"$0D "2"     }
       IELogAll:                 = {Typ="X"  Txt="Log All"                        Cap="Log all imports\exports" Hint="Unchecked = Only logs current import\export."$0D"Checked = Logs all imports\exports."}
-      IELogByFileType:          = {Typ="X"  Txt="By File Type"                   Cap="Log by file types" Hint="Unchecked = Creates only one import\export log."$0D"Checked = Creates individual logs by file type."}
+      IELogByFileType:          = {Typ="X"  Txt="Log By File Type"               Cap="Log by file types" Hint="Unchecked = Creates only one import\export log."$0D"Checked = Creates individual logs by file type."}
+      IEMaxTagFrames:           = {Typ="X"  Txt="I/E Max.-Min. Tag Frames"       Cap="I/E max.-min. tag frames" Hint="Checked = Imports\Exports all tag frames, if used (default)."$0D"Unchecked = Imports\Exports min. tag frames, if used."}
     }
     MapBuilding:form =
     {

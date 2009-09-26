@@ -410,6 +410,8 @@ def Import(basepath, filename):
                 tag_name = ModelFolder + '_' + cktag.name + ':tag'
                 if editor_dictitems['Misc:mg'].dictitems.has_key(tag_name):
                     old_torso_tag_frames = editor_dictitems['Misc:mg'].dictitems[tag_name].subitems
+    if quarkx.setupsubset(SS_MODEL, "Options")['IEMaxTagFrames'] != "1":
+        old_torso_tag_frames = None
 
     for k in xrange(md3.numSurfaces):
         surface = md3.surfaces[k]
@@ -1130,9 +1132,9 @@ def loadmodel(root, filename, gamename, nomessage=0):
                                 for frame in range(len(tag_subitems)):
                                     if old_torso_tag_frames is not None:
                                         if frame == len(tag_subitems)-1:
-                                            tag_subitems[frame]['origin'] = old_torso_tag_frames[frame].dictspec['origin']
-                                            tag_subitems[frame]['rotmatrix'] = old_torso_tag_frames[frame].dictspec['rotmatrix']
-                                            newframe = comp_frames[frame].copy()
+                                            tag_subitems[frame]['origin'] = old_torso_tag_frames[len(old_torso_tag_frames)-1].dictspec['origin']
+                                            tag_subitems[frame]['rotmatrix'] = old_torso_tag_frames[len(old_torso_tag_frames)-1].dictspec['rotmatrix']
+                                            newframe = comp_frames[len(comp_frames)-1].copy()
                                             newframesgroup.appenditem(newframe)
                                             continue
                                         o_r = old_torso_tag_frames[frame].dictspec['rotmatrix'] # This is the ORIGINAL ROTATION matrix for the "torso's" tag frame matrix.
@@ -1278,7 +1280,10 @@ def loadmodel(root, filename, gamename, nomessage=0):
 ### To register this Python plugin and put it on the importers menu.
 import quarkpy.qmdlbase
 import ie_md3_import # This imports itself to be passed along so it can be used in mdlmgr.py later.
-quarkpy.qmdlbase.RegisterMdlImporter(".md3 Quake3 Importer", ".md3 file", "*.md3", loadmodel, ie_md3_import)
+if quarkx.setupsubset(SS_MODEL, "Options")['IEMaxTagFrames'] == "1":
+    quarkpy.qmdlbase.RegisterMdlImporter(".md3 Quake3 Importer - max. tag frames", ".md3 file", "*.md3", loadmodel, ie_md3_import)
+else:
+    quarkpy.qmdlbase.RegisterMdlImporter(".md3 Quake3 Importer - min. tag frames", ".md3 file", "*.md3", loadmodel, ie_md3_import)
 
 
 def dataformname(o):
@@ -1372,6 +1377,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.13  2009/09/25 21:58:57  cdunde
+# To bring in extra frames, for a player model, of the torso when the upper model is loaded.
+#
 # Revision 1.12  2009/09/24 21:41:03  cdunde
 # Small update to remove duplicate tags.
 #
