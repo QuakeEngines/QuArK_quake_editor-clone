@@ -569,10 +569,6 @@ class ModelEditor(BaseEditor):
                         if item.type == ":mc" and item.name.startswith(tag_name) and len(item.dictitems["Frames:fg"].subitems)-1 >= tag_frame_index:
                             self.Root.currentcomponent = item
                             self.Root.currentcomponent.currentframe = item.dictitems["Frames:fg"].subitems[tag_frame_index]
-                        #    frame = item.dictitems["Frames:fg"].subitems[tag_frame_index]
-                        #    if frame != self.Root.currentcomponent.currentframe:
-                        #        self.Root.currentcomponent.currentframe = item.dictitems["Frames:fg"].subitems[tag_frame_index]
-                        #        self.layout.explorer.sellist = [frame] + self.layout.explorer.sellist
             else:
                 tag_name = tag_frame.parent.name.split("_")[0]
                 for item in self.Root.subitems:
@@ -1756,6 +1752,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.133  2009/09/07 01:38:45  cdunde
+#Setup of tag menus and icons.
+#
 #Revision 1.132  2009/09/06 11:54:44  cdunde
 #To setup, make and draw the TagFrameHandles. Also improve animation rotation.
 #
