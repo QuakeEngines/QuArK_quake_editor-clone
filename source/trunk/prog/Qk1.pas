@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.86  2009/07/31 11:40:45  danielpharos
+Small change to cleanup About.pas a bit.
+
 Revision 1.85  2009/07/15 10:38:01  danielpharos
 Updated website link.
 
@@ -420,6 +423,7 @@ type
     ExtEdit1: TMenuItem;
     Outputdirectories1: TMenuItem;
     Viewconsole1: TMenuItem;
+    N14: TMenuItem;
     N13: TMenuItem;
     Go1: TMenuItem;
     ConvertFrom1: TMenuItem;
