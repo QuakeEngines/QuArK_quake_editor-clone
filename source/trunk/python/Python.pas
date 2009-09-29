@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.41  2009/07/15 10:54:15  danielpharos
+Fix wrong variable type, and make some variables local.
+
 Revision 1.40  2009/07/15 10:38:10  danielpharos
 Updated website link.
 
@@ -404,6 +407,9 @@ type
                  tp_weaklist         : PyObject;
                  tp_del              : PyDestructor;
 {$ENDIF}
+{$IFDEF PYTHON26}
+                 tp_version_tag      : Cardinal; //Type attribute cache version tag
+{$ENDIF}
       end;
 
 const
@@ -420,36 +426,46 @@ const
  //   1009 for Python 2.0?
  //   1010 for Python 2.1a2 (and probably 2.1 as well)
  //   1011 for Python 2.2
- //   1012 for Python 2.3 (and 2.4?)
- //   1013 for Python 2.5
- //FIXME:   1013 or 1014 for Python 2.6?
+ //   1012 for Python 2.3 and 2.4
+ //   1013 for Python 2.5 and 2.6?
  // Version info from here: http://svn.python.org/view/python/trunk/Include/modsupport.h
+{$IFDEF PYTHON26}
+ PYTHON_API_VERSION = 1013;
+{$ELSE}
+
+{$IFDEF PYTHON25}
+ PYTHON_API_VERSION = 1013;
+{$ELSE}
+
+{$IFDEF PYTHON24}
+ PYTHON_API_VERSION = 1012;
+{$ELSE}
+
+{$IFDEF PYTHON23}
+ PYTHON_API_VERSION = 1012;
+{$ELSE}
+
+{$IFDEF PYTHON22}
+ PYTHON_API_VERSION = 1011;
+{$ELSE}
+
+{$IFDEF PYTHON21}
+ PYTHON_API_VERSION = 1010;
+{$ELSE}
+
 {$IFDEF PYTHON20}
  PYTHON_API_VERSION = 1009;
 {$ELSE}
- {$IFDEF PYTHON21}
-  PYTHON_API_VERSION = 1010;
- {$ELSE}
-  {$IFDEF PYTHON22}
-   PYTHON_API_VERSION = 1011;
-  {$ELSE}
-   {$IFDEF PYTHON23}
-    PYTHON_API_VERSION = 1012;
-   {$ELSE}
-    {$IFDEF PYTHON24}
-     PYTHON_API_VERSION = 1012;
-    {$ELSE}
-     {$IFDEF PYTHON25}
-      PYTHON_API_VERSION = 1013;
-     {$ELSE}
-      {$IFDEF PYTHON26}
-       PYTHON_API_VERSION = 1013;
-      {$ENDIF}
-     {$ENDIF}
-    {$ENDIF}
-   {$ENDIF}
-  {$ENDIF}
- {$ENDIF}
+
+//Minimal support version is 2.0!
+ PYTHON_API_VERSION = 1009;
+
+{$ENDIF}
+{$ENDIF}
+{$ENDIF}
+{$ENDIF}
+{$ENDIF}
+{$ENDIF}
 {$ENDIF}
 
 // METH_OLDARGS  = $0000; //Do not use!
