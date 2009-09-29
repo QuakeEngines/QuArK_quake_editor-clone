@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.94  2009/07/15 10:38:10  danielpharos
+Updated website link.
+
 Revision 1.93  2009/07/14 11:29:16  danielpharos
 Added logging of plugin loading.
 
@@ -2567,6 +2570,20 @@ begin
   end;
 end;
 
+function xMdlImpMenuClear(self, args: PyObject) : PyObject; cdecl;
+begin
+  try
+    Result:=Nil;
+    while g_Form1.MdlImportFrom1.Count <> 1 do
+      g_Form1.MdlImportFrom1.Delete(1);
+    g_Form1.mdlimpempty1.visible:=true;
+    Result:=PyNoResult;
+  except
+    EBackToUser;
+    Result:=Nil;
+  end;
+end;
+
 function xEntityMenuItem(self, args: PyObject) : PyObject; cdecl;
 var
  s: PChar;
@@ -3258,7 +3275,7 @@ begin
 end;
 
 const
- MethodTable: array[0..89] of TyMethodDef =
+ MethodTable: array[0..90] of TyMethodDef =
   ((ml_name: 'Setup1';          ml_meth: xSetup1;          ml_flags: METH_VARARGS),
    (ml_name: 'newobj';          ml_meth: xNewObj;          ml_flags: METH_VARARGS),
    (ml_name: 'newfileobj';      ml_meth: xNewFileObj;      ml_flags: METH_VARARGS),
@@ -3331,6 +3348,7 @@ const
    (ml_name: 'helpmenuitem';    ml_meth: xHelpMenuItem;    ml_flags: METH_VARARGS),
    (ml_name: 'entitymenuitem';  ml_meth: xEntityMenuItem;  ml_flags: METH_VARARGS),
    (ml_name: 'mdlimportmenu';   ml_meth: xMdlImpMenuItem;  ml_flags: METH_VARARGS),
+   (ml_name: 'mdlimportmenuclear';   ml_meth: xMdlImpMenuClear;  ml_flags: METH_VARARGS),
    (ml_name: 'htmldoc';         ml_meth: xHTMLDoc;         ml_flags: METH_VARARGS),
    (ml_name: 'needgamefile';    ml_meth: xNeedGameFile;    ml_flags: METH_VARARGS),
    (ml_name: 'externaledit';    ml_meth: xExternalEdit;    ml_flags: METH_VARARGS),

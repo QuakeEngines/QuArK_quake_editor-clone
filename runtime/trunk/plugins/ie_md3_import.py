@@ -1285,6 +1285,44 @@ if quarkx.setupsubset(SS_MODEL, "Options")['IEMaxTagFrames'] == "1":
 else:
     quarkpy.qmdlbase.RegisterMdlImporter(".md3 Quake3 Importer - min. tag frames", ".md3 file", "*.md3", loadmodel, ie_md3_import)
 
+def md3_setupchanged(level):
+    if quarkx.setupsubset(SS_MODEL, "Options")['IEMaxTagFrames'] == "1":
+        NewText = ".md3 Quake3 Importer - max. tag frames"
+        OldText = ".md3 Quake3 Importer - min. tag frames"
+    else:
+        NewText = ".md3 Quake3 Importer - min. tag frames"
+        OldText = ".md3 Quake3 Importer - max. tag frames"
+
+    # Update qmacro lists with the new Importer Text
+    import quarkpy.qmacro
+    itemlist = {}
+    for item in quarkpy.qmacro.mdlimportmenuorder.keys():
+        textlist = []
+        for text in quarkpy.qmacro.mdlimportmenuorder[item]:
+            if text == OldText:
+                textlist = textlist + [NewText]
+            else:
+                textlist = textlist + [text]
+        itemlist[item] = textlist
+    quarkpy.qmacro.mdlimportmenuorder = itemlist
+    itemlist = {}
+    for item in quarkpy.qmacro.mdlimport.keys():
+        if item == OldText:
+            itemlist[NewText] = quarkpy.qmacro.mdlimport[item]
+        else:
+            itemlist[item] = quarkpy.qmacro.mdlimport[item]
+    quarkpy.qmacro.mdlimport = itemlist
+
+    # Update File menu with new text
+    quarkx.mdlimportmenuclear()
+    orderedlist = quarkpy.qmacro.mdlimportmenuorder.keys()
+    orderedlist.sort()
+    for menuindex in orderedlist:
+        for importer in quarkpy.qmacro.mdlimportmenuorder[menuindex]:
+            quarkx.mdlimportmenu(importer)
+
+setupchanged1 = (md3_setupchanged,)
+apply(SetupRoutines.append, setupchanged1)
 
 def dataformname(o):
     "Returns the data form for this type of object 'o' (a model component & others) to use for the Specific/Args page."
@@ -1377,6 +1415,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.14  2009/09/26 03:59:01  cdunde
+# Added option for Model Editor to import-export max or min tag frames.
+#
 # Revision 1.13  2009/09/25 21:58:57  cdunde
 # To bring in extra frames, for a player model, of the torso when the upper model is loaded.
 #
