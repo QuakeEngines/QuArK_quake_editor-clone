@@ -480,8 +480,19 @@ class TagHandle(qhandles.GenericHandle):
 
 
     def extrasmenu(self, editor, view):
+        complist = []
+        for item in editor.layout.explorer.sellist:
+            if item.type == ":mc":
+                complist = complist + [item]
+
+        def add_tag_click(m, self=self, editor=editor, view=view, complist=complist):
+            import mdlmgr
+            mdlmgr.savefacesel = 1
+            addtag(editor, complist, self.pos)
 
         def ShowTags(m, self=self, editor=editor, view=view):
+            import mdlmgr
+            mdlmgr.savefacesel = 1
             quarkx.setupsubset(SS_MODEL, "Options")['HideTags'] = None
             ST1.state = qmenu.disabled
             HT1.state = qmenu.normal
@@ -489,13 +500,22 @@ class TagHandle(qhandles.GenericHandle):
             editor.layout.explorer.invalidate()
 
         def HideTags(m, self=self, editor=editor, view=view):
+            import mdlmgr
+            mdlmgr.savefacesel = 1
             quarkx.setupsubset(SS_MODEL, "Options")['HideTags'] = "1"
             ST1.state = qmenu.normal
             HT1.state = qmenu.disabled
             mdlutils.Update_Editor_Views(editor)
             editor.layout.explorer.invalidate()
+
+        AddTag = qmenu.item("&Add Tag Here", add_tag_click, "|Add Tag Here:\n\nYou must select one or more components to use this function.\n\nThis will add a single tag to the 'Misc' group.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.editelements.html#tags")
         ST1 = qmenu.item("&Show Tags", ShowTags, "|Show Tags:\n\nThis allows all tags to be displayed in the editor's views.|intro.modeleditor.editelements.html#tags")
         HT1 = qmenu.item("&Hide Tags", HideTags, "|Hide Tags:\n\nThis stops all tags from being displayed in the editor's views.|intro.modeleditor.editelements.html#tags")
+
+        AddTag.state = qmenu.disabled
+
+        if len(complist) != 0:
+            AddTag.state = qmenu.normal
 
         if quarkx.setupsubset(SS_MODEL, "Options")['HideTags'] is not None:
             ST1.state = qmenu.normal
@@ -504,27 +524,58 @@ class TagHandle(qhandles.GenericHandle):
             ST1.state = qmenu.disabled
             HT1.state = qmenu.normal
 
-        menu = [ST1, HT1]
+        menu = [AddTag, qmenu.sep, ST1, HT1]
 
         return menu
 
 
     def menu(self, editor, view):
 
-        def force_to_grid_click(m, self=self, editor=editor, view=view):
-            self.Action(editor, self.pos, self.pos, MB_CTRL, view, Strings[560])
+        def select_tag_click(m, self=self, editor=editor, view=view):
+            # self.tagframe = first tag frame, self.tagframe.parent = the tag itself.
+            import mdlmgr
+            mdlmgr.savefacesel = 1
+            editor.layout.explorer.sellist = [self.tagframe.parent] + editor.layout.explorer.sellist
+            editor.layout.explorer.expand(self.tagframe.parent.parent)
 
         def hide_this_tag_click(m, self=self, editor=editor, view=view):
+            import mdlmgr
+            mdlmgr.savefacesel = 1
             self.tagframe.parent['show'] = (0.0,)
             mdlutils.Update_Editor_Views(editor)
             editor.layout.explorer.invalidate()
 
-        Forcetogrid = qmenu.item("&Force to grid", force_to_grid_click,"|Force to grid:\n\nThis will cause a tag to 'snap' to the nearest location on the editor's grid for the view that the RMB click was made in.|intro.modeleditor.rmbmenus.html#bonecommands")
-        m = qmenu.item
-        m.editor = editor
-        HTT = qmenu.item("&Hide this tag", hide_this_tag_click)
+        def force_to_grid_click(m, self=self, editor=editor, view=view):
+            import mdlmgr
+            mdlmgr.savefacesel = 1
+            gridpos = qhandles.aligntogrid(self.pos, 1)
+            undo = quarkx.action()
+            movediff = gridpos - self.pos
+            old_tag = self.tagframe.parent
+            new_tag = old_tag.copy()
+            tag_frames = new_tag.subitems # Get all its tag frames.
+            for frame in tag_frames:
+                new_frame = frame.copy()
+                new_frame['origin'] = (quarkx.vect(new_frame.dictspec['origin']) + movediff).tuple
+                undo.exchange(frame, new_frame)
+            undo.exchange(old_tag, new_tag)
+            self.editor.ok(undo, new_tag.shortname + ' snapped to grid')
 
-        menu = [HTT, qmenu.sep, Forcetogrid]
+        def delete_tag_click(m, self=self, editor=editor, view=view):
+            import mdlmgr
+            mdlmgr.savefacesel = 1
+            deletetag(editor, self.tagframe.parent)
+
+        SelectTag = qmenu.item("&Select this tag", select_tag_click, "|Select this tag:This will select the single tag clicked on.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.editelements.html#tags")
+        HTT = qmenu.item("&Hide this tag", hide_this_tag_click)
+        Forcetogrid = qmenu.item("&Force to grid", force_to_grid_click,"|Force to grid:\n\nThis will cause a tag or tag frame to 'snap' to the nearest location on the editor's grid and change all of its other tag frames accordingly.\n\nIf a tag frame is not selected then the first tag frame will be used.|intro.modeleditor.rmbmenus.html#bonecommands")
+        DeleteTag = qmenu.item("&Delete this tag", delete_tag_click, "|Delete this tag:This will delete the single tag clicked on and its tag frames from the 'Misc' group and all components it belongs to.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.editelements.html#tags")
+
+        Forcetogrid.state = qmenu.disabled
+        if editor.gridstep:
+            Forcetogrid.state = qmenu.normal
+
+        menu = [SelectTag, qmenu.sep, HTT, qmenu.sep, Forcetogrid, qmenu.sep, DeleteTag]
 
         return menu
 
@@ -566,6 +617,57 @@ class TagHandle(qhandles.GenericHandle):
         if self.pos.visible:
             point = view.proj(self.pos)
             cv.draw(icon, int(point.x-7), int(point.y-7))
+
+
+    def drag(self, v1, v2, flags, view):
+        editor = mapeditor()
+        p0 = view.proj(self.pos)
+
+        if not p0.visible: return
+        view.repaint()
+        if flags&MB_CTRL:
+            v2 = qhandles.aligntogrid(v2, 0)
+            plugins.mdlgridscale.gridfinishdrawing(editor, view)
+        pv2 = view.proj(v2)        ### v2 is the SINGLE handle's (being dragged) 3D position (x,y and z in space).
+                                   ### And this converts its 3D position to the monitor's FLAT screen 2D and 3D views
+                                   ### 2D (x,y) position to draw it, (NOTICE >) using the 3D "y" and "z" position values.
+        delta = v2-v1
+        if editor is not None:
+            if editor.lock_x==1:
+                delta = quarkx.vect(0, delta.y, delta.z)
+            if editor.lock_y==1:
+                delta = quarkx.vect(delta.x, 0, delta.z)
+            if editor.lock_z==1:
+                delta = quarkx.vect(delta.x, delta.y, 0)
+
+        if view.info["viewname"] == "XY":
+            s = "was " + ftoss(self.pos.x) + " " + ftoss(self.pos.y) + " now " + ftoss(self.pos.x+delta.x) + " " + ftoss(self.pos.y+delta.y)
+        elif view.info["viewname"] == "XZ":
+            s = "was " + ftoss(self.pos.x) + " " + ftoss(self.pos.z) + " now " + ftoss(self.pos.x+delta.x) + " " + " " + ftoss(self.pos.z+delta.z)
+        elif view.info["viewname"] == "YZ":
+            s = "was " + ftoss(self.pos.y) + " " + ftoss(self.pos.z) + " now " + ftoss(self.pos.y+delta.y) + " " + ftoss(self.pos.z+delta.z)
+        else:
+            s = "was %s"%self.pos + " now " + ftoss(self.pos.x+delta.x) + " " + ftoss(self.pos.y+delta.y) + " " + ftoss(self.pos.z+delta.z)
+        self.draghint = s
+
+        new_tagframe = self.tagframe.copy()
+        new_tagframe['origin'] = (self.pos + delta).tuple
+        cv = view.canvas()
+        icon = ico_dict['ico_objects'][1][46]
+        cv.draw(icon, int(pv2.x-7), int(pv2.y-7))
+
+        return [self.tagframe], [new_tagframe]
+
+
+    def ok(self, editor, undo, old_tagframe_list, new_tagframe_list): # x_tagframe_list only contains the single tag_frame whos tag handle was being dragged.
+        movediff = quarkx.vect(new_tagframe_list[0].dictspec['origin']) - quarkx.vect(old_tagframe_list[0].dictspec['origin'])
+        for tag_frame in new_tagframe_list[0].parent.subitems:
+            if tag_frame.name == new_tagframe_list[0].name:
+                continue
+            new_tag_frame = tag_frame.copy()
+            new_tag_frame['origin'] = (quarkx.vect(tag_frame.dictspec['origin']) + movediff).tuple
+            undo.exchange(tag_frame, new_tag_frame)
+        editor.ok(undo, self.undomsg)
 
 
 
@@ -5158,6 +5260,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.185  2009/09/07 06:46:24  cdunde
+#Update for Linear and tag handle drawing.
+#
 #Revision 1.184  2009/09/07 01:38:45  cdunde
 #Setup of tag menus and icons.
 #

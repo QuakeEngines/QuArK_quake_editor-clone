@@ -3137,6 +3137,190 @@ def PassEditorSel2Skin(editor, option=1):
 
 ###############################
 #
+# Tag & Tag Frame functions
+#
+###############################
+
+
+#
+# This function adds a :tag object to the Misc group at position pos for each selected component in the complist.
+#
+def addtag(editor, complist, pos):
+    comp_FramesGroup = complist[len(complist)-1].dictitems['Frames:fg']
+    comp_frames = comp_FramesGroup.subitems
+    if len(complist) > 1:
+        for comp in complist:
+            if len(comp.dictitems['Frames:fg'].subitems) != len(comp_frames):
+                quarkx.beep() # Makes the computer "Beep" once .
+                quarkx.msgbox("FRAME COUNT ERROR !\n\nNot all components selected for this\ntag have the same number of frames.\n\nCorrect and try again.", MT_ERROR, MB_OK)
+                return
+    keys = comp_FramesGroup.dictitems.keys()
+    for key in range(len(keys)):
+        if keys[key] == "Base Frame:mf":
+            break
+        if key == len(keys)-1:
+            quarkx.beep() # Makes the computer "Beep" once .
+            quarkx.msgbox("No 'Base Frame' !\n\nTo use tags you must have a frame named:\n    Base Frame\nthat is the base position of each selected component.\n\nIt is best to have them as the last frame\nand each selected component\nmust have the same number of frames.\n\nCorrect and try again.", MT_ERROR, MB_OK)
+            return
+    name = None
+    comparenbr = 0
+    miscgroup = editor.Root.dictitems['Misc:mg']   # get the misc group
+    tags = miscgroup.findallsubitems("", ':tag')   # get all tags
+    compname = complist[len(complist)-1].name
+    compbasename = complist[len(complist)-1].shortname
+    compbasename = compbasename.split("_")[0]
+    for item in tags:
+        if item.shortname.startswith(compbasename + '_tag_NewTag'):
+            getnbr = item.shortname
+            getnbr = getnbr.split('_tag_NewTag')[1]
+            if getnbr == "":
+                nbr = 0
+            else:
+                nbr = int(getnbr)
+            if nbr > comparenbr:
+                comparenbr = nbr
+            nbr = comparenbr + 1
+            name = compbasename + "_tag_NewTag" + str(nbr)
+    if name is None:
+        name = compbasename + "_tag_NewTag1"
+    # First we make the tag.
+    new_tag = quarkx.newobj(name + ":tag")
+    new_tag['Component'] = compname
+    new_tag['show'] = (1.0,)
+    # Now we make its tag_frames.
+    baseframe = comp_FramesGroup.dictitems['Base Frame:mf']
+    if len(comp_frames) == 1:
+        tagframe = quarkx.newobj('Tag Base Frame:tagframe')
+        tagframe['origin'] = pos.tuple
+        if baseframe.dictspec.has_key('rotmatrix'):
+            tagframe['rotmatrix'] = baseframe.dictspec['rotmatrix']
+        else:
+            tagframe['rotmatrix'] = (1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0)
+        tagframe['show'] = (1.0,)
+        new_tag.appenditem(tagframe)
+    else:
+        vertices = baseframe.vertices
+        vtxpos = quarkx.vect(0, 0, 0)
+        for vtx in range(len(vertices)):
+            vtxpos = vtxpos + vertices[vtx]
+        vtx_center_pos = vtxpos/ float(len(vertices))
+        offset = pos - vtx_center_pos
+        for frame in range(len(comp_frames)):
+            vertices = comp_frames[frame].vertices
+            vtxpos = quarkx.vect(0, 0, 0)
+            for vtx in range(len(vertices)):
+                vtxpos = vtxpos + vertices[vtx]
+            vtx_center_pos = vtxpos/ float(len(vertices))
+            if frame == len(comp_frames)-1:
+                tagframe = quarkx.newobj('Tag Base Frame:tagframe')
+            else:
+                tagframe = quarkx.newobj('Tag Frame ' + str(frame+1) + ':tagframe')
+            tagframe['origin'] = (vtx_center_pos + offset).tuple
+            if comp_frames[frame].dictspec.has_key('rotmatrix'):
+                tagframe['rotmatrix'] = comp_frames[frame].dictspec['rotmatrix']
+            else:
+                tagframe['rotmatrix'] = (1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0)
+            tagframe['show'] = (1.0,)
+            new_tag.appenditem(tagframe)
+
+    # Now we update the components.
+    undo = quarkx.action()
+    for comp in complist:
+        new_comp = comp.copy()
+        if new_comp.dictspec.has_key("tag_components"):
+            tag_comps_list = new_comp.dictspec['tag_components'].split(", ")
+            for comp2 in complist:
+                if comp2.name in tag_comps_list:
+                    continue
+                else:
+                    tag_comps_list = tag_comps_list + [comp2.name]
+            for comp2 in range(len(tag_comps_list)):
+                if comp2 == 0:
+                    new_comp['tag_components'] = tag_comps_list[comp2]
+                else:
+                    new_comp['tag_components'] = new_comp.dictspec['tag_components'] + ", " + tag_comps_list[comp2]
+        else:
+            for comp2 in range(len(complist)):
+                if comp2 == 0:
+                    new_comp['tag_components'] = complist[comp2].name
+                else:
+                    new_comp['tag_components'] = new_comp.dictspec['tag_components'] + ", " + complist[comp2].name
+        if new_comp.name == complist[len(complist)-1].name:
+            new_tagname = new_tag.shortname.split(compbasename + "_")[1]
+            if new_comp.dictspec.has_key("Tags"):
+                Tags_list = new_comp.dictspec['Tags'].split(", ")
+                if new_tagname in Tags_list:
+                    pass
+                else:
+                    Tags_list = Tags_list + [new_tagname]
+                    for Tag in range(len(Tags_list)):
+                        if Tag == 0:
+                            new_comp['Tags'] = Tags_list[Tag]
+                        else:
+                            new_comp['Tags'] = new_comp.dictspec['Tags'] + ", " + Tags_list[Tag]
+            else:
+                new_comp['Tags'] = new_tagname
+        undo.exchange(comp, new_comp)
+
+    undo.put(miscgroup, new_tag)
+    editor.ok(undo, "added tag - " + new_tag.shortname)
+
+
+#
+# This function will delete a single tag and its tag frames from the 'Misc' group and all components it belongs to.
+#
+def deletetag(editor, tag_to_del):
+    undo = quarkx.action()
+    deltag = tag_to_del.name.replace(":tag", "")
+    deltag = deltag.split("_tag_")
+    deltagfile = deltag[0]
+    deltagname = "tag_" + deltag[1]
+    comps = editor.Root.findallsubitems("", ':mc')   # find all components
+    for comp in comps:
+        if comp.dictspec.has_key('Tags') and comp.name.startswith(deltagfile):
+            checktags = comp.dictspec['Tags'].split(", ")
+            if deltagname in checktags:
+                newcomp = comp.copy()
+                oldtags = newcomp.dictspec['Tags'].split(", ")
+                newtags = ""
+                count = 0
+                for tag in oldtags:
+                    if count == 0 and tag != deltagname:
+                        newtags = tag
+                        count = 1
+                    elif tag != deltagname:
+                        newtags = newtags + ", " + tag
+                newcomp['Tags'] = newtags
+                if len(newtags) == 0:
+                    tag_components = comp.dictspec['tag_components'].split(", ")
+                    for comp2 in tag_components:
+                        if comp2 == comp.name:
+                            continue
+                        old_comp2 = editor.Root.dictitems[comp2]
+                        new_comp2 = old_comp2.copy()
+                        tag_components2 = new_comp2.dictspec['tag_components'].split(", ")
+                        new_tag_components2 = ""
+                        count = 0
+                        for comp_name2 in tag_components2:
+                            if comp_name2 in tag_components:
+                                continue
+                            else:
+                                if count == 0:
+                                    new_tag_components2 = comp_name2
+                                    count = 1
+                                else:
+                                    new_tag_components2 = new_tag_components2 + ", " + comp_name2
+                        new_comp2['tag_components'] = new_tag_components2
+                        undo.exchange(old_comp2, new_comp2)
+                    newcomp['tag_components'] = ""
+                undo.exchange(comp, newcomp)
+    undo.exchange(tag_to_del, None)
+    editor.ok(undo, "tag deleted")
+
+
+
+###############################
+#
 # Texture handling functions
 #
 ###############################
@@ -3822,6 +4006,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.114  2009/08/24 23:39:20  cdunde
+#Added support for multiple bone sets for imported models and their animations.
+#
 #Revision 1.113  2009/08/18 23:21:36  cdunde
 #To increase Rebuild_Bone function processing speed.
 #

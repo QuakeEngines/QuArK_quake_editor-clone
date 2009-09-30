@@ -1021,7 +1021,8 @@ class RedImageDragObject(DragObject):
             editor = mdleditor.mdleditor
             import mdlhandles
             ### Stops Model Editor Vertex drag handles from drawing if not returned.
-            if isinstance(editor.dragobject.handle, mdlhandles.VertexHandle):
+            ### Also fixes a Ctrl snap to grid drag from breaking.
+            if isinstance(editor.dragobject.handle, mdlhandles.VertexHandle) or isinstance(editor.dragobject.handle, mdlhandles.TagHandle):
                 return
             ### Stops Model Editor Linear drag handles from drawing the model's MESH incorrectly (in miniature) in the Skin-view
             ### and stops Model Editor Linear drag handles from drawing redline drag objects incorrectly.
@@ -2214,6 +2215,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.88  2009/08/31 08:52:16  cdunde
+#To try and stop errors from opening the Model Editor Skin-view for the first time.
+#
 #Revision 1.87  2009/08/11 01:03:09  cdunde
 #To stop involuntary and unwanted zoom jumps in the model editor.
 #

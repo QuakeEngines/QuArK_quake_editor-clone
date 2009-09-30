@@ -1330,13 +1330,14 @@ class ModelLayout(BaseLayout):
         global savedskins, savefacesel
         from qbaseeditor import currentview, flagsmouse
 
-        # This section preserves, and passes on, data in the ModelComponentList (if any) when a component is renamed.
         changednames = quarkx.getchangednames()
         if changednames is not None:
+            # This section deals with a component's name change.
             if changednames[0][0].endswith(":mc"):
                 undo = quarkx.action()
                 undo_msg = "USE UNDO BELOW - " + changednames[0][1].replace(":mc", "") + " data updated"
 
+                # This section preserves, and passes on, data in the ModelComponentList (if any) when a component is renamed.
                 tempdata = self.editor.ModelComponentList['tristodraw'][changednames[0][0]]
                 del self.editor.ModelComponentList['tristodraw'][changednames[0][0]]
                 self.editor.ModelComponentList['tristodraw'][changednames[0][1]] = tempdata
@@ -1346,6 +1347,7 @@ class ModelLayout(BaseLayout):
                     del self.editor.ModelComponentList[changednames[0][0]]
                     self.editor.ModelComponentList[changednames[0][1]] = tempdata
 
+                # This section preserves, and passes on, data to the Bones (if any) when a component is renamed.
                 if len(self.editor.Root.dictitems['Skeleton:bg'].subitems) != 0:
                     oldskelgroup = self.editor.Root.dictitems['Skeleton:bg']
                     old = oldskelgroup.findallsubitems("", ':bone') # Get all bones in the old group.
@@ -1373,6 +1375,81 @@ class ModelLayout(BaseLayout):
                         bone.vtx_pos = tempdata
                     newskelgroup = boneundo(self.editor, old, new)
                     undo.exchange(oldskelgroup, newskelgroup)
+
+                # This section preserves, and passes on, data to the Misc tags and updates the component's
+                # and other needed component's dictspec['tag_components'] (if any) when a component is renamed.
+                if comp.dictspec.has_key("tag_components"):
+                    tempdata = ""
+                    oldlist = comp.dictspec['tag_components'].split(", ")
+                    # First update the components.
+                    for oldname in range(len(oldlist)):
+                        if oldname == 0:
+                            if oldlist[oldname] == changednames[0][0]:
+                                tempdata = changednames[0][1]
+                            else:
+                                tempdata = oldlist[oldname]
+                                oldcomp = self.editor.Root.dictitems[oldlist[oldname]]
+                                newcomp = oldcomp.copy()
+                                tempdata2 = ""
+                                oldlist2 = newcomp.dictspec['tag_components'].split(", ")
+                                for oldname2 in range(len(oldlist2)):
+                                    if oldname2 == 0:
+                                        if oldlist2[oldname2] == changednames[0][0]:
+                                            tempdata2 = changednames[0][1]
+                                        else:
+                                            tempdata2 = oldlist2[oldname2]
+                                    else:
+                                        if oldlist2[oldname2] == changednames[0][0]:
+                                            tempdata2 = tempdata2 + ", " + changednames[0][1]
+                                        else:
+                                            tempdata2 = tempdata2 + ", " + oldlist2[oldname2]
+                                newcomp['tag_components'] = tempdata2
+                                undo.exchange(oldcomp, newcomp)
+                        else:
+                            if oldlist[oldname] == changednames[0][0]:
+                                tempdata = tempdata + ", " + changednames[0][1]
+                            else:
+                                tempdata = tempdata + ", " + oldlist[oldname]
+                                oldcomp = self.editor.Root.dictitems[oldlist[oldname]]
+                                newcomp = oldcomp.copy()
+                                tempdata2 = ""
+                                oldlist2 = newcomp.dictspec['tag_components'].split(", ")
+                                for oldname2 in range(len(oldlist2)):
+                                    if oldname2 == 0:
+                                        if oldlist2[oldname2] == changednames[0][0]:
+                                            tempdata2 = changednames[0][1]
+                                        else:
+                                            tempdata2 = oldlist2[oldname2]
+                                    else:
+                                        if oldlist2[oldname2] == changednames[0][0]:
+                                            tempdata2 = tempdata2 + ", " + changednames[0][1]
+                                        else:
+                                            tempdata2 = tempdata2 + ", " + oldlist2[oldname2]
+                                newcomp['tag_components'] = tempdata2
+                                undo.exchange(oldcomp, newcomp)
+                    newcomp = comp.copy()
+                    newcomp['tag_components'] = tempdata
+                    undo.exchange(comp, newcomp)
+
+                    # Now update the tags.
+                    oldcomp = changednames[0][0].replace(":mc", "")
+                    oldcomp = oldcomp.split("_")
+                    oldcompfile = oldcomp[0]
+                    newcomp = changednames[0][1].replace(":mc", "")
+                    newcomp = newcomp.split("_")
+                    newcompfile = newcomp[0]
+                    found_tag = None
+                    tags = self.editor.Root.findallsubitems("", ':tag')   # find all tags
+                    for tag in tags:
+                        if tag.name.startswith(newcompfile):
+                            found_tag = 1
+                        if tag.dictspec.has_key('Component') and tag.dictspec['Component'] == changednames[0][0]:
+                            newtag = tag.copy()
+                            newtag['Component'] = changednames[0][1]
+                            undo.exchange(tag, newtag)
+                    if found_tag is None:
+                        quarkx.beep()
+                        quarkx.msgbox("Invalid Component Name\n\nNo tags start with the group name\n    " + newcompfile + "\n\nAll components and tags group names (1st part) must match\nThe tags with a name that starts with\n    " + oldcompfile + "\nhave been updated with this new component name.\n\nYou need to rename all other components\nand tags that this component belongs to\nor 'undo' this component's name change.", MT_ERROR, MB_OK)
 
                 self.editor.ok(undo, undo_msg)
 
@@ -1477,14 +1554,71 @@ class ModelLayout(BaseLayout):
 
 
     def selectcgroup(self, group):
-        "This is when you select a particular item of a component group 'Skins', 'Frames' or 'Skeleton' in the Tree-view."
+        # This is when you select a particular item of a component's 'Skins:sg' or 'Frames:fg' group in the Tree-view
+        # or when you select the 'Skeleton:bg' group in the Tree-view.
 
         comp = self.componentof(group)
         if comp is not None:
           self.selectcomponent(comp)
 
+    def selecttag(self, tag):
+        # This is when you select a particular tag(s) in the 'Misc:mg' group of the Tree-view.
+
+        changednames = quarkx.getchangednames()
+        if changednames is not None:
+            # This section deals with a tag's name change.
+            if changednames[0][0].endswith(":tag"):
+                undo = quarkx.action()
+                undo_msg = "USE UNDO BELOW - " + changednames[0][1].replace(":tag", "") + " data updated"
+                oldtag = changednames[0][0].replace(":tag", "")
+                oldtag = oldtag.split("_tag_")
+                oldtagfile = oldtag[0]
+                oldtagname = "tag_" + oldtag[1]
+                newtag = changednames[0][1].replace(":tag", "")
+                newtag = newtag.split("_tag_")
+                newtagfile = newtag[0]
+                try:
+                    newtagname = "tag_" + newtag[1]
+                except:
+                    quarkx.beep()
+                    quarkx.msgbox("Invalid Tag Name\n\nA tag name must consist of 3 parts.\n    1) A group name (1st part) of its component's name.\n    2) A tag indicator '_tag_'.\n    3) The tag name, ex: 'head', 'weapon'...\n\nA correction for this name change has been attempted.\nPlease verify if it is correct.", MT_ERROR, MB_OK)
+                    namefix = changednames[0][1].replace(":tag", "")
+                    namefix = namefix.split("_")
+                    newtagfile = namefix[0]
+                    newtagname = "tag_" + namefix[len(namefix)-1]
+                    tag.shortname = newtagfile + "_" + newtagname
+                found_tag_comp = None
+                comps = self.editor.Root.findallsubitems("", ':mc')   # find all components
+                for comp in comps:
+                    if comp.dictspec.has_key('Tags') and (comp.name.startswith(oldtagfile) or comp.name.startswith(newtagfile)):
+                        if comp.name.startswith(newtagfile):
+                            found_tag_comp = 1
+                        checktags = comp.dictspec['Tags'].split(", ")
+                        if oldtagname in checktags:
+                            newcomp = comp.copy()
+                            oldtags = newcomp.dictspec['Tags'].split(", ")
+                            for tag in range(len(oldtags)):
+                                if tag == 0:
+                                    if oldtags[tag] == oldtagname:
+                                        newtags = newtagname
+                                    else:
+                                        newtags = oldtags[tag]
+                                else:
+                                    if oldtags[tag] == oldtagname:
+                                        newtags = newtags + ", " + newtagname
+                                    else:
+                                        newtags = newtags + ", " + oldtags[tag]
+                            newcomp['Tags'] = newtags
+                            undo.exchange(comp, newcomp)
+                if found_tag_comp is None:
+                    quarkx.beep()
+                    quarkx.msgbox("Invalid Tag Name\n\nNo components start with the group name\n    " + newtagfile + "\n\nAll components and tags group names (1st part) must match\nThe components with a name that starts with\n    " + oldtagfile + "\nhave been updated with this new tag name.\n\nYou need to rename all other components\nand tags that this tag belongs to\nor 'undo' this tag's name change.", MT_ERROR, MB_OK)
+
+                self.editor.ok(undo, undo_msg)
+
+
     def selectbone(self, bone):
-        "This is when you select a particular bone(s) in the 'Skeleton' group of the Tree-view."
+        # This is when you select a particular bone(s) in the 'Skeleton:bg' group of the Tree-view.
 
         changednames = quarkx.getchangednames()
         if changednames is not None:
@@ -1515,15 +1649,6 @@ class ModelLayout(BaseLayout):
             self.editor.ok(undo, undo_msg)
 
 
-    def selectframe(self, frame):
-        "This is when you select a particular frame in the 'Frames' group of the Tree-view."
-
-        c = self.componentof(frame)
-        if c is not None:
-            self.selectcomponent(c)
-            c.setframe(frame)
-            c.setparentframes(frame)
-
     def selectskin(self, skin):
         "This is when you select a particular skin in the 'Skins' group of the Tree-view."
         global saveskin, savedskins
@@ -1547,9 +1672,21 @@ class ModelLayout(BaseLayout):
             self.selectcomponent(c)
 
 
+    def selectframe(self, frame):
+        # This is when you select a Component's particular
+        #ANIMATION frame in its 'Frames' group of the Tree-view.
+
+        c = self.componentof(frame)
+        if c is not None:
+            self.selectcomponent(c)
+            c.setframe(frame)
+            c.setparentframes(frame)
+
+
     def selchange(self):
         "This calls for what ever selection def you are using above."
-        global treeviewselchanged
+        global treeviewselchanged, savefacesel
+
 
         # Checks to see if the dictspec item exist, if so clears all other bones of it and related items for proper bone weights system use.
         skeletongroup = self.editor.Root.dictitems['Skeleton:bg']  # get the bones group
@@ -1594,34 +1731,40 @@ class ModelLayout(BaseLayout):
         self.makesettingclick(menuitem) # Updates the Specifics/Args page correctly.
         if fs is not None:
             treeviewselchanged = 1
-            if fs.type == ':mf':       # frame
-                self.selectframe(fs)
-            elif fs.type == ':fg':     # frame group
+            if fs.type == ':tag':      # An individual tag in the 'Misc:mg' miscellaneous group.
+                self.selecttag(fs)
+            elif fs.type == ':bg':     # The 'Skeleton:bg' bone group.
                 self.selectcgroup(fs)
-            elif fs.type == ':sg':     # skin group
-                self.selectcgroup(fs)
-            elif fs.type == ':bone':   # individual bone
+            elif fs.type == ':bone':   # An individual bone in the 'Skeleton:bg' bone group.
                 self.selectbone(fs)
-            elif fs.type == ':bg':     # bone group
-                self.selectcgroup(fs)
-            elif fs.type == ':mc':     # component
+            elif fs.type == ':mc':     # A particular component.
                 self.selectcomponent(fs)
-            elif fs.type == '.pcx':    # skin
+            elif fs.type == ':sg':     # A component's skin group.
+                self.selectcgroup(fs)
+            elif fs.type == '.pcx':    # A skin in a component's 'Skins:sg' skins group.
                 self.selectskin(fs)
-            elif fs.type == '.tga':    # skin
+            elif fs.type == '.tga':    # A skin in a component's 'Skins:sg' skins group.
                 self.selectskin(fs)
-            elif fs.type == '.dds':    # skin
+            elif fs.type == '.dds':    # A skin in a component's 'Skins:sg' skins group.
                 self.selectskin(fs)
-            elif fs.type == '.png':    # skin
+            elif fs.type == '.png':    # A skin in a component's 'Skins:sg' skins group.
                 self.selectskin(fs)
-            elif fs.type == '.jpg':    # skin
+            elif fs.type == '.jpg':    # A skin in a component's 'Skins:sg' skins group.
                 self.selectskin(fs)
-            elif fs.type == '.bmp':    # skin
+            elif fs.type == '.bmp':    # A skin in a component's 'Skins:sg' skins group.
                 self.selectskin(fs)
+            elif fs.type == ':fg':     # A component's frame group.
+                self.selectcgroup(fs)
+            elif fs.type == ':mf':     # A component's animation frame.
+                self.selectframe(fs)
             else:
                 self.editor.ModelVertexSelList = []
                 self.editor.SkinVertexSelList = []
-                self.editor.ModelFaceSelList = []
+                if savefacesel == 1:
+                    savefacesel = 0
+                else:
+                    savefacesel = 0
+                    self.editor.ModelFaceSelList = []
                 self.editor.EditorObjectList = []
                 self.editor.SkinFaceSelList = []
                 self.editor.SelCommonTriangles = []
@@ -1667,6 +1810,10 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.109  2009/09/26 08:35:50  cdunde
+#Setup tag movement using its Specifics page 'origin'
+#setting and updating of all its tag_frames.
+#
 #Revision 1.108  2009/09/24 06:46:02  cdunde
 #md3 rotation update, baseframe creation and proper connection of weapon tags.
 #

@@ -141,6 +141,111 @@ def HideComp(m):
 
 ###############################
 #
+# Menu Module
+#
+###############################
+
+# This module allows you to switch menu text when an option is changed.
+
+#---
+
+# More precise/technical:
+# This module allows you to change the name/text of importers and exporters displayed in the menus.
+
+# Call the appropriate RegisterMenu*Changed function to register your im-/exporter. The first and only parameter, TextProc,
+# is a function that must return the old text and new text of the menuitem. Example: "return OldText, NewText"
+# This text can depend on the loaded setup settings, so you can use quarkx.setupsubset(*) to determine the right text.
+# Any menuitems with the OldText will then automatically be changed into NewText whenever the setup is changed.
+
+ImpMenuProcs = [] #List of registered TextProcs of importers
+#Register a TextProc for an importer
+def RegisterMenuImporterChanged(TextProc):
+    ImpMenuProcs.append(TextProc)
+
+ExpMenuProcs = [] #List of registered TextProcs of exporters
+#Register a TextProc for an exporter
+def RegisterMenuExporterChanged(TextProc):
+    ExpMenuProcs.append(TextProc)
+
+#Don't call this directly! This is where the magic happens...
+def menu_setupchanged(level):
+    import mdleditor
+    import qmacro
+    import quarkx
+    editor = mdleditor.mdleditor
+
+    # Do the importers
+    if len(ImpMenuProcs) <> 0:
+        new_mdlimport = {}
+        for item in qmacro.mdlimport.keys():
+            new_mdlimport[item] = qmacro.mdlimport[item]
+        new_mdlimportmenuorder = {}
+        for item in qmacro.mdlimportmenuorder.keys():
+            new_mdlimportmenuorder[item] = qmacro.mdlimportmenuorder[item]
+        for TextProc in ImpMenuProcs:
+            OldText, NewText = TextProc()
+
+            # Update qmacro lists with the new Importer Text
+            for item in new_mdlimportmenuorder.keys():
+                textlist = []
+                for text in new_mdlimportmenuorder[item]:
+                    if text == OldText:
+                        textlist = textlist + [NewText]
+                    else:
+                        textlist = textlist + [text]
+                new_mdlimportmenuorder[item] = textlist
+            for item in new_mdlimport.keys():
+                if item == OldText:
+                    new_mdlimport[NewText] = new_mdlimport[OldText]
+                    del new_mdlimport[OldText]
+            qmacro.mdlimportmenuorder = new_mdlimportmenuorder
+            qmacro.mdlimport = new_mdlimport
+
+        # Update File menu of main window with new text
+        quarkx.mdlimportmenuclear()
+        orderedlist = qmacro.mdlimportmenuorder.keys()
+        orderedlist.sort()
+        for menuindex in orderedlist:
+            for importer in qmacro.mdlimportmenuorder[menuindex]:
+                quarkx.mdlimportmenu(importer)
+
+    # Do the exporters
+    if len(ExpMenuProcs) <> 0:
+        new_mdlexport = {}
+        for item in qmacro.mdlexport.keys():
+            new_mdlexport[item] = qmacro.mdlexport[item]
+        new_mdlexportmenuorder = {}
+        for item in qmacro.mdlexportmenuorder.keys():
+            new_mdlexportmenuorder[item] = qmacro.mdlexportmenuorder[item]
+        for TextProc in ExpMenuProcs:
+            OldText, NewText = TextProc()
+
+            # Update qmacro lists with the new Exporter Text
+            for item in new_mdlexportmenuorder.keys():
+                textlist = []
+                for text in new_mdlexportmenuorder[item]:
+                    if text == OldText:
+                        textlist = textlist + [NewText]
+                    else:
+                        textlist = textlist + [text]
+                new_mdlexportmenuorder[item] = textlist
+            for item in new_mdlexport.keys():
+                if item == OldText:
+                    new_mdlexport[NewText] = new_mdlexport[OldText]
+                    del new_mdlexport[OldText]
+            qmacro.mdlexportmenuorder = new_mdlexportmenuorder
+            qmacro.mdlexport = new_mdlexport
+
+    # Update File menu of the current editor with the new text
+    if editor is not None:
+        editor.initmenu(editor.form)
+
+# This registers the 'magic' function above, so it's called whenever the setup is changed
+setupchanged1 = (menu_setupchanged,)
+apply(SetupRoutines.append, setupchanged1)
+
+###############################
+#
 # Shader Module
 #
 ###############################
@@ -1575,20 +1680,6 @@ class BoundType(EntityManager):
         return formobj
 
 
-# Dialog class used for the selection of available tags to align to.
-class TagSelectionDlg(dlgclasses.LiveEditDlg):
-    # Dialog layout
-    size = (290, 300)
-    dlgflags = qutils.FWF_KEEPFOCUS
-    dfsep = 0.4      # Separation at 40% between labels and edit boxes
-    dlgdef = """ """ # The dialog is created in the setup function to allow self generated items.
-
-    def cancel(self, dlg):
-        # Modified from dlgclasses.py
-        qmacro.dialogbox.close(self, dlg)
-        self.src = None
-
-
 # Has no dictspec items, only subitems and dictitems (TagFrames).
 class TagType(EntityManager):
     "Tag, type = :tag"
@@ -1596,29 +1687,19 @@ class TagType(EntityManager):
     def menu(o, editor):
         import qmenu
 
-        # Matrix for QuArK.
-        ### Taken from source\prog\qmatrices.pas lines 139-141
-        def vector_by_matrix(p, m):
-            x = p[0] * m[0][0] + p[1] * m[0][1] + p[2] * m[0][2]
-            y = p[0] * m[1][0] + p[1] * m[1][1] + p[2] * m[1][2]
-            z = p[0] * m[2][0] + p[1] * m[2][1] + p[2] * m[2][2]
-            return [x, y, z]
-
         def AtachTags(m, editor=editor):
             tag1model = m.tag1.shortname.split(":")[0]
             tag1model = tag1model.split("_tag_")
             tag1name = "tag_" + tag1model[len(tag1model)-1]
             tag1model = tag1model[0]
-            if m.tag2 is not None:
-                tag2model = m.tag2.shortname.split(":")[0]
-                tag2model = tag2model.split("_tag_")
-                tag2name = "tag_" + tag2model[len(tag2model)-1]
-                tag2model = tag2model[0]
-                tagnames = ["tag_head", "tag_torso"]
-                if (tag1model == tag2model) and (tag1name in tagnames or tag2name in tagnames):
-                    quarkx.msgbox("Invalid Selection!\n\nThe model tags can not be\nfrom the same 'player' model.", MT_ERROR, MB_OK)
-                    return
 
+            tag2model = m.tag2.shortname.split(":")[0]
+            tag2model = tag2model.split("_tag_")
+            tag2name = "tag_" + tag2model[len(tag2model)-1]
+            tag2model = tag2model[0]
+
+            # This section connects the tags from two sepperate tag groups, ex: a player model and a weapon.
+            if (tag1model != tag2model):
                 for item in editor.Root.subitems:
                     if item.type == ":mc" and item.name.startswith(tag1model) and item.dictspec.has_key("Tags"):
                         tag1comp = item
@@ -1701,86 +1782,11 @@ class TagType(EntityManager):
                 for i in range(len(new_comps_list)):
                     undo.exchange(attachtag_comps_list[i], new_comps_list[i])
                 editor.ok(undo, "Attach tags")
-
-
             else:
-                for item in editor.Root.subitems:
-                    if item.type == ":mc" and item.name.startswith(tag1model) and item.dictspec.has_key("Tags"):
-                        tag1comp = item
-                        tag1comp_tags = tag1comp.dictspec['Tags'].split(", ")
-                tag1name = tag1model + "_" + tag1name + ":tag"
-                tag1 = editor.Root.dictitems['Misc:mg'].dictitems[tag1name]
+                quarkx.msgbox("Invalid Selection!\n\nThe model tags can not be\nfrom the same 'group' of tags.", MT_ERROR, MB_OK)
+                return
 
-                def tag_selection_click(m=m, editor=editor, tag1=tag1, tag1comp=tag1comp, tag1comp_tags=tag1comp_tags):
-                    global TagList, items
-                    TagList = ""
-                    items = []
-                    values = []
-                    if not tag1.dictspec.has_key("Component"):
-                        quarkx.msgbox("No Tag Match!\n\nA model that uses this tag has not been loaded yet.", MT_ERROR, MB_OK)
-                        return
-                    tag_component = editor.Root.dictitems[tag1.dictspec['Component']]
-                    for tag1 in tag1comp_tags:
-                        items = items + ['"' + tag1.split("_")[1] + '"' + "$0D"]
-                        values = values + ['"' + tag1 + '"' + "$0D"]
-
-                    TagList = """tag_list: = {Typ = "CL" Txt = "Tags list:" items = """
-                    for item in items:
-                        TagList = TagList + item 
-
-                    TagList = TagList + """ values = """
-                    for value in values:
-                        TagList = TagList + value 
-
-                    TagList = TagList + """ Hint="Select the tag from this list"$0D"or use the current one displayed"$0D"to attach the selected tags."}"""
-
-                    # This loads the relevant data into the dialog,
-                    # gets  recalled after changes.
-                    def setup(self, editor=editor):
-                        # Used for cleaned up in onclosing below.
-                        editor.tagselectiondlg = self
-                        # Brings in the globals and applies them to the dialog.
-                        self.items = items
-                        self.TagList = TagList
-                        # Defines the dialog.
-                        self.dlgdef = """
-                        {
-                         Style = "9"
-                         Caption = "Tag Selector"
-
-                         vertices: =
-                            {
-                             Typ = "E"
-                             Txt = "Vertices:"
-                             Hint = "Place a space or comma between each"$0D
-                                    "vertex entered to find more than one."
-                            }
-                          """ + TagList + """
-                         sep: = { Typ="S" Txt=""}
-                         exit:py = {Txt="" }
-                        }
-                        """
-
-                        src = self.src
-                        if src["tag_list"] is None:
-                            tag = editor.layout.explorer.sellist[0].shortname.split("_", 1)
-                            src["tag_list"] = tag[len(tag)-1]
-
-                    # When data is entered, this gets executed.
-                    def action(self, editor=editor):
-                        src = self.src
-
-                    # Cleanup when dialog closes.
-                    def onclosing(self, editor=editor):
-                        del editor.tagselectiondlg
-
-                    # And here's the invocation. 2nd arg is a label
-                    # for storing  position info in setup.qrk.
-                    TagSelectionDlg(quarkx.clickform, 'tag_selector', editor, setup, action, onclosing)
-
-                tag_selection_click()
-
-        attach_tags = qmenu.item("&Attach tags", AtachTags, "|Attach Tags:\n\nWhen one tag is selected, clicking this item will attach the tags within that model.\n\nWhen two tags are selected, clicking this item will attach them creating matching tag frames, based on the one that has the most frames, for animation.|intro.modeleditor.editelements.html#tags")
+        attach_tags = qmenu.item("&Attach tags", AtachTags, "|Attach Tags:\n\nWhen two tags of different groups are selected, clicking this item will attach them creating matching tag frames, based on the one that has the most frames, for animation.|intro.modeleditor.editelements.html#tags")
         STT = qmenu.item("&Show these tags", ShowTheseTags, "|Show these tags:\n\nThis allows the selected tags to be displayed in the editor's views if the function 'Hide Tags' is not active.|intro.modeleditor.editelements.html#tags")
         HTT = qmenu.item("&Hide these tags", HideTheseTags, "|Hide these tags:\n\nThis stops the selected tags from being displayed in the editor's views.|intro.modeleditor.editelements.html#tags")
 
@@ -1791,7 +1797,7 @@ class TagType(EntityManager):
                     attach_tags.tag1 = item
                 else:
                     attach_tags.tag2 = item
-        if attach_tags.tag1 is None:
+        if attach_tags.tag1 is None or attach_tags.tag2 is None:
             attach_tags.state = qmenu.disabled
 
         if not o.dictspec.has_key("show"):
@@ -2456,6 +2462,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.56  2009/09/24 06:46:02  cdunde
+#md3 rotation update, baseframe creation and proper connection of weapon tags.
+#
 #Revision 1.55  2009/09/18 03:21:19  cdunde
 #Setup dialog for selection of tags to attach for .md3 items such as weapons.
 #
