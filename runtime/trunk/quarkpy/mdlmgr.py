@@ -261,6 +261,58 @@ class ModelLayout(BaseLayout):
         import mdleditor
         mdleditor.AnimationCustomFPS(self.editor)
 
+  ### To setup the Animation Toolbar Interpolation IPF (interpolation frames) function.
+    def getIPFmenu(self, ipfbtn):
+        setup = quarkx.setupsubset(self.editor.MODE, "Display")
+        animationIPF = setup["AnimationIPF"]
+        animationipfmenu = []
+        for g in (20,16,12,8,4,2):
+            if g:
+                cap = "ipf \t%s" % g
+            item = qmenu.item(cap, self.animationipfmenuclick)
+            item.animationIPF = g
+            item.state = g==animationIPF[0] and qmenu.radiocheck
+            animationipfmenu.append(item)
+        animationipfmenu.append(qmenu.sep)
+        txt = "&Other...\t%s" % quarkx.ftos(animationIPF[0])
+        animationipfmenu.append(qmenu.item(txt, self.animationipfcustom))
+        return animationipfmenu
+
+    def animationipfmenuclick(self, sender):
+        self.setanimationipf(sender.animationIPF)
+
+    def setanimationipf(self, IPF):
+        if (self.editor.animationIPF == IPF) and (self.editor.animationIPFstep == IPF):
+            return
+        setup = quarkx.setupsubset(self.editor.MODE, "Display")
+        setup["AnimationIPF"] = (IPF,)
+        self.editor.animationIPF = self.editor.animationIPFstep = IPF
+        self.setanimationipfchanged()
+
+    def setanimationipfchanged(self):
+        setup = quarkx.setupsubset(self.editor.MODE, "Display")
+        setup["AnimationIPF"] = (self.editor.animationIPFstep,)
+        
+        # Update the display on the 'ipf' button.
+        try:
+            ipfbtn = self.buttons["ipf"]
+        except:
+            return
+        if self.editor.animationIPFstep:
+            ipfbtn.caption = quarkx.ftos(self.editor.animationIPFstep)
+        else:
+            ipfbtn.caption = "off"
+        ipfbtn.state = self.editor.animationIPF and qtoolbar.selected
+        quarkx.update(self.editor.form)
+
+    def toggleanimationipf(self, sender):
+        self.editor.animationIPF = not self.editor.animationIPF and self.editor.animationIPFstep
+        self.setanimationipfchanged()
+
+    def animationipfcustom(self, m):
+        import mdleditor
+        mdleditor.AnimationCustomIPF(self.editor)
+
 
   ### To setup the Skin-view grid independent from the editor grid.
     def skingetgridmenu(self, gridbtn):
@@ -1810,6 +1862,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.110  2009/09/30 19:37:26  cdunde
+#Threw out tags dialog, setup tag dragging, commands, and fixed saving of face selection.
+#
 #Revision 1.109  2009/09/26 08:35:50  cdunde
 #Setup tag movement using its Specifics page 'origin'
 #setting and updating of all its tag_frames.

@@ -480,6 +480,52 @@ def fixUpVertexNos(tris, index):
 
 ###############################
 #
+# Animation functions
+#
+###############################
+
+def LinearInterpolation(editor, AnimFrames, Factor=0.0):
+    if (Factor < 0.0) or (Factor > len(AnimFrames)):
+        # Somebody send me a bad Factor! Bad programmer! Bad!
+        raise "LinearInterpolation: Factor out of range! (%f)" % Factor
+    FrameIndex = int(floor(Factor))
+    PrevFrame = AnimFrames[FrameIndex]
+    if FrameIndex < len(AnimFrames)-1:
+        NextFrame = AnimFrames[FrameIndex+1]
+    else:
+        NextFrame = AnimFrames[0]
+    comp = PrevFrame.parent.parent
+    PrevVertices = PrevFrame.vertices
+    NextVertices = NextFrame.vertices
+    if len(PrevVertices) != len(NextVertices):
+        # Somebody send me frames with different numbers of vertices! Bad programmer! Bad!
+        raise "LinearInterpolation: Incompatible frames!"
+    ReducedFactor = Factor - floor(Factor)
+    newframe = PrevFrame.copy()
+    newframe.shortname = "AnimFrame"
+    newvertices = []
+    for i in range(len(PrevVertices)):
+        OldPos = PrevVertices[i]
+        NewPos = NextVertices[i]
+        pos = (OldPos * (1.0 - ReducedFactor)) + (NewPos * ReducedFactor)
+        newvertices = newvertices + [pos]
+    newframe.vertices = newvertices
+    return newframe
+
+def PolynomialInterpolation(editor, AnimFrames, Factor=0.0):
+    if (Factor < 0.0) or (Factor > len(AnimFrames)):
+        # Somebody send me a bad Factor! Bad programmer! Bad!
+        raise "PolynomialInterpolation: Factor out of range! (%f)" % Factor
+    # Uses gaussian elimination
+    
+    #FIXME: Not implemented yet!
+    newframe = LinearInterpolation(editor, AnimFrames, Factor)
+
+    return newframe
+
+
+###############################
+#
 # Vertex functions
 #
 ###############################
@@ -4006,6 +4052,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.115  2009/09/30 19:37:26  cdunde
+#Threw out tags dialog, setup tag dragging, commands, and fixed saving of face selection.
+#
 #Revision 1.114  2009/08/24 23:39:20  cdunde
 #Added support for multiple bone sets for imported models and their animations.
 #

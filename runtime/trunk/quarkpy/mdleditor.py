@@ -186,6 +186,12 @@ class ModelEditor(BaseEditor):
         else:
             self.animationFPS = 0
 
+        self.animationIPFstep, = setup["AnimationIPF"]
+        if MapOption("InterpolationActive", self.MODE):
+            self.animationIPF = self.animationIPFstep
+        else:
+            self.animationIPF = 0
+
         Root = self.fileobject['Root']
      #   if Root is not None: # If you have to open a model to open the Model Editor, how could it be None?
         Root = self.fileobject.findname(Root)
@@ -273,6 +279,8 @@ class ModelEditor(BaseEditor):
         quarkx.setupsubset(SS_MODEL, "Colors")["temp_color"] = None
         quarkx.setupsubset(SS_MODEL, "Options")["AnimationActive"] = None
         quarkx.setupsubset(SS_MODEL, "Options")["AnimationPaused"] = None
+        quarkx.setupsubset(SS_MODEL, "Options")["InterpolationActive"] = None
+        quarkx.setupsubset(SS_MODEL, "Options")["SmoothLooping"] = None
         quarkx.setupsubset(SS_MODEL, "Options")["ExtrudeFaces"] = None
         quarkx.setupsubset(SS_MODEL, "Options")["ExtrudeBulkHeads"] = None
         quarkx.setupsubset(SS_MODEL, "Options")['VertexUVColor'] = None
@@ -847,6 +855,7 @@ class ModelEditor(BaseEditor):
         except KeyError:
             pass
 
+
 class AnimationCustomFPSDlgBox(SimpleCancelDlgBox):
     "The Custom Animation FPS dialog box to input a new FPS setting of our own choice."
 
@@ -854,7 +863,7 @@ class AnimationCustomFPSDlgBox(SimpleCancelDlgBox):
     # Dialog box shape
     #
     endcolor = SILVER
-    size = (300,120)
+    size = (300,125)
     dlgdef = """
       {
         Style = "9"
@@ -879,12 +888,12 @@ class AnimationCustomFPSDlgBox(SimpleCancelDlgBox):
 
     def ok(self):
         #
-        # The user entered a new value...
+        # The user entered a new FPS value...
         #
         FPS = self.src["FPSstep"]
         if FPS is not None:
             #
-            # Update the grid step in the editor.
+            # Update the FPS  step in the editor.
             #
             if (self.editor.animationFPS == int(FPS[0])) and (self.editor.animationFPSstep == int(FPS[0])):
                 return
@@ -899,6 +908,60 @@ def AnimationCustomFPS(editor):
     src = quarkx.newobj(":")   # new object to store the data displayed in the dialog box
     src["FPSstep"] = editor.animationFPSstep,
     AnimationCustomFPSDlgBox(editor.form, src, editor)
+
+
+class AnimationCustomIPFDlgBox(SimpleCancelDlgBox):
+    "The Custom Animation IPF dialog box to input a new IPF setting of our own choice."
+
+    #
+    # Dialog box shape
+    #
+    endcolor = SILVER
+    size = (300,125)
+    dlgdef = """
+      {
+        Style = "9"
+        Caption = "Custom IPF"
+        sep: = {Typ="S" Txt=" "}    // some space
+        IPFstep: = {
+          Txt=" Enter the IPF :"
+          Typ="EF"
+          Min='2'
+          Max='20'
+          SelectMe="1"       // WARNING: be careful when using this
+        }
+        sep: = {Typ="S" Txt=" "}    // some space
+        sep: = {Typ="S" Txt=""}    // a separator line
+        cancel:py = {Txt="" }
+      }
+    """
+
+    def __init__(self, form, src, editor):
+        SimpleCancelDlgBox.__init__(self, form, src)
+        self.editor = editor
+
+    def ok(self):
+        #
+        # The user entered a new IPF value...
+        #
+        IPF = self.src["IPFstep"]
+        if IPF is not None:
+            #
+            # Update the IPF step in the editor.
+            #
+            if (self.editor.animationIPF == int(IPF[0])) and (self.editor.animationIPFstep == int(IPF[0])):
+                return
+            self.editor.animationIPF = self.editor.animationIPFstep = int(IPF[0])
+            self.editor.layout.setanimationipfchanged()
+
+
+def AnimationCustomIPF(editor):
+    "Calls to display the Custom Animation IPF dialog box for the editor"
+    "   to enter a new IPF setting of our own choice."
+
+    src = quarkx.newobj(":")   # new object to store the data displayed in the dialog box
+    src["IPFstep"] = editor.animationIPFstep,
+    AnimationCustomIPFDlgBox(editor.form, src, editor)
 
 
 
@@ -1752,6 +1815,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.134  2009/09/26 08:43:36  cdunde
+#File cleanup.
+#
 #Revision 1.133  2009/09/07 01:38:45  cdunde
 #Setup of tag menus and icons.
 #

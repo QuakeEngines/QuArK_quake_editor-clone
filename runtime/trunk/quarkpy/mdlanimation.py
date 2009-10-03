@@ -22,7 +22,9 @@ from qdictionnary import Strings
 # Globals
 # =========
 playlist = []
+playlistPerComp = {} # Contains the components to animate.
 playNR = 0
+
 def drawanimation(self):
     global playNR
     import mdleditor
@@ -30,6 +32,8 @@ def drawanimation(self):
     if editor is None:
         return
     FPS = int(1000/quarkx.setupsubset(SS_MODEL, "Display")["AnimationFPS"][0])
+    if quarkx.setupsubset(SS_MODEL, "Options")['InterpolationActive'] is None:
+        playNR = int(playNR)
     if quarkx.setupsubset(SS_MODEL, "Options")['AnimationPaused'] == "1":
         import mdlmgr
         if mdlmgr.treeviewselchanged == 1:
@@ -48,21 +52,53 @@ def drawanimation(self):
             mdlmgr.treeviewselchanged = 0
         return FPS
     else:
-        try:
-            frame = playlist[playNR]
-        except:
-            return
-        if playNR == len(playlist) - 1:
-            playNR = 0
+        if quarkx.setupsubset(SS_MODEL, "Options")['InterpolationActive'] is None:
+            try:
+                frame = playlist[playNR]
+            except:
+                return
+            if playNR == len(playlist) - 1:
+                playNR = 0
+            else:
+                playNR = playNR + 1
         else:
-            playNR = playNR + 1
+           # playNR = playNR + 0.05 #FIXME: Make an option for this! Use drapdownlist with settings .05-1.0
+            IPF = float(1/quarkx.setupsubset(SS_MODEL, "Display")["AnimationIPF"][0])
+            playNR = playNR + IPF
+            FPS = int(FPS*(IPF*2)) # Speeds up animation as IPF increases (causing slower drawing).
+            if quarkx.setupsubset(SS_MODEL, "Options")['SmoothLooping'] is not None:
+                while playNR >= len(playlist):
+                    playNR = playNR - len(playlist)
+            else:
+                while playNR >= len(playlist) - 1:
+                    playNR = playNR - (len(playlist) - 1)
+            OldFrameVertices = {}
+            for comp in editor.Root.subitems:
+                if comp.type != ":mc":
+                    # Not a component
+                    continue
+                try:
+                    newframe = LinearInterpolation(editor, playlistPerComp[comp.name], playNR)
+                except:
+                    continue
+                currentframe = comp.currentframe
+                if currentframe is None:
+                    currentframe = comp.dictitems['Frames:fg'].subitems[0]
+                OldFrameVertices[comp.name] = currentframe.vertices
+                # Swap the original frame's vertices (saving them) with the interpolation calculated vertices.
+                TmpVertices = currentframe.vertices
+                currentframe.vertices = newframe.vertices
+                newframe.vertices = TmpVertices
         if editor.layout is None:
             quarkx.setupsubset(SS_MODEL, "Options")['AnimationPaused'] = None
             quarkx.settimer(drawanimation, self, 0)
             return 0
         else:
-            editor.layout.explorer.uniquesel = frame
-            editor.layout.selchange
+            if quarkx.setupsubset(SS_MODEL, "Options")['InterpolationActive'] is None:
+                editor.layout.explorer.uniquesel = frame
+                editor.layout.selchange
+            else:
+                editor.invalidateviews()
             for v in editor.layout.views:
                 if v.info["viewname"] == "XY" and v.viewmode == "wire" and quarkx.setupsubset(SS_MODEL, "Options")['AnimateZ2Dview'] == "1":
                     mdleditor.setsingleframefillcolor(editor, v)
@@ -73,6 +109,19 @@ def drawanimation(self):
                 if v.info["viewname"] == "YZ" and v.viewmode == "wire" and quarkx.setupsubset(SS_MODEL, "Options")['AnimateX2Dview'] == "1":
                     mdleditor.setsingleframefillcolor(editor, v)
                     v.repaint()
+            if quarkx.setupsubset(SS_MODEL, "Options")['InterpolationActive'] is not None:
+                # Swap the original frame's vertices back.
+                for comp in editor.Root.subitems:
+                    if comp.type != ":mc":
+                        # Not a component
+                        continue
+                    currentframe = comp.currentframe
+                    if currentframe is None:
+                        currentframe = comp.dictitems['Frames:fg'].subitems[0]
+                    try:
+                        currentframe.vertices = OldFrameVertices[comp.name]
+                    except:
+                        continue
             return FPS
 
 
@@ -105,6 +154,14 @@ class Floating3Dview(mdlhandles.RectSelDragObject):
     "This is just a place holder to turn the Editor's Floating 3D view Animation on and off."
     Hint = hintPlusInfobaselink("", "")
 
+class DeactivateInterpolation(mdlhandles.RectSelDragObject):
+    "This is just a place holder to turn the Interpolation toolbar functions on and off."
+    Hint = hintPlusInfobaselink("", "")
+
+class DeactivateSmoothLooping(mdlhandles.RectSelDragObject):
+    "This is just a place holder to turn the Smooth Looping toolbar functions on and off."
+    Hint = hintPlusInfobaselink("", "")
+
 ##############################################################
 #
 # The tool bar with the available animation modes.
@@ -118,6 +175,8 @@ AnimationModes = [(DeactivateAnimation                 ,0)
                  ,(Y2Dview                             ,7)
                  ,(Z2Dview                             ,8)
                  ,(Floating3Dview                      ,9)
+                 ,(DeactivateInterpolation            ,10)
+                 ,(DeactivateSmoothLooping            ,11)
                  ]
 
 ### This part effects each buttons selection mode.
@@ -139,6 +198,58 @@ def select1(btn, toolbar, editor):
     editor.MouseDragMode, dummyicon = AnimationModes[btn.i]
     btn.state = qtoolbar.selected
 
+def UpdateplaylistPerComp(self):
+    import mdleditor, operator
+    global playlist, playlistPerComp, playNR
+    editor = mdleditor.mdleditor
+    playlistPerComp = {}
+    if len(playlist) == 0:
+        return
+    FrameGroup = playlist[0].parent.subitems
+    framenumbers = []
+    try:
+        for item in playlist:
+            listindex = operator.indexOf(FrameGroup, item)
+            framenumbers = framenumbers + [listindex]
+    except:
+        try:
+            tb1 = editor.layout.toolbars["tb_animation"]
+            buttons = tb1.tb.buttons
+            for b in range(len(buttons)):
+                if buttons[b] is None:
+                    continue
+                if buttons[b].state == qtoolbar.selected:
+                    buttons[b].state = qtoolbar.normal
+                if b == 5:
+                    break
+            if MdlOption("AnimationActive"):
+                quarkx.setupsubset(SS_MODEL, "Options")["AnimationActive"] = None
+            if MdlOption("AnimationPaused"):
+                quarkx.setupsubset(SS_MODEL, "Options")["AnimationPaused"] = None
+            if quarkx.setupsubset(SS_MODEL, "Building")["AnimationMode"]:
+                quarkx.setupsubset(SS_MODEL, "Building")["AnimationMode"] = None
+            editor.MouseDragMode = None
+            quarkx.update(editor.form)
+            playNR = 0
+            # This terminates the animation timer stopping the repeditive drawing function.
+            quarkx.settimer(drawanimation, self, 0)
+            quarkx.msgbox("Improper Action !\n\nYou can only select frames from\nthe same component to animate.\n\nAction Canceled.", MT_ERROR, MB_OK)
+            Update_Editor_Views(editor)
+            return
+        except:
+            return
+
+    for comp in editor.Root.subitems:
+        if comp.type != ":mc":
+            # Not a component
+            continue
+        FrameGroup = comp.dictitems['Frames:fg'].subitems
+        for frameindex in framenumbers:
+            if playlistPerComp.has_key(comp.name):
+                playlistPerComp[comp.name] = playlistPerComp[comp.name] + [FrameGroup[frameindex]]
+            else:
+                playlistPerComp[comp.name] = [FrameGroup[frameindex]]
+
 ##### Below makes the toolbar and arainges its buttons #####
 
 class AnimationBar(ToolBar):
@@ -157,15 +268,23 @@ class AnimationBar(ToolBar):
                 quarkx.msgbox("Improper Action !\n\nYou need to select at least two frames\n(and no other types of sub-items)\nof the same component to activate animation.\n\nPress 'F1' for InfoBase help\nof this function for details.\n\nAction Canceled.", MT_ERROR, MB_OK)
                 return
             else:
-                for item in editor.layout.explorer.sellist:
-                    if item.type != ':mf':
+                sel = editor.layout.explorer.sellist
+                for item in range(len(sel)):
+                    if sel[item].type != ':mf':
                         quarkx.msgbox("Improper Selection !\n\nYou need to select at least two frames\n(and no other types of sub-items)\nof the same component to activate animation.\n\nPress 'F1' for InfoBase help\nof this function for details.\n\nAction Canceled.", MT_ERROR, MB_OK)
                         return
+                    if item == len(sel)-1:
+                        pass
+                    else:
+                        if sel[item].parent.parent != sel[item+1].parent.parent:
+                            quarkx.msgbox("Improper Action !\n\nYou can only select frames from\nthe same component to animate.\n\nAction Canceled.", MT_ERROR, MB_OK)
+                            return
                 quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] = "1"
                 qtoolbar.toggle(btn)
                 btn.state = qtoolbar.selected
                 quarkx.update(editor.form)
                 playlist = editor.layout.explorer.sellist
+                UpdateplaylistPerComp(self)
                 editor.layout.explorer.sellist = []
                 for view in editor.layout.views:
                     view.handles = []
@@ -237,6 +356,7 @@ class AnimationBar(ToolBar):
             if playlist != [] and editor.layout.explorer.sellist != []:
                 if len(editor.layout.explorer.sellist) > 1:
                     playlist = editor.layout.explorer.sellist
+                    UpdateplaylistPerComp(self)
                     playNR = 0
                 else:
                     playlistcount = 0
@@ -317,6 +437,46 @@ class AnimationBar(ToolBar):
             btn.state = qtoolbar.normal
             quarkx.update(editor.form)
 
+    def interpolation(self, btn):
+        "Activates and deactivates animation interpolation, added movement between two frames by calculation."
+        editor = mapeditor()
+        if not MdlOption("InterpolationActive"):
+            quarkx.setupsubset(SS_MODEL, "Options")['InterpolationActive'] = "1"
+            qtoolbar.toggle(btn)
+            btn.state = qtoolbar.selected
+            quarkx.update(editor.form)
+        else:
+            quarkx.setupsubset(SS_MODEL, "Options")['InterpolationActive'] = None
+            qtoolbar.toggle(btn)
+            btn.state = qtoolbar.normal
+            quarkx.update(editor.form)
+
+
+    def incrementIPF(self, btn):
+        "Implements the increase and decrease IPF (interpolation frames) buttons."
+        editor = mapeditor()
+        setup = quarkx.setupsubset(SS_MODEL, "Display")
+        animationIPF = setup["AnimationIPF"]
+        if animationIPF[0] + btn.delta < 2 or animationIPF[0] + btn.delta > 20:
+            return
+        animationIPF = animationIPF[0] + btn.delta
+        setup["AnimationIPF"] = (animationIPF,)
+        editor.layout.setanimationipf(animationIPF)
+
+    def smoothlooping(self, btn):
+        "Activates and deactivates animation interpolation smooth looping, added movement between the last and first frames of a cycle by calculation."
+        editor = mapeditor()
+        if not MdlOption("SmoothLooping"):
+            quarkx.setupsubset(SS_MODEL, "Options")['SmoothLooping'] = "1"
+            qtoolbar.toggle(btn)
+            btn.state = qtoolbar.selected
+            quarkx.update(editor.form)
+        else:
+            quarkx.setupsubset(SS_MODEL, "Options")['SmoothLooping'] = None
+            qtoolbar.toggle(btn)
+            btn.state = qtoolbar.normal
+            quarkx.update(editor.form)
+
     def buildbuttons(self, layout):
               # to build the single click button
         if not ico_dict.has_key('ico_mdlanim'):
@@ -348,6 +508,16 @@ class AnimationBar(ToolBar):
         y2dviewanimated = qtoolbar.button(self.animatey2dview, "Animate Y Side 2D view||Animate Y Side 2D view:\n\nActivate this button to animate in the Editor's Y Side 2D view.", ico_mdlanim, 7, infobaselink="intro.modeleditor.toolpalettes.animation.html#viewselector")
         z2dviewanimated = qtoolbar.button(self.animatez2dview, "Animate Z Top 2D view||Animate Z Top 2D view:\n\nActivate this button to animate in the Editor's Z Top 2D view.", ico_mdlanim, 8, infobaselink="intro.modeleditor.toolpalettes.animation.html#viewselector")
         float3dviewanimated = qtoolbar.button(self.animatefloat3dview, "Animate Floating 3D view||Animate Floating 3D view:\n\nActivate this button to animate in the Editor's Floating 3D view.", ico_mdlanim, 9, infobaselink="intro.modeleditor.toolpalettes.animation.html#viewselector")
+
+        interpolonoff = qtoolbar.button(self.interpolation, "Interpolation on\off||Interpolation on\off:\n\nThis button will activate or de-activate the interpolation (give smooth animation) of the selected model component animation frames.\n\nInterpolation calculates additional movement positions between two frames and draws them to smooth out the movement between those two frames.\n\nTo return to regular animation mode you must click this button to turn 'Off' the interpolation function.", ico_mdlanim, 10, infobaselink="intro.modeleditor.toolpalettes.animation.html#animate")
+        ipfbtn = qtoolbar.doublebutton(layout.toggleanimationipf, layout.getIPFmenu, "IPF||IPF or interpolation frames is the setting as to how many added computed position frames will be added to the selected model component animation to be drawn in the selected view(s) of the editor.\n\nYou can select a menu fps speed or use the arrows to the right to increase or decrease that number while the frames are being animated.", ico_mdlanim, 1, infobaselink="intro.modeleditor.toolpalettes.animation.html#fps")
+        animationIPF = setup["AnimationIPF"]
+        ipfbtn.caption = quarkx.ftos(animationIPF[0])  # To determine the button width and show the current setting.
+        increaseipf = qtoolbar.button(self.incrementIPF, "Increase IPF", ico_mdlanim, 2)
+        increaseipf.delta = 1
+        decreaseipf = qtoolbar.button(self.incrementIPF, "Decrease IPF", ico_mdlanim, 3)
+        decreaseipf.delta = -1
+        smoothlooponoff = qtoolbar.button(self.smoothlooping, "Smooth Looping on\off||Smooth Looping on\off:\n\nThis button will activate or de-activate smooth looping, giving a smoother animation appearance of the selected model component animation frames when returning from the last to the first frame.\n\nTo return to regular looping mode you must click this button again to turn 'Off' this function.", ico_mdlanim, 11, infobaselink="intro.modeleditor.toolpalettes.animation.html#animate")
 
         if not MdlOption("AnimationActive"):
             animateonoff.state = qtoolbar.normal
@@ -384,6 +554,16 @@ class AnimationBar(ToolBar):
         else:
             float3dviewanimated.state = qtoolbar.selected
 
+        if not MdlOption("InterpolationActive"):
+            interpolonoff.state = qtoolbar.normal
+        else:
+            interpolonoff.state = qtoolbar.selected
+
+        if not MdlOption("SmoothLooping"):
+            smoothlooponoff.state = qtoolbar.normal
+        else:
+            smoothlooponoff.state = qtoolbar.selected
+
         layout.buttons.update({"animate": animateonoff,
                                "fps": fpsbtn,
                                "fpsup": increasefps,
@@ -393,17 +573,26 @@ class AnimationBar(ToolBar):
                                "animex2dview": x2dviewanimated,
                                "animey2dview": y2dviewanimated,
                                "animez2dview": z2dviewanimated,
-                               "floatd3dview": float3dviewanimated
+                               "floatd3dview": float3dviewanimated,
+                               "interpolation": interpolonoff,
+                               "ipf": ipfbtn,
+                               "ipfup": increaseipf,
+                               "ipfdown": decreaseipf,
+                               "smoothloop": smoothlooponoff
                              })
 
         return [animateonoff, fpsbtn, increasefps, decreasefps, qtoolbar.sep, animatepaused, qtoolbar.sep,
-                editor3dviewanimated, x2dviewanimated, y2dviewanimated, z2dviewanimated, float3dviewanimated]
+                editor3dviewanimated, x2dviewanimated, y2dviewanimated, z2dviewanimated, float3dviewanimated,
+                qtoolbar.sep, interpolonoff, ipfbtn, increaseipf, decreaseipf, qtoolbar.sep, smoothlooponoff]
 
 
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.11  2008/07/15 23:16:27  cdunde
+#To correct typo error from MldOption to MdlOption in all files.
+#
 #Revision 1.10  2008/05/01 19:15:24  danielpharos
 #Fix treeviewselchanged not updating.
 #

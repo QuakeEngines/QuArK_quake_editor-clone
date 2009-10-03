@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.496  2009/09/26 03:59:02  cdunde
+//Added option for Model Editor to import-export max or min tag frames.
+//
 //Revision 1.495  2009/09/24 18:45:17  danielpharos
 //Added some DirectX settings.
 //
@@ -4410,7 +4413,8 @@ QQRKSRC1
         MapLimit          = '512 512 512'
         GridHighlight     = "8"
         GridHFactor       = '2'
-        AnimationFPS      = '16'
+        AnimationFPS      = '8'
+        AnimationIPF      = '4'
         SkinGridStep      = '16'
         SkinGridMinStep   = '5'
         SkinGridHighlight = "8"
@@ -4581,6 +4585,12 @@ QQRKSRC1
       AnimationFPS: =
       {
         Txt = "Frames Per Second"
+        Typ = "EF1"    // Edit Float, 1 value
+        Min = '0'
+      }
+      AnimationIPF: =
+      {
+        Txt = "Interpolation Frames"
         Typ = "EF1"    // Edit Float, 1 value
         Min = '0'
       }
