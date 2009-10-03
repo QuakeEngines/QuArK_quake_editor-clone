@@ -14,6 +14,9 @@ $Id$
 
 6.6.0 Beta 3
 ============
+* [cdunde/DanielPharos]: Added support for animation interpolation in the Model Editor.
+          - (computation of added movement to emulate game action)
+
 * [cdunde]: Setup function to attach tags for imported .md3 models, such as weapons.
 
 * [cdunde]: Setup of tag menus and icons.
