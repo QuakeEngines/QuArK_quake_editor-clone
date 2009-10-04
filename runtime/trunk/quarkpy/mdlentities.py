@@ -2178,6 +2178,48 @@ class ComponentType(EntityManager):
     def dataformname(o):
         "Returns the data form for this type of object 'o' (a model component) to use for the Specific/Args page."
 
+        TagList = ""
+        if o.dictspec.has_key("Tags") or o.dictspec.has_key("tag_components"):
+            TagList = TagList + """sep: = { Typ="S" Txt="" } sep: = { Typ="S" Txt="Tags" }"""
+            if o.dictspec.has_key("Tags"):
+                items = []
+                values = []
+                tags = o.dictspec['Tags'].split(", ")
+                group = o.name.split("_")[0]
+                for tag in tags:
+                    items = items + ['"' + tag + '"' + "$0D"]
+                    tag_name = group + "_" + tag + ":tag"
+                    values = values + ['"' + tag_name + '"' + "$0D"]
+
+                TagList = TagList + """tag_list: = {Typ = "CL" Txt = "Tags list" items = """
+                for item in items:
+                    TagList = TagList + item 
+
+                TagList = TagList + """ values = """
+                for value in values:
+                    TagList = TagList + value 
+
+                TagList = TagList + """ Hint="List of tags for this component."}"""
+
+            if o.dictspec.has_key("tag_components"):
+                items = []
+                values = []
+                comps = o.dictspec['tag_components'].split(", ")
+                for comp in comps:
+                    comp_name = comp.split(":mc")[0]
+                    items = items + ['"' + comp_name + '"' + "$0D"]
+                    values = values + ['"' + comp + '"' + "$0D"]
+
+                TagList = TagList + """comp_tag_list: = {Typ = "CL" Txt = "Comps list:" items = """
+                for item in items:
+                    TagList = TagList + item 
+
+                TagList = TagList + """ values = """
+                for value in values:
+                    TagList = TagList + value 
+
+                TagList = TagList + """ Hint="List of tag components for this component."}"""
+
         dlgdef = """
         {
           Help = "These are the Specific settings for a Model Component."$0D0D22
@@ -2230,6 +2272,7 @@ class ComponentType(EntityManager):
               Hint="When checked, this color draws the"$0D
               "component's mesh lines in textured or solid view mode."
                  }
+          """ + TagList + """
         }
         """
 
@@ -2238,6 +2281,30 @@ class ComponentType(EntityManager):
             o['vtx_count'] = str(len(o.dictitems['Frames:fg'].subitems[0].vertices))
         else:
             o['vtx_count'] = "0"
+
+        if o.dictspec.has_key("Tags") or o.dictspec.has_key("tag_components"):
+            if o.dictspec.has_key("Tags"):
+                tagnames = o.dictspec['Tags'].split(", ")
+                group = o.name.split("_")[0]
+                tag_name = group + "_" + tagnames[0] + ":tag"
+                if not o.dictspec.has_key("tag_list"):
+                    tag_name = group + "_" + tagnames[0] + ":tag"
+                    o['tag_list'] = tag_name
+                elif not (o.dictspec['tag_list'].replace(group + "_", "")).replace(":tag", "") in tagnames:
+                    tag_name = group + "_" + tagnames[0] + ":tag"
+                    o['tag_list'] = tag_name
+                    
+            if o.dictspec.has_key("tag_components"):
+                comp_names = o.dictspec['tag_components'].split(", ")
+                if not o.dictspec.has_key("comp_tag_list"):
+                    o['comp_tag_list'] = comp_names[0]
+                elif not o.dictspec['comp_tag_list'] in comp_names:
+                    o['comp_tag_list'] = comp_names[0]
+        # Cleans these items out of the component when they should not be there, to keep them from showing up incorrectly.
+            if not o.dictspec.has_key("Tags") and o.dictspec.has_key("tag_list"):
+                o['tag_list'] = ""
+            if not o.dictspec.has_key("tag_components") and o.dictspec.has_key("comp_tag_list"):
+                o['comp_tag_list'] = ""
 
         formobj = quarkx.newobj("mc:form")
         formobj.loadtext(dlgdef)
@@ -2462,6 +2529,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.57  2009/09/30 19:37:26  cdunde
+#Threw out tags dialog, setup tag dragging, commands, and fixed saving of face selection.
+#
 #Revision 1.56  2009/09/24 06:46:02  cdunde
 #md3 rotation update, baseframe creation and proper connection of weapon tags.
 #
