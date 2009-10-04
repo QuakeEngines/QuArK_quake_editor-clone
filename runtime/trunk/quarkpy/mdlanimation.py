@@ -33,7 +33,7 @@ def drawanimation(self):
         return
     FPS = int(1000/quarkx.setupsubset(SS_MODEL, "Display")["AnimationFPS"][0])
     if quarkx.setupsubset(SS_MODEL, "Options")['InterpolationActive'] is None:
-        playNR = int(playNR)
+        playNR = int(round(playNR))
     if quarkx.setupsubset(SS_MODEL, "Options")['AnimationPaused'] == "1":
         import mdlmgr
         if mdlmgr.treeviewselchanged == 1:
@@ -62,6 +62,9 @@ def drawanimation(self):
             else:
                 playNR = playNR + 1
         else:
+            if editor.layout.explorer.uniquesel is not None:
+                editor.layout.explorer.uniquesel = None
+                editor.layout.explorer.invalidate()
            # playNR = playNR + 0.05 #FIXME: Make an option for this! Use drapdownlist with settings .05-1.0
             IPF = float(1/quarkx.setupsubset(SS_MODEL, "Display")["AnimationIPF"][0])
             playNR = playNR + IPF
@@ -230,7 +233,6 @@ def UpdateplaylistPerComp(self):
                 quarkx.setupsubset(SS_MODEL, "Building")["AnimationMode"] = None
             editor.MouseDragMode = None
             quarkx.update(editor.form)
-            playNR = 0
             # This terminates the animation timer stopping the repeditive drawing function.
             quarkx.settimer(drawanimation, self, 0)
             quarkx.msgbox("Improper Action !\n\nYou can only select frames from\nthe same component to animate.\n\nAction Canceled.", MT_ERROR, MB_OK)
@@ -245,10 +247,13 @@ def UpdateplaylistPerComp(self):
             continue
         FrameGroup = comp.dictitems['Frames:fg'].subitems
         for frameindex in framenumbers:
-            if playlistPerComp.has_key(comp.name):
-                playlistPerComp[comp.name] = playlistPerComp[comp.name] + [FrameGroup[frameindex]]
-            else:
-                playlistPerComp[comp.name] = [FrameGroup[frameindex]]
+            try: # In case a component does not have any frames or the same number of frames, it won't break.
+                if playlistPerComp.has_key(comp.name):
+                    playlistPerComp[comp.name] = playlistPerComp[comp.name] + [FrameGroup[frameindex]]
+                else:
+                    playlistPerComp[comp.name] = [FrameGroup[frameindex]]
+            except:
+                pass
 
 ##### Below makes the toolbar and arainges its buttons #####
 
@@ -348,6 +353,9 @@ class AnimationBar(ToolBar):
             qtoolbar.toggle(btn)
             btn.state = qtoolbar.selected
             quarkx.update(editor.form)
+            if quarkx.setupsubset(SS_MODEL, "Options")['InterpolationActive'] is not None:
+                import mdlmgr
+                mdlmgr.treeviewselchanged = 0
         else:
             quarkx.setupsubset(SS_MODEL, "Options")['AnimationPaused'] = None
             qtoolbar.toggle(btn)
@@ -439,17 +447,37 @@ class AnimationBar(ToolBar):
 
     def interpolation(self, btn):
         "Activates and deactivates animation interpolation, added movement between two frames by calculation."
+        global playNR
         editor = mapeditor()
         if not MdlOption("InterpolationActive"):
             quarkx.setupsubset(SS_MODEL, "Options")['InterpolationActive'] = "1"
             qtoolbar.toggle(btn)
             btn.state = qtoolbar.selected
             quarkx.update(editor.form)
+            if quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] is not None and quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] != "0" and editor.layout.explorer.uniquesel is not None:
+                frames = editor.Root.currentcomponent.dictitems['Frames:fg'].subitems
+                for framenbr in range(len(frames)):
+                    if frames[framenbr].name == editor.layout.explorer.uniquesel.name:
+                        playNR = framenbr
         else:
             quarkx.setupsubset(SS_MODEL, "Options")['InterpolationActive'] = None
             qtoolbar.toggle(btn)
             btn.state = qtoolbar.normal
             quarkx.update(editor.form)
+            if quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] is not None and quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] != "0" and MdlOption("AnimationPaused"):
+                if editor.layout.explorer.uniquesel is not None:
+                    frames = editor.Root.currentcomponent.dictitems['Frames:fg'].subitems
+                    for framenbr in range(len(frames)):
+                        if frames[framenbr].name == editor.layout.explorer.uniquesel.name:
+                            playNR = framenbr
+                import mdlmgr
+                mdlmgr.treeviewselchanged = 0
+                try:
+                    playNR = int(round(playNR))
+                    editor.layout.explorer.uniquesel = playlist[playNR]
+                    editor.layout.explorer.invalidate()
+                except:
+                    pass
 
 
     def incrementIPF(self, btn):
@@ -590,6 +618,10 @@ class AnimationBar(ToolBar):
 #
 #
 #$Log$
+#Revision 1.12  2009/10/03 06:16:07  cdunde
+#Added support for animation interpolation in the Model Editor.
+#(computation of added movement to emulate game action)
+#
 #Revision 1.11  2008/07/15 23:16:27  cdunde
 #To correct typo error from MldOption to MdlOption in all files.
 #

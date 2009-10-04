@@ -550,6 +550,8 @@ class ModelEditor(BaseEditor):
 
     def explorerselchange(self, ex=None):
         global BonesSellist
+        if quarkx.setupsubset(SS_MODEL, "Options")['InterpolationActive'] is not None and quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] is not None and quarkx.setupsubset(SS_MODEL, "Options")['AnimationPaused'] is None:
+            return
         import qbaseeditor
         from qbaseeditor import flagsmouse
 
@@ -1815,6 +1817,10 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.135  2009/10/03 06:16:07  cdunde
+#Added support for animation interpolation in the Model Editor.
+#(computation of added movement to emulate game action)
+#
 #Revision 1.134  2009/09/26 08:43:36  cdunde
 #File cleanup.
 #
