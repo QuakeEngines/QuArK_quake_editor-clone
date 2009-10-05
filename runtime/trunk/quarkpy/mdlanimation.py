@@ -76,18 +76,15 @@ def drawanimation(self):
                 while playNR >= len(playlist) - 1:
                     playNR = playNR - (len(playlist) - 1)
             OldFrameVertices = {}
-            for comp in editor.Root.subitems:
-                if comp.type != ":mc":
-                    # Not a component
-                    continue
+            for comp_name in playlistPerComp.keys():
                 try:
-                    newframe = LinearInterpolation(editor, playlistPerComp[comp.name], playNR)
+                    newframe = LinearInterpolation(editor, playlistPerComp[comp_name][1], playNR)
                 except:
                     continue
-                currentframe = comp.currentframe
+                currentframe = playlistPerComp[comp_name][0].currentframe
                 if currentframe is None:
-                    currentframe = comp.dictitems['Frames:fg'].subitems[0]
-                OldFrameVertices[comp.name] = currentframe.vertices
+                    currentframe = playlistPerComp[comp_name][0].dictitems['Frames:fg'].subitems[0]
+                OldFrameVertices[comp_name] = currentframe.vertices
                 # Swap the original frame's vertices (saving them) with the interpolation calculated vertices.
                 TmpVertices = currentframe.vertices
                 currentframe.vertices = newframe.vertices
@@ -106,23 +103,20 @@ def drawanimation(self):
                 if v.info["viewname"] == "XY" and v.viewmode == "wire" and quarkx.setupsubset(SS_MODEL, "Options")['AnimateZ2Dview'] == "1":
                     mdleditor.setsingleframefillcolor(editor, v)
                     v.repaint()
-                if v.info["viewname"] == "XZ" and v.viewmode == "wire" and quarkx.setupsubset(SS_MODEL, "Options")['AnimateY2Dview'] == "1":
+                elif v.info["viewname"] == "XZ" and v.viewmode == "wire" and quarkx.setupsubset(SS_MODEL, "Options")['AnimateY2Dview'] == "1":
                     mdleditor.setsingleframefillcolor(editor, v)
                     v.repaint()
-                if v.info["viewname"] == "YZ" and v.viewmode == "wire" and quarkx.setupsubset(SS_MODEL, "Options")['AnimateX2Dview'] == "1":
+                elif v.info["viewname"] == "YZ" and v.viewmode == "wire" and quarkx.setupsubset(SS_MODEL, "Options")['AnimateX2Dview'] == "1":
                     mdleditor.setsingleframefillcolor(editor, v)
                     v.repaint()
             if quarkx.setupsubset(SS_MODEL, "Options")['InterpolationActive'] is not None:
                 # Swap the original frame's vertices back.
-                for comp in editor.Root.subitems:
-                    if comp.type != ":mc":
-                        # Not a component
-                        continue
-                    currentframe = comp.currentframe
+                for comp_name in playlistPerComp.keys():
+                    currentframe = playlistPerComp[comp_name][0].currentframe
                     if currentframe is None:
-                        currentframe = comp.dictitems['Frames:fg'].subitems[0]
+                        currentframe = playlistPerComp[comp_name][0].dictitems['Frames:fg'].subitems[0]
                     try:
-                        currentframe.vertices = OldFrameVertices[comp.name]
+                        currentframe.vertices = OldFrameVertices[comp_name]
                     except:
                         continue
             return FPS
@@ -249,11 +243,12 @@ def UpdateplaylistPerComp(self):
         for frameindex in framenumbers:
             try: # In case a component does not have any frames or the same number of frames, it won't break.
                 if playlistPerComp.has_key(comp.name):
-                    playlistPerComp[comp.name] = playlistPerComp[comp.name] + [FrameGroup[frameindex]]
+                    playlistPerComp[comp.name][1] = playlistPerComp[comp.name][1] + [FrameGroup[frameindex]]
                 else:
-                    playlistPerComp[comp.name] = [FrameGroup[frameindex]]
+                    playlistPerComp[comp.name] = [comp, [FrameGroup[frameindex]]]
             except:
-                pass
+                break
+
 
 ##### Below makes the toolbar and arainges its buttons #####
 
@@ -618,6 +613,9 @@ class AnimationBar(ToolBar):
 #
 #
 #$Log$
+#Revision 1.13  2009/10/04 22:17:18  cdunde
+#Setup correct switching from standard to interpolation animation methods.
+#
 #Revision 1.12  2009/10/03 06:16:07  cdunde
 #Added support for animation interpolation in the Model Editor.
 #(computation of added movement to emulate game action)
