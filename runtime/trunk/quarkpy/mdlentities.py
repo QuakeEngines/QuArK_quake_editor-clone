@@ -1730,6 +1730,7 @@ class TagType(EntityManager):
                     quarkx.msgbox("No Tag Match!\n\nThese models do not have matching tags\nor one has been deleted.\nThey can not be used together.", MT_ERROR, MB_OK)
                     return
                 attachtag_comps_list = []
+                attachtags_list = []
                 if len(tag1.subitems) >= len(tag2.subitems):
                     basetag = tag1
                     basetag_comp = tag1comp
@@ -1738,6 +1739,9 @@ class TagType(EntityManager):
                     for item in editor.Root.subitems:
                         if item.type == ":mc" and item.name.startswith(tag2model):
                             attachtag_comps_list = attachtag_comps_list + [item]
+                    for item in editor.Root.dictitems['Misc:mg'].subitems:
+                        if item.type == ":tag" and item.name.startswith(tag2model):
+                            attachtags_list = attachtags_list + [item]
                 else:
                     basetag = tag2
                     basetag_comp = tag2comp
@@ -1746,21 +1750,34 @@ class TagType(EntityManager):
                     for item in editor.Root.subitems:
                         if item.type == ":mc" and item.name.startswith(tag1model):
                             attachtag_comps_list = attachtag_comps_list + [item]
+                    for item in editor.Root.dictitems['Misc:mg'].subitems:
+                        if item.type == ":tag" and item.name.startswith(tag1model):
+                            attachtags_list = attachtags_list + [item]
                 basetag_subitems = basetag.subitems
                 attachtag_subitems = attachtag.subitems
                 new_comps_list = []
+                new_tags_list = []
                 for attachtag_comp in attachtag_comps_list:
                     newcomp = attachtag_comp.copy()
                     new_comps_list = new_comps_list + [newcomp]
+                for attachtag_tag in attachtags_list:
+                    newtag = quarkx.newobj(attachtag_tag.name)
+                    for item in attachtag_tag.dictspec:
+                        newtag[item] = attachtag_tag.dictspec[item]
+                    new_tags_list = new_tags_list + [newtag]
                 undo = quarkx.action()
-                for newcomp in new_comps_list:
-                    comp_frames = newcomp.dictitems["Frames:fg"].subitems
+                for newcomp in range(len(new_comps_list)):
+                    comp_frames = new_comps_list[newcomp].dictitems["Frames:fg"].subitems
                     newframesgroup = quarkx.newobj('Frames:fg')
                     comp_framecount = len(comp_frames)-1
                     for frame in range(len(basetag_subitems)):
                         if frame == len(basetag_subitems)-1:
                             baseframe = comp_frames[comp_framecount].copy()
                             newframesgroup.appenditem(baseframe)
+                            if newcomp == 0:
+                                for newtag in range(len(new_tags_list)):
+                                    tag_baseframe = attachtags_list[newtag].subitems[0].copy()
+                                    new_tags_list[newtag].appenditem(tag_baseframe)
                             break
                         elif frame > len(attachtag_subitems)-1:
                             attachframe = attachtag_subitems[len(attachtag_subitems)-1]
@@ -1778,9 +1795,17 @@ class TagType(EntityManager):
                         comp_frame.vertices = vertices
                         newframe = comp_frame.copy()
                         newframesgroup.appenditem(newframe)
-                    undo.exchange(newcomp.dictitems['Frames:fg'], newframesgroup)
+                        if newcomp == 0:
+                            for newtag in range(len(new_tags_list)):
+                                tag_frame = attachtags_list[newtag].subitems[0].copy()
+                                tag_frame.shortname = "Tag Frame " + str(frame+1)
+                                tag_frame['origin'] = (quarkx.vect(tag_frame.dictspec['origin']) + quarkx.vect(basetag_subitems[frame].dictspec['origin'])).tuple
+                                new_tags_list[newtag].appenditem(tag_frame)
+                    undo.exchange(new_comps_list[newcomp].dictitems['Frames:fg'], newframesgroup)
                 for i in range(len(new_comps_list)):
                     undo.exchange(attachtag_comps_list[i], new_comps_list[i])
+                for i in range(len(new_tags_list)):
+                    undo.exchange(attachtags_list[i], new_tags_list[i])
                 editor.ok(undo, "Attach tags")
             else:
                 quarkx.msgbox("Invalid Selection!\n\nThe model tags can not be\nfrom the same 'group' of tags.", MT_ERROR, MB_OK)
@@ -2599,6 +2624,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.59  2009/10/06 05:59:26  cdunde
+#To give the tags and tag_components lists something to do.
+#
 #Revision 1.58  2009/10/04 22:20:10  cdunde
 #Added lists showing component Tags and tag_components.(not functional, just for ref.)
 #
