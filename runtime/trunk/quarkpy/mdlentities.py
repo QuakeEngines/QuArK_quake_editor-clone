@@ -1812,19 +1812,79 @@ class TagType(EntityManager):
 
     def dataformname(o):
         "Returns the data form for this type of object 'o' (a Tag) to use for the Specific/Args page."
+        editor = mdleditor.mdleditor # Get the editor.
+
+        Component = ""
+        Component = Component + """Help = "These are the Specific settings for a Tag."$0D"""
+        if o.dictspec.has_key("Component"):
+            Component = Component + """$0D22 "component"$22" - The main component this"$0D"          tag belongs to. (read only)" Component: = {Typ="E R" Txt="component" Hint="The main component that this"$0D"tag belongs to. (read only)"}"""
+
+        group = o.name.split("_")[0]
+        TagList = ""
+        TagList = TagList + """sep: = { Typ="S" Txt="" } sep: = { Typ="S" Txt="Tags" }"""
+        tag_names = [o.name]
+        tag_items = []
+        tag_values = []
+        for item in editor.Root.dictitems['Misc:mg'].subitems:
+            if item.type == ":tag" and item.name.startswith(group):
+                if not item.name in tag_names:
+                    tag_names = tag_names + [item.name]
+                if item.name == o.name:
+                    continue
+                tag_items = tag_items + ['"' + item.shortname + '"' + "$0D"]
+                tag_values = tag_values + ['"' + item.name + '"' + "$0D"]
+
+        if len(tag_items) != 0:
+            TagList = TagList + """tag_list: = {Typ = "CL" Txt = "Tags list" items = """
+            for item in tag_items:
+                TagList = TagList + item 
+
+            TagList = TagList + """ values = """
+            for value in tag_values:
+                TagList = TagList + value 
+
+            TagList = TagList + """ Hint="List of other tags for this group."$0D"Click on one to jump to that tag."}"""
+
+        comp_names = []
+        comp_items = []
+        comp_values = []
+        for item in editor.Root.subitems:
+            if item.type == ":mc" and item.name.startswith(group):
+                comp_names = comp_names + [item.name]
+                comp_items = comp_items + ['"' + item.shortname + '"' + "$0D"]
+                comp_values = comp_values + ['"' + item.name + '"' + "$0D"]
+
+        TagList = TagList + """comp_tag_list: = {Typ = "CL" Txt = "Comps list:" items = """
+        for item in comp_items:
+            TagList = TagList + item 
+
+        TagList = TagList + """ values = """
+        for value in comp_values:
+            TagList = TagList + value 
+
+        TagList = TagList + """ Hint="List of tag components for this group."$0D"Click on one to jump to that component."}"""
 
         dlgdef = """
         {
-          Help = "These are the Specific settings for a Tag."$0D0D22
-                 "component"$22" - The main component this"$0D
-                 "          tag belongs to. (read only)"
-          Component: = {
-              Typ="E R"
-              Txt="component"
-              Hint="The main component that this"$0D"tag belongs to. (read only)"
-                 }
+          """ + Component + """
+          """ + TagList + """
         }
         """
+
+        if o.dictspec.has_key("tag_list"):
+            if len(tag_names) > 1 and not o.dictspec['tag_list'] in tag_names: # In case one of them gets renamed.
+                o['tag_list'] = tagnames[1]
+            if not o.dictspec.has_key("None"):
+                editor.layout.explorer.sellist = [editor.Root.dictitems['Misc:mg'].dictitems[o.dictspec['tag_list']]]
+                editor.layout.explorer.expand(editor.Root.dictitems['Misc:mg'])
+                o['tag_list'] = ""
+
+        if o.dictspec.has_key("comp_tag_list"):
+            if len(comp_names) > 1 and not o.dictspec['comp_tag_list'] in comp_names: # In case one of them gets renamed.
+                o['comp_tag_list'] = comp_names[0]
+            if not o.dictspec.has_key("None"):
+                editor.layout.explorer.sellist = [editor.Root.dictitems[o.dictspec['comp_tag_list']]]
+                o['comp_tag_list'] = ""
 
         formobj = quarkx.newobj("tagframe:form")
         formobj.loadtext(dlgdef)
@@ -2199,26 +2259,29 @@ class ComponentType(EntityManager):
                 for value in values:
                     TagList = TagList + value 
 
-                TagList = TagList + """ Hint="List of tags for this component."}"""
+                TagList = TagList + """ Hint="List of tags for this component."$0D"Click on one to jump to that tag."}"""
 
             if o.dictspec.has_key("tag_components"):
                 items = []
                 values = []
                 comps = o.dictspec['tag_components'].split(", ")
                 for comp in comps:
+                    if comp == o.name:
+                        continue
                     comp_name = comp.split(":mc")[0]
                     items = items + ['"' + comp_name + '"' + "$0D"]
                     values = values + ['"' + comp + '"' + "$0D"]
 
-                TagList = TagList + """comp_tag_list: = {Typ = "CL" Txt = "Comps list:" items = """
-                for item in items:
-                    TagList = TagList + item 
+                if len(items) != 0:
+                    TagList = TagList + """comp_tag_list: = {Typ = "CL" Txt = "Comps list:" items = """
+                    for item in items:
+                        TagList = TagList + item 
 
-                TagList = TagList + """ values = """
-                for value in values:
-                    TagList = TagList + value 
+                    TagList = TagList + """ values = """
+                    for value in values:
+                        TagList = TagList + value 
 
-                TagList = TagList + """ Hint="List of tag components for this component."}"""
+                    TagList = TagList + """ Hint="List of tag components for this component."$0D"Click on one to jump to that component."}"""
 
         dlgdef = """
         {
@@ -2283,23 +2346,30 @@ class ComponentType(EntityManager):
             o['vtx_count'] = "0"
 
         if o.dictspec.has_key("Tags") or o.dictspec.has_key("tag_components"):
+            editor = mdleditor.mdleditor # Get the editor.
+                    
             if o.dictspec.has_key("Tags"):
                 tagnames = o.dictspec['Tags'].split(", ")
                 group = o.name.split("_")[0]
                 tag_name = group + "_" + tagnames[0] + ":tag"
-                if not o.dictspec.has_key("tag_list"):
-                    tag_name = group + "_" + tagnames[0] + ":tag"
-                    o['tag_list'] = tag_name
-                elif not (o.dictspec['tag_list'].replace(group + "_", "")).replace(":tag", "") in tagnames:
-                    tag_name = group + "_" + tagnames[0] + ":tag"
-                    o['tag_list'] = tag_name
+                if o.dictspec.has_key("tag_list"):
+                    if not (o.dictspec['tag_list'].replace(group + "_", "")).replace(":tag", "") in tagnames: # In case one of them gets renamed.
+                        tag_name = group + "_" + tagnames[0] + ":tag"
+                        o['tag_list'] = tag_name
+                    if not o.dictspec.has_key("None"):
+                        editor.layout.explorer.sellist = [editor.Root.dictitems['Misc:mg'].dictitems[o.dictspec['tag_list']]]
+                        editor.layout.explorer.expand(editor.Root.dictitems['Misc:mg'])
+                        o['tag_list'] = ""
+                    
                     
             if o.dictspec.has_key("tag_components"):
                 comp_names = o.dictspec['tag_components'].split(", ")
-                if not o.dictspec.has_key("comp_tag_list"):
-                    o['comp_tag_list'] = comp_names[0]
-                elif not o.dictspec['comp_tag_list'] in comp_names:
-                    o['comp_tag_list'] = comp_names[0]
+                if o.dictspec.has_key("comp_tag_list"):
+                    if not o.dictspec['comp_tag_list'] in comp_names: # In case one of them gets renamed.
+                        o['comp_tag_list'] = o.name
+                    if not o.dictspec.has_key("None"):
+                        editor.layout.explorer.sellist = [editor.Root.dictitems[o.dictspec['comp_tag_list']]]
+                        o['comp_tag_list'] = ""
         # Cleans these items out of the component when they should not be there, to keep them from showing up incorrectly.
             if not o.dictspec.has_key("Tags") and o.dictspec.has_key("tag_list"):
                 o['tag_list'] = ""
@@ -2529,6 +2599,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.58  2009/10/04 22:20:10  cdunde
+#Added lists showing component Tags and tag_components.(not functional, just for ref.)
+#
 #Revision 1.57  2009/09/30 19:37:26  cdunde
 #Threw out tags dialog, setup tag dragging, commands, and fixed saving of face selection.
 #
