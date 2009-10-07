@@ -2057,21 +2057,27 @@ def BuildCommonHandles(editor, explorer, option=1):
   #      print "mdlhandles line 1927 len(currentview.handles)",len(currentview.handles)
   #      h = currentview.handles
   #      return h
+
     th = []
-    tag_frame_index = -1
-    for frame in editor.Root.currentcomponent.dictitems['Frames:fg'].subitems:
-        tag_frame_index = tag_frame_index + 1
-        if frame.name == editor.Root.currentcomponent.currentframe.name:
-            break
-    if tag_frame_index != -1:
-        for item in editor.Root.dictitems["Misc:mg"].subitems:
-            if item.type == ":tag":
-                if len(item.subitems)-1 >= tag_frame_index:
-                    tag_frame = item.subitems[tag_frame_index]
-                    th = th + mdlentities.CallManager("handlesopt", tag_frame, editor)
-                else:
-                    tag_frame = item.subitems[0]
-                    th = th + mdlentities.CallManager("handlesopt", tag_frame, editor)
+    for item in editor.Root.dictitems["Misc:mg"].subitems:
+        if item.type == ":tag":
+            tag_group_name = item.name.split("_")[0]
+            for item2 in editor.Root.dictitems:
+                tag_frame_index = 0
+                if editor.Root.dictitems[item2].type == ":mc" and editor.Root.dictitems[item2].name.startswith(tag_group_name + "_") and editor.Root.dictitems[item2].dictspec.has_key("Tags"):
+                    item_currentframe_name = editor.Root.dictitems[item2].currentframe.name
+                    for frame in editor.Root.dictitems[item2].dictitems['Frames:fg'].subitems:
+                        if frame.name == item_currentframe_name:
+                            break
+                        tag_frame_index = tag_frame_index + 1
+                    break
+
+            if len(item.subitems)-1 >= tag_frame_index:
+                tag_frame = item.subitems[tag_frame_index]
+                th = th + mdlentities.CallManager("handlesopt", tag_frame, editor)
+            else:
+                tag_frame = item.subitems[0]
+                th = th + mdlentities.CallManager("handlesopt", tag_frame, editor)
 
     bh = th
     if quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] == "1":
@@ -2174,21 +2180,27 @@ def BuildHandles(editor, explorer, view, option=1):
   #      print "mdlhandles line 1888 len(currentview.handles)",len(currentview.handles)
   #      h = view.handles
   #      return h
+
     th = []
-    tag_frame_index = -1
-    for frame in editor.Root.currentcomponent.dictitems['Frames:fg'].subitems:
-        tag_frame_index = tag_frame_index + 1
-        if frame.name == editor.Root.currentcomponent.currentframe.name:
-            break
-    if tag_frame_index != -1:
-        for item in editor.Root.dictitems["Misc:mg"].subitems:
-            if item.type == ":tag":
-                if len(item.subitems)-1 >= tag_frame_index:
-                    tag_frame = item.subitems[tag_frame_index]
-                    th = th + mdlentities.CallManager("handlesopt", tag_frame, editor)
-                else:
-                    tag_frame = item.subitems[0]
-                    th = th + mdlentities.CallManager("handlesopt", tag_frame, editor)
+    for item in editor.Root.dictitems["Misc:mg"].subitems:
+        if item.type == ":tag":
+            tag_group_name = item.name.split("_")[0]
+            for item2 in editor.Root.dictitems:
+                tag_frame_index = 0
+                if editor.Root.dictitems[item2].type == ":mc" and editor.Root.dictitems[item2].name.startswith(tag_group_name + "_") and editor.Root.dictitems[item2].dictspec.has_key("Tags"):
+                    item_currentframe_name = editor.Root.dictitems[item2].currentframe.name
+                    for frame in editor.Root.dictitems[item2].dictitems['Frames:fg'].subitems:
+                        if frame.name == item_currentframe_name:
+                            break
+                        tag_frame_index = tag_frame_index + 1
+                    break
+
+            if len(item.subitems)-1 >= tag_frame_index:
+                tag_frame = item.subitems[tag_frame_index]
+                th = th + mdlentities.CallManager("handlesopt", tag_frame, editor)
+            else:
+                tag_frame = item.subitems[0]
+                th = th + mdlentities.CallManager("handlesopt", tag_frame, editor)
 
     bh = th
     if quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] == "1":
@@ -5260,6 +5272,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.186  2009/09/30 19:37:26  cdunde
+#Threw out tags dialog, setup tag dragging, commands, and fixed saving of face selection.
+#
 #Revision 1.185  2009/09/07 06:46:24  cdunde
 #Update for Linear and tag handle drawing.
 #
