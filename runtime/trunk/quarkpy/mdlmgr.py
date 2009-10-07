@@ -1821,9 +1821,10 @@ class ModelLayout(BaseLayout):
                 self.editor.SkinFaceSelList = []
                 self.editor.SelCommonTriangles = []
                 self.editor.SelVertexes = []
-                from mdlhandles import SkinView1
-                if SkinView1 is not None:
-                    SkinView1.invalidate()
+                if fs.type != ':tagframe':
+                    from mdlhandles import SkinView1
+                    if SkinView1 is not None:
+                        SkinView1.invalidate()
         else:
             if quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] == "1":
                 pass
@@ -1862,6 +1863,10 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.111  2009/10/03 06:16:07  cdunde
+#Added support for animation interpolation in the Model Editor.
+#(computation of added movement to emulate game action)
+#
 #Revision 1.110  2009/09/30 19:37:26  cdunde
 #Threw out tags dialog, setup tag dragging, commands, and fixed saving of face selection.
 #
