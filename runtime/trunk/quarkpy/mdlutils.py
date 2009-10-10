@@ -523,6 +523,63 @@ def PolynomialInterpolation(editor, AnimFrames, Factor=0.0):
 
     return newframe
 
+def gauss_jordan(m, eps = 1.0/(10**10)):
+  #From: http://elonen.iki.fi/code/misc-notes/python-gaussj/
+  """Puts given matrix (2D array) into the Reduced Row Echelon Form.
+     Returns 1 if successful, 0 if 'm' is singular.
+     NOTE: make sure all the matrix items support fractions! Int matrix will NOT work!
+     Written by Jarno Elonen in April 2005, released into Public Domain"""
+  (h, w) = (len(m), len(m[0]))
+  for y in range(0,h):
+    maxrow = y
+    for y2 in range(y+1, h):    # Find max pivot
+      if abs(m[y2][y]) > abs(m[maxrow][y]):
+        maxrow = y2
+    (m[y], m[maxrow]) = (m[maxrow], m[y])
+    if abs(m[y][y]) <= eps:     # Singular?
+      return 0
+    for y2 in range(y+1, h):    # Eliminate column y
+      c = m[y2][y] / m[y][y]
+      for x in range(y, w):
+        m[y2][x] -= m[y][x] * c
+  for y in range(h-1, 0-1, -1): # Backsubstitute
+    c  = m[y][y]
+    for y2 in range(0,y):
+      for x in range(w-1, y-1, -1):
+        m[y2][x] -=  m[y][x] * m[y2][y] / c
+    m[y][y] /= c
+    for x in range(h, w):       # Normalize row y
+      m[y][x] /= c
+  return 1
+
+def PolynomialInterpolation2(editor, AnimFrames, Factor=0.0):
+    if (Factor < 0.0) or (Factor > len(AnimFrames)):
+        # Somebody send me a bad Factor! Bad programmer! Bad!
+        raise "PolynomialInterpolation: Factor out of range! (%f)" % Factor
+    # Uses gaussian elimination: [A]*{x}={B}
+    NumberFrames = len(AnimFrames)
+    if NumberFrames > 1000:
+        # Can't have the float-cast loose precision
+        raise "PolynomialInterpolation: Too many frames!"
+    newframe = AnimFrames[0].copy()
+    newframe.shortname = "AnimFrame"
+    newvertices = []
+    for vtx in range(len(AnimFrames[0].vertices)):
+        mtx = []
+        for n in range(NumberFrames):
+            NewLine = []
+            for m in range(NumberFrames):
+                NewLine = NewLine + [float(n**(NumberFrames-1-m))]
+            NewLine = NewLine + [AnimFrames[n].vertices[vtx]]
+            mtx = mtx + [NewLine]
+        pos = quarkx.vect((0.0, 0.0, 0.0))
+        if gauss_jordan(mtx):
+            for n in range(NumberFrames):
+                pos = pos + (mtx[n][NumberFrames] * (Factor ** (NumberFrames-1-n)))
+        newvertices = newvertices + [pos]
+    newframe.vertices = newvertices
+    return newframe
+
 
 ###############################
 #
@@ -4052,6 +4109,10 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.116  2009/10/03 06:16:07  cdunde
+#Added support for animation interpolation in the Model Editor.
+#(computation of added movement to emulate game action)
+#
 #Revision 1.115  2009/09/30 19:37:26  cdunde
 #Threw out tags dialog, setup tag dragging, commands, and fixed saving of face selection.
 #
