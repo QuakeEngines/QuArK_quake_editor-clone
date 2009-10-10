@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.5  2008/07/25 19:03:50  danielpharos
+//Re-added QuArK-Protected and description settings.
+//
 //Revision 1.4  2008/07/22 19:02:26  cdunde
 //Updated addon, also new game pak on QuArK site. Don't know who did them.
 //
@@ -2107,7 +2110,7 @@ QQRKSRC1
       dmgtime: =
       {
         txt = "&"
-        Hint = "interval to apply dmg to a player who is s in the way"
+        Hint = "interval to apply dmg to a player who is in the way"
       }
       height: =
       {
@@ -3266,6 +3269,67 @@ QQRKSRC1
         txt = "&"
         hint = "Path to the metashader used to assign textures to the terrain "
          "entity. Note: Omit the 'textures/' prefix."
+      }
+    }
+    func_rotating:form =
+    {
+      help = "Brush entity that spins in place on one axis (default Z). Use an"
+       " origin brush to specifically define the rotation axis. To rotate arou"
+       "nd another axis, make a func_wall with an explicit velocity given."$0D
+       "-------- KEYS --------"$0D"speed : speed to rotate (in degrees per sec"
+       "ond)"$0D"noise : path/name of looping .wav file to play."$0D"dmg: Do t"
+       "his much dmg every .dmgtime interval when blocked"$0D"dmgtime: See abo"
+       "ve. (0.25s default)"$0D"message: kill message when crushed by this"$0D
+       "-------- SPAWNFLAGS --------"$0D"X_AXIS: rotate around the X axis"$0D
+       "Y_AXIS: rotate around the Y axis"
+      dmg: =
+      {
+        txt = "&"
+        Hint = "damage a player who gets crushed by it receives"
+      }
+      dmgtime: =
+      {
+        txt = "&"
+        Hint = "interval to apply dmg to a player who is in the way"
+      }
+      noise: =
+      {
+        hint = "Use this to select any .ogg; *.wav file you want."$0D"You must"
+         " extract the folder with the .ogg; *.wav files"$0D"from the .pk3 fil"
+         "e and put it in your 'data' folder."$0D"Click the 'Help Book' above "
+         "for more possible detail."
+        Typ = "EP"
+        BasePath = "$Game\data"
+        CutPath = "$Game\?\"
+        DefExt = "*.ogg; *.wav"
+        DirSep = "/"
+        txt = "&"
+        hint = "path/name of .wav file to play. Use looping sounds only (eg. s"
+         "ound/world/drone6.wav - See Notes)."
+      }
+      noise: =
+      {
+        Txt = " "
+        Typ = "B"
+        Cap = "sounds..."
+        form = "t_noise_form:form"
+        hint = "Available .WAV files"
+      }
+      speed: =
+      {
+        txt = "&"
+        hint = "amount of time in seconds for one complete oscillation cycle ("
+         "default 4)."
+      }
+      spawnflags: =
+      {
+        typ = "X1"
+        cap = "X_AXIS"
+      }
+      spawnflags: =
+      {
+        typ = "X2"
+        cap = "Y_AXIS"
       }
     }
     func_snow:form =
