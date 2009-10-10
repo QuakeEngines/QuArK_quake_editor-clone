@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.6  2009/10/10 09:57:13  danielpharos
+//Added missing func_rotating:form.
+//
 //Revision 1.5  2008/07/25 19:03:50  danielpharos
 //Re-added QuArK-Protected and description settings.
 //
@@ -206,6 +209,12 @@ QQRKSRC1
           ;incl = "defpoly"
           ;desc = "Used to lift the player in the air with a brush. Bots don't"
            " use well!"
+        }
+        func_rain:b =
+        {
+          ;incl = "defpoly"
+          ;desc = "This is an invisible area like a trigger, which rain falls "
+           "inside of."
         }
         func_rotating:b =
         {
@@ -3271,6 +3280,73 @@ QQRKSRC1
          "entity. Note: Omit the 'textures/' prefix."
       }
     }
+    func_rain:form =
+    {
+      help = "This is an invisible area like a trigger, which rain falls insid"
+       "e of."$0D22"velocity"$220D"falling direction (should be something like"
+       " '0 0 -700', use the X and Y velocity for wind)"$0D22"cnt"$220D"sets c"
+       "olor of rain (default 12 - white)"$0D22"count"$220D"adjusts rain densi"
+       "ty, this many particles fall every second, experiment to see the effec"
+       "ts (default is based on area size)"
+      count: =
+      {
+        txt = "&"
+        hint = ""
+      }
+      cnt: =
+      {
+        txt = "&"
+        hint = ""
+      }
+      target: =
+      {
+        txt = "&"
+        hint = "Name of the entity that this one targets."
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = "Name of this entity, used as a target by another entity."$0D"C"
+         "lick the 'Help Book' above for more possible detail."
+      }
+      velocity: =
+      {
+        txt = "&"
+        hint = ""
+      }
+      Sep: =
+      {
+        Typ = "S"
+        Txt = ""
+      }
+      notfree: =
+      {
+        Txt = "&"
+        Typ = "C"
+        Hint = "If set to 1, this will not spawn in a Free for All or Tourname"
+         "nt games. (Default=0)"
+        Items = "0) Spawn"$0D"1) Don't Spawn"
+        Values = "0"$0D"1"
+      }
+      notsingle: =
+      {
+        Txt = "&"
+        Typ = "C"
+        Hint = "If set to 1, this will not spawn in a single player game. (Def"
+         "ault=0)"
+        Items = "0) Spawn"$0D"1) Don't Spawn"
+        Values = "0"$0D"1"
+      }
+      notteam: =
+      {
+        Txt = "&"
+        Typ = "C"
+        Hint = "If set to 1, this will not spawn in a Teamplay or CTF games. ("
+         "Default=0)"
+        Items = "0) Spawn"$0D"1) Don't Spawn"
+        Values = "0"$0D"1"
+      }
+    }
     func_rotating:form =
     {
       help = "Brush entity that spins in place on one axis (default Z). Use an"
@@ -3337,7 +3413,7 @@ QQRKSRC1
       help = "This is an invisible area like a trigger, which snow falls insid"
        "e of."$0D22"velocity"$220D"falling direction (should be something like"
        " '0 0 -300', use the X and Y velocity for wind)"$0D22"cnt"$220D"sets c"
-       "olor of rain (default 12 - white)"$0D22"count"$220D"adjusts snow densi"
+       "olor of snow (default 12 - white)"$0D22"count"$220D"adjusts snow densi"
        "ty, this many particles fall every second, experiment to see the effec"
        "ts (default is based on area size)"
       count: =
