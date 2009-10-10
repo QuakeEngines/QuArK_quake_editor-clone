@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.7  2009/10/10 10:08:28  danielpharos
+//Added missing func_rain entity.
+//
 //Revision 1.6  2009/10/10 09:57:13  danielpharos
 //Added missing func_rotating:form.
 //
@@ -338,6 +341,16 @@ QQRKSRC1
         {
           ;incl = "defpoly"
           ;desc = "Command trigger."
+        }
+        trigger_counter:b =
+        {
+          ;incl = "defpoly"
+          ;desc = "This takes multiple triggers before it fires."
+        }
+        trigger_delay:b =
+        {
+          ;incl = "defpoly"
+          ;desc = "Delay trigger."
         }
         trigger_hurt:b =
         {
@@ -6046,6 +6059,149 @@ QQRKSRC1
         txt = "&"
         hint = "Name of this entity, used as a target by another entity."$0D"C"
          "lick the 'Help Book' above for more possible detail."
+      }
+      Sep: =
+      {
+        Typ = "S"
+        Txt = ""
+      }
+      notfree: =
+      {
+        Txt = "&"
+        Typ = "C"
+        Hint = "If set to 1, this will not spawn in a Free for All or Tourname"
+         "nt games. (Default=0)"
+        Items = "0) Spawn"$0D"1) Don't Spawn"
+        Values = "0"$0D"1"
+      }
+      notsingle: =
+      {
+        Txt = "&"
+        Typ = "C"
+        Hint = "If set to 1, this will not spawn in a single player game. (Def"
+         "ault=0)"
+        Items = "0) Spawn"$0D"1) Don't Spawn"
+        Values = "0"$0D"1"
+      }
+      notteam: =
+      {
+        Txt = "&"
+        Typ = "C"
+        Hint = "If set to 1, this will not spawn in a Teamplay or CTF games. ("
+         "Default=0)"
+        Items = "0) Spawn"$0D"1) Don't Spawn"
+        Values = "0"$0D"1"
+      }
+    }
+    trigger_counter:form =
+    {
+      help = "Acts as an intermediary for an action that takes multiple inputs"
+       "."$0D"After the counter has been triggered 'count' times, it will fire"
+       " all of its targets and remove itself."$0D"-------- KEYS --------"$0D
+       "count : how many times this needs to be triggered to activate its targ"
+       "ets"$0D"target : trigger all entities with this targetname when trigge"
+       "red"$0D"targetname : name that identifies this entity so it can be tri"
+       "ggered"$0D"delay : delay the triggering by the given time"$0D"message "
+       ": print this message to the player who activated the trigger"$0D"killt"
+       "arget : remove all entities with this targetname when triggered"$0D"--"
+       "------ SPAWNFLAGS --------"$0D"NOMESSAGE : don't print a "$22"2 more t"
+       "o go..."$22"-like message when triggered"
+      count: =
+      {
+        txt = "&"
+        hint = ""
+      }
+      delay: =
+      {
+        txt = "&"
+        hint = ""
+      }
+      killtarget: =
+      {
+        Txt = "&"
+        Hint = "remove all entities with this targetname when triggered."
+      }
+      target: =
+      {
+        txt = "&"
+        hint = "Name of the entity that this one targets."
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = "Name of this entity, used as a target by another entity."$0D"C"
+         "lick the 'Help Book' above for more possible detail."
+      }
+      spawnflags: =
+      {
+        typ = "X1"
+        cap = "NOMESSAGE"
+        Txt = "&"
+        Hint = "Don't print a message when triggered"
+      }
+      Sep: =
+      {
+        Typ = "S"
+        Txt = ""
+      }
+      notfree: =
+      {
+        Txt = "&"
+        Typ = "C"
+        Hint = "If set to 1, this will not spawn in a Free for All or Tourname"
+         "nt games. (Default=0)"
+        Items = "0) Spawn"$0D"1) Don't Spawn"
+        Values = "0"$0D"1"
+      }
+      notsingle: =
+      {
+        Txt = "&"
+        Typ = "C"
+        Hint = "If set to 1, this will not spawn in a single player game. (Def"
+         "ault=0)"
+        Items = "0) Spawn"$0D"1) Don't Spawn"
+        Values = "0"$0D"1"
+      }
+      notteam: =
+      {
+        Txt = "&"
+        Typ = "C"
+        Hint = "If set to 1, this will not spawn in a Teamplay or CTF games. ("
+         "Default=0)"
+        Items = "0) Spawn"$0D"1) Don't Spawn"
+        Values = "0"$0D"1"
+      }
+    }
+    trigger_delay:form =
+    {
+      help = "Trigger that delays triggering by a given amount of time. Only o"
+       "ne action can be waited for; if triggered again before the 'wait' time"
+       " expires, the timer will restart (as opposed to trigger_relay)."$0D"--"
+       "------ KEYS --------"$0D"wait : delay the triggering by the given time"
+       $0D"target : trigger all entities with this targetname when triggered"$0D
+       "targetname : name that identifies this entity so it can be triggered"$0D
+       "message : print this message to the player who activated the trigger"$0D
+       "killtarget : remove all entities with this targetname when triggered"
+      killtarget: =
+      {
+        Txt = "&"
+        Hint = "remove all entities with this targetname when triggered."
+      }
+      target: =
+      {
+        txt = "&"
+        hint = "Name of the entity that this one targets."
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = "Name of this entity, used as a target by another entity."$0D"C"
+         "lick the 'Help Book' above for more possible detail."
+      }
+      wait: =
+      {
+        txt = "&"
+        hint = "delay the triggering by the given time."
       }
       Sep: =
       {
