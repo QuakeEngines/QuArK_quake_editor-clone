@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.11  2009/10/10 12:42:18  danielpharos
+//Fixed a typo.
+//
 //Revision 1.10  2009/10/10 12:38:39  danielpharos
 //Some C to CL list fixes.
 //
@@ -3434,11 +3437,13 @@ QQRKSRC1
       {
         typ = "X1"
         cap = "X_AXIS"
+        Txt = "&"
       }
       spawnflags: =
       {
         typ = "X2"
         cap = "Y_AXIS"
+        Txt = "&"
       }
     }
     func_snow:form =
