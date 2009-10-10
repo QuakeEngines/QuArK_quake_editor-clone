@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.10  2009/10/10 12:38:39  danielpharos
+//Some C to CL list fixes.
+//
 //Revision 1.9  2009/10/10 12:30:42  danielpharos
 //Added missing misc_follow and trigger_swamp entities.
 //
@@ -66,7 +69,7 @@ QQRKSRC1
         runematch_spawn_point:e =
         {
           origin = "0 0 0"
-          ;desc = "Spawnpoiny for runes in a runematch."
+          ;desc = "Spawnpoint for runes in a runematch."
         }
         info_notnull:e =
         {
@@ -5756,7 +5759,7 @@ QQRKSRC1
     }
     runematch_spawn_point:form =
     {
-      help = "Spawnpoiny for runes in a runematch."$0D"-----------KEYS--------"
+      help = "Spawnpoint for runes in a runematch."$0D"-----------KEYS--------"
        "----"$0D"-----------SPAWNFLAGS-----------"$0D"---------NOTES----------"
        $0D"rune spwanpoint."
       bbox = '-16 -16 -16 16 16 16'
