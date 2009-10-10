@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.9  2009/10/10 12:30:42  danielpharos
+//Added missing misc_follow and trigger_swamp entities.
+//
 //Revision 1.8  2009/10/10 10:33:21  danielpharos
 //Added missing trigger_counter and trigger_delay entities.
 //
@@ -464,7 +467,7 @@ QQRKSRC1
       Caption = "Models lists"
       model: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Models"
         Items = "bullet.mdl"$0D"casing_bronze.mdl"$0D"casing_shell.mdl"$0D"cas"
          "ing_steel.mdl"$0D"ebomb.mdl"$0D"elaser.mdl"$0D"flash.md3"$0D"grass02"
@@ -486,21 +489,21 @@ QQRKSRC1
       }
       model: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Aircraft Models"
         Items = "a.ASE"$0D"aircraft.zym"
         Values = "models/aircraft/a.ASE"$0D"models/aircraft/aircraft.zym"
       }
       model: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "CTF Models"
         Items = "flag_blue.md3"$0D"flag_red.md3"
         Values = "models/ctf/flag_blue.md3"$0D"models/ctf/flag_red.md3"
       }
       model: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Domination Models"
         Items = "dom_blue.md3"$0D"dom_pink.md3"$0D"dom_red.md3"$0D"dom_unclaim"
          "ed.md3"$0D"dom_yellow.md3"
@@ -510,7 +513,7 @@ QQRKSRC1
       }
       model: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Final Rage Models"
         Items = "gspawn.md3"$0D"lamp2.md3"$0D"pspawn1.md3"$0D
         Values = "/models/final_rage/gspawn.md3"$0D"/models/final_rage/lamp2.m"
@@ -518,7 +521,7 @@ QQRKSRC1
       }
       model: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Gibs Models"
         Items = "arm.md3"$0D"bloodyskull.md3"$0D"chest.md3"$0D"chunk.mdl"$0D"e"
          "ye.md3"$0D"gib1.md3"$0D"gib1.mdl"$0D"gib2.md3"$0D"gib2.mdl"$0D"gib3."
@@ -534,7 +537,7 @@ QQRKSRC1
       }
       model: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Items Models"
         Items = "a_bullets.mdl"$0D"a_cells.md3"$0D"a_rockets.md3"$0D"a_shells."
          "md3"$0D"g_a1.md3"$0D"g_a25.md3"$0D"g_armormedium.md3"$0D"g_h1.md3"$0D
@@ -550,14 +553,14 @@ QQRKSRC1
       }
       model: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "KeyHunt Models"
         Items = "key.md3"$0D"key.obj"
         Values = "models/keyhunt/key.md3"$0D"models/keyhunt/key.obj"
       }
       model: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "MapObjects Models"
         Items = "aseceiling.ase"$0D"asedoor.ase"$0D"asedoor2.ase"$0D"asedoor3."
          "ase"$0D"asejp.ase"$0D"aseplats.ase"$0D"asesupport.ase"$0D"asetrim.as"
@@ -583,7 +586,7 @@ QQRKSRC1
       }
       model: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Misc Models"
         Items = "chatbubble.spr"$0D"line-81-1.mdl"$0D"teambubble.spr"
         Values = "models/misc/chatbubble.spr"$0D"models/misc/line-81-1.mdl"$0D
@@ -591,7 +594,7 @@ QQRKSRC1
       }
       model: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "OnSlaught Models"
         Items = "controlpoint_icon.md3"$0D"controlpoint_pad.md3"$0D"controlpoi"
          "nt_shield.md3"$0D"generator.md3"$0D"generator_shield.md3"$0D"pad.dpm"
@@ -604,7 +607,7 @@ QQRKSRC1
       }
       model: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Player Models"
         Items = "carni.zym"$0D"crash.zym"$0D"grunt.zym"$0D"headhunter.zym"$0D"i"
          "nsurrectionist.zym"$0D"jeandarc.zym"$0D"lurk.zym"$0D"lycanthrope.zym"
@@ -620,21 +623,21 @@ QQRKSRC1
       }
       model: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Pomp Models"
         Items = "pomp.zym"
         Values = "models/pomp/pomp.zym"
       }
       model: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "RuneMatch Models"
         Items = "curse.mdl"$0D"rune.mdl"
         Values = "models/runematch/curse.mdl"$0D"models/runematch/rune.mdl"
       }
       model: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Sprites Models"
         Items = "makespr32"$0D"make-sprites.sh"$0D"bluebase.sp2"$0D"danger.sp2"
          $0D"defend.sp2"$0D"destroy.sp2"$0D"flagcarrier.sp2"$0D"helpme.sp2"$0D
@@ -670,7 +673,7 @@ QQRKSRC1
       }
       model: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Weapons Models"
         Items = "g_crylink.md3"$0D"g_electro.md3"$0D"g_gl.md3"$0D"g_hagar.md3"$0D
          "g_nex.md3"$0D"g_rl.md3"$0D"g_shotgun.md3"$0D"g_uzi.md3"$0D"v_crylink"
@@ -697,7 +700,7 @@ QQRKSRC1
       Caption = "Models lists"
       model: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Domination Models"
         Items = "dom_blue.md3"$0D"dom_pink.md3"$0D"dom_red.md3"$0D"dom_unclaim"
          "ed.md3"$0D"dom_yellow.md3"
@@ -711,7 +714,7 @@ QQRKSRC1
       Caption = "Models2 lists"
       model2: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Models"
         Items = "bullet.mdl"$0D"casing_bronze.mdl"$0D"casing_shell.mdl"$0D"cas"
          "ing_steel.mdl"$0D"ebomb.mdl"$0D"elaser.mdl"$0D"flash.md3"$0D"grass02"
@@ -733,21 +736,21 @@ QQRKSRC1
       }
       model2: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Aircraft Models"
         Items = "a.ASE"$0D"aircraft.zym"
         Values = "models/aircraft/a.ASE"$0D"models/aircraft/aircraft.zym"
       }
       model2: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "CTF Models"
         Items = "flag_blue.md3"$0D"flag_red.md3"
         Values = "models/ctf/flag_blue.md3"$0D"models/ctf/flag_red.md3"
       }
       model2: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Domination Models"
         Items = "dom_blue.md3"$0D"dom_pink.md3"$0D"dom_red.md3"$0D"dom_unclaim"
          "ed.md3"$0D"dom_yellow.md3"
@@ -757,7 +760,7 @@ QQRKSRC1
       }
       model2: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Final Rage Models"
         Items = "gspawn.md3"$0D"lamp2.md3"$0D"pspawn1.md3"$0D
         Values = "/models/final_rage/gspawn.md3"$0D"/models/final_rage/lamp2.m"
@@ -765,7 +768,7 @@ QQRKSRC1
       }
       model2: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Gibs Models"
         Items = "arm.md3"$0D"bloodyskull.md3"$0D"chest.md3"$0D"chunk.mdl"$0D"e"
          "ye.md3"$0D"gib1.md3"$0D"gib1.mdl"$0D"gib2.md3"$0D"gib2.mdl"$0D"gib3."
@@ -781,7 +784,7 @@ QQRKSRC1
       }
       model2: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Items Models"
         Items = "a_bullets.mdl"$0D"a_cells.md3"$0D"a_rockets.md3"$0D"a_shells."
          "md3"$0D"g_a1.md3"$0D"g_a25.md3"$0D"g_armormedium.md3"$0D"g_h1.md3"$0D
@@ -797,14 +800,14 @@ QQRKSRC1
       }
       model2: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "KeyHunt Models"
         Items = "key.md3"$0D"key.obj"
         Values = "models/keyhunt/key.md3"$0D"models/keyhunt/key.obj"
       }
       model2: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "MapObjects Models"
         Items = "aseceiling.ase"$0D"asedoor.ase"$0D"asedoor2.ase"$0D"asedoor3."
          "ase"$0D"asejp.ase"$0D"aseplats.ase"$0D"asesupport.ase"$0D"asetrim.as"
@@ -830,7 +833,7 @@ QQRKSRC1
       }
       model2: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Misc Models"
         Items = "chatbubble.spr"$0D"line-81-1.mdl"$0D"teambubble.spr"
         Values = "models/misc/chatbubble.spr"$0D"models/misc/line-81-1.mdl"$0D
@@ -838,7 +841,7 @@ QQRKSRC1
       }
       model2: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "OnSlaught Models"
         Items = "controlpoint_icon.md3"$0D"controlpoint_pad.md3"$0D"controlpoi"
          "nt_shield.md3"$0D"generator.md3"$0D"generator_shield.md3"$0D"pad.dpm"
@@ -851,7 +854,7 @@ QQRKSRC1
       }
       model2: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Player Models"
         Items = "carni.zym"$0D"crash.zym"$0D"grunt.zym"$0D"headhunter.zym"$0D"i"
          "nsurrectionist.zym"$0D"jeandarc.zym"$0D"lurk.zym"$0D"lycanthrope.zym"
@@ -867,21 +870,21 @@ QQRKSRC1
       }
       model2: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Pomp Models"
         Items = "pomp.zym"
         Values = "models/pomp/pomp.zym"
       }
       model2: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "RuneMatch Models"
         Items = "curse.mdl"$0D"rune.mdl"
         Values = "models/runematch/curse.mdl"$0D"models/runematch/rune.mdl"
       }
       model2: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Sprites Models"
         Items = "makespr32"$0D"make-sprites.sh"$0D"bluebase.sp2"$0D"danger.sp2"
          $0D"defend.sp2"$0D"destroy.sp2"$0D"flagcarrier.sp2"$0D"helpme.sp2"$0D
@@ -917,7 +920,7 @@ QQRKSRC1
       }
       model2: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Weapons Models"
         Items = "g_crylink.md3"$0D"g_electro.md3"$0D"g_gl.md3"$0D"g_hagar.md3"$0D
          "g_nex.md3"$0D"g_rl.md3"$0D"g_shotgun.md3"$0D"g_uzi.md3"$0D"v_crylink"
@@ -944,7 +947,7 @@ QQRKSRC1
       Caption = "Sounds"
       noise: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Ambient Sounds"
         Items = "air.ogg"$0D"ambient_07.ogg"$0D"demonwind01.ogg"$0D"fan4.ogg"$0D
          "machine1.ogg"$0D"machine2.ogg"$0D"machine3.ogg"$0D"machine4.ogg"$0D"m"
@@ -959,7 +962,7 @@ QQRKSRC1
       }
       noise: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Announcer Male Sounds"
         Items = "03kills.ogg"$0D"05kills.ogg"$0D"10kills.ogg"$0D"15kills.ogg"$0D
          "20kills.ogg"$0D"25kills.ogg"$0D"30kills.ogg"$0D"botlike.ogg"$0D"elec"
@@ -974,7 +977,7 @@ QQRKSRC1
       }
       noise: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Announcer Robotic Sounds"
         Items = "1.ogg"$0D"2.ogg"$0D"3.ogg"$0D"4.ogg"$0D"5.ogg"$0D"6.ogg"$0D"7"
          ".ogg"$0D"8.ogg"$0D"9.ogg"$0D"10.ogg"$0D"1fragleft.ogg"$0D"2fragsleft"
@@ -1002,7 +1005,7 @@ QQRKSRC1
       }
       noise: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "CD Tracks Sounds"
         Items = "thunder.ogg"$0D"track001.ogg"$0D"track002.ogg"$0D"track003.og"
          "g"$0D"track004.ogg"$0D"track005.ogg"$0D"track006.ogg"$0D"track007.og"
@@ -1015,7 +1018,7 @@ QQRKSRC1
       }
       noise: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "CTF Sounds"
         Items = "bluecapture.ogg"$0D"capture.ogg"$0D"redcapture.ogg"$0D"respaw"
          "n.wav"$0D"return.wav"$0D"take.wav"
@@ -1025,14 +1028,14 @@ QQRKSRC1
       }
       noise: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Domination Sound"
         Items = "claim.wav"
         Values = "sound/domination/claim.wav"
       }
       noise: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Kh Sounds"
         Items = "capture.wav"$0D"collect.wav"$0D"destroy.wav"$0D"drop.wav"
         Values = "sound/kh/capture.wav"$0D"sound/kh/collect.wav"$0D"sound/kh/d"
@@ -1040,7 +1043,7 @@ QQRKSRC1
       }
       noise: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Misc Sounds"
         Items = "armor1.wav"$0D"armor25.wav"$0D"armorimpact.wav"$0D"bodyimpact"
          "1.wav"$0D"bodyimpact2.wav"$0D"decreasevalue.wav"$0D"footstep01.wav"$0D
@@ -1076,7 +1079,7 @@ QQRKSRC1
       }
       noise: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Onslaught Sounds"
         Items = "controlpoint_build.ogg"$0D"controlpoint_built.ogg"$0D"control"
          "point_underattack.ogg"$0D"damageblockedbyshield.wav"$0D"generator_de"
@@ -1088,21 +1091,21 @@ QQRKSRC1
       }
       noise: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Plats Sounds"
         Items = "medplat1.wav"$0D"medplat2.wav"
         Values = "sound/plats/medplat1.wav"$0D"sound/plats/medplat2.wav"
       }
       noise: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Player Sounds"
         Items = "lava.ogg"$0D"slime.ogg"
         Values = "sound/player/lava.ogg"$0D"sound/player/slime.ogg"
       }
       noise: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Weapons Sounds"
         Items = "crylink_fire.ogg"$0D"electro_bounce.ogg"$0D"electro_fire.ogg"$0D
          "electro_fire2.ogg"$0D"electro_fly.wav"$0D"electro_impact.ogg"$0D"ele"
@@ -1138,7 +1141,7 @@ QQRKSRC1
       }
       noise: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Weather Sounds"
         Items = "rain_1.ogg"
         Values = "sound/weather/rain_1.ogg"
@@ -1149,7 +1152,7 @@ QQRKSRC1
       Caption = "Sounds 1"
       noise1: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Ambient Sounds"
         Items = "air.ogg"$0D"ambient_07.ogg"$0D"demonwind01.ogg"$0D"fan4.ogg"$0D
          "machine1.ogg"$0D"machine2.ogg"$0D"machine3.ogg"$0D"machine4.ogg"$0D"m"
@@ -1164,7 +1167,7 @@ QQRKSRC1
       }
       noise1: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Announcer Male Sounds"
         Items = "03kills.ogg"$0D"05kills.ogg"$0D"10kills.ogg"$0D"15kills.ogg"$0D
          "20kills.ogg"$0D"25kills.ogg"$0D"30kills.ogg"$0D"botlike.ogg"$0D"elec"
@@ -1179,7 +1182,7 @@ QQRKSRC1
       }
       noise1: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Announcer Robotic Sounds"
         Items = "1.ogg"$0D"2.ogg"$0D"3.ogg"$0D"4.ogg"$0D"5.ogg"$0D"6.ogg"$0D"7"
          ".ogg"$0D"8.ogg"$0D"9.ogg"$0D"10.ogg"$0D"1fragleft.ogg"$0D"2fragsleft"
@@ -1207,7 +1210,7 @@ QQRKSRC1
       }
       noise1: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "CD Tracks Sounds"
         Items = "thunder.ogg"$0D"track001.ogg"$0D"track002.ogg"$0D"track003.og"
          "g"$0D"track004.ogg"$0D"track005.ogg"$0D"track006.ogg"$0D"track007.og"
@@ -1220,7 +1223,7 @@ QQRKSRC1
       }
       noise1: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "CTF Sounds"
         Items = "bluecapture.ogg"$0D"capture.ogg"$0D"redcapture.ogg"$0D"respaw"
          "n.wav"$0D"return.wav"$0D"take.wav"
@@ -1230,14 +1233,14 @@ QQRKSRC1
       }
       noise1: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Domination Sound"
         Items = "claim.wav"
         Values = "sound/domination/claim.wav"
       }
       noise1: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Kh Sounds"
         Items = "capture.wav"$0D"collect.wav"$0D"destroy.wav"$0D"drop.wav"
         Values = "sound/kh/capture.wav"$0D"sound/kh/collect.wav"$0D"sound/kh/d"
@@ -1245,7 +1248,7 @@ QQRKSRC1
       }
       noise1: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Misc Sounds"
         Items = "armor1.wav"$0D"armor25.wav"$0D"armorimpact.wav"$0D"bodyimpact"
          "1.wav"$0D"bodyimpact2.wav"$0D"decreasevalue.wav"$0D"footstep01.wav"$0D
@@ -1281,7 +1284,7 @@ QQRKSRC1
       }
       noise1: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Onslaught Sounds"
         Items = "controlpoint_build.ogg"$0D"controlpoint_built.ogg"$0D"control"
          "point_underattack.ogg"$0D"damageblockedbyshield.wav"$0D"generator_de"
@@ -1293,21 +1296,21 @@ QQRKSRC1
       }
       noise1: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Plats Sounds"
         Items = "medplat1.wav"$0D"medplat2.wav"
         Values = "sound/plats/medplat1.wav"$0D"sound/plats/medplat2.wav"
       }
       noise1: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Player Sounds"
         Items = "lava.ogg"$0D"slime.ogg"
         Values = "sound/player/lava.ogg"$0D"sound/player/slime.ogg"
       }
       noise1: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Weapons Sounds"
         Items = "crylink_fire.ogg"$0D"electro_bounce.ogg"$0D"electro_fire.ogg"$0D
          "electro_fire2.ogg"$0D"electro_fly.wav"$0D"electro_impact.ogg"$0D"ele"
@@ -1343,7 +1346,7 @@ QQRKSRC1
       }
       noise1: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Weather Sounds"
         Items = "rain_1.ogg"
         Values = "sound/weather/rain_1.ogg"
@@ -1354,7 +1357,7 @@ QQRKSRC1
       Caption = "Sounds 2"
       noise2: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Ambient Sounds"
         Items = "air.ogg"$0D"ambient_07.ogg"$0D"demonwind01.ogg"$0D"fan4.ogg"$0D
          "machine1.ogg"$0D"machine2.ogg"$0D"machine3.ogg"$0D"machine4.ogg"$0D"m"
@@ -1369,7 +1372,7 @@ QQRKSRC1
       }
       noise2: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Announcer Male Sounds"
         Items = "03kills.ogg"$0D"05kills.ogg"$0D"10kills.ogg"$0D"15kills.ogg"$0D
          "20kills.ogg"$0D"25kills.ogg"$0D"30kills.ogg"$0D"botlike.ogg"$0D"elec"
@@ -1384,7 +1387,7 @@ QQRKSRC1
       }
       noise2: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Announcer Robotic Sounds"
         Items = "1.ogg"$0D"2.ogg"$0D"3.ogg"$0D"4.ogg"$0D"5.ogg"$0D"6.ogg"$0D"7"
          ".ogg"$0D"8.ogg"$0D"9.ogg"$0D"10.ogg"$0D"1fragleft.ogg"$0D"2fragsleft"
@@ -1412,7 +1415,7 @@ QQRKSRC1
       }
       noise2: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "CD Tracks Sounds"
         Items = "thunder.ogg"$0D"track001.ogg"$0D"track002.ogg"$0D"track003.og"
          "g"$0D"track004.ogg"$0D"track005.ogg"$0D"track006.ogg"$0D"track007.og"
@@ -1425,7 +1428,7 @@ QQRKSRC1
       }
       noise2: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "CTF Sounds"
         Items = "bluecapture.ogg"$0D"capture.ogg"$0D"redcapture.ogg"$0D"respaw"
          "n.wav"$0D"return.wav"$0D"take.wav"
@@ -1435,14 +1438,14 @@ QQRKSRC1
       }
       noise2: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Domination Sound"
         Items = "claim.wav"
         Values = "sound/domination/claim.wav"
       }
       noise2: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Kh Sounds"
         Items = "capture.wav"$0D"collect.wav"$0D"destroy.wav"$0D"drop.wav"
         Values = "sound/kh/capture.wav"$0D"sound/kh/collect.wav"$0D"sound/kh/d"
@@ -1450,7 +1453,7 @@ QQRKSRC1
       }
       noise2: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Misc Sounds"
         Items = "armor1.wav"$0D"armor25.wav"$0D"armorimpact.wav"$0D"bodyimpact"
          "1.wav"$0D"bodyimpact2.wav"$0D"decreasevalue.wav"$0D"footstep01.wav"$0D
@@ -1486,7 +1489,7 @@ QQRKSRC1
       }
       noise2: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Onslaught Sounds"
         Items = "controlpoint_build.ogg"$0D"controlpoint_built.ogg"$0D"control"
          "point_underattack.ogg"$0D"damageblockedbyshield.wav"$0D"generator_de"
@@ -1498,21 +1501,21 @@ QQRKSRC1
       }
       noise2: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Plats Sounds"
         Items = "medplat1.wav"$0D"medplat2.wav"
         Values = "sound/plats/medplat1.wav"$0D"sound/plats/medplat2.wav"
       }
       noise2: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Player Sounds"
         Items = "lava.ogg"$0D"slime.ogg"
         Values = "sound/player/lava.ogg"$0D"sound/player/slime.ogg"
       }
       noise2: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Weapons Sounds"
         Items = "crylink_fire.ogg"$0D"electro_bounce.ogg"$0D"electro_fire.ogg"$0D
          "electro_fire2.ogg"$0D"electro_fly.wav"$0D"electro_impact.ogg"$0D"ele"
@@ -1548,7 +1551,7 @@ QQRKSRC1
       }
       noise2: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Weather Sounds"
         Items = "rain_1.ogg"
         Values = "sound/weather/rain_1.ogg"
@@ -1559,7 +1562,7 @@ QQRKSRC1
       Caption = "Sounds 3"
       noise3: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Ambient Sounds"
         Items = "air.ogg"$0D"ambient_07.ogg"$0D"demonwind01.ogg"$0D"fan4.ogg"$0D
          "machine1.ogg"$0D"machine2.ogg"$0D"machine3.ogg"$0D"machine4.ogg"$0D"m"
@@ -1574,7 +1577,7 @@ QQRKSRC1
       }
       noise3: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Announcer Male Sounds"
         Items = "03kills.ogg"$0D"05kills.ogg"$0D"10kills.ogg"$0D"15kills.ogg"$0D
          "20kills.ogg"$0D"25kills.ogg"$0D"30kills.ogg"$0D"botlike.ogg"$0D"elec"
@@ -1589,7 +1592,7 @@ QQRKSRC1
       }
       noise3: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Announcer Robotic Sounds"
         Items = "1.ogg"$0D"2.ogg"$0D"3.ogg"$0D"4.ogg"$0D"5.ogg"$0D"6.ogg"$0D"7"
          ".ogg"$0D"8.ogg"$0D"9.ogg"$0D"10.ogg"$0D"1fragleft.ogg"$0D"2fragsleft"
@@ -1617,7 +1620,7 @@ QQRKSRC1
       }
       noise3: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "CD Tracks Sounds"
         Items = "thunder.ogg"$0D"track001.ogg"$0D"track002.ogg"$0D"track003.og"
          "g"$0D"track004.ogg"$0D"track005.ogg"$0D"track006.ogg"$0D"track007.og"
@@ -1630,7 +1633,7 @@ QQRKSRC1
       }
       noise3: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "CTF Sounds"
         Items = "bluecapture.ogg"$0D"capture.ogg"$0D"redcapture.ogg"$0D"respaw"
          "n.wav"$0D"return.wav"$0D"take.wav"
@@ -1640,14 +1643,14 @@ QQRKSRC1
       }
       noise3: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Domination Sound"
         Items = "claim.wav"
         Values = "sound/domination/claim.wav"
       }
       noise3: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Kh Sounds"
         Items = "capture.wav"$0D"collect.wav"$0D"destroy.wav"$0D"drop.wav"
         Values = "sound/kh/capture.wav"$0D"sound/kh/collect.wav"$0D"sound/kh/d"
@@ -1655,7 +1658,7 @@ QQRKSRC1
       }
       noise3: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Misc Sounds"
         Items = "armor1.wav"$0D"armor25.wav"$0D"armorimpact.wav"$0D"bodyimpact"
          "1.wav"$0D"bodyimpact2.wav"$0D"decreasevalue.wav"$0D"footstep01.wav"$0D
@@ -1691,7 +1694,7 @@ QQRKSRC1
       }
       noise3: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Onslaught Sounds"
         Items = "controlpoint_build.ogg"$0D"controlpoint_built.ogg"$0D"control"
          "point_underattack.ogg"$0D"damageblockedbyshield.wav"$0D"generator_de"
@@ -1703,21 +1706,21 @@ QQRKSRC1
       }
       noise3: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Plats Sounds"
         Items = "medplat1.wav"$0D"medplat2.wav"
         Values = "sound/plats/medplat1.wav"$0D"sound/plats/medplat2.wav"
       }
       noise3: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Player Sounds"
         Items = "lava.ogg"$0D"slime.ogg"
         Values = "sound/player/lava.ogg"$0D"sound/player/slime.ogg"
       }
       noise3: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Weapons Sounds"
         Items = "crylink_fire.ogg"$0D"electro_bounce.ogg"$0D"electro_fire.ogg"$0D
          "electro_fire2.ogg"$0D"electro_fly.wav"$0D"electro_impact.ogg"$0D"ele"
@@ -1753,7 +1756,7 @@ QQRKSRC1
       }
       noise3: =
       {
-        Typ = "C"
+        Typ = "CL"
         Txt = "Weather Sounds"
         Items = "rain_1.ogg"
         Values = "sound/weather/rain_1.ogg"
