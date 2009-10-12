@@ -964,6 +964,11 @@ def loadmodel(root, filename, gamename, nomessage=0):
         editor = None # Reset the global again.
         return
 
+    # FullPathName is the full path and the full file name being imported with forward slashes.
+    FullPathName = filename.replace("\\", "/")
+    # FolderPath is the full path to the model's folder w/o slash at end.
+    FolderPath = FullPathName.rsplit("/", 1)[0]
+
     undo = quarkx.action()
     editor_dictitems = editor.Root.dictitems
     miscgroup = editor_dictitems['Misc:mg'].subitems
@@ -1125,6 +1130,20 @@ def loadmodel(root, filename, gamename, nomessage=0):
                                         tag_subitems[frame]['rotmatrix'] = (n_r[0][0], n_r[0][1], n_r[0][2], n_r[1][0], n_r[1][1], n_r[1][2], n_r[2][0], n_r[2][1], n_r[2][2])
                                 break
                             elif tagsgroup[tag].name.find("torso") != -1:
+                                # This is where we read in the players model animation.cfg file if one exist.
+                                if os.path.isfile(FolderPath + "/animation.cfg"):
+                                    read_CFG_file = open(FolderPath + "/animation.cfg","r")
+                                    CFGlines = read_CFG_file.readlines()
+                                    read_CFG_file.close()
+                                    animationCFG = ""
+                                    # Dec character code for space = chr(32), for tab = chr(9)
+                                    for line in range(len(CFGlines)):
+                                        CFGline = CFGlines[line].replace(chr(9), "    ")
+                                        CFGline = CFGline.rstrip()
+                                        animationCFG = animationCFG + CFGline + "\r\n"
+                                    tagsgroup[tag]['animationCFG'] = animationCFG
+                                    tagsgroup[tag]['animCFG_file'] = FolderPath + "/animation.cfg"
+                                # Now we work on the tag.
                                 tag_subitems = tagsgroup[tag].subitems
                                 miscgroup_subitems = miscgroup[item].subitems
                                 newcomp = editor_dictitems[key].copy()
@@ -1389,6 +1408,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.16  2009/09/30 19:37:26  cdunde
+# Threw out tags dialog, setup tag dragging, commands, and fixed saving of face selection.
+#
 # Revision 1.15  2009/09/29 20:07:44  danielpharos
 # Update menuitem-text when IEMaxTagFrames option changes.
 #

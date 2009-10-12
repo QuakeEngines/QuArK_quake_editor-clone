@@ -181,7 +181,7 @@ class ModelEditor(BaseEditor):
             self.skingrid = 0
 
         self.animationFPSstep, = setup["AnimationFPS"]
-        if MapOption("AnimationActive", self.MODE):
+        if MapOption("AnimationActive", self.MODE) or MapOption("AnimationCFGActive", self.MODE):
             self.animationFPS = self.animationFPSstep
         else:
             self.animationFPS = 0
@@ -278,6 +278,7 @@ class ModelEditor(BaseEditor):
         quarkx.setupsubset(SS_MODEL, "Building")["PaintMode"] = 0
         quarkx.setupsubset(SS_MODEL, "Colors")["temp_color"] = None
         quarkx.setupsubset(SS_MODEL, "Options")["AnimationActive"] = None
+        quarkx.setupsubset(SS_MODEL, "Options")["AnimationCFGActive"] = None
         quarkx.setupsubset(SS_MODEL, "Options")["AnimationPaused"] = None
         quarkx.setupsubset(SS_MODEL, "Options")["InterpolationActive"] = None
         quarkx.setupsubset(SS_MODEL, "Options")["SmoothLooping"] = None
@@ -346,7 +347,7 @@ class ModelEditor(BaseEditor):
         if delay <= 0.0:
             commonhandles(self, 0)
         else:
-            if quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] == "1":
+            if quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] == "1" or quarkx.setupsubset(SS_MODEL, "Options")['AnimationCFGActive'] == "1":
                 delayfactor = int(quarkx.setupsubset(SS_MODEL, "Display")["AnimationFPS"][0]*.5)
                 if delayfactor < 1:
                     delayfactor = 1
@@ -550,7 +551,7 @@ class ModelEditor(BaseEditor):
 
     def explorerselchange(self, ex=None):
         global BonesSellist
-        if quarkx.setupsubset(SS_MODEL, "Options")['InterpolationActive'] is not None and quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] is not None and quarkx.setupsubset(SS_MODEL, "Options")['AnimationPaused'] is None:
+        if quarkx.setupsubset(SS_MODEL, "Options")['InterpolationActive'] is not None and (quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] is not None or quarkx.setupsubset(SS_MODEL, "Options")['AnimationCFGActive'] is not None) and quarkx.setupsubset(SS_MODEL, "Options")['AnimationPaused'] is None:
             return
         import qbaseeditor
         from qbaseeditor import flagsmouse
@@ -1423,7 +1424,7 @@ def paintframefill(self, v):
 
 
 def commonhandles(self, redraw=1):
-    if quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] == "1":
+    if quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] == "1" or quarkx.setupsubset(SS_MODEL, "Options")['AnimationCFGActive'] == "1":
         return
     from qbaseeditor import flagsmouse, currentview
     try:
@@ -1817,6 +1818,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.136  2009/10/04 22:17:18  cdunde
+#Setup correct switching from standard to interpolation animation methods.
+#
 #Revision 1.135  2009/10/03 06:16:07  cdunde
 #Added support for animation interpolation in the Model Editor.
 #(computation of added movement to emulate game action)

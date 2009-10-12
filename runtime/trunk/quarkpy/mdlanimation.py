@@ -24,6 +24,7 @@ from qdictionnary import Strings
 playlist = []
 playlistPerComp = {} # Contains the components to animate.
 playNR = 0
+holdselection = None
 
 def drawanimation(self):
     global playNR
@@ -61,11 +62,20 @@ def drawanimation(self):
                 playNR = 0
             else:
                 playNR = playNR + 1
-        else:
-            if editor.layout.explorer.uniquesel is not None:
+
+            ### CFG Animation additional section.
+            if MdlOption("AnimationCFGActive"):
+                for comp in playlistPerComp.keys():
+                    try:
+                        playlistPerComp[comp][0].currentframe = playlistPerComp[comp][1][playNR]
+                    except:
+                        continue
+        else: ### Interpolation section.
+            if editor.layout.explorer.sellist != []:
                 editor.layout.explorer.uniquesel = None
+                editor.layout.explorer.sellist = []
                 editor.layout.explorer.invalidate()
-           # playNR = playNR + 0.05 #FIXME: Make an option for this! Use drapdownlist with settings .05-1.0
+
             IPF = float(1/quarkx.setupsubset(SS_MODEL, "Display")["AnimationIPF"][0])
             playNR = playNR + IPF
             FPS = int(FPS*(IPF*2)) # Speeds up animation as IPF increases (causing slower drawing).
@@ -89,16 +99,25 @@ def drawanimation(self):
                 TmpVertices = currentframe.vertices
                 currentframe.vertices = newframe.vertices
                 newframe.vertices = TmpVertices
-        if editor.layout is None:
+
+        # To catch any mishaps.
+        if editor.layout is None or (not MdlOption("AnimationActive") and not MdlOption("AnimationCFGActive")):
             quarkx.setupsubset(SS_MODEL, "Options")['AnimationPaused'] = None
             quarkx.settimer(drawanimation, self, 0)
+            editor.layout.explorer.sellist = playlist
             return 0
         else:
-            if quarkx.setupsubset(SS_MODEL, "Options")['InterpolationActive'] is None:
+            ### CFG Animation section.
+            if MdlOption("AnimationCFGActive"):
+                editor.invalidateviews()
+            ### Standard Animation section.
+            elif quarkx.setupsubset(SS_MODEL, "Options")['InterpolationActive'] is None:
                 editor.layout.explorer.uniquesel = frame
                 editor.layout.selchange
+            ### Interpolation section.
             else:
                 editor.invalidateviews()
+
             for v in editor.layout.views:
                 if v.info["viewname"] == "XY" and v.viewmode == "wire" and quarkx.setupsubset(SS_MODEL, "Options")['AnimateZ2Dview'] == "1":
                     mdleditor.setsingleframefillcolor(editor, v)
@@ -109,6 +128,8 @@ def drawanimation(self):
                 elif v.info["viewname"] == "YZ" and v.viewmode == "wire" and quarkx.setupsubset(SS_MODEL, "Options")['AnimateX2Dview'] == "1":
                     mdleditor.setsingleframefillcolor(editor, v)
                     v.repaint()
+
+            ### Interpolation section.
             if quarkx.setupsubset(SS_MODEL, "Options")['InterpolationActive'] is not None:
                 # Swap the original frame's vertices back.
                 for comp_name in playlistPerComp.keys():
@@ -125,6 +146,10 @@ def drawanimation(self):
 
 class DeactivateAnimation(mdlhandles.RectSelDragObject):
     "This is just a place holder to turn the Animation toolbar functions on and off."
+    Hint = hintPlusInfobaselink("", "")
+
+class DeactivateAnimationCFG(mdlhandles.RectSelDragObject):
+    "This is just a place holder to turn the AnimationCFG toolbar functions on and off."
     Hint = hintPlusInfobaselink("", "")
 
 class PauseAnimation(mdlhandles.RectSelDragObject):
@@ -164,16 +189,17 @@ class DeactivateSmoothLooping(mdlhandles.RectSelDragObject):
 # The tool bar with the available animation modes.
 # Add other animation modes from other plug-ins into this list :
 #
-               ## (the_object                          ,icon_index)
-AnimationModes = [(DeactivateAnimation                 ,0)
-                 ,(PauseAnimation                      ,4)
-                 ,(Editor3Dview                        ,5)
-                 ,(X2Dview                             ,6)
-                 ,(Y2Dview                             ,7)
-                 ,(Z2Dview                             ,8)
-                 ,(Floating3Dview                      ,9)
-                 ,(DeactivateInterpolation            ,10)
-                 ,(DeactivateSmoothLooping            ,11)
+               ## (the_object                                  ,icon_index)
+AnimationModes = [(DeactivateAnimation         ,0)
+                 ,(DeactivateAnimationCFG     ,12)
+                 ,(PauseAnimation              ,4)
+                 ,(Editor3Dview                ,5)
+                 ,(X2Dview                     ,6)
+                 ,(Y2Dview                     ,7)
+                 ,(Z2Dview                     ,8)
+                 ,(Floating3Dview              ,9)
+                 ,(DeactivateInterpolation    ,10)
+                 ,(DeactivateSmoothLooping    ,11)
                  ]
 
 ### This part effects each buttons selection mode.
@@ -197,11 +223,276 @@ def select1(btn, toolbar, editor):
 
 def UpdateplaylistPerComp(self):
     import mdleditor, operator
-    global playlist, playlistPerComp, playNR
+    global playlistPerComp, playlist
     editor = mdleditor.mdleditor
     playlistPerComp = {}
     if len(playlist) == 0:
         return
+
+    if MdlOption("AnimationCFGActive"):
+        sel = playlist
+        tags = editor.Root.dictitems['Misc:mg'].findallsubitems("", ':tag')  # get all tags
+        for item in range(len(sel)):
+            if sel[item].type == ':tag' and sel[item].dictspec.has_key("play_list1"):
+                group = sel[item].name.split("_")
+                play_list1 = sel[item].dictspec['play_list1'].split(",")
+                first_frame1 = int(play_list1[1])
+                num_frames1 = int(play_list1[2])
+                looping_frames1 = int(play_list1[3])
+                CFG_FPS1 = int(play_list1[4]) # Not being used yet.
+
+                if play_list1[0].startswith("TORSO_"): # Handles NON - "BOTH_" (combination) sequences.
+                    max_BOTH = int(play_list1[5])
+                    max_TORSO = int(play_list1[6])
+                    play_list2 = sel[item].dictspec['play_list2'].split(",")
+                    first_frame2 = int(play_list2[1])
+                    first_frame2 = first_frame2 - max_TORSO + max_BOTH
+                    num_frames2 = int(play_list2[2])
+                    looping_frames2 = int(play_list2[3])
+                    CFG_FPS2 = int(play_list2[4]) # Not being used yet.
+                    TORSO_tagframes = sel[item].subitems
+                    LEGS_origins = [] # A list of tagframe origins as vectors for the LEGS frames.
+                    TORSO_origins = [] # A list of tagframe origins as vectors for the TORSO frames.
+
+                    for frameindex in range(first_frame2, first_frame2 + num_frames2):
+                        LEGS_origins = LEGS_origins + [TORSO_tagframes[frameindex].dictspec['origin']]
+                    for frameindex in range(first_frame1, first_frame1 + num_frames1):
+                        TORSO_origins = TORSO_origins + [TORSO_tagframes[frameindex].dictspec['origin']]
+
+                    for comp in editor.Root.subitems:
+                        if comp.type != ":mc" or not comp.name.startswith(group[0]):  # Not a component
+                            continue
+                        try: # In case a component does not have any frames or the same number of frames, it won't break.
+                            FrameGroup = comp.dictitems['Frames:fg'].subitems # Get all the frames for this component.
+                            compname = comp.shortname.split("_")
+                            if compname[1] == "l":
+                                if num_frames2 >= num_frames1: # Equal or more frames in LEGS part.
+                                    for frameindex in range(first_frame2, first_frame2 + num_frames2):
+                                        if playlistPerComp.has_key(comp.name):
+                                            playlistPerComp[comp.name][1] = playlistPerComp[comp.name][1] + [FrameGroup[frameindex]]
+                                        else:
+                                            playlistPerComp[comp.name] = [comp, [FrameGroup[frameindex]]]
+                                else: # Handles the component's legs, LOWER part frames if the component's UPPER part has more frames.
+                                    legs_frames = []
+                                    for frameindex in range(first_frame2, first_frame2 + num_frames2):
+                                        legs_frames = legs_frames + [FrameGroup[frameindex]]
+                                    framecount = loop = loopcount = 0
+                                    for frameindex in range(first_frame1, first_frame1 + num_frames1):
+                                        if framecount > len(legs_frames)-1:
+                                            if looping_frames2 == 0:
+                                                extra_frame = legs_frames[len(legs_frames)-1].copy()
+                                            else:
+                                                frame_index = framecount - (len(legs_frames)*loop)
+                                                extra_frame = legs_frames[frame_index].copy()
+                                            if playlistPerComp.has_key(comp.name):
+                                                playlistPerComp[comp.name][1] = playlistPerComp[comp.name][1] + [extra_frame]
+                                            else:
+                                                playlistPerComp[comp.name] = [comp, [extra_frame]]
+                                        else:
+                                            frame_copy = legs_frames[framecount].copy()
+                                            if playlistPerComp.has_key(comp.name):
+                                                playlistPerComp[comp.name][1] = playlistPerComp[comp.name][1] + [frame_copy]
+                                            else:
+                                                playlistPerComp[comp.name] = [comp, [frame_copy]]
+                                        framecount = framecount + 1
+                                        loopcount = loopcount + 1
+                                        if loopcount == len(legs_frames)-1:
+                                            loop = loop + 1
+                                            loopcount = 0
+
+                                playlist = playlistPerComp[comp.name][1]
+
+                            else: # Handles the component's UPPER parts frames if legs equal or has more frames.
+                                comp_frames = []
+                                for frameindex in range(first_frame1, first_frame1 + num_frames1):
+                                    comp_frames = comp_frames + [FrameGroup[frameindex]]
+                                framecount = loop = loopcount = 0
+                                if num_frames2 >= num_frames1: # Equal or more frames in LEGS part.
+                                    for frameindex in range(first_frame2, first_frame2 + num_frames2):
+                                        if framecount > len(comp_frames)-1:
+                                            if looping_frames1 == 0:
+                                                vtx_diff = quarkx.vect(LEGS_origins[framecount]) - quarkx.vect(TORSO_origins[len(comp_frames)-1])
+                                                extra_frame = comp_frames[len(comp_frames)-1].copy()
+                                            else:
+                                                frame_index = framecount - (len(comp_frames)*loop)
+                                                vtx_diff = quarkx.vect(LEGS_origins[framecount]) - quarkx.vect(TORSO_origins[frame_index])
+                                                extra_frame = comp_frames[frame_index].copy()
+                                            vertices = []
+                                            for vtx in extra_frame.vertices:
+                                                vtx = vtx + vtx_diff
+                                                vertices = vertices + [vtx]
+                                            extra_frame.vertices = vertices
+                                            if playlistPerComp.has_key(comp.name):
+                                                playlistPerComp[comp.name][1] = playlistPerComp[comp.name][1] + [extra_frame]
+                                            else:
+                                                playlistPerComp[comp.name] = [comp, [extra_frame]]
+                                        else:
+                                            vtx_diff = quarkx.vect(LEGS_origins[framecount]) - quarkx.vect(TORSO_origins[framecount])
+                                            vertices = []
+                                            frame_copy = comp_frames[framecount].copy()
+                                            for vtx in frame_copy.vertices:
+                                                vtx = vtx + vtx_diff
+                                                vertices = vertices + [vtx]
+                                            frame_copy.vertices = vertices
+                                            if playlistPerComp.has_key(comp.name):
+                                                playlistPerComp[comp.name][1] = playlistPerComp[comp.name][1] + [frame_copy]
+                                            else:
+                                                playlistPerComp[comp.name] = [comp, [frame_copy]]
+                                        framecount = framecount + 1
+                                        loopcount = loopcount + 1
+                                        if loopcount == len(comp_frames)-1:
+                                            loop = loop + 1
+                                            loopcount = 0
+
+                                else: # Handles the component's UPPER parts frames if it has more frames then the legs.
+                                    if num_frames2 >= num_frames1: # Equal or more frames in LEGS part.
+                                        for frameindex in range(first_frame1, first_frame1 + num_frames1):
+                                            if playlistPerComp.has_key(comp.name):
+                                                playlistPerComp[comp.name][1] = playlistPerComp[comp.name][1] + [FrameGroup[frameindex]]
+                                            else:
+                                                playlistPerComp[comp.name] = [comp, [FrameGroup[frameindex]]]
+                                    else: # More frames in UPPER part.
+                                        legs_frames = []
+                                        for frameindex in range(first_frame2, first_frame2 + num_frames2):
+                                            legs_frames = legs_frames + [FrameGroup[frameindex]]
+                                        for frameindex in range(first_frame1, first_frame1 + num_frames1):
+                                            if framecount > len(legs_frames)-1:
+                                                if looping_frames2 == 0:
+                                                    vtx_diff = quarkx.vect(LEGS_origins[len(legs_frames)-1]) - quarkx.vect(TORSO_origins[framecount])
+                                                    fixed_frame = comp_frames[framecount].copy()
+                                                else:
+                                                    frame_index = framecount - (len(legs_frames)*loop)
+                                                    vtx_diff = quarkx.vect(LEGS_origins[frame_index]) - quarkx.vect(TORSO_origins[framecount])
+                                                    fixed_frame = comp_frames[framecount].copy()
+                                                vertices = []
+                                                for vtx in fixed_frame.vertices:
+                                                    vtx = vtx + vtx_diff
+                                                    vertices = vertices + [vtx]
+                                                fixed_frame.vertices = vertices
+                                                if playlistPerComp.has_key(comp.name):
+                                                    playlistPerComp[comp.name][1] = playlistPerComp[comp.name][1] + [fixed_frame]
+                                                else:
+                                                    playlistPerComp[comp.name] = [comp, [fixed_frame]]
+                                            else:
+                                                vtx_diff = quarkx.vect(LEGS_origins[framecount]) - quarkx.vect(TORSO_origins[framecount])
+                                                vertices = []
+                                                fixed_frame = comp_frames[framecount].copy()
+                                                for vtx in fixed_frame.vertices:
+                                                    vtx = vtx + vtx_diff
+                                                    vertices = vertices + [vtx]
+                                                fixed_frame.vertices = vertices
+                                                if playlistPerComp.has_key(comp.name):
+                                                    playlistPerComp[comp.name][1] = playlistPerComp[comp.name][1] + [fixed_frame]
+                                                else:
+                                                    playlistPerComp[comp.name] = [comp, [fixed_frame]]
+                                            framecount = framecount + 1
+                                            loopcount = loopcount + 1
+                                            if loopcount == len(legs_frames)-1:
+                                                loop = loop + 1
+                                                loopcount = 0
+                        except:
+                            try:
+                                tb1 = editor.layout.toolbars["tb_animation"]
+                                buttons = tb1.tb.buttons
+                                for b in range(len(buttons)):
+                                    if buttons[b] is None:
+                                        continue
+                                    if buttons[b].state == qtoolbar.selected:
+                                        buttons[b].state = qtoolbar.normal
+                                    if b == 5:
+                                        break
+                                if MdlOption("AnimationActive"):
+                                    quarkx.setupsubset(SS_MODEL, "Options")["AnimationActive"] = None
+                                if MdlOption("AnimationCFGActive"):
+                                    quarkx.setupsubset(SS_MODEL, "Options")["AnimationCFGActive"] = None
+                                if MdlOption("AnimationPaused"):
+                                    quarkx.setupsubset(SS_MODEL, "Options")["AnimationPaused"] = None
+                                if quarkx.setupsubset(SS_MODEL, "Building")["AnimationMode"]:
+                                    quarkx.setupsubset(SS_MODEL, "Building")["AnimationMode"] = None
+                                editor.MouseDragMode = None
+                                quarkx.update(editor.form)
+                                # This terminates the animation timer stopping the repeditive drawing function.
+                                quarkx.settimer(drawanimation, self, 0)
+                                quarkx.msgbox("Insufficient Frames !\n\nComponent: " + comp.shortname + "\ndoes not have enough frames for CFG Animation.\n\nEither the model was imported using 'min. tag frames'\n\nor some action caused the above component's frame count\nnot to match other components of this 'group'.\n\nTry undoing the import and re-import with 'max. tag frames'\nor adding frames to this component to match the others.\n\nAction Canceled.", MT_ERROR, MB_OK)
+                                Update_Editor_Views(editor)
+                                return
+                            except:
+                                return
+
+                else: # Handles "BOTH_" sequences.
+                    for comp in editor.Root.subitems:
+                        if comp.type != ":mc" or not comp.name.startswith(group[0]):  # Not a component
+                            continue
+                        compname = comp.shortname.split("_")
+                        FrameGroup = comp.dictitems['Frames:fg'].subitems
+                        try: # In case a component does not have any frames or the same number of frames, it won't break.
+                            for frameindex in range(first_frame1, first_frame1 + num_frames1):
+                                if playlistPerComp.has_key(comp.name):
+                                    playlistPerComp[comp.name][1] = playlistPerComp[comp.name][1] + [FrameGroup[frameindex]]
+                                else:
+                                    playlistPerComp[comp.name] = [comp, [FrameGroup[frameindex]]]
+
+                            if compname[1] == "l":
+                                playlist = playlistPerComp[comp.name][1]
+                        except:
+                            try:
+                                tb1 = editor.layout.toolbars["tb_animation"]
+                                buttons = tb1.tb.buttons
+                                for b in range(len(buttons)):
+                                    if buttons[b] is None:
+                                        continue
+                                    if buttons[b].state == qtoolbar.selected:
+                                        buttons[b].state = qtoolbar.normal
+                                    if b == 5:
+                                        break
+                                if MdlOption("AnimationActive"):
+                                    quarkx.setupsubset(SS_MODEL, "Options")["AnimationActive"] = None
+                                if MdlOption("AnimationCFGActive"):
+                                    quarkx.setupsubset(SS_MODEL, "Options")["AnimationCFGActive"] = None
+                                if MdlOption("AnimationPaused"):
+                                    quarkx.setupsubset(SS_MODEL, "Options")["AnimationPaused"] = None
+                                if quarkx.setupsubset(SS_MODEL, "Building")["AnimationMode"]:
+                                    quarkx.setupsubset(SS_MODEL, "Building")["AnimationMode"] = None
+                                editor.MouseDragMode = None
+                                quarkx.update(editor.form)
+                                # This terminates the animation timer stopping the repeditive drawing function.
+                                quarkx.settimer(drawanimation, self, 0)
+                                quarkx.msgbox("Insufficient Frames !\n\nComponent: " + comp.shortname + "\ndoes not have enough frames for CFG Animation.\n\nEither the model was imported using 'min. tag frames'\n\nor some action caused the above component's frame count\nnot to match other components of this 'group'.\n\nTry undoing the import and re-import with 'max. tag frames'\nor adding frames to this component to match the others.\n\nAction Canceled.", MT_ERROR, MB_OK)
+                                Update_Editor_Views(editor)
+                                return
+                            except:
+                                return
+                return
+
+            if item == len(sel)-1:
+                try:
+                    tb1 = editor.layout.toolbars["tb_animation"]
+                    buttons = tb1.tb.buttons
+                    for b in range(len(buttons)):
+                        if buttons[b] is None:
+                            continue
+                        if buttons[b].state == qtoolbar.selected:
+                            buttons[b].state = qtoolbar.normal
+                        if b == 5:
+                            break
+                    if MdlOption("AnimationActive"):
+                        quarkx.setupsubset(SS_MODEL, "Options")["AnimationActive"] = None
+                    if MdlOption("AnimationCFGActive"):
+                        quarkx.setupsubset(SS_MODEL, "Options")["AnimationCFGActive"] = None
+                    if MdlOption("AnimationPaused"):
+                        quarkx.setupsubset(SS_MODEL, "Options")["AnimationPaused"] = None
+                    if quarkx.setupsubset(SS_MODEL, "Building")["AnimationMode"]:
+                        quarkx.setupsubset(SS_MODEL, "Building")["AnimationMode"] = None
+                    editor.MouseDragMode = None
+                    quarkx.update(editor.form)
+                    # This terminates the animation timer stopping the repeditive drawing function.
+                    quarkx.settimer(drawanimation, self, 0)
+                    quarkx.msgbox("Improper Action !\n\nYou can only select frames from\nthe same component to animate.\n\nAction Canceled.", MT_ERROR, MB_OK)
+                    Update_Editor_Views(editor)
+                    return
+                except:
+                    return
+
     FrameGroup = playlist[0].parent.subitems
     framenumbers = []
     try:
@@ -221,6 +512,8 @@ def UpdateplaylistPerComp(self):
                     break
             if MdlOption("AnimationActive"):
                 quarkx.setupsubset(SS_MODEL, "Options")["AnimationActive"] = None
+            if MdlOption("AnimationCFGActive"):
+                quarkx.setupsubset(SS_MODEL, "Options")["AnimationCFGActive"] = None
             if MdlOption("AnimationPaused"):
                 quarkx.setupsubset(SS_MODEL, "Options")["AnimationPaused"] = None
             if quarkx.setupsubset(SS_MODEL, "Building")["AnimationMode"]:
@@ -263,59 +556,144 @@ class AnimationBar(ToolBar):
         global playlist, playNR
         import mdleditor
         editor = mdleditor.mdleditor
-        if not MdlOption("AnimationActive"):
-            if editor.layout.explorer.sellist == [] or len(editor.layout.explorer.sellist) < 2:
-                quarkx.msgbox("Improper Action !\n\nYou need to select at least two frames\n(and no other types of sub-items)\nof the same component to activate animation.\n\nPress 'F1' for InfoBase help\nof this function for details.\n\nAction Canceled.", MT_ERROR, MB_OK)
-                return
-            else:
-                sel = editor.layout.explorer.sellist
-                for item in range(len(sel)):
-                    if sel[item].type != ':mf':
-                        quarkx.msgbox("Improper Selection !\n\nYou need to select at least two frames\n(and no other types of sub-items)\nof the same component to activate animation.\n\nPress 'F1' for InfoBase help\nof this function for details.\n\nAction Canceled.", MT_ERROR, MB_OK)
-                        return
-                    if item == len(sel)-1:
-                        pass
-                    else:
-                        if sel[item].parent.parent != sel[item+1].parent.parent:
-                            quarkx.msgbox("Improper Action !\n\nYou can only select frames from\nthe same component to animate.\n\nAction Canceled.", MT_ERROR, MB_OK)
+        if not MdlOption("AnimationActive"): # Turns button ON
+            if not MdlOption("AnimationCFGActive"):
+                if editor.layout.explorer.sellist == [] or len(editor.layout.explorer.sellist) < 2:
+                    quarkx.msgbox("Improper Action !\n\nYou need to select at least two frames\n(and no other types of sub-items)\nof the same component to activate animation.\n\nPress 'F1' for InfoBase help\nof this function for details.\n\nAction Canceled.", MT_ERROR, MB_OK)
+                    return
+                else:
+                    sel = editor.layout.explorer.sellist
+                    for item in range(len(sel)):
+                        if sel[item].type != ':mf':
+                            quarkx.msgbox("Improper Selection !\n\nYou need to select at least two frames\n(and no other types of sub-items)\nof the same component to activate animation.\n\nPress 'F1' for InfoBase help\nof this function for details.\n\nAction Canceled.", MT_ERROR, MB_OK)
                             return
-                quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] = "1"
-                qtoolbar.toggle(btn)
-                btn.state = qtoolbar.selected
-                quarkx.update(editor.form)
+                        if item == len(sel)-1:
+                            pass
+                        else:
+                            if sel[item].parent.parent != sel[item+1].parent.parent:
+                                quarkx.msgbox("Improper Action !\n\nYou can only select frames from\nthe same component to animate.\n\nAction Canceled.", MT_ERROR, MB_OK)
+                                return
+            quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] = "1"
+            qtoolbar.toggle(btn)
+            btn.state = qtoolbar.selected
+            if MdlOption("AnimationCFGActive"):
+                quarkx.setupsubset(SS_MODEL, "Options")['AnimationCFGActive'] = None
+                qtoolbar.toggle(self.tb.buttons[2])
+                self.tb.buttons[2].state = qtoolbar.normal
+            else:
+                if quarkx.setupsubset(SS_MODEL, "Options")['AnimationPaused'] != "1" and quarkx.setupsubset(SS_MODEL, "Options")['InterpolationActive'] != "1":
+                    playNR = 0
                 playlist = editor.layout.explorer.sellist
                 UpdateplaylistPerComp(self)
-                editor.layout.explorer.sellist = []
+              #  editor.layout.explorer.sellist = []
                 for view in editor.layout.views:
                     view.handles = []
                     mdleditor.setsingleframefillcolor(editor, view)
                     view.repaint()
                 FPS = int(1000/quarkx.setupsubset(SS_MODEL, "Display")["AnimationFPS"][0])
-                playNR = 0
                 # This sets (starts) the timer and calls the drawing function for the first time.
                 # The drawing function will be recalled each time that the timer goes off.
                 quarkx.settimer(drawanimation, self, FPS)
-        else:
+        else: # Turns button OFF
             quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] = None
             qtoolbar.toggle(btn)
             btn.state = qtoolbar.normal
-            quarkx.update(editor.form)
-            playNR = 0
-            # This terminates the animation timer stopping the repeditive drawing function.
-            quarkx.settimer(drawanimation, self, 0)
-            editor.layout.explorer.sellist = playlist
+            if not MdlOption("AnimationCFGActive") and quarkx.setupsubset(SS_MODEL, "Options")['AnimationPaused'] != "1" and quarkx.setupsubset(SS_MODEL, "Options")['InterpolationActive'] != "1":
+                playNR = 0
+                # This terminates the animation timer stopping the repeditive drawing function.
+                quarkx.settimer(drawanimation, self, 0)
+            if not MdlOption("AnimationCFGActive"):
+                editor.layout.explorer.sellist = playlist
         try:
             tb2 = editor.layout.toolbars["tb_objmodes"]
             tb3 = editor.layout.toolbars["tb_paintmodes"]
+            for b in range(len(tb2.tb.buttons)):
+                if b == 1:
+                    tb2.tb.buttons[b].state = qtoolbar.selected
+                else:
+                    tb2.tb.buttons[b].state = qtoolbar.normal
+            for b in range(len(tb3.tb.buttons)):
+                tb3.tb.buttons[b].state = qtoolbar.normal
         except:
-            return
-        for b in range(len(tb2.tb.buttons)):
-            if b == 1:
-                tb2.tb.buttons[b].state = qtoolbar.selected
+            pass
+        quarkx.update(editor.form)
+        quarkx.setupsubset(SS_MODEL, "Building").setint("ObjectMode", 0)
+        quarkx.setupsubset(SS_MODEL, "Building").setint("PaintMode", 0)
+        for view in editor.layout.views:
+            if MapOption("CrossCursor", SS_MODEL):
+                view.cursor = CR_CROSS
+                view.handlecursor = CR_ARROW
             else:
-                tb2.tb.buttons[b].state = qtoolbar.normal
-        for b in range(len(tb3.tb.buttons)):
-            tb3.tb.buttons[b].state = qtoolbar.normal
+                view.cursor = CR_ARROW
+                view.handlecursor = CR_CROSS
+
+    def animateCFG(self, btn):
+        "Activates and deactivates animationCFG."
+        global playlist, playNR, holdselection
+        import mdleditor
+        editor = mdleditor.mdleditor
+        if not MdlOption("AnimationCFGActive"): # Turns button ON
+            if MdlOption("AnimationActive"):
+                quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] = None
+                qtoolbar.toggle(self.tb.buttons[0])
+                self.tb.buttons[0].state = qtoolbar.normal
+                quarkx.update(editor.form)
+            if editor.layout.explorer.sellist == []:
+                quarkx.msgbox("Improper Action !\n\nTo activate CFG animation\nyou need to select one Tag with the\nCFG text which would be a 'torso' tag\nand have imported all sections of that model,\nwhich will cause the 'animation.cfg' file\nof that model to also be loaded.\n\nPress 'F1' for InfoBase help\nof this function for details.\n\nAction Canceled.", MT_ERROR, MB_OK)
+                return
+            else:
+                sel = editor.layout.explorer.sellist
+                tags = editor.Root.dictitems['Misc:mg'].findallsubitems("", ':tag')  # get all tags
+                for item in range(len(sel)):
+                    if item == len(sel)-1 and sel[item].type != ':tag':
+                        quarkx.msgbox("Improper Action !\n\nTo activate CFG animation\nyou need to select one Tag with the\nCFG text which would be a 'torso' tag\nand have imported all sections of that model,\nwhich will cause the 'animation.cfg' file\nof that model to also be loaded.\n\nPress 'F1' for InfoBase help\nof this function for details.\n\nAction Canceled.", MT_ERROR, MB_OK)
+                        return
+                    elif sel[item].type == ':tag':
+                        group = sel[item].name.split("_")[0]
+                        for tag in tags:
+                            if tag.name.startswith(group) and tag.dictspec.has_key("play_list1"):
+                                break
+                    elif item == len(sel)-1:
+                        quarkx.msgbox("CFG file not found !\n\nNone of the selected tags has an 'animation.cfg' file\nor the '.cfg' file is named improperly.\nCheck the model folders and correct.\n\nTo activate CFG animation\nyou need to select at least\none Tag and have imported all sections of that model,\nwhich will cause the 'animation.cfg' file\nof that model to also be loaded.\n\nPress 'F1' for InfoBase help\nof this function for details.\n\nAction Canceled.", MT_ERROR, MB_OK)
+                        return
+            quarkx.setupsubset(SS_MODEL, "Options")['AnimationCFGActive'] = "1"
+            qtoolbar.toggle(btn)
+            btn.state = qtoolbar.selected
+            playNR = 0
+            holdselection = playlist = editor.layout.explorer.sellist
+            UpdateplaylistPerComp(self)
+            for view in editor.layout.views:
+                view.handles = []
+                mdleditor.setsingleframefillcolor(editor, view)
+                view.repaint()
+            FPS = int(1000/quarkx.setupsubset(SS_MODEL, "Display")["AnimationFPS"][0])
+            # This sets (starts) the timer and calls the drawing function for the first time.
+            # The drawing function will be recalled each time that the timer goes off.
+            quarkx.settimer(drawanimation, self, FPS)
+        else: # Turns button OFF
+            quarkx.setupsubset(SS_MODEL, "Options")['AnimationCFGActive'] = None
+            qtoolbar.toggle(btn)
+            btn.state = qtoolbar.normal
+            playNR = 0
+            # This terminates the animation timer stopping the repeditive drawing function.
+            quarkx.settimer(drawanimation, self, 0)
+            editor.layout.explorer.sellist = holdselection
+            comps = editor.Root.findallsubitems("", ':mc')  # Get all components.
+            for comp in comps:
+                comp.currentframe = comp.dictitems['Frames:fg'].subitems[0]
+            editor.Root.currentcomponent.currentframe = editor.Root.currentcomponent.dictitems['Frames:fg'].subitems[0]
+        try:
+            tb2 = editor.layout.toolbars["tb_objmodes"]
+            tb3 = editor.layout.toolbars["tb_paintmodes"]
+            for b in range(len(tb2.tb.buttons)):
+                if b == 1:
+                    tb2.tb.buttons[b].state = qtoolbar.selected
+                else:
+                    tb2.tb.buttons[b].state = qtoolbar.normal
+            for b in range(len(tb3.tb.buttons)):
+                tb3.tb.buttons[b].state = qtoolbar.normal
+        except:
+            pass
         quarkx.update(editor.form)
         quarkx.setupsubset(SS_MODEL, "Building").setint("ObjectMode", 0)
         quarkx.setupsubset(SS_MODEL, "Building").setint("PaintMode", 0)
@@ -343,7 +721,7 @@ class AnimationBar(ToolBar):
         "Play or Pause animation."
         global playlist, playNR
         editor = mapeditor()
-        if not MdlOption("AnimationPaused"):
+        if not MdlOption("AnimationPaused"): # Turns button ON
             quarkx.setupsubset(SS_MODEL, "Options")['AnimationPaused'] = "1"
             qtoolbar.toggle(btn)
             btn.state = qtoolbar.selected
@@ -351,7 +729,7 @@ class AnimationBar(ToolBar):
             if quarkx.setupsubset(SS_MODEL, "Options")['InterpolationActive'] is not None:
                 import mdlmgr
                 mdlmgr.treeviewselchanged = 0
-        else:
+        else: # Turns button OFF
             quarkx.setupsubset(SS_MODEL, "Options")['AnimationPaused'] = None
             qtoolbar.toggle(btn)
             btn.state = qtoolbar.normal
@@ -444,7 +822,7 @@ class AnimationBar(ToolBar):
         "Activates and deactivates animation interpolation, added movement between two frames by calculation."
         global playNR
         editor = mapeditor()
-        if not MdlOption("InterpolationActive"):
+        if not MdlOption("InterpolationActive"): # Turns button ON
             quarkx.setupsubset(SS_MODEL, "Options")['InterpolationActive'] = "1"
             qtoolbar.toggle(btn)
             btn.state = qtoolbar.selected
@@ -454,7 +832,7 @@ class AnimationBar(ToolBar):
                 for framenbr in range(len(frames)):
                     if frames[framenbr].name == editor.layout.explorer.uniquesel.name:
                         playNR = framenbr
-        else:
+        else: # Turns button OFF
             quarkx.setupsubset(SS_MODEL, "Options")['InterpolationActive'] = None
             qtoolbar.toggle(btn)
             btn.state = qtoolbar.normal
@@ -489,12 +867,12 @@ class AnimationBar(ToolBar):
     def smoothlooping(self, btn):
         "Activates and deactivates animation interpolation smooth looping, added movement between the last and first frames of a cycle by calculation."
         editor = mapeditor()
-        if not MdlOption("SmoothLooping"):
+        if not MdlOption("SmoothLooping"): # Turns button ON
             quarkx.setupsubset(SS_MODEL, "Options")['SmoothLooping'] = "1"
             qtoolbar.toggle(btn)
             btn.state = qtoolbar.selected
             quarkx.update(editor.form)
-        else:
+        else: # Turns button OFF
             quarkx.setupsubset(SS_MODEL, "Options")['SmoothLooping'] = None
             qtoolbar.toggle(btn)
             btn.state = qtoolbar.normal
@@ -516,6 +894,8 @@ class AnimationBar(ToolBar):
         select1(btns[i], self, layout.editor)
 
         animateonoff = qtoolbar.button(self.animate, "Animate on\off||Animate on\off:\n\nThis button will activate or de-activate the animation of the selected model component animation frames.\n\nYou must select two or more frames of the same component and no other sub-items for the animation to become available.\n\nTo return to regular operation mode you must click this button to turn 'Off' the animation function.", ico_mdlanim, 0, infobaselink="intro.modeleditor.toolpalettes.animation.html#animate")
+        animateCFGonoff = qtoolbar.button(self.animateCFG, "AnimateCFG on\off||AnimateCFG on\off:\n\nThis button will activate or de-activate the animationCFG of the selected model component animation frames.\n\nOnly use for .md3 'Player' type models with tags and a 'animation.cfg' file in its folder.\n\nYou must select two or more frames of the same component and no other sub-items for the animation to become available.\n\nTo return to regular operation mode you must click this button to turn 'Off' the animation function.", ico_mdlanim, 12, infobaselink="intro.modeleditor.toolpalettes.animation.html#animate")
+
         fpsbtn = qtoolbar.doublebutton(layout.toggleanimationfps, layout.getFPSmenu, "FPS||FPS or frames per second is the setting as to how fast or slow the selected model component animation frames will be drawn in the selected view(s) of the editor.\n\nYou can select a menu fps speed or use the arrows to the right to increase or decrease that speed while the frames are being animated.", ico_mdlanim, 1, infobaselink="intro.modeleditor.toolpalettes.animation.html#fps")
         setup = quarkx.setupsubset(SS_MODEL, "Display")
         animationFPS = setup["AnimationFPS"]
@@ -545,6 +925,7 @@ class AnimationBar(ToolBar):
         if not MdlOption("AnimationActive"):
             animateonoff.state = qtoolbar.normal
         else:
+            animateCFGonoff.state = qtoolbar.normal
             animateonoff.state = qtoolbar.selected
 
         if not MdlOption("AnimationPaused"):
@@ -587,7 +968,14 @@ class AnimationBar(ToolBar):
         else:
             smoothlooponoff.state = qtoolbar.selected
 
+        if not MdlOption("AnimationCFGActive"):
+            animateonoff.state = qtoolbar.normal
+        else:
+            animateonoff.state = qtoolbar.normal
+            animateCFGonoff.state = qtoolbar.selected
+
         layout.buttons.update({"animate": animateonoff,
+                               "animateCFG": animateCFGonoff,
                                "fps": fpsbtn,
                                "fpsup": increasefps,
                                "fpsdown": decreasefps,
@@ -604,7 +992,8 @@ class AnimationBar(ToolBar):
                                "smoothloop": smoothlooponoff
                              })
 
-        return [animateonoff, fpsbtn, increasefps, decreasefps, qtoolbar.sep, animatepaused, qtoolbar.sep,
+        return [animateonoff, qtoolbar.sep, animateCFGonoff, qtoolbar.sep, fpsbtn, increasefps, decreasefps,
+                qtoolbar.sep, animatepaused, qtoolbar.sep,
                 editor3dviewanimated, x2dviewanimated, y2dviewanimated, z2dviewanimated, float3dviewanimated,
                 qtoolbar.sep, interpolonoff, ipfbtn, increaseipf, decreaseipf, qtoolbar.sep, smoothlooponoff]
 
@@ -613,6 +1002,10 @@ class AnimationBar(ToolBar):
 #
 #
 #$Log$
+#Revision 1.14  2009/10/05 01:14:58  cdunde
+#Removed constant component looping for max interpolation drawing speed
+#and setup for possibly to only animate selected components and frames.
+#
 #Revision 1.13  2009/10/04 22:17:18  cdunde
 #Setup correct switching from standard to interpolation animation methods.
 #

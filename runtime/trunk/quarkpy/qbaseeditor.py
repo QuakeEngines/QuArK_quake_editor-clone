@@ -791,7 +791,7 @@ class BaseEditor:
                             if v.info["viewname"] == "editors3Dview" or v.info["viewname"] == "3Dwindow" or v.viewmode != "wire":
                                 import mdlmgr
                                 mdlmgr.treeviewselchanged = 1
-                                if quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] == "1":
+                                if quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] == "1" or quarkx.setupsubset(SS_MODEL, "Options")['AnimationCFGActive'] == "1":
                                     if v.info["viewname"] == "XY" and quarkx.setupsubset(SS_MODEL, "Options")['AnimateZ2Dview'] != "1":
                                         pass
                                     elif v.info["viewname"] == "XZ" and quarkx.setupsubset(SS_MODEL, "Options")['AnimateY2Dview'] != "1":
@@ -1622,6 +1622,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.131  2009/09/01 02:11:01  cdunde
+#Minor hint correction for Model Editor Linear handles position.
+#
 #Revision 1.130  2009/08/18 07:47:54  cdunde
 #To stop Model Editor redraw of LMB selection of currentcomponent in views.
 #

@@ -2717,6 +2717,7 @@ def selectmode(btn):
         quarkpy.mdlanimation.playlist = []
     quarkx.settimer(quarkpy.mdlanimation.drawanimation, editor, 0)
     quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] = None
+    quarkx.setupsubset(SS_MODEL, "Options")['AnimationCFGActive'] = None
     quarkx.setupsubset(SS_MODEL, "Options")['AnimationPaused'] = None
 
 def select1(btn, toolbar, editor):
@@ -2824,6 +2825,9 @@ quarkpy.mdltoolbars.toolbars["tb_paintmodes"] = PaintModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.4  2008/12/20 08:39:34  cdunde
+# Minor adjustment to various Model Editor dialogs for recent fix of item over lapping by Dan.
+#
 # Revision 1.3  2008/03/20 05:57:43  cdunde
 # To update Infobase links.
 #

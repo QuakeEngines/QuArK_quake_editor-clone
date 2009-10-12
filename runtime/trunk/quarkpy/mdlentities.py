@@ -244,6 +244,91 @@ def menu_setupchanged(level):
 setupchanged1 = (menu_setupchanged,)
 apply(SetupRoutines.append, setupchanged1)
 
+
+###############################
+#
+# Animation Configuration Module
+#
+###############################
+
+# Funcitons for AnimationCFG Module ONLY.
+
+def CFGfileLines():
+    editor = mdleditor.mdleditor # Get the editor.
+    if len(editor.layout.explorer.sellist) == 0:
+        return
+    if editor.layout.explorer.sellist[0].type == ":tag":
+        obj = editor.layout.explorer.sellist[0]
+        if not obj.dictspec.has_key("animationCFG"):
+            return
+    else:
+        return
+    if obj.dictspec.has_key("CFG_lines"):
+        if int(obj.dictspec['CFG_lines']) < 3:
+            obj['CFG_lines'] = "3"
+        if int(obj.dictspec['CFG_lines']) > 35:
+            obj['CFG_lines'] = "35"
+        NbrOfCFGLines = str(int(obj.dictspec['CFG_lines']))
+        quarkx.setupsubset(SS_MODEL, "Options")["NbrOfCFGLines"] = NbrOfCFGLines
+        if obj.type == ":tag":
+            obj['CFG_lines'] = NbrOfCFGLines
+    else:
+        if quarkx.setupsubset(SS_MODEL, "Options")["NbrOfCFGLines"] is not None:
+            NbrOfCFGLines = quarkx.setupsubset(SS_MODEL, "Options")["NbrOfCFGLines"]
+            obj['CFG_lines'] = NbrOfCFGLines
+        else:
+            NbrOfCFGLines = "8"
+            obj['CFG_lines'] = NbrOfCFGLines
+            quarkx.setupsubset(SS_MODEL, "Options")["NbrOfCFGLines"] = NbrOfCFGLines
+    return NbrOfCFGLines
+
+#
+# Main function to be called from other files such as this file
+# (see "class TagType" 'dataformname' function further below.)
+# to return a "dialog_plugin section" that will be used
+# in that files dialog definition or "dlgdef".
+#
+def UseAnimationCFG():
+    AnimationCFG_dialog_plugin =  """
+      Sep:            = {Typ = "S"   Txt = ""}
+      Sep:            = {Typ = "S"   Txt = "AnimationCFG File"  Hint = "Special configuration code used to:"$0D"1) Create animation sequences of the model."$0D"2) To create the 'AnimationCFG dialog' to select/run them."}
+      animCFG_file:   = {
+                         Typ = "E"
+                         Txt = "cfg file"
+                         Hint = "Gives the full path and name of the .cfg animation"$0D
+                                "file that is used to animate the model components, if any."
+                        }
+      CFG_lines:      = {
+                         Typ = "EU"
+                         Txt = "cfg lines"
+                         Hint = "Number of lines to display in window below, max. = 35."
+                        }
+      edit_cfg:       = {
+                         Typ = "P"
+                         Txt = "edit cfg -->"
+                         Macro = "opentexteditor"
+                         Hint = "Opens cfg text below in a text editor."$0D
+                                "Click 'Save' in that editor to change the cfg here."$0D
+                                "      The changes can then be viewed using the 'AnimationCFG' dialog."$0D
+                                "      All changes can be reversed using the 'Undo / Redo' list."$0D
+                                "Click 'Save As' in that editor to save a copy of the cfg file elsewhere."$0D
+                                "      Rename that file from .txt to animation.cfg and move to model folder."$0D
+                                "      Be sure NOT to overwrite the original cfg file in that folder."
+                         Cap = "edit cfg"
+                        }
+      animationCFG:   = {
+                         Typ = "M"
+                         Rows = """ + chr(34) + CFGfileLines() + chr(34) + """
+                         Scrollbars = "1"
+                         Txt = "cfg text"
+                         Hint = "Contains the full text of this tag's animation.cfg file, if any."$0D
+                                "This can be copied to a text file, changed and saved."
+                        }
+    """
+
+    return AnimationCFG_dialog_plugin
+
+
 ###############################
 #
 # Shader Module
@@ -391,6 +476,17 @@ def macro_opentexteditor(btn):
         for v in editor.layout.views:
             if v.viewmode == "tex":
                 v.invalidate(1)
+    elif btn.name == "edit_cfg:":
+        old_obj = editor.layout.explorer.sellist[0]
+        new_obj = old_obj.copy()
+        obj = quarkx.newfileobj("amCFG.txt")
+        obj['Data'] = new_obj.dictspec['animationCFG']
+        quarkx.externaledit(obj) # Opens this text in - external editor for changing.
+        new_obj['animationCFG'] = obj['Data']
+        if new_obj.dictspec['animationCFG'] != old_obj.dictspec['animationCFG']:
+            undo = quarkx.action()
+            undo.exchange(old_obj, new_obj)
+            editor.ok(undo, new_obj.shortname + " - animCFG changed")
     else:
         obj = quarkx.newfileobj("temp.txt")
         obj['Data'] = editor.Root.currentcomponent.dictspec['mesh_shader']
@@ -1836,8 +1932,95 @@ class TagType(EntityManager):
         return [attach_tags, qmenu.sep, STT, HTT, qmenu.sep] + CallManager("menubegin", o, editor) + mdlmenus.BaseMenu([o], editor)
 
     def dataformname(o):
-        "Returns the data form for this type of object 'o' (a Tag) to use for the Specific/Args page."
+        "Returns the data form for this type of object 'o' (a :tag) to use for the Specific/Args page."
         editor = mdleditor.mdleditor # Get the editor.
+        # Next line calls for the Animation Configuration Module above in this file.
+        if not o.dictspec.has_key("animationCFG"):
+            AnimationCFG_dialog_plugin = ""
+            PlayList1 = ""
+            PlayList2 = ""
+        else:
+            PlayList1 = ""
+            PlayList2 = ""
+            play_items1 = []
+            play_values1 = []
+            play_items2 = []
+            play_values2 = []
+            list_values = []
+            max_BOTH = "0"
+            max_TORSO = "0"
+            CFGlines = o.dictspec['animationCFG']
+            CFGlines = CFGlines.split("\r\n")
+            for CFGline in CFGlines:
+                if len(CFGline) == 0: # Empty line.
+                    continue
+                CFGline = CFGline.strip()
+                try:
+                    framenbr = int(CFGline[0])
+                    if CFGline.find("//") == -1:
+                        continue
+                    spacecount = 0
+                    tempstring = ""
+                    for item in CFGline:
+                        # Dec character code for space = chr(32), for tab = chr(9)
+                        if item == chr(32) or item == chr(9):
+                            if spacecount == 0:
+                                tempstring = tempstring + ","
+                                spacecount = 1
+                            else:
+                                continue
+                        else:
+                            tempstring = tempstring + item
+                            spacecount = 0
+                    CFGline = tempstring
+                except:
+                    continue
+                CFGline = CFGline.split(",")
+                for item in range(len(CFGline)):
+                    if CFGline[item] == "//":
+                        try:
+                            if CFGline[item+1].startswith("BOTH_") or CFGline[item+1].startswith("TORSO_"):
+                                play_items1 = play_items1 + ['"' + CFGline[item+1] + '"' + "$0D"]
+                                play_values1 = play_values1 + ['"' + CFGline[item+1]+','+CFGline[0]+','+CFGline[1]+','+CFGline[2]+','+CFGline[3]]
+                            else:
+                                play_items2 = play_items2 + ['"' + CFGline[item+1] + '"' + "$0D"]
+                                play_values2 = play_values2 + ['"' + CFGline[item+1]+','+CFGline[0]+','+CFGline[1]+','+CFGline[2]+','+CFGline[3] + '"' + "$0D"]
+                            list_values = list_values + [[CFGline[item+1],CFGline[0],CFGline[1],CFGline[2],CFGline[3]]]
+                            if CFGline[item+1].startswith("TORSO_") and max_BOTH == "0":
+                                max_BOTH = CFGline[0]
+                            if CFGline[item+1].startswith("LEGS_") and max_TORSO == "0":
+                                max_TORSO = CFGline[0]
+                        except: # Something is wrong with this line of data, making it invalid so go on to the next line.
+                            continue
+
+            if len(play_items1) != 0:
+                PlayList1 = PlayList1 + """sep: = { Typ="S" Txt="" } play_list1: = {Typ = "CL" Txt = "Play list upper" items = """
+                PlayList2 = PlayList2 + """sep: = { Typ="S" Txt="" } play_list2: = {Typ = "CL" Txt = "Play list lower" items = """
+                for item in play_items1:
+                    PlayList1 = PlayList1 + item 
+                for item in play_items2:
+                    PlayList2 = PlayList2 + item 
+
+                PlayList1 = PlayList1 + """ values = """
+                PlayList2 = PlayList2 + """ values = """
+                for value in play_values1:
+                    PlayList1 = PlayList1 + value + ','+max_BOTH+','+max_TORSO + '"' + "$0D"
+                for value in play_values2:
+                    PlayList2 = PlayList2 + value
+
+                PlayList1 = PlayList1 + """ Hint="List of available animations for this group."$0D"Click on one to play its components scquence."$0D"If 'BOTH_' is selected 'Play list lower' is ignored."}"""
+                PlayList1 = PlayList1 + """first_frame1:    = {Typ="E R" Txt="first frame"    Hint="The frame animation starts at. (read only)"}"""
+                PlayList1 = PlayList1 + """num_frames1:     = {Typ="E R" Txt="num frame"      Hint="The number of frames in the animation sequence. (read only)"}"""
+                PlayList1 = PlayList1 + """looping_frames1: = {Typ="E R" Txt="looping frames" Hint="The frames played in a loop. (read only)"}"""
+                PlayList1 = PlayList1 + """CFG_FPS1:        = {Typ="E R" Txt="CFG FPS"        Hint="The set frames per second to play this animation. (read only)"}"""
+
+                PlayList2 = PlayList2 + """ Hint="List of available animations for this group."$0D"Click on one to play its components scquence."$0D"If 'BOTH_' is selected 'Play list lower' is ignored."}"""
+                PlayList2 = PlayList2 + """first_frame2:    = {Typ="E R" Txt="first frame"    Hint="The frame animation starts at. (read only)"}"""
+                PlayList2 = PlayList2 + """num_frames2:     = {Typ="E R" Txt="num frame"      Hint="The number of frames in the animation sequence. (read only)"}"""
+                PlayList2 = PlayList2 + """looping_frames2: = {Typ="E R" Txt="looping frames" Hint="The frames played in a loop. (read only)"}"""
+                PlayList2 = PlayList2 + """CFG_FPS2:        = {Typ="E R" Txt="CFG FPS"        Hint="The set frames per second to play this animation. (read only)"}"""
+
+            AnimationCFG_dialog_plugin = UseAnimationCFG()
 
         Component = ""
         Component = Component + """Help = "These are the Specific settings for a Tag."$0D"""
@@ -1893,8 +2076,55 @@ class TagType(EntityManager):
         {
           """ + Component + """
           """ + TagList + """
+          """ + AnimationCFG_dialog_plugin + """
+          """ + PlayList1 + """
+          """ + PlayList2 + """
         }
         """
+        if o.dictspec.has_key("animationCFG"):
+            if o.dictspec.has_key("play_list1"):
+                for value in list_values:
+                    if value[0] == o.dictspec['play_list1'].split(",")[0]:
+                        o['play_list1'] = value[0]+","+value[1]+","+value[2]+","+value[3]+","+value[4]+","+max_BOTH+","+max_TORSO
+                        o['first_frame1'] = value[1]
+                        o['num_frames1'] = value[2]
+                        o['looping_frames1'] = value[3]
+                        o['CFG_FPS1'] = value[4]
+                        break
+            else:
+                value = list_values[0]
+                o['play_list1'] = value[0]+","+value[1]+","+value[2]+","+value[3]+","+value[4]+","+max_BOTH+","+max_TORSO
+                o['first_frame1'] = value[1]
+                o['num_frames1'] = value[2]
+                o['looping_frames1'] = value[3]
+                o['CFG_FPS1'] = value[4]
+            if o.dictspec.has_key("play_list2"):
+                for value in list_values:
+                    if value[0] == o.dictspec['play_list2'].split(",")[0]:
+                        o['play_list2'] = value[0]+","+value[1]+","+value[2]+","+value[3]+","+value[4]
+                        o['first_frame2'] = value[1]
+                        o['num_frames2'] = value[2]
+                        o['looping_frames2'] = value[3]
+                        o['CFG_FPS2'] = value[4]
+                        break
+            else:
+                for value in list_values:
+                    if value[0].startswith("LEGS_"):
+                        o['play_list2'] = value[0]+","+value[1]+","+value[2]+","+value[3]+","+value[4]
+                        o['first_frame2'] = value[1]
+                        o['num_frames2'] = value[2]
+                        o['looping_frames2'] = value[3]
+                        o['CFG_FPS2'] = value[4]
+                        break
+
+            if not o.dictspec.has_key('CFG_lines'):
+                if quarkx.setupsubset(SS_MODEL, "Options")["NbrOfCFGLines"] is not None:
+                    o['CFG_lines'] = quarkx.setupsubset(SS_MODEL, "Options")["NbrOfCFGLines"]
+                else:
+                    o['CFG_lines'] = "8"
+                    quarkx.setupsubset(SS_MODEL, "Options")["NbrOfCFGLines"] = o.dictspec['CFG_lines']
+            else:
+                quarkx.setupsubset(SS_MODEL, "Options")["NbrOfCFGLines"] = o.dictspec['CFG_lines']
 
         if o.dictspec.has_key("tag_list"):
             if len(tag_names) > 1 and not o.dictspec['tag_list'] in tag_names: # In case one of them gets renamed.
@@ -1913,6 +2143,14 @@ class TagType(EntityManager):
 
         formobj = quarkx.newobj("tagframe:form")
         formobj.loadtext(dlgdef)
+
+        if MdlOption("AnimationCFGActive"):
+            import mdlanimation
+            from mdlanimation import playNR, playlist
+            playNR = 0
+            mdlanimation.playlist = [o]
+            mdlanimation.UpdateplaylistPerComp(None)
+
         return formobj
 
 
@@ -2624,6 +2862,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.60  2009/10/06 09:26:17  cdunde
+#To create animated tag frames for all imported .md3 models with tags, such as weapons
+#
 #Revision 1.59  2009/10/06 05:59:26  cdunde
 #To give the tags and tag_components lists something to do.
 #

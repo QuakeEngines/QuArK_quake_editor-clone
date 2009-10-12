@@ -1826,7 +1826,7 @@ class ModelLayout(BaseLayout):
                     if SkinView1 is not None:
                         SkinView1.invalidate()
         else:
-            if quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] == "1":
+            if quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] == "1" or quarkx.setupsubset(SS_MODEL, "Options")['AnimationCFGActive'] == "1":
                 pass
             else:
                 self.editor.ModelVertexSelList = []
@@ -1863,6 +1863,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.112  2009/10/07 08:49:07  cdunde
+#To stop Skin-view from redrawing every time a tagframe is selected.
+#
 #Revision 1.111  2009/10/03 06:16:07  cdunde
 #Added support for animation interpolation in the Model Editor.
 #(computation of added movement to emulate game action)

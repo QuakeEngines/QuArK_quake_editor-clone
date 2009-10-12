@@ -959,7 +959,7 @@ class VertexHandle(qhandles.GenericHandle):
         else:
             if isinstance(editor.dragobject, qhandles.ScrollViewDragObject):
                 return # RMB pressed or dragging to pan (scroll) in the view.
-        if quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] == "1":
+        if quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] == "1" or quarkx.setupsubset(SS_MODEL, "Options")['AnimationCFGActive'] == "1":
             view.handles = []
             return
         if (flagsmouse == 520 or flagsmouse == 1032) and draghandle is not None: return # LMB pressed or dragging model mesh handle.
@@ -2080,7 +2080,7 @@ def BuildCommonHandles(editor, explorer, option=1):
                 th = th + mdlentities.CallManager("handlesopt", tag_frame, editor)
 
     bh = th
-    if quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] == "1":
+    if quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] == "1" or quarkx.setupsubset(SS_MODEL, "Options")['AnimationCFGActive'] == "1":
         if len(editor.ModelFaceSelList) != 0:
             MakeEditorFaceObject(editor)
         return bh
@@ -2203,7 +2203,7 @@ def BuildHandles(editor, explorer, view, option=1):
                 th = th + mdlentities.CallManager("handlesopt", tag_frame, editor)
 
     bh = th
-    if quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] == "1":
+    if quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] == "1" or quarkx.setupsubset(SS_MODEL, "Options")['AnimationCFGActive'] == "1":
         view.handles = []
         if len(editor.ModelFaceSelList) != 0:
             MakeEditorFaceObject(editor)
@@ -5272,6 +5272,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.187  2009/10/07 18:13:19  cdunde
+#Fix to move tags correctly with their own components tag and animation frames.
+#
 #Revision 1.186  2009/09/30 19:37:26  cdunde
 #Threw out tags dialog, setup tag dragging, commands, and fixed saving of face selection.
 #

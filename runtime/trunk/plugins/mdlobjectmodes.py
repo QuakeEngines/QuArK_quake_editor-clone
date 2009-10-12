@@ -4654,6 +4654,7 @@ def selectmode(btn):
         quarkpy.mdlanimation.playlist = []
     quarkx.settimer(quarkpy.mdlanimation.drawanimation, editor, 0)
     quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] = None
+    quarkx.setupsubset(SS_MODEL, "Options")['AnimationCFGActive'] = None
     quarkx.setupsubset(SS_MODEL, "Options")['AnimationPaused'] = None
 
 def select1(btn, toolbar, editor):
@@ -5615,6 +5616,10 @@ def ConvertPolyObject(editor, newobjectslist, flags, view, undomsg, option=1, nb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.18  2009/04/28 21:30:56  cdunde
+# Model Editor Bone Rebuild merge to HEAD.
+# Complete change of bone system.
+#
 # Revision 1.17  2008/12/20 08:39:34  cdunde
 # Minor adjustment to various Model Editor dialogs for recent fix of item over lapping by Dan.
 #
