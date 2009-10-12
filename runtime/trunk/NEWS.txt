@@ -14,6 +14,8 @@ $Id$
 
 6.6.0 Beta 3
 ============
+* [cdunde/DanielPharos]: Added support for .md3 animationCFG (configuration) support and editting.
+
 * [cdunde/DanielPharos]: Added support for animation interpolation in the Model Editor.
           - (computation of added movement to emulate game action)
 
