@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.83  2009/07/30 09:41:51  danielpharos
+Added additional logging.
+
 Revision 1.82  2009/07/15 10:38:01  danielpharos
 Updated website link.
 
@@ -1352,7 +1355,7 @@ begin
   if not Reg.OpenKey('\.'+Ext, True) then Exit;
   try
    S:=Format(RegFileAssocFormat, [Ext]);
-   if not Reg.ReadString('', S1) or (S=S1) then
+   if not (Reg.ReadString('', S1) or (S=S1)) then
     if not Reg.WriteString('', S) then Exit;
   finally
    Reg.CloseKey;
@@ -1360,14 +1363,14 @@ begin
   if not Reg.OpenKey('\'+ClassKey, True) then Exit;
   try
    S:=Format(RegFileDescrFormat, [Description]);
-   if not Reg.ReadString('', S1) or (S=S1) then
+   if not (Reg.ReadString('', S1) or (S=S1)) then
     Reg.WriteString('', S);
   finally
    Reg.CloseKey;
   end;
   if not Reg.OpenKey('\'+ClassKey+'\shell\open\command', True) then Exit;
   try
-   if not Reg.ReadString('', S) or (S=Command) then
+   if not (Reg.ReadString('', S) or (S=Command)) then
     if not Reg.WriteString('', Command) then Exit;
    {if (Icon>=0) and Reg.OpenKey('\'+S1+'\DefaultIcon', True) then
     Reg.WriteString('', Format('%s,%d', [Application.ExeName, Icon]));}
@@ -1471,7 +1474,8 @@ begin
 
     end;
    finally
-    Reg.Free;
+    if Reg <> Nil then
+     Reg.Free;
    end;
   end;
 end;
