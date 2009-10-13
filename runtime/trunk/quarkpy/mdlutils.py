@@ -512,17 +512,6 @@ def LinearInterpolation(editor, AnimFrames, Factor=0.0):
     newframe.vertices = newvertices
     return newframe
 
-def PolynomialInterpolation(editor, AnimFrames, Factor=0.0):
-    if (Factor < 0.0) or (Factor > len(AnimFrames)):
-        # Somebody send me a bad Factor! Bad programmer! Bad!
-        raise "PolynomialInterpolation: Factor out of range! (%f)" % Factor
-    # Uses gaussian elimination
-    
-    #FIXME: Not implemented yet!
-    newframe = LinearInterpolation(editor, AnimFrames, Factor)
-
-    return newframe
-
 def gauss_jordan(m, eps = 1.0/(10**10)):
   #From: http://elonen.iki.fi/code/misc-notes/python-gaussj/
   """Puts given matrix (2D array) into the Reduced Row Echelon Form.
@@ -552,7 +541,7 @@ def gauss_jordan(m, eps = 1.0/(10**10)):
       m[y][x] /= c
   return 1
 
-def PolynomialInterpolation2(editor, AnimFrames, Factor=0.0):
+def PolynomialInterpolation(editor, AnimFrames, Factor=0.0):
     if (Factor < 0.0) or (Factor > len(AnimFrames)):
         # Somebody send me a bad Factor! Bad programmer! Bad!
         raise "PolynomialInterpolation: Factor out of range! (%f)" % Factor
@@ -4109,6 +4098,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.117  2009/10/10 04:11:08  cdunde
+#Another method of interpolation by DanielPharos. Not being called at this time.
+#
 #Revision 1.116  2009/10/03 06:16:07  cdunde
 #Added support for animation interpolation in the Model Editor.
 #(computation of added movement to emulate game action)
