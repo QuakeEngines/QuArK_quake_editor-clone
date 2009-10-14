@@ -2147,7 +2147,7 @@ class TagType(EntityManager):
         if MdlOption("AnimationCFGActive"):
             import mdlanimation
             from mdlanimation import playNR, playlist
-            playNR = 0
+            mdlanimation.playNR = 0
             mdlanimation.playlist = [o]
             mdlanimation.UpdateplaylistPerComp(None)
 
@@ -2862,6 +2862,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.61  2009/10/12 20:49:56  cdunde
+#Added support for .md3 animationCFG (configuration) support and editing.
+#
 #Revision 1.60  2009/10/06 09:26:17  cdunde
 #To create animated tag frames for all imported .md3 models with tags, such as weapons
 #

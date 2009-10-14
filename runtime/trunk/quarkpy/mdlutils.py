@@ -485,16 +485,15 @@ def fixUpVertexNos(tris, index):
 ###############################
 
 def LinearInterpolation(editor, AnimFrames, Factor=0.0):
-    if (Factor < 0.0) or (Factor > len(AnimFrames)):
+    FrameIndex = int(floor(Factor))
+    if (Factor < 0.0) or (FrameIndex > len(AnimFrames)-1):
         # Somebody send me a bad Factor! Bad programmer! Bad!
         raise "LinearInterpolation: Factor out of range! (%f)" % Factor
-    FrameIndex = int(floor(Factor))
     PrevFrame = AnimFrames[FrameIndex]
     if FrameIndex < len(AnimFrames)-1:
         NextFrame = AnimFrames[FrameIndex+1]
     else:
         NextFrame = AnimFrames[0]
-    comp = PrevFrame.parent.parent
     PrevVertices = PrevFrame.vertices
     NextVertices = NextFrame.vertices
     if len(PrevVertices) != len(NextVertices):
@@ -542,9 +541,10 @@ def gauss_jordan(m, eps = 1.0/(10**10)):
   return 1
 
 def PolynomialInterpolation(editor, AnimFrames, Factor=0.0):
-    if (Factor < 0.0) or (Factor > len(AnimFrames)):
+    FrameIndex = int(floor(Factor))
+    if (Factor < 0.0) or (FrameIndex > len(AnimFrames)-1):
         # Somebody send me a bad Factor! Bad programmer! Bad!
-        raise "PolynomialInterpolation: Factor out of range! (%f)" % Factor
+        raise "LinearInterpolation: Factor out of range! (%f)" % Factor
     # Uses gaussian elimination: [A]*{x}={B}
     NumberFrames = len(AnimFrames)
     if NumberFrames > 1000:
@@ -4098,6 +4098,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.118  2009/10/13 22:02:36  danielpharos
+#Removed some redundant code.
+#
 #Revision 1.117  2009/10/10 04:11:08  cdunde
 #Another method of interpolation by DanielPharos. Not being called at this time.
 #

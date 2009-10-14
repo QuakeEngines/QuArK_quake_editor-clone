@@ -71,20 +71,24 @@ def drawanimation(self):
                     except:
                         continue
         else: ### Interpolation section.
-            if editor.layout.explorer.sellist != []:
+            if editor.layout.explorer.sellist != [] and not MdlOption("AnimationCFGActive"):
                 editor.layout.explorer.uniquesel = None
                 editor.layout.explorer.sellist = []
                 editor.layout.explorer.invalidate()
 
             IPF = float(1/quarkx.setupsubset(SS_MODEL, "Display")["AnimationIPF"][0])
-            playNR = playNR + IPF
             FPS = int(FPS*(IPF*2)) # Speeds up animation as IPF increases (causing slower drawing).
-            if quarkx.setupsubset(SS_MODEL, "Options")['SmoothLooping'] is not None:
-                while playNR >= len(playlist):
-                    playNR = playNR - len(playlist)
+            if len(playlist) == 1:
+                # Can't loop with just one frame
+                playNR = 0.0
             else:
-                while playNR >= len(playlist) - 1:
-                    playNR = playNR - (len(playlist) - 1)
+                playNR = playNR + IPF
+                if quarkx.setupsubset(SS_MODEL, "Options")['SmoothLooping'] is not None:
+                    while playNR >= len(playlist):
+                        playNR = playNR - len(playlist)
+                else:
+                    while playNR >= len(playlist) - 1:
+                        playNR = playNR - (len(playlist) - 1)
             OldFrameVertices = {}
             for comp_name in playlistPerComp.keys():
                 try:
@@ -242,6 +246,7 @@ def UpdateplaylistPerComp(self):
                 CFG_FPS1 = int(play_list1[4]) # Not being used yet.
 
                 if play_list1[0].startswith("TORSO_"): # Handles NON - "BOTH_" (combination) sequences.
+                    TORSO_tagframes = sel[item].subitems
                     max_BOTH = int(play_list1[5])
                     max_TORSO = int(play_list1[6])
                     play_list2 = sel[item].dictspec['play_list2'].split(",")
@@ -250,7 +255,6 @@ def UpdateplaylistPerComp(self):
                     num_frames2 = int(play_list2[2])
                     looping_frames2 = int(play_list2[3])
                     CFG_FPS2 = int(play_list2[4]) # Not being used yet.
-                    TORSO_tagframes = sel[item].subitems
                     LEGS_origins = [] # A list of tagframe origins as vectors for the LEGS frames.
                     TORSO_origins = [] # A list of tagframe origins as vectors for the TORSO frames.
 
@@ -296,7 +300,7 @@ def UpdateplaylistPerComp(self):
                                                 playlistPerComp[comp.name] = [comp, [frame_copy]]
                                         framecount = framecount + 1
                                         loopcount = loopcount + 1
-                                        if loopcount == len(legs_frames)-1:
+                                        if loopcount == len(legs_frames):
                                             loop = loop + 1
                                             loopcount = 0
 
@@ -340,7 +344,7 @@ def UpdateplaylistPerComp(self):
                                                 playlistPerComp[comp.name] = [comp, [frame_copy]]
                                         framecount = framecount + 1
                                         loopcount = loopcount + 1
-                                        if loopcount == len(comp_frames)-1:
+                                        if loopcount == len(comp_frames):
                                             loop = loop + 1
                                             loopcount = 0
 
@@ -387,7 +391,7 @@ def UpdateplaylistPerComp(self):
                                                     playlistPerComp[comp.name] = [comp, [fixed_frame]]
                                             framecount = framecount + 1
                                             loopcount = loopcount + 1
-                                            if loopcount == len(legs_frames)-1:
+                                            if loopcount == len(legs_frames):
                                                 loop = loop + 1
                                                 loopcount = 0
                         except:
@@ -828,29 +832,31 @@ class AnimationBar(ToolBar):
             btn.state = qtoolbar.selected
             quarkx.update(editor.form)
             if quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] is not None and quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] != "0" and editor.layout.explorer.uniquesel is not None:
-                frames = editor.Root.currentcomponent.dictitems['Frames:fg'].subitems
-                for framenbr in range(len(frames)):
-                    if frames[framenbr].name == editor.layout.explorer.uniquesel.name:
-                        playNR = framenbr
+                if not MdlOption("AnimationCFGActive"):
+                    frames = editor.Root.currentcomponent.dictitems['Frames:fg'].subitems
+                    for framenbr in range(len(frames)):
+                        if frames[framenbr].name == editor.layout.explorer.uniquesel.name:
+                            playNR = framenbr
         else: # Turns button OFF
             quarkx.setupsubset(SS_MODEL, "Options")['InterpolationActive'] = None
             qtoolbar.toggle(btn)
             btn.state = qtoolbar.normal
             quarkx.update(editor.form)
             if quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] is not None and quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] != "0" and MdlOption("AnimationPaused"):
-                if editor.layout.explorer.uniquesel is not None:
-                    frames = editor.Root.currentcomponent.dictitems['Frames:fg'].subitems
-                    for framenbr in range(len(frames)):
-                        if frames[framenbr].name == editor.layout.explorer.uniquesel.name:
-                            playNR = framenbr
-                import mdlmgr
-                mdlmgr.treeviewselchanged = 0
-                try:
-                    playNR = int(round(playNR))
-                    editor.layout.explorer.uniquesel = playlist[playNR]
-                    editor.layout.explorer.invalidate()
-                except:
-                    pass
+                if not MdlOption("AnimationCFGActive"):
+                    if editor.layout.explorer.uniquesel is not None:
+                        frames = editor.Root.currentcomponent.dictitems['Frames:fg'].subitems
+                        for framenbr in range(len(frames)):
+                            if frames[framenbr].name == editor.layout.explorer.uniquesel.name:
+                                playNR = framenbr
+                    import mdlmgr
+                    mdlmgr.treeviewselchanged = 0
+                    try:
+                        playNR = int(round(playNR))
+                        editor.layout.explorer.uniquesel = playlist[playNR]
+                        editor.layout.explorer.invalidate()
+                    except:
+                        pass
 
 
     def incrementIPF(self, btn):
@@ -1002,6 +1008,9 @@ class AnimationBar(ToolBar):
 #
 #
 #$Log$
+#Revision 1.15  2009/10/12 20:49:56  cdunde
+#Added support for .md3 animationCFG (configuration) support and editing.
+#
 #Revision 1.14  2009/10/05 01:14:58  cdunde
 #Removed constant component looping for max interpolation drawing speed
 #and setup for possibly to only animate selected components and frames.
