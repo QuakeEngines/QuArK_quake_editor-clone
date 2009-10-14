@@ -563,13 +563,13 @@ class AnimationBar(ToolBar):
         if not MdlOption("AnimationActive"): # Turns button ON
             if not MdlOption("AnimationCFGActive"):
                 if editor.layout.explorer.sellist == [] or len(editor.layout.explorer.sellist) < 2:
-                    quarkx.msgbox("Improper Action !\n\nYou need to select at least two frames\n(and no other types of sub-items)\nof the same component to activate animation.\n\nPress 'F1' for InfoBase help\nof this function for details.\n\nAction Canceled.", MT_ERROR, MB_OK)
+                    quarkx.msgbox("Improper Action !\n\nYou need to select at least two frames\n(and no other types of sub-items)\nof the same component to activate animation.\n\nAction Canceled.", MT_ERROR, MB_OK)
                     return
                 else:
                     sel = editor.layout.explorer.sellist
                     for item in range(len(sel)):
                         if sel[item].type != ':mf':
-                            quarkx.msgbox("Improper Selection !\n\nYou need to select at least two frames\n(and no other types of sub-items)\nof the same component to activate animation.\n\nPress 'F1' for InfoBase help\nof this function for details.\n\nAction Canceled.", MT_ERROR, MB_OK)
+                            quarkx.msgbox("Improper Selection !\n\nYou need to select at least two frames\n(and no other types of sub-items)\nof the same component to activate animation.\n\nAction Canceled.", MT_ERROR, MB_OK)
                             return
                         if item == len(sel)-1:
                             pass
@@ -643,14 +643,14 @@ class AnimationBar(ToolBar):
                 self.tb.buttons[0].state = qtoolbar.normal
                 quarkx.update(editor.form)
             if editor.layout.explorer.sellist == []:
-                quarkx.msgbox("Improper Action !\n\nTo activate CFG animation\nyou need to select one Tag with the\nCFG text which would be a 'torso' tag\nand have imported all sections of that model,\nwhich will cause the 'animation.cfg' file\nof that model to also be loaded.\n\nPress 'F1' for InfoBase help\nof this function for details.\n\nAction Canceled.", MT_ERROR, MB_OK)
+                quarkx.msgbox("Improper Action !\n\nTo activate CFG animation\nyou need to select one Tag with the\nCFG text which would be a 'torso' tag\nand have imported all sections of that model,\nwhich will cause the 'animation.cfg' file\nof that model to also be loaded.\n\nAction Canceled.", MT_ERROR, MB_OK)
                 return
             else:
                 sel = editor.layout.explorer.sellist
                 tags = editor.Root.dictitems['Misc:mg'].findallsubitems("", ':tag')  # get all tags
                 for item in range(len(sel)):
                     if item == len(sel)-1 and sel[item].type != ':tag':
-                        quarkx.msgbox("Improper Action !\n\nTo activate CFG animation\nyou need to select one Tag with the\nCFG text which would be a 'torso' tag\nand have imported all sections of that model,\nwhich will cause the 'animation.cfg' file\nof that model to also be loaded.\n\nPress 'F1' for InfoBase help\nof this function for details.\n\nAction Canceled.", MT_ERROR, MB_OK)
+                        quarkx.msgbox("Improper Action !\n\nTo activate CFG animation\nyou need to select one Tag with the\nCFG text which would be a 'torso' tag\nand have imported all sections of that model,\nwhich will cause the 'animation.cfg' file\nof that model to also be loaded.\n\nAction Canceled.", MT_ERROR, MB_OK)
                         return
                     elif sel[item].type == ':tag':
                         group = sel[item].name.split("_")[0]
@@ -658,7 +658,7 @@ class AnimationBar(ToolBar):
                             if tag.name.startswith(group) and tag.dictspec.has_key("play_list1"):
                                 break
                     elif item == len(sel)-1:
-                        quarkx.msgbox("CFG file not found !\n\nNone of the selected tags has an 'animation.cfg' file\nor the '.cfg' file is named improperly.\nCheck the model folders and correct.\n\nTo activate CFG animation\nyou need to select at least\none Tag and have imported all sections of that model,\nwhich will cause the 'animation.cfg' file\nof that model to also be loaded.\n\nPress 'F1' for InfoBase help\nof this function for details.\n\nAction Canceled.", MT_ERROR, MB_OK)
+                        quarkx.msgbox("CFG file not found !\n\nNone of the selected tags has an 'animation.cfg' file\nor the '.cfg' file is named improperly.\nCheck the model folders and correct.\n\nTo activate CFG animation\nyou need to select at least\none Tag and have imported all sections of that model,\nwhich will cause the 'animation.cfg' file\nof that model to also be loaded.\n\nAction Canceled.", MT_ERROR, MB_OK)
                         return
             quarkx.setupsubset(SS_MODEL, "Options")['AnimationCFGActive'] = "1"
             qtoolbar.toggle(btn)
@@ -709,7 +709,6 @@ class AnimationBar(ToolBar):
                 view.cursor = CR_ARROW
                 view.handlecursor = CR_CROSS
 
-
     def incrementFPS(self, btn):
         "Implements the increase and decrease FPS (frames per second) buttons."
         editor = mapeditor()
@@ -752,76 +751,6 @@ class AnimationBar(ToolBar):
                         else:
                             playlistcount = playlistcount + 1
 
-    def animateeditor3dview(self, btn):
-        "Editor's 3D view animation."
-        editor = mapeditor()
-        if not MdlOption("AnimateEd3Dview"):
-            quarkx.setupsubset(SS_MODEL, "Options")['AnimateEd3Dview'] = "1"
-            qtoolbar.toggle(btn)
-            btn.state = qtoolbar.selected
-            quarkx.update(editor.form)
-        else:
-            quarkx.setupsubset(SS_MODEL, "Options")['AnimateEd3Dview'] = None
-            qtoolbar.toggle(btn)
-            btn.state = qtoolbar.normal
-            quarkx.update(editor.form)
-
-    def animatex2dview(self, btn):
-        "Editor's X Back 2D view animation."
-        editor = mapeditor()
-        if not MdlOption("AnimateX2Dview"):
-            quarkx.setupsubset(SS_MODEL, "Options")['AnimateX2Dview'] = "1"
-            qtoolbar.toggle(btn)
-            btn.state = qtoolbar.selected
-            quarkx.update(editor.form)
-        else:
-            quarkx.setupsubset(SS_MODEL, "Options")['AnimateX2Dview'] = None
-            qtoolbar.toggle(btn)
-            btn.state = qtoolbar.normal
-            quarkx.update(editor.form)
-
-    def animatey2dview(self, btn):
-        "Editor's Y Side 2D view animation."
-        editor = mapeditor()
-        if not MdlOption("AnimateY2Dview"):
-            quarkx.setupsubset(SS_MODEL, "Options")['AnimateY2Dview'] = "1"
-            qtoolbar.toggle(btn)
-            btn.state = qtoolbar.selected
-            quarkx.update(editor.form)
-        else:
-            quarkx.setupsubset(SS_MODEL, "Options")['AnimateY2Dview'] = None
-            qtoolbar.toggle(btn)
-            btn.state = qtoolbar.normal
-            quarkx.update(editor.form)
-
-    def animatez2dview(self, btn):
-        "Editor's Z Top 2D view animation."
-        editor = mapeditor()
-        if not MdlOption("AnimateZ2Dview"):
-            quarkx.setupsubset(SS_MODEL, "Options")['AnimateZ2Dview'] = "1"
-            qtoolbar.toggle(btn)
-            btn.state = qtoolbar.selected
-            quarkx.update(editor.form)
-        else:
-            quarkx.setupsubset(SS_MODEL, "Options")['AnimateZ2Dview'] = None
-            qtoolbar.toggle(btn)
-            btn.state = qtoolbar.normal
-            quarkx.update(editor.form)
-
-    def animatefloat3dview(self, btn):
-        "Editor's Floating 3D view animation."
-        editor = mapeditor()
-        if not MdlOption("AnimateFloat3Dview"):
-            quarkx.setupsubset(SS_MODEL, "Options")['AnimateFloat3Dview'] = "1"
-            qtoolbar.toggle(btn)
-            btn.state = qtoolbar.selected
-            quarkx.update(editor.form)
-        else:
-            quarkx.setupsubset(SS_MODEL, "Options")['AnimateFloat3Dview'] = None
-            qtoolbar.toggle(btn)
-            btn.state = qtoolbar.normal
-            quarkx.update(editor.form)
-
     def interpolation(self, btn):
         "Activates and deactivates animation interpolation, added movement between two frames by calculation."
         global playNR
@@ -858,6 +787,19 @@ class AnimationBar(ToolBar):
                     except:
                         pass
 
+    def smoothlooping(self, btn):
+        "Activates and deactivates animation interpolation smooth looping, added movement between the last and first frames of a cycle by calculation."
+        editor = mapeditor()
+        if not MdlOption("SmoothLooping"): # Turns button ON
+            quarkx.setupsubset(SS_MODEL, "Options")['SmoothLooping'] = "1"
+            qtoolbar.toggle(btn)
+            btn.state = qtoolbar.selected
+            quarkx.update(editor.form)
+        else: # Turns button OFF
+            quarkx.setupsubset(SS_MODEL, "Options")['SmoothLooping'] = None
+            qtoolbar.toggle(btn)
+            btn.state = qtoolbar.normal
+            quarkx.update(editor.form)
 
     def incrementIPF(self, btn):
         "Implements the increase and decrease IPF (interpolation frames) buttons."
@@ -870,16 +812,72 @@ class AnimationBar(ToolBar):
         setup["AnimationIPF"] = (animationIPF,)
         editor.layout.setanimationipf(animationIPF)
 
-    def smoothlooping(self, btn):
-        "Activates and deactivates animation interpolation smooth looping, added movement between the last and first frames of a cycle by calculation."
+    def animateeditor3dview(self, btn):
+        "Editor's 3D view animation."
         editor = mapeditor()
-        if not MdlOption("SmoothLooping"): # Turns button ON
-            quarkx.setupsubset(SS_MODEL, "Options")['SmoothLooping'] = "1"
+        if not MdlOption("AnimateEd3Dview"): # Turns button ON
+            quarkx.setupsubset(SS_MODEL, "Options")['AnimateEd3Dview'] = "1"
             qtoolbar.toggle(btn)
             btn.state = qtoolbar.selected
             quarkx.update(editor.form)
         else: # Turns button OFF
-            quarkx.setupsubset(SS_MODEL, "Options")['SmoothLooping'] = None
+            quarkx.setupsubset(SS_MODEL, "Options")['AnimateEd3Dview'] = None
+            qtoolbar.toggle(btn)
+            btn.state = qtoolbar.normal
+            quarkx.update(editor.form)
+
+    def animatex2dview(self, btn):
+        "Editor's X Back 2D view animation."
+        editor = mapeditor()
+        if not MdlOption("AnimateX2Dview"): # Turns button ON
+            quarkx.setupsubset(SS_MODEL, "Options")['AnimateX2Dview'] = "1"
+            qtoolbar.toggle(btn)
+            btn.state = qtoolbar.selected
+            quarkx.update(editor.form)
+        else: # Turns button OFF
+            quarkx.setupsubset(SS_MODEL, "Options")['AnimateX2Dview'] = None
+            qtoolbar.toggle(btn)
+            btn.state = qtoolbar.normal
+            quarkx.update(editor.form)
+
+    def animatey2dview(self, btn):
+        "Editor's Y Side 2D view animation."
+        editor = mapeditor()
+        if not MdlOption("AnimateY2Dview"): # Turns button ON
+            quarkx.setupsubset(SS_MODEL, "Options")['AnimateY2Dview'] = "1"
+            qtoolbar.toggle(btn)
+            btn.state = qtoolbar.selected
+            quarkx.update(editor.form)
+        else: # Turns button OFF
+            quarkx.setupsubset(SS_MODEL, "Options")['AnimateY2Dview'] = None
+            qtoolbar.toggle(btn)
+            btn.state = qtoolbar.normal
+            quarkx.update(editor.form)
+
+    def animatez2dview(self, btn):
+        "Editor's Z Top 2D view animation."
+        editor = mapeditor()
+        if not MdlOption("AnimateZ2Dview"): # Turns button ON
+            quarkx.setupsubset(SS_MODEL, "Options")['AnimateZ2Dview'] = "1"
+            qtoolbar.toggle(btn)
+            btn.state = qtoolbar.selected
+            quarkx.update(editor.form)
+        else: # Turns button OFF
+            quarkx.setupsubset(SS_MODEL, "Options")['AnimateZ2Dview'] = None
+            qtoolbar.toggle(btn)
+            btn.state = qtoolbar.normal
+            quarkx.update(editor.form)
+
+    def animatefloat3dview(self, btn):
+        "Editor's Floating 3D view animation."
+        editor = mapeditor()
+        if not MdlOption("AnimateFloat3Dview"): # Turns button ON
+            quarkx.setupsubset(SS_MODEL, "Options")['AnimateFloat3Dview'] = "1"
+            qtoolbar.toggle(btn)
+            btn.state = qtoolbar.selected
+            quarkx.update(editor.form)
+        else: # Turns button OFF
+            quarkx.setupsubset(SS_MODEL, "Options")['AnimateFloat3Dview'] = None
             qtoolbar.toggle(btn)
             btn.state = qtoolbar.normal
             quarkx.update(editor.form)
@@ -899,8 +897,8 @@ class AnimationBar(ToolBar):
         i = quarkx.setupsubset(SS_MODEL, "Building").getint("AnimationMode")
         select1(btns[i], self, layout.editor)
 
-        animateonoff = qtoolbar.button(self.animate, "Animate on\off||Animate on\off:\n\nThis button will activate or de-activate the animation of the selected model component animation frames.\n\nYou must select two or more frames of the same component and no other sub-items for the animation to become available.\n\nTo return to regular operation mode you must click this button to turn 'Off' the animation function.", ico_mdlanim, 0, infobaselink="intro.modeleditor.toolpalettes.animation.html#animate")
-        animateCFGonoff = qtoolbar.button(self.animateCFG, "AnimateCFG on\off||AnimateCFG on\off:\n\nThis button will activate or de-activate the animationCFG of the selected model component animation frames.\n\nOnly use for .md3 'Player' type models with tags and a 'animation.cfg' file in its folder.\n\nYou must select two or more frames of the same component and no other sub-items for the animation to become available.\n\nTo return to regular operation mode you must click this button to turn 'Off' the animation function.", ico_mdlanim, 12, infobaselink="intro.modeleditor.toolpalettes.animation.html#animate")
+        animateonoff = qtoolbar.button(self.animate, "Animate on\off||Animate on\off:\n\nThis button will activate or de-activate the animation of the selected model component animation frames.\n\nYou must select two or more frames of the same component and no other sub-items for the animation to become available.\n\nTo return to regular operation mode you must click this button to turn 'Off' the animation function.\n\nPress 'F1' for InfoBase help\nof this function for details.", ico_mdlanim, 0, infobaselink="intro.modeleditor.toolpalettes.animation.html#animate")
+        animateCFGonoff = qtoolbar.button(self.animateCFG, "AnimateCFG on\off||AnimateCFG on\off:\n\nThis button will activate or de-activate the animationCFG of the selected model component animation frames.\n\nOnly use for .md3 'Player' type models with tags and a 'animation.cfg' file in its folder.\n\nYou must select one Tag with the CFG text which would be a 'torso' tag and have imported all sections of that model for the animation to become available.\n\nTo return to regular operation mode you must click this button to turn 'Off' the animation cfg function.\n\nPress 'F1' for InfoBase help\nof this function for details.", ico_mdlanim, 12, infobaselink="intro.modeleditor.toolpalettes.animation.html#animatecfg")
 
         fpsbtn = qtoolbar.doublebutton(layout.toggleanimationfps, layout.getFPSmenu, "FPS||FPS or frames per second is the setting as to how fast or slow the selected model component animation frames will be drawn in the selected view(s) of the editor.\n\nYou can select a menu fps speed or use the arrows to the right to increase or decrease that speed while the frames are being animated.", ico_mdlanim, 1, infobaselink="intro.modeleditor.toolpalettes.animation.html#fps")
         setup = quarkx.setupsubset(SS_MODEL, "Display")
@@ -912,21 +910,22 @@ class AnimationBar(ToolBar):
         decreasefps.delta = -1
 
         animatepaused = qtoolbar.button(self.pauseanimation, "Play\Pause||Play\Pause:\n\nTo temporarily pause the chosen animation sequence on the particular frame that was drawn when this button was clicked. Click this button again to continue on with the animation from that frame.\n\nIf another frame of the chosen sequence is selected during the pause, it will continue from that point.\n\nThe entire frame sequence selection can also be changed during a pause.\n\nIf a component has more then one skin, the skin can be changed during the pause.", ico_mdlanim, 4, infobaselink="intro.modeleditor.toolpalettes.animation.html#pause")
-        editor3dviewanimated = qtoolbar.button(self.animateeditor3dview, "Animate Editors 3D view||Animate Editors 3D view:\n\nActivate this button to animate in the Editor's 3D view.", ico_mdlanim, 5, infobaselink="intro.modeleditor.toolpalettes.animation.html#viewselector")
-        x2dviewanimated = qtoolbar.button(self.animatex2dview, "Animate X Back 2D view||Animate X Back 2D view:\n\nActivate this button to animate in the Editor's X Back 2D view.", ico_mdlanim, 6, infobaselink="intro.modeleditor.toolpalettes.animation.html#viewselector")
-        y2dviewanimated = qtoolbar.button(self.animatey2dview, "Animate Y Side 2D view||Animate Y Side 2D view:\n\nActivate this button to animate in the Editor's Y Side 2D view.", ico_mdlanim, 7, infobaselink="intro.modeleditor.toolpalettes.animation.html#viewselector")
-        z2dviewanimated = qtoolbar.button(self.animatez2dview, "Animate Z Top 2D view||Animate Z Top 2D view:\n\nActivate this button to animate in the Editor's Z Top 2D view.", ico_mdlanim, 8, infobaselink="intro.modeleditor.toolpalettes.animation.html#viewselector")
-        float3dviewanimated = qtoolbar.button(self.animatefloat3dview, "Animate Floating 3D view||Animate Floating 3D view:\n\nActivate this button to animate in the Editor's Floating 3D view.", ico_mdlanim, 9, infobaselink="intro.modeleditor.toolpalettes.animation.html#viewselector")
+        interpolonoff = qtoolbar.button(self.interpolation, "Interpolation on\off||Interpolation on\off:\n\nThis button will activate or de-activate the interpolation (give smooth animation) of the selected model component animation frames.\n\nInterpolation calculates additional movement positions between two frames and draws them to smooth out the movement between those two frames.\n\nTo return to regular animation mode you must click this button to turn 'Off' the interpolation function.", ico_mdlanim, 10, infobaselink="intro.modeleditor.toolpalettes.animation.html#interpolation")
+        smoothlooponoff = qtoolbar.button(self.smoothlooping, "Smooth Looping on\off||Smooth Looping on\off:\n\nThis button will activate or de-activate smooth looping, giving a smoother animation appearance of the selected model component animation frames when returning from the last to the first frame.\n\nTo return to regular looping mode you must click this button again to turn 'Off' this function.", ico_mdlanim, 11, infobaselink="intro.modeleditor.toolpalettes.animation.html#smooth")
 
-        interpolonoff = qtoolbar.button(self.interpolation, "Interpolation on\off||Interpolation on\off:\n\nThis button will activate or de-activate the interpolation (give smooth animation) of the selected model component animation frames.\n\nInterpolation calculates additional movement positions between two frames and draws them to smooth out the movement between those two frames.\n\nTo return to regular animation mode you must click this button to turn 'Off' the interpolation function.", ico_mdlanim, 10, infobaselink="intro.modeleditor.toolpalettes.animation.html#animate")
-        ipfbtn = qtoolbar.doublebutton(layout.toggleanimationipf, layout.getIPFmenu, "IPF||IPF or interpolation frames is the setting as to how many added computed position frames will be added to the selected model component animation to be drawn in the selected view(s) of the editor.\n\nYou can select a menu fps speed or use the arrows to the right to increase or decrease that number while the frames are being animated.", ico_mdlanim, 1, infobaselink="intro.modeleditor.toolpalettes.animation.html#fps")
+        ipfbtn = qtoolbar.doublebutton(layout.toggleanimationipf, layout.getIPFmenu, "IPF||IPF or interpolation frames is the setting as to how many added computed position frames will be added to the selected model component animation to be drawn in the selected view(s) of the editor.\n\nYou can select a menu fps speed or use the arrows to the right to increase or decrease that number while the frames are being animated.", ico_mdlanim, 1, infobaselink="intro.modeleditor.toolpalettes.animation.html#ipf")
         animationIPF = setup["AnimationIPF"]
         ipfbtn.caption = quarkx.ftos(animationIPF[0])  # To determine the button width and show the current setting.
         increaseipf = qtoolbar.button(self.incrementIPF, "Increase IPF", ico_mdlanim, 2)
         increaseipf.delta = 1
         decreaseipf = qtoolbar.button(self.incrementIPF, "Decrease IPF", ico_mdlanim, 3)
         decreaseipf.delta = -1
-        smoothlooponoff = qtoolbar.button(self.smoothlooping, "Smooth Looping on\off||Smooth Looping on\off:\n\nThis button will activate or de-activate smooth looping, giving a smoother animation appearance of the selected model component animation frames when returning from the last to the first frame.\n\nTo return to regular looping mode you must click this button again to turn 'Off' this function.", ico_mdlanim, 11, infobaselink="intro.modeleditor.toolpalettes.animation.html#animate")
+
+        editor3dviewanimated = qtoolbar.button(self.animateeditor3dview, "Animate Editors 3D view||Animate Editors 3D view:\n\nActivate this button to animate in the Editor's 3D view.", ico_mdlanim, 5, infobaselink="intro.modeleditor.toolpalettes.animation.html#viewselector")
+        x2dviewanimated = qtoolbar.button(self.animatex2dview, "Animate X Back 2D view||Animate X Back 2D view:\n\nActivate this button to animate in the Editor's X Back 2D view.", ico_mdlanim, 6, infobaselink="intro.modeleditor.toolpalettes.animation.html#viewselector")
+        y2dviewanimated = qtoolbar.button(self.animatey2dview, "Animate Y Side 2D view||Animate Y Side 2D view:\n\nActivate this button to animate in the Editor's Y Side 2D view.", ico_mdlanim, 7, infobaselink="intro.modeleditor.toolpalettes.animation.html#viewselector")
+        z2dviewanimated = qtoolbar.button(self.animatez2dview, "Animate Z Top 2D view||Animate Z Top 2D view:\n\nActivate this button to animate in the Editor's Z Top 2D view.", ico_mdlanim, 8, infobaselink="intro.modeleditor.toolpalettes.animation.html#viewselector")
+        float3dviewanimated = qtoolbar.button(self.animatefloat3dview, "Animate Floating 3D view||Animate Floating 3D view:\n\nActivate this button to animate in the Editor's Floating 3D view.", ico_mdlanim, 9, infobaselink="intro.modeleditor.toolpalettes.animation.html#viewselector")
 
         if not MdlOption("AnimationActive"):
             animateonoff.state = qtoolbar.normal
@@ -934,10 +933,26 @@ class AnimationBar(ToolBar):
             animateCFGonoff.state = qtoolbar.normal
             animateonoff.state = qtoolbar.selected
 
+        if not MdlOption("AnimationCFGActive"):
+            animateonoff.state = qtoolbar.normal
+        else:
+            animateonoff.state = qtoolbar.normal
+            animateCFGonoff.state = qtoolbar.selected
+
         if not MdlOption("AnimationPaused"):
             animatepaused.state = qtoolbar.normal
         else:
             animatepaused.state = qtoolbar.selected
+
+        if not MdlOption("InterpolationActive"):
+            interpolonoff.state = qtoolbar.normal
+        else:
+            interpolonoff.state = qtoolbar.selected
+
+        if not MdlOption("SmoothLooping"):
+            smoothlooponoff.state = qtoolbar.normal
+        else:
+            smoothlooponoff.state = qtoolbar.selected
 
         if not MdlOption("AnimateEd3Dview"):
             editor3dviewanimated.state = qtoolbar.normal
@@ -964,50 +979,38 @@ class AnimationBar(ToolBar):
         else:
             float3dviewanimated.state = qtoolbar.selected
 
-        if not MdlOption("InterpolationActive"):
-            interpolonoff.state = qtoolbar.normal
-        else:
-            interpolonoff.state = qtoolbar.selected
-
-        if not MdlOption("SmoothLooping"):
-            smoothlooponoff.state = qtoolbar.normal
-        else:
-            smoothlooponoff.state = qtoolbar.selected
-
-        if not MdlOption("AnimationCFGActive"):
-            animateonoff.state = qtoolbar.normal
-        else:
-            animateonoff.state = qtoolbar.normal
-            animateCFGonoff.state = qtoolbar.selected
-
         layout.buttons.update({"animate": animateonoff,
                                "animateCFG": animateCFGonoff,
                                "fps": fpsbtn,
                                "fpsup": increasefps,
                                "fpsdown": decreasefps,
                                "pause": animatepaused,
+                               "interpolation": interpolonoff,
+                               "smoothloop": smoothlooponoff,
+                               "ipf": ipfbtn,
+                               "ipfup": increaseipf,
+                               "ipfdown": decreaseipf,
                                "animed3dview": editor3dviewanimated,
                                "animex2dview": x2dviewanimated,
                                "animey2dview": y2dviewanimated,
                                "animez2dview": z2dviewanimated,
-                               "floatd3dview": float3dviewanimated,
-                               "interpolation": interpolonoff,
-                               "ipf": ipfbtn,
-                               "ipfup": increaseipf,
-                               "ipfdown": decreaseipf,
-                               "smoothloop": smoothlooponoff
+                               "floatd3dview": float3dviewanimated
                              })
 
-        return [animateonoff, qtoolbar.sep, animateCFGonoff, qtoolbar.sep, fpsbtn, increasefps, decreasefps,
-                qtoolbar.sep, animatepaused, qtoolbar.sep,
-                editor3dviewanimated, x2dviewanimated, y2dviewanimated, z2dviewanimated, float3dviewanimated,
-                qtoolbar.sep, interpolonoff, ipfbtn, increaseipf, decreaseipf, qtoolbar.sep, smoothlooponoff]
+        return [animateonoff, qtoolbar.sep, animateCFGonoff, qtoolbar.sep,
+                fpsbtn, increasefps, decreasefps, qtoolbar.sep,
+                animatepaused, qtoolbar.sep, interpolonoff, smoothlooponoff, qtoolbar.sep,
+                ipfbtn, increaseipf, decreaseipf, qtoolbar.sep,
+                editor3dviewanimated, x2dviewanimated, y2dviewanimated, z2dviewanimated, float3dviewanimated]
 
 
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.16  2009/10/14 00:20:47  cdunde
+#Various fixes for CFG Animation and interpolation.
+#
 #Revision 1.15  2009/10/12 20:49:56  cdunde
 #Added support for .md3 animationCFG (configuration) support and editing.
 #
