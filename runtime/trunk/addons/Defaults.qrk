@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.498  2009/10/15 16:58:48  danielpharos
+//Try to parse entity.def comments to find keys.
+//
 //Revision 1.497  2009/10/03 06:16:06  cdunde
 //Added support for animation interpolation in the Model Editor.
 //(computation of added movement to emulate game action)
@@ -1747,11 +1750,12 @@ QQRKSRC1
       {
         UpdateCheck = "1"
         UpdateCheckOnline = "1"
-        CheckForNotifications = "1"   //Currently hidden
-        CheckForPackages = ""   //Currently hidden
-        AutomaticInstall = ""
+        CheckForNotifications = "1"   //Hidden
+        CheckForPackages = ""   //Hidden
+        AutomaticInstall = ""   //Currently hidden
         SingleInstance = "1"
         Form = "GeneralUpdate"
+        Notification_Main = "2" //Hidden: Start-index for this version
       }
       QuakeC:config =
       {
@@ -9314,7 +9318,7 @@ QQRKSRC1
       Style = "3"
       UpdateCheck: = {Typ="X" Txt="Update check" Cap="Enabled" Hint = "Enables the update check when starting QuArK."}
       UpdateCheckOnline: = {Typ="X" Txt="Check online" Cap="Enabled" Hint = "Check for updates online."}
-      AutomaticInstall: = {Typ="X" Txt="Automatically update" Cap="Enabled" Hint = "Automatically download and install any updates available."}
+      //AutomaticInstall: = {Typ="X" Txt="Automatically update" Cap="Enabled" Hint = "Automatically download and install any updates available."}
       SingleInstance: = {Typ="X" Txt="Check for single instance" Cap="Enabled" Hint = "Enables the check for a single running QuArK (or updater instance) instance on start-up."}
     }
     externaledit:incl = {
