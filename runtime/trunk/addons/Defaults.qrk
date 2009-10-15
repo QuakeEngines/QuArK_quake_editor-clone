@@ -27,6 +27,10 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.497  2009/10/03 06:16:06  cdunde
+//Added support for animation interpolation in the Model Editor.
+//(computation of added movement to emulate game action)
+//
 //Revision 1.496  2009/09/26 03:59:02  cdunde
 //Added option for Model Editor to import-export max or min tag frames.
 //
@@ -4050,6 +4054,12 @@ QQRKSRC1
         SaveQualityNVDXT = "2"
         SaveFormatDevIL = "0"
         Form = "FilesDDS"
+      }
+      DEF:config =
+      {
+        AutoInterpretHelp = "1"
+        IgnoreUnknownLines = "1"
+        Form = "FilesDEF"
       }
       JPG:config =
       {
@@ -8272,6 +8282,13 @@ QQRKSRC1
              $0D "DXT5"
         Hint = "The format the DDS texture will be saved in when using the DevIL library"
       }
+    }
+    FilesDEF:form =
+    {
+      Style = "7"
+      LX: = {Typ="S" Bold="0" Txt="These settings only apply to the .def file converter."}
+      AutoInterpretHelp: = { Typ="X" Txt="Automatically Interpret Help" Cap="Enabled" Hint="Automatically try to interpret the help/description of the entities to try and find all the keys."}
+      IgnoreUnknownLines: = { Typ="X" Txt="Ignore unknown lines" Cap="Enabled" Hint="Automatically ignore lines that cannot be interpreted."}
     }
     FilesJPG:form =
     {

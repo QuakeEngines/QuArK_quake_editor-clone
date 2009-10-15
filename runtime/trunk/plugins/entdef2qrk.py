@@ -8,6 +8,9 @@ Python macros available for direct call by QuArK
 #
 
 import time, sys
+from quarkpy.qutils import *
+
+import quarkx
 
 class Key:
     def __init__(self):
@@ -17,6 +20,9 @@ class Key:
 
     def SetKeyname(self, keyname):
         self.m_keyname = keyname
+
+    def GetKeyname(self):
+        return self.m_keyname
 
     def SetDesc(self, desc):
         self.m_desc = desc
@@ -42,14 +48,26 @@ class Key:
     def AddKeyChoice(self, value, desc):
         return "This is pure virtual"
 
+class KeySeperator(Key):
+    def __init__(self):
+        Key.__init__(self)
+
+    def GenerateForm(self, indent):
+        s = quarkx.newobj("sep:")
+        s["txt"] = "-------- " + self.m_keyname + " --------"
+        s["typ"] = "S"
+        indent.appenditem(s)
+        return s
+
 class KeyString(Key):
     def __init__(self):
         Key.__init__(self)
 
     def GenerateForm(self, indent):
         s = quarkx.newobj(self.m_keyname + ":")
-        # s["txt"] = "&"
-        s["hint"] = self.m_desc
+        s["txt"] = "&"
+        if self.m_desc is not None:
+            s["hint"] = self.m_desc
         indent.appenditem(s)
         return s
 
@@ -69,8 +87,8 @@ class KeyFlags(Key):
         Key.__init__(self)
         self.m_flags = []
 
-    def AddKeyFlag(self, value, desc, selected):
-        self.m_flags = self.m_flags + [(value, desc)]
+    def AddKeyFlag(self, value, desc, hint, selected):
+        self.m_flags = self.m_flags + [(value, desc, hint)]
         if (int(selected) > 0):
             try:
                 oldvalue = int(self.GetDefaultValue())
@@ -81,13 +99,14 @@ class KeyFlags(Key):
     def GenerateForm(self, indent):
         s = ""
         nl = "" # no first newline
-        for value, desc in self.m_flags:
-          s = quarkx.newobj(self.m_keyname + ":")
-          # s["txt"] = "&"
-          # s["hint"] = ""
-          s["typ"] = "X"+value
-          s["cap"] = desc
-          indent.appenditem(s)
+        for value, desc, hint in self.m_flags:
+            s = quarkx.newobj(self.m_keyname + ":")
+            s["txt"] = "&"
+            if hint is not None:
+                s["hint"] = hint
+            s["typ"] = "X"+value
+            s["cap"] = desc
+            indent.appenditem(s)
         return None
 
 class KeyChoices(Key):
@@ -248,6 +267,8 @@ class InheritEntity(Entity):
 theEntities = []
 theEntity = None
 theKey = None
+theSpawnflag = None
+theSeperator = None
 currentclassname = None
 currentsize = None
 currentspawnflagbit = None
@@ -295,23 +316,23 @@ def SetSize(token):
     currentsize = None
 
 def AddSpawnflag(token):
-    global currentspawnflagbit, theKey
+    global currentspawnflagbit, theSpawnflag
     if (currentspawnflagbit == None):
         currentspawnflagbit = 1
         CloseSpawnflag("--CloseByAddSpawnflag--")
-        theKey = KeyFlags()
-        theKey.SetKeyname("spawnflags")
+        theSpawnflag = KeyFlags()
+        theSpawnflag.SetKeyname("spawnflags")
     # Only append spawnflag-tokens that are not "x" nor "-"
     if not (token == "x" or token == "-" or token == "?"):
-        theKey.AddKeyFlag(str(currentspawnflagbit), token, 0)
+        theSpawnflag.AddKeyFlag(str(currentspawnflagbit), token, None, 0)
     # Always double the spawnflagbit-value
     currentspawnflagbit = currentspawnflagbit * 2
 
 def CloseSpawnflag(token):
-    global theEntity, theKey
-    if (theKey is not None):
-        theEntity.AddKey(theKey)
-        theKey = None
+    global theEntity, theSpawnflag
+    if (theSpawnflag is not None):
+        theEntity.AddKey(theSpawnflag)
+        theSpawnflag = None
 
 def AddComment(token):
     global currentcomment
@@ -322,8 +343,109 @@ def AddComment(token):
         currentcomment = currentcomment + "\r" + token
 
 def DoneComment(token):
-    global currentcomment, theEntity
+    global currentcomment, theEntity, theSeperator
+
+    def GetLine(oldindex):
+        if oldindex > len(currentcomment) - 1:
+            return -1, None
+        index = oldindex
+        while (currentcomment[index] <> "\n") and (currentcomment[index] <> "\r"):
+            index = index + 1
+            if index == len(currentcomment):
+                break
+        if oldindex == index:
+            return -1, None
+        getaline = currentcomment[oldindex:index]
+        if index < len(currentcomment):
+            if (currentcomment[index] == "\r") and ((index < len(currentcomment) - 1) and (currentcomment[index+1] == "\n")):
+                index = index + 1
+            index = index + 1
+        return index, getaline
+
+    def OutputEntity(SectionName, KeyName, KeyValue):
+        global theEntity, theKey, theSeperator
+        if (SectionName is None) or (KeyName is None):
+            return
+        KeyValue = KeyValue.replace("\"", "\"$22\"")
+        if SectionName == "KEYS":
+            theKey = KeyString()
+            theKey.SetKeyname(KeyName)
+            theKey.SetDesc(KeyValue)
+            theEntity.AddKey(theKey)
+            theKey = None
+        elif SectionName == "SPAWNFLAGS":
+            FoundASpawnKey = 0
+            for item in theEntity.m_keys:
+                if isinstance(item, KeyFlags):
+                    for index in range(len(item.m_flags)):
+                        value, desc, hint = item.m_flags[index]
+                        if desc == KeyName:
+                            if hint is None:
+                                item.m_flags[index] = (value, desc, KeyValue)
+                            else:
+                                item.m_flags[index] = (value, desc, hint + "\r\n" + KeyValue)
+                            FoundASpawnKey = 1
+                            break
+                if FoundASpawnKey:
+                    break
+        elif SectionName == "NOTES":
+            # Do nothing
+            pass
+        else:
+            if theSeperator is not None:
+                if theSeperator.GetKeyname() != SectionName:
+                    theSeperator = None
+            if theSeperator is None:
+                theSeperator = KeySeperator()
+                theSeperator.SetKeyname(SectionName)
+                theEntity.AddKey(theSeperator)
+            theKey = KeyString()
+            theKey.SetKeyname(KeyName)
+            theKey.SetDesc(KeyValue)
+            theEntity.AddKey(theKey)
+            theKey = None
+        return
+
     theEntity.SetHelp(currentcomment)
+    if quarkx.setupsubset(SS_FILES, "DEF")["AutoInterpretHelp"] is not None:
+        index = 0
+        SectionName = None
+        KeyName = None
+        KeyValue = None
+        index, TextLine = GetLine(index)
+        while index <> -1:
+            if TextLine.startswith("--------") and TextLine.endswith("--------"):
+                OutputEntity(SectionName, KeyName, KeyValue)
+                SectionName = TextLine[8:len(TextLine)-8].strip()
+                theSeperator = None
+                KeyName = None
+                KeyValue = None
+            elif SectionName is not None:
+                if TextLine[0] == " ":
+                    # Line belongs to previous key
+                    if KeyValue is None:
+                        if quarkx.setupsubset(SS_FILES, "DEF")["IgnoreUnknownLines"] is None:
+                            raise "Cannot parse command line!"
+                        KeyValue = ""
+                    KeyValue = KeyValue + "\r\n" + TextLine
+                else:
+                    SplitLine = TextLine.split(":", 1)
+                    if len(SplitLine) == 2:
+                        OutputEntity(SectionName, KeyName, KeyValue)
+                        KeyName = SplitLine[0].strip("\"' ")
+                        KeyValue = SplitLine[1].lstrip(" ")
+                    else:
+                        if KeyValue is None:
+                            if quarkx.setupsubset(SS_FILES, "DEF")["IgnoreUnknownLines"] is None:
+                                raise "Cannot parse command line!"
+                            KeyValue = ""
+                        KeyValue = KeyValue + "\r\n" + TextLine
+            else:
+                # Description of entity, so skip
+                pass
+            index, TextLine = GetLine(index)
+        OutputEntity(SectionName, KeyName, KeyValue)
+    theSeperator = None
     currentcomment = None
 
 
@@ -480,10 +602,9 @@ statediagram =                                                                  
 ## --------
 
 import quarkpy.qutils
-import quarkx
 
 def makeqrk(root, filename, gamename, nomessage=0):
-    global theEntities, theEntity, theKey, currentclassname, currentsize, currentspawnflagbit, currentcomment
+    global theEntities, theEntity, theKey, theSpawnflag, currentclassname, currentsize, currentspawnflagbit, currentcomment
 
     count = 0
     for item in root.subitems:
@@ -513,19 +634,22 @@ def makeqrk(root, filename, gamename, nomessage=0):
                 break
             expectedtypes = expectedtypes + [type]
         if newstate is None:
-       #     print "Parse error: Got type", token_is
-       #     print "but expected type(s);", expectedtypes
-       #     print "Debug: Last classname was =", currentclassname
-       #     print "Debug:", srcstring[:64]
-       #     print "Debug - Associated function: ", func
-       #     raise "Parse error!"
-            if func == "None":
-                func_str = "None"
+            if quarkx.setupsubset(SS_FILES, "DEF")["IgnoreUnknownLines"] is not None:
+                newstate = 'STATE_UNKNOWN'
             else:
-                func_str = str(func)
-            quarkx.beep()
-            quarkx.msgbox("PARSE ERROR !\nNon-supported Entity Definition file(s) format.\n\nGot type " + str(token_is) + "\nbut expected type(s): " + str(expectedtypes) + "\n\nDebug: Last classname was = " + str(currentclassname) + "\nDebug: " + str(srcstring[:64]) + "\nDebug - Associated function: " + func_str + "\n\nContact QuArK development team with copy of Entity file(s).", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_ABORT)
-            return None
+           #     print "Parse error: Got type", token_is
+           #     print "but expected type(s);", expectedtypes
+           #     print "Debug: Last classname was =", currentclassname
+           #     print "Debug:", srcstring[:64]
+           #     print "Debug - Associated function: ", func
+           #     raise "Parse error!"
+                if func is None:
+                    func_str = "None"
+                else:
+                    func_str = str(func)
+                quarkx.beep()
+                quarkx.msgbox("PARSE ERROR !\nNon-supported Entity Definition file(s) format.\n\nGot type " + str(token_is) + "\nbut expected type(s): " + str(expectedtypes) + "\n\nDebug: Last classname was = " + str(currentclassname) + "\nDebug: " + str(srcstring[:64]) + "\nDebug - Associated function: " + func_str + "\n\nContact QuArK development team with copy of Entity file(s).", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_ABORT)
+                return None
         if (func is not None):
             # This state have a function attached to it. Call it giving it the found token.
             func(token)
@@ -562,6 +686,7 @@ def makeqrk(root, filename, gamename, nomessage=0):
     theEntities = []
     theEntity = None
     theKey = None
+    theSpawnflag = None
     currentclassname = None
     currentsize = None
     currentspawnflagbit = None
@@ -574,6 +699,9 @@ quarkpy.qentbase.RegisterEntityConverter("QERadiant .def file", "QERadiant .def 
 
 #
 #$Log$
+#Revision 1.12  2009/02/11 15:39:07  danielpharos
+#Updated link to forum.
+#
 #Revision 1.11  2008/04/04 20:19:30  cdunde
 #Added a new Conversion Tools for making game support QuArK .qrk files.
 #
