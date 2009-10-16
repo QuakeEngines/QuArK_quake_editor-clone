@@ -1783,7 +1783,7 @@ class TagType(EntityManager):
     def menu(o, editor):
         import qmenu
 
-        def AtachTags(m, editor=editor):
+        def AttachTags(m, editor=editor):
             tag1model = m.tag1.shortname.split(":")[0]
             tag1model = tag1model.split("_tag_")
             tag1name = "tag_" + tag1model[len(tag1model)-1]
@@ -1879,7 +1879,11 @@ class TagType(EntityManager):
                             attachframe = attachtag_subitems[len(attachtag_subitems)-1]
                         else:
                             attachframe = attachtag_subitems[frame]
-                        tag_adj_vect = quarkx.vect(basetag_subitems[frame].dictspec['origin']) - quarkx.vect(attachframe.dictspec['origin'])
+                        tag_pos_old = quarkx.vect(attachframe.dictspec['origin'])
+                        tag_pos_new = quarkx.vect(basetag_subitems[frame].dictspec['origin'])
+                        n_r = basetag_subitems[frame].dictspec['rotmatrix']
+                        n_r = ((n_r[0],n_r[1],n_r[2]), (n_r[3],n_r[4],n_r[5]), (n_r[6],n_r[7],n_r[8]))
+                        new_rotation = quarkx.matrix(n_r)
                         if frame >= comp_framecount:
                             comp_frame = comp_frames[comp_framecount].copy()
                         else:
@@ -1887,7 +1891,10 @@ class TagType(EntityManager):
                         comp_frame.shortname = "Frame " + str(frame+1)
                         vertices = []
                         for vtx in comp_frame.vertices:
-                            vertices = vertices + [vtx + tag_adj_vect]
+                            vtx = vtx - tag_pos_old
+                            vtx = (~new_rotation) * vtx
+                            vtx = vtx + tag_pos_new
+                            vertices = vertices + [vtx]
                         comp_frame.vertices = vertices
                         newframe = comp_frame.copy()
                         newframesgroup.appenditem(newframe)
@@ -1896,6 +1903,7 @@ class TagType(EntityManager):
                                 tag_frame = attachtags_list[newtag].subitems[0].copy()
                                 tag_frame.shortname = "Tag Frame " + str(frame+1)
                                 tag_frame['origin'] = (quarkx.vect(tag_frame.dictspec['origin']) + quarkx.vect(basetag_subitems[frame].dictspec['origin'])).tuple
+                                #tag_frame['rotmatrix'] = @
                                 new_tags_list[newtag].appenditem(tag_frame)
                     undo.exchange(new_comps_list[newcomp].dictitems['Frames:fg'], newframesgroup)
                 for i in range(len(new_comps_list)):
@@ -1907,7 +1915,7 @@ class TagType(EntityManager):
                 quarkx.msgbox("Invalid Selection!\n\nThe model tags can not be\nfrom the same 'group' of tags.", MT_ERROR, MB_OK)
                 return
 
-        attach_tags = qmenu.item("&Attach tags", AtachTags, "|Attach Tags:\n\nWhen two tags of different groups are selected, clicking this item will attach them creating matching tag frames, based on the one that has the most frames, for animation.|intro.modeleditor.editelements.html#tags")
+        attach_tags = qmenu.item("&Attach tags", AttachTags, "|Attach Tags:\n\nWhen two tags of different groups are selected, clicking this item will attach them creating matching tag frames, based on the one that has the most frames, for animation.|intro.modeleditor.editelements.html#tags")
         STT = qmenu.item("&Show these tags", ShowTheseTags, "|Show these tags:\n\nThis allows the selected tags to be displayed in the editor's views if the function 'Hide Tags' is not active.|intro.modeleditor.editelements.html#tags")
         HTT = qmenu.item("&Hide these tags", HideTheseTags, "|Hide these tags:\n\nThis stops the selected tags from being displayed in the editor's views.|intro.modeleditor.editelements.html#tags")
 
@@ -2862,6 +2870,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.62  2009/10/14 00:20:47  cdunde
+#Various fixes for CFG Animation and interpolation.
+#
 #Revision 1.61  2009/10/12 20:49:56  cdunde
 #Added support for .md3 animationCFG (configuration) support and editing.
 #

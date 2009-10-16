@@ -256,10 +256,12 @@ def UpdateplaylistPerComp(self):
                     looping_frames2 = int(play_list2[3])
                     CFG_FPS2 = int(play_list2[4]) # Not being used yet.
                     LEGS_origins = [] # A list of tagframe origins as vectors for the LEGS frames.
+                    LEGS_matrix = [] # A list of tagframe matrixs as vectors for the LEGS frames.
                     TORSO_origins = [] # A list of tagframe origins as vectors for the TORSO frames.
 
                     for frameindex in range(first_frame2, first_frame2 + num_frames2):
                         LEGS_origins = LEGS_origins + [TORSO_tagframes[frameindex].dictspec['origin']]
+                        LEGS_matrix = LEGS_matrix + [TORSO_tagframes[frameindex].dictspec['rotmatrix']]
                     for frameindex in range(first_frame1, first_frame1 + num_frames1):
                         TORSO_origins = TORSO_origins + [TORSO_tagframes[frameindex].dictspec['origin']]
 
@@ -315,15 +317,25 @@ def UpdateplaylistPerComp(self):
                                     for frameindex in range(first_frame2, first_frame2 + num_frames2):
                                         if framecount > len(comp_frames)-1:
                                             if looping_frames1 == 0:
-                                                vtx_diff = quarkx.vect(LEGS_origins[framecount]) - quarkx.vect(TORSO_origins[len(comp_frames)-1])
+                                                vtx_old = quarkx.vect(TORSO_origins[len(comp_frames)-1])
+                                                vtx_new = quarkx.vect(LEGS_origins[framecount])
+                                                n_r = LEGS_matrix[framecount]
+                                                n_r = ((n_r[0],n_r[1],n_r[2]), (n_r[3],n_r[4],n_r[5]), (n_r[6],n_r[7],n_r[8]))
+                                                new_rotation = quarkx.matrix(n_r)
                                                 extra_frame = comp_frames[len(comp_frames)-1].copy()
                                             else:
                                                 frame_index = framecount - (len(comp_frames)*loop)
-                                                vtx_diff = quarkx.vect(LEGS_origins[framecount]) - quarkx.vect(TORSO_origins[frame_index])
+                                                vtx_old = quarkx.vect(TORSO_origins[frame_index])
+                                                vtx_new = quarkx.vect(LEGS_origins[framecount])
+                                                n_r = LEGS_matrix[framecount]
+                                                n_r = ((n_r[0],n_r[1],n_r[2]), (n_r[3],n_r[4],n_r[5]), (n_r[6],n_r[7],n_r[8]))
+                                                new_rotation = quarkx.matrix(n_r)
                                                 extra_frame = comp_frames[frame_index].copy()
                                             vertices = []
                                             for vtx in extra_frame.vertices:
-                                                vtx = vtx + vtx_diff
+                                                vtx = vtx - vtx_old
+                                                vtx = (~new_rotation) * vtx
+                                                vtx = vtx + vtx_new
                                                 vertices = vertices + [vtx]
                                             extra_frame.vertices = vertices
                                             if playlistPerComp.has_key(comp.name):
@@ -331,11 +343,17 @@ def UpdateplaylistPerComp(self):
                                             else:
                                                 playlistPerComp[comp.name] = [comp, [extra_frame]]
                                         else:
-                                            vtx_diff = quarkx.vect(LEGS_origins[framecount]) - quarkx.vect(TORSO_origins[framecount])
+                                            vtx_old = quarkx.vect(TORSO_origins[framecount])
+                                            vtx_new = quarkx.vect(LEGS_origins[framecount])
+                                            n_r = LEGS_matrix[framecount]
+                                            n_r = ((n_r[0],n_r[1],n_r[2]), (n_r[3],n_r[4],n_r[5]), (n_r[6],n_r[7],n_r[8]))
+                                            new_rotation = quarkx.matrix(n_r)
                                             vertices = []
                                             frame_copy = comp_frames[framecount].copy()
                                             for vtx in frame_copy.vertices:
-                                                vtx = vtx + vtx_diff
+                                                vtx = vtx - vtx_old
+                                                vtx = (~new_rotation) * vtx
+                                                vtx = vtx + vtx_new
                                                 vertices = vertices + [vtx]
                                             frame_copy.vertices = vertices
                                             if playlistPerComp.has_key(comp.name):
@@ -362,15 +380,25 @@ def UpdateplaylistPerComp(self):
                                         for frameindex in range(first_frame1, first_frame1 + num_frames1):
                                             if framecount > len(legs_frames)-1:
                                                 if looping_frames2 == 0:
-                                                    vtx_diff = quarkx.vect(LEGS_origins[len(legs_frames)-1]) - quarkx.vect(TORSO_origins[framecount])
+                                                    vtx_old = quarkx.vect(TORSO_origins[framecount])
+                                                    vtx_new = quarkx.vect(LEGS_origins[len(legs_frames)-1])
+                                                    n_r = LEGS_matrix[len(legs_frames)-1]
+                                                    n_r = ((n_r[0],n_r[1],n_r[2]), (n_r[3],n_r[4],n_r[5]), (n_r[6],n_r[7],n_r[8]))
+                                                    new_rotation = quarkx.matrix(n_r)
                                                     fixed_frame = comp_frames[framecount].copy()
                                                 else:
                                                     frame_index = framecount - (len(legs_frames)*loop)
-                                                    vtx_diff = quarkx.vect(LEGS_origins[frame_index]) - quarkx.vect(TORSO_origins[framecount])
+                                                    vtx_old = quarkx.vect(TORSO_origins[framecount])
+                                                    vtx_new = quarkx.vect(LEGS_origins[frame_index])
+                                                    n_r = LEGS_matrix[frame_index]
+                                                    n_r = ((n_r[0],n_r[1],n_r[2]), (n_r[3],n_r[4],n_r[5]), (n_r[6],n_r[7],n_r[8]))
+                                                    new_rotation = quarkx.matrix(n_r)
                                                     fixed_frame = comp_frames[framecount].copy()
                                                 vertices = []
                                                 for vtx in fixed_frame.vertices:
-                                                    vtx = vtx + vtx_diff
+                                                    vtx = vtx - vtx_old
+                                                    vtx = (~new_rotation) * vtx
+                                                    vtx = vtx + vtx_new
                                                     vertices = vertices + [vtx]
                                                 fixed_frame.vertices = vertices
                                                 if playlistPerComp.has_key(comp.name):
@@ -378,11 +406,17 @@ def UpdateplaylistPerComp(self):
                                                 else:
                                                     playlistPerComp[comp.name] = [comp, [fixed_frame]]
                                             else:
-                                                vtx_diff = quarkx.vect(LEGS_origins[framecount]) - quarkx.vect(TORSO_origins[framecount])
+                                                vtx_old = quarkx.vect(TORSO_origins[framecount])
+                                                vtx_new = quarkx.vect(LEGS_origins[framecount])
+                                                n_r = LEGS_matrix[framecount]
+                                                n_r = ((n_r[0],n_r[1],n_r[2]), (n_r[3],n_r[4],n_r[5]), (n_r[6],n_r[7],n_r[8]))
+                                                new_rotation = quarkx.matrix(n_r)
                                                 vertices = []
                                                 fixed_frame = comp_frames[framecount].copy()
                                                 for vtx in fixed_frame.vertices:
-                                                    vtx = vtx + vtx_diff
+                                                    vtx = vtx - vtx_old
+                                                    vtx = (~new_rotation) * vtx
+                                                    vtx = vtx + vtx_new
                                                     vertices = vertices + [vtx]
                                                 fixed_frame.vertices = vertices
                                                 if playlistPerComp.has_key(comp.name):
@@ -1008,6 +1042,9 @@ class AnimationBar(ToolBar):
 #
 #
 #$Log$
+#Revision 1.17  2009/10/14 08:12:31  cdunde
+#Added complete section in the InfoBase Docs for the Model Editor about tags with F1 links.
+#
 #Revision 1.16  2009/10/14 00:20:47  cdunde
 #Various fixes for CFG Animation and interpolation.
 #
