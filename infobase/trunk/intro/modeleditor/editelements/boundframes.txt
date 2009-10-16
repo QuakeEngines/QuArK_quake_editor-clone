@@ -1,4 +1,16 @@
 title: Bound Frames
 author: cdunde
 
-(currently unsupported)
+<g>Bound frames</g> are fairly simple and straight forward. They are a box area that surrounds the entire model
+for each animation frame of that model.
+
+This is done by giving just two vectors, each consisting of three values representing an x,y,z point
+in 3D space. One vector gives the minimum point and the other the maximum point.
+Using these two vectors a 3D box can be created that encloses the model for that frame.
+
+The existence of <g>bound frames</g> can be use for determining the collision area of a model.
+Some games may use it for that purpose, but most games probably do not.
+
+Because this is a very minor application, that can easily be calculated when a model is exported to its
+format file, the creation of bound frames for viewing in the editor will most likely not be supported.
+But we felt this description of what they are should at least be added to the InfoBase docs.

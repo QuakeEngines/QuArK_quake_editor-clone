@@ -1,7 +1,11 @@
 title: Animation tool-palette
 desc: animate
+desc: animatecfg
 desc: fps
 desc: pause
+desc: interpolation
+desc: smooth
+desc: ipf
 desc: viewselector
 
 <img border=1>animation.png</img>
