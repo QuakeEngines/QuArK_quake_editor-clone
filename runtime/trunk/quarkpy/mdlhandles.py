@@ -569,7 +569,7 @@ class TagHandle(qhandles.GenericHandle):
         SelectTag = qmenu.item("&Select this tag", select_tag_click, "|Select this tag:This will select the single tag clicked on.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.editelements.html#tags")
         HTT = qmenu.item("&Hide this tag", hide_this_tag_click)
         Forcetogrid = qmenu.item("&Force to grid", force_to_grid_click,"|Force to grid:\n\nThis will cause a tag or tag frame to 'snap' to the nearest location on the editor's grid and change all of its other tag frames accordingly.\n\nIf a tag frame is not selected then the first tag frame will be used.|intro.modeleditor.rmbmenus.html#bonecommands")
-        DeleteTag = qmenu.item("&Delete this tag", delete_tag_click, "|Delete this tag:This will delete the single tag clicked on and its tag frames from the 'Misc' group and all components it belongs to.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.editelements.html#tags")
+        DeleteTag = qmenu.item("&Delete this tag", delete_tag_click, "|Delete this tag:This will delete the single tag clicked on and its tag frames from the 'Misc' group, all components it belongs to will remain.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.editelements.html#tags")
 
         Forcetogrid.state = qmenu.disabled
         if editor.gridstep:
@@ -5272,6 +5272,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.188  2009/10/12 20:49:56  cdunde
+#Added support for .md3 animationCFG (configuration) support and editing.
+#
 #Revision 1.187  2009/10/07 18:13:19  cdunde
 #Fix to move tags correctly with their own components tag and animation frames.
 #
