@@ -3359,7 +3359,7 @@ def addtag(editor, complist, pos):
 
 
 #
-# This function will delete a single tag and its tag frames from the 'Misc' group and all components it belongs to.
+# This function will delete a single tag and its tag frames from the 'Misc' group, all components it belongs to will remain.
 #
 def deletetag(editor, tag_to_del):
     undo = quarkx.action()
@@ -3407,7 +3407,7 @@ def deletetag(editor, tag_to_del):
                     newcomp['tag_components'] = ""
                 undo.exchange(comp, newcomp)
     undo.exchange(tag_to_del, None)
-    editor.ok(undo, "tag deleted")
+    editor.ok(undo, "tag deleted - " + tag_to_del.shortname)
 
 
 
@@ -4098,6 +4098,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.119  2009/10/14 00:20:47  cdunde
+#Various fixes for CFG Animation and interpolation.
+#
 #Revision 1.118  2009/10/13 22:02:36  danielpharos
 #Removed some redundant code.
 #

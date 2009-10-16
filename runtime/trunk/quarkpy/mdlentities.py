@@ -1919,6 +1919,7 @@ class TagType(EntityManager):
         attach_tags = qmenu.item("&Attach tags", AttachTags, "|Attach Tags:\n\nWhen two tags of different groups are selected, clicking this item will attach them creating matching tag frames, based on the one that has the most frames, for animation.|intro.modeleditor.editelements.html#tags")
         STT = qmenu.item("&Show these tags", ShowTheseTags, "|Show these tags:\n\nThis allows the selected tags to be displayed in the editor's views if the function 'Hide Tags' is not active.|intro.modeleditor.editelements.html#tags")
         HTT = qmenu.item("&Hide these tags", HideTheseTags, "|Hide these tags:\n\nThis stops the selected tags from being displayed in the editor's views.|intro.modeleditor.editelements.html#tags")
+        DeleteTag = mdlhandles.TagHandle(None, o.subitems[0]).menu(editor, None)[len(mdlhandles.TagHandle(None).menu(editor, None))-1]
 
         attach_tags.tag1 = attach_tags.tag2 = None
         for item in editor.layout.explorer.sellist:
@@ -1937,8 +1938,10 @@ class TagType(EntityManager):
         else:
             HTT.state = qmenu.disabled
 
-        import mdlmenus
-        return [attach_tags, qmenu.sep, STT, HTT, qmenu.sep] + CallManager("menubegin", o, editor) + mdlmenus.BaseMenu([o], editor)
+        if len(editor.layout.explorer.sellist) == 1:
+            return [attach_tags, qmenu.sep, STT, HTT, qmenu.sep, DeleteTag]
+        else:
+            return [attach_tags, qmenu.sep, STT, HTT]
 
     def dataformname(o):
         "Returns the data form for this type of object 'o' (a :tag) to use for the Specific/Args page."
@@ -2871,6 +2874,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.64  2009/10/16 04:57:42  cdunde
+#To get .md3 weapon tags to rotate with the weapon when attached to a player model.
+#
 #Revision 1.63  2009/10/16 00:59:17  cdunde
 #Add animation rotation of weapon, for .md3 imports, when attached to model.
 #
