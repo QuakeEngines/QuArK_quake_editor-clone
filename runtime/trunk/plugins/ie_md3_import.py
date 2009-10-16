@@ -1151,9 +1151,11 @@ def loadmodel(root, filename, gamename, nomessage=0):
                                 newframesgroup = quarkx.newobj('Frames:fg')
                                 for frame in range(len(tag_subitems)):
                                     if old_torso_tag_frames is not None:
+                                        old_torso_tag_rotmatrix = old_torso_tag_frames[frame].dictspec['rotmatrix']
                                         if frame == len(tag_subitems)-1:
                                             tag_subitems[frame]['origin'] = old_torso_tag_frames[len(old_torso_tag_frames)-1].dictspec['origin']
                                             tag_subitems[frame]['rotmatrix'] = old_torso_tag_frames[len(old_torso_tag_frames)-1].dictspec['rotmatrix']
+                                            old_torso_tag_rotmatrix = old_torso_tag_frames[len(old_torso_tag_frames)-1].dictspec['rotmatrix']
                                             newframe = comp_frames[len(comp_frames)-1].copy()
                                             newframesgroup.appenditem(newframe)
                                             continue
@@ -1162,12 +1164,17 @@ def loadmodel(root, filename, gamename, nomessage=0):
                                         org_rotation = quarkx.matrix(o_r)
                                         org_origin = old_torso_tag_frames[frame].dictspec['origin'] # This is the ORIGINAL ORIGIN for the "torso's" tag frame.
                                     n_r = tag_subitems[frame].dictspec['rotmatrix'] # This is the NEW ROTATION matrix for the "torso's" tag frame matrix.
+                                    if old_torso_tag_frames is not None:
+                                        tag_subitems[frame]['rotmatrix'] = old_torso_tag_rotmatrix # But we need to reset it back to the old matrix after we use it above to save the matrix data.
                                     n_r = ((n_r[0],n_r[1],n_r[2]), (n_r[3],n_r[4],n_r[5]), (n_r[6],n_r[7],n_r[8]))
                                     new_rotation = quarkx.matrix(n_r)
                                     new_origin = tag_subitems[frame].dictspec['origin'] # This is the NEW ORIGIN for the "head's" tag frame.
                                     if old_torso_tag_frames is not None:
                                         # Now, move the tags
                                         tag_subitems[frame]['origin'] = (quarkx.vect(org_origin) + ((~org_rotation) * new_rotation * (quarkx.vect(new_origin) - quarkx.vect(new_origin)))).tuple
+                                        new_rotation2 = (org_rotation * (~new_rotation)) * new_rotation
+                                        n_r2 = new_rotation2.tuple
+                                        tag_subitems[frame]['rotmatrix'] = (n_r2[0][0], n_r2[0][1], n_r2[0][2], n_r2[1][0], n_r2[1][1], n_r2[1][2], n_r2[2][0], n_r2[2][1], n_r2[2][2])
                                     # To try and rotate upper components properly when they come through.
                                     if ModelName.find("upper") != -1:
                                         for Component in ComponentList:
@@ -1408,6 +1415,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.17  2009/10/12 20:49:56  cdunde
+# Added support for .md3 animationCFG (configuration) support and editing.
+#
 # Revision 1.16  2009/09/30 19:37:26  cdunde
 # Threw out tags dialog, setup tag dragging, commands, and fixed saving of face selection.
 #
