@@ -101,6 +101,13 @@ def drawanimation(self):
                 OldFrameVertices[comp_name] = currentframe.vertices
                 # Swap the original frame's vertices (saving them) with the interpolation calculated vertices.
                 TmpVertices = currentframe.vertices
+                # To catch sudden animation stop so original 1st frame does not get messed up, which was happening.
+                if editor.layout is None or (not MdlOption("AnimationActive") and not MdlOption("AnimationCFGActive")):
+                    quarkx.setupsubset(SS_MODEL, "Options")['AnimationPaused'] = None
+                    playNR = 0
+                    quarkx.settimer(drawanimation, self, 0)
+                    editor.layout.explorer.sellist = playlist
+                    return 0
                 currentframe.vertices = newframe.vertices
                 newframe.vertices = TmpVertices
 
@@ -1042,6 +1049,9 @@ class AnimationBar(ToolBar):
 #
 #
 #$Log$
+#Revision 1.18  2009/10/16 00:59:17  cdunde
+#Add animation rotation of weapon, for .md3 imports, when attached to model.
+#
 #Revision 1.17  2009/10/14 08:12:31  cdunde
 #Added complete section in the InfoBase Docs for the Model Editor about tags with F1 links.
 #
