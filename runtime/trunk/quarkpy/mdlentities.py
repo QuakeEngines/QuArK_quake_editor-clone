@@ -1902,7 +1902,8 @@ class TagType(EntityManager):
                             for newtag in range(len(new_tags_list)):
                                 tag_frame = attachtags_list[newtag].subitems[0].copy()
                                 tag_frame.shortname = "Tag Frame " + str(frame+1)
-                                tag_frame['origin'] = (quarkx.vect(tag_frame.dictspec['origin']) + quarkx.vect(basetag_subitems[frame].dictspec['origin'])).tuple
+                                new_tag_frame_origin = (~new_rotation) * quarkx.vect(tag_frame.dictspec['origin'])
+                                tag_frame['origin'] = (new_tag_frame_origin + quarkx.vect(basetag_subitems[frame].dictspec['origin'])).tuple
                                 #tag_frame['rotmatrix'] = @
                                 new_tags_list[newtag].appenditem(tag_frame)
                     undo.exchange(new_comps_list[newcomp].dictitems['Frames:fg'], newframesgroup)
@@ -2870,6 +2871,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.63  2009/10/16 00:59:17  cdunde
+#Add animation rotation of weapon, for .md3 imports, when attached to model.
+#
 #Revision 1.62  2009/10/14 00:20:47  cdunde
 #Various fixes for CFG Animation and interpolation.
 #
