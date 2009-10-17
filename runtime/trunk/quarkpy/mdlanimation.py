@@ -246,6 +246,9 @@ def UpdateplaylistPerComp(self):
         for item in range(len(sel)):
             if sel[item].type == ':tag' and sel[item].dictspec.has_key("play_list1"):
                 group = sel[item].name.split("_")
+                weapon = "None"
+                if sel[item].dictspec.has_key("weapon"):
+                    weapon = sel[item].dictspec['weapon']
                 play_list1 = sel[item].dictspec['play_list1'].split(",")
                 first_frame1 = int(play_list1[1])
                 num_frames1 = int(play_list1[2])
@@ -273,7 +276,9 @@ def UpdateplaylistPerComp(self):
                         TORSO_origins = TORSO_origins + [TORSO_tagframes[frameindex].dictspec['origin']]
 
                     for comp in editor.Root.subitems:
-                        if comp.type != ":mc" or not comp.name.startswith(group[0]):  # Not a component
+                        if comp.type == ":mc" and (comp.name.startswith(group[0]) or (weapon != "None" and comp.name.startswith(weapon))):  # or not comp.name.startswith(group[0]):  # Not a component
+                            pass
+                        else:
                             continue
                         try: # In case a component does not have any frames or the same number of frames, it won't break.
                             FrameGroup = comp.dictitems['Frames:fg'].subitems # Get all the frames for this component.
@@ -466,7 +471,9 @@ def UpdateplaylistPerComp(self):
 
                 else: # Handles "BOTH_" sequences.
                     for comp in editor.Root.subitems:
-                        if comp.type != ":mc" or not comp.name.startswith(group[0]):  # Not a component
+                        if comp.type == ":mc" and (comp.name.startswith(group[0]) or (weapon != "None" and comp.name.startswith(weapon))):  # or not comp.name.startswith(group[0]):  # Not a component
+                            pass
+                        else:
                             continue
                         compname = comp.shortname.split("_")
                         FrameGroup = comp.dictitems['Frames:fg'].subitems
@@ -1049,6 +1056,9 @@ class AnimationBar(ToolBar):
 #
 #
 #$Log$
+#Revision 1.19  2009/10/16 06:40:40  cdunde
+#To catch sudden animation stop so original 1st frame does not get messed up, which was happening.
+#
 #Revision 1.18  2009/10/16 00:59:17  cdunde
 #Add animation rotation of weapon, for .md3 imports, when attached to model.
 #

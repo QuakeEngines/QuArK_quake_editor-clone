@@ -1849,6 +1849,19 @@ class TagType(EntityManager):
                     for item in editor.Root.dictitems['Misc:mg'].subitems:
                         if item.type == ":tag" and item.name.startswith(tag1model):
                             attachtags_list = attachtags_list + [item]
+
+                # Assigns the weapon to the player model.
+                group = basetag.name.split("_")[0]
+                tags = editor.Root.dictitems['Misc:mg'].findallsubitems("", ':tag')  # get all tags
+                weapon = attachtag.name.split("_")[0]
+                for tag in tags:
+                    if tag.name.startswith(group) and tag.dictspec.has_key("animationCFG"):
+                        if not tag.dictspec.has_key("weapons"):
+                            tag['weapons'] = "None," + weapon
+                            tag['weapon'] = "None"
+                        else:
+                            tag['weapons'] = tag.dictspec['weapons'] + "," + weapon
+
                 basetag_subitems = basetag.subitems
                 attachtag_subitems = attachtag.subitems
                 new_comps_list = []
@@ -1947,6 +1960,7 @@ class TagType(EntityManager):
         "Returns the data form for this type of object 'o' (a :tag) to use for the Specific/Args page."
         editor = mdleditor.mdleditor # Get the editor.
         # Next line calls for the Animation Configuration Module above in this file.
+        Weapons = ""
         if not o.dictspec.has_key("animationCFG"):
             AnimationCFG_dialog_plugin = ""
             PlayList1 = ""
@@ -2009,9 +2023,9 @@ class TagType(EntityManager):
                 PlayList1 = PlayList1 + """sep: = { Typ="S" Txt="" } play_list1: = {Typ = "CL" Txt = "Play list upper" items = """
                 PlayList2 = PlayList2 + """sep: = { Typ="S" Txt="" } play_list2: = {Typ = "CL" Txt = "Play list lower" items = """
                 for item in play_items1:
-                    PlayList1 = PlayList1 + item 
+                    PlayList1 = PlayList1 + item
                 for item in play_items2:
-                    PlayList2 = PlayList2 + item 
+                    PlayList2 = PlayList2 + item
 
                 PlayList1 = PlayList1 + """ values = """
                 PlayList2 = PlayList2 + """ values = """
@@ -2031,6 +2045,22 @@ class TagType(EntityManager):
                 PlayList2 = PlayList2 + """num_frames2:     = {Typ="E R" Txt="num frame"      Hint="The number of frames in the animation sequence. (read only)"}"""
                 PlayList2 = PlayList2 + """looping_frames2: = {Typ="E R" Txt="looping frames" Hint="The frames played in a loop. (read only)"}"""
                 PlayList2 = PlayList2 + """CFG_FPS2:        = {Typ="E R" Txt="CFG FPS"        Hint="The set frames per second to play this animation. (read only)"}"""
+
+                if o.dictspec.has_key("weapons"):
+                    weapons = o.dictspec['weapons'].split(",")
+                    weapons_items = []
+                    weapons_values = []
+                    for item in range(len(weapons)):
+                        weapons_items = weapons_items + ['"' + weapons[item] + '"' + "$0D"]
+                        weapons_values = weapons_values + ['"' + weapons[item] + '"' + "$0D"]
+                    Weapons = Weapons + """sep: = { Typ="S" Txt="" } weapon: = {Typ = "CL" Txt = "Player weapon" items = """
+                    for item in weapons_items:
+                        Weapons = Weapons + item
+
+                    Weapons = Weapons + """ values = """
+                    for value in weapons_values:
+                        Weapons = Weapons + value
+                    Weapons = Weapons + """ Hint="List of available weapons for this model."$0D"Click on one to play with components scquence."}"""
 
             AnimationCFG_dialog_plugin = UseAnimationCFG()
 
@@ -2091,6 +2121,7 @@ class TagType(EntityManager):
           """ + AnimationCFG_dialog_plugin + """
           """ + PlayList1 + """
           """ + PlayList2 + """
+          """ + Weapons + """
         }
         """
         if o.dictspec.has_key("animationCFG"):
@@ -2874,6 +2905,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.65  2009/10/16 21:01:18  cdunde
+#Menu update.
+#
 #Revision 1.64  2009/10/16 04:57:42  cdunde
 #To get .md3 weapon tags to rotate with the weapon when attached to a player model.
 #
