@@ -532,9 +532,11 @@ class ModelEditor(BaseEditor):
 
 
     def expand_subitems(self, focus_item):
-        "Expands all sub-items and their sub-items on down in the tree-view."
+        "Expands all sub-items and their sub-items on down (for bones only) in the tree-view."
 
         self.layout.explorer.expand(focus_item)
+        if focus_item.type != ":bg" and focus_item.type != ":bone":
+            return
         for subitem in focus_item.subitems:
             self.layout.explorer.expand(subitem)
             self.expand_subitems(subitem)
@@ -1818,6 +1820,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.137  2009/10/12 20:49:56  cdunde
+#Added support for .md3 animationCFG (configuration) support and editing.
+#
 #Revision 1.136  2009/10/04 22:17:18  cdunde
 #Setup correct switching from standard to interpolation animation methods.
 #
