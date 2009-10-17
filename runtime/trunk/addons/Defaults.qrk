@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.499  2009/10/15 17:02:38  danielpharos
+//Update 'update' section for new version.
+//
 //Revision 1.498  2009/10/15 16:58:48  danielpharos
 //Try to parse entity.def comments to find keys.
 //
@@ -4061,7 +4064,7 @@ QQRKSRC1
       }
       DEF:config =
       {
-        AutoInterpretHelp = "1"
+        AutoInterpretHelp = ""
         IgnoreUnknownLines = "1"
         Form = "FilesDEF"
       }
@@ -8291,7 +8294,7 @@ QQRKSRC1
     {
       Style = "7"
       LX: = {Typ="S" Bold="0" Txt="These settings only apply to the .def file converter."}
-      AutoInterpretHelp: = { Typ="X" Txt="Automatically Interpret Help" Cap="Enabled" Hint="Automatically try to interpret the help/description of the entities to try and find all the keys."}
+      AutoInterpretHelp: = { Typ="X" Txt="Automatically Interpret Help" Cap="Enabled" Hint="Automatically try to interpret the help/description of the entities to try and find all the keys. (Only enable when using the DEF converter directly!)"}
       IgnoreUnknownLines: = { Typ="X" Txt="Ignore unknown lines" Cap="Enabled" Hint="Automatically ignore lines that cannot be interpreted."}
     }
     FilesJPG:form =
