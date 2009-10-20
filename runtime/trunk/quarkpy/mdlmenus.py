@@ -236,12 +236,12 @@ def MdlBackgroundMenu(editor, view=None, origin=None):
                     mdlmgr.savefacesel = 1
                     KeyframeLinearInterpolation(editor, sellistPerComp, IPF, frameindex1, frameindex2)
 
-                linear_interpolation = qmenu.item("&Linear Interpolation", linear_interpolation_click, "|Linear Interpolation:\n\nThis will create movement in a straight line from the first frame selected to the second frame selected for all components selected (if more then one).|intro.modeleditor.editelements.html#tags")
+                linear_interpolation = qmenu.item("&Linear Interpolation", linear_interpolation_click, "|Linear Interpolation:\n\nThis will create movement in a straight line from the first frame selected to the second frame selected for all components selected (if more then one).|intro.modeleditor.rmbmenus.html#keyframecommands")
 
                 keyframe_menu = [linear_interpolation]
                 return keyframe_menu
 
-            keyframepop = qmenu.popup("Keyframe Commands", keyframeclick(), hint="|Keyframe Commands:\n\nKeyframe functions create additional animation frames for movement between two selected frames.\n\nThe number of additional frames to be created is the amount set on the 'Animation' toolbar 'IPF' button - 1.\n\nTo use these functions you must select two frames of the same component. If they are not consecutive frames (one right after the other) then all frames in between the two will be replaced with the newly created frames.\n\nYou can also select other components for their same frames to be included.|intro.modeleditor.editelements.html#tags")
+            keyframepop = qmenu.popup("Keyframe Commands", keyframeclick(), hint="|Keyframe Commands:\n\nKeyframe functions create additional animation frames for movement between two selected frames.\n\nThe number of additional frames to be created is the amount set on the 'Animation' toolbar 'IPF' button - 1.\n\nTo use these functions you must select two frames of the same component. If they are not consecutive frames (one right after the other) then all frames in between the two will be replaced with the newly created frames.\n\nYou can also select other components for their same frames to be included.|intro.modeleditor.rmbmenus.html")
             bonepop = qmenu.popup("Bone Commands", mdlhandles.BoneCenterHandle(origin,None,None).menu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
             mdlfacepop = qmenu.popup("Face Commands", mdlhandles.ModelFaceHandle(origin).menu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
             vertexpop = qmenu.popup("Vertex Commands", mdlhandles.VertexHandle(origin).menu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
@@ -364,6 +364,9 @@ def BaseMenu(sellist, editor):
 #
 #
 #$Log$
+#Revision 1.44  2009/10/20 07:03:21  cdunde
+#Added keyframe fill-in frames creation support for single and multiple component selections.
+#
 #Revision 1.43  2009/09/07 01:38:45  cdunde
 #Setup of tag menus and icons.
 #
