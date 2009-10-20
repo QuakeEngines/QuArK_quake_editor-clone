@@ -241,7 +241,7 @@ def MdlBackgroundMenu(editor, view=None, origin=None):
                 keyframe_menu = [linear_interpolation]
                 return keyframe_menu
 
-            keyframepop = qmenu.popup("Keyframe Commands", keyframeclick(), hint="|Keyframe Commands:\n\nKeyframe functions create additional animation frames for movement between two selected frames.\n\nThe number of additional frames to be created is the amount set on the 'Animation' toolbar 'IPF' button - 1.\n\nTo use these functions you must select two frames of the same component. If they are not consecutive frames (one right after the other) then all frames in between the two will be replaced with the newly created frames.\n\nYou can also select other components for their same frames to be included.|intro.modeleditor.rmbmenus.html")
+            keyframepop = qmenu.popup("Keyframe Commands", keyframeclick(), hint="|Keyframe Commands:\n\nKeyframe functions create additional animation frames for movement between two selected frames.\n\nThe number of additional frames to be created is the amount set on the 'Animation' toolbar 'IPF' button - 1.\n\nTo use these functions you must select two frames of the same component. If they are not consecutive frames (one right after the other) then all frames in between the two will be replaced with the newly created frames.\n\nYou can also select other components for their same frames to be included.|intro.modeleditor.rmbmenus.html#viewsrmbmenus")
             bonepop = qmenu.popup("Bone Commands", mdlhandles.BoneCenterHandle(origin,None,None).menu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
             mdlfacepop = qmenu.popup("Face Commands", mdlhandles.ModelFaceHandle(origin).menu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
             vertexpop = qmenu.popup("Vertex Commands", mdlhandles.VertexHandle(origin).menu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
@@ -364,6 +364,9 @@ def BaseMenu(sellist, editor):
 #
 #
 #$Log$
+#Revision 1.45  2009/10/20 21:09:45  cdunde
+#Update of InfoBase menu links.
+#
 #Revision 1.44  2009/10/20 07:03:21  cdunde
 #Added keyframe fill-in frames creation support for single and multiple component selections.
 #
