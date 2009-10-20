@@ -14,6 +14,8 @@ $Id$
 
 6.6.0 Beta 3
 ============
+* [cdunde]: Added keyframe fill-in frames creation support for single and multiple component selections.
+
 * [cdunde]: Added complete section in the InfoBase Docs for the Model Editor about tags with F1 links.
 
 * [cdunde/DanielPharos]: Added support for .md3 animationCFG (configuration) support and editting.
