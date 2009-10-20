@@ -484,6 +484,35 @@ def fixUpVertexNos(tris, index):
 #
 ###############################
 
+def KeyframeLinearInterpolation(editor, sellistPerComp, IPF, frameindex1, frameindex2):
+    undo = quarkx.action()
+    for comp in sellistPerComp:
+        parent = comp[0].dictitems['Frames:fg']
+        frames = parent.subitems
+        insertbefore = comp[1][1]
+        Factor=0.0
+        PrevFrame = comp[1][0].copy()
+        NextFrame = comp[1][1].copy()
+        for framenbr in range(frameindex1+1, frameindex2):
+            old = frames[framenbr]
+            undo.exchange(old, None)
+        for framenbr in range(1, int(round(1/IPF))):
+            Factor = IPF * framenbr
+            PrevVertices = PrevFrame.vertices
+            NextVertices = NextFrame.vertices
+            ReducedFactor = Factor - floor(Factor)
+            newframe = PrevFrame.copy()
+            newframe.shortname = PrevFrame.shortname + "-" + str(framenbr)
+            newvertices = []
+            for i in range(len(PrevVertices)):
+                OldPos = PrevVertices[i]
+                NewPos = NextVertices[i]
+                pos = (OldPos * (1.0 - ReducedFactor)) + (NewPos * ReducedFactor)
+                newvertices = newvertices + [pos]
+            newframe.vertices = newvertices
+            undo.put(parent, newframe, insertbefore)
+    editor.ok(undo, str(int(round(1/IPF)-1)) + " key frames added")
+
 def LinearInterpolation(editor, AnimFrames, Factor=0.0):
     FrameIndex = int(floor(Factor))
     if (Factor < 0.0) or (FrameIndex > len(AnimFrames)-1):
@@ -4098,6 +4127,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.120  2009/10/16 21:01:18  cdunde
+#Menu update.
+#
 #Revision 1.119  2009/10/14 00:20:47  cdunde
 #Various fixes for CFG Animation and interpolation.
 #
