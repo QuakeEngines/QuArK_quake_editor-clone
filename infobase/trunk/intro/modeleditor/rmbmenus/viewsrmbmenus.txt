@@ -5,10 +5,11 @@ author: cdunde
 <area href="#bonecommands" shape="rect" coords="2, 55, 155, 69">
 <area href="#facecommands" shape="rect" coords="2, 73, 155, 87">
 <area href="#vertexcommands" shape="rect" coords="2, 91, 155, 104">
-<area href="#commands" shape="rect" coords="2, 116, 155, 130">
-<area href="#editorboneoptions" shape="rect" coords="2, 134, 155, 148">
-<area href="#editorfaceoptions" shape="rect" coords="2, 152, 155, 166">
-<area href="#editorvertexoptions" shape="rect" coords="2, 170, 155, 184">
+<area href="#commands" shape="rect" coords="2, 108, 155, 122">
+<area href="#keyframecommands" shape="rect" coords="2, 134, 155, 148">
+<area href="#editorboneoptions" shape="rect" coords="2, 160, 155, 174">
+<area href="#editorfaceoptions" shape="rect" coords="2, 178, 155, 192">
+<area href="#editorvertexoptions" shape="rect" coords="2, 196, 155, 210">
 </map>
 
 <map name="rmbmenusMap1">
@@ -45,6 +46,19 @@ then this menu item will activate. These are strictly vertex related and are cov
 <i>Commands </i>&nbsp;: This is the link to the Commands sub-menu that will appear
 when your courser is over it. These are the same commands located on the 'Commands' menu of the Main
 menu bar and are more Triangle related. These are also covered in detail below.
+
+<i>Keyframe Commands </i>&nbsp;: Keyframe functions create additional animation frames for movement
+between two selected frames.<br>
+The number of additional frames to be created is the amount set on the
+<a href="intro.modeleditor.toolpalettes.animation.html#__top__">Animation toolbar</a>
+<a href="intro.modeleditor.toolpalettes.animation.html#ipf">IPF button</a> <b>- 1</b>.<br>
+For example, if you want <b>3</b> fill frames added between the two selected keyframes,
+set the <a href="intro.modeleditor.toolpalettes.animation.html#ipf">IPF button</a> to <b>4</b>.
+To use these functions you must select two frames of the same component.
+If they are not consecutive frames (one right after the other) then all frames in between the
+two will be replaced with the newly created frames.
+You can also select other components for their same frames to be included.
+They are strictly frame and component related and are covered in detail below.
 
 <i>Bone Options </i>&nbsp;: These functions deal with the Model Bone visual tools to work with.
 They are strictly bone related and are covered in detail below.
@@ -282,6 +296,17 @@ as tags to match them up correctly.
 They restrict any <g>vertex</g> movement in their related direction for all views and are interactive with their
 corrisponding buttons on the
 <a href="intro.modeleditor.toolpalettes.viewselection.html">View Selection tool-palette</a>.
+</td></tr>
+
+<tr><td valign=top><br>
+<img border=1 align=right valign=top>viewsrmbmenus6.png</img>
+
+<a name="keyframecommands"></a>
+<b><u><a href="#viewsrmbmenus">Keyframe Commands sub-menu :</a></u></b> This is the sub-menu described above and its functions in detail.
+More will be added as they are developed.<br>
+
+<i>Linear Interpolation </i>&nbsp;: This will create movement in a straight line from the first frame selected to the second frame selected
+for all components selected (if more then one).
 </td></tr>
 
 <tr><td valign=top><br>
