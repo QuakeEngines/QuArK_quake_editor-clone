@@ -224,12 +224,59 @@ def MdlBackgroundMenu(editor, view=None, origin=None):
                                 break
                 FrameGroup = framecomp.dictitems['Frames:fg'].subitems # Get all the frames for this component.
                 sellistPerComp = [[framecomp, [FrameGroup[frameindex1], FrameGroup[frameindex2]]]]
+                if framecomp.dictspec.has_key("tag_components"):
+                    comp_names = framecomp.dictspec['tag_components'].split(", ")
+                    for comp_name in comp_names:
+                        comp = editor.Root.dictitems[comp_name]
+                        if comp.dictspec.has_key("Tags"):
+                            comp_tags = comp.dictspec['Tags'].split(", ")
+                        if comp_name == framecomp.name:
+                            continue
+                        for item in range(len(sellistPerComp)):
+                            if comp_name == sellistPerComp[item][0].name:
+                                break
+                            if item == len(sellistPerComp)-1:
+                                comp_frames = comp.dictitems['Frames:fg'].subitems # Get all the frames for this component.
+                                sellistPerComp = sellistPerComp + [[comp, [comp_frames[frameindex1], comp_frames[frameindex2]]]]
+
+                    group = framecomp.name.split("_")[0]
+                    misc_group = editor.Root.dictitems['Misc:mg']
+                    for tag_name in comp_tags:
+                        tag = misc_group.dictitems[group + "_" + tag_name + ":tag"]
+                        tagframes = tag.subitems
+                        sellistPerComp = sellistPerComp + [[tag, [tagframes[frameindex1], tagframes[frameindex2]]]]
                 for comp in editor.layout.explorer.sellist:
                     if comp.type == ":mc":
                         if comp.name == framecomp.name:
                             continue
-                        FrameGroup = comp.dictitems['Frames:fg'].subitems # Get all the frames for this component.
-                        sellistPerComp = sellistPerComp + [[comp, [FrameGroup[frameindex1], FrameGroup[frameindex2]]]]
+                        for item in range(len(sellistPerComp)):
+                            if comp.name == sellistPerComp[item][0].name:
+                                break
+                            if item == len(sellistPerComp)-1:
+                                FrameGroup = comp.dictitems['Frames:fg'].subitems # Get all the frames for this component.
+                                sellistPerComp = sellistPerComp + [[comp, [FrameGroup[frameindex1], FrameGroup[frameindex2]]]]
+                        if comp.dictspec.has_key("tag_components"):
+                            comp_names = comp.dictspec['tag_components'].split(", ")
+                            for comp_name in comp_names:
+                                comp2 = editor.Root.dictitems[comp_name]
+                                if comp2.dictspec.has_key("Tags"):
+                                    comp_tags = comp2.dictspec['Tags'].split(", ")
+                                for item in range(len(sellistPerComp)):
+                                    if comp_name == sellistPerComp[item][0].name:
+                                        break
+                                    if item == len(sellistPerComp)-1:
+                                        comp_frames = comp2.dictitems['Frames:fg'].subitems # Get all the frames for this component.
+                                        sellistPerComp = sellistPerComp + [[comp2, [comp_frames[frameindex1], comp_frames[frameindex2]]]]
+                            group = comp.name.split("_")[0]
+                            misc_group = editor.Root.dictitems['Misc:mg']
+                            for tag_name in comp_tags:
+                                tag = misc_group.dictitems[group + "_" + tag_name + ":tag"]
+                                tagframes = tag.subitems
+                                for item in range(len(sellistPerComp)):
+                                    if tag.name == sellistPerComp[item][0].name:
+                                        break
+                                    if item == len(sellistPerComp)-1:
+                                        sellistPerComp = sellistPerComp + [[tag, [tagframes[frameindex1], tagframes[frameindex2]]]]
 
                 def linear_interpolation_click(m, editor=editor, sellistPerComp=sellistPerComp, IPF=IPF, frameindex1=frameindex1, frameindex2=frameindex2):
                     import mdlmgr
@@ -241,7 +288,7 @@ def MdlBackgroundMenu(editor, view=None, origin=None):
                 keyframe_menu = [linear_interpolation]
                 return keyframe_menu
 
-            keyframepop = qmenu.popup("Keyframe Commands", keyframeclick(), hint="|Keyframe Commands:\n\nKeyframe functions create additional animation frames for movement between two selected frames.\n\nThe number of additional frames to be created is the amount set on the 'Animation' toolbar 'IPF' button - 1.\n\nTo use these functions you must select two frames of the same component. If they are not consecutive frames (one right after the other) then all frames in between the two will be replaced with the newly created frames.\n\nYou can also select other components for their same frames to be included.|intro.modeleditor.rmbmenus.html#viewsrmbmenus")
+            keyframepop = qmenu.popup("Keyframe Commands", keyframeclick(), hint="|Keyframe Commands:\n\nKeyframe functions create additional animation frames for movement between two selected frames.\n\nThe number of additional frames to be created is the amount set on the 'Animation' toolbar 'IPF' button - 1.\n\nTo use these functions you must select two frames of the same component. If they are not consecutive frames (one right after the other) then all frames in between the two will be replaced with the newly created frames.\n\nYou can also select other components for their same frames to be included. Click 'InfoBase' for Tags info.|intro.modeleditor.rmbmenus.html#viewsrmbmenus")
             bonepop = qmenu.popup("Bone Commands", mdlhandles.BoneCenterHandle(origin,None,None).menu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
             mdlfacepop = qmenu.popup("Face Commands", mdlhandles.ModelFaceHandle(origin).menu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
             vertexpop = qmenu.popup("Vertex Commands", mdlhandles.VertexHandle(origin).menu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
@@ -364,6 +411,9 @@ def BaseMenu(sellist, editor):
 #
 #
 #$Log$
+#Revision 1.46  2009/10/20 21:42:03  cdunde
+#Correction of previous menu link update.
+#
 #Revision 1.45  2009/10/20 21:09:45  cdunde
 #Update of InfoBase menu links.
 #
