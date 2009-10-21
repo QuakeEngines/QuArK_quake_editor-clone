@@ -98,9 +98,8 @@ def drawanimation(self):
                 currentframe = playlistPerComp[comp_name][0].currentframe
                 if currentframe is None:
                     currentframe = playlistPerComp[comp_name][0].dictitems['Frames:fg'].subitems[0]
-                OldFrameVertices[comp_name] = currentframe.vertices
                 # Swap the original frame's vertices (saving them) with the interpolation calculated vertices.
-                TmpVertices = currentframe.vertices
+                OldFrameVertices[comp_name] = currentframe.vertices
                 # To catch sudden animation stop so original 1st frame does not get messed up, which was happening.
                 if editor.layout is None or (not MdlOption("AnimationActive") and not MdlOption("AnimationCFGActive")):
                     quarkx.setupsubset(SS_MODEL, "Options")['AnimationPaused'] = None
@@ -109,7 +108,6 @@ def drawanimation(self):
                     editor.layout.explorer.sellist = playlist
                     return 0
                 currentframe.vertices = newframe.vertices
-                newframe.vertices = TmpVertices
 
         # To catch any mishaps.
         if editor.layout is None or (not MdlOption("AnimationActive") and not MdlOption("AnimationCFGActive")):
@@ -1056,6 +1054,9 @@ class AnimationBar(ToolBar):
 #
 #
 #$Log$
+#Revision 1.20  2009/10/17 09:17:31  cdunde
+#Added selection and playing of .md3 weapons with player models CFG Animation.
+#
 #Revision 1.19  2009/10/16 06:40:40  cdunde
 #To catch sudden animation stop so original 1st frame does not get messed up, which was happening.
 #
