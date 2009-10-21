@@ -58,6 +58,11 @@ To use these functions you must select two frames of the same component.
 If they are not consecutive frames (one right after the other) then all frames in between the
 two will be replaced with the newly created frames.
 You can also select other components for their same frames to be included.
+If a component has <a href="intro.modeleditor.editelements.html#tags">Tags</a>,
+such as imported <g>.md3</g> Quake3 models, all of its <b>related</b> imported components and
+their tags will also be included without having to select them. But not all of the components
+of that particular <g>.md3</g> model that were imported separately. So be sure to select
+those components also if you want them included.
 They are strictly frame and component related and are covered in detail below.
 
 <i>Bone Options </i>&nbsp;: These functions deal with the Model Bone visual tools to work with.
