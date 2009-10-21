@@ -1,0 +1,108 @@
+title: QuArK 6.2 (superceded)
+author: tiglari
+
+Stuff actually implemented in QuArK 6.2.  Perhaps
+somebody could produce accurate lists for 6.0
+and 6.1?
+
+<ul>
+
+<li>Q3(T)A Model display: (Andy/Maleficus)
+<br> Complex models now showing
+
+<li>OsFolders: (tiglari)
+<br> Load up resources from disk by specified paths etc.
+Editing of folder properties not implemented.
+
+<li>Bezier Page: (tiglari)
+<br>No 'cp picking' or linear mapping handles.
+
+<li>Bezier CP Picking: (tiglari)
+<br>Select certain cp's & operate on them only. (in map views, not
+bezier page)
+
+<li>Read/Write Brush Primitives: (tiglari)
+<br>There's a potential for imprecisions to accumulate if
+stuff is imported & exported multiple times/
+
+
+<li>Read/Write Worlcraft 3.3 Map format: (tiglari)
+<br>So Quark is now among other things a WC3.3<->standard format
+map converter.
+
+<li>DefaultTextureScale: (tiglari)
+<br>Only for the buttons, don't yet understand how
+to do it for direct insert from toolbox menu.
+
+<li>Path duplicator: (Decker, tiglari)
+<br>With tiling substructures, 'elbow spaces', point position/creation
+dialogs, `roll control'.
+
+<li>Patch-based shape builders: (tiglari)
+<br>New orientations.
+
+<li>Brush-based shape builders: (tiglari)
+<br>thick & grid specifics added, plus same new orientations as patch-based ones.
+
+<li>Stairway duplicator: (Decker)
+<br>Stairs in a box
+
+<li>Microbrush H/K: (tiglari)
+<br> Find and destroy.
+
+<li>New Games/Addons Supported:
+<br>STVEF (Alex, Jeff[EFR]Scorpion, Mark Matthieson, tiglari)
+<br>Q3TA (Maleficus, Andy)
+<br>Crystal Space (Desmond Fletcher, et. al.)  This one probably
+needs more work from somebody knowledgeable about CS.
+
+<li>Drag & Drop imprecision bug: (tiglari)
+<br>squashed.
+
+<li>Model editor: (Andy)
+<br>pre-alpha Q1/2
+
+<li>'texture pinning': (tiglari)
+<br>Position a texture by giving its coords at three points
+
+<li>sprites etc. display: (Andy).
+<br> Display assorted minor resources. Full Adquedit not
+yet there.
+
+<li>Look At on face menu: (tiglari)
+<br>moves & points the camera in an open
+3d view to look head on at the face (ctrl to view from backside)
+
+<li>`radial' duplicator: (tiglari)
+<br>Makes copies of things
+radially around a tiltable axis, with 'spiral' attributes.
+
+<li> fgd converter: (Andy, Decker)
+
+<li> tag side plugin: (tiglari)
+<br> Wrap texture across tagged might be less fussy
+    
+<li> Navigate Tree: (tiglari)
+<br>    Zoom now causes 3d view camera to swivel to object
+
+<li> Addon organization: (Decker)
+<br>   Addons now can go in a different folder for each game.
+   
+<li> Circlestrafe Selection Mouse-key combo: (tiglari)
+<br> Shift+RMB during drag to swivel around selected
+object.
+
+<li>MipTex Extraction: (Andy)
+<br>extract textures from Q1, Hx1 .bsp's
+
+<li>Vertex Movement: (tiglari)
+<br>less drifting of non-drug vertexes when a vertex is dragged.
+
+<li>Form-editing: (Andy)
+<br>status: editing only - no create
+
+<li>Rectangle selection of everything: (tiglari)
+<br>selects groups and brush entities if all of their
+sub-objects are also selected.
+</ul>
+

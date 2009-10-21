@@ -1,0 +1,14 @@
+title: Object modes tool-palette
+desc: overview
+desc: dialog
+desc: sphere
+desc: pyramid_cone
+desc: double_cone
+desc: cylinder
+desc: dome
+desc: fan
+desc: torus
+desc: dialogboxes
+desc: aids
+
+<img border=1 align=left>objects1.png</img>

@@ -1,0 +1,25 @@
+title: Who are the other people?
+author: Gryphon/Decker
+format: html
+
+<dl>
+  <dt>Derrick McKay
+  <dd>was the original web master of the official homepage. He is now pursuing other interests.
+
+  <dt>Dudley Bryan Jr. (a.k.a Gryphon)
+  <dd>was the second web master of the official QuArK Homepage. He stopped due to lack of time servicing the homepage.
+
+  <dt>"Decker"
+  <dd>was the third web master of the official QuArK Homepage.
+
+  <dt>Cdunde
+  <dd>is the current web master  of the official QuArK Homepage.
+
+  <dt>PuG
+  <dd>is the current administrator of the forum.
+  
+
+  <dt>Tiglari, Seth Galbraith, Tim Smith, Patrick Steel,
+  <dd>and others who have contributed valuable time and effort to QuArK and the editing community at large.
+
+</dl>

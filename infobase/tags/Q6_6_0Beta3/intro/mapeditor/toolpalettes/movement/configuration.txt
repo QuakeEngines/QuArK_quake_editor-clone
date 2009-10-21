@@ -1,0 +1,30 @@
+title: Movement Configuration
+author: Decker
+
+<img border=0 align=right>configurationdialog.png</img>
+<img border=0 align=right>configuration.png</img>
+Pressing this button, will open up the movement configuration box, so you can
+specify different values for the move-, enlarge-, shrink-, inflate/deflate- and
+rotation-buttons.
+
+<i>Move selection (x,y,z)</i>. Here you specify, the distance in units, the
+<ref> ./move \ move-button </ref> should move the selection with. These values
+can be both positive and negative. For instance; '+8 -16 0' will move the
+selection +8 units in X-direction, -16 units in Y-direction and 0 units in
+Z-direction, from the common center of the selection.
+
+<i>Zoom factor</i>. This value specify by which factor to
+<ref> ./enlargeshrink \ enlarge/shrink </ref> your selection. You can't specify
+a value lower than '1', but you can specify floating point values like '1.75',
+if you so dare.
+
+<i>Inflate/Deflate by</i>. By which amount in units, the
+<ref> ./inflatedeflate \ inflate/deflate-button </ref> should change your
+selection. A negative value will deflate (make smaller) the selection with the
+number of units specified, and a positive will inflate (make bigger) the
+selection.
+
+<i>Rotation angle</i>. The distance in degrees, the
+<ref> ./rotate \ rotation-buttons </ref> should rotate your selection. Best
+values are from 1 to 180, since specifying anything above 180 or negative you
+could just use the other rotation-button.

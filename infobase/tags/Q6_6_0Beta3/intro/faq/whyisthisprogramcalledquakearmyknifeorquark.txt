@@ -1,0 +1,8 @@
+title: Why is this program called Quake Army Knife or QuArK?
+author: Gryphon, DanielPharos
+
+QuArK is an acronym of sorts for QUake ARmy Knife. Its name is unrelated
+to Quark, the Star Trek: Deep Space Nine Ferengi character, despite the
+coincidence that the actor which played Quark (Armin Shimerman) shares
+the same first name as the author of QuArK (Armin Rigo). For more
+information see <ref> intro/faq/whatisthehistoryofquark </ref> below.

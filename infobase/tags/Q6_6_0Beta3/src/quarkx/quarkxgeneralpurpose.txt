@@ -1,0 +1,273 @@
+title: Various general-purpose functions of the module quarkx
+author: Armin Rigo
+
+<table border=1 cellspacing=0 cellpadding=4>
+
+<tr><td class="doccode">
+lines2list(string)
+</td><td>
+Convert a string with $0D end-of-line characters (as found in .qrk files) into a list of strings, one for each line.
+</td></tr>
+
+<tr><td class="doccode">
+list2lines(list)
+</td><td>
+lines2list’s inverse operation.
+</td></tr>
+
+<tr><td class="doccode">
+truncstr(string)
+</td><td>
+Returns the string up to but not including the first null character.
+</td></tr>
+
+<tr><td class="doccode">
+settimer(callback, info, delay)
+</td><td>
+Set up a timer. QuArK will call the function callback with the single user-specified argument info after delay milliseconds have elapsed. To set a repetitive timer, callback can return a number, which is the number of milliseconds until it should be called again. If callback returns None, the timer stops. To cancel a pending timer, call settimer with exactly the same (as the operator “ is ” would tell) callback and info and with a delay of 0.
+</td></tr>
+
+<tr><td class="doccode">
+rnd(float)
+</td><td>
+Rounds float to the nearest integer. Values that are almost exactly an integer and a half are rounded down, e.g. 2.49999, 2.5 and 2.50001 are all rounded to 2.
+</td></tr>
+
+<tr><td class="doccode">
+middlecolor(c1,c2,frac)
+</td><td>
+Returns a color interpolated between c1 and c2. frac is usually between 0 (which returns c2) and 1 (which returns c1) but can be outside this range; in this case, the R-G-B components are clamped to the valid range.
+</td></tr>
+
+<tr><td class="doccode">
+keydown(key)
+</td><td>
+Checks the state of the keyboard. See qkeys.py for a list of all keys. Returns 1 if the key is down, -1 if the key is up but has been pressed after the previous same call to keydown, and 0 otherwise.
+</td></tr>
+
+<tr><td class="doccode">
+setpoolobj(tagname, anything)
+</td><td>
+Stores anything into the pool under the name tagname. The pool is like a dictionnary, but objects that are put there will be periodically freed if they are not referencied any more by other variables. Use it to store complex memory-consuming objects that can be quickly rebuilt when necessary. This lets you use the same object from several places. If tagname is the empty string, the stored object cannot be retreived from the pool any more, but it guarantees that the object won’t be freed immediately (e.g. use it to store objects that take some time to be freed).
+</td></tr>
+
+<tr><td class="doccode">
+poolobj(tagname)
+</td><td>
+Returns the pool object called tagname, or None.
+</td></tr>
+
+<tr><td class="doccode">
+listfileext()
+</td><td>
+Returns a list of all known file types, each of the form (extension, description).
+</td></tr>
+
+<tr><td class="doccode">
+filedialogbox(...)
+</td><td>
+Opens an Open or Save dialog box. See the .py files for examples.
+</td></tr>
+
+<tr><td class="doccode">
+screenrect()
+</td><td>
+Returns the screen size minus the task bar (left,top,right,bottom).
+</td></tr>
+
+<tr><td class="doccode">
+seticons(i, icon)<br>
+seticons(i, ico1, ico2)
+</td><td>
+Assigns the given icon to the objects of kind i. See qutils.py for a complete list. If two icons are given, the second one is used when the object is not selected. The icon parameter(s) can be each either an item of an image list, or a function that QuArK will call whenever it needs the icon. The function has the actual Internal object as parameter, and must return an item of an image list.
+</td></tr>
+
+<tr><td class="doccode">
+msgbox(msg, typ, btn)
+</td><td>
+Displays a message box. See qutils.py for a list of available MT_ flags for typ and MB_ for btn.
+</td></tr>
+
+<tr><td class="doccode">
+textbox(msg, text, typ)
+</td><td>
+Displays a text box form. See qutils.py for a list of available MT_ flags for typ.<br>
+<u>Note</u> : Each line of the text must end with both \r\n and not just \n or improper marks will be displayed instead.
+</td></tr>
+
+<tr><td class="doccode">
+beep()<br>
+beep(kind)
+</td><td>
+Beeps. Use <tt>kind</tt> with <tt>MB_*</tt> constants to change the kind of beep-noise made.
+</td></tr>
+
+<tr><td class="doccode">
+wait()<br>
+wait(delay)<br>
+wait(delay, origin)
+</td><td>
+Waits delay milliseconds (0 if unspecified) and returns the current time, computed in milliseconds. If origin is specified, the delay is computed from the start time origin. This lets you make an animation at a given speed no matter how long it takes to display one image.
+</td></tr>
+
+<tr><td class="doccode">
+exit()
+</td><td>
+Exits QuArK.
+</td></tr>
+
+<tr><td class="doccode">
+progressbar(txt,count)
+</td><td>
+Sets up a new progressbar module. The progress bar displays the text qdictionnary.Strings[txt] (txt must be an integer, not a string!) and it reaches 100% after count steps. Returns a new copy a the progressbar module (see below).
+</td></tr>
+
+<tr><td class="doccode">
+ftos(float)
+</td><td>
+Returns a string representing the given float with at most one decimal. If float is almost an integer, the string contains no decimal part.
+</td></tr>
+
+<tr><td class="doccode">
+clipline(p1,p2)
+</td><td>
+Clips the line between the points p1 and p2 to its part before the camera. Returns a couple of points that represents the new line, or (None, None) if the line is completely behind the camera. The two returned points are computed so that their x and y coordinates can be used (i.e. the visible attribute of the points are True). clipline is automatically called by the line method of canvases. See below for more information about projected 3D points.
+</td></tr>
+
+<tr><td class="doccode">
+runprogram(cmdline, currentdir)<br>
+runprogram(cmdline, currentdir, stdout)<br>
+runprogram(cmdline, currentdir, stdout, stderr)
+</td><td>
+Runs the program given by cmdline. currentdir is the new program’s current directory. runprogram returns a process object, as described below. If the program is a console program, and if stdout is specified, it will use this console object instead of running in its own console. If stderr is omitted, it defaults to stdout.
+<table valign=top halign=left>
+<tr><td>
+<b>Code example:</b><br>cmdline = "psp.exe"<br>
+currentdir = "C:\Programs\PSP"<br>
+quarkx.runprogram(cmdline, currentdir)
+</td>
+<td>
+ # runs the program<br>
+ # sets the programs directory
+</td></tr>
+</table>
+</td></tr>
+
+<tr><td class="doccode">
+console()<br>
+console(visible)
+</td><td>
+Shows or hides the QuArK console. console() or console(1) shows it and console(0) hides it.
+</td></tr>
+
+<tr><td class="doccode">
+writeconsole(src, text)
+</td><td>
+Writes the text in the console. src should be an object of class qconsole.console. See the file qconsole.py for details.
+</td></tr>
+
+<tr><td class="doccode">
+getquakedir()
+</td><td>
+Returns the Quake dir. This is the directory containing the game's executable file.
+</td></tr>
+
+<tr><td class="doccode">
+getgamedir()
+</td><td>
+Returns the Game dir. This is the directory containing the pak files (note: can be different for mods!).
+</td></tr>
+
+<tr><td class="doccode">
+gettmpquark()
+</td><td>
+Returns the tmpquark dir. This is the directory QuArK outputs files to.
+</td></tr>
+
+<tr><td class="doccode">
+getbasedir()
+</td><td>
+Returns the base dir. This is the directory containing the game's (official) pak files.
+</td></tr>
+
+<tr><td class="doccode">
+outputfile(pathandname)
+</td><td>
+Expands pathandname into a complete path and name. pathandname is a name as seen by Quake, e.g. maps/xyz.bsp. The returned path is in the directory tmpQuArK. The directories are created if they don’t already exist. If the directory to Quake has not been set in the Configuration dialog box, outputfile warns the user and raises quarkx.abort.
+</td></tr>
+
+<tr><td class="doccode">
+outputpakfile()<br>
+outputpakfile(1)
+</td><td>
+Returns the file path and name of the .PAK file that should be created before running Quake, or None. outputpakfile never returns None if a True parameter is given.
+</td></tr>
+
+<tr><td class="doccode">
+getfileattr(filename)
+</td><td>
+Returns the file attributes, or -1 if the file doesn’t exist. See qutils.py for the list of attributes.
+</td></tr>
+
+<tr><td class="doccode">
+setfileattr(filename, attr)
+</td><td>
+Sets the file attributes. Use it to either clear a file’s archive attribute, or to delete the file by specifying -1 as attr. Raises quarkx.error if the file doesn’t exist.
+</td></tr>
+
+<tr><td class="doccode">
+reloadsetup()
+</td><td>
+Reload the settings of QuArK from the Setup objects.
+</td></tr>
+
+<tr><td class="doccode">
+htmldoc(url)<br>
+htmldoc(filename)
+</td><td>
+Opens the given HTML file or URL in the default browser. filename must give the full path, and may end with #section to jump directly to the specified section in the file.
+</td></tr>
+
+<tr><td class="doccode">
+helppopup(text)
+</td><td>
+Displays a pop-up window with the given help text.
+</td></tr>
+
+<tr><td class="doccode">
+helpmenuitem(text)
+</td><td>
+Adds an item into the '?' menu. Selecting this items call the MACRO_helpmenu macro.
+</td></tr>
+
+<tr><td class="doccode">
+getshorthint(hint)
+</td><td>
+Returns the "short" part of a hint string, that is, everything before the first "|". This is the part of the hint that will be displayed in a small pop-up window when you leave the mouse over the control.
+</td></tr>
+
+<tr><td class="doccode">
+getlonghint(hint)
+</td><td>
+Returns the "long" part of a hint string. If there is a "|" in the string, this "long" part is everything after this bar. This is usually a longer description for the control action, suitable to be displayed with quarkx.helppopup.
+</td></tr>
+
+<tr><td class="doccode">
+listmapviews()
+</td><td>
+Returns a list with all currently opened map views in QuArK.
+</td></tr>
+
+<tr><td class="doccode">
+menuname(s)
+</td><td>
+Returns the string s with all '&' signs doubled (required for menu items in which the '&' sign should occur as is and not as a prefix for shortcut).
+</td></tr>
+
+<tr><td class="doccode">
+searchforholes(polys, startpoints)
+</td><td>
+Search for holes between the given list of polys, starting the search from the given list of startpoints. Returns a line going "through" the hole as a list of points, or None if no hole is found. startpoints may contain 3D vectors and/or Quake entities.
+</td></tr>
+
+</table>

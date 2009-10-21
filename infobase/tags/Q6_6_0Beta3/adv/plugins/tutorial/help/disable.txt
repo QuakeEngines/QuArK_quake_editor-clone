@@ -1,0 +1,143 @@
+title: Disablers
+author: tiglari
+
+Now for something a bit harder, which is to cause the menu
+items to become `disabled' (light grey and unresponsive)
+when they can't do anything useful.  The technique for doing
+this depends on the fact hat menu items are full-fledged
+objects and can have any kind of data attached to them.
+Furthermore there is an attribute `.state' with these values
+defined in quarkpy.qmenu.py:
+<code>
+# menu state
+normal     = 0
+checked    = 2
+radiocheck = 3
+disabled   = 4    # can be added to the above
+default    = 8    # can be added to the above
+</code>
+Menu items are created in a normal state; all we have to
+do to disable them is to change their state to disabled.
+
+These means first giving them names, then using those names
+when we append them to the command menu:
+<code>
+mentagside  = qmenu.item("&Tag Side", tagSideClick)
+menglueside = qmenu.item("&Glue to Tagged", glueSideClick)
+</code>
+<code>
+quarkpy.mapcommands.items.append(qmenu.sep)   # separator
+quarkpy.mapcommands.items.append(mentagside)
+quarkpy.mapcommands.items.append(menglueside)
+</code>
+For brevity, we've dropped the help text.  But we've
+also added a `separator', to make things look more organized.
+
+Our next trick is a bit deeper.  The `mapcommands' object in quarkpy
+has a `method' (some functions or procedures associated with the
+object), called `onclick', which does stuff when the commands
+menu is activated, before the items on it actually get displayed.
+What we're going to do is to redefine this method.  Some code that
+does this is:
+<code>
+def commandsclick(menu, oldcommand=quarkpy.mapcommands.onclick):
+    oldcommand(menu)
+</code>
+<code>
+quarkpy.mapcommands.onclick = commandsclick
+</code>
+First we define our new onclick function, calling it `commandsclick' for
+the moment.  It takes an optional parameter `oldcommand', which is equated
+by default to the current quarkpy.mapcommands.onclick (this is a basic
+technique for redefining things from quarkpy).  What it does (for now)
+is execute the old method.  I tried to get it to display a message box,
+but for some unknown reason that trashed the display of the menu, so
+I commented it out.  Finally we equate quarkpy.madpcommands.onclick
+to our new commandsclick function.  You should now test this to make
+sure nothing has gotten accidently broken, and then we'll move on to
+making it do something.
+
+But maybe I should first say a bit about what's really going
+on.  In the running of a Python program, the first time a module
+is imported, the statements in it are executed.  The
+<tt>def</tt> and <tt>class</tt> statements cause things
+to get defined, but you can write code to do anything
+you like.  Subsequent
+imports of a module don't re-execute its statements, they
+just make the stuff defined in the module available, not
+only for `read' access, but also for `write' access
+(redefinition).  This makes plugins extremely powerful,
+and is described in the Python documentation as a rather
+dangerous practice, but it seems to work out OK, the way
+it's managed in QuArK.
+
+But now what we want to do of course is check for the preconditions of our two
+menu items.  For side-tagging, we want the selection to consist of
+exactly one side.  If this is true, we want the menu state to be normal,
+otherwise disabled.  Here's some code that does it:
+<code>
+def selFace(editor):
+    sel = editor.layout.explorer.sellist
+    if len(sel)!=1 or sel[0].type!=":f":
+        return None
+    return sel[0]
+</code>
+<code>
+def commandsclick(menu, oldcommand=quarkpy.mapcommands.onclick):
+    editor = mapeditor()
+    if editor is None: return
+    oldcommand(menu)
+    mentagside.state = qmenu.normal
+    sel = selFace(editor)
+    if sel is None:
+        mentagside.state = qmenu.disabled
+</code>
+We can now remove the checks & message boxes from the
+tagSideClick code (tho it might be sensible to leave them in for
+a while to make sure our disabler is really picking up on all the
+preconditions).
+
+The next step is to extend commandsclick to test whether the gluing
+command is applicable.  Working out all of the conditions is a bit
+tricky, here's something that seems to be OK:
+<code>
+def commandsclick(menu, oldcommand=quarkpy.mapcommands.onclick):
+    editor = mapeditor()
+    if editor is None: return
+    oldcommand(menu)
+    mentagside.state = menglueside.state = qmenu.normal
+    sel = selFace(editor)
+    if sel is None:
+        mentagside.state = qmenu.disabled
+        menglueside.state = qmenu.disabled
+    tagged = gettagged(editor)
+    if tagged is None:
+        menglueside.state = qmenu.disabled
+    elif sel == tagged:
+        menglueside.state = mentagside.state = qmenu.disabled
+</code>
+Now we've lost a little bit, because there aren't any more
+explanations of what the problem is when the user tries to
+do the wrong thing.  So the conditions under which the
+menu item can be used should be explained in its hint.
+
+It is also, in my experience, rather tricky to work out the
+conditions under which items should be disabled, & the code
+tends to get fragile.  So it's good if the operations check
+that they're not going to cause trouble before proceeding.
+
+A further possibility is to dynamically adjust the hint, by writing
+code that says things like:
+<code>
+    hint = "|This menu item is disabled because ..."+hint[1:]
+</code>
+There is an example of this in the function curvemenu in
+plugins/mb2curves.py.  Hey, it begins with `mb2', and
+yet loads as a plugin!  That's because things to do with
+bezier curves, that are only useful with Q3A-engine games,
+should be put into plugins starting with `mb2'.
+
+A possible project would be to enhance the `tagging.py' module
+with some code that put into the tagging object info about the
+unsuccessful attempts to retrieve various kinds of tagged things;
+this info could then be used to add information to hints.

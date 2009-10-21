@@ -1,0 +1,11 @@
+title: Advanced features of the map editor
+author: Armin Rigo / Decker
+
+Beyond its basic features, the map editor has numerous advanced features which are not absolutely
+necessary but that will still help you a lot, particularily on large maps. These features include duplicators, diggers, face
+sharing, group masking, etc. Some features also come from plug-ins written by other people.
+
+The main source of information for advanced map editor features are my
+<a href="http://quark.planetquake.gamespy.com/armin/advanced.html">Advanced Features pages</a>.
+
+For textures and prefabs, see <ref> ./otherparts </ref> below.

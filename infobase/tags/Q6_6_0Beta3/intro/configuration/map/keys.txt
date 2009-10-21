@@ -1,0 +1,7 @@
+title: Keys
+author: Decker
+
+<img align=right>keys.png</img>
+Some functions in the map-editor map-views can also be accompilshed by pressing
+keys. In this settings-folder, you can see <u>and redefine</u> keys for the
+actions shown here.

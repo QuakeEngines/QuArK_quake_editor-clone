@@ -1,0 +1,108 @@
+title: Floating toolbars, Toolbar panels, and Buttons
+author: Armin Rigo
+
+Floating Toolbars correspond to a built-in type. You create toolbars with the method newtoolbar of Window objects. The user can
+move Floating toolbars and either dock them (put them along the border of the window) or make them float (appear as a small
+stand-alone window). Note that Toolbars are not screen controls, as mentionned above. Here are all their attributes.
+
+<table border=1 cellspacing=0 cellpadding=4>
+
+<tr><td class="doccode">
+buttons
+</td><td>
+List of the buttons displayed on the toolbar. See below.
+</td></tr>
+
+<tr><td class="doccode">
+caption
+</td><td>
+Caption displayed above the buttons when the toolbar is not docked.
+</td></tr>
+
+<tr><td class="doccode">
+dock
+</td><td>
+Current dock position: "topdock", "leftdock", "rightdock", "bottomdock", or None. (Note: because of bug in QuArK 5.0.c2, you cannot set dock to None; instead, set it to "floating".)
+</td></tr>
+
+<tr><td class="doccode">
+dockpos<br>
+dockrow
+</td><td>
+Position and row within the dock. (If they are several toolbars on the same dock, they can be organized in several rows.)
+</td></tr>
+
+<tr><td class="doccode">
+floatrect
+</td><td>
+Position of the toolbar when it is floating. (left,top,right,bottom). Changes to floatrect have no effect until the next dock=None.
+</td></tr>
+
+<tr><td class="doccode">
+visible
+</td><td>
+Is the toolbar visible?
+</td></tr>
+
+<tr><td class="doccode">
+update()
+</td><td>
+Refresh the toolbar buttons. (Was equivalent to buttons=buttons in previous versions, but now the recreation of buttons is not done immediately because it was causing some serious troubles). Required in some cases because QuArK doesn’t know, if you modify a single button, that it must update the displayed buttons. See also quarkx.update().
+</td></tr>
+
+<tr><td class="doccode">
+close()
+</td><td>
+Closes (destroys) the control. You cannot use it any longer once it has been closed, much like you cannot use Python files any longer once you called their close() method.
+</td></tr>
+
+<tr><td class="doccode">
+show()
+</td><td>
+visible = 1
+</td></tr>
+
+<tr><td class="doccode">
+hide()
+</td><td>
+visible = 0
+</td></tr>
+
+<tr><td class="doccode">
+ondrop
+</td><td>
+Same as ondrop for screen controls. (not implemented in 5.0.c4)
+</td></tr>
+
+</table>
+
+Individual buttons are, like menu items, not built-in types, but rather instances of a standard Python class. See qtoolbar.py
+for more information.
+
+Besides Floating Toolbars, buttons can also be displayed on fixed panels. Such panels are called Button Panels, and are created
+with a panel’s newbtnpanel() method. They are screen controls, with a few additionnal attributes:
+
+<table border=1 cellspacing=0 cellpadding=4>
+
+<tr><td class="doccode">
+buttons
+</td><td>
+List of the buttons displayed on the panel.
+</td></tr>
+
+<tr><td class="doccode">
+margins
+</td><td>
+Extra space between buttons, (x,y). Default (2,2).
+</td></tr>
+
+<tr><td class="doccode">
+update()
+</td><td>
+See the method update() of Floating toolbars.
+</td></tr>
+
+</table>
+
+Button panels have additionnal formatting capabilities: by inserting special values in the list of buttons, you can create gaps
+between buttons, pad buttons to the right, or force a new button row to begin. See qtoolbar.py.

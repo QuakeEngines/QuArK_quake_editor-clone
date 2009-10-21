@@ -1,0 +1,121 @@
+title: The Skin-view Mesh(s)
+author: cdunde
+
+A model is constructed from a mesh, which is a list of triangles grouped together to create its shape.
+The model can be a single mesh or it can consist of a number of meshes. In QuArK we call these meshes <g>components</g>.
+And therefore, each <g>component</g> of a model has its own group of triangles which are known as a components
+<a href="src.quarkx.html#objectsmodeleditor">Tris Specific</a> as stated in the
+<a href="src.quarkx.html#objectsmodeleditor">Quarkx Model Editor section</a> of these Infobase docs.
+<g>Tris</g> is an abbreviation for triangles.
+
+The <a href="intro.modeleditor.skinview.html">Skin-view page</a> will display an <g>unwrapped</g>, or flat
+version, of each of the model's components when it or any of its sub-items have been selected in the tree-view.
+
+The <a href="intro.modeleditor.skinview.html">Skin-view page</a> works a bit defiantly then the editor's views do,
+based on the fact that it has no actual triangles. Only what is known as <g>view.handles</g>, view being the view
+displayed on the <a href="intro.modeleditor.skinview.html">Skin-view page</a> itself. Another big difference,
+at this time, is that unlike all of the other <g>views</g> of the editor which are in a <g>list</g> of its 
+<g>editor.layout.view</g>, the <a href="intro.modeleditor.skinview.html">Skin-view page</a> view is never actually added
+(appended) to that list, on a permanent bases, making it pretty much isolated from the rest of the views of the editor.
+Because of this I needed to create a <g>global</g> in the <g>quarkpy\mdlhandles.py</g> file called <g>SkinView1</g>
+that can be used, when needed, to call that view when the <a href="intro.modeleditor.skinview.html">Skin-view page</a> is open.
+It does seem to be added periodically when the mouse cursor is actually somewhere within the
+<a href="intro.modeleditor.skinview.html">Skin-view page</a> view.
+
+As briefly described in the <a href="src.quarkx.html#objectsmodeleditorl">Internal objects related to the Model Editor</a>
+of the <ref>src/quarkx</ref> section of these Infobase docs, the <a href="intro.modeleditor.skinview.html">Skin-view page</a>
+view uses a model's <g>Component, Frame object's vertices</g>, also known as its views <b>view.handles</b>. There is a lot
+being said in that last part, so let me break it down for you in more layman's terms as to what it all means exactly.
+
+&nbsp;&nbsp;<i><g>Component</g> :</g></i> Each model can be made up of one or more <g>Components</g>, or parts,
+each containing sub-items, as described in the <a href="intro.modeleditor.model.html#components">Components of a Model</a>
+section above, one of which is the <b>frame group</b> that contains that particular components <g>animation frames</g>
+that gives that component its movement sequences.
+
+&nbsp;&nbsp;<i><g>Frame object's vertices</g> :</g></i> Each <b>frame</b> has attached to it a list of vertexes or points in
+3D space that make up that components <g>Frame</g>, or mesh of triangles for its shape. These vertexes are the
+<g>Frame object's vertices</g> which are also the <a href="intro.modeleditor.skinview.html">Skin-view page</a> <b>view.handles</b>.
+Below is a very small sample of a Skin-view <b>view.handles</b> list.<br>
+
+<code>
+[&lt;quarkpy.mdlhandles.SkinHandle instance at 0x0101AA08>,&lt;quarkpy.mdlhandles.SkinHandle instance at 0x0101AA58>]
+</code>
+
+Each item in this list, as you can see, is an <g>instance</g> of a <g>quarkpy.mdlhandles.SkinHandle</g> and if you look
+at that <g>Class SkinHandle</g> in the quarkpy\mdlhandles.py folder\file you will see that each <g>instance</g> has these
+items, or <g>Specifics</g> that make up that <g>SkinHandle</g>, or <g>Frame object's vertices</g> point.
+
+<code>
+def __init__(self, pos, tri_index, ver_index, comp, texWidth, texHeight, triangle):
+</code>
+
+
+<g>&nbsp;&nbsp;&nbsp;self</g> &nbsp;-----------&nbsp;being the handle or <g>quarkpy.mdlhandles.SkinHandle instance</g> itself.<br>
+<g>&nbsp;&nbsp;&nbsp;pos</g> &nbsp;-----------&nbsp;that handle's 3D position in space when it was created or changed.<br>
+<g>&nbsp;&nbsp;&nbsp;tri_index</g> &nbsp;----&nbsp;the triangle number of the component that view.handle belongs to.<br>
+<g>&nbsp;&nbsp;&nbsp;ver_index</g> &nbsp;--&nbsp;the vertex position of that triangle in sequential order, 0, 1 or 2.<br>
+<g>&nbsp;&nbsp;&nbsp;comp</g> &nbsp;--------&nbsp;the model component that triangle and view.handle is a part of.<br>
+<g>&nbsp;&nbsp;&nbsp;texWidth</g> &nbsp;----&nbsp;the computed width of the texture <g>skin</g> image that component uses.<br>
+<g>&nbsp;&nbsp;&nbsp;texHeight</g> &nbsp;---&nbsp;the computed height of the texture <g>skin</g> image that component uses.<br>
+<g>&nbsp;&nbsp;&nbsp;triangle</g> &nbsp;------&nbsp;the triangle itself that view.handle is a part of.<br>
+
+The data any one of these items contain can be used by simply adding its <g>Specific</g> name to the view.handle like this:
+<code>vtxpoint = view.handle.pos</code>
+These view.handle positions are then used to draw the handles onto the Skin-view's view and the lines that make up that
+components <g>Skin mesh</g>, but there are still no triangles per-say. These <g>Specifics</g> data can also be used to pass
+the needed items data from the <a href="intro.modeleditor.skinview.html">Skin-view page</a> to the editor's views and visa-versa
+as seen in the <g>quarkpy\mdlutils.py</g> file for the <g>PassSkinSel2Editor</g> and <g>PassEditorSel2Skin</g> functions which
+are located there, you might want to review those as additional detailed information for those functions use, explanation and data format
+are also located there for each function along with a simpler <g>formula</g> for the <g>PassEditorSel2Skin</g> function that can
+expedite its application time for obtaining data that it needs.
+
+There are two other functions, as well as several more useful ones, in the <g>quarkpy\mdlutils.py</g> file that you should also be aware of called:
+
+<g>Update_Editor_Views</g>:&nbsp; Updates the Editors views once something has changed in the Skin-view, such as 
+synchronized or added 'skin mesh' vertex selections. It can also be used to just update all of the Editor's views only.
+
+<g>MakeEditorFaceObject</g>:&nbsp; Creates a QuArK Internal Face Object from 3 selected vertexes in the ModelVertexSelList.
+This one is unique to the <b>Model Editor</b> in that it uses the same structure as a <b>Map Editor</b> QuArK Internal Face Object,
+Which should allow the calling of various Map Editor files and functions in the Python code files to use in the Model Editor once
+the returned items from those functions are converted back into usable data in the Model Editor required format.
+
+Both of the above functions have various <g>option</g> settings that can be applied for more specific uses and those option
+settings and descriptions are in each of their related function description section.
+
+One last item to cover are the various <g>selection lists</g> that I have setup for the Model Editor. Each one being specific for their needs and uses.
+
+<g>ModelVertexSelList</g>:&nbsp; Used for individual and multi selected Model Editor component mesh vertexes.
+
+<g>SkinVertexSelList</g>:&nbsp; Used for individual and multi selected Skin-view skin mesh vertexes.
+
+<g>ModelFaceSelList</g>:&nbsp; Used for individual and multi selected Model Editor component mesh triangles (faces).
+
+<g>SkinFaceSelList</g>:&nbsp; Used for <g>passing and retaining</g> individual and multi selected Model Editor component mesh triangles (faces) to the Skin-view page at this time.
+
+Complete detailed descriptions of each one of these <g>selection lists</g> are given near the top of the <g>quarkpy\mdleditor.py</g> file along with their related list item formats
+as to what data they require and carry as well as to what their purpose are. It would be a good idea to review that information as more will be added during future development of this editor.
+
+<b>One vital point about the <g>SkinVertexSelList</g> list is that it <g>must</g> be <g>changeable</g>, or <g>mutable</g> in Python terms,
+and the added data within it, or the list will become ineffective and objects will not be able to be updated when moved to work with QuArK.
+They will simply <g>DISAPEAR</g> !</b>
+
+To make this list <g>mutable</g> it must use <g>square brackets</g> to define it and any items that are added to that list as well, like this:
+
+<code>
+SkinVertexSelList = []
+SkinVertexSelList = SkinVertexSelList + [pos, self, tri_index, ver_index]
+</code>
+
+In addition to the above <g>selection lists</g> there are other lists used by the Model Editor, two of which are:
+
+<g>view.handles</g>:&nbsp; Covered in detail above earlier.
+
+<g>comp.filltris</g>:&nbsp; <g>comp</g> being the currently selected model component or <g>editor.Root.currentcomponent</g>
+and the actual list <g>filltris</g> which is a list of item settings to draw a component's triangle filled with a specified
+color and which is also described in the <a href="src.quarkx.html#objectsmodeleditorl">Internal objects related to the Model Editor</a>
+of the <ref>src/quarkx</ref> section of these Infobase docs. Also doing a word search using <g>comp.filltris</g> will divulge
+its usage in the Python <g>quarkpy\mdleditor.py</g> file.
+
+I realize there is a lot more relating to the editor but this very vital basic works information should help to get acquainted
+with the <b>QuArK Model Editor</b> inter actions much easer.
+

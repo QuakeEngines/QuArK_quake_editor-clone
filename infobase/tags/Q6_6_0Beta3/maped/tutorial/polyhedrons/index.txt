@@ -1,0 +1,16 @@
+title: Using brushes (polyhedrons)
+author: Decker
+desc: creating
+desc: movingsizing
+desc: navigating
+desc: texturing
+desc: firstroom
+desc: grouping
+desc: nextpart
+
+This is the second part of four, which guides you through the methods and
+functions of creating a map in QuArK's map-editor. You should have read
+<ref> ../starting \ the first part </ref> before going through this second
+part.
+
+Once you've completed this section, proceed to <ref> ../entities </ref>.

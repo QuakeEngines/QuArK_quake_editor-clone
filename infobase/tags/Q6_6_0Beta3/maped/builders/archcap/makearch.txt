@@ -1,0 +1,147 @@
+title:  Making an arch
+author: tiglari
+
+<pic align=right> arch1.png </pic>
+To make an arch, first click on the cube icon in the user
+panel, or use whatever technique you normally use to make
+a more or less cubical brush.  Then, in a side-on map-view,
+select the brush and <act>RMB|Curves|Arch</act>.
+
+An arch-shape will appear inside the brush, and if the brush
+isn't selected, it will be invisible. If you open up a 3d view and
+look around, you'll see that there are patches with textures
+on the front and back, and inside curve.
+
+<pic border=1 align=right> archtv.png </pic>
+What's happened is that the original brush has been put
+inside a duplicator, which makes it invisible unless selected.
+You can see this by looking at the tree view, as illustrated:
+
+The duplicator then controls the production of the actual
+patches comprising the arch, by means that we will shortly
+start manipulating.
+
+Of course, due to the one-sided visibility of patches, the
+arch isn't a very satisfactory piece of archicture until we
+put it into a suitable architectural environment.
+But first, a bit more about the arch itself.  You might think
+that once made, it's made, and what you see is all you get,
+but not at all.  First, click on the arch until its `guide brush'
+(the one inside its duplicator) is selected.
+
+We can now drag this brush around, and the arch will move, and
+we can reproportion the arch by dragging the individual faces.
+Since these are ordinary faces, which provide data to the duplicator
+code the makes the arch patches, we can do all the ordinary face
+stuff to them, such as tag/glue.
+
+<table border=0 cellpadding=0>
+<tr><td valign=top>
+
+So the next step is to make a wall with a hole in it,
+using whatever your favorite technique for doing this is (if you
+want to live dangerously, you can subtract with the arch brush
+before or after turning the original brush
+into an arch).
+
+Now move the arch's `guide brush' into the hole,
+and line everything up so that the sides and the top are flush
+with the sides of the hole, and the bottom is where you want it.
+In a 3d view, things should look as more or less as
+shown:
+
+</td><td valign=top>
+<pic> arch2.png </pic>
+</td></tr>
+<tr><td valign=top>
+
+Now, when we select the duplicator itself (which can be done without
+opening the tree view by selecting the brush and
+<act>RMB | Navigate Tree | Arch | Select</act>), we'll see something like this:
+
+When the duplicator is selected, the tracery of bezier
+mesh lines becomes visible.  Also, in an OGL view, the brush itself
+takes on a reddish color (this doesn't happen in the other
+views).  It is also possible that the textures might be misaligned,
+so controlling that is our next topic.
+
+</td><td valign=top>
+<pic> arch3.png </pic>
+</td></tr>
+<tr><td valign=top>
+
+Arches get the textures of their front and back faces
+off the front and back faces of their guide brush.  So all
+we have to is to tag some face of the wall (assuming the other
+wall bits are properly aligned), then select the front face
+of the arch's guide brush, and then <act>RMB | Project Texture from Tagged</act>,
+and ditto for the back wall.  The results should look more or
+less as to the right (the red line is the part of the outline
+of the wall-face that the texture was projected from).
+
+If your arch's front or back
+textures are misaligned, you should fix them now; if they're not,
+mess them up and then fix them.
+
+</td><td valign=top>
+<pic> arch4.png </pic>
+</td></tr>
+</table>
+
+The inside of the arch is unfortunately not so straightforward.  It
+would be nice if there was some way to wrap the texture on the front
+or back onto the inside curve, but there isn't, at least without using
+specially pre-prepared and proportioned textures.  So we basically
+are stuck with a misalignment here, which can be ameliorated
+by using some fairly bland, unpatterned texture on the inside
+face (there's a further amelioration we'll get to later, after
+dealing with the arch/cap duplicator specifics).
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+
+But what we can do is get the textures aligned around the inside
+of the archway.  The inside curve gets
+its texture off the top face of the guide-brush.  So basically
+what we want to do is wrap that texture onto the two walls.
+However for geometrical reasons we don't want to quite do that.
+To set the scene, raise the bottom of the guide-brush to explose
+some bare wall-side, then select the top face of the guide-brush
+and put a suitable ceiling-texture on it.  The results might look
+like this as to the right.
+
+</td><td valign=top>
+<pic> arch5.png </pic>
+</td></tr>
+<tr><td valign=top>
+
+Next, tag the top face of  guide brush, then select a wall, as
+indicated to the right:
+
+Finally, on the selected face, do <act>RMB|Texture|Wrapping|From tagged mirror</act>.
+The texture on the curve ought to now extend
+down the wall, smoothly aligned.  Repeat on the other side, and
+it's done.
+
+</td><td valign=top>
+<pic> arch6.png </pic>
+</td></tr>
+</table>
+
+But if you look closely with an patterned texture, you'll see
+that the texture scale is compressed somewhat on the curved portion;
+that's because its being positioned and scaled on the curve so
+that it will join up smoothly with what's on the walls, but
+the distance around the flat wall face is longer than on the
+smooth curve-face.  This is because of a bit of tricky coding
+in the duplicator, whereby the texture scale is compressed
+just enough so that the distance in texture-space around
+the curve equals the distance, w.r.t the top-face scale, around
+the three faces defining the arch.
+
+A final point: for some textures, especially small and/or
+non-square ones, this positioning trick doesn't work and the
+textures come out strangely warped.  This is a bug I haven't
+tracked down yet; to use these texture on inside arches, you
+have to check the `stretchtex' box, & you'll have to manage
+alignments manually.

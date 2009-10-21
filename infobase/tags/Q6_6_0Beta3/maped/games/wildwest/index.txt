@@ -1,0 +1,21 @@
+title: Return to Castle Wolfenstein: The WildWest
+
+
+"Set in the later half of the 19th century around the Western states of America bordering Mexico.
+A land plagued with disputes, lawlessness, gunfights and some of that periods most gruesome characters.
+An ex-Mexican army captain turned bandit, driven by a personal vendetta,
+has formed a mob of some of the most ruthless Mexican bandits to sweep a reign of terror through the land."
+
+
+The WildWest is a Multiplayer modification of Return to Castle Wolfenstein
+(which is in turn based upon Quake 3: Arena) developed by two British gents by the name of Hewster and BoltyBoy.
+Please see <a href="http://www.the-wildwest.co.uk/">the home of the WildWest </a> or
+<a href="http://www.gamingforums.com/forumdisplay.php?f=250">the Gaming Forums' WildWest Mod forum</a> for more details.
+
+
+If you have any questions, problems or find solutions regarding this topic, please post them in
+the <a href="http://quark.planetquake.gamespy.com/forums/">QuArK forum/mailing-list</a>.
+
+
+Please note: This version of the WildWest is intended for use with the 1.5 Beta version and newer.
+There are Entities that are referenced in the menu structure that may not exist in earlier versions.

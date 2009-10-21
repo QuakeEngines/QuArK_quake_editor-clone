@@ -1,0 +1,9 @@
+title: Other objects
+author: Decker
+
+<img border=0 align=right>objects.png</img>
+By dragging objects from the dataform or the new map items, you can drop them
+in the panel, and they will always be available to you.
+
+Notice that these objects are depended on what FPS-game you have selected in
+the QuArK-Explorer.

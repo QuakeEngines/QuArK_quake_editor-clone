@@ -1,0 +1,147 @@
+title: Custom Textures
+author: cdunde/Sven
+
+This section covers how to get your own custom textures to work in Half-Life 2, Half-Life 2 Deathmatch and Counterstrike Source.
+
+It's good to know how "materials", what texture files are called, are used in the game and how they are handled by the Half-Life 2 game engine. A good place to look for information on this is the <a href="http://www.valve-erc.com/srcsdk/Materials/materials_creation.html">materials section</a> of the SDK itself.
+
+Material or texture files are split into two parts: first your texture itself, a picture of any kind of file type, which later have to be converted into the .tga file type and then into .vtf with the vtex compiler from the sdk. We'll get to that later...
+
+The second part of our texture is the .vmt file, a script file which tells the engine how to render and handle the materials. Most settings in the .vmt file are based on variables for shaders and values which describe the material, like wood, glass, stone and so on,... it also flags the sound behavior of our texture,  mostly automatically.
+
+The first line of our .vmt file is the name of the shader that is used. depending on your computer, it can set to a default shader level, or set itself after a shader test to fit to the best result for each computer your map is running on. Shaders add reflections and such to the texture.
+
+It's all not that easy,... well, to be honest, I haven't figured out most parts of the shader thingy yet =)
+
+But, let's get to the part where the useful information take place, the other stuff is mentioned in the sdk section better than I could explain it. Just play around with it a little.
+
+<b>Choosing and Compiling your own texture</b>
+
+As you now know, you can use any kind of a picture to make a texture of it. There are some things to remember before you can use your texture:
+
+<ul>
+<li>The picture has to be a .tga file before compiling at 16, 24, or 32-bits in depth /VALVE SDK
+<li>All .TGA files must have a resolution equal to a power of 2, although the height and width can be different (i.e. 16x16, 32x32, 64x128, 128x128, 128x256, 512x512, etc.). /VALVE SDK
+</ul>
+
+The compiler vtex is located in the sourcesdk/bin folder where the other map compiling tools can be found as well.
+Now, if your picture matches all dependencies open one or two explorer window/s and go to:
+<i>DriveDevice:\Valve\Steam\SteamApps\YourSteamAccountName\sourcesdk\sourcesdk_content\GameType\materialsrc</i>
+
+Create a folder with a custom name there and save or copy your .tga file into the new folder.
+
+<table border=0 cellspacing=0 align=middle>
+<tr><td valign=top align=left>
+Your second explorer window should be the path to your sourcesdk/bin folder, it's easier to drag and drop the .tga file to vtex later.
+</td></tr>
+<tr><td valign=top align=middle>
+<img valign=top align=middle>hl2_texture1.png</img>
+</td></tr></table>
+
+<table border=0 cellspacing=0 align=middle>
+<tr><td valign=top align=left>
+Now drag and drop your .tga file on to the vtex.exe, the following screen should look like this,...
+</td></tr></table>
+
+<tr><td valign=top align=middle>
+<img valign=top align=middle>hl2_texture2.png</img>
+</td></tr></table>
+
+<table border=0 cellspacing=0 align=middle>
+<tr><td valign=top align=left>
+If you are not planning to build an "normal map" texture of your .tga ( I will hopefully find some time to make a tutorial on what that is soon ), drag it one more time.
+
+</td></tr>
+
+<tr><td valign=top align=middle>
+<img valign=top align=middle>hl2_texture3.png</img>
+</td></tr></table>
+
+<table border=0 cellspacing=0 align=middle>
+<tr><td valign=top align=left>
+The .tga should be converted now and saved into
+ <i>DriveDevice:\Valve\Steam\SteamApps\YourSteamAccountName\GameType\materials\YourFolderName</i>
+
+<ul>
+<li><b>Note ! You will get an error message if
+
+<li><i>...YourGameTxpe\materials\YourFolder</i>
+
+<li>is not present, so create it first !</b>
+</ul>
+
+The compiler made a text file now in the same folder where your .tga is. Please, read the sdk documentation on how to use this text file and what it is for.
+
+<b>It's time to define what kind of texture we have now.</b>
+
+There are a few default values which can be used, and to get ready for our .vmt file creation a good program called "VMTMak0r" needs to be mentioned. It helps to set all needed stuff in your .vmt.
+
+Download the English version from <a href="http://quark.planetquake.gamespy.com/download_tools.php3">here</a>.
+
+Ok, so "VMTMak0r" handles the .vtf file by drag and drop, so go in <i>...GameTypeFolder\materials\YourFolderName</i> and drag and drop the .vtf file on to "VMTMak0r".
+
+</td></tr>
+
+<tr><td valign=top align=middle>
+<img valign=top align=middle>hl2_texture4.png</img>
+
+</td></tr>
+
+<tr><td valign=top align=left>
+
+<b>Note ! You have to preview the .vmt file in the program, otherwise you'll get an error message if you're trying to save it !</b>
+
+Brilliant ! Our texture is done if you set every kind of behavior you would like it to have.
+
+If you are more into the other settings you see documented in the sdk, I'll explain them too, but for now let's just make a "default shader – metalpenal" and save it.
+
+<b>QuArK is waiting,...</b>
+
+- Start the sharpest Army Knife on Earth and open the Texture Browser<br>
+- Create a new main folder and select "in a new Addon"
+
+</td></tr>
+
+<tr><td valign=top align=middle>
+<img valign=top align=middle>hl2_texture5.png</img>
+
+</td></tr>
+
+<tr><td valign=top align=left>
+Give it a good name, may be your mapfilename and save it.<br>
+<b>Note ! Sometimes it could be that you have to save the file in <i>Quark\Addons\whatyouwant</i> !</b>
+
+Okidoki,...</br>
+- Select your new main folder and make a new "texture list" in it then -> edit -> import files by "copy" or "make file links" to this texture list.
+
+"I use copy and haven't figured out what's better, lazy me =)"
+
+Now a file browser opens, choose the directory of your texture file, it should be something like<br>
+<i>DriveDevice:\Valve\Steam\SteamApps\YourSteamAcccountName\GameType\materials\YourFolder</i>
+
+<b>Note ! Because of a path problem I haven't figured out yet, you have to copy the .vmt and the .vtf to the main materials folder to let the game find the texture, and to prevent a black/red texture to be displayed in the game !
+Done ! As you can see the texture works in the game,...</b>
+
+</td></tr>
+
+<tr><td valign=top align=middle>
+<img valign=top align=middle>hl2_texture6.png</img>
+
+</td></tr>
+
+<tr><td valign=top align=left>
+I hope this helps a bit and some of you can add one or two hints for this tutorial or will correct me
+on a few points,...
+
+I'll try to find some time to get an addon file ready where you can select all gametype textures
+( css textures for hldm and vice versa )
+
+Last thing, if you quit QuArK you'll be asked to save the changes to your addon file,...
+Then a message prompts that QuArK doesn't support that right now. Just add the textures you want in your map before start mapping with the texture browser / import them again,...
+
+Changed during update alpha3, custom textures now will be saved ! NICE, THX !
+
+have a lot of fun<br>
+matrikular - Sven
+</td></tr>
+</table>

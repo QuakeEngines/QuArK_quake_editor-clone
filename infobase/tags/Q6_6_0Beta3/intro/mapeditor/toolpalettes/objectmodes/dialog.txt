@@ -1,0 +1,10 @@
+title: Object Dialog Input
+author: cdunde
+
+<img border=1 align=middle>objects2.png</img>
+Pressing this button, will open a dialog input box for the <a href="intro.mapeditor.toolpalettes.objectmodes.html">Object modes Toolbar</a> item currently in use.
+
+Not all objects will use the same <a href="intro.mapeditor.toolpalettes.objectmodes.html#dialogboxes">dialog input box</a>. Which ever object button is active at the time this button is clicked, will produce that objects dialog input box.<br><a href="intro.mapeditor.toolpalettes.objectmodes.html#dialogboxes">These dialogs</a> will remain open until they are closed manually. They can also be moved around, resized and will save their settings, which are still active while closed, when QuArK is exited.
+
+If a particular object has its own dialog then that objects name will appear in the title. Other wise the standard <a href="intro.mapeditor.toolpalettes.objectmodes.html#dialogboxes">Object Distortion Dialog</a> will be used for all other objects.<br>You can have one or more <ref> ./dialogboxes </ref>. open and active at a time. But they will only effect the objects that use them.
+

@@ -1,0 +1,6 @@
+title: Floating 3D windows
+desc: editor
+desc: camera
+
+You can create a new floating 3D-window, from the <ref> ../menu/layoutmenu </ref>,
+or the <ref> ../toolpalettes/display/3dwindows </ref> icons.

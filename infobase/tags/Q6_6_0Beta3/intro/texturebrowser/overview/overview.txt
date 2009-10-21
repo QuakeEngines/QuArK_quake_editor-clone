@@ -1,0 +1,13 @@
+title: Overview
+author: Rowdy
+
+<img border=0 align=right>texturebrowser.png</img>
+Across the top is the menu and toolbar, this is covered in more detail in the
+<ref> ../menu </ref> section.
+
+Down the left of the form is a list of texture groups.  The ones shown here are
+from Quake II, yours may differ depending on which game you are editing, and
+whether you have setup any additional texture groups of your own.
+
+Most of the form is taken up with a preview of all the textures in the selected
+group.

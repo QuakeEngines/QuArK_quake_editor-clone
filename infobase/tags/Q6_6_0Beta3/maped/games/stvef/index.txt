@@ -1,0 +1,11 @@
+title: Star Trek: Voyager - Elite Force
+
+Building should work as specified in the defaults if you use gdk2, and
+install it into the STVEF directory, so that Tools is a sister-folder
+to EF-Main.
+
+Note: Most of the information that applies to <ref> maped/games/quake3 </ref>
+also applies to STVEF, mainly because STVEF uses the Quake 3 engine.
+
+If you have any questions, problems or find solutions regarding this topic, please post them in the
+<a href="http://quark.planetquake.gamespy.com/forums/">QuArK forum/mailing-list</a>.

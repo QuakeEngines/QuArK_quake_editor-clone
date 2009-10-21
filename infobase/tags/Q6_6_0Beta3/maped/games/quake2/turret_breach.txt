@@ -1,0 +1,24 @@
+title: Turret entities
+author: Armin Rigo
+
+<b>Question:</b><br>
+I am working on a huge turret.
+
+<b>Answer:</b><br>
+Turrets are a bit hard to design.
+
+The turret_base and turret_breach must have the same "team" specific.
+<br>
+The turret_driver's "target" must match the turret_breach's "targetname".
+<br>
+The turret_breach's "target" must match the "target" of yet another entity, "info_notnull".
+
+You must design and place all three turret_xxx entities as if the turret where looking to the direction 0 (east). If you want
+the turret to begin facing another direction, you must set it in the "angle"
+specific of both turret_breach and turret_base (not in turret_driver).
+
+Finally, place the "info_notnull" entity at the point from which rockets are
+to be thrown. Unlike the other entities, it seems that you must place this one
+at the correct position for the turret's starting angle, not for the angle 0.
+I mean, you must place it at the place where it WOULD BE if the turret already
+rotated to its starting angle.

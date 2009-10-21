@@ -1,0 +1,14 @@
+title: Mouse
+author: Decker
+
+<img align=right>mouse.png</img>
+To get the most out of the map-editor, you can here specify how the mouse
+should act when you do certain operations to it, like pressing a button and
+dragging.
+
+It is <u>highly recommended</u> that you familiarize yourself with these
+mouse-settings, or <u>redefine</u> them if you like. But you should experiment
+with them in the map-editor, to get a feel of what they are doing.
+
+However you should be aware that the mouse-modes toolpalette sometimes will
+overrule the settings you've choosen in this setup-folder.

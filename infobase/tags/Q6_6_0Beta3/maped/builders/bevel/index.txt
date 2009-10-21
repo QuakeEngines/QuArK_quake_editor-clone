@@ -1,0 +1,8 @@
+title: Rounded Corners and Bevels
+desc: makebevel
+
+'Bevels' are basically half-cap/arches; the non-inverse ones
+make rounded edges, while the inverse ones make things like
+cornices and corners.  They come in both patch and
+brush-vased versions, and work almost the same as caps and
+arches, so look at those now if you haven't already.

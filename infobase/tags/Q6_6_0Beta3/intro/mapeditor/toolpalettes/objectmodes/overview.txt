@@ -1,0 +1,19 @@
+title: Overview
+author: cdunde
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+With the  <a href="intro.mapeditor.toolpalettes.objectmodes.html">QuArK Quick Object Makers</a> an abundance of 3D object shapes can be created by simply choosing one of the toolbar object buttons and, while holding down the <g>LMB</g>, dragging the cursor around within any 2D view. Any of these objects can easily be created as a solid <g>poly</g> or a group of <g>polys</g> to make it a hollow structure. In the image below you can see just some of these shapes.
+
+The top row shows a simple (minimum amount of faces) shape for the Sphere, Pyramid\Cone and Cylinder objects.<br>
+The second rows shows these same objects as more complex objects (more faces used).<br>
+The third row shows simple, complex and more complex objects of the Torus maker.
+</td></tr>
+</table>
+<table border=0 cellspacing=0 valign=top align=center>
+<tr>
+<td valign=top align=center>
+<img border=1>objects7.png</img>
+</td></tr>
+</table>
+

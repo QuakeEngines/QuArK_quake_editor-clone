@@ -1,0 +1,9 @@
+title: L...
+author: Decker
+
+<dl>
+<dt><a name="leak">     </a>Leak        <dd>The most annoying thing you get, when building <a href="#bsp">bsp</a>-maps! A leak (or hole as it is also called), is a place in your map that has a view out to the <a href="#void">void</a>.<br>Think of you map as a giant enclosed bathtub filled with water. If there is a leak somewhere, the water would pour out (even run upwards if you got a leak in the ceiling!), and this prevents the VIS/QVIS program to optimize your map.<br>If your level got a leak, even just a tiny small one, it's a <u>bad</u> map! So compile often to catch leaks.
+<dt><a name="lmb">      </a>LMB         <dd>(abbreviation) <b>L</b>eft <b>M</b>ouse <b>B</b>utton.
+<dt><a name="lossless"> </a>Lossless compression <dd>A compression method that allows the exact original data to be reconstructed from the compressed data.
+<dt><a name="lossy">    </a>Lossy compression <dd>A compression method where compressing data and then decompressing it retrieves data that may well be different from the original.
+</dl>

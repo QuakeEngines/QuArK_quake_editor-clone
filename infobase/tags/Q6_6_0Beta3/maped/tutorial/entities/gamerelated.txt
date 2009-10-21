@@ -1,0 +1,56 @@
+title: Game related entities and arguments
+author: Decker
+
+As much as QuArK helps you along the way, giving you a wide array of entities,
+and within them their specifics and argument, you have to seek information
+about how to use the entities yourself, by;
+
+<ul>
+<li>reading documents and tutorials,
+<li>searching the web,
+<li>asking for help in news-groups and mailing-lists,
+<li>study entities in <g>.MAP</g> and <g>.BSP</g> files made by other people
+<li>and generally THINK, EXPERIMENT and LEARN.
+</ul>
+
+You will find out that, even though the games that QuArK supports, are all
+based on the Quake-engine series by <g>id Software</g>, some entities do not
+act in the same way. An example:
+
+<blockquote>
+Creating a semi-transparent window...
+<ul>
+<li>Quake-1: You can't! However, there is a way to make an invisible inpassable window, but it will bleed when shot upon.
+<li>Quake-2, Heretic-II, Sin: The face-flags controls whether the brush is transparent or not.
+<li>Half-Life: Can only be created by brush-entities. Some special specifics/args controls the transparency.
+<li>Hexen-II: I don't know, but the game is based on the Quake-1 engine, so the same thing might apply.
+<li>Quake-3 Arena: Use or create a <g>shader</g>, to be applied on the brush.
+</ul>
+</blockquote>
+
+The more information you seek out, the better equiped you are to make good maps.
+See also <ref> intro/basicknowledge/entitiesforgame </ref>.
+
+Okay enough of that. Lets put a light-source into your first room. I'm not
+going to tell you how, because as stated above; Think, Experiment and Learn.
+
+<img width=162 height=185 align=right>image26.png</img>
+Once you have put that light-source into your room, you are ready to build
+(compile) your map, and test it in the game. To build, you have several options
+in the game menu in the map-editor; <tt>GO!</tt>, <tt>QuickGO!</tt> and
+<tt>Complete rebuild</tt>.
+
+I suggest you activate the <tt>QuickGO!</tt> function, as this will; make QuArK
+export a .MAP file, run some of the build-programs, and then start the game you
+have choosen from QuArK Explorer Games menu.
+
+Errors might appear, like you haven't told QuArK where it can find the
+build-programs, then go to the <ref> intro/configuration/games </ref> for the
+choosen game, and correct the problem.
+
+Other errors can come from the build process, and here you have to find out
+what is wrong, and try to fix it yourself
+(see also <ref> intro/basicknowledge/compilingmaps </ref>). Of course, if its way
+over your head, you can write a message to the <link forums>QuArK-forum</link> asking
+for help. Just make sure you have supplied enough documentation on the error
+you get, so others can understand your problem.

@@ -1,0 +1,13 @@
+title: Paint Modes tool-palette
+desc: dialog
+desc: solidcolor
+desc: airbrush
+desc: pattern
+desc: colorpicker
+desc: colorselector
+desc: paintskinview
+desc: savingskin
+
+<img border=1 align=middle>paintmodes.png</img>
+All of these paint functions apply to only <g>textured views</g> of the <g>Model Editor</g> and
+the <g>Skin-view</g>.

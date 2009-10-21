@@ -1,0 +1,36 @@
+title: Return to Castle Wolfenstein
+
+One issue is that in the official tools release, many of the skins
+for the misc_model models are missing; they can be collected from:
+<a href=http://wolfenstein.gamesweb.com/dlman/download.php?id=146>
+here</a>.
+
+This info was found by Krekits at the rust Wolf forum, here's the
+<a href=http://forums.gamedesign.net/viewtopic.php?p=23377#23377>
+original message</a>.
+
+An excerpt from the msg:
+
+There is onbly a short german readme in it, because I made it 
+just for 
+myself and decided later to share it with others. 
+Here's a short descrition: 
+<UL>
+<LI>download the zip file 
+<LI>extract it with winzip 
+<LI>please select to "Keep the folders" when you extract it, so the 
+skinfiles will automatically extract into the right folder. (ex: 
+mapobjects/furniture skinfiles to mapobjects/furniture folder) 
+</UL>
+You will be able to see about 90% of the models with the skin in 
+your 
+radiant. Some are missing, because they were not shipped with 
+the game. 
+Don't know why... 
+
+I use an external program named "3D-Exploration" to preview and 
+select  my models I want to use. It's faster then testing all in
+the radiant.
+
+If you have any questions, problems or find solutions regarding this topic, please post them in the
+<a href="http://quark.planetquake.gamespy.com/forums/">QuArK forum/mailing-list</a>.

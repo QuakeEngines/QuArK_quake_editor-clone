@@ -1,0 +1,23 @@
+title: Built-in process objects
+author: Armin Rigo
+
+A process object lets you know the state of a program executed by quarkx.runprogram. It has the following attributes:
+
+<table border=1 cellspacing=0 cellpadding=4>
+
+<tr><td class="doccode">
+exitcode
+</td><td>
+If the program is still running, exitcode is None; otherwise, it is the program’s exit code (as checked with MS-DOS’ "if errorvalue xx" command).
+</td></tr>
+
+<tr><td class="doccode">
+onexit(proc)
+</td><td>
+Set a callback function that is called when the program terminates, or immediately if the program is already terminated. If several callbacks are set, they will all be called, but in random order. The callbacks take a single argument, the process object itself.
+</td></tr>
+
+</table>
+
+Note that this object might become obsolete in a future version of QuArK. Don’t rely on it. The stdout and stderr mechanism can
+be used to know when console processes terminate.

@@ -1,0 +1,122 @@
+title: Overview
+author: cdunde
+
+<noscript>
+  <div class="warning">Please enable JavaScript to get the most out of this page</div>
+</noscript>
+<script language="javascript">
+<!--
+imgsPrefix = "intro.modeleditor.overview."; /* This is a hack due to BUILD.PY */
+imgsA = new Array("menu",
+                  "display",
+                  "viewselect",
+                  "movement",
+                  "userdata",
+                  "misctool",
+                  "compass",
+                  "skinview",
+                  "layout",
+                  "hintbox",
+                  "animation",
+                  "objectmodes",
+                  "edittools",
+                  "blank1",
+                  "blank2");
+imgsB = new Array();
+for (i=0; i<30; i+=2) {
+  imgsB[i] = new Image();
+  imgsB[i].src = imgsPrefix+imgsA[i/2]+".png";
+  imgsB[i+1] = new Image();
+  imgsB[i+1].src = imgsPrefix+imgsA[i/2]+"_s.png";
+}
+function imgchange(imgname,num,typ)
+{
+document[imgname].src = imgsB[num*2+typ].src;
+}
+//-->
+</script>
+Move your mouse to highlight an area in the Model-editor, then mouse-click to go
+to a description of that area.
+<span class="sm">(Graphic-example from QuArK v6.5.0 Beta4)</span>
+<center>
+<table cellpadding=0 cellspacing=0 border=1 width=750 height=606>
+  <!-- menu -->
+  <tr>
+                                     <!-- HACK/FIX -->
+    <td width=750 colspan=2><a href="intro.modeleditor.menu.html" onMouseover='imgchange("0menu",0,0)' onMouseout='imgchange("0menu",0,1)'><img name="0menu" width=752 height=43 border=0 alt="Model-Editor Menu">menu_s.png</img></a></td>
+  </tr>
+  <tr>
+    <td width=750 colspan=2>
+      <table cellpadding=0 cellspacing=0 border=0 width=750 height=26>
+        <tr>
+  <!-- row 1 toolbars -->
+                                 <!-- HACK/FIX -->
+          <td width=222><a href="intro.modeleditor.toolpalettes.display.html" onMouseover='imgchange("1display",1,0)' onMouseout='imgchange("1display",1,1)'><img name="1display" width=222 height=26 border=0 alt="Display (Grid, Zoom, 3D floating window, Linear-handle and Help-book)">display_s.png</img></a></td>
+          <td width=333><a href="intro.modeleditor.toolpalettes.movement.html" onMouseover='imgchange("3movement",3,0)' onMouseout='imgchange("3movement",3,1)'><img name="3movement" width=333 height=26 border=0 alt="Movement tool-palette (Movement, Enlarge, Shrink, Shift Left/Right, Symmetry, Rotation and Movement-config.)">movement_s.png</img></a></td>
+          <td width=124><a href="intro.modeleditor.toolpalettes.viewselection.html" onMouseover='imgchange("2viewselect",2,0)' onMouseout='imgchange("2viewselect",2,1)'><img name="2viewselect" width=124 height=26 border=0 alt="View Selection (Lock-views, View-Options, Color-settings.)">viewselect_s.png</img></a></td>
+          <td width=73><a onMouseover='imgchange("13blank1",13,0)' onMouseout='imgchange("13blank1",13,1)'><img name="13blank1" width=73 height=26 border=0 alt="">blank1_s.png</img></a></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+    <td width=750 colspan=2>
+      <table cellpadding=0 cellspacing=0 border=0 width=750 height=26>
+        <tr>
+  <!-- row 2 toolbars -->
+                                 <!-- HACK/FIX -->
+          <td width=277><a href="intro.modeleditor.toolpalettes.animation.html" onMouseover='imgchange("10animation",10,0)' onMouseout='imgchange("10animation",10,1)'><img name="10animation" width=277 height=26 border=0 alt="Animation (Animate, FPS, Pause, Animation views)">animation_s.png</img></a></td>
+          <td width=213><a href="intro.modeleditor.toolpalettes.objectmodes.html" onMouseover='imgchange("11objectmodes",11,0)' onMouseout='imgchange("11objectmodes",11,1)'><img name="11objectmodes" width=213 height=26 border=0 alt="Quick Object modes (Dialogs, Activation, Sphere, Pyramid-cone, Double-cone, Cylinder, Dome, Fan, Torus)">objectmodes_s.png</img></a></td>
+          <td width=146><a href="intro.modeleditor.toolpalettes.edittools.html" onMouseover='imgchange("12edittools",12,0)' onMouseout='imgchange("12edittools",12,1)'><img name="12edittools" width=146 height=26 border=0 alt="Editing Tools (Extrude faces, Extrude w\bulkheads, Reverse faces, Subdivide faces)">edittools_s.png</img></a></td>
+          <td width=116><a onMouseover='imgchange("14blank2",14,0)' onMouseout='imgchange("14blank2",14,1)'><img name="14blank2" width=116 height=26 border=0 alt="">blank2_s.png</img></a></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td width=180>
+      <table cellpadding=0 cellspacing=0 border=0 width=180 height=511>
+  <!--- user objects --->
+        <tr>
+                                           <!-- HACK/FIX -->
+          <td width=180 colspan=2><a href="intro.modeleditor.dataforms.html" onMouseover='imgchange("4userdata",4,0)' onMouseout='imgchange("4userdata",4,1)'><img name="4userdata" width=180 height=42 border=0 alt="User Objects">userdata_s.png</img></a></td>
+        </tr>
+  <!--- misc tools --->
+        <tr>
+                                 <!-- HACK/FIX -->
+          <td width=28><a  href="intro.modeleditor.dataforms.html" onMouseover='imgchange("5misctool",5,0)' onMouseout='imgchange("5misctool",5,1)'><img name="5misctool" width=28 height=99 border=0 alt="New item, Trashcan, Undo/Redo and New group">misctool_s.png</img></a></td>
+          <td width=152><a href="intro.modeleditor.dataforms.html" onMouseover='imgchange("6compass",6,0)' onMouseout='imgchange("6compass",6,1)'><img name="6compass" width=152 height=99 border=0 alt="Compass, Zoom & Tree-view (below)">compass_s.png</img></a></td>
+        </tr>
+  <!--- skinview --->
+        <tr>
+                                           <!-- HACK/FIX -->
+          <td width=180 colspan=2><a href="intro.modeleditor.skinview.html" onMouseover='imgchange("7skinview",7,0)' onMouseout='imgchange("7skinview",7,1)'><img name="7skinview" width=180 height=350 border=0 alt="Skin-view page (skin-view grid, skin-view zoom, Drag modes, Snapshot, 2D view)">skinview_s.png</img></a></td>
+        </tr>
+        <tr>
+  <!--- hintbox --->
+                                           <!-- HACK/FIX -->
+          <td width=180 colspan=2><a href="#hintbox" onMouseover='imgchange("9hintbox",9,0)' onMouseout='imgchange("9hintbox",9,1)'><img name="9hintbox" width=180 height=20 border=0 alt="editor view handle positions & Hintbox">hintbox_s.png</img></a></td>
+        </tr>
+      </table>
+    </td>
+  <!--- editor views (layout) --->
+                           <!-- HACK/FIX -->
+    <td width=570><a href="intro.mapeditor.maplayout.html" onMouseover='imgchange("8layout",8,0)' onMouseout='imgchange("8layout",8,1)'><img name="8layout" width=570 height=511 border=0 alt="4 views layout">layout_s.png</img></a></td>
+  </tr>
+</table>
+<!-- hack/fix to load the non-shaded images -->
+<img border=0 width=0 height=0>menu.png       </img>
+<img border=0 width=0 height=0>display.png    </img>
+<img border=0 width=0 height=0>viewselect.png </img>
+<img border=0 width=0 height=0>movement.png   </img>
+<img border=0 width=0 height=0>userdata.png   </img>
+<img border=0 width=0 height=0>misctool.png   </img>
+<img border=0 width=0 height=0>compass.png    </img>
+<img border=0 width=0 height=0>skinview.png   </img>
+<img border=0 width=0 height=0>layout.png     </img>
+<img border=0 width=0 height=0>hintbox.png    </img>
+<img border=0 width=0 height=0>animation.png  </img>
+<img border=0 width=0 height=0>objectmodes.png</img>
+<img border=0 width=0 height=0>edittools.png  </img>
+<img border=0 width=0 height=0>blank1.png     </img>
+<img border=0 width=0 height=0>blank2.png     </img>
+</center>

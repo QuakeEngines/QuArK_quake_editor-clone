@@ -1,0 +1,189 @@
+title: Attributes common to all Internal objects
+author: Armin Rigo
+
+<table border=1 cellspacing=0 cellpadding=4>
+
+<tr><td class="doccode">
+classes
+</td><td>
+Tuple of all class names implemented into this object. For example, .bmp file objects returns ("Object", "FileObject", "Image", "Bmp").
+</td></tr>
+
+<tr><td class="doccode">
+dictitems
+</td><td>
+A dictionnary of all subitems with the format name:item. Modifying this dictionnary has no effect on the actual subitems of the object.
+</td></tr>
+
+<tr><td class="doccode">
+dictspec
+</td><td>
+A read-only dictionnary with all Specific/Arg pairs.<br>
+Note: known to cause memory leaks, see: <ref> src/bugs/leaks/dicts </ref>.
+</td></tr>
+
+<tr><td class="doccode">
+flags
+</td><td>
+OF_XXX flags. See qutils.py.
+</td></tr>
+
+<tr><td class="doccode">
+itemcount
+</td><td>
+Number of subitems.
+</td></tr>
+
+<tr><td class="doccode">
+name
+</td><td>
+Full name. Read-only.
+</td></tr>
+
+<tr><td class="doccode">
+parent
+</td><td>
+Object owning this object as subitem, or None.
+</td></tr>
+
+<tr><td class="doccode">
+selected
+</td><td>
+Is the object selected by the user?
+</td></tr>
+
+<tr><td class="doccode">
+shortname
+</td><td>
+Short name. Read-write. (writing to shortname was buggy in QuArK 5.0.c2 and 5.0.c3)
+</td></tr>
+
+<tr><td class="doccode">
+subitems
+</td><td>
+List of subitems. Read-only.
+</td></tr>
+
+<tr><td class="doccode">
+type
+</td><td>
+Type (extension).
+</td></tr>
+
+<tr><td class="doccode">
+treeparent
+</td><td>
+Like parent but is None if the parent is outside the scope of the tree view that displays the object, i.e. if the object is a root of its tree view.
+</td></tr>
+
+<tr><td class="doccode">
+subitem(i)
+</td><td>
+Returns the ith subitem.
+</td></tr>
+
+<tr><td class="doccode">
+appenditem(obj)
+</td><td>
+Appends the Internal object obj to the end of the subitems of the current object.
+</td></tr>
+
+<tr><td class="doccode">
+insertitem(i, ob)
+</td><td>
+Inserts ob at position i in the list of subitems.
+</td></tr>
+
+<tr><td class="doccode">
+removeitem(i)<br>
+removeitem(obj)
+</td><td>
+Removes a subitem specified by position or directly.
+</td></tr>
+
+<tr><td class="doccode">
+findname(name)
+</td><td>
+Finds the first subitems with the given name, or None.
+</td></tr>
+
+<tr><td class="doccode">
+findshortname(shortname)
+</td><td>
+Finds the first subitems with the given shortname, or None.
+</td></tr>
+
+<tr><td class="doccode">
+...[spec]
+</td><td>
+Like dictionnaries, use this notation to read or set a Specific. The values that can take a Specific are: None if not set, a string (that may be void), or a tuple of floats. To store an integer, either convert it from/to a string, or use the methods getint and setint below. As a special case, when using the “ [ ] ” notation to write an integer value, setint is called. However, when reading the same value, “ [ ] ” will return the packed string, not the integer. (QuArK 5.0.c2: you cannot set a Specific to None to delete it. All versions: setting a Specific to an empty string will delete it, although Specifics can exist with an empty Arg.)
+</td></tr>
+
+<tr><td class="doccode">
+getint(spec)
+</td><td>
+Reads the Specific spec and returns it as an integer. The Arg must not be a string describing an integer ("5") but a packed string of zero to four bytes ("\005").
+</td></tr>
+
+<tr><td class="doccode">
+setint(spec, int)
+</td><td>
+Sets the value of the Specific to the packed string that represents the integer int.
+</td></tr>
+
+<tr><td class="doccode">
+togglesel()
+</td><td>
+selected = not selected
+</td></tr>
+
+<tr><td class="doccode">
+copy()<br>
+copy(1)
+</td><td>
+Builds a copy of the object and all its subitems. The new copy has no parent. In the first form of the call, the new copies are initially unselected; in the second form of the call, the selection status is copied as well.
+</td></tr>
+
+<tr><td class="doccode">
+copyalldata(src)
+</td><td>
+Copies all Specifics and sub-items of the object from the ones of source. To make temporary changes on obj, do backup=obj.copy(), make the changes, and when done, call obj.copyalldata(backup).
+</td></tr>
+
+<tr><td class="doccode">
+acceptitem(ob)
+</td><td>
+Returns 1 if and only if the object ob can reasonnably be inserted into the list of subitems. For example, it is not reasonnable to insert a bitmap in an entity. Although it is possible, you should not try to do so.
+</td></tr>
+
+<tr><td class="doccode">
+nextingroup()
+</td><td>
+Returns the next object in the parent, or None.
+</td></tr>
+
+<tr><td class="doccode">
+findallsubitems(name, type)<br>
+findallsubitems(name, type, browsetype)
+</td><td>
+Returns a list of all objects that match the given name and type. If name is empty, all names are matched. Objects that can be returned include the object itself, all its subitems, all their own subitems, and so on, unless browsetype is set; in this case, only items whose type match browsetype are recursively looked into.
+</td></tr>
+
+<tr><td class="doccode">
+loadtext(fulltxt)
+</td><td>
+Loads a textual representation of the object from the string fulltxt, whose format should be the same as in full-text .QRK files. All Specifics and sub-items loaded are added to the object.
+</td></tr>
+
+<tr><td class="doccode">
+geticon()<br>
+geticon(selected)
+</td><td>
+Returns the icon used in tree views for this object. If selected is True, returns the selected version of the icon; otherwise, returns the unselected one. selected defaults to the current value of the object's attribute selected.
+</td></tr>
+
+</table>
+
+Note that Internal Objects implement none of the operations like +,*,not, etc. Trying to use them, or even using an Internal
+Object in a boolean operation, will likely raise an Access Violation error. To test if a function returned an actual object or
+None, don’t write if obj:... but write if obj is not None:...

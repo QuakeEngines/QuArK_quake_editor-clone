@@ -1,0 +1,5 @@
+title: Bugs
+author: Decker
+
+If you should experience any bugs, by using this Arg Replacer, please
+contact <a href="mailto:decker@planetquake.com">Decker</a>.

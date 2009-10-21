@@ -1,0 +1,63 @@
+title: Visual Aids & Misc. Info
+author: cdunde
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+<b><u>Visual Aids</u></b>:<br>
+Applying to all of the <a href="intro.mapeditor.toolpalettes.objectmodes.html">QuArK Quick Object Makers</a>,
+a number of visual aids have been added to enhance their features. These are covered below in relation to the
+screen shot also shown below. As a general statement, all objects shapes and changes are shown during the entire
+dragging process in all of the 2D and 3D views as redline objects. Once this process is completed they are 'dropped'
+into these views as model objects with triangular faces and become part of the currently selected model component
+with the 'Default' skinning texture applied, which will need to be adjusted in the
+<a href="intro.modeleditor.skinview.html">Skin-view</a>.
+</td></tr>
+</table>
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+<img border=1 align=right valign=top>objects10.png</img>
+<i>Ruler guide in 2D views:</i> This function has been incorporated to show dimensions as a drag is taking place
+and upon its completion as well. The 'Rulers' are fully dependent on their normal
+<a href="intro.modeleditor.menu.html#optionsmenu">view function controls</a> and can be turned on or off for each
+individual 2D view as desired. While a drag is in progress the rulers text size will show slightly smaller then
+that of existing component items, which will retain their own measurement display.
+
+<i>Starting point marker:</i> At the beginning of each drag a <font color="BLUE">blue target marker</font>
+is created to designate that position in the 2D dragging view. Because a poly can not be constructed with less
+than three faces, objects will not be drawn until, holding down the <g>LMB</g>, the cursor has moved at least
+three vertical scale grid sections away from this target position and either to the left or right of it.
+For every grid unit the cursor moves away vertically (up or down) from this target an additional section of faces,
+and in some cases an additional section, will be added to the object. When the cursor is moved horizontally
+(left or right) from the target the object will increase in size. The reverse also holds true. To keep from
+creating an object, to change its distortion settings or cancel its creation, simple move within the 'no draw'
+zone and release the mouse button.
+
+<i>Segment\Face indicator:</i> As a drag takes place a <font color="GREEN">green  label</font> and
+<font color="GREEN">cross hairs</font> are also displayed and updated to indicate the number of segments
+(sections) in some cases and faces. As the amounts increase and decrease, the label will change color from
+<font color="GREEN">green</font> to <font color="FUSHA">fuchsia</font> to <font color="PURPLE">purple</font>
+to <font color="RED">red</font> indicating a possible program performance slowdown and excessive faces for game use.
+In the case of the <a href="intro.mapeditor.toolpalettes.objectmodes.html">Sphere object</a>, any amount over
+fifteen faces, in the <font color="PURPLE">purple</font> to <font color="RED">red</font> range, will cause a
+program slowdown and possible temporary freezing. However, it will return to finish the object if so desired.
+Otherwise, just move the cursor back below the <font color="PURPLE">purple</font> zone and continue when it
+returns active.
+
+
+<b><u>Misc. Info</u></b>:<br>
+A couple of brief extra points on the use of the
+<a href="intro.mapeditor.toolpalettes.objectmodes.html">QuArK Quick Object Makers</a> are given here, below.
+
+<i>Special vertex dragging</i>:<br>
+As mentioned earlier in the <ref> ./pyramid_cone </ref> section above, movement of an objects <g>vertex</g>
+using the standard method may cause unwanted distortion. If so, try using the special <g>vertex</g> dragging
+function as described in the <ref> ./pyramid_cone </ref> section.
+
+<i>Grid Scale effects</i>:<br>
+Changing the <a href="intro.mapeditor.toolpalettes.display.html#grid">Grid Scale settings</a> will have a
+direct effect on both the size of the objects and the scale of their skin texture, which is always the
+currently selected skin texture of the model component.
+</td></tr>
+</table>
+

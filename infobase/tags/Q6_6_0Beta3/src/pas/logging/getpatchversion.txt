@@ -1,0 +1,10 @@
+title: GetPatchVersion
+author: DanielPharos
+
+<code>
+function GetPatchVersion: String;
+</code>
+
+This procedure retrieves the patch version.
+
+This procedure is called from <tt>OpenLogFile</tt>, but doesn't return anything useful, since the patch-file construction is not used anymore.

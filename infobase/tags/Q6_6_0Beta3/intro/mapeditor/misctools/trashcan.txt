@@ -1,0 +1,6 @@
+title: Trashcan
+author: Decker
+
+<img border=0 align=right>trashcan.png</img>
+Useful to delete an object from the <ref> ../userdata </ref>. Just drag and
+drop it in the trashcan.

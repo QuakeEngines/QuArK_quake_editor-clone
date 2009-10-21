@@ -1,0 +1,26 @@
+title: Uploading Files
+author: Rowdy / cdunde / DanielPharos
+
+<table width=100% cellspacing=0 cellpadding=0 border=0>
+<tr>
+<td align=left>
+<i>Committing Files:</i>
+
+<b>Committing</b> a file means that you are uploading it.
+
+To upload a (changed) file, right-click it, on the popup menu go to <b>Team</b> and then select <b>Commit...</b>.
+
+Note also the <b>Synchronize with Repository</b> option - this compares your local files with the files on the CVS server and shows you graphically the differences between them.
+
+Just to reiterate, before you commit anything using Eclipse, make sure you <b>ALWAYS</b> go to the resource perspective, right-click on the modules you are going to commit (you can hold down the Ctrl key on the keyboard and left-click to select multiple files/directories), and <b>refresh</b> them. Eclipse doesn't know that you have changed anything outside of Eclipse unless you tell it to refresh.
+
+Now switch to <b>Team Synchronizing</b> perspective. All changed files (marked with a ">" in the resource perspective) will be shown in the tree-view. A grey arrow to the right with the file indicates outgoing changes, and a blue arrow to the left incoming changes. Sometimes, you've changed a file but somebody else already updated another changed version. This will result in a <b>Conflict</b>, indicted with a red arrow going both ways. You'll first need to 'resolve' this conflict by manually importing the changed from the remote file into your own. After you've done that, refresh that file in the resource perspective, go back to the team synchronizing perspective and right-click it, and select <b>Mark as Merged</b>. This will tell Eclipse you really want to upload this file (note: this will OVERWRITE the remote file, so be careful you imported all changes correctly!).
+
+Now select all the outgoing files/directories you want to upload, right-click, <b>Commit</b>. A window will pop up. Write a short but descriptive comment for the changes you made, and press Finish to start the upload.
+</td>
+<td align=right>
+<img>committing_a_new_file.png</img>
+
+<img>committing_a_new_file2.png</img>
+</td></tr>
+</table>

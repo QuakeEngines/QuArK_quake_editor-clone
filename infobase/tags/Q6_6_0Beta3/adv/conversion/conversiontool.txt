@@ -1,0 +1,84 @@
+title: Conversion Tool 
+author: cdunde
+
+This tool is the most detailed of the three because it can create any of the types of
+<a href="adv.intro.html#qrk">.qrk</a> files that QuArK uses (mouse over
+each input displays its instructions) .<br>
+Folders and their files that are going to be used by this tool must be extracted from
+the games pak files in the same order that they are in those pak files.
+<img border=1 align=right>conversiontool1.png</img>
+
+Holding the mouse cursor over any <b>bold title</b> will cause some general instructions to
+be displayed.<br>
+This is also true for any of the non-bold items and their related input boxes
+to act as a step-by-step guide.
+
+<g><i>Game Files Loacation</i></g> : Here you select the folder that the actual
+<b>game files</b> are in, like the <g>.pk3</g> files.<br>
+<g><i>Pak file type</i></g> : Here you click on the <b><g>...</g></b> button to
+select one of those <g>.pk3</g> files using a file selection window.<br>
+<g><i>Game Name</i></g> : Type in a short name that the addons folder and files will use,
+ex: <b>Quake3</b> for Quake 3 Arena.<br>
+<g><i>Game Engine type</i></g> : Clicking on the <g>down arrow</g> gives a list to choose
+from that is closest to your game type.
+
+<g><i>Entities folder path</i></g> : Here you select the folder that the
+<b>definition file(s)</b> are in, like the <g>.def</g> or <g>.cpp</g> files.<br>
+<g><i>Entities file type</i></g> : Here you click on the <b><g>...</g></b> button to
+select any one of those files using a file selection window.<br>
+<g><i>Shaders folder path</i></g> : Here you select the folder that the
+<b>shader file(s)</b> are in, like the <g>.shader</g> or <g>.mat</g> files.<br>
+<g><i>Shaders file type</i></g> : Here you click on the <b><g>...</g></b> button to
+select any one of those files using a file selection window.<br>
+<g><i>Textures folder path</i></g> : Here you select the folder that the
+<b>texture file(s)</b> are in, like <g>.jpg</g> or multipal file types.<br>
+<g><i>Textures file type</i></g> : Here you click on the <b><g>...</g></b> button to
+select any one of those files using a file selection window.<br>
+<g><i>Model folder path</i></g> : Here you select the folder that the
+<b>model file(s)</b> are in, like the <g>.md2</g> or <g>.md3</g> files.<br>
+<g><i>Model file type</i></g> : Here you click on the <b><g>...</g></b> button to
+select any one of those files using a file selection window.<br>
+<g><i>Sound folder path</i></g> : Here you select the folder that the
+<b>sound file(s)</b> are in, like <g>.wav</g> or multipal file types.<br>
+<g><i>Sound file type</i></g> : Here you click on the <b><g>...</g></b> button to
+select any one of those files using a file selection window.<br>
+<g><i>Music folder path</i></g> : Here you select the folder that the
+<b>music file(s)</b> are in, like <g>.ogg</g> or multipal file types.<br>
+<g><i>Music file type</i></g> : Here you click on the <b><g>...</g></b> button to
+select any one of those files using a file selection window.
+
+Holding the mouse cursor over any <b>bold title</b> will cause some general instructions to
+be displayed.
+
+<g><i>Make Data file</i></g> : Check this box to make the <g>Data(gamename).qrk</g> file.<br>
+<g><i>Make UserData file</i></g> : Check this box to make the <g>UserData (gamename).qrk</g> file.<br>
+<g><i>Make Entities file</i></g> : Check this box to make the <g>(gamename)Entities.qrk</g> file.<br>
+<g><i>Make Shaders file</i></g> : Check this box to make the <g>(gamename)Shaders.qrk</g> file.<br>
+<g><i>Make Textures file</i></g> : Check this box to make the <g>(gamename)Textures.qrk</g> file.<br>
+<g><i>Make Mdl Entity file</i></g> : Check this box to make the <g>(gamename)ModelEntities.qrk</g> file.<br>
+<g><i>Mdl Entity folder path</i></g> : Here you select the folder that the
+<b>Mdl Entity files</b> are in, like <g>.lst</g> (text script) files.<br>
+<g><i>Mdl Entity file type</i></g> : Here you click on the <b><g>...</g></b> button to
+select one of those files using a file selection window.<br>
+<g><i>Make List file</i></g> : Check this box to make the <g>(gamename)(special)Lists.qrk</g> file.<br>
+<g><i>List File folder path</i></g> : Here you select the folder that the
+<b>List files</b> are in, this can be any set of files.<br>
+<g><i>List file type</i></g> : Here you click on the <b><g>...</g></b> button to
+select one of those files using a file selection window.<br>
+
+<g><i>Make .qrk files</i></g> : Starts the creation process for the above selected <a href="adv.intro.html#qrk">.qrk</a> files.
+As the individual files are<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+created other dialogs may open for additional selections depending on the <b>files to make</b> you checked.<br>
+<g><i>Close this dialog</i></g> : Closes the dialog, canceling the process.
+
+<b><u>Notes :</u></b><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+1) You should always leave this dialog open until you test the files it creates to avoid
+having to re-select everything if a change is needed.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+2) If so, individual fines can be re-created by leaving only those <b>files to make</b> checked in <b>Step 2</b>
+and clicking the <g>Make .qrk files</g> button again.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+3) Also see the <a href="adv.conversion.html#conversiontoolsys">Conversion Tool System</a> section below
+for more info as to how this system is structured and can be improved and\or expanded upon.

@@ -1,0 +1,42 @@
+title: Bot Waypointer
+author: cdunde
+
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+<img border=0 align=right valign=top>botwaypoint1.png</img>
+Although a more 'Game Specific' (Quake 2) function, this particular menu item will lead you to a very powerful
+and useful tool that deals with the entering and handling of game bots.
+
+
+This menu items actual function is to paste a bot waypoint, a position point to control a bots movement through
+a map, into the map.
+
+To paste a bot waypoint, you must first have copied (CTRL+C) a single 'dup botwaypointerpoint' entity
+into the clipboard.
+
+This action also creates a new targetname for the waypoint, and keeps it aligned with the previous
+waypoint selected.
+
+Creating 'bot' type maps is supported with the installation and use of a special editor which is covered
+in detail on its registering with QuArK, its functional applications and use in its own section of the
+Infobase docs called the
+<a href="maped.plugins.botwaypointer.html">Bot Waypoint Editor</a>.
+
+To the right and below we are showing a 'screen shot' listing of the QuArK Configuration area that
+handles this installation and registering step for QuArK.
+
+For a quick and brief run down of these steps, go to QuArK's Configuration Games section and select Quake 2.
+
+Click the 'Add-ons...' icon button to open the 'Game Configuration' window and click on its 'Add...' button.
+
+The 'Add...' window will open and show a listing of all available .qrk file addons. From that list select the
+BotWaypointer.qrk addon and click the 'Ok' icon button to register it.
+
+You can now close all the open windows and proceed to the section below.
+
+This is also covered in the <a href="maped.plugins.botwaypointer.html">Bot Waypoint Editor</a> section
+with a more descriptive tutorial for its setup and use.
+
+</td></tr>
+</table>

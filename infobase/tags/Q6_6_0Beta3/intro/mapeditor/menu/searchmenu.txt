@@ -1,0 +1,33 @@
+title: Search menu
+author: Decker
+
+<img border=0 align=right>search.png</img>
+<i>Find Bad Tex Scale</i>. This finds faces whose texture axes are almost parallel.
+
+<i>Find Camera Positions</i>. This finds all the camera positions.
+
+<i>Find Non-integral Faces</i>. This finds faces that don't have integral threepoints. Use integralize Selected Faces on the command menu to try to automatically fix them. If you want a particular group to be allowed to contain faces with non-integral threepoints, give it a nonintegral specific with a value such as 1.
+
+<i>Search/replace textures</i>. Use this if you need to replace one texture in a
+selection, with another texture.
+
+<i>Object by name</i> will search for the next entity with a <g>classname</g>
+that matches the name you entered.
+
+<i>Object by Specific/Aug</i> will search for the next entity with an
+<g>specific</g>-name which matches the search-value you entered.
+
+<i>Broken polys and faces</i>. Activating this option, will search your map for
+invalid polyhedrons and faces which does not belong to a polyhedron.
+
+<i>Find Microbrushes</i>. This function identifies brushes that are suspiciously small, at least in one dimension.
+
+<i>Search for Texture</i>. This function will search for the texture you specify.
+
+<i>Find Thin Faces</i>. This function will search for and identifies brushes with faces that are suspiciously thin.
+
+<i>Holes in map</i>. This function will try to check your map for <g>leaks</g> also known as Holes. A map must not contain any hole, that is, there must be no path from 'inside' to 'outside' the map. All entities must be completely enclosed by polyhedrons. With this command, QuArK will search for such holes, and if it finds one, it displays an arrow that starts from an entity and goes outside through a hole or a gap. Generally, the end of the arrow is exactly in the hole. Note that the path found by QuArK is maybe not the most direct way to reach the hole, and there are maybe other holes in your map. It is not a accurate leak/hole finder, so sometimes it might point to a leak
+which isn't there.
+
+<i>Basic checks</i>. Performs various checks on your map, to see if it can be
+compiled correctly, and function properly in the FPS-game.

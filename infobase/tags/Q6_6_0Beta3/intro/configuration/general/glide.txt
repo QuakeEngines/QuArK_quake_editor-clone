@@ -1,0 +1,30 @@
+title: Glide (3DFX)
+author: Decker, DanielPharos
+
+<img align=right>glide.png</img>
+Settings in this folder are only usable if you have a true Glide
+graphics-card.
+
+3D-accelerators like 3Dfx, Voodoo, Voodoo-II and other low-price cards, are
+<u>not</u> true OpenGL compatible, they only emulates it through a
+Glide-driver.
+
+<i>Second monitor on Glide</i>.
+
+<i>Full-screen gamma correction</i>.
+
+<i>Full-screen size</i>.
+
+<i>Isometric transparent fraction</i>.
+
+
+<u>Additional options</u>
+
+<i>Fade</i>. With this you can enable and disable the fading fog.
+
+<i>Resolution</i>. This is the resolution Glide renders at. The higher
+this setting, the higher the quality, but also the slower the
+rendering.
+
+Note: Usage of emulators (such as <a target="_blank" href="http://dege.freeweb.hu/">dgVoodoo</a>)
+might produce weird effects, and is generally not supported.

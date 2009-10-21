@@ -1,0 +1,51 @@
+title: Introduction
+author: tiglari
+
+Qk1 and its form Form1 (an instance of TForm1, descendent of TQkForm,
+descendant of the standard Delphi class TForm), kick off initializing QuArK -
+TForm1 is the main window; its Create method FormCreate (the OnCreate event
+handler for a TForm1, as you can see by looking in Qk1.dfm, the which defines
+the setup of a TForm1) initializes Python, sets up the main explorer window,
+and heaps of other things. Read the Delphi help on OnCreate.
+
+The handlers for the various Main Menu items are all there (opening/saving
+files, cut/paste in the tree-view), tho you should not have to mess with any of
+this stuff in order to support a new file-type for example (you do that by
+defining a subclass of QkFileObject and redefining methods, as discussed in the
+<ref> src/struct/fileobjects </ref>).
+
+The Toolbars containing the main menus at the left and right of the main window
+are set up in Form1 itself, defined in Qk1.dfm, also the menus. The buttons are
+defined in defaults.qrk, in Tool bars|Main.toolbar, which is put into the
+topdock control by the line:
+
+<code>
+ RestorePositionTb('Main', False, Explorer);
+</code>
+
+in Tform1.FormCreate (QkForm.pas).  Lines of this form can be used to put
+additional button toolbars into the main window (with names other then 'Main').
+
+The actions of the buttons are defined by their cmd:macro values; the msg
+specifies of these become the cmd parameter to the method TQkForm.MacroCommand
+(QkForm.pas).
+
+For those who aren't really up on how Delphi programs work, TForm1 is fired up
+by the QuArK.dpr file, which you can look at in Pascal Source form by opening
+up the project manager, then RMB|View Source on the QuArK.exe item (from which
+all the various modules hang as dependents). Or in fact you can just look at it
+with a text editor. You'll see a long list of 'uses' statements, followed by a
+few lines of the kind of code that's normally used to fire up GUI applications
+built with class libraries.
+
+The line:
+
+<code>
+ Application.CreateForm(TForm1, Form1);
+</code>
+
+is responsible for setting up <b>everything</b> that distinguishes QuArK from
+other Delphi applications (with the uses statement marshalling the resources).
+
+
+(What else should we know about Qk1?)

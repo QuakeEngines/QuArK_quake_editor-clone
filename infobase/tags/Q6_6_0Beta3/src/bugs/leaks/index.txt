@@ -1,0 +1,24 @@
+title: Leakhunt
+desc: tools open map dicts event popup
+
+User reports and the use of Atanas Stoyanov's <a target="_blank" href="http://www.automatedqa.com">
+Memproof<a> reveals a substantial assortment of resource and memory
+leaks.  Unfortunately it's not entirely clear which ones are genuine
+and which ones are Memproof misreports or Delphi bugs, but it is possible
+that most of the really important ones have been dealt with.
+
+So here are listed various things that still appear, organized by
+when they show up, followed by some other items.
+These leaks only include those reported when the
+`specifics sharing' scheme is disabled, by compiling with the flag
+`Noshare'.  Sorting the apparent specifics-sharing scheme leaks out
+is a challenge we have not yet risen to (since specifics sharing is
+arcane, involves assembler code, etc., the reports may well be spurious).
+As of 6.5.0 Beta 2, a lot of these problems have been fixed, however
+some might remain.
+
+Developer Mode in QuArK also enables a command to track memory usage,
+and compare current used message to that from the last call to it.
+This can be used to tell if inordinate amounts of memory are being
+consumed by map editing operations (of course the undo stack will get
+bigger as editing procedes, etc.).

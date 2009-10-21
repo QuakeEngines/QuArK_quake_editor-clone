@@ -1,0 +1,127 @@
+title: Game Data Addons
+author: tiglari
+
+Finally you need to make addons for the game data.  There are several
+of these:
+
+<table border=1 cellspacing=0 cellpadding=4>
+
+<tr><td>
+DataXXX.qrk
+</td><td>
+Where XXX is your game's <b>abbreviated</b> name. This file contains the main info about the game, like some settings and the default room.
+</td></tr>
+
+<tr><td>
+XXXEntities.qrk<br>
+XXXMaterials.qrk<br>
+XXXModels.qrk<br>
+XXXShaders.qrk<br>
+XXXScripts.qrk<br>
+XXXSounds.qrk<br>
+XXXTextures.qrk<br>
+</td><td>
+Where XXX is the full game name. These files contain the main data about the game.<br>
+Note: not all files are needed for all games.
+</td></tr>
+
+<tr><td>
+UserData XXX.qrk
+</td><td>
+Where XXX is the full game name. This files contains some additional settings for QuArK for this game, like pre-fab object that can be dropped into the map, and the default settings for the build-menu.
+</td></tr>
+
+</table>
+
+The easiest way to make these is by copying ones from a similar game, and then
+adding/changing things to suit (the game abbreviation for starters).
+
+A workable texture toolbox for SoF2 is:
+<code>
+  Textures.qtx =
+  {
+    Toolbox = "Texture Browser..."
+    Root = "SoF2 Textures.qtxfolder"
+    SoF2 Textures.qtxfolder =
+    {
+      Textures and Shaders.osfolder =
+      {
+        path = "base"
+      }
+    }
+  }
+</code>
+This will load up textures dynamically from the <g>.PK3</g> folders. For
+better performance, you can use the 'make texture links' button in the texture
+toolbox and check 'static' to produce a list of the textures in the .PK3's.
+
+<ul><u>
+<li>Access of Mod & Custom Textures
+</u><br>
+</ul>
+
+Another way of setting up access to textures for Mods and Custom Textures
+is to set the "path" to that specific Mod folder and use the blanket
+command name "build" with a value of "1" setting as shown in the example
+below for the Mod "ET", a Quake 3 base game:
+<code>
+{
+  Description = "Enemy Terror Add-on"
+  Game Context.qctx =
+  {
+    Game = "Quake 3"
+    SourceDir = "ET"
+    GameDir = "baseq3"
+  }
+  Textures.qtx =
+  {
+    ToolBox = "Texture Browser..."
+    Root = "ET (Enemy Terror).qtxfolder"
+    ET (Enemy Terror).qtxfolder =
+    {
+      ET Textures & Shaders.osfolder =
+      {
+        path = "ET"
+        build = "1"
+      }
+    }
+  }
+}
+</code>
+Basically what this does is tell QuArK to search the given path folder for
+all texture folders and files in all .pak files, no matter what their name
+is, and folders that have been named "textures" and, if the game supports
+them, "scripts" which are shader texture files like the ones used in Quake 3.
+
+In addition, any custom textures and shader files will also be included
+that are placed in the "textures" and "scripts" folders or in their own
+sub-folder placed in these folders, with any name you wish to give them.
+These custom sub-folders can also have sub-folder within them as well for
+a better grouping of files. All of the folders will then be grouped in the
+<ref> ../../intro/texturebrowser/overview \ Texture Browser </ref> under the
+caption "Directories" and will be displayed by their individual folder and
+sub-folder names.
+
+
+For entities, if the game has a <g>.DEF</g> or <g>.FGD</g> file, you can use the
+<act>File|Convert from</act> facility from the QuArK-Explorer main menu, to produce a basic entity toolbox entry
+which in the case of SoF2 might start look like this:
+<code>
+  SoF2Entities.qtx =
+  {
+    ToolBox = "New map items..."
+    Root = "SoF2 Entities.qtxfolder"
+    SoF2 Entities.qtxfolder =
+    {
+      ;desc = "Created from entities.def"
+      func_* entities.qtxfolder =
+      .
+      .
+    }
+  }
+</code>
+Whatever you get should be substituted for the entity toolbox folder in
+the file you're copying from, and later edited by hand to add missing entities,
+improve help, etc.
+
+More info about the converters and their options can be found here: <ref> ../conversion </ref>

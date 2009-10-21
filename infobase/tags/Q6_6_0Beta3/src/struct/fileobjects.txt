@@ -1,0 +1,23 @@
+title: QFileObjects
+author: Armin Rigo
+
+QFileObject is an abstract class that inherits from QObject. The general rule is that classes that inherit from QFileObject can
+be saved to or loaded from disk files, whereas classes that inherit from QObject only are internal objects whose purpose is
+only to be used as subobjects of other objects.
+
+For example, here is how a map file is internally organized. The ".map" file type itself is managed by a class called QMapFile
+that inherits from QFileObject, whereas inside the map, the hierarchy of polyhedrons, groups, entities, etc. is represented by
+a hierarchy of objects that inherit from QObject, because there is no point in saving these objects as single files.
+Graphically :
+
+<code>
+Map object
+ +-- worldspawn
+      +-- polyhedron
+      +-- polyhedron 2
+      +-- group
+           +-- entity
+           +-- etc
+</code>
+
+The links in this diagram mean "is a sub-object".

@@ -1,0 +1,14 @@
+title: Supported Map Formats
+desc: floating
+desc: formats
+desc: q62conv
+
+QuArK writes maps in a considerable range of formats, but also has
+the peculiarity of allowing (and indeed in certain ways promoting) the writing of
+faces with non-integer coordinates.  This is considered to be profoundly
+evil by some people, and can certainly cause problems, although I don't
+think it's always so bad (especially for example with non-structural brushes).
+At the least, it can create problems in using QuArK together with map
+editors that don't tolerate floating point coordinates well.
+
+

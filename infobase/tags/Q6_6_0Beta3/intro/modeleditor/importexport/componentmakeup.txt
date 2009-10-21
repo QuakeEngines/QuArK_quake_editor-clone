@@ -1,0 +1,172 @@
+title: What Makes Up a Model Component
+author: cdunde
+
+A model is a single <b>QuArK Internal Object</b> that can consist of a single or multiple <g>components</g>.
+The elements that make up a model are stored as "<g>key</g> <b>:</b> <g>value</g>" pairs of the QuArK Internal Object,
+where there is a <g>key</g> name and a <g>value</g> that goes along with that <g>key</g> name.
+
+Also, each of the "key names" CAN BE given a specific <g>type</g> to distinguish what kind of element it is.<br>
+So an example of a <g>key</g>, its <g>type</g> and its related <g>value</g> would look like this:
+<code>{'teeth:mc': &lt;QuArK Internal object at 0x00CC1E4C>}</code>
+
+The <g>key</g> name is teeth, its <g>type</g> mc (model component) and its <g>value</g> is another QuArK Internal Object
+containing its <g>subitems</g>, <g>dictspec</g> items and <g>dictitems</g>.<br>
+This method of using "<g>key</g><b>:</b><g>value</g>" pairs runs all the way through as a model's <g>component(s)</g>
+elements are broken down.
+
+<b><g>subitems</g> :</b> This is a list of <b>QuArK Internal Objects</b> that make up a component and controls the order
+that they are displayed in the <a href="intro.modeleditor.overview.html#overview">editor's tree-view</a>.<br>
+They consist of the <g>Skins</g> group (its texture images), <g>Frames</g> group (its animation\<g>vertexes</g> frames)
+and, <g>SDO</g> group (SystemDataObject) which is not really used at this time but still needs to be created.
+
+A <a href="intro.modeleditor.importexport.html#bones">Skeleton</a> group (its bones if any) is created outside of,and shaired by,
+the components. This group is covered in detail <a href="intro.modeleditor.importexport.html#bones">further below</a>.
+
+The creation of the <g>subitems</g> list is not something you need to be concerned about when writing an
+<g>importer or exporter file</g>.<br>
+QuArK takes care of that internally using the component's <g>dictitems</g> below.
+
+<a name="dictitems1"></a>
+<b><g>dictitems</g> :</b> These are other <g>dictionary</g> items within the component that make it up, they are the
+same items as its <g>subitems</g> and each one is a <g>key</g> <b>:</b> <g>value</g> pair that an <g>importer</g> file
+will use to create a <g>QuArK editor component</g>, for example:
+<code>
+{
+ 'SDO:sdo': <QuArK Internal object at 0x0165FE7C>, # stands for SystemDataObject
+ 'Skins:sg': <QuArK Internal object at 0x0166D48C>,
+ 'Frames:fg': <QuArK Internal object at 0x0166D864>
+}
+</code>
+Notice how these items are not in any particular order. Because they are <g>dictionary list</g> they do not need to be.
+We use their <g>key</g> name to get what goes along with them, not the order that they are in the <g>dictitems list</g>.
+Each of these <g>dictitems</g> brake down into their own <g>dictspecs</g> items, but <a href="#dictitems2">more on that later<a>.
+
+<a name="dictspec1"></a>
+<b><g>dictspec items</g> :</b> These are <g>key</g> <b>:</b> <g>value</g> item pairs that pertain to the component and
+its <g>subitems</g> as a whole and are only QuArK editor related.<br>
+They are individual dictionary items that contain settings for that component. Some of these settings are used and reset
+by simply moving things around in the editor, such as <g>vertexes</g>, while others are used to fill in the values
+on the <a href="intro.modeleditor.dataforms.html#specsargsview">editor's Specifics/Args</a> page
+where they can be viewed and\or reset there. The <g>importer</g> file will
+create these items (<a href="#dictspec2">covered in detail later<a>), for example:<br>
+<u>dictspec items of a model component</u> :
+<code>{'skinsize': (128.0, 64.0), 'Tris': '\x00\x00\x7f\...(a bunch more), 'show': '\x01'}</code>
+<g>'skinsize'</g> is the size of a component's first skin image or a default size of <g>(256, 256)</g> can be used if
+there are no skins.<br>
+<g>'show'</g> Components can be <g>Hidden</g> in the editor (not seen) when this is set to <g>'\x00'</g> and visible
+when set to <g>'\x01'</g>, so it should always be set to the latter.<br>
+<g>'Tris'</g> This is the primary one we will be concerned with when writing a <g>model importer</g> or <g>exporter</g> file.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Its <g>value</g> is in <g>binary</g> code
+and needs to remain so to work in QuArK.
+Think of this code as one big list of smaller, individual list.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Each of which contain three items,
+a <g>vert_index</g> (vertex index number), a <g>U</g> texture position value and a <g>V</g> texture position value.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The <g>U, V</g> values give the flat
+<g>2D</g> x , y position of that vertex on the model's skin (in <g>pixels</g>) and the <g>vert_index</g> points to that vertex.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Each vertex can have more then one
+<g>U, V</g> value and this is a key point to remember. But more will be covered on that later.
+
+<u>dictspec items of a frame</u> :
+<code>{'Vertices': (-1.859375, 31.234375, ...(a bunch more), 54.078125)}</code>
+<g>'Vertices'</g> This is a continuous list of float values that give the <g>x,y,z position</g> for each vertex of a model's
+component mesh. QuArK's internal code breaks these into groups of three to accomplish this, and of course it takes three
+vertexes, most of which are shared, to make a single triangle of a models mesh.
+
+So there you have it, the breakdown of a component...which can be a bit bewildering at first, but just remember,<br>
+you have a <g>dictionary</g> inside a <g>dictionary</g> inside a <g>dictionary</g>.... 
+and just about every <g>dictionary</g> has <g>dictspec</g> items that pertain directly to it.
+
+Now for their relationship between one another in making up a QuArK model component in a <g>model importer</g> file
+and used for the <g>exporter</g> file as well.<br>
+By the way...don't make an importer without an exporter to go along with it...that can be extremely frustrating to others.
+
+All of these files are in the <g>QuArK\plugins</g> folder and are
+written in <g>Python</g>, look at <g>ie_md2_import.py</g> as a guide. Also, all of them <b>MUST</b> start with <g>ie_</g> for their name.<br>
+That is used to identify them for file loading purposes when QuArK's Model Editor is started up.
+Otherwise they will not show up on the <g>Importer \ Exporter</g> menu.
+
+As we go through each item of a component, its title is shown the same way it would be written in <g>Python</g>
+code to gain access to it in an <g>importer</g> or <g>exporter</g> file.
+
+<a name="dictitems2"></a>
+<b><u><a href="#dictitems1">Component.dictitems :</a></u></b>
+
+<img border=0 align=right>componentmakeup1.png</img>
+<g>Component.dictitems['Frames:fg'].dictspec :</g><br>
+The only item here is <g>{'type': '\x01'}</g> which must be written to the frames group as shown.<br>
+<g><SMALL>Component.dictitems['Frames:fg'].dictspec['type'] = '\x01'</SMALL></g><br>
+This is its group type which is used by QuArK's internal source code to identify and handle it.
+
+<g>Component.dictitems['Frames:fg'].dictitems :</g>
+These are individual dictionary items, one for each frame in the frame group, for example:<br>
+<g><SMALL>'Frame 1:mf': &lt;QuArK Internal object at 0x016827FC></SMALL></g><br>
+Each <g>frame</g> has its own <g>dictspec</g> items which are <g>'index'</g> and <g>'Vertices'</g>.<br>
+<b>index</b> is its position in the frames group, ex:<br>
+<g><b>(0.0,)</b></g> the comma behind it means it is a <g>tuple</g>.<br>
+<b>Vertices</b> is a list of all its <g>3D</g> vertex positions.<br>
+Each vertex position has an <b>x, y and z</b> float value, ex: <g>-1.859375</g> (positive or negative)<br>
+and since it is the first item in this list its <g>vert_index</g> would be <b><g>0</b></g> shown as <b>Vertex 0</b>.<br>
+These items are indicated in <font color="RED">red</font> to the right.
+
+Even though this is a <g>continuous list</g>, QuArK knows to brake them up into groups of three (x,y,z) for each vertex.
+
+So all of a frames vertexes make up the <g>points</g> in 3D space that give the model <g>mesh</g> its shape.
+And it takes three of these vertexes to make a single <g>face</g> of the <g>mesh</g>, even though most vertexes are what
+we call <g>common vertexes</g>, meaning that they are shared with other <g>faces</g> of the <g>mesh</g>.
+That's what holds a <g>mesh</g> together as one complete unit. Other wise you could pull it apart into individual
+<g>faces</g> or pieces...not a good thing.
+
+<a name="footnote1a"></a>
+If a model has more then one <g>frame</g>, these vertex positions change from frame to frame, thus creating its
+animation movement, but that can also be handled using other files and methods from one model format to another.<br>
+<a href="#footnote1b">(see added footnote 1 below for more info)</a>
+
+<a name="tris1"></a>
+Even though the frame <g>vertexes</g> provide the mesh's <g>3D points in space</g>, the lines between those points
+(or <g>vertexes</g>) still need to be drawn and a working relationship between them still needs to be connected
+from one to the other and the other... to create a completed and joined mesh.
+That is done by the <g>Component.dictspec{'Tris']</g> item.
+
+<a name="dictspec2"></a>
+<b><u><a href="#dictspec1">Component.dictspec :</a></u></b>
+
+<g>Component.dictspec{'Tris']</g><br>
+As indicated by the <font color="BLUE">blue line</font> to the right,<br>
+(put your mouse over these for their results)<br>
+the <a href="" title="The entire list of triangle faces shown to the right __/ ">'Tris'</a> is one big list of individual sub-list and each sub-list consist of three items,
+one for each vertex of a face (or triangle), and each vertex consist of three items
+also. 1) vert_index, 2) U texture position and 3) V texture position. Follow the <font color="BLUE">blue line</font>
+to see how each vert_index links to its actual <b>x,y,z</b> 3D point position in a <a href="" title=" \__ The entire Models's 'frame vertices'&#10;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;list shown further above">frame['Vertices']</a> list (covered above)<br>
+This is how the two lists link to one another. When refering to the <a href="" title=" \__ The entire list of triangle faces shown above">'Tris'</a> a <a href="" title="a triangle index number">tri_index</a>
+(triangle index) number is used that relates to its <a href="" title="where it's located in the list,&#10;starting from position 0 (zero)">group's poistion</a> in the <a href="" title=" \__ The entire list of triangle faces shown above">'Tris'</a> list.
+
+So the first triangle (<a href="" title=" tri_index 0 ">tri_index</a>) in the list would be:
+<a href="" title=" tri_index 0 = ((2, 83, 105), (1, 216, 78), (0, 216 303)) "><SMALL>Component.dictspec['Tris'][0]</SMALL></a>
+its first vertex: <a href="" title=" vert_index 0 = (2, 83, 105) "><SMALL>Component.dictspec['Tris'][0][0]</SMALL></a><br>
+and that vertex's vert_index: <a href="" title="vert_index 0 = 2 &#10;frame vertices 2 = -1.5, 31.65625, 53.265625"><SMALL>Component.dictspec['Tris'][0][0][0]</SMALL></a>
+its <b><a href="" title=" U = 83 ">U</a></b> value: <a href="" title=" U = 83 "><SMALL>Component.dictspec['Tris'][0][0][1]</SMALL></a> and
+its <b><a href="" title=" V = 105 ">V</a></b> value:
+<a href="" title=" V = 105 "><SMALL>Component.dictspec['Tris'][0][0][2]</SMALL></a> that's it.<br>
+The second vert_index would be: <a href="" title="vert_index 1 = (1, 216, 78) &#10;frame vertices 1 = -1.171875, 29.25, 52.75"><SMALL>Component.dictspec['Tris'][0][1]</SMALL></a> and
+the third vert_index would be: <a href="" title="vert_index 2 = (0, 216 303) &#10;frame vertices 0 = -1.859375, 31.234375, 52.65625"><SMALL>Component.dictspec['Tris'][0][2]</SMALL></a>.
+
+Also notice how each vert_index (vertex) can have more then one U,V texture position
+(indicated by the <font color="GREEN">green</font> and <font color="FUSHA">fusha</font> lines).<br>
+It is this vertex multiple uv capability system that allows the skinning of model sections
+on different <g>tiles</g> (repeated) images of a components skin texture. So even though
+a model's component mesh is one combined object, its texturing can be made up of many sections,
+either stacked on top of one another or spread out over many copies of its texture making it much
+easer to get to and work with those areas.
+
+================================================ Footnotes ==================================================
+
+<a name="footnote1b"><u>footnote 1</u>: Model Animation Methods</a><br>
+As <a href="#footnote1a">mentioned above</a>, model formats can use different methods of animating a model.
+For example, <b>Quake 2</b> <g>.md2</g> models use <g>frames</g>, like we have been covering, for their movement,
+animation, while <b>Quake 4</b> models use <g>Lightwave model formats</g> which are <g>.lwo, .md5mesh</g> and
+<g>.md5anim</g> files. The <g>.lwo</g> is a <g>static</g> model, meaning it only has one <g>frame</g> and it does
+not have any animation movement to it. While the <g>.md5mesh</g> and <g>.md5anim</g> files (which are text files)
+are used together to create a moving model. The <g>.md5mesh</g> is a <g>static</g> model that gives
+the model its base shape and <a href="intro.modeleditor.editelements.html#bones">Bones System</a> hierarchy.
+The <g>.md5anim</g> file gives the vertex movement for its animation using that <a href="intro.modeleditor.editelements.html#bones">Bones System</a>.
+It gets a bit more complicated then that as to how they work exactly, but that is the basic method used for that format.

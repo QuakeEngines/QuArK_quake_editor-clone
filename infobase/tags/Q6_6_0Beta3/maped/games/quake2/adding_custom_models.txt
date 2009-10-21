@@ -1,0 +1,25 @@
+title: Adding custom models
+author: cdunde
+
+<b>Question:</b><br>
+I have my own custom md2 models I would like to add and use in QuArK and Quake 2. How would I do that?
+
+<b>Answer:</b><br>
+I do nothing but map for Q2, the original version was fairly limited compared to what has been made available with Lazarus for added entity features.
+
+Not to long ago I did some updating to it to work better with QuArK. If you have a recent version of QuArK 6.4alpha you may already have it in the addons\Quake_2 folder (it should be dated about 5-9-03).
+If so, you just need to register it in QuArK.
+
+To do that start QuArK and click on Options -> Configuration -> Quake2 -> Installed Add-ons. This will show all the addons available.
+
+Click on Q2_Lazarus.qrk, click OK then close all the window popups.
+
+Then in QuArK's main menu, click on Toolboxes -> New map items, there you will see listings for Quake2 Entities and Entities for QuArK_Lazarus. You can use either one as Lazarus updates the original as well. Look under model_*entities (in the Lazarus listing) for what you need. I believe I put in some flyover help tags as well.
+
+1)   With Lazarus you can use md2 models that you export out of MilkShape, That's your first step.
+
+2)   Next, go to <a href="http://groups.yahoo.com/group/quark/files/ENTITY%20ADDONS/">this link</a> on this site to download the QuArK Lazarus v3 zip file and extract it to your QuArK folder. General instructions on how to set your models up come with it.
+
+3)   Now go to the <a href="http://planetquake.com/lazarus/">Lazarus site on planetquake</a> and download it from there. This is a very good page to download for off line viewing as it gives detailed descriptions of Quake2 features, entities and how to use them. I believe instruction on how to install Lazarus for Q2 comes with it. The real difference is its gamex86.dll file that has all the added features built into it. Quake2 comes with it's own gamex86.dll file for the original features of the game, so you might want to rename it (like ORGgamex86.dll) if you want to save it.
+
+Basically, once you have done these 3 steps, you're pretty well set to go. Just play with the misc_actor and model_spawn entities that you use to insert your custom models with and get a feel on how they work.

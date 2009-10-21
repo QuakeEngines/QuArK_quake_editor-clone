@@ -1,0 +1,10 @@
+title: LogAndWarn
+author: DanielPharos
+
+<code>
+procedure LogAndWarn(const WarnMessage : String);
+</code>
+
+Logs the error message given by <tt>ErrMessage</tt> to the log with LOG_WARNING priority, and then pops up a dialogbox with <tt>ErrMessage</tt> as the message.
+
+Note: This never raises any errors (by default...), so the code WILL return!

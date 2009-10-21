@@ -1,0 +1,13 @@
+title: Points
+author: tiglari
+
+For more sophisticated applications, we need to get straight
+on the difference between 'points' and 'vectors'.  Although
+vectors are widely used to represent points, there is an
+important difference between them: vectors can be added to
+each other, and multiplied by numbers, but these operations
+make no sense for mere points.  What they do make sense for
+is <strong>relationships</strong> between points.  If we have
+points <b>a</b> and <b>b</b>, it make sense to look for a
+point <b>c</b> that is in the same direction from <b>a</b>
+as <b>b</b> is, but twice as far away.

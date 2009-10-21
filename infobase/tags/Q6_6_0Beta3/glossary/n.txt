@@ -1,0 +1,8 @@
+title: N...
+author: Decker
+
+<dl>
+<dt><a name="negativepoly">     </a>Negative Poly       <dd>A QuArK speciality, which allows the map-designer to <i>carve without carving</i>. Meaning, a negative poly will first make its brush-subtraction at compile-time, so the map-designer won't have to control "hundreds" of small brushes.
+<dt><a name="newsgroups">       </a>Newsgroups          <dd>(editing newsgroups) A selection of Usenet newsgroups, in where you can discuss map-editing for the FPS-game you're developing. Currently there are these newsgroups in relation to QuArK; <a href="news:rec.games.computer.quake.editing">rec.games.computer.quake.editing</a> and <a href="news:alt.games.half-life.editing">alt.games.half-life.editing</a>. See also <a href="#mailinglists">mailinglists</a>.
+<dt><a name="noclip">           </a>Noclip              <dd>A FPS-game <a href="#console">console</a> command, allowing the player to fly freely around, even through solid walls. This is commenly used when examine a map for errors or secrets. Some FPS-games might have a different command than NOCLIP, which performs the same thing.
+</dl>

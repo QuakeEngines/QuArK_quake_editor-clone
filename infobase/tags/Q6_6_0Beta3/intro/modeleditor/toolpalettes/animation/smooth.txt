@@ -1,0 +1,10 @@
+title: Smooth Looping on\off
+author: cdunde
+
+<img border=1 align=right>smooth.png</img>
+This button will activate or de-activate smooth looping, giving a smoother
+animation appearance of the selected model component animation frames when
+returning from the last to the first frame.
+
+To return to regular looping mode you must click this button again to turn
+'Off' this function.

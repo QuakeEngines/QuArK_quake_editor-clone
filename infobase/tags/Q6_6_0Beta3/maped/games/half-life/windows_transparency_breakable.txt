@@ -1,0 +1,22 @@
+title: Windows, Transparency, Breakable
+author:
+
+<b>Question:</b><br>
+How do I create a transparent breakable window in Half-Life? Or just a transparent object?
+
+<b>Answer:</b><br>
+It is only possible to create transparent objects in Half-Life, by using brush-entities.
+
+Most brush-entities in Half-Life, have some
+"render<i>xxx</i>&nbsp;" specifics.
+It is these that are used to tell the game-engine, that this brush
+should be drawn transparent or do other special effects.
+
+To set a func_wall half-transparent, you have to set these two specifics in the brush-entity:
+<code>
+rendermode      TEXTURE
+renderamt       128
+</code>
+
+If you want a breakable transparent window, use the func_breakable brush-entity, and besides the two mentioned specifics, you
+also have to set those specifics that makes it a breakable object.

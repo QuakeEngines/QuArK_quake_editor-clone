@@ -1,0 +1,13 @@
+title: Basic knowledge - A must know for people using QuArK
+author: Armin Rigo / Decker
+desc: usingmapeditor
+desc: compilingmaps
+desc: entitiesforgame
+desc: bugsmapeditor
+desc: advancedmapeditor
+desc: otherparts
+desc: helping
+
+The most common problems you might encounter can be put in one of the categories below. If some category names don't
+make sense to you, you should begin by reading their first paragraph to know how things are organized. This page also
+contains links to on-line information or forums which you should use.

@@ -1,0 +1,26 @@
+title: Log
+author: DanielPharos
+
+<code>
+Procedure Log(s: string); overload;
+Procedure Log(level: cardinal; s: string); overload;
+Procedure Log(s: string; args: array of const); overload;
+Procedure Log(level: cardinal; s: string; args: array of const); overload;
+Procedure Log(Logger: TLogName; s: string); overload;
+Procedure Log(Logger: TLogName; level: cardinal; s: string); overload;
+Procedure Log(Logger: TLogName; s: string; args: array of const); overload;
+Procedure Log(Logger: TLogName; level: cardinal; s: string; args: array of const); overload;
+</code>
+
+These procedures all do the same thing: they write something to the log. There are all defined with <tt>overload</tt>, so the parameters define which procedure is picked.
+
+So let's only describe the two longest ones, since the rest is just smaller versions.
+
+<code>
+Procedure Log(Logger: TLogName; level: cardinal; s: string); overload;
+Procedure Log(Logger: TLogName; level: cardinal; s: string; args: array of const); overload;
+</code>
+
+<tt>Logger</tt> is the TLogName that should appear in front of the log-line.<br>
+<tt>level</tt> is the priority-level of the ouput. This is compared to <tt>LogLevel</tt> variable, and a log-line is only written if the <tt>level</tt> is smaller or equal to this value. Use the LOG_* constants as a guide.<br>
+<tt>s</tt> or <tt>s; args</tt> are the text that is outputted. The second one is first formatted using the array <tt>args</tt>.

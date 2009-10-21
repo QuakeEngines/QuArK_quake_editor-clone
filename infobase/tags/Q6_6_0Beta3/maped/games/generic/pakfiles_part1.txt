@@ -1,0 +1,23 @@
+title: .PAK files - Part I
+author: Decker / Armin Rigo
+
+<b>Question:</b><br>
+If I built a level and I use my own textures
+and my own recorded sounds in it, can I distribute the BSP-file of my
+level without having to worry about that or do I have to include the textures
+and WAV-files that I home-created in the ZIP-file along with a manual for
+placing them correctly in the right directories as I have done on my computer?
+I mean; are they automatically included in the .BSP during creation,
+or does the .BSP merely point to those files, so that they
+have to be placed in the
+<i>insert-game-name-here</i>&nbsp;
+directories of the people who want to play my level?
+
+<b>Answer:</b><br>
+The following game's .BSP files don't store the textures. You have to distribute
+them together with it. The same is true for .WAV files. You can make a
+.ZIP file with the directory structure intact if you want to spare the
+trouble of putting the files in their correct directories from other users.
+<ul><li>
+Quake-2, Heretic-2, Half-Life, Sin, Kingpin, Quake-3:Arena, ST:V-Elite Force
+</ul>

@@ -1,0 +1,25 @@
+title: Moving and sizing brushes
+author: Decker
+
+<img width=273 height=177 align=right>image9.png</img>
+You can move a brush, by moving your mouse to the black-handle in the center
+(polyhedron handle), press and hold the mouse button, then move the brush to a
+new position, and release the mouse button.
+
+To size the brush, use the small blue-handles at the edges (<g>face</g>
+handles).
+
+To distort a corner, use the <g>vertex</g>. Notice that QuArK does not distort
+just a single corner, but an <g>edge</g>. This is due to the internal storing of
+faces, and in many cases ensure that your brushes are kept <g>convex</g>, which
+they must be to be used in a Quake-engine game! True vertex-manipulation does
+not exists in the map-editor.
+
+Try to create some more brushes, and move them around, maybe even size them.
+You can unselect the brush(es) by clicking in an empty space of the 2D-views,
+and selecting them again by clicking within the brush. Notice that the
+<ref> intro/mapeditor/dataforms/treeview </ref> will show you your new cubes,
+where you also can select them.
+
+Try also to delete and <ref> ../starting/undoredo \ undo/redo </ref> your
+newly created brushes.

@@ -1,0 +1,26 @@
+title: Valve Mapversion 220
+author: tiglari
+
+The Valve Mapversion 220 map format used by WorldCraft 3.3
+uses texture-scale representation that is quite close to that
+used by the Q1/2 bsp.  After the texture name come 2
+square-bracketted 4-tuples, then 0, and then 2 more numbers.
+The first three members of the 4-tuples are basically the u
+and v axes, except that they're normalized to have length 1,
+while the last member is the offset.  Then the following 0
+is empty cruft (originally indicated rotation), while the
+last two numbers as uscale and vscale, but you divide the
+u and v axes by them rather than multiply to get the .bsp
+structure (so it's opposite to what a sensible person would
+expect).  I.e.
+<code>
+ WC3.3: [u.x     u.y     u.z     u.o] [v.x v.y v.z v.o] 0 u.s v.s
+
+ BSP:   [u.x/u.s u.y/u.s u.z/u.s u.o] [v.x/v.s, ...    ]
+</code>
+Reading is done by WC33Params in QkMap.pas (a sub-procedure
+of ReadEntityList), Writing by Valve220MapParams in QkMapPoly.pas.
+The writing code draws very heavily on Zoner's.
+
+
+

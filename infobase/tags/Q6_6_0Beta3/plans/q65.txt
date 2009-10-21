@@ -1,0 +1,27 @@
+title: QuArK 6.5 (beta released)
+author: tiglari, etc.
+
+The QuArK 6.x series is intended for incremental development.  The
+further down on the list something appears, the more likely it is
+to be delayed till 6.6, or never to happen at all.
+
+<UL>
+<LI>Game support of as many as possible games (mostly cdunde)
+<br>status: never done!
+
+<LI>OpenGL in all 3D views (DanielPharos)
+<br>status: done!
+
+<LI>Get the model editor back on track (cdunde)
+<br>status: back on track!
+
+<LI>Fully working Direct3D renderer (DanielPharos)
+<br>status: only made stable basis
+
+<LI>OpenGL shader-rendering (DanielPharos)
+<br>status: not done
+
+<LI>Left-overs from 6.4
+<br>status: ...
+
+</UL>

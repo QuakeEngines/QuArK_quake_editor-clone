@@ -1,0 +1,42 @@
+title: How to make a hollow cylinder/pipe
+author: Decker
+
+The fastest method, but also the one that creates the most mess for the build-tools, is to create one normal cylinder and one
+that is smaller which will be used as a negative/digger cylinder.
+
+<table border=0 align=center>
+  <tr>
+    <td valign=top>
+      <img>make_prism_hollow_2.png</img>
+    </td>
+    <td>&nbsp;=>&nbsp;</td>
+    <td valign=top>
+      <img>make_prism_hollow_3.png</img>
+    </td>
+    <td>&nbsp;=>&nbsp;</td>
+    <td valign=center>
+      <img>make_prism_hollow_1.png</img>
+    </td>
+  </tr>
+</table>
+
+Unfortunatly this fast method, have a tendency to sometimes create irregular faces at the ends, as shown in this screenshot:
+
+<center>
+  <img>make_prism_hollow_4.png</img>
+</center>
+
+If you really care about your face-count, you should create the normal cylinder as <b>pie-slices</b> instead. This is
+recommended if the players also can see the <u>outside</u> of the hollow cylinder.
+
+<table border=0 align=center>
+	<tr>
+    <td valign=top>
+      <img>make_prism_hollow_5.png</img>
+    </td>
+    <td>&nbsp;=>&nbsp;</td>
+    <td valign=center>
+      <img>make_prism_hollow_6.png</img>
+    </td>
+	</tr>
+</table>

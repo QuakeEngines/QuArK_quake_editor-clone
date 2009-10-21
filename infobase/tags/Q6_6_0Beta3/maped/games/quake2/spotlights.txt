@@ -1,0 +1,16 @@
+title: Spotlights
+author:
+
+<b>Question:</b><br>
+When creating a spotlight, using the "info_null" entity,
+it is possible to set a "cone"-value in the specifics of the light_entity
+as well as in the specifics of the info_null-entity?
+
+<b>Answer:</b><br>
+It seems that only the light's "_cone" works. It must be a mistake to
+have a "_cone" field in the info_null.
+
+For your question; yes, this is the size of the cone of light that is emitted when the light's
+"target" points to an "info_null" entity. The light is emitted in the direction
+of the "info_null" entity. The "_cone" field is the angle, in degrees.
+

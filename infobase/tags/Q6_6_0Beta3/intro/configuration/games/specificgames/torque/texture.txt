@@ -1,0 +1,41 @@
+title: Custom Textures
+author: cdunde
+
+<table border=0 cellspacing=0 align=middle>
+<tr><td valign=top align=left>
+Because Torque is not a full game, but is only a game engine, it does not have a group of supplied textures. 
+You can make up your own textures as .jpg files and create links or your own custom textures .qrk
+file to use then make a link to those textures or their folder by using
+<a href="intro.texturebrowser.tutorials.html#texturelinks">QuArK's Texture Browser linking system</a>
+or registering your .qrk file in QuArK using the <i>Installed Add-ons</i> button covered above in the
+<a href="intro.configuration.games.specificgames.torque.html#config">Configuration</a> section.
+
+Another way, which I recommend, is to download a "base set" of textures we have made up for Torque in a
+<a href="http://quark.planetquake.gamespy.com/download_gamepaks.php3">Torque_textures.zip</a>
+file and placed on the Official QuArK site in a new section for "game_support".
+
+Just unzip that file to your main QuArK folder. Then you need to go into the
+<a href="intro.configuration.games.specificgames.torque.html#config">Torque Game Config</a> section covered above
+and click on the "Addons" button for the Addons Window, click the "Add" button there. That will show a list of them, click on the
+TorqueTextures.qrk file (that the zip file placed there) and click "OK". that registers it with QuArK and you're good to go.
+Just close all your windows and you will see the default room fully textured. If not then just close QuArK completely and restart it.
+
+In either case this needs to be done before you can view any objects in the QuArK 3D Textured view or compile a map. Otherwise you will just receive error messages.
+</td></tr></table>
+
+<tr><td valign=top align=middle>
+<img valign=top align=middle>torque_texture1.png</img>
+</td></tr></table>
+
+<table border=0 cellspacing=0 align=middle>
+<tr><td valign=top align=left>
+Once you have accomplished this last step you can then select the 3D Textured view, as shown in the screen shot above, by holding your mouse cursor over the 3D view, clicking your <g>RMB</g> and selecting the Textured item on the popup menu. QuArK creates a default building structure when you start a "New Map" from its Explorer's Games menu. But you may need to replace its default textures with ones that you now have in the Texture Browser to be able to see it in the 3D Textured view.
+
+You can also now compile your map by selecting one of the functions from the main Torque menu as covered in Part 2 of the <a href="intro.configuration.games.specificgames.torque.html#config">Configuration</a> section above.
+
+Just a few more needed points about textures for Torque.
+
+1) Most of the time they need to be of equal height and width and of a power of 2 (i.e. 16x16, 32x32, 64x128, 128x128, 128x256, 512x512, etc.). If not, then you will only see your map structures as white objects in the Torque Editor when you apply lighting to display the items.
+
+2) It is necessary that the .dif and its textures are placed in the same location, or folder, in order to display the object with its texture. So, as covered above, these files are located in their respective map and textures folders of the tmpQuArK folder in your Torque directory and need to be moved to the proper location for their use in the Torque Editor. See your Torque documentation for that exact handling.
+</td></tr></table>

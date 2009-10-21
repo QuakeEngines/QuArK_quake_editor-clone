@@ -1,0 +1,49 @@
+title: Basics
+author: tiglari
+
+Once again we will be redefining a method (the one that produces
+the speed menus), but the technique is different again because
+of the way the relevant classes are set up.  Speed menus are
+handled by methods associated with various kinds of classes
+descended from EntityManager, defined in the quarkpy file
+mapentities.py.  These classes have no instances, which will
+lead to a bit of black magic later on.  The class for faces is
+FaceType
+
+What we'll be doing is defining a new menu function for
+FaceType, which will add our new stuff onto the right mouse menu
+for faces.  What stuff? Well, always, a Tag Side command, but if
+a side is tagged, we will also want a Glue to Tagged command,
+and for a final flourish, let's say that if the face we're
+looking at is the original one, the only option we want is to
+Clear the tag.
+
+Here is a basic format for adding things to the face menu:
+<code>
+def tagmenu(o, editor, oldfacemenu = quarkpy.mapentities.FaceType.menu.im_func):
+    "the new right-mouse for sides"
+    menu = oldfacemenu(o, editor)
+    &lt;add stuff to menu&gt;
+    return menu
+</code>
+<code>
+quarkpy.mapentities.FaceType.menu = tagmenu
+</code>
+The `im_func' and the end of the `def' line is the black magic;
+it is needed to refer to
+a method of a class with no instances.
+
+Now to add stuff to the menu we could in fact just add the menu
+items we already have, getting something like this:
+<code>
+def tagmenu(o, editor, oldfacemenu = quarkpy.mapentities.FaceType.menu.im_func):
+    "the new right-mouse for sides"
+    menu = oldfacemenu(o, editor)
+    menu = [mentagside, menglueside, menclearside]+menu
+    return menu
+</code>
+These menu-building functions take two arguments, the
+object they're called by RMB-ing on, and the editor.  And
+we pass the older form of the menu function, which this one
+replaces, as a default parameter.
+

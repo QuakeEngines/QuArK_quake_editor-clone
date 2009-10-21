@@ -1,0 +1,12 @@
+title: DevIL
+author: DanielPharos
+
+<img align=right>devil.png</img>
+
+The DevIL library has several global settings, that allow to change the way
+DevIL stores the images in memory.
+
+<i>Memory speed</i>. Controls the memory used vs. speed tradeoff.
+
+<i>Compression</i>. Specifies that compression should be used when storing
+textures in memory, if possible.

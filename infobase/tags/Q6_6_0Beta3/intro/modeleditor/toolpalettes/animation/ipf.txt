@@ -1,0 +1,13 @@
+title: IPF (interpolation frames)
+author: cdunde
+
+<img border=1 align=right>ipf1.png</img>
+<img border=1 align=right>ipf2.png</img>
+IPF or interpolation frames is the setting as to how many added computed position frames will be added
+to the selected model component animation to be drawn in the selected view(s) of the editor.
+
+You can select a menu fps speed or use the arrows to the right to increase or decrease
+that number while the frames are being animated.
+
+Or click on <g>Other...</g> to get the <g>Custom IPF</g> dialog box to pop-up
+to set your own amout.

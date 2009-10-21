@@ -1,0 +1,5 @@
+title: Full 3D layout
+author: Decker
+
+<img border=0 align=right>full3d.png</img>
+The entire area is full 3D-view (X,Y,Z)

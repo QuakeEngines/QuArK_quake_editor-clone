@@ -1,0 +1,13 @@
+title: QuArK FAQ
+author: Decker
+desc: whatisquakearmyknife
+desc: whoisarminrigo
+desc: whyisthisprogramcalledquakearmyknifeorquark
+desc: whatisthehistoryofquark
+desc: whousesquark
+desc: howisquarkdifferentfromothermapeditors
+desc: howdoesquarkcomparetoothermapeditors
+desc: whydoesntquarkhavethisreallycoolfeature
+desc: whenwillquarksupportmyfavoritegame
+desc: doineedpythondist
+desc: doesquarkrunonlinux

@@ -1,0 +1,10 @@
+title: The Information Base
+author: Armin Rigo
+
+The Information Base is the source of information that you're just reading. It is written as a set of organized text files
+whose format is described below. The tool that translates these files and directories into a set of HTML files is the Python
+script <tt>build.py</tt>.
+
+The directories correspond to the classification in the final HTML files. Each directory must contain a file <tt>index.txt</tt>
+which gives the overall description of the category; it can also contain any number of other <tt>.txt</tt> files, which will be
+grouped into a single HTML. Each such text file correspond to a "question/answer" or item of discussion.

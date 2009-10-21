@@ -1,0 +1,11 @@
+title: Zoom settings
+author: Decker
+
+<img border=0 align=right>zoom.png</img>
+This button also have two parts. The left will bring down the menu, where you
+can select a zoom-factor. The right part will, when no object are selected, fit
+the entire level into view. When a object are selected, you can click one time
+to zoom to selection, and click again to fit the entire level into view.
+
+You can also use keys to zoom in or out. See
+<ref> intro/configuration/map/keys </ref> for these.

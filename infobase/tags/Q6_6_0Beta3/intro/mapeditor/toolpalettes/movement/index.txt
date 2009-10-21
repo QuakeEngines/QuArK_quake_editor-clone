@@ -1,0 +1,9 @@
+title: Movement tool-palette
+desc: move
+desc: enlargeshrink
+desc: inflatedeflate
+desc: mirror
+desc: rotate
+desc: configuration
+
+<img>movement.png</img>

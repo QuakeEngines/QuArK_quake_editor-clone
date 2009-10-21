@@ -1,0 +1,24 @@
+title: Terminology
+author: DanielPharos
+
+Here's a small list of some of the terms used by CVS and in this description about Eclipse:
+
+<b>Check out a file/directory</b> - Downloading a file/directory from the CVS into your Workspace-directory.
+
+<b>Committing a file/directory</b> - Uploading a file/directory from your Workspace-directory to the CVS.
+
+<b>Conflict</b> - When there are changes made to the remote file, and conflicting changes in the local file.
+
+<b>CVS</b> - Concurrent Versions System. The system used to store the online files on SourceForge.
+
+<b>Local file</b> - A file in your Workspace-directory.
+
+<b>Perspective</b> - The current 'view' you're working in. Every perspective has its own functions, allowing you to do different things with the files.
+
+<b>Remote file</b> - A file located in the repository, on the CVS.
+
+<b>Repository</b> - The online site where the files are actually kept.
+
+<b>Updating a file/directory</b> - Downloading changes from the CVS into your Workspace-directory.
+
+<b>Workspace</b> - The directory in which Eclipse stores the local files.

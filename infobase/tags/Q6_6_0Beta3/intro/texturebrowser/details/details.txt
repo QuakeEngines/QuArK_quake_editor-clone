@@ -1,0 +1,22 @@
+title: Details
+author: Rowdy
+
+<img border=0 align=right>details.png</img>
+This panel shows additional information about the texture.
+
+<i>Link to</i> indicates which texture you are linking to, and "in directory"
+is the directory which contains this file.  If you have copied the texture into
+the add-on instead of linking to it then "Link to" and "in directory" will not
+appear.
+
+<i>Path</i> is the directory containing the texture.
+
+<i>Contents</i>, <i>Flags</i> and <i>Value</i> are derived from the
+<ref>./textureflags</ref> settings, and the
+<img border=0 align=absmiddle>textureflagsbutton.png</img> button displays the
+<ref>./textureflags</ref> window.
+
+<i>Next texture in anim. sequence</i> allows you to string together a series of
+textures to make an animated texture.  Each texture points to the next one to
+be shown, and the last one should point back to the first texture in the
+sequence.

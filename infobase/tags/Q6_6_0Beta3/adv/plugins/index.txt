@@ -1,0 +1,26 @@
+title: Plug-Ins
+subdir: tutorial
+
+Plug-Ins are scripts programmed in Python that modify
+existing features or add new features to QuArK. They
+are mainly related to the map editor, which is itself
+programmed mostly in Python.  Plugins as used in QuArK are actually
+quite different from conventional plugins as found GtkRadiant etc.,
+so here's a bit of background to forestall confusion.
+
+QuArK was originally written entirely in Delphi, but halfway through
+writing QuArK 5, Armin Rigo discovered Python and decided that it would
+be better than straight Delphi for programming the QuArK GUI.  The
+architecture he came up with (I don't know what its antecedents are)
+was that each aspect of the interface would be defined by a plugin file,
+sitting in the subdirectory plugins/, which would be able to call on both
+a set of facilities provided by Delphi, and also a collection of facilities
+provided in Python by files in the quarkpy/.  So when map or model
+editor is started
+
+Probably the best way to get a feel for plugins is to
+first work thru a tutorial, then look at some existing
+examples.  There is an archive here, <a href="zips">plugin_examples.zip</a>,
+of working examples for this tutorial (and others) in the
+'zips' sub-folder of your QuArK-help folder on your hard drive.
+

@@ -1,0 +1,31 @@
+title: File menu
+author: cdunde
+
+<img border=0 align=right>file.png</img>
+<i>Open</i> works just as in the QuArK-Explorer. You can open any supported model file with
+this to work on.
+
+<i>Model Importers</i> Shows the Python importer plugins that are available.
+They will import that type of model once the editor is open.
+
+<i>Model Exporters</i> Shows the Python exporters plugins that are available.
+They will export that type of model once the editor is open.
+
+<i>Save</i> will save your current model to the same location and file type it was opened as.
+
+<i>Save in QuArK Explorer</i>. Use this if you want to add this model to your
+current project. This way, you can have multiple revisions of a model, in
+a single project. Just remember to give them a sensible name, so you can
+distinguish them. The model editor will automatically close itself when you use this menuitem.
+
+<i>Save as file</i>. If you want to export this model as a different supported model format type,
+select this menu item. A <g>QuArK .qkl model work file</g> can be created using this function.
+Even though, at the present time, QuArK can only save <g>Quake 1 .mdl</g> and <g>Quake 2 .md2</g>
+files, it can save <g>Quake 3 .md3</g> files as a <g>QuArK .qkl model work file</g>.
+This format preserves all settings and <g>Components</g> of the model making it much easer
+when you start a new session of the <g>QuArK Model Editor</g>. to resume your work.
+
+<i>Save all</i> will save all opened files. This includes the current project
+and modified <g>add-on</g> data files.
+
+<i>Close</i> will close the model editor.

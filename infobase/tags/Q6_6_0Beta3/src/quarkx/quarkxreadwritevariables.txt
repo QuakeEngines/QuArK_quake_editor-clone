@@ -1,0 +1,30 @@
+title: Read-write variables of the module quarkx
+author: Armin Rigo
+
+<table border=1 cellspacing=0 cellpadding=4>
+
+<tr><td class="doccode">
+editshortcuts
+</td><td>
+List of strings describing keys and shortcuts that are normally assigned to edit boxes. When the cursor is in an edit box, all the keys listed here are sent to the edit box instead of being used as a menu shortcut (this is particularly important for clipboard keys Ctrl-X, Ctrl-V,...)
+</td></tr>
+
+<tr><td class="doccode">
+setupchanged
+</td><td>
+Set by Python code to a function called whenever the configuration (from the Configuration dialog box) is changed. The function takes one parameter, which you can ignore for now.
+</td></tr>
+
+<tr><td class="doccode">
+redlinesicons
+</td><td>
+A tuple of 6 icons to use with the map editor red lines (top, topfocus, topmouse, bottom, bottomfocus, bottommouse).
+</td></tr>
+
+<tr><td class="doccode">
+buildmodes
+</td><td>
+A list of strings describing the available build modes for the big "GO!" button.
+</td></tr>
+
+</table>

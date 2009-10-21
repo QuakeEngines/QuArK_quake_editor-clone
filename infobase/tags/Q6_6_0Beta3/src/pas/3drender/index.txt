@@ -1,0 +1,6 @@
+title: The 3D-Render classes
+subdir: edsceneobject fullscreenwnd
+
+What are the files in \SOURCE\3DFX all about?
+
+There is more information about sceneobjects located <ref> src/topics/sceneobjects \ here </ref>.

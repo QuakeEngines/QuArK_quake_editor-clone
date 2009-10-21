@@ -1,0 +1,7 @@
+title: G...
+author: Decker
+
+<dl>
+<dt><a name="glide">    </a>Glide       <dd>A cross-platform library that allows developers to use 3D hardware to draw/render images. Glide works only with Voodoo cards, and has been discontinued. Was developed by <a href="#3dfx">3Dfx</a>.
+<dt><a name="group">    </a>Group       <dd>In QuArK, a group in the tree-view is a collection of brushes, entities and other groups.
+</dl>

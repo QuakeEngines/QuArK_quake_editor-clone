@@ -1,0 +1,19 @@
+title: What QuArK expects to find from Python
+author: Armin Rigo
+
+When QuArK starts, it initializes the Python interpreter and loads the package called <tt>quarkpy</tt>.
+This should be a subdirectory in the directory that contains <tt>quark.exe</tt>. Once this package (i.e.
+the file <tt>quarkpy\__init__.py</tt>) has been loaded, QuArK calls its function
+<tt>RunQuArK()</tt>. See the file <tt>__init__.py</tt> for more details about the
+start-up process.
+
+To answer to user actions, QuArK needs to call Python code. This is usually done by setting some variables that QuArK knows
+how to read so that they point to a Python function. In some cases, however, this is not possible; these cases are handled by
+the module <tt>qmacro.py</tt> which contains functions with special names, all beginning with
+<tt>MACRO_</tt>. See below for a list of all macros that QuArK expects to find there.
+
+QuArK exposes all its features to Python code through the built-in module <tt>quarkx</tt>. Constant
+values and various utilities are found in the Python modules <tt>qutils.py</tt> and
+<tt>qeditor.py</tt>.
+
+For examples about all the following stuff, see the <tt>.py</tt> files included with QuArK.

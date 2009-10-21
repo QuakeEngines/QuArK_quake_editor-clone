@@ -1,0 +1,83 @@
+title: Internal objects related to the Model Editor
+author: cdunde
+
+From version 5.3, there are a few new types of QuArK Internal Objects. When editing a Model, the generic object in the tree
+view is of type MdlObject, which inherits all attributes and methods from 3Dobject (see above). A "component" of the Model is
+an object of type Component. A "frame" of the Model is an object of type Frame. A "skin" is a standard Image object.
+
+Here are the attributes and methods of the Component objects.
+
+<table border=1 cellspacing=0 cellpadding=4>
+
+<tr><td class="doccode">
+currentskin
+</td><td>
+The current skin used for textured display. Also see <a href="#quarkxtexturefunctions">Texture functions of the module quarkx</a>
+above for functions to change these skin textures such as <g>Painting</g> them, as can now be done in the
+<a href="intro.modeleditor.toolpalettes.paintmodes.html">Model Editor</a>.
+</td></tr>
+
+<tr><td class="doccode">
+currentframe
+</td><td>
+The current frame.
+</td></tr>
+
+<tr><td class="doccode">
+mergevertices(framelist)
+</td><td>
+Reduces the component triangles and vertices by merging together the vertices that are at the same position in all frames.
+</td></tr>
+
+<tr><td class="doccode">
+filltris
+</td><td>
+This list specify how the triangles should be drawn. The list should be as long as the number of triangles in the Tris Specific; if shorter, it is assumed that missing values are all None. For each triangle, the corresponding item in the list can be None (no filling) or a tuple of two "patterns", one for if the triangle is displayed from front, and one for if it is displayed from back. Each "pattern" can be None (no filling), an integer (a color), or a tuple of two integers (two colors to be combined in a small checkerboard pattern).
+</td></tr>
+
+<tr><td class="doccode">
+backtris
+</td><td>
+Triangles whose background must be filled (like in the map editor's polyhedron backgrounds: without masking any line, even from objects behind the triangle) (not implemented in 5.3)
+</td></tr>
+
+<tr><td class="doccode">
+info
+</td><td>
+Not used by QuArK. Reserved for Python code.
+</td></tr>
+
+<tr><td class="doccode">
+triangles
+</td><td>
+List of all the triangles (read-write attribute). Each triangle is a tuple of three tuples (vertexnumber, skin_s, skin_t).
+</td></tr>
+
+</table>
+
+Additionally, the Component objects have a Tris Specific that lists the triangles of the component. Each triangle is given as
+three points of six bytes each: two for the vertex number, two for the first coordinate on the skin, and two for the second
+coordinate on the skin.
+
+Here are the attributes and methods of the Frame objects.
+
+<table border=1 cellspacing=0 cellpadding=4>
+
+<tr><td class="doccode">
+info
+</td><td>
+Not used by QuArK. Reserved for Python code.
+</td></tr>
+
+<tr><td class="doccode">
+vertices
+</td><td>
+This attribute is a way to quickly read or set the Vertices Specific of the frame (see below). It returns or can be set to a list of Vector objects.
+</td></tr>
+
+</table>
+
+Frame objects usually have a Vertices Specific that lists the 3D position of all vertices in the frame, as a large tuple where
+each three consecutive values give the X, Y and Z coordinates, respectively.
+
+For additional information, please see the files mdl*.py.
