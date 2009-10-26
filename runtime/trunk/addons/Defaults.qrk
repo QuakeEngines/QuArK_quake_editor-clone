@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.500  2009/10/17 13:49:47  danielpharos
+//Disabled new option: conflicting with existing converter.
+//
 //Revision 1.499  2009/10/15 17:02:38  danielpharos
 //Update 'update' section for new version.
 //
@@ -4114,8 +4117,8 @@ QQRKSRC1
       }
       VTF:config =
       {
-        LoadLibrary = "VTFLib"
-        SaveLibrary = "VTFLib"
+        LoadLibrary = "DevIL"
+        SaveLibrary = "DevIL"
         SaveFormatVTFLib = "3"
         SaveFormatAVTFLib = "15"
         SaveVersionVTFLib = "7.2"
