@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2009/07/30 09:41:51  danielpharos
+Added additional logging.
+
 Revision 1.8  2009/07/15 10:38:01  danielpharos
 Updated website link.
 
@@ -148,7 +151,7 @@ begin
    DummyStringList:=GlobalWarnings;
    try
      GlobalWarnings:=Nil;
-     ShowTextBox('QuArK', 'There are warnings:', DummyStringList, mtWarning);
+    // ShowTextBox('QuArK', 'There are warnings:', DummyStringList, mtWarning);
    finally
      DummyStringList.Free;
    end;
