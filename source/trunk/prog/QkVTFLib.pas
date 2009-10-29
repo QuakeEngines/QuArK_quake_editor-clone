@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23  2009/07/15 10:38:01  danielpharos
+Updated website link.
+
 Revision 1.22  2009/03/16 08:47:21  danielpharos
 Updated to DevIL 1.7.8, added IWI loading, and added many new image loading/saving options.
 
@@ -485,7 +488,7 @@ var
   vlImageConvert: function (lpSource : PvlByte; lpDest : PvlByte; uiWidth : vlUInt; uiHeight : vlUInt; SourceFormat : VTFImageFormat; DestFormat : VTFImageFormat) : vlBool; cdecl;
   vlImageConvertToRGBA8888: function (lpSource : PvlByte; lpDest : PvlByte; uiWidth : vlUInt; uiHeight : vlUInt; SourceFormat : VTFImageFormat) : vlBool; cdecl;
   //vlImageConvertFromRGBA8888: function (lpSource : PvlByte; lpDest : PvlByte; uiWidth : vlUInt; uiHeight : vlUInt; DestFormat : VTFImageFormat) : vlBool; cdecl;
-  vlImageComputeImageSize: function (uiWidth : vlUInt; uiHeight : vlUInt; uiDepth : vlUInt; uiMipmaps : Cardinal; ImageFormat : VTFImageFormat) : vlBool; cdecl;
+  vlImageComputeImageSize: function (uiWidth : vlUInt; uiHeight : vlUInt; uiDepth : vlUInt; uiMipmaps : Cardinal; ImageFormat : VTFImageFormat) : vlUInt; cdecl;
   vlImageGetSize: function : vlUInt; cdecl;
   
   vlImageGetData: function (uiFrame : vlUInt; uiFace : vlUInt; uiSlice : vlUInt; uiMipmapLevel : vlUInt) : PvlByte; cdecl;
