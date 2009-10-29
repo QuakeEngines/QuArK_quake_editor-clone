@@ -584,7 +584,7 @@ def PolynomialInterpolation(editor, AnimFrames, Factor=0.0):
     FrameIndex = int(floor(Factor))
     if (Factor < 0.0) or (FrameIndex > len(AnimFrames)-1):
         # Somebody send me a bad Factor! Bad programmer! Bad!
-        raise "LinearInterpolation: Factor out of range! (%f)" % Factor
+        raise "PolynomialInterpolation: Factor out of range! (%f)" % Factor
     # Uses gaussian elimination: [A]*{x}={B}
     NumberFrames = len(AnimFrames)
     if NumberFrames > 1000:
@@ -4138,6 +4138,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.122  2009/10/21 06:28:26  cdunde
+#Update to keyframes functions for handling tags.
+#
 #Revision 1.121  2009/10/20 07:03:20  cdunde
 #Added keyframe fill-in frames creation support for single and multiple component selections.
 #
