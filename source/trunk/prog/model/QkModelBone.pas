@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.26  2009/07/19 18:54:27  danielpharos
+Moved PByte, PInteger and sLineBreak to ExtraFunctionality.
+
 Revision 1.25  2009/07/15 10:38:06  danielpharos
 Updated website link.
 
@@ -195,7 +198,7 @@ end;
 const
   PosSpec = 'position';
   PosSpecLen = length(PosSpec+'=');
-  RotSpec = 'rotmatrix';
+  RotSpec = 'sys_rotmatrix';
   RotSpecLen = length(RotSpec+'=');
   VertSpec = 'vtxlist';
   VertSpecLen = length(VertSpec+'=');
