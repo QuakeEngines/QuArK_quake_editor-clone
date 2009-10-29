@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.35  2009/07/15 10:38:01  danielpharos
+Updated website link.
+
 Revision 1.34  2009/02/21 17:10:12  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -282,7 +285,7 @@ begin
   WaitForSteam := False;
   SteamEXEName := Setup.Specifics.Values['SteamEXEName'];
   if SteamEXEName = '' then
-    SteamEXEName := 'steam.exe';
+    SteamEXEName := 'Steam.exe';
   Result := ProcessExists(SteamEXEName);
   if (not Result) and (Setup.Specifics.Values['Autostart']='1') then
   begin
