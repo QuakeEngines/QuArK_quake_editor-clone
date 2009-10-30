@@ -615,17 +615,66 @@ def load_gr2mesh(gr2_filename, basepath):
             origin = words[3].replace("[", "")
             origin = origin.replace("]", "")
             origin = origin.split(",")
+            for amt in range(len(origin)):
+                origin[amt] = float(origin[amt])
+            while words[0] != ")":
+                #next line
+                line_counter+=1
+                current_line = lines[line_counter]
+                current_line = current_line.strip()
+                if current_line.startswith(")"):
+                    break
+                words=current_line.split()
+                if words and words[0] == "bone" and words[2] == "rotation:":
+                    rotation = words[3].replace("[", "")
+                    rotation = rotation.replace("]", "")
+                    rotation = rotation.split(",")
+                    for amt in range(len(rotation)):
+                        rotation[amt] = float(rotation[amt])
+                elif words and words[0] == "bone" and words[2] == "scale:":
+                    scale = words[3].replace("[", "")
+                    scale = scale.replace("]", "")
+                    scale = scale.split(",")
+                    XYZlisting_factors[0][1] = float(scale[0])
+                    XYZlisting_factors[1][1] = float(scale[4])
+                    XYZlisting_factors[2][1] = float(scale[8])
+                elif words and words[0] == "bone" and words[1] == "InverseWorldTransform:":
+                    InverseWorldTransform = words[2].replace("[", "")
+                    IWT = InverseWorldTransform.replace("]", "")
+                    IWT = IWT.split(",")
+                    for amt in range(len(IWT)):
+                        IWT[amt] = float(IWT[amt])
+                    IWT = (IWT[0],IWT[1],IWT[2],IWT[3],IWT[4],IWT[5],IWT[6],IWT[7],IWT[8],IWT[9],IWT[10],IWT[11],IWT[12],IWT[13],IWT[14],IWT[15])
+
             if new_bone.dictspec['parent_name'] == "None":
                 posX = float(origin[XYZlisting_factors[0][0]]) * XYZlisting_factors[0][1]
                 posY = float(origin[XYZlisting_factors[1][0]]) * XYZlisting_factors[1][1]
                 posZ = float(origin[XYZlisting_factors[2][0]]) * XYZlisting_factors[2][1]
                 new_bone['position'] = (posX, posY, posZ)
+                new_bone['IWT'] = IWT
             else:
                 parent_pos = QuArK_bones[int(new_bone.dictspec['parent_index'])].dictspec['position']
-                posX = (float(origin[XYZlisting_factors[0][0]]) * XYZlisting_factors[0][1]) + parent_pos[0]
-                posY = (float(origin[XYZlisting_factors[1][0]]) * XYZlisting_factors[1][1]) + parent_pos[1]
-                posZ = (float(origin[XYZlisting_factors[2][0]]) * XYZlisting_factors[2][1]) + parent_pos[2]
+                parent_IWT = QuArK_bones[int(new_bone.dictspec['parent_index'])].dictspec['IWT']
+               # posX = (float(origin[XYZlisting_factors[0][0]]) * XYZlisting_factors[0][1]) + parent_pos[0]
+               # posY = (float(origin[XYZlisting_factors[1][0]]) * XYZlisting_factors[1][1]) + parent_pos[1]
+               # posZ = (float(origin[XYZlisting_factors[2][0]]) * XYZlisting_factors[2][1]) + parent_pos[2]
+             #   mt = quaternion2matrix(rotation)
+             #   rotmatrix = quarkx.matrix(((mt[0][0], mt[0][1], mt[0][2]), (mt[1][0], mt[1][1], mt[1][2]), (mt[2][0], mt[2][1], mt[2][2])))
+             #   bone_origin = quarkx.vect(origin[0], origin[1], origin[2])
+             #   bone_origin = rotmatrix * bone_origin
+             #   bone_origin = bone_origin.tuple
+             #   posX = parent_pos[0] + bone_origin[0]
+             #   posY = parent_pos[1] + bone_origin[1]
+             #   posZ = parent_pos[2] + bone_origin[2]
+                bone_origin = quarkx.vect(IWT[12], IWT[13], IWT[14])
+                rotmatrix = quarkx.matrix(((IWT[0], IWT[1], IWT[2]), (IWT[4], IWT[5], IWT[6]), (IWT[8], IWT[9], IWT[10])))
+                bone_origin = rotmatrix * bone_origin
+                bone_origin = bone_origin.tuple
+                posX = bone_origin[0]
+                posY = bone_origin[1]
+                posZ = -bone_origin[2]
                 new_bone['position'] = (posX, posY, posZ)
+                new_bone['IWT'] = IWT
             new_bone.position = quarkx.vect(new_bone.dictspec['position'])
             if new_bone.dictspec['parent_name'] == "None":
                 new_bone['bone_length'] = (0.0, 0.0, 0.0)
@@ -1669,6 +1718,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.4  2009/08/28 07:21:34  cdunde
+# Minor comment addition.
+#
 # Revision 1.3  2009/08/27 04:00:06  cdunde
 # To setup a bone's "flags" dictspec item for model importing and exporting support that use them.
 # Start of .gr2 bone importing support.
