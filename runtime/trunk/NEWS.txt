@@ -34,7 +34,7 @@ $Id$
 * [cdunde/DanielPharos]: Added .md5mesh and .md5anim model exporter
           - including bones, skins and shaders.
 
-* [cdunde/DanielPharos]: Support started for granny .gr2 model importing using
+* [cdunde/DanielPharos]: Support started for granny .gr2 model importing with bones using
           - QuArK's build and version of grnreader.exe.
           - Source code for exe in QuArK's src source\dllsource\QuArKgrnreader folder.
 
