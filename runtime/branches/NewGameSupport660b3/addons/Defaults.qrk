@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.482.2.9  2009/07/14 23:21:26  danielpharos
+//Added initial World of Padman support.
+//
 //Revision 1.482.2.8  2009/05/02 13:14:08  danielpharos
 //UFO: Fixed maps not loading. Apparently, UFO has no mod support?
 //
@@ -1761,6 +1764,8 @@ QQRKSRC1
         .pk3 = "1"     ipk3 = '5'
         .pk4 = "1"     ipk4 = '5'
         .sin = "1"     isin = '5'
+        .007 = "1"     i007 = '5'
+        .dat = "1"     idat = '5'
         .iwd = "1"     iiwd = '5'
         .col = "1"     icol = '5'
         .gcf = "1"     igcf = '5'
@@ -1814,6 +1819,8 @@ QQRKSRC1
         .pk3 = "<open>"
         .pk4 = "<open>"
         .sin = ""
+        .007 = ""
+        .dat = ""
         .iwd = ""
         .col = ""
         .gcf = ""
@@ -2283,6 +2290,65 @@ QQRKSRC1
         Form = "GameCrystalSpace"
         PlayerClass = "X"
         DecimalPlaces = '5'
+      }
+
+      Daikatana:config =
+      {
+        Game = "Daikatana"
+        Code = "G" // Hardcoded value in Setup.PAS
+
+        Program = "Quake2.EXE"
+        Directory = "C:\Quake2"
+        CheckDirectory = "QUAKE2.EXE"
+
+        CD = ""
+        CDDir = "Install\Data"
+
+        MapCommentsPrefix = ";"
+        OutputMapFormat = "Quark etp"
+        ForceFaceFlags = ""
+
+        BuildPgm1  = "TXQBSP3.EXE"
+        BuildArgs1 = ""
+        BuildCheck1= "+BSP,-LIN{LoadLinFile}"
+        BuildPgm2  = "TIMVIS3.EXE"
+        BuildArgs2 = ""
+        BuildPgm3  = "ARGHRAD.EXE"
+        BuildArgs3 = "-gamedir .. -moddir ."
+
+        TexturesPath = "textures/"
+        Q2TexFlags = "1"
+
+        DefaultTexture = "e1u1/damage1_1"
+        DefaultTextureTrigger = "e1u1/trigger"
+        DefaultTextureOrigin = "e1u1/origin"
+        DefaultTextureClip = "e1u1/clip"
+        LightingInnerConeKeyword = "_cone"    // <-- ex: "" if game does not use or ex: "_cone" is the specifics name that gives the spotlight inter size.
+        LightingOuterConeKeyword = ""    // <-- ex: "" if game does not use or ex: "_cone2" is the specifics name that gives the spotlight outer size.
+
+    //    TextureFormat = ".wal"
+        TextureFormat = ".pcx"                  // primary texture fileextension, to save model textures properly.
+        TextureFileExtensions = ".pcx,.wal"     // possible texture fileextensions
+        TextureWriteFormat = ".wal"
+
+        BaseDir = "baseq2"
+        tmpQuArK = "tmpQuArK"
+
+        Palette = "pics/colormap.pcx"
+        Gradient = "pics/colormap.pcx"
+        UnifiedPalette = "1"
+        ExtractFiles = "pics/colormap.pcx"
+        ExtraCmdLine = "+set game %gamedir%"
+        RunMapCmdLine = "+map %filename%"
+        AddOns = "DataDK.qrk"$0D"DKEntities.qrk"$0D"DKTextures.qrk"
+        AlwaysPak = ""
+        PakExt = ".pak"
+        Console = "1"
+        LightFactor = '0.9'
+        3DLight = '512'
+        DecimalPlaces = '5'
+
+        Form = "GameQuake2" //FIXME: UPDATE!
       }
 
       Doom 3:config =
@@ -10441,6 +10507,8 @@ QQRKSRC1
       .pk3: = { Txt="PK3 archives" externaledit = ! }
       .pk4: = { Txt="PK4 archives" externaledit = ! }
       .sin: = { Txt="SIN Pak archives" externaledit = ! }
+      .007: = { Txt="007 Pak archives" externaledit = ! }
+      .dat: = { Txt="DAT Pak archives" externaledit = ! }
       .iwd: = { Txt="IWD archives" externaledit = ! }
       .col: = { Txt="COL archives" externaledit = ! }
       .gcf: = { Txt="GCF archives" externaledit = ! }
@@ -10518,6 +10586,8 @@ QQRKSRC1
       .pk3: = {Typ="X" Cap=".pk3" Txt="PACK files for Quake 3"}
       .pk4: = {Typ="X" Cap=".pk4" Txt="PACK files for Doom 3"}
       .sin: = {Typ="X" Cap=".sin" Txt="PACK files for Sin"}
+      .007: = {Typ="X" Cap=".007" Txt="PACK files for James Bond: Nightfire"}
+      .dat: = {Typ="X" Cap=".dat" Txt="PACK files for Anachronox"}
       .iwd: = {Typ="X" Cap=".iwd" Txt="PACK files for Call of Duty 2"}
       .col: = {Typ="X" Cap=".col" Txt="PACK files for Sylphis"}
       .gcf: = {Typ="X" Cap=".gcf" Txt="PACK files for Half-Life 2"}

@@ -1,0 +1,177 @@
+QQRKSRC1
+// Daikatana definition file for Quark
+
+//$Header: /cvsroot/quark/runtime/addons/Daikatana/DataDK.qrk,v 1.20 2008/06/30 17:31:55 cdunde Exp $
+// ----------- REVISION HISTORY ------------
+//$Log: DataDK.qrk,v $
+//
+
+{
+  QuArKProtected = "1"
+  Description = "Base Daikatana data"
+
+  Daikatana setup.qctx =
+  {
+    Game = "Daikatana"
+    HTML = "index.html"
+
+    SFSkills = '256 512 1024 2048'   // must be 4 or 6 values : easy/medium/hard/deathm.[/coop/single]
+    TexFlagsTransparent = '16 0.6667 32 0.3333 268435456 0.5'   // bit of value 16 (resp 32) means "66% transparent" (resp 33%)
+
+    TextureFlags:form =     // a form for setting flags on polyhedron faces
+    {
+      Style = "5"
+      Reset: =
+      {
+        Cap = "Reset to default"
+        Typ = "B"
+        Hint = "Reset all flags to the texture's default"
+        Delete: =
+        {
+          Flags = ""      // this button deletes these Specifics
+          Contents = ""
+          Value = ""
+        }
+      }
+
+      Sep:     ={Txt="" Typ="S"}  // separator
+
+      Contents:={Txt="Brush" Cap="water"          Typ="X32"        Hint="water"}
+      Contents:={Txt=""      Cap="slime"          Typ="X16"        Hint="mildly damaging"}
+      Contents:={Txt=""      Cap="lava"           Typ="X8"         Hint="very damaging"}
+      Contents:={Txt=""      Cap="window"         Typ="X2"         Hint="transparent (the opposite face of windows are not drawn)"}
+      Contents:={Txt=""      Cap="translucent"    Typ="X268435456" Hint="translucent (allows light to pass, not vision - e.g. use for water)"}
+      Contents:={Txt=""      Cap="mist"           Typ="X64"        Hint="non-solid window (Player can walk through it)"}
+      Contents:={Txt=""      Cap="origin"         Typ="X16777216"  Hint="use as centrepoint, for rotating objects only"}
+      Contents:={Txt=""      Cap="playerclip"     Typ="X65536"     Hint="Stops Players from passing through"}
+      Contents:={Txt=""      Cap="monsterclip"    Typ="X131072"    Hint="Stops monsters passing through"}
+      Contents:={Txt=""      Cap="detail"         Typ="X134217728" Hint="for small, detail brushes that QVIS3 can ignore"}
+      Contents:={Txt=""      Cap="ladder"         Typ="X536870912" Hint="Player can climb up this"}
+      Contents:={Txt=""      Cap="auxi"           Typ="X4"         Hint="??"}
+
+      Sep:     ={Txt="" Typ="S"}  // separator
+
+      Contents:={Txt="Flowing" Cap="current_0"      Typ="X262144"    Hint="Flowing water pushes to 0 west"}
+      Contents:={Txt=""        Cap="current_90"     Typ="X524288"    Hint="Flowing water pushes to 90 north"}
+      Contents:={Txt=""        Cap="current_180"    Typ="X1048576"   Hint="Flowing water pushes to 180 east"}
+      Contents:={Txt=""        Cap="current_270"    Typ="X2097152"   Hint="Flowing water pushes to 270 south"}
+      Contents:={Txt=""        Cap="current_up"     Typ="X4194304"   Hint="Flowing water pushes Upwards"}
+      Contents:={Txt=""        Cap="current_dn"     Typ="X8388608"   Hint="Flowing water pushes Down"}
+
+      Sep:     ={Txt="" Typ="S"}  // separator
+
+      Flags:   ={Txt="Face" Cap="hint"           Typ="X256"       Hint="tell QBSP3 to cut along this plane first"}
+      Flags:   ={Txt=""     Cap="skip"           Typ="X512"       Hint="completely ignore, allowing non-closed brushes"}
+      Flags:   ={Txt=""     Cap="light"          Typ="X1"         Hint="'value' is the light quantity"}
+      Flags:   ={Txt=""     Cap="slick"          Typ="X2"         Hint="slidy surface"}
+      Flags:   ={Txt=""     Cap="sky"            Typ="X4"         Hint="sky -can be used with 'light'"}
+      Flags:   ={Txt=""     Cap="warping"        Typ="X8"         Hint="turbulent water warp (for 64x64 textures only)"}
+      Flags:   ={Txt=""     Cap="trans33"        Typ="X16"        Hint="transparent, 33% (more see-through than 50%)"}
+      Flags:   ={Txt=""     Cap="trans66"        Typ="X32"        Hint="transparent, 66% (less see-through than 50%)"}
+      Flags:   ={Txt=""     Cap="flowing"        Typ="X64"        Hint="flow direction towards angle 0"}
+      Flags:   ={Txt=""     Cap="nodraw"         Typ="X128"       Hint="for clip textures and trigger textures"}
+
+      Sep:     ={Txt="" Typ="S"}  // separator
+
+      Value:   ={Txt="Value" Typ="E" Hint="The meaning of this depends on the other flags"}
+    }
+  }
+  NewFiles.qtx =
+  {
+    ToolBox = "New files..."
+    Root = "Daikatana file types.qtxfolder"
+    Daikatana file types.qtxfolder =
+    {
+      Texture.wal = { ;incl="EmptyTexture" }
+      CIN Video.cin = { }
+    }
+  }
+  walltex:incl =
+  {
+    tex = "e1u1/damage1_1"
+  }
+  floortex:incl =
+  {
+    tex = "e1u1/c_met51a"
+  }
+  ceiltex:incl =
+  {
+    tex = "e1u1/sky1"
+  }
+  NewMap:incl =
+  {
+    Game = "Daikatana"
+    Root = "worldspawn:b"
+    worldspawn:b =
+    {
+      Border walls:g =
+      {
+        East wall:p =
+        {
+          west:f =  { v = '256 0 272 256 -128 272 256 0 400'       walltex = ! }
+          east:f =  { v = '272 0 272 272 128 272 272 0 400'        walltex = ! }
+          south:f = { v = '432 -192 272 560 -192 272 432 -192 400' walltex = ! }
+          north:f = { v = '432 192 272 304 192 272 432 192 400'    walltex = ! }
+          down:f =  { v = '432 0 -96 560 0 -96 432 -128 -96'       walltex = ! }
+          up:f =    { v = '432 0 96 560 0 96 432 128 96'           walltex = ! }
+        }
+        West wall:p =
+        {
+          west:f =  { v = '-272 0 272 -272 -128 272 -272 0 400'    walltex = ! }
+          east:f =  { v = '-256 0 272 -256 128 272 -256 0 400'     walltex = ! }
+          south:f = { v = '432 -192 272 560 -192 272 432 -192 400' walltex = ! }
+          north:f = { v = '432 192 272 304 192 272 432 192 400'    walltex = ! }
+          down:f =  { v = '432 0 -96 560 0 -96 432 -128 -96'       walltex = ! }
+          up:f =    { v = '432 0 96 560 0 96 432 128 96'           walltex = ! }
+        }
+        North wall:p =
+        {
+          west:f =  { v = '-256 0 272 -256 -128 272 -256 0 400'    walltex = ! }
+          east:f =  { v = '256 0 272 256 128 272 256 0 400'        walltex = ! }
+          south:f = { v = '432 192 272 560 192 272 432 192 400'    walltex = ! }
+          north:f = { v = '432 208 272 304 208 272 432 208 400'    walltex = ! }
+          down:f =  { v = '432 0 -96 560 0 -96 432 -128 -96'       walltex = ! }
+          up:f =    { v = '432 0 96 560 0 96 432 128 96'           walltex = ! }
+        }
+        South wall:p =
+        {
+          west:f =  { v = '-256 0 272 -256 -128 272 -256 0 400'    walltex = ! }
+          east:f =  { v = '256 0 272 256 128 272 256 0 400'        walltex = ! }
+          south:f = { v = '432 -208 272 560 -208 272 432 -208 400' walltex = ! }
+          north:f = { v = '432 -192 272 304 -192 272 432 -192 400' walltex = ! }
+          down:f =  { v = '432 0 -96 560 0 -96 432 -128 -96'       walltex = ! }
+          up:f =    { v = '432 0 96 560 0 96 432 128 96'           walltex = ! }
+        }
+        Sky:p =
+        {
+          west:f =  { v = '-256 0 272 -256 -128 272 -256 0 400'    ceiltex = ! }
+          east:f =  { v = '256 0 272 256 128 272 256 0 400'        ceiltex = ! }
+          south:f = { v = '432 -192 272 560 -192 272 432 -192 400' ceiltex = ! }
+          north:f = { v = '432 192 272 304 192 272 432 192 400'    ceiltex = ! }
+          down:f =  { v = '432 0 96 560 0 96 432 -128 96'          ceiltex = ! }
+          up:f =    { v = '432 0 112 560 0 112 432 128 112'        ceiltex = ! }
+        }
+        Floor:p =
+        {
+          west:f =  { v = '-256 0 272 -256 -128 272 -256 0 400'    floortex = ! }
+          east:f =  { v = '256 0 272 256 128 272 256 0 400'        floortex = ! }
+          south:f = { v = '432 -192 272 560 -192 272 432 -192 400' floortex = ! }
+          north:f = { v = '432 192 272 304 192 272 432 192 400'    floortex = ! }
+          down:f =  { v = '432 0 -112 560 0 -112 432 -128 -112'    floortex = ! }
+          up:f =    { v = '432 0 -96 560 0 -96 432 128 -96'        floortex = ! }
+        }
+      }
+      info_player_start:e =
+      {
+        origin = "-144 0 -72"
+        angle = "360"
+      }
+      light:e =
+      {
+        light = "300"
+        _color = "1 1 1"
+        origin = "0 0 0"
+      }
+    }
+  }
+}

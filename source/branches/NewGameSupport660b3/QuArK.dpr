@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.63  2009/03/16 08:47:21  danielpharos
+Updated to DevIL 1.7.8, added IWI loading, and added many new image loading/saving options.
+
 Revision 1.62  2009/02/21 17:09:36  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -175,8 +178,8 @@ program QuArK;
 {%File '..\Runtime\addons\Defaults.qrk'}
 
 uses
-  MemTester in 'prog\MemTester.pas',
-  (*FastMM4 in 'prog\FastMM4.pas',*)     (*Enable for FastMM, copy the debug DLL to the runtime directory when debugging*)
+  (*MemTester in 'prog\MemTester.pas',*)
+  FastMM4 in 'prog\FastMM4.pas',     (*Enable for FastMM, copy the debug DLL to the runtime directory when debugging*)
   (*MemCheck in 'prog\MemCheck.pas',*)     (*Enable for MemCheck, also see below*)
   Forms,
   DWM in '3dfx\DWM.pas',
@@ -242,6 +245,7 @@ uses
   Qk1 in 'prog\Qk1.pas' {Form1},
   Qk3D in 'prog\Qk3D.pas',
   Qk6DX in 'prog\Qk6DX.pas',
+  QkAnachronox in 'prog\QkAnachronox.pas',
   QkApplPaths in 'prog\QkApplPaths.pas',
   QkBmp in 'prog\QkBmp.pas',
   QkBsp in 'prog\QkBsp.pas' {FQBsp},
@@ -267,6 +271,7 @@ uses
   QkImages in 'prog\QkImages.pas' {FQImages},
   QkInclude in 'prog\QkInclude.pas',
   QkIwi in 'prog\QkIwi.pas',
+  QkJBN in 'prog\QkJBN.pas',
   QkJpg in 'prog\QkJpg.pas',
   QkListView in 'prog\QkListView.pas' {QForm2},
   QkMacro in 'prog\QkMacro.pas',

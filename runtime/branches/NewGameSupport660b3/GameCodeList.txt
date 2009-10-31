@@ -28,6 +28,7 @@ Code    abbreviation            Name          or Screen name    taken
  D      KingPin         KingPin               Alexander         26/04/2000
  E      SOF             Solder of Fortune     Decker            11/02/2001
  F      AA              Alien Arena           DanielPharos      02/05/2009
+ G      DK              Daikatana             DanielPharos      31/10/2009
  Z      6DX             6DX game engine       Jacob Marner      06/03/2001
 
 

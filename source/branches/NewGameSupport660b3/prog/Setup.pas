@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.80.2.6  2009/07/14 23:21:31  danielpharos
+Added initial World of Padman support.
+
 Revision 1.80.2.5  2009/05/02 12:59:11  danielpharos
 Added initial support for UFO: Alien Invasion.
 
@@ -344,6 +347,7 @@ comparison between gamemodes.}
  mjKingPin      = 'D';
  mjSOF          = 'E';  { Soldier Of Fortune }
  mjAA           = 'F';  { Alien Arena }
+ mjDK           = 'G';  { Daikatana }
  {..space for more Quake-2 style games..}
  mj6DX          = 'Z';
 

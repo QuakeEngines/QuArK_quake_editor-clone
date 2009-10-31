@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.30  2009/02/21 17:06:18  danielpharos
+Changed all source files to use CRLF text format, updated copyright and GPL text.
+
 Revision 1.29  2008/09/06 15:57:24  danielpharos
 Moved exception code into separate file.
 
@@ -430,7 +433,7 @@ begin
   mem:=TMemoryStream.Create;
   err:=UnZipFile(Ref^.Self, mem, Ref^.Position);
   if err<>0 then
-    raise Exception.CreateFmt('Error decompressing file (%d)', [err]);
+    raise Exception.CreateFmt('Error decompressing file (%d)', [err]); //FIXME: Move to DICT!
   Result:=mem.Size;
   mem.Position:=0;
   S:=mem;
