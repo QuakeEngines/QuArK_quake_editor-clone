@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.73.4.1  2009/04/28 20:40:38  danielpharos
+Added initial support for American McGee's Alice.
+
 Revision 1.73  2009/02/21 17:06:18  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -661,10 +664,11 @@ type
 const
  // Note: Quake-3 and STVEF .BSPs, uses the same signature as Quake-2 .BSPs!
  cSignatureBspQ3      = $50534252; {"RBSP" 4-letter header}
- cSignatureMohaa      = $35313032;
+ cSignatureBspMOHAA   = $35313032; {"2015" 4-letter header}
 
  cVersionBspJK2JA     = $00000001; {JK2 or JA .BSP}
  cVersionBspSin       = $00000001; {SiN .BSP}
+ cVersionBspMOHAA     = $00000013; {MOHAA .BSP} //@ UNTESTED
 
 const
  Bsp3EntryNames : array[TBsp3EntryTypes] of String =
@@ -1163,9 +1167,9 @@ begin
           end;
         end;
 
-        cSignatureMohaa: { Moh:aa }
+        cSignatureBspMOHAA: { Moh:aa }
         begin
-          Raise EErrorFmt(5602, [LoadName, Version, cSignatureMohaa]);
+          Raise EErrorFmt(5602, [LoadName, Version, cSignatureBspMOHAA]);
 
 (* Non functiona
           LoadBsp3(F, StreamSize); {Decker - try using the Q3 .BSP loader for Moh:aa maps}
