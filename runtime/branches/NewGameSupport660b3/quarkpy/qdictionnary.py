@@ -284,6 +284,7 @@ Strings = {
     822: "Sylphis Map File (*.cmap)|*.cmap",
     823: "Doom 3 Material File (*.mtr)|*.mtr",
     824: "Call of Duty 2 Image Files (.iwi)|*.iwi",
+    825: "Anachronox Pak Files (*.dat)|*.dat",
 
     2368: "Skins",
     2369: "Frames",
@@ -573,6 +574,7 @@ Strings = {
     5147: "Call of Duty 2 Pak",
     5148: "Sylphis Pak",
     5149: "Sylphis Map file",
+    5150: "Anachronox Pak file",
 
     5155: "Quake Context",
     5156: "Tool bar",
@@ -733,7 +735,7 @@ Strings = {
     5504: "No texture image//Missing or invalid %s",
     5505: "'%s' is not a WAD file//%d should be %d or %d",
     5506: "'%s' is not a PACK file//%d should be %d",
-
+    5507: "'%s' is not a DAT file//%d should be %d",
     5508: "Files names in PACK files are limited to %d characters, including the path. '%s' is too long",
     5509: "Invalid data. The file is probably corrupted//Error %d",
 
@@ -1067,6 +1069,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.141  2009/03/16 08:46:00  danielpharos
+#Updated to DevIL 1.7.8, added IWI loading, and added many new image loading/saving options.
+#
 #Revision 1.140  2009/03/13 09:15:10  danielpharos
 #Added a Reset-button to the configuration window.
 #
