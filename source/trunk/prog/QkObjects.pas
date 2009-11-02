@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.124  2009/07/15 10:38:01  danielpharos
+Updated website link.
+
 Revision 1.123  2009/07/12 12:43:32  danielpharos
 Updated links to website for new website address.
 
@@ -399,10 +402,10 @@ uses Windows, SysUtils, Messages, Classes, Clipbrd,
 
 const
   QuArKVersion            = 'QuArK 6.6 Beta';
-  QuArKMinorVersion       = 'Beta 2';
+  QuArKMinorVersion       = 'Beta 3';
   QuArKCopyright          = 'Copyright (C) 1996-2009 Armin Rigo and others';
   QuArKUsedCompiler       = 'Delphi 7.0';
-  QuArKCompileDate        = 39843;   //This is the compiled date
+  QuArKCompileDate        = 40118;   //This is the compiled date
   { Amount of days that have passed after 30 Dec 1899 (Delphi 2+).
     You can use EncodeDate(Year, Month, Day) to compute it, but this value
     really needs to be a constant, so put the resulting value in here.
