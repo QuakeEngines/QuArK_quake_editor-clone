@@ -1,0 +1,73 @@
+Getting QuArK to compile under Delphi 7
+=======================================
+
+Obtaining and installing everything
+-----------------------------------
+
+Obtain Delphi 7 Personal from www.borland.com (you need to register to complete the download, and also so that you can register Delphi after you have installed it).
+
+Get the latest QuArK source from SourceForge (something like 20M, but you get lots of little files instead of one big zip file).
+
+If you're going to use QuArK 6.3 or older, you should also get (if you haven't already got it) the mini Python installer (minipy) from the QuArK downloads page (1M).  Note that these versions of QuArK require Python 1.5.1 or 1.5.2 - you can install a more recent version of Python but QuArK will not work with any version other than 1.5.1 and 1.5.2.
+
+That is basically all you need to develop for QuArK, however it is a generally held belief that you should test your changes before releasing them, and to do that you will need to have at least one of the supported games installed on your PC, and also the relevant build pack/s (build packs can be downloaded from the QuArK web site).
+
+This from Tiglari on the Python versions: QuArK will work with either; the current .exe looks for a .dll called python151 and uses it if it can, because there are some bugs in 151 (which is the Minipy) that cause certain Python code to work in 152 but not 151/Minipy.  So *if* you want to have 152 installed and to QuArK development, first install the minipy and rename the .dll to Python151 (in Windows/System), then install 1.52, and this won't interfere.  Python 2 doesn't have any collisions with the Minipy, and the infobase build script (build.py) works fine with Python 2.2.2 (latest stable).
+
+Compiling QuArK
+---------------
+
+The QuArK source download contains a readme file regarding the QuArK source - follow it carefully as it applies to Delphi 7 too.  You will need to install vclar40.dpk - Delphi 7 will give you a couple of warnings about missing resources and that the package is an older version, just click OK or Yes and it will be converted for you.  Don't forget to click the Install button after the package is converted to the Delphi 7 format.
+
+What has changed for Delphi 7
+-----------------------------
+
+Files which I had to change to get QuArK to compile under D7:
+
+	prog\SystemDetails.pas - included a {$ifdef VER150} to cover Delphi 7
+	prog\CCode.pas - {$I} for Resizer_delphi6.asm inside a {$ifdef VER150}
+
+This was summarised by nurail in a post to the QuArK-Python mailing list on 26-Dec-2002.
+
+A while ago I modified resizer.asm so that it would compile under Delphi 6, the modified version also works under Delphi 7.  The {$ifdef VER150} in CCode.pas takes care of including the correct .asm file.
+
+Delphi 7 configuration
+----------------------
+
+Delphi 7 is a lot more strict in what it considers clean code.  Compiling with the default warnings enabled produces a huge number of warnings, at least 4500 (that is where I stopped it compiling).  These can be fine-tuned by opening the project, selecting Project - Options from the Delphi menu, and going to the Compiler Messages tab.  There is a lengthy list of warnings which can be selectively disabled.  To get some sort of fairly meaningful list of warnings (actually 48 hints and 18 warnings), I found it best to disable the following warnings:
+
+	Comparing signed and unsigned types - widened both operands
+	Combining signed and unsigned types - widened both operands
+	Suspicious typecast
+	Unsafe typecast
+	Unsafe code
+	Unsafe typecast
+
+Note that these warnings should be DISABLED i.e. remove the tick from the checkbox.
+
+Some of these seem a tad paranoid, however there is probably substance in what they indicate.  Maybe that will be a nice little project for someone one day - enable all warnings, and clean up the QuArK source code to eradicate as many as possible.
+
+These settings are stored at the project level i.e. they are stored in the QuArK.cfg and QuArK.dof files.  It is probably best not to distribute versions of these files which were changed by a later version of Delphi in case they break something in an older version.
+
+Testing
+-------
+
+After building QuArK, I copied the .exe into a runtime directory, ran it, configured the Q3 build tools, created a simple Q3 map with a few entities, several textures and shaders, and then built and ran it.  Everything seemed to work ok, including the OpenGL preview inside QuArK.
+
+There is a lot of QuArK which I don't use, but loading/saving, the texture-browser, common tasks in the map-editing window, OpenGL preview and building (including QuArK's console) all appear basically to work.
+
+Caveat
+------
+
+This was all done using Delphi 7 Enterprise, there is nothing in the documentation comparing the different editions of Delphi 7 which indicates that this would not work with the Personal edition.
+
+DanielPharos: I also got working in Delphi 7 Free, using this guide. I didn't experience any problems, so everything should be OK.
+
+Questions
+---------
+
+Questions should probably be directed to the QuArK-Python forum which I monitor from time to time.
+
+Rowdy
+30-Dec-2002
+
