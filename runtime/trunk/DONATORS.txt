@@ -13,11 +13,9 @@ $Id$
         #####    Quake Army Knife Developers
 
 
-The QuArK Developers would like to thank the following donators
-for their support:
-
-QuArK 6.6.0 Beta 2 Donators
-------------------------------------
+The QuArK Developers would like to thank
+the following donators for their support:
+----------------------------------------
 
 - warcus
 "Please keep on working on this great tool!
