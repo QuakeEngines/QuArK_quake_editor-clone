@@ -11,7 +11,7 @@
 ;
 ; Setup and Use to create QuArK NSIS installer:
 ; ============================================
-; 1)  Change "INSTALLER_EXENAME" (line 31) below to the name of the installer executable file.
+; 1) Change "INSTALLER_EXENAME" (line 31) below to the name of the installer executable file.
 ; 2) Change "PRODUCT_VERSION" (line 33) below to match the new version number.
 ; 3) Change "InstallDir" (line 44) below to the new Program Files location.
 ; 4) Create a folder named " QuArK_installer_files " in your C:\ directory.
@@ -28,12 +28,12 @@ SetCompressor /SOLID lzma   ; We will use LZMA for best compression
 
 !define BUILDDIR "C:\QuArK_installer_files"
 !define SPLASHDIR "C:\QuArK_installer_splash_image"
-!define INSTALLER_EXENAME "quark-win32-6.6.0Beta1.exe"
+!define INSTALLER_EXENAME "quark-win32-6.6.0Beta3.exe"
 !define PRODUCT_NAME "QuArK"
-!define PRODUCT_VERSION "6.6.0 Beta 1"
-!define PRODUCT_WEB_SITE "http://quark.planetquake.gamespy.com/"
-!define PRODUCT_WEB_FORUM "http://quark.planetquake.gamespy.com/forums/"     ; QuArK forum
-!define PRODUCT_INFOBASE "http://quark.planetquake.gamespy.com/infobase/"
+!define PRODUCT_VERSION "6.6.0 Beta 3"
+!define PRODUCT_WEB_SITE "http://quark.sourceforge.net/"
+!define PRODUCT_WEB_FORUM "http://quark.sourceforge.net/forums/"     ; QuArK forum
+!define PRODUCT_INFOBASE "http://quark.sourceforge.net/infobase/"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\QuArK.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
@@ -41,14 +41,10 @@ SetCompressor /SOLID lzma   ; We will use LZMA for best compression
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
 OutFile "${INSTALLER_EXENAME}"
-InstallDir "$PROGRAMFILES\QuArK 6.6.0 Beta 1"
+InstallDir "$PROGRAMFILES\QuArK 6.6.0 Beta 3"
 InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show
 ShowUnInstDetails show
-#RequestExecutionLevel admin  #FIXME: Needed on Windows Vista. We should change the script to only need 'user'
-#SetShellVarContext: #FIXME: Start using this!
-#FIXME: If we set any reg-keys for QuArK, we need to switch to SetRegView 32!
-#XPStyle on #FIXME: Do we want this?
 
 ; MUI Settings
 !define MUI_ABORTWARNING
@@ -179,8 +175,6 @@ LangString TEXT_UNINSTALL3 ${LANG_NORWEGIAN} "$(^Name) was successfully removed 
 LangString TEXT_UNINSTALL3 ${LANG_RUSSIAN} "$(^Name) was successfully removed from your computer."
 LangString TEXT_UNINSTALL3 ${LANG_ARABIC} "$(^Name) was successfully removed from your computer."
 LangString TEXT_UNINSTALL3 ${LANG_TRADCHINESE} "$(^Name) was successfully removed from your computer."
-
-#LicenseLangString #FIXME: Start using this
 ; MUI end ------
 
 Section "$(TEXT_SEC01_TITLE)" SEC01
@@ -257,6 +251,8 @@ Section "$(TEXT_SEC01_TITLE)" SEC01
   File "${BUILDDIR}\images\*.*"
   SetOutPath "$INSTDIR\lgicons"
   File "${BUILDDIR}\lgicons\*.*"
+  SetOutPath "$INSTDIR\Lib"
+  File "${BUILDDIR}\Lib\*.*"
   SetOutPath "$INSTDIR\plugins"
   File "${BUILDDIR}\plugins\*.*"
   SetOutPath "$INSTDIR\quarkpy"
@@ -292,7 +288,6 @@ Section -Post
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "UninstallString" "$INSTDIR\uninst.exe"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayIcon" "$INSTDIR\QuArK.exe"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayVersion" "${PRODUCT_VERSION}"
-  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "InstallLocation" "$INSTDIR"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "Publisher" "${PRODUCT_PUBLISHER}"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "URLInfoAbout" "${PRODUCT_WEB_SITE}"
 SectionEnd
@@ -336,9 +331,15 @@ Section Uninstall
   Delete "$INSTDIR\help\*.*"
   Delete "$INSTDIR\images\*.*"
   Delete "$INSTDIR\lgicons\*.*"
+  Delete "$INSTDIR\Lib\*.*"
   Delete "$INSTDIR\plugins\*.*"
   Delete "$INSTDIR\quarkpy\*.*"
   Delete "$INSTDIR\*.*"
+
+
+  Delete "$SMPROGRAMS\QuArK\*.*"
+  Delete "$DESKTOP\QuArK.lnk"
+
 
   RMDir "$INSTDIR\addons\WildWest"
   RMDir "$INSTDIR\addons\Warsow"
@@ -378,13 +379,12 @@ Section Uninstall
   RMDir "$INSTDIR\help"
   RMDir "$INSTDIR\images"
   RMDir "$INSTDIR\lgicons"
+  RMDir "$INSTDIR\Lib"
   RMDir "$INSTDIR\plugins"
   RMDir "$INSTDIR\quarkpy"
   RMDir "$INSTDIR"
-
-  Delete "$SMPROGRAMS\QuArK\*.*"
   RMDir "$SMPROGRAMS\QuArK"
-  Delete "$DESKTOP\QuArK.lnk"
+
 
   DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
   DeleteRegKey HKLM "${PRODUCT_DIR_REGKEY}"
