@@ -46,7 +46,7 @@ class ThinFaceDlg (quarkpy.dlgclasses.LiveEditDlg):
     #
 
     endcolor = AQUA
-    size = (220,160)
+    size = (220,162)
     dfsep = 0.35
 
     dlgdef = """
@@ -288,6 +288,9 @@ quarkpy.mapsearch.items.append(qmenu.item('Find &Thin Faces', thinClick,
   "|Find Thin Faces:\n\nThis function will search for and identifies brushes with faces that are suspiciously thin.", "intro.mapeditor.menu.html#searchmenu"))
 
 #$Log$
+#Revision 1.10  2009/09/25 22:55:56  danielpharos
+#Added some missing import-statements.
+#
 #Revision 1.9  2005/10/15 00:51:56  cdunde
 #To reinstate headers and history
 #
