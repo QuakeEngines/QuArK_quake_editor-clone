@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.502  2009/10/29 20:33:10  danielpharos
+//Updated Steam filename.
+//
 //Revision 1.501  2009/10/26 00:11:53  cdunde
 //Made the default lib. setting to DevIL because the VTFLib.dll doesn't work!
 //If it's not going to work with Valve, Steam changing things all the time it should be removed.
@@ -10281,13 +10284,13 @@ QQRKSRC1
         Typ = "EDL" // "EDL" = Editfield-Directorypath-Lastfolderonly
         Hint = "QuArK will run the game with this as '-game' or '+set game' command-line parameter"
       }
-      GetEntitiesBtn: =
+      Get Entities: =
       {
         Typ = "P"
         Cap = "Get entities for this game"
         Macro = "makeaddon"
       }
-      GetTexturesBtn: =
+      Get Textures: =
       {
         Typ = "P"
         Cap = "Get textures for this game"
