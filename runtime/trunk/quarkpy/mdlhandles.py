@@ -4959,6 +4959,9 @@ class BoneCornerHandle(BoneHandle):
         #    changedradius = 1.0
         changedradius = 1.0
 
+        oldposrot = {}
+        for obj in list:
+            oldposrot[obj] = (obj.position, obj.rotmatrix)
         for obj in list:
             from math import sqrt
             # m in the line below causes the floating error.
@@ -4969,16 +4972,37 @@ class BoneCornerHandle(BoneHandle):
                 changedpos = changedradius * m * changedpos
                 obj.position = changedpos + rotationorigin
 
+        oldverticespos = self.newverticespos
+        newverticespos = {}
+        verticesweight = {}
+        for compname in oldverticespos.keys():
+            newverticespos[compname] = []
+            verticesweight[compname] = []
+            for vtx in oldverticespos[compname]:
+                newverticespos[compname] = newverticespos[compname] + [None]
+                verticesweight[compname] = verticesweight[compname] + [0.0]
+        for obj in list:
             vertices = obj.vtxlist
             for compname in vertices:
                 for vtx in vertices[compname]:
-                    if obj == self.bone and editor.ModelComponentList.has_key(compname) and editor.ModelComponentList[compname]['weightvtxlist'].has_key(vtx) and editor.ModelComponentList[compname]['weightvtxlist'][vtx].has_key(obj.name):
+                    if editor.ModelComponentList.has_key(compname) and editor.ModelComponentList[compname]['weightvtxlist'].has_key(vtx) and editor.ModelComponentList[compname]['weightvtxlist'][vtx].has_key(obj.name):
                         weight_value = editor.ModelComponentList[compname]['weightvtxlist'][vtx][obj.name]['weight_value']
                     else:
-                        weight_value = 1.0
-                    changedpos = self.newverticespos[compname][vtx] - rotationorigin
-                    changedpos = changedradius * m * changedpos * weight_value
-                    self.newverticespos[compname][vtx] = changedpos + rotationorigin
+                        continue
+                    changedpos = oldverticespos[compname][vtx] - rotationorigin
+                    changedpos = changedradius * m * changedpos
+                    if newverticespos[compname][vtx] is None:
+                        newverticespos[compname][vtx] = quarkx.vect(0, 0, 0)
+                    newverticespos[compname][vtx] = newverticespos[compname][vtx] + (changedpos + rotationorigin) * weight_value
+                    verticesweight[compname][vtx] = verticesweight[compname][vtx] + weight_value
+        for compname in newverticespos.keys():
+            for vtx in range(len(newverticespos[compname])):
+                if newverticespos[compname][vtx] is None:
+                    newverticespos[compname][vtx] = oldverticespos[compname][vtx]
+                    verticesweight[compname][vtx] = 1.0
+                if verticesweight[compname][vtx] != 1.0:
+                    newverticespos[compname][vtx] = newverticespos[compname][vtx] + oldverticespos[compname][vtx] * (1.0 - verticesweight[compname][vtx])
+        self.newverticespos = newverticespos
 
         return (math.acos(m[0,0])*180.0/math.pi)
 
@@ -5272,6 +5296,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.189  2009/10/16 21:29:06  cdunde
+#Menu update.
+#
 #Revision 1.188  2009/10/12 20:49:56  cdunde
 #Added support for .md3 animationCFG (configuration) support and editing.
 #
