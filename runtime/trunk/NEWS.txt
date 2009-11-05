@@ -12,6 +12,10 @@ $Id$
        #####
         #####       Quake Army Knife 6.6 Changelog
 
+6.6.0 Beta 4
+============
+
+
 6.6.0 Beta 3
 ============
 * [cdunde]: Added keyframe fill-in frames creation support for single and multiple component selections.
