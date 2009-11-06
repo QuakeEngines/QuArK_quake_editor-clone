@@ -4873,7 +4873,7 @@ class BoneCenterHandle(BoneHandle):
             vertices = obj.vtxlist
             for compname in vertices:
                 for vtx in vertices[compname]:
-                    if editor.ModelComponentList.has_key(compname) and editor.ModelComponentList[compname]['weightvtxlist'].has_key(vtx) and editor.ModelComponentList[compname]['weightvtxlist'][vtx].has_key(obj.name):
+                    if editor.ModelComponentList.has_key(compname) and editor.ModelComponentList[compname].has_key('weightvtxlist') and editor.ModelComponentList[compname]['weightvtxlist'].has_key(vtx) and editor.ModelComponentList[compname]['weightvtxlist'][vtx].has_key(obj.name):
                         weight_value = editor.ModelComponentList[compname]['weightvtxlist'][vtx][obj.name]['weight_value']
                     else:
                         weight_value = 1.0
@@ -4985,7 +4985,7 @@ class BoneCornerHandle(BoneHandle):
             vertices = obj.vtxlist
             for compname in vertices:
                 for vtx in vertices[compname]:
-                    if editor.ModelComponentList.has_key(compname) and editor.ModelComponentList[compname]['weightvtxlist'].has_key(vtx) and editor.ModelComponentList[compname]['weightvtxlist'][vtx].has_key(obj.name):
+                    if editor.ModelComponentList.has_key(compname) and editor.ModelComponentList[compname].has_key('weightvtxlist') and editor.ModelComponentList[compname]['weightvtxlist'].has_key(vtx) and editor.ModelComponentList[compname]['weightvtxlist'][vtx].has_key(obj.name):
                         weight_value = editor.ModelComponentList[compname]['weightvtxlist'][vtx][obj.name]['weight_value']
                     else:
                         continue
@@ -5296,6 +5296,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.190  2009/11/05 22:54:10  cdunde
+#DanielPharos's great fix for bones corner handle drag code.
+#
 #Revision 1.189  2009/10/16 21:29:06  cdunde
 #Menu update.
 #
