@@ -14,8 +14,9 @@ $Id$
 
 6.6.0 Beta 4
 ============
-* [cdunde]: DanielPharos's great fix for bones corner handle drag code.
+* [cdunde/DanielPharos]: To add bone vertex and weight assignment and improve output.ms file data.
 
+* [cdunde]: DanielPharos's great fix for bones corner handle drag code.
 
 6.6.0 Beta 3
 ============
