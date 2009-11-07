@@ -1,6 +1,6 @@
 target grnreader.exe
 
-Release grnreader.exe for use with QuArK 6.6.0 Beta 3
+Release grnreader.exe for use with QuArK 6.6.0 Beta 4
 can be built with these files and Visual Studio 2005.
 
 Works with granny2.dll included and possibly with later versions.
