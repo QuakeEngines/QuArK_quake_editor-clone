@@ -598,7 +598,7 @@ class ModelLayout(BaseLayout):
             elif selitem.type == ":tagframe": # Sets the tag frame form items.
                 self.dataform.setdata(selitem, formobj) # Tries to use the data returned to make the tag frame's form again.
             elif selitem.type == ":bone": # Sets the bone form items.
-                selitem['comp_list'] = self.editor.Root.currentcomponent.shortname
+                selitem['comp_list'] = self.editor.Root.currentcomponent.name
                 self.dataform.setdata(selitem, formobj) # Tries to use the data returned to make the bone's form again.
             elif selitem.type == ":mc": # Sets the component form items.
                 self.dataform.setdata(selitem, formobj) # Tries to use the data returned to make the skins group form again.
@@ -720,7 +720,7 @@ class ModelLayout(BaseLayout):
             check_tag_pos = selitem.dictspec['origin']
         elif len(sl) != 0 and selitem.type == ":bone": # Sets the bone form items.
             # Globals are set here for comparison in filldataform function later.
-            check_comp_list = selitem['comp_list']
+            check_comp_list = selitem.dictspec['comp_list']
             check_pos = selitem.dictspec['position']
             check_color = selitem.dictspec['_color']
             checkbone_length = selitem.dictspec['bone_length']
@@ -1011,19 +1011,22 @@ class ModelLayout(BaseLayout):
             ### This section handles the Bones default settings and data input for the Specifics/Args page.
             # Updates all vertexes U,V '_color' that are assigned to a bone handle when that handle color is changed.
             if (selitem.type == ":bone") and (not isinstance(reserved, qtoolbar.button)):
-                if check_comp_list != selitem["comp_list"]:
-                    check_comp_list = selitem['comp_list']
+                if check_comp_list != selitem.dictspec["comp_list"]:
+                    check_comp_list = selitem.dictspec['comp_list']
+                    self.editor.Root.currentcomponent = self.editor.Root.dictitems[selitem.dictspec['comp_list']]
                     try:
-                        self.editor.layout.explorer.sellist = [selitem] + [self.editor.Root.dictitems[selitem.dictspec['comp_list']].dictitems['Frames:fg'].subitems[self.editor.bone_frame]]
+                        frame = self.editor.Root.dictitems[selitem.dictspec['comp_list']].dictitems['Frames:fg'].subitems[self.editor.bone_frame]
                     except:
-                        self.editor.layout.explorer.sellist = [selitem] + [self.editor.Root.dictitems[selitem.dictspec['comp_list']].dictitems['Frames:fg'].subitems[0]]
+                        frame = self.editor.Root.dictitems[selitem.dictspec['comp_list']].dictitems['Frames:fg'].subitems[0]
                         self.editor.bone_frame = 0
-                    self.selchange()
                     if selitem.dictspec.has_key("frame_autoexpand") and selitem.dictspec['frame_autoexpand'] == "1":
-                        item = self.editor.Root.currentcomponent.currentframe
+                        item = frame
                         if item is not None:
                             self.editor.layout.explorer.expand(item.parent.parent)
                             self.editor.layout.explorer.expand(item.parent)
+                    self.editor.Root.currentcomponent.currentframe = frame
+                    self.editor.layout.explorer.sellist = [selitem] + [frame]
+                    self.selchange()
 
                 if check_offset != selitem["draw_offset"]:
                     if len(selitem.vtxlist) == 0:
@@ -1863,6 +1866,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.113  2009/10/12 20:49:56  cdunde
+#Added support for .md3 animationCFG (configuration) support and editing.
+#
 #Revision 1.112  2009/10/07 08:49:07  cdunde
 #To stop Skin-view from redrawing every time a tagframe is selected.
 #

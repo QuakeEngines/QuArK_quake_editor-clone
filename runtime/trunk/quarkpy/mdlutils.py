@@ -2189,7 +2189,7 @@ def removecomp(editor, compname, undo, multi_comps=0):
         else:
             for bone in new:
                 oldskelgroup.dictitems[bone.name]['component'] = bone.dictspec['component']
-                oldskelgroup.dictitems[bone.name]['comp_list'] = bone.dictspec['component'].replace(":mc", "")
+                oldskelgroup.dictitems[bone.name]['comp_list'] = bone.dictspec['component']
 
 #
 # The 'option' value of 1 MAKES a "clean" brand new component with NO triangles, frame.vertecies (only frames) or bones.
@@ -4138,6 +4138,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.123  2009/10/29 19:56:33  danielpharos
+#Fixed bad error-message text.
+#
 #Revision 1.122  2009/10/21 06:28:26  cdunde
 #Update to keyframes functions for handling tags.
 #
