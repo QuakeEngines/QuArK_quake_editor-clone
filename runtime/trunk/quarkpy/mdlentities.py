@@ -2437,6 +2437,9 @@ class BoneType(EntityManager):
         }
         """
 
+        if not o.dictspec.has_key("comp_list"):
+            o['comp_list'] = editor.Root.currentcomponent.name
+
         skeletongroup = editor.Root.dictitems['Skeleton:bg']  # get the bones group
         bones = skeletongroup.findallsubitems("", ':bone')    # get all bones
         for item in editor.layout.explorer.sellist:
@@ -2479,6 +2482,9 @@ class BoneType(EntityManager):
         "Returns the default settings or input data for this type of object 'o' (a bone) to use for the Specific/Args page."
 
         editor = mdleditor.mdleditor # Get the editor.
+        if not o.dictspec.has_key("comp_list"):
+            o['comp_list'] = editor.Root.currentcomponent.name
+
         skeletongroup = editor.Root.dictitems['Skeleton:bg']  # get the bones group
         bones = skeletongroup.findallsubitems("", ':bone')    # get all bones
         for item in o.dictspec:
@@ -2905,6 +2911,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.66  2009/10/17 09:17:31  cdunde
+#Added selection and playing of .md3 weapons with player models CFG Animation.
+#
 #Revision 1.65  2009/10/16 21:01:18  cdunde
 #Menu update.
 #
