@@ -1011,6 +1011,8 @@ class ModelLayout(BaseLayout):
             ### This section handles the Bones default settings and data input for the Specifics/Args page.
             # Updates all vertexes U,V '_color' that are assigned to a bone handle when that handle color is changed.
             if (selitem.type == ":bone") and (not isinstance(reserved, qtoolbar.button)):
+                if not selitem.dictspec.has_key("comp_list"):
+                    selitem['comp_list'] = self.editor.Root.currentcomponent.name
                 if check_comp_list != selitem.dictspec["comp_list"]:
                     check_comp_list = selitem.dictspec['comp_list']
                     self.editor.Root.currentcomponent = self.editor.Root.dictitems[selitem.dictspec['comp_list']]
@@ -1866,6 +1868,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.114  2009/11/09 02:17:31  cdunde
+#Fixes for individual bone selection and handle color change.
+#
 #Revision 1.113  2009/10/12 20:49:56  cdunde
 #Added support for .md3 animationCFG (configuration) support and editing.
 #
