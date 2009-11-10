@@ -3942,6 +3942,8 @@ class BoneHandle(qhandles.GenericHandle):
     #
     def start_drag(self, view, x, y, option=0):
         editor = self.mgr.editor
+        if quarkx.setupsubset(SS_MODEL, "Options")['Drag_Bones_Only'] == "1":
+            view.handles = []
         bones = editor.Root.dictitems['Skeleton:bg'].findallsubitems("", ':bone') # Get all bones.
         if self.attachedbones is None:
             self.attachedbones = []
@@ -4744,9 +4746,15 @@ class BoneCenterHandle(BoneHandle):
         # Draws all the bones in their original positions first.
         bones = self.mgr.editor.Root.dictitems['Skeleton:bg'].findallsubitems("", ':bone') # Get all bones.
         for bone in bones:
+            if bone == self.bone:
+                continue
+            if quarkx.setupsubset(SS_MODEL, "Options")['Drag_Bones_Only'] == "1" and (bone.name != self.bone.dictspec['parent_name'] and self.bone.name != bone.dictspec['parent_name']):
+                continue
             p = view.proj(bone.position)
             if p.visible:
-                if bone.dictspec['parent_name'] != "None":
+                if quarkx.setupsubset(SS_MODEL, "Options")['Drag_Bones_Only'] == "1" and (bone.name == self.bone.dictspec['parent_name'] or self.bone.name == bone.dictspec['parent_name']):
+                    pass
+                elif bone.dictspec['parent_name'] != "None":
                     parentbone = findbone(self.mgr.editor, bone.dictspec['parent_name'])
                     parent_handle_scale = parentbone['scale'][0]
                     p2 = view.proj(parentbone.position)
@@ -4778,6 +4786,20 @@ class BoneCenterHandle(BoneHandle):
         for obj in redimages:
             if obj.type != ":bone":
                 continue
+            vertices = obj.vtxlist
+            cv.pencolor = redcolor
+            # Draws the vertexes assigned to the bone joint DURING the drag.
+            for compname in vertices:
+                compvtx = self.newverticespos[compname]
+                tristodraw = self.mgr.editor.ModelComponentList['tristodraw'][compname]
+                for vtx in vertices[compname]:
+                    p = view.proj(compvtx[vtx])
+                    if vtx in tristodraw:
+                        for vtx2 in tristodraw[vtx]:
+                            p2 = view.proj(compvtx[vtx2])
+                            cv.line(p, p2)
+                    if p.visible:
+                        cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
             handle_color = self.bone.dictspec['_color']
             quarkx.setupsubset(SS_MODEL, "Colors")["handle_color"] = handle_color
             handle_color = MapColor("handle_color", SS_MODEL)
@@ -4804,20 +4826,6 @@ class BoneCenterHandle(BoneHandle):
                     DrawBoneLine(p, p2, cv, line_color, scale, parent_handle_scale)
                 handle_scale = obj.dictspec['scale'][0]
                 DrawBoneHandle(p, cv, handle_color, scale, handle_scale)
-            vertices = obj.vtxlist
-            cv.pencolor = redcolor
-            # Draws the vertexes assigned to the bone joint DURING the drag.
-            for compname in vertices:
-                compvtx = self.newverticespos[compname]
-                tristodraw = self.mgr.editor.ModelComponentList['tristodraw'][compname]
-                for vtx in vertices[compname]:
-                    p = view.proj(compvtx[vtx])
-                    if vtx in tristodraw:
-                        for vtx2 in tristodraw[vtx]:
-                            p2 = view.proj(compvtx[vtx2])
-                            cv.line(p, p2)
-                    if p.visible:
-                        cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
 
     def drag(self, v1, v2, flags, view): # for BoneCenterHandle
         delta = v2-v1
@@ -5015,57 +5023,60 @@ class BoneCornerHandle(BoneHandle):
         cv.brushstyle = BS_CLEAR
         scale = view.scale()
         # Draw all of the stationary bone joints first.
-        for bone in self.fixedbones:
-            p = view.proj(bone.position)
-            if bone.dictspec['parent_name'] != "None":
-                if (self.mgr.editor.layout.explorer.sellist[0] == self.bone):
-                    parentbone = bone.dictspec['parent_name']
-                    drewlines = 0
-                    for obj2 in range(len(redimages)):
-                        if parentbone == redimages[obj2].name:
-                            parentbone = redimages[obj2]
-                            parent_handle_scale = parentbone['scale'][0]
-                            p2 = view.proj(parentbone.position)
-                            if quarkx.setupsubset(SS_MODEL, "Options")['MBLines_Color'] is not None:
-                                line_color = self.bone.dictspec['_color']
-                                quarkx.setupsubset(SS_MODEL, "Colors")["line_color"] = line_color
-                                line_color = MapColor("line_color", SS_MODEL)
-                            else:
-                                line_color = MapColor("BoneHandles", SS_MODEL)
-                            DrawBoneLine(p, p2, cv, line_color, scale, parent_handle_scale)
-                            drewlines = 1
-                            break
-                    if drewlines == 1:
-                        try:
-                            handle_scale = bone.dictspec['scale'][0]
-                        except:
-                            handle_scale = 1.0
-                        handle_color = bone.dictspec['_color']
-                        quarkx.setupsubset(SS_MODEL, "Colors")["handle_color"] = handle_color
-                        handle_color = MapColor("handle_color", SS_MODEL)
-                        DrawBoneHandle(p, cv, handle_color, scale, handle_scale)
-                        continue
-                bone_parent = findbone(self.mgr.editor, bone.dictspec['parent_name'])
-                bone_parent_handle_scale = bone_parent['scale'][0]
-                p2 = view.proj(bone_parent.position)
-                line_color = MapColor("BoneLines", SS_MODEL)
-                DrawBoneLine(p, p2, cv, line_color, scale, bone_parent_handle_scale)
+        if quarkx.setupsubset(SS_MODEL, "Options")['Drag_Bones_Only'] != "1":
+            for bone in self.fixedbones:
+                if bone == self.bone:
+                    continue
+                p = view.proj(bone.position)
+                if bone.dictspec['parent_name'] != "None":
+                    if (self.mgr.editor.layout.explorer.sellist[0] == self.bone):
+                        parentbone = bone.dictspec['parent_name']
+                        drewlines = 0
+                        for obj2 in range(len(redimages)):
+                            if parentbone == redimages[obj2].name:
+                                parentbone = redimages[obj2]
+                                parent_handle_scale = parentbone['scale'][0]
+                                p2 = view.proj(parentbone.position)
+                                if quarkx.setupsubset(SS_MODEL, "Options")['MBLines_Color'] is not None:
+                                    line_color = self.bone.dictspec['_color']
+                                    quarkx.setupsubset(SS_MODEL, "Colors")["line_color"] = line_color
+                                    line_color = MapColor("line_color", SS_MODEL)
+                                else:
+                                    line_color = MapColor("BoneHandles", SS_MODEL)
+                                DrawBoneLine(p, p2, cv, line_color, scale, parent_handle_scale)
+                                drewlines = 1
+                                break
+                        if drewlines == 1:
+                            try:
+                                handle_scale = bone.dictspec['scale'][0]
+                            except:
+                                handle_scale = 1.0
+                            handle_color = bone.dictspec['_color']
+                            quarkx.setupsubset(SS_MODEL, "Colors")["handle_color"] = handle_color
+                            handle_color = MapColor("handle_color", SS_MODEL)
+                            DrawBoneHandle(p, cv, handle_color, scale, handle_scale)
+                            continue
+                    bone_parent = findbone(self.mgr.editor, bone.dictspec['parent_name'])
+                    bone_parent_handle_scale = bone_parent['scale'][0]
+                    p2 = view.proj(bone_parent.position)
+                    line_color = MapColor("BoneLines", SS_MODEL)
+                    DrawBoneLine(p, p2, cv, line_color, scale, bone_parent_handle_scale)
+                    try:
+                        handle_scale = bone_parent.dictspec['scale'][0]
+                    except:
+                        handle_scale = 1.0
+                    handle_color = bone_parent.dictspec['_color']
+                    quarkx.setupsubset(SS_MODEL, "Colors")["handle_color"] = handle_color
+                    handle_color = MapColor("handle_color", SS_MODEL)
+                    DrawBoneHandle(p2, cv, handle_color, scale, handle_scale)
                 try:
-                    handle_scale = bone_parent.dictspec['scale'][0]
+                    handle_scale = bone.dictspec['scale'][0]
                 except:
                     handle_scale = 1.0
-                handle_color = bone_parent.dictspec['_color']
+                handle_color = bone.dictspec['_color']
                 quarkx.setupsubset(SS_MODEL, "Colors")["handle_color"] = handle_color
                 handle_color = MapColor("handle_color", SS_MODEL)
-                DrawBoneHandle(p2, cv, handle_color, scale, handle_scale)
-            try:
-                handle_scale = bone.dictspec['scale'][0]
-            except:
-                handle_scale = 1.0
-            handle_color = bone.dictspec['_color']
-            quarkx.setupsubset(SS_MODEL, "Colors")["handle_color"] = handle_color
-            handle_color = MapColor("handle_color", SS_MODEL)
-            DrawBoneHandle(p, cv, handle_color, scale, handle_scale)
+                DrawBoneHandle(p, cv, handle_color, scale, handle_scale)
         if quarkx.setupsubset(SS_MODEL, "Options")['MBLines_Color'] is not None:
             line_color = self.bone.dictspec['_color']
             quarkx.setupsubset(SS_MODEL, "Colors")["line_color"] = line_color
@@ -5075,6 +5086,20 @@ class BoneCornerHandle(BoneHandle):
         for obj in redimages:
             if obj.type != ":bone":
                 continue
+            vertices = obj.vtxlist
+            cv.pencolor = redcolor
+            # Draws the vertexes assigned to the bone joint DURING the drag.
+            for compname in vertices:
+                compvtx = self.newverticespos[compname]
+                tristodraw = self.mgr.editor.ModelComponentList['tristodraw'][compname]
+                for vtx in vertices[compname]:
+                    p = view.proj(compvtx[vtx])
+                    if vtx in tristodraw:
+                        for vtx2 in tristodraw[vtx]:
+                            p2 = view.proj(compvtx[vtx2])
+                            cv.line(p, p2)
+                    if p.visible:
+                        cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
             try:
                 handle_scale = obj.dictspec['scale'][0]
             except:
@@ -5112,21 +5137,16 @@ class BoneCornerHandle(BoneHandle):
                 cv.brushcolor = handle_color
                 cv.brushstyle = BS_SOLID
                 cv.ellipse(int(p.x)-5, int(p.y)-3, int(p.x)+5, int(p.y)+3)
-            cv.brushstyle = BS_CLEAR
-            vertices = obj.vtxlist
-            cv.pencolor = redcolor
-            # Draws the vertexes assigned to the bone joint DURING the drag.
-            for compname in vertices:
-                compvtx = self.newverticespos[compname]
-                tristodraw = self.mgr.editor.ModelComponentList['tristodraw'][compname]
-                for vtx in vertices[compname]:
-                    p = view.proj(compvtx[vtx])
-                    if vtx in tristodraw:
-                        for vtx2 in tristodraw[vtx]:
-                            p2 = view.proj(compvtx[vtx2])
-                            cv.line(p, p2)
-                    if p.visible:
-                        cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
+                cv.brushstyle = BS_CLEAR
+        p = view.proj(self.bone.position)
+        try:
+            handle_scale = self.bone.dictspec['scale'][0]
+        except:
+            handle_scale = 1.0
+        handle_color = self.bone.dictspec['_color']
+        quarkx.setupsubset(SS_MODEL, "Colors")["handle_color"] = handle_color
+        handle_color = MapColor("handle_color", SS_MODEL)
+        DrawBoneHandle(p, cv, handle_color, scale, handle_scale)
 
     def drag(self, v1, v2, flags, view): # for BoneCornerHandle
         delta = v2-v1
@@ -5296,6 +5316,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.191  2009/11/06 06:10:45  cdunde
+#Minor error message fix.
+#
 #Revision 1.190  2009/11/05 22:54:10  cdunde
 #DanielPharos's great fix for bones corner handle drag code.
 #

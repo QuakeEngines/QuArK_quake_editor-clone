@@ -276,6 +276,13 @@ def mBHandles_Only(m):
         quarkx.setupsubset(SS_MODEL, "Options")['BHandles_Only'] = None
     quarkx.reloadsetup()
 
+def mB_DragHandles_Only(m):
+    # Only allows drawing of bone drag handles to be displayed to increase drawing speed.
+    if not MdlOption("Drag_Bones_Only"):
+        quarkx.setupsubset(SS_MODEL, "Options")['Drag_Bones_Only'] = "1"
+    else:
+        quarkx.setupsubset(SS_MODEL, "Options")['Drag_Bones_Only'] = None
+
 def mBMake_All_Draglines(m):
     # Allows all bone handles draglines to be created but will decrease drawing speed & increase model importing time.
     if not MdlOption("BMake_All_Draglines"):
@@ -433,12 +440,14 @@ def mBFONLY(m):
 def BoneMenu():
     Xmblines_color = qmenu.item("&Match Bone Lines Color", mMBLines_Color, "|Match Bone Lines Color:\n\nWhen checked the bone lines color displayed during a drag will match the handle color being dragged.|intro.modeleditor.menu.html#optionsmenu")
     Xmbhandles_only = qmenu.item("&Draw Bone Handles Only", mBHandles_Only, "|Draw Bone Handles Only:\n\nWhen checked only the bone handles are displayed to increase drawing speed during and after a drag.|intro.modeleditor.menu.html#optionsmenu")
+    Xmb_draghandles_only = qmenu.item("&Only Draw Drag Bones", mB_DragHandles_Only, "|Only Draw Drag Bones:\n\nWhen checked only all the bone handles being dragged are displayed to increase drawing speed during a drag.|intro.modeleditor.menu.html#optionsmenu")
     Xmball_draglines = qmenu.item("Make &All Draglines", mBMake_All_Draglines, "|Make All Draglines:\n\nWhen checked allows all bone handles draglines to be created but will decrease drawing speed & increase model importing time.\n\nOnly applies at time of model importing and will have no effect once it has. If not used sufficient draglines to see what is being moved and how will still be drawn.|intro.modeleditor.menu.html#optionsmenu")
 
-    menulist = [Xmblines_color, Xmbhandles_only, Xmball_draglines]
+    menulist = [Xmblines_color, Xmbhandles_only, Xmb_draghandles_only, Xmball_draglines]
 
     Xmblines_color.state = quarkx.setupsubset(SS_MODEL,"Options").getint("MBLines_Color")
     Xmbhandles_only.state = quarkx.setupsubset(SS_MODEL,"Options").getint("BHandles_Only")
+    Xmb_draghandles_only.state = quarkx.setupsubset(SS_MODEL,"Options").getint("Drag_Bones_Only")
     Xmball_draglines.state = quarkx.setupsubset(SS_MODEL,"Options").getint("BMake_All_Draglines")
 
     return menulist
@@ -845,6 +854,9 @@ def OptionsMenuRMB():
 #
 #
 #$Log$
+#Revision 1.46  2009/06/16 11:34:08  cdunde
+#Small dialog setting update.
+#
 #Revision 1.45  2009/04/28 21:30:56  cdunde
 #Model Editor Bone Rebuild merge to HEAD.
 #Complete change of bone system.
