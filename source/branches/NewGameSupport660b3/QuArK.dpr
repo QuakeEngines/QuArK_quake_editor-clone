@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.63.2.1  2009/10/31 15:20:50  danielpharos
+Added some Anachronox and James Bond: Nightfire stuff, and added Daikatana .pak reading support!
+
 Revision 1.63  2009/03/16 08:47:21  danielpharos
 Updated to DevIL 1.7.8, added IWI loading, and added many new image loading/saving options.
 
@@ -311,6 +314,7 @@ uses
   QkVTFLib in 'prog\QkVTFLib.pas',
   QkWad in 'prog\QkWad.pas' {FQWad},
   QkWav in 'prog\QkWav.pas',
+  QkWorldCraft in 'prog\QkWorldCraft.pas',
   QkZip2 in 'prog\QkZip2.pas',
   qmath in 'prog\qmath.pas',
   qmatrices in 'prog\qmatrices.pas',
