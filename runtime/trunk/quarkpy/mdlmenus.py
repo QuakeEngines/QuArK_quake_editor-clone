@@ -205,83 +205,85 @@ def MdlBackgroundMenu(editor, view=None, origin=None):
             def keyframeclick(editor=editor):
                 if len(editor.layout.explorer.sellist) == 0:
                     return
-                sellistPerComp = []
-                IPF = float(1/quarkx.setupsubset(SS_MODEL, "Display")["AnimationIPF"][0])
-                frameindex1 = frameindex2 = None
-                framecomp = None
-                for item in editor.layout.explorer.sellist:
-                    if frameindex2 is not None:
-                        break
-                    if item.type == ":mf":
-                        frames = item.parent.subitems
-                        for frame in range(len(frames)):
-                            if frames[frame].name == item.name and frameindex1 is None:
-                                frameindex1 = frame
-                                framecomp = item.parent.parent
-                                break
-                            elif frames[frame].name == item.name and frameindex2 is None:
-                                frameindex2 = frame
-                                break
-                FrameGroup = framecomp.dictitems['Frames:fg'].subitems # Get all the frames for this component.
-                sellistPerComp = [[framecomp, [FrameGroup[frameindex1], FrameGroup[frameindex2]]]]
-                if framecomp.dictspec.has_key("tag_components"):
-                    comp_names = framecomp.dictspec['tag_components'].split(", ")
-                    for comp_name in comp_names:
-                        comp = editor.Root.dictitems[comp_name]
-                        if comp.dictspec.has_key("Tags"):
-                            comp_tags = comp.dictspec['Tags'].split(", ")
-                        if comp_name == framecomp.name:
-                            continue
-                        for item in range(len(sellistPerComp)):
-                            if comp_name == sellistPerComp[item][0].name:
-                                break
-                            if item == len(sellistPerComp)-1:
-                                comp_frames = comp.dictitems['Frames:fg'].subitems # Get all the frames for this component.
-                                sellistPerComp = sellistPerComp + [[comp, [comp_frames[frameindex1], comp_frames[frameindex2]]]]
+                if len(editor.layout.explorer.sellist) > 1:
+                    sellistPerComp = []
+                    IPF = float(1/quarkx.setupsubset(SS_MODEL, "Display")["AnimationIPF"][0])
+                    frameindex1 = frameindex2 = None
+                    framecomp = None
+                    for item in editor.layout.explorer.sellist:
+                        if frameindex2 is not None:
+                            break
+                        if item.type == ":mf":
+                            frames = item.parent.subitems
+                            for frame in range(len(frames)):
+                                if frames[frame].name == item.name and frameindex1 is None:
+                                    frameindex1 = frame
+                                    framecomp = item.parent.parent
+                                    break
+                                elif frames[frame].name == item.name and frameindex2 is None:
+                                    frameindex2 = frame
+                                    break
+                    FrameGroup = framecomp.dictitems['Frames:fg'].subitems # Get all the frames for this component.
+                    sellistPerComp = [[framecomp, [FrameGroup[frameindex1], FrameGroup[frameindex2]]]]
+                    if framecomp.dictspec.has_key("tag_components"):
+                        comp_names = framecomp.dictspec['tag_components'].split(", ")
+                        for comp_name in comp_names:
+                            comp = editor.Root.dictitems[comp_name]
+                            if comp.dictspec.has_key("Tags"):
+                                comp_tags = comp.dictspec['Tags'].split(", ")
+                            if comp_name == framecomp.name:
+                                continue
+                            for item in range(len(sellistPerComp)):
+                                if comp_name == sellistPerComp[item][0].name:
+                                    break
+                                if item == len(sellistPerComp)-1:
+                                    comp_frames = comp.dictitems['Frames:fg'].subitems # Get all the frames for this component.
+                                    sellistPerComp = sellistPerComp + [[comp, [comp_frames[frameindex1], comp_frames[frameindex2]]]]
 
-                    group = framecomp.name.split("_")[0]
-                    misc_group = editor.Root.dictitems['Misc:mg']
-                    for tag_name in comp_tags:
-                        tag = misc_group.dictitems[group + "_" + tag_name + ":tag"]
-                        tagframes = tag.subitems
-                        sellistPerComp = sellistPerComp + [[tag, [tagframes[frameindex1], tagframes[frameindex2]]]]
-                for comp in editor.layout.explorer.sellist:
-                    if comp.type == ":mc":
-                        if comp.name == framecomp.name:
-                            continue
-                        for item in range(len(sellistPerComp)):
-                            if comp.name == sellistPerComp[item][0].name:
-                                break
-                            if item == len(sellistPerComp)-1:
-                                FrameGroup = comp.dictitems['Frames:fg'].subitems # Get all the frames for this component.
-                                sellistPerComp = sellistPerComp + [[comp, [FrameGroup[frameindex1], FrameGroup[frameindex2]]]]
-                        if comp.dictspec.has_key("tag_components"):
-                            comp_names = comp.dictspec['tag_components'].split(", ")
-                            for comp_name in comp_names:
-                                comp2 = editor.Root.dictitems[comp_name]
-                                if comp2.dictspec.has_key("Tags"):
-                                    comp_tags = comp2.dictspec['Tags'].split(", ")
-                                for item in range(len(sellistPerComp)):
-                                    if comp_name == sellistPerComp[item][0].name:
-                                        break
-                                    if item == len(sellistPerComp)-1:
-                                        comp_frames = comp2.dictitems['Frames:fg'].subitems # Get all the frames for this component.
-                                        sellistPerComp = sellistPerComp + [[comp2, [comp_frames[frameindex1], comp_frames[frameindex2]]]]
-                            group = comp.name.split("_")[0]
-                            misc_group = editor.Root.dictitems['Misc:mg']
-                            for tag_name in comp_tags:
-                                tag = misc_group.dictitems[group + "_" + tag_name + ":tag"]
-                                tagframes = tag.subitems
-                                for item in range(len(sellistPerComp)):
-                                    if tag.name == sellistPerComp[item][0].name:
-                                        break
-                                    if item == len(sellistPerComp)-1:
-                                        sellistPerComp = sellistPerComp + [[tag, [tagframes[frameindex1], tagframes[frameindex2]]]]
+                        group = framecomp.name.split("_")[0]
+                        misc_group = editor.Root.dictitems['Misc:mg']
+                        for tag_name in comp_tags:
+                            tag = misc_group.dictitems[group + "_" + tag_name + ":tag"]
+                            tagframes = tag.subitems
+                            sellistPerComp = sellistPerComp + [[tag, [tagframes[frameindex1], tagframes[frameindex2]]]]
+                    for comp in editor.layout.explorer.sellist:
+                        if comp.type == ":mc":
+                            if comp.name == framecomp.name:
+                                continue
+                            for item in range(len(sellistPerComp)):
+                                if comp.name == sellistPerComp[item][0].name:
+                                    break
+                                if item == len(sellistPerComp)-1:
+                                    FrameGroup = comp.dictitems['Frames:fg'].subitems # Get all the frames for this component.
+                                    sellistPerComp = sellistPerComp + [[comp, [FrameGroup[frameindex1], FrameGroup[frameindex2]]]]
+                            if comp.dictspec.has_key("tag_components"):
+                                comp_names = comp.dictspec['tag_components'].split(", ")
+                                for comp_name in comp_names:
+                                    comp2 = editor.Root.dictitems[comp_name]
+                                    if comp2.dictspec.has_key("Tags"):
+                                        comp_tags = comp2.dictspec['Tags'].split(", ")
+                                    for item in range(len(sellistPerComp)):
+                                        if comp_name == sellistPerComp[item][0].name:
+                                            break
+                                        if item == len(sellistPerComp)-1:
+                                            comp_frames = comp2.dictitems['Frames:fg'].subitems # Get all the frames for this component.
+                                            sellistPerComp = sellistPerComp + [[comp2, [comp_frames[frameindex1], comp_frames[frameindex2]]]]
+                                group = comp.name.split("_")[0]
+                                misc_group = editor.Root.dictitems['Misc:mg']
+                                for tag_name in comp_tags:
+                                    tag = misc_group.dictitems[group + "_" + tag_name + ":tag"]
+                                    tagframes = tag.subitems
+                                    for item in range(len(sellistPerComp)):
+                                        if tag.name == sellistPerComp[item][0].name:
+                                            break
+                                        if item == len(sellistPerComp)-1:
+                                            sellistPerComp = sellistPerComp + [[tag, [tagframes[frameindex1], tagframes[frameindex2]]]]
 
-                def linear_interpolation_click(m, editor=editor, sellistPerComp=sellistPerComp, IPF=IPF, frameindex1=frameindex1, frameindex2=frameindex2):
+                def linear_interpolation_click(m, editor=editor):
                     import mdlmgr
                     mdlmgr.savefacesel = 1
-                    KeyframeLinearInterpolation(editor, sellistPerComp, IPF, frameindex1, frameindex2)
+                    if len(editor.layout.explorer.sellist) > 1:
+                        KeyframeLinearInterpolation(editor, sellistPerComp, IPF, frameindex1, frameindex2)
 
                 linear_interpolation = qmenu.item("&Linear Interpolation", linear_interpolation_click, "|Linear Interpolation:\n\nThis will create movement in a straight line from the first frame selected to the second frame selected for all components selected (if more then one).|intro.modeleditor.rmbmenus.html#keyframecommands")
 
@@ -411,6 +413,9 @@ def BaseMenu(sellist, editor):
 #
 #
 #$Log$
+#Revision 1.47  2009/10/21 06:28:26  cdunde
+#Update to keyframes functions for handling tags.
+#
 #Revision 1.46  2009/10/20 21:42:03  cdunde
 #Correction of previous menu link update.
 #
