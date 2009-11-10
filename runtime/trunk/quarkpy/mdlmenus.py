@@ -205,7 +205,16 @@ def MdlBackgroundMenu(editor, view=None, origin=None):
             def keyframeclick(editor=editor):
                 if len(editor.layout.explorer.sellist) == 0:
                     return
-                if len(editor.layout.explorer.sellist) > 1:
+                frame1parent = frame2parent = None
+                framecount = 0
+                for item in editor.layout.explorer.sellist:
+                    if item.type == ":mf":
+                        framecount = framecount + 1
+                        if frame1parent is None:
+                            frame1parent = item.parent.parent
+                        elif frame2parent is None:
+                            frame2parent = item.parent.parent
+                if frame2parent == frame1parent and framecount == 2:
                     sellistPerComp = []
                     IPF = float(1/quarkx.setupsubset(SS_MODEL, "Display")["AnimationIPF"][0])
                     frameindex1 = frameindex2 = None
@@ -282,7 +291,16 @@ def MdlBackgroundMenu(editor, view=None, origin=None):
                 def linear_interpolation_click(m, editor=editor):
                     import mdlmgr
                     mdlmgr.savefacesel = 1
-                    if len(editor.layout.explorer.sellist) > 1:
+                    frame1parent = frame2parent = None
+                    framecount = 0
+                    for item in editor.layout.explorer.sellist:
+                        if item.type == ":mf":
+                            framecount = framecount + 1
+                            if frame1parent is None:
+                                frame1parent = item.parent.parent
+                            elif frame2parent is None:
+                                frame2parent = item.parent.parent
+                    if frame2parent == frame1parent and framecount == 2:
                         KeyframeLinearInterpolation(editor, sellistPerComp, IPF, frameindex1, frameindex2)
 
                 linear_interpolation = qmenu.item("&Linear Interpolation", linear_interpolation_click, "|Linear Interpolation:\n\nThis will create movement in a straight line from the first frame selected to the second frame selected for all components selected (if more then one).|intro.modeleditor.rmbmenus.html#keyframecommands")
@@ -413,6 +431,9 @@ def BaseMenu(sellist, editor):
 #
 #
 #$Log$
+#Revision 1.48  2009/11/10 18:58:55  cdunde
+#To fix broken RMB menu.
+#
 #Revision 1.47  2009/10/21 06:28:26  cdunde
 #Update to keyframes functions for handling tags.
 #
