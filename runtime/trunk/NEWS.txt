@@ -14,6 +14,8 @@ $Id$
 
 6.6.0 Beta 4
 ============
+* [cdunde]: Added option to only draw drag bones to speed up drag drawing if a lot of bones exist.
+
 * [cdunde]: Fixes for individual bone selection and handle color change.
 
 * [cdunde/DanielPharos]: To add bone vertex and weight assignment and improve output.ms file data.
