@@ -4884,7 +4884,10 @@ class BoneCenterHandle(BoneHandle):
                     if editor.ModelComponentList.has_key(compname) and editor.ModelComponentList[compname].has_key('weightvtxlist') and editor.ModelComponentList[compname]['weightvtxlist'].has_key(vtx) and editor.ModelComponentList[compname]['weightvtxlist'][vtx].has_key(obj.name):
                         weight_value = editor.ModelComponentList[compname]['weightvtxlist'][vtx][obj.name]['weight_value']
                     else:
-                        weight_value = 1.0
+                        if obj.dictspec.has_key("IWT") and obj.dictspec['parent_name'] != "None":
+                            weight_value = 0.0
+                        else:
+                            weight_value = 1.0
                     self.newverticespos[compname][vtx] = self.newverticespos[compname][vtx] + (delta * weight_value)
 
         return delta
@@ -4996,7 +4999,10 @@ class BoneCornerHandle(BoneHandle):
                     if editor.ModelComponentList.has_key(compname) and editor.ModelComponentList[compname].has_key('weightvtxlist') and editor.ModelComponentList[compname]['weightvtxlist'].has_key(vtx) and editor.ModelComponentList[compname]['weightvtxlist'][vtx].has_key(obj.name):
                         weight_value = editor.ModelComponentList[compname]['weightvtxlist'][vtx][obj.name]['weight_value']
                     else:
-                        continue
+                        if obj.dictspec.has_key("IWT") and obj.dictspec['parent_name'] != "None":
+                            weight_value = 0.0
+                        else:
+                            weight_value = 1.0
                     changedpos = oldverticespos[compname][vtx] - rotationorigin
                     changedpos = changedradius * m * changedpos
                     if newverticespos[compname][vtx] is None:
@@ -5316,6 +5322,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.192  2009/11/10 04:41:34  cdunde
+#Added option to only draw drag bones to speed up drag drawing if a lot of bones exist.
+#
 #Revision 1.191  2009/11/06 06:10:45  cdunde
 #Minor error message fix.
 #
