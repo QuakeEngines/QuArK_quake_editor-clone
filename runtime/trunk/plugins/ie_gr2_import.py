@@ -652,7 +652,7 @@ def load_gr2mesh(gr2_filename, basepath):
             bones_index_list = bones_index_list.replace("[", "")
             bones_index_list = bones_index_list.replace("]", "")
             bones_index_list = bones_index_list.split(",")
-            vert_index = int(words[2])-1
+            vert_index = int(words[2])
             for amt in range(len(bones_index_list)):
                 bones_index_list[amt] = int(bones_index_list[amt])
             weights_list[vert_index] = [bones_index_list]
@@ -662,7 +662,7 @@ def load_gr2mesh(gr2_filename, basepath):
             bones_weight_list = bones_weight_list.replace("[", "")
             bones_weight_list = bones_weight_list.replace("]", "")
             bones_weight_list = bones_weight_list.split(",")
-            vert_index = int(words[2])-1
+            vert_index = int(words[2])
             for amt in range(len(bones_weight_list)):
                 bones_weight_list[amt] = int(bones_weight_list[amt])
             weights_list[vert_index] = weights_list[vert_index] + [bones_weight_list]
@@ -672,7 +672,7 @@ def load_gr2mesh(gr2_filename, basepath):
             vert_index0, vert_index1, vert_index2 = words[3].split(",")
             vert_index0 = vert_index0.replace("[", "")
             vert_index2 = vert_index2.replace("]", "")
-            vert_index0 = int(vert_index0)-1
+            vert_index0 = int(vert_index0)
             if not conversion_list.has_key(vert_index0):
                 fixed_vert_index0 = len(frame_vertices) / 3
                 frame_vertices = frame_vertices + (comp_mesh[vert_index0*3],comp_mesh[vert_index0*3+1],comp_mesh[vert_index0*3+2],)
@@ -680,7 +680,7 @@ def load_gr2mesh(gr2_filename, basepath):
                 MakeBoneList(Component, fixed_vert_index0, weights_list[vert_index0][0], weights_list[vert_index0][1], bone_vtx_list, bone_index_conv_list)
             else:
                 fixed_vert_index0 = conversion_list[vert_index0]
-            vert_index1 = int(vert_index1)-1
+            vert_index1 = int(vert_index1)
             if not conversion_list.has_key(vert_index1):
                 fixed_vert_index1 = len(frame_vertices) / 3
                 frame_vertices = frame_vertices + (comp_mesh[vert_index1*3],comp_mesh[vert_index1*3+1],comp_mesh[vert_index1*3+2],)
@@ -688,7 +688,7 @@ def load_gr2mesh(gr2_filename, basepath):
                 MakeBoneList(Component, fixed_vert_index1, weights_list[vert_index1][0], weights_list[vert_index1][1], bone_vtx_list, bone_index_conv_list)
             else:
                 fixed_vert_index1 = conversion_list[vert_index1]
-            vert_index2 = int(vert_index2)-1
+            vert_index2 = int(vert_index2)
             if not conversion_list.has_key(vert_index2):
                 fixed_vert_index2 = len(frame_vertices) / 3
                 frame_vertices = frame_vertices + (comp_mesh[vert_index2*3],comp_mesh[vert_index2*3+1],comp_mesh[vert_index2*3+2],)
@@ -1906,6 +1906,11 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.8  2009/11/15 02:44:40  cdunde
+# Update of grnreader.exe to eliminate multiple outputs of group mesh vertices to .ms file,
+# of .gr2 importer to eliminate multiple output.ms file listings of bones and proper vertex weight assigning.
+# and of mdlhandles.py to set its code back to the way it was and should be for all model types.
+#
 # Revision 1.7  2009/11/13 06:15:05  cdunde
 # Updates for .gr2 bones to use our same code.
 #
