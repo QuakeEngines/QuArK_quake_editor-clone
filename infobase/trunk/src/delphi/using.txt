@@ -7,16 +7,16 @@ Here are a few notes about using Delphi.
 <dt><a name="files"></a>Delphi file types<dd>
 A project consists of a .dpr file (Delphi project), a number of .pas files (Object Pascal source files) and .dfm files (Delphi forms).
 
-There are a few other files containing resources (.res files), project configuration (.dof and .cfg), and possibly assembler files (.asm).
+There are a few other files containing resources (.res files), project configuration (.dof and .cfg), include files (.inc), and possibly assembler files (.asm).
 
 When Delphi compiles a .pas file, it creates a corresponding .dcu file (Delphi compiled unit).
 
-Also every .dfm file will have a corresponding .pas file (but not necessarily the other way around), and every .pas file will produce a .dcu file.
+Also every .dfm file will have a corresponding .pas file (but not necessarily the other way around).
 
 <dt><a name="compiling"></a>Compiling with Delphi<dd>
 .dcu files are temporary and can be deleted at any time.  However, if you delete a .dcu file then Delphi has to compile the corresponding .pas file again, whether it has changed since the last compile or not.
 
-If you do a compile in Delphi (by selecting Project - Compile from the menu or by pressing Ctrl-F9) Delphi checks all the .pas files and all the .dcu files, and only compiles those .pas files which have been changed since the corresponding .dcu file was last compiled.  This is also true for .pas files which have been changed inside the Delphi IDE but not yet saved - they are considered as changed by the compiler.  I also suspect that Delphi will recompile .pas files which rely on other .pas files e.g. if file1.pas uses file2.pas, and file2.pas has been changed, then both file1.pas and file2.pas will be recompiled.
+If you do a compile in Delphi (by selecting Project - Compile from the menu or by pressing Ctrl-F9) Delphi checks all the .pas files and all the .dcu files, and only compiles those .pas files which have been changed since the corresponding .dcu file was last compiled.  This is also true for .pas files which have been changed inside the Delphi IDE but not yet saved - they are considered as changed by the compiler.  Also, Delphi will recompile .pas files which rely on other .pas files e.g. if file1.pas uses file2.pas, and file2.pas has been changed, then both file1.pas and file2.pas will be recompiled.
 
 Alternatively you can force a full recompile of everything by selecting Project - Build from the menu.
 
