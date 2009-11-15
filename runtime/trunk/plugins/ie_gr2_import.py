@@ -485,7 +485,16 @@ def load_gr2mesh(gr2_filename, basepath):
     # bone_vtx_list =  { bone_index : { component_full_name : [ vtx, vtx, vtx ...] } } Dictionary list for the bone.vtxlist data so they process much faster.
     # bone_index_conv_list = { current_mesh_bone_index : model_bone_index, ...} a list of the above bones_index_list int bone indexes as "KEYS" and the correct "Skeleton's" bone_index that it really should be.
     def MakeBoneList(Component, vert_index, bones_index_list, bones_weight_list, bone_vtx_list, bone_index_conv_list):
+        weighted_vertex = 0
         for index in range(len(bones_index_list)):
+            if index < 3 and weighted_vertex != 0 and bones_weight_list[index] == 0:
+                continue
+            elif index == 3 and weighted_vertex == 0 and bones_weight_list[index] == 0:
+                bones_weight_list[index] = 255
+            elif bones_weight_list[index] != 0:
+                weighted_vertex = 1
+            else:
+                continue
             fixed_index = bone_index_conv_list[bones_index_list[index]]
             if bone_vtx_list[fixed_index].has_key(Component.name):
                 if vert_index in bone_vtx_list[fixed_index][Component.name]:
@@ -504,22 +513,24 @@ def load_gr2mesh(gr2_filename, basepath):
             if not editor.ModelComponentList[Component.name]['bonevtxlist'][QuArK_bones[fixed_index].name].has_key(vert_index):
                 editor.ModelComponentList[Component.name]['bonevtxlist'][QuArK_bones[fixed_index].name][vert_index] = {}
                 editor.ModelComponentList[Component.name]['bonevtxlist'][QuArK_bones[fixed_index].name][vert_index]['color'] = QuArK_bones[fixed_index]['_color']
-            if bones_weight_list[index] > 0:
-                if not editor.ModelComponentList[Component.name].has_key('weightvtxlist'):
-                    editor.ModelComponentList[Component.name]['weightvtxlist'] = {}
-                if not editor.ModelComponentList[Component.name]['weightvtxlist'].has_key(vert_index):
-                    editor.ModelComponentList[Component.name]['weightvtxlist'][vert_index] = {}
-                if not editor.ModelComponentList[Component.name]['weightvtxlist'][vert_index].has_key(QuArK_bones[fixed_index].name):
-                    weight_value = float(bones_weight_list[index])/255.0
-                    color = quarkpy.mdlutils.weights_color(editor, weight_value)
-                    editor.ModelComponentList[Component.name]['weightvtxlist'][vert_index][QuArK_bones[fixed_index].name] = {}
-                    editor.ModelComponentList[Component.name]['weightvtxlist'][vert_index][QuArK_bones[fixed_index].name]['weight_value'] = weight_value
-                    editor.ModelComponentList[Component.name]['weightvtxlist'][vert_index][QuArK_bones[fixed_index].name]['color'] = color
-                    editor.ModelComponentList[Component.name]['weightvtxlist'][vert_index][QuArK_bones[fixed_index].name]['weight_index'] = vert_index
+            if not editor.ModelComponentList[Component.name].has_key('weightvtxlist'):
+                editor.ModelComponentList[Component.name]['weightvtxlist'] = {}
+            if not editor.ModelComponentList[Component.name]['weightvtxlist'].has_key(vert_index):
+                editor.ModelComponentList[Component.name]['weightvtxlist'][vert_index] = {}
+            if not editor.ModelComponentList[Component.name]['weightvtxlist'][vert_index].has_key(QuArK_bones[fixed_index].name):
+                editor.ModelComponentList[Component.name]['weightvtxlist'][vert_index][QuArK_bones[fixed_index].name] = {}
+            weight_value = float(bones_weight_list[index])/255.0
+            color = quarkpy.mdlutils.weights_color(editor, weight_value)
+            editor.ModelComponentList[Component.name]['weightvtxlist'][vert_index][QuArK_bones[fixed_index].name]['weight_value'] = weight_value
+            editor.ModelComponentList[Component.name]['weightvtxlist'][vert_index][QuArK_bones[fixed_index].name]['color'] = color
+            weight_index_adj = len(editor.ModelComponentList[Component.name]['weightvtxlist'][vert_index].keys())
+            editor.ModelComponentList[Component.name]['weightvtxlist'][vert_index][QuArK_bones[fixed_index].name]['weight_index'] = vert_index + weight_index_adj
 
     for line_counter in range(0,num_lines):
         current_line = lines[line_counter]
         words = current_line.split()
+        if not words: # skip blank lines
+            continue
         if words and words[0] == "skeleton" and words[1] == "(":
             skeleton = skeleton + 1
         if len(words) < 3 and words[0] != "MESHNAME:":
@@ -569,12 +580,18 @@ def load_gr2mesh(gr2_filename, basepath):
             # Each mesh has its own group of bones it uses, so we need to convert its index to the complete list of bones for the entire model.
             # { current_mesh_bone_index : model_bone_index, ...}
             bone_index_conv_list = {}
-            while words[0] != "CreateMeshes":
+            # skip next line
+            line_counter+=1
+            while 1:
                 #next line
                 line_counter+=1
                 current_line = lines[line_counter]
                 current_line = current_line.strip()
-                if current_line.startswith("CreateMeshes"):
+                if current_line.startswith("set Group Vertices"):
+                    weights_list = {}  # { vtx_index : [setBoneIndices, setBoneWeights] }
+                    comp_mesh = ()
+                    comp_vertsUV = []
+                    skinsize = (256, 256)
                     break
                 words=current_line.split(" BindingBoneName: ")
                 bone_name = words[1] + ":bone"
@@ -583,7 +600,7 @@ def load_gr2mesh(gr2_filename, basepath):
                         bones_index = bone
                         break
                 bone_index_conv_list[int(words[0])] = bones_index
-        elif words and words[2] == "mesh":
+        elif words and words[0] == "CreateMeshes":
             if frame is not None and len(frame_vertices) != 0:
                 frame['Vertices'] = frame_vertices
                 framesgroup.appenditem(frame)
@@ -601,15 +618,11 @@ def load_gr2mesh(gr2_filename, basepath):
                 mesh_counter += 1
             frame_vertices = ()
             conversion_list = {}
-            weights_list = {}  # { vtx_index : [setBoneIndices, setBoneWeights] }
             Component = quarkx.newobj(filename + "_" + str(mesh_counter) + ':mc')
             framesgroup = quarkx.newobj('Frames:fg') # QuArK Frames group made here.
             frame = quarkx.newobj(filename + "_" + str(mesh_counter) + ' meshframe' + ':mf') # QuArK frame made here.
-            comp_mesh = ()
-            comp_vertsUV = []
             Tris = ''
             ### Creates this component's Skins:sg group.
-            skinsize = (256, 256)
             skingroup = quarkx.newobj('Skins:sg')
             skingroup['type'] = chr(2)
             continue
@@ -1893,6 +1906,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.7  2009/11/13 06:15:05  cdunde
+# Updates for .gr2 bones to use our same code.
+#
 # Revision 1.6  2009/11/07 23:25:27  cdunde
 # To add bone vertex and weight assignment
 # and improve output.ms file data.

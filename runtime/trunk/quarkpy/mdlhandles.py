@@ -4884,10 +4884,7 @@ class BoneCenterHandle(BoneHandle):
                     if editor.ModelComponentList.has_key(compname) and editor.ModelComponentList[compname].has_key('weightvtxlist') and editor.ModelComponentList[compname]['weightvtxlist'].has_key(vtx) and editor.ModelComponentList[compname]['weightvtxlist'][vtx].has_key(obj.name):
                         weight_value = editor.ModelComponentList[compname]['weightvtxlist'][vtx][obj.name]['weight_value']
                     else:
-                        if obj.dictspec.has_key("IWT") and obj.dictspec['parent_name'] != "None":
-                            weight_value = 0.0
-                        else:
-                            weight_value = 1.0
+                        weight_value = 1.0
                     self.newverticespos[compname][vtx] = self.newverticespos[compname][vtx] + (delta * weight_value)
 
         return delta
@@ -4975,8 +4972,6 @@ class BoneCornerHandle(BoneHandle):
             oldposrot[obj] = (obj.position, obj.rotmatrix)
         for obj in list:
             from math import sqrt
-            # m in the line below causes the floating error.
-        #    obj.rotmatrix = changedradius * m * quarkx.matrix((sqrt(2)/2, -sqrt(2)/2, 0), (sqrt(2)/2, sqrt(2)/2, 0), (0, 0, 1))
             obj.rotmatrix = changedradius * quarkx.matrix((sqrt(2)/2, -sqrt(2)/2, 0), (sqrt(2)/2, sqrt(2)/2, 0), (0, 0, 1))
             if obj != self.bone:
                 changedpos = obj.position - rotationorigin
@@ -4999,10 +4994,7 @@ class BoneCornerHandle(BoneHandle):
                     if editor.ModelComponentList.has_key(compname) and editor.ModelComponentList[compname].has_key('weightvtxlist') and editor.ModelComponentList[compname]['weightvtxlist'].has_key(vtx) and editor.ModelComponentList[compname]['weightvtxlist'][vtx].has_key(obj.name):
                         weight_value = editor.ModelComponentList[compname]['weightvtxlist'][vtx][obj.name]['weight_value']
                     else:
-                        if obj.dictspec.has_key("IWT") and obj.dictspec['parent_name'] != "None":
-                            weight_value = 0.0
-                        else:
-                            weight_value = 1.0
+                        continue
                     changedpos = oldverticespos[compname][vtx] - rotationorigin
                     changedpos = changedradius * m * changedpos
                     if newverticespos[compname][vtx] is None:
@@ -5322,6 +5314,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.193  2009/11/13 06:15:05  cdunde
+#Updates for .gr2 bones to use our same code.
+#
 #Revision 1.192  2009/11/10 04:41:34  cdunde
 #Added option to only draw drag bones to speed up drag drawing if a lot of bones exist.
 #
