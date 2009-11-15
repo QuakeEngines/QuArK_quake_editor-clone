@@ -7,15 +7,15 @@ QuArK has two types of releases: distributions and snapshots.
 <li>Distributions are released through the SourceForge Release System.
 A distribution consists of the following files:
 <ul>
-<li><tt>quark-win32-version.exe</tt> - a Nullsoft Scriptable Install
+<li><tt>quark-win32-*version*.exe</tt> - a Nullsoft Scriptable Install
 System executable containing the QuArK Windows binaries with a bundled
 Python micro-distribution and the Infobase.</li>
-<li><tt>quark-win32-version.zip</tt> - a zip archive containing the
+<li><tt>quark-win32-*version*.zip</tt> - a zip archive containing the
 QuArK Windows binaries with a bundled Python micro-distribution and
 the Infobase.</li>
-<li><tt>quark-src-version.zip</tt> - a zip archive containing full
+<li><tt>quark-src-*version*.zip</tt> - a zip archive containing full
 exports of the <tt>infobase</tt>, <tt>runtime</tt> and <tt>source</tt> CVS modules.</li>
-<li><tt>quark-help-version.zip</tt> - a zip archive containing the
+<li><tt>quark-help-*version*.zip</tt> - a zip archive containing the
 compiled Infobase.</li>
 </ul>
 You will need to have "Release Technician" permissions on the QuArK
@@ -28,16 +28,16 @@ versions, and the number after the state is the release number at that
 version/state. Examples:<ul><li><tt>6.4.0alpha1</tt>. Note also that version numbers should be <strong>unique</strong>.</li>
 <li><tt>6.3.0rel4</tt></li></ul>
 </li>
-<li>Snapshots are released on QuArK's SourceForge webspace (<a href="http://quark.sourceforge.net">http://quark.sourceforge.net</a>).
+<li>Snapshots are released on <link project>QuArK's SourceForge webspace</link>.
 A snapshot consists of the following files:
 <ul>
-<li><tt>quark-win32-date.zip</tt> - a zip archive containing the QuArK
+<li><tt>quark-win32-*date*.zip</tt> - a zip archive containing the QuArK
 Windows binaries with a bundled Python micro-distribution and the 
 Infobase.</li>
-<li><tt>quark-src-date.zip</tt> - a zip archive containing full
+<li><tt>quark-src-*date*.zip</tt> - a zip archive containing full
 exports of the <tt>infobase</tt>, <tt>runtime</tt> and <tt>source</tt>
 CVS modules.</li>
-<li><tt>quark-help-date.zip</tt> - a zip archive containing the
+<li><tt>quark-help-*date*.zip</tt> - a zip archive containing the
 compiled Infobase.</li>
 </ul>
 You will need to have access to the QuArK project's SourceForge

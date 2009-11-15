@@ -30,8 +30,8 @@ argument lets say the version number you come up with is '6.4.1beta3'.
 <li>For a distribtion, it's necessary to update the version numbers
 in the QuArK executable. Go to the Project > Options > Version Info
 and update the numbers. Don't forget the copyright year!<br>
-Also, some const's in QkObjects need to be updated. Check out and
-update where needed:
+Also, some const's in QkObjects need to be updated. Check them out
+and update where needed:
 <code>
   QuArKVersion
   QuArKMinorVersion
@@ -64,13 +64,14 @@ it manually.</li>
 the NSIS installation, right-clicking the file should provide you with
 that option. If not, open up <tt>QuArK.nsi</tt> in NSIS and create the
 installer there.</li>
-<li>It's not a bad idea to run some tests here. Test the installer, and
-make sure the new release does not have any show-stopping bugs.</li>
+<li>It's not a bad idea to run some tests at this point. Test the
+installer, and make sure the new release does not have any obvious
+bugs.</li>
 <li>Zip up the source and infobase directories just as with the snapshot.
 Again: no fancy zip-compressions!</li>
 <li>Now create the release in SourceForge (see <ref>src/distribution/snapshot</ref>
 for more details about this).</li>
 <li>Create a news-announcement on the SourceForge-page.</li>
 <li>Tell the webmaster of the QuArK website to do the same. (It's probably
-smart to have the same text in both.)</li>
+smart to have similar text in both.)</li>
 </ol>

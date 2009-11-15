@@ -6,7 +6,7 @@ Before you'll be able to follow the process outlined below, you'll
 probably want to read <a href="http://alexandria.wiki.sourceforge.net/File+Release+System+-+Offering+Files+for+Download">File Release System - Offering Files for Download</a> to know how to work with the SourceForge File Release System.
 
 <ol>
-<li>Make a copy of the runtime, source and infobase directories you want to release.</li>
+<li>Make a copy of the <tt>runtime</tt>, <tt>source</tt> and <tt>infobase</tt> directories you want to release.</li>
 <li>Build a QuArK binary from this source directory.</li>
 <li>Put the new QuArK binary in the main runtime directory (where it belongs).</li>
 <li>Zip up the directory, each to a different zip-file, using the scheme from <ref>src/distribution/policy</ref>. No fancy zip-compressions, please! Any plain old unzipper should be able to unzip the files.</li>
