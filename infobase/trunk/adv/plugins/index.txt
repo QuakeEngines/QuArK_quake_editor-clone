@@ -16,11 +16,11 @@ was that each aspect of the interface would be defined by a plugin file,
 sitting in the subdirectory plugins/, which would be able to call on both
 a set of facilities provided by Delphi, and also a collection of facilities
 provided in Python by files in the quarkpy/.  So when map or model
-editor is started
+editor is started, all the corresponding plugins are loaded, and their
+functionality enabled.
 
 Probably the best way to get a feel for plugins is to
 first work thru a tutorial, then look at some existing
 examples.  There is an archive here, <a href="zips">plugin_examples.zip</a>,
 of working examples for this tutorial (and others) in the
 'zips' sub-folder of your QuArK-help folder on your hard drive.
-
