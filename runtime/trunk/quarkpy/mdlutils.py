@@ -2597,8 +2597,10 @@ def clearbones(editor, undomsg):
     editor.ok(undo, undomsg)
 
 #
-# Creates a new Skeleton group to undo.exchange the old with. The 'old' list contains the old bones
-# and the 'new' list the new bones in the same order to put inside the new skeleton group.
+# Creates and returns a new Skeleton group to undo.exchange the old Skeleton group with.
+# The 'old' is a standard list containing the old bones
+# and the 'new' is a standard list containing the new bones in the same order.
+# The 'new' is used to put them inside the 'newskelgroup'.
 #
 def boneundo(editor, old, new):
     def replacebone(oldskelgroup, newskelgroup, old, new):
@@ -4138,6 +4140,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.124  2009/11/09 02:17:31  cdunde
+#Fixes for individual bone selection and handle color change.
+#
 #Revision 1.123  2009/10/29 19:56:33  danielpharos
 #Fixed bad error-message text.
 #
