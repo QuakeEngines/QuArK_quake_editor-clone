@@ -4,7 +4,7 @@
 
 """   QuArK  -  Quake Army Knife
 
-QuArK Model Editor importer for Doom3\Quake4 .md5mesh and .md5anim model files.
+QuArK Model Editor importer for Granny .gr2 model and animation files.
 """
 #
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
@@ -15,9 +15,9 @@ QuArK Model Editor importer for Doom3\Quake4 .md5mesh and .md5anim model files.
 
 
 Info = {
-   "plug-in":       "ie_md5_importer",
-   "desc":          "This script imports a Doom3\Quake4 .md5mesh and .md5anim model file, textures, and animations into QuArK for editing. Original code from Blender, md5Import_0.5.py, author - Bob Holcomb.",
-   "date":          "Dec 5 2008",
+   "plug-in":       "ie_gr2_importer",
+   "desc":          "This script imports a Granny .gr2 model and animation files into QuArK for editing. Original code from QuArK ie_md5_import.py",
+   "date":          "Feb 8 2009",
    "author":        "cdunde & DanielPharos",
    "author e-mail": "cdunde@sbcglobal.net",
    "quark":         "Version 6.6.0 Beta 2" }
@@ -47,12 +47,12 @@ from quarkpy.qeditor import MapColor # Strictly needed for QuArK bones MapColor 
 SS_MODEL = 3
 gr2_mesh_path = None
 gr2_anim_path = None
-md5_model = None
-md5_bones = None
-md5_model_comps = []
+gr2_model = None
+gr2_bones = None
+gr2_model_comps = []
 logging = 0
-importername = "ie_md5_import.py"
-textlog = "md5_ie_log.txt"
+importername = "ie_gr2_import.py"
+textlog = "gr2_ie_log.txt"
 editor = None
 progressbar = None
 
@@ -286,123 +286,16 @@ def vector_angle(v1, v2):
         return math.pi / 2.0
     return math.atan(-f / math.sqrt(1.0 - f * f)) + math.pi / 2.0
 
-
-######################################################
-# MD5 Data structures
-######################################################
-
-
-class md5_vert:
-    vert_index=0
-    co=[]
-    uvco=[]
-    blend_index=0
-    blend_count=0
-
-    def __init__(self):
-        self.vert_index=0
-        self.co=[0.0]*3
-        self.uvco=[0.0]*2
-        self.blend_index=0
-        self.blend_count=0
-
-    def dump(self):
-        print "vert index: ", self.vert_index
-        print "co: ", self.co
-        print "uvco: ", self.uvco
-        print "blend index: ", self.blend_index
-        print "belnd count: ", self.blend_count
-
-class md5_weight:
-    weight_index=0
-    bone_index=0
-    bias=0.0
-    weights=[]
-
-    def __init__(self):
-        self.weight_index=0
-        self.bone_index=0
-        self.bias=0.0
-        self.weights=[0.0]*3
-
-    def dump(self):
-        print "weight index: ", self.weight_index
-        print "bone index: ", self.bone_index
-        print "bias: ", self.bias
-        print "weighst: ", self.weights
-
-class md5_bone:
-    bone_index=0
-    name=""
-    bindpos=[]
-    bindmat=[]
-    parent=""
-    parent_index=0
-    blenderbone=None
-    roll=0
-
-    def __init__(self):
-        self.bone_index=0
-        self.name=""
-        self.bindpos=[0.0]*3
-        self.bindmat=[None]*3 # This how you initilize a 2d-array.
-        for i in range(3):
-            self.bindmat[i] = [0.0]*3
-        self.parent=""
-        self.parent_index=0
-        self.blenderbone=None
-
-    def dump(self):
-        print "bone index: ", self.bone_index
-        print "name: ", self.name
-        print "bind position: ", self.bindpos
-        print "bind translation matrix (mat): ", self.bindmat
-        print "parent: ", self.parent
-        print "parent index: ", self.parent_index
-        print "blenderbone: ", self.blenderbone
-
-
-class md5_tri:
-    tri_index=0
-    vert_index=[]
-
-    def __init__(self):
-        self.tri_index=0;
-        self.vert_index=[0]*3
-
-    def dump(self):
-        print "tri index: ", self.tri_index
-        print "vert index: ", self.vert_index
-
-class md5_mesh:
-    mesh_index=0
-    verts=[]
-    tris=[]
-    weights=[]
-    shader=""
-
-    def __init__(self):
-        self.mesh_index=0
-        self.verts=[]
-        self.tris=[]
-        self.weights=[]
-        self.shader=""
-
-    def dump(self):
-        print "mesh index: ", self.mesh_index
-        print "verts: ", self.verts
-        print "tris: ", self.tris
-        print "weights: ", self.weights
-        print "shader: ", self.shader
-
 ######################################################
 # IMPORT A FILE
 ######################################################
 
+def load_gr2model(gr2_filename, basepath, bone_group_name):
+    global gr2_model, gr2_model_comps, gr2_bones, progressbar, tobj, logging, Strings
 
-# def load_gr2mesh(md5_filename, basepath): # Change md5_filename to gr2_filename where needed below, then remove this reminder.
-def load_gr2mesh(gr2_filename, basepath):
-    global md5_model, md5_model_comps, md5_bones, progressbar, tobj, logging, Strings # Change global names where needed.
+    bone_group = []
+    if editor.Root.dictitems['Skeleton:bg'].dictitems.has_key(bone_group_name + "_Granny01:bone"):
+        bone_group = editor.Root.dictitems['Skeleton:bg'].dictitems[bone_group_name + "_Granny01:bone"].findallsubitems("", ':bone')   # Get all bones of this group only.
 
     ### This area is where we make the different elements of a QuArK Component, for each Component.
     # First we check for any other "Import Component"s,
@@ -429,19 +322,19 @@ def load_gr2mesh(gr2_filename, basepath):
 
     ComponentList = []
     message = ""
-    QuArK_bones = []         # A list to store all QuArK bones created from the .md5mesh file "joints" section.
+    QuArK_bones = []         # A list to store all QuArK bones created from the .gr2 file.
                              # [ bone1, bone2,...]
-    QuArK_weights_list = {}  # A list to store all QuArK  "weights" created from the .md5mesh "verts" section for each mesh.
-                             # {mesh_index : vert_index :[weight_index, nbr_of_weights]}
+    QuArK_weights_list = {}  # A list to store all QuArK  "weights" created from the hidden output.ms file "set Group Vertices" section for each "Tri-Groups" mesh.
+                             # { mesh_index : { vert_index : { bonename : { weight_index : int,  weight_value : float,  color : binary } } } }
 
-    # Use grnreader.exe in QuArK's dll folder to create the temoary output.ms file and place it there also to be read in below.
+    # Uses grnreader.exe in QuArK's dll folder to create the temoary output.ms file and place it there also to be read in below.
     filename = "\"" + gr2_filename + "\""
     cmdline = 'grnreader ' + filename
     fromdir = quarkx.exepath + "dlls"
     process = quarkx.runprogram(cmdline, fromdir)
     # read the file in
-    # md5_filename = the full path and file name of the .md5mesh file being imported, ex.
-    # "C:\Program Files\Doom 3\base\models\md5\monsters\pinky\pinky.md5mesh"
+    # gr2_filename = the full path and file name of the .gr2 file being imported, ex.
+    # "C:\Program Files\GR2game\client\resources\female\dancer.gr2"
     tempfile = quarkx.exepath + "dlls/output.ms"
     tempfile = tempfile.replace("\\", "/")
     goahead = 0
@@ -459,14 +352,15 @@ def load_gr2mesh(gr2_filename, basepath):
     # but the file needs to be renamed or deleted before new import.
     os.remove(quarkx.exepath + "dlls/output.ms")
 
-    md5_model = []
-    md5_bones = []
+    gr2_model = []
+    gr2_bones = []
 
     num_lines = len(lines)
 
     filename = filename.strip("\"")
     filename = filename.split("\\")[-1]
     filename = filename.replace(".gr2", "")
+    filename = filename.replace(".GR2", "")
     bone_names = []
     mesh_counter = 0
     comp_mesh = ()
@@ -537,97 +431,8 @@ def load_gr2mesh(gr2_filename, basepath):
             continue
         ### When starting to read in the output.ms file (created and read in the background then deleted)
         ### some variables need to be store for use to apply to values later as they are read in from that file.
-        if words and words[1] == "tool":
-            if words[2] == "units":
-                unitsFactor = float(words[5])
-                continue
-            if words[2] == "origin:":
-                factors = words[3].replace("[", "")
-                factors = factors.replace("]", "")
-                factors = factors.split(",")
-                originFactor = [float(factors[0]), float(factors[1]), float(factors[2])]
-                continue
-            if words[2] == "right":
-                factor = words[4].replace("[", "")
-                factor = factor.replace("]", "")
-                factor = factor.split(",")
-                for value in range(len(factor)):
-                    amt = float(factor[value])
-                    if abs(amt) == 1:
-                        XYZlisting_factors[0][0], XYZlisting_factors[0][1] = value, float(amt)
-                        continue
-            if words[2] == "back":
-                factor = words[4].replace("[", "")
-                factor = factor.replace("]", "")
-                factor = factor.split(",")
-                for value in range(len(factor)):
-                    amt = float(factor[value])
-                    if abs(amt) == 1:
-                        XYZlisting_factors[1][0], XYZlisting_factors[1][1] = value, float(amt)
-                        continue
-            if words[2] == "up":
-                factor = words[4].replace("[", "")
-                factor = factor.replace("]", "")
-                factor = factor.split(",")
-                for value in range(len(factor)):
-                    amt = float(factor[value])
-                    if abs(amt) == 1:
-                        XYZlisting_factors[2][0], XYZlisting_factors[2][1] = value, float(amt)
-                        continue
-        
-        ### New component starts here.
-        elif words and words[0] == "MESHNAME:":
-            # Each mesh has its own group of bones it uses, so we need to convert its index to the complete list of bones for the entire model.
-            # { current_mesh_bone_index : model_bone_index, ...}
-            bone_index_conv_list = {}
-            # skip next line
-            line_counter+=1
-            while 1:
-                #next line
-                line_counter+=1
-                current_line = lines[line_counter]
-                current_line = current_line.strip()
-                if current_line.startswith("set Group Vertices"):
-                    weights_list = {}  # { vtx_index : [setBoneIndices, setBoneWeights] }
-                    comp_mesh = ()
-                    comp_vertsUV = []
-                    skinsize = (256, 256)
-                    break
-                words=current_line.split(" BindingBoneName: ")
-                bone_name = words[1] + ":bone"
-                for bone in range(len(QuArK_bones)):
-                    if QuArK_bones[bone].name == bone_name:
-                        bones_index = bone
-                        break
-                bone_index_conv_list[int(words[0])] = bones_index
-        elif words and words[0] == "CreateMeshes":
-            if frame is not None and len(frame_vertices) != 0:
-                frame['Vertices'] = frame_vertices
-                framesgroup.appenditem(frame)
-                Component['skinsize'] = skinsize
-                Component['Tris'] = Tris
-                Component['show'] = chr(1)
-                sdogroup = quarkx.newobj('SDO:sdo')
-                Component.appenditem(sdogroup)
-                Component.appenditem(skingroup)
-                Component.appenditem(framesgroup)
-                ComponentList = ComponentList + [Component]
-                if mesh_counter == 0:
-                    for bone in QuArK_bones:
-                        bone['component'] = Component.name # Just use the 1st component created.
-                mesh_counter += 1
-            frame_vertices = ()
-            conversion_list = {}
-            Component = quarkx.newobj(filename + "_" + str(mesh_counter) + ':mc')
-            framesgroup = quarkx.newobj('Frames:fg') # QuArK Frames group made here.
-            frame = quarkx.newobj(filename + "_" + str(mesh_counter) + ' meshframe' + ':mf') # QuArK frame made here.
-            Tris = ''
-            ### Creates this component's Skins:sg group.
-            skingroup = quarkx.newobj('Skins:sg')
-            skingroup['type'] = chr(2)
-            continue
         # QuArK frame Vertices made here.
-        elif words and words[0] == "setVert":
+        if words and words[0] == "setVert":
             values = words[3].replace("[", "")
             values = values.replace("]", "")
             values = values.split(",")
@@ -642,7 +447,7 @@ def load_gr2mesh(gr2_filename, basepath):
             U = U.replace("[", "")
             # As a percentage of the QuArK Skinview1.clientarea for X and Y.
             U = float(U) * skinsize[0]
-            V = -float(V) * skinsize[1]
+            V = float(V) * skinsize[1]
             v = (U, V)
             comp_vertsUV = comp_vertsUV + [v]
             continue
@@ -703,26 +508,37 @@ def load_gr2mesh(gr2_filename, basepath):
 
         # QuArK Bones made in this section.
         elif words and skeleton == 1 and words[0] == "bone" and words[1] == "name:":
-            name = ""
-            for word in range(len(words)):
-                if word < 2:
-                    continue
-                if word == len(words)-1:
-                    name = name + words[word]
-                else:
-                    name = name + words[word] + " "
-            if name in bone_names:
-                newbone = 0
+            if len(bone_group) != 0:
+                for nbr in range(len(bone_group)):
+                    bone = bone_group[nbr]
+                    new_bone = bone.copy()
+                    bone_vtx_list[nbr] = new_bone.vtxlist
+                    QuArK_bones = QuArK_bones + [new_bone]
+                skeleton = 2
                 continue
             else:
-                bone_names = bone_names + [name]
-            new_bone = quarkx.newobj(name + ":bone")
-            new_bone['flags'] = (0,0,0,0,0,0)
-            new_bone['show'] = (1.0,)
-            bone_vtx_list[bone_index] = {}
-            bone_index += 1
-            newbone = 1
-            continue
+                name = ""
+                for word in range(len(words)):
+                    if word < 2:
+                        continue
+                    if word == len(words)-1:
+                        name = name + words[word]
+                    else:
+                        name = name + words[word] + " "
+                if name in bone_names:
+                    newbone = 0
+                    continue
+                else:
+                    bone_names = bone_names + [name]
+                if len(bone_names) == 1:
+                    name = bone_group_name + "_" + name
+                new_bone = quarkx.newobj(name + ":bone")
+                new_bone['flags'] = (0,0,0,0,0,0)
+                new_bone['show'] = (1.0,)
+                bone_vtx_list[bone_index] = {}
+                bone_index += 1
+                newbone = 1
+                continue
         elif words and skeleton == 1 and words[0] == "bone" and newbone == 1 and words[1] == "parentindex:":
             new_bone['parent_index'] = words[2] # QuArK code, this is NOT an integer but a string of its integer value.
             if words[2] == "-1":
@@ -801,8 +617,7 @@ def load_gr2mesh(gr2_filename, basepath):
                 rotmatrixY = rotmatrixY.tuple
                 rotmatrixZ = rotmatrixZ.tuple
                 rotmatrix = quarkx.matrix((rotmatrixX[0], rotmatrixX[1], rotmatrixX[2]), (rotmatrixY[0], rotmatrixY[1], rotmatrixY[2]), (rotmatrixZ[0], rotmatrixZ[1], rotmatrixZ[2]))
-                #rotmatrix = quarkx.matrix(((IWT[0], IWT[1], IWT[2]), (IWT[4], IWT[5], IWT[6]), (IWT[8], IWT[9], IWT[10])))
-                #rotmatrix = bone_scale * rotmatrix
+
                 bone_origin = rotmatrix * bone_origin
                 bone_origin = bone_origin.tuple
                 posX = bone_origin[0]
@@ -856,6 +671,109 @@ def load_gr2mesh(gr2_filename, basepath):
             new_bone.vtxlist = {}
             new_bone.vtx_pos = {}
             QuArK_bones = QuArK_bones + [new_bone]
+            continue
+        
+        ### New component starts here.
+        elif words and words[0] == "MESHNAME:":
+            # Each mesh has its own group of bones it uses, so we need to convert its index to the complete list of bones for the entire model.
+            # { current_mesh_bone_index : model_bone_index, ...}
+            bone_index_conv_list = {}
+            # skip next line
+            line_counter+=1
+            while 1:
+                #next line
+                line_counter+=1
+                current_line = lines[line_counter]
+                current_line = current_line.strip()
+                if current_line.startswith("set Group Vertices"):
+                    weights_list = {}  # { vtx_index : [setBoneIndices, setBoneWeights] }
+                    comp_mesh = ()
+                    comp_vertsUV = []
+                    skinsize = (256, 256)
+                    break
+                words=current_line.split(" BindingBoneName: ")
+                checkname = words[1]
+                bone_name = words[1] + ":bone"
+                bones_index = None
+                for bone in range(len(QuArK_bones)):
+                    if QuArK_bones[bone].name == bone_name:
+                        bones_index = bone
+                        break
+                if bones_index is None:
+                    bone_name = bone_group_name + "_" + bone_name
+                    for bone in range(len(QuArK_bones)):
+                        if QuArK_bones[bone].name == bone_name:
+                            bones_index = bone
+                            break
+                if bones_index is None:
+                    quarkx.beep() # Makes the computer "Beep" once if no bones are found.
+                    quarkx.msgbox("Tried to find bone named:\n    " + checkname + "\nNo bones in the model by that name.\n\nImport Cancelled.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
+                    return None, None, None, None
+                bone_index_conv_list[int(words[0])] = bones_index
+            continue
+        elif words and words[0] == "CreateMeshes":
+            if frame is not None and len(frame_vertices) != 0:
+                frame['Vertices'] = frame_vertices
+                framesgroup.appenditem(frame)
+                Component['skinsize'] = skinsize
+                Component['Tris'] = Tris
+                Component['show'] = chr(1)
+                sdogroup = quarkx.newobj('SDO:sdo')
+                Component.appenditem(sdogroup)
+                Component.appenditem(skingroup)
+                Component.appenditem(framesgroup)
+                ComponentList = ComponentList + [Component]
+                if mesh_counter == 0 and len(bone_group) == 0:
+                    for bone in QuArK_bones:
+                        bone['component'] = Component.name # Just use the 1st component created.
+                mesh_counter += 1
+            frame_vertices = ()
+            conversion_list = {}
+            Component = quarkx.newobj(filename + "_" + str(mesh_counter) + ':mc')
+            framesgroup = quarkx.newobj('Frames:fg') # QuArK Frames group made here.
+            frame = quarkx.newobj(filename + "_" + str(mesh_counter) + ' meshframe' + ':mf') # QuArK frame made here.
+            Tris = ''
+            ### Creates this component's Skins:sg group.
+            skingroup = quarkx.newobj('Skins:sg')
+            skingroup['type'] = chr(2)
+            continue
+        # Sets up the output.ms read in file header data up.
+        elif words and words[1] == "tool":
+            if words[2] == "units":
+                unitsFactor = float(words[5])
+                continue
+            if words[2] == "origin:":
+                factors = words[3].replace("[", "")
+                factors = factors.replace("]", "")
+                factors = factors.split(",")
+                originFactor = [float(factors[0]), float(factors[1]), float(factors[2])]
+                continue
+            if words[2] == "right":
+                factor = words[4].replace("[", "")
+                factor = factor.replace("]", "")
+                factor = factor.split(",")
+                for value in range(len(factor)):
+                    amt = float(factor[value])
+                    if abs(amt) == 1:
+                        XYZlisting_factors[0][0], XYZlisting_factors[0][1] = value, float(amt)
+                        continue
+            if words[2] == "back":
+                factor = words[4].replace("[", "")
+                factor = factor.replace("]", "")
+                factor = factor.split(",")
+                for value in range(len(factor)):
+                    amt = float(factor[value])
+                    if abs(amt) == 1:
+                        XYZlisting_factors[1][0], XYZlisting_factors[1][1] = value, float(amt)
+                        continue
+            if words[2] == "up":
+                factor = words[4].replace("[", "")
+                factor = factor.replace("]", "")
+                factor = factor.split(",")
+                for value in range(len(factor)):
+                    amt = float(factor[value])
+                    if abs(amt) == 1:
+                        XYZlisting_factors[2][0], XYZlisting_factors[2][1] = value, float(amt)
 
     if frame is not None and len(frame_vertices) != 0:
         frame['Vertices'] = frame_vertices
@@ -868,7 +786,7 @@ def load_gr2mesh(gr2_filename, basepath):
         Component.appenditem(skingroup)
         Component.appenditem(framesgroup)
         ComponentList = ComponentList + [Component]
-        if mesh_counter == 0:
+        if mesh_counter == 0 and len(bone_group) == 0:
             for bone in QuArK_bones:
                 bone['component'] = Component.name # Just use the 1st component created.
 
@@ -878,12 +796,12 @@ def load_gr2mesh(gr2_filename, basepath):
 
    # os.remove(tempfile) ### Uncomment this line when importer is completed.
     ### Line below just temp while making importer.
-    return ComponentList, QuArK_bones, message
+    return ComponentList, QuArK_bones, message, bone_group
 
     #figure out the base pose for each vertex from the weights
     bone_vtx_list = {} # { bone_index : { mesh_index : [ vtx, vtx, vtx ...] } }
     ModelComponentList = {} # { mesh_index : { bone_index : {vtx_index : {'color': '\x00\x00\xff', weight: 1.0} } } }
-    for mesh in md5_model:
+    for mesh in gr2_model:
        # mesh.dump()
         for vert_counter in range(0, len(mesh.verts)):
             blend_index=mesh.verts[vert_counter].blend_index
@@ -891,10 +809,10 @@ def load_gr2mesh(gr2_filename, basepath):
                 #get the current weight info
                 w=mesh.weights[blend_index+blend_counter]
                 weight_index = blend_index+blend_counter
-                weight_value = md5_model[mesh.mesh_index].weights[weight_index].bias
-                bonename = md5_bones[w.bone_index].name + ":bone"
+                weight_value = gr2_model[mesh.mesh_index].weights[weight_index].bias
+                bonename = gr2_bones[w.bone_index].name + ":bone"
                 # QuArK code.
-                if md5_model[mesh.mesh_index].verts[vert_counter].blend_count != 1:
+                if gr2_model[mesh.mesh_index].verts[vert_counter].blend_count != 1:
                     if not QuArK_weights_list.has_key(mesh.mesh_index):
                         QuArK_weights_list[mesh.mesh_index] = {}
                     if not QuArK_weights_list[mesh.mesh_index].has_key(vert_counter):
@@ -907,7 +825,7 @@ def load_gr2mesh(gr2_filename, basepath):
 
                 #w.dump()
                 #the bone that the current weight is refering to
-                b=md5_bones[w.bone_index]
+                b=gr2_bones[w.bone_index]
                 if not mesh.mesh_index in ModelComponentList.keys():
                     ModelComponentList[mesh.mesh_index] = {}
                 if not w.bone_index in ModelComponentList[mesh.mesh_index].keys():
@@ -938,10 +856,10 @@ def load_gr2mesh(gr2_filename, basepath):
 
     # Used for QuArK progressbar.
     firstcomp = str(CompNbr)
-    lastcomp = str(CompNbr + len(md5_model)-1)
+    lastcomp = str(CompNbr + len(gr2_model)-1)
 
-    # basepath = The full path to the game folder, ex: "C:\Program Files\Doom 3\base\"
-    for mesh in md5_model: # A new QuArK component needs to be made for each mesh.
+    # basepath = The full path to the game folder, ex: "C:\Program Files\GR2game\client\"
+    for mesh in gr2_model: # A new QuArK component needs to be made for each mesh.
         ### Creates this component's Skins:sg group.
         # Checks if the model has textures specified with it.
         skinsize = (256, 256)
@@ -1231,7 +1149,7 @@ def load_gr2mesh(gr2_filename, basepath):
         else:
             Component = quarkx.newobj("Import Component " + str(CompNbr) + ':mc')
             CompNbr = CompNbr + 1
-        md5_model_comps = md5_model_comps + [Component.name]
+        gr2_model_comps = gr2_model_comps + [Component.name]
         if mesh.mesh_index == 0:
             for bone in QuArK_bones:
                 bone['component'] = Component.name
@@ -1307,9 +1225,9 @@ def load_gr2mesh(gr2_filename, basepath):
                 if not editor.ModelComponentList[compname]['weightvtxlist'].has_key(vertex):
                     editor.ModelComponentList[compname]['weightvtxlist'][vertex] = QuArK_weights_list[mesh_index][vertex]
 
-    return ComponentList, QuArK_bones, message # Gives a list of ALL bone as they are created, same as in the .md5mesh file.
+    return ComponentList, QuArK_bones, message # Gives a list of ALL bone as they are created.
 
-class md5anim_bone:
+class gr2anim_bone:
     name = ""
     parent_index = 0
     flags = 0
@@ -1326,9 +1244,9 @@ class md5anim_bone:
         self.frameDataIndex = 0
 
         
-class md5anim:
+class gr2anim:
     num_bones = 0
-    md5anim_bones = []
+    gr2anim_bones = []
     frameRate = 24
     numFrames = 0
     numAnimatedComponents = 0
@@ -1337,12 +1255,12 @@ class md5anim:
 
     def __init__(self):
         num_bones = 0
-        md5anim_bones = []
+        gr2anim_bones = []
         baseframe = []
         framedata = []
         
-    def load_md5anim(self, md5_filename, bones=None): # bones = QuArK's "Skeleton:bg" folder to get our current bones from.
-        file=open(md5_filename,"r")
+    def load_gr2anim(self, gr2anim_filename, bones=None): # bones = QuArK's "Skeleton:bg" folder to get our current bones from.
+        file=open(gr2anim_filename,"r")
         lines=file.readlines()
         file.close()
 
@@ -1368,7 +1286,7 @@ class md5anim:
             elif words and words[0]=="hierarchy":
                 for bone_counter in range(0,self.num_bones):
                     #make a new bone
-                    self.md5anim_bones.append(md5anim_bone())
+                    self.gr2anim_bones.append(gr2anim_bone())
                     #next line
                     line_counter+=1
                     current_line=lines[line_counter]
@@ -1382,10 +1300,10 @@ class md5anim:
                     #get rid of the quotes on either side
                     temp_name=str(words[0])
                     temp_name=temp_name[1:-1]
-                    self.md5anim_bones[bone_counter].name=temp_name
-                    self.md5anim_bones[bone_counter].parent_index = int(words[1])
-                    self.md5anim_bones[bone_counter].flags = int(words[2])
-                    self.md5anim_bones[bone_counter].frameDataIndex=int(words[3])
+                    self.gr2anim_bones[bone_counter].name=temp_name
+                    self.gr2anim_bones[bone_counter].parent_index = int(words[1])
+                    self.gr2anim_bones[bone_counter].flags = int(words[2])
+                    self.gr2anim_bones[bone_counter].frameDataIndex=int(words[3])
 
             elif words and words[0]=="baseframe":
                 for bone_counter in range(0,self.num_bones):
@@ -1397,9 +1315,9 @@ class md5anim:
                         line_counter+=1
                         current_line=lines[line_counter]
                         words=current_line.split()
-                    self.md5anim_bones[bone_counter].bindpos[0]=float(words[1])
-                    self.md5anim_bones[bone_counter].bindpos[1]=float(words[2])
-                    self.md5anim_bones[bone_counter].bindpos[2]=float(words[3])
+                    self.gr2anim_bones[bone_counter].bindpos[0]=float(words[1])
+                    self.gr2anim_bones[bone_counter].bindpos[1]=float(words[2])
+                    self.gr2anim_bones[bone_counter].bindpos[2]=float(words[3])
                     qx = float(words[6])
                     qy = float(words[7])
                     qz = float(words[8])
@@ -1408,7 +1326,7 @@ class md5anim:
                         qw=0
                     else:
                         qw = -sqrt(qw)
-                    self.md5anim_bones[bone_counter].bindquat = [qx,qy,qz,qw]
+                    self.gr2anim_bones[bone_counter].bindquat = [qx,qy,qz,qw]
 
             elif words and words[0]=="frame":
                 framenumber = int(words[1])
@@ -1425,13 +1343,13 @@ class md5anim:
 
     def apply(self, skelgroup, animfile):
         global editor
-        filename = animfile.replace(".md5anim", "")
+        filename = animfile.split(".")[0]
         #Construct baseframe data
         QuArK_baseframe_position_raw = [[]]*self.num_bones
         QuArK_baseframe_matrix_raw = [[]]*self.num_bones
         for bone_counter in range(0,self.num_bones):
-            QuArK_baseframe_position_raw[bone_counter] = quarkx.vect((self.md5anim_bones[bone_counter].bindpos[0], self.md5anim_bones[bone_counter].bindpos[1], self.md5anim_bones[bone_counter].bindpos[2]))
-            tempmatrix = quaternion2matrix(self.md5anim_bones[bone_counter].bindquat)
+            QuArK_baseframe_position_raw[bone_counter] = quarkx.vect((self.gr2anim_bones[bone_counter].bindpos[0], self.gr2anim_bones[bone_counter].bindpos[1], self.gr2anim_bones[bone_counter].bindpos[2]))
+            tempmatrix = quaternion2matrix(self.gr2anim_bones[bone_counter].bindquat)
             QuArK_baseframe_matrix_raw[bone_counter] = quarkx.matrix(((tempmatrix[0][0], tempmatrix[1][0], tempmatrix[2][0]), (tempmatrix[0][1], tempmatrix[1][1], tempmatrix[2][1]), (tempmatrix[0][2], tempmatrix[1][2], tempmatrix[2][2])))
         #Construct animation frame data
         QuArK_frame_position_raw = [[]]*self.numFrames
@@ -1440,7 +1358,7 @@ class md5anim:
             QuArK_frame_position_raw[frame_counter] = [[]]*self.num_bones
             QuArK_frame_matrix_raw[frame_counter] = [[]]*self.num_bones
             for bone_counter in range(0,self.num_bones):
-                currentbone = self.md5anim_bones[bone_counter]
+                currentbone = self.gr2anim_bones[bone_counter]
                 lx, ly, lz = currentbone.bindpos
                 (qx, qy, qz, qw) = currentbone.bindquat
                 frameDataIndex = currentbone.frameDataIndex
@@ -1473,7 +1391,7 @@ class md5anim:
         QuArK_baseframe_position = [[]]*self.num_bones
         QuArK_baseframe_matrix = [[]]*self.num_bones
         for bone_counter in range(0,self.num_bones):
-            currentbone = self.md5anim_bones[bone_counter]
+            currentbone = self.gr2anim_bones[bone_counter]
             if currentbone.parent_index < 0:
                 QuArK_baseframe_position[bone_counter] = QuArK_baseframe_position_raw[bone_counter]
                 QuArK_baseframe_matrix[bone_counter] = QuArK_baseframe_matrix_raw[bone_counter]
@@ -1489,7 +1407,7 @@ class md5anim:
             QuArK_frame_position[frame_counter] = [[]]*self.num_bones
             QuArK_frame_matrix[frame_counter] = [[]]*self.num_bones
             for bone_counter in range(0,self.num_bones):
-                currentbone = self.md5anim_bones[bone_counter]
+                currentbone = self.gr2anim_bones[bone_counter]
                 if currentbone.parent_index < 0:
                     QuArK_frame_position[frame_counter][bone_counter] = QuArK_frame_position_raw[frame_counter][bone_counter]
                     QuArK_frame_matrix[frame_counter][bone_counter] = QuArK_frame_matrix_raw[frame_counter][bone_counter]
@@ -1499,9 +1417,9 @@ class md5anim:
                     QuArK_frame_position[frame_counter][bone_counter] = QuArK_frame_position[frame_counter][currentbone.parent_index] + temppos
                     QuArK_frame_matrix[frame_counter][bone_counter] = MatrixParent * QuArK_frame_matrix_raw[frame_counter][bone_counter]
         #Create baseframe
-        for mesh_counter in range(len(md5_model)):
-            currentmesh = md5_model[mesh_counter]
-            oldframe = editor.Root.dictitems[md5_model_comps[mesh_counter]].dictitems['Frames:fg'].dictitems['meshframe:mf']
+        for mesh_counter in range(len(gr2_model)):
+            currentmesh = gr2_model[mesh_counter]
+            oldframe = editor.Root.dictitems[gr2_model_comps[mesh_counter]].dictitems['Frames:fg'].dictitems['meshframe:mf']
             baseframe = oldframe.copy()
             baseframe.shortname = filename + " baseframe"
             oldverts = baseframe.vertices
@@ -1515,17 +1433,17 @@ class md5anim:
                 for blend_counter in range(0, currentvertex.blend_count):
                     weight_counter = currentvertex.blend_index + blend_counter
                     currentweight = currentmesh.weights[weight_counter]
-                    tempmatrix = md5_bones[currentweight.bone_index].bindmat
+                    tempmatrix = gr2_bones[currentweight.bone_index].bindmat
                     temppos = QuArK_baseframe_matrix[currentweight.bone_index] * quarkx.vect((currentweight.weights[0], currentweight.weights[1], currentweight.weights[2]))
                     newpos = newpos + ((QuArK_baseframe_position[currentweight.bone_index] + temppos) * currentweight.bias)
                 newverts[vert_counter] = newpos
             baseframe.vertices = newverts
-            editor.Root.dictitems[md5_model_comps[mesh_counter]].dictitems['Frames:fg'].appenditem(baseframe)
+            editor.Root.dictitems[gr2_model_comps[mesh_counter]].dictitems['Frames:fg'].appenditem(baseframe)
         #Apply animation data to frame vertices
         for frame_counter in range(0,self.numFrames):
-            for mesh_counter in range(len(md5_model)):
-                currentmesh = md5_model[mesh_counter]
-                oldframe = editor.Root.dictitems[md5_model_comps[mesh_counter]].dictitems['Frames:fg'].dictitems['meshframe:mf']
+            for mesh_counter in range(len(gr2_model)):
+                currentmesh = gr2_model[mesh_counter]
+                oldframe = editor.Root.dictitems[gr2_model_comps[mesh_counter]].dictitems['Frames:fg'].dictitems['meshframe:mf']
                 newframe = oldframe.copy()
                 newframe.shortname = filename + " frame "+str(frame_counter+1)
                 oldverts = newframe.vertices
@@ -1534,24 +1452,24 @@ class md5anim:
                     continue
                 newverts = oldverts
                 for vert_counter in range(len(currentmesh.verts)):
-                    currentvertex = md5_model[mesh_counter].verts[vert_counter]
+                    currentvertex = gr2_model[mesh_counter].verts[vert_counter]
                     newpos = quarkx.vect((0.0, 0.0, 0.0))
                     for blend_counter in range(0, currentmesh.verts[vert_counter].blend_count):
                         weight_counter = currentvertex.blend_index + blend_counter
-                        currentweight = md5_model[mesh_counter].weights[weight_counter]
+                        currentweight = gr2_model[mesh_counter].weights[weight_counter]
                         temppos = QuArK_frame_matrix[frame_counter][currentweight.bone_index] * quarkx.vect((currentweight.weights[0], currentweight.weights[1], currentweight.weights[2]))
                         newpos = newpos + ((QuArK_frame_position[frame_counter][currentweight.bone_index] + temppos) * currentweight.bias)
                     newverts[vert_counter] = newpos
                 newframe.vertices = newverts
-                editor.Root.dictitems[md5_model_comps[mesh_counter]].dictitems['Frames:fg'].appenditem(newframe)
+                editor.Root.dictitems[gr2_model_comps[mesh_counter]].dictitems['Frames:fg'].appenditem(newframe)
 
 
 # gr2anim_filename = QuArK's full path and file name.
 # bones = QuArK's "Skeleton:bg" folder to get our current bones from.
 def load_gr2anim(gr2anim_filename, bones):
     return # Nothing setup to read in the .gr2 animation file yet.
-    theanim = md5anim() # Making an "instance" of this class.
-    theanim.load_md5anim(gr2anim_filename, bones) # Calling this class function to open and completely read the ,gr2 animation file.
+    theanim = gr2anim() # Making an "instance" of this class.
+    theanim.load_gr2anim(gr2anim_filename, bones) # Calling this class function to open and completely read the ,gr2 animation file.
 
     if bones:
         pth, actionname = os.path.split(gr2anim_filename)
@@ -1566,17 +1484,17 @@ def load_gr2anim(gr2anim_filename, bones):
 # To run this file
 ########################
 
-def import_gr2_model(basepath, gr2_filename):
+def import_gr2_model(basepath, gr2_filename, bone_group_name):
     # basepath just the path to the "game" folder.
     # gr2_filename is the full path and file name.
     editor = quarkpy.mdleditor.mdleditor
-    if (gr2_filename.endswith(".gr2") or gr2_filename.endswith(".GR2")) and not gr2_filename.find("animations") != -1: # Calls to load the .gr2 mesh file.
-        RetComponentList, RetQuArK_bone_list, message = load_gr2mesh(gr2_filename, basepath) # Loads the model using list of ALL bones as they are created.
+    if (gr2_filename.endswith(".gr2") or gr2_filename.endswith(".GR2")) and not gr2_filename.find("\\animations\\") != -1: # Calls to load the .gr2 mesh file.
+        RetComponentList, RetQuArK_bone_list, message, bone_group = load_gr2model(gr2_filename, basepath, bone_group_name) # Loads the model using list of ALL bones as they are created.
         ### Use the 'ModelRoot' below to test opening the QuArK's Model Editor with, needs to be qualified with main menu item.
         ModelRoot = quarkx.newobj('Model:mr')
       #  ModelRoot.appenditem(Component)
 
-        return ModelRoot, RetComponentList, RetQuArK_bone_list, message # Using list of ALL bones as they are created.
+        return ModelRoot, RetComponentList, RetQuArK_bone_list, message, bone_group # Using list of ALL bones as they are created.
     else: # Calls to load the .gr2 animation file.
         bones = editor.Root.dictitems['Skeleton:bg']
         load_gr2anim(gr2_filename, bones)
@@ -1591,6 +1509,13 @@ def loadmodel(root, filename, gamename, nomessage=0):
     if editor is None:
         editor = quarkpy.mdleditor.mdleditor
 
+    if filename.find("\\attachments\\") != -1:
+        gr2_mesh_path = filename.split("\\attachments\\")[0]
+    else:
+        gr2_mesh_path = filename.rsplit('\\', 1)[0]
+
+    bone_group_name = gr2_mesh_path.rsplit('\\', 1)[1]
+
     ### First we get the base path from the model path.
     basepath = None
     basepath = filename.rsplit('\\', 1)[0]
@@ -1599,15 +1524,15 @@ def loadmodel(root, filename, gamename, nomessage=0):
         editor = None   #Reset the global again
         return
 
-    if (filename.endswith(".gr2") or filename.endswith(".GR2")) and not filename.find("animations") != -1: # Calls to load the .gr2 mesh file.
+    if (filename.endswith(".gr2") or filename.endswith(".GR2")) and not filename.find("animations") != -1: # Calls to load the .gr2 model file.
         logging, tobj, starttime = ie_utils.default_start_logging(importername, textlog, filename, "IM") ### Use "EX" for exporter text, "IM" for importer text.
 
     ### Lines below here loads the model into the opened editor's current model.
-        ModelRoot, RetComponentList, RetQuArK_bone_list, message = import_gr2_model(basepath, filename)
+        ModelRoot, RetComponentList, RetQuArK_bone_list, message, bone_group = import_gr2_model(basepath, filename, bone_group_name)
 
         if ModelRoot is None or RetComponentList is None or RetComponentList == []:
             quarkx.beep() # Makes the computer "Beep" once if a file is not valid.
-            quarkx.msgbox("Invalid .md5 model.\n\n    " + filename + "\n\nEditor can not import it.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
+            quarkx.msgbox("Invalid .gr2 model.\n\n    " + filename + "\n\nEditor can not import it.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
             try:
                 progressbar.close()
             except:
@@ -1617,17 +1542,23 @@ def loadmodel(root, filename, gamename, nomessage=0):
 
         QuArK_mesh_counter = 0
         undo = quarkx.action()
-        newbones = []
-        for bone in range(len(RetQuArK_bone_list)): # Using list of ALL bones.
-            boneobj = RetQuArK_bone_list[bone]
-            parent_index = int(boneobj.dictspec['parent_index'])
-            if parent_index < 0:
-                newbones = newbones + [boneobj]
-            else:
-                RetQuArK_bone_list[parent_index].appenditem(boneobj)
+        if len(bone_group) != 0:
+            oldskelgroup = editor.Root.dictitems['Skeleton:bg']
+            newskelgroup = quarkpy.mdlutils.boneundo(editor, bone_group, RetQuArK_bone_list)
+            undo.exchange(oldskelgroup, newskelgroup)
 
-        for bone in newbones:
-            undo.put(editor.Root.dictitems['Skeleton:bg'], bone)
+        else:
+            newbones = []
+            for bone in range(len(RetQuArK_bone_list)): # Using list of ALL bones.
+                boneobj = RetQuArK_bone_list[bone]
+                parent_index = int(boneobj.dictspec['parent_index'])
+                if parent_index < 0:
+                    newbones = newbones + [boneobj]
+                else:
+                    RetQuArK_bone_list[parent_index].appenditem(boneobj)
+
+            for bone in newbones:
+                undo.put(editor.Root.dictitems['Skeleton:bg'], bone)
 
         for Component in RetComponentList:
             undo.put(editor.Root, Component)
@@ -1649,7 +1580,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
 
             # This needs to be done for each component or bones will not work if used in the editor.
             quarkpy.mdlutils.make_tristodraw_dict(editor, Component)
-        editor.ok(undo, str(len(RetComponentList)) + " .md5 Components imported") # Let the ok finish the new components before going on.
+        editor.ok(undo, str(len(RetComponentList)) + " .gr2 Components imported") # Let the ok finish the new components before going on.
 
         editor.Root.currentcomponent = RetComponentList[0]  # Sets the current component.
         comp = editor.Root.currentcomponent
@@ -1671,8 +1602,6 @@ def loadmodel(root, filename, gamename, nomessage=0):
             message = message + "Either case, it would be for editing purposes only and should be placed in the proper folder.\r\n\r\n"
             message = message + "Once this is done, then delete the imported components and re-import the model."
             quarkx.textbox("WARNING", "Missing Skin Textures:\r\n\r\n================================\r\n" + message, quarkpy.qutils.MT_WARNING)
-
-        gr2_mesh_path = filename.rsplit('\\', 1)
 
     else: # Calls to load the .gr2 animation file.
         gr2_anim_path = filename.rsplit('\\', 1)
@@ -1765,8 +1694,8 @@ def dataformname(o):
 
     dlgdef = """
     {
-      Help = "These are the Specific settings for Doom3\Quake4 (.md5mesh) model types."$0D
-             "md5 models use 'meshes' the same way that QuArK uses 'components'."$0D
+      Help = "These are the Specific settings for Granny (.gr2) model types."$0D
+             "gr2 models use 'meshes' the same way that QuArK uses 'components'."$0D
              "Each can have its own special Surface or skin texture settings."$0D
              "These textures may or may not have 'shaders' that they use for special effects."$0D0D22
              "skin name"$22" - The currently selected skin texture name."$0D22
@@ -1847,7 +1776,7 @@ def dataformname(o):
     comp = DummyItem
 
     if comp.type == ":mc": # Just makes sure what we have is a model component.
-        formobj = quarkx.newobj("md5_mc:form")
+        formobj = quarkx.newobj("gr2_mc:form")
         formobj.loadtext(dlgdef)
         return formobj, icon_btns
     else:
@@ -1906,6 +1835,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.9  2009/11/15 07:53:46  cdunde
+# To fix indexing of vertices and other needed items.
+#
 # Revision 1.8  2009/11/15 02:44:40  cdunde
 # Update of grnreader.exe to eliminate multiple outputs of group mesh vertices to .ms file,
 # of .gr2 importer to eliminate multiple output.ms file listings of bones and proper vertex weight assigning.
