@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.24  2009/07/15 10:38:01  danielpharos
+Updated website link.
+
 Revision 1.23  2009/07/14 11:40:18  danielpharos
 Fixed debug not compiling.
 
@@ -1258,12 +1261,13 @@ begin
      CancelMouseClicking(True);
      Inv1:=False;
      VertScrollBar.Range:=CountVisibleItems(Roots, ofTreeViewSubElement)*MyTVLineStep;
-     Repaint;
+     Invalidate;
      if HorzScrollBar.Range <> MaxPixelWidth then
      begin
-       HorzScrollBar.Range:=MaxPixelWidth;
        Repaint;
-       //DanielPharos: Double repaint, because repaint recalcs the MaxPixelWidth,
+       HorzScrollBar.Range:=MaxPixelWidth;
+       Invalidate;
+       //DanielPharos: Double invalidate, because repaint recalcs the MaxPixelWidth,
        //and now we need to draw the changes.
      end;
     end;
