@@ -293,9 +293,6 @@ def vector_angle(v1, v2):
 def load_gr2model(gr2_filename, basepath, bone_group_name):
     global gr2_model, gr2_model_comps, gr2_bones, progressbar, tobj, logging, Strings
 
-    bone_group = []
-    if editor.Root.dictitems['Skeleton:bg'].dictitems.has_key(bone_group_name + "_Granny01:bone"):
-        bone_group = editor.Root.dictitems['Skeleton:bg'].dictitems[bone_group_name + "_Granny01:bone"].findallsubitems("", ':bone')   # Get all bones of this group only.
 
     ### This area is where we make the different elements of a QuArK Component, for each Component.
     # First we check for any other "Import Component"s,
@@ -508,37 +505,28 @@ def load_gr2model(gr2_filename, basepath, bone_group_name):
 
         # QuArK Bones made in this section.
         elif words and skeleton == 1 and words[0] == "bone" and words[1] == "name:":
-            if len(bone_group) != 0:
-                for nbr in range(len(bone_group)):
-                    bone = bone_group[nbr]
-                    new_bone = bone.copy()
-                    bone_vtx_list[nbr] = new_bone.vtxlist
-                    QuArK_bones = QuArK_bones + [new_bone]
-                skeleton = 2
+            name = ""
+            for word in range(len(words)):
+                if word < 2:
+                    continue
+                if word == len(words)-1:
+                    name = name + words[word]
+                else:
+                    name = name + words[word] + " "
+            if name in bone_names:
+                newbone = 0
                 continue
             else:
-                name = ""
-                for word in range(len(words)):
-                    if word < 2:
-                        continue
-                    if word == len(words)-1:
-                        name = name + words[word]
-                    else:
-                        name = name + words[word] + " "
-                if name in bone_names:
-                    newbone = 0
-                    continue
-                else:
-                    bone_names = bone_names + [name]
-                if len(bone_names) == 1:
-                    name = bone_group_name + "_" + name
-                new_bone = quarkx.newobj(name + ":bone")
-                new_bone['flags'] = (0,0,0,0,0,0)
-                new_bone['show'] = (1.0,)
-                bone_vtx_list[bone_index] = {}
-                bone_index += 1
-                newbone = 1
-                continue
+                bone_names = bone_names + [name]
+            if len(bone_names) == 1:
+                name = bone_group_name + "_" + name
+            new_bone = quarkx.newobj(name + ":bone")
+            new_bone['flags'] = (0,0,0,0,0,0)
+            new_bone['show'] = (1.0,)
+            bone_vtx_list[bone_index] = {}
+            bone_index += 1
+            newbone = 1
+            continue
         elif words and skeleton == 1 and words[0] == "bone" and newbone == 1 and words[1] == "parentindex:":
             new_bone['parent_index'] = words[2] # QuArK code, this is NOT an integer but a string of its integer value.
             if words[2] == "-1":
@@ -562,12 +550,12 @@ def load_gr2model(gr2_filename, basepath, bone_group_name):
                     origin = origin.split(",")
                     for amt in range(len(origin)):
                         origin[amt] = float(origin[amt])
-                elif words and words[0] == "bone" and words[2] == "rotation:":
-                    rotation = words[3].replace("[", "")
-                    rotation = rotation.replace("]", "")
-                    rotation = rotation.split(",")
-                    for amt in range(len(rotation)):
-                        rotation[amt] = float(rotation[amt])
+               # elif words and words[0] == "bone" and words[2] == "rotation:": # Not needed or being used at this time.
+               #     rotation = words[3].replace("[", "")
+               #     rotation = rotation.replace("]", "")
+               #     rotation = rotation.split(",")
+               #     for amt in range(len(rotation)):
+               #         rotation[amt] = float(rotation[amt])
                 elif words and words[0] == "bone" and words[2] == "scale:":
                     scale = words[3].replace("[", "")
                     scale = scale.replace("]", "")
@@ -631,39 +619,55 @@ def load_gr2model(gr2_filename, basepath, bone_group_name):
 
             new_bone.position = quarkx.vect(new_bone.dictspec['position'])
             # QuArK code below, adjust to handles jointscale for other bones connecting to this one and so on.
-            jointscale = 10.0
+            jointscale = 6.0
             if new_bone.dictspec['parent_name'] == "None":
                 new_bone['bone_length'] = (0.0, 0.0, 0.0)
+                parent_bone_scale = jointscale
+                parent_bone_length = parent_bone2_length = (0.0, 0.0, 0.0)
             else:
                 new_bone['bone_length'] = (-quarkx.vect(QuArK_bones[int(new_bone.dictspec['parent_index'])].dictspec['position']) + quarkx.vect(new_bone.dictspec['position'])).tuple
                 parent_bone_scale = QuArK_bones[int(new_bone.dictspec['parent_index'])].dictspec['scale'][0]
-                parent_bone_length = QuArK_bones[int(new_bone.dictspec['parent_index'])].dictspec['bone_length']
-                if abs(new_bone.dictspec['bone_length'][0]) > abs(new_bone.dictspec['bone_length'][1]):
-                    if  abs(new_bone.dictspec['bone_length'][0]) > abs(new_bone.dictspec['bone_length'][2]):
-                        testlength = abs(new_bone.dictspec['bone_length'][0])
-                        parent_bone_length = parent_bone_length[0]
-                    else:
-                        testlength = abs(new_bone.dictspec['bone_length'][2])
-                        parent_bone_length = parent_bone_length[2]
+                parent_bone = QuArK_bones[int(new_bone.dictspec['parent_index'])]
+                parent_bone2 = QuArK_bones[int(parent_bone.dictspec['parent_index'])]
+                parent_bone_length = parent_bone.dictspec['bone_length']
+                parent_bone2_length = parent_bone2.dictspec['bone_length']
+            Xdif = abs(parent_bone_length[0] - new_bone.dictspec['bone_length'][0])
+            Ydif = abs(parent_bone_length[1] - new_bone.dictspec['bone_length'][1])
+            Zdif = abs(parent_bone_length[2] - new_bone.dictspec['bone_length'][2])
+            pXdif = abs(parent_bone2_length[0] - parent_bone_length[0])
+            pYdif = abs(parent_bone2_length[1] - parent_bone_length[1])
+            pZdif = abs(parent_bone2_length[2] - parent_bone_length[2])
+            if Xdif >= Ydif:
+                if  Xdif >= Zdif:
+                    testlength1 = Xdif
                 else:
-                    if  abs(new_bone.dictspec['bone_length'][1]) > abs(new_bone.dictspec['bone_length'][2]):
-                        testlength = abs(new_bone.dictspec['bone_length'][1])
-                        parent_bone_length = parent_bone_length[1]
-                    else:
-                        testlength = abs(new_bone.dictspec['bone_length'][2])
-                        parent_bone_length = parent_bone_length[2]
-                if testlength > parent_bone_length:
-                    jointscale = parent_bone_scale
+                    testlength1 = Zdif
+            else:
+                if  Ydif >= Zdif:
+                    testlength1 = Ydif
                 else:
-                    jointscale = parent_bone_scale * (testlength / parent_bone_length)
-                if jointscale < 0.1:
-                    jointscale = 0.1
-                elif jointscale > 10.0:
-                    jointscale = 10.0
-                elif jointscale > parent_bone_scale:
-                    jointscale = parent_bone_scale
-          #  new_bone['scale'] = (jointscale,) # Written this way to store it as a tuple.
-            new_bone['scale'] = (1.0,) # Written this way to store it as a tuple.
+                    testlength1 = Zdif
+            if pXdif >= pYdif:
+                if  pXdif >= pZdif:
+                    testlength2 = pXdif
+                else:
+                    testlength2 = pZdif
+            else:
+                if  pYdif >= pZdif:
+                    testlength2 = pYdif
+                else:
+                    testlength2 = pZdif
+            if testlength2 == 0:
+                testlength2 = 1.0
+            testlength = testlength1 / testlength2
+            if testlength < .5:
+                testlength = .5
+            jointscale = parent_bone_scale * testlength
+            if jointscale < 1:
+                jointscale = 1.0
+            elif jointscale > 6.0:
+                jointscale = 6.0
+            new_bone['scale'] = (jointscale,) # Written this way to store it as a tuple.
             new_bone['rotmatrix'] = "None"
             new_bone['draw_offset'] = (0.0, 0.0, 0.0)
             new_bone['_color'] = MapColor("BoneHandles", 3)
@@ -723,7 +727,7 @@ def load_gr2model(gr2_filename, basepath, bone_group_name):
                 Component.appenditem(skingroup)
                 Component.appenditem(framesgroup)
                 ComponentList = ComponentList + [Component]
-                if mesh_counter == 0 and len(bone_group) == 0:
+                if mesh_counter == 0:
                     for bone in QuArK_bones:
                         bone['component'] = Component.name # Just use the 1st component created.
                 mesh_counter += 1
@@ -786,7 +790,7 @@ def load_gr2model(gr2_filename, basepath, bone_group_name):
         Component.appenditem(skingroup)
         Component.appenditem(framesgroup)
         ComponentList = ComponentList + [Component]
-        if mesh_counter == 0 and len(bone_group) == 0:
+        if mesh_counter == 0:
             for bone in QuArK_bones:
                 bone['component'] = Component.name # Just use the 1st component created.
 
@@ -796,7 +800,7 @@ def load_gr2model(gr2_filename, basepath, bone_group_name):
 
    # os.remove(tempfile) ### Uncomment this line when importer is completed.
     ### Line below just temp while making importer.
-    return ComponentList, QuArK_bones, message, bone_group
+    return ComponentList, QuArK_bones, message
 
     #figure out the base pose for each vertex from the weights
     bone_vtx_list = {} # { bone_index : { mesh_index : [ vtx, vtx, vtx ...] } }
@@ -1489,12 +1493,12 @@ def import_gr2_model(basepath, gr2_filename, bone_group_name):
     # gr2_filename is the full path and file name.
     editor = quarkpy.mdleditor.mdleditor
     if (gr2_filename.endswith(".gr2") or gr2_filename.endswith(".GR2")) and not gr2_filename.find("\\animations\\") != -1: # Calls to load the .gr2 mesh file.
-        RetComponentList, RetQuArK_bone_list, message, bone_group = load_gr2model(gr2_filename, basepath, bone_group_name) # Loads the model using list of ALL bones as they are created.
+        RetComponentList, RetQuArK_bone_list, message = load_gr2model(gr2_filename, basepath, bone_group_name) # Loads the model using list of ALL bones as they are created.
         ### Use the 'ModelRoot' below to test opening the QuArK's Model Editor with, needs to be qualified with main menu item.
         ModelRoot = quarkx.newobj('Model:mr')
       #  ModelRoot.appenditem(Component)
 
-        return ModelRoot, RetComponentList, RetQuArK_bone_list, message, bone_group # Using list of ALL bones as they are created.
+        return ModelRoot, RetComponentList, RetQuArK_bone_list, message # Using list of ALL bones as they are created.
     else: # Calls to load the .gr2 animation file.
         bones = editor.Root.dictitems['Skeleton:bg']
         load_gr2anim(gr2_filename, bones)
@@ -1528,7 +1532,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
         logging, tobj, starttime = ie_utils.default_start_logging(importername, textlog, filename, "IM") ### Use "EX" for exporter text, "IM" for importer text.
 
     ### Lines below here loads the model into the opened editor's current model.
-        ModelRoot, RetComponentList, RetQuArK_bone_list, message, bone_group = import_gr2_model(basepath, filename, bone_group_name)
+        ModelRoot, RetComponentList, RetQuArK_bone_list, message = import_gr2_model(basepath, filename, bone_group_name)
 
         if ModelRoot is None or RetComponentList is None or RetComponentList == []:
             quarkx.beep() # Makes the computer "Beep" once if a file is not valid.
@@ -1542,9 +1546,52 @@ def loadmodel(root, filename, gamename, nomessage=0):
 
         QuArK_mesh_counter = 0
         undo = quarkx.action()
-        if len(bone_group) != 0:
+        old_list = new_list = []
+        if len(RetQuArK_bone_list) != 0 and editor.Root.dictitems['Skeleton:bg'].dictitems.has_key(bone_group_name + "_Granny01:bone"):
+            old_bone_group = editor.Root.dictitems['Skeleton:bg'].dictitems[bone_group_name + "_Granny01:bone"].findallsubitems("", ':bone')   # Get all bones of this group only.
+            newbone_names = []
+            for bone in RetQuArK_bone_list:
+                newbone_names = newbone_names + [bone.name]
+            for bone in RetQuArK_bone_list:
+                for oldbone in range(len(old_bone_group)):
+                    if not old_bone_group[oldbone].name in newbone_names:
+                        newbone_names = newbone_names + [old_bone_group[oldbone].name]
+                        new_list = new_list + [old_bone_group[oldbone].copy()]
+                        old_list = old_list + [old_bone_group[oldbone]]
+
+                    if bone.name == old_bone_group[oldbone].name:
+                        if len(bone.vtxlist) == 0:
+                            new_list = new_list + [old_bone_group[oldbone].copy()]
+                            old_list = old_list + [old_bone_group[oldbone]]
+                        else:
+                            old_keys = old_bone_group[oldbone].vtxlist.keys()
+                            newbone = old_bone_group[oldbone].copy()
+                            old_vtxlist = old_bone_group[oldbone].vtxlist
+                            for comp in bone.vtxlist.keys():
+                                if comp in old_keys:
+                                    temp = old_vtxlist[comp]
+                                    for vtx in bone.vtxlist[comp]:
+                                        if not vtx in old_vtxlist[comp]:
+                                            temp = temp + [vtx]
+                                    old_vtxlist[comp] = temp
+                                else:
+                                    old_vtxlist[comp] = bone.vtxlist[comp]
+                            newbone.vtxlist = old_vtxlist
+                            new_list = new_list + [newbone]
+                            old_list = old_list + [old_bone_group[oldbone]]
+                        break
+
+                    if oldbone == len(old_bone_group)-1:
+                        parent_index = int(bone.dictspec['parent_index'])
+                        parent_bone_name = RetQuArK_bone_list[parent_index].name
+                        for newbone in new_list:
+                            if newbone.name == parent_bone_name:
+                                newbone.appenditem(bone)
+                        new_list = new_list + [bone]
+                        old_list = old_list + [bone.copy()]
+
             oldskelgroup = editor.Root.dictitems['Skeleton:bg']
-            newskelgroup = quarkpy.mdlutils.boneundo(editor, bone_group, RetQuArK_bone_list)
+            newskelgroup = quarkpy.mdlutils.boneundo(editor, old_list, new_list)
             undo.exchange(oldskelgroup, newskelgroup)
 
         else:
@@ -1835,6 +1882,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.10  2009/11/17 03:03:10  cdunde
+# Minor update to correct value sign output.
+#
 # Revision 1.9  2009/11/15 07:53:46  cdunde
 # To fix indexing of vertices and other needed items.
 #
