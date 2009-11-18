@@ -794,9 +794,30 @@ def load_gr2model(gr2_filename, basepath, bone_group_name):
             for bone in QuArK_bones:
                 bone['component'] = Component.name # Just use the 1st component created.
 
-    # Passes the full data to the bones.vtxlist.
-    for index in bone_vtx_list.keys():
-        QuArK_bones[index].vtxlist = bone_vtx_list[index]
+    # Passes the full data to the bones.vtxlist and sets each bone's vtx_pos for animation use.
+    for bone_index in bone_vtx_list.keys():
+        QuArK_bones[bone_index].vtxlist = bone_vtx_list[bone_index]
+        vtxcount = 0
+        usekey = None
+        for key in QuArK_bones[bone_index].vtxlist.keys():
+            if len(QuArK_bones[bone_index].vtxlist[key]) > vtxcount:
+                usekey = key
+                vtxcount = len(QuArK_bones[bone_index].vtxlist[key])
+        if usekey is not None:
+            temp = {}
+            temp[usekey] = QuArK_bones[bone_index].vtxlist[usekey]
+            QuArK_bones[bone_index].vtx_pos = temp
+            for item in ComponentList:
+                if item.name == usekey:
+                    comp = item
+                    break
+            vtxpos = quarkx.vect(0, 0, 0)
+            frame = comp.dictitems['Frames:fg'].subitems[0]
+            for vtx in range(len(QuArK_bones[bone_index].vtx_pos[usekey])):
+                vtxpos = vtxpos + frame.vertices[QuArK_bones[bone_index].vtx_pos[usekey][vtx]]
+            vtxpos = vtxpos/float(len(QuArK_bones[bone_index].vtx_pos[usekey]))
+            QuArK_bones[bone_index]['draw_offset'] = (QuArK_bones[bone_index].position - vtxpos).tuple
+            QuArK_bones[bone_index]['component'] = usekey
 
    # os.remove(tempfile) ### Uncomment this line when importer is completed.
     ### Line below just temp while making importer.
@@ -1882,6 +1903,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.11  2009/11/18 07:51:58  cdunde
+# Update to merge bones data for .gr2 attachments models.
+#
 # Revision 1.10  2009/11/17 03:03:10  cdunde
 # Minor update to correct value sign output.
 #
