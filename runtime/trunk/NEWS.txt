@@ -14,6 +14,8 @@ $Id$
 
 6.6.0 Beta 4
 ============
+* [cdunde]: Update to merge bones data for .gr2 attachments models.
+
 * [cdunde]: Update of grnreader.exe to eliminate multiple outputs of group mesh vertices to .ms file and .gr2
           - importer to eliminate multiple output.ms file listings of bones and proper vertex weight assigning.
 
