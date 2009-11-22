@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.25  2009/11/17 20:54:58  danielpharos
+Fixed horrible multiple redrawing of treeview.
+
 Revision 1.24  2009/07/15 10:38:01  danielpharos
 Updated website link.
 
@@ -187,6 +190,7 @@ type
     procedure ContentsChanged(Full: Boolean);
     procedure SelectionChanging;
     procedure ToggleExpanding(Q: QObject);
+    procedure ExpandAll(Q: QObject);
     function GetNextVisibleNode(Source: QObject) : QObject;
     function GetPrevVisibleNode(Source: QObject) : QObject;
     function GetNodeAt(X,Y: Integer) : QObject;
@@ -1677,6 +1681,28 @@ begin
   end;
  Perform(wm_InternalMessage, wp_ContentsChanged, 0);
  MakeVisible(Q, Last);
+end;
+
+procedure TMyTreeView.ExpandAll(Q: QObject);
+  //Copied from elsewhere in this file:
+  procedure ExpandAllRec(Q: QObject);
+  var
+   I: Integer;
+   Test: QObject;
+  begin
+   if GetFirstTvChild(Q)=Nil then Exit;
+   Q.Flags:=Q.Flags or ofTreeViewExpanded;
+   Expanding(Q);
+   for I:=0 to Q.SubElements.Count-1 do
+    begin
+     Test:=Q.SubElements[I];
+     if Test.Flags and (ofTreeViewSubElement or ofTreeViewInvisible) = ofTreeViewSubElement then
+      ExpandAllRec(Test);
+    end;
+  end;
+begin
+ ExpandAllRec(Q);
+ ContentsChanged(False);
 end;
 
 function SearchNode1(Test, LookFor: QObject; var Index, Level: Integer) : Boolean;

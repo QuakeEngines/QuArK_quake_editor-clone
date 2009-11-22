@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2009/07/30 09:38:57  danielpharos
+Updated website link.
+
 Revision 1.9  2008/09/06 15:57:33  danielpharos
 Moved exception code into separate file.
 
@@ -379,12 +382,35 @@ begin
  end;
 end;
 
+function eExpandAll(self, args: PyObject) : PyObject; cdecl;
+var
+ obj: PyObject;
+ Q: QObject;
+begin
+ try
+  Result:=Nil;
+  if not PyArg_ParseTupleX(args, 'O!|O', [@TyObject_Type, @obj]) then
+   Exit;
+  Q:=QkObjFromPyObj(obj);
+  if (Q<>Nil) then
+    with PyControlF(self)^ do
+     if QkControl<>Nil then
+      with QkControl as TPythonExplorer do
+       ExpandAll(Q);
+  Result:=PyNoResult;
+ except
+  EBackToPython;
+  Result:=Nil;
+ end;
+end;
+
  {------------------------}
 
 const
- MethodTable: array[0..3] of TyMethodDef =
+ MethodTable: array[0..4] of TyMethodDef =
   ((ml_name: 'selchanged';     ml_meth: eSelChanged;     ml_flags: METH_VARARGS),
    (ml_name: 'expand';         ml_meth: eExpand;         ml_flags: METH_VARARGS),
+   (ml_name: 'expandall';      ml_meth: eExpandAll;      ml_flags: METH_VARARGS),
    (ml_name: 'addroot';        ml_meth: eAddRoot;        ml_flags: METH_VARARGS),
    (ml_name: 'clear';          ml_meth: eClear;          ml_flags: METH_VARARGS));
 
