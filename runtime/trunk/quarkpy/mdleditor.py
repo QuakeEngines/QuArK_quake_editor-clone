@@ -398,7 +398,7 @@ class ModelEditor(BaseEditor):
                             else:
                                 ObjectUniqueName = ObjectUniqueName + HoldObject.name
                 HoldObjectList.append(ParentNames)
-                if Object.type == ":bg" or Object.type == ":bone":
+                if (Object.type == ":bg" or Object.type == ":bone") and (Object in self.layout.explorer.sellist):
                     ObjectExpanded[ObjectUniqueName] = (Object.flags & qutils.OF_TVEXPANDED)
                 else:
                     if len(Object.subitems) == 0:
@@ -436,7 +436,7 @@ class ModelEditor(BaseEditor):
 
             if ObjectUniqueName != "" and HoldObject is not None:
                 if ObjectExpanded[ObjectUniqueName] <> 0:
-                    self.layout.explorer.expand(HoldObject)
+                    self.layout.explorer.expandall(HoldObject)
 
                ### Line below moved to mdlmgr.py, def selectcomponent, using HoldObject as global
                ### to allow Skin-view to complete its new undo mesh and handles, was not working from here.
@@ -490,7 +490,7 @@ class ModelEditor(BaseEditor):
             extra = [qmenu.sep] + mdlmenus.TexModeMenu(self, view)
         def expand_subitems_click(m):
             focus_item = reserved.focus
-            self.expand_subitems(focus_item)
+            self.layout.explorer.expandall(focus_item)
         m = qmenu.item
         m.reserved = reserved
         expand_subitems = qmenu.item("Expand Sub-items", expand_subitems_click, "|Expand Sub-items:\n\nThis will expand all of this items sub-folders and their sub-folders on down.|intro.modeleditor.rmbmenus.html#bonecommands")
@@ -529,17 +529,6 @@ class ModelEditor(BaseEditor):
                 BoneExtras = mdlhandles.BoneCenterHandle(origin,None,None).extrasmenu(self)
                 return [expand_subitems, qmenu.sep] + BoneExtras + [qmenu.sep] + mdlentities.CallManager("menu", sellist[0], self) + extra
         return [expand_subitems, qmenu.sep] + mdlmenus.MultiSelMenu(sellist, self) + extra
-
-
-    def expand_subitems(self, focus_item):
-        "Expands all sub-items and their sub-items on down (for bones only) in the tree-view."
-
-        self.layout.explorer.expand(focus_item)
-        if focus_item.type != ":bg" and focus_item.type != ":bone":
-            return
-        for subitem in focus_item.subitems:
-            self.layout.explorer.expand(subitem)
-            self.expand_subitems(subitem)
 
 
     def explorerdrop(self, ex, list, text):
@@ -1820,6 +1809,10 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.138  2009/10/17 02:56:42  cdunde
+#To stop rundown of items, like frames, when using Expand Sub-items function.
+#Still does the Skeleton group and bones correctly though.
+#
 #Revision 1.137  2009/10/12 20:49:56  cdunde
 #Added support for .md3 animationCFG (configuration) support and editing.
 #
