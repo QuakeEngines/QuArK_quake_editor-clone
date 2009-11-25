@@ -4043,7 +4043,12 @@ class BoneHandle(qhandles.GenericHandle):
                     undo.exchange(old_bone, new_bone)
         if self.newverticespos is not None:
             editor = self.mgr.editor
-            for meshname in self.newverticespos:
+            for mesh in editor.Root.subitems:
+                if not (mesh.type == ":mc"):
+                    continue
+                meshname = mesh.name
+                if not (meshname in self.newverticespos.keys()):
+                    continue
                 oldmesh = editor.Root.dictitems[meshname]
                 newmesh = oldmesh.copy()
                 newmesh.currentframe = newmesh.dictitems["Frames:fg"].dictitems[oldmesh.currentframe.name]
@@ -4973,6 +4978,9 @@ class BoneCornerHandle(BoneHandle):
         for obj in list:
             from math import sqrt
             obj.rotmatrix = changedradius * quarkx.matrix((sqrt(2)/2, -sqrt(2)/2, 0), (sqrt(2)/2, sqrt(2)/2, 0), (0, 0, 1))
+            # To update the rotmatrix for this drag.
+    #        rm = m.tuple
+    #        obj['rotmatrix'] = (rm[0][0], rm[0][1], rm[0][2], rm[1][0], rm[1][1], rm[1][2], rm[2][0], rm[2][1], rm[2][2])
             if obj != self.bone:
                 changedpos = obj.position - rotationorigin
                 changedpos = changedradius * m * changedpos
@@ -5314,6 +5322,11 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.194  2009/11/15 02:44:40  cdunde
+#Update of grnreader.exe to eliminate multiple outputs of group mesh vertices to .ms file,
+#of .gr2 importer to eliminate multiple output.ms file listings of bones and proper vertex weight assigning.
+#and of mdlhandles.py to set its code back to the way it was and should be for all model types.
+#
 #Revision 1.193  2009/11/13 06:15:05  cdunde
 #Updates for .gr2 bones to use our same code.
 #
