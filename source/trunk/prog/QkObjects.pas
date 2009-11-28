@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.125  2009/11/02 21:37:18  cdunde
+Set date for new release.
+
 Revision 1.124  2009/07/15 10:38:01  danielpharos
 Updated website link.
 
@@ -781,7 +784,7 @@ function EndOfClipboardChain(PasteNow: QObject) : Boolean;
 var
   g_CF_QObjects: Integer;
   g_ClipboardChain: TClipboardHandler = EndOfClipboardChain;
-  g_PopupMenuObject: QObject;
+(*g_PopupMenuObject: QObject;*)
 (*CodeConstruction: Char;*)
 
 function FileAccessQ(const theFilename: String; Mode: TModeAcces) : TQStream;
