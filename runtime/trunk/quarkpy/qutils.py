@@ -55,7 +55,7 @@ MINIMIZED = 1
 MAXIMIZED = 2
 
 # filedialogbox
-SAVEDIALOG     = 1
+SAVEDIALOG     = 1   # These have to match Delpih's TOpenOptions flags, except for '1', which is overwritten in QuarkX.pas
 MULTIPLEFILES  = 64
 
 # setupset
@@ -901,6 +901,9 @@ def sortdictionary(dictionary):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.51  2009/09/07 01:38:45  cdunde
+#Setup of tag menus and icons.
+#
 #Revision 1.50  2009/07/14 12:14:54  danielpharos
 #Oops: uploaded version: Added logging of plugin loading.
 #
