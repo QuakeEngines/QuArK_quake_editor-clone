@@ -46,6 +46,7 @@ from quarkpy.qeditor import MapColor # Strictly needed for QuArK bones MapColor 
 # Globals
 SS_MODEL = 3
 gr2_mesh_path = None
+gr2_mesh_loaded = []
 gr2_anim_path = None
 gr2_model = None
 gr2_bones = None
@@ -290,7 +291,8 @@ def vector_angle(v1, v2):
 # IMPORT A FILE
 ######################################################
 
-def load_gr2model(gr2_filename, basepath, bone_group_name):
+# lines = the fully read output.ms file text.
+def load_gr2model(gr2_filename, basepath, bone_group_name, lines):
     global gr2_model, gr2_model_comps, gr2_bones, progressbar, tobj, logging, Strings
 
 
@@ -323,37 +325,12 @@ def load_gr2model(gr2_filename, basepath, bone_group_name):
                              # [ bone1, bone2,...]
     QuArK_weights_list = {}  # A list to store all QuArK  "weights" created from the hidden output.ms file "set Group Vertices" section for each "Tri-Groups" mesh.
                              # { mesh_index : { vert_index : { bonename : { weight_index : int,  weight_value : float,  color : binary } } } }
-
-    # Uses grnreader.exe in QuArK's dll folder to create the temoary output.ms file and place it there also to be read in below.
-    filename = "\"" + gr2_filename + "\""
-    cmdline = 'grnreader ' + filename
-    fromdir = quarkx.exepath + "dlls"
-    process = quarkx.runprogram(cmdline, fromdir)
-    # read the file in
-    # gr2_filename = the full path and file name of the .gr2 file being imported, ex.
-    # "C:\Program Files\GR2game\client\resources\female\dancer.gr2"
-    tempfile = quarkx.exepath + "dlls/output.ms"
-    tempfile = tempfile.replace("\\", "/")
-    goahead = 0
-    while not goahead:
-        try:
-            file = open(tempfile,"rw")
-        except:
-            quarkx.wait(100)
-        else:
-            goahead = 1
-    file = open(tempfile,"r")
-    lines = file.readlines()
-    file.close()
-    # Comment out the line below to save the output.ms file,
-    # but the file needs to be renamed or deleted before new import.
-    os.remove(quarkx.exepath + "dlls/output.ms")
-
     gr2_model = []
     gr2_bones = []
 
     num_lines = len(lines)
 
+    filename = "\"" + gr2_filename + "\""
     filename = filename.strip("\"")
     filename = filename.split("\\")[-1]
     filename = filename.replace(".gr2", "")
@@ -368,7 +345,6 @@ def load_gr2model(gr2_filename, basepath, bone_group_name):
     # Dictionary list for the bone.vtxlist data so they process much faster.
     bone_vtx_list = {} # { bone_index : { component_full_name : [ vtx, vtx, vtx ...] } }
     bone_index = 0
-    skeleton = 0
     # Component = the actual component being created at the time.
     # vert_index =  the fixed, correct, vert_index number of the above Component's mesh being processed at the time.
     # bones_index_list = [2,1,0,0] a list of int bone indexes for a particular meshes particular vertex_index number.
@@ -422,8 +398,6 @@ def load_gr2model(gr2_filename, basepath, bone_group_name):
         words = current_line.split()
         if not words: # skip blank lines
             continue
-        if words and words[0] == "skeleton" and words[1] == "(":
-            skeleton = skeleton + 1
         if len(words) < 3 and words[0] != "MESHNAME:":
             continue
         ### When starting to read in the output.ms file (created and read in the background then deleted)
@@ -504,7 +478,7 @@ def load_gr2model(gr2_filename, basepath, bone_group_name):
             continue
 
         # QuArK Bones made in this section.
-        elif words and skeleton == 1 and words[0] == "bone" and words[1] == "name:":
+        elif words and words[0] == "bone" and words[1] == "name:":
             name = ""
             for word in range(len(words)):
                 if word < 2:
@@ -527,14 +501,16 @@ def load_gr2model(gr2_filename, basepath, bone_group_name):
             bone_index += 1
             newbone = 1
             continue
-        elif words and skeleton == 1 and words[0] == "bone" and newbone == 1 and words[1] == "parentindex:":
+        elif words and words[0] == "bone" and newbone == 1 and words[1] == "parentindex:":
             new_bone['parent_index'] = words[2] # QuArK code, this is NOT an integer but a string of its integer value.
             if words[2] == "-1":
                 new_bone['parent_name'] = "None"
+                if not new_bone.shortname.startswith(bone_group_name):
+                    new_bone.shortname = bone_group_name + "_" + new_bone.shortname
             else:
                 new_bone['parent_name'] = QuArK_bones[int(new_bone.dictspec['parent_index'])].name
             continue
-        elif words and skeleton == 1 and words[0] == "bone" and newbone == 1 and words[2] == "dimensions:":
+        elif words and words[0] == "bone" and newbone == 1 and words[2] == "dimensions:":
             dimensions = int(words[3])
             while words[0] != ")":
                 #next line
@@ -733,9 +709,10 @@ def load_gr2model(gr2_filename, basepath, bone_group_name):
                 mesh_counter += 1
             frame_vertices = ()
             conversion_list = {}
-            Component = quarkx.newobj(filename + "_" + str(mesh_counter) + ':mc')
+            Component = quarkx.newobj(bone_group_name + "_" + filename + "_" + str(mesh_counter) + ':mc')
             framesgroup = quarkx.newobj('Frames:fg') # QuArK Frames group made here.
-            frame = quarkx.newobj(filename + "_" + str(mesh_counter) + ' meshframe' + ':mf') # QuArK frame made here.
+          #  frame = quarkx.newobj(filename + "_" + str(mesh_counter) + ' meshframe' + ':mf') # QuArK frame made here.
+            frame = quarkx.newobj('meshframe:mf') # QuArK frame made here.
             Tris = ''
             ### Creates this component's Skins:sg group.
             skingroup = quarkx.newobj('Skins:sg')
@@ -1170,9 +1147,9 @@ def load_gr2model(gr2_filename, basepath, bone_group_name):
         if shader_name is not None:
             Comp_name = shader_name.split("/")
             Comp_name = Comp_name[len(Comp_name)-1]
-            Component = quarkx.newobj(Comp_name + ':mc')
+            Component = quarkx.newobj(bone_group_name + "_" + Comp_name + ':mc')
         else:
-            Component = quarkx.newobj("Import Component " + str(CompNbr) + ':mc')
+            Component = quarkx.newobj(bone_group_name + "_" + "Import Component " + str(CompNbr) + ':mc')
             CompNbr = CompNbr + 1
         gr2_model_comps = gr2_model_comps + [Component.name]
         if mesh.mesh_index == 0:
@@ -1254,8 +1231,11 @@ def load_gr2model(gr2_filename, basepath, bone_group_name):
 
 class gr2anim_bone:
     name = ""
-    parent_index = 0
-    flags = 0
+    QuArK_bones_index = 0
+    QuArK_bones_parent_index = -1
+    parent_name = "None"
+    parent_index = -1
+    flags = (0,0,0,0,0,0)
     frameDataIndex = 0
     bindpos = []
     bindquat = []
@@ -1264,8 +1244,11 @@ class gr2anim_bone:
         name = ""
         self.bindpos=[0.0]*3
         self.bindquat=[0.0]*4
-        self.parent_index = 0
-        self.flags = 0
+        self.QuArK_bones_index = 0
+        self.QuArK_bones_parent_index = -1
+        self.parent_name = "None"
+        self.parent_index = -1
+        self.flags = (0,0,0,0,0,0)
         self.frameDataIndex = 0
 
         
@@ -1283,157 +1266,155 @@ class gr2anim:
         gr2anim_bones = []
         baseframe = []
         framedata = []
-        
-    def load_gr2anim(self, gr2anim_filename, bones=None): # bones = QuArK's "Skeleton:bg" folder to get our current bones from.
-        file=open(gr2anim_filename,"r")
-        lines=file.readlines()
-        file.close()
 
+    # bones = QuArK's "(model name)_Granny01:bone" and all its sub-bones to get our current bones from.
+    def load_gr2anim(self, gr2anim_filename, lines, bone_group_name, bones=None):
         num_lines=len(lines)
+        trackgroup = 0
 
         for line_counter in range(0,num_lines):
             current_line=lines[line_counter]
             words=current_line.split()
 
-            if words and words[0]=="numJoints":
-                self.num_bones=int(words[1])
-
-            elif words and words[0]=="numFrames":
+            if words and words[0]=="AnimationFrames:":
                 self.numFrames=int(words[1])
                 self.framedata = [[]]*self.numFrames
 
-            elif words and words[0]=="frameRate":
-                self.frameRate=int(words[1])
-
-            elif words and words[0]=="numAnimatedComponents":
-                self.numAnimatedComponents=int(words[1])
-
-            elif words and words[0]=="hierarchy":
+            elif words and words[0]=="trackgroup" and words[1]=="bones":
+                if trackgroup != 0:
+                    pth, animfilename = os.path.split(gr2anim_filename)
+                    self.apply(animfilename, bone_group_name, bones) # Calling this class function to create the amimation frames,
+                    trackgroup = 0
+                trackgroup = 1
+                self.num_bones=int(words[2])
                 for bone_counter in range(0,self.num_bones):
-                    #make a new bone
-                    self.gr2anim_bones.append(gr2anim_bone())
+                    self.gr2anim_bones.append(gr2anim_bone()) #make all the new bones
+                #skip next line
+                line_counter+=1
+                bone_names = []
+                for bone_counter in range(0,self.num_bones):
                     #next line
                     line_counter+=1
-                    current_line=lines[line_counter]
-                    words=current_line.split()
-                    #skip over blank lines
-                    while not words:
-                        line_counter+=1
-                        current_line=lines[line_counter]
-                        words=current_line.split()
+                    current_line = lines[line_counter]
+                    words = current_line.split(", ")
+                    words[1] = words[1].strip()
+                    bone_names = bone_names + [words[1]]
 
-                    #get rid of the quotes on either side
-                    temp_name=str(words[0])
-                    temp_name=temp_name[1:-1]
-                    self.gr2anim_bones[bone_counter].name=temp_name
-                    self.gr2anim_bones[bone_counter].parent_index = int(words[1])
-                    self.gr2anim_bones[bone_counter].flags = int(words[2])
-                    self.gr2anim_bones[bone_counter].frameDataIndex=int(words[3])
+                sort_names = []
+                while 1:
+                    if len(sort_names) == self.num_bones:
+                        break
+                    for bone in range(len(bones)):
+                        for index in range(len(bone_names)):
+                            if bone_names[index] + ":bone" == bones[bone].name.replace(bone_group_name+"_", ""):
+                                sort_names = sort_names + [[index, bone, bone_names[index]]]
+                                break
+                        if len(sort_names) == len(bone_names):
+                            break
 
-            elif words and words[0]=="baseframe":
                 for bone_counter in range(0,self.num_bones):
-                    line_counter+=1
-                    current_line=lines[line_counter]
-                    words=current_line.split()
-                    #skip over blank lines
-                    while not words:
-                        line_counter+=1
-                        current_line=lines[line_counter]
-                        words=current_line.split()
-                    self.gr2anim_bones[bone_counter].bindpos[0]=float(words[1])
-                    self.gr2anim_bones[bone_counter].bindpos[1]=float(words[2])
-                    self.gr2anim_bones[bone_counter].bindpos[2]=float(words[3])
-                    qx = float(words[6])
-                    qy = float(words[7])
-                    qz = float(words[8])
-                    qw = 1 - qx*qx - qy*qy - qz*qz
-                    if qw<0:
-                        qw=0
-                    else:
-                        qw = -sqrt(qw)
-                    self.gr2anim_bones[bone_counter].bindquat = [qx,qy,qz,qw]
+                    self.gr2anim_bones[bone_counter].name = sort_names[bone_counter][2]
+                    self.gr2anim_bones[bone_counter].QuArK_bones_index = sort_names[bone_counter][1]
+                    self.gr2anim_bones[bone_counter].parent_name = bones[sort_names[bone_counter][1]].dictspec['parent_name']
+                    for bone in range(len(bones)):
+                        if self.gr2anim_bones[bone_counter].parent_name == bones[bone].name:
+                            self.gr2anim_bones[bone_counter].QuArK_bones_parent_index = bone
+                            name = self.gr2anim_bones[bone_counter].parent_name.replace(bone_group_name + "_", "")
+                            name = name.replace(":bone", "")
+                            self.gr2anim_bones[bone_counter].parent_name = name
+                            break
 
-            elif words and words[0]=="frame":
+                for bone_counter in range(len(self.gr2anim_bones)):
+                    for parent_counter in range(len(self.gr2anim_bones)):
+                        if self.gr2anim_bones[bone_counter].parent_name == self.gr2anim_bones[parent_counter].name:
+                            self.gr2anim_bones[bone_counter].parent_index = parent_counter
+                            break
+
+            elif words and words[0]=="KeyFrame:":
                 framenumber = int(words[1])
-                self.framedata[framenumber]=[]
+                self.framedata[framenumber] = [[]]*self.num_bones
+                #skip next line
                 line_counter+=1
-                current_line=lines[line_counter]
-                words=current_line.split()
-                while words and not(words[0]=="frame" or words[0]=="}"):
-                    for i in range(0, len(words)):
-                        self.framedata[framenumber].append(float(words[i]))
+                current_line = lines[line_counter]
+                words = current_line.split()
+                while words and not(words[0]=="KeyFrame:" or words[0]==")"):
+                    bone_data = []
+                    if words[0] == "boneindex":
+                        for i in range(1, len(words)):
+                            bone_data.append(words[i])
+                        for item in range(len(sort_names)):
+                            if sort_names[item][0] == int(words[1]):
+                                self.framedata[framenumber][item] = bone_data
+                                break
                     line_counter+=1
-                    current_line=lines[line_counter]
-                    words=current_line.split()
+                    current_line = lines[line_counter]
+                    words = current_line.split()
 
-    def apply(self, skelgroup, animfile):
-        global editor
-        filename = animfile.split(".")[0]
-        #Construct baseframe data
-        QuArK_baseframe_position_raw = [[]]*self.num_bones
-        QuArK_baseframe_matrix_raw = [[]]*self.num_bones
-        for bone_counter in range(0,self.num_bones):
-            QuArK_baseframe_position_raw[bone_counter] = quarkx.vect((self.gr2anim_bones[bone_counter].bindpos[0], self.gr2anim_bones[bone_counter].bindpos[1], self.gr2anim_bones[bone_counter].bindpos[2]))
-            tempmatrix = quaternion2matrix(self.gr2anim_bones[bone_counter].bindquat)
-            QuArK_baseframe_matrix_raw[bone_counter] = quarkx.matrix(((tempmatrix[0][0], tempmatrix[1][0], tempmatrix[2][0]), (tempmatrix[0][1], tempmatrix[1][1], tempmatrix[2][1]), (tempmatrix[0][2], tempmatrix[1][2], tempmatrix[2][2])))
+
+    def apply(self, animfilename, bone_group_name, bones):
+        global editor, gr2_model_comps
+        gr2_model_comps = []
+        for item in editor.Root.dictitems:
+            if editor.Root.dictitems[item].type ==":mc" and editor.Root.dictitems[item].name.startswith(bone_group_name + "_"):
+                gr2_model_comps = gr2_model_comps + [editor.Root.dictitems[item]]
+        filename = animfilename.split(".")[0]
         #Construct animation frame data
-        QuArK_frame_position_raw = [[]]*self.numFrames
         QuArK_frame_matrix_raw = [[]]*self.numFrames
+        QuArK_frame_position_raw = [[]]*self.numFrames
+        prev_frame_matrix_pos = [[]]*self.numFrames
         for frame_counter in range(0,self.numFrames):
-            QuArK_frame_position_raw[frame_counter] = [[]]*self.num_bones
             QuArK_frame_matrix_raw[frame_counter] = [[]]*self.num_bones
+            QuArK_frame_position_raw[frame_counter] = [[]]*self.num_bones
+            prev_frame_matrix_pos[frame_counter] = [[]]*self.num_bones
+
             for bone_counter in range(0,self.num_bones):
-                currentbone = self.gr2anim_bones[bone_counter]
-                lx, ly, lz = currentbone.bindpos
-                (qx, qy, qz, qw) = currentbone.bindquat
-                frameDataIndex = currentbone.frameDataIndex
-                if (currentbone.flags & 1):
-                    lx = self.framedata[frame_counter][frameDataIndex]
-                    frameDataIndex+=1
-                if (currentbone.flags & 2):
-                    ly = self.framedata[frame_counter][frameDataIndex]
-                    frameDataIndex+=1
-                if (currentbone.flags & 4):
-                    lz = self.framedata[frame_counter][frameDataIndex]
-                    frameDataIndex+=1
-                if (currentbone.flags & 8):
-                    qx = self.framedata[frame_counter][frameDataIndex]
-                    frameDataIndex+=1
-                if (currentbone.flags & 16):
-                    qy = self.framedata[frame_counter][frameDataIndex]
-                    frameDataIndex+=1
-                if (currentbone.flags & 32):
-                    qz = self.framedata[frame_counter][frameDataIndex]
+                currentbone = self.framedata[frame_counter][bone_counter]
+                qx = float(currentbone[1])
+                qy = float(currentbone[2])
+                qz = float(currentbone[3])
                 qw = 1 - qx*qx - qy*qy - qz*qz
                 if qw<0:
                     qw=0
                 else:
                     qw = -sqrt(qw)
-                QuArK_frame_position_raw[frame_counter][bone_counter] = quarkx.vect((lx, ly, lz))
+                x = float(currentbone[4])
+                y = float(currentbone[5])
+                z = float(currentbone[6])
+                current_pos = quarkx.vect(-y, x, z)
+                prev_frame_matrix_pos[frame_counter][bone_counter] = [[qx, qy, qz, qw], current_pos]
+
+                if frame_counter == 0:
+                    qx = qy = qz = qw = 0.0
+                else:
+                    prev_bone_martix = prev_frame_matrix_pos[frame_counter-1][bone_counter][0]
+                    qx = qx - prev_bone_martix[0]
+                    qy = qy - prev_bone_martix[1]
+                    qz = qz - prev_bone_martix[2]
+                    qw = qw - prev_bone_martix[3]
+
                 tempmatrix = quaternion2matrix([qx, qy, qz, qw])
-                QuArK_frame_matrix_raw[frame_counter][bone_counter] = quarkx.matrix(((tempmatrix[0][0], tempmatrix[1][0], tempmatrix[2][0]), (tempmatrix[0][1], tempmatrix[1][1], tempmatrix[2][1]), (tempmatrix[0][2], tempmatrix[1][2], tempmatrix[2][2])))
-        #Process baseframe data
-        QuArK_baseframe_position = [[]]*self.num_bones
-        QuArK_baseframe_matrix = [[]]*self.num_bones
-        for bone_counter in range(0,self.num_bones):
-            currentbone = self.gr2anim_bones[bone_counter]
-            if currentbone.parent_index < 0:
-                QuArK_baseframe_position[bone_counter] = QuArK_baseframe_position_raw[bone_counter]
-                QuArK_baseframe_matrix[bone_counter] = QuArK_baseframe_matrix_raw[bone_counter]
-            else:
-                MatrixParent = QuArK_baseframe_matrix[currentbone.parent_index]
-                temppos = MatrixParent * QuArK_baseframe_position_raw[bone_counter]
-                QuArK_baseframe_position[bone_counter] = QuArK_baseframe_position[currentbone.parent_index] + temppos
-                QuArK_baseframe_matrix[bone_counter] = MatrixParent * QuArK_baseframe_matrix_raw[bone_counter]
+                QuArK_frame_matrix_raw[frame_counter][bone_counter] = quarkx.matrix(((tempmatrix[0][0], tempmatrix[1][0], tempmatrix[2][0]), (tempmatrix[0][2], tempmatrix[1][2], tempmatrix[2][2]), (tempmatrix[0][1], tempmatrix[1][1], tempmatrix[2][1])))
+                ORG_bone_pos = bones[bone_counter].position
+
+                if frame_counter == 0:
+                    new_bone_pos = ORG_bone_pos
+                else:
+                    prev_pos = prev_frame_matrix_pos[frame_counter-1][bone_counter][1]
+                    new_bone_pos = ORG_bone_pos + current_pos - prev_pos
+
+                QuArK_frame_position_raw[frame_counter][bone_counter] = new_bone_pos
+
         #Process animation frame data
         QuArK_frame_position = [[]]*self.numFrames
         QuArK_frame_matrix = [[]]*self.numFrames
+
         for frame_counter in range(0,self.numFrames):
             QuArK_frame_position[frame_counter] = [[]]*self.num_bones
             QuArK_frame_matrix[frame_counter] = [[]]*self.num_bones
+
             for bone_counter in range(0,self.num_bones):
                 currentbone = self.gr2anim_bones[bone_counter]
-                if currentbone.parent_index < 0:
+                if currentbone.QuArK_bones_parent_index < 1:
                     QuArK_frame_position[frame_counter][bone_counter] = QuArK_frame_position_raw[frame_counter][bone_counter]
                     QuArK_frame_matrix[frame_counter][bone_counter] = QuArK_frame_matrix_raw[frame_counter][bone_counter]
                 else:
@@ -1441,65 +1422,88 @@ class gr2anim:
                     temppos = MatrixParent * QuArK_frame_position_raw[frame_counter][bone_counter]
                     QuArK_frame_position[frame_counter][bone_counter] = QuArK_frame_position[frame_counter][currentbone.parent_index] + temppos
                     QuArK_frame_matrix[frame_counter][bone_counter] = MatrixParent * QuArK_frame_matrix_raw[frame_counter][bone_counter]
-        #Create baseframe
-        for mesh_counter in range(len(gr2_model)):
-            currentmesh = gr2_model[mesh_counter]
-            oldframe = editor.Root.dictitems[gr2_model_comps[mesh_counter]].dictitems['Frames:fg'].dictitems['meshframe:mf']
-            baseframe = oldframe.copy()
-            baseframe.shortname = filename + " baseframe"
-            oldverts = baseframe.vertices
-            if len(oldverts) != len(currentmesh.verts):
-                #Invalid frame! Wrong number of vertices! Skip it...
-                continue
-            newverts = oldverts
-            for vert_counter in range(len(currentmesh.verts)):
-                currentvertex = currentmesh.verts[vert_counter]
-                newpos = quarkx.vect((0.0, 0.0, 0.0))
-                for blend_counter in range(0, currentvertex.blend_count):
-                    weight_counter = currentvertex.blend_index + blend_counter
-                    currentweight = currentmesh.weights[weight_counter]
-                    tempmatrix = gr2_bones[currentweight.bone_index].bindmat
-                    temppos = QuArK_baseframe_matrix[currentweight.bone_index] * quarkx.vect((currentweight.weights[0], currentweight.weights[1], currentweight.weights[2]))
-                    newpos = newpos + ((QuArK_baseframe_position[currentweight.bone_index] + temppos) * currentweight.bias)
-                newverts[vert_counter] = newpos
-            baseframe.vertices = newverts
-            editor.Root.dictitems[gr2_model_comps[mesh_counter]].dictitems['Frames:fg'].appenditem(baseframe)
-        #Apply animation data to frame vertices
+
+        # Make animation frames and apply animation data to each frame's vertices
+        meshframes = []
+        for mesh_counter in range(len(gr2_model_comps)):
+            meshframes = meshframes + [gr2_model_comps[mesh_counter].dictitems['Frames:fg'].dictitems['meshframe:mf']]
+
+        remove_bones = []
+
         for frame_counter in range(0,self.numFrames):
-            for mesh_counter in range(len(gr2_model)):
-                currentmesh = gr2_model[mesh_counter]
-                oldframe = editor.Root.dictitems[gr2_model_comps[mesh_counter]].dictitems['Frames:fg'].dictitems['meshframe:mf']
+            for mesh_counter in range(len(gr2_model_comps)):
+                comp = gr2_model_comps[mesh_counter]
+                oldframe = meshframes[mesh_counter]
                 newframe = oldframe.copy()
                 newframe.shortname = filename + " frame "+str(frame_counter+1)
-                oldverts = newframe.vertices
-                if len(oldverts) != len(currentmesh.verts):
-                    #Invalid frame! Wrong number of vertices! Skip it...
-                    continue
-                newverts = oldverts
-                for vert_counter in range(len(currentmesh.verts)):
-                    currentvertex = gr2_model[mesh_counter].verts[vert_counter]
-                    newpos = quarkx.vect((0.0, 0.0, 0.0))
-                    for blend_counter in range(0, currentmesh.verts[vert_counter].blend_count):
-                        weight_counter = currentvertex.blend_index + blend_counter
-                        currentweight = gr2_model[mesh_counter].weights[weight_counter]
-                        temppos = QuArK_frame_matrix[frame_counter][currentweight.bone_index] * quarkx.vect((currentweight.weights[0], currentweight.weights[1], currentweight.weights[2]))
-                        newpos = newpos + ((QuArK_frame_position[frame_counter][currentweight.bone_index] + temppos) * currentweight.bias)
-                    newverts[vert_counter] = newpos
+                newverts = oldverts = oldframe.vertices
+
+                for bone_counter in range(0,self.num_bones):
+                    ORG_bone = bones[bone_counter]
+                    if frame_counter == 0 and mesh_counter == 0:
+                        remove_bones = remove_bones + [bone_counter]
+                    if ORG_bone.vtxlist.has_key(comp.name):
+                        ORG_bone_pos = ORG_bone.position
+                        vtxlist = ORG_bone.vtxlist[comp.name]
+                        new_bone_pos = QuArK_frame_position[frame_counter][bone_counter]
+                        new_bone_martix = QuArK_frame_matrix[frame_counter][bone_counter]
+                        weight_value = 1.0
+
+                        if frame_counter == 0:
+                            pos_diff = ORG_bone_pos - ORG_bone_pos
+                        else:
+                            prev_bone_pos = QuArK_frame_position[frame_counter-1][bone_counter]
+                            pos_diff = new_bone_pos - prev_bone_pos
+
+                        for vert_counter in range(len(vtxlist)):
+         #                   if editor.ModelComponentList.has_key(comp.name) and editor.ModelComponentList[comp.name].has_key("weightvtxlist") and editor.ModelComponentList[comp.name]['weightvtxlist'].has_key(vtxlist[vert_counter]) and editor.ModelComponentList[comp.name]['weightvtxlist'][vtxlist[vert_counter]].has_key(ORG_bone.name):
+         #                       weight_value = editor.ModelComponentList[comp.name]['weightvtxlist'][vtxlist[vert_counter]][ORG_bone.name]['weight_value']
+                            currentvertex = oldverts[vtxlist[vert_counter]]
+                #            newpos = quarkx.vect((0.0, 0.0, 0.0))
+                        #    print "========================="
+                        #    print "frame_counter", frame_counter
+                        #    print "bone_counter", bone_counter
+                        #    print "ORG_bone.name", ORG_bone.name
+                        #    print "comp.name", comp.name
+                        #    print "vtxlist[vert_counter]", vtxlist[vert_counter], type(vtxlist[vert_counter])
+                        #    print "currentvertex", currentvertex, type(currentvertex)
+                        #    print "QuArK_frame_matrix", QuArK_frame_matrix[frame_counter][bone_counter], type(QuArK_frame_matrix[frame_counter][bone_counter])
+                        #    print "newpos1", newpos, type(newpos)
+                #            temppos = QuArK_frame_matrix[frame_counter][bone_counter] * currentvertex
+                        #    print "temppos", temppos, type(temppos)
+                        #    print "weight_value", weight_value, type(weight_value)
+                        #    print "QuArK_frame_position", QuArK_frame_position[frame_counter][bone_counter], type(QuArK_frame_position[frame_counter][bone_counter])
+                #            newpos = newpos + ((QuArK_frame_position[frame_counter][bone_counter] + temppos) * weight_value)
+                        #    print "newpos2", newpos, type(newpos)
+                #            newverts[vtxlist[vert_counter]] = newpos
+                            newverts[vtxlist[vert_counter]] = currentvertex + pos_diff
+        #                    pos_diff = currentvertex - new_bone_pos
+        #                    currentvertex = (new_bone_martix * pos_diff) * weight_value
+        #                    currentvertex = currentvertex + new_bone_pos
+        #                    newverts[vtxlist[vert_counter]] = currentvertex
                 newframe.vertices = newverts
-                editor.Root.dictitems[gr2_model_comps[mesh_counter]].dictitems['Frames:fg'].appenditem(newframe)
+                if comp.dictitems['Frames:fg'].dictitems.has_key(newframe.name):
+                    comp.dictitems['Frames:fg'].dictitems[newframe.name].vertices = newframe.vertices
+                else:
+                    comp.dictitems['Frames:fg'].appenditem(newframe)
+        remove_bones.reverse()
+
+        for bone_index in range(len(remove_bones)):
+            bones.remove(bones[remove_bones[bone_index]])
 
 
 # gr2anim_filename = QuArK's full path and file name.
-# bones = QuArK's "Skeleton:bg" folder to get our current bones from.
-def load_gr2anim(gr2anim_filename, bones):
-    return # Nothing setup to read in the .gr2 animation file yet.
+# lines = the fully read output.ms file text.
+# bones = QuArK's "(model name)_Granny01:bone" and all its sub-bones to get our current bones from.
+# bone_group_name = the "static" models folder name that was added to its bones and components when imported.
+def load_gr2anim(gr2anim_filename, lines, bone_group_name, bones):
     theanim = gr2anim() # Making an "instance" of this class.
-    theanim.load_gr2anim(gr2anim_filename, bones) # Calling this class function to open and completely read the ,gr2 animation file.
+    theanim.load_gr2anim(gr2anim_filename, lines, bone_group_name, bones) # Calling this class function to completely read the ,gr2 animation file "lines".
 
     if bones:
-        pth, actionname = os.path.split(gr2anim_filename)
-        theanim.apply(bones, actionname) # Calling this class function to create the amimation frames,
-                                         # "bones" is QuArK's "Skeleton:bg" folder, "actionname" is the full ,gr2 animation file name only.
+        pth, animfilename = os.path.split(gr2anim_filename)
+        theanim.apply(animfilename, bone_group_name, bones) # Calling this class function to create the amimation frames,
+                                           # "bones" see above comment for bones, "animfilename" is the full ,gr2 animation file name only.
     else:
         quarkx.beep() # Makes the computer "Beep" once if no bones are found.
         quarkx.msgbox("Could not apply animation.\nNo bones in the scene.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
@@ -1509,20 +1513,37 @@ def load_gr2anim(gr2anim_filename, bones):
 # To run this file
 ########################
 
-def import_gr2_model(basepath, gr2_filename, bone_group_name):
+def import_gr2_model(basepath, gr2_filename, bone_group_name, gr2_mesh_path, lines, filetype):
     # basepath just the path to the "game" folder.
     # gr2_filename is the full path and file name.
+    global progressbar
     editor = quarkpy.mdleditor.mdleditor
-    if (gr2_filename.endswith(".gr2") or gr2_filename.endswith(".GR2")) and not gr2_filename.find("\\animations\\") != -1: # Calls to load the .gr2 mesh file.
-        RetComponentList, RetQuArK_bone_list, message = load_gr2model(gr2_filename, basepath, bone_group_name) # Loads the model using list of ALL bones as they are created.
+
+    if (gr2_filename.endswith(".gr2") or gr2_filename.endswith(".GR2")) and filetype == "model": # Calls to load the .gr2 mesh file.
+        RetComponentList, RetQuArK_bone_list, message = load_gr2model(gr2_filename, basepath, bone_group_name, lines) # Loads the model using list of ALL bones as they are created.
         ### Use the 'ModelRoot' below to test opening the QuArK's Model Editor with, needs to be qualified with main menu item.
         ModelRoot = quarkx.newobj('Model:mr')
       #  ModelRoot.appenditem(Component)
 
         return ModelRoot, RetComponentList, RetQuArK_bone_list, message # Using list of ALL bones as they are created.
     else: # Calls to load the .gr2 animation file.
-        bones = editor.Root.dictitems['Skeleton:bg']
-        load_gr2anim(gr2_filename, bones)
+      #  if editor.Root.dictitems['Skeleton:bg'].dictitems.has_key(bone_group_name + "_Granny01:bone"):
+        bones = []
+        for item in editor.Root.dictitems['Skeleton:bg'].subitems:
+            if item.name.startswith(bone_group_name):
+                group_bones = item.findallsubitems("", ':bone')   # Get all bones of this group only.
+                for bone in group_bones:
+                    bones = bones + [bone]
+        if len(bones) == 0:
+            quarkx.beep() # Makes the computer "Beep" once if a file is not valid.
+            quarkx.msgbox("Bone Group Not Found !\n\nThe bone group, 1st bone's name starting with:\n    " + bone_group_name + "could not be found for this models animation.\nEither it is improperly named, if so rename it.\n\nOr it, and all its sub-bones, have been deleted.\nIf so, to get all the bones again, try reloading the model's mesh file:\n    " + gr2_mesh_path + "\n\nAfter correcting the problem reload the animation file.\n\nImport Cancelled.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
+            try:
+                progressbar.close()
+            except:
+                pass
+            editor = None   #Reset the global again
+        else:
+            load_gr2anim(gr2_filename, lines, bone_group_name, bones)
 
 def loadmodel(root, filename, gamename, nomessage=0):
     #   Loads the model file: root is the actual file,
@@ -1530,12 +1551,14 @@ def loadmodel(root, filename, gamename, nomessage=0):
     #   for example:  C:\Program Files\Utherverse Digital Inc\Utherverse 3D Client\resources\female\HF_Dancer1.gr2
     #   gamename is None.
 
-    global gr2_mesh_path, gr2_anim_path, editor, progressbar, tobj, logging, importername, textlog, Strings
+    global gr2_mesh_path, gr2_mesh_loaded, gr2_anim_path, editor, progressbar, tobj, logging, importername, textlog, Strings
     if editor is None:
         editor = quarkpy.mdleditor.mdleditor
 
     if filename.find("\\attachments\\") != -1:
         gr2_mesh_path = filename.split("\\attachments\\")[0]
+    elif filename.find("\\animations\\") != -1:
+        gr2_mesh_path = filename.split("\\animations\\")[0]
     else:
         gr2_mesh_path = filename.rsplit('\\', 1)[0]
 
@@ -1549,11 +1572,49 @@ def loadmodel(root, filename, gamename, nomessage=0):
         editor = None   #Reset the global again
         return
 
-    if (filename.endswith(".gr2") or filename.endswith(".GR2")) and not filename.find("animations") != -1: # Calls to load the .gr2 model file.
+    # Uses grnreader.exe in QuArK's dll folder to create the temoary output.ms file and place it there also to be read in below.
+    gr2_filename = filename
+    gr2_filename = "\"" + gr2_filename + "\""
+    cmdline = 'grnreader ' + gr2_filename
+    fromdir = quarkx.exepath + "dlls"
+    process = quarkx.runprogram(cmdline, fromdir)
+    # read the file in
+    # gr2_filename = the full path and file name of the .gr2 file being imported, ex.
+    # "C:\Program Files\GR2game\client\resources\female\dancer.gr2"
+    tempfile = quarkx.exepath + "dlls/output.ms"
+    tempfile = tempfile.replace("\\", "/")
+    goahead = 0
+    while not goahead:
+        try:
+            file = open(tempfile,"rw")
+        except:
+            quarkx.wait(100)
+        else:
+            goahead = 1
+    file = open(tempfile,"r")
+    lines = file.readlines()
+    file.close()
+    # Comment out the line below to save the output.ms file,
+    # but the file needs to be renamed or deleted before new import.
+    os.remove(quarkx.exepath + "dlls/output.ms")
+
+    num_lines = len(lines)
+    for line_counter in range(0,num_lines):
+        current_line = lines[line_counter]
+        if current_line.startswith("model (") or current_line.startswith("animation ("):
+            if current_line.startswith("model ("):
+                filetype = "model"
+            else:
+                filetype = "animation"
+            break
+        else:
+            continue
+
+    if (filename.endswith(".gr2") or filename.endswith(".GR2")) and filetype == "model": # Calls to load the .gr2 model file.
         logging, tobj, starttime = ie_utils.default_start_logging(importername, textlog, filename, "IM") ### Use "EX" for exporter text, "IM" for importer text.
 
     ### Lines below here loads the model into the opened editor's current model.
-        ModelRoot, RetComponentList, RetQuArK_bone_list, message = import_gr2_model(basepath, filename, bone_group_name)
+        ModelRoot, RetComponentList, RetQuArK_bone_list, message = import_gr2_model(basepath, filename, bone_group_name, None, lines, filetype)
 
         if ModelRoot is None or RetComponentList is None or RetComponentList == []:
             quarkx.beep() # Makes the computer "Beep" once if a file is not valid.
@@ -1660,6 +1721,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
             comp.currentskin = None
 
         editor = None   #Reset the global again
+        gr2_mesh_loaded = gr2_mesh_loaded + [gr2_mesh_path]
         if message != "":
             message = message + "================================\r\n\r\n"
             message = message + "You need to find and supply the proper texture(s) and folder(s) above.\r\n"
@@ -1672,37 +1734,27 @@ def loadmodel(root, filename, gamename, nomessage=0):
             quarkx.textbox("WARNING", "Missing Skin Textures:\r\n\r\n================================\r\n" + message, quarkpy.qutils.MT_WARNING)
 
     else: # Calls to load the .gr2 animation file.
-        gr2_anim_path = filename.rsplit('\\', 1)
+        gr2_anim_path = filename.rsplit('\\', 1)[0]
+        gr2_anim_path = gr2_anim_path.rsplit('\\animations', 1)[0]
         if gr2_mesh_path is None:
             quarkx.beep() # Makes the computer "Beep" once if a animation file not loaded. 
-            gr2_anim_path = gr2_anim_path[0].rsplit('\\animations', 1)
-            quarkx.msgbox(".gr2 animation file not loaded\n\nFirst load .gr2 mesh file in:\n    " + gr2_anim_path[0] + "\n\nbefore any .gr2 animation files from its animation folder.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
+            quarkx.msgbox(".gr2 animation file not loaded\n\nFirst load .gr2 mesh file in:\n    " + gr2_anim_path + "\n\nbefore any .gr2 animation files from its animation folder.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
             try:
                 progressbar.close()
             except:
                 pass
             editor = None   #Reset the global again
             return
-        if gr2_anim_path[0].find(gr2_mesh_path[0]) == -1:
+        if not gr2_anim_path in gr2_mesh_loaded:
             quarkx.beep() # Makes the computer "Beep" once if a file is not valid.
-            quarkx.msgbox(".gr2 mesh and .gr2 animation files incompatible.\nThey need to come from same model folder.\n\nLast .gr2 mesh loaded from:\n    " + gr2_mesh_path[0] + "\n\nYou selected:\n    " + gr2_anim_path[0] + "\\" + gr2_anim_path[1], quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
+            quarkx.msgbox("Improper Action !\n\nThe mesh file(s) for this animation has not been imported yet.\n\nYou selected:\n    " + filename, quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
             try:
                 progressbar.close()
             except:
                 pass
             editor = None   #Reset the global again
             return
-        if gr2_anim_path[0].find("\\animations") == -1:
-            quarkx.beep() # Makes the computer "Beep" once if a file's path is not valid.
-            animationfile = filename.rsplit('\\', 1)[1]
-            quarkx.msgbox("Improper path for .gr2 animation file.\nThey need to come from a folder named\n'animations' located in the model's folder.\n\n    " + gr2_mesh_path[0] + "\n\nCreate the folder and move the animation file\n    " + animationfile + "\nto that location.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
-            try:
-                progressbar.close()
-            except:
-                pass
-            editor = None   #Reset the global again
-            return
-        import_gr2_model(basepath, filename)
+        import_gr2_model(basepath, filename, bone_group_name, gr2_mesh_path, lines, filetype)
         quarkpy.mdlutils.Update_Editor_Views(editor)
         editor = None   #Reset the global again
 
@@ -1903,6 +1955,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.12  2009/11/18 19:20:06  cdunde
+# Added bone vtx_list setting for future animation use.
+#
 # Revision 1.11  2009/11/18 07:51:58  cdunde
 # Update to merge bones data for .gr2 attachments models.
 #
