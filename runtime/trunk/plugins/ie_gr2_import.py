@@ -1254,17 +1254,17 @@ class gr2anim_bone:
         
 class gr2anim:
     num_bones = 0
+    skip_bones = []
     gr2anim_bones = []
     frameRate = 24
     numFrames = 0
     numAnimatedComponents = 0
-    baseframe = []
     framedata = []
 
     def __init__(self):
         num_bones = 0
+        skip_bones = []
         gr2anim_bones = []
-        baseframe = []
         framedata = []
 
     # bones = QuArK's "(model name)_Granny01:bone" and all its sub-bones to get our current bones from.
@@ -1282,23 +1282,32 @@ class gr2anim:
 
             elif words and words[0]=="trackgroup" and words[1]=="bones":
                 if trackgroup != 0:
-                    pth, animfilename = os.path.split(gr2anim_filename)
-                    self.apply(animfilename, bone_group_name, bones) # Calling this class function to create the amimation frames,
+                    if len(self.gr2anim_bones) != 0:
+                        pth, animfilename = os.path.split(gr2anim_filename)
+                        self.apply(animfilename, bone_group_name, bones) # Calling this class function to create the amimation frames,
                     trackgroup = 0
                 trackgroup = 1
                 self.num_bones=int(words[2])
-                for bone_counter in range(0,self.num_bones):
-                    self.gr2anim_bones.append(gr2anim_bone()) #make all the new bones
                 #skip next line
                 line_counter+=1
                 bone_names = []
+                self.skip_bones = []
                 for bone_counter in range(0,self.num_bones):
                     #next line
                     line_counter+=1
                     current_line = lines[line_counter]
                     words = current_line.split(", ")
+                    words[0] = words[0].strip()
+                    words0 = int(words[0])
                     words[1] = words[1].strip()
-                    bone_names = bone_names + [words[1]]
+                    for bone in range(len(bones)):
+                        if words[1] + ":bone" == bones[bone].name.replace(bone_group_name+"_", ""):
+                            bone_names = bone_names + [[words[1],words0]]
+                            self.gr2anim_bones.append(gr2anim_bone()) #add a new bone
+                            break
+                        if bone == len(bones)-1:
+                            self.skip_bones = self.skip_bones + [bone_counter]
+                self.num_bones = len(bone_names)
 
                 sort_names = []
                 while 1:
@@ -1306,8 +1315,8 @@ class gr2anim:
                         break
                     for bone in range(len(bones)):
                         for index in range(len(bone_names)):
-                            if bone_names[index] + ":bone" == bones[bone].name.replace(bone_group_name+"_", ""):
-                                sort_names = sort_names + [[index, bone, bone_names[index]]]
+                            if bone_names[index][0] + ":bone" == bones[bone].name.replace(bone_group_name+"_", ""):
+                                sort_names = sort_names + [[index, bone, bone_names[index][0], bone_names[index][1]]]
                                 break
                         if len(sort_names) == len(bone_names):
                             break
@@ -1339,11 +1348,11 @@ class gr2anim:
                 words = current_line.split()
                 while words and not(words[0]=="KeyFrame:" or words[0]==")"):
                     bone_data = []
-                    if words[0] == "boneindex":
+                    if words[0] == "boneindex" and not int(words[1]) in self.skip_bones:
                         for i in range(1, len(words)):
                             bone_data.append(words[i])
                         for item in range(len(sort_names)):
-                            if sort_names[item][0] == int(words[1]):
+                            if sort_names[item][3] == int(words[1]):
                                 self.framedata[framenumber][item] = bone_data
                                 break
                     line_counter+=1
@@ -1955,6 +1964,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.13  2009/12/12 07:48:08  cdunde
+# Update for improved animation importing.
+#
 # Revision 1.12  2009/11/18 19:20:06  cdunde
 # Added bone vtx_list setting for future animation use.
 #
