@@ -2598,6 +2598,8 @@ class ComponentType(EntityManager):
         dlgdef = """
         {
           Help = "These are the Specific settings for a Model Component."$0D0D22
+                 "skins"$22" - Number of skins of this component."$0D0D22
+                 "frames"$22" - Number of frames of this component."$0D0D22
                  "triangles"$22" - Number of triangle faces of this component."$0D0D22
                  "vertices"$22" - Number of vertices of this component."$0D0D22
                  "comp color 1"$22" - Color to use for this component's tint"$0D
@@ -2616,6 +2618,18 @@ class ComponentType(EntityManager):
                  "color over their textured and solid views which can also"$0D
                  "display their mesh lines in a second color when a views"$0D
                  "'Mesh in Frames' option is checked on the 'Views Options' dialog."
+          skins_count: = 
+            {
+              Typ="E R"
+              Txt="skins"
+              Hint="Number of skins of this component."
+            }
+          frames_count: = 
+            {
+              Typ="E R"
+              Txt="frames"
+              Hint="Number of frames of this component."
+            }
           tri_count: = 
             {
               Typ="E R"
@@ -2652,6 +2666,14 @@ class ComponentType(EntityManager):
         """
 
         o['tri_count'] = str(len(o.triangles))
+        if o.dictitems.has_key('Skins:sg') and len(o.dictitems['Skins:sg'].subitems) != 0:
+            o['skins_count'] = str(len(o.dictitems['Skins:sg'].subitems))
+        else:
+            o['skins_count'] = "0"
+        if o.dictitems.has_key('Frames:fg') and len(o.dictitems['Frames:fg'].subitems) != 0:
+            o['frames_count'] = str(len(o.dictitems['Frames:fg'].subitems))
+        else:
+            o['frames_count'] = "0"
         if o.dictitems.has_key('Frames:fg') and len(o.dictitems['Frames:fg'].subitems) != 0:
             o['vtx_count'] = str(len(o.dictitems['Frames:fg'].subitems[0].vertices))
         else:
@@ -2911,6 +2933,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.67  2009/11/09 18:01:58  cdunde
+#Fix for errors sometimes because of dictspec not being set.
+#
 #Revision 1.66  2009/10/17 09:17:31  cdunde
 #Added selection and playing of .md3 weapons with player models CFG Animation.
 #
