@@ -391,7 +391,7 @@ def Import(basepath, filename):
     ModelName = ModelName.rsplit(".", 1)[0]
     # PlayerModelName is just the .md3 player model file name, for special code handling, without any path or the ".md3" type.
     PlayerModelName = "None"
-    if ModelsPath.find("/players/") != -1:
+    if ModelsPath.find("players/") != -1:
         PlayerModelName = ModelName.split("_")[0]
 
     # read the file in
@@ -493,6 +493,7 @@ def Import(basepath, filename):
                             for type in ImageTypes:
                                 if line[1].lower().find(type) != -1:
                                     line = line[1].rsplit(".", 1)[0]
+                                    line = line.strip()
                                     foundtexture = line + type
                                     if os.path.isfile(BasePath + "/" + foundtexture):
                                         foundimage = BasePath + "/" + foundtexture
@@ -533,6 +534,7 @@ def Import(basepath, filename):
                             for type in ImageTypes:
                                 if line[1].find(type) != -1:
                                     line = line[1].rsplit(".", 1)[0]
+                                    line = line.strip()
                                     foundtexture = line + type
                                     if os.path.isfile(BasePath + "/" + foundtexture):
                                         foundimage = BasePath + "/" + foundtexture
@@ -1415,6 +1417,10 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.18  2009/10/16 00:59:47  cdunde
+# Saving old matrix data for CFG rotation in the editor.
+# Add animation rotation of weapon, for .md3 imports, when attached to model.
+#
 # Revision 1.17  2009/10/12 20:49:56  cdunde
 # Added support for .md3 animationCFG (configuration) support and editing.
 #
