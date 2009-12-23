@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.40  2009/02/21 17:06:18  danielpharos
+Changed all source files to use CRLF text format, updated copyright and GPL text.
+
 Revision 1.39  2008/09/29 21:45:30  danielpharos
 Soft-coded 'maps' directory (not in Python yet).
 
@@ -137,7 +140,7 @@ unit QkQ3;
 interface
 
 uses
-  SysUtils, Windows, Classes, QkZip2, QkFileObjects, QkObjects, QkText,
+  SysUtils, Windows, Classes, Math, QkZip2, QkFileObjects, QkObjects, QkText,
   QkJpg, QkTextures, Setup, QkWad, QkPixelSet;
 
 type
@@ -154,9 +157,14 @@ type
          procedure ObjectState(var E: TEtatObjet); override;
         end;
   Q3Pak = class(QZipPak)
+        private
+         QLDecoded: TMemoryStream;
         public
+         destructor Destroy; override;
          class function TypeInfo: String; override;
          class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
+         procedure SaveFile(Info: TInfoEnreg1); override;
+         procedure LoadFile(F: TStream; FSize: Integer); override;
         end;
   QShader = class(QPixelSet)
             protected
@@ -239,6 +247,120 @@ end;
 
 {------------------------}
 
+//Based on Luigi Auriemma's code for quakelivedec v0.1
+procedure DecodeQLPak(Target: TStream; Source: TStream);
+const
+ quakelive_xor: array[0..1023] of Byte =
+            ($cf, $8e, $8e ,$4c, $d0, $d9, $30, $ce, $07, $32, $27, $64, $ed, $16, $06, $12,
+             $20, $99, $55, $21, $7b, $10, $ef, $57, $8b, $bf, $2e, $09, $ee, $6b, $aa, $7c,
+             $cc, $3c, $95, $ee, $ba, $d7, $4b, $88, $84, $88, $d2, $70, $4c, $09, $30, $f2,
+             $af, $b0, $99, $0d, $1f, $5f, $a7, $c5, $af, $61, $c1, $18, $ed, $16, $b0, $32,
+             $f5, $07, $2f, $72, $b1, $23, $66, $1f, $f5, $18, $ef, $b3, $9d, $f0, $4a, $02,
+             $8f, $37, $ff, $b0, $d7, $af, $d3, $09, $b4, $4a, $2c, $63, $a3, $24, $1e, $52,
+             $df, $12, $9c, $8e, $ff, $31, $2f, $0e, $48, $fa, $25, $c5, $43, $e4, $71, $69,
+             $f4, $84, $91, $84, $0c, $c2, $3f, $7d, $b0, $e1, $e6, $03, $36, $bb, $ed, $22,
+             $89, $e9, $81, $6c, $4e, $fb, $41, $84, $ba, $f1, $5b, $1e, $bf, $30, $bf, $77,
+             $0e, $47, $1c, $84, $e9, $a0, $9e, $5b, $35, $a7, $ee, $3c, $40, $0d, $b9, $70,
+             $2a, $11, $f8, $c9, $41, $33, $89, $9c, $51, $f2, $40, $f0, $e5, $e8, $d7, $1e,
+             $77, $de, $19, $46, $00, $57, $f0, $02, $5c, $1d, $64, $b9, $40, $c8, $1a, $99,
+             $5f, $a7, $4d, $5a, $72, $3e, $80, $c3, $a1, $1a, $6e, $1e, $d0, $79, $06, $6b,
+             $ee, $50, $76, $81, $71, $a4, $b1, $db, $ab, $40, $1a, $a7, $8a, $ee, $06, $b9,
+             $f2, $22, $13, $30, $43, $19, $e1, $e3, $34, $ce, $1e, $03, $1a, $04, $e7, $a4,
+             $4a, $c7, $6a, $8e, $6f, $ad, $7f, $3d, $89, $11, $97, $ad, $95, $20, $e8, $35,
+             $c7, $d1, $02, $00, $0a, $e5, $81, $25, $91, $2c, $a2, $87, $16, $c3, $cc, $c9,
+             $1f, $6d, $56, $64, $82, $d6, $69, $97, $7d, $cb, $58, $40, $d0, $00, $16, $c3,
+             $ee, $b7, $19, $d6, $06, $6f, $39, $7b, $60, $ba, $7b, $ef, $fb, $c0, $79, $3c,
+             $e7, $0b, $6f, $67, $36, $af, $a9, $3a, $3f, $c2, $31, $72, $09, $a3, $fd, $4e,
+             $c8, $52, $96, $da, $67, $f1, $b9, $79, $a9, $cc, $d3, $6f, $e7, $f6, $a0, $80,
+             $0f, $cf, $7c, $b5, $9a, $89, $e6, $fa, $d3, $ec, $c9, $f5, $cc, $53, $65, $73,
+             $05, $d3, $d7, $83, $56, $84, $68, $94, $a3, $52, $1a, $0a, $cb, $e7, $cf, $ed,
+             $22, $fe, $d6, $3c, $f7, $84, $03, $bf, $eb, $77, $82, $5b, $8a, $35, $67, $2b,
+             $97, $75, $5a, $81, $c9, $37, $6b, $e3, $77, $4f, $82, $5c, $75, $3f, $c3, $a1,
+             $84, $e4, $2c, $43, $33, $8b, $ec, $d6, $32, $f2, $fa, $3a, $65, $06, $b7, $51,
+             $88, $85, $5b, $ab, $0f, $36, $41, $c5, $2f, $6d, $34, $31, $70, $59, $b5, $2e,
+             $44, $31, $62, $b9, $38, $39, $f7, $b6, $6e, $cf, $f2, $7f, $78, $dd, $f0, $8e,
+             $c4, $23, $5a, $48, $d0, $a5, $a8, $90, $69, $a9, $53, $ec, $45, $d6, $97, $9b,
+             $92, $3e, $0a, $50, $90, $3f, $e9, $92, $dc, $85, $aa, $ab, $57, $a7, $0e, $e8,
+             $ff, $cf, $fc, $4d, $9a, $c6, $36, $e3, $5a, $0d, $83, $12, $c5, $84, $85, $8a,
+             $74, $cf, $42, $33, $8c, $eb, $d3, $49, $4d, $60, $15, $be, $ad, $73, $92, $37,
+             $29, $3e, $63, $83, $1f, $d1, $c6, $9a, $bc, $b8, $c6, $ac, $34, $34, $87, $d2,
+             $e7, $0b, $77, $f9, $2f, $52, $37, $bb, $10, $a8, $e1, $de, $33, $f2, $52, $2e,
+             $e5, $56, $7e, $ff, $5c, $ec, $82, $50, $e1, $b0, $4e, $a1, $23, $86, $08, $22,
+             $a6, $56, $2b, $40, $99, $f4, $8e, $3d, $e2, $10, $05, $f1, $dd, $21, $69, $77,
+             $07, $59, $90, $2f, $f1, $bb, $b8, $03, $5a, $21, $e1, $e5, $0c, $aa, $52, $da,
+             $a1, $73, $31, $18, $12, $b2, $85, $52, $07, $f6, $8f, $23, $b0, $f7, $4a, $9a,
+             $6f, $0a, $6c, $1f, $be, $3f, $88, $ad, $e9, $55, $4a, $b7, $44, $fb, $f8, $25,
+             $6a, $2a, $f1, $d9, $fe, $b8, $62, $c5, $ae, $ed, $5c, $8b, $0f, $4b, $8a, $fe,
+             $01, $68, $8b, $e1, $3f, $84, $3c, $6f, $10, $bf, $b5, $0f, $82, $41, $97, $39,
+             $64, $18, $3d, $ef, $a4, $3a, $5f, $33, $9d, $4b, $6e, $a3, $77, $97, $06, $fb,
+             $1b, $8f, $f0, $ed, $e3, $84, $1b, $73, $51, $72, $0b, $2d, $f1, $78, $59, $d9,
+             $16, $50, $97, $1b, $e0, $5d, $27, $c3, $bb, $77, $2e, $15, $d2, $d2, $33, $68,
+             $ee, $d8, $0f, $28, $f5, $0c, $1b, $98, $1b, $da, $1d, $75, $c4, $2b, $b8, $45,
+             $8b, $c0, $6e, $88, $88, $ad, $61, $f8, $09, $1c, $b1, $46, $eb, $bb, $a2, $f5,
+             $bc, $5c, $7b, $02, $db, $cc, $ad, $97, $1c, $5b, $a9, $97, $0e, $49, $ea, $6d,
+             $13, $ba, $6f, $11, $cf, $2c, $2f, $c7, $9b, $b4, $80, $49, $18, $9e, $4c, $94,
+             $5a, $55, $06, $4d, $42, $75, $b6, $a2, $61, $db, $fa, $41, $ca, $92, $70, $cc,
+             $7e, $52, $66, $01, $13, $53, $ef, $ae, $40, $bd, $b7, $b6, $f2, $c7, $dd, $28,
+             $b1, $11, $d4, $78, $79, $c2, $22, $bf, $29, $a0, $3a, $83, $c5, $76, $17, $e6,
+             $94, $1e, $ee, $63, $d2, $1e, $52, $fd, $24, $9f, $40, $a7, $0c, $0a, $e7, $eb,
+             $9d, $12, $2a, $f3, $e3, $5f, $70, $e9, $31, $51, $6f, $e2, $ac, $e7, $fc, $f2,
+             $23, $e4, $6d, $e3, $85, $e3, $b8, $4c, $7f, $a1, $2c, $8c, $d7, $bb, $34, $70,
+             $12, $7b, $6c, $e7, $8b, $4d, $b5, $df, $52, $bb, $48, $5a, $21, $81, $16, $62,
+             $dd, $8a, $bf, $a7, $e3, $12, $02, $52, $30, $6e, $7d, $76, $52, $1d, $43, $71,
+             $f3, $6b, $1c, $a0, $d3, $d8, $59, $b0, $2d, $b9, $66, $9a, $b5, $00, $d9, $a6,
+             $eb, $3f, $8a, $26, $90, $98, $b3, $69, $5f, $9f, $85, $53, $28, $3c, $9e, $ce,
+             $93, $7e, $ab, $17, $76, $3d, $67, $0c, $4e, $21, $46, $3c, $94, $53, $ba, $dc,
+             $df, $2a, $87, $09, $24, $76, $38, $39, $2e, $c0, $58, $1f, $99, $1a, $ee, $9a,
+             $af, $c4, $c4, $3e, $fc, $eb, $4c, $fa, $5f, $43, $4f, $97, $e9, $ac, $a9, $03,
+             $29, $0e, $64, $eb, $24, $27, $87, $e3, $f2, $c3, $c6, $5d, $de, $e5, $3f, $46,
+             $ba, $d9, $75, $31, $da, $9c, $b2, $fd, $2b, $a5, $7e, $78, $3a, $af, $22, $c4,
+             $80, $90, $31, $f4, $d5, $9b, $04, $19, $09, $a2, $26, $91, $d2, $fe, $44, $b6);
+var
+  I, Blocks: Int64;
+  J: Integer;
+  x: array[0..1023] of Byte;
+begin
+  Source.Position := 0;
+  Target.Size := Source.Size;
+  Target.Position := 0;
+  Blocks := floor(Source.Size / 1024);
+  I:=0;
+  while I < Blocks do
+  begin
+    Source.ReadBuffer(x, 1024);
+    for J:=0 to 1023 do
+    begin
+      x[J] := x[J] xor quakelive_xor[J];
+    end;
+    Target.WriteBuffer(x, 1024);
+    I:=I+1;
+  end;
+  Blocks := Source.Size mod 1024; //Look out: Recycling variable!
+  I:=0;
+  while I < Blocks do
+  begin
+    Source.ReadBuffer(x[0], 1);
+    x[0] := x[0] xor quakelive_xor[I];
+    Target.WriteBuffer(x[0], 1);
+    I:=I+1;
+  end;
+end;
+
+procedure EncodeQLPak(Target: TStream; Source: TStream);
+begin
+  //Since a XOR is its own inverse, simply calling the decode-function will work!
+  DecodeQLPak(Target, Source);
+end;
+
+{------------------------}
+
+destructor Q3Pak.Destroy;
+begin
+  inherited;
+  if QLDecoded <> nil then
+    QLDecoded.Free;
+end;
+
 class function Q3Pak.TypeInfo;
 begin
  Result:='.pk3';
@@ -249,6 +371,68 @@ begin
  inherited;
  Info.FileObjectDescriptionText:=LoadStr1(5170);
  Info.FileExt:=798;
+end;
+
+procedure Q3Pak.LoadFile(F: TStream; FSize: Integer);
+var
+ Pos: Int64;
+begin
+  case ReadFormat of
+    1: begin  { as stand-alone file }
+      if (CharModeJeu = mjQuakeLive) then
+      begin
+        if QLDecoded <> Nil then
+          QLDecoded.Free;
+        QLDecoded := TMemoryStream.Create();
+        Pos := F.Position;
+        try
+          DecodeQLPak(QLDecoded, F);
+        finally
+          F.Position := Pos;
+        end;
+        QLDecoded.Position := Pos;
+        inherited LoadFile(QLDecoded, FSize);
+      end
+      else
+        inherited LoadFile(F, FSize);
+    end;
+    else
+      inherited;
+  end;
+end;
+
+procedure Q3Pak.SaveFile(Info: TInfoEnreg1);
+var
+  Info2: TInfoEnreg1;
+  Pos: Int64;
+begin
+  with Info do begin
+    case Format of
+      1: begin  { as stand-alone file }
+        if (CharModeJeu = mjQuakeLive) then
+        begin
+          CopyMemory(@Info2, @Info, SizeOf(Info));
+          Info2.F := TMemoryStream.Create();
+          try
+            Pos := Info.F.Position;
+            try
+              EncodeQLPak(Info2.F, Info.F);
+            finally
+              Info.F.Position := Pos;
+            end;
+            Info2.F.Position := Pos;
+            inherited SaveFile(Info2);
+          finally
+            Info2.F.Free;
+          end;
+        end
+        else
+          inherited SaveFile(Info);
+      end;
+      else
+        inherited;
+    end;
+  end;
 end;
 
 {------------------------}

@@ -23,6 +23,9 @@ http://quark.planetquake.gamespy.com/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.80.2.7  2009/10/31 15:20:50  danielpharos
+Added some Anachronox and James Bond: Nightfire stuff, and added Daikatana .pak reading support!
+
 Revision 1.80.2.6  2009/07/14 23:21:31  danielpharos
 Added initial World of Padman support.
 
@@ -378,6 +381,7 @@ comparison between gamemodes.}
  mjUFO          = 'y';  { UFO: Alien Invasion }
  mjNEXUIZ       = 'z';  { NEXUIZ }
  mjWoP          = '~';  { World of Padman }
+ mjQuakeLive    = '|';  { Quake Live }
 
  mjAny          = #1;
  mjNotQuake2    = #2;
