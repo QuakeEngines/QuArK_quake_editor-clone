@@ -534,8 +534,15 @@ def spawn_mesh(obj, basepath, filename, ComponentList, message, CompNbr):
         # If not then goes through all the keys to find a texture material.
         if (materials_list[obj.material_ref]['MAT' + str(obj.material_ref) + '_' + 'BITMAP'] is not None) or (materials_list[obj.material_ref].has_key().startswith("SUB") and materials_list[obj.material_ref].has_key().endswith("BITMAP")):
             submat_key = None
+            look4file = ""
             if (materials_list[obj.material_ref]['MAT' + str(obj.material_ref) + '_' + 'BITMAP'] is not None):
-                look4file = materials_list[obj.material_ref]['MAT' + str(obj.material_ref) + '_' + 'BITMAP'].split(gamefolder + "/", 1)[1]
+                try:
+                    look4file = materials_list[obj.material_ref]['MAT' + str(obj.material_ref) + '_' + 'BITMAP'].split(gamefolder + "/", 1)[1]
+                except:
+                    try:
+                        look4file = materials_list[obj.material_ref]['MAT' + str(obj.material_ref) + '_' + 'BITMAP'].split("../", 1)[1]
+                    except:
+                        pass
             else:
                 for key in materials_list[obj.material_ref].keys():
                     if key.startswith("SUB") and key.endswith("BITMAP"):
@@ -608,7 +615,14 @@ def spawn_mesh(obj, basepath, filename, ComponentList, message, CompNbr):
         # along with all of that texture's dictspec specifics items for the skin dialog to use.
         for matkey in materials_list.keys():
             if (materials_list[matkey]['MAT' + str(matkey) + '_' + 'BITMAP'] is not None):
-                look4file = materials_list[matkey]['MAT' + str(matkey) + '_' + 'BITMAP'].split(gamefolder + "/", 1)[1]
+                look4file = ""
+                try:
+                    look4file = materials_list[matkey]['MAT' + str(matkey) + '_' + 'BITMAP'].split(gamefolder + "/", 1)[1]
+                except:
+                    try:
+                        look4file = materials_list[matkey]['MAT' + str(matkey) + '_' + 'BITMAP'].split("../", 1)[1]
+                    except:
+                        pass
                 file_type = "." + materials_list[matkey]['MAT' + str(matkey) + '_' + 'BITMAP'].rsplit(".", 1)[1]
                 if (os.path.exists(basepath + look4file)) and (file_type in image_type_list):
                     if not 'MAT' + str(matkey) + "/" + look4file in skingroup.dictitems.keys():
@@ -692,6 +706,7 @@ def spawn_mesh(obj, basepath, filename, ComponentList, message, CompNbr):
     if os.path.exists(basepath + "materials") == 1:
         shaderspath = basepath + "materials"
         shaderfiles = os.listdir(shaderspath)
+        noimage = "No Shader Files Found."
         for shaderfile in shaderfiles:
             noimage = ""
             #read the file in
@@ -2026,6 +2041,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.12  2009/08/28 07:21:34  cdunde
+# Minor comment addition.
+#
 # Revision 1.11  2009/08/01 05:31:13  cdunde
 # Update.
 #
