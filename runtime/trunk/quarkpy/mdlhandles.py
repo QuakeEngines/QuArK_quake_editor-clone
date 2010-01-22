@@ -4986,6 +4986,11 @@ class BoneCornerHandle(BoneHandle):
                 changedpos = changedradius * m * changedpos
                 obj.position = changedpos + rotationorigin
 
+            #Update the draw_offset
+            old_draw_offset = quarkx.vect(obj.dictspec['draw_offset'])
+            new_draw_offset = changedradius * m * old_draw_offset
+            obj['draw_offset'] = new_draw_offset.tuple
+
         oldverticespos = self.newverticespos
         newverticespos = {}
         verticesweight = {}
@@ -5322,6 +5327,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.195  2009/11/25 23:51:49  cdunde
+#Fix by DanielPharos to stop component folders shifting around in tree-view after bone drag.
+#
 #Revision 1.194  2009/11/15 02:44:40  cdunde
 #Update of grnreader.exe to eliminate multiple outputs of group mesh vertices to .ms file,
 #of .gr2 importer to eliminate multiple output.ms file listings of bones and proper vertex weight assigning.
