@@ -593,12 +593,12 @@ Strings = {
     5169: "Zip Archive",
     5170: "Quake 3 Pak",
     5171: "Sprite file",
-    5172: "JPEG Image",
+    5172: "JPEG image",
     5173: "C File",
     5174: "C Header File",
     5175: "Shader list (Quake 3)",
     5176: ".md3 file",
-    5177: "M32 Texture (SoF)",
+    5177: "M32 texture (SoF)",
     5178: "3d studio file",
     5179: "Form Context",
     5180: ".hmf (6DX) file",
@@ -943,7 +943,7 @@ Strings = {
     5706: "%s not found",
     5707: "gcf file %s cannot be opened. Corrupt ?",
     5708: "Image found",
-    5709: "VTF file",
+    5709: "VTF image",
     5710: "GCF file",
     5711: "GCF folder",
     5712: "QuArK is about to clear the Steam cache in %s. Are you sure you want QuArK to do this?",
@@ -1069,6 +1069,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.144  2009/07/14 23:19:54  danielpharos
+#Fixed typo.
+#
 #Revision 1.143  2009/06/03 05:16:22  cdunde
 #Over all updating of Model Editor improvements, bones and model importers.
 #
