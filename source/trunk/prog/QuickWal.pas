@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.49  2009/07/15 10:38:01  danielpharos
+Updated website link.
+
 Revision 1.48  2009/03/16 08:47:21  danielpharos
 Updated to DevIL 1.7.8, added IWI loading, and added many new image loading/saving options.
 
@@ -366,6 +369,8 @@ begin
   Link1(ResultFolder, FolderName, Copy(Name, 1, Length(Name)-4), 'l', Base)
  else if CompareText(ExtractFileExt(Name), '.swl') = 0 then
   Link1(ResultFolder, FolderName, Copy(Name, 1, Length(Name)-4), 'i', Base)
+ else if CompareText(ExtractFileExt(Name), '.vtf') = 0 then
+  Link1(ResultFolder, FolderName, Copy(Name, 1, Length(Name)-3), 'v', Base)
  else if CompareText(ExtractFileExt(Name), '.wad') = 0 then
   begin
    if Loaded=Nil then
@@ -470,6 +475,8 @@ begin
   Link1(ResultFolder, FolderName, Copy(Name, 1, Length(Name)-4), 'l', Base, Index)
  else if CompareText(ExtractFileExt(Name), '.swl') = 0 then
   Link1(ResultFolder, FolderName, Copy(Name, 1, Length(Name)-4), 'i', Base, Index)
+ else if CompareText(ExtractFileExt(Name), '.vtf') = 0 then
+  Link1(ResultFolder, FolderName, Copy(Name, 1, Length(Name)-4), 'v', Base, Index)
  else if CompareText(ExtractFileExt(Name), '.wad') = 0 then
   begin
    if Loaded=Nil then
