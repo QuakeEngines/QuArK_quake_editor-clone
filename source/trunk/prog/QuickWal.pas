@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.50  2010/01/31 21:36:23  danielpharos
+Added missing vtf-file entries to TryToLink functions.
+
 Revision 1.49  2009/07/15 10:38:01  danielpharos
 Updated website link.
 
@@ -241,26 +244,28 @@ begin
   List:=TStringList.Create;
   List.Sorted:=true;
   List2:=TStringList.Create;
-  List2.Sorted:=true;
-
-  FindError:=FindFirst(ConcatPaths([Path, '*'+SetupGameSet.Specifics.Values['PakExt']]), faAnyFile, F);
   try
-    while FindError=0 do
-    begin
-      if Copy(F.Name,1,3)='pak' then
-        List.Add(F.Name)
-      else
-        List2.Add(F.Name);
-      FindError:=FindNext(F);
+    List2.Sorted:=true;
+    FindError:=FindFirst(ConcatPaths([Path, '*'+SetupGameSet.Specifics.Values['PakExt']]), faAnyFile, F);
+    try
+      while FindError=0 do
+      begin
+        if Copy(F.Name,1,3)='pak' then
+          List.Add(F.Name)
+        else
+          List2.Add(F.Name);
+        FindError:=FindNext(F);
+      end;
+    finally
+       FindClose(F);
     end;
+    List.Sorted:=false;
+    for I:=0 to List2.Count-1 do
+      List.Add(List2[I]);
+    Result:=List;
   finally
-     FindClose(F);
+    List2.Free;
   end;
-  List.Sorted:=false;
-  for I:=0 to List2.Count-1 do
-    List.Add(List2[I]);
-  Result:=List;
-  List2.Free;
 end;
 
 function Link1(var ResultFolder: QObject; const FolderName, Name, Spec, Arg: String) : QObject; overload
