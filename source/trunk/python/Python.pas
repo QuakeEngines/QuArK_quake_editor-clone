@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.42  2009/09/29 14:43:12  danielpharos
+Fixed version-traversal for Python giving wrong library version number to use, and added a missing Python 2.6 PyObject member.
+
 Revision 1.41  2009/07/15 10:54:15  danielpharos
 Fix wrong variable type, and make some variables local.
 
@@ -346,6 +349,8 @@ type
                   bf_getwritebuffer: writebufferproc;
                   bf_getsegcount: segcountproc;
                   bf_getcharbuffer: charbufferproc;
+                  //bf_getbuffer: getbufferproc;         //Added March 2008 (Python trunk revision 65874)
+                  //bf_releasebuffer: releasebufferproc; //Don't know if they are needed
                  end;
 
  TyTypeObject = object(TyVarObject)
@@ -427,8 +432,12 @@ const
  //   1010 for Python 2.1a2 (and probably 2.1 as well)
  //   1011 for Python 2.2
  //   1012 for Python 2.3 and 2.4
- //   1013 for Python 2.5 and 2.6?
+ //   1013 for Python 2.5 and 2.6 and 2.7?
  // Version info from here: http://svn.python.org/view/python/trunk/Include/modsupport.h
+ {$IFDEF PYTHON27}
+ PYTHON_API_VERSION = 1013;
+{$ELSE}
+
 {$IFDEF PYTHON26}
  PYTHON_API_VERSION = 1013;
 {$ELSE}
@@ -460,6 +469,7 @@ const
 //Minimal support version is 2.0!
  PYTHON_API_VERSION = 1009;
 
+{$ENDIF}
 {$ENDIF}
 {$ENDIF}
 {$ENDIF}
@@ -572,8 +582,17 @@ PyInt_AsLong: function (o: PyObject) : LongInt; cdecl;
 //NOT TESTED:
 //Long integers in Python are unlimited in size
 //(only limited by the amount of available memory)
-//PyLong_FromLong: function (Value : @) : PyObject; cdecl;
-//PyLong_FromDouble: function (Value : @) : PyObject; cdecl;
+//PyLong_FromLong: function (Value : LongInt) : PyObject; cdecl;
+//PyLong_FromUnsignedLong: function (Value : Longword) : PyObject; cdecl;
+//PyLong_FromDouble: function (Value : Double) : PyObject; cdecl;
+//PyLong_FromSize_t: function (Value : size_t) : PyObject; cdecl;
+//PyLong_FromSsize_t: function (Value : Py_ssize_t) : PyObject; cdecl;
+//PyLong_AsLong: function (o : PyObject) : LongInt; cdecl;
+//PyLong_AsLongAndOverflow: function (o : PyObject, overflow : PInt);
+//PyAPI_FUNC(unsigned long) PyLong_AsUnsignedLong(PyObject *); //NOT PROPERLY CONVERTED
+//PyAPI_FUNC(unsigned long) PyLong_AsUnsignedLongMask(PyObject *); //NOT PROPERLY CONVERTED
+//PyAPI_FUNC(Py_ssize_t) PyLong_AsSsize_t(PyObject *); //NOT PROPERLY CONVERTED
+
 
 PyFloat_FromDouble: function (Value: Double) : PyObject; cdecl;
 PyFloat_AsDouble: function (o: PyObject) : Double; cdecl;
@@ -743,25 +762,33 @@ begin
     begin
       //If the PythonDLL was not found in the dlls-dir,
       //let's try to load from anywhere else...
-      {$IFDEF PYTHON25}
-       PythonDll:='python25.dll';
+      {$IFDEF PYTHON27}
+       PythonDll:='python27.dll';
       {$ELSE}
-       {$IFDEF PYTHON24}
-        PythonDll:='python24.dll';
+       {$IFDEF PYTHON26}
+        PythonDll:='python26.dll';
        {$ELSE}
-        {$IFDEF PYTHON23}
-         PythonDll:='python23.dll';
+        {$IFDEF PYTHON25}
+         PythonDll:='python25.dll';
         {$ELSE}
-         {$IFDEF PYTHON22}
-          PythonDll:='python22.dll';
+         {$IFDEF PYTHON24}
+          PythonDll:='python24.dll';
          {$ELSE}
-          {$IFDEF PYTHON21}
-           PythonDll:='python21.dll';
+          {$IFDEF PYTHON23}
+           PythonDll:='python23.dll';
           {$ELSE}
-           {$IFDEF PYTHON20}
-            PythonDll:='python20.dll';
+           {$IFDEF PYTHON22}
+            PythonDll:='python22.dll';
            {$ELSE}
-            PythonDll:='';
+            {$IFDEF PYTHON21}
+             PythonDll:='python21.dll';
+            {$ELSE}
+             {$IFDEF PYTHON20}
+              PythonDll:='python20.dll';
+             {$ELSE}
+              PythonDll:='';
+             {$ENDIF}
+            {$ENDIF}
            {$ENDIF}
           {$ENDIF}
          {$ENDIF}
