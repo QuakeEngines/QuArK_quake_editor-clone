@@ -1744,10 +1744,10 @@ class ModelLayout(BaseLayout):
         "This calls for what ever selection def you are using above."
         global treeviewselchanged, savefacesel
 
-
         # Checks to see if the dictspec item exist, if so clears all other bones of it and related items for proper bone weights system use.
         skeletongroup = self.editor.Root.dictitems['Skeleton:bg']  # get the bones group
         bones = skeletongroup.findallsubitems("", ':bone')    # get all bones
+        # Not sure this section is being used any more.
         for bone2 in bones:
             for item in bone2.dictspec:
                 if item.endswith("_weight_value"):
@@ -1760,7 +1760,12 @@ class ModelLayout(BaseLayout):
 
         # Updates the editor.ModelComponentList
         if self.editor.Root.dictitems.has_key('ModelComponentList:sd'):
-            UnflattenModelComponentList(self.editor, self.editor.Root.dictitems['ModelComponentList:sd']['data'])
+            if quarkx.setupsubset(SS_MODEL, "Options")['VertexPaintMode'] == "1" and self.editor.Root.currentcomponent.dictspec.has_key("auto_save_weights") and self.editor.Root.currentcomponent.dictspec["auto_save_weights"] == "1":
+                # Added because line in else section using OLD ModelComponentList data killing new weight settings made.
+                FlattenModelComponentList(self.editor)
+            else:
+                # Needs to be this way or assigned vertexes will not draw their respective bone handle color.
+                UnflattenModelComponentList(self.editor, self.editor.Root.dictitems['ModelComponentList:sd']['data'])
 
         # Updates the models textures in the Texture Browser's 'Used Textures' to be displayed.
         self.putskinsintexturebrowser()
@@ -1868,6 +1873,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.115  2009/11/09 06:58:01  cdunde
+#Hopefully, temp fix until source code fixed, for binary data wiping out dictspec data.
+#
 #Revision 1.114  2009/11/09 02:17:31  cdunde
 #Fixes for individual bone selection and handle color change.
 #
