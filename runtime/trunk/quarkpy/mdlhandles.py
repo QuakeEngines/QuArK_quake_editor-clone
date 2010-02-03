@@ -5007,7 +5007,7 @@ class BoneCornerHandle(BoneHandle):
                     if editor.ModelComponentList.has_key(compname) and editor.ModelComponentList[compname].has_key('weightvtxlist') and editor.ModelComponentList[compname]['weightvtxlist'].has_key(vtx) and editor.ModelComponentList[compname]['weightvtxlist'][vtx].has_key(obj.name):
                         weight_value = editor.ModelComponentList[compname]['weightvtxlist'][vtx][obj.name]['weight_value']
                     else:
-                        continue
+                        weight_value = 1.0
                     changedpos = oldverticespos[compname][vtx] - rotationorigin
                     changedpos = changedradius * m * changedpos
                     if newverticespos[compname][vtx] is None:
@@ -5327,6 +5327,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.196  2010/01/22 22:07:33  cdunde
+#Fix by DanielPharos for bone handles offset updating after corner handle drag.
+#
 #Revision 1.195  2009/11/25 23:51:49  cdunde
 #Fix by DanielPharos to stop component folders shifting around in tree-view after bone drag.
 #
