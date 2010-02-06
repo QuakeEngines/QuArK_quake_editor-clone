@@ -6,7 +6,7 @@
 
 #include "..\public\tier0\basetypes.h"
 #include "..\common\filesystem_tools.h"
-#include "..\vstdlib\ICommandLine.h"
+#include "..\public\tier0\icommandline.h"
 #include "..\public\tier1\utlbuffer.h"
 #include "..\public\tier0\dbg.h"
 
@@ -86,7 +86,7 @@ int main(int argc, const char* argv[])
   printf("\r\n");
   printf("QuArK SAS (Steam Access System)\r\n");
   printf("-------------------------------\r\n");
-  printf("Version 1.01\r\n");
+  printf("Version 1.02\r\n");
   printf("\r\n");
 
   int GameCode = 220; //Default to HL2
@@ -100,7 +100,7 @@ int main(int argc, const char* argv[])
   sLog = new Logger("QuArKSAS.log");
   sLog->msg(0,"QuArK SAS (Steam Access System)\r\n");
   sLog->msg(0,"-------------------------------\r\n");
-  sLog->msg(0,"Version 1.01\r\n");
+  sLog->msg(0,"Version 1.02\r\n");
   sLog->msg(0,"\r\n");
 
   string Argument;
@@ -554,5 +554,6 @@ int main(int argc, const char* argv[])
 
   sLog->msg(20, "Shutdown completed.\r\n");
   delete sLog;
+
   return 0;
 }

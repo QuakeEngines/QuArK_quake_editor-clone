@@ -22,6 +22,7 @@
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
 			CharacterSet="2"
+			WholeProgramOptimization="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -43,7 +44,6 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"
-				InlineFunctionExpansion="1"
 				AdditionalIncludeDirectories="..\..\Public,..\..\Public\tier1,..\common,..\vmpi"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				StringPooling="true"
@@ -72,7 +72,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="&quot;C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Lib\AdvAPI32.Lib&quot;"
 				OutputFile=".\Release/QuArKSAS.exe"
-				Version="1.01"
+				Version="1.02"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				ProgramDatabaseFile=".\Release/QuArKSAS.pdb"
