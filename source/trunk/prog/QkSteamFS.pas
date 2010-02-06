@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.36  2009/10/29 20:33:02  danielpharos
+Updated Steam filename.
+
 Revision 1.35  2009/07/15 10:38:01  danielpharos
 Updated website link.
 
@@ -143,7 +146,7 @@ procedure ClearSteamCache;
 
 implementation
 
-uses ShellAPI, SysUtils, StrUtils, Quarkx, Setup, Logging, SystemDetails,
+uses ShellAPI, SysUtils, StrUtils, Quarkx, Game, Setup, Logging, SystemDetails,
      QkObjects, Md5Hash, ExtraFunctionality, QkApplPaths, QkExceptions;
 
 var
@@ -336,109 +339,85 @@ var
   SteamGameDirectory: String;
   SteamCacheDirectory: String;
   SteamProgramDirectory: String;
-  SteamSourceSDKDirectory: String;
+  SteamGameDir: String;
   SteamUser: String;
-  SteamAppID: String;
-  GameIDDir: String;
-  FullFileName: String;
+  OutputDir: String;
   QSASMd5Hash, CurQSASMd5Hash: String;
   QSASFile, QSASPath, QSASParameters: String;
   QSASAdditionalParameters: String;
   QSASStartupInfo: StartUpInfo;
   QSASProcessInformation: Process_Information;
-  I, J: Integer;
 begin
   //This function uses QuArKSAS to extract files from Steam
   ClearCacheNeeded:=true;
-  
-  I := Pos('\', Filename);
-  J := Pos('/', Filename);
-  if ((I > 0) and (I < J)) then
-  begin
-    GameIDDir := LeftStr(Filename, I-1);
-    FullFileName := RightStr(Filename, Length(Filename) - I);
-  end
-  else
-  begin
-    if (J > 0) then
-    begin
-      GameIDDir := LeftStr(Filename, J-1);
-      FullFileName := RightStr(Filename, Length(Filename) - J);
-    end
-    else
-      FullFileName := Filename;
-  end;
 
   Setup:=SetupSubSet(ssGames, 'Steam');
   SteamDirectory:=IncludeTrailingPathDelimiter(Setup.Specifics.Values['Directory']);
   SteamUser:=Setup.Specifics.Values['SteamUser'];
-  SteamAppID:=SetupGameSet.Specifics.Values['SteamAppID'];
-  SteamGameDirectory:=SetupGameSet.Specifics.Values['tmpQuArK'];
+  SteamGameDirectory:=GettmpQuArK;
   SteamCacheDirectory:=Setup.Specifics.Values['CacheDirectory'];
   QSASAdditionalParameters:=Setup.Specifics.Values['ExtractorParameters'];
   if Length(QSASAdditionalParameters)<>0 then
     QSASAdditionalParameters:=' '+QSASAdditionalParameters;
 
   //Copy QSAS if it's not in the Steam directory yet
-  SteamProgramDirectory:=IncludeTrailingPathDelimiter(Setup.Specifics.Values['ProgramDirectory']);
-  SteamSourceSDKDirectory:=Setup.Specifics.Values['SourceSDKDirectory'];
-  RemoveTrailingSlash(SteamSourceSDKDirectory);
-  QSASPath := SteamDirectory + SteamProgramDirectory + IncludeTrailingPathDelimiter(SteamUser) + SteamSourceSDKDirectory;
-  QSASFile := QSASPath + '\QuArKSAS.exe';
+  SteamProgramDirectory:=Setup.Specifics.Values['ProgramDirectory'];
+  QSASPath := ConcatPaths([SteamDirectory, SteamProgramDirectory, SteamUser, SourceSDKDir]);
+  RemoveTrailingSlash(QSASPath);
+  QSASFile := ConcatPaths([QSASPath, 'QuArKSAS.exe']);
 
   if DirectoryExists(SteamDirectory) = false then
     LogAndRaiseError('Unable to extract file from Steam. Cannot find Steam directory.');
 
-  if DirectoryExists(SteamDirectory+SteamCacheDirectory) = false then
-    if CreateDir(SteamDirectory+SteamCacheDirectory) = false then
-      LogAndRaiseError('Unable to extract file from Steam. Cannot create cache directory.');
-
-  if DirectoryExists(SteamDirectory+SteamCacheDirectory+'\'+GameIDDir) = false then
-    if CreateDir(SteamDirectory+SteamCacheDirectory+'\'+GameIDDir) = false then
+  if DirectoryExists(ConcatPaths([SteamDirectory, SteamCacheDirectory])) = false then
+    if CreateDir(ConcatPaths([SteamDirectory, SteamCacheDirectory])) = false then
       LogAndRaiseError('Unable to extract file from Steam. Cannot create cache directory.');
 
   if CheckQuArKSAS then
   begin
     if FileExists(QSASFile) = false then
     begin
-      if FileExists(GetQPath(pQuArKDll)+'QuArKSAS.exe') = false then
+      if FileExists(ConcatPaths([GetQPath(pQuArKDll), 'QuArKSAS.exe'])) = false then
         LogAndRaiseError('Unable to extract file from Steam. dlls/QuArKSAS.exe not found.');
-      if CopyFile(PChar(GetQPath(pQuArKDll)+'QuArKSAS.exe'), PChar(QSASFile), true) = false then
+      if CopyFile(PChar(ConcatPaths([GetQPath(pQuArKDll), 'QuArKSAS.exe'])), PChar(QSASFile), true) = false then
         LogAndRaiseError('Unable to extract file from Steam. Call to CopyFile failed.');
     end
     else
     begin
       //Check version!
-      QSASMd5Hash:=Md5GetFileHash(GetQPath(pQuArKDll)+'QuArKSAS.exe');
+      QSASMd5Hash:=Md5GetFileHash(ConcatPaths([GetQPath(pQuArKDll), 'QuArKSAS.exe']));
       CurQSASMd5Hash:=Md5GetFileHash(QSASFile);
       if QSASMd5Hash<>CurQSASMd5Hash then
       begin
         //Files do not match. The one in dlls is probably the most current one,
         //so let's update the Steam one.
-        if CopyFile(PChar(GetQPath(pQuArKDll)+'QuArKSAS.exe'), PChar(QSASFile), false) = false then
+        if CopyFile(PChar(ConcatPaths([GetQPath(pQuArKDll), 'QuArKSAS.exe'])), PChar(QSASFile), false) = false then
           LogAndRaiseError('Unable to extract file from Steam. Call to CopyFile failed.');
       end;
     end;
     CheckQuArKSAS:=false;
   end;
 
-  //No trailing slashes in paths allowed!
-  RemoveTrailingSlash(SteamGameDirectory);
-  RemoveTrailingSlash(GameIDDir);
+  SteamGameDir:=QuickResolveFilename(ConcatPaths([SteamDirectory, SteamGameDirectory]));
+  OutputDir:=ConcatPaths([SteamDirectory, SteamCacheDirectory]);
 
-  QSASParameters:='-g '+SteamAppID+' -gamedir "'+SteamDirectory+SteamGameDirectory+'" -o "'+SteamDirectory+SteamCacheDirectory+'\'+GameIDDir+'" -overwrite' + QSASAdditionalParameters;
+  //No trailing slashes in paths allowed!
+  RemoveTrailingSlash(SteamGameDir);
+  RemoveTrailingSlash(OutputDir);
+
+  QSASParameters:='-g '+SteamAppID+' -gamedir "'+SteamGameDir+'" -o "'+OutputDir+'" -overwrite' + QSASAdditionalParameters;
 
   FillChar(QSASStartupInfo, SizeOf(QSASStartupInfo), 0);
   FillChar(QSASProcessInformation, SizeOf(QSASProcessInformation), 0);
   QSASStartupInfo.cb:=SizeOf(QSASStartupInfo);
   QSASStartupInfo.dwFlags:=STARTF_USESHOWWINDOW;
   QSASStartupInfo.wShowWindow:=SW_SHOWMINNOACTIVE;
-  if Windows.CreateProcess(nil, PChar(QSASPath + '\QuArKSAS.exe ' + QSASParameters + ' ' + FullFilename), nil, nil, false, 0, nil, PChar(QSASPath), QSASStartupInfo, QSASProcessInformation)=false then
+  if Windows.CreateProcess(nil, PChar(QSASFile + ' ' + QSASParameters + ' ' + Filename), nil, nil, false, 0, nil, PChar(QSASPath), QSASStartupInfo, QSASProcessInformation)=false then
     LogAndRaiseError('Unable to extract file from Steam. Call to CreateProcess failed.');
   try
     //DanielPharos: Waiting for INFINITE is rather dangerous,
-    //so let's wait only 10 seconds
-    if WaitForSingleObject(QSASProcessInformation.hProcess, 10000)=WAIT_FAILED then
+    //so let's wait only 30 seconds
+    if WaitForSingleObject(QSASProcessInformation.hProcess, 30000)=WAIT_FAILED then
       LogAndRaiseError('Unable to extract file from Steam. Call to WaitForSingleObject failed.');
   finally
     CloseHandle(QSASProcessInformation.hThread);

@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.75  2010/02/06 15:23:41  danielpharos
+Massive update to GCF file loading. This should fix most "cannot find GCF file" type problems.
+
 Revision 1.74  2009/09/23 20:37:16  danielpharos
 Fix tags of models not loading outside of pak-files.
 
@@ -1090,6 +1093,36 @@ begin
       FilenameAlias := GetNextAlias;
     end;
 
+    //Steam filesystem access
+    if SetupGameSet.Specifics.Values['Steam']='1' then
+    begin
+      SteamRunning := RunSteam;
+
+      if not SteamRunning then
+        Log(LOG_WARNING, 'Steam is not running. Unable to extract files from it.')
+      else
+      begin
+        Setup:=SetupSubSet(ssGames, 'Steam');
+        SteamCacheDir:=ConcatPaths([Setup.Specifics.Values['Directory'], Setup.Specifics.Values['CacheDirectory']]);
+        RestartAliasing(FileName);
+        FilenameAlias := GetNextAlias;
+        while (FilenameAlias <> '') do
+        begin
+          if RunSteamExtractor(FilenameAlias) then
+            if FileExists(ConcatPaths([SteamCacheDir, FilenameAlias])) then
+            begin
+              Result:=ExactFileLink(ConcatPaths([SteamCacheDir, FilenameAlias]), Nil, True);
+              Result.Flags:=Result.Flags or ofWarnBeforeChange;
+              GameFiles.Add(Result);
+              GameFiles.Sort(ByFileName);
+              Exit; { found it }
+            end;
+
+          FilenameAlias := GetNextAlias;
+        end;
+      end;
+    end;
+
     //Pak file search (this includes GCF's)
     RestartAliasing(FileName);
     FilenameAlias := GetNextAlias;
@@ -1141,36 +1174,6 @@ begin
       end;
     finally
       GetPakNames.Free;
-    end;
-
-    //Steam filesystem access
-    if SetupGameSet.Specifics.Values['Steam']='1' then
-    begin
-      SteamRunning := RunSteam;
-
-      if not SteamRunning then
-        Log(LOG_WARNING, 'Steam is not running. Unable to extract files from it.')
-      else
-      begin
-        Setup:=SetupSubSet(ssGames, 'Steam');
-        SteamCacheDir:=ConcatPaths([Setup.Specifics.Values['Directory'], Setup.Specifics.Values['CacheDirectory']]);
-        RestartAliasing(FileName);
-        FilenameAlias := GetNextAlias;
-        while (FilenameAlias <> '') do
-        begin
-          if RunSteamExtractor(FilenameAlias) then
-            if FileExists(ConcatPaths([SteamCacheDir, FilenameAlias])) then
-            begin
-              Result:=ExactFileLink(ConcatPaths([SteamCacheDir, FilenameAlias]), Nil, True);
-              Result.Flags:=Result.Flags or ofWarnBeforeChange;
-              GameFiles.Add(Result);
-              GameFiles.Sort(ByFileName);
-              Exit; { found it }
-            end;
-
-          FilenameAlias := GetNextAlias;
-        end;
-      end;
     end;
 
     Inc(SearchStage);
