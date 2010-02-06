@@ -1,4 +1,3 @@
-#define QUARKGCFDLL_API_VERSION 2
 #define HLLIB_EXPORTS
 
 #include <iostream>
@@ -6,262 +5,278 @@
 #include "..\hllib118\Lib/HLLib.h"
 
 #include "../common/logger.h"
+
+#include "quarkgcfdll.h"
 using namespace std;
 
-#define  DLL_EXPORT   extern "C" __declspec( dllexport ) 
+static Logger* sLog = NULL;
+static char* sLogPath = NULL;
 
-static Logger* sLog;
+bool Inited = false;
 
-
-extern "C"
+DLL_EXPORT int Init(void)
 {
-  
-struct packagehandle
-{
-  CPackage* Package;
-  CPackageUtility* PackageUtility;
-};
-
-typedef struct packagehandle* p_packagehandle;
-
-struct packagefile
-{
-  CPackage *Package;
-  CDirectoryItem* Item;
-};
-
-typedef struct packagefile* p_packagefile;
-
-
-DLL_EXPORT unsigned long APIVersion(void)
-{
-  return QUARKGCFDLL_API_VERSION;
+	if (Inited)
+	{
+		return 0;
+	}
+	if (sLogPath == NULL)
+	{
+		return 1;
+	}
+	char* LogFileName = new char[strlen(sLogPath)+strlen(sLogFilename)+1];
+	strcpy(LogFileName, sLogPath);
+	strcat(LogFileName, sLogFilename);
+	sLog = new Logger(LogFileName);
+	delete [] LogFileName;
+	Inited = true;
+	return 0;
 }
 
-DLL_EXPORT p_packagehandle GCFOpen(char* PackageName)
+DLL_EXPORT void Unload(void)
 {
-  sLog = new Logger("quarkgcf.log");
-  sLog->scope("GCFOpen %s\n",PackageName);
+	if (!Inited)
+	{
+		return;
+	}
+	delete sLog;
+	sLog = NULL;
+	delete [] sLogPath;
+	sLogPath = NULL;
+	Inited = false;
+	return;
+}
 
-  p_packagehandle pkg = new packagehandle;
-  pkg->Package= CPackageFactory::Create(PackageName);
-  if(pkg->Package == 0)
-  {
-    sLog->msg(10,"GCFOpen Error loading %s:\nUnsupported package type.\n", PackageName);
-    delete pkg;
-    return NULL;
-  }
-  pkg->PackageUtility = new CPackageUtility(pkg->Package);
+DLL_EXPORT int APIVersion(void)
+{
+	return QUARKGCFDLL_API_VERSION;
+}
 
-  if(!pkg->Package->Open(PackageName))
-  {
-    sLog->msg(10,"Error loading %s:\n%s\n", PackageName, pkg->Package->GetLastError());
-    delete pkg->Package;
-    delete pkg;
-    return NULL;
-  }
+DLL_EXPORT void SetLogPath(char* LogPath)
+{
+	sLogPath = new char[strlen(LogPath)+1];
+	strcpy(sLogPath, LogPath);
+}
 
-  return pkg;
+DLL_EXPORT p_packagehandle GCFOpen(const char* PackageName)
+{
+	sLog->scope("GCFOpen %s\r\n", PackageName);
+
+	p_packagehandle pkg = new packagehandle;
+	pkg->Package = CPackageFactory::Create(PackageName);
+	if (pkg->Package == 0)
+	{
+		sLog->msg(10, "GCFOpen Error loading %s:\r\nUnsupported package type.\r\n", PackageName);
+		delete pkg;
+		return NULL;
+	}
+	pkg->PackageUtility = new CPackageUtility(pkg->Package);
+
+	if (!pkg->Package->Open(PackageName))
+	{
+	    sLog->msg(10, "Error loading %s:\r\n%s\r\n", PackageName, pkg->Package->GetLastError());
+	    delete pkg->Package;
+	    delete pkg;
+	    return NULL;
+	}
+
+	return pkg;
 }
 
 DLL_EXPORT void GCFClose(p_packagehandle pkg)
 {
-  sLog->scope("GCFClose(%p)\n",pkg);
-  pkg->Package->Close();
-  delete pkg->Package;
-  delete pkg->PackageUtility;
-  delete (pkg);
+	sLog->scope("GCFClose(%p)\r\n", pkg);
+	pkg->Package->Close();
+	delete pkg->Package;
+	delete pkg->PackageUtility;
+	delete (pkg);
 }
 
 DLL_EXPORT p_packagefile GCFOpenElement(p_packagehandle pkg, char* FileName)
 {
-  sLog->scope("GCFOpenElement(%p,%s)\n", pkg,FileName);
+	sLog->scope("GCFOpenElement(%p,%s)\r\n", pkg,FileName);
 
-  p_packagefile p = new  packagefile;
+	p_packagefile p = new packagefile;
 
-  p->Item = pkg->PackageUtility->GetDirectoryItem(FileName);
-  p->Package = pkg->Package;
+	p->Item = pkg->PackageUtility->GetDirectoryItem(FileName);
+	p->Package = pkg->Package;
 
-  if(p->Item == 0)
-  {
-    sLog->msg(10,"GCFOpenFile: %s not found in package.\n", FileName);
-    delete p;
-    return NULL;
-  }
-  return p;
+	if (p->Item == 0)
+	{
+	    sLog->msg(10, "GCFOpenFile: %s not found in package.\r\n", FileName);
+	    delete p;
+	    return NULL;
+	}
+	return p;
 }
 
-DLL_EXPORT void GCFCloseElement(p_packagefile p )
+DLL_EXPORT void GCFCloseElement(p_packagefile p)
 {
-  sLog->scope("GCFCloseElement(%p)\n",p);
-  delete p;
+	sLog->scope("GCFCloseElement(%p)\r\n",p);
+	delete p;
 }
 
-DLL_EXPORT int GCFElementIsFolder(p_packagefile p )
+DLL_EXPORT bool GCFElementIsFolder(p_packagefile p)
 {
-  sLog->scope("GCFElementIsFolder(%p)\n",p); 
-  return (p->Item->GetType() == DirectoryItemFolder);
+	sLog->scope("GCFElementIsFolder(%p)\r\n",p); 
+	return (p->Item->GetType() == DirectoryItemFolder);
 }
 
-DLL_EXPORT long GCFNumSubElements(p_packagefile p )
+DLL_EXPORT DWORD GCFNumSubElements(p_packagefile p)
 {
-  sLog->scope("GCFNumSubElements(%p)\n",p);
-  if (p->Item->GetType() == DirectoryItemFolder)
-    return static_cast<CDirectoryFolder *>(p->Item)->ItemCount();
-  else
-    return 0;
+	sLog->scope("GCFNumSubElements(%p)\r\n",p);
+	if (p->Item->GetType() == DirectoryItemFolder)
+	    return static_cast<CDirectoryFolder *>(p->Item)->ItemCount();
+	else
+	    return 0;
 }
 
-DLL_EXPORT p_packagefile GCFGetSubElement(p_packagefile p , long e)
+DLL_EXPORT p_packagefile GCFGetSubElement(p_packagefile p, DWORD e)
 {
-  sLog->scope("GCFGetSubElement(%p,%lu)\n",p,e);
-  if (p->Item->GetType() == DirectoryItemFolder)
-  {
-    p_packagefile subp = new  packagefile;
-    subp->Item = static_cast<CDirectoryFolder *>(p->Item)->GetItem(e);
-    subp->Package = p->Package;
-    return subp;
-  }
-  else
-    return NULL;
+	sLog->scope("GCFGetSubElement(%p,%lu)\r\n", p, e);
+	if (p->Item->GetType() == DirectoryItemFolder)
+	{
+	    p_packagefile subp = new packagefile;
+	    subp->Item = static_cast<CDirectoryFolder *>(p->Item)->GetItem(e);
+	    subp->Package = p->Package;
+	    return subp;
+	}
+	else
+	    return NULL;
 }
 
-DLL_EXPORT const char* GCFSubElementName(p_packagefile p )
+DLL_EXPORT const char* GCFSubElementName(p_packagefile p)
 {
-  sLog->scope("GCFSubElementName(%p)\n",p);
-  return p->Item->GetName();
+	sLog->scope("GCFSubElementName(%p)\r\n", p);
+	return p->Item->GetName();
 }
 
 
-DLL_EXPORT unsigned long GCFReadFile(p_packagefile p ,LPBYTE lpData)
+DLL_EXPORT bool GCFReadFile(p_packagefile p, LPBYTE lpData)
 {
-  sLog->scope("GCFReadFile(%p,%p)\n",p ,lpData);
-  if(p->Item->GetType() == DirectoryItemFile)
-  {
-    // Get the file's data.
-    if(!p->Package->GetFileData(static_cast<CDirectoryFile *>(p->Item), lpData))
-    {
-      sLog->msg(10,"Package->GetFileData:%\n",p->Package->GetLastError() );
-      return 0;
-    }
-    return 1;
-  }
-  else
-  {
-    return 0;
-  }
+	sLog->scope("GCFReadFile(%p,%p)\r\n", p, lpData);
+	if (p->Item->GetType() == DirectoryItemFile)
+	{
+	    // Get the file's data.
+	    if (!p->Package->GetFileData(static_cast<CDirectoryFile *>(p->Item), lpData))
+	    {
+			sLog->msg(10,"Package->GetFileData:%\r\n",p->Package->GetLastError() );
+			return false;
+		}
+		return true;
+	}
+	else
+	{
+	    return false;
+	}
 }
 
-DLL_EXPORT unsigned long GCFFileSize(p_packagefile p)
+DLL_EXPORT DWORD GCFFileSize(p_packagefile p)
 {
-  DWORD size;
-  sLog->scope("GCFFileSize(%p)\n", p);
-  if(p->Item->GetType() == DirectoryItemFile)
-  {
-    if(!p->Package->GetFileSize(static_cast<CDirectoryFile *>(p->Item), size))
-    {
-      sLog->msg(10,"Package->GetFileSize:%s\n",p->Package->GetLastError());
-      return 0;
-    }
-    else
-      return size;
-  }
-  else
-  {
-    return 0;
-  }
+	sLog->scope("GCFFileSize(%p)\r\n", p);
+	DWORD size;
+	if (p->Item->GetType() == DirectoryItemFile)
+	{
+	    if (!p->Package->GetFileSize(static_cast<CDirectoryFile *>(p->Item), size))
+	    {
+			sLog->msg(10, "Package->GetFileSize:%s\r\n",p->Package->GetLastError());
+			return 0;
+		}
+		else
+			return size;
+	}
+	else
+	{
+	    return 0;
+	}
 }
 
 DLL_EXPORT void GCFList(FILE *pFile, CPackageUtility &PackageUtility, CDirectoryItem *Item)
 {
-  char cPath[512] = "";
-   
-  if(Item->GetType() == DirectoryItemFolder)
-  {
-    //PackageUtility.GetDirectoryItemPath(Item, cPath);
-    //fprintf(pFile, "%s\n", cPath);
-    
-    CDirectoryFolder *Folder = static_cast<CDirectoryFolder *>(Item);
-    for(DWORD i = 0; i < Folder->ItemCount(); i++)
-    {
-      GCFList(pFile, PackageUtility, Folder->GetItem(i));
-    }
-  }
-  else if(Item->GetType() == DirectoryItemFile)
-  {
-    PackageUtility.GetDirectoryItemPath(Item, cPath);
-    fprintf(pFile, "%s\n", cPath);
-  }
+	sLog->scope("GCFList(%p,%p,%p)\r\n", pFile, PackageUtility, Item);
+	DWORD itemcount;
+	char cPath[MAX_PATH] = "";
+  
+	if (Item->GetType() == DirectoryItemFolder)
+	{
+	    //PackageUtility.GetDirectoryItemPath(Item, cPath);
+	    //fprintf(pFile, "%s\r\n", cPath);
+	    CDirectoryFolder *Folder = static_cast<CDirectoryFolder *>(Item);
+	    itemcount = Folder->ItemCount();
+	    for(DWORD i = 0; i < itemcount; i++)
+	    {
+			GCFList(pFile, PackageUtility, Folder->GetItem(i));
+		}
+	}
+	else if(Item->GetType() == DirectoryItemFile)
+	{
+	    PackageUtility.GetDirectoryItemPath(Item, cPath);
+	    fprintf(pFile, "%s\r\n", cPath);
+	}
 }
 
-DLL_EXPORT int GCFPrepList(char* arg0, char* arg1)
+DLL_EXPORT bool GCFPrepList(char* packagefile, char* textfile)
 {
-  char *cPackage = 0;
-  char *cDestination = 0;
-  char *cList = 0;
-  BOOL bFileMapping = FALSE;
-  BOOL bVolatileAccess = FALSE;
-  cPackage = arg0;
-  // Create an appropriate package.
-  // This function creates an appropriate package class based on the
-  // filename extension alone.  This package must be destroyed at a
-  // latter time by calling "delete Package;".
-  CPackage *Package = CPackageFactory::Create(cPackage);
-  // If CPackageFactory::Create() returns null the package extension
-  // is unsupported.
-  if(Package == 0)
-  {
-    printf("Error loading %s:\nUnsupported package type.\n", cPackage);
-    return 3;
-  }
-  // Create a package utility.
-  // A package utility has nothing to do with loading a package
-  // but provides several useful functions for generating statistical
-  // information on packages, extracting package items, and performing
-  // other miscellaneous tasks.
-  CPackageUtility PackageUtility = CPackageUtility(Package);
-  // Open the package.
-  // I know, ugly hack to gain CMappedPackage member access...  I don't
-  // want to require runtime type checking.  CPackageFactory::Create will
-  // always return a CMappedPackage object but this could change in later
-  // versions.  To be extra cautious you could make your own package factory.
-  if(!static_cast<CMappedPackage *>(Package)->Open(cPackage, bFileMapping, bVolatileAccess))
-  {
-    printf("Error loading %s:\n%s\n", cPackage, Package->GetLastError());
-    delete Package;
-    return 3;
-  }
-  // List items in package.
+	sLog->scope("GCFPrepList(%s,%s)\r\n", packagefile, textfile);
+	BOOL bFileMapping = FALSE;
+	BOOL bVolatileAccess = FALSE;
+	// Create an appropriate package.
+	// This function creates an appropriate package class based on the
+	// filename extension alone.  This package must be destroyed at a
+	// latter time by calling "delete Package;".
+	CPackage *Package = CPackageFactory::Create(packagefile);
+	// If CPackageFactory::Create() returns null the package extension
+	// is unsupported.
+	if(Package == NULL)
+	{
+	    sLog->msg(10, "Error loading %s:\r\nUnsupported package type.\r\n", packagefile);
+	    return false;
+	}
+	// Create a package utility.
+	// A package utility has nothing to do with loading a package
+	// but provides several useful functions for generating statistical
+	// information on packages, extracting package items, and performing
+	// other miscellaneous tasks.
+	CPackageUtility PackageUtility = CPackageUtility(Package);
+	// Open the package.
+	// I know, ugly hack to gain CMappedPackage member access...  I don't
+	// want to require runtime type checking.  CPackageFactory::Create will
+	// always return a CMappedPackage object but this could change in later
+	// versions.  To be extra cautious you could make your own package factory.
+	if(!static_cast<CMappedPackage *>(Package)->Open(packagefile, bFileMapping, bVolatileAccess))
+	{
+	    printf("Error loading %s:\r\n%s\r\n", packagefile, Package->GetLastError());
+	    delete Package;
+	    return false;
+	}
+	// List items in package.
 /*  if(bList)
   {
     if(!bSilent)
-      printf("Listing...\n");*/
-    FILE *pFile = stdout;
-//    if(cList != 0)
+      printf("Listing...\r\n");*/
+	  FILE *pFile = stdout;
+//    if(textfile != 0)
 //    {
-      cList = arg1;
-      pFile = fopen(cList, "wt");
-      if(pFile == 0)
-      {
-        printf("Error opening %s:\n%s\n", cList, "fopen() failed.");
-        delete Package;
-        return 3;
-      }
+		  pFile = fopen(textfile, "wt");
+		if(pFile == 0)
+		{
+	        printf("Error opening %s:\r\n%s\r\n", textfile, "fopen() failed.\r\n");
+			delete Package;
+			return false;
+		}
 //    }
-    GCFList(pFile, PackageUtility, Package->GetRoot());
-/*    if(cList != 0)
+		GCFList(pFile, PackageUtility, Package->GetRoot());
+/*    if(textfile != 0)
     {*/
-      fclose(pFile);
+		fclose(pFile);
 /*    }
     if(!bSilent)
-      printf("Done.\n");
+      printf("Done.\r\n");
   }*/
-  // Close the package.
-  Package->Close();
-  // Destroy the package.
-  delete Package;
+	// Close the package.
+	Package->Close();
+	// Destroy the package.
+	delete Package;
   
-  return 0;
-}
-
+	return true;
 }

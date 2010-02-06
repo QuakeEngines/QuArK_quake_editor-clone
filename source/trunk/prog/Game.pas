@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.74  2009/09/23 20:37:16  danielpharos
+Fix tags of models not loading outside of pak-files.
+
 Revision 1.73  2009/07/15 10:38:00  danielpharos
 Updated website link.
 
@@ -1051,7 +1054,6 @@ var
  Setup: QObject;
  SteamRunning: Boolean;
  SteamCacheDir: String;
- SteamCheckGCF: Boolean;
 begin
   Result := NIL;
   if (GameFiles=Nil) then
@@ -1091,54 +1093,54 @@ begin
     //Pak file search (this includes GCF's)
     RestartAliasing(FileName);
     FilenameAlias := GetNextAlias;
-    SteamCheckGCF := True;
     if SetupGameSet.Specifics.Values['Steam']='1' then
     begin
-      if SetupSubSet(ssGames, 'Steam').Specifics.Values['CacheGCF'] = '1' then
+      Setup:=SetupSubSet(ssGames, 'Steam');
+      if Setup.Specifics.Values['CacheGCF'] = '1' then
       begin
         PakRealFileName:=GetGCFFile(PakFileName);
         PakSearchPath:=ExtractFileDir(PakRealFileName);
         PakRealFileName:=ExtractFileName(PakRealFileName);
       end
       else
-        SteamCheckGCF:=False;
+      begin
+        PakSearchPath:=ConcatPaths([Setup.Specifics.Values['Directory'], Setup.Specifics.Values['ProgramDirectory']]);
+        PakRealFileName:=PakFileName;
+      end;
     end
     else
     begin
       PakRealFileName:=PakFileName;
       PakSearchPath:=AbsolutePath;
     end;
-    if SteamCheckGCF then
-    begin
-      GetPakNames:=TGetPakNames.Create;
-      try
-        GetPakNames.CreatePakList(PakSearchPath, PakRealFileName, True, False);
-        while (FilenameAlias <> '') do
+    GetPakNames:=TGetPakNames.Create;
+    try
+      GetPakNames.CreatePakList(PakSearchPath, PakRealFileName, True, False);
+      while (FilenameAlias <> '') do
+      begin
+        GetPakNames.ResetIter(True);
+        AbsolutePathAndFilename:=ExpandFileName(ConcatPaths([AbsolutePath, FilenameAlias]));
+        while GetPakNames.GetNextPakName(True, AbsolutePathAndFilename, True) do
         begin
-          GetPakNames.ResetIter(True);
-          AbsolutePathAndFilename:=ExpandFileName(ConcatPaths([AbsolutePath, FilenameAlias]));
-          while GetPakNames.GetNextPakName(True, AbsolutePathAndFilename, True) do
+          if (not IsPakTemp(AbsolutePathAndFilename)) then  // ignores QuArK's own temporary pak's
           begin
-            if (not IsPakTemp(AbsolutePathAndFilename)) then  // ignores QuArK's own temporary pak's
-            begin
-              PakFile:=SortedFindFileName(GameFiles, AbsolutePathAndFilename);
-              if (PakFile=Nil) then
-              begin  // open the pak file if not already opened
-                PakFile:=ExactFileLink(AbsolutePathAndFilename, Nil, True);
-                PakFile.Flags:=PakFile.Flags or ofWarnBeforeChange;
-                GameFiles.Add(PakFile);
-                GameFiles.Sort(ByFileName);
-              end;
-              Result:=PakFile.FindFile(FilenameAlias);
-              if (Result<>Nil) then
-                Exit; // found it
+            PakFile:=SortedFindFileName(GameFiles, AbsolutePathAndFilename);
+            if (PakFile=Nil) then
+            begin  // open the pak file if not already opened
+              PakFile:=ExactFileLink(AbsolutePathAndFilename, Nil, True);
+              PakFile.Flags:=PakFile.Flags or ofWarnBeforeChange;
+              GameFiles.Add(PakFile);
+              GameFiles.Sort(ByFileName);
             end;
+            Result:=PakFile.FindFile(FilenameAlias);
+            if (Result<>Nil) then
+              Exit; // found it
           end;
-          FilenameAlias := GetNextAlias;
         end;
-      finally
-        GetPakNames.Free;
+        FilenameAlias := GetNextAlias;
       end;
+    finally
+      GetPakNames.Free;
     end;
 
     //Steam filesystem access
