@@ -8,7 +8,15 @@ Version 1.02
 Program description
 -------------------
 QuArK SAS is a small command-line utility that allows you to extract files from Steam. For this to work, Steam must be running, and you probably have to be logged in. It produces a log-file which easily allows diagnoses when the program for some reason doesn't work. It's designed to be as light-weighted as possible (that's why there is no GUI), and run on as many systems as possible.
-The executable file has to be placed in the %Steam%/steamapps/%username%/sourcesdk/bin folder to work, although it might also function from other bin folders in the Steam directory. When not placed in a correct directory, it will not be able to find several Steam files (like tier0.dll) and will not run at all.
+
+The executable file has to be placed in the right folder to work:
+old:       %Steam%/steamapps/%username%/sourcesdk/bin
+ep1:       %Steam%/steamapps/%username%/sourcesdk/bin/ep1/bin
+orangebox: %Steam%/steamapps/%username%/sourcesdk/bin/orangebox/bin
+
+When not placed in a correct directory, it will not be able to find several Steam files (like tier0.dll) and will crash on startup.
+
+Also, use QuArKSAS.exe for the ep1 directory, and QuArKSAS_orangebox.exe for the orangebox directory.
 
 
 
@@ -46,8 +54,8 @@ The source code of this program is freely available (also see 'License' below), 
 Comments and suggestions
 ------------------------
 Do you have any comments or suggestions about this program? Below are links where you can find me.
-QuArK website: http://quark.planetquake.gamespy.com/
-QuArK forum:   http://www.dark-forge.com/forums/
+QuArK website: http://quark.sourceforge.net/
+QuArK forum:   http://quark.sourceforge.net/forums/
 
 
 

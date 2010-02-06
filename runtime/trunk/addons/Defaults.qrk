@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.503  2009/11/03 19:21:38  danielpharos
+//Improve some button captions.
+//
 //Revision 1.502  2009/10/29 20:33:10  danielpharos
 //Updated Steam filename.
 //
@@ -2474,6 +2477,7 @@ QQRKSRC1
         BaseDir = "*auto*"
         tmpQuArK = "*auto*"
         SourceSDKDir = "*auto*"
+        Compiler = "*auto*"
         MapCommentsPrefix = "//"
         OutputMapFormat = "HL2"
         ForceFaceFlags = ""
@@ -5741,6 +5745,16 @@ QQRKSRC1
              $0D"sourcesdk\bin"
              $0D"sourcesdk\bin\ep1\bin"
              $0D"sourcesdk\bin\orangebox\bin"
+      }
+      Compiler: =
+      {
+        Txt = "Compiler"
+        Typ = "CL"   // combo box
+        Hint = "Set this to the compiler version"
+        Items = "*auto*"
+             $0D"old"
+             $0D"ep1"
+             $0D"orangebox"
       }
       Templates: =
       {

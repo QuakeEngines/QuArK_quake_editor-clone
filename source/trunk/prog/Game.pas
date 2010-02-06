@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.76  2010/02/06 21:05:47  danielpharos
+Adjusted for newest Steam release (QuArKSAS 1.02). Also, fixed various Steam-related issues.
+
 Revision 1.75  2010/02/06 15:23:41  danielpharos
 Massive update to GCF file loading. This should fix most "cannot find GCF file" type problems.
 
@@ -351,6 +354,7 @@ function SteamAppID : String;
 function GetSteamtmpQuArK : String;
 function GetSteamBaseDir : String;
 function SourceSDKDir : String;
+function GetSteamCompiler : String;
 function ResolveFilename(const FileToResolve : TFileToResolve) : TResolvedFilename;
 function QuickResolveFilename(const Filename : String) : String;
 procedure CreateAllDirs(const Filename: string; StartIndex: Integer = 1);
@@ -1914,6 +1918,43 @@ begin
     begin
       //Shouldn't happen!
       Log(LOG_WARNING, 'SourceSDKDir: Unknown SteamGame value!');
+      Result := '';
+    end;
+  end;
+end;
+
+function GetSteamCompiler : String;
+var
+  S: String;
+begin
+  Result := SetupGameSet.Specifics.Values['Compiler'];
+  if Result = '*auto*' then
+  begin
+    S := SetupGameSet.Specifics.Values['SteamGame'];
+    if S = 'HL2' then
+      Result := 'ep1'
+    else if S = 'CSS' then
+      Result := 'ep1'
+    else if S = 'HL:S' then
+      Result := 'ep1'
+    else if S = 'HL2:DM' then
+      Result := 'ep1'
+    else if S = 'HL2:LC' then
+      Result := 'ep1'
+    else if S = 'HL:DM:S' then
+      Result := 'ep1'
+    else if S = 'HL2:EP1' then
+      Result := 'ep1'
+    else if S = 'Portal' then
+      Result := 'orangebox'
+    else if S = 'HL2:EP2' then
+      Result := 'orangebox'
+    else if S = 'TF2' then
+      Result := 'orangebox'
+    else
+    begin
+      //Shouldn't happen!
+      Log(LOG_WARNING, 'Compiler: Unknown SteamGame value!');
       Result := '';
     end;
   end;

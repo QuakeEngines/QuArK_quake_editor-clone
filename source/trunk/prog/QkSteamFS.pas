@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.37  2010/02/06 21:05:47  danielpharos
+Adjusted for newest Steam release (QuArKSAS 1.02). Also, fixed various Steam-related issues.
+
 Revision 1.36  2009/10/29 20:33:02  danielpharos
 Updated Steam filename.
 
@@ -341,12 +344,17 @@ var
   SteamProgramDirectory: String;
   SteamGameDir: String;
   SteamUser: String;
+  SteamCompiler: String;
+  GameIDDir: String;
   OutputDir: String;
+  FullFilename: String;
+  QuArKSASEXE: String;
   QSASMd5Hash, CurQSASMd5Hash: String;
   QSASFile, QSASPath, QSASParameters: String;
   QSASAdditionalParameters: String;
   QSASStartupInfo: StartUpInfo;
   QSASProcessInformation: Process_Information;
+  I: Integer;
 begin
   //This function uses QuArKSAS to extract files from Steam
   ClearCacheNeeded:=true;
@@ -357,14 +365,36 @@ begin
   SteamGameDirectory:=GettmpQuArK;
   SteamCacheDirectory:=Setup.Specifics.Values['CacheDirectory'];
   QSASAdditionalParameters:=Setup.Specifics.Values['ExtractorParameters'];
-  if Length(QSASAdditionalParameters)<>0 then
-    QSASAdditionalParameters:=' '+QSASAdditionalParameters;
+
+  SteamCompiler:=GetSteamCompiler;
+  if (SteamCompiler = 'old') or (SteamCompiler = 'ep1') then
+  begin
+    QuArKSASEXE := 'QuArKSAS.exe';
+    FullFilename := ConvertPath(FileName);
+    I := Pos(PathDelim, FullFilename);
+    if (I > 0) then
+    begin
+      GameIDDir := LeftStr(FullFilename, I-1);
+      FullFileName := RightStr(FullFilename, Length(FullFilename) - I);
+    end
+    else
+    begin
+      GameIDDir := '';
+      FullFileName := Filename;
+    end;
+  end
+  else
+  begin
+    QuArKSASEXE := 'QuArKSAS_orangebox.exe';
+    GameIDDir := '';
+    FullFileName := FileName;
+  end;
 
   //Copy QSAS if it's not in the Steam directory yet
   SteamProgramDirectory:=Setup.Specifics.Values['ProgramDirectory'];
   QSASPath := ConcatPaths([SteamDirectory, SteamProgramDirectory, SteamUser, SourceSDKDir]);
   RemoveTrailingSlash(QSASPath);
-  QSASFile := ConcatPaths([QSASPath, 'QuArKSAS.exe']);
+  QSASFile := ConcatPaths([QSASPath, QuArKSASEXE]);
 
   if DirectoryExists(SteamDirectory) = false then
     LogAndRaiseError('Unable to extract file from Steam. Cannot find Steam directory.');
@@ -373,25 +403,30 @@ begin
     if CreateDir(ConcatPaths([SteamDirectory, SteamCacheDirectory])) = false then
       LogAndRaiseError('Unable to extract file from Steam. Cannot create cache directory.');
 
+  if (SteamCompiler = 'old') or (SteamCompiler = 'ep1') then
+    if DirectoryExists(ConcatPaths([SteamDirectory, SteamCacheDirectory, GameIDDir])) = false then
+      if CreateDir(ConcatPaths([SteamDirectory, SteamCacheDirectory, GameIDDir])) = false then
+        LogAndRaiseError('Unable to extract file from Steam. Cannot create cache directory.');
+
   if CheckQuArKSAS then
   begin
     if FileExists(QSASFile) = false then
     begin
-      if FileExists(ConcatPaths([GetQPath(pQuArKDll), 'QuArKSAS.exe'])) = false then
-        LogAndRaiseError('Unable to extract file from Steam. dlls/QuArKSAS.exe not found.');
-      if CopyFile(PChar(ConcatPaths([GetQPath(pQuArKDll), 'QuArKSAS.exe'])), PChar(QSASFile), true) = false then
+      if FileExists(ConcatPaths([GetQPath(pQuArKDll), QuArKSASEXE])) = false then
+        LogAndRaiseError('Unable to extract file from Steam. dlls/'+QuArKSASEXE+' not found.');
+      if CopyFile(PChar(ConcatPaths([GetQPath(pQuArKDll), QuArKSASEXE])), PChar(QSASFile), true) = false then
         LogAndRaiseError('Unable to extract file from Steam. Call to CopyFile failed.');
     end
     else
     begin
       //Check version!
-      QSASMd5Hash:=Md5GetFileHash(ConcatPaths([GetQPath(pQuArKDll), 'QuArKSAS.exe']));
+      QSASMd5Hash:=Md5GetFileHash(ConcatPaths([GetQPath(pQuArKDll), QuArKSASEXE]));
       CurQSASMd5Hash:=Md5GetFileHash(QSASFile);
       if QSASMd5Hash<>CurQSASMd5Hash then
       begin
         //Files do not match. The one in dlls is probably the most current one,
         //so let's update the Steam one.
-        if CopyFile(PChar(ConcatPaths([GetQPath(pQuArKDll), 'QuArKSAS.exe'])), PChar(QSASFile), false) = false then
+        if CopyFile(PChar(ConcatPaths([GetQPath(pQuArKDll), QuArKSASEXE])), PChar(QSASFile), false) = false then
           LogAndRaiseError('Unable to extract file from Steam. Call to CopyFile failed.');
       end;
     end;
@@ -399,20 +434,25 @@ begin
   end;
 
   SteamGameDir:=QuickResolveFilename(ConcatPaths([SteamDirectory, SteamGameDirectory]));
-  OutputDir:=ConcatPaths([SteamDirectory, SteamCacheDirectory]);
+  if (SteamCompiler = 'old') or (SteamCompiler = 'ep1') then
+    OutputDir:=ConcatPaths([SteamDirectory, SteamCacheDirectory, GameIDDir])
+  else
+    OutputDir:=ConcatPaths([SteamDirectory, SteamCacheDirectory]);
 
   //No trailing slashes in paths allowed!
   RemoveTrailingSlash(SteamGameDir);
   RemoveTrailingSlash(OutputDir);
 
-  QSASParameters:='-g '+SteamAppID+' -gamedir "'+SteamGameDir+'" -o "'+OutputDir+'" -overwrite' + QSASAdditionalParameters;
+  QSASParameters:='-g '+SteamAppID+' -gamedir "'+SteamGameDir+'" -o "'+OutputDir+'" -overwrite';
+  if Length(QSASAdditionalParameters)<>0 then
+    QSASParameters:=QSASParameters+' '+QSASAdditionalParameters;
 
   FillChar(QSASStartupInfo, SizeOf(QSASStartupInfo), 0);
   FillChar(QSASProcessInformation, SizeOf(QSASProcessInformation), 0);
   QSASStartupInfo.cb:=SizeOf(QSASStartupInfo);
   QSASStartupInfo.dwFlags:=STARTF_USESHOWWINDOW;
   QSASStartupInfo.wShowWindow:=SW_SHOWMINNOACTIVE;
-  if Windows.CreateProcess(nil, PChar(QSASFile + ' ' + QSASParameters + ' ' + Filename), nil, nil, false, 0, nil, PChar(QSASPath), QSASStartupInfo, QSASProcessInformation)=false then
+  if Windows.CreateProcess(nil, PChar(QSASFile + ' ' + QSASParameters + ' ' + FullFilename), nil, nil, false, 0, nil, PChar(QSASPath), QSASStartupInfo, QSASProcessInformation)=false then
     LogAndRaiseError('Unable to extract file from Steam. Call to CreateProcess failed.');
   try
     //DanielPharos: Waiting for INFINITE is rather dangerous,
