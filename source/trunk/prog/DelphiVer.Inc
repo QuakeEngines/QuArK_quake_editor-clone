@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2009/09/22 18:11:51  danielpharos
+Updated website link.
+
 Revision 1.4  2008/02/23 19:25:20  danielpharos
 Moved a lot of path/file code around: should make it easier to use
 
@@ -36,9 +39,11 @@ Additional Delphi compiler version defines.
 
 // Versions of this unit are floating freely in several Delphi User Group
 // forums out there I don't know the origin.
-// It was added because it is a misnomer that a compilier constant is defined for
+// It was added because it is a misnomer that a compiler constant is defined for
 // that compiler and all newer versions. - SilverPaladin
 // DanielPharos: Here's the source: http://delphi.about.com/od/objectpascalide/a/compiler_ver.htm
+// or, see: http://delphi.wikia.com/wiki/Borland_Compiler_Conditional_Defines
+
 {$IFDEF VER80}
   {$DEFINE CompiledWithDelphi1}
   {$DEFINE Delphi1orNewerCompiler}
