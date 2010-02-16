@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.51  2010/01/31 21:38:59  danielpharos
+Added try-finally to protect against memory leak if an exception happens.
+
 Revision 1.50  2010/01/31 21:36:23  danielpharos
 Added missing vtf-file entries to TryToLink functions.
 
@@ -436,7 +439,7 @@ begin
      if Tex is QShader then
       begin
        Q:=Link1(Folder, Name+'/', Tex.Name, 'a', Base); { use 'filename.SHADER/' to indicate what this folder contains }
-       Q.Name:=Copy(Tex.Name, Pos('/', Tex.Name)+1, 999);
+       Q.Name:=Copy(Tex.Name, Pos('/', Tex.Name)+1, MaxInt);
        Q.Specifics.Values['b']:=Name;
       end;
     end;
@@ -458,7 +461,7 @@ begin
      if Tex is D3Material then
       begin
        Q:=Link1(Folder, Name+'/', Tex.Name, 'a', Base); { use 'filename.MTR/' to indicate what this folder contains }
-       Q.Name:=Copy(Tex.Name, Pos('/', Tex.Name)+1, 999);
+       Q.Name:=Copy(Tex.Name, Pos('/', Tex.Name)+1, MaxInt);
        Q.Specifics.Values['b']:=Name;
       end;
     end;
@@ -515,7 +518,16 @@ begin
  if CompareText(ExtractFileExt(Name), '.png') = 0 then
   Link1(ResultFolder, FolderName, Copy(Name, 1, Length(Name)-4), 'a', Base, Index)
  else
+ if CompareText(ExtractFileExt(Name), '.ftx') = 0 then
+  Link1(ResultFolder, FolderName, Copy(Name, 1, Length(Name)-4), 'a', Base, Index)
+ else
+ if CompareText(ExtractFileExt(Name), '.bmp') = 0 then
+  Link1(ResultFolder, FolderName, Copy(Name, 1, Length(Name)-4), 'a', Base, Index)
+ else
  if CompareText(ExtractFileExt(Name), '.dds') = 0 then
+  Link1(ResultFolder, FolderName, Copy(Name, 1, Length(Name)-4), 'a', Base, Index)
+ else
+ if CompareText(ExtractFileExt(Name), '.iwi') = 0 then
   Link1(ResultFolder, FolderName, Copy(Name, 1, Length(Name)-4), 'a', Base, Index)
  else
  if CompareText(ExtractFileExt(Name), '.shader') = 0 then
@@ -533,7 +545,7 @@ begin
      if Tex is QShader then
       begin
        Q:=Link1(Folder, Name+'/', Tex.Name, 'a', Base); { use 'filename.SHADER/' to indicate what this folder contains }
-       Q.Name:=Copy(Tex.Name, Pos('/', Tex.Name)+1, 999);
+       Q.Name:=Copy(Tex.Name, Pos('/', Tex.Name)+1, MaxInt);
        Q.Specifics.Values['b']:=Name;
       end;
     end;
@@ -555,7 +567,7 @@ begin
      if Tex is D3Material then
       begin
        Q:=Link1(Folder, Name+'/', Tex.Name, 'a', Base); { use 'filename.MTR/' to indicate what this folder contains }
-       Q.Name:=Copy(Tex.Name, Pos('/', Tex.Name)+1, 999);
+       Q.Name:=Copy(Tex.Name, Pos('/', Tex.Name)+1, MaxInt);
        Q.Specifics.Values['b']:=Name;
       end;
     end;
@@ -640,7 +652,7 @@ begin
        if Q=Nil then
        begin
          Q:=Link1(Folder, FileNameOnly(Name)+'/', Tex.Name, 'a', Base, Index); { use 'filename.SHADER/' to indicate what this folder contains }
-         Q.Name:=Copy(Tex.Name, Pos('/', Tex.Name)+1, 999);
+         Q.Name:=Copy(Tex.Name, Pos('/', Tex.Name)+1, MaxInt);
          Q.Specifics.Values['b']:=Name;
          Q.Specifics.Values['shader']:='1';
        end;
@@ -1099,7 +1111,7 @@ begin
   if Filter<>'' then
   begin
     PakExt:=SetupGameSet.Specifics.Values['PakExt'];
-    ShaderExt:='.shader';
+    ShaderExt:='.shader'; //FIXME: Hardcoded for now
     if Copy(Filter,Length(Filter)-Length(PakExt)+1,Length(PakExt))=PakExt then
     { it's a pak }
       PakFilter:=true
