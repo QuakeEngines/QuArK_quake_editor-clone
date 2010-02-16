@@ -64,11 +64,11 @@ Strings = {
     163: "-- Specifics common to selected items --",
     172: "Searching for holes...",
     175: "Extracting files...",
-#   176: "// This map has been written by QuArK - Quake Army Knife, %s\n// It is a map for the game %s.\n\n// It is recommended that you compile this map using TXQBSP, a version of QBSP\n// that can process floating-point coordinates and enhanced texture positioning.\n// For more information see QuArK's Home Page :  http://www.planetquake.com/quark\n\n",
+#   176: "// This map has been written by QuArK - Quake Army Knife, %s\n// It is a map for the game %s.\n\n// It is recommended that you compile this map using TXQBSP, a version of QBSP\n// that can process floating-point coordinates and enhanced texture positioning.\n// For more information see QuArK's Home Page :  http://quark.sourceforge.net//\n\n",
     ### The entries 176,177,178 are used in [QkMap.PAS] QMapFile.SaveFile()
     176: "This map has been written by QuArK - Quake Army Knife, %s",
     177: "It is a map for the game %s.",
-    178: "For more information see QuArK's Home Page: http://quark.planetquake.gamespy.com/",
+    178: "For more information see QuArK's Home Page: http://quark.sourceforge.net/",
     179: "(%d textures)",
     180: "noname",
     181: "  Map for the game %s",
@@ -922,7 +922,7 @@ Strings = {
     5687: "* The image will be converted to the palette of %s.\n",
     5688: "Invalid texture extension in Defaults.qrk",
     5689: "This image has got no palette : it is a true-color 24-bit image",
-    5690: "Welcome to QuArK!\n\nThis appears to be the first time you have started QuArK. You can press F1 at any time to get help.\n\nPlease report any bugs you might find to the QuArK development team at http://quark.planetquake.gamespy.com/forums/\nThank you!",
+    5690: "Welcome to QuArK!\n\nThis appears to be the first time you have started QuArK. You can press F1 at any time to get help.\n\nPlease report any bugs you might find to the QuArK development team at http://quark.sourceforge.net/forums/\nThank you!",
     5691: "Invalid Sprite File!",
     5692: "The file %s is not compressed\nusing stored, shrunk, imploded and deflated methods.\n\nLoading Aborted! (%d)",
     5693: "'%s' expected in %s",
@@ -1069,6 +1069,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.145  2010/01/31 21:36:08  danielpharos
+#Cleaned up some wording.
+#
 #Revision 1.144  2009/07/14 23:19:54  danielpharos
 #Fixed typo.
 #

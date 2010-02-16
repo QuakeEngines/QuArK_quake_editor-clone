@@ -1,5 +1,6 @@
-# Makefile to compile quark (use gmake and some unix utilities)
-#
+#**************************************************************************
+#QuArK -- Quake Army Knife -- 3D game editor
+#Copyright (C) QuArK Development Team
 #
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -13,15 +14,21 @@
 #
 #You should have received a copy of the GNU General Public License
 #along with this program; if not, write to the Free Software
-#Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-#http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
-#
+#http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
+#**************************************************************************
+
+
+# Makefile to compile quark (use gmake and some unix utilities)
 
 
 #$Header$
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.3  2005/09/28 10:48:31  peter-b
+#Revert removal of Log and Header keywords
+#
 #Revision 1.1  2004/11/08 22:56:46  alexander
 #added makefile to build quark with the help of gmake
 #

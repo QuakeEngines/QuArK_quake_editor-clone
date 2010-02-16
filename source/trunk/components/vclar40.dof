@@ -71,7 +71,7 @@ DLL=0
 Locale=1033
 CodePage=1252
 [Version Info Keys]
-CompanyName=http://www.planetquake.com/quark
+CompanyName=http://quark.sourceforge.net/
 FileDescription=QuArK 3rd Party Components
 FileVersion=6.5.0.4
 InternalName=VCLAr40
@@ -83,7 +83,7 @@ ProductVersion=6.5
 Comments=QuArK Original Author: Armin Rigo
 [HistoryLists\hlDebugSourcePath]
 Count=1
-Item0=$(DELPHI)\Lib\Debug;.;.\components;.\components\jpeg;.\components\PNG;.\components\zip;.\Prog;.\Prog\Model;.\Prog\Python;.\3dfx
+Item0=$(DELPHI)\Lib\Debug;.;.\components;.\components\zip;.\Prog;.\Prog\Model;.\Prog\Python;.\3dfx
 [HistoryLists\hlConditionals]
 Count=3
 Item0=PYTHON_BUNDLED;
@@ -94,20 +94,16 @@ Count=1
 Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
 [HistoryLists\hlSearchPath]
 Count=1
-Item0=$(DELPHI)\Lib\Debug;.;.\components;.\components\jpeg;.\components\PNG;.\components\zip;.\Prog;.\Prog\Model;.\Prog\Python;.\3dfx
+Item0=$(DELPHI)\Lib\Debug;.;.\components;.\components\zip;.\Prog;.\Prog\Model;.\Prog\Python;.\3dfx
 [HistoryLists\hlUnitOutputDirectory]
-Count=6
-Item0=d:\QuArK
+Count=3
+Item0=C:\rubbish
 Item1=.\rubbish
-Item2=C:\rubbish
-Item3=D:\rubbish
-Item4=%temp%
-Item5=C:\Recycled
+Item2=%temp%
 [HistoryLists\hlOutputDirectorry]
-Count=6
+Count=5
 Item0=d:\QuArK
 Item1=c:\progra~1\QuArK
 Item2=..\Runtime
 Item3=c:\QuArK
-Item4=c:\progra~1\GNU\QuArK
-Item5=c:\Quake\QuArK
+Item4=c:\Quake\QuArK

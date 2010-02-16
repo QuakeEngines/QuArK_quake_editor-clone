@@ -1,3 +1,11 @@
+
+
+
+*** Note: This is an old readme file! Please refer to the Infobase for
+          more up-to-date information! ***
+
+
+
 This is the source code of QuArK. It should work with Delphi 2, 3, 4, 5.
 
 *** INSTALLATION ***
@@ -53,14 +61,14 @@ Important ! Follow the steps below !
 
 Don't forget the link to the InfoBase:
 
-  http://www.planetquake.com/quark/infobase/index.html
+  http://quark.sourceforge.net/infobase/index.html
 
 You are welcome to make changes to the cvs-stored InfoBase. After you did so,
 visit this URL (warning, this URL might change later):
 
   http://imaux.unil.ch:8000/infobase/
 
-Doing so will update the InfoBase at PlanetQuake.
+Doing so will update the InfoBase at SourceForge.
 
 
 *** RUNNING NOTES ***
