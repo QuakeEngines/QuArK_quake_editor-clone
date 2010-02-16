@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2009/07/15 10:38:00  danielpharos
+Updated website link.
+
 Revision 1.17  2009/02/21 17:06:18  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -109,6 +112,8 @@ type
                 end;
 
 function ConvertPath(const S: string): string;
+function ReverseSlashes(const S: string): string;
+function RemoveTrailingSlash(const Path: String): String;
 function ConcatPaths(const Paths: array of String) : String;
 function GetQPath(const PathToGet : TQPathType) : String; overload;
 function GetQPath(const PathToGet : TQPathType; const GameName: String) : String; overload;
@@ -117,7 +122,7 @@ function GetQPath(const PathToGet : TQPathType; const GameName: String) : String
 
 implementation
 
-uses SysUtils, Windows, Forms, Setup, QkExceptions, ExtraFunctionality;
+uses SysUtils, StrUtils, Windows, Forms, Setup, QkExceptions, ExtraFunctionality;
 
 const
   ADDONS_SUBDIRECTORY = 'addons';
@@ -136,6 +141,23 @@ begin
   {$ELSE}
   result:=StringReplace(S,'/',PathDelim,[rfReplaceAll]);
   {$ENDIF}
+end;
+
+function ReverseSlashes(const S: string): string;
+begin
+  {$IFDEF LINUX}
+  result:=StringReplace(S,PathDelim,'\',[rfReplaceAll]);
+  {$ELSE}
+  result:=StringReplace(S,PathDelim,'/',[rfReplaceAll]);
+  {$ENDIF}
+end;
+
+function RemoveTrailingSlash(const Path: String): String;
+begin
+  if (RightStr(Path, 1) = '\') or (RightStr(Path, 1) = '/') then
+    Result:=LeftStr(Path, Length(Path) - 1)
+  else
+    Result:=Path;
 end;
 
 //You can also send a filename as the last element.

@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.504  2010/02/06 21:52:57  danielpharos
+//Corrected ep1 <--> orangebox.
+//
 //Revision 1.503  2009/11/03 19:21:38  danielpharos
 //Improve some button captions.
 //
@@ -3676,6 +3679,7 @@ QQRKSRC1
         SteamUser = "<Your Steam Account>"
         ExtractorParameters = ""
         Autostart = "1"
+        UseQuArKSAS = "1"
         CacheGCF = "1"
         WarnBeforeClear = "1"
         AllowRecycle = ""
@@ -3687,6 +3691,9 @@ QQRKSRC1
         CacheDirectory = "QuArKApps"
         ProgramDirectory = "steamapps"
         SourceSDKDirectory = "sourcesdk\bin"
+        QuArKSASEXENameOld = "QuArKSAS.exe"
+        QuArKSASEXENameEP1 = "QuArKSAS.exe"
+        QuArKSASEXENameOrangebox = "QuArKSAS_orangebox.exe"
         Form = "GameSteam"
       }
 
@@ -4128,8 +4135,8 @@ QQRKSRC1
       }
       VTF:config =
       {
-        LoadLibrary = "DevIL"
-        SaveLibrary = "DevIL"
+        LoadLibrary = "VTFLib"
+        SaveLibrary = "VTFLib"
         SaveFormatVTFLib = "3"
         SaveFormatAVTFLib = "15"
         SaveVersionVTFLib = "7.2"
@@ -7629,6 +7636,12 @@ QQRKSRC1
         Typ="X"
         Cap="Enabled"
         Hint = "Enables autostart. This will start Steam if it's needed, but isn't running."
+      }
+      UseQuArKSAS: = {
+        Txt="Use QuArKSAS"
+        Typ="X"
+        Cap="Enabled"
+        Hint = "Enables the use of the QuArKSAS extractor. This will allow extracting files directly from Steam."
       }
       CacheGCF: = {
         Txt="Cache GCF files"

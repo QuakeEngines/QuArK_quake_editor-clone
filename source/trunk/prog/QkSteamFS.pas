@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.38  2010/02/06 21:52:54  danielpharos
+Corrected ep1 <--> orangebox.
+
 Revision 1.37  2010/02/06 21:05:47  danielpharos
 Adjusted for newest Steam release (QuArKSAS 1.02). Also, fixed various Steam-related issues.
 
@@ -152,6 +155,10 @@ implementation
 uses ShellAPI, SysUtils, StrUtils, Quarkx, Game, Setup, Logging, SystemDetails,
      QkObjects, Md5Hash, ExtraFunctionality, QkApplPaths, QkExceptions;
 
+const
+  SteamDelay: Integer = 30000; //How long (in ms) to wait for Steam to start up
+  QSASDelay: Integer = 30000; //How long (in ms) to wait for QSAS to run
+
 var
   ClearCacheNeeded: Boolean = false;
   ClearGCFCacheNeeded: Boolean = false;
@@ -236,24 +243,24 @@ var
   FilesToCopyFlags: Word;
 begin
   Setup:=SetupSubSet(ssGames, 'Steam');
-  SteamDirectory:=IncludeTrailingPathDelimiter(Setup.Specifics.Values['Directory']);
-  CacheDirectory:=IncludeTrailingPathDelimiter(Setup.Specifics.Values['CacheDirectory']);
-  ProgramDirectory:=IncludeTrailingPathDelimiter(Setup.Specifics.Values['ProgramDirectory']);
-  FullFileName:=SteamDirectory + CacheDirectory + FileName;
+  SteamDirectory:=Setup.Specifics.Values['Directory'];
+  CacheDirectory:=Setup.Specifics.Values['CacheDirectory'];
+  ProgramDirectory:=Setup.Specifics.Values['ProgramDirectory'];
+  FullFileName:=ConcatPaths([SteamDirectory, CacheDirectory, FileName]);
   if FileExists(FullFileName)=false then
   begin
     //Try to copy original file...
     ClearGCFCacheNeeded:=true;
 
-    SteamGCFFile:=SteamDirectory+ProgramDirectory+Filename;
+    SteamGCFFile:=ConcatPaths([SteamDirectory, ProgramDirectory, Filename]);
     if FileExists(SteamGCFFile) = false then
     begin
       Log(LOG_WARNING, 'Unable to copy GCF file to cache: FileExists failed!');
       Result:='';
       Exit;
     end;
-    if DirectoryExists(SteamDirectory+CacheDirectory) = false then
-      if CreateDir(SteamDirectory+CacheDirectory) = false then
+    if DirectoryExists(ConcatPaths([SteamDirectory, CacheDirectory])) = false then
+      if CreateDir(ConcatPaths([SteamDirectory, CacheDirectory])) = false then
         LogAndRaiseError('Unable to extract file from Steam. Cannot create cache directory.');
 
     FilesToCopyFrom:=TStringList.Create;
@@ -298,8 +305,8 @@ begin
     FillChar(SteamStartupInfo, SizeOf(SteamStartupInfo), 0);
     FillChar(SteamProcessInformation, SizeOf(SteamProcessInformation), 0);
     SteamStartupInfo.cb:=SizeOf(SteamStartupInfo);
-    SteamDirectory:=IncludeTrailingPathDelimiter(Setup.Specifics.Values['Directory']);
-    if Windows.CreateProcess(nil, PChar(SteamDirectory+SteamEXEName), nil, nil, false, 0, nil, nil, SteamStartupInfo, SteamProcessInformation)=true then
+    SteamDirectory:=Setup.Specifics.Values['Directory'];
+    if Windows.CreateProcess(nil, PChar(ConcatPaths([SteamDirectory, SteamEXEName])), nil, nil, false, 0, nil, nil, SteamStartupInfo, SteamProcessInformation)=true then
     begin
       CloseHandle(SteamProcessInformation.hThread);
       CloseHandle(SteamProcessInformation.hProcess);
@@ -313,10 +320,10 @@ begin
   begin
     Sleep(200);  //Let's give the system a little bit of time to boot Steam...
     WaitForSteam:=not WindowExists(SteamWindowName);
-    if I>50 then
+    if I>=(SteamDelay/200) then
     begin
-      //We've been waiting for 10 SECONDS! Let's assume something went terribly wrong...!
-      if MessageBox(0, PChar('10 Seconds have passed, and QuArK cannot detect Steam as having started up... Please start it manually now (if it has not yet done so) and press YES when you are logged in. Otherwise, press NO.'), PChar('QuArK'), MB_TASKMODAL or MB_ICONEXCLAMATION or MB_YESNO) = IDNO then
+      //We've been waiting for quite some time now! Let's assume something went terribly wrong...!
+      if MessageBox(0, PChar('Some time has passed, but QuArK cannot detect Steam as having started up... Please start Steam manually now (if it has not yet done so) and press YES when you are logged in. Otherwise, press NO.'), PChar('QuArK'), MB_TASKMODAL or MB_ICONEXCLAMATION or MB_YESNO) = IDNO then
       begin
         Result:=False;
         WaitForSteam:=False;
@@ -325,17 +332,10 @@ begin
     else
       I:=I+1;
   end;
-  //@Do we also need to check if Steam is running in this USER ACCOUNT?!?
+  //FIXME: Do we also need to check if Steam is running in this USER ACCOUNT?!?
 end;
 
 function RunSteamExtractor(const Filename : String) : Boolean;
-
-  procedure RemoveTrailingSlash(var Path : String);
-  begin
-    if (RightStr(Path, 1) = '\') or (RightStr(Path, 1) = '/') then
-      Path:=LeftStr(Path, Length(Path) - 1);
-  end;
-
 var
   Setup: QObject;
   SteamDirectory: String;
@@ -356,11 +356,20 @@ var
   QSASProcessInformation: Process_Information;
   I: Integer;
 begin
+  Result:=False;
+
   //This function uses QuArKSAS to extract files from Steam
   ClearCacheNeeded:=true;
 
   Setup:=SetupSubSet(ssGames, 'Steam');
-  SteamDirectory:=IncludeTrailingPathDelimiter(Setup.Specifics.Values['Directory']);
+
+  if not (Setup.Specifics.Values['UseQuArKSAS'] <> '') then
+  begin
+    //Don't use QuArKSAS
+    Exit;
+  end;
+
+  SteamDirectory:=Setup.Specifics.Values['Directory'];
   SteamUser:=Setup.Specifics.Values['SteamUser'];
   SteamGameDirectory:=GettmpQuArK;
   SteamCacheDirectory:=Setup.Specifics.Values['CacheDirectory'];
@@ -369,7 +378,10 @@ begin
   SteamCompiler:=GetSteamCompiler;
   if (SteamCompiler = 'old') or (SteamCompiler = 'ep1') then
   begin
-    QuArKSASEXE := 'QuArKSAS.exe';
+    if (SteamCompiler = 'old') then
+      QuArKSASEXE := Setup.Specifics.Values['QuArKSASEXENameOld']
+    else
+      QuArKSASEXE := Setup.Specifics.Values['QuArKSASEXENameEP1'];
     FullFilename := ConvertPath(FileName);
     I := Pos(PathDelim, FullFilename);
     if (I > 0) then
@@ -385,15 +397,17 @@ begin
   end
   else
   begin
-    QuArKSASEXE := 'QuArKSAS_orangebox.exe';
+    QuArKSASEXE := Setup.Specifics.Values['QuArKSASEXENameOrangebox'];
     GameIDDir := '';
     FullFileName := FileName;
   end;
 
+  if QuArKSASEXE='' then
+    QuArKSASEXE:='QuArKSAS.exe';
+
   //Copy QSAS if it's not in the Steam directory yet
   SteamProgramDirectory:=Setup.Specifics.Values['ProgramDirectory'];
   QSASPath := ConcatPaths([SteamDirectory, SteamProgramDirectory, SteamUser, SourceSDKDir]);
-  RemoveTrailingSlash(QSASPath);
   QSASFile := ConcatPaths([QSASPath, QuArKSASEXE]);
 
   if DirectoryExists(SteamDirectory) = false then
@@ -439,11 +453,8 @@ begin
   else
     OutputDir:=ConcatPaths([SteamDirectory, SteamCacheDirectory]);
 
-  //No trailing slashes in paths allowed!
-  RemoveTrailingSlash(SteamGameDir);
-  RemoveTrailingSlash(OutputDir);
-
-  QSASParameters:='-g '+SteamAppID+' -gamedir "'+SteamGameDir+'" -o "'+OutputDir+'" -overwrite';
+  //No trailing slashes in paths allowed for QuArKSAS!
+  QSASParameters:='-g '+SteamAppID+' -gamedir "'+RemoveTrailingSlash(SteamGameDir)+'" -o "'+RemoveTrailingSlash(OutputDir)+'" -overwrite';
   if Length(QSASAdditionalParameters)<>0 then
     QSASParameters:=QSASParameters+' '+QSASAdditionalParameters;
 
@@ -455,9 +466,8 @@ begin
   if Windows.CreateProcess(nil, PChar(QSASFile + ' ' + QSASParameters + ' ' + FullFilename), nil, nil, false, 0, nil, PChar(QSASPath), QSASStartupInfo, QSASProcessInformation)=false then
     LogAndRaiseError('Unable to extract file from Steam. Call to CreateProcess failed.');
   try
-    //DanielPharos: Waiting for INFINITE is rather dangerous,
-    //so let's wait only 30 seconds
-    if WaitForSingleObject(QSASProcessInformation.hProcess, 30000)=WAIT_FAILED then
+    //DanielPharos: Waiting for INFINITE is rather dangerous, so let's wait only a certain amount of seconds
+    if WaitForSingleObject(QSASProcessInformation.hProcess, QSASDelay)=WAIT_FAILED then
       LogAndRaiseError('Unable to extract file from Steam. Call to WaitForSingleObject failed.');
   finally
     CloseHandle(QSASProcessInformation.hThread);
@@ -480,19 +490,19 @@ begin
   ClearCacheGCF:=Setup.Specifics.Values['ClearcacheGCF']<>'';
   if (ClearCache and (ClearCacheNeeded=false)) and (ClearCacheGCF and (ClearGCFCacheNeeded=false)) then
     Exit;
-  SteamFullCacheDirectory:=ConvertPath(IncludeTrailingPathDelimiter(Setup.Specifics.Values['Directory'])+Setup.Specifics.Values['CacheDirectory']+PathDelim);
+  SteamFullCacheDirectory:=ConcatPaths([Setup.Specifics.Values['Directory'], Setup.Specifics.Values['CacheDirectory']]);
   WarnBeforeClear:=Setup.Specifics.Values['WarnBeforeClear']<>'';
   AllowRecycle:=Setup.Specifics.Values['AllowRecycle']<>'';
   if ClearCache and ClearCacheNeeded then
   begin
-    if FindFirst(SteamFullCacheDirectory + '*.*', faDirectory	, sr) = 0 then
+    if FindFirst(ConcatPaths([SteamFullCacheDirectory, '*.*']), faDirectory, sr) = 0 then
     begin
       FilesToDelete := TStringList.Create;
       try
         repeat
           if (sr.name <> '.') and (sr.name <> '..') then
             if Lowercase(RightStr(sr.Name, 4)) <> '.gcf' then
-              FilesToDelete.Add(SteamFullCacheDirectory + sr.Name);
+              FilesToDelete.Add(ConcatPaths([SteamFullCacheDirectory, sr.Name]));
         until FindNext(sr) <> 0;
         FindClose(sr);
         if FilesToDelete.Count > 0 then
@@ -522,7 +532,7 @@ begin
         Exit;
     FilesToDelete := TStringList.Create;
     try
-      FilesToDelete.Add(SteamFullCacheDirectory + '*.gcf');
+      FilesToDelete.Add(ConcatPaths([SteamFullCacheDirectory, '*.gcf']));
       FilesToDeleteFlags := FOF_NOCONFIRMATION;
       if AllowRecycle then
         FilesToDeleteFlags := FilesToDeleteFlags or FOF_ALLOWUNDO;
