@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.43  2010/02/02 21:58:00  danielpharos
+Added Python 2.7 version cascade, and fixed the 2.6 one.
+
 Revision 1.42  2009/09/29 14:43:12  danielpharos
 Fixed version-traversal for Python giving wrong library version number to use, and added a missing Python 2.6 PyObject member.
 
@@ -742,14 +745,15 @@ var
   I: Integer;
   P: Pointer;
   s: string;
-  Index, OldIndex: Integer;
-  VersionString: String;
-  VersionSubStrings: array[0..2] of string;
+  Index: Integer;
+  VersionNumber: TVersionNumber;
+  VersionNumberString: String;
+  FoundGoodVersion: Boolean;
 begin
   //See ProbableCauseOfFatalError in QuarkX for return value meaning
   Result:=6;
 
-  if SetEnvironmentVariable('PYTHONPATH', PChar(ExtractFileDir(Application.Exename)+'\Lib')) = false then
+  if SetEnvironmentVariable('PYTHONPATH', PChar(ConcatPaths([ExtractFileDir(Application.Exename), 'Lib']))) = false then
     Exit;
   Result:=5;
 
@@ -757,7 +761,7 @@ begin
   begin
     PythonDll:='python.dll';
 
-    PythonLib:=LoadLibrary(PChar(GetQPath(pQuArKDll)+PythonDll));
+    PythonLib:=LoadLibrary(PChar(ConcatPaths([GetQPath(pQuArKDll), PythonDll])));
     if PythonLib=0 then
     begin
       //If the PythonDLL was not found in the dlls-dir,
@@ -831,38 +835,35 @@ begin
   Result:=3;
 
   //Process Py_GetVersion to find version number
+  FoundGoodVersion:=False;
+  
   //DanielPharos: We're going to assume the Python version numbers is
-  //either in ?.? or in ?.?.? format
+  //format of integers delimited by periods '.', with the number starting
+  //after a space ' '.
   Index:=Pos(' ', s);
-  if Index=0 then
-    Exit;
-  VersionString:=LeftStr(s, Index - 1);
-  Index:=Pos('.', VersionString);
-  if Index=0 then
-    Exit;
-  VersionSubStrings[0]:=LeftStr(VersionString, Index - 1);
-  OldIndex:=Index;
-  Index:=PosEx('.', VersionString, OldIndex + 1);
-  if Index=0 then
+  if Index <> 0 then
   begin
-    VersionSubStrings[1]:=RightStr(VersionString, Length(VersionString) - OldIndex);
-    VersionSubStrings[2]:='';
+    VersionNumberString:=LeftStr(s, Index-1);
+    VersionNumber:=SplitVersionNumber(VersionNumberString);
+
+    if Length(VersionNumber) >= 2 then
+    begin
+      //We're not supporting all versions of Python, so let's check that
+      if VersionNumber[0] = 2 then
+        if (VersionNumber[1] = 3) or (VersionNumber[1] = 4) then
+          //Supported!
+          FoundGoodVersion:=True;
+    end;
   end
   else
+    VersionNumberString:=s;
+
+  if not FoundGoodVersion then
   begin
-    VersionSubStrings[1]:=MidStr(VersionString, OldIndex + 1, (Index - 1) - OldIndex);
-    VersionSubStrings[2]:=RightStr(VersionString, Length(VersionString) - Index);
-  end;
-  try
-    PythonCurrentVersion:=StrToInt(VersionSubStrings[0]+VersionSubStrings[1]+VersionSubStrings[2]);
-  except
+    LogAndWarn('Unsupported version ('+VersionNumberString+') of Python found!');
     Exit;
   end;
   Result:=2;
-
-  //DanielPharos: We're not supporting all versions of Python, so let's check that:
-  if (VersionSubStrings[0]<>'2') or ((VersionSubStrings[1]<>'3') and (VersionSubStrings[1]<>'4')) then
-    LogAndWarn('Unsupported version ('+VersionString+') of Python found. QuArK might behave unpredictably!');
 
   //Now that we know the Python version, load the version-specific fucntions
   for I:=Low(PythonProcList) to High(PythonProcList) do

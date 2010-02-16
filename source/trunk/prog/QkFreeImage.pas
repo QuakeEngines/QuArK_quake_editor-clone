@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2009/07/15 10:38:01  danielpharos
+Updated website link.
+
 Revision 1.12  2009/03/16 08:47:21  danielpharos
 Updated to DevIL 1.7.8, added IWI loading, and added many new image loading/saving options.
 
@@ -207,7 +210,7 @@ type
   FreeImage_OutputMessageFunction = procedure(fif : FREE_IMAGE_FORMAT; xmessage : PChar);
 
 var
-  //DanielPharos: Not needed, are done automatically in the Windows version of FreeImage.
+  //DanielPharos: First two not needed, are done automatically in the Windows version of FreeImage DLL.
   //FreeImage_Initialise: procedure (load_local_plugins_only : BOOL); stdcall;
   //FreeImage_DeInitialise: procedure; stdcall;
   FreeImage_GetVersion: function : PChar; stdcall;
@@ -265,6 +268,8 @@ begin
 end;
 
 function LoadFreeImage : Boolean;
+var
+  VersionNumber: TVersionNumber;
 begin
   if (TimesLoaded=0) then
   begin
@@ -306,7 +311,18 @@ begin
       FreeImage_Allocate           := InitDllPointer(HFreeImage, '_FreeImage_Allocate@24');
 
       //DanielPharos: This is an ugly string comparison, but it should work.
-      if FreeImage_GetVersion < '3.9.3' then
+      VersionNumber:=SplitVersionNumber(FreeImage_GetVersion);
+      if Length(VersionNumber) < 3 then
+        //Malformed FreeImage version number
+        LogAndRaiseError('FreeImage library version mismatch!');
+      if (VersionNumber[0] <> 3) then
+        //We only support the 3.x releases
+        LogAndRaiseError('FreeImage library version mismatch!');
+      if (VersionNumber[1] < 9) then
+        //We only support the 3.9.x and higher releases
+        LogAndRaiseError('FreeImage library version mismatch!');
+      if (VersionNumber[1] = 9) and (VersionNumber[2] < 3) then
+        //We only support the 3.9.3 and higher releases of the 3.9.x releases
         LogAndRaiseError('FreeImage library version mismatch!');
 
       FreeImage_SetOutputMessage(FreeImageErrorHandler);

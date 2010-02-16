@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2010/02/16 19:56:23  danielpharos
+Added option to disable QuArKSAS extractor (and other small, related items).
+
 Revision 1.18  2009/07/15 10:38:00  danielpharos
 Updated website link.
 
@@ -83,6 +86,8 @@ unit QkApplPaths;
 interface
 
 type
+  TVersionNumber = array of Integer;
+
   TQPathType = (
       pQuArK, pQuArKAddon, pQuArKGameAddon, pQuArKDll, pQuArKHelp,  //QuArK's own paths
       pUserData, pUserGameData  //The user paths
@@ -117,6 +122,7 @@ function RemoveTrailingSlash(const Path: String): String;
 function ConcatPaths(const Paths: array of String) : String;
 function GetQPath(const PathToGet : TQPathType) : String; overload;
 function GetQPath(const PathToGet : TQPathType; const GameName: String) : String; overload;
+function SplitVersionNumber(const VersionNumber: String; const Delimiter: String = '.') : TVersionNumber;
 
  { ------------------- }
 
@@ -270,6 +276,32 @@ begin
 
   Result:=True;
   Inc(m_NextPathToTry);
+end;
+
+function SplitVersionNumber(const VersionNumber: String; const Delimiter: String): TVersionNumber;
+var
+  Index: Integer;
+  OldIndex: Integer;
+begin
+  SetLength(Result, 0);
+  Index:=Pos(Delimiter, VersionNumber);
+  if Index=0 then
+  begin
+    //No delimiter found
+    SetLength(Result, 1);
+    Result[0]:=StrToIntDef(VersionNumber, 0);
+    Exit;
+  end;
+  OldIndex:=1;
+  while (Index > 0) do
+  begin
+    SetLength(Result, Length(Result)+1);
+    Result[Length(Result)-1]:=StrToIntDef(MidStr(VersionNumber, OldIndex, Index - OldIndex), 0);
+    OldIndex:=Index+1;
+    Index:=PosEx(Delimiter, VersionNumber, OldIndex);
+  end;
+  SetLength(Result, Length(Result)+1);
+  Result[Length(Result)-1]:=StrToIntDef(RightStr(VersionNumber, Length(VersionNumber) - OldIndex + 1), 0);
 end;
 
 initialization
