@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.508  2010/02/21 13:31:09  danielpharos
+//Removed the need for the trailling slash of the texture path config setting.
+//
 //Revision 1.507  2010/02/21 13:20:10  danielpharos
 //Improved HL2 addon filenames, and added Who Gives A Dam's Portal addons!
 //
@@ -4752,7 +4755,7 @@ QQRKSRC1
       StupidBuildToolKludge:={Typ="X" Txt="Run tools from base directory" Hint="When this is checked, the tools are run in the base directory,"$0D" on maps in tmpquark"}
       OutputMapFormat: = {
         Txt = "Output Map Format"
-        Typ = "C"
+        Typ = "CL"
         Items = "Classic Quake"
                $0D "Quark etp"
                $0D "Valve 220"
@@ -5863,7 +5866,7 @@ QQRKSRC1
       StupidBuildToolKludge:={Typ="X" Txt="Run tools from base directory" Hint="When this is checked, the tools are run in the base directory,"$0D" on maps in tmpquark"}
       OutputMapFormat: = {
         Txt = "Output Map Format"
-        Typ = "C"
+        Typ = "CL"
         Items = "HL2"
                $0D "Classic Quake"
                $0D "Quark etp"
