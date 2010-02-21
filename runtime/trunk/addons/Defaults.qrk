@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.505  2010/02/16 19:56:20  danielpharos
+//Added option to disable QuArKSAS extractor (and other small, related items).
+//
 //Revision 1.504  2010/02/06 21:52:57  danielpharos
 //Corrected ep1 <--> orangebox.
 //
@@ -2485,8 +2488,7 @@ QQRKSRC1
         OutputMapFormat = "HL2"
         ForceFaceFlags = ""
         AddOns = "DataHL2.qrk"$0D"textures-hl2.qrk"$0D"models-hl2.qrk"$0D"soundscapes-hl2.qrk"$0D
-        "gamesounds-hl2.qrk"$0D"textures-hl2-cs.qrk"$0D"base.qrk"$0D"cstrike.qrk"$0D
-        "halflife2.qrk"$0D"hl2mp.qrk"$0D"prefabs-hl2.qrk"
+        "gamesounds-hl2.qrk"$0D"base.qrk"$0D"halflife2.qrk"$0D"prefabs-hl2.qrk"
 
         BuildPgmsDir="%steampath%\SteamApps\%steamuser%\%sourcesdkdir%"
         BuildPgm1  = "vbsp.exe"
