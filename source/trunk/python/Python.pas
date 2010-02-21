@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.44  2010/02/16 21:24:34  danielpharos
+Added version number split function.
+
 Revision 1.43  2010/02/02 21:58:00  danielpharos
 Added Python 2.7 version cascade, and fixed the 2.6 one.
 
@@ -779,16 +782,16 @@ begin
           PythonDll:='python24.dll';
          {$ELSE}
           {$IFDEF PYTHON23}
-           PythonDll:='python23.dll';
+           PythonDll:='PYTHON23.DLL';
           {$ELSE}
            {$IFDEF PYTHON22}
-            PythonDll:='python22.dll';
+            PythonDll:='PYTHON22.DLL';
            {$ELSE}
             {$IFDEF PYTHON21}
-             PythonDll:='python21.dll';
+             PythonDll:='PYTHON21.DLL';
             {$ELSE}
              {$IFDEF PYTHON20}
-              PythonDll:='python20.dll';
+              PythonDll:='PYTHON20.DLL';
              {$ELSE}
               PythonDll:='';
              {$ENDIF}
@@ -848,11 +851,18 @@ begin
 
     if Length(VersionNumber) >= 2 then
     begin
-      //We're not supporting all versions of Python, so let's check that
-      if VersionNumber[0] = 2 then
-        if (VersionNumber[1] = 3) or (VersionNumber[1] = 4) then
+      if VersionNumber[0] >= 2 then
+        if (VersionNumber[0] = 2) and ((VersionNumber[1] = 3) or (VersionNumber[1] = 4)) then
+        begin
           //Supported!
           FoundGoodVersion:=True;
+        end
+        else if (VersionNumber[1] > 4) then
+        begin
+          //Future version: Might work...
+          FoundGoodVersion:=True;
+          LogAndWarn('Unsupported, future version ('+VersionNumberString+') of Python found! QuArK might behave unpredictably!');
+        end;
     end;
   end
   else

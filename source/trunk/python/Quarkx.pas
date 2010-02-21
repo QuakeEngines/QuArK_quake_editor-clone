@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.96  2010/02/21 15:42:51  danielpharos
+Fixed orangebox compiler not finishing compile.
+
 Revision 1.95  2009/09/29 20:07:42  danielpharos
 Update menuitem-text when IEMaxTagFrames option changes.
 
@@ -3679,7 +3682,7 @@ var ProbableCauseOfFatalError: array[-9..6] of String = (
    { 0}    ' (No Error)',
    { 1}    ' (Error setting up Python types)',
    { 2}    ' (Error loading version-specific Python functions)',
-   { 3}    ' (Unable to determine Python dll version)',
+   { 3}    ' (Unable to verify Python dll version)',
    { 4}    ' (Error loading Python functions)',
    { 5}    ' (Unable to find or load Python dll)',
    { 6}    ' (Unable to set-up PythonPath environmental variable)');
