@@ -36,9 +36,6 @@ Delphi 7 configuration
 
 Delphi 7 is a lot more strict in what it considers clean code.  Compiling with the default warnings enabled produces a huge number of warnings, at least 4500 (that is where I stopped it compiling).  These can be fine-tuned by opening the project, selecting Project - Options from the Delphi menu, and going to the Compiler Messages tab.  There is a lengthy list of warnings which can be selectively disabled.  To get some sort of fairly meaningful list of warnings (actually 48 hints and 18 warnings), I found it best to disable the following warnings:
 
-	Comparing signed and unsigned types - widened both operands
-	Combining signed and unsigned types - widened both operands
-	Suspicious typecast
 	Unsafe typecast
 	Unsafe code
 	Unsafe typecast
@@ -61,7 +58,7 @@ Caveat
 
 This was all done using Delphi 7 Enterprise, there is nothing in the documentation comparing the different editions of Delphi 7 which indicates that this would not work with the Personal edition.
 
-DanielPharos: I also got working in Delphi 7 Free, using this guide. I didn't experience any problems, so everything should be OK.
+DanielPharos: I also got it working in Delphi 7 Free, just by following this guide. I didn't experience any problems, so everything should be OK.
 
 Questions
 ---------
