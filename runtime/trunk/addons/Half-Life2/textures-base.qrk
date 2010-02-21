@@ -1,19 +1,19 @@
 QQRKSRC1
 {
   QuArKProtected = "1"
-  Description = "HL2 Textures from source materials.gcf (august/12/2005)"
+  Description = "Source Textures from source materials.gcf (august/12/2005)"
 
-// Materials for HL2 / HL2MP
+// Common Source Materials
 
   HL2Textures.qtx =
   {
     ToolBox = "Texture Browser..."
-    Root = "HL2 Textures.qtxfolder"
+    Root = "Common Source Textures.qtxfolder"
     HTML = "intro.texturebrowser.html"
 
     t_hl2:incl =      {  v="QuArKApps" path="hl2/materials/" PakFile="source materials.gcf"}
 
-    HL2 Textures.qtxfolder =
+    Common Source Textures.qtxfolder =
     {
         Brick.txlist =
         {

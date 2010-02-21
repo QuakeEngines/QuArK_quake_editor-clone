@@ -3,9 +3,7 @@ QQRKSRC1
 // It's the text version of file: tf2.qrk
 
 {
-  Game Directories.qctx =
-  {
-  }
+  Description = "TF2 Entities"
   Toolbox Folders.qtx =
   {
     Toolbox = "New map items..."

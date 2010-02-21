@@ -1,21 +1,21 @@
 QQRKSRC1
 {
   QuArKProtected = "1"
-  Description = "CSS Textures from counter-strike source shared.gcf (august/12/2005)"
+  Description = "CS Source Textures from counter-strike source shared.gcf (august/12/2005)"
 
 //
 // Materials for Counter Strike Source
 //
 
-  CSS Textures.qtx =
+  CS Source Textures.qtx =
   {
     ToolBox = "Texture Browser..."
-    Root = "CSS Textures.qtxfolder"
+    Root = "CS Source Textures.qtxfolder"
     HTML = "intro.texturebrowser.html"
 
     t_css:incl =      {  v="QuArKApps" path="cstrike/materials/" PakFile="counter-strike source shared.gcf"}
 
-    CSS Textures.qtxfolder =
+    CS Source Textures.qtxfolder =
     {
     
         brick.txlist =

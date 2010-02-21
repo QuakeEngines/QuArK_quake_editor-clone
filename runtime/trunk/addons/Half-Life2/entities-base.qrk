@@ -2,16 +2,16 @@ QQRKSRC1
 // This file has been written by QuArK QuArK 6.4 alpha
 // It's the text version of file: base.qrk
 
-// Common HL2-Source Entities. last changes august/5/2005 by cbxpm.
+// Common Source Entities. last changes august/5/2005 by cbxpm.
 
 {
-  Description = "Common HL2-Source Entities"
+  Description = "Common Source Entities"
   t_player_size:incl = { bbox = '-16 -16 -24 16 16 32' }
   Toolbox Folders.qtx =
   {
     Toolbox = "New map items..."
-    Root = "Common HL2 Entities.qtxfolder"
-    Common HL2 Entities.qtxfolder =
+    Root = "Common Source Entities.qtxfolder"
+    Common Source Entities.qtxfolder =
     {
 
 // env entities

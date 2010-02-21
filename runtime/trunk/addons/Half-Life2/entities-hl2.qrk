@@ -2,15 +2,15 @@ QQRKSRC1
 // This file has been written by QuArK QuArK 6.4 alpha
 // It's the text version of file: halflife2.qrk
 
-// HL2 SP (singleplayer) Entities. last changes august/1/2005 by cbxpm.
+// HL2 Entities. last changes august/1/2005 by cbxpm.
 
 {
-  Description = "HL2 SP Entities"
+  Description = "HL2 Entities"
   Toolbox Folders.qtx =
   {
     Toolbox = "New map items..."
-    Root = "HL2 SP Entities.qtxfolder"
-    HL2 SP Entities.qtxfolder =
+    Root = "HL2 Entities.qtxfolder"
+    HL2 Entities.qtxfolder =
     {
 
 // ai entities
