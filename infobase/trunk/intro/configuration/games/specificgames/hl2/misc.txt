@@ -43,13 +43,14 @@ the right should be a list of entities when you click it.
 
 <li><u>I can't see the textures inside QuArK for Half-life 2, what is wrong?</u>
 
-There can be many problems , here are somethings you can do.
+There can be many problems, here are a few thing you can try:
+<ol>
+<li>The account name must be written in lower case only. User = user.  - Reported by Matrikular
+<li>Close QuArK and close Steam. Load Steam again, let it do its thing, and then start QuArK
+<li>SDK content needs to be installed, from Steam. See <ref>./important</ref>.
+</ol>
 
-<li>1: The account name must be written in lower case only. User = user.  - Reported by Matrikular
-<li>2: Close QuArK and close Steam. Load Steam again, let it do its thing, and then start QuArK
-<li>3: SDK content needs to be installed, from Steam. See <ref>./important</ref>.
-
-<li><u>Everything was working perfectly, but then Steam did an update and I cant use QuArK anymore?</u>
+<li><u>Everything was working perfectly, but then Steam did an update and I can't use QuArK anymore?</u>
 
 Refresh the Source SDK files, as described above in the <ref>./important</ref> section. If that doesn't work,
 delete the SDK content folder, and let Steam reload them.
@@ -57,8 +58,10 @@ delete the SDK content folder, and let Steam reload them.
 <li><u>When I try to compile my map, I get this error: "Unable to find gameinfo.txt." What's up?</u>
 
 As the error states, the compiler can't find the gameinfo.txt that goes with the game.
-1) Make sure all the paths are properly configured.
-2) Run the game at least once, so this file gets extracted.
+<ol>
+<li>Make sure all the paths are properly configured.
+<li>Run the game at least once, so this file gets extracted.
+</ol>
 
 <li><u>QuArK says, it can load some basic models, but where are they?</u>
 

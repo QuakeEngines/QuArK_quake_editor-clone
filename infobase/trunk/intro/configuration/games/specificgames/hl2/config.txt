@@ -46,7 +46,11 @@ Steam directory.
 The other options can be changed to alter the way QuArK works with Steam. The default
 settings are probably best.
 
+</td></tr>
+<tr><td valign=top align=middle>
 <img border=1 valign=top align=middle>steam_config.png</img>
+</td></tr>
+<tr><td valign=top align=left>
 
 <b>Part 2 - Setting up QuArK to work with Half-Life 2</b>
 
@@ -68,19 +72,23 @@ we use the 'Run Half-Life 2' option later on in the tutorial e.g. '-window -widt
 All other relevant settings are set to "*auto*" on default, so you don't need to
 change those. However, should you ever want to, here's a few pointers:
 
-Set the Game directory to the directory containing all the game's files, relative to
+<ul>
+<li>Set the Game directory to the directory containing all the game's files, relative to
 the Steam directory.
 
-Set the 'Steam App Id' to the Application ID of the game you want Steam to run. Look
+<li>Set the 'Steam App Id' to the Application ID of the game you want Steam to run. Look
 <a href="http://developer.valvesoftware.com/wiki/Steam_Application_IDs">here</a> for a complete list of all the application IDs.
 
-Set the Game data directory to the directory in which the game's data is located. For
+<li>Set the Game data directory to the directory in which the game's data is located. For
 Counter-Strike: Source, it's 'cstrike'. This is the directory that contains the 'bin'
 folder with the executable, and the 'GameInfo.txt' file, and is the last directory
 of the Game directory setting.
 
-Set the Source SDK Bin directory to the directory containing the SDK tools for that
+<li>Set the Source SDK Bin directory to the directory containing the SDK tools for that
 game. This directory should contain the compilers.
+
+<li>Set the Compiler version setting to the type of compiler the game uses.
+</ul>
 
 The compiler settings should work just fine, but if they need to be changed and you
 are unsure on any of the settings, hold your mouse cursor over the white
