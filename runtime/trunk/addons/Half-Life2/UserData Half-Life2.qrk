@@ -6586,9 +6586,6 @@ QQRKSRC1
       BuildPgm1 = "1"
       BuildPgm2 = "1"
       BuildPgm3 = "1"
-      BuildArgs1 = "-game "$22"%basepath%\%gamedir%"$22" %mapfile%"
-      BuildArgs2 = "-game "$22"%basepath%\%gamedir%"$22" %mapfile%"
-      BuildArgs3 = "-game "$22"%basepath%\%gamedir%"$22" %mapfile%"
       Pause = "1"
     }
     item: =
@@ -6599,11 +6596,8 @@ QQRKSRC1
       ExportMapFile = "1"
       BuildPgm1 = "1"
       BuildPgm2 = "1"
-      BuildPgm6 = "1"
-      BuildArgs1 = "-game "$22"%basepath%\%gamedir%"$22" %mapfile%"
-      BuildArgs2 = "-game "$22"%basepath%\%gamedir%"$22" %mapfile%"
-      BuildArgs6 = "-both -final -StaticPropLighting -game "$22"%basepath%\%ga"
-       "medir%"$22" %mapfile%"
+      BuildPgm3 = "1"
+      BuildArgs3 = "-both -final -StaticPropLighting"
       Pause = "1"
     }
     item: =
@@ -6614,8 +6608,6 @@ QQRKSRC1
       ExportMapFile = "1"
       BuildPgm1 = "1"
       BuildPgm2 = "1"
-      BuildArgs1 = "-game "$22"%basepath%\%gamedir%"$22" %mapfile%"
-      BuildArgs2 = "-game "$22"%basepath%\%gamedir%"$22" %mapfile%"
       Pause = "1"
     }
     item: =
@@ -6627,8 +6619,6 @@ QQRKSRC1
       ExportMapFile = "1"
       BuildPgm1 = "1"
       BuildPgm2 = "1"
-      BuildArgs1 = "-game "$22"%basepath%\%gamedir%"$22" %mapfile%"
-      BuildArgs2 = "-game "$22"%basepath%\%gamedir%"$22" %mapfile%"
       Pause = "1"
     }
     item: =
@@ -6649,9 +6639,6 @@ QQRKSRC1
       BuildPgm1 = "1"
       BuildPgm2 = "1"
       BuildPgm3 = "1"
-      BuildArgs1 = "-game "$22"%basepath%\%gamedir%"$22" %mapfile%"
-      BuildArgs2 = "-game "$22"%basepath%\%gamedir%"$22" %mapfile%"
-      BuildArgs3 = "-game "$22"%basepath%\%gamedir%"$22" %mapfile%"
     }
     item: =
     {
@@ -6668,21 +6655,18 @@ QQRKSRC1
       Pause = "1"
       ExportMapFile = "1"
       BuildPgm1 = "1"
-      BuildArgs1 = "-game "$22"%basepath%\%gamedir%"$22" %mapfile%"
     }
     item: =
     {
       Txt = "V&VIS (create visibility list)"
       Pause = "1"
       BuildPgm2 = "1"
-      BuildArgs2 = "-game "$22"%basepath%\%gamedir%"$22" %mapfile%"
     }
     item: =
     {
       Txt = "VRA&D (create radiosity)"
       Pause = "1"
       BuildPgm3 = "1"
-      BuildArgs3 = "-game "$22"%basepath%\%gamedir%"$22" %mapfile%"
     }
     item: =
     {
@@ -6693,7 +6677,7 @@ QQRKSRC1
       Txt = "Update ENTITIES within BSP file (using VBSP)"
       Pause = "1"
       ExportMapFile = "1"
-      BuildArgs1 = "-onlyents -game "$22"%basepath%\%gamedir%"$22" %mapfile%"
+      BuildArgs1 = "-onlyents"
       BuildPgm1 = "1"
     }
     item: =
@@ -6702,7 +6686,7 @@ QQRKSRC1
       Pause = "1"
       ExportMapFile = "1"
       BuildPgm1 = "1"
-      BuildArgs1 = "-onlyprops -game "$22"%basepath%\%gamedir%"$22" %mapfile%"
+      BuildArgs1 = "-onlyprops"
     }
     item: =
     {
@@ -6714,7 +6698,7 @@ QQRKSRC1
       Pause = "1"
       ExportMapFile = "1"
       BuildPgm1 = "1"
-      BuildArgs1 = "-nodetail -game "$22"%basepath%\%gamedir%"$22" %mapfile%"
+      BuildArgs1 = "-nodetail"
     }
     item: =
     {
@@ -6722,7 +6706,7 @@ QQRKSRC1
       Pause = "1"
       ExportMapFile = "1"
       BuildPgm1 = "1"
-      BuildArgs1 = "-glview -game "$22"%basepath%\%gamedir%"$22" %mapfile%"
+      BuildArgs1 = "-glview"
     }
     item: =
     {
@@ -6730,7 +6714,7 @@ QQRKSRC1
       Pause = "1"
       ExportMapFile = "1"
       BuildPgm1 = "1"
-      BuildArgs1 = "-nolinuxdata -game "$22"%basepath%\%gamedir%"$22" %mapfile"
+      BuildArgs1 = "-nolinuxdata"
        "%"
     }
     item: =
@@ -6738,14 +6722,14 @@ QQRKSRC1
       Txt = "VVIS (fast VIS)"
       Pause = "1"
       BuildPgm2 = "1"
-      BuildArgs2 = "-fast -game "$22"%basepath%\%gamedir%"$22" %mapfile%"
+      BuildArgs2 = "-fast"
     }
     item: =
     {
       Txt = "VRAD (fast RAD / quick and dirty lighting :)"
       Pause = "1"
       BuildPgm3 = "1"
-      BuildArgs3 = "-fast -game "$22"%basepath%\%gamedir%"$22" %mapfile%"
+      BuildArgs3 = "-fast"
     }
     item: =
     {
@@ -6763,7 +6747,7 @@ QQRKSRC1
       Txt = "Bspzip (view possible embedded BSP content)"
       Pause = "1"
       BuildPgm5 = "1"
-      BuildArgs5 = "-dir %file%.bsp"
+      BuildArgs5 = "-dir "$22"%file%"$22".bsp"
     }
   }
 }

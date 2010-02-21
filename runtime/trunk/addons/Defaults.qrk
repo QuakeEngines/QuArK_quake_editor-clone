@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.509  2010/02/21 15:01:10  danielpharos
+//Made OutputMapFormat CL-list.
+//
 //Revision 1.508  2010/02/21 13:31:09  danielpharos
 //Removed the need for the trailling slash of the texture path config setting.
 //
@@ -2501,13 +2504,13 @@ QQRKSRC1
 
         BuildPgmsDir="%steampath%\SteamApps\%steamuser%\%sourcesdkdir%"
         BuildPgm1  = "vbsp.exe"
-        BuildArgs1 = ""
+        BuildArgs1 = "-game "$22"%basepath%\%gamedir%"$22" "$22"%mapfile%"$22
         BuildCheck1= "+BSP"
         BuildPgm2  = "vvis.exe"
-        BuildArgs2 = ""
+        BuildArgs2 = "-game "$22"%basepath%\%gamedir%"$22" "$22"%mapfile%"$22
         BuildCheck2= ""
         BuildPgm3  = "vrad.exe"
-        BuildArgs3 = ""
+        BuildArgs3 = "-game "$22"%basepath%\%gamedir%"$22" "$22"%mapfile%"$22
         BuildCheck3= ""
         BuildPgm4  = "glview.exe"
         BuildArgs4 = ""
