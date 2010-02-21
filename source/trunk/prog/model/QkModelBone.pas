@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.27  2009/10/29 20:40:04  danielpharos
+Fixed naming conflict dictspec 'rotmatrix'.
+
 Revision 1.26  2009/07/19 18:54:27  danielpharos
 Moved PByte, PInteger and sLineBreak to ExtraFunctionality.
 
@@ -363,8 +366,8 @@ begin
           PyList_SetItem(o, I2, o2);
         end;
         PyDict_SetItemString(Result, PChar(S2), o);
+        Py_XDECREF(o);
       end;
-      //@ FIXME: Check for ref counters bugs!
       Exit;
     end
     else if StrComp(attr, 'vtx_pos')=0 then
@@ -391,8 +394,8 @@ begin
           PyList_SetItem(o, I2, o2);
         end;
         PyDict_SetItemString(Result, PChar(S2), o);
+        Py_XDECREF(o);
       end;
-      //@ FIXME: Check for ref counters bugs!
       Exit;
     end;
   end;
