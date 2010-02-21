@@ -5,6 +5,16 @@ author: DanielPharos
 Settings in this folder are only usable if you have a DirectX
 graphics-card.
 
+<i>Fade</i>. With this you can enable and disable the fading fog.
+
+<i>Transparency</i>. With this you can enable and disable transparency.
+You might need to enable lighting in order for transparency to be applied.
+
+<i>Lighting</i>. With this you can enable and disable the lighting.
+
+
+<u>Additional options</u>
+
 <i>Back buffer format</i>. The format of the back buffer used by
 DirectX. This is the color format of the pixels. The higher the better
 the quality, but not all formats might be supported.
@@ -12,6 +22,11 @@ the quality, but not all formats might be supported.
 <i>Depth buffer bits</i>. The amount of bits per pixel in the depth
 buffer. The higher the number, the less chance of objects being rendered
 overlapping while they're not. Not all modes might supported.
+
+<i>Color dithering</i>. When enabled, DirectX will dither colors.
+
+<i>Face culling</i>. Speeds up rendering by making all the backsides of
+faces invisible. This doesn't apply to transparent faces.
 
 Note: Use the <a target="_blank" href="http://support.microsoft.com/kb/157730">DirectX Diagnostic Tool</a> to make sure you have the right
 version of DirectX installed. See <a target="_blank" href="http://support.microsoft.com/kb/157730">this article</a>.
