@@ -254,8 +254,9 @@ class ModelEditor(BaseEditor):
     def CloseRoot(self):
         import mdlanimation
         quarkx.settimer(mdlanimation.drawanimation, self, 0)
-        global NewSellist, mdleditor
+        global NewSellist, BonesSellist, mdleditor
         NewSellist = []
+        BonesSellist = []
         mdleditor = None
         self.findtargetdlg = None
 
@@ -1809,6 +1810,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.139  2009/11/23 20:03:39  cdunde
+#Made changes to go along with DanielPharos's fix for expanding all sub-items.
+#
 #Revision 1.138  2009/10/17 02:56:42  cdunde
 #To stop rundown of items, like frames, when using Expand Sub-items function.
 #Still does the Skeleton group and bones correctly though.
