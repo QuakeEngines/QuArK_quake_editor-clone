@@ -4,7 +4,7 @@ desc: error_parsing
 
 This page lists various encountered errors, that may occur during the CSG map-compiling phase.
 
-The following games are known to use a CSG map-compiling phase:
+The following games that QuArK supports, are known to use a CSG map-compiling phase:
 
 <center><table border=1 cellspacing=0 width=50%><tr><th align=left>Game</th><th align=left>Possible program-names</th></tr>
 <tr><td>

@@ -3,7 +3,7 @@ author: Decker
 
 This page lists various encountered errors, that may occur during the RAD .bsp-lighting phase.
 
-All QuArK supported games, are know to use a RAD .bsp-lighting phase:
+The following games that QuArK supports, are known to use a RAD .bsp-lighting phase:
 
 <center><table border=1 cellspacing=0 width=50%><tr><th align=left>Game</th><th align=left>Possible program-names</th></tr>
 
