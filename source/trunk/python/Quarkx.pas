@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.95  2009/09/29 20:07:42  danielpharos
+Update menuitem-text when IEMaxTagFrames option changes.
+
 Revision 1.94  2009/07/15 10:38:10  danielpharos
 Updated website link.
 
@@ -1193,6 +1196,16 @@ function xGetBaseDir(self, args: PyObject) : PyObject; cdecl;
 begin
  try
   Result:=PyString_FromString(PChar(GetBaseDir));
+ except
+  EBackToPython;
+  Result:=Nil;
+ end;
+end;
+
+function xGetMapDir(self, args: PyObject) : PyObject; cdecl;
+begin
+ try
+  Result:=PyString_FromString(PChar(GameMapPath));
  except
   EBackToPython;
   Result:=Nil;
@@ -3275,7 +3288,7 @@ begin
 end;
 
 const
- MethodTable: array[0..90] of TyMethodDef =
+ MethodTable: array[0..91] of TyMethodDef =
   ((ml_name: 'Setup1';          ml_meth: xSetup1;          ml_flags: METH_VARARGS),
    (ml_name: 'newobj';          ml_meth: xNewObj;          ml_flags: METH_VARARGS),
    (ml_name: 'newfileobj';      ml_meth: xNewFileObj;      ml_flags: METH_VARARGS),
@@ -3286,6 +3299,7 @@ const
    (ml_name: 'getgamedir';      ml_meth: xGetGameDir;      ml_flags: METH_VARARGS),
    (ml_name: 'gettmpquark';     ml_meth: xGettmpQuArK;     ml_flags: METH_VARARGS),
    (ml_name: 'getbasedir';      ml_meth: xGetBaseDir;      ml_flags: METH_VARARGS),
+   (ml_name: 'getmapdir';       ml_meth: xGetMapDir;       ml_flags: METH_VARARGS),
    (ml_name: 'lines2list';      ml_meth: xLines2List;      ml_flags: METH_VARARGS),
    (ml_name: 'list2lines';      ml_meth: xList2Lines;      ml_flags: METH_VARARGS),
    (ml_name: 'truncstr';        ml_meth: xTruncStr;        ml_flags: METH_VARARGS),

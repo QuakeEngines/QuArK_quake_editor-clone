@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.22  2009/07/19 18:54:27  danielpharos
+Moved PByte, PInteger and sLineBreak to ExtraFunctionality.
+
 Revision 1.21  2009/07/17 10:52:09  danielpharos
 Moved PPointer to ExtraFunctionality.
 
@@ -141,6 +144,9 @@ function ReverseString(const AText: string): string;
 function PosEx(const SubStr, S: string; Offset: Cardinal = 1): Integer;
 {$endif}
 
+//This function doesn't exist at all in Delphi 7:
+function LastPos(const SubStr: String; const S: String): Integer;
+
 implementation
 
 {$ifndef Delphi5orNewerCompiler}
@@ -232,5 +238,13 @@ begin
     Result := Result + Offset;
 end;
 {$endif}
+
+//From: http://delphi.about.com/od/adptips2004/a/bltip0904_2.htm
+function LastPos(const SubStr: String; const S: String): Integer;
+begin
+   Result := Pos(ReverseString(SubStr), ReverseString(S)) ;
+   if (Result <> 0) then
+     Result := ((Length(S) - Length(SubStr)) + 1) - Result + 1;
+end;
 
 end.

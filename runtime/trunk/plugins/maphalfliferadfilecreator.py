@@ -75,7 +75,7 @@ class HalfLifeRADFileMaker(StandardDuplicator):
             filename = checkfilename(editor.fileobject.shortname or editor.fileobject["FileName"]) + ".RAD"
 	    filename = filename.lower()
 
-        radfilename = quarkx.outputfile("maps/"+filename)
+        radfilename = quarkx.outputfile(quarkx.getmapdir()+"//"+filename)
 
         try:
             f = open(radfilename, "w+")
@@ -100,6 +100,9 @@ quarkpy.mapduplicator.DupCodes.update({
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.7  2005/10/15 00:49:51  cdunde
+#To reinstate headers and history
+#
 #Revision 1.4  2003/12/18 21:59:33  peter-b
 #Fixed syntax error (d'oh!)
 #

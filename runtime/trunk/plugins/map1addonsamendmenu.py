@@ -101,7 +101,7 @@ class AddonsDlg (quarkpy.qmacro .dialogbox):
         self.action = action
         self.form = form
         self.src["program"] = None
-        self.src["mapfile"] = quarkx.outputfile("maps\\1SaveImport.map")
+        self.src["mapfile"] = quarkx.outputfile(quarkx.getmapdir()+"\\1SaveImport.map")
 
     #
     # Create the dialog form and the buttons
@@ -892,6 +892,9 @@ AmendMenuCmds = [quarkpy.qmenu.popup("&Add \ Delete menu items", [], ViewAmendMe
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.6  2005/10/15 00:49:51  cdunde
+#To reinstate headers and history
+#
 #Revision 1.3  2005/07/21 20:50:09  cdunde
 #To correct code error in previous version for removal of string reliance
 #

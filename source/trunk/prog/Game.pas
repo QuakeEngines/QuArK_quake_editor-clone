@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.77  2010/02/06 21:52:54  danielpharos
+Corrected ep1 <--> orangebox.
+
 Revision 1.76  2010/02/06 21:05:47  danielpharos
 Adjusted for newest Steam release (QuArKSAS 1.02). Also, fixed various Steam-related issues.
 
@@ -629,6 +632,14 @@ var
  I: Integer;
 begin
  Result:=IncludeTrailingPathDelimiter(BaseOutputPath); //To make sure there already is a trailing slash
+ if Length(FileName) <> 0 then
+   if SetupGameSet.Specifics.Values['Steam']='1' then
+     if (GetSteamCompiler = 'orangebox') then
+     begin
+       I:=LastPos(PathDelim, RemoveTrailingSlash(Result));
+       if I <> 0 then
+         Result:=LeftStr(Result, I-1);
+     end;
  I:=Length(Result)+1;
  Result:=ConcatPaths([Result, FileName]);
  if ExtractFileName(Result) <> '' then
@@ -759,6 +770,7 @@ var
   MapExt: String;
 
   S: String;
+  I: Integer;
 begin
   //Workaround: Only try to resolve if there is anything to resolve. This fixes
   //crashes when the setup is not init-ed properly yet.
@@ -786,7 +798,7 @@ begin
   else
     S:='';
   end;
-  if FileToResolve.FileType<>ftPath then
+  if FileToResolve.FileType <> ftPath then
   begin
     if (S<>'') and (Setup.Specifics.Values[S]<>'') then
     begin
@@ -801,13 +813,20 @@ begin
     begin
       // clever program that can run anywhere
       if FileToResolve.FileType = ftGame then
-        Result.Workdir := QuickResolveFilename(setupdirectory)
+        Result.Workdir := RemoveTrailingSlash(QuickResolveFilename(setupdirectory))
       else
-        Result.Workdir := QuickResolveFilename(argument_outputfile);
-      if Result.Workdir[Length(Result.Workdir)-1] = PathDelim then
-        Result.Workdir := LeftStr(Result.Workdir, Length(Result.Workdir)-1);
+        Result.Workdir := RemoveTrailingSlash(QuickResolveFilename(argument_outputfile));
       argument_mappath := GameMapPath;
     end;
+    if FileToResolve.FileType = ftTool then
+      if SetupGameSet.Specifics.Values['Steam']='1' then
+        if (GetSteamCompiler = 'orangebox') then
+        begin
+          I:=LastPos(PathDelim, Result.Workdir);
+          if I <> 0 then
+            Result.Workdir:=LeftStr(Result.Workdir, I-1);
+        end;
+
     MapExt := Setup.Specifics.Values['MapExt'];
     if MapExt = '' then
       MapExt := '.map';
@@ -1755,10 +1774,20 @@ begin
 end;
 
 function GameMapPath : String;
+var
+  TMPQuArK: string;
+  I: Integer;
 begin
   Result:=SetupGameSet.Specifics.Values['MapPath'];
   if Result='' then
     Result:='maps';
+  if (GetSteamCompiler = 'orangebox') then
+  begin
+    TMPQuArK:=ConvertPath(GetSteamtmpQuArK);
+    I:=LastPos(PathDelim, TMPQuArK);
+    if I <> 0 then
+      Result:=ConcatPaths([Copy(TMPQuArK, I+1, MaxInt), Result]);
+  end;
 end;
 
 function GameModelPath : String;

@@ -188,10 +188,10 @@ def writemapfile(root, mapname, selonly, wadfile, hxstr=None, group=None):
     m = quarkx.newfileobj(mapfullname)
 
     if group == "":
-        m.filename = quarkx.outputfile("maps/%s" % mapfullname)
+        m.filename = quarkx.outputfile("%s/%s" % (quarkx.getmapdir(), mapfullname))
     else:
-        m.filename = quarkx.outputfile("maps/"+group+"/%s" % mapfullname)
-        m.filename = quarkx.outputfile("maps/%s" % mapfullname)
+        m.filename = quarkx.outputfile("%s/%s/%s" % (quarkx.getmapdir(), group, mapfullname))
+        m.filename = quarkx.outputfile("%s/%s" % (quarkx.getmapdir(), mapfullname))
     worldspawn = root.copy(1)   # preserve selection while copying
     m["Root"] = worldspawn.name
     m.setint("saveflags", saveflags)
@@ -206,7 +206,7 @@ def writemapfile(root, mapname, selonly, wadfile, hxstr=None, group=None):
 
 def filesformap(map):
     setup = quarkx.setupsubset()
-    map = "maps/"+map
+    map = "%s/%s" % (quarkx.getmapdir(), map)
     mapholes = setup["MapHoles"]
     if not mapholes:
         mapholes = ".lin"
@@ -292,7 +292,7 @@ def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile,
         or buildmode["BuildPgm7"] \
         or buildmode["BuildPgm8"] \
         or buildmode["BuildPgm9"]:
-            bspfile = quarkx.outputfile("maps/%s.bsp" % map)
+            bspfile = quarkx.outputfile("%s/%s.bsp" % (quarkx.getmapdir(), map))
             if bspfile in extracted:
                 continue
             extracted = extracted + filesformap(map)
@@ -399,7 +399,7 @@ def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile,
     for mapfileobject, root, buildmode, mapinfo in newlist:
 
         map = mapinfo["map"]
-        bspfile = quarkx.outputfile("./maps/%s.bsp" % map)
+        bspfile = quarkx.outputfile("./%s/%s.bsp" % (quarkx.getmapdir(), map))
 
         for pgrmnbr in range(9,0,-1):
             pgrmx = "BuildPgm%d" % pgrmnbr
@@ -520,13 +520,13 @@ def Customize1Click(mnu):
     else:
         form1 = "CustomQuakeMenu"
     gamename = setup.shortname
-    group = quarkx.newobj("%s menu:config"%gamename)
+    group = quarkx.newobj("%s menu:config" % gamename)
     sourcename = "UserData %s.qrk" % gamename
     file = LoadPoolObj(sourcename, quarkx.openfileobj, sourcename)
     ud = file.findname("Menu.qrk")
     for p in ud.subitems:
         txt = p["Txt"]
-        ci = quarkx.newobj("%s.toolbar"%txt)
+        ci = quarkx.newobj("%s.toolbar" % txt)
         ci.copyalldata(p)
         ci["Form"] = (form1, "CustomQuakeMenuSep")[txt=="-"]
         group.appenditem(ci)
@@ -569,7 +569,7 @@ def prepAuxFileMenuItem(item,extkey,defext):
     mapfileobject = editor.fileobject
     map = checkfilename(mapfileobject["FileName"] or mapfileobject.shortname)
     map = map.lower()
-    mapfilename = quarkx.outputfile('')+'maps\\'+map
+    mapfilename = "%s%s\\%s" % (quarkx.outputfile(''), quarkx.getmapdir(), map)
     auxextension = quarkx.setupsubset()[extkey]
     if not auxextension:
         auxextension=defext
@@ -635,6 +635,9 @@ def QuakeMenu(editor):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.60  2008/11/17 19:10:23  danielpharos
+#Centralized and fixed BSP file detection.
+#
 #Revision 1.59  2008/10/08 21:42:12  danielpharos
 #Made map extension changable.
 #
