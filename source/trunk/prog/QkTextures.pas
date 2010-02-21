@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.73  2009/09/22 18:13:01  danielpharos
+TList --> TQList
+
 Revision 1.72  2009/07/29 22:52:57  danielpharos
 Added TextureWriteFormatA: some games want textures with Alpha in a different format (for instance, Quake 3).
 
@@ -507,6 +510,8 @@ const
 function GameTexturesPath : String;
 begin
   Result:=SetupGameSet.Specifics.Values['TexturesPath'];
+  //FIXME: Other code depends on the trailing slash... Bad!
+  IncludeTrailingPathDelimiter(Result);
 end;
 
 function GameShadersPath : String;
@@ -517,6 +522,8 @@ begin
     Log(LOG_WARNING, FmtLoadStr(4460, ['ShadersPath', 'TexturesPath']));
     Result:=GameTexturesPath;
   end;
+  //FIXME: Other code depends on the trailing slash... Bad!
+  IncludeTrailingPathDelimiter(Result);
 end;
 
 function GameMaterialsPath : String;
@@ -527,6 +534,8 @@ begin
     Log(LOG_WARNING, FmtLoadStr(4460, ['MaterialsPath', 'ShadersPath']));
     Result:=GameShadersPath;
   end;
+  //FIXME: Other code depends on the trailing slash... Bad!
+  IncludeTrailingPathDelimiter(Result);
 end;
 
 function ScaleDown(var W, H: Integer) : Boolean;
