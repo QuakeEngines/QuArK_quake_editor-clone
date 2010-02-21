@@ -1287,6 +1287,7 @@ QQRKSRC1
             Editor/BaseAlphaEnvMapMaskIcon.wl  = { t_hl2=! }
             Editor/bullseye.wl  = { t_hl2=! }
             Editor/choreo_scene.wl  = { t_hl2=! }
+            Editor/Climb_node.wl  = { t_hl2=! }
             Editor/cordon.wl  = { t_hl2=! }
             Editor/cubemap.wl  = { t_hl2=! }
             Editor/dotted.wl  = { t_hl2=! }
@@ -1345,15 +1346,18 @@ QQRKSRC1
             Editor/orange.wl  = { t_hl2=! }
             Editor/phys_ballsocket.wl  = { t_hl2=! }
             Editor/scripted_sentence.wl  = { t_hl2=! }
+            Editor/selectionOverlay.wl  = { t_hl2=! }
             Editor/SelfIllumIcon.wl  = { t_hl2=! }
             Editor/shadow_control.wl  = { t_hl2=! }
             Editor/tanktrain_ai.wl  = { t_hl2=! }
             Editor/tanktrain_aitarget.wl  = { t_hl2=! }
+            Editor/translucentflat.wl  = { t_hl2=! }
             Editor/translucentflatdecal.wl  = { t_hl2=! }
             Editor/TranslucentIcon.wl  = { t_hl2=! }
             Editor/trigger_relay.wl  = { t_hl2=! }
             Editor/vertexcolor.wl  = { t_hl2=! }
             Editor/waterlodcontrol.wl  = { t_hl2=! }
+            Editor/wireframe.wl  = { t_hl2=! }
         }
         
         Effects.txlist =
@@ -1490,6 +1494,8 @@ QQRKSRC1
             Engine/framesync2.wl  = { t_hl2=! }
             Engine/lightsprite.wl  = { t_hl2=! }
             Engine/normalize.wl  = { t_hl2=! }
+            Engine/occlusionproxy.wl  = { t_hl2=! }
+            Engine/occlusionproxy_countdraw.wl  = { t_hl2=! }
             Engine/rendertarget256.wl  = { t_hl2=! }
             Engine/rendertarget256-2.wl  = { t_hl2=! }
         }
