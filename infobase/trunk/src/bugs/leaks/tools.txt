@@ -67,3 +67,11 @@ settings in Delphi.  Also, some of these options have to
 be enabled in order to use the full power of the tools
 listed above.  Read the respective readme file that comes
 with the tool for more information.
+
+<hr>
+
+Another tool to hunt for problems (especially Python reference
+counter bugs) is the plugin called 'devpyobjects.py', which
+can output a file containing a list of all the active Python
+objects currently in memory. See the file (located in the
+'plugins' directory) for more info.
