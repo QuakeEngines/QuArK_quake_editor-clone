@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.14  2008/05/14 20:38:09  cdunde
+//Fixed basic lighting in all games and a few other small typo errors.
+//
 //Revision 1.13  2008/03/28 19:06:17  cdunde
 //Cleaned up, fixed if needed and brought into sync with all QuArK addons.
 //
@@ -68,7 +71,10 @@ QQRKSRC1
     Root = "Half-Life2 file types.qtxfolder"
     Half-Life2 file types.qtxfolder =
     {
-      Texture Wad.wad = { }
+      Vmf.vmf = { }
+    //  Vmt.vmt = { }
+      Vtf.vtf = { }
+      Gcf.gcf = { }
     }
   }
   walltex:incl =
