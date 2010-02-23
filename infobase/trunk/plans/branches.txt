@@ -6,28 +6,38 @@ repository, with comments on their purpose and status.  I've
 only done a few recent ones, mostly that I've been responsible for.
 
 <UL>
-<LI> <B>REL_61</B>: the branch for the Quark 6.1 release
+<LI> <B>REL_61</B>: the branch for the Quark 6.1 release.
 <LI> <B>rel-63</B>: a short-lived branch for putting new stuff
   that wasn't supposed to go into 62. relevant contents merged
-  into the main branch
-<LI> <B>rel-63-exp</B>: ditto
+  into the main branch.
+<LI> <B>rel-63-exp</B>: ditto.
 <LI> <B>REL_62</B>: branch for the 6.2 release.  Hopefully closed off now!
-<LI> <B>DanielPharos</B>: the branch where DanielPharos did his OpenGL work
+<LI> <B>pre-635c1</B>: a tag before adding a bunch of stuff just prior
+  to the intended rc1 (frozen selection, bilinear filtering in OBL).
+<LI> <B>rel-63a</b>: the 6.3 release branch, 'a' because of the ill-fated
+  63 branch above.
+<LI> <B>rel-6-3-0</b>: the tag for the actual release on the rel-63a branch.
+<LI> <B>DanielPharos</B>: the branch where DanielPharos did his OpenGL work.
+  <br><I>obsolete</I>
+<LI> <B>Leakhunt 1, 2</B> for runtime: useless bungling.
+<LI> <B>Leakhunt 3</B> for runtime: leak hunting modifications.
+<LI> <B>Leakhunt 3</B> for source: more bungling, needed
+  stuff in main branch.
+<LI> <B>MidJuneSnap</B>: ?
+<LI> <B>ModelEditorRebuild</B>: Attempt to restructure the model editor.
+  <br><I>obsolete</I>
+<LI> <B>ModelEditorBoneRebuild</B>: Attempt to restructure the way the model
+  editor handled bones.
+  <br><I>obsolete</I>
+<LI> <B>NewGameSupport660b3</B>: Branch where some experimental new game
+  support work is done.
 <LI> <B>NuTex</B>: an experimental branch for testing schemes
   for dissociating texture positioning from face-positioning.
-  <br>obsolete
+  <br><I>obsolete</I>
 <LI> <B>NuTex2</B>: an newer experimental branch for testing schemes
   for dissociating texture positioning from face-positioning.
   <br>only applies to QkMapPoly.pas
-<LI> <B>Q3ABSPM</B> only for QkBsp.pas, QkBspHull.pas: Q3A Bsp
-reading.  Now s/b closed, it's stuff is on the main branch.
-<LI> <B>Leakhunt 1, 2</B> for runtime: useless bungling
-<LI> <B>Leakhunt 3</B> for runtime: leak hunting modifications
-<LI> <B>Leakhunt 3</B> for source: more bungling, needed
-  stuff in main branch
-<LI> <B>pre-635c1</B> a tag before adding a bunch of stuff just prior
-to the intended rc1 (frozen selection, bilinear filtering in OBL)
-<LI> <B>rel-63a</b> the 6.3 release branch, 'a' because of the ill-fated
-63 branch above.
-<LI> <B> rel-6-3-0</b> the tag for the actual release on the rel-63a branch
-</B>
+<LI> <B>peter-b_tagging_api</B>: ?
+<LI> <B>Q3ABSPM</B>: only for QkBsp.pas, QkBspHull.pas: Q3A Bsp
+  reading.  Now s/b closed, its stuff is on the main branch.
+</UL>
