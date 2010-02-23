@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.21  2009/07/19 18:54:27  danielpharos
+Moved PByte, PInteger and sLineBreak to ExtraFunctionality.
+
 Revision 1.20  2009/07/15 10:38:01  danielpharos
 Updated website link.
 
@@ -189,7 +192,7 @@ var
 begin
   if ConsoleFileOpened then
     Exit;
-  FullFilename:=ConcatPaths([GetQPath(pQuArK), ConsoleFilename]);
+  FullFilename:=ConcatPaths([GetQPath(pQuArKLog), ConsoleFilename]);
   {$I-}
   AssignFile(ConsoleFile, FullFilename);
   {$IFDEF Delphi6orNewerCompiler}

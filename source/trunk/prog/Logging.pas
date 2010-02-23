@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.27  2010/02/23 18:38:23  danielpharos
+Added LOG_SUBDIRECTORY; not set right now.
+
 Revision 1.26  2009/07/15 10:38:01  danielpharos
 Updated website link.
 
@@ -151,7 +154,7 @@ var
   PF: TextFile;
   filename: string;
 begin
-  filename:=GetQPath(pQuArK)+LogPatchname;
+  filename:=GetQPath(pQuArKLog)+LogPatchname;
   if fileexists(filename) then
   begin
   {$I-}
