@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.26  2009/07/15 10:38:01  danielpharos
+Updated website link.
+
 Revision 1.25  2009/07/14 12:21:20  danielpharos
 Properly set default log level.
 
@@ -171,7 +174,7 @@ begin
   if LogOpened then
     exit;
   {$I-}
-  AssignFile(LogFile, ConcatPaths([GetQPath(pQuArK), LogFilename]));
+  AssignFile(LogFile, ConcatPaths([GetQPath(pQuArKLog), LogFilename]));
   rewrite(LogFile);
   {$I+}
   LogOpened:=true;

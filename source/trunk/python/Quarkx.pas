@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.97  2010/02/21 21:16:31  danielpharos
+Allow future versions of Python again (with warning).
+
 Revision 1.96  2010/02/21 15:42:51  danielpharos
 Fixed orangebox compiler not finishing compile.
 
@@ -3451,6 +3454,12 @@ begin
  if m=Nil then
   Exit;
  PyDict_SetItemString(QuarkxDict, 'exepath', m);
+ Py_DECREF(m);
+
+ m:=PyString_FromString(PChar(GetQPath(pQuArKLog)));
+ if m=Nil then
+  Exit;
+ PyDict_SetItemString(QuarkxDict, 'logpath', m);
  Py_DECREF(m);
 
  m:=PyList_New(0);

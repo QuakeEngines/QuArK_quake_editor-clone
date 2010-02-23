@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23  2010/02/06 15:23:41  danielpharos
+Massive update to GCF file loading. This should fix most "cannot find GCF file" type problems.
+
 Revision 1.22  2009/07/15 10:38:01  danielpharos
 Updated website link.
 
@@ -191,7 +194,7 @@ begin
     GCFFileSize     := InitDllPointer(Hgcfwrap, 'GCFFileSize');
     GCFPrepList     := InitDllPointer(Hgcfwrap, 'GCFPrepList');
 
-    SetLogPath(PChar(GetQPath(pQuArK)));
+    SetLogPath(PChar(GetQPath(pQuArKLog)));
     if Init <> 0 then
       LogAndRaiseError('Unable to initialize dlls/QuArKGCF.dll');
   end;

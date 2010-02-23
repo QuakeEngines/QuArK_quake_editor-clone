@@ -11,11 +11,20 @@
 # 2) Run it:
 #    > plugins.devpyobjects.OutputPyObjects()
 #
+#
+# The output file will be dropped in QuArK's log directory.
+#
 # -----
+#
+# If you want to compare different logs (for instance, in order to find python object leaks),
+# you can specify the filename (without extension) of the output log, so you can easily make a 'before' and 'after' log.
+#
 
-def OutputPyObjects():
+import quarkx
+
+def OutputPyObjects(filename='python_objects'):
     import gc
-    f = open('python_objects.log', 'w')
+    f = open(quarkx.logpath+filename+'.log', 'w')
     try:
         f.write(str(gc.get_objects()))
     finally:
@@ -24,5 +33,7 @@ def OutputPyObjects():
 
 # ----------- REVISION HISTORY ------------
 #
-#
 # $Log$
+# Revision 1.1  2010/02/21 20:30:08  danielpharos
+# Added a plugin for outputting all current Python objects in memory (see file for usage).
+#

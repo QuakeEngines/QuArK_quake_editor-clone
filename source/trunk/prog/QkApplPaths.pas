@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.20  2010/02/16 21:24:34  danielpharos
+Added version number split function.
+
 Revision 1.19  2010/02/16 19:56:23  danielpharos
 Added option to disable QuArKSAS extractor (and other small, related items).
 
@@ -89,7 +92,7 @@ type
   TVersionNumber = array of Integer;
 
   TQPathType = (
-      pQuArK, pQuArKAddon, pQuArKGameAddon, pQuArKDll, pQuArKHelp,  //QuArK's own paths
+      pQuArK, pQuArKAddon, pQuArKGameAddon, pQuArKDll, pQuArKLog, pQuArKHelp,  //QuArK's own paths
       pUserData, pUserGameData  //The user paths
     );
 
@@ -133,6 +136,7 @@ uses SysUtils, StrUtils, Windows, Forms, Setup, QkExceptions, ExtraFunctionality
 const
   ADDONS_SUBDIRECTORY = 'addons';
   DLL_SUBDIRECTORY = 'dlls';
+  LOG_SUBDIRECTORY = ''; //FIXME: Currently main QuArK directory
   HELP_SUBDIRECTORY = 'help';
 
 var
@@ -201,6 +205,7 @@ begin
   pQuArKAddon: Result:=ConcatPaths([GetQPath(pQuArK), ADDONS_SUBDIRECTORY]);
   pQuArKGameAddon: Result:=ConcatPaths([GetQPath(pQuArKAddon), UnderscoredGamename]);
   pQuArKDll: Result:=ConcatPaths([GetQPath(pQuArK), DLL_SUBDIRECTORY]);
+  pQuArKLog: Result:=ConcatPaths([GetQPath(pQuArK), LOG_SUBDIRECTORY]);
   pQuArKHelp: Result:=ConcatPaths([GetQPath(pQuArK), HELP_SUBDIRECTORY]);
   //FIXME: Currently, these return the same as pQuArKAddon and pQuArKGameAddon.
   //In the future, these should be changed to a my documents path, or even a AppData path!
