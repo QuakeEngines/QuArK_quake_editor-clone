@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.28  2009/07/15 10:38:10  danielpharos
+Updated website link.
+
 Revision 1.27  2009/05/04 18:42:56  danielpharos
 Hide PyObject address on __repr__ by default.
 
@@ -994,13 +997,21 @@ begin
     Acces;
     if value<>Py_None then
      if value^.ob_type = PyFloat_Type then
-      Specifics.Values[FloatSpecNameOf(nSpec)]:=S
+      begin
+       Specifics.Values[P]:='';
+       Specifics.Values[FloatSpecNameOf(P)]:='';
+       Specifics.Values[FloatSpecNameOf(nSpec)]:=S;
+      end
      else
-      Specifics.Values[nSpec]:=S
+      begin
+       Specifics.Values[P]:='';
+       Specifics.Values[FloatSpecNameOf(P)]:='';
+       Specifics.Values[nSpec]:=S;
+      end
     else
      begin
-      Specifics.Values[nSpec]:='';
-      Specifics.Values[FloatSpecNameOf(nSpec)]:='';
+      Specifics.Values[P]:='';
+      Specifics.Values[FloatSpecNameOf(P)]:='';
      end;
    end;
   Result:=0;

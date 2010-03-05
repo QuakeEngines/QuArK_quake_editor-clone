@@ -14,6 +14,8 @@ $Id$
 
 6.6.0 Beta 4
 ============
+* [DanielPharos]: Fixed an ancient bug: String specifics would not be properly overwritten by float specifics!
+
 * [DanielPharos]: Fixed orangebox compiler not working.
 
 * [DanielPharos]: Adjusted for newest Steam release (QuArKSAS 1.02). Also, fixed various Steam-related issues.
