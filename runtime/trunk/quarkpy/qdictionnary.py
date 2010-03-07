@@ -297,12 +297,21 @@ Strings = {
     2433: "Internal error : Invalid packed model structure//Please report : %s",
     2434: "The current structure of this model is invalid. It cannot be saved in %s format.",
     2435: "The model contains no skin and the skin size is unspecified",
+    2448: "Writing model's bones index data",
+    2449: "Writing component weights index data",
     2450: "Writing component vertex index data",
     2451: "Writing component u,v texture data",
     2452: "Writing component frame vertices data",
     2453: "Writing component triangle index data",
     2454: "Preparation data read...Importing model",
     2455: "Preparation data read...Exporting model",
+    2456: "Importing model's bones index data",
+    2457: "Importing component weights index data",
+    2458: "Importing component vertex index data",
+    2459: "Importing component u,v texture data",
+    2460: "Importing component frame vertices data",
+    2461: "Importing component triangle index data",
+    2462: "Importing model animation",
 
     2549: "shift left / right",
 
@@ -1069,6 +1078,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.146  2010/02/16 20:16:47  danielpharos
+#Updated website address.
+#
 #Revision 1.145  2010/01/31 21:36:08  danielpharos
 #Cleaned up some wording.
 #
