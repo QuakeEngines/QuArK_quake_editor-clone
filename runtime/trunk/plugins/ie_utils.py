@@ -291,10 +291,30 @@ def validpath(filename):
         return basepath
 
 
+# We want this -0.0000003936 as a string, but it gives this -3.936e-007
+# So this function creates the proper string and removes zeros from the end.
+def NicePrintableFloat(amt):
+    amt = round(amt, 10)
+    amt = str(amt)
+    if amt.find("e") != -1:
+        nbr = ""
+        if amt.startswith("-"):
+            nbr = nbr + "-"
+        fix = amt.replace("-", "").replace(".", "").split("e")
+        fix[1] = int(fix[1])-1
+        amt = nbr + "0." + "0" * fix[1] + fix[0]
+    amt = amt.rstrip("0")
+    amt = amt.rstrip(".")
+    return amt
+
+
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.9  2009/08/01 05:31:13  cdunde
+#Update.
+#
 #Revision 1.8  2008/07/29 02:21:08  cdunde
 #Fixed comment typo error.
 #
