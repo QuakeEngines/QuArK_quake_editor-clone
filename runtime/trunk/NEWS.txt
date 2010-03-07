@@ -14,6 +14,8 @@ $Id$
 
 6.6.0 Beta 4
 ============
+* [cdunde/DanielPharos]: Updates and improvements to both the md5 importer and exporter including animation support.
+
 * [DanielPharos]: Fixed an ancient bug: String specifics would not be properly overwritten by float specifics!
 
 * [DanielPharos]: Fixed orangebox compiler not working.
