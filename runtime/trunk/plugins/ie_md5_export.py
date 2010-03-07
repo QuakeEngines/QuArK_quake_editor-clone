@@ -28,16 +28,14 @@ import ie_utils
 from ie_utils import tobj
 from quarkpy.qdictionnary import Strings
 
-#Globals
+# Globals
 logging = 0
 exportername = "ie_md5_export.py"
 textlog = "md5_ie_log.txt"
-progressbar = None
-user_frame_list=[]
 
 
 ######################################################
-# Vector, Quaterion, Matrix math stuff- some taken from
+# Vector, Quaterion, Matrix math stuff - some taken from
 # Jiba's blender2cal3d script
 ######################################################
 def quaternion2matrix(q):
@@ -56,17 +54,33 @@ def quaternion2matrix(q):
             [0.0                  , 0.0                  , 0.0                  , 1.0]]
 
 def matrix2quaternion(m):
+    #See: http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/index.htm
     s = math.sqrt(abs(m[0][0] + m[1][1] + m[2][2] + m[3][3]))
-    if s == 0.0:
-        x = abs(m[2][1] - m[1][2])
-        y = abs(m[0][2] - m[2][0])
-        z = abs(m[1][0] - m[0][1])
-        if   (x >= y) and (x >= z):
-            return 1.0, 0.0, 0.0, 0.0
-        elif (y >= x) and (y >= z):
-            return 0.0, 1.0, 0.0, 0.0
+    if s < 0.001:
+        if ((m[0][0] > m[1][1]) and (m[0][0] > m[2][2])):
+            s = math.sqrt(m[3][3] + m[0][0] - m[1][1] - m[2][2]) * 2.0
+            return quaternion_normalize([
+            -0.25 * s,
+            -(m[0][1] + m[1][0]) / s,
+            -(m[0][2] + m[2][0]) / s,
+            (m[2][1] - m[1][2]) / s,
+            ])
+        elif (m[1][1] > m[2][2]):
+            s = math.sqrt(m[3][3] + m[1][1] - m[0][0] - m[2][2]) * 2.0
+            return quaternion_normalize([
+            -(m[0][1] + m[1][0]) / s,
+            -0.25 * s,
+            -(m[1][2] + m[2][1]) / s,
+            (m[0][2] - m[2][0]) / s,
+            ])
         else:
-            return 0.0, 0.0, 1.0, 0.0
+            s = math.sqrt(m[3][3] + m[2][2] - m[0][0] - m[1][1]) * 2.0
+            return quaternion_normalize([
+            -(m[0][2] + m[2][0]) / s,
+            -(m[1][2] + m[2][1]) / s,
+            -0.25 * s,
+            (m[1][0] - m[0][1]) / s,
+            ])
     return quaternion_normalize([
         -(m[2][1] - m[1][2]) / (2.0 * s),
         -(m[0][2] - m[2][0]) / (2.0 * s),
@@ -80,6 +94,7 @@ def quaternion_normalize(q):
 
 # This function takes a bone's matrix and inverses it
 # for exportation of data that uses the matrix, such as weights, bm = bone matrix.
+# Not being used in this file any more but should be saved and changed for individual bone call.
 def inverse_matrix(self):
     self.bone_matrix_list = {}
     for bone in range(len(self.bones)):
@@ -89,7 +104,6 @@ def inverse_matrix(self):
             bonematrix = self.editor.ModelComponentList['bonelist'][self.bones[bone].name]['bonematrix']
         except:
             bonematrix = self.bones[bone].rotmatrix.tuple
-
         for item in bonematrix:
             temp = []
             for amt in item:
@@ -121,7 +135,7 @@ def inverse_matrix(self):
 
         self.bone_matrix_list[self.bones[bone].name] = bm
 
-def matrix_by_vector(p, m):
+def vector_by_matrix(p, m):
     return [
         p[0] * m[0][0] + p[1] * m[1][0] + p[2] * m[2][0],
         p[0] * m[0][1] + p[1] * m[1][1] + p[2] * m[2][1],
@@ -129,32 +143,51 @@ def matrix_by_vector(p, m):
        ]
 
 
-#============================================
-#                   Setup Section
-#============================================
+######################################################
+# WRITES MESH & ANIMATION SHADERS SECTION
+######################################################
+def write_shaders(filename, exp_list):
+    shaders = []
+    for comp in exp_list:
+        if comp[0].dictspec.has_key('shader_name') and comp[0].dictspec['shader_name'] != "None" and not comp[0].dictspec['shader_name'] in shaders:
+            if len(shaders) == 0:
+                if filename.endswith(".md5mesh"):
+                    shadername = filename.replace(".md5mesh", ".mtr")
+                else:
+                    shadername = filename.replace(".md5anim", ".mtr")
+                shaderfile = open(shadername, "w")
+            shaders = shaders + [comp[0].dictspec['shader_name']]
+            shader = comp[0].dictspec['mesh_shader']
+            shader = shader.replace("\r\n", "\n")
+            shaderfile.write(shader)
+    try:
+        shaderfile.close()
+    except:
+        pass
+
+
+######################################################
+# SETUP SECTION
+######################################################
 def set_lists(exp_list, objects, worldTable):
-    #exp_list = [container1 = [ component],...]
+    #exp_list = [component1, component2,...]
     for current_obj in objects:
-        container = []
         if current_obj.type == ':mc':
-            container.append(current_obj)
+            exp_list.append(current_obj)
 
             # Sets the flag to export this component's shader file if there is one.
             if current_obj.dictspec.has_key('shader_file') and current_obj.dictspec['shader_file'] != "None":
                 worldTable['mat_type'] = 1
-            exp_list.append(container)
 
 
-#============================================
-#                Header
-#============================================
+######################################################
+# WRITE EXPORT FILE HEADER SECTION
+######################################################
 def write_header(self, file, filename, component, worldTable):
-    global user_frame_list, progressbar, tobj, Strings
+    global user_frame_list, tobj
 
     # Get the component's Mesh.
     mesh = component.triangles
-    Strings[2455] = component.shortname + "\n" + Strings[2455]
-    progressbar = quarkx.progressbar(2455, len(mesh)*6)
 
     file.write('MD5Version 10\n')
     path_name = filename.replace("\\", "/")
@@ -181,444 +214,460 @@ def write_header(self, file, filename, component, worldTable):
     file.write('\n')
 
 
-#============================================
-#                 Bone Joints Section
-#============================================
-def write_joints(self, file, filename, exp_list):
-    numJoints = len(self.bones)
-    if filename.endswith(".md5mesh"):
-        numMeshes = len(exp_list)
-        file.write('numJoints %i\nnumMeshes %i\n\njoints {\n' % (numJoints, numMeshes))
-    else:
-        numFrames = len(exp_list[0][0].dictitems['Frames:fg'].subitems) - 2 # So that the mesh and base frames are not counted.
-        file.write('numFrames %i\nnumJoints %i\nframeRate 24\n' % (numFrames, numJoints))
-    if filename.endswith(".md5anim"):
-        numAnimatedComponents = 0 # Counts all the bone flags that have been set to get this total amount...ex: "Head"	0 63 0	// origin ( Tx Ty Tz Qx Qy Qz )
-        frameDataIndex = 0
-        # Since we can not write the animation "hierarchy" bones section
-        # until we are done building each bones data
-        # we use the (hierarchy_list) list below to store that data for each bone in its own list (anim_bone)
-        # and then use those lists to write to the exported .md5anim file in one loop.
-        hierarchy_list = []
-        flag_types = ["Tx", "Ty", "Tz", "Qx", "Qy", "Qz"]
-        self.flagged_bones = []
-    for bone in range(len(self.bones)):
-        bonename = self.bones[bone].shortname
-        remove = bonename.split("_")[0]
-        remove = remove + "_"
-        foundbone = 0
-        for comp in range(len(exp_list)):
-            if exp_list[comp][0].name.startswith(remove):
-                break
-            if comp == len(exp_list)-1:
-                for item in range(len(self.editor.Root.subitems)):
-                    if self.editor.Root.subitems[item].type == ":mc" and self.editor.Root.subitems[item].name.startswith(remove):
-                        foundbone = 1
-                        break
-                    if item == len(self.editor.Root.subitems)-1:
-                        break
-        if foundbone == 1:
-            continue
-        bonename = bonename.replace(remove, "")
-        if self.bones[bone].dictspec['parent_name'] == "None":
-            parent_index = -1
-        else:
-            for parent_bone in range(len(self.bones)):
-                if self.bones[bone].dictspec['parent_name'] == self.bones[parent_bone].name:
-                    parent_index = parent_bone
-                    break
-        parent_name = self.bones[bone].dictspec['parent_name']
-        if parent_name == "None":
-            parent_name = ""
-        else:
-            parent_name = parent_name.split(":")[0]
-            remove = parent_name.split("_")[0]
-            remove = remove + "_"
-            parent_name = parent_name.replace(remove, "")
-        if filename.endswith(".md5mesh"):
-            bindpos = self.bones[bone].position.tuple
-            try:
-                bindmat = self.bones[bone].dictspec['bindmat']
-            except:
-               ### This does not work but it should.
-             #   w = ((0.0, 0.0, 0.0, 0.0),)
-             #   bone_rotmatrix = self.bones[bone].rotmatrix.tuple + w
-             #   bindmat = matrix2quaternion(bone_rotmatrix)
-                bindmat = self.bones[bone].rotmatrix.tuple[0]
-                self.bones[bone]['bindmat'] = bindmat
+######################################################
+# EXPORT MESH ONLY SECTION
+######################################################
+    # "exp_list" is a list of one or more selected model components for exporting.
+def export_mesh(self, file, filename, exp_list):
+    global tobj, Strings
 
-            file.write('%s"%s"%s%i ( %.10f %.10f %.10f ) ( %.10f %.10f %.10f )%s// %s\n' % (Tab, bonename, Tab, parent_index, bindpos[0], bindpos[1], bindpos[2], bindmat[0], bindmat[1], bindmat[2], Tab, parent_name))
-        else:
-            flags_count = 0
-            flags_total = 0
-            flags_list = []
-            flags = self.bones[bone].dictspec['flags']
-            for flag in range(len(flags)):
-                if flags[flag] != 0:
-                    flags_count = flags_count + 1
-                    flags_total = flags_total + flags[flag]
-                    flags_list = flags_list + [flag_types[flag]]
-            frameDataIndex = numAnimatedComponents
-            numAnimatedComponents = numAnimatedComponents + flags_count
-            if flags_total == 0:
-                frameDataIndexAmount = 0
-            else:
-                flags_total = int(flags_total)
-                frameDataIndexAmount = frameDataIndex
-                self.flagged_bones = self.flagged_bones + [self.bones[bone]]
-
-            anim_bone = [bonename, parent_index, flags_total, frameDataIndexAmount, parent_name, flags_list]
-
-            hierarchy_list = hierarchy_list + [anim_bone]
-
-    if filename.endswith(".md5anim"):
-        file.write('numAnimatedComponents %i\n\nhierarchy {\n' % (numAnimatedComponents))
-        for anim_bone in hierarchy_list:
-            file.write('%s"%s"%s%i %i %i%s//' % (Tab, anim_bone[0], Tab, anim_bone[1], anim_bone[2], anim_bone[3], Tab))
-            if anim_bone[4] != "":
-                file.write(' %s' % (anim_bone[4]))
-            if len(anim_bone[5]) == 0:
-                file.write('\n')
-            else:
-                file.write(' (')
-                for flag_type in anim_bone[5]:
-                    file.write(' %s' % (flag_type))
-                file.write(' )\n')
-                
-    file.write('}\n\n')
-
-
-#============================================
-#                   Mesh Section
-#============================================
-def write_mesh(self, file, comp):
-    # Starts the "mesh" section.
-    file.write('mesh {\n')
-    compname = comp.shortname
-    remove = compname.split("_")[0]
-    remove = remove + "_"
-    compname = compname.replace(remove, "")
-    file.write('%s// meshes: %s\n' % (Tab, compname))
-    if comp.dictspec.has_key('shader_name') and comp.dictspec['shader_name'] != "None":
-        shader = comp.dictspec['shader_name']
-    elif comp.dictitems['Skins:sg'].subitems[0].shortname.startswith("models/"):
-        shader = comp.dictitems['Skins:sg'].subitems[0].shortname.rsplit("/", 1)[0] + "/" + comp.shortname
-    elif self.exportpath.find("\\models\\") != -1:
-        shader = self.exportpath.replace("\\", "/")
-        if shader.find("/md5/") != -1:
-            shader = shader.replace("/md5/", "/")
-        if self.src["makefolder"] is not None:
-            shader = shader.rsplit("/", 1)[0]
-        shader = "models/" + shader.split("/models/")[1] + "/" + comp.shortname
-    else:
-        shader = comp.dictitems['Skins:sg'].subitems[0].shortname.rsplit("/", 1)[0] + "/" + comp.shortname
-    file.write('%sshader "%s"\n\n' % (Tab, shader))
-
-    # Writes the "vert" section.
-    triangles = comp.triangles
-    vertices = comp.dictitems['Frames:fg'].subitems[0].vertices
-    file.write('%snumverts %i\n' % (Tab, len(vertices)))
-    weightvtxlist = None
-    if self.editor.ModelComponentList.has_key(comp.name) and self.editor.ModelComponentList[comp.name].has_key('weightvtxlist'):
-        weightvtxlist = self.editor.ModelComponentList[comp.name]['weightvtxlist']
-    texWidth, texHeight = comp.dictitems['Skins:sg'].subitems[0].dictspec['Size']
-    prev_blend_index = None
-    prev_blend_count = None
-    for vert in range(len(vertices)):
-        vert_index = vert
-        for tri in range(len(triangles)):
-            if triangles[tri][0][0] == vert_index:
-                U = triangles[tri][0][1] / texWidth
-                V = triangles[tri][0][2] / texHeight
-                break
-            elif triangles[tri][1][0] == vert_index:
-                U = triangles[tri][1][1] / texWidth
-                V = triangles[tri][1][2] / texHeight
-                break
-            elif triangles[tri][2][0] == vert_index:
-                U = triangles[tri][2][1] / texWidth
-                V = triangles[tri][2][2] / texHeight
-                break
-        if weightvtxlist is not None and weightvtxlist.has_key(vert):
-            blend_index = 100000
-            for key in weightvtxlist[vert].keys():
-                if weightvtxlist[vert][key]['weight_index'] < blend_index:
-                    blend_index = weightvtxlist[vert][key]['weight_index']
-            blend_count = len(weightvtxlist[vert].keys())
-            if (prev_blend_index is not None) and (blend_index >= prev_blend_index):
-                prev_blend_index = blend_index
-                prev_blend_count = blend_count
-            if prev_blend_index is None:
-                prev_blend_index = blend_index
-                prev_blend_count = blend_count
-        else:
-            if prev_blend_index is not None:
-                blend_index = prev_blend_index + prev_blend_count
-                prev_blend_index = prev_blend_index + 1
-            else:
-                blend_index = vert_index
-            blend_count = 1
-        file.write('%svert %i ( %.10f %.10f ) %i %i\n' % (Tab, vert_index, U, V, blend_index, blend_count))
-    file.write("\n")
-
-    # Writes the "tri" section.
-    file.write('%snumtris %i\n' % (Tab, len(triangles)))
-    for tri in range(len(triangles)):
-        file.write('%stri %i %i %i %i\n' % (Tab, tri, triangles[tri][0][0], triangles[tri][1][0], triangles[tri][2][0]))
-    file.write("\n")
-
-    # Writes the "weight" section.
-    vertices = comp.dictitems['Frames:fg'].subitems[0].vertices
-    weight_index_list = []
-    weights_list = {}
-
-    self.mesh_vtx_errors = []
-    for vert_index in range(len(vertices)):
-        # weight_value # see line 609 of ie_md5_import.py file.
-        # pos= vector_by_matrix(w.weights, b.bindmat) # see line 642 of ie_md5_import.py file. ( w.weights = each weights x,y,z value in the file, b.bindmat = its bone's matrix. returns an x,y,z position.)
-        ### bindpos is the x,y,z postions for the bone handle that the vertex is assigned to.
-        # pos=((pos[0]+b.bindpos[0])*w.weight_value, (pos[1]+b.bindpos[1])*w.weight_value, (pos[2]+b.bindpos[2])*w.weight_value) # see line 643 of ie_md5_import.py file.
-        # mesh.verts[vert_counter].co[0]+=pos[0] # see line 645 of ie_md5_import.py file.
-        # mesh.verts[vert_counter].co[1]+=pos[1] # see line 646 of ie_md5_import.py file.
-        # mesh.verts[vert_counter].co[2]+=pos[2] # see line 647 of ie_md5_import.py file.
-        # Also see lines 922, 923, 924 & 933 of ie_md5_import.py file.
-        if weightvtxlist is not None:
-            try:
-                for key in range(len(weightvtxlist[vert_index].keys())):
-                    bonename = weightvtxlist[vert_index].keys()[key]
-                    weight_index = weightvtxlist[vert_index][bonename]['weight_index']
-                    if weight_index in weight_index_list:
-                        continue
-                    else:
-                        weight_index_list = weight_index_list + [weight_index]
-                    weight_value = weightvtxlist[vert_index][bonename]['weight_value']
-                    for bone in range(len(self.bones)):
-                        if self.bones[bone].name == bonename:
-                            bone_index = bone
-                            # To compute the correct position for weights_list below.
-                            bone_handle_pos = self.bones[bone].position.tuple # For line 272 above.
-                            pos = vertices[vert_index].tuple # For lines 273-276 above.
-                            bone_matrix = self.bone_matrix_list[bonename]
-                            # Computation section.
-                            pos = ((pos[0]-bone_handle_pos[0]), (pos[1]-bone_handle_pos[1]), (pos[2]-bone_handle_pos[2]))
-                            pos = matrix_by_vector(pos, bone_matrix)
-                            break
-                    weights_list[weight_index] = [bone_index, weight_value, pos[0], pos[1], pos[2]]
-            except:
-                pos = vertices[vert_index].tuple
-                weights_list[vert_index] = [0, 1.0, -pos[1], -pos[0], -pos[2]]
-                self.mesh_vtx_errors = self.mesh_vtx_errors + [vert_index]
-        else:
-            pos = vertices[vert_index].tuple
-            weights_list[vert_index] = [0, 1.0, -pos[1], -pos[0], -pos[2]]
-            self.mesh_vtx_errors = self.mesh_vtx_errors + [vert_index]
-
-    if len(self.mesh_vtx_errors) != 0:
-        self.mesh_errors = self.mesh_errors + "\nVertexes not assigned to a bone and weight value applied\nfor component: " + comp.shortname + "\n\n"
-        vtxcount = 0
-        for vtx in range(len(self.mesh_vtx_errors)):
-            if vtx == len(self.mesh_vtx_errors)-1:
-                self.mesh_errors = self.mesh_errors + str(self.mesh_vtx_errors[vtx]) + "\n============================================\n"
-                break
-            if vtxcount == 10:
-                self.mesh_errors = self.mesh_errors + str(self.mesh_vtx_errors[vtx]) + ",\n"
-                vtxcount = 0
-                continue
-            self.mesh_errors = self.mesh_errors + str(self.mesh_vtx_errors[vtx]) + ", "
-            vtxcount = vtxcount + 1
-
-    weightkeys = weights_list.keys()
-    weightkeys.sort()
-    file.write('%snumweights %i\n' % (Tab, len(weightkeys)))
-    for key in weightkeys:
-        weight = weights_list[key]
-        file.write('%sweight %i %i %.10f ( %.10f %.10f %.10f )\n' % (Tab, key, weight[0], weight[1], weight[2], weight[3], weight[4]))
-
-    # Close mesh.
-    file.write("}\n\n")
-
-
-#============================================
-#                   Bounds Section (Why do they need this anyway? To do it right we would half to go through all frames of all exported components?!)
-#============================================
-def write_bounds(self, file, exp_list):
-    file.write('bounds {\n')
-    # Maybe we can build a list to write all the frames in the write_frames function below since we half to go through all of them here, to save time.
-    self.mesh_data = [] # Used for the write_frames function below.
-    self.baseframe_data = [] # Used for the write_frames function below.
-    self.frames_data = [] # Used for the write_frames function below.
-    filename = exp_list[0][0].dictitems['Frames:fg'].subitems[1].name.split(" baseframe:mf")[0]
-    for frame in range(len(exp_list[0][0].dictitems['Frames:fg'].subitems)):
-        bmin = [10000.0]*3
-        bmax = [-10000.0]*3
-        frame_data = [] # Used for the write_frames function below.
-        flag_data = []
-        if frame < 2:
-            for bone in self.bones:
-                flag_data = flag_data + [[quarkx.vect(0.0,0.0,0.0), 0.0]]
-        else:
-            for bone in self.flagged_bones:
-                flag_data = flag_data + [[quarkx.vect(0.0,0.0,0.0), 0.0]]
-        # Used for the write_frames function below and the bounds values.
-        for comp in exp_list:
-            vertices = comp[0].dictitems['Frames:fg'].subitems[frame].vertices
-            if frame < 2:
-                for bone in range(len(self.bones)):
-                    if comp[0].name in self.bones[bone].vtx_pos.keys():
-                        for vtx_index in self.bones[bone].vtx_pos[comp[0].name]:
-                            flag_data[bone][0] = flag_data[bone][0] + vertices[vtx_index]
-                            flag_data[bone][1] = flag_data[bone][1] + 1.0
-            else:
-                for bone in range(len(self.flagged_bones)):
-                    if comp[0].name in self.flagged_bones[bone].vtx_pos.keys():
-                        for vtx_index in self.flagged_bones[bone].vtx_pos[comp[0].name]:
-                            flag_data[bone][0] = flag_data[bone][0] + vertices[vtx_index]
-                            flag_data[bone][1] = flag_data[bone][1] + 1.0
-                # Computes the bounds values.
-                for vtx in vertices:
-                    vtx = vtx.tuple
-                    for value in range(len(vtx)):
-                        if vtx[value] < bmin[value]:
-                            bmin[value] = vtx[value]
-                        if vtx[value] > bmax[value]:
-                            bmax[value] = vtx[value]
-        # Used for the write_frames function below.
-        for item in range(len(flag_data)):
-            item_data = []
-            if flag_data[item][1] > 0:
-                handle_pos = (flag_data[item][0]/flag_data[item][1]).tuple
-            else:
-                if frame < 2:
-                    handle_pos = self.bones[item].dictspec['position']
-                else:
-                    handle_pos = self.flagged_bones[item].dictspec['position']
-            if frame < 2:
-                if frame == 0: # The "hierarchy" data.
-                    handle_offset = self.bones[item].dictspec['draw_offset']
-                    flags = self.bones[item].dictspec['flags']
-                    bindmat = self.bones[item].dictspec['bindmat']
-                    item_data = item_data + [handle_pos[0] + handle_offset[0]]
-                    item_data = item_data + [handle_pos[1] + handle_offset[1]]
-                    item_data = item_data + [handle_pos[2] + handle_offset[2]]
-                    item_data = item_data + [bindmat[0]]
-                    item_data = item_data + [bindmat[1]]
-                    item_data = item_data + [bindmat[2]]
-                else: # The "baseframe" data.
-                    try:
-                        baseframe_data = self.bones[item].dictspec[filename]
-                    except:
-                        continue
-                    for item in baseframe_data:
-                        item_data = item_data + [item]
-            else:
-                handle_offset = self.flagged_bones[item].dictspec['draw_offset']
-                baseframe_data = self.flagged_bones[item].dictspec[filename]
-                dif0 = baseframe_data[0] - (handle_pos[0] + handle_offset[0])
-                dif1 = baseframe_data[1] - (handle_pos[1] + handle_offset[1])
-                dif2 = baseframe_data[2] - (handle_pos[2] + handle_offset[2])
-                flags = self.flagged_bones[item].dictspec['flags']
-                if flags[3] != 0 or flags[4] != 0 or flags[5] != 0:
-                    qx = flags[3]
-                    qy = flags[4]
-                    qz = flags[5]
-                    qw = 1 - qx*qx - qy*qy - qz*qz
-                    if qw<0:
-                        qw=0
-                    else:
-                        qw = -sqrt(qw)
-
-                    tempmatrix = quaternion2matrix([qx, qy, qz, qw])
-
-                    bindmat = self.flagged_bones[item].dictspec['bindmat']
-            #        bindmat = matrix2quaternion(bindmat)
-
-                if flags[0] != 0:
-                    item_data = item_data + [handle_pos[0] + handle_offset[0] + dif0]
-                if flags[1] != 0:
-                    item_data = item_data + [handle_pos[2] + handle_offset[2]]
-                if flags[2] != 0:
-                    item_data = item_data + [-handle_pos[1] - handle_offset[1]]
-                if flags[3] != 0:
-                    item_data = item_data + [bindmat[0]]
-                if flags[4] != 0:
-                    item_data = item_data + [bindmat[1]]
-                if flags[5] != 0:
-                    item_data = item_data + [bindmat[2]]
-
-            frame_data = frame_data + [item_data]
-
-        if frame == 0:
-            self.mesh_data = self.mesh_data + [frame_data]
-        if frame == 1:
-            self.baseframe_data = self.baseframe_data + [frame_data]
-        if frame > 1: 
-            self.frames_data = self.frames_data + [frame_data]
-        # Writes the bounds section lines.
-        if frame > 1:   
-            file.write('%s( %.10f %.10f %.10f ) ( %.10f %.10f %.10f )\n' % (Tab, bmin[0], bmin[1], bmin[2], bmax[0], bmax[1], bmax[2]))
-    file.write('}\n\n')
-
-
-#============================================
-#                   Frames Section
-#============================================
-def write_frames(self, file):
-    # We still need all of this stuff corrected.
-    # Writes the baseframe.
-    file.write('baseframe {\n')
-    baseframe = self.baseframe_data[0]
-
-    for line in range(len(baseframe)):
-        file.write('%s( ' % (Tab))
-        for value in range(len(baseframe[line])):
-            if value == len(baseframe[line])-4:
-                file.write('%.10f ) ( ' % (baseframe[line][value]))
-                continue
-            if value == len(baseframe[line])-1:
-                file.write('%.10f )\n' % (baseframe[line][value]))
-                break
-            file.write('%.10f ' % (baseframe[line][value]))
-    file.write('}\n\n')
-    # Writes all the individual frames.
-    for frame in range(len(self.frames_data)):
-        file.write('frame %i {\n' % (frame))
-        for line in self.frames_data[frame]:
-            file.write('%s' % (Tab))
-            for value in range(len(line)):
-                if value == len(line)-1:
-                    file.write('%.10f\n' % (line[value]))
-                    break
-                file.write('%.10f ' % (line[value]))
-        file.write('}\n\n')
-
-
-#============================================
-#                   Shaders Section
-#============================================
-def write_shaders(filename, exp_list):
-    shaders = []
+    joints = self.bones
+    fixed_comp_name = []
     for comp in exp_list:
-        if comp[0].dictspec.has_key('shader_name') and comp[0].dictspec['shader_name'] != "None" and not comp[0].dictspec['shader_name'] in shaders:
-            if len(shaders) == 0:
-                if filename.endswith(".md5mesh"):
-                    shadername = filename.replace(".md5mesh", ".mtr")
-                else:
-                    shadername = filename.replace(".md5anim", ".mtr")
-                shaderfile = open(shadername, "w")
-            shaders = shaders + [comp[0].dictspec['shader_name']]
-            shader = comp[0].dictspec['mesh_shader']
-            shader = shader.replace("\r\n", "\n")
-            shaderfile.write(shader)
-    try:
-        shaderfile.close()
-    except:
-        pass
+        compname = comp.shortname.split("_", 1)
+        foldername = compname[0]
+        compname = compname[1]
+        fixed_comp_name = fixed_comp_name + [(foldername, compname)]
 
-   #-------------------------End----------------------
+    file.write('numJoints %i\n' % len(joints))
+    file.write('numMeshes %i\n' % len(exp_list))
+    file.write('\n')
+
+    #Write the joints section
+    file.write('joints {\n')
+    joint_data = []
+    for current_joint in joints:
+        joint_name = current_joint.shortname.split("_", 1)[1]
+        parent_index = -1
+        parent_bone_name = ""
+        if current_joint.dictspec['parent_name'] != "None":
+            for parent_bone in range(len(joints)):
+                if current_joint.dictspec['parent_name'] == joints[parent_bone].name:
+                    parent_index = parent_bone
+                    parent_bone_name = joints[parent_bone].shortname.split("_", 1)[1]
+                    break
+        comp_name = current_joint['component']
+        comp = None
+        for test_comp in exp_list:
+            if test_comp.name == comp_name:
+                comp = test_comp
+                break
+        if comp is None:
+            #Can't use this component; defaulting!
+            comp = exp_list[0]
+        meshframe = comp.dictitems['Frames:fg'].subitems[0] #@
+        if not self.editor.ModelComponentList['bonelist'].has_key(current_joint.name):
+            #@
+            pass
+        bone_data = self.editor.ModelComponentList['bonelist'][current_joint.name]['frames'][meshframe.name]
+        bone_pos = bone_data['position']
+        bone_rot = bone_data['rotmatrix']
+        joint_data = joint_data + [(bone_pos, bone_rot)]
+        bone_rot = ((bone_rot[0], bone_rot[1], bone_rot[2], 0.0), (bone_rot[3], bone_rot[4], bone_rot[5], 0.0), (bone_rot[6], bone_rot[7], bone_rot[8], 0.0), (0.0, 0.0, 0.0, 1.0))
+        bone_rot = matrix2quaternion(bone_rot)
+        bone_pos0 = ie_utils.NicePrintableFloat(bone_pos[0])
+        bone_pos1 =  ie_utils.NicePrintableFloat(bone_pos[1])
+        bone_pos2 =  ie_utils.NicePrintableFloat(bone_pos[2])
+        bone_rot0 =  ie_utils.NicePrintableFloat(bone_rot[0])
+        bone_rot1 =  ie_utils.NicePrintableFloat(bone_rot[1])
+        bone_rot2 =  ie_utils.NicePrintableFloat(bone_rot[2])
+        file.write('\t"%s"\t%i ( %s %s %s ) ( %s %s %s )\t\t// %s\n' % (joint_name, parent_index, bone_pos0, bone_pos1, bone_pos2, bone_rot0, bone_rot1, bone_rot2, parent_bone_name))
+    file.write('}\n')
+    file.write('\n')
+
+    #Preparation: set-up a bone-name to bone-index convertion dict
+    bone_name_to_index = {}
+    for bone_index in range(len(joints)):
+        bone_name_to_index[joints[bone_index].name] = bone_index
+
+
+    for comp_index in range(len(exp_list)):
+        comp = exp_list[comp_index]
+        triangles = comp.triangles
+        vertices = comp.dictitems['Frames:fg'].subitems[0].vertices
+        weightvtxlist = None
+        if self.editor.ModelComponentList.has_key(comp.name) and self.editor.ModelComponentList[comp.name].has_key('weightvtxlist'):
+            weightvtxlist = self.editor.ModelComponentList[comp.name]['weightvtxlist']
+        texWidth, texHeight = comp.dictitems['Skins:sg'].subitems[0].dictspec['Size']
+
+        # Starts the "mesh" section.
+        file.write('mesh {\n')
+        file.write('\t// meshes: %s\n' % fixed_comp_name[comp_index][1])
+
+        if comp.dictspec.has_key('shader_name') and comp.dictspec['shader_name'] != "None":
+            shader = comp.dictspec['shader_name']
+        elif comp.dictitems['Skins:sg'].subitems[0].shortname.startswith("models/"):
+            shader = comp.dictitems['Skins:sg'].subitems[0].shortname.rsplit("/", 1)[0] + "/" + comp.shortname
+        elif self.exportpath.find("\\models\\") != -1:
+            shader = self.exportpath.replace("\\", "/")
+            if shader.find("/md5/") != -1:
+                shader = shader.replace("/md5/", "/")
+            if self.src["makefolder"] is not None:
+                shader = shader.rsplit("/", 1)[0]
+            shader = "models/" + shader.split("/models/")[1] + "/" + comp.shortname
+        else:
+            shader = comp.dictitems['Skins:sg'].subitems[0].shortname.rsplit("/", 1)[0] + "/" + comp.shortname
+        file.write('\tshader "%s"\n' % shader)
+        file.write('\n')
+
+        # Writes the "vert" section.
+        Strings[2452] = comp.shortname + "\n" + Strings[2452]
+        progressbar = quarkx.progressbar(2452, len(vertices))
+        prev_blend_index = -1
+        file.write('\tnumverts %i\n' % len(vertices))
+        TMPWeights = []
+        self.mesh_vtx_errors = [] # For self.mesh_errors data output below.
+        for vert_index in range(len(vertices)):
+            progressbar.progress()
+            for tri in range(len(triangles)):
+                if triangles[tri][0][0] == vert_index:
+                    U = triangles[tri][0][1] / texWidth
+                    V = triangles[tri][0][2] / texHeight
+                    break
+                elif triangles[tri][1][0] == vert_index:
+                    U = triangles[tri][1][1] / texWidth
+                    V = triangles[tri][1][2] / texHeight
+                    break
+                elif triangles[tri][2][0] == vert_index:
+                    U = triangles[tri][2][1] / texWidth
+                    V = triangles[tri][2][2] / texHeight
+                    break
+            # Creates TMPWeights data for the "weight" section below.
+            if weightvtxlist is not None and weightvtxlist.has_key(vert_index):
+                blend_index = prev_blend_index + 1
+                blend_count = len(weightvtxlist[vert_index])
+                for key in weightvtxlist[vert_index].keys():
+                    bone_index = bone_name_to_index[key]
+                    weight = weightvtxlist[vert_index][key]['weight_value']
+                    TMPWeights = TMPWeights + [(vert_index, bone_index, weight)]
+            else: # Handles un-assigned vertexes and writes them to the mesh_error report for viewing by the user.
+                blend_index = prev_blend_index + 1
+                blend_count = 1
+                bone_index = 0 #origin bone
+                weight = 1.0
+                TMPWeights = TMPWeights + [(vert_index, bone_index, weight)]
+                # For vertex error report output.
+                self.mesh_vtx_errors = self.mesh_vtx_errors + [vert_index]
+            U = ie_utils.NicePrintableFloat(U)
+            V = ie_utils.NicePrintableFloat(V)
+            file.write('\tvert %i ( %s %s ) %i %i\n' % (vert_index, U, V, blend_index, blend_count)) #@
+            prev_blend_index = blend_index + blend_count - 1
+        file.write('\n')
+        Strings[2452] = Strings[2452].replace(comp.shortname + "\n", "")
+        progressbar.close()
+
+        # Writes the mesh_errors report.
+        if len(self.mesh_vtx_errors) != 0:
+            self.mesh_errors = self.mesh_errors + "\nVertexes not assigned to a bone and weight value applied\nfor component: " + comp.shortname + "\n\n"
+            vtxcount = 0
+            for vtx in range(len(self.mesh_vtx_errors)):
+                if vtx == len(self.mesh_vtx_errors)-1:
+                    self.mesh_errors = self.mesh_errors + str(self.mesh_vtx_errors[vtx]) + "\n============================================\n"
+                    break
+                if vtxcount == 10:
+                    self.mesh_errors = self.mesh_errors + str(self.mesh_vtx_errors[vtx]) + ",\n"
+                    vtxcount = 0
+                    continue
+                self.mesh_errors = self.mesh_errors + str(self.mesh_vtx_errors[vtx]) + ", "
+                vtxcount = vtxcount + 1
+
+
+        # Writes the "tri" section.
+        Strings[2453] = comp.shortname + "\n" + Strings[2453]
+        progressbar = quarkx.progressbar(2453, len(triangles))
+        file.write('\tnumtris %i\n' % len(triangles))
+        for tri in range(len(triangles)):
+            progressbar.progress()
+            file.write('\ttri %i %i %i %i\n' % (tri, triangles[tri][0][0], triangles[tri][1][0], triangles[tri][2][0])) #@
+        file.write('\n')
+        Strings[2453] = Strings[2453].replace(comp.shortname + "\n", "")
+        progressbar.close()
+
+        # Writes the "weight" section.
+        Strings[2450] = comp.shortname + "\n" + Strings[2450]
+        progressbar = quarkx.progressbar(2450, len(TMPWeights))
+        file.write('\tnumweights %i\n' % len(TMPWeights))
+        for weight_index in range(len(TMPWeights)):
+            progressbar.progress()
+            weight = TMPWeights[weight_index]
+            vert = weight[0]
+            bone_index = weight[1]
+            weight_value = ie_utils.NicePrintableFloat(weight[2])
+            current_vertex = vertices[vert]
+            bone_pos = joint_data[bone_index][0]
+            bone_pos = quarkx.vect(bone_pos[0], bone_pos[1], bone_pos[2])
+            bone_rot = joint_data[bone_index][1]
+            bone_rot = quarkx.matrix((bone_rot[0], bone_rot[1], bone_rot[2]), (bone_rot[3], bone_rot[4], bone_rot[5]), (bone_rot[6], bone_rot[7], bone_rot[8]))
+            current_vertex = (~bone_rot) * (current_vertex - bone_pos) #FIXME: TEST THIS!
+            current_vertex = current_vertex.tuple
+            current_vertex0 = ie_utils.NicePrintableFloat(current_vertex[0])
+            current_vertex1 = ie_utils.NicePrintableFloat(current_vertex[1])
+            current_vertex2 = ie_utils.NicePrintableFloat(current_vertex[2])
+            file.write('\tweight %i %i %s ( %s %s %s )\n' % (weight_index, bone_index, weight_value, current_vertex0, current_vertex1, current_vertex2))
+        file.write('}\n')
+        file.write('\n')
+        Strings[2450] = Strings[2450].replace(comp.shortname + "\n", "")
+        progressbar.close()
 
 
 ######################################################
-#                    Save md5mesh Format (where it all starts off from)
+# EXPORT ANIMATION ONLY SECTION
+######################################################
+    # "exp_list" is a list of one or more selected model components for exporting.
+def export_anim(self, file, filename, exp_list):
+    global tobj, Strings
+
+    NumberOfFrames = -1
+    for object in exp_list:
+        CurNumberOfFrames = len(object.dictitems['Frames:fg'].subitems)
+        if NumberOfFrames == -1:
+            NumberOfFrames = CurNumberOfFrames
+        elif (CurNumberOfFrames != NumberOfFrames):
+            quarkx.msgbox("The selected component folders do not have the same number of frames !\n\nCorrect and try again.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
+            return
+        else:
+            NumberOfFrames = CurNumberOfFrames
+    if NumberOfFrames < 2:
+        quarkx.msgbox("The selected component folders do not have enough frames (missing meshframe and baseframe)!\n\nCorrect and try again.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
+        return
+    frames = exp_list[0].dictitems['Frames:fg'].subitems
+    NumberOfFrames -= 2
+
+    joints = self.bones
+    NumberOfBones = len(joints)
+    joints_parent_index = [[]]*NumberOfBones
+    for joint_counter in range(0,NumberOfBones):
+        current_joint = joints[joint_counter]
+        joints_parent_index[joint_counter] = -1
+        if current_joint.dictspec['parent_name'] != "None":
+            for parent_bone in range(len(joints)):
+                if current_joint.dictspec['parent_name'] == joints[parent_bone].name:
+                    joints_parent_index[joint_counter] = parent_bone
+                    break
+
+    # Get all the animation data
+    QuArK_frame_position = [[]]*NumberOfFrames
+    QuArK_frame_matrix = [[]]*NumberOfFrames
+    progressbar = quarkx.progressbar(2455, NumberOfFrames*2)
+    for frame_counter in range(0,NumberOfFrames):
+        progressbar.progress()
+        QuArK_frame_position[frame_counter] = [[]]*NumberOfBones
+        QuArK_frame_matrix[frame_counter] = [[]]*NumberOfBones
+        for joint_counter in range(0,NumberOfBones):
+            current_joint = joints[joint_counter]
+            bone_data = self.editor.ModelComponentList['bonelist'][current_joint.name]['frames'][frames[frame_counter+2].name]
+            bone_pos = bone_data['position']
+            bone_rot = bone_data['rotmatrix']
+            QuArK_frame_position[frame_counter][joint_counter] = quarkx.vect(bone_pos[0], bone_pos[1], bone_pos[2])
+            QuArK_frame_matrix[frame_counter][joint_counter] = quarkx.matrix((bone_rot[0], bone_rot[1], bone_rot[2]), (bone_rot[3], bone_rot[4], bone_rot[5]), (bone_rot[6], bone_rot[7], bone_rot[8]))
+
+    # Calculate all the MD5 animation data
+    QuArK_frame_position_raw = [[]]*NumberOfFrames
+    QuArK_frame_matrix_raw = [[]]*NumberOfFrames
+    for frame_counter in range(0,NumberOfFrames):
+        progressbar.progress()
+        QuArK_frame_position_raw[frame_counter] = [[]]*NumberOfBones
+        QuArK_frame_matrix_raw[frame_counter] = [[]]*NumberOfBones
+        for joint_counter in range(0,NumberOfBones):
+            current_joint = joints[joint_counter]
+            parent_index = joints_parent_index[joint_counter]
+            if parent_index != -1:
+                #parent_bone = joints[parent_index]
+                MatrixParent = QuArK_frame_matrix[frame_counter][parent_index]
+                temppos = QuArK_frame_position[frame_counter][joint_counter] - QuArK_frame_position[frame_counter][parent_index]
+                QuArK_frame_position_raw[frame_counter][joint_counter] = (~MatrixParent) * temppos
+                QuArK_frame_matrix_raw[frame_counter][joint_counter] = (~MatrixParent) * QuArK_frame_matrix[frame_counter][joint_counter]
+            else:
+                QuArK_frame_position_raw[frame_counter][joint_counter] = QuArK_frame_position[frame_counter][joint_counter]
+                QuArK_frame_matrix_raw[frame_counter][joint_counter] = QuArK_frame_matrix[frame_counter][joint_counter]
+    progressbar.close()
+
+    hierarchy = []
+    numAnimatedComponents = 0
+    progressbar = quarkx.progressbar(2448, NumberOfBones * NumberOfFrames)
+    for joint_counter in range(0,NumberOfBones):
+        progressbar.progress()
+        Flags = [0, 0, 0, 0, 0, 0]   #Tx, Ty, Tz, Qx, Qy, Qz
+        Values = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]   #Tx, Ty, Tz, Qx, Qy, Qz
+        for frame_counter in range(0,NumberOfFrames):
+            progressbar.progress()
+            # Convert the position to a typle and rotmatrix to quaternions:
+            QuArK_frame_position_raw[frame_counter][joint_counter] = (QuArK_frame_position_raw[frame_counter][joint_counter]).tuple
+            rotmatrix = (QuArK_frame_matrix_raw[frame_counter][joint_counter]).tuple
+            rotmatrix = ((rotmatrix[0][0], rotmatrix[0][1], rotmatrix[0][2], 0.0)
+                        ,(rotmatrix[1][0], rotmatrix[1][1], rotmatrix[1][2], 0.0)
+                        ,(rotmatrix[2][0], rotmatrix[2][1], rotmatrix[2][2], 0.0)
+                        ,(            0.0,             0.0,             0.0, 1.0))
+            rotmatrix = matrix2quaternion(rotmatrix)
+            #if rotmatrix[3] > 0.0:
+            #    rotmatrix = (-rotmatrix[0], -rotmatrix[1], -rotmatrix[2])
+            QuArK_frame_matrix_raw[frame_counter][joint_counter] = rotmatrix
+
+            bone_pos = QuArK_frame_position_raw[frame_counter][joint_counter]
+            bone_rot = QuArK_frame_matrix_raw[frame_counter][joint_counter]
+            if (frame_counter == 0):
+                Values[0] = bone_pos[0]
+                Values[1] = bone_pos[1]
+                Values[2] = bone_pos[2]
+                Values[3] = bone_rot[0]
+                Values[4] = bone_rot[1]
+                Values[5] = bone_rot[2]
+            else:
+                if ((Flags[0] == 0) and (abs(Values[0] - bone_pos[0]) > 0.0001)):
+                    numAnimatedComponents += 1
+                    Flags[0] = 1
+                if ((Flags[1] == 0) and (abs(Values[1] - bone_pos[1]) > 0.0001)):
+                    numAnimatedComponents += 1
+                    Flags[1] = 1
+                if ((Flags[2] == 0) and (abs(Values[2] - bone_pos[2]) > 0.0001)):
+                    numAnimatedComponents += 1
+                    Flags[2] = 1
+                if ((Flags[3] == 0) and (abs(Values[3] - bone_rot[0]) > 0.0001)):
+                    numAnimatedComponents += 1
+                    Flags[3] = 1
+                if ((Flags[4] == 0) and (abs(Values[4] - bone_rot[1]) > 0.0001)):
+                    numAnimatedComponents += 1
+                    Flags[4] = 1
+                if ((Flags[5] == 0) and (abs(Values[5] - bone_rot[2]) > 0.0001)):
+                    numAnimatedComponents += 1
+                    Flags[5] = 1
+        hierarchy += [(Flags, Values)]
+    progressbar.close()
+
+    bounds = [[]]*NumberOfFrames
+    for frame_counter in range(0,NumberOfFrames):
+        current_min = [None, None, None]
+        current_max = [None, None, None]
+        for object in exp_list:
+            vertices = object.dictitems['Frames:fg'].subitems[frame_counter+2].vertices
+            for vert in vertices:
+                vert = vert.tuple
+                for i in range(0,3):
+                    if ((current_min[i] is None) or (vert[i] < current_min[i])):
+                        current_min[i] = vert[i]
+                    if ((current_max[i] is None) or (vert[i] > current_max[i])):
+                        current_max[i] = vert[i]
+        bounds[frame_counter] = (current_min, current_max)
+
+    FlagName = ('Tx', 'Ty', 'Tz', 'Qx', 'Qy', 'Qz')
+
+    file.write('numFrames %i\n' % NumberOfFrames)
+    file.write('numJoints %i\n' % len(joints))
+    file.write('frameRate 24\n')
+    file.write('numAnimatedComponents %i\n' % numAnimatedComponents)
+    file.write('\n')
+
+    file.write('hierarchy {\n')
+    FlagStartIndex = [[]]*NumberOfBones
+    for joint_counter in range(0,NumberOfBones):
+        if (joint_counter == 0):
+            FlagStartIndex[joint_counter] = 0
+        else:
+            FlagStartIndex[joint_counter] = FlagStartIndex[joint_counter-1] + NumberOfFlags
+        current_joint = joints[joint_counter]
+        joint_name = current_joint.shortname.split("_", 1)[1]
+        parent_index = joints_parent_index[joint_counter]
+        if parent_index == -1:
+            parent_bone_name = ""
+        else:
+            parent_bone_name = joints[parent_index].shortname.split("_", 1)[1]
+        hierarchy_item = hierarchy[joint_counter]
+        Flags = hierarchy_item[0]
+        Values = hierarchy_item[1]
+        FlagValue = 0
+        FlagText = ''
+        NumberOfFlags = 0
+        for i in range(0,6):
+            if (Flags[i] != 0):
+                FlagValue += 2 ** i
+                FlagText += ' ' + FlagName[i]
+                NumberOfFlags += 1
+        comment_part = ''
+        if len(parent_bone_name) != 0:
+            comment_part += ' ' + parent_bone_name
+        if FlagValue != 0:
+            comment_part += ' (' + FlagText + ' )'
+        if NumberOfFlags == 0:
+            OutputFlagStartIndex = 0
+        else:
+            OutputFlagStartIndex = FlagStartIndex[joint_counter]
+        file.write('\t"%s"\t%i %i %i\t//%s\n' % (joint_name, parent_index, FlagValue, OutputFlagStartIndex, comment_part))
+    file.write('}\n')
+    file.write('\n')
+
+    file.write('bounds {\n')
+    for frame_counter in range(0,NumberOfFrames):
+        current_bound = bounds[frame_counter]
+        current_min = current_bound[0]
+        current_max = current_bound[1]
+        file.write('\t(')
+        for amt in current_min:
+            amt = ie_utils.NicePrintableFloat(amt)
+            file.write(' %s' % (amt))
+        file.write(' ) (')
+        for amt in current_max:
+            amt = ie_utils.NicePrintableFloat(amt)
+            file.write(' %s' % (amt))
+        file.write(' )\n')
+    file.write('}\n')
+    file.write('\n')
+
+    file.write('baseframe {\n')
+    for joint_counter in range(0,NumberOfBones):
+        hierarchy_item = hierarchy[joint_counter]
+        Values = hierarchy_item[1]
+        file.write('\t( ')
+        for value in range(len(Values)):
+            amt = ie_utils.NicePrintableFloat(Values[value])
+            if value == len(Values)-4:
+                file.write('%s ) ( ' % (amt))
+                continue
+            if value == len(Values)-1:
+                file.write('%s )\n' % (amt))
+                break
+            file.write('%s ' % (amt))
+    file.write('}\n')
+    file.write('\n')
+
+    progressbar = quarkx.progressbar(2452, NumberOfFrames * NumberOfBones)
+    for frame_counter in range(0,NumberOfFrames):
+        progressbar.progress()
+        file.write('frame %i {\n' % frame_counter)
+        for joint_counter in range(0,NumberOfBones):
+            progressbar.progress()
+            hierarchy_item = hierarchy[joint_counter]
+            Flags = hierarchy_item[0]
+            bone_pos = QuArK_frame_position_raw[frame_counter][joint_counter]
+            bone_rot = QuArK_frame_matrix_raw[frame_counter][joint_counter]
+            FirstItem = 1
+            for i in range(0,3):
+                if (Flags[i] != 0):
+                    if (FirstItem):
+                        file.write('\t')
+                        FirstItem = 0
+                    amt = ie_utils.NicePrintableFloat(bone_pos[i])
+                    file.write(' %s' % amt)
+            for i in range(0,3):
+                if (Flags[i+3] != 0):
+                    if (FirstItem):
+                        file.write('\t')
+                        FirstItem = 0
+                    amt = ie_utils.NicePrintableFloat(bone_rot[i])
+                    file.write(' %s' % amt)
+            if (FirstItem == 0):
+                file.write('\n')
+        file.write('}\n')
+        file.write('\n')
+    progressbar.close()
+
+
+######################################################
+# END OF EXPORT ANIMATION ONLY SECTION
+######################################################
+
+
+######################################################
+# CALL TO SAVE MESH (.md5mesh) FILE (called from dialog section below)
 ######################################################
 def save_md5(self):
     global tobj, logging, exportername, textlog, Strings, exp_list, Tab, worldTable
@@ -639,17 +688,13 @@ def save_md5(self):
     #get the component
     component = editor.Root.currentcomponent # This gets the first component (should be only one).
 
-    # This section calls functions to write  their sections to the exporter .md5 file.
+    # This section calls common file writing functions then to export either an .md5 mesh or animation file.
     set_lists(exp_list, objects, worldTable)
     write_header(self, file, filename, component, worldTable)
-    write_joints(self, file, filename, exp_list)
-    if filename.endswith(".md5mesh"):
-        inverse_matrix(self)
-        for comp in exp_list:
-            write_mesh(self, file, comp[0])
-    else:
-        write_bounds(self, file, exp_list)
-        write_frames(self, file)
+    if filename.endswith(".md5mesh"): # Calls to write a mesh file.
+        export_mesh(self, file, filename, exp_list)
+    else: # Calls to write an animation file.
+        export_anim(self, file, filename, exp_list)
 
     file.close()
 
@@ -665,9 +710,6 @@ def save_md5(self):
                 tempskinname = tempskinname.rsplit("/", 1)[1]
                 skin.filename = tempfilename + '/' + tempskinname
                 quarkx.savefileobj(skin, FM_Save, 0)
-        
-    progressbar.close()
-    Strings[2455] = Strings[2455].replace(component.shortname + "\n", "")
 
     add_to_message = "Any skin textures used as a material\nwill need to be converted to a .tga file.\n\nThis can be done in an image editor\nsuch as 'PaintShopPro' or 'PhotoShop'."
 
@@ -680,6 +722,10 @@ def save_md5(self):
 
     ie_utils.default_end_logging(filename, "EX", starttime, add_to_message) ### Use "EX" for exporter text, "IM" for importer text.
 
+
+######################################################
+# CALL TO SAVE MESH (.md5mesh) OR ANIMATION (.md5anim) FILE (where it all starts off from)
+######################################################
 # Saves the model file: root is the actual file,
 # filename is the full path and name of the .md5 to create.
 # For example:  C:Program Files\Doom 3\base\models\md5\monsters\archvile\archvile.md5mesh or attack1.md5anim.
@@ -721,8 +767,9 @@ def savemodel(root, filename, gamename, nomessage=0):
                 quarkx.msgbox("Component " + object.shortname + "\nsecond frame is not a '(2nd frame name) baseframe'.\nAll components to be exported\nmust have its 2nd frame as a baseframe.\nCan not create model.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
                 return
 
-    UIExportDialog(root, filename, editor)
+    UIExportDialog(root, filename, editor) # Calls the dialog below which calls to save a mesh or animaition file.
     return
+
 
 ### To register this Python plugin and put it on the exporters menu.
 import quarkpy.qmdlbase
@@ -730,9 +777,9 @@ quarkpy.qmdlbase.RegisterMdlExporter(".md5mesh Doom3\Quake4 Exporter", ".md5mesh
 quarkpy.qmdlbase.RegisterMdlExporter(".md5anim Doom3\Quake4 Exporter", ".md5anim file", "*.md5anim", savemodel)
 
 
-#============================================
-#                   Dialog Section
-#============================================
+######################################################
+# DIALOG SECTION (which calls to export a mesh or animation file)
+######################################################
 class ExportSettingsDlg(quarkpy.qmacro.dialogbox):
     endcolor = AQUA
     size = (200, 300)
@@ -898,9 +945,9 @@ class ExportSettingsDlg(quarkpy.qmacro.dialogbox):
                     quarkx.msgbox("PROCESS CANCELED:\n\nNothing was written to the\n    " + self.filename + "\nfile and it remains unchanged.", quarkpy.qutils.MT_INFORMATION, quarkpy.qutils.MB_OK)
                     return
 
-        # Open the output file for writing the .md5 file to disk.
+        # Opens the output file for writing the .md5 mesh or animation file to disk.
         self.md5file = open(self.filename,"w")
-        save_md5(self)
+        save_md5(self) # This is the funciton above called to start exporting the mesh or animation file.
 
 
 def UIExportDialog(root, filename, editor):
@@ -915,6 +962,9 @@ def UIExportDialog(root, filename, editor):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.5  2009/08/27 04:55:06  cdunde
+# To add support for exporting other model types as .md5mesh files.
+#
 # Revision 1.4  2009/08/27 04:32:20  cdunde
 # Update for multiple bone sets for import and export to restrict export of bones for selected components only.
 #
