@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.75  2010/03/08 21:45:46  danielpharos
+Fixed slashes not being appended to game texture paths.
+
 Revision 1.74  2010/02/21 13:31:06  danielpharos
 Removed the need for the trailling slash of the texture path config setting.
 
@@ -910,7 +913,7 @@ var
               else
                 S:=Tex.Name;
 
-              S:=GameTexturesPath+S+Tex.TypeInfo;
+              S:=ConcatPaths([GameTexturesPath, S+Tex.TypeInfo]);
             end;
 
             Tex.SaveInFile(rf_Default, OutputFile(S));
@@ -1226,17 +1229,17 @@ begin
         if CharModeJeu=mjHL2 then
         begin
           try // failing to load the textures produces an exception
-            Link:=NeedGameFileBase(S, Specifics.Values['path']+TexName+GameBuffer(StdGameTextureLinks[I].GameMode)^.TextureExt, Specifics.Values['PakFile']) as QPixelSet;
+            Link:=NeedGameFileBase(S, ConcatPaths([Specifics.Values['path'], TexName+GameBuffer(StdGameTextureLinks[I].GameMode)^.TextureExt]), Specifics.Values['PakFile']) as QPixelSet;
           except
             // fall back to vtf file loading if default texture extension (vmt) fails
             if Link=Nil then
-              Link:=NeedGameFileBase(S, Specifics.Values['path']+TexName+'.vtf', Specifics.Values['PakFile']) as QPixelSet;
+              Link:=NeedGameFileBase(S, ConcatPaths([Specifics.Values['path'], TexName+'.vtf']), Specifics.Values['PakFile']) as QPixelSet;
           end;
           if Link=Nil then
             Raise EErrorFmt(5755, [TexName, Arg]);
         end
         else
-          Link:=NeedGameFileBase(S, GameTexturesPath+TexName+GameBuffer(StdGameTextureLinks[I].GameMode)^.TextureExt, '') as QPixelSet;
+          Link:=NeedGameFileBase(S, ConcatPaths([GameTexturesPath, TexName+GameBuffer(StdGameTextureLinks[I].GameMode)^.TextureExt]), '') as QPixelSet;
 
         Link.AddRef(+1);
         Link.Acces;  { we found the linked texture }
@@ -1272,7 +1275,7 @@ begin
             // Arg is the game's shader (Q3) or material (D3/Q4) full file name.
             // So the line below MaterialFile:= gives the game folder, file folder, full file name of the shader/material for the link
             // witch is (as a Doom 3 example): base + materials/alphalabs.mtr
-            MaterialFile:=NeedGameFileBase(S, GameMaterialsPath+Arg, '') as D3MaterialFile;
+            MaterialFile:=NeedGameFileBase(S, ConcatPaths([GameMaterialsPath, Arg]), '') as D3MaterialFile;
             MaterialFile.Acces;  { load the .mtr file (if not already loaded), meaning this loads the entire .mtr file.}
 
             // GameTexturesPath is the IMAGE MAIN folder, for the link, with a forward slash, textures/ .
@@ -1284,7 +1287,7 @@ begin
             // Special Note: Each item in a shader\material file can have more than one texture IMAGE file for its bumpmap, diffusemap ...
             //    Any one of these "Keywords" can be used, for linking, depending on how the Keywords are listed in its QkD3.pas file (for Doom3).
             //    If the "primary" IMAGE file, with the Keyword qer_editorimage (for Doom3), does not exist then the next Keyword IMAGE file is used.
-            Link:=MaterialFile.SubElements.FindShortName(GameTexturesPath+TexName) as QPixelSet;
+            Link:=MaterialFile.SubElements.FindShortName(ReverseSlashes(ConcatPaths([GameTexturesPath, TexName]))) as QPixelSet;
 
             // this code was under the check for DefaultImageName below, but might cause an
             // access violation if Link is nil
@@ -1297,9 +1300,9 @@ begin
           else if ShaderType=mjQ3A then
            begin
             // the original code (Quake 3 shader)
-            ShaderFile:=NeedGameFileBase(S, GameShadersPath+Arg, '') as QShaderFile;
+            ShaderFile:=NeedGameFileBase(S, ConcatPaths([GameShadersPath, Arg]), '') as QShaderFile;
             ShaderFile.Acces;  { load the .shader file (if not already loaded) }
-            Link:=ShaderFile.SubElements.FindShortName(GameTexturesPath+TexName) as QPixelSet;
+            Link:=ShaderFile.SubElements.FindShortName(ReverseSlashes(ConcatPaths([GameTexturesPath, TexName]))) as QPixelSet;
 
             // this code was under the check for DefaultImageName below, but might cause an
             // access violation if Link is nil
@@ -1313,7 +1316,7 @@ begin
            Raise EErrorFmt(4461, [ShaderType, 'ShadersType'])
         end
         else  { direct (non-shader) }
-          Link:=NeedGameFileBase(S, GameTexturesPath+TexName+SetupGameSet.Specifics.Values['TextureFormat'], '') as QPixelSet;
+          Link:=NeedGameFileBase(S, ConcatPaths([GameTexturesPath, TexName+SetupGameSet.Specifics.Values['TextureFormat']]), '') as QPixelSet;
 
         Link.AddRef(+1);
         Link.Acces;  { we found the linked texture }
@@ -1339,7 +1342,7 @@ begin
           if Arg='' then
             Raise EError(5518);
 
-          TexList:=NeedGameFileBase(Arg, GameTexturesPath+S+'.wad', '') as QWad;
+          TexList:=NeedGameFileBase(Arg, ConcatPaths([GameTexturesPath, S+'.wad']), '') as QWad;
           TexList.AddRef(+1);
           try
             TexList.Acces;
