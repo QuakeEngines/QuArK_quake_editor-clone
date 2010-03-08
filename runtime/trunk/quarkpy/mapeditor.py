@@ -102,7 +102,7 @@ class MapEditor(BaseEditor):
         #       else:
         #           UsedTexture["a"] = (quarkx.getquakedir()+("/")+quarkx.getbasedir())
         #           try:
-        #               print "mapeditor line 106 the image path",(UsedTexture["a"]+("/")+quarkx.setupsubset()["TexturesPath"]+UsedTextureName)
+        #               print "mapeditor line 106 the image path",(UsedTexture["a"]+("/")+quarkx.setupsubset()["TexturesPath"]+("/")+UsedTextureName)
         #           except:
         #               NoImageFile = 1
                 UsedTexture["a"] = (quarkx.getquakedir()+("/")+quarkx.getbasedir())
@@ -410,6 +410,9 @@ def autosave(editor):
 #
 #
 #$Log$
+#Revision 1.21  2008/12/21 22:29:53  danielpharos
+#Fixed AutoSave-setting not being applied, and removed print-statement accidentally added in 1.19.
+#
 #Revision 1.20  2008/12/03 10:34:06  cdunde
 #Added functions for console logging and clearing of that log to the options menu.
 #
