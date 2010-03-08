@@ -473,10 +473,10 @@ def export_anim(self, file, filename, exp_list):
             parent_index = joints_parent_index[joint_counter]
             if parent_index != -1:
                 #parent_bone = joints[parent_index]
-                MatrixParent = QuArK_frame_matrix[frame_counter][parent_index]
+                ParentMatrix = QuArK_frame_matrix[frame_counter][parent_index]
                 temppos = QuArK_frame_position[frame_counter][joint_counter] - QuArK_frame_position[frame_counter][parent_index]
-                QuArK_frame_position_raw[frame_counter][joint_counter] = (~MatrixParent) * temppos
-                QuArK_frame_matrix_raw[frame_counter][joint_counter] = (~MatrixParent) * QuArK_frame_matrix[frame_counter][joint_counter]
+                QuArK_frame_position_raw[frame_counter][joint_counter] = (~ParentMatrix) * temppos
+                QuArK_frame_matrix_raw[frame_counter][joint_counter] = (~ParentMatrix) * QuArK_frame_matrix[frame_counter][joint_counter]
             else:
                 QuArK_frame_position_raw[frame_counter][joint_counter] = QuArK_frame_position[frame_counter][joint_counter]
                 QuArK_frame_matrix_raw[frame_counter][joint_counter] = QuArK_frame_matrix[frame_counter][joint_counter]
@@ -962,6 +962,9 @@ def UIExportDialog(root, filename, editor):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.6  2010/03/07 09:43:48  cdunde
+# Updates and improvements to both the md5 importer and exporter including animation support.
+#
 # Revision 1.5  2009/08/27 04:55:06  cdunde
 # To add support for exporting other model types as .md5mesh files.
 #
