@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.74  2010/02/21 13:31:06  danielpharos
+Removed the need for the trailling slash of the texture path config setting.
+
 Revision 1.73  2009/09/22 18:13:01  danielpharos
 TList --> TQList
 
@@ -511,7 +514,7 @@ function GameTexturesPath : String;
 begin
   Result:=SetupGameSet.Specifics.Values['TexturesPath'];
   //FIXME: Other code depends on the trailing slash... Bad!
-  IncludeTrailingPathDelimiter(Result);
+  Result:=IncludeTrailingPathDelimiter(Result);
 end;
 
 function GameShadersPath : String;
@@ -523,7 +526,7 @@ begin
     Result:=GameTexturesPath;
   end;
   //FIXME: Other code depends on the trailing slash... Bad!
-  IncludeTrailingPathDelimiter(Result);
+  Result:=IncludeTrailingPathDelimiter(Result);
 end;
 
 function GameMaterialsPath : String;
@@ -535,7 +538,7 @@ begin
     Result:=GameShadersPath;
   end;
   //FIXME: Other code depends on the trailing slash... Bad!
-  IncludeTrailingPathDelimiter(Result);
+  Result:=IncludeTrailingPathDelimiter(Result);
 end;
 
 function ScaleDown(var W, H: Integer) : Boolean;
