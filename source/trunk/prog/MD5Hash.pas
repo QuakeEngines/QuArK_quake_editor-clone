@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2009/07/15 10:38:01  danielpharos
+Updated website link.
+
 Revision 1.6  2009/02/21 17:06:18  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -67,26 +70,34 @@ var
   TimesLoaded: Integer;
   HMd5Hash  : HMODULE;
 
-function InitDllPointer(DLLHandle: HMODULE;APIFuncname:PChar):Pointer;
+function InitDllPointer(DLLHandle: HMODULE; const APIFuncname : String) : Pointer;
 begin
-   result:= GetProcAddress(DLLHandle, APIFuncname);
-   if result=Nil then
-     LogAndRaiseError('API Func "'+APIFuncname+ '" not found in dlls/md5dll.dll');
+  Result := GetProcAddress(DLLHandle, PChar(APIFuncname));
+  if Result=Nil then
+  begin
+    Log(LOG_WARNING, 'Error when calling a Windows API:' + #13#10 +
+                     'Call: GetProcAddress(DLLHandle, "'+APIFuncname+'")' + #13#10 +
+                     'Reason: ' + GetSystemErrorMessage(GetLastError()));
+    LogAndRaiseError('API Func "'+APIFuncname+ '" not found in the MD5DLL library');
+  end;
 end;
 
 function LoadMd5Hash : Boolean;
+var
+  HMd5HashLibraryFilename: String;
 begin
   if (TimesLoaded=0) then
   begin
-    Result:=False;
-
     if (HMd5Hash = 0) then
     begin
-      HMd5Hash := LoadLibrary(PChar(GetQPath(pQuArKDll)+'md5dll.dll'));
+      HMd5HashLibraryFilename := ConcatPaths([GetQPath(pQuArKDll), 'md5dll.dll']);
+      HMd5Hash := LoadLibrary(PChar(HMd5HashLibraryFilename));
       if HMd5Hash = 0 then
       begin
-        LogAndRaiseError('Unable to load dlls/md5dll.dll');
-        Exit;
+        Log(LOG_WARNING, 'Error when calling a Windows API:' + #13#10 +
+                         'Call: LoadLibrary("'+HMd5HashLibraryFilename+'")' + #13#10 +
+                         'Reason: ' + GetSystemErrorMessage(GetLastError()));
+        LogAndRaiseError('Unable to load the MD5DLL library');
       end;
 
       GetFileMd5        := InitDllPointer(HMd5Hash, 'GetFileMd5');
@@ -112,7 +123,12 @@ begin
     if HMd5Hash <> 0 then
     begin
       if FreeLibrary(HMd5Hash) = false then
-        LogAndRaiseError('Unable to unload dlls/md5dll.dll');
+      begin
+        Log(LOG_WARNING, 'Error when calling a Windows API:' + #13#10 +
+                         'Call: FreeLibrary(HMd5Hash)' + #13#10 +
+                         'Reason: ' + GetSystemErrorMessage(GetLastError()));
+        LogAndRaiseError('Unable to unload the MD5DLL library');
+      end;
       HMd5Hash := 0;
 
       GetFileMd5        := nil;
