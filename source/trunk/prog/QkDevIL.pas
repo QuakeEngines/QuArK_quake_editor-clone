@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.25  2009/07/15 10:38:01  danielpharos
+Updated website link.
+
 Revision 1.24  2009/03/16 08:47:21  danielpharos
 Updated to DevIL 1.7.8, added IWI loading, and added many new image loading/saving options.
 
@@ -411,22 +414,35 @@ var
   TimesLoaded: Integer;
   HDevIL : HMODULE;
 
-function InitDllPointer(DLLHandle: HMODULE;APIFuncname:PChar):Pointer;
+function InitDllPointer(DLLHandle: HMODULE; const APIFuncname: String) : Pointer;
 begin
-  result:=GetProcAddress(DLLHandle, APIFuncname);
-  if result=Nil then
-    LogAndRaiseError('API Func "'+APIFuncname+ '" not found in dlls/DevIL.dll');
+  Result := GetProcAddress(DLLHandle, PChar(APIFuncname));
+  if Result = Nil then
+  begin
+    Log(LOG_WARNING, 'Error when calling a Windows API:' + #13#10 +
+                     'Call: GetProcAddress(DLLHandle, "'+APIFuncname+'")' + #13#10 +
+                     'Reason: ' + GetSystemErrorMessage(GetLastError()));
+    LogAndRaiseError('API Func "'+APIFuncname+ '" not found in the DevIL library');
+  end;
 end;
 
 function LoadDevIL : Boolean;
+var
+  DevILLibraryFilename: String;
 begin
   if (TimesLoaded=0) then
   begin
     if (HDevIL = 0) then
     begin
-      HDevIL := LoadLibrary(PChar(GetQPath(pQuArKDll)+'DevIL.dll'));
+      DevILLibraryFilename := ConcatPaths([GetQPath(pQuArKDll), 'DevIL.dll']);
+      HDevIL := LoadLibrary(PChar(DevILLibraryFilename));
       if HDevIL = 0 then
-        LogAndRaiseError('Unable to load dlls/DevIL.dll');
+      begin
+        Log(LOG_WARNING, 'Error when calling a Windows API:' + #13#10 +
+                         'Call: LoadLibrary("'+DevILLibraryFilename+'")' + #13#10 +
+                         'Reason: ' + GetSystemErrorMessage(GetLastError()));
+        LogAndRaiseError('Unable to load the DevIL library');
+      end;
 
       ilInit            := InitDllPointer(HDevIL, 'ilInit');
       ilShutDown        := InitDllPointer(HDevIL, 'ilShutDown');
@@ -486,7 +502,12 @@ begin
       ilShutdown;
 
       if FreeLibrary(HDevIL) = false then
-        LogAndRaiseError('Unable to unload dlls/DevIL.dll');
+      begin
+        Log(LOG_WARNING, 'Error when calling a Windows API:' + #13#10 +
+                         'Call: FreeLibrary(HDevIL)' + #13#10 +
+                         'Reason: ' + GetSystemErrorMessage(GetLastError()));
+        LogAndRaiseError('Unable to unload the DevIL library');
+      end;
       HDevIL := 0;
 
       ilInit                := nil;

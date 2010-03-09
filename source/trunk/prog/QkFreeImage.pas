@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2010/02/16 21:24:34  danielpharos
+Added version number split function.
+
 Revision 1.13  2009/07/15 10:38:01  danielpharos
 Updated website link.
 
@@ -255,11 +258,16 @@ var
   TimesLoaded: Integer;
   HFreeImage : HMODULE;
 
-function InitDllPointer(DLLHandle: HMODULE;APIFuncname:PChar):Pointer;
+function InitDllPointer(DLLHandle: HMODULE; const APIFuncname : String) : Pointer;
 begin
-   result:= GetProcAddress(DLLHandle, APIFuncname);
-   if result=Nil then
-     LogAndRaiseError('API Func "'+APIFuncname+ '" not found in dlls/FreeImage.dll');
+  Result := GetProcAddress(DLLHandle, PChar(APIFuncname));
+  if Result = Nil then
+  begin
+    Log(LOG_WARNING, 'Error when calling a Windows API:' + #13#10 +
+                     'Call: GetProcAddress(DLLHandle, "'+APIFuncname+'")' + #13#10 +
+                     'Reason: ' + GetSystemErrorMessage(GetLastError()));
+    LogAndRaiseError('API Func "'+APIFuncname+ '" not found in the FreeImage library');
+  end;
 end;
 
 procedure FreeImageErrorHandler(fif : FREE_IMAGE_FORMAT; xmessage : PChar);
@@ -269,15 +277,22 @@ end;
 
 function LoadFreeImage : Boolean;
 var
+  FreeImageLibraryFilename: String;
   VersionNumber: TVersionNumber;
 begin
   if (TimesLoaded=0) then
   begin
     if (HFreeImage = 0) then
     begin
-      HFreeImage := LoadLibrary(PChar(GetQPath(pQuArKDll)+'FreeImage.dll'));
+      FreeImageLibraryFilename := ConcatPaths([GetQPath(pQuArKDll), 'FreeImage.dll']);
+      HFreeImage := LoadLibrary(PChar(FreeImageLibraryFilename));
       if HFreeImage = 0 then
-        LogAndRaiseError('Unable to load dlls/FreeImage.dll');
+      begin
+        Log(LOG_WARNING, 'Error when calling a Windows API:' + #13#10 +
+                         'Call: LoadLibrary("'+FreeImageLibraryFilename+'")' + #13#10 +
+                         'Reason: ' + GetSystemErrorMessage(GetLastError()));
+        LogAndRaiseError('Unable to load the FreeImage library');
+      end;
 
       //FreeImage_Initialise   := InitDllPointer(HFreeImage, '_FreeImage_Initialise@4');
       //FreeImage_DeInitialise := InitDllPointer(HFreeImage, '_FreeImage_DeInitialise@0');
@@ -345,7 +360,12 @@ begin
     if HFreeImage <> 0 then
     begin
       if FreeLibrary(HFreeImage) = false then
-        LogAndRaiseError('Unable to unload dlls/FreeImage.dll');
+      begin
+        Log(LOG_WARNING, 'Error when calling a Windows API:' + #13#10 +
+                         'Call: FreeLibrary(HFreeImage)' + #13#10 +
+                         'Reason: ' + GetSystemErrorMessage(GetLastError()));
+        LogAndRaiseError('Unable to unload the FreeImage library');
+      end;
       HFreeImage := 0;
 
       //FreeImage_Initialise            := nil;

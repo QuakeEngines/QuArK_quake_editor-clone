@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.24  2009/10/29 20:31:01  danielpharos
+Fixed bug crashing VTF loading.
+
 Revision 1.23  2009/07/15 10:38:01  danielpharos
 Updated website link.
 
@@ -537,22 +540,35 @@ var
   TimesLoaded: Integer;
   HVTFLib  : HMODULE;
 
-function InitDllPointer(DLLHandle: HMODULE;APIFuncname:PChar):Pointer;
+function InitDllPointer(DLLHandle: HMODULE; const APIFuncname : String) : Pointer;
 begin
-   result:= GetProcAddress(DLLHandle, APIFuncname);
-   if result=Nil then
-     LogAndRaiseError('API Func "'+APIFuncname+ '" not found in dlls/VTFLib.dll');
+  Result := GetProcAddress(DLLHandle, PChar(APIFuncname));
+  if Result = Nil then
+  begin
+    Log(LOG_WARNING, 'Error when calling a Windows API:' + #13#10 +
+                     'Call: GetProcAddress(DLLHandle, "'+APIFuncname+'")' + #13#10 +
+                     'Reason: ' + GetSystemErrorMessage(GetLastError()));
+    LogAndRaiseError('API Func "'+APIFuncname+ '" not found in the VTFLib library');
+  end;
 end;
 
 function LoadVTFLib : Boolean;
+var
+  VTFLibLibraryFilename: String;
 begin
   if (TimesLoaded=0) then
   begin
     if HVTFLib = 0 then
     begin
-      HVTFLib := LoadLibrary(PChar(GetQPath(pQuArKDll)+'VTFLib.dll'));
+      VTFLibLibraryFilename := ConcatPaths([GetQPath(pQuArKDll), 'VTFLib.dll']);
+      HVTFLib := LoadLibrary(PChar(VTFLibLibraryFilename));
       if HVTFLib = 0 then
-        LogAndRaiseError('Unable to load dlls/VTFLib.dll');
+      begin
+        Log(LOG_WARNING, 'Error when calling a Windows API:' + #13#10 +
+                         'Call: LoadLibrary("'+VTFLibLibraryFilename+'")' + #13#10 +
+                         'Reason: ' + GetSystemErrorMessage(GetLastError()));
+        LogAndRaiseError('Unable to load the VTFLib library');
+      end;
 
       vlGetVersion        := InitDllPointer(HVTFLib, 'vlGetVersion');
       //vlGetVersionString  := InitDllPointer(HVTFLib, 'vlGetVersionString');
@@ -623,8 +639,6 @@ begin
       vlMaterialGetParentNode   := InitDllPointer(HVTFLib, 'vlMaterialGetParentNode');
       vlMaterialGetChildNode    := InitDllPointer(HVTFLib, 'vlMaterialGetChildNode');
 
-      //DanielPharos: If one of the API func's fails, we should stop loading, and return False!
-
       if vlGetVersion<127 then
         LogAndRaiseError('VTFLib version mismatch!');
 
@@ -651,7 +665,12 @@ begin
       vlShutdown;
 
       if FreeLibrary(HVTFLib) = false then
-        LogAndRaiseError('Unable to unload dlls/VTFLib.dll');
+      begin
+        Log(LOG_WARNING, 'Error when calling a Windows API:' + #13#10 +
+                         'Call: FreeLibrary(HVTFLib)' + #13#10 +
+                         'Reason: ' + GetSystemErrorMessage(GetLastError()));
+        LogAndRaiseError('Unable to unload the VTFLib library');
+      end;
       HVTFLib := 0;
 
       vlGetVersion      := nil;
@@ -735,6 +754,10 @@ end;
 {-------------------}
 
 initialization
+begin
   HVTFLib:=0;
+end;
 
+finalization
+  UnloadVTFLib(true);
 end.

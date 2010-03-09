@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.24  2010/02/23 18:38:23  danielpharos
+Added LOG_SUBDIRECTORY; not set right now.
+
 Revision 1.23  2010/02/06 15:23:41  danielpharos
 Massive update to GCF file loading. This should fix most "cannot find GCF file" type problems.
 
@@ -157,28 +160,48 @@ var
   GCFFileSize         : function  (pkgfile: PChar) : DWORD	; cdecl;
   GCFPrepList         : function  (packagefile: PChar; textfile: PChar) : Boolean; cdecl;
 
-function InitDllPointer(DLLHandle: HINST;APIFuncname:PChar):Pointer;
+function InitDllPointer(DLLHandle: HINST; const APIFuncname : String) : Pointer;
 begin
-   result:= GetProcAddress(DLLHandle, APIFuncname);
-   if result=Nil then
-     LogAndRaiseError('API Func "'+APIFuncname+ '" not found in dlls/QuArKGCF.dll');
+  Result := GetProcAddress(DLLHandle, PChar(APIFuncname));
+  if Result=Nil then
+  begin
+    Log(LOG_WARNING, 'Error when calling a Windows API:' + #13#10 +
+                     'Call: GetProcAddress(DLLHandle, "'+APIFuncname+'")' + #13#10 +
+                     'Reason: ' + GetSystemErrorMessage(GetLastError()));
+    LogAndRaiseError('API Func "'+APIFuncname+ '" not found in the QuArKGCF library');
+  end;
 end;
 
 procedure initdll;
+var
+  HLLibLibraryFilename: String;
+  QuArKGCFLibraryFilename: String;
 begin
   if Hgcfwrap = 0 then
   begin
-    Hhllibwrap := LoadLibrary(PChar(ConcatPaths([GetQPath(pQuArKDll),'HLLib.dll'])));
+    HLLibLibraryFilename := ConcatPaths([GetQPath(pQuArKDll), 'HLLib.dll']);
+    Hhllibwrap := LoadLibrary(PChar(HLLibLibraryFilename));
     if Hhllibwrap = 0 then
-      LogAndRaiseError('Unable to load dlls/HLLib.dll');
+    begin
+      Log(LOG_WARNING, 'Error when calling a Windows API:' + #13#10 +
+                       'Call: LoadLibrary("'+HLLibLibraryFilename+'")' + #13#10 +
+                       'Reason: ' + GetSystemErrorMessage(GetLastError()));
+      LogAndRaiseError('Unable to load the HLLib library');
+    end;
 
-    Hgcfwrap := LoadLibrary(PChar(ConcatPaths([GetQPath(pQuArKDll),'QuArKGCF.dll'])));
+    QuArKGCFLibraryFilename := ConcatPaths([GetQPath(pQuArKDll), 'QuArKGCF.dll']);
+    Hgcfwrap := LoadLibrary(PChar(QuArKGCFLibraryFilename));
     if Hgcfwrap = 0 then
-      LogAndRaiseError('Unable to load dlls/QuArKGCF.dll');
+    begin
+      Log(LOG_WARNING, 'Error when calling a Windows API:' + #13#10 +
+                       'Call: LoadLibrary("'+QuArKGCFLibraryFilename+'")' + #13#10 +
+                       'Reason: ' + GetSystemErrorMessage(GetLastError()));
+      LogAndRaiseError('Unable to load the QuArKGCF library');
+    end;
 
     APIVersion      := InitDllPointer(Hgcfwrap, 'APIVersion');
     if APIVersion<>RequiredGCFAPI then
-      LogAndRaiseError('dlls/QuArKGCF.dll API version mismatch');
+      LogAndRaiseError('QuArKGCF library API version mismatch');
     SetLogPath      := InitDllPointer(Hgcfwrap, 'SetLogPath');
     Init            := InitDllPointer(Hgcfwrap, 'Init');
     Unload          := InitDllPointer(Hgcfwrap, 'Unload');
@@ -196,7 +219,7 @@ begin
 
     SetLogPath(PChar(GetQPath(pQuArKLog)));
     if Init <> 0 then
-      LogAndRaiseError('Unable to initialize dlls/QuArKGCF.dll');
+      LogAndRaiseError('Unable to initialize QuArKGCF library');
   end;
 end;
 
@@ -207,8 +230,14 @@ begin
     Unload;
 
     if FreeLibrary(Hgcfwrap)=false then
-      LogAndRaiseError('Unable to unload dlls/QuArKGCF.dll');
+    begin
+      Log(LOG_WARNING, 'Error when calling a Windows API:' + #13#10 +
+                       'Call: FreeLibrary(Hgcfwrap)' + #13#10 +
+                       'Reason: ' + GetSystemErrorMessage(GetLastError()));
+      LogAndRaiseError('Unable to unload the QuArKGCF library');
+    end;
     Hgcfwrap := 0;
+
     APIVersion      := nil;
     SetLogPath      := nil;
     Init            := nil;
@@ -229,7 +258,12 @@ begin
   if Hhllibwrap <> 0 then
   begin
     if FreeLibrary(Hhllibwrap)=false then
-      LogAndRaiseError('Unable to unload dlls/HLLib.dll');
+    begin
+      Log(LOG_WARNING, 'Error when calling a Windows API:' + #13#10 +
+                       'Call: FreeLibrary(Hhllibwrap)' + #13#10 +
+                       'Reason: ' + GetSystemErrorMessage(GetLastError()));
+      LogAndRaiseError('Unable to unload the HLLib library');
+    end;
     Hhllibwrap := 0;
   end;
 end;
