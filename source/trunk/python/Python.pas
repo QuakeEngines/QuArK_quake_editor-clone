@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.45  2010/02/21 21:16:31  danielpharos
+Allow future versions of Python again (with warning).
+
 Revision 1.44  2010/02/16 21:24:34  danielpharos
 Added version number split function.
 
@@ -741,8 +744,6 @@ var
  {-------------------}
 
 function InitializePython : Integer;
-type
-  PPointer = ^Pointer;
 var
   obj1: PyObject;
   I: Integer;
