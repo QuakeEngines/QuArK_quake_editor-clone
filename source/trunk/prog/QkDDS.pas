@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.27  2009/07/15 10:38:01  danielpharos
+Updated website link.
+
 Revision 1.26  2009/03/16 08:47:21  danielpharos
 Updated to DevIL 1.7.8, added IWI loading, and added many new image loading/saving options.
 
@@ -470,11 +473,11 @@ begin
         end;
       end;
 
-      DumpFileName:=GetQPath(pQuArK)+'0';
+      DumpFileName:=ConcatPaths([GetQPath(pQuArK), '0']);
       while FileExists(DumpFileName+'.tga') or FileExists(DumpFileName+'.dds') do
       begin
         //FIXME: Ugly way of creating a unique filename...
-        DumpFileName:=GetQPath(pQuArK)+IntToStr(Random(999999));
+        DumpFileName:=ConcatPaths([GetQPath(pQuArK), IntToStr(Random(999999))]);
       end;
       if ilSave(IL_TGA, PChar(DumpFileName+'.tga'))=IL_FALSE then
       begin
@@ -487,8 +490,8 @@ begin
 
       try
         //DanielPharos: Now convert the TGA to DDS with NVIDIA's DDS tool...
-        if FileExists(GetQPath(pQuArKDll)+'nvdxt.exe')=false then
-          LogAndRaiseError('Unable to save DDS file. dlls/nvdxt.exe not found.');
+        if FileExists(ConcatPaths([GetQPath(pQuArKDll), 'nvdxt.exe']))=false then
+          LogAndRaiseError('Unable to save DDS file. NVDXT not found.');
 
         case TexFormat of
         0: TexFormatParameter:='dxt1c';
@@ -517,7 +520,7 @@ begin
         NVDXTStartupInfo.dwFlags:=STARTF_USESHOWWINDOW;
         NVDXTStartupInfo.wShowWindow:=SW_HIDE+SW_MINIMIZE;
         try
-          if Windows.CreateProcess(PChar(GetQPath(pQuArKDll)+'nvdxt.exe'), PChar('nvdxt.exe -rescale nearest -file "'+DumpFileName+'.tga" -output "'+DumpFileName+'.dds" -'+TexFormatParameter+' -'+QualityParameter), nil, nil, false, 0, nil, PChar(GetQPath(pQuArKDll)), NVDXTStartupInfo, NVDXTProcessInformation)=false then
+          if Windows.CreateProcess(PChar(ConcatPaths([GetQPath(pQuArKDll), 'nvdxt.exe'])), PChar('nvdxt.exe -rescale nearest -file "'+DumpFileName+'.tga" -output "'+DumpFileName+'.dds" -'+TexFormatParameter+' -'+QualityParameter), nil, nil, false, 0, nil, PChar(GetQPath(pQuArKDll)), NVDXTStartupInfo, NVDXTProcessInformation)=false then
             LogAndRaiseError('Unable to save DDS file. Call to CreateProcess failed.');
 
           //DanielPharos: This is kinda dangerous, but NVDXT should exit rather quickly!
