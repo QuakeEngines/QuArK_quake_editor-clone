@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.28  2010/02/21 19:57:32  danielpharos
+Fixed a Python reference count leak.
+
 Revision 1.27  2009/10/29 20:40:04  danielpharos
 Fixed naming conflict dictspec 'rotmatrix'.
 
@@ -199,7 +202,7 @@ begin
 end;
 
 const
-  PosSpec = 'position';
+  PosSpec = 'sys_position';
   PosSpecLen = length(PosSpec+'=');
   RotSpec = 'sys_rotmatrix';
   RotSpecLen = length(RotSpec+'=');
@@ -213,15 +216,15 @@ var
   CVert: vec3_p;
   s: string;
 begin
-  S:=FloatSpecNameOf(PosSpec);
+  S:=PosSpec;
   SetLength(S, PosSpecLen+SizeOf(vec3_t));
   PChar(CVert):=PChar(S)+PosSpecLen;
   CVert^[0]:=P[0];
   CVert^[1]:=P[1];
   CVert^[2]:=P[2];
-  if Specifics.IndexofName(FloatSpecNameOf(PosSpec))<>-1 then
+  if Specifics.IndexofName(PosSpec)<>-1 then
     //@ BAD CODING TACTIC!
-    Specifics.Delete(Specifics.IndexofName(FloatSpecNameOf(PosSpec)));
+    Specifics.Delete(Specifics.IndexofName(PosSpec));
   Specifics.Add(s);
 end;
 
@@ -230,7 +233,7 @@ var
   s: string;
 begin
   Result:=nil;
-  S:=GetSpecArg(FloatSpecNameOf(PosSpec));
+  S:=GetSpecArg(PosSpec);
   if S='' then
     Exit;
   if Length(S) < PosSpecLen + SizeOf(vec3_t) then
@@ -243,13 +246,13 @@ var
   CVert: vec3_p;
   s: string;
 begin
-  S:=FloatSpecNameOf(RotSpec);
+  S:=RotSpec;
   SetLength(S, RotSpecLen+SizeOf(TMatrixTransformation));
   PChar(CVert):=PChar(S)+RotSpecLen;
   Move(P, CVert^, Sizeof(TMatrixTransformation));
-  if Specifics.IndexofName(FloatSpecNameOf(RotSpec))<>-1 then
+  if Specifics.IndexofName(RotSpec)<>-1 then
     //@ BAD CODING TACTIC!
-    Specifics.Delete(Specifics.IndexofName(FloatSpecNameOf(RotSpec)));
+    Specifics.Delete(Specifics.IndexofName(RotSpec));
   Specifics.Add(s);
 end;
 
@@ -258,7 +261,7 @@ var
   s: string;
 begin
   P:=nil;
-  S:=GetSpecArg(FloatSpecNameOf(RotSpec));
+  S:=GetSpecArg(RotSpec);
   if S='' then
     Exit;
   if Length(S) < RotSpecLen + SizeOf(TMatrixTransformation) then
@@ -421,7 +424,7 @@ begin
   if not Result then begin
     case attr[0] of
       'p': if StrComp(attr, 'position')=0 then begin
-        S0:=FloatSpecNameOf(PosSpec);
+        S0:=PosSpec;
         S:=S0+'=';
         SetLength(S, PosSpecLen+SizeOf(vec3_t));
         PChar(DestP):=PChar(S)+PosSpecLen;
@@ -435,15 +438,15 @@ begin
           DestP^[1]:=Y;
           DestP^[2]:=Z;
         end;
-        if Specifics.IndexofName(FloatSpecNameOf(PosSpec))<>-1 then
+        if Specifics.IndexofName(PosSpec)<>-1 then
           //@ BAD CODING TACTIC!
-          Specifics.Delete(Specifics.IndexofName(FloatSpecNameOf(PosSpec)));
+          Specifics.Delete(Specifics.IndexofName(PosSpec));
         Specifics.Add(S);
         Result:=True;
         Exit;
       end;
       'r': if StrComp(attr, 'rotmatrix')=0 then begin
-        S0:=FloatSpecNameOf(RotSpec);
+        S0:=RotSpec;
         S:=S0+'=';
         SetLength(S, RotSpecLen+SizeOf(TMatrixTransformation));
         PChar(DestM):=PChar(S)+RotSpecLen;
@@ -463,9 +466,9 @@ begin
           DestM^[3][2]:=M[3][2];
           DestM^[3][3]:=M[3][3];
         end;
-        if Specifics.IndexofName(FloatSpecNameOf(RotSpec))<>-1 then
+        if Specifics.IndexofName(RotSpec)<>-1 then
           //@ BAD CODING TACTIC!
-          Specifics.Delete(Specifics.IndexofName(FloatSpecNameOf(RotSpec)));
+          Specifics.Delete(Specifics.IndexofName(RotSpec));
         Specifics.Add(S);
         Result:=True;
         Exit;
