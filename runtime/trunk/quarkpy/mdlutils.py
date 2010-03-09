@@ -2513,8 +2513,8 @@ def removebone(editor, bonename, undo, list, bonelist):
                 del editor.ModelComponentList[comp]['bonevtxlist'][bonename]
                 if len(editor.ModelComponentList[comp]['bonevtxlist']) == 0:
                     del editor.ModelComponentList[comp]['bonevtxlist']
-                if len(editor.ModelComponentList[comp.name]) == 0:
-                    del editor.ModelComponentList[comp.name]
+                if len(editor.ModelComponentList[comp]) == 0:
+                    del editor.ModelComponentList[comp]
     group = editor.Root.dictitems['Skeleton:bg']
     for bone in bonelist:
         if bone.dictspec['parent_name'] == "None":
@@ -2845,6 +2845,7 @@ def assign_release_vertices(editor, bone, comp, vtxsellist):
     if len(new_bone.vtx_pos) == 0:
         new_bone.vtx_pos = old_vertices
         new_bone['component'] = comp.name
+        # Dupe call but needs to be here to update the bone in case it is not selected in the tree-view.
         Rebuild_Bone(editor, new_bone, editor.Root.currentcomponent.currentframe)
     # This section updates the "Vertex Weights Dialog" if it is opened and needs to update.
     formlist = quarkx.forms(1)
@@ -4140,6 +4141,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.125  2009/11/16 05:35:49  cdunde
+#Comment clarification update.
+#
 #Revision 1.124  2009/11/09 02:17:31  cdunde
 #Fixes for individual bone selection and handle color change.
 #
