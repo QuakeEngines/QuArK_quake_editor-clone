@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2010/03/09 21:08:56  danielpharos
+Added additional logging and small cleanup.
+
 Revision 1.14  2010/02/16 21:24:34  danielpharos
 Added version number split function.
 
@@ -227,7 +230,7 @@ var
   FreeImage_TellMemory: function (stream : FIMEMORY) : LongInt; stdcall;
   FreeImage_SeekMemory: function (stream : FIMEMORY; offset : LongInt; origin : Integer) : BOOL; stdcall;
   FreeImage_ReadMemory: function (buffer : PByte; size : Cardinal; count : Cardinal; stream : FIMEMORY) : Cardinal; stdcall;
-  FreeImage_WriteMemory: function (const buffer : PByte; size : Cardinal; count : Cardinal; stream : FIMEMORY) : Cardinal; stdcall;
+  //FreeImage_WriteMemory: function (const buffer : PByte; size : Cardinal; count : Cardinal; stream : FIMEMORY) : Cardinal; stdcall;
   FreeImage_GetBits: function (dib : FIBITMAP) : PByte; stdcall;
   //FreeImage_GetBPP: function (dib : FIBITMAP) : Cardinal; stdcall;
   FreeImage_GetWidth: function (dib : FIBITMAP) : Cardinal; stdcall;
