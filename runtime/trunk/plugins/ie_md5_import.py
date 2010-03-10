@@ -548,6 +548,7 @@ def load_md5(md5_filename, basepath, actionname):
 
                 tempmatrix = md5_bones[bone_counter].bindmat
                 new_bone['rotmatrix'] = (tempmatrix[0][0], tempmatrix[1][0], tempmatrix[2][0], tempmatrix[0][1], tempmatrix[1][1], tempmatrix[2][1], tempmatrix[0][2], tempmatrix[1][2], tempmatrix[2][2])
+                new_bone.rotmatrix = quarkx.matrix((tempmatrix[0][0], tempmatrix[1][0], tempmatrix[2][0]), (tempmatrix[0][1], tempmatrix[1][1], tempmatrix[2][1]), (tempmatrix[0][2], tempmatrix[1][2], tempmatrix[2][2]))
                 QuArK_bones = QuArK_bones + [new_bone]
                 #next line
                 line_counter+=1
@@ -1044,8 +1045,8 @@ def load_md5(md5_filename, basepath, actionname):
         editor.ModelComponentList['bonelist'][current_bone.name]['type'] = "md5"
         editor.ModelComponentList['bonelist'][current_bone.name]['frames'] = {}
         bone_data = {}
-        bone_data['position'] = current_bone['position']
-        bone_data['rotmatrix'] = current_bone['rotmatrix']
+        bone_data['position'] = current_bone.position.tuple
+        bone_data['rotmatrix'] = current_bone.rotmatrix.tuple
         editor.ModelComponentList['bonelist'][current_bone.name]['frames']['meshframe:mf'] = bone_data
 
     # Section below sets up the QuArK editor.ModelComponentList for each mesh.
@@ -1380,7 +1381,7 @@ class md5anim:
                 editor.ModelComponentList['bonelist'][current_bone.name]['frames'][framename + ':mf'] = {}
                 editor.ModelComponentList['bonelist'][current_bone.name]['frames'][framename + ':mf']['position'] = QuArK_frame_position[frame_counter][bone_counter].tuple
                 rotmatrix = QuArK_frame_matrix[frame_counter][bone_counter].tuple
-                rotmatrix = (rotmatrix[0][0], rotmatrix[0][1], rotmatrix[0][2], rotmatrix[1][0], rotmatrix[1][1], rotmatrix[1][2], rotmatrix[2][0], rotmatrix[2][1], rotmatrix[2][2])
+                rotmatrix = ((rotmatrix[0][0], rotmatrix[0][1], rotmatrix[0][2]), (rotmatrix[1][0], rotmatrix[1][1], rotmatrix[1][2]), (rotmatrix[2][0], rotmatrix[2][1], rotmatrix[2][2]))
                 editor.ModelComponentList['bonelist'][current_bone.name]['frames'][framename + ':mf']['rotmatrix'] = rotmatrix
 
         editor.ok(undo, "ANIM " + filename + " loaded")
@@ -1761,6 +1762,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.26  2010/03/07 09:43:48  cdunde
+# Updates and improvements to both the md5 importer and exporter including animation support.
+#
 # Revision 1.25  2009/08/28 07:21:34  cdunde
 # Minor comment addition.
 #

@@ -104,11 +104,7 @@ def inverse_matrix(self):
             bonematrix = self.editor.ModelComponentList['bonelist'][self.bones[bone].name]['bonematrix']
         except:
             bonematrix = self.bones[bone].rotmatrix.tuple
-        for item in bonematrix:
-            temp = []
-            for amt in item:
-                temp = temp + [amt]
-            bm = bm + [temp]
+        bm = bonematrix
         worklist[0][0] = ((bm[1][1]*bm[2][2]) - (bm[1][2]*bm[2][1])) * 1
         worklist[0][1] = ((bm[1][0]*bm[2][2]) - (bm[1][2]*bm[2][0])) * -1
         worklist[0][2] = ((bm[1][0]*bm[2][1]) - (bm[1][1]*bm[2][0])) * 1
@@ -263,7 +259,7 @@ def export_mesh(self, file, filename, exp_list):
         bone_pos = bone_data['position']
         bone_rot = bone_data['rotmatrix']
         joint_data = joint_data + [(bone_pos, bone_rot)]
-        bone_rot = ((bone_rot[0], bone_rot[1], bone_rot[2], 0.0), (bone_rot[3], bone_rot[4], bone_rot[5], 0.0), (bone_rot[6], bone_rot[7], bone_rot[8], 0.0), (0.0, 0.0, 0.0, 1.0))
+        bone_rot = ((bone_rot[0][0], bone_rot[0][1], bone_rot[0][2], 0.0), (bone_rot[1][0], bone_rot[1][1], bone_rot[1][2], 0.0), (bone_rot[2][0], bone_rot[2][1], bone_rot[2][2], 0.0), (0.0, 0.0, 0.0, 1.0))
         bone_rot = matrix2quaternion(bone_rot)
         bone_pos0 = ie_utils.NicePrintableFloat(bone_pos[0])
         bone_pos1 =  ie_utils.NicePrintableFloat(bone_pos[1])
@@ -395,10 +391,10 @@ def export_mesh(self, file, filename, exp_list):
             weight_value = ie_utils.NicePrintableFloat(weight[2])
             current_vertex = vertices[vert]
             bone_pos = joint_data[bone_index][0]
-            bone_pos = quarkx.vect(bone_pos[0], bone_pos[1], bone_pos[2])
+            bone_pos = quarkx.vect(bone_pos)
             bone_rot = joint_data[bone_index][1]
-            bone_rot = quarkx.matrix((bone_rot[0], bone_rot[1], bone_rot[2]), (bone_rot[3], bone_rot[4], bone_rot[5]), (bone_rot[6], bone_rot[7], bone_rot[8]))
-            current_vertex = (~bone_rot) * (current_vertex - bone_pos) #FIXME: TEST THIS!
+            bone_rot = quarkx.matrix(bone_rot)
+            current_vertex = (~bone_rot) * (current_vertex - bone_pos)
             current_vertex = current_vertex.tuple
             current_vertex0 = ie_utils.NicePrintableFloat(current_vertex[0])
             current_vertex1 = ie_utils.NicePrintableFloat(current_vertex[1])
@@ -458,8 +454,8 @@ def export_anim(self, file, filename, exp_list):
             bone_data = self.editor.ModelComponentList['bonelist'][current_joint.name]['frames'][frames[frame_counter+2].name]
             bone_pos = bone_data['position']
             bone_rot = bone_data['rotmatrix']
-            QuArK_frame_position[frame_counter][joint_counter] = quarkx.vect(bone_pos[0], bone_pos[1], bone_pos[2])
-            QuArK_frame_matrix[frame_counter][joint_counter] = quarkx.matrix((bone_rot[0], bone_rot[1], bone_rot[2]), (bone_rot[3], bone_rot[4], bone_rot[5]), (bone_rot[6], bone_rot[7], bone_rot[8]))
+            QuArK_frame_position[frame_counter][joint_counter] = quarkx.vect(bone_pos)
+            QuArK_frame_matrix[frame_counter][joint_counter] = quarkx.matrix(bone_rot)
 
     # Calculate all the MD5 animation data
     QuArK_frame_position_raw = [[]]*NumberOfFrames
@@ -962,6 +958,9 @@ def UIExportDialog(root, filename, editor):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.7  2010/03/08 02:21:18  cdunde
+# Variable name correction.
+#
 # Revision 1.6  2010/03/07 09:43:48  cdunde
 # Updates and improvements to both the md5 importer and exporter including animation support.
 #

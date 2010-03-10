@@ -4054,6 +4054,12 @@ class BoneHandle(qhandles.GenericHandle):
                 newmesh.currentframe = newmesh.dictitems["Frames:fg"].dictitems[oldmesh.currentframe.name]
                 newmesh.currentframe.vertices = self.newverticespos[meshname]
                 undo.exchange(oldmesh, newmesh)
+        framename = editor.Root.currentcomponent.currentframe.name
+        for bone in new:
+            if editor.ModelComponentList.has_key('bonelist') and editor.ModelComponentList['bonelist'].has_key(bone.name) and editor.ModelComponentList['bonelist'][bone.name].has_key('frames') and editor.ModelComponentList['bonelist'][bone.name]['frames'].has_key(framename):
+                editor.ModelComponentList['bonelist'][bone.name]['frames'][framename]['position'] = bone.position.tuple
+                if bone.name == self.bone.name and isinstance(self, BoneCornerHandle):
+                    editor.ModelComponentList['bonelist'][bone.name]['frames'][framename]['rotmatrix'] = bone.rotmatrix.tuple
         editor.ok(undo, undomsg)
 
 def DrawBoneHandle(p, cv, color, scale, handle_scale):
@@ -4976,11 +4982,9 @@ class BoneCornerHandle(BoneHandle):
         for obj in list:
             oldposrot[obj] = (obj.position, obj.rotmatrix)
         for obj in list:
-            from math import sqrt
-            obj.rotmatrix = changedradius * quarkx.matrix((sqrt(2)/2, -sqrt(2)/2, 0), (sqrt(2)/2, sqrt(2)/2, 0), (0, 0, 1))
-            # To update the rotmatrix for this drag.
-    #        rm = m.tuple
-    #        obj['rotmatrix'] = (rm[0][0], rm[0][1], rm[0][2], rm[1][0], rm[1][1], rm[1][2], rm[2][0], rm[2][1], rm[2][2])
+            # To update the rotmatrix of the drag handle ONLY for this drag.
+            if obj.name == self.bone.name:
+                obj.rotmatrix = changedradius * m
             if obj != self.bone:
                 changedpos = obj.position - rotationorigin
                 changedpos = changedradius * m * changedpos
@@ -5327,6 +5331,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.197  2010/02/03 08:41:14  cdunde
+#Fix for bone corner handle not rotating if assigned vertexes do not have a weight_value.
+#
 #Revision 1.196  2010/01/22 22:07:33  cdunde
 #Fix by DanielPharos for bone handles offset updating after corner handle drag.
 #
