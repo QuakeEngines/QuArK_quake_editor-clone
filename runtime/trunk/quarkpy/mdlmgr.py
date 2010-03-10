@@ -1775,6 +1775,7 @@ class ModelLayout(BaseLayout):
                 for item in self.explorer.sellist:
                     if item.type == ':bg' or item.type == ':bone':
                         if item.type == ':bone' and self.explorer.sellist[1].type == ':mf':
+                            # Dupe call but needs to be here to update Specifics page data form called next.
                             Rebuild_Bone(self.editor, item, self.explorer.sellist[1])
                     else:
                         fs = item
@@ -1873,6 +1874,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.116  2010/02/03 08:44:27  cdunde
+#Fix for loss of changed weight values due to pickle module loading old ModelComponentList.
+#
 #Revision 1.115  2009/11/09 06:58:01  cdunde
 #Hopefully, temp fix until source code fixed, for binary data wiping out dictspec data.
 #
