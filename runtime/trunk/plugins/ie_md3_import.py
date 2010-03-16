@@ -71,7 +71,7 @@ def Decode(latlng):
 class md3Vert(object):
     __slots__ = 'xyz', 'normal', 'binaryFormat'
 
-    binaryFormat = "<3hh"
+    binaryFormat = "<3hh" # Each h = 2 bytes.
 
     def __init__(self):
         self.xyz = [0, 0, 0]
@@ -90,7 +90,7 @@ class md3Vert(object):
 class md3TexCoord(object):
     __slots__ = 'u', 'v', 'binaryFormat'
 
-    binaryFormat = "<2f"
+    binaryFormat = "<2f" # Each f = 4 bytes.
 
     def __init__(self):
         self.u = 0.0
@@ -107,7 +107,7 @@ class md3TexCoord(object):
 class md3Triangle(object):
     __slots__ = 'indexes', 'binaryFormat'
 
-    binaryFormat = "<3i"
+    binaryFormat = "<3i" # Each i = 4 bytes.
 
     def __init__(self):
         self.indexes = [ 0, 0, 0 ]
@@ -124,7 +124,7 @@ class md3Triangle(object):
 class md3Shader(object):
     __slots__ = 'name', 'index', 'binaryFormat'
 
-    binaryFormat = "<%dsi" % MAX_QPATH
+    binaryFormat = "<%dsi" % MAX_QPATH  # name, then 1 int
 
     def __init__(self):
         self.name = ""
@@ -144,7 +144,7 @@ class md3Surface(object):
         'ofsTriangles', 'ofsShaders', 'ofsUV', 'ofsVerts', 'ofsEnd', 'shaders', 'triangles', 'uv', \
         'verts', 'binaryFormat'
 
-    binaryFormat = "<4s%ds10i" % MAX_QPATH  # 1 int, name, then 10 ints
+    binaryFormat = "<4s%ds10i" % MAX_QPATH  # 1 int, name, then 10 ints * 4 bytes per int
 
     def __init__(self):
         self.ident = ""
@@ -182,17 +182,17 @@ class md3Surface(object):
         self.ofsVerts = data[10]
         self.ofsEnd = data[11]
 
-        # load the tri info
-        file.seek(ofsBegin + self.ofsTriangles, 0)
-        for i in xrange(self.numTriangles):
-            self.triangles.append(md3Triangle())
-            self.triangles[i].Load(file)
-
         # load the shader info
         file.seek(ofsBegin + self.ofsShaders, 0)
         for i in xrange(self.numShaders):
             self.shaders.append(md3Shader())
             self.shaders[i].Load(file)
+
+        # load the tri info
+        file.seek(ofsBegin + self.ofsTriangles, 0)
+        for i in xrange(self.numTriangles):
+            self.triangles.append(md3Triangle())
+            self.triangles[i].Load(file)
 
         # load the uv info
         file.seek(ofsBegin + self.ofsUV, 0)
@@ -217,7 +217,7 @@ class md3Surface(object):
 class md3Tag(object):
     __slots__ = 'name', 'origin', 'axis', 'binaryFormat'
 
-    binaryFormat="<%ds3f9f" % MAX_QPATH
+    binaryFormat="<%ds3f9f" % MAX_QPATH  # name, then 12 ints * 4 bytes per int
 
     def __init__(self):
         self.name = ""
@@ -246,7 +246,7 @@ class md3Tag(object):
 class md3Frame(object):
     __slots__ = 'mins', 'maxs', 'localOrigin', 'radius', 'name', 'binaryFormat'
 
-    binaryFormat="<3f3f3ff16s"
+    binaryFormat="<3f3f3ff16s" # 10 f * 4 bytes per f + 16 s * 1 byte per s
 
     def __init__(self):
         self.mins = [0, 0, 0]
@@ -277,7 +277,7 @@ class md3Object(object):
         'ident', 'version', 'name', 'flags', 'numFrames', 'numTags', 'numSurfaces', 'numSkins', \
         'ofsFrames', 'ofsTags', 'ofsSurfaces', 'ofsEnd', 'frames', 'tags', 'surfaces', 'binaryFormat'
 
-    binaryFormat="<4si%ds9i" % MAX_QPATH  # little-endian (<), 17 integers (17i)
+    binaryFormat="<4si%ds9i" % MAX_QPATH  # little-endian (<), 4 char[] string, 1 int, size of string 'name' max 64 char[], integers (9i)
 
     def __init__(self):
         self.ident = ""
@@ -428,7 +428,7 @@ def Import(basepath, filename):
                 frame['Vertices'] = mesh
                 if i == 0:
                     baseframe = frame.copy()
-                    baseframe.shortname = 'Base Frame'
+                    baseframe.shortname = 'baseframe'
                 framesgroup.appenditem(frame)
                 if i == surface.numFrames-1:
                     if old_torso_tag_frames is not None:
@@ -444,7 +444,7 @@ def Import(basepath, filename):
         else: # Make a baseframe for this model if no animation frames.
             verts = []
             verts.extend( [surface.verts[i].xyz for i in xrange(surface.numVerts)] )
-            frame = quarkx.newobj('Base Frame:mf')
+            frame = quarkx.newobj('baseframe:mf')
             mesh = ()
             for vert in verts:
                 # This is a new vertex, so we add it to the frame['Vertices'] mesh
@@ -733,12 +733,6 @@ def Import(basepath, filename):
         if skinsize == (0, 0):
             skinsize = (256, 256)
 
-        # Get the UV's as needed to make the "Tris".
-    #    for i in xrange(len(verts)):
-    #        print "i", i
-    #        print "mormal", Decode(surface.verts[i].normal)  ### QUESTION: do we need these normals in QuArK right now if the faces are correct (and they are) ?
-    #        print "u, v", surface.uv[i].u, surface.uv[i].v
-
         ###  Create the Component's "Tris", this needs to be in binary so we use the 'struct' function.
         faces = []
         faces.extend([surface.triangles[i].indexes for i in xrange(surface.numTriangles)])
@@ -774,24 +768,6 @@ def Import(basepath, filename):
         Component.appenditem(skingroup)
         Component.appenditem(framesgroup)
         ComponentList = ComponentList + [Component]
-
-    #    if surface.numFrames > 1 :
-    #        meshKey = mesh.key
-    #        meshKey.ipo = Blender.Ipo.New('Key', surface.name + "_ipo")
-
-    #        index = 1
-    #        for curveName in meshKey.ipo.curveConsts :
-                #print curveName
-    #            meshKey.ipo.addCurve(curveName)
-    #            meshKey.ipo[curveName].interpolation=Blender.IpoCurve.InterpTypes.CONST
-    #            meshKey.ipo[curveName].addBezier((0,0))
-    #            meshKey.ipo[curveName].addBezier((index,1))
-    #            meshKey.ipo[curveName].addBezier((index+1,0))
-    #            index+=1
-
-        # select all and remove doubles
-        #mesh.sel=1
-        #mesh.remDoubles(0.0)
 
     # create tags
     tagsgroup = []
@@ -849,29 +825,7 @@ def Import(basepath, filename):
         else:
             tag_comp['Tags'] = tag_comp.dictspec['Tags'] + ", " + tag.name
 
-        # this should be an Empty object
-      #  blenderTag = Blender.Object.New("Empty", tag.name);
-      #  scene.link(blenderTag)
-      #  blenderTag.setLocation(tag.origin)
-
         if surface.numFrames > 0 :
-            # set ipo
-          #  ipo = Blender.Ipo.New('Object', tag.name + "_ipo")
-          #  locX = ipo.addCurve('LocX')
-          #  locY = ipo.addCurve('LocY')
-          #  locZ = ipo.addCurve('LocZ')
-          #  rotX = ipo.addCurve('RotX')
-          #  rotY = ipo.addCurve('RotY')
-          #  rotZ = ipo.addCurve('RotZ')
-          #  locX.interpolation=Blender.IpoCurve.InterpTypes.CONST
-          #  locY.interpolation=Blender.IpoCurve.InterpTypes.CONST
-          #  locZ.interpolation=Blender.IpoCurve.InterpTypes.CONST
-          #  rotX.interpolation=Blender.IpoCurve.InterpTypes.CONST
-          #  rotY.interpolation=Blender.IpoCurve.InterpTypes.CONST
-          #  rotZ.interpolation=Blender.IpoCurve.InterpTypes.CONST
-            #set ipo for tag
-          #  blenderTag.setIpo(ipo)
-
             for j in xrange(md3.numFrames):
                 try:
                     tag = md3.tags[j * md3.numTags + i]
@@ -891,7 +845,7 @@ def Import(basepath, filename):
                 tagframe['rotmatrix'] = (tag.axis[0], tag.axis[1], tag.axis[2], tag.axis[3], tag.axis[4], tag.axis[5], tag.axis[6], tag.axis[7], tag.axis[8])
                 if j == 0:
                     baseframe = tagframe.copy()
-                    baseframe.shortname = "Tag Base Frame"
+                    baseframe.shortname = "Tag baseframe"
                     if surface.numFrames == 1:
                         newtag.appenditem(baseframe)
                         continue
@@ -907,17 +861,6 @@ def Import(basepath, filename):
                                 newtag.appenditem(extra_tagframe)
                     else:
                         newtag.appenditem(baseframe)
-
-              #  rotation = Blender.Mathutils.Matrix(forward, left, up)
-              #  rot_Euler=rotation.toEuler()
-
-              #  locX.addBezier((j+1,tag.origin[0]))
-              #  locY.addBezier((j+1,tag.origin[1]))
-              #  locZ.addBezier((j+1,tag.origin[2]))
-                #blender: 100 degrees -> 10 units in IPO -> BLARGH
-              #  rotX.addBezier((j+1,rot_Euler.x/10))
-              #  rotY.addBezier((j+1,rot_Euler.y/10))
-              #  rotZ.addBezier((j+1,rot_Euler.z/10))
 
     ie_utils.default_end_logging(filename, "IM", starttime) ### Use "EX" for exporter text, "IM" for importer text.
 
@@ -1417,6 +1360,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.19  2009/12/21 15:13:43  cdunde
+# Update to try and handle different folder names for mods.
+#
 # Revision 1.18  2009/10/16 00:59:47  cdunde
 # Saving old matrix data for CFG rotation in the editor.
 # Add animation rotation of weapon, for .md3 imports, when attached to model.
