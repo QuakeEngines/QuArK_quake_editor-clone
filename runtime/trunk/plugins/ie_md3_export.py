@@ -42,6 +42,9 @@ MAX_QPATH = 64
 MD3_XYZ_SCALE = (1.0 / 64.0)
 
 
+######################################################
+# Exporter Functions section
+######################################################
 # copied from PhaethonH <phaethon@linux.ucla.edu> md3.py
 def Encode(normal):
     x, y, z = normal
@@ -91,6 +94,29 @@ def RadiusFromBounds(mins, maxs):
     return VectorLength(corner)
 
 
+######################################################
+# WRITES MESH SHADERS SECTION
+######################################################
+def write_shaders(filename, comp_list):
+    shaders = []
+    for comp in comp_list:
+        if comp.dictspec.has_key('shader_name') and comp.dictspec['shader_name'] != "None" and not comp.dictspec['shader_name'] in shaders:
+            if len(shaders) == 0:
+                shadername = filename.replace(".md3", ".shader")
+                shaderfile = open(shadername, "w")
+            shaders = shaders + [comp.dictspec['shader_name']]
+            shader = comp.dictspec['mesh_shader']
+            shader = shader.replace("\r\n", "\n")
+            shaderfile.write(shader)
+    try:
+        shaderfile.close()
+    except:
+        pass
+
+
+######################################################
+# EXPORTER CLASS SECTION
+######################################################
 class md3Vert:
     xyz = [0, 0, 0]
     normal = 0
@@ -297,7 +323,7 @@ class md3Frame:
 
 
 ######################################################
-# Fill MD3 data structure
+# FILL MD3 DATA STRUCTURE
 ######################################################
 def fill_md3(md3, QuArK_objects):
     # Fill the md3Object header values.
@@ -645,13 +671,13 @@ class ExportSettingsDlg(quarkpy.qmacro.dialogbox):
         quarkx.globalaccept()
         root = self.root
 
-        if len(self.filename) > MAX_QPATH:
-            quarkx.msgbox("EXPORT CANCELED:\n\nFull path and file name exceeded\nMD3 file limit of 64 characters & spaces.\n\nNothing was written to the\n    " + self.filename + "\nfile and it remains unchanged.", quarkpy.qutils.MT_INFORMATION, quarkpy.qutils.MB_OK)
-            return
         if self.src["makefolder"] is not None:
             if not os.path.exists(self.newfiles_folder):
                 os.mkdir(self.newfiles_folder)
             else:
+                if len(self.filename) > MAX_QPATH:
+                    quarkx.msgbox("EXPORT CANCELED:\n\nFull path and file name exceeded\nMD3 file limit of 64 characters & spaces.\n\nNothing was written to the\n    " + self.filename + "\nfile and it remains unchanged.", quarkpy.qutils.MT_INFORMATION, quarkpy.qutils.MB_OK)
+                    return
                 result = quarkx.msgbox("A folder to store the new files in\n    " + self.newfiles_folder + "\nalready exist at that location.\n\nCAUTION:\nAny files in that folder with the same name\nas a new file will be overwritten.\n\nDo you wish to continue making new files for that folder?", quarkpy.qutils.MT_WARNING, quarkpy.qutils.MB_YES | quarkpy.qutils.MB_NO)
                 if result == MR_YES:
                     pass
@@ -680,6 +706,17 @@ class ExportSettingsDlg(quarkpy.qmacro.dialogbox):
                 for tag in tags:
                     if not tag in self.tags and tag.name.startswith(comp_group):
                         self.tags = self.tags + [tag]
+        if self.src['Skins'] is not None:
+            for comp in self.comp_list:
+                for skin in comp.dictitems['Skins:sg'].subitems:
+                    tempfilename = self.filename.replace("\\", "/")
+                    tempfilename = tempfilename.rsplit("/", 1)[0]
+                    tempskinname = skin.name.replace("\\", "/")
+                    tempskinname = tempskinname.rsplit("/", 1)[1]
+                    skin.filename = tempfilename + '/' + tempskinname
+                    quarkx.savefileobj(skin, FM_Save, 0)
+        if self.src['Shaders'] is not None:
+            write_shaders(self.filename, self.comp_list)
 
         # Opens the output file for writing the .md5 mesh or animation file to disk.
         self.md3file = open(self.filename,"wb")
@@ -698,4 +735,7 @@ def UIExportDialog(root, filename, editor):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.1  2010/03/16 07:17:13  cdunde
+# Added support for .md3 model format exporting with tags, textures and shader files.
+#
 #
