@@ -2964,23 +2964,28 @@ def keyframes_rotation(editor, bonesgroup, frame1, frame2):
 # frame = editor.Root.dictitems[o.dictspec['component']].dictitems['Frames:fg'].subitems[editor.bone_frame]
 # This does not need to be returned since it is changing the object itself.
 def Rebuild_Bone(editor, o, frame):
-    if len(o.vtx_pos) != 0:
-        frames = editor.Root.dictitems[o.dictspec['component']].dictitems['Frames:fg'].subitems
-        for frame2 in frames:
-            if frame2.name == frame.name:
-                frame = frame2
-                break
-        vertices = frame.vertices
-        vtxlist = o.vtx_pos[o.dictspec['component']]
-        vtxpos = quarkx.vect(0.0, 0.0, 0.0)
-        for vtx in vtxlist:
-            try:
-                vtxpos = vtxpos + vertices[vtx]
-            except:
-                return
-        vtxpos = vtxpos/ float(len(vtxlist))
-        o.position = vtxpos + quarkx.vect(o.dictspec['draw_offset'])
+    try:
+        o['draw_offset'] = quarkx.vect(0.,0.,0.).tuple
+        o.position = quarkx.vect(editor.ModelComponentList['bonelist'][o.name]['frames'][frame.name]['position'])
         o['position'] = o.position.tuple
+    except:
+        if len(o.vtx_pos) != 0:
+            frames = editor.Root.dictitems[o.dictspec['component']].dictitems['Frames:fg'].subitems
+            for frame2 in frames:
+                if frame2.name == frame.name:
+                    frame = frame2
+                    break
+            vertices = frame.vertices
+            vtxlist = o.vtx_pos[o.dictspec['component']]
+            vtxpos = quarkx.vect(0.0, 0.0, 0.0)
+            for vtx in vtxlist:
+                try:
+                    vtxpos = vtxpos + vertices[vtx]
+                except:
+                    return
+            vtxpos = vtxpos/ float(len(vtxlist))
+            o.position = vtxpos + quarkx.vect(o.dictspec['draw_offset'])
+            o['position'] = o.position.tuple
 
 
 
@@ -4141,6 +4146,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.126  2010/03/09 19:59:19  cdunde
+#Attribute correction.
+#
 #Revision 1.125  2009/11/16 05:35:49  cdunde
 #Comment clarification update.
 #

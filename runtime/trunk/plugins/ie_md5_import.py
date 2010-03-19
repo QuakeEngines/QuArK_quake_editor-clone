@@ -1220,6 +1220,11 @@ class md5anim:
                     words=current_line.split()
 
     def apply(self, bones, actionname):
+        #A list of bones.name -> bone_index, to speed things up
+        ConvertBoneNameToIndex = {}
+        for bone_index in range(len(bones)):
+            ConvertBoneNameToIndex[bones[bone_index].name] = bone_index
+
         global editor
         filename = actionname.replace(".md5anim", "")
         Strings[2462] = Strings[2462] + "\n" + filename
@@ -1304,6 +1309,7 @@ class md5anim:
 
         # Create baseframe
         baseframes_list = []
+        most_vtxs = 0
         for mesh_counter in range(len(md5_model_comps)):
             oldframe = editor.Root.dictitems[md5_model_comps[mesh_counter]].dictitems['Frames:fg'].dictitems['meshframe:mf']
             comp_name = oldframe.parent.parent.name
@@ -1316,14 +1322,10 @@ class md5anim:
                     if editor.ModelComponentList[comp_name]['weightvtxlist'].has_key(vert_counter):
                         newpos = quarkx.vect(0.0, 0.0, 0.0)
                         for key in editor.ModelComponentList[comp_name]['weightvtxlist'][vert_counter].keys():
-                            our_bone_name = None
-                            for bone in range(len(bones)):
-                                if bones[bone].name == key:
-                                    bone_index = bone
-                                    our_bone_name = bones[bone].name
-                                    break
-                            if our_bone_name is None:
+                            bone_index = ConvertBoneNameToIndex[key]
+                            if bone_index == -1:
                                 continue
+                            our_bone_name = bones[bone_index].name
                             our_weight_value = editor.ModelComponentList[comp_name]['weightvtxlist'][vert_counter][our_bone_name]['weight_value']
                             our_weight_pos = editor.ModelComponentList[comp_name]['weightvtxlist'][vert_counter][our_bone_name]['weight_pos']
                             temppos = QuArK_baseframe_matrix[bone_index] * quarkx.vect(our_weight_pos)
@@ -1335,6 +1337,7 @@ class md5anim:
 
         #Create animation frames
         for frame_counter in range(0,self.numFrames):
+            most_vtxs = 0
             for mesh_counter in range(len(md5_model_comps)):
                 progressbar.progress()
                 newframe = baseframes_list[mesh_counter].copy()
@@ -1346,14 +1349,10 @@ class md5anim:
                         if editor.ModelComponentList[comp_name]['weightvtxlist'].has_key(vert_counter):
                             newpos = quarkx.vect(0.0, 0.0, 0.0)
                             for key in editor.ModelComponentList[comp_name]['weightvtxlist'][vert_counter].keys():
-                                our_bone_name = None
-                                for bone in range(len(bones)):
-                                    if bones[bone].name == key:
-                                        bone_index = bone
-                                        our_bone_name = bones[bone].name
-                                        break
-                                if our_bone_name is None:
+                                bone_index = ConvertBoneNameToIndex[key]
+                                if bone_index == -1:
                                     continue
+                                our_bone_name = bones[bone_index].name
                                 our_weight_value = editor.ModelComponentList[comp_name]['weightvtxlist'][vert_counter][our_bone_name]['weight_value']
                                 our_weight_pos = editor.ModelComponentList[comp_name]['weightvtxlist'][vert_counter][our_bone_name]['weight_pos']
                                 temppos = QuArK_frame_matrix[frame_counter][bone_index] * quarkx.vect(our_weight_pos)
@@ -1378,11 +1377,10 @@ class md5anim:
                 raise "editor.ModelComponentList corrupt!"
             for frame_counter in range(0,self.numFrames):
                 framename = filename + " frame "+str(frame_counter+1)
-                editor.ModelComponentList['bonelist'][current_bone.name]['frames'][framename + ':mf'] = {}
-                editor.ModelComponentList['bonelist'][current_bone.name]['frames'][framename + ':mf']['position'] = QuArK_frame_position[frame_counter][bone_counter].tuple
-                rotmatrix = QuArK_frame_matrix[frame_counter][bone_counter].tuple
-                rotmatrix = ((rotmatrix[0][0], rotmatrix[0][1], rotmatrix[0][2]), (rotmatrix[1][0], rotmatrix[1][1], rotmatrix[1][2]), (rotmatrix[2][0], rotmatrix[2][1], rotmatrix[2][2]))
-                editor.ModelComponentList['bonelist'][current_bone.name]['frames'][framename + ':mf']['rotmatrix'] = rotmatrix
+                bone_data = {}
+                bone_data['position'] = QuArK_frame_position[frame_counter][bone_counter].tuple
+                bone_data['rotmatrix'] = QuArK_frame_matrix[frame_counter][bone_counter].tuple
+                editor.ModelComponentList['bonelist'][current_bone.name]['frames'][framename + ':mf'] = bone_data
 
         editor.ok(undo, "ANIM " + filename + " loaded")
         Strings[2462] = Strings[2462].replace("\n" + filename, "")
@@ -1762,6 +1760,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.27  2010/03/10 04:24:06  cdunde
+# Update to support added ModelComponentList for 'bonelist' updating.
+#
 # Revision 1.26  2010/03/07 09:43:48  cdunde
 # Updates and improvements to both the md5 importer and exporter including animation support.
 #
