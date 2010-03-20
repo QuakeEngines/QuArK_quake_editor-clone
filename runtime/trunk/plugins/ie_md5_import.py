@@ -1316,6 +1316,24 @@ class md5anim:
             FramesGroup = oldframe.parent
             undo.put(FramesGroup, baseframe)
 
+        if not editor.ModelComponentList.has_key('bonelist'):
+            raise "editor.ModelComponentList corrupt!"
+        for bone_counter in range(0,self.num_bones):
+            for current_bone in bones:
+                bone_name = current_bone.shortname
+                bone_name = bone_name.split("_", 1)[1]
+                if bone_name == self.md5anim_bones[bone_counter].name:
+                    break
+            if not editor.ModelComponentList['bonelist'].has_key(current_bone.name):
+                raise "editor.ModelComponentList corrupt!"
+            if not editor.ModelComponentList['bonelist'][current_bone.name].has_key('frames'):
+                raise "editor.ModelComponentList corrupt!"
+            framename = filename + " baseframe"
+            bone_data = {}
+            bone_data['position'] = QuArK_baseframe_position[bone_counter].tuple
+            bone_data['rotmatrix'] = QuArK_baseframe_matrix[bone_counter].tuple
+            editor.ModelComponentList['bonelist'][current_bone.name]['frames'][framename + ':mf'] = bone_data
+
         #Create animation frames
         for frame_counter in range(0,self.numFrames):
             most_vtxs = 0
@@ -1741,6 +1759,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.29  2010/03/20 05:26:35  cdunde
+# Removal of unused code.
+#
 # Revision 1.28  2010/03/19 22:08:55  cdunde
 # Update for correct bone positioning when read in from a model file.
 #
