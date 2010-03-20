@@ -2965,8 +2965,7 @@ def keyframes_rotation(editor, bonesgroup, frame1, frame2):
 # This does not need to be returned since it is changing the object itself.
 def Rebuild_Bone(editor, o, frame):
     try:
-        o['draw_offset'] = quarkx.vect(0.,0.,0.).tuple
-        o.position = quarkx.vect(editor.ModelComponentList['bonelist'][o.name]['frames'][frame.name]['position'])
+        o.position = quarkx.vect(editor.ModelComponentList['bonelist'][o.name]['frames'][frame.name]['position']) + quarkx.vect(o.dictspec['draw_offset'])
         o['position'] = o.position.tuple
     except:
         if len(o.vtx_pos) != 0:
@@ -4146,6 +4145,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.128  2010/03/19 23:53:57  cdunde
+#Update for correct bone positioning when read in from a model file.
+#
 #Revision 1.126  2010/03/09 19:59:19  cdunde
 #Attribute correction.
 #
