@@ -89,13 +89,6 @@ def matrix2quaternion(m):
         -(m[1][0] - m[0][1]) / (2.0 * s),
         0.5 * s,
         ])
-    # To reverses values signs being returned if needed.
-  #  return quaternion_normalize([
-  #      (m[2][1] - m[1][2]) / (2.0 * s),
-  #      (m[0][2] - m[2][0]) / (2.0 * s),
-  #      (m[1][0] - m[0][1]) / (2.0 * s),
-  #      -0.5 * s,
-  #      ])
 
 def quaternion_normalize(q):
     l = math.sqrt(q[0] * q[0] + q[1] * q[1] + q[2] * q[2] + q[3] * q[3])
@@ -498,7 +491,6 @@ def load_md5(md5_filename, basepath, actionname):
                 new_bone['draw_offset'] = (0.0, 0.0, 0.0)
                 new_bone['_color'] = MapColor("BoneHandles", 3)
                 new_bone['bindmat'] = (float(words[8]), float(words[9]), float(words[10])) # QuArK code, use these values to build this bones matrix (see "quaternion2matrix" code below).
-                new_bone['draw_offset'] = (0.0, 0.0, 0.0)
                 new_bone.rotmatrix = quarkx.matrix((1, 0, 0), (0, 1, 0), (0, 0, 1))
                 new_bone.vtxlist = {}
                 new_bone.vtx_pos = {}
@@ -1022,17 +1014,6 @@ def load_md5(md5_filename, basepath, actionname):
                 temp = {}
                 temp[usekey] = QuArK_bones[bone_index].vtxlist[usekey]
                 QuArK_bones[bone_index].vtx_pos = temp
-                for item in ComponentList:
-                    if item.name == usekey:
-                        comp = item
-                        break
-                vtxpos = quarkx.vect(0, 0, 0)
-                frame = comp.dictitems['Frames:fg'].subitems[0]
-                frame_vertices = frame.vertices
-                for vtx in range(len(QuArK_bones[bone_index].vtx_pos[usekey])):
-                    vtxpos = vtxpos + frame_vertices[QuArK_bones[bone_index].vtx_pos[usekey][vtx]]
-                vtxpos = vtxpos/float(len(QuArK_bones[bone_index].vtx_pos[usekey]))
-                QuArK_bones[bone_index]['draw_offset'] = (QuArK_bones[bone_index].position - vtxpos).tuple
                 QuArK_bones[bone_index]['component'] = usekey
 
     # Section below sets up the 'bonelist' entry of editor.ModelComponentList for all importing bones and fills the 'meshframe' data.
@@ -1760,6 +1741,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.28  2010/03/19 22:08:55  cdunde
+# Update for correct bone positioning when read in from a model file.
+#
 # Revision 1.27  2010/03/10 04:24:06  cdunde
 # Update to support added ModelComponentList for 'bonelist' updating.
 #
