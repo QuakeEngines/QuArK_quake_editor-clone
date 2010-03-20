@@ -306,12 +306,49 @@ def export_mesh(self, file, filename, exp_list):
         file.write('\tshader "%s"\n' % shader)
         file.write('\n')
 
+        # Build the weights, and compute their proper index numbers
+        HighestWeightIndex = -1
+        TMPWeights = {}
+        TMPWeights_no_index = []
+        vert_blends = []
+        for vert_index in range(len(vertices)):
+            # Creates TMPWeights data for the "weight" section below.
+            if weightvtxlist is not None and weightvtxlist.has_key(vert_index):
+                blend_index = -1
+                blend_count = len(weightvtxlist[vert_index])
+                for key in weightvtxlist[vert_index].keys():
+                    bone_index = bone_name_to_index[key]
+                    weight = weightvtxlist[vert_index][key]['weight_value']
+                    weight_index = weightvtxlist[vert_index][key]['weight_index']
+                    TMPWeights[weight_index] = (vert_index, bone_index, weight)
+                    if weight_index > HighestWeightIndex:
+                        HighestWeightIndex = weight_index
+                    if (blend_index == -1) or (weight_index < blend_index):
+                        blend_index = weight_index
+                vert_blends += [[blend_index, blend_count]]
+            else: # Handles un-assigned vertexes and writes them to the mesh_error report for viewing by the user.
+                blend_index = -1 #Not calculated here
+                blend_count = 1
+                bone_index = 0 #origin bone
+                weight = 1.0
+                TMPWeights_no_index = TMPWeights_no_index + [[vert_index, bone_index, weight]]
+                vert_blends += [[blend_index, blend_count]]
+                # For vertex error report output.
+                self.mesh_vtx_errors = self.mesh_vtx_errors + [vert_index]
+
+        for weight_index in range(0, HighestWeightIndex+1):
+            if not TMPWeights.has_key(weight_index):
+                #Missing index; Create a dummy weight
+                TMPWeights[weight_index] = (0, 0, 0.0)
+        for weight_counter in range(len(TMPWeights_no_index)):
+            HighestWeightIndex = HighestWeightIndex + 1
+            vert_blends[TMPWeights_no_index[weight_counter][0]][0] = HighestWeightIndex
+
         # Writes the "vert" section.
         Strings[2452] = comp.shortname + "\n" + Strings[2452]
         progressbar = quarkx.progressbar(2452, len(vertices))
-        prev_blend_index = -1
         file.write('\tnumverts %i\n' % len(vertices))
-        TMPWeights = []
+
         self.mesh_vtx_errors = [] # For self.mesh_errors data output below.
         for vert_index in range(len(vertices)):
             progressbar.progress()
@@ -328,26 +365,11 @@ def export_mesh(self, file, filename, exp_list):
                     U = triangles[tri][2][1] / texWidth
                     V = triangles[tri][2][2] / texHeight
                     break
-            # Creates TMPWeights data for the "weight" section below.
-            if weightvtxlist is not None and weightvtxlist.has_key(vert_index):
-                blend_index = prev_blend_index + 1
-                blend_count = len(weightvtxlist[vert_index])
-                for key in weightvtxlist[vert_index].keys():
-                    bone_index = bone_name_to_index[key]
-                    weight = weightvtxlist[vert_index][key]['weight_value']
-                    TMPWeights = TMPWeights + [(vert_index, bone_index, weight)]
-            else: # Handles un-assigned vertexes and writes them to the mesh_error report for viewing by the user.
-                blend_index = prev_blend_index + 1
-                blend_count = 1
-                bone_index = 0 #origin bone
-                weight = 1.0
-                TMPWeights = TMPWeights + [(vert_index, bone_index, weight)]
-                # For vertex error report output.
-                self.mesh_vtx_errors = self.mesh_vtx_errors + [vert_index]
             U = ie_utils.NicePrintableFloat(U)
             V = ie_utils.NicePrintableFloat(V)
-            file.write('\tvert %i ( %s %s ) %i %i\n' % (vert_index, U, V, blend_index, blend_count)) #@
-            prev_blend_index = blend_index + blend_count - 1
+            blend_index = vert_blends[vert_index][0]
+            blend_count = vert_blends[vert_index][1]
+            file.write('\tvert %i ( %s %s ) %i %i\n' % (vert_index, U, V, blend_index, blend_count))
         file.write('\n')
         Strings[2452] = Strings[2452].replace(comp.shortname + "\n", "")
         progressbar.close()
@@ -374,18 +396,17 @@ def export_mesh(self, file, filename, exp_list):
         file.write('\tnumtris %i\n' % len(triangles))
         for tri in range(len(triangles)):
             progressbar.progress()
-            file.write('\ttri %i %i %i %i\n' % (tri, triangles[tri][0][0], triangles[tri][1][0], triangles[tri][2][0])) #@
+            file.write('\ttri %i %i %i %i\n' % (tri, triangles[tri][0][0], triangles[tri][1][0], triangles[tri][2][0]))
         file.write('\n')
         Strings[2453] = Strings[2453].replace(comp.shortname + "\n", "")
         progressbar.close()
 
         # Writes the "weight" section.
         Strings[2450] = comp.shortname + "\n" + Strings[2450]
-        progressbar = quarkx.progressbar(2450, len(TMPWeights))
-        file.write('\tnumweights %i\n' % len(TMPWeights))
-        for weight_index in range(len(TMPWeights)):
-            progressbar.progress()
-            weight = TMPWeights[weight_index]
+        progressbar = quarkx.progressbar(2450, len(TMPWeights) + len(TMPWeights_no_index))
+        file.write('\tnumweights %i\n' % (len(TMPWeights) + len(TMPWeights_no_index)))
+
+        def OutputWeight(weight, weight_index):
             vert = weight[0]
             bone_index = weight[1]
             weight_value = ie_utils.NicePrintableFloat(weight[2])
@@ -400,6 +421,16 @@ def export_mesh(self, file, filename, exp_list):
             current_vertex1 = ie_utils.NicePrintableFloat(current_vertex[1])
             current_vertex2 = ie_utils.NicePrintableFloat(current_vertex[2])
             file.write('\tweight %i %i %s ( %s %s %s )\n' % (weight_index, bone_index, weight_value, current_vertex0, current_vertex1, current_vertex2))
+
+        for weight_index in TMPWeights.keys():
+            progressbar.progress()
+            OutputWeight(TMPWeights[weight_index], weight_index)
+
+        for weight_counter in range(len(TMPWeights_no_index)):
+            progressbar.progress()
+            weight_index = len(TMPWeights) + weight_counter
+            OutputWeight(TMPWeights_no_index[weight_index], weight_index)
+
         file.write('}\n')
         file.write('\n')
         Strings[2450] = Strings[2450].replace(comp.shortname + "\n", "")
@@ -958,6 +989,9 @@ def UIExportDialog(root, filename, editor):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.8  2010/03/10 04:24:06  cdunde
+# Update to support added ModelComponentList for 'bonelist' updating.
+#
 # Revision 1.7  2010/03/08 02:21:18  cdunde
 # Variable name correction.
 #
