@@ -1043,6 +1043,14 @@ class ModelLayout(BaseLayout):
                     undo = quarkx.action()
                     new_bone = selitem.copy()
                     new_bone['draw_offset'] = check_offset
+                    try:
+                        new_bone.position = selitem.position + quarkx.vect(check_offset) - quarkx.vect(old_pos)
+                        new_bone['position'] = new_bone.position.tuple
+                        new_bone['bone_length'] = (quarkx.vect(selitem.dictspec['bone_length']) + quarkx.vect(check_offset) - quarkx.vect(old_pos)).tuple
+                        frame = self.editor.Root.currentcomponent.currentframe
+                        self.editor.ModelComponentList['bonelist'][new_bone.name]['frames'][frame.name]['position'] = new_bone.position.tuple
+                    except:
+                        pass
                     undo.exchange(selitem, new_bone)
                     self.editor.ok(undo, 'bone offset changed')
 
@@ -1064,7 +1072,8 @@ class ModelLayout(BaseLayout):
                     selitem['position'] = old_pos
                     undo = quarkx.action()
                     new_bone = selitem.copy()
-                    new_bone['position'] = check_pos
+                    new_bone.position = quarkx.vect(check_pos)
+                    new_bone['position'] = new_bone.position.tuple
                     movediff = quarkx.vect(new_bone['position']) - quarkx.vect(old_pos)
                     for comp in new_bone.vtxlist.keys():
                         new_comp = self.editor.Root.dictitems[comp].copy()
@@ -1087,6 +1096,10 @@ class ModelLayout(BaseLayout):
                             new_bone2 = bone.copy()
                             new_bone2['bone_length'] = (new_bone2.position - new_bone.position).tuple
                             undo.exchange(bone, new_bone2)
+                    try:
+                        self.editor.ModelComponentList['bonelist'][new_bone.name]['frames'][new_frame.name]['position'] = new_bone.position.tuple
+                    except:
+                        pass
                     self.editor.ok(undo, 'bone position changed')
 
                 elif checktuplepos(checkbone_scale, selitem["scale"]) != 1:
@@ -1140,7 +1153,8 @@ class ModelLayout(BaseLayout):
                     new_bone = selitem.copy()
                     new_bone['bone_length'] = checkbone_length
                     movediff = quarkx.vect(new_bone['bone_length']) - quarkx.vect(old_pos)
-                    new_bone['position'] = (selitem.position + movediff).tuple
+                    new_bone.position = selitem.position + movediff
+                    new_bone['position'] = new_bone.position.tuple
                     for comp in new_bone.vtxlist.keys():
                         new_comp = self.editor.Root.dictitems[comp].copy()
                         new_frame = new_comp.dictitems['Frames:fg'].subitems[self.editor.bone_frame]
@@ -1162,6 +1176,10 @@ class ModelLayout(BaseLayout):
                             new_bone2 = bone.copy()
                             new_bone2['bone_length'] = (new_bone2.position - new_bone.position).tuple
                             undo.exchange(bone, new_bone2)
+                    try:
+                        self.editor.ModelComponentList['bonelist'][new_bone.name]['frames'][new_frame.name]['position'] = new_bone.position.tuple
+                    except:
+                        pass
                     self.editor.ok(undo, 'bone length changed')
 
             ### This section handles the Tag Frames default settings and data input for the Specifics/Args page.
@@ -1874,6 +1892,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.117  2010/03/10 22:47:23  cdunde
+#Added needed comment.
+#
 #Revision 1.116  2010/02/03 08:44:27  cdunde
 #Fix for loss of changed weight values due to pickle module loading old ModelComponentList.
 #
