@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.66  2009/07/15 10:38:10  danielpharos
+Updated website link.
+
 Revision 1.65  2009/05/04 18:34:10  danielpharos
 Added switch to change memory manager easily.
 
@@ -232,6 +235,7 @@ uses
   QkQkl in 'prog\model\QkQkl.pas',
   qkskindrawobject in 'prog\model\qkskindrawobject.pas',
   QkSkinGroup in 'prog\model\QkSkinGroup.pas',
+  QkSkinSubGroup in 'prog\model\QkSkinSubGroup.pas',
   QkTagFrame in 'prog\model\QkTagFrame.pas',
   About in 'prog\About.pas' {AboutBox},
   AutoUpdater in 'prog\AutoUpdater.pas' {AutoUpdater},
