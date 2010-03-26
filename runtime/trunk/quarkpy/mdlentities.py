@@ -2768,6 +2768,59 @@ class SkinGroupType(EntityManager):
         return formobj
 
 
+class SkinSubGroupType(EntityManager):
+    "Model Skin Group Sub-group for skins (like an animation set of skins), type = :ssg"
+
+    def dataformname(o):
+        "Returns the data form for this type of object 'o' (the SkinsSubGroup:ssg folder) to use for the Specific/Args page."
+
+        skin_group_group_dlgdef = """
+        {
+          Help = "These are the Specific settings for the Skins sub-group."$0D0D22
+                 "import skin"$22" - Select a skin texture image file"$0D
+                 "                    to import and add to this group."$0D
+                 "                    Will not add a skin with duplicate names."
+          skin_name: = {t_ModelEditor_texturebrowser = ! Txt="import skin"    Hint="Select a skin texture image file"$0D"to import and add to this group."$0D"Will not add a skin with duplicate names."}
+        }
+        """
+
+        import mdleditor
+        editor = mdleditor.mdleditor # Get the editor.
+        if (o.dictspec.has_key("skin_name")) and (not o.dictspec['skin_name'] in o.dictitems.keys()):
+            # Gives the newly selected skin texture's game folders path and file name, for example:
+            #     models/monsters/cacodemon/cacoeye.tga
+            skinname = o.dictspec['skin_name']
+            skin = quarkx.newobj(skinname)
+            # Gives the full current work directory (cwd) path up to the file name, need to add "\\" + filename, for example:
+            #     E:\Program Files\Doom 3\base\models\monsters\cacodemon
+            import os
+            cur_folder = os.getcwd()
+            # Gives just the actual file name, for example: cacoeye.tga
+            tex_file = skinname.split("/")[-1]
+            # Puts the full path and file name together to get the file, for example:
+            # E:\Program Files\Doom 3\base\models\monsters\cacodemon\cacoeye.tga
+            file = cur_folder + "\\" + tex_file
+            image = quarkx.openfileobj(file)
+            skin['Image1'] = image.dictspec['Image1']
+            skin['Size'] = image.dictspec['Size']
+            skingroup = o
+            o['skin_name'] = ""
+            undo = quarkx.action()
+            undo.put(skingroup, skin)
+            editor.ok(undo, o.shortname + " - " + "new skin added")
+            editor.Root.currentcomponent.currentskin = skin
+            editor.layout.explorer.sellist = [editor.Root.currentcomponent.currentskin]
+            import mdlutils
+            mdlutils.Update_Skin_View(editor, 2) # The 2 argument resets the Skin-view to the new skin's size and centers it.
+        else:
+            if o.dictspec.has_key("skin_name"):
+                o['skin_name'] = ""
+
+        formobj = quarkx.newobj("sgg:form")
+        formobj.loadtext(skin_group_group_dlgdef)
+        return formobj
+
+
 class SkinType(EntityManager):
     "Model Skin, types = .pcx, .tga, .dds, .png, .jpg, .bmp"
 
@@ -2830,6 +2883,12 @@ class SkinType(EntityManager):
                 formobj = quarkx.newobj("skin:form")
                 formobj.loadtext(def_skin_dlgdef)
                 return formobj
+            for item in comp.dictitems['Skins:sg'].subitems:
+                if item.type == ":ssg":
+                    if o in item.subitems:
+                        formobj = quarkx.newobj("skin:form")
+                        formobj.loadtext(def_skin_dlgdef)
+                        return formobj
         else:
             return None
 
@@ -2877,6 +2936,7 @@ Mapping = {
     ":mc":       ComponentType(),
     ":mf":       FrameType(),
     ":sg":       SkinGroupType(),
+    ":ssg":      SkinSubGroupType(),
     ".pcx":      SkinType(),
     ".tga":      SkinType(),
     ".dds":      SkinType(),
@@ -2933,6 +2993,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.68  2009/12/12 23:45:39  cdunde
+#Added skins and frames counts to component specifics page.
+#
 #Revision 1.67  2009/11/09 18:01:58  cdunde
 #Fix for errors sometimes because of dictspec not being set.
 #

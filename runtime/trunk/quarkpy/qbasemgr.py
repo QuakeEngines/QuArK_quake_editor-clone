@@ -427,8 +427,12 @@ class BaseLayout:
         Trash.cmd = "del"
         Trash.ondrop = self.editor.trash1drop
         Undo = qtoolbar.macrobtn("MURD", "Multiple undo/redo||Multiple undo/redo:\n\nThe icon will open up the undo/redo display. |intro.mapeditor.misctools.html#undoredo", ico_maped, 6)
-        NewGroup = qtoolbar.button(self.editor.editcmdclick, "New group||New group:\n\nCreates a new group in the tree-view, where you can place other objects in, so they are neatly grouped together.|intro.mapeditor.misctools.html#newgroup", ico_maped, 16)
-        NewGroup.cmd = "newgroup"
+        if isinstance(self.editor, quarkpy.mdleditor.ModelEditor):
+            NewGroup = qtoolbar.button(self.editor.editcmdclick, "New skins sub-group||New skins sub-group:\n\nCreates a new Skins sub-group in the tree-view, where you can place skin objects in, used for Quake1 animation skins.|intro.mapeditor.misctools.html#newgroup", ico_maped, 16)
+            NewGroup.cmd = "newskingroup"
+        else:
+            NewGroup = qtoolbar.button(self.editor.editcmdclick, "New group||New group:\n\nCreates a new group in the tree-view, where you can place other objects in, so they are neatly grouped together.|intro.mapeditor.misctools.html#newgroup", ico_maped, 16)
+            NewGroup.cmd = "newgroup"
         bb = CompassPanel.newbtnpanel(NewItem + [Trash, Undo, NewGroup])
         bb.margins = (2,1)
 
@@ -609,6 +613,9 @@ class MPPage:
 #
 #
 #$Log$
+#Revision 1.33  2008/02/03 00:55:08  cdunde
+#To stop the progress bar from showing in the OpenGL window for the Model Editor
+#
 #Revision 1.32  2007/10/11 09:58:34  cdunde
 #To keep the fillcolor correct for the editors 3D view after a
 #tree-view selection is made with the floating 3D view window open and

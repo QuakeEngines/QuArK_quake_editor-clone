@@ -13,6 +13,7 @@ Model Editor Buttons and implementation of editing commands
 import quarkx
 import qtoolbar
 from qdictionnary import Strings
+import qutils
 from mdlutils import *
 
 #
@@ -352,7 +353,7 @@ def edit_dup(editor, m=None):
                 itemtomoveparent.insertitem(count, itemtomove)
 
 
-def edit_newgroup(editor, m=None):
+def edit_newskingroup(editor, m=None):
     "Create a new group."
 
     #
@@ -362,40 +363,81 @@ def edit_newgroup(editor, m=None):
     list = editor.visualselection()
 
     #
-    # Build a new group object.
-    #
-
-    newgroup = quarkx.newobj("group:m")
-
-    #
-    # Determine where to drop this new group.
+    # Only allow skins to be moved.
     #
 
     ex = editor.layout.explorer
-    nparent = ex.focussel     # currently selected item
-    if not nparent is None:
-        nib = nparent
-        nparent = nparent.parent
-    if nparent is None:
-        nparent = editor.Root
-        nib = None
+    nib = None
+    if len(list) == 1 and list[0].type == ":sg":
+        nparent = list[0]
+        ex.expand(nparent)
+        new_list = []
+        for item in list[0].subitems:
+            if not item.name.endswith(":ssg"):
+                new_list += [item]
+        list = new_list
+    else:
+        for item in list:
+            if (item.name.endswith(":ssg")) or (item.parent.type != ":sg"):
+                quarkx.beep()
+                quarkx.msgbox("Improper selection!\n\nA skin sub-group can only be added\nby having the Skins group selected.\n\nOr a skin(s) within that folder selected\nwhich will be placed into and\nname the new sub-group.\n\nAlso, you can not place a sub-group\ninside another sub-group.", qutils.MT_INFORMATION, qutils.MB_OK)
+                return
+        #
+        # Determine where to drop the new group.
+        #
+        nparent = ex.focussel     # currently selected item
+        if not nparent is None:
+            nib = nparent
+            nparent = nparent.parent
+        if nparent is None:
+            nparent = editor.Root
+            nib = None
+
+    if len(list) == 0:
+        quarkx.beep()
+        quarkx.msgbox("Improper selection!\n\nA skin sub-group can only be added\nby having the Skins group selected.\n\nOr a skin(s) within that folder selected\nwhich will be placed into and\nname the new sub-group.\n\nAlso, you can not place a sub-group\ninside another sub-group.", qutils.MT_INFORMATION, qutils.MB_OK)
+        return
+
+    #
+    # Build a new group object.
+    #
+
+    newgroup = quarkx.newobj("sub-group:ssg")
+    for item in range(len(ex.sellist)):
+        if ex.sellist[item].type == ":sg":
+            break
+        if ex.sellist[item].name.find(".") != 1:
+            name = ex.sellist[item].name.split(".")[0]
+            name = name.split()[0]
+            newgroup.shortname = "sub-group " + name
+            break
 
     #
     # The undo to perform this functions action
     #
 
+    for item in ex.sellist:
+        if item.type == "" or item.type == ":ssg":
+            quarkx.beep()
+            quarkx.msgbox("Improper selection!\n\nA skin sub-group can only be added\nby having the Skins group selected.\n\nOr a skin(s) within that folder selected\nwhich will be placed into and\nname the new sub-group.\n\nAlso, you can not place a sub-group\ninside another sub-group.", qutils.MT_INFORMATION, qutils.MB_OK)
+            return
     undo = quarkx.action()
     undo.put(nparent, newgroup, nib)   # actually create the new group
-    for s in list:
-        if s is not editor.Root and s is not nparent:
-            undo.move(s, newgroup)   # put the selected items into the new group
+    moveitems = 1
+    for item in ex.sellist:
+        if item.type == ":sg":
+            moveitems = 0
+    if moveitems == 1:
+        for s in list:
+            if s is not editor.Root and s is not nparent:
+                undo.move(s, newgroup)   # put the selected items into the new group
     undo.ok(editor.Root, Strings[556])
 
     #
     # Initially expand the new group.
     #
 
-    editor.layout.explorer.expand(newgroup)
+    ex.expand(newgroup)
 
 
 def texturebrowser(reserved=None):
@@ -536,6 +578,9 @@ def groupcolor(m):
 #
 #
 #$Log$
+#Revision 1.29  2009/07/04 03:02:40  cdunde
+#Fix to stop multiple Skeleton folders from being created when multiple components are deleted.
+#
 #Revision 1.28  2009/06/03 05:16:22  cdunde
 #Over all updating of Model Editor improvements, bones and model importers.
 #
