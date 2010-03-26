@@ -14,6 +14,8 @@ $Id$
 
 6.6.0 Beta 4
 ============
+* [cdunde/DanielPharos]: New exporter for Quake .mdl models.
+
 * [cdunde/DanielPharos]: Added support for Quake1 .mdl importing including textures and animations.
 
 * [cdunde]: Added support for .md3 model format exporting with tags, textures and shader files.
