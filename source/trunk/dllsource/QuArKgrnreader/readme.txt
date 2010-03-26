@@ -9,4 +9,4 @@ Place grnreader.exe and granny2.dll in QuArk's dlls folder
 and use QuArK's Model Editor, use "new model" icon button to start editor,
 delete empty "Component",
 then click main menu's File > Model Importers > .gr2 Importer
-and select model. (only works for static models and bones, no animation)
+and select model. (only works for static models and bones, some animation)

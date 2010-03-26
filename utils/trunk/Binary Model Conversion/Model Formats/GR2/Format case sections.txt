@@ -1,0 +1,488 @@
+Format = case number,  FOUND IN GR2Format.cpp
+
+****************** case 0: //DaKeyframes32f ************************
+None found
+***************************************************************************
+KeyType CurveDataHeader_DaKeyframes32f::GetKeyType() const {
+	return QUADRATIC_KEY;
+}
+
+GR2Array<float> CurveDataHeader_DaKeyframes32f::GetKnots() const {
+	return GR2Array<float>();
+}
+
+GR2Array<Quat> CurveDataHeader_DaKeyframes32f::GetQuatData() const {
+	GR2Array<Quat> controls(Controls.size() / 4);
+	if (Dimension == 4)
+	{
+		for (int i=0, n=Controls.size()/4; i<n; ++i) {
+			Quat& q = controls[i];
+			q.x = Controls[(i*4)+0];
+			q.y = Controls[(i*4)+1];
+			q.z = Controls[(i*4)+2];
+			q.w = Controls[(i*4)+3];
+		}
+	}
+	return controls;
+}
+
+GR2Array<Point3> CurveDataHeader_DaKeyframes32f::GetPoint3Data() const {
+	GR2Array<Point3> controls;
+	if (Dimension == 9)
+	{
+		controls.resize(Controls.size() / 3);
+		for (int i=0, n=Controls.size()/3; i<n; ++i) {
+			Point3& p = controls[i];
+			p.x = Controls[(i*3)+0];
+			p.y = Controls[(i*3)+1];
+			p.z = Controls[(i*3)+2];
+		}
+	}
+	
+	
+	return controls;
+}
+
+GR2Array<Matrix3> CurveDataHeader_DaKeyframes32f::GetMatrix3Data() const {
+	GR2Array<Matrix3> controls;
+	if (Dimension == 9)
+	{
+		controls.resize(Controls.size() / 9);
+		for (int i=0, n=Controls.size()/9; i<n; ++i) {
+			Matrix3& m = controls[i];
+			m.SetRow(0, Point3(Controls[(i*9)+0], Controls[(i*9)+1], Controls[(i*9)+2]));
+			m.SetRow(1, Point3(Controls[(i*9)+3], Controls[(i*9)+4], Controls[(i*9)+5]));
+			m.SetRow(2, Point3(Controls[(i*9)+6], Controls[(i*9)+7], Controls[(i*9)+8]));
+		}
+	}
+	return controls;
+}
+
+
+****************** case 1: //DaK32fC32f *******************************
+Used by OrientationCurve 1 Knot = 4 Controls, & PositionCurve 1 Knot = 3 Controls
+***************************************************************************
+# ADDED
+KeyType CurveDataHeader_DaK32fC32f::GetKeyType() const {
+	return QUADRATIC_KEY;
+}
+
+GR2Array<float> CurveDataHeader_DaK32fC32f::GetKnots() const {
+	return Knots;
+}
+
+GR2Array<Quat> CurveDataHeader_DaK32fC32f::GetQuatData() const {
+	GR2Array<Quat> controls(Controls.size() / 4);
+	for (int i=0, n=Controls.size()/4; i<n; ++i) {
+		Quat& q = controls[i];
+		q.x = Controls[(i*4)+0];
+		q.y = Controls[(i*4)+1];
+		q.z = Controls[(i*4)+2];
+		q.w = Controls[(i*4)+3];
+	}
+	
+	return controls;
+}
+/*
+//dafare
+GR2Array<Point3> CurveDataHeader_DaK32fC32f::GetPoint3Data() const {
+	GR2Array<Point3> controls;
+
+	
+	return controls;
+}
+*/
+//changed fede
+GR2Array<Point3> CurveDataHeader_DaK32fC32f::GetPoint3Data() const { 
+	/*
+	GR2Array<Point3> controls(Knots.size());
+	for (int i=0, n=Knots.size()/3; i<n; ++i) {
+		Point3 &q = controls[i];
+		q.x = float(Knots[n+(i*3+0)]);//*ControlScales.x + ControlOffsets.x;
+		q.y = float(Knots[n+(i*3+1)]);//*ControlScales.y + ControlOffsets.y;
+		q.z = float(Knots[n+(i*3+2)]);//*ControlScales.z + ControlOffsets.z;
+		controls[i] = q;
+	}
+	return controls;
+	*/
+	GR2Array<Point3> controls(Controls.size() / 3);
+	for (int i=0, n=Controls.size()/3; i<n; ++i) {
+		Point3& q = controls[i];
+		q.x = Controls[(i*3)+0];
+		q.y = Controls[(i*3)+1];
+		q.z = Controls[(i*3)+2];
+		//q.w = Controls[(i*4)+3];
+		//controls[i] = q;
+	}
+	return controls;
+}
+GR2Array<Matrix3> CurveDataHeader_DaK32fC32f::GetMatrix3Data() const {
+	GR2Array<Matrix3> controls;
+	if (Degree == 1 && (Controls.size() == (Knots.size() * 9)))
+	{
+		controls.resize(Controls.size() / 9);
+		for (int i=0, n=Controls.size()/9; i<n; ++i) {
+			Matrix3& m = controls[i];
+			m.SetRow(0, Point3(Controls[(i*9)+0], Controls[(i*9)+1], Controls[(i*9)+2]));
+			m.SetRow(1, Point3(Controls[(i*9)+3], Controls[(i*9)+4], Controls[(i*9)+5]));
+			m.SetRow(2, Point3(Controls[(i*9)+6], Controls[(i*9)+7], Controls[(i*9)+8]));
+		}
+	}
+	return controls;
+}
+
+
+****************** case 2: // DaIdentity *******************************
+Only used by PositionCurve and ScaleShearCurve, gives Dimension 9
+***************************************************************************
+# ADDED
+if (NWN2::CurveDataHeader_DaIdentity* value = new NWN2::CurveDataHeader_DaIdentity())
+{
+	ok = Recall(in, *value);
+	ValuePtr<NWN2::CurveData>(value).swap(val);
+}
+break;
+
+
+if (NWN2::CurveDataHeader_DaIdentity* value = (NWN2::CurveDataHeader_DaIdentity*)val.ToPointer())
+{
+	Dump(out, name, *value);
+}
+break;
+
+
+***** MOST USED ****** case 4: // D3Constant32f *******************************
+Only used by PositionCurve, single control of 3 values [x, y, z]
+***************************************************************************
+
+GR2Array<float> CurveDataHeader_D3Constant32f::GetKnots() const { 
+	GR2Array<float> a(1); 
+	a[0] = 0.0f;
+	return a;
+}
+//dafare
+
+GR2Array<Point3> CurveDataHeader_D3Constant32f::GetPoint3Data() const { 
+	GR2Array<Point3> a(1);
+	a[0] = Controls;
+	return a;
+}
+
+/*
+GR2Array<Point3> CurveDataHeader_D3Constant32f::GetPoint3Data() const { 
+
+	GR2Array<Point3> controls(KnotsControls.size()/4);
+	for (int i=0, n=KnotsControls.size()/4; i<n; ++i) {
+		Point3 &q = controls[i];
+		q.x = float(KnotsControls[n+(i*3+0)])*ControlScales.x + ControlOffsets.x;
+		q.y = float(KnotsControls[n+(i*3+1)])*ControlScales.y + ControlOffsets.y;
+		q.z = float(KnotsControls[n+(i*3+2)])*ControlScales.z + ControlOffsets.z;
+	}
+	return controls;
+}
+*/
+
+
+****************** case 8: // D4nK16uC15u *******************************
+Only used by OrientationCurve, KnotsControls are single increasing large int values, always divisable by 4
+***************************************************************************
+# ADDED
+GR2Array<float> CurveDataHeader_D4nK16uC15u::GetKnots() const {
+	GR2Array<float> knots(KnotControls.size()/4);
+	for (int i=0, n=KnotControls.size()/4; i<n; ++i)
+		knots[i] = float(KnotControls[i])/OneOverKnotScale;
+	return knots;
+}
+
+KeyType CurveDataHeader_D4nK16uC15u::GetKeyType() const {
+	return XYZ_ROTATION_KEY;
+}
+
+# ADDED
+GR2Array<Quat> CurveDataHeader_D4nK16uC15u::GetQuatData() const {
+	GR2Array<Quat> controls(KnotControls.size()/4);
+	for (int i=0, n=KnotControls.size()/4; i<n; ++i) {
+		Point3 q; // convert euler angles to quat?
+		q.x = float(KnotControls[n+(i*3+0)])/65535.0f*2.0f*float(M_PI)*2.0f;
+		q.y = float(KnotControls[n+(i*3+1)])/65535.0f*2.0f*float(M_PI)*2.0f;
+		q.z = float(KnotControls[n+(i*3+2)])/65535.0f*2.0f*float(M_PI)*2.0f;
+	}
+	return controls;
+}
+
+# ADDED
+GR2Array<Point3> CurveDataHeader_D4nK16uC15u::GetPoint3Data() const {
+	GR2Array<Point3> controls(KnotControls.size()/4);
+	for (int i=0, n=KnotControls.size()/4; i<n; ++i) {
+		Point3& q = controls[i]; // convert euler angles to quat?
+		q.x = (float(KnotControls[n+(i*3+0)])-16379.0f)/65535.0f*float(M_PI)*2.0f;
+		q.y = (float(KnotControls[n+(i*3+1)])-32757.0f)/65535.0f*float(M_PI)*2.0f;
+		q.z = (float(KnotControls[n+(i*3+2)])-32757.0f)/65535.0f*float(M_PI)*2.0f;
+	}
+	return controls;
+}
+/*
+
+GR2Array<Point3> CurveData::GetFedeData() const {
+
+	return Knots;;
+}
+*/
+
+
+***** USED MOST ****** case 9: //D4nK8uC7u *******************************
+Used only by OrientationCurve, KnotsControls are single int values from 0-255, weights, always divisable by 4
+***************************************************************************
+# ADDED
+GR2Array<float> CurveDataHeader_D4nK8uC7u::GetKnots() const {
+	GR2Array<float> Knots;
+	Knots.resize(KnotsControls.size()/4);
+	for (int i=0, n=KnotsControls.size()/4; i<n; ++i) {
+		Knots[i] = float(KnotsControls[i])/float(OneOverKnotScale);
+	}
+	return Knots;
+}
+
+KeyType CurveDataHeader_D4nK8uC7u::GetKeyType() const {
+	return XYZ_ROTATION_KEY;
+}
+
+GR2Array<Quat> CurveDataHeader_D4nK8uC7u::GetQuatData() const {
+	GR2Array<Quat> controls;
+	return controls;
+}
+
+inline granny_real32 toreal(granny_uint16 value) {
+	return float(value)/255.0f*float(M_PI)*2.0f;
+}
+
+enum ByteState
+{
+	eq000,
+	eq001,
+	eq063,
+	eq064,
+	eq128,
+	eq129,
+	eq191,
+	eq192,
+	bt002_062,
+	bt065_127,
+	bt130_190,
+	bt193_255,
+};
+
+ByteState GetState(granny_uint8 value)
+{
+	if (value ==   0) return eq000;
+	if (value ==   1) return eq001;
+	if (value <=  62) return bt002_062;
+	if (value ==  63) return eq063;
+	if (value ==  64) return eq064;
+	if (value <= 127) return bt065_127;
+	if (value == 128) return eq128;
+	if (value == 129) return eq129;
+	if (value == 191) return eq191;
+	if (value == 192) return eq192;
+	if (value <= 190) return bt130_190;
+	return bt193_255;
+}
+
+GR2Array<Point3> CurveDataHeader_D4nK8uC7u::GetPoint3Data() const {
+	GR2Array<Point3> controls(KnotsControls.size()/4);
+	
+	for (int i=0, n=KnotsControls.size()/4; i<n; ++i) {
+		Point3 &q = controls[i];
+		granny_uint8 x = KnotsControls[n+(i*3+0)];
+		granny_uint8 y = KnotsControls[n+(i*3+1)];
+		granny_uint8 z = KnotsControls[n+(i*3+2)];
+
+		ByteState xs = GetState(x);
+		ByteState ys = GetState(y);
+		ByteState zs = GetState(z);
+
+		// special cases
+
+		//  x-Axis Only Handling
+		if      (xs == bt065_127 && ys == eq128     && zs == eq128     ) q.Set(toreal(x-64),  0.0f, 0.0f);
+		else if (xs == eq000     && ys == eq000     && zs == bt065_127 ) q.Set(toreal(192-z), 0.0f, 0.0f);
+		else if (xs == bt130_190 && ys == eq128     && zs == eq128     ) q.Set(toreal(448-x), 0.0f, 0.0f);
+
+		//  zs-Axis Only Handling
+		else if (xs == eq000     && ys == eq128     && zs == bt130_190 ) q.Set(0.0f, 0.0f, toreal(z-192));
+		else if (xs == bt065_127 && ys == eq128     && zs == eq000     ) q.Set(0.0f, 0.0f, toreal(192-x));
+		else if (xs == eq128     && ys == eq128     && zs == bt130_190 ) q.Set(0.0f, 0.0f, toreal(448-z));
+
+		//  ys-Axis Only Handling
+		else if (xs == eq001     && ys == bt130_190 && zs == eq191     ) q.Set(0.0f, toreal(y-192), 0.0f);
+		else if (xs == eq063     && ys == bt065_127 && zs == eq129     ) q.Set(0.0f, toreal(192-y), 0.0f);
+		else if (xs == eq129     && ys == bt130_190 && zs == eq191     ) q.Set(0.0f, toreal(448-y), 0.0f);
+
+		else if (xs == eq063     && ys == bt130_190 && zs == bt130_190 ) q.Set(0.0f, 0.0f, toreal(z-y));
+		else if (xs == bt193_255 && ys == bt065_127 && zs == eq191     ) q.Set(0.0f, 0.0f, toreal(x-y-32));
+		else if (xs == bt193_255 && ys == bt002_062 && zs == eq192     ) q.Set(0.0f, 0.0f, toreal(x-y-32));
+		else if (xs == bt130_190 && ys == eq191     && zs == bt065_127 ) q.Set(0.0f, 0.0f, toreal(x+z));
+		else if (xs == bt065_127 && ys == eq192     && zs == eq001     ) q.Set(0.0f, 0.0f, toreal(x+64));
+
+
+		else
+		{
+			q.Set(toreal(x), toreal(y), toreal(z));
+			ASSERT(false);
+		}
+
+		
+	}
+	return controls;
+}
+
+
+****************** case 10: //D3K16uC16u *******************************
+# ADDED (THINK done right, have Dan check it out)
+Used only by PositionCurve, KnotsControls are single increasing large ints, always divisable by 3 or 4
+
+int DummyNumber = KnotsControls_count;
+if ((DummyNumber % 4) == 0)
+{
+    //Divisible by 4
+    DummyNumber = DummyNumber / 4;
+}
+else
+{
+    //Divisible by 3
+    DummyNumber = DummyNumber / 3;
+}
+for (int i=0, n=DummyNumber; ........................
+***************************************************************************
+# Have this one commented out, something weird about it, have Dan check it out.
+GR2Array<granny_real32> CurveDataHeader_D3K16uC16u::GetKnots() const {
+	GR2Array<granny_real32> knots(KnotsControls.size()/4);
+	for (int i=0, n=KnotsControls.size()/4; i<n; ++i)
+		knots[i] = float(KnotsControls[i])/float(OneOverKnotScaleTrunc);
+	return knots;
+}
+
+GR2Array<Point3> CurveDataHeader_D3K16uC16u::GetPoint3Data() const {
+
+	GR2Array<Point3> controls(KnotsControls.size()/4);
+	for (int i=0, n=KnotsControls.size()/4; i<n; ++i) {
+		Point3 &q = controls[i];
+		q.x = float(KnotsControls[n+(i*3+0)])*ControlScales.x + ControlOffsets.x;
+		q.y = float(KnotsControls[n+(i*3+1)])*ControlScales.y + ControlOffsets.y;
+		q.z = float(KnotsControls[n+(i*3+2)])*ControlScales.z + ControlOffsets.z;
+	}
+	return controls;
+}
+
+
+****************** case 11: //D3K8uC8u *******************************
+Used only by PositionCurve, KnotsControls are single int values from 0-255, weights, always divisable by 4
+***************************************************************************
+# ADDED
+GR2Array<float> CurveDataHeader_D3K8uC8u::GetKnots() const {
+	GR2Array<float> knots(KnotsControls.size()/4);
+	for (int i=0, n=KnotsControls.size()/4; i<n; ++i)
+		knots[i] = float(KnotsControls[i])*65536.0f/256.0f/float(OneOverKnotScaleTrunc);
+	return knots;
+}
+
+# ADDED
+GR2Array<Point3> CurveDataHeader_D3K8uC8u::GetPoint3Data() const {
+	GR2Array<Point3> controls(KnotsControls.size()/4);
+	for (int i=0, n=KnotsControls.size()/4; i<n; ++i) {
+		Point3 &q = controls[i];
+		q.x = float(KnotsControls[n+(i*3+0)])*ControlScales.x + ControlOffsets.x;
+		q.y = float(KnotsControls[n+(i*3+1)])*ControlScales.y + ControlOffsets.y;
+		q.z = float(KnotsControls[n+(i*3+2)])*ControlScales.z + ControlOffsets.z;
+	}
+	return controls;
+}
+
+
+============================================================
+          TYPES OF PROCESSING FOUND IN GR2Format.h
+============================================================
+enum KeyType
+{
+	NO_KEY = 0,
+	LINEAR_KEY = 1, /*!< Use linear interpolation. */
+	QUADRATIC_KEY = 2, /*!< Use quadratic interpolation.  Forward and back tangents will be stored. */
+	TBC_KEY = 3, /*!< Use Tension Bias Continuity interpolation.  Tension, bias, and continuity will be stored. */
+	XYZ_ROTATION_KEY = 4, /*!< For use only with rotation data.  Separate X, Y, and Z keys will be stored instead of using quaternions. */
+};
+
+struct CurveData
+{
+	granny_uint8 Format;
+	granny_uint8 Degree;
+
+	virtual KeyType GetKeyType() const { return NO_KEY; }
+};
+//DEFVARTYPE(ValuePtr<CurveData>)
+template<> bool ::Recall(NWStream& in, ValuePtr<CurveData>& val);
+template<> bool ::Store(NWStream& out, ValuePtr<CurveData> const & val);
+template<> void ::Dump(NWDumpStream& out, LPCTSTR name, ValuePtr<CurveData> const & val);
+
+struct Point3CurveData : public CurveData
+{
+	virtual KeyType GetKeyType() const { return QUADRATIC_KEY; }
+	virtual GR2Array<granny_real32> GetKnots() const { return GR2Array<granny_real32>(); }
+	virtual GR2Array<Point3> GetPoint3Data() const { return GR2Array<Point3>(); }
+	//virtual GR2Array<granny_real32> GetFloatData() const { return GR2Array<granny_real32>(); }
+	//float gino;
+};
+/*
+struct Point3CurveData_F : public CurveData
+{
+	virtual GR2Array<float> GetFedeData() const { return GR2Array<float>(); }
+};
+*/
+struct RotationCurveData : public Point3CurveData
+{
+	virtual KeyType GetKeyType() const { return QUADRATIC_KEY; }
+	virtual GR2Array<granny_real32> GetKnots() const { return GR2Array<granny_real32>(); }
+	virtual GR2Array<Quat> GetQuatData() const { return GR2Array<Quat>(); }
+	virtual GR2Array<Point3> GetPoint3Data() const { return GR2Array<Point3>(); }
+};
+
+struct PositionCurveData : public Point3CurveData
+{
+	virtual KeyType GetKeyType() const { return QUADRATIC_KEY; }
+	virtual GR2Array<granny_real32> GetKnots() const { return GR2Array<granny_real32>(); }
+	//virtual GR2Array<Quat> GetQuatData() const { return GR2Array<Quat>(); }
+	virtual GR2Array<Point3> GetPoint3Data() const { return GR2Array<Point3>(); }
+};
+
+struct FloatCurveData : public CurveData
+{
+	virtual GR2Array<granny_real32> GetKnots() const { return GR2Array<granny_real32>(); }
+	virtual GR2Array<granny_real32> GetFloatData() const { return GR2Array<granny_real32>(); }
+};
+
+struct Matrix3CurveData : public RotationCurveData
+{
+	virtual GR2Array<granny_real32> GetKnots() const { return GR2Array<granny_real32>(); }
+	virtual KeyType GetKeyType() const { return QUADRATIC_KEY; }
+	virtual GR2Array<Quat> GetQuatData() const { return GR2Array<Quat>(); }
+	virtual GR2Array<Point3> GetPoint3Data() const { return GR2Array<Point3>(); }
+	virtual GR2Array<Matrix3> GetMatrix3Data() const { return GR2Array<Matrix3>(); }
+};
+
+===================  all granny formats  =================
+D3I1K8uC8u
+D3I1K16uC16u
+D3I1K32fC32f
+D9I3K8uC8u
+D9I1K8uC8u
+D9I3K16uC16u
+D9I1K16uC16u
+D3K8uC8u
+D3K16uC16u
+D4nK8uC7u
+D4nK16uC15u
+DaK8uC8u
+DaK16uC16u
+D4Constant32f
+
+
+
