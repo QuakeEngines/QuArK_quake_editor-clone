@@ -34,18 +34,18 @@ logging = 0
 importername = "ie_qmdl_import.py"
 textlog = "qmdl_ie_log.txt"
 progressbar = None
-g_scale = 1.0
+mdl = None
 
 ######################################################
 # MDL Model Constants
 ######################################################
-MDL_MAX_TRIANGLES=2048
-MDL_MAX_VERTICES=1024
-MDL_MAX_TEXCOORDS=1024
-MDL_MAX_FRAMES=256
-MDL_MAX_NORMALS=162
-MDL_MAX_SKINS=32 # need to find and change to correct number
-MDL_MAX_FRAMESIZE=(MDL_MAX_VERTICES * 4 + 128) # need to find and change to correct number
+MDL_MAX_TRIANGLES = 2048
+MDL_MAX_VERTICES = 1024
+MDL_MAX_TEXCOORDS = 1024
+MDL_MAX_FRAMES = 256
+MDL_MAX_NORMALS = 162
+MDL_MAX_SKINS = 32 # need to find and change to correct number
+MDL_MAX_FRAMESIZE = (MDL_MAX_VERTICES * 4 + 128) # need to find and change to correct number
 
 ######################################################
 # MDL Vector Constants
@@ -57,55 +57,27 @@ MDL_COLORMAP = (( 0, 0, 0), ( 15, 15, 15), ( 31, 31, 31), ( 47, 47, 47), ( 63, 6
 ######################################################
 # MDL data structures
 ######################################################
-class mdl_vertex:
-    vertices=[]
-    normalIndex=0
-    binary_format="<3BB" #little-endian (<), 3 Unsigned char + one more
+class mdl_face:
+    facesfront = 1
+    vertex_index = [0, 0, 0]
+    binary_format = "<4i" #little-endian (<), 4 ints
     
     def __init__(self):
-        self.vertices=[0]*3
-        self.normalIndex=0
+        self.facesfront = 1
+        self.vertex_index = [0, 0, 0]
 
     def load(self, file):
         # file is the model file & full path, ex: C:\Quake\id1\progs\dog.mdl
-        # data[0] through data[3], three 3D coords and normal (normal not needed).
+        # data[0] int 0 = backface, 1 = frontface, data[1],[2],[3] ints, 3 vertex indexes as integers.
         temp_data = file.read(struct.calcsize(self.binary_format))
         data = struct.unpack(self.binary_format, temp_data)
-        self.vertices[0]=data[0]
-        self.vertices[1]=data[1]
-        self.vertices[2]=data[2]
-        self.normalIndex=data[3]
+        self.facesfront = data[0]
+        self.vertex_index[0] = data[1]
+        self.vertex_index[1] = data[2]
+        self.vertex_index[2] = data[3]
         return self
 
     def dump(self):
-        print "MDL Alias_Triangle Structure"
-        print "vertex: ", self.vertices[0]
-        print "vertex: ", self.vertices[1]
-        print "vertex: ", self.vertices[2]
-        print "normalIndex: ",self.normalIndex
-        print "------------------"
-
-class mdl_face:
-    facesfront=1
-    vertex_index=[0, 0, 0]
-    binary_format="<4i" #little-endian (<), 4 ints
-    
-    def __init__(self):
-        self.facesfront=1
-        self.vertex_index = [0, 0, 0]
-
-    def load (self, file):
-        # file is the model file & full path, ex: C:\Quake\id1\progs\dog.mdl
-        # data[0] int 0 = backface, 1 = frontface, data[1],[2],[3] ints, 3 vertex indexes as integers.
-        temp_data=file.read(struct.calcsize(self.binary_format))
-        data=struct.unpack(self.binary_format, temp_data)
-        self.facesfront=data[0]
-        self.vertex_index[0]=data[1]
-        self.vertex_index[1]=data[2]
-        self.vertex_index[2]=data[3]
-        return self
-
-    def dump (self):
         print "MDL Face Structure"
         print "facesfront: ", self.facesfront
         print "vertex index: ", self.vertex_index[0]
@@ -114,184 +86,188 @@ class mdl_face:
         print "------------------"
 
 class mdl_tex_coord:
-    onseam=0
-    u=0
-    v=0
-    binary_format="<3i" #little-endian (<), 3 ints
+    onseam = 0
+    u = 0
+    v = 0
+    binary_format = "<3i" #little-endian (<), 3 ints
 
     def __init__(self):
-        self.onseam=0
-        self.u=0
-        self.v=0
+        self.onseam = 0
+        self.u = 0
+        self.v = 0
 
-    def load (self, file):
+    def load(self, file):
         # file is the model file & full path, ex: C:\Quake\id1\progs\dog.mdl
         # data[0] flag for "onseam", data[1] and data[2] ex: (169, 213), are 2D skin texture coords as integers.
         # Texture are generally divided in two pieces:
         #     one for the frontface of the model,
         #     and one for the backface.
         # The backface piece must be translated by skinwidth/2 from the frontface piece.
-        temp_data=file.read(struct.calcsize(self.binary_format))
-        data=struct.unpack(self.binary_format, temp_data)
-        self.onseam=data[0]
-        self.u=data[1]
-        self.v=data[2]
+        temp_data = file.read(struct.calcsize(self.binary_format))
+        data = struct.unpack(self.binary_format, temp_data)
+        self.onseam = data[0]
+        self.u = data[1]
+        self.v = data[2]
         return self
 
-    def dump (self):
+    def dump(self):
         print "MDL Texture Coordinate Structure"
-        print "texture coord onseam: ",self.onseam
-        print "texture coordinate u: ",self.u
-        print "texture coordinate v: ",self.v
+        print "texture coord onseam: ", self.onseam
+        print "texture coordinate u: ", self.u
+        print "texture coordinate v: ", self.v
         print "------------------"
 
 class mdl_skin:
-    skinwidth=0
-    skinheight=0
-    data=()
-    binary_format="<%iB" % (skinwidth * skinheight) #little-endian (<), (skinwidth * skinheight) of unsigned char int
+    skinwidth = 0
+    skinheight = 0
+    data = ()
+    binary_format = "<%iB" % (skinwidth * skinheight) #little-endian (<), (skinwidth * skinheight) of unsigned char int
 
     def __init__(self):
-        self.skinwidth=0
-        self.skinheight=0
-        self.data=()
-        self.binary_format="<%iB" % (self.skinwidth * self.skinheight)
+        self.skinwidth = 0
+        self.skinheight = 0
+        self.data = ()
+        self.binary_format = "<%iB" % (self.skinwidth * self.skinheight)
 
-    def load (self, file, skinwidth, skinheight):
+    def load(self, file, skinwidth, skinheight):
         # file is the model file & full path, ex: C:\Quake\id1\progs\dog.mdl
         self.skinwidth = skinwidth
         self.skinheight = skinheight
-        self.binary_format="<%iB" % (self.skinwidth * self.skinheight)
-        temp_data=file.read(struct.calcsize(self.binary_format))
-        self.data=struct.unpack(self.binary_format, temp_data)
+        self.binary_format = "<%iB" % (self.skinwidth * self.skinheight)
+        temp_data = file.read(struct.calcsize(self.binary_format))
+        self.data = struct.unpack(self.binary_format, temp_data)
         return self
 
-    def dump (self):
+    def dump(self):
         print "MDL Skin"
-        print "skinwidth: ",self.skinwidth
-        print "skinheight: ",self.skinheight
-      #  print "data: ",self.data # un-comment this line for the list of data integer color indexes of the .lmp colormap pallet.
-        print "len data: ",len(self.data)
+        print "skinwidth: ", self.skinwidth
+        print "skinheight: ", self.skinheight
+      #  print "data: ", self.data # un-comment this line for the list of data integer color indexes of the .lmp colormap pallet.
+        print "len data: ", len(self.data)
         print "--------------------"
 
 class mdl_texture_info:
-    group=0   #item  0   int, This is the texture group setting, 0 = single, 1 = group (for animation textures)
-    nb=0 # (used in load function below), int, number of pics for an animation texture
-    time=0.0 # (used in load function below), float, time duration for each pic above
-    data=None # (used in load function below), texture data, an array of nb arrays of skinwidth * skinheight elements (picture size)
-    skins=[]
-    binary_format="<i" #little-endian (<), 1 int for group setting
+    group = 0   #item  0   int, This is the texture group setting, 0 = single, 1 = group (for animation textures)
+    nb = 0 # (used in load function below), int, number of pics for an animation texture
+    time = 0.0 # (used in load function below), float, time duration for each pic above
+    data = None # (used in load function below), texture data, an array of nb arrays of skinwidth * skinheight elements (picture size)
+    skins = []
+    binary_format = "<i" #little-endian (<), 1 int for group setting
 
     def __init__(self):
-        self.group=0
-        self.nb=0
-        self.time=0.0
-        self.data=None
-        self.binary_format="<i" #little-endian (<), 1 int for group setting, changed in load function if animation textures exist.
-        self.skins=[]
+        self.group = 0
+        self.nb = 0
+        self.time = 0.0
+        self.data = None
+        self.binary_format = "<i" #little-endian (<), 1 int for group setting, changed in load function if animation textures exist.
+        self.skins = []
 
-    def load (self, file):
+    def load(self, file, num_skins, skin_width, skin_height):
         # file is the model file & full path, ex: C:\Quake\id1\progs\dog.mdl
-        temp_data=file.read(struct.calcsize(self.binary_format))
-        data=struct.unpack(self.binary_format, temp_data)
-        self.group=data[0]
-        if self.group == 0:
-            #make the single skin object for model
-            self.skins.append(mdl_skin())
-        else:
-            #reset the binary data to read for the texture info section since animation textures exist.
-            self.binary_format="<if" #little-endian (<), 1 integer and 1 float
-            temp_data=file.read(struct.calcsize(self.binary_format))
-            data=struct.unpack(self.binary_format, temp_data)
-            self.nb=data[0]
-            self.time=data[1]
-            for i in xrange(0,self.nb):
-                #make the animated skin objects for model
+        for i in xrange(0,num_skins):
+            temp_data = file.read(struct.calcsize(self.binary_format))
+            data = struct.unpack(self.binary_format, temp_data)
+            self.group = data[0]
+            if self.group == 0:
+                #make the single skin object(s) for model
                 self.skins.append(mdl_skin())
+                self.skins[i].load(file, skin_width, skin_height)
+                #self.skins[i].dump() # for testing only, comment out when done
+            else:
+                #make the animated skin objects for model
+                #reset the binary data to read for the texture info section since animation textures exist.
+                binary_format = "<if" #little-endian (<), 1 integer and 1 float
+                temp_data = file.read(struct.calcsize(binary_format))
+                data = struct.unpack(binary_format, temp_data)
+                self.nb = data[0]
+                self.time = data[1]
+                self.skins.append(mdl_skin())
+                self.skins[i].load(file, skin_width, skin_height)
+                #self.skins[i].dump() # for testing only, comment out when done
         return self
 
-    def dump (self):
+    def dump(self):
         print "MDL Texture Info"
-        print "group setting: ",self.group
-        print "self.nb: ",self.nb
-        print "self.time: ",self.time
-        print "self.skins: ",self.skins
+        print "group setting: ", self.group
+        print "self.nb: ", self.nb
+        print "self.time: ", self.time
+        print "self.skins: ", self.skins
         print "==============="
 
 class mdl_vertex:
-    v=[0, 0, 0]
-    normalIndex=(0.0, 0.0, 0.0)
-    binary_format="<3B1B" #little-endian (<), 3  unsigned chars for coordinate, 1 unsigned char for normalIndex
+    v = [0, 0, 0]
+    normalIndex = (0.0, 0.0, 0.0)
+    binary_format = "<3B1B" #little-endian (<), 3  unsigned chars for coordinate, 1 unsigned char for normalIndex
 
     def __init__(self):
-        self.v=[0, 0, 0]
-        self.normalIndex=(0.0, 0.0, 0.0)
+        self.v = [0, 0, 0]
+        self.normalIndex = (0.0, 0.0, 0.0)
 
-    def load (self, file):
-        temp_data=file.read(struct.calcsize(self.binary_format))
-        data=struct.unpack(self.binary_format, temp_data)
-        self.v=[data[0],data[1],data[2]]
-        self.normalIndex=MDL_NORMAL_VECTORS[data[3]]
+    def load(self, file):
+        temp_data = file.read(struct.calcsize(self.binary_format))
+        data = struct.unpack(self.binary_format, temp_data)
+        self.v = [data[0], data[1], data[2]]
+        self.normalIndex = MDL_NORMAL_VECTORS[data[3]]
         return self
 
-    def dump (self):
+    def dump(self):
         print "MDL Vertex"
-        print "v: ",self.v[0],self.v[1],self.v[2]
-        print "normalIndex: ",self.normalIndex
+        print "v: ",self.v[0], self.v[1], self.v[2]
+        print "normalIndex: ", self.normalIndex
         print "===================="
 
 class mdl_frame:
-    group=0   #item  0   int, This is the frame group setting, 0 = simple single frame, not 0 = group of frames
-    time=0.0 # (used in load function below), float, time duration for each frame above
-    bboxmin=[]
-    bboxmax=[]
-    name=""
-    vertices=[]
-    frames=[] # for group of frames
-    binary_format="<i" #little-endian (<), 1 int for group setting
+    group = 0   #item  0   int, This is the frame group setting, 0 = simple single frame, not 0 = group of frames
+    time = 0.0 # (used in load function below), float, time duration for each frame above
+    bboxmin = []
+    bboxmax = []
+    name = ""
+    vertices = []
+    frames = [] # for group of frames
+    binary_format = "<i" #little-endian (<), 1 int for group setting
 
     def __init__(self):
-        self.group=0 # 0 = simple single frame, not 0 = group of frames
-        self.time=0.0
-        self.binary_format="<i" #little-endian (<), 1 int for group setting, changed in load function of this class.
-        self.bboxmin=[0.0]*3
-        self.bboxmax=[0.0]*3
-        self.name=""
-        self.vertices=[]
-        self.frames=[]
+        self.group = 0 # 0 = simple single frame, not 0 = group of frames
+        self.time = 0.0
+        self.binary_format = "<i" #little-endian (<), 1 int for group setting, changed in load function of this class.
+        self.bboxmin = [0.0]*3
+        self.bboxmax = [0.0]*3
+        self.name = ""
+        self.vertices = []
+        self.frames = []
 
-    def load (self, file, num_verts):
+    def load(self, file, num_verts):
         # file is the model file & full path, ex: C:\Quake\id1\progs\dog.mdl
         # self.bboxmin, bouding box min
         # self.bboxmax, bouding box max
         # self.name is the frame name ex: attack1
-        temp_data=file.read(struct.calcsize(self.binary_format))
-        data=struct.unpack(self.binary_format, temp_data)
-        self.group=data[0]
+        temp_data = file.read(struct.calcsize(self.binary_format))
+        data = struct.unpack(self.binary_format, temp_data)
+        self.group = data[0]
         if self.group == 0:
-            self.bboxmin=mdl_vertex()
+            self.bboxmin = mdl_vertex()
             self.bboxmin.load(file)
             #self.bboxmin.dump() # for testing only, comment out when done
-            self.bboxmax=mdl_vertex()
+            self.bboxmax = mdl_vertex()
             self.bboxmax.load(file)
             #self.bboxmax.dump() # for testing only, comment out when done
-            temp_data=file.read(struct.calcsize(">16c"))
-            data=struct.unpack(">16c", temp_data)
-            self.name="".join(data).split("\0")[0]
+            temp_data = file.read(struct.calcsize(">16c"))
+            data = struct.unpack(">16c", temp_data)
+            self.name = "".join(data).split("\0")[0]
             for i in xrange(0,num_verts):
                 self.vertices.append(mdl_vertex())
                 self.vertices[i].load(file)
                 #self.vertices[i].dump() # for testing only, comment out when done
         else: # HAVE DAN CHECK IF THIS IS CORRECT
-            self.bboxmin=mdl_vertex()
+            self.bboxmin = mdl_vertex()
             self.bboxmin.load(file)
             #self.bboxmin.dump() # for testing only, comment out when done
-            self.bboxmax=mdl_vertex()
+            self.bboxmax = mdl_vertex()
             self.bboxmax.load(file)
             #self.bboxmax.dump() # for testing only, comment out when done
-            binary_format="<f" #little-endian (<), 1 float for "time" till next frame.
-            temp_data=file.read(struct.calcsize(binary_format))
-            data=struct.unpack(binary_format, temp_data)
+            binary_format = "<f" #little-endian (<), 1 float for "time" till next frame.
+            temp_data = file.read(struct.calcsize(binary_format))
+            data = struct.unpack(binary_format, temp_data)
             self.time=data[0]
             for i in xrange(0,self.group):
                 self.frames.append(mdl_frame())
@@ -299,96 +275,92 @@ class mdl_frame:
                 self.frames[i].bboxmin.load(file)
                 self.frames[i].bboxmax=mdl_vertex()
                 self.frames[i].bboxmax.load(file)
-                temp_data=file.read(struct.calcsize(">16c"))
-                data=struct.unpack(">16c", temp_data)
-                self.frames[i].name="".join(data).split("\0")[0]
+                temp_data = file.read(struct.calcsize(">16c"))
+                data = struct.unpack(">16c", temp_data)
+                self.frames[i].name = "".join(data).split("\0")[0]
                 for j in xrange(0,num_verts):
                     self.frames[i].vertices.append(mdl_vertex())
                     self.frames[i].vertices[j].load(file)
         return self
 
-    def dump (self):
+    def dump(self):
         print "MDL Frame"
-        print "group: ",self.group
-        print "time: ",self.time
-        print "bboxmin: ",self.bboxmin
-        print "bboxmax: ",self.bboxmax
-        print "name: ",self.name
+        print "group: ", self.group
+        print "time: ", self.time
+        print "bboxmin: ", self.bboxmin
+        print "bboxmax: ", self.bboxmax
+        print "name: ", self.name
         print "===================="
 
 class mdl_obj:
     #Header Structure
-    ident=0              #item  0   int, This is used to identify the file
-    version=0            #item  1   int, The version number of the file (Must be 8)
-    scale=[0.0]*3        #item  2   3 floats, the scale factor, as a vector
-    translate=[0.0]*3    #item  3   3 floats, the translation vector
-    boundingradius=0.    #item  4   float, the radius of the bounding box, for collision
-    eyeposition=[0.0]*3  #item  5   3 floats, the eye's position, as a vector
-    num_skins=0          #item  6   int, The number of skins associated with the model
-    skin_width=0         #item  7   int, The skin width in pixels
-    skin_height=0        #item  8   int, The skin height in pixels
-    num_verts=0          #item  9   int, The number of vertices (constant for each frame)
-    num_tris=0           #item 10   int, The number of triangle faces (polygons)
-    num_frames=0         #item 11   int, The number of animation frames
-    synctype=0           #item 12   int, 0 = synchron, 1 = random
-    flags=0              #item 13   int, State flag
-    size=0.              #item 14   float, Don't know what this is
+    ident = 0              #item  0   int, This is used to identify the file
+    version = 0            #item  1   int, The version number of the file (Must be 8)
+    scale = [0.0]*3        #item  2   3 floats, the scale factor, as a vector
+    translate = [0.0]*3    #item  3   3 floats, the translation vector
+    boundingradius = 0.0   #item  4   float, the radius of the bounding box, for collision
+    eyeposition = [0.0]*3  #item  5   3 floats, the eye's position, as a vector
+    num_skins = 0          #item  6   int, The number of skins associated with the model
+    skin_width = 0         #item  7   int, The skin width in pixels
+    skin_height = 0        #item  8   int, The skin height in pixels
+    num_verts = 0          #item  9   int, The number of vertices (constant for each frame)
+    num_tris = 0           #item 10   int, The number of triangle faces (polygons)
+    num_frames = 0         #item 11   int, The number of animation frames
+    synctype = 0           #item 12   int, 0 = synchron, 1 = random
+    flags = 0              #item 13   int, State flag
+    size = 0.0             #item 14   float, Don't know what this is
 
-    binary_format="<2i3f3ff3f8if"  #little-endian (<), see #item descriptions above
+    binary_format = "<2i3f3ff3f8if"  #little-endian (<), see #item descriptions above
 
-    texture_info=None
+    texture_info = None
 
     #mdl data objects
-    tex_coords=[]
-    faces=[]
-    vertices=[]
-    frames=[]
+    tex_coords = []
+    faces = []
+    vertices = []
+    frames = []
 
     # Texture are generally divided in two pieces:
     #     one for the frontface of the model, and one for the backface.
     # The backface piece must be translated of skinwidth/2 from the frontface piece.
     def __init__ (self):
-        self.tex_coords=[] # A list of integers, 1 for "onseam" and 2 for the s,t or u,v texture coordinates.
-        self.faces=[]      # A list of the triangles.
-        self.vertices=[]   # A list of the vertexes.
-        self.frames=[]     # A list of the animation frames.
+        self.tex_coords = [] # A list of integers, 1 for "onseam" and 2 for the s,t or u,v texture coordinates.
+        self.faces = []      # A list of the triangles.
+        self.vertices = []   # A list of the vertexes.
+        self.frames = []     # A list of the animation frames.
 
-    def load (self, file):
+    def load(self, file):
         # file is the model file & full path, ex: C:\Quake\id1\progs\dog.mdl
         # data is all of the header data amounts.
         temp_data = file.read(struct.calcsize(self.binary_format))
         data = struct.unpack(self.binary_format, temp_data)
 
-        self.ident=data[0]
-        self.version=data[1]
+        self.ident = data[0]
+        self.version = data[1]
 
-        if (self.ident!=1330660425 or self.version!=6): # Not a valid MDL file.
+        if (self.ident != 1330660425 or self.version != 6): # Not a valid MDL file.
             if self.version == 10:
                 return self.version
             else:
                 return None
 
-        self.scale=data[2],data[3],data[4]
-        self.translate=data[5],data[6],data[7]
-        self.boundingradius=data[8]
-        self.eyeposition=data[9],data[10],data[11]
-        self.num_skins=data[12]
-        self.skin_width=data[13]
-        self.skin_height=data[14]
-        self.num_verts=data[15]
-        self.num_tris=data[16]
-        self.num_frames=data[17]
-        self.synctype=data[18]
-        self.flags=data[19]
-        self.size=data[20]
+        self.scale = data[2],data[3],data[4]
+        self.translate = data[5],data[6],data[7]
+        self.boundingradius = data[8]
+        self.eyeposition = data[9],data[10],data[11]
+        self.num_skins = data[12]
+        self.skin_width = data[13]
+        self.skin_height = data[14]
+        self.num_verts = data[15]
+        self.num_tris = data[16]
+        self.num_frames = data[17]
+        self.synctype = data[18]
+        self.flags = data[19]
+        self.size = data[20]
 
         # get the skin(s) texture information
-        self.texture_info=mdl_texture_info()
-        self.texture_info.load(file)
-        for i in xrange(0,self.num_skins):
-            #load the skin data
-            self.texture_info.skins[i].load(file, self.skin_width, self.skin_height)
-         #   self.texture_info.skins[i].dump() # for testing only, comment out when done
+        self.texture_info = mdl_texture_info()
+        self.texture_info.load(file, self.num_skins, self.skin_width, self.skin_height)
 
         #load the # of raw texture coordinates data for model, some get updated later.
         for i in xrange(0,self.num_verts):
@@ -416,7 +388,7 @@ class mdl_obj:
 
         return self
 
-    def dump (self):
+    def dump(self):
         global tobj, logging
         if logging == 1:
             tobj.logcon ("")
@@ -461,9 +433,9 @@ def load_textures(mdl, texture_name):
             Palette += struct.pack("BBB", MDL_COLORMAP[i][0], MDL_COLORMAP[i][1], MDL_COLORMAP[i][2])
         for i in xrange(0,mdl.num_skins):
             if mdl.num_skins == 1:
-                skinname = texture_name+".pcx"
+                skinname = texture_name + ".pcx"
             else:
-                skinname = texture_name+" "+str(i+1)+".pcx"
+                skinname = texture_name + " " + str(i+1) + ".pcx"
             if logging == 1:
                 tobj.logcon (skinname)
             skin = quarkx.newobj(skinname)
@@ -471,8 +443,8 @@ def load_textures(mdl, texture_name):
             ImageData = ''
             for y in xrange(0,mdl.skin_height):
                 for x in xrange(0,mdl.skin_width):
-                    ImageData += struct.pack("B", mdl.texture_info.skins[i].data[(mdl.skin_height-y-1)*mdl.skin_width+x])
-                ImageData += "\0"*Padding
+                    ImageData += struct.pack("B", mdl.texture_info.skins[i].data[(mdl.skin_height-y-1) * mdl.skin_width+x])
+                ImageData += "\0" * Padding
             skin['Image1'] = ImageData
             skin['Pal'] = Palette
             skin['Size'] = (float(mdl.skin_width), float(mdl.skin_height))
@@ -506,9 +478,9 @@ def animate_mdl(mdl): # The Frames Group is made here & returned to be added to 
         mesh = ()
         #update the vertices
         for j in xrange(0,mdl.num_verts):
-            x=(mdl.scale[0]*mdl.frames[i].vertices[j].v[0]+mdl.translate[0])*g_scale
-            y=(mdl.scale[1]*mdl.frames[i].vertices[j].v[1]+mdl.translate[1])*g_scale
-            z=(mdl.scale[2]*mdl.frames[i].vertices[j].v[2]+mdl.translate[2])*g_scale
+            x = (mdl.scale[0] * mdl.frames[i].vertices[j].v[0]) + mdl.translate[0]
+            y = (mdl.scale[1] * mdl.frames[i].vertices[j].v[1]) + mdl.translate[1]
+            z = (mdl.scale[2] * mdl.frames[i].vertices[j].v[2]) + mdl.translate[2]
 
             #put the vertex in the right spot
             mesh = mesh + (x,)
@@ -522,10 +494,10 @@ def animate_mdl(mdl): # The Frames Group is made here & returned to be added to 
 
 
 def load_mdl(mdl_filename, name):
-    global progressbar, tobj, logging, Strings
+    global progressbar, tobj, logging, Strings, mdl
     #read the file in
-    file=open(mdl_filename,"rb")
-    mdl=mdl_obj()
+    file = open(mdl_filename, "rb")
+    mdl = mdl_obj()
     MODEL = mdl.load(file)
 
     file.close()
@@ -536,7 +508,7 @@ def load_mdl(mdl_filename, name):
 
     Strings[2454] = name + "\n" + Strings[2454]
     progressbar = quarkx.progressbar(2454, mdl.num_tris + (mdl.num_frames * 2))
-    texture_name = mdl_filename.rsplit("\\",1)[1]
+    texture_name = mdl_filename.rsplit("\\", 1)[1]
     texture_name = texture_name.split(".")[0]
     skinsize, skingroup = load_textures(mdl, texture_name) # Calls here to make the Skins Group.
 
@@ -581,7 +553,7 @@ def import_mdl_model(editor, mdl_filename):
     # Now we start creating our Import Component.
     # But first we check for any other "Import Component"s,
     # if so we name this one 1 more then the largest number.
-    model_name = mdl_filename.rsplit("\\",1)[1]
+    model_name = mdl_filename.rsplit("\\", 1)[1]
     name = model_name.split(".")[0]
 
     Tris, skinsize, skingroup, framesgroup = load_mdl(mdl_filename, name) # Loads the model.
@@ -600,6 +572,8 @@ def import_mdl_model(editor, mdl_filename):
     Component.appenditem(sdogroup)
     Component.appenditem(skingroup)
     Component.appenditem(framesgroup)
+    Component['Q1scale'] = mdl.scale
+    Component['Q1translate'] = mdl.translate
 
     ### Use the 'ModelRoot' below to test opening the QuArK's Model Editor with, needs to be qualified with main menu item.
     ModelRoot = quarkx.newobj('Model:mr')
@@ -667,4 +641,7 @@ quarkpy.qmdlbase.RegisterMdlImporter(".mdl Quake Importer", ".mdl file", "*.mdl"
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.1  2010/03/24 02:05:19  cdunde
+# Added support for Quake1 .mdl importing including textures and animations.
+#
 #
