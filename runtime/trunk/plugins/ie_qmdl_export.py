@@ -388,18 +388,24 @@ def get_tris_data(file, mdl, component):
     progressbar = quarkx.progressbar(2454, mdl.num_tris + mdl.num_frames)
     for i in xrange(0, mdl.num_tris):
         tri = tris[i]
-        frontface = 1
         tris_list[i] = [0, 0, 0, 0]
+        u_values = [0, 0, 0]
+        for j in xrange(0, 3):
+            vtx, u, v = tri[j]
+            if u < seam:
+                u_values[j] = 1
+        if u_values[0] == 1 and u_values[1] == 1 and u_values[2] == 1:
+            frontface = 1
+        else:
+            frontface = 0
         for j in xrange(0, 3):
             vtx, u, v = tri[j]
             tris_list[i][j+1] = vtx
-            onseam = 0
+            onseam = 32
             if u == seam:
-                onseam = 32
-                frontface = 0
+                onseam = 0
             if u > seam:
                 u = u - seam
-                frontface = 0
             uv_list[vtx] = [onseam, u, v]
         tris_list[i][0] = frontface
         progressbar.progress()
@@ -504,4 +510,7 @@ quarkpy.qmdlbase.RegisterMdlExporter(".mdl Quake Exporter", ".mdl file", "*.mdl"
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.1  2010/03/26 07:27:41  cdunde
+# New exporter for Quake .mdl models.
+#
 #
