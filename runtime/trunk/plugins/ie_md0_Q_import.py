@@ -15,7 +15,7 @@ QuArK Model Editor importer for Quake .mdl model files.
 
 
 Info = {
-   "plug-in":       "ie_qmdl_importer",
+   "plug-in":       "ie_md0_Q_import",
    "desc":          "This script imports a Quake file (MDL), textures, and animations into QuArK for editing.",
    "date":          "March 21, 2010",
    "author":        "cdunde & DanielPharos",
@@ -31,8 +31,8 @@ from quarkpy.qdictionnary import Strings
 
 # Globals
 logging = 0
-importername = "ie_qmdl_import.py"
-textlog = "qmdl_ie_log.txt"
+importername = "ie_md0_Q_import.py"
+textlog = "Qmdl_ie_log.txt"
 progressbar = None
 mdl = None
 
@@ -635,12 +635,15 @@ def loadmodel(root, filename, gamename, nomessage=0):
 
 ### To register this Python plugin and put it on the importers menu.
 import quarkpy.qmdlbase
-import ie_qmdl_import # This imports itself to be passed along so it can be used in mdlmgr.py later.
+import ie_md0_Q_import # This imports itself to be passed along so it can be used in mdlmgr.py later.
 quarkpy.qmdlbase.RegisterMdlImporter(".mdl Quake Importer", ".mdl file", "*.mdl", loadmodel)
 
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.2  2010/03/26 07:28:05  cdunde
+# Update for Skins sub-groups and file cleanup.
+#
 # Revision 1.1  2010/03/24 02:05:19  cdunde
 # Added support for Quake1 .mdl importing including textures and animations.
 #

@@ -15,7 +15,7 @@ QuArK Model Editor exporter for Quake .mdl model files.
 
 
 Info = {
-   "plug-in":       "ie_qmdl_exporter",
+   "plug-in":       "ie_md0_Q_export",
    "desc":          "This script exports a Quake file (MDL), textures, and animations from QuArK.",
    "date":          "March 23, 2010",
    "author":        "cdunde & DanielPharos",
@@ -31,8 +31,8 @@ from quarkpy.qdictionnary import Strings
 
 # Globals
 logging = 0
-exportername = "ie_qmdl_import.py"
-textlog = "qmdl_ie_log.txt"
+exportername = "ie_md0_Q_export.py"
+textlog = "Qmdl_ie_log.txt"
 progressbar = None
 g_scale = 1.0
 
@@ -510,6 +510,9 @@ quarkpy.qmdlbase.RegisterMdlExporter(".mdl Quake Exporter", ".mdl file", "*.mdl"
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.2  2010/03/27 04:29:10  cdunde
+# Fixed the U,V exporting.
+#
 # Revision 1.1  2010/03/26 07:27:41  cdunde
 # New exporter for Quake .mdl models.
 #
