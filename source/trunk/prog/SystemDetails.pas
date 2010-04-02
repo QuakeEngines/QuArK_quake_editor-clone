@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.46  2009/09/23 20:38:52  danielpharos
+Small tweak to OS version printout.
+
 Revision 1.45  2009/07/15 10:38:01  danielpharos
 Updated website link.
 
@@ -427,11 +430,11 @@ type
 
 implementation
 
-uses ShlObj, TlHelp32, Psapi, Logging, ExtraFunctionality;
+uses ShlObj, TlHelp32, Psapi, Logging, QkExceptions, ExtraFunctionality;
 
 type
   TPlatformType = (osWin95Comp, osWinNTComp);
-  TPlatform = (osWin95, osWin98, osWinME, osWinNT4, osWin2000, osWinXP, osWin2003, osWinVista, osWin2008);
+  TPlatform = (osWin95, osWin98, osWinME, osWinNT4, osWin2000, osWinXP, osWin2003, osWinVista, osWin2008, osWin2008R2, osWin7);
 
 var
   VLevel, VFamily, VModel, VStepping, VTyp: Byte;
@@ -955,7 +958,10 @@ begin
   ZeroMemory(@OS,SizeOf(OS));
   OS.dwOSVersionInfoSize:=SizeOf(OS);
   if not GetVersionEx(OS) then
-    raise exception.create('Unable to retrieve system details. Call to GetVersionEx failed!');
+  begin
+    LogWindowsError(GetLastError(), 'GetVersionEx(OS)');
+    LogAndRaiseError('Unable to retrieve system details. Call to GetVersionEx failed!');
+  end;
   MajorVersion:=OS.dwMajorVersion;
   MinorVersion:=OS.dwMinorVersion;
   BuildNumber:=OS.dwBuildNumber;
@@ -1061,10 +1067,15 @@ begin
           Platform:='Windows Vista or Windows Server 2008';
           WindowsPlatform:=osWinVista;
          end;
+        1:
+         begin
+          Platform:='Windows 7 or Windows Server 2008 R2';
+          WindowsPlatform:=osWin7;
+         end;
         else
          begin
           Platform:='Unknown (Probably OK)';
-          WindowsPlatform:=osWinVista;
+          WindowsPlatform:=osWin7;
          end;
         end;
         WindowsPlatformCompatibility:=osWinNTComp;
@@ -1509,150 +1520,153 @@ const
 
   DescValue = 'DriverDesc';
 begin
-  l_hdc := GetDC(0); {Remember to call ReleaseDC() - as written in the Win32 API documentation}
+  l_hdc := GetDC(0);
+  try
 
-  FHorzRes:=GetDeviceCaps(l_hdc,windows.HORZRES);
-  FVertRes:=GetDeviceCaps(l_hdc,windows.VERTRES);
-  FColorDepth:=GetDeviceCaps(l_hdc,BITSPIXEL);
+    FHorzRes:=GetDeviceCaps(l_hdc,windows.HORZRES);
+    FVertRes:=GetDeviceCaps(l_hdc,windows.VERTRES);
+    FColorDepth:=GetDeviceCaps(l_hdc,BITSPIXEL);
+   
+    case GetDeviceCaps(l_hdc,windows.TECHNOLOGY) of
+      DT_PLOTTER:    FTechnology:='Vector Plotter';
+      DT_RASDISPLAY: FTechnology:='Raster Display';
+      DT_RASPRINTER: FTechnology:='Raster Printer';
+      DT_RASCAMERA:  FTechnology:='Raster Camera';
+      DT_CHARSTREAM: FTechnology:='Character Stream';
+      DT_METAFILE:   FTechnology:='Metafile';
+      DT_DISPFILE:   FTechnology:='Display File';
+    end;
+   
+    FHorzSize:=GetDeviceCaps(l_hdc,HORZSIZE);
+    FVertSize:=GetDeviceCaps(l_hdc,VERTSIZE);
+    FPixelWidth:=GetDeviceCaps(l_hdc,ASPECTX);
+    FPixelHeight:=GetDeviceCaps(l_hdc,ASPECTY);
+    FPixelDiagonal:=GetDeviceCaps(l_hdc,ASPECTXY);
+   
+    FCurveCaps:=[];
+    if GetDeviceCaps(l_hdc,windows.CURVECAPS)<>CC_NONE then
+    begin
+      if (GetDeviceCaps(l_hdc,windows.CURVECAPS) and CC_CIRCLES)=CC_CIRCLES then
+        FCurveCaps:=FCurveCaps+[ccCircles];
+      if (GetDeviceCaps(l_hdc,windows.CURVECAPS) and CC_PIE)=CC_PIE then
+        FCurveCaps:=FCurveCaps+[ccPieWedges];
+      if (GetDeviceCaps(l_hdc,windows.CURVECAPS) and CC_CHORD)=CC_CHORD then
+        FCurveCaps:=FCurveCaps+[ccChords];
+      if (GetDeviceCaps(l_hdc,windows.CURVECAPS) and CC_ELLIPSES)=CC_ELLIPSES then
+        FCurveCaps:=FCurveCaps+[ccEllipses];
+      if (GetDeviceCaps(l_hdc,windows.CURVECAPS) and CC_WIDE)=CC_WIDE then
+        FCurveCaps:=FCurveCaps+[ccWideBorders];
+      if (GetDeviceCaps(l_hdc,windows.CURVECAPS) and CC_STYLED)=CC_STYLED then
+        FCurveCaps:=FCurveCaps+[ccStyledBorders];
+      if (GetDeviceCaps(l_hdc,windows.CURVECAPS) and CC_WIDESTYLED)=CC_WIDESTYLED then
+        FCurveCaps:=FCurveCaps+[ccWideStyledBorders];
+      if (GetDeviceCaps(l_hdc,windows.CURVECAPS) and CC_INTERIORS)=CC_INTERIORS then
+        FCurveCaps:=FCurveCaps+[ccInteriors];
+      if (GetDeviceCaps(l_hdc,windows.CURVECAPS) and CC_ROUNDRECT)=CC_ROUNDRECT then
+        FCurveCaps:=FCurveCaps+[ccRoundedRects];
+    end;
+   
+    FLineCaps:=[];
+    if GetDeviceCaps(l_hdc,windows.LINECAPS)<>LC_NONE then
+    begin
+      if (GetDeviceCaps(l_hdc,windows.LINECAPS) and LC_POLYLINE)=LC_POLYLINE then
+        FLineCaps:=FLineCaps+[lcPolylines];
+      if (GetDeviceCaps(l_hdc,windows.LINECAPS) and LC_MARKER)=LC_MARKER then
+        FLineCaps:=FLineCaps+[lcMarkers];
+      if (GetDeviceCaps(l_hdc,windows.LINECAPS) and LC_POLYMARKER)=LC_POLYMARKER then
+        FLineCaps:=FLineCaps+[lcMultipleMarkers];
+      if (GetDeviceCaps(l_hdc,windows.LINECAPS) and LC_WIDE)=LC_WIDE then
+        FLineCaps:=FLineCaps+[lcWideLines];
+      if (GetDeviceCaps(l_hdc,windows.LINECAPS) and LC_STYLED)=LC_STYLED then
+        FLineCaps:=FLineCaps+[lcStyledLines];
+      if (GetDeviceCaps(l_hdc,windows.LINECAPS) and LC_WIDESTYLED)=LC_WIDESTYLED then
+        FLineCaps:=FLineCaps+[lcWideStyledLines];
+      if (GetDeviceCaps(l_hdc,windows.LINECAPS) and LC_INTERIORS)=LC_INTERIORS then
+        FLineCaps:=FLineCaps+[lcInteriors];
+    end;
+   
+    FPolygonCaps:=[];
+    if GetDeviceCaps(l_hdc,POLYGONALCAPS)<>PC_NONE then
+    begin
+      if (GetDeviceCaps(l_hdc,POLYGONALCAPS) and PC_POLYGON)=PC_POLYGON then
+        FPolygonCaps:=FPolygonCaps+[pcAltFillPolygons];
+      if (GetDeviceCaps(l_hdc,POLYGONALCAPS) and PC_RECTANGLE)=PC_RECTANGLE then
+        FPolygonCaps:=FPolygonCaps+[pcRectangles];
+      if (GetDeviceCaps(l_hdc,POLYGONALCAPS) and PC_WINDPOLYGON)=PC_WINDPOLYGON then
+        FPolygonCaps:=FPolygonCaps+[pcWindingFillPolygons];
+      if (GetDeviceCaps(l_hdc,POLYGONALCAPS) and PC_SCANLINE)=PC_SCANLINE then
+        FPolygonCaps:=FPolygonCaps+[pcSingleScanlines];
+      if (GetDeviceCaps(l_hdc,POLYGONALCAPS) and PC_WIDE)=PC_WIDE then
+        FPolygonCaps:=FPolygonCaps+[pcWideBorders];
+      if (GetDeviceCaps(l_hdc,POLYGONALCAPS) and PC_STYLED)=PC_STYLED then
+        FPolygonCaps:=FPolygonCaps+[pcStyledBorders];
+      if (GetDeviceCaps(l_hdc,POLYGONALCAPS) and PC_WIDESTYLED)=PC_WIDESTYLED then
+        FPolygonCaps:=FPolygonCaps+[pcWideStyledBorders];
+      if (GetDeviceCaps(l_hdc,POLYGONALCAPS) and PC_INTERIORS)=PC_INTERIORS then
+        FPolygonCaps:=FPolygonCaps+[pcInteriors];
+    end;
+   
+    FRasterCaps:=[];
+    if (GetDeviceCaps(l_hdc,windows.RASTERCAPS) and RC_BANDING)=RC_BANDING then
+      FRasterCaps:=FRasterCaps+[rcRequiresBanding];
+    if (GetDeviceCaps(l_hdc,windows.RASTERCAPS) and RC_BITBLT)=RC_BITBLT then
+      FRasterCaps:=FRasterCaps+[rcTranserBitmaps];
+    if (GetDeviceCaps(l_hdc,windows.RASTERCAPS) and RC_BITMAP64)=RC_BITMAP64 then
+      FRasterCaps:=FRasterCaps+[rcBitmaps64K];
+    if (GetDeviceCaps(l_hdc,windows.RASTERCAPS) and RC_DI_BITMAP)=RC_DI_BITMAP then
+      FRasterCaps:=FRasterCaps+[rcSetGetDIBits];
+    if (GetDeviceCaps(l_hdc,windows.RASTERCAPS) and RC_DIBTODEV)=RC_DIBTODEV then
+      FRasterCaps:=FRasterCaps+[rcSetDIBitsToDevice];
+    if (GetDeviceCaps(l_hdc,windows.RASTERCAPS) and RC_FLOODFILL)=RC_FLOODFILL then
+      FRasterCaps:=FRasterCaps+[rcFloodfills];
+    if (GetDeviceCaps(l_hdc,windows.RASTERCAPS) and RC_GDI20_OUTPUT)=RC_GDI20_OUTPUT then
+      FRasterCaps:=FRasterCaps+[rcWindows2xFeatures];
+    if (GetDeviceCaps(l_hdc,windows.RASTERCAPS) and RC_PALETTE)=RC_PALETTE then
+      FRasterCaps:=FRasterCaps+[rcPaletteBased];
+    if (GetDeviceCaps(l_hdc,windows.RASTERCAPS) and RC_SCALING)=RC_SCALING then
+      FRasterCaps:=FRasterCaps+[rcScaling];
+    if (GetDeviceCaps(l_hdc,windows.RASTERCAPS) and RC_STRETCHBLT)=RC_STRETCHBLT then
+      FRasterCaps:=FRasterCaps+[rcStretchBlt];
+    if (GetDeviceCaps(l_hdc,windows.RASTERCAPS) and RC_STRETCHDIB)=RC_STRETCHDIB then
+      FRasterCaps:=FRasterCaps+[rcStretchDIBits];
+   
+    FTextCaps:=[];
+    if (GetDeviceCaps(l_hdc,windows.TEXTCAPS) and TC_OP_CHARACTER)=TC_OP_CHARACTER then
+      FTextCaps:=FTextCaps+[tcCharOutPrec];
+    if (GetDeviceCaps(l_hdc,windows.TEXTCAPS) and TC_OP_STROKE)=TC_OP_STROKE then
+      FTextCaps:=FTextCaps+[tcStrokeOutPrec];
+    if (GetDeviceCaps(l_hdc,windows.TEXTCAPS) and TC_CP_STROKE)=TC_CP_STROKE then
+      FTextCaps:=FTextCaps+[tcStrokeClipPrec];
+    if (GetDeviceCaps(l_hdc,windows.TEXTCAPS) and TC_CR_90)=TC_CR_90 then
+      FTextCaps:=FTextCaps+[tcCharRotation90];
+    if (GetDeviceCaps(l_hdc,windows.TEXTCAPS) and TC_CR_ANY)=TC_CR_ANY then
+      FTextCaps:=FTextCaps+[tcCharRotationAny];
+    if (GetDeviceCaps(l_hdc,windows.TEXTCAPS) and TC_SF_X_YINDEP)=TC_SF_X_YINDEP then
+      FTextCaps:=FTextCaps+[tcScaleIndependent];
+    if (GetDeviceCaps(l_hdc,windows.TEXTCAPS) and TC_SA_DOUBLE)=TC_SA_DOUBLE then
+      FTextCaps:=FTextCaps+[tcDoubledCharScaling];
+    if (GetDeviceCaps(l_hdc,windows.TEXTCAPS) and TC_SA_INTEGER)=TC_SA_INTEGER then
+      FTextCaps:=FTextCaps+[tcIntMultiScaling];
+    if (GetDeviceCaps(l_hdc,windows.TEXTCAPS) and TC_SA_CONTIN)=TC_SA_CONTIN then
+      FTextCaps:=FTextCaps+[tcAnyMultiExactScaling];
+    if (GetDeviceCaps(l_hdc,windows.TEXTCAPS) and TC_EA_DOUBLE)=TC_EA_DOUBLE then
+      FTextCaps:=FTextCaps+[tcDoubleWeightChars];
+    if (GetDeviceCaps(l_hdc,windows.TEXTCAPS) and TC_IA_ABLE)=TC_IA_ABLE then
+      FTextCaps:=FTextCaps+[tcItalics];
+    if (GetDeviceCaps(l_hdc,windows.TEXTCAPS) and TC_UA_ABLE)=TC_UA_ABLE then
+      FTextCaps:=FTextCaps+[tcUnderlines];
+    if (GetDeviceCaps(l_hdc,windows.TEXTCAPS) and  TC_SO_ABLE)=TC_SO_ABLE then
+      FTextCaps:=FTextCaps+[tcStrikeouts];
+    if (GetDeviceCaps(l_hdc,windows.TEXTCAPS) and TC_RA_ABLE)=TC_RA_ABLE then
+      FTextCaps:=FTextCaps+[tcRasterFonts];
+    if (GetDeviceCaps(l_hdc,windows.TEXTCAPS) and TC_VA_ABLE)=TC_VA_ABLE then
+      FTextCaps:=FTextCaps+[tcVectorFonts];
+    if (GetDeviceCaps(l_hdc,windows.TEXTCAPS) and TC_SCROLLBLT)=TC_SCROLLBLT then
+      FTextCaps:=FTextCaps+[tcNoScrollUsingBlts];
 
-  case GetDeviceCaps(l_hdc,windows.TECHNOLOGY) of
-    DT_PLOTTER:    FTechnology:='Vector Plotter';
-    DT_RASDISPLAY: FTechnology:='Raster Display';
-    DT_RASPRINTER: FTechnology:='Raster Printer';
-    DT_RASCAMERA:  FTechnology:='Raster Camera';
-    DT_CHARSTREAM: FTechnology:='Character Stream';
-    DT_METAFILE:   FTechnology:='Metafile';
-    DT_DISPFILE:   FTechnology:='Display File';
+  finally
+    ReleaseDC(0, l_hdc);
   end;
-
-  FHorzSize:=GetDeviceCaps(l_hdc,HORZSIZE);
-  FVertSize:=GetDeviceCaps(l_hdc,VERTSIZE);
-  FPixelWidth:=GetDeviceCaps(l_hdc,ASPECTX);
-  FPixelHeight:=GetDeviceCaps(l_hdc,ASPECTY);
-  FPixelDiagonal:=GetDeviceCaps(l_hdc,ASPECTXY);
-
-  FCurveCaps:=[];
-  if GetDeviceCaps(l_hdc,windows.CURVECAPS)<>CC_NONE then
-  begin
-    if (GetDeviceCaps(l_hdc,windows.CURVECAPS) and CC_CIRCLES)=CC_CIRCLES then
-      FCurveCaps:=FCurveCaps+[ccCircles];
-    if (GetDeviceCaps(l_hdc,windows.CURVECAPS) and CC_PIE)=CC_PIE then
-      FCurveCaps:=FCurveCaps+[ccPieWedges];
-    if (GetDeviceCaps(l_hdc,windows.CURVECAPS) and CC_CHORD)=CC_CHORD then
-      FCurveCaps:=FCurveCaps+[ccChords];
-    if (GetDeviceCaps(l_hdc,windows.CURVECAPS) and CC_ELLIPSES)=CC_ELLIPSES then
-      FCurveCaps:=FCurveCaps+[ccEllipses];
-    if (GetDeviceCaps(l_hdc,windows.CURVECAPS) and CC_WIDE)=CC_WIDE then
-      FCurveCaps:=FCurveCaps+[ccWideBorders];
-    if (GetDeviceCaps(l_hdc,windows.CURVECAPS) and CC_STYLED)=CC_STYLED then
-      FCurveCaps:=FCurveCaps+[ccStyledBorders];
-    if (GetDeviceCaps(l_hdc,windows.CURVECAPS) and CC_WIDESTYLED)=CC_WIDESTYLED then
-      FCurveCaps:=FCurveCaps+[ccWideStyledBorders];
-    if (GetDeviceCaps(l_hdc,windows.CURVECAPS) and CC_INTERIORS)=CC_INTERIORS then
-      FCurveCaps:=FCurveCaps+[ccInteriors];
-    if (GetDeviceCaps(l_hdc,windows.CURVECAPS) and CC_ROUNDRECT)=CC_ROUNDRECT then
-      FCurveCaps:=FCurveCaps+[ccRoundedRects];
-  end;
-
-  FLineCaps:=[];
-  if GetDeviceCaps(l_hdc,windows.LINECAPS)<>LC_NONE then
-  begin
-    if (GetDeviceCaps(l_hdc,windows.LINECAPS) and LC_POLYLINE)=LC_POLYLINE then
-      FLineCaps:=FLineCaps+[lcPolylines];
-    if (GetDeviceCaps(l_hdc,windows.LINECAPS) and LC_MARKER)=LC_MARKER then
-      FLineCaps:=FLineCaps+[lcMarkers];
-    if (GetDeviceCaps(l_hdc,windows.LINECAPS) and LC_POLYMARKER)=LC_POLYMARKER then
-      FLineCaps:=FLineCaps+[lcMultipleMarkers];
-    if (GetDeviceCaps(l_hdc,windows.LINECAPS) and LC_WIDE)=LC_WIDE then
-      FLineCaps:=FLineCaps+[lcWideLines];
-    if (GetDeviceCaps(l_hdc,windows.LINECAPS) and LC_STYLED)=LC_STYLED then
-      FLineCaps:=FLineCaps+[lcStyledLines];
-    if (GetDeviceCaps(l_hdc,windows.LINECAPS) and LC_WIDESTYLED)=LC_WIDESTYLED then
-      FLineCaps:=FLineCaps+[lcWideStyledLines];
-    if (GetDeviceCaps(l_hdc,windows.LINECAPS) and LC_INTERIORS)=LC_INTERIORS then
-      FLineCaps:=FLineCaps+[lcInteriors];
-  end;
-
-  FPolygonCaps:=[];
-  if GetDeviceCaps(l_hdc,POLYGONALCAPS)<>PC_NONE then
-  begin
-    if (GetDeviceCaps(l_hdc,POLYGONALCAPS) and PC_POLYGON)=PC_POLYGON then
-      FPolygonCaps:=FPolygonCaps+[pcAltFillPolygons];
-    if (GetDeviceCaps(l_hdc,POLYGONALCAPS) and PC_RECTANGLE)=PC_RECTANGLE then
-      FPolygonCaps:=FPolygonCaps+[pcRectangles];
-    if (GetDeviceCaps(l_hdc,POLYGONALCAPS) and PC_WINDPOLYGON)=PC_WINDPOLYGON then
-      FPolygonCaps:=FPolygonCaps+[pcWindingFillPolygons];
-    if (GetDeviceCaps(l_hdc,POLYGONALCAPS) and PC_SCANLINE)=PC_SCANLINE then
-      FPolygonCaps:=FPolygonCaps+[pcSingleScanlines];
-    if (GetDeviceCaps(l_hdc,POLYGONALCAPS) and PC_WIDE)=PC_WIDE then
-      FPolygonCaps:=FPolygonCaps+[pcWideBorders];
-    if (GetDeviceCaps(l_hdc,POLYGONALCAPS) and PC_STYLED)=PC_STYLED then
-      FPolygonCaps:=FPolygonCaps+[pcStyledBorders];
-    if (GetDeviceCaps(l_hdc,POLYGONALCAPS) and PC_WIDESTYLED)=PC_WIDESTYLED then
-      FPolygonCaps:=FPolygonCaps+[pcWideStyledBorders];
-    if (GetDeviceCaps(l_hdc,POLYGONALCAPS) and PC_INTERIORS)=PC_INTERIORS then
-      FPolygonCaps:=FPolygonCaps+[pcInteriors];
-  end;
-
-  FRasterCaps:=[];
-  if (GetDeviceCaps(l_hdc,windows.RASTERCAPS) and RC_BANDING)=RC_BANDING then
-    FRasterCaps:=FRasterCaps+[rcRequiresBanding];
-  if (GetDeviceCaps(l_hdc,windows.RASTERCAPS) and RC_BITBLT)=RC_BITBLT then
-    FRasterCaps:=FRasterCaps+[rcTranserBitmaps];
-  if (GetDeviceCaps(l_hdc,windows.RASTERCAPS) and RC_BITMAP64)=RC_BITMAP64 then
-    FRasterCaps:=FRasterCaps+[rcBitmaps64K];
-  if (GetDeviceCaps(l_hdc,windows.RASTERCAPS) and RC_DI_BITMAP)=RC_DI_BITMAP then
-    FRasterCaps:=FRasterCaps+[rcSetGetDIBits];
-  if (GetDeviceCaps(l_hdc,windows.RASTERCAPS) and RC_DIBTODEV)=RC_DIBTODEV then
-    FRasterCaps:=FRasterCaps+[rcSetDIBitsToDevice];
-  if (GetDeviceCaps(l_hdc,windows.RASTERCAPS) and RC_FLOODFILL)=RC_FLOODFILL then
-    FRasterCaps:=FRasterCaps+[rcFloodfills];
-  if (GetDeviceCaps(l_hdc,windows.RASTERCAPS) and RC_GDI20_OUTPUT)=RC_GDI20_OUTPUT then
-    FRasterCaps:=FRasterCaps+[rcWindows2xFeatures];
-  if (GetDeviceCaps(l_hdc,windows.RASTERCAPS) and RC_PALETTE)=RC_PALETTE then
-    FRasterCaps:=FRasterCaps+[rcPaletteBased];
-  if (GetDeviceCaps(l_hdc,windows.RASTERCAPS) and RC_SCALING)=RC_SCALING then
-    FRasterCaps:=FRasterCaps+[rcScaling];
-  if (GetDeviceCaps(l_hdc,windows.RASTERCAPS) and RC_STRETCHBLT)=RC_STRETCHBLT then
-    FRasterCaps:=FRasterCaps+[rcStretchBlt];
-  if (GetDeviceCaps(l_hdc,windows.RASTERCAPS) and RC_STRETCHDIB)=RC_STRETCHDIB then
-    FRasterCaps:=FRasterCaps+[rcStretchDIBits];
-
-  FTextCaps:=[];
-  if (GetDeviceCaps(l_hdc,windows.TEXTCAPS) and TC_OP_CHARACTER)=TC_OP_CHARACTER then
-    FTextCaps:=FTextCaps+[tcCharOutPrec];
-  if (GetDeviceCaps(l_hdc,windows.TEXTCAPS) and TC_OP_STROKE)=TC_OP_STROKE then
-    FTextCaps:=FTextCaps+[tcStrokeOutPrec];
-  if (GetDeviceCaps(l_hdc,windows.TEXTCAPS) and TC_CP_STROKE)=TC_CP_STROKE then
-    FTextCaps:=FTextCaps+[tcStrokeClipPrec];
-  if (GetDeviceCaps(l_hdc,windows.TEXTCAPS) and TC_CR_90)=TC_CR_90 then
-    FTextCaps:=FTextCaps+[tcCharRotation90];
-  if (GetDeviceCaps(l_hdc,windows.TEXTCAPS) and TC_CR_ANY)=TC_CR_ANY then
-    FTextCaps:=FTextCaps+[tcCharRotationAny];
-  if (GetDeviceCaps(l_hdc,windows.TEXTCAPS) and TC_SF_X_YINDEP)=TC_SF_X_YINDEP then
-    FTextCaps:=FTextCaps+[tcScaleIndependent];
-  if (GetDeviceCaps(l_hdc,windows.TEXTCAPS) and TC_SA_DOUBLE)=TC_SA_DOUBLE then
-    FTextCaps:=FTextCaps+[tcDoubledCharScaling];
-  if (GetDeviceCaps(l_hdc,windows.TEXTCAPS) and TC_SA_INTEGER)=TC_SA_INTEGER then
-    FTextCaps:=FTextCaps+[tcIntMultiScaling];
-  if (GetDeviceCaps(l_hdc,windows.TEXTCAPS) and TC_SA_CONTIN)=TC_SA_CONTIN then
-    FTextCaps:=FTextCaps+[tcAnyMultiExactScaling];
-  if (GetDeviceCaps(l_hdc,windows.TEXTCAPS) and TC_EA_DOUBLE)=TC_EA_DOUBLE then
-    FTextCaps:=FTextCaps+[tcDoubleWeightChars];
-  if (GetDeviceCaps(l_hdc,windows.TEXTCAPS) and TC_IA_ABLE)=TC_IA_ABLE then
-    FTextCaps:=FTextCaps+[tcItalics];
-  if (GetDeviceCaps(l_hdc,windows.TEXTCAPS) and TC_UA_ABLE)=TC_UA_ABLE then
-    FTextCaps:=FTextCaps+[tcUnderlines];
-  if (GetDeviceCaps(l_hdc,windows.TEXTCAPS) and  TC_SO_ABLE)=TC_SO_ABLE then
-    FTextCaps:=FTextCaps+[tcStrikeouts];
-  if (GetDeviceCaps(l_hdc,windows.TEXTCAPS) and TC_RA_ABLE)=TC_RA_ABLE then
-    FTextCaps:=FTextCaps+[tcRasterFonts];
-  if (GetDeviceCaps(l_hdc,windows.TEXTCAPS) and TC_VA_ABLE)=TC_VA_ABLE then
-    FTextCaps:=FTextCaps+[tcVectorFonts];
-  if (GetDeviceCaps(l_hdc,windows.TEXTCAPS) and TC_SCROLLBLT)=TC_SCROLLBLT then
-    FTextCaps:=FTextCaps+[tcNoScrollUsingBlts];
-
-  ReleaseDC(0, l_hdc);
 
   if WindowsPlatformCompatibility=osWinNTComp then
     ClassKey:='SYSTEM\CurrentControlSet\Control\Class'
@@ -1660,137 +1674,140 @@ begin
     ClassKey:='SYSTEM\CurrentControlSet\Services\Class';
 
   sl:=tstringlist.create;
-  FAdapter.Clear;
-  FDevices.Clear;
-  FDAC.Clear;
-  FChipset.Clear;
-  FMemory.Clear;
-  bdata:=stralloc(255);
-  rk:=GetClassDevices(ClassKey,rvVideoClass,DescValue,FDevices);
-  Found:=False;
-
-  with TRegistry.Create do
-  begin
-    RootKey:=HKEY_LOCAL_MACHINE;
-    if OpenKey(rk,false) then
+  try
+    FAdapter.Clear;
+    FDevices.Clear;
+    FDAC.Clear;
+    FChipset.Clear;
+    FMemory.Clear;
+    bdata:=stralloc(255);
+    rk:=GetClassDevices(ClassKey,rvVideoClass,DescValue,FDevices);
+    Found:=False;
+   
+    with TRegistry.Create do
     begin
-      GetKeyNames(sl);
-      CloseKey;
-      for i:=0 to sl.count-1 do
+      RootKey:=HKEY_LOCAL_MACHINE;
+      if OpenKey(rk,false) then
       begin
-        if OpenKey(rk+'\'+sl[i]+'\'+rkClassInfo,false) then
-        begin
-          Found:=True;
-
-          if ValueExists(rvCIDAC) then
-            FDAC.Add(ReadString(rvCIDAC))
-          else
-            FDAC.Add('no DAC information');
-
-          if ValueExists(rvCIChip) then
-          begin
-            FChipset.Add(ReadString(rvCIChip));
-            if ValueExists(rvCIRev) then
-              FChipset[FChipset.Count-1]:=FChipset[FChipset.Count-1]+' Rev '+ReadString(rvCIRev);
-          end
-          else
-            FChipset.Add('no Chipset information');
-
-          if ValueExists(rvCIMem) then
-            FMemory.Add(inttostr(readinteger(rvCIMem)))
-          else
-            FMemory.Add('no Memory information');
-
-          CloseKey;
-        end;
-      end;
-    end;
-
-    if not Found then
-    begin
-      if OpenKey(rkVideoHardware,false) then
-      begin
-        if ValueExists(rvVideoKey1) then
-          rk:=ReadString(rvVideoKey1)
-        else
-        begin
-          if ValueExists(rvVideoKey2) then
-            rk:=ReadString(rvVideoKey2)
-          else
-            rk:='';
-        end;
+        GetKeyNames(sl);
         CloseKey;
-
-        if rk<>'' then
+        for i:=0 to sl.count-1 do
         begin
-          rk:=copy(rk,pos('Machine\',rk)+8,255);
-          if OpenKey(rk,false) then
+          if OpenKey(rk+'\'+sl[i]+'\'+rkClassInfo,false) then
           begin
-            if ValueExists(rvHardware+'.'+rvHWVideo) then
-              try
-                FillChar(bdata^,255,0);
-                readbinarydata(rvHardware+'.'+rvHWVideo,bdata^,255);
-                FAdapter.Add(getstrfrombuf(pchar(bdata)));
-              except
-              end;
-            if ValueExists(rvHardware+'.'+rvHWDAC) then
-              try
-                FillChar(bdata^,255,0);
-                readbinarydata(rvHardware+'.'+rvHWDAC,bdata^,255);
-                FDAC.Add(getstrfrombuf(pchar(bdata)));
-              except
-              end;
-            if ValueExists(rvHardware+'.'+rvHWChip) then
-              try
-                FillChar(bdata^,255,0);
-                readbinarydata(rvHardware+'.'+rvHWChip,bdata^,255);
-                FChipset.Add(getstrfrombuf(pchar(bdata)));
-              except
-              end;
-            if ValueExists(rvHardware+'.'+rvHWMem) then
-              try
-                FillChar(bdata^,255,0);
-                readbinarydata(rvHardware+'.'+rvHWMem,idata,4);
-                FMemory.Add(inttostr(idata));
-              except
-              end;
+            Found:=True;
+   
+            if ValueExists(rvCIDAC) then
+              FDAC.Add(ReadString(rvCIDAC))
+            else
+              FDAC.Add('no DAC information');
+   
+            if ValueExists(rvCIChip) then
+            begin
+              FChipset.Add(ReadString(rvCIChip));
+              if ValueExists(rvCIRev) then
+                FChipset[FChipset.Count-1]:=FChipset[FChipset.Count-1]+' Rev '+ReadString(rvCIRev);
+            end
+            else
+              FChipset.Add('no Chipset information');
+   
+            if ValueExists(rvCIMem) then
+              FMemory.Add(inttostr(readinteger(rvCIMem)))
+            else
+              FMemory.Add('no Memory information');
+   
             CloseKey;
           end;
         end;
       end;
-    end;
-    if OpenKey(rkBIOS,false) then
-    begin
-      if ValueExists(rvVideoBIOSVersion) then
+   
+      if not Found then
       begin
-        try
-          FillChar(bdata^,255,0);
-          readbinarydata(rvVideoBIOSVersion,bdata^,255);
-          FBIOSVersion:=strpas(pchar(bdata));
-        except
+        if OpenKey(rkVideoHardware,false) then
+        begin
+          if ValueExists(rvVideoKey1) then
+            rk:=ReadString(rvVideoKey1)
+          else
+          begin
+            if ValueExists(rvVideoKey2) then
+              rk:=ReadString(rvVideoKey2)
+            else
+              rk:='';
+          end;
+          CloseKey;
+   
+          if rk<>'' then
+          begin
+            rk:=copy(rk,pos('Machine\',rk)+8,255);
+            if OpenKey(rk,false) then
+            begin
+              if ValueExists(rvHardware+'.'+rvHWVideo) then
+                try
+                  FillChar(bdata^,255,0);
+                  readbinarydata(rvHardware+'.'+rvHWVideo,bdata^,255);
+                  FAdapter.Add(getstrfrombuf(pchar(bdata)));
+                except
+                end;
+              if ValueExists(rvHardware+'.'+rvHWDAC) then
+                try
+                  FillChar(bdata^,255,0);
+                  readbinarydata(rvHardware+'.'+rvHWDAC,bdata^,255);
+                  FDAC.Add(getstrfrombuf(pchar(bdata)));
+                except
+                end;
+              if ValueExists(rvHardware+'.'+rvHWChip) then
+                try
+                  FillChar(bdata^,255,0);
+                  readbinarydata(rvHardware+'.'+rvHWChip,bdata^,255);
+                  FChipset.Add(getstrfrombuf(pchar(bdata)));
+                except
+                end;
+              if ValueExists(rvHardware+'.'+rvHWMem) then
+                try
+                  FillChar(bdata^,255,0);
+                  readbinarydata(rvHardware+'.'+rvHWMem,idata,4);
+                  FMemory.Add(inttostr(idata));
+                except
+                end;
+              CloseKey;
+            end;
+          end;
         end;
       end;
-      if ValueExists(rvVideoBIOSDate) then
-        FBIOSDate:=ReadString(rvVideoBIOSDate);
-      CloseKey;
+      if OpenKey(rkBIOS,false) then
+      begin
+        if ValueExists(rvVideoBIOSVersion) then
+        begin
+          try
+            FillChar(bdata^,255,0);
+            readbinarydata(rvVideoBIOSVersion,bdata^,255);
+            FBIOSVersion:=strpas(pchar(bdata));
+          except
+          end;
+        end;
+        if ValueExists(rvVideoBIOSDate) then
+          FBIOSDate:=ReadString(rvVideoBIOSDate);
+        CloseKey;
+      end;
+      free;
     end;
-    free;
-  end;
-
-  FAcc.Clear;
-  GetClassDevices(ClassKey,rv3DClass,DescValue,FAcc);
-  FModes.Clear;
-  i:=0;
-  while EnumDisplaySettings(nil,i,Devmode) do
-  begin
-    with Devmode do
+   
+    FAcc.Clear;
+    GetClassDevices(ClassKey,rv3DClass,DescValue,FAcc);
+    FModes.Clear;
+    i:=0;
+    while EnumDisplaySettings(nil,i,Devmode) do
     begin
-      FModes.Add(Format('%d x %d - %d bit',[dmPelsWidth,dmPelsHeight,dmBitsPerPel]));
-      Inc(i);
+      with Devmode do
+      begin
+        FModes.Add(Format('%d x %d - %d bit',[dmPelsWidth,dmPelsHeight,dmBitsPerPel]));
+        Inc(i);
+      end;
     end;
+    strdispose(bdata);
+  finally
+    sl.free;
   end;
-  strdispose(bdata);
-  sl.free;
 end;
 
 constructor TDisplay.Create;
@@ -1929,9 +1946,12 @@ var
   c: TCPU;
 begin
   c:=TCPU.Create;
-  c.getInfo;
-  c.report(s);
-  c.free;
+  try
+    c.getInfo;
+    c.report(s);
+  finally
+    c.free;
+  end;
 end;
 
 Procedure GetDisplayDetails(var s: TStringlist);
@@ -1939,9 +1959,12 @@ var
   c: TDisplay;
 begin
   c:=TDisplay.Create;
-  c.getInfo;
-  c.report(s);
-  c.free;
+  try
+    c.getInfo;
+    c.report(s);
+  finally
+    c.free;
+  end;
 end;
 
 Procedure GetDirectXDetails(var s: TStringlist);
@@ -1949,9 +1972,12 @@ var
   c: TDirectX;
 begin
   c:=TDirectX.Create;
-  c.getInfo;
-  c.report(s);
-  c.free;
+  try
+    c.getInfo;
+    c.report(s);
+  finally
+    c.free;
+  end;
 end;
 
 Procedure GetMemoryDetails(var s: TStringlist);
@@ -1959,9 +1985,12 @@ var
   c: TMemory;
 begin
   c:=TMemory.Create;
-  c.getInfo;
-  c.report(s);
-  c.free;
+  try
+    c.getInfo;
+    c.report(s);
+  finally
+    c.free;
+  end;
 end;
 
 Procedure GetWorkStationDetails(var s: TStringlist);
@@ -1969,9 +1998,12 @@ var
   c: TWorkStation;
 begin
   c:=TWorkStation.Create;
-  c.getInfo;
-  c.report(s);
-  c.free;
+  try
+    c.getInfo;
+    c.report(s);
+  finally
+    c.free;
+  end;
 end;
 
 Procedure GetOperatingSystemDetails(var s: TStringlist);
@@ -1979,9 +2011,12 @@ var
   c: TOperatingSystem;
 begin
   c:=TOperatingSystem.Create;
-  c.getInfo;
-  c.report(s);
-  c.free;
+  try
+    c.getInfo;
+    c.report(s);
+  finally
+    c.free;
+  end;
 end;
 
 procedure GetPythonDetails(var s: TStringlist);
@@ -1998,21 +2033,24 @@ var
   installed: boolean;
 begin
   R:=TRegistry.Create;
-  R.RootKey:=HKEY_LOCAL_MACHINE;
-  installed:=R.KeyExists('\SOFTWARE\Python\PythonCore\CurrentVersion');
-  if installed then
-  begin
-    R.OpenKey('\SOFTWARE\Python\PythonCore\CurrentVersion', false);
-    v:=R.ReadString('');
-    s.Add('Version: '+v);
-    R.OpenKey('\SOFTWARE\Python\PythonCore\'+v+'\Dll', false);
-    s.Add('Dll path: '+R.ReadString(''));
-  end
-  else
-  begin
-    s.Add('Not Installed.');
+  try
+    R.RootKey:=HKEY_LOCAL_MACHINE;
+    installed:=R.KeyExists('\SOFTWARE\Python\PythonCore\CurrentVersion');
+    if installed then
+    begin
+      R.OpenKey('\SOFTWARE\Python\PythonCore\CurrentVersion', false);
+      v:=R.ReadString('');
+      s.Add('Version: '+v);
+      R.OpenKey('\SOFTWARE\Python\PythonCore\'+v+'\Dll', false);
+      s.Add('Dll path: '+R.ReadString(''));
+    end
+    else
+    begin
+      s.Add('Not Installed.');
+    end;
+  finally
+    R.free;
   end;
-  R.free;
 end;
 
 function ProcessExists(const exeFileName: string): Boolean;
@@ -2138,7 +2176,7 @@ end;
 
 function CheckWindowsVista: Boolean;
 begin
-  Result:=((WindowsPlatform = osWinVista) or (WindowsPlatform = osWin2008));
+  Result:=((WindowsPlatform = osWinVista) or (WindowsPlatform = osWin2008) or (WindowsPlatform = osWin2008R2) or (WindowsPlatform = osWin7));
 end;
 
 Procedure LogSystemDetails;
