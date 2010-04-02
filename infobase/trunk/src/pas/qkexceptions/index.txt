@@ -9,5 +9,6 @@ desc: internale
 desc: globalwarning
 desc: globaldisplaywarnings
 desc: getsystemerrormessage
+desc: logwindowserror
 
 This file contains several functions useful for exception handling.

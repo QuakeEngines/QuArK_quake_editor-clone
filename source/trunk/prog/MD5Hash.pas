@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2010/03/09 21:47:32  danielpharos
+Added additional logging and small cleanup.
+
 Revision 1.7  2009/07/15 10:38:01  danielpharos
 Updated website link.
 
@@ -75,9 +78,7 @@ begin
   Result := GetProcAddress(DLLHandle, PChar(APIFuncname));
   if Result=Nil then
   begin
-    Log(LOG_WARNING, 'Error when calling a Windows API:' + #13#10 +
-                     'Call: GetProcAddress(DLLHandle, "'+APIFuncname+'")' + #13#10 +
-                     'Reason: ' + GetSystemErrorMessage(GetLastError()));
+    LogWindowsError(GetLastError(), 'GetProcAddress(DLLHandle, "'+APIFuncname+'")');
     LogAndRaiseError('API Func "'+APIFuncname+ '" not found in the MD5DLL library');
   end;
 end;
@@ -94,9 +95,7 @@ begin
       HMd5Hash := LoadLibrary(PChar(HMd5HashLibraryFilename));
       if HMd5Hash = 0 then
       begin
-        Log(LOG_WARNING, 'Error when calling a Windows API:' + #13#10 +
-                         'Call: LoadLibrary("'+HMd5HashLibraryFilename+'")' + #13#10 +
-                         'Reason: ' + GetSystemErrorMessage(GetLastError()));
+        LogWindowsError(GetLastError(), 'LoadLibrary("'+HMd5HashLibraryFilename+'")');
         LogAndRaiseError('Unable to load the MD5DLL library');
       end;
 
@@ -124,9 +123,7 @@ begin
     begin
       if FreeLibrary(HMd5Hash) = false then
       begin
-        Log(LOG_WARNING, 'Error when calling a Windows API:' + #13#10 +
-                         'Call: FreeLibrary(HMd5Hash)' + #13#10 +
-                         'Reason: ' + GetSystemErrorMessage(GetLastError()));
+        LogWindowsError(GetLastError(), 'FreeLibrary(HMd5Hash)');
         LogAndRaiseError('Unable to unload the MD5DLL library');
       end;
       HMd5Hash := 0;

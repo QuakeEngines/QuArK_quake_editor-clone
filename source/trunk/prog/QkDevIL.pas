@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.26  2010/03/09 21:08:56  danielpharos
+Added additional logging and small cleanup.
+
 Revision 1.25  2009/07/15 10:38:01  danielpharos
 Updated website link.
 
@@ -419,9 +422,7 @@ begin
   Result := GetProcAddress(DLLHandle, PChar(APIFuncname));
   if Result = Nil then
   begin
-    Log(LOG_WARNING, 'Error when calling a Windows API:' + #13#10 +
-                     'Call: GetProcAddress(DLLHandle, "'+APIFuncname+'")' + #13#10 +
-                     'Reason: ' + GetSystemErrorMessage(GetLastError()));
+    LogWindowsError(GetLastError(), 'GetProcAddress(DLLHandle, "'+APIFuncname+'")');
     LogAndRaiseError('API Func "'+APIFuncname+ '" not found in the DevIL library');
   end;
 end;
@@ -438,9 +439,7 @@ begin
       HDevIL := LoadLibrary(PChar(DevILLibraryFilename));
       if HDevIL = 0 then
       begin
-        Log(LOG_WARNING, 'Error when calling a Windows API:' + #13#10 +
-                         'Call: LoadLibrary("'+DevILLibraryFilename+'")' + #13#10 +
-                         'Reason: ' + GetSystemErrorMessage(GetLastError()));
+        LogWindowsError(GetLastError(), 'LoadLibrary("'+DevILLibraryFilename+'")');
         LogAndRaiseError('Unable to load the DevIL library');
       end;
 
@@ -503,9 +502,7 @@ begin
 
       if FreeLibrary(HDevIL) = false then
       begin
-        Log(LOG_WARNING, 'Error when calling a Windows API:' + #13#10 +
-                         'Call: FreeLibrary(HDevIL)' + #13#10 +
-                         'Reason: ' + GetSystemErrorMessage(GetLastError()));
+        LogWindowsError(GetLastError(), 'FreeLibrary(HDevIL)');
         LogAndRaiseError('Unable to unload the DevIL library');
       end;
       HDevIL := 0;

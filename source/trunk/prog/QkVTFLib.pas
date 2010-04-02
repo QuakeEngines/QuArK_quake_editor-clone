@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.25  2010/03/09 21:08:56  danielpharos
+Added additional logging and small cleanup.
+
 Revision 1.24  2009/10/29 20:31:01  danielpharos
 Fixed bug crashing VTF loading.
 
@@ -545,9 +548,7 @@ begin
   Result := GetProcAddress(DLLHandle, PChar(APIFuncname));
   if Result = Nil then
   begin
-    Log(LOG_WARNING, 'Error when calling a Windows API:' + #13#10 +
-                     'Call: GetProcAddress(DLLHandle, "'+APIFuncname+'")' + #13#10 +
-                     'Reason: ' + GetSystemErrorMessage(GetLastError()));
+    LogWindowsError(GetLastError(), 'GetProcAddress(DLLHandle, "'+APIFuncname+'")');
     LogAndRaiseError('API Func "'+APIFuncname+ '" not found in the VTFLib library');
   end;
 end;
@@ -564,9 +565,7 @@ begin
       HVTFLib := LoadLibrary(PChar(VTFLibLibraryFilename));
       if HVTFLib = 0 then
       begin
-        Log(LOG_WARNING, 'Error when calling a Windows API:' + #13#10 +
-                         'Call: LoadLibrary("'+VTFLibLibraryFilename+'")' + #13#10 +
-                         'Reason: ' + GetSystemErrorMessage(GetLastError()));
+        LogWindowsError(GetLastError(), 'LoadLibrary("'+VTFLibLibraryFilename+'")');
         LogAndRaiseError('Unable to load the VTFLib library');
       end;
 
@@ -666,9 +665,7 @@ begin
 
       if FreeLibrary(HVTFLib) = false then
       begin
-        Log(LOG_WARNING, 'Error when calling a Windows API:' + #13#10 +
-                         'Call: FreeLibrary(HVTFLib)' + #13#10 +
-                         'Reason: ' + GetSystemErrorMessage(GetLastError()));
+        LogWindowsError(GetLastError(), 'FreeLibrary(HVTFLib)');
         LogAndRaiseError('Unable to unload the VTFLib library');
       end;
       HVTFLib := 0;

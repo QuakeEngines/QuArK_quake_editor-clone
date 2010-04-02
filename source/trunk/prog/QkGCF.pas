@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.25  2010/03/09 21:08:56  danielpharos
+Added additional logging and small cleanup.
+
 Revision 1.24  2010/02/23 18:38:23  danielpharos
 Added LOG_SUBDIRECTORY; not set right now.
 
@@ -165,9 +168,7 @@ begin
   Result := GetProcAddress(DLLHandle, PChar(APIFuncname));
   if Result=Nil then
   begin
-    Log(LOG_WARNING, 'Error when calling a Windows API:' + #13#10 +
-                     'Call: GetProcAddress(DLLHandle, "'+APIFuncname+'")' + #13#10 +
-                     'Reason: ' + GetSystemErrorMessage(GetLastError()));
+    LogWindowsError(GetLastError(), 'GetProcAddress(DLLHandle, "'+APIFuncname+'")');
     LogAndRaiseError('API Func "'+APIFuncname+ '" not found in the QuArKGCF library');
   end;
 end;
@@ -183,9 +184,7 @@ begin
     Hhllibwrap := LoadLibrary(PChar(HLLibLibraryFilename));
     if Hhllibwrap = 0 then
     begin
-      Log(LOG_WARNING, 'Error when calling a Windows API:' + #13#10 +
-                       'Call: LoadLibrary("'+HLLibLibraryFilename+'")' + #13#10 +
-                       'Reason: ' + GetSystemErrorMessage(GetLastError()));
+      LogWindowsError(GetLastError(), 'LoadLibrary("'+HLLibLibraryFilename+'")');
       LogAndRaiseError('Unable to load the HLLib library');
     end;
 
@@ -193,9 +192,7 @@ begin
     Hgcfwrap := LoadLibrary(PChar(QuArKGCFLibraryFilename));
     if Hgcfwrap = 0 then
     begin
-      Log(LOG_WARNING, 'Error when calling a Windows API:' + #13#10 +
-                       'Call: LoadLibrary("'+QuArKGCFLibraryFilename+'")' + #13#10 +
-                       'Reason: ' + GetSystemErrorMessage(GetLastError()));
+      LogWindowsError(GetLastError(), 'LoadLibrary("'+QuArKGCFLibraryFilename+'")');
       LogAndRaiseError('Unable to load the QuArKGCF library');
     end;
 
@@ -231,9 +228,7 @@ begin
 
     if FreeLibrary(Hgcfwrap)=false then
     begin
-      Log(LOG_WARNING, 'Error when calling a Windows API:' + #13#10 +
-                       'Call: FreeLibrary(Hgcfwrap)' + #13#10 +
-                       'Reason: ' + GetSystemErrorMessage(GetLastError()));
+      LogWindowsError(GetLastError(), 'FreeLibrary(Hgcfwrap)');
       LogAndRaiseError('Unable to unload the QuArKGCF library');
     end;
     Hgcfwrap := 0;
@@ -259,9 +254,7 @@ begin
   begin
     if FreeLibrary(Hhllibwrap)=false then
     begin
-      Log(LOG_WARNING, 'Error when calling a Windows API:' + #13#10 +
-                       'Call: FreeLibrary(Hhllibwrap)' + #13#10 +
-                       'Reason: ' + GetSystemErrorMessage(GetLastError()));
+      LogWindowsError(GetLastError(), 'FreeLibrary(Hhllibwrap)');
       LogAndRaiseError('Unable to unload the HLLib library');
     end;
     Hhllibwrap := 0;

@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2010/03/09 21:10:16  danielpharos
+Commented out unused function definition.
+
 Revision 1.15  2010/03/09 21:08:56  danielpharos
 Added additional logging and small cleanup.
 
@@ -266,9 +269,7 @@ begin
   Result := GetProcAddress(DLLHandle, PChar(APIFuncname));
   if Result = Nil then
   begin
-    Log(LOG_WARNING, 'Error when calling a Windows API:' + #13#10 +
-                     'Call: GetProcAddress(DLLHandle, "'+APIFuncname+'")' + #13#10 +
-                     'Reason: ' + GetSystemErrorMessage(GetLastError()));
+    LogWindowsError(GetLastError(), 'GetProcAddress(DLLHandle, "'+APIFuncname+'")');
     LogAndRaiseError('API Func "'+APIFuncname+ '" not found in the FreeImage library');
   end;
 end;
@@ -291,9 +292,7 @@ begin
       HFreeImage := LoadLibrary(PChar(FreeImageLibraryFilename));
       if HFreeImage = 0 then
       begin
-        Log(LOG_WARNING, 'Error when calling a Windows API:' + #13#10 +
-                         'Call: LoadLibrary("'+FreeImageLibraryFilename+'")' + #13#10 +
-                         'Reason: ' + GetSystemErrorMessage(GetLastError()));
+        LogWindowsError(GetLastError(), 'LoadLibrary("'+FreeImageLibraryFilename+'")');
         LogAndRaiseError('Unable to load the FreeImage library');
       end;
 
@@ -364,9 +363,7 @@ begin
     begin
       if FreeLibrary(HFreeImage) = false then
       begin
-        Log(LOG_WARNING, 'Error when calling a Windows API:' + #13#10 +
-                         'Call: FreeLibrary(HFreeImage)' + #13#10 +
-                         'Reason: ' + GetSystemErrorMessage(GetLastError()));
+        LogWindowsError(GetLastError(), 'FreeLibrary(HFreeImage)');
         LogAndRaiseError('Unable to unload the FreeImage library');
       end;
       HFreeImage := 0;

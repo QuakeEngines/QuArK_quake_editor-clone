@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2009/10/27 19:43:53  cdunde
+Commented out annoying message.
+
 Revision 1.9  2009/07/30 09:41:51  danielpharos
 Added additional logging.
 
@@ -68,6 +71,7 @@ procedure GlobalWarning(const Texte: String);
 procedure GlobalDisplayWarnings;
 
 function GetSystemErrorMessage(ErrNr: DWORD) : String;
+procedure LogWindowsError(ErrNr: DWORD; const Call: String);
 
  {-------------------}
 
@@ -151,7 +155,7 @@ begin
    DummyStringList:=GlobalWarnings;
    try
      GlobalWarnings:=Nil;
-    // ShowTextBox('QuArK', 'There are warnings:', DummyStringList, mtWarning);
+     //FIXME: ShowTextBox('QuArK', 'There are warnings:', DummyStringList, mtWarning);
    finally
      DummyStringList.Free;
    end;
@@ -172,6 +176,13 @@ begin
   end
   else
     Result:='';
+end;
+
+procedure LogWindowsError(ErrNr: DWORD; const Call: String);
+begin
+  Log(LOG_WARNING, 'Error when calling a Windows API:' + #13#10 +
+                   'Call: ' + Call + #13#10 +
+                   'Reason: ' + GetSystemErrorMessage(ErrNr));
 end;
 
 end.
