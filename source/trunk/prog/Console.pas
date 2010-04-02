@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.22  2010/02/23 18:44:22  danielpharos
+Added LOG_SUBDIRECTORY; not set right now.
+
 Revision 1.21  2009/07/19 18:54:27  danielpharos
 Moved PByte, PInteger and sLineBreak to ExtraFunctionality.
 
@@ -154,7 +157,8 @@ implementation
 
 {$R *.DFM}
 
-uses Qk1, QkObjects, Quarkx, PyProcess, Setup, QkApplPaths, ExtraFunctionality;
+uses Qk1, QkObjects, QkExceptions, Quarkx, PyProcess, Setup,
+     QkApplPaths, ExtraFunctionality;
 
 var
   ConsoleFile: TextFile;
@@ -245,7 +249,7 @@ var
   I: Integer;
 begin
   if Buffer<>nil then
-    raise exception.create('InitBuffer: Buffer not nil!');
+    raise InternalE('InitBuffer: Buffer not nil!');
   New(Buffer);
   SetLength(Buffer^, Height);
   for I:=0 to Height-1 do
