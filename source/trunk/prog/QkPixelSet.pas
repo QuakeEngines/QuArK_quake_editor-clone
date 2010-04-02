@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.25  2009/07/15 10:38:01  danielpharos
+Updated website link.
+
 Revision 1.24  2009/02/21 17:06:18  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -541,7 +544,10 @@ var
 begin
   DIBSection:=CreateDIBSection(DC, tagBITMAPINFO(BitmapInfo), DIB_RGB_COLORS, Bits, 0, 0);
   if DIBSection = 0 then
-    Raise exception.Create('CreateDIBSection failed!');
+  begin
+    LogWindowsError(GetLastError(), 'CreateDIBSection(DC, tagBITMAPINFO(BitmapInfo), DIB_RGB_COLORS, Bits, 0, 0)');
+    LogAndRaiseError('CreateDIBSection failed!');
+  end;
   try
     Width:=TBitmapInfo(BitmapInfo).bmiHeader.biWidth;
     Height:=TBitmapInfo(BitmapInfo).bmiHeader.biHeight;
