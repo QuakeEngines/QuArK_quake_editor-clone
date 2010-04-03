@@ -2150,8 +2150,8 @@ def removecomp(editor, compname, undo, multi_comps=0):
     if len(components) == 1:
         editor.ModelComponentList = {}
     else:
-        del editor.ModelComponentList['tristodraw'][compname]
         if editor.ModelComponentList.has_key(compname):
+            del editor.ModelComponentList['tristodraw'][compname]
             del editor.ModelComponentList[compname]
         for comp in components:
             if comp.name != compname:
@@ -4145,6 +4145,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.130  2010/03/20 08:16:59  cdunde
+#Needed updates to reactivate bone settings properly.
+#
 #Revision 1.129  2010/03/20 05:22:20  cdunde
 #To allow offsetting of bone handles for imported models.
 #

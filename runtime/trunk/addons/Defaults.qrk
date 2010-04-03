@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.510  2010/02/21 15:02:28  danielpharos
+//Moved command line parameters for Steam compilers to proper place.
+//
 //Revision 1.509  2010/02/21 15:01:10  danielpharos
 //Made OutputMapFormat CL-list.
 //
@@ -11543,7 +11546,7 @@ QQRKSRC1
         Frames:fg =
         {
           type = $01
-          newframe:mf =
+          baseframe:mf =
           {
             Vertices = ''
           }
