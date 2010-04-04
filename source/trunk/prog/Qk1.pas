@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.87  2009/09/29 19:56:40  danielpharos
+Moved 'check for updates' menuitem to its own section.
+
 Revision 1.86  2009/07/31 11:40:45  danielpharos
 Small change to cleanup About.pas a bit.
 
@@ -695,10 +698,12 @@ begin
  ProcessCmdLine;
 
  //This is the mutex for single-instance checking
+ Log(LOG_VERBOSE, 'Checking mutex...');
  g_Mutex:=CreateMutex(Nil, True, PChar('QuArK_Mutex'));
  if g_Mutex = 0 then
  begin
    //Something went terribly wrong!
+   LogWindowsError(GetLastError(), 'CreateMutex(Nil, True, "QuArK_Mutex")');
    Windows.MessageBox(0, PChar('Unable to check if there already is an instance of QuArK running! If this is the case, this can cause serious problems. For example, changed configuration settings might not be saved, and QuArK might not update correctly.'), PChar('QuArK'), MB_TASKMODAL or MB_OK or MB_ICONWARNING);
    MutexError := 0;
  end
@@ -722,6 +727,7 @@ begin
  end;
 
  // Python initialization and Defaults.qrk and Setup.qrk loading
+ Log(LOG_VERBOSE, 'Initializing Python...');
  InitPython;
 
  if g_CmdOptions.DoInstance and (SetupSubSet(ssGeneral, 'Update').Specifics.Values['SingleInstance']<>'') then
@@ -746,10 +752,14 @@ begin
    anymore! (Store data in registry?) }
  //Check for updates...
  if g_CmdOptions.DoUpdate and (SetupSubSet(ssGeneral, 'Update').Specifics.Values['UpdateCheck']<>'') then
+ begin
+   Log(LOG_VERBOSE, 'Checking for updates...');
    DoUpdate(g_CmdOptions.OnlineUpdate, True);
+ end;
 
  if g_CmdOptions.DoSplash then
  begin
+   Log(LOG_VERBOSE, 'Waiting for splash screen...');
    repeat
      Application.ProcessMessages;
    until (WaitForSingleObject(Disclaimer, 100)<>WAIT_TIMEOUT);

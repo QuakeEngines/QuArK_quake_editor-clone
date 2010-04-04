@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.32  2009/07/15 10:38:01  danielpharos
+Updated website link.
+
 Revision 1.31  2009/03/16 08:47:21  danielpharos
 Updated to DevIL 1.7.8, added IWI loading, and added many new image loading/saving options.
 
@@ -1236,7 +1239,7 @@ var
 begin
  S:=GetSpecArg(Spec2);
  if Length(S)-(Length(Spec2)+1) < SizeOf(TPaletteLmp) then
-  Raise EErrorFmt(5534, ['Pal']);
+  Raise EErrorFmt(5534, [Spec2]);
  PChar(Result):=PChar(S)+(Length(Spec2)+1);
 end;
 
@@ -1597,13 +1600,17 @@ begin
   else
    begin
     Pal1:=SelectPalette(DC, Palette, False);
-    RealizePalette(DC);
+    if Pal1 = 0 then
+      LogWindowsError(GetLastError(), 'SelectPalette(DC, Palette, False)');
+    if RealizePalette(DC) = GDI_ERROR then
+      LogWindowsError(GetLastError(), 'RealizePalette(DC)');
    end;
   try
     DrawToDC(DC, BitmapInfo, GetImagePtr1, Left, Top);
   finally
    if Pal1<>0 then
-    SelectPalette(DC, Pal1, False);
+    if SelectPalette(DC, Pal1, False) = GDI_ERROR then
+     LogWindowsError(GetLastError(), 'RealizePalette(DC, Pal1, False)');
   end;
  finally
   if Palette<>0 then

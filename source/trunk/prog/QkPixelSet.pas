@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.26  2010/04/02 16:52:47  danielpharos
+Added logging if DIB section cannot be created.
+
 Revision 1.25  2009/07/15 10:38:01  danielpharos
 Updated website link.
 
@@ -546,7 +549,7 @@ begin
   if DIBSection = 0 then
   begin
     LogWindowsError(GetLastError(), 'CreateDIBSection(DC, tagBITMAPINFO(BitmapInfo), DIB_RGB_COLORS, Bits, 0, 0)');
-    LogAndRaiseError('CreateDIBSection failed!');
+    LogAndRaiseError('DrawToDC: CreateDIBSection failed!');
   end;
   try
     Width:=TBitmapInfo(BitmapInfo).bmiHeader.biWidth;
@@ -579,12 +582,16 @@ begin
   if Pal0<>0 then
    begin
     Pal1:=SelectPalette(DC, Pal0, False);
-    RealizePalette(DC);
+    if Pal1 = 0 then
+      LogWindowsError(GetLastError(), 'SelectPalette(DC, Pal0, False)');
+    if RealizePalette(DC) = GDI_ERROR then
+      LogWindowsError(GetLastError(), 'RealizePalette(DC)');
    end;
   DrawToDC(DC, BitmapInfo^, NewPSD.Data, X, Y);
  finally
   if Pal1<>0 then
-   SelectPalette(DC, Pal1, False);
+   if SelectPalette(DC, Pal1, False) = GDI_ERROR then
+    LogWindowsError(GetLastError(), 'RealizePalette(DC, Pal1, False)');
   NewPSD.ReleasePalette(Pal0);
   NewPSD.Done;
  end;
