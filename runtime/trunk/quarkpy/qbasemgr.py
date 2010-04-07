@@ -427,14 +427,21 @@ class BaseLayout:
         Trash.cmd = "del"
         Trash.ondrop = self.editor.trash1drop
         Undo = qtoolbar.macrobtn("MURD", "Multiple undo/redo||Multiple undo/redo:\n\nThe icon will open up the undo/redo display. |intro.mapeditor.misctools.html#undoredo", ico_maped, 6)
-        if isinstance(self.editor, quarkpy.mdleditor.ModelEditor):
-            NewGroup = qtoolbar.button(self.editor.editcmdclick, "New skins sub-group||New skins sub-group:\n\nCreates a new Skins sub-group in the tree-view, where you can place skin objects in, used for Quake1 animation skins.|intro.mapeditor.misctools.html#newgroup", ico_maped, 16)
-            NewGroup.cmd = "newskingroup"
-        else:
-            NewGroup = qtoolbar.button(self.editor.editcmdclick, "New group||New group:\n\nCreates a new group in the tree-view, where you can place other objects in, so they are neatly grouped together.|intro.mapeditor.misctools.html#newgroup", ico_maped, 16)
-            NewGroup.cmd = "newgroup"
-        bb = CompassPanel.newbtnpanel(NewItem + [Trash, Undo, NewGroup])
-        bb.margins = (2,1)
+        try:
+            bb = CompassPanel.newbtnpanel(NewItem + [Trash, Undo, NewGroup])
+            bb.margins = (2,1)
+        except:
+            try:
+                if isinstance(self.editor, quarkpy.mdleditor.ModelEditor):
+                    NewGroup = qtoolbar.button(self.editor.editcmdclick, "New skins sub-group||New skins sub-group:\n\nCreates a new Skins sub-group in the tree-view, where you can place skin objects in, used for Quake1 animation skins.|intro.mapeditor.misctools.html#newgroup", ico_maped, 16)
+                    NewGroup.cmd = "newskingroup"
+                    bb = CompassPanel.newbtnpanel(NewItem + [Trash, Undo, NewGroup])
+                    bb.margins = (2,1)
+            except:
+                NewGroup = qtoolbar.button(self.editor.editcmdclick, "New group||New group:\n\nCreates a new group in the tree-view, where you can place other objects in, so they are neatly grouped together.|intro.mapeditor.misctools.html#newgroup", ico_maped, 16)
+                NewGroup.cmd = "newgroup"
+                bb = CompassPanel.newbtnpanel(NewItem + [Trash, Undo, NewGroup])
+                bb.margins = (2,1)
 
         self.bs_multipagespanel(bottompanel)
         self.bs_userobjects(toppanel)
@@ -613,6 +620,9 @@ class MPPage:
 #
 #
 #$Log$
+#Revision 1.34  2010/03/26 07:28:42  cdunde
+#To add new Model Editor sub-group folders to the Skins group.
+#
 #Revision 1.33  2008/02/03 00:55:08  cdunde
 #To stop the progress bar from showing in the OpenGL window for the Model Editor
 #
