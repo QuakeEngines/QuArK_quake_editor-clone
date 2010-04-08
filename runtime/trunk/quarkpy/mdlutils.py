@@ -2647,6 +2647,7 @@ def addbone(editor, comp, pos):
     new_bone['show'] = (1.0,)
     new_bone['component'] = editor.Root.currentcomponent.name
     new_bone['parent_name'] = "None"
+    new_bone.position = pos
     new_bone['position'] = pos.tuple
     from math import sqrt
     new_bone.rotmatrix = quarkx.matrix((sqrt(2)/2, -sqrt(2)/2, 0), (sqrt(2)/2, sqrt(2)/2, 0), (0, 0, 1))
@@ -2694,6 +2695,7 @@ def continue_bone(editor, bone, pos):
     new_bone['component'] = editor.Root.currentcomponent.name
     new_bone['parent_name'] = bone.name
     pos = quarkx.vect(bone.dictspec['position']) + quarkx.vect(8.0,2.0,2.0)
+    new_bone.position = pos
     new_bone['position'] = pos.tuple
     new_bone.rotmatrix = bone.rotmatrix
     new_bone['draw_offset'] = (0, 0, 0)
@@ -4145,6 +4147,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.131  2010/04/03 19:56:06  cdunde
+#Minor updates.
+#
 #Revision 1.130  2010/03/20 08:16:59  cdunde
 #Needed updates to reactivate bone settings properly.
 #

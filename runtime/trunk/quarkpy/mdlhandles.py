@@ -4889,6 +4889,7 @@ class BoneCenterHandle(BoneHandle):
 
         for obj in list:
             obj.position = obj.position + delta
+            obj['position'] = obj.position.tuple
             vertices = obj.vtxlist
             for compname in vertices:
                 for vtx in vertices[compname]:
@@ -4989,6 +4990,7 @@ class BoneCornerHandle(BoneHandle):
                 changedpos = obj.position - rotationorigin
                 changedpos = changedradius * m * changedpos
                 obj.position = changedpos + rotationorigin
+                obj['position'] = obj.position.tuple
 
             #Update the draw_offset
             old_draw_offset = quarkx.vect(obj.dictspec['draw_offset'])
@@ -5331,6 +5333,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.198  2010/03/10 04:24:06  cdunde
+#Update to support added ModelComponentList for 'bonelist' updating.
+#
 #Revision 1.197  2010/02/03 08:41:14  cdunde
 #Fix for bone corner handle not rotating if assigned vertexes do not have a weight_value.
 #
