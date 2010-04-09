@@ -5218,11 +5218,13 @@ def MouseDragging(self, view, x, y, s, handle):
     "Mouse Drag on a Model View, self is an instance of the model editor."
     global cursorposatstart
 
-    if self.Root.currentcomponent.dictspec['show'] == "\x00": # Component is hidden.
-        self.dragobject = None
-        quarkx.beep()
-        return None
-    if isinstance(handle, BoneCenterHandle) or isinstance(handle, BoneCornerHandle) or self.Root.currentcomponent.dictspec['show'] == "\x00": # Used for auto selection feature.
+  # Commented out lines below locks up editor if component is hidden and another component is not selected.
+  #  if self.Root.currentcomponent.dictspec['show'] == "\x00": # Component is hidden.
+      #  self.dragobject = None
+      #  quarkx.beep()
+      #  return None
+  #  if isinstance(handle, BoneCenterHandle) or isinstance(handle, BoneCornerHandle) or self.Root.currentcomponent.dictspec['show'] == "\x00": # Used for auto selection feature.
+    if isinstance(handle, BoneCenterHandle) or isinstance(handle, BoneCornerHandle): # Used for auto selection feature.
         if (len(self.layout.explorer.sellist) == 0):
             self.dragobject = None
             quarkx.beep()
@@ -5232,7 +5234,6 @@ def MouseDragging(self, view, x, y, s, handle):
                 self.layout.explorer.sellist = [handle.bone]
                 Update_Editor_Views(self)
                 self.layout.mpp.resetpage()
-    #        compbones = self.Root.findallsubitems("", ':bone')      # get all bones
         elif (len(self.layout.explorer.sellist) == 1) and (self.layout.explorer.sellist[0].type == ':bg'):
             compbones = self.Root.findallsubitems("", ':bone')      # get all bones
             allow = 1
@@ -5270,8 +5271,6 @@ def MouseDragging(self, view, x, y, s, handle):
             if handle.attachedbones is None:
                 self.dragobject = None
                 quarkx.beep()
-                # Why does the msgbox below cause a freezeup ? That should not happen.
-            #    quarkx.msgbox("Improper Action!\n\nA bone in this drag has assigned vertexes.\nYou must also select a frame to do this drag.", MT_ERROR, MB_OK)
                 return None
 
     return qhandles.MouseDragging(self, view, x, y, s, handle, MapColor("DragImage", SS_MODEL))
@@ -5333,6 +5332,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.199  2010/04/08 04:50:58  cdunde
+#Needed fixes for some broken bone specifics items.
+#
 #Revision 1.198  2010/03/10 04:24:06  cdunde
 #Update to support added ModelComponentList for 'bonelist' updating.
 #
