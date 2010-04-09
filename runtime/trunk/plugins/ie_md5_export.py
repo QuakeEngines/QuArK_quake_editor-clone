@@ -518,7 +518,7 @@ def export_anim(self, file, filename, exp_list):
         Values = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]   #Tx, Ty, Tz, Qx, Qy, Qz
         for frame_counter in range(0,NumberOfFrames):
             progressbar.progress()
-            # Convert the position to a typle and rotmatrix to quaternions:
+            # Convert the position to a tuple and rotmatrix to quaternions:
             QuArK_frame_position_raw[frame_counter][joint_counter] = (QuArK_frame_position_raw[frame_counter][joint_counter]).tuple
             rotmatrix = (QuArK_frame_matrix_raw[frame_counter][joint_counter]).tuple
             rotmatrix = ((rotmatrix[0][0], rotmatrix[0][1], rotmatrix[0][2], 0.0)
@@ -989,6 +989,9 @@ def UIExportDialog(root, filename, editor):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.9  2010/03/20 05:25:31  cdunde
+# Update by DanielPharos to bring imported models and animations more inline with original file.
+#
 # Revision 1.8  2010/03/10 04:24:06  cdunde
 # Update to support added ModelComponentList for 'bonelist' updating.
 #
