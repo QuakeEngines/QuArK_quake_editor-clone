@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.22  2009/07/17 10:52:09  danielpharos
+Moved PPointer to ExtraFunctionality.
+
 Revision 1.21  2009/07/15 10:38:06  danielpharos
 Updated website link.
 
@@ -1272,8 +1275,7 @@ const
 
 var
   TimesLoaded : Integer;
-
-  GlideLib: THandle;
+  GlideLib: HMODULE;
 
   DummyWindow: HWND;
 

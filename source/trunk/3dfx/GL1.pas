@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.42  2009/09/22 18:03:26  danielpharos
+Moved some stuff around.
+
 Revision 1.41  2009/09/22 17:58:33  danielpharos
 Fixed OpenGL extensions not being found at all, or the last one being missed.
 
@@ -956,8 +959,8 @@ const
 var
   TimesLoaded : Integer;
 
-  OpenGL32Lib: THandle;
-  Glu32Lib: THandle;
+  OpenGL32Lib: HMODULE;
+  Glu32Lib: HMODULE;
 
   GLExtensions: TStringList = nil;
   WinSwapHintLoaded: Boolean = false;
