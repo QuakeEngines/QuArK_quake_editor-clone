@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.30  2010/04/16 18:47:21  danielpharos
+Workaround for missing init-logging entries.
+
 Revision 1.29  2010/04/16 18:44:59  danielpharos
 Reduced missing init-logging entries to a single problematic line. Also, logging now uses const strings (faster).
 
@@ -121,6 +124,8 @@ type
 Procedure CloseLogFile;
 Procedure OpenLogFile;
 
+function GetLogLevel : Cardinal;
+
 Procedure Log(const s: string); overload;
 Procedure Log(level: cardinal; const s: string); overload;
 Procedure Log(const s: string; args: array of const); overload;
@@ -156,6 +161,11 @@ var
 Procedure aLog(Logger: TLogName; const s: string); forward;
 
  {------------------------}
+
+function GetLogLevel : Cardinal;
+begin
+  result := LogLevel;
+end;
 
 function GetPatchVersion: String;
 var
