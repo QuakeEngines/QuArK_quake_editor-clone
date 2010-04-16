@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.49  2010/04/16 20:07:22  danielpharos
+Move some version-stuff about. quarkpy now also checks the minor version number.
+
 Revision 1.48  2010/04/16 18:44:59  danielpharos
 Reduced missing init-logging entries to a single problematic line. Also, logging now uses const strings (faster).
 
@@ -1011,7 +1014,12 @@ begin
   if PythonLib<>0 then
   begin
     if FreeLibrary(PythonLib)=false then
-      raise InternalE('Unable to unload '+RetrieveModuleFilename(PythonLib));
+    begin
+      //FIXME: If FreeLibrary failed, can we still trust the loaded Python?
+      //       Shouldn't we be killing PythonLoaded?
+      LogWindowsError(GetLastError(), 'FreeLibrary(PythonLib)');
+      LogAndRaiseError('Unable to unload the Python library');
+    end;
     PythonLib:=0;
 
     PythonLoaded:=false;
