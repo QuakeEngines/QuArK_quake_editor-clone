@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.33  2010/04/04 13:37:18  danielpharos
+Added additional logging.
+
 Revision 1.32  2009/07/15 10:38:01  danielpharos
 Updated website link.
 
@@ -1939,7 +1942,7 @@ initialization
 
 finalization
   if DevILLoaded then
-    UnloadDevIl(false);
+    UnloadDevIl;
   if FreeImageLoaded then
-    UnloadFreeImage(false);
+    UnloadFreeImage;
 end.

@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.47  2009/09/23 20:40:48  danielpharos
+Removed unneeded 'use'.
+
 Revision 1.46  2009/07/17 10:48:09  danielpharos
 Added missing uses.
 
@@ -658,5 +661,6 @@ begin
 end;
 
 finalization
-  UnloadVTFLib(true);
+  if VTFLoaded then
+    UnloadVTFLib;
 end.

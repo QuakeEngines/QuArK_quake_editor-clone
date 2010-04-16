@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.28  2010/04/16 18:44:59  danielpharos
+Reduced missing init-logging entries to a single problematic line. Also, logging now uses const strings (faster).
+
 Revision 1.27  2010/04/02 16:51:58  danielpharos
 Created a new LogWindowsError procedure.
 
@@ -405,7 +408,7 @@ var
   ilRegisterPal: procedure (Pal : PByte; Size : ILuint; xType : DevILFormatPalette); stdcall;
 
 function LoadDevIL : Boolean;
-procedure UnloadDevIL(ForceUnload: boolean);
+procedure UnloadDevIL(ForceUnload: boolean = false);
 function ilHasAlpha: Boolean;
 function ilHasPalette: Boolean;
 procedure CheckDevILError(DevILError: DevILError);

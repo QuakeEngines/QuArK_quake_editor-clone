@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.17  2010/04/02 16:51:58  danielpharos
+Created a new LogWindowsError procedure.
+
 Revision 1.16  2010/03/09 21:10:16  danielpharos
 Commented out unused function definition.
 
@@ -252,7 +255,7 @@ var
   FreeImage_Allocate: function (width : Integer; height : Integer; bbp : Integer; red_mask : Cardinal; green_mask : Cardinal; blue_mask : Cardinal) : FIBITMAP; stdcall;
   
 function LoadFreeImage : Boolean;
-procedure UnloadFreeImage(ForceUnload: boolean);
+procedure UnloadFreeImage(ForceUnload: boolean = false);
 
 {-------------------}
 
