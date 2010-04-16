@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.46  2010/03/09 21:19:51  danielpharos
+Removed redundant type definition.
+
 Revision 1.45  2010/02/21 21:16:31  danielpharos
 Allow future versions of Python again (with warning).
 
@@ -853,17 +856,28 @@ begin
     if Length(VersionNumber) >= 2 then
     begin
       if VersionNumber[0] >= 2 then
-        if (VersionNumber[0] = 2) and ((VersionNumber[1] = 3) or (VersionNumber[1] = 4)) then
+      begin
+        if (VersionNumber[0] = 2) then
         begin
-          //Supported!
-          FoundGoodVersion:=True;
+          if (VersionNumber[1] = 3) or (VersionNumber[1] = 4) then
+          begin
+            //Python 2.3 or 2.4: Supported!
+            FoundGoodVersion:=True;
+          end
+          else if (VersionNumber[1] > 4) then
+          begin
+            //Python 2.x (> 2.4): Future version: Might work...
+            FoundGoodVersion:=True;
+            LogAndWarn('Newer version ('+VersionNumberString+') of Python that supported found! QuArK might behave unpredictably!');
+          end;
         end
-        else if (VersionNumber[1] > 4) then
+        else
         begin
-          //Future version: Might work...
+          //Python 3 or larger: Procede at own risk!
           FoundGoodVersion:=True;
           LogAndWarn('Unsupported, future version ('+VersionNumberString+') of Python found! QuArK might behave unpredictably!');
         end;
+      end;
     end;
   end
   else
