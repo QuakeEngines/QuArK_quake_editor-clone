@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.29  2010/04/16 18:44:59  danielpharos
+Reduced missing init-logging entries to a single problematic line. Also, logging now uses const strings (faster).
+
 Revision 1.28  2010/02/23 18:44:22  danielpharos
 Added LOG_SUBDIRECTORY; not set right now.
 
@@ -140,7 +143,7 @@ const
 implementation
 
 //Keep the number of uses to a bare minimal, due to Delphi's init-order!
-uses QkConsts, QkApplPaths; //FIXME: QkApplPaths is including TOO MUCH!
+uses QkConsts;//, QkApplPaths; //FIXME: QkApplPaths is including TOO MUCH!
 
 var
   LogFile: TextFile;
@@ -159,7 +162,8 @@ var
   PF: TextFile;
   filename: string;
 begin
-  filename:=GetQPath(pQuArKLog)+LogPatchname;
+  //filename:=GetQPath(pQuArKLog)+LogPatchname;
+  filename:=LogPatchname;
   if fileexists(filename) then
   begin
   {$I-}
@@ -182,7 +186,8 @@ begin
   if LogOpened then
     exit;
   {$I-}
-  AssignFile(LogFile, ConcatPaths([GetQPath(pQuArKLog), LogFilename]));
+  //AssignFile(LogFile, ConcatPaths([GetQPath(pQuArKLog), LogFilename]));
+  AssignFile(LogFile, LogFilename);
   rewrite(LogFile);
   {$I+}
   LogOpened:=true;
