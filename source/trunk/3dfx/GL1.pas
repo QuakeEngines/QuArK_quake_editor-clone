@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.45  2010/04/16 19:16:05  danielpharos
+GLExtensions should be cleared on failure.
+
 Revision 1.44  2010/04/16 19:13:46  danielpharos
 Removed unused DebugGLErr define.
 
@@ -1277,12 +1280,10 @@ end;
 
 procedure ResetExtensionList(var Extensions : TGLExtensionList);
 var
-  ExtCount: Integer;
   I: Integer;
 begin
-  ExtCount := High(ExtGL32DLL_FuncList)-Low(ExtGL32DLL_FuncList)+1;
-  SetLength(Extensions, ExtCount);
-  for I:=0 to ExtCount-1 do
+  SetLength(Extensions, High(ExtGL32DLL_FuncList)-Low(ExtGL32DLL_FuncList)+1);
+  for I:=Low(ExtGL32DLL_FuncList) to High(ExtGL32DLL_FuncList) do
     with Extensions[I] do
     begin
       Name := ExtGL32DLL_FuncList[I].ExtName;
@@ -1309,7 +1310,7 @@ begin
   if GLExtensions.IndexOf(ExtensionName)=-1 then
     Exit;
 
-  for I:=0 to Length(Extension)-1 do
+  for I:=Low(Extension) to High(Extension) do
     if Extension[I].Name = ExtensionName then
       with Extension[I] do
       begin
