@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.99  2010/04/16 18:44:59  danielpharos
+Reduced missing init-logging entries to a single problematic line. Also, logging now uses const strings (faster).
+
 Revision 1.98  2010/02/23 18:38:23  danielpharos
 Added LOG_SUBDIRECTORY; not set right now.
 
@@ -375,7 +378,7 @@ procedure QuarkXWorkaroundNameChange(OldName, NewName: String);
 implementation
 
 uses Classes, Dialogs, Graphics, CommCtrl, ExtCtrls, Controls,
-     QkForm, PyToolbars, PyImages, PyPanels, TB97, QkObjects,
+     QkForm, PyToolbars, PyImages, PyPanels, TB97, QkObjects, QkConsts,
      PyObjects, QkFileObjects, {PyFiles,} PyExplorer, Travail, Running,
      Qk1, PyFormCfg, QkQuakeCtx, PyFloating, PyMapView, qmath, Setup,
      PyMath, PyCanvas, PyUndo, qmatrices, QkMapObjects, QkTextures,
@@ -3447,7 +3450,7 @@ begin
   Exit;
  PyDict_SetItemString(QuarkxDict, 'aborted', QuarkxAborted);
 
- m:=PyString_FromString(QuArKVersion);
+ m:=PyString_FromString(QuArKVersion + ' ' + QuArKMinorVersion);
  if m=Nil then
   Exit;
  PyDict_SetItemString(QuarkxDict, 'version', m);

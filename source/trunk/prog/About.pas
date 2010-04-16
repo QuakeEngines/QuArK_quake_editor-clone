@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.35  2009/07/31 11:40:45  danielpharos
+Small change to cleanup About.pas a bit.
+
 Revision 1.34  2009/07/15 10:38:01  danielpharos
 Updated website link.
 
@@ -304,9 +307,9 @@ procedure TAboutBox.FormCreate(Sender: TObject);
 var
   DateFormat: TFormatSettings;}
 begin
-  Version.Caption := QuarkVersion;
+  Version.Caption := QuarkVersion + ' ' + QuArKMinorVersion;
   {*GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, DateFormat);}
-  UsedCompilerLabel.Caption := QuArKMinorVersion + ' Compiled with ' + QuArKUsedCompiler + ' - ' + DateToStr(QuArKCompileDate{*, DateFormat});
+  UsedCompilerLabel.Caption := 'Compiled with ' + QuArKUsedCompiler + ' - ' + DateToStr(QuArKCompileDate{*, DateFormat});
   Copyright.Caption := '  ' + QuArKCopyright;
   {$IFDEF Debug}
   Version.Caption := Version.Caption + '  DEBUG VERSION';

@@ -23,6 +23,8 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.1  2010/04/16 18:44:59  danielpharos
+Reduced missing init-logging entries to a single problematic line. Also, logging now uses const strings (faster).
 }
 
 unit QkConsts;
@@ -32,7 +34,7 @@ interface
 uses SysUtils;
 
 const
-  QuArKVersion            = 'QuArK 6.6 Beta';
+  QuArKVersion            = 'QuArK 6.6';
   QuArKMinorVersion       = 'Beta 3';
   QuArKCopyright          = 'Copyright (C) 1996-2009 Armin Rigo and others';
   QuArKUsedCompiler       = 'Delphi 7.0';

@@ -14,7 +14,7 @@ Dictionary of all strings used within the program
 
 
 Strings = {
-    0: "QuArK 6.6 Beta",
+    0: "QuArK 6.6 Beta 3", #This is also used for version number checks between executable and Python scripts
     1: "  QuArK - Quake Army Knife      %s    by Armin Rigo     -  logo McKay & Brian",
 
     2: "&New %s",
@@ -1078,6 +1078,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.147  2010/03/07 09:45:44  cdunde
+#Added strings for model editor.
+#
 #Revision 1.146  2010/02/16 20:16:47  danielpharos
 #Updated website address.
 #

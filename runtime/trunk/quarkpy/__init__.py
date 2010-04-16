@@ -79,7 +79,7 @@ quarkx.buildcodes = [
 
 
 def RunQuArK():
-    print " --- QuArK ---  Quake Army Knife ", quarkx.version
+    print " --- QuArK ---  Quake Army Knife (%s)" % (quarkx.version)
 
     import qmacro
     quarkx.Setup1(qmacro.__dict__)    # don't change this !
@@ -119,6 +119,9 @@ def RunQuArK():
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.15  2009/09/07 01:38:45  cdunde
+#Setup of tag menus and icons.
+#
 #Revision 1.14  2009/06/09 05:51:48  cdunde
 #Updated to better display the Model Editor's Skeleton group and
 #individual bones and their sub-bones when they are hidden.

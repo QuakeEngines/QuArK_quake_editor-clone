@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.48  2010/04/16 18:44:59  danielpharos
+Reduced missing init-logging entries to a single problematic line. Also, logging now uses const strings (faster).
+
 Revision 1.47  2010/04/16 18:23:57  danielpharos
 Better Python version checks
 
@@ -674,83 +677,131 @@ const
   PythonProcList: array[0..58] of record
                                     Variable: Pointer;
                                     Name: PChar;
-                                    MinimalVersion: Integer;
+                                    MinimalVersion: Integer; //Exact meaning in GoodPythonVersion
                                   end =
-  ( (Variable: @@Py_Initialize;              Name: 'Py_Initialize';              MinimalVersion: 0  ),
-    (Variable: @@Py_Finalize;                Name: 'Py_Finalize';                MinimalVersion: 0  ),
-    (Variable: @@Py_GetVersion;              Name: 'Py_GetVersion';              MinimalVersion: 0  ),
-    (Variable: @@Py_SetProgramName;          Name: 'Py_SetProgramName';          MinimalVersion: 0  ),
-    (Variable: @@PyRun_SimpleString;         Name: 'PyRun_SimpleString';         MinimalVersion: 0  ),
-//  (Variable: @@Py_CompileString;           Name: 'Py_CompileString';           MinimalVersion: 0  ),
-//  (Variable: @@Py_InitModule;              Name: 'Py_InitModule';              MinimalVersion: 0  ), //Missing in DLL
-//  (Variable: @@Py_InitModule3;             Name: 'Py_InitModule3';             MinimalVersion: 0  ), //Missing in DLL
-    (Variable: @@Py_InitModule4;             Name: 'Py_InitModule4';             MinimalVersion: 0  ),
-    (Variable: @@PyModule_GetDict;           Name: 'PyModule_GetDict';           MinimalVersion: 0  ),
-    (Variable: @@PyModule_New;               Name: 'PyModule_New';               MinimalVersion: 0  ),
-//  (Variable: @@PyImport_ImportModule;      Name: 'PyImport_ImportModule';      MinimalVersion: 0  ),
-//  (Variable: @@PyEval_GetGlobals;          Name: 'PyEval_GetGlobals';          MinimalVersion: 0  ),
-//  (Variable: @@PyEval_GetLocals;           Name: 'PyEval_GetLocals';           MinimalVersion: 0  ),
-    (Variable: @@PyEval_CallObject;          Name: 'PyEval_CallObject';          MinimalVersion: 0  ),
-    (Variable: @@PyCallable_Check;           Name: 'PyCallable_Check';           MinimalVersion: 0  ),
-    (Variable: @@PyErr_Print;                Name: 'PyErr_Print';                MinimalVersion: 0  ),
-    (Variable: @@PyErr_Clear;                Name: 'PyErr_Clear';                MinimalVersion: 0  ),
-    (Variable: @@PyErr_Occurred;             Name: 'PyErr_Occurred';             MinimalVersion: 0  ),
-    (Variable: @@PyErr_Fetch;                Name: 'PyErr_Fetch';                MinimalVersion: 0  ),
-//  (Variable: @@PyErr_Restore;              Name: 'PyErr_Restore';              MinimalVersion: 0  ),
-    (Variable: @@PyErr_NewException;         Name: 'PyErr_NewException';         MinimalVersion: 0  ),
-    (Variable: @@PyErr_SetString;            Name: 'PyErr_SetString';            MinimalVersion: 0  ),
-    (Variable: @@PyErr_ExceptionMatches;     Name: 'PyErr_ExceptionMatches';     MinimalVersion: 0  ),
-    (Variable: @@PyObject_Length;            Name: 'PyObject_Length';            MinimalVersion: 0  ),
-    (Variable: @@PyObject_GetItem;           Name: 'PyObject_GetItem';           MinimalVersion: 0  ),
-    (Variable: @@PyObject_HasAttrString;     Name: 'PyObject_HasAttrString';     MinimalVersion: 0  ),
-    (Variable: @@PyObject_GetAttrString;     Name: 'PyObject_GetAttrString';     MinimalVersion: 0  ),
-    (Variable: @@PyObject_IsTrue;            Name: 'PyObject_IsTrue';            MinimalVersion: 0  ),
-    (Variable: @@PyObject_Str;               Name: 'PyObject_Str';               MinimalVersion: 0  ),
-    (Variable: @@PyObject_Repr;              Name: 'PyObject_Repr';              MinimalVersion: 0  ),
-    (Variable: @@PySequence_GetItem;         Name: 'PySequence_GetItem';         MinimalVersion: 0  ),
-    (Variable: @@PySequence_In;              Name: 'PySequence_In';              MinimalVersion: 0  ),
-    (Variable: @@PySequence_Index;           Name: 'PySequence_Index';           MinimalVersion: 0  ),
-    (Variable: @@PySequence_DelItem;         Name: 'PySequence_DelItem';         MinimalVersion: 0  ),
-    (Variable: @@PyMapping_HasKey;           Name: 'PyMapping_HasKey';           MinimalVersion: 0  ),
-    (Variable: @@PyMapping_HasKeyString;     Name: 'PyMapping_HasKeyString';     MinimalVersion: 0  ),
-    (Variable: @@PyNumber_Float;             Name: 'PyNumber_Float';             MinimalVersion: 0  ),
-    (Variable: @@Py_BuildValue;              Name: 'Py_BuildValue';              MinimalVersion: 0  ),
-    (Variable: @@PyArg_ParseTuple;           Name: 'PyArg_ParseTuple';           MinimalVersion: 0  ),
-    (Variable: @@PyTuple_New;                Name: 'PyTuple_New';                MinimalVersion: 0  ),
-    (Variable: @@PyTuple_GetItem;            Name: 'PyTuple_GetItem';            MinimalVersion: 0  ),
-    (Variable: @@PyTuple_SetItem;            Name: 'PyTuple_SetItem';            MinimalVersion: 0  ),
-    (Variable: @@PyList_New;                 Name: 'PyList_New';                 MinimalVersion: 0  ),
-    (Variable: @@PyList_GetItem;             Name: 'PyList_GetItem';             MinimalVersion: 0  ),
-    (Variable: @@PyList_SetItem;             Name: 'PyList_SetItem';             MinimalVersion: 0  ),
-    (Variable: @@PyList_Insert;              Name: 'PyList_Insert';              MinimalVersion: 0  ),
-    (Variable: @@PyList_Append;              Name: 'PyList_Append';              MinimalVersion: 0  ),
-    (Variable: @@PyDict_New;                 Name: 'PyDict_New';                 MinimalVersion: 0  ),
-    (Variable: @@PyDict_SetItemString;       Name: 'PyDict_SetItemString';       MinimalVersion: 0  ),
-    (Variable: @@PyDict_GetItemString;       Name: 'PyDict_GetItemString';       MinimalVersion: 0  ),
-    (Variable: @@PyDict_GetItem;             Name: 'PyDict_GetItem';             MinimalVersion: 0  ),
-    (Variable: @@PyDict_Keys;                Name: 'PyDict_Keys';                MinimalVersion: 0  ),
-    (Variable: @@PyDict_Values;              Name: 'PyDict_Values';              MinimalVersion: 0  ),
-    (Variable: @@PyDict_Next;                Name: 'PyDict_Next';                MinimalVersion: 0  ),
-    (Variable: @@PyString_FromString;        Name: 'PyString_FromString';        MinimalVersion: 0  ),
-    (Variable: @@PyString_AsString;          Name: 'PyString_AsString';          MinimalVersion: 0  ),
-    (Variable: @@PyString_FromStringAndSize; Name: 'PyString_FromStringAndSize'; MinimalVersion: 0  ),
-    (Variable: @@PyString_Size;              Name: 'PyString_Size';              MinimalVersion: 0  ),
-    (Variable: @@PyInt_FromLong;             Name: 'PyInt_FromLong';             MinimalVersion: 0  ),
-    (Variable: @@PyInt_AsLong;               Name: 'PyInt_AsLong';               MinimalVersion: 0  ),
-    (Variable: @@PyFloat_FromDouble;         Name: 'PyFloat_FromDouble';         MinimalVersion: 0  ),
-    (Variable: @@PyFloat_AsDouble;           Name: 'PyFloat_AsDouble';           MinimalVersion: 0  ),
-    (Variable: @@PyObject_Init;              Name: 'PyObject_Init';              MinimalVersion: 0  ),
-    (Variable: @@PyCFunction_New;            Name: 'PyCFunction_New';            MinimalVersion: 0  ),
-    (Variable: @@PyGC_Collect;               Name: 'PyGC_Collect';               MinimalVersion: 235));
+  ( (Variable: @@Py_Initialize;              Name: 'Py_Initialize';              MinimalVersion: 0 ),
+    (Variable: @@Py_Finalize;                Name: 'Py_Finalize';                MinimalVersion: 0 ),
+    (Variable: @@Py_GetVersion;              Name: 'Py_GetVersion';              MinimalVersion: 0 ),
+    (Variable: @@Py_SetProgramName;          Name: 'Py_SetProgramName';          MinimalVersion: 0 ),
+    (Variable: @@PyRun_SimpleString;         Name: 'PyRun_SimpleString';         MinimalVersion: 0 ),
+//  (Variable: @@Py_CompileString;           Name: 'Py_CompileString';           MinimalVersion: 0 ),
+//  (Variable: @@Py_InitModule;              Name: 'Py_InitModule';              MinimalVersion: 0 ), //Missing in DLL
+//  (Variable: @@Py_InitModule3;             Name: 'Py_InitModule3';             MinimalVersion: 0 ), //Missing in DLL
+    (Variable: @@Py_InitModule4;             Name: 'Py_InitModule4';             MinimalVersion: 0 ),
+    (Variable: @@PyModule_GetDict;           Name: 'PyModule_GetDict';           MinimalVersion: 0 ),
+    (Variable: @@PyModule_New;               Name: 'PyModule_New';               MinimalVersion: 0 ),
+//  (Variable: @@PyImport_ImportModule;      Name: 'PyImport_ImportModule';      MinimalVersion: 0 ),
+//  (Variable: @@PyEval_GetGlobals;          Name: 'PyEval_GetGlobals';          MinimalVersion: 0 ),
+//  (Variable: @@PyEval_GetLocals;           Name: 'PyEval_GetLocals';           MinimalVersion: 0 ),
+    (Variable: @@PyEval_CallObject;          Name: 'PyEval_CallObject';          MinimalVersion: 0 ),
+    (Variable: @@PyCallable_Check;           Name: 'PyCallable_Check';           MinimalVersion: 0 ),
+    (Variable: @@PyErr_Print;                Name: 'PyErr_Print';                MinimalVersion: 0 ),
+    (Variable: @@PyErr_Clear;                Name: 'PyErr_Clear';                MinimalVersion: 0 ),
+    (Variable: @@PyErr_Occurred;             Name: 'PyErr_Occurred';             MinimalVersion: 0 ),
+    (Variable: @@PyErr_Fetch;                Name: 'PyErr_Fetch';                MinimalVersion: 0 ),
+//  (Variable: @@PyErr_Restore;              Name: 'PyErr_Restore';              MinimalVersion: 0 ),
+    (Variable: @@PyErr_NewException;         Name: 'PyErr_NewException';         MinimalVersion: 0 ),
+    (Variable: @@PyErr_SetString;            Name: 'PyErr_SetString';            MinimalVersion: 0 ),
+    (Variable: @@PyErr_ExceptionMatches;     Name: 'PyErr_ExceptionMatches';     MinimalVersion: 0 ),
+    (Variable: @@PyObject_Length;            Name: 'PyObject_Length';            MinimalVersion: 0 ),
+    (Variable: @@PyObject_GetItem;           Name: 'PyObject_GetItem';           MinimalVersion: 0 ),
+    (Variable: @@PyObject_HasAttrString;     Name: 'PyObject_HasAttrString';     MinimalVersion: 0 ),
+    (Variable: @@PyObject_GetAttrString;     Name: 'PyObject_GetAttrString';     MinimalVersion: 0 ),
+    (Variable: @@PyObject_IsTrue;            Name: 'PyObject_IsTrue';            MinimalVersion: 0 ),
+    (Variable: @@PyObject_Str;               Name: 'PyObject_Str';               MinimalVersion: 0 ),
+    (Variable: @@PyObject_Repr;              Name: 'PyObject_Repr';              MinimalVersion: 0 ),
+    (Variable: @@PySequence_GetItem;         Name: 'PySequence_GetItem';         MinimalVersion: 0 ),
+    (Variable: @@PySequence_In;              Name: 'PySequence_In';              MinimalVersion: 0 ),
+    (Variable: @@PySequence_Index;           Name: 'PySequence_Index';           MinimalVersion: 0 ),
+    (Variable: @@PySequence_DelItem;         Name: 'PySequence_DelItem';         MinimalVersion: 0 ),
+    (Variable: @@PyMapping_HasKey;           Name: 'PyMapping_HasKey';           MinimalVersion: 0 ),
+    (Variable: @@PyMapping_HasKeyString;     Name: 'PyMapping_HasKeyString';     MinimalVersion: 0 ),
+    (Variable: @@PyNumber_Float;             Name: 'PyNumber_Float';             MinimalVersion: 0 ),
+    (Variable: @@Py_BuildValue;              Name: 'Py_BuildValue';              MinimalVersion: 0 ),
+    (Variable: @@PyArg_ParseTuple;           Name: 'PyArg_ParseTuple';           MinimalVersion: 0 ),
+    (Variable: @@PyTuple_New;                Name: 'PyTuple_New';                MinimalVersion: 0 ),
+    (Variable: @@PyTuple_GetItem;            Name: 'PyTuple_GetItem';            MinimalVersion: 0 ),
+    (Variable: @@PyTuple_SetItem;            Name: 'PyTuple_SetItem';            MinimalVersion: 0 ),
+    (Variable: @@PyList_New;                 Name: 'PyList_New';                 MinimalVersion: 0 ),
+    (Variable: @@PyList_GetItem;             Name: 'PyList_GetItem';             MinimalVersion: 0 ),
+    (Variable: @@PyList_SetItem;             Name: 'PyList_SetItem';             MinimalVersion: 0 ),
+    (Variable: @@PyList_Insert;              Name: 'PyList_Insert';              MinimalVersion: 0 ),
+    (Variable: @@PyList_Append;              Name: 'PyList_Append';              MinimalVersion: 0 ),
+    (Variable: @@PyDict_New;                 Name: 'PyDict_New';                 MinimalVersion: 0 ),
+    (Variable: @@PyDict_SetItemString;       Name: 'PyDict_SetItemString';       MinimalVersion: 0 ),
+    (Variable: @@PyDict_GetItemString;       Name: 'PyDict_GetItemString';       MinimalVersion: 0 ),
+    (Variable: @@PyDict_GetItem;             Name: 'PyDict_GetItem';             MinimalVersion: 0 ),
+    (Variable: @@PyDict_Keys;                Name: 'PyDict_Keys';                MinimalVersion: 0 ),
+    (Variable: @@PyDict_Values;              Name: 'PyDict_Values';              MinimalVersion: 0 ),
+    (Variable: @@PyDict_Next;                Name: 'PyDict_Next';                MinimalVersion: 0 ),
+    (Variable: @@PyString_FromString;        Name: 'PyString_FromString';        MinimalVersion: 0 ),
+    (Variable: @@PyString_AsString;          Name: 'PyString_AsString';          MinimalVersion: 0 ),
+    (Variable: @@PyString_FromStringAndSize; Name: 'PyString_FromStringAndSize'; MinimalVersion: 0 ),
+    (Variable: @@PyString_Size;              Name: 'PyString_Size';              MinimalVersion: 0 ),
+    (Variable: @@PyInt_FromLong;             Name: 'PyInt_FromLong';             MinimalVersion: 0 ),
+    (Variable: @@PyInt_AsLong;               Name: 'PyInt_AsLong';               MinimalVersion: 0 ),
+    (Variable: @@PyFloat_FromDouble;         Name: 'PyFloat_FromDouble';         MinimalVersion: 0 ),
+    (Variable: @@PyFloat_AsDouble;           Name: 'PyFloat_AsDouble';           MinimalVersion: 0 ),
+    (Variable: @@PyObject_Init;              Name: 'PyObject_Init';              MinimalVersion: 0 ),
+    (Variable: @@PyCFunction_New;            Name: 'PyCFunction_New';            MinimalVersion: 0 ),
+    (Variable: @@PyGC_Collect;               Name: 'PyGC_Collect';               MinimalVersion: 235 )
+  );
 
 var
   PythonLoaded: boolean;
 
   PythonLib: HMODULE;
   PythonDll: String;
-  PythonCurrentVersion: Integer;
 
  {-------------------}
+
+function GoodPythonVersion(NumberToCheck: Integer; PythonVersionNumber: TVersionNumber) : boolean;
+begin
+  //This function checks if the Python version 'encoded' in NumberToCheck
+  //is equal or higher to the given PythonVersionNumber
+  Result:=false;
+  case NumberToCheck of
+  0:
+  begin
+    //All Python versions will do
+    Result:=true;
+  end;
+  235:
+  begin
+    if Length(PythonVersionNumber) >= 1 then
+    begin
+      if PythonVersionNumber[0] > 2 then
+      begin
+        Result:=true;
+      end
+      else if PythonVersionNumber[0] = 2 then
+      begin
+        if Length(PythonVersionNumber) >= 2 then
+        begin
+          if PythonVersionNumber[1] > 3 then
+          begin
+            Result:=true;
+          end
+          else if PythonVersionNumber[1] = 3 then
+          begin
+            if Length(PythonVersionNumber) >= 3 then
+            begin
+              if PythonVersionNumber[2] >= 5 then
+              begin
+                Result:=true;
+              end;
+            end;
+          end;
+        end;
+      end;
+    end;
+  end;
+  else
+  begin
+    Log(LOG_PYTHON, LOG_WARNING, 'Call to GoodPythonVersion with an unknown NumberToCheck!');
+  end;
+  end;
+end;
 
 function IsPythonLoaded : Boolean;
 begin
@@ -904,7 +955,7 @@ begin
   //Now that we know the Python version, load the version-specific functions
   for I:=Low(PythonProcList) to High(PythonProcList) do
   begin
-    if (PythonProcList[I].MinimalVersion <> 0) and (PythonProcList[I].MinimalVersion <= PythonCurrentVersion) then
+    if GoodPythonVersion(PythonProcList[I].MinimalVersion, VersionNumber) then
     begin
       P:=GetProcAddress(PythonLib, PythonProcList[I].Name);
       if P=Nil then

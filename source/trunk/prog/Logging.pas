@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.31  2010/04/16 19:13:33  danielpharos
+Added a way to get the value of LogLevel. Please only use for log-output optimization!
+
 Revision 1.30  2010/04/16 18:47:21  danielpharos
 Workaround for missing init-logging entries.
 
@@ -172,6 +175,7 @@ var
   PF: TextFile;
   filename: string;
 begin
+  result:='';
   //filename:=GetQPath(pQuArKLog)+LogPatchname;
   filename:=LogPatchname;
   if fileexists(filename) then
@@ -182,19 +186,16 @@ begin
     ReadLn(PF, result);
     CloseFile(PF);
   {$I+}
-    result:=' '+result;
-  end
-  else
-  begin
-    result:='';
   end;
-
 end;
 
 Procedure OpenLogFile;
+var
+  PatchVersion: String;
 begin
   if LogOpened then
     exit;
+  PatchVersion:=GetPatchVersion;
   {$I-}
   //AssignFile(LogFile, ConcatPaths([GetQPath(pQuArKLog), LogFilename]));
   AssignFile(LogFile, LogFilename);
@@ -202,7 +203,10 @@ begin
   {$I+}
   LogOpened:=true;
   Log(LOG_PASCAL, 'QuArK started at %s',[DateTimeToStr(now)]);
-  Log(LOG_PASCAL, 'QuArK version is %s',[QuarkVersion+GetPatchVersion]);
+  if Length(PatchVersion) <> 0 then
+    Log(LOG_PASCAL, 'QuArK version is %s %s %s',[QuarkVersion, QuArKMinorVersion, PatchVersion])
+  else
+    Log(LOG_PASCAL, 'QuArK version is %s %s',[QuarkVersion, QuArKMinorVersion]);
   Log(LOG_PASCAL, 'Loglevel is %d',[LogLevel]);
   (* DanielPharos: OLD CODE + NEW CODE
   {$IFDEF NoShare}
