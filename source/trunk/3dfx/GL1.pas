@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.43  2010/04/16 19:04:57  danielpharos
+Corrected variable type.
+
 Revision 1.42  2009/09/22 18:03:26  danielpharos
 Moved some stuff around.
 
@@ -1059,23 +1062,24 @@ begin
       Log(LOG_WARNING, 'OpenGL: Trying to set pixelformat 0. Will probably not work!');
     if not SetPixelFormat(DC, NewPixelFormat, @NewPixelFormatDesc) then
       Raise EErrorFmt(6301, ['SetPixelFormat']);
-    {$IFDEF DebugGLErr}
-    Log(LOG_VERBOSE, 'OpenGL: Selected PixelFormat: ' + IntToStr(NewPixelFormat));
-    if DescribePixelFormat(DC, NewPixelFormat, SizeOf(NewPixelFormatDesc), NewPixelFormatDesc) = false then
-      Raise EErrorFmt(6301, ['DescribePixelFormat']);
-    if ((NewPixelFormatDesc.dwFlags and PFD_GENERIC_FORMAT) <> 0) then
-      if ((NewPixelFormatDesc.dwFlags and PFD_GENERIC_ACCELERATED) <> 0) then
-        Log(LOG_VERBOSE, 'OpenGL: Hardware accelerated (MCD)')
+    if GetLogLevel >= LOG_VERBOSE then
+    begin
+      Log(LOG_VERBOSE, 'OpenGL: Selected PixelFormat: ' + IntToStr(NewPixelFormat));
+      if DescribePixelFormat(DC, NewPixelFormat, SizeOf(NewPixelFormatDesc), NewPixelFormatDesc) = false then
+        Raise EErrorFmt(6301, ['DescribePixelFormat']);
+      if ((NewPixelFormatDesc.dwFlags and PFD_GENERIC_FORMAT) <> 0) then
+        if ((NewPixelFormatDesc.dwFlags and PFD_GENERIC_ACCELERATED) <> 0) then
+          Log(LOG_VERBOSE, 'OpenGL: Hardware accelerated (MCD)')
+        else
+          Log(LOG_VERBOSE, 'OpenGL: Not hardware accelerated (software)')
       else
-        Log(LOG_VERBOSE, 'OpenGL: Not hardware accelerated (software)')
-    else
-      if ((NewPixelFormatDesc.dwFlags and PFD_GENERIC_ACCELERATED) <> 0) then
-        Log(LOG_VERBOSE, 'OpenGL: Unknown acceleration')
-      else
-        Log(LOG_VERBOSE, 'OpenGL: Hardware accelerated (ICD)');
-    Log(LOG_VERBOSE, 'OpenGL: PixelFormat: Color Bits: ' + IntToStr(NewPixelFormatDesc.cColorBits));
-    Log(LOG_VERBOSE, 'OpenGL: PixelFormat: Depth Bits: ' + IntToStr(NewPixelFormatDesc.cDepthBits));
-    {$ENDIF}
+        if ((NewPixelFormatDesc.dwFlags and PFD_GENERIC_ACCELERATED) <> 0) then
+          Log(LOG_VERBOSE, 'OpenGL: Unknown acceleration')
+        else
+          Log(LOG_VERBOSE, 'OpenGL: Hardware accelerated (ICD)');
+      Log(LOG_VERBOSE, 'OpenGL: PixelFormat: Color Bits: ' + IntToStr(NewPixelFormatDesc.cColorBits));
+      Log(LOG_VERBOSE, 'OpenGL: PixelFormat: Depth Bits: ' + IntToStr(NewPixelFormatDesc.cDepthBits));
+    end;
   end;
 end;
 

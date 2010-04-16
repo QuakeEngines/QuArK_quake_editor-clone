@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.94  2009/09/24 21:38:56  danielpharos
+Fixed a small bug that threw off transparency in triangle strip rendering.
+
 Revision 1.93  2009/09/24 18:45:19  danielpharos
 Added some DirectX settings.
 
@@ -320,11 +323,6 @@ uses Windows, Classes,
      qmath, PyMath, PyMath3D,
      GL1,
      EdSceneObject;
-
-{x $ IFDEF Debug}
- {---$OPTIMIZATION OFF}
- {x $ DEFINE DebugGLErr}
-{x $ ENDIF}
 
 const
  kScaleCos = 0.5;
