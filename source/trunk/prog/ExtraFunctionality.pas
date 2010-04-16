@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23  2010/02/21 15:42:51  danielpharos
+Fixed orangebox compiler not finishing compile.
+
 Revision 1.22  2009/07/19 18:54:27  danielpharos
 Moved PByte, PInteger and sLineBreak to ExtraFunctionality.
 
@@ -146,6 +149,17 @@ function PosEx(const SubStr, S: string; Offset: Cardinal = 1): Integer;
 
 //This function doesn't exist at all in Delphi 7:
 function LastPos(const SubStr: String; const S: String): Integer;
+
+//These constants don't exist at all in Delphi 7:
+const
+  PROCESSOR_ARCHITECTURE_INTEL: WORD = 0; //x86
+  PROCESSOR_ARCHITECTURE_IA64: WORD = 6; //Intel Itanium Processor Family (IPF)
+  PROCESSOR_ARCHITECTURE_AMD64: WORD = 9; //x64 (AMD or Intel)
+  PROCESSOR_ARCHITECTURE_UNKNOWN: WORD = $FFFF; //Unknown architecture.
+
+//This type does't exist at all in Delphi 7:
+type
+  size_t = Cardinal;  //This appears to be true in (32-bit) Delphi
 
 implementation
 

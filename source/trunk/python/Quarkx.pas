@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.98  2010/02/23 18:38:23  danielpharos
+Added LOG_SUBDIRECTORY; not set right now.
+
 Revision 1.97  2010/02/21 21:16:31  danielpharos
 Allow future versions of Python again (with warning).
 
@@ -3505,6 +3508,13 @@ var
  obj: PyObject;
  P: PChar;
 begin
+ if not IsPythonLoaded then
+ begin
+   //Can't load text!
+   Log(LOG_WARNING, 'Trying to call LoadStr1 while Python has not been loaded yet!');
+   Result:='*MISSING TEXT*';
+   Exit;
+ end;
  Result:='';
  key.ob_refcnt:=1;
  key.ob_type:=PyInt_Type;

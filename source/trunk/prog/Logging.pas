@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.28  2010/02/23 18:44:22  danielpharos
+Added LOG_SUBDIRECTORY; not set right now.
+
 Revision 1.27  2010/02/23 18:38:23  danielpharos
 Added LOG_SUBDIRECTORY; not set right now.
 
@@ -106,6 +109,7 @@ unit Logging;
 
 interface
 
+//Keep the number of uses to a bare minimal, due to Delphi's init-order!
 uses Windows, Sysutils;
 
 type
@@ -114,14 +118,14 @@ type
 Procedure CloseLogFile;
 Procedure OpenLogFile;
 
-Procedure Log(s: string); overload;
-Procedure Log(level: cardinal; s: string); overload;
-Procedure Log(s: string; args: array of const); overload;
-Procedure Log(level: cardinal; s: string; args: array of const); overload;
-Procedure Log(Logger: TLogName; s: string); overload;
-Procedure Log(Logger: TLogName; level: cardinal; s: string); overload;
-Procedure Log(Logger: TLogName; s: string; args: array of const); overload;
-Procedure Log(Logger: TLogName; level: cardinal; s: string; args: array of const); overload;
+Procedure Log(const s: string); overload;
+Procedure Log(level: cardinal; const s: string); overload;
+Procedure Log(const s: string; args: array of const); overload;
+Procedure Log(level: cardinal; const s: string; args: array of const); overload;
+Procedure Log(Logger: TLogName; const s: string); overload;
+Procedure Log(Logger: TLogName; level: cardinal; const s: string); overload;
+Procedure Log(Logger: TLogName; const s: string; args: array of const); overload;
+Procedure Log(Logger: TLogName; level: cardinal; const s: string; args: array of const); overload;
 
 const
   LOG_FILENAME = 'QUARK.LOG';
@@ -135,7 +139,8 @@ const
 
 implementation
 
-uses QkObjects, Setup, QkApplPaths, SystemDetails;
+//Keep the number of uses to a bare minimal, due to Delphi's init-order!
+uses QkConsts, QkApplPaths; //FIXME: QkApplPaths is including TOO MUCH!
 
 var
   LogFile: TextFile;
@@ -145,7 +150,7 @@ var
   LogLevel: cardinal;
   LogLevelEnv: string;
 
-Procedure aLog(Logger: TLogName; s: string); forward;
+Procedure aLog(Logger: TLogName; const s: string); forward;
 
  {------------------------}
 
@@ -191,65 +196,65 @@ begin
   Log('Spec Mem Sharing On');
   {$ENDIF}
   *)
-  LogSystemDetails;
 end;
 
-Procedure aLog(logger: TLogName; s: string);
+Procedure aLog(logger: TLogName; const s: string);
 begin
   if not LogOpened then
-    OpenLogFile;
-  case logger of
-    LOG_DEFAULT: s:='Log> '+s;
-    LOG_PASCAL: s:='QuArKLog> '+s;
-    LOG_PYTHON: s:='PythonLog> '+s;
-    LOG_SYS: s:='SysLog> '+s;
-    LOG_DEBUG: s:='DebugLog> '+s;
-  end;
+    //Warning: Can't OPEN the log file from here, due to Delphi's init-order!
+    Exit;
   {$I-}
-  WriteLn(LogFile, s);
+  case logger of
+    LOG_DEFAULT: WriteLn(LogFile, format('Log> %s', [s]));
+    LOG_PASCAL:  WriteLn(LogFile, format('QuArKLog> %s', [s]));
+    LOG_PYTHON:  WriteLn(LogFile, format('PythonLog> %s', [s]));
+    LOG_SYS:     WriteLn(LogFile, format('SysLog> %s', [s]));
+    LOG_DEBUG:   WriteLn(LogFile, format('DebugLog> %s', [s]));
+    else         WriteLn(LogFile, s);
+  end;
   Flush(LogFile);
   {$I+}
 end;
 
-Procedure Log(s: string);
+Procedure Log(const s: string);
 begin
   aLog(LOG_DEFAULT, s);
 end;
 
-Procedure Log(level: cardinal; s: string);
+Procedure Log(level: cardinal; const s: string);
 begin
   if level<=Loglevel then
     aLog(LOG_DEFAULT, s);
 end;
 
-Procedure Log(s: string; args: array of const);
+Procedure Log(const s: string; args: array of const);
 begin
   aLog(LOG_DEFAULT, format(s, args));
 end;
 
-Procedure Log(level: cardinal; s: string; args: array of const);
+Procedure Log(level: cardinal; const s: string; args: array of const);
 begin
   if level<=Loglevel then
     aLog(LOG_DEFAULT, format(s, args));
 end;
 
-Procedure Log(Logger: TLogName; s: string);
+Procedure Log(Logger: TLogName; const s: string);
 begin
   aLog(Logger, s);
 end;
 
-Procedure Log(Logger: TLogName; level: cardinal; s: string);
+Procedure Log(Logger: TLogName; level: cardinal; const s: string);
 begin
   if level<=Loglevel then
     aLog(Logger, s);
 end;
 
-Procedure Log(Logger: TLogName; s: string; args: array of const);
+Procedure Log(Logger: TLogName; const s: string; args: array of const);
 begin
   aLog(Logger, format(s, args));
 end;
 
-Procedure Log(Logger: TLogName; level: cardinal; s: string; args: array of const);
+Procedure Log(Logger: TLogName; level: cardinal; const s: string; args: array of const);
 begin
   if level<=Loglevel then
     aLog(Logger, format(s, args));

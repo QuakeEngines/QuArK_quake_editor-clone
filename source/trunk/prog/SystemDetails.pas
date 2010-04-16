@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.47  2010/04/02 16:53:41  danielpharos
+Added some logging, Windows 7 detection, and some memory leak protections.
+
 Revision 1.46  2009/09/23 20:38:52  danielpharos
 Small tweak to OS version printout.
 
@@ -164,15 +167,11 @@ interface
 {$I DelphiVer.inc}
 
 uses
-  SysUtils, StrUtils, Windows, Classes, Registry;
-
-type
-  size_t = Cardinal;  //This appears to be true in (32-bit) Delphi
+  SysUtils, StrUtils, Windows, Classes, Registry, ExtraFunctionality;
 
 var
   g_CxScreen, g_CyScreen: Integer;
 
-Procedure LogSystemDetails;
 function CheckWindowsNT: Boolean;
 function CheckWindowsVista: Boolean;
 function ProcessExists(const exeFileName: string): Boolean;
@@ -309,7 +308,6 @@ type
   TWorkstation = class(TPersistent)
   private
     FName: string;
-    FLastBoot: TDatetime;
     FUser: string;
     FSystemUpTime: Extended;
     FBIOSExtendedInfo: string;
@@ -327,7 +325,6 @@ type
     property Name :string read FName write FName stored false;
     property User :string read FUser write FUser stored false;
     property SystemUpTime :Extended read FSystemUpTime write FSystemUpTime stored false;
-    property LastBoot :TDatetime read FLastBoot write FLastBoot stored false;
     property BIOSCopyright :string read FBIOSCopyright write FBIOSCopyright stored false;
     property BIOSDate :string read FBIOSDate write FBIOSDate stored false;
     property BIOSExtendedInfo :string read FBIOSExtendedInfo write FBIOSExtendedInfo stored false;
@@ -430,7 +427,7 @@ type
 
 implementation
 
-uses ShlObj, TlHelp32, Psapi, Logging, QkExceptions, ExtraFunctionality;
+uses ShlObj, TlHelp32, Psapi, Logging, QkExceptions;
 
 type
   TPlatformType = (osWin95Comp, osWinNTComp);
@@ -441,6 +438,8 @@ var
   VFeatures: LongInt;
   WindowsPlatformCompatibility: TPlatformType;
   WindowsPlatform: TPlatform;
+
+{ TCPU }
 
 constructor TCPU.Create;
 begin
@@ -1345,11 +1344,6 @@ const
   rvBiosVersion = 'SystemBiosVersion';
 
 begin
-  try
-    FLastBoot:=Now-(GetTimeStamp.QuadPart/GetTicksPerSecond(1))/(24*3600);
-  except
-    FLastBoot:=0;
-  end;
   FSystemUpTime:=GetSystemUpTime;
   FName:=GetMachine;
   FUser:=GetUser;
@@ -2222,4 +2216,7 @@ begin
   end;
 end;
 
+initialization
+  LogSystemDetails;
 end.
+

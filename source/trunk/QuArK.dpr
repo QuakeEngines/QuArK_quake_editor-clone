@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.67  2010/03/25 21:42:00  danielpharos
+Added SkinSubGroup.
+
 Revision 1.66  2009/07/15 10:38:10  danielpharos
 Updated website link.
 
@@ -203,6 +206,10 @@ uses
   MemCheck in 'prog\MemCheck.pas',
 {$ENDIF}
   Forms,
+
+  //Init the logging module FIRST, otherwise we'll miss log-calls from other init's!
+  Logging in 'prog\Logging.pas',
+
   DWM in '3dfx\DWM.pas',
   DX9 in '3dfx\DX9.pas',
   EdDirect3D in '3dfx\EdDirect3D.pas',
@@ -256,7 +263,6 @@ uses
   HTTP in 'prog\HTTP.pas',
   Keys in 'prog\Keys.pas' {KeyDlg},
   KeySel in 'prog\KeySel.pas' {KeySelDlg},
-  Logging in 'prog\Logging.pas',
   MapError in 'prog\MapError.pas',
   MD5Hash in 'prog\MD5Hash.pas',
   NewFolder in 'prog\NewFolder.pas' {NewFolderDlg},
@@ -273,6 +279,7 @@ uses
   QkBspHulls in 'prog\QkBspHulls.pas',
   QkCin in 'prog\QkCin.pas',
   QkCoD2 in 'prog\QkCoD2.pas',
+  QkConsts in 'prog\QkConsts.pas',
   QkD3 in 'prog\QkD3.pas',
   QkDevIL in 'prog\QkDevIL.pas',
   QkDDS in 'prog\QkDDS.pas',

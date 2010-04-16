@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.27  2010/04/02 16:51:58  danielpharos
+Created a new LogWindowsError procedure.
+
 Revision 1.26  2010/03/09 21:08:56  danielpharos
 Added additional logging and small cleanup.
 
@@ -106,7 +109,7 @@ unit QkDevIL;
 
 interface
 
-uses Windows, SysUtils, SystemDetails;
+uses Windows, SysUtils, ExtraFunctionality;
 
 const
   IL_FALSE =0;

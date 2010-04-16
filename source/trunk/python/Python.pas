@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.47  2010/04/16 18:23:57  danielpharos
+Better Python version checks
+
 Revision 1.46  2010/03/09 21:19:51  danielpharos
 Removed redundant type definition.
 
@@ -177,7 +180,7 @@ unit Python;
 
 interface
 
-uses SystemDetails;
+uses ExtraFunctionality;
 
 // Comments:
 (* This file has been hacked by Rowdy and tiglari to make QuArK work
@@ -446,7 +449,7 @@ const
  //   1012 for Python 2.3 and 2.4
  //   1013 for Python 2.5 and 2.6 and 2.7?
  // Version info from here: http://svn.python.org/view/python/trunk/Include/modsupport.h
- {$IFDEF PYTHON27}
+{$IFDEF PYTHON27}
  PYTHON_API_VERSION = 1013;
 {$ELSE}
 
@@ -651,6 +654,7 @@ var
  PyFloat_Type:  PyTypeObject;
  PyTuple_Type:  PyTypeObject;
 
+function IsPythonLoaded : Boolean;
 function InitializePython : Integer;
 procedure UnInitializePython;
 procedure SizeDownPython;
@@ -661,8 +665,8 @@ implementation
 
 uses
  {$IFDEF Debug} QkObjects, {$ENDIF}
-  Windows, Forms, Registry, SysUtils, StrUtils, QkExceptions,
-  QkApplPaths, ExtraFunctionality, Logging;
+  Windows, Forms, SysUtils, StrUtils, QkExceptions,
+  QkApplPaths, SystemDetails, Logging;
 
  {-------------------}
 
@@ -740,11 +744,18 @@ const
     (Variable: @@PyGC_Collect;               Name: 'PyGC_Collect';               MinimalVersion: 235));
 
 var
+  PythonLoaded: boolean;
+
   PythonLib: HMODULE;
   PythonDll: String;
   PythonCurrentVersion: Integer;
 
  {-------------------}
+
+function IsPythonLoaded : Boolean;
+begin
+  Result:=PythonLoaded;
+end;
 
 function InitializePython : Integer;
 var
@@ -890,10 +901,10 @@ begin
   end;
   Result:=2;
 
-  //Now that we know the Python version, load the version-specific fucntions
+  //Now that we know the Python version, load the version-specific functions
   for I:=Low(PythonProcList) to High(PythonProcList) do
   begin
-    if (PythonProcList[I].MinimalVersion > 0) and (PythonProcList[I].MinimalVersion <= PythonCurrentVersion) then
+    if (PythonProcList[I].MinimalVersion <> 0) and (PythonProcList[I].MinimalVersion <= PythonCurrentVersion) then
     begin
       P:=GetProcAddress(PythonLib, PythonProcList[I].Name);
       if P=Nil then
@@ -914,7 +925,7 @@ begin
 
   obj1:=PyTuple_New(0);
   if obj1=Nil then
-  Exit;
+    Exit;
   PyTuple_Type:=obj1^.ob_type;
   Py_DECREF(obj1);
 
@@ -938,6 +949,7 @@ begin
 
   PyType_Type:=PyList_Type^.ob_type;
 
+  PythonLoaded:=true;
   Result:=0;
 end;
 
@@ -950,6 +962,8 @@ begin
     if FreeLibrary(PythonLib)=false then
       raise InternalE('Unable to unload '+RetrieveModuleFilename(PythonLib));
     PythonLib:=0;
+
+    PythonLoaded:=false;
 
     for I:=Low(PythonProcList) to High(PythonProcList) do
       PPointer(PythonProcList[I].Variable)^:=nil;
