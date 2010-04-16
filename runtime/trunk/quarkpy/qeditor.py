@@ -1529,13 +1529,13 @@ def Help3():
     htmldoc("intro.html") # Assumes the infobase have been installed in the ./HELP folder
 
 def Help4():
-    htmldoc("*http://quark.planetquake.gamespy.com/") # Takes the user to QuArK's official web page
+    htmldoc("*http://quark.sourceforge.net/") # Takes the user to QuArK's official web page
 
 def Help5():
     htmldoc("intro.mapeditor.overview.html") # Takes the user to the Overview page
 
 def Help6():
-    htmldoc("*http://quark.planetquake.gamespy.com/forums/") # Takes the user to QuArK's Forums web page
+    htmldoc("*http://quark.sourceforge.net/forums/") # Takes the user to QuArK's Forums web page
 
 #
 # Retrieves all objects with a given type, excluding VF_CANTSELECT groups.
@@ -1565,6 +1565,9 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.55  2008/11/29 06:56:25  cdunde
+#Setup new Component Colors and draw Textured View Tint Colors system.
+#
 #Revision 1.54  2008/11/17 23:56:04  danielpharos
 #Compensate for accidental change in behaviour in QkObjects rev 1.112.
 #
