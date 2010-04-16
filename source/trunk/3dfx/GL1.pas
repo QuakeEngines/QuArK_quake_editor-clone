@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.44  2010/04/16 19:13:46  danielpharos
+Removed unused DebugGLErr define.
+
 Revision 1.43  2010/04/16 19:04:57  danielpharos
 Corrected variable type.
 
@@ -1227,6 +1230,14 @@ begin
     Result:=false;
     Exit;
   end;
+
+  if GLExtensions<>nil then
+  begin
+    GLExtensions.Free;
+    GLExtensions:=nil;
+  end;
+
+  //Get the GL_EXTENSIONS from a OpenGL context
   if wglMakeCurrent(GetOpenGLDummyDC, GetOpenGLDummyRC) = false then
     raise EError(6310);
   try
@@ -1240,12 +1251,9 @@ begin
     Result:=false;
     Exit;
   end;
+
+  //Process the GL_EXTENSIONS list
   S:=PChar(P);
-  if GLExtensions<>nil then
-  begin
-    GLExtensions.Free;
-    GLExtensions:=nil;
-  end;
   GLExtensions:=TStringList.Create;
   OldPos:=0;
   I:=Pos(' ', S);
@@ -1257,6 +1265,7 @@ begin
     OldPos:=I;
     I:=PosEx(' ', S, OldPos + 1);
   end;
+  //Make sure we got the last one as well:
   if (OldPos<>Length(S)) and (OldPos<>0) then
   begin
     Ext := RightStr(S, Length(S) - OldPos);
