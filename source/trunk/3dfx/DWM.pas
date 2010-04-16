@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2009/07/17 10:52:09  danielpharos
+Moved PPointer to ExtraFunctionality.
+
 Revision 1.4  2009/07/15 10:38:06  danielpharos
 Updated website link.
 
@@ -51,11 +54,11 @@ var
   DwmEnableComposition: function (uCompositionAction : Cardinal) : HRESULT; stdcall;
 
 function LoadDWM : Boolean;
-procedure UnloadDWM;
+procedure UnloadDWM(ForceUnload: boolean = false);
 
 implementation
 
-uses ExtraFunctionality;
+uses QkExceptions, ExtraFunctionality;
 
 const
   DWMDLL_FuncList : array[0..1] of
@@ -69,8 +72,7 @@ const
 
 var
   TimesLoaded : Integer;
-
-  DWMLib: THandle;
+  DWMLib : HMODULE;
 
 function LoadDWM : Boolean;
 var
@@ -85,7 +87,12 @@ begin
        begin
         DWMLib := LoadLibrary('dwmapi.dll');
         if DWMLib=0 then
+        begin
+          LogWindowsError(GetLastError(), 'LoadLibrary("dwmapi.dll")');
+          //No LogAndRaiseError here; DWM is not needed if it doesn't exist! (Pre-Vista, for example)
+          //FIXME: Probably want to check the error code to check for this scenario specifically!
           Exit;
+        end;
        end;
        
       for I:=Low(DWMDLL_FuncList) to High(DWMDLL_FuncList) do
@@ -113,13 +120,19 @@ begin
   end;
 end;
 
-procedure UnloadDWM;
+procedure UnloadDWM(ForceUnload: boolean);
 begin
   if TimesLoaded = 1 then
   begin
     if DWMLib<>0 then
-      FreeLibrary(DWMLib);
-    DWMLib := 0;
+    begin
+      if FreeLibrary(DWMLib) = false then
+      begin
+        LogWindowsError(GetLastError(), 'FreeLibrary(DWMLib)');
+        LogAndRaiseError('Unable to unload the DWM library');
+      end;
+      DWMLib := 0;
+    end;
 
     TimesLoaded := 0;
   end
@@ -128,5 +141,10 @@ begin
 end;
 
 initialization
+begin
   TimesLoaded := 0;
+end;
+
+finalization
+  UnloadDWM(true);
 end.
