@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2010/04/16 21:18:45  danielpharos
+Move some version-stuff about. quarkpy now also checks the minor version number.
+
 Revision 1.2  2010/04/16 20:07:23  danielpharos
 Move some version-stuff about. quarkpy now also checks the minor version number.
 
@@ -34,13 +37,43 @@ unit QkConsts;
 
 interface
 
+{$I DelphiVer.inc}
+
 uses SysUtils;
 
 const
   QuArKVersion            = 'QuArK 6.6';
   QuArKMinorVersion       = 'Beta 3';
   QuArKCopyright          = 'Copyright (C) 1996-2009 Armin Rigo and others';
+{$IFDEF CompiledWithDelphi1}
+  QuArKUsedCompiler       = 'Delphi 1.0';
+{$ELSE}
+{$IFDEF CompiledWithDelphi2}
+  QuArKUsedCompiler       = 'Delphi 2.0';
+{$ELSE}
+{$IFDEF CompiledWithDelphi3}
+  QuArKUsedCompiler       = 'Delphi 3.0';
+{$ELSE}
+{$IFDEF CompiledWithDelphi4}
+  QuArKUsedCompiler       = 'Delphi 4.0';
+{$ELSE}
+{$IFDEF CompiledWithDelphi5}
+  QuArKUsedCompiler       = 'Delphi 5.0';
+{$ELSE}
+{$IFDEF CompiledWithDelphi6}
+  QuArKUsedCompiler       = 'Delphi 6.0';
+{$ELSE}
+{$IFDEF CompiledWithDelphi7}
   QuArKUsedCompiler       = 'Delphi 7.0';
+{$ELSE}
+  QuArKUsedCompiler       = 'Delphi';
+{$ENDIF}
+{$ENDIF}
+{$ENDIF}
+{$ENDIF}
+{$ENDIF}
+{$ENDIF}
+{$ENDIF}
   QuArKCompileDate        = 40118;   //This is the compiled date
   { Amount of days that have passed after 30 Dec 1899 (Delphi 2+).
     You can use EncodeDate(Year, Month, Day) to compute it, but this value

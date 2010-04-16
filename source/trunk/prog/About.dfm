@@ -44,7 +44,7 @@ object AboutBox: TAboutBox
     end
     object ProgramIcon: TImage
       Left = 412
-      Top = 29
+      Top = 13
       Width = 32
       Height = 32
       Stretch = True
@@ -52,7 +52,7 @@ object AboutBox: TAboutBox
     end
     object ProductName1: TLabel
       Left = 492
-      Top = 27
+      Top = 11
       Width = 17
       Height = 13
       Caption = 'Qu'
@@ -66,7 +66,7 @@ object AboutBox: TAboutBox
     end
     object ProductName2: TLabel
       Left = 508
-      Top = 27
+      Top = 11
       Width = 22
       Height = 13
       Caption = 'ake'
@@ -79,7 +79,7 @@ object AboutBox: TAboutBox
     end
     object ProductName3: TLabel
       Left = 536
-      Top = 27
+      Top = 11
       Width = 13
       Height = 13
       Caption = 'Ar'
@@ -92,7 +92,7 @@ object AboutBox: TAboutBox
     end
     object ProductName4: TLabel
       Left = 548
-      Top = 27
+      Top = 11
       Width = 16
       Height = 13
       Caption = 'my'
@@ -105,7 +105,7 @@ object AboutBox: TAboutBox
     end
     object ProductName5: TLabel
       Left = 570
-      Top = 27
+      Top = 11
       Width = 9
       Height = 13
       Caption = 'K'
@@ -118,7 +118,7 @@ object AboutBox: TAboutBox
     end
     object ProductName6: TLabel
       Left = 577
-      Top = 27
+      Top = 11
       Width = 22
       Height = 13
       Caption = 'nife'
@@ -131,7 +131,7 @@ object AboutBox: TAboutBox
     end
     object Version: TLabel
       Left = 461
-      Top = 45
+      Top = 29
       Width = 172
       Height = 20
       Alignment = taCenter
@@ -166,14 +166,14 @@ object AboutBox: TAboutBox
       ParentFont = False
     end
     object Copyright: TLabel
-      Left = 408
-      Top = 65
+      Left = 452
+      Top = 46
       Width = 3
       Height = 13
     end
     object UsedCompilerLabel: TLabel
-      Left = 454
-      Top = 7
+      Left = 482
+      Top = 64
       Width = 2
       Height = 11
       Font.Charset = DEFAULT_CHARSET
@@ -227,6 +227,13 @@ object AboutBox: TAboutBox
       Font.Name = 'Small Fonts'
       Font.Style = []
       ParentFont = False
+    end
+    object Label5: TLabel
+      Left = 411
+      Top = 62
+      Width = 68
+      Height = 13
+      Caption = 'Compiled with:'
     end
     object Memo1: TMemo
       Left = 408
