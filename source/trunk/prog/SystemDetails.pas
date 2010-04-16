@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.48  2010/04/16 18:44:59  danielpharos
+Reduced missing init-logging entries to a single problematic line. Also, logging now uses const strings (faster).
+
 Revision 1.47  2010/04/02 16:53:41  danielpharos
 Added some logging, Windows 7 detection, and some memory leak protections.
 
@@ -273,11 +276,17 @@ type
 
   TOperatingSystem = class(TPersistent)
   private
+    FExtended: Boolean;
     FBuildNumber: DWORD;
     FMajorVersion: DWORD;
     FMinorVersion: DWORD;
     FPlatform: string;
     FCSD: string;
+    FServicePackMajor: integer;
+    FServicePackMinor: integer;
+    FSuiteMask: integer;
+    FProductType: integer;
+    FWow64: Boolean;
     FVersion: string;
     FRegUser: string;
     FSerialNumber: string;
@@ -292,12 +301,18 @@ type
     procedure GetInfo;
     procedure Report(var sl :TStringList);
   published
+    property Extended :boolean read FExtended write FExtended stored false;
     property MajorVersion :DWORD read FMajorVersion write FMajorVersion stored false;
     property MinorVersion :DWORD read FMinorVersion write FMinorVersion stored false;
     property BuildNumber :DWORD read FBuildNumber write FBuildNumber stored false;
     property Platform :string read FPlatform write FPlatform stored false;
     property Version :string read FVersion write FVersion stored false;
     property CSD :string read FCSD write FCSD stored false;
+    property ServicePackMajor :integer read FServicePackMajor write FServicePackMajor stored false;
+    property ServicePackMinor :integer read FServicePackMinor write FServicePackMinor stored false;
+    property SuiteMask :integer read FSuiteMask write FSuiteMask stored false;
+    property ProductType :integer read FProductType write FProductType stored false;
+    property Wow64 :Boolean read FWow64 write FWow64 stored false;
     property SerialNumber :string read FSerialNumber write FSerialNumber stored false;
     property RegisteredUser :string read FRegUser write FRegUser stored false;
     property RegisteredOrg :string read FRegOrg write FRegOrg stored false;
@@ -932,7 +947,9 @@ end;
 
 procedure TOperatingSystem.GetInfo;
 var
-  OS: TOSVersionInfo;
+  OS: TOSVersionInfoEx;
+  bIsWow64: BOOL;
+  Wow64Ptr: Pointer;
   p: pchar;
   n: DWORD;
   WinH: HWND;
@@ -954,16 +971,54 @@ const
   cProfileDir = 'ProfileDirectory';
 begin
   FDirs.Clear;
+  Extended:=False;
   ZeroMemory(@OS,SizeOf(OS));
-  OS.dwOSVersionInfoSize:=SizeOf(OS);
-  if not GetVersionEx(OS) then
+  OS.dwOSVersionInfoSize:=SizeOf(TOSVersionInfo);
+  if not GetVersionEx(POSVersionInfo(@OS)^) then
+    raise exception.create('Unable to retrieve system details. Call to GetVersionEx failed!');
+  if (OS.dwPlatformId = VER_PLATFORM_WIN32_NT) and (OS.dwMajorVersion > 4) then
   begin
-    LogWindowsError(GetLastError(), 'GetVersionEx(OS)');
-    LogAndRaiseError('Unable to retrieve system details. Call to GetVersionEx failed!');
+    // This platform supports TOSVersionInfoEx
+    ZeroMemory(@OS,SizeOf(OS));
+    OS.dwOSVersionInfoSize:=SizeOf(TOSVersionInfoEx);
+    if not GetVersionEx(POSVersionInfo(@OS)^) then
+      raise exception.create('Unable to retrieve system details. Call to GetVersionEx failed!');
+    Extended:=True;
   end;
   MajorVersion:=OS.dwMajorVersion;
   MinorVersion:=OS.dwMinorVersion;
   BuildNumber:=OS.dwBuildNumber;
+  if Extended then
+  begin
+    ServicePackMajor:=OS.wServicePackMajor;
+    ServicePackMinor:=OS.wServicePackMinor;
+    SuiteMask:=OS.wSuiteMask;
+    ProductType:=OS.wProductType;
+  end
+  else
+  begin
+    ServicePackMajor:=0;
+    ServicePackMinor:=0;
+    SuiteMask:=0;
+    ProductType:=0;
+    //See: http://msdn.microsoft.com/en-us/library/ms724833.aspx
+  end;
+  Wow64Ptr := GetProcAddress(GetModuleHandle('kernel32'),'IsWow64Process');
+  if Wow64Ptr <> nil then
+  begin
+    IsWow64Process := Wow64Ptr;
+    bIsWow64 := FALSE;
+    if IsWow64Process(GetCurrentProcess(), bIsWow64) = false then
+      //FIXME: Even though we probably should raise an error, let's just play it safe...
+      Wow64:=False
+    else
+      if bIsWow64 then
+        Wow64:=True
+      else
+        Wow64:=False;
+  end
+  else
+    Wow64:=False;
   case OS.dwPlatformId of
     VER_PLATFORM_WIN32s:
      begin
@@ -1203,6 +1258,24 @@ begin
      add(format('Version: %s %d.%d.%d',[Version,MajorVersion,MinorVersion,BuildNumber]))
     else
      add(format('Version: %d.%d.%d',[MajorVersion,MinorVersion,BuildNumber]));
+    if Extended then
+    begin
+      if ServicePackMinor<>0 then
+        add(format('Service Pack: %d.%d',[ServicePackMajor,ServicePackMinor]))
+      else
+        add(format('Service Pack: %d',[ServicePackMajor]));
+      //FIXME: Handle SuiteMask!
+      case ProductType of
+        0: ; //Nothing set
+        VER_NT_WORKSTATION: add('Type: Workstation');
+        VER_NT_DOMAIN_CONTROLLER: add('Type: Domain Controller');
+        VER_NT_SERVER: add('Type: Server');
+        else
+          add('Type: Unknown');
+      end;
+    end;
+    if Wow64 then
+      add('Running under Wow64');
   end;
 end;
 

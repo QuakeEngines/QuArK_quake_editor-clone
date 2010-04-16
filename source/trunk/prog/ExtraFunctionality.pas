@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.24  2010/04/16 18:44:59  danielpharos
+Reduced missing init-logging entries to a single problematic line. Also, logging now uses const strings (faster).
+
 Revision 1.23  2010/02/21 15:42:51  danielpharos
 Fixed orangebox compiler not finishing compile.
 
@@ -81,7 +84,51 @@ interface
 
 {$I DelphiVer.inc}
 
-uses SysUtils{$IFDEF Delphi6orNewerCompiler}, StrUtils{$ENDIF};
+uses Windows, SysUtils{$IFDEF Delphi6orNewerCompiler}, StrUtils{$ENDIF};
+
+// These seem to be missing alltogether!
+type
+  TOSVersionInfoEx = record
+    dwOSVersionInfoSize: DWORD;
+    dwMajorVersion: DWORD;
+    dwMinorVersion: DWORD;
+    dwBuildNumber: DWORD;
+    dwPlatformId: DWORD;
+    szCSDVersion: array[0..127] of AnsiChar; { Maintenance string for PSS usage }
+    wServicePackMajor: WORD;
+    wServicePackMinor: WORD;
+    wSuiteMask: WORD;
+    wProductType: Byte;
+    wReserved: Byte;
+  end;
+
+// These consts don't exist at all! (In Delphi 7)
+const
+  VER_SUITE_BACKOFFICE = $00000004;
+  VER_SUITE_BLADE = $00000400;
+  VER_SUITE_COMPUTE_SERVER = $00004000;
+  VER_SUITE_DATACENTER = $00000080;
+  VER_SUITE_ENTERPRISE = $00000002;
+  VER_SUITE_EMBEDDEDNT = $00000040;
+  VER_SUITE_PERSONAL = $00000200;
+  VER_SUITE_SINGLEUSERTS = $00000100;
+  VER_SUITE_SMALLBUSINESS =$00000001;
+  VER_SUITE_SMALLBUSINESS_RESTRICTED =$00000020;
+  VER_SUITE_STORAGE_SERVER = $00002000;
+  VER_SUITE_TERMINAL = $00000010;
+  VER_SUITE_WH_SERVER = $00008000;
+
+  VER_NT_DOMAIN_CONTROLLER = $0000002;
+  VER_NT_SERVER = $0000003;
+  VER_NT_WORKSTATION = $0000001;
+
+  SM_MEDIACENTER = 87;
+  SM_SERVERR2 = 89;
+  SM_STARTER = 88;
+  SM_TABLETPC = 86;
+
+var
+  IsWow64Process: function (hProcess : THandle; var Wow64Process : BOOL): BOOL; stdcall;
 
 {$ifndef Delphi7orNewerCompiler} // Pre-dates Delphi 7
 const
