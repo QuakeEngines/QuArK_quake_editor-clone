@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.39  2010/04/16 21:50:37  danielpharos
+Oops; fixed double text.
+
 Revision 1.38  2010/04/16 21:48:00  danielpharos
 Added auto-Delphi-compiler version string selection, and moved compiler-string down a bit.
 
@@ -258,7 +261,7 @@ begin
   S := 'QuArK comes with ABSOLUTELY NO WARRANTY; this is free software, and you are welcome '
        + 'to redistribute it under certain conditions. For details, see ''?'', ''About''.';
   {$IFDEF Debug}
-  S := 'BETA ' + QuArKVersion;
+  S := 'DEBUG ' + QuArKVersion;
   Info^.TextSize := 22;
   {$ENDIF}
   StrPCopy(Info^.Text, S); //DanielPharos: S must NOT be longer than 255 characters!
