@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.126  2009/11/28 15:48:32  danielpharos
+Commented out unused variable.
+
 Revision 1.125  2009/11/02 21:37:18  cdunde
 Set date for new release.
 
@@ -404,27 +407,6 @@ uses Windows, SysUtils, Messages, Classes, Clipbrd,
      CommCtrl, Python;
 
 const
-  QuArKVersion            = 'QuArK 6.6 Beta';
-  QuArKMinorVersion       = 'Beta 3';
-  QuArKCopyright          = 'Copyright (C) 1996-2009 Armin Rigo and others';
-  QuArKUsedCompiler       = 'Delphi 7.0';
-  QuArKCompileDate        = 40118;   //This is the compiled date
-  { Amount of days that have passed after 30 Dec 1899 (Delphi 2+).
-    You can use EncodeDate(Year, Month, Day) to compute it, but this value
-    really needs to be a constant, so put the resulting value in here.
-    The result can be checked in the About form. }
-  QuArKDaysOld            = 270;     //About a 9 month difference...
-  { This is the amount of days after which a certain build is considered
-    old by the update-check. }
-  QuArKWebsite            = 'http://quark.sourceforge.net/';
-  QuArKRepository         = 'http://sourceforge.net/projects/quark/';
-  QuArKForum              = 'http://quark.sourceforge.net/forums/';
-  QuArKInfobase           = 'http://quark.sourceforge.net/infobase/';
-  QuArKDefaultHelpPage    = 'index.html'; 
-  QuArKUpdateSite         = 'quark.sourceforge.net';
-  QuArKUpdateFile         = '/update/index.dat';
-
-
   iiUnknownFile           = 0;
   iiExplorerGroup         = 1;
   iiQuakeC                = 2;

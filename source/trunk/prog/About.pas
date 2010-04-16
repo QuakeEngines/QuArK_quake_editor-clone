@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.36  2010/04/16 20:07:23  danielpharos
+Move some version-stuff about. quarkpy now also checks the minor version number.
+
 Revision 1.35  2009/07/31 11:40:45  danielpharos
 Small change to cleanup About.pas a bit.
 
@@ -96,7 +99,7 @@ function DisclaimerThread(F: TForm): THandle;
 
 implementation
 
-uses Quarkx, PyProcess, ExtraFunctionality;
+uses Quarkx, PyProcess, QkConsts, ExtraFunctionality;
 
 type
   PDisclaimerInfo = ^TDisclaimerInfo;

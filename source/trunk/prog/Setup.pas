@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.84  2009/10/13 20:37:55  danielpharos
+Fix logic bug and possible crash bug with file associations.
+
 Revision 1.83  2009/07/30 09:41:51  danielpharos
 Added additional logging.
 
@@ -461,7 +464,7 @@ implementation
 uses QkMapObjects, Travail, Game, Console, QkGroup, QkForm, Qk1,
      ToolBox1, Toolbar1, QkQuakeCtx, Quarkx, QkExceptions, Python, PyMapView,
      PyObjects, PyForms, Qk3D, EdSceneObject, QkObjectClassList, QkApplPaths,
-     ExtraFunctionality, Logging;
+     QkConsts, ExtraFunctionality, Logging;
 
 const
  SetupFileName    = 'Setup.qrk';
@@ -716,7 +719,7 @@ begin
   { checks loaded data }
  if g_SetupSet[ssGeneral]<>Nil then
   begin   { checks version }
-   V1:=QuarkVersion;
+   V1:=QuarkVersion + ' ' + QuArKMinorVersion;
    V2:=g_SetupSet[ssGeneral].Specifics.Values['Version'];
    if V1 <> V2 then
     begin

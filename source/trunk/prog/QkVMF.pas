@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.28  2009/07/15 10:38:00  danielpharos
+Updated website link.
+
 Revision 1.27  2009/02/21 17:06:18  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -129,7 +132,7 @@ implementation
 
 uses Qk1, QkQme, QkMapPoly, qmath, Travail, Setup,
   Qk3D, QkBspHulls, Undo, Game, Quarkx, QkExceptions,
-  QkObjectClassList, MapError,Logging,DispFace;
+  QkObjectClassList, MapError, Logging, DispFace, QkConsts;
 
 
  {------------------------}

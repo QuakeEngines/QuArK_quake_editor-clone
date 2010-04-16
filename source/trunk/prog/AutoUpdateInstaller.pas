@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2009/07/15 10:38:00  danielpharos
+Updated website link.
+
 Revision 1.12  2009/02/21 17:06:18  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -82,7 +85,7 @@ function DoInstall: Boolean;
 
 implementation
 
-uses SysUtils, QkObjects, QuarkX;
+uses SysUtils, QuarkX, QkConsts;
 
 procedure InstallPackages; stdcall; forward;
 

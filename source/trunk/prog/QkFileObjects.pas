@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.69  2009/07/15 10:38:01  danielpharos
+Updated website link.
+
 Revision 1.68  2009/05/20 20:46:42  danielpharos
 Use correct hand-editable file extension.
 
@@ -405,7 +408,7 @@ implementation
 
 uses Qk1, Undo, QkExplorer, Setup, qmath, QkGroup, Travail, QkOwnExplorer,
   QkFileExplorer, QkUnknown, Toolbar1, Quarkx, QkExceptions, QkInclude, PyObjects,
-  QkModel, QkMap,
+  QkModel, QkMap, QkConsts,
   PyForms, QkTreeView, Game, QkObjectClassList, QkApplPaths, ExtraFunctionality;
 
 {$R *.DFM}

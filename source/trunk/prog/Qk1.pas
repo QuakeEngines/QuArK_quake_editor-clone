@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.88  2010/04/04 13:38:54  danielpharos
+Added additional logging.
+
 Revision 1.87  2009/09/29 19:56:40  danielpharos
 Moved 'check for updates' menuitem to its own section.
 
@@ -534,7 +537,7 @@ uses Undo, QkQuakeC, Setup, Config, ToolBox1, Game, QkOwnExplorer,
   ObjProp, qmath, QkInclude, Running, Output1, QkTreeView, PyProcess,
   Console, Python, Quarkx, About, {$IFDEF Debug} MemTester, {$ENDIF}
   PyMapView, PyForms, Qk3D, EdSceneObject, QkObjectClassList, QkApplPaths,
-  QkExceptions, QkQuakeCtx, QkSteamFS, AutoUpdater, Logging;
+  QkExceptions, QkQuakeCtx, QkSteamFS, AutoUpdater, QkConsts, Logging;
 
 var
   g_Mutex: THandle = 0;

@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.511  2010/04/03 19:56:05  cdunde
+//Minor updates.
+//
 //Revision 1.510  2010/02/21 15:02:28  danielpharos
 //Moved command line parameters for Steam compilers to proper place.
 //
@@ -1655,7 +1658,7 @@ QQRKSRC1
   {
     General:config =     // ":config" objects are displayed in the Configuration dialog box
     {
-      Version = "QuArK 6.6 Beta"
+      Version = "QuArK 6.6 Beta 3"
       InternalVersion = '6.6'
       TextureBrowser = "Texture Browser..."
       NewMapItems = "New Map Items..."

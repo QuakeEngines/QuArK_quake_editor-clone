@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.100  2009/08/14 13:36:05  danielpharos
+Added some comments to help me fix a problem later.
+
 Revision 1.99  2009/07/15 10:38:01  danielpharos
 Updated website link.
 
@@ -424,7 +427,7 @@ implementation
 
 uses
   Setup, Undo, Quarkx, qmatrices, Qk3D, PyMath, QkQuakeMap,
-  Graphics, StrUtils, Game, QkExceptions, Travail, Logging,
+  Graphics, StrUtils, Game, QkExceptions, Travail, QkConsts, Logging,
   PyForms, Bezier, Duplicator, QkPixelSet, Qk6DX, QkVMF, QkSylphis, QkQ2,
   { tiglari } QkSin, { /tiglari } QkBspHulls, MapError, QkObjectClassList;
 

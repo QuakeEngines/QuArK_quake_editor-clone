@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2009/07/30 09:38:57  danielpharos
+Updated website link.
+
 Revision 1.17  2008/09/14 12:52:23  danielpharos
 Changes to Help system: All forms now have a customizable help-link. Also, added an fallback option to the online infobase docs.
 
@@ -138,7 +141,7 @@ procedure PyFormsClickItem(Options: Integer; nForm: TPyForm);
 
 implementation
 
-uses PyMenus, PyToolbars, PyObjects, Setup, Qk1,
+uses PyMenus, PyToolbars, PyObjects, Setup, Qk1, QkConsts,
      PyFloating, PyExplorer, ComCtrls, QkTreeView,
      EnterEditCtrl, TbPalette, HelpPopup1, Travail;
 
