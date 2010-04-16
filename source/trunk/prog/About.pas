@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.38  2010/04/16 21:48:00  danielpharos
+Added auto-Delphi-compiler version string selection, and moved compiler-string down a bit.
+
 Revision 1.37  2010/04/16 21:18:45  danielpharos
 Move some version-stuff about. quarkpy now also checks the minor version number.
 
@@ -316,7 +319,7 @@ var
 begin
   Version.Caption := QuarkVersion + ' ' + QuArKMinorVersion;
   {*GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, DateFormat);}
-  UsedCompilerLabel.Caption := 'Compiled with ' + QuArKUsedCompiler + ' - ' + DateToStr(QuArKCompileDate{*, DateFormat});
+  UsedCompilerLabel.Caption := QuArKUsedCompiler + ' at ' + DateToStr(QuArKCompileDate{*, DateFormat});
   Copyright.Caption := '  ' + QuArKCopyright;
   {$IFDEF Debug}
   Version.Caption := Version.Caption + '  DEBUG VERSION';
