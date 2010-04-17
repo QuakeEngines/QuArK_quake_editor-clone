@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.28  2009/07/15 10:38:00  danielpharos
+Updated website link.
+
 Revision 1.27  2009/04/28 20:54:03  cdunde
 Model Editor Bone Rebuild merge to HEAD.
 Complete change of bone system.
@@ -268,7 +271,7 @@ type
 
 implementation
 
-uses Qk1, QkExceptions, Undo, Travail, Quarkx, QkModelBone, QkFrame;
+uses Qk1, QkExceptions, Undo, Travail, Quarkx, QkModelBone, QkFrame, Logging;
 
  {------------------------}
 
@@ -516,6 +519,7 @@ end;
 
 constructor TQkExplorer.Create(AOwner: TComponent);
 begin
+ Log(LOG_VERBOSE, 'Creating a new QKExplorer... ('+AOwner.Name+')');
  inherited;
 {FRoots:=TQList.Create;
  Images:=g_Form1.ImageList1;
@@ -539,6 +543,7 @@ end;
 
 destructor TQkExplorer.Destroy;
 begin
+ Log(LOG_VERBOSE, 'Destroying QuArK Explorer... ('+Self.Name+')');   
  ClearView;
 {Roots.Free;}
  FAllExplorers.Remove(Self);
