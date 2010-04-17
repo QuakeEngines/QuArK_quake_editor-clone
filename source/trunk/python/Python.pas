@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.50  2010/04/16 20:32:57  danielpharos
+Proper logging of FreeLibrary PythonLib.
+
 Revision 1.49  2010/04/16 20:07:22  danielpharos
 Move some version-stuff about. quarkpy now also checks the minor version number.
 
@@ -903,7 +906,6 @@ begin
   Log(LOG_PYTHON,'PYTHON:');
   Log(LOG_PYTHON,'Version: '+s);
   Log(LOG_PYTHON,'DLL: '+RetrieveModuleFilename(PythonLib));
-  Log(LOG_PYTHON,'');
   Result:=3;
 
   //Process Py_GetVersion to find version number
