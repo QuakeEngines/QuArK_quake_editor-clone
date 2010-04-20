@@ -739,6 +739,10 @@ class ModelLayout(BaseLayout):
         "or when selecting another item in the tree-view that uses a form."
         global treeviewselchanged, check_currentcomponent, check_comp_list, check_pos, check_color, checkbone_length, check_offset, checkbone_scale, check_show_vtx_color, check_show_weight_color, check_apply_vtx_weights, check_use_weights, check_tag_pos
 
+        # Stops filling Specifics page (flickering) during animation.
+        if quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] == "1" or quarkx.setupsubset(SS_MODEL, "Options")['AnimationCFGActive'] == "1":
+            return
+
         currentcomp = self.editor.Root.currentcomponent
 
         if check_currentcomponent != currentcomp.name:
@@ -1762,31 +1766,41 @@ class ModelLayout(BaseLayout):
         "This calls for what ever selection def you are using above."
         global treeviewselchanged, savefacesel
 
-        # Checks to see if the dictspec item exist, if so clears all other bones of it and related items for proper bone weights system use.
-        skeletongroup = self.editor.Root.dictitems['Skeleton:bg']  # get the bones group
-        bones = skeletongroup.findallsubitems("", ':bone')    # get all bones
-        # Not sure this section is being used any more.
-        for bone2 in bones:
-            for item in bone2.dictspec:
-                if item.endswith("_weight_value"):
-                    if item.startswith(bone2.shortname):
-                        continue
-                    else:
-                        bonename = item.replace('_weight_value', '')
-                        bone2[bonename + "_weight_value"] = ""
-                        bone2[bonename + "_weight_color"] = ""
+        # Using "if" statement speeds up animation if bones exist.
+        if quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] != "1" and quarkx.setupsubset(SS_MODEL, "Options")['AnimationCFGActive'] != "1":
+            menuitem = None
+            sfbtn = self.buttons["sf"]
+            for m in sfbtn.menu:
+                if m.state == qmenu.checked:
+                    menuitem = m
+                    break
+            self.makesettingclick(menuitem) # Updates the Specifics/Args page correctly.
+            # Checks to see if the dictspec item exist, if so clears all other bones of it and related items for proper bone weights system use.
+            skeletongroup = self.editor.Root.dictitems['Skeleton:bg']  # get the bones group
+            bones = skeletongroup.findallsubitems("", ':bone')    # get all bones
+            # Not sure this section is being used any more.
+            for bone2 in bones:
+                for item in bone2.dictspec:
+                    if item.endswith("_weight_value"):
+                        if item.startswith(bone2.shortname):
+                            continue
+                        else:
+                            print "mdlmgr line 1758 IS THIS BEING USED ANY MORE?"
+                            bonename = item.replace('_weight_value', '')
+                            bone2[bonename + "_weight_value"] = ""
+                            bone2[bonename + "_weight_color"] = ""
 
-        # Updates the editor.ModelComponentList
-        if self.editor.Root.dictitems.has_key('ModelComponentList:sd'):
-            if quarkx.setupsubset(SS_MODEL, "Options")['VertexPaintMode'] == "1" and self.editor.Root.currentcomponent.dictspec.has_key("auto_save_weights") and self.editor.Root.currentcomponent.dictspec["auto_save_weights"] == "1":
-                # Added because line in else section using OLD ModelComponentList data killing new weight settings made.
-                FlattenModelComponentList(self.editor)
-            else:
-                # Needs to be this way or assigned vertexes will not draw their respective bone handle color.
-                UnflattenModelComponentList(self.editor, self.editor.Root.dictitems['ModelComponentList:sd']['data'])
+            # Updates the editor.ModelComponentList
+            if self.editor.Root.dictitems.has_key('ModelComponentList:sd'):
+                if quarkx.setupsubset(SS_MODEL, "Options")['VertexPaintMode'] == "1" and self.editor.Root.currentcomponent.dictspec.has_key("auto_save_weights") and self.editor.Root.currentcomponent.dictspec["auto_save_weights"] == "1":
+                    # Added because line in else section using OLD ModelComponentList data killing new weight settings made.
+                    FlattenModelComponentList(self.editor)
+                else:
+                    # Needs to be this way or assigned vertexes will not draw their respective bone handle color.
+                    UnflattenModelComponentList(self.editor, self.editor.Root.dictitems['ModelComponentList:sd']['data'])
 
-        # Updates the models textures in the Texture Browser's 'Used Textures' to be displayed.
-        self.putskinsintexturebrowser()
+            # Updates the models textures in the Texture Browser's 'Used Textures' to be displayed.
+            self.putskinsintexturebrowser()
         fs = None
         if self.explorer.sellist != []:
             if (len(self.explorer.sellist) >= 2) and (self.explorer.sellist[0].type == ':bg' or self.explorer.sellist[0].type == ':bone'):
@@ -1803,16 +1817,11 @@ class ModelLayout(BaseLayout):
         elif self.explorer.uniquesel is not None:
             fs = self.explorer.uniquesel
 
-        menuitem = None
-        sfbtn = self.buttons["sf"]
-        for m in sfbtn.menu:
-            if m.state == qmenu.checked:
-                menuitem = m
-                break
-        self.makesettingclick(menuitem) # Updates the Specifics/Args page correctly.
         if fs is not None:
             treeviewselchanged = 1
-            if fs.type == ':tag':      # An individual tag in the 'Misc:mg' miscellaneous group.
+            if fs.type == ':mf':       # A component's animation frame.
+                self.selectframe(fs)
+            elif fs.type == ':tag':    # An individual tag in the 'Misc:mg' miscellaneous group.
                 self.selecttag(fs)
             elif fs.type == ':bg':     # The 'Skeleton:bg' bone group.
                 self.selectcgroup(fs)
@@ -1836,8 +1845,6 @@ class ModelLayout(BaseLayout):
                 self.selectskin(fs)
             elif fs.type == ':fg':     # A component's frame group.
                 self.selectcgroup(fs)
-            elif fs.type == ':mf':     # A component's animation frame.
-                self.selectframe(fs)
             else:
                 self.editor.ModelVertexSelList = []
                 self.editor.SkinVertexSelList = []
@@ -1892,6 +1899,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.118  2010/03/20 08:16:59  cdunde
+#Needed updates to reactivate bone settings properly.
+#
 #Revision 1.117  2010/03/10 22:47:23  cdunde
 #Added needed comment.
 #
