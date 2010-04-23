@@ -27,6 +27,7 @@ from types import *
 import quarkx
 import quarkpy.qutils
 import quarkpy.qhandles
+import quarkpy.qtoolbar
 import quarkpy.mdleditor
 import quarkpy.mdlhandles
 import quarkpy.mdlutils
@@ -36,6 +37,7 @@ from ie_utils import tobj
 import math
 from math import *
 from quarkpy.qdictionnary import Strings
+from quarkpy.qeditor import ico_dict # Get the dictionary list of all icon image files available.
 from quarkpy.qeditor import MapColor # Strictly needed for QuArK bones MapColor call.
 
 # Globals
@@ -215,7 +217,13 @@ def matrix_rotate(axis, angle):
         [vz * vx * co1 + vy * sin, vy * vz * co1 - vx * sin, vz2 * co1 + cos,          0.0],
         [0.0, 0.0, 0.0, 1.0],
     ]
-
+  # return [
+  #     [vx2 * co1 + cos,          vx * vy * co1 + vz * sin, vz * vx * co1 - vy * sin, 0.0],
+  #     [vz * vx * co1 + vy * sin, vy * vz * co1 - vx * sin, vz2 * co1 + cos,          0.0],
+  #     [vx * vy * co1 - vz * sin, vy2 * co1 + cos,          vy * vz * co1 + vx * sin, 0.0],
+  #     [0.0, 0.0, 0.0, 1.0],
+  # ]
+  
 def matrix_scale(fx, fy, fz):
   return [
         [ fx, 0.0, 0.0, 0.0],
@@ -608,24 +616,24 @@ def load_md5(md5_filename, basepath, actionname):
             for blend_counter in range(0, mesh.verts[vert_counter].blend_count):
                 #get the current weight info
                 w=mesh.weights[blend_index+blend_counter]
+                #w.dump()
+                #the bone that the current weight is refering to
+                b=md5_bones[w.bone_index]
                 weight_index = blend_index+blend_counter
                 weight_value = md5_model[mesh.mesh_index].weights[weight_index].bias
-                bonename = filename + "_" + md5_bones[w.bone_index].name + ":bone"
+                bonename = filename + "_" + b.name + ":bone"
                 # QuArK code.
                 if not QuArK_weights_list.has_key(mesh.mesh_index):
                     QuArK_weights_list[mesh.mesh_index] = {}
                 if not QuArK_weights_list[mesh.mesh_index].has_key(vert_counter):
                     QuArK_weights_list[mesh.mesh_index][vert_counter] = {}
-                QuArK_weights_list[mesh.mesh_index][vert_counter][bonename] = {}
-                QuArK_weights_list[mesh.mesh_index][vert_counter][bonename]['weight_value'] = weight_value
-                color = quarkpy.mdlutils.weights_color(editor, weight_value)
-                QuArK_weights_list[mesh.mesh_index][vert_counter][bonename]['color'] = color
-                QuArK_weights_list[mesh.mesh_index][vert_counter][bonename]['weight_index'] = weight_index
-                QuArK_weights_list[mesh.mesh_index][vert_counter][bonename]['weight_pos'] = w.weights
+                weight_data = {}
+                weight_data['weight_value'] = weight_value
+                weight_data['color'] = quarkpy.mdlutils.weights_color(editor, weight_value)
+                weight_data['weight_index'] = weight_index
+                weight_data['weight_pos'] = w.weights
+                QuArK_weights_list[mesh.mesh_index][vert_counter][bonename] = weight_data
 
-                #w.dump()
-                #the bone that the current weight is refering to
-                b=md5_bones[w.bone_index]
                 if not mesh.mesh_index in ModelComponentList.keys():
                     ModelComponentList[mesh.mesh_index] = {}
                 if not w.bone_index in ModelComponentList[mesh.mesh_index].keys():
@@ -1555,7 +1563,6 @@ def loadmodel(root, filename, gamename, nomessage=0):
 
         import_md5_model(basepath, filename)
 
-        quarkpy.mdlutils.Update_Editor_Views(editor)
         editor = None   #Reset the global again
 
 ### To register this Python plugin and put it on the importers menu.
@@ -1569,8 +1576,8 @@ quarkpy.qmdlbase.RegisterMdlImporter(".md5anim Doom3\Quake4 Importer", ".md5anim
 # DIALOG SECTION (for Editor's Specifics/Args page)
 ######################################################
 def vtxcolorclick(btn):
-    global editor
     if editor is None:
+        global editor
         editor = quarkpy.mdleditor.mdleditor # Get the editor.
     if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
         editor.ModelVertexSelList = []
@@ -1583,9 +1590,8 @@ def vtxcolorclick(btn):
 
 
 def colorclick(btn):
-    global editor
-    import quarkpy.qtoolbar # Get the toolbar functions to make the button with.
     if editor is None:
+        global editor
         editor = quarkpy.mdleditor.mdleditor # Get the editor.
     if not quarkx.setupsubset(SS_MODEL, "Options")['VertexUVColor'] or quarkx.setupsubset(SS_MODEL, "Options")['VertexUVColor'] == "0":
         quarkx.setupsubset(SS_MODEL, "Options")['VertexUVColor'] = "1"
@@ -1646,9 +1652,9 @@ def dataformname(o):
     }
     """
 
-    from quarkpy.qeditor import ico_dict # Get the dictionary list of all icon image files available.
-    import quarkpy.qtoolbar              # Get the toolbar functions to make the button with.
-    editor = quarkpy.mdleditor.mdleditor # Get the editor.
+    if editor is None:
+        global editor
+        editor = quarkpy.mdleditor.mdleditor # Get the editor.
     ico_mdlskv = ico_dict['ico_mdlskv']  # Just to shorten our call later.
     icon_btns = {}                       # Setup our button list, as a dictionary list, to return at the end.
     vtxcolorbtn = quarkpy.qtoolbar.button(colorclick, "Color mode||When active, puts the editor vertex selection into this mode and uses the 'COLR' specific setting as the color to designate these types of vertexes.\n\nIt also places the editor into Vertex Selection mode if not there already and clears any selected vertexes to protect from including unwanted ones by mistake.\n\nAny vertexes selected in this mode will become Color UV Vertexes and added to the component as such. Click the InfoBase button or press F1 again for more detail.|intro.modeleditor.dataforms.html#specsargsview", ico_mdlskv, 5)
@@ -1759,6 +1765,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.30  2010/03/20 09:21:47  cdunde
+# To add code needed for the baseframe.
+#
 # Revision 1.29  2010/03/20 05:26:35  cdunde
 # Removal of unused code.
 #
