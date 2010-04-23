@@ -4058,7 +4058,7 @@ class BoneHandle(qhandles.GenericHandle):
         for bone in new:
             if editor.ModelComponentList.has_key('bonelist') and editor.ModelComponentList['bonelist'].has_key(bone.name) and editor.ModelComponentList['bonelist'][bone.name].has_key('frames') and editor.ModelComponentList['bonelist'][bone.name]['frames'].has_key(framename):
                 editor.ModelComponentList['bonelist'][bone.name]['frames'][framename]['position'] = bone.position.tuple
-                if bone.name == self.bone.name and isinstance(self, BoneCornerHandle):
+                if isinstance(self, BoneCornerHandle):
                     editor.ModelComponentList['bonelist'][bone.name]['frames'][framename]['rotmatrix'] = bone.rotmatrix.tuple
         editor.ok(undo, undomsg)
 
@@ -4868,10 +4868,17 @@ class BoneCenterHandle(BoneHandle):
         new = None
         if delta or (flags&MB_REDIMAGE):
             newbone = self.bone.copy()
+            frame_name = editor.Root.currentcomponent.currentframe.name
+            if editor.ModelComponentList.has_key('bonelist') and editor.ModelComponentList['bonelist'].has_key(newbone.name) and editor.ModelComponentList['bonelist'][newbone.name].has_key('frames') and editor.ModelComponentList['bonelist'][newbone.name]['frames'].has_key(frame_name):
+                newbone.position = quarkx.vect(editor.ModelComponentList['bonelist'][newbone.name]['frames'][frame_name]['position'])
+                newbone.rotmatrix = quarkx.matrix(editor.ModelComponentList['bonelist'][newbone.name]['frames'][frame_name]['rotmatrix'])
             new = [newbone]
             for bone in self.attachedbones:
                 old = old + [bone]
                 newbone = bone.copy()
+                if editor.ModelComponentList.has_key('bonelist') and editor.ModelComponentList['bonelist'].has_key(newbone.name) and editor.ModelComponentList['bonelist'][newbone.name].has_key('frames') and editor.ModelComponentList['bonelist'][newbone.name]['frames'].has_key(frame_name):
+                    newbone.position = quarkx.vect(editor.ModelComponentList['bonelist'][newbone.name]['frames'][frame_name]['position'])
+                    newbone.rotmatrix = quarkx.matrix(editor.ModelComponentList['bonelist'][newbone.name]['frames'][frame_name]['rotmatrix'])
                 new = new + [newbone]
             self.linoperation(new, delta, g1, view)
         else:
@@ -4971,7 +4978,7 @@ class BoneCornerHandle(BoneHandle):
         newpos = newpos - normal*(normal*newpos)
         m = qhandles.UserRotationMatrix(normal, newpos, oldpos, 0)
         if m is None:
-            m = quarkx.matrix(quarkx.vect(1, 0, 0), quarkx.vect(0, 1, 0), quarkx.vect(0, 0, 1))
+            m = quarkx.matrix(quarkx.vect(1.0, 0.0, 0.0), quarkx.vect(0.0, 1.0, 0.0), quarkx.vect(0.0, 0.0, 1.0))
         # Use this if the radius should also be changed:
         #try:
         #    changedradius = sqrt(pow(newpos.x, 2) + pow(newpos.y, 2) + pow(newpos.z, 2)) / sqrt(pow(oldpos.x, 2) + pow(oldpos.y, 2) + pow(oldpos.z, 2))
@@ -4979,14 +4986,10 @@ class BoneCornerHandle(BoneHandle):
         #    changedradius = 1.0
         changedradius = 1.0
 
-        oldposrot = {}
         for obj in list:
-            oldposrot[obj] = (obj.position, obj.rotmatrix)
-        for obj in list:
-            # To update the rotmatrix of the drag handle ONLY for this drag.
-            if obj.name == self.bone.name:
-                obj.rotmatrix = changedradius * m
-            if obj != self.bone:
+            obj.rotmatrix = changedradius * m * obj.rotmatrix
+            #The dragged bone can't move (only rotate), so:
+            if obj.name != self.bone.name:
                 changedpos = obj.position - rotationorigin
                 changedpos = changedradius * m * changedpos
                 obj.position = changedpos + rotationorigin
@@ -5001,11 +5004,11 @@ class BoneCornerHandle(BoneHandle):
         newverticespos = {}
         verticesweight = {}
         for compname in oldverticespos.keys():
-            newverticespos[compname] = []
-            verticesweight[compname] = []
-            for vtx in oldverticespos[compname]:
-                newverticespos[compname] = newverticespos[compname] + [None]
-                verticesweight[compname] = verticesweight[compname] + [0.0]
+            newverticespos[compname] = [[]] * len(oldverticespos[compname])
+            verticesweight[compname] = [[]] * len(oldverticespos[compname])
+            for vtx in range(len(oldverticespos[compname])):
+                newverticespos[compname][vtx] = None
+                verticesweight[compname][vtx] = 0.0
         for obj in list:
             vertices = obj.vtxlist
             for compname in vertices:
@@ -5025,8 +5028,9 @@ class BoneCornerHandle(BoneHandle):
                 if newverticespos[compname][vtx] is None:
                     newverticespos[compname][vtx] = oldverticespos[compname][vtx]
                     verticesweight[compname][vtx] = 1.0
-                if verticesweight[compname][vtx] != 1.0:
-                    newverticespos[compname][vtx] = newverticespos[compname][vtx] + oldverticespos[compname][vtx] * (1.0 - verticesweight[compname][vtx])
+                if abs(verticesweight[compname][vtx] - 1.0) > 0.001:
+                    oldpartpos = oldverticespos[compname][vtx] * (1.0 - verticesweight[compname][vtx])
+                    newverticespos[compname][vtx] = newverticespos[compname][vtx] + oldpartpos
         self.newverticespos = newverticespos
 
         return (math.acos(m[0,0])*180.0/math.pi)
@@ -5195,10 +5199,17 @@ class BoneCornerHandle(BoneHandle):
         new = None
         if delta or (flags&MB_REDIMAGE):
             newbone = self.bone.copy()
+            frame_name = editor.Root.currentcomponent.currentframe.name
+            if editor.ModelComponentList.has_key('bonelist') and editor.ModelComponentList['bonelist'].has_key(newbone.name) and editor.ModelComponentList['bonelist'][newbone.name].has_key('frames') and editor.ModelComponentList['bonelist'][newbone.name]['frames'].has_key(frame_name):
+                newbone.position = quarkx.vect(editor.ModelComponentList['bonelist'][newbone.name]['frames'][frame_name]['position'])
+                newbone.rotmatrix = quarkx.matrix(editor.ModelComponentList['bonelist'][newbone.name]['frames'][frame_name]['rotmatrix'])
             new = [newbone]
             for bone in self.attachedbones:
                 old = old + [bone]
                 newbone = bone.copy()
+                if editor.ModelComponentList.has_key('bonelist') and editor.ModelComponentList['bonelist'].has_key(newbone.name) and editor.ModelComponentList['bonelist'][newbone.name].has_key('frames') and editor.ModelComponentList['bonelist'][newbone.name]['frames'].has_key(frame_name):
+                    newbone.position = quarkx.vect(editor.ModelComponentList['bonelist'][newbone.name]['frames'][frame_name]['position'])
+                    newbone.rotmatrix = quarkx.matrix(editor.ModelComponentList['bonelist'][newbone.name]['frames'][frame_name]['rotmatrix'])
                 new = new + [newbone]
 
             angle = self.linoperation(new, delta, g1, view)
@@ -5332,6 +5343,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.200  2010/04/09 13:11:18  cdunde
+#Fix to stop editor lockup after hiding a component.
+#
 #Revision 1.199  2010/04/08 04:50:58  cdunde
 #Needed fixes for some broken bone specifics items.
 #
