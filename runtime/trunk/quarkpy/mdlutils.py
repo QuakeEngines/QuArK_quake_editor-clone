@@ -201,7 +201,7 @@ def update_weightvtxlist(editor, vertex_index):
 
 
 #
-# Flattens the ModelComponentList using cPickle into a single string
+# Saves the ModelComponentList into cPickle as a single string.
 #
 def FlattenModelComponentList(editor):
     # Based on http://docs.python.org/library/pickle.html
@@ -213,7 +213,7 @@ def FlattenModelComponentList(editor):
     return src.getvalue()
 
 #
-# Unflattens a single string into the ModelComponentList using cPickle
+# Extracts the stored ModelComponentList from cPickle as a single string.
 #
 def UnflattenModelComponentList(editor, datastream):
     # Based on http://docs.python.org/library/pickle.html
@@ -4147,6 +4147,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.132  2010/04/08 04:50:57  cdunde
+#Needed fixes for some broken bone specifics items.
+#
 #Revision 1.131  2010/04/03 19:56:06  cdunde
 #Minor updates.
 #
