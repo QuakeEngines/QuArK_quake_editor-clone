@@ -59,9 +59,13 @@ Info = {
 import struct, chunk, os, cStringIO, time, operator
 import quarkx
 import quarkpy.mdleditor
+import quarkpy.qtoolbar
 import ie_utils
+import quarkpy.mdlentities
+import quarkpy.mdlutils
 from ie_utils import tobj
 from quarkpy.qdictionnary import Strings
+from quarkpy.qeditor import ico_dict # Get the dictionary list of all icon image files available.
 
 # ===========================================================
 # === Utility Preamble ======================================
@@ -2514,15 +2518,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".lwo LightWave Importer", ".lwo file", "*.
 
 
 def vtxcolorclick(btn):
-  #  TODO list
-  #  =========
-  #  1) Should clear the editor.ModelVertexSelList when clicked both on or off.
-
-  #  2) Should use the editor.ModelVertexSelList while button is active to pass selected
-  #        vertexes to the current model component and store them as its own vtxcolorlist.
-    import quarkx
-    import quarkpy.mdleditor
-    editor = quarkpy.mdleditor.mdleditor # Get the editor.
+    if editor is None:
+        global editor
+        editor = quarkpy.mdleditor.mdleditor # Get the editor.
     if quarkx.setupsubset(3, "Options")["LinearBox"] == "1":
         editor.ModelVertexSelList = []
         editor.linearbox = "True"
@@ -2530,14 +2528,13 @@ def vtxcolorclick(btn):
     else:
         if editor.ModelVertexSelList != []:
             editor.ModelVertexSelList = []
-            import quarkpy.mdlutils
             quarkpy.mdlutils.Update_Editor_Views(editor)
 
             
 def colorclick(btn):
-    import quarkx
-    import quarkpy.qtoolbar              # Get the toolbar functions to make the button with.
-    editor = quarkpy.mdleditor.mdleditor # Get the editor.
+    if editor is None:
+        global editor
+        editor = quarkpy.mdleditor.mdleditor # Get the editor.
     if not quarkx.setupsubset(3, "Options")['VertexUVColor'] or quarkx.setupsubset(3, "Options")['VertexUVColor'] == "0":
         quarkx.setupsubset(3, "Options")['VertexUVColor'] = "1"
         quarkpy.qtoolbar.toggle(btn)
@@ -2553,7 +2550,6 @@ def colorclick(btn):
 
 def dataformname(o):
     "Returns the data form for this type of object 'o' (a model component & others) to use for the Specific/Args page."
-    import quarkpy.mdlentities # Used further down in a couple of places.
 
     # Next line calls for the Shader Module in mdlentities.py to be used.
     external_skin_editor_dialog_plugin = quarkpy.mdlentities.UseExternalSkinEditor()
@@ -2602,9 +2598,9 @@ def dataformname(o):
     }
     """
 
-    from quarkpy.qeditor import ico_dict # Get the dictionary list of all icon image files available.
-    import quarkpy.qtoolbar              # Get the toolbar functions to make the button with.
-    editor = quarkpy.mdleditor.mdleditor # Get the editor.
+    if editor is None:
+        global editor
+        editor = quarkpy.mdleditor.mdleditor # Get the editor.
     ico_mdlskv = ico_dict['ico_mdlskv']  # Just to shorten our call later.
     icon_btns = {}                       # Setup our button list, as a dictionary list, to return at the end.
     vtxcolorbtn = quarkpy.qtoolbar.button(colorclick, "Test button for now.||This button is just for testing purposes for right now, does not do anything.|intro.modeleditor.dataforms.html#specsargsview", ico_mdlskv, 5)
@@ -2640,7 +2636,9 @@ def dataformname(o):
 def dataforminput(o):
     "Returns the default settings or input data for this type of object 'o' (a model component & others) to use for the Specific/Args page."
 
-    editor = quarkpy.mdleditor.mdleditor # Get the editor.
+    if editor is None:
+        global editor
+        editor = quarkpy.mdleditor.mdleditor # Get the editor.
     DummyItem = Item = o
     while (DummyItem.type != ":mc"): # Gets the object's model component.
         DummyItem = DummyItem.parent
@@ -2680,6 +2678,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.32  2009/08/28 07:21:34  cdunde
+# Minor comment addition.
+#
 # Revision 1.31  2009/06/03 05:16:22  cdunde
 # Over all updating of Model Editor improvements, bones and model importers.
 #
