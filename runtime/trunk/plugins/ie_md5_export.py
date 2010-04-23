@@ -495,18 +495,30 @@ def export_anim(self, file, filename, exp_list):
         progressbar.progress()
         QuArK_frame_position_raw[frame_counter] = [[]]*NumberOfBones
         QuArK_frame_matrix_raw[frame_counter] = [[]]*NumberOfBones
+        BonesToDo = range(0,NumberOfBones)
+        BoneDone = []
         for joint_counter in range(0,NumberOfBones):
-            current_joint = joints[joint_counter]
-            parent_index = joints_parent_index[joint_counter]
-            if parent_index != -1:
-                #parent_bone = joints[parent_index]
-                ParentMatrix = QuArK_frame_matrix[frame_counter][parent_index]
-                temppos = QuArK_frame_position[frame_counter][joint_counter] - QuArK_frame_position[frame_counter][parent_index]
-                QuArK_frame_position_raw[frame_counter][joint_counter] = (~ParentMatrix) * temppos
-                QuArK_frame_matrix_raw[frame_counter][joint_counter] = (~ParentMatrix) * QuArK_frame_matrix[frame_counter][joint_counter]
-            else:
-                QuArK_frame_position_raw[frame_counter][joint_counter] = QuArK_frame_position[frame_counter][joint_counter]
-                QuArK_frame_matrix_raw[frame_counter][joint_counter] = QuArK_frame_matrix[frame_counter][joint_counter]
+            BoneDone += [0]
+        while len(BonesToDo) != 0:
+            DelayBones = []
+            for joint_counter in BonesToDo:
+                current_joint = joints[joint_counter]
+                parent_index = joints_parent_index[joint_counter]
+                if parent_index != -1:
+                    if BoneDone[parent_index] == 0:
+                        #This bone is being processed before its parent! This is BAD!
+                        DelayBones += [joint_counter]
+                        continue
+                    #parent_bone = joints[parent_index]
+                    ParentMatrix = QuArK_frame_matrix[frame_counter][parent_index]
+                    temppos = QuArK_frame_position[frame_counter][joint_counter] - QuArK_frame_position[frame_counter][parent_index]
+                    QuArK_frame_position_raw[frame_counter][joint_counter] = (~ParentMatrix) * temppos
+                    QuArK_frame_matrix_raw[frame_counter][joint_counter] = (~ParentMatrix) * QuArK_frame_matrix[frame_counter][joint_counter]
+                else:
+                    QuArK_frame_position_raw[frame_counter][joint_counter] = QuArK_frame_position[frame_counter][joint_counter]
+                    QuArK_frame_matrix_raw[frame_counter][joint_counter] = QuArK_frame_matrix[frame_counter][joint_counter]
+                BoneDone[joint_counter] = 1
+            BonesToDo = DelayBones
     progressbar.close()
 
     hierarchy = []
@@ -989,6 +1001,9 @@ def UIExportDialog(root, filename, editor):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.10  2010/04/09 23:03:00  cdunde
+# Comment typo correction.
+#
 # Revision 1.9  2010/03/20 05:25:31  cdunde
 # Update by DanielPharos to bring imported models and animations more inline with original file.
 #
