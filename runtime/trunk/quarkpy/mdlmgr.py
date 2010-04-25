@@ -1776,22 +1776,21 @@ class ModelLayout(BaseLayout):
                     break
             self.makesettingclick(menuitem) # Updates the Specifics/Args page correctly.
             # Checks to see if the dictspec item exist, if so clears all other bones of it and related items for proper bone weights system use.
+            # These dictspecs are used in the mdlentities.py bone weights dialog.
             skeletongroup = self.editor.Root.dictitems['Skeleton:bg']  # get the bones group
             bones = skeletongroup.findallsubitems("", ':bone')    # get all bones
-            # Not sure this section is being used any more.
             for bone2 in bones:
                 for item in bone2.dictspec:
                     if item.endswith("_weight_value"):
                         if item.startswith(bone2.shortname):
                             continue
                         else:
-                            print "mdlmgr line 1758 IS THIS BEING USED ANY MORE?"
                             bonename = item.replace('_weight_value', '')
                             bone2[bonename + "_weight_value"] = ""
                             bone2[bonename + "_weight_color"] = ""
 
             # Updates the editor.ModelComponentList
-            if self.editor.Root.dictitems.has_key('ModelComponentList:sd'):
+            if self.editor.Root.dictitems.has_key('ModelComponentList:sd') and treeviewselchanged != 0:
                 if quarkx.setupsubset(SS_MODEL, "Options")['VertexPaintMode'] == "1" and self.editor.Root.currentcomponent.dictspec.has_key("auto_save_weights") and self.editor.Root.currentcomponent.dictspec["auto_save_weights"] == "1":
                     # Added because line in else section using OLD ModelComponentList data killing new weight settings made.
                     FlattenModelComponentList(self.editor)
@@ -1899,6 +1898,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.119  2010/04/20 09:02:16  cdunde
+#Fix for slowdown of animation if bones exist.
+#
 #Revision 1.118  2010/03/20 08:16:59  cdunde
 #Needed updates to reactivate bone settings properly.
 #
