@@ -432,6 +432,7 @@ def load_md5(md5_filename, basepath, actionname):
                              # [ bone1, bone2,...]
     QuArK_weights_list = {}  # A list to store all QuArK  "weights" created from the .md5mesh "verts" section for each mesh.
                              # {mesh_index : vert_index :[weight_index, nbr_of_weights]}
+    weights_pos_list = {}    # A list to store all weight positions created from the .md5mesh "verts" section for each mesh.
 
     #read the file in
     # md5_filename = the full path and file name of the .md5mesh file being imported, ex.
@@ -625,14 +626,16 @@ def load_md5(md5_filename, basepath, actionname):
                 # QuArK code.
                 if not QuArK_weights_list.has_key(mesh.mesh_index):
                     QuArK_weights_list[mesh.mesh_index] = {}
+                    weights_pos_list[mesh.mesh_index] = {}
                 if not QuArK_weights_list[mesh.mesh_index].has_key(vert_counter):
                     QuArK_weights_list[mesh.mesh_index][vert_counter] = {}
+                    weights_pos_list[mesh.mesh_index][vert_counter] = {}
                 weight_data = {}
                 weight_data['weight_value'] = weight_value
                 weight_data['color'] = quarkpy.mdlutils.weights_color(editor, weight_value)
                 weight_data['weight_index'] = weight_index
-                weight_data['weight_pos'] = w.weights
                 QuArK_weights_list[mesh.mesh_index][vert_counter][bonename] = weight_data
+                weights_pos_list[mesh.mesh_index][vert_counter][bonename] = {'weight_pos': w.weights}
 
                 if not mesh.mesh_index in ModelComponentList.keys():
                     ModelComponentList[mesh.mesh_index] = {}
@@ -1316,7 +1319,7 @@ class md5anim:
                                 continue
                             our_bone_name = bones[bone_index].name
                             our_weight_value = editor.ModelComponentList[comp_name]['weightvtxlist'][vert_counter][our_bone_name]['weight_value']
-                            our_weight_pos = editor.ModelComponentList[comp_name]['weightvtxlist'][vert_counter][our_bone_name]['weight_pos']
+                            our_weight_pos = weights_pos_list[mesh_counter][vert_counter][our_bone_name]['weight_pos']
                             temppos = QuArK_baseframe_matrix[bone_index] * quarkx.vect(our_weight_pos)
                             newpos = newpos + ((QuArK_baseframe_position[bone_index] + temppos) * our_weight_value)
                         newverts[vert_counter] = newpos
@@ -1361,7 +1364,7 @@ class md5anim:
                                     continue
                                 our_bone_name = bones[bone_index].name
                                 our_weight_value = editor.ModelComponentList[comp_name]['weightvtxlist'][vert_counter][our_bone_name]['weight_value']
-                                our_weight_pos = editor.ModelComponentList[comp_name]['weightvtxlist'][vert_counter][our_bone_name]['weight_pos']
+                                our_weight_pos = weights_pos_list[mesh_counter][vert_counter][our_bone_name]['weight_pos']
                                 temppos = QuArK_frame_matrix[frame_counter][bone_index] * quarkx.vect(our_weight_pos)
                                 newpos = newpos + ((QuArK_frame_position[frame_counter][bone_index] + temppos) * our_weight_value)
                             newverts[vert_counter] = newpos
@@ -1765,6 +1768,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.31  2010/04/23 22:56:00  cdunde
+# Proper import changes by DanielPharos and file cleanup.
+#
 # Revision 1.30  2010/03/20 09:21:47  cdunde
 # To add code needed for the baseframe.
 #
