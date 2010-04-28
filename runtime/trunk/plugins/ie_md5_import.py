@@ -1415,6 +1415,7 @@ def load_md5anim(md5anim_filename, bones, actionname):
     theanim = md5anim() # Making an "instance" of this class.
     theanim.load_md5anim(md5anim_filename, bones, actionname) # Calling this class function to open and completely read the .md5_anim file.
     theanim.apply(bones, actionname) # Calling this class function to create the amimation frames,
+                                     # "bones" (see above), "actionname" is the full ,md5anim file name only.
 
     return
 
@@ -1772,6 +1773,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.35  2010/04/28 19:16:52  cdunde
+# To add line missed in last change.
+#
 # Revision 1.34  2010/04/28 19:08:07  cdunde
 # To remove ModelComponentList weights_pos correctly by DanielPharos, not needed.
 #
