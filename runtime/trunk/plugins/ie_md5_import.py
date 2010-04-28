@@ -1414,6 +1414,7 @@ class md5anim:
 def load_md5anim(md5anim_filename, bones, actionname):
     theanim = md5anim() # Making an "instance" of this class.
     theanim.load_md5anim(md5anim_filename, bones, actionname) # Calling this class function to open and completely read the .md5_anim file.
+    theanim.apply(bones, actionname) # Calling this class function to create the amimation frames,
 
     return
 
@@ -1771,6 +1772,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.34  2010/04/28 19:08:07  cdunde
+# To remove ModelComponentList weights_pos correctly by DanielPharos, not needed.
+#
 # Revision 1.33  2010/04/28 07:17:08  cdunde
 # To reverse previous change, causes animation importing to crash.
 #
