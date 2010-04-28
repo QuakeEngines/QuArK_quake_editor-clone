@@ -652,8 +652,15 @@ class AnimationBar(ToolBar):
                 playNR = 0
                 # This terminates the animation timer stopping the repeditive drawing function.
                 quarkx.settimer(drawanimation, self, 0)
-            if not MdlOption("AnimationCFGActive"):
+            if not MdlOption("AnimationCFGActive") and quarkx.setupsubset(SS_MODEL, "Options")['AnimationPaused'] != "1":
                 editor.layout.explorer.sellist = playlist
+            else:
+                playlist = []
+                comps = editor.Root.findallsubitems("", ':mc')  # Get all components.
+                for comp in comps:
+                    comp.currentframe = comp.dictitems['Frames:fg'].subitems[0]
+                editor.Root.currentcomponent.currentframe = editor.Root.currentcomponent.dictitems['Frames:fg'].subitems[0]
+                editor.layout.explorer.sellist = [editor.Root.currentcomponent.currentframe]
         try:
             tb2 = editor.layout.toolbars["tb_objmodes"]
             tb3 = editor.layout.toolbars["tb_paintmodes"]
@@ -1054,6 +1061,9 @@ class AnimationBar(ToolBar):
 #
 #
 #$Log$
+#Revision 1.21  2009/10/21 21:12:42  cdunde
+#Removed unused code.
+#
 #Revision 1.20  2009/10/17 09:17:31  cdunde
 #Added selection and playing of .md3 weapons with player models CFG Animation.
 #
