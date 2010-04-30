@@ -956,9 +956,9 @@ class VertexHandle(qhandles.GenericHandle):
 
         if flagsmouse == 2064:
             editor.dragobject = None
-        else:
-            if isinstance(editor.dragobject, qhandles.ScrollViewDragObject):
-                return # RMB pressed or dragging to pan (scroll) in the view.
+      #  else:
+      #      if isinstance(editor.dragobject, qhandles.ScrollViewDragObject):
+      #          return # RMB pressed or dragging to pan (scroll) in the view.
         if quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] == "1" or quarkx.setupsubset(SS_MODEL, "Options")['AnimationCFGActive'] == "1":
             view.handles = []
             return
@@ -5343,6 +5343,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.201  2010/04/23 23:15:48  cdunde
+#Proper bone movement code update by DanielPharos.
+#
 #Revision 1.200  2010/04/09 13:11:18  cdunde
 #Fix to stop editor lockup after hiding a component.
 #
