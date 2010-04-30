@@ -29,8 +29,8 @@ quarkx.Setup1(qdictionnary.Strings)   # don't change this !
 
 if qdictionnary.Strings[0] != quarkx.version:
     print "QuArK", quarkx.version
-    print "Python code", qdictionnary.Strings[0]
-    raise "QuArK program and Python code versions don't match"
+    print "Python code (from quarkpy\\qdictionnary.py)", qdictionnary.Strings[0]
+    raise "QuArK program and Python code versions don't match! Please reinstall QuArK."
 
 # ------- start-up code ends here --------
 
@@ -119,6 +119,9 @@ def RunQuArK():
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.16  2010/04/16 20:07:26  danielpharos
+#Move some version-stuff about. quarkpy now also checks the minor version number.
+#
 #Revision 1.15  2009/09/07 01:38:45  cdunde
 #Setup of tag menus and icons.
 #
