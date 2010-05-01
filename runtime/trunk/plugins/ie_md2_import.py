@@ -360,7 +360,7 @@ class md2_obj:
 def load_textures(md2):
     global tobj, logging
     # Checks if the model has textures specified with it.
-    skinsize = ()
+    skinsize = (256, 256)
     skingroup = quarkx.newobj('Skins:sg')
     skingroup['type'] = chr(2)
     if logging == 1:
@@ -581,6 +581,10 @@ quarkpy.qmdlbase.RegisterMdlImporter(".md2 Quake2 Importer", ".md2 file", "*.md2
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.10  2010/05/01 04:25:37  cdunde
+# Updated files to help increase editor speed by including necessary ModelComponentList items
+# and removing redundant checks and calls to the list.
+#
 # Revision 1.9  2009/04/28 21:30:56  cdunde
 # Model Editor Bone Rebuild merge to HEAD.
 # Complete change of bone system.
