@@ -162,11 +162,9 @@ def update_colorvtxlist(editor, comp, vertices_to_remove):
 # Updates the editor.ModelComponentList for a component's weightvtxlist.
 #
 def update_weightvtxlist(editor, vertex_index, bone=None, comp=None, option=1):
-    def update_weightlist(Old_dictionary_list, weight_count, bone_item, vertex_index=vertex_index):
+    def update_weightlist(Old_dictionary_list, bone_item, vertex_index=vertex_index):
         if not Old_dictionary_list.has_key(bone_item.name):
             Old_dictionary_list[bone_item.name] = {}
-            Old_dictionary_list[bone_item.name]['weight_index'] = vertex_index + weight_count
-            weight_count = weight_count + 1
         Old_dictionary_list[bone_item.name]['color'] = bone_item.dictspec[bone_item.shortname + "_weight_color"]
         Old_dictionary_list[bone_item.name]['weight_value'] = float(bone_item.dictspec[bone_item.shortname + "_weight_value"])
     if comp is None:
@@ -175,22 +173,20 @@ def update_weightvtxlist(editor, vertex_index, bone=None, comp=None, option=1):
         if not editor.ModelComponentList[comp.name]['weightvtxlist'].has_key(vertex_index):
             editor.ModelComponentList[comp.name]['weightvtxlist'][vertex_index] = {}
             Old_dictionary_list = editor.ModelComponentList[comp.name]['weightvtxlist'][vertex_index]
-            weight_count = 0
         else:
             Old_dictionary_list = editor.ModelComponentList[comp.name]['weightvtxlist'][vertex_index]
-            weight_count = len(Old_dictionary_list)
     found_bone = None
     for item in editor.layout.explorer.sellist:
         if item.type == ":bone":
             if item.dictspec.has_key(item.shortname + "_weight_value"):
                 if bone is not None and found_bone is None and item.name == bone.name:
                     found_bone = 1
-                update_weightlist(Old_dictionary_list, weight_count, item)
+                update_weightlist(Old_dictionary_list, item)
     if bone is not None and found_bone is None:
         if not bone.dictspec.has_key(bone.shortname + "_weight_value"):
             bone[bone.shortname + "_weight_value"] = "1.0"
             bone[bone.shortname + "_weight_color"] = weights_color(editor, 1.0)
-        update_weightlist(Old_dictionary_list, weight_count, bone)
+        update_weightlist(Old_dictionary_list, bone)
 
 
 
@@ -2853,9 +2849,6 @@ def assign_release_vertices(editor, bone, comp, vtxsellist):
                 for key in vertex_list_keys:
                     if key == new_bone.name:
                         del vertex_list[key]
-                    else:
-                        if vertex_list[key]['weight_index'] != vertex_index:
-                            vertex_list[key]['weight_index'] = vertex_list[key]['weight_index']-1
                 import mdlmgr # Import needs to be here to avoid error.
                 from mdlmgr import treeviewselchanged
                 mdlmgr.treeviewselchanged = 1
@@ -4158,6 +4151,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.135  2010/05/01 04:49:04  cdunde
+#Weights dialog fix by DanielPharos and reset of range from .01 to 1.0.
+#
 #Revision 1.134  2010/05/01 04:25:37  cdunde
 #Updated files to help increase editor speed by including necessary ModelComponentList items
 #and removing redundant checks and calls to the list.

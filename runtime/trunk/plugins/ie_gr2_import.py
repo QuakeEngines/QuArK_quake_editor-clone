@@ -1290,14 +1290,14 @@ def loadmodel(root, filename, gamename, nomessage=0):
                             new_modelcomponentlist['bonevtxlist'][QuArK_bones[fixed_index].name][vert_index]['color'] = QuArK_bones[fixed_index]['_color']
                         if not new_modelcomponentlist['weightvtxlist'].has_key(vert_index):
                             new_modelcomponentlist['weightvtxlist'][vert_index] = {}
-                        weight_index_adj = len(new_modelcomponentlist['weightvtxlist'][vert_index].keys())
+                    #1    weight_index_adj = len(new_modelcomponentlist['weightvtxlist'][vert_index].keys())
                         if not new_modelcomponentlist['weightvtxlist'][vert_index].has_key(QuArK_bones[fixed_index].name):
                             new_modelcomponentlist['weightvtxlist'][vert_index][QuArK_bones[fixed_index].name] = {}
                         weight_value = float(current_vert.boneweights[i])/255.0
                         color = quarkpy.mdlutils.weights_color(editor, weight_value)
                         new_modelcomponentlist['weightvtxlist'][vert_index][QuArK_bones[fixed_index].name]['weight_value'] = weight_value
                         new_modelcomponentlist['weightvtxlist'][vert_index][QuArK_bones[fixed_index].name]['color'] = color
-                        new_modelcomponentlist['weightvtxlist'][vert_index][QuArK_bones[fixed_index].name]['weight_index'] = vert_index + weight_index_adj
+                    #1    new_modelcomponentlist['weightvtxlist'][vert_index][QuArK_bones[fixed_index].name]['weight_index'] = vert_index + weight_index_adj
                 vert_index += 1
 
             current_tritopology = tritopologies[current_mesh.primarytopologybinding]
@@ -1979,3 +1979,7 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.15  2010/05/01 04:25:37  cdunde
+# Updated files to help increase editor speed by including necessary ModelComponentList items
+# and removing redundant checks and calls to the list.
+#

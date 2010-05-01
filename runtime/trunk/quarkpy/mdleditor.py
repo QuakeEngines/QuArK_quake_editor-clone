@@ -78,14 +78,13 @@ class ModelEditor(BaseEditor):
     #                     Created using:    the "Vertex Coloring" dialog in the Model Editor.
     #                               key   : Its "Frame" "vertices" number (an integer), which is the same number as a triangles "ver_index" number.
     #                               item 0: key = 'vtx_color', value = the color assigned, by the editor's tool, to that vertex in hex format.
-    # ['weightvtxlist'] = {22: {'bonename:bone': {'weight_value': 0.8, 'color': 'x00\xb7', 'weight_index': 18}}}      Can be cross referenced to the 'bonevtxlist' above.
+    # ['weightvtxlist'] = {22: {'bonename:bone': {'weight_value': 0.8, 'color': 'x00\xb7'}}}      Can be cross referenced to the 'bonevtxlist' above.
     #                               Use:    Stores data for applying 'weight values' from 0.0 to 1.0 to govern the movement of vertexes assigned to bone handles when dragged.
     #                     Created using:    the "Vertex Weight System" in the Model Editor.
     #                               key1   : Its "Frame" "vertices" number (an integer), which is the same number as a triangles "ver_index" number.
     #                               key2   : 'bonename' = full name of the bone that frame vertex is assigned to.
     #                               item 0: key = 'weight_value', value = the percentage value of movement for that vertex with that bone, must add up to 1.0, the remaining amount is given to another bone(s).
     #                               item 1: key = 'color', value = the color to dispaly for that vertex, calculated based on its 'weight_value' by the editor.
-    #                               item 2: key = 'weight_index', value = (an integer) because a vertex's "total weight value" of 1.0 is spread across numinous bones, model files use this indexing system.
 
     ModelVertexSelList = []
     # Editor vertexes    (frame_vertices_index, ..., ...)
@@ -1811,6 +1810,10 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.141  2010/05/01 04:25:37  cdunde
+#Updated files to help increase editor speed by including necessary ModelComponentList items
+#and removing redundant checks and calls to the list.
+#
 #Revision 1.140  2010/02/21 20:01:19  danielpharos
 #Fixed a global-leak on closing the model editor.
 #

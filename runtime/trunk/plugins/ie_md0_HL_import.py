@@ -2119,7 +2119,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
                 for vtx_index in boneobj.vtxlist[compname]:
                     editor.ModelComponentList[compname]['bonevtxlist'][bonename][vtx_index] = {'color': '\x00\x00\xff'}
                     editor.ModelComponentList[compname]['weightvtxlist'][vtx_index] = {}
-                    editor.ModelComponentList[compname]['weightvtxlist'][vtx_index][bonename] = {'weight_value': 1.0, 'color': quarkpy.mdlutils.weights_color(editor, 1.0), 'weight_index': vtx_index}
+                    editor.ModelComponentList[compname]['weightvtxlist'][vtx_index][bonename] = {'weight_value': 1.0, 'color': quarkpy.mdlutils.weights_color(editor, 1.0)}
         parent_index = int(boneobj.dictspec['parent_index'])
         if parent_index < 0:
             newbones = newbones + [boneobj]
@@ -2176,6 +2176,10 @@ quarkpy.qmdlbase.RegisterMdlImporter(".mdl Half-Life Importer", ".mdl file", "*.
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.2  2010/05/01 04:25:37  cdunde
+# Updated files to help increase editor speed by including necessary ModelComponentList items
+# and removing redundant checks and calls to the list.
+#
 # Revision 1.1  2010/05/01 03:54:32  cdunde
 # Started support for HalfLife 1 .mdl model importing.
 #
