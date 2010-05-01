@@ -307,42 +307,89 @@ def export_mesh(self, file, filename, exp_list):
         file.write('\n')
 
         # Build the weights, and compute their proper index numbers
+        #Note: The vert_index stored in weight_sets is only used in position calculations,
+        #so even when that set of weights is being shared by multiple vertices,
+        #all shared verts have the same position, it doesn't matter.
         HighestWeightIndex = -1
-        TMPWeights = {}
-        TMPWeights_no_index = []
+        weight_sets = []
+        weights = []
         vert_blends = []
         for vert_index in range(len(vertices)):
-            # Creates TMPWeights data for the "weight" section below.
+            # Creates weight data for the "weight" section below.
+            current_vertex = vertices[vert_index]
             if weightvtxlist is not None and weightvtxlist.has_key(vert_index):
-                blend_index = -1
+                blend_index = -1 #Calculated later
                 blend_count = len(weightvtxlist[vert_index])
-                for key in weightvtxlist[vert_index].keys():
+                
+                #Create the weight_set for this vertex
+                weight_set = []
+                sorted_keys = weightvtxlist[vert_index].keys()
+                #Sort on bone_index: (although not strictly speaking needed, it is nicer)
+                sorted_keys = sorted(sorted_keys, key=lambda sort_me: bone_name_to_index[sort_me])
+                for key in sorted_keys:
                     bone_index = bone_name_to_index[key]
-                    weight = weightvtxlist[vert_index][key]['weight_value']
-                    weight_index = weightvtxlist[vert_index][key]['weight_index']
-                    TMPWeights[weight_index] = (vert_index, bone_index, weight)
-                    if weight_index > HighestWeightIndex:
-                        HighestWeightIndex = weight_index
-                    if (blend_index == -1) or (weight_index < blend_index):
-                        blend_index = weight_index
-                vert_blends += [[blend_index, blend_count]]
+                    weight_value = weightvtxlist[vert_index][key]['weight_value']
+                    bone_pos = joint_data[bone_index][0]
+                    bone_pos = quarkx.vect(bone_pos)
+                    bone_rot = joint_data[bone_index][1]
+                    bone_rot = quarkx.matrix(bone_rot)
+                    weight_pos = (~bone_rot) * (current_vertex - bone_pos)
+                    pos_x, pos_y, pos_z = weight_pos.tuple
+                    weight_set += [(bone_index, weight_value, pos_x, pos_y, pos_z)]
+                
+                #Find shared sets of weights
+                SameSet = None
+                for tmp_weight_set in weight_sets:
+                    SameSet = tmp_weight_set
+                    if len(weight_set) != SameSet[1]:
+                        #Different amount of weights; this can't be an identical set!
+                        SameSet = None
+                        continue
+                    for weight_nr in range(SameSet[1]):
+                        set_bone_index, set_weight_value, set_pos_x, set_pos_y, set_pos_z = weights[SameSet[0]+weight_nr]
+                        bone_index, weight_value, pos_x, pos_y, pos_z = weight_set[weight_nr]
+                        if (set_bone_index != bone_index) or (set_weight_value != weight_value) \
+                        or (abs(set_pos_x - pos_x) > 0.0001) \
+                        or (abs(set_pos_y - pos_y) > 0.0001) \
+                        or (abs(set_pos_z - pos_z) > 0.0001):
+                            #Different set
+                            SameSet = None
+                            break
+                    if SameSet is not None:
+                        break
+                
+                #Now save it all
+                if SameSet is not None:
+                    #Shared set of weights; use old one to avoid duplication
+                    blend_index = SameSet[0]
+                else:
+                    #New set; add to the end of weights
+                    blend_index = len(weights)
+                    for weight in weight_set:
+                        weights += [weight]
+                    weight_sets += [(blend_index, blend_count)]
+                vert_blends += [(blend_index, blend_count)]
             else: # Handles un-assigned vertexes and writes them to the mesh_error report for viewing by the user.
-                blend_index = -1 #Not calculated here
+                #(Similar code as above here)
+                #Create the weight_set for this vertex
+                #New set; add to the end of weights
+                blend_index = len(weights)
                 blend_count = 1
-                bone_index = 0 #origin bone
-                weight = 1.0
-                TMPWeights_no_index = TMPWeights_no_index + [[vert_index, bone_index, weight]]
-                vert_blends += [[blend_index, blend_count]]
+                bone_index = 0 #0 = origin bone
+                weight_value = 1.0
+                
+                bone_pos = joint_data[bone_index][0]
+                bone_pos = quarkx.vect(bone_pos)
+                bone_rot = joint_data[bone_index][1]
+                bone_rot = quarkx.matrix(bone_rot)
+                weight_pos = (~bone_rot) * (current_vertex - bone_pos)
+                pos_x, pos_y, pos_z = weight_pos.tuple
+                
+                weights += [(bone_index, weight_value, pos_x, pos_y, pos_z)]
+                weight_sets += [(blend_index, blend_count)]
+                vert_blends += [(blend_index, blend_count)]
                 # For vertex error report output.
                 self.mesh_vtx_errors = self.mesh_vtx_errors + [vert_index]
-
-        for weight_index in range(0, HighestWeightIndex+1):
-            if not TMPWeights.has_key(weight_index):
-                #Missing index; Create a dummy weight
-                TMPWeights[weight_index] = (0, 0, 0.0)
-        for weight_counter in range(len(TMPWeights_no_index)):
-            HighestWeightIndex = HighestWeightIndex + 1
-            vert_blends[TMPWeights_no_index[weight_counter][0]][0] = HighestWeightIndex
 
         # Writes the "vert" section.
         Strings[2452] = comp.shortname + "\n" + Strings[2452]
@@ -403,33 +450,18 @@ def export_mesh(self, file, filename, exp_list):
 
         # Writes the "weight" section.
         Strings[2450] = comp.shortname + "\n" + Strings[2450]
-        progressbar = quarkx.progressbar(2450, len(TMPWeights) + len(TMPWeights_no_index))
-        file.write('\tnumweights %i\n' % (len(TMPWeights) + len(TMPWeights_no_index)))
+        progressbar = quarkx.progressbar(2450, len(weights))
+        file.write('\tnumweights %i\n' % (len(weights)))
 
-        def OutputWeight(weight, weight_index):
-            vert = weight[0]
-            bone_index = weight[1]
-            weight_value = ie_utils.NicePrintableFloat(weight[2])
-            current_vertex = vertices[vert]
-            bone_pos = joint_data[bone_index][0]
-            bone_pos = quarkx.vect(bone_pos)
-            bone_rot = joint_data[bone_index][1]
-            bone_rot = quarkx.matrix(bone_rot)
-            current_vertex = (~bone_rot) * (current_vertex - bone_pos)
-            current_vertex = current_vertex.tuple
-            current_vertex0 = ie_utils.NicePrintableFloat(current_vertex[0])
-            current_vertex1 = ie_utils.NicePrintableFloat(current_vertex[1])
-            current_vertex2 = ie_utils.NicePrintableFloat(current_vertex[2])
+        for weight_index in range(len(weights)):
+            progressbar.progress()
+            weight = weights[weight_index]
+            bone_index = weight[0]
+            weight_value = ie_utils.NicePrintableFloat(weight[1])
+            current_vertex0 = ie_utils.NicePrintableFloat(weight[2])
+            current_vertex1 = ie_utils.NicePrintableFloat(weight[3])
+            current_vertex2 = ie_utils.NicePrintableFloat(weight[4])
             file.write('\tweight %i %i %s ( %s %s %s )\n' % (weight_index, bone_index, weight_value, current_vertex0, current_vertex1, current_vertex2))
-
-        for weight_index in TMPWeights.keys():
-            progressbar.progress()
-            OutputWeight(TMPWeights[weight_index], weight_index)
-
-        for weight_counter in range(len(TMPWeights_no_index)):
-            progressbar.progress()
-            weight_index = len(TMPWeights) + weight_counter
-            OutputWeight(TMPWeights_no_index[weight_index], weight_index)
 
         file.write('}\n')
         file.write('\n')
@@ -1001,6 +1033,9 @@ def UIExportDialog(root, filename, editor):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.11  2010/04/23 23:36:17  cdunde
+# Proper export changes by DanielPharos.
+#
 # Revision 1.10  2010/04/09 23:03:00  cdunde
 # Comment typo correction.
 #

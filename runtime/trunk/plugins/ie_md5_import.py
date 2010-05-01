@@ -630,7 +630,6 @@ def load_md5(md5_filename, basepath, actionname):
                 weight_data = {}
                 weight_data['weight_value'] = weight_value
                 weight_data['color'] = quarkpy.mdlutils.weights_color(editor, weight_value)
-                weight_data['weight_index'] = weight_index
                 QuArK_weights_list[mesh.mesh_index][vert_counter][bonename] = weight_data
 
                 if not mesh.mesh_index in ModelComponentList.keys():
@@ -1768,6 +1767,10 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.37  2010/05/01 04:25:37  cdunde
+# Updated files to help increase editor speed by including necessary ModelComponentList items
+# and removing redundant checks and calls to the list.
+#
 # Revision 1.36  2010/04/28 19:23:18  cdunde
 # AW CRAP!!!
 #
