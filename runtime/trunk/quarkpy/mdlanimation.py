@@ -656,6 +656,8 @@ class AnimationBar(ToolBar):
                 editor.layout.explorer.sellist = playlist
             else:
                 playlist = []
+                btns = editor.layout.toolbars["tb_animation"].tb.buttons
+                self.pauseanimation(btns[8]) # Turns off the AnimationPaused button.
                 comps = editor.Root.findallsubitems("", ':mc')  # Get all components.
                 for comp in comps:
                     comp.currentframe = comp.dictitems['Frames:fg'].subitems[0]
@@ -1061,6 +1063,9 @@ class AnimationBar(ToolBar):
 #
 #
 #$Log$
+#Revision 1.22  2010/04/28 06:49:10  cdunde
+#Fix to reselect first frame if animation is stopped with pause still active for proper bone positioning.
+#
 #Revision 1.21  2009/10/21 21:12:42  cdunde
 #Removed unused code.
 #
