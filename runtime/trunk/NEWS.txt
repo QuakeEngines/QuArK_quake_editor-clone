@@ -14,6 +14,11 @@ $Id$
 
 6.6.0 Beta 4
 ============
+* [cdunde]: Model editor, updated files to help increase editor speed by including necessary ModelComponentList items
+          - and removing redundant checks and calls to the list.
+
+* [cdunde/DanielPharos]: Model editor, started support for HalfLife 1 .mdl model importing.
+
 * [DanielPharos]: Model Editor bone movement and .md5anim exporter code fixed.
 
 * [cdunde/DanielPharos]: New exporter for Quake .mdl models.
