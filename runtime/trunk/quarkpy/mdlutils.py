@@ -51,6 +51,10 @@ def weights_color(editor, weight_value):
         R = 255
         G = 51
         B = round(255-((weight_value-.8)*100*10.2))
+    else:
+        R = 255
+        G = 51
+        B = 255
     quarkx.setupsubset(SS_MODEL, "Colors")["temp_color"] = int(qutils.RGBToColor([R,G,B]))
     color = quarkx.setupsubset(SS_MODEL, "Colors")["temp_color"]
     return color
@@ -4154,6 +4158,10 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.134  2010/05/01 04:25:37  cdunde
+#Updated files to help increase editor speed by including necessary ModelComponentList items
+#and removing redundant checks and calls to the list.
+#
 #Revision 1.133  2010/04/23 10:03:29  cdunde
 #Commented function description clarification.
 #

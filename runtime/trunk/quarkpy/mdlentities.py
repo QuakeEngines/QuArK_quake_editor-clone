@@ -752,18 +752,22 @@ def AddStuff(editor):
             weightvtxlist = editor.ModelComponentList[comp.name]['weightvtxlist']
             vtxnbrs = []
             for key in weightvtxlist.keys():
-                if len(weightvtxlist[key]) != 1:
+                if len(weightvtxlist[key]) > 1:
                     vtxnbrs = vtxnbrs + [key]
+            if len(vtxnbrs) == 0:
+                WeightedVTXlist = []
+                WeightsDlgPage = 0
+                return
             vtxnbrs.sort()
             if WeightsDlgPage > int(floor((len(vtxnbrs)+9)/10))-1:
                 WeightsDlgPage = int(floor((len(vtxnbrs)+9)/10))-1
-            LastWeight = WeightsDlgPage * 10+WeightsDlgPage + 10
-            if LastWeight > len(vtxnbrs)-1:
+            LastWeight = WeightsDlgPage * 10 + 9
+            if LastWeight > len(vtxnbrs) - 1:
                 LastWeight = len(vtxnbrs) - 1
             skeletongroup = editor.Root.dictitems['Skeleton:bg']  # get the bones group
             bones = skeletongroup.findallsubitems("", ':bone')    # get all bones
             WeightedVTXlist = []
-            for vtx in vtxnbrs[WeightsDlgPage*10+WeightsDlgPage:LastWeight+1]:
+            for vtx in vtxnbrs[WeightsDlgPage*10:LastWeight+1]:
                 SortedKeys = []
                 for bone in bones:
                     if bone.name in weightvtxlist[vtx].keys():
@@ -808,31 +812,26 @@ def WeightsClick(editor):
     AddStuff(editor)
   
     def setup(self, editor=editor):
+        global vtxnbrs
         editor.weightsdlg = self
         comp = editor.Root.currentcomponent
         self.SRClables = SRClables
         self.SRCsList = SRCsList
         # Rebuilds this dialog's form with the current, self generated, data in SpecsList.
         PageChanger = """ """
-        if len(vtxnbrs) != 0 and editor.ModelComponentList.has_key(comp.name) and editor.ModelComponentList[comp.name].has_key("weightvtxlist"):
+        if len(vtxnbrs) != 0:
             PageChanger = """
             page_changer: = {
               Txt = "Vertex weights page"
               Typ = "C"
               Items = """
-            prevlast = vtxnbrs[0]
             for page in range(int(floor((len(vtxnbrs)+9)/10))):
-                pagenbr = page + 1
-                testcount = pagenbr * 11
-                if testcount > len(vtxnbrs)+9:
-                    break
-                try:
-                    firstvtx = vtxnbrs[page * 11]
-                    lastvtx = vtxnbrs[(page * 11)+10]
-                    prevlast = vtxnbrs[(page * 11)+11]
-                except:
-                    firstvtx = prevlast
+                firstvtx = vtxnbrs[page * 10]
+                if (page * 10) + 9 > len(vtxnbrs)-1:
+                    #No more vertices; this is the last and partially-filled page
                     lastvtx = vtxnbrs[len(vtxnbrs)-1]
+                else:
+                    lastvtx = vtxnbrs[(page * 10) + 9]
                 if page == 0:
                     PageChanger = PageChanger + "    \""+str(page + 1)+" ("+str(firstvtx)+" - "+str(lastvtx)+")\""
                 else:
@@ -929,8 +928,7 @@ def WeightsClick(editor):
         else:
             weightvtxlist = None
         src["comp_name"] = comp.name
-        if editor.ModelComponentList.has_key(comp.name) and editor.ModelComponentList[comp.name].has_key("weightvtxlist"):
-            src["page_changer"] = str(WeightsDlgPage + 1)
+        src["page_changer"] = str(WeightsDlgPage + 1)
         if comp.dictspec.has_key("auto_save_weights"):
             if comp.dictspec["auto_save_weights"] == "1":
                 src["auto_save_weights"] = ""
@@ -963,55 +961,57 @@ def WeightsClick(editor):
         else:
             comp["auto_save_weights"] = "1"
 
-        if editor.ModelComponentList.has_key(comp.name) and editor.ModelComponentList[comp.name].has_key("weightvtxlist"):
-            global WeightsDlgPage
-            if self.src["page_changer"].isdigit():
-                if WeightsDlgPage != int(self.src["page_changer"]) - 1:
-                    WeightsDlgPage = int(self.src["page_changer"]) - 1
-                    vtxweightsclick(None)
-            else:
-                self.src["page_changer"] = str(WeightsDlgPage + 1)
+        global WeightsDlgPage
+        if self.src["page_changer"].isdigit():
+            if WeightsDlgPage != int(self.src["page_changer"]) - 1:
+                WeightsDlgPage = int(self.src["page_changer"]) - 1
+                if WeightsDlgPage < 0:
+                    # If somebody types "0" or some negative number
+                    WeightsDlgPage = 0
+                vtxweightsclick(None)
+        else:
+            self.src["page_changer"] = str(WeightsDlgPage + 1)
 
         for key in self.SRCsList.keys():
             if not (self.src[key] is None):
                 vtxkey =  float(self.src[key])
-                if vtxkey > 1:
+                if vtxkey >= 2:
+                    vtxkey = 1.0
+                elif vtxkey > 1:
                     vtxkey = round(vtxkey,2) - 0.95
-                elif vtxkey == 1:
-                    vtxkey = "0.05"
                 elif vtxkey == 0:
                     vtxkey = 0.95
-                elif vtxkey == -1.0:
+                elif vtxkey == -1.0 or vtxkey == -0.95:
                     vtxkey = 0.05
                 elif vtxkey < 0:
                     vtxkey = round(vtxkey,2) + 0.95
-                if vtxkey >= 0.95:
-                    vtxkey = 0.95
-                elif vtxkey <= 0.05:
-                    vtxkey = 0.05
+                # Needed for hand entered amounts to keep value valid.
+                if vtxkey > 1:
+                    vtxkey = 1.0
+                elif vtxkey < 0.01:
+                    vtxkey = 0.01
                 quarkx.setupsubset(SS_MODEL, "Options")["vtx_" + key] = str(vtxkey)
                 self.src[key] = quarkx.setupsubset(SS_MODEL, "Options")["vtx_" + key]
 
     def onclosing(self, editor=editor):
         prev_comp = self.src["comp_name"]
         if editor.Root.dictitems[prev_comp].dictspec.has_key("auto_save_weights") and editor.Root.dictitems[prev_comp].dictspec['auto_save_weights'] != "1":
-            if editor.ModelComponentList.has_key(prev_comp):
-                weightvtxlist = editor.ModelComponentList[prev_comp]['weightvtxlist']
-                for key in self.SRCsList.keys():
-                    vtx, bone = key.split("_", 1)
-                    if quarkx.setupsubset(SS_MODEL, "Options")["vtx_" + key] is not None:
-                        try:
-                            weight_value = weightvtxlist[int(vtx)][bone + ":bone"]['weight_value'] = float(quarkx.setupsubset(SS_MODEL, "Options")["vtx_" + key])
-                            weightvtxlist[int(vtx)][bone + ":bone"]['color'] = weights_color(editor, weight_value)
-                        except:
-                            pass
-                        quarkx.setupsubset(SS_MODEL, "Options")["vtx_" + key] = None
-                o = editor.Root.currentcomponent
-                undo = quarkx.action()
-                newframe = o.currentframe.copy()
-                undo.exchange(o.currentframe, newframe)
-                prev_comp = prev_comp.replace(":mc", "")
-                editor.ok(undo, prev_comp + ' weight settings saved')
+            weightvtxlist = editor.ModelComponentList[prev_comp]['weightvtxlist']
+            for key in self.SRCsList.keys():
+                vtx, bone = key.split("_", 1)
+                if quarkx.setupsubset(SS_MODEL, "Options")["vtx_" + key] is not None:
+                    try:
+                        weight_value = weightvtxlist[int(vtx)][bone + ":bone"]['weight_value'] = float(quarkx.setupsubset(SS_MODEL, "Options")["vtx_" + key])
+                        weightvtxlist[int(vtx)][bone + ":bone"]['color'] = weights_color(editor, weight_value)
+                    except:
+                        pass
+                    quarkx.setupsubset(SS_MODEL, "Options")["vtx_" + key] = None
+            o = editor.Root.currentcomponent
+            undo = quarkx.action()
+            newframe = o.currentframe.copy()
+            undo.exchange(o.currentframe, newframe)
+            prev_comp = prev_comp.replace(":mc", "")
+            editor.ok(undo, prev_comp + ' weight settings saved')
         else:
             for key in self.SRCsList.keys():
                 quarkx.setupsubset(SS_MODEL, "Options")["vtx_" + key] = None
@@ -2439,10 +2439,10 @@ class BoneType(EntityManager):
                 for bone in bones:
                     if bone.name == item.name:
                         if not bone.dictspec.has_key(bone.shortname + "_weight_value"):
-                            o[bone.shortname + "_weight_value"] = "0.50"
+                            o[bone.shortname + "_weight_value"] = "1.0"
                             if bone.name != o.name:
-                                bone[bone.shortname + "_weight_value"] = "0.50"
-                            weights_color(editor, 0.50)
+                                bone[bone.shortname + "_weight_value"] = "1.0"
+                            weights_color(editor, 1.0)
                             o[bone.shortname + "_weight_color"] = MapColor("temp_color", SS_MODEL) # A long integer, used to display the color in the color picker.
                             if bone.name != o.name:
                                 bone[bone.shortname + "_weight_color"] = MapColor("temp_color", SS_MODEL)
@@ -2483,20 +2483,21 @@ class BoneType(EntityManager):
             if item.endswith("_weight_value"):
                 itemname = item.replace('_weight_value', '')
                 value = float(o.dictspec[item])
-                if value > 1:
+                if value >= 2:
+                    value = 1.0
+                elif value > 1:
                     value = round(value,2) - 0.95
-                elif value == 1:
-                    value = 0.05
                 elif value == 0:
                     value = 0.95
-                elif value == -1.0:
+                elif value == -1.0 or value == -0.95:
                     value = 0.05
                 elif value < 0:
                     value = round(value,2) + 0.95
-                if value >= 0.95:
-                    value = 0.95
-                elif value <= 0.05:
-                    value = 0.05
+                # Needed for hand entered amounts to keep value valid.
+                if value > 1:
+                    value = 1.0
+                elif value < 0.01:
+                    value = 0.01
                 o[itemname + "_weight_value"] = str(value)
                 weights_color(editor, value)
                 o[itemname + "_weight_color"] = MapColor("temp_color", SS_MODEL) # A long integer, used to display the color in the color picker.
@@ -2985,6 +2986,10 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.70  2010/05/01 04:25:37  cdunde
+#Updated files to help increase editor speed by including necessary ModelComponentList items
+#and removing redundant checks and calls to the list.
+#
 #Revision 1.69  2010/03/26 07:28:42  cdunde
 #To add new Model Editor sub-group folders to the Skins group.
 #
