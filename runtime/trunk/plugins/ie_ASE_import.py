@@ -1136,9 +1136,7 @@ def spawn_mesh(obj, basepath, filename, ComponentList, message, CompNbr):
             comp_name = "Import Component " + str(CompNbr)
         comp_name = comp_name + ':mc'
         if not editor.ModelComponentList.has_key(comp_name):
-            editor.ModelComponentList[comp_name] = {}
-        if not editor.ModelComponentList[comp_name].has_key('colorvtxlist'):
-            editor.ModelComponentList[comp_name]['colorvtxlist'] = {}
+            editor.ModelComponentList[comp_name] = {'bonevtxlist': {}, 'colorvtxlist': {}, 'weightvtxlist': {}}
             
     for f in range(len(objMe.meFaces)): # QuArK Tris made here.
         uv1 = (int(float(objMe.uvVerts[objMe.uvFaces[f].uv1].u)*TexWidth), TexHeight-(int(float(objMe.uvVerts[objMe.uvFaces[f].uv1].v)*TexHeight)))
@@ -1252,6 +1250,8 @@ def spawn_mesh(obj, basepath, filename, ComponentList, message, CompNbr):
     else:
         Component = quarkx.newobj("Import Component " + str(CompNbr) + ':mc')
         CompNbr = CompNbr + 1
+    if not editor.ModelComponentList.has_key(Component.name):
+        editor.ModelComponentList[Component.name] = {'bonevtxlist': {}, 'colorvtxlist': {}, 'weightvtxlist': {}}
     if shader_file is not None: # The path and name of the shader file.
         Component['shader_file'] = shader_file
     if shader_name is not None: # The name of the shader in the shader file.
@@ -2041,6 +2041,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.13  2010/01/01 05:55:41  cdunde
+# Update to try and import ase files from other games.
+#
 # Revision 1.12  2009/08/28 07:21:34  cdunde
 # Minor comment addition.
 #

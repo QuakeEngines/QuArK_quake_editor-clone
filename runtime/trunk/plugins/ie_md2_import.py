@@ -506,6 +506,8 @@ def import_md2_model(editor, md2_filename):
 
     # Now we can name our component that will be imported.
     Component = quarkx.newobj(name + ':mc')
+    # Set it up in the ModelComponentList.
+    editor.ModelComponentList[Component.name] = {'bonevtxlist': {}, 'colorvtxlist': {}, 'weightvtxlist': {}}
     Component['skinsize'] = skinsize
     Component['Tris'] = Tris
     Component['show'] = chr(1)
@@ -579,6 +581,10 @@ quarkpy.qmdlbase.RegisterMdlImporter(".md2 Quake2 Importer", ".md2 file", "*.md2
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.9  2009/04/28 21:30:56  cdunde
+# Model Editor Bone Rebuild merge to HEAD.
+# Complete change of bone system.
+#
 # Revision 1.8  2009/01/29 02:13:51  cdunde
 # To reverse frame indexing and fix it a better way by DanielPharos.
 #

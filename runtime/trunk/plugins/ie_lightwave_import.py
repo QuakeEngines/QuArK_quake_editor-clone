@@ -2100,6 +2100,8 @@ def create_objects(filename, polynames, clip_list, objspec_list, surf_list, base
 
         # Now we start creating our Import Component and name it.
         Component = quarkx.newobj("Import Component " + str(CompNbr) + ':mc')
+        # Set it up in the ModelComponentList.
+        editor.ModelComponentList[Component.name] = {'bonevtxlist': {}, 'colorvtxlist': {}, 'weightvtxlist': {}}
         if shader_file is not None: # The path and name of the shader file.
             Component['shader_file'] = shader_file
         if shader_name is not None: # The name of the shader in the shader file.
@@ -2678,6 +2680,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.33  2010/04/23 22:56:55  cdunde
+# File cleanup.
+#
 # Revision 1.32  2009/08/28 07:21:34  cdunde
 # Minor comment addition.
 #

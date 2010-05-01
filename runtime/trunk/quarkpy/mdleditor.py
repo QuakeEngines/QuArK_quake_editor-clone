@@ -56,10 +56,10 @@ class ModelEditor(BaseEditor):
     #                                                 Its triangle number in the Model component mesh "triangles" list
     #                                                    of the Models "currentcomponent".
 
-    # This is a dictionary list using each component's full name as its key (except 'tristodraw'), ex: editor.ModelComponentList[component's full name][sub-dict key].
+    # This is a dictionary list using each component's full name as its key (except 'bonelist' and 'tristodraw'), ex: editor.ModelComponentList[component's full name][sub-dict key].
     # Each component's list can then store anything relating to that component
     # and can be any type of item, another dictionary, tuple or standard list, object....
-    ModelComponentList = {}
+    ModelComponentList = {'bonelist': {}, 'tristodraw': {}}
     # Current uses for Bones, Vertex Coloring and Vertex Weights Coloring:
     # ['tristodraw'] = {'compname:mc': {22: [35, 34, 21, 2, 1] }}
     #                               Use:    Stores all the vertexes that a single vertex needs to draw drag lines to during a drag.
@@ -171,7 +171,7 @@ class ModelEditor(BaseEditor):
     def OpenRoot(self):
         global mdleditor
         mdleditor = self
-        self.ModelComponentList = {}
+        self.ModelComponentList = {'bonelist': {}, 'tristodraw': {}}
 
         setup = quarkx.setupsubset(self.MODE, "Display")
         self.skingridstep, = setup["SkinGridStep"]
@@ -204,6 +204,7 @@ class ModelEditor(BaseEditor):
                     componentnames.append(item)
                     ### Creates the editor.ModelComponentList 'tristodraw' dictionary list for the "component" sent to this function.
                     make_tristodraw_dict(self, comp)
+                    self.ModelComponentList[comp.name] = {'bonevtxlist': {}, 'colorvtxlist': {}, 'weightvtxlist': {}}
 
             componentnames.sort()
         try:
@@ -1810,6 +1811,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.140  2010/02/21 20:01:19  danielpharos
+#Fixed a global-leak on closing the model editor.
+#
 #Revision 1.139  2009/11/23 20:03:39  cdunde
 #Made changes to go along with DanielPharos's fix for expanding all sub-items.
 #

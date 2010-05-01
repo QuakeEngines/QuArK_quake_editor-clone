@@ -1835,8 +1835,6 @@ class mdl_obj: # Done cdunde
 
         # Section below sets up the 'bonelist' entry of editor.ModelComponentList for all importing bones and fills the 'frames' data.
         if len(self.bones) != 0 and len(ComponentList) != 0:
-            if not editor.ModelComponentList.has_key('bonelist'):
-                editor.ModelComponentList['bonelist'] = {}
             # Sets up the 'bonelist' entry of editor.ModelComponentList for all importing bones
             for bone_index in xrange(self.num_bones):
                 current_bone = QuArK_bones[bone_index]
@@ -2115,9 +2113,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
         if boneobj.vtxlist != {}:
             for compname in boneobj.vtxlist.keys():
                 if not editor.ModelComponentList.has_key(compname):
-                    editor.ModelComponentList[compname] = {}
-                    editor.ModelComponentList[compname]['bonevtxlist'] = {}
-                    editor.ModelComponentList[compname]['weightvtxlist'] = {}
+                    editor.ModelComponentList[compname] = {'bonevtxlist': {}, 'colorvtxlist': {}, 'weightvtxlist': {}}
                 if not editor.ModelComponentList[compname]['bonevtxlist'].has_key(bonename):
                     editor.ModelComponentList[compname]['bonevtxlist'][bonename] = {}
                 for vtx_index in boneobj.vtxlist[compname]:
@@ -2180,4 +2176,7 @@ quarkpy.qmdlbase.RegisterMdlImporter(".mdl Half-Life Importer", ".mdl file", "*.
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.1  2010/05/01 03:54:32  cdunde
+# Started support for HalfLife 1 .mdl model importing.
+#
 #

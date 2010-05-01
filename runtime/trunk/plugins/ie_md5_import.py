@@ -1023,9 +1023,7 @@ def load_md5(md5_filename, basepath, actionname):
                 QuArK_bones[bone_index].vtx_pos = temp
                 QuArK_bones[bone_index]['component'] = usekey
 
-    # Section below sets up the 'bonelist' entry of editor.ModelComponentList for all importing bones and fills the 'meshframe' data.
-    if not editor.ModelComponentList.has_key('bonelist'):
-        editor.ModelComponentList['bonelist'] = {}
+    # Section below fills the editor.ModelComponentList 'bonelist' for all importing bones and fills the 'meshframe' data.
     for bone_index in range(len(QuArK_bones)):
         current_bone = QuArK_bones[bone_index]
         if not editor.ModelComponentList['bonelist'].has_key(current_bone.name):
@@ -1041,8 +1039,7 @@ def load_md5(md5_filename, basepath, actionname):
     for mesh_index in ModelComponentList.keys():
         compname = ComponentList[mesh_index].name
         if not editor.ModelComponentList.has_key(compname):
-            editor.ModelComponentList[compname] = {}
-            editor.ModelComponentList[compname]['bonevtxlist'] = {}
+            editor.ModelComponentList[compname] = {'bonevtxlist': {}, 'colorvtxlist': {}, 'weightvtxlist': {}}
         for bone_index in ModelComponentList[mesh_index].keys():
             bonename = QuArK_bones[bone_index].name
             if not editor.ModelComponentList[compname]['bonevtxlist'].has_key(bonename):
@@ -1051,8 +1048,6 @@ def load_md5(md5_filename, basepath, actionname):
                 editor.ModelComponentList[compname]['bonevtxlist'][bonename][vtx_index] = ModelComponentList[mesh_index][bone_index][vtx_index]
                 editor.ModelComponentList[compname]['bonevtxlist'][bonename][vtx_index]['color'] = QuArK_bones[bone_index].dictspec['_color']
         if QuArK_weights_list.has_key(mesh_index) and len(QuArK_weights_list[mesh_index].keys()) != 0:
-            if not editor.ModelComponentList[compname].has_key("weightvtxlist"):
-                editor.ModelComponentList[compname]['weightvtxlist'] = {}
             for vertex in QuArK_weights_list[mesh_index].keys():
                 if not editor.ModelComponentList[compname]['weightvtxlist'].has_key(vertex):
                     editor.ModelComponentList[compname]['weightvtxlist'][vertex] = QuArK_weights_list[mesh_index][vertex]
@@ -1305,24 +1300,23 @@ class md5anim:
             baseframe.shortname = filename + " baseframe"
             baseframes_list = baseframes_list + [baseframe]
             newverts = baseframe.vertices
-            if editor.ModelComponentList.has_key(comp_name) and editor.ModelComponentList[comp_name].has_key("weightvtxlist"):
-                for vert_counter in range(len(newverts)):
-                    if editor.ModelComponentList[comp_name]['weightvtxlist'].has_key(vert_counter):
-                        oldpos = newverts[vert_counter] #This is the old position
-                        newpos = quarkx.vect(0.0, 0.0, 0.0)
-                        for key in editor.ModelComponentList[comp_name]['weightvtxlist'][vert_counter].keys():
-                            bone_index = ConvertBoneNameToIndex[key]
-                            if bone_index == -1:
-                                continue
-                            our_bone_name = bones[bone_index].name
-                            our_weight_value = editor.ModelComponentList[comp_name]['weightvtxlist'][vert_counter][our_bone_name]['weight_value']
-                            our_bone_data = editor.ModelComponentList['bonelist'][our_bone_name]['frames']['meshframe:mf']
-                            our_bone_pos = quarkx.vect(our_bone_data['position'])
-                            our_bone_rot = quarkx.matrix(our_bone_data['rotmatrix'])
-                            our_weight_pos = (~our_bone_rot) * (oldpos - our_bone_pos)
-                            temppos = QuArK_baseframe_matrix[bone_index] * our_weight_pos
-                            newpos = newpos + ((QuArK_baseframe_position[bone_index] + temppos) * our_weight_value)
-                        newverts[vert_counter] = newpos
+            for vert_counter in range(len(newverts)):
+                if editor.ModelComponentList[comp_name]['weightvtxlist'].has_key(vert_counter):
+                    oldpos = newverts[vert_counter] #This is the old position
+                    newpos = quarkx.vect(0.0, 0.0, 0.0)
+                    for key in editor.ModelComponentList[comp_name]['weightvtxlist'][vert_counter].keys():
+                        bone_index = ConvertBoneNameToIndex[key]
+                        if bone_index == -1:
+                            continue
+                        our_bone_name = bones[bone_index].name
+                        our_weight_value = editor.ModelComponentList[comp_name]['weightvtxlist'][vert_counter][our_bone_name]['weight_value']
+                        our_bone_data = editor.ModelComponentList['bonelist'][our_bone_name]['frames']['meshframe:mf']
+                        our_bone_pos = quarkx.vect(our_bone_data['position'])
+                        our_bone_rot = quarkx.matrix(our_bone_data['rotmatrix'])
+                        our_weight_pos = (~our_bone_rot) * (oldpos - our_bone_pos)
+                        temppos = QuArK_baseframe_matrix[bone_index] * our_weight_pos
+                        newpos = newpos + ((QuArK_baseframe_position[bone_index] + temppos) * our_weight_value)
+                    newverts[vert_counter] = newpos
             baseframe.vertices = newverts
             FramesGroup = oldframe.parent
             undo.put(FramesGroup, baseframe)
@@ -1354,31 +1348,28 @@ class md5anim:
                 newframe.shortname = filename + " frame "+str(frame_counter+1)
                 meshverts = meshframe.vertices
                 newverts = newframe.vertices
-                if editor.ModelComponentList.has_key(comp_name) and editor.ModelComponentList[comp_name].has_key("weightvtxlist"):
-                    for vert_counter in range(len(newverts)):
-                        if editor.ModelComponentList[comp_name]['weightvtxlist'].has_key(vert_counter):
-                            oldpos = meshverts[vert_counter] #This is the old position
-                            newpos = quarkx.vect(0.0, 0.0, 0.0)
-                            for key in editor.ModelComponentList[comp_name]['weightvtxlist'][vert_counter].keys():
-                                bone_index = ConvertBoneNameToIndex[key]
-                                if bone_index == -1:
-                                    continue
-                                our_bone_name = bones[bone_index].name
-                                our_weight_value = editor.ModelComponentList[comp_name]['weightvtxlist'][vert_counter][our_bone_name]['weight_value']
-                                our_bone_data = editor.ModelComponentList['bonelist'][our_bone_name]['frames']['meshframe:mf']
-                                our_bone_pos = quarkx.vect(our_bone_data['position'])
-                                our_bone_rot = quarkx.matrix(our_bone_data['rotmatrix'])
-                                our_weight_pos = (~our_bone_rot) * (oldpos - our_bone_pos)
-                                temppos = QuArK_frame_matrix[frame_counter][bone_index] * our_weight_pos
-                                newpos = newpos + ((QuArK_frame_position[frame_counter][bone_index] + temppos) * our_weight_value)
-                            newverts[vert_counter] = newpos
+                for vert_counter in range(len(newverts)):
+                    if editor.ModelComponentList[comp_name]['weightvtxlist'].has_key(vert_counter):
+                        oldpos = meshverts[vert_counter] #This is the old position
+                        newpos = quarkx.vect(0.0, 0.0, 0.0)
+                        for key in editor.ModelComponentList[comp_name]['weightvtxlist'][vert_counter].keys():
+                            bone_index = ConvertBoneNameToIndex[key]
+                            if bone_index == -1:
+                                continue
+                            our_bone_name = bones[bone_index].name
+                            our_weight_value = editor.ModelComponentList[comp_name]['weightvtxlist'][vert_counter][our_bone_name]['weight_value']
+                            our_bone_data = editor.ModelComponentList['bonelist'][our_bone_name]['frames']['meshframe:mf']
+                            our_bone_pos = quarkx.vect(our_bone_data['position'])
+                            our_bone_rot = quarkx.matrix(our_bone_data['rotmatrix'])
+                            our_weight_pos = (~our_bone_rot) * (oldpos - our_bone_pos)
+                            temppos = QuArK_frame_matrix[frame_counter][bone_index] * our_weight_pos
+                            newpos = newpos + ((QuArK_frame_position[frame_counter][bone_index] + temppos) * our_weight_value)
+                        newverts[vert_counter] = newpos
                 newframe.vertices = newverts
                 FramesGroup = baseframes_list[mesh_counter].parent
                 undo.put(FramesGroup, newframe)
 
         # Section below fills the 'bonelist' entry of editor.ModelComponentList for all the importing 'baseframe' and animation frames.
-        if not editor.ModelComponentList.has_key('bonelist'):
-            raise "editor.ModelComponentList corrupt!"
         for bone_counter in range(0,self.num_bones):
             for current_bone in bones:
                 bone_name = current_bone.shortname
@@ -1448,14 +1439,18 @@ def import_md5_model(basepath, md5_filename):
             if bone.name.startswith(filename):
                 mesh_bones = mesh_bones + [bone]
 
-        if len(mesh_bones) == 0 or not editor.ModelComponentList.has_key('bonelist'):
+        if len(mesh_bones) == 0:
             quarkx.beep() # Makes the computer "Beep" once if a file is not valid. Add more info to message.
-            quarkx.msgbox("Could not apply animation.\nNo bones in the scene.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
+            quarkx.msgbox("Could not apply animation.\nNo bones for the mesh file exist.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
             return
         md5_model_comps = []
         for item in editor.Root.subitems:
             if item.type == ":mc" and item.name.startswith(filename):
                 md5_model_comps = md5_model_comps + [item.name]
+        if len(md5_model_comps) == 0:
+            quarkx.beep() # Makes the computer "Beep" once if a file is not valid. Add more info to message.
+            quarkx.msgbox("No components exist for this animation.\n\nAnimation import aborted.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
+            return
         load_md5anim(md5_filename, mesh_bones, actionname)
 
 def loadmodel(root, filename, gamename, nomessage=0):
@@ -1773,6 +1768,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.36  2010/04/28 19:23:18  cdunde
+# AW CRAP!!!
+#
 # Revision 1.35  2010/04/28 19:16:52  cdunde
 # To add line missed in last change.
 #

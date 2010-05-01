@@ -291,6 +291,7 @@ def edit_dup(editor, m=None):
                     name = editor.visualselection()[item].shortname
                 new_comp.shortname = name
                 editor.ModelComponentList['tristodraw'][new_comp.name] = editor.ModelComponentList['tristodraw'][comp_copied_name]
+                editor.ModelComponentList[new_comp.name] = {'bonevtxlist': {}, 'colorvtxlist': {}, 'weightvtxlist': {}}
                 undo = quarkx.action()
                 undo.put(editor.Root, new_comp)
                 editor.ok(undo, "duplicate")
@@ -578,6 +579,9 @@ def groupcolor(m):
 #
 #
 #$Log$
+#Revision 1.30  2010/03/26 07:28:42  cdunde
+#To add new Model Editor sub-group folders to the Skins group.
+#
 #Revision 1.29  2009/07/04 03:02:40  cdunde
 #Fix to stop multiple Skeleton folders from being created when multiple components are deleted.
 #

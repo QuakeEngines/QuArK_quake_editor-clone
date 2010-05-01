@@ -750,6 +750,8 @@ def Import(basepath, filename):
         else:
             Component = quarkx.newobj(ModelFolder + '_' + "Import Component " + str(CompNbr) + ':mc')
             CompNbr = CompNbr + 1
+        # Set it up in the ModelComponentList.
+        editor.ModelComponentList[Component.name] = {'bonevtxlist': {}, 'colorvtxlist': {}, 'weightvtxlist': {}}
 
         if shader_file is not None: # The path and name of the shader file.
             Component['shader_file'] = shader_file
@@ -1360,6 +1362,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.20  2010/03/16 07:17:13  cdunde
+# Added support for .md3 model format exporting with tags, textures and shader files.
+#
 # Revision 1.19  2009/12/21 15:13:43  cdunde
 # Update to try and handle different folder names for mods.
 #

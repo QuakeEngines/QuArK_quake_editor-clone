@@ -565,6 +565,8 @@ def import_mdl_model(editor, mdl_filename):
 
     # Now we can name our component that will be imported.
     Component = quarkx.newobj(name + ':mc')
+    # Set it up in the ModelComponentList.
+    editor.ModelComponentList[Component.name] = {'bonevtxlist': {}, 'colorvtxlist': {}, 'weightvtxlist': {}}
     Component['skinsize'] = skinsize
     Component['Tris'] = Tris
     Component['show'] = chr(1)
@@ -641,6 +643,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".mdl Quake Importer", ".mdl file", "*.mdl"
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.1  2010/03/30 17:19:37  cdunde
+# Needed to change file name for proper listing on menu.
+#
 # Revision 1.2  2010/03/26 07:28:05  cdunde
 # Update for Skins sub-groups and file cleanup.
 #

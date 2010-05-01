@@ -559,10 +559,6 @@ def macro_apply_vtx_color(btn):
         B = round(float(B)*255)
         rgb = struct.pack('i', qutils.RGBToColor([R, G, B]))
         if len(editor.ModelVertexSelList) != 0:
-            if not editor.ModelComponentList.has_key(o.name):
-                editor.ModelComponentList[o.name] = {}
-            if not editor.ModelComponentList[o.name].has_key('colorvtxlist'):
-                editor.ModelComponentList[o.name]['colorvtxlist'] = {}
             for vtx in editor.ModelVertexSelList:
                 if not editor.ModelComponentList[o.name]['colorvtxlist'].has_key(vtx):
                     editor.ModelComponentList[o.name]['colorvtxlist'][vtx] = {}
@@ -579,7 +575,7 @@ def macro_remove_vtx_color(btn):
         quarkx.msgbox("No UV Color vertexes\nselected to remove.", qutils.MT_ERROR, qutils.MB_OK)
         return
     o = editor.Root.currentcomponent
-    if not (editor.ModelComponentList[o.name].has_key('colorvtxlist')):
+    if len(editor.ModelComponentList[o.name]['colorvtxlist']) == 0:
         quarkx.msgbox("No UV Color vertexes\nassigned to this component.", qutils.MT_INFORMATION, qutils.MB_OK)
         return
     else:
@@ -590,10 +586,6 @@ def macro_remove_vtx_color(btn):
                         del editor.ModelComponentList[o.name]['colorvtxlist'][vtx]
                     else:
                         del editor.ModelComponentList[o.name]['colorvtxlist'][vtx]['vtx_color']
-                if len(editor.ModelComponentList[o.name]['colorvtxlist']) == 0:
-                    del editor.ModelComponentList[o.name]['colorvtxlist']
-                if len(editor.ModelComponentList[o.name]) == 0:
-                    del editor.ModelComponentList[o.name]
     undo = quarkx.action()
     newframe = o.currentframe.copy()
     undo.exchange(o.currentframe, newframe)
@@ -756,7 +748,7 @@ def AddStuff(editor):
     SRCsList = {}
     if editor is not None and editor.Root.currentcomponent is not None:
         comp = editor.Root.currentcomponent
-        if editor.ModelComponentList.has_key(comp.name) and editor.ModelComponentList[comp.name].has_key('weightvtxlist') and len(editor.ModelComponentList[comp.name]['weightvtxlist']) != 0:
+        if len(editor.ModelComponentList[comp.name]['weightvtxlist']) != 0:
             weightvtxlist = editor.ModelComponentList[comp.name]['weightvtxlist']
             vtxnbrs = []
             for key in weightvtxlist.keys():
@@ -932,7 +924,7 @@ def WeightsClick(editor):
 
         src = self.src
       ### To populate settings...
-        if editor.ModelComponentList.has_key(comp.name) and editor.ModelComponentList[comp.name].has_key('weightvtxlist') and len(editor.ModelComponentList[comp.name]['weightvtxlist']) != 0:
+        if len(editor.ModelComponentList[comp.name]['weightvtxlist']) != 0:
             weightvtxlist = editor.ModelComponentList[comp.name]['weightvtxlist']
         else:
             weightvtxlist = None
@@ -2993,6 +2985,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.69  2010/03/26 07:28:42  cdunde
+#To add new Model Editor sub-group folders to the Skins group.
+#
 #Revision 1.68  2009/12/12 23:45:39  cdunde
 #Added skins and frames counts to component specifics page.
 #

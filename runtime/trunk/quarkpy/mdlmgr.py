@@ -1706,12 +1706,10 @@ class ModelLayout(BaseLayout):
 
             comps = self.editor.Root.findallsubitems("", ':mc')   # find all components
             for comp in comps:
-                if self.editor.ModelComponentList.has_key(comp.name):
-                    if self.editor.ModelComponentList[comp.name].has_key('bonevtxlist'):
-                        if self.editor.ModelComponentList[comp.name]['bonevtxlist'].has_key(changednames[0][0]):
-                            tempdata = self.editor.ModelComponentList[comp.name]['bonevtxlist'][changednames[0][0]]
-                            del self.editor.ModelComponentList[comp.name]['bonevtxlist'][changednames[0][0]]
-                            self.editor.ModelComponentList[comp.name]['bonevtxlist'][changednames[0][1]] = tempdata
+                if self.editor.ModelComponentList[comp.name]['bonevtxlist'].has_key(changednames[0][0]):
+                    tempdata = self.editor.ModelComponentList[comp.name]['bonevtxlist'][changednames[0][0]]
+                    del self.editor.ModelComponentList[comp.name]['bonevtxlist'][changednames[0][0]]
+                    self.editor.ModelComponentList[comp.name]['bonevtxlist'][changednames[0][1]] = tempdata
 
             if len(self.editor.Root.dictitems['Skeleton:bg'].subitems) != 0:
                 oldskelgroup = self.editor.Root.dictitems['Skeleton:bg']
@@ -1898,6 +1896,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.120  2010/04/25 04:35:26  cdunde
+#To fix slowdown during animation and frame selection due to size of ModelComponentList.
+#
 #Revision 1.119  2010/04/20 09:02:16  cdunde
 #Fix for slowdown of animation if bones exist.
 #

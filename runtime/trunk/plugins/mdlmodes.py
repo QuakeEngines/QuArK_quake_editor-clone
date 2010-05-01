@@ -1005,7 +1005,6 @@ def OptionsViewsClick(m):
         self.src["fillColor5"] = fivefillColor
 
         import quarkpy.mdlmgr
-        quarkpy.mdlmgr.treeviewselchanged = 1
         quarkpy.mdlutils.Update_Editor_Views(editor)
 
 
@@ -1081,6 +1080,9 @@ Lock_Z.state = int(quarkx.setupsubset(SS_MODEL, "Options")["setLock_Z"])
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.24  2008/05/01 19:15:25  danielpharos
+# Fix treeviewselchanged not updating.
+#
 # Revision 1.23  2008/05/01 14:02:31  danielpharos
 # Removed redundant code (this is already done elsewhere).
 #

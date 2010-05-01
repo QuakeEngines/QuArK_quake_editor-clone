@@ -68,8 +68,6 @@ def weights_color(editor, weight_value):
 # Creates the editor.ModelComponentList 'tristodraw' dictionary list for the "component" sent to this function.
 #
 def make_tristodraw_dict(editor, comp):
-    if not editor.ModelComponentList.has_key("tristodraw"):
-        editor.ModelComponentList['tristodraw'] = {}
     if comp.dictitems.has_key("Frames:fg") and len(comp.dictitems['Frames:fg'].subitems) != 0:
         if (len(comp.dictitems['Frames:fg'].subitems[0].vertices) == 0) and (editor.ModelComponentList['tristodraw'].has_key(comp.name)):
             del editor.ModelComponentList['tristodraw'][comp.name]
@@ -136,12 +134,7 @@ def update_bonevtxlist(editor, comp, vertices_to_remove):
     undo = quarkx.action()
     oldskelgroup = editor.Root.dictitems['Skeleton:bg']
     newskelgroup = boneundo(editor, old, new)
-    if len(Old_dictionary_list) == 0:
-        del editor.ModelComponentList[comp.name]['bonevtxlist']
-    else:
-        editor.ModelComponentList[comp.name]['bonevtxlist'] = Old_dictionary_list
-    if len(editor.ModelComponentList[comp.name]) == 0:
-        del editor.ModelComponentList[comp.name]
+    editor.ModelComponentList[comp.name]['bonevtxlist'] = Old_dictionary_list
     undo.exchange(oldskelgroup, newskelgroup)
     editor.ok(undo, "")
     # This section updates the "Vertex Weights Dialog" if it is opened and needs to update.
@@ -149,7 +142,7 @@ def update_bonevtxlist(editor, comp, vertices_to_remove):
     for f in formlist:
         try:
             if f.caption == "Vertex Weights Dialog":
-                import mdlentities
+                import mdlentities # Import needs to be here to avoid error.
                 mdlentities.WeightsClick(editor)
         except:
             pass
@@ -160,36 +153,40 @@ def update_bonevtxlist(editor, comp, vertices_to_remove):
 def update_colorvtxlist(editor, comp, vertices_to_remove):
     Old_dictionary_list = editor.ModelComponentList[comp.name]['colorvtxlist']
     editor.ModelComponentList[comp.name]['colorvtxlist'] = update_vertex_keys(Old_dictionary_list, vertices_to_remove)
-    if len(editor.ModelComponentList[comp.name]['colorvtxlist']) == 0:
-        del editor.ModelComponentList[comp.name]['colorvtxlist']
-    if len(editor.ModelComponentList[comp.name]) == 0:
-        del editor.ModelComponentList[comp.name]
 
 #
 # Updates the editor.ModelComponentList for a component's weightvtxlist.
 #
-def update_weightvtxlist(editor, vertex_index):
-    comp = editor.Root.currentcomponent
-    if not editor.ModelComponentList.has_key(comp.name):
-        editor.ModelComponentList[comp.name] = {}
-    if not editor.ModelComponentList[comp.name].has_key("weightvtxlist"):
-        editor.ModelComponentList[comp.name]['weightvtxlist'] = {}
-    if not editor.ModelComponentList[comp.name]['weightvtxlist'].has_key(vertex_index):
-        editor.ModelComponentList[comp.name]['weightvtxlist'][vertex_index] = {}
-        Old_dictionary_list = editor.ModelComponentList[comp.name]['weightvtxlist'][vertex_index]
-        weight_count = 0
-    else:
-        Old_dictionary_list = editor.ModelComponentList[comp.name]['weightvtxlist'][vertex_index]
-        weight_count = len(Old_dictionary_list)
+def update_weightvtxlist(editor, vertex_index, bone=None, comp=None, option=1):
+    def update_weightlist(Old_dictionary_list, weight_count, bone_item, vertex_index=vertex_index):
+        if not Old_dictionary_list.has_key(bone_item.name):
+            Old_dictionary_list[bone_item.name] = {}
+            Old_dictionary_list[bone_item.name]['weight_index'] = vertex_index + weight_count
+            weight_count = weight_count + 1
+        Old_dictionary_list[bone_item.name]['color'] = bone_item.dictspec[bone_item.shortname + "_weight_color"]
+        Old_dictionary_list[bone_item.name]['weight_value'] = float(bone_item.dictspec[bone_item.shortname + "_weight_value"])
+    if comp is None:
+        comp = editor.Root.currentcomponent
+    if option == 1:
+        if not editor.ModelComponentList[comp.name]['weightvtxlist'].has_key(vertex_index):
+            editor.ModelComponentList[comp.name]['weightvtxlist'][vertex_index] = {}
+            Old_dictionary_list = editor.ModelComponentList[comp.name]['weightvtxlist'][vertex_index]
+            weight_count = 0
+        else:
+            Old_dictionary_list = editor.ModelComponentList[comp.name]['weightvtxlist'][vertex_index]
+            weight_count = len(Old_dictionary_list)
+    found_bone = None
     for item in editor.layout.explorer.sellist:
         if item.type == ":bone":
             if item.dictspec.has_key(item.shortname + "_weight_value"):
-                if not Old_dictionary_list.has_key(item.name):
-                    Old_dictionary_list[item.name] = {}
-                    Old_dictionary_list[item.name]['weight_index'] = vertex_index + weight_count
-                    weight_count = weight_count + 1
-                Old_dictionary_list[item.name]['color'] = item.dictspec[item.shortname + "_weight_color"]
-                Old_dictionary_list[item.name]['weight_value'] = float(item.dictspec[item.shortname + "_weight_value"])
+                if bone is not None and found_bone is None and item.name == bone.name:
+                    found_bone = 1
+                update_weightlist(Old_dictionary_list, weight_count, item)
+    if bone is not None and found_bone is None:
+        if not bone.dictspec.has_key(bone.shortname + "_weight_value"):
+            bone[bone.shortname + "_weight_value"] = "1.0"
+            bone[bone.shortname + "_weight_color"] = weights_color(editor, 1.0)
+        update_weightlist(Old_dictionary_list, weight_count, bone)
 
 
 
@@ -1186,9 +1183,9 @@ def movefaces(editor, movetocomponent, option=2):
             editor.ok(undo, "faces deleted from " + change_comp.shortname)
         # Updates the editor.ModelComponentList, for this component, 'bonevtxlist' and 'colorvtxlist' if one or both exist. 
         if len(vertices_to_remove) != 0:
-            if  (editor.ModelComponentList.has_key(change_comp.name)) and (editor.ModelComponentList[change_comp.name].has_key('bonevtxlist')):
+            if editor.ModelComponentList[change_comp.name]['bonevtxlist'] != {}:
                 update_bonevtxlist(editor, change_comp, vertices_to_remove)
-            if  (editor.ModelComponentList.has_key(change_comp.name)) and ( editor.ModelComponentList[change_comp.name].has_key('colorvtxlist')):
+            if editor.ModelComponentList[change_comp.name]['colorvtxlist'] != {}:
                 update_colorvtxlist(editor, change_comp, vertices_to_remove)
 
 
@@ -2148,7 +2145,7 @@ def ConvertEditorFaceObject(editor, newobjectslist, flags, view, undomsg, option
 def removecomp(editor, compname, undo, multi_comps=0):
     components = editor.Root.findallsubitems("", ':mc')
     if len(components) == 1:
-        editor.ModelComponentList = {}
+        editor.ModelComponentList = {'bonelist': {}, 'tristodraw': {}}
     else:
         if editor.ModelComponentList.has_key(compname):
             del editor.ModelComponentList['tristodraw'][compname]
@@ -2245,6 +2242,8 @@ def addcomponent(editor, option=2):
             pass
         else:
             new_comp.shortname = "new component 1"
+        # Set it up in the ModelComponentList.
+        editor.ModelComponentList[new_comp.name] = {'bonevtxlist': {}, 'colorvtxlist': {}, 'weightvtxlist': {}}
     else:
         for item in editor.Root.dictitems:
             if editor.Root.dictitems[item].shortname.startswith('new clean component'):
@@ -2262,6 +2261,7 @@ def addcomponent(editor, option=2):
             pass
         else:
             new_comp.shortname = "new clean component 1"
+        editor.ModelComponentList[new_comp.name] = {'bonevtxlist': {}, 'colorvtxlist': {}, 'weightvtxlist': {}}
 
     ###### NEW COMPONENT SECTION ######
 
@@ -2395,9 +2395,9 @@ def addcomponent(editor, option=2):
     editor.ok(undo, change_comp.shortname + " updated")
     # Updates the editor.ModelComponentList, for this component, 'bonevtxlist' and 'colorvtxlist' if one or both exist. 
     if len(vertices_to_remove) != 0:
-        if  (editor.ModelComponentList.has_key(change_comp.name)) and (editor.ModelComponentList[change_comp.name].has_key('bonevtxlist')):
+        if editor.ModelComponentList[change_comp.name]['bonevtxlist'] != {}:
             update_bonevtxlist(editor, change_comp, vertices_to_remove)
-        if  (editor.ModelComponentList.has_key(change_comp.name)) and ( editor.ModelComponentList[change_comp.name].has_key('colorvtxlist')):
+        if editor.ModelComponentList[change_comp.name]['colorvtxlist'] != {}:
             update_colorvtxlist(editor, change_comp, vertices_to_remove)
     Update_Editor_Views(editor)
 
@@ -2508,13 +2508,8 @@ def removebone(editor, bonename, undo, list, bonelist):
     for comp in editor.ModelComponentList.keys():
         if not comp.endswith(":mc"):
             continue
-        if editor.ModelComponentList[comp].has_key("bonevtxlist"):
-            if editor.ModelComponentList[comp]['bonevtxlist'].has_key(bonename):
-                del editor.ModelComponentList[comp]['bonevtxlist'][bonename]
-                if len(editor.ModelComponentList[comp]['bonevtxlist']) == 0:
-                    del editor.ModelComponentList[comp]['bonevtxlist']
-                if len(editor.ModelComponentList[comp]) == 0:
-                    del editor.ModelComponentList[comp]
+        if editor.ModelComponentList[comp]['bonevtxlist'].has_key(bonename):
+            del editor.ModelComponentList[comp]['bonevtxlist'][bonename]
     group = editor.Root.dictitems['Skeleton:bg']
     for bone in bonelist:
         if bone.dictspec['parent_name'] == "None":
@@ -2589,7 +2584,7 @@ def allowbones(editor):
 def clearbones(editor, undomsg):
     editor.layout.explorer.sellist = []
     editor.layout.explorer.uniquesel = None
-    editor.ModelComponentList = {}
+    editor.ModelComponentList = {'bonelist': {}, 'tristodraw': {}}
     undo = quarkx.action()
     skeletongroup = quarkx.newobj('Skeleton:bg')
     skeletongroup['type'] = chr(5)
@@ -2659,7 +2654,7 @@ def addbone(editor, comp, pos):
     undo.put(skeletongroup, new_bone)
     editor.ok(undo, "add bone")
  ### Code below if we just want to draw new bones without redrawing all handles.
- #   import mdlentities
+ #   import mdlentities # Import needs to be here to avoid error.
  #   handle = mdlentities.CallManager("handlesopt", new_bone, editor)
  #   for v in editor.layout.views:
  #       cv = v.canvas()
@@ -2706,7 +2701,7 @@ def continue_bone(editor, bone, pos):
     undo.put(skeletongroup, new_bone)
     editor.ok(undo, "add bone")
  ### Code below if we just want to draw new bones without redrawing all handles.
- #   import mdlentities
+ #   import mdlentities # Import needs to be here to avoid error.
  #   handle = mdlentities.CallManager("handlesopt", new_bone, editor)
  #   for v in editor.layout.views:
  #       cv = v.canvas()
@@ -2815,10 +2810,6 @@ def assign_release_vertices(editor, bone, comp, vtxsellist):
         old_vertices_comp = old_vertices[comp.name]
     else:
         old_vertices_comp = []
-    if not editor.ModelComponentList.has_key(comp.name):
-        editor.ModelComponentList[comp.name] = {}
-    if not editor.ModelComponentList[comp.name].has_key('bonevtxlist'):
-        editor.ModelComponentList[comp.name]['bonevtxlist'] = {}
     for vtx in vtxsellist:
         if (vtx in old_vertices_comp) and (editor.ModelComponentList[comp.name]['bonevtxlist'].has_key(bone.name)) and (vtx in editor.ModelComponentList[comp.name]['bonevtxlist'][bone.name].keys()):
             old_vertices_comp.remove(vtx)
@@ -2839,31 +2830,47 @@ def assign_release_vertices(editor, bone, comp, vtxsellist):
         if new_bone.vtx_pos.has_key(comp.name):
             new_bone.vtx_pos ={}
         del old_vertices[comp.name]
-    if len(editor.ModelComponentList[comp.name]['bonevtxlist']) == 0:
-        del editor.ModelComponentList[comp.name]['bonevtxlist']
-    if len(editor.ModelComponentList[comp.name]) == 0:
-        del editor.ModelComponentList[comp.name]
     new_bone.vtxlist = old_vertices
     if len(new_bone.vtx_pos) == 0:
         new_bone.vtx_pos = old_vertices
         new_bone['component'] = comp.name
         # Dupe call but needs to be here to update the bone in case it is not selected in the tree-view.
         Rebuild_Bone(editor, new_bone, editor.Root.currentcomponent.currentframe)
+
+    # Updates the ModelComponentList weightvtxlist.
+    Old_dictionary_list = None
+    if editor.ModelComponentList[comp.name]['weightvtxlist'] != {}:
+        Old_dictionary_list = editor.ModelComponentList[comp.name]['weightvtxlist']
+    for vertex_index in vtxsellist:
+        if Old_dictionary_list is not None and Old_dictionary_list.has_key(vertex_index):
+            vertex_list = Old_dictionary_list[vertex_index]
+            vertex_list_keys = vertex_list.keys()
+            if new_bone.name in vertex_list_keys:
+                for key in vertex_list_keys:
+                    if key == new_bone.name:
+                        del vertex_list[key]
+                    else:
+                        if vertex_list[key]['weight_index'] != vertex_index:
+                            vertex_list[key]['weight_index'] = vertex_list[key]['weight_index']-1
+                import mdlmgr # Import needs to be here to avoid error.
+                from mdlmgr import treeviewselchanged
+                mdlmgr.treeviewselchanged = 1
+            else:
+                update_weightvtxlist(editor, vertex_index, new_bone)
+        else:
+            update_weightvtxlist(editor, vertex_index, new_bone)
+    undo = quarkx.action()
+    undo.exchange(bone, new_bone)
+    editor.ok(undo, "assign-release vertices")
     # This section updates the "Vertex Weights Dialog" if it is opened and needs to update.
     formlist = quarkx.forms(1)
     for f in formlist:
         try:
             if f.caption == "Vertex Weights Dialog":
-                panel = f.mainpanel.controls()
-                weightsdataform = panel[0].linkedobjects[0]
-                if editor.Root.currentcomponent.name == weightsdataform["comp_name"]:
-                    import mdlentities
-                    mdlentities.WeightsClick(editor)
+                import mdlentities # Import needs to be here to avoid error.
+                mdlentities.macro_updatedialog(None)
         except:
             pass
-    undo = quarkx.action()
-    undo.exchange(bone, new_bone)
-    editor.ok(undo, "assign vertices")
 
 #
 # This function does the rotation movement of all bones between two selected "Key frames".
@@ -4147,6 +4154,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.133  2010/04/23 10:03:29  cdunde
+#Commented function description clarification.
+#
 #Revision 1.132  2010/04/08 04:50:57  cdunde
 #Needed fixes for some broken bone specifics items.
 #

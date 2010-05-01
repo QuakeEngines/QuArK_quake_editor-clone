@@ -984,13 +984,62 @@ class VertexHandle(qhandles.GenericHandle):
 
         p = view.proj(self.pos)
         if p.visible:
-            if editor.ModelComponentList.has_key(editor.Root.currentcomponent.name):
-                from mdlentities import vtxpaint
-                # Here "color" is just a dummy item to pass the vertex's
-                # color to so we can use the MapColor function to set the cv.pencolor correctly.
+            from mdlentities import vtxpaint
+            # Here "color" is just a dummy item to pass the vertex's
+            # color to so we can use the MapColor function to set the cv.pencolor correctly.
+            color = None
+            if editor.Root.currentcomponent.dictspec.has_key("show_vtx_color") and editor.ModelComponentList[editor.Root.currentcomponent.name]['colorvtxlist'].has_key(self.index) and editor.ModelComponentList[editor.Root.currentcomponent.name]['colorvtxlist'][self.index].has_key('vtx_color'):
+                color = editor.ModelComponentList[editor.Root.currentcomponent.name]['colorvtxlist'][self.index]['vtx_color']
+                quarkx.setupsubset(SS_MODEL, "Colors")["color"] = color
+                cv.pencolor = cv.brushcolor = MapColor("color", SS_MODEL)
+                cv.brushstyle = BS_SOLID
+                if MdlOption("Ticks") == "1":
+                    cv.ellipse(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
+                else:
+                    cv.ellipse(int(p.x)-2, int(p.y)-2, int(p.x)+2, int(p.y)+2)
+            elif vtxpaint == 0 and quarkx.setupsubset(3, "Options")['VertexPaintMode'] is not None and quarkx.setupsubset(3, "Options")['VertexPaintMode'] == "1" and (flagsmouse == 552 or flagsmouse == 1064 or flagsmouse == 2088) and self == draghandle:
+                foundbone = None
+                for item in editor.layout.explorer.sellist:
+                    if item.type == ":bone":
+                        if item.dictspec.has_key(item.shortname + "_weight_color"):
+                            color = item.dictspec[item.shortname + "_weight_color"]
+                            foundbone = 1
+                            break
+                quarkx.setupsubset(SS_MODEL, "Colors")["color"] = color
+                cv.pencolor = cv.brushcolor = MapColor("color", SS_MODEL)
+                cv.brushstyle = BS_SOLID
+                if MdlOption("Ticks") == "1":
+                    cv.ellipse(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
+                else:
+                    cv.ellipse(int(p.x)-2, int(p.y)-2, int(p.x)+2, int(p.y)+2)
+                if foundbone is not None:
+                    update_weightvtxlist(editor, self.index) # Updates the ModelComponentList weightvtxlist HERE.
+            elif editor.Root.currentcomponent.dictspec.has_key("show_weight_color") and editor.ModelComponentList[editor.Root.currentcomponent.name]['weightvtxlist'].has_key(self.index):
+                if len(editor.layout.explorer.sellist) != 0 and editor.layout.explorer.sellist[0].type == ":bone" and editor.ModelComponentList[editor.Root.currentcomponent.name]['weightvtxlist'][self.index].has_key(editor.layout.explorer.sellist[0].name):
+                    color = editor.ModelComponentList[editor.Root.currentcomponent.name]['weightvtxlist'][self.index][editor.layout.explorer.sellist[0].name]['color']
+                else:
+                    bones = editor.ModelComponentList[editor.Root.currentcomponent.name]['weightvtxlist'][self.index].keys()
+                    if len(bones) != 0:
+                        color = editor.ModelComponentList[editor.Root.currentcomponent.name]['weightvtxlist'][self.index][bones[0]]['color']
+                if color is not None:
+                    quarkx.setupsubset(SS_MODEL, "Colors")["color"] = color
+                    cv.pencolor = cv.brushcolor = MapColor("color", SS_MODEL)
+                cv.brushstyle = BS_SOLID
+                if MdlOption("Ticks") == "1":
+                    cv.ellipse(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
+                else:
+                    cv.ellipse(int(p.x)-2, int(p.y)-2, int(p.x)+2, int(p.y)+2)
+            elif editor.ModelComponentList[editor.Root.currentcomponent.name]['bonevtxlist'] != {}:
                 color = None
-                if editor.Root.currentcomponent.dictspec.has_key("show_vtx_color") and editor.ModelComponentList[editor.Root.currentcomponent.name].has_key('colorvtxlist') and editor.ModelComponentList[editor.Root.currentcomponent.name]['colorvtxlist'].has_key(self.index) and editor.ModelComponentList[editor.Root.currentcomponent.name]['colorvtxlist'][self.index].has_key('vtx_color'):
-                    color = editor.ModelComponentList[editor.Root.currentcomponent.name]['colorvtxlist'][self.index]['vtx_color']
+                for bone in editor.ModelComponentList[editor.Root.currentcomponent.name]['bonevtxlist'].keys():
+                    if editor.layout.explorer.sellist[0].type == ":bone":
+                        if bone == editor.layout.explorer.sellist[0].name:
+                            if editor.ModelComponentList[editor.Root.currentcomponent.name]['bonevtxlist'][bone].has_key(self.index):
+                                color = editor.ModelComponentList[editor.Root.currentcomponent.name]['bonevtxlist'][bone][self.index]['color']
+                            break
+                    elif editor.ModelComponentList[editor.Root.currentcomponent.name]['bonevtxlist'][bone].has_key(self.index):
+                        color = editor.ModelComponentList[editor.Root.currentcomponent.name]['bonevtxlist'][bone][self.index]['color']
+                if color is not None:
                     quarkx.setupsubset(SS_MODEL, "Colors")["color"] = color
                     cv.pencolor = cv.brushcolor = MapColor("color", SS_MODEL)
                     cv.brushstyle = BS_SOLID
@@ -998,65 +1047,6 @@ class VertexHandle(qhandles.GenericHandle):
                         cv.ellipse(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
                     else:
                         cv.ellipse(int(p.x)-2, int(p.y)-2, int(p.x)+2, int(p.y)+2)
-                elif vtxpaint == 0 and quarkx.setupsubset(3, "Options")['VertexPaintMode'] is not None and quarkx.setupsubset(3, "Options")['VertexPaintMode'] == "1" and (flagsmouse == 552 or flagsmouse == 1064 or flagsmouse == 2088) and self == draghandle:
-                    foundbone = None
-                    for item in editor.layout.explorer.sellist:
-                        if item.type == ":bone":
-                            if item.dictspec.has_key(item.shortname + "_weight_color"):
-                                color = item.dictspec[item.shortname + "_weight_color"]
-                                foundbone = 1
-                                break
-                    quarkx.setupsubset(SS_MODEL, "Colors")["color"] = color
-                    cv.pencolor = cv.brushcolor = MapColor("color", SS_MODEL)
-                    cv.brushstyle = BS_SOLID
-                    if MdlOption("Ticks") == "1":
-                        cv.ellipse(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
-                    else:
-                        cv.ellipse(int(p.x)-2, int(p.y)-2, int(p.x)+2, int(p.y)+2)
-                    if foundbone is not None:
-                        update_weightvtxlist(editor, self.index) # Updates the ModelComponentList weightvtxlist HERE.
-                elif editor.Root.currentcomponent.dictspec.has_key("show_weight_color") and editor.ModelComponentList[editor.Root.currentcomponent.name].has_key('weightvtxlist') and editor.ModelComponentList[editor.Root.currentcomponent.name]['weightvtxlist'].has_key(self.index):
-                    if len(editor.layout.explorer.sellist) != 0 and editor.layout.explorer.sellist[0].type == ":bone" and editor.ModelComponentList[editor.Root.currentcomponent.name]['weightvtxlist'][self.index].has_key(editor.layout.explorer.sellist[0].name):
-                        color = editor.ModelComponentList[editor.Root.currentcomponent.name]['weightvtxlist'][self.index][editor.layout.explorer.sellist[0].name]['color']
-                    else:
-                        bones = editor.ModelComponentList[editor.Root.currentcomponent.name]['weightvtxlist'][self.index].keys()
-                        if len(bones) != 0:
-                            color = editor.ModelComponentList[editor.Root.currentcomponent.name]['weightvtxlist'][self.index][bones[0]]['color']
-                    if color is not None:
-                        quarkx.setupsubset(SS_MODEL, "Colors")["color"] = color
-                        cv.pencolor = cv.brushcolor = MapColor("color", SS_MODEL)
-                    cv.brushstyle = BS_SOLID
-                    if MdlOption("Ticks") == "1":
-                        cv.ellipse(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
-                    else:
-                        cv.ellipse(int(p.x)-2, int(p.y)-2, int(p.x)+2, int(p.y)+2)
-                elif editor.ModelComponentList[editor.Root.currentcomponent.name].has_key('bonevtxlist'):
-                    color = None
-                    for bone in editor.ModelComponentList[editor.Root.currentcomponent.name]['bonevtxlist'].keys():
-                        if editor.layout.explorer.sellist[0].type == ":bone":
-                            if bone == editor.layout.explorer.sellist[0].name:
-                                if editor.ModelComponentList[editor.Root.currentcomponent.name]['bonevtxlist'][bone].has_key(self.index):
-                                    color = editor.ModelComponentList[editor.Root.currentcomponent.name]['bonevtxlist'][bone][self.index]['color']
-                                break
-                        elif editor.ModelComponentList[editor.Root.currentcomponent.name]['bonevtxlist'][bone].has_key(self.index):
-                            color = editor.ModelComponentList[editor.Root.currentcomponent.name]['bonevtxlist'][bone][self.index]['color']
-                    if color is not None:
-                        quarkx.setupsubset(SS_MODEL, "Colors")["color"] = color
-                        cv.pencolor = cv.brushcolor = MapColor("color", SS_MODEL)
-                        cv.brushstyle = BS_SOLID
-                        if MdlOption("Ticks") == "1":
-                            cv.ellipse(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
-                        else:
-                            cv.ellipse(int(p.x)-2, int(p.y)-2, int(p.x)+2, int(p.y)+2)
-                    else:
-                        cv.pencolor = vertexdotcolor
-                        cv.brushstyle = BS_SOLID
-                        if MdlOption("Ticks") == "1":
-                            cv.brushcolor = WHITE
-                            cv.ellipse(int(p.x)-2, int(p.y)-2, int(p.x)+2, int(p.y)+2)
-                        else:
-                            cv.brushcolor = vertexdotcolor
-                            cv.ellipse(int(p.x)-1, int(p.y)-1, int(p.x)+1, int(p.y)+1)
                 else:
                     cv.pencolor = vertexdotcolor
                     cv.brushstyle = BS_SOLID
@@ -4056,7 +4046,7 @@ class BoneHandle(qhandles.GenericHandle):
                 undo.exchange(oldmesh, newmesh)
         framename = editor.Root.currentcomponent.currentframe.name
         for bone in new:
-            if editor.ModelComponentList.has_key('bonelist') and editor.ModelComponentList['bonelist'].has_key(bone.name) and editor.ModelComponentList['bonelist'][bone.name].has_key('frames') and editor.ModelComponentList['bonelist'][bone.name]['frames'].has_key(framename):
+            if editor.ModelComponentList['bonelist'].has_key(bone.name) and editor.ModelComponentList['bonelist'][bone.name].has_key('frames') and editor.ModelComponentList['bonelist'][bone.name]['frames'].has_key(framename):
                 editor.ModelComponentList['bonelist'][bone.name]['frames'][framename]['position'] = bone.position.tuple
                 if isinstance(self, BoneCornerHandle):
                     editor.ModelComponentList['bonelist'][bone.name]['frames'][framename]['rotmatrix'] = bone.rotmatrix.tuple
@@ -4869,14 +4859,14 @@ class BoneCenterHandle(BoneHandle):
         if delta or (flags&MB_REDIMAGE):
             newbone = self.bone.copy()
             frame_name = editor.Root.currentcomponent.currentframe.name
-            if editor.ModelComponentList.has_key('bonelist') and editor.ModelComponentList['bonelist'].has_key(newbone.name) and editor.ModelComponentList['bonelist'][newbone.name].has_key('frames') and editor.ModelComponentList['bonelist'][newbone.name]['frames'].has_key(frame_name):
+            if editor.ModelComponentList['bonelist'].has_key(newbone.name) and editor.ModelComponentList['bonelist'][newbone.name].has_key('frames') and editor.ModelComponentList['bonelist'][newbone.name]['frames'].has_key(frame_name):
                 newbone.position = quarkx.vect(editor.ModelComponentList['bonelist'][newbone.name]['frames'][frame_name]['position'])
                 newbone.rotmatrix = quarkx.matrix(editor.ModelComponentList['bonelist'][newbone.name]['frames'][frame_name]['rotmatrix'])
             new = [newbone]
             for bone in self.attachedbones:
                 old = old + [bone]
                 newbone = bone.copy()
-                if editor.ModelComponentList.has_key('bonelist') and editor.ModelComponentList['bonelist'].has_key(newbone.name) and editor.ModelComponentList['bonelist'][newbone.name].has_key('frames') and editor.ModelComponentList['bonelist'][newbone.name]['frames'].has_key(frame_name):
+                if editor.ModelComponentList['bonelist'].has_key(newbone.name) and editor.ModelComponentList['bonelist'][newbone.name].has_key('frames') and editor.ModelComponentList['bonelist'][newbone.name]['frames'].has_key(frame_name):
                     newbone.position = quarkx.vect(editor.ModelComponentList['bonelist'][newbone.name]['frames'][frame_name]['position'])
                     newbone.rotmatrix = quarkx.matrix(editor.ModelComponentList['bonelist'][newbone.name]['frames'][frame_name]['rotmatrix'])
                 new = new + [newbone]
@@ -4900,7 +4890,7 @@ class BoneCenterHandle(BoneHandle):
             vertices = obj.vtxlist
             for compname in vertices:
                 for vtx in vertices[compname]:
-                    if editor.ModelComponentList.has_key(compname) and editor.ModelComponentList[compname].has_key('weightvtxlist') and editor.ModelComponentList[compname]['weightvtxlist'].has_key(vtx) and editor.ModelComponentList[compname]['weightvtxlist'][vtx].has_key(obj.name):
+                    if editor.ModelComponentList[compname]['weightvtxlist'].has_key(vtx) and editor.ModelComponentList[compname]['weightvtxlist'][vtx].has_key(obj.name):
                         weight_value = editor.ModelComponentList[compname]['weightvtxlist'][vtx][obj.name]['weight_value']
                     else:
                         weight_value = 1.0
@@ -5013,7 +5003,7 @@ class BoneCornerHandle(BoneHandle):
             vertices = obj.vtxlist
             for compname in vertices:
                 for vtx in vertices[compname]:
-                    if editor.ModelComponentList.has_key(compname) and editor.ModelComponentList[compname].has_key('weightvtxlist') and editor.ModelComponentList[compname]['weightvtxlist'].has_key(vtx) and editor.ModelComponentList[compname]['weightvtxlist'][vtx].has_key(obj.name):
+                    if editor.ModelComponentList[compname]['weightvtxlist'].has_key(vtx) and editor.ModelComponentList[compname]['weightvtxlist'][vtx].has_key(obj.name):
                         weight_value = editor.ModelComponentList[compname]['weightvtxlist'][vtx][obj.name]['weight_value']
                     else:
                         weight_value = 1.0
@@ -5200,14 +5190,14 @@ class BoneCornerHandle(BoneHandle):
         if delta or (flags&MB_REDIMAGE):
             newbone = self.bone.copy()
             frame_name = editor.Root.currentcomponent.currentframe.name
-            if editor.ModelComponentList.has_key('bonelist') and editor.ModelComponentList['bonelist'].has_key(newbone.name) and editor.ModelComponentList['bonelist'][newbone.name].has_key('frames') and editor.ModelComponentList['bonelist'][newbone.name]['frames'].has_key(frame_name):
+            if editor.ModelComponentList['bonelist'].has_key(newbone.name) and editor.ModelComponentList['bonelist'][newbone.name].has_key('frames') and editor.ModelComponentList['bonelist'][newbone.name]['frames'].has_key(frame_name):
                 newbone.position = quarkx.vect(editor.ModelComponentList['bonelist'][newbone.name]['frames'][frame_name]['position'])
                 newbone.rotmatrix = quarkx.matrix(editor.ModelComponentList['bonelist'][newbone.name]['frames'][frame_name]['rotmatrix'])
             new = [newbone]
             for bone in self.attachedbones:
                 old = old + [bone]
                 newbone = bone.copy()
-                if editor.ModelComponentList.has_key('bonelist') and editor.ModelComponentList['bonelist'].has_key(newbone.name) and editor.ModelComponentList['bonelist'][newbone.name].has_key('frames') and editor.ModelComponentList['bonelist'][newbone.name]['frames'].has_key(frame_name):
+                if editor.ModelComponentList['bonelist'].has_key(newbone.name) and editor.ModelComponentList['bonelist'][newbone.name].has_key('frames') and editor.ModelComponentList['bonelist'][newbone.name]['frames'].has_key(frame_name):
                     newbone.position = quarkx.vect(editor.ModelComponentList['bonelist'][newbone.name]['frames'][frame_name]['position'])
                     newbone.rotmatrix = quarkx.matrix(editor.ModelComponentList['bonelist'][newbone.name]['frames'][frame_name]['rotmatrix'])
                 new = new + [newbone]
@@ -5343,6 +5333,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.202  2010/04/30 08:37:17  cdunde
+#Fix for vertex handles not drawing when switching from face to vertex mode after view scroll.
+#
 #Revision 1.201  2010/04/23 23:15:48  cdunde
 #Proper bone movement code update by DanielPharos.
 #
