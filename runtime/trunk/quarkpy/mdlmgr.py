@@ -740,7 +740,7 @@ class ModelLayout(BaseLayout):
         global treeviewselchanged, check_currentcomponent, check_comp_list, check_pos, check_color, checkbone_length, check_offset, checkbone_scale, check_show_vtx_color, check_show_weight_color, check_apply_vtx_weights, check_use_weights, check_tag_pos
 
         # Stops filling Specifics page (flickering) during animation.
-        if quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] == "1" or quarkx.setupsubset(SS_MODEL, "Options")['AnimationCFGActive'] == "1":
+        if quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] == "1":
             return
 
         currentcomp = self.editor.Root.currentcomponent
@@ -1896,6 +1896,10 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.121  2010/05/01 04:25:37  cdunde
+#Updated files to help increase editor speed by including necessary ModelComponentList items
+#and removing redundant checks and calls to the list.
+#
 #Revision 1.120  2010/04/25 04:35:26  cdunde
 #To fix slowdown during animation and frame selection due to size of ModelComponentList.
 #
