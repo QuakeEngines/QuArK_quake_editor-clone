@@ -21,13 +21,13 @@ from mdlutils import *
 #
 
 def componentof(obj):
-  while not (obj is None):
-    obj = obj.parent
-    if obj is None:
-      return None
-    else:
-      if obj.type == ':mc':
-        return obj
+    while not (obj is None):
+        obj = obj.parent
+        if obj is None:
+            return None
+        else:
+            if obj.type == ':mc':
+                return obj
 
 
 def droptarget(editor, newitem):
@@ -35,34 +35,34 @@ def droptarget(editor, newitem):
     ex = editor.layout.explorer
     fs = ex.focussel     # currently selected item
     if not newitem is None:
-      
-      if newitem.type==':mc':
-        return editor.Root, None
-      elif newitem.type==':mf':
-        if not fs is None:
-          c=componentof(fs)
-          if c is None:
-            c=editor.Root.currentcomponent
-          return c.dictitems['Frames:fg'], None
-      elif newitem.type in ('.pcx', '.tga', '.dds', '.png', '.jpg', '.bmp'):
-        if not fs is None:
-          c=componentof(fs)
-          if c is None:
-            c=editor.Root.currentcomponent
-          return c.dictitems['Skins:sg'], None
-      elif newitem.type==(':tag'):
-        return editor.Root.dictitems['Misc:mg'], None
-      elif newitem.type==(':bone'):
-        if editor.Root["no_skeleton"]=='1':
-          return editor.Root.dictitems['Misc:mg'], None
-        else: 
-          if not fs is None:
-            c=componentof(fs)
-            if c is None:
-              c=editor.Root.currentcomponent
-            return c.dictitems['Skeleton:bg'], None
-#    if editor.Root.acceptitem(newitem):
-#        return editor.Root, None   # in the root, at the end
+        if newitem.type==':mc':
+            return editor.Root, None
+        elif newitem.type==':mf':
+            if not fs is None:
+                c=componentof(fs)
+                if c is None:
+                    c=editor.Root.currentcomponent
+                return c.dictitems['Frames:fg'], None
+        elif newitem.type in ('.pcx', '.tga', '.dds', '.png', '.jpg', '.bmp'):
+            if not fs is None:
+                c=componentof(fs)
+                if c is None:
+                    c=editor.Root.currentcomponent
+                return c.dictitems['Skins:sg'], None
+        elif newitem.type==(':tag'):
+            return editor.Root.dictitems['Misc:mg'], None
+        elif newitem.type==(':bone'):
+            if editor.Root["no_skeleton"]=='1':
+                return editor.Root.dictitems['Misc:mg'], None
+            else: 
+                if not fs is None:
+                    c=componentof(fs)
+                    if c is None:
+                        c=editor.Root
+                    try:
+                        return c.dictitems['Skeleton:bg'], None
+                    except:
+                        pass
     # cannot insert new item at all...
     return None, None
 
@@ -122,8 +122,8 @@ def dropitemsnow(editor, newlist, text=Strings[544], center="S"):
             return
         if not newitem.isallowedparent(nparent):
             undo.cancel()    # not required, but it's better when it's done
-            msg = Strings[-106]
-            quarkx.msgbox(msg, MT_ERROR, MB_OK)
+            quarkx.beep()
+            quarkx.msgbox("Use Duplicate function\nto copy this item.", qutils.MT_ERROR, qutils.MB_OK)
             return
         new = newitem.copy()
         prepareobjecttodrop(editor, new)
@@ -233,14 +233,25 @@ def edit_cut(editor, m=None):
 
 
 def edit_paste(editor, m=None):
-
     newitems = quarkx.pasteobj(1)
     try:
         origin = m.origin
     except:
         origin = "+"
     if not dropitemsnow(editor, newitems, Strings[543], origin):
-        quarkx.beep()
+        pass
+    else:
+        for item in newitems:
+            if item.type == ":mc":
+                quarkx.beep()
+                quarkx.msgbox("Use Duplicate function\nto copy a component.", qutils.MT_ERROR, qutils.MB_OK)
+                return
+            elif item.type == ":mf":
+                quarkx.beep()
+                quarkx.msgbox("Use Duplicate function\nto copy a frame.", qutils.MT_ERROR, qutils.MB_OK)
+                return
+        quarkx.msgbox("Rename copied items\nto avoid duplicate name errors.", qutils.MT_INFORMATION, qutils.MB_OK)
+        return
 
 
 def edit_dup(editor, m=None):
@@ -555,7 +566,8 @@ def ForceToGrid(editor, grid, sellist):
 
 def groupcolor(m):
     editor = mapeditor(SS_MODEL)
-    if editor is None: return
+    if editor is None:
+        return
     group = editor.layout.explorer.uniquesel
     if (group is None) or (group.type != ':mc'):
         return
@@ -568,7 +580,8 @@ def groupcolor(m):
         except:
             oldval = 0
         nval = editor.form.choosecolor(oldval)
-        if nval is None: return
+        if nval is None:
+            return
         nval = str(colorquake(nval))
     if nval != oldval:
         undo = quarkx.action()
@@ -579,6 +592,10 @@ def groupcolor(m):
 #
 #
 #$Log$
+#Revision 1.31  2010/05/01 04:25:37  cdunde
+#Updated files to help increase editor speed by including necessary ModelComponentList items
+#and removing redundant checks and calls to the list.
+#
 #Revision 1.30  2010/03/26 07:28:42  cdunde
 #To add new Model Editor sub-group folders to the Skins group.
 #
