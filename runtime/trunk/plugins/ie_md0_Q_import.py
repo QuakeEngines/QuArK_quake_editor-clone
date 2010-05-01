@@ -418,7 +418,7 @@ class mdl_obj:
 def load_textures(mdl, texture_name):
     global tobj, logging
     # Checks if the model has textures specified with it.
-    skinsize = ()
+    skinsize = (256, 256)
     skingroup = quarkx.newobj('Skins:sg')
     skingroup['type'] = chr(2)
     if logging == 1:
@@ -643,6 +643,10 @@ quarkpy.qmdlbase.RegisterMdlImporter(".mdl Quake Importer", ".mdl file", "*.mdl"
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.2  2010/05/01 04:25:37  cdunde
+# Updated files to help increase editor speed by including necessary ModelComponentList items
+# and removing redundant checks and calls to the list.
+#
 # Revision 1.1  2010/03/30 17:19:37  cdunde
 # Needed to change file name for proper listing on menu.
 #

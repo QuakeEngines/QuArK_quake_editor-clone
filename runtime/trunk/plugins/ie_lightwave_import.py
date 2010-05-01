@@ -1646,7 +1646,7 @@ def create_objects(filename, polynames, clip_list, objspec_list, surf_list, base
     for poly in polynames:
         ### For the Skins:sg group.
         # Checks if the model has textures specified with it.
-        skinsize = (128, 128)
+        skinsize = (256, 256)
         skingroup = quarkx.newobj('Skins:sg')
         skingroup['type'] = chr(2)
         skinname = (poly + '.tga')
@@ -2680,6 +2680,10 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.34  2010/05/01 04:25:37  cdunde
+# Updated files to help increase editor speed by including necessary ModelComponentList items
+# and removing redundant checks and calls to the list.
+#
 # Revision 1.33  2010/04/23 22:56:55  cdunde
 # File cleanup.
 #
