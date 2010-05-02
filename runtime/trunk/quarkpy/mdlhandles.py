@@ -1231,14 +1231,6 @@ class SkinHandle(qhandles.GenericHandle):
                         editor.ModelVertexSelList = []
                     PassSkinSel2Editor(editor)
                     Update_Editor_Views(editor, 1)
-            else:
-                if str(self.pos) == str(editor.SkinVertexSelList[0][0]):
-                    editor.SkinVertexSelList = []
-                    if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_EDwSV'] == "1":
-                        editor.ModelVertexSelList = []
-                    PassSkinSel2Editor(editor)
-                    Update_Editor_Views(editor, 1)
-                    view.invalidate()
 
         def change_basevertex(m, self=self, editor=editor, view=view):
             for item in editor.SkinVertexSelList:
@@ -1253,23 +1245,13 @@ class SkinHandle(qhandles.GenericHandle):
                     if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_EDwSV'] == "1":
                         editor.ModelVertexSelList = []
                     PassSkinSel2Editor(editor)
-                    if len(editor.SkinVertexSelList) > 1:
-                        try:
-                            skindrawobject = editor.Root.currentcomponent.currentskin
-                        except:
-                            skindrawobject = None
-                        buildskinvertices(editor, SkinView1, editor.layout, editor.Root.currentcomponent, skindrawobject)
-                        SkinView1.invalidate(1)
-                        if len(view.handles) == 0:
-                            viewhandles = BuildHandles(editor, editor.layout.explorer, editor.layout.views[0])
-                        else:
-                            viewhandles = view.handles
-                        for v in editor.layout.views:
-                            if v.info["viewname"] == "skinview":
-                                continue
-                            v.handles = viewhandles
-                    Update_Editor_Views(editor, 4)
-            view.invalidate()
+                    Update_Editor_Views(editor, 1)
+                try:
+                    skindrawobject = editor.Root.currentcomponent.currentskin
+                except:
+                    skindrawobject = None
+                buildskinvertices(editor, view, editor.layout, editor.Root.currentcomponent, skindrawobject)
+                view.invalidate()
 
         def pick_skinvertex(m, self=self, editor=editor, view=view):
             itemcount = 0
@@ -1301,14 +1283,6 @@ class SkinHandle(qhandles.GenericHandle):
                                 if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_EDwSV'] == "1":
                                     editor.ModelVertexSelList = []
                                     PassSkinSel2Editor(editor)
-                                    if editor.layout.views[0].handles == 0:
-                                        viewhandles = BuildHandles(editor, editor.layout.explorer, editor.layout.views[0])
-                                    else:
-                                        viewhandles = editor.layout.views[0].handles
-                                    for v in editor.layout.views:
-                                        if v.info["viewname"] == "skinview":
-                                            continue
-                                        v.handles = viewhandles
                                     Update_Editor_Views(editor, 1)
                                 return
                             itemcount = itemcount + 1
@@ -1324,14 +1298,6 @@ class SkinHandle(qhandles.GenericHandle):
                         if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_EDwSV'] == "1":
                             editor.ModelVertexSelList = []
                             PassSkinSel2Editor(editor)
-                            if editor.layout.views[0].handles == 0:
-                                viewhandles = BuildHandles(editor, editor.layout.explorer, editor.layout.views[0])
-                            else:
-                                viewhandles = editor.layout.views[0].handles
-                            for v in editor.layout.views:
-                                if v.info["viewname"] == "skinview":
-                                    continue
-                                v.handles = viewhandles
                             Update_Editor_Views(editor, 1)
                         return
                     else:
@@ -1359,14 +1325,6 @@ class SkinHandle(qhandles.GenericHandle):
                 if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_EDwSV'] == "1":
                     editor.ModelVertexSelList = []
                 PassSkinSel2Editor(editor)
-                if editor.layout.views[0].handles == 0:
-                    viewhandles = BuildHandles(editor, editor.layout.explorer, editor.layout.views[0])
-                else:
-                    viewhandles = editor.layout.views[0].handles
-                for v in editor.layout.views:
-                    if v.info["viewname"] == "skinview":
-                        continue
-                    v.handles = viewhandles
                 Update_Editor_Views(editor, 1)
 
         def alignskinvertexesclick(m, self=self, editor=editor, view=view):
@@ -1394,15 +1352,7 @@ class SkinHandle(qhandles.GenericHandle):
             view.invalidate()
             if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_EDwSV'] == "1":
                 editor.ModelVertexSelList = []
-                if editor.layout.views[0].handles == 0:
-                    viewhandles = BuildHandles(editor, editor.layout.explorer, editor.layout.views[0])
-                else:
-                    viewhandles = editor.layout.views[0].handles
-                for v in editor.layout.views:
-                    if v.info["viewname"] == "skinview":
-                        continue
-                    v.handles = viewhandles
-                Update_Editor_Views(editor, 4)
+                Update_Editor_Views(editor)
 
         setup = quarkx.setupsubset(SS_MODEL, "Options")
         if len(editor.SkinVertexSelList) > 2 or not setup["SingleVertexDrag"]:
@@ -1413,6 +1363,7 @@ class SkinHandle(qhandles.GenericHandle):
         Forcetogrid = qmenu.item("&Force to grid", forcegrid1click,"|Force to grid:\n\nThis will cause any vertex to 'snap' to the nearest location on the Skin-view's grid.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
         PickBaseVertex = qmenu.item("&Pick Base Vertex", pick_basevertex, "|Pick Base Vertex:\n\n This is used to pick, or remove, the 'Base' (stationary) vertex to align other vertexes to on the Skin-view. It also works in conjunction with the 'Clear Skin Pick list' below it.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.skinview.html#funcsnmenus")
         ChangeBaseVertex = qmenu.item("&Change Base Vertex", change_basevertex, "|Change Base Vertex:\n\n This is used to select another vertex as the 'Base' (stationary) vertex to align other vertexes to on the Skin-view. It also works in conjunction with the 'Clear Skin Pick list' below it.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.skinview.html#funcsnmenus")
+        ClearBaseVertex = qmenu.item("&Clear Base Vertex", change_basevertex, "|Clear Base Vertex:\n\n This Clears the 'Base' (stationary) vertex and the 'Pick Skin Vertex' list of all selected vertexes, if any.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.skinview.html#funcsnmenus")
         PickSkinVertex = qmenu.item("&Pick Skin Vertex", pick_skinvertex, "|Pick Skin Vertex:\n\n This is used to pick, or remove, skin vertexes to align them with the 'Base' (stationary) vertex on the Skin-view. A base Vertex must be chosen first. It also works in conjunction with the 'Clear Skin Pick list' below it and the multi or single drag mode button on the Skin-view page.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.skinview.html#funcsnmenus")
         AlignSkinVertexes = qmenu.item(AlignText, alignskinvertexesclick,"|Align skin vertex(s):\n\nOnce a set of vertexes have been 'Picked' on the Skin-view all of those vertexes will be moved to the 'Base' (stationary) vertex (the first one selected) location and aligned for possible multiple vertex movement. It also works in conjunction with the 'Clear Skin Pick list' above it and the multi or single drag mode button on the Skin-view page.|intro.modeleditor.skinview.html#funcsnmenus")
         ClearSkinPicklist = qmenu.item("&Clear Skin Pick list", skinpick_cleared, "|Clear Skin Pick list:\n\nThis Clears the 'Base' (stationary) vertex and the 'Pick Skin Vertex' list of all vertexes and it becomes active when one or more vertexes have been selected.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.skinview.html#funcsnmenus")
@@ -1433,7 +1384,9 @@ class SkinHandle(qhandles.GenericHandle):
                     if str(self.pos) == str(editor.SkinVertexSelList[0][0]):
                         AlignSkinVertexes.state = qmenu.disabled
                         PickSkinVertex.state = qmenu.disabled
-                    menu = [ChangeBaseVertex, PickSkinVertex, qmenu.sep, ClearSkinPicklist, qmenu.sep, AlignSkinVertexes, qmenu.sep, Forcetogrid]
+                        menu = [ClearBaseVertex, PickSkinVertex, qmenu.sep, ClearSkinPicklist, qmenu.sep, AlignSkinVertexes, qmenu.sep, Forcetogrid]
+                    else:
+                        menu = [ChangeBaseVertex, PickSkinVertex, qmenu.sep, ClearSkinPicklist, qmenu.sep, AlignSkinVertexes, qmenu.sep, Forcetogrid]
             else:
                 if len(editor.SkinVertexSelList) < 2:
                     AlignSkinVertexes.state = qmenu.disabled
@@ -5333,6 +5286,10 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.203  2010/05/01 04:25:37  cdunde
+#Updated files to help increase editor speed by including necessary ModelComponentList items
+#and removing redundant checks and calls to the list.
+#
 #Revision 1.202  2010/04/30 08:37:17  cdunde
 #Fix for vertex handles not drawing when switching from face to vertex mode after view scroll.
 #

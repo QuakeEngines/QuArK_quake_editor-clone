@@ -1705,12 +1705,6 @@ class RectangleDragObject(RedImageDragObject):
                 import mdlhandles
                 if isinstance(editor.dragobject, mdlhandles.RectSelDragObject):
                     if self.redimages is not None:
-                        if self.view.info["viewname"] == "skinview":
-                            try:
-                                skindrawobject = editor.Root.currentcomponent.currentskin
-                            except:
-                                skindrawobject = None
-                            mdlhandles.buildskinvertices(editor, self.view, editor.layout, editor.Root.currentcomponent, skindrawobject)
                         self.rectanglesel(editor, x,y, self.redimages[0], self.view)
                         if self.view.info["viewname"] == "skinview":
                             return
@@ -2215,6 +2209,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.89  2009/09/30 19:37:26  cdunde
+#Threw out tags dialog, setup tag dragging, commands, and fixed saving of face selection.
+#
 #Revision 1.88  2009/08/31 08:52:16  cdunde
 #To try and stop errors from opening the Model Editor Skin-view for the first time.
 #
