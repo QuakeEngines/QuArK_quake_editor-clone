@@ -102,35 +102,22 @@ def ShowHideComp(x):
     obj.showhide(x)
     editor.layout.explorer.uniquesel = None
 
+    from mdlhandles import SkinView1
     if x == 0:
+        if SkinView1 is not None:
+            SkinView1.handles = []
         for view in editor.layout.views:
             view.handles = []
-            if view.viewmode == "wire":
-                view.invalidate()
-            else:
-                view.invalidate(1)
     else:
-        import mdlhandles
-        from mdlhandles import SkinView1
         if SkinView1 is not None:
             q = editor.layout.skinform.linkedobjects[0]
             q["triangles"] = str(len(editor.Root.currentcomponent.triangles))
             editor.layout.skinform.setdata(q, editor.layout.skinform.form)
-            SkinView1.invalidate()
             try:
                 skindrawobject = editor.Root.currentcomponent.currentskin
             except:
                 skindrawobject = None
             mdlhandles.buildskinvertices(editor, SkinView1, editor.layout, editor.Root.currentcomponent, skindrawobject)
-            editor.finishdrawing(SkinView1)
-
-        for view in editor.layout.views:
-            if view.viewmode == "wire":
-                pass
-            else:
-                view.invalidate(1)
-            mdleditor.setsingleframefillcolor(editor, view)
-            view.repaint()
 
 def ShowComp(m):
     ShowHideComp(1)
@@ -2986,6 +2973,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.71  2010/05/01 04:49:04  cdunde
+#Weights dialog fix by DanielPharos and reset of range from .01 to 1.0.
+#
 #Revision 1.70  2010/05/01 04:25:37  cdunde
 #Updated files to help increase editor speed by including necessary ModelComponentList items
 #and removing redundant checks and calls to the list.
