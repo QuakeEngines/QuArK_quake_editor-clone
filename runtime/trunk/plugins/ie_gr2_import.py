@@ -1113,6 +1113,10 @@ def loadmodel(root, filename, gamename, nomessage=0):
         pos = (~arttool_rotmatrix) * pos
         return pos
 
+    def ArtToolTransformMatrix(old_rot):
+        rot = arttool_rotmatrix * old_rot
+        return rot
+
     undo = quarkx.action()
     
     #editor.Root.currentcomponent = Component
@@ -1125,6 +1129,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
     #Process what we loaded
     Full_ComponentList = []
     Full_QuArK_bones = []
+    bonelist = editor.ModelComponentList['bonelist']
     for current_model in models:
         ComponentList = []
         QuArK_bones = []
@@ -1144,7 +1149,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
                 new_bone['flags'] = (0,0,0,0,0,0)
                 new_bone['show'] = (1.0,)
                 new_bone['parent_index'] = str(current_bone.parentindex)
-                if new_bone['parent_index'] == str(-1):
+                if current_bone.parentindex == -1:
                     # Update the bone name.
                     # Handle initial placement:
                     if current_model.initial_placement.flags & 1:
@@ -1168,9 +1173,9 @@ def loadmodel(root, filename, gamename, nomessage=0):
                                         [0.0, 0.0, 1.0, 0.0],
                                         [0.0, 0.0, 0.0, 1.0]]
                 else:
-                    parent_pos = QuArK_bone_pos[int(new_bone.dictspec['parent_index'])]
-                    parent_rot = QuArK_bone_rotmatrix[int(new_bone.dictspec['parent_index'])]
-                    parent_scale = QuArK_bone_scale[int(new_bone.dictspec['parent_index'])]
+                    parent_pos = QuArK_bone_pos[current_bone.parentindex]
+                    parent_rot = QuArK_bone_rotmatrix[current_bone.parentindex]
+                    parent_scale = QuArK_bone_scale[current_bone.parentindex]
                 QuArK_bone_pos_raw[bone_index] = (current_bone.transform.origin[0], current_bone.transform.origin[1], current_bone.transform.origin[2])
                 QuArK_bone_rotmatrix_raw[bone_index] = quaternion2matrix(current_bone.transform.rotation)
                 QuArK_bone_scale_raw[bone_index] = [[current_bone.transform.scale[0], current_bone.transform.scale[1], current_bone.transform.scale[2], 0.0],
@@ -1228,6 +1233,8 @@ def loadmodel(root, filename, gamename, nomessage=0):
 
                 if not editor.ModelComponentList.has_key('gr2_data'):
                     editor.ModelComponentList['gr2_data'] = {}
+                bonelist[new_bone.name] = {'frames': {}}
+                bonelist[new_bone.name]['type'] = 'gr2'
                 editor.ModelComponentList['gr2_data'][new_bone.name] = {}
                 editor.ModelComponentList['gr2_data'][new_bone.name]['bone_pos'] = QuArK_bone_pos[bone_index]
                 editor.ModelComponentList['gr2_data'][new_bone.name]['bone_rotmatrix'] = QuArK_bone_rotmatrix[bone_index]
@@ -1377,6 +1384,41 @@ def loadmodel(root, filename, gamename, nomessage=0):
         progressbar.progress()
     progressbar.close()
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    #FIXME: Forgot to set the bonelist here from "meshframe:mf"!!!
+    #Currently done in ANIMATION section...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     # ANIMATION STARTS THERE
    # TMP_ComponentList = editor.Root.findallsubitems("", ':mc')
     TMP_ComponentList = []
@@ -1455,11 +1497,14 @@ def loadmodel(root, filename, gamename, nomessage=0):
 
     for current_animation in animations:
         NumberOfFrames = 20 #QuArK: Overwriting the timestep to reduce the number of frames
+        FileNumberOfFrames = int(round(current_animation.duration / current_animation.timestep))
         for item in editor.Root.subitems:
             if item.type == ":mc":
                 if item.dictspec.has_key('gr_max_frames'):
-                    NumberOfFrames = int(current_animation.duration / current_animation.timestep)
+                    NumberOfFrames = int(item.dictspec['gr_max_frames'])
                 break
+        if NumberOfFrames > FileNumberOfFrames:
+            NumberOfFrames = FileNumberOfFrames
 
         ComponentList = Full_ComponentList
         QuArK_bones = Full_QuArK_bones
@@ -1684,6 +1729,19 @@ def loadmodel(root, filename, gamename, nomessage=0):
                 QuArK_frame_position[frame_counter][bone_counter] = bone_pos
                 QuArK_frame_matrix[frame_counter][bone_counter] = bone_rot
                 QuArK_frame_scale[frame_counter][bone_counter] = bone_scale
+
+                frame = {}
+                frame['position'] = ArtToolTransform(bone_pos)
+                frame['rotmatrix'] = ArtToolTransformMatrix(quarkx.matrix((bone_rot[0][0], bone_rot[1][0], bone_rot[2][0]),
+                                                                          (bone_rot[0][1], bone_rot[1][1], bone_rot[2][1]),
+                                                                          (bone_rot[0][2], bone_rot[1][2], bone_rot[2][2]))).tuple
+                comp = ComponentList[0] #@
+                current_frame = new_frames[comp.name][frame_counter]
+                bonelist[current_bone.name]['frames'][current_frame.name] = frame
+                if frame_counter == 0:
+                    #Copy this for the meshframe
+                    bonelist[current_bone.name]['frames']['meshframe:mf'] = frame
+
                 BoneDone[bone_counter] = 1
               BonesToDo = DelayBones
 
@@ -1730,16 +1788,34 @@ def loadmodel(root, filename, gamename, nomessage=0):
 
                         rot_diff = new_bone_matrix * (~old_bone_rotmatrix)
                         scale_diff = new_bone_scale * (~old_bone_scale)
-                        for vert_counter in range(len(vtxlist)):
-                            vert_index = vtxlist[vert_counter]
+                        
+                        
+                        frame = bonelist[current_bone.name]['frames'][new_frames[comp.name][0].name] #@
+                        old_bone_pos = quarkx.vect(frame['position'])
+                        old_bone_rot = quarkx.matrix(frame['rotmatrix'])
+                        frame = bonelist[current_bone.name]['frames'][current_frame.name]
+                        new_bone_pos = quarkx.vect(frame['position'])
+                        new_bone_rot = quarkx.matrix(frame['rotmatrix'])
+                        
+                        
+                        
+                        
+                        for vert_index in vtxlist:
                             weight_value = 1.0
                             if editor.ModelComponentList[comp.name]['weightvtxlist'].has_key(vert_index) and editor.ModelComponentList[comp.name]['weightvtxlist'][vert_index].has_key(current_bone.name):
                                 weight_value = editor.ModelComponentList[comp.name]['weightvtxlist'][vert_index][current_bone.name]['weight_value']
                             vert_weight_values[vert_index] += weight_value
-                            currentvertex_pos = ArtToolDetransformVect(oldverts[vert_index])
-                            temppos = scale_diff * rot_diff * (currentvertex_pos - old_bone_pos)
-                            newpos = ((temppos + new_bone_pos) * weight_value)
-                            vert_newpos[vert_index] += ArtToolTransformVect(newpos)
+                            #currentvertex_pos = ArtToolDetransformVect(oldverts[vert_index])
+                            #temppos = scale_diff * rot_diff * (currentvertex_pos - old_bone_pos)
+                            #newpos = ((temppos + new_bone_pos) * weight_value)
+                            #vert_newpos[vert_index] += ArtToolTransformVect(newpos)
+                            
+                            
+                            newpos = oldverts[vert_index] - old_bone_pos
+                            newpos = new_bone_rot * (~old_bone_rot) * newpos
+                            newpos = (newpos + new_bone_pos) * weight_value
+                            vert_newpos[vert_index] += newpos
+                            
                 for vert_counter in range(len(oldverts)):
                     vert_newpos[vert_counter] += oldverts[vert_counter] * (1.0 - vert_weight_values[vert_counter])
                     newverts[vert_counter] = vert_newpos[vert_counter]
@@ -1825,6 +1901,9 @@ def dataformname(o):
              "These textures may or may not have 'shaders' that they use for special effects."$0D0D22
              "skin name"$22" - The currently selected skin texture name."$0D22
              "edit skin"$22" - Opens this skin texture in an external editor."$0D22
+             "nbr of frames"$22" - Sets the number of animation key frames to be imported, default = 20."$0D
+             "            The grater number of frames to be imported can take much longer."$0D
+             "            If the file has fewer frames then this setting that is what will load."$0D22
              "Vertex Color"$22" - Color to use for this component's u,v vertex color mapping."$0D
              "            Click the color display button to select a color."$0D22
              "show weight colors"$22" - When checked, if component has vertex weight coloring they will show."$0D
@@ -1843,10 +1922,11 @@ def dataformname(o):
       """ + external_skin_editor_dialog_plugin + """
       Sep: = {Typ = "S"   Txt = ""}
       gr_max_frames: = {
-                     Typ = "X"
-                     Txt = "max frames"
-                     Hint = "If NOT checked, only a min. number of animation key frames will be imported."$0D
-                            "When checked more frames will be imported but this could take much longer."
+                     Typ = "EU"
+                     Txt = "nbr of frames"
+                     Hint = "Sets the number of animation key frames to be imported, default = 20."$0D
+                            "The grater number of frames to be imported can take much longer."$0D
+                            "If the file has fewer frames then this setting that is what will load."
                     }
       """ + vtx_UVcolor_dialog_plugin + """
       """ + vertex_weights_specifics_plugin + """
@@ -1907,20 +1987,12 @@ def dataformname(o):
         DummyItem = DummyItem.parent
     comp = DummyItem
 
-    if comp.dictspec.has_key('gr_max_frames'):
-        for item in editor.Root.subitems:
-            if item.name == comp.name:
-                continue
-            if item.type == ":mc":
-                item['gr_max_frames'] = comp.dictspec['gr_max_frames']
-    else:
-        for item in editor.Root.subitems:
-            if item.name == comp.name:
-                continue
-            if item.type == ":mc":
-                item['gr_max_frames'] = ""
-
     if comp.type == ":mc": # Just makes sure what we have is a model component.
+        if not comp.dictspec.has_key('gr_max_frames'):
+            comp['gr_max_frames'] = "20"
+        elif int(comp.dictspec['gr_max_frames']) < 2:
+            comp['gr_max_frames'] = "2"
+
         formobj = quarkx.newobj("gr2_mc:form")
         formobj.loadtext(dlgdef)
         return formobj, icon_btns
@@ -1935,6 +2007,7 @@ def dataforminput(o):
         DummyItem = DummyItem.parent
     if DummyItem.type == ":mc":
         comp = DummyItem
+
         if not comp.dictspec.has_key('vtx_color'):
             comp['vtx_color'] = "0.75 0.75 0.75"
         # This sections handles the data for this model type skin page form.
@@ -1979,6 +2052,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.16  2010/05/01 07:16:40  cdunde
+# Update by DanielPharos to allow removal of weight_index storage in the ModelComponentList related files.
+#
 # Revision 1.15  2010/05/01 04:25:37  cdunde
 # Updated files to help increase editor speed by including necessary ModelComponentList items
 # and removing redundant checks and calls to the list.
