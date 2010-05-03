@@ -1068,7 +1068,7 @@ Strings = {
     -105: "Note: when this button is pressed, the normal handles around the objects in your map are replaced by pink handles that let you do 'linear mapping' operations.\n\n'Linear mapping' operations include rotations, zooms, and various distortions.\n\nClick again on this button to get the normal handles.",
     -106: "Cannot drop this item here.",
     -107: "Incompatible items.",
-    -151: "Cannot drop this item into model component.",
+    -151: "No Current Component !\n\nYou must first select a component\nto receive this item then try again.",
 
     -409: "Bezier",
 
@@ -1078,6 +1078,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.148  2010/04/16 20:07:25  danielpharos
+#Move some version-stuff about. quarkpy now also checks the minor version number.
+#
 #Revision 1.147  2010/03/07 09:45:44  cdunde
 #Added strings for model editor.
 #

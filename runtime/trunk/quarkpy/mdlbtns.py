@@ -67,6 +67,19 @@ def droptarget(editor, newitem):
     return None, None
 
 
+def fixname(parent, newitem):
+    name = newitem.shortname
+    comparenbr = 0
+    if newitem.type == ":bone":
+        comparenbr = comparenbr + 1
+    for item in parent.subitems:
+        if item.shortname.startswith(name):
+            comparenbr = comparenbr + 1
+    if comparenbr != 0:
+        newitem.shortname = newitem.shortname + " " + str(comparenbr)
+    return newitem
+
+
 def dropitemsnow(editor, newlist, text=Strings[544], center="S"):
     "Drop new items into the given map editor."
     #
@@ -133,6 +146,7 @@ def dropitemsnow(editor, newlist, text=Strings[544], center="S"):
         except:
             pass
         if incompatible_items == 0:
+            new = fixname(nparent, new)
             undo.put(nparent, new, nib)
 
     if incompatible_items == 0:
@@ -250,7 +264,6 @@ def edit_paste(editor, m=None):
                 quarkx.beep()
                 quarkx.msgbox("Use Duplicate function\nto copy a frame.", qutils.MT_ERROR, qutils.MB_OK)
                 return
-        quarkx.msgbox("Rename copied items\nto avoid duplicate name errors.", qutils.MT_INFORMATION, qutils.MB_OK)
         return
 
 
@@ -592,6 +605,9 @@ def groupcolor(m):
 #
 #
 #$Log$
+#Revision 1.32  2010/05/01 04:43:59  cdunde
+#General function corrections and file cleanup.
+#
 #Revision 1.31  2010/05/01 04:25:37  cdunde
 #Updated files to help increase editor speed by including necessary ModelComponentList items
 #and removing redundant checks and calls to the list.
