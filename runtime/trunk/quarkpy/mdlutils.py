@@ -3472,6 +3472,62 @@ def deletetag(editor, tag_to_del):
 
 
 #
+# Changes the u and v skinning coords in the Skin-view for all faces (triangles)
+# of the currentcomponent and updates its "Tris" u, v values based on the
+# size of the currentskin in the Skin-view at the time this function is called.
+#
+def skinrescale(editor):
+    import mdlhandles
+    from mdlhandles import SkinView1
+    comp = editor.Root.currentcomponent
+    skin = comp.currentskin
+    if comp is None:
+        quarkx.msgbox("No Current Component Selected !\n\nYou need to select a component\nto activate this function.\n\nPress 'F1' for InfoBase help\nof this function for details.\n\nAction Canceled.", MT_ERROR, MB_OK)
+        return
+    if skin is None:
+        quarkx.msgbox("No Skin Texture Exist !\n\nYou need to import a skin texture\nfrom the 'Texture Browser' to activate this function.\n\nPress 'F1' for InfoBase help\nof this function for details.\n\nAction Canceled.", MT_ERROR, MB_OK)
+        return
+    if SkinView1 is None:
+        quarkx.msgbox("No Skin Handles Exist !\n\nPress 'F1' for InfoBase help\nof this function for details.\n\nAction Canceled.", MT_ERROR, MB_OK)
+        return
+    new_texWidth, new_texHeight = skin["Size"]
+    old_texWidth, old_texHeight = comp.dictspec['skinsize']
+    if new_texWidth == old_texWidth and new_texHeight == old_texHeight:
+        return
+    new_comp = comp.copy()
+    new_comp['skinsize'] = skin["Size"]
+    texWidth_scale = int(round(new_texWidth / old_texWidth))
+    texHeight_scale = int(round(new_texHeight / old_texHeight))
+
+    # Because the original list can not be changed, we use a dummy list copy
+    # then pass the updated values back to the original list, and so on, in a loop.
+    newtris = tris = comp.triangles
+    for i in range(len(tris)): # i is the tri_index based on its position in the 'Tris' frame list.
+        tri = tris[i]
+        for j in range(len(tri)): # j is the vert_index, either 0, 1 or 2 vertex of the triangle.
+                                    # To calculate a triangle's vert_index number = (i * 3) + j
+            u = tri[j][1] * texWidth_scale
+            v = tri[j][2] * texHeight_scale
+            if j == 0:
+                vtx0 = (tri[j][0], u, v)
+            elif j == 1:
+                vtx1 = (tri[j][0], u, v)
+            else:
+                vtx2 = (tri[j][0], u, v)
+        tri = (vtx0, vtx1, vtx2)
+        newtris[i:i+1] = [tri]
+    new_comp.triangles = newtris
+
+    # Now we need to rebuilt the Skin-view handles.
+    mdlhandles.buildskinvertices(editor, SkinView1, editor.layout, new_comp, skin)
+
+    # Finally the undo exchange is made and ok called to finish the function.
+    undo = quarkx.action()
+    undo.exchange(comp, new_comp)
+    editor.ok(undo, "Skin-view rescaled")
+
+
+#
 # Changes the selected faces (triangles), in the ModelFaceSelList of the editor,
 # u and v skinning coords based on the editor3Dview positions
 # which also changes their layout in the Skin-view causing a
@@ -4151,6 +4207,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.136  2010/05/01 07:16:40  cdunde
+#Update by DanielPharos to allow removal of weight_index storage in the ModelComponentList related files.
+#
 #Revision 1.135  2010/05/01 04:49:04  cdunde
 #Weights dialog fix by DanielPharos and reset of range from .01 to 1.0.
 #

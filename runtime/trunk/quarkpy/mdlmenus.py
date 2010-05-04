@@ -366,10 +366,14 @@ def MdlBackgroundMenu(editor, view=None, origin=None):
                 view.info["center"] = view.screencenter = quarkx.vect(0,0,0)
                 setprojmode(view)
 
+            def rescaleskinhandles(menu, editor=editor):
+                skinrescale(editor)
+
             ResetSkinView = qmenu.item("&Reset Skin-view", resetSkinview, "|Reset Skin-view:\n\nIf the model skinning image becomes 'lost', goes out of the Skin-view, you can use this function to reset the view and bring the model back to its starting position.|intro.modeleditor.skinview.html#funcsnmenus")
+            RescaleSkinHandles = qmenu.item("Rescale Skin &Handles", rescaleskinhandles, "|Rescale Skin Handles:\n\nIf the skin handles do not fit the image, you can use this function to rescale the handles to fit the current skin texture size.|intro.modeleditor.skinview.html#funcsnmenus")
             skinviewcommands = qmenu.popup("Vertex Commands", mdlhandles.SkinHandle(origin, None, None, None, None, None, None).menu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
             skinviewoptions = qmenu.popup("Skin-view Options", mdlhandles.SkinHandle(origin, None, None, None, None, None, None).optionsmenu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
-            extra = [qmenu.sep, ResetSkinView, qmenu.sep, skinviewcommands, skinviewoptions]
+            extra = [qmenu.sep, ResetSkinView, qmenu.sep, RescaleSkinHandles, qmenu.sep, skinviewcommands, skinviewoptions]
 
         # Add importer/exporter specific menu items
         from mdlmgr import SFTexts, IEfile
@@ -431,6 +435,9 @@ def BaseMenu(sellist, editor):
 #
 #
 #$Log$
+#Revision 1.49  2009/11/10 22:49:55  cdunde
+#Added update to fix broken RMB menu.
+#
 #Revision 1.48  2009/11/10 18:58:55  cdunde
 #To fix broken RMB menu.
 #
