@@ -1233,7 +1233,11 @@ def loadmodel(root, filename, gamename, nomessage=0):
 
                 if not editor.ModelComponentList.has_key('gr2_data'):
                     editor.ModelComponentList['gr2_data'] = {}
-                bonelist[new_bone.name] = {'frames': {}}
+            #    bonelist[new_bone.name] = {'frames': {}}
+                bone_rot = ((bone_rot[0][0], bone_rot[1][0], bone_rot[2][0]),
+                            (bone_rot[0][1], bone_rot[1][1], bone_rot[2][1]),
+                            (bone_rot[0][2], bone_rot[1][2], bone_rot[2][2])) # MY TEST
+                bonelist[new_bone.name] = {'frames': {'meshframe:mf': {'position': new_bone.position.tuple, 'rotmatrix': bone_rot}}} # MY TEST
                 bonelist[new_bone.name]['type'] = 'gr2'
                 editor.ModelComponentList['gr2_data'][new_bone.name] = {}
                 editor.ModelComponentList['gr2_data'][new_bone.name]['bone_pos'] = QuArK_bone_pos[bone_index]
@@ -1503,7 +1507,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
                 if item.dictspec.has_key('gr_max_frames'):
                     NumberOfFrames = int(item.dictspec['gr_max_frames'])
                 break
-        if NumberOfFrames > FileNumberOfFrames:
+        if NumberOfFrames > 20 and NumberOfFrames > FileNumberOfFrames:
             NumberOfFrames = FileNumberOfFrames
 
         ComponentList = Full_ComponentList
@@ -1738,7 +1742,8 @@ def loadmodel(root, filename, gamename, nomessage=0):
                 comp = ComponentList[0] #@
                 current_frame = new_frames[comp.name][frame_counter]
                 bonelist[current_bone.name]['frames'][current_frame.name] = frame
-                if frame_counter == 0:
+                if frame_counter == 0 and len(models) != 0 and len(animations) != 0: # File has both the model & animation.
+        #        if len(animations) == 0 and frame_counter == 0: # MY TEST
                     #Copy this for the meshframe
                     bonelist[current_bone.name]['frames']['meshframe:mf'] = frame
 
@@ -1788,11 +1793,14 @@ def loadmodel(root, filename, gamename, nomessage=0):
 
                         rot_diff = new_bone_matrix * (~old_bone_rotmatrix)
                         scale_diff = new_bone_scale * (~old_bone_scale)
-                        
-                        
-                        frame = bonelist[current_bone.name]['frames'][new_frames[comp.name][0].name] #@
-                        old_bone_pos = quarkx.vect(frame['position'])
-                        old_bone_rot = quarkx.matrix(frame['rotmatrix'])
+
+                        if len(models) != 0 and len(animations) != 0: # File has both the model & animation.
+                            frame = bonelist[current_bone.name]['frames'][new_frames[comp.name][0].name] #@
+                            old_bone_pos = quarkx.vect(frame['position'])
+                            old_bone_rot = quarkx.matrix(frame['rotmatrix'])
+                        else:
+                            old_bone_pos = current_bone.position # MY TEST
+                            old_bone_rot = quarkx.matrix(bonelist[current_bone.name]['frames']['meshframe:mf']['rotmatrix']) # MY TEST
                         frame = bonelist[current_bone.name]['frames'][current_frame.name]
                         new_bone_pos = quarkx.vect(frame['position'])
                         new_bone_rot = quarkx.matrix(frame['rotmatrix'])
@@ -1809,8 +1817,8 @@ def loadmodel(root, filename, gamename, nomessage=0):
                             #temppos = scale_diff * rot_diff * (currentvertex_pos - old_bone_pos)
                             #newpos = ((temppos + new_bone_pos) * weight_value)
                             #vert_newpos[vert_index] += ArtToolTransformVect(newpos)
-                            
-                            
+
+
                             newpos = oldverts[vert_index] - old_bone_pos
                             newpos = new_bone_rot * (~old_bone_rot) * newpos
                             newpos = (newpos + new_bone_pos) * weight_value
@@ -2052,6 +2060,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.17  2010/05/03 21:59:22  cdunde
+# File update fixes by DanielPharos. Still a work in progress.
+#
 # Revision 1.16  2010/05/01 07:16:40  cdunde
 # Update by DanielPharos to allow removal of weight_index storage in the ModelComponentList related files.
 #
