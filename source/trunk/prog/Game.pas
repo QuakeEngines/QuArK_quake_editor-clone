@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.79  2010/05/05 18:45:20  danielpharos
+Added logging for GetGameFileBase call.
+
 Revision 1.78  2010/02/21 15:42:51  danielpharos
 Fixed orangebox compiler not finishing compile.
 
@@ -940,7 +943,7 @@ begin
   end;
 end;
 
-procedure RestartAliasing(Filename: String);
+procedure RestartAliasing(const Filename: String);
 begin
   CurAliasName := Filename;
   CurAliasIndex := 0;
