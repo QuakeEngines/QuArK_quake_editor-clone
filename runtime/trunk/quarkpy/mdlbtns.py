@@ -128,6 +128,18 @@ def dropitemsnow(editor, newlist, text=Strings[544], center="S"):
         delta = editor.aligntogrid(delta)
     for newitem in newlist:
         nparent, nib = droptarget(editor, newitem)
+        if nparent is None and newitem.type == ".wl":
+            import os
+            image_type_list = ['.tga', '.dds', '.png', '.jpg', '.bmp']  # Order from best to worst (personal judgement).
+            for type in image_type_list:
+                if os.path.exists(newitem['path'] + "/" + newitem.shortname + type):
+                    nparent = editor.Root.currentcomponent.dictitems['Skins:sg']
+                    skin = quarkx.newobj(newitem.shortname + ".dds")
+                    image = quarkx.openfileobj(newitem['path'] + "/" + newitem.shortname + type)
+                    skin['Image1'] = image.dictspec['Image1']
+                    skin['Size'] = image.dictspec['Size']
+                    newitem = skin
+                    break
         if nparent is None:
             undo.cancel()    # not required, but it's better when it's done
             msg = Strings[-151]
@@ -605,6 +617,9 @@ def groupcolor(m):
 #
 #
 #$Log$
+#Revision 1.33  2010/05/03 04:06:10  cdunde
+#Code update.
+#
 #Revision 1.32  2010/05/01 04:43:59  cdunde
 #General function corrections and file cleanup.
 #
