@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.33  2009/07/15 10:38:01  danielpharos
+Updated website link.
+
 Revision 1.32  2009/02/21 17:06:18  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -482,9 +485,8 @@ begin
 
   addonRoot:=QFileObject(FParent);
   if addonRoot = nil then
-  begin
-    raise Exception.Create('addonRoot = nil');
-  end;
+    raise InternalE('addonRoot = nil');
+
   if addonRoot.specifics.IndexOfName('Description')=-1 then
     addonRoot.specifics.Add(format('Description=Addon for %s',[Specifics.Values['GameDir']]));
   (*
@@ -607,7 +609,7 @@ var
     while bsps.count<>0 do
     begin
 //      if not (bsps[0] is QBsp) then
-  //      raise exception.create('Error: bsp list contains non QBSP object!');
+  //      raise InternalE('Error: bsp list contains non QBSP object!');
       bsp := QBsp( bsps[0] );
       bsp.Acces;
       e_lump:=e_lump + bsp.GetEntityLump();
@@ -668,9 +670,8 @@ begin
 
   addonRoot:=QFileObject(FParent);
   if addonRoot = nil then
-  begin
-    raise Exception.Create('Error obtaining Root (addonRoot = nil)');
-  end;
+    raise InternalE('Error obtaining Root (addonRoot = nil)');
+
   if addonRoot.specifics.IndexOfName('Description')=-1 then
     addonRoot.specifics.Add(format('Description=Addon for %s',[Specifics.Values['GameDir']]));
   (*
