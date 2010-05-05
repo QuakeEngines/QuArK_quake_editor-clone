@@ -422,6 +422,8 @@ class BaseEditor:
 
         import mdleditor
         if isinstance(self, mdleditor.ModelEditor):
+            if (flagsmouse == 528 or flagsmouse == 1040):
+                view.handles = []
             try:
                 if view.info["viewname"] == "skinview":
                     if (flagsmouse != 536 or flagsmouse != 1048 or flagsmouse != 2072) and (view.info["viewname"] == "skinview"):
@@ -625,7 +627,6 @@ class BaseEditor:
                 if backup is not None:
                     obj.copyalldata(backup)
 
-#        v.info["editor"] = self
         v.ondraw = draw1
         v.onmouse = self.mousemap
         v.onkey = self.keymap
@@ -1622,6 +1623,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.132  2009/10/12 20:49:56  cdunde
+#Added support for .md3 animationCFG (configuration) support and editing.
+#
 #Revision 1.131  2009/09/01 02:11:01  cdunde
 #Minor hint correction for Model Editor Linear handles position.
 #

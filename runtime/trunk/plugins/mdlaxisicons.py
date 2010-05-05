@@ -88,6 +88,11 @@ def newfinishdrawing(editor, view, oldfinish=quarkpy.mdleditor.ModelEditor.finis
 
     oldfinish(editor, view)
 
+    # Stops jerky movement during panning in 2D views.
+    from quarkpy.qbaseeditor import flagsmouse
+    if (flagsmouse == 528 or flagsmouse == 1040):
+        view.handles = []
+
     #
     # Why not see what the clientarea produces.
     # Look at the console to find out.
@@ -161,7 +166,6 @@ def newfinishdrawing(editor, view, oldfinish=quarkpy.mdleditor.ModelEditor.finis
             if not MdlOption("AxisXYZ"):
                 view.update()
             ### This is the 2D views Textured mode scroller section
-            from quarkpy.qbaseeditor import flagsmouse
             if (flagsmouse == 1040 or flagsmouse == 1048 or flagsmouse == 1056) and view.viewmode == "tex":
                 if (view.info["viewname"] == "XY" or view.info["viewname"] == "XZ" or view.info["viewname"] == "YZ"):
                     quarkpy.mdleditor.paintframefill(editor, view)
@@ -195,7 +199,6 @@ def newfinishdrawing(editor, view, oldfinish=quarkpy.mdleditor.ModelEditor.finis
     #  to the window it appears in.
     #
 
-    from quarkpy.qbaseeditor import flagsmouse
     if (flagsmouse == 528 or flagsmouse == 1040 or flagsmouse == 1048 or flagsmouse == 1056):
         pass
     else:
@@ -221,6 +224,9 @@ quarkpy.mdleditor.ModelEditor.finishdrawing = newfinishdrawing
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.18  2008/07/15 23:16:27  cdunde
+#To correct typo error from MldOption to MdlOption in all files.
+#
 #Revision 1.17  2008/05/01 15:38:54  danielpharos
 #Got rid of global saveeditor
 #

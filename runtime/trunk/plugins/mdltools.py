@@ -45,6 +45,11 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mdleditor.ModelEditor.
 
     gridoldfinish(editor, view)
 
+    # Stops jerky movement during panning in 2D views.
+    from quarkpy.qbaseeditor import flagsmouse
+    if (flagsmouse == 528 or flagsmouse == 1040):
+        view.handles = []
+
 # The selection bases for setting up the rulers.
     rulerlist = editor.layout.explorer.sellist
     bmin = None
@@ -601,6 +606,9 @@ RulerMenuCmds = [quarkpy.qmenu.popup("Ruler guide in 2D views", [], ViewAmendMen
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.18  2008/07/15 23:16:27  cdunde
+#To correct typo error from MldOption to MdlOption in all files.
+#
 #Revision 1.17  2008/02/22 09:52:21  danielpharos
 #Move all finishdrawing code to the correct editor, and some small cleanups.
 #

@@ -3920,7 +3920,6 @@ def ReverseFaces(editor):
     undo.exchange(comp, new_comp)
     editor.Root.currentcomponent = new_comp
     editor.ok(undo, "Reversed Faces")
- #   Update_Editor_Views(editor)
 
 
 
@@ -4207,6 +4206,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.138  2010/05/05 04:08:47  cdunde
+#Function correction.
+#
 #Revision 1.137  2010/05/04 05:30:52  cdunde
 #Added new function to rescale Skin-view handles to current skin texture size.
 #
