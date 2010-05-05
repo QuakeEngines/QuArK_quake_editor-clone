@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.78  2010/02/21 15:42:51  danielpharos
+Fixed orangebox compiler not finishing compile.
+
 Revision 1.77  2010/02/06 21:52:54  danielpharos
 Corrected ep1 <--> orangebox.
 
@@ -1081,6 +1084,7 @@ var
  SteamRunning: Boolean;
  SteamCacheDir: String;
 begin
+  Log(LOG_VERBOSE, 'GetGameFileBase: %s, %s, %s, %s', [BaseDir, FileName, PakFileName, BoolToStr(LookInCD)]);
   Result := NIL;
   if (GameFiles=Nil) then
     GameFiles:=TQList.Create;

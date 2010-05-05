@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.25  2010/04/16 20:16:15  danielpharos
+Added more OS version info to log.
+
 Revision 1.24  2010/04/16 18:44:59  danielpharos
 Reduced missing init-logging entries to a single problematic line. Also, logging now uses const strings (faster).
 
@@ -183,6 +186,8 @@ function LeftStr(Const Str: String; Size: Word): String;
 
 { Returns the reverse of a specified string. }
 function ReverseString(const AText: string): string;
+
+function BoolToStr(B: Boolean; UseBoolStrs: Boolean = False): string;
 {$endif}
 
 {$ifndef Delphi7orNewerCompiler} // Pre-dates Delphi 7
@@ -287,6 +292,18 @@ begin
     P^ := AText[I];
     Inc(P);
   end;
+end;
+
+function BoolToStr(B: Boolean; UseBoolStrs: Boolean = False): string;
+const
+  cSimpleBoolStrs: array [boolean] of String = ('0', '-1');
+begin
+  if UseBoolStrs then
+    //This is a down-scaled version of BoolToStr, that doesn't
+    //support UseBoolStrs.
+    raise exception.create('BoolToStr: UseBoolStrs not implemented!')
+  else
+    Result := cSimpleBoolStrs[B];
 end;
 {$endif}
 
