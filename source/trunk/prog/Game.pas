@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.80  2010/05/05 19:15:06  danielpharos
+Const-ed a string.
+
 Revision 1.79  2010/05/05 18:45:20  danielpharos
 Added logging for GetGameFileBase call.
 
@@ -988,7 +991,7 @@ begin
 end;
 {--Convex-end--}
 
-function DisplayAllAlias(Filename: String) : String;
+function DisplayAllAlias(const Filename: String) : String;
 var
   AliasName: String;
 begin
