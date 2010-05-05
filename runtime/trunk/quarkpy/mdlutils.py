@@ -3496,8 +3496,8 @@ def skinrescale(editor):
         return
     new_comp = comp.copy()
     new_comp['skinsize'] = skin["Size"]
-    texWidth_scale = int(round(new_texWidth / old_texWidth))
-    texHeight_scale = int(round(new_texHeight / old_texHeight))
+    texWidth_scale = new_texWidth / old_texWidth
+    texHeight_scale = new_texHeight / old_texHeight
 
     # Because the original list can not be changed, we use a dummy list copy
     # then pass the updated values back to the original list, and so on, in a loop.
@@ -3506,8 +3506,8 @@ def skinrescale(editor):
         tri = tris[i]
         for j in range(len(tri)): # j is the vert_index, either 0, 1 or 2 vertex of the triangle.
                                     # To calculate a triangle's vert_index number = (i * 3) + j
-            u = tri[j][1] * texWidth_scale
-            v = tri[j][2] * texHeight_scale
+            u = int(round(tri[j][1] * texWidth_scale))
+            v = int(round(tri[j][2] * texHeight_scale))
             if j == 0:
                 vtx0 = (tri[j][0], u, v)
             elif j == 1:
@@ -4207,6 +4207,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.137  2010/05/04 05:30:52  cdunde
+#Added new function to rescale Skin-view handles to current skin texture size.
+#
 #Revision 1.136  2010/05/01 07:16:40  cdunde
 #Update by DanielPharos to allow removal of weight_index storage in the ModelComponentList related files.
 #
