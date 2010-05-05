@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.52  2010/02/16 20:06:31  danielpharos
+Fixed some problems if filename-strings were larger than 999 characters, and synced some functions to find textures more consistently.
+
 Revision 1.51  2010/01/31 21:38:59  danielpharos
 Added try-finally to protect against memory leak if an exception happens.
 
@@ -214,10 +217,10 @@ type
   end;
 
 function ParseRec(const Path, Base, FolderName: String; DestFolder:QObject) : QObject;
-procedure BuildTextureFolders(Base: String; var Q: QObject);
-procedure BuildDynamicFolders(Base: String; var Q: QObject; merged, allshaders: boolean; Filter: String);
-procedure BuildStaticFolders(Base: String; var Q: QObject; merged, allshaders: boolean; Filter: String);
-procedure MergeTextureFolders(Base: String; var Q: QObject; allshaders: boolean; Filter: String);
+procedure BuildTextureFolders(const Base: String; var Q: QObject);
+procedure BuildDynamicFolders(const Base: String; var Q: QObject; merged, allshaders: boolean; Filter: String);
+procedure BuildStaticFolders(const Base: String; var Q: QObject; merged, allshaders: boolean; Filter: String);
+procedure MergeTextureFolders(const Base: String; var Q: QObject; allshaders: boolean; Filter: String);
 function ListPakFiles(const Path: String) : TStringList;
 
  {------------------------}
@@ -943,7 +946,7 @@ begin
     Parental.SubElements.Add(Folder);
 end;
 
-procedure BuildDynamicFolders(Base : String; var Q:QObject; merged, allshaders: Boolean; Filter: String);
+procedure BuildDynamicFolders(const Base : String; var Q:QObject; merged, allshaders: Boolean; Filter: String);
 var
   OsF : QObject;
 begin
@@ -963,7 +966,7 @@ begin
     BuildTextureFolders(Base, OsF)
 end;
 
-procedure BuildStaticFolders(Base : String; var Q:QObject; merged, allshaders: Boolean; Filter: String);
+procedure BuildStaticFolders(const Base : String; var Q:QObject; merged, allshaders: Boolean; Filter: String);
 var
   TxF : QObject;
 begin
@@ -979,7 +982,7 @@ begin
     BuildTextureFolders(Base, TxF)
 end;
 
-procedure BuildTextureFolders(Base : String; var Q:QObject);
+procedure BuildTextureFolders(const Base : String; var Q:QObject);
 var
  S, Path: String;
  SearchFolder, SearchResultList: QObject;
@@ -1092,7 +1095,7 @@ end;
 
 
 
-procedure MergeTextureFolders(Base : String; var Q:QObject; allshaders: boolean; Filter: String);
+procedure MergeTextureFolders(const Base : String; var Q:QObject; allshaders: boolean; Filter: String);
 var
   S, Path, PakExt, ShaderExt, TexturesPath: String;
   SearchFolder : QObject;
