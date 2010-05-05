@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.81  2010/05/05 19:15:51  danielpharos
+Const-ed a string.
+
 Revision 1.80  2010/05/05 19:15:06  danielpharos
 Const-ed a string.
 
@@ -881,7 +884,7 @@ begin
   Result.Filename:=StringReplace(Result.Filename, '%steamuser%',    SteamSetup.Specifics.Values['SteamUser'], [rfReplaceAll]);
 
   {$IFDEF Debug}
-  if not ConstainsReplacer(FileToResolve.CommandLine) then
+  if ConstainsReplacer(FileToResolve.CommandLine) then
     Log(LOG_WARNING, 'Warning: ResolveFilename: There might be items left to be replaced...!');
   {$ENDIF}
 end;
