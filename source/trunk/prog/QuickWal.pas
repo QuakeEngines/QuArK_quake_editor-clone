@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.53  2010/05/05 19:53:35  danielpharos
+Const-ed a bunch of strings.
+
 Revision 1.52  2010/02/16 20:06:31  danielpharos
 Fixed some problems if filename-strings were larger than 999 characters, and synced some functions to find textures more consistently.
 
@@ -381,7 +384,7 @@ begin
  else if CompareText(ExtractFileExt(Name), '.swl') = 0 then
   Link1(ResultFolder, FolderName, Copy(Name, 1, Length(Name)-4), 'i', Base)
  else if CompareText(ExtractFileExt(Name), '.vtf') = 0 then
-  Link1(ResultFolder, FolderName, Copy(Name, 1, Length(Name)-3), 'v', Base)
+  Link1(ResultFolder, FolderName, Copy(Name, 1, Length(Name)-4), 'v', Base)
  else if CompareText(ExtractFileExt(Name), '.wad') = 0 then
   begin
    if Loaded=Nil then
