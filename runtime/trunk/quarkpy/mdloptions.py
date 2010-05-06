@@ -97,7 +97,8 @@ def ToggleOption(item):
     newvalue = not setup[tag]
     setup[tag] = "1"[:newvalue]
     if item.sendupdate[newvalue]:
-        quarkx.reloadsetup()
+        editor = mdleditor.mdleditor
+        Update_Editor_Views(editor)
 
 
 def StartConsoleLogClick(m):
@@ -274,7 +275,8 @@ def mBHandles_Only(m):
         quarkx.setupsubset(SS_MODEL, "Options")['BHandles_Only'] = "1"
     else:
         quarkx.setupsubset(SS_MODEL, "Options")['BHandles_Only'] = None
-    quarkx.reloadsetup()
+    editor = mdleditor.mdleditor
+    Update_Editor_Views(editor)
 
 def mB_DragHandles_Only(m):
     # Only allows drawing of bone drag handles to be displayed to increase drawing speed.
@@ -383,7 +385,8 @@ def mNFO(m):
         quarkx.setupsubset(SS_MODEL, "Options")['NFOWM'] = None
     else:
         quarkx.setupsubset(SS_MODEL, "Options")['NFO'] = None
-    quarkx.reloadsetup()
+    editor = mdleditor.mdleditor
+    Update_Editor_Views(editor)
 
 
 def mNFOWM(m):
@@ -395,7 +398,6 @@ def mNFOWM(m):
         quarkx.setupsubset(SS_MODEL, "Options")['NFO'] = None
     else:
         quarkx.setupsubset(SS_MODEL, "Options")['NFOWM'] = None
-    quarkx.reloadsetup()
 
 
 def mNOSF(m):
@@ -408,7 +410,8 @@ def mNOSF(m):
         quarkx.setupsubset(SS_MODEL, "Options")['BFONLY'] = None
     else:
         quarkx.setupsubset(SS_MODEL, "Options")['NOSF'] = None
-    quarkx.reloadsetup()
+    editor = mdleditor.mdleditor
+    Update_Editor_Views(editor)
 
 
 def mFFONLY(m):
@@ -421,7 +424,8 @@ def mFFONLY(m):
         quarkx.setupsubset(SS_MODEL, "Options")['BFONLY'] = None
     else:
         quarkx.setupsubset(SS_MODEL, "Options")['FFONLY'] = None
-    quarkx.reloadsetup()
+    editor = mdleditor.mdleditor
+    Update_Editor_Views(editor)
 
 
 def mBFONLY(m):
@@ -434,7 +438,8 @@ def mBFONLY(m):
         quarkx.setupsubset(SS_MODEL, "Options")['FFONLY'] = None
     else:
         quarkx.setupsubset(SS_MODEL, "Options")['BFONLY'] = None
-    quarkx.reloadsetup()
+    editor = mdleditor.mdleditor
+    Update_Editor_Views(editor)
 
 
 def BoneMenu():
@@ -539,7 +544,6 @@ def VertexMenu():
             quarkx.setupsubset(SS_MODEL, "Options")['NVDL'] = "1"
         else:
             quarkx.setupsubset(SS_MODEL, "Options")['NVDL'] = None
-            Update_Editor_Views(editor)
 
     Xsync_svwed = qmenu.item("&Sync Skin-view with Editor views", mSYNC_SVwED, "|Sync Skin-view with Editor views:\n\nThis function will turn off other related options and synchronize selected Editor views mesh vertexes, passing and selecting the coordinated 'Skin mesh' vertexes in the Skin-view, where they can be used for editing purposes. Any selection changes in the Editor views will be updated to the Skin-view as well.\n\nOnce the selection has been passed, if this function is turned off, the selection will remain in both the Editor and the Skin-view for further use.\n\nThe 'Skin-view' and Editor views selected vertex colors can be changed in the 'Configuration Model Colors' section.\n\nPress the 'F1' key again or click the button below for further details.|intro.modeleditor.menu.html#optionsmenu")
     Xpvstsv = qmenu.item("&Pass selection to Skin-view", mPVSTSV, "|Pass selection to Skin-view:\n\nThis function will pass selected Editor model mesh vertexes and select the coordinated 'Model Skin mesh' vertexes in the Skin-view, along with any others currently selected, where they can be used for editing purposes.\n\nOnce the selection has been passed, if this function is turned off, the selection will remain in the 'Skin-view' for its use there.\n\nThe Editor's selected vertex colors can be changed in the 'Configuration Model Colors' section.\n\nPress the 'F1' key again or click the button below for further details.|intro.modeleditor.menu.html#optionsmenu")
@@ -597,10 +601,10 @@ def SkinViewOptionsMenu():
             if editor.SkinVertexSelList != []:
                 editor.ModelVertexSelList = []
                 mdlutils.PassSkinSel2Editor(editor)
-                mdlutils.Update_Editor_Views(editor, 1)
+                mdlutils.Update_Editor_Views(editor)
             else:
                 editor.ModelVertexSelList = []
-                mdlutils.Update_Editor_Views(editor, 1)
+                mdlutils.Update_Editor_Views(editor)
         else:
             quarkx.setupsubset(SS_MODEL, "Options")['SYNC_EDwSV'] = None
 
@@ -780,7 +784,8 @@ def mMAIV(m):
     else:
         quarkx.setupsubset(SS_MODEL, "Options")['MAIV'] = None
         maiv.state = qmenu.normal
-    quarkx.reloadsetup()
+    editor = mdleditor.mdleditor
+    Update_Editor_Views(editor)
 
 
 def mRecenter(m):
@@ -790,7 +795,7 @@ def mRecenter(m):
     else:
         quarkx.setupsubset(SS_MODEL, "Options")['Recenter'] = None
     recenter.state = quarkx.setupsubset(SS_MODEL,"Options").getint("Recenter")
-    quarkx.reloadsetup()
+
 #
 # Global variables to update from plug-ins.
 #
@@ -854,6 +859,9 @@ def OptionsMenuRMB():
 #
 #
 #$Log$
+#Revision 1.47  2009/11/10 04:41:34  cdunde
+#Added option to only draw drag bones to speed up drag drawing if a lot of bones exist.
+#
 #Revision 1.46  2009/06/16 11:34:08  cdunde
 #Small dialog setting update.
 #

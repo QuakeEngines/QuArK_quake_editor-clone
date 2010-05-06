@@ -1504,7 +1504,6 @@ class SkinHandle(qhandles.GenericHandle):
                 quarkx.setupsubset(SS_MODEL, "Options")['UseSkinViewScale'] = None
             else:
                 quarkx.setupsubset(SS_MODEL, "Options")['SkinFrom3Dview'] = None
-            quarkx.reloadsetup()
 
         # When taking Skin-view coors from the Skin-view, turns using its "scale" factor on or off.
         def mUSVS(m, self=self, editor=editor, view=view):
@@ -1515,7 +1514,6 @@ class SkinHandle(qhandles.GenericHandle):
                 quarkx.setupsubset(SS_MODEL, "Options")['UseSkinViewScale'] = None
             Xsf3Dv.state = quarkx.setupsubset(SS_MODEL,"Options").getint("SkinFrom3Dview")
             Xusvs.state = quarkx.setupsubset(SS_MODEL,"Options").getint("UseSkinViewScale")
-            quarkx.reloadsetup()
 
         # Turn Model Options function SkinGridVisible on or off.
         def mSGV(m, self=self, editor=editor, view=view):
@@ -1523,15 +1521,12 @@ class SkinHandle(qhandles.GenericHandle):
                 quarkx.setupsubset(SS_MODEL, "Options")['SkinGridVisible'] = "1"
                 if SkinView1 is not None:
                     SkinView1.invalidate()
-                    mdleditor.ModelEditor.finishdrawing(editor, view)
             else:
                 quarkx.setupsubset(SS_MODEL, "Options")['SkinGridVisible'] = None
                 if SkinView1 is not None:
                     SkinView1.invalidate()
-                    mdleditor.ModelEditor.finishdrawing(editor, view)
             Xsf3Dv.state = quarkx.setupsubset(SS_MODEL,"Options").getint("SkinFrom3Dview")
             Xusvs.state = quarkx.setupsubset(SS_MODEL,"Options").getint("UseSkinViewScale")
-            quarkx.reloadsetup()
 
         # Turn Model Options function SkinGridActive on or off.
         def mSGA(m, self=self, editor=editor, view=view):
@@ -1539,7 +1534,6 @@ class SkinHandle(qhandles.GenericHandle):
                 quarkx.setupsubset(SS_MODEL, "Options")['SkinGridActive'] = "1"
             else:
                 quarkx.setupsubset(SS_MODEL, "Options")['SkinGridActive'] = None
-            quarkx.reloadsetup()
 
         # Turn Model Options function SingleSelDragLines on or off.
         def mSSDL(m, self=self, editor=editor, view=view):
@@ -5286,6 +5280,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.204  2010/05/02 06:20:26  cdunde
+#To remove Model Editor unused and duplicating handle build code causing slowdowns.
+#
 #Revision 1.203  2010/05/01 04:25:37  cdunde
 #Updated files to help increase editor speed by including necessary ModelComponentList items
 #and removing redundant checks and calls to the list.
