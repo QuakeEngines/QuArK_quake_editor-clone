@@ -1126,6 +1126,13 @@ def loadmodel(root, filename, gamename, nomessage=0):
 
     progressbar = quarkx.progressbar(2454, len(models)) #FIXME: Text message!!!
 
+    #Workaround; models with no meshes shouldn't be loaded
+    TMPmodels = []
+    for current_model in models:
+        if len(current_model.meshbindings) != 0:
+            TMPmodels += [current_model]
+    models = TMPmodels
+
     #Process what we loaded
     Full_ComponentList = []
     Full_QuArK_bones = []
@@ -1388,41 +1395,6 @@ def loadmodel(root, filename, gamename, nomessage=0):
         progressbar.progress()
     progressbar.close()
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    #FIXME: Forgot to set the bonelist here from "meshframe:mf"!!!
-    #Currently done in ANIMATION section...
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     # ANIMATION STARTS THERE
    # TMP_ComponentList = editor.Root.findallsubitems("", ':mc')
     TMP_ComponentList = []
@@ -1512,9 +1484,9 @@ def loadmodel(root, filename, gamename, nomessage=0):
 
         ComponentList = Full_ComponentList
         QuArK_bones = Full_QuArK_bones
-        SkipBone = []
+        BoneNameToBoneIndex = {}
         for bone_index in range(len(QuArK_bones)):
-            SkipBone += [1]
+            BoneNameToBoneIndex[QuArK_bones[bone_index].name] = bone_index
 
         #Prepare arrays to store the bone-animation-data
         QuArK_frame_matrix_raw = [[]] * NumberOfFrames
@@ -1562,7 +1534,6 @@ def loadmodel(root, filename, gamename, nomessage=0):
                 if found_bone is None:
                     continue
                     #raise "Error: Corrupt gr2 .ms file! Can't match up transformtracks!"
-                SkipBone[bone_index] = 0
                 BoneToTrackGroup[bone_index] = current_trackgroup
                 for frame_index in range(NumberOfFrames):
                     frametime = float(frame_index) / float(NumberOfFrames) * current_animation.duration
@@ -1659,7 +1630,6 @@ def loadmodel(root, filename, gamename, nomessage=0):
             while len(BonesToDo) != 0:
               DelayBones = []
               for bone_counter in BonesToDo:
-                #Note: Don't use SkipBone[bone_counter] here, since we need all the parent data too!
                 current_bone = QuArK_bones[bone_counter]
                 current_bone_parentname = current_bone.dictspec['parent_name']
                 if current_bone_parentname == "None":
@@ -1699,14 +1669,9 @@ def loadmodel(root, filename, gamename, nomessage=0):
                                         [0.0, 0.0, 1.0, 0.0],
                                         [0.0, 0.0, 0.0, 1.0]]
                 else:
-                    parentbone_index = -1
-                    for test_bone in range(len(QuArK_bones)):
-                        test_bone_obj = QuArK_bones[test_bone]
-                        if test_bone_obj.name == current_bone_parentname:
-                            parentbone_index = test_bone
-                            break
-                    if parentbone_index == -1:
+                    if not BoneNameToBoneIndex.has_key(current_bone_parentname):
                         raise "Error: Corrupt gr2 .ms file! Can't find parent bone!"
+                    parentbone_index = BoneNameToBoneIndex[current_bone_parentname]
                     if BoneDone[parentbone_index] == 0:
                         #This bone is being processed before its parent! This is BAD!
                         DelayBones += [bone_counter]
@@ -1764,36 +1729,9 @@ def loadmodel(root, filename, gamename, nomessage=0):
                     vert_newpos += [quarkx.vect(0.0, 0.0, 0.0)]
                     vert_weight_values += [0.0]
                 for bone_counter in range(0,NumberOfBones):
-                    if SkipBone[bone_counter]:
-                        continue
                     current_bone = QuArK_bones[bone_counter]
                     if current_bone.vtxlist.has_key(comp.name):
                         vtxlist = current_bone.vtxlist[comp.name]
-                        old_bone_pos = QuArK_bone_pos[bone_counter]
-                        old_bone_rotmatrix = QuArK_bone_rotmatrix[bone_counter]
-                        old_bone_scale = QuArK_bone_scale[bone_counter]
-                        old_bone_pos = quarkx.vect(old_bone_pos)
-                        old_bone_rotmatrix = quarkx.matrix((old_bone_rotmatrix[0][0], old_bone_rotmatrix[0][1], old_bone_rotmatrix[0][2]),
-                                                           (old_bone_rotmatrix[1][0], old_bone_rotmatrix[1][1], old_bone_rotmatrix[1][2]),
-                                                           (old_bone_rotmatrix[2][0], old_bone_rotmatrix[2][1], old_bone_rotmatrix[2][2]))
-                        old_bone_scale = quarkx.matrix((old_bone_scale[0][0], old_bone_scale[0][1], old_bone_scale[0][2]),
-                                                       (old_bone_scale[1][0], old_bone_scale[1][1], old_bone_scale[1][2]),
-                                                       (old_bone_scale[2][0], old_bone_scale[2][1], old_bone_scale[2][2]))
-
-                        new_bone_pos = QuArK_frame_position[frame_counter][bone_counter]
-                        new_bone_pos = quarkx.vect(new_bone_pos)
-                        new_bone_matrix = QuArK_frame_matrix[frame_counter][bone_counter]
-                        new_bone_matrix = quarkx.matrix((new_bone_matrix[0][0], new_bone_matrix[0][1], new_bone_matrix[0][2]),
-                                                        (new_bone_matrix[1][0], new_bone_matrix[1][1], new_bone_matrix[1][2]),
-                                                        (new_bone_matrix[2][0], new_bone_matrix[2][1], new_bone_matrix[2][2]))
-                        new_bone_scale = QuArK_frame_scale[frame_counter][bone_counter] 
-                        new_bone_scale = quarkx.matrix((new_bone_scale[0][0], new_bone_scale[0][1], new_bone_scale[0][2]),
-                                                       (new_bone_scale[1][0], new_bone_scale[1][1], new_bone_scale[1][2]),
-                                                       (new_bone_scale[2][0], new_bone_scale[2][1], new_bone_scale[2][2]))
-
-                        rot_diff = new_bone_matrix * (~old_bone_rotmatrix)
-                        scale_diff = new_bone_scale * (~old_bone_scale)
-
                         if len(models) != 0 and len(animations) != 0: # File has both the model & animation.
                             frame = bonelist[current_bone.name]['frames'][new_frames[comp.name][0].name] #@
                             old_bone_pos = quarkx.vect(frame['position'])
@@ -1804,20 +1742,12 @@ def loadmodel(root, filename, gamename, nomessage=0):
                         frame = bonelist[current_bone.name]['frames'][current_frame.name]
                         new_bone_pos = quarkx.vect(frame['position'])
                         new_bone_rot = quarkx.matrix(frame['rotmatrix'])
-                        
-                        
-                        
-                        
+                        #new_bone_scale?
                         for vert_index in vtxlist:
                             weight_value = 1.0
                             if editor.ModelComponentList[comp.name]['weightvtxlist'].has_key(vert_index) and editor.ModelComponentList[comp.name]['weightvtxlist'][vert_index].has_key(current_bone.name):
                                 weight_value = editor.ModelComponentList[comp.name]['weightvtxlist'][vert_index][current_bone.name]['weight_value']
                             vert_weight_values[vert_index] += weight_value
-                            #currentvertex_pos = ArtToolDetransformVect(oldverts[vert_index])
-                            #temppos = scale_diff * rot_diff * (currentvertex_pos - old_bone_pos)
-                            #newpos = ((temppos + new_bone_pos) * weight_value)
-                            #vert_newpos[vert_index] += ArtToolTransformVect(newpos)
-
 
                             newpos = oldverts[vert_index] - old_bone_pos
                             newpos = new_bone_rot * (~old_bone_rot) * newpos
@@ -1825,7 +1755,8 @@ def loadmodel(root, filename, gamename, nomessage=0):
                             vert_newpos[vert_index] += newpos
                             
                 for vert_counter in range(len(oldverts)):
-                    vert_newpos[vert_counter] += oldverts[vert_counter] * (1.0 - vert_weight_values[vert_counter])
+                    #Use this to fake a (weight_value = 1.0)
+                    #vert_newpos[vert_counter] += oldverts[vert_counter] * (1.0 - vert_weight_values[vert_counter])
                     newverts[vert_counter] = vert_newpos[vert_counter]
                 current_frame.vertices = newverts
         progressbar.progress()
@@ -2060,6 +1991,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.18  2010/05/04 19:39:03  cdunde
+# Update to work much better with models that do and do not include animation in the same file.
+#
 # Revision 1.17  2010/05/03 21:59:22  cdunde
 # File update fixes by DanielPharos. Still a work in progress.
 #
