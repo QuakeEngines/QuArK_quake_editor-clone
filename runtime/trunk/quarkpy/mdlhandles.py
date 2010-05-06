@@ -3914,12 +3914,12 @@ class BoneHandle(qhandles.GenericHandle):
 
         if self.newverticespos is None:
             self.newverticespos = {}
-            editor = self.mgr.editor
             for bone in [self.bone] + self.attachedbones:
                 oldvertices = bone.vtxlist
                 for compname in oldvertices.keys():
-                    comp = editor.Root.dictitems[compname]
-                    self.newverticespos[compname] = comp.currentframe.vertices
+                    if not self.newverticespos.has_key(compname):
+                        comp = editor.Root.dictitems[compname]
+                        self.newverticespos[compname] = comp.currentframe.vertices
         # Gets all bones that are stationary, not being moved
         foundframe = 0
         for item in editor.layout.explorer.sellist:
@@ -5280,6 +5280,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.205  2010/05/06 03:10:54  cdunde
+#Menu functions update to eliminate dupe and unnecessary redraws.
+#
 #Revision 1.204  2010/05/02 06:20:26  cdunde
 #To remove Model Editor unused and duplicating handle build code causing slowdowns.
 #
