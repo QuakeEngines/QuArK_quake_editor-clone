@@ -494,7 +494,7 @@ class BaseEditor:
                                     cv.ellipse(int(vertex1X)-1, int(vertex1Y)-1, int(vertex1X)+1, int(vertex1Y)+1)
                                     cv.ellipse(int(vertex2X)-1, int(vertex2Y)-1, int(vertex2X)+1, int(vertex2Y)+1)
                         # Draws the Skin-view grid dots.
-                        if MapOption("SkinGridVisible", self.MODE):
+                        if MapOption("SkinGridVisible", self.MODE) and flagsmouse != 1040 and flagsmouse != 1056 and flagsmouse != 1072 and flagsmouse != 2072 and flagsmouse != 2088:
                             setup = quarkx.setupsubset(self.MODE, "Display")
                             skingridstep = setup["SkinGridStep"][0]
                             if skingridstep>0.0:
@@ -950,7 +950,7 @@ class BaseEditor:
                             except:
                                 skindrawobject = None
                             mdlhandles.buildskinvertices(self, view, self.layout, self.Root.currentcomponent, skindrawobject)
-                            self.finishdrawing(view)
+                            view.invalidate()
                             return
                         else:
                             if len(self.layout.explorer.sellist) == 0:
@@ -1623,6 +1623,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.133  2010/05/05 15:46:39  cdunde
+#To stop jerky movement in Model Editor when scrolling, panning.
+#
 #Revision 1.132  2009/10/12 20:49:56  cdunde
 #Added support for .md3 animationCFG (configuration) support and editing.
 #
