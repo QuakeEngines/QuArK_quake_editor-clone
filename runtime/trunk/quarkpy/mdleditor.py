@@ -201,9 +201,10 @@ class ModelEditor(BaseEditor):
                 if item.endswith(":mc"):
                     comp = self.Root.dictitems[item]
                     componentnames.append(item)
-                    ### Creates the editor.ModelComponentList 'tristodraw' dictionary list for the "component" sent to this function.
-                    make_tristodraw_dict(self, comp)
-                    self.ModelComponentList[comp.name] = {'bonevtxlist': {}, 'colorvtxlist': {}, 'weightvtxlist': {}}
+                    if not self.Root.dictitems.has_key("ModelComponentList:sd"):
+                        ### Creates the editor.ModelComponentList 'tristodraw' dictionary list for the "component" sent to this function.
+                        make_tristodraw_dict(self, comp)
+                        self.ModelComponentList[comp.name] = {'bonevtxlist': {}, 'colorvtxlist': {}, 'weightvtxlist': {}}
 
             componentnames.sort()
         try:
@@ -1772,6 +1773,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.143  2010/05/01 19:45:23  cdunde
+#File cleanup.
+#
 #Revision 1.142  2010/05/01 07:16:40  cdunde
 #Update by DanielPharos to allow removal of weight_index storage in the ModelComponentList related files.
 #
