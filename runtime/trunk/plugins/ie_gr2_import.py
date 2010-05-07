@@ -1482,11 +1482,9 @@ def loadmodel(root, filename, gamename, nomessage=0):
         if NumberOfFrames > 20 and NumberOfFrames > FileNumberOfFrames:
             NumberOfFrames = FileNumberOfFrames
 
-        ComponentList = Full_ComponentList
-        QuArK_bones = Full_QuArK_bones
         BoneNameToBoneIndex = {}
-        for bone_index in range(len(QuArK_bones)):
-            BoneNameToBoneIndex[QuArK_bones[bone_index].name] = bone_index
+        for bone_index in range(len(Full_QuArK_bones)):
+            BoneNameToBoneIndex[Full_QuArK_bones[bone_index].name] = bone_index
 
         #Prepare arrays to store the bone-animation-data
         QuArK_frame_matrix_raw = [[]] * NumberOfFrames
@@ -1505,7 +1503,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
 
         #Create the new frames
         new_frames = {}
-        for Component in ComponentList:
+        for Component in Full_ComponentList:
             base_frame = Component.dictitems['Frames:fg'].subitems[0]
             frame_bunch = []
             for current_frame_index in range(0, NumberOfFrames):
@@ -1521,7 +1519,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
             for current_transformtrack in current_trackgroup.transformtracks:
                 found_bone = None
                 bone_index = 0
-                for bone_obj in QuArK_bones:
+                for bone_obj in Full_QuArK_bones:
                     tempname = bone_obj.name
                     for bone_group_name in bone_group_names:
                         if bone_obj.name.startswith(bone_group_name + "_"):
@@ -1630,7 +1628,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
             while len(BonesToDo) != 0:
               DelayBones = []
               for bone_counter in BonesToDo:
-                current_bone = QuArK_bones[bone_counter]
+                current_bone = Full_QuArK_bones[bone_counter]
                 current_bone_parentname = current_bone.dictspec['parent_name']
                 if current_bone_parentname == "None":
                     # Handle initial placement:
@@ -1704,7 +1702,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
                 frame['rotmatrix'] = ArtToolTransformMatrix(quarkx.matrix((bone_rot[0][0], bone_rot[1][0], bone_rot[2][0]),
                                                                           (bone_rot[0][1], bone_rot[1][1], bone_rot[2][1]),
                                                                           (bone_rot[0][2], bone_rot[1][2], bone_rot[2][2]))).tuple
-                comp = ComponentList[0] #@
+                comp = Full_ComponentList[0]
                 current_frame = new_frames[comp.name][frame_counter]
                 bonelist[current_bone.name]['frames'][current_frame.name] = frame
                 if frame_counter == 0 and len(models) != 0 and len(animations) != 0: # File has both the model & animation.
@@ -1719,8 +1717,8 @@ def loadmodel(root, filename, gamename, nomessage=0):
 
         #Apply animation data
         for frame_counter in range(0,NumberOfFrames):
-            for mesh_counter in range(len(ComponentList)):
-                comp = ComponentList[mesh_counter]
+            for mesh_counter in range(len(Full_ComponentList)):
+                comp = Full_ComponentList[mesh_counter]
                 current_frame = new_frames[comp.name][frame_counter]
                 oldverts = newverts = current_frame.vertices
                 vert_newpos = []
@@ -1729,7 +1727,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
                     vert_newpos += [quarkx.vect(0.0, 0.0, 0.0)]
                     vert_weight_values += [0.0]
                 for bone_counter in range(0,NumberOfBones):
-                    current_bone = QuArK_bones[bone_counter]
+                    current_bone = Full_QuArK_bones[bone_counter]
                     if current_bone.vtxlist.has_key(comp.name):
                         vtxlist = current_bone.vtxlist[comp.name]
                         if len(models) != 0 and len(animations) != 0: # File has both the model & animation.
@@ -1991,6 +1989,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.19  2010/05/06 22:26:24  cdunde
+# Great animation improvement fixes by DanielPharos.
+#
 # Revision 1.18  2010/05/04 19:39:03  cdunde
 # Update to work much better with models that do and do not include animation in the same file.
 #
