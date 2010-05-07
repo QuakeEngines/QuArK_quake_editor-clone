@@ -169,12 +169,12 @@ class gr2_art_tool(dict):
         global line_counter
         while 1:
             current_line = lines[line_counter].strip()
-            line_counter+=1   #Increase line_counter here, so we don't forget it
+            line_counter+=1   # Increase line_counter here, so we don't forget it.
             if current_line[-2:] == " (":
-                # Art tool section doesn't have deeper levels
+                # Art tool section doesn't have deeper levels.
                 raise "Error: Corrupt art tool section! Found deeper level where none was expected!"
             elif current_line == ")":
-                # End of art tool section
+                # End of art tool section.
                 break
             else:
                 current_line = current_line.split(":", 1)
@@ -193,12 +193,12 @@ class gr2_exporter_tool(dict):
         global line_counter
         while 1:
             current_line = lines[line_counter].strip()
-            line_counter+=1   #Increase line_counter here, so we don't forget it
+            line_counter+=1   # Increase line_counter here, so we don't forget it.
             if current_line[-2:] == " (":
-                # Exporter tool section doesn't have deeper levels
+                # Exporter tool section doesn't have deeper levels.
                 raise "Error: Corrupt exporter tool section! Found deeper level where none was expected!"
             elif current_line == ")":
-                # End of exporter tool section
+                # End of exporter tool section.
                 break
             else:
                 current_line = current_line.split(":", 1)
@@ -230,12 +230,12 @@ class gr2_bone:
         global line_counter
         while 1:
             current_line = lines[line_counter].strip()
-            line_counter+=1   #Increase line_counter here, so we don't forget it
+            line_counter+=1   # Increase line_counter here, so we don't forget it.
             if current_line[-2:] == " (":
-                # Bone section doesn't have deeper levels
+                # Bone section doesn't have deeper levels.
                 raise "Error: Corrupt bone section! Found deeper level where none was expected!"
             elif current_line == ")":
-                # End of bone section
+                # End of bone section.
                 break
             else:
                 current_line = current_line.split(":", 1)
@@ -281,19 +281,19 @@ class gr2_skeleton:
         global line_counter
         while 1:
             current_line = lines[line_counter].strip()
-            line_counter+=1   #Increase line_counter here, so we don't forget it
+            line_counter+=1   # Increase line_counter here, so we don't forget it.
             if current_line[-2:] == " (":
-                # Deeper level
+                # Deeper level.
                 current_line = current_line[:-2]
                 if current_line == "bone":
-                    # This is a bone section
+                    # This is a bone section.
                     bone = gr2_bone()
                     self.bones += [bone]
                     bone.ReadData()
                 else:
                     raise "Error: Corrupt skeleton section! Unknown section name: ", current_line
             elif current_line == ")":
-                # End of skeleton section
+                # End of skeleton section.
                 break
             else:
                 current_line = current_line.split(":", 1)
@@ -329,12 +329,12 @@ class gr2_model:
         global line_counter
         while 1:
             current_line = lines[line_counter].strip()
-            line_counter+=1   #Increase line_counter here, so we don't forget it
+            line_counter+=1   # Increase line_counter here, so we don't forget it.
             if current_line[-2:] == " (":
-                # Model section doesn't have deeper levels
+                # Model section doesn't have deeper levels.
                 raise "Error: Corrupt model section! Found deeper level where none was expected!"
             elif current_line == ")":
-                # End of model section
+                # End of model section.
                 break
             else:
                 current_line = current_line.split(":", 1)
@@ -382,12 +382,12 @@ class gr2_animation:
         global line_counter
         while 1:
             current_line = lines[line_counter].strip()
-            line_counter+=1   #Increase line_counter here, so we don't forget it
+            line_counter+=1   # Increase line_counter here, so we don't forget it.
             if current_line[-2:] == " (":
-                # Animation section doesn't have deeper levels
+                # Animation section doesn't have deeper levels.
                 raise "Error: Corrupt animation section! Found deeper level where none was expected!"
             elif current_line == ")":
-                # End of animation section
+                # End of animation section.
                 break
             else:
                 current_line = current_line.split(":", 1)
@@ -473,12 +473,12 @@ class gr2_tritopology_group:
         global line_counter
         while 1:
             current_line = lines[line_counter].strip()
-            line_counter+=1   #Increase line_counter here, so we don't forget it
+            line_counter+=1   # Increase line_counter here, so we don't forget it.
             if current_line[-2:] == " (":
-                # Tritopology group section doesn't have deeper levels
+                # Tritopology group section doesn't have deeper levels.
                 raise "Error: Corrupt tritopology group section! Found deeper level where none was expected!"
             elif current_line == ")":
-                # End of tritopology group section
+                # End of tritopology group section.
                 break
             else:
                 current_line = current_line.split(":", 1)
@@ -512,24 +512,24 @@ class gr2_tritopology:
         global line_counter
         while 1:
             current_line = lines[line_counter].strip()
-            line_counter+=1   #Increase line_counter here, so we don't forget it
+            line_counter+=1   # Increase line_counter here, so we don't forget it.
             if current_line[-2:] == " (":
-                # Deeper level
+                # Deeper level.
                 current_line = current_line[:-2]
                 if current_line == "group":
-                    # This is a group section
+                    # This is a group section.
                     group = gr2_tritopology_group()
                     self.groups += [group]
                     group.ReadData()
                 elif current_line == "face":
-                    # This is a face section
+                    # This is a face section.
                     face = gr2_face()
                     self.faces += [face]
                     face.ReadData()
                 else:
                     raise "Error: Corrupt tritopology section! Unknown section name: ", current_line
             elif current_line == ")":
-                # End of tritopology section
+                # End of tritopology section.
                 break
             else:
                 current_line = current_line.split(":", 1)
@@ -564,12 +564,12 @@ class gr2_vert:
         global line_counter
         while 1:
             current_line = lines[line_counter].strip()
-            line_counter+=1   #Increase line_counter here, so we don't forget it
+            line_counter+=1   # Increase line_counter here, so we don't forget it.
             if current_line[-2:] == " (":
-                # Vert section doesn't have deeper levels
+                # Vert section doesn't have deeper levels.
                 raise "Error: Corrupt vert section! Found deeper level where none was expected!"
             elif current_line == ")":
-                # End of vert section
+                # End of vert section.
                 break
             else:
                 current_line = current_line.split(":", 1)
@@ -607,12 +607,12 @@ class gr2_face:
         global line_counter
         while 1:
             current_line = lines[line_counter].strip()
-            line_counter+=1   #Increase line_counter here, so we don't forget it
+            line_counter+=1   # Increase line_counter here, so we don't forget it.
             if current_line[-2:] == " (":
-                # Face section doesn't have deeper levels
+                # Face section doesn't have deeper levels.
                 raise "Error: Corrupt face section! Found deeper level where none was expected!"
             elif current_line == ")":
-                # End of face section
+                # End of face section.
                 break
             else:
                 current_line = current_line.split(":", 1)
@@ -644,12 +644,12 @@ class gr2_bonebinding:
         global line_counter
         while 1:
             current_line = lines[line_counter].strip()
-            line_counter+=1   #Increase line_counter here, so we don't forget it
+            line_counter+=1   # Increase line_counter here, so we don't forget it.
             if current_line[-2:] == " (":
-                # Bonebinding section doesn't have deeper levels
+                # Bonebinding section doesn't have deeper levels.
                 raise "Error: Corrupt bonebinding section! Found deeper level where none was expected!"
             elif current_line == ")":
-                # End of bonebinding section
+                # End of bonebinding section.
                 break
             else:
                 current_line = current_line.split(":", 1)
@@ -687,24 +687,24 @@ class gr2_mesh:
         global line_counter
         while 1:
             current_line = lines[line_counter].strip()
-            line_counter+=1   #Increase line_counter here, so we don't forget it
+            line_counter+=1   # Increase line_counter here, so we don't forget it.
             if current_line[-2:] == " (":
-                # Deeper level
+                # Deeper level.
                 current_line = current_line[:-2]
                 if current_line == "vert":
-                    # This is a vert section
+                    # This is a vert section.
                     vert = gr2_vert()
                     self.verts += [vert]
                     vert.ReadData()
                 elif current_line == "bonebinding":
-                    # This is a bonebinding section
+                    # This is a bonebinding section.
                     bonebinding = gr2_bonebinding()
                     self.bonebindings += [bonebinding]
                     bonebinding.ReadData()
                 else:
                     raise "Error: Corrupt mesh section! Unknown section name: ", current_line
             elif current_line == ")":
-                # End of mesh section
+                # End of mesh section.
                 break
             else:
                 current_line = current_line.split(":", 1)
@@ -742,12 +742,12 @@ class gr2_curve:
         global line_counter
         while 1:
             current_line = lines[line_counter].strip()
-            line_counter+=1   #Increase line_counter here, so we don't forget it
+            line_counter+=1   # Increase line_counter here, so we don't forget it.
             if current_line[-2:] == " (":
-                # Curve section doesn't have deeper levels
+                # Curve section doesn't have deeper levels.
                 raise "Error: Corrupt curve section! Found deeper level where none was expected!"
             elif current_line == ")":
-                # End of curve section
+                # End of curve section.
                 break
             else:
                 current_line = current_line.split(":", 1)
@@ -791,29 +791,29 @@ class gr2_transformtrack:
         global line_counter
         while 1:
             current_line = lines[line_counter].strip()
-            line_counter+=1   #Increase line_counter here, so we don't forget it
+            line_counter+=1   # Increase line_counter here, so we don't forget it.
             if current_line[-2:] == " (":
-                # Deeper level
+                # Deeper level.
                 current_line = current_line[:-2]
                 if current_line == "orientationcurve":
-                    # This is a orientationcurve section
+                    # This is an orientationcurve section.
                     curve = gr2_curve()
                     self.orientationcurve = curve
                     curve.ReadData()
                 elif current_line == "positioncurve":
-                    # This is a positioncurve section
+                    # This is a positioncurve section.
                     curve = gr2_curve()
                     self.positioncurve = curve
                     curve.ReadData()
                 elif current_line == "scaleshearcurve":
-                    # This is a scaleshearcurve section
+                    # This is a scaleshearcurve section.
                     curve = gr2_curve()
                     self.scaleshearcurve = curve
                     curve.ReadData()
                 else:
                     raise "Error: Corrupt transformtrack section! Unknown section name: ", current_line
             elif current_line == ")":
-                # End of transformtrack section
+                # End of transformtrack section.
                 break
             else:
                 current_line = current_line.split(":", 1)
@@ -847,19 +847,19 @@ class gr2_trackgroup:
         global line_counter
         while 1:
             current_line = lines[line_counter].strip()
-            line_counter+=1   #Increase line_counter here, so we don't forget it
+            line_counter+=1   # Increase line_counter here, so we don't forget it.
             if current_line[-2:] == " (":
-                # Deeper level
+                # Deeper level.
                 current_line = current_line[:-2]
                 if current_line == "transformtrack":
-                    # This is a transformtrack section
+                    # This is a transformtrack section.
                     transformtrack = gr2_transformtrack()
                     self.transformtracks += [transformtrack]
                     transformtrack.ReadData()
                 else:
                     raise "Error: Corrupt trackgroup section! Unknown section name: ", current_line
             elif current_line == ")":
-                # End of trackgroup section
+                # End of trackgroup section.
                 break
             else:
                 current_line = current_line.split(":", 1)
@@ -908,13 +908,13 @@ def LoadGR2MSFile(MSfilename):
         try:
             while line_counter < len(lines):
                 current_line = lines[line_counter]
-                line_counter+=1 # Skip the section name
+                line_counter+=1 # Skip the section name.
                 if current_line is None or current_line == "":
-                    # Empty line; skip it
+                    # Empty line; skip it.
                     continue
                 words = current_line.split()
                 if len(words) == 0:
-                    # Empty line; skip it
+                    # Empty line; skip it.
                     continue
                 SectionName = words[0:-1]
                 if SectionName is None or len(SectionName) == 0:
@@ -922,64 +922,64 @@ def LoadGR2MSFile(MSfilename):
                     raise "Error: Corrupt gr2 .ms file! Don't know what to do with: ", current_line
                 SectionName = " ".join(SectionName)
                 if SectionName == "art tool":
-                    # This is an art tool section
+                    # This is an art tool section.
                     if art_tool is not None:
                         raise "Error: Corrupt gr2 .ms file: Multiple art tool sections!"
                     art_tool = gr2_art_tool()
                     art_tool.ReadData()
                 elif SectionName == "exporter tool":
-                    # This is an exporter tool section
+                    # This is an exporter tool section.
                     if exporter_tool is not None:
                         raise "Error: Corrupt gr2 .ms file: Multiple exporter tool sections!"
                     exporter_tool = gr2_exporter_tool()
                     exporter_tool.ReadData()
                 elif SectionName == "model":
-                    # This is a model section
+                    # This is a model section.
                     model = gr2_model()
                     models += [model]
                     model.ReadData()
                 elif SectionName == "animation":
-                    # This is an animation section
+                    # This is an animation section.
                     animation = gr2_animation()
                     animations += [animation]
                     animation.ReadData()
                 elif SectionName == "texture":
-                    # This is an texture section
+                    # This is a texture section
                     texture = gr2_texture()
                     textures += [texture]
                     texture.ReadData()
                 elif SectionName == "material":
-                    # This is a material section
+                    # This is a material section.
                     material = gr2_material()
                     materials += [material]
                     material.ReadData()
                 elif SectionName == "skeleton":
-                    # This is a skeleton section
+                    # This is a skeleton section.
                     skeleton = gr2_skeleton()
                     skeletons += [skeleton]
                     skeleton.ReadData()
                 elif SectionName == "vertexdata":
-                    # This is a vertexdata section
+                    # This is a vertexdata section.
                     vertexdata = gr2_vertexdata()
                     vertexdatas += [vertexdata]
                     vertexdata.ReadData()
                 elif SectionName == "tritopology":
-                    # This is a tritopology section
+                    # This is a tritopology section.
                     tritopology = gr2_tritopology()
                     tritopologies += [tritopology]
                     tritopology.ReadData()
                 elif SectionName == "mesh":
-                    # This is a mesh section
+                    # This is a mesh section.
                     mesh = gr2_mesh()
                     meshes += [mesh]
                     mesh.ReadData()
                 elif SectionName == "trackgroup":
-                    # This is a trackgroup section
+                    # This is a trackgroup section.
                     trackgroup = gr2_trackgroup()
                     trackgroups += [trackgroup]
                     trackgroup.ReadData()
                 else:
-                    # Don't know what this; skip it
+                    # Don't know what this; skip it.
                     raise "Error: Corrupt gr2 .ms file! Don't know what to do with section: ", SectionName
         except:
             raise "Error in gr2 .ms file line: ", line_counter
@@ -1004,7 +1004,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
     bone_group_name = gr2_mesh_path.rsplit('\\', 1)[1]
     bone_group_names = bone_group_names + [bone_group_name]
     found_group_name = 0
-    for item in editor.layout.explorer.sellist: # HAVE DAN CHECK THIS for "_" in comp name.
+    for item in editor.layout.explorer.sellist: # Allows selected components to be animated with other models.
         if item.type == ":mc" and not item.name.startswith(bone_group_name):
             tempname = checkname = item.shortname.split(" ")[0]
             for bone in editor.Root.dictitems['Skeleton:bg'].subitems:
@@ -1028,7 +1028,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
     pth, animframename = os.path.split(filename)
     animframename = animframename.split(".")[0]
 
-    # Convert the GR2 file into a GR2MS file
+    # Convert the GR2 file into a GR2MS file.
     cmdline = 'grnreader ' + '\"' + filename + '\"'
     fromdir = quarkx.exepath + "dlls"
     process = quarkx.runprogram(cmdline, fromdir)
@@ -1047,7 +1047,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
     finally:
         os.remove(MSfilename)
 
-    # Do whatever user-filtering is needed here:
+    # Do whatever user-filtering is needed here.
     """if nomessage == 0:
         if len(models) != 0:
             choice = quarkx.msgbox("There are "+str(len(models))+" model(s) in this file. Do you want to load them into QuArK?", MT_CONFIRMATION, MB_YES_NO_CANCEL)
@@ -1062,7 +1062,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
             if choice == MR_NO:
                 animations = []"""
 
-    #Process art tool settings
+    # Process art tool settings.
     if art_tool is not None and art_tool.has_key("art tool units per meter"):
         art_tool_units = float(art_tool["art tool units per meter"])
         if art_tool_units <= 0:
@@ -1087,7 +1087,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
     else:
         art_tool_back_vector = [0.000000,0.000000,1.000000]
 
-    #Construct this here, so it doesn't have to be rebuild every time ArtTool(De)Transform is called:
+    # Construct this here, so it doesn't have to be rebuild every time ArtTool(De)Transform is called.
     arttool_origin = quarkx.vect(art_tool_origin[0], art_tool_origin[1], art_tool_origin[2])
     arttool_rotmatrix = quarkx.matrix((art_tool_right_vector[0], art_tool_back_vector[0], art_tool_up_vector[0]) #FIXME: Right way around???
                                      ,(-art_tool_right_vector[1], -art_tool_back_vector[1], -art_tool_up_vector[1])
@@ -1118,22 +1118,17 @@ def loadmodel(root, filename, gamename, nomessage=0):
         return rot
 
     undo = quarkx.action()
-    
-    #editor.Root.currentcomponent = Component
-    #compframes = editor.Root.currentcomponent.findallsubitems("", ':mf') # get all frames
-    #for compframe in compframes:
-    #    compframe.compparent = editor.Root.currentcomponent # To allow frame relocation after editing.
 
     progressbar = quarkx.progressbar(2454, len(models)) #FIXME: Text message!!!
 
-    #Workaround; models with no meshes shouldn't be loaded
+    # Workaround; models with no meshes shouldn't be loaded.
     TMPmodels = []
     for current_model in models:
         if len(current_model.meshbindings) != 0:
             TMPmodels += [current_model]
     models = TMPmodels
 
-    #Process what we loaded
+    # Process what we loaded.
     Full_ComponentList = []
     Full_QuArK_bones = []
     bonelist = editor.ModelComponentList['bonelist']
@@ -1158,7 +1153,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
                 new_bone['parent_index'] = str(current_bone.parentindex)
                 if current_bone.parentindex == -1:
                     # Update the bone name.
-                    # Handle initial placement:
+                    # Handle initial placement.
                     if current_model.initial_placement.flags & 1:
                         parent_pos = (current_model.initial_placement.origin[0], current_model.initial_placement.origin[1], current_model.initial_placement.origin[2])
                     else:
@@ -1190,7 +1185,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
                                                     [current_bone.transform.scale[6], current_bone.transform.scale[7], current_bone.transform.scale[8], 0.0],
                                                     [0.0                            , 0.0                            , 0.0                            , 1.0]]
                 if current_bone.transform.flags & 4:
-                    # Apply scale
+                    # Apply scale.
                     bone_scale = [[current_bone.transform.scale[0], current_bone.transform.scale[1], current_bone.transform.scale[2], 0.0],
                                   [current_bone.transform.scale[3], current_bone.transform.scale[4], current_bone.transform.scale[5], 0.0],
                                   [current_bone.transform.scale[6], current_bone.transform.scale[7], current_bone.transform.scale[8], 0.0],
@@ -1199,14 +1194,14 @@ def loadmodel(root, filename, gamename, nomessage=0):
                 else:
                     bone_scale = parent_scale
                 if current_bone.transform.flags & 1:
-                    # Apply origin
+                    # Apply origin.
                     bone_pos = point_by_matrix(current_bone.transform.origin, parent_rot)
                     bone_pos = point_by_matrix(bone_pos, parent_scale)
                     bone_pos = (parent_pos[0] + bone_pos[0], parent_pos[1] + bone_pos[1], parent_pos[2] + bone_pos[2])
                 else:
                     bone_pos = parent_pos
                 if current_bone.transform.flags & 2:
-                    # Apply rotation
+                    # Apply rotation.
                     bone_rot = quaternion2matrix(current_bone.transform.rotation)
                     bone_rot = matrix_multiply(parent_rot, bone_rot)
                 else:
@@ -1232,19 +1227,14 @@ def loadmodel(root, filename, gamename, nomessage=0):
                 new_bone.vtxlist = {}
                 new_bone.vtx_pos = {}
                 QuArK_bones += [new_bone]
-                if current_bone.parentindex < 0:
-                    undo.put(editor.Root.dictitems['Skeleton:bg'], new_bone)
-                else:
-                    undo.put(QuArK_bones[current_bone.parentindex], new_bone)
-                #undo.put(editor.Root.dictitems['Skeleton:bg'], new_bone)
+
 
                 if not editor.ModelComponentList.has_key('gr2_data'):
                     editor.ModelComponentList['gr2_data'] = {}
-            #    bonelist[new_bone.name] = {'frames': {}}
                 bone_rot = ((bone_rot[0][0], bone_rot[1][0], bone_rot[2][0]),
                             (bone_rot[0][1], bone_rot[1][1], bone_rot[2][1]),
-                            (bone_rot[0][2], bone_rot[1][2], bone_rot[2][2])) # MY TEST
-                bonelist[new_bone.name] = {'frames': {'meshframe:mf': {'position': new_bone.position.tuple, 'rotmatrix': bone_rot}}} # MY TEST
+                            (bone_rot[0][2], bone_rot[1][2], bone_rot[2][2]))
+                bonelist[new_bone.name] = {'frames': {'meshframe:mf': {'position': new_bone.position.tuple, 'rotmatrix': bone_rot}}}
                 bonelist[new_bone.name]['type'] = 'gr2'
                 editor.ModelComponentList['gr2_data'][new_bone.name] = {}
                 editor.ModelComponentList['gr2_data'][new_bone.name]['bone_pos'] = QuArK_bone_pos[bone_index]
@@ -1287,17 +1277,17 @@ def loadmodel(root, filename, gamename, nomessage=0):
                 current_pos = ArtToolTransform(current_vert.position)
                 frame_vertices = frame_vertices + (current_pos[0], current_pos[1], current_pos[2])
 
-                #Bone bindings:
+                # Bone bindings.
                 if current_model.skeletonbinding != -1:
                     for i in range(0, 4):
                         if current_vert.boneweights[i] == 0:
-                            #This index is not bound
+                            # This index is not bound.
                             if (i == 0) and (len(QuArK_bones) != 0):
-                                #There are bones; assign this bone to the origin bone (0)
+                                # There are bones; assign this bone to the origin bone (0).
                                 current_vert.boneindices[i] = 0
                                 current_vert.boneweights[i] = 255
                             else:
-                                #Skip it
+                                # Skip it.
                                 continue
                         fixed_index = bone_index_conv_list[current_vert.boneindices[i]]
                         bone_vtx_list[fixed_index] = bone_vtx_list[fixed_index] + [vert_index]
@@ -1308,14 +1298,12 @@ def loadmodel(root, filename, gamename, nomessage=0):
                             new_modelcomponentlist['bonevtxlist'][QuArK_bones[fixed_index].name][vert_index]['color'] = QuArK_bones[fixed_index]['_color']
                         if not new_modelcomponentlist['weightvtxlist'].has_key(vert_index):
                             new_modelcomponentlist['weightvtxlist'][vert_index] = {}
-                    #1    weight_index_adj = len(new_modelcomponentlist['weightvtxlist'][vert_index].keys())
                         if not new_modelcomponentlist['weightvtxlist'][vert_index].has_key(QuArK_bones[fixed_index].name):
                             new_modelcomponentlist['weightvtxlist'][vert_index][QuArK_bones[fixed_index].name] = {}
                         weight_value = float(current_vert.boneweights[i])/255.0
                         color = quarkpy.mdlutils.weights_color(editor, weight_value)
                         new_modelcomponentlist['weightvtxlist'][vert_index][QuArK_bones[fixed_index].name]['weight_value'] = weight_value
                         new_modelcomponentlist['weightvtxlist'][vert_index][QuArK_bones[fixed_index].name]['color'] = color
-                    #1    new_modelcomponentlist['weightvtxlist'][vert_index][QuArK_bones[fixed_index].name]['weight_index'] = vert_index + weight_index_adj
                 vert_index += 1
 
             current_tritopology = tritopologies[current_mesh.primarytopologybinding]
@@ -1391,12 +1379,42 @@ def loadmodel(root, filename, gamename, nomessage=0):
             # This needs to be done for each component or bones will not work if used in the editor.
             quarkpy.mdlutils.make_tristodraw_dict(editor, Component)
         Full_ComponentList += ComponentList
+
+        bones_in_editor = {}
+        for group in editor.Root.dictitems['Skeleton:bg'].subitems:
+            for bone_group_name in bone_group_names:
+                if group.name.startswith(bone_group_name):
+                    group_bones = group.findallsubitems("", ':bone')
+                    for bone in group_bones:
+                        bones_in_editor[bone.name] = bone
+        editor_bone_names = bones_in_editor.keys()
+   #     exchange_bones = []
+        editor_bone_group = editor.Root.dictitems['Skeleton:bg']
+        for new_bone in QuArK_bones:
+            if new_bone.name in editor_bone_names:
+                continue
+            else:
+                if new_bone.dictspec['parent_name'] == "None":
+                    undo.put(editor_bone_group, new_bone)
+                else:
+                    undo.put(QuArK_bones[int(new_bone.dictspec['parent_index'])], new_bone)
+        for new_bone in QuArK_bones:
+            if new_bone.name in editor_bone_names:
+                editor_bone = bones_in_editor[new_bone.name] #.copy()
+                vtxlist = editor_bone.vtxlist
+                for comp_name in new_bone.vtxlist.keys():
+                    vtxlist[comp_name] = new_bone.vtxlist[comp_name]
+                editor_bone.vtxlist = vtxlist
+   #             exchange_bones = exchange_bones + [editor_bone]
+   #     print "line 1428 exchange_bones", len(exchange_bones)
+   #     for editor_bone in exchange_bones:
+   #         undo.exchange(bones_in_editor[editor_bone.name], editor_bone)
+            
         Full_QuArK_bones += QuArK_bones
         progressbar.progress()
     progressbar.close()
 
-    # ANIMATION STARTS THERE
-   # TMP_ComponentList = editor.Root.findallsubitems("", ':mc')
+    # ANIMATION STARTS HERE.
     TMP_ComponentList = []
     for item in editor.Root.subitems:
         for bone_group_name in bone_group_names:
@@ -1404,19 +1422,8 @@ def loadmodel(root, filename, gamename, nomessage=0):
                 TMP_ComponentList = TMP_ComponentList + [item]
     if len(TMP_ComponentList) != 0:
         Full_ComponentList += TMP_ComponentList
-  #  else:
-  #      quarkx.beep() # Makes the computer "Beep" once if a animation file not loaded. 
-  #      quarkx.msgbox("No components exist for this animation.\n\nAnimation import aborted.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
-  #      try:
-  #          progressbar.close()
-  #      except:
-  #          pass
-  #      editor = None   #Reset the global again
-  #      return
-
         
-   # TMP_QuArK_bones = editor.Root.dictitems['Skeleton:bg'].findallsubitems("", ':bone')
-    # Only get the model's bone groups.
+    # Only get the model's bone groups needed.
     allbones = editor.Root.dictitems['Skeleton:bg'].findallsubitems("", ':bone')
     TMP_QuArK_bones = []
     for bone_group_name in bone_group_names:
@@ -1428,7 +1435,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
 
     NumberOfBones = len(Full_QuArK_bones)
 
-    #Store bone-data for easy access
+    # Store bone-data for easy access.
     QuArK_bone_pos = [[]] * NumberOfBones
     QuArK_bone_rotmatrix = [[]] * NumberOfBones
     QuArK_bone_scale = [[]] * NumberOfBones
@@ -1449,7 +1456,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
                 QuArK_bone_scale_raw[bone_counter] = editor.ModelComponentList['gr2_data'][bone_obj.name]['bone_scale_raw']
         if found_bone == 0:
             QuArK_bone_pos[bone_counter] = ArtToolDetransformVect(bone_obj.position).tuple
-            #These cannot be recovered:
+            # These cannot be recovered.
             QuArK_bone_rotmatrix[bone_counter] = [[1.0, 0.0, 0.0, 0.0],
                                                   [0.0, 1.0, 0.0, 0.0],
                                                   [0.0, 0.0, 1.0, 0.0],
@@ -1459,7 +1466,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
                                               [0.0, 0.0, 1.0, 0.0],
                                               [0.0, 0.0, 0.0, 1.0]]
             QuArK_bone_pos_raw[bone_counter] = ArtToolDetransformVect(bone_obj.position).tuple
-            #These cannot be recovered:
+            # These cannot be recovered.
             QuArK_bone_rotmatrix_raw[bone_counter] = [[1.0, 0.0, 0.0, 0.0],
                                                       [0.0, 1.0, 0.0, 0.0],
                                                       [0.0, 0.0, 1.0, 0.0],
@@ -1472,7 +1479,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
     progressbar = quarkx.progressbar(2454, len(animations)) #FIXME: Text message!!!
 
     for current_animation in animations:
-        NumberOfFrames = 20 #QuArK: Overwriting the timestep to reduce the number of frames
+        NumberOfFrames = 20 # QuArK: Overwriting the timestep to reduce the number of frames.
         FileNumberOfFrames = int(round(current_animation.duration / current_animation.timestep))
         for item in editor.Root.subitems:
             if item.type == ":mc":
@@ -1486,7 +1493,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
         for bone_index in range(len(Full_QuArK_bones)):
             BoneNameToBoneIndex[Full_QuArK_bones[bone_index].name] = bone_index
 
-        #Prepare arrays to store the bone-animation-data
+        # Prepare arrays to store the bone-animation-data.
         QuArK_frame_matrix_raw = [[]] * NumberOfFrames
         QuArK_frame_position_raw = [[]] * NumberOfFrames
         QuArK_frame_scale_raw = [[]] * NumberOfFrames
@@ -1495,13 +1502,13 @@ def loadmodel(root, filename, gamename, nomessage=0):
             QuArK_frame_position_raw[frame_counter] = [[]] * NumberOfBones
             QuArK_frame_scale_raw[frame_counter] = [[]] * NumberOfBones
             for bone_counter in range(0,NumberOfBones):
-                #Set default values:
+                # Set default values.
                 QuArK_frame_position_raw[frame_counter][bone_counter] = QuArK_bone_pos_raw[bone_counter]
                 QuArK_frame_matrix_raw[frame_counter][bone_counter] = QuArK_bone_rotmatrix_raw[bone_counter]
                 QuArK_frame_scale_raw[frame_counter][bone_counter] = QuArK_bone_scale_raw[bone_counter]
                 #FIXME:SHOULD BE ABLE TO DELETE _RAW's LATER?!?
 
-        #Create the new frames
+        # Create the new frames.
         new_frames = {}
         for Component in Full_ComponentList:
             base_frame = Component.dictitems['Frames:fg'].subitems[0]
@@ -1539,7 +1546,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
                     current_curve_rot = current_transformtrack.orientationcurve
                     current_curve_scale = current_transformtrack.scaleshearcurve
 
-                    # Do position curve
+                    # Do position curve.
                     if current_curve_pos.dimension == 3:
                         use_knot = -1
                         for current_knot_index in range(len(current_curve_pos.knots)):
@@ -1547,7 +1554,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
                                 use_knot = current_knot_index
                                 break
                         if use_knot == -1:
-                            #No "suitable" knot found; use last knot
+                            # No "suitable" knot found; use last knot.
                             use_knot = len(current_curve_pos.knots) - 1
                         x = current_curve_pos.controls[use_knot][0]
                         y = current_curve_pos.controls[use_knot][1]
@@ -1558,7 +1565,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
                     else:
                         raise "Error: Corrupt gr2 .ms file! Bad number of dimensions for position curve!"
 
-                    # Do orientation curve
+                    # Do orientation curve.
                     if current_curve_rot.dimension == 4:
                         use_knot = -1
                         for current_knot_index in range(len(current_curve_rot.knots)):
@@ -1566,7 +1573,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
                                 use_knot = current_knot_index
                                 break
                         if use_knot == -1:
-                            #No "suitable" knot found; use last knot
+                            # No "suitable" knot found; use last knot.
                             use_knot = len(current_curve_rot.knots) - 1
                         qx = current_curve_rot.controls[use_knot][0]
                         qy = current_curve_rot.controls[use_knot][1]
@@ -1582,7 +1589,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
                     else:
                         raise "Error: Corrupt gr2 .ms file! Bad number of dimensions for orientation curve!"
 
-                    # Do scaleshear curve
+                    # Do scaleshear curve.
                     if current_curve_scale.dimension == 9:
                         use_knot = -1
                         for current_knot_index in range(len(current_curve_scale.knots)):
@@ -1590,7 +1597,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
                                 use_knot = current_knot_index
                                 break
                         if use_knot == -1:
-                            #No "suitable" knot found; use last knot
+                            # No "suitable" knot found; use last knot.
                             use_knot = len(current_curve_scale.knots) - 1
                         sxx = current_curve_scale.controls[use_knot][0]
                         sxy = current_curve_scale.controls[use_knot][1]
@@ -1613,7 +1620,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
                     else:
                         raise "Error: Corrupt gr2 .ms file! Bad number of dimensions for scale curve!"
 
-        #Process animation frame data
+        # Process animation frame data.
         QuArK_frame_position = [[]] * NumberOfFrames
         QuArK_frame_matrix = [[]] * NumberOfFrames
         QuArK_frame_scale = [[]] * NumberOfFrames
@@ -1631,7 +1638,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
                 current_bone = Full_QuArK_bones[bone_counter]
                 current_bone_parentname = current_bone.dictspec['parent_name']
                 if current_bone_parentname == "None":
-                    # Handle initial placement:
+                    # Handle initial placement.
                     if BoneToTrackGroup.has_key(bone_counter):
                         current_trackgroup = BoneToTrackGroup[bone_counter]
                         if current_trackgroup.initial_placement.flags & 1:
@@ -1656,7 +1663,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
                                             [0.0, 0.0, 1.0, 0.0],
                                             [0.0, 0.0, 0.0, 1.0]]
                     else:
-                        # These can't be recovered
+                        # These can't be recovered.
                         parent_pos = (0.0, 0.0, 0.0)
                         parent_rot = [[1.0, 0.0, 0.0, 0.0],
                                       [0.0, 1.0, 0.0, 0.0],
@@ -1671,7 +1678,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
                         raise "Error: Corrupt gr2 .ms file! Can't find parent bone!"
                     parentbone_index = BoneNameToBoneIndex[current_bone_parentname]
                     if BoneDone[parentbone_index] == 0:
-                        #This bone is being processed before its parent! This is BAD!
+                        # This bone is being processed before its parent! This is BAD!
                         DelayBones += [bone_counter]
                         continue
                     parent_pos = QuArK_frame_position[frame_counter][parentbone_index]
@@ -1682,7 +1689,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
                 raw_matrix = QuArK_frame_matrix_raw[frame_counter][bone_counter]
                 raw_scale = QuArK_frame_scale_raw[frame_counter][bone_counter]
 
-                # Apply origin
+                # Apply origin.
                 bone_pos = point_by_matrix(raw_position, parent_rot)
                 bone_pos = point_by_matrix(bone_pos, parent_scale)
                 bone_pos = (parent_pos[0] + bone_pos[0], parent_pos[1] + bone_pos[1], parent_pos[2] + bone_pos[2])
@@ -1690,7 +1697,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
                 # Apply rotation
                 bone_rot = matrix_multiply(parent_rot, raw_matrix)
 
-                # Apply scale
+                # Apply scale.
                 bone_scale = matrix_multiply(raw_scale, parent_scale)
 
                 QuArK_frame_position[frame_counter][bone_counter] = bone_pos
@@ -1706,7 +1713,6 @@ def loadmodel(root, filename, gamename, nomessage=0):
                 current_frame = new_frames[comp.name][frame_counter]
                 bonelist[current_bone.name]['frames'][current_frame.name] = frame
                 if frame_counter == 0 and len(models) != 0 and len(animations) != 0: # File has both the model & animation.
-        #        if len(animations) == 0 and frame_counter == 0: # MY TEST
                     #Copy this for the meshframe
                     bonelist[current_bone.name]['frames']['meshframe:mf'] = frame
 
@@ -1715,7 +1721,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
 
         #FIXME: have to update "draw_offset"!
 
-        #Apply animation data
+        # Apply animation data.
         for frame_counter in range(0,NumberOfFrames):
             for mesh_counter in range(len(Full_ComponentList)):
                 comp = Full_ComponentList[mesh_counter]
@@ -1735,12 +1741,12 @@ def loadmodel(root, filename, gamename, nomessage=0):
                             old_bone_pos = quarkx.vect(frame['position'])
                             old_bone_rot = quarkx.matrix(frame['rotmatrix'])
                         else:
-                            old_bone_pos = current_bone.position # MY TEST
-                            old_bone_rot = quarkx.matrix(bonelist[current_bone.name]['frames']['meshframe:mf']['rotmatrix']) # MY TEST
+                            old_bone_pos = current_bone.position
+                            old_bone_rot = quarkx.matrix(bonelist[current_bone.name]['frames']['meshframe:mf']['rotmatrix'])
                         frame = bonelist[current_bone.name]['frames'][current_frame.name]
                         new_bone_pos = quarkx.vect(frame['position'])
                         new_bone_rot = quarkx.matrix(frame['rotmatrix'])
-                        #new_bone_scale?
+                        # new_bone_scale?
                         for vert_index in vtxlist:
                             weight_value = 1.0
                             if editor.ModelComponentList[comp.name]['weightvtxlist'].has_key(vert_index) and editor.ModelComponentList[comp.name]['weightvtxlist'][vert_index].has_key(current_bone.name):
@@ -1753,7 +1759,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
                             vert_newpos[vert_index] += newpos
                             
                 for vert_counter in range(len(oldverts)):
-                    #Use this to fake a (weight_value = 1.0)
+                    # Use this to fake a (weight_value = 1.0)
                     #vert_newpos[vert_counter] += oldverts[vert_counter] * (1.0 - vert_weight_values[vert_counter])
                     newverts[vert_counter] = vert_newpos[vert_counter]
                 current_frame.vertices = newverts
@@ -1989,6 +1995,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.20  2010/05/07 06:22:34  cdunde
+# Changed mesh variable name reused in animation section to avoid confusion.
+#
 # Revision 1.19  2010/05/06 22:26:24  cdunde
 # Great animation improvement fixes by DanielPharos.
 #
