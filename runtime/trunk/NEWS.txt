@@ -14,6 +14,8 @@ $Id$
 
 6.6.0 Beta 4
 ============
+* [cdunde]: Setup the QuArK Model Editor to allow obtaining textures dynamically in the Texture Browser.
+
 * [cdunde]: Model editor, Setup support to import model skin textures using addon .qrk file links.
 
 * [cdunde]: Model editor, Added new function to rescale Skin-view handles to current skin texture size.
