@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.85  2010/04/16 21:18:45  danielpharos
+Move some version-stuff about. quarkpy now also checks the minor version number.
+
 Revision 1.84  2009/10/13 20:37:55  danielpharos
 Fix logic bug and possible crash bug with file associations.
 
@@ -363,7 +366,8 @@ comparison between gamemodes.}
  mjPrey         = 'r';  { Prey }
  mjFAKK2        = 's';  { Heavy Metal - FAKK2 }
  mjWarsow       = 'v';  { Warsow }
- mjWildWest     = 'w';  { WildWest }
+ mjWildWest     = 'w';  { WildWest }   
+ mjModelEditor  = 'x';  { QuArK Model editor }
  mjNEXUIZ       = 'z';  { NEXUIZ }
 
  mjAny          = #1;
@@ -1187,11 +1191,16 @@ end;
 function ModeJeuQuake2: Boolean;
 begin
  Result := CharModeJeu >= mjQuake2;
-end;     
+end;
 
 function ModeJeuQuake4: Boolean;
 begin
  Result := CharModeJeu >= mjQuake4;
+end;                                 
+
+function ModeJeuModelEditor: Boolean;
+begin
+ Result := CharModeJeu >= mjModelEditor;
 end;
 
 function CurrentQuake1Mode: Char;

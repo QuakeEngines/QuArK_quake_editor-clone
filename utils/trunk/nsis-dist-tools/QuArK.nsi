@@ -1,6 +1,6 @@
 
 ; QuArK installer x.x.x
-; HomePage: http://quark.planetquake.gamespy.com/
+; HomePage: http://quark.sourceforge.net/
 ; Version:  NSIS 2.28
 ; Author:  Fredrick Vamstad, DanielPharos & cdunde
 ; Date:     18 Aug. 2005 & 5 January 2007
@@ -206,6 +206,8 @@ Section "$(TEXT_SEC01_TITLE)" SEC01
   File "${BUILDDIR}\addons\JK2\*.*"
   SetOutPath "$INSTDIR\addons\KingPin"
   File "${BUILDDIR}\addons\KingPin\*.*"
+  SetOutPath "$INSTDIR\addons\ModelEditor"
+  File "${BUILDDIR}\addons\ModelEditor\*.*"
   SetOutPath "$INSTDIR\addons\MOHAA"
   File "${BUILDDIR}\addons\MOHAA\*.*"
   SetOutPath "$INSTDIR\addons\NEXUIZ"
@@ -311,6 +313,7 @@ Section Uninstall
   Delete "$INSTDIR\addons\Quake_1\*.*"
   Delete "$INSTDIR\addons\Prey\*.*"
   Delete "$INSTDIR\addons\NEXUIZ\*.*"
+  Delete "$INSTDIR\addons\ModelEditor\*.*"
   Delete "$INSTDIR\addons\MOHAA\*.*"
   Delete "$INSTDIR\addons\KingPin\*.*"
   Delete "$INSTDIR\addons\JK2\*.*"
@@ -359,6 +362,7 @@ Section Uninstall
   RMDir "$INSTDIR\addons\Quake_1"
   RMDir "$INSTDIR\addons\Prey"
   RMDir "$INSTDIR\addons\NEXUIZ"
+  RMDir "$INSTDIR\addons\ModelEditor"
   RMDir "$INSTDIR\addons\MOHAA"
   RMDir "$INSTDIR\addons\KingPin"
   RMDir "$INSTDIR\addons\JK2"
