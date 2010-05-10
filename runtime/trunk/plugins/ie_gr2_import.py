@@ -1326,12 +1326,20 @@ def loadmodel(root, filename, gamename, nomessage=0):
                 tricount = current_face_group.tricount
                 for current_face_nr in range(trifirst, trifirst+tricount):
                     current_face = current_tritopology.faces[current_face_nr]
-                    vert_index0 = current_face.indices[0]
-                    vert_index1 = current_face.indices[1]
-                    vert_index2 = current_face.indices[2]
-                    Tris = Tris + struct.pack("Hhh", vert_index2, current_mesh.verts[vert_index2].texturecoords[0]*skinsize[0], current_mesh.verts[vert_index2].texturecoords[1]*skinsize[1])
-                    Tris = Tris + struct.pack("Hhh", vert_index1, current_mesh.verts[vert_index1].texturecoords[0]*skinsize[0], current_mesh.verts[vert_index1].texturecoords[1]*skinsize[1])
-                    Tris = Tris + struct.pack("Hhh", vert_index0, current_mesh.verts[vert_index0].texturecoords[0]*skinsize[0], current_mesh.verts[vert_index0].texturecoords[1]*skinsize[1])
+                    vert_index = [[]] * 3
+                    texcoordX = [[]] * 3
+                    texcoordY = [[]] * 3
+                    for i in range(0, 3):
+                        vert_index[i] = current_face.indices[i]
+                        texcoordX[i] = current_mesh.verts[vert_index[i]].texturecoords[0]
+                        if (texcoordX[i] < -20) or (texcoordX[i] > 20):
+                            texcoordX[i] = texcoordX[i] - float(int(texcoordX[i] / 20) * 20)
+                        texcoordY[i] = current_mesh.verts[vert_index[i]].texturecoords[1]
+                        if (texcoordY[i] < -20) or (texcoordY[i] > 20):
+                            texcoordY[i] = texcoordY[i] - float(int(texcoordY[i] / 20) * 20)
+                    Tris = Tris + struct.pack("Hhh", vert_index[2], texcoordX[2]*skinsize[0], texcoordY[2]*skinsize[1])
+                    Tris = Tris + struct.pack("Hhh", vert_index[1], texcoordX[1]*skinsize[0], texcoordY[1]*skinsize[1])
+                    Tris = Tris + struct.pack("Hhh", vert_index[0], texcoordX[0]*skinsize[0], texcoordY[0]*skinsize[1])
                 Component['Tris'] = Tris
                 Component['show'] = chr(1)
                 framesgroup = quarkx.newobj('Frames:fg')
@@ -1997,6 +2005,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.22  2010/05/10 18:41:49  danielpharos
+# Also output actual error.
+#
 # Revision 1.21  2010/05/07 19:11:12  cdunde
 # To allow model attachments to animate with model,
 # selected components to animate with other components
