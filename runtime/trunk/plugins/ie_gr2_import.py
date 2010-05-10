@@ -982,7 +982,9 @@ def LoadGR2MSFile(MSfilename):
                     # Don't know what this; skip it.
                     raise "Error: Corrupt gr2 .ms file! Don't know what to do with section: ", SectionName
         except:
-            raise "Error in gr2 .ms file line: ", line_counter
+            print "Error in gr2 .ms file line: ", line_counter
+            print "Error follows..."
+            raise
     finally:
         line_counter = 0
         lines = None
@@ -1995,6 +1997,11 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.21  2010/05/07 19:11:12  cdunde
+# To allow model attachments to animate with model,
+# selected components to animate with other components
+# and some file cleanup.
+#
 # Revision 1.20  2010/05/07 06:22:34  cdunde
 # Changed mesh variable name reused in animation section to avoid confusion.
 #
