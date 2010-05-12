@@ -14,6 +14,8 @@ $Id$
 
 6.6.0 Beta 4
 ============
+* [cdunde]: Model editor, Added Eye camera handle when in True 3D mode for easier navigation.
+
 * [cdunde]: Setup the QuArK Model Editor to allow obtaining textures dynamically in the Texture Browser.
 
 * [cdunde]: Model editor, Setup support to import model skin textures using addon .qrk file links.
