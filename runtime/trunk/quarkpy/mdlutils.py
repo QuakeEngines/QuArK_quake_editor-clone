@@ -3842,7 +3842,11 @@ def Update_Editor_Views(editor, option=4):
     import mdlmgr
     mdlmgr.treeviewselchanged = 1
     editorview = editor.layout.views[0]
-    newhandles = mdlhandles.BuildHandles(editor, editor.layout.explorer, editorview)
+    newhandles = mdlhandles.BuildCommonHandles(editor, editor.layout.explorer)
+    view3D = None
+    for v in editor.layout.views:
+        if v.info["type"] == "3D":
+            view3D = v
     if option == 7:
         import qbaseeditor
         from qbaseeditor import currentview
@@ -3876,6 +3880,9 @@ def Update_Editor_Views(editor, option=4):
                     v.handles = []
                 else:
                     v.handles = newhandles
+                    if view3D is not None and v.info["viewname"] != "editors3Dview" and v.info["viewname"] != "3Dwindow":
+                        v.handles.append(qhandles.EyePosition(v, view3D))
+                        v.handles.append(mdlhandles.MdlEyeDirection(v, view3D))
                 if editor.ModelFaceSelList != []:
                     mdlhandles.ModelFaceHandle(qhandles.GenericHandle).draw(editor, v, editor.EditorObjectList)
                 if v.handles is None:
@@ -4206,6 +4213,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.139  2010/05/05 15:46:39  cdunde
+#To stop jerky movement in Model Editor when scrolling, panning.
+#
 #Revision 1.138  2010/05/05 04:08:47  cdunde
 #Function correction.
 #

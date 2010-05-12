@@ -293,8 +293,8 @@ class Rotate3DHandle(GenericHandle):
             editor = saveeditor
         import mdleditor
         if isinstance(editor, mdleditor.ModelEditor):
-            return
-        if editor is not None and editor.layout is not None:
+            pass # To allow Eye ball handle to draw when needed.
+        elif editor is not None and editor.layout is not None:
             tb2 = editor.layout.toolbars["tb_terrmodes"]
             if view.info["type"] == "3D":
                 if view.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons1"] == "1":
@@ -1286,7 +1286,7 @@ def refreshtimer(self):
             else:
                 if len(self.view.handles) == 0:
                     import mdlhandles
-                    self.view.handles = mdlhandles.BuildCommonHandles(editor, editor.layout.explorer)
+                    self.view.handles = mdlhandles.BuildHandles(editor, editor.layout.explorer, self.view)
             if flagsmouse == 1072:
                 mdleditor.setsingleframefillcolor(editor, self.view)
                 self.view.repaint()
@@ -1328,7 +1328,7 @@ def refreshtimer(self):
                     else:
                         if len(self.view.handles) == 0:
                             import mdlhandles
-                            self.view.handles = mdlhandles.BuildCommonHandles(editor, editor.layout.explorer)
+                            self.view.handles = mdlhandles.BuildHandles(editor, editor.layout.explorer, self.view)
                   # Line below stops the editor 2D view handles from drawing during rec drag after the timer
                   # goes off one time, but does not recreate the handles if nothing is selected at end of drag.
                   #      self.view.handles = []
@@ -1742,7 +1742,7 @@ class RectangleDragObject(RedImageDragObject):
                     else:
                         if len(self.view.handles) == 0:
                             import mdlhandles
-                            self.view.handles = mdlhandles.BuildCommonHandles(editor, editor.layout.explorer)
+                            self.view.handles = mdlhandles.BuildHandles(editor, editor.layout.explorer, self.view)
                         cv = self.view.canvas()
                         for h in self.view.handles:
                             h.draw(self.view, cv, self)
@@ -2209,6 +2209,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.90  2010/05/02 06:20:26  cdunde
+#To remove Model Editor unused and duplicating handle build code causing slowdowns.
+#
 #Revision 1.89  2009/09/30 19:37:26  cdunde
 #Threw out tags dialog, setup tag dragging, commands, and fixed saving of face selection.
 #

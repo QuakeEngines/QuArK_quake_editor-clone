@@ -515,11 +515,23 @@ class BaseLayout:
     def update3Dviews(self, newview=None):
         if newview is not None:
             newview.oncameramove = self.cameramoved
-        self.editor.lastscale = 0    # force a call to buildhandles()
-        for v in self.views:
-            if v is not newview:
-                v.info["timer"] = 1
-                quarkx.settimer(RefreshView, v, 200)
+        import mdleditor
+        if isinstance(self.editor, mdleditor.ModelEditor) and quarkx.setupsubset(SS_MODEL, "Options")['EditorTrue3Dmode'] is not None:
+            from qbaseeditor import currentview
+            if currentview.info['viewname'] == "editors3Dview":
+                pass
+            else:
+                self.editor.lastscale = 0    # force a call to buildhandles()
+                for v in self.views:
+                    if v is not newview:
+                        v.info["timer"] = 1
+                        quarkx.settimer(RefreshView, v, 200)
+        else:
+            self.editor.lastscale = 0    # force a call to buildhandles()
+            for v in self.views:
+                if v is not newview:
+                    v.info["timer"] = 1
+                    quarkx.settimer(RefreshView, v, 200)
 
     cameramoved = update3Dviews
 
@@ -620,6 +632,9 @@ class MPPage:
 #
 #
 #$Log$
+#Revision 1.35  2010/04/07 21:12:12  cdunde
+#To fix crash from pervious update change when switching editors without closing QuArK.
+#
 #Revision 1.34  2010/03/26 07:28:42  cdunde
 #To add new Model Editor sub-group folders to the Skins group.
 #

@@ -1656,7 +1656,11 @@ def commonhandles(self, redraw=1):
 
 ### Draw Needed Views GrigScale and AxisIcons Section:
 ### =================================================
+    # The 3D view "eyes" IF the editor's 3D view is set to "True 3D mode" to navigate easer when needed.
+    view3D = None
     for v in self.layout.views:
+        if v.info["type"] == "3D":
+            view3D = v
         if v.info["viewname"] == "editors3Dview" or v.info["viewname"] == "3Dwindow" or v.info["viewname"] == "skinview":
             continue
         else:
@@ -1696,7 +1700,7 @@ def commonhandles(self, redraw=1):
                             else:
                                 v.handles = hlist
                                 cv = v.canvas()
-                                for h in hlist:
+                                for h in v.handles:
                                     h.draw(v, cv, None)
 
                             if quarkx.setupsubset(SS_MODEL, "Options")["MAIV"] == "1":
@@ -1710,7 +1714,10 @@ def commonhandles(self, redraw=1):
                 else:
                     v.handles = hlist
                     cv = v.canvas()
-                    for h in hlist:
+                    if view3D is not None:
+                        v.handles.append(qhandles.EyePosition(v, view3D))
+                        v.handles.append(mdlhandles.MdlEyeDirection(v, view3D))
+                    for h in v.handles:
                         h.draw(v, cv, None)
                 if quarkx.setupsubset(SS_MODEL, "Options")["MAIV"] == "1":
                     modelaxis(v)
@@ -1721,7 +1728,10 @@ def commonhandles(self, redraw=1):
                 else:
                     v.handles = hlist
                     cv = v.canvas()
-                    for h in hlist:
+                    if view3D is not None:
+                        v.handles.append(qhandles.EyePosition(v, view3D))
+                        v.handles.append(mdlhandles.MdlEyeDirection(v, view3D))
+                    for h in v.handles:
                         h.draw(v, cv, None)
                 if quarkx.setupsubset(SS_MODEL, "Options")["MAIV"] == "1":
                     modelaxis(v)
@@ -1732,7 +1742,10 @@ def commonhandles(self, redraw=1):
                 else:
                     v.handles = hlist
                     cv = v.canvas()
-                    for h in hlist:
+                    if view3D is not None:
+                        v.handles.append(qhandles.EyePosition(v, view3D))
+                        v.handles.append(mdlhandles.MdlEyeDirection(v, view3D))
+                    for h in v.handles:
                         h.draw(v, cv, None)
                 if quarkx.setupsubset(SS_MODEL, "Options")["MAIV"] == "1":
                     modelaxis(v)
@@ -1750,7 +1763,7 @@ def commonhandles(self, redraw=1):
                             else:
                                 v.handles = hlist
                                 cv = v.canvas()
-                                for h in hlist:
+                                for h in v.handles:
                                     h.draw(v, cv, None)
                             if quarkx.setupsubset(SS_MODEL, "Options")["MAIV"] == "1":
                                 modelaxis(v)
@@ -1773,6 +1786,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.144  2010/05/06 08:41:17  cdunde
+#Small update.
+#
 #Revision 1.143  2010/05/01 19:45:23  cdunde
 #File cleanup.
 #

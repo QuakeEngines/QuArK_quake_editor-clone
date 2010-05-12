@@ -2118,6 +2118,19 @@ def BuildHandles(editor, explorer, view, option=1):
   #      h = view.handles
   #      return h
 
+    #
+    # The 3D view "eyes".
+    #
+    if quarkx.setupsubset(SS_MODEL, "Options")['EditorTrue3Dmode'] is not None:
+        eye_handles = []
+        if view.info["viewname"] == "editors3Dview" or view.info["viewname"] == "3Dwindow":
+            pass
+        else:
+            for v in editor.layout.views:
+                if (v is not view) and (v.info["type"] == "3D"):
+                    eye_handles.append(qhandles.EyePosition(view, v))
+                    eye_handles.append(MdlEyeDirection(view, v))
+
     th = []
     for item in editor.Root.dictitems["Misc:mg"].subitems:
         if item.type == ":tag":
@@ -2173,6 +2186,8 @@ def BuildHandles(editor, explorer, view, option=1):
             list = MakeEditorFaceObject(editor)
         else:
             h = []
+            if quarkx.setupsubset(SS_MODEL, "Options")['EditorTrue3Dmode'] is not None:
+                h = h + eye_handles
             return h
         box = quarkx.boundingboxof(list)
         if box is None:
@@ -2181,6 +2196,8 @@ def BuildHandles(editor, explorer, view, option=1):
             h = ModelEditorLinHandlesManager(MapColor("LinearHandleCircle", SS_MODEL), box, list, view).BuildHandles()
     else:
         if editor.Root.currentcomponent.dictspec['show'] == "\x00": # Component is hidden.
+            if quarkx.setupsubset(SS_MODEL, "Options")['EditorTrue3Dmode'] is not None:
+                h = h + eye_handles
             return h
         #
         # Call the Entity Manager in mdlentities.py to build the Vertex handles.
@@ -2218,22 +2235,10 @@ def BuildHandles(editor, explorer, view, option=1):
                         h = vh + ModelEditorLinHandlesManager(MapColor("LinearHandleCircle", SS_MODEL), box, vtxlist, view).BuildHandles() + bh
                 except:
                     pass
-    #
-    # The 3D view "eyes".
-    #
- # No need to loop through these views since they are all being passed to here anyway.
- #   for v in editor.layout.views:
- #       if (v is not view) and (v.info["type"] == "3D"):
- #           h.append(qhandles.EyePosition(view, v))
- #           h.append(MdlEyeDirection(view, v))
-
- # We're not using the Eye icon right now but if it is added
- # it will probably need to go into a "try" statement or an error will occur.
- #   if view.info["type"] == "3D":
- #       h.append(qhandles.EyePosition(view, view))
- #       h.append(MdlEyeDirection(view, view))
 
     try:
+        if quarkx.setupsubset(SS_MODEL, "Options")['EditorTrue3Dmode'] is not None:
+            h = h + eye_handles
         return qhandles.FilterHandles(h, SS_MODEL)
     except:
         pass
@@ -2256,7 +2261,7 @@ class RectSelDragObject(qhandles.RectangleDragObject):
         ### And to retain existing selected items, if any, in the ModelVertexSelList.
         if view.info["viewname"] != "skinview":
             if len(editor.Root.dictitems['Skeleton:bg'].findallsubitems("", ':bone')) != 0 and len(view.handles) == 0:
-                view.handles = BuildCommonHandles(editor, editor.layout.explorer)
+                view.handles = BuildHandles(editor, editor.layout.explorer, view)
             if len(editor.layout.explorer.sellist) == 0:
                 mdleditor.setsingleframefillcolor(editor, view)
                 view.repaint()
@@ -5280,6 +5285,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.206  2010/05/06 21:57:01  cdunde
+#Speed improvement by DanielPharos.
+#
 #Revision 1.205  2010/05/06 03:10:54  cdunde
 #Menu functions update to eliminate dupe and unnecessary redraws.
 #
