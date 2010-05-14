@@ -25,7 +25,7 @@ Info = {
 
 # Python specific modules import.
 import quarkx
-import sys, struct, os, math
+import sys, struct, os, math, Lib, Lib.base64
 from quarkpy.qutils import *
 from quarkpy.qeditor import MapColor # Strictly needed for QuArK bones MapColor call.from types import *
 import quarkpy.qhandles
@@ -413,37 +413,158 @@ class gr2_animation:
         return
 
 class gr2_texture:
-    name = ""
+    fromfilename = ""
+    texturetype = 0
+    width = 0
+    height = 0
+    encoding = 0
+    subformat = 0
+    BytesPerPixel = 0
+    ShiftForComponent = [0, 0, 0, 0]
+    BitsForComponent = [0, 0, 0, 0]
+    imagedata = ""
 
     def __init__(self):
-        self.name = ""
+        self.fromfilename = ""
+        self.texturetype = 0
+        self.width = 0
+        self.height = 0
+        self.encoding = 0
+        self.subformat = 0
+        self.BytesPerPixel = 0
+        self.ShiftForComponent = [0, 0, 0, 0]
+        self.BitsForComponent = [0, 0, 0, 0]
+        self.imagedata = ""
 
     def ReadData(self):
         global lines
         global line_counter
-        #@
-        """fromfilename: C:\Utherverse\Avatars\female\textures\nude\replaceable5.tga
-        texturetype: 0
-        width: 256
-        height: 256
-        encoding: 3
-        subformat: 4
-        BytesPerPixel: 3
-        ShiftForComponent: [0,8,16,0]
-        BitsForComponent: [8,8,8,0]"""
-        
+        while 1:
+            current_line = lines[line_counter].strip()
+            line_counter+=1   # Increase line_counter here, so we don't forget it.
+            if current_line[-2:] == " (":
+                # Texture section doesn't have deeper levels.
+                raise "Error: Corrupt texture section! Found deeper level where none was expected!"
+            elif current_line == ")":
+                # End of texture section.
+                break
+            else:
+                current_line = current_line.split(":", 1)
+                if current_line is None:
+                    raise "Error: Corrupt texture section! Empty line!"
+                if len(current_line) != 2:
+                    raise "Error: Corrupt texture section! Bad line!"
+                current_line[0] = current_line[0].strip()
+                current_line[1] = current_line[1].strip()
+                if current_line[0] == "fromfilename":
+                    self.fromfilename = current_line[1]
+                elif current_line[0] == "texturetype":
+                    self.texturetype = int(current_line[1])
+                elif current_line[0] == "width":
+                    self.width = int(current_line[1])
+                elif current_line[0] == "height":
+                    self.height = int(current_line[1])
+                elif current_line[0] == "encoding":
+                    self.encoding = int(current_line[1])
+                elif current_line[0] == "subformat":
+                    self.subformat = int(current_line[1])
+                elif current_line[0] == "BytesPerPixel":
+                    self.BytesPerPixel = int(current_line[1])
+                elif current_line[0] == "ShiftForComponent":
+                    self.ShiftForComponent = InterpretIntTuple(current_line[1])
+                elif current_line[0] == "BitsForComponent":
+                    self.BitsForComponent = InterpretIntTuple(current_line[1])
+                elif current_line[0] == "imagedata":
+                    self.imagedata = Lib.base64.b64decode(current_line[1])
+                else:
+                    # Don't know what to do with this...
+                    raise "Error: Corrupt texture section! Don't know what to do with: ", current_line
+        return
+
+class gr2_map:
+    usage = ""
+    material = -1
+
+    def __init__(self):
+        self.usage = ""
+        self.material = -1
+
+    def ReadData(self):
+        global lines
+        global line_counter
+        while 1:
+            current_line = lines[line_counter].strip()
+            line_counter+=1   # Increase line_counter here, so we don't forget it.
+            if current_line[-2:] == " (":
+                # Map section doesn't have deeper levels.
+                raise "Error: Corrupt map section! Found deeper level where none was expected!"
+            elif current_line == ")":
+                # End of map section.
+                break
+            else:
+                current_line = current_line.split(":", 1)
+                if current_line is None:
+                    raise "Error: Corrupt map section! Empty line!"
+                if len(current_line) != 2:
+                    raise "Error: Corrupt map section! Bad line!"
+                current_line[0] = current_line[0].strip()
+                current_line[1] = current_line[1].strip()
+                if current_line[0] == "map usage":
+                    self.usage = current_line[1]
+                elif current_line[0] == "map material":
+                    self.material = int(current_line[1])
+                else:
+                    # Don't know what to do with this...
+                    raise "Error: Corrupt map section! Don't know what to do with: ", current_line
         return
 
 class gr2_material:
     name = ""
+    maps = []
+    texture = None
 
     def __init__(self):
         self.name = ""
+        self.maps = []
+        self.texture = None
 
     def ReadData(self):
         global lines
         global line_counter
-        #@
+        while 1:
+            current_line = lines[line_counter].strip()
+            line_counter+=1   # Increase line_counter here, so we don't forget it.
+            if current_line[-2:] == " (":
+                # Deeper level.
+                current_line = current_line[:-2]
+                if current_line == "map":
+                    # This is a map section.
+                    map = gr2_map()
+                    self.maps += [map]
+                    map.ReadData()
+                elif current_line == "texture":
+                    # This is a texture section.
+                    texture = gr2_texture()
+                    self.texture = texture
+                    texture.ReadData()
+                else:
+                    raise "Error: Corrupt material section! Unknown section name: ", current_line
+            elif current_line == ")":
+                # End of material section.
+                break
+            else:
+                current_line = current_line.split(":", 1)
+                if current_line is None:
+                    raise "Error: Corrupt material section! Empty line!"
+                if len(current_line) != 2:
+                    raise "Error: Corrupt material section! Bad line!"
+                current_line[0] = current_line[0].strip()
+                current_line[1] = current_line[1].strip()
+                if current_line[0] == "material name":
+                    self.name = current_line[1]
+                else:
+                    # Don't know what to do with this...
+                    raise "Error: Corrupt material section! Don't know what to do with: ", current_line
         return
 
 class gr2_vertexdata:
@@ -629,6 +750,39 @@ class gr2_face:
                     raise "Error: Corrupt face section! Don't know what to do with: ", current_line
         return
 
+class gr2_materialbinding:
+    material = -1
+
+    def __init__(self):
+        self.material = -1
+
+    def ReadData(self):
+        global lines
+        global line_counter
+        while 1:
+            current_line = lines[line_counter].strip()
+            line_counter+=1   # Increase line_counter here, so we don't forget it.
+            if current_line[-2:] == " (":
+                # Materialbinding section doesn't have deeper levels.
+                raise "Error: Corrupt materialbinding section! Found deeper level where none was expected!"
+            elif current_line == ")":
+                # End of materialbinding section.
+                break
+            else:
+                current_line = current_line.split(":", 1)
+                if current_line is None:
+                    raise "Error: Corrupt materialbinding section! Empty line!"
+                if len(current_line) != 2:
+                    raise "Error: Corrupt materialbinding section! Bad line!"
+                current_line[0] = current_line[0].strip()
+                current_line[1] = current_line[1].strip()
+                if current_line[0] == "materialbinding material":
+                    self.material = int(current_line[1])
+                else:
+                    # Don't know what to do with this...
+                    raise "Error: Corrupt materialbinding section! Don't know what to do with: ", current_line
+        return
+
 class gr2_bonebinding:
     bonename = ""
     OBBMin = []
@@ -674,12 +828,14 @@ class gr2_mesh:
     name = ""
     verts = []
     primarytopologybinding = -1
+    materialbindings = []
     bonebindings = []
 
     def __init__(self):
         self.name = ""
         self.verts = []
         self.primarytopologybinding = -1
+        self.materialbindings = []
         self.bonebindings = []
 
     def ReadData(self):
@@ -696,6 +852,11 @@ class gr2_mesh:
                     vert = gr2_vert()
                     self.verts += [vert]
                     vert.ReadData()
+                elif current_line == "materialbinding":
+                    # This is a materialbinding section.
+                    materialbinding = gr2_materialbinding()
+                    self.materialbindings += [materialbinding]
+                    materialbinding.ReadData()
                 elif current_line == "bonebinding":
                     # This is a bonebinding section.
                     bonebinding = gr2_bonebinding()
@@ -1130,7 +1291,44 @@ def loadmodel(root, filename, gamename, nomessage=0):
             TMPmodels += [current_model]
     models = TMPmodels
 
+    #
     # Process what we loaded.
+    #
+
+    #First, convert the materials to QuArK skins
+    QuArK_skins = []
+    def DoMaterial(current_material):
+        result = []
+        current_texture = current_material.texture
+        if current_texture is not None:
+            texturename = current_texture.fromfilename
+            if texturename.find("\\") != -1:
+                texturename = texturename.rsplit("\\", 1)[1]
+            if texturename.find("/") != -1:
+                texturename = texturename.rsplit("/", 1)[1]
+            skin = quarkx.newobj(texturename)
+            ImgData = ''
+            BytesPerPixel = len(current_texture.imagedata) / (current_texture.width * current_texture.height)
+            Padding=(int(((current_texture.width * 8) + 31) / 32) * 4) - (current_texture.width * 1)
+            for y in range(current_texture.height):
+                PixelIndex = current_texture.width * (current_texture.height - y - 1)
+                for x in range(current_texture.width):
+                    PixelData = current_texture.imagedata[PixelIndex * BytesPerPixel:PixelIndex * BytesPerPixel+3]
+                    red, green, blue = struct.unpack("<3B", PixelData)
+                    ImgData += struct.pack("BBB", blue, green, red)
+                    PixelIndex += 1
+                ImgData += "\0" * Padding
+            skin['Image1'] = ImgData
+            skin['Size'] = (float(current_texture.width), float(current_texture.height))
+            result += [skin]
+        for current_map in current_material.maps:
+            current_material_index = current_map.material
+            if current_material_index != -1:
+                result += DoMaterial(materials[current_material_index])
+        return result
+    for current_material in materials:
+        QuArK_skins += [DoMaterial(current_material)]
+
     Full_ComponentList = []
     Full_QuArK_bones = []
     bonelist = editor.ModelComponentList['bonelist']
@@ -1316,7 +1514,19 @@ def loadmodel(root, filename, gamename, nomessage=0):
                 else:
                     Component = quarkx.newobj(bone_group_name + "_" + current_mesh.name + ":mc")
                 ComponentList += [Component]
-                skinsize = (256, 256)
+
+                #Now do the skins
+                skins = []
+                skinsize = None
+                current_materialindex = current_face_group.materialindex
+                current_materialbinding = current_mesh.materialbindings[current_materialindex]
+                if current_materialbinding.material != -1:
+                    for skin in QuArK_skins[current_materialbinding.material]:
+                        if skinsize is None:
+                            skinsize = skin['Size']
+                        skins += [skin]
+                if skinsize is None:
+                    skinsize = (256, 256)
                 Component['skinsize'] = skinsize
                 if len(new_modelcomponentlist) <> 0:
                     editor.ModelComponentList[Component.name] = new_modelcomponentlist
@@ -1345,6 +1555,8 @@ def loadmodel(root, filename, gamename, nomessage=0):
                 framesgroup = quarkx.newobj('Frames:fg')
                 skingroup = quarkx.newobj('Skins:sg')
                 skingroup['type'] = chr(2)
+                for skin in skins:
+                    skingroup.appenditem(skin.copy()) #Put a COPY in the skingroup
                 sdogroup = quarkx.newobj('SDO:sdo')
                 Component.appenditem(sdogroup)
                 Component.appenditem(skingroup)
@@ -1352,7 +1564,6 @@ def loadmodel(root, filename, gamename, nomessage=0):
                 frame = quarkx.newobj('meshframe:mf')
                 frame['Vertices'] = frame_vertices
                 framesgroup.appenditem(frame)
-                #FIXME: DO SKINS... skingroup
                 undo.put(editor.Root, Component)
 
                 if current_model.skeletonbinding != -1:
@@ -1790,6 +2001,15 @@ def loadmodel(root, filename, gamename, nomessage=0):
     else:
         undomessage = "MIXD " + undomessage
     editor.ok(undo, undomessage + " loaded")
+
+    editor.Root.currentcomponent = Full_ComponentList[0]  # Sets the current component.
+    comp = editor.Root.currentcomponent
+    skins = comp.findallsubitems("", ':sg')      # Gets the skin group.
+    if len(skins[0].subitems) != 0:
+        comp.currentskin = skins[0].subitems[0]      # To try and set to the correct skin.
+        quarkpy.mdlutils.Update_Skin_View(editor, 2) # Sends the Skin-view for updating and center the texture in the view.
+    else:
+        comp.currentskin = None
     return
 
 ### To register this Python plugin and put it on the importers menu.
@@ -2005,6 +2225,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.23  2010/05/10 19:47:31  cdunde
+# Texture UV fix by DanielPharos.
+#
 # Revision 1.22  2010/05/10 18:41:49  danielpharos
 # Also output actual error.
 #
