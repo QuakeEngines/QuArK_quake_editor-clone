@@ -1446,6 +1446,17 @@ def TexModeMenu(editor, view):
         editor.lastscale = 0    # force a call to buildhandles()
 
     def reset3Dview(menu, editor=editor, view=view):
+        if editor.dragobject is None:
+            pass
+        else:
+            try:
+                if editor.dragobject.handle is None:
+                    pass
+                else:
+                    editor.dragobject.handle = None
+            except:
+                pass
+            editor.dragobject = None
         for view in editor.layout.views:
             if view.info["type"] == "2D":
                 view.info["scale"] = 2.0
@@ -1565,6 +1576,9 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.56  2010/04/16 21:26:14  danielpharos
+#Updated website address.
+#
 #Revision 1.55  2008/11/29 06:56:25  cdunde
 #Setup new Component Colors and draw Textured View Tint Colors system.
 #
