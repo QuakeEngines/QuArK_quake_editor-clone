@@ -2189,6 +2189,18 @@ class TagFrameType(EntityManager):
             return h
         comp = editor.Root.currentcomponent
 
+        # In case there are tags but all components have been deleted,
+        # we need to remove the tags as well.
+        # If neither then just clear the selections lists and return.
+        if allowitems(editor) == 0:
+            if len(editor.Root.dictitems['Misc:mg'].findallsubitems("", ':tag')) == 0:
+                editor.layout.explorer.sellist = []
+                editor.layout.explorer.uniquesel = None
+                return h
+            o = None
+            clearMiscGroup(editor, "no components - tags cleared")
+            return h
+
         if quarkx.setupsubset(SS_MODEL, "Options")['HideTags'] is not None or comp is None:
             return h
 
@@ -2245,7 +2257,7 @@ class BoneType(EntityManager):
         # In case there are bones but all components have been deleted,
         # we need to remove the bones as well.
         # If neither then just clear the selections lists and return.
-        if allowbones(editor) == 0:
+        if allowitems(editor) == 0:
             if len(editor.Root.dictitems['Skeleton:bg'].findallsubitems("", ':bone')) == 0:
                 editor.layout.explorer.sellist = []
                 editor.layout.explorer.uniquesel = None
@@ -2973,6 +2985,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.73  2010/05/14 00:26:45  cdunde
+#Need fix, in case user deletes Skeleton group, to avoid errors and update ModelComponentList.
+#
 #Revision 1.72  2010/05/03 06:01:46  cdunde
 #To remove unneeded code causing dupe drawing and slowdown when comps are hidden and shown.
 #

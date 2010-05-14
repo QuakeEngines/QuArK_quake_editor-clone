@@ -2568,19 +2568,9 @@ def findbone(editor, bone_name):
     return None
 
 #
-# To have any bones, avoiding errors, this checks that at least one model component exist in the editor.
-#
-def allowbones(editor):
-    for item in editor.Root.dictitems:
-        if item.endswith(":mc"):
-            return 1
-    return 0
-
-#
 # This function removes all bones, CLEARS ALL selection lists and the editor.ModelComponentList
 # to avoid errors in case there are bones that exist but all components have been deleted.
 # It will also replace the 'Skeleton:bg' if it has been deleted by the user.
-# Could be used with "allowbones" function above called first.
 #
 def clearbones(editor, undomsg):
     import mdlmgr
@@ -3313,6 +3303,45 @@ def PassEditorSel2Skin(editor, option=1):
 
 ###############################
 #
+# Misc Group functions
+#
+###############################
+
+#
+# This function removes all tagss and CLEARS ALL selection lists
+# to avoid errors in case there are tagss that exist but all components have been deleted.
+# It will also replace the 'Misc:mg' if it has been deleted by the user.
+#
+def clearMiscGroup(editor, undomsg, undo=None):
+    import mdlmgr
+    from mdlmgr import treeviewselchanged
+    mdlmgr.treeviewselchanged = 1
+    editor.layout.explorer.sellist = []
+    editor.layout.explorer.uniquesel = None
+    if undo is None:
+        undo = quarkx.action()
+    miscgroup = quarkx.newobj('Misc:mg')
+    miscgroup['type'] = chr(6)
+    # If all components have been deleted.
+    if editor.Root.dictitems.has_key("Misc:mg"):
+        undo.exchange(editor.Root.dictitems['Misc:mg'], miscgroup)
+    else:
+        # If the 'Misc:mg' has been deleted.
+        insertbefore = None
+        for item in editor.Root.subitems:
+            if item.type == ":bg" or item.type == ":mc":
+                insertbefore = item
+                break
+        if insertbefore is not None:
+            undo.put(editor.Root, miscgroup, insertbefore)
+        else:
+            undo.put(editor.Root, miscgroup)
+    editor.ok(undo, undomsg)
+
+
+
+###############################
+#
 # Tag & Tag Frame functions
 #
 ###############################
@@ -3804,6 +3833,15 @@ def TexturePixelLocation(editor, view, x, y, object=None):
 #
 ###############################
 
+#
+# To have any tags, bones or other items, to avoid errors, this checks that at least one model component exist in the editor.
+#
+def allowitems(editor):
+    for item in editor.Root.dictitems:
+        if item.endswith(":mc"):
+            return 1
+    return 0
+
 
 def Update_Skin_View(editor, option=1):
     "Updates the Skin-view using virous option settings."
@@ -4244,6 +4282,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.141  2010/05/14 00:26:45  cdunde
+#Need fix, in case user deletes Skeleton group, to avoid errors and update ModelComponentList.
+#
 #Revision 1.140  2010/05/12 08:07:13  cdunde
 #Added Eye camera handle when in True 3D mode for easier navigation.
 #

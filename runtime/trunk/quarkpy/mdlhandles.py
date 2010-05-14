@@ -2002,6 +2002,13 @@ def BuildCommonHandles(editor, explorer, option=1):
         clearbones(editor, "deleted Skeleton group replaced")
 
     th = []
+
+    # Just in case the 'Misc:mg' gets deleted we need to create a new one.
+    if editor.Root.dictitems.has_key("Misc:mg"):
+        pass
+    else:
+        clearMiscGroup(editor, "deleted Misc group replaced")
+
     for item in editor.Root.dictitems["Misc:mg"].subitems:
         if item.type == ":tag":
             tag_group_name = item.name.split("_")[0]
@@ -2124,12 +2131,6 @@ def BuildHandles(editor, explorer, view, option=1):
   #      h = view.handles
   #      return h
 
-    # Just in case the 'Skeleton:bg' gets deleted we need to create a new one.
-    if editor.Root.dictitems.has_key("Skeleton:bg"):
-        pass
-    else:
-        clearbones(editor, "deleted Skeleton group replaced")
-
     #
     # The 3D view "eyes".
     #
@@ -2143,7 +2144,20 @@ def BuildHandles(editor, explorer, view, option=1):
                     eye_handles.append(qhandles.EyePosition(view, v))
                     eye_handles.append(MdlEyeDirection(view, v))
 
+    # Just in case the 'Skeleton:bg' gets deleted we need to create a new one.
+    if editor.Root.dictitems.has_key("Skeleton:bg"):
+        pass
+    else:
+        clearbones(editor, "deleted Skeleton group replaced")
+
     th = []
+
+    # Just in case the 'Misc:mg' gets deleted we need to create a new one.
+    if editor.Root.dictitems.has_key("Misc:mg"):
+        pass
+    else:
+        clearMiscGroup(editor, "deleted Misc group replaced")
+
     for item in editor.Root.dictitems["Misc:mg"].subitems:
         if item.type == ":tag":
             tag_group_name = item.name.split("_")[0]
@@ -5297,6 +5311,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.208  2010/05/14 00:26:45  cdunde
+#Need fix, in case user deletes Skeleton group, to avoid errors and update ModelComponentList.
+#
 #Revision 1.207  2010/05/12 08:07:13  cdunde
 #Added Eye camera handle when in True 3D mode for easier navigation.
 #
