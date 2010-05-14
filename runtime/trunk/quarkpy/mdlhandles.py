@@ -1995,6 +1995,12 @@ def BuildCommonHandles(editor, explorer, option=1):
   #      h = currentview.handles
   #      return h
 
+    # Just in case the 'Skeleton:bg' gets deleted we need to create a new one.
+    if editor.Root.dictitems.has_key("Skeleton:bg"):
+        pass
+    else:
+        clearbones(editor, "deleted Skeleton group replaced")
+
     th = []
     for item in editor.Root.dictitems["Misc:mg"].subitems:
         if item.type == ":tag":
@@ -2117,6 +2123,12 @@ def BuildHandles(editor, explorer, view, option=1):
   #      print "mdlhandles line 1888 len(currentview.handles)",len(currentview.handles)
   #      h = view.handles
   #      return h
+
+    # Just in case the 'Skeleton:bg' gets deleted we need to create a new one.
+    if editor.Root.dictitems.has_key("Skeleton:bg"):
+        pass
+    else:
+        clearbones(editor, "deleted Skeleton group replaced")
 
     #
     # The 3D view "eyes".
@@ -5285,6 +5297,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.207  2010/05/12 08:07:13  cdunde
+#Added Eye camera handle when in True 3D mode for easier navigation.
+#
 #Revision 1.206  2010/05/06 21:57:01  cdunde
 #Speed improvement by DanielPharos.
 #

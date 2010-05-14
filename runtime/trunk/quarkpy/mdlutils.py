@@ -2579,17 +2579,48 @@ def allowbones(editor):
 #
 # This function removes all bones, CLEARS ALL selection lists and the editor.ModelComponentList
 # to avoid errors in case there are bones that exist but all components have been deleted.
+# It will also replace the 'Skeleton:bg' if it has been deleted by the user.
 # Could be used with "allowbones" function above called first.
 #
 def clearbones(editor, undomsg):
+    import mdlmgr
+    from mdlmgr import treeviewselchanged
+    mdlmgr.treeviewselchanged = 1
     editor.layout.explorer.sellist = []
     editor.layout.explorer.uniquesel = None
-    editor.ModelComponentList = {'bonelist': {}, 'tristodraw': {}}
+    editor.ModelComponentList['bonelist'] = {}
     undo = quarkx.action()
     skeletongroup = quarkx.newobj('Skeleton:bg')
     skeletongroup['type'] = chr(5)
-    undo.exchange(editor.Root.dictitems['Skeleton:bg'], skeletongroup)
+    # If all components have been deleted.
+    if editor.Root.dictitems.has_key("Skeleton:bg"):
+        editor.ModelComponentList['tristodraw'] = {}
+        undo.exchange(editor.Root.dictitems['Skeleton:bg'], skeletongroup)
+    else:
+        # If the 'Skeleton:bg' has been deleted.
+        insertbefore = None
+        for item in editor.Root.subitems:
+            if item.type == ":mc":
+                insertbefore = item
+                break
+        for item in editor.Root.subitems:
+            if item.type == ":mc":
+                editor.ModelComponentList[item.name]['bonevtxlist'] = {}
+                editor.ModelComponentList[item.name]['weightvtxlist'] = {}
+        if insertbefore is not None:
+            undo.put(editor.Root, skeletongroup, insertbefore)
+        else:
+            undo.put(editor.Root, skeletongroup)
     editor.ok(undo, undomsg)
+    formlist = quarkx.forms(1)
+    for f in formlist:
+        try:
+            # This section updates the "Vertex Weights Dialog" if it is opened and needs to update.
+            if f.caption == "Vertex Weights Dialog":
+                import mdlentities
+                mdlentities.WeightsClick(editor)
+        except:
+            pass
 
 #
 # Creates and returns a new Skeleton group to undo.exchange the old Skeleton group with.
@@ -4213,6 +4244,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.140  2010/05/12 08:07:13  cdunde
+#Added Eye camera handle when in True 3D mode for easier navigation.
+#
 #Revision 1.139  2010/05/05 15:46:39  cdunde
 #To stop jerky movement in Model Editor when scrolling, panning.
 #

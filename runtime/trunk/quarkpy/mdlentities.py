@@ -733,11 +733,11 @@ def AddStuff(editor):
     SpecsList = """ """
     SRClables = {}
     SRCsList = {}
+    vtxnbrs = []
     if editor is not None and editor.Root.currentcomponent is not None:
         comp = editor.Root.currentcomponent
         if len(editor.ModelComponentList[comp.name]['weightvtxlist']) != 0:
             weightvtxlist = editor.ModelComponentList[comp.name]['weightvtxlist']
-            vtxnbrs = []
             for key in weightvtxlist.keys():
                 if len(weightvtxlist[key]) > 1:
                     vtxnbrs = vtxnbrs + [key]
@@ -2973,6 +2973,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.72  2010/05/03 06:01:46  cdunde
+#To remove unneeded code causing dupe drawing and slowdown when comps are hidden and shown.
+#
 #Revision 1.71  2010/05/01 04:49:04  cdunde
 #Weights dialog fix by DanielPharos and reset of range from .01 to 1.0.
 #

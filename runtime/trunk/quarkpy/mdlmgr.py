@@ -1773,19 +1773,23 @@ class ModelLayout(BaseLayout):
                     menuitem = m
                     break
             self.makesettingclick(menuitem) # Updates the Specifics/Args page correctly.
-            # Checks to see if the dictspec item exist, if so clears all other bones of it and related items for proper bone weights system use.
-            # These dictspecs are used in the mdlentities.py bone weights dialog.
-            skeletongroup = self.editor.Root.dictitems['Skeleton:bg']  # get the bones group
-            bones = skeletongroup.findallsubitems("", ':bone')    # get all bones
-            for bone2 in bones:
-                for item in bone2.dictspec:
-                    if item.endswith("_weight_value"):
-                        if item.startswith(bone2.shortname):
-                            continue
-                        else:
-                            bonename = item.replace('_weight_value', '')
-                            bone2[bonename + "_weight_value"] = ""
-                            bone2[bonename + "_weight_color"] = ""
+            try:
+                # Checks to see if the dictspec item exist, if so clears all other bones of it and related items for proper bone weights system use.
+                # These dictspecs are used in the mdlentities.py bone weights dialog.
+                skeletongroup = self.editor.Root.dictitems['Skeleton:bg']  # get the bones group
+                bones = skeletongroup.findallsubitems("", ':bone')    # get all bones
+                for bone2 in bones:
+                    for item in bone2.dictspec:
+                        if item.endswith("_weight_value"):
+                            if item.startswith(bone2.shortname):
+                                continue
+                            else:
+                                bonename = item.replace('_weight_value', '')
+                                bone2[bonename + "_weight_value"] = ""
+                                bone2[bonename + "_weight_color"] = ""
+            except:
+                # Just in case the 'Skeleton:bg' gets deleted we need to create a new one.
+                clearbones(self.editor, "deleted Skeleton group replaced")
 
             # Updates the editor.ModelComponentList
             if self.editor.Root.dictitems.has_key('ModelComponentList:sd') and treeviewselchanged != 0:
@@ -1896,6 +1900,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.122  2010/05/01 09:09:53  cdunde
+#To fix broken .md3 CFG Animation switching while animating.
+#
 #Revision 1.121  2010/05/01 04:25:37  cdunde
 #Updated files to help increase editor speed by including necessary ModelComponentList items
 #and removing redundant checks and calls to the list.
