@@ -1458,9 +1458,7 @@ def TexModeMenu(editor, view):
                 pass
             editor.dragobject = None
         import mdlmgr
-        from mdlmgr import treeviewselchanged
-        if mdlmgr.treeviewselchanged == 1:
-            mdlmgr.treeviewselchanged = 0
+        mdlmgr.treeviewselchanged = 0
         for view in editor.layout.views:
             if view.info["type"] == "2D":
                 view.info["scale"] = 2.0
@@ -1580,6 +1578,9 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.58  2010/05/14 22:00:35  cdunde
+#Additional fix for Model Editor not redrawing vertexes after selecting some in a 2D view then 'Reset 3D view'.
+#
 #Revision 1.57  2010/05/14 07:10:08  cdunde
 #Partial fix for Model Editor not redrawing vertexes after a zoom then 'Reset 3D view'.
 #
