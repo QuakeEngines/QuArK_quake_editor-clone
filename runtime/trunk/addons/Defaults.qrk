@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.514  2010/05/08 07:39:16  cdunde
+//Setup the QuArK Model Editor to allow obtaining textures dynamically in the Texture Browser.
+//
 //Revision 1.513  2010/04/16 21:24:19  danielpharos
 //Updated website address and GPL block.
 //
@@ -2887,6 +2890,7 @@ QQRKSRC1
         BaseDir = "../textures"
         tmpQuArK = "tmpQuArK"
 
+        Palette = ":pics/colormap.pcx"
         TexturesPath = ""
 
         TextureFormat = ".tga"                  // primary texture file extension
