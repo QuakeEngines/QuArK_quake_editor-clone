@@ -1300,7 +1300,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
     def DoMaterial(current_material):
         result = []
         current_texture = current_material.texture
-        if current_texture is not None:
+        if current_texture is not None and len(current_texture.imagedata) != 0:
             texturename = current_texture.fromfilename
             if texturename.find("\\") != -1:
                 texturename = texturename.rsplit("\\", 1)[1]
@@ -2225,6 +2225,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.24  2010/05/14 20:18:57  danielpharos
+# Added skin importing for .gr2 models.
+#
 # Revision 1.23  2010/05/10 19:47:31  cdunde
 # Texture UV fix by DanielPharos.
 #
