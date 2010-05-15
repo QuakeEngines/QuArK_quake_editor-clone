@@ -2148,7 +2148,10 @@ def removecomp(editor, compname, undo, multi_comps=0):
         editor.ModelComponentList = {'bonelist': {}, 'tristodraw': {}}
     else:
         if editor.ModelComponentList.has_key(compname):
-            del editor.ModelComponentList['tristodraw'][compname]
+            try:
+                del editor.ModelComponentList['tristodraw'][compname]
+            except:
+                pass
             del editor.ModelComponentList[compname]
         for comp in components:
             if comp.name != compname:
@@ -4282,6 +4285,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.142  2010/05/14 06:12:32  cdunde
+#Needed fix, in case user deletes Misc group or components with tags, to avoid errors.
+#
 #Revision 1.141  2010/05/14 00:26:45  cdunde
 #Need fix, in case user deletes Skeleton group, to avoid errors and update ModelComponentList.
 #
