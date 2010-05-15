@@ -132,23 +132,23 @@ def dropitemsnow(editor, newlist, text=Strings[544], center="S"):
             import os
             image_type_list = ['.tga', '.dds', '.png', '.jpg', '.bmp']  # Order from best to worst (personal judgement).
             try:
-                path = quarkx.setupsubset(SS_GAMES, 'ModelEditor')['Directory']
                 for type in image_type_list:
-                    if os.path.exists(path + "/" + newitem.shortname + type):
+                    if os.path.exists(newitem['path'] + "/" + newitem.shortname + type):
                         nparent = editor.Root.currentcomponent.dictitems['Skins:sg']
                         skin = quarkx.newobj(newitem.shortname + type)
-                        image = quarkx.openfileobj(path + "/" + newitem.shortname + type)
+                        image = quarkx.openfileobj(newitem['path'] + "/" + newitem.shortname + type)
                         skin['Image1'] = image.dictspec['Image1']
                         skin['Size'] = image.dictspec['Size']
                         newitem = skin
                         break
             except:
                 try:
+                    path = quarkx.setupsubset(SS_GAMES, 'ModelEditor')['Directory']
                     for type in image_type_list:
-                        if os.path.exists(newitem['path'] + "/" + newitem.shortname + type):
+                        if os.path.exists(path + "/" + newitem.shortname + type):
                             nparent = editor.Root.currentcomponent.dictitems['Skins:sg']
                             skin = quarkx.newobj(newitem.shortname + type)
-                            image = quarkx.openfileobj(newitem['path'] + "/" + newitem.shortname + type)
+                            image = quarkx.openfileobj(path + "/" + newitem.shortname + type)
                             skin['Image1'] = image.dictspec['Image1']
                             skin['Size'] = image.dictspec['Size']
                             newitem = skin
@@ -632,6 +632,9 @@ def groupcolor(m):
 #
 #
 #$Log$
+#Revision 1.35  2010/05/08 07:39:16  cdunde
+#Setup the QuArK Model Editor to allow obtaining textures dynamically in the Texture Browser.
+#
 #Revision 1.34  2010/05/05 04:47:22  cdunde
 #Setup support to import model skin textures using addon .qrk file links.
 #
