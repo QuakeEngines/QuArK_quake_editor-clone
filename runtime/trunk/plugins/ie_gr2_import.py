@@ -1991,6 +1991,13 @@ def loadmodel(root, filename, gamename, nomessage=0):
     #Strings[2454] = Strings[2454].replace(Component.shortname + "\n", "")
     #ie_utils.default_end_logging(filename, "IM", starttime) ### Use "EX" for exporter text, "IM" for importer text.
 
+    try:
+        editor.Root.currentcomponent = Full_ComponentList[0]  # Sets the current component.
+    except:
+        quarkx.beep() # Makes the computer "Beep" once if a file is not valid.
+        quarkx.msgbox("Invalid Action !\n\nYou are trying to load an animation file only    \n" + filename + "\n\nBut there is no model mesh in the editor.\nImport the model first then try again.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
+        return
+
     undomessage = CleanupName(filename)
     undomessage = undomessage.split("\\")
     undomessage = undomessage[-1]
@@ -2002,7 +2009,6 @@ def loadmodel(root, filename, gamename, nomessage=0):
         undomessage = "MIXD " + undomessage
     editor.ok(undo, undomessage + " loaded")
 
-    editor.Root.currentcomponent = Full_ComponentList[0]  # Sets the current component.
     comp = editor.Root.currentcomponent
     skins = comp.findallsubitems("", ':sg')      # Gets the skin group.
     if len(skins[0].subitems) != 0:
@@ -2225,6 +2231,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.25  2010/05/15 03:29:50  cdunde
+# Small change to handle models without imbedded textures.
+#
 # Revision 1.24  2010/05/14 20:18:57  danielpharos
 # Added skin importing for .gr2 models.
 #
