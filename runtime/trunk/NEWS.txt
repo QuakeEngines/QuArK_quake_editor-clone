@@ -14,7 +14,7 @@ $Id$
 
 6.6.0 Beta 4
 ============
-* [cdunde/DanielPharos]: Added skin importing for .gr2 models.
+* [DanielPharos/cdunde]: Added imbedded skin importing for .gr2 models.
 
 * [cdunde]: Model editor, Added Eye camera handle when in True 3D mode for easier navigation.
 
