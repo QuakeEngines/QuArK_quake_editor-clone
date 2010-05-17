@@ -1459,29 +1459,18 @@ def TexModeMenu(editor, view):
             editor.dragobject = None
         import mdlmgr
         mdlmgr.treeviewselchanged = 0
-        for view in editor.layout.views:
-            if view.info["type"] == "2D":
-                view.info["scale"] = 2.0
-                view.info["angle"] = -0.7
-                view.info["vangle"] = 0.3
-                view.screencenter = quarkx.vect(0,0,0)
-                rotationmode = quarkx.setupsubset(SS_MODEL, "Options").getint("3DRotation")
-                holdrotationmode = rotationmode
-                rotationmode == 0
-                setprojmode(view)
-                rotationmode = holdrotationmode
-                modelcenter = view.info["center"]
-                if rotationmode == 2:
-                    center = quarkx.vect(0,0,0) + modelcenter ### Moves the center of the MODEL to the center of the view.
-                elif rotationmode == 3:
-                    center = quarkx.vect(0,0,0) + modelcenter ### Moves the center of the MODEL to the center of the view.
-                else:
-                    center = quarkx.vect(0,0,0) ### For resetting the Original QuArK rotation and "Lock to center of 3Dview" methods.
-                view.info["scale"] = 2.0
-                view.info["angle"] = -0.7
-                view.info["vangle"] = 0.3
-                view.screencenter = center
-                setprojmode(view)
+        if view.info["type"] == "2D":
+            view.info["scale"] = 2.0
+            view.info["angle"] = -0.7
+            view.info["vangle"] = 0.3
+            rotationmode = quarkx.setupsubset(SS_MODEL, "Options").getint("3DRotation")
+            modelcenter = view.info["center"]
+            if rotationmode == 0:
+                center = quarkx.vect(0,0,0) ### For resetting the Original QuArK rotation and "Lock to center of 3Dview" methods.
+            else:
+                center = quarkx.vect(0,0,0) + modelcenter ### Moves the center of the MODEL to the center of the view.
+            view.screencenter = center
+            setprojmode(view)
 
     import qbasemgr
     modhint = qbasemgr.ModesHint + "\n\nThe commands in this menu lets you select the mode for the view you right-clicked on. You can set the mode for all views at once in the 'Layouts' menu."
@@ -1578,6 +1567,9 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.59  2010/05/15 17:16:41  cdunde
+#A better way to handle the last change.
+#
 #Revision 1.58  2010/05/14 22:00:35  cdunde
 #Additional fix for Model Editor not redrawing vertexes after selecting some in a 2D view then 'Reset 3D view'.
 #
