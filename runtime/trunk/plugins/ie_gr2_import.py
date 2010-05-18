@@ -1506,69 +1506,70 @@ def loadmodel(root, filename, gamename, nomessage=0):
                         new_modelcomponentlist['weightvtxlist'][vert_index][QuArK_bones[fixed_index].name]['color'] = color
                 vert_index += 1
 
-            current_tritopology = tritopologies[current_mesh.primarytopologybinding]
-            for current_face_group_nr in range(len(current_tritopology.groups)):
-                current_face_group = current_tritopology.groups[current_face_group_nr]
-                if len(current_tritopology.groups) <> 1:
-                    Component = quarkx.newobj(bone_group_name + "_" + current_mesh.name + " group " + str(current_face_group_nr+1) + ":mc")
-                else:
-                    Component = quarkx.newobj(bone_group_name + "_" + current_mesh.name + ":mc")
-                ComponentList += [Component]
-
-                #Now do the skins
-                skins = []
-                skinsize = None
-                current_materialindex = current_face_group.materialindex
-                current_materialbinding = current_mesh.materialbindings[current_materialindex]
-                if current_materialbinding.material != -1:
-                    for skin in QuArK_skins[current_materialbinding.material]:
-                        if skinsize is None:
-                            skinsize = skin['Size']
-                        skins += [skin]
-                if skinsize is None:
-                    skinsize = (256, 256)
-                Component['skinsize'] = skinsize
-                if len(new_modelcomponentlist) <> 0:
-                    editor.ModelComponentList[Component.name] = new_modelcomponentlist
-
-                Tris = ''
-                trifirst = current_face_group.trifirst
-                tricount = current_face_group.tricount
-                for current_face_nr in range(trifirst, trifirst+tricount):
-                    current_face = current_tritopology.faces[current_face_nr]
-                    vert_index = [[]] * 3
-                    texcoordX = [[]] * 3
-                    texcoordY = [[]] * 3
-                    for i in range(0, 3):
-                        vert_index[i] = current_face.indices[i]
-                        texcoordX[i] = current_mesh.verts[vert_index[i]].texturecoords[0]
-                        if (texcoordX[i] < -20) or (texcoordX[i] > 20):
-                            texcoordX[i] = texcoordX[i] - float(int(texcoordX[i] / 20) * 20)
-                        texcoordY[i] = current_mesh.verts[vert_index[i]].texturecoords[1]
-                        if (texcoordY[i] < -20) or (texcoordY[i] > 20):
-                            texcoordY[i] = texcoordY[i] - float(int(texcoordY[i] / 20) * 20)
-                    Tris = Tris + struct.pack("Hhh", vert_index[2], texcoordX[2]*skinsize[0], texcoordY[2]*skinsize[1])
-                    Tris = Tris + struct.pack("Hhh", vert_index[1], texcoordX[1]*skinsize[0], texcoordY[1]*skinsize[1])
-                    Tris = Tris + struct.pack("Hhh", vert_index[0], texcoordX[0]*skinsize[0], texcoordY[0]*skinsize[1])
-                Component['Tris'] = Tris
-                Component['show'] = chr(1)
-                framesgroup = quarkx.newobj('Frames:fg')
-                skingroup = quarkx.newobj('Skins:sg')
-                skingroup['type'] = chr(2)
-                for skin in skins:
-                    skingroup.appenditem(skin.copy()) #Put a COPY in the skingroup
-                sdogroup = quarkx.newobj('SDO:sdo')
-                Component.appenditem(sdogroup)
-                Component.appenditem(skingroup)
-                Component.appenditem(framesgroup)
-                frame = quarkx.newobj('meshframe:mf')
-                frame['Vertices'] = frame_vertices
-                framesgroup.appenditem(frame)
-                undo.put(editor.Root, Component)
-
-                if current_model.skeletonbinding != -1:
-                    for bone_index in range(len(QuArK_bones)):
-                        full_bone_vtx_list[bone_index][Component.name] = bone_vtx_list[bone_index]
+            if current_mesh.primarytopologybinding != -1:
+                current_tritopology = tritopologies[current_mesh.primarytopologybinding]
+                for current_face_group_nr in range(len(current_tritopology.groups)):
+                    current_face_group = current_tritopology.groups[current_face_group_nr]
+                    if len(current_tritopology.groups) <> 1:
+                        Component = quarkx.newobj(bone_group_name + "_" + current_mesh.name + " group " + str(current_face_group_nr+1) + ":mc")
+                    else:
+                        Component = quarkx.newobj(bone_group_name + "_" + current_mesh.name + ":mc")
+                    ComponentList += [Component]
+            
+                    #Now do the skins
+                    skins = []
+                    skinsize = None
+                    current_materialindex = current_face_group.materialindex
+                    current_materialbinding = current_mesh.materialbindings[current_materialindex]
+                    if current_materialbinding.material != -1:
+                        for skin in QuArK_skins[current_materialbinding.material]:
+                            if skinsize is None:
+                                skinsize = skin['Size']
+                            skins += [skin]
+                    if skinsize is None:
+                        skinsize = (256, 256)
+                    Component['skinsize'] = skinsize
+                    if len(new_modelcomponentlist) <> 0:
+                        editor.ModelComponentList[Component.name] = new_modelcomponentlist
+            
+                    Tris = ''
+                    trifirst = current_face_group.trifirst
+                    tricount = current_face_group.tricount
+                    for current_face_nr in range(trifirst, trifirst+tricount):
+                        current_face = current_tritopology.faces[current_face_nr]
+                        vert_index = [[]] * 3
+                        texcoordX = [[]] * 3
+                        texcoordY = [[]] * 3
+                        for i in range(0, 3):
+                            vert_index[i] = current_face.indices[i]
+                            texcoordX[i] = current_mesh.verts[vert_index[i]].texturecoords[0]
+                            if (texcoordX[i] < -20) or (texcoordX[i] > 20):
+                                texcoordX[i] = texcoordX[i] - float(int(texcoordX[i] / 20) * 20)
+                            texcoordY[i] = current_mesh.verts[vert_index[i]].texturecoords[1]
+                            if (texcoordY[i] < -20) or (texcoordY[i] > 20):
+                                texcoordY[i] = texcoordY[i] - float(int(texcoordY[i] / 20) * 20)
+                        Tris = Tris + struct.pack("Hhh", vert_index[2], texcoordX[2]*skinsize[0], texcoordY[2]*skinsize[1])
+                        Tris = Tris + struct.pack("Hhh", vert_index[1], texcoordX[1]*skinsize[0], texcoordY[1]*skinsize[1])
+                        Tris = Tris + struct.pack("Hhh", vert_index[0], texcoordX[0]*skinsize[0], texcoordY[0]*skinsize[1])
+                    Component['Tris'] = Tris
+                    Component['show'] = chr(1)
+                    framesgroup = quarkx.newobj('Frames:fg')
+                    skingroup = quarkx.newobj('Skins:sg')
+                    skingroup['type'] = chr(2)
+                    for skin in skins:
+                        skingroup.appenditem(skin.copy()) #Put a COPY in the skingroup
+                    sdogroup = quarkx.newobj('SDO:sdo')
+                    Component.appenditem(sdogroup)
+                    Component.appenditem(skingroup)
+                    Component.appenditem(framesgroup)
+                    frame = quarkx.newobj('meshframe:mf')
+                    frame['Vertices'] = frame_vertices
+                    framesgroup.appenditem(frame)
+                    undo.put(editor.Root, Component)
+            
+                    if current_model.skeletonbinding != -1:
+                        for bone_index in range(len(QuArK_bones)):
+                            full_bone_vtx_list[bone_index][Component.name] = bone_vtx_list[bone_index]
 
         for bone_index in range(len(QuArK_bones)):
             QuArK_bones[bone_index].vtxlist = full_bone_vtx_list[bone_index]
@@ -1715,12 +1716,12 @@ def loadmodel(root, filename, gamename, nomessage=0):
             BoneNameToBoneIndex[Full_QuArK_bones[bone_index].name] = bone_index
 
         # Prepare arrays to store the bone-animation-data.
-        QuArK_frame_matrix_raw = [[]] * NumberOfFrames
         QuArK_frame_position_raw = [[]] * NumberOfFrames
+        QuArK_frame_matrix_raw = [[]] * NumberOfFrames
         QuArK_frame_scale_raw = [[]] * NumberOfFrames
         for frame_counter in range(0,NumberOfFrames):
-            QuArK_frame_matrix_raw[frame_counter] = [[]] * NumberOfBones
             QuArK_frame_position_raw[frame_counter] = [[]] * NumberOfBones
+            QuArK_frame_matrix_raw[frame_counter] = [[]] * NumberOfBones
             QuArK_frame_scale_raw[frame_counter] = [[]] * NumberOfBones
             for bone_counter in range(0,NumberOfBones):
                 # Set default values.
@@ -2231,6 +2232,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.26  2010/05/15 17:38:13  cdunde
+# To avoid loading error and give the user a message.
+#
 # Revision 1.25  2010/05/15 03:29:50  cdunde
 # Small change to handle models without imbedded textures.
 #
