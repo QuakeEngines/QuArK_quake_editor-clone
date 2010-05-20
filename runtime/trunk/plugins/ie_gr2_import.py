@@ -835,7 +835,7 @@ class gr2_mesh:
         self.name = ""
         self.verts = []
         self.primarytopologybinding = -1
-        self.materialbindings = []
+        self.materialbinding = []
         self.bonebindings = []
 
     def ReadData(self):
@@ -2232,6 +2232,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.27  2010/05/18 10:58:32  cdunde
+# DanielPharos fix for models that have invalid components, causing the importer to brake, to skip over them.
+#
 # Revision 1.26  2010/05/15 17:38:13  cdunde
 # To avoid loading error and give the user a message.
 #
