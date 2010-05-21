@@ -88,7 +88,7 @@ def matrix_determinant(m):
     i = m[2][2]
     return a*e*i - a*f*h + b*f*g - b*d*i + c*d*h - c*e*g
 
-def matrix_multiply(b, a):
+def matrix_multiply(a, b):
     return [ [
         a[0][0] * b[0][0] + a[0][1] * b[1][0] + a[0][2] * b[2][0],
         a[0][0] * b[0][1] + a[0][1] * b[1][1] + a[0][2] * b[2][1],
@@ -1083,7 +1083,6 @@ def LoadGR2MSFile(MSfilename):
     file = open(MSfilename,"r")
     lines = file.readlines()
     file.close()
-    os.remove(MSfilename)
     try:
         line_counter = 0
         try:
@@ -1238,8 +1237,8 @@ def loadmodel(root, filename, gamename, nomessage=0):
             goahead = 1
     try:
         art_tool, exporter_tool, models, animations, textures, materials, skeletons, vertexdatas, tritopologies, meshes, trackgroups = LoadGR2MSFile(MSfilename)
-    except:
-        pass
+    finally:
+        os.remove(MSfilename)
 
     # Do whatever user-filtering is needed here.
     """if nomessage == 0:
@@ -1317,8 +1316,6 @@ def loadmodel(root, filename, gamename, nomessage=0):
 
     undo = quarkx.action()
 
-    progressbar = quarkx.progressbar(2454, len(models)) #FIXME: Text message!!!
-
     # Workaround; models with no meshes shouldn't be loaded.
     TMPmodels = []
     for current_model in models:
@@ -1331,6 +1328,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
     #
 
     #First, convert the materials to QuArK skins
+    progressbar = quarkx.progressbar(2454, len(materials)) #FIXME: Text message!!!
     QuArK_skins = []
     def DoMaterial(current_material):
         result = []
@@ -1363,6 +1361,10 @@ def loadmodel(root, filename, gamename, nomessage=0):
         return result
     for current_material in materials:
         QuArK_skins += [DoMaterial(current_material)]
+        progressbar.progress()
+    progressbar.close()
+
+    progressbar = quarkx.progressbar(2454, len(models)) #FIXME: Text message!!!
 
     Full_ComponentList = []
     Full_QuArK_bones = []
@@ -1419,6 +1421,19 @@ def loadmodel(root, filename, gamename, nomessage=0):
                                                     [current_bone.transform.scale[3], current_bone.transform.scale[4], current_bone.transform.scale[5], 0.0],
                                                     [current_bone.transform.scale[6], current_bone.transform.scale[7], current_bone.transform.scale[8], 0.0],
                                                     [0.0                            , 0.0                            , 0.0                            , 1.0]]
+                if current_bone.transform.flags & 1:
+                    # Apply position.
+                    bone_pos = point_by_matrix(current_bone.transform.origin, parent_rot)
+                    bone_pos = point_by_matrix(bone_pos, parent_scale)
+                    bone_pos = (parent_pos[0] + bone_pos[0], parent_pos[1] + bone_pos[1], parent_pos[2] + bone_pos[2])
+                else:
+                    bone_pos = parent_pos
+                if current_bone.transform.flags & 2:
+                    # Apply rotation.
+                    bone_rot = quaternion2matrix(current_bone.transform.rotation)
+                    bone_rot = matrix_multiply(bone_rot, parent_rot)
+                else:
+                    bone_rot = parent_rot
                 if current_bone.transform.flags & 4:
                     # Apply scale.
                     bone_scale = [[current_bone.transform.scale[0], current_bone.transform.scale[1], current_bone.transform.scale[2], 0.0],
@@ -1428,19 +1443,6 @@ def loadmodel(root, filename, gamename, nomessage=0):
                     bone_scale = matrix_multiply(bone_scale, parent_scale)
                 else:
                     bone_scale = parent_scale
-                if current_bone.transform.flags & 1:
-                    # Apply origin.
-                    bone_pos = point_by_matrix(current_bone.transform.origin, parent_rot)
-                    bone_pos = point_by_matrix(bone_pos, parent_scale)
-                    bone_pos = (parent_pos[0] + bone_pos[0], parent_pos[1] + bone_pos[1], parent_pos[2] + bone_pos[2])
-                else:
-                    bone_pos = parent_pos
-                if current_bone.transform.flags & 2:
-                    # Apply rotation.
-                    bone_rot = quaternion2matrix(current_bone.transform.rotation)
-                    bone_rot = matrix_multiply(parent_rot, bone_rot)
-                else:
-                    bone_rot = parent_rot
                 QuArK_bone_pos[bone_index] = bone_pos
                 QuArK_bone_rotmatrix[bone_index] = bone_rot
                 QuArK_bone_scale[bone_index] = bone_scale
@@ -1463,21 +1465,17 @@ def loadmodel(root, filename, gamename, nomessage=0):
                 new_bone.vtx_pos = {}
                 QuArK_bones += [new_bone]
 
-
-                if not editor.ModelComponentList.has_key('gr2_data'):
-                    editor.ModelComponentList['gr2_data'] = {}
-                bone_rot = ((bone_rot[0][0], bone_rot[1][0], bone_rot[2][0]),
-                            (bone_rot[0][1], bone_rot[1][1], bone_rot[2][1]),
-                            (bone_rot[0][2], bone_rot[1][2], bone_rot[2][2]))
-                bonelist[new_bone.name] = {'frames': {'meshframe:mf': {'position': new_bone.position.tuple, 'rotmatrix': bone_rot}}}
+                frame = {}
+                frame['position'] = ArtToolTransform(bone_pos)
+                frame['rotmatrix'] = ArtToolTransformMatrix(quarkx.matrix((bone_rot[0][0], bone_rot[1][0], bone_rot[2][0]),
+                                                                          (bone_rot[0][1], bone_rot[1][1], bone_rot[2][1]),
+                                                                          (bone_rot[0][2], bone_rot[1][2], bone_rot[2][2]))).tuple
+                frame['gr2_scale'] = ArtToolTransformMatrix(quarkx.matrix((bone_scale[0][0], bone_scale[1][0], bone_scale[2][0]),
+                                                                          (bone_scale[0][1], bone_scale[1][1], bone_scale[2][1]),
+                                                                          (bone_scale[0][2], bone_scale[1][2], bone_scale[2][2]))).tuple
+                bonelist[new_bone.name] = {'frames': {'meshframe:mf': frame}}
                 bonelist[new_bone.name]['type'] = 'gr2'
-                editor.ModelComponentList['gr2_data'][new_bone.name] = {}
-                editor.ModelComponentList['gr2_data'][new_bone.name]['bone_pos'] = QuArK_bone_pos[bone_index]
-                editor.ModelComponentList['gr2_data'][new_bone.name]['bone_rotmatrix'] = QuArK_bone_rotmatrix[bone_index]
-                editor.ModelComponentList['gr2_data'][new_bone.name]['bone_scale'] = QuArK_bone_scale[bone_index]
-                editor.ModelComponentList['gr2_data'][new_bone.name]['bone_pos_raw'] = QuArK_bone_pos_raw[bone_index]
-                editor.ModelComponentList['gr2_data'][new_bone.name]['bone_rotmatrix_raw'] = QuArK_bone_rotmatrix_raw[bone_index]
-                editor.ModelComponentList['gr2_data'][new_bone.name]['bone_scale_raw'] = QuArK_bone_scale_raw[bone_index]
+
         full_bone_vtx_list = {} # { bone_index : { component_full_name : [ vtx, vtx, vtx ...] } }
         for bone_index in range(len(QuArK_bones)):
             full_bone_vtx_list[bone_index] = {}
@@ -1525,20 +1523,21 @@ def loadmodel(root, filename, gamename, nomessage=0):
                                 # Skip it.
                                 continue
                         fixed_index = bone_index_conv_list[current_vert.boneindices[i]]
+                        current_bone = QuArK_bones[fixed_index]
                         bone_vtx_list[fixed_index] = bone_vtx_list[fixed_index] + [vert_index]
-                        if not new_modelcomponentlist['bonevtxlist'].has_key(QuArK_bones[fixed_index].name):
-                            new_modelcomponentlist['bonevtxlist'][QuArK_bones[fixed_index].name] = {}
-                        if not new_modelcomponentlist['bonevtxlist'][QuArK_bones[fixed_index].name].has_key(vert_index):
-                            new_modelcomponentlist['bonevtxlist'][QuArK_bones[fixed_index].name][vert_index] = {}
-                            new_modelcomponentlist['bonevtxlist'][QuArK_bones[fixed_index].name][vert_index]['color'] = QuArK_bones[fixed_index]['_color']
+                        if not new_modelcomponentlist['bonevtxlist'].has_key(current_bone.name):
+                            new_modelcomponentlist['bonevtxlist'][current_bone.name] = {}
+                        if not new_modelcomponentlist['bonevtxlist'][current_bone.name].has_key(vert_index):
+                            new_modelcomponentlist['bonevtxlist'][current_bone.name][vert_index] = {}
+                            new_modelcomponentlist['bonevtxlist'][current_bone.name][vert_index]['color'] = current_bone['_color']
                         if not new_modelcomponentlist['weightvtxlist'].has_key(vert_index):
                             new_modelcomponentlist['weightvtxlist'][vert_index] = {}
-                        if not new_modelcomponentlist['weightvtxlist'][vert_index].has_key(QuArK_bones[fixed_index].name):
-                            new_modelcomponentlist['weightvtxlist'][vert_index][QuArK_bones[fixed_index].name] = {}
+                        if not new_modelcomponentlist['weightvtxlist'][vert_index].has_key(current_bone.name):
+                            new_modelcomponentlist['weightvtxlist'][vert_index][current_bone.name] = {}
                         weight_value = float(current_vert.boneweights[i])/255.0
                         color = quarkpy.mdlutils.weights_color(editor, weight_value)
-                        new_modelcomponentlist['weightvtxlist'][vert_index][QuArK_bones[fixed_index].name]['weight_value'] = weight_value
-                        new_modelcomponentlist['weightvtxlist'][vert_index][QuArK_bones[fixed_index].name]['color'] = color
+                        new_modelcomponentlist['weightvtxlist'][vert_index][current_bone.name]['weight_value'] = weight_value
+                        new_modelcomponentlist['weightvtxlist'][vert_index][current_bone.name]['color'] = color
                 vert_index += 1
 
             if current_mesh.primarytopologybinding != -1:
@@ -1555,22 +1554,19 @@ def loadmodel(root, filename, gamename, nomessage=0):
                     skins = []
                     skinsize = None
                     current_materialindex = current_face_group.materialindex
-                    if len(current_mesh.materialbindings) == 0:
-                        current_materialbinding = gr2_materialbinding()
-                        current_materialbinding.material = current_materialindex
-                    else:
+                    if current_materialindex >= 0 and current_materialindex < len(current_mesh.materialbindings):
                         current_materialbinding = current_mesh.materialbindings[current_materialindex]
-                    if current_materialbinding.material != -1:
-                        for skin in QuArK_skins[current_materialbinding.material]:
-                            if skinsize is None:
-                                skinsize = skin['Size']
-                            skins += [skin]
+                        if current_materialbinding.material != -1:
+                            for skin in QuArK_skins[current_materialbinding.material]:
+                                if skinsize is None:
+                                    skinsize = skin['Size']
+                                skins += [skin]
                     if skinsize is None:
                         skinsize = (256, 256)
                     Component['skinsize'] = skinsize
                     if len(new_modelcomponentlist) <> 0:
                         editor.ModelComponentList[Component.name] = new_modelcomponentlist
-            
+
                     Tris = ''
                     trifirst = current_face_group.trifirst
                     tricount = current_face_group.tricount
@@ -1605,37 +1601,39 @@ def loadmodel(root, filename, gamename, nomessage=0):
                     frame['Vertices'] = frame_vertices
                     framesgroup.appenditem(frame)
                     undo.put(editor.Root, Component)
-            
+
                     if current_model.skeletonbinding != -1:
                         for bone_index in range(len(QuArK_bones)):
                             full_bone_vtx_list[bone_index][Component.name] = bone_vtx_list[bone_index]
 
         for bone_index in range(len(QuArK_bones)):
-            QuArK_bones[bone_index].vtxlist = full_bone_vtx_list[bone_index]
+            current_bone = QuArK_bones[bone_index]
+            current_bone.vtxlist = full_bone_vtx_list[bone_index]
+            vtxlist = current_bone.vtxlist
             vtxcount = 0
             usekey = None
-            for key in QuArK_bones[bone_index].vtxlist.keys():
-                if len(QuArK_bones[bone_index].vtxlist[key]) > vtxcount:
+            for key in vtxlist.keys():
+                if len(vtxlist[key]) > vtxcount:
                     usekey = key
-                    vtxcount = len(QuArK_bones[bone_index].vtxlist[key])
+                    vtxcount = len(vtxlist[key])
             if usekey is not None:
-                temp = {}
-                temp[usekey] = QuArK_bones[bone_index].vtxlist[usekey]
-                QuArK_bones[bone_index].vtx_pos = temp
+                vtx_pos = {}
+                vtx_pos[usekey] = vtxlist[usekey]
+                current_bone.vtx_pos = vtx_pos
                 comp = None
                 for item in ComponentList:
                     if item.name == usekey:
                         comp = item
                         break
                 vtxpos = quarkx.vect(0, 0, 0)
-                frame_vertices = comp.dictitems['Frames:fg'].subitems[0].vertices
-                for vtx in range(len(QuArK_bones[bone_index].vtx_pos[usekey])):
-                    vtxpos = vtxpos + frame_vertices[QuArK_bones[bone_index].vtx_pos[usekey][vtx]]
-                vtxpos = vtxpos/float(len(QuArK_bones[bone_index].vtx_pos[usekey]))
-                QuArK_bones[bone_index]['draw_offset'] = (QuArK_bones[bone_index].position - vtxpos).tuple
-                QuArK_bones[bone_index]['component'] = usekey
+                frame_vertices = comp.dictitems['Frames:fg'].dictitems['meshframe:mf'].vertices
+                for vtx in range(len(vtx_pos[usekey])):
+                    vtxpos = vtxpos + frame_vertices[vtx_pos[usekey][vtx]]
+                vtxpos = vtxpos/float(len(vtx_pos[usekey]))
+                current_bone['draw_offset'] = (current_bone.position - vtxpos).tuple
+                current_bone['component'] = usekey
             else:
-                QuArK_bones[bone_index]['component'] = ComponentList[-1].name
+                current_bone['component'] = ComponentList[-1].name
         for Component in ComponentList:
             # This needs to be done for each component or bones will not work if used in the editor.
             quarkpy.mdlutils.make_tristodraw_dict(editor, Component)
@@ -1700,22 +1698,31 @@ def loadmodel(root, filename, gamename, nomessage=0):
     QuArK_bone_pos = [[]] * NumberOfBones
     QuArK_bone_rotmatrix = [[]] * NumberOfBones
     QuArK_bone_scale = [[]] * NumberOfBones
-    QuArK_bone_pos_raw = [[]] * NumberOfBones
-    QuArK_bone_rotmatrix_raw = [[]] * NumberOfBones
-    QuArK_bone_scale_raw = [[]] * NumberOfBones
     for bone_counter in range(len(Full_QuArK_bones)):
-        found_bone = 0
         bone_obj = Full_QuArK_bones[bone_counter]
-        if editor.ModelComponentList.has_key('gr2_data'):
-            if editor.ModelComponentList['gr2_data'].has_key(bone_obj.name):
-                found_bone = 1
-                QuArK_bone_pos[bone_counter] = editor.ModelComponentList['gr2_data'][bone_obj.name]['bone_pos']
-                QuArK_bone_rotmatrix[bone_counter] = editor.ModelComponentList['gr2_data'][bone_obj.name]['bone_rotmatrix']
-                QuArK_bone_scale[bone_counter] = editor.ModelComponentList['gr2_data'][bone_obj.name]['bone_scale']
-                QuArK_bone_pos_raw[bone_counter] = editor.ModelComponentList['gr2_data'][bone_obj.name]['bone_pos_raw']
-                QuArK_bone_rotmatrix_raw[bone_counter] = editor.ModelComponentList['gr2_data'][bone_obj.name]['bone_rotmatrix_raw']
-                QuArK_bone_scale_raw[bone_counter] = editor.ModelComponentList['gr2_data'][bone_obj.name]['bone_scale_raw']
-        if found_bone == 0:
+        if bonelist.has_key(bone_obj.name):
+            frame = bonelist[bone_obj.name]['frames']['meshframe:mf']
+            QuArK_bone_pos[bone_counter] = ArtToolDetransformVect(quarkx.vect(frame['position'])).tuple
+            bone_rot = ArtToolDetransformMatrix(quarkx.matrix(frame['rotmatrix'])).tuple
+            bone_rot = [[bone_rot[0][0], bone_rot[1][0], bone_rot[2][0], 0.0],
+                        [bone_rot[0][1], bone_rot[1][1], bone_rot[2][1], 0.0],
+                        [bone_rot[0][2], bone_rot[1][2], bone_rot[2][2], 0.0],
+                        [0.0           , 0.0           , 0.0           , 1.0]]
+            QuArK_bone_rotmatrix[bone_counter] = bone_rot
+            if frame.has_key('gr2_scale'):
+                bone_scale = ArtToolDetransformMatrix(quarkx.matrix(frame['gr2_scale'])).tuple
+                bone_scale = [[bone_scale[0][0], bone_scale[1][0], bone_scale[2][0], 0.0],
+                              [bone_scale[0][1], bone_scale[1][1], bone_scale[2][1], 0.0],
+                              [bone_scale[0][2], bone_scale[1][2], bone_scale[2][2], 0.0],
+                              [0.0             , 0.0             , 0.0             , 1.0]]
+                QuArK_bone_scale[bone_counter] = bone_scale
+            else:
+                # This bone wasn't gr2, so it doesn't have gr2_scale... Default value:
+                QuArK_bone_scale[bone_counter] = [[1.0, 0.0, 0.0, 0.0],
+                                                  [0.0, 1.0, 0.0, 0.0],
+                                                  [0.0, 0.0, 1.0, 0.0],
+                                                  [0.0, 0.0, 0.0, 1.0]]
+        else:
             QuArK_bone_pos[bone_counter] = ArtToolDetransformVect(bone_obj.position).tuple
             # These cannot be recovered.
             QuArK_bone_rotmatrix[bone_counter] = [[1.0, 0.0, 0.0, 0.0],
@@ -1726,33 +1733,21 @@ def loadmodel(root, filename, gamename, nomessage=0):
                                               [0.0, 1.0, 0.0, 0.0],
                                               [0.0, 0.0, 1.0, 0.0],
                                               [0.0, 0.0, 0.0, 1.0]]
-            QuArK_bone_pos_raw[bone_counter] = ArtToolDetransformVect(bone_obj.position).tuple
-            # These cannot be recovered.
-            QuArK_bone_rotmatrix_raw[bone_counter] = [[1.0, 0.0, 0.0, 0.0],
-                                                      [0.0, 1.0, 0.0, 0.0],
-                                                      [0.0, 0.0, 1.0, 0.0],
-                                                      [0.0, 0.0, 0.0, 1.0]]
-            QuArK_bone_scale_raw[bone_counter] = [[1.0, 0.0, 0.0, 0.0],
-                                                  [0.0, 1.0, 0.0, 0.0],
-                                                  [0.0, 0.0, 1.0, 0.0],
-                                                  [0.0, 0.0, 0.0, 1.0]]
 
-    progressbar = quarkx.progressbar(2454, len(animations)) #FIXME: Text message!!!
+    progressbar = quarkx.progressbar(2462, len(animations)) #FIXME: Text message!!!
 
+    QuArK_bone_pos_raw = [[]] * NumberOfBones
+    QuArK_bone_rotmatrix_raw = [[]] * NumberOfBones
+    QuArK_bone_scale_raw = [[]] * NumberOfBones
     for current_animation in animations:
-        NumberOfFrames = 20 # QuArK: Overwriting the timestep to reduce the number of frames.
-        FileNumberOfFrames = int(round(current_animation.duration / current_animation.timestep))
-        for item in editor.Root.subitems:
-            if item.type == ":mc":
-                if item.dictspec.has_key('gr_max_frames'):
-                    NumberOfFrames = int(item.dictspec['gr_max_frames'])
-                break
-        if NumberOfFrames > 20 and NumberOfFrames > FileNumberOfFrames:
-            NumberOfFrames = FileNumberOfFrames
+        NumberOfFrames = int(round(current_animation.duration / current_animation.timestep))
 
         BoneNameToBoneIndex = {}
         for bone_index in range(len(Full_QuArK_bones)):
-            BoneNameToBoneIndex[Full_QuArK_bones[bone_index].name] = bone_index
+            current_bone = Full_QuArK_bones[bone_index]
+            if BoneNameToBoneIndex.has_key(current_bone.name):
+                raise "Error: Multiple bones with the same name detected!"
+            BoneNameToBoneIndex[current_bone.name] = bone_index
 
         # Prepare arrays to store the bone-animation-data.
         QuArK_frame_position_raw = [[]] * NumberOfFrames
@@ -1763,11 +1758,9 @@ def loadmodel(root, filename, gamename, nomessage=0):
             QuArK_frame_matrix_raw[frame_counter] = [[]] * NumberOfBones
             QuArK_frame_scale_raw[frame_counter] = [[]] * NumberOfBones
             for bone_counter in range(0,NumberOfBones):
-                # Set default values.
-                QuArK_frame_position_raw[frame_counter][bone_counter] = QuArK_bone_pos_raw[bone_counter]
-                QuArK_frame_matrix_raw[frame_counter][bone_counter] = QuArK_bone_rotmatrix_raw[bone_counter]
-                QuArK_frame_scale_raw[frame_counter][bone_counter] = QuArK_bone_scale_raw[bone_counter]
-                #FIXME:SHOULD BE ABLE TO DELETE _RAW's LATER?!?
+                QuArK_frame_position_raw[frame_counter][bone_counter] = None
+                QuArK_frame_matrix_raw[frame_counter][bone_counter] = None
+                QuArK_frame_scale_raw[frame_counter][bone_counter] = None
 
         # Create the new frames.
         new_frames = {}
@@ -1822,7 +1815,8 @@ def loadmodel(root, filename, gamename, nomessage=0):
                         z = current_curve_pos.controls[use_knot][2]
                         QuArK_frame_position_raw[frame_index][bone_index] = (x, y, z)
                     elif current_curve_pos.dimension == 0:
-                        QuArK_frame_position_raw[frame_index][bone_index] = (0.0, 0.0, 0.0)
+                        pass #Do nothing; already taken care of
+                    #    QuArK_frame_position_raw[frame_index][bone_index] = (0.0, 0.0, 0.0)
                     else:
                         raise "Error: Corrupt gr2 .ms file! Bad number of dimensions for position curve!"
 
@@ -1843,10 +1837,11 @@ def loadmodel(root, filename, gamename, nomessage=0):
                         qx, qy, qz, qw = quaternion_normalize([qx, qy, qz, qw])
                         QuArK_frame_matrix_raw[frame_index][bone_index] = quaternion2matrix([qx, qy, qz, qw])
                     elif current_curve_rot.dimension == 0:
-                        QuArK_frame_matrix_raw[frame_index][bone_index] = [[1.0, 0.0, 0.0, 0.0],
-                                                                           [0.0, 1.0, 0.0, 0.0],
-                                                                           [0.0, 0.0, 1.0, 0.0],
-                                                                           [0.0, 0.0, 0.0, 1.0]]
+                        pass #Do nothing; already taken care of
+                    #    QuArK_frame_matrix_raw[frame_index][bone_index] = [[1.0, 0.0, 0.0, 0.0],
+                    #                                                       [0.0, 1.0, 0.0, 0.0],
+                    #                                                       [0.0, 0.0, 1.0, 0.0],
+                    #                                                       [0.0, 0.0, 0.0, 1.0]]
                     else:
                         raise "Error: Corrupt gr2 .ms file! Bad number of dimensions for orientation curve!"
 
@@ -1874,10 +1869,11 @@ def loadmodel(root, filename, gamename, nomessage=0):
                                                                           [szx, szy, szz, 0.0],
                                                                           [0.0, 0.0, 0.0, 1.0]]
                     elif current_curve_scale.dimension == 0:
-                        QuArK_frame_scale_raw[frame_index][bone_index] = [[1.0, 0.0, 0.0, 0.0],
-                                                                          [0.0, 1.0, 0.0, 0.0],
-                                                                          [0.0, 0.0, 1.0, 0.0],
-                                                                          [0.0, 0.0, 0.0, 1.0]]
+                        pass #Do nothing; already taken care of
+                    #    QuArK_frame_scale_raw[frame_index][bone_index] = [[1.0, 0.0, 0.0, 0.0],
+                    #                                                      [0.0, 1.0, 0.0, 0.0],
+                    #                                                      [0.0, 0.0, 1.0, 0.0],
+                    #                                                      [0.0, 0.0, 0.0, 1.0]]
                     else:
                         raise "Error: Corrupt gr2 .ms file! Bad number of dimensions for scale curve!"
 
@@ -1890,13 +1886,14 @@ def loadmodel(root, filename, gamename, nomessage=0):
             QuArK_frame_matrix[frame_counter] = [[]] * NumberOfBones
             QuArK_frame_scale[frame_counter] = [[]] * NumberOfBones
             BonesToDo = range(0,NumberOfBones)
-            BoneDone = []
+            BoneDone = [[]] * NumberOfBones
             for bone_counter in range(0,NumberOfBones):
-                BoneDone += [0]
+                BoneDone[bone_counter] = 0
             while len(BonesToDo) != 0:
               DelayBones = []
               for bone_counter in BonesToDo:
                 current_bone = Full_QuArK_bones[bone_counter]
+                parentbone_index = -1
                 current_bone_parentname = current_bone.dictspec['parent_name']
                 if current_bone_parentname == "None":
                     # Handle initial placement.
@@ -1939,7 +1936,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
                         raise "Error: Corrupt gr2 .ms file! Can't find parent bone!"
                     parentbone_index = BoneNameToBoneIndex[current_bone_parentname]
                     if BoneDone[parentbone_index] == 0:
-                        # This bone is being processed before its parent! This is BAD!
+                        # This bone is trying to be processed before its parent! Not allowed!
                         DelayBones += [bone_counter]
                         continue
                     parent_pos = QuArK_frame_position[frame_counter][parentbone_index]
@@ -1950,16 +1947,55 @@ def loadmodel(root, filename, gamename, nomessage=0):
                 raw_matrix = QuArK_frame_matrix_raw[frame_counter][bone_counter]
                 raw_scale = QuArK_frame_scale_raw[frame_counter][bone_counter]
 
-                # Apply origin.
-                bone_pos = point_by_matrix(raw_position, parent_rot)
-                bone_pos = point_by_matrix(bone_pos, parent_scale)
-                bone_pos = (parent_pos[0] + bone_pos[0], parent_pos[1] + bone_pos[1], parent_pos[2] + bone_pos[2])
+                # Apply position
+                if raw_position is not None:
+                    bone_pos = point_by_matrix(raw_position, parent_rot)
+                    bone_pos = point_by_matrix(bone_pos, parent_scale)
+                    bone_pos = (parent_pos[0] + bone_pos[0], parent_pos[1] + bone_pos[1], parent_pos[2] + bone_pos[2])
+                else:
+                    #This bone doesn't have new data, but it can still move through its parent, so re-calc it!
+                    if parentbone_index != -1:
+                        bone_pos = QuArK_bone_pos[bone_counter]
+                        old_parent_pos = QuArK_bone_pos[parentbone_index]
+                        bone_pos = (bone_pos[0] - old_parent_pos[0], bone_pos[1] - old_parent_pos[1], bone_pos[2] - old_parent_pos[2])
+                        old_parent_rot = QuArK_bone_rotmatrix[parentbone_index]
+                        bone_pos = point_by_matrix(bone_pos, inverse_matrix(old_parent_rot))
+                        bone_pos = point_by_matrix(bone_pos, parent_rot)
+                        old_parent_scale = QuArK_bone_scale[parentbone_index]
+                        bone_pos = point_by_matrix(bone_pos, inverse_matrix(old_parent_scale))
+                        bone_pos = point_by_matrix(bone_pos, parent_scale)
+                        bone_pos = (parent_pos[0] + bone_pos[0], parent_pos[1] + bone_pos[1], parent_pos[2] + bone_pos[2])
+                    else:
+                        #No movement after all
+                        bone_pos = QuArK_bone_pos[bone_counter]
 
                 # Apply rotation
-                bone_rot = matrix_multiply(parent_rot, raw_matrix)
+                if raw_matrix is not None:
+                    bone_rot = matrix_multiply(raw_matrix, parent_rot)
+                else:
+                    #This bone doesn't have new data, but it can still move through its parent, so re-calc it!
+                    if parentbone_index != -1:
+                        bone_rot = QuArK_bone_rotmatrix[bone_counter]
+                        old_parent_rot = QuArK_bone_rotmatrix[parentbone_index]
+                        bone_rot = matrix_multiply(bone_rot, inverse_matrix(old_parent_rot))
+                        bone_rot = matrix_multiply(bone_rot, parent_rot)
+                    else:
+                        #No movement after all
+                        bone_rot = QuArK_bone_rotmatrix[bone_counter]
 
-                # Apply scale.
-                bone_scale = matrix_multiply(raw_scale, parent_scale)
+                # Apply scale
+                if raw_scale is not None:
+                    bone_scale = matrix_multiply(raw_scale, parent_scale)
+                else:
+                    #This bone doesn't have new data, but it can still move through its parent, so re-calc it!
+                    if parentbone_index != -1:
+                        bone_scale = QuArK_bone_scale[bone_counter]
+                        old_parent_scale = QuArK_bone_scale[parentbone_index]
+                        bone_scale = matrix_multiply(bone_scale, inverse_matrix(old_parent_scale))
+                        bone_scale = matrix_multiply(bone_scale, parent_scale)
+                    else:
+                        #No movement after all
+                        bone_scale = QuArK_bone_scale[bone_counter]
 
                 QuArK_frame_position[frame_counter][bone_counter] = bone_pos
                 QuArK_frame_matrix[frame_counter][bone_counter] = bone_rot
@@ -1970,12 +2006,12 @@ def loadmodel(root, filename, gamename, nomessage=0):
                 frame['rotmatrix'] = ArtToolTransformMatrix(quarkx.matrix((bone_rot[0][0], bone_rot[1][0], bone_rot[2][0]),
                                                                           (bone_rot[0][1], bone_rot[1][1], bone_rot[2][1]),
                                                                           (bone_rot[0][2], bone_rot[1][2], bone_rot[2][2]))).tuple
+                frame['gr2_scale'] = ArtToolTransformMatrix(quarkx.matrix((bone_scale[0][0], bone_scale[1][0], bone_scale[2][0]),
+                                                                          (bone_scale[0][1], bone_scale[1][1], bone_scale[2][1]),
+                                                                          (bone_scale[0][2], bone_scale[1][2], bone_scale[2][2]))).tuple
                 comp = Full_ComponentList[0]
                 current_frame = new_frames[comp.name][frame_counter]
                 bonelist[current_bone.name]['frames'][current_frame.name] = frame
-                if frame_counter == 0 and len(models) != 0 and len(animations) != 0: # File has both the model & animation.
-                    #Copy this for the meshframe
-                    bonelist[current_bone.name]['frames']['meshframe:mf'] = frame
 
                 BoneDone[bone_counter] = 1
               BonesToDo = DelayBones
@@ -1988,26 +2024,37 @@ def loadmodel(root, filename, gamename, nomessage=0):
                 comp = Full_ComponentList[mesh_counter]
                 current_frame = new_frames[comp.name][frame_counter]
                 oldverts = newverts = current_frame.vertices
-                vert_newpos = []
-                vert_weight_values = []
+                vert_newpos = [[]] * len(oldverts)
+                vert_weight_values = [[]] * len(oldverts)
                 for vert_counter in range(len(oldverts)):
-                    vert_newpos += [quarkx.vect(0.0, 0.0, 0.0)]
-                    vert_weight_values += [0.0]
+                    vert_newpos[vert_counter] = quarkx.vect(0.0, 0.0, 0.0)
+                    vert_weight_values[vert_counter] = 0.0
                 for bone_counter in range(0,NumberOfBones):
                     current_bone = Full_QuArK_bones[bone_counter]
                     if current_bone.vtxlist.has_key(comp.name):
                         vtxlist = current_bone.vtxlist[comp.name]
-                        if len(models) != 0 and len(animations) != 0: # File has both the model & animation.
-                            frame = bonelist[current_bone.name]['frames'][new_frames[comp.name][0].name] #@
-                            old_bone_pos = quarkx.vect(frame['position'])
-                            old_bone_rot = quarkx.matrix(frame['rotmatrix'])
+                        frame = bonelist[current_bone.name]['frames']['meshframe:mf']
+                        old_bone_pos = quarkx.vect(frame['position'])
+                        old_bone_rot = quarkx.matrix(frame['rotmatrix'])
+                        if frame.has_key('gr2_scale'):
+                            old_bone_scale = quarkx.matrix(frame['gr2_scale'])
                         else:
-                            old_bone_pos = current_bone.position
-                            old_bone_rot = quarkx.matrix(bonelist[current_bone.name]['frames']['meshframe:mf']['rotmatrix'])
+                            # This bone wasn't gr2, so it doesn't have gr2_scale... Default value:
+                            old_bone_scale = quarkx.matrix([[1.0, 0.0, 0.0, 0.0],
+                                                            [0.0, 1.0, 0.0, 0.0],
+                                                            [0.0, 0.0, 1.0, 0.0],
+                                                            [0.0, 0.0, 0.0, 1.0]])
                         frame = bonelist[current_bone.name]['frames'][current_frame.name]
                         new_bone_pos = quarkx.vect(frame['position'])
                         new_bone_rot = quarkx.matrix(frame['rotmatrix'])
-                        # new_bone_scale?
+                        if frame.has_key('gr2_scale'):
+                            new_bone_scale = quarkx.matrix(frame['gr2_scale'])
+                        else:
+                            # This bone wasn't gr2, so it doesn't have gr2_scale... Default value:
+                            new_bone_scale = quarkx.matrix([[1.0, 0.0, 0.0, 0.0],
+                                                            [0.0, 1.0, 0.0, 0.0],
+                                                            [0.0, 0.0, 1.0, 0.0],
+                                                            [0.0, 0.0, 0.0, 1.0]])
                         for vert_index in vtxlist:
                             weight_value = 1.0
                             if editor.ModelComponentList[comp.name]['weightvtxlist'].has_key(vert_index) and editor.ModelComponentList[comp.name]['weightvtxlist'][vert_index].has_key(current_bone.name):
@@ -2016,6 +2063,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
 
                             newpos = oldverts[vert_index] - old_bone_pos
                             newpos = new_bone_rot * (~old_bone_rot) * newpos
+                            newpos = new_bone_scale * (~old_bone_scale) * newpos
                             newpos = (newpos + new_bone_pos) * weight_value
                             vert_newpos[vert_index] += newpos
                             
@@ -2271,6 +2319,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.30  2010/05/21 08:36:12  cdunde
+# Massive improvement in material texture handling and animations.
+#
 # Revision 1.29  2010/05/21 03:33:33  cdunde
 # Correct way to fix previous correction and handling of materials.
 #
