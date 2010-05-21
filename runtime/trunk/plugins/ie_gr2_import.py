@@ -118,6 +118,25 @@ def point_by_matrix(p, m):
         p[0] * m[0][2] + p[1] * m[1][2] + p[2] * m[2][2] + m[3][2]
     ]
 
+def inverse_matrix(m):
+    det = matrix_determinant(m)
+    if det == 0:
+        return None
+    a = m[0][0]
+    b = m[0][1]
+    c = m[0][2]
+    d = m[1][0]
+    e = m[1][1]
+    f = m[1][2]
+    g = m[2][0]
+    h = m[2][1]
+    i = m[2][2]
+    #FIXME: no idea how to handle 4-th dimension, so let's ignore it (I know I won't need it)
+    return [ [(e*i - f*h) / det, (h*c - i*b) / det, (b*f - c*e) / det, 0.0],
+             [(g*f - d*i) / det, (a*i - g*c) / det, (d*c - a*f) / det, 0.0],
+             [(d*h - g*e) / det, (g*b - a*h) / det, (a*e - d*b) / det, 0.0],
+             [              0.0,               0.0,               0.0, 1.0] ]
+
 def CleanupName(name):
     BetterName = name.replace("/", "\\")
     BetterName = BetterName.split("\\")
@@ -1064,6 +1083,7 @@ def LoadGR2MSFile(MSfilename):
     file = open(MSfilename,"r")
     lines = file.readlines()
     file.close()
+    os.remove(MSfilename)
     try:
         line_counter = 0
         try:
@@ -1191,8 +1211,19 @@ def loadmodel(root, filename, gamename, nomessage=0):
     pth, animframename = os.path.split(filename)
     animframename = animframename.split(".")[0]
 
+    #Determine how many animation frames to load
+    NumberOfFrames = 20 # QuArK: Overwriting the timestep to reduce the number of frames.
+    for item in editor.Root.subitems:
+        if item.type == ":mc":
+            if item.dictspec.has_key('gr_max_frames'):
+                NumberOfFrames = int(item.dictspec['gr_max_frames'])
+            break
+
     # Convert the GR2 file into a GR2MS file.
-    cmdline = 'grnreader ' + '\"' + filename + '\"'
+    if NumberOfFrames < 1:
+        cmdline = 'grnreader \"%s\"' % (filename)
+    else:
+        cmdline = 'grnreader \"%s\" %d' % (filename, NumberOfFrames)
     fromdir = quarkx.exepath + "dlls"
     process = quarkx.runprogram(cmdline, fromdir)
     MSfilename = quarkx.exepath + "dlls/output.ms"
@@ -1207,8 +1238,8 @@ def loadmodel(root, filename, gamename, nomessage=0):
             goahead = 1
     try:
         art_tool, exporter_tool, models, animations, textures, materials, skeletons, vertexdatas, tritopologies, meshes, trackgroups = LoadGR2MSFile(MSfilename)
-    finally:
-        os.remove(MSfilename)
+    except:
+        pass
 
     # Do whatever user-filtering is needed here.
     """if nomessage == 0:
@@ -1278,6 +1309,10 @@ def loadmodel(root, filename, gamename, nomessage=0):
 
     def ArtToolTransformMatrix(old_rot):
         rot = arttool_rotmatrix * old_rot
+        return rot
+
+    def ArtToolDetransformMatrix(old_rot):
+        rot = (~arttool_rotmatrix) * old_rot
         return rot
 
     undo = quarkx.action()
@@ -2236,6 +2271,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.29  2010/05/21 03:33:33  cdunde
+# Correct way to fix previous correction and handling of materials.
+#
 # Revision 1.28  2010/05/20 08:06:05  cdunde
 # To fix typo error that got back into this file causing it to brake.
 #
