@@ -14,6 +14,8 @@ $Id$
 
 6.6.0 Beta 4
 ============
+* [DanielPharos/cdunde]: Massive improvement in material texture handling and animations.
+
 * [DanielPharos/cdunde]: Added imbedded skin importing for .gr2 models.
 
 * [cdunde]: Model editor, Added Eye camera handle when in True 3D mode for easier navigation.
