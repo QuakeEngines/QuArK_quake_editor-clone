@@ -835,7 +835,7 @@ class gr2_mesh:
         self.name = ""
         self.verts = []
         self.primarytopologybinding = -1
-        self.materialbinding = []
+        self.materialbindings = []
         self.bonebindings = []
 
     def ReadData(self):
@@ -1520,7 +1520,11 @@ def loadmodel(root, filename, gamename, nomessage=0):
                     skins = []
                     skinsize = None
                     current_materialindex = current_face_group.materialindex
-                    current_materialbinding = current_mesh.materialbindings[current_materialindex]
+                    if len(current_mesh.materialbindings) == 0:
+                        current_materialbinding = gr2_materialbinding()
+                        current_materialbinding.material = current_materialindex
+                    else:
+                        current_materialbinding = current_mesh.materialbindings[current_materialindex]
                     if current_materialbinding.material != -1:
                         for skin in QuArK_skins[current_materialbinding.material]:
                             if skinsize is None:
@@ -2232,6 +2236,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.28  2010/05/20 08:06:05  cdunde
+# To fix typo error that got back into this file causing it to brake.
+#
 # Revision 1.27  2010/05/18 10:58:32  cdunde
 # DanielPharos fix for models that have invalid components, causing the importer to brake, to skip over them.
 #
