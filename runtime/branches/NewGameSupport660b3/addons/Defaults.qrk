@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.482.2.11  2009/12/23 21:29:10  danielpharos
+//Added loading support for Quake Live pk3 files (saving enabled, but untested).
+//
 //Revision 1.482.2.10  2009/10/31 15:20:43  danielpharos
 //Added some Anachronox and James Bond: Nightfire stuff, and added Daikatana .pak reading support!
 //
@@ -1965,7 +1968,7 @@ QQRKSRC1
         Code = "F" // Hardcoded value in Setup.PAS
 
         Program = "crx.EXE"
-        Directory = "C:\Alien Arena 2008"
+        Directory = "C:\Alien Arena 7_40"
         CheckDirectory = "crx.EXE"
 
         CD = ""
