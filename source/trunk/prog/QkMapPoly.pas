@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.97  2009/07/15 10:38:01  danielpharos
+Updated website link.
+
 Revision 1.96  2009/02/21 17:06:18  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -348,7 +351,6 @@ uses SysUtils, Windows, Classes, Graphics,
      QkExplorer, Setup, QkTextures, Python, PyMath;
 
 { $DEFINE WriteOnlyIntegers}
-{ $DEFINE TexUpperCase}
 
 const
  MaxFVertices  = 64;   { sommets par face, maximum }

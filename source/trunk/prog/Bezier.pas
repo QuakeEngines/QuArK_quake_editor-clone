@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.38  2009/07/15 10:38:01  danielpharos
+Updated website link.
+
 Revision 1.37  2009/02/21 17:06:18  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -133,8 +136,6 @@ uses Windows, SysUtils, Classes, Python, qmath, qmatrices, PyMath, QkObjects,
      QkMapObjects, QkMapPoly, Qk3D;
 
  {------------------------}
-
-{ $DEFINE TexUpperCase}
 
 const
  BezierMeshCnt = 6;   { number of subdivisions on screen }

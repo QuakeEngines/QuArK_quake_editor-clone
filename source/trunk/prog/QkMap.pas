@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.101  2010/04/16 21:19:26  danielpharos
+Move some version-stuff about. quarkpy now also checks the minor version number.
+
 Revision 1.100  2009/08/14 13:36:05  danielpharos
 Added some comments to help me fix a problem later.
 
@@ -337,7 +340,6 @@ uses
   { tiglari } QkTextures, { /tiglari}
   QkForm, QkObjects, QkFileObjects, PyMapView;
 
-{ $DEFINE TexUpperCase}
 { $DEFINE ClassnameLowerCase}
 {$DEFINE RemoveEmptySpecs}
 
@@ -426,7 +428,7 @@ procedure SaveAsMapTextTDuplicator(ObjectToSave: QObject; MapSaveSettings: TMapS
 implementation
 
 uses
-  Setup, Undo, Quarkx, qmatrices, Qk3D, PyMath, QkQuakeMap,
+  Setup, Undo, Quarkx, qmatrices, Qk3D, PyMath, QkQuakeMap, QkApplPaths,
   Graphics, StrUtils, Game, QkExceptions, Travail, QkConsts, Logging,
   PyForms, Bezier, Duplicator, QkPixelSet, Qk6DX, QkVMF, QkSylphis, QkQ2,
   { tiglari } QkSin, { /tiglari } QkBspHulls, MapError, QkObjectClassList;
@@ -1501,6 +1503,7 @@ expected one.
  var
    I, J: Integer;
    V5: TVect5;
+   TexPath: String;
  begin
    ReadSymbol(sStringToken); // lbrace follows "patchDef2"
    ReadSymbol(sCurlyBracketLeft); // texture follows lbrace
@@ -1512,13 +1515,13 @@ expected one.
    you can set if this path gets prefixed. }
    if MapVersion>1 then
    begin
-     if LowerCase(LeftStr(S,9))='textures/' then
-       S:=RightStr(S,Length(S)-9);
+     TexPath:=IncludeTrailingPathDelimiter(GameTexturesPath);
+     if LowerCase(LeftStr(S,Length(TexPath)))=TexPath then
+       S:=RightStr(S,Length(S)-Length(TexPath));
    end;
 
-   {$IFDEF TexUpperCase}
-   S:=LowerCase(S);
-   {$ENDIF}
+   if SetupGameSet.Specifics.Values['TextureNameUppercase']<>'' then
+     S:=LowerCase(S);
    Q2Tex:=Q2Tex or (Pos('/',S)<>0);
 
    B:=TBezier.Create(LoadStr1(261), EntiteBezier); // 261 = "bezier"
@@ -1600,6 +1603,7 @@ expected one.
    I, J: Integer;
    V5: TVect5;
    V7: TVect7;
+   TexPath: String;
  begin
    ReadSymbol(sStringToken); // lbrace follows "patchDef3"
    ReadSymbol(sCurlyBracketLeft); // texture follows lbrace
@@ -1611,13 +1615,13 @@ expected one.
    you can set if this path gets prefixed. }
    if MapVersion>1 then
    begin
-     if LowerCase(LeftStr(S,9))='textures/' then
-       S:=RightStr(S,Length(S)-9);
+     TexPath:=IncludeTrailingPathDelimiter(GameTexturesPath);
+     if LowerCase(LeftStr(S,Length(TexPath)))=TexPath then
+       S:=RightStr(S,Length(S)-Length(TexPath));
    end;
 
-   {$IFDEF TexUpperCase}
-   S:=LowerCase(S);
-   {$ENDIF}
+   if SetupGameSet.Specifics.Values['TextureNameUppercase']<>'' then
+     S:=LowerCase(S);
    Q2Tex:=Q2Tex or (Pos('/',S)<>0);
 
    B:=TBezier.Create(LoadStr1(261), EntiteBezier); // 261 = "bezier"
@@ -1681,6 +1685,7 @@ expected one.
    I, J: Integer;
    V7: TVect7;
    V10: TVect10;
+   TexPath: String;
  begin
    ReadSymbol(sStringToken); // lbrace follows "patchTerrainDef3"
    ReadSymbol(sCurlyBracketLeft); // texture follows lbrace
@@ -1692,13 +1697,13 @@ expected one.
    you can set if this path gets prefixed. }
    if MapVersion>1 then
    begin
-     if LowerCase(LeftStr(S,9))='textures/' then
-       S:=RightStr(S,Length(S)-9);
+     TexPath:=IncludeTrailingPathDelimiter(GameTexturesPath);
+     if LowerCase(LeftStr(S,Length(TexPath)))=TexPath then
+       S:=RightStr(S,Length(S)-Length(TexPath));
    end;
 
-   {$IFDEF TexUpperCase}
-   S:=LowerCase(S);
-   {$ENDIF}
+   if SetupGameSet.Specifics.Values['TextureNameUppercase']<>'' then
+     S:=LowerCase(S);
    Q2Tex:=Q2Tex or (Pos('/',S)<>0);
 
 //   B:=TBezier.Create(LoadStr1(261), EntiteBezier); // 261 = "bezier"
@@ -1763,6 +1768,7 @@ expected one.
    I, J: Integer;
    V7: TVect7;
    V10: TVect10;
+   TexPath: String;
  begin
    ReadSymbol(sStringToken); // lbrace follows "patchDef5"
    ReadSymbol(sCurlyBracketLeft); // texture follows lbrace
@@ -1774,13 +1780,13 @@ expected one.
    you can set if this path gets prefixed. }
    if MapVersion>1 then
    begin
-     if LowerCase(LeftStr(S,9))='textures/' then
-       S:=RightStr(S,Length(S)-9);
+     TexPath:=IncludeTrailingPathDelimiter(GameTexturesPath);
+     if LowerCase(LeftStr(S,Length(TexPath)))=TexPath then
+       S:=RightStr(S,Length(S)-Length(TexPath));
    end;
 
-   {$IFDEF TexUpperCase}
-   S:=LowerCase(S);
-   {$ENDIF}
+   if SetupGameSet.Specifics.Values['TextureNameUppercase']<>'' then
+     S:=LowerCase(S);
    Q2Tex:=Q2Tex or (Pos('/',S)<>0);
 
 //   B:=TBezier.Create(LoadStr1(261), EntiteBezier); // 261 = "bezier"
@@ -1858,10 +1864,11 @@ expected one.
     Surface:=TFace.Create(LoadStr1(139), P);
     P.SubElements.Add(Surface);
     Surface.SetThreePoints(V[1], V[3], V[2]);
-    {$IFDEF TexUpperCase}
-    S:=LowerCase(S);
-    {$ENDIF}
+
+    if SetupGameSet.Specifics.Values['TextureNameUppercase']<>'' then
+      S:=LowerCase(S);
     Q2Tex:=Q2Tex or (Pos('/',S)<>0);
+
     Surface.NomTex:=S;   { here we get the texture-name }
     ReadSymbol(sTokenForcedToString);
     {DECKER}
@@ -1974,6 +1981,7 @@ expected one.
    Denom : Double;
    Matrix : TMatrixTransformation;
    Surface: TFace;
+   TexPath: String;
  begin
   ReadSymbol(sStringToken); // lbrace follows "brushDef"
   ReadSymbol(sCurlyBracketLeft); // data follows lbrace
@@ -2027,14 +2035,15 @@ expected one.
     you can set if this path gets prefixed. }
     if MapVersion>1 then
     begin
-      if LowerCase(LeftStr(S,9))='textures/' then
-         S:=RightStr(S,Length(S)-9);
+      TexPath:=IncludeTrailingPathDelimiter(GameTexturesPath);
+      if LowerCase(LeftStr(S,Length(TexPath)))=TexPath then
+        S:=RightStr(S,Length(S)-Length(TexPath));
     end;
 
-    {$IFDEF TexUpperCase}
-    S:=LowerCase(S);
-    {$ENDIF}
+    if SetupGameSet.Specifics.Values['TextureNameUppercase']<>'' then
+      S:=LowerCase(S);
     Q2Tex:=Q2Tex or (Pos('/',S)<>0);
+
     Surface.NomTex:=S;   { here we get the texture-name }
     Surface.SetThreePointsUserTex(P0,P1,P2,nil);
     ReadSymbol(sTokenForcedToString);
@@ -2066,6 +2075,7 @@ expected one.
    texparm : TFaceParams;
    Matrix : TMatrixTransformation;
    Surface: TFace;
+   TexPath: String;
  begin
   ReadSymbol(sStringToken); // lbrace follows "brushDef3"
   ReadSymbol(sCurlyBracketLeft); // texture follows lbrace
@@ -2154,14 +2164,15 @@ expected one.
     you can set if this path gets prefixed. }
     if MapVersion>1 then
     begin
-      if LowerCase(LeftStr(texname,9))='textures/' then
-         texname:=RightStr(texname,Length(texname)-9);
+      TexPath:=IncludeTrailingPathDelimiter(GameTexturesPath);
+      if LowerCase(LeftStr(S,Length(TexPath)))=TexPath then
+        S:=RightStr(S,Length(S)-Length(TexPath));
     end;
 
-    {$IFDEF TexUpperCase}
-    texname:=LowerCase(texname);
-    {$ENDIF}
+    if SetupGameSet.Specifics.Values['TextureNameUppercase']<>'' then
+      texname:=LowerCase(texname);
     Q2Tex:=Q2Tex or (Pos('/',texname)<>0);
+
     Surface.NomTex:=texname;   { here we get the texture-name }
     Surface.SetThreePointsUserTex(P0,P1,P2,nil);
   end;
@@ -3609,6 +3620,7 @@ var
  { tiglari }
  rval : Single; { for Value/lightvalue }
  Q: QPixelSet;
+ TextureName: String;
  Mirror, EtpMirror: Boolean;
  DecimalPlaces: Integer;
  type
@@ -3945,30 +3957,19 @@ begin
     begin
 
      {texture name}
+     TextureName:=NomTex;
      if MapSaveSettings.MapFormat=HL2Type then
        S:= S+#13#10'    "material" "';
 
-     {$IFDEF TexUpperCase}
      if MapSaveSettings.MapVersion>1 then
-       S:=S+'"TEXTURES/'+UpperCase(NomTex)+'"'
-     else
-       S:=S+UpperCase(NomTex);
-     {$ELSE}
-     if MapSaveSettings.MapVersion>1 then
-     begin
-       if MapSaveSettings.GameCode=mjHalfLife then
-         S:=S+'"TEXTURES/'+UpperCase(NomTex)+'"'   // This is actually impossible...
-       else
-         S:=S+'"textures/'+NomTex+'"';
-     end
-     else
-     begin
-       if MapSaveSettings.GameCode=mjHalfLife then
-         S:=S+UpperCase(NomTex)
-       else
-         S:=S+NomTex;
-     end;
-     {$ENDIF}
+       TextureName:='"'+ConcatPaths([GameTexturesPath, TextureName])+'"';
+
+     if SetupGameSet.Specifics.Values['TextureNameUppercase']<>'' then
+       TextureName:=UpperCase(TextureName);
+     if not (SetupGameSet.Specifics.Values['TextureNameDontReverseSlashes']<>'') then
+       TextureName:=ReverseSlashes(TextureName);
+
+     S:=S+TextureName;
 
      if MapSaveSettings.MapFormat=HL2Type then
        S:= S+'"';
@@ -4127,6 +4128,7 @@ var
  I, J, K, R: Integer;
  S: String;
  Value: PSingle;
+ TextureName: String;
  DecimalPlaces: Integer;
 begin
  ResolveMapSaveSettings(MapSaveSettings);
@@ -4147,17 +4149,19 @@ begin
    end;
    Target.Add('  {');
 
-   {$IFDEF TexUpperCase}
+   {texture name}
+   TextureName:=NomTex;
+
    if MapSaveSettings.MapVersion>1 then
-     Target.Add('   "TEXTURES/' + UpperCase(NomTex) + '"')
-   else
-     Target.Add('   ' + UpperCase(NomTex));
-   {$ELSE}
-   if MapSaveSettings.MapVersion>1 then
-     Target.Add('   "textures/' + NomTex + '"')
-   else
-     Target.Add('   ' + NomTex);
-   {$ENDIF}
+     TextureName:='"'+ConcatPaths([GameTexturesPath, TextureName])+'"';
+
+   if SetupGameSet.Specifics.Values['TextureNameUppercase']<>'' then
+     TextureName:=UpperCase(TextureName);
+   if not (SetupGameSet.Specifics.Values['TextureNameDontReverseSlashes']<>'') then
+     TextureName:=ReverseSlashes(TextureName);
+
+   Target.Add('   ' + TextureName);
+
    { We should start saving the other values too, once we've
      figured out what they actually are... }
    if MapSaveSettings.GameCode=mjMOHAA then
