@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.29  2010/04/16 19:07:57  danielpharos
+Added default value for ForceUnload argument.
+
 Revision 1.28  2010/04/16 18:44:59  danielpharos
 Reduced missing init-logging entries to a single problematic line. Also, logging now uses const strings (faster).
 
@@ -441,6 +444,8 @@ begin
   begin
     if (HDevIL = 0) then
     begin
+      Log(LOG_VERBOSE, 'Loading DevIL...');
+
       DevILLibraryFilename := ConcatPaths([GetQPath(pQuArKDll), 'DevIL.dll']);
       HDevIL := LoadLibrary(PChar(DevILLibraryFilename));
       if HDevIL = 0 then
@@ -486,6 +491,8 @@ begin
         LogAndRaiseError('DevIL library version mismatch!');
 
       ilInit;
+
+      Log(LOG_VERBOSE, 'DevIL loaded!');
     end;
 
     TimesLoaded := 1;
@@ -504,6 +511,8 @@ begin
   begin
     if HDevIL <> 0 then
     begin
+      Log(LOG_VERBOSE, 'Unloading DevIL...');
+
       ilShutdown;
 
       if FreeLibrary(HDevIL) = false then
@@ -545,6 +554,8 @@ begin
       ilOriginFunc          := nil;
       ilClearImage          := nil;
       ilRegisterPal         := nil;
+
+      Log(LOG_VERBOSE, 'DevIL unloaded!');
     end;
 
     TimesLoaded := 0;

@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.27  2010/04/16 19:08:17  danielpharos
+Added default value for ForceUnload argument.
+
 Revision 1.26  2010/04/02 16:51:58  danielpharos
 Created a new LogWindowsError procedure.
 
@@ -564,6 +567,8 @@ begin
   begin
     if HVTFLib = 0 then
     begin
+      Log(LOG_VERBOSE, 'Loading VTFLib...');
+
       VTFLibLibraryFilename := ConcatPaths([GetQPath(pQuArKDll), 'VTFLib.dll']);
       HVTFLib := LoadLibrary(PChar(VTFLibLibraryFilename));
       if HVTFLib = 0 then
@@ -646,6 +651,8 @@ begin
 
       if vlInitialize=vlFalse then
         LogAndRaiseError('Unable to initialize VTFLib!');
+
+      Log(LOG_VERBOSE, 'VTFLib loaded!');
     end;
 
     TimesLoaded := 1;
@@ -664,6 +671,8 @@ begin
   begin
     if HVTFLib <> 0 then
     begin
+      Log(LOG_VERBOSE, 'Unloading VTFLib...');
+
       vlShutdown;
 
       if FreeLibrary(HVTFLib) = false then
@@ -742,6 +751,8 @@ begin
       vlMaterialCreate          := nil;
       vlMaterialGetParentNode   := nil;
       vlMaterialGetChildNode    := nil;
+
+      Log(LOG_VERBOSE, 'VTFLib unloaded!');
     end;
 
     TimesLoaded := 0;

@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2010/04/02 16:51:58  danielpharos
+Created a new LogWindowsError procedure.
+
 Revision 1.8  2010/03/09 21:47:32  danielpharos
 Added additional logging and small cleanup.
 
@@ -91,6 +94,8 @@ begin
   begin
     if (HMd5Hash = 0) then
     begin
+      Log(LOG_VERBOSE, 'Loading MD5DLL...');
+
       HMd5HashLibraryFilename := ConcatPaths([GetQPath(pQuArKDll), 'md5dll.dll']);
       HMd5Hash := LoadLibrary(PChar(HMd5HashLibraryFilename));
       if HMd5Hash = 0 then
@@ -103,6 +108,8 @@ begin
       GetBenchmarkMd5   := InitDllPointer(HMd5Hash, 'GetBenchmarkMd5');
       GetStringMd5      := InitDllPointer(HMd5Hash, 'GetStringMd5');
       GetRandomMd5      := InitDllPointer(HMd5Hash, 'GetRandomMd5');
+
+      Log(LOG_VERBOSE, 'MD5DLL loaded!');
     end;
 
     TimesLoaded := 1;
@@ -121,6 +128,8 @@ begin
   begin
     if HMd5Hash <> 0 then
     begin
+      Log(LOG_VERBOSE, 'Unloading MD5DLL...');
+
       if FreeLibrary(HMd5Hash) = false then
       begin
         LogWindowsError(GetLastError(), 'FreeLibrary(HMd5Hash)');
@@ -132,6 +141,8 @@ begin
       GetBenchmarkMd5   := nil;
       GetStringMd5      := nil;
       GetRandomMd5      := nil;
+
+      Log(LOG_VERBOSE, 'MD5DLL unloaded!');
     end;
 
     TimesLoaded := 0;

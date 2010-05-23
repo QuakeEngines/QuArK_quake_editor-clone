@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.26  2010/04/02 16:51:58  danielpharos
+Created a new LogWindowsError procedure.
+
 Revision 1.25  2010/03/09 21:08:56  danielpharos
 Added additional logging and small cleanup.
 
@@ -180,6 +183,8 @@ var
 begin
   if Hgcfwrap = 0 then
   begin
+    Log(LOG_VERBOSE, 'Loading GCF...');
+
     HLLibLibraryFilename := ConcatPaths([GetQPath(pQuArKDll), 'HLLib.dll']);
     Hhllibwrap := LoadLibrary(PChar(HLLibLibraryFilename));
     if Hhllibwrap = 0 then
@@ -217,6 +222,8 @@ begin
     SetLogPath(PChar(GetQPath(pQuArKLog)));
     if Init <> 0 then
       LogAndRaiseError('Unable to initialize QuArKGCF library');
+
+    Log(LOG_VERBOSE, 'GCF loaded!');
   end;
 end;
 
@@ -224,6 +231,8 @@ procedure uninitdll;
 begin
   if Hgcfwrap <> 0 then
   begin
+    Log(LOG_VERBOSE, 'Unloading GCF...');
+
     Unload;
 
     if FreeLibrary(Hgcfwrap)=false then
@@ -259,6 +268,8 @@ begin
     end;
     Hhllibwrap := 0;
   end;
+
+  Log(LOG_VERBOSE, 'GCF unloaded!');
 end;
 
  {------------ QGCFFolder ------------}

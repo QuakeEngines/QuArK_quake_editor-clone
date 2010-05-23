@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2010/04/16 19:07:57  danielpharos
+Added default value for ForceUnload argument.
+
 Revision 1.17  2010/04/02 16:51:58  danielpharos
 Created a new LogWindowsError procedure.
 
@@ -291,6 +294,8 @@ begin
   begin
     if (HFreeImage = 0) then
     begin
+      Log(LOG_VERBOSE, 'Loading FreeImage...');
+
       FreeImageLibraryFilename := ConcatPaths([GetQPath(pQuArKDll), 'FreeImage.dll']);
       HFreeImage := LoadLibrary(PChar(FreeImageLibraryFilename));
       if HFreeImage = 0 then
@@ -346,6 +351,8 @@ begin
         LogAndRaiseError('FreeImage library version mismatch!');
 
       FreeImage_SetOutputMessage(FreeImageErrorHandler);
+
+      Log(LOG_VERBOSE, 'FreeImage loaded!');
     end;
 
     TimesLoaded := 1;
@@ -364,6 +371,8 @@ begin
   begin
     if HFreeImage <> 0 then
     begin
+      Log(LOG_VERBOSE, 'Unloading FreeImage...');
+
       if FreeLibrary(HFreeImage) = false then
       begin
         LogWindowsError(GetLastError(), 'FreeLibrary(HFreeImage)');
@@ -401,6 +410,8 @@ begin
       FreeImage_ConvertToRawBits      := nil;
       FreeImage_IsTransparent         := nil;
       FreeImage_Allocate              := nil;
+
+      Log(LOG_VERBOSE, 'FreeImage unloaded!');
     end;
 
     TimesLoaded := 0;
