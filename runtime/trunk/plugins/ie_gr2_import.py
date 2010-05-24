@@ -1369,6 +1369,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
     Full_ComponentList = []
     Full_QuArK_bones = []
     bonelist = editor.ModelComponentList['bonelist']
+    comp_count = 0
     for current_model in models:
         ComponentList = []
         QuArK_bones = []
@@ -1545,8 +1546,12 @@ def loadmodel(root, filename, gamename, nomessage=0):
                 for current_face_group_nr in range(len(current_tritopology.groups)):
                     current_face_group = current_tritopology.groups[current_face_group_nr]
                     if len(current_tritopology.groups) <> 1:
+                        if comp_count > 0 and current_face_group_nr == 0:
+                            current_mesh.name = current_mesh.name + str(comp_count)
                         Component = quarkx.newobj(bone_group_name + "_" + current_mesh.name + " group " + str(current_face_group_nr+1) + ":mc")
                     else:
+                        if comp_count > 0:
+                            current_mesh.name = current_mesh.name + str(comp_count)
                         Component = quarkx.newobj(bone_group_name + "_" + current_mesh.name + ":mc")
                     ComponentList += [Component]
             
@@ -1606,72 +1611,90 @@ def loadmodel(root, filename, gamename, nomessage=0):
                         for bone_index in range(len(QuArK_bones)):
                             full_bone_vtx_list[bone_index][Component.name] = bone_vtx_list[bone_index]
 
+        # This section merges different bone groups of the same model
+        # for things like attachment models in a sub-folder for that particular mode.
         for bone_index in range(len(QuArK_bones)):
             current_bone = QuArK_bones[bone_index]
-            current_bone.vtxlist = full_bone_vtx_list[bone_index]
-            vtxlist = current_bone.vtxlist
-            vtxcount = 0
-            usekey = None
-            for key in vtxlist.keys():
-                if len(vtxlist[key]) > vtxcount:
-                    usekey = key
-                    vtxcount = len(vtxlist[key])
-            if usekey is not None:
-                vtx_pos = {}
-                vtx_pos[usekey] = vtxlist[usekey]
-                current_bone.vtx_pos = vtx_pos
-                comp = None
-                for item in ComponentList:
-                    if item.name == usekey:
-                        comp = item
+            Full_QuArK_bones_names = []
+            for new_bone in Full_QuArK_bones:
+                Full_QuArK_bones_names = Full_QuArK_bones_names + [new_bone.name]
+            if current_bone.name in Full_QuArK_bones_names:
+                for bone in Full_QuArK_bones:
+                    if bone.name == current_bone.name:
+                        vtxlist = bone.vtxlist
+                        for key in full_bone_vtx_list[bone_index].keys():
+                            vtxlist[key] = full_bone_vtx_list[bone_index][key]
+                        bone.vtxlist = vtxlist
                         break
-                vtxpos = quarkx.vect(0, 0, 0)
-                frame_vertices = comp.dictitems['Frames:fg'].dictitems['meshframe:mf'].vertices
-                for vtx in range(len(vtx_pos[usekey])):
-                    vtxpos = vtxpos + frame_vertices[vtx_pos[usekey][vtx]]
-                vtxpos = vtxpos/float(len(vtx_pos[usekey]))
-                current_bone['draw_offset'] = (current_bone.position - vtxpos).tuple
-                current_bone['component'] = usekey
             else:
-                current_bone['component'] = ComponentList[-1].name
+                current_bone.vtxlist = full_bone_vtx_list[bone_index]
+                Full_QuArK_bones = Full_QuArK_bones + [current_bone]
         for Component in ComponentList:
             # This needs to be done for each component or bones will not work if used in the editor.
             quarkpy.mdlutils.make_tristodraw_dict(editor, Component)
         Full_ComponentList += ComponentList
-
-        bones_in_editor = {}
-        for group in editor.Root.dictitems['Skeleton:bg'].subitems:
-            for bone_group_name in bone_group_names:
-                if group.name.startswith(bone_group_name):
-                    group_bones = group.findallsubitems("", ':bone')
-                    for bone in group_bones:
-                        bones_in_editor[bone.name] = bone
-        editor_bone_names = bones_in_editor.keys()
-   #     exchange_bones = []
-        editor_bone_group = editor.Root.dictitems['Skeleton:bg']
-        for new_bone in QuArK_bones:
-            if new_bone.name in editor_bone_names:
-                continue
-            else:
-                if new_bone.dictspec['parent_name'] == "None":
-                    undo.put(editor_bone_group, new_bone)
-                else:
-                    undo.put(QuArK_bones[int(new_bone.dictspec['parent_index'])], new_bone)
-        for new_bone in QuArK_bones:
-            if new_bone.name in editor_bone_names:
-                editor_bone = bones_in_editor[new_bone.name] #.copy()
-                vtxlist = editor_bone.vtxlist
-                for comp_name in new_bone.vtxlist.keys():
-                    vtxlist[comp_name] = new_bone.vtxlist[comp_name]
-                editor_bone.vtxlist = vtxlist
-   #             exchange_bones = exchange_bones + [editor_bone]
-   #     print "line 1428 exchange_bones", len(exchange_bones)
-   #     for editor_bone in exchange_bones:
-   #         undo.exchange(bones_in_editor[editor_bone.name], editor_bone)
-            
-        Full_QuArK_bones += QuArK_bones
+        comp_count = comp_count + 1
         progressbar.progress()
     progressbar.close()
+
+    for bone_index in range(len(Full_QuArK_bones)):
+        current_bone = Full_QuArK_bones[bone_index]
+        vtxlist = current_bone.vtxlist
+        vtxcount = 0
+        usekey = None
+        for key in vtxlist.keys():
+            if len(vtxlist[key]) > vtxcount:
+                usekey = key
+                vtxcount = len(vtxlist[key])
+        if usekey is not None:
+            vtx_pos = {}
+            vtx_pos[usekey] = vtxlist[usekey]
+            current_bone.vtx_pos = vtx_pos
+            comp = None
+            for item in Full_ComponentList:
+                if item.name == usekey:
+                    comp = item
+                    break
+            vtxpos = quarkx.vect(0, 0, 0)
+            frame_vertices = comp.dictitems['Frames:fg'].dictitems['meshframe:mf'].vertices
+            for vtx in range(len(vtx_pos[usekey])):
+                vtxpos = vtxpos + frame_vertices[vtx_pos[usekey][vtx]]
+            vtxpos = vtxpos/float(len(vtx_pos[usekey]))
+            current_bone['draw_offset'] = (current_bone.position - vtxpos).tuple
+            current_bone['component'] = usekey
+        else:
+            current_bone['component'] = Full_ComponentList[-1].name
+
+    bones_in_editor = {}
+    for group in editor.Root.dictitems['Skeleton:bg'].subitems:
+        for bone_group_name in bone_group_names:
+            if group.name.startswith(bone_group_name):
+                group_bones = group.findallsubitems("", ':bone')
+                for bone in group_bones:
+                    bones_in_editor[bone.name] = bone
+    editor_bone_names = bones_in_editor.keys()
+   # exchange_bones = []
+    editor_bone_group = editor.Root.dictitems['Skeleton:bg']
+    for new_bone in Full_QuArK_bones:
+        if new_bone.name in editor_bone_names:
+            continue
+        else:
+            if new_bone.dictspec['parent_name'] == "None":
+                undo.put(editor_bone_group, new_bone)
+            else:
+                undo.put(Full_QuArK_bones[int(new_bone.dictspec['parent_index'])], new_bone)
+    for new_bone in Full_QuArK_bones:
+        if new_bone.name in editor_bone_names:
+            editor_bone = bones_in_editor[new_bone.name] #.copy()
+            vtxlist = editor_bone.vtxlist
+            for comp_name in new_bone.vtxlist.keys():
+                vtxlist[comp_name] = new_bone.vtxlist[comp_name]
+            editor_bone.vtxlist = vtxlist
+   #         exchange_bones = exchange_bones + [editor_bone]
+   # print "line 1428 exchange_bones", len(exchange_bones)
+   # for editor_bone in exchange_bones:
+   #     undo.exchange(bones_in_editor[editor_bone.name], editor_bone)
+
 
     # ANIMATION STARTS HERE.
     TMP_ComponentList = []
@@ -2319,6 +2342,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.31  2010/05/21 20:31:12  danielpharos
+# Another bunch of fixes: This should straighten out even more models.
+#
 # Revision 1.30  2010/05/21 08:36:12  cdunde
 # Massive improvement in material texture handling and animations.
 #
