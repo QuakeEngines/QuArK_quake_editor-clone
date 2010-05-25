@@ -613,16 +613,9 @@ class AnimationBar(ToolBar):
                     return
                 else:
                     sel = editor.layout.explorer.sellist
-                    for item in range(len(sel)):
-                        if sel[item].type != ':mf':
-                            quarkx.msgbox("Improper Selection !\n\nYou need to select at least two frames\n(and no other types of sub-items)\nof the same component to activate animation.\n\nAction Canceled.", MT_ERROR, MB_OK)
-                            return
-                        if item == len(sel)-1:
-                            pass
-                        else:
-                            if sel[item].parent.parent != sel[item+1].parent.parent:
-                                quarkx.msgbox("Improper Action !\n\nYou can only select frames from\nthe same component to animate.\n\nAction Canceled.", MT_ERROR, MB_OK)
-                                return
+                    if sel[0].type != ':mf':
+                        quarkx.msgbox("Improper Selection !\n\nYou need to select at least two frames\n(and no other types of sub-items)\nof the same component to activate animation.\n\nAction Canceled.", MT_ERROR, MB_OK)
+                        return
             quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] = "1"
             qtoolbar.toggle(btn)
             btn.state = qtoolbar.selected
@@ -634,12 +627,12 @@ class AnimationBar(ToolBar):
                 if quarkx.setupsubset(SS_MODEL, "Options")['AnimationPaused'] != "1" and quarkx.setupsubset(SS_MODEL, "Options")['InterpolationActive'] != "1":
                     playNR = 0
                 playlist = editor.layout.explorer.sellist
-                UpdateplaylistPerComp(self)
-              #  editor.layout.explorer.sellist = []
-                for view in editor.layout.views:
-                    view.handles = []
-                    mdleditor.setsingleframefillcolor(editor, view)
-                    view.repaint()
+            # Commenting out items below speeds up start and stop of animation.
+            #    UpdateplaylistPerComp(self)
+            #    for view in editor.layout.views:
+            #        view.handles = []
+            #        mdleditor.setsingleframefillcolor(editor, view)
+            #        view.repaint()
                 FPS = int(1000/quarkx.setupsubset(SS_MODEL, "Display")["AnimationFPS"][0])
                 # This sets (starts) the timer and calls the drawing function for the first time.
                 # The drawing function will be recalled each time that the timer goes off.
@@ -817,6 +810,7 @@ class AnimationBar(ToolBar):
             quarkx.update(editor.form)
             if quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] is not None and quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] != "0" and editor.layout.explorer.uniquesel is not None:
                 if not MdlOption("AnimationCFGActive"):
+                    UpdateplaylistPerComp(self)
                     frames = editor.Root.currentcomponent.dictitems['Frames:fg'].subitems
                     for framenbr in range(len(frames)):
                         if frames[framenbr].name == editor.layout.explorer.uniquesel.name:
@@ -1063,6 +1057,9 @@ class AnimationBar(ToolBar):
 #
 #
 #$Log$
+#Revision 1.23  2010/05/01 04:39:48  cdunde
+#Fix to draw bones, if any, correctly after stopping animation with pause still on.
+#
 #Revision 1.22  2010/04/28 06:49:10  cdunde
 #Fix to reselect first frame if animation is stopped with pause still active for proper bone positioning.
 #
