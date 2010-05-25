@@ -1207,6 +1207,11 @@ def loadmodel(root, filename, gamename, nomessage=0):
         if found_group_name != 0:
             break
 
+    editor_group_names = []
+    for item in editor.Root.subitems: # Gets list of like component names to avoid dupe names later.
+        if item.type == ":mc" and item.name.startswith(bone_group_name):
+            editor_group_names = editor_group_names + [item.name]
+
     pth, animframename = os.path.split(filename)
     animframename = animframename.split(".")[0]
 
@@ -1543,13 +1548,22 @@ def loadmodel(root, filename, gamename, nomessage=0):
 
             if current_mesh.primarytopologybinding != -1:
                 current_tritopology = tritopologies[current_mesh.primarytopologybinding]
+                group_count = 0
                 for current_face_group_nr in range(len(current_tritopology.groups)):
                     current_face_group = current_tritopology.groups[current_face_group_nr]
                     if len(current_tritopology.groups) <> 1:
+                        if comp_count == 0 and current_face_group_nr == 0:
+                            for name in editor_group_names:
+                                if name.find(current_mesh.name) != -1 and name.find(" group " + str(current_face_group_nr+1)) != -1:
+                                    comp_count = comp_count + 1
                         if comp_count > 0 and current_face_group_nr == 0:
                             current_mesh.name = current_mesh.name + str(comp_count)
                         Component = quarkx.newobj(bone_group_name + "_" + current_mesh.name + " group " + str(current_face_group_nr+1) + ":mc")
                     else:
+                        if comp_count == 0:
+                            for name in editor_group_names:
+                                if name.find(current_mesh.name) != -1:
+                                    comp_count = comp_count + 1
                         if comp_count > 0:
                             current_mesh.name = current_mesh.name + str(comp_count)
                         Component = quarkx.newobj(bone_group_name + "_" + current_mesh.name + ":mc")
@@ -1769,7 +1783,9 @@ def loadmodel(root, filename, gamename, nomessage=0):
         for bone_index in range(len(Full_QuArK_bones)):
             current_bone = Full_QuArK_bones[bone_index]
             if BoneNameToBoneIndex.has_key(current_bone.name):
-                raise "Error: Multiple bones with the same name detected!"
+                quarkx.beep() # Makes the computer "Beep" once if a file is not valid.
+                quarkx.msgbox("Invalid Action !\n\nMultiple bones with the same name detected !\n\nCan not import this model.\nDelete the first model then try again.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
+                return
             BoneNameToBoneIndex[current_bone.name] = bone_index
 
         # Prepare arrays to store the bone-animation-data.
@@ -2342,6 +2358,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.32  2010/05/24 21:49:59  cdunde
+# Update to handle models with multiple bones and components with the same name.
+#
 # Revision 1.31  2010/05/21 20:31:12  danielpharos
 # Another bunch of fixes: This should straighten out even more models.
 #
