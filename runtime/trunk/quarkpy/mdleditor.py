@@ -1182,7 +1182,7 @@ def setsingleframefillcolor(self, view):
                     comp.filltris = [(None,None)]*len(comp.triangles)
             else:
                 comp.filltris = [(None,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
-  
+
     if view.info["viewname"] == "3Dwindow":
         fillcolor = MapColor("Options3Dviews_fillColor5", SS_MODEL)
         backfacecolor1 = MapColor("BackFaceColor1", SS_MODEL)
@@ -1274,7 +1274,7 @@ def setframefillcolor(self, view):
                     comp.filltris = [(None,None)]*len(comp.triangles)
             else:
                 comp.filltris = [(None,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
-  
+
     if view.info["viewname"] == "3Dwindow":
         currentview = view
         fillcolor = MapColor("Options3Dviews_fillColor5", SS_MODEL)
@@ -1443,6 +1443,8 @@ def commonhandles(self, redraw=1):
         else:
             if (flagsmouse == 1032 or flagsmouse == 1040 or flagsmouse == 1048 or flagsmouse == 1056 or flagsmouse == 2056 or flagsmouse == 2064 or flagsmouse == 2080):
                 if currentview.info["viewname"] == "editors3Dview":
+                    if (flagsmouse == 2064 or flagsmouse == 2080) and (quarkx.setupsubset(SS_MODEL, "Options")["EditorTrue3Dmode"] == "1") and (quarkx.setupsubset(SS_MODEL, "Options")["MAIV"] == "1"):
+                        modelaxis(currentview)
                     if (quarkx.setupsubset(SS_MODEL, "Options")["DHWR"] == "1") and (flagsmouse == 2056):
                         return
                     else:
@@ -1470,6 +1472,8 @@ def commonhandles(self, redraw=1):
         else:
             if (flagsmouse == 1032 or flagsmouse == 1040 or flagsmouse == 1048 or flagsmouse == 1056 or flagsmouse == 2056 or flagsmouse == 2064 or flagsmouse == 2080):
                 if currentview.info["viewname"] == "3Dwindow":
+                    if (flagsmouse == 2064 or flagsmouse == 2080) and (quarkx.setupsubset(SS_MODEL, "Options")["Full3DTrue3Dmode"] == "1") and (quarkx.setupsubset(SS_MODEL, "Options")["MAIV"] == "1"):
+                        modelaxis(currentview)
                     if (quarkx.setupsubset(SS_MODEL, "Options")["DHWR"] == "1") and (flagsmouse == 2056):
                         return
                     else:
@@ -1674,7 +1678,7 @@ def commonhandles(self, redraw=1):
         for v in self.layout.views:
             if v.info["viewname"] == "skinview":
                 continue
-    
+
             ### To update only those views that are in 'Textured' mode after a Skin-view drag has been done.
             try:
                 if flagsmouse == 16384 and currentview.info["viewname"] == "skinview":
@@ -1686,7 +1690,7 @@ def commonhandles(self, redraw=1):
                             modelaxis(v)
             except:
                 pass
-            
+
             try:
                 if (currentview.info["viewname"] != "editors3Dview") and (flagsmouse == 1040 or flagsmouse == 1048 or flagsmouse == 1056):
                     pass
@@ -1786,6 +1790,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.145  2010/05/12 08:07:13  cdunde
+#Added Eye camera handle when in True 3D mode for easier navigation.
+#
 #Revision 1.144  2010/05/06 08:41:17  cdunde
 #Small update.
 #

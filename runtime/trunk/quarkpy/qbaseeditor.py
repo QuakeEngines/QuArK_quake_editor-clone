@@ -835,7 +835,8 @@ class BaseEditor:
 
     def keymap(self, view, key, flags):
         pass
-        
+
+
     def mousemap(self, view, x, y, flags, handle):
         "Called by QuArK upon mouse operation."
 
@@ -1220,6 +1221,8 @@ class BaseEditor:
                     else:
                         self.dragobject.dragto(x, y, flags)
             if isinstance(self, mdleditor.ModelEditor):
+                if (quarkx.setupsubset(SS_MODEL, "Options")["MAIV"] == "1") and ((view.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MODEL, "Options")["EditorTrue3Dmode"] == "1") or (view.info["viewname"] == "3Dwindow" and quarkx.setupsubset(SS_MODEL, "Options")["Full3DTrue3Dmode"] == "1")):
+                    mdleditor.modelaxis(view)
                 try:
                     if self.dragobject.hint is not None:
                         self.showhint(self.dragobject.hint)
@@ -1399,7 +1402,6 @@ class BaseEditor:
                 if self.dragobject is not None:
 
                     if isinstance(self, mdleditor.ModelEditor):
-                    
                         if (flagsmouse == 520 or flagsmouse == 1032) and view.info["viewname"] == "skinview":
                             self.dragobject.view = view
                             self.dragobject.dragto(x, y, flags | MB_DRAGGING)
@@ -1623,6 +1625,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.134  2010/05/06 05:23:02  cdunde
+#To stop Model Editor Skin-view grid from drawing when panning and zooming for smoother movement.
+#
 #Revision 1.133  2010/05/05 15:46:39  cdunde
 #To stop jerky movement in Model Editor when scrolling, panning.
 #
