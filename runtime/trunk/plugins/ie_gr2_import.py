@@ -1345,18 +1345,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
             if texturename.find("/") != -1:
                 texturename = texturename.rsplit("/", 1)[1]
             skin = quarkx.newobj(texturename)
-            ImgData = ''
-            BytesPerPixel = len(current_texture.imagedata) / (current_texture.width * current_texture.height)
-            Padding=(int(((current_texture.width * 8) + 31) / 32) * 4) - (current_texture.width * 1)
-            for y in range(current_texture.height):
-                PixelIndex = current_texture.width * (current_texture.height - y - 1)
-                for x in range(current_texture.width):
-                    PixelData = current_texture.imagedata[PixelIndex * BytesPerPixel:PixelIndex * BytesPerPixel+3]
-                    red, green, blue = struct.unpack("<3B", PixelData)
-                    ImgData += struct.pack("BBB", blue, green, red)
-                    PixelIndex += 1
-                ImgData += "\0" * Padding
-            skin['Image1'] = ImgData
+            skin['Image1'] = current_texture.imagedata
             skin['Size'] = (float(current_texture.width), float(current_texture.height))
             result += [skin]
         for current_map in current_material.maps:
@@ -2358,6 +2347,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.33  2010/05/25 05:00:44  cdunde
+# Update to import multiple model file parts with multiple bones and components with the same name.
+#
 # Revision 1.32  2010/05/24 21:49:59  cdunde
 # Update to handle models with multiple bones and components with the same name.
 #
