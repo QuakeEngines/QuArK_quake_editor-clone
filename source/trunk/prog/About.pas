@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.40  2010/04/16 22:06:01  danielpharos
+Corrected Debug wording.
+
 Revision 1.39  2010/04/16 21:50:37  danielpharos
 Oops; fixed double text.
 
@@ -322,7 +325,7 @@ var
 begin
   Version.Caption := QuarkVersion + ' ' + QuArKMinorVersion;
   {*GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, DateFormat);}
-  UsedCompilerLabel.Caption := QuArKUsedCompiler + ' at ' + DateToStr(QuArKCompileDate{*, DateFormat});
+  UsedCompilerLabel.Caption := QuArKUsedCompiler + ' on ' + DateToStr(QuArKCompileDate{*, DateFormat});
   Copyright.Caption := '  ' + QuArKCopyright;
   {$IFDEF Debug}
   Version.Caption := Version.Caption + '  DEBUG VERSION';
