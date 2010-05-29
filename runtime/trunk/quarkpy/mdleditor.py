@@ -1412,9 +1412,9 @@ def commonhandles(self, redraw=1):
         if flagsmouse == 16384:
             if isinstance(self.dragobject, mdlhandles.RectSelDragObject):
                 return
-            if isinstance(self.dragobject, qhandles.ScrollViewDragObject):
-                    self.dragobject = None
-            if isinstance(self.dragobject, qhandles.FreeZoomDragObject):
+            elif isinstance(self.dragobject, qhandles.ScrollViewDragObject):
+                self.dragobject = None
+            elif isinstance(self.dragobject, qhandles.FreeZoomDragObject):
                 self.dragobject = None
                 return
 
@@ -1498,6 +1498,19 @@ def commonhandles(self, redraw=1):
     if (currentview.info["viewname"] == "editors3Dview" or currentview.info["viewname"] == "3Dwindow") and (flagsmouse == 2064 or flagsmouse == 2080):
         return
 
+### Create EYE handles Section:
+### ===============================
+    True3Dview = None
+    if quarkx.setupsubset(SS_MODEL, "Options")['EditorTrue3Dmode'] == "1":
+        for v in self.layout.views:
+            if v.info["viewname"] == "editors3Dview":
+                True3Dview = v
+    FullTrue3Dview = None
+    if quarkx.setupsubset(SS_MODEL, "Options")['Full3DTrue3Dmode'] == "1":
+        for v in self.layout.views:
+            if v.info["viewname"] == "3Dwindow" and v.info['type'] == "3D":
+                FullTrue3Dview = v
+
 ### Draw No Handles Setting Section:
 ### ===============================
     if flagsmouse == 2056:
@@ -1514,8 +1527,72 @@ def commonhandles(self, redraw=1):
                 v.handles = []
             elif v.info["viewname"] == "3Dwindow" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] == "1":
                 v.handles = []
-
-        return
+            elif (True3Dview is not None or FullTrue3Dview is not None) and v.handles != []:
+                if True3Dview is not None and FullTrue3Dview is not None:
+                    if len(v.handles) > 3 and isinstance(v.handles[-3], mdlhandles.MdlEyeDirection) and isinstance(v.handles[-1], mdlhandles.MdlEyeDirection):
+                        handle = qhandles.EyePosition(v, True3Dview)
+                        handle.hint = "camera for the Editor 3D view"
+                        v.handles[-4] = handle
+                        handle = mdlhandles.MdlEyeDirection(v, True3Dview)
+                        handle.hint = "Editor 3D view camera direction"
+                        v.handles[-3] = handle
+                        handle = qhandles.EyePosition(v, FullTrue3Dview)
+                        handle.hint = "camera for the floating 3D view"
+                        v.handles[-2] = handle
+                        handle = mdlhandles.MdlEyeDirection(v, FullTrue3Dview)
+                        handle.hint = "floating 3D view camera direction"
+                        v.handles[-1] = handle
+                    else:
+                        handle = qhandles.EyePosition(v, True3Dview)
+                        handle.hint = "camera for the Editor 3D view"
+                        v.handles.append(handle)
+                        handle = mdlhandles.MdlEyeDirection(v, True3Dview)
+                        handle.hint = "Editor 3D view camera direction"
+                        v.handles.append(handle)
+                        handle = qhandles.EyePosition(v, FullTrue3Dview)
+                        handle.hint = "camera for the floating 3D view"
+                        v.handles.append(handle)
+                        handle = mdlhandles.MdlEyeDirection(v, FullTrue3Dview)
+                        handle.hint = "floating 3D view camera direction"
+                        v.handles.append(handle)
+                elif True3Dview is not None:
+                    if isinstance(v.handles[-1], mdlhandles.MdlEyeDirection):
+                        handle = qhandles.EyePosition(v, True3Dview)
+                        handle.hint = "camera for the Editor 3D view"
+                        v.handles[-2] = handle
+                        handle = mdlhandles.MdlEyeDirection(v, True3Dview)
+                        handle.hint = "Editor 3D view camera direction"
+                        v.handles[-1] = handle
+                    else:
+                        handle = qhandles.EyePosition(v, True3Dview)
+                        handle.hint = "camera for the Editor 3D view"
+                        v.handles.append(handle)
+                        handle = mdlhandles.MdlEyeDirection(v, True3Dview)
+                        handle.hint = "Editor 3D view camera direction"
+                        v.handles.append(handle)
+                elif FullTrue3Dview is not None:
+                    if isinstance(v.handles[-1], mdlhandles.MdlEyeDirection):
+                        handle = qhandles.EyePosition(v, FullTrue3Dview)
+                        handle.hint = "camera for the floating 3D view"
+                        v.handles[-2] = handle
+                        handle = mdlhandles.MdlEyeDirection(v, FullTrue3Dview)
+                        handle.hint = "floating 3D view camera direction"
+                        v.handles[-1] = handle
+                    else:
+                        handle = qhandles.EyePosition(v, FullTrue3Dview)
+                        handle.hint = "camera for the floating 3D view"
+                        v.handles.append(handle)
+                        handle = mdlhandles.MdlEyeDirection(v, FullTrue3Dview)
+                        handle.hint = "floating 3D view camera direction"
+                        v.handles.append(handle)
+        try:
+            if self.dragobject.handle.hint.find("Editor 3D view") != -1:
+                self.dragobject.handle = None
+                self.dragobject = None
+            else:
+                return
+        except:
+            return
 
 ### Skin-view Invalidate for Textured Views Only Section:
 ### ====================================================
@@ -1660,11 +1737,7 @@ def commonhandles(self, redraw=1):
 
 ### Draw Needed Views GrigScale and AxisIcons Section:
 ### =================================================
-    # The 3D view "eyes" IF the editor's 3D view is set to "True 3D mode" to navigate easer when needed.
-    view3D = None
     for v in self.layout.views:
-        if v.info["type"] == "3D":
-            view3D = v
         if v.info["viewname"] == "editors3Dview" or v.info["viewname"] == "3Dwindow" or v.info["viewname"] == "skinview":
             continue
         else:
@@ -1718,9 +1791,20 @@ def commonhandles(self, redraw=1):
                 else:
                     v.handles = hlist
                     cv = v.canvas()
-                    if view3D is not None:
-                        v.handles.append(qhandles.EyePosition(v, view3D))
-                        v.handles.append(mdlhandles.MdlEyeDirection(v, view3D))
+                    if True3Dview is not None:
+                        handle = qhandles.EyePosition(v, True3Dview)
+                        handle.hint = "camera for the Editor 3D view"
+                        v.handles.append(handle)
+                        handle = mdlhandles.MdlEyeDirection(v, True3Dview)
+                        handle.hint = "Editor 3D view camera direction"
+                        v.handles.append(handle)
+                    if FullTrue3Dview is not None:
+                        handle = qhandles.EyePosition(v, FullTrue3Dview)
+                        handle.hint = "camera for the floating 3D view"
+                        v.handles.append(handle)
+                        handle = mdlhandles.MdlEyeDirection(v, FullTrue3Dview)
+                        handle.hint = "floating 3D view camera direction"
+                        v.handles.append(handle)
                     for h in v.handles:
                         h.draw(v, cv, None)
                 if quarkx.setupsubset(SS_MODEL, "Options")["MAIV"] == "1":
@@ -1732,9 +1816,20 @@ def commonhandles(self, redraw=1):
                 else:
                     v.handles = hlist
                     cv = v.canvas()
-                    if view3D is not None:
-                        v.handles.append(qhandles.EyePosition(v, view3D))
-                        v.handles.append(mdlhandles.MdlEyeDirection(v, view3D))
+                    if True3Dview is not None:
+                        handle = qhandles.EyePosition(v, True3Dview)
+                        handle.hint = "camera for the Editor 3D view"
+                        v.handles.append(handle)
+                        handle = mdlhandles.MdlEyeDirection(v, True3Dview)
+                        handle.hint = "Editor 3D view camera direction"
+                        v.handles.append(handle)
+                    if FullTrue3Dview is not None:
+                        handle = qhandles.EyePosition(v, FullTrue3Dview)
+                        handle.hint = "camera for the floating 3D view"
+                        v.handles.append(handle)
+                        handle = mdlhandles.MdlEyeDirection(v, FullTrue3Dview)
+                        handle.hint = "floating 3D view camera direction"
+                        v.handles.append(handle)
                     for h in v.handles:
                         h.draw(v, cv, None)
                 if quarkx.setupsubset(SS_MODEL, "Options")["MAIV"] == "1":
@@ -1746,9 +1841,20 @@ def commonhandles(self, redraw=1):
                 else:
                     v.handles = hlist
                     cv = v.canvas()
-                    if view3D is not None:
-                        v.handles.append(qhandles.EyePosition(v, view3D))
-                        v.handles.append(mdlhandles.MdlEyeDirection(v, view3D))
+                    if True3Dview is not None:
+                        handle = qhandles.EyePosition(v, True3Dview)
+                        handle.hint = "camera for the Editor 3D view"
+                        v.handles.append(handle)
+                        handle = mdlhandles.MdlEyeDirection(v, True3Dview)
+                        handle.hint = "Editor 3D view camera direction"
+                        v.handles.append(handle)
+                    if FullTrue3Dview is not None:
+                        handle = qhandles.EyePosition(v, FullTrue3Dview)
+                        handle.hint = "camera for the floating 3D view"
+                        v.handles.append(handle)
+                        handle = mdlhandles.MdlEyeDirection(v, FullTrue3Dview)
+                        handle.hint = "floating 3D view camera direction"
+                        v.handles.append(handle)
                     for h in v.handles:
                         h.draw(v, cv, None)
                 if quarkx.setupsubset(SS_MODEL, "Options")["MAIV"] == "1":
@@ -1790,6 +1896,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.146  2010/05/26 06:38:50  cdunde
+#To draw model axis, if active, in 3D views when True3Dmode is active.
+#
 #Revision 1.145  2010/05/12 08:07:13  cdunde
 #Added Eye camera handle when in True 3D mode for easier navigation.
 #

@@ -529,10 +529,12 @@ class BaseEditor:
                                 self.dragobject = None
                     return
                 else:
-                    import mdlhandles
+                    import mdlhandles, plugins.mdlobjectmodes
+                    if flagsmouse == 16384 and isinstance(self.dragobject, plugins.mdlobjectmodes.DeactivateDragObject):
+                        self.dragobject = None
                     if quarkx.setupsubset(SS_MODEL, "Options")["MAIV"] == "1":
                         mdleditor.modelaxis(view)
-                    if flagsmouse == 16384 and (isinstance(self.dragobject, qhandles.FreeZoomDragObject) or isinstance(self.dragobject, mdlhandles.RectSelDragObject)):
+                    if flagsmouse == 16384 and self.dragobject is not None and (isinstance(self.dragobject, qhandles.FreeZoomDragObject) or isinstance(self.dragobject, mdlhandles.RectSelDragObject)):
                         self.dragobject = None
                         return
             ### Don't put back in will cause dupe draw of handles. Had to move handle drawing code
@@ -556,6 +558,8 @@ class BaseEditor:
                     import mdlmgr
                     if flagsmouse == 1056 or flagsmouse == 2056 or flagsmouse == 2080 or mdlmgr.treeviewselchanged != 0:
                         # This stops dupe handle drawing from the hintcontrol redraw section below.
+                        if flagsmouse == 2056 or flagsmouse == 2080:
+                            mdlmgr.treeviewselchanged = 0
                         return
 
                     if self.layout.hintcontrol is not None and not isinstance(self.dragobject, mdlhandles.RectSelDragObject) and not isinstance(self.dragobject, qhandles.HandleDragObject):
@@ -973,8 +977,14 @@ class BaseEditor:
 
                 if isinstance(self, mdleditor.ModelEditor):
                     if (flagsmouse == 2056 or flagsmouse == 2064 or flagsmouse == 2072 or flagsmouse == 2080):
-
                         mdleditor.commonhandles(self)
+                        try:
+                            if (isinstance(self.dragobject.handle, qhandles.EyePosition) or isinstance(self.dragobject.handle, mdlhandles.MdlEyeDirection)) and self.dragobject.handle.hint.find("floating 3D view") != -1:
+                                if view.info['viewname'] != "editors3Dview" and flagsmouse == 2056 and quarkx.setupsubset(SS_MODEL, "Options")['Full3DTrue3Dmode'] == "1":
+                                    import mdlutils
+                                    mdlutils.Update_Editor_Views(self)
+                        except:
+                            pass
                     else:
                         return
                 else:
@@ -1625,6 +1635,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.135  2010/05/26 06:38:51  cdunde
+#To draw model axis, if active, in 3D views when True3Dmode is active.
+#
 #Revision 1.134  2010/05/06 05:23:02  cdunde
 #To stop Model Editor Skin-view grid from drawing when panning and zooming for smoother movement.
 #

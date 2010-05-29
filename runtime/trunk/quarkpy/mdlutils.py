@@ -3915,10 +3915,16 @@ def Update_Editor_Views(editor, option=4):
     mdlmgr.treeviewselchanged = 1
     editorview = editor.layout.views[0]
     newhandles = mdlhandles.BuildCommonHandles(editor, editor.layout.explorer)
-    view3D = None
-    for v in editor.layout.views:
-        if v.info["type"] == "3D":
-            view3D = v
+    True3Dview = None
+    if quarkx.setupsubset(SS_MODEL, "Options")['EditorTrue3Dmode'] == "1":
+        for v in editor.layout.views:
+            if v.info["viewname"] == "editors3Dview":
+                True3Dview = v
+    FullTrue3Dview = None
+    if quarkx.setupsubset(SS_MODEL, "Options")['Full3DTrue3Dmode'] == "1":
+        for v in editor.layout.views:
+            if v.info["viewname"] == "3Dwindow" and v.info['type'] == "3D":
+                FullTrue3Dview = v
     if option == 7:
         import qbaseeditor
         from qbaseeditor import currentview
@@ -3952,9 +3958,20 @@ def Update_Editor_Views(editor, option=4):
                     v.handles = []
                 else:
                     v.handles = newhandles
-                    if view3D is not None and v.info["viewname"] != "editors3Dview" and v.info["viewname"] != "3Dwindow":
-                        v.handles.append(qhandles.EyePosition(v, view3D))
-                        v.handles.append(mdlhandles.MdlEyeDirection(v, view3D))
+                    if True3Dview is not None and v.info["viewname"] != "editors3Dview" and v.info["viewname"] != "3Dwindow":
+                        handle = qhandles.EyePosition(v, True3Dview)
+                        handle.hint = "camera for the Editor 3D view"
+                        v.handles.append(handle)
+                        handle = mdlhandles.MdlEyeDirection(v, True3Dview)
+                        handle.hint = "Editor 3D view camera direction"
+                        v.handles.append(handle)
+                    if FullTrue3Dview is not None and v.info["viewname"] != "editors3Dview" and v.info["viewname"] != "3Dwindow":
+                        handle = qhandles.EyePosition(v, FullTrue3Dview)
+                        handle.hint = "camera for the floating 3D view"
+                        v.handles.append(handle)
+                        handle = mdlhandles.MdlEyeDirection(v, FullTrue3Dview)
+                        handle.hint = "floating 3D view camera direction"
+                        v.handles.append(handle)
                 if editor.ModelFaceSelList != []:
                     mdlhandles.ModelFaceHandle(qhandles.GenericHandle).draw(editor, v, editor.EditorObjectList)
                 if v.handles is None:
@@ -4285,6 +4302,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.143  2010/05/15 07:43:26  cdunde
+#Fix for another possible error causer...how many of these do we have?!
+#
 #Revision 1.142  2010/05/14 06:12:32  cdunde
 #Needed fix, in case user deletes Misc group or components with tags, to avoid errors.
 #

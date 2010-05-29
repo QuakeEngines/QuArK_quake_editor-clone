@@ -282,15 +282,16 @@ class Rotate3DHandle(GenericHandle):
         self.center = center
         self.normal = normal
         self.icon = icon
+        if mapeditor() is not None:
+            self.editor = mapeditor()
+        else:
+            self.editor = saveeditor
 
     def draw(self, view, cv, draghandle=None):
         "Draws the camera position eye line and ball handle"
         p1, p2 = view.proj(self.center), view.proj(self.pos)
     ## To trun off camera position and eye icon in selected 3D views using Terrain Generator 3D views Options dialog button
-        if mapeditor() is not None:
-            editor = mapeditor()
-        else:
-            editor = saveeditor
+        editor = self.editor
         import mdleditor
         if isinstance(editor, mdleditor.ModelEditor):
             pass # To allow Eye ball handle to draw when needed.
@@ -339,6 +340,13 @@ class Rotate3DHandle(GenericHandle):
         self.draw1(view, cv.reset(), p1, p2, p1<p2)
 
     def draw1(self, view, cv, p1, p2, fromback):
+        editor = self.editor
+        import mdleditor
+        if isinstance(editor, mdleditor.ModelEditor):
+            if view.viewmode == "wire":
+                cv.pencolor = BLACK
+            else:
+                cv.pencolor = WHITE
         if p2.visible:
             if fromback:  # viewing from backwards
 #py2.4                cv.draw(self.icon, p2.x-8, p2.y-8)
@@ -2209,6 +2217,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.91  2010/05/12 08:07:13  cdunde
+#Added Eye camera handle when in True 3D mode for easier navigation.
+#
 #Revision 1.90  2010/05/02 06:20:26  cdunde
 #To remove Model Editor unused and duplicating handle build code causing slowdowns.
 #

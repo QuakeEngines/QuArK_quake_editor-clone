@@ -95,6 +95,58 @@ class MdlEyeDirection(qhandles.EyeDirection):
 
 
 
+def AddRemoveEyeHandles(editor, v):
+    if v.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] == "1":
+        v.handles = []
+        return
+    elif v.info["viewname"] == "XY" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles2"] == "1":
+        v.handles = []
+        return
+    elif v.info["viewname"] == "YZ" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles3"] == "1":
+        v.handles = []
+        return
+    elif v.info["viewname"] == "XZ" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles4"] == "1":
+        v.handles = []
+        return
+    elif v.info["viewname"] == "3Dwindow" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] == "1":
+        v.handles = []
+        return
+
+    True3Dview = None
+    FullTrue3Dview = None
+    for view in editor.layout.views:
+        if view.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MODEL, "Options")['EditorTrue3Dmode'] == "1":
+            True3Dview = view
+        if view.info["viewname"] == "3Dwindow" and view.info['type'] == "3D" and quarkx.setupsubset(SS_MODEL, "Options")['Full3DTrue3Dmode'] == "1":
+            FullTrue3Dview = view
+
+    while 1:
+        try:
+            if isinstance(v.handles[-1], MdlEyeDirection) or isinstance(v.handles[-1], qhandles.EyePosition):
+                del v.handles[-1]
+            else:
+                break
+        except:
+            break
+
+    if True3Dview is not None or FullTrue3Dview is not None:
+        if True3Dview is not None:
+            handle = qhandles.EyePosition(v, True3Dview)
+            handle.hint = "camera for the Editor 3D view"
+            v.handles.append(handle)
+            handle = MdlEyeDirection(v, True3Dview)
+            handle.hint = "Editor 3D view camera direction"
+            v.handles.append(handle)
+        if FullTrue3Dview is not None:
+            handle = qhandles.EyePosition(v, FullTrue3Dview)
+            handle.hint = "camera for the floating 3D view"
+            v.handles.append(handle)
+            handle = MdlEyeDirection(v, FullTrue3Dview)
+            handle.hint = "floating 3D view camera direction"
+            v.handles.append(handle)
+
+
+
 class ModelFaceHandle(qhandles.GenericHandle):
     "Model Mesh Face selection and edit."
 
@@ -2141,8 +2193,12 @@ def BuildHandles(editor, explorer, view, option=1):
         else:
             for v in editor.layout.views:
                 if (v is not view) and (v.info["type"] == "3D"):
-                    eye_handles.append(qhandles.EyePosition(view, v))
-                    eye_handles.append(MdlEyeDirection(view, v))
+                    handle = qhandles.EyePosition(view, v)
+                    handle.hint = "camera for the Editor 3D view"
+                    eye_handles.append(handle)
+                    handle = MdlEyeDirection(view, v)
+                    handle.hint = "Editor 3D view camera direction"
+                    eye_handles.append(handle)
 
     # Just in case the 'Skeleton:bg' gets deleted we need to create a new one.
     if editor.Root.dictitems.has_key("Skeleton:bg"):
@@ -5311,6 +5367,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.209  2010/05/14 06:12:32  cdunde
+#Needed fix, in case user deletes Misc group or components with tags, to avoid errors.
+#
 #Revision 1.208  2010/05/14 00:26:45  cdunde
 #Need fix, in case user deletes Skeleton group, to avoid errors and update ModelComponentList.
 #

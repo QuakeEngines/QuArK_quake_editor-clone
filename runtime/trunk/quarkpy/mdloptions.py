@@ -672,8 +672,9 @@ def SkinViewOptionsClick(m):
 def EditorTrue3Dmode(m):
     # Changes the Editor's 3D view mode from default Flat3D to True3D and back.
     global saveEDtrue3Dcamerapos, saveEDflat3Dcamerapos
-    import qeditor, qhandles
+    import qeditor, qhandles, mdlmgr
     editor = mdleditor.mdleditor
+    editor.dragobject = None
     view = None
     for v in editor.layout.views:
         if v.info['viewname'] == "editors3Dview":
@@ -686,7 +687,6 @@ def EditorTrue3Dmode(m):
         if saveEDflat3Dcamerapos is None and view.info["type"] == "2D":
             saveEDflat3Dcamerapos = [view.info["scale"], view.info["angle"], view.info["vangle"]]
         view.info["type"] = "3D"
-        view.screencenter = view.info["center"] = quarkx.vect(0,0,0)
         if saveEDtrue3Dcamerapos is None:
             view.cameraposition = (quarkx.vect(102.59, -102.15, 46.11), 2.358, 0.288)
         else:
@@ -704,7 +704,6 @@ def EditorTrue3Dmode(m):
         qhandles.flat3Dview(view, editor.layout)
         view.info["type"] = "2D"
         view.info["scale"], view.info["angle"], view.info["vangle"] = saveEDflat3Dcamerapos
-        view.screencenter = quarkx.vect(0,0,0)
         rotationmode = quarkx.setupsubset(SS_MODEL, "Options").getint("3DRotation")
         holdrotationmode = rotationmode
         rotationmode == 0
@@ -720,13 +719,21 @@ def EditorTrue3Dmode(m):
         view.info["scale"], view.info["angle"], view.info["vangle"] = saveEDflat3Dcamerapos
         view.screencenter = center
         qeditor.setprojmode(view)
+    mdlmgr.treeviewselchanged = 0
+    import mdlhandles
+    for v in editor.layout.views:
+        mdlhandles.AddRemoveEyeHandles(editor, v)
+        if v.info["viewname"] == "editors3Dview":
+            continue
+        v.repaint()
 
 
 def Full3DTrue3Dmode(m):
     # Changes the first Floating 3D view opened mode from default Flat3D to True3D and back.
     global saveFLtrue3Dcamerapos, saveFLflat3Dcamerapos
-    import qeditor, qhandles
+    import qeditor, qhandles, mdlmgr
     editor = mdleditor.mdleditor
+    editor.dragobject = None
     view = None
     for v in editor.layout.views:
         if v.info['viewname'] == "3Dwindow":
@@ -740,7 +747,6 @@ def Full3DTrue3Dmode(m):
         if saveFLflat3Dcamerapos is None and view.info["type"] == "2D":
             saveFLflat3Dcamerapos = [view.info["scale"], view.info["angle"], view.info["vangle"]]
         view.info["type"] = "3D"
-        view.screencenter = view.info["center"] = quarkx.vect(0,0,0)
         if saveFLtrue3Dcamerapos is None:
             view.cameraposition = (quarkx.vect(102.59, -102.15, 46.11), 2.358, 0.288)
         else:
@@ -758,7 +764,6 @@ def Full3DTrue3Dmode(m):
         qhandles.flat3Dview(view, editor.layout)
         view.info["type"] = "2D"
         view.info["scale"], view.info["angle"], view.info["vangle"] = saveFLflat3Dcamerapos
-        view.screencenter = quarkx.vect(0,0,0)
         rotationmode = quarkx.setupsubset(SS_MODEL, "Options").getint("3DRotation")
         holdrotationmode = rotationmode
         rotationmode == 0
@@ -774,6 +779,13 @@ def Full3DTrue3Dmode(m):
         view.info["scale"], view.info["angle"], view.info["vangle"] = saveFLflat3Dcamerapos
         view.screencenter = center
         qeditor.setprojmode(view)
+    mdlmgr.treeviewselchanged = 0
+    import mdlhandles
+    for v in editor.layout.views:
+        mdlhandles.AddRemoveEyeHandles(editor, v)
+        if v.info["viewname"] == "3Dwindow":
+            continue
+        v.repaint()
 
 
 def mMAIV(m):
@@ -859,6 +871,9 @@ def OptionsMenuRMB():
 #
 #
 #$Log$
+#Revision 1.48  2010/05/06 03:10:54  cdunde
+#Menu functions update to eliminate dupe and unnecessary redraws.
+#
 #Revision 1.47  2009/11/10 04:41:34  cdunde
 #Added option to only draw drag bones to speed up drag drawing if a lot of bones exist.
 #
