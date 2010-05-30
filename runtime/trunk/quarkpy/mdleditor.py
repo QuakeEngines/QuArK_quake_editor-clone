@@ -320,7 +320,7 @@ class ModelEditor(BaseEditor):
         " It is also used to rebuild the handles by various functions later."
         from qbaseeditor import flagsmouse, currentview
         try:
-            if flagsmouse is None:
+            if flagsmouse is None or flagsmouse == 0:
                 return
             if flagsmouse == 1032 or flagsmouse == 1048 or flagsmouse == 2072:
                 return
@@ -1585,14 +1585,7 @@ def commonhandles(self, redraw=1):
                         handle = mdlhandles.MdlEyeDirection(v, FullTrue3Dview)
                         handle.hint = "floating 3D view camera direction"
                         v.handles.append(handle)
-        try:
-            if self.dragobject.handle.hint.find("Editor 3D view") != -1:
-                self.dragobject.handle = None
-                self.dragobject = None
-            else:
-                return
-        except:
-            return
+        return
 
 ### Skin-view Invalidate for Textured Views Only Section:
 ### ====================================================
@@ -1896,6 +1889,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.147  2010/05/29 04:34:45  cdunde
+#Update for Model Editor camera EYE handles for editor and floating 3D view.
+#
 #Revision 1.146  2010/05/26 06:38:50  cdunde
 #To draw model axis, if active, in 3D views when True3Dmode is active.
 #
