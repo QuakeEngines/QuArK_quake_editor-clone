@@ -1271,7 +1271,14 @@ def refreshtimer(self):
     if isinstance(editor, mdleditor.ModelEditor):
         from qbaseeditor import flagsmouse
         if flagsmouse == 16384:
-            editor.dragobject = None
+            try:
+                import mdlhandles
+                if isinstance(editor.dragobject.handle, mdlhandles.MdlEyeDirection) or isinstance(editor.dragobject.handle, EyePosition):
+                    pass
+                else:
+                    editor.dragobject = None
+            except:
+                editor.dragobject = None
             return
         if flagsmouse != 1032:
             # This area draws the rectangle selector and view handles
@@ -2217,6 +2224,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.92  2010/05/29 04:34:45  cdunde
+#Update for Model Editor camera EYE handles for editor and floating 3D view.
+#
 #Revision 1.91  2010/05/12 08:07:13  cdunde
 #Added Eye camera handle when in True 3D mode for easier navigation.
 #
