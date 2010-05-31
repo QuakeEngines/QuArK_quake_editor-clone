@@ -292,6 +292,7 @@ class ModelEditor(BaseEditor):
         quarkx.setupsubset(SS_MODEL, "Options")['ConsoleLog'] = None
         quarkx.setupsubset(SS_MODEL, "Options")['CompColors'] = None
         quarkx.setupsubset(SS_MODEL, "Options")['VertexPaintMode'] = None
+        quarkx.setupsubset(SS_MODEL, "Options")['Full3DTrue3Dmode'] = None
 
 
     def initmenu(self, form):
@@ -1889,6 +1890,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.148  2010/05/30 23:16:14  cdunde
+#To stop multiple redraws caused in last change.
+#
 #Revision 1.147  2010/05/29 04:34:45  cdunde
 #Update for Model Editor camera EYE handles for editor and floating 3D view.
 #
