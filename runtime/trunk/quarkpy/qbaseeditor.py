@@ -977,6 +977,7 @@ class BaseEditor:
                     if (flagsmouse == 2056 or flagsmouse == 2064 or flagsmouse == 2072 or flagsmouse == 2080):
                         mdleditor.commonhandles(self)
                         try:
+                            # This section for True3Dmode end of drag.
                             if (isinstance(self.dragobject.handle, qhandles.EyePosition) or isinstance(self.dragobject.handle, mdlhandles.MdlEyeDirection)) and self.dragobject.handle.hint.find("floating 3D view") != -1:
                                 if view.info['viewname'] != "editors3Dview" and flagsmouse == 2056 and quarkx.setupsubset(SS_MODEL, "Options")['Full3DTrue3Dmode'] == "1":
                                     import mdlutils
@@ -1228,25 +1229,32 @@ class BaseEditor:
                     else:
                         self.dragobject.dragto(x, y, flags)
             if isinstance(self, mdleditor.ModelEditor):
-                if quarkx.setupsubset(SS_MODEL, "Options")["EditorTrue3Dmode"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")["Full3DTrue3Dmode"] == "1":
-                    print "qbaseeditor line 1235 flags", flags
-                    if view.info["viewname"] == "editors3Dview" or view.info["viewname"] == "3Dwindow":
-                        view.repaint()
-                        if self.ModelFaceSelList != [] and quarkx.setupsubset(SS_MODEL, "Options")['MAIV'] != "1":
-                            mdlhandles.ModelFaceHandle(qhandles.GenericHandle).draw(self, view, self.EditorObjectList)
-                    else:
-                        try:
-                            for v in self.layout.views:
-                                if v.info["viewname"] == "editors3Dview" and self.dragobject.handle.hint.find("Editor 3D view") != -1:
-                                    v.repaint()
-                                    if self.ModelFaceSelList != [] and quarkx.setupsubset(SS_MODEL, "Options")['MAIV'] != "1":
-                                        mdlhandles.ModelFaceHandle(qhandles.GenericHandle).draw(self, v, self.EditorObjectList)
-                                elif v.info["viewname"] == "3Dwindow" and self.dragobject.handle.hint.find("floating 3D view") != -1:
-                                    v.repaint()
-                                    if self.ModelFaceSelList != [] and quarkx.setupsubset(SS_MODEL, "Options")['MAIV'] != "1":
-                                        mdlhandles.ModelFaceHandle(qhandles.GenericHandle).draw(self, v, self.EditorObjectList)
-                        except:
-                            pass
+                # This section for True3Dmode drags.
+                try:
+                    if flagsmouse != 1048 and quarkx.setupsubset(SS_MODEL, "Options")["EditorTrue3Dmode"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")["Full3DTrue3Dmode"] == "1":
+                        if view.info["viewname"] == "editors3Dview" or view.info["viewname"] == "3Dwindow":
+                            view.repaint()
+                            if isinstance(self.dragobject.handle, mdlhandles.LinRedHandle):
+                                self.dragobject.handle.drawred(None, view, mdlhandles.drag3Dlines)
+                            elif isinstance(self.dragobject.handle, mdlhandles.VertexHandle):
+                                self.dragobject.handle.drag(self.dragobject.handle.pos, view.space(x,y,view.proj(view.info["center"]).z), flagsmouse, view)
+                            if self.ModelFaceSelList != [] and quarkx.setupsubset(SS_MODEL, "Options")['MAIV'] != "1":
+                                mdlhandles.ModelFaceHandle(qhandles.GenericHandle).draw(self, view, self.EditorObjectList)
+                        else:
+                            try:
+                                for v in self.layout.views:
+                                    if v.info["viewname"] == "editors3Dview" and self.dragobject.handle.hint.find("Editor 3D view") != -1:
+                                        v.repaint()
+                                        if self.ModelFaceSelList != [] and quarkx.setupsubset(SS_MODEL, "Options")['MAIV'] != "1":
+                                            mdlhandles.ModelFaceHandle(qhandles.GenericHandle).draw(self, v, self.EditorObjectList)
+                                    elif v.info["viewname"] == "3Dwindow" and self.dragobject.handle.hint.find("floating 3D view") != -1:
+                                        v.repaint()
+                                        if self.ModelFaceSelList != [] and quarkx.setupsubset(SS_MODEL, "Options")['MAIV'] != "1":
+                                            mdlhandles.ModelFaceHandle(qhandles.GenericHandle).draw(self, v, self.EditorObjectList)
+                            except:
+                                pass
+                except:
+                    pass
                 try:
                     if self.dragobject.hint is not None:
                         self.showhint(self.dragobject.hint)
@@ -1649,6 +1657,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.137  2010/05/30 23:16:15  cdunde
+#To stop multiple redraws caused in last change.
+#
 #Revision 1.136  2010/05/29 04:34:45  cdunde
 #Update for Model Editor camera EYE handles for editor and floating 3D view.
 #

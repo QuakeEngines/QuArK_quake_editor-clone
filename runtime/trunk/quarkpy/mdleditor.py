@@ -321,7 +321,7 @@ class ModelEditor(BaseEditor):
         " It is also used to rebuild the handles by various functions later."
         from qbaseeditor import flagsmouse, currentview
         try:
-            if flagsmouse is None or flagsmouse == 0:
+            if flagsmouse is None:
                 return
             if flagsmouse == 1032 or flagsmouse == 1048 or flagsmouse == 2072:
                 return
@@ -1890,6 +1890,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.149  2010/05/31 06:27:34  cdunde
+#Added item to be cleared when closing editor.
+#
 #Revision 1.148  2010/05/30 23:16:14  cdunde
 #To stop multiple redraws caused in last change.
 #
