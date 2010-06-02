@@ -584,8 +584,16 @@ class EyeDirection(Rotate3DHandle):
 
     def __init__(self, view, view3D):
         self.camera = view3D.cameraposition
-        forward = angles2vec1(self.camera[2] * rad2deg, self.camera[1] * rad2deg, 0) 
-        Rotate3DHandle.__init__(self, self.camera[0], forward, view.scale(), mapicons[12])
+        forward = angles2vec1(self.camera[2] * rad2deg, self.camera[1] * rad2deg, 0)
+        if mapeditor() is not None:
+            editor = mapeditor()
+        else:
+            editor = saveeditor
+        import mdleditor
+        if isinstance(editor, mdleditor.ModelEditor):
+            Rotate3DHandle.__init__(self, self.camera[0], forward, view.info['scale'], mapicons[12])
+        else:
+            Rotate3DHandle.__init__(self, self.camera[0], forward, view.scale(), mapicons[12])
         self.view3D = view3D
         self.view = view
         if self.view.info["type"] == "3D" and self.view.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons1"] == "1" or self.view.info["type"] == "3D" and self.view.info["viewname"] == "3Dwindow" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons2"] == "1":
@@ -2224,6 +2232,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.93  2010/05/31 06:29:01  cdunde
+#Fix for Model Editor Eye handle causing multi redraws if quick move is made.
+#
 #Revision 1.92  2010/05/29 04:34:45  cdunde
 #Update for Model Editor camera EYE handles for editor and floating 3D view.
 #

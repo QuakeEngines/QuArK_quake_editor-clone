@@ -687,6 +687,7 @@ def EditorTrue3Dmode(m):
         if saveEDflat3Dcamerapos is None and view.info["type"] == "2D":
             saveEDflat3Dcamerapos = [view.info["scale"], view.info["angle"], view.info["vangle"]]
         view.info["type"] = "3D"
+        view.scale()
         if saveEDtrue3Dcamerapos is None:
             view.cameraposition = (quarkx.vect(102.59, -102.15, 46.11), 2.358, 0.288)
         else:
@@ -703,6 +704,7 @@ def EditorTrue3Dmode(m):
             saveEDflat3Dcamerapos = [view.info["scale"], view.info["angle"], view.info["vangle"]]
         qhandles.flat3Dview(view, editor.layout)
         view.info["type"] = "2D"
+        view.scale()
         view.info["scale"], view.info["angle"], view.info["vangle"] = saveEDflat3Dcamerapos
         rotationmode = quarkx.setupsubset(SS_MODEL, "Options").getint("3DRotation")
         holdrotationmode = rotationmode
@@ -747,6 +749,7 @@ def Full3DTrue3Dmode(m):
         if saveFLflat3Dcamerapos is None and view.info["type"] == "2D":
             saveFLflat3Dcamerapos = [view.info["scale"], view.info["angle"], view.info["vangle"]]
         view.info["type"] = "3D"
+        view.scale()
         if saveFLtrue3Dcamerapos is None:
             view.cameraposition = (quarkx.vect(102.59, -102.15, 46.11), 2.358, 0.288)
         else:
@@ -763,6 +766,7 @@ def Full3DTrue3Dmode(m):
             saveFLflat3Dcamerapos = [view.info["scale"], view.info["angle"], view.info["vangle"]]
         qhandles.flat3Dview(view, editor.layout)
         view.info["type"] = "2D"
+        view.scale()
         view.info["scale"], view.info["angle"], view.info["vangle"] = saveFLflat3Dcamerapos
         rotationmode = quarkx.setupsubset(SS_MODEL, "Options").getint("3DRotation")
         holdrotationmode = rotationmode
@@ -871,6 +875,9 @@ def OptionsMenuRMB():
 #
 #
 #$Log$
+#Revision 1.49  2010/05/29 04:34:45  cdunde
+#Update for Model Editor camera EYE handles for editor and floating 3D view.
+#
 #Revision 1.48  2010/05/06 03:10:54  cdunde
 #Menu functions update to eliminate dupe and unnecessary redraws.
 #

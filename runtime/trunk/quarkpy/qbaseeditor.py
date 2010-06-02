@@ -978,10 +978,16 @@ class BaseEditor:
                         mdleditor.commonhandles(self)
                         try:
                             # This section for True3Dmode end of drag.
-                            if (isinstance(self.dragobject.handle, qhandles.EyePosition) or isinstance(self.dragobject.handle, mdlhandles.MdlEyeDirection)) and self.dragobject.handle.hint.find("floating 3D view") != -1:
-                                if view.info['viewname'] != "editors3Dview" and flagsmouse == 2056 and quarkx.setupsubset(SS_MODEL, "Options")['Full3DTrue3Dmode'] == "1":
+                            if (isinstance(self.dragobject.handle, qhandles.EyePosition) or isinstance(self.dragobject.handle, mdlhandles.MdlEyeDirection)) and flagsmouse == 2056:
+                                if view.info['viewname'] != "editors3Dview" and quarkx.setupsubset(SS_MODEL, "Options")['Full3DTrue3Dmode'] == "1" and self.dragobject.handle.hint.find("floating 3D view") != -1:
                                     import mdlutils
                                     mdlutils.Update_Editor_Views(self)
+                                elif flagsmouse == 2056:
+                                    if view.info.has_key("timer"):
+                                        pass
+                                    else:
+                                        flagsmouse = 16384
+                                        mdleditor.commonhandles(self)
                         except:
                             pass
                     else:
@@ -1657,6 +1663,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.138  2010/05/31 21:10:50  cdunde
+#Fix for Model Editor Eye handle drags lines not drawing when drag is paused.
+#
 #Revision 1.137  2010/05/30 23:16:15  cdunde
 #To stop multiple redraws caused in last change.
 #
