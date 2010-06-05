@@ -939,19 +939,13 @@ class ModelLayout(BaseLayout):
                         view.invalidate(1)
                 self.explorer.invalidate()
 
-            #  Handles the displaying of the 'UV Vertex Colors', if any, for the components.
+            # Handles the displaying of the 'UV Vertex Colors', if any, for the components.
             if self.editor.Root.currentcomponent.dictspec.has_key("show_vtx_color") and check_show_vtx_color is None:
                 check_show_vtx_color = self.editor.Root.currentcomponent.dictspec['show_vtx_color']
-                if treeviewselchanged == 1:
-                    treeviewselchanged = 0
-                for v in self.editor.layout.views:
-                    v.invalidate()
+                self.editor.explorerselchange(self.editor)
             elif not self.editor.Root.currentcomponent.dictspec.has_key("show_vtx_color") and check_show_vtx_color is not None:
                 check_show_vtx_color = None
-                if treeviewselchanged == 1:
-                    treeviewselchanged = 0
-                for v in self.editor.layout.views:
-                    v.invalidate()
+                self.editor.explorerselchange(self.editor)
 
             #  Handles the special selection mode of bones for 'Vertex Weight Colors' for the components and the bones, if any.
             if selitem.type == ":bone":
@@ -981,16 +975,10 @@ class ModelLayout(BaseLayout):
 
             if self.editor.Root.currentcomponent.dictspec.has_key("show_weight_color") and check_show_weight_color is None:
                 check_show_weight_color = self.editor.Root.currentcomponent.dictspec['show_weight_color']
-                if treeviewselchanged == 1:
-                    treeviewselchanged = 0
-                for v in self.editor.layout.views:
-                    v.invalidate()
+                self.editor.explorerselchange(self.editor)
             elif not self.editor.Root.currentcomponent.dictspec.has_key("show_weight_color") and check_show_weight_color is not None:
                 check_show_weight_color = None
-                if treeviewselchanged == 1:
-                    treeviewselchanged = 0
-                for v in self.editor.layout.views:
-                    v.invalidate()
+                self.editor.explorerselchange(self.editor)
 
             # Handles the auto appling and saving of vertex weights, for the components and the bones, if the linear handle is use to select them.
             if selitem.type == ":bone":
@@ -1900,6 +1888,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.123  2010/05/14 00:26:45  cdunde
+#Need fix, in case user deletes Skeleton group, to avoid errors and update ModelComponentList.
+#
 #Revision 1.122  2010/05/01 09:09:53  cdunde
 #To fix broken .md3 CFG Animation switching while animating.
 #

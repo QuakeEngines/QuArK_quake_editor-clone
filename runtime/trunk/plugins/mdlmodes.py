@@ -1004,8 +1004,7 @@ def OptionsViewsClick(m):
         self.src["fillmesh5"] = fivefillmesh
         self.src["fillColor5"] = fivefillColor
 
-        import quarkpy.mdlmgr
-        quarkpy.mdlutils.Update_Editor_Views(editor)
+        editor.explorerselchange(editor)
 
 
     def onclosing(self,editor=editor):
@@ -1080,6 +1079,10 @@ Lock_Z.state = int(quarkx.setupsubset(SS_MODEL, "Options")["setLock_Z"])
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.25  2010/05/01 04:25:37  cdunde
+# Updated files to help increase editor speed by including necessary ModelComponentList items
+# and removing redundant checks and calls to the list.
+#
 # Revision 1.24  2008/05/01 19:15:25  danielpharos
 # Fix treeviewselchanged not updating.
 #
