@@ -2873,6 +2873,8 @@ def assign_release_vertices(editor, bone, comp, vtxsellist):
                 for key in vertex_list_keys:
                     if key == new_bone.name:
                         del vertex_list[key]
+                if len(vertex_list) == 0:
+                    del Old_dictionary_list[vertex_index]
                 import mdlmgr # Import needs to be here to avoid error.
                 from mdlmgr import treeviewselchanged
                 mdlmgr.treeviewselchanged = 1
@@ -4302,6 +4304,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.144  2010/05/29 04:34:45  cdunde
+#Update for Model Editor camera EYE handles for editor and floating 3D view.
+#
 #Revision 1.143  2010/05/15 07:43:26  cdunde
 #Fix for another possible error causer...how many of these do we have?!
 #
