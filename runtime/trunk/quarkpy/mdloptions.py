@@ -727,7 +727,7 @@ def EditorTrue3Dmode(m):
         mdlhandles.AddRemoveEyeHandles(editor, v)
         if v.info["viewname"] == "editors3Dview":
             continue
-        v.repaint()
+    editor.explorerselchange(editor)
 
 
 def Full3DTrue3Dmode(m):
@@ -789,7 +789,7 @@ def Full3DTrue3Dmode(m):
         mdlhandles.AddRemoveEyeHandles(editor, v)
         if v.info["viewname"] == "3Dwindow":
             continue
-        v.repaint()
+    editor.explorerselchange(editor)
 
 
 def mMAIV(m):
@@ -875,6 +875,9 @@ def OptionsMenuRMB():
 #
 #
 #$Log$
+#Revision 1.50  2010/06/02 21:23:38  cdunde
+#Fixes for Model Editor Eye position handle.
+#
 #Revision 1.49  2010/05/29 04:34:45  cdunde
 #Update for Model Editor camera EYE handles for editor and floating 3D view.
 #
