@@ -585,10 +585,10 @@ class ModelEditor(BaseEditor):
 
         mdlmgr.savefacesel = 1
         skipbuild = 0
-        if qbaseeditor.flagsmouse == 1032:
+        if flagsmouse == 1032:
             return
         try:
-            if (qbaseeditor.flagsmouse == 520) or (qbaseeditor.flagsmouse == 16384 and isinstance(self.dragobject.handle, mdlhandles.BoneCornerHandle)):
+            if (flagsmouse == 520) or (flagsmouse == 16384 and isinstance(self.dragobject.handle, mdlhandles.BoneCornerHandle)):
                 skipbuild = 1
         except:
             pass
@@ -1890,6 +1890,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.150  2010/05/31 21:10:50  cdunde
+#Fix for Model Editor Eye handle drags lines not drawing when drag is paused.
+#
 #Revision 1.149  2010/05/31 06:27:34  cdunde
 #Added item to be cleared when closing editor.
 #
