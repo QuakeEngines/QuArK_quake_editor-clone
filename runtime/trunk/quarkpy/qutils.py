@@ -583,7 +583,7 @@ def SetupChanged(level):
         import mdleditor
         if isinstance(mdleditor.mdleditor, mdleditor.ModelEditor):
             import mdlmgr
-            mdlmgr.treeviewselchanged = 1
+            mdlmgr.treeviewselchanged = 0
         for s in SetupRoutines:
             s(level)
     except:
@@ -901,6 +901,9 @@ def sortdictionary(dictionary):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.52  2009/11/28 15:48:15  danielpharos
+#Added a comment explaining some flags a bit.
+#
 #Revision 1.51  2009/09/07 01:38:45  cdunde
 #Setup of tag menus and icons.
 #

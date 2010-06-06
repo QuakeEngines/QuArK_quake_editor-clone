@@ -272,6 +272,8 @@ class BaseLayout:
             quarkpy.qhandles.flat3Dview(view, self)
             del view.info["noclick"]
             view.info["viewname"]="3Dwindow"
+            import mdlmgr, mdlhandles
+            mdlmgr.treeviewselchanged = 0
 
         setprojmode(view)
         self.editor.setupview(view)
@@ -295,7 +297,7 @@ class BaseLayout:
         if not (view in self.views):
             self.views.append(view)
             if self.editor.MODE == 3:
-                pass
+                mdlhandles.AddRemoveEyeHandles(self.editor, view)
             else:
                 self.update3Dviews(view)
         BaseLayout.Floating3DWindows.append(floating)
@@ -632,6 +634,9 @@ class MPPage:
 #
 #
 #$Log$
+#Revision 1.36  2010/05/12 08:07:13  cdunde
+#Added Eye camera handle when in True 3D mode for easier navigation.
+#
 #Revision 1.35  2010/04/07 21:12:12  cdunde
 #To fix crash from pervious update change when switching editors without closing QuArK.
 #
