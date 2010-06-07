@@ -933,13 +933,6 @@ def WeightsClick(editor):
             else:
                 src[key] = quarkx.setupsubset(SS_MODEL, "Options")["vtx_" + key]
                 src[key] = "%.2f"%(float(src[key]))
-                vtx, bone = key.split("_", 1)
-                try: # Need this to avoid an error in case we are in "Face mode"
-                     # which means the bones are being hidden, thus causing an error.
-                    weight_value = weightvtxlist[int(vtx)][bone + ":bone"]['weight_value'] = round(float(src[key]), 2)
-                    weightvtxlist[int(vtx)][bone + ":bone"]['color'] = weights_color(editor, weight_value)
-                except:
-                    pass
 
     def action(self, editor=editor):
         comp = editor.Root.currentcomponent
@@ -959,6 +952,7 @@ def WeightsClick(editor):
         else:
             self.src["page_changer"] = str(WeightsDlgPage + 1)
 
+        weightvtxlist = editor.ModelComponentList[comp.name]['weightvtxlist']
         for key in self.SRCsList.keys():
             if not (self.src[key] is None):
                 vtxkey =  float(self.src[key])
@@ -979,6 +973,20 @@ def WeightsClick(editor):
                     vtxkey = 0.01
                 quarkx.setupsubset(SS_MODEL, "Options")["vtx_" + key] = str(vtxkey)
                 self.src[key] = quarkx.setupsubset(SS_MODEL, "Options")["vtx_" + key]
+                vtx, bonename = key.split("_", 1)
+                vtx = int(vtx)
+                bonename = bonename + ":bone"
+                if weightvtxlist[vtx][bonename]['weight_value'] != vtxkey:
+                    try: # Need this to avoid an error in case we are in "Face mode"
+                         # which means the bones are being hidden, thus causing an error.
+                        weight_value = weightvtxlist[vtx][bonename]['weight_value'] = vtxkey
+                        weightvtxlist[vtx][bonename]['color'] = weights_color(editor, weight_value)
+                        for v in editor.layout.views:
+                            cv = v.canvas()
+                            h = v.handles[vtx]
+                            h.draw(v, cv, h)
+                    except:
+                        pass
 
     def onclosing(self, editor=editor):
         prev_comp = self.src["comp_name"]
@@ -2985,6 +2993,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.74  2010/05/14 06:12:32  cdunde
+#Needed fix, in case user deletes Misc group or components with tags, to avoid errors.
+#
 #Revision 1.73  2010/05/14 00:26:45  cdunde
 #Need fix, in case user deletes Skeleton group, to avoid errors and update ModelComponentList.
 #
