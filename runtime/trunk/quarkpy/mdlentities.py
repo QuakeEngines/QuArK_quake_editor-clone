@@ -716,7 +716,9 @@ def UseVertexWeightsSpecifics():
                              Typ = "X"
                              Txt = "auto apply changes"
                              Hint = "When checked, applies all bone weight settings for any currently or"$0D
-                                    "additional selected vertexes using the linear handle or applied by the paint brush."
+                                    "additional selected vertexes using the linear handle or applied by the paint brush."$0D0D
+                                    "Weight changes made using the 'Vertex Weights Dialog' settings"$0D
+                                    "will be made automatically if its 'auto save' option box is checked."
                             }
     """
 
@@ -889,19 +891,27 @@ def WeightsClick(editor):
                     "This will also place them on the"$0D
                     "'undo' list for easy interval reversal."$0D
                     "If you wish to save all changes as they are made"$0D
-                    "check the option 'auto apply changes' on the Bones Specific Page."$0D
-                    "After an 'undo' you MUST click the"$0D
-                    "'update dialog' button to reload the old settings."
+                    "from this dialog check the option 'auto save'."$0D0D
+                    "To change the weight values of a group of vertexes for a bone at one"$0D
+                    "time check the option 'auto apply change' on the Bones Specific Page"$0D
+                    "and either use the 'Paint brush' or do a 'LMB'"$0D
+                    "linear handle drag to select them."$0D
+                    "After an 'undo' you MUST click the 'update dialog'"$0D
+                    "button to reload the old settings."$0D0D
+                    "When this dialog is closed it will save all data anyway."
              Cap = "apply changes"
             }
          auto_save_weights: =
             {
              Typ = "X"
              Txt = "auto save"
-             Hint = "When checked, all displayed settings will be saved"$0D
-                    "when ever this dialog is closed or switches components only."$0D
-                    "To constantly save changes, once they are made, check the"$0D
-                    "'auto apply changes' option on the Bones Specific Page."
+             Hint = "When checked, all settings that are changed using"$0D
+                    "this dialog will be saved as they are made."$0D
+                    "With large models this can slow down"$0D
+                    "the editor's response time dramatically."$0D
+                    "If so, un-check this option and use the"$0D
+                    "'apply changes' button above when desired."$0D0D
+                    "When this dialog is closed it will save all data anyway."
             }
          sep: = { Typ = "S" Txt = ""}
          exit:py = {Txt = "" }
@@ -985,6 +995,9 @@ def WeightsClick(editor):
                             cv = v.canvas()
                             h = v.handles[vtx]
                             h.draw(v, cv, h)
+                        # Saves the ModelComponentList to "pickle" and updates the editor's 'ModelComponentList:sd' data.
+                        if comp.dictspec.has_key("auto_save_weights") and comp.dictspec["auto_save_weights"] == "0":
+                            editor.Root.dictitems['ModelComponentList:sd']['data'] = FlattenModelComponentList(editor)
                     except:
                         pass
 
@@ -2993,6 +3006,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.75  2010/06/07 00:06:29  cdunde
+#Changed method of updating vertex weight by dialog setting to make it more responsive and isolated.
+#
 #Revision 1.74  2010/05/14 06:12:32  cdunde
 #Needed fix, in case user deletes Misc group or components with tags, to avoid errors.
 #

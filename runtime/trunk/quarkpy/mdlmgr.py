@@ -1779,15 +1779,6 @@ class ModelLayout(BaseLayout):
                 # Just in case the 'Skeleton:bg' gets deleted we need to create a new one.
                 clearbones(self.editor, "deleted Skeleton group replaced")
 
-            # Updates the editor.ModelComponentList
-            if self.editor.Root.dictitems.has_key('ModelComponentList:sd') and treeviewselchanged != 0:
-                if quarkx.setupsubset(SS_MODEL, "Options")['VertexPaintMode'] == "1" and self.editor.Root.currentcomponent.dictspec.has_key("auto_save_weights") and self.editor.Root.currentcomponent.dictspec["auto_save_weights"] == "1":
-                    # Added because line in else section using OLD ModelComponentList data killing new weight settings made.
-                    FlattenModelComponentList(self.editor)
-                else:
-                    # Needs to be this way or assigned vertexes will not draw their respective bone handle color.
-                    UnflattenModelComponentList(self.editor, self.editor.Root.dictitems['ModelComponentList:sd']['data'])
-
             # Updates the models textures in the Texture Browser's 'Used Textures' to be displayed.
             self.putskinsintexturebrowser()
         fs = None
@@ -1888,6 +1879,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.124  2010/06/05 21:43:44  cdunde
+#Fix to update dialog and specifics page before redrawing views and draw fillcolors correctly.
+#
 #Revision 1.123  2010/05/14 00:26:45  cdunde
 #Need fix, in case user deletes Skeleton group, to avoid errors and update ModelComponentList.
 #
