@@ -196,6 +196,9 @@ class ModelEditor(BaseEditor):
         Root = self.fileobject.findname(Root)
         self.Root = Root
         if self.Root.currentcomponent is None and self.Root.name.endswith(":mr"):
+            if self.Root.dictitems.has_key("ModelComponentList:sd"):
+                datastream = self.Root.dictitems['ModelComponentList:sd']['data'].replace('"$0A"', '\r\n')
+                UnflattenModelComponentList(self, datastream)
             componentnames = []
             for item in self.Root.dictitems:
                 if item.endswith(":mc"):
@@ -1890,6 +1893,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.151  2010/06/06 04:44:39  cdunde
+#Correction of function call.
+#
 #Revision 1.150  2010/05/31 21:10:50  cdunde
 #Fix for Model Editor Eye handle drags lines not drawing when drag is paused.
 #
