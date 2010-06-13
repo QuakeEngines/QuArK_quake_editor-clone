@@ -1237,6 +1237,7 @@ class mdl_obj: # Done cdunde
     attachments = []
     bodyparts = []
     frames = []
+    anim_seqs_data = []
 
     texture_info = None
     tex_coords = []
@@ -1254,6 +1255,7 @@ class mdl_obj: # Done cdunde
         self.attachments = []       # A list of the attachments.
         self.bodyparts = []         # A list of the bodyparts.
         self.frames = []            # A list of the animation frames.
+        self.anim_seqs_data = []    # A list of the animation sequences sub-list of seq_pivots, seq_panims, seq_frames from SetUpBones function.
 
         self.tex_coords = []        # A list of integers, 1 for "onseam" and 2 for the s,t or u,v texture coordinates.
         self.faces = []             # A list of the triangles.
@@ -1500,6 +1502,7 @@ class mdl_obj: # Done cdunde
         # Create the bones, if any.
         QuArK_bones = [] # A list to store all QuArK bones created.
         if len(self.bones) != 0 and len(ComponentList) != 0:
+            org = self.anim_seqs_data[0][0][0].org
             for mdlbone in xrange(len(self.bones)):
                 bone = self.bones[mdlbone]
                 new_bone = quarkx.newobj(folder_name + "_" + bone.name + ":bone")
@@ -2248,6 +2251,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".mdl Half-Life Importer", ".mdl file", "*.
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.4  2010/06/13 15:37:55  cdunde
+# Setup Model Editor to allow importing of model from main explorer File menu.
+#
 # Revision 1.3  2010/05/01 07:16:40  cdunde
 # Update by DanielPharos to allow removal of weight_index storage in the ModelComponentList related files.
 #
