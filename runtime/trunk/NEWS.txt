@@ -14,6 +14,8 @@ $Id$
 
 6.6.0 Beta 4
 ============
+* [DanielPharos/cdunde]: Setup Model Editor to allow importing of model from main explorer File menu.
+
 * [DanielPharos/cdunde]: Massive improvement in material texture handling and animations.
 
 * [DanielPharos/cdunde]: Added imbedded skin importing for .gr2 models.
