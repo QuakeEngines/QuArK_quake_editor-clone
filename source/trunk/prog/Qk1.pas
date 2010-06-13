@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.89  2010/04/16 21:18:45  danielpharos
+Move some version-stuff about. quarkpy now also checks the minor version number.
+
 Revision 1.88  2010/04/04 13:38:54  danielpharos
 Added additional logging.
 
@@ -2658,17 +2661,12 @@ end;
 procedure TForm1.MdlImportFrom1Item1Click(Sender: TObject);
 var
   s: PyObject;
-  Q: QObject;
 begin
  s:=Nil;
  try
   with Sender as TMenuItem do
    s:=PyString_FromString(PChar(Caption));
   if s=Nil then Exit;
-  News1Click(Sender);
-  Q:=QQuakeCtx.Create('Game Directories', NeedExplorerRoot);
-  Q.Flags := Q.Flags or ofTreeViewSubElement;
-  NeedExplorerRoot.Subelements.Add(Q);
   CallMacro(s, 'mdl_pythonimporter');
  finally
   Py_XDECREF(s);
