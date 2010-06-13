@@ -44,6 +44,11 @@ class ModelEditor(BaseEditor):
     findtargetdlg = None
     bone_frame = 0
 
+    def __init__(self, form, file=None, filename=None):
+        self.file = file
+        self.filename = filename
+        if form is not None:
+            BaseEditor.__init__(self, form)
 
     ### Different lists of the Model Editor.
     ###|--- contence ---|-------- format -------|----------------------- discription -----------------------|
@@ -170,7 +175,10 @@ class ModelEditor(BaseEditor):
     def OpenRoot(self):
         global mdleditor
         mdleditor = self
-        self.ModelComponentList = {'bonelist': {}, 'tristodraw': {}}
+        if self.ModelComponentList.has_key('bonelist'):
+            pass
+        else:
+            self.ModelComponentList = {'bonelist': {}, 'tristodraw': {}}
 
         setup = quarkx.setupsubset(self.MODE, "Display")
         self.skingridstep, = setup["SkinGridStep"]
@@ -192,9 +200,9 @@ class ModelEditor(BaseEditor):
             self.animationIPF = 0
 
         Root = self.fileobject['Root']
-     #   if Root is not None: # If you have to open a model to open the Model Editor, how could it be None?
         Root = self.fileobject.findname(Root)
         self.Root = Root
+
         if self.Root.currentcomponent is None and self.Root.name.endswith(":mr"):
             if self.Root.dictitems.has_key("ModelComponentList:sd"):
                 datastream = self.Root.dictitems['ModelComponentList:sd']['data'].replace('"$0A"', '\r\n')
@@ -207,7 +215,8 @@ class ModelEditor(BaseEditor):
                     if not self.Root.dictitems.has_key("ModelComponentList:sd"):
                         ### Creates the editor.ModelComponentList 'tristodraw' dictionary list for the "component" sent to this function.
                         make_tristodraw_dict(self, comp)
-                        self.ModelComponentList[comp.name] = {'bonevtxlist': {}, 'colorvtxlist': {}, 'weightvtxlist': {}}
+                        if not self.ModelComponentList.has_key(comp.name):
+                            self.ModelComponentList[comp.name] = {'bonevtxlist': {}, 'colorvtxlist': {}, 'weightvtxlist': {}}
 
             componentnames.sort()
         try:
@@ -1893,6 +1902,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.152  2010/06/09 18:37:39  cdunde
+#Fix to allow Model Editor to load .qkl files properly and create the ModelComponentList.
+#
 #Revision 1.151  2010/06/06 04:44:39  cdunde
 #Correction of function call.
 #

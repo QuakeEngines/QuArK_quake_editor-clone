@@ -48,14 +48,6 @@ def runimporter(m):
     if len(files) != 0:
         mdlf[1](None, files[0], None)
 
-    ### Line below will load the model.
-  #  editor.Root = mdlf[1](None, files[0], None)
-  #  print "mdlmenus line 52 Root",editor.Root
-  #  model = mdlf[1](None, files[0], None)
-  #  editor.Root.appenditem(model)
-  #  for view in editor.layout.views:
-  #      view.drawmap(model)
-
 def runexporter(m):
     from qmacro import mdlexport
     try:
@@ -435,6 +427,9 @@ def BaseMenu(sellist, editor):
 #
 #
 #$Log$
+#Revision 1.50  2010/05/04 05:30:52  cdunde
+#Added new function to rescale Skin-view handles to current skin texture size.
+#
 #Revision 1.49  2009/11/10 22:49:55  cdunde
 #Added update to fix broken RMB menu.
 #

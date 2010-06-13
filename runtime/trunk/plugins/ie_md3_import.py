@@ -25,7 +25,6 @@ Info = {
 import os, struct, math
 import quarkx
 from quarkpy.qutils import *
-import quarkpy.mdleditor
 import ie_utils
 from ie_utils import tobj
 from quarkpy.qdictionnary import Strings
@@ -885,7 +884,19 @@ def loadmodel(root, filename, gamename, nomessage=0):
     "For example:  C:\Quake 3 Arena\baseq3\models\mapobjects\banner\banner5.md3"
 
     global editor, basepath
+    import quarkpy.mdleditor
     editor = quarkpy.mdleditor.mdleditor
+    # Step 1 to import model from QuArK's Explorer.
+    if editor is None:
+        editor = quarkpy.mdleditor.ModelEditor(None)
+        editor.Root = quarkx.newobj('Model Root:mr')
+        misc_group = quarkx.newobj('Misc:mg')
+        misc_group['type'] = chr(6)
+        editor.Root.appenditem(misc_group)
+        skeleton_group = quarkx.newobj('Skeleton:bg')
+        skeleton_group['type'] = chr(5)
+        editor.Root.appenditem(skeleton_group)
+        editor.form = None
 
     ### First we test for a valid (proper) model path.
     basepath = ie_utils.validpath(filename)
@@ -916,7 +927,8 @@ def loadmodel(root, filename, gamename, nomessage=0):
     # FolderPath is the full path to the model's folder w/o slash at end.
     FolderPath = FullPathName.rsplit("/", 1)[0]
 
-    undo = quarkx.action()
+    if editor.form is not None:
+        undo = quarkx.action()
     editor_dictitems = editor.Root.dictitems
     miscgroup = editor_dictitems['Misc:mg'].subitems
     old_torso_tag_frames = new_torso_tag_frames = old_tag_subitems = None
@@ -958,7 +970,10 @@ def loadmodel(root, filename, gamename, nomessage=0):
     # Start importing the tags and making the animation frames.
     for tag in range(len(tagsgroup)):
         if len(miscgroup) == 0:
-            undo.put(editor_dictitems['Misc:mg'], tagsgroup[tag])
+            if editor.form is not None:
+                undo.put(editor_dictitems['Misc:mg'], tagsgroup[tag])
+            else:
+                editor_dictitems['Misc:mg'].appenditem(tagsgroup[tag])
         for item in range(len(miscgroup)):
             if tagsgroup[tag].name == miscgroup[item].name:
                 if ModelName.find("upper") != -1:
@@ -1040,9 +1055,10 @@ def loadmodel(root, filename, gamename, nomessage=0):
                                         comp_frame.vertices = vertices
                                         newframe = comp_frame.copy()
                                         newframesgroups[comp].appenditem(newframe)
-                                for i in range(len(tag_comps_list)):
-                                    undo.exchange(newcomps[i].dictitems['Frames:fg'], newframesgroups[i])
-                                    undo.exchange(editor_dictitems[tag_comps_list[i]], newcomps[i])
+                                if editor.form is not None:
+                                    for i in range(len(tag_comps_list)):
+                                        undo.exchange(newcomps[i].dictitems['Frames:fg'], newframesgroups[i])
+                                        undo.exchange(editor_dictitems[tag_comps_list[i]], newcomps[i])
                                 break
 
                             elif tagsgroup[tag].name.find("weapon") != -1 and editor_dictitems[key].name.find("weapon") != -1:
@@ -1151,16 +1167,19 @@ def loadmodel(root, filename, gamename, nomessage=0):
                                     comp_frames[frame].vertices = vertices
                                     newframe = comp_frames[frame].copy()
                                     newframesgroup.appenditem(newframe)
-                                undo.exchange(newcomp.dictitems['Frames:fg'], newframesgroup)
-                                undo.exchange(editor_dictitems[key], newcomp)
+                                if editor.form is not None:
+                                    undo.exchange(newcomp.dictitems['Frames:fg'], newframesgroup)
+                                    undo.exchange(editor_dictitems[key], newcomp)
                                 break
-                    undo.exchange(miscgroup[item], tagsgroup[tag]) # This replaces the ORIGINAL Torso tag frames with FEWER tag frames.
+                    if editor.form is not None:
+                        undo.exchange(miscgroup[item], tagsgroup[tag]) # This replaces the ORIGINAL Torso tag frames with FEWER tag frames.
                     break
                 else: # This is where the weapons would come through.
                     if tagsgroup[tag].dictspec.has_key("Component"):
                         update_tag = miscgroup[item].copy()
                         update_tag['Component'] = tagsgroup[tag].dictspec['Component']
-                        undo.exchange(miscgroup[item], update_tag)
+                        if editor.form is not None:
+                            undo.exchange(miscgroup[item], update_tag)
                         for comp in ComponentList:
                             if comp.name == tagsgroup[tag].dictspec['Component']:
                                 for comp in ComponentList:
@@ -1210,46 +1229,58 @@ def loadmodel(root, filename, gamename, nomessage=0):
                             n_r = new_rotation.tuple
                             tag_subitems[frame]['rotmatrix'] = (n_r[0][0], n_r[0][1], n_r[0][2], n_r[1][0], n_r[1][1], n_r[1][2], n_r[2][0], n_r[2][1], n_r[2][2])
 
-                undo.put(editor_dictitems['Misc:mg'], tagsgroup[tag])
+                if editor.form is not None:
+                    undo.put(editor_dictitems['Misc:mg'], tagsgroup[tag])
+                else:
+                    editor_dictitems['Misc:mg'].appenditem(tagsgroup[tag])
 
     # Now we process the Components.
-    for Component in ComponentList:
-        dupeitem = 0
-        for item in editor.Root.subitems:
-            if item.type == ":mc":
-                if item.name == Component.name:
-                    dupeitem = 1
-                    break
-        if dupeitem == 1:
-            undo.exchange(editor.Root.dictitems[item.name], Component)
-        else:
-            undo.put(editor.Root, Component)
-        editor.Root.currentcomponent = Component
-        if len(Component.dictitems['Skins:sg'].subitems) != 0:
-            editor.Root.currentcomponent.currentskin = Component.dictitems['Skins:sg'].subitems[0] # To try and set to the correct skin.
-            quarkpy.mdlutils.Update_Skin_View(editor, 2) # Sends the Skin-view for updating and center the texture in the view.
-        else:
-            editor.Root.currentcomponent.currentskin = None
+    if editor.form is None: # Step 2 to import model from QuArK's Explorer.
+        md2fileobj = quarkx.newfileobj("New model.md2")
+        md2fileobj['FileName'] = 'New model.qkl'
+        for Component in ComponentList:
+            editor.Root.appenditem(Component)
+        md2fileobj['Root'] = editor.Root.name
+        md2fileobj.appenditem(editor.Root)
+        md2fileobj.openinnewwindow()
+    else: # Imports a model properly from within the editor.
+        for Component in ComponentList:
+            dupeitem = 0
+            for item in editor.Root.subitems:
+                if item.type == ":mc":
+                    if item.name == Component.name:
+                        dupeitem = 1
+                        break
+            if dupeitem == 1:
+                undo.exchange(editor.Root.dictitems[item.name], Component)
+            else:
+                undo.put(editor.Root, Component)
+            editor.Root.currentcomponent = Component
+            if len(Component.dictitems['Skins:sg'].subitems) != 0:
+                editor.Root.currentcomponent.currentskin = Component.dictitems['Skins:sg'].subitems[0] # To try and set to the correct skin.
+                quarkpy.mdlutils.Update_Skin_View(editor, 2) # Sends the Skin-view for updating and center the texture in the view.
+            else:
+                editor.Root.currentcomponent.currentskin = None
 
-        compframes = editor.Root.currentcomponent.findallsubitems("", ':mf')   # get all frames
-        for compframe in compframes:
-            compframe.compparent = editor.Root.currentcomponent # To allow frame relocation after editing.
+            compframes = editor.Root.currentcomponent.findallsubitems("", ':mf')   # get all frames
+            for compframe in compframes:
+                compframe.compparent = editor.Root.currentcomponent # To allow frame relocation after editing.
 
-        # This needs to be done for each component or bones will not work if used in the editor.
-        quarkpy.mdlutils.make_tristodraw_dict(editor, Component)
-    editor.ok(undo, str(len(ComponentList)) + " .md3 Components imported")
+            # This needs to be done for each component or bones will not work if used in the editor.
+            quarkpy.mdlutils.make_tristodraw_dict(editor, Component)
+        editor.ok(undo, str(len(ComponentList)) + " .md3 Components imported")
 
-    editor = None   #Reset the global again
-    if message != "":
-        message = message + "================================\r\n\r\n"
-        message = message + "You need to find and supply the proper texture(s) and folder(s) above.\r\n"
-        message = message + "Extract the folder(s) and file(s) to the 'game' folder.\r\n\r\n"
-        message = message + "If a texture does not exist it may be a .dds or some other type of image file.\r\n"
-        message = message + "If so then you need to make a .tga file copy of that texture, perhaps in PaintShop Pro.\r\n\r\n"
-        message = message + "You may also need to rename it to match the exact name above.\r\n"
-        message = message + "Either case, it would be for editing purposes only and should be placed in the model's folder.\r\n\r\n"
-        message = message + "Once this is done, then delete the imported components and re-import the model."
-        quarkx.textbox("WARNING", "Missing Skin Textures:\r\n\r\n================================\r\n" + message, MT_WARNING)
+        editor = None   #Reset the global again
+        if message != "":
+            message = message + "================================\r\n\r\n"
+            message = message + "You need to find and supply the proper texture(s) and folder(s) above.\r\n"
+            message = message + "Extract the folder(s) and file(s) to the 'game' folder.\r\n\r\n"
+            message = message + "If a texture does not exist it may be a .dds or some other type of image file.\r\n"
+            message = message + "If so then you need to make a .tga file copy of that texture, perhaps in PaintShop Pro.\r\n\r\n"
+            message = message + "You may also need to rename it to match the exact name above.\r\n"
+            message = message + "Either case, it would be for editing purposes only and should be placed in the model's folder.\r\n\r\n"
+            message = message + "Once this is done, then delete the imported components and re-import the model."
+            quarkx.textbox("WARNING", "Missing Skin Textures:\r\n\r\n================================\r\n" + message, MT_WARNING)
 
 ### To register this Python plugin and put it on the importers menu.
 import quarkpy.qmdlbase
@@ -1362,6 +1393,10 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.21  2010/05/01 04:25:37  cdunde
+# Updated files to help increase editor speed by including necessary ModelComponentList items
+# and removing redundant checks and calls to the list.
+#
 # Revision 1.20  2010/03/16 07:17:13  cdunde
 # Added support for .md3 model format exporting with tags, textures and shader files.
 #

@@ -42,7 +42,6 @@ import time, os, struct, operator, sys as osSys
 import quarkx
 import quarkpy.qmacro
 from quarkpy.qutils import *
-import quarkpy.mdleditor
 import ie_utils
 from ie_utils import tobj
 from quarkpy.qdictionnary import Strings
@@ -1333,7 +1332,19 @@ def loadmodel(root, filename, gamename, nomessage=0):
     "For example:  C:\Doom 3\base\models\mapobjects\washroom\toilet.ase"
 
     global editor, basepath
+    import quarkpy.mdleditor
     editor = quarkpy.mdleditor.mdleditor
+    # Step 1 to import model from QuArK's Explorer.
+    if editor is None:
+        editor = quarkpy.mdleditor.ModelEditor(None)
+        editor.Root = quarkx.newobj('Model Root:mr')
+        misc_group = quarkx.newobj('Misc:mg')
+        misc_group['type'] = chr(6)
+        editor.Root.appenditem(misc_group)
+        skeleton_group = quarkx.newobj('Skeleton:bg')
+        skeleton_group['type'] = chr(5)
+        editor.Root.appenditem(skeleton_group)
+        editor.form = None
 
     ### First we test for a valid (proper) model path.
     basepath = ie_utils.validpath(filename)
@@ -1356,35 +1367,44 @@ def loadmodel(root, filename, gamename, nomessage=0):
         quarkx.msgbox("Invalid .ase model.\nEditor can not import it.", MT_ERROR, MB_OK)
         return
 
-    undo = quarkx.action()
-    for Component in ComponentList:
-        undo.put(editor.Root, Component)
-        editor.Root.currentcomponent = Component
-        if len(Component.dictitems['Skins:sg'].subitems) != 0:
-            editor.Root.currentcomponent.currentskin = Component.dictitems['Skins:sg'].subitems[0] # To try and set to the correct skin.
-            quarkpy.mdlutils.Update_Skin_View(editor, 2) # Sends the Skin-view for updating and center the texture in the view.
-        else:
-            editor.Root.currentcomponent.currentskin = None
-            
-        compframes = editor.Root.currentcomponent.findallsubitems("", ':mf')   # get all frames
-        for compframe in compframes:
-            compframe.compparent = editor.Root.currentcomponent # To allow frame relocation after editing.
+    if editor.form is None: # Step 2 to import model from QuArK's Explorer.
+        md2fileobj = quarkx.newfileobj("New model.md2")
+        md2fileobj['FileName'] = 'New model.qkl'
+        for Component in ComponentList:
+            editor.Root.appenditem(Component)
+        md2fileobj['Root'] = editor.Root.name
+        md2fileobj.appenditem(editor.Root)
+        md2fileobj.openinnewwindow()
+    else: # Imports a model properly from within the editor.
+        undo = quarkx.action()
+        for Component in ComponentList:
+            undo.put(editor.Root, Component)
+            editor.Root.currentcomponent = Component
+            if len(Component.dictitems['Skins:sg'].subitems) != 0:
+                editor.Root.currentcomponent.currentskin = Component.dictitems['Skins:sg'].subitems[0] # To try and set to the correct skin.
+                quarkpy.mdlutils.Update_Skin_View(editor, 2) # Sends the Skin-view for updating and center the texture in the view.
+            else:
+                editor.Root.currentcomponent.currentskin = None
+                
+            compframes = editor.Root.currentcomponent.findallsubitems("", ':mf')   # get all frames
+            for compframe in compframes:
+                compframe.compparent = editor.Root.currentcomponent # To allow frame relocation after editing.
 
-        # This needs to be done for each component or bones will not work if used in the editor.
-        quarkpy.mdlutils.make_tristodraw_dict(editor, Component)
-    editor.ok(undo, str(len(ComponentList)) + " .ase Components imported")
+            # This needs to be done for each component or bones will not work if used in the editor.
+            quarkpy.mdlutils.make_tristodraw_dict(editor, Component)
+        editor.ok(undo, str(len(ComponentList)) + " .ase Components imported")
 
-    editor = None   #Reset the global again
-    if message != "":
-        message = message + "================================\r\n\r\n"
-        message = message + "You need to find and supply the proper texture(s) and folder(s) above.\r\n"
-        message = message + "Extract the folder(s) and file(s) to the 'game' folder.\r\n\r\n"
-        message = message + "If a texture does not exist it may be a .dds or some other type of image file.\r\n"
-        message = message + "If so then you need to make a .tga file copy of that texture, perhaps in PaintShop Pro.\r\n\r\n"
-        message = message + "You may also need to rename it to match the exact name above.\r\n"
-        message = message + "Either case, it would be for editing purposes only and should be placed in the model's folder.\r\n\r\n"
-        message = message + "Once this is done, then delete the imported components and re-import the model."
-        quarkx.textbox("WARNING", "Missing Skin Textures:\r\n\r\n================================\r\n" + message, MT_WARNING)
+        editor = None   #Reset the global again
+        if message != "":
+            message = message + "================================\r\n\r\n"
+            message = message + "You need to find and supply the proper texture(s) and folder(s) above.\r\n"
+            message = message + "Extract the folder(s) and file(s) to the 'game' folder.\r\n\r\n"
+            message = message + "If a texture does not exist it may be a .dds or some other type of image file.\r\n"
+            message = message + "If so then you need to make a .tga file copy of that texture, perhaps in PaintShop Pro.\r\n\r\n"
+            message = message + "You may also need to rename it to match the exact name above.\r\n"
+            message = message + "Either case, it would be for editing purposes only and should be placed in the model's folder.\r\n\r\n"
+            message = message + "Once this is done, then delete the imported components and re-import the model."
+            quarkx.textbox("WARNING", "Missing Skin Textures:\r\n\r\n================================\r\n" + message, MT_WARNING)
 
 ### To register this Python plugin and put it on the importers menu.
 import quarkpy.qmdlbase
@@ -2041,6 +2061,10 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.14  2010/05/01 04:25:37  cdunde
+# Updated files to help increase editor speed by including necessary ModelComponentList items
+# and removing redundant checks and calls to the list.
+#
 # Revision 1.13  2010/01/01 05:55:41  cdunde
 # Update to try and import ase files from other games.
 #

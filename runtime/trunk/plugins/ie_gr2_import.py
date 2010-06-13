@@ -29,7 +29,6 @@ import sys, struct, os, math, Lib, Lib.base64
 from quarkpy.qutils import *
 from quarkpy.qeditor import MapColor # Strictly needed for QuArK bones MapColor call.from types import *
 import quarkpy.qhandles
-import quarkpy.mdleditor
 import quarkpy.mdlhandles
 import quarkpy.mdlutils
 import ie_utils
@@ -1173,7 +1172,19 @@ def LoadGR2MSFile(MSfilename):
 
 def loadmodel(root, filename, gamename, nomessage=0):
     global editor
+    import quarkpy.mdleditor
     editor = quarkpy.mdleditor.mdleditor
+    # Step 1 to import model from QuArK's Explorer.
+    if editor is None:
+        editor = quarkpy.mdleditor.ModelEditor(None)
+        editor.Root = quarkx.newobj('Model Root:mr')
+        misc_group = quarkx.newobj('Misc:mg')
+        misc_group['type'] = chr(6)
+        editor.Root.appenditem(misc_group)
+        skeleton_group = quarkx.newobj('Skeleton:bg')
+        skeleton_group['type'] = chr(5)
+        editor.Root.appenditem(skeleton_group)
+        editor.form = None
 
     bone_group_names = []
     if filename.find("\\attachments\\") != -1:
@@ -1186,26 +1197,29 @@ def loadmodel(root, filename, gamename, nomessage=0):
     bone_group_name = gr2_mesh_path.rsplit('\\', 1)[1]
     bone_group_names = bone_group_names + [bone_group_name]
     found_group_name = 0
-    for item in editor.layout.explorer.sellist: # Allows selected components to be animated with other models.
-        if item.type == ":mc" and not item.name.startswith(bone_group_name):
-            tempname = checkname = item.shortname.split(" ")[0]
-            for bone in editor.Root.dictitems['Skeleton:bg'].subitems:
-                while 1:
-                    if bone.shortname.find(tempname) != -1:
-                        tempname = tempname.rsplit("_", 1)[0]
-                        if not tempname in bone_group_names:
-                            bone_group_names = bone_group_names + [tempname]
-                        found_group_name = 1
-                        break
-                    else:
-                        if not tempname.find("_") != -1:
+    try:
+        for item in editor.layout.explorer.sellist: # Allows selected components to be animated with other models.
+            if item.type == ":mc" and not item.name.startswith(bone_group_name):
+                tempname = checkname = item.shortname.split(" ")[0]
+                for bone in editor.Root.dictitems['Skeleton:bg'].subitems:
+                    while 1:
+                        if bone.shortname.find(tempname) != -1:
+                            tempname = tempname.rsplit("_", 1)[0]
+                            if not tempname in bone_group_names:
+                                bone_group_names = bone_group_names + [tempname]
+                            found_group_name = 1
                             break
-                        tempname = tempname.rsplit("_", 1)[0]
-                if found_group_name != 0:
-                    break
-                tempname = checkname
-        if found_group_name != 0:
-            break
+                        else:
+                            if not tempname.find("_") != -1:
+                                break
+                            tempname = tempname.rsplit("_", 1)[0]
+                    if found_group_name != 0:
+                        break
+                    tempname = checkname
+            if found_group_name != 0:
+                break
+    except:
+        pass
 
     editor_group_names = []
     for item in editor.Root.subitems: # Gets list of like component names to avoid dupe names later.
@@ -1318,8 +1332,8 @@ def loadmodel(root, filename, gamename, nomessage=0):
     def ArtToolDetransformMatrix(old_rot):
         rot = (~arttool_rotmatrix) * old_rot
         return rot
-
-    undo = quarkx.action()
+    if editor.form is not None:
+        undo = quarkx.action()
 
     # Workaround; models with no meshes shouldn't be loaded.
     TMPmodels = []
@@ -1608,7 +1622,8 @@ def loadmodel(root, filename, gamename, nomessage=0):
                     frame = quarkx.newobj('meshframe:mf')
                     frame['Vertices'] = frame_vertices
                     framesgroup.appenditem(frame)
-                    undo.put(editor.Root, Component)
+                    if editor.form is not None:
+                        undo.put(editor.Root, Component)
 
                     if current_model.skeletonbinding != -1:
                         for bone_index in range(len(QuArK_bones)):
@@ -1683,9 +1698,15 @@ def loadmodel(root, filename, gamename, nomessage=0):
             continue
         else:
             if new_bone.dictspec['parent_name'] == "None":
-                undo.put(editor_bone_group, new_bone)
+                if editor.form is not None:
+                    undo.put(editor_bone_group, new_bone)
+                else:
+                    editor_bone_group.appenditem(new_bone)
             else:
-                undo.put(Full_QuArK_bones[int(new_bone.dictspec['parent_index'])], new_bone)
+                if editor.form is not None:
+                    undo.put(Full_QuArK_bones[int(new_bone.dictspec['parent_index'])], new_bone)
+                else:
+                    Full_QuArK_bones[int(new_bone.dictspec['parent_index'])].appenditem(new_bone)
     for new_bone in Full_QuArK_bones:
         if new_bone.name in editor_bone_names:
             editor_bone = bones_in_editor[new_bone.name] #.copy()
@@ -1799,7 +1820,10 @@ def loadmodel(root, filename, gamename, nomessage=0):
                 new_frame = base_frame.copy()
                 new_frame.shortname = CleanupName(animframename) + " frame " + str(current_frame_index + 1)
                 frame_bunch += [new_frame]
-                undo.put(base_frame.parent, new_frame)
+                if editor.form is not None:
+                    undo.put(base_frame.parent, new_frame)
+                else:
+                    base_frame.parent.appenditem(new_frame)
             new_frames[Component.name] = frame_bunch
 
         BoneToTrackGroup = {}
@@ -2114,25 +2138,33 @@ def loadmodel(root, filename, gamename, nomessage=0):
         quarkx.msgbox("Invalid Action !\n\nYou are trying to load an animation file only    \n" + filename + "\n\nBut there is no model mesh in the editor.\nImport the model first then try again.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
         return
 
-    undomessage = CleanupName(filename)
-    undomessage = undomessage.split("\\")
-    undomessage = undomessage[-1]
-    if (len(meshes) <> 0) and (len(animations) == 0):
-        undomessage = "MESH " + undomessage
-    elif (len(meshes) == 0) and (len(animations) <> 0):
-        undomessage = "ANIM " + undomessage
-    else:
-        undomessage = "MIXD " + undomessage
-    editor.ok(undo, undomessage + " loaded")
+    if editor.form is None: # Step 2 to import model from QuArK's Explorer.
+        md2fileobj = quarkx.newfileobj("New model.md2")
+        md2fileobj['FileName'] = 'New model.qkl'
+        for Component in Full_ComponentList:
+            editor.Root.appenditem(Component)
+        md2fileobj['Root'] = editor.Root.name
+        md2fileobj.appenditem(editor.Root)
+        md2fileobj.openinnewwindow()
+    else: # Imports a model properly from within the editor.
+        undomessage = CleanupName(filename)
+        undomessage = undomessage.split("\\")
+        undomessage = undomessage[-1]
+        if (len(meshes) <> 0) and (len(animations) == 0):
+            undomessage = "MESH " + undomessage
+        elif (len(meshes) == 0) and (len(animations) <> 0):
+            undomessage = "ANIM " + undomessage
+        else:
+            undomessage = "MIXD " + undomessage
+        editor.ok(undo, undomessage + " loaded")
 
-    comp = editor.Root.currentcomponent
-    skins = comp.findallsubitems("", ':sg')      # Gets the skin group.
-    if len(skins[0].subitems) != 0:
-        comp.currentskin = skins[0].subitems[0]      # To try and set to the correct skin.
-        quarkpy.mdlutils.Update_Skin_View(editor, 2) # Sends the Skin-view for updating and center the texture in the view.
-    else:
-        comp.currentskin = None
-    return
+        comp = editor.Root.currentcomponent
+        skins = comp.findallsubitems("", ':sg')      # Gets the skin group.
+        if len(skins[0].subitems) != 0:
+            comp.currentskin = skins[0].subitems[0]      # To try and set to the correct skin.
+            quarkpy.mdlutils.Update_Skin_View(editor, 2) # Sends the Skin-view for updating and center the texture in the view.
+        else:
+            comp.currentskin = None
 
 ### To register this Python plugin and put it on the importers menu.
 import quarkpy.qmdlbase
@@ -2347,6 +2379,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.34  2010/05/26 18:48:34  danielpharos
+# Big speedup for converting granny textures.
+#
 # Revision 1.33  2010/05/25 05:00:44  cdunde
 # Update to import multiple model file parts with multiple bones and components with the same name.
 #

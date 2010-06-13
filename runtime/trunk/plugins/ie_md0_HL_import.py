@@ -30,7 +30,6 @@ import ie_utils
 from ie_utils import tobj
 from quarkpy.qdictionnary import Strings
 from quarkpy.qeditor import MapColor # Strictly needed for QuArK bones MapColor call.
-import quarkpy.mdleditor
 
 # Globals
 logging = 0
@@ -120,6 +119,19 @@ def VectorTransform(vtx_tuple, bone_rotmatrix_tuple):
     y = DotProduct(vtx_tuple, bone_rotmatrix_tuple[1]) # + bone_rotmatrix_tuple[1][3]
     z = DotProduct(vtx_tuple, bone_rotmatrix_tuple[2]) # + bone_rotmatrix_tuple[2][3]
     return quarkx.vect(x, y, z)
+
+def QuaternionMatrix(quaternion, matrix):
+	matrix[0][0] = 1.0 - 2.0 * quaternion[1] * quaternion[1] - 2.0 * quaternion[2] * quaternion[2]
+	matrix[1][0] = 2.0 * quaternion[0] * quaternion[1] + 2.0 * quaternion[3] * quaternion[2]
+	matrix[2][0] = 2.0 * quaternion[0] * quaternion[2] - 2.0 * quaternion[3] * quaternion[1]
+
+	matrix[0][1] = 2.0 * quaternion[0] * quaternion[1] - 2.0 * quaternion[3] * quaternion[2]
+	matrix[1][1] = 1.0 - 2.0 * quaternion[0] * quaternion[0] - 2.0 * quaternion[2] * quaternion[2]
+	matrix[2][1] = 2.0 * quaternion[1] * quaternion[2] + 2.0 * quaternion[3] * quaternion[0]
+
+	matrix[0][2] = 2.0 * quaternion[0] * quaternion[2] + 2.0 * quaternion[3] * quaternion[1]
+	matrix[1][2] = 2.0 * quaternion[1] * quaternion[2] - 2.0 * quaternion[3] * quaternion[0]
+	matrix[2][2] = 1.0 - 2.0 * quaternion[0] * quaternion[0] - 2.0 * quaternion[1] * quaternion[1]
 
 # m_frame = 0.0 for an interpolation's base frame.
 # If we were using interpolation it would be a value between 0.0 and 1.0.
@@ -1150,7 +1162,7 @@ def SetUpBones(self): # self = the mdl_obj.
         for p in xrange(seq.numpivots+1):
             seq_pivots.append(mdl_pivots())
             seq_pivots[p].load(file)
-            seq_pivots[p].dump()
+          #  seq_pivots[p].dump()
         file.seek(self.ofsBegin + seq.anim_offset, 0)
         for pbone in range(len(pbones)):
             seq_panims.append(mdl_bone_anim())
@@ -1195,7 +1207,7 @@ class mdl_obj: # Done cdunde
     num_anim_seq = 0           #item  92    int, The number of animation sequences for the model.
     anim_seq_offset = 0        #item  93    int, The animation sequences data starting point in the file, in bytes.
     num_demand_hdr_groups = 0  #item  94    int, The number of demand seq groups for the model, demand loaded sequences.
-    demand_hdr_offset = 0  #item  95    int, The demand seq groups data starting point in the file, in bytes.
+    demand_hdr_offset = 0      #item  95    int, The demand seq groups data starting point in the file, in bytes.
     num_textures = 0           #item  96    int, The number of raw textures.
     texture_index_offset = 0   #item  97    int, The textures data index starting point in the file, in bytes.
     texture_data_offset = 0    #item  98    int, The textures data starting point in the file, in bytes.
@@ -1373,7 +1385,7 @@ class mdl_obj: # Done cdunde
         ComponentList = []
         message = ""
 
-        # Check is this model only has textures for another model.
+        # Check if this model only has textures for another model.
         if self.num_bodyparts == 0 and len(self.skins_group) != 0:
             message = message + "This model only has textures.\r\n\r\nYou need to import the models that use them\r\nmove them to their proper skin folder\r\nand delete this component.\r\n================================\r\n\r\n"
             # Now we create a dummy Import Component to place the textures into.
@@ -1425,7 +1437,7 @@ class mdl_obj: # Done cdunde
                 self.bodyparts[i].models[j].load(file)
               #  self.bodyparts[i].models[j].dump()
 
-        # load the models vert info data (may not need these) # WTF is this JUNK!
+        # load the models vert info data (may not need these) # What is this 1?
         """for i in xrange(self.num_bodyparts):
             for j in xrange(self.bodyparts[i].nummodels):
                 file.seek(ofsBegin + self.bodyparts[i].models[j].vert_info_offset, 0)
@@ -1472,6 +1484,19 @@ class mdl_obj: # Done cdunde
                     # To get Component = ComponentList[i+(j * nummesh)+k]
                     ComponentList = ComponentList + [Component]
 
+        pseqdesc = self.sequence_descs
+        # Go through all the animation sequences (frame groups).
+        for m_sequence in xrange(self.num_anim_seq):
+            seq_data = []
+            seq_pivots = []
+            seq = pseqdesc[m_sequence]
+            file.seek(self.ofsBegin + seq.pivot_offset, 0)
+            for p in xrange(seq.numpivots+1):
+                seq_pivots.append(mdl_pivots())
+                seq_pivots[p].load(file)
+            seq_data.append(seq_pivots)
+            self.anim_seqs_data.append(seq_data)
+
         # Create the bones, if any.
         QuArK_bones = [] # A list to store all QuArK bones created.
         if len(self.bones) != 0 and len(ComponentList) != 0:
@@ -1481,18 +1506,35 @@ class mdl_obj: # Done cdunde
                 new_bone['flags'] = (0,0,0,0,0,0)
                 new_bone['show'] = (1.0,)
     #            position = quarkx.vect(-bone.value[0], bone.value[2], -bone.value[1]) # Ours for Barney
-                position = quarkx.vect(-bone.value[0], bone.value[2], bone.value[1]) # Ours for Helicopter
+            #    position = quarkx.vect(-bone.value[0], bone.value[2], bone.value[1]) # Ours for Helicopter
     #            position = quarkx.vect(bone.value[0], bone.value[1], bone.value[2]) # As in file.
-                if mdlbone == 0:
-                    self.origin = position * -1
-                    position = position + self.origin
-                new_bone.position = position
-                new_bone['position'] = new_bone.position.tuple
+                position = quarkx.vect(bone.value[0], -bone.value[2], -bone.value[1]) # Ours for Helicopter
+            #    if mdlbone == 0:
+            #        self.origin = position * -1
+            #        position = position + self.origin
                 new_bone['bonecontroller'] = (float(str(bone.bonecontroller[3])),)
                 new_bone['parent_index'] = str(bone.parent)
                 if bone.parent == -1:
+                    new_bone.position = position
+                    pos = new_bone['position'] = new_bone.position.tuple
                     new_bone['parent_name'] = "None"
                     new_bone['bone_length'] = (0.0, 0.0, 0.0)
+                    flip = None
+                    if str(pos).find("e") != -1:
+                        amt = []
+                        for i in xrange(3):
+                            item = str(org[i])
+                            if item.find("e") != -1:
+                                if item.find("-") != -1:
+                                    amt = amt + [-1.0]
+                                    bone.value[i+3] = bone.value[i+3] * -1
+                                else:
+                                    amt = amt + [1.0]
+                                    bone.value[i+3] = bone.value[i+3] * -1
+                            else:
+                                amt = amt + [1.0]
+                                bone.value[i+3] = bone.value[i+3] * -1
+                        flip = amt
                 else:
                     """if QuArK_bones[bone.parent].dictspec['bonecontroller'][0] == 0:
                         new_bone['bonecontroller'] = (0.0,)
@@ -1503,9 +1545,16 @@ class mdl_obj: # Done cdunde
 
                         pos[0] = ((pos[0] - ppos[0]) * -1) - ppos[0]
                         pos[1] = pos[1] * -1
-
                         new_bone.position = quarkx.vect(pos[0], pos[1], pos[2])
                         new_bone['position'] = new_bone.position.tuple"""
+                    if flip is not None:
+                        vect = position.tuple
+                        pos = []
+                        for i in xrange(3):
+                            pos = pos + [vect[i] * flip[i]]
+                        position = quarkx.vect(pos[0], pos[1], pos[2])
+                    new_bone.position = QuArK_bones[bone.parent].position - position
+                    new_bone['position'] = new_bone.position.tuple
                     new_bone['parent_name'] = QuArK_bones[bone.parent].name
                     new_bone['bone_length'] = (-quarkx.vect(QuArK_bones[int(new_bone.dictspec['parent_index'])].dictspec['position']) + quarkx.vect(new_bone.dictspec['position'])).tuple
                 new_bone['scale'] = (1.0,)
@@ -1542,8 +1591,8 @@ class mdl_obj: # Done cdunde
                     ParentMatrix = quarkx.matrix((pm[0], pm[1], pm[2]), (pm[3], pm[4], pm[5]), (pm[6], pm[7], pm[8]))
                   #  temppos = ParentMatrix * bone.position
                   #  bone.position = ParentBone.position + temppos
-                    bone.position = bone.position + ParentBone.position
-                    bone['position'] = bone.position.tuple
+            #        bone.position = bone.position + ParentBone.position
+            #        bone['position'] = bone.position.tuple
                     bm = bone.dictspec['rotmatrix']
                     BoneMatrix = quarkx.matrix((bm[0], bm[1], bm[2]), (bm[3], bm[4], bm[5]), (bm[6], bm[7], bm[8]))
                     bm = (ParentMatrix * BoneMatrix).tuple
@@ -1573,14 +1622,14 @@ class mdl_obj: # Done cdunde
                     data = struct.unpack(binary_format, temp_data)
                     vtxlist[k] = data[0]
 
-                # What is this stuff! Get the meshes normals info data.
+                # What is this 2? Get the meshes normals info data.
                 """file.seek(ofsBegin + self.bodyparts[i].models[j].norm_info_offset, 0)
                 binary_format = "<b" #little-endian (<), single byte (signed int).
                 for k in xrange(self.bodyparts[i].models[j].numnorms):
                     temp_data = file.read(struct.calcsize(binary_format))
                     data = struct.unpack(binary_format, temp_data)"""
 
-                # What is this stuff! Get the meshes normals data.
+                # What is this 3? Get the meshes normals data.
                 """file.seek(ofsBegin + self.bodyparts[i].models[j].norm_offset, 0)
                 binary_format = "<3f" #little-endian (<), 3 floats, 4 bytes per float.
                 for k in xrange(self.bodyparts[i].models[j].numnorms):
@@ -2082,7 +2131,19 @@ def loadmodel(root, filename, gamename, nomessage=0):
     "For example:  C:\Half-Life\valve\models\player\barney\barney.mdl"
 
     global editor, progressbar, tobj, logging, importername, textlog, Strings
+    import quarkpy.mdleditor
     editor = quarkpy.mdleditor.mdleditor
+    # Step 1 to import model from QuArK's Explorer.
+    if editor is None:
+        editor = quarkpy.mdleditor.ModelEditor(None)
+        editor.Root = quarkx.newobj('Model Root:mr')
+        misc_group = quarkx.newobj('Misc:mg')
+        misc_group['type'] = chr(6)
+        editor.Root.appenditem(misc_group)
+        skeleton_group = quarkx.newobj('Skeleton:bg')
+        skeleton_group['type'] = chr(5)
+        editor.Root.appenditem(skeleton_group)
+        editor.form = None
 
     logging, tobj, starttime = ie_utils.default_start_logging(importername, textlog, filename, "IM") ### Use "EX" for exporter text, "IM" for importer text.
 
@@ -2103,7 +2164,6 @@ def loadmodel(root, filename, gamename, nomessage=0):
             pass
         return
 
-    undo = quarkx.action()
     # Process the bones, if any.
     newbones = []
     for bone_index in range(len(QuArK_bones)): # Using list of ALL bones.
@@ -2126,40 +2186,52 @@ def loadmodel(root, filename, gamename, nomessage=0):
         else:
             QuArK_bones[parent_index].appenditem(boneobj)
 
-    for bone in newbones:
-        undo.put(editor.Root.dictitems['Skeleton:bg'], bone)
-        
+    if editor.form is None: # Step 2 to import model from QuArK's Explorer.
+        md2fileobj = quarkx.newfileobj("New model.md2")
+        md2fileobj['FileName'] = 'New model.qkl'
+        for bone in newbones:
+            editor.Root.dictitems['Skeleton:bg'].appenditem(bone)
+        for Component in ComponentList:
+            editor.Root.appenditem(Component)
+        md2fileobj['Root'] = editor.Root.name
+        md2fileobj.appenditem(editor.Root)
+        md2fileobj.openinnewwindow()
+    else: # Imports a model properly from within the editor.
+        undo = quarkx.action()
+        for bone in newbones:
+            undo.put(editor.Root.dictitems['Skeleton:bg'], bone)
+            
 
-    # Now we process the Components.
-    for Component in ComponentList:
-        dupeitem = 0
-        for item in editor.Root.subitems:
-            if item.type == ":mc":
-                if item.name == Component.name:
-                    dupeitem = 1
-                    break
-        if dupeitem == 1:
-            undo.exchange(editor.Root.dictitems[item.name], Component)
-        else:
-            undo.put(editor.Root, Component)
-        editor.Root.currentcomponent = Component
-        if len(Component.dictitems['Skins:sg'].subitems) != 0:
-            editor.Root.currentcomponent.currentskin = Component.dictitems['Skins:sg'].subitems[0] # To try and set to the correct skin.
-            quarkpy.mdlutils.Update_Skin_View(editor, 2) # Sends the Skin-view for updating and center the texture in the view.
-        else:
-            editor.Root.currentcomponent.currentskin = None
+        # Now we process the Components.
+        for Component in ComponentList:
+            dupeitem = 0
+            for item in editor.Root.subitems:
+                if item.type == ":mc":
+                    if item.name == Component.name:
+                        dupeitem = 1
+                        break
+            if dupeitem == 1:
+                undo.exchange(editor.Root.dictitems[item.name], Component)
+            else:
+                undo.put(editor.Root, Component)
+            editor.Root.currentcomponent = Component
+            if len(Component.dictitems['Skins:sg'].subitems) != 0:
+                editor.Root.currentcomponent.currentskin = Component.dictitems['Skins:sg'].subitems[0] # To try and set to the correct skin.
+                quarkpy.mdlutils.Update_Skin_View(editor, 2) # Sends the Skin-view for updating and center the texture in the view.
+            else:
+                editor.Root.currentcomponent.currentskin = None
 
-        compframes = editor.Root.currentcomponent.findallsubitems("", ':mf')   # get all frames
-        for compframe in compframes:
-            compframe.compparent = editor.Root.currentcomponent # To allow frame relocation after editing.
+            compframes = editor.Root.currentcomponent.findallsubitems("", ':mf')   # get all frames
+            for compframe in compframes:
+                compframe.compparent = editor.Root.currentcomponent # To allow frame relocation after editing.
 
-        # This needs to be done for each component or bones will not work if used in the editor.
-        quarkpy.mdlutils.make_tristodraw_dict(editor, Component)
-    editor.ok(undo, str(len(ComponentList)) + " .mdl Components imported")
+            # This needs to be done for each component or bones will not work if used in the editor.
+            quarkpy.mdlutils.make_tristodraw_dict(editor, Component)
+        editor.ok(undo, str(len(ComponentList)) + " .mdl Components imported")
 
-    editor = None   #Reset the global again
-    if message != "":
-        quarkx.textbox("WARNING", message, quarkpy.qutils.MT_WARNING)
+        editor = None   #Reset the global again
+        if message != "":
+            quarkx.textbox("WARNING", message, quarkpy.qutils.MT_WARNING)
 
     try:
         progressbar.close()
@@ -2176,6 +2248,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".mdl Half-Life Importer", ".mdl file", "*.
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.3  2010/05/01 07:16:40  cdunde
+# Update by DanielPharos to allow removal of weight_index storage in the ModelComponentList related files.
+#
 # Revision 1.2  2010/05/01 04:25:37  cdunde
 # Updated files to help increase editor speed by including necessary ModelComponentList items
 # and removing redundant checks and calls to the list.

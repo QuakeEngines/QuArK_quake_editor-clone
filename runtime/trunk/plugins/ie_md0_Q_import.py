@@ -593,6 +593,17 @@ def loadmodel(root, filename, gamename, nomessage=0):
     global progressbar, tobj, logging, importername, textlog, Strings
     import quarkpy.mdleditor
     editor = quarkpy.mdleditor.mdleditor
+    # Step 1 to import model from QuArK's Explorer.
+    if editor is None:
+        editor = quarkpy.mdleditor.ModelEditor(None)
+        editor.Root = quarkx.newobj('Model Root:mr')
+        misc_group = quarkx.newobj('Misc:mg')
+        misc_group['type'] = chr(6)
+        editor.Root.appenditem(misc_group)
+        skeleton_group = quarkx.newobj('Skeleton:bg')
+        skeleton_group['type'] = chr(5)
+        editor.Root.appenditem(skeleton_group)
+        editor.form = None
 
     logging, tobj, starttime = ie_utils.default_start_logging(importername, textlog, filename, "IM") ### Use "EX" for exporter text, "IM" for importer text.
 
@@ -611,29 +622,37 @@ def loadmodel(root, filename, gamename, nomessage=0):
             pass
         return
 
-    undo = quarkx.action()
-    undo.put(editor.Root, Component)
-    editor.Root.currentcomponent = Component
-    compframes = editor.Root.currentcomponent.findallsubitems("", ':mf') # get all frames
-    for compframe in compframes:
-        compframe.compparent = editor.Root.currentcomponent # To allow frame relocation after editing.
-        progressbar.progress()
+    if editor.form is None: # Step 2 to import model from QuArK's Explorer.
+        md2fileobj = quarkx.newfileobj("New model.md2")
+        md2fileobj['FileName'] = 'New model.qkl'
+        editor.Root.appenditem(Component)
+        md2fileobj['Root'] = editor.Root.name
+        md2fileobj.appenditem(editor.Root)
+        md2fileobj.openinnewwindow()
+    else: # Imports a model properly from within the editor.
+        undo = quarkx.action()
+        undo.put(editor.Root, Component)
+        editor.Root.currentcomponent = Component
+        compframes = editor.Root.currentcomponent.findallsubitems("", ':mf') # get all frames
+        for compframe in compframes:
+            compframe.compparent = editor.Root.currentcomponent # To allow frame relocation after editing.
+            progressbar.progress()
 
-    progressbar.close()
-    Strings[2454] = Strings[2454].replace(Component.shortname + "\n", "")
-    ie_utils.default_end_logging(filename, "IM", starttime) ### Use "EX" for exporter text, "IM" for importer text.
+        progressbar.close()
+        Strings[2454] = Strings[2454].replace(Component.shortname + "\n", "")
+        ie_utils.default_end_logging(filename, "IM", starttime) ### Use "EX" for exporter text, "IM" for importer text.
 
-    # This needs to be done for each component or bones will not work if used in the editor.
-    quarkpy.mdlutils.make_tristodraw_dict(editor, Component)
-    editor.ok(undo, Component.shortname + " created")
+        # This needs to be done for each component or bones will not work if used in the editor.
+        quarkpy.mdlutils.make_tristodraw_dict(editor, Component)
+        editor.ok(undo, Component.shortname + " created")
 
-    comp = editor.Root.currentcomponent
-    skins = comp.findallsubitems("", ':sg')      # Gets the skin group.
-    if len(skins[0].subitems) != 0:
-        comp.currentskin = skins[0].subitems[0]      # To try and set to the correct skin.
-        quarkpy.mdlutils.Update_Skin_View(editor, 2) # Sends the Skin-view for updating and center the texture in the view.
-    else:
-        comp.currentskin = None
+        comp = editor.Root.currentcomponent
+        skins = comp.findallsubitems("", ':sg')      # Gets the skin group.
+        if len(skins[0].subitems) != 0:
+            comp.currentskin = skins[0].subitems[0]      # To try and set to the correct skin.
+            quarkpy.mdlutils.Update_Skin_View(editor, 2) # Sends the Skin-view for updating and center the texture in the view.
+        else:
+            comp.currentskin = None
 
 ### To register this Python plugin and put it on the importers menu.
 import quarkpy.qmdlbase
@@ -643,6 +662,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".mdl Quake Importer", ".mdl file", "*.mdl"
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.3  2010/05/01 22:54:57  cdunde
+# Set default skinsize to match all other importers.
+#
 # Revision 1.2  2010/05/01 04:25:37  cdunde
 # Updated files to help increase editor speed by including necessary ModelComponentList items
 # and removing redundant checks and calls to the list.

@@ -28,7 +28,6 @@ import quarkx
 import quarkpy.qutils
 import quarkpy.qhandles
 import quarkpy.qtoolbar
-import quarkpy.mdleditor
 import quarkpy.mdlhandles
 import quarkpy.mdlutils
 import ie_utils
@@ -1459,8 +1458,19 @@ def loadmodel(root, filename, gamename, nomessage=0):
     #   gamename is None.
 
     global md5_mesh_path, md5_anim_path, editor, tobj, logging, importername, textlog, Strings
+    import quarkpy.mdleditor
+    editor = quarkpy.mdleditor.mdleditor
+    # Step 1 to import model from QuArK's Explorer.
     if editor is None:
-        editor = quarkpy.mdleditor.mdleditor
+        editor = quarkpy.mdleditor.ModelEditor(None)
+        editor.Root = quarkx.newobj('Model Root:mr')
+        misc_group = quarkx.newobj('Misc:mg')
+        misc_group['type'] = chr(6)
+        editor.Root.appenditem(misc_group)
+        skeleton_group = quarkx.newobj('Skeleton:bg')
+        skeleton_group['type'] = chr(5)
+        editor.Root.appenditem(skeleton_group)
+        editor.form = None
 
     ### First we test for a valid (proper) model path.
     basepath = ie_utils.validpath(filename)
@@ -1487,8 +1497,6 @@ def loadmodel(root, filename, gamename, nomessage=0):
             editor = None   #Reset the global again
             return
 
-        QuArK_mesh_counter = 0
-        undo = quarkx.action()
         newbones = []
         for bone in range(len(RetQuArK_bone_list)): # Using list of ALL bones.
             boneobj = RetQuArK_bone_list[bone]
@@ -1497,49 +1505,63 @@ def loadmodel(root, filename, gamename, nomessage=0):
                 newbones = newbones + [boneobj]
             else:
                 RetQuArK_bone_list[parent_index].appenditem(boneobj)
-        for bone in newbones:
-            undo.put(editor.Root.dictitems['Skeleton:bg'], bone)
-        for Component in RetComponentList:
-            undo.put(editor.Root, Component)
-            editor.Root.currentcomponent = Component
-            compframes = editor.Root.currentcomponent.findallsubitems("", ':mf')   # get all frames
-            for compframe in compframes:
-                compframe.compparent = editor.Root.currentcomponent # To allow frame relocation after editing.
 
-            QuArK_mesh_counter = QuArK_mesh_counter + 1
+        if editor.form is None: # Step 2 to import model from QuArK's Explorer.
+            md2fileobj = quarkx.newfileobj("New model.md2")
+            md2fileobj['FileName'] = 'New model.qkl'
+            for bone in newbones:
+                editor.Root.dictitems['Skeleton:bg'].appenditem(bone)
+            for Component in RetComponentList:
+                editor.Root.appenditem(Component)
+            md2fileobj['Root'] = editor.Root.name
+            md2fileobj.appenditem(editor.Root)
+            md2fileobj.openinnewwindow()
+        else: # Imports a model properly from within the editor.
+            QuArK_mesh_counter = 0
+            undo = quarkx.action()
+            for bone in newbones:
+                undo.put(editor.Root.dictitems['Skeleton:bg'], bone)
+            for Component in RetComponentList:
+                undo.put(editor.Root, Component)
+                editor.Root.currentcomponent = Component
+                compframes = editor.Root.currentcomponent.findallsubitems("", ':mf')   # get all frames
+                for compframe in compframes:
+                    compframe.compparent = editor.Root.currentcomponent # To allow frame relocation after editing.
 
-            try:
-                progressbar.close()
-                ie_utils.default_end_logging(filename, "IM", starttime) ### Use "EX" for exporter text, "IM" for importer text.
-            except:
-                pass
+                QuArK_mesh_counter = QuArK_mesh_counter + 1
 
-            # This needs to be done for each component or bones will not work if used in the editor.
-            quarkpy.mdlutils.make_tristodraw_dict(editor, Component)
-        editor.ok(undo, str(len(RetComponentList)) + " .md5 Components imported") # Let the ok finish the new components before going on.
+                try:
+                    progressbar.close()
+                    ie_utils.default_end_logging(filename, "IM", starttime) ### Use "EX" for exporter text, "IM" for importer text.
+                except:
+                    pass
 
-        editor.Root.currentcomponent = RetComponentList[0]  # Sets the current component.
-        comp = editor.Root.currentcomponent
-        skins = comp.findallsubitems("", ':sg')      # Gets the skin group.
-        if len(skins[0].subitems) != 0:
-            comp.currentskin = skins[0].subitems[0]      # To try and set to the correct skin.
-            quarkpy.mdlutils.Update_Skin_View(editor, 2) # Sends the Skin-view for updating and center the texture in the view.
-        else:
-            comp.currentskin = None
+                # This needs to be done for each component or bones will not work if used in the editor.
+                quarkpy.mdlutils.make_tristodraw_dict(editor, Component)
+            editor.ok(undo, str(len(RetComponentList)) + " .md5 Components imported") # Let the ok finish the new components before going on.
 
-        editor = None   #Reset the global again
-        if message != "":
-            message = message + "================================\r\n\r\n"
-            message = message + "You need to find and supply the proper texture(s) and folder(s) above.\r\n"
-            message = message + "Extract the required folder(s) and file(s) to the 'game' folder.\r\n\r\n"
-            message = message + "If a texture does not exist it may be a .dds or some other type of image file.\r\n"
-            message = message + "If so then you need to make a .tga file copy of that texture, perhaps in PaintShop Pro.\r\n\r\n"
-            message = message + "You may also need to rename it to match the exact name above.\r\n"
-            message = message + "Either case, it would be for editing purposes only and should be placed in the proper folder.\r\n\r\n"
-            message = message + "Once this is done, then delete the imported components and re-import the model."
-            quarkx.textbox("WARNING", "Missing Skin Textures:\r\n\r\n================================\r\n" + message, quarkpy.qutils.MT_WARNING)
+            editor.Root.currentcomponent = RetComponentList[0]  # Sets the current component.
+            comp = editor.Root.currentcomponent
+            skins = comp.findallsubitems("", ':sg')      # Gets the skin group.
+            if len(skins[0].subitems) != 0:
+                comp.currentskin = skins[0].subitems[0]      # To try and set to the correct skin.
+                quarkpy.mdlutils.Update_Skin_View(editor, 2) # Sends the Skin-view for updating and center the texture in the view.
+            else:
+                comp.currentskin = None
 
-        md5_mesh_path = filename.rsplit('\\', 1)
+            editor = None   #Reset the global again
+            if message != "":
+                message = message + "================================\r\n\r\n"
+                message = message + "You need to find and supply the proper texture(s) and folder(s) above.\r\n"
+                message = message + "Extract the required folder(s) and file(s) to the 'game' folder.\r\n\r\n"
+                message = message + "If a texture does not exist it may be a .dds or some other type of image file.\r\n"
+                message = message + "If so then you need to make a .tga file copy of that texture, perhaps in PaintShop Pro.\r\n\r\n"
+                message = message + "You may also need to rename it to match the exact name above.\r\n"
+                message = message + "Either case, it would be for editing purposes only and should be placed in the proper folder.\r\n\r\n"
+                message = message + "Once this is done, then delete the imported components and re-import the model."
+                quarkx.textbox("WARNING", "Missing Skin Textures:\r\n\r\n================================\r\n" + message, quarkpy.qutils.MT_WARNING)
+
+            md5_mesh_path = filename.rsplit('\\', 1)
 
     else: # Calls to load the .md5_anim file.
         # md5_anim_path = two items in a list, the full path to the model folder, and the animation file name, ex:
@@ -1565,7 +1587,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
 
         import_md5_model(basepath, filename)
 
-        editor = None   #Reset the global again
+      #  editor = None   #Reset the global again
 
 ### To register this Python plugin and put it on the importers menu.
 import quarkpy.qmdlbase
@@ -1767,6 +1789,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.38  2010/05/01 05:01:17  cdunde
+# Update by DanielPharos to allow removal of weight_index storage in the ModelComponentList.
+#
 # Revision 1.37  2010/05/01 04:25:37  cdunde
 # Updated files to help increase editor speed by including necessary ModelComponentList items
 # and removing redundant checks and calls to the list.
