@@ -203,7 +203,7 @@ class ModelEditor(BaseEditor):
         Root = self.fileobject.findname(Root)
         self.Root = Root
 
-        if self.Root.currentcomponent is None and self.Root.name.endswith(":mr"):
+        if self.Root.name.endswith(":mr"):
             if self.Root.dictitems.has_key("ModelComponentList:sd"):
                 datastream = self.Root.dictitems['ModelComponentList:sd']['data'].replace('"$0A"', '\r\n')
                 UnflattenModelComponentList(self, datastream)
@@ -1902,6 +1902,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.153  2010/06/13 15:37:55  cdunde
+#Setup Model Editor to allow importing of model from main explorer File menu.
+#
 #Revision 1.152  2010/06/09 18:37:39  cdunde
 #Fix to allow Model Editor to load .qkl files properly and create the ModelComponentList.
 #
