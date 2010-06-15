@@ -2835,7 +2835,7 @@ class SkinSubGroupType(EntityManager):
 
 
 class SkinType(EntityManager):
-    "Model Skin, types = .pcx, .tga, .dds, .png, .jpg, .bmp"
+    "Model Skin, types = .pcx, .tga, .dds, .png, .jpg, .bmp, .ftx"
 
     def dataformname(o):
         "Returns the data form for this type of object 'o' (a model's skin texture) to use for the Specific/Args page."
@@ -2956,6 +2956,7 @@ Mapping = {
     ".png":      SkinType(),
     ".jpg":      SkinType(),
     ".bmp":      SkinType(),
+    ".ftx":      SkinType(),
     ":bound":    BoundType(),
     ":tag":      TagType(),
     ":tagframe": TagFrameType(),
@@ -3006,6 +3007,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.76  2010/06/07 02:45:28  cdunde
+#Moved the 'pickle' saving call function to where it was needed to increase editor response time.
+#
 #Revision 1.75  2010/06/07 00:06:29  cdunde
 #Changed method of updating vertex weight by dialog setting to make it more responsive and isolated.
 #

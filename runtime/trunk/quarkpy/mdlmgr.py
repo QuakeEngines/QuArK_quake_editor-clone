@@ -117,11 +117,11 @@ class ModelLayout(BaseLayout):
             else:
                 slist.append(None)
                 return slist
-            if s.name.endswith(".pcx") or s.name.endswith(".tga") or s.name.endswith(".dds") or s.name.endswith(".png") or s.name.endswith(".jpg") or s.name.endswith(".bmp"):
+            if s.name.endswith(".pcx") or s.name.endswith(".tga") or s.name.endswith(".dds") or s.name.endswith(".png") or s.name.endswith(".jpg") or s.name.endswith(".bmp") or s.name.endswith(".ftx"):
                 slist.append(s)
         else:
             for s in self.explorer.sellist:
-                if s.name.endswith(".pcx") or s.name.endswith(".tga") or s.name.endswith(".dds") or s.name.endswith(".png") or s.name.endswith(".jpg") or s.name.endswith(".bmp"):
+                if s.name.endswith(".pcx") or s.name.endswith(".tga") or s.name.endswith(".dds") or s.name.endswith(".png") or s.name.endswith(".jpg") or s.name.endswith(".bmp") or s.name.endswith(".ftx"):
                     slist.append(s)
                     return slist
                 else:
@@ -149,7 +149,7 @@ class ModelLayout(BaseLayout):
                                 if dictitem == saveskin:
                                     slist.append(dictitem)
                                     return slist
-                                if dictitem.endswith(".pcx") or dictitem.endswith(".tga") or dictitem.endswith(".dds") or dictitem.endswith(".png") or dictitem.endswith(".jpg") or dictitem.endswith(".bmp"):
+                                if dictitem.endswith(".pcx") or dictitem.endswith(".tga") or dictitem.endswith(".dds") or dictitem.endswith(".png") or dictitem.endswith(".jpg") or dictitem.endswith(".bmp") or dictitem.endswith(".ftx"):
                                     if count == 1:
                                         holddictitem = item.dictitems[dictitem]
                                     if len(item.dictitems) > 1:
@@ -1823,6 +1823,8 @@ class ModelLayout(BaseLayout):
                 self.selectskin(fs)
             elif fs.type == '.bmp':    # A skin in a component's 'Skins:sg' skins group.
                 self.selectskin(fs)
+            elif fs.type == '.ftx':    # A skin in a component's 'Skins:sg' skins group.
+                self.selectskin(fs)
             elif fs.type == ':fg':     # A component's frame group.
                 self.selectcgroup(fs)
             else:
@@ -1879,6 +1881,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.125  2010/06/07 02:45:28  cdunde
+#Moved the 'pickle' saving call function to where it was needed to increase editor response time.
+#
 #Revision 1.124  2010/06/05 21:43:44  cdunde
 #Fix to update dialog and specifics page before redrawing views and draw fillcolors correctly.
 #
