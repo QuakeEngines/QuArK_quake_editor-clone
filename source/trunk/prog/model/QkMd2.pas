@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2009/07/15 10:38:06  danielpharos
+Updated website link.
+
 Revision 1.13  2009/02/21 17:09:53  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -63,8 +66,8 @@ interface
 
 uses
   SysUtils, Classes, QkObjects, QkFileObjects, QkImages, Python, Game, QkMdl, QMath,
-  Graphics, Windows, QkModelFile, QkModelRoot, QkMdlObject, QkComponent, QkFrame,
-  Logging, Console;
+  Graphics, Windows, QkModelRoot, QkMdlObject, QkComponent, QkFrame,
+  Logging, Console, QkQkl;
 
 (***********  Quake 2 .md2 format  ***********)
 
@@ -110,7 +113,7 @@ type
     ofs_glcmds: LongInt;       // offset OpenGL command data
     ofs_end: LongInt;          // offset end of file (end of file)
   end;
-  QMd2File = class(QModelFile)
+  QMd2File = class(QQkl)
   protected
     procedure LoadFile(F: TStream; FSize: Integer); override;
     procedure SaveFile(Info: TInfoEnreg1); override;

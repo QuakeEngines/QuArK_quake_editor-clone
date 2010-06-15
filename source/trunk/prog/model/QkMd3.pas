@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.47  2009/09/23 20:37:16  danielpharos
+Fix tags of models not loading outside of pak-files.
+
 Revision 1.46  2009/07/15 10:38:06  danielpharos
 Updated website link.
 
@@ -171,11 +174,11 @@ interface
 
 uses Windows, SysUtils, StrUtils, Classes, QkObjects, QkForm, Graphics,
      QkImages, qmath, QkTextures, QkFileObjects, QkPcx,
-     QkModelFile, QkModelRoot, QkFrame, QkComponent, QkMdlObject, QkModelTag,
+     QkQkl, QkModelRoot, QkFrame, QkComponent, QkMdlObject, QkModelTag,
      QkTagFrame, QkBoundFrame, QkMiscGroup, {QkFrameGroup,} qmatrices;
 
 type
-  QMd3File = class(QModelFile)
+  QMd3File = class(QQkl)
     protected
       procedure LoadFile(F: TStream; Taille: Integer); override;
       procedure SaveFile(Info: TInfoEnreg1); override;
@@ -184,7 +187,7 @@ type
       class function TypeInfo: String; override;
       class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
       function Loaded_ShaderFile(Comp: QComponent; tex_name: string): QImage;
-      function AttachModelToTag(const Tag_Name: string; model: QModelFile): boolean;
+      function AttachModelToTag(const Tag_Name: string; model: QQkl): boolean;
       function AttachModelToTagFromFileName(const Tag_Name: string; const Filename: string): boolean;
       function TryAutoLoadParts: boolean;
       Function GetFullFilename: string;
@@ -808,13 +811,13 @@ begin
     if FileObj2 = nil then
       exit;
   end;
-  if not(FileObj2 is QModelFile) then
+  if not(FileObj2 is QQkl) then
     exit;
   FileObj2.Acces;
-  Result:=AttachModelToTag(Tag_Name, QModelFile(FileObj2));
+  Result:=AttachModelToTag(Tag_Name, QQkl(FileObj2));
 end;
 
-function QMd3File.AttachModelToTag(const Tag_Name: string; model: QModelFile): boolean;
+function QMd3File.AttachModelToTag(const Tag_Name: string; model: QQkl): boolean;
 var
   other_root: QModelRoot;
 begin

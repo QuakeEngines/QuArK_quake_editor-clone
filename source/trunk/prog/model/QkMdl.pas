@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.27  2009/07/15 10:38:06  danielpharos
+Updated website link.
+
 Revision 1.26  2009/02/21 17:09:53  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -98,11 +101,11 @@ unit QkMdl;
 interface
 
 uses
-  SysUtils, Classes, QkObjects, QkFileObjects, QkImages, Python, Game, QkModelFile, QMath,
+  SysUtils, Classes, QkObjects, QkFileObjects, QkImages, Python, Game, QkQkl, QMath,
   Graphics, Windows, QkModelRoot, QkMdlObject, QkFrame, QkComponent, Logging;
 
 type
-  QMdlFile = class(QModelFile)
+  QMdlFile = class(QQkl)
   private
 //    procedure LoadHLModel(F: TStream; FSize: Integer);
       Procedure ReadHL2Model(F: TStream; FileSize: Integer);

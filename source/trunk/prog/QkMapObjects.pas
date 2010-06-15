@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.55  2009/07/15 10:38:01  danielpharos
+Updated website link.
+
 Revision 1.54  2009/02/21 17:10:12  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -393,7 +396,7 @@ implementation
 
 uses Setup, QkMapPoly, Undo, FormCfg, Game, QkMacro, Quarkx, QkExceptions, PyMath,
      PyMapView, PyObjects, QkImages, Bezier, EdSceneObject,
-     QkObjectClassList, QkMD3, QKModelFile, QkModelRoot, ExtraFunctionality;
+     QkObjectClassList, QkMD3, QkQkl, QkModelRoot, ExtraFunctionality;
 
  {------------------------}
 
@@ -1820,9 +1823,9 @@ begin
 
    S:=Q.Specifics.Values['mdlframe'];
    if S<>'' then
-     QModelFile(Mdl).getRoot.setFramesByName(S)
+     QQkl(Mdl).getRoot.setFramesByName(S)
    else
-     QModelFile(Mdl).getRoot.setFrames(Round(Q.GetFloatSpec('mdlframe', 0)));
+     QQkl(Mdl).getRoot.setFrames(Round(Q.GetFloatSpec('mdlframe', 0)));
 
    // Check for auto-tag linking for .md3 files and derivatives (Doom3 ?? STVEF ??)
    if Q.Specifics.Values['md3_autolink']='1' then // auto link tags to models

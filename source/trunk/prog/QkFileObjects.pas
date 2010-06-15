@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.70  2010/04/16 21:18:45  danielpharos
+Move some version-stuff about. quarkpy now also checks the minor version number.
+
 Revision 1.69  2009/07/15 10:38:01  danielpharos
 Updated website link.
 
@@ -224,7 +227,7 @@ unit QkFileObjects;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  Windows, Messages, SysUtils, StrUtils, Classes, Graphics, Controls, Forms, Dialogs,
   Menus, QkObjects, TB97, EnterEditCtrl, QkForm, ComCtrls, CommCtrl, Python;
 
 const
@@ -408,7 +411,7 @@ implementation
 
 uses Qk1, Undo, QkExplorer, Setup, qmath, QkGroup, Travail, QkOwnExplorer,
   QkFileExplorer, QkUnknown, Toolbar1, Quarkx, QkExceptions, QkInclude, PyObjects,
-  QkModel, QkMap, QkConsts,
+  QkModel, QkMap, QkQkl, QkConsts,
   PyForms, QkTreeView, Game, QkObjectClassList, QkApplPaths, ExtraFunctionality;
 
 {$R *.DFM}
@@ -1982,7 +1985,10 @@ begin
        end;
       Inc(I);
      until False;
-     if Info.QuArKFileObject then
+     if FFileObject is QModel then
+       { workaround to get .qkl file saving to work right }
+       FileName:='qkl'
+     else if Info.QuArKFileObject then
       FileName:=Info.DefaultExt  { can save directly as text }
      else
       if FFileObject is QModel then

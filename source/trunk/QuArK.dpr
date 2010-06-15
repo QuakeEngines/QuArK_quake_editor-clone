@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.68  2010/04/16 18:44:59  danielpharos
+Reduced missing init-logging entries to a single problematic line. Also, logging now uses const strings (faster).
+
 Revision 1.67  2010/03/25 21:42:00  danielpharos
 Added SkinSubGroup.
 
@@ -236,7 +239,6 @@ uses
   QkMiscGroup in 'prog\model\QkMiscGroup.pas',
   QkModel in 'prog\model\QkModel.pas',
   QkModelBone in 'prog\model\QkModelBone.pas',
-  QkModelFile in 'prog\model\QkModelFile.pas',
   QkModelRoot in 'prog\model\QkModelRoot.pas',
   QkModelTag in 'prog\model\QkModelTag.pas',
   QkQkl in 'prog\model\QkQkl.pas',
