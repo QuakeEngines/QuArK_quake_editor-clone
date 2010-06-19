@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.515  2010/05/15 07:23:59  cdunde
+//To get checkerboard pattern to show up in the Model Editor if no skin exist.
+//
 //Revision 1.514  2010/05/08 07:39:16  cdunde
 //Setup the QuArK Model Editor to allow obtaining textures dynamically in the Texture Browser.
 //
@@ -5753,16 +5756,16 @@ QQRKSRC1
       {
         Txt = "Steam App Id"
         Typ = "C"     // combo box
-        Hint = "set to 220 for Half-Life 2"$0D
-               "240 for Counter-Strike: Source"$0D
-               "280 for Half-Life: Source"$0D
-               "320 for Half-Life 2: Deathmatch"$0D
-               "340 for Half-Life 2: Lost Coast"$0D
-               "360 for Half-Life Deathmatch: Source"$0D
-               "380 for Half-Life 2: Episode One"
-               "400 for Portal"
-               "420 for Half-Life 2: Episode Two"
-               "440 for Team Fortress 2"
+        Hint = "set to 220 for Half-Life 2"
+            $0D"240 for Counter-Strike: Source"
+            $0D"280 for Half-Life: Source"
+            $0D"320 for Half-Life 2: Deathmatch"
+            $0D"340 for Half-Life 2: Lost Coast"
+            $0D"360 for Half-Life Deathmatch: Source"
+            $0D"380 for Half-Life 2: Episode One"
+            $0D"400 for Portal"
+            $0D"420 for Half-Life 2: Episode Two"
+            $0D"440 for Team Fortress 2"
         Items = "*auto*"
              $0D"220"
              $0D"240"
