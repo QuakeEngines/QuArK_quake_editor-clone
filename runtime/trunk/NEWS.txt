@@ -14,6 +14,9 @@ $Id$
 
 6.6.0 Beta 4
 ============
+* [cdunde]: Model editor, Setup 'Auto Scaling' function for the Skin-view that resets the skin handles and Component's UV's
+          - to fit the currently selected and viewable skin texture of that Component.
+
 * [DanielPharos/cdunde]: Setup Model Editor to allow importing of model from main explorer File menu.
 
 * [DanielPharos/cdunde]: Massive improvement in material texture handling and animations.
