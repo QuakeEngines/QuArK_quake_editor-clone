@@ -361,11 +361,20 @@ def MdlBackgroundMenu(editor, view=None, origin=None):
             def rescaleskinhandles(menu, editor=editor):
                 skinrescale(editor)
 
+            def autoscaleskinhandles(menu, editor=editor):
+                if not MdlOption("AutoScale_SkinHandles"):
+                    quarkx.setupsubset(SS_MODEL, "Options")['AutoScale_SkinHandles'] = "1"
+                else:
+                    quarkx.setupsubset(SS_MODEL, "Options")['AutoScale_SkinHandles'] = None
+
             ResetSkinView = qmenu.item("&Reset Skin-view", resetSkinview, "|Reset Skin-view:\n\nIf the model skinning image becomes 'lost', goes out of the Skin-view, you can use this function to reset the view and bring the model back to its starting position.|intro.modeleditor.skinview.html#funcsnmenus")
             RescaleSkinHandles = qmenu.item("Rescale Skin &Handles", rescaleskinhandles, "|Rescale Skin Handles:\n\nIf the skin handles do not fit the image, you can use this function to rescale the handles to fit the current skin texture size.|intro.modeleditor.skinview.html#funcsnmenus")
+            AutoScaleSkinHandles = qmenu.item("&Auto Scale", autoscaleskinhandles, "|Auto Scale:\n\nIf active, automatically scales the skin handles\nand Component's UVs to fit the current skin image texture size.|intro.modeleditor.skinview.html#funcsnmenus")
             skinviewcommands = qmenu.popup("Vertex Commands", mdlhandles.SkinHandle(origin, None, None, None, None, None, None).menu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
             skinviewoptions = qmenu.popup("Skin-view Options", mdlhandles.SkinHandle(origin, None, None, None, None, None, None).optionsmenu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
-            extra = [qmenu.sep, ResetSkinView, qmenu.sep, RescaleSkinHandles, qmenu.sep, skinviewcommands, skinviewoptions]
+            extra = [qmenu.sep, ResetSkinView, qmenu.sep, AutoScaleSkinHandles, RescaleSkinHandles, qmenu.sep, skinviewcommands, skinviewoptions]
+
+            AutoScaleSkinHandles.state = quarkx.setupsubset(SS_MODEL,"Options").getint("AutoScale_SkinHandles")
 
         # Add importer/exporter specific menu items
         from mdlmgr import SFTexts, IEfile
@@ -427,6 +436,9 @@ def BaseMenu(sellist, editor):
 #
 #
 #$Log$
+#Revision 1.51  2010/06/13 15:37:55  cdunde
+#Setup Model Editor to allow importing of model from main explorer File menu.
+#
 #Revision 1.50  2010/05/04 05:30:52  cdunde
 #Added new function to rescale Skin-view handles to current skin texture size.
 #

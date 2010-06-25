@@ -1981,6 +1981,29 @@ def buildskinvertices(editor, view, layout, component, skindrawobject):
     linecount = 0
     from qbaseeditor import flagsmouse
 
+    # Section below does the "Auto Scaling".
+    if skindrawobject is not None and MdlOption("AutoScale_SkinHandles"):
+        old_texWidth, old_texHeight = component.dictspec['skinsize']
+        texWidth_scale = texWidth / old_texWidth
+        texHeight_scale = texHeight / old_texHeight
+        component['skinsize'] = skindrawobject["Size"]
+        newtris = tris
+        for i in range(len(tris)): # i is the tri_index based on its position in the 'Tris' frame list.
+            tri = tris[i]
+            for j in range(len(tri)): # j is the vert_index, either 0, 1 or 2 vertex of the triangle.
+                                        # To calculate a triangle's vert_index number = (i * 3) + j
+                u = int(round(tri[j][1] * texWidth_scale))
+                v = int(round(tri[j][2] * texHeight_scale))
+                if j == 0:
+                    vtx0 = (tri[j][0], u, v)
+                elif j == 1:
+                    vtx1 = (tri[j][0], u, v)
+                else:
+                    vtx2 = (tri[j][0], u, v)
+            tri = (vtx0, vtx1, vtx2)
+            newtris[i:i+1] = [tri]
+        component.triangles = tris = newtris
+    
     for i in range(len(tris)): # i is the tri_index based on its position in the 'Tris' frame list.
         tri = tris[i]
         for j in range(len(tri)): # j is the vert_index, either 0, 1 or 2 vertex of the triangle.
@@ -5367,6 +5390,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.210  2010/05/29 04:34:45  cdunde
+#Update for Model Editor camera EYE handles for editor and floating 3D view.
+#
 #Revision 1.209  2010/05/14 06:12:32  cdunde
 #Needed fix, in case user deletes Misc group or components with tags, to avoid errors.
 #
