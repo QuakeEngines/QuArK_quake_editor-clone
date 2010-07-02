@@ -1982,7 +1982,7 @@ def buildskinvertices(editor, view, layout, component, skindrawobject):
     from qbaseeditor import flagsmouse
 
     # Section below does the "Auto Scaling".
-    if skindrawobject is not None and MdlOption("AutoScale_SkinHandles"):
+    if skindrawobject is not None and MdlOption("AutoScale_SkinHandles") and component.dictspec['show'] == '\x01':
         old_texWidth, old_texHeight = component.dictspec['skinsize']
         texWidth_scale = texWidth / old_texWidth
         texHeight_scale = texHeight / old_texHeight
@@ -5390,6 +5390,10 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.211  2010/06/25 05:28:00  cdunde
+#Setup 'Auto Scaling' function for the Skin-view that resets the skin handles and Component's UV's
+#to fit the currently selected and viewable skin texture of that Component.
+#
 #Revision 1.210  2010/05/29 04:34:45  cdunde
 #Update for Model Editor camera EYE handles for editor and floating 3D view.
 #
