@@ -37,7 +37,6 @@ importername = "ie_tan_import.py"
 textlog = "tan_ie_log.txt"
 editor = None
 progressbar = None
-g_scale = 1.0
 
 
 ######################################################
@@ -801,6 +800,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".tan Alice\EF2\FAKK2 Importer", ".tan file
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.2  2010/07/08 18:04:04  danielpharos
+# Removed left-over MD2 constants, and added proper function for CString converting.
+#
 # Revision 1.1  2010/07/07 03:35:28  cdunde
 # Setup importers for Alice, EF2 and FAKK2 .skb, .ska and
 # .tan models (static and animated) with bone and skin support.
