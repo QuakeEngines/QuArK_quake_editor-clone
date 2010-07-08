@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.516  2010/06/19 21:52:21  danielpharos
+//Added a bunch of missing newlines in a hint.
+//
 //Revision 1.515  2010/05/15 07:23:59  cdunde
 //To get checkerboard pattern to show up in the Model Editor if no skin exist.
 //
@@ -2897,7 +2900,7 @@ QQRKSRC1
         TexturesPath = ""
 
         TextureFormat = ".tga"                  // primary texture file extension
-        TextureFileExtensions = ".dds,.tga,.jpg,.png"     // possible texture file extensions
+        TextureFileExtensions = ".dds,.tga,.jpg,.png,.ftx"     // possible texture file extensions
         TextureWriteFormat = ".tga"
         TextureWriteFormatA = ".dds"
 
@@ -9827,7 +9830,7 @@ QQRKSRC1
     t_ModelEditor_texturebrowser:incl =
     {
       Typ = "EPR"
-      DefExt = "tga; *.dds; *.png; *.jpg; *.bmp"
+      DefExt = "tga; *.dds; *.png; *.jpg; *.bmp; *.ftx"
       BasePath = "?\?\?"
       CutPath = "?\?\?\?\"
       DirSep = "/"
@@ -9837,7 +9840,7 @@ QQRKSRC1
     t_texturebrowser:incl =
     {
       Typ = "EP"
-      DefExt = "tga; *.dds; *.png; *.jpg; *.bmp"
+      DefExt = "tga; *.dds; *.png; *.jpg; *.bmp; *.ftx"
       BasePath = "$Game\?\?"
       CutPath = "$Game\?\"
       DirSep = "/"
