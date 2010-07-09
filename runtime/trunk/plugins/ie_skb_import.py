@@ -40,12 +40,11 @@ importername = "ie_skb_import.py"
 textlog = "ska-skb_ie_log.txt"
 editor = None
 progressbar = None
-g_scale = 1.0
 file_version = 0
 
 
 ######################################################
-# MD2 Model Constants
+# SKB Model Constants
 ######################################################
 SKB_MAX_BONES = 256
 SKB_MAX_FRAMES = 2048
@@ -127,7 +126,7 @@ class SKB_Surface:
         self.ofsCollapseMap = 0
         self.ofsEnd = 0
 
-    def load(self, file, Component, bones, message):
+    def load(self, file, Component, bones, message, version):
         this_offset = file.tell() #Get current file read position
         # file is the model file & full path, ex: C:\FAKK2\fakk\models\animal\edencow\edencow_base.skb
 
@@ -144,7 +143,7 @@ class SKB_Surface:
         # This is needed to use that material name later to get its skin texture from the .tik file.
         Component.shortname = Component.shortname + "_" + self.name
         comp_name = Component.name
-        message = check4skin(file, Component, self.name, message)
+        message = check4skin(file, Component, self.name, message, version)
         # Now setup the ModelComponentList using the Component's updated name.
         editor.ModelComponentList[comp_name] = {'bonevtxlist': {}, 'colorvtxlist': {}, 'weightvtxlist': {}}
 
@@ -197,11 +196,8 @@ class SKB_Surface:
                 boneIndex = data[0]
                 weight_value = data[1]
                 vtx_offset = (data[2], data[3], data[4])
-            #4        offset = quarkx.vect(vtx_offset) * weight_value
-            #4        mesh = mesh + offset.tuple
-                  #3  mesh = mesh + (quarkx.vect(vtx_offset) + bones[boneIndex].position).tuple
 
-                pos += quarkx.vect(vtx_offset) #* weight_value
+                pos += quarkx.vect(vtx_offset)
                 if not bonevtxlist.has_key(bones[boneIndex].name):
                     bonevtxlist[bones[boneIndex].name] = {}
                 bonevtxlist[bones[boneIndex].name][i] = {'color': bones[boneIndex].dictspec['_color']}
@@ -257,11 +253,11 @@ class SKB_Surface:
         if logging == 1:
             tobj.logcon ("")
 
-        # Load CollapseMap data here - WHAT IS IT?
+        # Load CollapseMap data here - the reduction of number of model mesh faces when viewed further away.
         file.seek(this_offset + self.ofsCollapseMap,0)
         for i in xrange(0, self.numVerts):
             #--> 1 integer
-            file.read(4) #Ignore collapsemap for now
+            file.read(4) #Ignore collapsemap for now.
 
         return message
 
@@ -442,7 +438,8 @@ class skb_obj:
                         tobj.logcon ("Bone " + str(i))
                         bone.dump(self.version)
 
-        if self.version == 4: # (EF2 file)
+            # We don't need this section.
+        """if self.version == 4: # (EF2 file)
             #load the BaseFrame bones ****** QuArK basic, empty bones are created here.
             if logging == 1:
                 tobj.logcon ("")
@@ -461,29 +458,29 @@ class skb_obj:
                     temp_data = file.read(struct.calcsize(binary_format))
                     data = struct.unpack(binary_format, temp_data)
 
+                    QuArK_Bone = self.bones[i]
                     bone = self.temp_bones[i]
                     bone.basequat = (data[0], data[1], data[2], data[3])
                     bone.baseoffset = (data[4], data[5], data[6])
+
+                    factor = 0.015625 # = 1/64 to avoid division by zero errors.
+                    scale = 1.0 / 32768.0 #To convert rotation values into quaternion-units
+                    QuArK_Bone["_skb_baseposition"] = (bone.baseoffset[0]*factor, bone.baseoffset[1]*factor, bone.baseoffset[2]*factor)
+                    tempmatrix = quaternion2matrix((bone.basequat[0] * scale, bone.basequat[1] * scale, bone.basequat[2] * scale, bone.basequat[3] * scale))
+                    QuArK_Bone["_skb_baserotmatrix"] = (tempmatrix[0][0], tempmatrix[0][1], tempmatrix[0][2], tempmatrix[1][0], tempmatrix[1][1], tempmatrix[1][2], tempmatrix[2][0], tempmatrix[2][1], tempmatrix[2][2])
+
                   #1  ofs = bone.baseoffset
                   #1  bone.baseoffset = (ofs[0]*factor, ofs[1]*factor, ofs[2]*factor)
                     bone.basejunk1 = data[7]
                     if logging == 1:
                         tobj.logcon ("Bone " + str(i))
-                        bone.dump(self.version)
+                        bone.dump(self.version)"""
 
-                    if bone.parent > 0:
-                        #find the rotation of the current bone by multiplying the current bone rotation by its parent.
-                        parent_bone = self.temp_bones[bone.parent]
-                        bone.basequat = QuatMult(bone.basequat, parent_bone.basequat)
-                        offset = MatrixTransformVector(bone.baseoffset, parent_bone.basematrix)
-                        bone.baseoffset = (quarkx.vect(offset) + quarkx.vect(parent_bone.baseoffset)).tuple
-                        bone.basematrix = QuatToMat(bone.basequat)
-                    else:
-                        bone.basematrix = QuatToMat(bone.basequat)
-                    print "bone " + str(i) + " parent: ", bone.parent
-                    print "bone " + str(i) + " matrix: ", bone.basematrix
-                    print "bone " + str(i) + " pos: ", bone.baseoffset
-                    print "------------------------"
+
+                    #print "bone " + str(i) + " parent: ", bone.parent
+                    #print "bone " + str(i) + " matrix: ", bone.basematrix
+                    #print "bone " + str(i) + " pos: ", bone.baseoffset
+                    #print "------------------------"
 
         #load the surfaces (meshes) ****** QuArK basic, empty Components are made and passed along here to be completed. ******
         next_surf_offset = 0
@@ -514,7 +511,7 @@ class skb_obj:
             frame['Vertices'] = ''
             framesgroup.appenditem(frame)
             Component.appenditem(framesgroup)
-            message = surface.load(file, Component, self.bones, message)
+            message = surface.load(file, Component, self.bones, message, self.version)
             if self.existing_bones is None and i == 0: # Use 1st Component to update bones 'component' dictspec.
                 comp_name = Component.name
                 for bone in self.bones:
@@ -530,6 +527,17 @@ class skb_obj:
             self.surfaceList.append(surface)
             self.ComponentList.append(Component)
 
+        # To sort and place the components in their proper order.
+        import operator
+        templist = []
+        for name in range(len(self.ComponentList)):
+            try:
+                itemindex = operator.indexOf(self.ComponentList, self.ComponentList[name])
+            except:
+                pass
+            else:
+                templist = templist + [self.ComponentList[itemindex]]
+        self.ComponentList = templist
         return self, message
 
     def dump(self):
@@ -585,7 +593,6 @@ class SKA_Bone:
     matrix = (0)*4          #item   0    0-3   4 ints, the bone's quat values.
     offset = (0)*3          #item   4    4-6   3 ints, the bone's offset.
     junk1 = 0               #item   7    7     1 int, read in to keep pointer count correct, but DO NOT USE.
-    parent_index = 0        #item  ---   ---   for QuArK use only.
     SetPosition = None      #item  ---   ---   for QuArK use only.
     SetRotation = None      #item  ---   ---   for QuArK use only.
 
@@ -595,7 +602,6 @@ class SKA_Bone:
         self.matrix = (0)*4
         self.offset = (0)*3
         self.junk1 = 0
-        self.parent_index
         self.SetPosition = None
         self.SetRotation = None
 
@@ -617,7 +623,6 @@ class SKA_Bone:
         tobj.logcon ("quat pos: " + str(self.matrix))
         tobj.logcon ("offset pos: " + str(self.offset))
         tobj.logcon ("junk1: " + str(self.junk1))
-        tobj.logcon ("parent_index: " + str(self.parent_index))
         tobj.logcon ("SetPosition: " + str(self.SetPosition))
         tobj.logcon ("SetRotation: " + str(self.SetRotation))
         tobj.logcon ("")
@@ -627,7 +632,6 @@ class SKA_Frame:
     bounds = ((0.0)*3, (0.0)*3)  #item   0    0-5 6 floats, the frame's bboxMin and bboxMax.
     radius = 0.0                 #item   6    float, dist from origin to corner.
     delta = (0.0)*3              #item   7    7-9 3 floats.
-  #  origin = (0.0)*3             #item  10    10-12 3 floats.
 
     bones = [] # To load the bones animation data read in from the file.
 
@@ -637,37 +641,49 @@ class SKA_Frame:
         self.bounds = ((0.0)*3, (0.0)*3)
         self.radius = 0.0
         self.delta = (0.0)*3
-      #  self.origin = (0.0)*3
         self.bones = []
 
-    def load(self, file, numBones, QuArK_bones, parent_indexes, real_bone_index):
+    def load(self, file, numBones, QuArK_bones, parent_indexes, real_bone_index, index_to_ska):
         temp_data = file.read(struct.calcsize(self.binary_format))
         data = struct.unpack(self.binary_format, temp_data)
 
         self.bounds = ((data[0], data[1], data[2]), (data[3], data[4], data[5]))
         self.radius = data[6]
         self.delta = (data[7], data[8], data[9])
-      #  self.origin = (data[10], data[11], data[12])
         for i in xrange(0, numBones):
             bone = SKA_Bone()
             bone.load(file)
-            bone.parent_index = parent_indexes[real_bone_index[QuArK_bones[i].name]]
+            if real_bone_index[i] == []:
+                #Apparently, there is no skb bone for this ska bone!
+                #Skip it...
+                continue
             self.bones.append(bone)
             if logging == 1:
                 tobj.logcon ("bone " + str(i) + " : relative")
                 bone.dump()
             #Resolve absolute bone position and rotation
-            if bone.parent_index != -1:
-                parent_bone = self.bones[bone.parent_index]
-                bone.SetPosition = parent_bone.SetPosition + (parent_bone.SetRotation * bone.SetPosition)
-                bone.SetRotation = parent_bone.SetRotation * bone.SetRotation
+            parent_index = parent_indexes[real_bone_index[i]]
+            if parent_index != -1:
+                ska_bone_index = index_to_ska[parent_index]
+                if ska_bone_index == -1:
+                    #Parent is no SKA bone; use SKB base frame data instead
+                    parent_bone = QuArK_bones[parent_index]
+                    parent_pos = quarkx.vect(parent_bone.dictspec["_skb_baseposition"])
+                    temp_rot = parent_bone.dictspec["_skb_baserotmatrix"]
+                    parent_rot = quarkx.matrix((temp_rot[0], temp_rot[1], temp_rot[2]), (temp_rot[3], temp_rot[4], temp_rot[5]), (temp_rot[6], temp_rot[7], temp_rot[8]))
+                else:
+                    parent_bone = self.bones[ska_bone_index]
+                    parent_pos = parent_bone.SetPosition
+                    parent_rot = parent_bone.SetRotation
+                bone.SetPosition = parent_pos + (parent_rot * bone.SetPosition)
+                bone.SetRotation = parent_rot * bone.SetRotation
             if logging == 1:
                 tobj.logcon ("bone " + str(i) + " : absolute")
                 bone.dump()
 
-    def apply(self, numBones, QuArK_bones, bonelist, numComponents, comp_names, baseframes, new_framesgroups, frame_name):
+    def apply(self, numBones, QuArK_bones, bonelist, numComponents, comp_names, baseframes, new_framesgroups, frame_name, real_bone_index):
             check_name = frame_name + ":mf"
-            self.SetupBones(numBones, QuArK_bones, bonelist, check_name)
+            self.SetupBones(numBones, QuArK_bones, bonelist, check_name, real_bone_index)
 
             #A list of bones.name -> bone_index, to speed things up
             ConvertBoneNameToIndex = {}
@@ -690,8 +706,11 @@ class SKA_Frame:
                             bone_index = ConvertBoneNameToIndex[key]
                             if bone_index == -1:
                                 continue
-                            Bpos = self.bones[bone_index].SetPosition
-                            Brot = self.bones[bone_index].SetRotation
+                            if not bonelist[QuArK_bones[bone_index].name]['frames'].has_key(frame_name + ':mf'):
+                                print "Warning: Bone %s missing frame %s!" % (QuArK_bones[bone_index].shortname, frame_name)
+                                continue
+                            Bpos = quarkx.vect(bonelist[QuArK_bones[bone_index].name]['frames'][frame_name+':mf']['position'])
+                            Brot = quarkx.matrix(bonelist[QuArK_bones[bone_index].name]['frames'][frame_name+':mf']['rotmatrix'])
                             try:
                                 weight_value = editor.ModelComponentList[comp_name]['weightvtxlist'][vert_counter][QuArK_bones[bone_index].name]['weight_value']
                             except:
@@ -699,6 +718,8 @@ class SKA_Frame:
                             total_weight_value += weight_value
                             oldpos = quarkx.vect(editor.ModelComponentList[comp_name]['weightvtxlist'][vert_counter][QuArK_bones[bone_index].name]['vtx_offset'])
                             vertpos = vertpos + ((Bpos + (Brot * oldpos)) * weight_value)
+                        if total_weight_value == 0.0:
+                            total_weight_value = 1.0
                         newverts[vert_counter] = (vertpos / total_weight_value)
                 QuArK_frame.vertices = newverts
 
@@ -709,26 +730,28 @@ class SKA_Frame:
                 framesgroup.appenditem(QuArK_frame)
 
 
-    def SetupBones(self, numBones, QuArK_bones, bonelist, QuArK_frame_name):
-        for i in xrange(0, numBones):
-            if not bonelist[QuArK_bones[i].name]['frames'].has_key(QuArK_frame_name):
-                bonelist[QuArK_bones[i].name]['frames'][QuArK_frame_name] = {}
+    def SetupBones(self, numBones, QuArK_bones, bonelist, QuArK_frame_name, real_bone_index):
+        for i in xrange(0, len(self.bones)):
+            if real_bone_index[i] == []:
+                #No corresponding SKB bone
+                continue
+            QuArK_bone = QuArK_bones[real_bone_index[i]]
+            if not bonelist[QuArK_bone.name]['frames'].has_key(QuArK_frame_name):
+                bonelist[QuArK_bone.name]['frames'][QuArK_frame_name] = {}
             bone = self.bones[i] # self = a Frame
-            ParentBone = bone.parent_index
-            bonelist[QuArK_bones[i].name]['frames'][QuArK_frame_name]['position'] = bone.SetPosition.tuple
-            bonelist[QuArK_bones[i].name]['frames'][QuArK_frame_name]['rotmatrix'] = bone.SetRotation.tuple
+            bonelist[QuArK_bone.name]['frames'][QuArK_frame_name]['position'] = bone.SetPosition.tuple
+            bonelist[QuArK_bone.name]['frames'][QuArK_frame_name]['rotmatrix'] = bone.SetRotation.tuple
 
             if QuArK_frame_name.endswith(" 1:mf"):
                 baseframe = QuArK_frame_name.rsplit(" ", 1)[0] + " baseframe:mf"
-                bonelist[QuArK_bones[i].name]['frames'][baseframe] = {}
-                bonelist[QuArK_bones[i].name]['frames'][baseframe]['position'] = bonelist[QuArK_bones[i].name]['frames'][QuArK_frame_name]['position']
-                bonelist[QuArK_bones[i].name]['frames'][baseframe]['rotmatrix'] = bonelist[QuArK_bones[i].name]['frames'][QuArK_frame_name]['rotmatrix']
+                bonelist[QuArK_bone.name]['frames'][baseframe] = {}
+                bonelist[QuArK_bone.name]['frames'][baseframe]['position'] = bonelist[QuArK_bone.name]['frames'][QuArK_frame_name]['position']
+                bonelist[QuArK_bone.name]['frames'][baseframe]['rotmatrix'] = bonelist[QuArK_bone.name]['frames'][QuArK_frame_name]['rotmatrix']
 
     def dump(self):
         tobj.logcon ("bounds: " + str(self.bounds))
         tobj.logcon ("radius: " + str(self.radius))
         tobj.logcon ("delta: " + str(self.delta))
-     #   tobj.logcon ("origin: " + str(self.origin))
 
 
 class ska_obj:
@@ -748,6 +771,7 @@ class ska_obj:
 
     binary_format="<2i64c3i2f3fi"  #little-endian (<), see #item descriptions above.
 
+    bone_names = []
 
     def __init__(self):
         self.ident = 0
@@ -761,6 +785,8 @@ class ska_obj:
         self.totaldelta = (0.0)*3
         self.ofsBones = 0
         self.ofsFrames = 0
+        
+        self.bone_names = []
 
     def load(self, file, Components, QuArK_bones, Exist_Comps, anim_name):
         global file_version
@@ -811,15 +837,9 @@ class ska_obj:
         #setup the QuArK's ModelComponentList['bonelist'].
         bonelist = editor.ModelComponentList['bonelist']
 
-        # Construct a translation table for our bone number --> skb bone number
-        # (not sure if this is needed)
-        real_bone_index = {}
-        for bone in QuArK_bones:
-            real_bone_index[bone.name] = int(bone.dictspec['_skb_boneindex'])
-
         # Construct a look-up-table to get a bone from a parent index number
         parent_indexes = []
-        for i in xrange(0, self.numBones):
+        for i in range(len(QuArK_bones)):
             bone = QuArK_bones[i]
             if not bonelist.has_key(QuArK_bones[i].name):
                 bonelist[bone.name] = {}
@@ -829,7 +849,7 @@ class ska_obj:
                 parent_indexes = parent_indexes + [-1]
             else:
                 FoundABone = 0
-                for j in xrange(0, self.numBones):
+                for j in range(len(QuArK_bones)):
                     if i == j:
                         #Bone can't be its own parent
                         continue
@@ -859,16 +879,51 @@ class ska_obj:
                 new_framesgroups = new_framesgroups + [new_framesgroup]
 
         if self.version == 4:
-            #EF2 has bone names
+            #EF2 has bone_names
             file.seek(self.ofsBones,0)
             for i in xrange(0, self.numBones):
                 bone_name = SKA_BoneName_EF2()
                 bone_name.load(file)
-                #Not used at this time, so we're not storing them
-                #self.bone_names.append(bone_name)
-
+                self.bone_names.append(bone_name)
                 if logging == 1:
                     bone_name.dump()
+
+        # Construct a translation table for ska bone index --> QuArK_bones index number
+        real_bone_index = None
+        if self.version == 3:
+            real_bone_index = [[]] * self.numBones
+            for bone_index in range(len(QuArK_bones)):
+                bone = QuArK_bones[bone_index]
+                real_bone_index[int(bone.dictspec['_skb_boneindex'])] = bone_index
+        else:
+            #For EF2, we have to go through the bone_names
+            real_bone_index = [[]] * len(self.bone_names)
+            for bone_index in range(len(self.bone_names)):
+                bone = self.bone_names[bone_index]
+                bone_name = bone.name
+                for bone2_index in range(len(QuArK_bones)):
+                    bone2 = QuArK_bones[bone2_index]
+                    bone2_name = bone2.shortname.split("_", 1)[1]
+                    if bone_name == bone2_name:
+                        real_bone_index[bone_index] = bone2_index
+                        break
+
+        index_to_ska = [[]] * len(QuArK_bones)
+        if self.version == 3:
+            for bone2_index in range(len(QuArK_bones)):
+                index_to_ska[bone2_index] = bone2_index
+        else:
+            #EF2: A translation table to go from a QuArK_bones index number to a SKA index number (or -1 if there's no corresponding SKA bone)
+            for bone2_index in range(len(QuArK_bones)):
+                bone2 = QuArK_bones[bone2_index]
+                bone2_name = bone2.shortname.split("_", 1)[1]
+                index_to_ska[bone2_index] = -1
+                for bone_index in range(len(self.bone_names)):
+                    bone = self.bone_names[bone_index]
+                    bone_name = bone.name
+                    if bone_name == bone2_name:
+                        index_to_ska[bone2_index] = bone_index
+                        break
 
         #load the Frames
         file.seek(self.ofsFrames,0)
@@ -880,10 +935,10 @@ class ska_obj:
             tobj.logcon ("")
         for i in xrange(0, self.numFrames):
             frame = SKA_Frame()
-            frame.load(file, self.numBones, QuArK_bones, parent_indexes, real_bone_index)
+            frame.load(file, self.numBones, QuArK_bones, parent_indexes, real_bone_index, index_to_ska)
             frame_name = anim_name + " " + str(i+1)
             #FIXME: self.type ???
-            frame.apply(self.numBones, QuArK_bones, bonelist, numComponents, comp_names, baseframes, new_framesgroups, frame_name)
+            frame.apply(self.numBones, QuArK_bones, bonelist, numComponents, comp_names, baseframes, new_framesgroups, frame_name, real_bone_index)
             if logging == 1:
                 tobj.logcon ("---------------------")
                 tobj.logcon ("frame " + str(i))
@@ -915,7 +970,8 @@ class ska_obj:
 ######################################################
 # Import functions for Alice EF2 and FAKK2
 ######################################################
-def check4skin(file, Component, material_name, message):
+def check4skin(file, Component, material_name, message, version):
+    material_name = material_name.lower() # Make sure all text is lower case.
     # Try to locate and load Component's skin textures.
     ImageTypes = [".ftx", ".tga", ".jpg", ".bmp", ".png", ".dds"]
     if logging == 1:
@@ -927,50 +983,58 @@ def check4skin(file, Component, material_name, message):
         pass
     else:
         message = message + "Invalid folders setup !!!\r\nTo import a model you MUST have its folder WITHIN another folder named 'models'\r\nalong with its '.tik' file to locate its skin texture name in.\r\nWill now try to find a texture file in the models folder.\r\n\r\n"
-    skin_name = None
+    tik_file = file_skin_name = skin_name = None
+    skin_names = []
     path = path.rsplit('\\', 1)
     model_name = path[1]
+  #  model_name = model_name.split(".")[0]
     path = skin_path = path[0]
-    while 1:
-        files = os.listdir(path)
-        check_files = []
-        for file in files:
-            if file.endswith(".tik") and not file.endswith(".tiki"):
-                check_files.append(file)
-        if check_files != []:
-            for file in check_files:
-                #read the file in
-                read_tik_file = open(path + "\\" + file,"r")
-                filelines = read_tik_file.readlines()
-                read_tik_file.close()
-                foundmodel = None
-                count = 0
-                for line in filelines:
-                    if line.find(model_name) != -1:
-                        foundmodel = 1
-                    if foundmodel is not None and line.find(material_name) != -1:
-                        items = line.split(" ")
-                        for item in items:
-                            for type in ImageTypes:
-                                if item.find(type) != -1:
-                                    file_skin_name = item
-                                    skin_name = item.split(".")[0]
-                                    tik_file = path + "\\" + file
+    model_folder = path.rsplit('\\', 1)[1]
+    if version != 4: # (is NOT an EF2 file, those idiots couldn't setup a decent system to save their worthless lives - cdunde.)
+        while 1:
+            files = os.listdir(path)
+            check_files = []
+            for file in files:
+                if file.endswith(".tik") and not file.endswith(".tiki"):
+                    check_files.append(file)
+            if check_files != []:
+                for file in check_files:
+                    #read the file in
+                    read_tik_file = open(path + "\\" + file,"r")
+                    filelines = read_tik_file.readlines()
+                    read_tik_file.close()
+                    count = 0
+                    for line in range(len(filelines)):
+                        if filelines[line].find(model_name) != -1 or filelines[line].find(model_folder) != -1:
+                            while 1:
+                                line += 1 # Advance the line counter by 1.
+                                filelines[line] = filelines[line].lower() # Make sure all text is lower case.
+                                if filelines[line].find(material_name) != -1:
+                                    items = filelines[line].split(" ")
+                                    if material_name in items:
+                                        for item in items:
+                                            for type in ImageTypes:
+                                                if item.find(type) != -1:
+                                                    file_skin_name = item.strip()
+                                                    skin_name = item.split(".")[0]
+                                                    tik_file = path + "\\" + file
+                                                    skin_names = skin_names + [skin_name]
+                                if line == 50 or filelines[line].find("}") != -1:
                                     break
-                    if skin_name is not None or count == 20:
+                        if skin_name is not None or filelines[line].find("}") != -1 or count == 50:
+                            break
+                        count = count + 1
+                    if skin_name is not None:
                         break
-                    count = count + 1
-                if skin_name is not None:
-                    break
-        if path.endswith("\\models") or skin_name is not None:
-            break
-        path = path.rsplit('\\', 1)[0]
+            if path.endswith("\\models") or skin_name is not None:
+                break
+            path = path.rsplit('\\', 1)[0]
     path = skin_path # Reset to the full path to try and find the skin texture.
     found_skin_file = None
     if skin_name is not None:
         while 1:
-            files = os.listdir(path)
-            for file in files:
+            for name in range(len(skin_names)):
+                skin_name = skin_names[name]
                 for type in ImageTypes:
                     if os.path.isfile(path + "\\" + skin_name + type): # We found the skin texture file.
                         found_skin_file = path + "\\" + skin_name + type
@@ -982,7 +1046,7 @@ def check4skin(file, Component, material_name, message):
                         if logging == 1:
                             tobj.logcon (skin.name)
                         break
-                if found_skin_file is not None:
+                if name == len(skin_names)-1:
                     break
             if path.endswith("\\models") or found_skin_file is not None:
                 if found_skin_file is None:
@@ -1016,7 +1080,7 @@ def check4skin(file, Component, material_name, message):
 
 
 ######################################################
-# Import functions for Alice and FAKK2 ONLY
+# Import math functions
 ######################################################
 def quaternion2matrix(q):
     xx = q[0] * q[0]
@@ -1032,66 +1096,6 @@ def quaternion2matrix(q):
             [      2.0 * (xy - wz), 1.0 - 2.0 * (xx + zz),       2.0 * (yz + wx), 0.0],
             [      2.0 * (xz + wy),       2.0 * (yz - wx), 1.0 - 2.0 * (xx + yy), 0.0],
             [0.0                  , 0.0                  , 0.0                  , 1.0]]
-
-
-######################################################
-# Import functions for EF2 ONLY
-######################################################
-def QuatToMat(q):
-    xx=xy=xz = 0.
-    yy=yz=zz = 0.
-    x2=y2=z2 = 0.
-    wx=wy=wz = 0.
-
-    x2 = q[0] + q[0]
-    y2 = q[1] + q[1]
-    z2 = q[2] + q[2]
-
-    xx = q[0] * x2
-    xy = q[0] * y2
-    xz = q[0] * z2
-
-    yy = q[1] * y2
-    yz = q[1] * z2
-    zz = q[2] * z2
-
-    wx = q[3] * x2
-    wy = q[3] * y2
-    wz = q[3] * z2
-
-    mxx = 1.0 - (yy + zz)
-    mxy = xy - wz
-    mxz = xz + wy
-
-    myx = xy + wz
-    myy = 1.0 - (xx + zz)
-    myz = yz - wx
-
-    mzx = xz - wy
-    mzy = yz + wx
-    mzz = 1.0 - (xx + yy)
-    matrix = ((mxx, mxy, mxz), (myx, myy, myz), (mzx, mzy, mzz))
-
-    return matrix
-
-
-def QuatMult(q1, q2):
-    x = q1[3] * q2[0] + q2[3] * q1[0] + q1[1] * q2[2] - q1[2] * q2[1]
-    y = q1[3] * q2[1] + q2[3] * q1[1] + q1[2] * q2[0] - q1[0] * q2[2]
-    z = q1[3] * q2[2] + q2[3] * q1[2] + q1[0] * q2[1] - q1[1] * q2[0]
-    w = q1[3] * q2[3] - q1[0] * q2[0] - q1[1] * q2[1] - q1[2] * q2[2]
-    quat = [x, y, z, w]
-    
-    return quat
-
-
-def MatrixTransformVector(v, mat):
-    x = v[0] * mat[0][0] + v[1] * mat[1][0] + v[2] * mat[2][0]
-    y = v[0] * mat[0][1] + v[1] * mat[1][1] + v[2] * mat[2][1]
-    z = v[0] * mat[0][2] + v[1] * mat[1][2] + v[2] * mat[2][2]
-    vect = (x, y, z)                                  
-
-    return vect
 
 
 ############################
@@ -1321,4 +1325,8 @@ quarkpy.qmdlbase.RegisterMdlImporter(".skb Alice\EF2\FAKK2 Importer", ".skb file
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.1  2010/07/07 03:35:28  cdunde
+# Setup importers for Alice, EF2 and FAKK2 .skb, .ska and
+# .tan models (static and animated) with bone and skin support.
+#
 #
