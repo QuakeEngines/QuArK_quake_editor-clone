@@ -101,9 +101,9 @@ class SKB_Bone:
 
 
 class SKB_Surface:
-    # ident = 541870931 = SKL
+    # ident = 541870931 = "SKL "
     #Header Structure    #item of data file, size & type,   description.
-    ident = 0            #item   0    int, used to identify the file (see above).
+    ident = ""           #item   0    int but read as 4s string to convert to alpha, used to identify the file (see above).
     name = ""            #item   1    1-64 64 char, the surface (mesh) name.
     numTriangles = 0     #item  65    int, number of triangles.
     numVerts = 0         #item  66    int, number of verts.
@@ -113,10 +113,10 @@ class SKB_Surface:
     ofsCollapseMap = 0   #item  70    int, offset where Collapse Map begins, NumVerts * int.
     ofsEnd = 0           #item  71    int, next Surface data follows ex: (header) ofsSurfaces + (1st surf) ofsEnd = 2nd surface offset.
 
-    binary_format="<i64c7i" #little-endian (<), see #item descriptions above.
+    binary_format="<4s64c7i" #little-endian (<), see #item descriptions above.
 
     def __init__(self):
-        self.ident = 0
+        self.ident = ""
         self.name = ""
         self.numTriangles = 0
         self.numVerts = 0
@@ -133,7 +133,7 @@ class SKB_Surface:
         temp_data = file.read(struct.calcsize(self.binary_format))
         data = struct.unpack(self.binary_format, temp_data)
 
-        self.ident = data[0] # SKL ident = 541870931, we already checked this in the header.
+        self.ident = data[0] # SKB ident = 541870931 or "SKL ", we already checked this in the header.
         char = 64 + 1 # The above data items = 1.
         for c in xrange(1, char):
             if data[c] == "\x00":
@@ -262,7 +262,7 @@ class SKB_Surface:
         return message
 
     def dump(self):
-        tobj.logcon ("ident: " + str(self.ident))
+        tobj.logcon ("ident: " + self.ident)
         tobj.logcon ("name: " + str(self.name))
         tobj.logcon ("numTriangles: " + str(self.numTriangles))
         tobj.logcon ("minLod: " + str(self.minLod))
@@ -307,9 +307,9 @@ class SKB_Triangle:
 
 
 class skb_obj:
-    # SKB ident = 541870931 version = 3 Alice and  FAKK2, EF2 uses version 4.
+    # SKB ident = 541870931 or "SKL " version = 3 Alice and  FAKK2, EF2 uses version 4.
     #Header Structure    #item of data file, size & type,   description.
-    ident = 0            #item   0    int, used to identify the file (see above).
+    ident = ""           #item   0    int but read as 4s string to convert to alpha, used to identify the file (see above).
     version = 0          #item   1    int, version number of the file (see above).
                          #### Items below read in after version is determined.
     name = ""            #item   0    0-63 64 char, the models path and full name.
@@ -321,7 +321,7 @@ class skb_obj:
     ofsBaseFrame = 0     #item v4=68  int,  end (or length) of the file.
     ofsEnd = 0           #item v3=68, v4=69 int, end (or length) of the file.
 
-    binary_format="<2i"  #little-endian (<), see #item descriptions above.
+    binary_format="<4si"  #little-endian (<), see #item descriptions above.
 
     #skb data objects
     existing_bones = None
@@ -331,7 +331,7 @@ class skb_obj:
     ComponentList = [] # QuArK list to place our Components into when they are created.
 
     def __init__(self):
-        self.ident = 0
+        self.ident = ""
         self.version = 0
         self.name = ""
         self.numSurfaces = 0
@@ -366,10 +366,10 @@ class skb_obj:
         self.version = data[1]
         file_version = self.version
 
-        # SKB ident = 541870931 version = 3 Alice and  FAKK2, EF2 uses version 4.
-        if self.ident != 541870931: # Not a valid .skb file.
+        # SKB ident = 541870931 or "SKL " version = 3 Alice and  FAKK2, EF2 uses version 4.
+        if self.ident != "SKL ": # Not a valid .skb file.
             quarkx.beep() # Makes the computer "Beep" once if a file is not valid. Add more info to message.
-            quarkx.msgbox("Invalid model.\nEditor can not import it.\n\nSKB ident = 541870931 version = 4\n\nFile has:\nident = " + str(self.ident) + " version = " + str(self.version), quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
+            quarkx.msgbox("Invalid model.\nEditor can not import it.\n\nSKB ident = SKL version = 4\n\nFile has:\nident = " + self.ident + " version = " + str(self.version), quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
             return None
 
         if self.version == 3:
@@ -546,7 +546,7 @@ class skb_obj:
             tobj.logcon ("#####################################################################")
             tobj.logcon ("Header Information")
             tobj.logcon ("#####################################################################")
-            tobj.logcon ("ident: " + str(self.ident))
+            tobj.logcon ("ident: " + self.ident)
             tobj.logcon ("version: " + str(self.version))
             tobj.logcon ("name: " + self.name)
             tobj.logcon ("number of surfaces: " + str(self.numSurfaces))
@@ -755,9 +755,9 @@ class SKA_Frame:
 
 
 class ska_obj:
-    # SKA ident = 1312901971 version = 3 Alice and  FAKK2, EF2 uses version 4.
+    # SKA ident = 1312901971 or "SKAN" version = 3 Alice and  FAKK2, EF2 uses version 4.
     #Header Structure    #item of data file, size & type,   description.
-    ident = 0            #item   0    int, used to identify the file (see above).
+    ident = ""           #item   0    int but read as 4s string to convert to alpha, used to identify the file (see above).
     version = 0          #item   1    int, version number of the file (see above).
     name = ""            #item   2    2-65 64 char, the models path and full name.
     type = 0             #item  66    int, unknown.
@@ -769,12 +769,12 @@ class ska_obj:
     ofsBones = 0         #item  74    only used for EF2 file.
     ofsFrames = 0        #item  74\75 int, offset for the frames data.
 
-    binary_format="<2i64c3i2f3fi"  #little-endian (<), see #item descriptions above.
+    binary_format="<4si64c3i2f3fi"  #little-endian (<), see #item descriptions above.
 
     bone_names = []
 
     def __init__(self):
-        self.ident = 0
+        self.ident = ""
         self.version = 0
         self.name = ""
         self.type = 0
@@ -807,10 +807,10 @@ class ska_obj:
         self.version = data[1]
         file_version = self.version
 
-        # SKA ident = 1312901971 version = 3
-        if self.ident != 1312901971: # Not a valid .ska file.
+        # SKA ident = 1312901971 or  "SKAN" version = 3
+        if self.ident != "SKAN": # Not a valid .ska file.
             quarkx.beep() # Makes the computer "Beep" once if a file is not valid. Add more info to message.
-            quarkx.msgbox("Invalid model.\nEditor can not import it.\n\nSKA ident = 1312901971 version = 3\n\nFile has:\nident = " + str(self.ident) + " version = " + str(self.version), quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
+            quarkx.msgbox("Invalid model.\nEditor can not import it.\n\nSKA ident = SKAN version = 3\n\nFile has:\nident = " + self.ident + " version = " + str(self.version), quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
             return None
 
         char = 64 + 2 # The above data items = 2.
@@ -955,7 +955,7 @@ class ska_obj:
             tobj.logcon ("#####################################################################")
             tobj.logcon ("Header Information")
             tobj.logcon ("#####################################################################")
-            tobj.logcon ("ident: " + str(self.ident))
+            tobj.logcon ("ident: " + self.ident)
             tobj.logcon ("version: " + str(self.version))
             tobj.logcon ("name: " + self.name)
             tobj.logcon ("type: " + str(self.type))
@@ -1325,6 +1325,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".skb Alice\EF2\FAKK2 Importer", ".skb file
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.2  2010/07/09 05:28:36  cdunde
+# File cleanup, texture and bone handling updates.
+#
 # Revision 1.1  2010/07/07 03:35:28  cdunde
 # Setup importers for Alice, EF2 and FAKK2 .skb, .ska and
 # .tan models (static and animated) with bone and skin support.

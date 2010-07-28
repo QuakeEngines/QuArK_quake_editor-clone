@@ -234,9 +234,9 @@ class TAN_XyzNormal:
 
 
 class TAN_Surface:
-    # ident = 541999444 = TAN
+    # ident = 541999444 = "TAN "
     #Header Structure    #item of data file, size & type,   description.
-    ident = 0            #item   0    int, used to identify the file (see above).
+    ident = ""           #item   0    int but read as 4s string to convert to alpha, used to identify the file (see above).
     name = ""            #item   1    1-64 64 char, the surface (mesh) name.
     numFrames = 0        #item  65    int, number of animation frames in this surface, usually 1.
     numVerts = 0         #item  66    int, number of verts.
@@ -248,10 +248,10 @@ class TAN_Surface:
     ofsVerts = 0         #item  72    int, offset for VERTICES data.
     ofsEnd = 0           #item  73    int, next Surface data follows ex: (header) ofsSurfaces + (1st surf) ofsEnd = 2nd surface offset.
 
-    binary_format="<i64c9i" #little-endian (<), see #item descriptions above.
+    binary_format="<4s64c9i" #little-endian (<), see #item descriptions above.
 
     def __init__ (self):
-        self.ident = 0
+        self.ident = ""
         self.name = ""
         self.numFrames = 0
         self.numVerts = 0
@@ -367,7 +367,7 @@ class TAN_Surface:
         return message
 
     def dump(self):
-            tobj.logcon ("ident: " + str(self.ident))
+            tobj.logcon ("ident: " + self.ident)
             tobj.logcon ("name: " + self.name)
             tobj.logcon ("numFrames: " + str(self.numFrames))
             tobj.logcon ("numVerts: " + str(self.numVerts))
@@ -383,7 +383,7 @@ class TAN_Surface:
 class tan_obj:
     # TAN ident = 541999444 version = 2 Same for Alice, EF2 and FAKK2.
     #Header Structure    #item of data file, size & type,   description.
-    ident = 0            #item   0    int, used to identify the file (see above).
+    ident = ""           #item   0    int but read as 4s string to convert to alpha, used to identify the file (see above).
     version = 0          #item   1    int, version number of the file (see above).
     name = ""            #item   2    2-65 64 char, the models path and full name.
     numFrames = 0        #item  66    int, number of animation frames, should be same as numFrames in every Surface Header.
@@ -399,7 +399,7 @@ class tan_obj:
     ofsTags = []         #item  75-90 16 int, the file offsets for the 16 sets of tags data, if less they are set to zero.
     ofsEnd = 0           #item  91    int, end (or length) of the file.
 
-    binary_format="<2i64c3i4f19i"  #little-endian (<), see #item descriptions above.
+    binary_format="<4si64c3i4f19i"  #little-endian (<), see #item descriptions above.
 
     #tan data objects
     frames = []
@@ -408,7 +408,7 @@ class tan_obj:
     ComponentList = [] # QuArK list to place our Components into when they are created.
 
     def __init__ (self):
-        self.ident = 0
+        self.ident = ""
         self.version = 0
         self.name = ""
         self.numFrames = 0
@@ -447,9 +447,9 @@ class tan_obj:
         self.version = data[1]
 
         # TAN ident = 541999444 version = 2
-        if self.ident != 541999444: # Not a valid .tan file.
+        if self.ident != "TAN ": # Not a valid .tan file.
             quarkx.beep() # Makes the computer "Beep" once if a file is not valid. Add more info to message.
-            quarkx.msgbox("Invalid model.\nEditor can not import it.\n\nTAN ident = 541999444 version = 2\n\nFile has:\nident = " + str(self.ident) + " version = " + str(self.version), quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
+            quarkx.msgbox("Invalid model.\nEditor can not import it.\n\nTAN ident = TAN version = 2\n\nFile has:\nident = " + self.ident + " version = " + str(self.version), quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
             return None
 
         self.name = CString(data, 64, 2)
@@ -558,7 +558,7 @@ class tan_obj:
             tobj.logcon ("#####################################################################")
             tobj.logcon ("Header Information")
             tobj.logcon ("#####################################################################")
-            tobj.logcon ("ident: " + str(self.ident))
+            tobj.logcon ("ident: " + self.ident)
             tobj.logcon ("version: " + str(self.version))
             tobj.logcon ("name: " + self.name)
             tobj.logcon ("number of frames: " + str(self.numFrames))
@@ -800,6 +800,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".tan Alice\EF2\FAKK2 Importer", ".tan file
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.3  2010/07/08 18:05:15  danielpharos
+# Removed unused variable.
+#
 # Revision 1.2  2010/07/08 18:04:04  danielpharos
 # Removed left-over MD2 constants, and added proper function for CString converting.
 #
