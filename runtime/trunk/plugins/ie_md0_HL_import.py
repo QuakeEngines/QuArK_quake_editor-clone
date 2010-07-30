@@ -32,6 +32,7 @@ from quarkpy.qdictionnary import Strings
 from quarkpy.qeditor import MapColor # Strictly needed for QuArK bones MapColor call.
 
 # Globals
+SkipAnimation = 0 # 0 = makes animation frames, 1 = does not.
 logging = 0
 importername = "ie_md0_HL_import.py"
 textlog = "HLmdl_ie_log.txt"
@@ -39,7 +40,7 @@ progressbar = None
 mdl = None
 
 ######################################################
-# MDL Model Constants
+# MDL Model Constants from -> hlmviewer source file -> studio.h -> STUDIO MODELS
 ######################################################
 MDL_MAX_TRIANGLES   = 20000
 MDL_MAX_VERTICES    = 2048
@@ -57,14 +58,14 @@ MDL_MAX_PIVOTS      = 256
 MDL_MAX_CONTROLLERS = 8
 
 ######################################################
-# MDL Flag Settings
+# MDL Flag Settings from -> hlmviewer source file -> studio.h
 ######################################################
-# lighting options
+# lighting options from -> lighting options
 STUDIO_NF_FLATSHADE  = 1
 STUDIO_NF_CHROME     = 2
 STUDIO_NF_FULLBRIGHT = 4
 
-# motion flags
+# motion flags from -> motion flags
 STUDIO_X     =    1
 STUDIO_Y     =    2    
 STUDIO_Z     =    4
@@ -83,10 +84,10 @@ STUDIO_AZR   = 16384
 STUDIO_TYPES = 32767
 STUDIO_RLOOP = 32768 # controller that wraps shortest distance
 
-# sequence flags
+# sequence flags from -> sequence flags
 STUDIO_LOOPING      = 1
 
-# bone flags
+# bone flags from -> bone flags
 STUDIO_HAS_NORMALS  = 1
 STUDIO_HAS_VERTICES = 2
 STUDIO_HAS_BBOX     = 4
@@ -95,48 +96,15 @@ STUDIO_HAS_CHROME   = 8 # if any of the textures have chrome on them
 RAD_TO_STUDIO       = (32768.0/math.pi)
 STUDIO_TO_RAD       = (math.pi/32768.0)
 
-######################################################
-# MDL Vector Constants
-######################################################
-MDL_NORMAL_VECTORS = (( -0.525731, 0.000000, 0.850651 ), ( -0.442863, 0.238856, 0.864188 ), ( -0.295242, 0.000000, 0.955423 ), ( -0.309017, 0.500000, 0.809017 ), ( -0.162460, 0.262866, 0.951056 ), ( 0.000000, 0.000000, 1.000000 ), ( 0.000000, 0.850651, 0.525731 ), ( -0.147621, 0.716567, 0.681718 ), ( 0.147621, 0.716567, 0.681718 ), ( 0.000000, 0.525731, 0.850651 ), ( 0.309017, 0.500000, 0.809017 ), ( 0.525731, 0.000000, 0.850651 ), ( 0.295242, 0.000000, 0.955423 ), ( 0.442863, 0.238856, 0.864188 ), ( 0.162460, 0.262866, 0.951056 ), ( -0.681718, 0.147621, 0.716567 ), ( -0.809017, 0.309017, 0.500000 ), ( -0.587785, 0.425325, 0.688191 ), ( -0.850651, 0.525731, 0.000000 ), ( -0.864188, 0.442863, 0.238856 ), ( -0.716567, 0.681718, 0.147621 ), ( -0.688191, 0.587785, 0.425325 ), ( -0.500000, 0.809017, 0.309017 ), ( -0.238856, 0.864188, 0.442863 ), ( -0.425325, 0.688191, 0.587785 ), ( -0.716567, 0.681718, -0.147621 ), ( -0.500000, 0.809017, -0.309017 ), ( -0.525731, 0.850651, 0.000000 ), ( 0.000000, 0.850651, -0.525731 ), ( -0.238856, 0.864188, -0.442863 ), ( 0.000000, 0.955423, -0.295242 ), ( -0.262866, 0.951056, -0.162460 ), ( 0.000000, 1.000000, 0.000000 ), ( 0.000000, 0.955423, 0.295242 ), ( -0.262866, 0.951056, 0.162460 ), ( 0.238856, 0.864188, 0.442863 ), ( 0.262866, 0.951056, 0.162460 ), ( 0.500000, 0.809017, 0.309017 ), ( 0.238856, 0.864188, -0.442863 ), ( 0.262866, 0.951056, -0.162460 ), ( 0.500000, 0.809017, -0.309017 ), ( 0.850651, 0.525731, 0.000000 ), ( 0.716567, 0.681718, 0.147621 ), ( 0.716567, 0.681718, -0.147621 ), ( 0.525731, 0.850651, 0.000000 ), ( 0.425325, 0.688191, 0.587785 ), ( 0.864188, 0.442863, 0.238856 ), ( 0.688191, 0.587785, 0.425325 ), ( 0.809017, 0.309017, 0.500000 ), ( 0.681718, 0.147621, 0.716567 ), ( 0.587785, 0.425325, 0.688191 ), ( 0.955423, 0.295242, 0.000000 ), ( 1.000000, 0.000000, 0.000000 ), ( 0.951056, 0.162460, 0.262866 ), ( 0.850651, -0.525731, 0.000000 ), ( 0.955423, -0.295242, 0.000000 ), ( 0.864188, -0.442863, 0.238856 ), ( 0.951056, -0.162460, 0.262866 ), ( 0.809017, -0.309017, 0.500000 ), ( 0.681718, -0.147621, 0.716567 ), ( 0.850651, 0.000000, 0.525731 ), ( 0.864188, 0.442863, -0.238856 ), ( 0.809017, 0.309017, -0.500000 ), ( 0.951056, 0.162460, -0.262866 ), ( 0.525731, 0.000000, -0.850651 ), ( 0.681718, 0.147621, -0.716567 ), ( 0.681718, -0.147621, -0.716567 ), ( 0.850651, 0.000000, -0.525731 ), ( 0.809017, -0.309017, -0.500000 ), ( 0.864188, -0.442863, -0.238856 ), ( 0.951056, -0.162460, -0.262866 ), ( 0.147621, 0.716567, -0.681718 ), ( 0.309017, 0.500000, -0.809017 ), ( 0.425325, 0.688191, -0.587785 ), ( 0.442863, 0.238856, -0.864188 ), ( 0.587785, 0.425325, -0.688191 ), ( 0.688191, 0.587785, -0.425325 ), ( -0.147621, 0.716567, -0.681718 ), ( -0.309017, 0.500000, -0.809017 ), ( 0.000000, 0.525731, -0.850651 ), ( -0.525731, 0.000000, -0.850651 ), ( -0.442863, 0.238856, -0.864188 ), ( -0.295242, 0.000000, -0.955423 ), ( -0.162460, 0.262866, -0.951056 ), ( 0.000000, 0.000000, -1.000000 ), ( 0.295242, 0.000000, -0.955423 ), ( 0.162460, 0.262866, -0.951056 ), ( -0.442863, -0.238856, -0.864188 ), ( -0.309017, -0.500000, -0.809017 ), ( -0.162460, -0.262866, -0.951056 ), ( 0.000000, -0.850651, -0.525731 ), ( -0.147621, -0.716567, -0.681718 ), ( 0.147621, -0.716567, -0.681718 ), ( 0.000000, -0.525731, -0.850651 ), ( 0.309017, -0.500000, -0.809017 ), ( 0.442863, -0.238856, -0.864188 ), ( 0.162460, -0.262866, -0.951056 ), ( 0.238856, -0.864188, -0.442863 ), ( 0.500000, -0.809017, -0.309017 ), ( 0.425325, -0.688191, -0.587785 ), ( 0.716567, -0.681718, -0.147621 ), ( 0.688191, -0.587785, -0.425325 ), ( 0.587785, -0.425325, -0.688191 ), ( 0.000000, -0.955423, -0.295242 ), ( 0.000000, -1.000000, 0.000000 ), ( 0.262866, -0.951056, -0.162460 ), ( 0.000000, -0.850651, 0.525731 ), ( 0.000000, -0.955423, 0.295242 ), ( 0.238856, -0.864188, 0.442863 ), ( 0.262866, -0.951056, 0.162460 ), ( 0.500000, -0.809017, 0.309017 ), ( 0.716567, -0.681718, 0.147621 ), ( 0.525731, -0.850651, 0.000000 ), ( -0.238856, -0.864188, -0.442863 ), ( -0.500000, -0.809017, -0.309017 ), ( -0.262866, -0.951056, -0.162460 ), ( -0.850651, -0.525731, 0.000000 ), ( -0.716567, -0.681718, -0.147621 ), ( -0.716567, -0.681718, 0.147621 ), ( -0.525731, -0.850651, 0.000000 ), ( -0.500000, -0.809017, 0.309017 ), ( -0.238856, -0.864188, 0.442863 ), ( -0.262866, -0.951056, 0.162460 ), ( -0.864188, -0.442863, 0.238856 ), ( -0.809017, -0.309017, 0.500000 ), ( -0.688191, -0.587785, 0.425325 ), ( -0.681718, -0.147621, 0.716567 ), ( -0.442863, -0.238856, 0.864188 ), ( -0.587785, -0.425325, 0.688191 ), ( -0.309017, -0.500000, 0.809017 ), ( -0.147621, -0.716567, 0.681718 ), ( -0.425325, -0.688191, 0.587785 ), ( -0.162460, -0.262866, 0.951056 ), ( 0.442863, -0.238856, 0.864188 ), ( 0.162460, -0.262866, 0.951056 ), ( 0.309017, -0.500000, 0.809017 ), ( 0.147621, -0.716567, 0.681718 ), ( 0.000000, -0.525731, 0.850651 ), ( 0.425325, -0.688191, 0.587785 ), ( 0.587785, -0.425325, 0.688191 ), ( 0.688191, -0.587785, 0.425325 ), ( -0.955423, 0.295242, 0.000000 ), ( -0.951056, 0.162460, 0.262866 ), ( -1.000000, 0.000000, 0.000000 ), ( -0.850651, 0.000000, 0.525731 ), ( -0.955423, -0.295242, 0.000000 ), ( -0.951056, -0.162460, 0.262866 ), ( -0.864188, 0.442863, -0.238856 ), ( -0.951056, 0.162460, -0.262866 ), ( -0.809017, 0.309017, -0.500000 ), ( -0.864188, -0.442863, -0.238856 ), ( -0.951056, -0.162460, -0.262866 ), ( -0.809017, -0.309017, -0.500000 ), ( -0.681718, 0.147621, -0.716567 ), ( -0.681718, -0.147621, -0.716567 ), ( -0.850651, 0.000000, -0.525731 ), ( -0.688191, 0.587785, -0.425325 ), ( -0.587785, 0.425325, -0.688191 ), ( -0.425325, 0.688191, -0.587785 ), ( -0.425325, -0.688191, -0.587785 ), ( -0.587785, -0.425325, -0.688191 ), ( -0.688191, -0.587785, -0.425325 ))
-# Line below defines the Quake1 palette to force its use later.
-MDL_COLORMAP       = (( 0, 0, 0), ( 15, 15, 15), ( 31, 31, 31), ( 47, 47, 47), ( 63, 63, 63), ( 75, 75, 75), ( 91, 91, 91), (107, 107, 107), (123, 123, 123), (139, 139, 139), (155, 155, 155), (171, 171, 171), (187, 187, 187), (203, 203, 203), (219, 219, 219), (235, 235, 235), ( 15, 11, 7), ( 23, 15, 11), ( 31, 23, 11), ( 39, 27, 15), ( 47, 35, 19), ( 55, 43, 23), ( 63, 47, 23), ( 75, 55, 27), ( 83, 59, 27), ( 91, 67, 31), ( 99, 75, 31), (107, 83, 31), (115, 87, 31), (123, 95, 35), (131, 103, 35), (143, 111, 35), ( 11, 11, 15), ( 19, 19, 27), ( 27, 27, 39), ( 39, 39, 51), ( 47, 47, 63), ( 55, 55, 75), ( 63, 63, 87), ( 71, 71, 103), ( 79, 79, 115), ( 91, 91, 127), ( 99, 99, 139), (107, 107, 151), (115, 115, 163), (123, 123, 175), (131, 131, 187), (139, 139, 203), ( 0, 0, 0), ( 7, 7, 0), ( 11, 11, 0), ( 19, 19, 0), ( 27, 27, 0), ( 35, 35, 0), ( 43, 43, 7), ( 47, 47, 7), ( 55, 55, 7), ( 63, 63, 7), ( 71, 71, 7), ( 75, 75, 11), ( 83, 83, 11), ( 91, 91, 11), ( 99, 99, 11), (107, 107, 15), ( 7, 0, 0), ( 15, 0, 0), ( 23, 0, 0), ( 31, 0, 0), ( 39, 0, 0), ( 47, 0, 0), ( 55, 0, 0), ( 63, 0, 0), ( 71, 0, 0), ( 79, 0, 0), ( 87, 0, 0), ( 95, 0, 0), (103, 0, 0), (111, 0, 0), (119, 0, 0), (127, 0, 0), ( 19, 19, 0), ( 27, 27, 0), ( 35, 35, 0), ( 47, 43, 0), ( 55, 47, 0), ( 67, 55, 0), ( 75, 59, 7), ( 87, 67, 7), ( 95, 71, 7), (107, 75, 11), (119, 83, 15), (131, 87, 19), (139, 91, 19), (151, 95, 27), (163, 99, 31), (175, 103, 35), ( 35, 19, 7), ( 47, 23, 11), ( 59, 31, 15), ( 75, 35, 19), ( 87, 43, 23), ( 99, 47, 31), (115, 55, 35), (127, 59, 43), (143, 67, 51), (159, 79, 51), (175, 99, 47), (191, 119, 47), (207, 143, 43), (223, 171, 39), (239, 203, 31), (255, 243, 27), ( 11, 7, 0), ( 27, 19, 0), ( 43, 35, 15), ( 55, 43, 19), ( 71, 51, 27), ( 83, 55, 35), ( 99, 63, 43), (111, 71, 51), (127, 83, 63), (139, 95, 71), (155, 107, 83), (167, 123, 95), (183, 135, 107), (195, 147, 123), (211, 163, 139), (227, 179, 151), (171, 139, 163), (159, 127, 151), (147, 115, 135), (139, 103, 123), (127, 91, 111), (119, 83, 99), (107, 75, 87), ( 95, 63, 75), ( 87, 55, 67), ( 75, 47, 55), ( 67, 39, 47), ( 55, 31, 35), ( 43, 23, 27), ( 35, 19, 19), ( 23, 11, 11), ( 15, 7, 7), (187, 115, 159), (175, 107, 143), (163, 95, 131), (151, 87, 119), (139, 79, 107), (127, 75, 95), (115, 67, 83), (107, 59, 75), ( 95, 51, 63), ( 83, 43, 55), ( 71, 35, 43), ( 59, 31, 35), ( 47, 23, 27), ( 35, 19, 19), ( 23, 11, 11), ( 15, 7, 7), (219, 195, 187), (203, 179, 167), (191, 163, 155), (175, 151, 139), (163, 135, 123), (151, 123, 111), (135, 111, 95), (123, 99, 83), (107, 87, 71), ( 95, 75, 59), ( 83, 63, 51), ( 67, 51, 39), ( 55, 43, 31), ( 39, 31, 23), ( 27, 19, 15), ( 15, 11, 7), (111, 131, 123), (103, 123, 111), ( 95, 115, 103), ( 87, 107, 95), ( 79, 99, 87), ( 71, 91, 79), ( 63, 83, 71), ( 55, 75, 63), ( 47, 67, 55), ( 43, 59, 47), ( 35, 51, 39), ( 31, 43, 31), ( 23, 35, 23), ( 15, 27, 19), ( 11, 19, 11), ( 7, 11, 7), (255, 243, 27), (239, 223, 23), (219, 203, 19), (203, 183, 15), (187, 167, 15), (171, 151, 11), (155, 131, 7), (139, 115, 7), (123, 99, 7), (107, 83, 0), ( 91, 71, 0), ( 75, 55, 0), ( 59, 43, 0), ( 43, 31, 0), ( 27, 15, 0), ( 11, 7, 0), ( 0, 0, 255), ( 11, 11, 239), ( 19, 19, 223), ( 27, 27, 207), ( 35, 35, 191), ( 43, 43, 175), ( 47, 47, 159), ( 47, 47, 143), ( 47, 47, 127), ( 47, 47, 111), ( 47, 47, 95), ( 43, 43, 79), ( 35, 35, 63), ( 27, 27, 47), ( 19, 19, 31), ( 11, 11, 15), ( 43, 0, 0), ( 59, 0, 0), ( 75, 7, 0), ( 95, 7, 0), (111, 15, 0), (127, 23, 7), (147, 31, 7), (163, 39, 11), (183, 51, 15), (195, 75, 27), (207, 99, 43), (219, 127, 59), (227, 151, 79), (231, 171, 95), (239, 191, 119), (247, 211, 139), (167, 123, 59), (183, 155, 55), (199, 195, 55), (231, 227, 87), (127, 191, 255), (171, 231, 255), (215, 255, 255), (103, 0, 0), (139, 0, 0), (179, 0, 0), (215, 0, 0), (255, 0, 0), (255, 243, 147), (255, 247, 199), (255, 255, 255), (159, 91, 83))
 
 ######################################################
-# MDL Importer Functions
+# MDL Importer Functions, from -> hlmviewer source file -> mathlib.c
 ######################################################
-def quaternion2matrix(quaternion):
-    return [[1.0 - 2.0 * quaternion[1] * quaternion[1] - 2.0 * quaternion[2] * quaternion[2], 2.0 * quaternion[0] * quaternion[1] - 2.0 * quaternion[3] * quaternion[2], 2.0 * quaternion[0] * quaternion[2] + 2.0 * quaternion[3] * quaternion[1], 0.0],
-            [2.0 * quaternion[0] * quaternion[1] + 2.0 * quaternion[3] * quaternion[2], 1.0 - 2.0 * quaternion[0] * quaternion[0] - 2.0 * quaternion[2] * quaternion[2], 2.0 * quaternion[1] * quaternion[2] - 2.0 * quaternion[3] * quaternion[0], 0.0],
-            [2.0 * quaternion[0] * quaternion[2] - 2.0 * quaternion[3] * quaternion[1], 2.0 * quaternion[1] * quaternion[2] + 2.0 * quaternion[3] * quaternion[0], 1.0 - 2.0 * quaternion[0] * quaternion[0] - 2.0 * quaternion[1] * quaternion[1], 0.0],
-            [0.0                  , 0.0                  , 0.0                  , 1.0]]
-
-def DotProduct(vtx1, vtx2):
-    return vtx1[0]*vtx2[0]+vtx1[1]*vtx2[1]+vtx1[2]*vtx2[2]
-
-def VectorTransform(vtx_tuple, bone_rotmatrix_tuple):
-    x = DotProduct(vtx_tuple, bone_rotmatrix_tuple[0]) # + bone_rotmatrix_tuple[0][3]
-    y = DotProduct(vtx_tuple, bone_rotmatrix_tuple[1]) # + bone_rotmatrix_tuple[1][3]
-    z = DotProduct(vtx_tuple, bone_rotmatrix_tuple[2]) # + bone_rotmatrix_tuple[2][3]
-    return quarkx.vect(x, y, z)
-
-def QuaternionMatrix(quaternion, matrix):
-	matrix[0][0] = 1.0 - 2.0 * quaternion[1] * quaternion[1] - 2.0 * quaternion[2] * quaternion[2]
-	matrix[1][0] = 2.0 * quaternion[0] * quaternion[1] + 2.0 * quaternion[3] * quaternion[2]
-	matrix[2][0] = 2.0 * quaternion[0] * quaternion[2] - 2.0 * quaternion[3] * quaternion[1]
-
-	matrix[0][1] = 2.0 * quaternion[0] * quaternion[1] - 2.0 * quaternion[3] * quaternion[2]
-	matrix[1][1] = 1.0 - 2.0 * quaternion[0] * quaternion[0] - 2.0 * quaternion[2] * quaternion[2]
-	matrix[2][1] = 2.0 * quaternion[1] * quaternion[2] + 2.0 * quaternion[3] * quaternion[0]
-
-	matrix[0][2] = 2.0 * quaternion[0] * quaternion[2] + 2.0 * quaternion[3] * quaternion[1]
-	matrix[1][2] = 2.0 * quaternion[1] * quaternion[2] - 2.0 * quaternion[3] * quaternion[0]
-	matrix[2][2] = 1.0 - 2.0 * quaternion[0] * quaternion[0] - 2.0 * quaternion[1] * quaternion[1]
-
 # m_frame = 0.0 for an interpolation's base frame.
 # If we were using interpolation it would be a value between 0.0 and 1.0.
-def QuaternionSlerp(q1, q2, q, m_frame=0.0):
+def QuaternionSlerp(q1, q2, m_frame=0.0):
     # Decide if one of the quaternions is backwards.
+    q = [0.0, 0.0, 0.0, 0.0]
     a = 0
     b = 0
     for i in xrange(4):
@@ -173,28 +141,62 @@ def QuaternionSlerp(q1, q2, q, m_frame=0.0):
             q[i] = sclp * q1[i] + sclq * q[i]
     return q
 
-def AngleQuaternion(angles, quaternion):
+def AngleQuaternion(angles):
     # FIXME: rescale the inputs to 1/2 angle
-    angle = angles[2] * 0.5
-    sy = math.sin(angle)
-    cy = math.cos(angle)
-    angle = angles[1] * 0.5
-    sp = math.sin(angle)
-    cp = math.cos(angle)
+    # r = roll, p = pitch, y = yaw
     angle = angles[0] * 0.5
     sr = math.sin(angle)
     cr = math.cos(angle)
+    angle = angles[1] * 0.5
+    sp = math.sin(angle)
+    cp = math.cos(angle)
+    angle = angles[2] * 0.5
+    sy = math.sin(angle)
+    cy = math.cos(angle)
 
-    quaternion[0] = sr*cp*cy-cr*sp*sy; # X
-    quaternion[1] = cr*sp*cy+sr*cp*sy; # Y
-    quaternion[2] = cr*cp*sy-sr*sp*cy; # Z
-    quaternion[3] = cr*cp*cy+sr*sp*sy; # W
-    return quaternion
+    return [sr*cp*cy-cr*sp*sy, # X
+            cr*sp*cy+sr*cp*sy, # Y
+            cr*cp*sy-sr*sp*cy, # Z
+            cr*cp*cy+sr*sp*sy] # W
+
+#Minimum difference to consider float "different"
+EQUAL_EPSILON = 0.001
+
+    
+######################################################
+# MDL Importer Functions, from -> hlmviewer source file -> studio_render.cpp
+######################################################
+def VectorCompare(v1, v2):
+    for i in range(3):
+        if (math.fabs(v1[i]-v2[i]) > EQUAL_EPSILON):
+            return 0
+    return 1
+
+
+
+######################################################
+# MDL Importer Functions, QuArK's own
+######################################################
+def quaternion2matrix(quaternion):
+    return [[1.0 - 2.0 * quaternion[1] * quaternion[1] - 2.0 * quaternion[2] * quaternion[2], 2.0 * quaternion[0] * quaternion[1] - 2.0 * quaternion[3] * quaternion[2], 2.0 * quaternion[0] * quaternion[2] + 2.0 * quaternion[3] * quaternion[1], 0.0],
+            [2.0 * quaternion[0] * quaternion[1] + 2.0 * quaternion[3] * quaternion[2], 1.0 - 2.0 * quaternion[0] * quaternion[0] - 2.0 * quaternion[2] * quaternion[2], 2.0 * quaternion[1] * quaternion[2] - 2.0 * quaternion[3] * quaternion[0], 0.0],
+            [2.0 * quaternion[0] * quaternion[2] - 2.0 * quaternion[3] * quaternion[1], 2.0 * quaternion[1] * quaternion[2] + 2.0 * quaternion[3] * quaternion[0], 1.0 - 2.0 * quaternion[0] * quaternion[0] - 2.0 * quaternion[1] * quaternion[1], 0.0],
+            [0.0                  , 0.0                  , 0.0                  , 1.0]]
+
+
+def Read_mdl_bone_anim_value(self, file, file_offset):
+    file.seek(file_offset, 0)
+    anim_value = mdl_bone_anim_value()
+    anim_value.load(file)
+   # anim_value.dump()
+    return anim_value
+
+
 
 ######################################################
 # MDL data structures
 ######################################################
-class mdl_face:
+class mdl_face: # Old code from ie_md0_Q_import.py
     facesfront = 1
     vertex_index = [0, 0, 0]
     binary_format = "<4i" #little-endian (<), 4 ints
@@ -222,7 +224,7 @@ class mdl_face:
         print "vertex index: ", self.vertex_index[2]
         print "------------------"
 
-class mdl_tex_coord:
+class mdl_tex_coord: # Old code from ie_md0_Q_import.py
     onseam = 0
     u = 0
     v = 0
@@ -254,7 +256,7 @@ class mdl_tex_coord:
         print "texture coordinate v: ", self.v
         print "------------------"
 
-class mdl_skin_info: # Done cdunde
+class mdl_skin_info: # Done cdunde from -> hlmviewer source file -> studio.h -> mstudiotexture_t
     name = ""               #item  0-63   64 char, skin name.
     flags = 0               #item  64     int, skin flags setting for special texture handling ex: CHROME, LIGHTING.
     width = 0               #item  65     int, skinwidth in pixels.
@@ -291,56 +293,6 @@ class mdl_skin_info: # Done cdunde
         print "height: ", self.height
         print "skin_offset: ", self.skin_offset
         print "--------------------"
-
-class mdl_texture_info:
-    group = 0   #item  0   int, This is the texture group setting, 0 = single, 1 = group (for animation textures)
-    nb = 0 # (used in load function below), int, number of pics for an animation texture
-    time = 0.0 # (used in load function below), float, time duration for each pic above
-    data = None # (used in load function below), texture data, an array of nb arrays of skinwidth * skinheight elements (picture size)
-    binary_format = "<i" #little-endian (<), 1 int for group setting
-
-    skins = []
-
-    def __init__(self):
-        self.group = 0
-        self.nb = 0
-        self.time = 0.0
-        self.data = None
-        self.binary_format = "<i" #little-endian (<), 1 int for group setting, changed in load function if animation textures exist.
-
-        self.skins = []
-
-    def load(self, file, num_skins, skin_width, skin_height):
-        # file is the model file & full path, ex: C:\Half-Life\valve\models\player\barney\barney.mdl
-        for i in xrange(0,num_skins):
-            temp_data = file.read(struct.calcsize(self.binary_format))
-            data = struct.unpack(self.binary_format, temp_data)
-            self.group = data[0]
-            if self.group == 0:
-                #make the single skin object(s) for model
-                self.skins.append(mdl_skin_info())
-                self.skins[i].load(file, skin_width, skin_height)
-                #self.skins[i].dump() # for testing only, comment out when done
-            else:
-                #make the animated skin objects for model
-                #reset the binary data to read for the texture info section since animation textures exist.
-                binary_format = "<if" #little-endian (<), 1 integer and 1 float
-                temp_data = file.read(struct.calcsize(binary_format))
-                data = struct.unpack(binary_format, temp_data)
-                self.nb = data[0]
-                self.time = data[1]
-                self.skins.append(mdl_skin_info())
-                self.skins[i].load(file, skin_width, skin_height)
-                #self.skins[i].dump() # for testing only, comment out when done
-        return self
-
-    def dump(self):
-        print "MDL Texture Info"
-        print "group setting: ", self.group
-        print "self.nb: ", self.nb
-        print "self.time: ", self.time
-        print "self.skins: ", self.skins
-        print "==============="
 
 class mdl_frame:
     group = 0   #item  0   int, This is the frame group setting, 0 = simple single frame, not 0 = group of frames
@@ -418,16 +370,19 @@ class mdl_frame:
         print "name: ", self.name
         print "===================="
 
-class mdl_bone_anim: # Done cdunde
+class mdl_bone_anim: # Done cdunde from -> hlmviewer source file -> studio.h -> mstudioanim_t
                             #item of data file, size & type,   description
-    offset = [0]*6          #item  0-5   6 unsigned short, beleive file offset to read animation data for bone(s).
+    offset = [0]*6          #item  0-5   6 unsigned short ints, file offsets to read animation data for bone(s) for EACH SET of ANIMATION FRAMES sequences.
+    file_position = 0       #QuArK hack: file offset of this structure
 
     binary_format = "<6H" #little-endian (<), see #item descriptions above.
 
     def __init__(self):
         self.offset = [0]*6
+        self.file_position = 0
 
     def load(self, file):
+        self.file_position = file.tell()
         temp_data = file.read(struct.calcsize(self.binary_format))
         data = struct.unpack(self.binary_format, temp_data)
         self.offset = [data[0], data[1], data[2], data[3], data[4], data[5]]
@@ -437,7 +392,7 @@ class mdl_bone_anim: # Done cdunde
         print "offset: ", self.offset
         print "-------------------"
 
-class mdl_bone: # Done cdunde
+class mdl_bone: # Done cdunde from -> hlmviewer source file -> studio.h -> mstudiobone_t
                             #item of data file, size & type,   description
     bone_index = 0          # For our own use later.
     name = ""               #item  0-31   32 char, bone name for symbolic links.
@@ -484,7 +439,7 @@ class mdl_bone: # Done cdunde
         print "scale: ", self.scale
         print "===================="
 
-class mdl_bone_control: # Done cdunde
+class mdl_bone_control: # Done cdunde from -> hlmviewer source file -> studio.h -> mstudiobonecontroller_t
                     #item of data file, size & type,   description
     bone = 0        #item  0      int, -1 = 0
     type = 0        #item  1      int, types = X, Y, Z, XR, YR, ZR or M.
@@ -524,7 +479,7 @@ class mdl_bone_control: # Done cdunde
         print "index: ", self.index
         print "===================="
 
-class mdl_attachment: # Done cdunde
+class mdl_attachment: # Done cdunde from -> hlmviewer source file -> studio.h -> mstudioattachment_t
                             #item of data file, size & type,   description
     name = ""               #item  0-31   32 char, attachment name.
     type = 0                #item  32     int, type of attachment.
@@ -598,7 +553,7 @@ class mdl_triangle: # Done cdunde
         print "index3v: ", self.index3v
         print "===================="
 
-class mdl_mesh: # Done cdunde
+class mdl_mesh: # Done cdunde from -> hlmviewer source file -> studio.h -> mstudiomesh_t
                             #item of data file, size & type,   description
     numtris = 0             #item  0   int, attachment name.
     tri_offset = 0          #item  1   int, offset of triangle data.
@@ -640,22 +595,22 @@ class mdl_mesh: # Done cdunde
         print "normindex: ", self.normindex
         print "===================="
 
-class mdl_vert_info: # Done cdunde # WTF is this JUNK!
-    vi = 0
-    binary_format = "<b" #little-endian (<), 1 signed byte.
+class mdl_vert_info: # Gives a bone_index for each Component's vertex that is assigned to that bone.
+    bone_index = 0
+    binary_format = "<B" #little-endian (<), 1 single byte (unsigned int).
 
     def __init__(self):
-        self.vi = 0
+        self.bone_index = 0
 
     def load(self, file):
         temp_data = file.read(struct.calcsize(self.binary_format))
         data = struct.unpack(self.binary_format, temp_data)
-        self.vi = data[0]
+        self.bone_index = data[0]
         return self
 
-    def dump(self):
-        print "MDL Vertex Info"
-        print "vi: ",self.vi
+    def dump(self, bodypart, model, vtx):
+        print "MDL Vertex Info for, bodypart, model, vtx:", bodypart, model, vtx
+        print "bone_index: ",self.bone_index
         print "===================="
 
 class mdl_vertex: # Done cdunde
@@ -668,10 +623,7 @@ class mdl_vertex: # Done cdunde
     def load(self, file):
         temp_data = file.read(struct.calcsize(self.binary_format))
         data = struct.unpack(self.binary_format, temp_data)
-        #### If we need to swap vertex x,y or z to correct direction in the QuArK editor, do it here.
-    #    self.v = [-data[0], data[2], -data[1]] # Ours for Barney
-        self.v = [-data[0], data[2], data[1]] # Ours for Helicopter
-    #    self.v = [data[0], data[1], data[2]] # As in file.
+        self.v = [data[0], data[1], data[2]]
         return self
 
     def dump(self):
@@ -679,7 +631,7 @@ class mdl_vertex: # Done cdunde
         print "v: ",self.v[0], self.v[1], self.v[2]
         print "===================="
 
-class mdl_model: # Done cdunde
+class mdl_model: # Done cdunde from -> hlmviewer source file -> studio.h -> mstudiomodel_t
                             #item of data file, size & type,   description
     name = ""               #item  0-63   64 char, model name.
     type = 0                #item  64     int, type of model.
@@ -763,7 +715,7 @@ class mdl_model: # Done cdunde
         print "group_offset: ", self.group_offset
         print "===================="
 
-class mdl_bodypart: # Done cdunde
+class mdl_bodypart: # Done cdunde from -> hlmviewer source file -> studio.h -> mstudiobodyparts_t
                             #item of data file, size & type,   description
     name = ""               #item  0-63   64 char, bodypart name.
     nummodels = 0           #item  64     int, number of bodypart models.
@@ -801,15 +753,15 @@ class mdl_bodypart: # Done cdunde
         print "model_offset: ", self.model_offset
         print "===================="
 
-class mdl_sequence_desc: # Done cdunde
+class mdl_sequence_desc: # Done cdunde from -> hlmviewer source file -> studio.h -> mstudioseqdesc_t
                               #item of data file, size & type,   description
     label = ""                #item  0-31   32 char, sequence label.
     fps = 0                   #item  32     float, frames per second.
     flags = 0                 #item  33     int, looping/non-looping flags.
     activity = 0              #item  34     int, unknown item.
     actweight = 0             #item  35     int, unknown item.
-    numevents = 0             #item  36     int, number of vertices per frames.
-    event_offset = 0          #item  37     int, index (Offset) to this events data.
+    numevents = 0             #item  36     int, number of events.
+    event_offset = 0          #item  37     int, index (Offset) to THIS events data.
     numframes = 0             #item  38     int, number of frames per sequence.
     numpivots = 0             #item  39     int, number of foot pivots.
     pivot_offset = 0          #item  40     int, index (Offset) to the pivot data.
@@ -899,6 +851,12 @@ class mdl_sequence_desc: # Done cdunde
         self.exitnode = data[65]
         self.nodeflags = data[66]
         self.nextseq = data[67]
+
+        global SkipAnimation
+        if SkipAnimation:
+            self.numframes = 0
+            self.numblends = 0
+
         return self
 
     def dump(self):
@@ -933,7 +891,7 @@ class mdl_sequence_desc: # Done cdunde
         print "nextseq: ", self.nextseq
         print "===================="
 
-class mdl_hitbox: # Done cdunde
+class mdl_hitbox: # Done cdunde from -> hlmviewer source file -> studio.h -> mstudiobbox_t
                             #item of data file, size & type,   description
     bone = 0                #item  0      int, bone index.
     group = 0               #item  1      int, intersection group.
@@ -965,7 +923,7 @@ class mdl_hitbox: # Done cdunde
         print "bbmax: ", self.bbmax
         print "===================="
 
-class mdl_demand_hdr_group: # Done cdunde
+class mdl_demand_hdr_group: # Done cdunde from -> hlmviewer source file -> studio.h -> studioseqhdr_t
                             #item of data file, size & type,   description
     id = 0                  #item  0      int, group id.
     version = 0             #item  1      int, group version.
@@ -1001,7 +959,48 @@ class mdl_demand_hdr_group: # Done cdunde
         print "length: ", self.length
         print "===================="
 
-class mdl_events: # Done cdunde
+class mdl_demand_group: # Done cdunde from -> hlmviewer source file -> studio.h -> mstudioseqgroup_t
+                            #item of data file, size & type,   description
+    label = ""              #item  0-31   32 char, group label
+    name = ""               #item  32-95  64 char, group name
+    cache = 0               #item  96     int, cache index pointer
+    data = 0                #item  97     int, hack for group 0
+
+    binary_format = "<32c64c2i" #little-endian (<), see #item descriptions above.
+
+    def __init__(self):
+        self.label = ""
+        self.name = ""
+        self.cache = 0
+        self.data = 0
+
+    def load(self, file):
+        temp_data = file.read(struct.calcsize(self.binary_format))
+        data = struct.unpack(self.binary_format, temp_data)
+        char = 32 # The above data items = 0.
+        for c in xrange(0, char):
+            if data[c] == "\x00":
+                continue
+            self.label = self.label + data[c]
+
+        char = 64 + 32 # The above data items = 32.
+        for c in xrange(32, char):
+            if data[c] == "\x00":
+                continue
+            self.name = self.name + data[c]
+        self.cache = data[96]
+        self.data = data[97]
+        return self
+
+    def dump(self):
+        print "MDL Demand Seq Group"
+        print "label: ", self.label
+        print "name: ", self.name
+        print "cache: ", self.cache
+        print "data: ", self.data
+        print "===================="
+
+class mdl_events: # Done cdunde from -> hlmviewer source file -> studio.h -> mstudioevent_t
                             #item of data file, size & type,   description
     frame = 0               #item  0     int, frame number.
     event = 0               #item  1     int, event number.
@@ -1037,7 +1036,7 @@ class mdl_events: # Done cdunde
         print "options: ", self.options
         print "===================="
 
-class mdl_pivots: # Done cdunde
+class mdl_pivots: # Done cdunde from -> hlmviewer source file -> studio.h -> mstudiopivot_t
                             #item of data file, size & type,   description
     org = [0.0]*3           #item  0-2   3 floats, pivot point.
     start = 0               #item  3     int.
@@ -1059,19 +1058,20 @@ class mdl_pivots: # Done cdunde
         return self
 
     def dump(self):
-        print "MDL Pivots"
-        print "org: ", self.org
-        print "start: ", self.start
-        print "end: ", self.end
-        print "===================="
+        origin = str(self.org)
+        tobj.logcon ("    org: %s" % origin)
+        tobj.logcon ("  start: " + str(self.start))
+        tobj.logcon ("    end: " + str(self.end))
 
-class mdl_anim_frames: # Done cdunde
+class mdl_bone_anim_value: # Done cdunde from -> hlmviewer source file -> studio.h -> mstudioanimvalue_t
                             #item of data file, size & type,   description
-    valid = 0               #item  0     byte.
-    total = 0               #item  1     byte.
-    value = 0               #item  2     short.
+    valid = 0               #item  0     unsigned char int, 1 byte.
+    total = 0               #item  1     unsigned char int, 1 byte.
+    value = 0               #item  0-1   signed short int, 2 bytes.
 
-    binary_format = "<2Bh" #little-endian (<), see #item descriptions above.
+    #This is a C++ union (two different ways to read the same bitstream); we'll do both at the same time
+    binary_format1 = "<2B" #little-endian (<), see #item descriptions above.
+    binary_format2 = "<h" #little-endian (<), see #item descriptions above.
 
     def __init__(self):
         self.valid = 0
@@ -1079,11 +1079,12 @@ class mdl_anim_frames: # Done cdunde
         self.value = 0
 
     def load(self, file):
-        temp_data = file.read(struct.calcsize(self.binary_format))
-        data = struct.unpack(self.binary_format, temp_data)
+        temp_data = file.read(struct.calcsize(self.binary_format1))
+        data = struct.unpack(self.binary_format1, temp_data)
         self.valid = data[0]
         self.total = data[1]
-        self.value = data[2]
+        data = struct.unpack(self.binary_format2, temp_data)
+        self.value = data[0]
         return self
 
     def dump(self):
@@ -1093,99 +1094,310 @@ class mdl_anim_frames: # Done cdunde
         print "value: ", self.value
         print "===================="
 
-def CalcBoneQuaternion(file, m_frame, pbone, panim):
-    q = q1 = q2 = [0.0]*4
-    angle1 = angle2 = [0.0]*3
-    for j in xrange(3):
-        if panim[j+3] == 0:
-            angle2[j] = angle1[j] = pbone.value[j+3]
+def CalcBoneAdj(self, m_controller, m_mouth):
+    m_adj = []
+
+    for j in range(self.num_bone_controls):
+        pbonecontroller = self.bone_controls[j]
+        i = pbonecontroller.index;
+        if (i <= 3):
+            # check for 360% wrapping
+            if (pbonecontroller.type & STUDIO_RLOOP):
+                value = m_controller[i] * (360.0/256.0) + pbonecontroller.start
+            else:
+              #  value = m_controller[i] / 255.0
+                value = m_controller[i]
+                if (value < 0):
+                    value = 0.0
+                elif (value > 1.0):
+                    value = 1.0
+              #  value = (1.0 - value) * pbonecontroller.start + value * pbonecontroller.end
         else:
-            file.seek(panim[j+3], 0)
-            value = struct.unpack("<f", file.read(struct.calcsize("f")))
-            value = value[0]
-            test_value = str(value)
-            if test_value.find("#") != -1:
-                value = float(test_value.split("#")[0])
-            angle2[j] = angle1[j] = value # I THINK this is right for angle2, have Dan check.
-            angle1[j] = pbone.value[j+3] + angle1[j] * pbone.scale[j+3]
-            angle2[j] = pbone.value[j+3] + angle2[j] * pbone.scale[j+3]
-    if str(angle1) != str(angle2):
-        q1 = AngleQuaternion(angle1, q1)
-        q2 = AngleQuaternion(angle2, q2)
-        q = QuaternionSlerp(q1, q2, q, 0.0)
+            value = m_mouth / 64.0
+            if (value > 1.0):
+                value = 1.0
+            value = (1.0 - value) * pbonecontroller.start + value * pbonecontroller.end
+
+        if ((pbonecontroller.type & STUDIO_TYPES) == STUDIO_XR) \
+        or ((pbonecontroller.type & STUDIO_TYPES) == STUDIO_YR) \
+        or ((pbonecontroller.type & STUDIO_TYPES) == STUDIO_ZR):
+            if i == 0:
+                m_adj += [value * (math.pi / 180.0)]
+            else:
+                m_adj += [value]
+        elif ((pbonecontroller.type & STUDIO_TYPES) == STUDIO_X) \
+          or ((pbonecontroller.type & STUDIO_TYPES) == STUDIO_Y) \
+          or ((pbonecontroller.type & STUDIO_TYPES) == STUDIO_Z):
+            m_adj += [value]
+
+    return m_adj
+
+def CalcBoneQuaternion(self, m_frame, s, pbone, panim, m_adj):
+    file = self.file
+    angle1 = [0.0, 0.0, 0.0]
+    angle2 = [0.0, 0.0, 0.0]
+
+    quat = [0.0, 0.0, 0.0, 0.0]
+
+    bone = self.bones[pbone]
+
+    for i in range(3):
+        if panim.offset[i+3] == 0:
+            angle1[i] = bone.value[i+3] #default
+            angle2[i] = bone.value[i+3] #default
+        else:
+            panimvalue = panim.file_position + panim.offset[i+3]
+            animvalue = Read_mdl_bone_anim_value(self, file, panimvalue)
+            k = m_frame
+            # find span of values that includes the frame we want
+            while (animvalue.total <= k):
+                k -= animvalue.total
+                panimvalue += (animvalue.valid + 1) * struct.calcsize(mdl_bone_anim_value.binary_format1)
+                animvalue = Read_mdl_bone_anim_value(self, file, panimvalue)
+            # Bah, missing blend!
+            if (animvalue.valid > k):
+                panimvalueX = panimvalue + (k+1) * struct.calcsize(mdl_bone_anim_value.binary_format1)
+                animvalue = Read_mdl_bone_anim_value(self, file, panimvalueX)
+                angle1[i] = animvalue.value
+                if (animvalue.valid > k + 1):
+                    panimvalueX = panimvalue + (k+2) * struct.calcsize(mdl_bone_anim_value.binary_format1)
+                    animvalue = Read_mdl_bone_anim_value(self, file, panimvalueX)
+                    angle2[i] = animvalue.value
+                else:
+                    if (animvalue.total > k + 1):
+                        angle2[i] = angle1[i]
+                    else:
+                        panimvalueX = panimvalue + (animvalue.valid+2) * struct.calcsize(mdl_bone_anim_value.binary_format1)
+                        animvalue = Read_mdl_bone_anim_value(self, file, panimvalueX)
+                        angle2[i] = animvalue.value
+            else:
+                panimvalueX = panimvalue + (animvalue.valid) * struct.calcsize(mdl_bone_anim_value.binary_format1)
+                animvalue = Read_mdl_bone_anim_value(self, file, panimvalueX)
+                angle1[i] = animvalue.value
+                if (animvalue.total > k + 1):
+                    angle2[i] = angle1[i]
+                else:
+                    panimvalueX = panimvalue + (animvalue.valid+2) * struct.calcsize(mdl_bone_anim_value.binary_format1)
+                    animvalue = Read_mdl_bone_anim_value(self, file, panimvalueX)
+                    angle2[i] = animvalue.value
+            angle1[i] = bone.value[i+3] + angle1[i] * bone.scale[i+3]
+            angle2[i] = bone.value[i+3] + angle2[i] * bone.scale[i+3]
+
+        if (bone.bonecontroller[i+3] != -1):
+            angle1[i] += m_adj[bone.bonecontroller[i+3]]
+            angle2[i] += m_adj[bone.bonecontroller[i+3]]
+
+    if not VectorCompare(angle1, angle2):
+        q1 = AngleQuaternion(angle1)
+        q2 = AngleQuaternion(angle2)
+        quat = QuaternionSlerp(q1, q2, s)
     else:
-        q = AngleQuaternion(angle1, q)
-    for j in xrange(len(q)):
-        test_value = str(q[j])
-        if test_value.find("e") != 0:
-            q[j] = float(test_value.split("e")[0]) #/ 10000
-    q = (q[0], q[1], q[2], q[3])
+        quat = AngleQuaternion(angle1)
 
-    return q
+    return quat
 
-def CalcBonePosition(file, m_frame, pbone, panim):
-    for j in xrange(3):
-        if panim[j] != 0:
-            file.seek(panim[j], 0)
-            value = struct.unpack("<f", file.read(struct.calcsize("f")))
-            value = value[0]
-            test_value = str(value)
-            if test_value.find("#") != -1:
-                value = float(test_value.split("#")[0])
-            pbone.value[j] = value * pbone.scale[j]
-    for j in range(3):
-        test_value = str(pbone.value[j])
-        if test_value.find("e") != 0:
-            pbone.value[j] = float(test_value.split("e")[0]) #/ 10000
-    pos = (pbone.value[0], pbone.value[1], pbone.value[2])
+def CalcBonePosition(self, m_frame, s, pbone, panim, m_adj):
+    file = self.file
+    pos = [0.0, 0.0, 0.0]
+
+    bone = self.bones[pbone]
+
+    for i in range(3):
+        pos[i] = bone.value[i] # default
+        if panim.offset[i] != 0:
+            panimvalue = panim.file_position + panim.offset[i]
+            animvalue = Read_mdl_bone_anim_value(self, file, panimvalue)
+            k = m_frame
+            # find span of values that includes the frame we want
+            while (animvalue.total <= k):
+                k -= animvalue.total
+                panimvalue += (animvalue.valid + 1) * struct.calcsize(mdl_bone_anim_value.binary_format1)
+                animvalue = Read_mdl_bone_anim_value(self, file, panimvalue)
+            # if we're inside the span
+            if (animvalue.valid > k):
+                # and there's more data in the span
+                if (animvalue.valid > k + 1):
+                    panimvalueX = panimvalue + (k+1) * struct.calcsize(mdl_bone_anim_value.binary_format1)
+                    animvalue = Read_mdl_bone_anim_value(self, file, panimvalueX)
+                    panimvalueX = panimvalue + (k+2) * struct.calcsize(mdl_bone_anim_value.binary_format1)
+                    animvalue2 = Read_mdl_bone_anim_value(self, file, panimvalueX)
+                    pos[i] += (animvalue.value * (1.0 - s) + s * animvalue2.value) * bone.scale[i]
+                else:
+                    panimvalueX = panimvalue + (k+1) * struct.calcsize(mdl_bone_anim_value.binary_format1)
+                    animvalue = Read_mdl_bone_anim_value(self, file, panimvalueX)
+                    pos[i] += animvalue.value * bone.scale[i]
+            else:
+                # are we at the end of the repeating values section and there's another section with data?
+                if (animvalue.total <= k + 1):
+                    panimvalueX = panimvalue + (animvalue.valid) * struct.calcsize(mdl_bone_anim_value.binary_format1)
+                    animvalue = Read_mdl_bone_anim_value(self, file, panimvalueX)
+                    panimvalueX = panimvalue + (animvalue.valid+2) * struct.calcsize(mdl_bone_anim_value.binary_format1)
+                    animvalue2 = Read_mdl_bone_anim_value(self, file, panimvalueX)
+                    pos[i] += (animvalue.value * (1.0 - s) + s * animvalue2.value) * bone.scale[i]
+                else:
+                    panimvalueX = panimvalue + (animvalue.valid) * struct.calcsize(mdl_bone_anim_value.binary_format1)
+                    animvalue = Read_mdl_bone_anim_value(self, file, panimvalueX)
+                    pos[i] += animvalue.value * bone.scale[i]
+        if (bone.bonecontroller[i] != -1):
+            pos[i] += m_adj[bone.bonecontroller[i]]
 
     return pos
 
-def CalcRotations(file, m_frame, pbone, panim):
-    bone_pos = CalcBonePosition(file, m_frame, pbone, panim)
-    bone_quat = CalcBoneQuaternion(file, m_frame, pbone, panim)
-    return bone_pos, bone_quat
-
-def SetUpBones(self): # self = the mdl_obj.
+def SetUpBones(self, QuArK_bones): # self = the mdl_obj. Done cdunde from -> hlmviewer source file -> studio_render.cpp -> StudioModel::SetUpBones
+    if logging == 1:
+        tobj.logcon ("")
+        tobj.logcon ("#########################")
+        tobj.logcon ("SetUpBones Section")
+        tobj.logcon ("#########################")
     file = self.file
     pbones = self.bones
     pseqdesc = self.sequence_descs
-    # Go through all the animation sequences (frame groups).
+
+    #Determine end of file
+    oldpos = file.tell()
+    file.seek(0, 2)
+    endpos = file.tell()
+    file.seek(oldpos, 0) #Restore old position
+
+    # Go through all the animation sequences (frame groups) and fill the ModelComponentList['bonelist'][bone.name]['frames'] data.
+    bonelist = editor.ModelComponentList['bonelist']
+    if logging == 1:
+        tobj.logcon ("num_anim_seq: " + str(self.num_anim_seq))
+        tobj.logcon ("=========================")
     for m_sequence in xrange(self.num_anim_seq):
         seq_pivots = []
         seq_panims = []
-        seq_frames = []
         seq = pseqdesc[m_sequence]
-        seq_name = seq.label
+        if (seq.numblends == 0) or (seq.numframes == 0):
+            #Animation has no frames? Skip it!
+            continue
 
+        seq_name = seq.label
+        if logging == 1:
+            tobj.logcon ("========================")
+            tobj.logcon ("seq %d: sequence name -> %s" % (m_sequence+1, seq_name))
+            tobj.logcon ("========================")
+        #Not used:
         file.seek(self.ofsBegin + seq.pivot_offset, 0)
-        for p in xrange(seq.numpivots+1):
+        if logging == 1:
+            tobj.logcon ("seq.numpivots: " + str(seq.numpivots))
+        for p in xrange(seq.numpivots):
             seq_pivots.append(mdl_pivots())
             seq_pivots[p].load(file)
-          #  seq_pivots[p].dump()
-        file.seek(self.ofsBegin + seq.anim_offset, 0)
-        for pbone in range(len(pbones)):
-            seq_panims.append(mdl_bone_anim())
-            seq_panims[pbone].load(file)
-          #  seq_panims[pbone].dump()
-        for m_frame in xrange(seq.numframes):
-            frames = []
-            frame_name = seq_name + " frame " + str(m_frame+1)
-            for pbone in range(len(pbones)):
-                frame = [frame_name, []]
-                bone = pbones[pbone]
-                # SLOW DOWN, panim does NOT change during a m_sequence,
-                # but it is constantly calling to re-read its value from the file.
-                # A list should be made at the start of m_sequence storing those
-                # values per bone and pass those to CalcRotations instead for each bone.
-                panim = seq_panims[pbone].offset
-                bone_pos, bone_quat = CalcRotations(file, m_frame, bone, panim)
-                frame[1] = frame[1] + [bone_pos, bone_quat]
-                frames.append(frame)
-            seq_frames.append(frames)
-        self.frames.append(seq_frames)
+            if logging == 1:
+                tobj.logcon ("mdl_pivot: " + str(p+1))
+                tobj.logcon ("----------")
+                seq_pivots[p].dump()
+                tobj.logcon ("")
 
-class mdl_obj: # Done cdunde
+        #Read in the offsets
+        if seq.seqgroup == 0:
+            seq_fileoffset = self.ofsBegin + self.demand_seq_groups[seq.seqgroup].data
+        else:
+            seq_fileoffset = self.ofsBegin + self.anim_seq_offset + (m_sequence * struct.calcsize(seq.binary_format))
+
+        file.seek(seq_fileoffset + seq.anim_offset, 0)
+        if logging == 1:
+            total = len(pbones)*6*2
+            tobj.logcon ("----------------")
+            tobj.logcon ("start bones data: NumBones " + str(len(pbones)) + " x 6 offsets x 2 bytes ea. = " + str(total) + " bytes")
+            tobj.logcon ("      pointer at start seq " + str(m_sequence) + ": " + str(file.tell()))
+            tobj.logcon ("      frames data pointer s/b " + str(file.tell()+total))
+            tobj.logcon ("----------------")
+        for m_blend in range(seq.numblends):
+            seq_panims.append([])
+            for pbone in range(len(self.bones)):
+                seq_panims[m_blend].append(mdl_bone_anim())
+                seq_panims[m_blend][pbone].load(file)
+              #  seq_panims[m_blend][pbone].dump()
+
+        #Get the bone position + rotation (vector + quaternion)
+        if logging == 1:
+            tobj.logcon ("")
+            tobj.logcon ("----------------")
+            tobj.logcon ("start frames data pointer at: " + str(file.tell()))
+            tobj.logcon ("      seq.numframes: " + str(seq.numframes))
+            tobj.logcon ("----------------")
+        for m_frame in xrange(seq.numframes):
+            pos = [[]] * len(self.bones)
+            quat = [[]] * len(self.bones)
+
+            #@FIXME:
+            m_controller = [0.0, 0.0, 0.0, 0.0]
+            m_mouth = 0.0
+
+            # add in programatic controllers
+            m_adj = CalcBoneAdj(self, m_controller, m_mouth)
+
+            for pbone in range(len(self.bones)):
+                panim = seq_panims[0][pbone]
+                bone = self.bones[pbone]
+                #dirty = float(m_frame) / float(seq.numframes)
+                #quat[pbone] = CalcBoneQuaternion(self, 0, dirty, pbone, panim, m_adj)
+                #pos[pbone] = CalcBonePosition(self, 0, dirty, pbone, panim, m_adj)
+                quat[pbone] = CalcBoneQuaternion(self, m_frame, 0.0, pbone, panim, m_adj)
+                pos[pbone] = CalcBonePosition(self, m_frame, 0.0, pbone, panim, m_adj)
+
+            if (seq.motiontype & STUDIO_X):
+                pos[seq.motionbone][0] = 0.0
+            if (seq.motiontype & STUDIO_Y):
+                pos[seq.motionbone][1] = 0.0
+            if (seq.motiontype & STUDIO_Z):
+                pos[seq.motionbone][2] = 0.0
+
+            if (seq.numblends > 1):
+                panim = seq_panims[1][pbone]
+
+                #FIXME: NEED TO DO!
+                Dump = """float	        	s;
+
+    	CalcRotations( pos2, q2, pseqdesc, panim, m_frame );
+    	s = m_blending[0] / 255.0;
+
+    	SlerpBones( quat, pos, q2, pos2, s );
+
+    	if (pseqdesc->numblends == 4)
+        {
+        	panim += m_pstudiohdr->numbones;
+        	CalcRotations( pos3, q3, pseqdesc, panim, m_frame );
+
+        	panim += m_pstudiohdr->numbones;
+        	CalcRotations( pos4, q4, pseqdesc, panim, m_frame );
+
+        	s = m_blending[0] / 255.0;
+        	SlerpBones( q3, pos3, q4, pos4, s );
+
+        	s = m_blending[1] / 255.0;
+        	SlerpBones( quat, pos, q3, pos3, s );
+        }
+    }"""
+
+            frame_name = seq_name + " frame " + str(m_frame+1)
+            for pbone in range(len(self.bones)):
+                bone = self.bones[pbone]
+
+                bone_pos = (pos[pbone][0], pos[pbone][1], pos[pbone][2])
+                tempmatrix = quaternion2matrix(quat[pbone])
+                bone_matrix = ((tempmatrix[0][0], tempmatrix[0][1], tempmatrix[0][2]), (tempmatrix[1][0], tempmatrix[1][1], tempmatrix[1][2]), (tempmatrix[2][0], tempmatrix[2][1], tempmatrix[2][2]))
+                if bone.parent != -1:
+                    parent_name = QuArK_bones[bone.parent].name
+                    parent_pos = quarkx.vect(bonelist[parent_name]['frames'][frame_name + ":mf"]['position'])
+                    parent_matrix = quarkx.matrix(bonelist[parent_name]['frames'][frame_name + ":mf"]['rotmatrix'])
+                    bone_pos = parent_pos + (parent_matrix * quarkx.vect(bone_pos))
+                    bone_matrix = parent_matrix * quarkx.matrix(bone_matrix)
+                    bone_pos = bone_pos.tuple
+                    bone_matrix = bone_matrix.tuple
+
+                # fills the ModelComponentList['bonelist'][bone.name]['frames'] data.
+                bone_name = QuArK_bones[pbone].name
+                if not bonelist[bone_name]['frames'].has_key(frame_name + ":mf"):
+                    bonelist[bone_name]['frames'][frame_name + ":mf"] = {}
+                bone_data = {}
+                bone_data['position'] = bone_pos
+                bone_data['rotmatrix'] = bone_matrix
+                bonelist[bone_name]['frames'][frame_name + ":mf"] = bone_data
+
+class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studiohdr_t
     origin = quarkx.vect(0.0, 0.0, 0.0) ### For QuArK's model placement in the editor.
     #Header Structure          #item of data file, size & type,   description
     ident = ""                 #item  0-3   4 char, The version of the file (Must be IDST)
@@ -1236,7 +1448,6 @@ class mdl_obj: # Done cdunde
     hitboxes = []
     attachments = []
     bodyparts = []
-    frames = []
     anim_seqs_data = []
 
     texture_info = None
@@ -1254,7 +1465,6 @@ class mdl_obj: # Done cdunde
         self.hitboxes = []          # A list of the hitboxes.
         self.attachments = []       # A list of the attachments.
         self.bodyparts = []         # A list of the bodyparts.
-        self.frames = []            # A list of the animation frames.
         self.anim_seqs_data = []    # A list of the animation sequences sub-list of seq_pivots, seq_panims, seq_frames from SetUpBones function.
 
         self.tex_coords = []        # A list of integers, 1 for "onseam" and 2 for the s,t or u,v texture coordinates.
@@ -1283,7 +1493,7 @@ class mdl_obj: # Done cdunde
             if self.version == 6:
                 return self.version
             else:
-                return None
+                return None, None, None, self.ident, self.version
 
         self.length = data[69]
         self.eyeposition = data[70],data[71],data[72]
@@ -1318,14 +1528,20 @@ class mdl_obj: # Done cdunde
         self.sound_groups_offset = data[109]
         self.num_transitions = data[110]
         self.transitions_offset = data[111]
+        if logging == 1:
+            tobj.logcon ("")
+            tobj.logcon ("#####################################################################")
+            tobj.logcon ("Header Data Size in bytes: " + str(file.tell()))
+            tobj.logcon ("#####################################################################")
 
         # load the bones data
         file.seek(ofsBegin + self.bones_offset, 0)
         for i in xrange(self.num_bones):
-            self.bones.append(mdl_bone())
-            self.bones[i].bone_index = i
-            self.bones[i].load(file)
-          #  self.bones[i].dump()
+            bone = mdl_bone()
+            bone.bone_index = i
+            bone.load(file)
+          #  bone.dump()
+            self.bones.append(bone) # Correct way! Why put in list, then dig into list to get it back! 8-| Change others where needed.
 
         # load the bone controllers data
         file.seek(ofsBegin + self.bone_controls_offset, 0)
@@ -1341,19 +1557,20 @@ class mdl_obj: # Done cdunde
             self.hitboxes[i].load(file)
           #  self.hitboxes[i].dump()
 
+        # load the header for demand sequence group data
+        file.seek(ofsBegin + self.demand_hdr_offset, 0)
+        for i in xrange(self.num_demand_hdr_groups):
+     #HAY!       self.demand_seq_groups.append(mdl_demand_hdr_group()) # MY DATA THAT USE TO WORK.
+            self.demand_seq_groups.append(mdl_demand_group()) # DAN'S DATA SWITCH ON ME. 8-(
+            self.demand_seq_groups[i].load(file)
+          #  self.demand_seq_groups[i].dump()
+
         # load the animation sequence descriptions data.
         file.seek(ofsBegin + self.anim_seq_offset, 0)
         for i in xrange(self.num_anim_seq):
             self.sequence_descs.append(mdl_sequence_desc())
             self.sequence_descs[i].load(file)
           #  self.sequence_descs[i].dump()
-
-        # load the header for demand sequence group data
-        file.seek(ofsBegin + self.demand_hdr_offset, 0)
-        for i in xrange(self.num_demand_hdr_groups):
-            self.demand_seq_groups.append(mdl_demand_hdr_group())
-            self.demand_seq_groups[i].load(file)
-          #  self.demand_seq_groups[i].dump()
 
         # load the skins group data
         file.seek(ofsBegin + self.texture_index_offset, 0)
@@ -1439,15 +1656,6 @@ class mdl_obj: # Done cdunde
                 self.bodyparts[i].models[j].load(file)
               #  self.bodyparts[i].models[j].dump()
 
-        # load the models vert info data (may not need these) # What is this 1?
-        """for i in xrange(self.num_bodyparts):
-            for j in xrange(self.bodyparts[i].nummodels):
-                file.seek(ofsBegin + self.bodyparts[i].models[j].vert_info_offset, 0)
-                for k in xrange(self.bodyparts[i].models[j].numverts):
-                    self.bodyparts[i].models[j].verts_info.append(mdl_vert_info())
-                    self.bodyparts[i].models[j].verts_info[k].load(file)
-                    self.bodyparts[i].models[j].verts_info[k].dump()"""
-
         # load the bodyparts models meshes data
         for i in xrange(self.num_bodyparts):
             for j in xrange(self.bodyparts[i].nummodels):
@@ -1483,7 +1691,6 @@ class mdl_obj: # Done cdunde
                     Component.appenditem(sdogroup)
                     Component.appenditem(skingroup)
                     Component.appenditem(framesgroup)
-                    # To get Component = ComponentList[i+(j * nummesh)+k]
                     ComponentList = ComponentList + [Component]
 
         pseqdesc = self.sequence_descs
@@ -1493,7 +1700,7 @@ class mdl_obj: # Done cdunde
             seq_pivots = []
             seq = pseqdesc[m_sequence]
             file.seek(self.ofsBegin + seq.pivot_offset, 0)
-            for p in xrange(seq.numpivots+1):
+            for p in xrange(seq.numpivots):
                 seq_pivots.append(mdl_pivots())
                 seq_pivots[p].load(file)
             seq_data.append(seq_pivots)
@@ -1502,63 +1709,38 @@ class mdl_obj: # Done cdunde
         # Create the bones, if any.
         QuArK_bones = [] # A list to store all QuArK bones created.
         if len(self.bones) != 0 and len(ComponentList) != 0:
-            org = self.anim_seqs_data[0][0][0].org
             for mdlbone in xrange(len(self.bones)):
                 bone = self.bones[mdlbone]
                 new_bone = quarkx.newobj(folder_name + "_" + bone.name + ":bone")
                 new_bone['flags'] = (0,0,0,0,0,0)
                 new_bone['show'] = (1.0,)
-    #            position = quarkx.vect(-bone.value[0], bone.value[2], -bone.value[1]) # Ours for Barney
-            #    position = quarkx.vect(-bone.value[0], bone.value[2], bone.value[1]) # Ours for Helicopter
-    #            position = quarkx.vect(bone.value[0], bone.value[1], bone.value[2]) # As in file.
-                position = quarkx.vect(bone.value[0], -bone.value[2], -bone.value[1]) # Ours for Helicopter
-            #    if mdlbone == 0:
-            #        self.origin = position * -1
-            #        position = position + self.origin
-                new_bone['bonecontroller'] = (float(str(bone.bonecontroller[3])),)
+                bone_pos = quarkx.vect(bone.value[0], bone.value[1], bone.value[2])
+                quat = AngleQuaternion([bone.value[3], bone.value[4], bone.value[5]])
+                tempmatrix = quaternion2matrix(quat)
+                #new_bone['quaternion'] = (qx,qy,qz,qw)
+                bone_matrix = quarkx.matrix((tempmatrix[0][0], tempmatrix[0][1], tempmatrix[0][2]), (tempmatrix[1][0], tempmatrix[1][1], tempmatrix[1][2]), (tempmatrix[2][0], tempmatrix[2][1], tempmatrix[2][2]))
                 new_bone['parent_index'] = str(bone.parent)
                 if bone.parent == -1:
-                    new_bone.position = position
-                    pos = new_bone['position'] = new_bone.position.tuple
+                    new_bone.position = bone_pos
+                    new_bone.rotmatrix = bone_matrix
+                    new_bone['position'] = new_bone.position.tuple
+                    tempmatrix = new_bone.rotmatrix.tuple
+                    new_bone['rotmatrix'] = (tempmatrix[0][0], tempmatrix[0][1], tempmatrix[0][2], tempmatrix[1][0], tempmatrix[1][1], tempmatrix[1][2], tempmatrix[2][0], tempmatrix[2][1], tempmatrix[2][2])
                     new_bone['parent_name'] = "None"
                     new_bone['bone_length'] = (0.0, 0.0, 0.0)
-                    flip = None
-                    if str(pos).find("e") != -1:
-                        amt = []
-                        for i in xrange(3):
-                            item = str(org[i])
-                            if item.find("e") != -1:
-                                if item.find("-") != -1:
-                                    amt = amt + [-1.0]
-                                    bone.value[i+3] = bone.value[i+3] * -1
-                                else:
-                                    amt = amt + [1.0]
-                                    bone.value[i+3] = bone.value[i+3] * -1
-                            else:
-                                amt = amt + [1.0]
-                                bone.value[i+3] = bone.value[i+3] * -1
-                        flip = amt
                 else:
-                    """if QuArK_bones[bone.parent].dictspec['bonecontroller'][0] == 0:
-                        new_bone['bonecontroller'] = (0.0,)
-                        ppos = QuArK_bones[bone.parent].dictspec['position']
-                        ppos = [ppos[0], ppos[1], ppos[2]]
-                        pos = new_bone.dictspec['position']
-                        pos = [pos[0], pos[1], pos[2]]
-
-                        pos[0] = ((pos[0] - ppos[0]) * -1) - ppos[0]
-                        pos[1] = pos[1] * -1
-                        new_bone.position = quarkx.vect(pos[0], pos[1], pos[2])
-                        new_bone['position'] = new_bone.position.tuple"""
-                    if flip is not None:
-                        vect = position.tuple
-                        pos = []
-                        for i in xrange(3):
-                            pos = pos + [vect[i] * flip[i]]
-                        position = quarkx.vect(pos[0], pos[1], pos[2])
-                    new_bone.position = QuArK_bones[bone.parent].position - position
+                    parent_bone = QuArK_bones[bone.parent]
+                    parent_pos = parent_bone.position
+                    parent_matrix = parent_bone.rotmatrix
+                    bone_pos = parent_pos + (parent_matrix * bone_pos)
+                    bone_matrix = parent_matrix * bone_matrix
+                    new_bone.position = bone_pos
+                    new_bone.rotmatrix = bone_matrix
                     new_bone['position'] = new_bone.position.tuple
-                    new_bone['parent_name'] = QuArK_bones[bone.parent].name
+                    tempmatrix = new_bone.rotmatrix.tuple
+                    new_bone['rotmatrix'] = (tempmatrix[0][0], tempmatrix[0][1], tempmatrix[0][2], tempmatrix[1][0], tempmatrix[1][1], tempmatrix[1][2], tempmatrix[2][0], tempmatrix[2][1], tempmatrix[2][2])
+
+                    new_bone['parent_name'] = parent_bone.name
                     new_bone['bone_length'] = (-quarkx.vect(QuArK_bones[int(new_bone.dictspec['parent_index'])].dictspec['position']) + quarkx.vect(new_bone.dictspec['position'])).tuple
                 new_bone['scale'] = (1.0,)
                 new_bone['component'] = ComponentList[0].name # Reset this if needed later.
@@ -1568,41 +1750,20 @@ class mdl_obj: # Done cdunde
                 new_bone.vtx_pos = {}
                 new_bone['scale'] = (1.0,) # Written this way to store it as a tuple.
                 new_bone['org_scale'] = new_bone.dictspec['scale']
-                qx = bone.value[3]
-                qy = bone.value[4]
-                qz = bone.value[5]
-                qw = 1 - qx*qx - qy*qy - qz*qz
-                if qw<0:
-                    qw=0
-                else:
-                    qw = -math.sqrt(qw)
-                tempmatrix = quaternion2matrix([qx,qy,qz,qw])
-
-                new_bone['quaternion'] = (qx,qy,qz,qw)
-                new_bone['bone_scale'] = (bone.scale[0], bone.scale[1], bone.scale[2], bone.scale[3], bone.scale[4], bone.scale[5])
-                new_bone['rotmatrix'] = (tempmatrix[0][0], tempmatrix[1][0], tempmatrix[2][0], tempmatrix[0][1], tempmatrix[1][1], tempmatrix[2][1], tempmatrix[0][2], tempmatrix[1][2], tempmatrix[2][2])
-                new_bone.rotmatrix = quarkx.matrix((tempmatrix[0][0], tempmatrix[1][0], tempmatrix[2][0]), (tempmatrix[0][1], tempmatrix[1][1], tempmatrix[2][1]), (tempmatrix[0][2], tempmatrix[1][2], tempmatrix[2][2]))
                 QuArK_bones = QuArK_bones + [new_bone]
 
-        # Construct the bones baseframe data, if any.
-        if len(QuArK_bones) != 0 and len(ComponentList) != 0:
-            for bone in QuArK_bones:
-                parent_index = int(bone.dictspec['parent_index'])
-                if parent_index >= 0:
-                    ParentBone = QuArK_bones[parent_index]
-                    pm = ParentBone.dictspec['rotmatrix']
-                    ParentMatrix = quarkx.matrix((pm[0], pm[1], pm[2]), (pm[3], pm[4], pm[5]), (pm[6], pm[7], pm[8]))
-                  #  temppos = ParentMatrix * bone.position
-                  #  bone.position = ParentBone.position + temppos
-            #        bone.position = bone.position + ParentBone.position
-            #        bone['position'] = bone.position.tuple
-                    bm = bone.dictspec['rotmatrix']
-                    BoneMatrix = quarkx.matrix((bm[0], bm[1], bm[2]), (bm[3], bm[4], bm[5]), (bm[6], bm[7], bm[8]))
-                    bm = (ParentMatrix * BoneMatrix).tuple
-                    bone['rotmatrix'] = (bm[0][0], bm[0][1], bm[0][2], bm[1][0], bm[1][1], bm[1][2], bm[2][0], bm[2][1], bm[2][2])
+                # Sets up the 'bonelist' entry of editor.ModelComponentList for the 'baseframe' of all importing bones
+                bonedata = {}
+                bonedata['type'] = "HL"
+                bonedata['frames'] = {}
+                bonedata['frames']['baseframe:mf'] = {}
+                bonedata['frames']['baseframe:mf']['position'] = new_bone.dictspec['position']
+                bonedata['frames']['baseframe:mf']['rotmatrix'] = new_bone.rotmatrix.tuple
+                editor.ModelComponentList['bonelist'][new_bone.name] = bonedata
 
         # load the meshes triangles data
         byte_count = 0
+        Component_index = -1
         for i in xrange(self.num_bodyparts):
             for j in xrange(self.bodyparts[i].nummodels):
                 # Make & fill vertex dictionary list to convert vertex_indexes and
@@ -1618,36 +1779,41 @@ class mdl_obj: # Done cdunde
                 # Make & fill vtxlist dictionary list to assign vertexes to their bones and
                 #    breakdown by Component later in the triangles Tris section below.
                 vtxlist = {}
+                # load the model's verts info data.
+                # Gives a bone_index for each Component's vertex that is assigned to that bone.
                 file.seek(ofsBegin + self.bodyparts[i].models[j].vert_info_offset, 0)
-                binary_format = "<B" #little-endian (<), single byte (unsigned int).
                 for k in xrange(self.bodyparts[i].models[j].numverts):
-                    temp_data = file.read(struct.calcsize(binary_format))
-                    data = struct.unpack(binary_format, temp_data)
-                    vtxlist[k] = data[0]
+                    self.bodyparts[i].models[j].verts_info.append(mdl_vert_info())
+                    self.bodyparts[i].models[j].verts_info[k].load(file)
+                    vtxlist[k] = self.bodyparts[i].models[j].verts_info[k].bone_index
+                  #  self.bodyparts[i].models[j].verts_info[k].dump(i, j, k)
 
-                # What is this 2? Get the meshes normals info data.
-                """file.seek(ofsBegin + self.bodyparts[i].models[j].norm_info_offset, 0)
-                binary_format = "<b" #little-endian (<), single byte (signed int).
-                for k in xrange(self.bodyparts[i].models[j].numnorms):
-                    temp_data = file.read(struct.calcsize(binary_format))
-                    data = struct.unpack(binary_format, temp_data)"""
+                # load the model's normals info data. (not using these but needed for exporting)
+                # Gives a bone_index for each Component's normal that is assigned to that bone.
+        #        file.seek(ofsBegin + self.bodyparts[i].models[j].norm_info_offset, 0)
+        #        binary_format = "<B" #little-endian (<), single byte (unsigned int).
+        #        for k in xrange(self.bodyparts[i].models[j].numnorms):
+        #            temp_data = file.read(struct.calcsize(binary_format))
+        #            data = struct.unpack(binary_format, temp_data)
 
-                # What is this 3? Get the meshes normals data.
-                """file.seek(ofsBegin + self.bodyparts[i].models[j].norm_offset, 0)
-                binary_format = "<3f" #little-endian (<), 3 floats, 4 bytes per float.
-                for k in xrange(self.bodyparts[i].models[j].numnorms):
-                  #  normals = []
-                  #  for l in xrange(self.bodyparts[i].models[j].meshes[k].numnorms):
-                    temp_data = file.read(struct.calcsize(binary_format))
-                    data = struct.unpack(binary_format, temp_data)"""
+                # load the model's normals data. (not using these but needed for exporting)
+                # Gives each normal's x,y,z position.
+        #        file.seek(ofsBegin + self.bodyparts[i].models[j].norm_offset, 0)
+        #        binary_format = "<3f" #little-endian (<), 3 floats, 4 bytes per float.
+        #        for k in xrange(self.bodyparts[i].models[j].numnorms):
+        #          #  normals = []
+        #          #  for l in xrange(self.bodyparts[i].models[j].meshes[k].numnorms):
+        #            temp_data = file.read(struct.calcsize(binary_format))
+        #            data = struct.unpack(binary_format, temp_data)
                         
 
                 # Now get the meshes triangles data.
             #    verts = self.bodyparts[i].models[j].verts
                 for k in xrange(self.bodyparts[i].models[j].nummesh):
+                    Component_index += 1
                     start = self.bodyparts[i].models[j].meshes[k].tri_offset
                     numtris = self.bodyparts[i].models[j].meshes[k].numtris
-                  #  numnorms = self.bodyparts[i].models[j].meshes[k].numnorms # WTF is this JUNK!
+                  #  numnorms = self.bodyparts[i].models[j].meshes[k].numnorms # See about normals info and data above.
                     triangles = []
                     file.seek(ofsBegin + start, 0)
                     if k == self.bodyparts[i].models[j].nummesh-1:
@@ -1663,10 +1829,10 @@ class mdl_obj: # Done cdunde
                     tri_count = 0
 
                     # Note: To create the triangle faces this code doesn't actually use the self.bodyparts[i].models[j].meshes[k].numtris variable.
-                    # Instead it reads through the triangle data, which is all char (or "h") types of 2 bytes each.
-                    # The first char read in, and for following groups, designates if the following group, or number,
-                    #    of chars are for a "Fan", "List" or "Strip" type group. That same designating char also gives the
-                    #    count value, or number, of how many chars are in that group.
+                    # Instead it reads through the triangle data, which is all "signed short int" (or "h") types of 2 bytes each.
+                    # The first "h" read in, and for following groups, designates if the following group, or number,
+                    #    of "h"s are for a "Fan", "List" or "Strip" type group. That same designating "h" also gives the
+                    #    count value, or number, of how many "h"s are in that group.
                     while 1:
                         binary_format = "<h"
                         size = struct.calcsize(binary_format)
@@ -1686,9 +1852,8 @@ class mdl_obj: # Done cdunde
                         except:
                             skinflags = 0
                         if tris_group < 0:
-                            # If the designating char is a negative value then the group is a
-                            # Triangle Fan. The negative designating char is then turned into
-                            #    a positive value so it can be used as the count size of the group.
+                            # If the designating "signed short int" (or "h") is a negative value then the group is a Triangle Fan.
+                            # The negative designating "h" is then turned into a positive value so it can be used as the count size of the group.
                             tris_group = -tris_group
                             for l in xrange(tris_group):
                                 self.bodyparts[i].models[j].meshes[k].triangles.append(mdl_triangle())
@@ -1736,7 +1901,7 @@ class mdl_obj: # Done cdunde
                                 if byte_count + start >= end and len(triangles) == numtris:
                                     break
                         else:
-                            # If the designating char is NOT a negative value then the group is a
+                            # If the designating "signed short int" (or "h") is NOT a negative value then the group is a
                             # Triangle Strip or a Triangle List, which are handled the same way.
                             for l in xrange(tris_group):
                                 self.bodyparts[i].models[j].meshes[k].triangles.append(mdl_triangle())
@@ -1793,37 +1958,41 @@ class mdl_obj: # Done cdunde
                                     break
 
                     # Create this Component's Tris and "baseframe".
-                    nummesh = self.bodyparts[i].models[j].nummesh
-                    Component = ComponentList[i+(j * nummesh)+k]
+                    Component = ComponentList[Component_index]
                     comp_name = Component.name
-                    vert_keys = []
                     Tris = ''
-                    mesh = []
+                    vertex = []
                     frame = quarkx.newobj('baseframe:mf')
+                    # Make a HL vert --> QuArK vert translation table
+                    numverts = self.bodyparts[i].models[j].numverts
+                    vert_converter = [-1] * numverts
+                    QuArK_verts_so_far = 0
                     for tri in triangles:
                         for vtx in tri:
-                            vert_index = vtx[0]
-                            if vert_index in vert_keys:
-                                for key in xrange(len(vert_keys)):
-                                    if vert_keys[key] == vert_index:
-                                        vert_index = key
-                                        break
-                            else:
-                                bone = QuArK_bones[vtxlist[vert_index]]
-                                bp = bone.position.tuple
-                                mesh = mesh + [mesh_verts[vert_index][0]+bp[0], mesh_verts[vert_index][1]+bp[1], mesh_verts[vert_index][2]+bp[2]]
-                                vert_keys = vert_keys + [vert_index]
+                            vert_index = vert_converter[vtx[0]]
+                            if vert_index == -1:
+                                # This is a new vertex
+                                vert_pos = mesh_verts[vtx[0]]
+                                bone = QuArK_bones[vtxlist[vtx[0]]]
+                                bp = bone.position
+                                br = bone.rotmatrix
+                                vert_pos = quarkx.vect(vert_pos[0], vert_pos[1], vert_pos[2])
+                                vert_pos = bp + (br * vert_pos)
+                                vert_pos = vert_pos.tuple
+                                vertex = vertex + [vert_pos[0], vert_pos[1], vert_pos[2]]
+                                vert_index = QuArK_verts_so_far
+                                QuArK_verts_so_far += 1
+                                vert_converter[vtx[0]] = vert_index
                                 list = bone.vtxlist
                                 if not list.has_key(comp_name):
                                     list[comp_name] = []
-                                vert_index = len(vert_keys)-1
                                 if not vert_index in list[comp_name]:
                                     list[comp_name].append(vert_index)
                                     bone.vtxlist = list
                             u = vtx[1]
                             v = vtx[2]
                             Tris = Tris + struct.pack("Hhh", vert_index, u, v)
-                    frame['Vertices'] = mesh
+                    frame['Vertices'] = vertex
                     Component.dictitems['Frames:fg'].appenditem(frame)
                     Component['Tris'] = Tris
 
@@ -1870,62 +2039,76 @@ class mdl_obj: # Done cdunde
                             bone.vtx_pos = temp
                             bone['component'] = usekey
                             for Component in ComponentList:
-                                if Component.name == usekey:
+                                if Component.name == usekey and Component.dictitems['Frames:fg'].subitems != 0:
                                     vertices = Component.dictitems['Frames:fg'].subitems[0].vertices
                                     vtxlist = temp[usekey]
                                     vtxpos = quarkx.vect(0.0, 0.0, 0.0)
                                     for vtx in vtxlist:
-                                #        vertices[vtx] = VectorTransform(vertices[vtx].tuple, bone.rotmatrix.tuple)
                                         vtxpos = vtxpos + vertices[vtx]
                                     vtxpos = vtxpos/ float(len(vtxlist))
                                     bone['draw_offset'] = (bone.position - vtxpos).tuple
-                                #    Component.dictitems['Frames:fg'].subitems[0].vertices = vertices
+                                    break
 
         # Setup the bones, if any, position & rotmatrix of the animation frames.
         if len(self.bones) != 0 and len(ComponentList) != 0:
-            SetUpBones(self)
+            SetUpBones(self, QuArK_bones)
 
-        # Section below sets up the 'bonelist' entry of editor.ModelComponentList for all importing bones and fills the 'frames' data.
-        if len(self.bones) != 0 and len(ComponentList) != 0:
-            # Sets up the 'bonelist' entry of editor.ModelComponentList for all importing bones
-            for bone_index in xrange(self.num_bones):
-                current_bone = QuArK_bones[bone_index]
-                if not editor.ModelComponentList['bonelist'].has_key(current_bone.name):
-                    editor.ModelComponentList['bonelist'][current_bone.name] = {}
-                editor.ModelComponentList['bonelist'][current_bone.name]['type'] = "HL"
-                editor.ModelComponentList['bonelist'][current_bone.name]['frames'] = {}
+            # Go through all the animation sequences (frame groups) and makes the Component's animation frames. Also setup the ModelComponentList for the bones
+            for bone_index in range(len(QuArK_bones)): # Using list of ALL bones.
+                boneobj = QuArK_bones[bone_index]
+                bonename = boneobj.name
+                # Builds the editor.ModelComponentList here.
+                if boneobj.vtxlist != {}:
+                    for compname in boneobj.vtxlist.keys():
+                        if not editor.ModelComponentList.has_key(compname):
+                            editor.ModelComponentList[compname] = {'bonevtxlist': {}, 'colorvtxlist': {}, 'weightvtxlist': {}}
+                        if not editor.ModelComponentList[compname]['bonevtxlist'].has_key(bonename):
+                            editor.ModelComponentList[compname]['bonevtxlist'][bonename] = {}
+                        for vtx_index in boneobj.vtxlist[compname]:
+                            editor.ModelComponentList[compname]['bonevtxlist'][bonename][vtx_index] = {'color': '\x00\x00\xff'}
+                            editor.ModelComponentList[compname]['weightvtxlist'][vtx_index] = {}
+                            editor.ModelComponentList[compname]['weightvtxlist'][vtx_index][bonename] = {'weight_value': 1.0, 'color': quarkpy.mdlutils.weights_color(editor, 1.0)}
 
-            # Go through all the animation sequences (frame groups) and fills the 'frames' data.
+            #A list of bones.name -> bone_index, to speed things up
+            ConvertBoneNameToIndex = {}
+            for bone_index in range(len(QuArK_bones)):
+                ConvertBoneNameToIndex[QuArK_bones[bone_index].name] = bone_index
+
             bonelist = editor.ModelComponentList['bonelist']
-            pseqdesc = self.sequence_descs
-            for m_sequence in xrange(self.num_anim_seq):
-                seq = pseqdesc[m_sequence]
-                seq_frames = self.frames[m_sequence]
-                for m_frame in xrange(seq.numframes):
-                    frames = seq_frames[m_frame]
-                    for bone_index in xrange(self.num_bones):
-                        frame = frames[bone_index]
-                        frame_name = frame[0] + ":mf"
-                        frame_bone_data = frame[1]
-                        bone_name = QuArK_bones[bone_index].name
-                        bone_data = {}
-                        bone_data['position'] = frame_bone_data[0]
-                        bone_data['rotmatrix'] = frame_bone_data[1]
-                        bonelist[bone_name]['frames'][frame_name] = bone_data
-
-            # Go through all the animation sequences (frame groups) and makes the Compnent's animation frames.
             for Component in range(len(ComponentList)):
                 comp = ComponentList[Component]
+                comp_name = comp.name
                 framesgroup = comp.dictitems['Frames:fg']
                 baseframe = framesgroup.subitems[0]
+                meshverts = baseframe.vertices
                 for m_sequence in xrange(self.num_anim_seq):
                     seq = pseqdesc[m_sequence]
-                    seq_frames = self.frames[m_sequence]
+                    seq_name = seq.label
                     for m_frame in xrange(seq.numframes):
-                        frame = seq_frames[m_frame][0]
-                        frame_name = frame[0]
+                        frame_name = seq_name + " frame " + str(m_frame+1)
                         new_frame = baseframe.copy()
                         new_frame.shortname = frame_name
+                        newverts = new_frame.vertices
+                        for vert_index in range(len(newverts)):
+                            newverts[vert_index] = quarkx.vect(0.0, 0.0, 0.0)
+                        for bone_index in range(len(QuArK_bones)):
+                            pbone = QuArK_bones[bone_index]
+                            if pbone.vtxlist.has_key(comp_name):
+                                vtxs = pbone.vtxlist[comp_name]
+                                for vert_index in vtxs:
+                                    try:
+                                        weight_value = editor.ModelComponentList[comp_name]['weightvtxlist'][vert_index][pbone.name]['weight_value']
+                                    except:
+                                        weight_value = 1.0
+                                    Bpos_old = quarkx.vect(bonelist[pbone.name]['frames']['baseframe:mf']['position'])
+                                    Brot_old = quarkx.matrix(bonelist[pbone.name]['frames']['baseframe:mf']['rotmatrix'])
+                                    Bpos_new = quarkx.vect(bonelist[pbone.name]['frames'][frame_name+':mf']['position'])
+                                    Brot_new = quarkx.matrix(bonelist[pbone.name]['frames'][frame_name+':mf']['rotmatrix'])
+                                    vert_pos = meshverts[vert_index]
+                                    vert_pos = (~Brot_old) * (vert_pos - Bpos_old)
+                                    vert_pos = Bpos_new + (Brot_new * vert_pos)
+                                    newverts[vert_index] += weight_value * vert_pos
+                        new_frame.vertices = newverts
                         framesgroup.appenditem(new_frame)
 
         # load the attachment data
@@ -1935,38 +2118,7 @@ class mdl_obj: # Done cdunde
             self.attachments[i].load(file)
           #  self.attachments[i].dump()
         
-        return self, ComponentList, QuArK_bones, message, self.version # For making importer, removed others when done.
-
-        # make the # of frames for the model
-        file.seek(ofsBegin + self.anim_seq_offset, 0)
-        for i in xrange(0,self.num_anim_seq):
-            self.frames.append(mdl_frame())
-            #make the # of vertices for each frame
-            for j in xrange(0,self.num_verts):
-                self.frames[i].vertices.append(mdl_vertex())
-
-        # load the animation frames
-        for i in xrange(0, self.num_anim_seq):
-            self.frames[i].load(file, self.num_verts)
-          #  self.frames[i].dump() # for testing only, comment out when done
-
-        # get the skin(s) texture information
-        self.texture_info = mdl_texture_info()
-        self.texture_info.load(file, self.num_skins, self.skin_width, self.skin_height)
-
-        #load the # of raw texture coordinates data for model, some get updated later.
-        for i in xrange(0,self.num_verts):
-            self.tex_coords.append(mdl_tex_coord())
-            self.tex_coords[i].load(file)
-         #   self.tex_coords[i].dump() # for testing only, comment out when done
-
-        #make the # of triangle faces for model
-        for i in xrange(0,self.num_tris):
-            self.faces.append(mdl_face())
-            self.faces[i].load(file)
-         #   self.faces[i].dump() # for testing only, comment out when done
-
-        return ComponentList
+        return self, ComponentList, QuArK_bones, message, self.version # END FOR THIS IMPORTER.
 
     def dump(self):
         if logging == 1:
@@ -2012,52 +2164,11 @@ class mdl_obj: # Done cdunde
             tobj.logcon ("transitions_offset: " + str(self.transitions_offset))
             tobj.logcon ("")
 
-######################################################
-# Import functions
-######################################################
-def load_textures(mdl, texture_name):
-    global tobj, logging
-    # Checks if the model has textures specified with it.
-    skinsize = ()
-    skingroup = quarkx.newobj('Skins:sg')
-    skingroup['type'] = chr(2)
-    if logging == 1:
-        tobj.logcon ("")
-        tobj.logcon ("#####################################################################")
-        tobj.logcon ("Skins group data: " + str(mdl.num_skins) + " skins")
-        tobj.logcon ("#####################################################################")
-    if int(mdl.num_skins) > 0:
-        #Build the palette
-        Palette=''
-        for i in xrange(0, 256):
-            Palette += struct.pack("BBB", MDL_COLORMAP[i][0], MDL_COLORMAP[i][1], MDL_COLORMAP[i][2])
-        for i in xrange(0,mdl.num_skins):
-            if mdl.num_skins == 1:
-                skinname = texture_name + ".pcx"
-            else:
-                skinname = texture_name + " " + str(i+1) + ".pcx"
-            if logging == 1:
-                tobj.logcon (skinname)
-            skin = quarkx.newobj(skinname)
-            Padding=(int(((mdl.skin_width * 8) + 31) / 32) * 4) - (mdl.skin_width * 1)
-            ImageData = ''
-            for y in xrange(0,mdl.skin_height):
-                for x in xrange(0,mdl.skin_width):
-                    ImageData += struct.pack("B", mdl.texture_info.skins[i].data[(mdl.skin_height-y-1) * mdl.skin_width+x])
-                ImageData += "\0" * Padding
-            skin['Image1'] = ImageData
-            skin['Pal'] = Palette
-            skin['Size'] = (float(mdl.skin_width), float(mdl.skin_height))
-            skingroup.appenditem(skin)
-            skinsize = (mdl.skin_width, mdl.skin_height) # Used for QuArK.
-          #  mdl.texture_info.skins[i].dump() # Comment out later, just prints to the console what the skin(s) are.
 
-        return skinsize, skingroup # Used for QuArK.
-    else:
-        return skinsize, skingroup # Used for QuArK.
-    
-
-def animate_mdl(mdl): # The Frames Group is made here & returned to be added to the Component.
+######################################################
+# Import functions # Old code from ie_md0_Q_import.py
+######################################################
+def animate_mdl(mdl): # Old code from ie_md0_Q_import.py # The Frames Group is made here & returned to be added to the Component.
     global progressbar, tobj, logging
     ######### Animate the verts through the QuArK Frames lists.
     framesgroup = quarkx.newobj('Frames:fg')
@@ -2093,6 +2204,9 @@ def animate_mdl(mdl): # The Frames Group is made here & returned to be added to 
     return framesgroup
 
 
+########################
+# To run this file
+########################
 def load_mdl(mdl_filename, folder_name):
     global progressbar, tobj, logging, Strings, mdl
     #read the file in
@@ -2106,14 +2220,11 @@ def load_mdl(mdl_filename, folder_name):
         mdl.dump() # Writes the file Header last to the log for comparison reasons.
 
     if MODEL is None:
-        return None, None, None
+        return None, None, message, version
 
     return ComponentList, QuArK_bones, message, version
 
 
-########################
-# To run this file
-########################
 def import_mdl_model(editor, mdl_filename):
     # mdl_filename = the full path and the full model file name that is open to write to.
     model_name = mdl_filename.split("\\")
@@ -2121,10 +2232,7 @@ def import_mdl_model(editor, mdl_filename):
 
     ComponentList, QuArK_bones, message, version = load_mdl(mdl_filename, folder_name) # Loads the model.
 
-    ### Use the 'ModelRoot' below to test opening the QuArK's Model Editor with, needs to be qualified with main menu item.
-    ModelRoot = quarkx.newobj('Model:mr')
-
-    return ModelRoot, ComponentList, QuArK_bones, message, version
+    return ComponentList, QuArK_bones, message, version
 
 
 def loadmodel(root, filename, gamename, nomessage=0):
@@ -2151,16 +2259,16 @@ def loadmodel(root, filename, gamename, nomessage=0):
     logging, tobj, starttime = ie_utils.default_start_logging(importername, textlog, filename, "IM") ### Use "EX" for exporter text, "IM" for importer text.
 
     ### Lines below here loads the model into the opened editor's current model.
-    ModelRoot, ComponentList, QuArK_bones, message, version = import_mdl_model(editor, filename)
+    ComponentList, QuArK_bones, message, version = import_mdl_model(editor, filename)
 
-    if ModelRoot is None:
+    if ComponentList is None or len(ComponentList) == 0 or version is None or version != 10:
         quarkx.beep() # Makes the computer "Beep" once if a file is not valid. Add more info to message.
-        if len(ComponentList) == 0:
-            quarkx.msgbox("Invalid Half-Life .mdl model.\nEditor can not import it.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
-        elif version == 6:
+        if version == 6:
             quarkx.msgbox("Invalid Half-Life .mdl model.\nVersion number is " + str(version) + "\nThis is a Quake .mdl model.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
+        elif version is not None:
+            quarkx.msgbox("Invalid Half-Life .mdl model.\nID, Version number is " + str(message) + ", " + str(version) + "\nThis is another type .mdl model.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
         else:
-            quarkx.msgbox("Invalid Half-Life .mdl model.\nVersion number is " + str(version) + "\nThis is another type .mdl model.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
+            quarkx.msgbox("Invalid Half-Life .mdl model.\nEditor can not import it.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
         try:
             progressbar.close()
         except:
@@ -2251,6 +2359,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".mdl Half-Life Importer", ".mdl file", "*.
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.5  2010/06/13 16:22:13  cdunde
+# Correction update.
+#
 # Revision 1.4  2010/06/13 15:37:55  cdunde
 # Setup Model Editor to allow importing of model from main explorer File menu.
 #
