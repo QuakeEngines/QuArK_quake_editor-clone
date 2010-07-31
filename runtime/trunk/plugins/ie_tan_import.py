@@ -358,11 +358,10 @@ class TAN_Surface:
             framesgroup.appenditem(frame)
         Component.appenditem(framesgroup)
 
-        # Load CollapseMap data here - WHAT IS IT?
-        file.seek(this_offset + self.ofsCollapseMap,0)
-        for i in xrange(0, self.numVerts):
-            #--> 1 integer
-            file.read(4) #Ignore collapsemap for now
+        # Ignore CollapseMap data for now. Gives which vertex_indexes to use to create a low poly count model, Level Of Detail (LoD).
+    #    file.seek(this_offset + self.ofsCollapseMap,0)
+    #    for i in xrange(0, self.numVerts):
+    #        file.read(4) # 1 int.
 
         return message
 
@@ -800,6 +799,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".tan Alice\EF2\FAKK2 Importer", ".tan file
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.4  2010/07/28 04:27:13  cdunde
+# File ident update.
+#
 # Revision 1.3  2010/07/08 18:05:15  danielpharos
 # Removed unused variable.
 #
