@@ -2053,27 +2053,6 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
         if len(self.bones) != 0 and len(ComponentList) != 0:
             SetUpBones(self, QuArK_bones)
 
-            # Go through all the animation sequences (frame groups) and makes the Component's animation frames. Also setup the ModelComponentList for the bones
-            for bone_index in range(len(QuArK_bones)): # Using list of ALL bones.
-                boneobj = QuArK_bones[bone_index]
-                bonename = boneobj.name
-                # Builds the editor.ModelComponentList here.
-                if boneobj.vtxlist != {}:
-                    for compname in boneobj.vtxlist.keys():
-                        if not editor.ModelComponentList.has_key(compname):
-                            editor.ModelComponentList[compname] = {'bonevtxlist': {}, 'colorvtxlist': {}, 'weightvtxlist': {}}
-                        if not editor.ModelComponentList[compname]['bonevtxlist'].has_key(bonename):
-                            editor.ModelComponentList[compname]['bonevtxlist'][bonename] = {}
-                        for vtx_index in boneobj.vtxlist[compname]:
-                            editor.ModelComponentList[compname]['bonevtxlist'][bonename][vtx_index] = {'color': '\x00\x00\xff'}
-                            editor.ModelComponentList[compname]['weightvtxlist'][vtx_index] = {}
-                            editor.ModelComponentList[compname]['weightvtxlist'][vtx_index][bonename] = {'weight_value': 1.0, 'color': quarkpy.mdlutils.weights_color(editor, 1.0)}
-
-            #A list of bones.name -> bone_index, to speed things up
-            ConvertBoneNameToIndex = {}
-            for bone_index in range(len(QuArK_bones)):
-                ConvertBoneNameToIndex[QuArK_bones[bone_index].name] = bone_index
-
             bonelist = editor.ModelComponentList['bonelist']
             for Component in range(len(ComponentList)):
                 comp = ComponentList[Component]
@@ -2088,26 +2067,19 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
                         frame_name = seq_name + " frame " + str(m_frame+1)
                         new_frame = baseframe.copy()
                         new_frame.shortname = frame_name
-                        newverts = new_frame.vertices
-                        for vert_index in range(len(newverts)):
-                            newverts[vert_index] = quarkx.vect(0.0, 0.0, 0.0)
+                        newverts = [quarkx.vect(0.0, 0.0, 0.0)] * len(meshverts)
                         for bone_index in range(len(QuArK_bones)):
                             pbone = QuArK_bones[bone_index]
                             if pbone.vtxlist.has_key(comp_name):
                                 vtxs = pbone.vtxlist[comp_name]
                                 for vert_index in vtxs:
-                                    try:
-                                        weight_value = editor.ModelComponentList[comp_name]['weightvtxlist'][vert_index][pbone.name]['weight_value']
-                                    except:
-                                        weight_value = 1.0
                                     Bpos_old = quarkx.vect(bonelist[pbone.name]['frames']['baseframe:mf']['position'])
                                     Brot_old = quarkx.matrix(bonelist[pbone.name]['frames']['baseframe:mf']['rotmatrix'])
                                     Bpos_new = quarkx.vect(bonelist[pbone.name]['frames'][frame_name+':mf']['position'])
                                     Brot_new = quarkx.matrix(bonelist[pbone.name]['frames'][frame_name+':mf']['rotmatrix'])
                                     vert_pos = meshverts[vert_index]
                                     vert_pos = (~Brot_old) * (vert_pos - Bpos_old)
-                                    vert_pos = Bpos_new + (Brot_new * vert_pos)
-                                    newverts[vert_index] += weight_value * vert_pos
+                                    newverts[vert_index] += Bpos_new + (Brot_new * vert_pos)
                         new_frame.vertices = newverts
                         framesgroup.appenditem(new_frame)
 
@@ -2359,6 +2331,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".mdl Half-Life Importer", ".mdl file", "*.
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.6  2010/07/30 20:30:56  cdunde
+# Major animation improvement, new base work copy for further development.
+#
 # Revision 1.5  2010/06/13 16:22:13  cdunde
 # Correction update.
 #
