@@ -14,6 +14,9 @@ $Id$
 
 6.6.0 Beta 4
 ============
+* [cdunde/DanielPharos]: Setup exporter for Alice, EF2 and FAKK2 .tan models
+          - (static and animated), tags not supported at this time.
+
 * [cdunde/DanielPharos]: Setup importers for Alice, EF2 and FAKK2 .skb, .ska and
           - .tan models (static and animated) with bone and skin support.
 
