@@ -59,7 +59,7 @@ class TAN_Frame:
     bboxMin = (0.0)*3  # Min. bounding box coords.
     bboxMax = (0.0)*3  # Max. bounding box coords.
     scale = (0.0)*3    # You will have to multiply every Vertex Coord by this.
-    offset = (0.0)*3   # You will have to add every Vertex Coords by this.
+    offset = (0.0)*3   # Center of bbox = (bboxMin + bboxMax) / 2. Need to add every Vertex Coords by this.
     delta = (0.0)*3    # unknown.
     radius = 0.0       # Radius from center of bounding box.
     frameTime = 0.0    # Length of Frame in sec -> useless ...
@@ -213,6 +213,8 @@ class TAN_XyzNormal:
         pos = [data[0], data[1], data[2]]
         normal = data[3]
 
+        if logging == 1:
+            tobj.logcon ("data pos: " + str(pos))
         for i in xrange(3):
             pos[i] = float(((pos[i] - 32768) * scale[i]) + offset[i])
         self.position = [pos[0], pos[1], pos[2]]
@@ -342,14 +344,16 @@ class TAN_Surface:
             else:
                 frame = quarkx.newobj(name + ' frame ' + str(i) + ':mf')
             if logging == 1:
-                tobj.logcon (frame.shortname + ", numVerts: " + str(self.numVerts))
+                tobj.logcon (frame.shortname + ", numVerts: " + str(self.numVerts) + " [x,y,z position] normal")
+                tobj.logcon ("  frame_scale : " + str(frame_scale))
+                tobj.logcon ("  frame_offset: " + str(frame_offset))
                 tobj.logcon ("-----------------------")
             mesh = ()
             for j in xrange(0, self.numVerts):
                 Vert = TAN_XyzNormal()
                 Vert.load(file, frame_scale, frame_offset)
                 if logging == 1:
-                    tobj.logcon ("vert " + str(j) + " pos: " + str(Vert.position))
+                    tobj.logcon ("vert " + str(j) + ": " + str(Vert.position) + " " + str(Vert.normal))
                 x,y,z = Vert.position
                 mesh = mesh + (x,y,z)
             if logging == 1:
@@ -799,6 +803,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".tan Alice\EF2\FAKK2 Importer", ".tan file
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.5  2010/07/31 22:41:35  cdunde
+# Commented out unused file read data.
+#
 # Revision 1.4  2010/07/28 04:27:13  cdunde
 # File ident update.
 #
