@@ -59,11 +59,11 @@ class SKB_Bone:
     #Header Structure      #item of data file, size & type,   description.
     parent = 0             #item   0     int, gives the index to the parent bone in the bones list.
     flags = 0              #item   1     int, holds any of the bone flags MD4_BONE_FLAG_H (head), MD4_BONE_FLAG_U (upper), MD4_BONE_FLAG_L (lower), or MD4_BONE_FLAG_T (tag).
-    name = ""              #item   2-66  64 char, the bone name.
+    name = ""              #item   2-65  64 char, the bone name.
     # If version = 4 (EF2), these items are read in from the file later.
-    basequat = (0)*4     #item   0    0-3   4 ints, the bone's baseframe quat values.
-    baseoffset = (0)*3     #item   4    4-6   3 ints, the bone's baseframe offset.
-    basejunk1 = 0          #item   7    7     1 int, read in to keep pointer count correct, but DO NOT USE.
+    basequat = (0)*4       #item   66    66-69   4 signed short ints, the bone's baseframe quat values.
+    baseoffset = (0)*3     #item   70    70-72   3 signed short ints, the bone's baseframe offset.
+    basejunk1 = 0          #item   73    73      1 signed short int, read in to keep pointer count correct, but DO NOT USE.
     basematrix = ((1.,0.,0.),(0.,1.,0.),(0.,0.,1.)) #just for us to use later.
 
     binary_format="<2i64c"  #little-endian (<), see #item descriptions above.
@@ -90,13 +90,16 @@ class SKB_Bone:
                 continue
             self.name = self.name + data[c]
 
-    def dump(self, version):
+    def dump(self):
         tobj.logcon ("bone parent: " + str(self.parent))
         tobj.logcon ("bone flags: " + str(self.flags))
         tobj.logcon ("bone name: " + str(self.name))
-        if version == 4: # (EF2 file)
-            tobj.logcon ("bone basequat: " + str(self.basequat))
-            tobj.logcon ("bone baseoffset: " + str(self.baseoffset))
+        tobj.logcon ("")
+
+    def dump_baseframe(self):
+        tobj.logcon ("bone name: " + str(self.name))
+        tobj.logcon ("bone basequat: " + str(self.basequat))
+        tobj.logcon ("bone baseoffset: " + str(self.baseoffset))
         tobj.logcon ("")
 
 
@@ -317,7 +320,7 @@ class skb_obj:
     numBones = 0         #item  65    int, number of bones.
     ofsBones = 0         #item  66    int, the file offset for the bone names data.
     ofsSurfaces = 0      #item  67    int, the file offset for the surface (mesh) data (for the 1st surface).
-    # If version = 4 (EF2)
+    # If version = 4 Added EF2 data.
     ofsBaseFrame = 0     #item v4=68  int,  end (or length) of the file.
     ofsEnd = 0           #item v3=68, v4=69 int, end (or length) of the file.
 
@@ -338,7 +341,7 @@ class skb_obj:
         self.numBones = 0
         self.ofsBones = 0
         self.ofsSurfaces = 0
-        self.ofsBaseFrame = 0 # If version = 4 (EF2)
+        self.ofsBaseFrame = 0 # If version = 4 Added EF2 data.
         self.ofsEnd = 0
 
         self.existing_bones = None
@@ -389,14 +392,14 @@ class skb_obj:
         self.numBones = data[65]
         self.ofsBones = data[66]
         self.ofsSurfaces = data[67]
-        if self.version == 4: # (EF2 file)
+        if self.version == 4: # Added EF2 data.
             self.ofsBaseFrame = data[68]
             self.ofsEnd = data[69]
         else: # (Alice or FAKK2 file)
             self.ofsEnd = data[68]
 
         #load the bones ****** QuArK basic, empty bones are created here.
-        if logging == 1 and self.version != 4:
+        if logging == 1:
             tobj.logcon ("")
             tobj.logcon ("==========================")
             tobj.logcon ("PROCESSING BONES, numBones: " + str(self.numBones))
@@ -404,7 +407,7 @@ class skb_obj:
             tobj.logcon ("")
         file.seek(self.ofsBones,0)
         if self.bones == []:
-            if self.numBones == 0 and logging == 1 and self.version != 4:
+            if self.numBones == 0 and logging == 1:
                 tobj.logcon ("No bones to load into editor")
                 tobj.logcon ("")
             else:
@@ -434,12 +437,12 @@ class skb_obj:
                     QuArK_Bone['_skb_boneindex'] = str(i)
                     self.bones.append(QuArK_Bone)
                     self.temp_bones.append(bone)
-                    if logging == 1 and self.version != 4:
+                    if logging == 1:
                         tobj.logcon ("Bone " + str(i))
-                        bone.dump(self.version)
+                        bone.dump()
 
             # We don't need this section.
-        """if self.version == 4: # (EF2 file)
+        if self.version == 4: # (EF2 file)
             #load the BaseFrame bones ****** QuArK basic, empty bones are created here.
             if logging == 1:
                 tobj.logcon ("")
@@ -458,29 +461,23 @@ class skb_obj:
                     temp_data = file.read(struct.calcsize(binary_format))
                     data = struct.unpack(binary_format, temp_data)
 
-                    QuArK_Bone = self.bones[i]
+                #    QuArK_Bone = self.bones[i]
                     bone = self.temp_bones[i]
                     bone.basequat = (data[0], data[1], data[2], data[3])
                     bone.baseoffset = (data[4], data[5], data[6])
 
-                    factor = 0.015625 # = 1/64 to avoid division by zero errors.
-                    scale = 1.0 / 32768.0 #To convert rotation values into quaternion-units
-                    QuArK_Bone["_skb_baseposition"] = (bone.baseoffset[0]*factor, bone.baseoffset[1]*factor, bone.baseoffset[2]*factor)
-                    tempmatrix = quaternion2matrix((bone.basequat[0] * scale, bone.basequat[1] * scale, bone.basequat[2] * scale, bone.basequat[3] * scale))
-                    QuArK_Bone["_skb_baserotmatrix"] = (tempmatrix[0][0], tempmatrix[0][1], tempmatrix[0][2], tempmatrix[1][0], tempmatrix[1][1], tempmatrix[1][2], tempmatrix[2][0], tempmatrix[2][1], tempmatrix[2][2])
+                #    factor = 0.015625 # = 1/64 to avoid division by zero errors.
+                #    scale = 1.0 / 32768.0 #To convert rotation values into quaternion-units
+                #    QuArK_Bone["_skb_baseposition"] = (bone.baseoffset[0]*factor, bone.baseoffset[1]*factor, bone.baseoffset[2]*factor)
+                #    tempmatrix = quaternion2matrix((bone.basequat[0] * scale, bone.basequat[1] * scale, bone.basequat[2] * scale, bone.basequat[3] * scale))
+                #    QuArK_Bone["_skb_baserotmatrix"] = (tempmatrix[0][0], tempmatrix[0][1], tempmatrix[0][2], tempmatrix[1][0], tempmatrix[1][1], tempmatrix[1][2], tempmatrix[2][0], tempmatrix[2][1], tempmatrix[2][2])
 
                   #1  ofs = bone.baseoffset
                   #1  bone.baseoffset = (ofs[0]*factor, ofs[1]*factor, ofs[2]*factor)
                     bone.basejunk1 = data[7]
                     if logging == 1:
                         tobj.logcon ("Bone " + str(i))
-                        bone.dump(self.version)"""
-
-
-                    #print "bone " + str(i) + " parent: ", bone.parent
-                    #print "bone " + str(i) + " matrix: ", bone.basematrix
-                    #print "bone " + str(i) + " pos: ", bone.baseoffset
-                    #print "------------------------"
+                        bone.dump_baseframe()
 
         #load the surfaces (meshes) ****** QuArK basic, empty Components are made and passed along here to be completed. ******
         next_surf_offset = 0
@@ -1325,6 +1322,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".skb Alice\EF2\FAKK2 Importer", ".skb file
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.3  2010/07/28 04:27:13  cdunde
+# File ident update.
+#
 # Revision 1.2  2010/07/09 05:28:36  cdunde
 # File cleanup, texture and bone handling updates.
 #
