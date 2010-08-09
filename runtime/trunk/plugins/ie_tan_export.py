@@ -22,7 +22,7 @@ Info = {
    "author e-mail": "cdunde@sbcglobal.net",
    "quark":         "Version 6.6.0 Beta 4" }
 
-import struct, chunk, os, cStringIO, time, operator, math
+import struct, math
 import quarkx
 import quarkpy.mdleditor
 from types import *
@@ -36,7 +36,6 @@ logging = 0
 exportername = "ie_tan_export.py"
 textlog = "tan_ie_log.txt"
 progressbar = None
-MeshValid = 0
 
 # Global .tan file limits and values.
 MAX_PATH = 64
@@ -586,12 +585,12 @@ def RadiusFromBounds(mins, maxs):
 # CALLS TO WRITE A (.tan) FILE
 ##########################
 def savemodel(root, filename, gamename, nomessage=0):
-    #   Loads the model file: root is the actual file,
+    #   Saves the model file: root is the actual file,
     #   filename is the full path and name of the .tan file selected,
     #   for example:  C:\FAKK2\fakk\models\monster\claw\claw.tan
     #   gamename is None.
 
-    global editor, progressbar, tobj, logging, exportername, textlog, Strings, MeshValid
+    global editor, progressbar, tobj, logging, exportername, textlog, Strings
     import quarkpy.qutils
     editor = quarkpy.mdleditor.mdleditor
     if editor is None:
@@ -644,12 +643,11 @@ def savemodel(root, filename, gamename, nomessage=0):
     tan.save(file)
     file.close()
 
-    if MeshValid != 0:
-        add_to_message = "Any used skin textures that are not a\n.dds, .ftx, .tga, .png, .jpg or .bmp\nwill need to be created to go with the model"
-        ie_utils.default_end_logging(filename, "EX", starttime, add_to_message) ### Use "EX" for exporter text, "IM" for importer text.
+    add_to_message = "Any used skin textures that are a\n.dds, .ftx, .tga, .png, .jpg or .bmp\nmay need to be copied to go with the model"
+    ie_utils.default_end_logging(filename, "EX", starttime, add_to_message) ### Use "EX" for exporter text, "IM" for importer text.
 
-        if message != "":
-            quarkx.textbox("WARNING", "Missing Skin Texture Links:\r\n\r\n================================\r\n" + message, quarkpy.qutils.MT_WARNING)
+    if message != "":
+        quarkx.textbox("WARNING", "Missing Skin Texture Links:\r\n\r\n================================\r\n" + message, quarkpy.qutils.MT_WARNING)
 
 ### To register this Python plugin and put it on the exporters menu.
 import quarkpy.qmdlbase
@@ -658,4 +656,7 @@ quarkpy.qmdlbase.RegisterMdlExporter(".tan Alice\EF2\FAKK2 Exporter", ".tan file
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.1  2010/08/03 22:44:42  cdunde
+# Setup exporter for Alice, EF2 and FAKK2 .tan models (static and animated), tags not supported at this time.
+#
 #
