@@ -456,24 +456,31 @@ class skb_obj:
             else:
                 file.seek(self.ofsBaseFrame,0)
                 binary_format="<4h3hh"
-              #1  factor = 0.015625 # = 1/64 to avoid division by zero errors.
+                factor = 1.0 / 64.0 # to avoid division by zero errors.
+                scale = 1.0 / 32767.0 #To convert rotation values into quaternion-units
+                bonelist = editor.ModelComponentList['bonelist']
                 for i in xrange(0, self.numBones):
                     temp_data = file.read(struct.calcsize(binary_format))
                     data = struct.unpack(binary_format, temp_data)
 
-                #    QuArK_Bone = self.bones[i]
+                    QuArK_Bone = self.bones[i]
+                    if not bonelist.has_key(QuArK_Bone.name):
+                        bonelist[QuArK_Bone.name] = {}
+                        bonelist[QuArK_Bone.name]['type'] = 'skb'
+                        bonelist[QuArK_Bone.name]['frames'] = {}
+                        bonelist[QuArK_Bone.name]['frames']['baseframe:mf'] = {}
                     bone = self.temp_bones[i]
                     bone.basequat = (data[0], data[1], data[2], data[3])
                     bone.baseoffset = (data[4], data[5], data[6])
 
-                #    factor = 0.015625 # = 1/64 to avoid division by zero errors.
-                #    scale = 1.0 / 32768.0 #To convert rotation values into quaternion-units
-                #    QuArK_Bone["_skb_baseposition"] = (bone.baseoffset[0]*factor, bone.baseoffset[1]*factor, bone.baseoffset[2]*factor)
-                #    tempmatrix = quaternion2matrix((bone.basequat[0] * scale, bone.basequat[1] * scale, bone.basequat[2] * scale, bone.basequat[3] * scale))
-                #    QuArK_Bone["_skb_baserotmatrix"] = (tempmatrix[0][0], tempmatrix[0][1], tempmatrix[0][2], tempmatrix[1][0], tempmatrix[1][1], tempmatrix[1][2], tempmatrix[2][0], tempmatrix[2][1], tempmatrix[2][2])
+                    QuArK_Bone.position = quarkx.vect((bone.baseoffset[0]*factor, bone.baseoffset[1]*factor, bone.baseoffset[2]*factor))
+                    position = QuArK_Bone.position.tuple
+                    QuArK_Bone['position'] = position
+                    tempmatrix = quaternion2matrix((bone.basequat[0] * scale, bone.basequat[1] * scale, bone.basequat[2] * scale, bone.basequat[3] * scale))
+                    QuArK_Bone.rotmatrix = quarkx.matrix((tempmatrix[0][0], tempmatrix[0][1], tempmatrix[0][2]), (tempmatrix[1][0], tempmatrix[1][1], tempmatrix[1][2]), (tempmatrix[2][0], tempmatrix[2][1], tempmatrix[2][2]))
+                    bonelist[QuArK_Bone.name]['frames']['baseframe:mf']['position'] = position
+                    bonelist[QuArK_Bone.name]['frames']['baseframe:mf']['rotmatrix'] = QuArK_Bone.rotmatrix.tuple
 
-                  #1  ofs = bone.baseoffset
-                  #1  bone.baseoffset = (ofs[0]*factor, ofs[1]*factor, ofs[2]*factor)
                     bone.basejunk1 = data[7]
                     if logging == 1:
                         tobj.logcon ("Bone " + str(i))
@@ -840,7 +847,7 @@ class ska_obj:
             bone = QuArK_bones[i]
             if not bonelist.has_key(QuArK_bones[i].name):
                 bonelist[bone.name] = {}
-                bonelist[bone.name]['type'] = 'ska'
+                bonelist[bone.name]['type'] = 'skb'
                 bonelist[bone.name]['frames'] = {}
             if bone.dictspec['parent_name'] == "None":
                 parent_indexes = parent_indexes + [-1]
@@ -1322,6 +1329,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".skb Alice\EF2\FAKK2 Importer", ".skb file
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.4  2010/08/09 08:24:59  cdunde
+# Added logging and expansion for processing skb BaseFrame bones.
+#
 # Revision 1.3  2010/07/28 04:27:13  cdunde
 # File ident update.
 #
