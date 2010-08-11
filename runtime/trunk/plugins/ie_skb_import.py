@@ -1115,11 +1115,11 @@ def load_ska(filename, Components, QuArK_bones, Exist_Comps, anim_name):
 
     #read the file in
     file = open(filename, "rb")
-    animation = ska_obj() # Making an "instance" of this class.
-    new_framesgroups = animation.load(file, Components, QuArK_bones, Exist_Comps, anim_name) # Calling this class function to read the file data and create the animation frames.
+    ska = ska_obj() # Making an "instance" of this class.
+    new_framesgroups = ska.load(file, Components, QuArK_bones, Exist_Comps, anim_name) # Calling this class function to read the file data and create the animation frames.
     file.close()
     if logging == 1:
-        animation.dump() # Writes the file Header last to the log for comparison reasons.
+        ska.dump() # Writes the file Header last to the log for comparison reasons.
 
     return new_framesgroups
 
@@ -1329,6 +1329,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".skb Alice\EF2\FAKK2 Importer", ".skb file
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.5  2010/08/10 07:33:27  cdunde
+# To handle bone positioning properly for .skb exporting.
+#
 # Revision 1.4  2010/08/09 08:24:59  cdunde
 # Added logging and expansion for processing skb BaseFrame bones.
 #
