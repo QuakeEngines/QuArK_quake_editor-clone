@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.28  2010/05/23 15:56:46  danielpharos
+Added some logging during loading and unloading of some external libraries.
+
 Revision 1.27  2010/04/16 19:08:17  danielpharos
 Added default value for ForceUnload argument.
 
@@ -646,7 +649,7 @@ begin
       vlMaterialGetParentNode   := InitDllPointer(HVTFLib, 'vlMaterialGetParentNode');
       vlMaterialGetChildNode    := InitDllPointer(HVTFLib, 'vlMaterialGetChildNode');
 
-      if vlGetVersion<127 then
+      if vlGetVersion<131 then
         LogAndRaiseError('VTFLib version mismatch!');
 
       if vlInitialize=vlFalse then

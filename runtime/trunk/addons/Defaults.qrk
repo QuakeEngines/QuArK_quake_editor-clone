@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.517  2010/07/08 06:53:34  cdunde
+//To add .ftx for possible texture file type selection.
+//
 //Revision 1.516  2010/06/19 21:52:21  danielpharos
 //Added a bunch of missing newlines in a hint.
 //
@@ -8717,12 +8720,13 @@ QQRKSRC1
       {
         Typ = "CL"
         Txt = "Version of exported VTF textures"
-        Values = "7.0"$0D"7.1"$0D"7.2"$0D"7.3"$0D"7.4"
+        Values = "7.0"$0D"7.1"$0D"7.2"$0D"7.3"$0D"7.4"$0D"7.5"
         Items = "7.0"
              $0D "7.1"
              $0D "7.2"
              $0D "7.3"
              $0D "7.4"
+             $0D "7.5"
         Hint = "The file version the VTF texture will be saved in"
       }
       DXTQualityVTFLib: =
