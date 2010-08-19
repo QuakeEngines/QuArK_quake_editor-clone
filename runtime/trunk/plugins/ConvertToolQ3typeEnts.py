@@ -192,11 +192,14 @@ def Q3typeEntList(root, QuArKpath, gamename, gamefileslocation,
 
     ### This section handles all the files in the SUB-FOLDERS, starting with the 1st sub-folder.
     for name in names:
-        if name.endswith(entitiesfiletype) or "." in name:   ### Checks if this is a file name or a folder name
+        if name.endswith(entitiesfiletype) or name.find(".") != -1:   ### Checks if this is a file name or a folder name
             pass
         else:
             foldername = dirname + "\\" + name
-            filenames = os.listdir(foldername)
+            try:
+                filenames = os.listdir(foldername)
+            except:
+                continue
             for name in filenames:
                 if name.endswith(entitiesfiletype) and name != OutPutList:
                     input = open(os.path.join(foldername, name))
@@ -226,6 +229,9 @@ def Q3typeEntList(root, QuArKpath, gamename, gamefileslocation,
     
 #
 #$Log$
+#Revision 1.3  2008/04/23 20:22:27  cdunde
+#Minor improvements.
+#
 #Revision 1.2  2008/04/04 23:20:48  cdunde
 #To add another read file format.
 #

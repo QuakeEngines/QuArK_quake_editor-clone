@@ -346,7 +346,7 @@ def DoneComment(token):
     global currentcomment, theEntity, theSeperator
 
     def GetLine(oldindex):
-        if oldindex > len(currentcomment) - 1:
+        if currentcomment is None or oldindex > len(currentcomment) - 1:
             return -1, None
         index = oldindex
         while (currentcomment[index] <> "\n") and (currentcomment[index] <> "\r"):
@@ -699,6 +699,9 @@ quarkpy.qentbase.RegisterEntityConverter("QERadiant .def file", "QERadiant .def 
 
 #
 #$Log$
+#Revision 1.13  2009/10/15 16:58:48  danielpharos
+#Try to parse entity.def comments to find keys.
+#
 #Revision 1.12  2009/02/11 15:39:07  danielpharos
 #Updated link to forum.
 #

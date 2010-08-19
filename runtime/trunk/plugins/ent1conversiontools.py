@@ -11,6 +11,9 @@ using the actual game files and other .qrk files as templates.
 
 #
 #$Log$
+#Revision 1.13  2008/08/26 15:18:54  danielpharos
+#Fixed a typo and re-added missing log entries.
+#
 #Revision 1.12  2008/06/25 14:32:33  danielpharos
 #Change to ASCII file property
 #
@@ -547,7 +550,7 @@ def MakeEntitiesFile(root, QuArKpath, gamename, gameenginetype, gamefileslocatio
     "Makes a new 'gamename'Entities.qrk file"
     "using the files in the entitiesfolder."
 
-    if gameenginetype == "Quake 3":
+    if gameenginetype == "Quake 2" or gameenginetype == "Quake 3":
         import ConvertToolQ3typeEnts
         ConvertToolQ3typeEnts.Q3typeEntList(root, QuArKpath, gamename, gamefileslocation,
             gamepakfiletype, entitiesfolder, entitiesfiletype,

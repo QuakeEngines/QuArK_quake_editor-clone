@@ -164,7 +164,10 @@ def D3typeEntList(root, QuArKpath, gamename, gamefileslocation,
         return None
 
     def SetupEntities(foldername):
-        names = os.listdir(foldername)
+        try:
+            names = os.listdir(foldername)
+        except:
+            return
         names.sort()
         for name in names:
             if name.endswith(entitiesfiletype):
@@ -479,7 +482,7 @@ def D3typeEntList(root, QuArKpath, gamename, gamefileslocation,
     ### This section handles all the files in the SUB-FOLDERS, starting with the 1st sub-folder.
     for name in allnames:
         allEntities = {}
-        if "." in name:   ### Checks if this is a file name or a folder name
+        if name.find(".") != -1:   ### Checks if this is a file name or a folder name
             pass
         else:
             foldername = mainworkfoldername + "\\" + name
@@ -863,6 +866,9 @@ def D3typeEntList(root, QuArKpath, gamename, gamefileslocation,
     
 #
 #$Log$
+#Revision 1.4  2009/02/11 15:38:57  danielpharos
+#Use correct kind of combobox.
+#
 #Revision 1.3  2008/04/12 18:16:19  cdunde
 #Removed color picker for all editor_color keyword entities.
 #
