@@ -11,6 +11,9 @@ using the actual game files and other .qrk files as templates.
 
 #
 #$Log$
+#Revision 1.14  2010/08/19 08:04:26  cdunde
+#Some small fixes for the Conversion Tool system.
+#
 #Revision 1.13  2008/08/26 15:18:54  danielpharos
 #Fixed a typo and re-added missing log entries.
 #
@@ -53,7 +56,7 @@ using the actual game files and other .qrk files as templates.
 #
 #
 
-import os, os.path
+import os, sys
 import quarkx
 import quarkpy.qmacro
 from quarkpy.qutils import *
@@ -164,7 +167,7 @@ def MakeShadersFile(QuArKpath, gamename, gameenginetype, gamefileslocation,
 
 class EntitiesFileDlg(quarkpy.qmacro.dialogbox):
     endcolor = AQUA
-    size = (300, 465)
+    size = (300, 500)
     dfsep = 0.5     # sets 50% for labels and the rest for edit boxes
     dlgflags = FWF_KEEPFOCUS + FWF_NORESIZE
     dlgdef = """
@@ -704,7 +707,7 @@ def MakeUserDataFile(root, QuArKpath, gamename, gameenginetype, gamefileslocatio
 
 class DataFileDlg(quarkpy.qmacro.dialogbox):
     endcolor = AQUA
-    size = (300, 165)
+    size = (300, 185)
     dfsep = 0.4     # sets 40% for labels and the rest for edit boxes
     dlgflags = FWF_KEEPFOCUS + FWF_NORESIZE
     dlgdef = """
@@ -886,8 +889,8 @@ def MakeDataFile(root, QuArKpath, gamename, gameenginetype, gamefileslocation,
     gamefileslocation = gamefileslocation.replace('/', '\\')
     gamefileslocation = gamefileslocation.strip()
     shadersfolder = shadersfolder.replace('/', '\\')
-    shaderfolder = shadersfolder.replace(gamefileslocation, "")
-    shaderfolder = shaderfolder.replace('\\', "")
+    shaderfolder = shadersfolder.rsplit('\\', 1)
+    shaderfolder = shaderfolder[len(shaderfolder)-1]
     shaderfolder = shaderfolder.strip()
 
     shadertype = shadersfiletype.replace('.', "")
@@ -1034,7 +1037,7 @@ def MakeDataFile(root, QuArKpath, gamename, gameenginetype, gamefileslocation,
 
 class TypeOfConversionDlg(quarkpy.qmacro.dialogbox):
     endcolor = AQUA
-    size = (300, 650)
+    size = (300, 735)
     dfsep = 0.45     # sets 45% for labels and the rest for edit boxes
     dlgflags = FWF_KEEPFOCUS + FWF_NORESIZE
     dlgdef = """
