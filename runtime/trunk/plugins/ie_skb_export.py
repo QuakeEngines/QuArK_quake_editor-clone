@@ -1158,7 +1158,7 @@ def savemodel(root, filename, gamename):
 
     logging, tobj, starttime = ie_utils.default_start_logging(exportername, textlog, filename, "EX") ### Use "EX" for exporter text, "IM" for importer text.
 
-    if filename.endswith(".ska"):
+    if filename.endswith(".ska") or filename.endswith(".skb"):
         files = os.listdir(model_path[0])
         for file in files:
             if file.endswith(".skb"):
@@ -1170,6 +1170,43 @@ def savemodel(root, filename, gamename):
             if choice == 6:
                 base_file = filename.replace(".ska", ".skb")
                 message = export_SK_model(base_file, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex) # Calls to save the .skb file before the .ska file.
+        if file_version == 3:
+            # The bone order in the ska file needs to match the one in the skb file for FAKK2 and Alice models
+            # Ugly hack: Partially copied and modified code from the importer!
+            QuArKBoneNames = []
+            import ie_skb_import
+            file = open(base_file, "rb")
+            try:
+                binary_format = "<4si64c5i"
+                temp_data = file.read(struct.calcsize(binary_format))
+                data = struct.unpack(binary_format, temp_data)
+
+                numBones = data[67]
+                ofsBones = data[68]
+                file.seek(ofsBones,0)
+                for i in xrange(0, numBones):
+                    bone = ie_skb_import.SKB_Bone()
+                    bone.load(file)
+                    QuArKBoneNames += [ModelFolder + "_" + bone.name + ":bone"]
+            finally:
+                file.close()
+            
+            # Now, recreate the relevant bone lists in this new order
+            QuArK_bones_new = [None] * len(QuArKBoneNames)
+            for QuArK_bone in QuArK_bones:
+                index = operator.indexOf(QuArKBoneNames, QuArK_bone.name)
+                if index == -1:
+                    #Not found; add to back
+                    QuArK_bones_new += [QuArK_bone]
+                else:
+                    QuArK_bones_new[index] = QuArK_bone
+            QuArK_bones = QuArK_bones_new
+
+            ConvertBoneNameToIndex = {}
+            for QuArK_bone_index in range(len(QuArK_bones)):
+                QuArK_bone = QuArK_bones[QuArK_bone_index]
+                ConvertBoneNameToIndex[QuArK_bone.name] = QuArK_bone_index
+
         # Call to write ska file.
         message = export_SK_model(filename, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex) # Calls to save the .ska animation file.
 
@@ -1195,4 +1232,7 @@ quarkpy.qmdlbase.RegisterMdlExporter(".skb Alice\EF2\FAKK2 Exporter", ".skb file
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.1  2010/08/22 05:11:16  cdunde
+# Setup exporter for Alice, EF2 and FAKK2 .skb mesh and .ska animated models with bone and skin support.
+#
 #
