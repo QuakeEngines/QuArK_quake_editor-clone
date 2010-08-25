@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.519  2010/08/25 03:32:48  cdunde
+//Setup full game support for American McGee's - Alice in the map editor along with version conversion tool.
+//
 //Revision 1.518  2010/08/15 21:19:42  danielpharos
 //Updated to VTFLib 1.3.1, and added 7.5 VTF version to settings.
 //
@@ -2110,7 +2113,7 @@ QQRKSRC1
     //    ExtraCmdLine = "+set fs_game %gamedir%"
         ExtraCmdLine = "+set game %gamedir%"
         RunMapCmdLine = "+devmap %filename%"
-        AddOns = "Bezier_Library.qrk"$0D"Q3ArchLib.qrk"$0D"DataAlice.qrk"$0D"AliceEntities.qrk"$0D"AliceTextures.qrk"$0D"AliceScripts.qrk"
+        AddOns = "Bezier_Library.qrk"$0D"Q3ArchLib.qrk"$0D"DataAlice.qrk"$0D"AliceEntities.qrk"$0D"AliceWeapon-ModelEntities.qrk"$0D"AliceTextures.qrk"$0D"AliceScripts.qrk"
         AlwaysPak = ""
         PakExt = ".pk3"
         PakFormat = "*.PK3"
@@ -3059,7 +3062,7 @@ QQRKSRC1
         Palette = ":pics/colormap.pcx"
         ExtraCmdLine = "+set developer 1 +set thereisnomonkey 1 +set cheats 1 +set ui_console 1 +set fs_game %gamedir%"
         RunMapCmdLine = "+map %filename%"
-        AddOns = "Bezier_Library.qrk"$0D"Q3ArchLib.qrk"$0D"DataMOHAA.qrk"$0D"MOHAAEntities.qrk"$0D"MOHAATextures.qrk"
+        AddOns = "Bezier_Library.qrk"$0D"Q3ArchLib.qrk"$0D"DataMOHAA.qrk"$0D"MOHAAEntities.qrk"$0D"MOHAAWeapon-ModelEntities.qrk"$0D"MOHAATextures.qrk"
         AlwaysPak = ""
         PakExt = ".pk3"
         PakFormat = "*.PK3"
@@ -10591,7 +10594,7 @@ QQRKSRC1
       Game: = {
         Txt = "Based on game"
         Typ = "CL"
-        Items = "6DX"$0D"CoD1"$0D"Crystal Space"$0D"Doom 3"$0D"EF2"$0D"FAKK2"$0D"Genesis3D"$0D"Half-Life"$0D"Half-Life2"
+        Items = "6DX"$0D"Alice"$0D"CoD1"$0D"Crystal Space"$0D"Doom 3"$0D"EF2"$0D"FAKK2"$0D"Genesis3D"$0D"Half-Life"$0D"Half-Life2"
              $0D"Heretic II"$0D"Hexen II"$0D"JA"$0D"JK2"$0D"KingPin"$0D"ModelEditor"$0D"MOHAA"$0D"NEXUIZ"$0D"Prey"
              $0D"Quake 1"$0D"Quake 2"$0D"Quake 3"$0D"Quake 4"$0D"RTCW"$0D"RTCW-ET"$0D"Sin"$0D"SOF"$0D"SoF2"
              $0D"STVEF"$0D"Sylphis"$0D"Torque"$0D"Warsow"$0D"WildWest"
