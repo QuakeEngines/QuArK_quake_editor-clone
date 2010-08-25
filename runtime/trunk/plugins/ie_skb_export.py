@@ -1170,7 +1170,7 @@ def savemodel(root, filename, gamename):
             if choice == 6:
                 base_file = filename.replace(".ska", ".skb")
                 message = export_SK_model(base_file, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex) # Calls to save the .skb file before the .ska file.
-        if file_version == 3:
+        if file_version == 3 and base_file is not None:
             # The bone order in the ska file needs to match the one in the skb file for FAKK2 and Alice models
             # Ugly hack: Partially copied and modified code from the importer!
             QuArKBoneNames = []
@@ -1232,6 +1232,9 @@ quarkpy.qmdlbase.RegisterMdlExporter(".skb Alice\EF2\FAKK2 Exporter", ".skb file
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.2  2010/08/24 21:58:49  cdunde
+# Final bone position fix for both skb and ska files, everything working correctly now.
+#
 # Revision 1.1  2010/08/22 05:11:16  cdunde
 # Setup exporter for Alice, EF2 and FAKK2 .skb mesh and .ska animated models with bone and skin support.
 #

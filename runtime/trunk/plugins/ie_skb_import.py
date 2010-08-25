@@ -567,10 +567,10 @@ class skb_obj:
 ######################################################
 class SKA_BoneName_EF2:
     #Header Structure       #item of data file, size & type,   description.
-    ID = 0          #item   0       0     1 int, the bone's ID.
+    ID = 0          #item   0       0     1 float, the bone's ID is really its length.
     name = ""       #item   1-31    1-31  32 char, the bone's name.
 
-    binary_format="<i32c"  #little-endian (<), see items above.
+    binary_format="<f32c"  #little-endian (<), see items above.
 
     def __init__(self):
         self.ID = 0
@@ -1329,6 +1329,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".skb Alice\EF2\FAKK2 Importer", ".skb file
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.6  2010/08/11 18:31:08  cdunde
+# Changed variable name to be more consistent and identifiable.
+#
 # Revision 1.5  2010/08/10 07:33:27  cdunde
 # To handle bone positioning properly for .skb exporting.
 #
