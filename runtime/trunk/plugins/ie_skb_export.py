@@ -1226,12 +1226,15 @@ def savemodel(root, filename, gamename):
 
 ### To register this Python plugin and put it on the exporters menu.
 import quarkpy.qmdlbase
-quarkpy.qmdlbase.RegisterMdlExporter(".ska Alice\EF2\FAKK2 Exporter", ".ska file", "*.ska", savemodel)
-quarkpy.qmdlbase.RegisterMdlExporter(".skb Alice\EF2\FAKK2 Exporter", ".skb file", "*.skb", savemodel)
+quarkpy.qmdlbase.RegisterMdlExporter(".ska Alice\EF2\FAKK2 Exporter-anim", ".ska file", "*.ska", savemodel)
+quarkpy.qmdlbase.RegisterMdlExporter(".skb Alice\EF2\FAKK2 Exporter-mesh", ".skb file", "*.skb", savemodel)
 
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.3  2010/08/25 18:47:24  cdunde
+# Small fix.
+#
 # Revision 1.2  2010/08/24 21:58:49  cdunde
 # Final bone position fix for both skb and ska files, everything working correctly now.
 #

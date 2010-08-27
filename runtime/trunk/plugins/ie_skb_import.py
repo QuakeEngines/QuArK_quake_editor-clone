@@ -1323,12 +1323,15 @@ def loadmodel(root, filename, gamename):
 ### To register this Python plugin and put it on the importers menu.
 import quarkpy.qmdlbase
 import ie_skb_import # This imports itself to be passed along so it can be used in mdlmgr.py later.
-quarkpy.qmdlbase.RegisterMdlImporter(".ska Alice\EF2\FAKK2 Importer", ".ska file", "*.ska", loadmodel)
-quarkpy.qmdlbase.RegisterMdlImporter(".skb Alice\EF2\FAKK2 Importer", ".skb file", "*.skb", loadmodel)
+quarkpy.qmdlbase.RegisterMdlImporter(".ska Alice\EF2\FAKK2 Importer-anim", ".ska file", "*.ska", loadmodel)
+quarkpy.qmdlbase.RegisterMdlImporter(".skb Alice\EF2\FAKK2 Importer-mesh", ".skb file", "*.skb", loadmodel)
 
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.7  2010/08/25 18:47:25  cdunde
+# Small fix.
+#
 # Revision 1.6  2010/08/11 18:31:08  cdunde
 # Changed variable name to be more consistent and identifiable.
 #
