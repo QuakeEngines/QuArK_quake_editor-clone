@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.1  2010/08/25 03:32:47  cdunde
+//Setup full game support for American McGee's - Alice in the map editor along with version conversion tool.
+//
 //
 
 {
@@ -1630,15 +1633,21 @@ QQRKSRC1
           ;desc = "light"
           modelname = "cardguard_club.tik"
           model = "lever.tik"
-          angle = "360"
+          light = "300"
+          _color = "1 1 1"
+          angles = "0 0 0"
           origin = "0 0 0"
+          spawnflags = "514"
         }
         queen_magic_light:e =
         {
           ;desc = "queen_magic_light"
           model = "fx_queenlight.tik"
-          angle = "360"
+          light = "300"
+          _color = "1 1 1"
+          angles = "0 0 0"
           origin = "0 0 0"
+          spawnflags = "514"
         }
         worldspawn:b =
         {
@@ -7963,7 +7972,7 @@ QQRKSRC1
         txt = "&"
         hint = "Created from .bsp file."$0D"This item needs to be updated by hand"$0D"in this games addons .qrk file."
       }
-      angle: = 
+      angles: = 
       {
         txt = "&"
         hint = "Created from .bsp file."$0D"This item needs to be updated by hand"$0D"in this games addons .qrk file."
@@ -8025,6 +8034,36 @@ QQRKSRC1
     {
       help = "Created from .bsp file."$0D"This entity needs to be updated by hand"$0D"in this games addons .qrk file."
       bbox = '-8 -8 -8 8 8 8'
+      spawnflags: = 
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "unknown"
+      }
+      spawnflags: = 
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "unknown"
+      }
+      spawnflags: = 
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "unknown"
+      }
+      spawnflags: = 
+      {
+        txt = "&"
+        typ = "X512"
+        cap = "unknown"
+      }
+      spawnflags: = 
+      {
+        txt = "&"
+        typ = "X1024"
+        cap = "unknown"
+      }
       t_commonspecifics = !
       model: = 
       {
@@ -8032,7 +8071,28 @@ QQRKSRC1
         txt = "&"
         hint = "arbitrary .tik file to display."
       }
+      light: = 
+      {
+        Txt = "&"
+        Hint = "light value, default 300"
+      }
+      _color: = 
+      {
+        Txt = "&"
+        Hint = "light color (not the intensity, only the color)"
+      }
+      _color: = 
+      {
+        Txt = "&"
+        Typ = "L"
+        Hint = "Click here to pick the light color."
+      }
       origin: = 
+      {
+        txt = "&"
+        hint = "Created from .bsp file."$0D"This item needs to be updated by hand"$0D"in this games addons .qrk file."
+      }
+      angles: = 
       {
         txt = "&"
         hint = "Created from .bsp file."$0D"This item needs to be updated by hand"$0D"in this games addons .qrk file."
@@ -8088,7 +8148,7 @@ QQRKSRC1
         txt = "&"
         hint = "Created from .bsp file."$0D"This item needs to be updated by hand"$0D"in this games addons .qrk file."
       }
-      angle: = 
+      angles: = 
       {
         txt = "&"
         hint = "Created from .bsp file."$0D"This item needs to be updated by hand"$0D"in this games addons .qrk file."
