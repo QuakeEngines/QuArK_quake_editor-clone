@@ -763,6 +763,9 @@ class SKC_Frame:
          #   print "--------------------"
          #   print "line 764 SKC_Channel nbr ->", i
          #   print bone.matrix
+            index = skcobj.Channels_list[i].keys()[0]
+            channel_type = skcobj.Channels_list[i][index].keys()[0]
+            skcobj.Channels_list[i][index][channel_type] = bone.matrix
             continue # ONLY FOR TESTING REMOVE WHEN READY TO GO ON.
             if real_bone_index[i] == []:
                 #Apparently, there is no skd bone for this skc bone!
@@ -888,7 +891,14 @@ class skc_obj:
 
     binary_format="<4s3if4f3i"  #little-endian (<), see #item descriptions above.
 
-    bone_names = []
+    # Setup cross reference dictionary lists to speed things up with.
+    QuArK_bones_Name2Indexes = {}
+    QuArK_bones_Indexes2Name = {}
+    # Setup a dictionary list of the Channels (bone names) for this skc file and their types
+    # of movement(s) to be used with the animation frames Channels (bones) data later.
+    # Channels_list = {channel_nbr: {QuArK_bone_index: QuArK_bones list index_nbr, 'pos': [4 float values], 'rot': [4 float values], 'rotFX': [4 float values]}}
+    Channels_list = {}
+    bone_names = [] # Not really being used, should use Channels_list above instead.
 
     def __init__(self):
         self.ident = ""      # ex: 'SKAN' (verified to be correct)
@@ -904,6 +914,9 @@ class skc_obj:
         self.ofsChannels = 0 # Looks like should be int. (verified to be correct)
         self.numFrames = 0   # Looks like should be int. (verified to be correct)
 
+        self.QuArK_bones_Name2Indexes = {}
+        self.QuArK_bones_Indexes2Name = {}
+        self.Channels_list = {}
         self.bone_names = []
 
     def load(self, file, Components, QuArK_bones, Exist_Comps, anim_name):
@@ -919,7 +932,7 @@ class skc_obj:
         ModelFolder = FolderPath.rsplit("/", 1)[1]
         temp_data = file.read(struct.calcsize(self.binary_format))
         data = struct.unpack(self.binary_format, temp_data)
-     #   print "skd_import line 922 skc_obj header data"
+     #   print "skd_import line 935 skc_obj header data"
      #   print data
 
         # "data" is all of the header data amounts.
@@ -944,26 +957,58 @@ class skc_obj:
         self.ofsChannels = data[10]
         self.numFrames = data[11]
 
-        #setup the QuArK's ModelComponentList['bonelist'].
+        # Get the QuArK's ModelComponentList['bonelist'].
         bonelist = editor.ModelComponentList['bonelist']
 
-        # for data read test only, remove below when done
-        current_pointer_count = file.tell()
-     #   print "========= line 952 =========", current_pointer_count, self.numChannels, self.ofsChannels, len(QuArK_bones)
-     #   for i in range(len(QuArK_bones)):
-     #       print "OUR BONE", i, QuArK_bones[i].shortname
+        # Fill the cross reference dictionary lists.
+        for i in range(len(QuArK_bones)):
+            name = QuArK_bones[i].name
+            self.QuArK_bones_Indexes2Name[i] = name
+            name = name.split("_")[1]
+            name = name.split(":")[0]
+            self.QuArK_bones_Name2Indexes[name] = i
+
+        # Fill the self.Channels_list data.
+        current_pointer_count = file.tell() # To save the file read pointer position at where we were.
+        # Channels_list = {channel_nbr: {QuArK_bone_index: QuArK_bones list index_nbr, 'pos': [4 float values], 'rot': [4 float values], 'rotFX': [4 float values]}}
         file.seek(self.ofsChannels,0)
         binary_format = "<%ds" % SKC_MAX_CHANNEL_CHARS
-
         for i in xrange(self.numChannels):
             temp_data = file.read(struct.calcsize(binary_format))
             data = struct.unpack(binary_format, temp_data)
      #       print "------------------------"
      #       print "item: ", i
      #       print data
-        file.seek(current_pointer_count,0)
-     #   print "========= line 965 =========", file.tell()
-        # for data read test only, remove above when done
+            data = data[0].replace("\x00", "")
+            if data.endswith(" pos"):
+                name = data.split(" pos")[0]
+                try:
+                    index = self.QuArK_bones_Name2Indexes[name]
+                except:
+                    index = -2 # This bone is NOT in the .skd bones...a NEW bone? NOW WHAT?
+                self.Channels_list[i] = {}
+                self.Channels_list[i][index] = {}
+                self.Channels_list[i][index]['pos'] = [0.0]*4
+            elif data.endswith(" rot"):
+                name = data.split(" rot")[0]
+                try:
+                    index = self.QuArK_bones_Name2Indexes[name]
+                except:
+                    index = -2 # This bone is NOT in the .skd bones...a NEW bone? NOW WHAT?
+                self.Channels_list[i] = {}
+                self.Channels_list[i][index] = {}
+                self.Channels_list[i][index]['rot'] = [0.0]*4
+            elif data.endswith(" rotFK"):
+                name = data.split(" rotFK")[0]
+                try:
+                    index = self.QuArK_bones_Name2Indexes[name]
+                except:
+                    index = -2 # This bone is NOT in the .skd bones...a NEW bone? NOW WHAT?
+                self.Channels_list[i] = {}
+                self.Channels_list[i][index] = {}
+                self.Channels_list[i][index]['rotFK'] = [0.0]*4
+        file.seek(current_pointer_count,0) # To put the file read pointer back to where it was.
+     #   print "========= line 1011 =========", file.tell()
 
         # Construct a look-up-table to get a bone from a parent index number
         parent_indexes = []
@@ -1107,7 +1152,9 @@ def check4skin(file, Component, material_name, message, version):
     ImageTypes = [".ftx", ".tga", ".jpg", ".bmp", ".png", ".dds"]
     if logging == 1:
         tobj.logcon ("----------------------------------------------------------")
-        tobj.logcon ("Skins group data: " + Component.name + " skins")
+        tobj.logcon ("Skins group data for: " + Component.name)
+        tobj.logcon ("material_name: " + material_name)
+        tobj.logcon ("version: " + str(version))
         tobj.logcon ("----------------------------------------------------------")
     path = file.name
     shaders_path = None
@@ -1454,4 +1501,7 @@ quarkpy.qmdlbase.RegisterMdlImporter(".skd MOHAA Importer-mesh", ".skd file", "*
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.1  2010/08/27 19:35:05  cdunde
+# Setup importer for MoHAA .skd and .skc models (static and animated) with bone and skin support.
+#
 #
