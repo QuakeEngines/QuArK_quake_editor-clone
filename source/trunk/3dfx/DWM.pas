@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2010/04/16 19:07:23  danielpharos
+Corrected variable type, added some logging, and added ForceUnload argument.
+
 Revision 1.5  2009/07/17 10:52:09  danielpharos
 Moved PPointer to ExtraFunctionality.
 
@@ -122,7 +125,7 @@ end;
 
 procedure UnloadDWM(ForceUnload: boolean);
 begin
-  if TimesLoaded = 1 then
+  if (TimesLoaded = 1) or ForceUnload then
   begin
     if DWMLib<>0 then
     begin
