@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.86  2010/05/08 07:41:12  cdunde
+Setup the QuArK Model Editor to allow obtaining textures dynamically in the Texture Browser.
+
 Revision 1.85  2010/04/16 21:18:45  danielpharos
 Move some version-stuff about. quarkpy now also checks the minor version number.
 
@@ -365,6 +368,7 @@ comparison between gamemodes.}
  mjCoD2         = 'q';  { Call of Duty 2 }
  mjPrey         = 'r';  { Prey }
  mjFAKK2        = 's';  { Heavy Metal - FAKK2 }
+ mjAlice        = 't';  { American McGee's Alice }
  mjWarsow       = 'v';  { Warsow }
  mjWildWest     = 'w';  { WildWest }   
  mjModelEditor  = 'x';  { QuArK Model editor }
