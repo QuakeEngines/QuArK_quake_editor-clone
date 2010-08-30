@@ -288,6 +288,8 @@ if classnames != {}:
         q.write("      {\n")
      #   if group_name == 'misc' and misc_ents == []: # check 'misc' ents for misc_model, if not add it.
      #       pass
+        if not primary_ents.has_key(group_name): # Skip processing group_name ents if none exist.
+            continue
         group_ent_names = primary_ents[group_name]
         for ent_name in group_ent_names:
             entitiy_count = entitiy_count + 1 # Used just for console printout for checking all were processed.
@@ -464,6 +466,8 @@ if classnames != {}:
 
     for group_name in primary_list:
         if group_name == 'game' and game_specific_ents == []: # Skip processing 'game' forms if none exist.
+            continue
+        if not primary_ents.has_key(group_name): # Skip processing group_name ents if none exist.
             continue
         group_ent_names = primary_ents[group_name]
         for ent_name in group_ent_names:
