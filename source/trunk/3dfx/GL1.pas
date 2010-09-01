@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.46  2010/04/16 19:19:37  danielpharos
+Fixed some ugly looping.
+
 Revision 1.45  2010/04/16 19:16:05  danielpharos
 GLExtensions should be cleared on failure.
 
@@ -756,6 +759,10 @@ const
   GL_CLAMP  = $2900;
   GL_REPEAT = $2901;
 
+  (* Anisotropic texture filtering *)
+  GL_TEXTURE_MAX_ANISOTROPY_EXT      = $84FE;
+  GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT  = $84FF;
+
 type
   TMatrix4f = array[0..3, 0..3] of GLdouble;
   GLfloat4 = array[0..3] of GLfloat;
@@ -815,6 +822,7 @@ var
   glBlendFunc: procedure (sfactor: GLint; dfactor: GLint) stdcall;
   glOrtho: procedure (left: GLdouble; right: GLdouble; bottom: GLdouble; top: GLdouble; near: GLdouble; far: GLdouble) stdcall;
   glGetIntegerv: procedure (pname: GLenum; params: PGLint) stdcall;
+  glGetFloatv: procedure (pname: GLenum; params: PGLfloat) stdcall;
   glGetString: function (name: GLenum) : PGLubyte; stdcall;
   glLightModelf: procedure (pname: GLenum; params: GLfloat) stdcall;
   glLightModelfv: procedure (pname: GLenum; params: PGLfloat) stdcall;
@@ -837,7 +845,7 @@ var
   *)
   gluPerspective: procedure (fovy, aspect, zNear, zFar: GLdouble); stdcall;
   //Looks like a bug in the OpenGL specs: the last parameter is void, not GLvoid
- {gluBuild2DMipmaps: function (target: GLenum; components: GLint; width, height: GLint; format: GLenum; typ: GLenum; const data: PByte): GLint; stdcall;}
+  gluBuild2DMipmaps: function (target: GLenum; components: GLint; width, height: GLint; format: GLenum; typ: GLenum; const data: PByte): GLint; stdcall;
 
   (*
   ** Extensions
@@ -879,7 +887,7 @@ uses Classes, StrUtils, Quarkx, QkExceptions, Logging, Setup, QkObjects,
      SystemDetails, ExtraFunctionality;
 
 const
-  OpenGL32DLL_FuncList : array[0..55] of
+  OpenGL32DLL_FuncList : array[0..56] of
     record
       FuncPtr: Pointer;
       FuncName: PChar;
@@ -935,6 +943,7 @@ const
    ,(FuncPtr: @@glBlendFunc;           FuncName: 'glBlendFunc'           )
    ,(FuncPtr: @@glOrtho;               FuncName: 'glOrtho'               )
    ,(FuncPtr: @@glGetIntegerv;         FuncName: 'glGetIntegerv'         )
+   ,(FuncPtr: @@glGetFloatv;           FuncName: 'glGetFloatv'           )
    ,(FuncPtr: @@glGetString;           FuncName: 'glGetString'           )
    ,(FuncPtr: @@glLightModelf;         FuncName: 'glLightModelf'         )
    ,(FuncPtr: @@glLightModelfv;        FuncName: 'glLightModelfv'        )
@@ -948,13 +957,13 @@ const
    ,(FuncPtr: @@glDepthMask;           FuncName: 'glDepthMask'           )
  );
 
-  Glu32DLL_FuncList : array[0..0] of
+  Glu32DLL_FuncList : array[0..1] of
     record
       FuncPtr: Pointer;
       FuncName: PChar;
     end =
   ( (FuncPtr: @@gluPerspective;        FuncName: 'gluPerspective'        )
-  {,(FuncPtr: @@gluBuild2DMipmaps;     FuncName: 'gluBuild2DMipmaps'     )});
+   ,(FuncPtr: @@gluBuild2DMipmaps;     FuncName: 'gluBuild2DMipmaps'     ));
 
   ExtGL32DLL_FuncList : array[0..0] of
     record

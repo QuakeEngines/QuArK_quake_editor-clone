@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.95  2010/04/16 19:13:46  danielpharos
+Removed unused DebugGLErr define.
+
 Revision 1.94  2009/09/24 21:38:56  danielpharos
 Fixed a small bug that threw off transparency in triangle strip rendering.
 
@@ -340,6 +343,8 @@ type
                  ZeroLight, BrightnessSaturation, LightFactor: scalar_t;
                 end;
 
+ TTextureFiltering = (tfNone, tfBilinear, tfTrilinear, tfAnisotropic);
+
  TGLSceneObject = class(TSceneObject)
  private
    RC: HGLRC;
@@ -361,13 +366,14 @@ type
    MapLimit: TVect;
    MapLimitSmallest: Double;
    MaxLights: GLint;
+   maxAnisotropyTextureFiltering: GLfloat;
    LightingQuality: Integer;
    OpenGLDisplayLists: array[0..2] of GLuint;
    PixelFormat: PPixelFormatDescriptor;
    Extensions: TGLExtensionList;
    procedure RenderPList(PList: PSurfaces; TransparentFaces: Boolean; SourceCoord: TCoordinates);
  protected
-   Bilinear: boolean;
+   TextureFiltering: TTextureFiltering;
    ScreenX, ScreenY: Integer;
    procedure stScalePoly(Texture: PTexture3; var ScaleS, ScaleT: TDouble); override;
    procedure stScaleModel(Skin: PTexture3; var ScaleS, ScaleT: TDouble); override;
@@ -1079,7 +1085,23 @@ begin
   VCorrection2:=2*Setup.GetFloatSpec('VCorrection',1);
   AllowsGDI:=Setup.Specifics.Values['AllowsGDI']<>'';
   DisplayLists:=Setup.Specifics.Values['GLLists']<>'';
-  Bilinear:=Setup.Specifics.Values['Bilinear']<>'';
+  if Setup.Specifics.Values['TextureFiltering'] = '0' then
+    TextureFiltering := tfNone
+  else if Setup.Specifics.Values['TextureFiltering'] = '1' then
+    TextureFiltering := tfBilinear
+  else if Setup.Specifics.Values['TextureFiltering'] = '2' then
+    TextureFiltering := tfTrilinear
+  else if Setup.Specifics.Values['TextureFiltering'] = '3' then
+    TextureFiltering := tfAnisotropic
+  else
+  begin
+    //Backward compatibility
+    Log(LOG_WARNING, 'OpenGL Init: Texture Filtering setting missing or invalid!'); //@MOVE to dict!
+    if Setup.Specifics.Values['Bilinear']<>'' then
+      TextureFiltering := tfBilinear
+    else
+      TextureFiltering := tfNone;
+  end;
   DoubleBuffered:=Setup.Specifics.Values['DoubleBuffer']<>'';
 
   SetViewDC(True);
@@ -1119,8 +1141,21 @@ begin
     CheckOpenGLError('Init: GL_MAX_LIGHTS');
     if MaxLights<8 then
     begin
-      Log(LOG_WARNING, 'Init: OpenGL is lying about GL_MAX_LIGHTS! Lighting disabled out of safety.'); //@MOVE to dict!
+      Log(LOG_WARNING, 'OpenGL Init: OpenGL is lying about GL_MAX_LIGHTS! Lighting disabled out of safety.'); //@MOVE to dict!
       Lighting:=false;
+    end;
+
+    if ExtensionSupported('GL_EXT_texture_filter_anisotropic') then
+    begin
+      glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, @maxAnisotropyTextureFiltering);
+    end
+    else
+    begin
+      if TextureFiltering = tfAnisotropic then
+      begin
+        Log(LOG_INFO, 'OpenGL Init: Anisotropic texture filtering not support. Falling back to trilinear texture filtering.'); //@MOVE to dict!
+        TextureFiltering := tfTrilinear;
+      end;
     end;
 
     if Lighting then
@@ -1811,6 +1846,7 @@ var
  MaxTexDim: GLint;
  NumberOfComponents: GLint;
  BufferType: GLenum;
+ NeedMipmaps: Boolean;
 begin
   if Texture^.OpenGLName=0 then
   begin
@@ -2071,7 +2107,6 @@ begin
       PSD2.Done;
     end;
 
-    {gluBuild2DMipmaps(GL_TEXTURE_2D, 3, W, H, GL_RGBA, GL_UNSIGNED_BYTE, TexData^);}
     glGenTextures(1, @Texture^.OpenGLName);
     CheckOpenGLError('BuildTexture: glGenTextures');
     if Texture^.OpenGLName=0 then
@@ -2082,20 +2117,49 @@ begin
 
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    if Bilinear then
-    begin
-      glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-      glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    end
-    else
-    begin
+    case TextureFiltering of
+    tfNone:
+     begin
+      NeedMipmaps := false;
       glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
       glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+     end;
+    tfBilinear:
+     begin
+      NeedMipmaps := false;
+      glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+      glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+     end;
+    tfTrilinear:
+     begin
+      NeedMipmaps := true;
+      glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+      glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+     end;
+    tfAnisotropic:
+     begin
+      NeedMipmaps := true;
+      glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+      glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+
+      glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, maxAnisotropyTextureFiltering);
+     end;
+    else
+      //Shouldn't happen...
+      NeedMipmaps := false;
     end;
     CheckOpenGLError('BuildTexture: glTexParameterf');
 
+    //Build image
     glTexImage2D(GL_TEXTURE_2D, 0, NumberOfComponents, W, H, 0, BufferType, GL_UNSIGNED_BYTE, PGLvoid(TexData));
     CheckOpenGLError('BuildTexture: glTexImage2D');
+
+    if NeedMipmaps then
+    begin
+      //Build mipmaps
+      gluBuild2DMipmaps(GL_TEXTURE_2D, 3, W, H, BufferType, GL_UNSIGNED_BYTE, PByte(TexData));
+      CheckOpenGLError('BuildTexture: gluBuild2DMipmaps');
+    end;
     finally
       FreeMem(TexData);
     end;

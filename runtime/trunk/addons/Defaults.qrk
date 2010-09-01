@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.520  2010/08/25 22:25:01  cdunde
+//Added game models support file.
+//
 //Revision 1.519  2010/08/25 03:32:48  cdunde
 //Setup full game support for American McGee's - Alice in the map editor along with version conversion tool.
 //
@@ -1774,7 +1777,8 @@ QQRKSRC1
         Transparency = "1"
         Lights = "1"
         Dither = "1"
-        Bilinear = "1"
+        //Bilinear = "1" OLD SETTING, use TextureFiltering instead!
+        TextureFiltering = "1"
         DoubleBuffer = "1"
         SupportsGDI = ""
         AllowsGDI = "1"
@@ -9545,7 +9549,13 @@ QQRKSRC1
       L2: = {Typ="S" Bold="0" Txt="configuration page for each game."}
       Sep0: = {Typ="S" Txt = ""}
       L3: = {Typ="S" Txt="---- additional options ----"}
-      Bilinear: = { Typ="X" Txt="Bilinear filtering" Cap="Enabled" }
+      TextureFiltering: = {
+        Txt="Texture filtering"
+        Typ="CL"
+        Items  = "None" $0D "Bilinear" $0D "Trilinear" $0D "Anisotropic"
+        Values = "0"    $0D "1"        $0D "2"         $0D "3"
+        Hint = "Texture filtering to use to improve texture sampling (the higher, the better the quality)."
+      }
       DoubleBuffer: = { Typ="X" Txt="Double buffering" Cap="Enabled" Hint="Reduces the flickering noticed when the view redraws."}
       Dither: = { Typ="X" Txt="Color dithering" Cap="Enabled" }
       SupportsGDI:  = { Typ="X" Txt="'Supports GDI' flag" Cap="Enabled" }
