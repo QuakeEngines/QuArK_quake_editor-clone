@@ -2739,8 +2739,9 @@ class ModelEditorLinHandlesManager:
             if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
                 self.tristodrawlist = []
                 self.selvtxlist = []
+                tris = comp.triangles
                 for tri_index in self.editor.ModelFaceSelList:
-                    for vtx in self.editor.Root.currentcomponent.triangles[tri_index]:
+                    for vtx in tris[tri_index]:
                         if vtx[0] in self.selvtxlist:
                             pass
                         else:
@@ -2830,7 +2831,7 @@ class ModelEditorLinHandlesManager:
                                 self.editor.ModelVertexSelList = templist
                                 self.editor.ModelVertexSelListPos = []
                                 self.editor.ModelVertexSelListBBox = None
-                                vertices = self.editor.Root.currentcomponent.currentframe.vertices
+                                vertices = comp.currentframe.vertices
                                 for vtxpos in self.editor.ModelVertexSelList:
                                     self.editor.ModelVertexSelListPos = self.editor.ModelVertexSelListPos + [vertices[vtxpos]]
                                 self.editor.ModelVertexSelListBbox = quarkx.boundingboxof(self.editor.ModelVertexSelListPos)
@@ -5390,6 +5391,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.212  2010/07/02 04:26:59  cdunde
+#Needed small fix for last change to avoid problems.
+#
 #Revision 1.211  2010/06/25 05:28:00  cdunde
 #Setup 'Auto Scaling' function for the Skin-view that resets the skin handles and Component's UV's
 #to fit the currently selected and viewable skin texture of that Component.
