@@ -11,6 +11,9 @@ using the actual game files and other .qrk files as templates.
 
 #
 #$Log$
+#Revision 1.15  2010/08/21 03:17:41  cdunde
+#Additional small fix for the Conversion Tool system.
+#
 #Revision 1.14  2010/08/19 08:04:26  cdunde
 #Some small fixes for the Conversion Tool system.
 #
@@ -463,7 +466,7 @@ class EntitiesFileDlg(quarkpy.qmacro.dialogbox):
             self.src["ClipMdlFileFolder"] = self.gamefileslocation
 
     def UseTheseSelections(self, btn):
-        "Accepts all entries and passes then to the MakeEntitiesFile function."
+        "Accepts all entries and passes them to the MakeEntitiesFile function."
 
         quarkx.globalaccept()
         root = self.root
@@ -553,7 +556,7 @@ def MakeEntitiesFile(root, QuArKpath, gamename, gameenginetype, gamefileslocatio
     "Makes a new 'gamename'Entities.qrk file"
     "using the files in the entitiesfolder."
 
-    if gameenginetype == "Quake 2" or gameenginetype == "Quake 3":
+    if entitiesfiletype != ".bsp" and (gameenginetype == "Quake 2" or gameenginetype == "Quake 3"):
         import ConvertToolQ3typeEnts
         ConvertToolQ3typeEnts.Q3typeEntList(root, QuArKpath, gamename, gamefileslocation,
             gamepakfiletype, entitiesfolder, entitiesfiletype,
@@ -563,7 +566,7 @@ def MakeEntitiesFile(root, QuArKpath, gamename, gameenginetype, gamefileslocatio
             WriteMusicBrowser, UseMusicBrowser, UseDefaultMusicHint, MusicHint,
             UseColorPicker)
 
-    if gameenginetype == "Doom 3":
+    elif entitiesfiletype != ".bsp" and gameenginetype == "Doom 3":
         import ConvertToolD3typeEnts
         ConvertToolD3typeEnts.D3typeEntList(root, QuArKpath, gamename, gamefileslocation,
             gamepakfiletype, entitiesfolder, entitiesfiletype, modelfolder,
@@ -571,6 +574,16 @@ def MakeEntitiesFile(root, QuArKpath, gamename, gameenginetype, gamefileslocatio
             WriteModelBrowser, UseModelBrowser, UseDefaultModelHint, ModelHint,
             WriteSoundBrowser, UseSoundBrowser, UseDefaultSoundHint, SoundHint, MakeSoundList, SoundListFileFolder, SoundListFileType,
             WriteMusicBrowser, UseMusicBrowser, UseDefaultMusicHint, MusicHint, MakeModelList, MakeClipMdlList, ClipMdlFileFolder, ClipMdlFileType,
+            UseColorPicker)
+
+    elif entitiesfiletype == ".bsp":
+        import ConvertToolBSPtypeEnts
+        ConvertToolBSPtypeEnts.BSPtypeEntList(root, QuArKpath, gamename, gamefileslocation,
+            gamepakfiletype, entitiesfolder, entitiesfiletype,
+            modelfiletype, soundfiletype, musicfiletype, WriteCommonSpecifics, UseCommonSpecifics,
+            WriteModelBrowser, UseModelBrowser, UseDefaultModelHint, ModelHint,
+            WriteSoundBrowser, UseSoundBrowser, UseDefaultSoundHint, SoundHint,
+            WriteMusicBrowser, UseMusicBrowser, UseDefaultMusicHint, MusicHint,
             UseColorPicker)
 
     if makeshadersfile == "40":
