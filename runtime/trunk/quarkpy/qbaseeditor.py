@@ -429,6 +429,7 @@ class BaseEditor:
                     if (flagsmouse != 536 or flagsmouse != 1048 or flagsmouse != 2072) and (view.info["viewname"] == "skinview"):
 
                         cv = view.canvas()
+                        tris = self.Root.currentcomponent.triangles
                         tex = self.Root.currentcomponent.currentskin
                         if tex is not None:
                             texWidth,texHeight = tex["Size"]
@@ -447,7 +448,8 @@ class BaseEditor:
 
                         tricount = -1
                         cv.pencolor = MapColor("SkinLines", SS_MODEL)
-                        for triangle in self.Root.currentcomponent.triangles:
+                        # Section below does the drawing of all the Skinview's mesh lines.
+                        for triangle in tris:
                             faceselected = 0
                             tricount = tricount + 1
                             if flagsmouse == 520 or flagsmouse == 1032:
@@ -502,7 +504,7 @@ class BaseEditor:
                         # Method 2, Ticks drawn during RecSelDrag.
                         if (flagsmouse == 1032 and isinstance(self.dragobject, mdlhandles.RectSelDragObject) and quarkx.setupsubset(SS_MODEL, "Options")["RDT_M2"] == "1"):
                             cv.pencolor = MapColor("Vertices", SS_MODEL)
-                            for triangle in self.Root.currentcomponent.triangles:
+                            for triangle in tris:
                                 vertex0 = triangle[0]
                                 vertex1 = triangle[1]
                                 vertex2 = triangle[2]
@@ -1663,6 +1665,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.139  2010/06/02 21:23:39  cdunde
+#Fixes for Model Editor Eye position handle.
+#
 #Revision 1.138  2010/05/31 21:10:50  cdunde
 #Fix for Model Editor Eye handle drags lines not drawing when drag is paused.
 #
