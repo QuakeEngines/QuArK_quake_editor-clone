@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.96  2010/09/01 20:20:21  danielpharos
+Added experimental trilinear and anisotropic texture filtering.
+
 Revision 1.95  2010/04/16 19:13:46  danielpharos
 Removed unused DebugGLErr define.
 
@@ -2150,15 +2153,17 @@ begin
     end;
     CheckOpenGLError('BuildTexture: glTexParameterf');
 
-    //Build image
-    glTexImage2D(GL_TEXTURE_2D, 0, NumberOfComponents, W, H, 0, BufferType, GL_UNSIGNED_BYTE, PGLvoid(TexData));
-    CheckOpenGLError('BuildTexture: glTexImage2D');
-
     if NeedMipmaps then
     begin
       //Build mipmaps
-      gluBuild2DMipmaps(GL_TEXTURE_2D, 3, W, H, BufferType, GL_UNSIGNED_BYTE, PByte(TexData));
+      gluBuild2DMipmaps(GL_TEXTURE_2D, NumberOfComponents, W, H, BufferType, GL_UNSIGNED_BYTE, PByte(TexData));
       CheckOpenGLError('BuildTexture: gluBuild2DMipmaps');
+    end
+    else
+    begin
+      //Build image
+      glTexImage2D(GL_TEXTURE_2D, 0, NumberOfComponents, W, H, 0, BufferType, GL_UNSIGNED_BYTE, PGLvoid(TexData));
+      CheckOpenGLError('BuildTexture: glTexImage2D');
     end;
     finally
       FreeMem(TexData);
