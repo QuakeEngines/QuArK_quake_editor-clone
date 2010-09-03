@@ -1209,6 +1209,7 @@ def movefaces(editor, movetocomponent, option=2):
 #
 def MakeEditorVertexPolyObject(editor, option=0, otherlist=None, name=None):
     "Creates a QuArK Internal Group Object of Poly Objects for vertex drags."
+    from qbaseeditor import currentview
 
     if editor.Root.currentcomponent is None:
         componentnames = []
@@ -1219,6 +1220,12 @@ def MakeEditorVertexPolyObject(editor, option=0, otherlist=None, name=None):
         comp = editor.Root.dictitems[componentnames[0]]
     else:
         comp = editor.Root.currentcomponent
+
+    currentskin = comp.currentskin
+    if currentskin is not None:
+        skinname = currentskin.shortname
+    else:
+        skinname = "None"
         
     if option == 0:
         if editor.ModelVertexSelList == [] and otherlist is None:
@@ -1227,7 +1234,8 @@ def MakeEditorVertexPolyObject(editor, option=0, otherlist=None, name=None):
             VertexList = otherlist
         else:
             VertexList = editor.ModelVertexSelList
-        from qbaseeditor import currentview
+
+        scale = currentview.info["scale"]*2
         polylist = []
         if name is None:
             group = quarkx.newobj("selected:g");
@@ -1238,70 +1246,54 @@ def MakeEditorVertexPolyObject(editor, option=0, otherlist=None, name=None):
             group = quarkx.newobj(name + ":g");
         if comp.currentframe is None:
             return []
-        for vtx in range (len(comp.currentframe.vertices)):
+        else:
+            vertices = comp.currentframe.vertices
+        for vtx in range (len(vertices)):
             for ver_index in range (len(VertexList)):
                 if vtx == VertexList[ver_index]:
-                    vertex = comp.currentframe.vertices[vtx]
+                    vertex = vertices[vtx]
                     p = quarkx.newobj(str(vtx)+":p");
                     face = quarkx.newobj("east:f")
-                    vtx0X, vtx0Y, vtx0Z = (vertex + quarkx.vect(1.0,0.0,0.0)/currentview.info["scale"]*2).tuple
-                    vtx1X, vtx1Y, vtx1Z = (vertex + quarkx.vect(1.0,1.0,0.0)/currentview.info["scale"]*2).tuple
-                    vtx2X, vtx2Y, vtx2Z = (vertex + quarkx.vect(1.0,0.0,1.0)/currentview.info["scale"]*2).tuple
+                    vtx0X, vtx0Y, vtx0Z = (vertex + quarkx.vect(1.0,0.0,0.0)/scale).tuple
+                    vtx1X, vtx1Y, vtx1Z = (vertex + quarkx.vect(1.0,1.0,0.0)/scale).tuple
+                    vtx2X, vtx2Y, vtx2Z = (vertex + quarkx.vect(1.0,0.0,1.0)/scale).tuple
                     face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
-                    if comp.currentskin is not None:
-                        face["tex"] = comp.currentskin.shortname
-                    else:
-                        face["tex"] = "None"
+                    face["tex"] = skinname
                     p.appenditem(face)
                     face = quarkx.newobj("west:f")
-                    vtx0X, vtx0Y, vtx0Z = (vertex + quarkx.vect(-1.0,0.0,0.0)/currentview.info["scale"]*2).tuple
-                    vtx1X, vtx1Y, vtx1Z = (vertex + quarkx.vect(-1.0,-1.0,0.0)/currentview.info["scale"]*2).tuple
-                    vtx2X, vtx2Y, vtx2Z = (vertex + quarkx.vect(-1.0,0.0,1.0)/currentview.info["scale"]*2).tuple
+                    vtx0X, vtx0Y, vtx0Z = (vertex + quarkx.vect(-1.0,0.0,0.0)/scale).tuple
+                    vtx1X, vtx1Y, vtx1Z = (vertex + quarkx.vect(-1.0,-1.0,0.0)/scale).tuple
+                    vtx2X, vtx2Y, vtx2Z = (vertex + quarkx.vect(-1.0,0.0,1.0)/scale).tuple
                     face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
-                    if comp.currentskin is not None:
-                        face["tex"] = comp.currentskin.shortname
-                    else:
-                        face["tex"] = "None"
+                    face["tex"] = skinname
                     p.appenditem(face)
                     face = quarkx.newobj("north:f")
-                    vtx0X, vtx0Y, vtx0Z = (vertex + quarkx.vect(0.0,1.0,0.0)/currentview.info["scale"]*2).tuple
-                    vtx1X, vtx1Y, vtx1Z = (vertex + quarkx.vect(-1.0,1.0,0.0)/currentview.info["scale"]*2).tuple
-                    vtx2X, vtx2Y, vtx2Z = (vertex + quarkx.vect(0.0,1.0,1.0)/currentview.info["scale"]*2).tuple
+                    vtx0X, vtx0Y, vtx0Z = (vertex + quarkx.vect(0.0,1.0,0.0)/scale).tuple
+                    vtx1X, vtx1Y, vtx1Z = (vertex + quarkx.vect(-1.0,1.0,0.0)/scale).tuple
+                    vtx2X, vtx2Y, vtx2Z = (vertex + quarkx.vect(0.0,1.0,1.0)/scale).tuple
                     face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
-                    if comp.currentskin is not None:
-                        face["tex"] = comp.currentskin.shortname
-                    else:
-                        face["tex"] = "None"
+                    face["tex"] = skinname
                     p.appenditem(face)
                     face = quarkx.newobj("south:f")
-                    vtx0X, vtx0Y, vtx0Z = (vertex + quarkx.vect(0.0,-1.0,0.0)/currentview.info["scale"]*2).tuple
-                    vtx1X, vtx1Y, vtx1Z = (vertex + quarkx.vect(1.0,-1.0,0.0)/currentview.info["scale"]*2).tuple
-                    vtx2X, vtx2Y, vtx2Z = (vertex + quarkx.vect(0.0,-1.0,1.0)/currentview.info["scale"]*2).tuple
+                    vtx0X, vtx0Y, vtx0Z = (vertex + quarkx.vect(0.0,-1.0,0.0)/scale).tuple
+                    vtx1X, vtx1Y, vtx1Z = (vertex + quarkx.vect(1.0,-1.0,0.0)/scale).tuple
+                    vtx2X, vtx2Y, vtx2Z = (vertex + quarkx.vect(0.0,-1.0,1.0)/scale).tuple
                     face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
-                    if comp.currentskin is not None:
-                        face["tex"] = comp.currentskin.shortname
-                    else:
-                        face["tex"] = "None"
+                    face["tex"] = skinname
                     p.appenditem(face)
                     face = quarkx.newobj("up:f")
-                    vtx0X, vtx0Y, vtx0Z = (vertex + quarkx.vect(0.0,0.0,1.0)/currentview.info["scale"]*2).tuple
-                    vtx1X, vtx1Y, vtx1Z = (vertex + quarkx.vect(1.0,0.0,1.0)/currentview.info["scale"]*2).tuple
-                    vtx2X, vtx2Y, vtx2Z = (vertex + quarkx.vect(0.0,1.0,1.0)/currentview.info["scale"]*2).tuple
+                    vtx0X, vtx0Y, vtx0Z = (vertex + quarkx.vect(0.0,0.0,1.0)/scale).tuple
+                    vtx1X, vtx1Y, vtx1Z = (vertex + quarkx.vect(1.0,0.0,1.0)/scale).tuple
+                    vtx2X, vtx2Y, vtx2Z = (vertex + quarkx.vect(0.0,1.0,1.0)/scale).tuple
                     face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
-                    if comp.currentskin is not None:
-                        face["tex"] = comp.currentskin.shortname
-                    else:
-                        face["tex"] = "None"
+                    face["tex"] = skinname
                     p.appenditem(face)
                     face = quarkx.newobj("down:f")
-                    vtx0X, vtx0Y, vtx0Z = (vertex + quarkx.vect(0.0,0.0,-1.0)/currentview.info["scale"]*2).tuple
-                    vtx1X, vtx1Y, vtx1Z = (vertex + quarkx.vect(1.0,0.0,-1.0)/currentview.info["scale"]*2).tuple
-                    vtx2X, vtx2Y, vtx2Z = (vertex + quarkx.vect(0.0,-1.0,-1.0)/currentview.info["scale"]*2).tuple
+                    vtx0X, vtx0Y, vtx0Z = (vertex + quarkx.vect(0.0,0.0,-1.0)/scale).tuple
+                    vtx1X, vtx1Y, vtx1Z = (vertex + quarkx.vect(1.0,0.0,-1.0)/scale).tuple
+                    vtx2X, vtx2Y, vtx2Z = (vertex + quarkx.vect(0.0,-1.0,-1.0)/scale).tuple
                     face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
-                    if comp.currentskin is not None:
-                        face["tex"] = comp.currentskin.shortname
-                    else:
-                        face["tex"] = "None"
+                    face["tex"] = skinname
                     p.appenditem(face)
                     group.appenditem(p)
 
@@ -1311,78 +1303,61 @@ def MakeEditorVertexPolyObject(editor, option=0, otherlist=None, name=None):
     if option == 1:
         from mdlhandles import SkinView1
         import mdlhandles
-        from qbaseeditor import currentview
+        scale = SkinView1.info["scale"]*2
+        VertexList = editor.SkinVertexSelList
         polylist = []
         group = quarkx.newobj("selected:g");
         for vtx in range (len(SkinView1.handles)):
             if (isinstance(SkinView1.handles[vtx], mdlhandles.LinRedHandle)) or (isinstance(SkinView1.handles[vtx], mdlhandles.LinSideHandle)) or (isinstance(SkinView1.handles[vtx], mdlhandles.LinCornerHandle)):
                 continue
-            for handle in range (len(editor.SkinVertexSelList)):
-                tri_index = int(editor.SkinVertexSelList[handle][2])
-                ver_index = int(editor.SkinVertexSelList[handle][3])
+            for handle in range (len(VertexList)):
+                tri_index = int(VertexList[handle][2])
+                ver_index = int(VertexList[handle][3])
                 handlevtx = (tri_index * 3) + ver_index
                 if vtx == handlevtx:
                     vertex = SkinView1.handles[vtx].pos
                     p = quarkx.newobj(str(tri_index)+","+str(ver_index)+":p");
                     face = quarkx.newobj("east:f")
-                    vtx0X, vtx0Y, vtx0Z = (vertex + quarkx.vect(1.0,0.0,0.0)/SkinView1.info["scale"]*2).tuple
-                    vtx1X, vtx1Y, vtx1Z = (vertex + quarkx.vect(1.0,1.0,0.0)/SkinView1.info["scale"]*2).tuple
-                    vtx2X, vtx2Y, vtx2Z = (vertex + quarkx.vect(1.0,0.0,1.0)/SkinView1.info["scale"]*2).tuple
+                    vtx0X, vtx0Y, vtx0Z = (vertex + quarkx.vect(1.0,0.0,0.0)/scale).tuple
+                    vtx1X, vtx1Y, vtx1Z = (vertex + quarkx.vect(1.0,1.0,0.0)/scale).tuple
+                    vtx2X, vtx2Y, vtx2Z = (vertex + quarkx.vect(1.0,0.0,1.0)/scale).tuple
                     face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
-                    if editor.Root.currentcomponent.currentskin is not None:
-                        face["tex"] = editor.Root.currentcomponent.currentskin.shortname
-                    else:
-                        face["tex"] = "None"
+                    face["tex"] = skinname
                     p.appenditem(face)
                     face = quarkx.newobj("west:f")
-                    vtx0X, vtx0Y, vtx0Z = (vertex + quarkx.vect(-1.0,0.0,0.0)/SkinView1.info["scale"]*2).tuple
-                    vtx1X, vtx1Y, vtx1Z = (vertex + quarkx.vect(-1.0,-1.0,0.0)/SkinView1.info["scale"]*2).tuple
-                    vtx2X, vtx2Y, vtx2Z = (vertex + quarkx.vect(-1.0,0.0,1.0)/SkinView1.info["scale"]*2).tuple
+                    vtx0X, vtx0Y, vtx0Z = (vertex + quarkx.vect(-1.0,0.0,0.0)/scale).tuple
+                    vtx1X, vtx1Y, vtx1Z = (vertex + quarkx.vect(-1.0,-1.0,0.0)/scale).tuple
+                    vtx2X, vtx2Y, vtx2Z = (vertex + quarkx.vect(-1.0,0.0,1.0)/scale).tuple
                     face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
-                    if editor.Root.currentcomponent.currentskin is not None:
-                        face["tex"] = editor.Root.currentcomponent.currentskin.shortname
-                    else:
-                        face["tex"] = "None"
+                    face["tex"] = skinname
                     p.appenditem(face)
                     face = quarkx.newobj("north:f")
-                    vtx0X, vtx0Y, vtx0Z = (vertex + quarkx.vect(0.0,1.0,0.0)/SkinView1.info["scale"]*2).tuple
-                    vtx1X, vtx1Y, vtx1Z = (vertex + quarkx.vect(-1.0,1.0,0.0)/SkinView1.info["scale"]*2).tuple
-                    vtx2X, vtx2Y, vtx2Z = (vertex + quarkx.vect(0.0,1.0,1.0)/SkinView1.info["scale"]*2).tuple
+                    vtx0X, vtx0Y, vtx0Z = (vertex + quarkx.vect(0.0,1.0,0.0)/scale).tuple
+                    vtx1X, vtx1Y, vtx1Z = (vertex + quarkx.vect(-1.0,1.0,0.0)/scale).tuple
+                    vtx2X, vtx2Y, vtx2Z = (vertex + quarkx.vect(0.0,1.0,1.0)/scale).tuple
                     face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
-                    if editor.Root.currentcomponent.currentskin is not None:
-                        face["tex"] = editor.Root.currentcomponent.currentskin.shortname
-                    else:
-                        face["tex"] = "None"
+                    face["tex"] = skinname
                     p.appenditem(face)
                     face = quarkx.newobj("south:f")
-                    vtx0X, vtx0Y, vtx0Z = (vertex + quarkx.vect(0.0,-1.0,0.0)/SkinView1.info["scale"]*2).tuple
-                    vtx1X, vtx1Y, vtx1Z = (vertex + quarkx.vect(1.0,-1.0,0.0)/SkinView1.info["scale"]*2).tuple
-                    vtx2X, vtx2Y, vtx2Z = (vertex + quarkx.vect(0.0,-1.0,1.0)/SkinView1.info["scale"]*2).tuple
+                    vtx0X, vtx0Y, vtx0Z = (vertex + quarkx.vect(0.0,-1.0,0.0)/scale).tuple
+                    vtx1X, vtx1Y, vtx1Z = (vertex + quarkx.vect(1.0,-1.0,0.0)/scale).tuple
+                    vtx2X, vtx2Y, vtx2Z = (vertex + quarkx.vect(0.0,-1.0,1.0)/scale).tuple
                     face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
-                    if editor.Root.currentcomponent.currentskin is not None:
-                        face["tex"] = editor.Root.currentcomponent.currentskin.shortname
-                    else:
-                        face["tex"] = "None"
+                    face["tex"] = skinname
                     p.appenditem(face)
                     face = quarkx.newobj("up:f")
-                    vtx0X, vtx0Y, vtx0Z = (vertex + quarkx.vect(0.0,0.0,1.0)/SkinView1.info["scale"]*2).tuple
-                    vtx1X, vtx1Y, vtx1Z = (vertex + quarkx.vect(1.0,0.0,1.0)/SkinView1.info["scale"]*2).tuple
-                    vtx2X, vtx2Y, vtx2Z = (vertex + quarkx.vect(0.0,1.0,1.0)/SkinView1.info["scale"]*2).tuple
+                    vtx0X, vtx0Y, vtx0Z = (vertex + quarkx.vect(0.0,0.0,1.0)/scale).tuple
+                    vtx1X, vtx1Y, vtx1Z = (vertex + quarkx.vect(1.0,0.0,1.0)/scale).tuple
+                    vtx2X, vtx2Y, vtx2Z = (vertex + quarkx.vect(0.0,1.0,1.0)/scale).tuple
                     face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
-                    if editor.Root.currentcomponent.currentskin is not None:
-                        face["tex"] = editor.Root.currentcomponent.currentskin.shortname
-                    else:
-                        face["tex"] = "None"
+                    face["tex"] = skinname
                     p.appenditem(face)
                     face = quarkx.newobj("down:f")
-                    vtx0X, vtx0Y, vtx0Z = (vertex + quarkx.vect(0.0,0.0,-1.0)/SkinView1.info["scale"]*2).tuple
-                    vtx1X, vtx1Y, vtx1Z = (vertex + quarkx.vect(1.0,0.0,-1.0)/SkinView1.info["scale"]*2).tuple
-                    vtx2X, vtx2Y, vtx2Z = (vertex + quarkx.vect(0.0,-1.0,-1.0)/SkinView1.info["scale"]*2).tuple
+                    vtx0X, vtx0Y, vtx0Z = (vertex + quarkx.vect(0.0,0.0,-1.0)/scale).tuple
+                    vtx1X, vtx1Y, vtx1Z = (vertex + quarkx.vect(1.0,0.0,-1.0)/scale).tuple
+                    vtx2X, vtx2Y, vtx2Z = (vertex + quarkx.vect(0.0,-1.0,-1.0)/scale).tuple
                     face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
-                    if editor.Root.currentcomponent.currentskin is not None:
-                        face["tex"] = editor.Root.currentcomponent.currentskin.shortname
-                    else:
-                        face["tex"] = "None"
+                    face["tex"] = skinname
                     p.appenditem(face)
                     group.appenditem(p)
 
@@ -4304,6 +4279,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.145  2010/06/06 23:27:20  cdunde
+#Fix for ModelComponentList weightvtxlist not always being updated properly.
+#
 #Revision 1.144  2010/05/29 04:34:45  cdunde
 #Update for Model Editor camera EYE handles for editor and floating 3D view.
 #
