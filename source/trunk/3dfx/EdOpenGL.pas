@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.97  2010/09/02 19:38:45  danielpharos
+Corrected alpha-texture mipmaps, and don't build normal texture if mipmaps are enabled.
+
 Revision 1.96  2010/09/01 20:20:21  danielpharos
 Added experimental trilinear and anisotropic texture filtering.
 
@@ -1505,13 +1508,13 @@ begin
             PL:=PL^.Next;
           end;
           NumberOfLightsInList:=0;
-          // We make the surface's list of lights as large as possible for now...
           if OpenGLLightList<>nil then
           begin
             FreeMem(OpenGLLightList);
             OpenGLLightList := nil;
             OpenGLLights := 0;
           end;
+          // We make the surface's list of lights as large as possible for now...
           OpenGLLights := MaxLights;
           GetMem(OpenGLLightList, OpenGLLights * SizeOf(GLenum));
           try
@@ -2339,6 +2342,12 @@ begin
 
       if Lighting and (LightingQuality=0) then
       begin
+        //
+        //DanielPharos: This line fixes a subtle bug. LightNR is a cardinal, so if it's
+        //zero, the max bound of the for-loop overflows into max_int. -> The loop isn't
+        //skipped! 
+        if OpenGLLights <> 0 then
+        //
         for LightNR := 0 to OpenGLLights-1 do
         begin
           PO:=OpenGLLightList;
