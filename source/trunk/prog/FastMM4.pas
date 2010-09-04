@@ -1,11 +1,12 @@
 (*
 
-Fast Memory Manager 4.94
+Fast Memory Manager 4.96
 
 Description:
- A fast replacement memory manager for CodeGear Delphi Win32 applications that
- scales well under multi-threaded usage, is not prone to memory fragmentation,
- and supports shared memory without the use of external .DLL files.
+ A fast replacement memory manager for Embarcadero Delphi Win32 applications
+ that scales well under multi-threaded usage, is not prone to memory
+ fragmentation, and supports shared memory without the use of external .DLL
+ files.
 
 Homepage:
  http://fastmm.sourceforge.net
@@ -83,7 +84,7 @@ Contact Details:
 Support:
  If you have trouble using FastMM, you are welcome to drop me an e-mail at the
  address above, or you may post your questions in the BASM newsgroup on the
- CodeGear news server (which is where I hang out quite frequently).
+ Embarcadero news server (which is where I hang out quite frequently).
 
 Disclaimer:
  FastMM has been tested extensively with both single and multithreaded
@@ -229,6 +230,11 @@ Acknowledgements (for version 4):
  - Patrick van Logchem for the DisableLoggingOfMemoryDumps option.
  - Norbert Spiegel for the BCB4 support code.
  - Uwe Schuster for the improved string leak detection code.
+ - Murray McGowan for improvements to the usage tracker.
+ - Michael Hieke for the SuppressFreeMemErrorsInsideException option as well
+   as a bugfix to GetMemoryMap.
+ - Richard Bradbrook for fixing the Windows 95 FullDebugMode support that was
+   broken in version 4.94.
  - Everyone who have made donations. Thanks!
  - Any other Fastcoders or supporters that I have forgotten, and also everyone
    that helped with the older versions.
@@ -764,6 +770,30 @@ Change log:
     will check that the block was actually allocated through the same FastMM
     instance. This is useful for tracking down memory manager sharing issues.
   - Compatible with Delphi 2010.
+  Version 4.96 (31 August 2011):
+  - Reduced the minimum block size to 4 bytes from the previous value of 12
+    bytes (only applicable to 8 byte alignment). This reduces memory usage if
+    the application allocates many blocks <= 4 bytes in size.
+  - Added colour-coded change indication to the FastMM usage tracker, making
+    it easier to spot changes in the memory usage grid. (Thanks to Murray
+    McGowan.)
+  - Added the SuppressFreeMemErrorsInsideException FullDebugMode option: If
+    FastMM encounters a problem with a memory block inside the FullDebugMode
+    FreeMem handler then an "invalid pointer operation" exception will usually
+    be raised. If the FreeMem occurs while another exception is being handled
+    (perhaps in the try.. finally code) then the original exception will be
+    lost. With this option set FastMM will ignore errors inside FreeMem when an
+    exception is being handled, thus allowing the original exception to
+    propagate. This option is on by default. (Thanks to Michael Hieke.)
+  - Fixed Windows 95 FullDebugMode support that was broken in 4.94. (Thanks to
+    Richard Bradbrook.)
+  - Fixed a bug affecting GetMemoryMap performance and accuracy of measurements
+    above 2GB if a large address space is not enabled for the project. (Thanks
+    to Michael Hieke.)
+  - Added the FullDebugModeRegisterAllAllocsAsExpectedMemoryLeak boolean flag.
+    When set, all allocations are automatically registered as expected memory
+    leaks. Only available in FullDebugMode. (Thanks to Brian Cook.)
+  - Compatible with Delphi XE.
 
 *)
 
@@ -778,6 +808,7 @@ interface
 {$OVERFLOWCHECKS OFF}
 {$OPTIMIZATION ON}
 {$TYPEDADDRESS OFF}
+{$LONGSTRINGS ON}
 
 {IDE debug mode always enables FullDebugMode and dynamic loading of the FullDebugMode DLL.}
 {$ifdef FullDebugModeInIDE}
@@ -941,12 +972,12 @@ interface
 {-------------------------Public constants-----------------------------}
 const
   {The current version of FastMM}
-  FastMMVersion = '4.94';
+  FastMMVersion = '4.96';
   {The number of small block types}
 {$ifdef Align16Bytes}
   NumSmallBlockTypes = 46;
 {$else}
-  NumSmallBlockTypes = 55;
+  NumSmallBlockTypes = 56;
 {$endif}
 
 {----------------------------Public types------------------------------}
@@ -1019,6 +1050,7 @@ var
    the already significant FullDebugMode overhead, so enable this option
    only when absolutely necessary.}
   FullDebugModeScanMemoryPoolBeforeEveryOperation: Boolean = False;
+  FullDebugModeRegisterAllAllocsAsExpectedMemoryLeak: Boolean = False;
 {$ifdef ManualLeakReportingControl}
   {Variable is declared in system.pas in newer Delphi versions.}
   {$ifndef BDS2006AndUp}
@@ -1191,7 +1223,7 @@ uses
 {$ifndef Linux}
   Windows,
   {$ifdef FullDebugMode}
-  ShlObj,
+  SHFolder,
   {$endif}
 {$else}
   Libc,
@@ -1199,6 +1231,7 @@ uses
   FastMM4Messages;
 
 {Fixed size move procedures}
+procedure Move4(const ASource; var ADest; ACount: Integer); forward;
 procedure Move12(const ASource; var ADest; ACount: Integer); forward;
 procedure Move20(const ASource; var ADest; ACount: Integer); forward;
 procedure Move28(const ASource; var ADest; ACount: Integer); forward;
@@ -1324,7 +1357,7 @@ const
   {Sleep time when a resource (small/medium/large block manager) is in use}
   InitialSleepTime = 0;
   {Used when the resource is still in use after the first sleep}
-  AdditionalSleepTime = 10;
+  AdditionalSleepTime = 1;
 {$endif}
   {Hexadecimal characters}
   HexTable: array[0..15] of AnsiChar = ('0', '1', '2', '3', '4', '5', '6', '7',
@@ -1639,6 +1672,9 @@ var
    less) where possible.}
   SmallBlockTypes: packed array[0..NumSmallBlockTypes - 1] of TSmallBlockType =(
     {8/16 byte jumps}
+{$ifndef Align16Bytes}
+    (BlockSize: 8 {$ifdef UseCustomFixedSizeMoveRoutines}; UpsizeMoveProcedure: Move4{$endif}),
+{$endif}
     (BlockSize: 16 {$ifdef UseCustomFixedSizeMoveRoutines}; UpsizeMoveProcedure: Move12{$endif}),
 {$ifndef Align16Bytes}
     (BlockSize: 24 {$ifdef UseCustomFixedSizeMoveRoutines}; UpsizeMoveProcedure: Move20{$endif}),
@@ -2031,6 +2067,12 @@ end;
 
 {Fixed size move operations ignore the size parameter. All moves are assumed to
  be non-overlapping.}
+
+procedure Move4(const ASource; var ADest; ACount: Integer);
+asm
+  mov eax, [eax]
+  mov [edx], eax
+end;
 
 procedure Move12(const ASource; var ADest; ACount: Integer);
 asm
@@ -5773,8 +5815,11 @@ asm
   {Point edx to the last dword}
   lea edx, [eax + ebx]
   {ebx = $ffffffff if no block could be allocated, otherwise size rounded down
-   to previous multiple of 4}
+   to previous multiple of 4. If ebx = 0 then the block size is 1..4 bytes and
+   the FPU based clearing loop should not be used (since it clears 8 bytes per
+   iteration).}
   or ebx, ecx
+  jz @ClearLastDWord
   {Large blocks are already zero filled}
   cmp ebx, MaximumMediumBlockSize - BlockHeaderSize
   jae @Done
@@ -5783,17 +5828,18 @@ asm
   {Load zero into st(0)}
   fldz
   {Clear groups of 8 bytes. Block sizes are always four less than a multiple
-   of 8, with a minimum of 12 bytes}
+   of 8.}
 @FillLoop:
   fst qword ptr [edx + ebx]
   add ebx, 8
   js @FillLoop
-  {Clear the last four bytes}
-  mov [edx], ecx
   {Clear st(0)}
   ffree st(0)
   {Correct the stack top}
   fincstp
+  {Clear the last four bytes}
+@ClearLastDWord:
+  mov [edx], ecx
 @Done:
   pop ebx
 end;
@@ -5989,6 +6035,9 @@ begin
 end;
 
 procedure AppendEventLog(ABuffer: Pointer; ACount: Cardinal);
+const
+  {Declared here, because it is not declared in the SHFolder.pas unit of some older Delphi versions.}
+  SHGFP_TYPE_CURRENT = 0;
 var
   LFileHandle, LBytesWritten: Cardinal;
   LEventHeader: array[0..1023] of AnsiChar;
@@ -6003,7 +6052,8 @@ begin
   {Did log file creation fail? If so, the destination folder is perhaps read-only:
    Try to redirect logging to a file in the user's "My Documents" folder.}
   if (LFileHandle = INVALID_HANDLE_VALUE)
-    and SHGetSpecialFolderPathA(0, @LAlternateLogFileName, CSIDL_PERSONAL, True) then
+    and (SHGetFolderPathA(0, CSIDL_PERSONAL or CSIDL_FLAG_CREATE, 0,
+      SHGFP_TYPE_CURRENT, @LAlternateLogFileName) = S_OK) then
   begin
     {Extract the filename part from MMLogFileName and append it to the path of
      the "My Documents" folder.}
@@ -6749,6 +6799,9 @@ begin
         UpdateHeaderAndFooterCheckSums(Result);
         {Return the start of the actual block}
         Result := Pointer(Cardinal(Result) + SizeOf(TFullDebugBlockHeader));
+        {Should this block be marked as an expected leak automatically?}
+        if FullDebugModeRegisterAllAllocsAsExpectedMemoryLeak then
+          RegisterExpectedMemoryLeak(Result);
       end
       else
       begin
@@ -6822,6 +6875,9 @@ begin
         {Recalculate the checksums}
         UpdateHeaderAndFooterCheckSums(LActualBlock);
       end;
+      {Automatically deregister the expected memory leak?}
+      if FullDebugModeRegisterAllAllocsAsExpectedMemoryLeak then
+        UnregisterExpectedMemoryLeak(APointer);
       {Free the actual block}
       Result := FastFreeMem(LActualBlock);
     finally
@@ -6831,7 +6887,12 @@ begin
   end
   else
   begin
-    Result := -1;
+{$ifdef SuppressFreeMemErrorsInsideException}
+    if RaiseList <> nil then
+      Result := 0
+    else
+{$endif}
+      Result := -1;
   end;
 end;
 
@@ -8399,7 +8460,13 @@ begin
     if AMemoryMap[LInd] = csUnallocated then
     begin
       {Query the address space starting at the chunk boundary}
-      VirtualQuery(Pointer(LInd * 65536), LMBI, SizeOf(LMBI));
+      if VirtualQuery(Pointer(LInd * 65536), LMBI, SizeOf(LMBI)) = 0 then
+      begin
+        {VirtualQuery may fail for addresses >2GB if a large address space is
+         not enabled.}
+        FillChar(AMemoryMap[LInd], 65536 - LInd, csSysReserved);
+        Break;
+      end;
       {Get the chunk number after the region}
       LNextChunk := (LMBI.RegionSize - 1) shr 16 + LInd + 1;
       {Validate}
@@ -8616,8 +8683,8 @@ begin
 {$endif}
     Exit;
   end;
-  {Has another MM been set, or has the CodeGear MM been used? If so, this file
-   is not the first unit in the uses clause of the project's .dpr file.}
+  {Has another MM been set, or has the Embarcadero MM been used? If so, this
+   file is not the first unit in the uses clause of the project's .dpr file.}
   if IsMemoryManagerSet then
   begin
     {When using runtime packages, another library may already have installed
@@ -8679,7 +8746,7 @@ begin
   {Initialize the memory manager}
   {-------------Set up the small block types-------------}
   LPreviousBlockSize := 0;
-  for LInd := 0 to high(SmallBlockTypes) do
+  for LInd := 0 to High(SmallBlockTypes) do
   begin
     {Set the move procedure}
 {$ifdef UseCustomFixedSizeMoveRoutines}
@@ -9108,7 +9175,7 @@ initialization
   begin
     {Initialize all the lookup tables, etc. for the memory manager}
     InitializeMemoryManager;
-    {Has another MM been set, or has the CodeGear MM been used? If so, this
+    {Has another MM been set, or has the Embarcadero MM been used? If so, this
      file is not the first unit in the uses clause of the project's .dpr
      file.}
     if CheckCanInstallMemoryManager then
