@@ -14,6 +14,8 @@ $Id$
 
 6.6.0 Beta 4
 ============
+* [cdunde]: Model editor, Major change of Skin-view Linear Handle selection and dragging system, massively improving drawing time.
+
 * [cdunde]: Model editor, Added entity extraction from game map .bsp files for .qrk file creation of Conversion Tool system.
 
 * [cdunde/DanielPharos]: Setup importer for MoHAA .skd and .skc models (static and animated) with bone and skin support.
