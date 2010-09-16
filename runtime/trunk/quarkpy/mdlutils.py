@@ -75,22 +75,36 @@ def make_tristodraw_dict(editor, comp):
     if comp.dictitems.has_key("Frames:fg") and len(comp.dictitems['Frames:fg'].subitems) != 0:
         if (len(comp.dictitems['Frames:fg'].subitems[0].vertices) == 0) and (editor.ModelComponentList['tristodraw'].has_key(comp.name)):
             del editor.ModelComponentList['tristodraw'][comp.name]
+            if editor.SkinViewList['tristodraw'].has_key(comp.name):
+                del editor.SkinViewList['tristodraw'][comp.name]
+            if editor.SkinViewList['handlepos'].has_key(comp.name):
+                del editor.SkinViewList['handlepos'][comp.name]
         else:
             if not editor.ModelComponentList['tristodraw'].has_key(comp.name):
                 editor.ModelComponentList['tristodraw'][comp.name] = {}
+            if not editor.SkinViewList['tristodraw'].has_key(comp.name):
+                editor.SkinViewList['tristodraw'][comp.name] = {}
+            if not editor.SkinViewList['handlepos'].has_key(comp.name):
+                editor.SkinViewList['handlepos'][comp.name] = []
             tristodraw = {}
+            skin_tristodraw = {}
             tris = comp.triangles
             for vtx in range(len(comp.dictitems['Frames:fg'].subitems[0].vertices)):
                 tristodraw[vtx] = []
-            for tri in tris:
-                for vertex in tri:
-                    vtx = vertex[0]
-                    for vertex2 in tri:
-                        vtx2 = vertex2[0]
+            for i in range(len(tris)):
+                for j in range(len(tris[i])):
+                    vtx = tris[i][j][0]
+                    svtx = (i*3) + j
+                    skin_tristodraw[svtx] = []
+                    for k in range(len(tris[i])):
+                        vtx2 = tris[i][k][0]
+                        svtx2 = (i*3) + k
                         if vtx == vtx2:
                             continue
                         if not vtx2 in tristodraw[vtx]:
                             tristodraw[vtx] = tristodraw[vtx] + [vtx2]
+                        if not svtx2 in skin_tristodraw[svtx]:
+                            skin_tristodraw[svtx] = skin_tristodraw[svtx] + [svtx2]
             for vtx in range(len(comp.dictitems['Frames:fg'].subitems[0].vertices)):
                 if len(tristodraw[vtx]) == 0:
                     del tristodraw[vtx]
@@ -99,11 +113,25 @@ def make_tristodraw_dict(editor, comp):
                 tristodraw[vtx].reverse()
             if len(tristodraw) == 0:
                 del editor.ModelComponentList['tristodraw'][comp.name]
+                if len(skin_tristodraw) == 0:
+                    del editor.SkinViewList['tristodraw'][comp.name]
+                    del editor.SkinViewList['handlepos'][comp.name]
             else:
                 editor.ModelComponentList['tristodraw'][comp.name] = tristodraw
+                keys = skin_tristodraw.keys()
+                for vtx in range(len(keys)):
+                    if len(skin_tristodraw[keys[vtx]]) == 0:
+                        del skin_tristodraw[keys[vtx]]
+                        continue
+                    skin_tristodraw[keys[vtx]].sort()
+                    skin_tristodraw[keys[vtx]].reverse()
+                editor.SkinViewList['tristodraw'][comp.name] = skin_tristodraw
     else:
         if editor.ModelComponentList['tristodraw'].has_key(comp.name):
             del editor.ModelComponentList['tristodraw'][comp.name]
+            if editor.SkinViewList['tristodraw'].has_key(comp.name):
+                del editor.SkinViewList['tristodraw'][comp.name]
+                del editor.SkinViewList['handlepos'][comp.name]
 
 #
 # Updates the editor.ModelComponentList for a component's bonevtxlist when any vertex is removed,
@@ -4279,6 +4307,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.146  2010/09/03 07:19:11  cdunde
+#Speedup code changes for the function MakeEditorVertexPolyObject.
+#
 #Revision 1.145  2010/06/06 23:27:20  cdunde
 #Fix for ModelComponentList weightvtxlist not always being updated properly.
 #

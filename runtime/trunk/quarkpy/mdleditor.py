@@ -50,6 +50,17 @@ class ModelEditor(BaseEditor):
         if form is not None:
             BaseEditor.__init__(self, form)
 
+    ### Different lists of the Skin View.
+    ###|--- contence ---|-------- format -------|----------------------- discription -----------------------|
+    SkinViewList = {'handlepos': {}, 'tristodraw': {}}
+    # Current uses for Skin-view vertex handles:
+    # ['tristodraw'] = {'compname:mc': {22: [35, 34, 21, 2, 1] }}
+    #                               Use:    Stores all the vertexes that a single vertex needs to draw drag lines to during a drag.
+    #                     Created using:    the model component data after the model is read in and using the 'make_tristodraw_dict' function in mdlutils.py.
+    #                               key1   : 'compname' = full name of the model component and its 'type' or :mc.
+    #                               key2   : Its "view.handles" "index" number (an integer), which is the same number as a triangles "index" times 3 + "ver_index" number.
+    #                               key2 value :  A list of other view.handle indexes (as integers) used for drawing drag lines to during a drag.
+
     ### Different lists of the Model Editor.
     ###|--- contence ---|-------- format -------|----------------------- discription -----------------------|
 
@@ -1902,6 +1913,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.154  2010/06/13 17:49:57  cdunde
+#Needed fix to open .qrk files.
+#
 #Revision 1.153  2010/06/13 15:37:55  cdunde
 #Setup Model Editor to allow importing of model from main explorer File menu.
 #

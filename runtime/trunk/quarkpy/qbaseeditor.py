@@ -1386,7 +1386,6 @@ class BaseEditor:
                                 skindrawobject = self.Root.currentcomponent.currentskin
                             except:
                                 skindrawobject = None
-                            mdlhandles.buildskinvertices(self, view, self.layout, self.Root.currentcomponent, skindrawobject)
                         else:
                             if (isinstance(self.dragobject, mdlhandles.BoneCenterHandle) or isinstance(self.dragobject, mdlhandles.BoneCornerHandle)) and (flagsmouse == 520 or flagsmouse == 524):
                                 from mdleditor import NewSellist
@@ -1442,7 +1441,7 @@ class BaseEditor:
                 if self.dragobject is not None:
 
                     if isinstance(self, mdleditor.ModelEditor):
-                        if (flagsmouse == 520 or flagsmouse == 1032) and view.info["viewname"] == "skinview":
+                        if flagsmouse == 520 and view.info["viewname"] == "skinview":
                             self.dragobject.view = view
                             self.dragobject.dragto(x, y, flags | MB_DRAGGING)
                         elif (flagsmouse == 520 or flagsmouse == 528 or flagsmouse == 536 or flagsmouse == 544 or flagsmouse == 1040):
@@ -1665,6 +1664,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.140  2010/09/02 20:46:13  cdunde
+#Code speedup change.
+#
 #Revision 1.139  2010/06/02 21:23:39  cdunde
 #Fixes for Model Editor Eye position handle.
 #

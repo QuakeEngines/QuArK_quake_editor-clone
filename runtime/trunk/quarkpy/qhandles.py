@@ -1113,7 +1113,6 @@ class RedImageDragObject(DragObject):
                             # It also does one draw of the rectangle selector for the
                             #   Skin-view when a pause in the drag takes place.
                             if view.info["viewname"] == "skinview":
-                                plugins.mdlgridscale.gridfinishdrawing(editor, view) # This is just here to slow down the Skin-view from drawing too fast?
                                 rectanglecolor = MapColor("SkinDragLines", SS_MODEL)
                                 for r in self.redimages:
                                     view.drawmap(r, mode, rectanglecolor)
@@ -2232,6 +2231,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.94  2010/06/02 21:23:39  cdunde
+#Fixes for Model Editor Eye position handle.
+#
 #Revision 1.93  2010/05/31 06:29:01  cdunde
 #Fix for Model Editor Eye handle causing multi redraws if quick move is made.
 #
