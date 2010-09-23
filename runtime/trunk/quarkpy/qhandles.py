@@ -1729,7 +1729,7 @@ class RectangleDragObject(RedImageDragObject):
                     if self.redimages is not None:
                         self.rectanglesel(editor, x,y, self.redimages[0], self.view)
                         if self.view.info["viewname"] == "skinview":
-                            return
+                            pass
                         else:
                             if (quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1") and (len(editor.ModelFaceSelList) != 0 or len(editor.ModelVertexSelList) != 0):
                                 if self.view.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] == "1":
@@ -2231,6 +2231,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.95  2010/09/16 06:33:33  cdunde
+#Model editor, Major change of Skin-view Linear Handle selection and dragging system, massively improving drawing time.
+#
 #Revision 1.94  2010/06/02 21:23:39  cdunde
 #Fixes for Model Editor Eye position handle.
 #

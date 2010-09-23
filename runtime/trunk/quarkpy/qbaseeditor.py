@@ -525,8 +525,33 @@ class BaseEditor:
                                     cv.ellipse(int(vertex2X)-1, int(vertex2Y)-1, int(vertex2X)+1, int(vertex2Y)+1)
                         if flagsmouse == 16384:
                             if self.SkinVertexSelList != []:
+                                import mdlhandles
+                                # Draws All Handles.
                                 for h in view.handles:
                                     h.draw(view, cv, draghandle)
+
+                                # Now draws the selected Skin Handles except the 1st one.
+                                selsize = int(quarkx.setupsubset(SS_MODEL,"Building")['SkinLinearSelected'][0])
+                                cv.brushcolor = mdlhandles.skinvertexsellistcolor
+                                for i in range(1, len(self.SkinVertexSelList)):
+                                    item = self.SkinVertexSelList[i]
+                                    p = view.proj(item[0])
+                                    cv.rectangle(int(p.x)-selsize, int(p.y)-selsize, int(p.x)+selsize, int(p.y)+selsize)
+
+                                # Now draws the 1st one, the base handle.
+                                cv.brushcolor = mdlhandles.skinviewdraglines
+                                item = self.SkinVertexSelList[0]
+                                p = view.proj(item[0])
+                                cv.rectangle(int(p.x)-selsize, int(p.y)-selsize, int(p.x)+selsize, int(p.y)+selsize)
+
+                                # Redraws the Linear Handles.
+                                count = len(view.handles)
+                                for i in range(count-15, count):
+                                    h = view.handles[i]
+                                    if isinstance(h, mdlhandles.SkinHandle):
+                                        break
+                                    h.draw(view, cv, draghandle)
+
                             if isinstance(self.dragobject, qhandles.FreeZoomDragObject) or isinstance(self.dragobject, qhandles.ScrollViewDragObject):
                                 self.dragobject = None
                     return
@@ -1664,6 +1689,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.141  2010/09/16 06:33:34  cdunde
+#Model editor, Major change of Skin-view Linear Handle selection and dragging system, massively improving drawing time.
+#
 #Revision 1.140  2010/09/02 20:46:13  cdunde
 #Code speedup change.
 #

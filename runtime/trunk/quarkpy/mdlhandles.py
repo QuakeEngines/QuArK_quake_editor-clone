@@ -1654,43 +1654,29 @@ class SkinHandle(qhandles.GenericHandle):
         if p.visible:
             cv.pencolor = skinviewmesh
             pv2 = p.tuple
-            if flagsmouse == 16384 and editor.SkinVertexSelList == []:
-                for vertex in triangle:
-                    fixedvertex = quarkx.vect(vertex[1]-int(texWidth*.5), vertex[2]-int(texHeight*.5), 0)
-                    fixedX, fixedY,fixedZ = view.proj(fixedvertex).tuple
-                    cv.line(int(pv2[0]), int(pv2[1]), int(fixedX), int(fixedY))
+            if flagsmouse == 16384:
+                if editor.SkinVertexSelList == []:
+                    for vertex in triangle:
+                        fixedvertex = quarkx.vect(vertex[1]-int(texWidth*.5), vertex[2]-int(texHeight*.5), 0)
+                        fixedX, fixedY,fixedZ = view.proj(fixedvertex).tuple
+                        cv.line(int(pv2[0]), int(pv2[1]), int(fixedX), int(fixedY))
 
-                cv.reset()
-                if MdlOption("Ticks") == "1":
-                    cv.brushcolor = WHITE
-                    cv.ellipse(int(p.x)-2, int(p.y)-2, int(p.x)+2, int(p.y)+2)
+                    cv.reset()
+                    if MdlOption("Ticks") == "1":
+                        cv.brushcolor = WHITE
+                        cv.ellipse(int(p.x)-2, int(p.y)-2, int(p.x)+2, int(p.y)+2)
+                    else:
+                        cv.ellipse(int(p.x)-1, int(p.y)-1, int(p.x)+1, int(p.y)+1)
+
                 else:
-                    cv.ellipse(int(p.x)-1, int(p.y)-1, int(p.x)+1, int(p.y)+1)
-            try:
-                if editor.SkinVertexSelList != []:
-                    itemnbr = 0
-                    for item in editor.SkinVertexSelList:
-                        if self.tri_index == item[2] and self.ver_index == item[3] and self != item[1]:
-                            editor.SkinVertexSelList[itemnbr][0] = self.pos
-                            editor.SkinVertexSelList[itemnbr][1] = self
-                        itemnbr = itemnbr + 1
-
-                if editor is not None:
-                    if editor.SkinVertexSelList != []:
-                        itemcount = len(editor.SkinVertexSelList)
+                    item = editor.SkinVertexSelList[0]
+                    if self.tri_index == item[2] and self.ver_index == item[3]:
                         selsize = int(quarkx.setupsubset(SS_MODEL,"Building")['SkinLinearSelected'][0])
-                        for item in editor.SkinVertexSelList:
-                            if (self.tri_index == item[2] and self.ver_index == item[3] and itemcount == len(editor.SkinVertexSelList)):
-                                cv.brushcolor = skinviewdraglines
-                                cv.rectangle(int(p.x)-selsize, int(p.y)-selsize, int(p.x)+selsize, int(p.y)+selsize)
-                            else:
-                                if len(editor.SkinVertexSelList) > 1 and itemcount != 0:
-                                    if (self.tri_index == item[2] and self.ver_index == item[3]):
-                                        cv.brushcolor = skinvertexsellistcolor
-                                        cv.rectangle(int(p.x)-selsize, int(p.y)-selsize, int(p.x)+selsize, int(p.y)+selsize)
-                                    itemcount = itemcount - 1
-            except:
-                pass
+                        cv.brushcolor = skinviewdraglines
+                        cv.rectangle(int(p.x)-selsize, int(p.y)-selsize, int(p.x)+selsize, int(p.y)+selsize)
+                        item[0] = item[1].pos = self.pos
+                        item[1] = self
+
 
  #  For setting stuff up at the beginning of a handle drag.
  #
@@ -1848,7 +1834,16 @@ class SkinHandle(qhandles.GenericHandle):
                         else:
                             newtriangle = (tri[0], tri[1], newvert)
                         tris[index] = newtriangle
-        new.triangles = tris    
+        new.triangles = tris
+        if (flags == 2056 or flags == 2060) and len(editor.SkinVertexSelList) > 1:
+            for i in range(len(editor.SkinVertexSelList)):
+                if editor.SkinVertexSelList[i][2] == self.tri_index and editor.SkinVertexSelList[i][3] == self.ver_index:
+                    newvert = (int((self.pos+delta).x), int((self.pos+delta).y), 0)
+                    editor.SkinVertexSelList[i][0] = quarkx.vect(newvert)
+                    layout = editor.layout
+                    skin = new.currentskin
+                    buildskinvertices(editor, view, layout, new, skin)
+                    break
         return [self.comp], [new]
 
 
@@ -1857,8 +1852,7 @@ class SkinHandle(qhandles.GenericHandle):
 
 
 
-# If rebuild of Skin-view handles is not needed give zero 0 as rebuild argument.
-def buildskinvertices(editor, view, layout, component, skindrawobject, rebuild=1):
+def buildskinvertices(editor, view, layout, component, skindrawobject):
     "builds a list of handles to display on the skinview"
     global SkinView1
     from qbaseeditor import flagsmouse
@@ -2001,19 +1995,17 @@ def buildskinvertices(editor, view, layout, component, skindrawobject, rebuild=1
             newtris[i:i+1] = [tri]
         component.triangles = tris = newtris
 
-    h = view.handles
-    if rebuild == 1:
-        h = []
-        handlepos = []
-        for i in range(len(tris)): # i is the tri_index based on its position in the 'Tris' frame list.
-            tri = tris[i]
-            for j in range(len(tri)): # j is the vert_index, either 0, 1 or 2 vertex of the triangle.
-                                      # To calculate a triangle's vert_index number = (i * 3) + j
-                vtx = tri[j]
-                ### This sets the Skin-view model mesh vertexes and line drawing location(s).
-                h.append(SkinHandle(quarkx.vect(vtx[1]-int(texWidth*.5), vtx[2]-int(texHeight*.5), 0), i, j, component, texWidth, texHeight, tri))
-                handlepos.append(h[i*3+j].pos)
-        editor.SkinViewList['handlepos'][component.name] = handlepos
+    h = []
+    handlepos = []
+    for i in range(len(tris)): # i is the tri_index based on its position in the 'Tris' frame list.
+        tri = tris[i]
+        for j in range(len(tri)): # j is the vert_index, either 0, 1 or 2 vertex of the triangle.
+                                  # To calculate a triangle's vert_index number = (i * 3) + j
+            vtx = tri[j]
+            ### This sets the Skin-view model mesh vertexes and line drawing location(s).
+            h.append(SkinHandle(quarkx.vect(vtx[1]-int(texWidth*.5), vtx[2]-int(texHeight*.5), 0), i, j, component, texWidth, texHeight, tri))
+            handlepos.append(h[i*3+j].pos)
+    editor.SkinViewList['handlepos'][component.name] = handlepos
 
     if len(editor.SkinVertexSelList) >= 2:
         view.handles = h
@@ -2461,7 +2453,7 @@ class RectSelDragObject(qhandles.RectangleDragObject):
                 skindrawobject = comp.currentskin
             except:
                 skindrawobject = None
-            buildskinvertices(editor, view, editor.layout, comp, skindrawobject, 0)
+            buildskinvertices(editor, view, editor.layout, comp, skindrawobject)
             if quarkx.setupsubset(SS_MODEL, "Options")['PVSTEV'] == "1" or quarkx.setupsubset(SS_MODEL, "Options")['SYNC_EDwSV'] == "1":
                 if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_EDwSV'] == "1":
                     editor.ModelVertexSelList = []
@@ -3013,7 +3005,8 @@ class LinearHandle(qhandles.GenericHandle):
             if view.info["viewname"] == "skinview":
                 self.mgr.tristodrawlist = editor.SkinViewList['tristodraw'][currentcomponent.name]
                 if self.oldverticespos is None:
-                    self.oldverticespos = editor.SkinViewList['handlepos'][currentcomponent.name]
+                    #The "tuple" bit is to force Python to make a copy of the list (the original is changed during the drag)
+                    self.oldverticespos = tuple(editor.SkinViewList['handlepos'][currentcomponent.name])
                 if self.newverticespos is None:
                     self.newverticespos = editor.SkinViewList['handlepos'][currentcomponent.name]
                 if self.selvtxlist is None:
@@ -3101,7 +3094,6 @@ class LinearHandle(qhandles.GenericHandle):
                             new = delta = None
                         else:
                             list = []
-                            delta = delta * view.info['scale'] * .1 # Try and slow the movement down.
                             new = self.linoperation(list, delta, self.g1, view)
                 else:
                     new = map(lambda obj: obj.copy(), self.mgr.list)
@@ -3915,39 +3907,34 @@ class LinCornerHandle(LinearHandle):
                 delta = quarkx.vect(delta.x, delta.y, 0)
         normal = view.vector("Z").normalized
         if view.info["viewname"] == "skinview" or quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
-            texp4 = self.pos-self.mgr.center
-            texp4 = texp4 - normal*(normal*texp4)
-            npos = self.pos + delta
-            npos = npos-self.mgr.center
-            npos = npos - normal*(normal*npos)
             ### Rotation section.
-            if g1 == 0 and npos:
-                v = npos.normalized * abs(texp4)
-                if abs(v-texp4) > abs(v-npos):
-                    pass
-                else:
-                    self.m = quarkx.matrix((1,0,0),(0,1,0),(0,0,1))    # Forces pure scaling.
-                self.m = qhandles.UserRotationMatrix(normal, npos, texp4, 0)
+            if self.g1 == 0:
+                rotationorigin = self.mgr.center
+                oldpos = self.pos - rotationorigin
+                newpos = (self.pos + delta) - rotationorigin
+                oldpos = oldpos - normal*(normal*oldpos)
+                newpos = newpos - normal*(normal*newpos)
+                self.m = qhandles.UserRotationMatrix(normal, newpos, oldpos, 0)
                 if self.m is None:
                     return
             ### Scaling section.
             else:
+                texp4 = self.pos-self.mgr.center
+                texp4 = texp4 - normal*(normal*texp4)
+                npos = self.pos + delta
+                npos = npos-self.mgr.center
+                npos = npos - normal*(normal*npos)
                 v = self.mgr.center
                 if self.m is None:
-                    self.m = quarkx.matrix((1,0,0),(0,1,0),(0,0,1))  # Forces pure scaling.
+                    self.m = quarkx.matrix(quarkx.vect(1, 0, 0), quarkx.vect(0, 1, 0), quarkx.vect(0, 0, 1))  # Forces pure scaling.
                 self.diff = abs(npos) / abs(texp4)
             ### Drag Hint section.
-            if self.m is None:
-                self.m = quarkx.matrix((1,0,0),(0,1,0),(0,0,1))  # Forces pure scaling.
             rotate = math.acos(self.m[0,0])*180.0/math.pi
-            scaling = 100.0*self.diff
+            scaling = 100.0 * self.diff
             self.draghint = "rotate %d deg.   scale %d %%" % (rotate, scaling)
-
-            if g1 == 0 and npos:
-                return self.m * self.diff
-            else:
-                return self.m * self.diff
+            return self.m * self.diff
         else:
+            ### Rotation section.
             if self.g1 == 0:
                 rotationorigin = self.mgr.center
                 oldpos = self.pos - rotationorigin
@@ -5482,6 +5469,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.214  2010/09/16 06:33:34  cdunde
+#Model editor, Major change of Skin-view Linear Handle selection and dragging system, massively improving drawing time.
+#
 #Revision 1.213  2010/09/01 08:49:08  cdunde
 #Code speedup by DanielPharos.
 #
