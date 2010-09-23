@@ -1836,14 +1836,19 @@ class SkinHandle(qhandles.GenericHandle):
                         tris[index] = newtriangle
         new.triangles = tris
         if (flags == 2056 or flags == 2060) and len(editor.SkinVertexSelList) > 1:
-            for i in range(len(editor.SkinVertexSelList)):
-                if editor.SkinVertexSelList[i][2] == self.tri_index and editor.SkinVertexSelList[i][3] == self.ver_index:
-                    newvert = (int((self.pos+delta).x), int((self.pos+delta).y), 0)
-                    editor.SkinVertexSelList[i][0] = quarkx.vect(newvert)
-                    layout = editor.layout
-                    skin = new.currentskin
-                    buildskinvertices(editor, view, layout, new, skin)
-                    break
+            new_pos = self.pos + delta
+            newvert = quarkx.vect((int(new_pos.x), int(new_pos.y), 0))
+            if quarkx.setupsubset(SS_MODEL, "Options")['SingleVertexDrag'] == "1":
+                for i in range(len(editor.SkinVertexSelList)):
+                    if editor.SkinVertexSelList[i][2] == self.tri_index and editor.SkinVertexSelList[i][3] == self.ver_index:
+                        editor.SkinVertexSelList[i][0] = newvert
+                        editor.SkinVertexSelList[i][1].pos = newvert
+                        break
+            else:
+                for i in range(len(editor.SkinVertexSelList)):
+                    if str(editor.SkinVertexSelList[i][0]) == str(self.pos):
+                        editor.SkinVertexSelList[i][0] = newvert
+                        editor.SkinVertexSelList[i][1].pos = newvert
         return [self.comp], [new]
 
 
@@ -5469,6 +5474,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.215  2010/09/23 04:57:24  cdunde
+#Various improvements for Model Editor Skin-view Linear Handle drawing time.
+#
 #Revision 1.214  2010/09/16 06:33:34  cdunde
 #Model editor, Major change of Skin-view Linear Handle selection and dragging system, massively improving drawing time.
 #
