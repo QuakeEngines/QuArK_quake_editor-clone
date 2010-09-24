@@ -1435,7 +1435,7 @@ def commonhandles(self, redraw=1):
 
         if flagsmouse == 16384:
             if isinstance(self.dragobject, mdlhandles.RectSelDragObject):
-                return
+                self.dragobject = None
             elif isinstance(self.dragobject, qhandles.ScrollViewDragObject):
                 self.dragobject = None
             elif isinstance(self.dragobject, qhandles.FreeZoomDragObject):
@@ -1913,6 +1913,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.155  2010/09/16 06:33:34  cdunde
+#Model editor, Major change of Skin-view Linear Handle selection and dragging system, massively improving drawing time.
+#
 #Revision 1.154  2010/06/13 17:49:57  cdunde
 #Needed fix to open .qrk files.
 #

@@ -544,7 +544,7 @@ class BaseEditor:
                                 p = view.proj(item[0])
                                 cv.rectangle(int(p.x)-selsize, int(p.y)-selsize, int(p.x)+selsize, int(p.y)+selsize)
 
-                                # Redraws the Linear Handles.
+                                # Redraws the Linear Handles to keep them on top.
                                 count = len(view.handles)
                                 for i in range(count-15, count):
                                     h = view.handles[i]
@@ -1379,18 +1379,18 @@ class BaseEditor:
                                 self.SkinVertexSelList = []
                                 view.invalidate()
                         else:
-                            from mdlhandles import SkinView1
-                            if SkinView1 is not None:
-                                if self.SkinVertexSelList != []:
-                                    if len(self.SkinVertexSelList) > 1:
+                          #  from mdlhandles import SkinView1
+                          #  if SkinView1 is not None:
+                          #      if self.SkinVertexSelList != []:
+                          #          if len(self.SkinVertexSelList) > 1:
                                         # Removes the Linear Handles.
-                                        count = len(SkinView1.handles)
-                                        while 1:
-                                            count = count - 1
-                                            h = SkinView1.handles[count]
-                                            if isinstance(h, mdlhandles.SkinHandle):
-                                                break
-                                            SkinView1.handles.remove(h)
+                          #              count = len(SkinView1.handles)
+                          #              while 1:
+                          #                  count = count - 1
+                          #                  h = SkinView1.handles[count]
+                          #                  if isinstance(h, mdlhandles.SkinHandle):
+                          #                      break
+                          #                  SkinView1.handles.remove(h)
                             self.layout.explorer.sellist = []
                             self.layout.explorer.uniquesel = None
                 #
@@ -1715,6 +1715,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.143  2010/09/24 04:58:52  cdunde
+#Model Editor Skin-view handles fix.
+#
 #Revision 1.142  2010/09/23 04:57:24  cdunde
 #Various improvements for Model Editor Skin-view Linear Handle drawing time.
 #

@@ -1734,6 +1734,8 @@ class ModelLayout(BaseLayout):
             self.selectcomponent(c)
             
         if c != self.editor.Root.currentcomponent:
+            self.editor.SkinVertexSelList = []
+            self.editor.SkinFaceSelList = []
             self.selectcomponent(c)
 
 
@@ -1848,15 +1850,15 @@ class ModelLayout(BaseLayout):
                 pass
             else:
                 self.editor.ModelVertexSelList = []
-                self.editor.SkinVertexSelList = []
+    #            self.editor.SkinVertexSelList = []
                 self.editor.ModelFaceSelList = []
                 self.editor.EditorObjectList = []
-                self.editor.SkinFaceSelList = []
+    #            self.editor.SkinFaceSelList = []
                 self.editor.SelCommonTriangles = []
                 self.editor.SelVertexes = []
-                from mdlhandles import SkinView1
-                if SkinView1 is not None:
-                    SkinView1.invalidate()
+    #            from mdlhandles import SkinView1
+    #            if SkinView1 is not None:
+    #                SkinView1.invalidate()
 
 
     def NewItem1Click(self, m):
@@ -1881,6 +1883,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.126  2010/06/15 20:38:36  cdunde
+#Added .ftx as supported texture file type for game FAKK2.
+#
 #Revision 1.125  2010/06/07 02:45:28  cdunde
 #Moved the 'pickle' saving call function to where it was needed to increase editor response time.
 #
