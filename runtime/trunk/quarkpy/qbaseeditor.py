@@ -1365,8 +1365,34 @@ class BaseEditor:
                                         return
                                     self.layout.explorer.uniquesel = choice[0][1].subitems[0].parent
                     if choice == [] and flagsmouse == 264:
-                        self.layout.explorer.sellist = []
-                        self.layout.explorer.uniquesel = None
+                        if view.info['viewname'] == "skinview":
+                            if self.SkinVertexSelList != []:
+                                if len(self.SkinVertexSelList) > 1:
+                                    # Removes the Linear Handles.
+                                    count = len(view.handles)
+                                    while 1:
+                                        count = count - 1
+                                        h = view.handles[count]
+                                        if isinstance(h, mdlhandles.SkinHandle):
+                                            break
+                                        view.handles.remove(h)
+                                self.SkinVertexSelList = []
+                                view.invalidate()
+                        else:
+                            from mdlhandles import SkinView1
+                            if SkinView1 is not None:
+                                if self.SkinVertexSelList != []:
+                                    if len(self.SkinVertexSelList) > 1:
+                                        # Removes the Linear Handles.
+                                        count = len(SkinView1.handles)
+                                        while 1:
+                                            count = count - 1
+                                            h = SkinView1.handles[count]
+                                            if isinstance(h, mdlhandles.SkinHandle):
+                                                break
+                                            SkinView1.handles.remove(h)
+                            self.layout.explorer.sellist = []
+                            self.layout.explorer.uniquesel = None
                 #
                 # Send the click to MouseClicked
                 #
@@ -1689,6 +1715,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.142  2010/09/23 04:57:24  cdunde
+#Various improvements for Model Editor Skin-view Linear Handle drawing time.
+#
 #Revision 1.141  2010/09/16 06:33:34  cdunde
 #Model editor, Major change of Skin-view Linear Handle selection and dragging system, massively improving drawing time.
 #
