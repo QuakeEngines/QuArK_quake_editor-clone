@@ -13,7 +13,7 @@ author: cdunde
 
 <i>Shape programs:</i>  These are programs that can make different shapes to use in your maps. One that I recommend is 'MGS-object builder' and can be downloaded from the  <a href="http://groups.yahoo.com/group/quark/files/">Yahoo QuArK group site</a>. If you find any programs that may help others, please let us know by making a posting to the <a href="http://groups.yahoo.com/group/quark/">QuArK groups site</a>.
 
-<i>Terrain programs:</i>  This category is for your terrain programs for making landscape layouts in your maps. One that I recommend is <a href="http://countermap.counter-strike.net/Nemesis/index.php?p=1"> 'Terrain Generator'</a> and can be downloaded from its own site.
+<i>Terrain programs:</i>  This category is for your terrain programs for making landscape layouts in your maps. One that I recommend is <a href="http://nemesis.thewavelength.net/index.php?p=8"> 'Terrain Generator'</a> and can be downloaded from its own site.
 
 <i>Other programs:</i>  This category is for all other types of programs that can export to a map file for your use in QuArK.
 
