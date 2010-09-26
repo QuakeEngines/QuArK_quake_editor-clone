@@ -562,7 +562,7 @@ class mdl_mesh: # Done cdunde from -> hlmviewer source file -> studio.h -> mstud
     normindex = 0           #item  4   int, normal vec3_t.
 
     triangles = []                     # List of mdl_triangle.
-    normals = []   # WTF is this JUNK! # List of normals. Use these for the UV's, tile when needed.
+    normals = []                       # List of normals. Use these for the UV's, tile when needed.
 
     binary_format = "<5i" #little-endian (<), see #item descriptions above.
 
@@ -574,7 +574,7 @@ class mdl_mesh: # Done cdunde from -> hlmviewer source file -> studio.h -> mstud
         self.normindex = 0
 
         self.triangles = []
-        self.normals = [] # WTF is this JUNK!
+        self.normals = []
 
     def load(self, file):
         temp_data = file.read(struct.calcsize(self.binary_format))
@@ -648,7 +648,7 @@ class mdl_model: # Done cdunde from -> hlmviewer source file -> studio.h -> mstu
     group_offset = 0        #item  75     int, deformation groups Offset.
 
     meshes = []                           # List of meshes.
-    verts_info = [] # WTF is this JUNK!   # List of vertex info data.
+    verts_info = []                       # List of vertex info data.
     verts = []                            # List of vertex vector poistions.
     normals = []                          # List of normal vectors.
     groups = []                           # List of groups, unknown items.
@@ -671,7 +671,7 @@ class mdl_model: # Done cdunde from -> hlmviewer source file -> studio.h -> mstu
         self.group_offset = 0
 
         self.meshes = []
-        self.verts_info = [] # WTF is this JUNK!
+        self.verts_info = []
         self.verts = []
         self.normals = []
         self.groups = []
@@ -1472,6 +1472,7 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
         self.vertices = []          # A list of the vertexes.
 
     def load(self, file, folder_name, message):
+        global progressbar
         # file = the model file & full path being writen to, ex: C:\Half-Life\valve\models\player\barney\barney.mdl
         # name = just the basic name of the .mdl file, ex: barner
         # message = "" and empty string to add needed messages to.
@@ -1560,8 +1561,7 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
         # load the header for demand sequence group data
         file.seek(ofsBegin + self.demand_hdr_offset, 0)
         for i in xrange(self.num_demand_hdr_groups):
-     #HAY!       self.demand_seq_groups.append(mdl_demand_hdr_group()) # MY DATA THAT USE TO WORK.
-            self.demand_seq_groups.append(mdl_demand_group()) # DAN'S DATA SWITCH ON ME. 8-(
+            self.demand_seq_groups.append(mdl_demand_group())
             self.demand_seq_groups[i].load(file)
           #  self.demand_seq_groups[i].dump()
 
@@ -2057,10 +2057,13 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
             for Component in range(len(ComponentList)):
                 comp = ComponentList[Component]
                 comp_name = comp.name
+                Strings[2462] = comp.shortname + "\n" + Strings[2462]
+                progressbar = quarkx.progressbar(2462, self.num_anim_seq)
                 framesgroup = comp.dictitems['Frames:fg']
                 baseframe = framesgroup.subitems[0]
                 meshverts = baseframe.vertices
                 for m_sequence in xrange(self.num_anim_seq):
+                    progressbar.progress()
                     seq = pseqdesc[m_sequence]
                     seq_name = seq.label
                     for m_frame in xrange(seq.numframes):
@@ -2082,6 +2085,8 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
                                     newverts[vert_index] += Bpos_new + (Brot_new * vert_pos)
                         new_frame.vertices = newverts
                         framesgroup.appenditem(new_frame)
+                Strings[2462] = Strings[2462].replace(comp.shortname + "\n", "")
+                progressbar.close()
 
         # load the attachment data
         file.seek(ofsBegin + self.attachments_offset, 0)
@@ -2137,50 +2142,11 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
             tobj.logcon ("")
 
 
-######################################################
-# Import functions # Old code from ie_md0_Q_import.py
-######################################################
-def animate_mdl(mdl): # Old code from ie_md0_Q_import.py # The Frames Group is made here & returned to be added to the Component.
-    global progressbar, tobj, logging
-    ######### Animate the verts through the QuArK Frames lists.
-    framesgroup = quarkx.newobj('Frames:fg')
-
-    if logging == 1:
-        tobj.logcon ("")
-        tobj.logcon ("#####################################################################")
-        tobj.logcon ("Frame group data: " + str(mdl.num_frames) + " frames")
-        tobj.logcon ("frame: frame name")
-        tobj.logcon ("#####################################################################")
-
-    for i in xrange(0, mdl.num_frames):
-        ### mdl.frames[i].name is the frame name, ex: attack1
-        if logging == 1:
-            tobj.logcon (str(i) + ": " + mdl.frames[i].name)
-
-        frame = quarkx.newobj(mdl.frames[i].name + ':mf')
-        mesh = ()
-        #update the vertices
-        for j in xrange(0,mdl.num_verts):
-            x = (mdl.scale[0] * mdl.frames[i].vertices[j].v[0]) + mdl.translate[0]
-            y = (mdl.scale[1] * mdl.frames[i].vertices[j].v[1]) + mdl.translate[1]
-            z = (mdl.scale[2] * mdl.frames[i].vertices[j].v[2]) + mdl.translate[2]
-
-            #put the vertex in the right spot
-            mesh = mesh + (x,)
-            mesh = mesh + (y,)
-            mesh = mesh + (z,)
-
-        frame['Vertices'] = mesh
-        framesgroup.appenditem(frame)
-        progressbar.progress()
-    return framesgroup
-
-
 ########################
 # To run this file
 ########################
 def load_mdl(mdl_filename, folder_name):
-    global progressbar, tobj, logging, Strings, mdl
+    global tobj, logging, Strings, mdl
     #read the file in
     file = open(mdl_filename, "rb")
     mdl = mdl_obj()
@@ -2213,7 +2179,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
     "and name of the .mdl file selected."
     "For example:  C:\Half-Life\valve\models\player\barney\barney.mdl"
 
-    global editor, progressbar, tobj, logging, importername, textlog, Strings
+    global editor, tobj, logging, importername, textlog, Strings
     import quarkpy.mdleditor
     editor = quarkpy.mdleditor.mdleditor
     # Step 1 to import model from QuArK's Explorer.
@@ -2331,6 +2297,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".mdl Half-Life Importer", ".mdl file", "*.
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.7  2010/07/31 22:44:31  cdunde
+# Removed dupe and unused code.
+#
 # Revision 1.6  2010/07/30 20:30:56  cdunde
 # Major animation improvement, new base work copy for further development.
 #
