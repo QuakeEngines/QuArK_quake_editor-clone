@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.56  2009/09/22 18:12:40  danielpharos
+TList --> TQList
+
 Revision 1.55  2009/07/15 10:38:00  danielpharos
 Updated website link.
 
@@ -186,7 +189,7 @@ interface
 
 uses SysUtils, Classes, Controls, Graphics, Forms, StdCtrls, ExtCtrls,
      QkObjects, qmath, Windows, ComCtrls, Messages, TB97, Dialogs,
-     Menus, CommCtrl, EnterEditCtrl, QkForm, Game, BrowseForFolder,
+     Menus, CommCtrl, EnterEditCtrl, TrackBar2, QkForm, Game, BrowseForFolder,
      CursorScrollBox, Spin, SmArrowBtn, QkFormCfg, QkApplPaths;
 
 const
@@ -243,6 +246,7 @@ type
               procedure AcceptEditFloat(Sender: TObject);
               procedure AcceptSetName(Sender: TObject);
               procedure AcceptComboBox(Sender: TObject);
+              procedure AcceptTrackBar(Sender: TObject);
               procedure ClickColorInteger(Sender: TObject);
               procedure ClickColor3(Sender: TObject);
               procedure ClickColorPalette(Sender: TObject);
@@ -280,6 +284,7 @@ type
               procedure EditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
               procedure ComboKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
               procedure SpecEditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+              procedure TrackBarChange(Sender: TObject);
               procedure EnterEditChange(Sender: TObject);
               procedure AnyControlEnter(Sender: TObject);
               function MatchSpecItem(Sender: TObject; var Spec: String; SpecToItem: Boolean) : Integer;
@@ -891,6 +896,22 @@ begin
   end;
 end;
 
+procedure TFormCfg.AcceptTrackBar(Sender: TObject);
+var
+ Spec: String;
+ Arg: String;
+ nTrackBar: TTrackBar2;
+begin
+ Spec:=Form.SubElements[(Sender as TControl).Tag-1].Name;
+ nTrackBar:=(Sender as TTrackBar2);
+ if nTrackBar.AmIFloat then
+  Arg:=FloatToStr(nTrackBar.FloatPosition)
+ else
+  Arg:=IntToStr(nTrackBar.IntPosition);
+ if Arg=LoadStr1(Differs) then Exit;
+ SetSpecArg(Spec, Arg, sp_Auto);
+end;
+
 procedure TFormCfg.ClickColorInteger(Sender: TObject);
 var
  nColor: TColor;
@@ -1321,7 +1342,6 @@ begin
  Value := Value+1;
  Edit.Text:=ftos(Value);
  SetArg(Sender, Edit.Text);
-
 end;
 
 procedure TFormCfg.SpinDownClick(Sender: TObject);
@@ -1784,6 +1804,10 @@ var
  Btn, ReclickPopupForm: TToolbarButton97;
  Bevel: TBevel;
  Memo: TMemo;
+ TrackBar: TTrackBar2;
+ LabelMin, LabelMax: TLabel;
+ WantLabels, WantValue: Boolean;
+ Macro: String;
  L: TList;
  Checked: TCheckBoxState;
  Found: TCommonSpec;
@@ -1797,6 +1821,11 @@ var
  sTextRows: String;
  TextRows: Integer;
  sScrollBars: String;
+ sMinValue, sMaxValue, sValue: String;
+ iMinValue, iMaxValue, iValue: Integer;
+ fMinValue, fMaxValue, fValue: Single;
+ sSteps, sTickFreq: String;
+ iSteps, iTickFreq: Integer;
  sDropDownCount: String;
  DropDownCount: Integer;
 begin
@@ -2417,6 +2446,137 @@ begin
                  ResultCtrl := Memo;
                 end;
 {/Decker 2002-12-29}
+           'T': begin { Trackbar / Lone horizontal scrollbar }
+                 Icone := 0;
+                 if S[2] = 'F' then
+                 begin
+                   //Float
+                   sMinValue := Values['Min'];
+                   if sMinValue <> '' then
+                     fMinValue := StrToFloatDef(sMinValue, 0.0)
+                   else
+                     fMinValue := 0;
+                   sMaxValue := Values['Max'];
+                   if sMaxValue <> '' then
+                     fMaxValue := StrToFloatDef(sMaxValue, 10.0)
+                   else
+                     fMaxValue := 10;
+                   sMaxValue := Values['Value'];
+                   if sValue <> '' then
+                     fValue := StrToFloatDef(sValue, 0.0)
+                   else
+                     fValue := 0;
+                 end
+                 else
+                 begin
+                   //Integer
+                   sMinValue := Values['Min'];
+                   if sMinValue <> '' then
+                     iMinValue := StrToIntDef(sMinValue, 0)
+                   else
+                     iMinValue := 0;
+                   sMaxValue := Values['Max'];
+                   if sMaxValue <> '' then
+                     iMaxValue := StrToIntDef(sMaxValue, 10)
+                   else
+                     iMaxValue := 10;
+                   sMaxValue := Values['Value'];
+                   if sValue <> '' then
+                     iValue := StrToIntDef(sValue, 0)
+                   else
+                     iValue := 0;
+                 end;
+                 if Values['Labels'] <> '' then
+                   WantLabels := True
+                 else
+                   WantLabels := False;
+                 if Values['ShowValue'] <> '' then
+                   WantValue := True
+                 else
+                   WantValue := False;
+                 if WantLabels then
+                 begin
+                   LabelMin := TLabel.Create(Self);
+                   if S[2] = 'F' then
+                     LabelMin.Caption := FloatToStr(fMinValue)
+                   else
+                     LabelMin.Caption := IntToStr(iMinValue);
+                   LabelMin.AutoSize := true; //Auto-resize it once...
+                   LabelMin.AutoSize := false;
+                   LabelMin.SetBounds(X, Y, LabelMin.Width, LineHeight);
+                   LabelMin.Parent := SB;
+                   LabelMax := TLabel.Create(Self);
+                   if S[2] = 'F' then
+                     LabelMax.Caption := FloatToStr(fMaxValue)
+                   else
+                     LabelMax.Caption := IntToStr(iMaxValue);
+                   LabelMax.AutoSize := true; //Auto-resize it once...
+                   LabelMax.AutoSize := false;
+                   LabelMax.SetBounds(X+W-LabelMax.Width, Y, LabelMax.Width, LineHeight);
+                   LabelMax.Parent := SB;
+                 end;
+                 TrackBar := TTrackBar2.Create(Self);
+                 if WantValue then
+                 begin
+                   if WantLabels then
+                     TrackBar.SetBounds(X+LabelMin.Width, Y, W-LabelMin.Width-LabelMax.Width, LineHeight*3)
+                   else
+                     TrackBar.SetBounds(X, Y, W, LineHeight*3);
+                   ExtraVertSpace := LineHeight*2; { to adjust height for Y below. }
+                 end
+                 else
+                 begin
+                   if WantLabels then
+                     TrackBar.SetBounds(X+LabelMin.Width, Y, W-LabelMin.Width-LabelMax.Width, LineHeight*2)
+                   else
+                     TrackBar.SetBounds(X, Y, W, LineHeight*2);
+                   ExtraVertSpace := LineHeight; { to adjust height for Y below. }
+                 end;
+                 TrackBar.Parent := SB;
+                 TrackBar.Tag:=I+1;
+                 TrackBar.Hint:=HintMsg;
+                 TrackBar.ShowValue := WantValue;
+                 sSteps := Values['Steps'];
+                 if sSteps <> '' then
+                   iSteps := StrToIntDef(sSteps, 10)
+                 else
+                   iSteps := 10;
+                 TrackBar.Steps := iSteps;
+                 sTickFreq := Values['TickFreq'];
+                 if sTickFreq <> '' then
+                   iTickFreq := StrToIntDef(sTickFreq, 1)
+                 else
+                   iTickFreq := 1;
+                 TrackBar.Frequency := iTickFreq;
+                 if S[2] = 'F' then
+                 begin
+                   TrackBar.AmIFloat := true;
+                   TrackBar.FloatMin := fMinValue;
+                   TrackBar.FloatMax := fMaxValue;
+                 end
+                 else
+                 begin
+                   TrackBar.IntMin := iMinValue;
+                   TrackBar.IntMax := iMaxValue;
+                 end;
+                 { Set the value }
+                 Found:=GetSingleSpec(Spec, ArgValue);
+                 if (Found = csDiffers) then
+                   ArgValue := LoadStr1(Differs);
+                 if S[2] = 'F' then
+                   TrackBar.FloatPosition := StrToFloatDef(ArgValue, 0.0)
+                 else
+                   TrackBar.IntPosition := StrToIntDef(ArgValue, 0);
+                 Macro:=Values['Macro'];
+                 if Macro<>'' then
+                  begin
+                   //There is a Macro set, so let's call it whenever the value changes
+                   TrackBar.OnChange := TrackBarChange;
+                  end;
+                 TrackBar.OnEnter := AnyControlEnter;
+                 TrackBar.OnAccept := AcceptTrackBar;
+                 ResultCtrl := TrackBar;
+                end;
            '!': begin   { not displayed }
                  Dec(Y, LineHeight);
                 end;
@@ -3084,6 +3244,29 @@ end;
 procedure TFormCfg.SpecEditKeyDown;
 begin
  EditKeyDown(Nil, Key, Shift);
+end;
+
+procedure TFormCfg.TrackBarChange(Sender: TObject);
+var
+ FormObj: QObject;
+ S: String;
+ Obj: PyObject;
+ nTrackBar: TTrackBar2;
+begin
+ FormObj:=Form.SubElements[(Sender as TControl).Tag-1];
+ with FormObj do
+  begin
+   nTrackBar:=(Sender as TTrackBar2);
+   if nTrackBar.AmIFloat then
+    Obj:=PyFloat_FromDouble(nTrackBar.FloatPosition)
+   else
+    Obj:=PyInt_FromLong(nTrackBar.IntPosition);
+   S:=Specifics.Values['Macro'];
+   if S<>'' then
+    begin
+     Py_XDECREF(CallMacroEx(Py_BuildValueX('OO', [@PythonObj, Obj]), S))
+    end;
+  end;
 end;
 
 procedure TFormCfg.EnterEditChange(Sender: TObject);
