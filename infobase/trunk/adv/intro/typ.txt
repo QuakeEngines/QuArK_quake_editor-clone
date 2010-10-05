@@ -267,6 +267,38 @@ KeyLeft: = {Typ="K" Txt=" turn left"}
 </pre>
 </td></tr>
 
+<tr><td align=center>
+T<br>
+
+TF
+</td><td valign=top>
+<b>Slider bar with sliding button</b>. (only top portions shown)<br>
+T returns integer, TF returns float value when slider released.<br>
+
+<b><u>Continuous</u></b> values can be applied by example code below:
+
+def macro_slider(self, value):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;editor.Root.currentcomponent['control_slider'] = str(value)<br>
+def macro_slider2(self, value):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;editor.Root.currentcomponent['control_slider2'] = str(value)<br>
+
+quarkpy.qmacro.MACRO_slider = macro_slider<br>
+quarkpy.qmacro.MACRO_slider2 = macro_slider2<br>
+</td><td valign=top>
+<img align=right>slider.png</img>
+&nbsp;<u><i>Specifics:</i></u><br>
+&nbsp;Txt = "control slider"<br>
+&nbsp;Hint = "Contains text" # optional.<br>
+&nbsp;Min = "-1000" # shown if 'Labels' below is used.<br>
+&nbsp;Max = "1000" # shown if 'Labels' below is used.<br>
+&nbsp;Steps = "50" # increment of values between Min & Max.<br>
+&nbsp;TickFreq = "5" # number of 'Steps' between tick marks.<br>
+&nbsp;Labels = "1" # To display Min & Max settings above.<br>
+&nbsp;ShowValue = "1" # To display value below slider bar.<br>
+&nbsp;Macro="slider" # To use macro code (shown on left) for continuous value use as slider is moved.<br>
+<P>
+</td></tr>
+
 <tr><td align=center>----</td>
 <td align=center><b>Choices</b></td>
 <td align=center><b>Examples and Comments</b></td></tr>
