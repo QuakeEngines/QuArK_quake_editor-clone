@@ -1604,7 +1604,7 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
                     self.attachments[attachment.bone]['bone_name'] = folder_name + "_" + self.bones[attachment.bone].name + ":bone"
                     self.attachments[attachment.bone]['tag_pos'] = {}
                 self.attachments[attachment.bone]['tag_pos'][i] = attachment.org
-                attachment.dump()
+              #  attachment.dump()
                 # Create tags (attachments) groups if any. We need to keep these separate for each complete model loaded.
                 tag_name = 'tag_weapon' + str(i+1)
                 newtag = quarkx.newobj(folder_name + '_' + tag_name + ':tag')
@@ -2224,6 +2224,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".mdl Half-Life Importer", ".mdl file", "*.
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.9  2010/10/08 05:33:35  cdunde
+# Added support for player models attachment tags.
+#
 # Revision 1.8  2010/09/26 23:14:31  cdunde
 # Added progress bar and did some file cleanup.
 #
