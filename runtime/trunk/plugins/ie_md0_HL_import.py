@@ -196,66 +196,6 @@ def Read_mdl_bone_anim_value(self, file, file_offset):
 ######################################################
 # MDL data structures
 ######################################################
-class mdl_face: # Old code from ie_md0_Q_import.py
-    facesfront = 1
-    vertex_index = [0, 0, 0]
-    binary_format = "<4i" #little-endian (<), 4 ints
-    
-    def __init__(self):
-        self.facesfront = 1
-        self.vertex_index = [0, 0, 0]
-
-    def load(self, file):
-        # file is the model file & full path, ex: C:\Half-Life\valve\models\player\barney\barney.mdl
-        # data[0] int 0 = backface, 1 = frontface, data[1],[2],[3] ints, 3 vertex indexes as integers.
-        temp_data = file.read(struct.calcsize(self.binary_format))
-        data = struct.unpack(self.binary_format, temp_data)
-        self.facesfront = data[0]
-        self.vertex_index[0] = data[1]
-        self.vertex_index[1] = data[2]
-        self.vertex_index[2] = data[3]
-        return self
-
-    def dump(self):
-        print "MDL Face Structure"
-        print "facesfront: ", self.facesfront
-        print "vertex index: ", self.vertex_index[0]
-        print "vertex index: ", self.vertex_index[1]
-        print "vertex index: ", self.vertex_index[2]
-        print "------------------"
-
-class mdl_tex_coord: # Old code from ie_md0_Q_import.py
-    onseam = 0
-    u = 0
-    v = 0
-    binary_format = "<3i" #little-endian (<), 3 ints
-
-    def __init__(self):
-        self.onseam = 0
-        self.u = 0
-        self.v = 0
-
-    def load(self, file):
-        # file is the model file & full path, ex: C:\Half-Life\valve\models\player\barney\barney.mdl
-        # data[0] flag for "onseam", data[1] and data[2] ex: (169, 213), are 2D skin texture coords as integers.
-        # Texture are generally divided in two pieces:
-        #     one for the frontface of the model,
-        #     and one for the backface.
-        # The backface piece must be translated by skinwidth/2 from the frontface piece.
-        temp_data = file.read(struct.calcsize(self.binary_format))
-        data = struct.unpack(self.binary_format, temp_data)
-        self.onseam = data[0]
-        self.u = data[1]
-        self.v = data[2]
-        return self
-
-    def dump(self):
-        print "MDL Texture Coordinate Structure"
-        print "texture coord onseam: ", self.onseam
-        print "texture coordinate u: ", self.u
-        print "texture coordinate v: ", self.v
-        print "------------------"
-
 class mdl_skin_info: # Done cdunde from -> hlmviewer source file -> studio.h -> mstudiotexture_t
     name = ""               #item  0-63   64 char, skin name.
     flags = 0               #item  64     int, skin flags setting for special texture handling ex: CHROME, LIGHTING.
@@ -293,82 +233,6 @@ class mdl_skin_info: # Done cdunde from -> hlmviewer source file -> studio.h -> 
         print "height: ", self.height
         print "skin_offset: ", self.skin_offset
         print "--------------------"
-
-class mdl_frame:
-    group = 0   #item  0   int, This is the frame group setting, 0 = simple single frame, not 0 = group of frames
-    time = 0.0 # (used in load function below), float, time duration for each frame above
-    bboxmin = []
-    bboxmax = []
-    name = ""
-    vertices = []
-    frames = [] # for group of frames
-    binary_format = "<i" #little-endian (<), 1 int for group setting
-
-    def __init__(self):
-        self.group = 0 # 0 = simple single frame, not 0 = group of frames
-        self.time = 0.0
-        self.binary_format = "<i" #little-endian (<), 1 int for group setting, changed in load function of this class.
-        self.bboxmin = [0.0]*3
-        self.bboxmax = [0.0]*3
-        self.name = ""
-        self.vertices = []
-        self.frames = []
-
-    def load(self, file, num_verts):
-        # file is the model file & full path, ex: C:\Half-Life\valve\models\player\barney\barney.mdl
-        # self.bboxmin, bouding box min
-        # self.bboxmax, bouding box max
-        # self.name is the frame name ex: attack1
-        temp_data = file.read(struct.calcsize(self.binary_format))
-        data = struct.unpack(self.binary_format, temp_data)
-        self.group = data[0]
-        if self.group == 0:
-            self.bboxmin = mdl_vertex()
-            self.bboxmin.load(file)
-            #self.bboxmin.dump() # for testing only, comment out when done
-            self.bboxmax = mdl_vertex()
-            self.bboxmax.load(file)
-            #self.bboxmax.dump() # for testing only, comment out when done
-            temp_data = file.read(struct.calcsize(">16c"))
-            data = struct.unpack(">16c", temp_data)
-            self.name = "".join(data).split("\0")[0]
-            for i in xrange(0,num_verts):
-                self.vertices.append(mdl_vertex())
-                self.vertices[i].load(file)
-                #self.vertices[i].dump() # for testing only, comment out when done
-        else: # HAVE DAN CHECK IF THIS IS CORRECT
-            self.bboxmin = mdl_vertex()
-            self.bboxmin.load(file)
-            #self.bboxmin.dump() # for testing only, comment out when done
-            self.bboxmax = mdl_vertex()
-            self.bboxmax.load(file)
-            #self.bboxmax.dump() # for testing only, comment out when done
-            binary_format = "<f" #little-endian (<), 1 float for "time" till next frame.
-            temp_data = file.read(struct.calcsize(binary_format))
-            data = struct.unpack(binary_format, temp_data)
-            self.time=data[0]
-            for i in xrange(0,self.group):
-                self.frames.append(mdl_frame())
-                self.frames[i].bboxmin=mdl_vertex()
-                self.frames[i].bboxmin.load(file)
-                self.frames[i].bboxmax=mdl_vertex()
-                self.frames[i].bboxmax.load(file)
-                temp_data = file.read(struct.calcsize(">16c"))
-                data = struct.unpack(">16c", temp_data)
-                self.frames[i].name = "".join(data).split("\0")[0]
-                for j in xrange(0,num_verts):
-                    self.frames[i].vertices.append(mdl_vertex())
-                    self.frames[i].vertices[j].load(file)
-        return self
-
-    def dump(self):
-        print "MDL Frame"
-        print "group: ", self.group
-        print "time: ", self.time
-        print "bboxmin: ", self.bboxmin
-        print "bboxmax: ", self.bboxmax
-        print "name: ", self.name
-        print "===================="
 
 class mdl_bone_anim: # Done cdunde from -> hlmviewer source file -> studio.h -> mstudioanim_t
                             #item of data file, size & type,   description
@@ -1349,30 +1213,31 @@ def SetUpBones(self, QuArK_bones): # self = the mdl_obj. Done cdunde from -> hlm
                 panim = seq_panims[1][pbone]
 
                 #FIXME: NEED TO DO!
-                Dump = """float	        	s;
+  #              Dump = float	        	s;
 
-    	CalcRotations( pos2, q2, pseqdesc, panim, m_frame );
-    	s = m_blending[0] / 255.0;
+  #  	CalcRotations( pos2, q2, pseqdesc, panim, m_frame );
+  #  	s = m_blending[0] / 255.0;
 
-    	SlerpBones( quat, pos, q2, pos2, s );
+  #  	SlerpBones( quat, pos, q2, pos2, s );
 
-    	if (pseqdesc->numblends == 4)
-        {
-        	panim += m_pstudiohdr->numbones;
-        	CalcRotations( pos3, q3, pseqdesc, panim, m_frame );
+  #  	if (pseqdesc->numblends == 4)
+  #      {
+  #      	panim += m_pstudiohdr->numbones;
+  #      	CalcRotations( pos3, q3, pseqdesc, panim, m_frame );
 
-        	panim += m_pstudiohdr->numbones;
-        	CalcRotations( pos4, q4, pseqdesc, panim, m_frame );
+  #      	panim += m_pstudiohdr->numbones;
+  #      	CalcRotations( pos4, q4, pseqdesc, panim, m_frame );
 
-        	s = m_blending[0] / 255.0;
-        	SlerpBones( q3, pos3, q4, pos4, s );
+  #      	s = m_blending[0] / 255.0;
+  #      	SlerpBones( q3, pos3, q4, pos4, s );
 
-        	s = m_blending[1] / 255.0;
-        	SlerpBones( quat, pos, q3, pos3, s );
-        }
-    }"""
+  #      	s = m_blending[1] / 255.0;
+  #      	SlerpBones( quat, pos, q3, pos3, s );
+  #      }
+  #  }
 
             frame_name = seq_name + " frame " + str(m_frame+1)
+            tagsgroup_count = 0
             for pbone in range(len(self.bones)):
                 bone = self.bones[pbone]
 
@@ -1387,6 +1252,26 @@ def SetUpBones(self, QuArK_bones): # self = the mdl_obj. Done cdunde from -> hlm
                     bone_matrix = parent_matrix * quarkx.matrix(bone_matrix)
                     bone_pos = bone_pos.tuple
                     bone_matrix = bone_matrix.tuple
+
+                if self.num_attachments != 0 and self.attachments.has_key(pbone):
+                    tags = self.attachments[pbone]['tag_pos']
+                    bone_name = self.attachments[pbone]['bone_name']
+                    old_bone_pos = quarkx.vect(bonelist[bone_name]['frames']["baseframe:mf"]['position'])
+                    new_bone_pos = quarkx.vect(bone_pos)
+                    old_bone_rotmatrix = quarkx.matrix(bonelist[bone_name]['frames']["baseframe:mf"]['rotmatrix'])
+                    new_bone_rotmatrix = quarkx.matrix(bone_matrix)
+                    for tag in tags.keys():
+                        Tpos = tags[tag]
+                        Tpos = quarkx.vect((Tpos[0], Tpos[1], Tpos[2]))
+                        Tpos = new_bone_pos + (new_bone_rotmatrix * Tpos)
+                        Tpos = Tpos.tuple
+                        tagframe = quarkx.newobj(frame_name + ':tagframe')
+                        tagframe['show'] = (1.0,)
+                        tagframe['origin'] = Tpos
+                        tagframe['rotmatrix'] = (1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0)
+                        tagframe['bone'] = bone_name
+                        self.tagsgroup[tagsgroup_count].appenditem(tagframe)
+                        tagsgroup_count = tagsgroup_count + 1
 
                 # fills the ModelComponentList['bonelist'][bone.name]['frames'] data.
                 bone_name = QuArK_bones[pbone].name
@@ -1446,7 +1331,7 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
     bone_controls = []
     sequence_descs = []
     hitboxes = []
-    attachments = []
+    attachments = {}
     bodyparts = []
     anim_seqs_data = []
 
@@ -1454,6 +1339,7 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
     tex_coords = []
     faces = []
     vertices = []
+    tagsgroup = []
 
     def __init__ (self):
         self.origin = quarkx.vect(0.0, 0.0, 0.0)
@@ -1463,13 +1349,14 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
         self.bone_controls = []     # A list of the bone controllers.
         self.sequence_descs = []    # A list of the sequence descriptions (leads into grouped frames).
         self.hitboxes = []          # A list of the hitboxes.
-        self.attachments = []       # A list of the attachments.
+        self.attachments = {}       # A dictionary list of the attachments, the key being the bone number it is attached to.
         self.bodyparts = []         # A list of the bodyparts.
         self.anim_seqs_data = []    # A list of the animation sequences sub-list of seq_pivots, seq_panims, seq_frames from SetUpBones function.
 
         self.tex_coords = []        # A list of integers, 1 for "onseam" and 2 for the s,t or u,v texture coordinates.
         self.faces = []             # A list of the triangles.
         self.vertices = []          # A list of the vertexes.
+        self.tagsgroup = []         # A list of tag (attachment) groups to store tag frames into for each tag.
 
     def load(self, file, folder_name, message):
         global progressbar
@@ -1706,8 +1593,32 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
             seq_data.append(seq_pivots)
             self.anim_seqs_data.append(seq_data)
 
+        # load the attachment data, for position processing with bones they belong to.
+        if len(self.bones) != 0 and len(ComponentList) != 0 and self.num_attachments != 0:
+            file.seek(ofsBegin + self.attachments_offset, 0)
+            tag_comp = ComponentList[0] # Reset this if needed later.
+            for i in xrange(self.num_attachments):
+                attachment = mdl_attachment().load(file)
+                if not self.attachments.has_key(attachment.bone):
+                    self.attachments[attachment.bone] = {}
+                    self.attachments[attachment.bone]['bone_name'] = folder_name + "_" + self.bones[attachment.bone].name + ":bone"
+                    self.attachments[attachment.bone]['tag_pos'] = {}
+                self.attachments[attachment.bone]['tag_pos'][i] = attachment.org
+                attachment.dump()
+                # Create tags (attachments) groups if any. We need to keep these separate for each complete model loaded.
+                tag_name = 'tag_weapon' + str(i+1)
+                newtag = quarkx.newobj(folder_name + '_' + tag_name + ':tag')
+                newtag['Component'] = tag_comp.name
+                newtag['bone'] = self.attachments[attachment.bone]['bone_name']
+                self.tagsgroup = self.tagsgroup + [newtag]
+                if i == 0:
+                    tag_comp['Tags'] = tag_name
+                else:
+                    tag_comp['Tags'] = tag_comp.dictspec['Tags'] + ", " + tag_name
+
         # Create the bones, if any.
         QuArK_bones = [] # A list to store all QuArK bones created.
+        tagsgroup_count = 0
         if len(self.bones) != 0 and len(ComponentList) != 0:
             for mdlbone in xrange(len(self.bones)):
                 bone = self.bones[mdlbone]
@@ -1720,26 +1631,39 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
                 #new_bone['quaternion'] = (qx,qy,qz,qw)
                 bone_matrix = quarkx.matrix((tempmatrix[0][0], tempmatrix[0][1], tempmatrix[0][2]), (tempmatrix[1][0], tempmatrix[1][1], tempmatrix[1][2]), (tempmatrix[2][0], tempmatrix[2][1], tempmatrix[2][2]))
                 new_bone['parent_index'] = str(bone.parent)
-                if bone.parent == -1:
-                    new_bone.position = bone_pos
-                    new_bone.rotmatrix = bone_matrix
-                    new_bone['position'] = new_bone.position.tuple
-                    tempmatrix = new_bone.rotmatrix.tuple
-                    new_bone['rotmatrix'] = (tempmatrix[0][0], tempmatrix[0][1], tempmatrix[0][2], tempmatrix[1][0], tempmatrix[1][1], tempmatrix[1][2], tempmatrix[2][0], tempmatrix[2][1], tempmatrix[2][2])
-                    new_bone['parent_name'] = "None"
-                    new_bone['bone_length'] = (0.0, 0.0, 0.0)
-                else:
+                if bone.parent != -1:
                     parent_bone = QuArK_bones[bone.parent]
                     parent_pos = parent_bone.position
                     parent_matrix = parent_bone.rotmatrix
                     bone_pos = parent_pos + (parent_matrix * bone_pos)
                     bone_matrix = parent_matrix * bone_matrix
-                    new_bone.position = bone_pos
-                    new_bone.rotmatrix = bone_matrix
-                    new_bone['position'] = new_bone.position.tuple
-                    tempmatrix = new_bone.rotmatrix.tuple
-                    new_bone['rotmatrix'] = (tempmatrix[0][0], tempmatrix[0][1], tempmatrix[0][2], tempmatrix[1][0], tempmatrix[1][1], tempmatrix[1][2], tempmatrix[2][0], tempmatrix[2][1], tempmatrix[2][2])
 
+                if self.num_attachments != 0 and self.attachments.has_key(mdlbone):
+                    tags = self.attachments[mdlbone]['tag_pos']
+                    bone_name = self.attachments[mdlbone]['bone_name']
+                    for tag in tags.keys():
+                        Tpos = tags[tag]
+                        Tpos = quarkx.vect((Tpos[0], Tpos[1], Tpos[2]))
+                        Tpos = bone_pos + (bone_matrix * Tpos)
+                        Tpos = Tpos.tuple
+                        tagframe = quarkx.newobj('Tag baseframe:tagframe')
+                        tagframe['show'] = (1.0,)
+                        tagframe['origin'] = Tpos
+                        tagframe['rotmatrix'] = (1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0)
+                        tagframe['bone'] = bone_name
+                        self.tagsgroup[tagsgroup_count].appenditem(tagframe)
+                        tagsgroup_count = tagsgroup_count + 1
+
+                new_bone.position = bone_pos
+                new_bone.rotmatrix = bone_matrix
+                new_bone['position'] = new_bone.position.tuple
+                tempmatrix = new_bone.rotmatrix.tuple
+                new_bone['rotmatrix'] = (tempmatrix[0][0], tempmatrix[0][1], tempmatrix[0][2], tempmatrix[1][0], tempmatrix[1][1], tempmatrix[1][2], tempmatrix[2][0], tempmatrix[2][1], tempmatrix[2][2])
+
+                if bone.parent == -1:
+                    new_bone['parent_name'] = "None"
+                    new_bone['bone_length'] = (0.0, 0.0, 0.0)
+                else:
                     new_bone['parent_name'] = parent_bone.name
                     new_bone['bone_length'] = (-quarkx.vect(QuArK_bones[int(new_bone.dictspec['parent_index'])].dictspec['position']) + quarkx.vect(new_bone.dictspec['position'])).tuple
                 new_bone['scale'] = (1.0,)
@@ -2087,15 +2011,8 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
                         framesgroup.appenditem(new_frame)
                 Strings[2462] = Strings[2462].replace(comp.shortname + "\n", "")
                 progressbar.close()
-
-        # load the attachment data
-        file.seek(ofsBegin + self.attachments_offset, 0)
-        for i in xrange(self.num_attachments):
-            self.attachments.append(mdl_attachment())
-            self.attachments[i].load(file)
-          #  self.attachments[i].dump()
         
-        return self, ComponentList, QuArK_bones, message, self.version # END FOR THIS IMPORTER.
+        return self, ComponentList, QuArK_bones, message, self.tagsgroup, self.version # END FOR THIS IMPORTER.
 
     def dump(self):
         if logging == 1:
@@ -2151,16 +2068,16 @@ def load_mdl(mdl_filename, folder_name):
     file = open(mdl_filename, "rb")
     mdl = mdl_obj()
     message = ""
-    MODEL, ComponentList, QuArK_bones, message, version = mdl.load(file, folder_name, message)
+    MODEL, ComponentList, QuArK_bones, message, tagsgroup, version = mdl.load(file, folder_name, message)
     file.close()
 
     if logging == 1:
         mdl.dump() # Writes the file Header last to the log for comparison reasons.
 
     if MODEL is None:
-        return None, None, message, version
+        return None, None, message, tagsgroup, version
 
-    return ComponentList, QuArK_bones, message, version
+    return ComponentList, QuArK_bones, message, tagsgroup, version
 
 
 def import_mdl_model(editor, mdl_filename):
@@ -2168,9 +2085,9 @@ def import_mdl_model(editor, mdl_filename):
     model_name = mdl_filename.split("\\")
     folder_name = model_name[len(model_name)-2]
 
-    ComponentList, QuArK_bones, message, version = load_mdl(mdl_filename, folder_name) # Loads the model.
+    ComponentList, QuArK_bones, message, tagsgroup, version = load_mdl(mdl_filename, folder_name) # Loads the model.
 
-    return ComponentList, QuArK_bones, message, version
+    return ComponentList, QuArK_bones, message, tagsgroup, version
 
 
 def loadmodel(root, filename, gamename, nomessage=0):
@@ -2197,7 +2114,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
     logging, tobj, starttime = ie_utils.default_start_logging(importername, textlog, filename, "IM") ### Use "EX" for exporter text, "IM" for importer text.
 
     ### Lines below here loads the model into the opened editor's current model.
-    ComponentList, QuArK_bones, message, version = import_mdl_model(editor, filename)
+    ComponentList, QuArK_bones, message, tagsgroup, version = import_mdl_model(editor, filename)
 
     if ComponentList is None or len(ComponentList) == 0 or version is None or version != 10:
         quarkx.beep() # Makes the computer "Beep" once if a file is not valid. Add more info to message.
@@ -2212,6 +2129,17 @@ def loadmodel(root, filename, gamename, nomessage=0):
         except:
             pass
         return
+
+    if editor.form is not None:
+        undo = quarkx.action()
+    editor_dictitems = editor.Root.dictitems
+
+    # Import the tags (attachments) if any.
+    for tag in range(len(tagsgroup)):
+        if editor.form is not None:
+            undo.put(editor_dictitems['Misc:mg'], tagsgroup[tag])
+        else:
+            editor_dictitems['Misc:mg'].appenditem(tagsgroup[tag])
 
     # Process the bones, if any.
     newbones = []
@@ -2246,7 +2174,6 @@ def loadmodel(root, filename, gamename, nomessage=0):
         md2fileobj.appenditem(editor.Root)
         md2fileobj.openinnewwindow()
     else: # Imports a model properly from within the editor.
-        undo = quarkx.action()
         for bone in newbones:
             undo.put(editor.Root.dictitems['Skeleton:bg'], bone)
             
@@ -2297,6 +2224,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".mdl Half-Life Importer", ".mdl file", "*.
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.8  2010/09/26 23:14:31  cdunde
+# Added progress bar and did some file cleanup.
+#
 # Revision 1.7  2010/07/31 22:44:31  cdunde
 # Removed dupe and unused code.
 #
