@@ -14,6 +14,8 @@ $Id$
 
 6.6.0 Beta 4
 ============
+* [cdunde/DanielPharos]: Added support for player models attachment tags.
+
 * [DanielPharos]: New slide bar dialog form type control added.
 
 * [cdunde]: Model editor, Major change of Skin-view Linear Handle selection and dragging system, massively improving drawing time.
