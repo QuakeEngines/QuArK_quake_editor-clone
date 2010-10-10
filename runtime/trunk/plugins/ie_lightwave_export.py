@@ -332,7 +332,7 @@ def generate_layr(layer_index): # Here the surf_index and the obj_index are one 
 # ====================== Generate Verts (PNTS Chunk) =======================
 # == The "frame.vertices" x,y,z position of each vertex, objspec_list[2] ===
 # ==========================================================================
-# These are a single component's 'Frames:fg' 'Base Frame:mf' (there's only one) 'Vertices'.
+# These are a single component's 'Frames:fg' 'baseframe:mf' (there's only one) 'Vertices'.
 def generate_pnts(meshes, mesh_names):
     global Strings
     data = cStringIO.StringIO()
@@ -958,6 +958,10 @@ quarkpy.qmdlbase.RegisterMdlExporter(".lwo LightWave Exporter", ".lwo file", "*.
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.12  2009/03/10 08:00:39  cdunde
+# Updates by DanielPharos to fix multiple component models
+# to work correctly in game and uv positioning.
+#
 # Revision 1.11  2009/03/08 04:48:52  cdunde
 # To reinstate functions previously removed to get models to show in games.
 #

@@ -2008,9 +2008,9 @@ def create_objects(filename, polynames, clip_list, objspec_list, surf_list, base
         framesgroup = quarkx.newobj('Frames:fg')
 
         # Because .lwo models are "stagnat" models, (no animation), we only make 1 frame
-        # which is used to draw the maodel's 'mesh' (shape) in the editor's views.
+        # which is used to draw the model’s 'mesh' (shape) in the editor's views.
         # The Skin-view uses the model's 'Tris' to draw its nlines. 
-        frame = quarkx.newobj('Base Frame:mf')
+        frame = quarkx.newobj('baseframe:mf')
         mesh = ()
         vtxconvert = {}
         count = 0
@@ -2700,6 +2700,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.36  2010/06/13 15:37:55  cdunde
+# Setup Model Editor to allow importing of model from main explorer File menu.
+#
 # Revision 1.35  2010/05/01 22:54:57  cdunde
 # Set default skinsize to match all other importers.
 #

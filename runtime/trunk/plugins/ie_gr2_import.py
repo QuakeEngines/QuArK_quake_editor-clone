@@ -1482,7 +1482,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
                 frame['gr2_scale'] = ArtToolTransformMatrix(quarkx.matrix((bone_scale[0][0], bone_scale[1][0], bone_scale[2][0]),
                                                                           (bone_scale[0][1], bone_scale[1][1], bone_scale[2][1]),
                                                                           (bone_scale[0][2], bone_scale[1][2], bone_scale[2][2]))).tuple
-                bonelist[new_bone.name] = {'frames': {'meshframe:mf': frame}}
+                bonelist[new_bone.name] = {'frames': {'baseframe:mf': frame}}
                 bonelist[new_bone.name]['type'] = 'gr2'
 
         full_bone_vtx_list = {} # { bone_index : { component_full_name : [ vtx, vtx, vtx ...] } }
@@ -1619,7 +1619,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
                     Component.appenditem(sdogroup)
                     Component.appenditem(skingroup)
                     Component.appenditem(framesgroup)
-                    frame = quarkx.newobj('meshframe:mf')
+                    frame = quarkx.newobj('baseframe:mf')
                     frame['Vertices'] = frame_vertices
                     framesgroup.appenditem(frame)
                     if editor.form is not None:
@@ -1674,7 +1674,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
                     comp = item
                     break
             vtxpos = quarkx.vect(0, 0, 0)
-            frame_vertices = comp.dictitems['Frames:fg'].dictitems['meshframe:mf'].vertices
+            frame_vertices = comp.dictitems['Frames:fg'].dictitems['baseframe:mf'].vertices
             for vtx in range(len(vtx_pos[usekey])):
                 vtxpos = vtxpos + frame_vertices[vtx_pos[usekey][vtx]]
             vtxpos = vtxpos/float(len(vtx_pos[usekey]))
@@ -1748,7 +1748,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
     for bone_counter in range(len(Full_QuArK_bones)):
         bone_obj = Full_QuArK_bones[bone_counter]
         if bonelist.has_key(bone_obj.name):
-            frame = bonelist[bone_obj.name]['frames']['meshframe:mf']
+            frame = bonelist[bone_obj.name]['frames']['baseframe:mf']
             QuArK_bone_pos[bone_counter] = ArtToolDetransformVect(quarkx.vect(frame['position'])).tuple
             bone_rot = ArtToolDetransformMatrix(quarkx.matrix(frame['rotmatrix'])).tuple
             bone_rot = [[bone_rot[0][0], bone_rot[1][0], bone_rot[2][0], 0.0],
@@ -2085,7 +2085,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
                     current_bone = Full_QuArK_bones[bone_counter]
                     if current_bone.vtxlist.has_key(comp.name):
                         vtxlist = current_bone.vtxlist[comp.name]
-                        frame = bonelist[current_bone.name]['frames']['meshframe:mf']
+                        frame = bonelist[current_bone.name]['frames']['baseframe:mf']
                         old_bone_pos = quarkx.vect(frame['position'])
                         old_bone_rot = quarkx.matrix(frame['rotmatrix'])
                         if frame.has_key('gr2_scale'):
@@ -2379,6 +2379,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.35  2010/06/13 15:37:55  cdunde
+# Setup Model Editor to allow importing of model from main explorer File menu.
+#
 # Revision 1.34  2010/05/26 18:48:34  danielpharos
 # Big speedup for converting granny textures.
 #

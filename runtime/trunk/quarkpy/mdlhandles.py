@@ -519,7 +519,7 @@ class ModelFaceHandle(qhandles.GenericHandle):
 
 
 class TagHandle(qhandles.GenericHandle):
-    "Tag handle, location based on tagrame.dictspec['origin']."
+    "Tag handle, location based on tagframe.dictspec['origin']."
 
     def __init__(self, pos, tagframe=None):
         qhandles.GenericHandle.__init__(self, pos)
@@ -668,6 +668,20 @@ class TagHandle(qhandles.GenericHandle):
             icon = ico_dict['ico_objects'][0][46]
         if self.pos.visible:
             point = view.proj(self.pos)
+            if self.tagframe.dictspec.has_key('bone'):
+                tag_bonename = self.tagframe.dictspec['bone']
+                if editor.ModelComponentList['bonelist'].has_key(tag_bonename):
+                    frame_name = self.tagframe.shortname
+                    if frame_name.find("baseframe") != -1:
+                        frame_name = "baseframe"
+                    frame_name = frame_name + ":mf"
+                    bone_pos = editor.ModelComponentList['bonelist'][tag_bonename]['frames'][frame_name]['position']
+                    bp = view.proj(quarkx.vect(bone_pos))
+                    if view.viewmode == "wire":
+                        cv.pencolor = BLACK
+                    else:
+                        cv.pencolor = WHITE
+                    cv.line(int(bp.x), int(bp.y), int(point.x), int(point.y))
             cv.draw(icon, int(point.x-7), int(point.y-7))
 
 
@@ -5474,6 +5488,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.216  2010/09/23 20:29:32  cdunde
+#Update for new Skin-view drag method.
+#
 #Revision 1.215  2010/09/23 04:57:24  cdunde
 #Various improvements for Model Editor Skin-view Linear Handle drawing time.
 #

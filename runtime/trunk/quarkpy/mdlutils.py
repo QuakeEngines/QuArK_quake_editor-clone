@@ -3369,11 +3369,11 @@ def addtag(editor, complist, pos):
                 return
     keys = comp_FramesGroup.dictitems.keys()
     for key in range(len(keys)):
-        if keys[key] == "Base Frame:mf":
+        if keys[key] == "baseframe:mf":
             break
         if key == len(keys)-1:
             quarkx.beep() # Makes the computer "Beep" once .
-            quarkx.msgbox("No 'Base Frame' !\n\nTo use tags you must have a frame named:\n    Base Frame\nthat is the base position of each selected component.\n\nIt is best to have them as the last frame\nand each selected component\nmust have the same number of frames.\n\nCorrect and try again.", MT_ERROR, MB_OK)
+            quarkx.msgbox("No 'baseframe' !\n\nTo use tags you must have a frame named:\n    baseframe\nthat is the base position of each selected component.\n\nIt is best to have them as the last frame\nand each selected component\nmust have the same number of frames.\n\nCorrect and try again.", MT_ERROR, MB_OK)
             return
     name = None
     comparenbr = 0
@@ -3401,9 +3401,9 @@ def addtag(editor, complist, pos):
     new_tag['Component'] = compname
     new_tag['show'] = (1.0,)
     # Now we make its tag_frames.
-    baseframe = comp_FramesGroup.dictitems['Base Frame:mf']
+    baseframe = comp_FramesGroup.dictitems['baseframe:mf']
     if len(comp_frames) == 1:
-        tagframe = quarkx.newobj('Tag Base Frame:tagframe')
+        tagframe = quarkx.newobj('Tag baseframe:tagframe')
         tagframe['origin'] = pos.tuple
         if baseframe.dictspec.has_key('rotmatrix'):
             tagframe['rotmatrix'] = baseframe.dictspec['rotmatrix']
@@ -3425,7 +3425,7 @@ def addtag(editor, complist, pos):
                 vtxpos = vtxpos + vertices[vtx]
             vtx_center_pos = vtxpos/ float(len(vertices))
             if frame == len(comp_frames)-1:
-                tagframe = quarkx.newobj('Tag Base Frame:tagframe')
+                tagframe = quarkx.newobj('Tag baseframe:tagframe')
             else:
                 tagframe = quarkx.newobj('Tag Frame ' + str(frame+1) + ':tagframe')
             tagframe['origin'] = (vtx_center_pos + offset).tuple
@@ -4307,6 +4307,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.147  2010/09/16 06:33:33  cdunde
+#Model editor, Major change of Skin-view Linear Handle selection and dragging system, massively improving drawing time.
+#
 #Revision 1.146  2010/09/03 07:19:11  cdunde
 #Speedup code changes for the function MakeEditorVertexPolyObject.
 #

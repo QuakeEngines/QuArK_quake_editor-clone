@@ -1094,9 +1094,9 @@ def spawn_mesh(obj, basepath, filename, ComponentList, message, CompNbr):
     framesgroup = quarkx.newobj('Frames:fg') # QuArK Frames group made here.
 
     # Because .ase models are "stagnat" models, (no animation), we only make 1 frame
-    # which is used to draw the maodel's 'mesh' (shape) in the editor's views.
+    # which is used to draw the model’s 'mesh' (shape) in the editor's views.
     # The Skin-view uses the model's 'Tris' to draw its lines. 
-    frame = quarkx.newobj('Base Frame:mf') # QuArK frame made here.
+    frame = quarkx.newobj('baseframe:mf') # QuArK frame made here.
     comp_mesh = () # QuArK code
 
     objMe = obj.obj
@@ -2061,6 +2061,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.15  2010/06/13 15:37:55  cdunde
+# Setup Model Editor to allow importing of model from main explorer File menu.
+#
 # Revision 1.14  2010/05/01 04:25:37  cdunde
 # Updated files to help increase editor speed by including necessary ModelComponentList items
 # and removing redundant checks and calls to the list.
