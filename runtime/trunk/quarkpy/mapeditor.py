@@ -330,6 +330,9 @@ class MapEditor(BaseEditor):
         for obj in list:
             mapbtns.prepareobjecttodrop(self, obj)
 
+    def explorerundo(self, ex, undo):
+        pass
+
     def editcmdclick(self, m):
         # dispatch the command to mapbtns' "edit_xxx" procedure
         getattr(mapbtns, "edit_" + m.cmd)(self, m)
@@ -410,6 +413,9 @@ def autosave(editor):
 #
 #
 #$Log$
+#Revision 1.22  2010/03/08 20:26:35  danielpharos
+#Updated for change to TexturesPath.
+#
 #Revision 1.21  2008/12/21 22:29:53  danielpharos
 #Fixed AutoSave-setting not being applied, and removed print-statement accidentally added in 1.19.
 #

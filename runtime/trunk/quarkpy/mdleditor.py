@@ -400,43 +400,22 @@ class ModelEditor(BaseEditor):
 
 
     def ok(self, undo, msg, autoremove=[]):
-        global NewSellist
-        HoldObject = None
-        NewSellist = []
-        HoldObjectList = []
-        ObjectExpanded = {}
-        ObjectSelected = {}
+        sellist = self.layout.explorer.sellist
+        uniquesel = self.layout.explorer.uniquesel
         def storestate(parent):
+            SelObjectList = []
             for Object in parent.subitems:
-                HoldObject = Object
-                ObjectUniqueName = HoldObject.name
-                ObjectUniqueNameStore = 1
-                if HoldObject is None:
-                    ParentNames = []
-                else:
-                    ParentNames = [HoldObject.name]
-                    while HoldObject.parent is not None:
-                        HoldObject = HoldObject.parent
-                        ParentNames.append(HoldObject.name)
-                        if ObjectUniqueNameStore == 1:
-                            if HoldObject == self.Root:
-                                ObjectUniqueNameStore = 0
-                            else:
-                                ObjectUniqueName = ObjectUniqueName + HoldObject.name
-                HoldObjectList.append(ParentNames)
-                if (Object.type == ":bg" or Object.type == ":bone") and (Object in self.layout.explorer.sellist):
-                    ObjectExpanded[ObjectUniqueName] = (Object.flags & qutils.OF_TVEXPANDED)
-                else:
-                    if len(Object.subitems) == 0:
-                        ObjectExpanded[ObjectUniqueName] = 0
-                    else:
-                        ObjectExpanded[ObjectUniqueName] = (Object.flags & qutils.OF_TVEXPANDED)
-                if Object in self.layout.explorer.sellist:
-                    ObjectSelected[ObjectUniqueName] = 1
-                else:
-                    ObjectSelected[ObjectUniqueName] = 0
-                storestate(Object)
-        storestate(self.Root)
+                Flags = 0
+                if Object in sellist:
+                    Flags = Flags + 1
+                if Object == uniquesel:
+                    Flags = Flags + 2
+                if (len(Object.subitems) != 0) and (Object.flags & qutils.OF_TVEXPANDED):
+                    Flags = Flags + 4
+                SelObjectList += [(Object.name, Flags, storestate(Object))]
+            return SelObjectList
+        SelObjectList = storestate(self.Root)
+
         # Puts the 'pickle module' copy of ModelComponentList into the undo & for .qkl files saving.
         oldsd = self.Root.dictitems['ModelComponentList:sd']
         newsd = self.Root.dictitems['ModelComponentList:sd'].copy()
@@ -445,32 +424,25 @@ class ModelEditor(BaseEditor):
 
         undo.ok(self.Root, msg)
 
-        for ParentNames in HoldObjectList:
-            HoldObject = self.Root
-            ObjectUniqueName = ""
-            ParentNames.reverse()
-            if len(ParentNames) == 0:
-                EditorRoot = 0
-            else:
-                EditorRoot = ParentNames.index(HoldObject.name)
-
-            for x in range(len(ParentNames)-EditorRoot-1):
-                if HoldObject is not None:
-                    HoldObject = HoldObject.findname(ParentNames[EditorRoot+x+1])
-                    if HoldObject is not None:
-                        ObjectUniqueName = HoldObject.name + ObjectUniqueName
-
-            if ObjectUniqueName != "" and HoldObject is not None:
-                if ObjectExpanded[ObjectUniqueName] <> 0:
-                    self.layout.explorer.expandall(HoldObject)
-
-               ### Line below moved to mdlmgr.py, def selectcomponent, using HoldObject as global
-               ### to allow Skin-view to complete its new undo mesh and handles, was not working from here.
-                #self.layout.explorer.sellist = [HoldObject]
-
-                if ObjectSelected[ObjectUniqueName] <> 0:
-                    NewSellist.append(HoldObject)
-
+        global NewSellist
+        NewSellist = []
+        def restorestate(SelObjectList, parent):
+            for ObjectName, Flags, SelObjectListChildren in SelObjectList:
+                for Object in parent.subitems:
+                    if Object.name == ObjectName:
+                        if Flags & 2:
+                            if Flags & 1:
+                                #Add it to the FRONT of the sellist
+                                NewSellist.insert(0, Object)
+                        else:
+                            if Flags & 1:
+                                NewSellist.append(Object)
+                        if Flags & 4:
+                            Object.flags = Object.flags | qutils.OF_TVEXPANDED
+                        restorestate(SelObjectListChildren, Object)
+                        break
+        restorestate(SelObjectList, self.Root)
+        self.layout.explorer.expand(self.Root) #To trigger redrawing of expanded items in the treeview
         self.layout.explorer.sellist = NewSellist
 
         NewSellist = []
@@ -564,6 +536,12 @@ class ModelEditor(BaseEditor):
     def explorerinsert(self, ex, list):
         for obj in list:
             mdlbtns.prepareobjecttodrop(self, obj)
+
+
+    def explorerundo(self, ex, undo):
+        # Updates the editor.ModelComponentList
+        if self.Root.dictitems.has_key('ModelComponentList:sd'):
+            UnflattenModelComponentList(self, self.Root.dictitems['ModelComponentList:sd']['data'])
 
 
     def explorerselchange(self, ex=None):
@@ -1913,6 +1891,10 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.156  2010/09/24 23:31:25  cdunde
+#Fix for Model Editor LMB click not deselecting everything
+#and made Skin-view independent from editor for same.
+#
 #Revision 1.155  2010/09/16 06:33:34  cdunde
 #Model editor, Major change of Skin-view Linear Handle selection and dragging system, massively improving drawing time.
 #

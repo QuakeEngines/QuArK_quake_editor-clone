@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2009/07/15 10:38:10  danielpharos
+Updated website link.
+
 Revision 1.7  2009/02/21 17:09:44  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -47,7 +50,7 @@ uses Classes, QkObjects, Undo, Python;
 
  {-------------------}
 
-function GetUndoModule : PyObject;
+function GetUndoModule(DoDebutAction: Boolean = True) : PyObject;
 
  {-------------------}
 
@@ -228,12 +231,13 @@ const
    (ml_name: 'ok';         ml_meth: uOk;         ml_flags: METH_VARARGS),
    (ml_name: 'cancel';     ml_meth: uCancel;     ml_flags: METH_VARARGS));
 
-function GetUndoModule : PyObject;
+function GetUndoModule(DoDebutAction: Boolean = True) : PyObject;
 var
  dict, obj: PyObject;
  I: Integer;
 begin
- DebutAction;
+ if DoDebutAction then
+   DebutAction;
  Result:=PyModule_New('quarkx.action');
  dict:=PyModule_GetDict(Result);
  for I:=Low(UndoMethodTable) to High(UndoMethodTable) do

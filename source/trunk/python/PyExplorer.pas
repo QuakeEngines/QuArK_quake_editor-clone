@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2009/11/22 21:44:33  danielpharos
+Added an ExpandAll feature to the treeview, callable from Python.
+
 Revision 1.10  2009/07/30 09:38:57  danielpharos
 Updated website link.
 
@@ -69,7 +72,7 @@ const
 type
   TPythonExplorer = class(TQkExplorer)
                     private
-                      FOnSelChange, FOnRootChange, FOnMenu, FOnInsert: PyObject;
+                      FOnSelChange, FOnRootChange, FOnMenu, FOnInsert, FOnUndo: PyObject;
                       Flags: Integer;
                       procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
                       procedure DisplayMenu(DoubleClick: Boolean);
@@ -89,6 +92,7 @@ type
                       function GetExplorerMenu : TPopupMenu; override;
                       function DropObjectsNow(Gr: QExplorerGroup; const Texte: String; Beep: Boolean) : Boolean; override;
                       function CanBeTargetted: Boolean;
+                      procedure UndoAction; override;
                     end;
 
  {------------------------}
@@ -110,7 +114,7 @@ var
 
 implementation
 
-uses Quarkx, QkExceptions, PyForms, QkMapObjects, QkMapPoly, QkTreeView;
+uses Quarkx, QkExceptions, PyForms, QkMapObjects, QkMapPoly, QkTreeView, PyUndo;
 
  {------------------------}
 
@@ -122,6 +126,7 @@ begin
  FOnMenu:=PyNoResult;
 {FOnDrop:=PyNoResult;}
  FOnInsert:=PyNoResult;
+ FOnUndo:=PyNoResult;
  ExplorerObject:=NewControl(TyExplorer_Type, Self);
  AllowEditing:=aeUndo;
  LoadAllAuto:=True;  { FIXME }
@@ -130,6 +135,7 @@ end;
 destructor TPythonExplorer.Destroy;
 begin
  ExplorerObject^.Close;
+ Py_DECREF(FOnUndo);
  Py_DECREF(FOnInsert);
 {Py_DECREF(FOnDrop);}
  Py_DECREF(FOnMenu);
@@ -305,6 +311,29 @@ begin
  finally Py_DECREF(obj); end;
 end;
 
+procedure TPythonExplorer.UndoAction;
+var
+ arglist, callresult, obj: PyObject;
+begin
+ if FOnUndo=Py_None then
+   Exit;
+ obj:=GetUndoModule(False);
+ arglist:=Py_BuildValueX('OO', [ExplorerObject, obj]);
+ if arglist=Nil then Exit;
+ try
+  callresult:=PyEval_CallObject(FOnUndo, arglist);
+ finally
+  Py_DECREF(arglist);
+ end;
+ if callresult=nil then
+  begin
+   PythonCodeEnd;
+   Exit;
+  end;
+ Py_XDECREF(callresult);
+ PythonCodeEnd;
+end;
+
  {------------------------}
 
 function eAddRoot(self, args: PyObject) : PyObject; cdecl;
@@ -447,6 +476,12 @@ begin
          begin
           if QkControl<>Nil then
            Result:=@(QkControl as TPythonExplorer).FOnInsert;
+          Exit;
+         end
+        else if StrComp(attr, 'onundo')=0 then
+         begin
+          if QkControl<>Nil then
+           Result:=@(QkControl as TPythonExplorer).FOnUndo;
           Exit;
          end;
   end;

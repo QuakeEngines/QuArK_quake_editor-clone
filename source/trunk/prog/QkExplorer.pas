@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.29  2010/04/17 20:54:44  danielpharos
+Added some might-be-useful logging.
+
 Revision 1.28  2009/07/15 10:38:00  danielpharos
 Updated website link.
 
@@ -234,6 +237,7 @@ type
     procedure AjouterElement(El: QObject{; nParent, nInsert: TTreeNode});
    {procedure SetItemBold(Node: TTreeNode);}
     procedure CreateSplitter;
+    procedure UndoAction; dynamic;
   end;
 
 const
@@ -511,7 +515,11 @@ var
 begin
  if FUndoExplorers=Nil then Exit;
  for I:=FUndoExplorers.Count-1 downto 0 do
-  TQkExplorer(FUndoExplorers[I]).MsgUndo(muOneEnd, Nil);
+  with TQkExplorer(FUndoExplorers[I]) do
+   begin
+    MsgUndo(muOneEnd, Nil);
+    UndoAction;
+   end;
  AnnuleUndos;
 end;
 
@@ -1735,6 +1743,10 @@ end;
 function TQkExplorer.CopyFromOutside(SourceQ: QObject) : Boolean;
 begin
  Result:=True;
+end;
+
+procedure TQkExplorer.UndoAction;
+begin
 end;
 
 procedure TQkExplorer.InsererDansGroupe1(Sender: TObject);

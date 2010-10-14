@@ -700,6 +700,7 @@ class BaseEditor:
             nlayout.explorer.onmenu = self.explorermenu
             nlayout.explorer.ondrop = self.explorerdrop
             nlayout.explorer.oninsert = self.explorerinsert
+            nlayout.explorer.onundo = self.explorerundo
             nlayout.setupchanged(None)
             self.lastscale = 0    # force a call to buildhandles()
             if self.Root is not None:
@@ -1715,6 +1716,10 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.144  2010/09/24 23:31:25  cdunde
+#Fix for Model Editor LMB click not deselecting everything
+#and made Skin-view independent from editor for same.
+#
 #Revision 1.143  2010/09/24 04:58:52  cdunde
 #Model Editor Skin-view handles fix.
 #
