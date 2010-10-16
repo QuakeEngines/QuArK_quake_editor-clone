@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.1  2010/10/16 22:31:03  danielpharos
+Added NCF file loading support (for example: Alien Swarm). Also, corrected VPK dictionnary mistake.
+
 }
 
 unit QkNCF;
@@ -120,10 +123,10 @@ begin
   if filesize<> 0 then
   begin
     if hlFileCreateStream(ncfelement, @NCFStream) = hlFalse then
-      LogAndRaiseError(FmtLoadStr1(5729, ['hlPackageGetRoot', hlGetString(HL_ERROR)]));
+      LogAndRaiseError(FmtLoadStr1(5729, ['hlPackageGetRoot', PChar(hlGetString(HL_ERROR))]));
     try
       if hlStreamOpen(NCFStream, HL_MODE_READ) = hlFalse then
-        LogAndRaiseError(FmtLoadStr1(5729, ['hlStreamOpen', hlGetString(HL_ERROR)]));
+        LogAndRaiseError(FmtLoadStr1(5729, ['hlStreamOpen', PChar(hlGetString(HL_ERROR))]));
       try
         read := hlStreamRead(NCFStream, mem.Memory, filesize);
         if read<>filesize then
@@ -202,23 +205,23 @@ begin
          end;
 
          if hlCreatePackage(HL_PACKAGE_NCF, @uiPackage) = hlFalse then
-           LogAndRaiseError(FmtLoadStr1(5727, ['hlCreatePackage', hlGetString(HL_ERROR)]));
+           LogAndRaiseError(FmtLoadStr1(5727, ['hlCreatePackage', PChar(hlGetString(HL_ERROR))]));
          HasAPackage := true;
 
          if hlBindPackage(uiPackage) = hlFalse then
-           LogAndRaiseError(FmtLoadStr1(5727, ['hlBindPackage', hlGetString(HL_ERROR)]));
+           LogAndRaiseError(FmtLoadStr1(5727, ['hlBindPackage', PChar(hlGetString(HL_ERROR))]));
 
          (*//This code would load the entire file --> OutOfMemory!
          SetLength(RawBuffer, FSize);
          F.ReadBuffer(Pointer(RawBuffer)^, FSize);
 
          if hlPackageOpenMemory(Pointer(RawBuffer), Length(RawBuffer), HL_MODE_READ + HL_MODE_WRITE) = hlFalse then
-           LogAndRaiseError(FmtLoadStr1(5727, ['hlPackageOpenMemory', hlGetString(HL_ERROR)]));
+           LogAndRaiseError(FmtLoadStr1(5727, ['hlPackageOpenMemory', PChar(hlGetString(HL_ERROR))]));
 
          //so instead, do this:*)
 
          if hlPackageOpenFile(PhlChar(LoadName), HL_MODE_READ) = hlFalse then //+ HL_MODE_WRITE
-           LogAndRaiseError(FmtLoadStr1(5727, ['hlPackageOpenFile', hlGetString(HL_ERROR)]));
+           LogAndRaiseError(FmtLoadStr1(5727, ['hlPackageOpenFile', PChar(hlGetString(HL_ERROR))]));
 
          NCFRoot := hlPackageGetRoot();
          if NCFRoot=nil then

@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2010/10/16 22:31:03  danielpharos
+Added NCF file loading support (for example: Alien Swarm). Also, corrected VPK dictionnary mistake.
+
 Revision 1.1  2010/10/16 22:14:56  danielpharos
 Added VPK file loading support (for example: Left 4 Dead).
 
@@ -123,10 +126,10 @@ begin
   if filesize<> 0 then
   begin
     if hlFileCreateStream(vpkelement, @VPKStream) = hlFalse then
-      LogAndRaiseError(FmtLoadStr1(5726, ['hlPackageGetRoot', hlGetString(HL_ERROR)]));
+      LogAndRaiseError(FmtLoadStr1(5726, ['hlPackageGetRoot', PChar(hlGetString(HL_ERROR))]));
     try
       if hlStreamOpen(VPKStream, HL_MODE_READ) = hlFalse then
-        LogAndRaiseError(FmtLoadStr1(5726, ['hlStreamOpen', hlGetString(HL_ERROR)]));
+        LogAndRaiseError(FmtLoadStr1(5726, ['hlStreamOpen', PChar(hlGetString(HL_ERROR))]));
       try
         read := hlStreamRead(VPKStream, mem.Memory, filesize);
         if read<>filesize then
@@ -204,23 +207,23 @@ begin
          end;
 
          if hlCreatePackage(HL_PACKAGE_VPK, @uiPackage) = hlFalse then
-           LogAndRaiseError(FmtLoadStr1(5724, ['hlCreatePackage', hlGetString(HL_ERROR)]));
+           LogAndRaiseError(FmtLoadStr1(5724, ['hlCreatePackage', PChar(hlGetString(HL_ERROR))]));
          HasAPackage := true;
 
          if hlBindPackage(uiPackage) = hlFalse then
-           LogAndRaiseError(FmtLoadStr1(5724, ['hlBindPackage', hlGetString(HL_ERROR)]));
+           LogAndRaiseError(FmtLoadStr1(5724, ['hlBindPackage', PChar(hlGetString(HL_ERROR))]));
 
          (*//This code would load the entire file --> OutOfMemory!
          SetLength(RawBuffer, FSize);
          F.ReadBuffer(Pointer(RawBuffer)^, FSize);
 
          if hlPackageOpenMemory(Pointer(RawBuffer), Length(RawBuffer), HL_MODE_READ + HL_MODE_WRITE) = hlFalse then
-           LogAndRaiseError(FmtLoadStr1(5724, ['hlPackageOpenMemory', hlGetString(HL_ERROR)]));
+           LogAndRaiseError(FmtLoadStr1(5724, ['hlPackageOpenMemory', PChar(hlGetString(HL_ERROR))]));
 
          //so instead, do this:*)
 
          if hlPackageOpenFile(PhlChar(LoadName), HL_MODE_READ) = hlFalse then //+ HL_MODE_WRITE
-           LogAndRaiseError(FmtLoadStr1(5724, ['hlPackageOpenFile', hlGetString(HL_ERROR)]));
+           LogAndRaiseError(FmtLoadStr1(5724, ['hlPackageOpenFile', PChar(hlGetString(HL_ERROR))]));
 
          VPKRoot := hlPackageGetRoot();
          if VPKRoot=nil then

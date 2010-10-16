@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.31  2010/10/16 22:11:44  danielpharos
+Fixed suble underflow crash, and remove PackageList: buggy, and unneeded.
+
 Revision 1.30  2010/10/16 21:53:40  danielpharos
 Fixed a commented out copy-paste bug.
 
@@ -211,10 +214,10 @@ begin
   if filesize<> 0 then
   begin
     if hlFileCreateStream(gcfelement, @GCFStream) = hlFalse then
-      LogAndRaiseError(FmtLoadStr1(5707, ['hlPackageGetRoot', hlGetString(HL_ERROR)]));
+      LogAndRaiseError(FmtLoadStr1(5707, ['hlPackageGetRoot', PChar(hlGetString(HL_ERROR))]));
     try
       if hlStreamOpen(GCFStream, HL_MODE_READ) = hlFalse then
-        LogAndRaiseError(FmtLoadStr1(5707, ['hlStreamOpen', hlGetString(HL_ERROR)]));
+        LogAndRaiseError(FmtLoadStr1(5707, ['hlStreamOpen', PChar(hlGetString(HL_ERROR))]));
       try
         read := hlStreamRead(GCFStream, mem.Memory, filesize);
         if read<>filesize then
@@ -293,23 +296,23 @@ begin
          end;
 
          if hlCreatePackage(HL_PACKAGE_GCF, @uiPackage) = hlFalse then
-           LogAndRaiseError(FmtLoadStr1(5722, ['hlCreatePackage', hlGetString(HL_ERROR)]));
+           LogAndRaiseError(FmtLoadStr1(5722, ['hlCreatePackage', PChar(hlGetString(HL_ERROR))]));
          HasAPackage := true;
 
          if hlBindPackage(uiPackage) = hlFalse then
-           LogAndRaiseError(FmtLoadStr1(5722, ['hlBindPackage', hlGetString(HL_ERROR)]));
+           LogAndRaiseError(FmtLoadStr1(5722, ['hlBindPackage', PChar(hlGetString(HL_ERROR))]));
 
          (*//This code would load the entire file --> OutOfMemory!
          SetLength(RawBuffer, FSize);
          F.ReadBuffer(Pointer(RawBuffer)^, FSize);
 
          if hlPackageOpenMemory(Pointer(RawBuffer), Length(RawBuffer), HL_MODE_READ + HL_MODE_WRITE) = hlFalse then
-           LogAndRaiseError(FmtLoadStr1(5722, ['hlPackageOpenMemory', hlGetString(HL_ERROR)]));
+           LogAndRaiseError(FmtLoadStr1(5722, ['hlPackageOpenMemory', PChar(hlGetString(HL_ERROR))]));
 
          //so instead, do this:*)
 
          if hlPackageOpenFile(PhlChar(LoadName), HL_MODE_READ) = hlFalse then //+ HL_MODE_WRITE
-           LogAndRaiseError(FmtLoadStr1(5722, ['hlPackageOpenFile', hlGetString(HL_ERROR)]));
+           LogAndRaiseError(FmtLoadStr1(5722, ['hlPackageOpenFile', PChar(hlGetString(HL_ERROR))]));
 
          GCFRoot := hlPackageGetRoot();
          if GCFRoot=nil then
