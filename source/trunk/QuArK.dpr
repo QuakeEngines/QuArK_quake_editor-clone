@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.71  2010/10/16 22:14:56  danielpharos
+Added VPK file loading support (for example: Left 4 Dead).
+
 Revision 1.70  2010/10/16 18:50:55  danielpharos
 Re-factored GCF-file handling code: split into GCF and HLLib.
 
@@ -314,6 +317,7 @@ uses
   QkMap in 'prog\QkMap.pas' {FQMap},
   QkMapObjects in 'prog\QkMapObjects.pas',
   QkMapPoly in 'prog\QkMapPoly.pas',
+  QkNCF in 'prog\QkNCF.pas',
   QkObjectClassList in 'prog\QkObjectClassList.pas',
   QkObjects in 'prog\QkObjects.pas',
   QkOwnExplorer in 'prog\QkOwnExplorer.pas' {QFormExplorer},

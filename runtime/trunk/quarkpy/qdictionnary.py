@@ -275,7 +275,7 @@ Strings = {
     813: "Doom 3 Pak Files (*.pk4)|*.pk4",
     814: "Valve Texture File (*.vtf)|*.vtf",
     815: "Valve Material File (*.vmt)|*.vmt",
-    816: "Steam Cache File (*.gcf)|*.gcf",
+    816: "Steam Game Cache File (*.gcf)|*.gcf",
     817: "Valve Map File (*.vmf)|*.vmf",
     818: "Steam FS (*.SteamFS)|*.SteamFS",
     819: "DDS image (*.dds)|*.dds",
@@ -284,6 +284,8 @@ Strings = {
     822: "Sylphis Map File (*.cmap)|*.cmap",
     823: "Doom 3 Material File (*.mtr)|*.mtr",
     824: "Call of Duty 2 Image Files (*.iwi)|*.iwi",
+    825: "Valve Pak File (*.vpk)|*.vpk",
+    826: "Steam No Cache File (*.ncf)|*.ncf",
 
     2368: "Skins",
     2369: "Frames",
@@ -970,11 +972,15 @@ Strings = {
     5724: "Unable to load VPK file. Call to %s failed.\nError: %s",
     5725: "Unable to save VPK file. Call to %s failed.\nError: %s",
     5726: "Error while handling VPK file:\nCall: %s\nError: %s",
-    #5727: "reserved for hl2",
-    #5728: "reserved for hl2",
-    #5729: "reserved for hl2",
+    5727: "Unable to load NCF file. Call to %s failed.\nError: %s",
+    5728: "Unable to save NCF file. Call to %s failed.\nError: %s",
+    5729: "Error while handling NCF file:\nCall: %s\nError: %s",
     5730: "Could not load the %s//Error code %d",
     5731: "An error occurred in the %s: %s",
+    5732: "VPK file",
+    5733: "VPK folder",
+    5734: "NCF file",
+    5735: "NCF folder",
 
     # Rowdy would like to reserve 5750..5769 for Doom 3 :-)
     5750: "Material '%s' has no image to display",
@@ -1078,6 +1084,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.151  2010/10/16 22:14:57  danielpharos
+#Added VPK file loading support (for example: Left 4 Dead).
+#
 #Revision 1.150  2010/10/16 21:47:42  danielpharos
 #Reworked GCF file loading. HLLib now directly called. Updated to HLLib 2.3.0. Fixed JPG-library setting being used in VTF file saving.
 #

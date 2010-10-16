@@ -23,23 +23,20 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
-Revision 1.1  2010/10/16 22:14:56  danielpharos
-Added VPK file loading support (for example: Left 4 Dead).
-
 }
 
-unit QkVPK;
+unit QkNCF;
 
 interface
 
 uses Windows, SysUtils, Classes, QkObjects, QkFileObjects, QkPak, QkHLLib;
 
 type
- QVPKFolder = class(QPakFolder)
+ QNCFFolder = class(QPakFolder)
               private
                HasAPackage : Boolean;
                uiPackage : hlUInt;
-               VPKRoot : PHLDirectoryItem;
+               NCFRoot : PHLDirectoryItem;
               protected
                 procedure SaveFile(Info: TInfoEnreg1); override;
                 procedure LoadFile(F: TStream; FSize: Integer); override;
@@ -49,10 +46,10 @@ type
                 class function TypeInfo: String; override;
                 class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
                 function FindFile(const PakPath: String) : QFileObject; override;
-                function GetFolder(Path: String) : QVPKFolder;
+                function GetFolder(Path: String) : QNCFFolder;
               end;
 
- QVPK = class(QVPKFolder)
+ QNCF = class(QNCFFolder)
         protected
         public
           class function TypeInfo: String; override;
@@ -69,27 +66,27 @@ uses Quarkx, QkExceptions, PyObjects, Game, QkObjectClassList, Logging;
 var
   HLLoaded: Boolean;
 
- {------------ QVPKFolder ------------}
+ {------------ QNCFFolder ------------}
 
-class function QVPKFolder.TypeInfo;
+class function QNCFFolder.TypeInfo;
 begin
- Result:='.vpkfolder';
+ Result:='.ncffolder';
 end;
 
-class procedure QVPKFolder.FileObjectClassInfo(var Info: TFileObjectClassInfo);
+class procedure QNCFFolder.FileObjectClassInfo(var Info: TFileObjectClassInfo);
 begin
  inherited;
- Info.FileObjectDescriptionText:=LoadStr1(5733);
+ Info.FileObjectDescriptionText:=LoadStr1(5735);
  Info.WndInfo:=[wiSameExplorer];
 end;
 
-constructor QVPKFolder.Create(const nName: String; nParent: QObject);
+constructor QNCFFolder.Create(const nName: String; nParent: QObject);
 begin
  inherited;
  HasAPackage := false;
 end;
 
-destructor QVPKFolder.Destroy;
+destructor QNCFFolder.Destroy;
 begin
  if HasAPackage then
    hlDeletePackage(uiPackage);
@@ -105,37 +102,37 @@ begin
  Result:=OpenFileObjectData(nil, FullName, i, nParent);
 end;
 
-Function VPKAddRef(Ref: PQStreamRef; var S: TStream) : Integer;
+Function NCFAddRef(Ref: PQStreamRef; var S: TStream) : Integer;
 var
   mem: TMemoryStream;
   filesize: hlUInt;
   read: hlUInt;
   name: string;
-  vpkelement: PHLDirectoryItem;
-  VPKStream: PHLStream;
+  ncfelement: PHLDirectoryItem;
+  NCFStream: PHLStream;
 begin
   Ref^.Self.Position:=Ref^.Position;
   mem := TMemoryStream.Create;
-  vpkelement := PHLDirectoryItem(Ref^.PUserdata);
-  filesize := hlFileGetSize(vpkelement);
-  name := PChar(hlItemGetName(vpkelement));
+  ncfelement := PHLDirectoryItem(Ref^.PUserdata);
+  filesize := hlFileGetSize(ncfelement);
+  name := PChar(hlItemGetName(ncfelement));
   mem.SetSize(filesize);
   if filesize<> 0 then
   begin
-    if hlFileCreateStream(vpkelement, @VPKStream) = hlFalse then
-      LogAndRaiseError(FmtLoadStr1(5726, ['hlPackageGetRoot', hlGetString(HL_ERROR)]));
+    if hlFileCreateStream(ncfelement, @NCFStream) = hlFalse then
+      LogAndRaiseError(FmtLoadStr1(5729, ['hlPackageGetRoot', hlGetString(HL_ERROR)]));
     try
-      if hlStreamOpen(VPKStream, HL_MODE_READ) = hlFalse then
-        LogAndRaiseError(FmtLoadStr1(5726, ['hlStreamOpen', hlGetString(HL_ERROR)]));
+      if hlStreamOpen(NCFStream, HL_MODE_READ) = hlFalse then
+        LogAndRaiseError(FmtLoadStr1(5729, ['hlStreamOpen', hlGetString(HL_ERROR)]));
       try
-        read := hlStreamRead(VPKStream, mem.Memory, filesize);
+        read := hlStreamRead(NCFStream, mem.Memory, filesize);
         if read<>filesize then
-          LogAndRaiseError(FmtLoadStr1(5726, ['hlStreamRead', 'Number of bytes read does not equal the file size!']));
+          LogAndRaiseError(FmtLoadStr1(5729, ['hlStreamRead', 'Number of bytes read does not equal the file size!']));
       finally
-        hlStreamClose(VPKStream);
+        hlStreamClose(NCFStream);
       end;
     finally
-      hlFileReleaseStream(vpkelement, VPKStream);
+      hlFileReleaseStream(ncfelement, NCFStream);
     end;
   end;
   Result:=mem.Size;
@@ -143,18 +140,18 @@ begin
   S:=mem;
 end;
 
-Procedure AddTree(ParentFolder: QObject; VPKDirectoryFile : PHLDirectoryItem; root: Bool; F: TStream);
+Procedure AddTree(ParentFolder: QObject; NCFDirectoryFile : PHLDirectoryItem; root: Bool; F: TStream);
 var
   Nsubelements : hlUInt;
-  VPKDirectoryItem : PHLDirectoryItem;
+  NCFDirectoryItem : PHLDirectoryItem;
   I: Integer;
   Folder, Q: QObject;
 begin
-  if hlItemGetType(VPKDirectoryFile) = HL_ITEM_FOLDER then
+  if hlItemGetType(NCFDirectoryFile) = HL_ITEM_FOLDER then
   begin
     {handle a folder}
-    Folder:= QVPKFolder.Create( PChar(hlItemGetName(VPKDirectoryFile)), ParentFolder) ;
-    Log(LOG_VERBOSE,'Made vpk folder object :'+Folder.name);
+    Folder:= QNCFFolder.Create( PChar(hlItemGetName(NCFDirectoryFile)), ParentFolder) ;
+    Log(LOG_VERBOSE,'Made ncf folder object :'+Folder.name);
     ParentFolder.SubElements.Add( Folder );
     if root then
       Folder.TvParent:= nil
@@ -162,38 +159,39 @@ begin
       Folder.TvParent:= ParentFolder;
 
     {recurse into subelements of folder}
-    Nsubelements := hlFolderGetCount(VPKDirectoryFile);
+    Nsubelements := hlFolderGetCount(NCFDirectoryFile);
     for I:=0 to Nsubelements-1 do
     begin
-      VPKDirectoryItem := hlFolderGetItem(VPKDirectoryFile, I);
-      AddTree(Folder, VPKDirectoryItem, False, F);
+      NCFDirectoryItem := hlFolderGetItem(NCFDirectoryFile, I);
+      AddTree(Folder, NCFDirectoryItem, False, F);
     end;
   end
   else
   begin
-    Q := MakeFileQObject( PChar(hlItemGetName(VPKDirectoryFile)), ParentFolder);
+    Q := MakeFileQObject( PChar(hlItemGetName(NCFDirectoryFile)), ParentFolder);
 
     ParentFolder.SubElements.Add( Q );
 
-    Log(LOG_VERBOSE,'Made vpk file object :'+Q.name);
+    Log(LOG_VERBOSE,'Made ncf file object :'+Q.name);
     if Q is QFileObject then
       QFileObject(Q).ReadFormat := rf_default
     else
       Raise InternalE('LoadedItem '+Q.GetFullName+' '+IntToStr(rf_default));
     Q.Open(TQStream(F), 0);
     // i must access the object, from inside the onaccess function
-    Q.FNode^.PUserdata:=VPKDirectoryFile;
-    Q.FNode^.OnAccess:=VPKAddRef;
+    Q.FNode^.PUserdata:=NCFDirectoryFile;
+    Q.FNode^.OnAccess:=NCFAddRef;
   end;
 end;
 
-procedure QVPKFolder.LoadFile(F: TStream; FSize: Integer);
+procedure QNCFFolder.LoadFile(F: TStream; FSize: Integer);
 var
   //RawBuffer: String;
-  VPKDirectoryItem : PHLDirectoryItem;
+
+  NCFDirectoryItem : PHLDirectoryItem;
   Nsubelements, I : hlUInt;
 begin
-  Log(LOG_VERBOSE,'Loading VPK file: %s',[self.name]);
+  Log(LOG_VERBOSE,'Loading NCF file: %s',[self.name]);
   case ReadFormat of
     1: begin  { as stand-alone file }
          if not HLLoaded then
@@ -203,35 +201,35 @@ begin
            HLLoaded:=true;
          end;
 
-         if hlCreatePackage(HL_PACKAGE_VPK, @uiPackage) = hlFalse then
-           LogAndRaiseError(FmtLoadStr1(5724, ['hlCreatePackage', hlGetString(HL_ERROR)]));
+         if hlCreatePackage(HL_PACKAGE_NCF, @uiPackage) = hlFalse then
+           LogAndRaiseError(FmtLoadStr1(5727, ['hlCreatePackage', hlGetString(HL_ERROR)]));
          HasAPackage := true;
 
          if hlBindPackage(uiPackage) = hlFalse then
-           LogAndRaiseError(FmtLoadStr1(5724, ['hlBindPackage', hlGetString(HL_ERROR)]));
+           LogAndRaiseError(FmtLoadStr1(5727, ['hlBindPackage', hlGetString(HL_ERROR)]));
 
          (*//This code would load the entire file --> OutOfMemory!
          SetLength(RawBuffer, FSize);
          F.ReadBuffer(Pointer(RawBuffer)^, FSize);
 
          if hlPackageOpenMemory(Pointer(RawBuffer), Length(RawBuffer), HL_MODE_READ + HL_MODE_WRITE) = hlFalse then
-           LogAndRaiseError(FmtLoadStr1(5724, ['hlPackageOpenMemory', hlGetString(HL_ERROR)]));
+           LogAndRaiseError(FmtLoadStr1(5727, ['hlPackageOpenMemory', hlGetString(HL_ERROR)]));
 
          //so instead, do this:*)
 
          if hlPackageOpenFile(PhlChar(LoadName), HL_MODE_READ) = hlFalse then //+ HL_MODE_WRITE
-           LogAndRaiseError(FmtLoadStr1(5724, ['hlPackageOpenFile', hlGetString(HL_ERROR)]));
+           LogAndRaiseError(FmtLoadStr1(5727, ['hlPackageOpenFile', hlGetString(HL_ERROR)]));
 
-         VPKRoot := hlPackageGetRoot();
-         if VPKRoot=nil then
-           LogAndRaiseError(FmtLoadStr1(5726, ['hlPackageGetRoot', 'Root element not found!']));
+         NCFRoot := hlPackageGetRoot();
+         if NCFRoot=nil then
+           LogAndRaiseError(FmtLoadStr1(5729, ['hlPackageGetRoot', 'Root element not found!']));
 
-         Nsubelements := hlFolderGetCount(VPKRoot);
-         if Nsubelements > 0 then //Prevent underflow by -1 in for-loop 
+         Nsubelements := hlFolderGetCount(NCFRoot);
+         if Nsubelements > 0 then //Prevent underflow by -1 in for-loop
            for I:=0 to Nsubelements-1 do
            begin
-             VPKDirectoryItem := hlFolderGetItem(VPKRoot, I);
-             AddTree(Self, VPKDirectoryItem, False, F);
+             NCFDirectoryItem := hlFolderGetItem(NCFRoot, I);
+             AddTree(Self, NCFDirectoryItem, False, F);
            end;
        end;
     else
@@ -239,9 +237,9 @@ begin
   end;
 end;
 
-procedure QVPKFolder.SaveFile(Info: TInfoEnreg1);
+procedure QNCFFolder.SaveFile(Info: TInfoEnreg1);
 begin
- Log(LOG_VERBOSE,'Saving VPK file: %s',[self.name]);
+ Log(LOG_VERBOSE,'Saving NCF file: %s',[self.name]);
  with Info do case Format of
   1: begin  { as stand-alone file }
       if not HLLoaded then
@@ -251,13 +249,13 @@ begin
         HLLoaded:=true;
       end;
 
-      {tbd: save to vpk}
+      {tbd: save to ncf}
      end;
  else inherited;
  end;
 end;
 
-function QVPKFolder.FindFile(const PakPath: String) : QFileObject;
+function QNCFFolder.FindFile(const PakPath: String) : QFileObject;
 var
   I: Integer;
   Folder: QObject;
@@ -267,11 +265,11 @@ begin
   begin
     if PakPath[I] in ['/','\'] then
     begin
-      Folder:=SubElements.FindName(Copy(PakPath, 1, I-1) + '.vpkfolder');
-      if (Folder=Nil) or not (Folder is QVPKFolder) then
+      Folder:=SubElements.FindName(Copy(PakPath, 1, I-1) + '.ncffolder');
+      if (Folder=Nil) or not (Folder is QNCFFolder) then
         Result:=Nil
       else
-        Result:=QVPKFolder(Folder).FindFile(Copy(PakPath, I+1, MaxInt));
+        Result:=QNCFFolder(Folder).FindFile(Copy(PakPath, I+1, MaxInt));
         if assigned(Result) then
           Result.Protocol:=self.Protocol;
       Exit;
@@ -282,7 +280,7 @@ begin
     Result.Protocol:=self.Protocol;
 end;
 
-function QVPKFolder.GetFolder(Path: String) : QVPKFolder;
+function QNCFFolder.GetFolder(Path: String) : QNCFFolder;
 var
  I, J: Integer;
  Folder: QObject;
@@ -293,35 +291,35 @@ begin
    I:=Pos('/',Path); if I=0 then I:=Length(Path)+1;
    J:=Pos('\',Path); if J=0 then J:=Length(Path)+1;
    if I>J then I:=J;
-   Folder:=Self.SubElements.FindName(Copy(Path, 1, I-1) + '.vpkfolder');
+   Folder:=Self.SubElements.FindName(Copy(Path, 1, I-1) + '.ncffolder');
    if Folder=Nil then
     begin
-     Folder:=QVPKFolder.Create(Copy(Path, 1, I-1), Self);
+     Folder:=QNCFFolder.Create(Copy(Path, 1, I-1), Self);
      Self.SubElements.Add(Folder);
     end;
-   Result:=Folder as QVPKFolder;
+   Result:=Folder as QNCFFolder;
    System.Delete(Path, 1, I);
   end;
 end;
 
- {------------ QVPK ------------}
+ {------------ QNCF ------------}
 
-class function QVPK.TypeInfo;
+class function QNCF.TypeInfo;
 begin
- Result:='.vpk';
+ Result:='.ncf';
 end;
 
-procedure QVPK.ObjectState(var E: TEtatObjet);
+procedure QNCF.ObjectState(var E: TEtatObjet);
 begin
  inherited;
  E.IndexImage:=iiPak;
 end;
 
-class procedure QVPK.FileObjectClassInfo(var Info: TFileObjectClassInfo);
+class procedure QNCF.FileObjectClassInfo(var Info: TFileObjectClassInfo);
 begin
  inherited;
- Info.FileObjectDescriptionText:=LoadStr1(5732);
- Info.FileExt:=825;
+ Info.FileObjectDescriptionText:=LoadStr1(5734);
+ Info.FileExt:=826;
  Info.WndInfo:=[wiOwnExplorer];
 end;
 
@@ -330,8 +328,8 @@ end;
 initialization
 begin
   {tbd is the code ok to be used ?  }
-  RegisterQObject(QVPK, 's');
-  RegisterQObject(QVPKFolder, 'a');
+  RegisterQObject(QNCF, 's');
+  RegisterQObject(QNCFFolder, 'a');
 end;
 
 finalization
