@@ -949,8 +949,8 @@ Strings = {
     5703: "%s contains an unsupported format (width %d, height %d, format %d)",
     5704: "Unable to retrieve the location of '%s'. Please make sure the location is set correctly in the Half-Life 2 configurations.",
     #5705: "reserved for hl2",
-    5706: "%s not found",
-    5707: "gcf file %s cannot be opened. Corrupt ?",
+    #5706: "reserved for hl2",
+    5707: "Error while handling GCF file:\nCall: %s\nError: %s",
     5708: "Image found",
     5709: "VTF image",
     5710: "GCF file",
@@ -963,10 +963,10 @@ Strings = {
     5717: "Syntax error in Material file %s, line %d",
     5718: "Could not load the VTF Lib//Error code %d",
     5719: "Could not load the HL Lib//Error code %d",
-    #5720: "reserved for hl2",
-    #5721: "reserved for hl2",
-    #5722: "reserved for hl2",
-    #5723: "reserved for hl2",
+    5720: "Unable to load VTF file. Call to %s failed.",
+    5721: "Unable to save VTF file. Call to %s failed.",
+    5722: "Unable to load GCF file. Call to %s failed.\nError: %s",
+    5723: "Unable to save GCF file. Call to %s failed.\nError: %s",
     #5724: "reserved for hl2",
     #5725: "reserved for hl2",
     #5726: "reserved for hl2",
@@ -1078,6 +1078,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.149  2010/05/03 04:06:09  cdunde
+#Code update.
+#
 #Revision 1.148  2010/04/16 20:07:25  danielpharos
 #Move some version-stuff about. quarkpy now also checks the minor version number.
 #

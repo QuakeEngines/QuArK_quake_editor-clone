@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.48  2010/04/16 19:08:17  danielpharos
+Added default value for ForceUnload argument.
+
 Revision 1.47  2009/09/23 20:40:48  danielpharos
 Removed unneeded 'use'.
 
@@ -302,7 +305,7 @@ var
   HasAlpha: Boolean;
   V: array[1..2] of Single;
 begin
-  Log(LOG_VERBOSE,'Loading VTF file: %s',[self.name]);;
+  Log(LOG_VERBOSE,'Loading VTF file: %s',[self.name]);
   case ReadFormat of
     1: begin  { as stand-alone file }
       LibraryToUse:=SetupSubSet(ssFiles, 'VTF').Specifics.Values['LoadLibrary'];
@@ -336,11 +339,11 @@ begin
         vlSetInteger(VTFLIB_DXT_QUALITY, Flag);
 
         if vlCreateImage(@VTFImage)=vlFalse then
-          LogAndRaiseError('Unable to load VTF file. Call to vlCreateImage failed.');
+          LogAndRaiseError(FmtLoadStr1(5720, ['vlCreateImage']));
 
         try
           if vlBindImage(VTFImage)=vlFalse then
-            LogAndRaiseError('Unable to load VTF file. Call to vlBindImage failed.');
+            LogAndRaiseError(FmtLoadStr1(5720, ['vlBindImage']));
 
           if vlImageLoadLump(Pointer(RawBuffer), Length(RawBuffer), vlFalse)=vlFalse then
             LogAndRaiseError('Unable to load VTF file. Call to vlImageLoadLump failed. Please make sure the file is a valid VTF file, and not damaged or corrupt.');
@@ -363,7 +366,7 @@ begin
           try
             RawData2:=vlImageGetData(0, 0, 0, 0);
             if vlImageConvert(RawData2, RawData, Width, Height, vlImageGetFormat(), ImageFormat)=vlFalse then
-              LogAndRaiseError('Unable to load VTF file. Call to vlImageConvert failed.');
+              LogAndRaiseError(FmtLoadStr1(5720, ['vlImageConvert']));
 
             if HasAlpha then
             begin
@@ -474,7 +477,7 @@ begin
   case Format of
   1:
   begin  { as stand-alone file }
-    LibraryToUse:=SetupSubSet(ssFiles, 'JPG').Specifics.Values['LoadLibrary'];
+    LibraryToUse:=SetupSubSet(ssFiles, 'VTF').Specifics.Values['LoadLibrary'];
     if LibraryToUse='DevIL' then
       SaveFileDevIL(Info)
     else if LibraryToUse='VTFLib' then
@@ -487,11 +490,11 @@ begin
       end;
 
       if vlCreateImage(@VTFImage)=vlFalse then
-        LogAndRaiseError('Unable to save VTF file. Call to vlCreateImage failed.');
+        LogAndRaiseError(FmtLoadStr1(5721, ['vlCreateImage']));
 
       try
         if vlBindImage(VTFImage)=vlFalse then
-          LogAndRaiseError('Unable to save VTF file. Call to vlBindImage failed.');
+          LogAndRaiseError(FmtLoadStr1(5721, ['vlBindImage']));
 
         TexFormat := IMAGE_FORMAT_DXT5;
 
@@ -552,7 +555,7 @@ begin
               GetMem(RawData, TexSize);
 
               if vlImageConvertToRGBA8888(RawData2, RawData, Width, Height, ImageFormat)=vlFalse then
-                LogAndRaiseError('Unable to save VTF file. Call to vlImageConvert failed.');
+                LogAndRaiseError(FmtLoadStr1(5721, ['vlImageConvert']));
               finally
                 FreeMem(RawData2);
               end;
@@ -594,7 +597,7 @@ begin
               GetMem(RawData, TexSize);
 
               if vlImageConvertToRGBA8888(RawData2, RawData, Width, Height, ImageFormat)=vlFalse then
-                LogAndRaiseError('Unable to save VTF file. Call to vlImageConvert failed.');
+                LogAndRaiseError(FmtLoadStr1(5721, ['vlImageConvert']));
             finally
               FreeMem(RawData2);
             end;
@@ -633,10 +636,10 @@ begin
         VTFOptions.ImageFormat:=TexFormat;
 
         if vlImageCreateSingle(Width, Height, RawData, @VTFOptions)=vlFalse then
-          LogAndRaiseError('Unable to load VTF file. Call to vlImageCreateSingle failed.');
+          LogAndRaiseError(FmtLoadStr1(5721, ['vlImageCreateSingle']));
         SetLength(RawBuffer, vlImageGetSize);
         if vlImageSaveLump(Pointer(RawBuffer), Length(RawBuffer), @OutputSize)=vlFalse then
-          LogAndRaiseError('Unable to save VTF file. Call to vlImageSaveLump failed.');
+          LogAndRaiseError(FmtLoadStr1(5721, ['vlImageSaveLump']));
 
         F.WriteBuffer(Pointer(RawBuffer)^,OutputSize);
         FreeMem(RawData); //FIXME: Put inside try..finally
@@ -645,7 +648,7 @@ begin
       end;
     end
     else
-      LogAndRaiseError('Unable to load VTF file. No valid saving library selected.');
+      LogAndRaiseError('Unable to save VTF file. No valid saving library selected.');
   end
   else
     inherited;

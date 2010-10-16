@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.28  2010/10/16 18:50:55  danielpharos
+Re-factored GCF-file handling code: split into GCF and HLLib.
+
 Revision 1.27  2010/05/23 15:56:46  danielpharos
 Added some logging during loading and unloading of some external libraries.
 
@@ -114,13 +117,24 @@ interface
 uses Windows, SysUtils, Classes, QkObjects, QkFileObjects, QkPak, QkHLLib;
 
 type
+ TGCFPackage = class
+               public
+                FileName: string;
+                RefCount: Integer;
+                uiPackage : hlUInt;
+               end;
+ PGCFPackage = ^TGCFPackage;
+
  QGCFFolder = class(QPakFolder)
               private
-                gcfhandle : p_packagehandle;
+               GCFPackage : PGCFPackage;
+               GCFRoot : PHLDirectoryItem;
               protected
                 procedure SaveFile(Info: TInfoEnreg1); override;
                 procedure LoadFile(F: TStream; FSize: Integer); override;
               public
+                constructor Create(const nName: String; nParent: QObject);
+                destructor Destroy; override;
                 class function TypeInfo: String; override;
                 class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
                 function FindFile(const PakPath: String) : QFileObject; override;
@@ -135,8 +149,6 @@ type
           class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
         end;
 
-procedure GCFDLLConversionTool(packagefile: PChar; textfile: PChar);
-
  {------------------------}
 
 implementation
@@ -145,6 +157,8 @@ uses Quarkx, QkExceptions, PyObjects, Game, QkObjectClassList, Logging;
 
 var
   HLLoaded: Boolean;
+
+  GCFPackageList: TList; //To prevent multiple-loading of a single GCF file
 
  {------------ QGCFFolder ------------}
 
@@ -160,6 +174,27 @@ begin
  Info.WndInfo:=[wiSameExplorer];
 end;
 
+constructor QGCFFolder.Create(const nName: String; nParent: QObject);
+begin
+ inherited;
+ GCFPackage := nil;
+end;
+
+destructor QGCFFolder.Destroy;
+begin
+ if GCFPackage<>nil then
+ begin
+   GCFPackage.RefCount := GCFPackage.RefCount - 1;
+   if (GCFPackage.RefCount = 0) then
+   begin
+     GCFPackageList.Remove(GCFPackage);
+     hlDeletePackage(GCFPackage.uiPackage);
+     GCFPackage.Free;
+   end;
+ end;
+ inherited;
+end;
+
 function MakeFileQObject(const FullName: String; nParent: QObject) : QFileObject;
 var
   i: LongInt;
@@ -172,45 +207,52 @@ end;
 Function GCFAddRef(Ref: PQStreamRef; var S: TStream) : Integer;
 var
   mem: TMemoryStream;
-  filesize: DWORD;
-  read:boolean;
-  name,errstr:string;
-  gcfelement:PChar;
+  filesize: hlUInt;
+  read: hlUInt;
+  name: string;
+  gcfelement: PHLDirectoryItem;
+  GCFStream: PHLStream;
 begin
   Ref^.Self.Position:=Ref^.Position;
   mem := TMemoryStream.Create;
-  gcfelement := Ref^.PUserdata;
-  filesize := GCFFileSize(gcfelement);
-  name := GCFSubElementName(gcfelement);
+  gcfelement := PHLDirectoryItem(Ref^.PUserdata);
+  filesize := hlFileGetSize(gcfelement);
+  name := PChar(hlItemGetName(gcfelement));
   mem.SetSize(filesize);
-  if filesize=0 then
+  if filesize<> 0 then
   begin
-    errstr:='file '+name+ 'does not contain data';
-    mem.write(errstr,Length(errstr));
-  end
-  else
-  begin
-    read:= GCFReadFile(Ref^.PUserdata,mem.Memory);
-    if not read then
-      raise EErrorFmt(5720, [name]);
+    if hlFileCreateStream(gcfelement, @GCFStream) = hlFalse then
+      LogAndRaiseError(FmtLoadStr1(5707, ['hlPackageGetRoot', hlGetString(HL_ERROR)]));
+    try
+      if hlStreamOpen(GCFStream, HL_MODE_READ) = hlFalse then
+        LogAndRaiseError(FmtLoadStr1(5707, ['hlStreamOpen', hlGetString(HL_ERROR)]));
+      try
+        read := hlStreamRead(GCFStream, mem.Memory, filesize);
+        if read<>filesize then
+          LogAndRaiseError(FmtLoadStr1(5707, ['hlStreamRead', 'Number of bytes read does not equal the file size!']));
+      finally
+        hlStreamClose(GCFStream);
+      end;
+    finally
+      hlFileReleaseStream(gcfelement, GCFStream);
+    end;
   end;
   Result:=mem.Size;
   mem.Position:=0;
   S:=mem;
 end;
 
-Procedure AddTree(ParentFolder: QObject; gcfelement : PChar; root: Bool; F: TStream);
+Procedure AddTree(ParentFolder: QObject; GCFDirectoryFile : PHLDirectoryItem; root: Bool; F: TStream);
 var
-  subelements : DWORD;
-  subgcfelement : PChar;
-  i: Integer;
-  Folder,Q: QObject;
-  n: string;
+  Nsubelements : hlUInt;
+  GCFDirectoryItem : PHLDirectoryItem;
+  I: Integer;
+  Folder, Q: QObject;
 begin
-  if GCFElementIsFolder(gcfelement) then
+  if hlItemGetType(GCFDirectoryFile) = HL_ITEM_FOLDER then
   begin
     {handle a folder}
-    Folder:= QGCFFolder.Create( GCFSubElementName(gcfelement), ParentFolder) ;
+    Folder:= QGCFFolder.Create( PChar(hlItemGetName(GCFDirectoryFile)), ParentFolder) ;
     Log(LOG_VERBOSE,'Made gcf folder object :'+Folder.name);
     ParentFolder.SubElements.Add( Folder );
     if root then
@@ -219,20 +261,19 @@ begin
       Folder.TvParent:= ParentFolder;
 
     {recurse into subelements of folder}
-    subelements:= GCFNumSubElements(gcfelement);
-    for i:=0 to subelements-1 do
+    Nsubelements := hlFolderGetCount(GCFDirectoryFile);
+    for I:=0 to Nsubelements-1 do
     begin
-      subgcfelement:= GCFGetSubElement(gcfelement,i);
-      AddTree(Folder,subgcfelement,False,F);
+      GCFDirectoryItem := hlFolderGetItem(GCFDirectoryFile, I);
+      AddTree(Folder, GCFDirectoryItem, False, F);
     end;
   end
   else
   begin
-    Q := MakeFileQObject( GCFSubElementName(gcfelement), ParentFolder);
+    Q := MakeFileQObject( PChar(hlItemGetName(GCFDirectoryFile)), ParentFolder);
 
     ParentFolder.SubElements.Add( Q );
 
-    n:=Q.GetFullName;
     Log(LOG_VERBOSE,'Made gcf file object :'+Q.name);
     if Q is QFileObject then
       QFileObject(Q).ReadFormat := rf_default
@@ -240,16 +281,22 @@ begin
       Raise InternalE('LoadedItem '+Q.GetFullName+' '+IntToStr(rf_default));
     Q.Open(TQStream(F), 0);
     // i must access the object, from inside the onaccess function
-    Q.FNode^.PUserdata:=gcfelement;
+    Q.FNode^.PUserdata:=GCFDirectoryFile;
     Q.FNode^.OnAccess:=GCFAddRef;
   end;
 end;
 
 procedure QGCFFolder.LoadFile(F: TStream; FSize: Integer);
 var
-  gcfelement,subgcfelement : p_packagefile;
-  nsubelements,i : DWORD;
+  //RawBuffer: String;
+  NeedNewPackage: Boolean;
+  xGCFPackage: TGCFPackage;
+  J: Integer;
+
+  GCFDirectoryItem : PHLDirectoryItem;
+  Nsubelements, I : hlUInt;
 begin
+  Log(LOG_VERBOSE,'Loading GCF file: %s',[self.name]);
   case ReadFormat of
     1: begin  { as stand-alone file }
          if not HLLoaded then
@@ -259,17 +306,53 @@ begin
            HLLoaded:=true;
          end;
 
-         gcfhandle:= GCFOpen(PChar(LoadName));
-         if gcfhandle=nil then
-           Raise EErrorFmt(5707, [LoadName]); {cant open gcf file}
-         gcfelement:=GCFOpenElement(gcfhandle,'root');
-         nsubelements:= GCFNumSubElements(gcfelement);
-         for i:=0 to nsubelements-1 do
+         NeedNewPackage := true;
+         for J:=0 to GCFPackageList.Count-1 do
          begin
-           subgcfelement:= GCFGetSubElement(gcfelement,i);
-           AddTree(Self,subgcfelement,False,F);
+           if PGCFPackage(GCFPackageList[J]).FileName = LoadName then
+           begin
+             GCFPackage := PGCFPackage(GCFPackageList[J]);
+             GCFPackage.RefCount := GCFPackage.RefCount + 1;
+             NeedNewPackage := false;
+             break;
+           end;
          end;
-         //self.Protocol:='gcffile://';
+         if NeedNewPackage then
+         begin
+           xGCFPackage := TGCFPackage.Create;
+           GCFPackage:=@xGCFPackage;
+           GCFPackageList.Add(GCFPackage);
+           GCFPackage.FileName := LoadName;
+           GCFPackage.RefCount := 1;
+           if hlCreatePackage(HL_PACKAGE_GCF, @GCFPackage.uiPackage) = hlFalse then
+             LogAndRaiseError(FmtLoadStr1(5722, ['hlCreatePackage', hlGetString(HL_ERROR)]));
+         end;
+
+         if hlBindPackage(GCFPackage.uiPackage) = hlFalse then
+           LogAndRaiseError(FmtLoadStr1(5722, ['hlBindPackage', hlGetString(HL_ERROR)]));
+
+         (*//This code would load the entire file --> OutOfMemory!
+         SetLength(RawBuffer, FSize);
+         F.ReadBuffer(Pointer(RawBuffer)^, FSize);
+
+         if hlPackageOpenMemory(Pointer(RawBuffer), Length(RawBuffer), HL_MODE_READ + HL_MODE_WRITE) = hlFalse then
+           LogAndRaiseError(FmtLoadStr1(5707, ['hlPackageOpenMemory', hlGetString(HL_ERROR)]));
+
+         //so instead, do this:*)
+
+         if hlPackageOpenFile(PhlChar(LoadName), HL_MODE_READ) = hlFalse then //+ HL_MODE_WRITE
+           LogAndRaiseError(FmtLoadStr1(5722, ['hlPackageOpenFile', hlGetString(HL_ERROR)]));
+
+         GCFRoot := hlPackageGetRoot();
+         if GCFRoot=nil then
+           LogAndRaiseError(FmtLoadStr1(5722, ['hlPackageGetRoot', hlGetString(HL_ERROR)]));
+
+         Nsubelements := hlFolderGetCount(GCFRoot);
+         for I:=0 to Nsubelements-1 do
+         begin
+           GCFDirectoryItem := hlFolderGetItem(GCFRoot, I);
+           AddTree(Self, GCFDirectoryItem, False, F);
+         end;
        end;
     else
       inherited;
@@ -278,6 +361,7 @@ end;
 
 procedure QGCFFolder.SaveFile(Info: TInfoEnreg1);
 begin
+ Log(LOG_VERBOSE,'Saving GCF file: %s',[self.name]);
  with Info do case Format of
   1: begin  { as stand-alone file }
       if not HLLoaded then
@@ -363,28 +447,17 @@ end;
 
  {------------------------}
 
-procedure GCFDLLConversionTool(packagefile: PChar; textfile: PChar);
-begin
-  if not HLLoaded then
-  begin
-    if not LoadHLLib then
-      Raise EErrorFmt(5719, [GetLastError]);
-    HLLoaded:=true;
-  end;
-  if not GCFPrepList(packagefile, textfile) then
-    LogAndRaiseError('Error Loading "' + packagefile + '": Unsupported package type.');
-end;
-
- {------------------------}
-
 initialization
 begin
   {tbd is the code ok to be used ?  }
   RegisterQObject(QGCF, 's');
   RegisterQObject(QGCFFolder, 'a');
+  GCFPackageList := TList.Create();
 end;
 
 finalization
   if HLLoaded then
     UnloadHLLib;
+  //FIXME: What is there are still GCFPackages in the GCFPackageList?
+  GCFPackageList.Free;
 end.

@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.1  2010/10/16 18:50:55  danielpharos
+Re-factored GCF-file handling code: split into GCF and HLLib.
+
 }
 
 unit QkHLLib;
@@ -31,31 +34,148 @@ interface
 
 uses Windows, SysUtils, Classes;
 
-type
- p_packagehandle = Pointer;
- p_packagefile = Pointer;
-
-var
-  APIVersion          : function   : Integer; cdecl;
-  SetLogPath          : procedure (path: PChar); cdecl;
-  Init                : function   : Integer; cdecl;
-  Unload              : procedure ; cdecl;
-  GCFOpen             : function  (name: PChar) : p_packagehandle; cdecl;
-  GCFClose            : procedure (package: p_packagehandle); cdecl;
-  GCFOpenElement      : function  (package: p_packagehandle; name: PChar) : p_packagefile; cdecl;
-  GCFCloseElement     : procedure (pkgfile: p_packagefile); cdecl;
-  GCFElementIsFolder  : function  (pkgfile: p_packagefile): Boolean; cdecl;
-  GCFNumSubElements   : function  (pkgfile: p_packagefile): DWORD; cdecl;
-  GCFGetSubElement    : function  (pkgfile: p_packagefile; index : DWORD): p_packagefile; cdecl;
-  GCFSubElementName   : function  (pkgfile: p_packagefile): PChar; cdecl;
-  GCFReadFile         : function  (pkgfile: PChar; data: PByte) : Boolean; cdecl;
-  GCFFileSize         : function  (pkgfile: PChar) : DWORD	; cdecl;
-  GCFPrepList         : function  (packagefile: PChar; textfile: PChar) : Boolean; cdecl;
-
 function LoadHLLib : Boolean;
 procedure UnloadHLLib(ForceUnload: boolean = false);
 
  {------------------------}
+
+const
+  hlFalse = 0;
+  hlTrue = 1;
+
+  HL_VERSION_NUMBER = ((2 shl 24) + (3 shl 16) + (0 shl 8) + 0);
+
+//HLOption:
+	HL_VERSION = 0;
+	HL_ERROR = 1;
+	HL_ERROR_SYSTEM = 2;
+	HL_ERROR_SHORT_FORMATED = 3;
+	HL_ERROR_LONG_FORMATED = 4;
+	HL_PROC_OPEN = 5;
+	HL_PROC_CLOSE = 6;
+	HL_PROC_READ = 7;
+	HL_PROC_WRITE = 8;
+	HL_PROC_SEEK = 9;
+	HL_PROC_TELL = 10;
+	HL_PROC_SIZE = 11;
+	HL_PROC_EXTRACT_ITEM_START = 12;
+	HL_PROC_EXTRACT_ITEM_END = 13;
+	HL_PROC_EXTRACT_FILE_PROGRESS = 14;
+	HL_PROC_VALIDATE_FILE_PROGRESS = 15;
+	HL_OVERWRITE_FILES = 16;
+	HL_PACKAGE_BOUND = 17;
+	HL_PACKAGE_ID = 18;
+	HL_PACKAGE_SIZE = 19;
+	HL_PACKAGE_TOTAL_ALLOCATIONS = 20;
+	HL_PACKAGE_TOTAL_MEMORY_ALLOCATED = 21;
+	HL_PACKAGE_TOTAL_MEMORY_USED = 22;
+	HL_READ_ENCRYPTED = 23;
+	HL_FORCE_DEFRAGMENT = 24;
+	HL_PROC_DEFRAGMENT_PROGRESS = 25;
+	HL_PROC_DEFRAGMENT_PROGRESS_EX = 26;
+
+//HLPackageType:
+	HL_PACKAGE_NONE = 0;
+	HL_PACKAGE_BSP = 1;
+	HL_PACKAGE_GCF = 2;
+	HL_PACKAGE_PAK = 3;
+	HL_PACKAGE_VBSP = 4;
+	HL_PACKAGE_WAD = 5;
+	HL_PACKAGE_XZP = 6;
+	HL_PACKAGE_ZIP = 7;
+	HL_PACKAGE_NCF = 8;
+	HL_PACKAGE_VPK = 9;
+
+//HLFileMode:
+	HL_MODE_INVALID = $00;
+	HL_MODE_READ = $01;
+	HL_MODE_WRITE = $02;
+	HL_MODE_CREATE = $04;
+	HL_MODE_VOLATILE = $08;
+	HL_MODE_NO_FILEMAPPING = $10;
+	HL_MODE_QUICK_FILEMAPPING = $20;
+
+//HLDirectoryItemType:
+	HL_ITEM_NONE = 0;
+	HL_ITEM_FOLDER = 1;
+	HL_ITEM_FILE = 2;
+
+type
+  hlBool = Byte;
+  hlChar = Char; //ShortInt;
+//typedef unsigned char		hlByte;
+//typedef signed short		hlShort;
+//typedef unsigned short		hlUShort;
+//typedef signed int			hlInt;
+  hlUInt = Cardinal;
+//typedef signed long			hlLong;
+//typedef unsigned long		hlULong;
+//typedef signed long long	hlLongLong;
+//typedef unsigned long long	hlULongLong;
+//typedef float				hlSingle;
+//typedef double				hlDouble;
+  hlVoid = Byte;
+
+  PhlChar = ^hlChar;
+  PhlUInt = ^hlUInt;
+  PhlVoid = ^hlVoid;
+
+  HLOption = Integer;
+  HLPackageType = Integer;
+  HLDirectoryItemType = Integer;
+
+  PHLDirectoryItem = Pointer;
+  PHLStream = Pointer;
+  PPHLStream = ^PHLStream;
+
+var
+  hlInitialize: procedure; cdecl;
+  hlShutdown: procedure; cdecl;
+
+  hlGetUnsignedInteger: function (eOption : HLOption) : hlUInt; cdecl;
+
+  hlGetString: function (eOption : HLOption) : PhlChar; cdecl;
+
+// Directory Item
+
+  hlItemGetType: function (const pItem : PHLDirectoryItem) : HLDirectoryItemType; cdecl;
+
+  hlItemGetName: function (const pItem : PHLDirectoryItem) : PhlChar; cdecl;
+
+// Directory Folder
+
+  hlFolderGetCount: function (const pItem : PHLDirectoryItem ) : hlUInt; cdecl;
+
+  hlFolderGetItem: function (pItem : PHLDirectoryItem; uiIndex : hlUInt) : PHLDirectoryItem; cdecl;
+
+// Directory File
+
+  hlFileGetSize: function (const pItem : PHLDirectoryItem) : hlUInt; cdecl;
+
+  hlFileCreateStream: function (pItem : PHLDirectoryItem; pStream : PPHLStream) : hlBool; cdecl;
+  hlFileReleaseStream : procedure (pItem : PHLDirectoryItem; pStream : PHLStream); cdecl;
+
+// Stream
+
+  hlStreamOpen: function (pStream : PHLStream; uiMode : hlUInt) : hlBool; cdecl;
+  hlStreamClose: procedure (pStream : PHLStream); cdecl;
+
+  hlStreamRead: function (pStream : PHLStream; lpData : PhlVoid; uiBytes : hlUInt) : hlUInt; cdecl;
+
+  //hlStreamWrite: function (pStream : PHLStream; const lpData : PhlVoid, uiBytes : hlUInt) : hlUInt; cdecl;
+
+// Package
+
+  hlBindPackage: function (uiPackage : hlUInt) : hlBool; cdecl;
+
+  hlCreatePackage: function (ePackageType : HLPackageType; uiPackage : PhlUInt) : hlBool; cdecl;
+  hlDeletePackage: procedure (uiPackage : hlUInt); cdecl;
+
+  hlPackageOpenFile: function (const lpFileName : PhlChar; uiMode : hlUInt) : hlBool; cdecl;
+  //hlPackageOpenMemory: function (lpData : PhlVoid; uiBufferSize : hlUInt; uiMode : hlUInt) : hlBool; cdecl;
+  hlPackageClose : procedure; cdecl;
+
+  hlPackageGetRoot : function : PHLDirectoryItem; cdecl;
 
 implementation
 
@@ -65,10 +185,7 @@ const RequiredGCFAPI = 3;
 
 var
   TimesLoaded: Integer;
-
-// binding to c dll
-  Hhllibwrap : HMODULE;
-  Hgcfwrap : HMODULE;
+  HHLLib : HMODULE;
 
 function InitDllPointer(DLLHandle: HINST; const APIFuncname : String) : Pointer;
 begin
@@ -83,53 +200,56 @@ end;
 function LoadHLLib : Boolean;
 var
   HLLibLibraryFilename: String;
-  QuArKGCFLibraryFilename: String;
 begin
   if (TimesLoaded=0) then
   begin
-    if Hgcfwrap = 0 then
+    if HHLLib = 0 then
     begin
-      Log(LOG_VERBOSE, 'Loading GCF...');
+      Log(LOG_VERBOSE, 'Loading HLLib...');
     
       HLLibLibraryFilename := ConcatPaths([GetQPath(pQuArKDll), 'HLLib.dll']);
-      Hhllibwrap := LoadLibrary(PChar(HLLibLibraryFilename));
-      if Hhllibwrap = 0 then
+      HHLLib := LoadLibrary(PChar(HLLibLibraryFilename));
+      if HHLLib = 0 then
       begin
         LogWindowsError(GetLastError(), 'LoadLibrary("'+HLLibLibraryFilename+'")');
         LogAndRaiseError('Unable to load the HLLib library');
       end;
 
-      QuArKGCFLibraryFilename := ConcatPaths([GetQPath(pQuArKDll), 'QuArKGCF.dll']);
-      Hgcfwrap := LoadLibrary(PChar(QuArKGCFLibraryFilename));
-      if Hgcfwrap = 0 then
-      begin
-        LogWindowsError(GetLastError(), 'LoadLibrary("'+QuArKGCFLibraryFilename+'")');
-        LogAndRaiseError('Unable to load the QuArKGCF library');
-      end;
-   
-      APIVersion      := InitDllPointer(Hgcfwrap, 'APIVersion');
-      if APIVersion<>RequiredGCFAPI then
-        LogAndRaiseError('QuArKGCF library API version mismatch');
-      SetLogPath      := InitDllPointer(Hgcfwrap, 'SetLogPath');
-      Init            := InitDllPointer(Hgcfwrap, 'Init');
-      Unload          := InitDllPointer(Hgcfwrap, 'Unload');
-      GCFOpen         := InitDllPointer(Hgcfwrap, 'GCFOpen');
-      GCFClose        := InitDllPointer(Hgcfwrap, 'GCFClose');
-      GCFOpenElement  := InitDllPointer(Hgcfwrap, 'GCFOpenElement');
-      GCFCloseElement := InitDllPointer(Hgcfwrap, 'GCFCloseElement');
-      GCFElementIsFolder  := InitDllPointer(Hgcfwrap, 'GCFElementIsFolder');
-      GCFNumSubElements   := InitDllPointer(Hgcfwrap, 'GCFNumSubElements');
-      GCFGetSubElement    := InitDllPointer(Hgcfwrap, 'GCFGetSubElement');
-      GCFSubElementName   := InitDllPointer(Hgcfwrap, 'GCFSubElementName');
-      GCFReadFile     := InitDllPointer(Hgcfwrap, 'GCFReadFile');
-      GCFFileSize     := InitDllPointer(Hgcfwrap, 'GCFFileSize');
-      GCFPrepList     := InitDllPointer(Hgcfwrap, 'GCFPrepList');
-   
-      SetLogPath(PChar(GetQPath(pQuArKLog)));
-      if Init <> 0 then
-        LogAndRaiseError('Unable to initialize QuArKGCF library');
-   
-      Log(LOG_VERBOSE, 'GCF loaded!');
+      hlInitialize := InitDllPointer(HHLLib, 'hlInitialize');
+      hlShutdown   := InitDllPointer(HHLLib, 'hlShutdown');
+
+      hlGetUnsignedInteger := InitDllPointer(HHLLib, 'hlGetUnsignedInteger');
+      if hlGetUnsignedInteger(HL_VERSION) < HL_VERSION_NUMBER then
+        LogAndRaiseError('HLLib version mismatch!');
+
+      hlGetString := InitDllPointer(HHLLib, 'hlGetString');
+
+      hlItemGetType := InitDllPointer(HHLLib, 'hlItemGetType');
+      hlItemGetName := InitDllPointer(HHLLib, 'hlItemGetName');
+
+      hlFolderGetCount := InitDllPointer(HHLLib, 'hlFolderGetCount');
+      hlFolderGetItem  := InitDllPointer(HHLLib, 'hlFolderGetItem');
+
+      hlFileGetSize       := InitDllPointer(HHLLib, 'hlFileGetSize');
+      hlFileCreateStream  := InitDllPointer(HHLLib, 'hlFileCreateStream');
+      hlFileReleaseStream := InitDllPointer(HHLLib, 'hlFileReleaseStream');
+
+      hlStreamOpen  := InitDllPointer(HHLLib, 'hlStreamOpen');
+      hlStreamClose := InitDllPointer(HHLLib, 'hlStreamClose');
+      hlStreamRead  := InitDllPointer(HHLLib, 'hlStreamRead');
+      //hlStreamWrite := InitDllPointer(HHLLib, 'hlStreamWrite');
+
+      hlBindPackage       := InitDllPointer(HHLLib, 'hlBindPackage');
+      hlCreatePackage     := InitDllPointer(HHLLib, 'hlCreatePackage');
+      hlDeletePackage     := InitDllPointer(HHLLib, 'hlDeletePackage');
+      hlPackageOpenFile   := InitDllPointer(HHLLib, 'hlPackageOpenFile');
+      //hlPackageOpenMemory := InitDllPointer(HHLLib, 'hlPackageOpenMemory');
+      hlPackageClose      := InitDllPointer(HHLLib, 'hlPackageClose');
+      hlPackageGetRoot    := InitDllPointer(HHLLib, 'hlPackageGetRoot');
+
+      hlInitialize;
+
+      Log(LOG_VERBOSE, 'HLLib loaded!');
     end;
 
     TimesLoaded := 1;
@@ -146,48 +266,48 @@ procedure UnloadHLLib(ForceUnload: boolean);
 begin
   if (TimesLoaded = 1) or ForceUnload then
   begin
-    if Hgcfwrap <> 0 then
-    begin
-      Log(LOG_VERBOSE, 'Unloading GCFwrap...');
-
-      Unload;
-
-      if FreeLibrary(Hgcfwrap)=false then
-      begin
-        LogWindowsError(GetLastError(), 'FreeLibrary(Hgcfwrap)');
-        LogAndRaiseError('Unable to unload the QuArKGCF library');
-      end;
-      Hgcfwrap := 0;
-
-      APIVersion      := nil;
-      SetLogPath      := nil;
-      Init            := nil;
-      Unload          := nil;
-      GCFOpen         := nil;
-      GCFClose        := nil;
-      GCFOpenElement  := nil;
-      GCFCloseElement := nil;
-      GCFElementIsFolder  := nil;
-      GCFNumSubElements   := nil;
-      GCFGetSubElement    := nil;
-      GCFSubElementName   := nil;
-      GCFReadFile     := nil;
-      GCFFileSize     := nil;
-      GCFPrepList     := nil;
-
-      Log(LOG_VERBOSE, 'GCFwrap unloaded!');
-    end;
-   
-    if Hhllibwrap <> 0 then
+    if HHLLib <> 0 then
     begin
       Log(LOG_VERBOSE, 'Unloading HLLib...');
 
-      if FreeLibrary(Hhllibwrap)=false then
+      hlShutdown;
+
+      if FreeLibrary(HHLLib)=false then
       begin
-        LogWindowsError(GetLastError(), 'FreeLibrary(Hhllibwrap)');
+        LogWindowsError(GetLastError(), 'FreeLibrary(HHLLib)');
         LogAndRaiseError('Unable to unload the HLLib library');
       end;
-      Hhllibwrap := 0;
+      HHLLib := 0;
+
+      hlInitialize := nil;
+      hlShutdown   := nil;
+
+      hlGetUnsignedInteger := nil;
+
+      hlGetString := nil;
+
+      hlItemGetType := nil;
+      hlItemGetName := nil;
+
+      hlFolderGetCount := nil;
+      hlFolderGetItem  := nil;
+
+      hlFileGetSize       := nil;
+      hlFileCreateStream  := nil;
+      hlFileReleaseStream := nil;
+
+      hlStreamOpen  := nil;
+      hlStreamClose := nil;
+      hlStreamRead  := nil;
+      //hlStreamWrite := nil;
+
+      hlBindPackage       := nil;
+      hlCreatePackage     := nil;
+      hlDeletePackage     := nil;
+      hlPackageOpenFile   := nil;
+      //hlPackageOpenMemory := nil;
+      hlPackageClose      := nil;
+      hlPackageGetRoot    := nil;
 
       Log(LOG_VERBOSE, 'HLLib unloaded!');
     end;
@@ -203,8 +323,7 @@ end;
 
 initialization
 begin
-  Hgcfwrap := 0;
-  HHLLibwrap := 0;
+  HHLLib := 0;
 end;
 
 finalization

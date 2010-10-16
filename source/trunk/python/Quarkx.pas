@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.100  2010/04/16 20:07:23  danielpharos
+Move some version-stuff about. quarkpy now also checks the minor version number.
+
 Revision 1.99  2010/04/16 18:44:59  danielpharos
 Reduced missing init-logging entries to a single problematic line. Also, logging now uses const strings (faster).
 
@@ -3250,24 +3253,6 @@ begin
   end;
 end;
 
-function xGCFDLLConvTool(self, args: PyObject) : PyObject; cdecl;
-var
-  packagefile: PChar;
-  textfile: PChar;
-begin
-  Result:=Nil;
-  try
-    if not PyArg_ParseTupleX(args, 'ss', [@packagefile, @textfile]) then
-      Exit;
-    {if packagefile^<>#0 then}
-    GCFDLLConversionTool(packagefile, textfile);
-    Result:=PyNoResult;
-  except
-    EBackToPython;
-    Result:=Nil;
-  end;
-end;
-
 //QuarkXWorkaroundNameChange
 function xGetChangedNames(self, args: PyObject) : PyObject; cdecl;
 var
@@ -3300,7 +3285,7 @@ begin
 end;
 
 const
- MethodTable: array[0..91] of TyMethodDef =
+ MethodTable: array[0..90] of TyMethodDef =
   ((ml_name: 'Setup1';          ml_meth: xSetup1;          ml_flags: METH_VARARGS),
    (ml_name: 'newobj';          ml_meth: xNewObj;          ml_flags: METH_VARARGS),
    (ml_name: 'newfileobj';      ml_meth: xNewFileObj;      ml_flags: METH_VARARGS),
@@ -3391,7 +3376,6 @@ const
    (ml_name: 'setpixel';        ml_meth: xSetPixel;        ml_flags: METH_VARARGS),
    (ml_name: 'setpixelpal';     ml_meth: xSetPixelPal;     ml_flags: METH_VARARGS),
    (ml_name: 'setpixelalpha';   ml_meth: xSetPixelAlpha;   ml_flags: METH_VARARGS),
-   (ml_name: 'GCFDLLConvTool';  ml_meth: xGCFDLLConvTool;  ml_flags: METH_VARARGS),
    (ml_name: 'getchangednames'; ml_meth: xGetChangedNames; ml_flags: METH_VARARGS), //QuarkXWorkaroundNameChange
    (ml_Name: Nil;               ml_meth: Nil));
 
