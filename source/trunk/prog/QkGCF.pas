@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.30  2010/10/16 21:53:40  danielpharos
+Fixed a commented out copy-paste bug.
+
 Revision 1.29  2010/10/16 21:47:40  danielpharos
 Reworked GCF file loading. HLLib now directly called. Updated to HLLib 2.3.0. Fixed JPG-library setting being used in VTF file saving.
 
@@ -120,17 +123,10 @@ interface
 uses Windows, SysUtils, Classes, QkObjects, QkFileObjects, QkPak, QkHLLib;
 
 type
- TGCFPackage = class
-               public
-                FileName: string;
-                RefCount: Integer;
-                uiPackage : hlUInt;
-               end;
- PGCFPackage = ^TGCFPackage;
-
  QGCFFolder = class(QPakFolder)
               private
-               GCFPackage : PGCFPackage;
+               HasAPackage : Boolean;
+               uiPackage : hlUInt;
                GCFRoot : PHLDirectoryItem;
               protected
                 procedure SaveFile(Info: TInfoEnreg1); override;
@@ -161,8 +157,6 @@ uses Quarkx, QkExceptions, PyObjects, Game, QkObjectClassList, Logging;
 var
   HLLoaded: Boolean;
 
-  GCFPackageList: TList; //To prevent multiple-loading of a single GCF file
-
  {------------ QGCFFolder ------------}
 
 class function QGCFFolder.TypeInfo;
@@ -180,21 +174,13 @@ end;
 constructor QGCFFolder.Create(const nName: String; nParent: QObject);
 begin
  inherited;
- GCFPackage := nil;
+ HasAPackage := false;
 end;
 
 destructor QGCFFolder.Destroy;
 begin
- if GCFPackage<>nil then
- begin
-   GCFPackage.RefCount := GCFPackage.RefCount - 1;
-   if (GCFPackage.RefCount = 0) then
-   begin
-     GCFPackageList.Remove(GCFPackage);
-     hlDeletePackage(GCFPackage.uiPackage);
-     GCFPackage.Free;
-   end;
- end;
+ if HasAPackage then
+   hlDeletePackage(uiPackage);
  inherited;
 end;
 
@@ -292,9 +278,6 @@ end;
 procedure QGCFFolder.LoadFile(F: TStream; FSize: Integer);
 var
   //RawBuffer: String;
-  NeedNewPackage: Boolean;
-  xGCFPackage: TGCFPackage;
-  J: Integer;
 
   GCFDirectoryItem : PHLDirectoryItem;
   Nsubelements, I : hlUInt;
@@ -309,29 +292,11 @@ begin
            HLLoaded:=true;
          end;
 
-         NeedNewPackage := true;
-         for J:=0 to GCFPackageList.Count-1 do
-         begin
-           if PGCFPackage(GCFPackageList[J]).FileName = LoadName then
-           begin
-             GCFPackage := PGCFPackage(GCFPackageList[J]);
-             GCFPackage.RefCount := GCFPackage.RefCount + 1;
-             NeedNewPackage := false;
-             break;
-           end;
-         end;
-         if NeedNewPackage then
-         begin
-           xGCFPackage := TGCFPackage.Create;
-           GCFPackage:=@xGCFPackage;
-           GCFPackageList.Add(GCFPackage);
-           GCFPackage.FileName := LoadName;
-           GCFPackage.RefCount := 1;
-           if hlCreatePackage(HL_PACKAGE_GCF, @GCFPackage.uiPackage) = hlFalse then
-             LogAndRaiseError(FmtLoadStr1(5722, ['hlCreatePackage', hlGetString(HL_ERROR)]));
-         end;
+         if hlCreatePackage(HL_PACKAGE_GCF, @uiPackage) = hlFalse then
+           LogAndRaiseError(FmtLoadStr1(5722, ['hlCreatePackage', hlGetString(HL_ERROR)]));
+         HasAPackage := true;
 
-         if hlBindPackage(GCFPackage.uiPackage) = hlFalse then
+         if hlBindPackage(uiPackage) = hlFalse then
            LogAndRaiseError(FmtLoadStr1(5722, ['hlBindPackage', hlGetString(HL_ERROR)]));
 
          (*//This code would load the entire file --> OutOfMemory!
@@ -348,14 +313,15 @@ begin
 
          GCFRoot := hlPackageGetRoot();
          if GCFRoot=nil then
-           LogAndRaiseError(FmtLoadStr1(5722, ['hlPackageGetRoot', hlGetString(HL_ERROR)]));
+           LogAndRaiseError(FmtLoadStr1(5707, ['hlPackageGetRoot', 'Root element not found!']));
 
          Nsubelements := hlFolderGetCount(GCFRoot);
-         for I:=0 to Nsubelements-1 do
-         begin
-           GCFDirectoryItem := hlFolderGetItem(GCFRoot, I);
-           AddTree(Self, GCFDirectoryItem, False, F);
-         end;
+         if Nsubelements > 0 then //Prevent underflow by -1 in for-loop
+           for I:=0 to Nsubelements-1 do
+           begin
+             GCFDirectoryItem := hlFolderGetItem(GCFRoot, I);
+             AddTree(Self, GCFDirectoryItem, False, F);
+           end;
        end;
     else
       inherited;
@@ -455,12 +421,9 @@ begin
   {tbd is the code ok to be used ?  }
   RegisterQObject(QGCF, 's');
   RegisterQObject(QGCFFolder, 'a');
-  GCFPackageList := TList.Create();
 end;
 
 finalization
   if HLLoaded then
     UnloadHLLib;
-  //FIXME: What is there are still GCFPackages in the GCFPackageList?
-  GCFPackageList.Free;
 end.
