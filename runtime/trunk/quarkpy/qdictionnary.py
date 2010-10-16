@@ -286,6 +286,7 @@ Strings = {
     824: "Call of Duty 2 Image Files (*.iwi)|*.iwi",
     825: "Valve Pak File (*.vpk)|*.vpk",
     826: "Steam No Cache File (*.ncf)|*.ncf",
+    827: "WorldCraft Rich Map Format file (*.rmf)|*.rmf",
 
     2368: "Skins",
     2369: "Frames",
@@ -585,6 +586,7 @@ Strings = {
     5147: "Call of Duty 2 Pak",
     5148: "Sylphis Pak",
     5149: "Sylphis Map file",
+    5150: "WorldCraft Rich Map Format file",
 
     5155: "Quake Context",
     5156: "Tool bar",
@@ -1084,6 +1086,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.152  2010/10/16 22:31:04  danielpharos
+#Added NCF file loading support (for example: Alien Swarm). Also, corrected VPK dictionnary mistake.
+#
 #Revision 1.151  2010/10/16 22:14:57  danielpharos
 #Added VPK file loading support (for example: Left 4 Dead).
 #

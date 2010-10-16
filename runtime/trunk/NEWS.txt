@@ -14,6 +14,8 @@ $Id$
 
 6.6.0 Beta 4
 ============
+* [DanielPharos]: Added experimental RMF file loading support; poly's only, no UV's or textures.
+
 * [DanielPharos]: Added NCF file loading support (for example: Alien Swarm).
 
 * [DanielPharos]: Added VPK file loading support (for example: Left 4 Dead).

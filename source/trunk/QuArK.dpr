@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.72  2010/10/16 22:31:03  danielpharos
+Added NCF file loading support (for example: Alien Swarm). Also, corrected VPK dictionnary mistake.
+
 Revision 1.71  2010/10/16 22:14:56  danielpharos
 Added VPK file loading support (for example: Left 4 Dead).
 
@@ -353,6 +356,7 @@ uses
   QkVTFLib in 'prog\QkVTFLib.pas',
   QkWad in 'prog\QkWad.pas' {FQWad},
   QkWav in 'prog\QkWav.pas',
+  QkWorldCraft in 'prog\QkWorldCraft.pas',
   QkZip2 in 'prog\QkZip2.pas',
   qmath in 'prog\qmath.pas',
   qmatrices in 'prog\qmatrices.pas',
