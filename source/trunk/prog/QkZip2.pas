@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.31  2009/07/15 10:38:01  danielpharos
+Updated website link.
+
 Revision 1.30  2009/02/21 17:06:18  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -496,86 +499,89 @@ begin
       f.seek(org, soFromBeginning); {beginning of 'file'}
       f.seek(eocd.offset_cd, soFromCurrent);
       files:=TMemoryStream.Create;    {ms for central directory}
-      files.CopyFrom(f, eocd.size_cd); {read in central dir}
-      files.seek(0, sofrombeginning);
-
-      ProgressIndicatorStart(5461, eocd.no_entries);
       try
-        for i:=1 to eocd.no_entries do
-        begin
-          files.readbuffer(s, 4); // Signiture
-          if s<>cCFILE_HEADER then
-            raise Exception.CreateFmt('Central directory for file "%s" is corrupt: %d<>%d(cCFILE_HEADER)', [LoadName, s, cCFILE_HEADER]);
+        files.CopyFrom(f, eocd.size_cd); {read in central dir}
+        files.seek(0, sofrombeginning);
 
-          files.ReadBuffer(FH, sizeof(TFileHeader));
-
-          ReadaString(files, chemin,      FH.filename_len);
-          ReadaString(files, dummystring, FH.extrafield_len);
-          ReadaString(files, dummystring, FH.filecomment_len);
-
-          { store original filename for later check }
-          fn:=Chemin;
-
-          { check compression method, that it is one we can decompress }
-          if  (FH.compression_method<>0)
-          and (FH.compression_method<>1)
-          and (FH.compression_method<>6)
-          and (FH.compression_method<>8) then
-            Raise EErrorFmt(5692, [LoadName, FH.compression_method]);
-
-          { if previous file's path, is the same as this file's path, then reuse the Dossier-pointer.
-            Else reset the Dossier-pointer to self. }
-          if Copy(Chemin, 1, Length(CheminPrec)) = CheminPrec then
-            Delete(Chemin, 1, Length(CheminPrec))
-          else
+        ProgressIndicatorStart(5461, eocd.no_entries);
+        try
+          for i:=1 to eocd.no_entries do
           begin
-            Dossier:=Self;
-            CheminPrec:='';
-          end;
+            files.readbuffer(s, 4); // Signiture
+            if s<>cCFILE_HEADER then
+              raise Exception.CreateFmt('Central directory for file "%s" is corrupt: %d<>%d(cCFILE_HEADER)', [LoadName, s, cCFILE_HEADER]);
 
-          { Find the correct .zipfolder, or create a new one for this file. }
-          repeat
-            J:=Pos('/', Chemin);
-            if J=0 then
-              Break;
-            nDossier:=Dossier.SubElements.FindName(Copy(Chemin, 1, J-1) + '.zipfolder');
-            if (nDossier=Nil) then
-            begin
-              nDossier:=QZipFolder.Create(Copy(Chemin, 1, J-1), Dossier);
-              Dossier.SubElements.Add(nDossier);
-            end;
-            CheminPrec:=CheminPrec + Copy(Chemin, 1, J);
-            Delete(Chemin, 1, J);
-            Dossier:=nDossier;
-          until False;
+            files.ReadBuffer(FH, sizeof(TFileHeader));
 
-          Size:=FH.compressed;
+            ReadaString(files, chemin,      FH.filename_len);
+            ReadaString(files, dummystring, FH.extrafield_len);
+            ReadaString(files, dummystring, FH.filecomment_len);
 
-          { if this file, really is a file and not just a path, then add it as a sub-element }
-          if fn[length(fn)]<>'/' then
-          begin
-            Size:=Size + (FH.extrafield_len + FH.filename_len + 4 + sizeof(FH) + FH.filecomment_len);
-            Q:=OpenFileObjectData(nil, Chemin, Size, Dossier);
-            Dossier.SubElements.Add(Q);
-            F.Seek(Org + fh.local_header_offset, soFromBeginning);
-            {Copied From LoadedItem & Modified}
-            if Q is QFileObject then
-              QFileObject(Q).ReadFormat:=rf_default
+            { store original filename for later check }
+            fn:=Chemin;
+
+            { check compression method, that it is one we can decompress }
+            if  (FH.compression_method<>0)
+            and (FH.compression_method<>1)
+            and (FH.compression_method<>6)
+            and (FH.compression_method<>8) then
+              Raise EErrorFmt(5692, [LoadName, FH.compression_method]);
+
+            { if previous file's path, is the same as this file's path, then reuse the Dossier-pointer.
+              Else reset the Dossier-pointer to self. }
+            if Copy(Chemin, 1, Length(CheminPrec)) = CheminPrec then
+              Delete(Chemin, 1, Length(CheminPrec))
             else
-              Raise InternalE('LoadedItem '+Q.GetFullName+' '+IntToStr(rf_default));
-            nEnd:=F.Position+Size;
-            Q.Open(TQStream(F), Size);
-            F.Position:=nEnd;
-            {/Copied From LoadedItem & Modified}
-            Q.FNode^.OnAccess:=ZipAddRef;
+            begin
+              Dossier:=Self;
+              CheminPrec:='';
+            end;
+
+            { Find the correct .zipfolder, or create a new one for this file. }
+            repeat
+              J:=Pos('/', Chemin);
+              if J=0 then
+                Break;
+              nDossier:=Dossier.SubElements.FindName(Copy(Chemin, 1, J-1) + '.zipfolder');
+              if (nDossier=Nil) then
+              begin
+                nDossier:=QZipFolder.Create(Copy(Chemin, 1, J-1), Dossier);
+                Dossier.SubElements.Add(nDossier);
+              end;
+              CheminPrec:=CheminPrec + Copy(Chemin, 1, J);
+              Delete(Chemin, 1, J);
+              Dossier:=nDossier;
+            until False;
+
+            Size:=FH.compressed;
+
+            { if this file, really is a file and not just a path, then add it as a sub-element }
+            if fn[length(fn)]<>'/' then
+            begin
+              Size:=Size + (FH.extrafield_len + FH.filename_len + 4 + sizeof(FH) + FH.filecomment_len);
+              Q:=OpenFileObjectData(nil, Chemin, Size, Dossier);
+              Dossier.SubElements.Add(Q);
+              F.Seek(Org + fh.local_header_offset, soFromBeginning);
+              {Copied From LoadedItem & Modified}
+              if Q is QFileObject then
+                QFileObject(Q).ReadFormat:=rf_default
+              else
+                Raise InternalE('LoadedItem '+Q.GetFullName+' '+IntToStr(rf_default));
+              nEnd:=F.Position+Size;
+              Q.Open(TQStream(F), Size);
+              F.Position:=nEnd;
+              {/Copied From LoadedItem & Modified}
+              Q.FNode^.OnAccess:=ZipAddRef;
+            end;
+            ProgressIndicatorIncrement;
           end;
-          ProgressIndicatorIncrement;
+          SortPakFolder;
+        finally
+          ProgressIndicatorStop;
         end;
-        SortPakFolder;
       finally
-        ProgressIndicatorStop;
+        files.free;
       end;
-      files.free;
     end;
     else
       inherited;
