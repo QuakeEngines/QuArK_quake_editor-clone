@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.29  2010/10/16 21:47:40  danielpharos
+Reworked GCF file loading. HLLib now directly called. Updated to HLLib 2.3.0. Fixed JPG-library setting being used in VTF file saving.
+
 Revision 1.28  2010/10/16 18:50:55  danielpharos
 Re-factored GCF-file handling code: split into GCF and HLLib.
 
@@ -336,7 +339,7 @@ begin
          F.ReadBuffer(Pointer(RawBuffer)^, FSize);
 
          if hlPackageOpenMemory(Pointer(RawBuffer), Length(RawBuffer), HL_MODE_READ + HL_MODE_WRITE) = hlFalse then
-           LogAndRaiseError(FmtLoadStr1(5707, ['hlPackageOpenMemory', hlGetString(HL_ERROR)]));
+           LogAndRaiseError(FmtLoadStr1(5722, ['hlPackageOpenMemory', hlGetString(HL_ERROR)]));
 
          //so instead, do this:*)
 
