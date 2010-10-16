@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.27  2010/05/23 15:56:46  danielpharos
+Added some logging during loading and unloading of some external libraries.
+
 Revision 1.26  2010/04/02 16:51:58  danielpharos
 Created a new LogWindowsError procedure.
 
@@ -108,12 +111,9 @@ unit QkGCF;
 
 interface
 
-uses  Windows, SysUtils, Classes, QkObjects, QkFileObjects, QkPak;
+uses Windows, SysUtils, Classes, QkObjects, QkFileObjects, QkPak, QkHLLib;
 
 type
- p_packagehandle = Pointer;
- p_packagefile = Pointer;
- 
  QGCFFolder = class(QPakFolder)
               private
                 gcfhandle : p_packagehandle;
@@ -141,136 +141,10 @@ procedure GCFDLLConversionTool(packagefile: PChar; textfile: PChar);
 
 implementation
 
-uses Quarkx, QkExceptions, PyObjects, Game, QkObjectClassList, Logging, QkApplPaths;
-
-const RequiredGCFAPI = 3;
+uses Quarkx, QkExceptions, PyObjects, Game, QkObjectClassList, Logging;
 
 var
-// binding to c dll
-  Hhllibwrap : HMODULE;
-  Hgcfwrap : HMODULE;
-
-  APIVersion          : function   : Integer; cdecl;
-  SetLogPath          : procedure (path: PChar); cdecl;
-  Init                : function   : Integer; cdecl;
-  Unload              : procedure ; cdecl;
-  GCFOpen             : function  (name: PChar) : p_packagehandle; cdecl;
-  GCFClose            : procedure (package: p_packagehandle); cdecl;
-  GCFOpenElement      : function  (package: p_packagehandle; name: PChar) : p_packagefile; cdecl;
-  GCFCloseElement     : procedure (pkgfile: p_packagefile); cdecl;
-  GCFElementIsFolder  : function  (pkgfile: p_packagefile): Boolean; cdecl;
-  GCFNumSubElements   : function  (pkgfile: p_packagefile): DWORD; cdecl;
-  GCFGetSubElement    : function  (pkgfile: p_packagefile; index : DWORD): p_packagefile; cdecl;
-  GCFSubElementName   : function  (pkgfile: p_packagefile): PChar; cdecl;
-  GCFReadFile         : function  (pkgfile: PChar; data: PByte) : Boolean; cdecl;
-  GCFFileSize         : function  (pkgfile: PChar) : DWORD	; cdecl;
-  GCFPrepList         : function  (packagefile: PChar; textfile: PChar) : Boolean; cdecl;
-
-function InitDllPointer(DLLHandle: HINST; const APIFuncname : String) : Pointer;
-begin
-  Result := GetProcAddress(DLLHandle, PChar(APIFuncname));
-  if Result=Nil then
-  begin
-    LogWindowsError(GetLastError(), 'GetProcAddress(DLLHandle, "'+APIFuncname+'")');
-    LogAndRaiseError('API Func "'+APIFuncname+ '" not found in the QuArKGCF library');
-  end;
-end;
-
-procedure initdll;
-var
-  HLLibLibraryFilename: String;
-  QuArKGCFLibraryFilename: String;
-begin
-  if Hgcfwrap = 0 then
-  begin
-    Log(LOG_VERBOSE, 'Loading GCF...');
-
-    HLLibLibraryFilename := ConcatPaths([GetQPath(pQuArKDll), 'HLLib.dll']);
-    Hhllibwrap := LoadLibrary(PChar(HLLibLibraryFilename));
-    if Hhllibwrap = 0 then
-    begin
-      LogWindowsError(GetLastError(), 'LoadLibrary("'+HLLibLibraryFilename+'")');
-      LogAndRaiseError('Unable to load the HLLib library');
-    end;
-
-    QuArKGCFLibraryFilename := ConcatPaths([GetQPath(pQuArKDll), 'QuArKGCF.dll']);
-    Hgcfwrap := LoadLibrary(PChar(QuArKGCFLibraryFilename));
-    if Hgcfwrap = 0 then
-    begin
-      LogWindowsError(GetLastError(), 'LoadLibrary("'+QuArKGCFLibraryFilename+'")');
-      LogAndRaiseError('Unable to load the QuArKGCF library');
-    end;
-
-    APIVersion      := InitDllPointer(Hgcfwrap, 'APIVersion');
-    if APIVersion<>RequiredGCFAPI then
-      LogAndRaiseError('QuArKGCF library API version mismatch');
-    SetLogPath      := InitDllPointer(Hgcfwrap, 'SetLogPath');
-    Init            := InitDllPointer(Hgcfwrap, 'Init');
-    Unload          := InitDllPointer(Hgcfwrap, 'Unload');
-    GCFOpen         := InitDllPointer(Hgcfwrap, 'GCFOpen');
-    GCFClose        := InitDllPointer(Hgcfwrap, 'GCFClose');
-    GCFOpenElement  := InitDllPointer(Hgcfwrap, 'GCFOpenElement');
-    GCFCloseElement := InitDllPointer(Hgcfwrap, 'GCFCloseElement');
-    GCFElementIsFolder  := InitDllPointer(Hgcfwrap, 'GCFElementIsFolder');
-    GCFNumSubElements   := InitDllPointer(Hgcfwrap, 'GCFNumSubElements');
-    GCFGetSubElement    := InitDllPointer(Hgcfwrap, 'GCFGetSubElement');
-    GCFSubElementName   := InitDllPointer(Hgcfwrap, 'GCFSubElementName');
-    GCFReadFile     := InitDllPointer(Hgcfwrap, 'GCFReadFile');
-    GCFFileSize     := InitDllPointer(Hgcfwrap, 'GCFFileSize');
-    GCFPrepList     := InitDllPointer(Hgcfwrap, 'GCFPrepList');
-
-    SetLogPath(PChar(GetQPath(pQuArKLog)));
-    if Init <> 0 then
-      LogAndRaiseError('Unable to initialize QuArKGCF library');
-
-    Log(LOG_VERBOSE, 'GCF loaded!');
-  end;
-end;
-
-procedure uninitdll;
-begin
-  if Hgcfwrap <> 0 then
-  begin
-    Log(LOG_VERBOSE, 'Unloading GCF...');
-
-    Unload;
-
-    if FreeLibrary(Hgcfwrap)=false then
-    begin
-      LogWindowsError(GetLastError(), 'FreeLibrary(Hgcfwrap)');
-      LogAndRaiseError('Unable to unload the QuArKGCF library');
-    end;
-    Hgcfwrap := 0;
-
-    APIVersion      := nil;
-    SetLogPath      := nil;
-    Init            := nil;
-    Unload          := nil;
-    GCFOpen         := nil;
-    GCFClose        := nil;
-    GCFOpenElement  := nil;
-    GCFCloseElement := nil;
-    GCFElementIsFolder  := nil;
-    GCFNumSubElements   := nil;
-    GCFGetSubElement    := nil;
-    GCFSubElementName   := nil;
-    GCFReadFile     := nil;
-    GCFFileSize     := nil;
-    GCFPrepList     := nil;
-  end;
-
-  if Hhllibwrap <> 0 then
-  begin
-    if FreeLibrary(Hhllibwrap)=false then
-    begin
-      LogWindowsError(GetLastError(), 'FreeLibrary(Hhllibwrap)');
-      LogAndRaiseError('Unable to unload the HLLib library');
-    end;
-    Hhllibwrap := 0;
-  end;
-
-  Log(LOG_VERBOSE, 'GCF unloaded!');
-end;
+  HLLoaded: Boolean;
 
  {------------ QGCFFolder ------------}
 
@@ -378,7 +252,12 @@ var
 begin
   case ReadFormat of
     1: begin  { as stand-alone file }
-         initdll;
+         if not HLLoaded then
+         begin
+           if not LoadHLLib then
+             Raise EErrorFmt(5719, [GetLastError]);
+           HLLoaded:=true;
+         end;
 
          gcfhandle:= GCFOpen(PChar(LoadName));
          if gcfhandle=nil then
@@ -401,7 +280,13 @@ procedure QGCFFolder.SaveFile(Info: TInfoEnreg1);
 begin
  with Info do case Format of
   1: begin  { as stand-alone file }
-      initdll;
+      if not HLLoaded then
+      begin
+        if not LoadHLLib then
+          Raise EErrorFmt(5719, [GetLastError]);
+        HLLoaded:=true;
+      end;
+
       {tbd: save to gcf}
      end;
  else inherited;
@@ -437,10 +322,7 @@ function QGCFFolder.GetFolder(Path: String) : QGCFFolder;
 var
  I, J: Integer;
  Folder: QObject;
- S: String;
 begin
-  S:=TypeInfo;
-  S:=S;
  Result:=Self;
  while Path<>'' do
   begin
@@ -483,9 +365,14 @@ end;
 
 procedure GCFDLLConversionTool(packagefile: PChar; textfile: PChar);
 begin
- initdll;
- if not GCFPrepList(packagefile, textfile) then
-   LogAndRaiseError('Error Loading "' + packagefile + '": Unsupported package type.');
+  if not HLLoaded then
+  begin
+    if not LoadHLLib then
+      Raise EErrorFmt(5719, [GetLastError]);
+    HLLoaded:=true;
+  end;
+  if not GCFPrepList(packagefile, textfile) then
+    LogAndRaiseError('Error Loading "' + packagefile + '": Unsupported package type.');
 end;
 
  {------------------------}
@@ -495,10 +382,9 @@ begin
   {tbd is the code ok to be used ?  }
   RegisterQObject(QGCF, 's');
   RegisterQObject(QGCFFolder, 'a');
-  Hgcfwrap := 0;
-  HHLLibwrap := 0;
 end;
 
 finalization
-  uninitdll;
+  if HLLoaded then
+    UnloadHLLib;
 end.

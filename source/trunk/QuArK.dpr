@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.69  2010/06/15 18:04:49  danielpharos
+Attempt to fix .qkl files being saved with the wrong extension.
+
 Revision 1.68  2010/04/16 18:44:59  danielpharos
 Reduced missing init-logging entries to a single problematic line. Also, logging now uses const strings (faster).
 
@@ -297,6 +300,7 @@ uses
   QkGCF in 'prog\QkGCF.pas',
   QkGroup in 'prog\QkGroup.pas' {FQGroup},
   QkHL in 'prog\QkHL.pas',
+  QkHLLib in 'prog\QkHLLib.pas',
   QkHr2 in 'prog\QkHr2.pas',
   QkImages in 'prog\QkImages.pas' {FQImages},
   QkInclude in 'prog\QkInclude.pas',
