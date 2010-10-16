@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.76  2010/03/08 22:03:38  danielpharos
+Fixed issues with shaders and materials not showing because of slash-problems.
+
 Revision 1.75  2010/03/08 21:45:46  danielpharos
 Fixed slashes not being appended to game texture paths.
 
@@ -1109,22 +1112,24 @@ begin
 end;
 
 procedure QTextureFile.SaveAsHalfLife(F: TStream);
+const
+  Spec2 = 'Pal';
 var
   S: String;
   PalSize: SmallInt;
 begin
   SaveAsQuake1(F);
 
-  S:=GetSpecArg('Pal');
+  S:=GetSpecArg(Spec2);
   if S='' then
     PalSize:=0
   else
-    PalSize:=(Length(S)-Length('Pal=')) div SizeOf(TPaletteLmp1);
+    PalSize:=(Length(S)-(Length(Spec2)+1)) div SizeOf(TPaletteLmp1);
 
   F.WriteBuffer(PalSize, SizeOf(PalSize));
 
   if PalSize>0 then
-    F.WriteBuffer((PChar(S)+Length('Pal='))^, PalSize*SizeOf(TPaletteLmp1));
+    F.WriteBuffer((PChar(S)+(Length(Spec2)+1))^, PalSize*SizeOf(TPaletteLmp1));
 end;
 
 function QTexture.TestConversionType(I: Integer) : QFileObjectClass;
@@ -1435,7 +1440,8 @@ end;
 function QTextureFile.ScaledDownDescription(I: Integer) : TPixelSetDescription;
 const
   Spec1 = 'Image#';
-  LenPal = Length('Pal=');
+  Spec2 = 'Pal';
+  LenSpec2 = Length(Spec2)+1;
 var
  {Size: TPoint;}
   Spec, S, Pal: String;
@@ -1452,11 +1458,11 @@ begin
   else
   begin
     Result.Palette:=pspVariable;
-    Pal:=GetSpecArg('Pal');
-    if Length(Pal) < SizeOf(TPaletteLmp) + LenPal then
+    Pal:=GetSpecArg(Spec2);
+    if Length(Pal) < SizeOf(TPaletteLmp) + LenSpec2 then
       Result.ColorPalette:=@GameBuffer(BaseGame)^.PaletteLmp
     else
-      Result.ColorPalette:=PPaletteLmp(PChar(Pal)+LenPal);
+      Result.ColorPalette:=PPaletteLmp(PChar(Pal)+LenSpec2);
   end;
 
   Spec:=Spec1;
@@ -1541,6 +1547,9 @@ begin
 end;
 
 function QTextureFile.SetDescription(const PSD: TPixelSetDescription; Confirm: TSDConfirm) : Boolean;
+const
+  Spec2 = 'Pal';
+  LenSpec2 = Length(Spec2+'=');
 var
   NewPSD: TPixelSetDescription;
   cp, I, W, H: Integer;
@@ -1561,9 +1570,9 @@ begin
     else
     begin
       NewPSD.Palette:=pspVariable;
-      Pal:='Pal=';
-      SetLength(Pal, Length('Pal=')+SizeOf(TPaletteLmp));
-      NewPSD.ColorPalette:=PPaletteLmp(PChar(Pal)+Length('Pal='));
+      Pal:=Spec2+'=';
+      SetLength(Pal, LenSpec2+SizeOf(TPaletteLmp));
+      NewPSD.ColorPalette:=PPaletteLmp(PChar(Pal)+LenSpec2);
       { set the ColorPalette pointer but don't initialize the palette;
       pspVariable tells PSDConvert to store the new palette there. }
     end;
@@ -1589,7 +1598,7 @@ begin
       for I:=0 to (cp and cpIndexesMax)-1 do
         Specifics.Values['Image'+ImgCodes[I]]:='';
 
-      Specifics.Values['Pal']:='';
+      Specifics.Values[Spec2]:='';
       SetSize(NewPSD.Size);
       Specifics.Add(Data);
       if Pal<>'' then
@@ -1960,17 +1969,20 @@ begin
 end;
 
 function QTextureFile.LoadPaletteInfo : PGameBuffer;
+const
+  Spec2 = 'Pal';
+  LenSpec2 = Length(Spec2+'=');
 var
   P: PChar;
   Pal: String;
 begin
   Acces;
   Result:=DuplicateGameBuffer(GameBuffer(BaseGame));
-  Pal:=GetSpecArg('Pal');
-  if (Length(Pal) >= SizeOf(TPaletteLmp) + Length('Pal=')) then
+  Pal:=GetSpecArg(Spec2);
+  if (Length(Pal) >= SizeOf(TPaletteLmp) + LenSpec2) then
   begin
     P:=Pointer(Pal);
-    Move(P[Length('Pal=')], Result^.PaletteLmp, SizeOf(TPaletteLmp));
+    Move(P[LenSpec2], Result^.PaletteLmp, SizeOf(TPaletteLmp));
     PaletteFromLmp(Result^.PaletteLmp, Result^.BitmapInfo, @Result^.Palette, @Result^.PaletteReelle);
   end;
 end;
