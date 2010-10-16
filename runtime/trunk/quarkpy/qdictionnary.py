@@ -967,9 +967,9 @@ Strings = {
     5721: "Unable to save VTF file. Call to %s failed.",
     5722: "Unable to load GCF file. Call to %s failed.\nError: %s",
     5723: "Unable to save GCF file. Call to %s failed.\nError: %s",
-    #5724: "reserved for hl2",
-    #5725: "reserved for hl2",
-    #5726: "reserved for hl2",
+    5724: "Unable to load VPK file. Call to %s failed.\nError: %s",
+    5725: "Unable to save VPK file. Call to %s failed.\nError: %s",
+    5726: "Error while handling VPK file:\nCall: %s\nError: %s",
     #5727: "reserved for hl2",
     #5728: "reserved for hl2",
     #5729: "reserved for hl2",
@@ -1078,6 +1078,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.150  2010/10/16 21:47:42  danielpharos
+#Reworked GCF file loading. HLLib now directly called. Updated to HLLib 2.3.0. Fixed JPG-library setting being used in VTF file saving.
+#
 #Revision 1.149  2010/05/03 04:06:09  cdunde
 #Code update.
 #

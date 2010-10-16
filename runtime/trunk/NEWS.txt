@@ -14,6 +14,8 @@ $Id$
 
 6.6.0 Beta 4
 ============
+* [DanielPharos]: Added VPK file loading support (for example: Left 4 Dead).
+
 * [DanielPharos]: Model editor, Fix bone-position with Undo/Redo dialog box and made some fixes to selection-holding code.
 
 * [cdunde/DanielPharos]: Added support for player models attachment tags.

@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.70  2010/10/16 18:50:55  danielpharos
+Re-factored GCF-file handling code: split into GCF and HLLib.
+
 Revision 1.69  2010/06/15 18:04:49  danielpharos
 Attempt to fix .qkl files being saved with the wrong extension.
 
@@ -341,6 +344,7 @@ uses
   QkUnknown in 'prog\QkUnknown.pas' {FQUnknown},
   QkVMF in 'prog\QkVMF.pas',
   QkVMT in 'prog\QkVMT.pas',
+  QkVPK in 'prog\QkVPK.pas',
   QkVTF in 'prog\QkVTF.pas',
   QkVTFLib in 'prog\QkVTFLib.pas',
   QkWad in 'prog\QkWad.pas' {FQWad},
