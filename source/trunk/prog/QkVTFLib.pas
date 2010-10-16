@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.29  2010/08/15 21:19:38  danielpharos
+Updated to VTFLib 1.3.1, and added 7.5 VTF version to settings.
+
 Revision 1.28  2010/05/23 15:56:46  danielpharos
 Added some logging during loading and unloading of some external libraries.
 
@@ -182,7 +185,7 @@ unit QkVTFLib;
 
 interface
 
-uses Windows, SysUtils, QkObjects;
+uses Windows, SysUtils;
 
 function LoadVTFLib : Boolean;
 procedure UnloadVTFLib(ForceUnload: boolean = false);
