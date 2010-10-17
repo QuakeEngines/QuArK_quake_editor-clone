@@ -15,8 +15,10 @@ You might need to enable lighting in order for transparency to be applied.
 
 <u>Additional options</u>
 
-<i>Bilinear filtering</i>. This improved the texture quality. It will
-make the textures appear less blocky.
+<i>Texture filtering</i>. This improved the texture quality, mainly under
+high angles. It will make the textures appear less blocky and pixelated.
+The higher the settings, the better the quality, but also the lower the
+performance.
 
 <i>Double buffering</i>. When enabled, OpenGL will render the image
 offscreen, and then copy it. This will prevent any weird triangular
@@ -69,6 +71,6 @@ time, especially in larger scenes with many lights. Disabling lighting
 when moving will speed up rendering when the camera is moving, and thus
 make the movement much less jerky.
 
-Note: Use an utility like <a target="_blank" href="http://www.realtech-vr.com/glview/">OpenGL Viewer</a>
+Note: Use a utility like <a target="_blank" href="http://www.realtech-vr.com/glview/">OpenGL Viewer</a>
 to make sure your video card and video drivers support all the OpenGL
 features QuArK needs.
