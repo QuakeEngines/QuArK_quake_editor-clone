@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.521  2010/09/01 20:20:15  danielpharos
+//Added experimental trilinear and anisotropic texture filtering.
+//
 //Revision 1.520  2010/08/25 22:25:01  cdunde
 //Added game models support file.
 //
@@ -1850,6 +1853,7 @@ QQRKSRC1
         .qkm = "!"     iqkm = '2'
         .map = "1"     imap = '2'
         .hmf = "1"     ihmf = '2'
+        .rmf = "1"     irmf = '2'
         .vmf = "1"     ivmf = '2'
         .cmap = "1"    icmap = '2'
         .bsp = "1"     ibsp = '3'
@@ -1865,6 +1869,8 @@ QQRKSRC1
         .iwd = "1"     iiwd = '5'
         .col = "1"     icol = '5'
         .gcf = "1"     igcf = '5'
+        .ncf = "1"     incf = '5'
+        .vpk = "1"     ivpk = '5'
         .vl2 = "1"     ivl2 = '5'
         .qc  = "1"     iqc  = '8'
         .hc  = "1"     ihc  = '8'
@@ -1903,6 +1909,7 @@ QQRKSRC1
         .qkm = ""
         .map = "Notepad.exe"
         .hmf = "Notepad.exe"
+        .rmf = ""
         .vmf = "Notepad.exe"
         .cmap = "Notepad.exe"
         .bsp = "<open>"
@@ -1918,6 +1925,8 @@ QQRKSRC1
         .iwd = ""
         .col = ""
         .gcf = ""
+        .ncf = ""
+        .vpk = ""
         .vl2 = ""
         .qc  = "Notepad.exe"
         .hc  = "Notepad.exe"
@@ -9684,6 +9693,7 @@ QQRKSRC1
       //.qkm: = { Txt="QKM map files" externaledit = ! }
       .map: = { Txt="MAP map files" externaledit = ! }
       .hmf: = { Txt="HMF map files" externaledit = ! }
+      .rmf: = { Txt="RMF map files" externaledit = ! }
       .vmf: = { Txt="VMF map files" externaledit = ! }
       .cmap: = { Txt="CMAP map files" externaledit = ! }
       .bsp: = { Txt="BSP compiled maps" externaledit = ! }
@@ -9699,6 +9709,8 @@ QQRKSRC1
       .iwd: = { Txt="IWD archives" externaledit = ! }
       .col: = { Txt="COL archives" externaledit = ! }
       .gcf: = { Txt="GCF archives" externaledit = ! }
+      .ncf: = { Txt="NCF archives" externaledit = ! }
+      .vpk: = { Txt="VPK archives" externaledit = ! }
       .vl2: = { Txt="VL2 archives" externaledit = ! }
       .qc:  = { Txt="QC scripts" externaledit = ! }
       .hc:  = { Txt="HC scripts" externaledit = ! }
@@ -9761,6 +9773,7 @@ QQRKSRC1
     //.qkm: = {Typ="X" Cap=".qkm" Txt="QuArK maps (if not in .qrk)"}
       .map: = {Typ="X" Cap=".map" Txt="Quake map files"}
       .hmf: = {Typ="X" Cap=".hmf" Txt="6DX map files"}
+      .rmf: = {Typ="X" Cap=".rmf" Txt="Rich Map Format map files"}
       .vmf: = {Typ="X" Cap=".vmf" Txt="Valve map format map files"}
       .cmap: = {Typ="X" Cap=".cmap" Txt="Sylphis map files"}
       .bsp: = {Typ="X" Cap=".bsp" Txt="Compiled maps"}
@@ -9776,6 +9789,8 @@ QQRKSRC1
       .iwd: = {Typ="X" Cap=".iwd" Txt="PACK files for Call of Duty 2"}
       .col: = {Typ="X" Cap=".col" Txt="PACK files for Sylphis"}
       .gcf: = {Typ="X" Cap=".gcf" Txt="PACK files for Half-Life 2"}
+      .ncf: = {Typ="X" Cap=".ncf" Txt="PACK files for Left 4 Dead"}
+      .vpk: = {Typ="X" Cap=".vpk" Txt="PACK files for Left 4 Dead"}
       .vl2: = {Typ="X" Cap=".vl2" Txt="PACK files for Tribe 2"}
       .qc:  = {Typ="X" Cap=".qc"  Txt="QuakeC Code (Quake 1)"}
       .hc:  = {Typ="X" Cap=".hc"  Txt="HexenC Code (Hexen II)"}
