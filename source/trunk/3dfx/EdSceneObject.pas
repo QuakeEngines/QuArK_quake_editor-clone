@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.52  2009/07/15 10:38:06  danielpharos
+Updated website link.
+
 Revision 1.51  2009/02/21 17:06:17  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -636,6 +639,7 @@ var
  NewRenderMode: Integer;
  TextureManager: TTextureManager;
  Mode: TBuildMode;
+ NeedVertexList2: Boolean;
  VertexSize, VertexSize3m: Integer;
  BezierBuf: TBezierMeshBuf3;
  BControlPoints: TBezierMeshBuf5;
@@ -758,13 +762,14 @@ var
 begin
  ClearPList;
  Mode:=StartBuildScene({PalWarning,} VertexSize);
+ NeedVertexList2:=(Mode=bmSoftware) or (Mode=bmGlide);
  TextureManager:=TTextureManager.GetInstance;
  VertexSize3m:=SizeOf(TSurface3D)+3*VertexSize;
  TexNames:=TStringList.Create;
  try  {begin outer try block - almost whole method}
    TexNames.Sorted:=True;
 
-   if (Mode=bmSoftware) or (Mode=bmGlide) then
+   if NeedVertexList2 then
    begin
      nVertexList:=TList.Create;
      nVertexList2:=TList.Create;
@@ -868,7 +873,7 @@ begin
          with OneBezier do
          begin
            BezierBuf:=GetMeshCache;
-           if Mode<>bmOpenGL then
+           if NeedVertexList2 then
            begin
              AddSurfaceRef(NomTex, ((BezierBuf.H-1) * (BezierBuf.W-1) * 2) * VertexSize3m, Nil);
              for J:=1 to BezierBuf.W*BezierBuf.H do
@@ -879,7 +884,7 @@ begin
            end
            else
            begin
-             { bmOpenGL }
+             { bmOpenGL or bmDirect3D }
              AddSurfaceRef(NomTex, (BezierBuf.H-1) * (SizeOf(TSurface3D) + 2 * BezierBuf.W * (VertexSize + SizeOf(vec3_t))), Nil);
            end;
          end;
@@ -1172,7 +1177,7 @@ begin
            Inc(PV, VertexSize);
          end;
 
-         if (Mode=bmSoftware) or (Mode=bmGlide) then
+         if NeedVertexList2 then
            Surf3D^.GlideRadius:=Sqrt(Radius2);
 
          PList^.tmp:=PSurface3D(PV);
@@ -1263,7 +1268,7 @@ begin
                OpenGLLights := 0;
                OpenGLLightList := nil;
 
-               if (Mode=bmSoftware) or (Mode=bmGlide) then
+               if NeedVertexList2 then
                begin
                  if nRadius2>Radius2 then
                    GlideRadius:=Sqrt(nRadius2)
@@ -1380,7 +1385,7 @@ begin
                OpenGLLights := 0;
                OpenGLLightList := nil;
 
-               if (Mode=bmSoftware) or (Mode=bmGlide) then
+               if NeedVertexList2 then
                begin
                  if nRadius2>Radius2 then
                    GlideRadius:=Sqrt(nRadius2)
@@ -1467,7 +1472,7 @@ begin
            end;
 
            st:=stBuffer;
-           if (Mode=bmSoftware) or (Mode=bmGlide) then
+           if NeedVertexList2 then
            begin
              for L:=0 to BezierBuf.H-2 do
              begin
@@ -1485,7 +1490,7 @@ begin
            end
            else
            begin
-             { bmOpenGL }
+             { bmOpenGL or bmDirect3D }
              for L:=0 to BezierBuf.H-2 do
              begin
                with Surf3D^ do
