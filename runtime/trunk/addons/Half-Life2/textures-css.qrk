@@ -54,6 +54,10 @@ QQRKSRC1
             brick/infwndwc.wl  = { t_css=! }
             brick/infwndwc_off.wl  = { t_css=! }
             brick/infwndwd.wl  = { t_css=! }
+            brick/morarcha.wl  = { t_css=! }
+            brick/morarchb.wl  = { t_css=! }
+            brick/morwllb.wl  = { t_css=! }
+            brick/morwllg.wl  = { t_css=! }
             brick/offwlla.wl  = { t_css=! }
             brick/offwllb.wl  = { t_css=! }
             brick/offwllbedge.wl  = { t_css=! }
@@ -61,7 +65,7 @@ QQRKSRC1
             brick/offwlld.wl  = { t_css=! }
             }
         
-        building.txlist =
+        buildings.txlist =
         {
             buildings/antn01.wl  = { t_css=! }
             buildings/antn02.wl  = { t_css=! }
@@ -132,6 +136,14 @@ QQRKSRC1
             concrete/curbreda.wl  = { t_css=! }
             concrete/curbredafire.wl  = { t_css=! }
             concrete/curbredaparking.wl  = { t_css=! }
+            concrete/milflr001.wl  = { t_css=! }
+            concrete/milgrate001.wl  = { t_css=! }
+            concrete/milwall001.wl  = { t_css=! }
+            concrete/milwall002.wl  = { t_css=! }
+            concrete/milwall004.wl  = { t_css=! }
+            concrete/milwall005.wl  = { t_css=! }
+            concrete/milwall007.wl  = { t_css=! }
+            concrete/milwall008.wl  = { t_css=! }
             concrete/offceilinga.wl  = { t_css=! }
             concrete/offceilingb.wl  = { t_css=! }
             concrete/offflra.wl  = { t_css=! }
@@ -171,8 +183,8 @@ QQRKSRC1
         {
             console/background01.wl  = { t_css=! }
             console/background01_widescreen.wl  = { t_css=! }
-            console/intro.wl  = { t_css=! }
-            console/intro_widescreen.wl  = { t_css=! }
+//            console/intro.wl  = { t_css=! }
+//            console/intro_widescreen.wl  = { t_css=! }
         }
         
         cstrike.txlist =
@@ -223,6 +235,7 @@ QQRKSRC1
             cs_assault/assault_train_sched01.wl  = { t_css=! }
             cs_assault/assault_tres_decal01.wl  = { t_css=! }
             cs_assault/assault_tunnel_sign01.wl  = { t_css=! }
+//            cs_assault/assault_vent_decal01.wl  = { t_css=! )
             cs_assault/assault_warehouse_02.wl  = { t_css=! }
             cs_assault/assault_window_decal01.wl  = { t_css=! }
             cs_assault/concretefloor024adecal.wl  = { t_css=! }
@@ -262,6 +275,7 @@ QQRKSRC1
             cs_havana/blde.wl  = { t_css=! }
             cs_havana/bldf.wl  = { t_css=! }
             cs_havana/body.wl  = { t_css=! }
+            cs_havana/bookse.wl  = { t_css=! }
             cs_havana/box01sides.wl  = { t_css=! }
             cs_havana/box01top.wl  = { t_css=! }
             cs_havana/box02sides.wl  = { t_css=! }
@@ -271,9 +285,11 @@ QQRKSRC1
             cs_havana/box04sides.wl  = { t_css=! }
             cs_havana/box04top.wl  = { t_css=! }
             cs_havana/boxpaper01.wl  = { t_css=! }
+//            cs_havana/brickwall022a_height.wl  = { t_css=! }
             cs_havana/building010.wl  = { t_css=! }
             cs_havana/building011.wl  = { t_css=! }
             cs_havana/building03.wl  = { t_css=! }
+            cs_havana/building05.wl  = { t_css=! }
             cs_havana/building06.wl  = { t_css=! }
             cs_havana/building09.wl  = { t_css=! }
             cs_havana/bullet.wl  = { t_css=! }
@@ -310,6 +326,8 @@ QQRKSRC1
             cs_havana/cs_grey.wl  = { t_css=! }
             cs_havana/curb04.wl  = { t_css=! }
             cs_havana/cxcrptb.wl  = { t_css=! }
+            cs_havana/darkwood.wl  = { t_css=! }
+//            cs_havana/dirtfloor_blend.wl  = { t_css=! }
             cs_havana/dirtfloor006a.wl  = { t_css=! }
             cs_havana/dirtfloor009c.wl  = { t_css=! }
             cs_havana/dirtfloor01.wl  = { t_css=! }
@@ -2269,6 +2287,7 @@ QQRKSRC1
             effects/metalfence007a.wl  = { t_css=! }
             effects/metalrail011a.wl  = { t_css=! }
             effects/metaltruss022b.wl  = { t_css=! }
+            effects/metaltruss022c.wl  = { t_css=! }
             effects/metaltruss022d.wl  = { t_css=! }
             effects/muzzleflashX.wl  = { t_css=! }
             effects/offelevdrsa.wl  = { t_css=! }
