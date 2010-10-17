@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.3  2008/09/14 12:55:26  danielpharos
+//Changes to Help system: All forms now have a customizable help-link. Also, added an fallback option to the online infobase docs.
+//
 //Revision 1.2  2008/04/25 20:36:45  danielpharos
 //Major update: added all missing materials and removed all non-working ones.
 //
@@ -174,7 +177,7 @@ QQRKSRC1
         base_door/deldoorgutter.wl    = { t_basematerials_andy=! }
         base_door/deldoorgutter2.wl    = { t_basematerials_andy=! }
 //        base_door/delelev1.wl    = { t_basematerials_andy=! }
-        base_door/delelev1a.wl    = { t_basematerials_andy=! }
+//        base_door/delelev1a.wl    = { t_basematerials_andy=! }
 //        base_door/delelev2.wl    = { t_basematerials_andy=! }
 //        base_door/delelev2a.wl    = { t_basematerials_andy=! }
         base_door/doorlamp.wl    = { t_basematerials_andy=! }
