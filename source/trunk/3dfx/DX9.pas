@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2009/07/15 10:38:06  danielpharos
+Updated website link.
+
 Revision 1.13  2009/02/21 17:06:18  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -100,8 +103,16 @@ begin
         end;
       end;
 
-      //Check for software/hardware vertex processing
       BehaviorFlags:=0;
+      Setup:=SetupSubSet(ssGeneral, 'DirectX');
+      if Setup.Specifics.Values['HighPrecision']<>'' then
+        BehaviorFlags:=BehaviorFlags or D3DCREATE_FPU_PRESERVE;
+
+      //FIXME: What about:    http://msdn.microsoft.com/en-us/library/bb172527(VS.85).aspx
+      //D3DCREATE_MIXED_VERTEXPROCESSING
+      //D3DCREATE_MULTITHREADED
+
+      //Check for software/hardware vertex processing
       if (D3DCaps.DevCaps and D3DDEVCAPS_HWTRANSFORMANDLIGHT)<>0 then
       begin
         Log(LOG_VERBOSE, LoadStr1(6421));
@@ -122,7 +133,6 @@ begin
       else
         Log(LOG_VERBOSE, LoadStr1(6424));
 
-      Setup:=SetupSubSet(ssGeneral, 'DirectX');
       try
         BackBufferFormat:=StrToInt(Setup.Specifics.Values['BackBufferFormat']);
         if (BackBufferFormat < 0) or (BackBufferFormat > 5) then

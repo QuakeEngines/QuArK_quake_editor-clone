@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.522  2010/10/17 15:38:06  danielpharos
+//Added new filetypes.
+//
 //Revision 1.521  2010/09/01 20:20:15  danielpharos
 //Added experimental trilinear and anisotropic texture filtering.
 //
@@ -1804,6 +1807,7 @@ QQRKSRC1
         BackBufferFormat = "1"
         StencilBufferBits = "0"
         Culling = "1"
+        HighPrecision = ""
         Form = "GeneralDirectX"
       }
       Memory:config =
@@ -9659,6 +9663,7 @@ QQRKSRC1
       Dither: = { Typ="X" Txt="Color dithering" Cap="Enabled" }
       Culling: = {Typ="X" Txt="Face culling" Cap="Enabled" Hint="Speeds up rendering by making all the backsides of faces invisible."
                                                              $0D"This doesn't apply to transparent faces." }
+      HighPrecision: = { Typ="X" Txt="High floating point precision" Cap="Enabled" Hint="Enables high precision floating point calculations. Improves accuracy, but decreases performance."}
     }
     GeneralMemory:form =
     {

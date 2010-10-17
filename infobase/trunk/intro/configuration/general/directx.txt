@@ -28,5 +28,9 @@ overlapping while they're not. Not all modes might supported.
 <i>Face culling</i>. Speeds up rendering by making all the backsides of
 faces invisible. This doesn't apply to transparent faces.
 
+<i>High floating point precision</i>. Enabled high precision in floating
+point calculations. Setting this increases rendering accuracy, but also
+degrades performance.
+
 Note: Use the <a target="_blank" href="http://support.microsoft.com/kb/157730">DirectX Diagnostic Tool</a> to make sure you have the right
 version of DirectX installed. See <a target="_blank" href="http://support.microsoft.com/kb/157730">this article</a>.
