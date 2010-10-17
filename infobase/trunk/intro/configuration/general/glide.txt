@@ -26,5 +26,7 @@ Glide-driver.
 this setting, the higher the quality, but also the slower the
 rendering.
 
+<i>Mirroring</i>. Allows you to flip the viewport around. Use this if everything renders upside-down.
+
 Note: Usage of emulators (such as <a target="_blank" href="http://dege.freeweb.hu/">dgVoodoo</a>)
 might produce weird effects, and is generally not supported.
