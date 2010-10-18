@@ -400,21 +400,36 @@ class ModelEditor(BaseEditor):
 
 
     def ok(self, undo, msg, autoremove=[]):
+        sub_types = [':mg', ':tag', ':bg', ':bone', ':mc', ':sg', ':fg']
+        skip_types = [':sdo']
         sellist = self.layout.explorer.sellist
-        uniquesel = self.layout.explorer.uniquesel
-        def storestate(parent):
-            SelObjectList = []
-            for Object in parent.subitems:
-                Flags = 0
-                if Object in sellist:
-                    Flags = Flags + 1
-                if Object == uniquesel:
-                    Flags = Flags + 2
-                if (len(Object.subitems) != 0) and (Object.flags & qutils.OF_TVEXPANDED):
-                    Flags = Flags + 4
-                SelObjectList += [(Object.name, Flags, storestate(Object))]
-            return SelObjectList
-        SelObjectList = storestate(self.Root)
+        ObjSelectList = []
+        for obj in sellist:
+            sel = [obj.name]
+            par = obj.parent
+            while par.type != ":mr":
+                sel = sel + [par.name]
+                par = par.parent
+            sel.reverse()
+            ObjSelectList = ObjSelectList + [sel]
+
+        ObjExpandList = []
+        def storestate(parent, list):
+            if (len(parent.subitems) != 0) and parent.type in sub_types:
+                if (parent.flags & qutils.OF_TVEXPANDED) and not parent.name in list:
+                    list += [parent.name]
+                for Object in parent.subitems:
+                    if (len(Object.subitems) != 0) and Object.type in sub_types:
+                        if (Object.flags & qutils.OF_TVEXPANDED):
+                            list += [Object.name]
+                            list = storestate(Object, list)
+                    elif Object.type in skip_types or Object.type == ":bone":
+                        continue
+                    else:
+                        break
+            return list
+        for Object in self.Root.subitems:
+            ObjExpandList = storestate(Object, ObjExpandList)
 
         # Puts the 'pickle module' copy of ModelComponentList into the undo & for .qkl files saving.
         oldsd = self.Root.dictitems['ModelComponentList:sd']
@@ -426,26 +441,41 @@ class ModelEditor(BaseEditor):
 
         global NewSellist
         NewSellist = []
-        def restorestate(SelObjectList, parent):
-            for ObjectName, Flags, SelObjectListChildren in SelObjectList:
-                for Object in parent.subitems:
-                    if Object.name == ObjectName:
-                        if Flags & 2:
-                            if Flags & 1:
-                                #Add it to the FRONT of the sellist
-                                NewSellist.insert(0, Object)
-                        else:
-                            if Flags & 1:
-                                NewSellist.append(Object)
-                        if Flags & 4:
-                            Object.flags = Object.flags | qutils.OF_TVEXPANDED
-                        restorestate(SelObjectListChildren, Object)
-                        break
-        restorestate(SelObjectList, self.Root)
-        self.layout.explorer.expand(self.Root) #To trigger redrawing of expanded items in the treeview
-        self.layout.explorer.sellist = NewSellist
+        for item in ObjSelectList:
+            get = self.Root
+            try:
+                for name in range(len(item)):
+                    get = get.dictitems[item[name]]
+                NewSellist = NewSellist + [get]
+            except:
+                continue
 
+        getbones = 0
+        for ObjectName in ObjExpandList:
+            try:
+                if ObjectName.endswith(":bg"):
+                    bonesgroup = self.Root.dictitems[ObjectName]
+                    bonesgroup.flags = bonesgroup.flags | qutils.OF_TVEXPANDED
+                elif ObjectName.endswith(":bone"):
+                    if getbones == 0:
+                    	bones = bonesgroup.findallsubitems("", ':bone')
+                    	getbones = 1
+                    for bone in bones:
+                        if bone.name == ObjectName:
+                            bone.flags = bone.flags | qutils.OF_TVEXPANDED
+                            break
+                elif ObjectName.endswith(":mc"):
+                    comp = self.Root.dictitems[ObjectName]
+                    comp.flags = comp.flags | qutils.OF_TVEXPANDED
+                elif ObjectName.endswith(":sg") or ObjectName.endswith(":fg"):
+                    group = self.Root.dictitems[comp.name].dictitems[ObjectName]
+                    group.flags = group.flags | qutils.OF_TVEXPANDED
+            except:
+                continue
+
+        self.layout.explorer.sellist = NewSellist
         NewSellist = []
+
 
     def dropmap(self, view, newlist, x, y, src):
         center = view.space(x, y, view.proj(view.screencenter).z)
@@ -1891,6 +1921,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.157  2010/10/14 20:03:32  danielpharos
+#Fix bone-position with Undo/Redo dialog box and made some fixes to selection-holding code.
+#
 #Revision 1.156  2010/09/24 23:31:25  cdunde
 #Fix for Model Editor LMB click not deselecting everything
 #and made Skin-view independent from editor for same.
