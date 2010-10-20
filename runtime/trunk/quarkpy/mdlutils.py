@@ -2811,6 +2811,59 @@ def continue_bone(editor, bone, pos):
  #           h.draw(v, cv, h)
 
 #
+# This function creates a bone control to the specified bone and all its components.
+#
+def add_bone_control(editor, spec_bone):
+    folder_name = spec_bone.name.split("_")[0]
+    nbr = -1
+    for item in editor.Root.subitems:
+        if item.type == ":mc" and item.name.startswith(folder_name):
+            keys = item.dictspec.keys()
+            keys.sort()
+            for key in keys:
+                if key.startswith("bone_control_"):
+                    nbr = int(key.split("_")[2])
+            break
+    undo = quarkx.action()
+    new_bone = spec_bone.copy()
+    new_bone['control_type'] = "8"
+    new_bone['control_start'] = "-30.0"
+    new_bone['control_end'] = "30.0"
+    new_bone['control_rest'] = "0"
+    new_bone['control_index'] = str(nbr+1)
+    undo.exchange(spec_bone, new_bone)
+    for item in editor.Root.subitems:
+        if item.type == ":mc" and item.name.startswith(folder_name):
+            new_comp = item.copy()
+            new_comp["bone_control_" + str(nbr+1)] = spec_bone.name
+            undo.exchange(item, new_comp)
+    editor.ok(undo, "add bone control")
+
+#
+# This function removes a bone control from the specified bone and all its components.
+#
+def remove_bone_control(editor, spec_bone):
+    folder_name = spec_bone.name.split("_")[0]
+    undo = quarkx.action()
+    new_bone = spec_bone.copy()
+    new_bone['control_type'] = ""
+    new_bone['control_start'] = ""
+    new_bone['control_end'] = ""
+    new_bone['control_rest'] = ""
+    new_bone['control_index'] = ""
+    undo.exchange(spec_bone, new_bone)
+    for item in editor.Root.subitems:
+        if item.type == ":mc" and item.name.startswith(folder_name):
+            new_comp = item.copy()
+            keys = new_comp.dictspec.keys()
+            for key in keys:
+                if key.startswith("bone_control_") and (new_comp.dictspec[key] == spec_bone.name):
+                    new_comp[key] = ""
+                    break
+            undo.exchange(item, new_comp)
+    editor.ok(undo, "remove bone control")
+
+#
 # This function attaches 1st bone selected (based on tree-view order) to 2nd bone selected as its parent.
 #
 def attach_bone1to2(editor, bone1, bone2):
@@ -4381,6 +4434,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.149  2010/10/20 06:40:36  cdunde
+#Fixed the loss of selections and expanded items in the Model Editor from UNDO and REDO actions.
+#
 #Revision 1.148  2010/10/10 03:24:59  cdunde
 #Added support for player models attachment tags.
 #To make baseframe name uniform with other files.

@@ -306,7 +306,8 @@ class mdl_bone: # Done cdunde from -> hlmviewer source file -> studio.h -> mstud
 class mdl_bone_control: # Done cdunde from -> hlmviewer source file -> studio.h -> mstudiobonecontroller_t
                     #item of data file, size & type,   description
     bone = 0        #item  0      int, -1 = 0
-    type = 0        #item  1      int, types = X, Y, Z, XR, YR, ZR or M.
+                    #                  types = X, Y, Z, XR, YR, ZR or M.
+    type = 0        #item  1      int, types = 1, 2, 4,  8, 16, 32 or 64
     start = 0.0     #item  2      float.
     end = 0.0       #item  3      float.
     rest = 0        #item  4      int, byte index value at rest.
@@ -759,24 +760,24 @@ class mdl_hitbox: # Done cdunde from -> hlmviewer source file -> studio.h -> mst
                             #item of data file, size & type,   description
     bone = 0                #item  0      int, bone index.
     group = 0               #item  1      int, intersection group.
-    bbmin = [0.0]*3         #item  2-4   3 floats, bounding box min.
-    bbmax = [0.0]*3         #item  5-7   3 floats, bounding box max.
+    bbmin = (0.0)*3         #item  2-4   3 floats, bounding box min.
+    bbmax = (0.0)*3         #item  5-7   3 floats, bounding box max.
 
     binary_format = "<2i3f3f" #little-endian (<), see #item descriptions above.
 
     def __init__(self):
         self.bone = 0
         self.group = 0
-        self.bbmin = [0.0]*3
-        self.bbmax = [0.0]*3
+        self.bbmin = (0.0)*3
+        self.bbmax = (0.0)*3
 
     def load(self, file):
         temp_data = file.read(struct.calcsize(self.binary_format))
         data = struct.unpack(self.binary_format, temp_data)
         self.bone = data[0]
         self.group = data[1]
-        self.bbmin = [data[2], data[3], data[4]]
-        self.bbmax = [data[5], data[6], data[7]]
+        self.bbmin = (data[2], data[3], data[4])
+        self.bbmax = (data[5], data[6], data[7])
         return self
 
     def dump(self):
@@ -1330,7 +1331,7 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
     demand_seq_groups = []
     bone_controls = []
     sequence_descs = []
-    hitboxes = []
+    hitboxes = {}
     attachments = {}
     bodyparts = []
     anim_seqs_data = []
@@ -1348,7 +1349,7 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
         self.demand_seq_groups = [] # A list of the demand sequence groups.
         self.bone_controls = []     # A list of the bone controllers.
         self.sequence_descs = []    # A list of the sequence descriptions (leads into grouped frames).
-        self.hitboxes = []          # A list of the hitboxes.
+        self.hitboxes = {}          # A dictionary list of the hitboxes, the key being the bone number it is attached to.
         self.attachments = {}       # A dictionary list of the attachments, the key being the bone number it is attached to.
         self.bodyparts = []         # A list of the bodyparts.
         self.anim_seqs_data = []    # A list of the animation sequences sub-list of seq_pivots, seq_panims, seq_frames from SetUpBones function.
@@ -1434,16 +1435,19 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
         # load the bone controllers data
         file.seek(ofsBegin + self.bone_controls_offset, 0)
         for i in xrange(self.num_bone_controls):
-            self.bone_controls.append(mdl_bone_control())
-            self.bone_controls[i].load(file)
-          #  self.bone_controls[i].dump()
+            control = mdl_bone_control().load(file)
+            self.bone_controls.append(control)
+          #  control.dump()
                   
         # load the hitboxes data
         file.seek(ofsBegin + self.hitboxes_offset, 0)
         for i in xrange(self.num_hitboxes):
-            self.hitboxes.append(mdl_hitbox())
-            self.hitboxes[i].load(file)
-          #  self.hitboxes[i].dump()
+            hitbox = mdl_hitbox().load(file)
+            if self.hitboxes.has_key(hitbox.bone):
+                self.hitboxes[hitbox.bone] = self.hitboxes[hitbox.bone] + [[hitbox.bbmin, hitbox.bbmax]]
+            else:
+                self.hitboxes[hitbox.bone] = [[hitbox.bbmin, hitbox.bbmax]]
+          #  hitbox.dump()
 
         # load the header for demand sequence group data
         file.seek(ofsBegin + self.demand_hdr_offset, 0)
@@ -1578,6 +1582,10 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
                     Component.appenditem(sdogroup)
                     Component.appenditem(skingroup)
                     Component.appenditem(framesgroup)
+                    # Add bone controls if any.
+                    for control in self.bone_controls:
+                        bone = self.bones[control.bone]
+                        Component['bone_control_'+ str(control.index)] = folder_name + "_" + bone.name + ":bone"
                     ComponentList = ComponentList + [Component]
 
         pseqdesc = self.sequence_descs
@@ -1666,7 +1674,6 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
                 else:
                     new_bone['parent_name'] = parent_bone.name
                     new_bone['bone_length'] = (-quarkx.vect(QuArK_bones[int(new_bone.dictspec['parent_index'])].dictspec['position']) + quarkx.vect(new_bone.dictspec['position'])).tuple
-                new_bone['scale'] = (1.0,)
                 new_bone['component'] = ComponentList[0].name # Reset this if needed later.
                 new_bone['draw_offset'] = (0.0, 0.0, 0.0)
                 new_bone['_color'] = MapColor("BoneHandles", 3)
@@ -1674,6 +1681,14 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
                 new_bone.vtx_pos = {}
                 new_bone['scale'] = (1.0,) # Written this way to store it as a tuple.
                 new_bone['org_scale'] = new_bone.dictspec['scale']
+                # Add bone control if any.
+                for control in self.bone_controls:
+                    if control.bone == mdlbone:
+                        new_bone['control_type'] = str(control.type)
+                        new_bone['control_start'] = str(control.start)
+                        new_bone['control_end'] = str(control.end)
+                        new_bone['control_rest'] = str(control.rest)
+                        new_bone['control_index'] = str(control.index)
                 QuArK_bones = QuArK_bones + [new_bone]
 
                 # Sets up the 'bonelist' entry of editor.ModelComponentList for the 'baseframe' of all importing bones
@@ -1683,6 +1698,8 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
                 bonedata['frames']['baseframe:mf'] = {}
                 bonedata['frames']['baseframe:mf']['position'] = new_bone.dictspec['position']
                 bonedata['frames']['baseframe:mf']['rotmatrix'] = new_bone.rotmatrix.tuple
+                if self.hitboxes.has_key(mdlbone):
+                    bonedata['bboxes'] = self.hitboxes[mdlbone]
                 editor.ModelComponentList['bonelist'][new_bone.name] = bonedata
 
         # load the meshes triangles data
@@ -2224,6 +2241,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".mdl Half-Life Importer", ".mdl file", "*.
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.10  2010/10/08 06:02:44  cdunde
+# To kill dump console printing.
+#
 # Revision 1.9  2010/10/08 05:33:35  cdunde
 # Added support for player models attachment tags.
 #

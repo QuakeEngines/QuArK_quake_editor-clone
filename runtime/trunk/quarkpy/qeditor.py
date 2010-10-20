@@ -1487,15 +1487,18 @@ def TexModeMenu(editor, view):
     import mdleditor
     if isinstance(editor, mdleditor.ModelEditor):
         import mdloptions
+        DrawBBoxes = mdloptions.toggleitem("&Draw Bounding Boxes", "DrawBBoxes", (1,1),
+            hint="|Draw Bounding Boxes:\n\nWhen checked this activates the display of model bounding boxes if any. Also known as 'hit boxes' for Half-Life and by other names for different model formats.|intro.modeleditor.rmbmenus.html#viewsrmbmenus")
         UseCompColors = mdloptions.toggleitem("&Use Component Colors", "CompColors", (1,1),
             hint="|Use Component Colors:\n\nWhen checked this activates the display of individual component colors, which can be set on the Specifics page, to distinguish one model component mesh area from another.|intro.modeleditor.rmbmenus.html#viewsrmbmenus")
         if view.info["type"] == "2D":
             modhint = qbasemgr.ModesHint + "\n\nReset 3D view:\nIf the model becomes 'lost', goes out of the 3D view, you can use this function to reset the 3D view and bring the model back to its starting position when it was first opened and based on the 'Rotation Method' you last chose to rotate the model by."
             infobaselink = "intro.modeleditor.menu.html#rmbmenus"
             Reset3D = qmenu.item("&Reset 3D view", reset3Dview, modhint, infobaselink)
-            List = [Reset3D] + [UseCompColors] + List
+            List = [Reset3D] + [DrawBBoxes, UseCompColors] + List
         else:
-            List = [UseCompColors] + List
+            List = [DrawBBoxes, UseCompColors] + List
+        DrawBBoxes.state = quarkx.setupsubset(SS_MODEL,"Options").getint("DrawBBoxes")
         UseCompColors.state = quarkx.setupsubset(SS_MODEL,"Options").getint("CompColors")
 
     return List
@@ -1567,6 +1570,9 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.60  2010/05/17 18:29:00  cdunde
+#Model Editor, to make resetting of 3D view view independent.
+#
 #Revision 1.59  2010/05/15 17:16:41  cdunde
 #A better way to handle the last change.
 #

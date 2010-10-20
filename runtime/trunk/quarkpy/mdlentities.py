@@ -2356,10 +2356,39 @@ class BoneType(EntityManager):
         SpecsList = SpecsList + """ Hint="List of components and number of"$0D"their vertexes assigned to this bone."$0D"If the current component does not use this bone"$0D"then 'None' will be displayed as the default item."}"""
 
         bonelist = 'Sep: = {Typ = "S"   Txt = ""}'
+        bone_control = """ """
         for item in editor.layout.explorer.sellist:
             if item.type == ":bone":
                 bone = item
                 bonelist = bonelist + bone.shortname + '_weight_value: = { Txt = "' + bone.shortname + ' weight value:"  Typ = "EU" Hint = "Set this vertex' + "'" + 's weight here."$0D"Total values for this vertex MUST = 1.0"}' + bone.shortname + '_weight_color: = { Typ = "LI" Txt = "' + bone.shortname + ' weight color" Hint = "Color used for this component' + "'" + 's vertex weight color mapping."$0D"You can not change this color, use button above."}'
+                keys = bone.dictspec.keys()
+                control = 0
+                for key in keys:
+                    if key.startswith("control_"):
+                        bone_control = 'Sep: = {Typ = "S"   Txt = ""} Sep: = {Typ="S" Txt="Bone Control Settings" Hint="Used in some games player models"$0D"such as Half-Life 1."$0D"Select component to change this control."}'
+                        control = 1
+                        break
+                if control == 1:
+                    for key in keys:
+                        if key == "control_index":
+                            bone_control = bone_control + 'control_index: = {Typ="E R" Txt="index" Hint="Which control this one is."$0D"Half-Life 1 allows up to 4."}'
+                            break
+                    for key in keys:
+                        if key == "control_type":
+                            bone_control = bone_control + 'control_type: = {Typ="CL" Txt="type" Hint="Default setting usually XRotation." items="1 = X"$0D"2 = Y"$0D"4 = Z"$0D"8 = XRotation"$0D"16 = YRotation"$0D"32 = ZRotation"$0D"64 = Mouth" values="1"$0D"2"$0D"4"$0D"8"$0D"16"$0D"32"$0D"64"}'
+                            break
+                    for key in keys:
+                        if key == "control_start":
+                            bone_control = bone_control + 'control_start: = {Typ="EU" Txt="start" Hint="Default setting usually -30."}'
+                            break
+                    for key in keys:
+                        if key == "control_rest":
+                            bone_control = bone_control + 'control_rest: = {Typ="EU" Txt="rest" Hint="Default setting usually 0."}'
+                            break
+                    for key in keys:
+                        if key == "control_end":
+                            bone_control = bone_control + 'control_end: = {Typ="EU" Txt="end" Hint="Default setting usually 30."}'
+                            break
 
         dlgdef = """
         {
@@ -2446,6 +2475,7 @@ class BoneType(EntityManager):
             }
           """ + vertex_weights_specifics_plugin + """
           """ + bonelist + """
+          """ + bone_control + """
         }
         """
 
@@ -2563,6 +2593,40 @@ class ComponentType(EntityManager):
     def dataformname(o):
         "Returns the data form for this type of object 'o' (a model component) to use for the Specific/Args page."
 
+        editor = mdleditor.mdleditor # Get the editor.
+        BoneControls = """ """
+        keys = o.dictspec.keys()
+        controls = 0
+        for key in keys:
+            if key.startswith("bone_control_"):
+                BoneControls = BoneControls + 'sep: = { Typ="S" Txt="" } sep: = { Typ="S" Txt="Bone Controls" }'
+                controls = 1
+                break
+        if controls == 1:
+            keys.sort()
+            for key in keys:
+                if key.startswith("bone_control_"):
+                    bone_name = o.dictspec[key]
+                    if bone_name.endswith("_select"):
+                        o[key] = bone_name.split("_select")[0]
+                        folder_name = o.name.split("_")[0]
+                        bones = []
+                        for bone in o.parent.dictitems['Skeleton:bg'].subitems:
+                            if bone.name.startswith(folder_name + "_"):
+                                bones = bones + bone.findallsubitems("", ':bone')    # get all bones
+                        for bone in bones:
+                            editor.layout.explorer.expand(bone.parent)
+                            if bone.name == o[key]:
+                                editor.layout.explorer.sellist = [bone]
+                                editor.layout.selchange()
+                                break
+                                
+                    nbr = key.split("_")[2]
+                    bone_name = o.dictspec[key].split(":")
+                    BoneControls = BoneControls + 'bone_control_' + nbr + ': = {Typ = "CL"  Txt = "&"  items = "' + bone_name[0] + '"$0D"select bone"'
+                    BoneControls = BoneControls + ' values = "' + o.dictspec[key] + '"$0D"' + o.dictspec[key] + '_select"'
+                    BoneControls = BoneControls + 'Hint = "Select bone for this control."$0D"Select this bone in Skeleton folder"$0D"to change its control settings."}'
+
         TagList = ""
         if o.dictspec.has_key("Tags") or o.dictspec.has_key("tag_components"):
             TagList = TagList + """sep: = { Typ="S" Txt="" } sep: = { Typ="S" Txt="Tags" }"""
@@ -2675,6 +2739,7 @@ class ComponentType(EntityManager):
               "component's mesh lines in textured or solid view mode."
                  }
           """ + TagList + """
+          """ + BoneControls + """
         }
         """
 
@@ -2693,8 +2758,6 @@ class ComponentType(EntityManager):
             o['vtx_count'] = "0"
 
         if o.dictspec.has_key("Tags") or o.dictspec.has_key("tag_components"):
-            editor = mdleditor.mdleditor # Get the editor.
-                    
             if o.dictspec.has_key("Tags"):
                 tagnames = o.dictspec['Tags'].split(", ")
                 group = o.name.split("_")[0]
@@ -3007,6 +3070,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.77  2010/06/15 20:38:36  cdunde
+#Added .ftx as supported texture file type for game FAKK2.
+#
 #Revision 1.76  2010/06/07 02:45:28  cdunde
 #Moved the 'pickle' saving call function to where it was needed to increase editor response time.
 #

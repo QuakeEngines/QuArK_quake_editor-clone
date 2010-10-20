@@ -4279,6 +4279,16 @@ class BoneCenterHandle(BoneHandle):
 
     def menu(self, editor, view): # for BoneCenterHandle
 
+        def add_bone_control_click(m, self=self, editor=editor, view=view):
+            import mdlmgr
+            mdlmgr.savefacesel = 1
+            add_bone_control(editor, self.bone)
+
+        def remove_bone_control_click(m, self=self, editor=editor, view=view):
+            import mdlmgr
+            mdlmgr.savefacesel = 1
+            remove_bone_control(editor, self.bone)
+
         def CalcBoneScaleValue(bone, parent_bone_scale):
             scale = 1.0
             if abs(bone.dictspec['bone_length'][0]) > abs(bone.dictspec['bone_length'][1]):
@@ -4735,6 +4745,14 @@ class BoneCenterHandle(BoneHandle):
         Forcetogrid = qmenu.item("&Force to grid", force_to_grid_click,"|Force to grid:\n\nThis will cause a bone's center handle to 'snap' to the nearest location on the editor's grid for the view that the RMB click was made in.|intro.modeleditor.rmbmenus.html#bonecommands")
         m = qmenu.item
         m.editor = editor
+        if self.bone is None:
+            bone_control = qmenu.item("Add \ Remove Control", None, "|Add \ Remove Control:\n\nThis will add or remove a single bone controle, connected to the bone handle when the RMB was clicked in the editor's view.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
+        else:
+            bone_control = qmenu.item("Add &Bone Control", add_bone_control_click, "|Add Bone Control:\n\nThis will add a single bone controle, connected to the bone handle when the RMB was clicked in the editor's view.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
+            for key in self.bone.dictspec.keys():
+                if key.startswith("control_"):
+                    bone_control = qmenu.item("&Remove Bone Control", remove_bone_control_click, "|Remove Bone Control:\n\nThis will remove a single bone controle, connected to the bone handle when the RMB was clicked in the editor's view.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
+                    break
         individual_bones_sel = qmenu.item("Individual Bones Selection", IndividualBonesSel, "|Individual Bones Selection:\n\n(Unless a function specifically deals with all bones)\n\nWhen this item is checked ONLY the INDIVIDUAL bone handles that are selected will be effected and NOT any sub-bones that are NOT specifically selected, Which IS the case if this is un-checked.|intro.modeleditor.editelements.html#specificsettings")
         individual_bones_sel.state = quarkx.setupsubset(SS_MODEL,"Options").getint("IndividualBonesSel")
         handlescalepop = qmenu.popup("Handle Scaling", handlescalemenu(m), None, "|Handle Scaling:\n\nThese functions deal with setting the scale size of the bone handles for better work size.", "intro.modeleditor.editelements.html#specificsettings")
@@ -4782,10 +4800,12 @@ class BoneCenterHandle(BoneHandle):
         AddBone.state = qmenu.normal
         if self.bone is None:
             ContinueBones.state = qmenu.disabled
+            bone_control.state = qmenu.disabled
             DetachBones.state = qmenu.disabled
             AssignReleaseVertices.state = qmenu.disabled
         else:
             ContinueBones.state = qmenu.normal
+            bone_control.state = qmenu.normal
             if self.bone.dictspec['parent_name'] == "None":
                 DetachBones.state = qmenu.disabled
             else:
@@ -4833,7 +4853,7 @@ class BoneCenterHandle(BoneHandle):
         if not MdlOption("GridActive") or editor.gridstep <= 0:
             Forcetogrid.state = qmenu.disabled
 
-        menu = [AddBone, ContinueBones, qmenu.sep, AttachBone1to2, AttachBone2to1, qmenu.sep, DetachBones, qmenu.sep, AlignBone1to2, AlignBone2to1, qmenu.sep, AssignReleaseVertices, qmenu.sep, SetHandlePosition, qmenu.sep] + sel_vtx_list + [qmenu.sep, individual_bones_sel] + [qmenu.sep, handlescalepop, qmenu.sep, KeyframesRotation, qmenu.sep, SB1, HB1, qmenu.sep] + BoneExtras + [qmenu.sep, Forcetogrid]
+        menu = [AddBone, ContinueBones, qmenu.sep, AttachBone1to2, AttachBone2to1, qmenu.sep, DetachBones, qmenu.sep, AlignBone1to2, AlignBone2to1, qmenu.sep, AssignReleaseVertices, qmenu.sep, SetHandlePosition, qmenu.sep] + sel_vtx_list + [qmenu.sep, bone_control, qmenu.sep, individual_bones_sel, qmenu.sep, handlescalepop, qmenu.sep, KeyframesRotation, qmenu.sep, SB1, HB1, qmenu.sep] + BoneExtras + [qmenu.sep, Forcetogrid]
 
         return menu
 
@@ -4869,6 +4889,30 @@ class BoneCenterHandle(BoneHandle):
             p = view.proj(0,0,0)
 
         if p.visible:
+            if MdlOption("DrawBBoxes") and editor.ModelComponentList['bonelist'].has_key(self.bone.name) and editor.ModelComponentList['bonelist'][self.bone.name].has_key("bboxes"):
+                bone_data = editor.ModelComponentList['bonelist'][self.bone.name]
+                frame_name = editor.Root.currentcomponent.currentframe.name
+                bpos = quarkx.vect(bone_data['frames'][frame_name]['position'])
+                brot = quarkx.matrix(bone_data['frames'][frame_name]['rotmatrix'])
+                cv.pencolor = RED
+                for bbox in bone_data['bboxes']:
+                    m = bbox[0]
+                    M = bbox[1]
+                    box = [quarkx.vect(m), quarkx.vect(M), quarkx.vect(m[0],m[1],M[2]), quarkx.vect(m[0],M[1],m[2]), quarkx.vect(m[0],M[1],M[2]), quarkx.vect(M[0],m[1],M[2]), quarkx.vect(M[0],m[1],m[2]), quarkx.vect(M[0],M[1],m[2])]
+                    for bp in xrange(len(box)):
+                        box[bp] = view.proj(bpos + (brot * box[bp]))
+                    cv.line(int(box[0].x), int(box[0].y), int(box[2].x), int(box[2].y))
+                    cv.line(int(box[0].x), int(box[0].y), int(box[3].x), int(box[3].y))
+                    cv.line(int(box[3].x), int(box[3].y), int(box[4].x), int(box[4].y))
+                    cv.line(int(box[4].x), int(box[4].y), int(box[2].x), int(box[2].y))
+                    cv.line(int(box[0].x), int(box[0].y), int(box[6].x), int(box[6].y))
+                    cv.line(int(box[3].x), int(box[3].y), int(box[7].x), int(box[7].y))
+                    cv.line(int(box[4].x), int(box[4].y), int(box[1].x), int(box[1].y))
+                    cv.line(int(box[2].x), int(box[2].y), int(box[5].x), int(box[5].y))
+                    cv.line(int(box[6].x), int(box[6].y), int(box[7].x), int(box[7].y))
+                    cv.line(int(box[7].x), int(box[7].y), int(box[1].x), int(box[1].y))
+                    cv.line(int(box[1].x), int(box[1].y), int(box[5].x), int(box[5].y))
+                    cv.line(int(box[5].x), int(box[5].y), int(box[6].x), int(box[6].y))
             bonecount = 0
             for item in editor.layout.explorer.sellist:
                 if item.type == ":bone" or item.type == ":mf":
@@ -5488,6 +5532,10 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.217  2010/10/10 03:24:59  cdunde
+#Added support for player models attachment tags.
+#To make baseframe name uniform with other files.
+#
 #Revision 1.216  2010/09/23 20:29:32  cdunde
 #Update for new Skin-view drag method.
 #
