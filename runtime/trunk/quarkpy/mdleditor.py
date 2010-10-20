@@ -43,6 +43,8 @@ class ModelEditor(BaseEditor):
     MouseDragMode = mdlhandles.RectSelDragObject
     findtargetdlg = None
     bone_frame = 0
+    ObjExpandList = []
+    ObjSelectList = []
 
     def __init__(self, form, file=None, filename=None):
         self.file = file
@@ -284,6 +286,8 @@ class ModelEditor(BaseEditor):
         mdleditor = None
         self.findtargetdlg = None
 
+        self.ObjExpandList = []
+        self.ObjSelectList = []
         self.ModelComponentList = {}
         self.ModelVertexSelList = []
         self.SkinVertexSelList = []
@@ -400,36 +404,7 @@ class ModelEditor(BaseEditor):
 
 
     def ok(self, undo, msg, autoremove=[]):
-        sub_types = [':mg', ':tag', ':bg', ':bone', ':mc', ':sg', ':fg']
-        skip_types = [':sdo']
-        sellist = self.layout.explorer.sellist
-        ObjSelectList = []
-        for obj in sellist:
-            sel = [obj.name]
-            par = obj.parent
-            while par.type != ":mr":
-                sel = sel + [par.name]
-                par = par.parent
-            sel.reverse()
-            ObjSelectList = ObjSelectList + [sel]
-
-        ObjExpandList = []
-        def storestate(parent, list):
-            if (len(parent.subitems) != 0) and parent.type in sub_types:
-                if (parent.flags & qutils.OF_TVEXPANDED) and not parent.name in list:
-                    list += [parent.name]
-                for Object in parent.subitems:
-                    if (len(Object.subitems) != 0) and Object.type in sub_types:
-                        if (Object.flags & qutils.OF_TVEXPANDED):
-                            list += [Object.name]
-                            list = storestate(Object, list)
-                    elif Object.type in skip_types or Object.type == ":bone":
-                        continue
-                    else:
-                        break
-            return list
-        for Object in self.Root.subitems:
-            ObjExpandList = storestate(Object, ObjExpandList)
+        SaveTreeView(self)
 
         # Puts the 'pickle module' copy of ModelComponentList into the undo & for .qkl files saving.
         oldsd = self.Root.dictitems['ModelComponentList:sd']
@@ -439,42 +414,7 @@ class ModelEditor(BaseEditor):
 
         undo.ok(self.Root, msg)
 
-        global NewSellist
-        NewSellist = []
-        for item in ObjSelectList:
-            get = self.Root
-            try:
-                for name in range(len(item)):
-                    get = get.dictitems[item[name]]
-                NewSellist = NewSellist + [get]
-            except:
-                continue
-
-        getbones = 0
-        for ObjectName in ObjExpandList:
-            try:
-                if ObjectName.endswith(":bg"):
-                    bonesgroup = self.Root.dictitems[ObjectName]
-                    bonesgroup.flags = bonesgroup.flags | qutils.OF_TVEXPANDED
-                elif ObjectName.endswith(":bone"):
-                    if getbones == 0:
-                    	bones = bonesgroup.findallsubitems("", ':bone')
-                    	getbones = 1
-                    for bone in bones:
-                        if bone.name == ObjectName:
-                            bone.flags = bone.flags | qutils.OF_TVEXPANDED
-                            break
-                elif ObjectName.endswith(":mc"):
-                    comp = self.Root.dictitems[ObjectName]
-                    comp.flags = comp.flags | qutils.OF_TVEXPANDED
-                elif ObjectName.endswith(":sg") or ObjectName.endswith(":fg"):
-                    group = self.Root.dictitems[comp.name].dictitems[ObjectName]
-                    group.flags = group.flags | qutils.OF_TVEXPANDED
-            except:
-                continue
-
-        self.layout.explorer.sellist = NewSellist
-        NewSellist = []
+        RestoreTreeView(self)
 
 
     def dropmap(self, view, newlist, x, y, src):
@@ -572,6 +512,7 @@ class ModelEditor(BaseEditor):
         # Updates the editor.ModelComponentList
         if self.Root.dictitems.has_key('ModelComponentList:sd'):
             UnflattenModelComponentList(self, self.Root.dictitems['ModelComponentList:sd']['data'])
+        RestoreTreeView(self)
 
 
     def explorerselchange(self, ex=None):
@@ -1921,6 +1862,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.158  2010/10/18 23:37:22  cdunde
+#Update to editor ok function to dramatically reduce processing time.
+#
 #Revision 1.157  2010/10/14 20:03:32  danielpharos
 #Fix bone-position with Undo/Redo dialog box and made some fixes to selection-holding code.
 #

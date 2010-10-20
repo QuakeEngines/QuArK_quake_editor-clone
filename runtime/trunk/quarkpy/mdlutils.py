@@ -222,8 +222,82 @@ def update_weightvtxlist(editor, vertex_index, bone=None, comp=None, option=1):
 #
 # Operational functions
 #
-###############################
+##############################################################
 
+
+#
+# Saves the tree-view selections and expanded folders structure.
+#
+def SaveTreeView(editor):
+    sub_types = [':mg', ':tag', ':bg', ':bone', ':mc', ':sg', ':fg']
+    skip_types = [':sdo']
+    sellist = editor.layout.explorer.sellist
+    editor.ObjSelectList = []
+    for obj in sellist:
+        sel = [obj.name]
+        par = obj.parent
+        while par.type != ":mr":
+            sel = sel + [par.name]
+            par = par.parent
+        sel.reverse()
+        editor.ObjSelectList = editor.ObjSelectList + [sel]
+
+    editor.ObjExpandList = []
+    def storestate(parent, list):
+        if (len(parent.subitems) != 0) and parent.type in sub_types:
+            if (parent.flags & qutils.OF_TVEXPANDED) and not parent.name in list:
+                list += [parent.name]
+            for Object in parent.subitems:
+                if (len(Object.subitems) != 0) and Object.type in sub_types:
+                    if (Object.flags & qutils.OF_TVEXPANDED):
+                        list += [Object.name]
+                        list = storestate(Object, list)
+                elif Object.type in skip_types or Object.type == ":bone":
+                    continue
+                else:
+                    break
+        return list
+    for Object in editor.Root.subitems:
+        editor.ObjExpandList = storestate(Object, editor.ObjExpandList)
+
+#
+# Restores the tree-view selections and expanded folders structure.
+#
+def RestoreTreeView(editor):
+    NewSellist = []
+    for item in editor.ObjSelectList:
+        get = editor.Root
+        try:
+            for name in range(len(item)):
+                get = get.dictitems[item[name]]
+            NewSellist = NewSellist + [get]
+        except:
+            continue
+
+    getbones = 0
+    for ObjectName in editor.ObjExpandList:
+        try:
+            if ObjectName.endswith(":bg"):
+                bonesgroup = editor.Root.dictitems[ObjectName]
+                bonesgroup.flags = bonesgroup.flags | qutils.OF_TVEXPANDED
+            elif ObjectName.endswith(":bone"):
+                if getbones == 0:
+                	bones = bonesgroup.findallsubitems("", ':bone')
+                	getbones = 1
+                for bone in bones:
+                    if bone.name == ObjectName:
+                        bone.flags = bone.flags | qutils.OF_TVEXPANDED
+                        break
+            elif ObjectName.endswith(":mc"):
+                comp = editor.Root.dictitems[ObjectName]
+                comp.flags = comp.flags | qutils.OF_TVEXPANDED
+            elif ObjectName.endswith(":sg") or ObjectName.endswith(":fg"):
+                group = editor.Root.dictitems[comp.name].dictitems[ObjectName]
+                group.flags = group.flags | qutils.OF_TVEXPANDED
+        except:
+            continue
+
+    editor.layout.explorer.sellist = NewSellist
 
 #
 # Saves the ModelComponentList into cPickle as a single string.
@@ -4307,6 +4381,10 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.148  2010/10/10 03:24:59  cdunde
+#Added support for player models attachment tags.
+#To make baseframe name uniform with other files.
+#
 #Revision 1.147  2010/09/16 06:33:33  cdunde
 #Model editor, Major change of Skin-view Linear Handle selection and dragging system, massively improving drawing time.
 #

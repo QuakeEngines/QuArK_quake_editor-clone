@@ -71,6 +71,11 @@ def macroitem(text, macro, hint=None, infobaselink=""):
 
 def macroclick(m):
     if not (quarkx.clickform is None):
+        import mdleditor
+        if isinstance(quarkx.clickform.info, mdleditor.ModelEditor) and (m.macro == "UNDO" or m.macro == "REDO" or m.macro == "MURD"):
+            editor = quarkx.clickform.info
+            import mdlutils
+            mdlutils.SaveTreeView(editor)
         quarkx.clickform.macro(m.macro)   # returns True (1) or False (0) depending on success or failure
 
 
@@ -187,6 +192,9 @@ def DefaultEditMenu(editor):
 #
 #
 #$Log$
+#Revision 1.11  2009/05/03 08:06:06  cdunde
+#Edit menu, moved Duplicate and separated Delete from other items.
+#
 #Revision 1.10  2007/09/05 18:43:10  cdunde
 #Minor comment addition and grammar corrections.
 #
