@@ -1155,7 +1155,10 @@ class RedImageDragObject(DragObject):
                                             self.redhandledata = self.handle.drawred(self.redimages, view, self.redcolor)
 
                             for r in self.redimages:
-                                view.drawmap(r, mode, self.redcolor)
+                                try:
+                                    view.drawmap(r, mode, self.redcolor)
+                                except:
+                                    pass
                             if self.handle is not None:
                                 self.redhandledata = self.handle.drawred(self.redimages, view, self.redcolor)
 
@@ -2231,6 +2234,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.96  2010/09/23 04:57:24  cdunde
+#Various improvements for Model Editor Skin-view Linear Handle drawing time.
+#
 #Revision 1.95  2010/09/16 06:33:33  cdunde
 #Model editor, Major change of Skin-view Linear Handle selection and dragging system, massively improving drawing time.
 #
