@@ -25,17 +25,15 @@ Info = {
 
 # Python specific modules import.
 import quarkx
-import sys, struct, os, math, Lib, Lib.base64
+import sys, struct, os, os.path, math, Lib, Lib.base64
 from quarkpy.qutils import *
 from quarkpy.qeditor import MapColor # Strictly needed for QuArK bones MapColor call.from types import *
 import quarkpy.qhandles
 import quarkpy.mdlhandles
 import quarkpy.mdlutils
 import ie_utils
-from os import path
 from ie_utils import tobj
-import math
-from math import *
+from ie_utils import *
 from quarkpy.qdictionnary import Strings
 
 # Globals
@@ -51,90 +49,10 @@ global lines
 line_counter = 0
 lines = None
 
+
 ######################################################
-# Vector, Quaterion, Matrix math stuff-taken from
-# Jiba's blender2cal3d script
+# Some generic functions
 ######################################################
-
-def quaternion_normalize(q):
-    m = math.sqrt(q[0]*q[0] + q[1]*q[1] + q[2]*q[2] + q[3]*q[3])
-    return [q[0]/m, q[1]/m, q[2]/m, q[3]/m]
-
-def quaternion2matrix(q):
-    xx = q[0] * q[0]
-    yy = q[1] * q[1]
-    zz = q[2] * q[2]
-    xy = q[0] * q[1]
-    xz = q[0] * q[2]
-    yz = q[1] * q[2]
-    wx = q[3] * q[0]
-    wy = q[3] * q[1]
-    wz = q[3] * q[2]
-    return [[1.0 - 2.0 * (yy + zz),       2.0 * (xy + wz),       2.0 * (xz - wy), 0.0],
-            [      2.0 * (xy - wz), 1.0 - 2.0 * (xx + zz),       2.0 * (yz + wx), 0.0],
-            [      2.0 * (xz + wy),       2.0 * (yz - wx), 1.0 - 2.0 * (xx + yy), 0.0],
-            [0.0                  , 0.0                  , 0.0                  , 1.0]]
-
-def matrix_determinant(m):
-    a = m[0][0]
-    b = m[0][1]
-    c = m[0][2]
-    d = m[1][0]
-    e = m[1][1]
-    f = m[1][2]
-    g = m[2][0]
-    h = m[2][1]
-    i = m[2][2]
-    return a*e*i - a*f*h + b*f*g - b*d*i + c*d*h - c*e*g
-
-def matrix_multiply(a, b):
-    return [ [
-        a[0][0] * b[0][0] + a[0][1] * b[1][0] + a[0][2] * b[2][0],
-        a[0][0] * b[0][1] + a[0][1] * b[1][1] + a[0][2] * b[2][1],
-        a[0][0] * b[0][2] + a[0][1] * b[1][2] + a[0][2] * b[2][2],
-        0.0,
-        ], [
-        a[1][0] * b[0][0] + a[1][1] * b[1][0] + a[1][2] * b[2][0],
-        a[1][0] * b[0][1] + a[1][1] * b[1][1] + a[1][2] * b[2][1],
-        a[1][0] * b[0][2] + a[1][1] * b[1][2] + a[1][2] * b[2][2],
-        0.0,
-        ], [
-        a[2][0] * b[0][0] + a[2][1] * b[1][0] + a[2][2] * b[2][0],
-        a[2][0] * b[0][1] + a[2][1] * b[1][1] + a[2][2] * b[2][1],
-        a[2][0] * b[0][2] + a[2][1] * b[1][2] + a[2][2] * b[2][2],
-         0.0,
-        ], [
-        a[3][0] * b[0][0] + a[3][1] * b[1][0] + a[3][2] * b[2][0] + b[3][0],
-        a[3][0] * b[0][1] + a[3][1] * b[1][1] + a[3][2] * b[2][1] + b[3][1],
-        a[3][0] * b[0][2] + a[3][1] * b[1][2] + a[3][2] * b[2][2] + b[3][2],
-        1.0,
-        ] ]
-
-def point_by_matrix(p, m):
-  return [
-        p[0] * m[0][0] + p[1] * m[1][0] + p[2] * m[2][0] + m[3][0],
-        p[0] * m[0][1] + p[1] * m[1][1] + p[2] * m[2][1] + m[3][1],
-        p[0] * m[0][2] + p[1] * m[1][2] + p[2] * m[2][2] + m[3][2]
-    ]
-
-def inverse_matrix(m):
-    det = matrix_determinant(m)
-    if det == 0:
-        return None
-    a = m[0][0]
-    b = m[0][1]
-    c = m[0][2]
-    d = m[1][0]
-    e = m[1][1]
-    f = m[1][2]
-    g = m[2][0]
-    h = m[2][1]
-    i = m[2][2]
-    #FIXME: no idea how to handle 4-th dimension, so let's ignore it (I know I won't need it)
-    return [ [(e*i - f*h) / det, (h*c - i*b) / det, (b*f - c*e) / det, 0.0],
-             [(g*f - d*i) / det, (a*i - g*c) / det, (d*c - a*f) / det, 0.0],
-             [(d*h - g*e) / det, (g*b - a*h) / det, (a*e - d*b) / det, 0.0],
-             [              0.0,               0.0,               0.0, 1.0] ]
 
 def CleanupName(name):
     BetterName = name.replace("/", "\\")
@@ -168,6 +86,10 @@ def InterpretFloatTuple(text):
     for item in text:
         tuple += [float(item)]
     return tuple
+
+######################################################
+# GR2 classes
+######################################################
 
 class gr2_coords:
     flags = 0
@@ -1467,7 +1389,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
                 new_bone['scale'] = (1.0,)
                 new_bone['component'] = "None" # None for now and get the component name later.
                 new_bone['draw_offset'] = (0.0, 0.0, 0.0)
-                new_bone['_color'] = MapColor("BoneHandles", 3)
+                new_bone['_color'] = MapColor("BoneHandles", SS_MODEL)
                 new_bone['draw_offset'] = (0.0, 0.0, 0.0)
                 new_bone.rotmatrix = quarkx.matrix((1, 0, 0), (0, 1, 0), (0, 0, 1))
                 new_bone.vtxlist = {}
@@ -2011,10 +1933,10 @@ def loadmodel(root, filename, gamename, nomessage=0):
                         old_parent_pos = QuArK_bone_pos[parentbone_index]
                         bone_pos = (bone_pos[0] - old_parent_pos[0], bone_pos[1] - old_parent_pos[1], bone_pos[2] - old_parent_pos[2])
                         old_parent_rot = QuArK_bone_rotmatrix[parentbone_index]
-                        bone_pos = point_by_matrix(bone_pos, inverse_matrix(old_parent_rot))
+                        bone_pos = point_by_matrix(bone_pos, matrix_inverse(old_parent_rot))
                         bone_pos = point_by_matrix(bone_pos, parent_rot)
                         old_parent_scale = QuArK_bone_scale[parentbone_index]
-                        bone_pos = point_by_matrix(bone_pos, inverse_matrix(old_parent_scale))
+                        bone_pos = point_by_matrix(bone_pos, matrix_inverse(old_parent_scale))
                         bone_pos = point_by_matrix(bone_pos, parent_scale)
                         bone_pos = (parent_pos[0] + bone_pos[0], parent_pos[1] + bone_pos[1], parent_pos[2] + bone_pos[2])
                     else:
@@ -2029,7 +1951,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
                     if parentbone_index != -1:
                         bone_rot = QuArK_bone_rotmatrix[bone_counter]
                         old_parent_rot = QuArK_bone_rotmatrix[parentbone_index]
-                        bone_rot = matrix_multiply(bone_rot, inverse_matrix(old_parent_rot))
+                        bone_rot = matrix_multiply(bone_rot, matrix_inverse(old_parent_rot))
                         bone_rot = matrix_multiply(bone_rot, parent_rot)
                     else:
                         #No movement after all
@@ -2043,7 +1965,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
                     if parentbone_index != -1:
                         bone_scale = QuArK_bone_scale[bone_counter]
                         old_parent_scale = QuArK_bone_scale[parentbone_index]
-                        bone_scale = matrix_multiply(bone_scale, inverse_matrix(old_parent_scale))
+                        bone_scale = matrix_multiply(bone_scale, matrix_inverse(old_parent_scale))
                         bone_scale = matrix_multiply(bone_scale, parent_scale)
                     else:
                         #No movement after all
@@ -2379,6 +2301,10 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.36  2010/10/10 03:24:59  cdunde
+# Added support for player models attachment tags.
+# To make baseframe name uniform with other files.
+#
 # Revision 1.35  2010/06/13 15:37:55  cdunde
 # Setup Model Editor to allow importing of model from main explorer File menu.
 #

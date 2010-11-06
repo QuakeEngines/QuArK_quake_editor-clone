@@ -22,7 +22,7 @@ Info = {
    "author e-mail": "cdunde@sbcglobal.net",
    "quark":         "Version 6.6.0 Beta 2" }
 
-import sys, struct, os
+import sys, struct, os, os.path
 from types import *
 import quarkx
 import quarkpy.qutils
@@ -31,10 +31,9 @@ import quarkpy.qtoolbar
 import quarkpy.mdlhandles
 import quarkpy.mdlutils
 import ie_utils
-from os import path
 from ie_utils import tobj
+from ie_utils import *
 import math
-from math import *
 from quarkpy.qdictionnary import Strings
 from quarkpy.qeditor import ico_dict # Get the dictionary list of all icon image files available.
 from quarkpy.qeditor import MapColor # Strictly needed for QuArK bones MapColor call.
@@ -51,240 +50,6 @@ importername = "ie_md5_import.py"
 textlog = "md5_ie_log.txt"
 editor = None
 progressbar = None
-
-
-######################################################
-# Vector, Quaterion, Matrix math stuff - some taken from
-# Jiba's blender2cal3d script
-######################################################
-def quaternion2matrix(q):
-    xx = q[0] * q[0]
-    yy = q[1] * q[1]
-    zz = q[2] * q[2]
-    xy = q[0] * q[1]
-    xz = q[0] * q[2]
-    yz = q[1] * q[2]
-    wx = q[3] * q[0]
-    wy = q[3] * q[1]
-    wz = q[3] * q[2]
-    return [[1.0 - 2.0 * (yy + zz),       2.0 * (xy + wz),       2.0 * (xz - wy), 0.0],
-            [      2.0 * (xy - wz), 1.0 - 2.0 * (xx + zz),       2.0 * (yz + wx), 0.0],
-            [      2.0 * (xz + wy),       2.0 * (yz - wx), 1.0 - 2.0 * (xx + yy), 0.0],
-            [0.0                  , 0.0                  , 0.0                  , 1.0]]
-
-def matrix2quaternion(m):
-    s = math.sqrt(abs(m[0][0] + m[1][1] + m[2][2] + m[3][3]))
-    if s == 0.0:
-        x = abs(m[2][1] - m[1][2])
-        y = abs(m[0][2] - m[2][0])
-        z = abs(m[1][0] - m[0][1])
-        if   (x >= y) and (x >= z):
-            return 1.0, 0.0, 0.0, 0.0
-        elif (y >= x) and (y >= z):
-            return 0.0, 1.0, 0.0, 0.0
-        else:
-            return 0.0, 0.0, 1.0, 0.0
-    return quaternion_normalize([
-        -(m[2][1] - m[1][2]) / (2.0 * s),
-        -(m[0][2] - m[2][0]) / (2.0 * s),
-        -(m[1][0] - m[0][1]) / (2.0 * s),
-        0.5 * s,
-        ])
-
-def quaternion_normalize(q):
-    l = math.sqrt(q[0] * q[0] + q[1] * q[1] + q[2] * q[2] + q[3] * q[3])
-    return q[0] / l, q[1] / l, q[2] / l, q[3] / l
-
-def quaternion_multiply(q1, q2):
-    r = [
-            q2[3] * q1[0] + q2[0] * q1[3] + q2[1] * q1[2] - q2[2] * q1[1],
-            q2[3] * q1[1] + q2[1] * q1[3] + q2[2] * q1[0] - q2[0] * q1[2],
-            q2[3] * q1[2] + q2[2] * q1[3] + q2[0] * q1[1] - q2[1] * q1[0],
-            q2[3] * q1[3] - q2[0] * q1[0] - q2[1] * q1[1] - q2[2] * q1[2],
-        ]
-    d = math.sqrt(r[0] * r[0] + r[1] * r[1] + r[2] * r[2] + r[3] * r[3])
-    r[0] /= d
-    r[1] /= d
-    r[2] /= d
-    r[3] /= d
-    return r
-
-def matrix_translate(m, v):
-    v = v.tuple
-    m[3][0] += v[0]
-    m[3][1] += v[1]
-    m[3][2] += v[2]
-    return m
-
-def matrix_multiply(b, a):
-    return [ [
-        a[0][0] * b[0][0] + a[0][1] * b[1][0] + a[0][2] * b[2][0],
-        a[0][0] * b[0][1] + a[0][1] * b[1][1] + a[0][2] * b[2][1],
-        a[0][0] * b[0][2] + a[0][1] * b[1][2] + a[0][2] * b[2][2],
-        0.0,
-        ], [
-        a[1][0] * b[0][0] + a[1][1] * b[1][0] + a[1][2] * b[2][0],
-        a[1][0] * b[0][1] + a[1][1] * b[1][1] + a[1][2] * b[2][1],
-        a[1][0] * b[0][2] + a[1][1] * b[1][2] + a[1][2] * b[2][2],
-        0.0,
-        ], [
-        a[2][0] * b[0][0] + a[2][1] * b[1][0] + a[2][2] * b[2][0],
-        a[2][0] * b[0][1] + a[2][1] * b[1][1] + a[2][2] * b[2][1],
-        a[2][0] * b[0][2] + a[2][1] * b[1][2] + a[2][2] * b[2][2],
-         0.0,
-        ], [
-        a[3][0] * b[0][0] + a[3][1] * b[1][0] + a[3][2] * b[2][0] + b[3][0],
-        a[3][0] * b[0][1] + a[3][1] * b[1][1] + a[3][2] * b[2][1] + b[3][1],
-        a[3][0] * b[0][2] + a[3][1] * b[1][2] + a[3][2] * b[2][2] + b[3][2],
-        1.0,
-        ] ]
-
-def matrix_invert(m):
-    det = (m[0][0] * (m[1][1] * m[2][2] - m[2][1] * m[1][2])
-         - m[1][0] * (m[0][1] * m[2][2] - m[2][1] * m[0][2])
-         + m[2][0] * (m[0][1] * m[1][2] - m[1][1] * m[0][2]))
-    if det == 0.0:
-        return None
-    det = 1.0 / det
-    r = [ [
-        det * (m[1][1] * m[2][2] - m[2][1] * m[1][2]),
-      - det * (m[0][1] * m[2][2] - m[2][1] * m[0][2]),
-        det * (m[0][1] * m[1][2] - m[1][1] * m[0][2]),
-        0.0,
-      ], [
-      - det * (m[1][0] * m[2][2] - m[2][0] * m[1][2]),
-        det * (m[0][0] * m[2][2] - m[2][0] * m[0][2]),
-      - det * (m[0][0] * m[1][2] - m[1][0] * m[0][2]),
-        0.0
-      ], [
-        det * (m[1][0] * m[2][1] - m[2][0] * m[1][1]),
-      - det * (m[0][0] * m[2][1] - m[2][0] * m[0][1]),
-        det * (m[0][0] * m[1][1] - m[1][0] * m[0][1]),
-        0.0,
-      ] ]
-    r.append([
-      -(m[3][0] * r[0][0] + m[3][1] * r[1][0] + m[3][2] * r[2][0]),
-      -(m[3][0] * r[0][1] + m[3][1] * r[1][1] + m[3][2] * r[2][1]),
-      -(m[3][0] * r[0][2] + m[3][1] * r[1][2] + m[3][2] * r[2][2]),
-      1.0,
-      ])
-    return r
-
-def matrix_rotate_x(angle):
-    cos = math.cos(angle)
-    sin = math.sin(angle)
-    return [
-        [1.0,  0.0, 0.0, 0.0],
-        [0.0,  cos, sin, 0.0],
-        [0.0, -sin, cos, 0.0],
-        [0.0,  0.0, 0.0, 1.0],
-    ]
-
-def matrix_rotate_y(angle):
-    cos = math.cos(angle)
-    sin = math.sin(angle)
-    return [
-        [cos, 0.0, -sin, 0.0],
-        [0.0, 1.0,  0.0, 0.0],
-        [sin, 0.0,  cos, 0.0],
-        [0.0, 0.0,  0.0, 1.0],
-    ]
-
-def matrix_rotate_z(angle):
-    cos = math.cos(angle)
-    sin = math.sin(angle)
-    return [
-        [ cos, sin, 0.0, 0.0],
-        [-sin, cos, 0.0, 0.0],
-        [ 0.0, 0.0, 1.0, 0.0],
-        [ 0.0, 0.0, 0.0, 1.0],
-    ]
-
-def matrix_rotate(axis, angle):
-    vx  = axis[0]
-    vy  = axis[1]
-    vz  = axis[2]
-    vx2 = vx * vx
-    vy2 = vy * vy
-    vz2 = vz * vz
-    cos = math.cos(angle)
-    sin = math.sin(angle)
-    co1 = 1.0 - cos
-    return [
-        [vx2 * co1 + cos,          vx * vy * co1 + vz * sin, vz * vx * co1 - vy * sin, 0.0],
-        [vx * vy * co1 - vz * sin, vy2 * co1 + cos,          vy * vz * co1 + vx * sin, 0.0],
-        [vz * vx * co1 + vy * sin, vy * vz * co1 - vx * sin, vz2 * co1 + cos,          0.0],
-        [0.0, 0.0, 0.0, 1.0],
-    ]
-  # return [
-  #     [vx2 * co1 + cos,          vx * vy * co1 + vz * sin, vz * vx * co1 - vy * sin, 0.0],
-  #     [vz * vx * co1 + vy * sin, vy * vz * co1 - vx * sin, vz2 * co1 + cos,          0.0],
-  #     [vx * vy * co1 - vz * sin, vy2 * co1 + cos,          vy * vz * co1 + vx * sin, 0.0],
-  #     [0.0, 0.0, 0.0, 1.0],
-  # ]
-  
-def matrix_scale(fx, fy, fz):
-  return [
-        [ fx, 0.0, 0.0, 0.0],
-        [0.0,  fy, 0.0, 0.0],
-        [0.0, 0.0,  fz, 0.0],
-        [0.0, 0.0, 0.0, 1.0],
-    ]
-
-def point_by_matrix(p, m):
-  return [
-        p[0] * m[0][0] + p[1] * m[1][0] + p[2] * m[2][0] + m[3][0],
-        p[0] * m[0][1] + p[1] * m[1][1] + p[2] * m[2][1] + m[3][1],
-        p[0] * m[0][2] + p[1] * m[1][2] + p[2] * m[2][2] + m[3][2]
-    ]
-
-def point_distance(p1, p2):
-  return math.sqrt((p2[0] - p1[0]) ** 2 + (p2[1] - p1[1]) ** 2 + (p2[2] - p1[2]) ** 2)
-
-def vector_by_matrix(p, m):
-  return [
-        p[0] * m[0][0] + p[1] * m[1][0] + p[2] * m[2][0],
-        p[0] * m[0][1] + p[1] * m[1][1] + p[2] * m[2][1],
-        p[0] * m[0][2] + p[1] * m[1][2] + p[2] * m[2][2]
-    ]
-
-def vector_length(v):
-    v = v.tuple
-    length = math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2])
-    if length == 0.0:
-        length = 1.0
-    return length
-
-def vector_normalize(v):
-    v = v.tuple
-    l = math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2])
-    try:
-        return v[0] / l, v[1] / l, v[2] / l
-    except:
-        return 1, 0, 0
-
-def vector_dotproduct(v1, v2):
-    v1 = v1.tuple
-    v2 = v2.tuple
-    return v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2]
-
-def vector_crossproduct(v1, v2):
-    v1 = v1.tuple
-    v2 = v2.tuple
-    return [
-        v1[1] * v2[2] - v1[2] * v2[1],
-        v1[2] * v2[0] - v1[0] * v2[2],
-        v1[0] * v2[1] - v1[1] * v2[0],
-    ]
-
-def vector_angle(v1, v2):
-    s = vector_length(v1) * vector_length(v2)
-    f = vector_dotproduct(v1, v2) / s
-    if f >=  1.0:
-        return 0.0
-    if f <= -1.0:
-        return math.pi / 2.0
-    return math.atan(-f / math.sqrt(1.0 - f * f)) + math.pi / 2.0
 
 
 ######################################################
@@ -461,10 +226,14 @@ def load_md5(md5_filename, basepath, actionname):
             # Go to next line.
             line_counter+=1
             for bone_counter in range(0,num_bones): # num_bones = "numJoints" in md5mesh file (including "origin") as an integer.
+                if line_counter >= len(lines):
+                    raise "MD5 file corrupt!"
                 current_line=lines[line_counter]
                 #skip over blank lines
                 while len(current_line) == 0:
                     line_counter+=1
+                    if line_counter >= len(lines):
+                        raise "MD5 file corrupt!"
                     current_line=lines[line_counter]
                 #make a new bone
                 md5_bones.append(md5_bone())
@@ -496,7 +265,7 @@ def load_md5(md5_filename, basepath, actionname):
                 new_bone['scale'] = (1.0,)
                 new_bone['component'] = "None" # None for now and get the component name later.
                 new_bone['draw_offset'] = (0.0, 0.0, 0.0)
-                new_bone['_color'] = MapColor("BoneHandles", 3)
+                new_bone['_color'] = MapColor("BoneHandles", SS_MODEL)
                 new_bone['bindmat'] = (float(words[8]), float(words[9]), float(words[10])) # QuArK code, use these values to build this bones matrix (see "quaternion2matrix" code below).
                 new_bone.rotmatrix = quarkx.matrix((1, 0, 0), (0, 1, 0), (0, 0, 1))
                 new_bone.vtxlist = {}
@@ -542,7 +311,7 @@ def load_md5(md5_filename, basepath, actionname):
                 if qw<0:
                     qw=0
                 else:
-                    qw = -sqrt(qw)
+                    qw = -math.sqrt(qw)
                 md5_bones[bone_counter].bindmat = quaternion2matrix([qx,qy,qz,qw])
 
                 tempmatrix = md5_bones[bone_counter].bindmat
@@ -1184,7 +953,7 @@ class md5anim:
                     if qw<0:
                         qw=0
                     else:
-                        qw = -sqrt(qw)
+                        qw = -math.sqrt(qw)
                     self.md5anim_bones[bone_counter].bindquat = [qx,qy,qz,qw]
 
             elif words and words[0]=="frame":
@@ -1252,7 +1021,7 @@ class md5anim:
                 if qw<0:
                     qw=0
                 else:
-                    qw = -sqrt(qw)
+                    qw = -math.sqrt(qw)
                 QuArK_frame_position_raw[frame_counter][bone_counter] = quarkx.vect(lx, ly, lz)
                 tempmatrix = quaternion2matrix([qx, qy, qz, qw])
                 QuArK_frame_matrix_raw[frame_counter][bone_counter] = quarkx.matrix((tempmatrix[0][0], tempmatrix[1][0], tempmatrix[2][0]), (tempmatrix[0][1], tempmatrix[1][1], tempmatrix[2][1]), (tempmatrix[0][2], tempmatrix[1][2], tempmatrix[2][2]))
@@ -1789,6 +1558,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.39  2010/06/13 15:37:55  cdunde
+# Setup Model Editor to allow importing of model from main explorer File menu.
+#
 # Revision 1.38  2010/05/01 05:01:17  cdunde
 # Update by DanielPharos to allow removal of weight_index storage in the ModelComponentList.
 #

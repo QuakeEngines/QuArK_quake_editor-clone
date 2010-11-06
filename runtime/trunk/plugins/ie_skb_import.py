@@ -23,13 +23,13 @@ Info = {
    "quark":         "Version 6.6.0 Beta 4" }
 
 import struct, sys, os, time, operator, math
-from math import sqrt
 import quarkx
 import quarkpy.qutils
 from types import *
 import quarkpy.mdlutils
 import ie_utils
 from ie_utils import tobj
+from ie_utils import *
 from quarkpy.qdictionnary import Strings
 from quarkpy.qeditor import MapColor # Strictly needed for QuArK bones MapColor call.
 
@@ -84,11 +84,7 @@ class SKB_Bone:
 
         self.parent = data[0]
         self.flags = data[1]
-        char = 64 + 2 # The above data items = 0.
-        for c in xrange(2, char):
-            if data[c] == "\x00":
-                continue
-            self.name = self.name + data[c]
+        self.name = ConvertToString(data, 64, 2)
 
     def dump(self):
         tobj.logcon ("bone parent: " + str(self.parent))
@@ -137,11 +133,7 @@ class SKB_Surface:
         data = struct.unpack(self.binary_format, temp_data)
 
         self.ident = data[0] # SKB ident = 541870931 or "SKL ", we already checked this in the header.
-        char = 64 + 1 # The above data items = 1.
-        for c in xrange(1, char):
-            if data[c] == "\x00":
-                continue
-            self.name = self.name + data[c]
+        self.name = ConvertToString(data, 64, 1)
         # Update the Component name by adding its material name at the end.
         # This is needed to use that material name later to get its skin texture from the .tik file.
         Component.shortname = Component.shortname + "_" + self.name
@@ -382,11 +374,7 @@ class skb_obj:
         temp_data = file.read(struct.calcsize(self.binary_format))
         data = struct.unpack(self.binary_format, temp_data)
 
-        char = 64 # The above data items = 2.
-        for c in xrange(0, char):
-            if data[c] == "\x00":
-                continue
-            self.name = self.name + data[c]
+        self.name = ConvertToString(data, 64)
         self.name = self.name.split(".")[0]
         self.numSurfaces = data[64]
         self.numBones = data[65]
@@ -430,7 +418,7 @@ class skb_obj:
                     QuArK_Bone.vtx_pos = {}
                     QuArK_Bone['show'] = (1.0,)
                     QuArK_Bone['position'] = QuArK_Bone.position.tuple
-                    QuArK_Bone.rotmatrix = quarkx.matrix((sqrt(2)/2, -sqrt(2)/2, 0), (sqrt(2)/2, sqrt(2)/2, 0), (0, 0, 1))
+                    QuArK_Bone.rotmatrix = quarkx.matrix((math.sqrt(2)/2, -math.sqrt(2)/2, 0), (math.sqrt(2)/2, math.sqrt(2)/2, 0), (0, 0, 1))
                     QuArK_Bone['draw_offset'] = (0.0,0.0,0.0)
                     QuArK_Bone['scale'] = (1.0,)
                     QuArK_Bone['_color'] = MapColor("BoneHandles", SS_MODEL)
@@ -567,29 +555,25 @@ class skb_obj:
 ######################################################
 class SKA_BoneName_EF2:
     #Header Structure       #item of data file, size & type,   description.
-    ID = 0          #item   0       0     1 float, the bone's ID is really its length.
+    length = 0.0    #item   0       0     1 float, the bone's length.
     name = ""       #item   1-31    1-31  32 char, the bone's name.
 
     binary_format="<f32c"  #little-endian (<), see items above.
 
     def __init__(self):
-        self.ID = 0
+        self.length = 0.0
         self.name = ""
 
     def load(self, file):
         temp_data = file.read(struct.calcsize(self.binary_format))
         data = struct.unpack(self.binary_format, temp_data)
 
-        self.ID = data[0]
-        char = 32 + 1 # The above data items 1-31.
-        for c in xrange(1, char):
-            if data[c] == "\x00":
-                break
-            self.name = self.name + data[c]
+        self.length = data[0]
+        self.name = ConvertToString(data, 32, 1)
         self.name = self.name.split(".")[0]
 
     def dump(self):
-        tobj.logcon ("ID: " + str(self.ID))
+        tobj.logcon ("length: " + str(self.length))
         tobj.logcon ("name: " + str(self.name))
 
 class SKA_Bone:
@@ -817,11 +801,7 @@ class ska_obj:
             quarkx.msgbox("Invalid model.\nEditor can not import it.\n\nSKA ident = SKAN version = 3\n\nFile has:\nident = " + self.ident + " version = " + str(self.version), quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
             return None
 
-        char = 64 + 2 # The above data items = 2.
-        for c in xrange(2, char):
-            if data[c] == "\x00":
-                continue
-            self.name = self.name + data[c]
+        self.name = ConvertToString(data, 64, 2)
         self.name = self.name.split(".")[0]
         self.type = data[66]
         self.numFrames = data[67]
@@ -1083,25 +1063,6 @@ def check4skin(file, Component, material_name, message, version):
     return message
 
 
-######################################################
-# Import math functions
-######################################################
-def quaternion2matrix(q):
-    xx = q[0] * q[0]
-    yy = q[1] * q[1]
-    zz = q[2] * q[2]
-    xy = q[0] * q[1]
-    xz = q[0] * q[2]
-    yz = q[1] * q[2]
-    wx = q[3] * q[0]
-    wy = q[3] * q[1]
-    wz = q[3] * q[2]
-    return [[1.0 - 2.0 * (yy + zz),       2.0 * (xy + wz),       2.0 * (xz - wy), 0.0],
-            [      2.0 * (xy - wz), 1.0 - 2.0 * (xx + zz),       2.0 * (yz + wx), 0.0],
-            [      2.0 * (xz + wy),       2.0 * (yz - wx), 1.0 - 2.0 * (xx + yy), 0.0],
-            [0.0                  , 0.0                  , 0.0                  , 1.0]]
-
-
 ############################
 # CALL TO IMPORT ANIMATION (.ska) FILE
 ############################
@@ -1329,6 +1290,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".skb Alice\EF2\FAKK2 Importer-mesh", ".skb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.8  2010/08/27 19:36:15  cdunde
+# To clarify menu item listing.
+#
 # Revision 1.7  2010/08/25 18:47:25  cdunde
 # Small fix.
 #

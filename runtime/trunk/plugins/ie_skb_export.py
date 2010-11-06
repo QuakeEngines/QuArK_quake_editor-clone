@@ -23,7 +23,6 @@ Info = {
    "quark":         "Version 6.6.0 Beta 4" }
 
 import struct, sys, os, operator, math
-from math import *
 import quarkx
 import quarkpy.mdleditor
 from quarkpy.qutils import *
@@ -31,6 +30,7 @@ from types import *
 import quarkpy.mdlutils
 import ie_utils
 from ie_utils import tobj
+from ie_utils import *
 from quarkpy.qdictionnary import Strings
 
 # Globals
@@ -561,24 +561,24 @@ class skb_obj:
 ######################################################
 class SKA_BoneName_EF2:
     #Header Structure       #item of data file, size & type,   description.
-    ID = 0          #item   0       0     1 int, the bone's ID.
+    length = 0.0    #item   0       0     1 float, the bone's length.
     name = ""       #item   1-31    1-31  32 char, the bone's name.
 
     binary_format="<f%ds" % (MAX_PATH * .5)  #little-endian (<), see items above.
 
     def __init__(self):
-        self.ID = 0
+        self.length = 0.0
         self.name = ""
 
     def save(self, file):
         tmpData = [0]*2
-        tmpData[0] = self.ID
+        tmpData[0] = self.length
         tmpData[1] = self.name
         data = struct.pack(self.binary_format, tmpData[0], tmpData[1])
         file.write(data)
 
     def dump(self):
-        tobj.logcon ("ID: " + str(self.ID))
+        tobj.logcon ("length: " + str(self.length))
         tobj.logcon ("name: " + str(self.name))
 
 class SKA_Bone:
@@ -868,12 +868,12 @@ class ska_obj:
                     parent_bone = QuArK_bones[ConvertBoneNameToIndex[QuArK_bones[i].dictspec['parent_name']]]
                     vect_diff = current_bone.position - parent_bone.position
                     vect_diff = vect_diff.tuple
-                    ID = math.sqrt((vect_diff[0] * vect_diff[0]) + (vect_diff[1] * vect_diff[1]) + (vect_diff[2] * vect_diff[2]))
+                    length = math.sqrt((vect_diff[0] * vect_diff[0]) + (vect_diff[1] * vect_diff[1]) + (vect_diff[2] * vect_diff[2]))
                 else:
-                    ID = 0.0
+                    length = 0.0
                 
                 bone_name = SKA_BoneName_EF2()
-                bone_name.ID = ID
+                bone_name.length = length
                 bone_name.name = QuArK_bones[i].shortname.split("_", 1)[1]
                 self.bone_names.append(bone_name)
                 if logging == 1:
@@ -982,50 +982,6 @@ def RadiusFromBounds(mins, maxs):
     return VectorLength(corner)
 
 
-######################################################
-# Export math functions
-######################################################
-def matrix2quaternion(m):
-    #See: http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/index.htm
-    trace = m[0][0] + m[1][1] + m[2][2]
-    if trace > 0.0:
-        s = math.sqrt(m[3][3] + trace) * 2.0
-        return quaternion_normalize([
-        (m[2][1] - m[1][2]) / s,
-        (m[0][2] - m[2][0]) / s,
-        (m[1][0] - m[0][1]) / s,
-        0.25 * s,
-        ])
-    elif ((m[0][0] > m[1][1]) and (m[0][0] > m[2][2])):
-        s = math.sqrt(m[3][3] + m[0][0] - m[1][1] - m[2][2]) * 2.0
-        return quaternion_normalize([
-        0.25 * s,
-        (m[0][1] + m[1][0]) / s,
-        (m[0][2] + m[2][0]) / s,
-        (m[2][1] - m[1][2]) / s,
-        ])
-    elif (m[1][1] > m[2][2]):
-        s = math.sqrt(m[3][3] + m[1][1] - m[0][0] - m[2][2]) * 2.0
-        return quaternion_normalize([
-        (m[0][1] + m[1][0]) / s,
-        0.25 * s,
-        (m[1][2] + m[2][1]) / s,
-        (m[0][2] - m[2][0]) / s,
-        ])
-    else:
-        s = math.sqrt(m[3][3] + m[2][2] - m[0][0] - m[1][1]) * 2.0
-        return quaternion_normalize([
-        (m[0][2] + m[2][0]) / s,
-        (m[1][2] + m[2][1]) / s,
-        0.25 * s,
-        (m[1][0] - m[0][1]) / s,
-        ])
-
-def quaternion_normalize(q):
-    l = math.sqrt(q[0] * q[0] + q[1] * q[1] + q[2] * q[2] + q[3] * q[3])
-    return q[0] / l, q[1] / l, q[2] / l, q[3] / l
-
-
 ############################
 # CALL TO EXPORT ANIMATION (.ska) FILE
 ############################
@@ -1115,7 +1071,7 @@ def savemodel(root, filename, gamename):
             QuArK_comps.append(item)
             frame_count = frame_count + [len(item.dictitems['Frames:fg'].dictitems)]
 
-    if len(sellist) > 1 and quarkx.setupsubset(3, "Options")["ExpComponentChecks"] == "1":
+    if len(sellist) > 1 and quarkx.setupsubset(SS_MODEL, "Options")["ExpComponentChecks"] == "1":
         if len(frame_count) > 1:
             for item in range(len(frame_count)):
                 if item >= len(frame_count)-1:
@@ -1232,6 +1188,9 @@ quarkpy.qmdlbase.RegisterMdlExporter(".skb Alice\EF2\FAKK2 Exporter-mesh", ".skb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.4  2010/08/27 19:36:15  cdunde
+# To clarify menu item listing.
+#
 # Revision 1.3  2010/08/25 18:47:24  cdunde
 # Small fix.
 #

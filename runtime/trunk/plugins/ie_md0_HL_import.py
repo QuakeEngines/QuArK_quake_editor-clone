@@ -28,10 +28,12 @@ from types import *
 import quarkpy.mdlutils
 import ie_utils
 from ie_utils import tobj
+from ie_utils import *
 from quarkpy.qdictionnary import Strings
 from quarkpy.qeditor import MapColor # Strictly needed for QuArK bones MapColor call.
 
 # Globals
+SS_MODEL = 3
 SkipAnimation = 0 # 0 = makes animation frames, 1 = does not.
 logging = 0
 importername = "ie_md0_HL_import.py"
@@ -93,8 +95,8 @@ STUDIO_HAS_VERTICES = 2
 STUDIO_HAS_BBOX     = 4
 STUDIO_HAS_CHROME   = 8 # if any of the textures have chrome on them
 
-RAD_TO_STUDIO       = (32768.0/math.pi)
-STUDIO_TO_RAD       = (math.pi/32768.0)
+RAD_TO_STUDIO       = 32768.0 / math.pi
+STUDIO_TO_RAD       = math.pi / 32768.0
 
 
 ######################################################
@@ -159,37 +161,19 @@ def AngleQuaternion(angles):
             cr*cp*sy-sr*sp*cy, # Z
             cr*cp*cy+sr*sp*sy] # W
 
-#Minimum difference to consider float "different"
-EQUAL_EPSILON = 0.001
 
-    
+
 ######################################################
 # MDL Importer Functions, from -> hlmviewer source file -> studio_render.cpp
 ######################################################
+#Minimum difference to consider float "different"
+EQUAL_EPSILON = 0.001
+
 def VectorCompare(v1, v2):
     for i in range(3):
         if (math.fabs(v1[i]-v2[i]) > EQUAL_EPSILON):
             return 0
     return 1
-
-
-
-######################################################
-# MDL Importer Functions, QuArK's own
-######################################################
-def quaternion2matrix(quaternion):
-    return [[1.0 - 2.0 * quaternion[1] * quaternion[1] - 2.0 * quaternion[2] * quaternion[2], 2.0 * quaternion[0] * quaternion[1] - 2.0 * quaternion[3] * quaternion[2], 2.0 * quaternion[0] * quaternion[2] + 2.0 * quaternion[3] * quaternion[1], 0.0],
-            [2.0 * quaternion[0] * quaternion[1] + 2.0 * quaternion[3] * quaternion[2], 1.0 - 2.0 * quaternion[0] * quaternion[0] - 2.0 * quaternion[2] * quaternion[2], 2.0 * quaternion[1] * quaternion[2] - 2.0 * quaternion[3] * quaternion[0], 0.0],
-            [2.0 * quaternion[0] * quaternion[2] - 2.0 * quaternion[3] * quaternion[1], 2.0 * quaternion[1] * quaternion[2] + 2.0 * quaternion[3] * quaternion[0], 1.0 - 2.0 * quaternion[0] * quaternion[0] - 2.0 * quaternion[1] * quaternion[1], 0.0],
-            [0.0                  , 0.0                  , 0.0                  , 1.0]]
-
-
-def Read_mdl_bone_anim_value(self, file, file_offset):
-    file.seek(file_offset, 0)
-    anim_value = mdl_bone_anim_value()
-    anim_value.load(file)
-   # anim_value.dump()
-    return anim_value
 
 
 
@@ -214,11 +198,7 @@ class mdl_skin_info: # Done cdunde from -> hlmviewer source file -> studio.h -> 
     def load(self, file):
         temp_data = file.read(struct.calcsize(self.binary_format))
         data = struct.unpack(self.binary_format, temp_data)
-        char = 64
-        for i in xrange(0, char):
-            if data[i] == "\x00":
-                continue
-            self.name = self.name + data[i]
+        self.name = ConvertToString(data, 64)
         self.flags = data[64]
         self.width = data[65]
         self.height = data[66]
@@ -280,11 +260,7 @@ class mdl_bone: # Done cdunde from -> hlmviewer source file -> studio.h -> mstud
     def load(self, file):
         temp_data = file.read(struct.calcsize(self.binary_format))
         data = struct.unpack(self.binary_format, temp_data)
-        char = 32
-        for i in xrange(0, char):
-            if data[i] == "\x00":
-                continue
-            self.name = self.name + data[i]
+        self.name = ConvertToString(data, 32)
         self.parent = data[32]
         self.flags = data[33]
         self.bonecontroller = [data[34], data[35], data[36], data[37], data[38], data[39]]
@@ -364,11 +340,7 @@ class mdl_attachment: # Done cdunde from -> hlmviewer source file -> studio.h ->
     def load(self, file):
         temp_data = file.read(struct.calcsize(self.binary_format))
         data = struct.unpack(self.binary_format, temp_data)
-        char = 32
-        for i in xrange(0, char):
-            if data[i] == "\x00":
-                continue
-            self.name = self.name + data[i]
+        self.name = ConvertToString(data, 32)
         self.type = data[32]
         self.bone = data[33]
         self.org = [data[34], data[35], data[36]]
@@ -544,11 +516,7 @@ class mdl_model: # Done cdunde from -> hlmviewer source file -> studio.h -> mstu
     def load(self, file):
         temp_data = file.read(struct.calcsize(self.binary_format))
         data = struct.unpack(self.binary_format, temp_data)
-        char = 64
-        for i in xrange(0, char):
-            if data[i] == "\x00":
-                continue
-            self.name = self.name + data[i]
+        self.name = ConvertToString(data, 64)
         self.type = data[64]
         self.boundingradius = data[65]
         self.nummesh = data[66]
@@ -600,11 +568,7 @@ class mdl_bodypart: # Done cdunde from -> hlmviewer source file -> studio.h -> m
     def load(self, file):
         temp_data = file.read(struct.calcsize(self.binary_format))
         data = struct.unpack(self.binary_format, temp_data)
-        char = 64
-        for i in xrange(0, char):
-            if data[i] == "\x00":
-                continue
-            self.name = self.name + data[i]
+        self.name = ConvertToString(data, 64)
         self.nummodels = data[64]
         self.base = data[65]
         self.model_offset = data[66]
@@ -684,11 +648,7 @@ class mdl_sequence_desc: # Done cdunde from -> hlmviewer source file -> studio.h
     def load(self, file):
         temp_data = file.read(struct.calcsize(self.binary_format))
         data = struct.unpack(self.binary_format, temp_data)
-        char = 32
-        for i in xrange(0, char):
-            if data[i] == "\x00":
-                continue
-            self.label = self.label + data[i]
+        self.label = ConvertToString(data, 32)
         self.fps = data[32]
         self.flags = data[33]
         self.activity = data[34]
@@ -808,11 +768,7 @@ class mdl_demand_hdr_group: # Done cdunde from -> hlmviewer source file -> studi
         data = struct.unpack(self.binary_format, temp_data)
         self.id = data[0]
         self.version = data[1]
-        char = 64 + 2 # The above data items = 2.
-        for c in xrange(2, char):
-            if data[c] == "\x00":
-                continue
-            self.name = self.name + data[c]
+        self.name = ConvertToString(data, 64, 2)
         self.length = data[66]
         return self
 
@@ -842,17 +798,8 @@ class mdl_demand_group: # Done cdunde from -> hlmviewer source file -> studio.h 
     def load(self, file):
         temp_data = file.read(struct.calcsize(self.binary_format))
         data = struct.unpack(self.binary_format, temp_data)
-        char = 32 # The above data items = 0.
-        for c in xrange(0, char):
-            if data[c] == "\x00":
-                continue
-            self.label = self.label + data[c]
-
-        char = 64 + 32 # The above data items = 32.
-        for c in xrange(32, char):
-            if data[c] == "\x00":
-                continue
-            self.name = self.name + data[c]
+        self.label = ConvertToString(data, 32)
+        self.name = ConvertToString(data, 64, 32)
         self.cache = data[96]
         self.data = data[97]
         return self
@@ -886,11 +833,7 @@ class mdl_events: # Done cdunde from -> hlmviewer source file -> studio.h -> mst
         self.frame = data[0]
         self.event = data[1]
         self.type = data[2]
-        char = 64
-        for i in xrange(0, char):
-            if data[i+3] == "\x00":
-                continue
-            self.options = self.options + data[i+3]
+        self.options = ConvertToString(data, 64, 3)
         return self
 
     def dump(self):
@@ -998,6 +941,14 @@ def CalcBoneAdj(self, m_controller, m_mouth):
     return m_adj
 
 def CalcBoneQuaternion(self, m_frame, s, pbone, panim, m_adj):
+
+    def Read_mdl_bone_anim_value(self, file, file_offset):
+        file.seek(file_offset, 0)
+        anim_value = mdl_bone_anim_value()
+        anim_value.load(file)
+       # anim_value.dump()
+        return anim_value
+
     file = self.file
     angle1 = [0.0, 0.0, 0.0]
     angle2 = [0.0, 0.0, 0.0]
@@ -1243,7 +1194,7 @@ def SetUpBones(self, QuArK_bones): # self = the mdl_obj. Done cdunde from -> hlm
                 bone = self.bones[pbone]
 
                 bone_pos = (pos[pbone][0], pos[pbone][1], pos[pbone][2])
-                tempmatrix = quaternion2matrix(quat[pbone])
+                tempmatrix = matrix_translate(quaternion2matrix(quat[pbone]))
                 bone_matrix = ((tempmatrix[0][0], tempmatrix[0][1], tempmatrix[0][2]), (tempmatrix[1][0], tempmatrix[1][1], tempmatrix[1][2]), (tempmatrix[2][0], tempmatrix[2][1], tempmatrix[2][2]))
                 if bone.parent != -1:
                     parent_name = QuArK_bones[bone.parent].name
@@ -1372,11 +1323,7 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
 
         self.ident = data[0] + data[1] + data[2] + data[3]
         self.version = data[4]
-        char = 64 + 5 # The above data items = 5.
-        for c in xrange(5, char):
-            if data[c] == "\x00":
-                continue
-            self.name = self.name + data[c]
+        self.name = ConvertToString(data, 64, 5)
 
         if (self.ident != "IDST" or self.version != 10): # Not a valid Half-Life MDL file.
             if self.version == 6:
@@ -1635,7 +1582,7 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
                 new_bone['show'] = (1.0,)
                 bone_pos = quarkx.vect(bone.value[0], bone.value[1], bone.value[2])
                 quat = AngleQuaternion([bone.value[3], bone.value[4], bone.value[5]])
-                tempmatrix = quaternion2matrix(quat)
+                tempmatrix = matrix_translate(quaternion2matrix(quat))
                 #new_bone['quaternion'] = (qx,qy,qz,qw)
                 bone_matrix = quarkx.matrix((tempmatrix[0][0], tempmatrix[0][1], tempmatrix[0][2]), (tempmatrix[1][0], tempmatrix[1][1], tempmatrix[1][2]), (tempmatrix[2][0], tempmatrix[2][1], tempmatrix[2][2]))
                 new_bone['parent_index'] = str(bone.parent)
@@ -1676,7 +1623,7 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
                     new_bone['bone_length'] = (-quarkx.vect(QuArK_bones[int(new_bone.dictspec['parent_index'])].dictspec['position']) + quarkx.vect(new_bone.dictspec['position'])).tuple
                 new_bone['component'] = ComponentList[0].name # Reset this if needed later.
                 new_bone['draw_offset'] = (0.0, 0.0, 0.0)
-                new_bone['_color'] = MapColor("BoneHandles", 3)
+                new_bone['_color'] = MapColor("BoneHandles", SS_MODEL)
                 new_bone.vtxlist = {}
                 new_bone.vtx_pos = {}
                 new_bone['scale'] = (1.0,) # Written this way to store it as a tuple.
@@ -2241,6 +2188,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".mdl Half-Life Importer", ".mdl file", "*.
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.11  2010/10/20 20:17:54  cdunde
+# Added bounding boxes (hit boxes) and bone controls support used by Half-Life, maybe others.
+#
 # Revision 1.10  2010/10/08 06:02:44  cdunde
 # To kill dump console printing.
 #

@@ -51,6 +51,7 @@ from ie_utils import tobj
 from quarkpy.qdictionnary import Strings
 
 # Globals
+SS_MODEL = 3
 logging = 0
 exportername = "ie_lightwave_export.py"
 textlog = "lwo_ie_log.txt"
@@ -927,7 +928,7 @@ def savemodel(root, filename, gamename, nomessage=0):
     editor = quarkpy.mdleditor.mdleditor
     if editor is None:
         return
-    if len(editor.layout.explorer.sellist) > 1 and quarkx.setupsubset(3, "Options")["ExpComponentChecks"] == "1":
+    if len(editor.layout.explorer.sellist) > 1 and quarkx.setupsubset(SS_MODEL, "Options")["ExpComponentChecks"] == "1":
         frame_count = []
         for item in editor.layout.explorer.sellist:
             if item.type == ":mc":
@@ -958,6 +959,10 @@ quarkpy.qmdlbase.RegisterMdlExporter(".lwo LightWave Exporter", ".lwo file", "*.
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.13  2010/10/10 03:24:59  cdunde
+# Added support for player models attachment tags.
+# To make baseframe name uniform with other files.
+#
 # Revision 1.12  2009/03/10 08:00:39  cdunde
 # Updates by DanielPharos to fix multiple component models
 # to work correctly in game and uv positioning.
