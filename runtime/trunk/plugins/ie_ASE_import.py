@@ -48,7 +48,6 @@ from quarkpy.qdictionnary import Strings
 import quarkpy.dlgclasses
 
 # Globals
-SS_MODEL = 3
 logging = 0
 importername = "ie_ASE_import.py"
 textlog = "ase_ie_log.txt"
@@ -2061,6 +2060,10 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.16  2010/10/10 03:24:59  cdunde
+# Added support for player models attachment tags.
+# To make baseframe name uniform with other files.
+#
 # Revision 1.15  2010/06/13 15:37:55  cdunde
 # Setup Model Editor to allow importing of model from main explorer File menu.
 #
