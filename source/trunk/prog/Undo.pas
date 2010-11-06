@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2009/07/15 10:38:00  danielpharos
+Updated website link.
+
 Revision 1.15  2009/02/21 17:06:18  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -88,7 +91,7 @@ type
                {function CheckUsage: Boolean; virtual; abstract;}
                public
                 procedure Faire;
-                constructor Create(nText: String);
+                constructor Create(const nText: String);
                 property Text: String read FText;
                end;
 
@@ -115,7 +118,7 @@ type
                 {function CheckUsage: Boolean; override;}
                 public
                  InsererAvant: QObject;
-                 constructor Create(nText: String; nAncien, nNouveau: QObject);
+                 constructor Create(const nText: String; nAncien, nNouveau: QObject);
                  destructor Destroy; override;
                 end;
 
@@ -127,7 +130,7 @@ type
                  function MemorySize(Loaded: TQStream; LoadNow: Boolean) : Integer; override;
                 {function CheckUsage: Boolean; override;}
                 public
-                 constructor Create(nText: String; nAppliqueA: QObject);
+                 constructor Create(const nText: String; nAppliqueA: QObject);
                  destructor Destroy; override;
                 end;
 
@@ -142,7 +145,7 @@ type
                   procedure DoAtom; override;
                   function MemorySize(Loaded: TQStream; LoadNow: Boolean) : Integer; override;
                  public
-                  constructor Create(nText, nSpec, nArg: String; nPosition: Integer; nAppliqueA: QObject);
+                  constructor Create(const nText, nSpec, nArg: String; nPosition: Integer; nAppliqueA: QObject);
                  end;
 
  TSetSpecificsUndo = class(TObjPropUndo)
@@ -152,7 +155,7 @@ type
                       procedure DoAtom; override;
                       function MemorySize(Loaded: TQStream; LoadNow: Boolean) : Integer; override;
                      public
-                      constructor Create(nText: String; nSpec: TSpecificsList; nAppliqueA: QObject);
+                      constructor Create(const nText: String; nSpec: TSpecificsList; nAppliqueA: QObject);
                       destructor Destroy; override;
                      end;
 
@@ -162,7 +165,7 @@ type
              protected
               procedure DoAtom; override;
              public
-              constructor Create(nText, nName: String; nAppliqueA: QObject);
+              constructor Create(const nText, nName: String; nAppliqueA: QObject);
              end;
 
  TMoveUndo = class(TAtomicUndo)
@@ -177,7 +180,7 @@ type
               procedure DoOp2; override;
               function MemorySize(Loaded: TQStream; LoadNow: Boolean) : Integer; override;
              public
-              constructor Create(nText: String; nElement: QObject; nDestination: QObject; nInsererAvant: QObject);
+              constructor Create(const nText: String; nElement: QObject; nDestination: QObject; nInsererAvant: QObject);
               destructor Destroy; override;
               property Element: QObject read FElement;
              end;
@@ -190,8 +193,8 @@ type
                   function MemorySize(Loaded: TQStream; LoadNow: Boolean) : Integer; override;
                  {function CheckUsage: Boolean; override;}
                  public
-                  constructor Create(nText: String);
-                  constructor CreateList(nText: String; nList: TList);
+                  constructor Create(const nText: String);
+                  constructor CreateList(const nText: String; nList: TList);
                   destructor Destroy; override;
                   property ToDo: TList read FToDo;
                  end;
@@ -1389,7 +1392,7 @@ begin
  FToDo:=TList.Create;
 end;
 
-constructor TMultipleUndo.CreateList(nText: String; nList: TList);
+constructor TMultipleUndo.CreateList(const nText: String; nList: TList);
 begin
  inherited Create(nText);
  FToDo:=nList;
