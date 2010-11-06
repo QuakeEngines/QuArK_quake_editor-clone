@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.51  2010/04/17 20:41:00  danielpharos
+Removed unneeded empty log line.
+
 Revision 1.50  2010/04/16 20:32:57  danielpharos
 Proper logging of FreeLibrary PythonLib.
 
@@ -935,7 +938,7 @@ begin
           begin
             //Python 2.x (> 2.4): Future version: Might work...
             FoundGoodVersion:=True;
-            LogAndWarn('Newer version ('+VersionNumberString+') of Python that supported found! QuArK might behave unpredictably!');
+            LogAndWarn('Newer version ('+VersionNumberString+') of Python than supported found! QuArK might behave unpredictably!');
           end;
         end
         else
