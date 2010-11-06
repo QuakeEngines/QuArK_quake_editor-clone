@@ -2008,7 +2008,7 @@ def create_objects(filename, polynames, clip_list, objspec_list, surf_list, base
         framesgroup = quarkx.newobj('Frames:fg')
 
         # Because .lwo models are "stagnat" models, (no animation), we only make 1 frame
-        # which is used to draw the model’s 'mesh' (shape) in the editor's views.
+        # which is used to draw the model's 'mesh' (shape) in the editor's views.
         # The Skin-view uses the model's 'Tris' to draw its nlines. 
         frame = quarkx.newobj('baseframe:mf')
         mesh = ()
@@ -2700,6 +2700,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.38  2010/11/06 13:31:04  danielpharos
+# Moved a lot of math-code to ie_utils, and replaced magic constant 3 with variable SS_MODEL.
+#
 # Revision 1.37  2010/10/10 03:24:59  cdunde
 # Added support for player models attachment tags.
 # To make baseframe name uniform with other files.
