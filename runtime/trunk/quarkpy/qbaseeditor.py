@@ -1709,13 +1709,18 @@ class BaseEditor:
         return None
 
 
-NeedViewError = "this key only applies to a 2D map view"
+class NeedViewError(Exception):
+    def __str__(self):
+        return "this key only applies to a 2D map view"
 
 
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.145  2010/10/14 20:03:32  danielpharos
+#Fix bone-position with Undo/Redo dialog box and made some fixes to selection-holding code.
+#
 #Revision 1.144  2010/09/24 23:31:25  cdunde
 #Fix for Model Editor LMB click not deselecting everything
 #and made Skin-view independent from editor for same.
