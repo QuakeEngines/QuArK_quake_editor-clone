@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.101  2010/10/16 21:47:40  danielpharos
+Reworked GCF file loading. HLLib now directly called. Updated to HLLib 2.3.0. Fixed JPG-library setting being used in VTF file saving.
+
 Revision 1.100  2010/04/16 20:07:23  danielpharos
 Move some version-stuff about. quarkpy now also checks the minor version number.
 
@@ -374,7 +377,7 @@ function MiddleColor(c1, c2: TColorRef; const f: Single) : TColorRef;
 procedure ClickForm(nForm: TForm);
 procedure HTMLDoc(const URL: String);
 //QuarkXWorkaroundNameChange
-procedure QuarkXWorkaroundNameChange(OldName, NewName: String);
+procedure QuarkXWorkaroundNameChange(const OldName, NewName: String);
 
  {-------------------}
 
@@ -642,7 +645,7 @@ end;
  {-------------------}
 
 //QuarkXWorkaroundNameChange
-procedure QuarkXWorkaroundNameChange(OldName, NewName: String);
+procedure QuarkXWorkaroundNameChange(const OldName, NewName: String);
 var
   I: Integer;
 begin
