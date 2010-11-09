@@ -48,6 +48,7 @@ from quarkpy.qdictionnary import Strings
 import quarkpy.dlgclasses
 
 # Globals
+SS_MODEL = 3
 logging = 0
 importername = "ie_ASE_import.py"
 textlog = "ase_ie_log.txt"
@@ -1093,7 +1094,7 @@ def spawn_mesh(obj, basepath, filename, ComponentList, message, CompNbr):
     framesgroup = quarkx.newobj('Frames:fg') # QuArK Frames group made here.
 
     # Because .ase models are "stagnat" models, (no animation), we only make 1 frame
-    # which is used to draw the model's 'mesh' (shape) in the editor's views.
+    # which is used to draw the model’s 'mesh' (shape) in the editor's views.
     # The Skin-view uses the model's 'Tris' to draw its lines. 
     frame = quarkx.newobj('baseframe:mf') # QuArK frame made here.
     comp_mesh = () # QuArK code
@@ -1262,7 +1263,7 @@ def spawn_mesh(obj, basepath, filename, ComponentList, message, CompNbr):
     # Adds all of the Component's Specifics page items to the Component.
     for key in comp_specifics[name].keys():
         Component[key] = comp_specifics[name][key]
-    # Resets all submaterials ' PARENT'  to the parent's actual skin texture name.
+    # Resets all submaterials ' PARENT'  to the parent’s actual skin texture name.
   #  for objkey in materials_list.keys():
   #      for key in materials_list[objkey].keys():
   #          if key.startswith("SUB") and key.endswith("_PARENT"):
@@ -2060,6 +2061,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.18  2010/11/06 15:00:47  danielpharos
+# Replaced some non-ASCII characters.
+#
 # Revision 1.17  2010/11/06 13:29:36  danielpharos
 # Removed unneeded variable.
 #

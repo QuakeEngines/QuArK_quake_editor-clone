@@ -11,12 +11,11 @@ Various Model importer\exporter utility functions.
 #$Header$
 
 
-import math, os, os.path, time
+import os, os.path, time, operator
 import quarkx
 import quarkpy.qutils
 
 # Globals
-SS_MODEL = 3
 logging = 0
 textlog = "model_ie_log.txt"
 tobj = None
@@ -66,22 +65,22 @@ def default_start_logging(IM_EX_name, IM_EX_textlog, filename, IM_or_EX, add_to_
     global tobj, textlog
 
     starttime = time.time()
-    if quarkx.setupsubset(SS_MODEL, "Options")['IELogging'] != "0":
+    if quarkx.setupsubset(3, "Options")['IELogging'] != "0":
         logging = 1
-        if quarkx.setupsubset(SS_MODEL, "Options")['IELogByFileType'] != "1" and textlog != "model_ie_log.txt" and tobj is not None:
+        if quarkx.setupsubset(3, "Options")['IELogByFileType'] != "1" and textlog != "model_ie_log.txt" and tobj is not None:
             if tobj.txtobj is not None:
                 tobj.txtobj.close()
                 textlog = "model_ie_log.txt"
                 tobj = dotext(textlog) # Calls the class to handle logging.
 
-        if quarkx.setupsubset(SS_MODEL, "Options")['IELogByFileType'] == "1" and textlog == "model_ie_log.txt" and tobj is not None:
+        if quarkx.setupsubset(3, "Options")['IELogByFileType'] == "1" and textlog == "model_ie_log.txt" and tobj is not None:
             if tobj.txtobj is not None:
                 tobj.txtobj.close()
                 textlog = IM_EX_textlog
                 tobj = dotext(textlog) # Calls the class to handle logging.
 
-        if quarkx.setupsubset(SS_MODEL, "Options")['IELogAll'] != "1":
-            if quarkx.setupsubset(SS_MODEL, "Options")['IELogByFileType'] != "1":
+        if quarkx.setupsubset(3, "Options")['IELogAll'] != "1":
+            if quarkx.setupsubset(3, "Options")['IELogByFileType'] != "1":
                 textlog = "model_ie_log.txt"
                 tobj = dotext(textlog) # Calls the class to handle logging.
             else:
@@ -89,7 +88,7 @@ def default_start_logging(IM_EX_name, IM_EX_textlog, filename, IM_or_EX, add_to_
                 tobj = dotext(textlog) # Calls the class to handle logging.
         else:
             if tobj is None:
-                if quarkx.setupsubset(SS_MODEL, "Options")['IELogByFileType'] != "1":
+                if quarkx.setupsubset(3, "Options")['IELogByFileType'] != "1":
                     textlog = "model_ie_log.txt"
                     tobj = dotext(textlog) # Calls the class to handle logging.
                 else:
@@ -133,7 +132,7 @@ def default_end_logging(filename, IM_or_EX, starttime, add_to_message=""):
 
     end = time.time()
     seconds = "in %.2f %s" % (end-starttime, "seconds")
-    if quarkx.setupsubset(SS_MODEL, "Options")['IELogging'] != "0":
+    if quarkx.setupsubset(3, "Options")['IELogging'] != "0":
         if IM_or_EX == "IM":
             tobj.logcon ("=====================================================================")
             tobj.logcon ("Successfully imported " + os.path.basename(filename))
@@ -150,7 +149,7 @@ def default_end_logging(filename, IM_or_EX, starttime, add_to_message=""):
                 tobj.logcon ("=====================================================================")
                 tobj.logcon ("")
                 tobj.logcon ("")
-            if quarkx.setupsubset(SS_MODEL, "Options")['IELogAll'] != "1":
+            if quarkx.setupsubset(3, "Options")['IELogAll'] != "1":
                 tobj.txtobj.close()
         else:
             tobj.logcon ("=====================================================================")
@@ -168,7 +167,7 @@ def default_end_logging(filename, IM_or_EX, starttime, add_to_message=""):
                 tobj.logcon ("=====================================================================")
                 tobj.logcon ("")
                 tobj.logcon ("")
-            if quarkx.setupsubset(SS_MODEL, "Options")['IELogAll'] != "1":
+            if quarkx.setupsubset(3, "Options")['IELogAll'] != "1":
                 tobj.txtobj.close()
     if IM_or_EX == "EX":
         if add_to_message == "":
@@ -205,7 +204,7 @@ class dotext:
     def write(self, wstring, maxlen=80):
         # Opens a text file in QuArK's main directory for logging to.
         # See QuArK's Defaults.qrk file for additional setup code for IELogging option.
-        if quarkx.setupsubset(SS_MODEL, "Options")['IELogging'] != "0":
+        if quarkx.setupsubset(3, "Options")['IELogging'] != "0":
             if self.txtobj == None or not os.path.exists(quarkx.exepath + self.textlog):
                 self.txtobj = open(quarkx.exepath + self.textlog, "w")
         if (self.txtobj==None):
@@ -215,7 +214,7 @@ class dotext:
             if (ll>maxlen):
                 self.txtobj.write((wstring[:maxlen]))
                 self.txtobj.write("\n")
-                if int(quarkx.setupsubset(SS_MODEL, "Options")['IELogging']) == 2:
+                if int(quarkx.setupsubset(3, "Options")['IELogging']) == 2:
                     print (wstring[:maxlen])
                 wstring = (wstring[maxlen:])
             else:
@@ -224,13 +223,13 @@ class dotext:
                 except:
                     self.txtobj = open(quarkx.exepath + self.textlog, "w")
                     self.txtobj.write(wstring)
-                if int(quarkx.setupsubset(SS_MODEL, "Options")['IELogging']) == 2:
+                if int(quarkx.setupsubset(3, "Options")['IELogging']) == 2:
                     if wstring != "\n":
                         print wstring
                 break
 
     def pstring(self, ppstring, where = _NO):
-        where = int(quarkx.setupsubset(SS_MODEL, "Options")['IELogging'])
+        where = int(quarkx.setupsubset(3, "Options")['IELogging'])
         if where == dotext._NO: where = self.dwhere
         self.write(ppstring)
         self.write("\n")
@@ -308,259 +307,14 @@ def NicePrintableFloat(amt):
     amt = amt.rstrip(".")
     return amt
 
-# CString to Python string function
-def ConvertToString(data, length, start=0):
-    result = ''
-    for i in xrange(length):
-        char = data[start+i]
-        if char == "\x00":
-            #NULL character found: End of string
-            break
-        result += char
-    return result
-
-
-######################################################
-# Vector, Quaterion, Matrix math stuff - some taken from
-# Jiba's blender2cal3d script
-######################################################
-def quaternion2matrix(q):
-    xx = q[0] * q[0]
-    yy = q[1] * q[1]
-    zz = q[2] * q[2]
-    xy = q[0] * q[1]
-    xz = q[0] * q[2]
-    yz = q[1] * q[2]
-    wx = q[3] * q[0]
-    wy = q[3] * q[1]
-    wz = q[3] * q[2]
-    return [[1.0 - 2.0 * (yy + zz),       2.0 * (xy + wz),       2.0 * (xz - wy), 0.0],
-            [      2.0 * (xy - wz), 1.0 - 2.0 * (xx + zz),       2.0 * (yz + wx), 0.0],
-            [      2.0 * (xz + wy),       2.0 * (yz - wx), 1.0 - 2.0 * (xx + yy), 0.0],
-            [0.0                  , 0.0                  , 0.0                  , 1.0]]
-
-def matrix2quaternion(m):
-    #See: http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/index.htm
-    s = math.sqrt(abs(m[0][0] + m[1][1] + m[2][2] + m[3][3]))
-    if s < 0.001:
-        if ((m[0][0] > m[1][1]) and (m[0][0] > m[2][2])):
-            s = math.sqrt(m[3][3] + m[0][0] - m[1][1] - m[2][2]) * 2.0
-            return quaternion_normalize([
-            -0.25 * s,
-            -(m[0][1] + m[1][0]) / s,
-            -(m[0][2] + m[2][0]) / s,
-            (m[2][1] - m[1][2]) / s,
-            ])
-        elif (m[1][1] > m[2][2]):
-            s = math.sqrt(m[3][3] + m[1][1] - m[0][0] - m[2][2]) * 2.0
-            return quaternion_normalize([
-            -(m[0][1] + m[1][0]) / s,
-            -0.25 * s,
-            -(m[1][2] + m[2][1]) / s,
-            (m[0][2] - m[2][0]) / s,
-            ])
-        else:
-            s = math.sqrt(m[3][3] + m[2][2] - m[0][0] - m[1][1]) * 2.0
-            return quaternion_normalize([
-            -(m[0][2] + m[2][0]) / s,
-            -(m[1][2] + m[2][1]) / s,
-            -0.25 * s,
-            (m[1][0] - m[0][1]) / s,
-            ])
-    return quaternion_normalize([
-        -(m[2][1] - m[1][2]) / (2.0 * s),
-        -(m[0][2] - m[2][0]) / (2.0 * s),
-        -(m[1][0] - m[0][1]) / (2.0 * s),
-        0.5 * s,
-        ])
-
-def quaternion_normalize(q):
-    l = math.sqrt(q[0] * q[0] + q[1] * q[1] + q[2] * q[2] + q[3] * q[3])
-    return q[0] / l, q[1] / l, q[2] / l, q[3] / l
-
-def quaternion_multiply(q1, q2):
-    r = [
-            q2[3] * q1[0] + q2[0] * q1[3] + q2[1] * q1[2] - q2[2] * q1[1],
-            q2[3] * q1[1] + q2[1] * q1[3] + q2[2] * q1[0] - q2[0] * q1[2],
-            q2[3] * q1[2] + q2[2] * q1[3] + q2[0] * q1[1] - q2[1] * q1[0],
-            q2[3] * q1[3] - q2[0] * q1[0] - q2[1] * q1[1] - q2[2] * q1[2],
-        ]
-    d = math.sqrt(r[0] * r[0] + r[1] * r[1] + r[2] * r[2] + r[3] * r[3])
-    r[0] /= d
-    r[1] /= d
-    r[2] /= d
-    r[3] /= d
-    return r
-
-def matrix_translate(m):
-    m2 = [[m[0][0], m[1][0], m[2][0], m[3][0]],
-          [m[0][1], m[1][1], m[2][1], m[3][1]],
-          [m[0][2], m[1][2], m[2][2], m[3][2]],
-          [m[0][3], m[1][3], m[2][3], m[3][3]]]
-    return m2
-
-def matrix_multiply(b, a):
-    return [ [
-        a[0][0] * b[0][0] + a[0][1] * b[1][0] + a[0][2] * b[2][0],
-        a[0][0] * b[0][1] + a[0][1] * b[1][1] + a[0][2] * b[2][1],
-        a[0][0] * b[0][2] + a[0][1] * b[1][2] + a[0][2] * b[2][2],
-        0.0,
-        ], [
-        a[1][0] * b[0][0] + a[1][1] * b[1][0] + a[1][2] * b[2][0],
-        a[1][0] * b[0][1] + a[1][1] * b[1][1] + a[1][2] * b[2][1],
-        a[1][0] * b[0][2] + a[1][1] * b[1][2] + a[1][2] * b[2][2],
-        0.0,
-        ], [
-        a[2][0] * b[0][0] + a[2][1] * b[1][0] + a[2][2] * b[2][0],
-        a[2][0] * b[0][1] + a[2][1] * b[1][1] + a[2][2] * b[2][1],
-        a[2][0] * b[0][2] + a[2][1] * b[1][2] + a[2][2] * b[2][2],
-         0.0,
-        ], [
-        a[3][0] * b[0][0] + a[3][1] * b[1][0] + a[3][2] * b[2][0] + b[3][0],
-        a[3][0] * b[0][1] + a[3][1] * b[1][1] + a[3][2] * b[2][1] + b[3][1],
-        a[3][0] * b[0][2] + a[3][1] * b[1][2] + a[3][2] * b[2][2] + b[3][2],
-        1.0,
-        ] ]
-
-def matrix_inverse(m):
-    det = matrix_determinant(m)
-    if det == 0:
-        return None
-    a = m[0][0]
-    b = m[0][1]
-    c = m[0][2]
-    d = m[1][0]
-    e = m[1][1]
-    f = m[1][2]
-    g = m[2][0]
-    h = m[2][1]
-    i = m[2][2]
-    #FIXME: no idea how to handle 4-th dimension, so let's ignore it (I know I won't need it)
-    return [ [(e*i - f*h) / det, (h*c - i*b) / det, (b*f - c*e) / det, 0.0],
-             [(g*f - d*i) / det, (a*i - g*c) / det, (d*c - a*f) / det, 0.0],
-             [(d*h - g*e) / det, (g*b - a*h) / det, (a*e - d*b) / det, 0.0],
-             [              0.0,               0.0,               0.0, 1.0] ]
-
-def matrix_rotate_x(angle):
-    cos = math.cos(angle)
-    sin = math.sin(angle)
-    return [
-        [1.0,  0.0, 0.0, 0.0],
-        [0.0,  cos, sin, 0.0],
-        [0.0, -sin, cos, 0.0],
-        [0.0,  0.0, 0.0, 1.0],
-    ]
-
-def matrix_rotate_y(angle):
-    cos = math.cos(angle)
-    sin = math.sin(angle)
-    return [
-        [cos, 0.0, -sin, 0.0],
-        [0.0, 1.0,  0.0, 0.0],
-        [sin, 0.0,  cos, 0.0],
-        [0.0, 0.0,  0.0, 1.0],
-    ]
-
-def matrix_rotate_z(angle):
-    cos = math.cos(angle)
-    sin = math.sin(angle)
-    return [
-        [ cos, sin, 0.0, 0.0],
-        [-sin, cos, 0.0, 0.0],
-        [ 0.0, 0.0, 1.0, 0.0],
-        [ 0.0, 0.0, 0.0, 1.0],
-    ]
-
-def matrix_rotate(axis, angle):
-    vx  = axis[0]
-    vy  = axis[1]
-    vz  = axis[2]
-    vx2 = vx * vx
-    vy2 = vy * vy
-    vz2 = vz * vz
-    cos = math.cos(angle)
-    sin = math.sin(angle)
-    co1 = 1.0 - cos
-    return [
-        [vx2 * co1 + cos,          vx * vy * co1 + vz * sin, vz * vx * co1 - vy * sin, 0.0],
-        [vx * vy * co1 - vz * sin, vy2 * co1 + cos,          vy * vz * co1 + vx * sin, 0.0],
-        [vz * vx * co1 + vy * sin, vy * vz * co1 - vx * sin, vz2 * co1 + cos,          0.0],
-        [0.0, 0.0, 0.0, 1.0],
-    ]
-  # return [
-  #     [vx2 * co1 + cos,          vx * vy * co1 + vz * sin, vz * vx * co1 - vy * sin, 0.0],
-  #     [vz * vx * co1 + vy * sin, vy * vz * co1 - vx * sin, vz2 * co1 + cos,          0.0],
-  #     [vx * vy * co1 - vz * sin, vy2 * co1 + cos,          vy * vz * co1 + vx * sin, 0.0],
-  #     [0.0, 0.0, 0.0, 1.0],
-  # ]
-  
-def matrix_scale(fx, fy, fz):
-  return [
-        [ fx, 0.0, 0.0, 0.0],
-        [0.0,  fy, 0.0, 0.0],
-        [0.0, 0.0,  fz, 0.0],
-        [0.0, 0.0, 0.0, 1.0],
-    ]
-
-def point_by_matrix(p, m):
-  return [
-        p[0] * m[0][0] + p[1] * m[1][0] + p[2] * m[2][0] + m[3][0],
-        p[0] * m[0][1] + p[1] * m[1][1] + p[2] * m[2][1] + m[3][1],
-        p[0] * m[0][2] + p[1] * m[1][2] + p[2] * m[2][2] + m[3][2]
-    ]
-
-def point_distance(p1, p2):
-  return math.sqrt((p2[0] - p1[0]) ** 2 + (p2[1] - p1[1]) ** 2 + (p2[2] - p1[2]) ** 2)
-
-def vector_by_matrix(p, m):
-  return [
-        p[0] * m[0][0] + p[1] * m[1][0] + p[2] * m[2][0],
-        p[0] * m[0][1] + p[1] * m[1][1] + p[2] * m[2][1],
-        p[0] * m[0][2] + p[1] * m[1][2] + p[2] * m[2][2]
-    ]
-
-def vector_length(v):
-    v = v.tuple
-    return math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2])
-
-def vector_normalize(v):
-    v = v.tuple
-    l = math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2])
-    try:
-        return v[0] / l, v[1] / l, v[2] / l
-    except:
-        return 1, 0, 0
-
-def vector_dotproduct(v1, v2):
-    v1 = v1.tuple
-    v2 = v2.tuple
-    return v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2]
-
-def vector_crossproduct(v1, v2):
-    v1 = v1.tuple
-    v2 = v2.tuple
-    return [
-        v1[1] * v2[2] - v1[2] * v2[1],
-        v1[2] * v2[0] - v1[0] * v2[2],
-        v1[0] * v2[1] - v1[1] * v2[0],
-    ]
-
-def vector_angle(v1, v2):
-    s = vector_length(v1) * vector_length(v2)
-    if s == 0.0:
-        return 0.0
-    f = vector_dotproduct(v1, v2) / s
-    if f >=  1.0:
-        return 0.0
-    if f <= -1.0:
-        return math.pi / 2.0
-    return math.atan(-f / math.sqrt(1.0 - f * f)) + math.pi / 2.0
-
 
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.11  2010/11/06 13:31:04  danielpharos
+#Moved a lot of math-code to ie_utils, and replaced magic constant 3 with variable SS_MODEL.
+#
 #Revision 1.10  2010/03/07 09:46:31  cdunde
 #Added new function for converting floats into nice printable strings.
 #

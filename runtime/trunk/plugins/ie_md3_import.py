@@ -27,7 +27,6 @@ import quarkx
 from quarkpy.qutils import *
 import ie_utils
 from ie_utils import tobj
-from ie_utils import *
 from quarkpy.qdictionnary import Strings
 
 # Globals
@@ -37,7 +36,13 @@ importername = "ie_md3_import.py"
 textlog = "md3_ie_log.txt"
 editor = None
 
-
+# Matrix for QuArK.
+### Taken from source\prog\qmatrices.pas lines 139-141
+def vector_by_matrix(p, m):
+    x = p[0] * m[0][0] + p[1] * m[0][1] + p[2] * m[0][2]
+    y = p[0] * m[1][0] + p[1] * m[1][1] + p[2] * m[1][2]
+    z = p[0] * m[2][0] + p[1] * m[2][1] + p[2] * m[2][2]
+    return [x, y, z]
 
 # Global .md3 file limits and values.
 MAX_QPATH = 64
@@ -1388,6 +1393,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.23  2010/11/06 13:31:04  danielpharos
+# Moved a lot of math-code to ie_utils, and replaced magic constant 3 with variable SS_MODEL.
+#
 # Revision 1.22  2010/06/13 15:37:55  cdunde
 # Setup Model Editor to allow importing of model from main explorer File menu.
 #

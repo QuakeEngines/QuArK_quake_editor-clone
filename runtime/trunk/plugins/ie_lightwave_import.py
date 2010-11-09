@@ -56,7 +56,7 @@ Info = {
 #    import mod_meshtools as my_meshtools
 
 #python specific modules import
-import struct, chunk, os, math, cStringIO, time, operator
+import struct, chunk, os, cStringIO, time, operator
 import quarkx
 import quarkpy.qtoolbar
 import ie_utils
@@ -1404,7 +1404,7 @@ def my_create_mesh(clip_list, surf, objspec_list, current_facelist, objname, not
     if surf.has_key('SMAN'):
         #not allowed mixed mode mesh (all the mesh is smoothed and all with the same angle)
         #only one smoothing angle will be active! => take the max one
-        s = int(surf['SMAN']/math.pi*180.0)     #lwo in radians - blender in degrees
+        s = int(surf['SMAN']/3.1415926535897932384626433832795*180.0)     #lwo in radians - blender in degrees
         if msh.getMaxSmoothAngle() < s: msh.setMaxSmoothAngle(s)
 
     img = None
@@ -2008,7 +2008,7 @@ def create_objects(filename, polynames, clip_list, objspec_list, surf_list, base
         framesgroup = quarkx.newobj('Frames:fg')
 
         # Because .lwo models are "stagnat" models, (no animation), we only make 1 frame
-        # which is used to draw the model's 'mesh' (shape) in the editor's views.
+        # which is used to draw the model’s 'mesh' (shape) in the editor's views.
         # The Skin-view uses the model's 'Tris' to draw its nlines. 
         frame = quarkx.newobj('baseframe:mf')
         mesh = ()
@@ -2543,7 +2543,7 @@ def vtxcolorclick(btn):
     if editor is None:
         global editor
         editor = quarkpy.mdleditor.mdleditor # Get the editor.
-    if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
+    if quarkx.setupsubset(3, "Options")["LinearBox"] == "1":
         editor.ModelVertexSelList = []
         editor.linearbox = "True"
         editor.linear1click(btn)
@@ -2557,14 +2557,14 @@ def colorclick(btn):
     if editor is None:
         global editor
         editor = quarkpy.mdleditor.mdleditor # Get the editor.
-    if not quarkx.setupsubset(SS_MODEL, "Options")['VertexUVColor'] or quarkx.setupsubset(SS_MODEL, "Options")['VertexUVColor'] == "0":
-        quarkx.setupsubset(SS_MODEL, "Options")['VertexUVColor'] = "1"
+    if not quarkx.setupsubset(3, "Options")['VertexUVColor'] or quarkx.setupsubset(3, "Options")['VertexUVColor'] == "0":
+        quarkx.setupsubset(3, "Options")['VertexUVColor'] = "1"
         quarkpy.qtoolbar.toggle(btn)
         btn.state = quarkpy.qtoolbar.selected
         quarkx.update(editor.form)
         vtxcolorclick(btn)
     else:
-        quarkx.setupsubset(SS_MODEL, "Options")['VertexUVColor'] = "0"
+        quarkx.setupsubset(3, "Options")['VertexUVColor'] = "0"
         quarkpy.qtoolbar.toggle(btn)
         btn.state = quarkpy.qtoolbar.normal
         quarkx.update(editor.form)
@@ -2700,6 +2700,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.39  2010/11/06 15:00:47  danielpharos
+# Replaced some non-ASCII characters.
+#
 # Revision 1.38  2010/11/06 13:31:04  danielpharos
 # Moved a lot of math-code to ie_utils, and replaced magic constant 3 with variable SS_MODEL.
 #

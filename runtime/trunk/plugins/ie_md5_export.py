@@ -18,6 +18,7 @@ Info = {
    "quark":         "Version 6.6.0 Beta 3" }
 
 import time, math, os, os.path, struct, operator, sys as osSys, chunk
+from math import *
 import quarkx
 import quarkpy.qmacro
 from quarkpy.qutils import *
@@ -25,13 +26,117 @@ import quarkpy.mdleditor
 from types import *
 import ie_utils
 from ie_utils import tobj
-from ie_utils import *
 from quarkpy.qdictionnary import Strings
 
 # Globals
 logging = 0
 exportername = "ie_md5_export.py"
 textlog = "md5_ie_log.txt"
+
+
+######################################################
+# Vector, Quaterion, Matrix math stuff - some taken from
+# Jiba's blender2cal3d script
+######################################################
+def quaternion2matrix(q):
+    xx = q[0] * q[0]
+    yy = q[1] * q[1]
+    zz = q[2] * q[2]
+    xy = q[0] * q[1]
+    xz = q[0] * q[2]
+    yz = q[1] * q[2]
+    wx = q[3] * q[0]
+    wy = q[3] * q[1]
+    wz = q[3] * q[2]
+    return [[1.0 - 2.0 * (yy + zz),       2.0 * (xy + wz),       2.0 * (xz - wy), 0.0],
+            [      2.0 * (xy - wz), 1.0 - 2.0 * (xx + zz),       2.0 * (yz + wx), 0.0],
+            [      2.0 * (xz + wy),       2.0 * (yz - wx), 1.0 - 2.0 * (xx + yy), 0.0],
+            [0.0                  , 0.0                  , 0.0                  , 1.0]]
+
+def matrix2quaternion(m):
+    #See: http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/index.htm
+    s = math.sqrt(abs(m[0][0] + m[1][1] + m[2][2] + m[3][3]))
+    if s < 0.001:
+        if ((m[0][0] > m[1][1]) and (m[0][0] > m[2][2])):
+            s = math.sqrt(m[3][3] + m[0][0] - m[1][1] - m[2][2]) * 2.0
+            return quaternion_normalize([
+            -0.25 * s,
+            -(m[0][1] + m[1][0]) / s,
+            -(m[0][2] + m[2][0]) / s,
+            (m[2][1] - m[1][2]) / s,
+            ])
+        elif (m[1][1] > m[2][2]):
+            s = math.sqrt(m[3][3] + m[1][1] - m[0][0] - m[2][2]) * 2.0
+            return quaternion_normalize([
+            -(m[0][1] + m[1][0]) / s,
+            -0.25 * s,
+            -(m[1][2] + m[2][1]) / s,
+            (m[0][2] - m[2][0]) / s,
+            ])
+        else:
+            s = math.sqrt(m[3][3] + m[2][2] - m[0][0] - m[1][1]) * 2.0
+            return quaternion_normalize([
+            -(m[0][2] + m[2][0]) / s,
+            -(m[1][2] + m[2][1]) / s,
+            -0.25 * s,
+            (m[1][0] - m[0][1]) / s,
+            ])
+    return quaternion_normalize([
+        -(m[2][1] - m[1][2]) / (2.0 * s),
+        -(m[0][2] - m[2][0]) / (2.0 * s),
+        -(m[1][0] - m[0][1]) / (2.0 * s),
+        0.5 * s,
+        ])
+
+def quaternion_normalize(q):
+    l = math.sqrt(q[0] * q[0] + q[1] * q[1] + q[2] * q[2] + q[3] * q[3])
+    return q[0] / l, q[1] / l, q[2] / l, q[3] / l
+
+# This function takes a bone's matrix and inverses it
+# for exportation of data that uses the matrix, such as weights, bm = bone matrix.
+# Not being used in this file any more but should be saved and changed for individual bone call.
+def inverse_matrix(self):
+    self.bone_matrix_list = {}
+    for bone in range(len(self.bones)):
+        bm = []
+        worklist = [[0,0,0],[0,0,0],[0,0,0]]
+        try:
+            bonematrix = self.editor.ModelComponentList['bonelist'][self.bones[bone].name]['bonematrix']
+        except:
+            bonematrix = self.bones[bone].rotmatrix.tuple
+        bm = bonematrix
+        worklist[0][0] = ((bm[1][1]*bm[2][2]) - (bm[1][2]*bm[2][1])) * 1
+        worklist[0][1] = ((bm[1][0]*bm[2][2]) - (bm[1][2]*bm[2][0])) * -1
+        worklist[0][2] = ((bm[1][0]*bm[2][1]) - (bm[1][1]*bm[2][0])) * 1
+
+        worklist[1][0] = ((bm[0][1]*bm[2][2]) - (bm[0][2]*bm[2][1])) * -1
+        worklist[1][1] = ((bm[0][0]*bm[2][2]) - (bm[0][2]*bm[2][0])) * 1
+        worklist[1][2] = ((bm[0][0]*bm[2][1]) - (bm[0][1]*bm[2][0])) * -1
+
+        worklist[2][0] = ((bm[0][1]*bm[1][2]) - (bm[0][2]*bm[1][1])) * 1
+        worklist[2][1] = ((bm[0][0]*bm[1][2]) - (bm[0][2]*bm[1][0])) * -1
+        worklist[2][2] = ((bm[0][0]*bm[1][1]) - (bm[0][1]*bm[1][0])) * 1
+
+        bm[0][0] = worklist[0][0]
+        bm[1][0] = worklist[0][1]
+        bm[2][0] = worklist[0][2]
+
+        bm[0][1] = worklist[1][0]
+        bm[1][1] = worklist[1][1]
+        bm[2][1] = worklist[1][2]
+
+        bm[0][2] = worklist[2][0]
+        bm[1][2] = worklist[2][1]
+        bm[2][2] = worklist[2][2]
+
+        self.bone_matrix_list[self.bones[bone].name] = bm
+
+def vector_by_matrix(p, m):
+    return [
+        p[0] * m[0][0] + p[1] * m[1][0] + p[2] * m[2][0],
+        p[0] * m[0][1] + p[1] * m[1][1] + p[2] * m[2][1],
+        p[0] * m[0][2] + p[1] * m[1][2] + p[2] * m[2][2]
+       ]
 
 
 ######################################################
@@ -928,6 +1033,9 @@ def UIExportDialog(root, filename, editor):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.13  2010/11/06 13:31:04  danielpharos
+# Moved a lot of math-code to ie_utils, and replaced magic constant 3 with variable SS_MODEL.
+#
 # Revision 1.12  2010/05/01 05:01:17  cdunde
 # Update by DanielPharos to allow removal of weight_index storage in the ModelComponentList.
 #

@@ -23,13 +23,13 @@ Info = {
    "quark":         "Version 6.6.0 Beta 4" }
 
 import struct, sys, os, time, operator, math
+from math import sqrt
 import quarkx
 import quarkpy.qutils
 from types import *
 import quarkpy.mdlutils
 import ie_utils
 from ie_utils import tobj
-from ie_utils import *
 from quarkpy.qdictionnary import Strings
 from quarkpy.qeditor import MapColor # Strictly needed for QuArK bones MapColor call.
 
@@ -101,8 +101,16 @@ class SKD_Bone:
         data = struct.unpack(self.binary_format, temp_data)
 
         if file_version == 5: # MOHAA
-            self.name = ConvertToString(data, 32)
-            self.parent = ConvertToString(data, 32, 32)
+            char = 32 # See above data items.
+            for c in xrange(0, char):
+                if data[c] == "\x00":
+                    continue
+                self.name = self.name + data[c]
+            char = 32 + 32 # See above data items.
+            for c in xrange(32, char):
+                if data[c] == "\x00":
+                    continue
+                self.parent = self.parent + data[c]
             self.jointType = data[64]
             self.ofsValues = data[65]
             self.ofsChannels = data[66]
@@ -169,7 +177,11 @@ class SKD_Surface:
         data = struct.unpack(self.binary_format, temp_data)
 
         self.ident = data[0] # SKD ident = 541870931 or "SKL ", we already checked this in the header.
-        self.name = ConvertToString(data, 64, 1)
+        char = 64 + 1 # The above data items = 1.
+        for c in xrange(1, char):
+            if data[c] == "\x00":
+                continue
+            self.name = self.name + data[c]
         # Update the Component name by adding its material name at the end.
         # This is needed to use that material name later to get its skin texture from the .tik file.
         Component.shortname = Component.shortname + "_" + self.name
@@ -448,7 +460,14 @@ class skd_obj:
             tobj.logcon ("==========================")
             tobj.logcon (str(data))
 
-        self.name = ConvertToString(data, 64)
+        char = 64
+        for c in xrange(0, char):
+            if data[c] == "\x00":
+                continue
+            try:
+                self.name = self.name + data[c]
+            except:
+                break
         self.name = self.name.split(".")[0]
         self.numSurfaces = data[64]
         self.numBones = data[65]
@@ -506,7 +525,7 @@ class skd_obj:
                     QuArK_Bone.vtx_pos = {}
                     QuArK_Bone['show'] = (1.0,)
                     QuArK_Bone['position'] = QuArK_Bone.position.tuple
-                    QuArK_Bone.rotmatrix = quarkx.matrix((math.sqrt(2)/2, -math.sqrt(2)/2, 0), (math.sqrt(2)/2, math.sqrt(2)/2, 0), (0, 0, 1))
+                    QuArK_Bone.rotmatrix = quarkx.matrix((sqrt(2)/2, -sqrt(2)/2, 0), (sqrt(2)/2, sqrt(2)/2, 0), (0, 0, 1))
                     QuArK_Bone['draw_offset'] = (0.0,0.0,0.0)
                     QuArK_Bone['scale'] = (1.0,)
                     QuArK_Bone['_color'] = MapColor("BoneHandles", SS_MODEL)
@@ -662,7 +681,11 @@ class SKA_BoneName_EF2: # From skb importer, can probably remove this section.
         data = struct.unpack(self.binary_format, temp_data)
 
         self.ID = data[0]
-        self.name = ConvertToString(data, 32, 1)
+        char = 32 + 1 # The above data items 1-31.
+        for c in xrange(1, char):
+            if data[c] == "\x00":
+                break
+            self.name = self.name + data[c]
         self.name = self.name.split(".")[0]
 
     def dump(self):
@@ -909,6 +932,8 @@ class skc_obj:
         ModelFolder = FolderPath.rsplit("/", 1)[1]
         temp_data = file.read(struct.calcsize(self.binary_format))
         data = struct.unpack(self.binary_format, temp_data)
+     #   print "skd_import line 935 skc_obj header data"
+     #   print data
 
         # "data" is all of the header data amounts.
         self.ident = data[0]
@@ -951,6 +976,9 @@ class skc_obj:
         for i in xrange(self.numChannels):
             temp_data = file.read(struct.calcsize(binary_format))
             data = struct.unpack(binary_format, temp_data)
+     #       print "------------------------"
+     #       print "item: ", i
+     #       print data
             data = data[0].replace("\x00", "")
             if data.endswith(" pos"):
                 name = data.split(" pos")[0]
@@ -1078,6 +1106,8 @@ class skc_obj:
             tobj.logcon ("============================")
             tobj.logcon ("")
         for i in xrange(0, self.numFrames):
+     #       print "--------------------------"
+     #       print "SKC_Frame header data nbr", i
             frame = SKC_Frame()
             frame.load(file, self, QuArK_bones, parent_indexes, real_bone_index, index_to_skc)
             frame_name = anim_name + " " + str(i+1)
@@ -1223,6 +1253,25 @@ def check4skin(file, Component, material_name, message, version):
     if logging == 1:
         tobj.logcon ("")
     return message
+
+
+######################################################
+# Import math functions
+######################################################
+def quaternion2matrix(q):
+    xx = q[0] * q[0]
+    yy = q[1] * q[1]
+    zz = q[2] * q[2]
+    xy = q[0] * q[1]
+    xz = q[0] * q[2]
+    yz = q[1] * q[2]
+    wx = q[3] * q[0]
+    wy = q[3] * q[1]
+    wz = q[3] * q[2]
+    return [[1.0 - 2.0 * (yy + zz),       2.0 * (xy + wz),       2.0 * (xz - wy), 0.0],
+            [      2.0 * (xy - wz), 1.0 - 2.0 * (xx + zz),       2.0 * (yz + wx), 0.0],
+            [      2.0 * (xz + wy),       2.0 * (yz - wx), 1.0 - 2.0 * (xx + yy), 0.0],
+            [0.0                  , 0.0                  , 0.0                  , 1.0]]
 
 
 ############################
@@ -1452,6 +1501,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".skd MOHAA Importer-mesh", ".skd file", "*
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.3  2010/11/06 13:31:04  danielpharos
+# Moved a lot of math-code to ie_utils, and replaced magic constant 3 with variable SS_MODEL.
+#
 # Revision 1.2  2010/08/28 05:46:53  cdunde
 # Development update, added channels list and data.
 #

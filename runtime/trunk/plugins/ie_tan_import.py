@@ -29,7 +29,6 @@ from types import *
 import quarkpy.mdlutils
 import ie_utils
 from ie_utils import tobj
-from ie_utils import *
 from quarkpy.qdictionnary import Strings
 
 # Globals
@@ -39,6 +38,19 @@ textlog = "tan_ie_log.txt"
 editor = None
 progressbar = None
 
+
+######################################################
+# CString to Python string function
+######################################################
+def CString(data, length, start=0):
+    result = ''
+    for i in xrange(length):
+        char = data[start+i]
+        if char == "\x00":
+            #NULL character found: End of string
+            break
+        result += char
+    return result
 
 ######################################################
 # TAN data structures
@@ -108,7 +120,7 @@ class TAN_TagName:
         temp_data = file.read(struct.calcsize(self.binary_format))
         data = struct.unpack(self.binary_format, temp_data)
 
-        self.name = ConvertToString(data, 64)
+        self.name = CString(data, 64)
 
     def dump (self):
         print "Tag Name: ",self.name
@@ -263,7 +275,7 @@ class TAN_Surface:
         data = struct.unpack(self.binary_format, temp_data)
 
         self.ident = data[0] # TAN ident = 541999444, we already checked this in the header.
-        self.name = ConvertToString(data, 64, 1)
+        self.name = CString(data, 64, 1)
         # Update the Component name by adding its material name at the end.
         # This is needed to use that material name later to get its skin texture from the .tik file.
         Component.shortname = Component.shortname + "_" + self.name
@@ -443,7 +455,7 @@ class tan_obj:
             quarkx.msgbox("Invalid model.\nEditor can not import it.\n\nTAN ident = TAN version = 2\n\nFile has:\nident = " + self.ident + " version = " + str(self.version), quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
             return None
 
-        self.name = ConvertToString(data, 64, 2)
+        self.name = CString(data, 64, 2)
         self.name = self.name.split(".")[0]
         self.numFrames = data[66]
         self.numTags = data[67]
@@ -791,6 +803,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".tan Alice\EF2\FAKK2 Importer", ".tan file
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.7  2010/11/06 13:31:04  danielpharos
+# Moved a lot of math-code to ie_utils, and replaced magic constant 3 with variable SS_MODEL.
+#
 # Revision 1.6  2010/08/03 22:40:06  cdunde
 # Logging and comments update.
 #

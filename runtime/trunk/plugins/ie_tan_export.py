@@ -28,20 +28,31 @@ import quarkpy.mdleditor
 from types import *
 import ie_utils
 from ie_utils import tobj
-from ie_utils import *
 from quarkpy.qdictionnary import Strings
 
 # Globals
-SS_MODEL = 3
+editor = None
 logging = 0
 exportername = "ie_tan_export.py"
 textlog = "tan_ie_log.txt"
-editor = None
 progressbar = None
 
 # Global .tan file limits and values.
 MAX_PATH = 64
 
+
+######################################################
+# CString to Python string function
+######################################################
+def CString(data, length, start=0):
+    result = ''
+    for i in xrange(length):
+        char = data[start+i]
+        if char == "\x00":
+            #NULL character found: End of string
+            break
+        result += char
+    return result
 
 ######################################################
 # TAN data structures
@@ -111,7 +122,7 @@ class TAN_TagName:
         temp_data = file.read(struct.calcsize(self.binary_format))
         data = struct.unpack(self.binary_format, temp_data)
 
-        self.name = ConvertToString(data, 64)
+        self.name = CString(data, 64)
 
 
 class TAN_TagData:
@@ -604,7 +615,7 @@ def savemodel(root, filename, gamename, nomessage=0):
             QuArK_comps.append(item)
             frame_count = frame_count + [len(item.dictitems['Frames:fg'].dictitems)]
 
-    if len(sellist) > 1 and quarkx.setupsubset(SS_MODEL, "Options")["ExpComponentChecks"] == "1":
+    if len(sellist) > 1 and quarkx.setupsubset(3, "Options")["ExpComponentChecks"] == "1":
         if len(frame_count) > 1:
             for item in range(len(frame_count)):
                 if item >= len(frame_count)-1:
@@ -645,6 +656,9 @@ quarkpy.qmdlbase.RegisterMdlExporter(".tan Alice\EF2\FAKK2 Exporter", ".tan file
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.3  2010/11/06 13:31:04  danielpharos
+# Moved a lot of math-code to ie_utils, and replaced magic constant 3 with variable SS_MODEL.
+#
 # Revision 1.2  2010/08/09 00:50:28  cdunde
 # Removed unused code items and updated comments.
 #
