@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2009/07/15 10:38:06  danielpharos
+Updated website link.
+
 Revision 1.8  2009/02/21 17:09:53  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -54,11 +57,13 @@ type
   public
     class function TypeInfo: String; override;
     function IsAllowedParent(Parent: QObject) : Boolean; override;
+    //procedure AddTo3DScene(Scene: TObject); override;
+    procedure AnalyseClic(Liste: PyObject); override;
   end;
 
 implementation
 
-uses QkObjectClassList, QkModelRoot;
+uses QkObjectClassList, QkModelRoot, QkMapPoly, QkMapObjects;
 
 function QMiscGroup.IsAllowedParent(Parent: QObject) : Boolean;
 begin
@@ -68,12 +73,38 @@ begin
     Result:=false;
 end;
 
+(*procedure QMiscGroup.AddTo3DScene(Scene: TObject);
+var
+  I: Integer;
+  Q: QObject;
+begin
+  for I:=0 to SubElements.Count-1 do begin
+    Q:=SubElements[I];
+    if Q is TPolyhedron then
+      QMdlObject(Q).AddTo3DScene(Scene);
+  end;
+end;*)
+
+procedure QMiscGroup.AnalyseClic;
+var
+  I: Integer;
+  Q: QObject;
+begin
+  for I:=0 to SubElements.Count-1 do begin
+    Q:=SubElements[I];
+    if (Q is TPolyhedron) then
+      TPolyhedron(Q).AnalyseClic(Liste)
+    else if (Q is TTreeMapGroup) then
+      TTreeMapGroup(Q).AnalyseClic(Liste);
+  end;
+end;
+
 class function QMiscGroup.TypeInfo;
 begin
   TypeInfo:=':mg';
 end;
 
 initialization
-  RegisterQObject(QMiscGroup,  'a');
+  RegisterQObject(QMiscGroup, 'a');
 end.
 
