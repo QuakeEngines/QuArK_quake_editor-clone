@@ -49,4 +49,10 @@ intersects(poly, face)
 True or False depending on whether the polyhedron intersects or not the given polyhedron poly or the given face. If two arguments are given, face must be a face of poly and the intersection with this face of the polyhedron only is computed.
 </td></tr>
 
+<tr><td class="doccode">
+changedfaces()
+</td><td>
+Makes the Delphi code add + sign to poly in the tree-view without going through undo code.
+</td></tr>
+
 </table>
