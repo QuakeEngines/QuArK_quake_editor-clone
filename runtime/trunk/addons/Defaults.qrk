@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.523  2010/10/17 15:39:16  danielpharos
+//Added high precision float option to DirectX renderer.
+//
 //Revision 1.522  2010/10/17 15:38:06  danielpharos
 //Added new filetypes.
 //
@@ -4583,6 +4586,7 @@ QQRKSRC1
         NoScrollBars       = "1"
         CrossCursor        = ""
         HideMouseDrag      = ""
+        DrawBBoxes         = ""
         AutoAdjustNormal   = ""
         PagesLocked        = ""
         Recenter           = "1"
@@ -9897,7 +9901,8 @@ QQRKSRC1
       NoScrollBars:             = {Typ="X" Txt="Model view scroll"              Cap="Hide scroll bars"                     }
       CrossCursor:              = {Typ="X" Txt="Mouse cursor"                   Cap="Cross-like cursor"                    }
       HideMouseDrag:            = {Typ="X" Txt="   ``"                          Cap="Hidden while dragging"                }
-      AutoAdjustNormal:         = {Typ="X" Txt="Polyhedron editing"             Cap="Quantize angles"                      }
+      DrawBBoxes:               = {Typ="X" Txt="Polyhedron editing"             Cap="Draw Bounding Boxes"                  }
+      AutoAdjustNormal:         = {Typ="X" Txt="   ``"                          Cap="Quantize angles"                      }
       PagesLocked:              = {Typ="X" Txt="Multi-pages panel"              Cap="Locked"                               }
       HandleHints:              = {Typ="X" Txt="Hints (help rectangles)"        Cap="Hints for model handles"              }
       Recenter:                 = {Typ="X" Txt="Position of new objects"        Cap="Screen center"                        }
