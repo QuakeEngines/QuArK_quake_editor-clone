@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23  2009/07/15 10:38:06  danielpharos
+Updated website link.
+
 Revision 1.22  2009/02/21 17:09:53  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -125,11 +128,9 @@ uses Quarkx, QkExceptions, PyObjects, QkObjectClassList, QkComponent, QkModelRoo
 
 function QFrame.IsAllowedParent(Parent: QObject) : Boolean;
 begin
-  try
-    if ParentComponent = Nil then ParentComponent := Self.FParent.FParent;
-  except
-    ParentComponent := Nil;
-  end;
+  if ParentComponent = Nil then
+   if Self.FParent<>Nil then
+    ParentComponent := Self.FParent.FParent;
   if (Parent=nil) or ((Parent is QFrameGroup) and (Parent.FParent = ParentComponent)) then
     Result:=true
   else
