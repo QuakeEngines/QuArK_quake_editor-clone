@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.98  2010/05/23 15:58:04  danielpharos
+Added some options to handle texture names better. Should fix wrong slashes on export.
+
 Revision 1.97  2009/07/15 10:38:01  danielpharos
 Updated website link.
 
@@ -2806,10 +2809,36 @@ begin
  end;
 end;
 
+function pChangedFaces(self, args: PyObject) : PyObject; cdecl;
+var
+ poly: PyObject;
+ Me: TPolyedre;
+ I: Integer;
+begin
+ try
+  Result:=Nil;
+  poly:=self;
+//  if not PyArg_ParseTupleX(args, 'O!', [@TyObject_Type, @poly]) then
+//   Exit;
+  Me:=QkObjFromPyObj(self) as TPolyedre;
+  Me.LoadAll;
+  InvalidatePolyhedronTree(Me);
+  Me.ConstructVertices();
+  for I:=0 to Me.SubElements.Count-1 do
+    if Me.SubElements[i] is TFace then
+      Me.SubElements[i].Flags := Me.SubElements[i].Flags or ofTreeViewSubElement;
+  Result:=Py_None;
+ except
+  EBackToPython;
+  Result:=Nil;
+ end;
+end;
+
 const
- PolyMethodTable: array[0..1] of TyMethodDef =
+ PolyMethodTable: array[0..2] of TyMethodDef =
   ((ml_name: 'subtractfrom';   ml_meth: pSubtractFrom;   ml_flags: METH_VARARGS),
-   (ml_name: 'intersects';     ml_meth: pIntersects;     ml_flags: METH_VARARGS));
+   (ml_name: 'intersects';     ml_meth: pIntersects;     ml_flags: METH_VARARGS),
+   (ml_name: 'changedfaces';   ml_meth: pChangedFaces;   ml_flags: METH_VARARGS));
 
 function TPolyhedron.PyGetAttr(attr: PChar) : PyObject;
 var
