@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.73  2010/10/16 22:50:16  danielpharos
+Added experimental RMF file loading support; poly's only, no UV's or textures.
+
 Revision 1.72  2010/10/16 22:31:03  danielpharos
 Added NCF file loading support (for example: Alien Swarm). Also, corrected VPK dictionnary mistake.
 
@@ -249,6 +252,7 @@ uses
   QkMdl in 'prog\model\QkMdl.pas',
   QkMdlObject in 'prog\model\QkMdlObject.pas',
   QkMiscGroup in 'prog\model\QkMiscGroup.pas',
+  QkBBoxGroup in 'prog\model\QkBBoxGroup.pas',
   QkModel in 'prog\model\QkModel.pas',
   QkModelBone in 'prog\model\QkModelBone.pas',
   QkModelRoot in 'prog\model\QkModelRoot.pas',
