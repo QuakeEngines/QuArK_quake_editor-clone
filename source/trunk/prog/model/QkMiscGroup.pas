@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2010/11/18 21:26:15  danielpharos
+Added ability to select poly's.
+
 Revision 1.9  2009/07/15 10:38:06  danielpharos
 Updated website link.
 
@@ -63,7 +66,7 @@ type
 
 implementation
 
-uses QkObjectClassList, QkModelRoot, QkMapPoly, QkMapObjects;
+uses QkObjectClassList, QkModelRoot, QkMapPoly, QkMapObjects, QkBBoxGroup;
 
 function QMiscGroup.IsAllowedParent(Parent: QObject) : Boolean;
 begin
@@ -95,7 +98,9 @@ begin
     if (Q is TPolyhedron) then
       TPolyhedron(Q).AnalyseClic(Liste)
     else if (Q is TTreeMapGroup) then
-      TTreeMapGroup(Q).AnalyseClic(Liste);
+      TTreeMapGroup(Q).AnalyseClic(Liste)
+    else if (Q is QBBoxGroup) then
+      QBBoxGroup(Q).AnalyseClic(Liste);
   end;
 end;
 

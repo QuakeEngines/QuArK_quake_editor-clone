@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.1  2010/11/30 20:31:14  danielpharos
+Added BBoxGroup object.
+
 }
 
 unit QkBBoxGroup;
@@ -37,11 +40,12 @@ type
   public
     class function TypeInfo: String; override;
     function IsAllowedParent(Parent: QObject) : Boolean; override;
+    procedure AnalyseClic(Liste: PyObject); override;
   end;
 
 implementation
 
-uses QkObjectClassList, QkMiscGroup;
+uses QkObjectClassList, QkMiscGroup, QkMapPoly;
 
 function QBBoxGroup.IsAllowedParent(Parent: QObject) : Boolean;
 begin
@@ -54,6 +58,18 @@ end;
 class function QBBoxGroup.TypeInfo;
 begin
   TypeInfo:=':bbg';
+end;
+
+procedure QBBoxGroup.AnalyseClic;
+var
+  I: Integer;
+  Q: QObject;
+begin
+  for I:=0 to SubElements.Count-1 do begin
+    Q:=SubElements[I];
+    if (Q is TPolyhedron) then
+      TPolyhedron(Q).AnalyseClic(Liste);
+  end;
 end;
 
 initialization
