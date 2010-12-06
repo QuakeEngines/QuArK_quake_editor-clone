@@ -2232,7 +2232,6 @@ def loadmodel(root, filename, gamename, nomessage=0):
 
     bonelist = editor.ModelComponentList['bonelist']
     bboxlist = editor.ModelComponentList['bboxlist']
-    bone_names = bonelist.keys()
     frame_name = ComponentList[0].dictitems['Frames:fg'].subitems[0].name
     bbg_name = filename.split("\\")
     folder = bbg_name[len(bbg_name)-2]
@@ -2241,10 +2240,8 @@ def loadmodel(root, filename, gamename, nomessage=0):
     bbg_name = folder + "_" + file
     if editor.form is not None:
         bboxgroup = quarkx.newobj("BBoxes "+bbg_name+":bbg")
-        for bone in range(len(bone_names)):
-            bonename = bone_names[bone]
-            if bonename.find(mdl_name) == -1:
-                continue
+        for bone in range(len(QuArK_bones)):
+            bonename = QuArK_bones[bone].name
             bboxname = bonename.replace(":bone", ":p")
             if bboxlist.has_key(bboxname):
                 bone_data = bonelist[bonename]
@@ -2258,10 +2255,8 @@ def loadmodel(root, filename, gamename, nomessage=0):
             undo.put(editor_dictitems['Misc:mg'], bboxgroup)
     else:
         bboxgroup = quarkx.newobj("BBoxes "+bbg_name+":bbg")
-        for bone in range(len(bone_names)):
-            bonename = bone_names[bone]
-            if bonename.find(mdl_name) == -1:
-                continue
+        for bone in range(len(QuArK_bones)):
+            bonename = QuArK_bones[bone].name
             bboxname = bonename.replace(":bone", ":p")
             if bboxlist.has_key(bboxname):
                 bone_data = bonelist[bonename]
@@ -2357,6 +2352,10 @@ quarkpy.qmdlbase.RegisterMdlImporter(".mdl Half-Life Importer", ".mdl file", "*.
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.15  2010/12/06 09:44:00  cdunde
+# Needed to add model name to stuff on importing to keep isolated
+# and fixed incorrect usage of ModelComponentList bonelist.
+#
 # Revision 1.14  2010/12/06 05:43:06  cdunde
 # Updates for Model Editor bounding box system.
 #
