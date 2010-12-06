@@ -405,8 +405,56 @@ def edit_dup(editor, m=None):
                 itemtomoveparent.insertitem(count, itemtomove)
 
 
+def edit_newbboxgroup(editor, m=None):
+    "Create a new group in a 'Misc' folder for BBoxes."
+
+    # List selected objects.
+    list = editor.visualselection()
+
+    # Only allow polys to be moved.
+    ex = editor.layout.explorer
+    nparent = editor.Root.dictitems['Misc:mg']
+    nib = nparent
+    ex.expand(nparent)
+    if len(list) == 1 and list[0].type == ":mg":
+        new_list = []
+        for item in list[0].subitems:
+            if not item.name.endswith(":p"):
+                new_list += [item]
+        list = new_list
+    else:
+        for item in list:
+            if item.type != ":p":
+                quarkx.beep()
+                quarkx.msgbox("Improper selection!\n\nA BBox sub-group can only accept BBox polys within that folder.\nCurrent selected items to be placed into the new sub-group are not all BBoxes.\n\nAlso, you can not place a sub-group inside another sub-group.", qutils.MT_INFORMATION, qutils.MB_OK)
+                return
+
+    # Build a new group object.
+    newgroup = quarkx.newobj("Bounding Boxes:bbg")
+
+    # The undo to perform this functions action.
+    undo = quarkx.action()
+    undo.put(nparent, newgroup, nib)   # actually create the new group
+    moveitems = 1
+    for item in ex.sellist:
+        if item.type != ":p":
+            moveitems = 0
+            break
+    if moveitems == 1:
+        for s in list:
+            if s is not editor.Root and s is not nparent:
+                undo.move(s, newgroup)   # put the selected items into the new group
+    undo.ok(editor.Root, Strings[556])
+
+    #
+    # Initially expand the new group.
+    #
+
+    ex.expand(newgroup)
+
+
 def edit_newskingroup(editor, m=None):
-    "Create a new group."
+    "Create a new group in a 'Skins' folder."
 
     #
     # List selected objects.
@@ -632,6 +680,9 @@ def groupcolor(m):
 #
 #
 #$Log$
+#Revision 1.37  2010/06/15 20:38:36  cdunde
+#Added .ftx as supported texture file type for game FAKK2.
+#
 #Revision 1.36  2010/05/15 18:47:28  cdunde
 #Better to set looking for texture paths in game addons qrk files first.
 #

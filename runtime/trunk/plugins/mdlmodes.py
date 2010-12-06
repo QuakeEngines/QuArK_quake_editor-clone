@@ -23,6 +23,7 @@ Info = {
 
 import quarkpy.qhandles
 from quarkpy.mdlmgr import *
+import quarkpy.mdleditor
 
 
 def lockxclick(m):
@@ -1016,17 +1017,118 @@ def OptionsViewsClick(m):
     OptionsViewsDlg(quarkx.clickform, 'optionsviewsdlg', editor, setup, action, onclosing)
 
 
+parent = quarkpy.qhandles.RectangleDragObject
+class BBoxMakerDragObject(parent):
+    "A bbox cube maker."
+
+    Hint = hintPlusInfobaselink("Quick bbox maker||Quick bbox maker:\n\nWhen active allows the LMB drag creation of a bounding box in any view.\n\nCan only be used when a single bone is selected for the bbox to be linked to.", "intro.modeleditor.toolpalettes.viewselection.html#coloroptions")
+
+    def __init__(self, view, x, y, redcolor, todo):
+        parent.__init__(self, view, x, y, redcolor, todo)
+        self.pt0 = quarkpy.qhandles.aligntogrid(self.pt0, 1)
+        p = view.proj(self.pt0)
+        if p.visible:
+            self.x0 = p.x
+            self.y0 = p.y
+
+    def buildredimages(self, x, y, flags):
+        depth = self.view.depth
+        p = self.view.proj(quarkpy.qhandles.aligntogrid(self.view.space(x, y, depth[0]), 1))
+        if p.visible:
+            x = p.x
+            y = p.y
+        dx = abs(self.x0-x)
+        dy = abs(self.y0-y)
+        if dx>dy: dx=dy
+        min = (depth[0]+depth[1]-dx)*0.5
+        p = self.view.proj(quarkpy.qhandles.aligntogrid(self.view.space(x, y, min), 1))
+        if p.visible:
+            min = p.z
+        max = min + dx
+        return parent.buildredimages(self, x, y, flags, (min,max))
+
+    def rectanglesel(self, editor, x,y, rectangle, view):
+        comp = editor.Root.currentcomponent
+        quarkpy.mdleditor.setsingleframefillcolor(editor, view)
+        plugins.mdlgridscale.gridfinishdrawing(editor, view)
+        cv = view.canvas()
+        if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] != "1":
+            for h in view.handles:
+                h.draw(view, cv, h)
+
+        for v in editor.layout.views:
+            bbox = quarkx.boundingboxof([rectangle])
+            m = bbox[0].tuple
+            M = bbox[1].tuple
+            box = [quarkx.vect(m), quarkx.vect(M), quarkx.vect(m[0],m[1],M[2]), quarkx.vect(m[0],M[1],m[2]), quarkx.vect(m[0],M[1],M[2]), quarkx.vect(M[0],m[1],M[2]), quarkx.vect(M[0],m[1],m[2]), quarkx.vect(M[0],M[1],m[2])]
+            cv = v.canvas()
+            cv.pencolor = RED
+            for bp in xrange(len(box)):
+                box[bp] = v.proj(box[bp])
+            cv.line(int(box[0].x), int(box[0].y), int(box[2].x), int(box[2].y))
+            cv.line(int(box[0].x), int(box[0].y), int(box[3].x), int(box[3].y))
+            cv.line(int(box[3].x), int(box[3].y), int(box[4].x), int(box[4].y))
+            cv.line(int(box[4].x), int(box[4].y), int(box[2].x), int(box[2].y))
+            cv.line(int(box[0].x), int(box[0].y), int(box[6].x), int(box[6].y))
+            cv.line(int(box[3].x), int(box[3].y), int(box[7].x), int(box[7].y))
+            cv.line(int(box[4].x), int(box[4].y), int(box[1].x), int(box[1].y))
+            cv.line(int(box[2].x), int(box[2].y), int(box[5].x), int(box[5].y))
+            cv.line(int(box[6].x), int(box[6].y), int(box[7].x), int(box[7].y))
+            cv.line(int(box[7].x), int(box[7].y), int(box[1].x), int(box[1].y))
+            cv.line(int(box[1].x), int(box[1].y), int(box[5].x), int(box[5].y))
+            cv.line(int(box[5].x), int(box[5].y), int(box[6].x), int(box[6].y))
+
+        undo = quarkx.action()
+        parent = editor.Root.dictitems['Misc:mg']
+        polys = parent.findallsubitems("", ':p')
+        count = 1
+        newpoly = rectangle.copy()
+        newpoly["assigned2"] = "None"
+        for poly in polys:
+            if poly.shortname.startswith("bbox "):
+                nbr = None
+                try:
+                    nbr = poly.shortname.split(" ")[1]
+                except:
+                    pass
+                if nbr is not None:
+                    if int(nbr) >= count:
+                        count = int(nbr) + 1
+                else:
+                    count = count + 1
+        newpoly.shortname = "bbox " + str(count)
+        face_names = ['north', 'east', 'south', 'west', 'up', 'down']
+        for f in range(len(newpoly.subitems)):
+            newpoly.subitems[f].shortname = face_names[f]
+
+        undo.put(parent, newpoly)
+        editor.ok(undo, "bbox added")
+
 
 def DialogViewsClick(m):
     editor = mapeditor()
     m = qmenu.item("Dummy", None, "")
     OptionsViewsClick(m)
 
-
 def ColorsClick(m):
     editor = mapeditor()
     m = qmenu.item("Dummy", None, "")
     quarkx.openconfigdlg("Model:Colors")
+
+def BBoxClick(m):
+    editor = mapeditor()
+    quarkpy.qtoolbar.toggle(m)
+    tb1 = editor.layout.toolbars["tb_AxisLock"]
+    if not MdlOption("MakeBBox"):
+        quarkx.setupsubset(SS_MODEL, "Options")["MakeBBox"] = "1"
+        tb1.tb.buttons[5].state = qtoolbar.selected
+        quarkx.update(editor.form)
+        editor.MouseDragMode = BBoxMakerDragObject
+    else:
+        quarkx.setupsubset(SS_MODEL, "Options")["MakeBBox"] = None
+        tb1.tb.buttons[5].state = qtoolbar.normal
+        quarkx.update(editor.form)
+        editor.MouseDragMode = mdlhandles.RectSelDragObject
 
 
 class AxisLockBar(ToolBar):
@@ -1041,7 +1143,8 @@ class AxisLockBar(ToolBar):
         LockZBtn = qtoolbar.button(lockzclick, "Lock Z Axis", ico_mdled, 2)  # tb_AxisLock[2] button
         viewsDialogbtn = qtoolbar.button(DialogViewsClick, "Views Options\nDialog Input\n(opens the input box)||Views Options Dialog Input:\n\nThis will open its own 'Dialog Box' and is laid out in the same order as the 'Display tool-palette'. \n\nThis dialog gives you the ability to customize every view that QuArK provides and does so independently from one view to the next.", ico_mdled, 3, infobaselink="intro.modeleditor.toolpalettes.viewselection.html#viewoptions")
         Colorsbtn = qtoolbar.button(ColorsClick, "Color Options\nfor quick line and\nvertex color changes||Color Options:\n\nThis will open the 'Configuration Model Editor Colors' selection dialog.\n\nThis dialog allows you to quickly change a variety of line and vertex color settings for easer viewing as needed.", ico_mdled, 4, infobaselink="intro.modeleditor.toolpalettes.viewselection.html#coloroptions")
-        layout.buttons.update({"lockx": LockXBtn, "locky": LockYBtn,"lockz": LockZBtn})
+        BBoxbtn = qtoolbar.button(BBoxClick, "Quick bbox maker||Quick bbox maker:\n\nWhen active allows the LMB drag creation of a bounding box in any view.\n\nCan only be used when a single bone is selected for the bbox to be linked to.", ico_mdled, 5, infobaselink="intro.modeleditor.toolpalettes.viewselection.html#coloroptions")
+        layout.buttons.update({"lockx": LockXBtn, "locky": LockYBtn, "lockz": LockZBtn, "bboxes": BBoxbtn})
 
         if quarkx.setupsubset(SS_MODEL, "Options")["setLock_X"]=="1":
             LockXBtn.state = quarkpy.qtoolbar.selected
@@ -1058,7 +1161,7 @@ class AxisLockBar(ToolBar):
         else:
             LockZBtn.state = quarkpy.qtoolbar.normal
 
-        return [LockXBtn, LockYBtn, LockZBtn, viewsDialogbtn, Colorsbtn]
+        return [LockXBtn, LockYBtn, LockZBtn, viewsDialogbtn, Colorsbtn, BBoxbtn]
 
 
 quarkpy.mdlcommands.items.append(quarkpy.qmenu.sep)
@@ -1079,6 +1182,9 @@ Lock_Z.state = int(quarkx.setupsubset(SS_MODEL, "Options")["setLock_Z"])
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.26  2010/06/05 21:43:44  cdunde
+# Fix to update dialog and specifics page before redrawing views and draw fillcolors correctly.
+#
 # Revision 1.25  2010/05/01 04:25:37  cdunde
 # Updated files to help increase editor speed by including necessary ModelComponentList items
 # and removing redundant checks and calls to the list.

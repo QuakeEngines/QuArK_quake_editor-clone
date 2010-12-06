@@ -1439,14 +1439,11 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
             self.bone_controls.append(control)
           #  control.dump()
                   
-        # load the hitboxes data
+        # load the hitboxes data, can only have one per bone and visa versa.
         file.seek(ofsBegin + self.hitboxes_offset, 0)
         for i in xrange(self.num_hitboxes):
             hitbox = mdl_hitbox().load(file)
-            if self.hitboxes.has_key(hitbox.bone):
-                self.hitboxes[hitbox.bone] = self.hitboxes[hitbox.bone] + [[hitbox.bbmin, hitbox.bbmax]]
-            else:
-                self.hitboxes[hitbox.bone] = [[hitbox.bbmin, hitbox.bbmax]]
+            self.hitboxes[hitbox.bone] = [hitbox.bbmin, hitbox.bbmax]
           #  hitbox.dump()
 
         # load the header for demand sequence group data
@@ -1698,9 +1695,10 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
                 bonedata['frames']['baseframe:mf'] = {}
                 bonedata['frames']['baseframe:mf']['position'] = new_bone.dictspec['position']
                 bonedata['frames']['baseframe:mf']['rotmatrix'] = new_bone.rotmatrix.tuple
-                if self.hitboxes.has_key(mdlbone):
-                    bonedata['bboxes'] = self.hitboxes[mdlbone]
                 editor.ModelComponentList['bonelist'][new_bone.name] = bonedata
+                if self.hitboxes.has_key(mdlbone):
+                    bboxname = new_bone.name.replace(":bone", ":p")
+                    editor.ModelComponentList['bboxlist'][bboxname] = self.hitboxes[mdlbone]
 
         # load the meshes triangles data
         byte_count = 0
@@ -2158,6 +2156,116 @@ def loadmodel(root, filename, gamename, nomessage=0):
         else:
             editor_dictitems['Misc:mg'].appenditem(tagsgroup[tag])
 
+    # Import the bboxes (hit boxes) if any.
+    def MakePoly(bname, bpos, brot, bbox):
+        m = bbox[0]
+        M = bbox[1]
+        shortname = bname.split(":")[0]
+        p = quarkx.newobj(shortname + ":p");
+        p["assigned2"] = bname
+        face = quarkx.newobj("north:f") # BACK FACE
+        vtx0 = (bpos + (brot * quarkx.vect(m[0],M[1],M[2]))).tuple
+        vtx0X, vtx0Y, vtx0Z = vtx0[0], vtx0[1], vtx0[2]
+        vtx1 = (bpos + (brot * quarkx.vect(M[0],M[1],M[2]))).tuple
+        vtx1X, vtx1Y, vtx1Z = vtx1[0], vtx1[1], vtx1[2]
+        vtx2 = (bpos + (brot * quarkx.vect(m[0],M[1],m[2]))).tuple
+        vtx2X, vtx2Y, vtx2Z = vtx2[0], vtx2[1], vtx2[2]
+        face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
+        face["tex"] = None
+        p.appenditem(face)
+        face = quarkx.newobj("east:f") # RIGHT FACE
+        vtx0 = (bpos + (brot * quarkx.vect(M[0],M[1],M[2]))).tuple
+        vtx0X, vtx0Y, vtx0Z = vtx0[0], vtx0[1], vtx0[2]
+        vtx1 = (bpos + (brot * quarkx.vect(M[0],m[1],M[2]))).tuple
+        vtx1X, vtx1Y, vtx1Z = vtx1[0], vtx1[1], vtx1[2]
+        vtx2 = (bpos + (brot * quarkx.vect(M[0],M[1],m[2]))).tuple
+        vtx2X, vtx2Y, vtx2Z = vtx2[0], vtx2[1], vtx2[2]
+        face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
+        face["tex"] = None
+        p.appenditem(face)
+        face = quarkx.newobj("south:f") # FRONT FACE
+        vtx0 = (bpos + (brot * quarkx.vect(M[0],m[1],M[2]))).tuple
+        vtx0X, vtx0Y, vtx0Z = vtx0[0], vtx0[1], vtx0[2]
+        vtx1 = (bpos + (brot * quarkx.vect(m[0],m[1],M[2]))).tuple
+        vtx1X, vtx1Y, vtx1Z = vtx1[0], vtx1[1], vtx1[2]
+        vtx2 = (bpos + (brot * quarkx.vect(M[0],m[1],m[2]))).tuple
+        vtx2X, vtx2Y, vtx2Z = vtx2[0], vtx2[1], vtx2[2]
+        face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
+        face["tex"] = None
+        p.appenditem(face)
+        face = quarkx.newobj("west:f") # LEFT FACE
+        vtx0 = (bpos + (brot * quarkx.vect(m[0],m[1],M[2]))).tuple
+        vtx0X, vtx0Y, vtx0Z = vtx0[0], vtx0[1], vtx0[2]
+        vtx1 = (bpos + (brot * quarkx.vect(m[0],M[1],M[2]))).tuple
+        vtx1X, vtx1Y, vtx1Z = vtx1[0], vtx1[1], vtx1[2]
+        vtx2 = (bpos + (brot * quarkx.vect(m[0],m[1],m[2]))).tuple
+        vtx2X, vtx2Y, vtx2Z = vtx2[0], vtx2[1], vtx2[2]
+        face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
+        face["tex"] = None
+        p.appenditem(face)
+        face = quarkx.newobj("up:f") # TOP FACE
+        vtx0 = (bpos + (brot * quarkx.vect(m[0],M[1],M[2]))).tuple
+        vtx0X, vtx0Y, vtx0Z = vtx0[0], vtx0[1], vtx0[2]
+        vtx1 = (bpos + (brot * quarkx.vect(m[0],m[1],M[2]))).tuple
+        vtx1X, vtx1Y, vtx1Z = vtx1[0], vtx1[1], vtx1[2]
+        vtx2 = (bpos + (brot * quarkx.vect(M[0],M[1],M[2]))).tuple
+        vtx2X, vtx2Y, vtx2Z = vtx2[0], vtx2[1], vtx2[2]
+        face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
+        face["tex"] = None
+        p.appenditem(face)
+        face = quarkx.newobj("down:f") # BOTTOM FACE
+        vtx0 = (bpos + (brot * quarkx.vect(m[0],M[1],m[2]))).tuple
+        vtx0X, vtx0Y, vtx0Z = vtx0[0], vtx0[1], vtx0[2]
+        vtx1 = (bpos + (brot * quarkx.vect(M[0],M[1],m[2]))).tuple
+        vtx1X, vtx1Y, vtx1Z = vtx1[0], vtx1[1], vtx1[2]
+        vtx2 = (bpos + (brot * quarkx.vect(m[0],m[1],m[2]))).tuple
+        vtx2X, vtx2Y, vtx2Z = vtx2[0], vtx2[1], vtx2[2]
+        face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
+        face["tex"] = None
+        p.appenditem(face)
+
+        return p
+
+    bonelist = editor.ModelComponentList['bonelist']
+    bboxlist = editor.ModelComponentList['bboxlist']
+    bone_names = bonelist.keys()
+    frame_name = ComponentList[0].dictitems['Frames:fg'].subitems[0].name
+    bbg_name = filename.split("\\")
+    folder = bbg_name[len(bbg_name)-2]
+    file = bbg_name[len(bbg_name)-1]
+    file = file.split(".")[0]
+    bbg_name = folder + "_" + file
+    if editor.form is not None:
+        bboxgroup = quarkx.newobj("BBoxes "+bbg_name+":bbg")
+        for bone in range(len(bone_names)):
+            bonename = bone_names[bone]
+            bboxname = bonename.replace(":bone", ":p")
+            if bboxlist.has_key(bboxname):
+                bone_data = bonelist[bonename]
+                bpos = quarkx.vect(bone_data['frames'][frame_name]['position'])
+                brot = quarkx.matrix(bone_data['frames'][frame_name]['rotmatrix'])
+                bbox = bboxlist[bboxname]
+                p = MakePoly(bonename, bpos, brot, bbox)
+                bboxgroup.appenditem(p)
+
+        if len(bboxgroup.subitems) !=0:
+            undo.put(editor_dictitems['Misc:mg'], bboxgroup)
+    else:
+        bboxgroup = quarkx.newobj("BBoxes "+bbg_name+":bbg")
+        for bone in range(len(bone_names)):
+            bonename = bone_names[bone]
+            bboxname = bonename.replace(":bone", ":p")
+            if bboxlist.has_key(bboxname):
+                bone_data = bonelist[bonename]
+                bpos = quarkx.vect(bone_data['frames'][frame_name]['position'])
+                brot = quarkx.matrix(bone_data['frames'][frame_name]['rotmatrix'])
+                bbox = bboxlist[bboxname]
+                p = MakePoly(bonename, bpos, brot, bbox)
+                bboxgroup.appenditem(p)
+
+        if len(bboxgroup.subitems) !=0:
+            editor_dictitems['Misc:mg'].appenditem(bboxgroup)
+
     # Process the bones, if any.
     newbones = []
     for bone_index in range(len(QuArK_bones)): # Using list of ALL bones.
@@ -2241,6 +2349,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".mdl Half-Life Importer", ".mdl file", "*.
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.13  2010/11/09 05:48:10  cdunde
+# To reverse previous changes, some to be reinstated after next release.
+#
 # Revision 1.12  2010/11/06 13:31:04  danielpharos
 # Moved a lot of math-code to ie_utils, and replaced magic constant 3 with variable SS_MODEL.
 #

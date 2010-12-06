@@ -454,7 +454,7 @@ class XYZDialog(SimpleCancelDlgBox):
     "A simple dialog box to enter a x, y, z vector."
 
     endcolor = AQUA
-    size = (330,120)
+    size = (330,125)
     dfsep = 0.45
     dlgdef = """
       {
@@ -1570,6 +1570,9 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.61  2010/10/20 20:17:54  cdunde
+#Added bounding boxes (hit boxes) and bone controls support used by Half-Life, maybe others.
+#
 #Revision 1.60  2010/05/17 18:29:00  cdunde
 #Model Editor, to make resetting of 3D view view independent.
 #

@@ -1294,10 +1294,329 @@ def movefaces(editor, movetocomponent, option=2):
 
 ###############################
 #
-# Conversion functions
+# Conversion and Poly functions
 #
 ###############################
 
+
+#
+# Returns the correct frame_name needed.
+#
+def GetFrameName(editor):
+    Root = editor.Root
+    explorer = editor.layout.explorer
+    try:
+        frame_name = editor.Root.currentcomponent.currentframe.name
+    except:
+        frame_name = editor.Root.currentcomponent.dictitems['Frames:fg'].subitems[0].name
+    if explorer.uniquesel is not None:
+        if explorer.uniquesel.type == ":mf":
+            frame_name = explorer.uniquesel.name
+        elif explorer.uniquesel.type == ":mc":
+            frame_name = explorer.uniquesel.currentframe.name
+    elif len(explorer.sellist) > 1:
+        if explorer.sellist[0].type == ":mf":
+            frame_name = explorer.sellist[0].name
+        elif explorer.sellist[1].type == ":mf":
+            frame_name = explorer.sellist[1].name
+
+    return frame_name
+
+
+#
+# Returns the correct frame_name needed for the editor.ModelComponentList['bonelist'].
+#
+def GetBonelistFrameName(editor, frame_name, bones, bonename, comp):
+    bonelist_frame_name = None
+
+    for bone in bones:
+        if bonename == bone.name:
+            comp_name = bone.dictspec['component']
+            try:
+                comp2 = editor.Root.dictitems[comp_name]
+                comp_frames = comp2.dictitems['Frames:fg'].subitems
+                c_frames = comp.dictitems['Frames:fg'].subitems
+                frame_index = None
+                for f in range(len(c_frames)):
+                    if frame_name == c_frames[f].name:
+                        frame_index = f
+                        break
+                if frame_index is not None and frame_index < len(comp_frames):
+                    bonelist_frame_name = comp_frames[frame_index].name
+                    break
+            except:
+                break
+
+    return bonelist_frame_name
+
+
+#
+# Update the editor.ModelComponentList['bboxlist'] for a poly bbox (hit box) at the end of a drag,
+# depending on what they are assigned to like a bone or a component's vertexes or something else.
+#
+def UpdateBBoxList(editor, newpoly):
+    Root = editor.Root
+    frame_name = GetFrameName(editor)
+    assigned2 = newpoly.dictspec["assigned2"]
+    if assigned2 == "None": # MIGHT want to save this anyway to
+        pass                # editor.ModelComponentList['bboxlist'][poly.name]
+                            # to be stored in our .qkl model work files.
+    elif assigned2.endswith(":bone"):
+        # Set things up that we'll need.
+        comp = Root.currentcomponent
+        skelgroup = Root.dictitems['Skeleton:bg']
+        bones = skelgroup.findallsubitems("", ':bone')
+        bonelist = editor.ModelComponentList['bonelist']
+        bboxlist = editor.ModelComponentList['bboxlist']
+
+        bonename = assigned2
+        if bonelist.has_key(bonename):
+            pass
+        else:
+            quarkx.msgbox("Bounding Box " + newpoly.shortname + "\nassigned to " + assigned2 + "\n\nBut a data conflict exist causing this error.\nDelete, remake and assign the Bounding Box.", MT_ERROR, MB_OK)
+            return
+        keys = bonelist[bonename]['frames'].keys()
+        if not frame_name in keys:
+            bonelist_frame_name = GetBonelistFrameName(editor, frame_name, bones, bonename, comp)
+        else:
+            bonelist_frame_name = frame_name
+
+        # Updates the bboxlist.
+        poly = quarkx.newobj("dummy:p");
+        bone_data = bonelist[bonename]
+        if not bboxlist.has_key(bonename.replace(":bone", ":p")):
+            bpos = quarkx.vect(bone_data['frames'][bonelist_frame_name]['position'])
+            brot = quarkx.matrix(bone_data['frames'][bonelist_frame_name]['rotmatrix'])
+            poly.shortname = bonename.split(":")[0]
+            poly["assigned2"] = newpoly.dictspec["assigned2"]
+            # HAVE DAN CHECK THIS
+    #2        bbox = quarkx.boundingboxof([newpoly])
+    #2        for bone in bones:
+    #2            if bone.name == assigned2:
+    #2                bone_pos = bone.position
+    #2                bbox_pos = (bbox[0] + bbox[1]) / 2
+    #2                neg_bbox = bbox_pos * -1
+    #2                dif = bbox_pos + bone_pos + neg_bbox
+    #2                break
+        else:
+            bpos = quarkx.vect(bone_data['frames'][bonelist_frame_name]['position'])
+            brot = ~quarkx.matrix(bone_data['frames'][bonelist_frame_name]['rotmatrix'])
+            parent = editor.Root.dictitems['Misc:mg']
+            polys = parent.findallsubitems("", ':p')
+            count = 1
+            for p in polys:
+                if p.shortname.startswith("bbox "):
+                    nbr = None
+                    try:
+                        nbr = p.shortname.split(" ")[1]
+                    except:
+                        pass
+                    if nbr is not None:
+                        if int(nbr) >= count:
+                            count = int(nbr) + 1
+                    else:
+                        count = count + 1
+            poly.shortname = "bbox " + str(count)
+
+        polykeys = []
+        for f in newpoly.subitems:
+            polykeys = polykeys + [f.name]
+        for f in polykeys:
+            face = quarkx.newobj(f)
+            vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z = newpoly.dictitems[f].dictspec["v"]
+            if not bboxlist.has_key(bonename.replace(":bone", ":p")):
+                vtx0 = quarkx.vect(vtx0X, vtx0Y, vtx0Z).tuple
+                vtx1 = quarkx.vect(vtx1X, vtx1Y, vtx1Z).tuple
+                vtx2 = quarkx.vect(vtx2X, vtx2Y, vtx2Z).tuple
+                # HAVE DAN CHECK THIS
+    #2            vtx0 = (quarkx.vect(vtx0X, vtx0Y, vtx0Z) + neg_bbox).tuple
+    #2            vtx1 = (quarkx.vect(vtx1X, vtx1Y, vtx1Z) + neg_bbox).tuple
+    #2            vtx2 = (quarkx.vect(vtx2X, vtx2Y, vtx2Z) + neg_bbox).tuple
+            else:
+                vtx0 = (brot * (quarkx.vect(vtx0X, vtx0Y, vtx0Z) - bpos)).tuple
+                vtx1 = (brot * (quarkx.vect(vtx1X, vtx1Y, vtx1Z) - bpos)).tuple
+                vtx2 = (brot * (quarkx.vect(vtx2X, vtx2Y, vtx2Z) - bpos)).tuple
+            vtx0X, vtx0Y, vtx0Z = vtx0[0], vtx0[1], vtx0[2]
+            vtx1X, vtx1Y, vtx1Z = vtx1[0], vtx1[1], vtx1[2]
+            vtx2X, vtx2Y, vtx2Z = vtx2[0], vtx2[1], vtx2[2]
+            face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
+            face["tex"] = None
+            poly.appenditem(face)
+
+        bbox = quarkx.boundingboxof([poly])
+
+        # HAVE DAN CHECK THIS
+    #1    bbox = [bbox[0], bbox[1]]
+    #1    print "ORG bbox", bbox
+    #1    if not bboxlist.has_key(bonename.replace(":bone", ":p")):
+    #1        for bone in bones:
+    #1            if bone.name == assigned2:
+    #1               bone_pos = bone.position
+    #1               bbox_pos = (bbox[0] + bbox[1]) / 2
+    #1               print "bone_pos, bbox_pos", bone_pos, bbox_pos
+    #1               neg_bbox = bbox_pos * -1
+    #1               print "neg_bbox", neg_bbox
+    #1               dif = bone_pos + neg_bbox
+    #1               print "dif", dif
+    #1               bbox[0] = bbox[0] + dif
+    #1               bbox[1] = bbox[1] + dif
+    #1               break
+
+        bboxlist[bonename.replace(":bone", ":p")] = [bbox[0].tuple, bbox[1].tuple]
+
+    #1    print "NEW bbox", bboxlist[bonename.replace(":bone", ":p")]
+
+        return poly # DO NOT move outside to combine calls, will break dragging of poly in editor.
+
+    elif assigned2.endswith(":mc"):
+        # Set things up that we'll need.
+        bboxlist = editor.ModelComponentList['bboxlist']
+
+        # Updates the bboxlist.
+        poly = newpoly
+        bbox = quarkx.boundingboxof([poly])
+        bboxlist[poly.name] = [bbox[0].tuple, bbox[1].tuple]
+
+        return poly # DO NOT move outside to combine calls, will break dragging of poly in editor.
+
+
+#
+# Update the poly bboxes (hit boxes if any) when switching frames, like during animation.
+#
+def UpdateBBoxPoly(poly, bpos, brot, bbox):
+    m = bbox[0]
+    M = bbox[1]
+    polykeys = []
+    for p in poly.subitems:
+        polykeys = polykeys + [p.name]
+    for f in polykeys:
+        if f == "north:f": # BACK FACE
+            poly.removeitem(poly.dictitems[f])
+            face = quarkx.newobj("north:f")
+            vtx0 = (bpos + (brot * quarkx.vect(m[0],M[1],M[2]))).tuple
+            vtx0X, vtx0Y, vtx0Z = vtx0[0], vtx0[1], vtx0[2]
+            vtx1 = (bpos + (brot * quarkx.vect(M[0],M[1],M[2]))).tuple
+            vtx1X, vtx1Y, vtx1Z = vtx1[0], vtx1[1], vtx1[2]
+            vtx2 = (bpos + (brot * quarkx.vect(m[0],M[1],m[2]))).tuple
+            vtx2X, vtx2Y, vtx2Z = vtx2[0], vtx2[1], vtx2[2]
+            face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
+            face["tex"] = None
+            poly.appenditem(face)
+
+        elif f == "east:f": # RIGHT FACE
+            poly.removeitem(poly.dictitems[f])
+            face = quarkx.newobj("east:f")
+            vtx0 = (bpos + (brot * quarkx.vect(M[0],M[1],M[2]))).tuple
+            vtx0X, vtx0Y, vtx0Z = vtx0[0], vtx0[1], vtx0[2]
+            vtx1 = (bpos + (brot * quarkx.vect(M[0],m[1],M[2]))).tuple
+            vtx1X, vtx1Y, vtx1Z = vtx1[0], vtx1[1], vtx1[2]
+            vtx2 = (bpos + (brot * quarkx.vect(M[0],M[1],m[2]))).tuple
+            vtx2X, vtx2Y, vtx2Z = vtx2[0], vtx2[1], vtx2[2]
+            face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
+            face["tex"] = None
+            poly.appenditem(face)
+
+        elif f == "south:f": # FRONT FACE
+            poly.removeitem(poly.dictitems[f])
+            face = quarkx.newobj("south:f")
+            vtx0 = (bpos + (brot * quarkx.vect(M[0],m[1],M[2]))).tuple
+            vtx0X, vtx0Y, vtx0Z = vtx0[0], vtx0[1], vtx0[2]
+            vtx1 = (bpos + (brot * quarkx.vect(m[0],m[1],M[2]))).tuple
+            vtx1X, vtx1Y, vtx1Z = vtx1[0], vtx1[1], vtx1[2]
+            vtx2 = (bpos + (brot * quarkx.vect(M[0],m[1],m[2]))).tuple
+            vtx2X, vtx2Y, vtx2Z = vtx2[0], vtx2[1], vtx2[2]
+            face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
+            face["tex"] = None
+            poly.appenditem(face)
+
+        elif f == "west:f": # LEFT FACE
+            poly.removeitem(poly.dictitems[f])
+            face = quarkx.newobj("west:f")
+            vtx0 = (bpos + (brot * quarkx.vect(m[0],m[1],M[2]))).tuple
+            vtx0X, vtx0Y, vtx0Z = vtx0[0], vtx0[1], vtx0[2]
+            vtx1 = (bpos + (brot * quarkx.vect(m[0],M[1],M[2]))).tuple
+            vtx1X, vtx1Y, vtx1Z = vtx1[0], vtx1[1], vtx1[2]
+            vtx2 = (bpos + (brot * quarkx.vect(m[0],m[1],m[2]))).tuple
+            vtx2X, vtx2Y, vtx2Z = vtx2[0], vtx2[1], vtx2[2]
+            face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
+            face["tex"] = None
+            poly.appenditem(face)
+
+        elif f == "up:f": # TOP FACE
+            poly.removeitem(poly.dictitems[f])
+            face = quarkx.newobj("up:f")
+            vtx0 = (bpos + (brot * quarkx.vect(m[0],M[1],M[2]))).tuple
+            vtx0X, vtx0Y, vtx0Z = vtx0[0], vtx0[1], vtx0[2]
+            vtx1 = (bpos + (brot * quarkx.vect(m[0],m[1],M[2]))).tuple
+            vtx1X, vtx1Y, vtx1Z = vtx1[0], vtx1[1], vtx1[2]
+            vtx2 = (bpos + (brot * quarkx.vect(M[0],M[1],M[2]))).tuple
+            vtx2X, vtx2Y, vtx2Z = vtx2[0], vtx2[1], vtx2[2]
+            face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
+            face["tex"] = None
+            poly.appenditem(face)
+
+        elif f == "down:f": # BOTTOM FACE
+            poly.removeitem(poly.dictitems[f])
+            face = quarkx.newobj("down:f")
+            vtx0 = (bpos + (brot * quarkx.vect(m[0],M[1],m[2]))).tuple
+            vtx0X, vtx0Y, vtx0Z = vtx0[0], vtx0[1], vtx0[2]
+            vtx1 = (bpos + (brot * quarkx.vect(M[0],M[1],m[2]))).tuple
+            vtx1X, vtx1Y, vtx1Z = vtx1[0], vtx1[1], vtx1[2]
+            vtx2 = (bpos + (brot * quarkx.vect(m[0],m[1],m[2]))).tuple
+            vtx2X, vtx2Y, vtx2Z = vtx2[0], vtx2[1], vtx2[2]
+            face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
+            face["tex"] = None
+            poly.appenditem(face)
+
+    try: # In case a previous QuArK.exe is used before adding the function call below.
+        poly.changedfaces() # Makes the Delphi code add + sign to poly without going through undo code.
+    except:
+        pass
+
+#
+# Updates the poly bboxes (hit boxes if any) and editor explorer.
+#
+def DrawBBoxes(editor, explorer, comp):
+            Root = editor.Root
+            miscgroup = Root.dictitems['Misc:mg']
+            polys = miscgroup.findallsubitems("", ':p')
+            if len(polys) != 0:
+                frame_name = GetFrameName(editor)
+
+                # Set things up that we'll probably need.
+                skelgroup = Root.dictitems['Skeleton:bg']
+                bones = skelgroup.findallsubitems("", ':bone')
+                bonelist = editor.ModelComponentList['bonelist']
+                bboxlist = editor.ModelComponentList['bboxlist']
+                bone_names = bonelist.keys()
+                found_frame = None
+
+                # Process all polys, first see what they are assigned to, if anything.
+                for poly in polys:
+                    assigned2 = poly.dictspec["assigned2"]
+                    if assigned2 == "None": # MIGHT want to save these anyway to
+                        continue            # editor.ModelComponentList['bboxlist'][poly.name]
+                                            # to be stored in our .qkl model work files.
+                    elif assigned2.endswith(":bone"):
+                        bonename = assigned2
+                        if bonelist.has_key(bonename) and bboxlist.has_key(poly.name):
+                            pass
+                        else:
+                            continue
+                        keys = bonelist[bonename]['frames'].keys()
+                        if not frame_name in keys:
+                            bonelist_frame_name = GetBonelistFrameName(editor, frame_name, bones, bonename, comp)
+                        else:
+                            bonelist_frame_name = frame_name
+
+                        # Updates the poly as needed.
+                        if bonelist_frame_name is not None:
+                            bone_data = bonelist[bonename]
+                            bpos = quarkx.vect(bone_data['frames'][bonelist_frame_name]['position'])
+                            brot = quarkx.matrix(bone_data['frames'][bonelist_frame_name]['rotmatrix'])
+                            bbox = bboxlist[poly.name]
+                            UpdateBBoxPoly(poly, bpos, brot, bbox)
+                            found_frame = 1
 
 #
 # Creates a QuArK Internal Group Object which consist of QuArK internal Poly Objects
@@ -2222,7 +2541,7 @@ def ConvertEditorFaceObject(editor, newobjectslist, flags, view, undomsg, option
 def removecomp(editor, compname, undo, multi_comps=0):
     components = editor.Root.findallsubitems("", ':mc')
     if len(components) == 1:
-        editor.ModelComponentList = {'bonelist': {}, 'tristodraw': {}}
+        editor.ModelComponentList = {'bboxlist': {}, 'bonelist': {}, 'tristodraw': {}}
     else:
         if editor.ModelComponentList.has_key(compname):
             try:
@@ -4434,6 +4753,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.150  2010/10/20 20:17:54  cdunde
+#Added bounding boxes (hit boxes) and bone controls support used by Half-Life, maybe others.
+#
 #Revision 1.149  2010/10/20 06:40:36  cdunde
 #Fixed the loss of selections and expanded items in the Model Editor from UNDO and REDO actions.
 #

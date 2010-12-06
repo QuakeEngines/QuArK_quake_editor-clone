@@ -435,6 +435,8 @@ def ModelIcon(modelobj, iconset):
             return ico_editor[iconset][0]
 
     # Needed to display the correct icons of these groups for imported models.
+    if modelobj.type ==":bbg":
+        return icons[8]
     if modelobj.type ==":fg":
         return icons[1]
     if modelobj.type ==":bg":
@@ -901,6 +903,9 @@ def sortdictionary(dictionary):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.53  2010/06/06 04:04:24  cdunde
+#Fix to draw Eye handles in model editor floating 3D views when first opened.
+#
 #Revision 1.52  2009/11/28 15:48:15  danielpharos
 #Added a comment explaining some flags a bit.
 #

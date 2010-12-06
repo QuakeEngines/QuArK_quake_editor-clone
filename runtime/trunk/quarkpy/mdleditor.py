@@ -74,10 +74,10 @@ class ModelEditor(BaseEditor):
     #                                                 Its triangle number in the Model component mesh "triangles" list
     #                                                    of the Models "currentcomponent".
 
-    # This is a dictionary list using each component's full name as its key (except 'bonelist' and 'tristodraw'), ex: editor.ModelComponentList[component's full name][sub-dict key].
+    # This is a dictionary list using each component's full name as its key (except 'bboxlist', 'bonelist' and 'tristodraw'), ex: editor.ModelComponentList[component's full name][sub-dict key].
     # Each component's list can then store anything relating to that component
     # and can be any type of item, another dictionary, tuple or standard list, object....
-    ModelComponentList = {'bonelist': {}, 'tristodraw': {}}
+    ModelComponentList = {'bboxlist': {}, 'bonelist': {}, 'tristodraw': {}}
     # Current uses for Bones, Vertex Coloring and Vertex Weights Coloring:
     # ['tristodraw'] = {'compname:mc': {22: [35, 34, 21, 2, 1] }}
     #                               Use:    Stores all the vertexes that a single vertex needs to draw drag lines to during a drag.
@@ -188,10 +188,10 @@ class ModelEditor(BaseEditor):
     def OpenRoot(self):
         global mdleditor
         mdleditor = self
-        if self.ModelComponentList.has_key('bonelist'):
+        if self.ModelComponentList.has_key('bboxlist'):
             pass
         else:
-            self.ModelComponentList = {'bonelist': {}, 'tristodraw': {}}
+            self.ModelComponentList = {'bboxlist': {}, 'bonelist': {}, 'tristodraw': {}}
 
         setup = quarkx.setupsubset(self.MODE, "Display")
         self.skingridstep, = setup["SkinGridStep"]
@@ -222,6 +222,10 @@ class ModelEditor(BaseEditor):
                 UnflattenModelComponentList(self, datastream)
             componentnames = []
             for item in self.Root.dictitems:
+                if item.endswith(":mg"): # Sometimes folder flag not set causing selection problems in tree-view.
+                    MG = self.Root.dictitems[item]
+                    if MG.flags == 0:
+                        MG.flags = 140 # 140 is an invalid setting but someplace another 1 is added.
                 if item.endswith(":mc"):
                     comp = self.Root.dictitems[item]
                     componentnames.append(item)
@@ -320,6 +324,7 @@ class ModelEditor(BaseEditor):
         quarkx.setupsubset(SS_MODEL, "Options")['CompColors'] = None
         quarkx.setupsubset(SS_MODEL, "Options")['VertexPaintMode'] = None
         quarkx.setupsubset(SS_MODEL, "Options")['Full3DTrue3Dmode'] = None
+        quarkx.setupsubset(SS_MODEL, "Options")['MakeBBox'] = None
 
 
     def initmenu(self, form):
@@ -1862,6 +1867,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.159  2010/10/20 06:40:37  cdunde
+#Fixed the loss of selections and expanded items in the Model Editor from UNDO and REDO actions.
+#
 #Revision 1.158  2010/10/18 23:37:22  cdunde
 #Update to editor ok function to dramatically reduce processing time.
 #

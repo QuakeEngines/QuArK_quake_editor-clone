@@ -170,6 +170,7 @@ def MdlBackgroundMenu(editor, view=None, origin=None):
     Commands1, sc2 = mdlcommands.CommandsMenu()
     sc1.update(sc2)   # merge shortcuts
     BoneOptions, FaceSelOptions, VertexSelOptions = mdloptions.OptionsMenuRMB()
+    sellist = editor.layout.explorer.sellist
 
     undo, redo = quarkx.undostate(editor.Root)
     if undo is None:   # to undo
@@ -195,11 +196,11 @@ def MdlBackgroundMenu(editor, view=None, origin=None):
             import mdloptions
 
             def keyframeclick(editor=editor):
-                if len(editor.layout.explorer.sellist) == 0:
+                if len(sellist) == 0:
                     return
                 frame1parent = frame2parent = None
                 framecount = 0
-                for item in editor.layout.explorer.sellist:
+                for item in sellist:
                     if item.type == ":mf":
                         framecount = framecount + 1
                         if frame1parent is None:
@@ -211,7 +212,7 @@ def MdlBackgroundMenu(editor, view=None, origin=None):
                     IPF = float(1/quarkx.setupsubset(SS_MODEL, "Display")["AnimationIPF"][0])
                     frameindex1 = frameindex2 = None
                     framecomp = None
-                    for item in editor.layout.explorer.sellist:
+                    for item in sellist:
                         if frameindex2 is not None:
                             break
                         if item.type == ":mf":
@@ -247,7 +248,7 @@ def MdlBackgroundMenu(editor, view=None, origin=None):
                             tag = misc_group.dictitems[group + "_" + tag_name + ":tag"]
                             tagframes = tag.subitems
                             sellistPerComp = sellistPerComp + [[tag, [tagframes[frameindex1], tagframes[frameindex2]]]]
-                    for comp in editor.layout.explorer.sellist:
+                    for comp in sellist:
                         if comp.type == ":mc":
                             if comp.name == framecomp.name:
                                 continue
@@ -285,7 +286,7 @@ def MdlBackgroundMenu(editor, view=None, origin=None):
                     mdlmgr.savefacesel = 1
                     frame1parent = frame2parent = None
                     framecount = 0
-                    for item in editor.layout.explorer.sellist:
+                    for item in sellist:
                         if item.type == ":mf":
                             framecount = framecount + 1
                             if frame1parent is None:
@@ -300,16 +301,17 @@ def MdlBackgroundMenu(editor, view=None, origin=None):
                 keyframe_menu = [linear_interpolation]
                 return keyframe_menu
 
-            keyframepop = qmenu.popup("Keyframe Commands", keyframeclick(), hint="|Keyframe Commands:\n\nKeyframe functions create additional animation frames for movement between two selected frames.\n\nThe number of additional frames to be created is the amount set on the 'Animation' toolbar 'IPF' button - 1.\n\nTo use these functions you must select two frames of the same component. If they are not consecutive frames (one right after the other) then all frames in between the two will be replaced with the newly created frames.\n\nYou can also select other components for their same frames to be included. Click 'InfoBase' for Tags info.|intro.modeleditor.rmbmenus.html#viewsrmbmenus")
+            bboxpop = qmenu.popup("BBox Commands", mdlhandles.PolyHandle(origin, None).comp_extras_menu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
+            tagpop = qmenu.popup("Tag Commands", mdlhandles.TagHandle(origin).extrasmenu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
             bonepop = qmenu.popup("Bone Commands", mdlhandles.BoneCenterHandle(origin,None,None).menu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
             mdlfacepop = qmenu.popup("Face Commands", mdlhandles.ModelFaceHandle(origin).menu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
             vertexpop = qmenu.popup("Vertex Commands", mdlhandles.VertexHandle(origin).menu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
-            tagpop = qmenu.popup("Tag Commands", mdlhandles.TagHandle(origin).extrasmenu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
+            keyframepop = qmenu.popup("Keyframe Commands", keyframeclick(), hint="|Keyframe Commands:\n\nKeyframe functions create additional animation frames for movement between two selected frames.\n\nThe number of additional frames to be created is the amount set on the 'Animation' toolbar 'IPF' button - 1.\n\nTo use these functions you must select two frames of the same component. If they are not consecutive frames (one right after the other) then all frames in between the two will be replaced with the newly created frames.\n\nYou can also select other components for their same frames to be included. Click 'InfoBase' for Tags info.|intro.modeleditor.rmbmenus.html#viewsrmbmenus")
 
             keyframepop.state = qmenu.disabled
             frame1parent = frame2parent = None
             framecount = 0
-            for item in editor.layout.explorer.sellist:
+            for item in sellist:
                 if item.type == ":mf":
                     framecount = framecount + 1
                     if frame1parent is None:
@@ -319,16 +321,16 @@ def MdlBackgroundMenu(editor, view=None, origin=None):
             if frame2parent == frame1parent and framecount == 2:
                 keyframepop.state = qmenu.normal
 
-            if len(editor.layout.explorer.sellist) >= 1:
+            if len(sellist) >= 1:
                 import mdlmgr
-                item = editor.layout.explorer.sellist[0]
+                item = sellist[0]
                 if (item.type == ':fg' or item.type == ':mf' or item.type == ':bg' or item.type == ':bone') and (quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] != "1"):
                     bonepop.state = qmenu.normal
                 comp =  editor.layout.componentof(item)
-            if editor.layout.explorer.sellist == [] or quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1" or (len(editor.layout.explorer.sellist) == 1 and editor.layout.explorer.sellist[0].type != ':mf'):
+            if sellist == [] or quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1" or (len(sellist) == 1 and sellist[0].type != ':mf'):
                 vertexpop.state = qmenu.disabled
             else:
-                for item in editor.layout.explorer.sellist:
+                for item in sellist:
                     if item.type != ':bg' and item.type != ':bone' and item.type != ':fg' and item.type != ':mf':
                         vertexpop.state = qmenu.disabled
                         break
@@ -337,9 +339,9 @@ def MdlBackgroundMenu(editor, view=None, origin=None):
                 qbackbmp.MdlBackBmpDlg(form, view)
             backbmp1 = qmenu.item("Background image...", backbmp1click, "|Background image:\n\nWhen selected, this will open a dialog box where you can choose a .bmp image file to place and display in the 2D view that the cursor was in when the RMB was clicked.\n\nClick on the 'InfoBase' button below for full detailed information about its functions and settings.|intro.mapeditor.rmb_menus.noselectionmenu.html#background")
             if editor.ModelFaceSelList != []:
-                extra = extra + [qmenu.sep, tagpop, bonepop, mdlfacepop, vertexpop, Search1, Commands1, qmenu.sep, keyframepop, qmenu.sep, BoneOptions, FaceSelOptions, VertexSelOptions, qmenu.sep] + TexModeMenu(editor, view) + [qmenu.sep, backbmp1]
+                extra = extra + [qmenu.sep, bboxpop, tagpop, bonepop, mdlfacepop, vertexpop, Search1, Commands1, qmenu.sep, keyframepop, qmenu.sep, BoneOptions, FaceSelOptions, VertexSelOptions, qmenu.sep] + TexModeMenu(editor, view) + [qmenu.sep, backbmp1]
             else:
-                extra = extra + [qmenu.sep, tagpop, bonepop, vertexpop, Search1, Commands1, qmenu.sep, keyframepop, qmenu.sep, BoneOptions, FaceSelOptions, VertexSelOptions, qmenu.sep] + TexModeMenu(editor, view) + [qmenu.sep, backbmp1]
+                extra = extra + [qmenu.sep, bboxpop, tagpop, bonepop, vertexpop, Search1, Commands1, qmenu.sep, keyframepop, qmenu.sep, BoneOptions, FaceSelOptions, VertexSelOptions, qmenu.sep] + TexModeMenu(editor, view) + [qmenu.sep, backbmp1]
         else:
             def resetSkinview(menu, editor=editor, view=view):
                 viewWidth, viewHeight = view.clientarea
@@ -436,6 +438,10 @@ def BaseMenu(sellist, editor):
 #
 #
 #$Log$
+#Revision 1.52  2010/06/25 05:27:59  cdunde
+#Setup 'Auto Scaling' function for the Skin-view that resets the skin handles and Component's UV's
+#to fit the currently selected and viewable skin texture of that Component.
+#
 #Revision 1.51  2010/06/13 15:37:55  cdunde
 #Setup Model Editor to allow importing of model from main explorer File menu.
 #

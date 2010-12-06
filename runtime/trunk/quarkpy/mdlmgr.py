@@ -1570,10 +1570,14 @@ class ModelLayout(BaseLayout):
                     self.editor.Root.currentcomponent.filltris = []
             if currentview.info["viewname"] == "skinview" and len(comp.triangles) == 0:
                 currentview.invalidate()
-        for component in self.editor.Root.findallsubitems("", ':mc'):   # find all components
-            self.editor.Root.setcomponent(component)
-            self.editor.Root.currentcomponent.currentframe = self.editor.Root.currentcomponent.dictitems['Frames:fg'].subitems[0]
-        self.editor.Root.setcomponent(comp)
+     #   for component in self.editor.Root.findallsubitems("", ':mc'):   # find all components
+     #       self.editor.Root.setcomponent(component)
+     #       self.editor.Root.currentcomponent.currentframe = self.editor.Root.currentcomponent.dictitems['Frames:fg'].subitems[0]
+     #   self.editor.Root.setcomponent(comp)
+            self.editor.Root.setcomponent(comp)
+
+        if MdlOption("DrawBBoxes"): # Calls to update bboxes positions (if any) and editor explorer.
+            DrawBBoxes(self.editor, self.explorer, comp)
 
 ########## commenting out the lines below brakes Misc dragging
         if self.editor.Root.currentcomponent is not None and not self.editor.Root.currentcomponent.shortname in savedskins:
@@ -1883,6 +1887,10 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.127  2010/09/24 23:31:25  cdunde
+#Fix for Model Editor LMB click not deselecting everything
+#and made Skin-view independent from editor for same.
+#
 #Revision 1.126  2010/06/15 20:38:36  cdunde
 #Added .ftx as supported texture file type for game FAKK2.
 #

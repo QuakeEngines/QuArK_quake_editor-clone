@@ -1192,7 +1192,13 @@ class RedImageDragObject(DragObject):
         import mdleditor
         if isinstance(editor, mdleditor.ModelEditor):
             try:
-                if self.view.info['viewname'] != "skinview" and  quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] != "1":
+                import mdlhandles
+                if isinstance(self.handle, mdlhandles.PFaceHandle) or isinstance(self.handle, mdlhandles.PolyHandle) or isinstance(self.handle, mdlhandles.PVertexHandle):
+                    old = self.dragto(x, y, flags)
+                    if (self.redimages is None) or (len(old)!=len(self.redimages)):
+                        qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+                        return
+                elif self.view.info['viewname'] != "skinview" and  quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] != "1":
                     self.handle.ok(editor, None, None, self.redimages, self.view)
                     return
             except:
@@ -1727,8 +1733,8 @@ class RectangleDragObject(RedImageDragObject):
                             import mdlutils
                             mdlutils.Update_Editor_Views(editor, 4)
                 mdleditor.setsingleframefillcolor(editor, self.view)
-                import mdlhandles
-                if isinstance(editor.dragobject, mdlhandles.RectSelDragObject):
+                import mdlhandles, plugins.mdlmodes
+                if isinstance(editor.dragobject, mdlhandles.RectSelDragObject) or isinstance(editor.dragobject, plugins.mdlmodes.BBoxMakerDragObject):
                     if self.redimages is not None:
                         self.rectanglesel(editor, x,y, self.redimages[0], self.view)
                         if self.view.info["viewname"] == "skinview":
@@ -2234,6 +2240,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.97  2010/10/21 07:24:56  cdunde
+#Fix for occasional floating point division by zero error.
+#
 #Revision 1.96  2010/09/23 04:57:24  cdunde
 #Various improvements for Model Editor Skin-view Linear Handle drawing time.
 #

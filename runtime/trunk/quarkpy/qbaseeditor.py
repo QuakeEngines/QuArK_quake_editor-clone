@@ -348,6 +348,28 @@ class BaseEditor:
                                 self.ObjectMgr.im_func("drawback", ex.sellist[0], self, view, 1)
                         else:
                             self.ObjectMgr.im_func("drawback", self.Root.currentcomponent, self, view, 1)
+                    # Calls to draw bboxes, if any, for a view if it is in "wire" mode.
+                    if MdlOption("DrawBBoxes") and view.viewmode == "wire":
+                        for item in self.Root.dictitems['Misc:mg'].subitems:
+                            if item.type == ":bbg" and len(item.subitems) != 0 and item.subitems[0].type == ":p":
+                                group = item
+                                if group in ex.sellist:
+                                    for subitem in group.subitems:
+                                        if subitem.type == ":p":
+                                            view.drawmap(subitem, DM_OTHERCOLOR, BLUE) # Causes only Poly lines (see through) to be drawn OVER textured and solid view images.
+                                else:
+                                    for subitem in group.subitems:
+                                        if subitem.type == ":p":
+                                            if not subitem in ex.sellist:
+                                                view.drawmap(subitem, DM_OTHERCOLOR, RED) # Causes only Poly lines (see through) to be drawn OVER textured and solid view images.
+                                            else:
+                                                view.drawmap(subitem, DM_OTHERCOLOR, BLUE) # Causes only Poly lines (see through) to be drawn OVER textured and solid view images.
+                            elif item.type == ":p":
+                                if not item in ex.sellist and not self.Root.dictitems['Misc:mg'] in ex.sellist:
+                                    view.drawmap(item, DM_OTHERCOLOR, RED) # Causes only Poly lines (see through) to be drawn OVER textured and solid view images.
+                                else:
+                                    view.drawmap(item, DM_OTHERCOLOR, BLUE) # Causes only Poly lines (see through) to be drawn OVER textured and solid view images.
+
                 else: # Draws the textured and solid views image.
                     drawview(view, self.Root, 0)
             #
@@ -384,15 +406,38 @@ class BaseEditor:
         # In our case, we simply draw the selected objects again.
         #
         if isinstance(self, mdleditor.ModelEditor):
-            if (fs is not None) and (view.viewmode != "wire"):
-                if quarkx.setupsubset(SS_MODEL, "Options")["CompColors"] is not None:
-                    if (fs.dictspec.has_key("usecolor2") and fs.dictspec['usecolor2'] == "1") or (self.Root.currentcomponent.dictspec.has_key("usecolor2") and self.Root.currentcomponent.dictspec['usecolor2'] == "1"):
-                        self.ObjectMgr.im_func("drawback", fs, self, view, mode, 1) # Causes lines to be drawn in Model Editor using comp_color2.
+            if view.viewmode != "wire":
+                if fs is not None and fs.type != ":p":
+                    if quarkx.setupsubset(SS_MODEL, "Options")["CompColors"] is not None:
+                        if (fs.dictspec.has_key("usecolor2") and fs.dictspec['usecolor2'] == "1") or (self.Root.currentcomponent.dictspec.has_key("usecolor2") and self.Root.currentcomponent.dictspec['usecolor2'] == "1"):
+                            self.ObjectMgr.im_func("drawback", fs, self, view, mode, 1) # Causes lines to be drawn in Model Editor using comp_color2.
+                        else:
+                            self.ObjectMgr.im_func("drawback", fs, self, view, mode) # Causes lines to be drawn in Model Editor using comp_color1.
                     else:
-                        self.ObjectMgr.im_func("drawback", fs, self, view, mode) # Causes lines to be drawn in Model Editor using comp_color1.
-                else:
-                    mode = self.drawmode
-                    self.ObjectMgr.im_func("drawback", fs, self, view, mode) # Causes lines to be drawn OVER textured and solid view images.
+                        mode = self.drawmode
+                        self.ObjectMgr.im_func("drawback", fs, self, view, mode) # Causes lines to be drawn OVER textured and solid view component images.
+                # Calls to draw bboxes, if any, for a view if it is in "tex" or "solid" mode.
+                if MdlOption("DrawBBoxes"):
+                    for item in self.Root.dictitems['Misc:mg'].subitems:
+                        if item.type == ":bbg" and len(item.subitems) != 0 and item.subitems[0].type == ":p":
+                            if not item in ex.sellist:
+                                group = item
+                                for subitem in group.subitems:
+                                    if subitem.type == ":p":
+                                        if not subitem in ex.sellist:
+                                            view.drawmap(subitem, DM_OTHERCOLOR, RED) # Causes only Poly lines (see through) to be drawn OVER textured and solid view images.
+                                        else:
+                                            view.drawmap(subitem, DM_OTHERCOLOR, WHITE) # Causes only Poly lines (see through) to be drawn OVER textured and solid view images.
+                            else:
+                                group = item
+                                for subitem in group.subitems:
+                                    if subitem.type == ":p":
+                                        view.drawmap(subitem, DM_OTHERCOLOR, WHITE) # Causes only Poly lines (see through) to be drawn OVER textured and solid view images.
+                        elif item.type == ":p":
+                            if not item in ex.sellist and not self.Root.dictitems['Misc:mg'] in ex.sellist:
+                                view.drawmap(item, DM_OTHERCOLOR, RED) # Causes only Poly lines (see through) to be drawn OVER textured and solid view images.
+                            else:
+                                view.drawmap(item, DM_OTHERCOLOR, WHITE) # Causes only Poly lines (see through) to be drawn OVER textured and solid view images.
         else:
             if (fs is not None) and (view.viewmode != "wire"):
                 mode = self.drawmode
@@ -1057,92 +1102,100 @@ class BaseEditor:
                 if list[0]==list[3]: tag = 1
                 if list[1]==list[4]: tag = tag + 2
                 if list[2]==list[5]: tag = tag + 4
-                try:
-                    # Show width(x)/depth(y)/height(z) of selected polyhedron(s),
-                    # but only when the mousepointer is inside the selection
-                    mousepoint = quarkx.vect(float(list[0]), float(list[1]), float(list[2]))
-                    objlist = self.layout.explorer.sellist
-                    if (len(objlist) == 1) and (objlist[0].type == ":f"):
-                        # if is single face selected, then use parent poly
-                        objlist = [ objlist[0].parent ]
-                    polylistlist = map(lambda x: x.findallsubitems("", ":p", ":g"), objlist)
-                    polylist = reduce(lambda a,b: a+b, polylistlist)
-                    if (len(polylist) < 1):
-                        raise
-                    box = quarkx.boundingboxof(polylist)
-                    if   tag==6: point = quarkx.vect(box[0].x, mousepoint.y, mousepoint.z)
-                    elif tag==5: point = quarkx.vect(mousepoint.x, box[0].y, mousepoint.z)
-                    elif tag==3: point = quarkx.vect(mousepoint.x, mousepoint.y, box[0].z)
-                    if  (box[0].x <= point.x) and (box[1].x >= point.x) \
-                    and (box[0].y <= point.y) and (box[1].y >= point.y) \
-                    and (box[0].z <= point.z) and (box[1].z >= point.z):
-                        if len(polylist) > 1:
-                            s = "Polys size"
-                        else:
-                            s = "Poly size"
-                        selsize = box[1] - box[0]
-                        s = s + " w:" + quarkx.ftos(selsize.x) \
-                            +   " d:" + quarkx.ftos(selsize.y) \
-                            +   " h:" + quarkx.ftos(selsize.z)
-
-                        # Just for kicks, we append the mouse-position
-                        if   tag==6: s = s + " (" + list[1] + "," + list[2] + ")"
-                        elif tag==5: s = s + " (" + list[0] + "," + list[2] + ")"
-                        elif tag==3: s = s + " (" + list[0] + "," + list[1] + ")"
-                    else:
-                        raise
-                except:
-                    if isinstance(self, mdleditor.ModelEditor):
-                        import mdlhandles
-                        try:
-                            # This returns during Linear Handle drag so that actual drag hints will appear properly in the 'Help box'.
-                            if isinstance(editor.dragobject.handle, mdlhandles.LinRedHandle) or isinstance(self.dragobject.handle, mdlhandles.LinCornerHandle) or isinstance(self.dragobject.handle, mdlhandles.LinSideHandle) or isinstance(self.dragobject.handle, mdlhandles.BoneCornerHandle):
-                                return
-                        except:
-                            pass
-                        s = view.info["viewname"]
-                        if view.info["viewname"] == "skinview":
-                            try:
-                                texWidth,texHeight = editor.Root.currentcomponent.currentskin["Size"]
-                                cursorXpos = float(list[0])
-                                cursorYpos = float(list[1])
-                                if cursorXpos > (texWidth * .5):
-                                    Xstart = int((cursorXpos / texWidth) -.5)
-                                    Xpos = -texWidth + cursorXpos - (texWidth * Xstart)
-                                elif cursorXpos < (-texWidth * .5):
-                                    Xstart = int((cursorXpos / texWidth) +.5)
-                                    Xpos = texWidth + cursorXpos + (texWidth * -Xstart)
-                                else:
-                                    Xpos = cursorXpos
-
-                                if -cursorYpos > (texHeight * .5):
-                                    Ystart = int((-cursorYpos / texHeight) -.5)
-                                    Ypos = -texHeight + -cursorYpos - (texHeight * Ystart)
-                                elif -cursorYpos < (-texHeight * .5):
-                                    Ystart = int((-cursorYpos / texHeight) +.5)
-                                    Ypos = texHeight + -cursorYpos + (texHeight * -Ystart)
-                                else:
-                                    Ypos = -cursorYpos
-                                s = s + " x:" + ftoss(int(Xpos)) + " y:" + ftoss(int(Ypos))
-                            except:
-                                s = s + " x:" + ftoss(int(x)) + " y:" + ftoss(int(y))
-                        else:
-                            triangle = mdlhandles.ClickOnView(self, view, x, y)
-                            if triangle != []:
-                                if   tag==6: s = "Xview y:" + list[1] + " z:" + list[2] + " triangle: " + str(triangle[0][2])
-                                elif tag==5: s = "Yview x:" + list[0] + " z:" + list[2] + " triangle: " + str(triangle[0][2])
-                                elif tag==3: s = "Zview x:" + list[0] + " y:" + list[1] + " triangle: " + str(triangle[0][2])
-                                else:
-                                    s = s + " triangle: " + str(triangle[0][2])
+                if not isinstance(self, mdleditor.ModelEditor):
+                    try:
+                        # Show width(x)/depth(y)/height(z) of selected polyhedron(s),
+                        # but only when the mousepointer is inside the selection
+                        mousepoint = quarkx.vect(float(list[0]), float(list[1]), float(list[2]))
+                        objlist = self.layout.explorer.sellist
+                        if (len(objlist) == 1) and (objlist[0].type == ":f"):
+                            # if is single face selected, then use parent poly
+                            objlist = [ objlist[0].parent ]
+                        polylistlist = map(lambda x: x.findallsubitems("", ":p", ":g"), objlist)
+                        polylist = reduce(lambda a,b: a+b, polylistlist)
+                        if (len(polylist) < 1):
+                            raise
+                        box = quarkx.boundingboxof(polylist)
+                        if   tag==6: point = quarkx.vect(box[0].x, mousepoint.y, mousepoint.z)
+                        elif tag==5: point = quarkx.vect(mousepoint.x, box[0].y, mousepoint.z)
+                        elif tag==3: point = quarkx.vect(mousepoint.x, mousepoint.y, box[0].z)
+                        if  (box[0].x <= point.x) and (box[1].x >= point.x) \
+                        and (box[0].y <= point.y) and (box[1].y >= point.y) \
+                        and (box[0].z <= point.z) and (box[1].z >= point.z):
+                            if len(polylist) > 1:
+                                s = "Polys size"
                             else:
-                                if   tag==6: s = "Xview y:" + list[1] + " z:" + list[2]
-                                elif tag==5: s = "Yview x:" + list[0] + " z:" + list[2]
-                                elif tag==3: s = "Zview x:" + list[0] + " y:" + list[1]
+                                s = "Poly size"
+                            selsize = box[1] - box[0]
+                            s = s + " w:" + quarkx.ftos(selsize.x) \
+                                +   " d:" + quarkx.ftos(selsize.y) \
+                                +   " h:" + quarkx.ftos(selsize.z)
+
+                            # Just for kicks, we append the mouse-position
+                            if   tag==6: s = s + " (" + list[1] + "," + list[2] + ")"
+                            elif tag==5: s = s + " (" + list[0] + "," + list[2] + ")"
+                            elif tag==3: s = s + " (" + list[0] + "," + list[1] + ")"
+                        else:
+                            raise
+                    except:
+                            s = view.info["type"] + " view"
+                            if   tag==6: s = "Xview y:" + " y:" + list[1] + " z:" + list[2]
+                            elif tag==5: s = "Yview x:" + " x:" + list[0] + " z:" + list[2]
+                            elif tag==3: s = "Zview x:" + " x:" + list[0] + " y:" + list[1]
+                else:
+                    import mdlhandles
+                    try:
+                        # This returns during Linear Handle drag so that actual drag hints will appear properly in the 'Help box'.
+                        if isinstance(editor.dragobject.handle, mdlhandles.LinRedHandle) or isinstance(self.dragobject.handle, mdlhandles.LinCornerHandle) or isinstance(self.dragobject.handle, mdlhandles.LinSideHandle) or isinstance(self.dragobject.handle, mdlhandles.BoneCornerHandle):
+                            return
+                    except:
+                        pass
+                    s = view.info["viewname"]
+                    if view.info["viewname"] == "skinview":
+                        try:
+                            texWidth,texHeight = editor.Root.currentcomponent.currentskin["Size"]
+                            cursorXpos = float(list[0])
+                            cursorYpos = float(list[1])
+                            if cursorXpos > (texWidth * .5):
+                                Xstart = int((cursorXpos / texWidth) -.5)
+                                Xpos = -texWidth + cursorXpos - (texWidth * Xstart)
+                            elif cursorXpos < (-texWidth * .5):
+                                Xstart = int((cursorXpos / texWidth) +.5)
+                                Xpos = texWidth + cursorXpos + (texWidth * -Xstart)
+                            else:
+                                Xpos = cursorXpos
+
+                            if -cursorYpos > (texHeight * .5):
+                                Ystart = int((-cursorYpos / texHeight) -.5)
+                                Ypos = -texHeight + -cursorYpos - (texHeight * Ystart)
+                            elif -cursorYpos < (-texHeight * .5):
+                                Ystart = int((-cursorYpos / texHeight) +.5)
+                                Ypos = texHeight + -cursorYpos + (texHeight * -Ystart)
+                            else:
+                                Ypos = -cursorYpos
+                            s = s + " x:" + ftoss(int(Xpos)) + " y:" + ftoss(int(Ypos))
+                        except:
+                            s = s + " x:" + ftoss(int(x)) + " y:" + ftoss(int(y))
                     else:
-                        s = view.info["type"] + " view"
-                        if   tag==6: s = "Xview y:" + " y:" + list[1] + " z:" + list[2]
-                        elif tag==5: s = "Yview x:" + " x:" + list[0] + " z:" + list[2]
-                        elif tag==3: s = "Zview x:" + " x:" + list[0] + " y:" + list[1]
+                        triangle = mdlhandles.ClickOnView(self, view, x, y)
+                        if triangle != []:
+                            for item in range(len(triangle)): # To make sure we have what we need.
+                                if str(triangle[item][2]).find(":") == -1 and str(triangle[item][2]).find("None") == -1:
+                                    triangle = triangle[item]
+                                    if   tag==6: s = "Xview y:" + list[1] + " z:" + list[2] + " triangle: " + str(triangle[2])
+                                    elif tag==5: s = "Yview x:" + list[0] + " z:" + list[2] + " triangle: " + str(triangle[2])
+                                    elif tag==3: s = "Zview x:" + list[0] + " y:" + list[1] + " triangle: " + str(triangle[2])
+                                    else:
+                                        s = s + " triangle: " + str(triangle[2])
+                                    break
+                                if item == len(triangle)-1:
+                                    if   tag==6: s = "Xview y:" + list[1] + " z:" + list[2]
+                                    elif tag==5: s = "Yview x:" + list[0] + " z:" + list[2]
+                                    elif tag==3: s = "Zview x:" + list[0] + " y:" + list[1]
+                        else:
+                            if   tag==6: s = "Xview y:" + list[1] + " z:" + list[2]
+                            elif tag==5: s = "Yview x:" + list[0] + " z:" + list[2]
+                            elif tag==3: s = "Zview x:" + list[0] + " y:" + list[1]
             else:
                 if isinstance(self, mdleditor.ModelEditor):
                     if view.info["viewname"] == "skinview":
@@ -1212,6 +1265,8 @@ class BaseEditor:
                             s = "Linear handle pos " + " y:%s"%ftoss(handle.pos.y) + " z:%s"%ftoss(handle.pos.z)
                         else:
                             s = "Linear handle pos " + " x,y,z: %s"%handle.pos
+                    elif (isinstance(handle, mdlhandles.PolyHandle)) or (isinstance(handle, mdlhandles.PFaceHandle)) or (isinstance(handle, mdlhandles.PVertexHandle)):
+                        s = quarkx.getlonghint(handle.hint)
                     else:
                         try:
                             s = view.info["viewname"] + " view"
@@ -1341,30 +1396,28 @@ class BaseEditor:
                                 self.dragobject = None
                             return
 
-                    # This takes you directly to (selects) the main model component folder for the
-                    #    component that was LMB clicked on if there was one under the cursor,
-                    #    if not then if something IS selected already in the tree-view it clears all selections.
+                    # This takes you directly to and selects:
+                    #    a bounding box, if any, or the main model component folder that was LMB clicked on
+                    #    if there was one under the cursor and steps through them in view depth.
+                    # If not then if something IS selected already in the tree-view it clears all selections.
                     choice = mdlhandles.ClickOnView(self, view, x, y)
                     if choice != [] and flagsmouse == 264:
                         if self.layout.explorer.uniquesel == None:
-                            self.layout.explorer.uniquesel = choice[0][1].subitems[0].parent
+                            self.layout.explorer.uniquesel = choice[0][1]
                         else:
+                            if len(choice) == 1 and self.layout.explorer.uniquesel == choice[0][1]:
+                                return
                             for item in range(len(choice)):
-                                if (choice[item][1].subitems[0].parent == self.layout.explorer.uniquesel):
-                                    try:
-                                        if choice[item+1][1].subitems[0].parent == self.Root.currentcomponent:
-                                            return
-                                        self.layout.explorer.uniquesel = choice[item+1][1].subitems[0].parent
-                                        break
-                                    except:
-                                        if choice[0][1].subitems[0].parent == self.Root.currentcomponent:
-                                            return
-                                        self.layout.explorer.uniquesel = choice[0][1].subitems[0].parent
-                                        break
                                 if item == len(choice)-1:
-                                    if choice[0][1].subitems[0].parent == self.Root.currentcomponent:
+                                    if choice[0][1] == self.layout.explorer.uniquesel:
                                         return
-                                    self.layout.explorer.uniquesel = choice[0][1].subitems[0].parent
+                                    self.layout.explorer.uniquesel = choice[0][1]
+                                    break
+                                if choice[item][1] == self.layout.explorer.uniquesel:
+                                    if choice[item+1][1] == self.layout.explorer.uniquesel:
+                                        continue
+                                    self.layout.explorer.uniquesel = choice[item+1][1]
+                                    break
                     if choice == [] and flagsmouse == 264:
                         if view.info['viewname'] == "skinview":
                             if self.SkinVertexSelList != []:
@@ -1718,6 +1771,9 @@ class NeedViewError(Exception):
 #
 #
 #$Log$
+#Revision 1.146  2010/11/06 17:04:24  danielpharos
+#Raising a string is deprecated; made it a proper exception.
+#
 #Revision 1.145  2010/10/14 20:03:32  danielpharos
 #Fix bone-position with Undo/Redo dialog box and made some fixes to selection-holding code.
 #

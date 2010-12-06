@@ -2844,6 +2844,10 @@ class SkinGroupType(EntityManager):
         return formobj
 
 
+class BBoxGroupType(EntityManager):
+    "Model BBox Sub-group in the 'Misc:mg' folder for bounding poly boxes, type = :bbg"
+
+
 class SkinSubGroupType(EntityManager):
     "Model Skin Group Sub-group for skins (like an animation set of skins), type = :ssg"
 
@@ -3004,11 +3008,56 @@ class FrameType(EntityManager):
                 item.hint = item.name + " %s"%item.index
         return h
 
+
+class PolyhedronType(EntityManager):
+    "A Bounding Box's (BBox) Polyhedron"
+
+    def handles(o, editor):
+        h = PolyHandles(o, None)
+        if h:
+            return h
+        return []
+
+
+def PolyHandles(o, exclude):
+    "Makes a list of handles for a Bounding Box's (BBox) polyhedron, o is the BBox poly."
+
+    h = []
+    pos = o.origin
+    if not (pos is None) and MdlOption("DrawBBoxes"):
+        #
+        # Vertex handles.
+        #
+        for v in o.vertices:
+            h.append(mdlhandles.PVertexHandle(v, o))
+        #
+        # Face handles.
+        #
+        for f in o.faces:
+            if f!=exclude:
+                #
+                # Compute the center of the face.
+                #
+                vtx = f.verticesof(o)
+                center = reduce(lambda x,y: x+y, vtx)/len(vtx)
+                #
+                # Create the handle at this point.
+                #
+                h.append(mdlhandles.PFaceHandle(center, f))
+        #
+        # Finally, add the polyhedron center handle.
+        #
+        h.append(mdlhandles.PolyHandle(pos, o))
+
+    return h
+
 #
 # Mappings between Internal Objects types and Entity Manager classes.
 #
 
 Mapping = {
+    ":p":        PolyhedronType(),
+    ":bbg":      BBoxGroupType(),
     ":mc":       ComponentType(),
     ":mf":       FrameType(),
     ":sg":       SkinGroupType(),
@@ -3070,6 +3119,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.78  2010/10/20 20:17:54  cdunde
+#Added bounding boxes (hit boxes) and bone controls support used by Half-Life, maybe others.
+#
 #Revision 1.77  2010/06/15 20:38:36  cdunde
 #Added .ftx as supported texture file type for game FAKK2.
 #

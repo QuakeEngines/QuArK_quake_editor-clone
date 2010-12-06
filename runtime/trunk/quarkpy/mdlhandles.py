@@ -736,7 +736,851 @@ class TagHandle(qhandles.GenericHandle):
         editor.ok(undo, self.undomsg)
 
 
+#
+# Poly Classes and Functions.
+#
+class FaceHandleCursor:
+    "Special class to compute the mouse cursor shape based on the visual direction of a face."
 
+    def getcursor(self, view):
+        n = view.proj(self.pos + self.face.normal) - view.proj(self.pos)
+        dx, dy = abs(n.x), abs(n.y)
+        if dx*2<=dy:
+            if (dx==0) and (dy==0):
+                return CR_ARROW
+            else:
+                return CR_SIZENS
+        elif dy*2<=dx:
+            return CR_SIZEWE
+        elif (n.x>0)^(n.y>0):
+            return CR_SIZENESW
+        else:
+            return CR_SIZENWSE
+
+
+def completeredimage(face, new):
+    # Complete a red image with the whole polyhedron.
+    # (red images cannot be reduced to a single face; even if
+    #  we drag just a face, we want to see the whole polyhedron)
+    gr = []
+    for src in face.faceof:
+        if src.type == ":p":
+            poly = quarkx.newobj("redimage:p")
+            t = src
+            while t is not None:
+                for q in t.subitems:
+                    if (q.type==":f") and not (q is face):
+                         poly.appenditem(q.copy())
+                t = t.treeparent
+            poly.appenditem(new.copy())
+            gr.append(poly)
+    if len(gr):
+        return gr
+    else:
+        return [new]
+
+
+def perptonormthru(source, dest, normthru):
+    "The line from source to dest that is perpendicular to (normalized) normthru."
+    diff = source-dest
+    dot = diff*normthru
+    return diff - dot*normthru
+
+
+def getotherfixed(v, vtxes, axis):
+    "If vtxes contains a point close to the line thru v along axis, return it, otherwise v+axis."
+    for v2 in vtxes:
+        if not (v-v2):
+            continue;
+        perp = perptonormthru(v2,v,axis.normalized)
+        if abs(perp)<.05:
+            return v2
+    return v+axis
+
+
+#
+# Poly Handle Classes.
+#
+class FaceHandle(qhandles.GenericHandle):
+    "Center of a face."
+
+    undomsg = Strings[516]
+    hint = "move this face (Ctrl key: force center to grid)||This handle lets you scroll this face, thus distort the polyhedron(s) that contain it.\n\nNormally, the face can be moved by steps of the size of the grid; holding down the Ctrl key will force the face center to be exactly on the grid."
+
+    def __init__(self, pos, face):
+        qhandles.GenericHandle.__init__(self, pos)
+        self.newpoly = None
+        self.face = face
+        cur = FaceHandleCursor()
+        cur.pos = pos
+        cur.face = face
+        self.cursor = cur.getcursor
+
+    def menu(self, editor, view):
+        Force1 = qmenu.item("&Force center to grid", editor.ForceEverythingToGrid, "force to grid")
+        Force1.state = not editor.gridstep and qmenu.disabled
+        return [Force1] + self.OriginItems(editor, view)
+
+    def drag(self, v1, v2, flags, view):
+        delta = v2-v1
+        g1 = 1
+        if flags&MB_CTRL:
+            pos0 = self.face.origin
+            if pos0 is not None:
+                pos1 = qhandles.aligntogrid(pos0+delta, 1)
+                delta = pos1 - pos0
+                g1 = 0
+        if g1:
+            delta = qhandles.aligntogrid(delta, 0)
+
+        s = ""
+        if view.info["type"] == "XY":
+            if abs(self.face.normal.tuple[0]) > abs(self.face.normal.tuple[1]):
+                s = "was x: " + ftoss(v1.x) + " now x: " + ftoss(v1.x+delta.x)
+            else:
+                s = "was y: " + ftoss(v1.y) + " now y: " + ftoss(v1.y+delta.y)
+        elif view.info["type"] == "XZ":
+            if abs(self.face.normal.tuple[0]) > abs(self.face.normal.tuple[2]):
+                s = "was x: " + ftoss(self.pos.x) + " now x: " + ftoss(self.pos.x+delta.x)
+            else:
+                s = "was z: " + ftoss(self.pos.z) + " now z: " + ftoss(self.pos.z+delta.z)
+        elif view.info["type"] == "YZ":
+            if abs(self.face.normal.tuple[1]) > abs(self.face.normal.tuple[2]):
+                s = "was y: " + ftoss(self.pos.y) + " now y: " + ftoss(self.pos.x+delta.y)
+            else:
+                s = "was z: " + ftoss(self.pos.z) + " now z: " + ftoss(self.pos.z+delta.z)
+        if s == "":
+            if self.face.normal.tuple[0] == 1 or self.face.normal.tuple[0] == -1:
+                s = "was x: " + ftoss(self.pos.x) + " now x: " + ftoss(self.pos.x+delta.x)
+            elif self.face.normal.tuple[1] == 1 or self.face.normal.tuple[1] == -1:
+                s = "was y: " + ftoss(self.pos.y) + " now y: " + ftoss(self.pos.y+delta.y)
+            elif self.face.normal.tuple[2] == 1 or self.face.normal.tuple[2] == -1:
+                s = "was z: " + ftoss(self.pos.z) + " now z: " + ftoss(self.pos.z+delta.z)
+            else:
+                s = "was: " + vtoposhint(self.pos) + " now: " + vtoposhint(delta + self.pos)
+        self.draghint = s
+
+        if delta or (flags&MB_REDIMAGE):
+            new = self.face.copy()
+            if self.face.faceof[0].type == ":p":
+                delta = self.face.normal * (self.face.normal*delta)  # projection of 'delta' on the 'normal' line
+            new.translate(delta)
+            if flags&MB_DRAGGING:    # the red image contains the whole polyhedron(s), not the single face
+                new = completeredimage(self.face, new)
+            else: # Goes through this section twice at the end of a face drag, when the LMB is released.
+                if self.newpoly is not None: # 2nd time through.
+                    # Gets the original poly before the face drag.
+                    oldpoly = self.face.faceof[0]
+                    # Makes a brand new work poly, gives it the oldpoly name, to get all things correct.
+                    poly = quarkx.newobj(oldpoly.name)
+                    # Gets the oldpoly faces in their proper order.
+                    polykeys = []
+                    for p in oldpoly.subitems:
+                        polykeys = polykeys + [p.name]
+                    # Copies the newpoly faces, at the end of the drag, to our poly.
+                    for key in polykeys:
+                        new_face = self.newpoly.dictitems[key].copy()
+                        poly.appenditem(new_face)
+                    # Does the same for all the dictspec items of the newpoly.
+                    for spec in self.newpoly.dictspec.keys():
+                        poly[spec] = self.newpoly.dictspec[spec]
+                    # Updates what the tree-view selections, expanded folders and objects are so oldpoly.flags are current.
+                    RestoreTreeView(mdleditor.mdleditor)
+                    # Passes the current updated oldpoly.flags to our work poly.
+                    poly.flags = oldpoly.flags
+                    # Finally, returns our work poly as the new poly at the end of the drag with all things correct and intact.
+                    return [oldpoly], [poly]
+                else: # 1st time through, newpoly is not complete, the poly name is incorrect and no dictspec data is in it.
+                    self.newpoly = completeredimage(self.face, new)[0]
+                    oldpoly = self.face.faceof[0]
+                    self.newpoly.shortname = oldpoly.shortname # Fix the newpoly name to the same as the oldpoly name.
+                    self.newpoly["assigned2"] = oldpoly.dictspec["assigned2"] # Add a missing dictspec that we need.
+                    new = [new]
+        else:
+            new = None
+        return [self.face], new
+
+    def ok(self, editor, undo, old, new, view=None):
+        newpoly = new[0]
+        if newpoly.broken:
+            undo.cancel()
+            quarkx.beep()
+            editor.layout.explorer.uniquesel = old[0]
+            editor.layout.explorer.sellist = [old[0]]
+            quarkx.msgbox("Invalid Drag !\n\nWill cause broken poly.\nAction canceled.", qutils.MT_ERROR, qutils.MB_OK)
+            Update_Editor_Views(editor)
+            return
+        for face in newpoly.subitems:
+            if face.broken:
+                undo.cancel()
+                quarkx.beep()
+                editor.layout.explorer.uniquesel = old[0]
+                editor.layout.explorer.sellist = [old[0]]
+                quarkx.msgbox("Invalid Drag !\n\nWill cause broken poly.\nAction canceled.", qutils.MT_ERROR, qutils.MB_OK)
+                Update_Editor_Views(editor)
+                return
+        UpdateBBoxList(editor, newpoly)
+        editor.ok(undo, self.undomsg)
+        editor.layout.explorer.uniquesel = newpoly
+        editor.layout.explorer.sellist = [newpoly]
+
+
+
+class PFaceHandle(FaceHandle):
+    "Center of a face, but unselected (as part of a selected poly)."
+
+    def draw(self, view, cv, draghandle=None):
+        p = view.proj(self.pos)
+        if p.visible:
+            cv.reset()
+            cv.brushcolor = view.darkcolor
+            cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+4, int(p.y)+4)
+
+
+
+class PolyHandle(qhandles.CenterHandle):
+    "BBox polyhedron Center Handle."
+
+    undomsg = Strings[515]
+    hint = "move polyhedron (Ctrl key: force center to grid)||Lets you move this polyhedron.\n\nYou can move it by steps equal to the grid size. This means that if it is not on the grid now, it will not be after the move, either. You can force it on the grid by holding down the Ctrl key, but be aware that this forces its center to the grid, not all its faces. For cubic polyhedron, you may need to divide the grid size by two before you get the expected results."
+
+    def __init__(self, pos, poly):
+        qhandles.CenterHandle.__init__(self, pos, poly, 0x202020, 1)
+        self.poly = poly
+
+    def click(self, editor):
+        if not self.poly.selected:   # case of the polyhedron center handle if only a face is selected this causes the poly to become selected instead.
+            editor.layout.explorer.uniquesel = self.poly
+            return "S"
+
+    def comp_extras_menu(self, editor, view=None):
+        "This is the BBox's extras menu for items that can be placed on other menus involving components."
+
+        choice_comps = []
+        for obj in editor.Root.dictitems:
+            if obj.endswith(":mc"):
+                choice_comps = choice_comps + [obj]
+
+        bboxes = editor.Root.dictitems['Misc:mg'].findallsubitems("", ':p')
+        bboxlist_comps = []
+        for bbox in bboxes:
+            if bbox.dictspec['assigned2'].endswith(":mc") and not bbox.dictspec['assigned2'] in bboxlist_comps:
+                bboxlist_comps = bboxlist_comps + [bbox.dictspec['assigned2']]
+
+        bboxlist = editor.ModelComponentList['bboxlist']
+        sellist = editor.layout.explorer.sellist
+
+        def onclick1(m, editor=editor): # for assign_bbox_click
+            poly = editor.layout.explorer.sellist[0]
+            Old_poly = poly.copy()
+            Old_poly['assigned2'] = m.text + ":mc"
+            Old_poly.shortname = m.text + " " + poly.shortname
+            New_poly = UpdateBBoxList(editor, Old_poly)
+            explorer = editor.layout.explorer
+            undo = quarkx.action()
+            undo.exchange(poly, New_poly)
+            editor.ok(undo, "bbox assigned")
+            DrawBBoxes(editor, explorer, editor.Root.currentcomponent)
+            editor.layout.explorer.uniquesel = New_poly
+            editor.layout.explorer.sellist = [New_poly]
+
+        def onclick2(m, editor=editor, bboxlist=bboxlist): # for release_bbox_click
+            poly = editor.layout.explorer.sellist[0]
+            del bboxlist[poly.name]
+            New_poly = poly.copy()
+            New_poly['assigned2'] = "None"
+            parent = editor.Root.dictitems['Misc:mg']
+            polys = parent.findallsubitems("", ':p')
+            count = 1
+            for p in polys:
+                if p.shortname.startswith("bbox "):
+                    nbr = None
+                    try:
+                        nbr = p.shortname.split(" ")[1]
+                    except:
+                        pass
+                    if nbr is not None:
+                        if int(nbr) >= count:
+                            count = int(nbr) + 1
+                    else:
+                        count = count + 1
+            New_poly.shortname = "bbox " + str(count)
+            undo = quarkx.action()
+            undo.exchange(poly, New_poly)
+            editor.ok(undo, "bbox released")
+            editor.layout.explorer.uniquesel = New_poly
+            editor.layout.explorer.sellist = [New_poly]
+
+        def onclick3(m, editor=editor): # for select_bboxs_click
+            comp_name = m.text + ':mc'
+            parent = editor.Root.dictitems['Misc:mg']
+            polys = parent.findallsubitems("", ':p')
+            sellist = []
+            for poly in polys:
+                if poly.dictspec['assigned2'] == comp_name:
+                    sellist = sellist + [poly]
+            editor.layout.explorer.sellist = sellist
+
+        def onclick4(m, editor=editor, bboxlist=bboxlist): # for release_bboxs_click
+            comp_name = m.text + ':mc'
+            parent = editor.Root.dictitems['Misc:mg']
+            polys = parent.findallsubitems("", ':p')
+            count = 1
+            for p in polys:
+                if p.shortname.startswith("bbox "):
+                    nbr = None
+                    try:
+                        nbr = p.shortname.split(" ")[1]
+                    except:
+                        pass
+                    if nbr is not None:
+                        if int(nbr) >= count:
+                            count = int(nbr) + 1
+                    else:
+                        count = count + 1
+            undo = quarkx.action()
+            for poly in polys:
+                if poly.dictspec['assigned2'] == comp_name:
+                    del bboxlist[poly.name]
+                    New_poly = poly.copy()
+                    New_poly['assigned2'] = "None"
+                    New_poly.shortname = "bbox " + str(count)
+                    count = count + 1
+                    undo.exchange(poly, New_poly)
+            editor.ok(undo, "bboxes released")
+
+
+        def assign_bbox_click(m, self=self, editor=editor, choice_comps=choice_comps, view=view):
+            componentnames = choice_comps
+            if len(componentnames) == 0:
+                quarkx.msgbox("Improper Selection!\n\nThere are no components available to assign this bbox to.", MT_ERROR, MB_OK)
+                return None, None
+            else:
+                componentnames.sort()
+                menu = []
+                for compname in componentnames:
+                    menu = menu + [qmenu.item(compname.split(":")[0], onclick1)]
+                m.items = menu
+
+        def release_bbox_click(m, self=self, editor=editor, view=view):
+            poly = editor.layout.explorer.sellist[0]
+            assigned2 = poly.dictspec['assigned2']
+            menu = [qmenu.item(assigned2.split(":")[0], onclick2)]
+            m.items = menu
+        
+        def select_bboxs_click(m, self=self, editor=editor, bboxlist_comps=bboxlist_comps, view=view):
+            componentnames = bboxlist_comps
+            componentnames.sort()
+            menu = []
+            for compname in componentnames:
+                menu = menu + [qmenu.item(compname.split(":")[0], onclick3)]
+            m.items = menu
+
+        def release_bboxs_click(m, self=self, editor=editor, bboxlist_comps=bboxlist_comps, view=view):
+            componentnames = bboxlist_comps
+            componentnames.sort()
+            menu = []
+            for compname in componentnames:
+                menu = menu + [qmenu.item(compname.split(":")[0], onclick4)]
+            m.items = menu
+
+        AssignBBoxTo = qmenu.popup("Assign BBox To", [], assign_bbox_click, "|Assign BBox To:\n\nYou need to select a single BBox to use this function.\n\nThis will assign a selected bounding box to the component (if NOT Hidden) you select by means of a menu that will appear listing all available components to choose from, if any.", "intro.modeleditor.rmbmenus.html#facermbmenu")
+        ReleaseBBox = qmenu.popup("Release BBox", [], release_bbox_click, "|Release BBox:\n\nThis will release the selected bounding box assigned to the component (if NOT Hidden) you select by means of a menu that will appear listing the component it is assigned to.", "intro.modeleditor.rmbmenus.html#facermbmenu")
+        SelectBBoxes = qmenu.popup("Select BBoxes", [], select_bboxs_click, "|Select BBoxes:\n\nThis will select all the bounding boxes assigned to the component (if NOT Hidden) you select by means of a menu that will appear listing all available components to choose from, if any.", "intro.modeleditor.rmbmenus.html#facermbmenu")
+        ReleaseBBoxes = qmenu.popup("Release BBoxes", [], release_bboxs_click, "|Release BBoxes:\n\nThis will release all the bounding boxes assigned to the component (if NOT Hidden) you select by means of a menu that will appear listing all available components to choose from, if any.", "intro.modeleditor.rmbmenus.html#facermbmenu")
+
+        AssignBBoxTo.state = qmenu.disabled
+        SelectBBoxes.state = qmenu.disabled
+        ReleaseBBoxes.state = qmenu.disabled
+
+        menu = [AssignBBoxTo, SelectBBoxes, ReleaseBBoxes]
+        if len(sellist) >= 1 and sellist[0].type == ":p":
+            if sellist[0].dictspec['assigned2'] == "None":
+                AssignBBoxTo.state = qmenu.normal
+            elif sellist[0].dictspec['assigned2'].endswith(":mc"):
+                menu = [ReleaseBBox, SelectBBoxes, ReleaseBBoxes]
+            if len(bboxlist_comps) != 0:
+                SelectBBoxes.state = qmenu.normal
+                ReleaseBBoxes.state = qmenu.normal
+        elif len(bboxlist_comps) != 0:
+            SelectBBoxes.state = qmenu.normal
+            ReleaseBBoxes.state = qmenu.normal
+
+        return menu
+
+
+    def bone_extras_menu(self, editor, obj=None, view=None):
+        "This is the BBox's extras menu for items that can be placed on other menus involving bones."
+        # obj is a bone that a bbox can be assigned to.
+
+        bboxlist = editor.ModelComponentList['bboxlist']
+        sellist = editor.layout.explorer.sellist
+        if self.poly is None:
+            for item in sellist:
+                if item.type == ":p":
+                    self.poly = item
+                    break
+
+        def assign_bbox_click(m, editor=editor, obj=obj):
+            self.poly['assigned2'] = obj.name
+            New_poly = UpdateBBoxList(editor, self.poly)
+            explorer = editor.layout.explorer
+            undo = quarkx.action()
+            undo.exchange(self.poly, New_poly)
+            editor.ok(undo, "bbox assigned")
+            DrawBBoxes(editor, explorer, editor.Root.currentcomponent)
+            editor.layout.explorer.uniquesel = New_poly
+            editor.layout.explorer.sellist = [New_poly]
+
+        def release_bbox_click(m, editor=editor, bboxlist=bboxlist, obj=obj):
+            Old_poly = self.poly
+            if obj is None:
+                bones = editor.Root.dictitems['Skeleton:bg'].findallsubitems("", ':bone')
+                bone_name = Old_poly.dictspec['assigned2']
+                for bone in bones:
+                    if bone.name == bone_name:
+                         obj = bone
+                         break
+            if obj.type == ":bone" and obj.shortname + ":p" in bboxlist.keys():
+                poly_name = obj.shortname + ":p"
+                if Old_poly is None or Old_poly.name != poly_name:
+                    polys = editor.Root.dictitems['Misc:mg'].findallsubitems("", ':p')
+                    for poly in polys:
+                        if poly.name == poly_name:
+                            Old_poly = poly
+                            break
+                New_poly = UpdateBBoxList(editor, Old_poly)
+                New_poly['assigned2'] = "None"
+                del bboxlist[obj.shortname + ":p"]
+                undo = quarkx.action()
+                undo.exchange(Old_poly, New_poly)
+                editor.ok(undo, "bbox released")
+                editor.layout.explorer.uniquesel = New_poly
+                editor.layout.explorer.sellist = [New_poly]
+
+        def select_bbox_click(m, editor=editor, obj=obj):
+            poly_name = obj.shortname + ":p"
+            polys = editor.Root.dictitems['Misc:mg'].findallsubitems("", ':p')
+            for poly in polys:
+                if poly.name == poly_name:
+                    editor.layout.explorer.sellist = [poly]
+                    break
+            editor.layout.selchange()
+
+        AssignReleaseBBox = qmenu.item("Assign \ Release BBox", None, "|Assign \ Release BBox:\n\nBBox is a polyhedron box that is called by different names\nand are used for different things based on a game models format.\nCommonly it surrounds an area for a 'hitbox', 'collision', 'bounding box'...\n\nWhen a BBox is selected and a RMB click on the center of a bone is made, then that BBox can be assigned to that bone, or release from that bone\nif both have not already been assigned to something else that would cause a conflict.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
+        AssignReleaseBBox.state = qmenu.disabled
+        menulist = [AssignReleaseBBox]
+
+        if obj is not None and self.poly is not None and self.poly.dictspec['assigned2'] == "None":
+            if obj.type == ":bone": # Bone can only have 1 bbox.
+                if not obj.shortname + ":p" in bboxlist.keys():
+                    assign_bbox = qmenu.item("Assign BBox "+self.poly.shortname, assign_bbox_click, "|Assign BBox:\n\nBBox is a polyhedron box that is called by different names\nand are used for different things based on a game models format.\nCommonly it surrounds an area for a 'hitbox', 'collision', 'bounding box'...\n\nWhen a BBox is selected and a RMB click on the center of a bone is made, then that BBox can be assigned to that bone, or release from that bone\nif both have not already been assigned to something else that would cause a conflict.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
+                    menulist = [assign_bbox]
+                else:
+                    release_bbox = qmenu.item("Release BBox "+obj.shortname, release_bbox_click, "|Release BBox:\n\nBBox is a polyhedron box that is called by different names\nand are used for different things based on a game models format.\nCommonly it surrounds an area for a 'hitbox', 'collision', 'bounding box'...\n\nWhen a BBox is selected and a RMB click on the center of a bone is made, then that BBox can be assigned to that bone, or release from that bone\nif both have not already been assigned to something else that would cause a conflict.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
+                    select_bbox = qmenu.item("Select BBox "+obj.shortname, select_bbox_click, "|Select BBox:\n\nBBox is a polyhedron box that is called by different names\nand are used for different things based on a game models format.\nCommonly it surrounds an area for a 'hitbox', 'collision', 'bounding box'...\n\nWhen a BBox is selected and a RMB click on the center of a bone is made, then that BBox can be assigned to that bone, or release from that bone\nif both have not already been assigned to something else that would cause a conflict.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
+                    menulist = [release_bbox, select_bbox]
+        elif self.poly is not None and self.poly.dictspec['assigned2'] != "None":
+            if obj is not None and obj.shortname == self.poly.shortname:
+                release_bbox = qmenu.item("Release BBox "+obj.shortname, release_bbox_click, "|Release BBox:\n\nBBox is a polyhedron box that is called by different names\nand are used for different things based on a game models format.\nCommonly it surrounds an area for a 'hitbox', 'collision', 'bounding box'...\n\nWhen a BBox is selected and a RMB click on the center of a bone is made, then that BBox can be assigned to that bone, or release from that bone\nif both have not already been assigned to something else that would cause a conflict.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
+                select_bbox = qmenu.item("Select BBox "+obj.shortname, select_bbox_click, "|Select BBox:\n\nBBox is a polyhedron box that is called by different names\nand are used for different things based on a game models format.\nCommonly it surrounds an area for a 'hitbox', 'collision', 'bounding box'...\n\nWhen a BBox is selected and a RMB click on the center of a bone is made, then that BBox can be assigned to that bone, or release from that bone\nif both have not already been assigned to something else that would cause a conflict.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
+                menulist = [release_bbox, select_bbox]
+            elif obj is not None and obj.shortname + ":p" in bboxlist.keys():
+                release_bbox = qmenu.item("Release BBox "+obj.shortname, release_bbox_click, "|Release BBox:\n\nBBox is a polyhedron box that is called by different names\nand are used for different things based on a game models format.\nCommonly it surrounds an area for a 'hitbox', 'collision', 'bounding box'...\n\nWhen a BBox is selected and a RMB click on the center of a bone is made, then that BBox can be assigned to that bone, or release from that bone\nif both have not already been assigned to something else that would cause a conflict.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
+                select_bbox = qmenu.item("Select BBox "+obj.shortname, select_bbox_click, "|Select BBox:\n\nBBox is a polyhedron box that is called by different names\nand are used for different things based on a game models format.\nCommonly it surrounds an area for a 'hitbox', 'collision', 'bounding box'...\n\nWhen a BBox is selected and a RMB click on the center of a bone is made, then that BBox can be assigned to that bone, or release from that bone\nif both have not already been assigned to something else that would cause a conflict.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
+                menulist = [release_bbox, select_bbox]
+            elif obj is None:
+                release_bbox = qmenu.item("Release BBox "+self.poly.shortname, release_bbox_click, "|Release BBox:\n\nBBox is a polyhedron box that is called by different names\nand are used for different things based on a game models format.\nCommonly it surrounds an area for a 'hitbox', 'collision', 'bounding box'...\n\nWhen a BBox is selected and a RMB click on the center of a bone is made, then that BBox can be assigned to that bone, or release from that bone\nif both have not already been assigned to something else that would cause a conflict.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
+                menulist = [release_bbox]
+        elif obj is not None:
+            if obj.type == ":bone": # Bone can only have 1 bbox.
+                if obj.shortname + ":p" in bboxlist.keys():
+                    release_bbox = qmenu.item("Release BBox "+obj.shortname, release_bbox_click, "|Release BBox:\n\nBBox is a polyhedron box that is called by different names\nand are used for different things based on a game models format.\nCommonly it surrounds an area for a 'hitbox', 'collision', 'bounding box'...\n\nWhen a BBox is selected and a RMB click on the center of a bone is made, then that BBox can be assigned to that bone, or release from that bone\nif both have not already been assigned to something else that would cause a conflict.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
+                    select_bbox = qmenu.item("Select BBox "+obj.shortname, select_bbox_click, "|Select BBox:\n\nBBox is a polyhedron box that is called by different names\nand are used for different things based on a game models format.\nCommonly it surrounds an area for a 'hitbox', 'collision', 'bounding box'...\n\nWhen a BBox is selected and a RMB click on the center of a bone is made, then that BBox can be assigned to that bone, or release from that bone\nif both have not already been assigned to something else that would cause a conflict.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
+                    menulist = [release_bbox, select_bbox]
+
+        return menulist
+
+
+    def menu(self, editor, view=None): # for Bounding Box Center Handle (PolyHandle)
+        editor.layout.clickedview = view
+
+        def forcegrid1click(m, self=self, editor=editor, view=view):
+            self.Action(editor, self.pos, self.pos, MB_CTRL, view, Strings[560])
+
+        if self.poly.dictspec['assigned2'].endswith(":bone"):
+            BBoxBoneExtras = self.bone_extras_menu(editor)
+            return BBoxBoneExtras + [qmenu.sep, qmenu.item("&Force to grid", forcegrid1click, "force vertex to grid")] + self.OriginItems(editor, view)
+        elif self.poly.dictspec['assigned2'].endswith(":mc"):
+            BBoxCompExtras = self.comp_extras_menu(editor, view)
+            return BBoxCompExtras + [qmenu.sep, qmenu.item("&Force to grid", forcegrid1click, "force vertex to grid")] + self.OriginItems(editor, view)
+        elif self.poly.dictspec['assigned2'] == "None":
+            BBoxAssignComp = self.comp_extras_menu(editor, view)[0]
+            return [BBoxAssignComp] + [qmenu.sep, qmenu.item("&Force to grid", forcegrid1click, "force vertex to grid")] + self.OriginItems(editor, view)
+
+
+    def ok(self, editor, undo, old, new, view=None):
+        newpoly = new[0]
+        UpdateBBoxList(editor, newpoly)
+        editor.ok(undo, self.undomsg)
+
+
+class PVertexHandle(qhandles.GenericHandle):
+    "A polyhedron vertex."
+
+    undomsg = Strings[525]
+    hint = "Move vertex and distort polyhedron\n'n' key: move only one vertex\nAlt key: restricted to one face only\nCtrl key: force the vertex to the grid||Move vertex and distort polyhedron:\nBy dragging this point, you can distort the polyhedron.\n\nHolding down the 'n' key: This allows the movement of only ONE vertex and may add additional faces to obtain the shape.\n\nHolding down the Alt key: This allows only one face to move. It appears like you are moving the vertex of the polyhedron. In this case be aware that you might not always get the expected results, because you are not really dragging the vertex, but just rotating the adjacent faces in a way that simulates the vertex movement. If you move the vertex too far away, it might just disappear.|intro.terraingenerator.shaping.html#othervertexmovement"
+
+    def __init__(self, pos, poly):
+        qhandles.GenericHandle.__init__(self, pos)
+        self.poly = poly
+        self.cursor = CR_CROSSH
+
+
+    def menu(self, editor, view):
+        def forcegrid1click(m, self=self, editor=editor, view=view):
+            self.Action(editor, self.pos, self.pos, MB_CTRL, view, Strings[560])
+
+        def cutcorner1click(m, self=self, editor=editor, view=view):
+            # Find all edges and faces issuing from the given vertex.
+            edgeends = []
+            faces = []
+            for f in self.poly.faces:
+                vertices = f.verticesof(self.poly)
+                for i in range(len(vertices)):
+                    if not (vertices[i]-self.pos):
+                        edgeends.append(vertices[i-1])
+                        edgeends.append(vertices[i+1-len(vertices)])
+                        if not (f in faces):
+                            faces.append(f)
+
+            # Remove duplicates.
+            edgeends1 = []
+            for i in range(len(edgeends)):
+                e1 = edgeends[i]
+                for e2 in edgeends[:i]:
+                    if not (e1-e2):
+                        break
+                else:
+                    edgeends1.append(e1)
+
+            # Compute the mean point of edgeends1.
+            # The new face will go through the point in the middle between this and the vertex.
+            pt = reduce(lambda x,y: x+y, edgeends1)/len(edgeends1)
+
+            # Compute the mean normal vector from the adjacent faces' normal vector.
+            n = reduce(lambda x,y: x+y, map(lambda f: f.normal, faces))
+
+            # Force "n" to be perpendicular to the screen direction.
+            vertical = view.vector("z").normalized   # Vertical vector at this point.
+
+            # Correction for 3D views, still needs some work though.
+            if view.info["type"] == "3D":
+                vertX, vertY, vertZ = vertical.tuple
+                vertX = round(vertX)
+                vertY = round(vertY)
+                vertZ = round(vertZ)
+                vertical = quarkx.vect(vertX, vertY, vertZ)
+            n = (n - vertical * (n*vertical)).normalized
+
+            # Find a "model" face for the new one.
+            bestface = faces[0]
+            for f in faces[1:]:
+                if abs(f.normal*vertical) < abs(bestface.normal*vertical):
+                    bestface = f
+
+            # Build the new face.
+            newface = bestface.copy()
+            newface.shortname = "corner"
+            newface.distortion(n, self.pos)
+
+            # Move the face to its correct position.
+            delta = 0.5*(pt-self.pos)
+            delta = n * (delta*n)
+            newface.translate(delta)
+
+            # Insert the new face into the polyhedron.
+            undo = quarkx.action()
+            undo.put(self.poly, newface)
+            editor.ok(undo, Strings[563])
+
+  #      return [qmenu.item("&Cut out corner", cutcorner1click, "|This command cuts out the corner of the polyhedron. It does so by adding a new face near the vertex you right-clicked on. The new face is always perpendicular to the view."),
+  #              qmenu.sep,
+  #              qmenu.item("&Force to grid", forcegrid1click,
+  #                "force vertex to grid")] + self.OriginItems(editor, view)
+        return [qmenu.item("&Force to grid", forcegrid1click, "force vertex to grid")] + self.OriginItems(editor, view)
+
+
+    def draw(self, view, cv, draghandle=None):
+        p = view.proj(self.pos)
+        if p.visible:
+            cv.reset()
+            cv.brushcolor = view.color
+            cv.rectangle(int(p.x)-int(0.501), int(p.y)-int(0.501), int(p.x)+int(2.499), int(p.y)+int(2.499))
+
+
+    def drag(self, v1, v2, flags, view):
+        #### Vertex Dragging Code by Tim Smith ####
+
+        # Compute the projection of the starting point? onto the screen.
+        p0 = view.proj(self.pos)
+        if not p0.visible: return
+
+        # Save a copy of the original faces.
+        orgfaces = self.poly.subitems
+
+        # First, loop through the faces to see if we are draging
+        # more than one point at a time.  This loop uses the distance
+        # between the projected screen position of the starting point
+        # and the project screen position of the vertex.
+        dragtwo = 0
+        for f in self.poly.faces:
+            if f in orgfaces:
+                if abs(self.pos*f.normal-f.dist) < epsilon:
+                    foundcount = 0
+                    for v in f.verticesof(self.poly):
+                        p1 = view.proj(v)
+                        if p1.visible:
+                            dx, dy = p1.x-p0.x, p1.y-p0.y
+                            d = dx*dx + dy*dy
+                            if d < epsilon:
+                                foundcount = foundcount + 1
+                    if foundcount == 2:
+                        dragtwo = 1
+
+        # If the ALT key is pressed.
+        if (flags&MB_ALT) != 0:
+
+            # Loop through the list of points looking for the edge
+            # that is closest to the new position.
+            #
+            # WARNING - THIS CODE ASSUMES THAT THE VERTECIES ARE ORDERED.
+            #   IT ASSUMES THAT V1->V2 MAKE AND EDGE, V2->V3 etc...
+            #
+            # Note by Armin: this assumption is correct.
+            delta = v2 - v1
+            mindist = 99999999
+            dv1 = self.pos + delta
+            xface = -1
+            xvert = -1
+            for f in self.poly.faces:
+                xface = xface + 1
+                if f in orgfaces:
+                    if abs(self.pos*f.normal-f.dist) < epsilon:
+                        vl = f.verticesof (self.poly)
+                        i = 0
+                        while i < len (vl):
+                            v = vl [i]
+                            p1 = view.proj(v)
+                            if p1.visible:
+                                dx, dy = p1.x-p0.x, p1.y-p0.y
+                                d = dx*dx + dy*dy
+                                if d < epsilon:
+                                    dv2 = v - vl [i - 1]
+                                    if dv2:
+                                        cp = (v - dv1) ^ dv2
+                                        num = (cp.x * cp.x + cp.y * cp.y + cp.z * cp.z)
+                                        den = (dv2.x * dv2.x + dv2.y * dv2.y + dv2.z * dv2.z)
+                                        if num / den < mindist:
+                                            mindist = num / den
+                                            vtu1 = v
+                                            vtu2 = vl [i - 1]
+                                            xvert = i - 1
+                                    dv2 = v - vl [i + 1 - len (vl)]
+                                    if dv2:
+                                        cp = (v - dv1) ^ dv2
+                                        num = (cp.x * cp.x + cp.y * cp.y + cp.z * cp.z)
+                                        den = (dv2.x * dv2.x + dv2.y * dv2.y + dv2.z * dv2.z)
+                                        if num / den < mindist:
+                                            mindist = num / den
+                                            vtu1 = v
+                                            vtu2 = vl [i + 1 - len (vl)]
+                                            xvert = i
+                            i = i + 1
+
+            # If a edge was found.
+            if mindist < 99999999:
+                # Compute the orthogonal projection of the destination point onto the edge.
+                # Use the projection to compute a new value for delta.
+                temp = dv1 - vtu1
+                if not temp:
+                    vtu1, vtu2 = vtu2, vtu1
+                temp = dv1 - vtu1
+                vtu2 = vtu2 - vtu1
+                k = (temp * vtu2) / (abs (vtu2) * abs (vtu2))
+                projdv1 = k * vtu2
+                temp = projdv1 + vtu1
+
+                #
+                # Compute the final value for the delta.
+                #
+                if flags&MB_CTRL:
+                    delta = qhandles .aligntogrid (temp, 1) - self .pos
+                else:
+                    delta = qhandles .aligntogrid (temp - self .pos, 0)
+
+        # If the ALT key is NOT pressed.
+        else:
+            # If the control key is pressed, align the destination point to grid.
+            if flags&MB_CTRL:
+                v2 = qhandles.aligntogrid(v2, 1)
+
+            # Compute the change in position.
+            delta = v2-v1
+
+            # If the control is not pressed, align delta to the grid.
+            if not (flags&MB_CTRL):
+                delta = qhandles.aligntogrid(delta, 0)
+
+        # If we are dragging.
+        if view.info["type"] == "XY":
+            s = "was " + ftoss(self.pos.x) + " " + ftoss(self.pos.y) + " now " + ftoss(self.pos.x+delta.x) + " " + ftoss(self.pos.y+delta.y)
+        elif view.info["type"] == "XZ":
+            s = "was " + ftoss(self.pos.x) + " " + ftoss(self.pos.z) + " now " + ftoss(self.pos.x+delta.x) + " " + " " + ftoss(self.pos.z+delta.z)
+        elif view.info["type"] == "YZ":
+            s = "was " + ftoss(self.pos.y) + " " + ftoss(self.pos.z) + " now " + ftoss(self.pos.y+delta.y) + " " + ftoss(self.pos.z+delta.z)
+        else:
+            s = "was: " + vtoposhint(self.pos) + " now: " + vtoposhint(delta + self.pos)
+        self.draghint = s
+
+        if delta or (flags&MB_REDIMAGE):
+            # Make a copy of the polygon being drug.
+            new = self.poly.copy()
+
+            # Loop through the faces.
+            for f in self.poly.faces:
+                # If this face is part of the original group.
+                if f in orgfaces:
+                    # If the point is on the face.
+                    if abs(self.pos*f.normal-f.dist) < epsilon:
+                        # Collect a list of verticies on the face along
+                        # with the distances from the destination point.
+                        # Also, count the number of vertices.
+                        # NOTE: this loop uses the actual distance between the
+                        #       two points and not the screen distance.
+                        foundcount = 0
+                        vlist = []
+                        mvlist = []
+                        for v in f.verticesof(self.poly):
+                            p1 = view.proj(v)
+                            if p1.visible:
+                                dx, dy = p1.x-p0.x, p1.y-p0.y
+                                d = dx*dx + dy*dy
+                            else:
+                                d = 1
+                            if d < epsilon:
+                                foundcount = foundcount + 1
+                                mvlist .append (v)
+                            else:
+                                d = v - self .pos
+                                vlist.append((abs (d), v))
+
+                        # Sort the list of vertecies, this places the most distant point at the end.
+                        vlist.sort ()
+                        vmax = vlist [-1][1]
+
+                        # If we are draging two vertecies.
+                        if dragtwo:
+                            # If this face does not have more than one vertex selected, then skip it.
+                            if foundcount != 2:
+                                continue
+
+                            # The rotational axis is between the two points being drug.
+                            # The reference point is the most distant point.
+                            rotationaxis = mvlist [0] - mvlist [1]
+                            otherfixed = getotherfixed(vmax, mvlist, rotationaxis)
+                            fixedpoints = vmax, otherfixed
+
+                        # Otherwise, we are draging one vertex.
+                        else:
+                            # If this face does not have any of the selected vertecies, then skip it.
+                            if foundcount == 0:
+                                continue
+
+                            # METHOD A: Using the two most distant points as the axis of rotation.
+                            if not (flags&MB_SHIFT):
+                                rotationaxis = (vmax - vlist [-2] [1])
+                                fixedpoints = vmax, vlist[-2][1]
+
+                            # METHOD B: Using the most distant point,
+                            # rotate along the perpendicular to the vector between
+                            # the most distant point and the position.
+                            else:
+                                rotationaxis = (vmax - self .pos) ^ f .normal
+                                otherfixed =getotherfixed(vmax, vlist, rotationaxis)
+                                fixedpoints = vmax, otherfixed
+
+                        # Apply the rotation axis to the face (requires that rotationaxis and vmax to be set).
+                        newpoint = self.pos+delta
+                        nf = new.subitem(orgfaces.index(f))
+
+                        def pointsok(new,fixed):
+                            # Coincident not OK.
+                            if not new-fixed[0]: return 0
+                            if not new-fixed[1]: return 0
+                            # Colinear also not OK.
+                            if abs((new-fixed[0]).normalized*(new-fixed[1]).normalized)>.999999:
+                               return 0
+                            return 1
+
+                        if pointsok(newpoint,fixedpoints):
+                            tp = nf.threepoints(2)
+                            x,y = nf.axisbase()
+                            def proj1(p, x=x,y=y,v=vmax):
+                                return (p-v)*x, (p-v)*y
+                            tp = tuple(map(proj1, tp))
+                            nf.setthreepoints((newpoint,fixedpoints[0],fixedpoints[1]),0)
+
+                            newnormal = rotationaxis ^ (self.pos+delta-vmax)
+                            testnormal = rotationaxis ^ (self.pos-vmax)
+                            if newnormal:
+                                if testnormal * f.normal < 0.0:
+                                    newnormal = -newnormal
+
+                            if nf.normal*newnormal<0.0:
+                                nf.swapsides()
+
+                            x,y=nf.axisbase()
+                            def proj2(p,x=x,y=y,v=vmax):
+                                return v+p[0]*x+p[1]*y
+                            tp = tuple(map(proj2,tp))
+                            # Code 4 for NuTex.
+                            nf.setthreepoints(tp ,2)
+
+                # If the face is not part of the original group.
+                else:
+                    if not (flags&MB_DRAGGING):
+                        continue   # Face is outside the polyhedron.
+                    nf = f.copy()   # Put a copy of the face for the red image only.
+                    new.appenditem(nf)
+        # Final code.
+            new = [new]
+        else:
+            new = None
+        return [self.poly], new
+
+    def ok(self, editor, undo, old, new, view=None):
+        newpoly = new[0]
+        if newpoly.broken:
+            undo.cancel()
+            quarkx.beep()
+            quarkx.msgbox("Invalid Drag !\n\nWill cause broken poly.\nAction canceled.", qutils.MT_ERROR, qutils.MB_OK)
+            Update_Editor_Views(editor)
+            return
+        for face in newpoly.subitems:
+            if face.broken:
+                undo.cancel()
+                quarkx.beep()
+                quarkx.msgbox("Invalid Drag !\n\nWill cause broken poly.\nAction canceled.", qutils.MT_ERROR, qutils.MB_OK)
+                Update_Editor_Views(editor)
+                return
+        UpdateBBoxList(editor, newpoly)
+        editor.ok(undo, self.undomsg)
+
+
+#
+# Model Handle Classes and functions.
+#
 class VertexHandle(qhandles.GenericHandle):
     "Frame Vertex handle."
 
@@ -2135,6 +2979,12 @@ def BuildCommonHandles(editor, explorer, option=1):
             for bone in bones:
                 bh = bh + mdlentities.CallManager("handlesopt", bone, editor)
             bh.reverse() # Stops connecting bone lines from drawing over rotation handles.
+            for item in explorer.sellist:
+                if item.type == ':p' or item.type == ':f':
+                    if item.type == ':f':
+                        item = item.parent
+                    bh = bh + mdlentities.CallManager("handles", item, editor)
+                    break
     else:
         return bh
     h = bh
@@ -2288,7 +3138,13 @@ def BuildHandles(editor, explorer, view, option=1):
 
             for bone in bones:
                 bh = bh + mdlentities.CallManager("handlesopt", bone, editor)
-                bh.reverse() # Stops connecting bone lines from drawing over rotation handles.
+            bh.reverse() # Stops connecting bone lines from drawing over rotation handles.
+            for item in explorer.sellist:
+                if item.type == ':p' or item.type == ':f':
+                    if item.type == ':f':
+                        item = item.parent
+                    bh = bh + mdlentities.CallManager("handles", item, editor)
+                    break
     h = bh
     if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
         #
@@ -4774,6 +5630,7 @@ class BoneCenterHandle(BoneHandle):
         SelectHandlePosVertexes = qmenu.item("Select Handle &Position Vertexes", select_handle_pos_vertexes_click, "|Select (bone handle name) handle position Vertexes:\n\nWhen the cursor is over a bone's Center handle with vertexes assigned to it, click this item to select the vertexes used to set that bone's handle position.\n\nOr, if another handle is attached that has the vertexes assigned to it instead, then those are the position vertexes for that handle that will be selected.\n\nIf no vertexes have been assigned to any handle at that location, then the menu item will show disabled.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
         SelectHandlePosVertexes.state = qmenu.disabled
         BoneExtras = self.extrasmenu(editor)
+        BBoxBoneExtras = PolyHandle(None, None).bone_extras_menu(editor, self.bone)
         try:
             if (len(self.bone.vtxlist) != 0) and (len(editor.ModelVertexSelList) != 0) and (editor.Root.currentcomponent.name in self.bone.vtxlist.keys()):
                 SetHandlePosition.state = qmenu.normal
@@ -4853,7 +5710,7 @@ class BoneCenterHandle(BoneHandle):
         if not MdlOption("GridActive") or editor.gridstep <= 0:
             Forcetogrid.state = qmenu.disabled
 
-        menu = [AddBone, ContinueBones, qmenu.sep, AttachBone1to2, AttachBone2to1, qmenu.sep, DetachBones, qmenu.sep, AlignBone1to2, AlignBone2to1, qmenu.sep, AssignReleaseVertices, qmenu.sep, SetHandlePosition, qmenu.sep] + sel_vtx_list + [qmenu.sep, bone_control, qmenu.sep, individual_bones_sel, qmenu.sep, handlescalepop, qmenu.sep, KeyframesRotation, qmenu.sep, SB1, HB1, qmenu.sep] + BoneExtras + [qmenu.sep, Forcetogrid]
+        menu = [AddBone, ContinueBones, qmenu.sep, AttachBone1to2, AttachBone2to1, qmenu.sep, DetachBones, qmenu.sep, AlignBone1to2, AlignBone2to1, qmenu.sep] + BBoxBoneExtras + [qmenu.sep, AssignReleaseVertices, qmenu.sep, SetHandlePosition, qmenu.sep] + sel_vtx_list + [qmenu.sep, bone_control, qmenu.sep, individual_bones_sel, qmenu.sep, handlescalepop, qmenu.sep, KeyframesRotation, qmenu.sep, SB1, HB1, qmenu.sep] + BoneExtras + [qmenu.sep, Forcetogrid]
 
         return menu
 
@@ -4889,30 +5746,6 @@ class BoneCenterHandle(BoneHandle):
             p = view.proj(0,0,0)
 
         if p.visible:
-            if MdlOption("DrawBBoxes") and editor.ModelComponentList['bonelist'].has_key(self.bone.name) and editor.ModelComponentList['bonelist'][self.bone.name].has_key("bboxes"):
-                bone_data = editor.ModelComponentList['bonelist'][self.bone.name]
-                frame_name = editor.Root.currentcomponent.currentframe.name
-                bpos = quarkx.vect(bone_data['frames'][frame_name]['position'])
-                brot = quarkx.matrix(bone_data['frames'][frame_name]['rotmatrix'])
-                cv.pencolor = RED
-                for bbox in bone_data['bboxes']:
-                    m = bbox[0]
-                    M = bbox[1]
-                    box = [quarkx.vect(m), quarkx.vect(M), quarkx.vect(m[0],m[1],M[2]), quarkx.vect(m[0],M[1],m[2]), quarkx.vect(m[0],M[1],M[2]), quarkx.vect(M[0],m[1],M[2]), quarkx.vect(M[0],m[1],m[2]), quarkx.vect(M[0],M[1],m[2])]
-                    for bp in xrange(len(box)):
-                        box[bp] = view.proj(bpos + (brot * box[bp]))
-                    cv.line(int(box[0].x), int(box[0].y), int(box[2].x), int(box[2].y))
-                    cv.line(int(box[0].x), int(box[0].y), int(box[3].x), int(box[3].y))
-                    cv.line(int(box[3].x), int(box[3].y), int(box[4].x), int(box[4].y))
-                    cv.line(int(box[4].x), int(box[4].y), int(box[2].x), int(box[2].y))
-                    cv.line(int(box[0].x), int(box[0].y), int(box[6].x), int(box[6].y))
-                    cv.line(int(box[3].x), int(box[3].y), int(box[7].x), int(box[7].y))
-                    cv.line(int(box[4].x), int(box[4].y), int(box[1].x), int(box[1].y))
-                    cv.line(int(box[2].x), int(box[2].y), int(box[5].x), int(box[5].y))
-                    cv.line(int(box[6].x), int(box[6].y), int(box[7].x), int(box[7].y))
-                    cv.line(int(box[7].x), int(box[7].y), int(box[1].x), int(box[1].y))
-                    cv.line(int(box[1].x), int(box[1].y), int(box[5].x), int(box[5].y))
-                    cv.line(int(box[5].x), int(box[5].y), int(box[6].x), int(box[6].y))
             bonecount = 0
             for item in editor.layout.explorer.sellist:
                 if item.type == ":bone" or item.type == ":mf":
@@ -5532,6 +6365,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.218  2010/10/20 20:17:54  cdunde
+#Added bounding boxes (hit boxes) and bone controls support used by Half-Life, maybe others.
+#
 #Revision 1.217  2010/10/10 03:24:59  cdunde
 #Added support for player models attachment tags.
 #To make baseframe name uniform with other files.
