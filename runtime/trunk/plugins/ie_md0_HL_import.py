@@ -1359,12 +1359,12 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
         self.vertices = []          # A list of the vertexes.
         self.tagsgroup = []         # A list of tag (attachment) groups to store tag frames into for each tag.
 
-    def load(self, file, folder_name, message):
+    def load(self, file, folder_name, mdl_name, message):
         global progressbar
-        # file = the model file & full path being writen to, ex: C:\Half-Life\valve\models\player\barney\barney.mdl
-        # name = just the basic name of the .mdl file, ex: barner
+        # file = the actual .mdl model file being read in, imported.
+        # folder_name = name of the folder the .mdl model file is in.
+        # mdl_name = just the basic name of the .mdl file, ex: barney
         # message = "" and empty string to add needed messages to.
-        # data = all of the header data amounts.
         self.file = file # To pass the file being read in, when needed.
         ofsBegin = self.ofsBegin = file.tell()
         temp_data = file.read(struct.calcsize(self.binary_format))
@@ -1503,7 +1503,7 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
             except:
                 pass
             name = name.split(".")[0]
-            Component = quarkx.newobj(folder_name + '_' + name + " textures" + ':mc')
+            Component = quarkx.newobj(folder_name + '_' + mdl_name + '_' + name + ' textures' + ':mc')
             sdogroup = quarkx.newobj('SDO:sdo')
             # Create the "Skins:sg" group.
             skinsize = (self.skins_group[0].width, self.skins_group[0].height)
@@ -1561,7 +1561,7 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
                   #  self.bodyparts[i].models[j].meshes[k].dump()
 
                     # Now we start creating our Import Component and name it.
-                    Component = quarkx.newobj(folder_name + '_' + name + " " + str(k) + ':mc')
+                    Component = quarkx.newobj(folder_name + '_' + mdl_name + '_' + name + ' ' + str(k) + ':mc')
                     sdogroup = quarkx.newobj('SDO:sdo')
                     # Create the "Skins:sg" group.
                     try:
@@ -1582,7 +1582,7 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
                     # Add bone controls if any.
                     for control in self.bone_controls:
                         bone = self.bones[control.bone]
-                        Component['bone_control_'+ str(control.index)] = folder_name + "_" + bone.name + ":bone"
+                        Component['bone_control_'+ str(control.index)] = folder_name + '_' + mdl_name + '_' + bone.name + ':bone'
                     ComponentList = ComponentList + [Component]
 
         pseqdesc = self.sequence_descs
@@ -1606,13 +1606,13 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
                 attachment = mdl_attachment().load(file)
                 if not self.attachments.has_key(attachment.bone):
                     self.attachments[attachment.bone] = {}
-                    self.attachments[attachment.bone]['bone_name'] = folder_name + "_" + self.bones[attachment.bone].name + ":bone"
+                    self.attachments[attachment.bone]['bone_name'] = folder_name + '_' + mdl_name + '_' + self.bones[attachment.bone].name + ':bone'
                     self.attachments[attachment.bone]['tag_pos'] = {}
                 self.attachments[attachment.bone]['tag_pos'][i] = attachment.org
               #  attachment.dump()
                 # Create tags (attachments) groups if any. We need to keep these separate for each complete model loaded.
                 tag_name = 'tag_weapon' + str(i+1)
-                newtag = quarkx.newobj(folder_name + '_' + tag_name + ':tag')
+                newtag = quarkx.newobj(folder_name + '_' + mdl_name + '_' + tag_name + ':tag')
                 newtag['Component'] = tag_comp.name
                 newtag['bone'] = self.attachments[attachment.bone]['bone_name']
                 self.tagsgroup = self.tagsgroup + [newtag]
@@ -1627,7 +1627,7 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
         if len(self.bones) != 0 and len(ComponentList) != 0:
             for mdlbone in xrange(len(self.bones)):
                 bone = self.bones[mdlbone]
-                new_bone = quarkx.newobj(folder_name + "_" + bone.name + ":bone")
+                new_bone = quarkx.newobj(folder_name + '_' + mdl_name + '_' + bone.name + ':bone')
                 new_bone['flags'] = (0,0,0,0,0,0)
                 new_bone['show'] = (1.0,)
                 bone_pos = quarkx.vect(bone.value[0], bone.value[1], bone.value[2])
@@ -2077,13 +2077,15 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
 ########################
 # To run this file
 ########################
-def load_mdl(mdl_filename, folder_name):
+def load_mdl(mdl_filename, folder_name, mdl_name):
     global tobj, logging, Strings, mdl
+    # mdl_filename = the model file & full path being writen to, ex: C:\Half-Life\valve\models\player\barney\barney.mdl
+
     #read the file in
     file = open(mdl_filename, "rb")
     mdl = mdl_obj()
     message = ""
-    MODEL, ComponentList, QuArK_bones, message, tagsgroup, version = mdl.load(file, folder_name, message)
+    MODEL, ComponentList, QuArK_bones, message, tagsgroup, version = mdl.load(file, folder_name, mdl_name, message)
     file.close()
 
     if logging == 1:
@@ -2095,12 +2097,12 @@ def load_mdl(mdl_filename, folder_name):
     return ComponentList, QuArK_bones, message, tagsgroup, version
 
 
-def import_mdl_model(editor, mdl_filename):
+def import_mdl_model(editor, mdl_filename, mdl_name):
     # mdl_filename = the full path and the full model file name that is open to write to.
     model_name = mdl_filename.split("\\")
     folder_name = model_name[len(model_name)-2]
 
-    ComponentList, QuArK_bones, message, tagsgroup, version = load_mdl(mdl_filename, folder_name) # Loads the model.
+    ComponentList, QuArK_bones, message, tagsgroup, version = load_mdl(mdl_filename, folder_name, mdl_name) # Loads the model.
 
     return ComponentList, QuArK_bones, message, tagsgroup, version
 
@@ -2114,6 +2116,8 @@ def loadmodel(root, filename, gamename, nomessage=0):
     global editor, tobj, logging, importername, textlog, Strings
     import quarkpy.mdleditor
     editor = quarkpy.mdleditor.mdleditor
+    mdl_name = filename.rsplit("\\", 1)[1]
+    mdl_name = mdl_name.split(".")[0]
     # Step 1 to import model from QuArK's Explorer.
     if editor is None:
         editor = quarkpy.mdleditor.ModelEditor(None)
@@ -2129,7 +2133,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
     logging, tobj, starttime = ie_utils.default_start_logging(importername, textlog, filename, "IM") ### Use "EX" for exporter text, "IM" for importer text.
 
     ### Lines below here loads the model into the opened editor's current model.
-    ComponentList, QuArK_bones, message, tagsgroup, version = import_mdl_model(editor, filename)
+    ComponentList, QuArK_bones, message, tagsgroup, version = import_mdl_model(editor, filename, mdl_name)
 
     if ComponentList is None or len(ComponentList) == 0 or version is None or version != 10:
         quarkx.beep() # Makes the computer "Beep" once if a file is not valid. Add more info to message.
@@ -2239,6 +2243,8 @@ def loadmodel(root, filename, gamename, nomessage=0):
         bboxgroup = quarkx.newobj("BBoxes "+bbg_name+":bbg")
         for bone in range(len(bone_names)):
             bonename = bone_names[bone]
+            if bonename.find(mdl_name) == -1:
+                continue
             bboxname = bonename.replace(":bone", ":p")
             if bboxlist.has_key(bboxname):
                 bone_data = bonelist[bonename]
@@ -2254,6 +2260,8 @@ def loadmodel(root, filename, gamename, nomessage=0):
         bboxgroup = quarkx.newobj("BBoxes "+bbg_name+":bbg")
         for bone in range(len(bone_names)):
             bonename = bone_names[bone]
+            if bonename.find(mdl_name) == -1:
+                continue
             bboxname = bonename.replace(":bone", ":p")
             if bboxlist.has_key(bboxname):
                 bone_data = bonelist[bonename]
@@ -2349,6 +2357,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".mdl Half-Life Importer", ".mdl file", "*.
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.14  2010/12/06 05:43:06  cdunde
+# Updates for Model Editor bounding box system.
+#
 # Revision 1.13  2010/11/09 05:48:10  cdunde
 # To reverse previous changes, some to be reinstated after next release.
 #
