@@ -351,7 +351,7 @@ class BaseEditor:
                     # Calls to draw bboxes, if any, for a view if it is in "wire" mode.
                     if MdlOption("DrawBBoxes") and view.viewmode == "wire":
                         for item in self.Root.dictitems['Misc:mg'].subitems:
-                            if item.type == ":bbg" and len(item.subitems) != 0 and item.subitems[0].type == ":p" and item.dictspec['show'][0] == 1.0:
+                            if item.type == ":bbg" and len(item.subitems) != 0 and item.subitems[0].type == ":p":
                                 group = item
                                 if group in ex.sellist:
                                     for subitem in group.subitems:
@@ -419,7 +419,7 @@ class BaseEditor:
                 # Calls to draw bboxes, if any, for a view if it is in "tex" or "solid" mode.
                 if MdlOption("DrawBBoxes"):
                     for item in self.Root.dictitems['Misc:mg'].subitems:
-                        if item.type == ":bbg" and len(item.subitems) != 0 and item.subitems[0].type == ":p" and item.dictspec['show'][0] == 1.0:
+                        if item.type == ":bbg" and len(item.subitems) != 0 and item.subitems[0].type == ":p":
                             if not item in ex.sellist:
                                 group = item
                                 for subitem in group.subitems:
@@ -1417,6 +1417,11 @@ class BaseEditor:
                                         return
                                     if choice[0][1].type == ":p" and choice[0][1].dictspec['show'][0] != 1.0:
                                         skip = choice[0][1]
+                                        if choice[item][1] == self.layout.explorer.uniquesel:
+                                            pass
+                                        else:
+                                            self.layout.explorer.uniquesel = None
+                                            self.layout.explorer.sellist = []
                                         for obj in choice:
                                             if obj[1] == skip or obj[1].type == ":p" and obj[1].dictspec['show'][0] != 1.0:
                                                 continue
@@ -1795,6 +1800,9 @@ class NeedViewError(Exception):
 #
 #
 #$Log$
+#Revision 1.149  2010/12/07 11:17:15  cdunde
+#More updates for Model Editor bounding box system.
+#
 #Revision 1.148  2010/12/07 06:06:52  cdunde
 #Updates for Model Editor bounding box system.
 #
