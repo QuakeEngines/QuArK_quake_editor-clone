@@ -1390,15 +1390,6 @@ def UpdateBBoxList(editor, newpoly):
             brot = quarkx.matrix(bone_data['frames'][bonelist_frame_name]['rotmatrix'])
             poly.shortname = bonename.split(":")[0]
             poly['assigned2'] = newpoly.dictspec['assigned2']
-            # HAVE DAN CHECK THIS
-    #2        bbox = quarkx.boundingboxof([newpoly])
-    #2        for bone in bones:
-    #2            if bone.name == assigned2:
-    #2                bone_pos = bone.position
-    #2                bbox_pos = (bbox[0] + bbox[1]) / 2
-    #2                neg_bbox = bbox_pos * -1
-    #2                dif = bbox_pos + bone_pos + neg_bbox
-    #2                break
         else:
             bpos = quarkx.vect(bone_data['frames'][bonelist_frame_name]['position'])
             brot = ~quarkx.matrix(bone_data['frames'][bonelist_frame_name]['rotmatrix'])
@@ -1429,10 +1420,6 @@ def UpdateBBoxList(editor, newpoly):
                 vtx0 = quarkx.vect(vtx0X, vtx0Y, vtx0Z).tuple
                 vtx1 = quarkx.vect(vtx1X, vtx1Y, vtx1Z).tuple
                 vtx2 = quarkx.vect(vtx2X, vtx2Y, vtx2Z).tuple
-                # HAVE DAN CHECK THIS
-    #2            vtx0 = (quarkx.vect(vtx0X, vtx0Y, vtx0Z) + neg_bbox).tuple
-    #2            vtx1 = (quarkx.vect(vtx1X, vtx1Y, vtx1Z) + neg_bbox).tuple
-    #2            vtx2 = (quarkx.vect(vtx2X, vtx2Y, vtx2Z) + neg_bbox).tuple
             else:
                 vtx0 = (brot * (quarkx.vect(vtx0X, vtx0Y, vtx0Z) - bpos)).tuple
                 vtx1 = (brot * (quarkx.vect(vtx1X, vtx1Y, vtx1Z) - bpos)).tuple
@@ -1446,26 +1433,7 @@ def UpdateBBoxList(editor, newpoly):
 
         bbox = quarkx.boundingboxof([poly])
 
-        # HAVE DAN CHECK THIS
-    #1    bbox = [bbox[0], bbox[1]]
-    #1    print "ORG bbox", bbox
-    #1    if not bboxlist.has_key(bonename.replace(":bone", ":p")):
-    #1        for bone in bones:
-    #1            if bone.name == assigned2:
-    #1               bone_pos = bone.position
-    #1               bbox_pos = (bbox[0] + bbox[1]) / 2
-    #1               print "bone_pos, bbox_pos", bone_pos, bbox_pos
-    #1               neg_bbox = bbox_pos * -1
-    #1               print "neg_bbox", neg_bbox
-    #1               dif = bone_pos + neg_bbox
-    #1               print "dif", dif
-    #1               bbox[0] = bbox[0] + dif
-    #1               bbox[1] = bbox[1] + dif
-    #1               break
-
         bboxlist[bonename.replace(":bone", ":p")] = [bbox[0].tuple, bbox[1].tuple]
-
-    #1    print "NEW bbox", bboxlist[bonename.replace(":bone", ":p")]
 
         return poly # DO NOT move outside to combine calls, will break dragging of poly in editor.
 
@@ -4754,6 +4722,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.152  2010/12/07 11:17:14  cdunde
+#More updates for Model Editor bounding box system.
+#
 #Revision 1.151  2010/12/06 05:43:06  cdunde
 #Updates for Model Editor bounding box system.
 #
