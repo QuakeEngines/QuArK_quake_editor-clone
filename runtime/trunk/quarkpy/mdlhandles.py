@@ -1205,18 +1205,27 @@ class PolyHandle(qhandles.CenterHandle):
     def menu(self, editor, view=None): # for Bounding Box Center Handle (PolyHandle)
         editor.layout.clickedview = view
 
+        def hide_this_bbox_click(m, self=self, editor=editor, view=view):
+            import mdlmgr
+            mdlmgr.savefacesel = 1
+            self.poly['show'] = (0.0,)
+            mdlutils.Update_Editor_Views(editor)
+            editor.layout.explorer.invalidate()
+
         def forcegrid1click(m, self=self, editor=editor, view=view):
             self.Action(editor, self.pos, self.pos, MB_CTRL, view, Strings[560])
 
+        HTBB = qmenu.item("&Hide this bbox", hide_this_bbox_click)
+
         if self.poly.dictspec['assigned2'].endswith(":bone"):
             BBoxBoneExtras = self.bone_extras_menu(editor)
-            return BBoxBoneExtras + [qmenu.sep, qmenu.item("&Force to grid", forcegrid1click, "force vertex to grid")] + self.OriginItems(editor, view)
+            return BBoxBoneExtras + [qmenu.sep, HTBB, qmenu.sep, qmenu.item("&Force to grid", forcegrid1click, "force vertex to grid")] + self.OriginItems(editor, view)
         elif self.poly.dictspec['assigned2'].endswith(":mc"):
             BBoxCompExtras = self.comp_extras_menu(editor, view)
-            return BBoxCompExtras + [qmenu.sep, qmenu.item("&Force to grid", forcegrid1click, "force vertex to grid")] + self.OriginItems(editor, view)
+            return BBoxCompExtras + [qmenu.sep, HTBB, qmenu.sep, qmenu.item("&Force to grid", forcegrid1click, "force vertex to grid")] + self.OriginItems(editor, view)
         elif self.poly.dictspec['assigned2'] == "None":
             BBoxAssignComp = self.comp_extras_menu(editor, view)[0]
-            return [BBoxAssignComp] + [qmenu.sep, qmenu.item("&Force to grid", forcegrid1click, "force vertex to grid")] + self.OriginItems(editor, view)
+            return [BBoxAssignComp] + [qmenu.sep, HTBB, qmenu.sep, qmenu.item("&Force to grid", forcegrid1click, "force vertex to grid")] + self.OriginItems(editor, view)
 
 
     def ok(self, editor, undo, old, new, view=None):
@@ -6365,6 +6374,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.219  2010/12/06 05:43:06  cdunde
+#Updates for Model Editor bounding box system.
+#
 #Revision 1.218  2010/10/20 20:17:54  cdunde
 #Added bounding boxes (hit boxes) and bone controls support used by Half-Life, maybe others.
 #

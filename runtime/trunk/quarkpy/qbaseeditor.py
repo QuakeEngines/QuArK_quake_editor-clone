@@ -1427,18 +1427,21 @@ class BaseEditor:
                                     else:
                                         self.layout.explorer.uniquesel = choice[0][1]
                                 if choice[item][1] == self.layout.explorer.uniquesel:
-                                    if choice[item+1][1].type == ":p" and choice[item+1][1].dictspec['show'][0] != 1.0:
-                                        item = item + 1
-                                        while 1:
-                                            if item == len(choice):
-                                                break
-                                            if choice[item][1].type == ":p" and choice[item][1].dictspec['show'][0] != 1.0:
-                                                item = item + 1
-                                            else:
-                                                self.layout.explorer.uniquesel = choice[item][1]
-                                                return
-                                    self.layout.explorer.uniquesel = choice[item+1][1]
-                                    break
+                                    try:
+                                        if choice[item+1][1].type == ":p" and choice[item+1][1].dictspec['show'][0] != 1.0:
+                                            item = item + 1
+                                            while 1:
+                                                if item == len(choice):
+                                                    break
+                                                if choice[item][1].type == ":p" and choice[item][1].dictspec['show'][0] != 1.0:
+                                                    item = item + 1
+                                                else:
+                                                    self.layout.explorer.uniquesel = choice[item][1]
+                                                    return
+                                        self.layout.explorer.uniquesel = choice[item+1][1]
+                                        break
+                                    except:
+                                        pass
                     if choice == [] and flagsmouse == 264:
                         if view.info['viewname'] == "skinview":
                             if self.SkinVertexSelList != []:
@@ -1792,6 +1795,9 @@ class NeedViewError(Exception):
 #
 #
 #$Log$
+#Revision 1.148  2010/12/07 06:06:52  cdunde
+#Updates for Model Editor bounding box system.
+#
 #Revision 1.147  2010/12/06 05:43:06  cdunde
 #Updates for Model Editor bounding box system.
 #

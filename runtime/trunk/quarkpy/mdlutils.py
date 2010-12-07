@@ -1383,12 +1383,13 @@ def UpdateBBoxList(editor, newpoly):
 
         # Updates the bboxlist.
         poly = quarkx.newobj("dummy:p");
+        poly['show'] = (1.0,)
         bone_data = bonelist[bonename]
         if not bboxlist.has_key(bonename.replace(":bone", ":p")):
             bpos = quarkx.vect(bone_data['frames'][bonelist_frame_name]['position'])
             brot = quarkx.matrix(bone_data['frames'][bonelist_frame_name]['rotmatrix'])
             poly.shortname = bonename.split(":")[0]
-            poly["assigned2"] = newpoly.dictspec["assigned2"]
+            poly['assigned2'] = newpoly.dictspec['assigned2']
             # HAVE DAN CHECK THIS
     #2        bbox = quarkx.boundingboxof([newpoly])
     #2        for bone in bones:
@@ -4753,6 +4754,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.151  2010/12/06 05:43:06  cdunde
+#Updates for Model Editor bounding box system.
+#
 #Revision 1.150  2010/10/20 20:17:54  cdunde
 #Added bounding boxes (hit boxes) and bone controls support used by Half-Life, maybe others.
 #
