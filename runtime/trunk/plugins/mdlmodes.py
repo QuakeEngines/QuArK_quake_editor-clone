@@ -1083,7 +1083,8 @@ class BBoxMakerDragObject(parent):
         polys = parent.findallsubitems("", ':p')
         count = 1
         newpoly = rectangle.copy()
-        newpoly["assigned2"] = "None"
+        newpoly['assigned2'] = "None"
+        newpoly['show'] = (1.0,)
         for poly in polys:
             if poly.shortname.startswith("bbox "):
                 nbr = None
@@ -1182,6 +1183,9 @@ Lock_Z.state = int(quarkx.setupsubset(SS_MODEL, "Options")["setLock_Z"])
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.27  2010/12/06 05:43:06  cdunde
+# Updates for Model Editor bounding box system.
+#
 # Revision 1.26  2010/06/05 21:43:44  cdunde
 # Fix to update dialog and specifics page before redrawing views and draw fillcolors correctly.
 #

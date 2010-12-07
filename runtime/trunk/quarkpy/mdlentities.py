@@ -48,6 +48,28 @@ MT_MISCGROUP   = 6      # AiV
 #
 ###############################
 
+def ShowHideBBoxes(x):
+    editor = mdleditor.mdleditor
+    if editor is None: return
+    templist = editor.layout.explorer.sellist
+    for obj in range(len(editor.layout.explorer.sellist)):
+        if editor.layout.explorer.sellist[obj].type == ":bbg" or editor.layout.explorer.sellist[obj].type == ":p":
+            def group_subitems(subitems, x=x):
+                for bbox in subitems:
+                    bbox['show'] = (x,)
+            editor.layout.explorer.sellist[obj]['show'] = (x,)
+            group_subitems(editor.layout.explorer.sellist[obj].subitems)
+            templist.remove(editor.layout.explorer.sellist[obj])
+    editor.layout.explorer.sellist = templist
+    editor.explorerselchange()
+
+def ShowTheseBBoxes(m):
+    ShowHideBBoxes(1.0)
+
+def HideTheseBBoxes(m):
+    ShowHideBBoxes(0.0)
+
+
 def ShowHideTags(x):
     editor = mdleditor.mdleditor
     if editor is None: return
@@ -2847,6 +2869,18 @@ class SkinGroupType(EntityManager):
 class BBoxGroupType(EntityManager):
     "Model BBox Sub-group in the 'Misc:mg' folder for bounding poly boxes, type = :bbg"
 
+    def menu(o, editor):
+        import qmenu
+        STBB = qmenu.item("&Show these bboxes", ShowTheseBBoxes, "|Show these bboxes:\n\nThis allows the selected bboxes to be displayed in the editor's views if the function 'Draw Bounding Boxes' is not active.|intro.modeleditor.editelements.html#tags")
+        HTBB = qmenu.item("&Hide these bboxes", HideTheseBBoxes, "|Hide these bboxes:\n\nThis stops the selected bboxes from being displayed in the editor's views.|intro.modeleditor.editelements.html#tags")
+
+        if not o.dictspec.has_key("show"):
+            o['show'] = (1.0,)
+        if o.dictspec['show'][0] == 1.0:
+            STBB.state = qmenu.disabled
+        else:
+            HTBB.state = qmenu.disabled
+        return [STBB, HTBB]
 
 class SkinSubGroupType(EntityManager):
     "Model Skin Group Sub-group for skins (like an animation set of skins), type = :ssg"
@@ -3012,6 +3046,19 @@ class FrameType(EntityManager):
 class PolyhedronType(EntityManager):
     "A Bounding Box's (BBox) Polyhedron"
 
+    def menu(o, editor):
+        import qmenu
+        STBB = qmenu.item("&Show this bbox", ShowTheseBBoxes, "|Show this bbox:\n\nThis allows the selected bbox to be displayed in the editor's views if the function 'Draw Bounding Boxes' is not active.|intro.modeleditor.editelements.html#tags")
+        HTBB = qmenu.item("&Hide this bbox", HideTheseBBoxes, "|Hide this bbox:\n\nThis stops the selected bbox from being displayed in the editor's views.|intro.modeleditor.editelements.html#tags")
+
+        if not o.dictspec.has_key("show"):
+            o['show'] = (1.0,)
+        if o.dictspec['show'][0] == 1.0:
+            STBB.state = qmenu.disabled
+        else:
+            HTBB.state = qmenu.disabled
+        return [STBB, HTBB]
+
     def handles(o, editor):
         h = PolyHandles(o, None)
         if h:
@@ -3023,6 +3070,8 @@ def PolyHandles(o, exclude):
     "Makes a list of handles for a Bounding Box's (BBox) polyhedron, o is the BBox poly."
 
     h = []
+    if o.dictspec['show'][0] != 1.0:
+        return h
     pos = o.origin
     if not (pos is None) and MdlOption("DrawBBoxes"):
         #
@@ -3119,6 +3168,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.79  2010/12/06 05:43:06  cdunde
+#Updates for Model Editor bounding box system.
+#
 #Revision 1.78  2010/10/20 20:17:54  cdunde
 #Added bounding boxes (hit boxes) and bone controls support used by Half-Life, maybe others.
 #

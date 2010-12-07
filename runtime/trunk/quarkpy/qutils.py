@@ -409,6 +409,9 @@ def GroupIconSel(grp, ico_objects_group_set={
 #
 
 def ModelIcon(modelobj, iconset):
+    
+    # Sets the Model Editor's Bbox Polys to use its own function for icons.
+    quarkx.seticons(iiPolyhedron,     BBoxIconSel,        BBoxIconUnsel)
     #
     # Sets the default icons for each group type ex: ":sg", ":fg"...
     # Also individual component group type icons can be set here as well.
@@ -436,7 +439,10 @@ def ModelIcon(modelobj, iconset):
 
     # Needed to display the correct icons of these groups for imported models.
     if modelobj.type ==":bbg":
-        return icons[8]
+        if modelobj['show'][0] == 1.0:
+            return icons[8]
+        else:
+            return icons[9]
     if modelobj.type ==":fg":
         return icons[1]
     if modelobj.type ==":bg":
@@ -489,13 +495,30 @@ def ComponentIconUnsel(obj):
     return ComponentIcon(obj, 0)
 
 #
+# Variable icons handlers for Model bbox (poly:p) objects
+#
+
+def BBoxIcon(bbox, iconset):
+    if not ico_dict.has_key('ico_objects'):
+        ico_dict['ico_objects'] = LoadIconSet("images\\objects", 16)
+    icons = ico_dict['ico_objects'][iconset]
+
+    if bbox['show'][0] == 1.0:
+        return icons[15]
+    else:
+        return icons[53]
+
+def BBoxIconSel(bbox):
+    return BBoxIcon(bbox, 1)
+
+def BBoxIconUnsel(bbox):
+    return BBoxIcon(bbox, 0)
+
+#
 # Variable icons handlers for Model bone objects
 #
 
 def BoneIcon(bone, iconset):
-    #
-    # Sets the default icons for each entity type, by figuring out their type from their name.
-    #
     if not ico_dict.has_key('ico_objects'):
         ico_dict['ico_objects'] = LoadIconSet("images\\objects", 16)
     icons = ico_dict['ico_objects'][iconset]
@@ -512,13 +535,10 @@ def BoneIconUnsel(bone):
     return BoneIcon(bone, 0)
 
 #
-# Variable icons handlers for Model bone objects
+# Variable icons handlers for Model tag objects
 #
 
 def TagIcon(tag, iconset):
-    #
-    # Sets the default icons for each entity type, by figuring out their type from their name.
-    #
     if not ico_dict.has_key('ico_objects'):
         ico_dict['ico_objects'] = LoadIconSet("images\\objects", 16)
     icons = ico_dict['ico_objects'][iconset]
@@ -903,6 +923,9 @@ def sortdictionary(dictionary):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.54  2010/12/06 05:43:06  cdunde
+#Updates for Model Editor bounding box system.
+#
 #Revision 1.53  2010/06/06 04:04:24  cdunde
 #Fix to draw Eye handles in model editor floating 3D views when first opened.
 #

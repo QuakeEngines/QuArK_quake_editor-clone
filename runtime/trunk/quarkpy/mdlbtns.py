@@ -431,6 +431,7 @@ def edit_newbboxgroup(editor, m=None):
 
     # Build a new group object.
     newgroup = quarkx.newobj("Bounding Boxes:bbg")
+    newgroup['show'] = (1.0,)
 
     # The undo to perform this functions action.
     undo = quarkx.action()
@@ -680,6 +681,9 @@ def groupcolor(m):
 #
 #
 #$Log$
+#Revision 1.38  2010/12/06 05:43:06  cdunde
+#Updates for Model Editor bounding box system.
+#
 #Revision 1.37  2010/06/15 20:38:36  cdunde
 #Added .ftx as supported texture file type for game FAKK2.
 #

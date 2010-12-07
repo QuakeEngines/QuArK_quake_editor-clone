@@ -351,20 +351,20 @@ class BaseEditor:
                     # Calls to draw bboxes, if any, for a view if it is in "wire" mode.
                     if MdlOption("DrawBBoxes") and view.viewmode == "wire":
                         for item in self.Root.dictitems['Misc:mg'].subitems:
-                            if item.type == ":bbg" and len(item.subitems) != 0 and item.subitems[0].type == ":p":
+                            if item.type == ":bbg" and len(item.subitems) != 0 and item.subitems[0].type == ":p" and item.dictspec['show'][0] == 1.0:
                                 group = item
                                 if group in ex.sellist:
                                     for subitem in group.subitems:
-                                        if subitem.type == ":p":
+                                        if subitem.type == ":p" and subitem.dictspec['show'][0] == 1.0:
                                             view.drawmap(subitem, DM_OTHERCOLOR, BLUE) # Causes only Poly lines (see through) to be drawn OVER textured and solid view images.
                                 else:
                                     for subitem in group.subitems:
-                                        if subitem.type == ":p":
+                                        if subitem.type == ":p" and subitem.dictspec['show'][0] == 1.0:
                                             if not subitem in ex.sellist:
                                                 view.drawmap(subitem, DM_OTHERCOLOR, RED) # Causes only Poly lines (see through) to be drawn OVER textured and solid view images.
                                             else:
                                                 view.drawmap(subitem, DM_OTHERCOLOR, BLUE) # Causes only Poly lines (see through) to be drawn OVER textured and solid view images.
-                            elif item.type == ":p":
+                            elif item.type == ":p" and item.dictspec['show'][0] == 1.0:
                                 if not item in ex.sellist and not self.Root.dictitems['Misc:mg'] in ex.sellist:
                                     view.drawmap(item, DM_OTHERCOLOR, RED) # Causes only Poly lines (see through) to be drawn OVER textured and solid view images.
                                 else:
@@ -419,11 +419,11 @@ class BaseEditor:
                 # Calls to draw bboxes, if any, for a view if it is in "tex" or "solid" mode.
                 if MdlOption("DrawBBoxes"):
                     for item in self.Root.dictitems['Misc:mg'].subitems:
-                        if item.type == ":bbg" and len(item.subitems) != 0 and item.subitems[0].type == ":p":
+                        if item.type == ":bbg" and len(item.subitems) != 0 and item.subitems[0].type == ":p" and item.dictspec['show'][0] == 1.0:
                             if not item in ex.sellist:
                                 group = item
                                 for subitem in group.subitems:
-                                    if subitem.type == ":p":
+                                    if subitem.type == ":p" and subitem.dictspec['show'][0] == 1.0:
                                         if not subitem in ex.sellist:
                                             view.drawmap(subitem, DM_OTHERCOLOR, RED) # Causes only Poly lines (see through) to be drawn OVER textured and solid view images.
                                         else:
@@ -431,9 +431,9 @@ class BaseEditor:
                             else:
                                 group = item
                                 for subitem in group.subitems:
-                                    if subitem.type == ":p":
+                                    if subitem.type == ":p" and subitem.dictspec['show'][0] == 1.0:
                                         view.drawmap(subitem, DM_OTHERCOLOR, WHITE) # Causes only Poly lines (see through) to be drawn OVER textured and solid view images.
-                        elif item.type == ":p":
+                        elif item.type == ":p" and item.dictspec['show'][0] == 1.0:
                             if not item in ex.sellist and not self.Root.dictitems['Misc:mg'] in ex.sellist:
                                 view.drawmap(item, DM_OTHERCOLOR, RED) # Causes only Poly lines (see through) to be drawn OVER textured and solid view images.
                             else:
@@ -1403,7 +1403,11 @@ class BaseEditor:
                     choice = mdlhandles.ClickOnView(self, view, x, y)
                     if choice != [] and flagsmouse == 264:
                         if self.layout.explorer.uniquesel == None:
-                            self.layout.explorer.uniquesel = choice[0][1]
+                            for obj in choice:
+                                if obj[1].type == ":p" and obj[1].dictspec['show'][0] != 1.0:
+                                    continue
+                                self.layout.explorer.uniquesel = obj[1]
+                                break
                         else:
                             if len(choice) == 1 and self.layout.explorer.uniquesel == choice[0][1]:
                                 return
@@ -1411,11 +1415,28 @@ class BaseEditor:
                                 if item == len(choice)-1:
                                     if choice[0][1] == self.layout.explorer.uniquesel:
                                         return
-                                    self.layout.explorer.uniquesel = choice[0][1]
-                                    break
+                                    if choice[0][1].type == ":p" and choice[0][1].dictspec['show'][0] != 1.0:
+                                        skip = choice[0][1]
+                                        for obj in choice:
+                                            if obj[1] == skip or obj[1].type == ":p" and obj[1].dictspec['show'][0] != 1.0:
+                                                continue
+                                            if obj[1] == self.layout.explorer.uniquesel:
+                                                return
+                                            self.layout.explorer.uniquesel = obj[1]
+                                            return
+                                    else:
+                                        self.layout.explorer.uniquesel = choice[0][1]
                                 if choice[item][1] == self.layout.explorer.uniquesel:
-                                    if choice[item+1][1] == self.layout.explorer.uniquesel:
-                                        continue
+                                    if choice[item+1][1].type == ":p" and choice[item+1][1].dictspec['show'][0] != 1.0:
+                                        item = item + 1
+                                        while 1:
+                                            if item == len(choice):
+                                                break
+                                            if choice[item][1].type == ":p" and choice[item][1].dictspec['show'][0] != 1.0:
+                                                item = item + 1
+                                            else:
+                                                self.layout.explorer.uniquesel = choice[item][1]
+                                                return
                                     self.layout.explorer.uniquesel = choice[item+1][1]
                                     break
                     if choice == [] and flagsmouse == 264:
@@ -1771,6 +1792,9 @@ class NeedViewError(Exception):
 #
 #
 #$Log$
+#Revision 1.147  2010/12/06 05:43:06  cdunde
+#Updates for Model Editor bounding box system.
+#
 #Revision 1.146  2010/11/06 17:04:24  danielpharos
 #Raising a string is deprecated; made it a proper exception.
 #

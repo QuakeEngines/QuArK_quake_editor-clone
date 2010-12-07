@@ -2167,6 +2167,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
         shortname = bname.split(":")[0]
         p = quarkx.newobj(shortname + ":p");
         p["assigned2"] = bname
+        p['show'] = (1.0,)
         face = quarkx.newobj("north:f") # BACK FACE
         vtx0 = (bpos + (brot * quarkx.vect(m[0],M[1],M[2]))).tuple
         vtx0X, vtx0Y, vtx0Z = vtx0[0], vtx0[1], vtx0[2]
@@ -2240,6 +2241,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
     bbg_name = folder + "_" + file
     if editor.form is not None:
         bboxgroup = quarkx.newobj("BBoxes "+bbg_name+":bbg")
+        bboxgroup['show'] = (1.0,)
         for bone in range(len(QuArK_bones)):
             bonename = QuArK_bones[bone].name
             bboxname = bonename.replace(":bone", ":p")
@@ -2255,6 +2257,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
             undo.put(editor_dictitems['Misc:mg'], bboxgroup)
     else:
         bboxgroup = quarkx.newobj("BBoxes "+bbg_name+":bbg")
+        bboxgroup['show'] = (1.0,)
         for bone in range(len(QuArK_bones)):
             bonename = QuArK_bones[bone].name
             bboxname = bonename.replace(":bone", ":p")
@@ -2352,6 +2355,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".mdl Half-Life Importer", ".mdl file", "*.
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.16  2010/12/06 18:29:47  cdunde
+# Found a better way for the last bounding box change.
+#
 # Revision 1.15  2010/12/06 09:44:00  cdunde
 # Needed to add model name to stuff on importing to keep isolated
 # and fixed incorrect usage of ModelComponentList bonelist.
