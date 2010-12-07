@@ -873,6 +873,7 @@ class FaceHandle(qhandles.GenericHandle):
                     oldpoly = self.face.faceof[0]
                     # Makes a brand new work poly, gives it the oldpoly name, to get all things correct.
                     poly = quarkx.newobj(oldpoly.name)
+                    poly['show'] = (1.0,)
                     # Gets the oldpoly faces in their proper order.
                     polykeys = []
                     for p in oldpoly.subitems:
@@ -6374,6 +6375,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.220  2010/12/07 11:17:15  cdunde
+#More updates for Model Editor bounding box system.
+#
 #Revision 1.219  2010/12/06 05:43:06  cdunde
 #Updates for Model Editor bounding box system.
 #
