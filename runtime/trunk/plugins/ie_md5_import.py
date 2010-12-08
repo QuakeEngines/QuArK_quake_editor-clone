@@ -684,243 +684,246 @@ def load_md5(md5_filename, basepath, actionname):
             path = mesh.shader.split("\\")
             path = path[len(path)-1] # This is the full shader we are looking for, ex: "models/monsters/pinky/pinky_metal"
             shaderspath = basepath + "materials"
-            shaderfiles = os.listdir(shaderspath)
-            for shaderfile in shaderfiles:
-                noimage = ""
-                foundshader = foundtexture = foundimage = imagefile = None
-                mesh_shader = shader_file = shader_name = shader_keyword = qer_editorimage = diffusemap = map = bumpmap = addnormals = heightmap = specularmap = None
-                #read the file in
-                try: # To by pass sub-folders, should make this to check those also.
-                    file=open(shaderspath+"/"+shaderfile,"r")
-                except:
-                    continue
-                lines=file.readlines()
-                file.close()
-                left_cur_braket = 0
-                for line in range(len(lines)):
-                    if foundshader is None and lines[line].startswith(mesh.shader+"\n"):
-                        shaderline = lines[line].replace(chr(9), "    ")
-                        shaderline = shaderline.rstrip()
-                        mesh_shader = "\r\n" + shaderline + "\r\n"
-                        shader_file = shaderspath + "/" + shaderfile
-                        shader_name = mesh.shader
-                        foundshader = mesh.shader
-                        left_cur_braket = 0
+            try:
+                shaderfiles = os.listdir(shaderspath)
+                for shaderfile in shaderfiles:
+                    noimage = ""
+                    foundshader = foundtexture = foundimage = imagefile = None
+                    mesh_shader = shader_file = shader_name = shader_keyword = qer_editorimage = diffusemap = map = bumpmap = addnormals = heightmap = specularmap = None
+                    #read the file in
+                    try: # To by pass sub-folders, should make this to check those also.
+                        file=open(shaderspath+"/"+shaderfile,"r")
+                    except:
                         continue
-                    if foundshader is not None and lines[line].find("{") != -1:
-                        left_cur_braket = left_cur_braket + 1
-                    if foundshader is not None and lines[line].find("}") != -1:
-                        left_cur_braket = left_cur_braket - 1
-                    if foundshader is not None:
-                        if lines[line].find("qer_editorimage") != -1 or lines[line].find("diffusemap") != -1:
-                            words = lines[line].split()
-                            for word in words:
-                                if word.endswith(".tga"):
-                                    foundtexture = word
-                                    if lines[line].find("qer_editorimage") != -1:
-                                        shader_keyword = "qer_editorimage"
+                    lines=file.readlines()
+                    file.close()
+                    left_cur_braket = 0
+                    for line in range(len(lines)):
+                        if foundshader is None and lines[line].startswith(mesh.shader+"\n"):
+                            shaderline = lines[line].replace(chr(9), "    ")
+                            shaderline = shaderline.rstrip()
+                            mesh_shader = "\r\n" + shaderline + "\r\n"
+                            shader_file = shaderspath + "/" + shaderfile
+                            shader_name = mesh.shader
+                            foundshader = mesh.shader
+                            left_cur_braket = 0
+                            continue
+                        if foundshader is not None and lines[line].find("{") != -1:
+                            left_cur_braket = left_cur_braket + 1
+                        if foundshader is not None and lines[line].find("}") != -1:
+                            left_cur_braket = left_cur_braket - 1
+                        if foundshader is not None:
+                            if lines[line].find("qer_editorimage") != -1 or lines[line].find("diffusemap") != -1:
+                                words = lines[line].split()
+                                for word in words:
+                                    if word.endswith(".tga"):
+                                        foundtexture = word
+                                        if lines[line].find("qer_editorimage") != -1:
+                                            shader_keyword = "qer_editorimage"
+                                        else:
+                                            shader_keyword = "diffusemap"
+                                        skinname = foundtexture
+                                        skin = quarkx.newobj(skinname)
+                                        break
+                                    elif word.find("/") != -1 and (word.startswith("models") or word.startswith("textures")):
+                                        foundtexture = word + ".tga"
+                                        if lines[line].find("qer_editorimage") != -1:
+                                            shader_keyword = "qer_editorimage"
+                                        else:
+                                            shader_keyword = "diffusemap"
+                                        skinname = foundtexture
+                                        skin = quarkx.newobj(skinname)
+                                        break
+                                if foundtexture is not None:
+                                    if os.path.isfile(basepath + foundtexture):
+                                        foundimage = basepath + foundtexture
+                                        image = quarkx.openfileobj(foundimage)
+                                        skin['Image1'] = image.dictspec['Image1']
+                                        skin['Size'] = image.dictspec['Size']
+                                        skin['shader_keyword'] = shader_keyword
+                                        skingroup.appenditem(skin)
+                                        if skinsize == (256, 256):
+                                            skinsize = skin['Size']
+                                        foundtexture = None
+                                    else: # Keep looking in the shader files, the shader may be in another one.
+                                        imagefile = basepath + foundtexture
+                                        noimage = noimage + "\r\nFound needed shader for Import Component " + str(CompNbr) + ":\r\n    " + mesh.shader + "\r\n" + "in\r\n    " + shaderspath+"/"+shaderfile + "\r\n" + "and the 'diffusemap' image to display.\r\n    " + foundtexture + "\r\n" + "But that image file does not exist.\r\n"
+                            if lines[line].find("bumpmap") != -1 and (not lines[line].find("addnormals") != -1 and not lines[line].find("heightmap") != -1):
+                                words = lines[line].replace("("," ")
+                                words = words.replace(")"," ")
+                                words = words.replace(","," ")
+                                words = words.split()
+                                for word in words:
+                                    if word.endswith(".tga"):
+                                        bumpmap = word
+                                    elif word.find("/") != -1 and (word.startswith("models") or word.startswith("textures")):
+                                        bumpmap = word + ".tga"
+                            if lines[line].find("addnormals") != -1 or lines[line].find("heightmap") != -1:
+                                words = lines[line].replace("("," ")
+                                words = words.replace(")"," ")
+                                words = words.replace(","," ")
+                                words = words.split()
+                                for word in range(len(words)):
+                                    if words[word].find("addnormals") != -1 and words[word+1].find("/") != -1 and (words[word+1].startswith("models") or words[word+1].startswith("textures")):
+                                        addnormals = words[word+1]
+                                        if not addnormals.endswith(".tga"):
+                                            addnormals = addnormals + ".tga"
+                                    if words[word].find("heightmap") != -1 and words[word+1].find("/") != -1 and (words[word+1].startswith("models") or words[word+1].startswith("textures")):
+                                        heightmap = words[word+1]
+                                        if not heightmap.endswith(".tga"):
+                                            heightmap = heightmap + ".tga"
+                            elif lines[line].find("specularmap") != -1:
+                                words = lines[line].split()
+                                for word in words:
+                                    if word.endswith(".tga"):
+                                        specularmap = word
+                                    elif word.find("/") != -1 and (word.startswith("models") or word.startswith("textures")):
+                                        specularmap = word + ".tga"
+                            # Dec character code for space = chr(32), for tab = chr(9)
+                            elif lines[line].find(chr(32)+"map") != -1 or lines[line].find(chr(9)+"map") != -1:
+                                words = lines[line].split()
+                                for word in words:
+                                    if word.endswith(".tga") and (word.startswith("models") or word.startswith("textures")) and ((not word.endswith("_dis.tga") and not word.endswith("_dis")) and (not word.endswith("dis2.tga") and not word.endswith("dis2"))):
+                                        map = word
+                                    elif word.find("/") != -1 and (word.startswith("models") or word.startswith("textures")) and ((not word.endswith("_dis.tga") and not word.endswith("_dis")) and (not word.endswith("dis2.tga") and not word.endswith("dis2"))):
+                                        map = word + ".tga"
+                                if map is not None and not map in skingroup.dictitems.keys():
+                                    imagefile = basepath + map
+                                    if os.path.isfile(basepath + map):
+                                        skinname = map
+                                        foundimage = basepath + skinname
+                                        shader_keyword = "map"
+                                        # Make the skin and add it.
+                                        skin = quarkx.newobj(skinname)
+                                        image = quarkx.openfileobj(foundimage)
+                                        skin['Image1'] = image.dictspec['Image1']
+                                        skin['Size'] = image.dictspec['Size']
+                                        skin['shader_keyword'] = shader_keyword
+                                        skingroup.appenditem(skin)
+                                        if skinsize == (256, 256):
+                                            skinsize = skin['Size']
                                     else:
-                                        shader_keyword = "diffusemap"
-                                    skinname = foundtexture
-                                    skin = quarkx.newobj(skinname)
-                                    break
-                                elif word.find("/") != -1 and (word.startswith("models") or word.startswith("textures")):
-                                    foundtexture = word + ".tga"
-                                    if lines[line].find("qer_editorimage") != -1:
-                                        shader_keyword = "qer_editorimage"
-                                    else:
-                                        shader_keyword = "diffusemap"
-                                    skinname = foundtexture
-                                    skin = quarkx.newobj(skinname)
-                                    break
-                            if foundtexture is not None:
-                                if os.path.isfile(basepath + foundtexture):
-                                    foundimage = basepath + foundtexture
-                                    image = quarkx.openfileobj(foundimage)
-                                    skin['Image1'] = image.dictspec['Image1']
-                                    skin['Size'] = image.dictspec['Size']
-                                    skin['shader_keyword'] = shader_keyword
-                                    skingroup.appenditem(skin)
-                                    if skinsize == (256, 256):
-                                        skinsize = skin['Size']
-                                    foundtexture = None
-                                else: # Keep looking in the shader files, the shader may be in another one.
-                                    imagefile = basepath + foundtexture
-                                    noimage = noimage + "\r\nFound needed shader for Import Component " + str(CompNbr) + ":\r\n    " + mesh.shader + "\r\n" + "in\r\n    " + shaderspath+"/"+shaderfile + "\r\n" + "and the 'diffusemap' image to display.\r\n    " + foundtexture + "\r\n" + "But that image file does not exist.\r\n"
-                        if lines[line].find("bumpmap") != -1 and (not lines[line].find("addnormals") != -1 and not lines[line].find("heightmap") != -1):
-                            words = lines[line].replace("("," ")
-                            words = words.replace(")"," ")
-                            words = words.replace(","," ")
-                            words = words.split()
-                            for word in words:
-                                if word.endswith(".tga"):
-                                    bumpmap = word
-                                elif word.find("/") != -1 and (word.startswith("models") or word.startswith("textures")):
-                                    bumpmap = word + ".tga"
-                        if lines[line].find("addnormals") != -1 or lines[line].find("heightmap") != -1:
-                            words = lines[line].replace("("," ")
-                            words = words.replace(")"," ")
-                            words = words.replace(","," ")
-                            words = words.split()
-                            for word in range(len(words)):
-                                if words[word].find("addnormals") != -1 and words[word+1].find("/") != -1 and (words[word+1].startswith("models") or words[word+1].startswith("textures")):
-                                    addnormals = words[word+1]
-                                    if not addnormals.endswith(".tga"):
-                                        addnormals = addnormals + ".tga"
-                                if words[word].find("heightmap") != -1 and words[word+1].find("/") != -1 and (words[word+1].startswith("models") or words[word+1].startswith("textures")):
-                                    heightmap = words[word+1]
-                                    if not heightmap.endswith(".tga"):
-                                        heightmap = heightmap + ".tga"
-                        elif lines[line].find("specularmap") != -1:
-                            words = lines[line].split()
-                            for word in words:
-                                if word.endswith(".tga"):
-                                    specularmap = word
-                                elif word.find("/") != -1 and (word.startswith("models") or word.startswith("textures")):
-                                    specularmap = word + ".tga"
-                        # Dec character code for space = chr(32), for tab = chr(9)
-                        elif lines[line].find(chr(32)+"map") != -1 or lines[line].find(chr(9)+"map") != -1:
-                            words = lines[line].split()
-                            for word in words:
-                                if word.endswith(".tga") and (word.startswith("models") or word.startswith("textures")) and ((not word.endswith("_dis.tga") and not word.endswith("_dis")) and (not word.endswith("dis2.tga") and not word.endswith("dis2"))):
-                                    map = word
-                                elif word.find("/") != -1 and (word.startswith("models") or word.startswith("textures")) and ((not word.endswith("_dis.tga") and not word.endswith("_dis")) and (not word.endswith("dis2.tga") and not word.endswith("dis2"))):
-                                    map = word + ".tga"
-                            if map is not None and not map in skingroup.dictitems.keys():
-                                imagefile = basepath + map
-                                if os.path.isfile(basepath + map):
-                                    skinname = map
-                                    foundimage = basepath + skinname
-                                    shader_keyword = "map"
-                                    # Make the skin and add it.
-                                    skin = quarkx.newobj(skinname)
-                                    image = quarkx.openfileobj(foundimage)
-                                    skin['Image1'] = image.dictspec['Image1']
-                                    skin['Size'] = image.dictspec['Size']
-                                    skin['shader_keyword'] = shader_keyword
-                                    skingroup.appenditem(skin)
-                                    if skinsize == (256, 256):
-                                        skinsize = skin['Size']
-                                else:
-                                    noimage = noimage + "\r\nFound needed shader for Import Component " + str(CompNbr) + ":\r\n    " + mesh.shader + "\r\n" + "in\r\n    " + shaderspath+"/"+shaderfile + "\r\n" + "but the texture image file it calls to display\r\n    " + imagefile + "\r\nis not there or has a different name.\r\nMake a copy of the file and rename it or\r\ncheck the shader and make a correction to add it.\r\n"
-                        else:
-                            if lines[line].find("/") != -1:
-                                if lines[line-1].find("qer_editorimage") != -1 or lines[line-1].find("diffusemap") != -1 or lines[line-1].find("bumpmap") != -1 or lines[line-1].find("addnormals") != -1 or lines[line-1].find("heightmap") != -1 or lines[line-1].find("specularmap") != -1 or lines[line].find(chr(32)+"map") != -1 or lines[line].find(chr(9)+"map") != -1:
-                                    words = lines[line].replace("("," ")
-                                    words = words.replace(")"," ")
-                                    words = words.replace(","," ")
-                                    words = words.split()
-                                    image = None
-                                    for word in words:
-                                        if word.endswith(".tga") and (word.startswith("models") or word.startswith("textures")) and ((not word.endswith("_dis.tga") and not word.endswith("_dis")) and (not word.endswith("dis2.tga") and not word.endswith("dis2"))):
-                                            image = word
-                                        elif word.find("/") != -1 and (word.startswith("models") or word.startswith("textures")) and ((not word.endswith("_dis.tga") and not word.endswith("_dis")) and (not word.endswith("dis2.tga") and not word.endswith("dis2"))):
-                                            image = word + ".tga"
-                                    if (image is not None) and (not image in skingroup.dictitems.keys()):
-                                        words = lines[line-1].replace("("," ")
+                                        noimage = noimage + "\r\nFound needed shader for Import Component " + str(CompNbr) + ":\r\n    " + mesh.shader + "\r\n" + "in\r\n    " + shaderspath+"/"+shaderfile + "\r\n" + "but the texture image file it calls to display\r\n    " + imagefile + "\r\nis not there or has a different name.\r\nMake a copy of the file and rename it or\r\ncheck the shader and make a correction to add it.\r\n"
+                            else:
+                                if lines[line].find("/") != -1:
+                                    if lines[line-1].find("qer_editorimage") != -1 or lines[line-1].find("diffusemap") != -1 or lines[line-1].find("bumpmap") != -1 or lines[line-1].find("addnormals") != -1 or lines[line-1].find("heightmap") != -1 or lines[line-1].find("specularmap") != -1 or lines[line].find(chr(32)+"map") != -1 or lines[line].find(chr(9)+"map") != -1:
+                                        words = lines[line].replace("("," ")
                                         words = words.replace(")"," ")
                                         words = words.replace(","," ")
                                         words = words.split()
-                                        keys = [qer_editorimage, diffusemap, bumpmap, addnormals, heightmap, specularmap, map]
-                                        words.reverse() # Work our way backwards to get the last key name first.
-                                        for word in range(len(words)):
-                                            if words[word] in keys:
-                                                imagefile = basepath + image
-                                                if os.path.isfile(basepath + image):
-                                                    skinname = image
-                                                    foundimage = basepath + skinname
-                                                    shader_keyword = words[word]
-                                                    # Make the skin and add it.
-                                                    skin = quarkx.newobj(skinname)
-                                                    image = quarkx.openfileobj(foundimage)
-                                                    skin['Image1'] = image.dictspec['Image1']
-                                                    skin['Size'] = image.dictspec['Size']
-                                                    skin['shader_keyword'] = shader_keyword
-                                                    skingroup.appenditem(skin)
-                                                    if skinsize == (256, 256):
-                                                        skinsize = skin['Size']
-                                                else:
-                                                    noimage = noimage + "\r\nFound needed shader for Import Component " + str(CompNbr) + ":\r\n    " + mesh.shader + "\r\n" + "in\r\n    " + shaderspath+"/"+shaderfile + "\r\n" + "but the texture image file it calls to display\r\n    " + imagefile + "\r\nis not there or has a different name.\r\nMake a copy of the file and rename it or\r\ncheck the shader and make a correction to add it.\r\n"
-                        shaderline = lines[line].replace(chr(9), "    ")
-                        shaderline = shaderline.rstrip()
-                        if mesh_shader is not None:
-                            mesh_shader = mesh_shader + shaderline + "\r\n"
-                        if lines[line].find("}") != -1 and left_cur_braket == 0: # Done reading shader so break out of reading this file.
-                            break
-                if mesh_shader is not None:
-                    if bumpmap is not None:
-                        imagefile = basepath + bumpmap
-                        if os.path.isfile(basepath + bumpmap):
-                            skinname = bumpmap
-                            foundimage = basepath + skinname
-                            shader_keyword = "bumpmap"
-                            # Make the skin and add it.
-                            skin = quarkx.newobj(skinname)
-                            image = quarkx.openfileobj(foundimage)
-                            skin['Image1'] = image.dictspec['Image1']
-                            skin['Size'] = image.dictspec['Size']
-                            skin['shader_keyword'] = shader_keyword
-                            skingroup.appenditem(skin)
-                            if skinsize == (256, 256):
-                                skinsize = skin['Size']
-                        else:
-                            noimage = noimage + "\r\nFound needed shader for Import Component " + str(CompNbr) + ":\r\n    " + mesh.shader + "\r\n" + "in\r\n    " + shaderspath+"/"+shaderfile + "\r\n" + "but the texture image file it calls to display\r\n    " + imagefile + "\r\nis not there or has a different name.\r\nMake a copy of the file and rename it or\r\ncheck the shader and make a correction to add it.\r\n"
-                    if addnormals is not None:
-                        imagefile = basepath + addnormals
-                        if os.path.isfile(basepath + addnormals):
-                            skinname = addnormals
-                            foundimage = basepath + skinname
-                            shader_keyword = "addnormals"
-                            # Make the skin and add it.
-                            skin = quarkx.newobj(skinname)
-                            image = quarkx.openfileobj(foundimage)
-                            skin['Image1'] = image.dictspec['Image1']
-                            skin['Size'] = image.dictspec['Size']
-                            skin['shader_keyword'] = shader_keyword
-                            skingroup.appenditem(skin)
-                            if skinsize == (256, 256):
-                                skinsize = skin['Size']
-                        else:
-                            noimage = noimage + "\r\nFound needed shader for Import Component " + str(CompNbr) + ":\r\n    " + mesh.shader + "\r\n" + "in\r\n    " + shaderspath+"/"+shaderfile + "\r\n" + "but the texture image file it calls to display\r\n    " + imagefile + "\r\nis not there or has a different name.\r\nMake a copy of the file and rename it or\r\ncheck the shader and make a correction to add it.\r\n"
-                    if heightmap is not None:
-                        imagefile = basepath + heightmap
-                        if os.path.isfile(basepath + heightmap):
-                            skinname = heightmap
-                            foundimage = basepath + skinname
-                            shader_keyword = "heightmap"
-                            # Make the skin and add it.
-                            skin = quarkx.newobj(skinname)
-                            image = quarkx.openfileobj(foundimage)
-                            skin['Image1'] = image.dictspec['Image1']
-                            skin['Size'] = image.dictspec['Size']
-                            skin['shader_keyword'] = shader_keyword
-                            skingroup.appenditem(skin)
-                            if skinsize == (256, 256):
-                                skinsize = skin['Size']
-                        else:
-                            noimage = noimage + "\r\nFound needed shader for Import Component " + str(CompNbr) + ":\r\n    " + mesh.shader + "\r\n" + "in\r\n    " + shaderspath+"/"+shaderfile + "\r\n" + "but the texture image file it calls to display\r\n    " + imagefile + "\r\nis not there or has a different name.\r\nMake a copy of the file and rename it or\r\ncheck the shader and make a correction to add it.\r\n"
-                    if specularmap is not None:
-                        imagefile = basepath + specularmap
-                        if os.path.isfile(basepath + specularmap):
-                            skinname = specularmap
-                            foundimage = basepath + skinname
-                            shader_keyword = "specularmap"
-                            # Make the skin and add it.
-                            skin = quarkx.newobj(skinname)
-                            image = quarkx.openfileobj(foundimage)
-                            skin['Image1'] = image.dictspec['Image1']
-                            skin['Size'] = image.dictspec['Size']
-                            skin['shader_keyword'] = shader_keyword
-                            skingroup.appenditem(skin)
-                            if skinsize == (256, 256):
-                                skinsize = skin['Size']
-                        else:
-                            noimage = noimage + "\r\nFound needed shader for Import Component " + str(CompNbr) + ":\r\n    " + mesh.shader + "\r\n" + "in\r\n    " + shaderspath+"/"+shaderfile + "\r\n" + "but the texture image file it calls to display\r\n    " + imagefile + "\r\nis not there or has a different name.\r\nMake a copy of the file and rename it or\r\ncheck the shader and make a correction to add it.\r\n"
-                    if imagefile is None:
-                        imagefile = "NO IMAGE FILE FOUND AT ALL, CHECK THE SHADER."
-                    break
-                if foundshader is not None: # Found the shader so break out of the shader files loop.
-                    break
+                                        image = None
+                                        for word in words:
+                                            if word.endswith(".tga") and (word.startswith("models") or word.startswith("textures")) and ((not word.endswith("_dis.tga") and not word.endswith("_dis")) and (not word.endswith("dis2.tga") and not word.endswith("dis2"))):
+                                                image = word
+                                            elif word.find("/") != -1 and (word.startswith("models") or word.startswith("textures")) and ((not word.endswith("_dis.tga") and not word.endswith("_dis")) and (not word.endswith("dis2.tga") and not word.endswith("dis2"))):
+                                                image = word + ".tga"
+                                        if (image is not None) and (not image in skingroup.dictitems.keys()):
+                                            words = lines[line-1].replace("("," ")
+                                            words = words.replace(")"," ")
+                                            words = words.replace(","," ")
+                                            words = words.split()
+                                            keys = [qer_editorimage, diffusemap, bumpmap, addnormals, heightmap, specularmap, map]
+                                            words.reverse() # Work our way backwards to get the last key name first.
+                                            for word in range(len(words)):
+                                                if words[word] in keys:
+                                                    imagefile = basepath + image
+                                                    if os.path.isfile(basepath + image):
+                                                        skinname = image
+                                                        foundimage = basepath + skinname
+                                                        shader_keyword = words[word]
+                                                        # Make the skin and add it.
+                                                        skin = quarkx.newobj(skinname)
+                                                        image = quarkx.openfileobj(foundimage)
+                                                        skin['Image1'] = image.dictspec['Image1']
+                                                        skin['Size'] = image.dictspec['Size']
+                                                        skin['shader_keyword'] = shader_keyword
+                                                        skingroup.appenditem(skin)
+                                                        if skinsize == (256, 256):
+                                                            skinsize = skin['Size']
+                                                    else:
+                                                        noimage = noimage + "\r\nFound needed shader for Import Component " + str(CompNbr) + ":\r\n    " + mesh.shader + "\r\n" + "in\r\n    " + shaderspath+"/"+shaderfile + "\r\n" + "but the texture image file it calls to display\r\n    " + imagefile + "\r\nis not there or has a different name.\r\nMake a copy of the file and rename it or\r\ncheck the shader and make a correction to add it.\r\n"
+                            shaderline = lines[line].replace(chr(9), "    ")
+                            shaderline = shaderline.rstrip()
+                            if mesh_shader is not None:
+                                mesh_shader = mesh_shader + shaderline + "\r\n"
+                            if lines[line].find("}") != -1 and left_cur_braket == 0: # Done reading shader so break out of reading this file.
+                                break
+                    if mesh_shader is not None:
+                        if bumpmap is not None:
+                            imagefile = basepath + bumpmap
+                            if os.path.isfile(basepath + bumpmap):
+                                skinname = bumpmap
+                                foundimage = basepath + skinname
+                                shader_keyword = "bumpmap"
+                                # Make the skin and add it.
+                                skin = quarkx.newobj(skinname)
+                                image = quarkx.openfileobj(foundimage)
+                                skin['Image1'] = image.dictspec['Image1']
+                                skin['Size'] = image.dictspec['Size']
+                                skin['shader_keyword'] = shader_keyword
+                                skingroup.appenditem(skin)
+                                if skinsize == (256, 256):
+                                    skinsize = skin['Size']
+                            else:
+                                noimage = noimage + "\r\nFound needed shader for Import Component " + str(CompNbr) + ":\r\n    " + mesh.shader + "\r\n" + "in\r\n    " + shaderspath+"/"+shaderfile + "\r\n" + "but the texture image file it calls to display\r\n    " + imagefile + "\r\nis not there or has a different name.\r\nMake a copy of the file and rename it or\r\ncheck the shader and make a correction to add it.\r\n"
+                        if addnormals is not None:
+                            imagefile = basepath + addnormals
+                            if os.path.isfile(basepath + addnormals):
+                                skinname = addnormals
+                                foundimage = basepath + skinname
+                                shader_keyword = "addnormals"
+                                # Make the skin and add it.
+                                skin = quarkx.newobj(skinname)
+                                image = quarkx.openfileobj(foundimage)
+                                skin['Image1'] = image.dictspec['Image1']
+                                skin['Size'] = image.dictspec['Size']
+                                skin['shader_keyword'] = shader_keyword
+                                skingroup.appenditem(skin)
+                                if skinsize == (256, 256):
+                                    skinsize = skin['Size']
+                            else:
+                                noimage = noimage + "\r\nFound needed shader for Import Component " + str(CompNbr) + ":\r\n    " + mesh.shader + "\r\n" + "in\r\n    " + shaderspath+"/"+shaderfile + "\r\n" + "but the texture image file it calls to display\r\n    " + imagefile + "\r\nis not there or has a different name.\r\nMake a copy of the file and rename it or\r\ncheck the shader and make a correction to add it.\r\n"
+                        if heightmap is not None:
+                            imagefile = basepath + heightmap
+                            if os.path.isfile(basepath + heightmap):
+                                skinname = heightmap
+                                foundimage = basepath + skinname
+                                shader_keyword = "heightmap"
+                                # Make the skin and add it.
+                                skin = quarkx.newobj(skinname)
+                                image = quarkx.openfileobj(foundimage)
+                                skin['Image1'] = image.dictspec['Image1']
+                                skin['Size'] = image.dictspec['Size']
+                                skin['shader_keyword'] = shader_keyword
+                                skingroup.appenditem(skin)
+                                if skinsize == (256, 256):
+                                    skinsize = skin['Size']
+                            else:
+                                noimage = noimage + "\r\nFound needed shader for Import Component " + str(CompNbr) + ":\r\n    " + mesh.shader + "\r\n" + "in\r\n    " + shaderspath+"/"+shaderfile + "\r\n" + "but the texture image file it calls to display\r\n    " + imagefile + "\r\nis not there or has a different name.\r\nMake a copy of the file and rename it or\r\ncheck the shader and make a correction to add it.\r\n"
+                        if specularmap is not None:
+                            imagefile = basepath + specularmap
+                            if os.path.isfile(basepath + specularmap):
+                                skinname = specularmap
+                                foundimage = basepath + skinname
+                                shader_keyword = "specularmap"
+                                # Make the skin and add it.
+                                skin = quarkx.newobj(skinname)
+                                image = quarkx.openfileobj(foundimage)
+                                skin['Image1'] = image.dictspec['Image1']
+                                skin['Size'] = image.dictspec['Size']
+                                skin['shader_keyword'] = shader_keyword
+                                skingroup.appenditem(skin)
+                                if skinsize == (256, 256):
+                                    skinsize = skin['Size']
+                            else:
+                                noimage = noimage + "\r\nFound needed shader for Import Component " + str(CompNbr) + ":\r\n    " + mesh.shader + "\r\n" + "in\r\n    " + shaderspath+"/"+shaderfile + "\r\n" + "but the texture image file it calls to display\r\n    " + imagefile + "\r\nis not there or has a different name.\r\nMake a copy of the file and rename it or\r\ncheck the shader and make a correction to add it.\r\n"
+                        if imagefile is None:
+                            imagefile = "NO IMAGE FILE FOUND AT ALL, CHECK THE SHADER."
+                        break
+                    if foundshader is not None: # Found the shader so break out of the shader files loop.
+                        break
+            except:
+                noimage = noimage + "\r\nThe needed file folder\r\n    " + shaderspath + "\r\ncould not be located.\r\nCorrect and retry importing the model.\r\n"
 
             message = message + noimage
 
@@ -1789,6 +1792,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.41  2010/11/09 05:48:10  cdunde
+# To reverse previous changes, some to be reinstated after next release.
+#
 # Revision 1.40  2010/11/06 13:31:04  danielpharos
 # Moved a lot of math-code to ie_utils, and replaced magic constant 3 with variable SS_MODEL.
 #
