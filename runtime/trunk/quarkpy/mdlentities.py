@@ -2870,7 +2870,7 @@ class BBoxGroupType(EntityManager):
     "Model BBox Sub-group in the 'Misc:mg' folder for bounding poly boxes, type = :bbg"
 
     def menu(o, editor):
-        import qmenu
+        import qmenu, mdlmenus
         STBB = qmenu.item("&Show these bboxes", ShowTheseBBoxes, "|Show these bboxes:\n\nThis allows the selected bboxes to be displayed in the editor's views if the function 'Draw Bounding Boxes' is not active.|intro.modeleditor.editelements.html#tags")
         HTBB = qmenu.item("&Hide these bboxes", HideTheseBBoxes, "|Hide these bboxes:\n\nThis stops the selected bboxes from being displayed in the editor's views.|intro.modeleditor.editelements.html#tags")
 
@@ -2880,7 +2880,7 @@ class BBoxGroupType(EntityManager):
             STBB.state = qmenu.disabled
         else:
             HTBB.state = qmenu.disabled
-        return [STBB, HTBB]
+        return [STBB, HTBB, qmenu.sep] + CallManager("menubegin", o, editor) + mdlmenus.BaseMenu([o], editor)
 
 class SkinSubGroupType(EntityManager):
     "Model Skin Group Sub-group for skins (like an animation set of skins), type = :ssg"
@@ -3047,7 +3047,7 @@ class PolyhedronType(EntityManager):
     "A Bounding Box's (BBox) Polyhedron"
 
     def menu(o, editor):
-        import qmenu
+        import qmenu, mdlmenus
         STBB = qmenu.item("&Show this bbox", ShowTheseBBoxes, "|Show this bbox:\n\nThis allows the selected bbox to be displayed in the editor's views if the function 'Draw Bounding Boxes' is not active.|intro.modeleditor.editelements.html#tags")
         HTBB = qmenu.item("&Hide this bbox", HideTheseBBoxes, "|Hide this bbox:\n\nThis stops the selected bbox from being displayed in the editor's views.|intro.modeleditor.editelements.html#tags")
 
@@ -3057,7 +3057,7 @@ class PolyhedronType(EntityManager):
             STBB.state = qmenu.disabled
         else:
             HTBB.state = qmenu.disabled
-        return [STBB, HTBB]
+        return [STBB, HTBB, qmenu.sep] + CallManager("menubegin", o, editor) + mdlmenus.BaseMenu([o], editor)
 
     def handles(o, editor):
         h = PolyHandles(o, None)
@@ -3168,6 +3168,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.80  2010/12/07 06:06:52  cdunde
+#Updates for Model Editor bounding box system.
+#
 #Revision 1.79  2010/12/06 05:43:06  cdunde
 #Updates for Model Editor bounding box system.
 #

@@ -49,6 +49,8 @@ def droptarget(editor, newitem):
                 if c is None:
                     c=editor.Root.currentcomponent
                 return c.dictitems['Skins:sg'], None
+        elif newitem.type==(':bbg') or newitem.type==(':p'):
+            return editor.Root.dictitems['Misc:mg'], None
         elif newitem.type==(':tag'):
             return editor.Root.dictitems['Misc:mg'], None
         elif newitem.type==(':bone'):
@@ -248,6 +250,15 @@ def deleteitems(editor, root, list):
                         newbone['parent_name'] = "None"
                         undo.exchange(bone, None)
                         undo.put(group, newbone)
+        if s.type == ":p" or s.type == ":bbg":
+            if s.type == ":bbg":
+                for bbox in s.subitems:
+                    if editor.ModelComponentList['bboxlist'].has_key(bbox.name):
+                        del editor.ModelComponentList['bboxlist'][bbox.name]
+            else:
+                if editor.ModelComponentList['bboxlist'].has_key(s.name):
+                    del editor.ModelComponentList['bboxlist'][s.name]
+            
         if text is None:
             text = Strings[582] % s.shortname
         else:
@@ -681,6 +692,9 @@ def groupcolor(m):
 #
 #
 #$Log$
+#Revision 1.39  2010/12/07 06:06:52  cdunde
+#Updates for Model Editor bounding box system.
+#
 #Revision 1.38  2010/12/06 05:43:06  cdunde
 #Updates for Model Editor bounding box system.
 #
