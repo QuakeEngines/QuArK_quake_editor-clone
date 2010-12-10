@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.24  2010/11/24 19:32:54  danielpharos
+Removed a try-except, and replaced it with a proper if-statement.
+
 Revision 1.23  2009/07/15 10:38:06  danielpharos
 Updated website link.
 
@@ -434,7 +437,11 @@ begin
       Result:=GetPyObj(Component);
       Exit;
     end;
-    'i': if StrComp(attr, 'info')=0 then begin
+    'i': if StrComp(attr, 'index')=0 then begin
+      Result:=PyInt_FromLong(FParent.SubElements.IndexOf(self));
+      Exit;
+    end
+    else if StrComp(attr, 'info')=0 then begin
       if FInfo=Nil then
         Result:=Py_None
       else
