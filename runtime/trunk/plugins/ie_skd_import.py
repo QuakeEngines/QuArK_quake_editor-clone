@@ -46,7 +46,7 @@ file_version = 0
 ######################################################
 # SKD & SKC Model Constants
 ######################################################
-SKD_MAX_BONES = 256
+SKD_MAX_BONES = 128
 SKD_MAX_FRAMES = 2048
 SKD_MAX_SURFACES = 32
 SKD_MAX_TRIANGLES = 8192
@@ -57,6 +57,42 @@ SKC_MAX_CHANNEL_CHARS = 32
 # SKD data structures
 ######################################################
 # A list of binary_formats to use based on a bone's jointType.
+# Examples for type 0-4 from MOHAA models\animal\dog\german_shepherd.skd
+# Examples for type 5-6 from MOHAA models\human\allied_airborne\airborne.skd
+# typedef enum {   x = looks right        84 = number of SKD_Bone header in bytes.
+# 0  JT_24BYTES1     = (ofsChannels) 108 - 84 (ofsValues) = 24/4bytes =  6f values, 3 = pos x,y,z, 3 = quat qx,qy,qz ????
+#                      bone values: (13.266192436218262, -0.0060352231375873089, 6.4365340222138911e-005, 1.0, 1.0, 1.0)
+#                      bone channels: ('Bip01 Neck rot\x00',)
+#                      bone refs: None
+# 1  JT_POSROT_SKC   = (ofsChannels)  96 - 84 (ofsValues) = 12/2bytes =  6h values, 3 = pos x,y,z, 3 = quat qx,qy,qz
+#                      bone values: (0, 16256, 0, 16256, 0, 16256)
+#                      bone channels: ('Bip01 rot\x00Bip01 pos\x00',) these look BACKWARDS, you CAN NOT have 0's for rot values!!!
+#                      bone refs: None
+# 2? JT_40BYTES1     = (ofsChannels) 124 - 84 (ofsValues) = 40/4bytes = 10f values, unknown breakdown
+#                      bone values: (0.81796324253082275, 0.56404381990432739, -0.10230085998773575, -0.048220913857221603,
+#                                    8.0932804848998785e-006, -3.153935722366441e-006, -5.1458311080932617, 1.0, 1.0, 1.0)
+#                      bone channels: None
+#                      bone refs: None
+# 3  JT_24BYTES2     = (ofsChannels) 108 - 84 (ofsValues) = 24/4bytes =  6f values, + ofsRefs has bone's name, channel has None, see example below:
+#                      3 = pos x,y,z, 3 = quat qx,qy,qz
+#                      bone values: (27.260543823242187, -1.0524528079258744e-005, -1.1960052688664291e-005, 1.0, 1.0, 1.0)
+#                      bone channels: None
+#                      bone refs: ('Bip01 R Thigh\x00',)
+# 4  JT_24BYTES3   x = (ofsChannels) 108 - 84 (ofsValues) = 24/2bytes = 12h values, + has an ofsRefs of another bone's name, see example below:
+#                      1st bone's channel data = x,qx,y,qy,z,qz then ref bone's data = x,qx,y,qy,z,qz
+#                      bone values: (-32595, 16771, 30473, -18922, 13960, 13813, 0, 16256, 0, 16256, 0, 16256)
+#                      bone channels: ('Bip01 R Foot rot\x00Bip01 R Foot pos\x00',) these look BACKWARDS, you CAN NOT have 0's for rot values!!!
+#                      bone refs: ('Bip01 R Thigh\x00',)
+# 5? JT_40BYTES2     = (ofsChannels) 124 - 84 (ofsValues) = 40/4bytes = 10f values, unknown breakdown ????
+#                      bone values: (1.0, 180.0, 0.54000002145767212, 14.681717872619629, -1.238970810391038e-007, -1.0011821359512396e-005,
+#                                    1.0, 1.0, 1.0, 0.0)
+#                      bone channels: None
+#                      bone refs: ('Bip01 L UpperArm\x00',)
+# 6?  JT_28BYTES      = (ofsChannels) 112 - 84 (ofsValues) = 24/4bytes =  7f values, 3 = pos x,y,z, 4 = quat qx,qy,qz,qw ????
+#                      bone values: (0.5, 8.7047643661499023, -0.76852285861968994, -0.13475938141345978, 1.0, 1.0, 1.0)
+#                      bone channels: None
+#                      bone refs: ('helper Lshoulder\x00Bip01 L UpperArm\x00',)
+# } skdJointType_t;
 skdJointType = [
     "<6f",
     "<6h",
@@ -68,18 +104,20 @@ skdJointType = [
 ]
 
 class SKD_Bone:
-    #Header Structure      #item of data file, size & type,   description.
+#Header Structure  #item of data file, size & type,    description.
     if file_version == 5: # MOHAA
         name = ""              #item   0-31   32 char, the bone's name.
         parent = ""            #item   32-63  32 char, the bone's parent name.
-        jointType = 0          #item   64     1 signed short int, see class SKD_JointType.
-        ofsValues = 0          #item   65     1 signed short int.
-        ofsChannels = 0        #item   66     1 signed short int.
-        ofsRefs = 0            #item   67     1 signed short int.
+        jointType = 0          #item   64     1 signed short int, see skdJointType list description above.
+        ofsValues = 0          #item   65     1 signed short int, constant = number of SKD_Bone header in bytes.
+        ofsChannels = 0        #item   66     1 signed short int, ofsChannels - ofsValues = skdJointType in bytes.
+        ofsRefs = 0            #item   67     1 signed short int, unknown but ofsEnd - ofsRefs = 24bytes maybe 7h at 2 bytes per h.
         ofsEnd = 0             #item   68     1 signed short int.
         binary_format="<32c32c5i"  #little-endian (<), see #item descriptions above.
 
-        data = []              # A list to store a bone's data in.
+        values = []            # A list to store a bone's Channels data in.
+        channels = "None"      # String giving the bone name(s) and "pos", "rot" and "rotFK" of what the above Channel data values are.
+        refs = "None"          # String referencing another bone's name OR replaces "channels" above when it is "None".
         parent_index = -1      # For our own use while loading the files bones.
 
     def __init__(self):
@@ -93,7 +131,9 @@ class SKD_Bone:
             self.ofsEnd = 0
             self.binary_format="<32c32c5i"  #little-endian (<), see #item descriptions above.
 
-            self.data = []
+            self.values = []
+            self.channels = "None"
+            self.refs = "None"
             self.parent_index = -1
 
     def load(self, file):
@@ -116,10 +156,20 @@ class SKD_Bone:
             self.ofsChannels = data[66]
             self.ofsRefs = data[67]
             self.ofsEnd = data[68]
-
+            # After reading the bone header we read in the bone's pos (x,y,z 3 floats) and quat values (qx,qy,qz 3 floats).
             binary_format = skdJointType[self.jointType]
             temp_data = file.read(struct.calcsize(binary_format))
-            self.data = struct.unpack(binary_format, temp_data)
+            self.values = struct.unpack(binary_format, temp_data)
+            # Now we read the bone's Channels data if any.
+            if self.ofsChannels != self.ofsRefs:
+                binary_format = "<%ds" % (self.ofsRefs - self.ofsChannels)
+                temp_data = file.read(struct.calcsize(binary_format))
+                self.channels = struct.unpack(binary_format, temp_data)
+            # Now we read the bone's Refs data if any.
+            if self.ofsRefs != self.ofsEnd:
+                binary_format = "<%ds" % (self.ofsEnd - self.ofsRefs)
+                temp_data = file.read(struct.calcsize(binary_format))
+                self.refs = struct.unpack(binary_format, temp_data)
 
     def dump(self):
         if file_version == 5: # MOHAA
@@ -131,7 +181,9 @@ class SKD_Bone:
             tobj.logcon ("ofsChannels: " + str(self.ofsChannels))
             tobj.logcon ("ofsRefs: " + str(self.ofsRefs))
             tobj.logcon ("ofsEnd: " + str(self.ofsEnd))
-            tobj.logcon ("bone data: " + str(self.data))
+            tobj.logcon ("bone values: " + str(self.values))
+            tobj.logcon ("bone channels: " + str(self.channels))
+            tobj.logcon ("bone refs: " + str(self.refs))
             tobj.logcon ("")
 
     def dump_baseframe(self):
@@ -204,6 +256,7 @@ class SKD_Surface:
             tobj.logcon ("-----------------------------")
             tobj.logcon ("Vert UV's & Weights, numVerts: " + str(self.numVerts))
             tobj.logcon ("-----------------------------")
+
         skd_verts = []
         file.seek(this_offset + self.ofsVerts,0)
         # Fill this Component's dummy baseframe.
@@ -217,10 +270,12 @@ class SKD_Surface:
             skd_vert = SKD_Vertex()
             skd_vert.load(file)
             skd_verts.append(skd_vert)
+
             if logging == 1:
                 tobj.logcon ("vert " + str(i) + " U,V: " + str(skd_vert.uv))
                 tobj.logcon ("  numWeights " + str(skd_vert.numWeights))
                 tobj.logcon ("  =============")
+
             vtxweight = {}
             pos = quarkx.vect(0, 0, 0)
             for j in xrange(0, skd_vert.numWeights):
@@ -229,12 +284,14 @@ class SKD_Surface:
                 boneIndex = w.boneIndex
                 weight_value = w.weight_value
                 vtx_offset = w.vtx_offset
+
                 if logging == 1:
                     tobj.logcon ("  weight " + str(j))
                     tobj.logcon ("    boneIndex " + str(boneIndex))
                     tobj.logcon ("    weight_value " + str(weight_value))
                     tobj.logcon ("    vtx_offset " + str(vtx_offset))
                   #  tobj.logcon ("    bonevtxlist " + str(bonevtxlist[bones[boneIndex].name][i]))
+
                 pos += quarkx.vect(vtx_offset)
                 if not bonevtxlist.has_key(bones[boneIndex].name):
                     bonevtxlist[bones[boneIndex].name] = {}
@@ -242,9 +299,11 @@ class SKD_Surface:
                 vtxweight[bones[boneIndex].name] = {'weight_value': weight_value, 'color': quarkpy.mdlutils.weights_color(editor, weight_value), 'vtx_offset': vtx_offset}
             weightvtxlist[i] = vtxweight
             mesh = mesh + (m * (pos/skd_vert.numWeights)).tuple
+
             if logging == 1:
               #  tobj.logcon ("    vtxweight " + str(weightvtxlist[i]))
                 tobj.logcon ("    -------------")
+
         baseframe['Vertices'] = mesh
         # Fill each bone's vtx_list and vtx_pos list for this Component.
         for bone in bones:
@@ -270,18 +329,22 @@ class SKD_Surface:
             tobj.logcon ("-----------------------------------")
             tobj.logcon ("Triangle vert_indexes, numTriangles: " + str(self.numTriangles))
             tobj.logcon ("-----------------------------------")
+
         file.seek(this_offset + self.ofsTriangles,0)
         Tris = ''
         size = Component.dictspec['skinsize']
         for i in xrange(0, self.numTriangles):
             tri = SKD_Triangle()
             tri.load(file)
+
             if logging == 1:
                 tobj.logcon ("tri " + str(i) + " " + str(tri.indices))
+
             tri = tri.indices
             for j in xrange(3):
                 Tris = Tris + struct.pack("Hhh", tri[j], skd_verts[tri[j]].uv[0]*size[0], skd_verts[tri[j]].uv[1]*size[1])
         Component['Tris'] = Tris
+
         if logging == 1:
             tobj.logcon ("")
 
@@ -307,11 +370,13 @@ class SKD_Surface:
 
 
 class SKD_Vertex:
-    #Data Structure    #item of data file, size & type,   description.
+    #Data Structure    # item of data file, size & type,   description.
     normal = [0]*3     # item   0-2    3 floats, ignore this, we don't need it, but we need to include it in the exporter.
     uv = [0]*2         # item   3-4    2 floats, a vertex's U,V values.
     numWeights = 0     # item   5      int, number of weights the current vertex has, 1 weight = assigned amount to a single bone.
-    numMorphs = 0      # item   6      int, number of morphs the current vertex has, not sure how these work yet.
+                       #                    numWeights[i] = SKD_Weight()
+    numMorphs = 0      # item   6      int, number of morphs the current vertex has, these control mouth movement for speech.
+                       #                    numMorphs[i] = SKD_Morph()
 
     binary_format="<3f2f2i" #little-endian (<), see #item descriptions above.
 
@@ -332,10 +397,10 @@ class SKD_Vertex:
 
 
 class SKD_Weight:
-    #Data Structure    #item of data file, size & type,   description.
+    #Data Structure    # item of data file, size & type,   description.
     boneIndex = 0      # item   0    int, the bone index number in list order.
     weight_value = 0   # item   1    float, this is the QuArK ModelComponentList['weightvtxlist'][vertex]['weight_value']
-    vtx_offset = [0]*3 # item   2-4  3 floats, offset between the bone position and a vertex's position.
+    vtx_offset = (0)*3 # item   2-4  3 floats, offset between the bone position and a vertex's position.
 
     binary_format="<if3f" #little-endian (<), see #item descriptions above.
 
@@ -353,8 +418,43 @@ class SKD_Weight:
         self.vtx_offset = (data[2], data[3], data[4])
 
 
+class SKD_Morph:
+    #Data Structure    # item of data file, size & type,   description.
+    index = 0          # item   0    int.
+    pos = (0)*3        # item   1-3  3 floats, morph's position.
+
+    binary_format="<i3f" #little-endian (<), see #item descriptions above.
+
+    def __init__(self):
+        self.index = 0
+        self.pos = (0)*3
+
+    def load(self, file):
+        # file is the model file & full path, ex: C:\MOHAA\Main\models\furniture\chairs\roundedchair.skd
+        temp_data = file.read(struct.calcsize(self.binary_format))
+        data = struct.unpack(self.binary_format, temp_data)
+        self.index = data[0]
+        self.pos = (data[1], data[2], data[3])
+
+
+class SKD_HitBox:
+    #Data Structure    # item of data file, size & type,   description.
+    boneIndex = 0      # item   0    int.
+
+    binary_format="<i" #little-endian (<), see #item descriptions above.
+
+    def __init__(self):
+        self.boneIndex = 0
+
+    def load(self, file):
+        # file is the model file & full path, ex: C:\MOHAA\Main\models\furniture\chairs\roundedchair.skd
+        temp_data = file.read(struct.calcsize(self.binary_format))
+        data = struct.unpack(self.binary_format, temp_data)
+        self.boneIndex = data[0]
+
+
 class SKD_Triangle:
-    #Header Structure    #item of data file, size & type,   description.
+    #Header Structure    # item of data file, size & type,   description.
     indices = [0]*3      # item   0-2    3 ints, a triangles 3 vertex indexes.
 
     binary_format="<3i" #little-endian (<), 3 int
@@ -382,6 +482,7 @@ class skd_obj:
     ofsBones = 0         #item  66    int, the file offset for the bone names data.
     ofsSurfaces = 0      #item  67    int, the file offset for the surface (mesh) data (for the 1st surface).
     ofsEnd = 0           #item  68    int, end (or length) of the file.
+                         #                 Each level of detail (LODs) has completely separate sets of surfaces.
     numLODs = 0          #item  69    int, number of LODs (Low Object Display), low poly model viewed at distance.
     ofsLODs = 0          #item  70    int, offset to LOD data.
     lodIndex = 0         #item  71    int, LOD Index. [8]?
@@ -422,7 +523,7 @@ class skd_obj:
         self.temp_bones = []
         self.ComponentList = []
 
-    def load(self, file):
+    def load_mesh(self, file):
         global file_version
         # file.name is the model file & full path, ex: C:\MOHAA\Main\models\furniture\chairs\roundedchair.skd
         # FullPathName is the full path and the full file name being imported with forward slashes.
@@ -453,6 +554,7 @@ class skd_obj:
             self.binary_format="<64c12i"  #MOHAA file, little-endian (<), see #item descriptions above.
         temp_data = file.read(struct.calcsize(self.binary_format))
         data = struct.unpack(self.binary_format, temp_data)
+
         if logging == 1:
             tobj.logcon ("")
             tobj.logcon ("==========================")
@@ -490,13 +592,16 @@ class skd_obj:
             tobj.logcon ("PROCESSING BONES, numBones: " + str(self.numBones))
             tobj.logcon ("==========================")
             tobj.logcon ("")
+
         file.seek(self.ofsBones,0)
         if self.version == 5: # MOHAA
             nextbone = 0
         if self.bones == []:
+
             if self.numBones == 0 and logging == 1:
                 tobj.logcon ("No bones to load into editor")
                 tobj.logcon ("")
+
             else:
                 for i in xrange(0, self.numBones):
                     bone = SKD_Bone()
@@ -519,7 +624,7 @@ class skd_obj:
                         QuArK_Bone['parent_name'] = parent.name
                         QuArK_Bone.position = parent.position + quarkx.vect(8.0,2.0,2.0)
                         QuArK_Bone['bone_length'] = (8.0,2.0,2.0)
-                  #  if bone.flags == 0:
+
                     QuArK_Bone['flags'] = (0,0,0,0,0,0)
                     QuArK_Bone.vtxlist = {}
                     QuArK_Bone.vtx_pos = {}
@@ -532,12 +637,13 @@ class skd_obj:
                     QuArK_Bone['_skd_boneindex'] = str(i) # May not need this, if not remove.
                     self.bones.append(QuArK_Bone)
                     self.temp_bones.append(bone)
+
                     if logging == 1:
                         tobj.logcon ("Bone " + str(i))
                         bone.dump()
 
         # May not need this section, if not remove.
-        if self.version == 4: # (EF2 file) From skb importer, can probably remove this section.
+        if self.version == 5: # MOHAA, WE ARE USING IT RIGHT NOW SO LEAVE IT IN.
             #load the BaseFrame bones ****** QuArK basic, empty bones are created here.
             if logging == 1:
                 tobj.logcon ("")
@@ -548,38 +654,91 @@ class skd_obj:
             if self.numBones == 0 and logging == 1:
                 tobj.logcon ("No bones to load into editor")
                 tobj.logcon ("")
+
             else:
-                file.seek(self.ofsBaseFrame,0)
-                binary_format="<4h3hh"
-                factor = 1.0 / 64.0 # to avoid division by zero errors.
-                scale = 1.0 / 32767.0 #To convert rotation values into quaternion-units
+                scale = 1.0 / 64.0 # Applies to POS to avoid division by zero errors.
+                factor = 1.0 / 32767.0 # Applies to QUAT to convert rotation values into quaternion-units
                 bonelist = editor.ModelComponentList['bonelist']
                 for i in xrange(0, self.numBones):
-                    temp_data = file.read(struct.calcsize(binary_format))
-                    data = struct.unpack(binary_format, temp_data)
-
                     QuArK_Bone = self.bones[i]
                     if not bonelist.has_key(QuArK_Bone.name):
                         bonelist[QuArK_Bone.name] = {}
-                        bonelist[QuArK_Bone.name]['type'] = 'skb'
+                        bonelist[QuArK_Bone.name]['type'] = 'skd'
                         bonelist[QuArK_Bone.name]['frames'] = {}
                         bonelist[QuArK_Bone.name]['frames']['baseframe:mf'] = {}
                     bone = self.temp_bones[i]
-                    bone.basequat = (data[0], data[1], data[2], data[3])
-                    bone.baseoffset = (data[4], data[5], data[6])
+                    if bone.jointType == 0 or bone.jointType == 3:
+                        bv = bone.values
+                        pos = (bv[0], bv[1], bv[2])
+                        qx = bv[3]
+                        qy = bv[4]
+                        qz = bv[5]
+                        qw = 1 - qx*qx - qy*qy - qz*qz
+                        if qw<0:
+                            qw=0
+                        else:
+                            qw = -sqrt(qw)
+                        quat = [qx, qy, qz, qw]
+                        tempmatrix = quaternion2matrix(quat)
+                    elif bone.jointType == 1 or bone.jointType == 4:
+                        bv = bone.values
+                        pos = (bv[0]*scale, bv[2]*scale, bv[4]*scale)
+                        qx = bv[1]
+                        qy = bv[3]
+                        qz = bv[5]
+                        if bone.jointType == 4:
+                            pos = (bv[6]*scale, bv[8]*scale, bv[10]*scale)
+                            qx = bv[7]
+                            qy = bv[9]
+                            qz = bv[11]
+                        qw = 1 - qx*qx - qy*qy - qz*qz
+                        if qw<0:
+                            qw=0
+                        else:
+                            qw = -sqrt(qw)
+                        quat = [qx*factor, qy*factor, qz*factor, qw*factor]
+                        tempmatrix = quaternion2matrix(quat)
+                    elif bone.jointType == 2:
+                        bv = bone.values
+                        pos = (bv[4], bv[5], bv[6])
+                        qx = bv[7]
+                        qy = bv[8]
+                        qz = bv[9]
+                        qw = 1 - qx*qx - qy*qy - qz*qz
+                        if qw<0:
+                            qw=0
+                        else:
+                            qw = -sqrt(qw)
+                        quat = [qx, qy, qz, qw]
+                        tempmatrix = quaternion2matrix(quat)
+                    elif bone.jointType == 5:
+                        bv = bone.values
+                        pos = (bv[0], bv[1], bv[2])
+                        qx = bv[6]
+                        qy = bv[7]
+                        qz = bv[8]
+                        qw = bv[9]
+                        quat = [qx, qy, qz, qw]
+                        tempmatrix = quaternion2matrix(quat)
+                    elif bone.jointType == 6:
+                        bv = bone.values
+                        pos = (bv[0], bv[1], bv[2])
+                        qx = bv[3]
+                        qy = bv[4]
+                        qz = bv[5]
+                        qw = bv[6]
+                        quat = [qx, qy, qz, qw]
+                        tempmatrix = quaternion2matrix(quat)
 
-                    QuArK_Bone.position = quarkx.vect((bone.baseoffset[0]*factor, bone.baseoffset[1]*factor, bone.baseoffset[2]*factor))
+                    pos = quarkx.vect(pos)
+                    rotmatrix = quarkx.matrix((tempmatrix[0][0], tempmatrix[0][1], tempmatrix[0][2]), (tempmatrix[1][0], tempmatrix[1][1], tempmatrix[1][2]), (tempmatrix[2][0], tempmatrix[2][1], tempmatrix[2][2]))
+
+                    QuArK_Bone.position = pos
                     position = QuArK_Bone.position.tuple
                     QuArK_Bone['position'] = position
-                    tempmatrix = quaternion2matrix((bone.basequat[0] * scale, bone.basequat[1] * scale, bone.basequat[2] * scale, bone.basequat[3] * scale))
-                    QuArK_Bone.rotmatrix = quarkx.matrix((tempmatrix[0][0], tempmatrix[0][1], tempmatrix[0][2]), (tempmatrix[1][0], tempmatrix[1][1], tempmatrix[1][2]), (tempmatrix[2][0], tempmatrix[2][1], tempmatrix[2][2]))
+                    QuArK_Bone.rotmatrix = rotmatrix
                     bonelist[QuArK_Bone.name]['frames']['baseframe:mf']['position'] = position
                     bonelist[QuArK_Bone.name]['frames']['baseframe:mf']['rotmatrix'] = QuArK_Bone.rotmatrix.tuple
-
-                    bone.basejunk1 = data[7]
-                    if logging == 1:
-                        tobj.logcon ("Bone " + str(i))
-                        bone.dump_baseframe()
 
         #load the surfaces (meshes) ****** QuArK basic, empty Components are made and passed along here to be completed. ******
         next_surf_offset = 0
@@ -590,6 +749,7 @@ class skd_obj:
                 tobj.logcon ("PROCESSING SURFACE: " + str(i))
                 tobj.logcon ("=====================")
                 tobj.logcon ("")
+
             file.seek(self.ofsSurfaces + next_surf_offset,0)
             surface = SKD_Surface()
             name = self.name.replace("\\", "/")
@@ -616,6 +776,7 @@ class skd_obj:
                 for bone in self.bones:
                     bone['component'] = comp_name
             next_surf_offset = next_surf_offset + surface.ofsEnd
+
             if logging == 1:
                 tobj.logcon ("")
                 tobj.logcon ("----------------")
@@ -623,6 +784,7 @@ class skd_obj:
                 tobj.logcon ("----------------")
                 surface.dump()
                 tobj.logcon ("")
+
             self.surfaceList.append(surface)
             self.ComponentList.append(Component)
 
@@ -663,64 +825,25 @@ class skd_obj:
             tobj.logcon ("")
 
 ######################################################
-# SKA data structures
+# SKC data structures
 ######################################################
-class SKA_BoneName_EF2: # From skb importer, can probably remove this section.
-    #Header Structure       #item of data file, size & type,   description.
-    ID = 0          #item   0       0     1 int, the bone's ID.
-    name = ""       #item   1-31    1-31  32 char, the bone's name.
-
-    binary_format="<i32c"  #little-endian (<), see items above.
-
-    def __init__(self):
-        self.ID = 0
-        self.name = ""
-
-    def load(self, file):
-        temp_data = file.read(struct.calcsize(self.binary_format))
-        data = struct.unpack(self.binary_format, temp_data)
-
-        self.ID = data[0]
-        char = 32 + 1 # The above data items 1-31.
-        for c in xrange(1, char):
-            if data[c] == "\x00":
-                break
-            self.name = self.name + data[c]
-        self.name = self.name.split(".")[0]
-
-    def dump(self):
-        tobj.logcon ("ID: " + str(self.ID))
-        tobj.logcon ("name: " + str(self.name))
-
 class SKC_Channel:
     #Header Structure       #item of data file, size & type,   description.
-    matrix = (0)*4          #item   0    0-3   4 ints, the bone's quat values.
-    SetPosition = None      #item  ---   ---   for QuArK use only.
-    SetRotation = None      #item  ---   ---   for QuArK use only.
+    values = (0)*4          #item   0    0-3   4 floats, a bone's rot, quat or rotFK (rotation Forward Kinematics) values.
 
     binary_format="<4f"      #little-endian (<), see items above.
 
     def __init__(self):
-        self.matrix = (0)*4
-        self.SetPosition = None
-        self.SetRotation = None
+        self.values = (0)*4
 
     def load(self, file):
         temp_data = file.read(struct.calcsize(self.binary_format))
         data = struct.unpack(self.binary_format, temp_data)
 
-        self.matrix = (data[0], data[1], data[2], data[3])
-
-     #   factor = 0.015625 # = 1/64 to avoid division by zero errors.
-     #   scale = 1.0 / 32768.0 #To convert rotation values into quaternion-units
-     #   self.SetPosition = quarkx.vect((self.offset[0]*factor, self.offset[1]*factor, self.offset[2]*factor))
-     #   tempmatrix = quaternion2matrix((self.matrix[0] * scale, self.matrix[1] * scale, self.matrix[2] * scale, self.matrix[3] * scale))
-     #   self.SetRotation = quarkx.matrix((tempmatrix[0][0], tempmatrix[0][1], tempmatrix[0][2]), (tempmatrix[1][0], tempmatrix[1][1], tempmatrix[1][2]), (tempmatrix[2][0], tempmatrix[2][1], tempmatrix[2][2]))
+        self.values = (data[0], data[1], data[2], data[3])
 
     def dump(self):
-        tobj.logcon ("channel values: " + str(self.matrix))
-        tobj.logcon ("SetPosition: " + str(self.SetPosition))
-        tobj.logcon ("SetRotation: " + str(self.SetRotation))
+        tobj.logcon ("channel values: " + str(self.values))
         tobj.logcon ("")
 
 class SKC_Frame:
@@ -731,24 +854,21 @@ class SKC_Frame:
     dummy1 = 0.0                 #item   10   float, unknown item.
     ofsEnd = 0                   #item   11   int.
 
-    bones = [] # To load the bones animation data read in from the file.
-
     binary_format="<6ff3ffi"  #little-endian (<), see #item descriptions above.
 
     def __init__(self):
-        self.bounds = ((0.0)*3, (0.0)*3) # (varified correct)
-        self.radius = 0.0 # (varified correct)
-        self.delta = (0.0)*3 # (varified correct)
+        self.bounds = ((0.0)*3, (0.0)*3)
+        self.radius = 0.0
+        self.delta = (0.0)*3
         self.dummy1 = 0.0
         self.ofsEnd = 0
-        self.bones = []
 
-    def load(self, file, skcobj, QuArK_bones, parent_indexes, real_bone_index, index_to_skc):
+    def load(self, file, skcobj, QuArK_bones, parent_indexes, index_to_skc, frame_name, bonelist):
         numChannels = skcobj.numChannels
+        QuArK_Index2Channels = skcobj.QuArK_Index2Channels
+        frame_name = frame_name + ":mf"
         temp_data = file.read(struct.calcsize(self.binary_format))
         data = struct.unpack(self.binary_format, temp_data)
-     #   print "skd_import line 750 frame data"
-     #   print data
 
         self.bounds = ((data[0], data[1], data[2]), (data[3], data[4], data[5]))
         self.radius = data[6]
@@ -758,48 +878,84 @@ class SKC_Frame:
         current_pointer_count = file.tell()
         file.seek(self.ofsEnd,0)
         for i in xrange(0, numChannels):
-            bone = SKC_Channel()
-            bone.load(file)
-         #   print "--------------------"
-         #   print "line 764 SKC_Channel nbr ->", i
-         #   print bone.matrix
+            channel = SKC_Channel()
+            channel.load(file)
             index = skcobj.Channels_list[i].keys()[0]
             channel_type = skcobj.Channels_list[i][index].keys()[0]
-            skcobj.Channels_list[i][index][channel_type] = bone.matrix
-            continue # ONLY FOR TESTING REMOVE WHEN READY TO GO ON.
-            if real_bone_index[i] == []:
-                #Apparently, there is no skd bone for this skc bone!
-                #Skip it...
-                continue
-            self.bones.append(bone)
+            skcobj.Channels_list[i][index][channel_type] = channel.values
+
+        for i in xrange(0, len(QuArK_bones)):
+            bone = QuArK_bones[i]
+            pos = bone.position
+            rot = bone.rotmatrix
+            if QuArK_Index2Channels.has_key(i):
+                channels = QuArK_Index2Channels[i]
+                for index in channels:
+                    type = skcobj.Channels_list[index][i].keys()[0]
+                    if type == "pos":
+                        pos = skcobj.Channels_list[index][i]['pos']
+                        pos = quarkx.vect(pos[0], pos[1], pos[2])
+                    elif type == "rot":
+                        quat = skcobj.Channels_list[index][i]['rot']
+                        tempmatrix = quaternion2matrix(quat)
+                        rot = quarkx.matrix((tempmatrix[0][0], tempmatrix[0][1], tempmatrix[0][2]), (tempmatrix[1][0], tempmatrix[1][1], tempmatrix[1][2]), (tempmatrix[2][0], tempmatrix[2][1], tempmatrix[2][2]))
+                    elif type == "rotFK":
+                        rotFK = skcobj.Channels_list[index][i]['rotFK']
+                        tempmatrix = quaternion2matrix(rotFK)
+                        rot = quarkx.matrix((tempmatrix[0][0], tempmatrix[0][1], tempmatrix[0][2]), (tempmatrix[1][0], tempmatrix[1][1], tempmatrix[1][2]), (tempmatrix[2][0], tempmatrix[2][1], tempmatrix[2][2]))
             if logging == 1:
-                tobj.logcon ("bone " + str(i) + " : relative")
-                bone.dump()
-            # Resolve absolute bone position and rotation
-            parent_index = parent_indexes[real_bone_index[i]]
+                tobj.logcon ("channel " + str(i) + ":")
+                channel.dump()
+            # Resolve absolute channel position and rotation
+            parent_index = parent_indexes[i]
             if parent_index != -1:
-                ska_bone_index = index_to_skc[parent_index]
-                if ska_bone_index == -1:
+                skd_bone_index = index_to_skc[parent_index]
+                if skd_bone_index == -1:
                     # Parent is no SKC bone; use SKD base frame data instead
                     parent_bone = QuArK_bones[parent_index]
-                    parent_pos = quarkx.vect(parent_bone.dictspec["_skd_baseposition"])
-                    temp_rot = parent_bone.dictspec["_skd_baserotmatrix"]
-                    parent_rot = quarkx.matrix((temp_rot[0], temp_rot[1], temp_rot[2]), (temp_rot[3], temp_rot[4], temp_rot[5]), (temp_rot[6], temp_rot[7], temp_rot[8]))
+                    parent_pos = parent_bone.position
+                    parent_rot = parent_bone.rotmatrix
+                    quarkx.beep()
+                    # WTF !? MULT OWN POS BY ITS OWN MATRIX...should never go here anyway...so REMOVE THIS SECTION let it crash.
                 else:
-                    parent_bone = self.bones[ska_bone_index]
-                    parent_pos = parent_bone.SetPosition
-                    parent_rot = parent_bone.SetRotation
-                bone.SetPosition = parent_pos + (parent_rot * bone.SetPosition)
-                bone.SetRotation = parent_rot * bone.SetRotation
-            if logging == 1:
-                tobj.logcon ("bone " + str(i) + " : absolute")
-                bone.dump()
+                    parent_bone = QuArK_bones[skd_bone_index] # This shouldn't be using QuArK_bones (fixed values), should use a list of parents pos and rot (the bonelist) for THIS frame unless parent NOT in the list, THEN use QuArK_bones values.
+                    if bonelist.has_key(parent_bone.name) and bonelist[parent_bone.name]['frames'].has_key(frame_name):
+                        parent_pos = quarkx.vect(bonelist[parent_bone.name]['frames'][frame_name]['position'])
+                        parent_rot = quarkx.matrix(bonelist[parent_bone.name]['frames'][frame_name]['rotmatrix'])
+                    else:
+                        parent_pos = parent_bone.position
+                        parent_rot = parent_bone.rotmatrix
+                if QuArK_Index2Channels.has_key(i) and len(QuArK_Index2Channels[i]) == 3:
+                    channels = QuArK_Index2Channels[i]
+                    for index in channels:
+                        type = skcobj.Channels_list[index][i].keys()[0]
+                        if type == "pos":
+                            pos = skcobj.Channels_list[index][i]['pos']
+                            pos = quarkx.vect(pos[0], pos[1], pos[2])
+                            SetPosition = pos
+                            break
+                else:
+                    SetPosition = parent_pos + (parent_rot * pos)
+                SetRotation = parent_rot * rot
+            else:
+                SetPosition = pos
+                SetRotation = rot
+
+            if not bonelist[bone.name]['frames'].has_key(frame_name):
+                bonelist[bone.name]['frames'][frame_name] = {}
+            bonelist[bone.name]['frames'][frame_name]['position'] = SetPosition.tuple
+            bonelist[bone.name]['frames'][frame_name]['rotmatrix'] = SetRotation.tuple
+
+            if frame_name.endswith(" 1:mf"):
+                baseframe = frame_name.rsplit(" ", 1)[0] + " baseframe:mf"
+                bonelist[bone.name]['frames'][baseframe] = {}
+                bonelist[bone.name]['frames'][baseframe]['position'] = bonelist[bone.name]['frames'][frame_name]['position']
+                bonelist[bone.name]['frames'][baseframe]['rotmatrix'] = bonelist[bone.name]['frames'][frame_name]['rotmatrix']
+
         file.seek(current_pointer_count,0)
 
-    def apply(self, numChannels, QuArK_bones, bonelist, numComponents, comp_names, baseframes, new_framesgroups, frame_name, real_bone_index):
+    def apply(self, numChannels, QuArK_bones, bonelist, numComponents, comp_names, baseframes, new_framesgroups, frame_name):
             check_name = frame_name + ":mf"
-            self.SetupBones(numChannels, QuArK_bones, bonelist, check_name, real_bone_index)
-
             #A list of bones.name -> bone_index, to speed things up
             ConvertBoneNameToIndex = {}
             for bone_index in range(len(QuArK_bones)):
@@ -822,7 +978,7 @@ class SKC_Frame:
                             if bone_index == -1:
                                 continue
                             if not bonelist[QuArK_bones[bone_index].name]['frames'].has_key(frame_name + ':mf'):
-        #                        print "Warning: Bone %s missing frame %s!" % (QuArK_bones[bone_index].shortname, frame_name)
+                                print "Warning: Bone %s missing frame %s!" % (QuArK_bones[bone_index].shortname, frame_name)
                                 continue
                             Bpos = quarkx.vect(bonelist[QuArK_bones[bone_index].name]['frames'][frame_name+':mf']['position'])
                             Brot = quarkx.matrix(bonelist[QuArK_bones[bone_index].name]['frames'][frame_name+':mf']['rotmatrix'])
@@ -844,25 +1000,6 @@ class SKC_Frame:
                     framesgroup.appenditem(baseframe)
                 framesgroup.appenditem(QuArK_frame)
 
-
-    def SetupBones(self, numChannels, QuArK_bones, bonelist, QuArK_frame_name, real_bone_index):
-        for i in xrange(0, len(self.bones)):
-            if real_bone_index[i] == []:
-                #No corresponding SKD bone
-                continue
-            QuArK_bone = QuArK_bones[real_bone_index[i]]
-            if not bonelist[QuArK_bone.name]['frames'].has_key(QuArK_frame_name):
-                bonelist[QuArK_bone.name]['frames'][QuArK_frame_name] = {}
-            bone = self.bones[i] # self = a Frame
-            bonelist[QuArK_bone.name]['frames'][QuArK_frame_name]['position'] = bone.SetPosition.tuple
-            bonelist[QuArK_bone.name]['frames'][QuArK_frame_name]['rotmatrix'] = bone.SetRotation.tuple
-
-            if QuArK_frame_name.endswith(" 1:mf"):
-                baseframe = QuArK_frame_name.rsplit(" ", 1)[0] + " baseframe:mf"
-                bonelist[QuArK_bone.name]['frames'][baseframe] = {}
-                bonelist[QuArK_bone.name]['frames'][baseframe]['position'] = bonelist[QuArK_bone.name]['frames'][QuArK_frame_name]['position']
-                bonelist[QuArK_bone.name]['frames'][baseframe]['rotmatrix'] = bonelist[QuArK_bone.name]['frames'][QuArK_frame_name]['rotmatrix']
-
     def dump(self):
         tobj.logcon ("bounds: " + str(self.bounds))
         tobj.logcon ("radius: " + str(self.radius))
@@ -882,10 +1019,10 @@ class skc_obj:
     dummy2 = 0           #item  6    float, unknown.
     dummy3 = 0           #item  7    float, unknown.
     dummy4 = 0           #item  8    float, unknown.
-    numChannels = 0      #item  9    int, number of Channels, varies per bone, each bone can have up to 3 channels (pos, rot and rotFX).
+    numChannels = 0      #item  9    int, number of Channels, varies per bone, each bone can have up to 3 channels (pos, rot and rotFK).
                                         # pos = x, y, z and w, w being unused.
                                         # rot = quaternion qx, qy, qz, qw values.
-                                        # rotFX = rotation forward kinematics; no idea how this works.
+                                        # rotFK = rotation forward kinematics; no idea how this works.
     ofsChannels = 0      #item  10   int, offset of Channels data.
     numFrames = 0        #item  11   int, number of mesh animation frames.
 
@@ -894,11 +1031,12 @@ class skc_obj:
     # Setup cross reference dictionary lists to speed things up with.
     QuArK_bones_Name2Indexes = {}
     QuArK_bones_Indexes2Name = {}
+    QuArK_Index2Channels = {}
     # Setup a dictionary list of the Channels (bone names) for this skc file and their types
     # of movement(s) to be used with the animation frames Channels (bones) data later.
-    # Channels_list = {channel_nbr: {QuArK_bone_index: QuArK_bones list index_nbr, 'pos': [4 float values], 'rot': [4 float values], 'rotFX': [4 float values]}}
+    # Channels_list = {channel_nbr: {QuArK_bone_index: QuArK_bones list index_nbr, 'pos': [4 float values], 'rot': [4 float values], 'rotFK': [4 float values]}}
     Channels_list = {}
-    bone_names = [] # Not really being used, should use Channels_list above instead.
+    bone_names = []
 
     def __init__(self):
         self.ident = ""      # ex: 'SKAN' (verified to be correct)
@@ -916,10 +1054,11 @@ class skc_obj:
 
         self.QuArK_bones_Name2Indexes = {}
         self.QuArK_bones_Indexes2Name = {}
+        self.QuArK_Index2Channels = {}
         self.Channels_list = {}
         self.bone_names = []
 
-    def load(self, file, Components, QuArK_bones, Exist_Comps, anim_name):
+    def load_anim(self, file, Components, QuArK_bones, Exist_Comps, anim_name):
         global file_version
         # file.name is the model file & full path, ex: C:\MOHAA\Main\models\furniture\chairs\roundedchair.skc
         # FullPathName is the full path and the full file name being imported with forward slashes.
@@ -932,8 +1071,6 @@ class skc_obj:
         ModelFolder = FolderPath.rsplit("/", 1)[1]
         temp_data = file.read(struct.calcsize(self.binary_format))
         data = struct.unpack(self.binary_format, temp_data)
-     #   print "skd_import line 935 skc_obj header data"
-     #   print data
 
         # "data" is all of the header data amounts.
         self.ident = data[0]
@@ -970,20 +1107,21 @@ class skc_obj:
 
         # Fill the self.Channels_list data.
         current_pointer_count = file.tell() # To save the file read pointer position at where we were.
-        # Channels_list = {channel_nbr: {QuArK_bone_index: QuArK_bones list index_nbr, 'pos': [4 float values], 'rot': [4 float values], 'rotFX': [4 float values]}}
+
+        # Channels_list = {channel_nbr: {QuArK_bone_index: QuArK_bones list index_nbr, 'pos': [4 float values], 'rot': [4 float values], 'rotFK': [4 float values]}}
         file.seek(self.ofsChannels,0)
         binary_format = "<%ds" % SKC_MAX_CHANNEL_CHARS
         for i in xrange(self.numChannels):
             temp_data = file.read(struct.calcsize(binary_format))
             data = struct.unpack(binary_format, temp_data)
-     #       print "------------------------"
-     #       print "item: ", i
-     #       print data
             data = data[0].replace("\x00", "")
             if data.endswith(" pos"):
                 name = data.split(" pos")[0]
                 try:
                     index = self.QuArK_bones_Name2Indexes[name]
+                    if not self.QuArK_Index2Channels.has_key(index):
+                        self.QuArK_Index2Channels[index] = []
+                    self.QuArK_Index2Channels[index] = self.QuArK_Index2Channels[index] + [i]
                 except:
                     index = -2 # This bone is NOT in the .skd bones...a NEW bone? NOW WHAT?
                 self.Channels_list[i] = {}
@@ -993,6 +1131,9 @@ class skc_obj:
                 name = data.split(" rot")[0]
                 try:
                     index = self.QuArK_bones_Name2Indexes[name]
+                    if not self.QuArK_Index2Channels.has_key(index):
+                        self.QuArK_Index2Channels[index] = []
+                    self.QuArK_Index2Channels[index] = self.QuArK_Index2Channels[index] + [i]
                 except:
                     index = -2 # This bone is NOT in the .skd bones...a NEW bone? NOW WHAT?
                 self.Channels_list[i] = {}
@@ -1002,13 +1143,15 @@ class skc_obj:
                 name = data.split(" rotFK")[0]
                 try:
                     index = self.QuArK_bones_Name2Indexes[name]
+                    if not self.QuArK_Index2Channels.has_key(index):
+                        self.QuArK_Index2Channels[index] = []
+                    self.QuArK_Index2Channels[index] = self.QuArK_Index2Channels[index] + [i]
                 except:
                     index = -2 # This bone is NOT in the .skd bones...a NEW bone? NOW WHAT?
                 self.Channels_list[i] = {}
                 self.Channels_list[i][index] = {}
                 self.Channels_list[i][index]['rotFK'] = [0.0]*4
         file.seek(current_pointer_count,0) # To put the file read pointer back to where it was.
-     #   print "========= line 1011 =========", file.tell()
 
         # Construct a look-up-table to get a bone from a parent index number
         parent_indexes = []
@@ -1051,16 +1194,6 @@ class skc_obj:
                 new_framesgroup['type'] = chr(1)
                 new_framesgroups = new_framesgroups + [new_framesgroup]
 
-     #   if self.version == 4: # From skb importer, this section can probably be removed.
-            #EF2 has bone_names
-     #       file.seek(self.ofsChannels,0)
-     #       for i in xrange(0, self.numChannels):
-     #           bone_name = SKA_BoneName_EF2()
-     #           bone_name.load(file)
-     #           self.bone_names.append(bone_name)
-     #           if logging == 1:
-     #               bone_name.dump()
-
         # Construct a translation table for skc bone index --> QuArK_bones index number
         real_bone_index = None
         if self.version == 3:
@@ -1069,7 +1202,7 @@ class skc_obj:
                 bone = QuArK_bones[bone_index]
                 real_bone_index[int(bone.dictspec['_skd_boneindex'])] = bone_index
         else:
-            #For EF2, we have to go through the bone_names
+            # For other future versions, we may have to go through the bone_names.
             real_bone_index = [[]] * len(self.bone_names)
             for bone_index in range(len(self.bone_names)):
                 bone = self.bone_names[bone_index]
@@ -1082,11 +1215,11 @@ class skc_obj:
                         break
 
         index_to_skc = [[]] * len(QuArK_bones)
-        if self.version == 3:
+        if self.version == 13:
             for bone2_index in range(len(QuArK_bones)):
                 index_to_skc[bone2_index] = bone2_index
         else:
-            #EF2: A translation table to go from a QuArK_bones index number to a SKC index number (or -1 if there's no corresponding SKA bone)
+            # A translation table to go from a QuArK_bones index number to a SKC index number (or -1 if there's no corresponding SKC bone)
             for bone2_index in range(len(QuArK_bones)):
                 bone2 = QuArK_bones[bone2_index]
                 bone2_name = bone2.shortname.split("_", 1)[1]
@@ -1105,14 +1238,13 @@ class skc_obj:
             tobj.logcon ("PROCESSING FRAMES, numFrames: " + str(self.numFrames))
             tobj.logcon ("============================")
             tobj.logcon ("")
+
         for i in xrange(0, self.numFrames):
-     #       print "--------------------------"
-     #       print "SKC_Frame header data nbr", i
             frame = SKC_Frame()
-            frame.load(file, self, QuArK_bones, parent_indexes, real_bone_index, index_to_skc)
             frame_name = anim_name + " " + str(i+1)
-            #FIXME: self.type ???
-            frame.apply(self.numChannels, QuArK_bones, bonelist, numComponents, comp_names, baseframes, new_framesgroups, frame_name, real_bone_index)
+            frame.load(file, self, QuArK_bones, parent_indexes, index_to_skc, frame_name, bonelist)
+            frame.apply(self.numChannels, QuArK_bones, bonelist, numComponents, comp_names, baseframes, new_framesgroups, frame_name)
+
             if logging == 1:
                 tobj.logcon ("---------------------")
                 tobj.logcon ("frame " + str(i))
@@ -1150,12 +1282,14 @@ def check4skin(file, Component, material_name, message, version):
     material_name = material_name.lower() # Make sure all text is lower case.
     # Try to locate and load Component's skin textures.
     ImageTypes = [".ftx", ".tga", ".jpg", ".bmp", ".png", ".dds"]
+
     if logging == 1:
         tobj.logcon ("----------------------------------------------------------")
         tobj.logcon ("Skins group data for: " + Component.name)
         tobj.logcon ("material_name: " + material_name)
         tobj.logcon ("version: " + str(version))
         tobj.logcon ("----------------------------------------------------------")
+
     path = file.name
     shaders_path = None
     if path.find("models\\") != -1:
@@ -1203,10 +1337,7 @@ def check4skin(file, Component, material_name, message, version):
                                         skin_names = skin_names + [skin_name]
                             if L_curly_count == 0 and filelines[line].find("}") != -1:
                                 break
-                  #  if skin_name is not None:
-                  #      break
-              #  if skin_name is not None:
-              #      break
+
     path = skin_path # Reset to the full path to try and find the skin texture.
     found_skin_file = None
     if skin_name is not None:
@@ -1222,8 +1353,10 @@ def check4skin(file, Component, material_name, message, version):
                     skin['Image1'] = image.dictspec['Image1']
                     Component['skinsize'] = skin['Size'] = image.dictspec['Size']
                     Component.dictitems['Skins:sg'].appenditem(skin)
+
                     if logging == 1:
                         tobj.logcon (skin.name)
+
                     break
             if found_skin_file is not None and skin_name.endswith(material_name):
                 break
@@ -1246,12 +1379,16 @@ def check4skin(file, Component, material_name, message, version):
                         skinsize[1] = size[1]
                         Component['skinsize'] = skin['Size']
                     skingroup.appenditem(skin)
+
                     if logging == 1:
                         tobj.logcon (skin.name)
+
         if found_skin_file is None:
             message = message + "Cound not locate any type of skin textures for Component:\r\n  " + Component.shortname + "\r\n\r\n"
+
     if logging == 1:
         tobj.logcon ("")
+
     return message
 
 
@@ -1288,8 +1425,9 @@ def load_skc(filename, Components, QuArK_bones, Exist_Comps, anim_name):
     #read the file in
     file = open(filename, "rb")
     skc = skc_obj() # Making an "instance" of this class.
-    new_framesgroups = skc.load(file, Components, QuArK_bones, Exist_Comps, anim_name) # Calling this class function to read the file data and create the animation frames.
+    new_framesgroups = skc.load_anim(file, Components, QuArK_bones, Exist_Comps, anim_name) # Calling this class function to read the file data and create the animation frames.
     file.close()
+
     if logging == 1:
         skc.dump() # Writes the file Header last to the log for comparison reasons.
 
@@ -1303,10 +1441,12 @@ def load_skd(filename):
     #read the file in
     file = open(filename, "rb")
     skd = skd_obj()
-    MODEL, message = skd.load(file)
+    MODEL, message = skd.load_mesh(file)
     file.close()
+
     if logging == 1:
         skd.dump() # Writes the file Header last to the log for comparison reasons.
+
     if MODEL is None:
         return None
 
@@ -1501,6 +1641,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".skd MOHAA Importer-mesh", ".skd file", "*
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.4  2010/11/09 05:48:10  cdunde
+# To reverse previous changes, some to be reinstated after next release.
+#
 # Revision 1.3  2010/11/06 13:31:04  danielpharos
 # Moved a lot of math-code to ie_utils, and replaced magic constant 3 with variable SS_MODEL.
 #
