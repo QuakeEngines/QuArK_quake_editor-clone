@@ -64,6 +64,12 @@ Here are the attributes and methods of the Frame objects.
 <table border=1 cellspacing=0 cellpadding=4>
 
 <tr><td class="doccode">
+index
+</td><td>
+The frame's position in a component.dictitems['Frames:fg'].subitems list, as shown in the tree-view.
+</td></tr>
+
+<tr><td class="doccode">
 info
 </td><td>
 Not used by QuArK. Reserved for Python code.
