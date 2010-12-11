@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2010/10/14 20:03:30  danielpharos
+Fix bone-position with Undo/Redo dialog box and made some fixes to selection-holding code.
+
 Revision 1.8  2009/07/15 10:38:10  danielpharos
 Updated website link.
 
@@ -137,7 +140,7 @@ begin
    Q2.PySetParent(Q1.FParent);
   U:=TQObjectUndo.Create('', Q1, Q2);
   g_ListeActions.Add(U);
-  if obj3<>Nil then
+  if obj3<>Py_None then
    U.InsererAvant:=QkObjFromPyObj(obj3);
   Result:=PyNoResult;
  except
