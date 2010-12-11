@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.1.2.3  2010/12/11 20:48:07  danielpharos
+//Start using full lists, to prevent out of memory errors, and to organize the mess.
+//
 //Revision 1.1.2.2  2010/12/11 20:46:29  danielpharos
 //Switched to ASCII format
 //
@@ -21,6 +24,42 @@ QQRKSRC1
 
     CoD2 Textures and shaders.qtxfolder =
     {
+      155_cannon.txlist =
+      {
+        155_cannon.wl                                           = { t_cod2=! }
+        155_cannon_decal.wl                                     = { t_cod2=! }
+        155_cannon_parts_d.wl                                   = { t_cod2=! }
+        ~155_cannon_bump-gggr.wl                                = { t_cod2=! }
+        ~155_cannon_decal_bump-gggr.wl                          = { t_cod2=! }
+        ~155_cannon_decal_spec-rgb&155_cannon_decal~3c7873c9.wl = { t_cod2=! }
+        ~155_cannon_parts_d_bump-gggr.wl                        = { t_cod2=! }
+        ~155_cannon_parts_d_spec-rgb&155_cannon_par~145d5271.wl = { t_cod2=! }
+        ~155_cannon_spec-rgb&155_cannon_cosine-l-11.wl          = { t_cod2=! }
+      }
+      AfricaJeep.txlist =
+      {
+        africajeepcolor#0.wl                                    = { t_cod2=! }
+        africajeepdetail#0.wl                                   = { t_cod2=! }
+        africajeepdmgcolor#0.wl                                 = { t_cod2=! }
+        ~africajeepdmgnormal#0-gggr.wl                          = { t_cod2=! }
+        ~africajeepdmgspecular#0-r-25g-25b-25&afric~a7dd18d3.wl = { t_cod2=! }
+        ~africajeepnormal#0-gggr.wl                             = { t_cod2=! }
+        ~africajeepspecular#0-r-61g-61b-61&africaje~f57328a8.wl = { t_cod2=! }
+      }
+      AmericanJeep.txlist =
+      {
+        americanjeepcolor#0.wl                                  = { t_cod2=! }
+        americanjeepcolordmg#0.wl                               = { t_cod2=! }
+        americanjeepcotcolor#0.wl                               = { t_cod2=! }
+        americanjeepglasscolor#0.wl                             = { t_cod2=! }
+        ~americanjeepcotnormal#0-gggr.wl                        = { t_cod2=! }
+        ~americanjeepcotspecular#0-rgbl-79.wl                   = { t_cod2=! }
+        ~americanjeepglassspecular#0-rgb&americanje~f087d27f.wl = { t_cod2=! }
+        ~americanjeepnormal#0-gggr.wl                           = { t_cod2=! }
+        ~americanjeepnormaldmg#0-gggr.wl                        = { t_cod2=! }
+        ~americanjeepspecular#0-rgb&americanjeepcos~95102df6.wl = { t_cod2=! }
+        ~americanjeepspeculardmg#0-rgb&americanjeep~378f9b94.wl = { t_cod2=! }
+      }
       Background.txlist =
       {
         background_american_bottom.wl                           = { t_cod2=! }
@@ -734,6 +773,61 @@ QQRKSRC1
         case64x512grey2.wl                                      = { t_cod2=! }
         case64x512grey3.wl                                      = { t_cod2=! }
         case64x512orange.wl                                     = { t_cod2=! }
+        ~case_normal-gggr.wl                                    = { t_cod2=! }
+      }
+      Colt45.txlist =
+      {
+        colt45_color#0.wl                                       = { t_cod2=! }
+        colt45_wm.wl                                            = { t_cod2=! }
+        ~colt45_normals#0-gggr.wl                               = { t_cod2=! }
+        ~colt45_spec#0-rgbl-11.wl                               = { t_cod2=! }
+      }
+      Concrete.txlist =
+      {
+        concrete04_decal01.wl                                   = { t_cod2=! }
+        concrete04_decal02.wl                                   = { t_cod2=! }
+        concrete04_decal03.wl                                   = { t_cod2=! }
+        concrete04_decal04.wl                                   = { t_cod2=! }
+        concrete04_decal05.wl                                   = { t_cod2=! }
+        concrete04_decal06.wl                                   = { t_cod2=! }
+        concrete04_decal07.wl                                   = { t_cod2=! }
+        concrete@stalin1_brt.wl                                 = { t_cod2=! }
+        concrete_arch1trim.wl                                   = { t_cod2=! }
+        concrete_bunker1.wl                                     = { t_cod2=! }
+        concrete_bunker2.wl                                     = { t_cod2=! }
+        concrete_bunkerstair_rise.wl                            = { t_cod2=! }
+        concrete_bunkerstair_run.wl                             = { t_cod2=! }
+        concrete_ceiling.wl                                     = { t_cod2=! }
+        concrete_floor01.wl                                     = { t_cod2=! }
+        concrete_floor_01.wl                                    = { t_cod2=! }
+        concrete_floor_02.wl                                    = { t_cod2=! }
+        concrete_multi.wl                                       = { t_cod2=! }
+        concrete_redwall1.wl                                    = { t_cod2=! }
+        concrete_redwall2.wl                                    = { t_cod2=! }
+        concrete_side.wl                                        = { t_cod2=! }
+        concrete_stairs01.wl                                    = { t_cod2=! }
+        concrete_stairs02.wl                                    = { t_cod2=! }
+        concrete_stripe01.wl                                    = { t_cod2=! }
+        concrete_stripe02.wl                                    = { t_cod2=! }
+        concrete_stripe03.wl                                    = { t_cod2=! }
+        concrete_stripe04.wl                                    = { t_cod2=! }
+        concrete_trim1.wl                                       = { t_cod2=! }
+        concrete_wall_01.wl                                     = { t_cod2=! }
+        concrete_white1.wl                                      = { t_cod2=! }
+        ~concrete04_decal02_n-gggr.wl                           = { t_cod2=! }
+        ~concrete04_decal02_s-r-87g-87b-87l-67.wl               = { t_cod2=! }
+        ~concrete04_decal03_n-gggr.wl                           = { t_cod2=! }
+        ~concrete04_decal03_s-r-87g-87b-87l-67.wl               = { t_cod2=! }
+        ~concrete04_decal04_n-gggr.wl                           = { t_cod2=! }
+        ~concrete04_decal04_s-r-87g-87b-87l-67.wl               = { t_cod2=! }
+        ~concrete04_decal05_n-gggr.wl                           = { t_cod2=! }
+        ~concrete04_decal05_s-r-87g-87b-87l-67.wl               = { t_cod2=! }
+        ~concrete04_decal06_n-gggr.wl                           = { t_cod2=! }
+        ~concrete04_decal06_s-r-87g-87b-87l-67.wl               = { t_cod2=! }
+        ~concrete04_decal07_n-gggr.wl                           = { t_cod2=! }
+        ~concrete04_decal07_s-r-87g-87b-87l-67.wl               = { t_cod2=! }
+        ~concrete_stairs02_n-gggr.wl                            = { t_cod2=! }
+        ~concrete_stairs02_s-rgb&concrete_stairs02_cp-l-11.wl   = { t_cod2=! }
       }
       Decal.txlist =
       {
@@ -785,6 +879,16 @@ QQRKSRC1
         decal_wall_damage02.wl                                  = { t_cod2=! }
         decal_wall_damage03.wl                                  = { t_cod2=! }
         decal_wall_damage04.wl                                  = { t_cod2=! }
+        ~decal_grimy_wall01_n-gggr.wl                           = { t_cod2=! }
+        ~decal_grimy_wall01_s-rgb&decal_grimy_wall01_cp-l-11.wl = { t_cod2=! }
+        ~decal_grimy_wall02_n-gggr.wl                           = { t_cod2=! }
+        ~decal_grimy_wall02_s-rgbl-11.wl                        = { t_cod2=! }
+        ~decal_painted_arrow_n-gggr.wl                          = { t_cod2=! }
+        ~decal_painted_arrow_s-r-59g-59b-59l-11.wl              = { t_cod2=! }
+        ~decal_picture02_n-gggr.wl                              = { t_cod2=! }
+        ~decal_picture02_s-r30g30b30&$white-l-11.wl             = { t_cod2=! }
+        ~decal_wall_damage04_n-gggr.wl                          = { t_cod2=! }
+        ~decal_wall_damage04_s-rgbl-11.wl                       = { t_cod2=! }
       }
       Desert.txlist =
       {
@@ -794,6 +898,30 @@ QQRKSRC1
         desert_leaf_2.wl                                        = { t_cod2=! }
         desert_leaf_3.wl                                        = { t_cod2=! }
         desert_leaf_4.wl                                        = { t_cod2=! }
+        ~desert_canopies1bump-gggr.wl                           = { t_cod2=! }
+      }
+      Duhoc.txlist =
+      {
+        duhoc_bunker_wallfillet.wl                              = { t_cod2=! }
+        duhoc_bunker_wallfillet_dark.wl                         = { t_cod2=! }
+        duhoc_bunker_wall_floor.wl                              = { t_cod2=! }
+        duhoc_crater_1.wl                                       = { t_cod2=! }
+        duhoc_defend_ft.wl                                      = { t_cod2=! }
+        duhoc_dirt2.wl                                          = { t_cod2=! }
+        duhoc_ft.wl                                             = { t_cod2=! }
+        duhoc_furniture_c.wl                                    = { t_cod2=! }
+        duhoc_grass01.wl                                        = { t_cod2=! }
+        duhoc_grass02.wl                                        = { t_cod2=! }
+        duhoc_grass_edge.wl                                     = { t_cod2=! }
+        duhoc_plowfield01.wl                                    = { t_cod2=! }
+        duhoc_reflect.wl                                        = { t_cod2=! }
+        duhoc_rope_col.wl                                       = { t_cod2=! }
+        duhoc_water_ft.wl                                       = { t_cod2=! }
+        ~duhoc_furniture_n-gggr.wl                              = { t_cod2=! }
+        ~duhoc_furniture_s-r-17g-17b-17&duhoc_furni~0f43101e.wl = { t_cod2=! }
+        ~duhoc_grass02_nrml-gggr.wl                             = { t_cod2=! }
+        ~duhoc_plowfield01_nrml-gggr.wl                         = { t_cod2=! }
+        ~duhoc_rope_normal-gggr.wl                              = { t_cod2=! }
       }
       Egypt.txlist =
       {
@@ -1383,6 +1511,26 @@ QQRKSRC1
         ~egypt_wood_top_normal-gggr.wl                          = { t_cod2=! }
         ~egypt_wood_top_spec-r73g73b73&egypt_wood_t~ab947faf.wl = { t_cod2=! }
       }
+      Flak88.txlist =
+      {
+        flak88_col.wl                                           = { t_cod2=! }
+        flak88_destroy_col.wl                                   = { t_cod2=! }
+        flak88_nm_col.wl                                        = { t_cod2=! }
+        flak88_nm_destroy_col.wl                                = { t_cod2=! }
+        ~flak88_destroy_normal-gggr.wl                          = { t_cod2=! }
+        ~flak88_destroy_spec-rgb&flak88_destroy_cosine-l-11.wl  = { t_cod2=! }
+        ~flak88_nm_destroy_normal-gggr.wl                       = { t_cod2=! }
+        ~flak88_nm_destroy_spec-rgb&flak88_nm_destr~0596c93e.wl = { t_cod2=! }
+        ~flak88_nm_normal-gggr.wl                               = { t_cod2=! }
+        ~flak88_nm_spec-rgb&flak88_nm_cosine-l-11.wl            = { t_cod2=! }
+        ~flak88_normal-gggr.wl                                  = { t_cod2=! }
+        ~flak88_spec-rgb&flak88_cosine-l-11.wl                  = { t_cod2=! }
+      }
+      FlakPanzer.txlist =
+      {
+        flakpanzer_base.wl                                      = { t_cod2=! }
+        flakpanzer_gun.wl                                       = { t_cod2=! }
+      }
       Foliage.txlist =
       {
         foliage_detail@grassblades2a.wl                         = { t_cod2=! }
@@ -1438,6 +1586,15 @@ QQRKSRC1
         foliage_masked@wtallpinevert#0.wl                       = { t_cod2=! }
         foliage_stick.wl                                        = { t_cod2=! }
       }
+      German_armored_car.txlist =
+      {
+        german_armored_car_color.wl                             = { t_cod2=! }
+        german_armored_car_color_d.wl                           = { t_cod2=! }
+        german_armored_car_winter_color_d.wl                    = { t_cod2=! }
+        ~german_armored_car_color_spec_d-rgbl30.wl              = { t_cod2=! }
+        ~german_armored_car_normals-gggr.wl                     = { t_cod2=! }
+        ~german_armored_car_spec-rgbl30.wl                      = { t_cod2=! }
+      }
       Grass.txlist =
       {
         grass01.wl                                              = { t_cod2=! }
@@ -1462,6 +1619,43 @@ QQRKSRC1
         grass_yellow1.wl                                        = { t_cod2=! }
         grass_yellow2.wl                                        = { t_cod2=! }
         grass_yellow3.wl                                        = { t_cod2=! }
+      }
+      Halftrack.txlist =
+      {
+        halftracktread.wl                                       = { t_cod2=! }
+        halftrackwheelhub_camo_d.wl                             = { t_cod2=! }
+        halftrackwheeltread.wl                                  = { t_cod2=! }
+        halftrack_camo_d.wl                                     = { t_cod2=! }
+        half_track_desert_#0.wl                                 = { t_cod2=! }
+        half_track_markings_#0.wl                               = { t_cod2=! }
+        half_track_snow_#0.wl                                   = { t_cod2=! }
+        half_track_tread_desert_#0.wl                           = { t_cod2=! }
+        half_track_tread_d_#0.wl                                = { t_cod2=! }
+        half_track_tread_snow_#0.wl                             = { t_cod2=! }
+        half_track_tread_woodland_#0.wl                         = { t_cod2=! }
+        half_track_woodland_#0.wl                               = { t_cod2=! }
+        half_track_woodland_d_#0.wl                             = { t_cod2=! }
+        ~half_track_desert_nrml_#0-gggr.wl                      = { t_cod2=! }
+        ~half_track_desert_spec_#0-rgb&half_track_w~62016630.wl = { t_cod2=! }
+        ~half_track_nrml_#0-gggr.wl                             = { t_cod2=! }
+        ~half_track_snow_nrml_#0-gggr.wl                        = { t_cod2=! }
+        ~half_track_snow_spec_#0-rgb&half_track_woo~147e6548.wl = { t_cod2=! }
+        ~half_track_tread_nrml_#0-gggr.wl                       = { t_cod2=! }
+        ~half_track_woodland_spec_#0-rgb&half_track~59d40030.wl = { t_cod2=! }
+        ~half_track_woodland_spec_d_#0-rgbl08.wl                = { t_cod2=! }
+      }
+      Higgins.txlist =
+      {
+        higginsvm_color.wl                                      = { t_cod2=! }
+        higgins_color.wl                                        = { t_cod2=! }
+        higgins_decal.wl                                        = { t_cod2=! }
+        higgins_destroyed.wl                                    = { t_cod2=! }
+        ~higginsgrappel_nm-gggr.wl                              = { t_cod2=! }
+        ~higginsgrappel_spec-rgbl-11.wl                         = { t_cod2=! }
+        ~higginsvm_normal-gggr.wl                               = { t_cod2=! }
+        ~higgins_nm-gggr.wl                                     = { t_cod2=! }
+        ~higgins_spec-rgb&higgins_cosine-l-11.wl                = { t_cod2=! }
+        ~higgins_vm_spec-rgbl-11.wl                             = { t_cod2=! }
       }
       Hill400.txlist =
       {
@@ -1523,6 +1717,10 @@ QQRKSRC1
         hud_enfield.wl                                          = { t_cod2=! }
         hud_enfield_scoped.wl                                   = { t_cod2=! }
         hud_fg42.wl                                             = { t_cod2=! }
+        hud_flagflash_american.wl                               = { t_cod2=! }
+        hud_flagflash_british.wl                                = { t_cod2=! }
+        hud_flagflash_german.wl                                 = { t_cod2=! }
+        hud_flagflash_russian.wl                                = { t_cod2=! }
         hud_flag_american.wl                                    = { t_cod2=! }
         hud_flag_british.wl                                     = { t_cod2=! }
         hud_flag_german.wl                                      = { t_cod2=! }
@@ -1588,8 +1786,10 @@ QQRKSRC1
         loadscreen_mp_downtown.wl                               = { t_cod2=! }
         loadscreen_mp_farmhouse.wl                              = { t_cod2=! }
         loadscreen_mp_leningrad.wl                              = { t_cod2=! }
+        loadscreen_mp_harbor.wl                                 = { t_cod2=! }
         loadscreen_mp_matmata.wl                                = { t_cod2=! }
         loadscreen_mp_railyard.wl                               = { t_cod2=! }
+        loadscreen_mp_rhine.wl                                  = { t_cod2=! }
         loadscreen_mp_toujane.wl                                = { t_cod2=! }
         loadscreen_mp_trainstation.wl                           = { t_cod2=! }
         loadscreen_slideshow_bergstein.wl                       = { t_cod2=! }
@@ -1599,6 +1799,218 @@ QQRKSRC1
         loadscreen_slideshow_libya.wl                           = { t_cod2=! }
         loadscreen_slideshow_rhine.wl                           = { t_cod2=! }
         loadscreen_slideshow_tunisia.wl                         = { t_cod2=! }
+      }
+      Minefield.txlist =
+      {
+        minefieldclear_sign.wl                                  = { t_cod2=! }
+        minefieldclear_sign_snow.wl                             = { t_cod2=! }
+        minefieldfake_sign.wl                                   = { t_cod2=! }
+        minefieldfake_sign2.wl                                  = { t_cod2=! }
+        minefieldfake_sign2_snow.wl                             = { t_cod2=! }
+        minefieldfake_sign_snow.wl                              = { t_cod2=! }
+        minefieldpath_sign.wl                                   = { t_cod2=! }
+        minefieldpath_sign_snow.wl                              = { t_cod2=! }
+        minefieldpost.wl                                        = { t_cod2=! }
+        minefieldpost_snow.wl                                   = { t_cod2=! }
+        minefield_sign.wl                                       = { t_cod2=! }
+        minefield_sign2.wl                                      = { t_cod2=! }
+        minefield_sign2_snow.wl                                 = { t_cod2=! }
+        minefield_sign3.wl                                      = { t_cod2=! }
+        minefield_sign3_snow.wl                                 = { t_cod2=! }
+        minefield_sign_snow.wl                                  = { t_cod2=! }
+      }
+      Mission_select.txlist =
+      {
+        mission_select_american_backdrop.wl                     = { t_cod2=! }
+        mission_select_american_background.wl                   = { t_cod2=! }
+        mission_select_background_ru_bottom.wl                  = { t_cod2=! }
+        mission_select_background_ru_top.wl                     = { t_cod2=! }
+        mission_select_background_uk_bottom.wl                  = { t_cod2=! }
+        mission_select_background_uk_top.wl                     = { t_cod2=! }
+        mission_select_background_us_bottom.wl                  = { t_cod2=! }
+        mission_select_background_us_top.wl                     = { t_cod2=! }
+        mission_select_british_1942_01.wl                       = { t_cod2=! }
+        mission_select_british_backdrop.wl                      = { t_cod2=! }
+        mission_select_british_background.wl                    = { t_cod2=! }
+        mission_select_next_mission.wl                          = { t_cod2=! }
+        mission_select_prev_mission.wl                          = { t_cod2=! }
+        mission_select_russian_1941_01.wl                       = { t_cod2=! }
+        mission_select_russian_1942_01.wl                       = { t_cod2=! }
+        mission_select_russian_backdrop.wl                      = { t_cod2=! }
+        mission_select_russian_background.wl                    = { t_cod2=! }
+        mission_select_spacer.wl                                = { t_cod2=! }
+        mission_select_title.wl                                 = { t_cod2=! }
+      }
+      NorthAfrica.txlist =
+      {
+        northafrica_armoire_col.wl                              = { t_cod2=! }
+        northafrica_chairs_col.wl                               = { t_cod2=! }
+        northafrica_halftable_col.wl                            = { t_cod2=! }
+        northafrica_oil_lamp_col.wl                             = { t_cod2=! }
+        northafrica_tables_col.wl                               = { t_cod2=! }
+        northafrica_woodscreen_col.wl                           = { t_cod2=! }
+        ~northafrica_armoire_normal-gggr.wl                     = { t_cod2=! }
+        ~northafrica_armoire_spec-rgbl-86.wl                    = { t_cod2=! }
+        ~northafrica_chairs_normal-gggr.wl                      = { t_cod2=! }
+        ~northafrica_chairs_spec-rgbl-79.wl                     = { t_cod2=! }
+        ~northafrica_oil_lamp_normal-gggr.wl                    = { t_cod2=! }
+        ~northafrica_oil_lamp_spec-rgbl-79.wl                   = { t_cod2=! }
+        ~northafrica_tables_normal-gggr.wl                      = { t_cod2=! }
+        ~northafrica_tables_spec-rgbl-79.wl                     = { t_cod2=! }
+        ~northafrica_woodscreen_normal-gggr.wl                  = { t_cod2=! }
+      }
+      Objective.txlist =
+      {
+        objective.wl                                            = { t_cod2=! }
+        objectivea.wl                                           = { t_cod2=! }
+        objectiveb.wl                                           = { t_cod2=! }
+        objectivec.wl                                           = { t_cod2=! }
+        objectived.wl                                           = { t_cod2=! }
+        objectivee.wl                                           = { t_cod2=! }
+        objectivef.wl                                           = { t_cod2=! }
+        objective_american.wl                                   = { t_cod2=! }
+        objective_american_down.wl                              = { t_cod2=! }
+        objective_american_up.wl                                = { t_cod2=! }
+        objective_base.wl                                       = { t_cod2=! }
+        objective_base_obj.wl                                   = { t_cod2=! }
+        objective_british.wl                                    = { t_cod2=! }
+        objective_british_down.wl                               = { t_cod2=! }
+        objective_british_up.wl                                 = { t_cod2=! }
+        objective_down.wl                                       = { t_cod2=! }
+        objective_friendly.wl                                   = { t_cod2=! }
+        objective_friendly_chat.wl                              = { t_cod2=! }
+        objective_german.wl                                     = { t_cod2=! }
+        objective_german_down.wl                                = { t_cod2=! }
+        objective_german_up.wl                                  = { t_cod2=! }
+        objective_hq.wl                                         = { t_cod2=! }
+        objective_hqa.wl                                        = { t_cod2=! }
+        objective_hqa_down.wl                                   = { t_cod2=! }
+        objective_hqa_up.wl                                     = { t_cod2=! }
+        objective_hqb.wl                                        = { t_cod2=! }
+        objective_hqb_down.wl                                   = { t_cod2=! }
+        objective_hqb_up.wl                                     = { t_cod2=! }
+        objective_hq_down.wl                                    = { t_cod2=! }
+        objective_hq_up.wl                                      = { t_cod2=! }
+        objective_ring.wl                                       = { t_cod2=! }
+        objective_russian.wl                                    = { t_cod2=! }
+        objective_russian_down.wl                               = { t_cod2=! }
+        objective_russian_up.wl                                 = { t_cod2=! }
+        objective_tank.wl                                       = { t_cod2=! }
+        objpoint_a.wl                                           = { t_cod2=! }
+        objpoint_aquestion.wl                                   = { t_cod2=! }
+        objpoint_armoredcar.wl                                  = { t_cod2=! }
+        objpoint_b.wl                                           = { t_cod2=! }
+        objpoint_bomb.wl                                        = { t_cod2=! }
+        objpoint_bquestion.wl                                   = { t_cod2=! }
+        objpoint_default.wl                                     = { t_cod2=! }
+        objpoint_flagmissing_american.wl                        = { t_cod2=! }
+        objpoint_flagmissing_british.wl                         = { t_cod2=! }
+        objpoint_flagmissing_german.wl                          = { t_cod2=! }
+        objpoint_flagmissing_russian.wl                         = { t_cod2=! }
+        objpoint_flagpatch1_american.wl                         = { t_cod2=! }
+        objpoint_flagpatch1_british.wl                          = { t_cod2=! }
+        objpoint_flagpatch1_german.wl                           = { t_cod2=! }
+        objpoint_flagpatch1_russian.wl                          = { t_cod2=! }
+        objpoint_flag_american.wl                               = { t_cod2=! }
+        objpoint_flag_british.wl                                = { t_cod2=! }
+        objpoint_flag_german.wl                                 = { t_cod2=! }
+        objpoint_flag_russian.wl                                = { t_cod2=! }
+        objpoint_flak.wl                                        = { t_cod2=! }
+        objpoint_halftrack.wl                                   = { t_cod2=! }
+        objpoint_question.wl                                    = { t_cod2=! }
+        objpoint_radio.wl                                       = { t_cod2=! }
+        objpoint_star.wl                                        = { t_cod2=! }
+        objpoint_tank.wl                                        = { t_cod2=! }
+        objpoint_truck.wl                                       = { t_cod2=! }
+        obj_attack.wl                                           = { t_cod2=! }
+        obj_baseoffire.wl                                       = { t_cod2=! }
+        obj_capturehold.wl                                      = { t_cod2=! }
+        obj_defend.wl                                           = { t_cod2=! }
+        obj_destroy.wl                                          = { t_cod2=! }
+        obj_lineofsight.wl                                      = { t_cod2=! }
+        obj_movement.wl                                         = { t_cod2=! }
+        obj_question.wl                                         = { t_cod2=! }
+        obj_spawn_american.wl                                   = { t_cod2=! }
+        obj_spawn_british.wl                                    = { t_cod2=! }
+        obj_spawn_german.wl                                     = { t_cod2=! }
+        obj_spawn_russian.wl                                    = { t_cod2=! }
+        obj_stop.wl                                             = { t_cod2=! }
+      }
+      Opel_blitz.txlist =
+      {
+        opel_blitz_desert_#0.wl                                 = { t_cod2=! }
+        opel_blitz_d_#0.wl                                      = { t_cod2=! }
+        opel_blitz_glass_#0.wl                                  = { t_cod2=! }
+        opel_blitz_glass_d_#0.wl                                = { t_cod2=! }
+        opel_blitz_snow_#0.wl                                   = { t_cod2=! }
+        opel_blitz_woodland_#0.wl                               = { t_cod2=! }
+        opel_blitz_woodland_d_#0.wl                             = { t_cod2=! }
+        opel_blitz_woodland_glass_#0.wl                         = { t_cod2=! }
+        ~opel_blitz_nrml_#0-gggr.wl                             = { t_cod2=! }
+        ~opel_blitz_snow_spec_#0-rgb&opel_blitz_cos_#0-l-11.wl  = { t_cod2=! }
+        ~opel_blitz_spec_#0-rgb&opel_blitz_cos_#0-l-11.wl       = { t_cod2=! }
+        ~opel_blitz_spec_d_#0-rgbl08.wl                         = { t_cod2=! }
+      }
+      Panzer2.txlist =
+      {
+        panzer2_color.wl                                        = { t_cod2=! }
+        panzer2_color_d.wl                                      = { t_cod2=! }
+        panzer2_treads_d.wl                                     = { t_cod2=! }
+        panzer2_tread_color.wl                                  = { t_cod2=! }
+        panzer2_winter_c.wl                                     = { t_cod2=! }
+        panzer2_winter_d_c.wl                                   = { t_cod2=! }
+        panzer2_winter_tread_c.wl                               = { t_cod2=! }
+        panzer2_winter_tread_d_c.wl                             = { t_cod2=! }
+        ~panzer2_normals-gggr.wl                                = { t_cod2=! }
+        ~panzer2_spec-rgbl99.wl                                 = { t_cod2=! }
+        ~panzer2_spec_d-r41g41b41l-64.wl                        = { t_cod2=! }
+        ~panzer2_tread_normals-gggr.wl                          = { t_cod2=! }
+        ~panzer2_tread_spec-rgbl-13.wl                          = { t_cod2=! }
+        ~panzer2_winter_normals-gggr.wl                         = { t_cod2=! }
+      }
+      Ranger.txlist =
+      {
+        ranger_frank_#0.wl                                      = { t_cod2=! }
+        ranger_markings_#0.wl                                   = { t_cod2=! }
+        ranger_xpec_body_col.wl                                 = { t_cod2=! }
+        ranger_xpec_hand_col.wl                                 = { t_cod2=! }
+        ranger_xpec_head_col.wl                                 = { t_cod2=! }
+        ~ranger_frank_nrml_#0-gggr.wl                           = { t_cod2=! }
+        ~ranger_frank_spec_#0-r30g30b30&ranger_fran~63674dcd.wl = { t_cod2=! }
+        ~ranger_frank_spec_#0-rgb&ranger_frank_cos_#0-l-11.wl   = { t_cod2=! }
+        ~ranger_xpec_body_normal-gggr.wl                        = { t_cod2=! }
+        ~ranger_xpec_body_spec-rgb&ranger_xpec_body~3c7873c9.wl = { t_cod2=! }
+        ~ranger_xpec_hand_normal-gggr.wl                        = { t_cod2=! }
+        ~ranger_xpec_hand_spec-rgb&ranger_xpec_hand~3c7873c9.wl = { t_cod2=! }
+        ~ranger_xpec_head_normal-gggr.wl                        = { t_cod2=! }
+        ~ranger_xpec_head_spec-rgb&ranger_xpec_head~3c7873c9.wl = { t_cod2=! }
+      }
+      Rock.txlist =
+      {
+        rockdebri_01.wl                                         = { t_cod2=! }
+        rockdebri_02.wl                                         = { t_cod2=! }
+        rockdebri_03.wl                                         = { t_cod2=! }
+        rockdebri_04.wl                                         = { t_cod2=! }
+        rocks_col_2.wl                                          = { t_cod2=! }
+        rocks_col_2_night.wl                                    = { t_cod2=! }
+        rockwall_color.wl                                       = { t_cod2=! }
+        rockychunks01.wl                                        = { t_cod2=! }
+        rockychunks02.wl                                        = { t_cod2=! }
+        rockychunks03.wl                                        = { t_cod2=! }
+        rock_wall_01.wl                                         = { t_cod2=! }
+        rock_wall_2.wl                                          = { t_cod2=! }
+        ~rockwall_normals-gggr.wl                               = { t_cod2=! }
+        ~rockwall_specular-rgbl-11.wl                           = { t_cod2=! }
+        ~rock_wall_2_normal-gggr.wl                             = { t_cod2=! }
+      }
+      RussiaJeep.txlist =
+      {
+        russiajeepcolor#0.wl                                    = { t_cod2=! }
+        russiajeepcolordmg#0.wl                                 = { t_cod2=! }
+        ~russiajeepnormal#0-gggr.wl                             = { t_cod2=! }
+        ~russiajeepnormaldmg#0-gggr.wl                          = { t_cod2=! }
+        ~russiajeepspecular#0-rgb&russiajeepcosine#0-l-79.wl    = { t_cod2=! }
+        ~russiajeepspeculardmg#0-rgb&russiajeepcosi~d366d107.wl = { t_cod2=! }
       }
       Slideshow.txlist =
       {
@@ -1813,6 +2225,20 @@ QQRKSRC1
         ~stalingrad_trim03_n-gggr.wl                            = { t_cod2=! }
         ~stalingrad_trim03_s-rgbl-11.wl                         = { t_cod2=! }
       }
+      Tiger.txlist =
+      {
+        tiger_#0.wl                                             = { t_cod2=! }
+        tiger_d_#0.wl                                           = { t_cod2=! }
+        tiger_d_snow_#0.wl                                      = { t_cod2=! }
+        tiger_tread_#0.wl                                       = { t_cod2=! }
+        tiger_tread_d_#0.wl                                     = { t_cod2=! }
+        ~tiger_d_snow_spec_#0-rgb&tiger_d_snow_cos_#0-l-11.wl   = { t_cod2=! }
+        ~tiger_nrml_#0-gggr.wl                                  = { t_cod2=! }
+        ~tiger_spec_#0-rgb&tiger_cos_#0-l-11.wl                 = { t_cod2=! }
+        ~tiger_spec_d_#0-rgbl08.wl                              = { t_cod2=! }
+        ~tiger_tread_nrml_#0-gggr.wl                            = { t_cod2=! }
+        ~tiger_tread_spec_#0-rgbl08.wl                          = { t_cod2=! }
+      }
       Toujane.txlist =
       {
         toujane_canopy.wl                                       = { t_cod2=! }
@@ -1946,6 +2372,31 @@ QQRKSRC1
         ~toujane_window6_n-gggr.wl                              = { t_cod2=! }
         ~toujane_window6_s-r30g30b30&toujane_window6_cp-l-11.wl = { t_cod2=! }
       }
+      Tree.txlist =
+      {
+        treeline01.wl                                           = { t_cod2=! }
+        treeline02.wl                                           = { t_cod2=! }
+        treeline2_center.wl                                     = { t_cod2=! }
+        treeline2_left.wl                                       = { t_cod2=! }
+        treeline2_right.wl                                      = { t_cod2=! }
+        treeline_center.wl                                      = { t_cod2=! }
+        treeline_left.wl                                        = { t_cod2=! }
+        treeline_right.wl                                       = { t_cod2=! }
+        tree_bark_01.wl                                         = { t_cod2=! }
+        tree_desertbushy_col#0.wl                               = { t_cod2=! }
+        tree_desertbushy_col.wl                                 = { t_cod2=! }
+        tree_desertpalm_col.wl                                  = { t_cod2=! }
+        ~tree_desertpalm_normal-gggr.wl                         = { t_cod2=! }
+      }
+      Trolley.txlist =
+      {
+        trolleypole.wl                                          = { t_cod2=! }
+        trolley_damaged_col.wl                                  = { t_cod2=! }
+        ~trolleypole_bump-gggr.wl                               = { t_cod2=! }
+        ~trolleypole_spec-rgb&$white-l-11.wl                    = { t_cod2=! }
+        ~trolley_damaged_normal-gggr.wl                         = { t_cod2=! }
+        ~trolley_damaged_spec-rgbl-79.wl                        = { t_cod2=! }
+      }
       Tunisia.txlist =
       {
         tunisia_mountain_col_01.wl                              = { t_cod2=! }
@@ -1959,14 +2410,201 @@ QQRKSRC1
         ~tunisia_stone_normal-gggr.wl                           = { t_cod2=! }
         ~tunisia_stone_specular-rgb&$white-l-11.wl              = { t_cod2=! }
       }
+      UniversalCarrier.txlist =
+      {
+        universal_carrier_burn_mark.wl                          = { t_cod2=! }
+        universal_carrier_burn_track.wl                         = { t_cod2=! }
+        universal_carrier_burn_tran.wl                          = { t_cod2=! }
+        universal_carrier_c.wl                                  = { t_cod2=! }
+        universal_carrier_drt_track.wl                          = { t_cod2=! }
+        universal_carrier_drt_tran.wl                           = { t_cod2=! }
+        universal_carrier_gr_burn_c.wl                          = { t_cod2=! }
+        universal_carrier_gr_c.wl                               = { t_cod2=! }
+        universal_carrier_gr_mud_c.wl                           = { t_cod2=! }
+        universal_carrier_gr_mud_track.wl                       = { t_cod2=! }
+        universal_carrier_gr_mud_tran.wl                        = { t_cod2=! }
+        universal_carrier_gr_trans.wl                           = { t_cod2=! }
+        universal_carrier_mark_c.wl                             = { t_cod2=! }
+        universal_carrier_mark_drt_c.wl                         = { t_cod2=! }
+        universal_carrier_mud_track.wl                          = { t_cod2=! }
+        universal_carrier_mud_tran.wl                           = { t_cod2=! }
+        universal_carrier_track.wl                              = { t_cod2=! }
+        universal_carrier_tran.wl                               = { t_cod2=! }
+        universal_carrier_ye_burn_c.wl                          = { t_cod2=! }
+        universal_carrier_ye_drt_c.wl                           = { t_cod2=! }
+        universal_carrier_ye_mud_c.wl                           = { t_cod2=! }
+        ~universal_carrier_mud_n-gggr.wl                        = { t_cod2=! }
+        ~universal_carrier_mud_track_n-gggr.wl                  = { t_cod2=! }
+        ~universal_carrier_mud_tran_n-gggr.wl                   = { t_cod2=! }
+        ~universal_carrier_n-gggr.wl                            = { t_cod2=! }
+        ~universal_carrier_s-r-61g-61b-61&$white-l-11.wl        = { t_cod2=! }
+        ~universal_carrier_s-r29g29b29&$white-l-11.wl           = { t_cod2=! }
+        ~universal_carrier_s-r34g34b34&$white-l-11.wl           = { t_cod2=! }
+        ~universal_carrier_s-r66g66b66&$white-l-11.wl           = { t_cod2=! }
+        ~universal_carrier_s-r97g97b97&$white-l-11.wl           = { t_cod2=! }
+        ~universal_carrier_track_n-gggr.wl                      = { t_cod2=! }
+        ~universal_carrier_track_s-r-49g-49b-49&$white-l-11.wl  = { t_cod2=! }
+        ~universal_carrier_track_s-rgb&$white-l-11.wl           = { t_cod2=! }
+        ~universal_carrier_tran_n-gggr.wl                       = { t_cod2=! }
+        ~universal_carrier_tran_s-r-49g-49b-49&$white-l-11.wl   = { t_cod2=! }
+        ~universal_carrier_tran_s-rgb&$white-l-11.wl            = { t_cod2=! }
+      }
+      Wall.txlist =
+      {
+        wall01.wl                                               = { t_cod2=! }
+        wallightshade_off.wl                                    = { t_cod2=! }
+        wallight_arms.wl                                        = { t_cod2=! }
+        walllightbase.wl                                        = { t_cod2=! }
+        walllightcrystal.wl                                     = { t_cod2=! }
+        walllightornate.wl                                      = { t_cod2=! }
+        walllight_c.wl                                          = { t_cod2=! }
+        walllight_c_on.wl                                       = { t_cod2=! }
+        wallpaper_01.wl                                         = { t_cod2=! }
+        walltrim01.wl                                           = { t_cod2=! }
+        walltrim02.wl                                           = { t_cod2=! }
+        walltrim03.wl                                           = { t_cod2=! }
+        walltrim04.wl                                           = { t_cod2=! }
+        walltrim05.wl                                           = { t_cod2=! }
+        walltrim06.wl                                           = { t_cod2=! }
+        walltrim07.wl                                           = { t_cod2=! }
+        wall_core01.wl                                          = { t_cod2=! }
+        wall_crack01.wl                                         = { t_cod2=! }
+        wall_crack02.wl                                         = { t_cod2=! }
+        wall_crack03.wl                                         = { t_cod2=! }
+        wall_crack04.wl                                         = { t_cod2=! }
+        wall_crack05.wl                                         = { t_cod2=! }
+        wall_ext_stone_decal_01.wl                              = { t_cod2=! }
+        wall_grime_blend01.wl                                   = { t_cod2=! }
+        wall_grime_blend04.wl                                   = { t_cod2=! }
+        wall_grime_multiply01.wl                                = { t_cod2=! }
+        wall_grime_multiply02.wl                                = { t_cod2=! }
+        wall_grime_multiply03.wl                                = { t_cod2=! }
+        wall_grime_multiply04.wl                                = { t_cod2=! }
+        wall_transition01.wl                                    = { t_cod2=! }
+        wall_trim_bottom.wl                                     = { t_cod2=! }
+        wall_trim_bottom01.wl                                   = { t_cod2=! }
+        wall_trim_bottom01_noalpha.wl                           = { t_cod2=! }
+        wall_trim_bottom02.wl                                   = { t_cod2=! }
+        wall_trim_bottom02_noalpha.wl                           = { t_cod2=! }
+        wall_trim_bottom03.wl                                   = { t_cod2=! }
+        wall_trim_bottom_noalpha.wl                             = { t_cod2=! }
+        ~walllight_n-gggr.wl                                    = { t_cod2=! }
+        ~walltrim02_n-gggr.wl                                   = { t_cod2=! }
+        ~walltrim02_s-rgbl-11.wl                                = { t_cod2=! }
+        ~walltrim05_n-gggr.wl                                   = { t_cod2=! }
+        ~walltrim05_s-rgbl-11.wl                                = { t_cod2=! }
+        ~wall_ext_stone_decal_01_normal-gggr.wl                 = { t_cod2=! }
+        ~wall_transition01_n-gggr.wl                            = { t_cod2=! }
+        ~wall_transition01_s-rgbl-11.wl                         = { t_cod2=! }
+        ~wall_trim_bottom01_noalpha_n-gggr.wl                   = { t_cod2=! }
+        ~wall_trim_bottom01_noalpha_s-rgb&wall_trim~0e7d795c.wl = { t_cod2=! }
+        ~wall_trim_bottom02_n-gggr.wl                           = { t_cod2=! }
+        ~wall_trim_bottom02_s-rgbl-11.wl                        = { t_cod2=! }
+        ~wall_trim_bottom_n-gggr.wl                             = { t_cod2=! }
+        ~wall_trim_bottom_noalpha_n-gggr.wl                     = { t_cod2=! }
+        ~wall_trim_bottom_noalpha_s-rgbl-11.wl                  = { t_cod2=! }
+        ~wall_trim_bottom_s-r-61g-61b-61l-11.wl                 = { t_cod2=! }
+      }
+      Weapon.txlist =
+      {
+        weaponnameback.wl                                       = { t_cod2=! }
+        weapon_30cal_c.wl                                       = { t_cod2=! }
+        weapon_bar.wl                                           = { t_cod2=! }
+        weapon_bar_c.wl                                         = { t_cod2=! }
+        weapon_bren.wl                                          = { t_cod2=! }
+        weapon_bren_c.wl                                        = { t_cod2=! }
+        weapon_carbine_c.wl                                     = { t_cod2=! }
+        weapon_colt45.wl                                        = { t_cod2=! }
+        weapon_enfield.wl                                       = { t_cod2=! }
+        weapon_enfieldscoped.wl                                 = { t_cod2=! }
+        weapon_enfield_c.wl                                     = { t_cod2=! }
+        weapon_enfield_scope_c.wl                               = { t_cod2=! }
+        weapon_g43.wl                                           = { t_cod2=! }
+        weapon_g43_c.wl                                         = { t_cod2=! }
+        weapon_greasegun.wl                                     = { t_cod2=! }
+        weapon_greasegun_c.wl                                   = { t_cod2=! }
+        weapon_kar98.wl                                         = { t_cod2=! }
+        weapon_kar98scoped.wl                                   = { t_cod2=! }
+        weapon_kar98_c.wl                                       = { t_cod2=! }
+        weapon_kar98_scope_c.wl                                 = { t_cod2=! }
+        weapon_m1carbine.wl                                     = { t_cod2=! }
+        weapon_m1garand.wl                                      = { t_cod2=! }
+        weapon_m1garand_c.wl                                    = { t_cod2=! }
+        weapon_mg42_c.wl                                        = { t_cod2=! }
+        weapon_mosin_c.wl                                       = { t_cod2=! }
+        weapon_mosin_cloth_c.wl                                 = { t_cod2=! }
+        weapon_mp40.wl                                          = { t_cod2=! }
+        weapon_mp40_c.wl                                        = { t_cod2=! }
+        weapon_mp44.wl                                          = { t_cod2=! }
+        weapon_mp44_c.wl                                        = { t_cod2=! }
+        weapon_nagant.wl                                        = { t_cod2=! }
+        weapon_nagantscoped.wl                                  = { t_cod2=! }
+        weapon_pps42.wl                                         = { t_cod2=! }
+        weapon_pps43_c.wl                                       = { t_cod2=! }
+        weapon_ppsh.wl                                          = { t_cod2=! }
+        weapon_ppsh_c.wl                                        = { t_cod2=! }
+        weapon_shotgun.wl                                       = { t_cod2=! }
+        weapon_springfield.wl                                   = { t_cod2=! }
+        weapon_springfield_c.wl                                 = { t_cod2=! }
+        weapon_sten.wl                                          = { t_cod2=! }
+        weapon_sten_c.wl                                        = { t_cod2=! }
+        weapon_svt40.wl                                         = { t_cod2=! }
+        weapon_svt40_c.wl                                       = { t_cod2=! }
+        weapon_thompson.wl                                      = { t_cod2=! }
+        weapon_thompson_c.wl                                    = { t_cod2=! }
+        weapon_trenchgun_c.wl                                   = { t_cod2=! }
+        ~weapon_30cal_n-gggr.wl                                 = { t_cod2=! }
+        ~weapon_30cal_s-rgb&weapon_30cal_cp-l-11.wl             = { t_cod2=! }
+        ~weapon_bar_n-gggr.wl                                   = { t_cod2=! }
+        ~weapon_bar_s-rgb&weapon_bar_cp-l-11.wl                 = { t_cod2=! }
+        ~weapon_bren_n-gggr.wl                                  = { t_cod2=! }
+        ~weapon_bren_s-r30g30b30&weapon_bren_cp-l-11.wl         = { t_cod2=! }
+        ~weapon_carbine_n-gggr.wl                               = { t_cod2=! }
+        ~weapon_carbine_s-rgb&weapon_carbine_cp-l-11.wl         = { t_cod2=! }
+        ~weapon_enfield_n-gggr.wl                               = { t_cod2=! }
+        ~weapon_enfield_s-rgb&weapon_enfield_cp-l-11.wl         = { t_cod2=! }
+        ~weapon_enfield_scope_n-gggr.wl                         = { t_cod2=! }
+        ~weapon_enfield_scope_s-r-17g-17b-17&weapon~a0a2cbad.wl = { t_cod2=! }
+        ~weapon_g43_n-gggr.wl                                   = { t_cod2=! }
+        ~weapon_g43_s-r-59g-59b-59&weapon_g43_cp-l-11.wl        = { t_cod2=! }
+        ~weapon_greasegun_n-gggr.wl                             = { t_cod2=! }
+        ~weapon_greasegun_s-rgb&weapon_greasegun_cp-l-11.wl     = { t_cod2=! }
+        ~weapon_kar98_n-gggr.wl                                 = { t_cod2=! }
+        ~weapon_kar98_s-r-59g-59b-59&weapon_kar98_cp-l02.wl     = { t_cod2=! }
+        ~weapon_kar98_scope_n-gggr.wl                           = { t_cod2=! }
+        ~weapon_kar98_scope_s-r-59g-59b-59&weapon_k~ddb85fcc.wl = { t_cod2=! }
+        ~weapon_m1garand_n-gggr.wl                              = { t_cod2=! }
+        ~weapon_m1garand_s-rgb&weapon_m1garand_cp-l-11.wl       = { t_cod2=! }
+        ~weapon_mg42_n-gggr.wl                                  = { t_cod2=! }
+        ~weapon_mg42_s-r-59g-59b-59&weapon_mg42_cp-l-11.wl      = { t_cod2=! }
+        ~weapon_mosin_cloth_n-gggr.wl                           = { t_cod2=! }
+        ~weapon_mosin_cloth_s-rgbl-11.wl                        = { t_cod2=! }
+        ~weapon_mosin_n-gggr.wl                                 = { t_cod2=! }
+        ~weapon_mosin_s-r-17g-17b-17&weapon_mosin_cp-l-11.wl    = { t_cod2=! }
+        ~weapon_mp40_n-gggr.wl                                  = { t_cod2=! }
+        ~weapon_mp40_s-r-59g-59b-59&weapon_mp40_cp-l-11.wl      = { t_cod2=! }
+        ~weapon_mp44_n-gggr.wl                                  = { t_cod2=! }
+        ~weapon_mp44_s-rgb&weapon_mp44_cp-l-11.wl               = { t_cod2=! }
+        ~weapon_pps43_n-gggr.wl                                 = { t_cod2=! }
+        ~weapon_pps43_s-rgb&weapon_pps43_cp-l-11.wl             = { t_cod2=! }
+        ~weapon_ppsh_n-gggr.wl                                  = { t_cod2=! }
+        ~weapon_ppsh_s-rgb&weapon_ppsh_cp-l-11.wl               = { t_cod2=! }
+        ~weapon_springfield_n-gggr.wl                           = { t_cod2=! }
+        ~weapon_springfield_s-r-25g-25b-25&weapon_s~aa63322e.wl = { t_cod2=! }
+        ~weapon_sten_n-gggr.wl                                  = { t_cod2=! }
+        ~weapon_sten_s-r-59g-59b-59&weapon_sten_cp-l-11.wl      = { t_cod2=! }
+        ~weapon_svt40_n-gggr.wl                                 = { t_cod2=! }
+        ~weapon_svt40_s-r-87g-87b-87&weapon_svt40_cp-l-11.wl    = { t_cod2=! }
+        ~weapon_thompson_n-gggr.wl                              = { t_cod2=! }
+        ~weapon_thompson_s-rgb&weapon_thompson_cp-l-11.wl       = { t_cod2=! }
+        ~weapon_trenchgun_n-gggr.wl                             = { t_cod2=! }
+        ~weapon_trenchgun_s-rgb&weapon_trenchgun_cp-l-11.wl     = { t_cod2=! }
+      }
       Misc.txlist =
       {
         $black.wl                                               = { t_cod2=! }
         $identitynormalmap.wl                                   = { t_cod2=! }
         $white.wl                                               = { t_cod2=! }
-        155_cannon.wl                                           = { t_cod2=! }
-        155_cannon_decal.wl                                     = { t_cod2=! }
-        155_cannon_parts_d.wl                                   = { t_cod2=! }
         3_cursor3.wl                                            = { t_cod2=! }
         6pndr_base.wl                                           = { t_cod2=! }
         6pndr_sheild.wl                                         = { t_cod2=! }
@@ -1977,18 +2615,11 @@ QQRKSRC1
         adobe_bottom_yellow.wl                                  = { t_cod2=! }
         adobe_top.wl                                            = { t_cod2=! }
         adobe_top_yellow.wl                                     = { t_cod2=! }
-        africajeepcolor#0.wl                                    = { t_cod2=! }
-        africajeepdetail#0.wl                                   = { t_cod2=! }
-        africajeepdmgcolor#0.wl                                 = { t_cod2=! }
         africa_geman_head_col.wl                                = { t_cod2=! }
         air_filter_c.wl                                         = { t_cod2=! }
         aitrig.wl                                               = { t_cod2=! }
         alex_col.wl                                             = { t_cod2=! }
         ambient.wl                                              = { t_cod2=! }
-        americanjeepcolor#0.wl                                  = { t_cod2=! }
-        americanjeepcolordmg#0.wl                               = { t_cod2=! }
-        americanjeepcotcolor#0.wl                               = { t_cod2=! }
-        americanjeepglasscolor#0.wl                             = { t_cod2=! }
         american_radio_c.wl                                     = { t_cod2=! }
         american_rangers_#0.wl                                  = { t_cod2=! }
         american_thread_color.wl                                = { t_cod2=! }
@@ -2163,8 +2794,6 @@ QQRKSRC1
         cobblestone_03.wl                                       = { t_cod2=! }
         color_blue.wl                                           = { t_cod2=! }
         color_red.wl                                            = { t_cod2=! }
-        colt45_color#0.wl                                       = { t_cod2=! }
-        colt45_wm.wl                                            = { t_cod2=! }
         compassback.wl                                          = { t_cod2=! }
         compassface.wl                                          = { t_cod2=! }
         compassping_enemyfiring.wl                              = { t_cod2=! }
@@ -2179,36 +2808,6 @@ QQRKSRC1
         compass_flag_russian.wl                                 = { t_cod2=! }
         compass_highlight.wl                                    = { t_cod2=! }
         composite_01.wl                                         = { t_cod2=! }
-        concrete04_decal01.wl                                   = { t_cod2=! }
-        concrete04_decal02.wl                                   = { t_cod2=! }
-        concrete04_decal03.wl                                   = { t_cod2=! }
-        concrete04_decal04.wl                                   = { t_cod2=! }
-        concrete04_decal05.wl                                   = { t_cod2=! }
-        concrete04_decal06.wl                                   = { t_cod2=! }
-        concrete04_decal07.wl                                   = { t_cod2=! }
-        concrete@stalin1_brt.wl                                 = { t_cod2=! }
-        concrete_arch1trim.wl                                   = { t_cod2=! }
-        concrete_bunker1.wl                                     = { t_cod2=! }
-        concrete_bunker2.wl                                     = { t_cod2=! }
-        concrete_bunkerstair_rise.wl                            = { t_cod2=! }
-        concrete_bunkerstair_run.wl                             = { t_cod2=! }
-        concrete_ceiling.wl                                     = { t_cod2=! }
-        concrete_floor01.wl                                     = { t_cod2=! }
-        concrete_floor_01.wl                                    = { t_cod2=! }
-        concrete_floor_02.wl                                    = { t_cod2=! }
-        concrete_multi.wl                                       = { t_cod2=! }
-        concrete_redwall1.wl                                    = { t_cod2=! }
-        concrete_redwall2.wl                                    = { t_cod2=! }
-        concrete_side.wl                                        = { t_cod2=! }
-        concrete_stairs01.wl                                    = { t_cod2=! }
-        concrete_stairs02.wl                                    = { t_cod2=! }
-        concrete_stripe01.wl                                    = { t_cod2=! }
-        concrete_stripe02.wl                                    = { t_cod2=! }
-        concrete_stripe03.wl                                    = { t_cod2=! }
-        concrete_stripe04.wl                                    = { t_cod2=! }
-        concrete_trim1.wl                                       = { t_cod2=! }
-        concrete_wall_01.wl                                     = { t_cod2=! }
-        concrete_white1.wl                                      = { t_cod2=! }
         console.wl                                              = { t_cod2=! }
         copperpan_metalpots_col.wl                              = { t_cod2=! }
         core_01.wl                                              = { t_cod2=! }
@@ -2355,21 +2954,6 @@ QQRKSRC1
         dualradio_tan.wl                                        = { t_cod2=! }
         dualradio_tan_d.wl                                      = { t_cod2=! }
         dug_trench01.wl                                         = { t_cod2=! }
-        duhoc_bunker_wallfillet.wl                              = { t_cod2=! }
-        duhoc_bunker_wallfillet_dark.wl                         = { t_cod2=! }
-        duhoc_bunker_wall_floor.wl                              = { t_cod2=! }
-        duhoc_crater_1.wl                                       = { t_cod2=! }
-        duhoc_defend_ft.wl                                      = { t_cod2=! }
-        duhoc_dirt2.wl                                          = { t_cod2=! }
-        duhoc_ft.wl                                             = { t_cod2=! }
-        duhoc_furniture_c.wl                                    = { t_cod2=! }
-        duhoc_grass01.wl                                        = { t_cod2=! }
-        duhoc_grass02.wl                                        = { t_cod2=! }
-        duhoc_grass_edge.wl                                     = { t_cod2=! }
-        duhoc_plowfield01.wl                                    = { t_cod2=! }
-        duhoc_reflect.wl                                        = { t_cod2=! }
-        duhoc_rope_col.wl                                       = { t_cod2=! }
-        duhoc_water_ft.wl                                       = { t_cod2=! }
         dustlayer1.wl                                           = { t_cod2=! }
         dusty.wl                                                = { t_cod2=! }
         dusty_puff.wl                                           = { t_cod2=! }
@@ -2437,12 +3021,6 @@ QQRKSRC1
         flag_russian.wl                                         = { t_cod2=! }
         flag_us.wl                                              = { t_cod2=! }
         flag_ussr.wl                                            = { t_cod2=! }
-        flak88_col.wl                                           = { t_cod2=! }
-        flak88_destroy_col.wl                                   = { t_cod2=! }
-        flak88_nm_col.wl                                        = { t_cod2=! }
-        flak88_nm_destroy_col.wl                                = { t_cod2=! }
-        flakpanzer_base.wl                                      = { t_cod2=! }
-        flakpanzer_gun.wl                                       = { t_cod2=! }
         flakpuff_atlas.wl                                       = { t_cod2=! }
         flakscheinwerfer.wl                                     = { t_cod2=! }
         flakscheinwerferhub.wl                                  = { t_cod2=! }
@@ -2486,9 +3064,6 @@ QQRKSRC1
         germankubelglasspristinecolor#0.wl                      = { t_cod2=! }
         germankubelnormdamcolor#0.wl                            = { t_cod2=! }
         germankubelnormpristinecolor#0.wl                       = { t_cod2=! }
-        german_armored_car_color.wl                             = { t_cod2=! }
-        german_armored_car_color_d.wl                           = { t_cod2=! }
-        german_armored_car_winter_color_d.wl                    = { t_cod2=! }
         german_graffiti01.wl                                    = { t_cod2=! }
         german_winter_color.wl                                  = { t_cod2=! }
         glove_thread_c.wl                                       = { t_cod2=! }
@@ -2516,19 +3091,6 @@ QQRKSRC1
         gully_decal.wl                                          = { t_cod2=! }
         gully_ft.wl                                             = { t_cod2=! }
         hair_col.wl                                             = { t_cod2=! }
-        halftracktread.wl                                       = { t_cod2=! }
-        halftrackwheelhub_camo_d.wl                             = { t_cod2=! }
-        halftrackwheeltread.wl                                  = { t_cod2=! }
-        halftrack_camo_d.wl                                     = { t_cod2=! }
-        half_track_desert_#0.wl                                 = { t_cod2=! }
-        half_track_markings_#0.wl                               = { t_cod2=! }
-        half_track_snow_#0.wl                                   = { t_cod2=! }
-        half_track_tread_desert_#0.wl                           = { t_cod2=! }
-        half_track_tread_d_#0.wl                                = { t_cod2=! }
-        half_track_tread_snow_#0.wl                             = { t_cod2=! }
-        half_track_tread_woodland_#0.wl                         = { t_cod2=! }
-        half_track_woodland_#0.wl                               = { t_cod2=! }
-        half_track_woodland_d_#0.wl                             = { t_cod2=! }
         hand_british_bare_c.wl                                  = { t_cod2=! }
         hand_british_c.wl                                       = { t_cod2=! }
         hand_british_wet_c.wl                                   = { t_cod2=! }
@@ -2581,10 +3143,6 @@ QQRKSRC1
         hedgewall01.wl                                          = { t_cod2=! }
         hedgewallbush_all_col.wl                                = { t_cod2=! }
         hedgewallbush_lodrenders_col.wl                         = { t_cod2=! }
-        higginsvm_color.wl                                      = { t_cod2=! }
-        higgins_color.wl                                        = { t_cod2=! }
-        higgins_decal.wl                                        = { t_cod2=! }
-        higgins_destroyed.wl                                    = { t_cod2=! }
         hint.wl                                                 = { t_cod2=! }
         hint_health.wl                                          = { t_cod2=! }
         hint_mantle.wl                                          = { t_cod2=! }
@@ -2732,42 +3290,7 @@ QQRKSRC1
         mg42color.wl                                            = { t_cod2=! }
         mg42_cross.wl                                           = { t_cod2=! }
         mine.wl                                                 = { t_cod2=! }
-        minefieldclear_sign.wl                                  = { t_cod2=! }
-        minefieldclear_sign_snow.wl                             = { t_cod2=! }
-        minefieldfake_sign.wl                                   = { t_cod2=! }
-        minefieldfake_sign2.wl                                  = { t_cod2=! }
-        minefieldfake_sign2_snow.wl                             = { t_cod2=! }
-        minefieldfake_sign_snow.wl                              = { t_cod2=! }
-        minefieldpath_sign.wl                                   = { t_cod2=! }
-        minefieldpath_sign_snow.wl                              = { t_cod2=! }
-        minefieldpost.wl                                        = { t_cod2=! }
-        minefieldpost_snow.wl                                   = { t_cod2=! }
-        minefield_sign.wl                                       = { t_cod2=! }
-        minefield_sign2.wl                                      = { t_cod2=! }
-        minefield_sign2_snow.wl                                 = { t_cod2=! }
-        minefield_sign3.wl                                      = { t_cod2=! }
-        minefield_sign3_snow.wl                                 = { t_cod2=! }
-        minefield_sign_snow.wl                                  = { t_cod2=! }
         missing_fx.wl                                           = { t_cod2=! }
-        mission_select_american_backdrop.wl                     = { t_cod2=! }
-        mission_select_american_background.wl                   = { t_cod2=! }
-        mission_select_background_ru_bottom.wl                  = { t_cod2=! }
-        mission_select_background_ru_top.wl                     = { t_cod2=! }
-        mission_select_background_uk_bottom.wl                  = { t_cod2=! }
-        mission_select_background_uk_top.wl                     = { t_cod2=! }
-        mission_select_background_us_bottom.wl                  = { t_cod2=! }
-        mission_select_background_us_top.wl                     = { t_cod2=! }
-        mission_select_british_1942_01.wl                       = { t_cod2=! }
-        mission_select_british_backdrop.wl                      = { t_cod2=! }
-        mission_select_british_background.wl                    = { t_cod2=! }
-        mission_select_next_mission.wl                          = { t_cod2=! }
-        mission_select_prev_mission.wl                          = { t_cod2=! }
-        mission_select_russian_1941_01.wl                       = { t_cod2=! }
-        mission_select_russian_1942_01.wl                       = { t_cod2=! }
-        mission_select_russian_backdrop.wl                      = { t_cod2=! }
-        mission_select_russian_background.wl                    = { t_cod2=! }
-        mission_select_spacer.wl                                = { t_cod2=! }
-        mission_select_title.wl                                 = { t_cod2=! }
         mist.wl                                                 = { t_cod2=! }
         mist2.wl                                                = { t_cod2=! }
         mkfrag.wl                                               = { t_cod2=! }
@@ -2845,87 +3368,7 @@ QQRKSRC1
         nodraw.wl                                               = { t_cod2=! }
         nodraw_decal.wl                                         = { t_cod2=! }
         nodraw_notsolid.wl                                      = { t_cod2=! }
-        northafrica_armoire_col.wl                              = { t_cod2=! }
-        northafrica_chairs_col.wl                               = { t_cod2=! }
-        northafrica_halftable_col.wl                            = { t_cod2=! }
-        northafrica_oil_lamp_col.wl                             = { t_cod2=! }
-        northafrica_tables_col.wl                               = { t_cod2=! }
-        northafrica_woodscreen_col.wl                           = { t_cod2=! }
-        objective.wl                                            = { t_cod2=! }
-        objectivea.wl                                           = { t_cod2=! }
-        objectiveb.wl                                           = { t_cod2=! }
-        objectivec.wl                                           = { t_cod2=! }
-        objectived.wl                                           = { t_cod2=! }
-        objectivee.wl                                           = { t_cod2=! }
-        objectivef.wl                                           = { t_cod2=! }
-        objective_american.wl                                   = { t_cod2=! }
-        objective_american_down.wl                              = { t_cod2=! }
-        objective_american_up.wl                                = { t_cod2=! }
-        objective_base.wl                                       = { t_cod2=! }
-        objective_base_obj.wl                                   = { t_cod2=! }
-        objective_british.wl                                    = { t_cod2=! }
-        objective_british_down.wl                               = { t_cod2=! }
-        objective_british_up.wl                                 = { t_cod2=! }
-        objective_down.wl                                       = { t_cod2=! }
-        objective_friendly.wl                                   = { t_cod2=! }
-        objective_friendly_chat.wl                              = { t_cod2=! }
-        objective_german.wl                                     = { t_cod2=! }
-        objective_german_down.wl                                = { t_cod2=! }
-        objective_german_up.wl                                  = { t_cod2=! }
-        objective_hq.wl                                         = { t_cod2=! }
-        objective_hqa.wl                                        = { t_cod2=! }
-        objective_hqa_down.wl                                   = { t_cod2=! }
-        objective_hqa_up.wl                                     = { t_cod2=! }
-        objective_hqb.wl                                        = { t_cod2=! }
-        objective_hqb_down.wl                                   = { t_cod2=! }
-        objective_hqb_up.wl                                     = { t_cod2=! }
-        objective_hq_down.wl                                    = { t_cod2=! }
-        objective_hq_up.wl                                      = { t_cod2=! }
-        objective_ring.wl                                       = { t_cod2=! }
-        objective_russian.wl                                    = { t_cod2=! }
-        objective_russian_down.wl                               = { t_cod2=! }
-        objective_russian_up.wl                                 = { t_cod2=! }
-        objective_tank.wl                                       = { t_cod2=! }
-        objpoint_a.wl                                           = { t_cod2=! }
-        objpoint_aquestion.wl                                   = { t_cod2=! }
-        objpoint_armoredcar.wl                                  = { t_cod2=! }
-        objpoint_b.wl                                           = { t_cod2=! }
-        objpoint_bomb.wl                                        = { t_cod2=! }
-        objpoint_bquestion.wl                                   = { t_cod2=! }
-        objpoint_default.wl                                     = { t_cod2=! }
-        objpoint_flag_american.wl                               = { t_cod2=! }
-        objpoint_flag_british.wl                                = { t_cod2=! }
-        objpoint_flag_german.wl                                 = { t_cod2=! }
-        objpoint_flag_russian.wl                                = { t_cod2=! }
-        objpoint_flak.wl                                        = { t_cod2=! }
-        objpoint_halftrack.wl                                   = { t_cod2=! }
-        objpoint_question.wl                                    = { t_cod2=! }
-        objpoint_radio.wl                                       = { t_cod2=! }
-        objpoint_star.wl                                        = { t_cod2=! }
-        objpoint_tank.wl                                        = { t_cod2=! }
-        objpoint_truck.wl                                       = { t_cod2=! }
-        obj_attack.wl                                           = { t_cod2=! }
-        obj_baseoffire.wl                                       = { t_cod2=! }
-        obj_capturehold.wl                                      = { t_cod2=! }
-        obj_defend.wl                                           = { t_cod2=! }
-        obj_destroy.wl                                          = { t_cod2=! }
-        obj_lineofsight.wl                                      = { t_cod2=! }
-        obj_movement.wl                                         = { t_cod2=! }
-        obj_question.wl                                         = { t_cod2=! }
-        obj_spawn_american.wl                                   = { t_cod2=! }
-        obj_spawn_british.wl                                    = { t_cod2=! }
-        obj_spawn_german.wl                                     = { t_cod2=! }
-        obj_spawn_russian.wl                                    = { t_cod2=! }
-        obj_stop.wl                                             = { t_cod2=! }
         occluder.wl                                             = { t_cod2=! }
-        opel_blitz_desert_#0.wl                                 = { t_cod2=! }
-        opel_blitz_d_#0.wl                                      = { t_cod2=! }
-        opel_blitz_glass_#0.wl                                  = { t_cod2=! }
-        opel_blitz_glass_d_#0.wl                                = { t_cod2=! }
-        opel_blitz_snow_#0.wl                                   = { t_cod2=! }
-        opel_blitz_woodland_#0.wl                               = { t_cod2=! }
-        opel_blitz_woodland_d_#0.wl                             = { t_cod2=! }
-        opel_blitz_woodland_glass_#0.wl                         = { t_cod2=! }
         opel_vm_desert_#0.wl                                    = { t_cod2=! }
         opel_vm_woodland_#0.wl                                  = { t_cod2=! }
         origin.wl                                               = { t_cod2=! }
@@ -2936,14 +3379,6 @@ QQRKSRC1
         p51_mustang_decals_#0.wl                                = { t_cod2=! }
         pail.wl                                                 = { t_cod2=! }
         paml_back.wl                                            = { t_cod2=! }
-        panzer2_color.wl                                        = { t_cod2=! }
-        panzer2_color_d.wl                                      = { t_cod2=! }
-        panzer2_treads_d.wl                                     = { t_cod2=! }
-        panzer2_tread_color.wl                                  = { t_cod2=! }
-        panzer2_winter_c.wl                                     = { t_cod2=! }
-        panzer2_winter_d_c.wl                                   = { t_cod2=! }
-        panzer2_winter_tread_c.wl                               = { t_cod2=! }
-        panzer2_winter_tread_d_c.wl                             = { t_cod2=! }
         panzerfaust.wl                                          = { t_cod2=! }
         panzerfaust_box.wl                                      = { t_cod2=! }
         panzerfaust_box_interior.wl                             = { t_cod2=! }
@@ -3014,6 +3449,7 @@ QQRKSRC1
         pricehead_col.wl                                        = { t_cod2=! }
         prop_shell_c.wl                                         = { t_cod2=! }
         pscolor.wl                                              = { t_cod2=! }
+        punkbusterlogo.wl                                       = { t_cod2=! }
         qerfont.wl                                              = { t_cod2=! }
         radioknobs.wl                                           = { t_cod2=! }
         railside.wl                                             = { t_cod2=! }
@@ -3024,11 +3460,6 @@ QQRKSRC1
         rain_drop.wl                                            = { t_cod2=! }
         rain_spray.wl                                           = { t_cod2=! }
         randall_head_col_#0.wl                                  = { t_cod2=! }
-        ranger_frank_#0.wl                                      = { t_cod2=! }
-        ranger_markings_#0.wl                                   = { t_cod2=! }
-        ranger_xpec_body_col.wl                                 = { t_cod2=! }
-        ranger_xpec_hand_col.wl                                 = { t_cod2=! }
-        ranger_xpec_head_col.wl                                 = { t_cod2=! }
         rank_captain.wl                                         = { t_cod2=! }
         rank_colonel.wl                                         = { t_cod2=! }
         rank_corporal.wl                                        = { t_cod2=! }
@@ -3055,18 +3486,6 @@ QQRKSRC1
         road_single01.wl                                        = { t_cod2=! }
         road_single02.wl                                        = { t_cod2=! }
         road_turn01.wl                                          = { t_cod2=! }
-        rockdebri_01.wl                                         = { t_cod2=! }
-        rockdebri_02.wl                                         = { t_cod2=! }
-        rockdebri_03.wl                                         = { t_cod2=! }
-        rockdebri_04.wl                                         = { t_cod2=! }
-        rocks_col_2.wl                                          = { t_cod2=! }
-        rocks_col_2_night.wl                                    = { t_cod2=! }
-        rockwall_color.wl                                       = { t_cod2=! }
-        rockychunks01.wl                                        = { t_cod2=! }
-        rockychunks02.wl                                        = { t_cod2=! }
-        rockychunks03.wl                                        = { t_cod2=! }
-        rock_wall_01.wl                                         = { t_cod2=! }
-        rock_wall_2.wl                                          = { t_cod2=! }
         roof01.wl                                               = { t_cod2=! }
         roof01wide.wl                                           = { t_cod2=! }
         roof_underside01.wl                                     = { t_cod2=! }
@@ -3083,8 +3502,6 @@ QQRKSRC1
         rubble_wood_light.wl                                    = { t_cod2=! }
         rugs1a.wl                                               = { t_cod2=! }
         rug_2.wl                                                = { t_cod2=! }
-        russiajeepcolor#0.wl                                    = { t_cod2=! }
-        russiajeepcolordmg#0.wl                                 = { t_cod2=! }
         russiangrenade_c.wl                                     = { t_cod2=! }
         russianuniformcol#0.wl                                  = { t_cod2=! }
         russian_graffiti01.wl                                   = { t_cod2=! }
@@ -3284,17 +3701,14 @@ QQRKSRC1
         thicktrunk_bark.wl                                      = { t_cod2=! }
         thompson_stage1.wl                                      = { t_cod2=! }
         thompson_stage2.wl                                      = { t_cod2=! }
+        thumbsup.wl                                             = { t_cod2=! }
+        thumbsdown.wl                                           = { t_cod2=! }
         th_snow_a.wl                                            = { t_cod2=! }
         th_snow_add.wl                                          = { t_cod2=! }
         th_snow_b.wl                                            = { t_cod2=! }
         th_snow_blend.wl                                        = { t_cod2=! }
         th_snow_b_edge.wl                                       = { t_cod2=! }
         th_snow_c.wl                                            = { t_cod2=! }
-        tiger_#0.wl                                             = { t_cod2=! }
-        tiger_d_#0.wl                                           = { t_cod2=! }
-        tiger_d_snow_#0.wl                                      = { t_cod2=! }
-        tiger_tread_#0.wl                                       = { t_cod2=! }
-        tiger_tread_d_#0.wl                                     = { t_cod2=! }
         tile_bath01.wl                                          = { t_cod2=! }
         tile_bath01_decal.wl                                    = { t_cod2=! }
         tile_bath02.wl                                          = { t_cod2=! }
@@ -3327,18 +3741,6 @@ QQRKSRC1
         train_wheel_snow_col.wl                                 = { t_cod2=! }
         transparent.wl                                          = { t_cod2=! }
         traverse.wl                                             = { t_cod2=! }
-        treeline01.wl                                           = { t_cod2=! }
-        treeline02.wl                                           = { t_cod2=! }
-        treeline2_center.wl                                     = { t_cod2=! }
-        treeline2_left.wl                                       = { t_cod2=! }
-        treeline2_right.wl                                      = { t_cod2=! }
-        treeline_center.wl                                      = { t_cod2=! }
-        treeline_left.wl                                        = { t_cod2=! }
-        treeline_right.wl                                       = { t_cod2=! }
-        tree_bark_01.wl                                         = { t_cod2=! }
-        tree_desertbushy_col#0.wl                               = { t_cod2=! }
-        tree_desertbushy_col.wl                                 = { t_cod2=! }
-        tree_desertpalm_col.wl                                  = { t_cod2=! }
         trenchfloor_stalingrad01.wl                             = { t_cod2=! }
         trenchframe.wl                                          = { t_cod2=! }
         trenchwallconcrete_a.wl                                 = { t_cod2=! }
@@ -3351,31 +3753,8 @@ QQRKSRC1
         trench_wall.wl                                          = { t_cod2=! }
         trench_wall_short.wl                                    = { t_cod2=! }
         trigger.wl                                              = { t_cod2=! }
-        trolleypole.wl                                          = { t_cod2=! }
-        trolley_damaged_col.wl                                  = { t_cod2=! }
         ui_button_xenon_trigl_32x32.wl                          = { t_cod2=! }
         ui_button_xenon_trigr_32x32.wl                          = { t_cod2=! }
-        universal_carrier_burn_mark.wl                          = { t_cod2=! }
-        universal_carrier_burn_track.wl                         = { t_cod2=! }
-        universal_carrier_burn_tran.wl                          = { t_cod2=! }
-        universal_carrier_c.wl                                  = { t_cod2=! }
-        universal_carrier_drt_track.wl                          = { t_cod2=! }
-        universal_carrier_drt_tran.wl                           = { t_cod2=! }
-        universal_carrier_gr_burn_c.wl                          = { t_cod2=! }
-        universal_carrier_gr_c.wl                               = { t_cod2=! }
-        universal_carrier_gr_mud_c.wl                           = { t_cod2=! }
-        universal_carrier_gr_mud_track.wl                       = { t_cod2=! }
-        universal_carrier_gr_mud_tran.wl                        = { t_cod2=! }
-        universal_carrier_gr_trans.wl                           = { t_cod2=! }
-        universal_carrier_mark_c.wl                             = { t_cod2=! }
-        universal_carrier_mark_drt_c.wl                         = { t_cod2=! }
-        universal_carrier_mud_track.wl                          = { t_cod2=! }
-        universal_carrier_mud_tran.wl                           = { t_cod2=! }
-        universal_carrier_track.wl                              = { t_cod2=! }
-        universal_carrier_tran.wl                               = { t_cod2=! }
-        universal_carrier_ye_burn_c.wl                          = { t_cod2=! }
-        universal_carrier_ye_drt_c.wl                           = { t_cod2=! }
-        universal_carrier_ye_mud_c.wl                           = { t_cod2=! }
         up_arrow.wl                                             = { t_cod2=! }
         us_ranger_body_a.wl                                     = { t_cod2=! }
         us_smokegrenade.wl                                      = { t_cod2=! }
@@ -3555,43 +3934,6 @@ QQRKSRC1
         v_wood_stair_rise01.wl                                  = { t_cod2=! }
         v_wood_stair_top.wl                                     = { t_cod2=! }
         v_wood_stair_top01.wl                                   = { t_cod2=! }
-        wall01.wl                                               = { t_cod2=! }
-        wallightshade_off.wl                                    = { t_cod2=! }
-        wallight_arms.wl                                        = { t_cod2=! }
-        walllightbase.wl                                        = { t_cod2=! }
-        walllightcrystal.wl                                     = { t_cod2=! }
-        walllightornate.wl                                      = { t_cod2=! }
-        walllight_c.wl                                          = { t_cod2=! }
-        walllight_c_on.wl                                       = { t_cod2=! }
-        wallpaper_01.wl                                         = { t_cod2=! }
-        walltrim01.wl                                           = { t_cod2=! }
-        walltrim02.wl                                           = { t_cod2=! }
-        walltrim03.wl                                           = { t_cod2=! }
-        walltrim04.wl                                           = { t_cod2=! }
-        walltrim05.wl                                           = { t_cod2=! }
-        walltrim06.wl                                           = { t_cod2=! }
-        walltrim07.wl                                           = { t_cod2=! }
-        wall_core01.wl                                          = { t_cod2=! }
-        wall_crack01.wl                                         = { t_cod2=! }
-        wall_crack02.wl                                         = { t_cod2=! }
-        wall_crack03.wl                                         = { t_cod2=! }
-        wall_crack04.wl                                         = { t_cod2=! }
-        wall_crack05.wl                                         = { t_cod2=! }
-        wall_ext_stone_decal_01.wl                              = { t_cod2=! }
-        wall_grime_blend01.wl                                   = { t_cod2=! }
-        wall_grime_blend04.wl                                   = { t_cod2=! }
-        wall_grime_multiply01.wl                                = { t_cod2=! }
-        wall_grime_multiply02.wl                                = { t_cod2=! }
-        wall_grime_multiply03.wl                                = { t_cod2=! }
-        wall_grime_multiply04.wl                                = { t_cod2=! }
-        wall_transition01.wl                                    = { t_cod2=! }
-        wall_trim_bottom.wl                                     = { t_cod2=! }
-        wall_trim_bottom01.wl                                   = { t_cod2=! }
-        wall_trim_bottom01_noalpha.wl                           = { t_cod2=! }
-        wall_trim_bottom02.wl                                   = { t_cod2=! }
-        wall_trim_bottom02_noalpha.wl                           = { t_cod2=! }
-        wall_trim_bottom03.wl                                   = { t_cod2=! }
-        wall_trim_bottom_noalpha.wl                             = { t_cod2=! }
         warning.wl                                              = { t_cod2=! }
         warning@file.wl                                         = { t_cod2=! }
         warning@fps.wl                                          = { t_cod2=! }
@@ -3615,52 +3957,6 @@ QQRKSRC1
         water_spout.wl                                          = { t_cod2=! }
         water_wake.wl                                           = { t_cod2=! }
         water_wake_green.wl                                     = { t_cod2=! }
-        weaponnameback.wl                                       = { t_cod2=! }
-        weapon_30cal_c.wl                                       = { t_cod2=! }
-        weapon_bar.wl                                           = { t_cod2=! }
-        weapon_bar_c.wl                                         = { t_cod2=! }
-        weapon_bren.wl                                          = { t_cod2=! }
-        weapon_bren_c.wl                                        = { t_cod2=! }
-        weapon_carbine_c.wl                                     = { t_cod2=! }
-        weapon_colt45.wl                                        = { t_cod2=! }
-        weapon_enfield.wl                                       = { t_cod2=! }
-        weapon_enfieldscoped.wl                                 = { t_cod2=! }
-        weapon_enfield_c.wl                                     = { t_cod2=! }
-        weapon_enfield_scope_c.wl                               = { t_cod2=! }
-        weapon_g43.wl                                           = { t_cod2=! }
-        weapon_g43_c.wl                                         = { t_cod2=! }
-        weapon_greasegun.wl                                     = { t_cod2=! }
-        weapon_greasegun_c.wl                                   = { t_cod2=! }
-        weapon_kar98.wl                                         = { t_cod2=! }
-        weapon_kar98scoped.wl                                   = { t_cod2=! }
-        weapon_kar98_c.wl                                       = { t_cod2=! }
-        weapon_kar98_scope_c.wl                                 = { t_cod2=! }
-        weapon_m1carbine.wl                                     = { t_cod2=! }
-        weapon_m1garand.wl                                      = { t_cod2=! }
-        weapon_m1garand_c.wl                                    = { t_cod2=! }
-        weapon_mg42_c.wl                                        = { t_cod2=! }
-        weapon_mosin_c.wl                                       = { t_cod2=! }
-        weapon_mosin_cloth_c.wl                                 = { t_cod2=! }
-        weapon_mp40.wl                                          = { t_cod2=! }
-        weapon_mp40_c.wl                                        = { t_cod2=! }
-        weapon_mp44.wl                                          = { t_cod2=! }
-        weapon_mp44_c.wl                                        = { t_cod2=! }
-        weapon_nagant.wl                                        = { t_cod2=! }
-        weapon_nagantscoped.wl                                  = { t_cod2=! }
-        weapon_pps42.wl                                         = { t_cod2=! }
-        weapon_pps43_c.wl                                       = { t_cod2=! }
-        weapon_ppsh.wl                                          = { t_cod2=! }
-        weapon_ppsh_c.wl                                        = { t_cod2=! }
-        weapon_shotgun.wl                                       = { t_cod2=! }
-        weapon_springfield.wl                                   = { t_cod2=! }
-        weapon_springfield_c.wl                                 = { t_cod2=! }
-        weapon_sten.wl                                          = { t_cod2=! }
-        weapon_sten_c.wl                                        = { t_cod2=! }
-        weapon_svt40.wl                                         = { t_cod2=! }
-        weapon_svt40_c.wl                                       = { t_cod2=! }
-        weapon_thompson.wl                                      = { t_cod2=! }
-        weapon_thompson_c.wl                                    = { t_cod2=! }
-        weapon_trenchgun_c.wl                                   = { t_cod2=! }
         webley_c.wl                                             = { t_cod2=! }
         wellington_color_#0.wl                                  = { t_cod2=! }
         whisp_spiral.wl                                         = { t_cod2=! }
@@ -3762,12 +4058,6 @@ QQRKSRC1
         zbrushtest_corner_color01.wl                            = { t_cod2=! }
         ~$white-rgb&caen_mud_cosine_02-l.wl                     = { t_cod2=! }
         ~$white-rgbl.wl                                         = { t_cod2=! }
-        ~155_cannon_bump-gggr.wl                                = { t_cod2=! }
-        ~155_cannon_decal_bump-gggr.wl                          = { t_cod2=! }
-        ~155_cannon_decal_spec-rgb&155_cannon_decal~3c7873c9.wl = { t_cod2=! }
-        ~155_cannon_parts_d_bump-gggr.wl                        = { t_cod2=! }
-        ~155_cannon_parts_d_spec-rgb&155_cannon_par~145d5271.wl = { t_cod2=! }
-        ~155_cannon_spec-rgb&155_cannon_cosine-l-11.wl          = { t_cod2=! }
         ~6pndrbasenm-gggr.wl                                    = { t_cod2=! }
         ~6pndrsheildnm-gggr.wl                                  = { t_cod2=! }
         ~6pndrwheelnm-gggr.wl                                   = { t_cod2=! }
@@ -3777,23 +4067,12 @@ QQRKSRC1
         ~access_door1_n-gggr.wl                                 = { t_cod2=! }
         ~access_door1_s-r-25g-25b-25l-11.wl                     = { t_cod2=! }
         ~adobe_bottom_normal-gggr.wl                            = { t_cod2=! }
-        ~africajeepdmgnormal#0-gggr.wl                          = { t_cod2=! }
-        ~africajeepdmgspecular#0-r-25g-25b-25&afric~a7dd18d3.wl = { t_cod2=! }
-        ~africajeepnormal#0-gggr.wl                             = { t_cod2=! }
-        ~africajeepspecular#0-r-61g-61b-61&africaje~f57328a8.wl = { t_cod2=! }
         ~africa_geman_head_norm-gggr.wl                         = { t_cod2=! }
         ~africa_geman_head_spec-rgb&africa_geman_he~e8e513ea.wl = { t_cod2=! }
         ~air_filter_n-gggr.wl                                   = { t_cod2=! }
         ~air_filter_s-rgb&air_filter_cp-l40.wl                  = { t_cod2=! }
         ~alex_nrml-gggr.wl                                      = { t_cod2=! }
         ~alex_spec-rgb&alex_cosine-l-11.wl                      = { t_cod2=! }
-        ~americanjeepcotnormal#0-gggr.wl                        = { t_cod2=! }
-        ~americanjeepcotspecular#0-rgbl-79.wl                   = { t_cod2=! }
-        ~americanjeepglassspecular#0-rgb&americanje~f087d27f.wl = { t_cod2=! }
-        ~americanjeepnormal#0-gggr.wl                           = { t_cod2=! }
-        ~americanjeepnormaldmg#0-gggr.wl                        = { t_cod2=! }
-        ~americanjeepspecular#0-rgb&americanjeepcos~95102df6.wl = { t_cod2=! }
-        ~americanjeepspeculardmg#0-rgb&americanjeep~378f9b94.wl = { t_cod2=! }
         ~american_radio_n-gggr.wl                               = { t_cod2=! }
         ~american_radio_s-rgb&american_radio_cp-l-11.wl         = { t_cod2=! }
         ~american_rangers_nrml_#0-gggr.wl                       = { t_cod2=! }
@@ -3875,7 +4154,6 @@ QQRKSRC1
         ~canopybed_s-r-87g-87b-87&canopybed_cp-l-11.wl          = { t_cod2=! }
         ~canopygrill_n-gggr.wl                                  = { t_cod2=! }
         ~canopygrill_s-r-87g-87b-87&canopygrill_cp-l-11.wl      = { t_cod2=! }
-        ~case_normal-gggr.wl                                    = { t_cod2=! }
         ~ceiling_n-gggr.wl                                      = { t_cod2=! }
         ~ceiling_s-rgb&ceiling_cp-l-11.wl                       = { t_cod2=! }
         ~char_wood_bump-gggr.wl                                 = { t_cod2=! }
@@ -3889,22 +4167,6 @@ QQRKSRC1
         ~cobblestone_bump3-gggr.wl                              = { t_cod2=! }
         ~cobble_n-gggr.wl                                       = { t_cod2=! }
         ~cobble_s-r-25g-25b-25&cobble_c-l-11.wl                 = { t_cod2=! }
-        ~colt45_normals#0-gggr.wl                               = { t_cod2=! }
-        ~colt45_spec#0-rgbl-11.wl                               = { t_cod2=! }
-        ~concrete04_decal02_n-gggr.wl                           = { t_cod2=! }
-        ~concrete04_decal02_s-r-87g-87b-87l-67.wl               = { t_cod2=! }
-        ~concrete04_decal03_n-gggr.wl                           = { t_cod2=! }
-        ~concrete04_decal03_s-r-87g-87b-87l-67.wl               = { t_cod2=! }
-        ~concrete04_decal04_n-gggr.wl                           = { t_cod2=! }
-        ~concrete04_decal04_s-r-87g-87b-87l-67.wl               = { t_cod2=! }
-        ~concrete04_decal05_n-gggr.wl                           = { t_cod2=! }
-        ~concrete04_decal05_s-r-87g-87b-87l-67.wl               = { t_cod2=! }
-        ~concrete04_decal06_n-gggr.wl                           = { t_cod2=! }
-        ~concrete04_decal06_s-r-87g-87b-87l-67.wl               = { t_cod2=! }
-        ~concrete04_decal07_n-gggr.wl                           = { t_cod2=! }
-        ~concrete04_decal07_s-r-87g-87b-87l-67.wl               = { t_cod2=! }
-        ~concrete_stairs02_n-gggr.wl                            = { t_cod2=! }
-        ~concrete_stairs02_s-rgb&concrete_stairs02_cp-l-11.wl   = { t_cod2=! }
         ~copperpan_metalpots_norm-gggr.wl                       = { t_cod2=! }
         ~copperpan_metalpots_spec-rgbl22.wl                     = { t_cod2=! }
         ~cow_normals-gggr.wl                                    = { t_cod2=! }
@@ -3942,19 +4204,8 @@ QQRKSRC1
         ~david_head_norm-gggr.wl                                = { t_cod2=! }
         ~david_head_spec-r30g30b30&david_head_cosin~65ac5d36.wl = { t_cod2=! }
         ~david_head_spec-rgb&david_head_cosine-l-11.wl          = { t_cod2=! }
-        ~decal_grimy_wall01_n-gggr.wl                           = { t_cod2=! }
-        ~decal_grimy_wall01_s-rgb&decal_grimy_wall01_cp-l-11.wl = { t_cod2=! }
-        ~decal_grimy_wall02_n-gggr.wl                           = { t_cod2=! }
-        ~decal_grimy_wall02_s-rgbl-11.wl                        = { t_cod2=! }
-        ~decal_painted_arrow_n-gggr.wl                          = { t_cod2=! }
-        ~decal_painted_arrow_s-r-59g-59b-59l-11.wl              = { t_cod2=! }
-        ~decal_picture02_n-gggr.wl                              = { t_cod2=! }
-        ~decal_picture02_s-r30g30b30&$white-l-11.wl             = { t_cod2=! }
-        ~decal_wall_damage04_n-gggr.wl                          = { t_cod2=! }
-        ~decal_wall_damage04_s-rgbl-11.wl                       = { t_cod2=! }
         ~decorative_grate1spec-r-25g-25b-25l-11.wl              = { t_cod2=! }
         ~decorative_grate1_bump-gggr.wl                         = { t_cod2=! }
-        ~desert_canopies1bump-gggr.wl                           = { t_cod2=! }
         ~desk_a_nrml-gggr.wl                                    = { t_cod2=! }
         ~desk_a_spec-rgbl08.wl                                  = { t_cod2=! }
         ~desk_b_nrml-gggr.wl                                    = { t_cod2=! }
@@ -4018,11 +4269,6 @@ QQRKSRC1
         ~dualradio_bump_d-gggr.wl                               = { t_cod2=! }
         ~dualradio_spec-rgbl-11.wl                              = { t_cod2=! }
         ~dualradio_spec_d-rgbl-11.wl                            = { t_cod2=! }
-        ~duhoc_furniture_n-gggr.wl                              = { t_cod2=! }
-        ~duhoc_furniture_s-r-17g-17b-17&duhoc_furni~0f43101e.wl = { t_cod2=! }
-        ~duhoc_grass02_nrml-gggr.wl                             = { t_cod2=! }
-        ~duhoc_plowfield01_nrml-gggr.wl                         = { t_cod2=! }
-        ~duhoc_rope_normal-gggr.wl                              = { t_cod2=! }
         ~d_beachpebble_normal-gggr.wl                           = { t_cod2=! }
         ~d_beachpebble_s-r-87g-87b-87l-11.wl                    = { t_cod2=! }
         ~d_beachrock_normal-gggr.wl                             = { t_cod2=! }
@@ -4067,14 +4313,6 @@ QQRKSRC1
         ~filltest_n-gggr.wl                                     = { t_cod2=! }
         ~filltest_s-rgb&filltest_c-l-11.wl                      = { t_cod2=! }
         ~flag_s-r34g34b34&flag_cp-l-11.wl                       = { t_cod2=! }
-        ~flak88_destroy_normal-gggr.wl                          = { t_cod2=! }
-        ~flak88_destroy_spec-rgb&flak88_destroy_cosine-l-11.wl  = { t_cod2=! }
-        ~flak88_nm_destroy_normal-gggr.wl                       = { t_cod2=! }
-        ~flak88_nm_destroy_spec-rgb&flak88_nm_destr~0596c93e.wl = { t_cod2=! }
-        ~flak88_nm_normal-gggr.wl                               = { t_cod2=! }
-        ~flak88_nm_spec-rgb&flak88_nm_cosine-l-11.wl            = { t_cod2=! }
-        ~flak88_normal-gggr.wl                                  = { t_cod2=! }
-        ~flak88_spec-rgb&flak88_cosine-l-11.wl                  = { t_cod2=! }
         ~flakveirling_d_s-rgb&flakveirling_d_cp-l-11.wl         = { t_cod2=! }
         ~flakveirling_n-gggr.wl                                 = { t_cod2=! }
         ~flakveirling_s-rgb&flakveirling_cp-l-11.wl             = { t_cod2=! }
@@ -4108,9 +4346,6 @@ QQRKSRC1
         ~germankubelnormdamspecular#0-rgb&germankub~fc218584.wl = { t_cod2=! }
         ~germankubelnormpristinenormal#0-gggr.wl                = { t_cod2=! }
         ~germankubelnormpristinespecular#0-rgb&germ~441e663e.wl = { t_cod2=! }
-        ~german_armored_car_color_spec_d-rgbl30.wl              = { t_cod2=! }
-        ~german_armored_car_normals-gggr.wl                     = { t_cod2=! }
-        ~german_armored_car_spec-rgbl30.wl                      = { t_cod2=! }
         ~german_winter_normals-gggr.wl                          = { t_cod2=! }
         ~german_winter_spec-rgbl-13.wl                          = { t_cod2=! }
         ~glove_thread_n-gggr.wl                                 = { t_cod2=! }
@@ -4127,14 +4362,6 @@ QQRKSRC1
         ~ground_2_s-r-71g-71b-71l-11.wl                         = { t_cod2=! }
         ~ground_3_n-gggr.wl                                     = { t_cod2=! }
         ~ground_3_s-rgb&ground_3_cp-l-11.wl                     = { t_cod2=! }
-        ~half_track_desert_nrml_#0-gggr.wl                      = { t_cod2=! }
-        ~half_track_desert_spec_#0-rgb&half_track_w~62016630.wl = { t_cod2=! }
-        ~half_track_nrml_#0-gggr.wl                             = { t_cod2=! }
-        ~half_track_snow_nrml_#0-gggr.wl                        = { t_cod2=! }
-        ~half_track_snow_spec_#0-rgb&half_track_woo~147e6548.wl = { t_cod2=! }
-        ~half_track_tread_nrml_#0-gggr.wl                       = { t_cod2=! }
-        ~half_track_woodland_spec_#0-rgb&half_track~59d40030.wl = { t_cod2=! }
-        ~half_track_woodland_spec_d_#0-rgbl08.wl                = { t_cod2=! }
         ~hand_british_bare_n-gggr.wl                            = { t_cod2=! }
         ~hand_british_bare_s-rgbl-11.wl                         = { t_cod2=! }
         ~hand_british_n-gggr.wl                                 = { t_cod2=! }
@@ -4166,12 +4393,6 @@ QQRKSRC1
         ~head_spec-rgb&head_cosine-l-11.wl                      = { t_cod2=! }
         ~hedgehog_normals-gggr.wl                               = { t_cod2=! }
         ~hedgehog_spec-rgbl-11.wl                               = { t_cod2=! }
-        ~higginsgrappel_nm-gggr.wl                              = { t_cod2=! }
-        ~higginsgrappel_spec-rgbl-11.wl                         = { t_cod2=! }
-        ~higginsvm_normal-gggr.wl                               = { t_cod2=! }
-        ~higgins_nm-gggr.wl                                     = { t_cod2=! }
-        ~higgins_spec-rgb&higgins_cosine-l-11.wl                = { t_cod2=! }
-        ~higgins_vm_spec-rgbl-11.wl                             = { t_cod2=! }
         ~horse_normals-gggr.wl                                  = { t_cod2=! }
         ~horse_spec-rgbl-11.wl                                  = { t_cod2=! }
         ~icycle01_n-gggr.wl                                     = { t_cod2=! }
@@ -4272,30 +4493,11 @@ QQRKSRC1
         ~nixon_head_spec-rgb&nixon_head_cosine-l-11.wl          = { t_cod2=! }
         ~normal_zbrush_leftside-gggr.wl                         = { t_cod2=! }
         ~normal_zbrush_rightside-gggr.wl                        = { t_cod2=! }
-        ~northafrica_armoire_normal-gggr.wl                     = { t_cod2=! }
-        ~northafrica_armoire_spec-rgbl-86.wl                    = { t_cod2=! }
-        ~northafrica_chairs_normal-gggr.wl                      = { t_cod2=! }
-        ~northafrica_chairs_spec-rgbl-79.wl                     = { t_cod2=! }
-        ~northafrica_oil_lamp_normal-gggr.wl                    = { t_cod2=! }
-        ~northafrica_oil_lamp_spec-rgbl-79.wl                   = { t_cod2=! }
-        ~northafrica_tables_normal-gggr.wl                      = { t_cod2=! }
-        ~northafrica_tables_spec-rgbl-79.wl                     = { t_cod2=! }
-        ~northafrica_woodscreen_normal-gggr.wl                  = { t_cod2=! }
-        ~opel_blitz_nrml_#0-gggr.wl                             = { t_cod2=! }
-        ~opel_blitz_snow_spec_#0-rgb&opel_blitz_cos_#0-l-11.wl  = { t_cod2=! }
-        ~opel_blitz_spec_#0-rgb&opel_blitz_cos_#0-l-11.wl       = { t_cod2=! }
-        ~opel_blitz_spec_d_#0-rgbl08.wl                         = { t_cod2=! }
         ~opel_vm_desert_spec_#0-rgbl08.wl                       = { t_cod2=! }
         ~p51_mustang_spec_#0-rgb&p51_mustang_cos_#0-l-11.wl     = { t_cod2=! }
         ~pail_bump-gggr.wl                                      = { t_cod2=! }
         ~pail_spec-rgb&$white-l-11.wl                           = { t_cod2=! }
         ~paml_back_n-gggr.wl                                    = { t_cod2=! }
-        ~panzer2_normals-gggr.wl                                = { t_cod2=! }
-        ~panzer2_spec-rgbl99.wl                                 = { t_cod2=! }
-        ~panzer2_spec_d-r41g41b41l-64.wl                        = { t_cod2=! }
-        ~panzer2_tread_normals-gggr.wl                          = { t_cod2=! }
-        ~panzer2_tread_spec-rgbl-13.wl                          = { t_cod2=! }
-        ~panzer2_winter_normals-gggr.wl                         = { t_cod2=! }
         ~panzerschrecknm-gggr.wl                                = { t_cod2=! }
         ~panzerschreckspec-r-25g-25b-25&$white-l-11.wl          = { t_cod2=! }
         ~paper_debris_n-gggr.wl                                 = { t_cod2=! }
@@ -4343,21 +4545,9 @@ QQRKSRC1
         ~randall_head_normal_#0-gggr.wl                         = { t_cod2=! }
         ~randall_head_spec_#0-r30g30b30&randall_hea~bac8a784.wl = { t_cod2=! }
         ~randall_head_spec_#0-rgb&randall_head_cosi~89468437.wl = { t_cod2=! }
-        ~ranger_frank_nrml_#0-gggr.wl                           = { t_cod2=! }
-        ~ranger_frank_spec_#0-r30g30b30&ranger_fran~63674dcd.wl = { t_cod2=! }
-        ~ranger_frank_spec_#0-rgb&ranger_frank_cos_#0-l-11.wl   = { t_cod2=! }
-        ~ranger_xpec_body_normal-gggr.wl                        = { t_cod2=! }
-        ~ranger_xpec_body_spec-rgb&ranger_xpec_body~3c7873c9.wl = { t_cod2=! }
-        ~ranger_xpec_hand_normal-gggr.wl                        = { t_cod2=! }
-        ~ranger_xpec_hand_spec-rgb&ranger_xpec_hand~3c7873c9.wl = { t_cod2=! }
-        ~ranger_xpec_head_normal-gggr.wl                        = { t_cod2=! }
-        ~ranger_xpec_head_spec-rgb&ranger_xpec_head~3c7873c9.wl = { t_cod2=! }
         ~rebar_n-gggr.wl                                        = { t_cod2=! }
         ~rebar_s-r-49g-49b-49&rebar_cp-l-11.wl                  = { t_cod2=! }
         ~river_birch_nrml_#0-gggr.wl                            = { t_cod2=! }
-        ~rockwall_normals-gggr.wl                               = { t_cod2=! }
-        ~rockwall_specular-rgbl-11.wl                           = { t_cod2=! }
-        ~rock_wall_2_normal-gggr.wl                             = { t_cod2=! }
         ~roof01_n-gggr.wl                                       = { t_cod2=! }
         ~roof01_s-rgb&$white-l-11.wl                            = { t_cod2=! }
         ~rstbar01_n-gggr.wl                                     = { t_cod2=! }
@@ -4374,10 +4564,6 @@ QQRKSRC1
         ~rubble_wood_dark_spec-rgbl-79.wl                       = { t_cod2=! }
         ~rug_2_s-rgb&$white-l-11.wl                             = { t_cod2=! }
         ~rug_n-gggr.wl                                          = { t_cod2=! }
-        ~russiajeepnormal#0-gggr.wl                             = { t_cod2=! }
-        ~russiajeepnormaldmg#0-gggr.wl                          = { t_cod2=! }
-        ~russiajeepspecular#0-rgb&russiajeepcosine#0-l-79.wl    = { t_cod2=! }
-        ~russiajeepspeculardmg#0-rgb&russiajeepcosi~d366d107.wl = { t_cod2=! }
         ~russiangrenade_n-gggr.wl                               = { t_cod2=! }
         ~russiangrenade_s-rgb&russiangrenade_cp-l-11.wl         = { t_cod2=! }
         ~russianuniformnorm#0-gggr.wl                           = { t_cod2=! }
@@ -4449,12 +4635,6 @@ QQRKSRC1
         ~th_snow_b_s-r30g30b30&th_snow_b_cp-l-11.wl             = { t_cod2=! }
         ~th_snow_c_n-gggr.wl                                    = { t_cod2=! }
         ~th_snow_c_s-r30g30b30&th_snow_c_cp-l-11.wl             = { t_cod2=! }
-        ~tiger_d_snow_spec_#0-rgb&tiger_d_snow_cos_#0-l-11.wl   = { t_cod2=! }
-        ~tiger_nrml_#0-gggr.wl                                  = { t_cod2=! }
-        ~tiger_spec_#0-rgb&tiger_cos_#0-l-11.wl                 = { t_cod2=! }
-        ~tiger_spec_d_#0-rgbl08.wl                              = { t_cod2=! }
-        ~tiger_tread_nrml_#0-gggr.wl                            = { t_cod2=! }
-        ~tiger_tread_spec_#0-rgbl08.wl                          = { t_cod2=! }
         ~tile_bath01_decal_n-gggr.wl                            = { t_cod2=! }
         ~tile_bath01_decal_s-r-61g-61b-61l-64.wl                = { t_cod2=! }
         ~tile_bath01_n-gggr.wl                                  = { t_cod2=! }
@@ -4485,30 +4665,10 @@ QQRKSRC1
         ~train_car01_spec-rgb&$white-l-11.wl                    = { t_cod2=! }
         ~train_wheel_normal-gggr.wl                             = { t_cod2=! }
         ~train_wheel_spec-r-25g-25b-25&$white-l-11.wl           = { t_cod2=! }
-        ~tree_desertpalm_normal-gggr.wl                         = { t_cod2=! }
         ~trenchwalldirt_n-gggr.wl                               = { t_cod2=! }
         ~trenchwalldirt_s-r73g73b73&trenchwalldirt_cp-l-11.wl   = { t_cod2=! }
         ~trench_wall_n-gggr.wl                                  = { t_cod2=! }
         ~trench_wall_s-rgb&$white-l-11.wl                       = { t_cod2=! }
-        ~trolleypole_bump-gggr.wl                               = { t_cod2=! }
-        ~trolleypole_spec-rgb&$white-l-11.wl                    = { t_cod2=! }
-        ~trolley_damaged_normal-gggr.wl                         = { t_cod2=! }
-        ~trolley_damaged_spec-rgbl-79.wl                        = { t_cod2=! }
-        ~universal_carrier_mud_n-gggr.wl                        = { t_cod2=! }
-        ~universal_carrier_mud_track_n-gggr.wl                  = { t_cod2=! }
-        ~universal_carrier_mud_tran_n-gggr.wl                   = { t_cod2=! }
-        ~universal_carrier_n-gggr.wl                            = { t_cod2=! }
-        ~universal_carrier_s-r-61g-61b-61&$white-l-11.wl        = { t_cod2=! }
-        ~universal_carrier_s-r29g29b29&$white-l-11.wl           = { t_cod2=! }
-        ~universal_carrier_s-r34g34b34&$white-l-11.wl           = { t_cod2=! }
-        ~universal_carrier_s-r66g66b66&$white-l-11.wl           = { t_cod2=! }
-        ~universal_carrier_s-r97g97b97&$white-l-11.wl           = { t_cod2=! }
-        ~universal_carrier_track_n-gggr.wl                      = { t_cod2=! }
-        ~universal_carrier_track_s-r-49g-49b-49&$white-l-11.wl  = { t_cod2=! }
-        ~universal_carrier_track_s-rgb&$white-l-11.wl           = { t_cod2=! }
-        ~universal_carrier_tran_n-gggr.wl                       = { t_cod2=! }
-        ~universal_carrier_tran_s-r-49g-49b-49&$white-l-11.wl   = { t_cod2=! }
-        ~universal_carrier_tran_s-rgb&$white-l-11.wl            = { t_cod2=! }
         ~us_ranger_body_a_nrml-gggr.wl                          = { t_cod2=! }
         ~us_ranger_body_a_spec-rgbl08.wl                        = { t_cod2=! }
         ~us_smoke_grenade_burnt_s-rgbl-11.wl                    = { t_cod2=! }
@@ -4733,70 +4893,8 @@ QQRKSRC1
         ~v_wood_stair_rises-rgbl-92.wl                          = { t_cod2=! }
         ~v_wood_stair_top01n-gggr.wl                            = { t_cod2=! }
         ~v_wood_stair_top01s-rgbl-92.wl                         = { t_cod2=! }
-        ~walllight_n-gggr.wl                                    = { t_cod2=! }
-        ~walltrim02_n-gggr.wl                                   = { t_cod2=! }
-        ~walltrim02_s-rgbl-11.wl                                = { t_cod2=! }
-        ~walltrim05_n-gggr.wl                                   = { t_cod2=! }
-        ~walltrim05_s-rgbl-11.wl                                = { t_cod2=! }
-        ~wall_ext_stone_decal_01_normal-gggr.wl                 = { t_cod2=! }
-        ~wall_transition01_n-gggr.wl                            = { t_cod2=! }
-        ~wall_transition01_s-rgbl-11.wl                         = { t_cod2=! }
-        ~wall_trim_bottom01_noalpha_n-gggr.wl                   = { t_cod2=! }
-        ~wall_trim_bottom01_noalpha_s-rgb&wall_trim~0e7d795c.wl = { t_cod2=! }
-        ~wall_trim_bottom02_n-gggr.wl                           = { t_cod2=! }
-        ~wall_trim_bottom02_s-rgbl-11.wl                        = { t_cod2=! }
-        ~wall_trim_bottom_n-gggr.wl                             = { t_cod2=! }
-        ~wall_trim_bottom_noalpha_n-gggr.wl                     = { t_cod2=! }
-        ~wall_trim_bottom_noalpha_s-rgbl-11.wl                  = { t_cod2=! }
-        ~wall_trim_bottom_s-r-61g-61b-61l-11.wl                 = { t_cod2=! }
         ~water_spout_n-gggr.wl                                  = { t_cod2=! }
         ~water_spout_s-rgb&$white-l-11.wl                       = { t_cod2=! }
-        ~weapon_30cal_n-gggr.wl                                 = { t_cod2=! }
-        ~weapon_30cal_s-rgb&weapon_30cal_cp-l-11.wl             = { t_cod2=! }
-        ~weapon_bar_n-gggr.wl                                   = { t_cod2=! }
-        ~weapon_bar_s-rgb&weapon_bar_cp-l-11.wl                 = { t_cod2=! }
-        ~weapon_bren_n-gggr.wl                                  = { t_cod2=! }
-        ~weapon_bren_s-r30g30b30&weapon_bren_cp-l-11.wl         = { t_cod2=! }
-        ~weapon_carbine_n-gggr.wl                               = { t_cod2=! }
-        ~weapon_carbine_s-rgb&weapon_carbine_cp-l-11.wl         = { t_cod2=! }
-        ~weapon_enfield_n-gggr.wl                               = { t_cod2=! }
-        ~weapon_enfield_s-rgb&weapon_enfield_cp-l-11.wl         = { t_cod2=! }
-        ~weapon_enfield_scope_n-gggr.wl                         = { t_cod2=! }
-        ~weapon_enfield_scope_s-r-17g-17b-17&weapon~a0a2cbad.wl = { t_cod2=! }
-        ~weapon_g43_n-gggr.wl                                   = { t_cod2=! }
-        ~weapon_g43_s-r-59g-59b-59&weapon_g43_cp-l-11.wl        = { t_cod2=! }
-        ~weapon_greasegun_n-gggr.wl                             = { t_cod2=! }
-        ~weapon_greasegun_s-rgb&weapon_greasegun_cp-l-11.wl     = { t_cod2=! }
-        ~weapon_kar98_n-gggr.wl                                 = { t_cod2=! }
-        ~weapon_kar98_s-r-59g-59b-59&weapon_kar98_cp-l02.wl     = { t_cod2=! }
-        ~weapon_kar98_scope_n-gggr.wl                           = { t_cod2=! }
-        ~weapon_kar98_scope_s-r-59g-59b-59&weapon_k~ddb85fcc.wl = { t_cod2=! }
-        ~weapon_m1garand_n-gggr.wl                              = { t_cod2=! }
-        ~weapon_m1garand_s-rgb&weapon_m1garand_cp-l-11.wl       = { t_cod2=! }
-        ~weapon_mg42_n-gggr.wl                                  = { t_cod2=! }
-        ~weapon_mg42_s-r-59g-59b-59&weapon_mg42_cp-l-11.wl      = { t_cod2=! }
-        ~weapon_mosin_cloth_n-gggr.wl                           = { t_cod2=! }
-        ~weapon_mosin_cloth_s-rgbl-11.wl                        = { t_cod2=! }
-        ~weapon_mosin_n-gggr.wl                                 = { t_cod2=! }
-        ~weapon_mosin_s-r-17g-17b-17&weapon_mosin_cp-l-11.wl    = { t_cod2=! }
-        ~weapon_mp40_n-gggr.wl                                  = { t_cod2=! }
-        ~weapon_mp40_s-r-59g-59b-59&weapon_mp40_cp-l-11.wl      = { t_cod2=! }
-        ~weapon_mp44_n-gggr.wl                                  = { t_cod2=! }
-        ~weapon_mp44_s-rgb&weapon_mp44_cp-l-11.wl               = { t_cod2=! }
-        ~weapon_pps43_n-gggr.wl                                 = { t_cod2=! }
-        ~weapon_pps43_s-rgb&weapon_pps43_cp-l-11.wl             = { t_cod2=! }
-        ~weapon_ppsh_n-gggr.wl                                  = { t_cod2=! }
-        ~weapon_ppsh_s-rgb&weapon_ppsh_cp-l-11.wl               = { t_cod2=! }
-        ~weapon_springfield_n-gggr.wl                           = { t_cod2=! }
-        ~weapon_springfield_s-r-25g-25b-25&weapon_s~aa63322e.wl = { t_cod2=! }
-        ~weapon_sten_n-gggr.wl                                  = { t_cod2=! }
-        ~weapon_sten_s-r-59g-59b-59&weapon_sten_cp-l-11.wl      = { t_cod2=! }
-        ~weapon_svt40_n-gggr.wl                                 = { t_cod2=! }
-        ~weapon_svt40_s-r-87g-87b-87&weapon_svt40_cp-l-11.wl    = { t_cod2=! }
-        ~weapon_thompson_n-gggr.wl                              = { t_cod2=! }
-        ~weapon_thompson_s-rgb&weapon_thompson_cp-l-11.wl       = { t_cod2=! }
-        ~weapon_trenchgun_n-gggr.wl                             = { t_cod2=! }
-        ~weapon_trenchgun_s-rgb&weapon_trenchgun_cp-l-11.wl     = { t_cod2=! }
         ~webley_n-gggr.wl                                       = { t_cod2=! }
         ~webley_s-rgb&webley_cp-l-11.wl                         = { t_cod2=! }
         ~wellington_normal_#0-gggr.wl                           = { t_cod2=! }
@@ -4841,23 +4939,6 @@ QQRKSRC1
         ~wood_floor01_n-gggr.wl                                 = { t_cod2=! }
         ~wood_floor01_s-r38g38b38l-11.wl                        = { t_cod2=! }
         ~zbrushtest_corner_normal01-gggr.wl                     = { t_cod2=! }
-        loadscreen_mp_rhine.wl                                  = { t_cod2=! }
-        punkbusterlogo.wl                                       = { t_cod2=! }
-        objpoint_flagmissing_american.wl                        = { t_cod2=! }
-        hud_flagflash_german.wl                                 = { t_cod2=! }
-        objpoint_flagmissing_german.wl                          = { t_cod2=! }
-        objpoint_flagpatch1_british.wl                          = { t_cod2=! }
-        hud_flagflash_american.wl                               = { t_cod2=! }
-        objpoint_flagmissing_british.wl                         = { t_cod2=! }
-        objpoint_flagmissing_russian.wl                         = { t_cod2=! }
-        hud_flagflash_russian.wl                                = { t_cod2=! }
-        loadscreen_mp_harbor.wl                                 = { t_cod2=! }
-        objpoint_flagpatch1_russian.wl                          = { t_cod2=! }
-        objpoint_flagpatch1_american.wl                         = { t_cod2=! }
-        hud_flagflash_british.wl                                = { t_cod2=! }
-        objpoint_flagpatch1_german.wl                           = { t_cod2=! }
-        thumbsup.wl                                             = { t_cod2=! }
-        thumbsdown.wl                                           = { t_cod2=! }
       }
     }
   }
