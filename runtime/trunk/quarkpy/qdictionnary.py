@@ -287,6 +287,7 @@ Strings = {
     825: "Valve Pak File (*.vpk)|*.vpk",
     826: "Steam No Cache File (*.ncf)|*.ncf",
     827: "WorldCraft Rich Map Format file (*.rmf)|*.rmf",
+    828: "Call of Duty 2 Bsp Files (*.d3dbsp)|*.d3dbsp",
 
     2368: "Skins",
     2369: "Frames",
@@ -587,6 +588,7 @@ Strings = {
     5148: "Sylphis Pak",
     5149: "Sylphis Map file",
     5150: "WorldCraft Rich Map Format file",
+    5151: "Call of Duty 2 Bsp file",
 
     5155: "Quake Context",
     5156: "Tool bar",
@@ -1086,6 +1088,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.153  2010/10/16 22:50:17  danielpharos
+#Added experimental RMF file loading support; poly's only, no UV's or textures.
+#
 #Revision 1.152  2010/10/16 22:31:04  danielpharos
 #Added NCF file loading support (for example: Alien Swarm). Also, corrected VPK dictionnary mistake.
 #

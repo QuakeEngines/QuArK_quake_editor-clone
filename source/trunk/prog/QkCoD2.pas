@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2009/07/15 10:38:01  danielpharos
+Updated website link.
+
 Revision 1.4  2009/02/21 17:06:18  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -41,10 +44,15 @@ unit QkCoD2;
 interface
 
 uses
-  QkZip2, QkFileObjects, QkObjects;
+  QkZip2, QkBsp, QkFileObjects, QkObjects;
 
 type
-  CoD2Pak = class(QZipPak)
+  QCoD2Pak = class(QZipPak)
+        public
+         class function TypeInfo: String; override;
+         class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
+        end;
+  QCoD2Bsp = class(QBsp)
         public
          class function TypeInfo: String; override;
          class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
@@ -56,21 +64,36 @@ uses QuarkX, QkObjectClassList;
 
 {------------------------}
 
-class function CoD2Pak.TypeInfo;
+class function QCoD2Pak.TypeInfo;
 begin
  Result:='.iwd';
 end;
 
-class procedure CoD2Pak.FileObjectClassInfo(var Info: TFileObjectClassInfo);
+class procedure QCoD2Pak.FileObjectClassInfo(var Info: TFileObjectClassInfo);
 begin
  inherited;
  Info.FileObjectDescriptionText:=LoadStr1(5147);
  Info.FileExt:=821;
 end;
 
+{------------------------}
+
+class function QCoD2Bsp.TypeInfo;
+begin
+ Result:='.d3dbsp';
+end;
+
+class procedure QCoD2Bsp.FileObjectClassInfo(var Info: TFileObjectClassInfo);
+begin
+ inherited;
+ Info.FileObjectDescriptionText:=LoadStr1(5151);
+ Info.FileExt:=828;
+end;
+
  {------------------------}
 
 initialization
-  RegisterQObject(CoD2Pak, 's');
+  RegisterQObject(QCoD2Pak, 's');
+  RegisterQObject(QCoD2Bsp, 's');
 end.
 

@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.30  2009/07/15 10:38:01  danielpharos
+Updated website link.
+
 Revision 1.29  2009/02/21 17:06:18  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -890,7 +893,7 @@ begin
   case I of
     1: Result:=D3Pak;
     2: Result:=Q3Pak;
-    3: Result:=CoD2Pak;
+    3: Result:=QCoD2Pak;
     4: Result:=QZipPak;
     5: Result:=QSinPak;
     6: Result:=SylphisPak;
