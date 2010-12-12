@@ -1142,7 +1142,16 @@ class PolyHandle(qhandles.CenterHandle):
                     if bone.name == bone_name:
                          obj = bone
                          break
-            if obj.type == ":bone" and obj.shortname + ":p" in bboxlist.keys():
+            if obj is None and Old_poly is not None and Old_poly.dictspec['assigned2'] != "None":
+                New_poly = UpdateBBoxList(editor, Old_poly)
+                New_poly['assigned2'] = "None"
+                del bboxlist[Old_poly.name]
+                undo = quarkx.action()
+                undo.exchange(Old_poly, New_poly)
+                editor.ok(undo, "bbox released")
+                editor.layout.explorer.uniquesel = New_poly
+                editor.layout.explorer.sellist = [New_poly]
+            elif obj.type == ":bone" and obj.shortname + ":p" in bboxlist.keys():
                 poly_name = obj.shortname + ":p"
                 if Old_poly is None or Old_poly.name != poly_name:
                     polys = editor.Root.dictitems['Misc:mg'].findallsubitems("", ':p')
@@ -6375,6 +6384,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.221  2010/12/07 20:10:16  cdunde
+#Update for bbox face handle.
+#
 #Revision 1.220  2010/12/07 11:17:15  cdunde
 #More updates for Model Editor bounding box system.
 #
