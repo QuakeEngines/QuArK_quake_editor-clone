@@ -1506,7 +1506,7 @@ class ModelLayout(BaseLayout):
                     newcomp = newcomp.split("_")
                     newcompfile = newcomp[0]
                     found_tag = None
-                    tags = self.editor.Root.findallsubitems("", ':tag')   # find all tags
+                    tags = self.editor.Root.findallsubitems("", ':tag')   # Find all tags.
                     for tag in tags:
                         if tag.name.startswith(newcompfile):
                             found_tag = 1
@@ -1631,6 +1631,11 @@ class ModelLayout(BaseLayout):
         comp = self.componentof(group)
         if comp is not None:
           self.selectcomponent(comp)
+
+    def selectbbox(self, bbox):
+        # This is when you select a particular bbox(s) in the 'Misc:mg' group of the Tree-view.
+
+        pass
 
     def selecttag(self, tag):
         # This is when you select a particular tag(s) in the 'Misc:mg' group of the Tree-view.
@@ -1807,6 +1812,10 @@ class ModelLayout(BaseLayout):
             treeviewselchanged = 1
             if fs.type == ':mf':       # A component's animation frame.
                 self.selectframe(fs)
+            elif fs.type == ':bbg':    # An individual bbox group in the 'Misc:mg' miscellaneous group.
+                self.selectcgroup(fs)
+            elif fs.type == ':p':      # An individual poly in the 'Misc:mg' miscellaneous group or a bbox group.
+                self.selectbbox(fs)
             elif fs.type == ':tag':    # An individual tag in the 'Misc:mg' miscellaneous group.
                 self.selecttag(fs)
             elif fs.type == ':bg':     # The 'Skeleton:bg' bone group.
@@ -1887,6 +1896,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.128  2010/12/06 05:43:06  cdunde
+#Updates for Model Editor bounding box system.
+#
 #Revision 1.127  2010/09/24 23:31:25  cdunde
 #Fix for Model Editor LMB click not deselecting everything
 #and made Skin-view independent from editor for same.
