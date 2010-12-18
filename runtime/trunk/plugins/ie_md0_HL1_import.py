@@ -15,7 +15,7 @@ QuArK Model Editor importer for original Half-Life .mdl model files.
 
 
 Info = {
-   "plug-in":       "ie_md0_HL_import",
+   "plug-in":       "ie_md0_HL1_import",
    "desc":          "This script imports an original Half-Life file (MDL), textures, and animations into QuArK for editing.",
    "date":          "March 27, 2010",
    "author":        "cdunde & DanielPharos",
@@ -34,8 +34,8 @@ from quarkpy.qeditor import MapColor # Strictly needed for QuArK bones MapColor 
 # Globals
 SkipAnimation = 0 # 0 = makes animation frames, 1 = does not.
 logging = 0
-importername = "ie_md0_HL_import.py"
-textlog = "HLmdl_ie_log.txt"
+importername = "ie_md0_HL1_import.py"
+textlog = "HL1mdl_ie_log.txt"
 progressbar = None
 mdl = None
 
@@ -1379,10 +1379,10 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
             self.name = self.name + data[c]
 
         if (self.ident != "IDST" or self.version != 10): # Not a valid Half-Life MDL file.
-            if self.version == 6:
-                return self.version
+            if self.version == 6 or self.version == 44:
+                return None, None, None, None, self.ident, self.version
             else:
-                return None, None, None, self.ident, self.version
+                return None, None, None, None, self.ident, self.version
 
         self.length = data[69]
         self.eyeposition = data[70],data[71],data[72]
@@ -2139,6 +2139,8 @@ def loadmodel(root, filename, gamename, nomessage=0):
         quarkx.beep() # Makes the computer "Beep" once if a file is not valid. Add more info to message.
         if version == 6:
             quarkx.msgbox("Invalid Half-Life .mdl model.\nVersion number is " + str(version) + "\nThis is a Quake .mdl model.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
+        elif version == 44:
+            quarkx.msgbox("Invalid Half-Life .mdl model.\nVersion number is " + str(version) + "\nThis is a Half-Life 2 .mdl model.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
         elif version is not None:
             quarkx.msgbox("Invalid Half-Life .mdl model.\nID, Version number is " + str(message) + ", " + str(version) + "\nThis is another type .mdl model.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
         else:
@@ -2349,12 +2351,15 @@ def loadmodel(root, filename, gamename, nomessage=0):
 
 ### To register this Python plugin and put it on the importers menu.
 import quarkpy.qmdlbase
-import ie_md0_HL_import # This imports itself to be passed along so it can be used in mdlmgr.py later.
-quarkpy.qmdlbase.RegisterMdlImporter(".mdl Half-Life Importer", ".mdl file", "*.mdl", loadmodel)
+import ie_md0_HL1_import # This imports itself to be passed along so it can be used in mdlmgr.py later.
+quarkpy.qmdlbase.RegisterMdlImporter(".mdl Half-Life1 Importer", ".mdl file", "*.mdl", loadmodel)
 
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.17  2010/12/07 06:06:52  cdunde
+# Updates for Model Editor bounding box system.
+#
 # Revision 1.16  2010/12/06 18:29:47  cdunde
 # Found a better way for the last bounding box change.
 #
