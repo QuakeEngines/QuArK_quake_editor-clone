@@ -339,10 +339,7 @@ class mdl_obj:
         self.version = data[1]
 
         if (self.ident != 1330660425 or self.version != 6): # Not a valid MDL file.
-            if self.version == 10:
-                return self.version
-            else:
-                return None
+            return None, self.version
 
         self.scale = data[2],data[3],data[4]
         self.translate = data[5],data[6],data[7]
@@ -386,7 +383,7 @@ class mdl_obj:
             self.frames[i].load(file, self.num_verts)
           #  self.frames[i].dump() # for testing only, comment out when done
 
-        return self
+        return self, self.version
 
     def dump(self):
         global tobj, logging
@@ -498,13 +495,11 @@ def load_mdl(mdl_filename, name):
     #read the file in
     file = open(mdl_filename, "rb")
     mdl = mdl_obj()
-    MODEL = mdl.load(file)
+    MODEL, version = mdl.load(file)
 
     file.close()
-    if MODEL == 10:
-        return None, MODEL, None, None
-    if MODEL is None:
-        return None, None, None, None
+    if version != 6 or MODEL is None:
+        return None, None, None, None, version
 
     Strings[2454] = name + "\n" + Strings[2454]
     progressbar = quarkx.progressbar(2454, mdl.num_tris + (mdl.num_frames * 2))
@@ -543,7 +538,7 @@ def load_mdl(mdl_filename, name):
     if logging == 1:
         mdl.dump() # Writes the file Header last to the log for comparison reasons.
 
-    return Tris, skinsize, skingroup, framesgroup
+    return Tris, skinsize, skingroup, framesgroup, version
 
 
 ########################
@@ -556,12 +551,9 @@ def import_mdl_model(editor, mdl_filename):
     model_name = mdl_filename.rsplit("\\", 1)[1]
     name = model_name.split(".")[0]
 
-    Tris, skinsize, skingroup, framesgroup = load_mdl(mdl_filename, name) # Loads the model.
+    Tris, skinsize, skingroup, framesgroup, version = load_mdl(mdl_filename, name) # Loads the model.
     if Tris is None:
-        if skinsize is not None:
-            return None, skinsize
-        else:
-            return None, None, None, None
+        return None, version
 
     # Now we can name our component that will be imported.
     Component = quarkx.newobj(name + ':mc')
@@ -577,11 +569,7 @@ def import_mdl_model(editor, mdl_filename):
     Component['Q1scale'] = mdl.scale
     Component['Q1translate'] = mdl.translate
 
-    ### Use the 'ModelRoot' below to test opening the QuArK's Model Editor with, needs to be qualified with main menu item.
-    ModelRoot = quarkx.newobj('Model:mr')
-  #  ModelRoot.appenditem(Component)
-
-    return ModelRoot, Component
+    return Component, version
 
 
 def loadmodel(root, filename, gamename, nomessage=0):
@@ -608,14 +596,16 @@ def loadmodel(root, filename, gamename, nomessage=0):
     logging, tobj, starttime = ie_utils.default_start_logging(importername, textlog, filename, "IM") ### Use "EX" for exporter text, "IM" for importer text.
 
     ### Lines below here loads the model into the opened editor's current model.
-    ModelRoot, Component = import_mdl_model(editor, filename)
+    Component, version = import_mdl_model(editor, filename)
 
-    if ModelRoot is None:
+    if Component is None:
         quarkx.beep() # Makes the computer "Beep" once if a file is not valid. Add more info to message.
-        if Component is None:
-            quarkx.msgbox("Invalid Quake .mdl model.\nEditor can not import it.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
+        if version == 10:
+            quarkx.msgbox("Invalid Quake .mdl model.\nVersion number is " + str(version) + "\nThis is a Half-Life .mdl model.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
+        elif version == 44:
+            quarkx.msgbox("Invalid Quake .mdl model.\nVersion number is " + str(version) + "\nThis is a Half-Life 2 .mdl model.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
         else:
-            quarkx.msgbox("Invalid Quake .mdl model.\nVersion number is " + str(Component) + "\nThis is a Half-Life .mdl model.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
+            quarkx.msgbox("Invalid Quake .mdl model.\nEditor can not import it.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
         try:
             progressbar.close()
         except:
@@ -662,6 +652,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".mdl Quake Importer", ".mdl file", "*.mdl"
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.4  2010/06/13 15:37:55  cdunde
+# Setup Model Editor to allow importing of model from main explorer File menu.
+#
 # Revision 1.3  2010/05/01 22:54:57  cdunde
 # Set default skinsize to match all other importers.
 #
