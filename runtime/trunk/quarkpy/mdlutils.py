@@ -1354,10 +1354,11 @@ def GetBonelistFrameName(editor, frame_name, bones, bonename, comp):
 # Update the editor.ModelComponentList['bboxlist'] for a poly bbox (hit box) at the end of a drag,
 # depending on what they are assigned to like a bone or a component's vertexes or something else.
 #
-def UpdateBBoxList(editor, newpoly):
+def UpdateBBoxList(editor, newpoly, count=None):
     Root = editor.Root
     frame_name = GetFrameName(editor)
     assigned2 = newpoly.dictspec["assigned2"]
+    bboxlist = editor.ModelComponentList['bboxlist']
     if assigned2 == "None": # MIGHT want to save this anyway to
         pass                # editor.ModelComponentList['bboxlist'][poly.name]
                             # to be stored in our .qkl model work files.
@@ -1367,11 +1368,9 @@ def UpdateBBoxList(editor, newpoly):
         skelgroup = Root.dictitems['Skeleton:bg']
         bones = skelgroup.findallsubitems("", ':bone')
         bonelist = editor.ModelComponentList['bonelist']
-        bboxlist = editor.ModelComponentList['bboxlist']
 
-        bonename = assigned2
-        if bonelist.has_key(bonename):
-            pass
+        if bonelist.has_key(assigned2):
+            bonename = assigned2
         else:
             quarkx.msgbox("Bounding Box " + newpoly.shortname + "\nassigned to " + assigned2 + "\n\nBut a data conflict exist causing this error.\nDelete, remake and assign the Bounding Box.", MT_ERROR, MB_OK)
             return
@@ -1385,29 +1384,28 @@ def UpdateBBoxList(editor, newpoly):
         poly = quarkx.newobj("dummy:p");
         poly['show'] = (1.0,)
         bone_data = bonelist[bonename]
-        if not bboxlist.has_key(bonename.replace(":bone", ":p")):
+        if not bboxlist.has_key(newpoly.name):
             bpos = quarkx.vect(bone_data['frames'][bonelist_frame_name]['position'])
             brot = quarkx.matrix(bone_data['frames'][bonelist_frame_name]['rotmatrix'])
-            poly.shortname = bonename.split(":")[0]
-            poly['assigned2'] = newpoly.dictspec['assigned2']
+            poly.shortname = newpoly.shortname
+            poly['assigned2'] = bonename
         else:
             bpos = quarkx.vect(bone_data['frames'][bonelist_frame_name]['position'])
             brot = ~quarkx.matrix(bone_data['frames'][bonelist_frame_name]['rotmatrix'])
-            parent = editor.Root.dictitems['Misc:mg']
-            polys = parent.findallsubitems("", ':p')
-            count = 1
-            for p in polys:
-                if p.shortname.startswith("bbox "):
-                    nbr = None
-                    try:
-                        nbr = p.shortname.split(" ")[1]
-                    except:
-                        pass
-                    if nbr is not None:
-                        if int(nbr) >= count:
-                            count = int(nbr) + 1
-                    else:
+            if count is None:
+                parent = editor.Root.dictitems['Misc:mg']
+                polys = parent.findallsubitems("", ':p')
+                poly_names = []
+                for p in polys:
+                    if p.shortname.startswith("bbox "):
+                        poly_names = poly_names + [p.shortname]
+                count = 1
+                while 1:
+                    name = "bbox " + str(count)
+                    if name in poly_names:
                         count = count + 1
+                    else:
+                        break
             poly.shortname = "bbox " + str(count)
 
         polykeys = []
@@ -1416,7 +1414,7 @@ def UpdateBBoxList(editor, newpoly):
         for f in polykeys:
             face = quarkx.newobj(f)
             vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z = newpoly.dictitems[f].dictspec["v"]
-            if not bboxlist.has_key(bonename.replace(":bone", ":p")):
+            if not bboxlist.has_key(newpoly.name):
                 vtx0 = quarkx.vect(vtx0X, vtx0Y, vtx0Z).tuple
                 vtx1 = quarkx.vect(vtx1X, vtx1Y, vtx1Z).tuple
                 vtx2 = quarkx.vect(vtx2X, vtx2Y, vtx2Z).tuple
@@ -1433,7 +1431,7 @@ def UpdateBBoxList(editor, newpoly):
 
         bbox = quarkx.boundingboxof([poly])
 
-        bboxlist[bonename.replace(":bone", ":p")] = [bbox[0].tuple, bbox[1].tuple]
+        bboxlist[newpoly.name] = [bbox[0].tuple, bbox[1].tuple]
 
         return poly # DO NOT move outside to combine calls, will break dragging of poly in editor.
 
@@ -4722,6 +4720,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.153  2010/12/07 21:04:49  cdunde
+#Removed code that we decided not to use.
+#
 #Revision 1.152  2010/12/07 11:17:14  cdunde
 #More updates for Model Editor bounding box system.
 #

@@ -1069,7 +1069,7 @@ class PolyHandle(qhandles.CenterHandle):
             menu = [qmenu.item(assigned2.split(":")[0], onclick2)]
             m.items = menu
         
-        def select_bboxs_click(m, self=self, editor=editor, bboxlist_comps=bboxlist_comps, view=view):
+        def select_bboxes_click(m, self=self, editor=editor, bboxlist_comps=bboxlist_comps, view=view):
             componentnames = bboxlist_comps
             componentnames.sort()
             menu = []
@@ -1077,7 +1077,7 @@ class PolyHandle(qhandles.CenterHandle):
                 menu = menu + [qmenu.item(compname.split(":")[0], onclick3)]
             m.items = menu
 
-        def release_bboxs_click(m, self=self, editor=editor, bboxlist_comps=bboxlist_comps, view=view):
+        def release_bboxes_click(m, self=self, editor=editor, bboxlist_comps=bboxlist_comps, view=view):
             componentnames = bboxlist_comps
             componentnames.sort()
             menu = []
@@ -1087,8 +1087,8 @@ class PolyHandle(qhandles.CenterHandle):
 
         AssignBBoxTo = qmenu.popup("Assign BBox To", [], assign_bbox_click, "|Assign BBox To:\n\nYou need to select a single BBox to use this function.\n\nThis will assign a selected bounding box to the component (if NOT Hidden) you select by means of a menu that will appear listing all available components to choose from, if any.", "intro.modeleditor.rmbmenus.html#facermbmenu")
         ReleaseBBox = qmenu.popup("Release BBox", [], release_bbox_click, "|Release BBox:\n\nThis will release the selected bounding box assigned to the component (if NOT Hidden) you select by means of a menu that will appear listing the component it is assigned to.", "intro.modeleditor.rmbmenus.html#facermbmenu")
-        SelectBBoxes = qmenu.popup("Select BBoxes", [], select_bboxs_click, "|Select BBoxes:\n\nThis will select all the bounding boxes assigned to the component (if NOT Hidden) you select by means of a menu that will appear listing all available components to choose from, if any.", "intro.modeleditor.rmbmenus.html#facermbmenu")
-        ReleaseBBoxes = qmenu.popup("Release BBoxes", [], release_bboxs_click, "|Release BBoxes:\n\nThis will release all the bounding boxes assigned to the component (if NOT Hidden) you select by means of a menu that will appear listing all available components to choose from, if any.", "intro.modeleditor.rmbmenus.html#facermbmenu")
+        SelectBBoxes = qmenu.popup("Select BBoxes", [], select_bboxes_click, "|Select BBoxes:\n\nThis will select all the bounding boxes assigned to the component (if NOT Hidden) you select by means of a menu that will appear listing all available components to choose from, if any.", "intro.modeleditor.rmbmenus.html#facermbmenu")
+        ReleaseBBoxes = qmenu.popup("Release BBoxes", [], release_bboxes_click, "|Release BBoxes:\n\nThis will release all the bounding boxes assigned to the component (if NOT Hidden) you select by means of a menu that will appear listing all available components to choose from, if any.", "intro.modeleditor.rmbmenus.html#facermbmenu")
 
         AssignBBoxTo.state = qmenu.disabled
         SelectBBoxes.state = qmenu.disabled
@@ -1114,6 +1114,13 @@ class PolyHandle(qhandles.CenterHandle):
         "This is the BBox's extras menu for items that can be placed on other menus involving bones."
         # obj is a bone that a bbox can be assigned to.
 
+        bone_bbox_list = []
+        if obj is not None:
+                bboxes = editor.Root.dictitems['Misc:mg'].findallsubitems("", ':p')
+                for bbox in bboxes:
+                    if bbox.dictspec['assigned2'] == obj.name and not bbox in bone_bbox_list:
+                        bone_bbox_list = bone_bbox_list + [bbox]
+
         bboxlist = editor.ModelComponentList['bboxlist']
         sellist = editor.layout.explorer.sellist
         if self.poly is None:
@@ -1123,8 +1130,23 @@ class PolyHandle(qhandles.CenterHandle):
                     break
 
         def assign_bbox_click(m, editor=editor, obj=obj):
-            self.poly['assigned2'] = obj.name
-            New_poly = UpdateBBoxList(editor, self.poly)
+            bboxlistkeys = editor.ModelComponentList['bboxlist'].keys()
+            name = obj.name.replace(":bone", ":p")
+            if name in bboxlistkeys:
+                count = 1
+                while 1:
+                    name = obj.shortname + str(count) + ":p"
+                    if name in bboxlistkeys:
+                        count = count + 1
+                    else:
+                        name = name.replace(":p", "")
+                        break
+            else:
+                name = name.replace(":p", "")
+            New_poly = self.poly.copy()
+            New_poly['assigned2'] = obj.name
+            New_poly.shortname = name
+            New_poly = UpdateBBoxList(editor, New_poly)
             explorer = editor.layout.explorer
             undo = quarkx.action()
             undo.exchange(self.poly, New_poly)
@@ -1133,7 +1155,7 @@ class PolyHandle(qhandles.CenterHandle):
             editor.layout.explorer.uniquesel = New_poly
             editor.layout.explorer.sellist = [New_poly]
 
-        def release_bbox_click(m, editor=editor, bboxlist=bboxlist, obj=obj):
+        def release_bbox_click(m, editor=editor, bboxlist=bboxlist, obj=obj, bone_bbox_list=bone_bbox_list):
             Old_poly = self.poly
             if obj is None:
                 bones = editor.Root.dictitems['Skeleton:bg'].findallsubitems("", ':bone')
@@ -1151,63 +1173,141 @@ class PolyHandle(qhandles.CenterHandle):
                 editor.ok(undo, "bbox released")
                 editor.layout.explorer.uniquesel = New_poly
                 editor.layout.explorer.sellist = [New_poly]
-            elif obj.type == ":bone" and obj.shortname + ":p" in bboxlist.keys():
+            elif obj.type == ":bone":
                 poly_name = obj.shortname + ":p"
-                if Old_poly is None or Old_poly.name != poly_name:
+                if Old_poly is None:
                     polys = editor.Root.dictitems['Misc:mg'].findallsubitems("", ':p')
                     for poly in polys:
                         if poly.name == poly_name:
                             Old_poly = poly
                             break
+                if Old_poly is None:
+                    Old_poly = bone_bbox_list[0]
                 New_poly = UpdateBBoxList(editor, Old_poly)
                 New_poly['assigned2'] = "None"
-                del bboxlist[obj.shortname + ":p"]
+                del bboxlist[Old_poly.name]
                 undo = quarkx.action()
                 undo.exchange(Old_poly, New_poly)
                 editor.ok(undo, "bbox released")
                 editor.layout.explorer.uniquesel = New_poly
                 editor.layout.explorer.sellist = [New_poly]
 
-        def select_bbox_click(m, editor=editor, obj=obj):
-            poly_name = obj.shortname + ":p"
-            polys = editor.Root.dictitems['Misc:mg'].findallsubitems("", ':p')
-            for poly in polys:
-                if poly.name == poly_name:
-                    editor.layout.explorer.sellist = [poly]
-                    break
+        def select_bbox_click(m, editor=editor, bboxlist=bboxlist, obj=obj, bone_bbox_list=bone_bbox_list):
+            if self.poly is not None:
+                editor.layout.explorer.sellist = [self.poly]
+            elif obj is not None and obj.shortname + ":p" in bboxlist.keys():
+                poly_name = obj.shortname + ":p"
+                polys = editor.Root.dictitems['Misc:mg'].findallsubitems("", ':p')
+                for poly in polys:
+                    if poly.name == poly_name:
+                        editor.layout.explorer.sellist = [poly]
+                        break
+            else:
+                editor.layout.explorer.sellist = [bone_bbox_list[0]]
             editor.layout.selchange()
+
+        def onclick1(m, editor=editor, bone_bbox_list=bone_bbox_list): # for select_bbox_click2
+            bbox_name = m.text + ':p'
+            sellist = []
+            for poly in bone_bbox_list:
+                if poly.name == bbox_name:
+                    sellist = sellist + [poly]
+                    break
+            editor.layout.explorer.sellist = sellist
+
+        def onclick2(m, editor=editor, bboxlist=bboxlist, bone_bbox_list=bone_bbox_list): # for release_bbox_click2
+            bbox_name = m.text + ':p'
+            sellist = []
+            for poly in bone_bbox_list:
+                if poly.name == bbox_name:
+                    Old_poly = poly
+                    break
+            New_poly = UpdateBBoxList(editor, Old_poly)
+            New_poly['assigned2'] = "None"
+            del bboxlist[Old_poly.name]
+            undo = quarkx.action()
+            undo.exchange(Old_poly, New_poly)
+            editor.ok(undo, "bbox released")
+            editor.layout.explorer.uniquesel = New_poly
+            editor.layout.explorer.sellist = [New_poly]
+        
+        def select_bbox_click2(m, editor=editor, bone_bbox_list=bone_bbox_list):
+            menu = []
+            for bbox in bone_bbox_list:
+                menu = menu + [qmenu.item(bbox.shortname, onclick1)]
+            m.items = menu
+
+        def release_bbox_click2(m, editor=editor, bone_bbox_list=bone_bbox_list):
+            menu = []
+            for bbox in bone_bbox_list:
+                menu = menu + [qmenu.item(bbox.shortname, onclick2)]
+            m.items = menu
+
+        def select_bboxes_click(m, editor=editor, bone_bbox_list=bone_bbox_list):
+            editor.layout.explorer.sellist = bone_bbox_list
+            editor.layout.selchange()
+
+        def release_bboxes_click(m, editor=editor, bboxlist=bboxlist, obj=obj, bone_bbox_list=bone_bbox_list):
+            parent = editor.Root.dictitems['Misc:mg']
+            polys = parent.findallsubitems("", ':p')
+            count = 1
+            for p in polys:
+                if p.shortname.startswith("bbox "):
+                    nbr = None
+                    try:
+                        nbr = p.shortname.split(" ")[1]
+                    except:
+                        pass
+                    if nbr is not None:
+                        if int(nbr) >= count:
+                            count = int(nbr) + 1
+                    else:
+                        count = count + 1
+            undo = quarkx.action()
+            for bbox in bone_bbox_list:
+                Old_poly = bbox
+                New_poly = UpdateBBoxList(editor, Old_poly, count)
+                New_poly['assigned2'] = "None"
+                del bboxlist[Old_poly.name]
+                undo.exchange(Old_poly, New_poly)
+                count = count + 1
+            editor.ok(undo, "bboxes released")
+            editor.layout.explorer.uniquesel = None
+            editor.layout.explorer.sellist = []
 
         AssignReleaseBBox = qmenu.item("Assign \ Release BBox", None, "|Assign \ Release BBox:\n\nBBox is a polyhedron box that is called by different names\nand are used for different things based on a game models format.\nCommonly it surrounds an area for a 'hitbox', 'collision', 'bounding box'...\n\nWhen a BBox is selected and a RMB click on the center of a bone is made, then that BBox can be assigned to that bone, or release from that bone\nif both have not already been assigned to something else that would cause a conflict.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
         AssignReleaseBBox.state = qmenu.disabled
         menulist = [AssignReleaseBBox]
 
-        if obj is not None and self.poly is not None and self.poly.dictspec['assigned2'] == "None":
-            if obj.type == ":bone": # Bone can only have 1 bbox.
-                if not obj.shortname + ":p" in bboxlist.keys():
+        if len(bone_bbox_list) < 2 or (len(sellist) == 1 and sellist[0].type == ":p"):
+            if obj is not None and self.poly is not None and self.poly.dictspec['assigned2'] == "None":
+                if obj.type == ":bone": # Bone can have multiple bboxes.
                     assign_bbox = qmenu.item("Assign BBox "+self.poly.shortname, assign_bbox_click, "|Assign BBox:\n\nBBox is a polyhedron box that is called by different names\nand are used for different things based on a game models format.\nCommonly it surrounds an area for a 'hitbox', 'collision', 'bounding box'...\n\nWhen a BBox is selected and a RMB click on the center of a bone is made, then that BBox can be assigned to that bone, or release from that bone\nif both have not already been assigned to something else that would cause a conflict.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
                     menulist = [assign_bbox]
+            elif self.poly is not None and self.poly.dictspec['assigned2'] != "None":
+                if obj is not None and obj.name == self.poly.dictspec['assigned2']:
+                    release_bbox = qmenu.item("Release BBox "+self.poly.shortname, release_bbox_click, "|Release BBox:\n\nBBox is a polyhedron box that is called by different names\nand are used for different things based on a game models format.\nCommonly it surrounds an area for a 'hitbox', 'collision', 'bounding box'...\n\nWhen a BBox is selected and a RMB click on the center of a bone is made, then that BBox can be assigned to that bone, or release from that bone\nif both have not already been assigned to something else that would cause a conflict.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
+                    select_bbox = qmenu.item("Select BBox "+self.poly.shortname, select_bbox_click, "|Select BBox:\n\nBBox is a polyhedron box that is called by different names\nand are used for different things based on a game models format.\nCommonly it surrounds an area for a 'hitbox', 'collision', 'bounding box'...\n\nWhen a BBox is selected and a RMB click on the center of a bone is made, then that BBox can be assigned to that bone, or release from that bone\nif both have not already been assigned to something else that would cause a conflict.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
+                    menulist = [release_bbox, select_bbox]
                 else:
-                    release_bbox = qmenu.item("Release BBox "+obj.shortname, release_bbox_click, "|Release BBox:\n\nBBox is a polyhedron box that is called by different names\nand are used for different things based on a game models format.\nCommonly it surrounds an area for a 'hitbox', 'collision', 'bounding box'...\n\nWhen a BBox is selected and a RMB click on the center of a bone is made, then that BBox can be assigned to that bone, or release from that bone\nif both have not already been assigned to something else that would cause a conflict.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
-                    select_bbox = qmenu.item("Select BBox "+obj.shortname, select_bbox_click, "|Select BBox:\n\nBBox is a polyhedron box that is called by different names\nand are used for different things based on a game models format.\nCommonly it surrounds an area for a 'hitbox', 'collision', 'bounding box'...\n\nWhen a BBox is selected and a RMB click on the center of a bone is made, then that BBox can be assigned to that bone, or release from that bone\nif both have not already been assigned to something else that would cause a conflict.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
-                    menulist = [release_bbox, select_bbox]
-        elif self.poly is not None and self.poly.dictspec['assigned2'] != "None":
-            if obj is not None and obj.shortname == self.poly.shortname:
-                release_bbox = qmenu.item("Release BBox "+obj.shortname, release_bbox_click, "|Release BBox:\n\nBBox is a polyhedron box that is called by different names\nand are used for different things based on a game models format.\nCommonly it surrounds an area for a 'hitbox', 'collision', 'bounding box'...\n\nWhen a BBox is selected and a RMB click on the center of a bone is made, then that BBox can be assigned to that bone, or release from that bone\nif both have not already been assigned to something else that would cause a conflict.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
-                select_bbox = qmenu.item("Select BBox "+obj.shortname, select_bbox_click, "|Select BBox:\n\nBBox is a polyhedron box that is called by different names\nand are used for different things based on a game models format.\nCommonly it surrounds an area for a 'hitbox', 'collision', 'bounding box'...\n\nWhen a BBox is selected and a RMB click on the center of a bone is made, then that BBox can be assigned to that bone, or release from that bone\nif both have not already been assigned to something else that would cause a conflict.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
-                menulist = [release_bbox, select_bbox]
-            elif obj is not None and obj.shortname + ":p" in bboxlist.keys():
-                release_bbox = qmenu.item("Release BBox "+obj.shortname, release_bbox_click, "|Release BBox:\n\nBBox is a polyhedron box that is called by different names\nand are used for different things based on a game models format.\nCommonly it surrounds an area for a 'hitbox', 'collision', 'bounding box'...\n\nWhen a BBox is selected and a RMB click on the center of a bone is made, then that BBox can be assigned to that bone, or release from that bone\nif both have not already been assigned to something else that would cause a conflict.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
-                select_bbox = qmenu.item("Select BBox "+obj.shortname, select_bbox_click, "|Select BBox:\n\nBBox is a polyhedron box that is called by different names\nand are used for different things based on a game models format.\nCommonly it surrounds an area for a 'hitbox', 'collision', 'bounding box'...\n\nWhen a BBox is selected and a RMB click on the center of a bone is made, then that BBox can be assigned to that bone, or release from that bone\nif both have not already been assigned to something else that would cause a conflict.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
-                menulist = [release_bbox, select_bbox]
-            elif obj is None:
-                release_bbox = qmenu.item("Release BBox "+self.poly.shortname, release_bbox_click, "|Release BBox:\n\nBBox is a polyhedron box that is called by different names\nand are used for different things based on a game models format.\nCommonly it surrounds an area for a 'hitbox', 'collision', 'bounding box'...\n\nWhen a BBox is selected and a RMB click on the center of a bone is made, then that BBox can be assigned to that bone, or release from that bone\nif both have not already been assigned to something else that would cause a conflict.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
-                menulist = [release_bbox]
-        elif obj is not None:
-            if obj.type == ":bone": # Bone can only have 1 bbox.
-                if obj.shortname + ":p" in bboxlist.keys():
-                    release_bbox = qmenu.item("Release BBox "+obj.shortname, release_bbox_click, "|Release BBox:\n\nBBox is a polyhedron box that is called by different names\nand are used for different things based on a game models format.\nCommonly it surrounds an area for a 'hitbox', 'collision', 'bounding box'...\n\nWhen a BBox is selected and a RMB click on the center of a bone is made, then that BBox can be assigned to that bone, or release from that bone\nif both have not already been assigned to something else that would cause a conflict.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
-                    select_bbox = qmenu.item("Select BBox "+obj.shortname, select_bbox_click, "|Select BBox:\n\nBBox is a polyhedron box that is called by different names\nand are used for different things based on a game models format.\nCommonly it surrounds an area for a 'hitbox', 'collision', 'bounding box'...\n\nWhen a BBox is selected and a RMB click on the center of a bone is made, then that BBox can be assigned to that bone, or release from that bone\nif both have not already been assigned to something else that would cause a conflict.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
-                    menulist = [release_bbox, select_bbox]
+                    release_bbox = qmenu.item("Release BBox "+self.poly.shortname, release_bbox_click, "|Release BBox:\n\nBBox is a polyhedron box that is called by different names\nand are used for different things based on a game models format.\nCommonly it surrounds an area for a 'hitbox', 'collision', 'bounding box'...\n\nWhen a BBox is selected and a RMB click on the center of a bone is made, then that BBox can be assigned to that bone, or release from that bone\nif both have not already been assigned to something else that would cause a conflict.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
+                    menulist = [release_bbox]
+            elif obj is not None:
+                if obj.type == ":bone": # Bone can have multiple bboxes.
+                    if obj.shortname + ":p" in bboxlist.keys():
+                        release_bbox = qmenu.item("Release BBox "+obj.shortname, release_bbox_click, "|Release BBox:\n\nBBox is a polyhedron box that is called by different names\nand are used for different things based on a game models format.\nCommonly it surrounds an area for a 'hitbox', 'collision', 'bounding box'...\n\nWhen a BBox is selected and a RMB click on the center of a bone is made, then that BBox can be assigned to that bone, or release from that bone\nif both have not already been assigned to something else that would cause a conflict.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
+                        select_bbox = qmenu.item("Select BBox "+obj.shortname, select_bbox_click, "|Select BBox:\n\nBBox is a polyhedron box that is called by different names\nand are used for different things based on a game models format.\nCommonly it surrounds an area for a 'hitbox', 'collision', 'bounding box'...\n\nWhen a BBox is selected and a RMB click on the center of a bone is made, then that BBox can be assigned to that bone, or release from that bone\nif both have not already been assigned to something else that would cause a conflict.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
+                        menulist = [release_bbox, select_bbox]
+                    elif len(bone_bbox_list) != 0:
+                        release_bbox = qmenu.item("Release BBox "+bone_bbox_list[0].shortname, release_bbox_click, "|Release BBox:\n\nBBox is a polyhedron box that is called by different names\nand are used for different things based on a game models format.\nCommonly it surrounds an area for a 'hitbox', 'collision', 'bounding box'...\n\nWhen a BBox is selected and a RMB click on the center of a bone is made, then that BBox can be assigned to that bone, or release from that bone\nif both have not already been assigned to something else that would cause a conflict.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
+                        select_bbox = qmenu.item("Select BBox "+bone_bbox_list[0].shortname, select_bbox_click, "|Select BBox:\n\nBBox is a polyhedron box that is called by different names\nand are used for different things based on a game models format.\nCommonly it surrounds an area for a 'hitbox', 'collision', 'bounding box'...\n\nWhen a BBox is selected and a RMB click on the center of a bone is made, then that BBox can be assigned to that bone, or release from that bone\nif both have not already been assigned to something else that would cause a conflict.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
+                        menulist = [release_bbox, select_bbox]
+        else:
+            SelectBBox = qmenu.popup("Select BBox", [], select_bbox_click2, "|Select BBox:\n\nThis will select a bounding box assigned to the bone (if NOT Hidden). You select by means of a menu that will appear listing all of a bone's bounding boxes to choose from.", "intro.modeleditor.rmbmenus.html#facermbmenu")
+            ReleaseBBox = qmenu.popup("Release BBox", [], release_bbox_click2, "|Release BBox:\n\nThis will release a bounding box assigned to the bone (if NOT Hidden). You select by means of a menu that will appear listing all of a bone's bounding boxes to choose from.", "intro.modeleditor.rmbmenus.html#facermbmenu")
+            SelectBBoxes = qmenu.item("Select BBoxes", select_bboxes_click, "|Select BBoxes:\n\nThis will select all the bounding boxes assigned to the bone (if NOT Hidden).|intro.modeleditor.rmbmenus.html#facermbmenu")
+            ReleaseBBoxes = qmenu.item("Release BBoxes", release_bboxes_click, "|Release BBoxes:\n\nThis will release all the bounding boxes assigned to the bone (if NOT Hidden).|intro.modeleditor.rmbmenus.html#facermbmenu")
+            menulist = [SelectBBox, ReleaseBBox, SelectBBoxes, ReleaseBBoxes]
 
         return menulist
 
@@ -6384,6 +6484,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.222  2010/12/12 20:19:55  cdunde
+#Update to release bbox function.
+#
 #Revision 1.221  2010/12/07 20:10:16  cdunde
 #Update for bbox face handle.
 #
