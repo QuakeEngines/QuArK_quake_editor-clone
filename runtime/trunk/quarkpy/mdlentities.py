@@ -2656,10 +2656,14 @@ class ComponentType(EntityManager):
                 items = []
                 values = []
                 tags = o.dictspec['Tags'].split(", ")
-                group = o.name.split("_")[0]
+                alltags = editor.Root.dictitems['Misc:mg'].findallsubitems("", ':tag')   # get all frames
+                for t in alltags:
+                    group = t.shortname.split("tag_")[0]
+                    if o.name.startswith(group):
+                        break
                 for tag in tags:
                     items = items + ['"' + tag + '"' + "$0D"]
-                    tag_name = group + "_" + tag + ":tag"
+                    tag_name = group + tag + ":tag"
                     values = values + ['"' + tag_name + '"' + "$0D"]
 
                 TagList = TagList + """tag_list: = {Typ = "CL" Txt = "Tags list" items = """
@@ -2782,11 +2786,10 @@ class ComponentType(EntityManager):
         if o.dictspec.has_key("Tags") or o.dictspec.has_key("tag_components"):
             if o.dictspec.has_key("Tags"):
                 tagnames = o.dictspec['Tags'].split(", ")
-                group = o.name.split("_")[0]
-                tag_name = group + "_" + tagnames[0] + ":tag"
+                tag_name = group + tag + ":tag"
                 if o.dictspec.has_key("tag_list"):
-                    if not (o.dictspec['tag_list'].replace(group + "_", "")).replace(":tag", "") in tagnames: # In case one of them gets renamed.
-                        tag_name = group + "_" + tagnames[0] + ":tag"
+                    if not (o.dictspec['tag_list'].replace(group, "")).replace(":tag", "") in tagnames: # In case one of them gets renamed.
+                        tag_name = group + tagnames[0] + ":tag"
                         o['tag_list'] = tag_name
                     if not o.dictspec.has_key("None"):
                         editor.layout.explorer.sellist = [editor.Root.dictitems['Misc:mg'].dictitems[o.dictspec['tag_list']]]
@@ -3168,6 +3171,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.81  2010/12/10 20:18:32  cdunde
+#Added bbox edit menu items.
+#
 #Revision 1.80  2010/12/07 06:06:52  cdunde
 #Updates for Model Editor bounding box system.
 #
