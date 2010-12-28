@@ -1313,7 +1313,12 @@ def GetFrameName(editor):
         if explorer.uniquesel.type == ":mf":
             frame_name = explorer.uniquesel.name
         elif explorer.uniquesel.type == ":mc":
-            frame_name = explorer.uniquesel.currentframe.name
+            if explorer.uniquesel.currentframe is None:
+                frame = explorer.uniquesel.dictitems['Frames:fg'].subitems[0]
+                explorer.uniquesel.currentframe = frame
+                frame_name = frame.name
+            else:
+                frame_name = explorer.uniquesel.currentframe.name
     elif len(explorer.sellist) > 1:
         if explorer.sellist[0].type == ":mf":
             frame_name = explorer.sellist[0].name
@@ -4720,6 +4725,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.154  2010/12/19 17:24:54  cdunde
+#Changes so a bone can have multiple bounding boxes assigned to it.
+#
 #Revision 1.153  2010/12/07 21:04:49  cdunde
 #Removed code that we decided not to use.
 #
