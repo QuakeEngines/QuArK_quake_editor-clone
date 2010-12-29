@@ -154,7 +154,11 @@ class FourViewsLayout(ModelLayout):
         #
 
         if not (view in (self.ViewXY, self.ViewXZ, self.ViewYZ)):
-            return
+            if (view.info["viewname"] == "editors3Dview" or view.info["viewname"] == "3Dwindow") and quarkx.setupsubset(SS_MODEL, "Options")['EditorTrue3Dmode'] != "1":
+                #3D editor view in 2D mode. Also set depth!
+                pass
+            else:
+                return
 
         #
         # To compute the visible areas for the XY view, we
@@ -222,6 +226,9 @@ class FourViewsLayout(ModelLayout):
             self.ViewYZ.setdepth(yzdepth)
         else:
             self.ViewYZ.depth = yzdepth
+
+        if view.info["viewname"] == "editors3Dview" or view.info["viewname"] == "3Dwindow":
+            view.depth = xydepth
 
 
     #
@@ -317,6 +324,9 @@ LayoutsList.insert(0, FourViewsLayout2)
 #
 #
 # $Log$
+# Revision 1.16  2008/08/21 17:55:14  cdunde
+# To put the imports back at the top.
+#
 # Revision 1.15  2008/08/21 12:04:03  danielpharos
 # Moved import to proper location.
 #

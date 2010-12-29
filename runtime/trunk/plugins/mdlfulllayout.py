@@ -59,6 +59,17 @@ class Full3DLayout(ModelLayout):
         
         quarkpy.qbaseeditor.currentview = self.View3D
 
+    def setupdepth(self, view):
+        if (view.info["viewname"] == "editors3Dview" or view.info["viewname"] == "3Dwindow") and quarkx.setupsubset(SS_MODEL, "Options")['EditorTrue3Dmode'] != "1":
+            #3D editor view in 2D mode. Also set depth!
+            pass
+        else:
+            return
+
+        if view.info["viewname"] == "editors3Dview" or view.info["viewname"] == "3Dwindow":
+            #FIXME: I have no clue what to do here... Just throwing in some number that seems to work...
+            view.depth = (-1000, 1000)
+
 
 LayoutsList.append(Full3DLayout)
 
@@ -66,6 +77,9 @@ LayoutsList.append(Full3DLayout)
 #
 #
 # $Log$
+# Revision 1.12  2008/08/21 17:55:13  cdunde
+# To put the imports back at the top.
+#
 # Revision 1.11  2008/08/21 12:04:02  danielpharos
 # Moved import to proper location.
 #
