@@ -68,7 +68,7 @@ class Full3DLayout(ModelLayout):
 
         if view.info["viewname"] == "editors3Dview" or view.info["viewname"] == "3Dwindow":
             #FIXME: I have no clue what to do here... Just throwing in some number that seems to work...
-            view.depth = (-1000, 1000)
+            view.depth = (-10000, 10000)
 
 
 LayoutsList.append(Full3DLayout)
@@ -77,6 +77,10 @@ LayoutsList.append(Full3DLayout)
 #
 #
 # $Log$
+# Revision 1.13  2010/12/29 21:20:49  cdunde
+# Fix by DanielPharos for 3D view depth causing not being able
+# to select bounding boxes in those type of views sometimes.
+#
 # Revision 1.12  2008/08/21 17:55:13  cdunde
 # To put the imports back at the top.
 #
