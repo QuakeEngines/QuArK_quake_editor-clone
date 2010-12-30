@@ -154,10 +154,11 @@ class FourViewsLayout(ModelLayout):
         #
 
         if not (view in (self.ViewXY, self.ViewXZ, self.ViewYZ)):
-            if (view.info["viewname"] == "editors3Dview" or view.info["viewname"] == "3Dwindow") and quarkx.setupsubset(SS_MODEL, "Options")['EditorTrue3Dmode'] != "1":
+            if view.info["viewname"] == "3Dwindow" and quarkx.setupsubset(SS_MODEL, "Options")['Full3DTrue3Dmode']:
+                #3D floating view in 2D mode. Also set depth!
+                return
+            elif view.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MODEL, "Options")['EditorTrue3Dmode']:
                 #3D editor view in 2D mode. Also set depth!
-                pass
-            else:
                 return
 
         #
@@ -228,7 +229,9 @@ class FourViewsLayout(ModelLayout):
             self.ViewYZ.depth = yzdepth
 
         if view.info["viewname"] == "editors3Dview" or view.info["viewname"] == "3Dwindow":
-            view.depth = xydepth
+            fulldepth = (view.proj(view.space(x1, y1, -10000)).z,
+                       view.proj(view.space(x2, y2, 10000)).z)
+            view.depth = fulldepth
 
 
     #
@@ -324,6 +327,10 @@ LayoutsList.insert(0, FourViewsLayout2)
 #
 #
 # $Log$
+# Revision 1.17  2010/12/29 21:20:49  cdunde
+# Fix by DanielPharos for 3D view depth causing not being able
+# to select bounding boxes in those type of views sometimes.
+#
 # Revision 1.16  2008/08/21 17:55:14  cdunde
 # To put the imports back at the top.
 #

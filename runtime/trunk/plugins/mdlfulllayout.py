@@ -60,15 +60,17 @@ class Full3DLayout(ModelLayout):
         quarkpy.qbaseeditor.currentview = self.View3D
 
     def setupdepth(self, view):
-        if (view.info["viewname"] == "editors3Dview" or view.info["viewname"] == "3Dwindow") and quarkx.setupsubset(SS_MODEL, "Options")['EditorTrue3Dmode'] != "1":
+        if view.info["viewname"] == "3Dwindow" and quarkx.setupsubset(SS_MODEL, "Options")['Full3DTrue3Dmode']:
+            #3D floating view in 2D mode. Also set depth!
+            return
+        elif view.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MODEL, "Options")['EditorTrue3Dmode']:
             #3D editor view in 2D mode. Also set depth!
-            pass
-        else:
             return
 
         if view.info["viewname"] == "editors3Dview" or view.info["viewname"] == "3Dwindow":
-            #FIXME: I have no clue what to do here... Just throwing in some number that seems to work...
-            view.depth = (-10000, 10000)
+            fulldepth = (view.proj(view.space(-10000, -10000, -10000)).z,
+                       view.proj(view.space(10000, 10000, 10000)).z)
+            view.depth = fulldepth
 
 
 LayoutsList.append(Full3DLayout)
@@ -77,6 +79,9 @@ LayoutsList.append(Full3DLayout)
 #
 #
 # $Log$
+# Revision 1.14  2010/12/29 21:30:58  cdunde
+# Increased dept for this layout in case a large model is loaded.
+#
 # Revision 1.13  2010/12/29 21:20:49  cdunde
 # Fix by DanielPharos for 3D view depth causing not being able
 # to select bounding boxes in those type of views sometimes.
