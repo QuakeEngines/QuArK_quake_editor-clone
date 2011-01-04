@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.524  2010/11/24 15:00:17  cdunde
+//Added Model Editor option, Draw Bounding Boxes.
+//
 //Revision 1.523  2010/10/17 15:39:16  danielpharos
 //Added high precision float option to DirectX renderer.
 //
@@ -10058,7 +10061,7 @@ QQRKSRC1
     t_ModelEditor_texturebrowser:incl =
     {
       Typ = "EPR"
-      DefExt = "tga; *.dds; *.png; *.jpg; *.bmp; *.ftx"
+      DefExt = "tga; *.dds; *.png; *.jpg; *.bmp; *.ftx; *.vtf"
       BasePath = "?\?\?"
       CutPath = "?\?\?\?\"
       DirSep = "/"
@@ -10068,7 +10071,7 @@ QQRKSRC1
     t_texturebrowser:incl =
     {
       Typ = "EP"
-      DefExt = "tga; *.dds; *.png; *.jpg; *.bmp; *.ftx"
+      DefExt = "tga; *.dds; *.png; *.jpg; *.bmp; *.ftx; *.vtf"
       BasePath = "$Game\?\?"
       CutPath = "$Game\?\"
       DirSep = "/"

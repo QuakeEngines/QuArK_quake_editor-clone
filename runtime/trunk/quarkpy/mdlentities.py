@@ -2939,7 +2939,7 @@ class SkinSubGroupType(EntityManager):
 
 
 class SkinType(EntityManager):
-    "Model Skin, types = .pcx, .tga, .dds, .png, .jpg, .bmp, .ftx"
+    "Model Skin, types = .pcx, .tga, .dds, .png, .jpg, .bmp, .ftx, .vtf"
 
     def dataformname(o):
         "Returns the data form for this type of object 'o' (a model's skin texture) to use for the Specific/Args page."
@@ -3121,6 +3121,7 @@ Mapping = {
     ".jpg":      SkinType(),
     ".bmp":      SkinType(),
     ".ftx":      SkinType(),
+    ".vtf":      SkinType(),
     ":bound":    BoundType(),
     ":tag":      TagType(),
     ":tagframe": TagFrameType(),
@@ -3171,6 +3172,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.82  2010/12/28 20:18:53  cdunde
+#Changes for tags that use both the model folder and name or just the model folder.
+#
 #Revision 1.81  2010/12/10 20:18:32  cdunde
 #Added bbox edit menu items.
 #

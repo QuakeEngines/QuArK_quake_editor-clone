@@ -43,7 +43,7 @@ def droptarget(editor, newitem):
                 if c is None:
                     c=editor.Root.currentcomponent
                 return c.dictitems['Frames:fg'], None
-        elif newitem.type in ('.pcx', '.tga', '.dds', '.png', '.jpg', '.bmp', '.ftx'):
+        elif newitem.type in ('.pcx', '.tga', '.dds', '.png', '.jpg', '.bmp', '.ftx', '.vtf'):
             if not fs is None:
                 c=componentof(fs)
                 if c is None:
@@ -132,7 +132,7 @@ def dropitemsnow(editor, newlist, text=Strings[544], center="S"):
         nparent, nib = droptarget(editor, newitem)
         if nparent is None and newitem.type == ".wl":
             import os
-            image_type_list = ['.tga', '.dds', '.png', '.jpg', '.bmp', '.ftx']  # Order from best to worst (personal judgement).
+            image_type_list = ['.tga', '.dds', '.png', '.jpg', '.bmp', '.ftx', '.vtf']  # Order from best to worst (personal judgement).
             try:
                 for type in image_type_list:
                     if os.path.exists(newitem['path'] + "/" + newitem.shortname + type):
@@ -692,6 +692,9 @@ def groupcolor(m):
 #
 #
 #$Log$
+#Revision 1.40  2010/12/10 20:18:32  cdunde
+#Added bbox edit menu items.
+#
 #Revision 1.39  2010/12/07 06:06:52  cdunde
 #Updates for Model Editor bounding box system.
 #
