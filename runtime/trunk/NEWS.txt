@@ -14,6 +14,8 @@ $Id$
 
 6.6.0 Beta 4
 ============
+* [cdunde/DanielPharos]: Setup importer for Half-Life 2 mesh (animation to follow) with bone, attachment, bbox and skin support.
+
 * [cdunde/DanielPharos]: Added bounding boxes (hit boxes) and bone controls support used by Half-Life, maybe others.
 
 * [cdunde/DanielPharos]: Fixed the loss of selections and expanded items in the Model Editor from UNDO and REDO actions.
