@@ -497,9 +497,22 @@ def macro_opentexteditor(btn):
             undo.exchange(old_obj, new_obj)
             editor.ok(undo, new_obj.shortname + " - animCFG changed")
     else:
+        old_obj = editor.Root.currentcomponent
+        new_obj = old_obj.copy()
         obj = quarkx.newfileobj("temp.txt")
-        obj['Data'] = editor.Root.currentcomponent.dictspec['mesh_shader']
+        obj['Data'] = new_obj.dictspec['mesh_shader']
         quarkx.externaledit(obj)
+        new_obj['mesh_shader'] = obj['Data']
+        if new_obj.dictspec['mesh_shader'] != old_obj.dictspec['mesh_shader']:
+            if old_obj.dictspec.has_key("shader_keyword"):
+                shader_keyword = old_obj.dictspec['shader_keyword']
+                if old_obj.dictspec['mesh_shader'].find(shader_keyword) != -1 and new_obj.dictspec['mesh_shader'].find(shader_keyword) == -1:
+                    quarkx.beep() # Makes the computer "Beep" once.
+                    quarkx.msgbox("shader keyword:\n    " + shader_keyword + "\nhas changed !\n\nYou should probably copy the new keyword from the shader below and\npaste it into this dialogs 'shader keyword' to replace the old one.", qutils.MT_WARNING, qutils.MB_OK)
+
+            undo = quarkx.action()
+            undo.exchange(old_obj, new_obj)
+            editor.ok(undo, new_obj.shortname + " - mesh shader changed")
     
 qmacro.MACRO_opentexteditor = macro_opentexteditor
 
@@ -3172,6 +3185,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.83  2011/01/04 11:10:20  cdunde
+#Added .vtf as supported texture file type for game HalfLife2.
+#
 #Revision 1.82  2010/12/28 20:18:53  cdunde
 #Changes for tags that use both the model folder and name or just the model folder.
 #
