@@ -243,16 +243,22 @@ def LookForSkins(skin_names, skins_group, materials_group, folder_name, mdl_name
                         trydir = trydir + '/materials/models/' + mdl_name
                         dir_files = os.listdir(trydir)
                     except:
-                        trydir = dir.replace('/models/', '/materials/models/')
-                        trydir = trydir + '/' + mdl_name
-                        dir_files = os.listdir(trydir)
+                        try:
+                            trydir = dir.replace('/models/', '/materials/models/')
+                            trydir = trydir + '/' + mdl_name
+                            dir_files = os.listdir(trydir)
+                        except:
+                            trydir = dir.replace('/models/', '/materials/models/')
+                            dir_files = os.listdir(trydir)
+
                     dir = trydir
                     for df in range(len(dir_files)):
                         df_name = dir_files[df].lower()
-                        if df_name == skin_names[skin_name] + ".vmt" and material is None:
-                            material = dir_files[df]
-                        if df_name == skin_names[skin_name] + ".vtf" and texture is None:
-                            texture = dir_files[df]
+                        if df_name.find(skin_names[skin_name]) != -1:
+                            if df_name.endswith(".vmt") and material is None:
+                                material = dir_files[df]
+                            if df_name.endswith(".vtf") and texture is None:
+                                texture = dir_files[df]
                         if material is not None and texture is not None:
                             material = dir + '/' + material
                             texture = dir + '/' + texture
@@ -261,6 +267,49 @@ def LookForSkins(skin_names, skins_group, materials_group, folder_name, mdl_name
                         texture, material = LookForTexture(cur_dir, material, texture, dir)
                 except:
                     pass
+
+        # If nothing, try another way.
+        if material is None and texture is None:
+            try:
+                dir = cur_dir.replace('\\', '/')
+                trydir = dir.replace('/models/', '/materials/models/')
+                try_name = mdl_name.rsplit('_', 1)[0]
+                trydir2 = trydir.rsplit('/', 1)[0] + '/' + try_name
+                dir = trydir2
+                dir_files = os.listdir(trydir2)
+                for df in range(len(dir_files)):
+                    df_name = dir_files[df].lower()
+                    if df_name.find(skin_names[skin_name]) != -1:
+                        if df_name.endswith(".vmt") and material is None:
+                            material = dir_files[df]
+                        if df_name.endswith(".vtf") and texture is None:
+                            texture = dir_files[df]
+                    if material is not None and texture is not None:
+                        material = dir + '/' + material
+                        texture = dir + '/' + texture
+                        break
+
+                if material is not None and texture is None:
+                    texture, material = LookForTexture(cur_dir, material, texture, dir)
+
+                if material is None and texture is None:
+                    dir = dir + '/' + folder_name
+                    dir_files = os.listdir(dir)
+                    for df in range(len(dir_files)):
+                        df_name = dir_files[df].lower()
+                        if df_name.find(skin_names[skin_name]) != -1:
+                            if df_name.endswith(".vmt") and material is None:
+                                material = dir_files[df]
+                            if df_name.endswith(".vtf") and texture is None:
+                                texture = dir_files[df]
+                        if material is not None and texture is not None:
+                            material = dir + '/' + material
+                            texture = dir + '/' + texture
+                            break
+                    if material is not None and texture is None:
+                        texture, material = LookForTexture(cur_dir, material, texture, dir)
+            except:
+                pass
 
         if texture is None:
             skins_group.append("None")
@@ -272,6 +321,30 @@ def LookForSkins(skin_names, skins_group, materials_group, folder_name, mdl_name
             materials_group.append(material)
 
     return skins_group, materials_group
+
+# Opens and reads in the given material file.
+def ReadMaterialFile(material_path):
+    file = open(material_path, "r")
+    lines = file.readlines()
+    file.close()
+    left_cur_braket = 0
+    mesh_shader = ""
+    for line in range(len(lines)):
+        shaderline = lines[line].replace(chr(9), "    ")
+        shaderline = shaderline.rstrip()
+        if left_cur_braket == 0 and shaderline.startswith('"') and shaderline.endswith('"'):
+            shader_keyword = shaderline.replace('"', "")
+        if lines[line].find("{") != -1:
+            left_cur_braket = left_cur_braket + 1
+        if lines[line].find("}") != -1:
+            left_cur_braket = left_cur_braket - 1
+        mesh_shader = mesh_shader + shaderline + "\r\n"
+
+    shader_file = material_path
+    shader_name = material_path.rsplit("/", 1)[1]
+    mesh_shader = mesh_shader
+
+    return shader_keyword, shader_file, shader_name, mesh_shader
 
 
 ######################################################
@@ -1908,7 +1981,8 @@ class HL2_SurfaceProp:
 
 
 class HL2_KeyValues(object):
-    __slots__ = 'mdlkeyvalues', 'binaryFormat'
+    #Header Structure      #item of file, type, description.
+    mdlkeyvalues = ""
 
     def __init__(self):
         self.mdlkeyvalues = ""
@@ -2285,32 +2359,67 @@ class HL2_VTXFileReader:
                                     new_comp.shortname = new_comp.shortname + str(m)
                                 if mesh_flags != 2:
                                     skin_path = skins[mesh.material]
+                                    material_path = materials[mesh.material]
                                     if skin_path != "None":
                                         skinname = 'models' + skin_path.split('/models')[1]
                                         skin = quarkx.newobj(skinname)
                                         image = quarkx.openfileobj(skin_path)
                                         skin['Image1'] = image.dictspec['Image1']
                                         skin['Size'] = image.dictspec['Size']
+                                        if material_path != "None":
+                                            shader_keyword, shader_file, shader_name, mesh_shader = ReadMaterialFile(material_path)
+                                            new_comp['shader_keyword'] = skin['shader_keyword'] = shader_keyword
+                                            new_comp['shader_file'] = skin['shader_file'] = shader_file
+                                            new_comp['shader_name'] = skin['shader_name'] = shader_name
+                                            new_comp['mesh_shader'] = skin['mesh_shader'] = mesh_shader
+                                            new_comp['skin_name'] = skin.name
+                                        else:
+                                            new_comp['shader_keyword'] = skin['shader_keyword'] = material_path
                                         new_comp.dictitems['Skins:sg'].appenditem(skin)
                                         new_comp['skinsize'] = skin['Size']
                                 else:
                                     eyeball = eyeballs[eyeball_count]
                                     skin_path = skins[eyeball.iris_material]
+                                    material_path = materials[eyeball.iris_material]
                                     if skin_path != "None":
                                         skinname = 'models' + skin_path.split('/models')[1]
                                         skin = quarkx.newobj(skinname)
                                         image = quarkx.openfileobj(skin_path)
                                         skin['Image1'] = image.dictspec['Image1']
                                         skin['Size'] = image.dictspec['Size']
+                                        if material_path != "None":
+                                            shader_keyword, shader_file, shader_name, mesh_shader = ReadMaterialFile(material_path)
+                                            new_comp['shader_keyword'] = skin['shader_keyword'] = shader_keyword
+                                            new_comp['shader_file'] = skin['shader_file'] = shader_file
+                                            new_comp['shader_name'] = skin['shader_name'] = shader_name
+                                            new_comp['mesh_shader'] = skin['mesh_shader'] = mesh_shader
+                                            new_comp['skin_name'] = skin.name
+                                        else:
+                                            new_comp['shader_keyword'] = skin['shader_keyword'] = material_path
                                         new_comp.dictitems['Skins:sg'].appenditem(skin)
                                         new_comp['skinsize'] = skin['Size']
                                     skin_path = skins[eyeball.glint_material]
+                                    material_path = materials[eyeball.glint_material]
                                     if skin_path != "None":
                                         skinname = 'models' + skin_path.split('/models')[1]
                                         skin = quarkx.newobj(skinname)
                                         image = quarkx.openfileobj(skin_path)
                                         skin['Image1'] = image.dictspec['Image1']
                                         skin['Size'] = image.dictspec['Size']
+                                        if material_path != "None":
+                                            shader_keyword, shader_file, shader_name, mesh_shader = ReadMaterialFile(material_path)
+                                            skin['shader_keyword'] = shader_keyword
+                                            skin['shader_file'] = shader_file
+                                            skin['shader_name'] = shader_name
+                                            skin['mesh_shader'] = mesh_shader
+                                            if not new_comp.dictspec.has_key('skin_name'):
+                                                new_comp['shader_keyword'] = shader_keyword
+                                                new_comp['shader_file'] = shader_file
+                                                new_comp['shader_name'] = shader_name
+                                                new_comp['mesh_shader'] = mesh_shader
+                                                new_comp['skin_name'] = skin.name
+                                        else:
+                                            new_comp['shader_keyword'] = skin['shader_keyword'] = material_path
                                         skingroup = new_comp.dictitems['Skins:sg']
                                         skingroup.appenditem(skin)
                                         if len(skingroup.subitems) == 1:
@@ -2487,150 +2596,6 @@ def HL2_GetTriangleData(mdl_name):
     return vtx_file
 
 
-class Vert(object):
-    __slots__ = 'xyz', 'normal', 'binaryFormat'
-
-    binaryFormat = "<3hh"
-
-    def __init__(self):
-        self.xyz = [0, 0, 0]
-        self.normal = 0
-
-    def Load(self, file):
-        tmpData = file.read(struct.calcsize(self.binaryFormat))
-        data = struct.unpack(self.binaryFormat, tmpData)
-        self.xyz[0] = data[0] * MD3_XYZ_SCALE
-        self.xyz[1] = data[1] * MD3_XYZ_SCALE
-        self.xyz[2] = data[2] * MD3_XYZ_SCALE
-        self.normal = data[3]
-        return self
-
-
-class TexCoord(object):
-    __slots__ = 'u', 'v', 'binaryFormat'
-
-    binaryFormat = "<2f"
-
-    def __init__(self):
-        self.u = 0.0
-        self.v = 0.0
-
-    def Load(self, file):
-        tmpData = file.read(struct.calcsize(self.binaryFormat))
-        data = struct.unpack(self.binaryFormat, tmpData)
-        self.u = data[0]
-        self.v = data[1]
-        return self
-
-
-class Triangle(object):
-    __slots__ = 'indexes', 'binaryFormat'
-
-    binaryFormat = "<3i"
-
-    def __init__(self):
-        self.indexes = [ 0, 0, 0 ]
-
-    def Load(self, file):
-        tmpData = file.read(struct.calcsize(self.binaryFormat))
-        data = struct.unpack(self.binaryFormat, tmpData)
-        self.indexes[0] = data[0]
-        self.indexes[1] = data[1]
-        self.indexes[2] = data[2]
-        return self
-
-
-class Shaders(object):
-    __slots__ = 'name', 'index', 'binaryFormat'
-
-    binaryFormat = "<%dsi" % MAX_QPATH
-
-    def __init__(self):
-        self.name = ""
-        self.index = 0
-
-    def Load(self, file):
-        tmpData = file.read(struct.calcsize(self.binaryFormat))
-        data = struct.unpack(self.binaryFormat, tmpData)
-        self.name = asciiz(data[0])
-        self.index = data[1]
-        return self
-
-
-class Surfaces(object):
-    __slots__ = \
-        'ident', 'name', 'flags', 'numFrames', 'numShaders', 'numVerts', 'numTriangles', \
-        'ofsTriangles', 'ofsShaders', 'ofsUV', 'ofsVerts', 'ofsEnd', 'shaders', 'triangles', 'uv', \
-        'verts', 'binaryFormat'
-
-    binaryFormat = "<4s%ds10i" % MAX_QPATH  # 1 int, name, then 10 ints
-
-    def __init__(self):
-        self.ident = ""
-        self.name = ""
-        self.flags = 0
-        self.numFrames = 0
-        self.numShaders = 0
-        self.numVerts = 0
-        self.numTriangles = 0
-        self.ofsTriangles = 0
-        self.ofsShaders = 0
-        self.ofsUV = 0
-        self.ofsVerts = 0
-        self.ofsEnd = 0
-        self.shaders = []
-        self.triangles = []
-        self.uv = []
-        self.verts = []
-
-    def Load(self, file):
-        tmpData = file.read(struct.calcsize(self.binaryFormat))
-        data = struct.unpack(self.binaryFormat, tmpData)
-        self.ident = data[0]
-        self.name = asciiz(data[1])
-        self.flags = data[2]
-        self.numFrames = data[3]
-        self.numShaders = data[4]
-        self.numVerts = data[5]
-        self.numTriangles = data[6]
-        self.ofsTriangles = data[7]
-        self.ofsShaders = data[8]
-        self.ofsUV = data[9]
-        self.ofsVerts = data[10]
-        self.ofsEnd = data[11]
-
-        # load the tri info
-        file.seek(ofsBegin + self.ofsTriangles, 0)
-        for i in xrange(self.numTriangles):
-            self.triangles.append(Triangle())
-            self.triangles[i].Load(file)
-
-        # load the shader info
-        file.seek(ofsBegin + self.ofsShaders, 0)
-        for i in xrange(self.numShaders):
-            self.shaders.append(Shaders())
-            self.shaders[i].Load(file)
-
-        # load the uv info
-        file.seek(ofsBegin + self.ofsUV, 0)
-        for i in xrange(self.numVerts):
-            self.uv.append(TexCoord())
-            self.uv[i].Load(file)
-
-        # load the verts info
-        file.seek(ofsBegin + self.ofsVerts, 0)
-        for i in xrange(self.numFrames):
-            for j in xrange(self.numVerts):
-                self.verts.append(Vert())
-                #i*self.numVerts+j=where in the surface vertex list the vert position for this frame is
-                self.verts[(i * self.numVerts) + j].Load(file)
-
-        # go to the end of this structure
-        file.seek(ofsBegin+self.ofsEnd, 0)
-
-        return self
-
-
 class Tags(object):
     mdltagvalues = ""
     origin = [0.0, 0.0, 0.0]
@@ -2653,35 +2618,6 @@ class Tags(object):
             print ""
             print "line 2654 Tags self.mdltagvalues", self.mdltagvalues
 
-        return self
-
-
-class Frames(object):
-    __slots__ = 'mins', 'maxs', 'localOrigin', 'radius', 'name', 'binaryFormat'
-
-    binaryFormat="<3f3f3ff16s"
-
-    def __init__(self):
-        self.mins = [0, 0, 0]
-        self.maxs = [0, 0, 0]
-        self.localOrigin = [0, 0, 0]
-        self.radius = 0.0
-        self.name = ""
-
-    def Load(self, file):
-        tmpData = file.read(struct.calcsize(self.binaryFormat))
-        data = struct.unpack(self.binaryFormat, tmpData)
-        self.mins[0] = data[0]
-        self.mins[1] = data[1]
-        self.mins[2] = data[2]
-        self.maxs[0] = data[3]
-        self.maxs[1] = data[4]
-        self.maxs[2] = data[5]
-        self.localOrigin[0] = data[6]
-        self.localOrigin[1] = data[7]
-        self.localOrigin[2] = data[8]
-        self.radius = data[9]
-        self.name = asciiz(data[10])
         return self
 
 
@@ -3764,16 +3700,6 @@ def loadmodel(root, filename, gamename, nomessage=0):
     newbones = []
     for bone_index in range(len(QuArK_bones)): # Using list of ALL bones.
         boneobj = QuArK_bones[bone_index]
-    #    bonename = boneobj.name
-        # Builds the editor.ModelComponentList here.
-    #    if boneobj.vtxlist != {}:
-    #        for compname in boneobj.vtxlist.keys():
-    #            if not editor.ModelComponentList[compname]['bonevtxlist'].has_key(bonename):
-    #                editor.ModelComponentList[compname]['bonevtxlist'][bonename] = {}
-    #            for vtx_index in boneobj.vtxlist[compname]:
-    #                editor.ModelComponentList[compname]['bonevtxlist'][bonename][vtx_index] = {'color': '\x00\x00\xff'}
-    #                editor.ModelComponentList[compname]['weightvtxlist'][vtx_index] = {}
-    #                editor.ModelComponentList[compname]['weightvtxlist'][vtx_index][bonename] = {'weight_value': 1.0, 'color': quarkpy.mdlutils.weights_color(editor, 1.0)}
         parent_index = int(boneobj.dictspec['parent_index'])
         if parent_index < 0:
             newbones = newbones + [boneobj]
@@ -3827,7 +3753,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
             message = message + "================================\r\n\r\n"
             message = message + "You need to find and supply the proper texture(s) and folder(s) above.\r\n"
             message = message + "Extract the folder(s) and file(s) to the 'game' folder.\r\n\r\n"
-            message = message + "If a texture does not exist it may be a .dds or some other type of image file.\r\n"
+            message = message + "If a texture does not exist it may need a .vmt material file or some other type of image file.\r\n"
             message = message + "If so then you need to make a .tga file copy of that texture, perhaps in PaintShop Pro.\r\n\r\n"
             message = message + "You may also need to rename it to match the exact name above.\r\n"
             message = message + "Either case, it would be for editing purposes only and should be placed in the model's folder.\r\n\r\n"
@@ -3844,11 +3770,179 @@ def loadmodel(root, filename, gamename, nomessage=0):
 ### To register this Python plugin and put it on the importers menu.
 import quarkpy.qmdlbase
 import ie_md0_HL2_import # This imports itself to be passed along so it can be used in mdlmgr.py later.
-quarkpy.qmdlbase.RegisterMdlImporter(".mdl Half-Life2 Importer", ".mdl file", "*.mdl", loadmodel)
+quarkpy.qmdlbase.RegisterMdlImporter(".mdl Half-Life2 Importer", ".mdl file", "*.mdl", loadmodel, ie_md0_HL2_import)
+
+
+######################################################
+# DIALOG SECTION (for Editor's Specifics/Args page)
+######################################################
+def dataformname(o):
+    "Returns the data form for this type of object 'o' (a model's skin texture) to use for the Specific/Args page."
+    import quarkpy.mdlentities # Used further down in a couple of places.
+
+    # Next line calls for the External Skin Editor Module in mdlentities.py to be used.
+    external_skin_editor_dialog_plugin = quarkpy.mdlentities.UseExternalSkinEditor()
+
+    # Next line calls for the Vertex Weights Specifics Module in mdlentities.py to be used.
+    vertex_weights_specifics_plugin = quarkpy.mdlentities.UseVertexWeightsSpecifics()
+
+    # Next line calls for the Shader Module in mdlentities.py to be used.
+    Shader_dialog_plugin = quarkpy.mdlentities.UseShaders()
+
+    dlgdef = """
+    {
+      Help = "These are the Specific settings for Half-Life 2 (.mdl) model types."$0D
+             "mdl models use 'meshes' the same way that QuArK uses 'components'."$0D
+             "Each can have its own special Surface or skin texture settings."$0D
+             "These textures have a 'material' (or shader) .vmf file that they use for special effects."$0D0D22
+             "skin name"$22" - The currently selected skin texture name."$0D22
+             "edit skin"$22" - Opens this skin texture in an external editor (can not open .vtf files)."$0D22
+             "shader file"$22" - Gives the full path and name of the .vmf material"$0D
+             "           shader file that the selected skin texture uses, if any."$0D22
+             "shader name"$22" - Gives the name of the shader located in the above file"$0D
+             "           that the selected skin texture uses, if any."$0D22
+             "shader keyword"$22" - Gives the above shader 'keyword' that is used to identify"$0D
+             "          the currently selected skin texture used in the shader, if any."$0D22
+             "shader lines"$22" - Number of lines to display in window below, max. = 35."$0D22
+             "edit shader"$22" - Opens shader below in a text editor."$0D22
+             "mesh shader"$22" - Contains the full text of this skin texture's shader, if any."$0D22
+             "          This can be copied to a text file, changed and saved."
+      skin_name:      = {t_ModelEditor_texturebrowser = ! Txt="skin name"    Hint="The currently selected skin texture name."}
+      """ + external_skin_editor_dialog_plugin + """
+      """ + vertex_weights_specifics_plugin + """
+      """ + Shader_dialog_plugin + """
+    }
+    """
+
+    editor = quarkpy.mdleditor.mdleditor # Get the editor.
+    ico_mdlskv = ico_dict['ico_mdlskv']  # Just to shorten our call later.
+    icon_btns = {}                       # Setup our button list, as a dictionary list, to return at the end.
+    # Next line calls for the Vertex Weights system in mdlentities.py to be used.
+    vtxweightsbtn = quarkpy.qtoolbar.button(quarkpy.mdlentities.UseVertexWeights, "Open or Update\nVertex Weights Dialog||When clicked, this button opens the dialog to allow the 'weight' movement setting of single vertexes that have been assigned to more then one bone handle.\n\nClick the InfoBase button or press F1 again for more detail.|intro.modeleditor.dataforms.html#specsargsview", ico_mdlskv, 5)
+    vtxweightsbtn.state = quarkpy.qtoolbar.normal
+    vtxweightsbtn.caption = "" # Texts shows next to button and keeps the width of this button so it doesn't change.
+    icon_btns['vtxweights'] = vtxweightsbtn # Put our button in the above list to return.
+
+    if (editor.Root.currentcomponent.currentskin is not None) and (o.name == editor.Root.currentcomponent.currentskin.name): # If this is not done it will cause looping through multiple times.
+        if o.parent.parent.dictspec.has_key("shader_keyword") and o.dictspec.has_key("shader_keyword"):
+            if o.parent.parent.dictspec['shader_keyword'] != o.dictspec['shader_keyword']:
+                if o.parent.parent.dictspec['shader_file'] == o.dictspec['shader_file']:
+                    o['shader_keyword'] = o.parent.parent.dictspec['shader_keyword']
+        if (o.parent.parent.dictspec.has_key("skin_name")) and (o.parent.parent.dictspec['skin_name'] != o.name) and (not o.parent.parent.dictspec['skin_name'] in o.parent.parent.dictitems['Skins:sg'].dictitems.keys()):
+            # Gives the newly selected skin texture's game folders path and file name, for example:
+            #     models/monsters/cacodemon/cacoeye.tga
+            skinname = o.parent.parent.dictspec['skin_name']
+            skin = quarkx.newobj(skinname)
+            # Gives the full current work directory (cwd) path up to the file name, need to add "\\" + filename, for example:
+            #     E:\Program Files\Doom 3\base\models\monsters\cacodemon
+            cur_folder = os.getcwd()
+            # Gives just the actual file name, for example: cacoeye.tga
+            tex_file = skinname.split("/")[-1]
+            # Puts the full path and file name together to get the file, for example:
+            # E:\Program Files\Doom 3\base\models\monsters\cacodemon\cacoeye.tga
+            file = cur_folder + "\\" + tex_file
+            image = quarkx.openfileobj(file)
+            skin['Image1'] = image.dictspec['Image1']
+            skin['Size'] = image.dictspec['Size']
+            skin['shader_keyword'] = o.parent.parent.dictspec['shader_keyword']
+            skingroup = o.parent.parent.dictitems['Skins:sg']
+            undo = quarkx.action()
+            undo.put(skingroup, skin)
+            editor.ok(undo, o.parent.parent.shortname + " - " + "new skin added")
+            editor.Root.currentcomponent.currentskin = skin
+            editor.layout.explorer.sellist = [editor.Root.currentcomponent.currentskin]
+            quarkpy.mdlutils.Update_Skin_View(editor, 2)
+
+    DummyItem = o
+    while (DummyItem.type != ":mc"): # Gets the object's model component.
+        DummyItem = DummyItem.parent
+    comp = DummyItem
+
+    if comp.type == ":mc": # Just makes sure what we have is a model component.
+        if comp.dictspec.has_key('shader_file') and o.dictspec.has_key('shader_file') and comp.dictspec.has_key('mesh_shader') and o.dictspec.has_key('mesh_shader'):
+            if comp.dictspec['shader_file'] == o.dictspec['shader_file'] and comp.dictspec['mesh_shader'] != o.dictspec['mesh_shader']:
+                o['mesh_shader'] = comp.dictspec['mesh_shader']
+            else:
+                comp['mesh_shader'] = o.dictspec['mesh_shader']
+
+        formobj = quarkx.newobj("mdl_mc:form")
+        formobj.loadtext(dlgdef)
+        return formobj, icon_btns
+    else:
+        return None, None
+
+def dataforminput(o):
+    "Returns the default settings or input data for this type of object 'o' (a model's skin texture) to use for the Specific/Args page."
+
+    DummyItem = o
+    while (DummyItem.type != ":mc"): # Gets the object's model component.
+        DummyItem = DummyItem.parent
+    if DummyItem.type == ":mc":
+        comp = DummyItem
+        # This sections handles the data for this model type skin page form.
+        # This makes sure what is selected is a model skin, if so it fills the Skin page data and adds the items to the component.
+        # It also handles the shader file which its name is the full path and name of the skin texture.
+        if len(comp.dictitems['Skins:sg'].subitems) == 0 or o in comp.dictitems['Skins:sg'].subitems:
+            if not comp.dictspec.has_key('shader_file'):
+                if o.dictspec.has_key('shader_file'):
+                    comp['shader_file'] = o.dictspec['shader_file']
+                else:
+                    comp['shader_file'] = "None"
+            else:
+                if o.dictspec.has_key('shader_file'):
+                    comp['shader_file'] = o.dictspec['shader_file']
+                else:
+                    comp['shader_file'] = "None"
+            if not comp.dictspec.has_key('shader_name'):
+                if o.dictspec.has_key('shader_name'):
+                    comp['shader_name'] = o.dictspec['shader_name']
+                else:
+                    comp['shader_name'] = "None"
+            else:
+                if o.dictspec.has_key('shader_name'):
+                    comp['shader_name'] = o.dictspec['shader_name']
+                else:
+                    comp['shader_name'] = "None"
+            if not comp.dictspec.has_key('skin_name'):
+                if len(comp.dictitems['Skins:sg'].subitems) != 0:
+                   comp['skin_name'] = o.name
+                else:
+                   comp['skin_name'] = "no skins exist"
+            else:
+                if len(comp.dictitems['Skins:sg'].subitems) != 0:
+                   comp['skin_name'] = o.name
+                else:
+                   comp['skin_name'] = "no skins exist"
+            if not comp.dictspec.has_key('shader_keyword'):
+                if o.dictspec.has_key("shader_keyword"):
+                    comp['shader_keyword'] = o.dictspec['shader_keyword']
+                else:
+                    comp['shader_keyword'] = o['shader_keyword'] = "None"
+            else:
+                if o.dictspec.has_key("shader_keyword"):
+                    comp['shader_keyword'] = o.dictspec['shader_keyword']
+                else:
+                    comp['shader_keyword'] = o['shader_keyword'] = "None"
+            if not comp.dictspec.has_key('shader_lines'):
+                if quarkx.setupsubset(SS_MODEL, "Options")["NbrOfShaderLines"] is not None:
+                    comp['shader_lines'] = quarkx.setupsubset(SS_MODEL, "Options")["NbrOfShaderLines"]
+                else:
+                    comp['shader_lines'] = "8"
+                    quarkx.setupsubset(SS_MODEL, "Options")["NbrOfShaderLines"] = comp.dictspec['shader_lines']
+            else:
+                quarkx.setupsubset(SS_MODEL, "Options")["NbrOfShaderLines"] = comp.dictspec['shader_lines']
+            if not comp.dictspec.has_key('mesh_shader'):
+                if o.dictspec.has_key('mesh_shader'):
+                    comp['mesh_shader'] = o.dictspec['mesh_shader']
+                else:
+                    comp['mesh_shader'] = "None"
 
 
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.1  2011/01/12 01:59:08  cdunde
+# Setup importer for Half-Life 2 mesh (animation to follow) with bone, attachment, bbox and skin support.
+#
 #
 #
