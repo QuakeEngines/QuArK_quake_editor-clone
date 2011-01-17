@@ -1585,19 +1585,6 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
                         Component['bone_control_'+ str(control.index)] = folder_name + '_' + mdl_name + '_' + bone.name + ':bone'
                     ComponentList = ComponentList + [Component]
 
-        pseqdesc = self.sequence_descs
-        # Go through all the animation sequences (frame groups).
-        for m_sequence in xrange(self.num_anim_seq):
-            seq_data = []
-            seq_pivots = []
-            seq = pseqdesc[m_sequence]
-            file.seek(self.ofsBegin + seq.pivot_offset, 0)
-            for p in xrange(seq.numpivots):
-                seq_pivots.append(mdl_pivots())
-                seq_pivots[p].load(file)
-            seq_data.append(seq_pivots)
-            self.anim_seqs_data.append(seq_data)
-
         # load the attachment data, for position processing with bones they belong to.
         if len(self.bones) != 0 and len(ComponentList) != 0 and self.num_attachments != 0:
             file.seek(ofsBegin + self.attachments_offset, 0)
@@ -1992,6 +1979,7 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
         if len(self.bones) != 0 and len(ComponentList) != 0:
             SetUpBones(self, QuArK_bones)
 
+            pseqdesc = self.sequence_descs
             bonelist = editor.ModelComponentList['bonelist']
             for Component in range(len(ComponentList)):
                 comp = ComponentList[Component]
@@ -2357,6 +2345,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".mdl Half-Life1 Importer", ".mdl file", "*
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.1  2010/12/18 07:21:45  cdunde
+# Update and file name change, previously ie_md0_HL_import.py, for proper listing of future Half-Life2 importer.
+#
 # Revision 1.17  2010/12/07 06:06:52  cdunde
 # Updates for Model Editor bounding box system.
 #
