@@ -77,7 +77,7 @@ def BuildMenuBar(editor):
         orderedlist.sort()
         for menuindex in orderedlist:
             for importer in mdlimportmenuorder[menuindex]:
-                mdlimportmenu = mdlimportmenu + [qmenu.item(importer, runimporter, "load an "+str(importer))]
+                mdlimportmenu = mdlimportmenu + [qmenu.item(importer, runimporter, "load a "+str(importer).replace('Importer', 'model'))]
         if mdlimportmenu == []:
             mdlimportmenu = mdlimportmenu + [qmenu.item("none available", None, "no importers available")]
         return mdlimportmenu
@@ -89,7 +89,9 @@ def BuildMenuBar(editor):
         orderedlist.sort()
         for menuindex in orderedlist:
             for exporter in mdlexportmenuorder[menuindex]:
-                mdlexportmenu = mdlexportmenu + [qmenu.item(exporter, runexporter, "load an "+str(exporter))]
+                format = str(exporter).split(' ')[0]
+                format = format.replace('.', '')
+                mdlexportmenu = mdlexportmenu + [qmenu.item(exporter, runexporter, "|save as a "+str(exporter).replace('Exporter', 'model')+".\n\nFor details on how to setup and export this type of model format press F1 again or click on the InfoBase button.|intro.modeleditor.exportmodelformats.html#"+str(format))]
         if mdlexportmenu == []:
             mdlexportmenu = mdlexportmenu + [qmenu.item("none available", None, "no exporters available")]
         return mdlexportmenu
@@ -438,6 +440,9 @@ def BaseMenu(sellist, editor):
 #
 #
 #$Log$
+#Revision 1.53  2010/12/06 05:43:06  cdunde
+#Updates for Model Editor bounding box system.
+#
 #Revision 1.52  2010/06/25 05:27:59  cdunde
 #Setup 'Auto Scaling' function for the Skin-view that resets the skin handles and Component's UV's
 #to fit the currently selected and viewable skin texture of that Component.
