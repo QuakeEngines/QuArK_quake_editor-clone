@@ -117,11 +117,11 @@ class ModelLayout(BaseLayout):
             else:
                 slist.append(None)
                 return slist
-            if s.name.endswith(".pcx") or s.name.endswith(".tga") or s.name.endswith(".dds") or s.name.endswith(".png") or s.name.endswith(".jpg") or s.name.endswith(".bmp") or s.name.endswith(".ftx") or s.name.endswith(".vtf"):
+            if s.name.endswith(".pcx") or s.name.endswith(".tga") or s.name.endswith(".dds") or s.name.endswith(".png") or s.name.endswith(".jpg") or s.name.endswith(".bmp") or s.name.endswith(".ftx") or s.name.endswith(".vtf") or s.name.endswith(".m8"):
                 slist.append(s)
         else:
             for s in self.explorer.sellist:
-                if s.name.endswith(".pcx") or s.name.endswith(".tga") or s.name.endswith(".dds") or s.name.endswith(".png") or s.name.endswith(".jpg") or s.name.endswith(".bmp") or s.name.endswith(".ftx") or s.name.endswith(".vtf"):
+                if s.name.endswith(".pcx") or s.name.endswith(".tga") or s.name.endswith(".dds") or s.name.endswith(".png") or s.name.endswith(".jpg") or s.name.endswith(".bmp") or s.name.endswith(".ftx") or s.name.endswith(".vtf") or s.name.endswith(".m8"):
                     slist.append(s)
                     return slist
                 else:
@@ -149,7 +149,7 @@ class ModelLayout(BaseLayout):
                                 if dictitem == saveskin:
                                     slist.append(dictitem)
                                     return slist
-                                if dictitem.endswith(".pcx") or dictitem.endswith(".tga") or dictitem.endswith(".dds") or dictitem.endswith(".png") or dictitem.endswith(".jpg") or dictitem.endswith(".bmp") or dictitem.endswith(".ftx") or dictitem.endswith(".vtf"):
+                                if dictitem.endswith(".pcx") or dictitem.endswith(".tga") or dictitem.endswith(".dds") or dictitem.endswith(".png") or dictitem.endswith(".jpg") or dictitem.endswith(".bmp") or dictitem.endswith(".ftx") or dictitem.endswith(".vtf") or dictitem.endswith(".m8"):
                                     if count == 1:
                                         holddictitem = item.dictitems[dictitem]
                                     if len(item.dictitems) > 1:
@@ -1842,6 +1842,8 @@ class ModelLayout(BaseLayout):
                 self.selectskin(fs)
             elif fs.type == '.vtf':    # A skin in a component's 'Skins:sg' skins group.
                 self.selectskin(fs)
+            elif fs.type == '.m8':     # A skin in a component's 'Skins:sg' skins group.
+                self.selectskin(fs)
             elif fs.type == ':fg':     # A component's frame group.
                 self.selectcgroup(fs)
             else:
@@ -1898,6 +1900,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.130  2011/01/04 11:10:20  cdunde
+#Added .vtf as supported texture file type for game HalfLife2.
+#
 #Revision 1.129  2010/12/12 20:21:12  cdunde
 #To stop unnecessary redraws of the Skin-view for bbox and bbox group selection..
 #

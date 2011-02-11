@@ -2952,7 +2952,7 @@ class SkinSubGroupType(EntityManager):
 
 
 class SkinType(EntityManager):
-    "Model Skin, types = .pcx, .tga, .dds, .png, .jpg, .bmp, .ftx, .vtf"
+    "Model Skin, types = .pcx, .tga, .dds, .png, .jpg, .bmp, .ftx, .vtf, .m8"
 
     def dataformname(o):
         "Returns the data form for this type of object 'o' (a model's skin texture) to use for the Specific/Args page."
@@ -3135,6 +3135,7 @@ Mapping = {
     ".bmp":      SkinType(),
     ".ftx":      SkinType(),
     ".vtf":      SkinType(),
+    ".m8":       SkinType(),
     ":bound":    BoundType(),
     ":tag":      TagType(),
     ":tagframe": TagFrameType(),
@@ -3185,6 +3186,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.84  2011/01/13 01:34:30  cdunde
+#To update shader files edited in shader dialog.
+#
 #Revision 1.83  2011/01/04 11:10:20  cdunde
 #Added .vtf as supported texture file type for game HalfLife2.
 #
