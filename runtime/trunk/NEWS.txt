@@ -14,6 +14,8 @@ $Id$
 
 6.6.0 Beta 4
 ============
+* [cdunde/DanielPharos]: Added import support for Heretic II and .m8 as supported texture file type.
+
 * [cdunde]: Added InfoBase section and direct links for Model Editor exporters to assist people in their use.
 
 * [cdunde/DanielPharos]: Setup importer for Half-Life 2 mesh (animation to follow) with bone, attachment, bbox and skin support.
