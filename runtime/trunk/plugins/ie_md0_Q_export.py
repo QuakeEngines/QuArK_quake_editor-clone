@@ -505,11 +505,14 @@ def savemodel(root, filename, gamename, nomessage=0):
 
 ### To register this Python plugin and put it on the importers menu.
 import quarkpy.qmdlbase
-quarkpy.qmdlbase.RegisterMdlExporter(".mdl Quake Exporter", ".mdl file", "*.mdl", savemodel)
+quarkpy.qmdlbase.RegisterMdlExporter(".mdl Quake\HexenII Exporter", ".mdl file", "*.mdl", savemodel)
 
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.1  2010/03/30 17:19:37  cdunde
+# Needed to change file name for proper listing on menu.
+#
 # Revision 1.2  2010/03/27 04:29:10  cdunde
 # Fixed the U,V exporting.
 #

@@ -647,11 +647,14 @@ def loadmodel(root, filename, gamename, nomessage=0):
 ### To register this Python plugin and put it on the importers menu.
 import quarkpy.qmdlbase
 import ie_md0_Q_import # This imports itself to be passed along so it can be used in mdlmgr.py later.
-quarkpy.qmdlbase.RegisterMdlImporter(".mdl Quake Importer", ".mdl file", "*.mdl", loadmodel)
+quarkpy.qmdlbase.RegisterMdlImporter(".mdl Quake\HexenII Importer", ".mdl file", "*.mdl", loadmodel)
 
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.5  2010/12/18 07:22:19  cdunde
+# File version check update.
+#
 # Revision 1.4  2010/06/13 15:37:55  cdunde
 # Setup Model Editor to allow importing of model from main explorer File menu.
 #
