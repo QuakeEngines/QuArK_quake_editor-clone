@@ -1,0 +1,15 @@
+title: .md5anim format
+author: cdunde
+
+<i>Original game </i>&nbsp;: Doom 3
+
+<i>Other games </i>&nbsp;: Prey, Quake 4
+
+Used in Doom 3, Prey, Quake 4 for animation of md5mesh model single and multiple components.
+
+<b><u>uses</u></b><br>
+<a href="intro.modeleditor.editelements.html#tags">tags </a>&nbsp;: no<br>
+<a href="intro.modeleditor.editelements.html#bones">bones </a>&nbsp;: <a style="color:#FF0000"><b>yes</b></a><br>
+<a href="intro.modeleditor.vertexcolorandweights.html#vertexweights">weights </a>&nbsp;: <a style="color:#FF0000"><b>yes</b></a><br>
+<a href="intro.modeleditor.vertexcolorandweights.html#vertexcoloring">uv colors </a>&nbsp;: no<br>
+<a href="intro.modeleditor.dataforms.html#specsargsview">Specifics page </a>&nbsp;: <a style="color:#FF0000"><b>yes</b></a>

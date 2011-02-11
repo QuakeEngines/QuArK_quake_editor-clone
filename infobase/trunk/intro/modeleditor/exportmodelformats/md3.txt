@@ -1,0 +1,16 @@
+title: .md3 format
+author: cdunde
+
+<i>Original game </i>&nbsp;: Quake 3
+
+<i>Other games </i>&nbsp;: Quake 4, RTCW, RTCW-ET, SoF2, STVEF, Warsow
+
+Used in Quake 3, SoF2 for both static (single frame) and simple animated (multiple frames) single component multiple md3 files.<br>
+Used in Quake 4, RTCW, RTCW-ET, STVEF, Warsow for static (single frame) single and multiple components.
+
+<b><u>uses</u></b><br>
+<a href="intro.modeleditor.editelements.html#tags">tags </a>&nbsp;: <a style="color:#FF0000"><b>yes</b></a> (Quake 3, SoF2 only)<br>
+<a href="intro.modeleditor.editelements.html#bones">bones </a>&nbsp;: no<br>
+<a href="intro.modeleditor.vertexcolorandweights.html#vertexweights">weights </a>&nbsp;: no<br>
+<a href="intro.modeleditor.vertexcolorandweights.html#vertexcoloring">uv colors </a>&nbsp;: no<br>
+<a href="intro.modeleditor.dataforms.html#specsargsview">Specifics page </a>&nbsp;: <a style="color:#FF0000"><b>yes</b></a>
