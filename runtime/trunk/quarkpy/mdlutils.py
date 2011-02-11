@@ -746,8 +746,8 @@ def addvertex(editor, comp, pos):
 #    editor.ModelVertexSelList + [[frame_vertices_index, view.proj(pos)]]
 #
 def replacevertexes(editor, comp, vertexlist, flags, view, undomsg, option=1, method=1):
-    "option=0 uses the ModelVertexSelList for the editor."
-    "option=1 uses the SkinVertexSelList for the Skin-view."
+    "option=0 uses the ModelVertexSelList for the editor to align vertexes."
+    "option=1 uses the SkinVertexSelList for the Skin-view to align vertexes."
     "option=2 uses the ModelVertexSelList for the editor and merges two, or more, selected vertexes."
     "method=1 other selected vertexes move to the 'Base' vertex position of each tree-view selected 'frame', only applies to option=0."
     "method=2 other selected vertexes move to the 'Base' vertex position of the 1st tree-view selected 'frame', only applies to option=0."
@@ -820,18 +820,18 @@ def replacevertexes(editor, comp, vertexlist, flags, view, undomsg, option=1, me
         for vtx in range(len(vertexlist)):
             if vtx == 0:
                 continue
-            unusedvtxs = unusedvtxs + [vertexlist[vtx][0]]
+            unusedvtxs = unusedvtxs + [vertexlist[vtx]]
         newvertnumbers = []
         newvertoffset = 0
         old_vtxs = comp.currentframe.vertices
         for v in range(len(old_vtxs)):
-            if v == vertexlist[0][0]:
+            if v == vertexlist[0]:
                 newindex = v + newvertoffset
             if v in unusedvtxs:
                 newvertoffset = newvertoffset - 1
             newvertnumbers = newvertnumbers + [v + newvertoffset]
         for v in range(len(vertexlist)):
-            newvertnumbers[vertexlist[v][0]] = newindex
+            newvertnumbers[vertexlist[v]] = newindex
         for triindex in range(len(tris)):
             tri = tris[triindex]
             newtriangle = ((newvertnumbers[tri[0][0]], tri[0][1], tri[0][2]), (newvertnumbers[tri[1][0]], tri[1][1], tri[1][2]), (newvertnumbers[tri[2][0]], tri[2][1], tri[2][2]))
@@ -852,6 +852,8 @@ def replacevertexes(editor, comp, vertexlist, flags, view, undomsg, option=1, me
             compframe.compparent = new_comp # To allow frame relocation after editing.
 
         new_comp.triangles = tris
+        if len(editor.ModelVertexSelList) > 2:
+            undomsg = "merged " + str(len(editor.ModelVertexSelList)) + " vertexes"
         editor.ModelVertexSelList = []
         undo = quarkx.action()
         undo.exchange(comp, new_comp)
@@ -4725,6 +4727,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.155  2010/12/28 20:14:36  cdunde
+#Fix for occasional currentframe error.
+#
 #Revision 1.154  2010/12/19 17:24:54  cdunde
 #Changes so a bone can have multiple bounding boxes assigned to it.
 #
