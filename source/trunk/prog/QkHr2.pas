@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.20  2009/07/15 10:38:00  danielpharos
+Updated website link.
+
 Revision 1.19  2009/02/21 17:06:18  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -347,7 +350,7 @@ begin
         begin
          for J:=0 to 2 do
           with CTris^[J] do
-           T:=mdl.skinheight-1-T;  { .m8 skins are top-down, but .pcx skins were bottom-up }
+           T:=T;  { .m8 skins are top-down, but .pcx skins were bottom-up }
          Inc(CTris);
         end;
      end;
