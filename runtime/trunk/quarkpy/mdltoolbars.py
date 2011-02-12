@@ -15,6 +15,7 @@ import qmenu
 from mdlutils import *
 import qeditor
 import mdleditor
+import mdlhandles
 
 
 class DisplayBar(qeditor.ToolBar):
@@ -62,6 +63,8 @@ def extrudeclick(m):
             b.state = qtoolbar.normal
         tb2.tb.buttons[1].state = qtoolbar.selected
         quarkx.update(editor.form)
+        quarkx.setupsubset(SS_MODEL, "Building").setint("ObjectMode", 0)
+        editor.MouseDragMode = mdlhandles.RectSelDragObject
         # All code below in this section checks for proper selection if in vertex mode.
         if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] != "1":
             if len(editor.ModelVertexSelList) > 1:
@@ -178,6 +181,8 @@ def extrudebulkheadsclick(m):
             b.state = qtoolbar.normal
         tb2.tb.buttons[1].state = qtoolbar.selected
         quarkx.update(editor.form)
+        quarkx.setupsubset(SS_MODEL, "Building").setint("ObjectMode", 0)
+        editor.MouseDragMode = mdlhandles.RectSelDragObject
         # All code below in this section checks for proper selection if in vertex mode.
         if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] != "1":
             if len(editor.ModelVertexSelList) > 1:
@@ -317,6 +322,10 @@ toolbars = {"tb_display": DisplayBar, "tb_edittools": EditToolsBar, "tb_movepal"
 #
 #
 #$Log$
+#Revision 1.15  2009/07/14 00:27:33  cdunde
+#Completely revamped Model Editor vertex Linear draglines system,
+#increasing its reaction and drawing time to twenty times faster.
+#
 #Revision 1.14  2008/08/21 12:11:53  danielpharos
 #Fixed an import failure.
 #

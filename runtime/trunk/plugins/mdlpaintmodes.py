@@ -2710,6 +2710,7 @@ def selectmode(btn):
     quarkx.update(editor.form)
     quarkx.setupsubset(SS_MODEL, "Building").setint("PaintMode", PaintModes[btn.i][1])
     quarkx.setupsubset(SS_MODEL, "Building").setint("ObjectMode", 0)
+    editor.MouseDragMode = quarkpy.mdlhandles.RectSelDragObject
     from quarkpy.mdlanimation import playlist, playNR
     if quarkpy.mdlanimation.playlist != []:
         editor.layout.explorer.sellist = quarkpy.mdlanimation.playlist
@@ -2825,6 +2826,9 @@ quarkpy.mdltoolbars.toolbars["tb_paintmodes"] = PaintModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.5  2009/10/12 20:49:56  cdunde
+# Added support for .md3 animationCFG (configuration) support and editing.
+#
 # Revision 1.4  2008/12/20 08:39:34  cdunde
 # Minor adjustment to various Model Editor dialogs for recent fix of item over lapping by Dan.
 #

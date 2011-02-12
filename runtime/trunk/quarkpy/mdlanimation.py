@@ -671,6 +671,7 @@ class AnimationBar(ToolBar):
         quarkx.update(editor.form)
         quarkx.setupsubset(SS_MODEL, "Building").setint("ObjectMode", 0)
         quarkx.setupsubset(SS_MODEL, "Building").setint("PaintMode", 0)
+        editor.MouseDragMode = mdlhandles.RectSelDragObject
         for view in editor.layout.views:
             if MapOption("CrossCursor", SS_MODEL):
                 view.cursor = CR_CROSS
@@ -749,6 +750,7 @@ class AnimationBar(ToolBar):
         quarkx.update(editor.form)
         quarkx.setupsubset(SS_MODEL, "Building").setint("ObjectMode", 0)
         quarkx.setupsubset(SS_MODEL, "Building").setint("PaintMode", 0)
+        editor.MouseDragMode = mdlhandles.RectSelDragObject
         for view in editor.layout.views:
             if MapOption("CrossCursor", SS_MODEL):
                 view.cursor = CR_CROSS
@@ -1057,6 +1059,9 @@ class AnimationBar(ToolBar):
 #
 #
 #$Log$
+#Revision 1.24  2010/05/25 21:43:32  cdunde
+#To speed up start and stop of animations.
+#
 #Revision 1.23  2010/05/01 04:39:48  cdunde
 #Fix to draw bones, if any, correctly after stopping animation with pause still on.
 #
