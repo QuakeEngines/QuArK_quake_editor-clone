@@ -1358,7 +1358,8 @@ class PVertexHandle(qhandles.GenericHandle):
 
     def menu(self, editor, view):
         def forcegrid1click(m, self=self, editor=editor, view=view):
-            self.Action(editor, self.pos, self.pos, MB_CTRL, view, Strings[560])
+            v2 = qhandles.aligntogrid(self.pos, 1)
+            self.Action(editor, self.pos, v2, MB_CTRL, view, Strings[560])
 
         def cutcorner1click(m, self=self, editor=editor, view=view):
             # Find all edges and faces issuing from the given vertex.
@@ -1534,9 +1535,9 @@ class PVertexHandle(qhandles.GenericHandle):
                 # Compute the final value for the delta.
                 #
                 if flags&MB_CTRL:
-                    delta = qhandles .aligntogrid (temp, 1) - self .pos
+                    delta = qhandles.aligntogrid (temp, 1) - self.pos
                 else:
-                    delta = qhandles .aligntogrid (temp - self .pos, 0)
+                    delta = qhandles.aligntogrid (temp - self.pos, 0)
 
         # If the ALT key is NOT pressed.
         else:
@@ -1716,7 +1717,8 @@ class VertexHandle(qhandles.GenericHandle):
     def menu(self, editor, view):
 
         def force_to_grid_click(m, self=self, editor=editor, view=view):
-            self.Action(editor, self.pos, self.pos, MB_CTRL, view, Strings[560])
+            v2 = qhandles.aligntogrid(self.pos, 1)
+            self.Action(editor, self.pos, v2, view.flags, view, Strings[560])
 
         def add_vertex_click(m, self=self, editor=editor, view=view):
             import mdlmgr
@@ -2147,6 +2149,10 @@ class VertexHandle(qhandles.GenericHandle):
         p0 = view.proj(self.pos)
 
         if not p0.visible: return
+        if len(self.selection) == 0:
+            for item in editor.layout.explorer.sellist:
+                if item.type == ':mf':
+                    self.selection = self.selection + [item]
         if flags&MB_CTRL:
             v2 = qhandles.aligntogrid(v2, 0)
             view.repaint()
@@ -5542,7 +5548,18 @@ class BoneCenterHandle(BoneHandle):
             return menulist
 
         def force_to_grid_click(m, self=self, editor=editor, view=view):
-            self.Action(editor, self.pos, self.pos, MB_CTRL, view, Strings[560])
+            sellist = editor.layout.explorer.sellist
+            if not self.bone in sellist and not editor.Root.dictitems['Skeleton:bg'] in sellist:
+                quarkx.beep() # Makes the computer "Beep" once.
+                quarkx.msgbox("Invalid Action\n\nTo use this function you must\neither select the 'Skeleton' folder\nor the specific bone itself in that folder.", qutils.MT_ERROR, qutils.MB_OK)
+                return
+            x = self.pos.x
+            y = self.pos.y
+            self.start_drag(view, x, y)
+            if self.attachedbones is None:
+                self.attachedbones = []
+            v2 = qhandles.aligntogrid(self.pos, 1)
+            self.Action(editor, self.pos, v2, 0, view, Strings[560])
 
         def add_bone_click(m, self=self, editor=editor, view=view):
             import mdlmgr
@@ -5979,7 +5996,7 @@ class BoneCenterHandle(BoneHandle):
                 handle_scale = obj.dictspec['scale'][0]
                 DrawBoneHandle(p, cv, handle_color, scale, handle_scale)
 
-    def drag(self, v1, v2, flags, view): # for BoneCenterHandle
+    def drag(self, v1, v2, flags, view, undo=None): # for BoneCenterHandle
         delta = v2-v1
         if flags&MB_CTRL:
             g1 = 1
@@ -6013,6 +6030,8 @@ class BoneCenterHandle(BoneHandle):
             if editor.ModelComponentList['bonelist'].has_key(newbone.name) and editor.ModelComponentList['bonelist'][newbone.name].has_key('frames') and editor.ModelComponentList['bonelist'][newbone.name]['frames'].has_key(frame_name):
                 newbone.position = quarkx.vect(editor.ModelComponentList['bonelist'][newbone.name]['frames'][frame_name]['position'])
                 newbone.rotmatrix = quarkx.matrix(editor.ModelComponentList['bonelist'][newbone.name]['frames'][frame_name]['rotmatrix'])
+                if editor.dragobject is None:
+                    editor.ModelComponentList['bonelist'][newbone.name]['frames'][frame_name]['position'] = (newbone.position + delta).tuple
             new = [newbone]
             for bone in self.attachedbones:
                 old = old + [bone]
@@ -6020,15 +6039,17 @@ class BoneCenterHandle(BoneHandle):
                 if editor.ModelComponentList['bonelist'].has_key(newbone.name) and editor.ModelComponentList['bonelist'][newbone.name].has_key('frames') and editor.ModelComponentList['bonelist'][newbone.name]['frames'].has_key(frame_name):
                     newbone.position = quarkx.vect(editor.ModelComponentList['bonelist'][newbone.name]['frames'][frame_name]['position'])
                     newbone.rotmatrix = quarkx.matrix(editor.ModelComponentList['bonelist'][newbone.name]['frames'][frame_name]['rotmatrix'])
+                    if editor.dragobject is None:
+                        editor.ModelComponentList['bonelist'][newbone.name]['frames'][frame_name]['position'] = (newbone.position + delta).tuple
                 new = new + [newbone]
-            self.linoperation(new, delta, g1, view)
+            self.linoperation(new, delta, g1, view, undo)
         else:
             new = None
         old, new = self.sortbonelist(old, new)
 
         return old, new
 
-    def linoperation(self, list, delta, g1, view): # for BoneCenterHandle
+    def linoperation(self, list, delta, g1, view, undo=None): # for BoneCenterHandle
         # Reset the self.newverticespos list
         editor = self.mgr.editor
         for compname in self.newverticespos:
@@ -6040,12 +6061,24 @@ class BoneCenterHandle(BoneHandle):
             obj['position'] = obj.position.tuple
             vertices = obj.vtxlist
             for compname in vertices:
-                for vtx in vertices[compname]:
-                    if editor.ModelComponentList[compname]['weightvtxlist'].has_key(vtx) and editor.ModelComponentList[compname]['weightvtxlist'][vtx].has_key(obj.name):
-                        weight_value = editor.ModelComponentList[compname]['weightvtxlist'][vtx][obj.name]['weight_value']
-                    else:
-                        weight_value = 1.0
-                    self.newverticespos[compname][vtx] = self.newverticespos[compname][vtx] + (delta * weight_value)
+                if editor.dragobject is None:
+                    for vtx in vertices[compname]:
+                        self.newverticespos[compname][vtx] = self.newverticespos[compname][vtx] + delta
+                else:
+                    for vtx in vertices[compname]:
+                        if editor.ModelComponentList[compname]['weightvtxlist'].has_key(vtx) and editor.ModelComponentList[compname]['weightvtxlist'][vtx].has_key(obj.name):
+                            weight_value = editor.ModelComponentList[compname]['weightvtxlist'][vtx][obj.name]['weight_value']
+                        else:
+                            weight_value = 1.0
+                        self.newverticespos[compname][vtx] = self.newverticespos[compname][vtx] + (delta * weight_value)
+
+        if editor.dragobject is None:
+            for compname in self.newverticespos:
+                comp = editor.Root.dictitems[compname]
+                old_frame = comp.currentframe
+                new_frame = old_frame.copy()
+                new_frame.vertices = self.newverticespos[compname]
+                undo.exchange(old_frame, new_frame)
 
         return delta
 
@@ -6484,6 +6517,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.223  2010/12/19 17:24:54  cdunde
+#Changes so a bone can have multiple bounding boxes assigned to it.
+#
 #Revision 1.222  2010/12/12 20:19:55  cdunde
 #Update to release bbox function.
 #

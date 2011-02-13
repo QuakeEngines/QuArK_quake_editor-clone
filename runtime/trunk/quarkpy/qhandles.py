@@ -240,18 +240,27 @@ class GenericHandle:
             cleargrid()
         else:
             setupgrid(editor)
-        old, ri = self.drag(v1, v2, flags, view)
-        if (ri is None) or (len(old)!=len(ri)):
-            return
+        undo = quarkx.action()
         import mdleditor
         if isinstance(editor, mdleditor.ModelEditor):
+            try:
+                old, ri = self.drag(v1, v2, flags, view, undo)
+            except:
+                old, ri = self.drag(v1, v2, flags, view)
+        else:
+            old, ri = self.drag(v1, v2, flags, view)
+        if (ri is None) or (len(old)!=len(ri)):
+            return
+        if isinstance(editor, mdleditor.ModelEditor):
             if ri == []:
-                old, ri = self.centerdrag(v1, v2, flags, view)
+                try:
+                    old, ri = self.drag(v1, v2, flags, view, undo)
+                except:
+                    old, ri = self.drag(v1, v2, flags, view)
             comp = editor.Root.currentcomponent
             compframes = comp.findallsubitems("", ':mf')   # get all frames
             for compframe in compframes:
                 compframe.compparent = comp # To allow frame relocation after editing.
-        undo = quarkx.action()
         for i in range(0,len(old)):
             undo.exchange(old[i], ri[i])
         editor.ok(undo, undomsg or self.undomsg)
@@ -2240,6 +2249,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.98  2010/12/06 05:43:06  cdunde
+#Updates for Model Editor bounding box system.
+#
 #Revision 1.97  2010/10/21 07:24:56  cdunde
 #Fix for occasional floating point division by zero error.
 #
