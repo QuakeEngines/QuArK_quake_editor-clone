@@ -175,8 +175,11 @@ class ModelFaceHandle(qhandles.GenericHandle):
         def onclick2(m):
             movefacestoclick(m.text, 2)
 
-        def onclick3(m):
+        def onclick3(m, editor=editor):
             movefacestoclick(None, 3)
+            # Clear these lists to avoid errors.
+            editor.ModelFaceSelList = []
+            editor.EditorObjectList = []
 
         def movefacesclick(m, self=self, editor=editor, view=view):
             componentnames = []
@@ -6517,6 +6520,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.224  2011/02/13 03:37:47  cdunde
+#Fixed all force to grid functions for model editor bones, vertexes, tags and bboxes.
+#
 #Revision 1.223  2010/12/19 17:24:54  cdunde
 #Changes so a bone can have multiple bounding boxes assigned to it.
 #
