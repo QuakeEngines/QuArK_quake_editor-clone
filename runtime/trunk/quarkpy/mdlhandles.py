@@ -410,7 +410,7 @@ class ModelFaceHandle(qhandles.GenericHandle):
         if quarkx.setupsubset(SS_MODEL,"Options")['NFO'] == "1":
             return
         from qbaseeditor import flagsmouse, currentview
-        if (flagsmouse == 2056 or flagsmouse == 2060):
+        if (flagsmouse == 2056 or flagsmouse == 2060) and not isinstance(editor.dragobject, RectSelDragObject):
             return
         if (flagsmouse == 1032 or flagsmouse == 1036):
             if ((isinstance(editor.dragobject.handle, LinSideHandle)) or (isinstance(editor.dragobject.handle, LinCornerHandle)) or (isinstance(editor.dragobject.handle, BoneCornerHandle)) or (quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1" and not isinstance(editor.dragobject, qhandles.Rotator2D))) and quarkx.setupsubset(SS_MODEL, "Options")['NFDL'] is None:
@@ -6520,6 +6520,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.225  2011/02/21 20:17:26  cdunde
+#Fixed error when faces are deleted.
+#
 #Revision 1.224  2011/02/13 03:37:47  cdunde
 #Fixed all force to grid functions for model editor bones, vertexes, tags and bboxes.
 #
