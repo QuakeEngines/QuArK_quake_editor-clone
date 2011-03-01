@@ -1021,7 +1021,7 @@ parent = quarkpy.qhandles.RectangleDragObject
 class BBoxMakerDragObject(parent):
     "A bbox cube maker."
 
-    Hint = hintPlusInfobaselink("Quick bbox maker||Quick bbox maker:\n\nWhen active allows the LMB drag creation of a bounding box in any view.\n\nCan only be used when a single bone is selected for the bbox to be linked to.", "intro.modeleditor.toolpalettes.viewselection.html#coloroptions")
+    Hint = hintPlusInfobaselink("Quick bbox maker||Quick bbox maker:\n\nWhen active allows the LMB drag creation of a bounding box in any view.\n\nCan only be used when a single bone is selected for the bbox to be linked to.", "intro.modeleditor.toolpalettes.viewselection.html#bboxmaker")
 
     def __init__(self, view, x, y, redcolor, todo):
         parent.__init__(self, view, x, y, redcolor, todo)
@@ -1183,6 +1183,9 @@ Lock_Z.state = int(quarkx.setupsubset(SS_MODEL, "Options")["setLock_Z"])
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.28  2010/12/07 06:06:52  cdunde
+# Updates for Model Editor bounding box system.
+#
 # Revision 1.27  2010/12/06 05:43:06  cdunde
 # Updates for Model Editor bounding box system.
 #
