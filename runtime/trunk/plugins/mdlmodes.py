@@ -1144,7 +1144,7 @@ class AxisLockBar(ToolBar):
         LockZBtn = qtoolbar.button(lockzclick, "Lock Z Axis", ico_mdled, 2)  # tb_AxisLock[2] button
         viewsDialogbtn = qtoolbar.button(DialogViewsClick, "Views Options\nDialog Input\n(opens the input box)||Views Options Dialog Input:\n\nThis will open its own 'Dialog Box' and is laid out in the same order as the 'Display tool-palette'. \n\nThis dialog gives you the ability to customize every view that QuArK provides and does so independently from one view to the next.", ico_mdled, 3, infobaselink="intro.modeleditor.toolpalettes.viewselection.html#viewoptions")
         Colorsbtn = qtoolbar.button(ColorsClick, "Color Options\nfor quick line and\nvertex color changes||Color Options:\n\nThis will open the 'Configuration Model Editor Colors' selection dialog.\n\nThis dialog allows you to quickly change a variety of line and vertex color settings for easer viewing as needed.", ico_mdled, 4, infobaselink="intro.modeleditor.toolpalettes.viewselection.html#coloroptions")
-        BBoxbtn = qtoolbar.button(BBoxClick, "Quick bbox maker||Quick bbox maker:\n\nWhen active allows the LMB drag creation of a bounding box in any view.\n\nCan only be used when a single bone is selected for the bbox to be linked to.", ico_mdled, 5, infobaselink="intro.modeleditor.toolpalettes.viewselection.html#coloroptions")
+        BBoxbtn = qtoolbar.button(BBoxClick, "Quick bbox maker||Quick bbox maker:\n\nWhen active allows the LMB drag creation of a bounding box in any view.\n\nCan only be used when a single bone is selected for the bbox to be linked to.", ico_mdled, 5, infobaselink="intro.modeleditor.toolpalettes.viewselection.html#bboxmaker")
         layout.buttons.update({"lockx": LockXBtn, "locky": LockYBtn, "lockz": LockZBtn, "bboxes": BBoxbtn})
 
         if quarkx.setupsubset(SS_MODEL, "Options")["setLock_X"]=="1":
@@ -1183,6 +1183,9 @@ Lock_Z.state = int(quarkx.setupsubset(SS_MODEL, "Options")["setLock_Z"])
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.29  2011/03/01 08:09:20  cdunde
+# InfoBase link update.
+#
 # Revision 1.28  2010/12/07 06:06:52  cdunde
 # Updates for Model Editor bounding box system.
 #
