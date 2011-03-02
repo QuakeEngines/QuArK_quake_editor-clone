@@ -438,9 +438,9 @@ class BaseLayout:
                     if not ico_dict.has_key('mdlobjs'):
                         ico_dict['mdlobjs'] = LoadIconSet("images\\mdlobjs", 16)
                     ico_mdlobjs = ico_dict['mdlobjs']
-                    NewBBoxGroup = qtoolbar.button(self.editor.editcmdclick, "New BBox sub-group||New BBox sub-group:\n\nCreates a new BBox sub-group in the tree-view 'Misc' folder, where you can place bbox (poly bounding and collision) objects in.|intro.mapeditor.misctools.html#newgroup", ico_mdlobjs, 8)
+                    NewBBoxGroup = qtoolbar.button(self.editor.editcmdclick, "New BBox sub-group||New BBox sub-group:\n\nCreates a new BBox sub-group in the tree-view 'Misc' folder, where you can place bbox (poly bounding and collision) objects in.|intro.modeleditor.misctools.html#bboxsubgroup", ico_mdlobjs, 8)
                     NewBBoxGroup.cmd = "newbboxgroup"
-                    NewSkinsGroup = qtoolbar.button(self.editor.editcmdclick, "New skins sub-group||New skins sub-group:\n\nCreates a new Skins sub-group in the tree-view, where you can place skin objects in, used for Quake1 animation skins.|intro.mapeditor.misctools.html#newgroup", ico_mdlobjs, 0)
+                    NewSkinsGroup = qtoolbar.button(self.editor.editcmdclick, "New skins sub-group||New skins sub-group:\n\nCreates a new Skins sub-group in the selected component's 'Skins' folder, where you can place skin objects in, used for Quake1 animation skins.|intro.modeleditor.misctools.html#skinsubgroup", ico_mdlobjs, 0)
                     NewSkinsGroup.cmd = "newskingroup"
                     bb = CompassPanel.newbtnpanel(NewItem + [Trash, Undo, NewBBoxGroup, NewSkinsGroup])
                     bb.margins = (2,1)
@@ -639,6 +639,9 @@ class MPPage:
 #
 #
 #$Log$
+#Revision 1.38  2010/12/06 05:43:06  cdunde
+#Updates for Model Editor bounding box system.
+#
 #Revision 1.37  2010/06/06 04:04:24  cdunde
 #Fix to draw Eye handles in model editor floating 3D views when first opened.
 #
