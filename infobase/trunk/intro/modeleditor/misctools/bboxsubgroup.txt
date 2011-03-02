@@ -1,0 +1,11 @@
+title: New BBox sub-group
+author: cdunde
+
+<img border=1 align=right>bboxsubgroup.png</img>
+Creates a new BBox sub-group in the tree-view 'Misc' folder,
+where you can place bbox (poly bounding and collision) objects in.
+If any existing bboxes are selected when this button is clicked
+it will place all of those into the new sub-group for you.
+
+Once you have created a sub-group, select it in the tree-view
+and press <b>F2</b> to rename it.

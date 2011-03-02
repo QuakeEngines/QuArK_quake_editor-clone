@@ -1,0 +1,12 @@
+title: Undo/Redo
+author: cdunde
+
+<img border=1 align=right>undoredodialog.png</img>
+<img border=1 align=right>undo.png</img>
+The icon will open up the undo/redo display.
+
+<i>Redo</i> Click on the entry, from where you want to redo.
+Notice you can't do a selective redo-selection. Its all or nothing.
+
+<i>Undo</i> Click on the entry, from where you want to undo.
+Notice you can't do a selective undo-selection. Its all or nothing.

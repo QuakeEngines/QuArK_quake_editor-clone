@@ -1,0 +1,18 @@
+title: Userdata panel
+desc: components
+desc: skinfolders
+desc: skins
+desc: bboxes
+desc: bones
+
+<img border=0 align=left valign=top>userdata.png</img>
+This panel can contain Objects that you use most frequently for easy access and application.
+Even though the panel might take an item it may not be all that practical.
+
+To place an Object into this panel simply drag and drop it at the location you desire.
+Items can be rearranged in the same manor of dragging them in front or behind other items.
+You can always remove objects from the panel, by dragging them to the
+<a href="intro.modeleditor.misctools.html">trashcan</a>
+in the Misc tools section.
+
+A brief description of the most common objects and how they might be used is given below.

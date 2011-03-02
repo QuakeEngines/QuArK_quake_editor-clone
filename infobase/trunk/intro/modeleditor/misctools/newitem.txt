@@ -1,0 +1,5 @@
+title: New item
+author: cdunde
+
+<img border=1 align=right>newitem.png</img>
+(not being used at this time)

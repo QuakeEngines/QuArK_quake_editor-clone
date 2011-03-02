@@ -5,6 +5,8 @@ subdir: importexport
 subdir: menu
 subdir: rmbmenus
 subdir: toolpalettes
+subdir: userdata
+subdir: misctools
 subdir: dataforms
 subdir: skinview
 subdir: editelements

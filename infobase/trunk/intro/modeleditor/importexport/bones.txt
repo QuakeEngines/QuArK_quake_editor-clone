@@ -144,6 +144,7 @@ search for <g>ModelComponentList</g><br>
 you will find a description of everything that is stored in this list and the structure as how the data is stored in detail.<br>
 Below is an example of those data structures.
 
+<a name="ModelComponentList"></a>
 <u><i>What's in ModelComponentList </i></u>&nbsp;:
 
 The first three items <g>['bboxlist']</g>, <g>['bonelist']</g> and <g>['tristodraw']</g> do <b>not</b> use a component's name as their<br>
@@ -164,7 +165,8 @@ editor.ModelComponentList['bboxlist']
 </code>
 Their positions get set by the bones they are assigned to for any animation frame that exist. They can be placed in the
 <a href="intro.modeleditor.dataforms.html#treeview">tree-view</a><br>
-individually or in a <g>BboxGroupFolder:bbg</g>, which is usually done to keep them identified with one particular imported model.
+individually or in a <a href="intro.modeleditor.misctools.html">BboxGroupFolder:bbg</a>,
+which is usually done to keep them identified with one particular imported model.
 
 The <g>['bonelist']</g> is also a dictionary list and its <g>keys</g> are the bone names.<br>
 It is used to store each bones exact imported position and rotation matrix for each animation frame.<br>

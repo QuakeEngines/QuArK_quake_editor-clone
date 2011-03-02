@@ -1,0 +1,5 @@
+title: Components
+author: cdunde
+
+<img border=0 align=right>components.png</img>
+Any component can be placed here including all of its sub-folders and their items.
