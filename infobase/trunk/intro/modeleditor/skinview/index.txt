@@ -2,6 +2,7 @@ title: Skin-view page
 desc: overview
 desc: selection
 desc: funcsnmenus
+desc: importskins
 
 QuArK's Model Skin-view page is quite different then its 
 <a href="intro.mapeditor.dataforms.html#faceview">Map Editor's Face-view page.</a>

@@ -1,3 +1,17 @@
 title: Tutorials
-author: Decker
+author: Decker-cdunde
+desc: textureimports
 desc: texturelinks
+
+The differences between importing and making links to textures for the Texture Browser are these:
+
+1) Imports are actual copies of texture image files which make the .qrk file,
+where data is stored for both methods, much larger then just linking to them.
+However, the linking system has its bugs and those links can become broken
+or the files they link to may be moved, again braking the links.
+Therefore, importing copies is more reliable then making links.
+
+2) On the other hand, if you are dealing with <g>Shader</g> or <g>Material</g> type
+image files using the linking method would be the preferred method just because of the
+fact that those files are not really image files, but are text files that point to
+the actual image files they relate to and interact with for the game.

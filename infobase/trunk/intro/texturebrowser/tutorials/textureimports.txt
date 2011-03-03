@@ -1,0 +1,92 @@
+title: Texture Imports, how to create
+author: cdunde
+
+1) First, make sure that the textures you want to import,
+have been extracted from any game compressed files such as pak or zip files.
+
+Then in QuArK, open the texture-browser, and choose 'New main folder'.
+
+<img>texturelinks_1.png</img>
+
+2) This will bring up a dialog-box where QuArK asks you, in what .QRK file you
+want to store the new texture-links.
+
+If you have the textures in a special game-directory, like a TC/PC/MOD, I
+suggest you choose the option 'In a new Add-on'.
+
+If you already have some custom textures from before, you can choose 'In an
+already registered Add-on', so you don't end up with multiple .QRK add-ons, but
+for this tutorial we will select the 'In a new Add-on'.
+
+<img>texturelinks_2.png</img>
+
+3) Now that you have selected 'In a new Add-on', QuArK will ask you to name
+the new .qrk file that will be created.
+Keep the file in your QuArK main directory, along with the other .QRK files, so you
+can always find it again. Also remember to save it before you uninstall QuArK for an
+updated version in the future.
+
+<img>texturelinks_3.png</img>
+
+4) In the texture-browser tree-view, there will now be a new main folder, called
+'New Folder'.
+
+<img>texturelinks_4.png</img>
+
+5) You can rename this folder (and others as well), by highlighting it and press
+the F2 key (just like in Windows' File-explorer) or just click twice on it.
+
+<img>texturelinks_5.png</img>
+
+6) While still having selected the new main folder (now called 'Action Quake 2' for this example),
+click on 'Edit' in the menu-bar, go to 'Import files' then 'Import (copy) files...' and click on it.
+
+<img>textureimports_6.png</img>
+
+7) The file to import window will open. Use it to navigate to your texture locations and click on
+one you wish to import. You can only import one file at a time. If you have a lot of files and folders
+then you should try to use the
+<a href="intro.texturebrowser.tutorials.html#texturelinks">Texture Linking</a> method instead.
+
+<img>textureimports_7.png</img>
+
+To keep things organized, it's a good idea to setup <u>sub-folders</u> before or as you import textures.
+The 'new sub-folder' can be found in the 'Folders' menu.
+When one is added it will show up in the Texture Browser tree-view as 'New Folder' but can be changed
+to any name you choose. Which ever folder is selected when you import a texture, that is the folder
+it will be placed into. You can also drag textures from folder to folder as you please.
+
+<img>textureimports_8.png</img>
+
+Once you have them arranged the way you want it's a good idea to make a 'new texture list'
+for each of the folders you have. This will cause all the textures in a particular folder
+to be displayed as thumbnails when the folder is selected.
+
+You create a 'new texture list' by selecting a folder with imported textures
+then click the 1st icon button in the right-most set of icons of the menu
+(if in doubt, always read the fly-over help).
+
+This will place another folder called 'Texture list' in that folder which you will
+rename to the same name of the folder it is in, ex: rename 'Texture list' to 'actionrally'.
+
+<img>textureimports_9.png</img>
+
+Now <g>LMB</g> drag all those textures into the <b>NEW</b> 'actionrally' folder,<br>
+then <g>LMB</g> drag that folder outside of the <b>OLD</b> 'actionrally' folder.<br>
+Finally, do a <g>RMB</g> click on the <b>OLD</b> 'actionrally' folder and select 'Cut'
+on the menu to remove that folder.<br>
+Now when you click on the <b>NEW</b> folder you will see its textures thumbnails.
+
+<img>textureimports_10.png</img>
+
+9) The final step is to close QuArK completely. As it shuts down you will see a message asking if you want to save the
+changes to your new addon .QRK file, click "yes". Restart QuArK and you will see the newly imported textures.
+
+If you look in QuArK's main folder you will also find your newly created textures .QRK file, which needs
+to stay where it is or you will break where QuArK expects it to be.
+
+Once again, <b> remember to save it before you uninstall QuArK for an updated version in the future.</b>
+You should be able to use the same Addon .QRK file in the new version.
+
+
+

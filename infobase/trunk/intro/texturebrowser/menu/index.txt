@@ -6,5 +6,6 @@ desc: toolboxesmenu
 desc: newtextureicons
 desc: newtexturelist
 desc: linktofolder
+desc: texturesearch
 
-<img>menu.png</img>
+<img border=1>menu.png</img>

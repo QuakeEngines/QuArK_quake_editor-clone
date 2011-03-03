@@ -20,7 +20,8 @@ for this tutorial we will select the 'In a new Add-on'.
 
 <img>texturelinks_2.png</img>
 
-3) Now that you have selected 'In a new Add-on', QuArK ask you for a filename.
+3) Now that you have selected 'In a new Add-on', QuArK will ask you to name
+the new .qrk file that will be created.
 Keep the file in your QuArK main directory, along with the other .QRK files, so you
 can always find it again. Also remember to save it before you uninstall QuArK for an
 updated version in the future.

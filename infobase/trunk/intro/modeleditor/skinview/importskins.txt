@@ -1,0 +1,27 @@
+title: Importing Skin Textures
+author: cdunde
+
+<img border=1 align=right>importskins.png</img>
+Basically there are two ways to import a skin texture:<br>
+1) Through the Texture Browser by
+<a href="intro.texturebrowser.tutorials.html#textureimports">making a copy of</a> or
+<a href="intro.texturebrowser.tutorials.html#texturelinks">link to</a> the skin image file and
+
+2) By using a component's Skins Specifics / Arg page (detailed steps below).
+
+By selecting a component's Skins folder, or a skin within that folder, you will activate the Specifics page for it.<br>
+<a href="intro.modeleditor.overview.html#overview">You can then click on the icon button above the tree-view</a>
+to show that page or hold your <g>LMB</g> down while over the icon and drag the page out to display it in its own window.
+
+One that Specifics page click on the icon button that shows three dots on it next to where it
+says either <g>import skin</g> or <g>skin name</g>, depending on if you selected the
+Skins folder or a skin in the tree-view.
+
+Clicking that button will bring up a File Selection window that you can use to locate and
+select the skin texture image file you wish to import. Selecting the file will cause it to be imported.
+
+This method supports most of the texture file formats that are available in QuArK.
+However, some, such as .pcx, files use a color pallet for their images and need to
+be imported through one of the
+<a href="intro.texturebrowser.tutorials.html">Texture Browser methods</a>
+above to get processed properly.
