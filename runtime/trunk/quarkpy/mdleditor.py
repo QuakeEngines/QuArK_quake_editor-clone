@@ -21,6 +21,7 @@ import mdlbtns
 import mdlcommands
 import mdlentities
 import mdlhandles
+import mdltoolbars
 import mdlmgr
 from mdlutils import *
 
@@ -317,6 +318,8 @@ class ModelEditor(BaseEditor):
         quarkx.setupsubset(SS_MODEL, "Options")["SmoothLooping"] = None
         quarkx.setupsubset(SS_MODEL, "Options")["ExtrudeFaces"] = None
         quarkx.setupsubset(SS_MODEL, "Options")["ExtrudeBulkHeads"] = None
+        quarkx.setupsubset(SS_MODEL, "Options")["FaceCutTool"] = None
+        quarkx.setupsubset(SS_MODEL, "Options")["KeepDupeVertexes"] = None
         quarkx.setupsubset(SS_MODEL, "Options")['VertexUVColor'] = None
         quarkx.setupsubset(SS_MODEL, "Options")['HideBones'] = None
         quarkx.setupsubset(SS_MODEL, "Options")['HideTags'] = None
@@ -1370,6 +1373,9 @@ def commonhandles(self, redraw=1):
     if quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] == "1" or quarkx.setupsubset(SS_MODEL, "Options")['AnimationCFGActive'] == "1":
         return
     from qbaseeditor import flagsmouse, currentview
+
+    if flagsmouse == 2072 and isinstance(self.dragobject, mdltoolbars.FaceCutter): # Cancels face cutting.
+        return
     try:
         if flagsmouse == 536:
             return
@@ -1867,6 +1873,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.160  2010/12/06 05:43:06  cdunde
+#Updates for Model Editor bounding box system.
+#
 #Revision 1.159  2010/10/20 06:40:37  cdunde
 #Fixed the loss of selections and expanded items in the Model Editor from UNDO and REDO actions.
 #

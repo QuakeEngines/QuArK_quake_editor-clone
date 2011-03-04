@@ -659,6 +659,7 @@ class AnimationBar(ToolBar):
         try:
             tb2 = editor.layout.toolbars["tb_objmodes"]
             tb3 = editor.layout.toolbars["tb_paintmodes"]
+            tb4 = editor.layout.toolbars["tb_edittools"]
             for b in range(len(tb2.tb.buttons)):
                 if b == 1:
                     tb2.tb.buttons[b].state = qtoolbar.selected
@@ -666,11 +667,15 @@ class AnimationBar(ToolBar):
                     tb2.tb.buttons[b].state = qtoolbar.normal
             for b in range(len(tb3.tb.buttons)):
                 tb3.tb.buttons[b].state = qtoolbar.normal
+            for b in range(len(tb4.tb.buttons)):
+                if b == 7:
+                    tb4.tb.buttons[b].state = qtoolbar.normal
         except:
             pass
         quarkx.update(editor.form)
         quarkx.setupsubset(SS_MODEL, "Building").setint("ObjectMode", 0)
         quarkx.setupsubset(SS_MODEL, "Building").setint("PaintMode", 0)
+        quarkx.setupsubset(SS_MODEL, "Options")["FaceCutTool"] = None
         editor.MouseDragMode = mdlhandles.RectSelDragObject
         for view in editor.layout.views:
             if MapOption("CrossCursor", SS_MODEL):
@@ -738,6 +743,7 @@ class AnimationBar(ToolBar):
         try:
             tb2 = editor.layout.toolbars["tb_objmodes"]
             tb3 = editor.layout.toolbars["tb_paintmodes"]
+            tb4 = editor.layout.toolbars["tb_edittools"]
             for b in range(len(tb2.tb.buttons)):
                 if b == 1:
                     tb2.tb.buttons[b].state = qtoolbar.selected
@@ -745,11 +751,15 @@ class AnimationBar(ToolBar):
                     tb2.tb.buttons[b].state = qtoolbar.normal
             for b in range(len(tb3.tb.buttons)):
                 tb3.tb.buttons[b].state = qtoolbar.normal
+            for b in range(len(tb4.tb.buttons)):
+                if b == 7:
+                    tb4.tb.buttons[b].state = qtoolbar.normal
         except:
             pass
         quarkx.update(editor.form)
         quarkx.setupsubset(SS_MODEL, "Building").setint("ObjectMode", 0)
         quarkx.setupsubset(SS_MODEL, "Building").setint("PaintMode", 0)
+        quarkx.setupsubset(SS_MODEL, "Options")["FaceCutTool"] = None
         editor.MouseDragMode = mdlhandles.RectSelDragObject
         for view in editor.layout.views:
             if MapOption("CrossCursor", SS_MODEL):
@@ -800,6 +810,23 @@ class AnimationBar(ToolBar):
                             break
                         else:
                             playlistcount = playlistcount + 1
+        try:
+            tb2 = editor.layout.toolbars["tb_objmodes"]
+            tb4 = editor.layout.toolbars["tb_edittools"]
+            for b in range(len(tb2.tb.buttons)):
+                if b == 1:
+                    tb2.tb.buttons[b].state = qtoolbar.selected
+                else:
+                    tb2.tb.buttons[b].state = qtoolbar.normal
+            for b in range(len(tb4.tb.buttons)):
+                if b == 7:
+                    tb4.tb.buttons[b].state = qtoolbar.normal
+        except:
+            pass
+        quarkx.update(editor.form)
+        quarkx.setupsubset(SS_MODEL, "Building").setint("ObjectMode", 0)
+        quarkx.setupsubset(SS_MODEL, "Options")["FaceCutTool"] = None
+        editor.MouseDragMode = mdlhandles.RectSelDragObject
 
     def interpolation(self, btn):
         "Activates and deactivates animation interpolation, added movement between two frames by calculation."
@@ -1059,6 +1086,9 @@ class AnimationBar(ToolBar):
 #
 #
 #$Log$
+#Revision 1.25  2011/02/12 08:36:37  cdunde
+#Fixed auto turn off of Objects Maker not working with other toolbars.
+#
 #Revision 1.24  2010/05/25 21:43:32  cdunde
 #To speed up start and stop of animations.
 #

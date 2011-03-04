@@ -2695,6 +2695,7 @@ def selectmode(btn):
         tb1 = editor.layout.toolbars["tb_paintmodes"]
         tb2 = editor.layout.toolbars["tb_objmodes"]
         tb3 = editor.layout.toolbars["tb_animation"]
+        tb4 = editor.layout.toolbars["tb_edittools"]
     except:
         return
     select1(btn, tb1, editor)
@@ -2706,10 +2707,14 @@ def selectmode(btn):
     for b in range(len(tb3.tb.buttons)):
         if b == 0 or b == 5:
             tb3.tb.buttons[b].state = quarkpy.qtoolbar.normal
+    for b in range(len(tb4.tb.buttons)):
+        if b == 7:
+            tb4.tb.buttons[b].state = quarkpy.qtoolbar.normal
     paintcursor(editor)
     quarkx.update(editor.form)
     quarkx.setupsubset(SS_MODEL, "Building").setint("PaintMode", PaintModes[btn.i][1])
     quarkx.setupsubset(SS_MODEL, "Building").setint("ObjectMode", 0)
+    quarkx.setupsubset(SS_MODEL, "Options")["FaceCutTool"] = None
     editor.MouseDragMode = quarkpy.mdlhandles.RectSelDragObject
     from quarkpy.mdlanimation import playlist, playNR
     if quarkpy.mdlanimation.playlist != []:
@@ -2826,6 +2831,9 @@ quarkpy.mdltoolbars.toolbars["tb_paintmodes"] = PaintModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.6  2011/02/12 08:36:37  cdunde
+# Fixed auto turn off of Objects Maker not working with other toolbars.
+#
 # Revision 1.5  2009/10/12 20:49:56  cdunde
 # Added support for .md3 animationCFG (configuration) support and editing.
 #
