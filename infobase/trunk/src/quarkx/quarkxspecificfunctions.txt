@@ -74,7 +74,7 @@ Updates the window <tt>form</tt>, or all windows if not specified. Menu bars, to
 opentoolbox(toolbox)<br>
 opentoolbox(toolbox, select)
 </td><td>
-Opens the toolbox given by name. If <tt>toolbox</tt> is empty, this function opens the texture browser. If <tt>select</tt> is specified, attempts to find and select this Internal object in the toolbox. If <tt>select</tt> is <tt>None</tt>, and if some objects were previously selected in the toolbox, they are unselected.
+Opens the toolbox given by name. If <tt>toolbox</tt> is empty ex: <tt>quarkx.opentoolbox("")</tt>, this function opens the texture browser. If <tt>select</tt> is the actual texture object (see quarkpy\mdlbtns.py texturebrowser function for code example), attempts to find and select this Internal object in the toolbox. If <tt>select</tt> is <tt>None</tt>, and if some objects were previously selected in the toolbox, they are unselected.
 </td></tr>
 
 <tr><td class="doccode">
