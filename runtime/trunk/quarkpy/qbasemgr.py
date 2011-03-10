@@ -401,7 +401,13 @@ class BaseLayout:
         self.mpp.lock = qtoolbar.button(maptogglebtn, "lock the current page||When this button is activated, QuArK no longer automatically switches between the pages when you select or unselect objects.", ico_maped, 9)
         self.mpp.lock.mode = self.MODE
         self.mpp.lock.tag = "PagesLocked"
-        self.mpp.btnpanel.buttons = self.mpp.btnpanel.buttons + [qtoolbar.padright, self.mpp.lock]
+        import mapeditor
+        if isinstance(self.editor, mapeditor.MapEditor):
+            self.mpp.btnpanel.buttons = self.mpp.btnpanel.buttons + [qtoolbar.padright, self.mpp.lock]
+        else:
+            import mdlbtns
+            TexBtn = qtoolbar.button(mdlbtns.texturebrowser, "choose texture||Click this button to open the 'Texture Browser'.", ico_maped, 0)
+            self.mpp.btnpanel.buttons = self.mpp.btnpanel.buttons + [TexBtn] + [qtoolbar.padright, self.mpp.lock]
 
     def bs_leftpanel(self, form, right=0):
         "Default-looking panel at the left or right of the screen."
@@ -639,6 +645,9 @@ class MPPage:
 #
 #
 #$Log$
+#Revision 1.39  2011/03/02 04:19:45  cdunde
+#InfoBase link update.
+#
 #Revision 1.38  2010/12/06 05:43:06  cdunde
 #Updates for Model Editor bounding box system.
 #

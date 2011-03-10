@@ -644,6 +644,8 @@ def loadmodel(root, filename, gamename, nomessage=0):
         else:
             comp.currentskin = None
 
+    quarkpy.mdlbtns.updateUsedTextures() # Updates the Texture Browser's "Used Skin Textures" for all imported skins.
+
 ### To register this Python plugin and put it on the importers menu.
 import quarkpy.qmdlbase
 import ie_md0_Q_import # This imports itself to be passed along so it can be used in mdlmgr.py later.
@@ -652,6 +654,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".mdl Quake\HexenII Importer", ".mdl file",
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.6  2011/02/11 18:49:57  cdunde
+# Small name update.
+#
 # Revision 1.5  2010/12/18 07:22:19  cdunde
 # File version check update.
 #

@@ -1365,6 +1365,23 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
         # folder_name = name of the folder the .mdl model file is in.
         # mdl_name = just the basic name of the .mdl file, ex: barney
         # message = "" and empty string to add needed messages to.
+
+        # To avoid dupeicate skin names from being imported, we change the name.
+        used_skin_names = []
+        for item in editor.Root.subitems:
+            if item.type == ":mc" and not item.name.startswith(folder_name + "_" + mdl_name + "_"):
+                for skin in item.dictitems['Skins:sg'].subitems:
+                    used_skin_names = used_skin_names + [skin.shortname]
+        def check_skin_name(skin_name, used_skin_names=used_skin_names):
+            test_name = skin_name.split(".")
+            count = 0
+            if test_name[0] in used_skin_names:
+                for name in used_skin_names:
+                    if name == test_name[0]:
+                        count += 1
+                skin_name = test_name[0] + "Dupe" + str(count) + "." + test_name[1]
+            return skin_name
+
         self.file = file # To pass the file being read in, when needed.
         ofsBegin = self.ofsBegin = file.tell()
         temp_data = file.read(struct.calcsize(self.binary_format))
@@ -1511,6 +1528,7 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
             skingroup['type'] = chr(2)
             for skin in self.skins_group:
                 skin_name = skin.name # Gives the skin name and type, ex: head.bmp
+                skin_name = check_skin_name(skin_name)
                 #Create the QuArK skin objects
                 newskin = quarkx.newobj(skin_name)
                 newskin['Size'] = (float(skin.width), float(skin.height))
@@ -1929,7 +1947,8 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
                         try:
                             #Create the QuArK skin objects
                             skin = self.skins_group[skinref]
-                            newskin = quarkx.newobj(skin_name)
+                            new_skin_name = check_skin_name(skin_name)
+                            newskin = quarkx.newobj(new_skin_name)
                             skinsize = newskin['Size'] = (float(skin.width), float(skin.height))
                             newskin['Image1'] = skin.ImageData
                             newskin['Pal'] = skin.Palette
@@ -1939,6 +1958,7 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
                             # Try to find this Component's skins.
                                 if os.path.isfile(skin_name): # We try to find the skin in the models folder.
                                     skinname = folder_name + "/" + skin_name
+                                    skinname = check_skin_name(skinname)
                                     skin = quarkx.newobj(skinname)
                                     foundimage = os.getcwd() + "/" + skin_name
                                     image = quarkx.openfileobj(foundimage)
@@ -2337,6 +2357,8 @@ def loadmodel(root, filename, gamename, nomessage=0):
 
     ie_utils.default_end_logging(filename, "IM", starttime) ### Use "EX" for exporter text, "IM" for importer text.
 
+    quarkpy.mdlbtns.updateUsedTextures() # Updates the Texture Browser's "Used Skin Textures" for all imported skins.
+
 ### To register this Python plugin and put it on the importers menu.
 import quarkpy.qmdlbase
 import ie_md0_HL1_import # This imports itself to be passed along so it can be used in mdlmgr.py later.
@@ -2345,6 +2367,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".mdl Half-Life1 Importer", ".mdl file", "*
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.2  2011/01/17 06:33:51  cdunde
+# Removed unneeded and unused code.
+#
 # Revision 1.1  2010/12/18 07:21:45  cdunde
 # Update and file name change, previously ie_md0_HL_import.py, for proper listing of future Half-Life2 importer.
 #

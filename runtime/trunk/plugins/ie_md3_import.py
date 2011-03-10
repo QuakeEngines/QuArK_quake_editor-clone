@@ -1282,6 +1282,8 @@ def loadmodel(root, filename, gamename, nomessage=0):
             message = message + "Once this is done, then delete the imported components and re-import the model."
             quarkx.textbox("WARNING", "Missing Skin Textures:\r\n\r\n================================\r\n" + message, MT_WARNING)
 
+    quarkpy.mdlbtns.updateUsedTextures() # Updates the Texture Browser's "Used Skin Textures" for all imported skins.
+
 ### To register this Python plugin and put it on the importers menu.
 import quarkpy.qmdlbase
 import ie_md3_import # This imports itself to be passed along so it can be used in mdlmgr.py later.
@@ -1393,6 +1395,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.24  2010/11/09 05:48:10  cdunde
+# To reverse previous changes, some to be reinstated after next release.
+#
 # Revision 1.23  2010/11/06 13:31:04  danielpharos
 # Moved a lot of math-code to ie_utils, and replaced magic constant 3 with variable SS_MODEL.
 #

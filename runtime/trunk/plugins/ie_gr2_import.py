@@ -45,11 +45,26 @@ importername = "ie_gr2_import.py"
 textlog = "gr2_ie_log.txt"
 editor = None
 progressbar = None
+used_skin_names = []
 
 global line_counter
 global lines
 line_counter = 0
 lines = None
+
+######################################################
+# QuArK Importer Functions.
+######################################################
+
+def check_skin_name(skin_name):
+    test_name = skin_name.split(".")
+    count = 0
+    if test_name[0] in used_skin_names:
+        for name in used_skin_names:
+            if name == test_name[0]:
+                count += 1
+        skin_name = test_name[0] + "Dupe" + str(count) + "." + test_name[1]
+    return skin_name
 
 ######################################################
 # Vector, Quaterion, Matrix math stuff-taken from
@@ -1171,7 +1186,7 @@ def LoadGR2MSFile(MSfilename):
     return [art_tool, exporter_tool, models, animations, textures, materials, skeletons, vertexdatas, tritopologies, meshes, trackgroups]
 
 def loadmodel(root, filename, gamename, nomessage=0):
-    global editor
+    global editor, used_skin_names
     import quarkpy.mdleditor
     editor = quarkpy.mdleditor.mdleditor
     # Step 1 to import model from QuArK's Explorer.
@@ -1195,6 +1210,14 @@ def loadmodel(root, filename, gamename, nomessage=0):
         gr2_mesh_path = filename.rsplit('\\', 1)[0]
 
     bone_group_name = gr2_mesh_path.rsplit('\\', 1)[1]
+
+    # To avoid dupeicate skin names from being imported, we change the name.
+    used_skin_names = []
+    for item in editor.Root.subitems:
+        if item.type == ":mc" and not item.name.startswith(bone_group_name + "_"):
+            for skin in item.dictitems['Skins:sg'].subitems:
+                used_skin_names = used_skin_names + [skin.shortname]
+
     bone_group_names = bone_group_names + [bone_group_name]
     found_group_name = 0
     try:
@@ -1358,6 +1381,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
                 texturename = texturename.rsplit("\\", 1)[1]
             if texturename.find("/") != -1:
                 texturename = texturename.rsplit("/", 1)[1]
+            texturename = check_skin_name(texturename)
             skin = quarkx.newobj(texturename)
             skin['Image1'] = current_texture.imagedata
             skin['Size'] = (float(current_texture.width), float(current_texture.height))
@@ -2166,6 +2190,8 @@ def loadmodel(root, filename, gamename, nomessage=0):
         else:
             comp.currentskin = None
 
+    quarkpy.mdlbtns.updateUsedTextures() # Updates the Texture Browser's "Used Skin Textures" for all imported skins.
+
 ### To register this Python plugin and put it on the importers menu.
 import quarkpy.qmdlbase
 import ie_gr2_import # This imports itself to be passed along so it can be used in mdlmgr.py later for the Specifics page.
@@ -2288,7 +2314,8 @@ def dataformname(o):
             # Gives the newly selected skin texture's game folders path and file name, for example:
             #     models/monsters/cacodemon/cacoeye.tga
             skinname = o.parent.parent.dictspec['skin_name']
-            skin = quarkx.newobj(skinname)
+            new_skin_name = check_skin_name(skinname)
+            skin = quarkx.newobj(new_skin_name)
             # Gives the full current work directory (cwd) path up to the file name, need to add "\\" + filename, for example:
             #     E:\Program Files\Doom 3\base\models\monsters\cacodemon
             cur_folder = os.getcwd()
@@ -2379,6 +2406,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.38  2010/11/09 05:48:10  cdunde
+# To reverse previous changes, some to be reinstated after next release.
+#
 # Revision 1.37  2010/11/06 13:31:04  danielpharos
 # Moved a lot of math-code to ie_utils, and replaced magic constant 3 with variable SS_MODEL.
 #

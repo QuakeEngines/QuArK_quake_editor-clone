@@ -183,32 +183,6 @@ class ModelLayout(BaseLayout):
             slist.append(None)
         return slist
 
-  ### To link Used Skin Textures of the current model being edited into the Texture Browser for displaying.
-    def putskinsintexturebrowser(self):
-        return
-        import qutils
-        tbx_list = quarkx.findtoolboxes("Texture Browser...");
-        ToolBoxName, ToolBox = tbx_list[0]
-        # Removes the old Used Skin Textures ToolBoxFolder so duplicates of it are not displayed.
-        for ToolBoxFolder in ToolBox.subitems:
-            if ToolBoxFolder.name == "Used Skin Textures.qtxfolder":
-                ToolBoxFolder.parent.removeitem(ToolBoxFolder)
-                break
-        # Creates a dictionary list of the Used Skin Textures name and image to display in the Texture Browser for the model that is opened in the editor.
-        UsedTexturesList = {}
-        for item in self.editor.Root.subitems:
-            if item.name.endswith(":mc"):
-                for subitem in item.subitems:
-                    if subitem.name.endswith(":sg"):
-                        for skin in subitem.subitems:
-                            UsedTexturesList[skin.name] = subitem.dictitems[skin.name]
-        # Creates the "Used Skin Textures.qtxfolder" to display in the Texture Browser for the model that is opened in the editor.
-        UsedTexture = quarkx.newobj('Used Skin Textures.qtxfolder')
-        UsedTexture.flags = UsedTexture.flags | qutils.OF_TVSUBITEM
-        for UsedTextureName in UsedTexturesList:
-            UsedTexture.appenditem(UsedTexturesList[UsedTextureName].copy())
-        ToolBox.appenditem(UsedTexture)
-
   ### To setup the Animation Toolbar FPS (frames per second) function.
     def getFPSmenu(self, fpsbtn):
         setup = quarkx.setupsubset(self.editor.MODE, "Display")
@@ -1790,8 +1764,6 @@ class ModelLayout(BaseLayout):
                 # Just in case the 'Skeleton:bg' gets deleted we need to create a new one.
                 clearbones(self.editor, "deleted Skeleton group replaced")
 
-            # Updates the models textures in the Texture Browser's 'Used Textures' to be displayed.
-            self.putskinsintexturebrowser()
         fs = None
         if self.explorer.sellist != []:
             if (len(self.explorer.sellist) >= 2) and (self.explorer.sellist[0].type == ':bg' or self.explorer.sellist[0].type == ':bone'):
@@ -1900,6 +1872,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.131  2011/02/11 19:52:56  cdunde
+#Added import support for Heretic II and .m8 as supported texture file type.
+#
 #Revision 1.130  2011/01/04 11:10:20  cdunde
 #Added .vtf as supported texture file type for game HalfLife2.
 #

@@ -806,6 +806,8 @@ def loadmodel(root, filename, gamename, nomessage=0):
             message = message + "Once it is imported double click on it to add it to the Skins group of your current component.\r\n"
             quarkx.textbox("WARNING", "Missing Skin Textures:\r\n\r\n================================\r\n" + message, quarkpy.qutils.MT_WARNING)
 
+    quarkpy.mdlbtns.updateUsedTextures() # Updates the Texture Browser's "Used Skin Textures" for all imported skins.
+
 ### To register this Python plugin and put it on the importers menu.
 import quarkpy.qmdlbase
 import ie_fm_import # This imports itself to be passed along so it can be used in mdlmgr.py later.
@@ -814,4 +816,7 @@ quarkpy.qmdlbase.RegisterMdlImporter(".fm HereticII Importer", ".fm file", "*.fm
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.1  2011/02/11 19:52:56  cdunde
+# Added import support for Heretic II and .m8 as supported texture file type.
+#
 #

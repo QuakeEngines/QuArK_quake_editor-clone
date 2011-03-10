@@ -199,6 +199,20 @@ def replacespecifics(obj, mapping):
 
 def prepareobjecttodrop(editor, obj):
     "Call this to prepare an object to be dropped. It replaces [auto] Specifics."
+    def resetbones(bone, editor=editor): # Clears the bones of data that cause errors.
+        bones = bone.findallsubitems("", ':bone')
+        comp_name = editor.Root.currentcomponent.name
+        for bone in bones:
+            bone['component'] = comp_name
+            bone.vtxlist  = {}
+            bone.vtx_pos  = {}
+            if bone.dictspec.has_key('comp_list'):
+                bone['comp_list'] = comp_name
+    if obj.type == ":bone":
+        resetbones(obj)
+    if obj.type == ":bg":
+        for bone in obj.subitems:
+            resetbones(bone)
 
     oldincl = obj[";incl"]
     obj[";desc"] = None
@@ -552,29 +566,57 @@ def edit_newskingroup(editor, m=None):
     ex.expand(newgroup)
 
 
-def texturebrowser(reserved=None):
-    "Opens the texture browser."
+def updateUsedTextures(reserved=None):
+    "Updates the 'Used Skin Textures.qtxfolder' then opens the texture browser with the currentcomponent's currentskin selected."
 
-    #
-    # Get the texture to select from the current selection.
-    #
     editor = mapeditor()
     if editor is None:
         seltex = None
-    else:
-        if not ("TTreeMap" in editor.layout.explorer.sellist[0].classes):
-            seltex = None
+    elif editor.Root.currentcomponent is not None and editor.Root.currentcomponent.currentskin is not None:
+        tbx_list = quarkx.findtoolboxes("Texture Browser...");
+        ToolBoxName, ToolBox = tbx_list[0]
+        UsedTexturesList = {}
+        for item in editor.Root.subitems:
+            if item.name.endswith(":mc"):
+                for subitem in item.subitems:
+                    if subitem.name.endswith(":sg"):
+                        for skin in subitem.subitems:
+                            UsedTexturesList[skin.name] = subitem.dictitems[skin.name]
+        # Updates the "Used Skin Textures.qtxfolder" to display in the Texture Browser.
+        if ToolBox.dictitems.has_key('Used Skin Textures.qtxfolder'):
+            UsedTexture = ToolBox.dictitems['Used Skin Textures.qtxfolder']
         else:
-            texlist = quarkx.texturesof(editor.layout.explorer.sellist)
-            if len(texlist)==1:
-                seltex = quarkx.loadtexture(texlist[0], editor.TexSource)
-            else:
-                seltex = None
+            UsedTexture = quarkx.newobj('Used Skin Textures.qtxfolder')
+        UsedTexture.flags = UsedTexture.flags | qutils.OF_TVSUBITEM
+        for UsedTextureName in UsedTexturesList:
+            if UsedTextureName in UsedTexture.dictitems.keys():
+                continue
+            UsedTexture.appenditem(UsedTexturesList[UsedTextureName].copy())
+        if not ToolBox.dictitems.has_key('Used Skin Textures.qtxfolder'):
+            ToolBox.appenditem(UsedTexture)
 
-    #
+
+def texturebrowser(reserved=None):
+    "Updates the 'Used Skin Textures.qtxfolder' then opens the texture browser with the currentcomponent's currentskin selected."
+
+    editor = mapeditor()
+    if editor is None:
+        seltex = None
+    elif editor.Root.currentcomponent is not None and editor.Root.currentcomponent.currentskin is not None:
+        # Updates the "Used Skin Textures.qtxfolder" to display in the Texture Browser.
+        updateUsedTextures()
+
+        tbx_list = quarkx.findtoolboxes("Texture Browser...");
+        ToolBoxName, ToolBox = tbx_list[0]
+
+        try:
+            seltex = ToolBox.dictitems['Used Skin Textures.qtxfolder'].dictitems[editor.Root.currentcomponent.currentskin.name]
+        except:
+            seltex = None
+    else:
+        seltex = None
+
     # Open the Texture Browser tool box.
-    #
-
     quarkx.opentoolbox("", seltex)
 
 
@@ -692,6 +734,9 @@ def groupcolor(m):
 #
 #
 #$Log$
+#Revision 1.42  2011/02/11 19:52:56  cdunde
+#Added import support for Heretic II and .m8 as supported texture file type.
+#
 #Revision 1.41  2011/01/04 11:10:20  cdunde
 #Added .vtf as supported texture file type for game HalfLife2.
 #

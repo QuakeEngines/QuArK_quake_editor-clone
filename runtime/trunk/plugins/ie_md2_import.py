@@ -592,6 +592,8 @@ def loadmodel(root, filename, gamename, nomessage=0):
         else:
             comp.currentskin = None
 
+    quarkpy.mdlbtns.updateUsedTextures() # Updates the Texture Browser's "Used Skin Textures" for all imported skins.
+
 ### To register this Python plugin and put it on the importers menu.
 import quarkpy.qmdlbase
 import ie_md2_import # This imports itself to be passed along so it can be used in mdlmgr.py later.
@@ -600,6 +602,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".md2 Quake2 Importer", ".md2 file", "*.md2
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.12  2010/06/13 15:37:55  cdunde
+# Setup Model Editor to allow importing of model from main explorer File menu.
+#
 # Revision 1.11  2010/05/01 22:54:49  cdunde
 # Fix for importing models without any skins.
 # Set default skinsize to match all other importers.

@@ -37,6 +37,7 @@ importername = "ie_tan_import.py"
 textlog = "tan_ie_log.txt"
 editor = None
 progressbar = None
+used_skin_names = []
 
 
 ######################################################
@@ -433,6 +434,7 @@ class tan_obj:
         self.ComponentList = []
 
     def load (self, file):
+        global used_skin_names
         # file.name is the model file & full path, ex: C:\FAKK2\fakk\models\animal\bird\bird_flyfast.tan
         # FullPathName is the full path and the full file name being imported with forward slashes.
         FullPathName = file.name.replace("\\", "/")
@@ -444,6 +446,13 @@ class tan_obj:
         ModelFolder = FolderPath.rsplit("/", 1)[1]
         temp_data = file.read(struct.calcsize(self.binary_format))
         data = struct.unpack(self.binary_format, temp_data)
+
+        # To avoid dupeicate skin names from being imported, we change the name.
+        used_skin_names = []
+        for item in editor.Root.subitems:
+            if item.type == ":mc" and not item.name.startswith(ModelFolder + "_" + ModelName):
+                for skin in item.dictitems['Skins:sg'].subitems:
+                    used_skin_names = used_skin_names + [skin.shortname]
 
         # "data" is all of the header data amounts.
         self.ident = data[0]
@@ -578,6 +587,16 @@ class tan_obj:
 ######################################################
 # Import functions
 ######################################################
+def check_skin_name(skin_name):
+    test_name = skin_name.split(".")
+    count = 0
+    if test_name[0] in used_skin_names:
+        for name in used_skin_names:
+            if name == test_name[0]:
+                count += 1
+        skin_name = test_name[0] + "Dupe" + str(count) + "." + test_name[1]
+    return skin_name
+
 def check4skin(file, Component, material_name, message):
     # Try to locate and load Component's skin textures.
     ImageTypes = [".ftx", ".tga", ".jpg", ".bmp", ".png", ".dds"]
@@ -637,7 +656,8 @@ def check4skin(file, Component, material_name, message):
                 for type in ImageTypes:
                     if os.path.isfile(path + "\\" + skin_name + type): # We found the skin texture file.
                         found_skin_file = path + "\\" + skin_name + type
-                        skin = quarkx.newobj(skin_name + type)
+                        new_skin_name = check_skin_name(skin_name)
+                        skin = quarkx.newobj(new_skin_name + type)
                         image = quarkx.openfileobj(found_skin_file)
                         skin['Image1'] = image.dictspec['Image1']
                         Component['skinsize'] = skin['Size'] = image.dictspec['Size']
@@ -660,7 +680,8 @@ def check4skin(file, Component, material_name, message):
             for type in ImageTypes:
                 if file.endswith(type):
                     found_skin_file = path + "\\" + file
-                    skin = quarkx.newobj(file)
+                    new_skin_name = check_skin_name(file)
+                    skin = quarkx.newobj(new_skin_name)
                     image = quarkx.openfileobj(found_skin_file)
                     skin['Image1'] = image.dictspec['Image1']
                     skin['Size'] = size = image.dictspec['Size']
@@ -795,6 +816,8 @@ def loadmodel(root, filename, gamename, nomessage=0):
             message = message + "Once this is done, then delete the imported components and re-import the model."
             quarkx.textbox("WARNING", "Missing Skin Textures:\r\n\r\n================================\r\n" + message, quarkpy.qutils.MT_WARNING)
 
+    quarkpy.mdlbtns.updateUsedTextures() # Updates the Texture Browser's "Used Skin Textures" for all imported skins.
+
 ### To register this Python plugin and put it on the importers menu.
 import quarkpy.qmdlbase
 import ie_tan_import # This imports itself to be passed along so it can be used in mdlmgr.py later.
@@ -803,6 +826,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".tan Alice\EF2\FAKK2 Importer", ".tan file
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.8  2010/11/09 05:48:10  cdunde
+# To reverse previous changes, some to be reinstated after next release.
+#
 # Revision 1.7  2010/11/06 13:31:04  danielpharos
 # Moved a lot of math-code to ie_utils, and replaced magic constant 3 with variable SS_MODEL.
 #
