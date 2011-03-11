@@ -168,7 +168,7 @@ class NameDialog(SimpleCancelDlgBox):
     "A simple dialog box to enter a name."
 
     endcolor = AQUA
-    size = (330,135)
+    size = (330,140)
     dfsep = 0.45
     dlgdef = """
       {
@@ -453,6 +453,9 @@ mapselection.prevItem.onclick=camnextClick
 
 
 # $Log$
+# Revision 1.17  2008/02/07 13:24:49  danielpharos
+# Fix a typo and remove redundant spaces
+#
 # Revision 1.16  2006/11/30 01:17:47  cdunde
 # To fix for filtering purposes, we do NOT want to use capital letters for cvs.
 #
