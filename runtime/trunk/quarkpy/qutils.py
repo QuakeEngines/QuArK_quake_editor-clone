@@ -409,9 +409,7 @@ def GroupIconSel(grp, ico_objects_group_set={
 #
 
 def ModelIcon(modelobj, iconset):
-    
-    # Sets the Model Editor's Bbox Polys to use its own function for icons.
-    quarkx.seticons(iiPolyhedron,     BBoxIconSel,        BBoxIconUnsel)
+
     #
     # Sets the default icons for each group type ex: ":sg", ":fg"...
     # Also individual component group type icons can be set here as well.
@@ -504,7 +502,7 @@ def BBoxIcon(bbox, iconset):
     icons = ico_dict['ico_objects'][iconset]
 
     if bbox['show'][0] == 1.0:
-        return icons[15]
+        return icons[54]
     else:
         return icons[53]
 
@@ -923,6 +921,9 @@ def sortdictionary(dictionary):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.55  2010/12/07 06:06:52  cdunde
+#Updates for Model Editor bounding box system.
+#
 #Revision 1.54  2010/12/06 05:43:06  cdunde
 #Updates for Model Editor bounding box system.
 #
