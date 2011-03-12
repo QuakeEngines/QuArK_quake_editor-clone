@@ -1026,6 +1026,7 @@ class SKC_Frame:
               #2  tempmatrix = rot.tuple
               #2  rot = quarkx.matrix((tempmatrix[0][0]*factor, tempmatrix[0][1]*factor, tempmatrix[0][2]*factor), (tempmatrix[1][0]*factor, tempmatrix[1][1]*factor, tempmatrix[1][2]*factor), (tempmatrix[2][0]*factor, tempmatrix[2][1]*factor, tempmatrix[2][2]*factor))
               #2  bone.rotmatrix = rot
+                pass
             if logging == 1:
                 tobj.logcon ("channel " + str(i) + ":")
                 channel.dump()
@@ -1792,6 +1793,11 @@ quarkpy.qmdlbase.RegisterMdlImporter(".skd MOHAA Importer-mesh", ".skd file", "*
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.6  2011/03/10 20:58:25  cdunde
+# Updating of Used Textures in the Model Editor Texture Browser for all imported skin textures
+# and allow bones and Skeleton folder to be placed in Userdata panel for reuse with other models.
+# Updated MOHAA mesh and animation support.
+#
 # Revision 1.5  2010/12/10 02:23:26  cdunde
 # Final animation fixes and file cleanup.
 #
