@@ -419,8 +419,7 @@ def findClick(m):
 
     FindCameraPosDlg(quarkx.clickform, 'findcamerapos', editor, setup, action)
 
-mapsearch.items.append(qmenu.item('Find Camera Positions', findClick,
- "|Find Camera Positions:\n\nThis finds all the camera positions.|intro.mapeditor.menu.html#searchmenu"))
+mapsearch.items.append(qmenu.item('Find Camera Positions', findClick, "|Find Camera Positions:\n\nThis finds all the camera positions.|intro.mapeditor.menu.html#searchmenu"))
 
 
 #
@@ -453,6 +452,9 @@ mapselection.prevItem.onclick=camnextClick
 
 
 # $Log$
+# Revision 1.18  2011/03/11 07:53:01  cdunde
+# Fixed dialog box height.
+#
 # Revision 1.17  2008/02/07 13:24:49  danielpharos
 # Fix a typo and remove redundant spaces
 #
