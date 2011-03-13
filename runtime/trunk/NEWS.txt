@@ -14,6 +14,8 @@ $Id$
 
 6.6.0 Beta 4
 ============
+* [cdunde/DanielPharos]: Updating fixed for the Model Editor of the Texture Browser's Used Textures folder.
+
 * [cdunde]: Updating of Used Textures in the Model Editor Texture Browser for all imported skin textures
           - and allow bones and Skeleton folder to be placed in Userdata panel for reuse with other models.
 
