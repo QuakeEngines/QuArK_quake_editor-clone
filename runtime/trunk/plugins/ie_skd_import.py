@@ -1019,6 +1019,7 @@ class SKC_Frame:
                         tempmatrix = quaternion2matrix(rotFK)
                         rot = quarkx.matrix((tempmatrix[0][0], tempmatrix[0][1], tempmatrix[0][2]), (tempmatrix[1][0], tempmatrix[1][1], tempmatrix[1][2]), (tempmatrix[2][0], tempmatrix[2][1], tempmatrix[2][2]))
             else:
+                pass
              #   print "line 1022 NO CHANNELS DATA bone.name ->", bone.name
              #   print "line 1023 NO CHANNELS DATA pos ->", pos
              #   print "line 1024 NO CHANNELS DATA rot ->", rot
@@ -1026,7 +1027,6 @@ class SKC_Frame:
               #2  tempmatrix = rot.tuple
               #2  rot = quarkx.matrix((tempmatrix[0][0]*factor, tempmatrix[0][1]*factor, tempmatrix[0][2]*factor), (tempmatrix[1][0]*factor, tempmatrix[1][1]*factor, tempmatrix[1][2]*factor), (tempmatrix[2][0]*factor, tempmatrix[2][1]*factor, tempmatrix[2][2]*factor))
               #2  bone.rotmatrix = rot
-                pass
             if logging == 1:
                 tobj.logcon ("channel " + str(i) + ":")
                 channel.dump()
@@ -1782,7 +1782,13 @@ def loadmodel(root, filename, gamename):
 
     ie_utils.default_end_logging(filename, "IM", starttime) ### Use "EX" for exporter text, "IM" for importer text.
 
-    quarkpy.mdlbtns.updateUsedTextures() # Updates the Texture Browser's "Used Skin Textures" for all imported skins.
+    # Updates the Texture Browser's "Used Skin Textures" for all imported skins.
+    tbx_list = quarkx.findtoolboxes("Texture Browser...");
+    ToolBoxName, ToolBox, flag = tbx_list[0]
+    if flag == 2:
+        quarkpy.mdlbtns.texturebrowser() # If already open, reopens it after the update.
+    else:
+        quarkpy.mdlbtns.updateUsedTextures()
 
 ### To register this Python plugin and put it on the importers menu.
 import quarkpy.qmdlbase
@@ -1793,6 +1799,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".skd MOHAA Importer-mesh", ".skd file", "*
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.7  2011/03/12 19:19:46  danielpharos
+# Fixed small mistake introduced when commenting out print-statements.
+#
 # Revision 1.6  2011/03/10 20:58:25  cdunde
 # Updating of Used Textures in the Model Editor Texture Browser for all imported skin textures
 # and allow bones and Skeleton folder to be placed in Userdata panel for reuse with other models.

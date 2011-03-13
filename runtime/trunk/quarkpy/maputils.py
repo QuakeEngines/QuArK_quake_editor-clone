@@ -80,7 +80,7 @@ class MapUserDataPanel(UserDataPanel):
         for tb, icon in (("New map items...", 25), ("Texture Browser...", 26)):
             icons = (ico_maped[0][icon], ico_maped[1][icon])
             toolboxes = quarkx.findtoolboxes(tb)
-            for toolbox, root in toolboxes:
+            for toolbox, root, flag in toolboxes:
                 new = quarkx.newobj(root.shortname + '.qtxfolder')
                 new.appenditem(root.copy())
                 btn = self.newbutton(new, btnpanel, icons)
@@ -387,6 +387,9 @@ def warpedCircleFrom4Points(n, points):
 #
 #
 #$Log$
+#Revision 1.28  2008/11/17 19:10:23  danielpharos
+#Centralized and fixed BSP file detection.
+#
 #Revision 1.27  2008/05/27 19:35:02  danielpharos
 #Fix typo
 #

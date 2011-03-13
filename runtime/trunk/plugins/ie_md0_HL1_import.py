@@ -2357,7 +2357,13 @@ def loadmodel(root, filename, gamename, nomessage=0):
 
     ie_utils.default_end_logging(filename, "IM", starttime) ### Use "EX" for exporter text, "IM" for importer text.
 
-    quarkpy.mdlbtns.updateUsedTextures() # Updates the Texture Browser's "Used Skin Textures" for all imported skins.
+    # Updates the Texture Browser's "Used Skin Textures" for all imported skins.
+    tbx_list = quarkx.findtoolboxes("Texture Browser...");
+    ToolBoxName, ToolBox, flag = tbx_list[0]
+    if flag == 2:
+        quarkpy.mdlbtns.texturebrowser() # If already open, reopens it after the update.
+    else:
+        quarkpy.mdlbtns.updateUsedTextures()
 
 ### To register this Python plugin and put it on the importers menu.
 import quarkpy.qmdlbase
@@ -2367,6 +2373,10 @@ quarkpy.qmdlbase.RegisterMdlImporter(".mdl Half-Life1 Importer", ".mdl file", "*
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.3  2011/03/10 20:56:39  cdunde
+# Updating of Used Textures in the Model Editor Texture Browser for all imported skin textures
+# and allow bones and Skeleton folder to be placed in Userdata panel for reuse with other models.
+#
 # Revision 1.2  2011/01/17 06:33:51  cdunde
 # Removed unneeded and unused code.
 #

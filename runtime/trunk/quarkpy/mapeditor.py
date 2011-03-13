@@ -78,7 +78,7 @@ class MapEditor(BaseEditor):
             import qutils
             # Creates the "Used Textures.txlist" to display in the Texture Browser for the map that is opened in the editor.
             tbx_list = quarkx.findtoolboxes("Texture Browser...");
-            ToolBoxName, ToolBox = tbx_list[0]
+            ToolBoxName, ToolBox, flag = tbx_list[0]
             # Removes the old Used Textures ToolBoxFolder so duplicates of it are not displayed.
             for ToolBoxFolder in ToolBox.subitems:
                 if ToolBoxFolder.name == "Used Textures.txlist":
@@ -413,6 +413,9 @@ def autosave(editor):
 #
 #
 #$Log$
+#Revision 1.23  2010/10/14 20:03:32  danielpharos
+#Fix bone-position with Undo/Redo dialog box and made some fixes to selection-holding code.
+#
 #Revision 1.22  2010/03/08 20:26:35  danielpharos
 #Updated for change to TexturesPath.
 #

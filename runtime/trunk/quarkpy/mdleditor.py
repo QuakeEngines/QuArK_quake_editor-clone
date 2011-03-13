@@ -265,7 +265,7 @@ class ModelEditor(BaseEditor):
         # Creates a dictionary list of the Used Skin Textures name and image to display in the Texture Browser for the model that is opened in the editor.
         import qutils
         tbx_list = quarkx.findtoolboxes("Texture Browser...");
-        ToolBoxName, ToolBox = tbx_list[0]
+        ToolBoxName, ToolBox, flag = tbx_list[0]
         UsedTexturesList = {}
         for item in self.Root.subitems:
             if item.name.endswith(":mc"):
@@ -1873,6 +1873,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.161  2011/03/04 06:50:28  cdunde
+#Added new face cutting tool, for selected faces, like in the map editor with option to allow vertex separation.
+#
 #Revision 1.160  2010/12/06 05:43:06  cdunde
 #Updates for Model Editor bounding box system.
 #

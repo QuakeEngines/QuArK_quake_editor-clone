@@ -574,7 +574,7 @@ def updateUsedTextures(reserved=None):
         seltex = None
     elif editor.Root.currentcomponent is not None and editor.Root.currentcomponent.currentskin is not None:
         tbx_list = quarkx.findtoolboxes("Texture Browser...");
-        ToolBoxName, ToolBox = tbx_list[0]
+        ToolBoxName, ToolBox, flag = tbx_list[0]
         UsedTexturesList = {}
         for item in editor.Root.subitems:
             if item.name.endswith(":mc"):
@@ -607,7 +607,7 @@ def texturebrowser(reserved=None):
         updateUsedTextures()
 
         tbx_list = quarkx.findtoolboxes("Texture Browser...");
-        ToolBoxName, ToolBox = tbx_list[0]
+        ToolBoxName, ToolBox, flag = tbx_list[0]
 
         try:
             seltex = ToolBox.dictitems['Used Skin Textures.qtxfolder'].dictitems[editor.Root.currentcomponent.currentskin.name]
@@ -734,6 +734,10 @@ def groupcolor(m):
 #
 #
 #$Log$
+#Revision 1.43  2011/03/10 20:56:39  cdunde
+#Updating of Used Textures in the Model Editor Texture Browser for all imported skin textures
+#and allow bones and Skeleton folder to be placed in Userdata panel for reuse with other models.
+#
 #Revision 1.42  2011/02/11 19:52:56  cdunde
 #Added import support for Heretic II and .m8 as supported texture file type.
 #

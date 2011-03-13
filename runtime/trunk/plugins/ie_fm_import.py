@@ -806,7 +806,13 @@ def loadmodel(root, filename, gamename, nomessage=0):
             message = message + "Once it is imported double click on it to add it to the Skins group of your current component.\r\n"
             quarkx.textbox("WARNING", "Missing Skin Textures:\r\n\r\n================================\r\n" + message, quarkpy.qutils.MT_WARNING)
 
-    quarkpy.mdlbtns.updateUsedTextures() # Updates the Texture Browser's "Used Skin Textures" for all imported skins.
+    # Updates the Texture Browser's "Used Skin Textures" for all imported skins.
+    tbx_list = quarkx.findtoolboxes("Texture Browser...");
+    ToolBoxName, ToolBox, flag = tbx_list[0]
+    if flag == 2:
+        quarkpy.mdlbtns.texturebrowser() # If already open, reopens it after the update.
+    else:
+        quarkpy.mdlbtns.updateUsedTextures()
 
 ### To register this Python plugin and put it on the importers menu.
 import quarkpy.qmdlbase
@@ -816,6 +822,10 @@ quarkpy.qmdlbase.RegisterMdlImporter(".fm HereticII Importer", ".fm file", "*.fm
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.2  2011/03/10 20:56:39  cdunde
+# Updating of Used Textures in the Model Editor Texture Browser for all imported skin textures
+# and allow bones and Skeleton folder to be placed in Userdata panel for reuse with other models.
+#
 # Revision 1.1  2011/02/11 19:52:56  cdunde
 # Added import support for Heretic II and .m8 as supported texture file type.
 #

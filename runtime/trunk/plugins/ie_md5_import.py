@@ -1590,7 +1590,13 @@ def loadmodel(root, filename, gamename, nomessage=0):
 
         import_md5_model(basepath, filename)
 
-    quarkpy.mdlbtns.updateUsedTextures() # Updates the Texture Browser's "Used Skin Textures" for all imported skins.
+    # Updates the Texture Browser's "Used Skin Textures" for all imported skins.
+    tbx_list = quarkx.findtoolboxes("Texture Browser...");
+    ToolBoxName, ToolBox, flag = tbx_list[0]
+    if flag == 2:
+        quarkpy.mdlbtns.texturebrowser() # If already open, reopens it after the update.
+    else:
+        quarkpy.mdlbtns.updateUsedTextures()
 
 ### To register this Python plugin and put it on the importers menu.
 import quarkpy.qmdlbase
@@ -1792,6 +1798,10 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.43  2011/03/10 20:56:39  cdunde
+# Updating of Used Textures in the Model Editor Texture Browser for all imported skin textures
+# and allow bones and Skeleton folder to be placed in Userdata panel for reuse with other models.
+#
 # Revision 1.42  2010/12/08 21:06:01  cdunde
 # Fix to load model even if shader can not be found.
 #

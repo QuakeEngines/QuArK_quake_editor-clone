@@ -378,7 +378,7 @@ def texturebrowser(reserved=None):
     # Open the Texture Browser tool box.
     #
     tbx_list = quarkx.findtoolboxes("Texture Browser...");
-    ToolBoxName, ToolBox = tbx_list[0]
+    ToolBoxName, ToolBox, flag = tbx_list[0]
     for ToolBoxFolder in ToolBox.subitems:
         if ToolBoxFolder.name == "Used Textures.txlist":
             ToolBoxFolder.parent.removeitem(ToolBoxFolder)
@@ -746,6 +746,9 @@ def groupview1click(m):
 #
 #
 #$Log$
+#Revision 1.36  2008/11/17 23:56:04  danielpharos
+#Compensate for accidental change in behaviour in QkObjects rev 1.112.
+#
 #Revision 1.35  2008/10/07 21:04:49  danielpharos
 #Added GetBaseDir function and other small fixes.
 #

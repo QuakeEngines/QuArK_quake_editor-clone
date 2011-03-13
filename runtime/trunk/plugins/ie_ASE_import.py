@@ -1406,7 +1406,13 @@ def loadmodel(root, filename, gamename, nomessage=0):
             message = message + "Once this is done, then delete the imported components and re-import the model."
             quarkx.textbox("WARNING", "Missing Skin Textures:\r\n\r\n================================\r\n" + message, MT_WARNING)
 
-    quarkpy.mdlbtns.updateUsedTextures() # Updates the Texture Browser's "Used Skin Textures" for all imported skins.
+    # Updates the Texture Browser's "Used Skin Textures" for all imported skins.
+    tbx_list = quarkx.findtoolboxes("Texture Browser...");
+    ToolBoxName, ToolBox, flag = tbx_list[0]
+    if flag == 2:
+        quarkpy.mdlbtns.texturebrowser() # If already open, reopens it after the update.
+    else:
+        quarkpy.mdlbtns.updateUsedTextures()
 
 ### To register this Python plugin and put it on the importers menu.
 import quarkpy.qmdlbase
@@ -2063,6 +2069,10 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.20  2011/03/10 20:56:39  cdunde
+# Updating of Used Textures in the Model Editor Texture Browser for all imported skin textures
+# and allow bones and Skeleton folder to be placed in Userdata panel for reuse with other models.
+#
 # Revision 1.19  2010/11/09 05:48:10  cdunde
 # To reverse previous changes, some to be reinstated after next release.
 #
