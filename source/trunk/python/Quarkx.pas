@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.102  2010/11/06 14:11:08  danielpharos
+Consted two string parameters.
+
 Revision 1.101  2010/10/16 21:47:40  danielpharos
 Reworked GCF file loading. HLLib now directly called. Updated to HLLib 2.3.0. Fixed JPG-library setting being used in VTF file saving.
 
@@ -2809,10 +2812,12 @@ function xFindToolBoxes(self, args: PyObject) : PyObject; cdecl;
 var
  L: TQList;
  SetupQrk, Q, T: QObject;
- I: Integer;
+ I, J: Integer;
  S: String;
  P: PChar;
  obj: PyObject;
+ ToolBox1: TForm;
+ AlreadyOpen: Integer;
 begin
  try
   Result:=Nil;
@@ -2839,7 +2844,21 @@ begin
      T:=Q.SubElements.FindName(S);
      if T=Nil then Continue;   { no data }
      S:=Q.Specifics.Values['ToolBox'];
-     obj:=Py_BuildValueX('sO', [PChar(S), @T.PythonObj]);
+     
+     AlreadyOpen:=0;
+     for J:=0 to Screen.FormCount-1 do
+      begin
+       ToolBox1:=Screen.Forms[J];
+       if (ToolBox1 is TToolBoxForm) and (CompareText(TToolBoxForm(ToolBox1).GetToolBoxSingleName, S)=0) then
+       begin
+         if (ToolBox1.Visible) then
+           AlreadyOpen:=2  { is currently open }
+         else
+           AlreadyOpen:=1;  { is currently open, but hidden }
+         break;
+       end;
+     end;
+     obj:=Py_BuildValueX('sOi', [PChar(S), @T.PythonObj, AlreadyOpen]);
      if obj=Nil then Exit;
      PyList_Append(Result, obj);
      Py_DECREF(obj);
