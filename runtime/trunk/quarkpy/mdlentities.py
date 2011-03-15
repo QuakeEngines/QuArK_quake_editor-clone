@@ -1177,6 +1177,19 @@ qmacro.MACRO_applychanges = macro_applychanges
 # Entity Manager base class, followed by subclasses.
 #
 ###############################
+def ObjectOrigin(o):
+    "Returns the origin of the object o, or the center of its bounding box."
+    pos = o.origin
+    if pos is None:
+        #
+        # The object has no "origin", let's compute its bounding box.
+        #
+        box = quarkx.boundingboxof([o])
+        if box is None:
+            return None
+        pos = 0.5*(box[0]+box[1])
+    return pos
+
 
 class EntityManager:
     "Base class for entity managers."
@@ -1753,8 +1766,51 @@ class EntityManager:
         return []
 
 
+class EntityType(EntityManager):
+    "QuArK non-brush Entities"
+
+    def handles(o, editor, view=None):
+        return mdlhandles.CenterEntityHandle(o, view)
+
+    def drawback(o, editor, view, mode):
+        view.drawmap(o, mode)  # draw a dark background for "o"
+
+    def dataformname(o):
+        return o.shortname
+
+    def menubegin(o, editor):
+        import mapmenus
+        return mapmenus.EntityMenuPart([o], editor)
+
+
+class DuplicatorType(EntityType):
+    "Duplicators"
+
+    def applylinear(entity, matrix):
+        try:
+            import mdlduplicator
+            mdlduplicator.DupManager(entity).applylinear(matrix)
+        except:
+            pass
+
+    def dataformname(o):
+        import mdlduplicator
+        return mdlduplicator.DupManager(o).dataformname()
+
+    def handles(o, editor, view=None):
+        import mdlduplicator
+        return mdlduplicator.DupManager(o).handles(editor, view)
+
+
 class GroupType(EntityManager):
     "Generic Model object type."
+
+    def handles(o, editor, view=None):
+        pos = ObjectOrigin(o)
+        if pos is None:
+            return []
+        h = [mdlhandles.CenterHandle(pos, o, MapColor("Tag"))]
+        return h
 
 
 class MiscGroupType(EntityManager):
@@ -3121,6 +3177,9 @@ def PolyHandles(o, exclude):
 #
 
 Mapping = {
+    ":d":        DuplicatorType(),
+    ":e":        EntityType(),
+    ":g":        GroupType(),
     ":p":        PolyhedronType(),
     ":bbg":      BBoxGroupType(),
     ":mc":       ComponentType(),
@@ -3141,7 +3200,7 @@ Mapping = {
     ":tagframe": TagFrameType(),
     ":bone":     BoneType() }
 
-Generics = [GroupType(), MiscGroupType(), FrameGroupType()]  # AiV
+Generics = [MiscGroupType(), FrameGroupType()]  # AiV
 
 #
 # Use the function below to call a method of the Entity Manager classes.
@@ -3186,6 +3245,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.85  2011/02/11 19:52:56  cdunde
+#Added import support for Heretic II and .m8 as supported texture file type.
+#
 #Revision 1.84  2011/01/13 01:34:30  cdunde
 #To update shader files edited in shader dialog.
 #

@@ -1006,8 +1006,8 @@ class RedImageDragObject(DragObject):
 
        ### This is for the Model Editor Skin-view RedImageDragObject use only.
             try:
+                import mdlhandles
                 if self.view.info["viewname"] == "skinview":
-                    import mdlhandles
                     if isinstance(self.editor.dragobject.handle, mdlhandles.SkinHandle):
                         ### To stop the Model Editor from drawing incorrect component image in Skin-view.
                         pass
@@ -1019,6 +1019,11 @@ class RedImageDragObject(DragObject):
                                 rectanglecolor = MapColor("SkinVertexSelListColor", SS_MODEL)
                                 for r in self.redimages: # Draws selected vertex rectangles while dragging.
                                     self.view.drawmap(r, mode, rectanglecolor)
+                else:
+                    import plugins.mdlcamerapos
+                    if isinstance(self.editor.dragobject.handle, plugins.mdlcamerapos.CamPosHandle) or isinstance(self.editor.dragobject.handle, mdlhandles.CenterHandle):
+                        self.drawredimages(self.view, 1)
+                        self.drawredimages(self.view, 2)
             except:
                 pass
 
@@ -1028,8 +1033,14 @@ class RedImageDragObject(DragObject):
             if flags&MB_DRAGGING:
                 if self.view.viewmode == "tex":
                     self.redimages = ri
+                #    self.view.repaint()
+                    try:
+                        import plugins.mdlcamerapos, mdlhandles
+                        if isinstance(self.editor.dragobject.handle, plugins.mdlcamerapos.CamPosHandle) or isinstance(self.editor.dragobject.handle, mdlhandles.CenterHandle):
+                            self.drawredimages(self.view, 1)
+                    except:
+                        pass
                     self.drawredimages(self.view, 2)
-                    self.view.repaint()
                 else:
                     self.redimages = ri
                     self.drawredimages(self.view, 1)
@@ -1115,7 +1126,6 @@ class RedImageDragObject(DragObject):
                         if self.handle is not None:
                             self.redhandledata = self.handle.drawred(self.redimages, view, self.redcolor)
                     else:
-                        import mdleditor
                         if isinstance(editor, mdleditor.ModelEditor):
                             # This area draws the rectangle selector and view handles
                             #   in the Model Editor 3D and 2D view while dragging.
@@ -1135,6 +1145,12 @@ class RedImageDragObject(DragObject):
                                 try:
                                     for r in self.redimages:
                                         view.drawmap(r, mode, reccolor)
+                                except:
+                                    pass
+                                try:
+                                    import plugins.mdlcamerapos
+                                    if isinstance(self.editor.dragobject.handle, plugins.mdlcamerapos.CamPosHandle) or isinstance(self.editor.dragobject.handle, mdlhandles.CenterHandle):
+                                        return
                                 except:
                                     pass
                                 if self.handle is not None:
@@ -2249,6 +2265,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.99  2011/02/13 03:37:47  cdunde
+#Fixed all force to grid functions for model editor bones, vertexes, tags and bboxes.
+#
 #Revision 1.98  2010/12/06 05:43:06  cdunde
 #Updates for Model Editor bounding box system.
 #

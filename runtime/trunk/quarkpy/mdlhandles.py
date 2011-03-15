@@ -33,17 +33,6 @@ lastmodelfaceremovedlist = []
 SkinView1 = None  # Used to get the Skin-view at any time because
                   # it is not in the "editors.layout.views" list.
 
-#
-# Global variables that are set by the model editor.
-#
-# There are two skingrid values : they are the same, excepted when
-# there is a skingrid but disabled; in this case, the first value
-# is 0 and the second one is the disabled skingridstep - which is
-# used only if the user hold down Ctrl while dragging.
-#
-
-# skingrid = (0,0)
-
 
 def alignskintogrid(v, mode):
     #
@@ -58,19 +47,30 @@ def alignskintogrid(v, mode):
     rnd = quarkx.rnd
     return quarkx.vect(rnd(v.x/g)*g, rnd(v.y/g)*g, rnd(v.z/g)*g)
 
-# def setupskingrid(editor):
-    #
-    # Set the skingrid variable from the model editor's current skingridstep.
-    #
-#     global skingrid
-#     skingrid = (editor.skingrid, editor.skingridstep)
 
-# def clearskingrid():
-#     global skingrid
-#     skingrid = (0,0)
+def vec2rads(v):
+    "returns pitch, yaw, in radians"
+    v = v.normalized
+    pitch = -math.sin(v.z)
+    yaw = math.atan2(v.y, v.x)
+    return pitch, yaw
 
-#def newfinishdrawing(editor, view, oldfinish=mdleditor.ModelEditor.finishdrawing):
-#    oldfinish(editor, view)
+
+def GetUserCenter(obj):
+    if type(obj) is type([]):  # obj is list
+        if len(obj)==1 and obj[0]["usercenter"] is not None:
+            uc = obj[0]["usercenter"]
+        else:
+            try:
+                box=quarkx.boundingboxof(obj)
+                return (box[0]+box[1])/2
+            except:
+                return quarkx.vect(0,0,0)
+    else:
+        uc = obj["usercenter"]
+    if uc is None:
+        uc = mdlentities.ObjectOrigin(obj).tuple
+    return quarkx.vect(uc)
 
 #
 # The handle classes.
@@ -79,7 +79,20 @@ def alignskintogrid(v, mode):
 class CenterHandle(qhandles.CenterHandle):
     "Like qhandles.CenterHandle, but specifically for the Model editor."
     def menu(self, editor, view):
-        return mdlentities.CallManager("menu", self.centerof, editor) + self.OriginItems(editor, view)
+        def seePointClick(m, self=self, editor=editor):
+            for v in editor.layout.views:
+                if v.info['viewname'] == "editors3Dview":
+                    view = v
+                    break
+            pos, yaw, pitch = view.cameraposition
+            dir = (self.pos-pos).normalized
+            pitch, yaw = vec2rads(dir)
+            view.cameraposition = pos, yaw, pitch
+            editor.invalidateviews()
+
+        seeitem = qmenu.item("Look To",seePointClick,"|Aims an open 3d view at object")
+        org_menu = self.OriginItems(editor, view)
+        return [seeitem, qmenu.sep, org_menu[len(org_menu)-1]]
 
 
 
@@ -87,6 +100,22 @@ class IconHandle(qhandles.IconHandle):
     "Like qhandles.IconHandle, but specifically for the Model editor."
     def menu(self, editor, view):
         return mdlentities.CallManager("menu", self.centerof, editor) + self.OriginItems(editor, view)
+
+
+
+def CenterEntityHandle(o, view, handleclass=IconHandle, pos=None):
+    if pos is None:
+        pos = o.origin
+    if pos is not None:
+        # Build a "circle" icon handle at the object origin.
+        new = handleclass(pos, o)   # The "circle" icon would be qhandles.mapicons[10], but it looks better with the entity icon itself.
+        # Set the hint as the entity classname in blue ("?").
+        new.hint = "?" + o.shortname + "||This point represents an entity, i.e. an object that appears and interacts in the game when you play the map. The exact kind of entity depends on its 'classname' (its name).\n\nThis handle lets you move the entity with the mouse. Normally, the movement is done by steps of the size of the grid : if the entity was not aligned on the grid before the movement, it will not be after it. Hold down Ctrl to force the entity to the grid.|maped.duplicators.extruder.html"
+
+        return [new]
+    else:
+        # No "origin".
+        return []
 
 
 
@@ -3041,15 +3070,6 @@ def BuildCommonHandles(editor, explorer, option=1):
     "option=1: Clears all exising handles in the 'h' list and rebuilds it for specific handle type."
     "option=2: Does NOT clear the list but adds to it to allow a combination of view handles to use."
 
-  # For future, handles are being killed right now, if we just don't draw them then we can use this below to just send them back, much faster.
-  #  currentindex = operator.indexOf(editor.Root.currentcomponent.dictitems['Frames:fg'].subitems, editor.Root.currentcomponent.currentframe)
-  #  if currentindex == editor.bone_frame:
-  #      import qbaseeditor
-  #      from qbaseeditor import currentview
-  #      print "mdlhandles line 1927 len(currentview.handles)",len(currentview.handles)
-  #      h = currentview.handles
-  #      return h
-
     # Just in case the 'Skeleton:bg' gets deleted we need to create a new one.
     if editor.Root.dictitems.has_key("Skeleton:bg"):
         pass
@@ -3090,31 +3110,29 @@ def BuildCommonHandles(editor, explorer, option=1):
             MakeEditorFaceObject(editor)
         return bh
 
-    if len(explorer.sellist) >= 0:
-        if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] != "1" and quarkx.setupsubset(SS_MODEL, "Options")['HideBones'] is None:
+    if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] != "1" and quarkx.setupsubset(SS_MODEL, "Options")['HideBones'] is None:
 
-            bones = editor.Root.dictitems['Skeleton:bg'].findallsubitems("", ':bone') # Get all bones.
-            if len(bones) != 0:
-                # Checks if something has changed the frame selection.
-                import operator
-                try:
-                    currentindex = operator.indexOf(editor.Root.currentcomponent.dictitems['Frames:fg'].subitems, editor.Root.currentcomponent.currentframe)
-                    if currentindex != editor.bone_frame:
-                        editor.bone_frame = currentindex
-                except:
-                    pass
+        bones = editor.Root.dictitems['Skeleton:bg'].findallsubitems("", ':bone') # Get all bones.
+        if len(bones) != 0:
+            # Checks if something has changed the frame selection.
+            import operator
+            try:
+                currentindex = operator.indexOf(editor.Root.currentcomponent.dictitems['Frames:fg'].subitems, editor.Root.currentcomponent.currentframe)
+                if currentindex != editor.bone_frame:
+                    editor.bone_frame = currentindex
+            except:
+                pass
 
-            for bone in bones:
-                bh = bh + mdlentities.CallManager("handlesopt", bone, editor)
-            bh.reverse() # Stops connecting bone lines from drawing over rotation handles.
-            for item in explorer.sellist:
-                if item.type == ':p' or item.type == ':f':
-                    if item.type == ':f':
-                        item = item.parent
-                    bh = bh + mdlentities.CallManager("handles", item, editor)
-                    break
-    else:
-        return bh
+        for bone in bones:
+            bh = bh + mdlentities.CallManager("handlesopt", bone, editor)
+        bh.reverse() # Stops connecting bone lines from drawing over rotation handles.
+        for item in explorer.sellist:
+            if item.type == ':p' or item.type == ':f':
+                if item.type == ':f':
+                    item = item.parent
+                bh = bh + mdlentities.CallManager("handles", item, editor)
+                break
+
     h = bh
     if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
         #
@@ -3125,6 +3143,9 @@ def BuildCommonHandles(editor, explorer, option=1):
             list = MakeEditorFaceObject(editor)
         else:
             h = []
+            for item in explorer.sellist:
+                if item.type == ':g' or item.type == ':d':
+                    h = h + mdlentities.CallManager("handles", item, editor)
             return h
         box = quarkx.boundingboxof(list)
         if box is None:
@@ -3133,6 +3154,9 @@ def BuildCommonHandles(editor, explorer, option=1):
             h = ModelEditorLinHandlesManager(MapColor("LinearHandleCircle", SS_MODEL), box, list).BuildHandles()
     else:
         if editor.Root.currentcomponent.dictspec['show'] == "\x00": # Component is hidden.
+            for item in explorer.sellist:
+                if item.type == ':g' or item.type == ':d':
+                    h = h + mdlentities.CallManager("handles", item, editor)
             return h
         #
         # Call the Entity Manager in mdlentities.py to build the Vertex handles.
@@ -3170,7 +3194,11 @@ def BuildCommonHandles(editor, explorer, option=1):
                         h = vh + ModelEditorLinHandlesManager(MapColor("LinearHandleCircle", SS_MODEL), box, vtxlist).BuildHandles() + bh
                 except:
                     pass
-            
+
+    for item in explorer.sellist:
+        if item.type == ':g' or item.type == ':d':
+            h = h + mdlentities.CallManager("handles", item, editor)
+
     try:
         return qhandles.FilterHandles(h, SS_MODEL)
     except:
@@ -3184,13 +3212,6 @@ def BuildHandles(editor, explorer, view, option=1):
     "def buildhandles function and returns the list of handles to that function."
     "option=1: Clears all exising handles in the 'h' list and rebuilds it for specific handle type."
     "option=2: Does NOT clear the list but adds to it to allow a combination of view handles to use."
-
-  # For future, handles are being killed right now, if we just don't draw them then we can use this below to just send them back, much faster.
-  #  currentindex = operator.indexOf(editor.Root.currentcomponent.dictitems['Frames:fg'].subitems, editor.Root.currentcomponent.currentframe)
-  #  if currentindex == editor.bone_frame:
-  #      print "mdlhandles line 1888 len(currentview.handles)",len(currentview.handles)
-  #      h = view.handles
-  #      return h
 
     #
     # The 3D view "eyes".
@@ -3248,9 +3269,12 @@ def BuildHandles(editor, explorer, view, option=1):
         view.handles = []
         if len(editor.ModelFaceSelList) != 0:
             MakeEditorFaceObject(editor)
+        for item in explorer.sellist:
+            if item.type == ':g' or item.type == ':d':
+                bh = bh + mdlentities.CallManager("handles", item, editor, view)
         return bh
 
-    if len(explorer.sellist) >= 0 and quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] != "1":
+    if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] != "1":
         if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] != "1" and quarkx.setupsubset(SS_MODEL, "Options")['HideBones'] is None:
 
             bones = editor.Root.dictitems['Skeleton:bg'].findallsubitems("", ':bone') # Get all bones.
@@ -3285,6 +3309,9 @@ def BuildHandles(editor, explorer, view, option=1):
             h = []
             if quarkx.setupsubset(SS_MODEL, "Options")['EditorTrue3Dmode'] is not None:
                 h = h + eye_handles
+            for item in explorer.sellist:
+                if item.type == ':g' or item.type == ':d':
+                    h = h + mdlentities.CallManager("handles", item, editor, view)
             return h
         box = quarkx.boundingboxof(list)
         if box is None:
@@ -3295,6 +3322,9 @@ def BuildHandles(editor, explorer, view, option=1):
         if editor.Root.currentcomponent.dictspec['show'] == "\x00": # Component is hidden.
             if quarkx.setupsubset(SS_MODEL, "Options")['EditorTrue3Dmode'] is not None:
                 h = h + eye_handles
+            for item in explorer.sellist:
+                if item.type == ':g' or item.type == ':d':
+                    h = h + mdlentities.CallManager("handles", item, editor, view)
             return h
         #
         # Call the Entity Manager in mdlentities.py to build the Vertex handles.
@@ -3332,10 +3362,17 @@ def BuildHandles(editor, explorer, view, option=1):
                         h = vh + ModelEditorLinHandlesManager(MapColor("LinearHandleCircle", SS_MODEL), box, vtxlist, view).BuildHandles() + bh
                 except:
                     pass
-
     try:
         if quarkx.setupsubset(SS_MODEL, "Options")['EditorTrue3Dmode'] is not None:
             h = h + eye_handles
+    except:
+        pass
+
+    for item in explorer.sellist:
+        if item.type == ':g' or item.type == ':d':
+            h = h + mdlentities.CallManager("handles", item, editor, view)
+
+    try:
         return qhandles.FilterHandles(h, SS_MODEL)
     except:
         pass
@@ -6520,6 +6557,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.226  2011/02/28 00:33:51  cdunde
+#Fixed face outlines not drawing, when they should, after rectangle selection.
+#
 #Revision 1.225  2011/02/21 20:17:26  cdunde
 #Fixed error when faces are deleted.
 #

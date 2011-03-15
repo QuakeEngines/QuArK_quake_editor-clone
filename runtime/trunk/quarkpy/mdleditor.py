@@ -749,52 +749,38 @@ class ModelEditor(BaseEditor):
             quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] = "1"
             setup = quarkx.setupsubset(self.MODE, "Building")
             self.linearbox = True
-            if len(self.ModelFaceSelList) or len(self.ModelVertexSelList):
-                newhandles = mdlhandles.BuildHandles(self, self.layout.explorer, editorview)
-                for view in self.layout.views:
-                    if view.info["viewname"] == "skinview":
-                        continue
-                    elif view.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] == "1":
-                        view.handles = []
-                    elif view.info["viewname"] == "XY" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles2"] == "1":
-                        view.handles = []
-                    elif view.info["viewname"] == "YZ" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles3"] == "1":
-                        view.handles = []
-                    elif view.info["viewname"] == "XZ" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles4"] == "1":
-                        view.handles = []
-                    elif view.info["viewname"] == "3Dwindow" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] == "1":
-                        view.handles = []
-                    else:
-                        view.handles = newhandles
+            newhandles = mdlhandles.BuildHandles(self, self.layout.explorer, editorview)
+            for view in self.layout.views:
+                if view.info["viewname"] == "skinview":
+                    continue
+                elif view.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] == "1":
+                    view.handles = []
+                elif view.info["viewname"] == "XY" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles2"] == "1":
+                    view.handles = []
+                elif view.info["viewname"] == "YZ" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles3"] == "1":
+                    view.handles = []
+                elif view.info["viewname"] == "XZ" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles4"] == "1":
+                    view.handles = []
+                elif view.info["viewname"] == "3Dwindow" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] == "1":
+                    view.handles = []
+                else:
+                    view.handles = newhandles
 
-                    setsingleframefillcolor(self, view)
-                    view.repaint()
-                    plugins.mdlgridscale.gridfinishdrawing(self, view)
-                    plugins.mdlaxisicons.newfinishdrawing(self, view)
-                    if view.handles == []:
-                        pass
-                    else:
-                        cv = view.canvas()
-                        for h in view.handles:
-                            h.draw(view, cv, h)
-                    if quarkx.setupsubset(SS_MODEL, "Options")["MAIV"] == "1":
-                        modelaxis(view)
-            else:
-                for view in self.layout.views:
-                    if view.info["viewname"] == "skinview":
-                        continue
-                    else:
-                        view.handles = []
-                        setsingleframefillcolor(self, view)
-                        view.repaint()
-                        plugins.mdlgridscale.gridfinishdrawing(self, view)
-                        plugins.mdlaxisicons.newfinishdrawing(self, view)
-                        if quarkx.setupsubset(SS_MODEL, "Options")["MAIV"] == "1":
-                            modelaxis(view)
+                setsingleframefillcolor(self, view)
+                view.repaint()
+                plugins.mdlgridscale.gridfinishdrawing(self, view)
+                plugins.mdlaxisicons.newfinishdrawing(self, view)
+                if view.handles == []:
+                    pass
+                else:
+                    cv = view.canvas()
+                    for h in view.handles:
+                        h.draw(view, cv, h)
+                if quarkx.setupsubset(SS_MODEL, "Options")["MAIV"] == "1":
+                    modelaxis(view)
         else: # Turns Linear Handles mode off.
             quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] = "0"
-            if len(self.layout.explorer.sellist) >= 1:
-                newhandles = mdlhandles.BuildHandles(self, self.layout.explorer, editorview)
+            newhandles = mdlhandles.BuildHandles(self, self.layout.explorer, editorview)
             for view in self.layout.views:
                 if view.info["viewname"] == "skinview":
                     continue
@@ -1873,6 +1859,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.162  2011/03/13 00:41:47  cdunde
+#Updating fixed for the Model Editor of the Texture Browser's Used Textures folder.
+#
 #Revision 1.161  2011/03/04 06:50:28  cdunde
 #Added new face cutting tool, for selected faces, like in the map editor with option to allow vertex separation.
 #

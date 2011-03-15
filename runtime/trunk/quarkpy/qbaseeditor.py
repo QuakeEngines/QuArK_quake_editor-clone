@@ -923,6 +923,7 @@ class BaseEditor:
         import mdlhandles                          ### Used for the Model Editor only.
         import mdlmgr                              ### Used for the Model Editor only.
         import mdlentities                         ### Used for the Model Editor only.
+        import plugins.mdlcamerapos                ### Used for the Model Editor only.
 
         ### This section just for Model Editor face selection and editor views drawing manipulation
         ### and to free up L & RMB combo dragging for Model Editor Face selection use.
@@ -1322,7 +1323,8 @@ class BaseEditor:
                 try:
                     if flagsmouse != 1048 and quarkx.setupsubset(SS_MODEL, "Options")["EditorTrue3Dmode"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")["Full3DTrue3Dmode"] == "1":
                         if view.info["viewname"] == "editors3Dview" or view.info["viewname"] == "3Dwindow":
-                            view.repaint()
+                            if not isinstance(self.dragobject.handle, plugins.mdlcamerapos.CamPosHandle) and not isinstance(self.dragobject.handle, mdlhandles.CenterHandle):
+                                view.repaint()
                             if isinstance(self.dragobject.handle, mdlhandles.LinRedHandle):
                                 self.dragobject.handle.drawred(None, view, mdlhandles.drag3Dlines)
                             elif isinstance(self.dragobject.handle, mdlhandles.VertexHandle):
@@ -1800,6 +1802,9 @@ class NeedViewError(Exception):
 #
 #
 #$Log$
+#Revision 1.150  2010/12/07 22:11:34  cdunde
+#Model Editor selection update.
+#
 #Revision 1.149  2010/12/07 11:17:15  cdunde
 #More updates for Model Editor bounding box system.
 #

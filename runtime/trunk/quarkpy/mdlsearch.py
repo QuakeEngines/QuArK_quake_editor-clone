@@ -22,10 +22,12 @@ import dlgclasses
 import mdleditor
 import mdlentities
 import mdlhandles
+import plugins.mdlcamerapos
 
 # Globals
 SS_MODEL = 3
 CompList = ""
+sel = None
 
 
 def defCompList():
@@ -492,7 +494,7 @@ class SearchDlg(qmacro.dialogbox):
 #
 # Search by Classname.
 #
-class SearchByName(SearchDlg):
+class SearchByType(SearchDlg):
 
     dlgflags = FWF_KEEPFOCUS
     size = (390, 194)
@@ -584,10 +586,52 @@ def CheckMap(menu=None):
         progr.close()
     return noproblem(menu)
 
+def getNext(obj):
+    parent = obj.treeparent
+    if parent is None:
+        return
+    next = obj.nextingroup()
+    if next is None:
+        next = parent.subitems[0]
+    return next
+    
+def getPrevious(obj):
+    parent = obj.treeparent
+    if parent is None: return
+    index = parent.subitems.index(obj)
+    if index>0:
+        prev = parent.subitem(index-1)
+    else:
+        prev = parent.subitem(len(parent.subitems)-1)
+    return prev
+    
+def nextClick(m, editor=None):
+    global sel
+    if editor is None:
+        editor = mapeditor()
+    if sel is None:
+        campos = editor.Root.findallsubitems("", ':d')
+        if len(campos) == 0:
+            return
+        sel = campos[0]
+    successor = m.succ(sel)
+    if successor is None:
+        return
+
+    while successor.type != sel.type:
+        successor = m.succ(successor)
+    plugins.mdlcamerapos.setView(successor, editor)
+    sel = successor
 
 #
 # Global variables to update from plug-ins.
 #
+nextItem = qmenu.item("Select &Next", nextClick, "|Select Next:\n\nThis selects and sets the next camera view in the group.\n\nCycling - Depress (default) 'PageUP' to switch to the next view.|intro.mapeditor.menu.html#selectionmenu")
+
+prevItem = qmenu.item("Select Pre&vious", nextClick, "|Select Previous:\n\nSelects and sets the previous camera view in the group.\n\nCycling - Depress (default) 'PageDown' to switch to the previous.|intro.mapeditor.menu.html#selectionmenu")
+nextItem.succ = getNext
+prevItem.succ = getPrevious
+
 items = []
 checkitems = []
 shortcuts = {}
@@ -611,7 +655,7 @@ def onclick(menu):
         except:
             pass
 
-def SearchMenu():
+def SearchMenu(nextItem=nextItem, prevItem=prevItem):
     "The Search menu, with its shortcuts."
     if len(checkitems)>1:
         allchecks = [qmenu.item("&ALL CHECKS", CheckMap, "perform all map checks")]
@@ -622,14 +666,23 @@ def SearchMenu():
     findface = qmenu.item('Find &Faces', find_faces_click, "|Find Faces:\n\nThis function selects the faces entered\nfor the component currently selected\nor selected from the drop down box.\nPlace a comma between each face entered to find more then one.", "intro.mapeditor.menu.html#searchmenu")
     findskinvertex = qmenu.item('Find &Skin Vertices', find_skin_vertices_click, "|Find Skin Vertices:\n\nThis function selects the Skin-view vertexes entered\nfor the component currently selected\nor selected from the drop down box.\nPlace a comma between each face entered to find more then one.", "intro.mapeditor.menu.html#searchmenu")
     findskinface = qmenu.item('Find S&kin Faces', find_skin_faces_click, "|Find Skin Faces:\n\nThis function selects the Skin-view face vertexes for\nthe faces entered of the component currently selected\nor selected from the drop down box.\nPlace a comma between each face entered to find more then one.", "intro.mapeditor.menu.html#searchmenu")
-    ByName = qmenu.item("Find &Objects", SearchByName, "|Find Objects:\n\nThis function will search for objects by their 'type'\n(the type of model object it represents, a bone, skin, frame...).", "intro.mapeditor.menu.html#searchmenu")
-    
-    it1 = items + [findvertex, findface, qmenu.sep, findskinvertex, findskinface, qmenu.sep, ByName] + checkitems + allchecks
+    ObjByType = qmenu.item("Find &Objects", SearchByType, "|Find Objects:\n\nThis function will search for objects by their 'type'\n(the type of model object it represents, a bone, skin, frame...).", "intro.mapeditor.menu.html#searchmenu")
+    findcamerapos = qmenu.item('Find Camera Positions', plugins.mdlcamerapos.findClick, "|Find Camera Positions:\n\nThis finds all the camera positions.|intro.mapeditor.menu.html#searchmenu")
+
+    it1 = items + [findvertex, findface, qmenu.sep, findskinvertex, findskinface, qmenu.sep, ObjByType, qmenu.sep, findcamerapos, nextItem, prevItem] + checkitems + allchecks
+
     return qmenu.popup("&Search", it1, onclick), shortcuts
+
+MapHotKeyList("Select Next", nextItem, shortcuts)
+MapHotKeyList("Select Previous", prevItem, shortcuts)
 
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.3  2009/07/14 00:27:33  cdunde
+#Completely revamped Model Editor vertex Linear draglines system,
+#increasing its reaction and drawing time to twenty times faster.
+#
 #Revision 1.2  2009/06/22 22:14:06  cdunde
 #Search functions update.
 #
