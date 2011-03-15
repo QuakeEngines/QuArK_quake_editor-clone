@@ -5228,14 +5228,22 @@ class BoneHandle(qhandles.GenericHandle):
                     editor.ModelComponentList['bonelist'][bone.name]['frames'][framename]['rotmatrix'] = bone.rotmatrix.tuple
         editor.ok(undo, undomsg)
 
-def DrawBoneHandle(p, cv, color, scale, handle_scale):
+def DrawBoneHandle(p, cv, color, scale, handle_scale, view=None):
+    if view is not None:
+        if (view.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MODEL, "Options")['EditorTrue3Dmode'] == "1") or (view.info["viewname"] == "3Dwindow" and view.info['type'] == "3D" and quarkx.setupsubset(SS_MODEL, "Options")['Full3DTrue3Dmode'] == "1"):
+            # Correct scale for true 3D view, as scale is always 1.0 in those views
+            scale = 10.0
     bonehalfsize = 1.0*scale*handle_scale
     cv.pencolor = color
     cv.ellipse(int(p.x-bonehalfsize), int(p.y-bonehalfsize), int(p.x+bonehalfsize), int(p.y+bonehalfsize))
     cv.line(int(p.x-bonehalfsize), int(p.y), int(p.x+bonehalfsize), int(p.y))
     cv.line(int(p.x), int(p.y-bonehalfsize), int(p.x), int(p.y+bonehalfsize))
 
-def DrawBoneLine(p, p2, cv, color, scale, handle_scale):
+def DrawBoneLine(p, p2, cv, color, scale, handle_scale, view=None):
+    if view is not None:
+        if (view.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MODEL, "Options")['EditorTrue3Dmode'] == "1") or (view.info["viewname"] == "3Dwindow" and view.info['type'] == "3D" and quarkx.setupsubset(SS_MODEL, "Options")['Full3DTrue3Dmode'] == "1"):
+            # Correct scale for true 3D view, as scale is always 1.0 in those views
+            scale = 10.0
     bonehalfsize = 1.0*scale*handle_scale
     cv.pencolor = color
     cv.line(int(p2.x), int(p2.y-bonehalfsize), int(p.x), int(p.y))
@@ -5942,8 +5950,8 @@ class BoneCenterHandle(BoneHandle):
                 parentbone = findbone(self.mgr.editor, self.bone.dictspec['parent_name'])
                 parent_handle_scale = parentbone['scale'][0]
                 p2 = view.proj(parentbone.position)
-                DrawBoneLine(p, p2, cv, line_color, scale, parent_handle_scale)
-            DrawBoneHandle(p, cv, handle_color, scale, handle_scale)
+                DrawBoneLine(p, p2, cv, line_color, scale, parent_handle_scale, view)
+            DrawBoneHandle(p, cv, handle_color, scale, handle_scale, view)
 
     def drawred(self, redimages, view, redcolor): # for BoneCenterHandle
         view.repaint()
@@ -5968,7 +5976,7 @@ class BoneCenterHandle(BoneHandle):
                     parent_handle_scale = parentbone['scale'][0]
                     p2 = view.proj(parentbone.position)
                     line_color = MapColor("BoneLines", SS_MODEL)
-                    DrawBoneLine(p, p2, cv, line_color, scale, parent_handle_scale)
+                    DrawBoneLine(p, p2, cv, line_color, scale, parent_handle_scale, view)
                 handle_scale = bone.dictspec['scale'][0]
                 handle_color = bone.dictspec['_color']
                 quarkx.setupsubset(SS_MODEL, "Colors")["handle_color"] = handle_color
@@ -5990,7 +5998,7 @@ class BoneCenterHandle(BoneHandle):
                         line_color = handle_color
                     else:
                         line_color = MapColor("BoneHandles", SS_MODEL)
-                    DrawBoneLine(p, p2, cv, line_color, scale, parent_handle_scale)
+                    DrawBoneLine(p, p2, cv, line_color, scale, parent_handle_scale, view)
                     
         for obj in redimages:
             if obj.type != ":bone":
@@ -6032,9 +6040,9 @@ class BoneCenterHandle(BoneHandle):
                             pass
                         else:
                             line_color = MapColor("BoneHandles", SS_MODEL)
-                    DrawBoneLine(p, p2, cv, line_color, scale, parent_handle_scale)
+                    DrawBoneLine(p, p2, cv, line_color, scale, parent_handle_scale, view)
                 handle_scale = obj.dictspec['scale'][0]
-                DrawBoneHandle(p, cv, handle_color, scale, handle_scale)
+                DrawBoneHandle(p, cv, handle_color, scale, handle_scale, view)
 
     def drag(self, v1, v2, flags, view, undo=None): # for BoneCenterHandle
         delta = v2-v1
@@ -6557,6 +6565,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.227  2011/03/15 08:25:46  cdunde
+#Added cameraview saving duplicators and search systems, like in the Map Editor, to the Model Editor.
+#
 #Revision 1.226  2011/02/28 00:33:51  cdunde
 #Fixed face outlines not drawing, when they should, after rectangle selection.
 #
