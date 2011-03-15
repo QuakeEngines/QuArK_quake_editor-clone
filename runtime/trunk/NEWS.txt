@@ -14,6 +14,8 @@ $Id$
 
 6.6.0 Beta 4
 ============
+* [cdunde]: Added cameraview saving duplicators and search systems, like in the Map Editor, to the Model Editor.
+
 * [cdunde/DanielPharos]: Updating fixed for the Model Editor of the Texture Browser's Used Textures folder.
 
 * [cdunde]: Updating of Used Textures in the Model Editor Texture Browser for all imported skin textures
