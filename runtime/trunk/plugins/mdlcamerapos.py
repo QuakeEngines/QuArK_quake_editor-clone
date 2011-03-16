@@ -276,10 +276,8 @@ def addPosition(view3D, editor): # this stays - cdunde, change for reg mode
 #  EyePosition handle defined in qhandles.py.
 #
 def newEyePosMenu(self, editor, view): # this stays - cdunde
-    print "mdlcamerapos line 283 ", self, editor, view.info['viewname']
     
     def addClick(m,self=self,editor=editor):
-        print "mdlcamerapos line 286 ", self, editor, self.view3D
         addPosition(self.view3D,editor)
         
     item = qmenu.item('Add position',addClick)
@@ -461,4 +459,7 @@ mapselection.prevItem.onclick = camnextClick
 
 
 # $Log$
+# Revision 1.1  2011/03/15 08:25:46  cdunde
+# Added cameraview saving duplicators and search systems, like in the Map Editor, to the Model Editor.
+#
 #

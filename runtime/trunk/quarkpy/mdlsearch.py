@@ -588,7 +588,7 @@ def CheckMap(menu=None):
 
 def getNext(obj):
     parent = obj.treeparent
-    if parent is None:
+    if parent is None or len(parent.subitems) == 0:
         return
     next = obj.nextingroup()
     if next is None:
@@ -597,7 +597,8 @@ def getNext(obj):
     
 def getPrevious(obj):
     parent = obj.treeparent
-    if parent is None: return
+    if parent is None or len(parent.subitems) == 0:
+        return
     index = parent.subitems.index(obj)
     if index>0:
         prev = parent.subitem(index-1)
@@ -673,12 +674,52 @@ def SearchMenu(nextItem=nextItem, prevItem=prevItem):
 
     return qmenu.popup("&Search", it1, onclick), shortcuts
 
+def editor3D_HotKeyViewShot(m):
+    editor = mapeditor()
+    if editor is None:
+        return
+    for v in editor.layout.views:
+        if v.info['viewname'] == "editors3Dview":
+            view3D = v
+            break
+    pozzies=None
+    if pozzies is None:
+        pozzies = editor.Root.findname("Editor True 3D Camera Positions:g")
+    undo=quarkx.action()
+    if pozzies is None:
+        pozzies = quarkx.newobj("Editor True 3D Camera Positions:g")
+        undo.put(editor.Root,pozzies, editor.Root.subitems[0])
+    #
+    # NB: elsewhere in the code, 'yaw' tends to
+    # be misnamed as 'roll'
+    #
+    #  pitch = up/down angle (relative to x axis)
+    #  yaw = left/right angle (relative to x axis)
+    #  roll = turn around long axis (relative to y)
+    #
+    pos, yaw, pitch = view3D.cameraposition
+    camdup = quarkx.newobj("Camera Position" + str(len(pozzies.subitems)+1) +":d")
+    camdup["macro"] = "cameraposition"
+    undo.put(pozzies, camdup)
+    undo.setspec(camdup,"origin",str(pos))
+    undo.setspec(camdup,"yaw",(yaw,))
+    undo.setspec(camdup,"pitch",(pitch,))
+    editor.ok(undo,'add camera position')
+
+Editor3Dshot = qmenu.item("Editor 3D shot", editor3D_HotKeyViewShot)
+
+MapHotKeyList("Editor3Dshot", Editor3Dshot, shortcuts)
+# MapHotKeyList("Float3Dshot", prevItem, shortcuts)
+
 MapHotKeyList("Select Next", nextItem, shortcuts)
 MapHotKeyList("Select Previous", prevItem, shortcuts)
 
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.4  2011/03/15 08:25:46  cdunde
+#Added cameraview saving duplicators and search systems, like in the Map Editor, to the Model Editor.
+#
 #Revision 1.3  2009/07/14 00:27:33  cdunde
 #Completely revamped Model Editor vertex Linear draglines system,
 #increasing its reaction and drawing time to twenty times faster.

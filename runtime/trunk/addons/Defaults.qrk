@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.525  2011/01/04 11:10:20  cdunde
+//Added .vtf as supported texture file type for game HalfLife2.
+//
 //Revision 1.524  2010/11/24 15:00:17  cdunde
 //Added Model Editor option, Draw Bounding Boxes.
 //
@@ -2006,6 +2009,8 @@ QQRKSRC1
         Make Detail = "Alt+D"
         AxisXYZ = "Alt+A"
         Rebuild3D = "Tab"
+        Editor3Dshot = "F5"
+        Float3Dshot = "F6"
         Game Menu = "These are set in Game Menu|Customize"
         Form = "MapHotKeys"
       }
@@ -9340,6 +9345,8 @@ QQRKSRC1
        Make Detail: = {HotKeyForm = !}
        AxisXYZ: = {HotKeyForm = !}
        Rebuild3D: = {HotKeyForm = !}
+       Editor3Dshot: = {HotKeyForm = !}
+       Float3Dshot: = {HotKeyForm = !}
        sep:={Typ="S" Txt = ""}
        Game Menu:= {Txt="&R" Typ="ESR"}
     }
