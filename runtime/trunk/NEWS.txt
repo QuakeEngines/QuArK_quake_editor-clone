@@ -15,6 +15,7 @@ $Id$
 6.6.0 Beta 4
 ============
 * [cdunde]: Added cameraview saving duplicators and search systems, like in the Map Editor, to the Model Editor.
+          - Also added a Hotkey F5 function for making those duplicators by simply pressing that key.
 
 * [cdunde/DanielPharos]: Updating fixed for the Model Editor of the Texture Browser's Used Textures folder.
 
