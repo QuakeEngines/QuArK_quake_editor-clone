@@ -1772,9 +1772,6 @@ class EntityType(EntityManager):
     def handles(o, editor, view=None):
         return mdlhandles.CenterEntityHandle(o, view)
 
-    def drawback(o, editor, view, mode):
-        view.drawmap(o, mode)  # draw a dark background for "o"
-
     def dataformname(o):
         return o.shortname
 
@@ -3245,6 +3242,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.86  2011/03/15 08:25:46  cdunde
+#Added cameraview saving duplicators and search systems, like in the Map Editor, to the Model Editor.
+#
 #Revision 1.85  2011/02/11 19:52:56  cdunde
 #Added import support for Heretic II and .m8 as supported texture file type.
 #
