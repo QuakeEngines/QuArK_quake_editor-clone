@@ -1766,21 +1766,7 @@ class EntityManager:
         return []
 
 
-class EntityType(EntityManager):
-    "QuArK non-brush Entities"
-
-    def handles(o, editor, view=None):
-        return mdlhandles.CenterEntityHandle(o, view)
-
-    def dataformname(o):
-        return o.shortname
-
-    def menubegin(o, editor):
-        import mapmenus
-        return mapmenus.EntityMenuPart([o], editor)
-
-
-class DuplicatorType(EntityType):
+class DuplicatorType(EntityManager):
     "Duplicators"
 
     def applylinear(entity, matrix):
@@ -3175,7 +3161,6 @@ def PolyHandles(o, exclude):
 
 Mapping = {
     ":d":        DuplicatorType(),
-    ":e":        EntityType(),
     ":g":        GroupType(),
     ":p":        PolyhedronType(),
     ":bbg":      BBoxGroupType(),
@@ -3242,6 +3227,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.87  2011/03/17 18:11:38  cdunde
+#Removed code that messed all the 2D views drawing up.
+#
 #Revision 1.86  2011/03/15 08:25:46  cdunde
 #Added cameraview saving duplicators and search systems, like in the Map Editor, to the Model Editor.
 #

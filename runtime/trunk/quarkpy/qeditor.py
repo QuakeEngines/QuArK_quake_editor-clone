@@ -188,13 +188,6 @@ Z_axis = quarkx.vect(0,0,1)
 #
 # Standard Matrix computation
 #
-def matrix_rot_z(rad):
-    sin, cos = math.sin(rad), math.cos(rad)
-    return quarkx.matrix(
-       (cos, -sin, 0),
-       (sin,  cos, 0),
-       ( 0 ,   0,  1))
-
 def matrix_rot_x(rad):
     sin, cos = math.sin(rad), math.cos(rad)
     return quarkx.matrix(
@@ -208,6 +201,13 @@ def matrix_rot_y(rad):
        (cos, 0, -sin),
        (0,   1,   0 ),
        (sin, 0,  cos))
+
+def matrix_rot_z(rad):
+    sin, cos = math.sin(rad), math.cos(rad)
+    return quarkx.matrix(
+       (cos, -sin, 0),
+       (sin,  cos, 0),
+       ( 0 ,   0,  1))
 
 def matrix_sym(coord):    # coord = 'x', 'y' or 'z'
     return quarkx.matrix(
@@ -277,6 +277,7 @@ def defsetprojmode(view):
         #matrix = matrix_rot_x(view.info["vangle"]) * viewtype[view.info["type"]](view.info["scale"]) * matrix_rot_z(view.info["angle"])
         matrix = viewtype[view.info["type"]](view.info["scale"]) * matrix_rot_x(view.info["vangle"]) * matrix_rot_z(view.info["angle"])
         view.setprojmode("2D", matrix)
+        return matrix
 
 
 def setviews(list, attr, value):
@@ -1570,6 +1571,9 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.62  2010/12/06 05:43:06  cdunde
+#Updates for Model Editor bounding box system.
+#
 #Revision 1.61  2010/10/20 20:17:54  cdunde
 #Added bounding boxes (hit boxes) and bone controls support used by Half-Life, maybe others.
 #

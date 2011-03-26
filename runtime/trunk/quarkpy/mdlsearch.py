@@ -27,7 +27,7 @@ import plugins.mdlcamerapos
 # Globals
 SS_MODEL = 3
 CompList = ""
-sel = None
+camsel = None
 
 
 def defCompList():
@@ -586,57 +586,6 @@ def CheckMap(menu=None):
         progr.close()
     return noproblem(menu)
 
-def getNext(obj):
-    parent = obj.treeparent
-    if parent is None or len(parent.subitems) == 0:
-        return
-    next = obj.nextingroup()
-    if next is None:
-        next = parent.subitems[0]
-    return next
-    
-def getPrevious(obj):
-    parent = obj.treeparent
-    if parent is None or len(parent.subitems) == 0:
-        return
-    index = parent.subitems.index(obj)
-    if index>0:
-        prev = parent.subitem(index-1)
-    else:
-        prev = parent.subitem(len(parent.subitems)-1)
-    return prev
-    
-def nextClick(m, editor=None):
-    global sel
-    if editor is None:
-        editor = mapeditor()
-    if sel is None:
-        campos = editor.Root.findallsubitems("", ':d')
-        if len(campos) == 0:
-            return
-        sel = campos[0]
-    successor = m.succ(sel)
-    if successor is None:
-        return
-
-    while successor.type != sel.type:
-        successor = m.succ(successor)
-    plugins.mdlcamerapos.setView(successor, editor)
-    sel = successor
-
-#
-# Global variables to update from plug-ins.
-#
-nextItem = qmenu.item("Select &Next", nextClick, "|Select Next:\n\nThis selects and sets the next camera view in the group.\n\nCycling - Depress (default) 'PageUP' to switch to the next view.|intro.mapeditor.menu.html#selectionmenu")
-
-prevItem = qmenu.item("Select Pre&vious", nextClick, "|Select Previous:\n\nSelects and sets the previous camera view in the group.\n\nCycling - Depress (default) 'PageDown' to switch to the previous.|intro.mapeditor.menu.html#selectionmenu")
-nextItem.succ = getNext
-prevItem.succ = getPrevious
-
-items = []
-checkitems = []
-shortcuts = {}
-
 def onclick(menu):
     findvertex = menu.items[0]
     findvertex.state = qmenu.disabled
@@ -656,7 +605,264 @@ def onclick(menu):
         except:
             pass
 
-def SearchMenu(nextItem=nextItem, prevItem=prevItem):
+def EditorGetNext(obj):
+    parent = obj.treeparent
+    if parent is None or len(parent.subitems) == 0:
+        return
+    next = obj.nextingroup()
+    if next is None:
+        next = parent.subitems[0]
+    return next
+    
+def EditorGetPrevious(obj):
+    parent = obj.treeparent
+    if parent is None or len(parent.subitems) == 0:
+        return
+    index = parent.subitems.index(obj)
+    if index>0:
+        prev = parent.subitem(index-1)
+    else:
+        prev = parent.subitem(len(parent.subitems)-1)
+    return prev
+    
+def EditorNextClick(m, editor=None):
+    global camsel
+    if editor is None:
+        editor = mapeditor()
+    if camsel is not None:
+        if camsel.parent.name.startswith("Full3D"):
+            camsel = None
+        elif quarkx.setupsubset(SS_MODEL, "Options")["EditorTrue3Dmode"] == "1" and camsel.parent.name.startswith("Editor Std 3D"):
+            camsel = None
+        elif quarkx.setupsubset(SS_MODEL, "Options")["EditorTrue3Dmode"] != "1" and camsel.parent.name.startswith("Editor True 3D"):
+            camsel = None
+    if camsel is None:
+        if quarkx.setupsubset(SS_MODEL, "Options")["EditorTrue3Dmode"] == "1" and editor.Root.dictitems.has_key("Editor True 3D Camera Positions:g"):
+            campos = editor.Root.dictitems["Editor True 3D Camera Positions:g"].findallsubitems("", ':d')
+        elif editor.Root.dictitems.has_key("Editor Std 3D Camera Positions:g"):
+            campos = editor.Root.dictitems["Editor Std 3D Camera Positions:g"].findallsubitems("", ':d')
+        try:
+            if len(campos) == 0:
+                return
+        except:
+            return
+        camsel = campos[0]
+    successor = m.succ(camsel)
+    if successor is None:
+        return
+
+    while successor.type != camsel.type:
+        successor = m.succ(successor)
+    plugins.mdlcamerapos.setView(successor, editor)
+    camsel = successor
+
+def Editor3DViewShot(m):
+    editor = mapeditor()
+    if editor is None:
+        return
+    # Gets the correct view to use.
+    for v in editor.layout.views:
+        if v.info['viewname'] == "editors3Dview":
+            view3D = v
+            break
+    # Gets where to put things.
+    pozzies = None
+    hasfolder = None
+    if quarkx.setupsubset(SS_MODEL, "Options")["EditorTrue3Dmode"] == "1":
+        pozzies = editor.Root.findname("Editor True 3D Camera Positions:g")
+        hasfolder = editor.Root.findname("Editor Std 3D Camera Positions:g")
+        if hasfolder is None:
+            hasfolder = editor.Root.subitems[0]
+        else:
+            hasfolder = editor.Root.subitems[1]
+    else:
+        pozzies = editor.Root.findname("Editor Std 3D Camera Positions:g")
+        hasfolder = editor.Root.subitems[0]
+
+    undo=quarkx.action()
+    if pozzies is None:
+        if quarkx.setupsubset(SS_MODEL, "Options")["EditorTrue3Dmode"] == "1":
+            pozzies = quarkx.newobj("Editor True 3D Camera Positions:g")
+        else:
+            pozzies = quarkx.newobj("Editor Std 3D Camera Positions:g")
+
+        undo.put(editor.Root,pozzies, hasfolder)
+    #
+    # NB: elsewhere in the code, 'yaw' tends to
+    # be misnamed as 'roll'
+    #
+    #  pitch = up/down angle (relative to x axis)
+    #  yaw = left/right angle (relative to x axis)
+    #  roll = turn around long axis (relative to y)
+    #
+    # For True 3D view shots.
+    if quarkx.setupsubset(SS_MODEL, "Options")["EditorTrue3Dmode"] == "1":
+        pos, yaw, pitch = view3D.cameraposition
+        camdup = quarkx.newobj("Editor True 3D Camera Position" + str(len(pozzies.subitems)+1) +":d")
+        camdup["macro"] = "cameraposition"
+        undo.put(pozzies, camdup)
+        undo.setspec(camdup,"origin",str(pos))
+        undo.setspec(camdup,"yaw",(yaw,))
+        undo.setspec(camdup,"pitch",(pitch,))
+    else: # For standard 3D view shots.
+        info = view3D.info
+        camdup = quarkx.newobj("Editor Std 3D Camera Position" + str(len(pozzies.subitems)+1) +":d")
+        camdup["macro"] = "cameraposition"
+        undo.put(pozzies, camdup)
+        import qeditor
+        matrix = qeditor.defsetprojmode(view3D)
+        undo.setspec(camdup,"matrix",str(matrix,))
+        undo.setspec(camdup,"screencenter",str(view3D.screencenter))
+        undo.setspec(camdup,"scale",(info['scale'],))
+        undo.setspec(camdup,"angle",(info['angle'],))
+        undo.setspec(camdup,"center",str(info['center'],))
+        undo.setspec(camdup,"vangle",(info['vangle'],))
+        undo.setspec(camdup,"sfx",(info['sfx'],))
+        undo.setspec(camdup,"hscrollbar",(view3D.scrollbars[0]))
+        undo.setspec(camdup,"vscrollbar",(view3D.scrollbars[1]))
+    editor.ok(undo,'added camera position')
+
+def WindowGetNext(obj):
+    parent = obj.treeparent
+    if parent is None or len(parent.subitems) == 0:
+        return
+    next = obj.nextingroup()
+    if next is None:
+        next = parent.subitems[0]
+    return next
+    
+def WindowGetPrevious(obj):
+    parent = obj.treeparent
+    if parent is None or len(parent.subitems) == 0:
+        return
+    index = parent.subitems.index(obj)
+    if index>0:
+        prev = parent.subitem(index-1)
+    else:
+        prev = parent.subitem(len(parent.subitems)-1)
+    return prev
+    
+def WindowNextClick(m, editor=None):
+    global camsel
+    if editor is None:
+        editor = mapeditor()
+    if camsel is not None:
+        if camsel.parent.name.startswith("Editor"):
+            camsel = None
+        elif quarkx.setupsubset(SS_MODEL, "Options")["Full3DTrue3Dmode"] == "1" and camsel.parent.name.startswith("Full3D Standard"):
+            camsel = None
+        elif quarkx.setupsubset(SS_MODEL, "Options")["Full3DTrue3Dmode"] != "1" and camsel.parent.name.startswith("Full3D True 3D"):
+            camsel = None
+    if camsel is None:
+        if quarkx.setupsubset(SS_MODEL, "Options")["Full3DTrue3Dmode"] == "1" and editor.Root.dictitems.has_key("Full3D True 3D Camera Positions:g"):
+            campos = editor.Root.dictitems["Full3D True 3D Camera Positions:g"].findallsubitems("", ':d')
+        elif editor.Root.dictitems.has_key("Full3D Standard Camera Positions:g"):
+            campos = editor.Root.dictitems["Full3D Standard Camera Positions:g"].findallsubitems("", ':d')
+        try:
+            if len(campos) == 0:
+                return
+        except:
+            return
+        camsel = campos[0]
+    successor = m.succ(camsel)
+    if successor is None:
+        return
+
+    while successor.type != camsel.type:
+        successor = m.succ(successor)
+    plugins.mdlcamerapos.setView(successor, editor)
+    camsel = successor
+
+def Window3DViewShot(m):
+    editor = mapeditor()
+    if editor is None:
+        return
+    # Gets the correct view to use.
+    view3D = None
+    for v in editor.layout.views:
+        if v.info['viewname'] == "3Dwindow":
+            view3D = v
+            break
+    if view3D is None:
+        return
+    # Gets where to put things.
+    pozzies = None
+    hasfolder = None
+    counter = 0
+    for item in editor.Root.subitems:
+        if item.name.endswith("Camera Positions:g"):
+            counter += 1
+    if quarkx.setupsubset(SS_MODEL, "Options")["Full3DTrue3Dmode"] == "1":
+        pozzies = editor.Root.findname("Full3D True 3D Camera Positions:g")
+        hasfolder = editor.Root.subitems[counter]
+    else:
+        pozzies = editor.Root.findname("Full3D Standard Camera Positions:g")
+        hasfolder = editor.Root.findname("Full3D True 3D Camera Positions:g")
+        if hasfolder is None:
+            hasfolder = editor.Root.subitems[counter]
+
+    undo=quarkx.action()
+    if pozzies is None:
+        if quarkx.setupsubset(SS_MODEL, "Options")["Full3DTrue3Dmode"] == "1":
+            pozzies = quarkx.newobj("Full3D True 3D Camera Positions:g")
+        else:
+            pozzies = quarkx.newobj("Full3D Standard Camera Positions:g")
+        undo.put(editor.Root,pozzies, hasfolder)
+    #
+    # NB: elsewhere in the code, 'yaw' tends to
+    # be misnamed as 'roll'
+    #
+    #  pitch = up/down angle (relative to x axis)
+    #  yaw = left/right angle (relative to x axis)
+    #  roll = turn around long axis (relative to y)
+    #
+    # For True 3D view shots.
+    if quarkx.setupsubset(SS_MODEL, "Options")["Full3DTrue3Dmode"] == "1":
+        pos, yaw, pitch = view3D.cameraposition
+        camdup = quarkx.newobj("Full3D True 3D Camera Position" + str(len(pozzies.subitems)+1) +":d")
+        camdup["macro"] = "cameraposition"
+        undo.put(pozzies, camdup)
+        undo.setspec(camdup,"origin",str(pos))
+        undo.setspec(camdup,"yaw",(yaw,))
+        undo.setspec(camdup,"pitch",(pitch,))
+    else: # For standard 3D view shots.
+        info = view3D.info
+        camdup = quarkx.newobj("Full3D Standard Camera Position" + str(len(pozzies.subitems)+1) +":d")
+        camdup["macro"] = "cameraposition"
+        undo.put(pozzies, camdup)
+        import qeditor
+        matrix = qeditor.defsetprojmode(view3D)
+        undo.setspec(camdup,"matrix",str(matrix,))
+        undo.setspec(camdup,"screencenter",str(view3D.screencenter))
+        undo.setspec(camdup,"scale",(info['scale'],))
+        undo.setspec(camdup,"angle",(info['angle'],))
+        undo.setspec(camdup,"center",str(info['center'],))
+        undo.setspec(camdup,"vangle",(info['vangle'],))
+        undo.setspec(camdup,"sfx",(info['sfx'],))
+        undo.setspec(camdup,"hscrollbar",(view3D.scrollbars[0]))
+        undo.setspec(camdup,"vscrollbar",(view3D.scrollbars[1]))
+    editor.ok(undo,'added camera position')
+
+#
+# Global variables to update from plug-ins.
+#
+EditorNextShot = qmenu.item("Editor next shot", EditorNextClick, "|Editor next shot:\n\nThis selects and sets the next camera shot for the Editor's 3D view in the group.\n\nCycling - Depress (default) 'F3' to switch to the next view.|intro.mapeditor.menu.html#selectionmenu")
+EditorPrevShot = qmenu.item("Editor prev shot", EditorNextClick, "|Editor prev shot:\n\nSelects and sets the previous camera shot for the Editor's 3D view in the group.\n\nCycling - Depress (default) 'F4' to switch to the previous.|intro.mapeditor.menu.html#selectionmenu")
+EditorNextShot.succ = EditorGetNext
+EditorPrevShot.succ = EditorGetPrevious
+Editor3Dshot = qmenu.item("Editor 3D shot", Editor3DViewShot, "|Editor 3D shot:\n\nThis creates a camera shot of the current editor's 3D view in either standard or 'True 3D' mode.\n\nDepressing the Hotkey (default) 'F5' will do the same thing.|intro.mapeditor.menu.html#selectionmenu")
+
+WindowNextShot = qmenu.item("Full 3D next shot", WindowNextClick, "|Full 3D next shot:\n\nThis selects and sets the next camera shot for the floating 3D Window in the group.\n\nCycling - Depress (default) 'F7' to switch to the next view.|intro.mapeditor.menu.html#selectionmenu")
+WindowPrevShot = qmenu.item("Full 3D prev shot", WindowNextClick, "|Full 3D prev shot:\n\nSelects and sets the previous camera shot for the floating 3D Window in the group.\n\nCycling - Depress (default) 'F8' to switch to the previous.|intro.mapeditor.menu.html#selectionmenu")
+WindowNextShot.succ = WindowGetNext
+WindowPrevShot.succ = WindowGetPrevious
+Window3Dshot = qmenu.item("Full 3D shot", Window3DViewShot, "|Full 3D shot:\n\nThis creates a camera shot of the current Full 3D view in either standard or 'True 3D' mode.\n\nDepressing the Hotkey (default) 'F6' will do the same thing.|intro.mapeditor.menu.html#selectionmenu")
+
+items = []
+checkitems = []
+shortcuts = {}
+
+def SearchMenu(Editor3Dshot=Editor3Dshot, EditorNextShot=EditorNextShot, EditorPrevShot=EditorPrevShot, Window3Dshot=Window3Dshot, WindowNextShot=WindowNextShot, WindowPrevShot=WindowPrevShot):
     "The Search menu, with its shortcuts."
     if len(checkitems)>1:
         allchecks = [qmenu.item("&ALL CHECKS", CheckMap, "perform all map checks")]
@@ -670,53 +876,23 @@ def SearchMenu(nextItem=nextItem, prevItem=prevItem):
     ObjByType = qmenu.item("Find &Objects", SearchByType, "|Find Objects:\n\nThis function will search for objects by their 'type'\n(the type of model object it represents, a bone, skin, frame...).", "intro.mapeditor.menu.html#searchmenu")
     findcamerapos = qmenu.item('Find Camera Positions', plugins.mdlcamerapos.findClick, "|Find Camera Positions:\n\nThis finds all the camera positions.|intro.mapeditor.menu.html#searchmenu")
 
-    it1 = items + [findvertex, findface, qmenu.sep, findskinvertex, findskinface, qmenu.sep, ObjByType, qmenu.sep, findcamerapos, nextItem, prevItem] + checkitems + allchecks
+    it1 = items + [findvertex, findface, qmenu.sep, findskinvertex, findskinface, qmenu.sep, ObjByType, qmenu.sep, findcamerapos, qmenu.sep, EditorNextShot, EditorPrevShot, Editor3Dshot, qmenu.sep, Window3Dshot, WindowNextShot, WindowPrevShot] + checkitems + allchecks
 
     return qmenu.popup("&Search", it1, onclick), shortcuts
 
-def editor3D_HotKeyViewShot(m):
-    editor = mapeditor()
-    if editor is None:
-        return
-    for v in editor.layout.views:
-        if v.info['viewname'] == "editors3Dview":
-            view3D = v
-            break
-    pozzies=None
-    if pozzies is None:
-        pozzies = editor.Root.findname("Editor True 3D Camera Positions:g")
-    undo=quarkx.action()
-    if pozzies is None:
-        pozzies = quarkx.newobj("Editor True 3D Camera Positions:g")
-        undo.put(editor.Root,pozzies, editor.Root.subitems[0])
-    #
-    # NB: elsewhere in the code, 'yaw' tends to
-    # be misnamed as 'roll'
-    #
-    #  pitch = up/down angle (relative to x axis)
-    #  yaw = left/right angle (relative to x axis)
-    #  roll = turn around long axis (relative to y)
-    #
-    pos, yaw, pitch = view3D.cameraposition
-    camdup = quarkx.newobj("Camera Position" + str(len(pozzies.subitems)+1) +":d")
-    camdup["macro"] = "cameraposition"
-    undo.put(pozzies, camdup)
-    undo.setspec(camdup,"origin",str(pos))
-    undo.setspec(camdup,"yaw",(yaw,))
-    undo.setspec(camdup,"pitch",(pitch,))
-    editor.ok(undo,'add camera position')
-
-Editor3Dshot = qmenu.item("Editor 3D shot", editor3D_HotKeyViewShot)
-
 MapHotKeyList("Editor3Dshot", Editor3Dshot, shortcuts)
-# MapHotKeyList("Float3Dshot", prevItem, shortcuts)
-
-MapHotKeyList("Select Next", nextItem, shortcuts)
-MapHotKeyList("Select Previous", prevItem, shortcuts)
+MapHotKeyList("Full3Dshot", Window3Dshot, shortcuts)
+MapHotKeyList("EditorNextShot", EditorNextShot, shortcuts)
+MapHotKeyList("EditorPrevShot", EditorPrevShot, shortcuts)
+MapHotKeyList("Full3DNextShot", WindowNextShot, shortcuts)
+MapHotKeyList("Full3DPrevShot", WindowPrevShot, shortcuts)
 
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.5  2011/03/16 05:43:31  cdunde
+#Added F5 Hotkey function for making Model Editor 3D camera positions.
+#
 #Revision 1.4  2011/03/15 08:25:46  cdunde
 #Added cameraview saving duplicators and search systems, like in the Map Editor, to the Model Editor.
 #

@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.526  2011/03/16 05:43:31  cdunde
+//Added F5 Hotkey function for making Model Editor 3D camera positions.
+//
 //Revision 1.525  2011/01/04 11:10:20  cdunde
 //Added .vtf as supported texture file type for game HalfLife2.
 //
@@ -2009,8 +2012,12 @@ QQRKSRC1
         Make Detail = "Alt+D"
         AxisXYZ = "Alt+A"
         Rebuild3D = "Tab"
+        EditorNextShot = "F3"
+        EditorPrevShot = "F4"
         Editor3Dshot = "F5"
-        Float3Dshot = "F6"
+        Full3Dshot = "F6"
+        Full3DNextShot = "F7"
+        Full3DPrevShot = "F8"
         Game Menu = "These are set in Game Menu|Customize"
         Form = "MapHotKeys"
       }
@@ -9345,8 +9352,14 @@ QQRKSRC1
        Make Detail: = {HotKeyForm = !}
        AxisXYZ: = {HotKeyForm = !}
        Rebuild3D: = {HotKeyForm = !}
+       sep:={Typ="S" Txt = ""}
+       sep:={Typ="S" Txt = "Model Editor only"}
+       EditorNextShot: = {HotKeyForm = !}
+       EditorPrevShot: = {HotKeyForm = !}
        Editor3Dshot: = {HotKeyForm = !}
-       Float3Dshot: = {HotKeyForm = !}
+       Full3Dshot: = {HotKeyForm = !}
+       Full3DNextShot: = {HotKeyForm = !}
+       Full3DPrevShot: = {HotKeyForm = !}
        sep:={Typ="S" Txt = ""}
        Game Menu:= {Txt="&R" Typ="ESR"}
     }

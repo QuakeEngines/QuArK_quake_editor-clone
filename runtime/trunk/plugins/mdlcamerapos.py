@@ -25,89 +25,123 @@ import quarkx
 #  This would make it easier to shift this material directly
 #  into say the 'mdlhandles' module
 #
-from quarkpy import mdlentities # this stays - cdunde
-#from quarkpy import mapduplicator
-from quarkpy import mdlduplicator # this stays - cdunde
-from quarkpy import qhandles # this stays - cdunde
+from quarkpy import mdlentities
+from quarkpy import mdlduplicator
+from quarkpy import qhandles
 from quarkpy import qutils
 from quarkpy import dlgclasses
 from quarkpy import qmacro
-from quarkpy import mapselection
-#from quarkpy import mapmenus
-from quarkpy import mdlmenus # this stays - cdunde
-
-from quarkpy.mdlhandles import * # this stays - cdunde
+from quarkpy import mdlmenus
+from quarkpy.mdlhandles import *
 
 
-#
-# Tries to find the last 3D view clicked on
-#
-def get3DView(editor,makeone=0):
-    #
-    # A bit of showoff coding, see the onlne Python tutorial,
-    #   functional programming techiques
-    #
-    views = filter(lambda v:v.info["type"]=="3D",editor.layout.views)
-    if len(views)==0:
-        if makeone:
-            editor.layout.full3Dclick(None)
-            views = filter(lambda v:v.info["type"]=="3D",editor.layout.views)
-            try:
-                return views[0]
-            except:
-                quarkx.msgbox("Switch to 'Editor True 3D mode'\non the Options menu\nto use this camera view.",2,4)
-                return
-        else:
-            quarkx.msgbox("Switch to 'Editor True 3D mode'\non the Options menu\nto use this camera view.",2,4)
+def giveMessage(o, view):
+    if o.parent.name.startswith("Editor"):
+        if quarkx.setupsubset(SS_MODEL, "Options")["EditorTrue3Dmode"] == "1" and o.parent.name.startswith("Editor Std 3D"):
+            quarkx.msgbox("You must uncheck the Options menu item\nEditor True 3D mode\nto use this camera view.",2,4)
             return
-    elif len(views)==1:
-        return views[0]
-    for view in views:
-        #
-        # put it in an exception-catching block for in case
-        #   editor doesn't have a last3DView
-        #
-        try:
-            if view is editor.last3DView:
-                return view
-        except (AttributeError):
-            pass
-    #
-    # If intelligent selection fails, take the first.
-    #
-    return views[0]
+        if quarkx.setupsubset(SS_MODEL, "Options")["EditorTrue3Dmode"] != "1" and o.parent.name.startswith("Editor True 3D"):
+            quarkx.msgbox("You must check the Options menu item\nEditor True 3D mode\nto use this camera view.",2,4)
+            return
+    else:
+        if view is None:
+            if o.parent.name.startswith("Full3D True 3D"):
+                quarkx.msgbox("You must open a 'Full 3D view'\nand check the Options menu item\nFull3D True 3D mode\nto use this camera view.",2,4)
+                return
+            else:
+                quarkx.msgbox("You must open a 'Full 3D view'\nand uncheck the Options menu item\nFull3D True 3D mode\nif checked, to use this camera view.",2,4)
+                return
+        if quarkx.setupsubset(SS_MODEL, "Options")["Full3DTrue3Dmode"] == "1" and o.parent.name.startswith("Full3D Standard"):
+            quarkx.msgbox("You must uncheck the Options menu item\nFull3D True 3D mode\nto use this camera view.",2,4)
+            return
+        if quarkx.setupsubset(SS_MODEL, "Options")["Full3DTrue3Dmode"] != "1" and o.parent.name.startswith("Full3D True 3D"):
+            quarkx.msgbox("You must check the Options menu item\nFull3D True 3D mode\nto use this camera view.",2,4)
+            return
+
+#
+# Tries to find the correct 3D view for the 'o' (object) cameraposition duplicator.
+#
+def get3DView(o, editor):
+    got3DView = action = None
+    if o.parent.name.startswith("Editor"):
+        for view in editor.layout.views:
+            if view.info['viewname'] == "editors3Dview":
+                got3DView = view
+                break
+        if quarkx.setupsubset(SS_MODEL, "Options")["EditorTrue3Dmode"] == "1" and o.parent.name.startswith("Editor Std 3D"):
+            return got3DView, 1
+        if quarkx.setupsubset(SS_MODEL, "Options")["EditorTrue3Dmode"] != "1" and o.parent.name.startswith("Editor True 3D"):
+            return got3DView, 1
+    else:
+        for view in editor.layout.views:
+            if view.info['viewname'] == "3Dwindow":
+                got3DView = view
+                break
+        if got3DView is None:
+            if o.parent.name.startswith("Full3D True 3D"):
+                return got3DView, 1
+            else:
+                return got3DView, 1
+        if quarkx.setupsubset(SS_MODEL, "Options")["Full3DTrue3Dmode"] == "1" and o.parent.name.startswith("Full3D Standard"):
+            return got3DView, 1
+        if quarkx.setupsubset(SS_MODEL, "Options")["Full3DTrue3Dmode"] != "1" and o.parent.name.startswith("Full3D True 3D"):
+            return got3DView, 1
+    return got3DView, action
 
 #
 # We're going to trigger these actions both by menu
 #  items and buttons in a dialog, so we define them
 #  independently of the UI elements that call them.
 #
-def setView(o, editor): # this stays - cdunde, change for reg mode
+def setView(o, editor):
     import quarkpy.qbaseeditor
     from quarkpy.qbaseeditor import currentview
-    view = get3DView(editor)
-    if currentview.info['viewname'] == "editors3Dview" or currentview.info['viewname'] == "skinview":
-        quarkpy.qbaseeditor.currentview = editor.layout.views[0]
-    if view is None:
+    view, action = get3DView(o, editor)
+    if view is None or action is not None:
+        giveMessage(o, view)
         return
-    view.cameraposition = o.origin, o["yaw"][0], o["pitch"][0]
-    editor.invalidateviews()
-    editor.currentcampos=o
+    quarkpy.qbaseeditor.currentview = view
+    try: # For True 3D modes.
+        view.cameraposition = o.origin, o["yaw"][0], o["pitch"][0]
+        editor.currentcampos=o
+    except: # For Standard 3D modes.
+        import quarkpy.qeditor
+        view.info["scale"] = o["scale"][0]
+        view.info["angle"] = o["angle"][0]
+        view.info["center"] = quarkx.vect(o["center"])
+        view.info["vangle"] = o["vangle"][0]
+        view.info["sfx"] = o["sfx"][0]
+        quarkpy.qeditor.setprojmode(view)
+        view.scrollto(o["hscrollbar"][0], o["vscrollbar"][0])
+        view.update() # Needs to be here to stop early and dupe drawing of vertexes if suppose to.
 
-def storeView(o, editor): # this stays - cdunde, change for reg mode
-    view = get3DView(editor)
-    if view is None:
+def storeView(o, editor):
+    view, action = get3DView(o, editor)
+    if view is None or action is not None:
+        giveMessage(o, view)
         return
-    pos, yaw, pitch = view.cameraposition
     undo = quarkx.action()
-    undo.setspec(o,"origin",str(pos))
-    #
-    # note setting values as 1-element tuples (Python docco)
-    #
-    undo.setspec(o,"yaw",(yaw,))
-    undo.setspec(o,"pitch",(pitch,))
-    editor.ok(undo,"store camera position")
-    editor.currentcampos=o
+    # For True 3D view shots.
+    if (view.info['viewname'] == "editors3Dview" and quarkx.setupsubset(SS_MODEL, "Options")["EditorTrue3Dmode"] == "1") or (view.info['viewname'] == "3Dwindow" and quarkx.setupsubset(SS_MODEL, "Options")["Full3DTrue3Dmode"] == "1"):
+        pos, yaw, pitch = view.cameraposition
+        undo.setspec(o,"origin",str(pos))
+        undo.setspec(o,"yaw",(yaw,))
+        undo.setspec(o,"pitch",(pitch,))
+    else: # For standard 3D view shots.
+        info = view.info
+        import quarkpy.qeditor
+        matrix = quarkpy.qeditor.defsetprojmode(view)
+        undo.setspec(o,"matrix",str(matrix,))
+        undo.setspec(o,"screencenter",str(view.screencenter))
+        undo.setspec(o,"scale",(info['scale'],))
+        undo.setspec(o,"angle",(info['angle'],))
+        undo.setspec(o,"center",str(info['center'],))
+        undo.setspec(o,"vangle",(info['vangle'],))
+        undo.setspec(o,"sfx",(info['sfx'],))
+        undo.setspec(o,"hscrollbar",(view.scrollbars[0]))
+        undo.setspec(o,"vscrollbar",(view.scrollbars[1]))
+    editor.ok(undo,"stored camera position")
+    editor.currentcampos = o
 
 #
 # The menu redefinition trick, as discussed in the plugin tutorial
@@ -154,7 +188,16 @@ class CamPosDuplicator(mdlduplicator.StandardDuplicator):
     def handles(self, editor, view):
         org = self.dup.origin
         if org is None:
-            org = quarkx.vect(self.dup["origin"])
+            try: # For True 3D modes.
+                org = quarkx.vect(self.dup["origin"])
+            except: # For Standard 3D modes.
+                if view is None:
+                    view, action = get3DView(self.dup, editor)
+                if view is None:
+                    return
+                org = quarkx.vect(self.dup["screencenter"]) - quarkx.vect(self.dup["center"])
+                org = org - ((~(quarkx.matrix(self.dup["matrix"])) * quarkx.vect(0.0, 0.0, 500.0))) #Step the camera back
+                org = org + quarkx.vect(self.dup["center"]) #Get modelcenter
         hndl = CamPosHandle(org, self.dup)
         return [hndl]
 
@@ -167,12 +210,12 @@ mdlduplicator.DupCodes.update({
 #  section of the infobase.  SimpleCancelDlgBox is
 #  defined in quarkpy.qeditor.
 #
-class NameDialog(SimpleCancelDlgBox): # this stays - cdunde
+class NameDialog(SimpleCancelDlgBox):
     "A simple dialog box to enter a name."
 
     endcolor = AQUA
     size = (330,140)
-    dfsep = 0.45
+    dfsep = 0.35
     dlgdef = """
       {
         Style = "9"
@@ -182,7 +225,7 @@ class NameDialog(SimpleCancelDlgBox): # this stays - cdunde
           Txt=" Enter the name :"
           Typ="E"
         }
-        local: = {Typ="X" Hint="Put camera in currently selected group, if possible" $0D " (sister to selected non-group)"}
+        accept: = {Typ = "P" Txt = " " Macro = "accept" Cap = "Accept above name" Hint = "Push to accept given name"$0D"or enter your own name but"$0D"it can not match any other names."}
         sep: = {Typ="S" Txt=" "}    // some space
         sep: = {Typ="S" Txt=""}    // a separator line
         cancel:py = {Txt="" }
@@ -192,48 +235,53 @@ class NameDialog(SimpleCancelDlgBox): # this stays - cdunde
     def __init__(self, form, action, initialvalue=None):
         src = quarkx.newobj(":")
         if initialvalue is not None:
-           src["name"]=initialvalue
-        self.initialvalue=initialvalue
-        self.action=action
+           src["name"] = initialvalue
+        self.initialvalue = initialvalue
+        self.action = action
         SimpleCancelDlgBox.__init__(self, form, src)
 
-    #
-    # This is executed when the data changes, close when a new
-    #   name is provided
-    #
+    # This is executed when the data changes, close when a new name is provided.
     def datachange(self, df):
-        if self.src["name"]!=self.initialvalue:
+        if self.src["name"] != self.initialvalue:
             self.close()
- 
 
-    #
-    # This is executed when the OK button is pressed
-    #   FIXME: 'local' code doesn't work right, dialog
-    #   would need some redesign
-    #
     def ok(self):
         name = self.src["name"]
         if name is None:
-            name="Camera Position"
-        self.name=name
-        self.local = self.src["local"]
+            import quarkpy.qbaseeditor
+            from quarkpy.qbaseeditor import currentview
+            if currentview.info['viewname'] == "editors3Dview":
+                type = "Editor"
+            else:
+                type = "Full3D"
+            name = type + " True 3D Camera Position"
+        self.name = name
         self.action(self)
 
-#
-# This is called by two interface items, so pulled
-#  out of both of them
-#
-def addPosition(view3D, editor): # this stays - cdunde, change for reg mode
+def macro_accept(btn):
+    import quarkpy.qmacro
+    quarkpy.qmacro.closedialogbox("NameDialog")
+
+import quarkpy.qmacro
+quarkpy.qmacro.MACRO_accept = macro_accept
+
+# This is called by two interface items, so pulled out of both of them.
+def addPosition(view3D, editor, viewhandle):
         #
         # Dialogs run 'asynchronously', which means
-        #  that the after the creation of the dialog just
+        #  that after the creation of the dialog it just
         #  runs without waiting for a value to be entered
         #  into the dialog.  So if you don't want something
         #  to happen until then, you need to code it in a
         #  function that gets passed to the dialog as
         #  a parameter, which is what this is.
         #
-        def action(self, view3D=view3D,editor=editor):
+        undo=quarkx.action()
+        def action(self, view3D=view3D, editor=editor, viewhandle=viewhandle, undo=undo):
+            if viewhandle.hint.find("Editor") != -1:
+                type = "Editor"
+            else:
+                type = "Full3D"
             #
             # NB: elsewhere in the code, 'yaw' tends to
             # be misnamed as 'roll'
@@ -245,73 +293,44 @@ def addPosition(view3D, editor): # this stays - cdunde, change for reg mode
             pos, yaw, pitch = view3D.cameraposition
             camdup = quarkx.newobj(self.name+":d")
             camdup["macro"] = "cameraposition"
-            pozzies=None
-            if self.src["local"]:
-                sel = editor.layout.explorer.uniquesel
-                if sel is not None:
-                    if sel.type==":g":
-                        pozzies = sel
-                    else:
-                       pozzies=sel.treeparent # returns None if parent outside of tree
-            if pozzies is None:
-                pozzies = editor.Root.findname("True 3D Camera Positions:g")
-            undo=quarkx.action()
-            if pozzies is None:
-                pozzies = quarkx.newobj("True 3D Camera Positions:g")
-                undo.put(editor.Root,pozzies, editor.Root.subitems[0])
             undo.put(pozzies, camdup)
             undo.setspec(camdup,"origin",str(pos))
             undo.setspec(camdup,"yaw",(yaw,))
             undo.setspec(camdup,"pitch",(pitch,))
             editor.ok(undo,'add camera position')
-        #
-        # Now execute the dialog
-        #
-        NameDialog(quarkx.clickform,action,"Camera Position")
 
+        # Now create the proper suggestive name and execute the dialog.
+        if viewhandle.hint.find("Editor") != -1:
+            type = "Editor"
+        else:
+            type = "Full3D"
+        pozzies = None
+        if pozzies is None:
+            pozzies = editor.Root.findname(type + " True 3D Camera Positions:g")
+        if pozzies is None:
+            pozzies = quarkx.newobj(type + " True 3D Camera Positions:g")
+            undo.put(editor.Root,pozzies, editor.Root.subitems[0])
+        name = type + " True 3D Camera Position" + str(len(pozzies.subitems)+1)
+        NameDialog(quarkx.clickform, action, name)
 
-
-#
-# And more menu redefinition, this time for the
-#  EyePosition handle defined in qhandles.py.
-#
-def newEyePosMenu(self, editor, view): # this stays - cdunde
+# And more menu redefinition, this time for the EyePosition handle defined in qhandles.py.
+def newEyePosMenu(self, editor, view):
     
-    def addClick(m,self=self,editor=editor):
-        addPosition(self.view3D,editor)
+    def addClick(m, self=self, editor=editor):
+        addPosition(self.view3D, editor, self)
         
-    item = qmenu.item('Add position',addClick)
+    item = qmenu.item('Add position', addClick)
     return [item]
 
-qhandles.EyePosition.menu = newEyePosMenu # this stays - cdunde
-
-# This function and its call below it not working and don't want it to for tree-view.
-# But good example how to put the "Add" call on another RMB menu for standard 3D view mode when we're ready to.
-def backmenu(editor, view=None, origin=None, oldbackmenu = mdlmenus.MdlBackgroundMenu):
-    menu = oldbackmenu(editor, view, origin)
-
-    def addClick(m,view=view,editor=editor):
-        addPosition(view,editor)
-      
-    if view is not None and view.info["type"]=="3D":
-        menu.append(qmenu.item("Add Model Camera Position",addClick, "|Add Camera Position:\n\nWhen selected, this function is used to set and store 3D camera views. This feature will only work for the Editor's 3D view and not the 3D view window.\n\nPress F1 again or click the 'InfoBase' for more detailed information on its use.|intro.mapeditor.floating3dview.html#camera"))
-    return menu
-
-mdlmenus.MdlBackgroundMenu = backmenu
+qhandles.EyePosition.menu = newEyePosMenu
 
 
-
-#
 # A Live Edit dialog.  Closely modelled on the Microbrush
-#  H/K dialog, so look at that for enlightenment
-#
+#  H/K dialog, so look at that for enlightenment.
 class FindCameraPosDlg(dlgclasses.LiveEditDlg):
-    #
-    # dialog layout
-    #
     editor = mapeditor()
     endcolor = AQUA
-    size = (220,160)
+    size = (330,160)
     dfsep = 0.35
     dlgflags = qutils.FWF_KEEPFOCUS 
     
@@ -328,7 +347,6 @@ class FindCameraPosDlg(dlgclasses.LiveEditDlg):
           Hint = "These are the camera positions.  Pick one," $0D " then push buttons on row below for action."
         }
 
-          
         sep: = { Typ="S" Txt=""}
 
         buttons: = {
@@ -357,7 +375,7 @@ class FindCameraPosDlg(dlgclasses.LiveEditDlg):
         try:
             index = eval(self.chosen)
             m = qmenu.item("",None)
-            m.object=self.pack.cameras[index]
+            m.object = self.pack.cameras[index]
             self.editor.layout.explorer.sellist = [m.object]
             self.editor.layout.explorer.expand(m.object.parent)
         except:
@@ -391,11 +409,11 @@ class FindCameraPosDlg(dlgclasses.LiveEditDlg):
 def macro_camerapos(self, index=0):
     editor = mapeditor()
     if editor is None: return
-    if index==1:
+    if index == 1:
         editor.cameraposdlg.select()
-    elif index==2:
+    elif index == 2:
         editor.cameraposdlg.setview()
-    elif index==3:
+    elif index == 3:
         editor.cameraposdlg.storeview()
 
 qmacro.MACRO_camerapos = macro_camerapos
@@ -408,8 +426,16 @@ def findClick(m):
     
     def setup(self, pack=pack, editor=editor):
         editor.cameraposdlg = self
-        self.pack=pack
-        cameras = filter(lambda d:d["macro"] == "cameraposition",editor.Root.findallsubitems("",":d"))
+        self.pack = pack
+        cameras = []
+        if quarkx.setupsubset(SS_MODEL, "Options")["EditorTrue3Dmode"] != "1" and editor.Root.dictitems.has_key("Editor Std 3D Camera Positions:g"):
+            cameras = cameras + filter(lambda d:d["macro"] == "cameraposition",editor.Root.dictitems["Editor Std 3D Camera Positions:g"].findallsubitems("", ':d'))
+        elif quarkx.setupsubset(SS_MODEL, "Options")["EditorTrue3Dmode"] == "1" and editor.Root.dictitems.has_key("Editor True 3D Camera Positions:g"):
+            cameras = cameras + filter(lambda d:d["macro"] == "cameraposition",editor.Root.dictitems["Editor True 3D Camera Positions:g"].findallsubitems("", ':d'))
+        if quarkx.setupsubset(SS_MODEL, "Options")["Full3DTrue3Dmode"] != "1" and editor.Root.dictitems.has_key("Full3D Standard Camera Positions:g"):
+            cameras = cameras + filter(lambda d:d["macro"] == "cameraposition",editor.Root.dictitems["Full3D Standard Camera Positions:g"].findallsubitems("", ':d'))
+        elif quarkx.setupsubset(SS_MODEL, "Options")["Full3DTrue3Dmode"] == "1" and editor.Root.dictitems.has_key("Full3D True 3D Camera Positions:g"):
+            cameras = cameras + filter(lambda d:d["macro"] == "cameraposition",editor.Root.dictitems["Full3D True 3D Camera Positions:g"].findallsubitems("", ':d'))
         pack.cameras = cameras
         pack.slist = map(lambda obj:obj.shortname, cameras)
         pack.klist = map(lambda d:`d`, range(len(cameras)))
@@ -429,36 +455,13 @@ def findClick(m):
         # note what's been chosen
         self.chosen = src["cameras"]
 
-    FindCameraPosDlg(quarkx.clickform, 'findcamerapos', editor, setup, action)
-
-# Prev/Next hotkey subversion
-def camnextClick(m, editor=None, oldnext=mapselection.nextClick):
-    if quarkx.keydown('C') == 1:
-        editor = mapeditor()
-        if editor is None:
-           quarkx.msgbox('oops no editor',2,4)
-           return
-        try:
-            current = editor.currentcampos
-        except (AttributeError):
-            quarkx.msgbox("You need to set or store a view first for this to work",2,4)
-            return
-        successor = m.succ(current) # succ=prev or next, depending on key
-        #
-        # Skip over any non-camera stuff
-        #
-        while successor is not current and successor["macro"] != "cameraposition":
-            successor = m.succ(successor)
-        setView(successor,editor)
-    else:
-        oldnext(m,editor)
-
-mapselection.nextItem.onclick = camnextClick
-mapselection.prevItem.onclick = camnextClick
-
+    FindCameraPosDlg(quarkx.clickform, 'mdlfindcamerapos', editor, setup, action)
 
 
 # $Log$
+# Revision 1.2  2011/03/16 05:43:31  cdunde
+# Added F5 Hotkey function for making Model Editor 3D camera positions.
+#
 # Revision 1.1  2011/03/15 08:25:46  cdunde
 # Added cameraview saving duplicators and search systems, like in the Map Editor, to the Model Editor.
 #
