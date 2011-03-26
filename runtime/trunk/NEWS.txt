@@ -14,6 +14,9 @@ $Id$
 
 6.6.0 Beta 4
 ============
+* [cdunde/DanielPharos]: Updated Model Editor Camera Position system with Hotkeys to take quick shots of both Editor and Floating 3D views,
+          - kept in separate folders for both Standard modes and True3D modes with Hotkeys to scroll through those shots.
+
 * [cdunde]: Added cameraview saving duplicators and search systems, like in the Map Editor, to the Model Editor.
           - Also added a Hotkey F5 function for making those duplicators by simply pressing that key.
 
