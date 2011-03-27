@@ -365,12 +365,36 @@ def DuplicatorIconUnsel(dup):
     loadmapeditor()
     import mapduplicator
     iconlist, iconindex = mapduplicator.DupManager(dup).Icon
+    if dup.name.startswith("Editor Std 3D"):
+        if quarkx.setupsubset(SS_MODEL, "Options")["EditorTrue3Dmode"] == "1":
+            iconindex = 4
+    elif dup.name.startswith("Editor True 3D"):
+        if quarkx.setupsubset(SS_MODEL, "Options")["EditorTrue3Dmode"] != "1":
+            iconindex = 4
+    elif dup.name.startswith("Full3D Standard"):
+        if quarkx.setupsubset(SS_MODEL, "Options")["Full3DTrue3Dmode"] == "1":
+            iconindex = 4
+    elif dup.name.startswith("Full3D True 3D"):
+        if quarkx.setupsubset(SS_MODEL, "Options")["Full3DTrue3Dmode"] != "1":
+            iconindex = 4
     return iconlist[0][iconindex]
 
 def DuplicatorIconSel(dup):
     loadmapeditor()
     import mapduplicator
     iconlist, iconindex = mapduplicator.DupManager(dup).Icon
+    if dup.name.startswith("Editor Std 3D"):
+        if quarkx.setupsubset(SS_MODEL, "Options")["EditorTrue3Dmode"] == "1":
+            iconindex = 4
+    elif dup.name.startswith("Editor True 3D"):
+        if quarkx.setupsubset(SS_MODEL, "Options")["EditorTrue3Dmode"] != "1":
+            iconindex = 4
+    elif dup.name.startswith("Full3D Standard"):
+        if quarkx.setupsubset(SS_MODEL, "Options")["Full3DTrue3Dmode"] == "1":
+            iconindex = 4
+    elif dup.name.startswith("Full3D True 3D"):
+        if quarkx.setupsubset(SS_MODEL, "Options")["Full3DTrue3Dmode"] != "1":
+            iconindex = 4
     return iconlist[1][iconindex]
 
 
@@ -389,6 +413,19 @@ def GroupIconUnsel(grp, ico_objects_group_set={
             return ico_objects_group_set[view&4, not (view&~4)]
         except:
             pass
+    iiGroup = 13
+    if grp.name.startswith("Editor Std 3D"):
+        if quarkx.setupsubset(SS_MODEL, "Options")["EditorTrue3Dmode"] == "1":
+            iiGroup = 31
+    elif grp.name.startswith("Editor True 3D"):
+        if quarkx.setupsubset(SS_MODEL, "Options")["EditorTrue3Dmode"] != "1":
+            iiGroup = 31
+    elif grp.name.startswith("Full3D Standard"):
+        if quarkx.setupsubset(SS_MODEL, "Options")["Full3DTrue3Dmode"] == "1":
+            iiGroup = 31
+    elif grp.name.startswith("Full3D True 3D"):
+        if quarkx.setupsubset(SS_MODEL, "Options")["Full3DTrue3Dmode"] != "1":
+            iiGroup = 31
     return ico_objects[0][iiGroup]
 
 def GroupIconSel(grp, ico_objects_group_set={
@@ -402,6 +439,19 @@ def GroupIconSel(grp, ico_objects_group_set={
             return ico_objects_group_set[view&4, not (view&~4)]
         except:
             pass
+    iiGroup = 13
+    if grp.name.startswith("Editor Std 3D"):
+        if quarkx.setupsubset(SS_MODEL, "Options")["EditorTrue3Dmode"] == "1":
+            iiGroup = 31
+    elif grp.name.startswith("Editor True 3D"):
+        if quarkx.setupsubset(SS_MODEL, "Options")["EditorTrue3Dmode"] != "1":
+            iiGroup = 31
+    elif grp.name.startswith("Full3D Standard"):
+        if quarkx.setupsubset(SS_MODEL, "Options")["Full3DTrue3Dmode"] == "1":
+            iiGroup = 31
+    elif grp.name.startswith("Full3D True 3D"):
+        if quarkx.setupsubset(SS_MODEL, "Options")["Full3DTrue3Dmode"] != "1":
+            iiGroup = 31
     return ico_objects[1][iiGroup]
 
 #
@@ -921,6 +971,9 @@ def sortdictionary(dictionary):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.56  2011/03/12 23:19:12  cdunde
+#Fix to handle Model Editor BBox icons properly.
+#
 #Revision 1.55  2010/12/07 06:06:52  cdunde
 #Updates for Model Editor bounding box system.
 #

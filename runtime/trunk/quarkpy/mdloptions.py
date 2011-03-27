@@ -727,6 +727,7 @@ def EditorTrue3Dmode(m):
         mdlhandles.AddRemoveEyeHandles(editor, v)
         if v.info["viewname"] == "editors3Dview":
             continue
+    editor.layout.explorer.invalidate()
     editor.explorerselchange(editor)
 
 
@@ -789,6 +790,7 @@ def Full3DTrue3Dmode(m):
         mdlhandles.AddRemoveEyeHandles(editor, v)
         if v.info["viewname"] == "3Dwindow":
             continue
+    editor.layout.explorer.invalidate()
     editor.explorerselchange(editor)
 
 
@@ -875,6 +877,9 @@ def OptionsMenuRMB():
 #
 #
 #$Log$
+#Revision 1.51  2010/06/06 08:56:13  cdunde
+#Fix to draw fillcolors correctly when true 3D is turned on or off.
+#
 #Revision 1.50  2010/06/02 21:23:38  cdunde
 #Fixes for Model Editor Eye position handle.
 #
