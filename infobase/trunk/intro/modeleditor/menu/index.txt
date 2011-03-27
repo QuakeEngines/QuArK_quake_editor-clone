@@ -4,6 +4,7 @@ desc: filemenu
 desc: layoutmenu
 desc: editmenu
 desc: toolboxesmenu
+desc: searchmenu
 desc: commandsmenu
 desc: toolbarsmenu
 desc: optionsmenu
