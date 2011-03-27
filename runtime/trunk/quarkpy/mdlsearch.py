@@ -846,17 +846,17 @@ def Window3DViewShot(m):
 #
 # Global variables to update from plug-ins.
 #
-EditorNextShot = qmenu.item("Editor next shot", EditorNextClick, "|Editor next shot:\n\nThis selects and sets the next camera shot for the Editor's 3D view in the group.\n\nCycling - Depress (default) 'F3' to switch to the next view.|intro.mapeditor.menu.html#selectionmenu")
-EditorPrevShot = qmenu.item("Editor prev shot", EditorNextClick, "|Editor prev shot:\n\nSelects and sets the previous camera shot for the Editor's 3D view in the group.\n\nCycling - Depress (default) 'F4' to switch to the previous.|intro.mapeditor.menu.html#selectionmenu")
+EditorNextShot = qmenu.item("Editor next shot", EditorNextClick, "|Editor next shot:\n\nThis selects and sets the next camera shot for the Editor's 3D view in the group.\n\nCycling - Depress (default) 'F3' to switch to the next view.|intro.modeleditor.menu.html#searchmenu")
+EditorPrevShot = qmenu.item("Editor prev shot", EditorNextClick, "|Editor prev shot:\n\nSelects and sets the previous camera shot for the Editor's 3D view in the group.\n\nCycling - Depress (default) 'F4' to switch to the previous.|intro.modeleditor.menu.html#searchmenu")
 EditorNextShot.succ = EditorGetNext
 EditorPrevShot.succ = EditorGetPrevious
-Editor3Dshot = qmenu.item("Editor 3D shot", Editor3DViewShot, "|Editor 3D shot:\n\nThis creates a camera shot of the current editor's 3D view in either standard or 'True 3D' mode.\n\nDepressing the Hotkey (default) 'F5' will do the same thing.|intro.mapeditor.menu.html#selectionmenu")
+Editor3Dshot = qmenu.item("Editor 3D shot", Editor3DViewShot, "|Editor 3D shot:\n\nThis creates a camera shot of the current editor's 3D view in either standard or 'True 3D' mode.\n\nDepressing the Hotkey (default) 'F5' will do the same thing.|intro.modeleditor.menu.html#searchmenu")
 
-WindowNextShot = qmenu.item("Full 3D next shot", WindowNextClick, "|Full 3D next shot:\n\nThis selects and sets the next camera shot for the floating 3D Window in the group.\n\nCycling - Depress (default) 'F7' to switch to the next view.|intro.mapeditor.menu.html#selectionmenu")
-WindowPrevShot = qmenu.item("Full 3D prev shot", WindowNextClick, "|Full 3D prev shot:\n\nSelects and sets the previous camera shot for the floating 3D Window in the group.\n\nCycling - Depress (default) 'F8' to switch to the previous.|intro.mapeditor.menu.html#selectionmenu")
+WindowNextShot = qmenu.item("Full 3D next shot", WindowNextClick, "|Full 3D next shot:\n\nThis selects and sets the next camera shot for the floating 3D Window in the group.\n\nCycling - Depress (default) 'F7' to switch to the next view.|intro.modeleditor.menu.html#searchmenu")
+WindowPrevShot = qmenu.item("Full 3D prev shot", WindowNextClick, "|Full 3D prev shot:\n\nSelects and sets the previous camera shot for the floating 3D Window in the group.\n\nCycling - Depress (default) 'F8' to switch to the previous.|intro.modeleditor.menu.html#searchmenu")
 WindowNextShot.succ = WindowGetNext
 WindowPrevShot.succ = WindowGetPrevious
-Window3Dshot = qmenu.item("Full 3D shot", Window3DViewShot, "|Full 3D shot:\n\nThis creates a camera shot of the current Full 3D view in either standard or 'True 3D' mode.\n\nDepressing the Hotkey (default) 'F6' will do the same thing.|intro.mapeditor.menu.html#selectionmenu")
+Window3Dshot = qmenu.item("Full 3D shot", Window3DViewShot, "|Full 3D shot:\n\nThis creates a camera shot of the current Full 3D view in either standard or 'True 3D' mode.\n\nDepressing the Hotkey (default) 'F6' will do the same thing.|intro.modeleditor.menu.html#searchmenu")
 
 items = []
 checkitems = []
@@ -869,12 +869,12 @@ def SearchMenu(Editor3Dshot=Editor3Dshot, EditorNextShot=EditorNextShot, EditorP
     else:
         allchecks = []
 
-    findvertex = qmenu.item('Find &Vertices', find_vertices_click, "|Find Vertices:\n\nThis function selects the vertices entered\nfor the component currently selected\nor selected from the drop down box.\nPlace a comma between each vertex entered to find more then one.", "intro.mapeditor.menu.html#searchmenu")
-    findface = qmenu.item('Find &Faces', find_faces_click, "|Find Faces:\n\nThis function selects the faces entered\nfor the component currently selected\nor selected from the drop down box.\nPlace a comma between each face entered to find more then one.", "intro.mapeditor.menu.html#searchmenu")
-    findskinvertex = qmenu.item('Find &Skin Vertices', find_skin_vertices_click, "|Find Skin Vertices:\n\nThis function selects the Skin-view vertexes entered\nfor the component currently selected\nor selected from the drop down box.\nPlace a comma between each face entered to find more then one.", "intro.mapeditor.menu.html#searchmenu")
-    findskinface = qmenu.item('Find S&kin Faces', find_skin_faces_click, "|Find Skin Faces:\n\nThis function selects the Skin-view face vertexes for\nthe faces entered of the component currently selected\nor selected from the drop down box.\nPlace a comma between each face entered to find more then one.", "intro.mapeditor.menu.html#searchmenu")
-    ObjByType = qmenu.item("Find &Objects", SearchByType, "|Find Objects:\n\nThis function will search for objects by their 'type'\n(the type of model object it represents, a bone, skin, frame...).", "intro.mapeditor.menu.html#searchmenu")
-    findcamerapos = qmenu.item('Find Camera Positions', plugins.mdlcamerapos.findClick, "|Find Camera Positions:\n\nThis finds all the camera positions.|intro.mapeditor.menu.html#searchmenu")
+    findvertex = qmenu.item('Find &Vertices', find_vertices_click, "|Find Vertices:\n\nThis function selects the vertices entered\nfor the component currently selected\nor selected from the drop down box.\nPlace a comma between each vertex entered to find more then one.", "intro.modeleditor.menu.html#searchmenu")
+    findface = qmenu.item('Find &Faces', find_faces_click, "|Find Faces:\n\nThis function selects the faces entered\nfor the component currently selected\nor selected from the drop down box.\nPlace a comma between each face entered to find more then one.", "intro.modeleditor.menu.html#searchmenu")
+    findskinvertex = qmenu.item('Find &Skin Vertices', find_skin_vertices_click, "|Find Skin Vertices:\n\nThis function selects the Skin-view vertexes entered\nfor the component currently selected\nor selected from the drop down box.\nPlace a comma between each face entered to find more then one.", "intro.modeleditor.menu.html#searchmenu")
+    findskinface = qmenu.item('Find S&kin Faces', find_skin_faces_click, "|Find Skin Faces:\n\nThis function selects the Skin-view face vertexes for\nthe faces entered of the component currently selected\nor selected from the drop down box.\nPlace a comma between each face entered to find more then one.", "intro.modeleditor.menu.html#searchmenu")
+    ObjByType = qmenu.item("Find &Objects", SearchByType, "|Find Objects:\n\nThis function will search for objects by their 'type'\n(the type of model object it represents, a bone, skin, frame...).", "intro.modeleditor.menu.html#searchmenu")
+    findcamerapos = qmenu.item('Find Camera Positions', plugins.mdlcamerapos.findClick, "|Find Camera Positions:\n\nThis finds all the camera positions.|intro.modeleditor.menu.html#searchmenu")
 
     it1 = items + [findvertex, findface, qmenu.sep, findskinvertex, findskinface, qmenu.sep, ObjByType, qmenu.sep, findcamerapos, qmenu.sep, EditorNextShot, EditorPrevShot, Editor3Dshot, qmenu.sep, Window3Dshot, WindowNextShot, WindowPrevShot] + checkitems + allchecks
 
@@ -890,6 +890,10 @@ MapHotKeyList("Full3DPrevShot", WindowPrevShot, shortcuts)
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.6  2011/03/26 23:35:16  cdunde
+#Updated Model Editor Camera Position system with Hotkeys to take quick shots of both Editor and Floating 3D views,
+#kept in separate folders for both Standard modes and True3D modes with Hotkeys to scroll through those shots.
+#
 #Revision 1.5  2011/03/16 05:43:31  cdunde
 #Added F5 Hotkey function for making Model Editor 3D camera positions.
 #
