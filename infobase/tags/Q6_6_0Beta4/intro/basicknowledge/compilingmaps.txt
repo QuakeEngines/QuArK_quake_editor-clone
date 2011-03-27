@@ -1,0 +1,28 @@
+title: Compiling maps
+author: Armin Rigo / Decker
+
+Map compiling is the process of translating a map you made in the editor into something that the game can read, namely a
+<tt>.BSP</tt> file. In QuArK, this is done when you select a command in the "Quake" menu (or "Half-Life", or "Hexen II", or
+whatever the game is). This is what occurs in the black window with scrolling text. The map compilers are programs written by
+the authors of the game (e.g. id Software) and not by the QuArK developers, so our knowledge about them is limited. (These
+tools are found in the "Build Pack" corresponding to your game; see the
+<link download>download page</link> on the web site.)
+
+There are tons of problems that can occur at map compiling time. You will often get a cryptic error message at the bottom of
+the black window. This is 99% of the time not related to QuArK itself; either you made an "error" in your map, or you ran into
+one of the numerous bugs and limitations of the map compiler programs. Errors in the map include, for example, "holes", that
+is, gaps between polyhedrons that would let you see "outside" the map into the so-called void. You must always think about a
+map as floating in the outer space, and you can imagine you must prevent the air from escaping. Thus there must not exist any
+path from an entity of your map to the outer space. This error can be complex to localize, and only the map compilers can find
+it. QuArK can check for the other most common map errors before it starts the map compilers.
+
+If you have strange problems in the game itself, like some walls being not displayed, this is also often related to the map
+compilers. One more time, it's important to understand that QuArK, like any other map editor, only lets you design a map, and
+with it you can put virtually any kind of polyhedron or entity in it. What the map compilers and the game itself will do with
+these polyhedrons and entities is no longer related to the map editor.
+
+Map compiling is a complex subject and you can find a lot of information about it (not related to QuArK) at
+<a target="_blank" href="http://www.planetquake.com">PlanetQuake</a>. See also the links (right column in the current design)
+<link website>on the QuArK site</link>, as well as the
+<link infobase>on-line docs</link>. See also
+<a href="http://quark.planetquake.gamespy.com/armin/adv-qbsp.html">this page about compiling</a>.

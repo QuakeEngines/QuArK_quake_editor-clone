@@ -1,0 +1,23 @@
+title: QObjects
+author: Armin Rigo
+
+The most central part of QuArK is its internal objects on which everything else is based. These objects are represented by all
+the classes that directly or indirectly inherit from QObject, defined in qobjects.pas. Here are the main rules about QObjects.
+
+Although the class QObject has got a few fields, these fields should be regarded as used by QuArK's internal management only.
+All important data must be stored using a combination of the two main features of QObjects : their Specific/Args and their
+subobjects (called subelements in the code).
+
+Specific/Args are similar to the ones of Quake entities : it is a list of pairs of strings. The first string, the Specific, is
+an arbitrary name for a setting; the corresponding second string gives the value of this setting.
+
+Objects also each have a list of subobjects. This lets objects be organized in a hierarchy.
+
+The basic principles are that the Specific/Args and the subobjects contain all the information, and that this object hierarchy
+is central for all operations :
+
+<ul>
+<li>to load a file, we actually convert it into an object or a hierarchy of objects;
+<li>to save a file, we convert the objects back to the destination file format;
+<li>we can only display and work with objects, never directly with files.
+</ul>

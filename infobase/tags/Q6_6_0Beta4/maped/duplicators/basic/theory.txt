@@ -1,0 +1,25 @@
+title: Some theory
+author: tiglari
+
+Now I think a bit more background on what's going
+on would be a good idea.  Basically what a duplicator
+is doing is looking inside of itself (duplicators
+can contain things just like brush entities do),
+and also inside of the (smallest) group it is in,
+and executing some code that specifies additional
+structure to make, on the basis of what it sees,
+and what it's specifics are.  This code is specified
+by the 'macro' specific, so you can transmute one
+kind of duplicator into another by changing that.
+
+Then the 'out' specific specifies whether or not the
+duplicator looks at the stuff in the group that
+contains it (value 1), or only inside itself (no value).
+The difference between these two possible locations
+is finally that the stuff inside the duplicator is
+not put directly into the map, but only provides data
+for the duplicator's calculations.  You can test
+the effect of this by moving the brush inside the
+duplicator; when the brush itself is not selected,
+it will vanish from the map views, but the copies
+(blue outlines) will remain visible.

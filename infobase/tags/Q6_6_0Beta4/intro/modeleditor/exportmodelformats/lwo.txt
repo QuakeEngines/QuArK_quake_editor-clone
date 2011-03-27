@@ -1,0 +1,16 @@
+title: .lwo format
+author: cdunde
+
+<i>Original game </i>&nbsp;: Doom3
+
+<i>Other games </i>&nbsp;: Prey
+
+Used in Doom3 for static (single frame) single and multiple components.<br>
+Used in Prey for static (single frame) single and multiple components.
+
+<b><u>uses</u></b><br>
+<a href="intro.modeleditor.editelements.html#tags">tags </a>&nbsp;: no<br>
+<a href="intro.modeleditor.editelements.html#bones">bones </a>&nbsp;: no<br>
+<a href="intro.modeleditor.vertexcolorandweights.html#vertexweights">weights </a>&nbsp;: no<br>
+<a href="intro.modeleditor.vertexcolorandweights.html#vertexcoloring">uv colors </a>&nbsp;: <a style="color:#FF0000"><b>yes</b></a><br>
+<a href="intro.modeleditor.dataforms.html#specsargsview">Specifics page </a>&nbsp;: <a style="color:#FF0000"><b>yes</b></a>

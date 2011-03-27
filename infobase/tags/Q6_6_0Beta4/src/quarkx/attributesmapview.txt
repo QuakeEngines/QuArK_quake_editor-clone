@@ -1,0 +1,181 @@
+title: Additionnal attributes of Map View controls
+author: Armin Rigo
+
+Methods are described above. The following table describes the other attributes only.
+
+<table border=1 cellspacing=0 cellpadding=4>
+
+<tr><td class="doccode">
+color<br>
+darkcolor
+</td><td>
+The background color in wireframe mode. darkcolor is used as background for selected objects (in draw mode DM_BACKGROUND).
+</td></tr>
+
+<tr><td class="doccode">
+cursor<br>
+handlecursor
+</td><td>
+Mouse cursor shape. handlecursor is the shape when the mouse is over a handle, if the handle doesn’t have its own cursor shape. Handles are described below. See qeditor.CR_XXX for a list of cursor shapes.
+</td></tr>
+
+<tr><td class="doccode">
+depth
+</td><td>
+The (min,max) depth, as set by setdepth(min,max). Avoid to change this value directly; call setdepth instead.
+</td></tr>
+
+<tr><td class="doccode">
+flags
+</td><td>
+Map View flags. See qeditor.MV_XXX.
+</td></tr>
+
+<tr><td class="doccode">
+redlines
+</td><td>
+Red lines position. The flags corresponding to the red lines to show must be set first.
+</td></tr>
+
+<tr><td class="doccode">
+redlinesrect
+</td><td>
+The (left,top,right,bottom) rectangular area considered to be the visible part of the map view. Use this instead of clientarea, because it excludes the parts outside the red lines.
+</td></tr>
+
+<tr><td class="doccode">
+scrollbars
+</td><td>
+Scroll bars position and range. Returns ((hpos,hposend,hrange), (vpos,vposend,vrange)) where pos is the current position, posend is the same plus the width or the height of the control, and range is the maximal value that posend can take.
+</td></tr>
+
+<tr><td class="doccode">
+screencenter
+</td><td>
+3D point at the center of the screen. Can be modified on non-perspective views.
+</td></tr>
+
+<tr><td class="doccode">
+setup
+</td><td>
+An Internal Objects that describes the 3D perspective display parameters. Defaults to the setup page “ 3D view ”. To force the Map View to reload the parameters, write setup=setup. Set it to another value only if you want to have several 3D views that don’t share the same parameters.
+</td></tr>
+
+<tr><td class="doccode">
+viewmode
+</td><td>
+View mode: "wire", "solid", or "tex". All values are valid in both flat and perspective projection modes. If the view doesn’t display a map at all (e.g. the shadowed texture panel of the Polyhedron page), use the mode "wire". The background is painted with the color before drawmap is called; if you want to avoid this, set color to NOCOLOR. Special mode: "opengl" for OpenGL views. Tested OpenGL implementations probably don't support several opengl views at the same time, nor switching back to another non-OpenGL mode.
+</td></tr>
+
+<tr><td class="doccode">
+viewname
+</td><td>
+Key values: "editors3Dview", "new3Dwindow", "full3Dview" or "opengl3Dview". All though not part of the actual quarkx source code, new keys have been added to all the required view layout python files for easier detection and control of these 3D views. Not required for 2D views, their key word "type" gives those view names already. Use of the new key can be coded by first qualifying for the 3D "type" views, then for their key "value" for example:
+
+<code>
+  for view in editor.layout.views:
+      type = view.info["type"]
+      if type != "3D": continue
+      viewname = view.info["viewname"]
+      if viewname == "editors3Dview":
+          print "got the Editors 3D view"
+      if viewname == "new3Dwindow":
+          print "got the Floating 3D view"
+      if viewname == "full3Dview":
+          print "GOT THE FULL 3D VIEW"
+      if viewname == "opengl3Dview":
+          print "got the OpenGL view"
+</code>
+
+Any new 3D views added can also use this method by assigning a new value to its view info for example:
+
+<code>
+  from quarkpy.mapmgr import *
+
+  class New3DLayout(MapLayout):
+      def buildscreen(self, form):
+          self.bs_leftpanel(form)
+          self.View3D = form.mainpanel.newmapview()
+          self.views[:] = [self.View3D]
+          self.baseviews = self.views[:]
+          self.View3D.info = {"type": "3D", "viewname": "new3Dlayout"}
+</code>
+
+See the various map layout files in the python folder for more examples.
+</td></tr>
+
+<tr><td class="doccode">
+boundingboxes
+</td><td>
+List of Internal objects from which QuArK can load bounding box sizes and model file paths. See mapeditor.py for an example.
+</td></tr>
+
+<tr><td class="doccode">
+handles
+</td><td>
+List of handles. See below.
+</td></tr>
+
+<tr><td class="doccode">
+ondraw
+</td><td>
+Callback function. Called when the control content must be drawn. It takes a single parameter: the Map view object itself. Call drawmap() and/or canvas() to draw in the Map view.
+</td></tr>
+
+<tr><td class="doccode">
+onmouse
+</td><td>
+Callback function. Called in answer to a mouse event, as onmouse(mapview, x, y, flags, handle), where x,y is the mouse position, handle is the handle it is on (if any), and flags describes the mouse operation. See qeditor.MB_XXX. Values 1 to 64 are flags that indicate which keys and mouse buttons were down when the event begun, and may be combined together. Values 256 and above describe the event, and only one may be set.
+</td></tr>
+
+<tr><td class="doccode">
+onkey
+</td><td>
+Callback function. Called when a key is pressed or released, as onkey(mapview, key, flags). flags are the same as above. key is a single character that describes the key. See qkeys.py for a list of possible values.
+</td></tr>
+
+<tr><td class="doccode">
+cameraposition
+</td><td>
+In 3D modes, the camera position, as a 3-tuple (position, horzangle, pitchangle), where position is the 3D point of the camera position, horzangle is the direction on the Compass the camera is looking to, and pitchangle is used to look up or down. Returns None if not in 3D mode. Angles are in radians. This variable is read-write, but should not be used for animations (ask me if you need this).
+</td></tr>
+
+<tr><td class="doccode">
+oncameramove
+</td><td>
+Callback function. Called when the camera moved, for any reason.
+</td></tr>
+
+<tr><td class="doccode">
+animation
+</td><td>
+Are we currently doing an animation? Change this attribute to start (1) or end (0) an animation sequence. The only type of animation allowed is repeatedly changing cameraposition.
+</td></tr>
+
+<tr><td class="doccode">
+background
+</td><td>
+Background image settings (center, scale, offset, multiple), where center is the 3D position of the center of the image, scale is the scale, offset to center the image, and multiple to fill the entire view with copies of the image. (sorry, the image won’t rotate when you rotate the view!)
+</td></tr>
+
+<tr><td class="doccode">
+backgroundimage
+</td><td>
+Background image filename, where filename is the name of any supported image file or a loaded QImage object, put inside a tuple.
+</td></tr>
+
+</table>
+
+A useful feature of Map views is their ability to work with handles: the attribute handles can be set to a list of Python
+instances (like a menu bar or a list of buttons), where each instance must have an attribute pos corresponding to the 3D
+location of the handle, and an attribute cursor giving the cursor shape to use when the mouse cursor is over the handle. cursor
+can be a CR_XXX value or a callback function that will be called with the map view as single parameter and that should return a
+CR_XXX value. The value CR_DEFAULT is replaced by the value set in the map view’s handlecursor attribute.
+
+Normally, the area around the handle center where you can click is 10 by 10 pixels large, that is, the distance between the
+mouse click and the handle center must be less than 5 pixels horizontally and vertically. You can give a custom horizontal and
+vertical size in the handle's size attribute, which defaults to the tuple (5,5).
+
+You can set a string in the hint attribute. This string will be displayed in a small pop-up rectangle when the mouse is over
+the handle. To display hints over a blue background (for entity-specific information only), make the hint string begin with a
+question mark ("?"). QuArK does not draw the handles itself. The Python code is responsible for that. See maphandles.py.

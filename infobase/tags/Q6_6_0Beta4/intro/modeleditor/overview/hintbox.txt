@@ -1,0 +1,39 @@
+title: Hintbox
+author: cdunde
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+
+Whenever you see the text "<tt>Press <b>F1</b> for help</tt>" in the little
+hintbox under the <a href="#dataform">dataform-display</a>, you can press F1
+and get a Hint Pop-up window, which tells you a little more about the item
+you are pointing at. This is its primary function.
+
+Many of the Hint Pop-up windows will have an InfoBase button that is linked
+directly to a page in the InfoBase and will give you further help for the
+item in question. Clicking that button or pressing <b>F1</b> again will open that page.
+
+If you are new to QuArK, these hints and InfoBase links come in handy if you
+do not know exactly what the item you are pointing at, does. So press <b>F1</b> to
+get the hint and information available, before asking about it in the
+<a href="http://quark.planetquake.gamespy.com/forums/">QuArK Forum</a>.
+
+Once you move your mouse outside the larger hintbox, it will automatically
+disappear.
+
+The <b>Hintbox</b> also has a secondary function, that of displaying useful
+informaiton as to the view you are in, the location of your cursor and certain
+items it is over such as a model mesh face (triangle) or drag handle. It will also display
+your cursor co-ordinances at the start of a drag and your current drag position to assist
+in the positioning of those drag handles. This also applies to the
+<a href="intro.modeleditor.skinview.html">Skin-view page</a> to aid in the <g>skinning</g>
+process of a model.
+
+</td><td valign=top>
+<center>
+<img border=1>hintbox_small.png</img><br><br>
+<img border=1>hintbox_large.png</img><br><br>
+<img border=1>hintbox_small2.png</img>
+</center>
+</td></tr>
+</table>

@@ -1,0 +1,5 @@
+title: EdSceneObject.PAS
+desc: tsceneobject
+
+The abstract base-class for a 3D-Render window-class, and the texture-manager object which
+stores used textures for the 3D-view.

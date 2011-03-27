@@ -1,0 +1,7 @@
+title: Texture folders
+author: Decker
+
+<img border=0 align=right>txlist.png</img>
+These folders are the same as the top folders from the texture browser. Plus
+theres an extra folder, which contain textures that are used in the current
+map.

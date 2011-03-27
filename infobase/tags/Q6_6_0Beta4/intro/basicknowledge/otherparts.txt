@@ -1,0 +1,40 @@
+title: Other parts of QuArK (incl. textures, prefabs and templates)
+author: Armin Rigo / Decker / cdunde
+
+The other parts of QuArK lack documentation. The general way QuArK works -- besides the map editor -- is by displaying files
+in windows with trees that describe the structure of the file. This lets you easily edit e.g. <tt>.PAK</tt> files.
+The texture browser, too, has a tree at its left, and the "New Map Items" window is itself a big tree. You work with trees a
+bit like you do with the Windows Explorer: Use the mouse to drag and drop or copy and paste anything, and use the right button
+while clicking or while dragging to get a pop-up menu. There are also commands in the menus to make new folders, etc.
+
+If you want to make changes in a tree -- e.g. make your custom textures or add new map items or prefabs -- you should first
+create a new "main folder" with the corresponding item in the "Folders" menu. This command will let you specify in which file
+this new main folder should be stored. You can then add stuff with the copy and paste, with drag and drop, or with the buttons
+at the top of the window, like "new sub-folder", "new texture list", "new texture", etc.
+
+
+<ul>
+<li><strong>Example 1: creating new textures.</strong><br>
+  In the texture browser, select "Folders", "New Main Folder". Choose the option that best suits your needs, then
+  click Ok. Then click on the new folder called "New Folder" (you can rename it if you like by single-clicking on its
+  name, as usual). Click on the button "new texture list" at the top. This create a sub-folder where you can store
+  textures. Use the above buttons "new texture" to create new textures. These buttons create sub-objects in the
+  folder, that is, they create an initially black texture. You should first rename it, and then you can edit it by
+  clicking on the button "call external editor". Note that all these buttons at the top only appear when you select
+  the corresponding object in the tree.
+
+<li><strong>Example 2: making prefabs.</strong><br>
+  Same procedure as above but in the New Map Items window. To organize the prefabs in sub-folders, use the command
+  "New sub-folder" in the "Folders" menu. Use copy and paste from the map editor. Also note that map prefabs can also
+  be drag-and-dropped directly on the panel at the left in the map editor, where there are already a cube and a light
+  by default.
+
+<li><strong>Example 3: making & using templates.</strong><br>
+  Templates are somewhat like prefabs but far more powerful. There is also a specific setting for selecting a Templates
+  folder for each game that QuArK supports in the Games Configuration section of every game. For a complete
+  understanding of templates please see its own section in <ref> intro/mapeditor/misctools/templates \ Misc tools </ref>.
+
+</ul>
+
+All your changes are saved in the file you specified in "New Main Folder". This is an "add-on" file that you can pass to
+your friends, if you like. Your friends must use the "Games" menu, "Add-ons", in QuArK's main window, to use your add-on.

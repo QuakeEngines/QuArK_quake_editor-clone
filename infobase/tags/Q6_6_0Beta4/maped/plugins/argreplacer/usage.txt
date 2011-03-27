@@ -1,0 +1,51 @@
+title: Usage
+author: Decker
+
+To explain the idea of the 'Arg Replacer', it is properly best to show an example.
+
+Say you have two <b>func_door</b>s and a <b>trigger_multiple</b> which
+should activate the two doors. Normally you would have to assign the same
+string to <i>targetname</i> of the two func_doors and in <i>target</i> of the
+trigger_multiple. If you then wanted a second copy of those three entities, you
+had to go in and change the string of all three specifics again, so the first
+trigger_multiple don't activate the second set of func_doors.
+
+With the 'Arg Replacer', you can put each copy of the three entities into an
+Arg Replacer object (as shown in the images), and then only in the Arg
+Replacer's specific/args change the string. When QuArK then builds the map, the
+special constructed value '<b>%</b>name<b>%</b>', will be replaced with the
+ones from the Arg Replacer object.
+
+In the image, both func_doors have set some of their specifics to values that
+the Arg Replacer should replace when the map is build:
+
+<img>argreplacer_1.png</img>
+
+The trigger_multiple also have a specific set, which match the <i>targetname</i> of the func_doors:
+
+<img>argreplacer_2.png</img>
+
+In the Arg Replacer, you add new specifics (<u>not</u> surrounded by
+<b>%</b> signs) that match the <b>%</b>name<b>%</b> args in the other entities.
+The argument is what they will be replaced with.
+
+<img>argreplacer_3.png</img>
+
+This is the result that QuArK will produce of the above three entities, that
+have their arguments replaced by the Arg Replacer:
+
+<img>argreplacer_4.png</img>
+
+Now you can take a second copy of the Arg Replacer, and its childs. But this
+time you don't have to change the arguments of the three entities:
+
+<img>argreplacer_5.png</img>
+
+Only the Arg Replacer's arguments have to be changed:
+
+<img>argreplacer_6.png</img>
+
+Remember! There is a blue hintbox, when viewing the Arg Replacer's spec/arg
+view.
+
+<img>argreplacer_7.png</img>

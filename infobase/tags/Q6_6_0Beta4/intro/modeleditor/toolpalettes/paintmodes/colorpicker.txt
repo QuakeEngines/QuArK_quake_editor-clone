@@ -1,0 +1,21 @@
+title: Color Picker
+author: cdunde
+
+<img  border=0 align=right>colorpicker1.png</img>
+
+When active along with one of the paint tool brushes, such as the
+<a href="intro.modeleditor.toolpalettes.paintmodes.html#solidcolor">Solid Color Paint</a> tool,
+you can <g>pick</g> a color to set the paint brush to use by clicking the <g>LMB</g> on a pixel in any of the editor's
+textured views or the Skin-view.
+
+If the <a href="intro.modeleditor.toolpalettes.paintmodes.html#airbrush">Airbrush Paint</a> tool
+is active, doing a click on a pixel using your <g>middle mouse button</g> will
+set the <g>second, or lower, color</g> of the airbrush as well. A <g>LMB</g> click over a pixel in any of
+the editor's textured views or the Skin-view will set its <g>primary, top or start, color</g> setting.
+
+Activated by itself, without one of the paint brush tools, will stop the <g>LMB</g> single click
+component selection function and the <g>MMB</g> auto zoom function. All other functions will remain
+in effect and active. Meaning you can edit and paint without having to change modes.
+
+Also, the color that is <g>picked</g> comes directly from the skin texture and not the view itself,
+which avoids any possible view settings distortion of that color.

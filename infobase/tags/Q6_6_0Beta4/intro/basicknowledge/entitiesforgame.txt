@@ -1,0 +1,24 @@
+title: Entities and other features that depend on the game only
+author: Armin Rigo / Decker
+
+As explained in <ref> ./compilingmaps </ref> above, some stuff depends on the game you are making maps for. This includes which
+entities you can use, which settings of these entities you can change, and what these settings really do. The list of textures
+you see in QuArK also depends on the game -- it's actually the list of the textures used in all the original maps of the game.
+Some games also have per-face attributes that let you make polyhedrons translucent or light-emitting, for example.
+
+A typical example of this are ladders. You first make a polyhedron structure with two vertical bars and a lot of horizontal
+steps, but this is not enough to let the game know that the player should be able to climb there. The way you do the latter
+depends on the game you are using. In Quake 2, for example, you must set a flag on the polyhedron faces (there is a button
+"polyhedron flags" bottom left when you click on a polyhedron). But in Half-Life, you must use a special invisible entity
+"func_ladder" and put it around the actual ladder structure. If you want to know the exact way to do this in QuArK, see
+<ref> ./usingmapeditor </ref> above; but if you didn't know that you had to use a flag for Quake 2 and a "func_ladder" for
+Half-Life, read on.
+
+The game-dependant features are not related to QuArK itself: All the map editors available on the Internet will provide you
+with a list of entities and textures and settings; what these settings actually do is programmed in the game itself. For
+information about this subject, you can look for general documentation at <a target="_blank" href="http://www.planetquake.com">PlanetQuake</a>.
+The other sources are Quake editing forums. You can use the
+<link forums>QuArK forums</link> (please mention explicitely which game you
+are using!). See also the links (right column in the current design)
+<link website>on the web site</link>, as well as the <link infobase>on-line docs</link>.
+There is also a <a href="http://quark.planetquake.gamespy.com/armin/adv-quake2.html">Quake 2 - specific page</a> on the web site.

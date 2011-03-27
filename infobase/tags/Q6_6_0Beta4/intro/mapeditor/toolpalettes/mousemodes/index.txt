@@ -1,0 +1,8 @@
+title: Mouse modes tool-palette
+desc: selectpoly
+desc: selectentity
+desc: selecteverything
+desc: createcube
+desc: polycutter
+
+<img>mousemodes.png</img>

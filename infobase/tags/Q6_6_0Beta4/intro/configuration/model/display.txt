@@ -1,0 +1,6 @@
+title: Display
+author: cdunde
+
+<img align=right>display.png</img>
+The options in this settings-folder, controls mainly the grid in the editor
+and Skin views. Experiment with them if you like.

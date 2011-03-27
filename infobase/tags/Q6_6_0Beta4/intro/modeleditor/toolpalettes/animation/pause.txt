@@ -1,0 +1,14 @@
+title: Play\Pause
+author: cdunde
+
+<img border=1 align=right>pause.png</img>
+Click this button to temporarily pause the chosen animation sequence on the particular frame
+that was drawn when this button was clicked.<br>
+Click this button again to continue on with the animation from that frame.
+
+If another frame of the chosen sequence is selected during the pause, it will continue
+from that point.<br>
+The entire frame sequence selection can also be changed during a pause.<br>
+Any single frame of that component can be viewed by clicking on it during a pause without loosing
+the chosen sequence of frames to animate.<br>
+If a component has more then one skin, the skin can also be changed during the pause.

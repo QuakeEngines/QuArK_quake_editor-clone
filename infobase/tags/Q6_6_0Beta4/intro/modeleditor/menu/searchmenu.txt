@@ -1,0 +1,38 @@
+title: Search menu
+author: Decker
+
+<img border=0 align=right>search.png</img>
+<i>Find Vertices</i>. This function selects the vertices entered for the component currently selected
+or selected from the drop down box. Place a comma between each vertex entered to find more then one.
+
+<i>Find Faces</i>. This function selects the faces entered for the component currently selected
+or selected from the drop down box. Place a comma between each face entered to find more then one.
+
+<i>Find Skin Vertices</i>. This function selects the Skin-view vertexes entered for the component currently
+selected or selected from the drop down box. Place a comma between each face entered to find more then one.
+
+<i>Find Skin Faces</i>. This function selects the Skin-view face vertexes for the faces entered of the component
+currently selected or selected from the drop down box. Place a comma between each face entered to find more then one.
+
+<i>Find Objects</i> This function will search for objects by their 'type'
+(the type of model object it represents, a bone, skin, frame...).
+
+<i>Find Camera Positions</i> This finds all the camera positions.
+
+<i>Editor next shot</i>. This selects and sets the next camera shot for the Editor's 3D view in the group.
+Cycling - Depress (default) 'F3' to switch to the next view.
+
+<i>Editor prev shot</i>. Selects and sets the previous camera shot for the Editor's 3D view in the group.
+Cycling - Depress (default) 'F4' to switch to the previous.
+
+<i>Editor 3D shot</i>. This creates a camera shot of the current editor's 3D view in either standard or 'True 3D' mode.
+Depressing the Hotkey (default) 'F5' will do the same thing.
+
+<i>Full 3D shot</i>. This creates a camera shot of the current Full 3D view in either standard or 'True 3D' mode.
+Depressing the Hotkey (default) 'F6' will do the same thing.
+
+<i>Full 3D next shot</i>. This selects and sets the next camera shot for the floating 3D Window in the group.
+Cycling - Depress (default) 'F7' to switch to the next view.
+
+<i>Full 3D prev shot</i>. Selects and sets the previous camera shot for the floating 3D Window in the group.
+Cycling - Depress (default) 'F8' to switch to the previous.

@@ -1,0 +1,11 @@
+title: Help menu
+author: Decker
+
+<img border=0 align=right>help.png</img>
+<i>Contextual help</i>. Opens your web-browser.
+
+<i>Help contents</i>. Opens your web-browser.
+
+<i>View console</i>. Shows a Python-console. Usefull when debugging plug-ins.
+
+<i>About</i>. Shows the about box.

@@ -1,0 +1,10 @@
+title: New Skins sub-group
+author: cdunde
+
+<img border=1 align=right>skinsubgroup.png</img>
+Creates a new Skins sub-group in the selected component's 'Skins' folder,
+where you can place skin objects in, used for Quake1 animation skins.
+If any existing skins are selected when this button is clicked
+it will place all of those into the new sub-group for you.
+
+This special folder exists because some model formats allow or require them.

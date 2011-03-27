@@ -1,0 +1,66 @@
+title: Downloading Files
+author: Rowdy / cdunde / DanielPharos
+
+<table width=100% cellspacing=0 cellpadding=0 border=0>
+<tr>
+<td align=left>
+<i>Downloading a Module:</i>
+
+Each folder is known as a <b>Module</b> of the program. To download a module, right-click it and select <b>Check Out</b>. This will download all of the files in the selected module to the Workspace-directory.
+
+The modules required to build the QuArK program and support files are:
+
+<i><b>infobase</b></i> - used to build the help files.
+
+<i><b>runtime</b></i> - the program support files: addons, Python files, icons, images... etc.
+
+<i><b>source</b></i> - the files used to build the QuArK.exe file.
+
+You probably want to check out <i><b>utils</b></i> too, since that contains the files to create the installer.
+</td>
+<td align=right>
+<img>checkout_utils.png</img>
+</td></tr>
+</table>
+
+<table width=100% cellspacing=0 cellpadding=0 border=0>
+<tr>
+<td align=left>
+This dialog is displayed while the module is being checked out and can be set to <b>Run in Background</b>, so you can continue to work with Eclipse while the files are being downloaded.
+</td>
+<td align=right>
+<img>checking_out.png</img>
+</td></tr>
+</table>
+
+<table width=100% cellspacing=0 cellpadding=0 border=0>
+<tr>
+<td align=left>
+Now switch to the <b>Resource</b> view to see the module files you have downloaded to your computer by clicking the icon circled in red and selecting Resource. All items shown are actually the files in your Workspace-directory.
+</td>
+<td align=right>
+<img>switch_to_resource.png</img>
+</td></tr>
+</table>
+
+<table width=100% cellspacing=0 cellpadding=0 border=0>
+<tr>
+<td align=left>
+<i>The Resource View:</i>
+
+Note that the "<b>></b>" indicates that a file has been changed or added. You can right-click an item and select <b>Refresh</b> (or press F5) to refresh that resource item to see what files you have changed.
+</td>
+<td align=right>
+<img>resource_view.png</img>
+</td></tr>
+</table>
+
+<table width=100% cellspacing=0 cellpadding=0 border=0>
+<tr>
+<td align=left>
+To check if there are any new files on the CVS, switch to <b>Team Synchronizing</b> perspective, and hit the <b>Synchronize CVS</b> button, circled in red to the right. This process might take a while, but all the changed files will eventually show up in the tree-view. A grey arrow to the right with the file indicates outgoing changes, and a blue arrow to the left incoming changes. (A conflict (red double-arrow) is handled in the Upload-section.) If you want to check out updated files, select them, right-click, <b>Update</b>. All the changed files will now be downloaded into your Workspace-directory. (Note: You can also use <b>Override and Update</b> to overwrite local changes, and resolve conflicts this way. Be careful, as this will OVERWRITE local changes!)
+</td>
+<td align=right>
+<img>synchronizing.png</img>
+</td></tr>
+</table>

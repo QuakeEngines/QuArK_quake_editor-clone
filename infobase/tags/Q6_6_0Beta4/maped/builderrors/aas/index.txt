@@ -1,0 +1,34 @@
+title: AAS - Area Awareness System
+author: DanielPharos
+
+This page lists various encountered errors, that may occur during the AAS phase.
+
+The following games that QuArK supports, are known to use an AAS phase:
+
+<center><table border=1 cellspacing=0 width=50%><tr><th align=left>Game</th><th align=left>Possible program-names</th></tr>
+
+<tr><td>
+Quake-3: Arena
+</td><td>
+"BSPC.EXE"
+</td></tr>
+
+<tr><td>
+Return to Castle Wolfenstein
+</td><td>
+"BSPC.EXE"
+</td></tr>
+
+<tr><td>
+Star Trek: Voyager - Elite Force
+</td><td>
+"BSPC.EXE"
+</td></tr>
+
+<tr><td>
+Star Trek: Elite Force 2
+</td><td>
+"BSPC.EXE"
+</td></tr>
+
+</table></center>

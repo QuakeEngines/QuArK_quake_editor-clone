@@ -1,0 +1,112 @@
+title: Commands menu
+author: Decker, tiglari
+
+<img border=0 align=right>commands.png</img>
+<i>Insert map item.</i> Activating this, will open the New map items window.
+
+<i>Build templates list.</i> Creates a list of
+<a href="intro.mapeditor.misctools.html#templates">Templates</a> for the current game mode
+that can be used if any exist.
+
+<i>Tricky force to grid.</i> Repairs maps that are off-the-grid.
+
+<i>Tag side.</i> This menuitem are created by a <g>plug-in</g>. It allows you
+to select, or tag as it says, a <g>face</g> of an polyhedron. With a
+tagged-face, the next three menuitems becomes active. See <ref>maped/plugins/tagside/basic</ref> for detail on how to use this function.
+
+<i>Clear tag.</i> Removes the tag.
+
+<i>Glue to tagged.</i> Another selected face or polyhedron, can be glued to the
+tagged face. Very usefull if you want another face to touch the tagged-face, so
+it will be somewhat seamless.
+
+<i>Wrap texture from tagged.</i> Should be enabled when the selected face is
+next to the tagged one, and should wrap the texture from the tagged onto
+the selection, with a fluent seam.
+
+<i>Add to tagged.</i> Should be enabled when there is a tagged face, and
+other face is selected; adds the selected face to the collection of tagged
+ones.
+
+<i>Link selected.</i> To use this one, you first need to create a multiple
+selection of faces all occupying the same plane.  This can be
+done with the 'Extend Selection from Face' from the
+<ref>intro/mapeditor/menu/selectionmenu</ref> below, or, if you have made
+a list of tagged faces, with the 'Select Tagged' item from the same
+menu.  What the Link selection command then does is 'link' all of the
+selected faces so that if one is moved, you will be invited to move all the
+others with it.
+
+<a name="orientation"></a>
+<i>Orientation.</i> Only active when you have selected a <g>face</g>. It will
+bring up a window where you can edit some attributes about that face. However,
+its not recommended that you do it this way, unless you know what you're doing!
+
+<i>Adjust angle.</i> Only active when you have selected a face. This will bring
+the angle of the face on the polyhedron, to the nearest angle by which you
+specified in the <ref> intro/configuration/map/building </ref>.
+
+<i>Delete face.</i> As it says. However, deleting a face will very likely make
+a polyhedron invalid.
+
+<i>Cone over face.</i> This will create a new set of faces in style as a cone,
+over the selected face. The number of new faces will be the number of
+<g>edges</g> the selected face has.
+
+<i>Swap face sides.</i> Will swap the face inside-out. Do not use this, unless
+you really want to!
+
+<i>Look At.</i> An open 3D view shifts to look at this face head on. (SHIFT to look at the face from the back)
+
+<a name="brushsubtraction"></a>
+<i>Brush subtraction.</i> This function will subtract one <g>brush</g> from another;<br>
+- first select the brush you want the subtraction to occur on,<br>
+- next select the brush that should be subtracted from the first.<br>
+Then you activate this menu item, or press the accellerator key <b>CTRL+B</b>.
+<br>Brush subtraction is the process of 'digging' a hole with the shape of a given polyhedron.Design a polyhedron with the shape of the hole, move it at the location where you expect a hole (that is, it must overlap at least one other polyhedron), and select this command. The polyhedrons that overlap this one will be 'digged'. If necessary, you can then remove the hole-shaped polyhedron. Note that all polyhedrons are always convex : this means that the polyhedrons you are digging into will usually be broken into several smaller pieces, each convex. To prevent these extra polyhedrons to make your map too complex, use a Negative polyhedron (a button bottom left after you selected a polyhedron), or a Digger (from the New Items window). There are other features that also lets you make holes; the most useful is probably the polyhedron cutter (button 'cut polyhedrons in two', top). If you select several polyhedrons, the last one subtracts in the other ones only (instead of in the whole world). You can use a group instead of a polyhedron as the subtracter.
+
+<a name="facesharesubtract"></a>
+<i>Face sharing subtraction.</i> This is an advanced brush subtraction method.
+If a <g>face</g> from the originally brush, will be split up into multiple
+faces by the subtraction, it will actually be converted into a face, which is
+shared by the brushes that will be created by the brush-subtraction. Read more
+about <ref> maped/tutorial/advanced/facesharing </ref>.
+
+<i>Extrude walls.</i> This extrudes walls from the faces, deletes the poly(s).
+
+<i>Make hollow.</i> This will create a polyhedron for each face the selection has,
+and delete the original selected polyhedrons. The inflate/deflate value in the
+Movement configuration window, determines the thickness of the new polyhedrons,
+and if they should occupy (negative value) or surround (positive value) the
+original selected polyhedrons.
+
+<i>Intersection.</i> This is basically a kind of <i>brush adding</i> function.
+It will try to create a new polyhedron which occupy the common area of the
+selected polyhedrons.
+
+<a name="disdupimages"></a>
+<i>Dissociate Duplicator images.</i> Only active when you have marked a
+duplicator. This will create actual copies of the duplicator-object(s), and
+remove the duplicator itself.
+
+<i>Reset Texture Cycle.</i> Reload files specifying texture cycles for duplicators.
+
+<i>Export texture-names.</i> Exports a list of used textures in this map, to a text-file.
+
+<i>Integralize Selected Faces.</i> If faces without integral threepoints have enough integral vertices to be used as threepoints, changes the face to use them (also forces nearly integral ones). Selects the ones it changes, for checking. Use Find Non-integral Faces on the search menu to find suitable victims. Research and fix the remaining ones by hand.
+
+<a name="heapstatus"></a>
+<i>HeapStatus.</i> This item only shows on the menu if <a href="intro.mapeditor.menu.html#developermode">Developer Mode</a> is activated on the 'Options' menu, shown below in that section. This function is used to display heap information which tracks changes in memory used by this program.
+
+<a name="makeprism"></a>
+<i>Make Prism.</i> This opens a dialog window for your input to create a prism of various types as well as texture selection.
+
+
+<i>Make X-Tree.</i> This is a simple 'tree' maker that allows you to select you texture, number of 'wings' and the scale size.
+
+<i>Swap Selection.</i> Swap first and second elements of 2 selected items.
+
+<i>Align selected.</i> Align items in selection along their bounding box edges, or along the edges of a marked object (RMB I Navigate Tree I <item> \ Mark).
+
+<a name="reload"></a>
+<i>Reload.</i> This item only shows on the menu if <a href="intro.mapeditor.menu.html#developermode">Developer Mode</a> is activated on the 'Options' menu, shown below in that section. When working on developing a plugin you can use this function to reload that plugin, or any other, without having to shut down and restart QuArK. However, in some cases this function is not always effective.

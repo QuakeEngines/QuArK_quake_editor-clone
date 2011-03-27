@@ -1,0 +1,8 @@
+title: New texture icons
+author: Rowdy
+
+<img border=1 align=right>newtexture.png</img>
+These buttons, one for each game, allow you to create a new blank texture.
+Once you click one of these, the <ref> ../details </ref>
+view will appear, allowing you to edit and change the properties of the
+texture.

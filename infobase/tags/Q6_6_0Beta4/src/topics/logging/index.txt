@@ -1,0 +1,41 @@
+title: Logging
+author: danielpharos
+
+<u>From the Delphi code</u>
+
+To output information to the QUARK.LOG, use the Log-call defined in the
+Logging.pas file.  There are several ways it can be called. The first
+parameter is optional and indicates the part of the code trying to log
+an item.  It is of the TLogName type:
+
+TLogName: LOG_DEFAULT, LOG_PASCAL, LOG_PYTHON, LOG_SYS, LOG_DEBUG.
+
+The second, also optional parameter indicated the severity of the item
+to be logged.  All calls to Log with a level equal or lower to the level-
+setting will be logged, the rest will be ignored.  The default logging
+level is 20.  To set the log level, see the information about Environmental
+variables below.<br>
+The rest of the parameters is the information to be logged.  This can be
+either a single string, or a string with format information followed by all
+the variables to put in.  See information about the Format function in
+Delphi.
+
+Internally, QuArK uses aLog to actually output the information to the log
+file.  This procedure should not be called directly.
+
+<u>Environmental variables for Logging</u>
+
+QuArK reads several environmental variables to control logging.  These are
+not set via a configuration file, because a problem with the file could
+cause a failure to create a logfile.  Environmental variables can be set in
+the operating system.  The following variables are related to logging and
+can be set:
+
+QUARK_LOG_FILENAME: The name of the file to log to.  This file will be
+cleared when QuArK starts up.<br>
+QUARK_LOG_PATCHNAME: The name of the log of a patcher.  Shouldn't be used
+anymore.<br>
+QUARK_LOG_LEVEL: The log level of QuArK. See above in the 'Delphi code'
+part for a description.
+
+See <ref> ../../pas/logging </ref> for more on logging.

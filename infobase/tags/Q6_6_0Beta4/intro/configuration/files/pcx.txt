@@ -1,0 +1,10 @@
+title: PCX
+author: DanielPharos
+
+<img align=right>pcx.png</img>
+
+<i>Select library for loading PCX files</i>. Here you can select the library you
+want to use to load PCX files.
+
+<i>Select library for saving PCX files</i>. Here you can select the library you
+want to use to save PCX files.

@@ -1,0 +1,4 @@
+title: Known bugs in the Source Code
+subdir: range leaks destroy
+
+This section discusses the quality of QuArK programming.  Over the years, many different people with a wide range of coding skills have been working on the QuArK Source Code.  And because there is no such things as a program without bugs (apart from Hello World maybe), there are a lot of bugs in the QuArK code.  Most can and should be fixed on sight.  However, there are some bugs that are burrowed in the code, and probably will be there forever.

@@ -1,0 +1,7 @@
+title: Special Paint Functions Dialog
+author: cdunde
+
+<img  border=0 align=right>dialog1.png</img>
+Not functional at this time. Reserved for future use.
+
+As the paint functions are developed this special dialog can be used to expand on any of those functions.

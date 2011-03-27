@@ -1,0 +1,60 @@
+title: Extruder
+author: tiglari
+
+The extruder has overlapping functionality with the
+<ref>maped/duplicators/path</ref>, but lacks
+some of its features, and has additional ones of its own (it's a different
+kind of implementation, with different potential).  Some significant strengths
+of the extruder are:
+<ul>
+<li>it has 2d editing facilities (either a special 2d editing window, or
+  circumference handles in a normal view) for controlling the shape of the
+  outline, which can be a hollow or solid (including concave) pipe, a patch
+  tube, or pipe with an outside square and inside complex outine).
+<li>it has a variety of faclities for positioning path points with respect
+  to each other (rmb on the path points).
+<li>it can automatically punch holes in things that it goes thru, both for the
+  inner and the outer circumference.
+</ul>
+To texture, it, dissociate the images, arrange the textures on the first section,
+then revert it back to being a duplicator.
+
+If you want to use the extruder 2d/outline editing features in combination with
+the features of the path duplicator, you can put a one-segment extruder into
+a path-duplicator's template group, and the shape will be extruded along the
+path.
+
+<table border=0 cellspacing=0>
+<tr><td valign=top align=left>
+<b>Extruder use steps:</b><P>
+
+1) Click on the blue cube to open the Shape Builders menu and double click on <b>Extruder</b> to put one in the Tree view.
+
+2) <g>RMB</g> click on it in the Tree view and select 2D view from the pop-up menu to get the <b>2D Extruder Window</b> to shape it.
+
+3) As you move the blue boxes around more green circles will appear and you move those to change the shape even more.
+       You can <g>RMB</g> click on a blue box, select <b>Add a point</b> to add more green points to use. Close the 2D Window when done.
+</td>
+<td>
+<img border=1 valign=top align=right>extruder1.png</img><br>
+</td></tr>
+</table>
+
+
+
+<table border=0 cellspacing=0>
+<tr><td valign=top align=left>
+4) In the editor, <g>RMB</g> click on the light blue square box at the other end of the extrusion poly,
+      select <b>Add a point</b> and a new section will be added to the poly. You use these light blue squares to drag to make the ploy
+      longer or angled.
+
+5) If you select <b>Path point properties</b> on the RMB menu, another dialog will open <b>Path Point Properties</b> where you can enter
+     a <b>Scale</b> amount to flair or reduce the opening at that point of the poly.
+
+There are other things you can do with it, so just play around with the properties settings and see what you come up with.
+
+</td>
+<td>
+<img border=1 valign=top align=right>extruder2.png</img><br>
+</td></tr>
+</table>

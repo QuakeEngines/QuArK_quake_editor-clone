@@ -1,0 +1,10 @@
+title: Generic
+desc: pakfiles_part1 pakfiles_part2
+desc: nameoflevel
+desc: rotatingbrushes
+desc: func_train
+
+This section contains general problems, which spans several or all games, that is supported by QuArK.
+
+If you have any questions, problems or find solutions regarding this topic, please post them in the
+<a href="http://quark.planetquake.gamespy.com/forums/">QuArK forum/mailing-list</a>.

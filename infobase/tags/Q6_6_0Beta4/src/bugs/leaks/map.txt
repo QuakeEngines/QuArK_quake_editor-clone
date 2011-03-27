@@ -1,0 +1,10 @@
+title: Open/Close Map Editor
+author: tiglari
+
+<UL>
+<LI>Windows Errors
+<UL>
+<LI>Three attempts to free unexisting resources from PyMapView.pas:2358 (mdrawmap)
+<LI>Another attempt to free an unexisting resource from QkForm.pas:422(QkForm.Destroy),
+with a different call stack from the one from opening and closing QuArK.
+</UL>

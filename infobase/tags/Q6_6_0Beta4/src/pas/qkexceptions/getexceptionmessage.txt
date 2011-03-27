@@ -1,0 +1,12 @@
+title: GetExceptionMessage
+author: DanielPharos
+
+<code>
+function GetExceptionMessage(E: Exception) : String;
+</code>
+
+This function takes a generated exception, and strips the additional information from it and adds a point to the end (<tt>.</tt>).
+
+The additional information is everything after a double slash (<tt>//</tt>), and is used by the exception handler for the MORE panel.
+
+This function should be used instead of <tt>E.message</tt> whenever possible.

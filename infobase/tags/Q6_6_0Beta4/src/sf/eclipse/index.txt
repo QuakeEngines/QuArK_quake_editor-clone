@@ -1,0 +1,4 @@
+title: Eclipse CVS client
+desc: installation configuration download upload comparing terminology
+
+This is Rowdy's guide to configuring Eclipse to access the QuArK CVS repository. This is at best a short introduction in Eclipse, but it should be enough to get you going, and teach you the basics of usage.

@@ -1,0 +1,77 @@
+title: Releasing a Distribution
+author: Peter Brett, DanielPharos
+
+(I'm going to assume that you're running Windows.)
+
+In preparation for creating a distribution, you'll need to carry out a
+couple of preliminary steps.
+
+<ol><li>Download and install Nullsoft Scriptable Install System (NSIS)
+2.0 beta 4 or higher from 
+<a href="http://nsis.sourceforge.net">http://nsis.sourceforge.net</a>.
+</li>
+<li>Checkout the <tt>utils</tt> module from QuArK CVS on SourceForge.
+This module contains the scripts and other files you'll need to be
+able to create the distribution.</li>
+<li>Make sure you have access permissions to work with the SourceForge
+release system.</li>
+</ol>
+
+So, once you've decided that you're ready to create a distribution,
+here's what you do.
+
+<ol>
+<li>First, work out what the version number is for this distribution
+(see <ref>src/distribution/policy</ref>). You'll probably need to
+discuss with other developers to decide what the state is going to be
+and whether to increment the the minor version, but for the sake of
+argument lets say the version number you come up with is '6.4.1beta3'.
+</li>
+<li>For a distribtion, it's necessary to update the version numbers
+in the QuArK executable. Go to the Project > Options > Version Info
+and update the numbers. Don't forget the copyright year!<br>
+Also, some const's in QkObjects need to be updated. Check them out
+and update where needed:
+<code>
+  QuArKVersion
+  QuArKMinorVersion
+  QuArKCopyright
+  QuArKUsedCompiler
+  QuArKCompileDate
+</code></li>
+<li>Most of creating a distribution is similar to creating a snapshot.
+First, do steps 1 to 3 of <ref>src/distribution/snapshot</ref>, with
+the difference that you name the files with the '6.4.1beta3' instead
+of the date, so <tt>quark-win32-20070831</tt> becomes
+<tt>quark-win32-6.4.1beta3</tt>.</li>
+<li>Open up your local copy of <tt>QuArK.nsi</tt>. You'll need to
+make some changes there:
+<ol>
+<li>Update the version numbers:
+<code>!define INSTALLER_EXENAME "quark-win32-6.4.1beta3.exe"
+!define PRODUCT_VERSION "6.4.1 beta 3"
+InstallDir "$PROGRAMFILES\QuArK 6.4.1 beta 3"
+</code></li>
+<li>Set the path to the files to create the installer with:
+<code>!define BUILDDIR "C:\QuArK_installer_files"</code>
+It is advisable to simply create this directory and copy the files into
+it manually.</li>
+<li>Set the path to the installer images:
+<code>!define SPLASHDIR "C:\QuArK_installer_splash_image"</code></li>
+</ol>
+</li>
+<li>Run the <tt>QuArK.nsi</tt> script. If you selected this option during
+the NSIS installation, right-clicking the file should provide you with
+that option. If not, open up <tt>QuArK.nsi</tt> in NSIS and create the
+installer there.</li>
+<li>It's not a bad idea to run some tests at this point. Test the
+installer, and make sure the new release does not have any obvious
+bugs.</li>
+<li>Zip up the source and infobase directories just as with the snapshot.
+Again: no fancy zip-compressions!</li>
+<li>Now create the release in SourceForge (see <ref>src/distribution/snapshot</ref>
+for more details about this).</li>
+<li>Create a news-announcement on the SourceForge-page.</li>
+<li>Tell the webmaster of the QuArK website to do the same. (It's probably
+smart to have similar text in both.)</li>
+</ol>

@@ -1,0 +1,33 @@
+title: Attributes of Internal objects of class "TreeMapBrush"
+author: Armin Rigo
+
+TreeMapBrush objects are all Quake's "Brush entities", that is, all entities with associated brushes. The top-level object
+worldspawn is a TreeMapBrush, and so are all doors, plats, etc. These objects have three additionnal read-only attributes.
+
+<table border=1 cellspacing=0 cellpadding=4>
+
+<tr><td class="doccode">
+listpolyhedrons
+</td><td>
+List of all polyhedrons within this brush entity. Operations of Diggers, negative polyhedrons, and Duplicators are computed, so the returned polyhedrons are not necessarily all found in the map tree. Polyhedrons from sub-brush-entities are not included, that is, if you apply listpolyhedrons to worldspawn, you will not get the polyhedrons from doors, plats, etc. listpolyhedron does exactly the same work as QuArK does when it should write the .MAP file section corresponding to a brush entity. This function returns polyhedrons with wrong texture positionning in the case of Quake 2 rotating objects; use Q2offset below.
+</td></tr>
+
+<tr><td class="doccode">
+listentities
+</td><td>
+List of all entities and brush entities within this brush entity, including the ones created by Duplicators, if any, and including the given brush entity itself.
+</td></tr>
+
+<tr><td class="doccode">
+listbeziers
+</td><td>
+List of all bezier patches within this brush entity, including the ones created by Duplicators, if any.
+</td></tr>
+
+<tr><td class="doccode">
+Q2offset
+</td><td>
+Relevant only in Quake 2 mode, and if the given entity is not worldspawn. Returns the texture offset computed from the "origin" brush in the entity, as with rotating doors. (Not implemented yet, ask me if you need this)
+</td></tr>
+
+</table>

@@ -1,0 +1,45 @@
+title: Specific games
+subdir: doom3
+subdir: hl2
+subdir: quake4
+subdir: rtcw
+subdir: rtcw-et
+subdir: stvef
+subdir: torque
+subdir: ufo
+author: Decker
+
+<img align=right>specificgames.png</img>
+Each kind of <g>FPS-game</g> has its own setup-options and <g>build tools</g>.
+In these folders, you must specify, for the FPS-games you want to develop for,
+where you've installed the game, how it should be started and with what
+command-line arguments it should run.
+
+You must also specify where QuArK can find the specific build tools, which are
+needed to build (compile) a map to something that the FPS-game can read and
+understand. On <a href="http://quark.planetquake.gamespy.com/download_tools.php3">http://quark.planetquake.gamespy.com/download_tools.php3</a>
+you can find file-archives with build tools for the FPS-games that QuArK
+supports.
+
+A build tool set typically consists of three or four different programs;
+
+<ul>
+<li>one to convert <g>.MAP</g> files into <g>.BSP</g> files (QBSP, TXQBSP),
+<li>one to optimize the drawing of visible walls/floors in-game (VIS, QVIS),
+<li>one to put lighting into the level (LIGHT, QRAD, ARGHRAD),
+<li>one to create AI pathfinding (BSPC) (not always applicable).
+</ul>
+
+With the release of QuArK 6.2, you now have more control of which build-tools
+should run, and in what order. There is place for up to nine different build-tools,
+per game.
+
+With the standard installation of QuArK, these build-tools are set to default
+values, which definitely does not conform to your own directory-paths. The first
+thing you need to do, is to tell QuArK where it can find the build-tools, and if
+you use other named build-tools than the default supplied, you need to change
+that too.
+
+There are lot of useful information to be found, regarding the QuArK build-tool
+configuration, in the fly-over hints. So keep your mouse-cursor steady on an
+item and read the hint.

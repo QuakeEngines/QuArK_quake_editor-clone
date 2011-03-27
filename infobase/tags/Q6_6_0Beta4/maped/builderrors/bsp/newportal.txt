@@ -1,0 +1,4 @@
+title: New portal was clipped away
+author: Andy / Armin (?)
+
+I don't know why this message sometimes pops up, resulting in large gray areas in Quake. My modest experience on it seemed to reveal that this error sometimes occurs when you stick a polyhedron into another one, if one face on a polyhedron ends up completely inside the other polyhedron, and if this face is not axis-aligned, i.e. it has a slope or orientation of something else than 0, 90, 180 or 270 degree. I got the above error after I slightly moved a polyhedron into another one to avoid a small gap between them, and all three conditions were suddenly met. The problem disappeared when I put the polyhedron back outside the other one.

@@ -1,0 +1,12 @@
+title: Animate on\off
+author: cdunde
+
+<img border=1 align=right>animate.png</img>
+This button will activate or de-activate the animation of the selected model component
+animation frames.
+
+You must select two or more frames of the same component and no other
+sub-items for the animation to become available.
+
+To return to regular operation mode you
+must click this button to turn 'Off' the animation function.

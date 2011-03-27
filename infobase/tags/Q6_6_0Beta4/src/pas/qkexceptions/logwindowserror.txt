@@ -1,0 +1,10 @@
+title: LogWindowsError
+author: DanielPharos
+
+<code>
+procedure LogWindowsError(ErrNr: DWORD; const Call: String);
+</code>
+
+Use this if a Windows API fails. This procedure logs the error message given by <tt>GetSystemErrorMessage(ErrNr)</tt> to the log with LOG_WARNING priority, and blaims the <tt>Call</tt> function call for producing it.
+
+Note: This never raises any errors (by default...), so the code WILL return!

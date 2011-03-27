@@ -1,0 +1,12 @@
+title: Required software
+author: Armin Rigo, Peter Brett, cdunde, DanielPharos
+
+First, note that you need no special software to browse the <link cvs>on-line version of the repository</link>.
+
+For more serious work, the software you need first is a CVS client. Although the command-line version works perfectly well, there is a GUI version (<a target="_blank" href="http://www.wincvs.org/">WinCVS</a>) available.
+
+If you want to be able to contribute your own changes to the source into the repository, you will also need an SSH client. You can use <a target="_blank" href="http://asp.planetquake.com/dl/dl.asp?quark/source/ssh-pack.zip">this one</a>, or alternatively you could use PuTTY (read <a target="_blank" href="http://sourceforge.net/docman/display_doc.php?docid=766&group_id=1">CVS client installation: WinCvs with PuTTY on 32-bit Microsoft Windows platforms</a> to help you get set up with it).
+
+Another CVS client with its own SSH client and much easer to configure is <b>Eclipse</b>. A complete description of <b>Eclipse</b>, links to the software needed and full configuration instructions can be found here <ref>src/sf/eclipse</ref>.
+
+Another useful program is <b>WinMerge</b>. This program allows you to compare two directories, complete with files and subdirectories, to look for changes. You can download it from the <a target="_blank" href="http://winmerge.org/">winmerge.org</a> site. It comes in handy when you want to maintain a local copy of the CVS to work in.

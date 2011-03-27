@@ -1,0 +1,50 @@
+title: Introduction
+author: tiglari
+
+There are currently shape builders for making arches,
+caps and bevels out of either brushes or patches, and
+also stairways.
+
+
+They are also for the moment introduced into maps by RMB
+(Right Mouse Button) clicking on an appropriate shaped
+(six-sided, boxy) brush in a map-view, and then selecting
+a menu item such as `Curves', `Brush Curves' or `Stair'
+from near the top of the speed menu that then appears.
+
+<center>
+<pic> rmb2.png </pic>
+</center>
+
+If the RMB menu items for the shape builders are disabled (greyed out,
+doing nothing), it may be because the code is doesn't think it
+knows how to use the brush as a basis for a shape (wrong number
+of sides, crazy angles, etc); a comment about this
+might appear in the help window called up by F1.
+
+What the RMB command actually does is create a `duplicator'
+(a sophisticated QuArK feature that creates shapes from data,
+on the basis of code in plugins) containing the original brush.
+So if we make a <act>Brush Curve | Arch</act> for example what we get looks
+like this in the treeview:
+
+<center>
+<pic> dup1.png </pic>
+</center>
+
+Features of the shape can then be further specified by setting
+specifics for the duplicator, and it can be dynamically
+resized by selecting the brush and dragging its faces.
+
+Two further points:
+<UL>
+<LI> No CSG operations should be performed on the brushes used by the
+shape-builders. The brushes need to be six-sided, CSG operations will mess this
+up and break them.
+<LI><pic border=0 align=right> light1.png </pic>
+Watch out for items other than the shape-defining brush getting into the
+duplicator (as in this screenie here, where a light has wandered in) such
+intruders won't appear in the map or the map views, & might mess things up.  If
+something you have inserted disappears when it's not selected, it might have
+gotten stuck inside a shape-builder.
+</UL>

@@ -1,0 +1,6 @@
+title: Subdivide 4
+author: cdunde
+
+<img border=1 align=right>subdivide4.png</img>
+If faces of a model component have been selected, those faces will be split, at one point and the middle of
+all 3 edges of each selected face, into 4 new triangles when this button is clicked.

@@ -1,0 +1,50 @@
+title: General Texturing
+author: cdunde
+
+To start with, select the desired area or, as here, the entire terrain surface. You can use the <a href="intro.terraingenerator.selection.html">Terrain Selector</a> that you have been using thus far, but only the <g>faces</g> that are movable will receive texturing. If you wish to texture the entire <g>polys</g> then you must use one of <a href="intro.mapeditor.toolpalettes.mousemodes.html">QuArK's  Standard Selectors</a>.
+
+<table width=100% cellspacing=0>
+<tr><td valign=top align=middle>
+<img border=1  align=middle>texture1.png</img>
+</td></tr></table>
+
+Then open <a href="intro.texturebrowser.overview.html">QuArK's Texture Browser</a>, select your texture as you would for any other <g>poly</g> and basically your terrain is complete!
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+<img border=1 align=right>texture2.png</img>
+</td><td valign=top>
+<img border=1 align=right>texture3.png</img>
+</td></tr></table>
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+One <b>key</b> factor is the <b>Basic Selector</b> and its ability to select only surface faces to aid in the process of texturing the terrain.
+
+Here we first select the entire terrain and apply our <b>base</b> texture. Then, using the <b>Face View</b> we can easily select <b>only</b> the faces that have been <b>moved</b> to apply their finial texturing. Remember, you only need to include the <b>center portion</b> of those faces within the <b>red rectangular selection box</b> for them to become selected. This is what causes the simplicity of their isolation and selection.
+</td></tr>
+</table>
+
+<table width=100% cellspacing=0>
+<tr><td valign=top align=middle>
+<img border=1  align=middle>texture4.png</img>
+</td></tr>
+</table>
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+Another nice technique is to <b>stair step</b> your texture. This can be done either <b>while</b> you are creating the terrain or after a portion has been completed.
+
+<b>Stair stepping</b> is the process of selecting inter sections of the terrain surface, applying the same texture and increasing its <b>scale size</b>, by using the <a href="intro.mapeditor.dataforms.html#faceview">Face View</a> settings as you work your way inwards.
+</td>
+<td valign=top align=right>
+<img border=1 align=right>texture5.png</img>
+</td></tr>
+</table>
+
+<table width=100% cellspacing=0>
+<tr><td valign=top align=middle>
+<img border=1  align=middle>texture6.png</img>
+</td></tr>
+</table>
+

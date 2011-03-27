@@ -1,0 +1,83 @@
+title: Additional attributes of Panel controls
+author: Armin Rigo
+
+<table border=1 cellspacing=0 cellpadding=4>
+
+<tr><td class="doccode">
+sections
+</td><td>
+The sections: (columns, rows) where rows and columns are two tuples of floats giving the position of the separation between adjacent rows (resp. columns). For example, (0.1,0.8) means three columns, the first one between 0% and 10% of the width, the second one between 10% and 80% of the width, and the third one between 80% and 100% of the width. Be careful about tuples with a single value: when there are exactly two columns or two rows, don’t write (0.6) because Python interprets this as a float; instead, write (0.6,). The default value for one row and one column is ((),()). Use negative floats to prevent the user from resizing himself the sections.
+</td></tr>
+
+<tr><td class="doccode">
+size
+</td><td>
+The width or the height of the panel, in pixels, if it is border-padded.
+</td></tr>
+
+<tr><td class="doccode">
+align
+</td><td>
+A string giving the padding mode: "left", "right", "top", "bottom", or "full" if not border-padded. You can switch between the four first modes by changing this attribute.
+</td></tr>
+
+<tr><td class="doccode">
+controls()
+</td><td>
+Returns a list of the controls within this panel.
+</td></tr>
+
+<tr><td class="doccode">
+newleftpanel(size)<br>
+newleftpanel(size,resizable)
+</td><td>
+Makes and returns a new left-padded panel with width size. resizable defaults to True; if it is False, the user cannot resize the panel himself.
+</td></tr>
+
+<tr><td class="doccode">
+newrightpanel(..)<br>
+newtoppanel(..)<br>
+newbottompanel(..)
+</td><td>
+See newleftpanel(..).
+</td></tr>
+
+<tr><td class="doccode">
+newfullpanel()
+</td><td>
+Returns a new subpanel that is not border-padded.
+</td></tr>
+
+<tr><td class="doccode">
+newexplorer()
+</td><td>
+Returns a new Explorer control (a tree view).
+</td></tr>
+
+<tr><td class="doccode">
+newdataform()
+</td><td>
+Returns a new Data Form control.
+</td></tr>
+
+<tr><td class="doccode">
+newmapview()
+</td><td>
+Returns a new Map View control.
+</td></tr>
+
+<tr><td class="doccode">
+newimagectrl()<br>
+newimagectrl(icon)
+</td><td>
+Returns a new Image Displayer control. If specified, icon is the initial value of the image attribute.
+</td></tr>
+
+<tr><td class="doccode">
+newbtnpanel()<br>
+newbtnpanel(btns)
+</td><td>
+Returns a new Button Panel control. If specified, btns is the initial value of the buttons attribute.
+</td></tr>
+
+</table>

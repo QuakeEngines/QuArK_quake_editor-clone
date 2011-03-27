@@ -1,0 +1,5 @@
+title: Displaying Tagged-ness
+desc: drawing tracking
+
+Our plugin still has the weakness that the map doesn't display any
+information about what side is tagged.  Now we'll see how to fix this.

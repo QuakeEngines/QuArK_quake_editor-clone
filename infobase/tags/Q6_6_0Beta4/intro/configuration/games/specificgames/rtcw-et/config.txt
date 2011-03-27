@@ -1,0 +1,151 @@
+title: Configuration
+author: cdunde
+
+In this short tutorial I will be showing you how to quickly setup Quark to compile and
+run maps for the Return to Castle Wolfenstein - Enemy Territory or RTCW-ET game engine.
+We have strived to preset its configuration as much as possible based on the games
+standard installation settings.
+
+<table border=0 cellspacing=0>
+<tr><td valign=top align=left>
+
+<b>Part 1 – Setting up QuArK to work with RTCW-ET</b>
+
+In this section we will quickly go over how to setup Quark to work with RTCW-ET.
+To start with load up Quark, you should be greeted with the 'Quark Explorer' panel.
+The Quark Explorer allows you to define which game environment you wish to work in,
+as well as doing many other things.
+
+First we need to select the game we want to map for. We do this by simply going
+to the 'Games' button located on the top right of the Explorer panel, once pressed it
+will present you with a drop list of all the currently available games, select
+RTCW-ET as shown in the screen shot to the right.
+
+Next we need to setup Quark to work with the RTCW-ET game engine, which is actually a variation
+of the Quake 3 engine. To do so go back to the 'Games' button and press the 'Configuration'
+button at the bottom of the list. 
+
+Once selected a new window will be opened called 'Configuration', making sure you have
+RTCW-ET selected on the left navigation panel, (under the Games Tab) as we now need
+to fill out some of the necessary game settings on the right of the Configuration panel which
+is shown two images below.
+
+But before we do that, go to your <b>Wolfenstein - Enemy Territory</b> game folder and create a new
+sub-folder named <b>QuArK files</b>. This is where the compiling program folder and its files will be placed.
+You will need to download the <a href="http://quark.planetquake.gamespy.com/download_gamepaks.php3">q3map_2.5.16_win32_x86.zip</a>
+file from the Official QuArK site.
+
+Also, see the <a href="intro.configuration.games.specificgames.rtcw-et.html#misc">Misc. Info.</a>
+section below for more detailed instructions on its installation.
+
+</td>
+<td>
+<img border=1 valign=top align=right>rtcw-et_config1.png</img><br>
+</td></tr>
+</table>
+<table border=0 cellspacing=0>
+<tr><td valign=top align=left>
+<b>Part 2 – QuArK game pack download</b>
+
+This is the QuArK RTCW-ET game support package. Download the <a href="http://quark.planetquake.gamespy.com/download_gamepaks.php3">QuArK_RTCW-ET.zip</a>
+file and extract it, using the folders path option, to the game folder location where you have RTCW-ET installed on your computer.
+
+All the paths to the "etmain" sub-folder have already been set in the zip file.
+The zip file is about 45.6 MB and will take around 1 minute with cable or DSL.
+
+This package has been created to work with QuArK 6.5.0 alpha 8 or later and will give the most complete
+support available.
+
+Every effort has been made working through the RTCW-ET game files and other sources to allow the viewing
+of all available textures in <a href="intro.texturebrowser.overview.html">QuArK's Texture Browser</a>,
+all game models viewable in the 3D editor Texture views and detail entity settings with the use of
+pre-defined dropdown list, model selection and variations list, file selection capabilities for models
+and sounds, as well as 'color pickers' for all lighting functions. Even a few 'script\shader' corrections.
+
+</td>
+<td>
+<img border=1 valign=top align=right>rtcw-et_config4.png</img>
+</td></tr>
+</table>
+<table border=0 cellspacing=0>
+<tr><td valign=top align=left>
+<b>Part 3 – QuArK RTCW-ET Configuration settings</b>
+
+As you can see in the image below, most of the settings have already been set with a default
+entry. While others have been pre-coded in
+QuArK's Defaults.qrk file that you can not see. This will prove to make life a lot easyer
+when you go to build and run your maps in RTCW-ET.
+
+<i><u>RTCW-ET command-line</u></i>: Even though this is pre-set for you, I wanted to explain
+exactly what the added items are that follow the ET.EXE entry, the entire line is:
+
+<ul>ET.EXE +set sv_cheats 1 +set sv_pure 0 +set g_gametype 2 +set fs_homepath etmain +set fs_game tmpQuArK +devmap "%filename%" +exec
+
+<li><b>+set sv_cheats 1</b> lets you use the game console (by pressing the ~ Tilde key)
+developer commands like /noclip, /god and /give all.
+<li><b>+set sv_pure 0</b> this causes your map to be loaded directly into the game engine, bypassing all the normal startup movies.
+<li><b>+set g_gametype 2</b> this tells the engine to accept your map as a developers game type 2 map and starts a local server for it to run.
+<li><b>+set fs_homepath etmain</b> gives the path to the <b>etmain</b> game sub-folder in the RTCW-ET folder,
+where the .pak files are.
+<li><b>+set fs_game tmpQuArK</b> a second <b>tmpQuArK</b> sub-folder will be created in the above
+<b>etmain</b> folder, this sets it as a mod folder.
+<li><b>+devmap "%filename%"</b> this sets your map <b>%filename%</b>
+(a variable that holds your map's name) as the map to load into the game.
+<li><b>+exec</b> this executes these commands and starts the game engine.
+</ul>
+
+<i><u>Directory of RTCW-ET</u></i>: If this does not match your RTCW-ET folder location, use the <b>...</b> button to select your RTCW-ET folder.
+
+<i><u>RTCW-ET CD_ROM drive</u></i>: This is the location of the game cd if you need to operate it from there, just click on the ... button to select the cd drive.
+
+<i><u>Run these build-programs...</u></i>: This allows the display of the building, compiling, process in QuArK's console.
+
+<i><u>Default directory of build-programs</u></i>: Does not need any settings here.
+
+<i><u>Run tools from base directory</u></i>: Do not check this box unless you plan to put both build programs in the same folder and set its folder path above.
+
+<i><u>Output Map Format</u></i>: The default setting for "Brush Primitives" should be correct here. If not there are other options you can choose from or just type in your own.
+
+<i><u>1st through 4th program</u></i>: These are pretty self explanatory, just make sure the "q3map2.exe" is set to the correct path for you. If not just use the ... button to select the file.
+</td></tr>
+</table>
+
+<table width=100% cellspacing=0>
+<tr><td valign=top align=middle>
+<img border=1  align=middle>rtcw-et_config2.png</img>
+</td></tr></table>
+
+After you have finished setting Quark to work with the RTCW-ET engine, simply hit the 'Apply'
+button, and then press the 'OK' button to close the Configuration panel. This will put you
+back in the Quark Explorer. Now is also a good time to close QuArK completely, this will
+save your settings in the Setup.qrk file. You're done!
+
+<b>Part 4 – Compiling</b>
+
+When you are ready to compile your map, simply select the "Go ![textures+build+Rctw-ET]"
+main menu item, which is a "Full" build, meaning for, textures, their script files
+and lighting. This will cause QuArK to export the map file to your RTCW-ET\tmpQuArK\maps
+folder, texture files to the textures folder and script files to the scripts folder. If any of the
+folders do not exist then QuArK will create them. Once that is done, QuArK will then start up the
+build program to complete the process of compiling the map file and build the rest
+of the files needed to run in RTCW-ET. Some of these additional game files will be placed in a second folder
+with the same name "tmpQuArK" but that folder will be in the RTCW-ET "etmain" game directory folder.
+Then the game will be started to load your map and display it !
+
+<table border=0 cellspacing=0 align=middle>
+<tr><td valign=top align=middle>
+<img border=1 valign=top align=middle>rtcw-et_config3.png</img>
+</td></tr>
+
+<tr><td><br>
+The rest of the RTCW-ET menu items are variations of the "Full" build process to expedite the compiling
+and in game viewing time when a "Full" build is not needed.
+
+Because you have already completed the configuration steps above you will be able to see
+your map in QuArK's Textured 3D view. Even that part is automatically done for you. Just
+place your mouse cursor over that view, click your <g>RMB</g> and select "Textured" from
+the pop-up menu. Just a few more minor but important pointers in the
+<a href="intro.configuration.games.specificgames.rtcw-et.html#misc">Misc. Info.</a>
+section below and you're good to go.
+</td></tr>
+</table>

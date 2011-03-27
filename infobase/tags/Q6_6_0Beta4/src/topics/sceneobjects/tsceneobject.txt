@@ -1,0 +1,62 @@
+title: TSceneObject
+author: tiglari
+
+TSceneObject defined in 3dfx/EdSceneObject.pas, with subclasses:
+
+  3dfx\EdSoftware.pas(183): TSoftwareSceneObject = class(TSceneObject)
+  3dfx\EdGlide.pas(178): TGlideSceneObject = class(TSceneObject)
+  3dfx\EdOpenGL.pas(181): TGLSceneBase = class(TSceneObject)
+  3dfx\EdDirect3D.pas(78): TDirect3DSceneObject = class(TSceneObject)
+  
+  Note: Line numbers will change as history is added to the front of the file.
+
+The first is the class for the software, the second for Glide (3dfx) 3d
+textured views, the third for the OpenGL one, and the last is the start of
+an unfinished projet to produce a Direct3D view; the appropriate
+constructors are called by python/PyMapView:TPyMapView.NeedScene.
+
+There also are several files that are used by the renderers:
+
+  3dfx\Glide.pas     (Used by Software and Glide)
+  3dfx\GL1.pas     (Used by OpenGL)
+  3dfx\Direct3D9.pas     (Used by Direct3D)
+  3dfx\Direct3D.pas     (Used by Direct3D)
+  3dfx\DirectDraw.pas     (Used by Direct3D)
+  3dfx\DX9.pas     (Used by Direct3D)
+  3dfx\DXErr9.pas     (Used by Direct3D)
+  3dfx\DXTypes.pas     (Used by Direct3D)
+
+EdSceneObject.pas:  This is divided into two sections, one concerned
+with TSceneObject, the other with TTexture Manager.  The interesting
+non-virtual method is BuildScene, which is very big - Armin seems
+to often have gone for extremely long functions, which are supposed to
+be bad style, so perhaps we could think about breaking this one
+up into intelligible bits?
+
+An important type in 3d scene building is PSurface, defined in
+prog/QkMapPoly.pas, which defines a visible polyhedron face.  It
+is a pointer to a TSurface, defined as follows:
+
+TSurface = record
+             Source: TTreeMap;
+             F: TFace;
+             NextF: PSurface;   { linked list of PSurfaces for a given face }
+             prvVertexCount: Integer;
+             prvVertexTable: TFVertexTable;
+            end;
+
+Each face has a linked list of PSurfaces because of face-sharing. F is
+used to get info about the texture-name, etc., Source isn't used by
+this module.  The PSurfaces are rebuilt by code in QkMapPoly.pas.
+
+The AddSurfaceRef sub-procedure of BuildScene adds a surface to a master-list
+of surfaces, TSceneObject.FListSurfaces, accesible also as read-property
+ListSurfaces. Need to understand BuildScene to see what this does.
+
+Questions about TSceneObject:
+
+  how does BuildScene work?
+  what is SetColor do for?
+  what is the purpose of ChangeQuality?
+    It seems to be related to cutting the resolution in half in the software
+    renderer.

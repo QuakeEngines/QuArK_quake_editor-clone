@@ -1,0 +1,9 @@
+title: Compass Y-axis rotation
+author: Decker
+
+<img border=0 align=right>yaxis.png</img>
+Rotates the map-views.
+
+This is useful, if you use the classic map-layout, so you can see 'the other
+sides' of your map, without having to manually
+<ref>../toolpalettes/movement/rotate \ rotate </ref> the objects.

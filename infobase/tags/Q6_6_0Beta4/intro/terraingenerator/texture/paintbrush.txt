@@ -1,0 +1,61 @@
+title: Texture Applicator & Dialog Box
+author: cdunde
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+This section covers the <b>Texture Applicator</b> or "paint brush" and its related Dialog Input functions. It does everything that the <a href="intro.terraingenerator.selection.html#basicselector">Basic Selector</a> does when you are in the 2D views of the editor. However, in the <b>textured 3D views</b> it works entirely different. Much like on the <a href="intro.mapeditor.dataforms.html#faceview">Face-view</a> page, all of its input is <b>Live Edit</b>, meaning these take effect, and reflect, so as soon as you enter them.
+</td>
+<td valign=top align=middle>
+<img border=0>paintbrush1.png</img>
+</td></tr>
+</table>
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+The <b>Texture Applicator</b> can also use the <a href="intro.terraingenerator.selection.html#basicselector">Basic Selector's Dialog Input</a>, but that can only be brought up by selecting the Basic Selector, clicking the Selector Dialog Input button and then switching back to the Texture Applicator.
+
+Like the Basic Selector, the <b>Texture Applicator's</b> dialog will appear when you click on the <b>Selector Dialog Input</b> button while in this selector mode.
+
+This particular dialog is a combo input box that it shares with the <a href="intro.terraingenerator.shaping.html#touchuptool">Touch-up Selector</a>.
+
+The <b>first input box</b> of the dialog, <b>Texture</b>, is for the selection of the texture that is currently being used. Meaning it will apply the texture that is displayed  within the input window. There are two ways you can use this and works the same for all of the other input boxes.
+</td>
+<td valign=top align=right>
+<img border=1>paintbrush2.png</img>
+</td></tr>
+</table>
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+You can select the texture by clicking the "<b>. . .</b>" input button to bring up the <a href="intro.texturebrowser.overview.html#overview">Texture Browser</a> and pick one from there, or select any <g>face</g> of any <g>poly</g> in the map, click the <b>Selector Dialog Input</b> button and that face's texture and all other data will be entered for you automatically, unless the <b>Retain</b> check box is active. Then only the <b>Origin</b> values will remain unchanged.
+
+The <b>Origin</b>, or <b>second input box</b>, can be made manually in the input box area or changed by clicking on the 4-way button next to it. This takes two values for the X and Y positions of the texture and will move it left and right or up and down on the face, decimals can be used.
+
+The <b>third input box</b>, as mentioned above, will <b>Retain</b> the origin that is currently displayed. When this is active, or checked, the texture will use these amounts as a fixed point and give a smooth continuous appearance. If unchecked each <g>face's</g> origin will be used and give a chopped up look to the surface as a whole.
+
+The <b>Scale size</b> input will stretch or shrink the texture's width or height and is used a lot to get a <b>wood grain</b> or distorted appearance to change the overall look. As a <b>percentage factor</b> of the texture size, the default values are 100 100.
+
+<b>Angles</b> will rotate, or tilt, the texture on the face and again takes two amounts for the X and Y axis, in that order.
+
+<b>Color Guide</b>, when active or checked, will display the colored <g>face</g> shapes as shown above by simply moving your cursor over a particular terrain surface area. These do not apply any texturing, but are used as a guide to go by. The <b>Fuchsia</b> color shows the <b>up</b> faces and the <b>Dark Blue</b> shows the <b>down</b> faces. These are only temporary and can be cleared, or removed, from the view by holding down the <g>RMB</g> for a second or doing a slight movement of the view. They will only appear on <b>movable terrain faces</b> to distinguish them from regular <g>faces</g>.
+
+<b>Sides Too</b> and <b>Sides Only</b> actually toggle each other, meaning you can only use on at a time and one will turn off the other automatically. <b>Sides Too</b> will allow you to apply texture to the <b>side</b> faces as you apply it to the top and/or bottom faces. <b>Sides Only</b> will only allow texture to be applied to the <b>side</b> terrain faces for situations where they are exposed to the scene. Such as cliff sides.
+
+<b>Variance</b> does not apply to the <b>Texture Applicator</b>. This is used by the <a href="intro.terraingenerator.shaping.html#touchuptool">Touch-up Selector</a> and is covered in that section.
+
+Clicking the <b>Reset to default</b> button is a quick way to reset the <b>Scale size</b> and <b>Angles</b> to their default values and bringing the texture back to its normal appearance. For example, if the two <b>Scale size</b> values where set to say 1 1 then you would only see a solid color because it is redrawing the texture to only one percent of its actual size making it extremely small and un-displayable. <b>Reset</b> will also restore all of the other default values, from, and including, the <b>Retain</b> setting on down.
+
+This particular dialog can also be used for poisoning the texture on <b>any</b> face in a map to align your textures. It will remain open and on top of the editor until you close it with the "<b>X</b>" button. Also, it can be moved to any location and stretched to any size.
+</td></tr>
+</table>
+<table width=100% cellspacing=0>
+<tr><td valign=top align=middle>
+<img border=1  align=middle>paintbrush3.png</img>
+</td></tr>
+</table>
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+
+Actually applying the texture is very simple. Just hold down the <g>LMB</g> and pass over the areas you wish to change. As shown above, the <g>faces</g> receiving the new texture will turn <b>Yellow</b>, which will disappear when the movement has paused or the <g>LMB</g> is released and the new texturing will appear. Sometimes the 3D view will not refresh properly and you may need to press the <b>Tab</b> Hotkey a couple of times to get it to do so. Unfortunately, this is a problem that has existed in <b>QuArK</b> for some time.
+</td></tr>
+</table>

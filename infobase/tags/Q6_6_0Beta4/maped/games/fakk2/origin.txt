@@ -1,0 +1,4 @@
+title: Origin collision in game
+author: DanielPharos
+
+For some reason, the player can't reach the origin ingame: you keep bumping into it. It's almost asif there is a small collision cube around it. This appears to be a bug in the game (or maybe the compiler). Keep this in mind when making your map! Position your map such that the (0, 0, 0) point is not inside your map!

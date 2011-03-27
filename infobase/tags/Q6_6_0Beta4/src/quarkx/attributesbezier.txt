@@ -1,0 +1,24 @@
+title: Attributes of Internal objects of class "Bezier"
+author: Armin Rigo
+
+These objects are Bezier patches (for Quake 3). They can actually represent any "quilt" of <tt>m</tt> times
+<tt>n</tt> joined quadratic Bezier patches, where <tt>m</tt> or
+<tt>n</tt> can be zero (for Bezier lines).
+
+For more information about Bezier patches see <ref> src/pas/bezier </ref>.
+
+<table border=1 cellspacing=0 cellpadding=4>
+
+<tr><td class="doccode">
+cp
+</td><td>
+This read/write attribute lists all control points of the Bezier face. It is a tuple of tuples of 5D vectors, making a rectangular array of control points. Both dimensions of the rectangle are odd numbers. When writing to this attribute, the following rules apply: the tuples can be replaced by lists, and the vectors can be 3D only (in which case the old texture coordinates are not modified).
+</td></tr>
+
+<tr><td class="doccode">
+texturename
+</td><td>
+The name of the texture.
+</td></tr>
+
+</table>

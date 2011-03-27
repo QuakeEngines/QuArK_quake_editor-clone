@@ -1,0 +1,195 @@
+title: Coordinate Systems and the Dot Product
+author: tiglari
+
+The dot product (also sometimes called the 'inner
+product') might be the leading 'value for money'
+vector operation, since its definition is simple and
+its results extremely useful.  For sequence vectors,
+we can define it like this:
+<code>
+&lt;x,y,z&gt;*&lt;p,s,t&gt; = x*p + y*s + z*t
+</code>
+In other words, to compute the dot product of
+two vectors, multiply their corresponding components,
+and add the results.
+
+In QuArK python, the dot product is represented
+by the '*' symbol, so that if u and v are vectors,
+'u*v' will be their dot product, a number.  If you
+crank through the definition, you can work out that
+the dot product obeys many (but not quite all)
+applicable instances of the
+associative and commutative laws, such as (where u and v are
+vectors, and a is a number):
+<code>
+u*v = v*u
+a*(u*v) = (a*u)*v
+(a+b)*u = a*u + b*u
+a*(u+v)  = a*u+a*v
+</code>
+One that doesn't work is:
+<code>
+(u*v)*w = (u*w)*v  (NOT!!)
+</code>
+where u, v w are all vectors.
+
+One aspect of the geometric significance of the dot
+product is that we can use it to compute the length
+of a vector:
+<code>
+length(v) = sqrt(v*v)
+</code>
+This follows from the Pythagorean formula for the
+hypoteneuse (long side) of a right triangle, generalized
+to give the diagonal of a box.  However we don't actually
+have to know this for QuArK Python, since the abs()
+function delivers the length of a vector.  Also in
+QuArK Python, the square root function needs to be preceded
+by 'math.', since it's part of the math module, so we
+can render the above equation into an always-true
+QuArK Python statement as follows:
+<code>
+abs(v) == math.sqrt(v*v)
+</code>
+This illustrates a very important feature of the dot
+product, which is that even though we compute it from
+coordinates, which depend on a choice of a basis, it is
+actually independent of the exact choice of basis: no matter
+what basis we chose to get an sequence vector w representing
+a geometric vector v, the dot product w*w will be the same.
+This means that we can think of the dot product as
+a property of geometric vectors, as well as sequence
+ones.
+
+A further essential fact about the dot product is that if
+the dot product of two sequence vectors is zero,
+then the geometric vectors they represent, with
+respect to any coordinate system, will be zero.  So
+we have a fast and easy to compute test for
+perpendicularity.  A typical application is determining
+whether a point lies on a plane.
+
+One way to represent a plane is to pick one vector
+p representing a point on the plane (it doesn't
+matter which one), and another vector n to represent
+a 'normal' to the plane, that is a line perpendicular to it. (If
+(If the plane is thought of as dividing space into an 'inside'
+and an 'outside', there is an essentially arbitrary
+convention that the normal sticks into the outside.
+So the direction handles sticking out of faces in
+QuArK are normals to the face plane, pointing in the
+conventional direction).  The plane will then be
+defined as all points v such that the vector from v
+to p is perpendicular to n.  And given a point v, we
+can test it for lying on the plane by seeing if
+n*(p-v) equals the 0 vector &lt;0,0,0&gt;.
+
+The &lt;0,0,0&gt; vector evaluates to 'false' in a QuArK
+Python conditional, so a piece of code might be:
+<code>
+if not n*(p-v):  # if v lies on the plane defined by p, n
+  [do something]
+</code>
+Recall that when we're using vectors to represent points
+(v and p), we're assuming a prior choice of origin, but
+n is a direction, so doesn't require an origin, and notice
+that p-v will be independent of the choice of origin,
+since if you move the origin by say some vector d, d
+will be addeed to both v and p, and so cancel out in their
+difference.
+
+The perpendicularity test provided by the dot product
+is a consequence of something more general, which we
+push on to investigate.
+
+Suppose we have two vectors, u and v, which we represent as
+lines in space going from an arbitrarily chosen origin to the
+point that the vectors relate to that origin, and we draw a line
+from the end of u so that it intersects the line that v
+extends along, and is perpendicular to v.  The relation
+between the origin and this intersection point is then
+a vector, which might point in the same direction as
+v, or the opposite one.
+
+This vector is called 'the projection of v onto u'; note
+that it depends on the length and direction of v, and
+the direction of u, but <strong>not</strong> on the
+length of v.  The big news is that projection of u onto v,
+which we've defined geometrically, can be computed algebraically
+using the dot product:
+<code>
+proj(u,v) = ((u*v)/abs(u))*u
+</code>
+The ability to compute these projections is something we
+can put to use in various ways. 
+
+Suppose we have a point v, and a plane defined by a point
+v and a normal vector n, and what we want to do is to
+'project' the point v to the plane along the plane's normal,
+that is, find a vector that is perpendicular to the
+plane that will take v onto a point in the plane (this
+might be part of a routine to attach an object to a face,
+for example).  Now we already have one vector (p-v) that
+will take p onto the plane, but this isn't the one we
+want because it might not be perpendicular to the
+plane.  But we can fix this by projecting (p-v) onto
+the normal.  The resulting vector will be parallel to
+the normal and therefore perpendicular to the plane,
+and the line connecting its end to v will also be
+perpendicular to the normal, so its satisfies the test
+above for being on the plane (you should try to visualize
+this too, to see intuitively that it makes sense).
+
+And since plane normals, including the output of face.normal
+in QuArK Python, are by convention of length 1, we can drop
+the abs(u) term from the computation, and find the vector
+proj taking v onto the plane by computing:
+<code>
+proj = ((p-v)*n)*n
+</code>
+And if we want the actual point, we just add proj to v.
+
+A more general version of this is to project a point to a
+plane along any normal; that's what the procedure projectpointtoplane
+in quarkpy.maputils does.  The idea behind that code is to take
+two dot products of the plane normal, one with the vector from
+the point we're projecting from to the point that defines the
+plane, the other with the vector we're projecting along.  These
+are used to compute a ratio, by which the 'along' vector is
+multiplied to produce the projection vector.
+
+A final, easier, example is the 'perptonormthru' procedure,
+also in quarkpy.maputils.  Here the idea is that we're given
+a 'source' point, a (sort of) 'destination' point, and a normal
+vector thru the destination point.  The idea is to find vector
+that's perpendicular to the normal, going from source to a point
+on the line of that normal (so the destination)
+is only a sort-of destination.  So the idea here is to compute
+the projection of (source-dest) onto norm, then subtract that
+from (source-dest) to get the desired answer.  This procedure is
+used in various ways, for example in computing the circumference
+of prism-shaped brushes with irregular ends in the texture-wrapping
+code.
+
+And finally we come to the most general and important application.
+Suppose u is coordinate axis of a basis. Then u*v
+is v's coordinate for that axis, w.r.t. the basis.
+So out of all of this we have gotten a way to compute the
+coordinates of a vector w.r.t a new coordinate system.
+This is very convenient.  Suppose we've worked out the
+coordinates of a bunch of points, and suddenly decide that
+we need them w.r.t a different coordinate system.  It would
+be annoying to have to pull out our surveying gear and measure
+everything again, but thanks to the dot product we don't
+have to.  All we have to do is get the coordinates of
+the new origin (w.r.t the original coordinate system),
+call it <b>o</b>, and of the new basis vectors.
+If <b>v</b> is an
+sequence vector representing a point in the old
+coordinate system, and <b>ax</b> is an axis vector
+of the new basis, then (<b>v</b>-<b>o</b>)*<b>ax</b>
+will be <b>v</b>'s ax-coordinate in that basis, also with
+three computations of this nature, one for each of the
+new axes, we can get the new coordinates.
+
+

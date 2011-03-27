@@ -1,0 +1,35 @@
+title: Layout menu
+author: cdunde
+
+<img border=0 align=right>layout.png</img>
+<i>Wireframe</i> will change all model-views to show the model as
+wireframe-graphics. This is the fastest drawing-method of the model-views.
+
+<i>Solid</i> will change all model-views to show the model as a solid object.
+This means that you won't be able to 'see-through' the model once it's in
+view.
+
+<i>Textured</i> will change all model-views to show the model with it's
+applied textures and alignment.
+
+<i>3D view</i> will create a new free-floating 3D edit window.
+You can actually edit the model in the 3D view
+and manipulate its 'mesh' (frame shape). This view, and all the others,
+can use the OpenGL standard 3D graphic library. 
+<span class="sm">(Silicon Graphics' OpenGL drivers for Windows:
+<a href="http://www.berkelium.com/OpenGL/sgi-opengl.html">http://www.berkelium.com/OpenGL/sgi-opengl.html</a>.)</span>
+
+<i>Show whole level</i> will in wireframe-mode, draw all lines the model
+consists of, even those that can't be seen simultaneously in all model-views.
+
+<i>Gray out of view</i> will in wireframe-mode, draw grey lines of those parts
+of the model, which can't be seen within the model-views.
+
+<i>Hide out of view</i> will in wireframe-mode, only draw lines for those parts
+of the model, which is within the model-views.
+
+<i>Panel at right</i>. Check this menu-item, if you want the compass, dataform
+and that area, moved to the right of the model-views.
+
+<i>Layouts</i>. These menu-item are used to change between the different
+model-layouts.

@@ -1,0 +1,90 @@
+title: VIS - Visibility
+author: Decker
+desc: loadportals
+
+This page lists various encountered errors, that may occur during the VIS .bsp-optimization phase.
+
+The following games that QuArK supports, are known to use a VIS .bsp-optimization phase:
+
+<center><table border=1 cellspacing=0 width=50%><tr><th align=left>Game</th><th align=left>Possible program-names</th></tr>
+
+<tr><td>
+Quake-1
+</td><td>
+VIS.EXE, RVIS.EXE
+</td></tr>
+
+<tr><td>
+Hexen-2
+</td><td>
+VIS.EXE
+</td></tr>
+
+<tr><td>
+Quake-2
+</td><td>
+QVIS3.EXE, TIMVIS3.EXE
+</td></tr>
+
+<tr><td>
+Heretic-2
+</td><td>
+QVIS3.EXE, TIMVIS3.EXE
+</td></tr>
+
+<tr><td>
+Half-Life
+</td><td>
+VIS.EXE, HLVIS.EXE
+</td></tr>
+
+<tr><td>
+Sin
+</td><td>
+QVIS3.EXE
+</td></tr>
+
+<tr><td>
+Kingpin
+</td><td>
+KPVIS.EXE
+</td></tr>
+
+<tr><td>
+Soldier of Fortune
+</td><td>
+SOFVIS.EXE
+</td></tr>
+
+<tr><td>
+Soldier of Fortune 2
+</td><td>
+"Q3MAP.EXE -vis", "Q3MAP2.EXE -vis"
+</td></tr>
+
+<tr><td>
+Quake-3: Arena
+</td><td>
+"Q3MAP.EXE -vis", "Q3MAP2.EXE -vis"
+</td></tr>
+
+<tr><td>
+Return to Castle Wolfenstein
+</td><td>
+"Q3MAP.EXE -vis", "Q3MAP2.EXE -vis"
+</td></tr>
+
+<tr><td>
+Star Trek: Voyager - Elite Force
+</td><td>
+"Q3MAP.EXE -vis", "Q3MAP2.EXE -vis"
+</td></tr>
+
+<tr><td>
+Star Trek: Elite Force 2
+</td><td>
+"UBERMAP.EXE -vis"
+</td></tr>
+
+</table></center>
+

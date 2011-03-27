@@ -1,0 +1,8 @@
+title: TAboutBox
+author: DanielPharos
+
+<code>
+TAboutBox = class(TQkForm)
+</code>
+
+TAboutBox is QuArK's About window class.

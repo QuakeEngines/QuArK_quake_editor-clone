@@ -1,0 +1,23 @@
+title: Using decals
+author: Decker
+
+<b>Question:</b><br>
+How do I apply decals over a texture?
+
+<b>Answer:</b><br>
+A decal is a special point-entity in Half-Life.
+
+Create a <tt>infodecal</tt> point-entity (Look in the 'Info_ entities' folder),
+and place it near the wall you want your decal to appear on (max 8 units from it, at Grid 1).
+
+The spec/args view of the <tt>infodecal</tt> point-entity, contains a specific named "<tt>texture</tt>",
+this you can change to any decal texturename - mainly the texture-browser's "Decals Folder".
+
+<b>Note</b> that the decal-texture's scale and orientation is controlled by the brush-face upon
+which the decal is applied. So if your decal-texture looks mirrored or large/small, then
+is the brush-face's texture you need to mirror/scale.
+
+The decal-texture's color is controlled by the decal-texture itself. If you want to change
+it, you need to create a new decal-texture yourself.
+
+See also <ref>maped/plugins/halflifeinfodecal</ref>

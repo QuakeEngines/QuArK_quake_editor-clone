@@ -1,0 +1,12 @@
+title: Update
+author: DanielPharos
+
+<img align=right>update.png</img>
+
+<i>Update check</i>. Enables the update check when starting QuArK.
+
+<i>Check online</i>. Check for updates online.
+
+<!-- <i>Automatically update</i>. Automatically download and install any updates available. -->
+
+<i>Check for single instance</i>. Enables the check for a single running QuArK (or updater instance) instance on start-up.

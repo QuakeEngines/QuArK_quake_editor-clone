@@ -1,0 +1,15 @@
+title: .skb format
+author: cdunde
+
+<i>Original game </i>&nbsp;: Alice
+
+<i>Other games </i>&nbsp;: EF2, FAKK2
+
+Used in Alice, EF2, FAKK2 for static (single baseframe for ska animation model) single and multiple components.
+
+<b><u>uses</u></b><br>
+<a href="intro.modeleditor.editelements.html#tags">tags </a>&nbsp;: no<br>
+<a href="intro.modeleditor.editelements.html#bones">bones </a>&nbsp;: <a style="color:#FF0000"><b>yes</b></a><br>
+<a href="intro.modeleditor.vertexcolorandweights.html#vertexweights">weights </a>&nbsp;: <a style="color:#FF0000"><b>yes</b></a><br>
+<a href="intro.modeleditor.vertexcolorandweights.html#vertexcoloring">uv colors </a>&nbsp;: no<br>
+<a href="intro.modeleditor.dataforms.html#specsargsview">Specifics page </a>&nbsp;: no

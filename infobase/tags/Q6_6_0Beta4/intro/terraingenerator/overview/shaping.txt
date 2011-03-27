@@ -1,0 +1,31 @@
+title: Shaping
+author: cdunde
+
+To start the actual shaping process you need to click on the <b>Basic Selector</b> button of the <b>Terrain modes</b> tool bar, which is the first button to the right of the <b>Selector Dialog Input</b> button shown below. Then in the <b>Top View</b> of the editor hold down your <g>LMB</g> and drag across the desired faces, area, you wish to start creating the terrain shape from. As you are dragging you will see a <b>red rectangular box</b> that will indicate the area you are selecting. Once the area is surrounded, let go of your mouse button and all of those <b>up faces</b> will turn <b>red</b>, indicating what has been selected for movement or <g>pulling</g>.
+
+Once a selection has been made like this, you can then activate the <b>Selector Dialog Input</b> button just to the left of the <b>Basic Selector</b> button. This will bring up this particular selector's dialog input box. This <b>Basic Selector Dialog</b> box is <b>only</b> used by the 
+<b>Basic Selector</b> button. As future selectors are added, they too can have their own dialog box that will relate to their particular features. This and other detail about the <b>Selector Dialog Input</b> function and  the <b>Basic Selector</b> are covered on the <ref> ../selection </ref> page.
+
+The <b>Basic Selector</b> is used for the movement of large areas of terrain surface. For more <b>detailed</b> selection and movement of smaller common face groups and individual faces, see the <a href="intro.terraingenerator.selection.html#touchup">Touch-up Selector</a> section.
+
+<table width=100% cellspacing=0>
+<tr><td valign=top align=middle>
+<img border=1  align=middle>shape1.png</img>
+</td></tr></table>
+
+Although it is not really necessary to use at this point to create your first terrain <g>pull</g>, I wanted to get you familiar with what needs to be done to <b>activate</b> it, its location and general features of its use, which is to change the way the terrain will be created as a <g>pull</g> is taking place. The dialog box can be dragged to any location by placing your mouse cursor over its blue title bar, holding down the <g>LMB</g> and moving it. It can also be resized like any other window and it will remain open and on top of the editor for your use until you click on the <b>X</b> button to close it. The first time you use the dialog box it will have <b>default values</b> already set in it that are also the <b>default settings</b> for that particular <b>Terrain Selector</b>. Once these settings are changed they are stored and saved to keep them the same until you change them again in another session of <b>QuArK</b>.
+
+With that covered, you are now ready to drag and shape your terrain. The <b>dialog box</b> can remain open or closed during this process. It is best to use the editors <b>Side</b> or <b>Front View</b> to do the actual dragging of the terrain. Although both, the dragging and selection process, can be done in any of the 2D or <b>3D views</b>. However, you will notice, if you do your dragging in the 3D views, that it will be much slower and jerky in appearance.
+
+<table width=100% cellspacing=0>
+<tr><td valign=top align=middle>
+<img border=1  align=middle>shape2.png</img>
+</td></tr></table>
+
+Place your mouse cursor over the <b>center blue movement handle</b> and holding down the <g>LMB</g> slowly move your cursor towards the top of the editor view. You should now see your terrain taking shape as you move your mouse further. If the size and amount of terrain you are moving is not too large, you will also see the changes in all of the other views, including the 3D views, as well. If not, briefly pausing, without releasing the <g>LMB</g>, will allow the editor to <b>catch up</b> for the redrawing of all of the views. This is the process that <b>QuArK</b> has to go through and why, sometimes, you may not see movement in the other views while you are dragging.
+
+One other item about dragging. If the <b>3D view</b> should become distorted during a drag, you can usually clear this up by pressing your <b>Tab</b> key a couple of times. This is the <b>Default Hot Key</b> to cause <b>all</b> of the views to be redrawn. This can also be done while you are dragging if need be.
+
+<b>Control</b> of your mouse movement is the key here! Because of the way that <b>QuArK</b> processes terrain movement, the mouse curser will not remain on the center handle, but will tend to <b>drift</b> above or below it, depending on which direction you are dragging. This is normal. There is also a <b>delay</b> in movement <b>reaction</b> by the editor, for the same reasons, which can sometimes cause a <b>run away</b> effect to the terrain you are dragging. If this should happen, simply stop moving your mouse and <b>release</b> the <g>LMB</g> <b>without</b> canceling your terrain selection. Then click on the center handle again and slowly start your movement in the opposite direction. This will stop the <b>run away</b> movement all together and reset the handle co-ordinances to react properly once again.
+
+If you are unable to use the <b>stop and restart</b> method because things have just gone too far already, then use the <b>Edit</b> menu <a href="intro.mapeditor.menu.html#editmenu">Undo / Redo...</a> function which will usually take you back to a safe point from which you can start from again. For these reasons I highly recommend that you save your work and/or make a backup copy as you reach critical stages in your map editing process.

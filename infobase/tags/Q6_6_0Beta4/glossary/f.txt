@@ -1,0 +1,11 @@
+title: F...
+author: Decker
+
+<dl>
+<dt><a name="face">                     </a>Face                        <dd>A side/plane of a polyhedron. A dice has 6 faces. See also <a href="#edge">edge</a> and <a href="#vertex">vertex</a>.<br>
+                                                                            <pic>dice.gif</pic>
+<dt><a name="fieldofview">              </a>Field of view               <dd>[FOV] (console command)
+<dt><a name="firstpersonshooter">       </a>First Person Shooter        <dd>[FPS] (-game). A shoot-em-up game where you look through the eyes of the character you play.
+<dt><a name="fov">                      </a>FOV                         <dd>(abbreviation) A <a href="#console">console</a> command which allows the user to adjust the <a href="#fieldofview">field of vision</a>.
+<dt><a name="fps">                      </a>FPS                         <dd>(abbreviation) See <a href="#firstpersonshooter">First Person Shooter</a>.
+</dl>

@@ -1,0 +1,7 @@
+title: Caps and Arches (Brushes)
+desc: makearch texturing specifics
+
+Brush-based `Caps' and arches are made by the same
+shape-builder, and
+arches are probably its most important function, so
+that's what gets discussed most here.

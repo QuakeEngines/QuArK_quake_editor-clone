@@ -1,0 +1,143 @@
+title: Specifics/Args-view
+author: cdunde
+
+<img border=1 align=right>specsargsview.png</img>
+This page is used for a variety of different elements that have a set of
+parameters to set, so they act in a certain way. These parameters are called
+<i>specifics</i> in QuArK. Each specific can have an argument (arg) attached, or associated, with it.<br>
+At this time primarily <a href="intro.modeleditor.editelements.html#bones">Bones</a>
+and <a href="intro.modeleditor.importexport.html">Python Model Importers\Exporters</a> use it.
+
+Selecting the <a href="intro.modeleditor.dataforms.html#treeview">Frames</a> folder,
+a number of frames or a single frame only, will display the
+<g>frame type page</g> for the specific type of model that is set, if such a page exist.
+
+If a single bone is selected it will display the
+<a href="intro.modeleditor.editelements.html#specificsettings">bone's page</a> for that particular bone.
+
+Selecting a single component displays its page where you can set a <g>tint</g> color for each
+component that will be applied over that component's texture and lines when a
+<a href="intro.modeleditor.rmbmenus.html#viewsrmbmenus">view's RMB menu</a> item
+<a href="intro.modeleditor.rmbmenus.html#viewsrmbmenus">Use Component Colors</a>
+is active (checked) to help distinguish one component from another.
+
+If you do not know what permitted values an arg can have, place your
+mouse-cursor over that item for a second and a blue 'flyover' help-box will appear,
+if there is any help for that specific/arg pair.
+
+Sometimes there may be a dropdown-listbox which contain valid args, or most
+used args. Some specifics are only possible to turn on/off, these looks like
+checkboxes. There might even be pushbuttons which opens another window, with
+more specific/arg settings.
+
+The top bar of icons from left to right are:
+<table border=1 cellspacing=0 cellpadding=2>
+<tr>
+  <td valign=top align=center>
+    <i>Tree-view</i>
+  </td>
+  <td>
+    Click on this icon to display the tree-view which is a
+    hierarchy structure of all the elements currently loaded into the editor.
+  </td>
+</tr>
+<tr>
+  <td valign=top align=center>
+    <i>Specifics/ Args view</i>
+  </td>
+  <td>
+    This is the page that you see to the right which varies depending on
+    what you have selected in the tree-view or the editor's view.
+  </td>
+</tr>
+<tr>
+  <td valign=top align=center>
+    <i>Skin-view</i>
+  </td>
+  <td>
+    Click on this icon to display the Skin-view which contains the current
+    skin texture that is being used. This is the main view where many actions
+    are performed that directly effect that texture image.
+  </td>
+</tr>
+</table>
+
+The second bar of icons from left to right are:
+<table border=1 cellspacing=0 cellpadding=2>
+<tr>
+  <td valign=top align=center>
+    <i>SF<br>set model type</i>
+  </td>
+  <td>
+    Click on this icon to display supported Python Import\Exporters model formats
+    and select one you wish to use for exporting your model as and\or
+    specifics of that type of model format, any of which can use this page.<br>
+    See the section about <ref>intro/modeleditor/importexport</ref>
+  </td>
+</tr>
+<tr>
+  <td valign=top align=center>
+    <i>HelpBook</i>
+  </td>
+  <td>
+    Keep your mouse-cursor steady on this icon to get a blue 'flyover'
+    help-box, which will contain specific description/help for the selected
+    item, and not just a single specific/arg pair. Press the icon to display
+    this help in a window. Some elements that use this page may provide additional
+    detail, pressing your <b>F1</b> key will take you to a page which contains more
+    information about its use, if there is such a page.
+  </td>
+</tr>
+<tr>
+  <td valign=top align=center>
+    <i>Vertex Weights<br>Dialog button</i>
+  </td>
+  <td>
+    Click on this icon to open and display this dialog which contains
+    settings and data dealing with vertex weights. Not all model formats
+    will cause this button to be available for use.<br>
+    See the section about <ref>intro/modeleditor/vertexcolorandweights</ref>
+  </td>
+</tr>
+</table>
+
+<u><i>classname </i></u>&nbsp;: This shows the name of the selected item causing this page to be displayed.
+Usually this item's name can be changed to any name you choose
+in the <a href="intro.modeleditor.dataforms.html#treeview">tree-view</a> by pressing your <b>F2</b> key.
+Once <b>Enter</b> is pressed to change the name, it will update the
+<a href="intro.modeleditor.dataforms.html#specsargsview">Specifics/Args</a> page.
+
+<u><i>current skin </i></u>&nbsp;: This is a read only item displaying the path and name of the current skin texture.
+
+<u><i>edit skin </i></u>&nbsp;: By clicking the gray 'edit skin' button, it will open the above texture image in the external
+editor that is set to use in
+<a href="intro.configuration.general.html#externaleditors">QuArK's Configuration External editors</a> section.
+
+<i><b><u>UV Vertex Colors</u></b></i>&nbsp;: This section is used
+for color selection, displaying, applying and removing <b>UV</b> vertex coloring.<br>
+Not all model formats use this method. See the section about <ref>intro/modeleditor/vertexcolorandweights</ref>
+
+<i><b><u>Vertex Weight Colors</u></b></i>&nbsp;: This section is used in conjunction with the
+<a href="intro.modeleditor.editelements.html#specificsettings">Bone's Specifics page</a>
+for Vertex Weights. See that page for their descriptions.<br>
+Not all model formats use this method. See the section about <ref>intro/modeleditor/vertexcolorandweights</ref>
+
+<i><b><u>Shader File</u></b></i>&nbsp;: This section is for those model format types that use texture shaders
+to give different appearances and effects to a model.
+
+<u><i>shader file </i></u>&nbsp;: This gives the full path and file name that contains the texture shader being used.
+
+<u><i>shader name </i></u>&nbsp;: This gives the name of the shader being used that is contained in the above file.
+
+<u><i>shader keyword </i></u>&nbsp;: This displays a keyword, if the current texture has one, to identify it in the above shader.
+
+<u><i>shader lines </i></u>&nbsp;: This is an adjustable setting for the 'mesh shader' window below to make it larger or smaller
+by using the arrow buttons to the far right, or an amount entered by hand.
+
+<u><i>edit shader </i></u>&nbsp;: By clicking the gray 'edit shader' button, it will open the above shader code in the external
+editor that is set to use in
+<a href="intro.configuration.general.html#externaleditors">QuArK's Configuration External editors</a> section.<br>
+This allows that shader code to be hand edited and saved for customized use. Its proper application and placement must be done by the user.
+
+<u><i>mesh shader </i></u>&nbsp;: This is a window that displays the shader code and can be adjusted in size by using the above
+'shader lines' entry field.

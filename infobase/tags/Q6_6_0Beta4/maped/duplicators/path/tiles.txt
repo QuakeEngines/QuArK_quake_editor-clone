@@ -1,0 +1,15 @@
+title: Tiles
+author: tiglari
+
+It is also possible to have a structure that is
+replicated, or 'tiled', along the length of the
+corridor.  Any such things are placed inside
+a group named 'Tile', which is treated specially:
+brushes in this group don't have their front and
+back faces stripped off, & the entire contents
+of the group is copied along each branch of the
+path as many times as the entire X-axis length
+of the stuff in the Path Duplicator will fit
+(the contents of Tile are treated just like other
+contents of the Path Duplicator for working out
+the size of the template).

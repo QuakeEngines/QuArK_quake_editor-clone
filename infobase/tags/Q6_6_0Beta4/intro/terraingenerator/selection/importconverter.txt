@@ -1,0 +1,36 @@
+title: Import Converter
+author: cdunde
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+The fourth button of the toolbar is the <ref> ../import </ref> button. This provides a function to convert imported terrains, that have been created in other terrain editors, into the proper format so that they too can be edited within <b>QuArK</b> in the same manner as its own.
+</td>
+<td valign=top align=middle>
+<img border=0>importconverter1.png</img>
+</td></tr>
+</table>
+
+<table width=100% border=0 cellspacing=0>
+<tr><td valign=top>Once a terrain has been imported, by means of using 
+<a href="intro.mapeditor.menu.html#addonsmenu">QuArK's Addons</a> menu function, then all or any <b>selected</b> part of that terrain can be converted to the proper format, for further editing, by simply clicking on this button.
+
+This feature has been designed around two specific and widely used terrain editors <a href="http://tarot.telefragged.com/gensurf/">GenSurf Terrain Maker</a> and<br><a href="http://nemesis.thewavelength.net/">Nem's Tools-Terrain Generator</a>.
+
+And all though other terrain editors are not supported directly as these are, it is hopeful that it will serve them as well.
+</td>
+<td valign=top align=right>
+<img border=1 align=right>importconverter2.png</img>
+</td></tr>
+</table>
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+Upon the completion of a conversion, a brief report message will be displayed to give you details on its success, any items that may not have been converted and why. There is also an <b>alert</b> feature built in for any improper <g>poly</g> detection that will cancel this function and select that particular <g>poly</g> for you so that corrective measures can be taken to alleviate the problem.
+</td></tr>
+</table>
+
+<table width=100% cellspacing=0>
+<tr><td valign=top align=middle>
+<img border=1  align=middle>importconverter3.png</img>
+</td></tr>
+</table>

@@ -1,0 +1,91 @@
+title: Texture functions of the module quarkx
+author: cdunde
+
+Functions for actually changing a texture image, weather it be in the
+<a href="intro.modeleditor.toolpalettes.paintmodes.html">Model Editor</a> as a <g>skin texture</g> or the
+<a href="intro.mapeditor.dataforms.html#faceview">Map Editor</a> as a <g>face texture</g> (not implemented yet).
+These can also be used to set and apply dialog pen colors to change a texture or in conjunction with
+a view's <a href="src.quarkx.html#canvas">Canvas objects</a> to set their various color functions.
+
+In addition, other useful related functions can be found in the quarkpy\qutils.py file <g>Texture and Color Utilities</g> section such as:<br>
+<g>RGBToColor(RGB)</g> : Converts separate Red, Green, Blue color components into a long integer color.<br>
+<g>ColorToRGB(Color)</g> : Converts long integer color number into separate color components Red Green Blue (RGB).<br>
+
+As well as specific functions for the <a href="intro.modeleditor.toolpalettes.paintmodes.html">Model Editor</a> in its quarkpy/mdlutils.py file for:<br>
+<g>TexturePixelLocation(editor, view, x, y, triangleface)</g> : To get the
+<a href="triangleUV/triangleUV.htm">u, v texture position of any triangle</a> where the cursor is pointing in any view.
+
+<b><u>Argument Definitions and examples to use for these functions</u></b>:<br>
+<g>texshortname = editor.Root.currentcomponent.currentskin.shortname</g> (be SURE to use the <g>shortname</g> and not <g>name</g> or the function breaks!)<br>
+<g>texparent = editor.Root.currentcomponent.currentskin.parent</g><br>
+<g>pixU, pixV =</g> The texture u, v location in a view (get by using the mdlutils.py TexturePixelLocation function).<br>
+<g>PalIndex =</g> An actual integer palette number, not the <g>string</g> equivalent of an integer value.<br>
+<g>paintcolor =</g> As a palette index intiger, hex number, or Long intiger for ex:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<g>PalIndex = int(quarkx.setupsubset(SS_MODEL, "Colors")["Paint_PalettePenColor"])</g> # 8 bit texture PalIndex number.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<g>hex2longint = MapColor("Paint_RGBPenColor", SS_MODEL)</g> # 24 bit texture, as a hex number converted to a long int.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<g>longint = 13283574</g>
+
+<table border=1 cellspacing=0 cellpadding=4>
+
+<tr><td class="doccode">
+getpixel(texshortname, texparent, pixU, pixV)
+</td><td>
+This is NOT the same function as the view.canvas() <a href="src.quarkx.html#canvas">getpixel</a> function.
+which is a pixel of a view that can be distorted, inaccurate, not a true texture pixel.<br>
+If the texture being sent is a palette texture, such as a .pcx texture,
+then the function returns the PalIndex number as an integer (not a string of an integer).
+
+If the texture being sent is a 24 bit texture, such as a .tga texture
+which do not use a palette - only RGB colors, then the color's long integer number is returned.<br>
+
+If an RBG color, returns a long integer of that pixel, this can be used for the <g>setpixelpal</g>
+function below to paint (change) that texture.<br>
+<g><u>Use example:</u></g><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<g>paintcolor = quarkx.getpixel(texshortname, texparent, pixU, pixV)</g>
+</td></tr>
+
+<tr><td class="doccode">
+getpixelpal(texshortname, texparent, PalIndex)
+</td><td>
+Returns the color of the PalIndex as an RGB long integer. Used to set RGB pen color from a palette color.<br>
+<g><u>Use example:</u></g><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<g>paintcolor = quarkx.getpixelpal(texshortname, texparent, PalIndex)</g>
+</td></tr>
+
+<tr><td class="doccode">
+getpixelalpha(texshortname, texparent, pixU, pixV)
+</td><td>
+This function is an RGB function ONLY! And ONLY works with OpenGL in QuArK. Returns the "alphavalue" as a long integer.<br>
+<g><u>Use example:</u></g><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<g>alphavalue = quarkx.getpixelalpha(texshortname, texparent, pixU, pixV)</g>
+</td></tr>
+
+<tr><td class="doccode">
+setpixel(texshortname, texparent, pixU, pixV, integer)
+</td><td>
+Changes the actual texture image color to the new Palette integer color, or for RGB colors the hex2longint or longint. (does the color painting)<br>
+<g><u>Use examples:</u></g><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<g>quarkx.setpixel(texshortname, texparent, pixU, pixV, PalIndex)</g>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; or<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<g>quarkx.setpixel(texshortname, texparent, pixU, pixV, hex2longint)</g>&nbsp;&nbsp; or<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<g>quarkx.setpixel(texshortname, texparent, pixU, pixV, longint)</g>
+</td></tr>
+
+<tr><td class="doccode">
+setpixelpal(texshortname, texparent, PalIndex, paintcolor)
+</td><td>
+Used to CHANGE a model's palette color to ANY RGB color, to be saved with the model file. It actually changes the model's palette.<br>
+<g><u>Use example:</u></g><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<g>quarkx.setpixelpal(texshortname, texparent, PalIndex, paintcolor)</g>
+</td></tr>
+
+<tr><td class="doccode">
+setpixelalpha(texshortname, texparent, pixU, pixV, alphavalue)
+</td><td>
+This function is an RGB function ONLY! And ONLY works with OpenGL in QuArK.
+Changes the actual alpha color <g>alphavalue</g> of a texture, to the new <g>alphavalue</g>.<br>
+(does the alpha painting, the <g>alphavalue</g>, comes from <g>getpixelalpha</g> function above)<br>
+<g><u>Use example:</u></g><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<g>quarkx.setpixelalpha(texshortname, texparent, pixU, pixV, alphavalue)</g>
+</td></tr>
+
+</table>

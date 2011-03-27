@@ -1,0 +1,10 @@
+title: Linear Mappings and Matrices
+desc: bases mappings examples points
+
+Linear mappings are functions taking vectors as input
+and producing vectors as output, which provide an
+easy-to-compute implementation of many intuitively
+natural transformations of objects, such as size-change
+(scaling) and rotation.  This introduction assumes a
+basic grasp of vectors, including vector addition and
+scalar multiplication, plus trigonometry for rotations.

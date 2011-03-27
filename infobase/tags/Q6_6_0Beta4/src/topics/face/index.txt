@@ -1,0 +1,7 @@
+title: Face Formats
+desc: bsp classic etp tv6 bp valve220
+
+Here are described various aspects of face formats, which are of relevance
+to the code in QkMapPoly.pas and QkMap.pas.  Especially the relationship
+between QuArK's original internal representation (Quark etp) and the
+'Classic Quake' map format(s), and the new internal/.qrk/.qkm representation.

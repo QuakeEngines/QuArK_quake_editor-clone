@@ -1,0 +1,22 @@
+title: Tree-view (hierarchy-view)
+author: Decker
+
+<img border=0 align=right>treeview.png</img>
+This view actually contains your level! In here, you can arrange and group
+objects; polyhedrons and entities, and plugin-functions like the duplicator.
+You can see all entities you've put into your level, and what polyhedrons
+belong to what entities.
+
+You can right-mouse-click on every tree-view object, to get a context-menu,
+from where you can select different actions.
+
+Some of the more powerfull functions are:
+<ul>
+<li>Group objects together, and call the group: 'My Front Room', 'Monster Trap', 'Furniture' etc.
+<li>Hide an entire group from the map-views, so it does not clutter your view.
+<li>Change textures on all the selected polyhedrons (or faces).
+<li>Cut, Copy, Paste and Move.
+<li>Change colors on groups, to illustrate different things.
+</ul>
+
+If you wish to enlarge or reduce the Tree-view height, there is a hidden 'drag line' at the very top of the Tree-view, just below the compass. When your curser changes to two bars, with arrows above and below them, you can then hold the left mouse button down and drag the Tree-view to the height you desire.

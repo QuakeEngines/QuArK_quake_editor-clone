@@ -1,0 +1,16 @@
+title: The last part
+author: Fredrick
+
+When you are happy with your work, you can save it by clicking on the bot waypointer that is in the class list.
+
+If you use a lot of work, you can actually make waypoint navigation much better than the bot author himself, due to that you have the advantage of overview the structure.
+
+Tips: Do not lay down to many waypoints, this is explained in the bot readme. You can probably reduce almost half of the waypoints on a map, by looking at the map structure, like a long hallway with no sidewalk does not need 30 waypoints but maybe only 15, as long as a waypoint can "see each other, it is good enough", and the result is less cpu usage.
+
+Another thing which is kind of useful to know is that you might notice that it is very easy to mark say the object behind a waypoint , a wall etc. The waypoint was the object you wanted to select. use the 3d view and try to zoom down so you are almost level with the waypoint. Now it should be easy to click trough the waypoints.
+
+I thank Decker for his great work on this project. Without him, my idea would have been still in dreamland :-)
+
+- Fredrick aka RiviEr
+
+Notice: This is still an experimental work-in-progress, there are lots of bugs, and a lot more work has to be done.

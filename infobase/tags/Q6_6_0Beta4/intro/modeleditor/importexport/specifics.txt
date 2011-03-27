@@ -1,0 +1,97 @@
+title: Adding Specifics Page & Menu Items
+author: cdunde
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+<i><u><b>Using existing icons</b></u></i> :<br>
+Button icons are .bmp files in the QuArK images folder which are loaded into QuArK when it starts up
+using a Python all in the <g>quarkpy\qeditor.py</g> file such as this one for example:
+<code>
+    ico_dict['ico_maped'] = LoadIconSet1("maped", 1.0)
+</code>
+The <g>1.0</g> tells it to use the file with the <g>-1</g> in its name when a button is clicked.
+
+This puts those images, which are maped-0.bmp and maped-1.bmp,
+into a dictionary list <g>ico_dict</g> so that entire list of objects will be removed from memory when QuArK is closed,<br>
+avoiding a memory leak. Do a word search using the above example line of code to see all of the image dictionary
+list that are available to use and trace those back to the actual<br>
+images in the <g>images</g> folder.
+
+Each .bmp file is like a <g>bar</g> of icon images. The -0.bmp is used when a button is not active
+and the -1.bmp is used when a button is active.<br>
+Each icon image is counted from left to right starting with the digit zero to identify it.<br>
+An example on how to call one would be like this:(shortened)
+</td></tr>
+</table>
+<code>
+    from quarkpy.qeditor import ico_dict # Get the dictionary list of all icon image files available.
+    import quarkpy.qtoolbar              # Get the toolbar functions to make the button with.
+    ico_maped=ico_dict['ico_maped']      # Just to shorten our call later.
+    icon_btns = {}                       # Setup our button list, as a dictionary list, to return at the end.
+                                         # Make our first button, below, to go into the above list.
+    vtxcolorbtn = quarkpy.qtoolbar.button(colorclick, "Color UV Vertex mode||When active, puts the editor\nvertex selection into this mode.|intro.modeleditor.dataforms.html", ico_maped, 10)
+    icon_btns['color'] = vtxcolorbtn     # Put our button in the above list to return.
+</code>
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+You can see at the very end of the next to the last line of code above that we are using icon 10, the 11th one,
+from the maped-0.bmp and maped-1.bmp image files.
+
+The first argument of the quarkpy.qtoolbar.button call is <g>colorclick</g>. This is the name of the function to call
+when the button is activated (or clicked) that you write, define, in your import file.<br>
+This name can be anything you wish and the actual function can do just about anything you want it to do in the editor,<br>
+such as storing vertex and\or triangle indexes and other needed data within the component that will be needed for exporting later.
+
+The second argument does a couple of things:
+<ul>
+<li> 1) Gives a brief hint, of what the button does, followed by two bars || then
+<li> 2) a brief description of how to use the function and\or what it does in more detail.<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;This shows up when someone presses their <g>F1</g> key to get a help box window.<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Notice the \n in <g>editor\nvertex</g> which causes a new line. \n\n can be use for a space between lines and so on.
+<li> 3) Next we have a single bar | that allows us to provide a link to the InfoBase docs, with a button, to give more help.
+<li> 4) It gives our icon list item to use and which icon from that list.
+</ul>
+
+For each button you want to add simply do it like above, with its own name like icon_btn2, and add it to the list as well.
+
+<i><u><b>Making your own icon</b></u></i> :<br>
+If you can not find an icon that gives a distinct appearance of what a button is for, then you can make your own.<br>
+To keep things simple and consistent, that new icon should be added at the <b>end</b> of the mdlskv-0.bmp, mdlskv-1.bmp and
+mdlskv-2.bmp files and submitted,<br>
+along with your import and export files, for others to draw from.
+The first five spaces, including blanks, are reserved for the editor's <g>Skin-view</g> and for future use.<br>
+Notice also that the image in mdled-1.bmp and mdlskv-2.bmp are slightly brighter or even a different set of colors.
+That is so when the button is active it will be more noticeable then the others.<br>
+Not all buttons will need to remain active but all three files still need to have the new icon to keep things straight.
+
+The reason there are three related image files in this set is because the mdlskv-1.bmp is used as a pass over highlighted look
+when used with the proper button function type.<br>
+There are also other kinds of buttons that you can use. See the <g>quarkpy\qtoolbar</g> file or other <g>mdl</g> files for those.
+
+<i><u><b>Menu items</b></u></i> :<br>
+These types of items apply to the <a href="intro.modeleditor.rmbmenus.html">RMB menus</a>. Using this type of method,
+complete functions can be written within the import file to perform special tasks required by that type of model format.<br>
+The results can then be stored within the model component and used for its exporting. The only requirement is that of
+using explicit function names to add items to the RMB menus.<br>
+One good example to look at is the <g>ie_md5_import.py</g> file. Some of these function names are given below along with
+a brief description of what they are for.<br>
+Others may be added later, so if you see something special used, it is a good idea to look at the code for that particular
+model import file for how it was done.
+</td></tr>
+</table>
+<code>
+def dataformname(o):
+    "Returns the data form for this type of object 'o' to use for the Specific/Args page."
+
+def dataforminput(o):
+    "Returns the default settings or input data for this type of object 'o' to use for the Specific/Args page."
+
+def newmenuitems(editor, extra):
+    "To add new menu items to other RMB menus. 'extra' is the current list of RMB menu items."
+
+def bonemodeclick(btn_menu_item):
+    "To add new menu mode items to this RMB menu, use editor.layout.buttons['bonemode'] to get the base menu."
+
+def macro_opentexteditor(btn):
+    "To open an object, such as a shader text object or skin texture object, in an outside editor."
+</code>

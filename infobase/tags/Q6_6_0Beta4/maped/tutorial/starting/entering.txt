@@ -1,0 +1,13 @@
+title: Entering the map-editor
+author: Decker
+
+Before we start, make sure that the <g>build-programs</g> are configured
+properly in the <ref> intro/configuration/games </ref> section.
+
+<img width=336 height=62 align=right> image1.png </img>
+You start the QuArK map-editor, by first selecting what game you want to
+develop for, in the <act>Games</act> menu. For this tutorial, the game
+'Half-Life' has been choosen.
+
+Then press the 'New map' icon as shown in the image, to start the
+map-editor.

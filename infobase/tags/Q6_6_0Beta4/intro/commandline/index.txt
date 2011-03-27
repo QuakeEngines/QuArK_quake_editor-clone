@@ -1,0 +1,15 @@
+title: Commandline of QuArK
+
+The commandline of QuArK allows you to send some additional information to QuArK as it starts up.  There aren't many options, since most can be set using environmental variables <ref> src/topics/logging </ref> (for logging only) or in the Configuration menu.
+
+Recognized parameters:<br>
+/?: Displays a window containing this information.<br>
+/NOINSTANCE: Skips the single-instance check (use at own risk!)<br>
+/NOSPLASH: Skips the splash screen.  This will improve start-up time.<br>
+/NOUPDATE: Skips the update check.  This will prevent QuArK from checking for updates.
+
+Note: All other parameters will be interpreted as files to load.
+
+For those not familiar how to use commandlines: the parameters can be added to a shortcut:<br>
+Right-click the QuArK shortcut > Properties > Target: Add the parameters to the end of the Target, separated by spaces.  If a parameters contains a space, put double-quotes around it.<br>
+You can also use a DOS-prompt to accomplish this.  Simply append the parameters to the QuArK.exe-command the same way as with the shortcut.

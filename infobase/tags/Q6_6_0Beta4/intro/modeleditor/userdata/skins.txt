@@ -1,0 +1,11 @@
+title: Skin Textures
+author: Decker
+
+<img border=0 align=right>skins.png</img>
+You can even put in a single texture in the userdata panel.
+Dragged from either a component's Skins folder or the
+<a href="intro.texturebrowser.overview.html">Texture Browser</a>
+these will display the skin image when you rest your cursor over them.
+
+
+<img border=1 align=right>skins1.png</img>

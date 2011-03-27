@@ -1,0 +1,27 @@
+title: Undo/Redo
+author: Decker
+
+<img width=182 height=130 align=right>image5.png</img>
+Before moving on, let's look at the <ref> intro/mapeditor/misctools/undoredo \ undo/redo </ref>
+facility in QuArK. This would be a good time to test it, as we are
+experimenting deleting the default room.
+
+You activate the undo/redo window, by either clicking on the icon
+<img width=24 height=23 align=absmiddle>image6.png</img>, or from the
+<tt>Edit</tt> menu select <tt>Undo/Redo...</tt>
+
+In this window, you can see what QuArK allows you to undo and/or redo. You can
+<u>not</u> do a selective undo or redo, so it's better to get some knowledge
+about how it works. There is also a limit on how much thats available to
+undo/redo, see <ref> intro/configuration/general/memory </ref>.
+
+Try to undo your 'delete selection'. Now the default room and all came back
+again. You can then redo the 'delete selection'. Try it.
+
+Try to experiment with deleting all items, one item at a time, from the
+tree-view, and then open the undo/redo window.
+
+Remember to look at the shortcut keys in the menus ('Ctrl+...' and 'Shift+...')
+and in <ref> intro/configuration/map/keys </ref>.
+Using these will not only give you a faster work-flow, but also reduce the
+risk of getting physical-disabilities due to using the mouse too much.

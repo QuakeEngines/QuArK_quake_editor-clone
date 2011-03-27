@@ -1,0 +1,72 @@
+title: Dialog boxes
+author: cdunde
+
+
+At this time there are two <a href="intro.mapeditor.toolpalettes.objectmodes.html#dialogboxes">dialog input boxes</a> for the <a href="intro.mapeditor.toolpalettes.objectmodes.html">QuArK Quick Object Makers Toolbar</a> that are linked to the <a href="intro.mapeditor.toolpalettes.objectmodes.html#dialog">Object Dialog Input button</a>.<br>
+When an <a href="intro.mapeditor.toolpalettes.objectmodes.html">Object Makers Toolbar</a> button is selected and this dialog button is clicked, the proper dialog box for that object maker will open.<br>
+All amounts that are set for any dialog box will still be active even if that dialog box is closed.<br>
+All of their settings will also be saved when QuArK is closed and remain the same when QuArK is reused.<br>
+All dialog boxes can be moved, resized and will remain open until manually closed.<br>
+Both dialog boxes can remain open at the same time and are active on the particular object makers that they relate to.
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+<img border=1 align=right valign=top>objects8.png</img>
+<I><u>Object Distortion Dialog</u></I>: This is a basic dialog input box that is used by every object maker on the toolbar unless a specific one has been created for that particular object maker.
+
+&nbsp;&nbsp;&nbsp;<b>Distortion</b>:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Clicking on the 'up' arrow will cause the object to be stretched, or elongated, from its normal shape. Clicking on the 'down' arrow will do the opposite and cause it to shrink or be squished. If set to '0', then it will have no effect and the object will be crated to its normal default shape. It has no effect on how many 'rings', sections, or faces that an object will have. That is done by the actual dragging process or a 'custom' dialog box possibly.
+
+&nbsp;&nbsp;&nbsp;<b>Make hollow</b>:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;This check box can be used on any object and is pretty much self explanatory. Leaving this box unchecked will create the object as a normal solid item. For alternative ways of making a solid object hollow, see 'Misc. Info' below in the <ref> ./aids </ref> section. In addition, this function is effect by the <a href="intro.mapeditor.toolpalettes.movement.html">Movement tool-palette</a> and it is recommended that a low 'negative' setting be given for its <a href="intro.mapeditor.toolpalettes.movement.html#configuration">Inflate/Deflate</a> amount.
+
+Clicking the 'X' will close any dialog box.
+</td></tr>
+</table>
+
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+<img border=1 align=right valign=top>objects9.png</img>
+<I><u>Torus Distortion Dialog</u></I>: This is a custom dialog input box that only relates to and effects the torus object maker. The basic dialog box, covered above, has no effect on the torus object. Many shapes can be created from a torus using one or more of these input items.
+
+&nbsp;&nbsp;&nbsp;<b>Segments\Faces</b>:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Segments - using the left and right arrows will add or reduce that number of sections or 'rings' that a torus would normally have.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Faces - using the up and down arrows will add or reduce that number of faces per section that a torus would normally contain.
+
+&nbsp;&nbsp;&nbsp;<b>Hole\Seg size</b>:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Hole size - using the left and right arrows will increase or reduce the radius of a torus, making its 'hole' larger or smaller.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Seg size - using the up and down arrows will add or reduce the radius for the sections of the torus, making it taller or shorter.
+
+&nbsp;&nbsp;&nbsp;<b>X\Y distortion</b>:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;X distortion - using the left and right arrows will increase or reduce the length of a torus, causing it to become oblong on the X axis.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Y  distortion - using the up and down arrows will increase or reduce the width of the torus, causing it to become oblong on the Y axis.
+
+&nbsp;&nbsp;&nbsp;<b>Z\Up distortion</b>:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Z distortion - using the left and right arrows will increase or reduce the height of a torus, causing it to become taller or shorter on the Z axis.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Up distortion - using the up and down arrows will actually 'stretch' and taper the torus, causing it to become more of a hollow 'tube' on the Z axis.
+
+&nbsp;&nbsp;&nbsp;<b>Ring\Seg edges</b>:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ring edges - using the left and right arrows will cause the edges of the 'rings' of a torus to become angled or squared off, creating more of an overall 'box' shape.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Seg edges - using the up and down arrows will cause the edges of the 'segments' of a torus to become angled or squared off, giving it more of a 'hallway' shape.
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Both of these powerful functions can render some very unusual results and shapes that add just 'gobs' of real creativity, experimentation and fun to this object.
+
+&nbsp;&nbsp;&nbsp;<b>Extrude hollow</b>:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;This check box can be used at any time and is pretty much self explanatory. Leaving this box unchecked will create the object as a normal torus item. For alternative ways of making a solid object hollow, see 'Misc. Info' below in the <ref> ./aids </ref> section. In addition, this function is effect by the <a href="intro.mapeditor.toolpalettes.movement.html">Movement tool-palette</a> and it is recommended that a low 'negative' setting be given for its <a href="intro.mapeditor.toolpalettes.movement.html#configuration">Inflate/Deflate</a> amount.
+
+&nbsp;&nbsp;&nbsp;<b>No bulkheads</b>:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;This check box is a special feature item for the torus object only and its use is controlled automatically by the 'Extrude hollow' check box above, which has to be active for this one to be checked. This function will cause all interior 'bulkhead' walls to be removed when the torus is made hollow.
+
+&nbsp;&nbsp;&nbsp;<b>Reset & the X buttons</b>:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Reset button - this one 'defaults' button, as it is marked, will reset all of the default values for this dialog box.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;X button - this will of course close the dialog box with its current settings. Even though it may be closed, these settings are still active.
+
+<b><u>As some general notes</u></b>:<br>
+All of the input amounts can also be done manually and will take multipal decimal place input as well, except the first set for 'Segments\Faces'.<br>
+Also, there have been some built in safe gards such as not allowing some to go below zero or pass another that can cause a torus to break up.<br>
+Another safe guard that has been added is the removal of any broken polys during the dragging process when very abstract shapes are being created.<br>
+So basicly, 'what you see is what you get'.
+</td></tr>
+</table>
+

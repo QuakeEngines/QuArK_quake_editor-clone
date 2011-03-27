@@ -1,0 +1,47 @@
+title: Options
+author: Decker
+
+<img align=right>options.png</img>
+A lot of things in the map-editor is controlled in this folder. A brief
+overview will be given here, but you should experiment with the settings
+yourself, to get a knowledge of what they do and if you can use them to
+something usefull.
+
+<i>Draw axis</i>. If the X, Y and Z-axis through coordinate 0,0,0 (center of
+map) should be drawn.
+
+<i>Show indirect 'target' links</i>. Shows with colored arrows, what a selected
+entity has as 'targets', and their 'targets', and their 'targets', and their
+'targets', and their 'targets', etc. etc. etc. Having this on, can really slow
+down map-drawing in the map-editor, if you got a lot of 'targets'. It is
+<u>recommended</u> to only have this checked, when you want to see that its all
+connected.
+
+<i>Both red lines</i>. Turn on a second set of red-guidiance lines.
+
+<i>Cross-like cursor</i>. If you're doing precision work, its better to have a
+cross instead of the arrow-shaped mouse-cursor.
+
+<i>Auto adjust normal</i>. It's about the face "normal" vectors as well as the
+entities' "angle" vectors drawn in the map editor. When you move them with the
+mouse, if this box is checked, it gets forced to the nearest multiple of 15
+degrees (15 is the default value and can be changed) just as if you were
+holding down the Ctrl key all the time.
+
+<i>Delete unused faces</i>. Unless you know what you're doing, keep this marked
+at all times.
+
+<i>Dig in 3D views</i>. To see what a digger or negative polyhedron will do to
+your level in the 3D-windows, keep this checked.
+
+<i>Hide faces in tree</i>. Check this, if you do not want to be able to expand
+polyhedrons showing its faces, in the tree-view. If you are working with
+shared-faces, uncheck this.
+
+<i>Hint for map handles</i>. Keep this checked, or you will not be able to get
+the great flyover-hintboxes on handles.
+
+<i>Don't write //TX# in .map</i>. If you do not use build tools that are
+custommade for QuArK, you won't be able to take advantage of the better
+texture-alignment, when compiling your map. This option must be
+<u>unchecked</u> when you use TXQBSP/TXQCSG build tools.

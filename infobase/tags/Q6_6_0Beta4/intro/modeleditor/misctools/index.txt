@@ -1,0 +1,8 @@
+title: Misc tools
+desc: newitem
+desc: trashcan
+desc: undoredo
+desc: bboxsubgroup
+desc: skinsubgroup
+
+<img border=0 align=left valign=top>misctool.png</img>

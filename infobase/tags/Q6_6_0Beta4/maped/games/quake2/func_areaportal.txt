@@ -1,0 +1,37 @@
+title: Func_areaportal entities
+author: Robert van der Schoot
+
+<b>Question:</b><br>
+I know that that is some kind of a barrier for Quake-2 used by the map-designer (me) to tell
+Quake-2 to ignore anything that is behind it, so that the framerate will not suffer from parts of the map that are not
+essential yet, but will be taken into account (and therefore use precious processing power) by Quake-2 if this func_areaportal
+is not used. But how do i place it?
+
+<b>Answer:</b><br>
+Quake-2 tends to (re)draw the whole map during gameplay all the time, even the (numerous) parts
+of it that are not visible to the player (yet). This of course puts a lot of "stress" on your system (pc), resulting in a
+slower gameplay, more than necessary.
+
+The func_areaportal entity tells Quake-2 to ignore anything that's behind the brush belonging to the func_areaportal.
+
+This brush can be resized just like all the others and should be placed in a way that it covers the passage that you want to
+"close off" completely. Putting the brush of the func_areaportal in the same place as the brush of, for example, the func_door
+that you use to close off the corridor visibly (from the player's point of view) is the only wise choice of positioning.
+
+Take care not to make it visible for the player; making it a little "thinner" than the door-brush prevents that. Making it
+wider and/or higher than the door-brush is not bad (most of the times).
+
+You can use the func_areaportal in conjunction with any "passage-covering-entity" like; func_train, func_plat,
+func_explosive, etc.
+
+Make sure that the TARGET specific of the entity you chose as a "passage-blocker" is pointing to the TARGETNAME specific of
+the func_areaportal. This will make the brush of the func_areaportal dissapear when the entity (func_door for instance) gets
+triggered (and reappear if the door slams shut again. Nifty).
+
+Don't just give the passage-blocking-entity and the func_areaportal the same TARGETNAME. It will result in a func_areaportal
+that DOES dissapear when you trigger (for example) the button that opens the door, but that DOES NOT reappear automatically
+when the door slams shut again. Even worse, it will reappear when you open the door once again, showing its ugly black looks to
+the confused player.
+
+You can of course check the "relationship" between the trigger-entity, the passage-blocking-entity and the func_areaportal
+by selecting one of them in QuArK.

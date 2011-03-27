@@ -1,0 +1,22 @@
+title: Making columns
+author: tiglari
+
+
+There's only one menu item for columns & pipes,
+Column.  As usual, resize the block to change the
+shape of the column or pipe.  And there are lots
+of specifics to experiment with.  For example you
+can make a round porthole to fit into a square
+aperture by checking inverse and unchecking open.
+
+One difference between pipe/column and the other
+shapebuilders at the moment is that for a pipe with
+thickness, the outside texture comes off the wall labeled
+`back', the inside off the one labelled `front', so they
+can be different.
+
+Unfortunately there isn't yet any facility for making
+pipes that are bent, we need some kind of replication of
+the functionality of q3radiant's `patch bend mode',
+but don't have it yet.
+

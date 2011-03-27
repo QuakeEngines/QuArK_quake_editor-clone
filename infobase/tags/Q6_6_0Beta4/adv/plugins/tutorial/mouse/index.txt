@@ -1,0 +1,11 @@
+title: Right Mouse Menus
+desc: basic elaborate
+
+Our commands work, but the interface is clunky because we have to select
+our sides, and then cruise up to the command menu (or remember a
+hot key, which are in limited supply) to get the effect.
+A popular strategy to make things easier is to put commands on
+a `speed menu', or RMB menu, which is brought up by clicking
+the right mouse button when the cursor is over the object
+we want to act on.
+

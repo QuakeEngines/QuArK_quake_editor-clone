@@ -1,0 +1,24 @@
+title: Delphi coding
+author: tiglari
+
+At the minimum, there will have to be a gamecode for the game, defined
+in the source file prog/Setup.pas.  Presently these are single-character
+alphanumerics assigned on the basis of what kind of engine is used:
+<UL>
+<LI>1-9: Quake 1/HL</LI>
+<LI>A-Z: Quake 2</LI>
+<LI>a-z: Quake 3 & other advanced</LI>
+</UL>
+A complete list of the gamecodes that have been checked out thus far is
+given in the GameCodeList.txt file located in QuArK's main runtime
+folder.  As people use these codes this text file should be updated and
+committed to the CVS archives to maintain control and avoid confutation.
+
+Engines that do use shaders and might acquire curves should go into the
+last range (Quake 3 & other advanced).
+
+If the game has technology similar to one already supported by QuArK, then
+this may well be all that's necessary in the Delphi code, and one of the
+current Delphi coders will be able to do it for you.  Otherwise there may
+need to be coding for texture-display, model-viewing, terrain editing etc.,
+and you might have to do some or even most of it yourself.

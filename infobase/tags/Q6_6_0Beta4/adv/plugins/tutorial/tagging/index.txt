@@ -1,0 +1,11 @@
+title:  Tagging and Gluing
+desc: tag glue trouble
+
+Now we get some commands to actually do something.  What
+we want the user to be able to do is first `tag' a selected side,
+then later select one or more sides, and finally 
+give another command `glue to tagged', which will move the
+selected sides so that they are coplanar with the tagged one.
+So we will actually need two (eventually three) commands
+in all.
+

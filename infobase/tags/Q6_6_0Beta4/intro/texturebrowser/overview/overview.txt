@@ -1,0 +1,22 @@
+title: Overview
+author: Rowdy
+
+Across the top is the menu and toolbar, this is covered in more detail in the
+<ref> ../menu </ref> section.
+
+<img border=1 align=right>texturebrowser.png</img>
+Down the left of the form the first item you will see is the
+<a href="intro.texturebrowser.menu.html#texturesearch">Searched Textures</a>
+folder.This is where any textures will be placed when you use the
+<a href="intro.texturebrowser.menu.html#texturesearch">Search tool</a>,
+shown at the far right of the toolbar.
+
+Next comes the <g>Used Skin Textures</g> folder. These are all the textures that are
+curently being used in the map or model as the case may be.
+
+Below that is a list of texture groups.  The ones shown here are
+from Quake III Arena, yours may differ depending on which game you are editing, and
+whether you have setup any additional texture groups of your own.
+
+Most of the form is taken up with a preview of all the textures in the selected
+group.

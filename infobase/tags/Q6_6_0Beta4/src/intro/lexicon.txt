@@ -1,0 +1,77 @@
+title: French-to-English lexicon
+author: Tiglari / Armin
+
+<pre>
+
+
+
+Aucun       - none
+
+Ajouter     - to add
+
+
+
+Charger     - to load
+
+
+
+Dans        - in (SuivantDansGroupe = following in group)
+
+Deplacer    - to move
+
+
+
+Enfant      - child
+
+Enregistrer - to save
+
+Entete      - header
+
+Etat        - state (TEtatObjet = object state type)
+
+
+
+Fichier     - file
+
+Frere       - brother (ModifeFrere = brother modified)
+
+
+
+Lien        - link (LienFichierQObject = File Link QObject)
+
+Lire        - to read
+
+
+
+Modifier    - to modify
+
+
+
+Ouvrir      - to open
+
+
+
+Retirer     - to remove
+
+
+
+SousElement - sub-element (Sous = under)
+
+SousSelVide - empty sub-selection
+
+Suivant     - following (SuivantDansGroupe = following in group)
+
+SurDisque   - on-disk (Sur = on, over)
+
+
+
+Tout, Toute - all
+
+Taille      - size
+
+
+
+Vide        - empty
+
+</pre>
+

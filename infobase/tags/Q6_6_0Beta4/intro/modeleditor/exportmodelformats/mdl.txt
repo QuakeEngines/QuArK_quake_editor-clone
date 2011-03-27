@@ -1,0 +1,16 @@
+title: .mdl format
+author: cdunde
+
+<i>Original game </i>&nbsp;: Quake 1
+
+<i>Other games </i>&nbsp;: Unknown (not Half-Life 1 or 2)
+
+Used in Quake 1 for both static (single frame) single component and simple animated (multiple frames) single component.
+
+<b><u>uses</u></b><br>
+<a href="intro.modeleditor.editelements.html#tags">tags </a>&nbsp;: no<br>
+<a href="intro.modeleditor.editelements.html#bones">bones </a>&nbsp;: no<br>
+<a href="intro.modeleditor.vertexcolorandweights.html#vertexweights">weights </a>&nbsp;: no<br>
+<a href="intro.modeleditor.vertexcolorandweights.html#vertexcoloring">uv colors </a>&nbsp;: no<br>
+<a href="intro.modeleditor.dataforms.html#specsargsview">Specifics page </a>&nbsp;: no<br>
+

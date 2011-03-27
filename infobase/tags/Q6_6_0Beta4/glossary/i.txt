@@ -1,0 +1,6 @@
+title: I...
+author: Decker
+
+<dl>
+<dt><a name="idsoftware">       </a>id Software         <dd>Software company. Creator of Wolfenstein 3D, the DOOM and Quake games and 3D-engines. <a href="http://www.idsoftware.com">http://www.idsoftware.com</a>.
+</dl>
