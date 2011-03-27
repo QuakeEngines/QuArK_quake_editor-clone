@@ -195,9 +195,8 @@ class CamPosDuplicator(mdlduplicator.StandardDuplicator):
                     view, action = get3DView(self.dup, editor)
                 if view is None:
                     return
-                org = quarkx.vect(self.dup["screencenter"]) - quarkx.vect(self.dup["center"])
+                org = quarkx.vect(self.dup["screencenter"])
                 org = org - ((~(quarkx.matrix(self.dup["matrix"])) * quarkx.vect(0.0, 0.0, 500.0))) #Step the camera back
-                org = org + quarkx.vect(self.dup["center"]) #Get modelcenter
         hndl = CamPosHandle(org, self.dup)
         return [hndl]
 
@@ -459,6 +458,10 @@ def findClick(m):
 
 
 # $Log$
+# Revision 1.3  2011/03/26 23:35:16  cdunde
+# Updated Model Editor Camera Position system with Hotkeys to take quick shots of both Editor and Floating 3D views,
+# kept in separate folders for both Standard modes and True3D modes with Hotkeys to scroll through those shots.
+#
 # Revision 1.2  2011/03/16 05:43:31  cdunde
 # Added F5 Hotkey function for making Model Editor 3D camera positions.
 #
