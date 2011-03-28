@@ -160,7 +160,7 @@ def camposmenu(o, editor, oldmenu=mdlentities.DuplicatorType.menu.im_func):
     def storeViewClick(m,o=o,editor=editor):
         storeView(o,editor)
 
-    getitem=qmenu.item("Set View", setViewClick,"|Set 3D view position from this position item.\n\nThen use PgUp/Down with 'C' depressed to cycle prev/next camera positions in the same group as this one.\n\nThis won't work until a view has been set or stored in the group with the menu item")
+    getitem=qmenu.item("Set View", setViewClick,"|Set 3D view position from this position item.")
     storeitem=qmenu.item("Store View",storeViewClick,"|Store 3D view position in this position item.")
     return [getitem, storeitem]
 
@@ -458,6 +458,9 @@ def findClick(m):
 
 
 # $Log$
+# Revision 1.4  2011/03/27 03:10:12  cdunde
+# Removed unnecessary code.
+#
 # Revision 1.3  2011/03/26 23:35:16  cdunde
 # Updated Model Editor Camera Position system with Hotkeys to take quick shots of both Editor and Floating 3D views,
 # kept in separate folders for both Standard modes and True3D modes with Hotkeys to scroll through those shots.
