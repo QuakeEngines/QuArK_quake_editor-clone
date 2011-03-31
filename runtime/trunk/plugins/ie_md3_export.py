@@ -523,7 +523,7 @@ def save_md3(self):
 
 
 ######################################################
-# CALL TO SAVE MESH (.md5mesh) OR ANIMATION (.md5anim) FILE (where it all starts off from)
+# CALL TO SAVE .md3 FILE (where it all starts off from)
 ######################################################
 # Saves the model file: root is the actual file,
 # filename is the full path and name of the .md3 to create.
@@ -718,7 +718,7 @@ class ExportSettingsDlg(quarkpy.qmacro.dialogbox):
         if self.src['Shaders'] is not None:
             write_shaders(self.filename, self.comp_list)
 
-        # Opens the output file for writing the .md5 mesh or animation file to disk.
+        # Opens the output file for writing the .md3 file to disk.
         self.md3file = open(self.filename,"wb")
         save_md3(self) # This is the funciton above called to start exporting the mesh or animation file.
         self.md3file.close()
@@ -735,6 +735,9 @@ def UIExportDialog(root, filename, editor):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.2  2010/03/16 19:25:37  cdunde
+# Update to activate the rest of the export dialog items.
+#
 # Revision 1.1  2010/03/16 07:17:13  cdunde
 # Added support for .md3 model format exporting with tags, textures and shader files.
 #
