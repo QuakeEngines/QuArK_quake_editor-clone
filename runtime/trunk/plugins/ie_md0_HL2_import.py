@@ -4626,7 +4626,10 @@ class Object(object):
             baseframe = framesgroup.dictitems['baseframe:mf']
 
             #Update baseframe vertices
+            dupeframe = None
             baseframe_name = "BaseFrame " + mdl_name
+            if baseframe_name + ":mf" in framesgroup.dictitems.keys():
+                dupeframe = 1
             new_frame = baseframe.copy()
             new_frame.shortname = baseframe_name
             meshverts = baseframe.vertices
@@ -4638,7 +4641,7 @@ class Object(object):
                 Bpos_new = quarkx.vect(bonelist[pbone.name]['frames'][baseframe_name+':mf']['position'])
                 Brot_new = quarkx.matrix(bonelist[pbone.name]['frames'][baseframe_name+':mf']['rotmatrix'])
                 # Updates all the tags adding their 'BaseFrame' for this model's imported animation.
-                if comp == 0 and pbone.name in model_tag_bone_names:
+                if comp == 0 and pbone.name in model_tag_bone_names and dupeframe is None:
                     for tag in self.tagsgroup:
                         if tag.dictspec['bone'] == pbone.name:
                             tagframe = tag.subitems[0].copy()
@@ -4661,7 +4664,8 @@ class Object(object):
                         vert_pos = (~Brot_old) * (vert_pos - Bpos_old)
                         newverts[vert_index] += weight_value * (Bpos_new + (Brot_new * vert_pos))
             new_frame.vertices = newverts
-            framesgroup.appenditem(new_frame)
+            if dupeframe is None:
+                framesgroup.appenditem(new_frame)
             baseframe = new_frame   #This is now our new baseframe
             meshverts = baseframe.vertices
 
@@ -5221,6 +5225,9 @@ def UIImportDialog(MDL, file, editor, filename, ComponentList, QuArK_bones, hitb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.6  2011/04/02 03:17:58  cdunde
+# Minor update to cancel animation importing..
+#
 # Revision 1.5  2011/04/02 01:08:10  cdunde
 # Added Half-Life 2 importer animation support with bone, attachment and bbox movement.
 #
