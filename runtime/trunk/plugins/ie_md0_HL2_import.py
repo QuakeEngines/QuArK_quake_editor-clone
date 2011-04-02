@@ -33,11 +33,12 @@ from quarkpy.qeditor import MapColor # Strictly needed for QuArK bones MapColor 
 # Globals
 SS_MODEL = 3
 logging = 0
+starttime = None
 importername = "ie_md0_HL2_import.py"
 textlog = "HL2mdl_ie_log.txt"
 progressbar = None
 editor = None
-
+SpecsList = """ """
 
 ######################################################
 # MDL Flag Settings from -> studio.h
@@ -573,8 +574,8 @@ class HL2_Bone:
     binary_format="<ii6i3f4f3f3f3f12f4f6i8i"  #little-endian (<), see #item descriptions above.
     data_read_in = 256 # Total binary_format byte value above, used below to set the file offset pointer back.
 
-    value = (0.0)*6        # For QuArK's own use.
-    scale = (0.0)*6        # For QuArK's own use.
+    value = (0.0)*6    # For QuArK's own use.
+    scale = (0.0)*6    # For QuArK's own use.
 
     def __init__(self):
         self.bone_index = 0
@@ -606,8 +607,8 @@ class HL2_Bone:
         self.binary_format="<ii6i3f4f3f3f3f12f4f6i8i"  #little-endian (<), see #item descriptions above.
         self.data_read_in = 216 # Total binary_format byte value above, used below to set the file offset pointer back.
 
-        self.value = (0.0)*6        # For QuArK's own use.
-        self.scale = (0.0)*6        # For QuArK's own use.
+        self.value = (0.0)*6    # For QuArK's own use.
+        self.scale = (0.0)*6    # For QuArK's own use.
 
     def load(self, file):
         temp_data = file.read(struct.calcsize(self.binary_format))
@@ -915,8 +916,8 @@ class HL2_StudioMovement:
         temp_data = file.read(struct.calcsize(self.binary_format))
         data = struct.unpack(self.binary_format, temp_data)
         if logging == 1:
-            print "======================================"
-            print "HL2import line 625 HL2_StudioMovement data"
+            print "========================"
+            print "HL2_StudioMovement data"
             print data
         self.endframe = data[0]
         self.motionflags = data[1]
@@ -1013,6 +1014,7 @@ class HL2_LocalAnimDesc:
     unused7 = 0              #item   24     int.
     binary_format="<2if4i3f3f12i"  #little-endian (<), see #item descriptions above.
     data_read_in = 100 # Total binary_format byte value above, used below to set the file offset pointer back.
+    ThisOffset = 0 # Need the offset of the structure to get to the anim block later
 
     def __init__(self):
         self.baseptr = 0
@@ -1039,6 +1041,7 @@ class HL2_LocalAnimDesc:
         self.unused7 = 0
         self.binary_format="<2if4i3f3f12i"  #little-endian (<), see #item descriptions above.
         self.data_read_in = 100 # Total binary_format byte value above, used below to set the file offset pointer back.
+        self.ThisOffset = 0
 
     def load(self, file, ani_file, hl2_file_obj):
         temp_data = file.read(struct.calcsize(self.binary_format))
@@ -1069,6 +1072,7 @@ class HL2_LocalAnimDesc:
         self.unused7 = data[24]
 
         SaveCurOffset = file.tell() # Save the file current offset pointer.
+        self.ThisOffset = SaveCurOffset - self.data_read_in
         file.seek(SaveCurOffset - self.data_read_in + self.sznameindex, 0) # change the file offset pointer position.
         binary_format="<c"
         while 1:
@@ -1099,140 +1103,7 @@ class HL2_LocalAnimDesc:
          #   print "unused6", str(self.unused6)
          #   print "unused7", str(self.unused7)
 
-        #Read in the zero frame data first
-        file.seek(SaveCurOffset - self.data_read_in + hl2_file_obj.zeroframecacheindex, 0) # change the file offset pointer position.
-        for i in xrange(hl2_file_obj.numlocalanim):
-            for j in xrange(hl2_file_obj.numbones):
-                bone = hl2_file_obj.bones[j]
-                if bone.flags & BONE_HAS_SAVEFRAME_POS:
-                    #Read in a Vector48
-                    pos = Vector48()
-                    pos.load(file)
-                    #print "line 1082: pos: ",pos
-                    #FIXME: Done something with it!
-                if bone.flags & BONE_HAS_SAVEFRAME_ROT:
-                    #Read in a Quaterion32, but advance a Quaternion48
-                    #rot = Quaterion32()
-                    #rot.load(file)
-                    #FIXME: advance file by 1 byte...!
-                    #print "line 1088: rot: ",rot
-                    #FIXME: Done something with it!
-                    pass
-
-        if ani_file is not None:
-
-            #Read in the animation data
-            ani_file.seek(hl2_file_obj.anim_blocks[self.animblock].datastart,0)
-            #print "pszName, numframes:", self.pszName, self.numframes
-            while 1:
-                SaveCurAniOffset = ani_file.tell()
-                StudioAnim = HL2_ANIStudioAnim()
-                StudioAnim.load(ani_file)
-                #print
-                #print "bone:", StudioAnim.bone
-                #print "flags:", StudioAnim.flags
-                #print "nextoffset:", StudioAnim.nextoffset
-            #    binary_format="<6h"
-            #    for i in xrange(self.numframes):
-            #        temp_data = ani_file.read(struct.calcsize(binary_format))
-            #        data = struct.unpack(binary_format, temp_data)
-            #        print "pos, quat:", data
-
-                if self.numframes == 1:
-                    if (StudioAnim.flags & STUDIO_ANIM_RAWROT):
-                        #Read in a Quaternion48
-                        rot = Quaternion48()
-                        rot.load(file)
-                        #print "line 1077: rot:", rot
-                        #print rot.qx
-                        #print rot.qy
-                        #print rot.qz
-                        #print rot.qw
-                        #FIXME: Done something with it!
-                    if (StudioAnim.flags & STUDIO_ANIM_RAWPOS):
-                        #Read in a Vector48
-                        pos = Vector48()
-                        pos.load(file)
-                        #print "line 1149: pos:", pos
-                        #print pos.x
-                        #print pos.y
-                        #print pos.z
-                        #FIXME: Done something with it!
-                else:
-                    AnimValuePtrRot = None
-                    AnimValuePtrPos = None
-                    if (StudioAnim.flags & STUDIO_ANIM_ANIMROT):
-                        SaveCurAniValuePtrRotOffset = ani_file.tell()
-                        AnimValuePtrRot = HL2_AnimValuePtr()
-                        AnimValuePtrRot.load(ani_file)
-                        #print "AnimValuePtr Rot.offset", AnimValuePtrRot.offset
-                    if (StudioAnim.flags & STUDIO_ANIM_ANIMPOS):
-                        SaveCurAniValuePtrPosOffset = ani_file.tell()
-                        AnimValuePtrPos = HL2_AnimValuePtr()
-                        AnimValuePtrPos.load(ani_file)
-                        #print "AnimValuePtr Pos.offset", AnimValuePtrPos.offset
-                    rot_anim_data = [None, None, None]
-                    pos_anim_data = [None, None, None]
-                    if AnimValuePtrRot is not None:
-                        for i in xrange(0, 3): #XR, YR, ZR
-                            if AnimValuePtrRot.offset[i] == 0:
-                                #No data
-                                continue
-                            rot_anim_data[i] = []
-                            ani_file.seek(SaveCurAniValuePtrRotOffset+AnimValuePtrRot.offset[i],0)
-                            j = 0
-                            while j < self.numframes:
-                                AnimValue = HL2_AnimValue()
-                                AnimValue.load(ani_file)
-                                #print "AnimValue.valid", AnimValue.valid
-                                #print "AnimValue.total", AnimValue.total
-                                #print "AnimValue.value", AnimValue.value
-                                for k in xrange(AnimValue.valid):
-                                    AnimValue2 = HL2_AnimValue()
-                                    AnimValue2.load(ani_file)
-                                    rot_anim_data[i] += [AnimValue2.value]
-                                    j += 1
-                                for k in xrange(AnimValue.valid, AnimValue.total):
-                                    rot_anim_data[i] += [AnimValue2.value] #Repeat last entry
-                                    j += 1
-                    if AnimValuePtrPos is not None:
-                        for i in xrange(0, 3): #X, Y, Z
-                            if AnimValuePtrPos.offset[i] == 0:
-                                #No data
-                                continue
-                            pos_anim_data[i] = []
-                            ani_file.seek(SaveCurAniValuePtrPosOffset+AnimValuePtrPos.offset[i],0)
-                            j = 0
-                            while j < self.numframes:
-                                AnimValue = HL2_AnimValue()
-                                AnimValue.load(ani_file)
-                                #print "AnimValue.valid", AnimValue.valid
-                                #print "AnimValue.total", AnimValue.total
-                                #print "AnimValue.value", AnimValue.value
-                                for k in xrange(AnimValue.valid):
-                                    AnimValue2 = HL2_AnimValue()
-                                    AnimValue2.load(ani_file)
-                                    pos_anim_data[i] += [AnimValue2.value]
-                                    j += 1
-                                for k in xrange(AnimValue.valid, AnimValue.total):
-                                    pos_anim_data[i] += [AnimValue2.value] #Repeat last entry
-                                    j += 1
-                    #print "line 1060: rot_anim_data for XR:", rot_anim_data[0]
-                    #print "line 1060: rot_anim_data for YR:", rot_anim_data[1]
-                    #print "line 1060: rot_anim_data for ZR:", rot_anim_data[2]
-                    #print "line 1080: pos_anim_data for X:", pos_anim_data[0]
-                    #print "line 1080: pos_anim_data for Y:", pos_anim_data[1]
-                    #print "line 1080: pos_anim_data for Z:", pos_anim_data[2]
-                    #FIXME: Do something with the pos_anim_data and rot_anim_data...
-                if StudioAnim.nextoffset == 0:
-                    break
-                else:
-                    ani_file.seek(SaveCurAniOffset+StudioAnim.nextoffset,0)
-
-        file.seek(SaveCurOffset, 0) # Reset the file offset pointer back to where it should be now.
-
         # inline mstudiomovement_t * const pMovement( int i ) const { return (mstudiomovement_t *)(((byte *)this) + movementindex) + i; };
-        SaveCurOffset = file.tell() # Save the file current offset pointer.
         file.seek(SaveCurOffset - self.data_read_in + self.movementindex, 0) # change the file offset pointer position.
         for i in xrange(self.nummovements, 0):
             std_movement = HL2_StudioMovement()
@@ -1500,7 +1371,7 @@ class HL2_LocalSeqDesc:
                     continue
             self.pszActivityName = self.pszActivityName + Namedata[0]
         if logging == 1:
-            print "line 1053 DAN PLEASE FIX THIS pszActivityName", self.pszActivityName
+            print "DAN PLEASE FIX THIS pszActivityName", self.pszActivityName
         file.seek(SaveCurOffset, 0) # Reset the file offset pointer back to where it should be now.
 
 
@@ -1812,9 +1683,9 @@ class HL2_Model:
     unused8 = 0            #item   21     int.
     binary_format = "<%dsif9i2f8i" % MAX_QPATH  #little-endian (<), see #item descriptions above.
 
-    meshes = []                           # List of meshes.
-    verts = []                            # List of vertex vector poistions.
-    eyeballs = []                         # List of meshe eyeballs.
+    meshes = []            # List of meshes.
+    verts = []             # List of vertex vector poistions.
+    eyeballs = []          # List of meshe eyeballs.
 
     def __init__(self):
         self.pszName = ""
@@ -2042,7 +1913,7 @@ class HL2_Node:
     unused6 = 0            #item   14     int.
     unused7 = 0            #item   15     int.
     unused8 = 0            #item   16     int.
-    pszLocalNodeName = ""        # returned string of the bbox name, if any.
+    pszLocalNodeName = ""  # returned string of the bbox name, if any.
     binary_format="<64c"  #little-endian (<), see #item descriptions above.
 
     def __init__(self):
@@ -3036,12 +2907,12 @@ class HL2_VTXFileReader:
                                                 pass
                                     elif strip_flags == 2:
                                         #This is a triangle strip
-                                      #  print "line 3039 body_parts, model, mesh, strip_group, strip ->", i, j, l, m, n
+                                      #  print "body_parts, model, mesh, strip_group, strip ->", i, j, l, m, n
                                       #  quarkx.beep()
                                         pass
                                     else:
                                         #Dunno
-                                      #  print "line 3044 body_parts, model, mesh, strip_group, strip ->", i, j, l, m, n
+                                      #  print "body_parts, model, mesh, strip_group, strip ->", i, j, l, m, n
                                       #  print "STRIP_FLAGS IS ", strip_flags
                                       #  quarkx.beep()
                                         pass
@@ -3098,7 +2969,7 @@ class Tags(object):
 
         if logging == 1:
             print ""
-            print "line 2654 Tags self.mdltagvalues", self.mdltagvalues
+            print "Tags self.mdltagvalues", self.mdltagvalues
 
         return self
 
@@ -3305,153 +3176,6 @@ def CalcBonePosition(self, file, m_frame, s, pbone, panim, m_adj):
             pos[i] += m_adj[bone.bonecontroller[i]]
 
     return pos
-
-
-def SetUpBones(self, file, ani_file, QuArK_bones): # self = the mdl Object. This function copied from HL1 importer and changed for this importer.
-    if logging != 1:
-        print ""
-        print "#########################"
-        print "SetUpBones Section"
-        print "#########################"
-
-    animdesc = self.animation_descs
-    pbones = self.bones
-    pseqdesc = self.sequence_descs
-
-    # Go through all the animation sequences (frame groups) and fill the ModelComponentList['bonelist'][bone.name]['frames'] data.
-    bonelist = editor.ModelComponentList['bonelist']
-    if logging != 1:
-        print "num_anim: " + str(self.num_anim)
-        print "========================="
-    for m_sequence in xrange(self.num_anim):
-        seq_panims = []
-        anim = animdesc[m_sequence]
-        seq = pseqdesc[m_sequence]
-        if (seq.numblends == 0) or (anim.numframes == 0):
-            #Animation has no frames? Skip it!
-            continue
-
-        seq_name = seq.pszLabel
-        if logging != 1:
-            print "========================"
-            print "seq %d: sequence name -> %s" % (m_sequence, seq_name)
-            print "========================"
-
-        #Read in the offsets
-      #  if seq.seqgroup == 0: # HL1 call used
-      #      seq_fileoffset = self.demand_seq_groups[seq.seqgroup].data # HL1 call used
-  #      if m_sequence == 0 and ani_file is None: # HL2 not sure what to use now.
-        if animdesc[m_sequence].animblock == 0 and ani_file is None:
-            seq_fileoffset = self.localseqindex # HL2 call uses
-        else:
-      #      seq_fileoffset = self.anim_seq_offset + (m_sequence * struct.calcsize(seq.binary_format)) # HL1 call used
-            if ani_file is None:
-                seq_fileoffset = self.localanimindex + (m_sequence * struct.calcsize(seq.binary_format)) # HL2 call uses
-            else: # HL2 not sure what to use now.
-                pass
-
-      #  file.seek(seq_fileoffset + seq.anim_offset, 0) # HL1 call used
-        file.seek(seq_fileoffset + seq.animindexindex, 0) # HL2 call uses
-        if logging != 1:
-          #  anim_block = HL2_AnimBlock()
-          #  print "======================================"
-          #  print m_sequence, "index, HL2_AnimBlock data"
-          #  anim_block.load(file)
-          #  print "line 2802 anim_block.datastart",  anim_block.datastart
-          #  print "line 2803 anim_block.dataend",  anim_block.dataend
-            total = len(pbones)*6*2
-            print "----------------"
-            print "start bones data: NumBones " + str(len(pbones)) + " x 6 offsets x 2 bytes ea. = " + str(total) + " bytes"
-            print "      pointer at start seq " + str(m_sequence) + ": " + str(file.tell())
-            print "      frames data pointer s/b " + str(file.tell()+total)
-            print "----------------"
-        for m_blend in range(seq.numblends):
-            seq_panims.append([])
-            for pbone in range(len(self.bones)):
-                seq_panims[m_blend].append(mdl_bone_anim())
-                seq_panims[m_blend][pbone].load(file)
-              #  seq_panims[m_blend][pbone].dump()
-
-        #Get the bone position + rotation (vector + quaternion)
-        if logging != 1:
-            print ""
-            print "----------------"
-            print "start frames data pointer at: " + str(file.tell())
-            print "      anim.numframes: " + str(anim.numframes)
-            print "----------------"
-        for m_frame in xrange(anim.numframes):
-            pos = [[]] * len(self.bones)
-            quat = [[]] * len(self.bones)
-
-            m_controller = [0.0, 0.0, 0.0, 0.0]
-            m_mouth = 0.0
-
-            # add in programatic controllers
-            m_adj = CalcBoneAdj(self, m_controller, m_mouth)
-
-            for pbone in range(len(self.bones)):
-                panim = seq_panims[0][pbone]
-                bone = self.bones[pbone]
-                #dirty = float(m_frame) / float(anim.numframes)
-                #quat[pbone] = CalcBoneQuaternion(self, file, 0, dirty, pbone, panim, m_adj)
-                #pos[pbone] = CalcBonePosition(self, 0, dirty, pbone, panim, m_adj)
-            #    print "line 3398 m_frame, pbone, m_adj", m_frame, pbone, m_adj
-                quat[pbone] = CalcBoneQuaternion(self, file, m_frame, 0.0, pbone, panim, m_adj)
-                pos[pbone] = CalcBonePosition(self, file, m_frame, 0.0, pbone, panim, m_adj)
-
-        #    if (seq.motiontype & STUDIO_X):
-        #        pos[seq.motionbone][0] = 0.0
-        #    if (seq.motiontype & STUDIO_Y):
-        #        pos[seq.motionbone][1] = 0.0
-        #    if (seq.motiontype & STUDIO_Z):
-        #        pos[seq.motionbone][2] = 0.0
-
-            if (seq.numblends > 1):
-                panim = seq_panims[1][pbone]
-
-            frame_name = seq_name + " frame " + str(m_frame+1)
-            for pbone in range(len(self.bones)):
-                bone = self.bones[pbone]
-
-                bone_pos = (pos[pbone][0], pos[pbone][1], pos[pbone][2])
-                tempmatrix = quaternion2matrix(quat[pbone])
-                bone_matrix = ((tempmatrix[0][0], tempmatrix[0][1], tempmatrix[0][2]), (tempmatrix[1][0], tempmatrix[1][1], tempmatrix[1][2]), (tempmatrix[2][0], tempmatrix[2][1], tempmatrix[2][2]))
-                if bone.parent != -1:
-                    parent_name = QuArK_bones[bone.parent].name
-                    parent_pos = quarkx.vect(bonelist[parent_name]['frames'][frame_name + ":mf"]['position'])
-                    parent_matrix = quarkx.matrix(bonelist[parent_name]['frames'][frame_name + ":mf"]['rotmatrix'])
-                    bone_pos = parent_pos + (parent_matrix * quarkx.vect(bone_pos))
-                    bone_matrix = parent_matrix * quarkx.matrix(bone_matrix)
-                    bone_pos = bone_pos.tuple
-                    bone_matrix = bone_matrix.tuple
-
-                if self.num_attachments != 0 and self.attachments.has_key(pbone):
-                    tags = self.attachments[pbone]['tag_pos']
-                    bone_name = self.attachments[pbone]['bone_name']
-                    old_bone_pos = quarkx.vect(bonelist[bone_name]['frames']["baseframe:mf"]['position'])
-                    new_bone_pos = quarkx.vect(bone_pos)
-                    old_bone_rotmatrix = quarkx.matrix(bonelist[bone_name]['frames']["baseframe:mf"]['rotmatrix'])
-                    new_bone_rotmatrix = quarkx.matrix(bone_matrix)
-                    for tag in tags.keys():
-                        Tpos = tags[tag]
-                        Tpos = quarkx.vect((Tpos[0], Tpos[1], Tpos[2]))
-                        Tpos = new_bone_pos + (new_bone_rotmatrix * Tpos)
-                        Tpos = Tpos.tuple
-                        tagframe = quarkx.newobj(frame_name + ':tagframe')
-                        tagframe['show'] = (1.0,)
-                        tagframe['origin'] = Tpos
-                        tagframe['rotmatrix'] = (1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0)
-                        tagframe['bone'] = bone_name
-                        self.tagsgroup[tag].appenditem(tagframe)
-
-                # fills the ModelComponentList['bonelist'][bone.name]['frames'] data.
-                bone_name = QuArK_bones[pbone].name
-                if not bonelist[bone_name]['frames'].has_key(frame_name + ":mf"):
-                    bonelist[bone_name]['frames'][frame_name + ":mf"] = {}
-                bone_data = {}
-                bone_data['position'] = bone_pos
-                bone_data['rotmatrix'] = bone_matrix
-                bonelist[bone_name]['frames'][frame_name + ":mf"] = bone_data
 
 
 class Object(object):
@@ -3689,7 +3413,8 @@ class Object(object):
         self.new_mdl_comps = []     # A list of main model components updated copies in the main_mdl_comps list above.
 
     def load_Object(self, file, editor, folder_name, mdl_name, message):
-        global progressbar
+        global progressbar, SpecsList
+        SpecsList = """ """
         # file = the actual .mdl model file being read in, imported.
         # folder_name = name of the folder the .mdl model file is in.
         # mdl_name = just the basic name of the .mdl file, ex: barney
@@ -3706,13 +3431,13 @@ class Object(object):
 
         # Check for correct file versions.
         if self.version != 44 and self.version != 49:
-            return None, None, None, message, None, self.version, self.main_mdl_comps, self.new_mdl_comps
+            return file, None, None, None, message, None, self.version, self.main_mdl_comps, self.new_mdl_comps, None, None, None, None
 
         # Check if Main .mdl file or not and set our flag 'main_mdl_file' to use in loading the file.
         file_name = self.name.lower() # Make sure all text is lower case.
         main_mdl_file = 1
         main_mdl_name = None
-        ani_file = None
+        self.ani_file = None
         for i in range(len(possible_files)):
             if file_name.find(possible_files[i]) != -1:
                 main_mdl_file = None
@@ -3728,19 +3453,19 @@ class Object(object):
                                 self.main_mdl_comps = self.main_mdl_comps + [item]
                     if len(self.main_mdl_comps) == 0:
                         quarkx.msgbox("Main Half-Life 2 .mdl model\nfor this animation .mdl file not loaded.\n\nImport the main file first\nthen reload this .mdl file:\n\n" + file_name, quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
-                        return None, None, None, message, None, None, self.main_mdl_comps, self.new_mdl_comps
-                    ani_file = os.getcwd() + "/" + ani_file_name
-                    ani_file = open(ani_file, "rb")
+                        return file, None, None, None, message, None, None, self.main_mdl_comps, self.new_mdl_comps, None, None, None, None
+                    self.ani_file = os.getcwd() + "/" + ani_file_name
+                    self.ani_file = open(self.ani_file, "rb")
                     break
                 else:
-                    return None, None, None, message, None, self.version, self.main_mdl_comps, self.new_mdl_comps
+                    return file, None, None, None, message, None, self.version, self.main_mdl_comps, self.new_mdl_comps, None, None, None, None
         if main_mdl_file is not None:
             ## Check for and load the .vvd vertex and weights data file for model being imported.
             vvd_file, VVDFileReader = HL2_GetVertexData(mdl_name)
             ## Check for and load the .vtx triangle Tris data file for model being imported.
             vtx_file = HL2_GetTriangleData(mdl_name)
             if vvd_file is None or vtx_file is None:
-                return None, None, None, message, None, self.version, self.main_mdl_comps, self.new_mdl_comps
+                return file, None, None, None, message, None, self.version, self.main_mdl_comps, self.new_mdl_comps, None, None, None, None
 
         self.length = data[4]
         self.eyeposition = [data[5], data[6], data[7]] # ideal eye position
@@ -3955,7 +3680,7 @@ class Object(object):
         tmpData = file.read(struct.calcsize(binaryFormat))
         data = struct.unpack(binaryFormat, tmpData)
         if logging == 1:
-            print "line 3131 bonetablebynameindex", data
+            print "bonetablebynameindex", data
         # Just get garbage from file read below? Have DAN check this out.
     #    bonetablebyname = data[0]
     #    file.seek(SaveCurOffset + bonetablebyname, 0)
@@ -3967,14 +3692,17 @@ class Object(object):
 
         ## Load the bones data.
         file.seek(self.boneindex, 0)
+        if logging == 1:
+            print ""
+            print "========================"
+            print "nbr of bones", self.numbones
         for i in xrange(self.numbones):
-            if logging == 1:
-                print "======================================"
-                print i, "index, HL2_Bone data"
-
             bone = HL2_Bone()
             bone.bone_index = i
             bone.load(file)
+            if logging == 1:
+                print "----------------------------"
+                print i, "index, HL2_Bone data"
             self.bones.append(bone)
             self.QuArKBonesData = self.QuArKBonesData + [[folder_name + '_' + mdl_name + '_' + bone.pszName + ':bone', {}]]
 
@@ -3982,6 +3710,7 @@ class Object(object):
         if logging == 1:
             print ""
             print "========================"
+            print "nbr of bone controllers", self.numbonecontrollers
         file.seek(self.bonecontrollerindex, 0)
         for i in xrange(self.numbonecontrollers):
             bone_controller = HL2_BoneController()
@@ -3992,50 +3721,72 @@ class Object(object):
         if logging == 1:
             print ""
             print "========================"
+            print "nbr of animblocks", self.numanimblocks
         file.seek(self.animblockindex, 0)
         for i in xrange(self.numanimblocks):
             anim_block = HL2_AnimBlock()
-            if logging == 1:
-                print "======================================"
-                print i, "index, HL2_AnimBlock data"
             anim_block.load(file)
             #Please note: Block 0 is invalid, so the first AnimBlock is filled with rubbish numbers!
-          #  print ""
-          #  print "line 4004 anim_block.datastart", anim_block.datastart
-          #  print "line 4005 anim_block.dataend",  anim_block.dataend
+            if logging == 1:
+                print "========================"
+                print i, "index, HL2_AnimBlock data"
+                print "anim_block.datastart", anim_block.datastart
+                print "anim_block.dataend",  anim_block.dataend
+                print "----------------------------"
             self.anim_blocks.append(anim_block)
 
-      #  print"numlocalanim", self.numlocalanim
-      #  print"numlocalseq", self.numlocalseq
-      #  print "========================"
-      #  print "========================"
-      #  print ""
         ## Load the file local animations.
         if logging == 1:
             print ""
             print "========================"
-            print "nbr of bones" , len(self.bones)
+            print "numlocalanim", self.numlocalanim
         file.seek(self.localanimindex, 0)
+        total_frames = 0
+        if main_mdl_name is not None:
+            self.SRCsList = []
+            temp = """ """
         for i in xrange(self.numlocalanim):
             local_animation_desc = HL2_LocalAnimDesc()
+            local_animation_desc.load(file, self.ani_file, self)
             if logging == 1:
-                print "======================================"
+                print "========================"
                 print i, "index, HL2_LocalAnimDesc data"
-            local_animation_desc.load(file, ani_file, self)
+                print "pszName", local_animation_desc.pszName
+                print "numframes", local_animation_desc.numframes
+                print "----------------------------"
+            if main_mdl_name is not None:
+                name = local_animation_desc.pszName.replace("@", "")
+                frames = local_animation_desc.numframes
+                self.SRCsList = self.SRCsList + [name]
+                temp = temp + name + """: = {Txt = """
+                temp = temp + '"' + name + ' / ' + str(frames) + '"'
+                temp = temp + """Typ = "X" Hint = "Check this box to import these frames."}"""
+                total_frames = total_frames + frames
             self.animation_descs.append(local_animation_desc)
+        if main_mdl_name is not None:
+            if logging == 1:
+                print ""
+                print "total_frames", total_frames
+            SpecsList = SpecsList + """sep: = { Typ="S" Txt="Sequence / nbr of frames"}"""
+            SpecsList = SpecsList + """all: = {Txt = """
+            SpecsList = SpecsList + '"Import All / ' + str(total_frames) + '"'
+            SpecsList = SpecsList + """Typ = "X" Hint = "Check this box ONLY to import all frames."}"""
+            SpecsList = SpecsList + """sep: = { Typ="S" Txt=""}"""
+            SpecsList = SpecsList + temp
 
         ## Load the file local sequences.
         if logging == 1:
             print ""
             print "========================"
+            print"numlocalseq", self.numlocalseq
         file.seek(self.localseqindex, 0)
         for i in xrange(self.numlocalseq):
             local_sequence_desc = HL2_LocalSeqDesc()
-            if logging == 1:
-                print "======================================"
-                print i, "index, HL2_LocalSeqDesc data"
             local_sequence_desc.load(file)
             self.sequence_descs.append(local_sequence_desc)
+            if logging == 1:
+                print "========================"
+                print i, "index, HL2_LocalSeqDesc data"
 
         # Setup items needed for QuArK.
         ComponentList = []
@@ -4049,27 +3800,27 @@ class Object(object):
         skin_names = []
         for i in xrange(self.numtextures):
             textures_info = HL2_TexturesInfo()
-            if logging == 1:
-                print "======================================"
-                print i, "index, HL2_TexturesInfo data"
             textures_info.load(file)
             skin_name = textures_info.pszName.lower() # Make sure all text is lower case.
             skin_names.append(skin_name)
+            if logging == 1:
+                print "========================"
+                print i, "index, HL2_TexturesInfo data"
         self.skins_group, self.materials_group = LookForSkins(skin_names, self.skins_group, self.materials_group, folder_name, mdl_name, message)
 
         ## Load the body parts index data.
         if logging == 1:
             print ""
             print "========================"
-            print "    MDL File nbr of HL2_BodyParts", self.numbodyparts
+            print "nbr of HL2_BodyParts", self.numbodyparts
         file.seek(self.bodypartindex, 0)
         for i in xrange(self.numbodyparts):
             body_part_index = HL2_BodyPartIndex()
-            if logging == 1:
-                print "======================================"
-                print i, "index, HL2_BodyPartIndex data OFFSET->", self.bodypartindex
             body_part_index.load(file)
             self.bodyparts.append(body_part_index)
+            if logging == 1:
+                print "========================"
+                print i, "index, HL2_BodyPartIndex data OFFSET->", self.bodypartindex
 
         QuArK_bones = [] # A list to store all QuArK bones created.
         if main_mdl_file is not None:
@@ -4191,9 +3942,9 @@ class Object(object):
                 ComponentList = VTX.load(vtx_file, self, vvd_file, ComponentList)
                 if logging == 1:
                     print ""
-                    print "===================="
-                    print "line 3341 VTX FILE", vtx_file
-                    print "===================="
+                    print "========================"
+                    print "VTX FILE", vtx_file
+                    print "========================"
                     print "--------- HL2_VTXFileReader ---------"
 
 
@@ -4226,8 +3977,8 @@ class Object(object):
                         tag_comp['Tags'] = tag_comp.dictspec['Tags'] + ", " + tag_name
 
                     if logging == 1:
-                        print "line 3375 tag_comp", tag_comp
-                        print "line 3376 Tags", tag_comp.dictspec['Tags']
+                        print "tag_comp", tag_comp
+                        print "Tags", tag_comp.dictspec['Tags']
 
             # Create the bones, if any.
             if len(self.bones) != 0 and len(ComponentList) != 0:
@@ -4283,11 +4034,12 @@ class Object(object):
                     new_bone.vtxlist = vtxlist
                     keys = vtxlist.keys()
                     vtx_pos = {}
+                    use_key = ComponentList[0].name
                     if len(keys) != 0:
                         key = keys[0]
                         vtx_count = len(vtxlist[key])
                         vtx_pos = {key: vtxlist[key]}
-                    use_key = ComponentList[0].name
+                        use_key = key
                     for key in keys:
                         if len(vtxlist[key]) > vtx_count:
                             vtx_pos = {key: vtxlist[key]}
@@ -4322,6 +4074,7 @@ class Object(object):
             if logging == 1:
                 print ""
                 print "========================"
+                print "nbr of hitboxes", self.numhitboxsets
             file.seek(self.hitboxsetindex, 0)
             bboxlist = editor.ModelComponentList['bboxlist']
             for i in xrange(self.numhitboxsets):
@@ -4334,6 +4087,7 @@ class Object(object):
             if logging == 1:
                 print ""
                 print "========================"
+                print "num of nodes", self.numlocalnodes
             file.seek(self.localnodenameindex, 0)
             NodeName = ""
             binary_format="<c"
@@ -4344,9 +4098,9 @@ class Object(object):
                     break
                 NodeName = NodeName + data[0]
             if logging == 1:
-                print "==================="
-                print "line 3500 NodeName", NodeName
-                print "-------------------"
+                print "------------------------"
+                print "NodeName", NodeName
+                print "------------------------"
             file.seek(self.localnodeindex, 0)
             for i in xrange(self.numlocalnodes):
                 node = HL2_Node()
@@ -4357,76 +4111,82 @@ class Object(object):
         if logging == 1:
             print ""
             print "========================"
+            print "num of flex desc", self.numflexdesc
         for i in xrange(self.numflexdesc):
-            if logging == 1:
-                print "--------------" + str(i) + " HL2_FlexDesc ----------------"
             flex_desc = HL2_FlexDesc()
             flex_desc.load(file)
+            if logging == 1:
+                print "--------------" + str(i) + " HL2_FlexDesc ----------------"
 
         ## Load the flex controller data.
         file.seek(self.flexcontrollerindex, 0)
         if logging == 1:
             print ""
             print "========================"
+            print "num of flex controller", self.numflexcontrollers
         for i in xrange(self.numflexcontrollers):
-            if logging == 1:
-                print "--------------" + str(i) + " HL2_FlexController ----------------"
             flex_cont = HL2_FlexController()
             flex_cont.load(file)
+            if logging == 1:
+                print "--------------" + str(i) + " HL2_FlexController ----------------"
 
         ## Load the flex rules data.
         file.seek(self.flexruleindex, 0)
         if logging == 1:
             print ""
             print "========================"
+            print "num of flex rules", self.numflexrules
         for i in xrange(self.numflexrules):
-            if logging == 1:
-                print "--------------" + str(i) + " HL2_FlexRule ----------------"
             flex_rule = HL2_FlexRule()
             flex_rule.load(file)
+            if logging == 1:
+                print "--------------" + str(i) + " HL2_FlexRule ----------------"
 
         ## Load the ikchains data.
         file.seek(self.ikchainindex, 0)
         if logging == 1:
             print ""
             print "========================"
+            print "num of ikchains", self.numikchains
         for i in xrange(self.numikchains):
-            if logging == 1:
-                print "--------------" + str(i) + " HL2_IKChain ----------------"
             IKChain = HL2_IKChain()
             IKChain.load(file)
             self.ikchains.append(IKChain)
+            if logging == 1:
+                print "--------------" + str(i) + " HL2_IKChain ----------------"
 
         ## Load the mouths data.
         file.seek(self.mouthindex, 0)
         if logging == 1:
             print ""
             print "========================"
+            print "num of mouths", self.nummouths
         for i in xrange(self.nummouths):
-            if logging == 1:
-                print "--------------" + str(i) + " HL2_Mouth ----------------"
             mouth = HL2_Mouth()
             mouth.load(file)
+            if logging == 1:
+                print "--------------" + str(i) + " HL2_Mouth ----------------"
 
         ## Load the local pose parameters data.
         file.seek(self.localposeparamindex, 0)
         if logging == 1:
             print ""
             print "========================"
+            print "num of local pose parameters", self.numlocalposeparameters
         for i in xrange(self.numlocalposeparameters):
-            if logging == 1:
-                print "--------------" + str(i) + " HL2_LocalPoseParameter ----------------"
             localposeparameter = HL2_LocalPoseParameter()
             localposeparameter.load(file)
+            if logging == 1:
+                print "--------------" + str(i) + " HL2_LocalPoseParameter ----------------"
 
         ## Load the surface prop data.
         file.seek(self.surfacepropindex, 0)
+        flex_rule = HL2_SurfaceProp()
+        flex_rule.load(file)
         if logging == 1:
             print ""
             print "========================"
-            print "-------------- HL2_SurfaceProp ----------------"
-        flex_rule = HL2_SurfaceProp()
-        flex_rule.load(file)
+            print "surface prop data"
 
         ## Load the keyvalues data.
         if self.keyvaluesize != 0:
@@ -4434,246 +4194,529 @@ class Object(object):
             keyvalues = HL2_KeyValues()
             self.keys.append(keyvalues)
             keyvalues.Load(file, self.keyvaluesize)
+        if logging == 1:
+            print ""
+            print "========================"
+            print "keyvalues data"
 
         ## Load the local ik autoplay locks data.
         file.seek(self.localikautoplaylockindex, 0)
         if logging == 1:
             print ""
             print "========================"
+            print "local ik autoplay locks"
         for i in xrange(self.numlocalikautoplaylocks):
-            if logging == 1:
-                print "--------------" + str(i) + " HL2_LocalIKAutoplayLock ----------------"
             localikautoplaylock = HL2_LocalIKAutoplayLock()
             localikautoplaylock.load(file)
+            if logging == 1:
+                print "--------------" + str(i) + " HL2_LocalIKAutoplayLock ----------------"
 
         ## Load the include models data.
         file.seek(self.includemodelindex, 0)
         if logging == 1:
             print ""
             print "========================"
+            print "include models data"
         for i in xrange(self.numincludemodels):
-            if logging == 1:
-                print "--------------" + str(i) + " HL2_ModelGroup ----------------"
             localikautoplaylock = HL2_ModelGroup()
             localikautoplaylock.load(file)
+            if logging == 1:
+                print "--------------" + str(i) + " HL2_ModelGroup ----------------"
 
-        # load the tag info (DONE)
+        # load the tag info
         file.seek(self.surfacepropindex, 0)
         tagvaluesize = self.length - self.surfacepropindex
         tagvalues = Tags()
         self.tags.append(tagvalues)
         tagvalues.Load(file, tagvaluesize)
 
-        # Process animation data
-        if main_mdl_name is not None:
-            #
-            # Get all the moving bones
-            #
-            tmp_start_bones = [] # A list of 'topmost' bones that belong to the model
-            for bone in editor.Root.dictitems['Skeleton:bg'].subitems:
-                name = bone.shortname.lower() # Make sure all text is lower case.
-                if name.startswith(folder_name + "_" + main_mdl_name + "_"):
-                    tmp_start_bones += [bone]
+        return self, ComponentList, QuArK_bones, message, self.tagsgroup, self.version, self.main_mdl_comps, self.new_mdl_comps, main_mdl_name, total_frames, folder_name, mdl_name, SpecsList
 
-            # Determines if this bone is part of the animation?
-            def IsBoneMoving(self, bone):
-                test_name = bone.shortname.split(folder_name + "_" + main_mdl_name + "_")[1]
-                for b in self.bones:
-                    if b.pszName == test_name:
-                        return 1
-                return 0
+    # Process animation data
+    def load_Animation(self, ComponentList, QuArK_bones, message, file, editor, folder_name, mdl_name, main_mdl_name, LoadAnim):
+        global progressbar
+        ani_file = self.ani_file
+        #
+        # Get all the moving bones
+        #
+        tmp_start_bones = [] # A list of 'topmost' bones that belong to the model
+        for bone in editor.Root.dictitems['Skeleton:bg'].subitems:
+            name = bone.shortname.lower() # Make sure all text is lower case.
+            if name.startswith(folder_name + "_" + main_mdl_name + "_"):
+                tmp_start_bones += [bone]
 
-            def CheckBone(self, bone, AutoSelect):
-                BoneList = []
-                if not AutoSelect:
-                    if IsBoneMoving(self, bone):
-                        # Bone is moving! Auto-select all children, as they need to be re-positioned anyway
-                        AutoSelect = 1
-                if AutoSelect:
-                    # If this bone needs to be selected, do that
-                    BoneList += [bone]
-                # Loop over all children bones, and select them if needed
-                for ChildBone in bone.subitems:
-                    if ChildBone.type == ":bone":
-                        BoneList += CheckBone(self, ChildBone, AutoSelect)
-                return BoneList
+        # Determines if this bone is part of the animation?
+        def IsBoneMoving(self, bone):
+            test_name = bone.shortname.split(folder_name + "_" + main_mdl_name + "_")[1]
+            for b in self.bones:
+                if b.pszName == test_name:
+                    return 1
+            return 0
 
-            # Now start the work:
-            for bone in tmp_start_bones:
-                AutoSelect = 0
-                self.main_mdl_bones += CheckBone(self, bone, AutoSelect)
+        def CheckBone(self, bone, AutoSelect):
+            BoneList = []
+            if not AutoSelect:
+                if IsBoneMoving(self, bone):
+                    # Bone is moving! Auto-select all children, as they need to be re-positioned anyway
+                    AutoSelect = 1
+            if AutoSelect:
+                # If this bone needs to be selected, do that
+                BoneList += [bone]
+            # Loop over all children bones, and select them if needed
+            for ChildBone in bone.subitems:
+                if ChildBone.type == ":bone":
+                    BoneList += CheckBone(self, ChildBone, AutoSelect)
+            return BoneList
 
-            # Fill the bone names conversion list.
-            for bone in self.main_mdl_bones:
-                name = bone.shortname.split(folder_name + "_" + main_mdl_name + "_")[1]
-                self.bones_names = self.bones_names + [name]
-            bones_names_count = len(self.bones_names)
-            self_bone_count = len(self.bones)
+        # Now start the work:
+        for bone in tmp_start_bones:
+            AutoSelect = 0
+            self.main_mdl_bones += CheckBone(self, bone, AutoSelect)
 
-            # Find any bones in the animation that were not present in the bones we already got
-            for j in xrange(self_bone_count):
-                FoundIt = 0
-                for i in xrange(bones_names_count):
-                    if self.bones_names[i] == self.bones[j].pszName:
-                        FoundIt = 1
-                        break
-                if not FoundIt:
-                    print "Warning: Bone %s found in animation that is not present in main mdl file!" % (self.bones[j].pszName)
-                    #FIXME: Add these to the model?
+        # Fill the bone names conversion list.
+        for bone in self.main_mdl_bones:
+            name = bone.shortname.split(folder_name + "_" + main_mdl_name + "_")[1]
+            self.bones_names = self.bones_names + [name]
+        bones_names_count = len(self.bones_names)
+        self_bone_count = len(self.bones)
 
-            bonelist = editor.ModelComponentList['bonelist']
-            def GetParentPosAndRot(ParentName, FrameName="baseframe " + mdl_name + ":mf"):
-                ParentName = folder_name + "_" + main_mdl_name + "_" + ParentName + ":bone"
-                if not bonelist.has_key(ParentName):
-                    #Parent bone not found? Return default values
-                    return quarkx.vect((0.0, 0.0, 0.0)), quarkx.matrix((1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (0.0, 0.0, 1.0))
-                if bonelist[ParentName]['frames'].has_key(FrameName):
-                    parent = bonelist[ParentName]['frames'][FrameName]
-                else:
-                    parent = bonelist[ParentName]['frames']['baseframe:mf']
-                return quarkx.vect(parent['position']), quarkx.matrix(parent['rotmatrix'])
+        #List of all the bones that are NOT moving
+        all_bones = editor.Root.dictitems['Skeleton:bg'].findallsubitems("", ':bone')
+        bones_not_moving = []
+        for bone in all_bones:
+            if bone not in self.main_mdl_bones:
+                bones_not_moving += [bone]
 
-            # Add to the editor.ModelComponentList 'bonelist' for the importing animation baseframe.
+        # Find any bones in the animation that were not present in the bones we already got
+        for j in xrange(self_bone_count):
+            FoundIt = 0
             for i in xrange(bones_names_count):
-                FoundIt = 0
-                for j in xrange(self_bone_count):
-                    if self.bones_names[i] == self.bones[j].pszName:
-                        bone = self.bones[j]
-                        if bone.flags & BONE_ALWAYS_PROCEDURAL:
-                            #Procedural bone; don't move with animation data!
-                            break
-                        
-                        BoneIKChain = 0
-                        for ikchain in self.ikchains:
-                            for link in ikchain.links:
-                                if link.bone == bone.bone_index:
-                                    BoneIKChain = 1
-                                    break
-                        if BoneIKChain:
-                            #Bone moved by IKChain
-                            continue
-                        
-                        #bone_pos = quarkx.vect(bone.pos[0] * bone.posscale[0], bone.pos[1] * bone.posscale[1], bone.pos[2] * bone.posscale[2])
-                        #quat = AngleQuaternion([bone.rot[0] * bone.rotscale[0], bone.rot[1] * bone.rotscale[1], bone.rot[2] * bone.rotscale[2]])
-                        bone_pos = quarkx.vect(bone.pos[0], bone.pos[1], bone.pos[2])
-                        quat = AngleQuaternion([bone.rot[0], bone.rot[1], bone.rot[2]])
-                        tempmatrix = quaternion2matrix(quat)
-                        bone_matrix = quarkx.matrix((tempmatrix[0][0], tempmatrix[0][1], tempmatrix[0][2]), (tempmatrix[1][0], tempmatrix[1][1], tempmatrix[1][2]), (tempmatrix[2][0], tempmatrix[2][1], tempmatrix[2][2]))
-                        if bone.parent != -1:
-                            parent_bone_name = self.bones[bone.parent].pszName
-                            parent_pos, parent_matrix = GetParentPosAndRot(parent_bone_name)
-                            bone_pos = parent_pos + (parent_matrix * bone_pos)
-                            bone_matrix = parent_matrix * bone_matrix
-                        bonelist[self.main_mdl_bones[i].name]['frames']["baseframe " + mdl_name + ":mf"] = {}
-                        bonelist[self.main_mdl_bones[i].name]['frames']["baseframe " + mdl_name + ":mf"]['position'] = bone_pos.tuple
-                        bonelist[self.main_mdl_bones[i].name]['frames']["baseframe " + mdl_name + ":mf"]['rotmatrix'] = bone_matrix.tuple
-                        FoundIt = 1
+                if self.bones_names[i] == self.bones[j].pszName:
+                    FoundIt = 1
+                    break
+            if not FoundIt:
+                print "Warning: Bone %s found in animation that is not present in main mdl file!" % (self.bones[j].pszName)
+                #FIXME: Add these to the model?
+
+        bonelist = editor.ModelComponentList['bonelist']
+        def GetParentPosAndRot(ParentName, FrameName):
+            ParentName = folder_name + "_" + main_mdl_name + "_" + ParentName + ":bone"
+            if not bonelist.has_key(ParentName):
+                #Parent bone not found? Return default values
+                return quarkx.vect((0.0, 0.0, 0.0)), quarkx.matrix((1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (0.0, 0.0, 1.0))
+            if bonelist[ParentName]['frames'].has_key(FrameName):
+                parent = bonelist[ParentName]['frames'][FrameName]
+            else:
+                parent = bonelist[ParentName]['frames']['baseframe:mf']
+            return quarkx.vect(parent['position']), quarkx.matrix(parent['rotmatrix'])
+
+        # Add to the editor.ModelComponentList 'bonelist' for the importing animation baseframe.
+        for i in xrange(bones_names_count):
+            FoundIt = 0
+            for j in xrange(self_bone_count):
+                if self.bones_names[i] == self.bones[j].pszName:
+                    bone = self.bones[j]
+                    if bone.flags & BONE_ALWAYS_PROCEDURAL:
+                        #Procedural bone; don't move with animation data!
                         break
-                if not FoundIt:
-                    #Bone not in animation; use 'old' position and rotmatrix
-                    baseframe = bonelist[self.main_mdl_bones[i].name]['frames']['baseframe:mf']
-                    bone_pos = quarkx.vect(baseframe['position'])
-                    bone_matrix = quarkx.matrix(baseframe['rotmatrix'])
+                    
+                    BoneIKChain = 0
+                    for ikchain in self.ikchains:
+                        for link in ikchain.links:
+                            if link.bone == bone.bone_index:
+                                BoneIKChain = 1
+                                break
+                    if BoneIKChain:
+                        #Bone moved by IKChain
+                        continue
+                    
+                    #bone_pos = quarkx.vect(bone.pos[0] * bone.posscale[0], bone.pos[1] * bone.posscale[1], bone.pos[2] * bone.posscale[2])
+                    #quat = AngleQuaternion([bone.rot[0] * bone.rotscale[0], bone.rot[1] * bone.rotscale[1], bone.rot[2] * bone.rotscale[2]])
+                    bone_pos = quarkx.vect(bone.pos[0], bone.pos[1], bone.pos[2])
+                    quat = AngleQuaternion([bone.rot[0], bone.rot[1], bone.rot[2]])
+                    tempmatrix = quaternion2matrix(quat)
+                    bone_matrix = quarkx.matrix((tempmatrix[0][0], tempmatrix[0][1], tempmatrix[0][2]), (tempmatrix[1][0], tempmatrix[1][1], tempmatrix[1][2]), (tempmatrix[2][0], tempmatrix[2][1], tempmatrix[2][2]))
                     if bone.parent != -1:
                         parent_bone_name = self.bones[bone.parent].pszName
-                        #First, undo 'old' parent stuff
-                        parent_pos, parent_matrix = GetParentPosAndRot(parent_bone_name, 'baseframe:mf')
-                        bone_pos = (~parent_matrix) * (bone_pos - parent_pos)
-                        bone_matrix = (~parent_matrix) * bone_matrix
-                        #Now, apply 'new' parent stuff
-                        parent_pos, parent_matrix = GetParentPosAndRot(parent_bone_name)
+                        parent_pos, parent_matrix = GetParentPosAndRot(parent_bone_name, "BaseFrame " + mdl_name + ":mf")
                         bone_pos = parent_pos + (parent_matrix * bone_pos)
                         bone_matrix = parent_matrix * bone_matrix
-                    bonelist[self.main_mdl_bones[i].name]['frames']["baseframe " + mdl_name + ":mf"] = {}
-                    bonelist[self.main_mdl_bones[i].name]['frames']["baseframe " + mdl_name + ":mf"]['position'] = bone_pos.tuple
-                    bonelist[self.main_mdl_bones[i].name]['frames']["baseframe " + mdl_name + ":mf"]['rotmatrix'] = bone_matrix.tuple
+                    bonelist[self.main_mdl_bones[i].name]['frames']["BaseFrame " + mdl_name + ":mf"] = {}
+                    bonelist[self.main_mdl_bones[i].name]['frames']["BaseFrame " + mdl_name + ":mf"]['position'] = bone_pos.tuple
+                    bonelist[self.main_mdl_bones[i].name]['frames']["BaseFrame " + mdl_name + ":mf"]['rotmatrix'] = bone_matrix.tuple
+                    FoundIt = 1
+                    break
+            if not FoundIt:
+                #Bone not in animation; use 'old' position and rotmatrix
+                baseframe = bonelist[self.main_mdl_bones[i].name]['frames']['baseframe:mf']
+                bone_pos = quarkx.vect(baseframe['position'])
+                bone_matrix = quarkx.matrix(baseframe['rotmatrix'])
+                if bone.parent != -1:
+                    parent_bone_name = self.bones[bone.parent].pszName
+                    #First, undo 'old' parent stuff
+                    parent_pos, parent_matrix = GetParentPosAndRot(parent_bone_name, 'baseframe:mf')
+                    bone_pos = (~parent_matrix) * (bone_pos - parent_pos)
+                    bone_matrix = (~parent_matrix) * bone_matrix
+                    #Now, apply 'new' parent stuff
+                    parent_pos, parent_matrix = GetParentPosAndRot(parent_bone_name, "BaseFrame " + mdl_name + ":mf")
+                    bone_pos = parent_pos + (parent_matrix * bone_pos)
+                    bone_matrix = parent_matrix * bone_matrix
+                bonelist[self.main_mdl_bones[i].name]['frames']["BaseFrame " + mdl_name + ":mf"] = {}
+                bonelist[self.main_mdl_bones[i].name]['frames']["BaseFrame " + mdl_name + ":mf"]['position'] = bone_pos.tuple
+                bonelist[self.main_mdl_bones[i].name]['frames']["BaseFrame " + mdl_name + ":mf"]['rotmatrix'] = bone_matrix.tuple
 
-            # Load the animation data for the frames
-            for m_localanim in xrange(self.numlocalanim):
-                anim = self.animation_descs[m_localanim]
-                anim_block = self.anim_blocks[anim.animblock]
+        for bone in bones_not_moving:
+            #Bone not moving; use 'old' position and rotmatrix
+            baseframe = bonelist[bone.name]['frames']['baseframe:mf']
+            bone_pos = quarkx.vect(baseframe['position'])
+            bone_matrix = quarkx.matrix(baseframe['rotmatrix'])
+            #FIXME: Fix this!
+            #if bone.parent != -1:
+            #    parent_bone_name = self.bones[bone.parent].pszName
+            #    #First, undo 'old' parent stuff
+            #    parent_pos, parent_matrix = GetParentPosAndRot(parent_bone_name, 'baseframe:mf')
+            #    bone_pos = (~parent_matrix) * (bone_pos - parent_pos)
+            #    bone_matrix = (~parent_matrix) * bone_matrix
+            #    #Now, apply 'new' parent stuff
+            #    parent_pos, parent_matrix = GetParentPosAndRot(parent_bone_name, "BaseFrame " + mdl_name + ":mf"
+            #    bone_pos = parent_pos + (parent_matrix * bone_pos)
+            #    bone_matrix = parent_matrix * bone_matrix
+            bonelist[bone.name]['frames']["BaseFrame " + mdl_name + ":mf"] = {}
+            bonelist[bone.name]['frames']["BaseFrame " + mdl_name + ":mf"]['position'] = bone_pos.tuple
+            bonelist[bone.name]['frames']["BaseFrame " + mdl_name + ":mf"]['rotmatrix'] = bone_matrix.tuple
 
-             #   print "line 4596: anim stuff"
-                #This is where the data is located in the file (?)
-                anim_offset = anim_block.datastart + anim.animindex
-             #   print anim_offset
-                #FIXME: ...
-                
-            # Adds the animation baseframe to each component.
-            Strings[2462] = main_mdl_name + "\n" + Strings[2462] #FIXME: Probably wrong...
-            progressbar = quarkx.progressbar(2462, self.numlocalanim)
-            for comp in self.main_mdl_comps:
-                comp_name = comp.name
-                new_comp = comp.copy()
-                framesgroup = new_comp.dictitems['Frames:fg']
-                baseframe = framesgroup.dictitems['baseframe:mf']
+        # Load the animation data for the frames
+        for m_localanim in xrange(self.numlocalanim):
+            if not LoadAnim[m_localanim]: continue
+            anim = self.animation_descs[m_localanim]
+            anim_block = self.anim_blocks[anim.animblock]
 
-                #Update baseframe vertices
-                baseframe_name = "baseframe " + mdl_name
-                new_frame = baseframe.copy()
-                new_frame.shortname = baseframe_name
-                meshverts = baseframe.vertices
-                newverts = [quarkx.vect(0.0, 0.0, 0.0)] * len(meshverts)
-                for bone_index in xrange(bones_names_count):
-                    pbone = self.main_mdl_bones[bone_index]
-                    if pbone.vtxlist.has_key(comp_name):
-                        vtxs = pbone.vtxlist[comp_name]
-                        for vert_index in vtxs:
-                            if editor.ModelComponentList[comp_name]['weightvtxlist'].has_key(vert_index):
-                                weight_value = editor.ModelComponentList[comp_name]['weightvtxlist'][vert_index][pbone.name]['weight_value']
-                            else:
-                                weight_value = 1.0
-                            Bpos_old = quarkx.vect(bonelist[pbone.name]['frames']['baseframe:mf']['position'])
-                            Brot_old = quarkx.matrix(bonelist[pbone.name]['frames']['baseframe:mf']['rotmatrix'])
-                            Bpos_new = quarkx.vect(bonelist[pbone.name]['frames'][baseframe_name+':mf']['position'])
-                            Brot_new = quarkx.matrix(bonelist[pbone.name]['frames'][baseframe_name+':mf']['rotmatrix'])
-                            vert_pos = meshverts[vert_index]
-                            vert_pos = (~Brot_old) * (vert_pos - Bpos_old)
-                            newverts[vert_index] += weight_value * (Bpos_new + (Brot_new * vert_pos))
-                new_frame.vertices = newverts
-                framesgroup.appenditem(new_frame)
-                baseframe = new_frame   #This is now our new baseframe
+            SaveCurOffset = file.tell()
+            #Read in the zero frame data first
+            file.seek(anim.ThisOffset + self.zeroframecacheindex, 0) # change the file offset pointer position.
+            ZeroFrame = {}
+            for i in xrange(self.numbones):
+                bone = self.bones[i]
+                if bone.flags & BONE_HAS_SAVEFRAME_POS:
+                    #Read in a Vector48
+                    pos = Vector48()
+                    pos.load(file)
+                    #print "line 1082: pos: ",pos
+                    if not ZeroFrame.has_key(i):
+                        ZeroFrame[i] = {}
+                    ZeroFrame[i]['pos'] = pos #FIXME: Probably want to parse this first!
+                if bone.flags & BONE_HAS_SAVEFRAME_ROT:
+                    #Read in a Quaterion32, but advance a Quaternion48
+                    #rot = Quaterion32()
+                    #rot.load(file)
+                    #FIXME: advance file by 1 byte...!
+                    #print "line 1088: rot: ",rot
+                    #if not ZeroFrame.has_key(i):
+                    #    ZeroFrame[i] = {}
+                    #ZeroFrame[i]['rot'] = rot #FIXME: Probably want to parse this first!
+                    pass
+            file.seek(SaveCurOffset, 0) # Reset the file offset pointer back to where it should be now.
 
-                #Update frame vertices
-                for m_localanim in xrange(self.numlocalanim):
-                    progressbar.progress()
-                    anim = self.animation_descs[m_localanim]
+            if ani_file is not None:
+                #Read in the animation data
+                ani_file.seek(anim_block.datastart + anim.animindex,0)
+                #print "pszName, numframes:", anim.pszName, anim.numframes
+
+                # Read in bone animation data from anim blocks
+                all_rot_anim_data = {}
+                all_pos_anim_data = {}
+                while 1:
+                    SaveCurAniOffset = ani_file.tell()
+                    StudioAnim = HL2_ANIStudioAnim()
+                    StudioAnim.load(ani_file)
+                    if StudioAnim.bone == 255:
+                        #End of anim block
+                        break
+                    #print
+                    #print "bone:", StudioAnim.bone
+                    #print "flags:", StudioAnim.flags
+                    #print "nextoffset:", StudioAnim.nextoffset
+    
+                    rot_anim_data = [None, None, None]
+                    pos_anim_data = [None, None, None]
+                    if anim.numframes == 1:
+                        if (StudioAnim.flags & STUDIO_ANIM_RAWROT):
+                            #Read in a Quaternion48
+                            rot = Quaternion48()
+                            rot.load(ani_file)
+                            #print "line 4446: rot:", rot
+                            #print rot.qx
+                            #print rot.qy
+                            #print rot.qz
+                            #print rot.qw
+                            rot_anim_data = [[rot.qx], [rot.qy], [rot.qz]] #Not storing qw
+                        if (StudioAnim.flags & STUDIO_ANIM_RAWPOS):
+                            #Read in a Vector48
+                            pos = Vector48()
+                            pos.load(ani_file)
+                            #print "line 4456: pos:", pos
+                            #print pos.x
+                            #print pos.y
+                            #print pos.z
+                            pos_anim_data = [[pos.x], [pos.y], [pos.z]]
+                    else:
+                        AnimValuePtrRot = None
+                        AnimValuePtrPos = None
+                        if (StudioAnim.flags & STUDIO_ANIM_ANIMROT):
+                            SaveCurAniValuePtrRotOffset = ani_file.tell()
+                            AnimValuePtrRot = HL2_AnimValuePtr()
+                            AnimValuePtrRot.load(ani_file)
+                            #print "AnimValuePtr Rot.offset", AnimValuePtrRot.offset
+                        if (StudioAnim.flags & STUDIO_ANIM_ANIMPOS):
+                            SaveCurAniValuePtrPosOffset = ani_file.tell()
+                            AnimValuePtrPos = HL2_AnimValuePtr()
+                            AnimValuePtrPos.load(ani_file)
+                            #print "AnimValuePtr Pos.offset", AnimValuePtrPos.offset
+                        if AnimValuePtrRot is not None:
+                            for i in xrange(0, 3): #XR, YR, ZR
+                                if AnimValuePtrRot.offset[i] == 0:
+                                    #No data
+                                    continue
+                                rot_anim_data[i] = []
+                                ani_file.seek(SaveCurAniValuePtrRotOffset+AnimValuePtrRot.offset[i],0)
+                                j = 0
+                                while j < anim.numframes:
+                                    AnimValue = HL2_AnimValue()
+                                    AnimValue.load(ani_file)
+                                    #print "AnimValue.valid", AnimValue.valid
+                                    #print "AnimValue.total", AnimValue.total
+                                    #print "AnimValue.value", AnimValue.value
+                                    for k in xrange(AnimValue.valid):
+                                        AnimValue2 = HL2_AnimValue()
+                                        AnimValue2.load(ani_file)
+                                        rot_anim_data[i] += [AnimValue2.value]
+                                        j += 1
+                                    for k in xrange(AnimValue.valid, AnimValue.total):
+                                        rot_anim_data[i] += [AnimValue2.value] #Repeat last entry
+                                        j += 1
+                            #print "line 4496: rot_anim_data for X:", rot_anim_data[0]
+                            #print "line 4497: rot_anim_data for Y:", rot_anim_data[1]
+                            #print "line 4498: rot_anim_data for Z:", rot_anim_data[2]
+                        if AnimValuePtrPos is not None:
+                            for i in xrange(0, 3): #X, Y, Z
+                                if AnimValuePtrPos.offset[i] == 0:
+                                    #No data
+                                    continue
+                                pos_anim_data[i] = []
+                                ani_file.seek(SaveCurAniValuePtrPosOffset+AnimValuePtrPos.offset[i],0)
+                                j = 0
+                                while j < anim.numframes:
+                                    AnimValue = HL2_AnimValue()
+                                    AnimValue.load(ani_file)
+                                    #print "AnimValue.valid", AnimValue.valid
+                                    #print "AnimValue.total", AnimValue.total
+                                    #print "AnimValue.value", AnimValue.value
+                                    for k in xrange(AnimValue.valid):
+                                        AnimValue2 = HL2_AnimValue()
+                                        AnimValue2.load(ani_file)
+                                        pos_anim_data[i] += [AnimValue2.value]
+                                        j += 1
+                                    for k in xrange(AnimValue.valid, AnimValue.total):
+                                        pos_anim_data[i] += [AnimValue2.value] #Repeat last entry
+                                        j += 1
+                            #print "line 4521: pos_anim_data for X:", pos_anim_data[0]
+                            #print "line 4522: pos_anim_data for Y:", pos_anim_data[1]
+                            #print "line 4523: pos_anim_data for Z:", pos_anim_data[2]
+                        all_pos_anim_data[StudioAnim.bone] = pos_anim_data
+                        all_rot_anim_data[StudioAnim.bone] = rot_anim_data
+                    if StudioAnim.nextoffset == 0:
+                        break
+                    else:
+                        ani_file.seek(SaveCurAniOffset+StudioAnim.nextoffset,0)
+
+                for i in xrange(bones_names_count):
+                    FoundIt = 0
+                    for j in xrange(self_bone_count):
+                        if self.bones_names[i] == self.bones[j].pszName:
+                            bone = self.bones[j]
+                            for m_frame in xrange(anim.numframes):
+                                pos = [0.0, 0.0, 0.0]
+                                if all_pos_anim_data.has_key(j):
+                                    pos_anim_data = all_pos_anim_data[j]
+                                else:
+                                    pos_anim_data = [None, None, None]
+                                for k in xrange(3):
+                                    if pos_anim_data[k] is not None:
+                                        pos[k] = (pos_anim_data[k][m_frame] * self.bones[j].posscale[k]) + self.bones[j].pos[k]
+                                    else:
+                                        if ZeroFrame.has_key(j):
+                                            pos[k] = ZeroFrame[j]['pos'][k]
+                                        else:
+                                            pos[k] = self.bones[j].pos[k]
+                                rot = [0.0, 0.0, 0.0]
+                                if all_rot_anim_data.has_key(j):
+                                    rot_anim_data = all_rot_anim_data[j]
+                                else:
+                                    rot_anim_data = [None, None, None]
+                                for k in xrange(3):
+                                    if rot_anim_data[k] is not None:
+                                        rot[k] = (rot_anim_data[k][m_frame] * self.bones[j].rotscale[k]) + self.bones[j].rot[k]
+                                    else:
+                                        if ZeroFrame.has_key(j):
+                                            rot[k] = ZeroFrame[j]['rot'][k]
+                                        else:
+                                            rot[k] = self.bones[j].rot[k]
+                                frame_name = anim.pszName.replace("@", "") + " frame " + str(m_frame+1)
+                                bone_pos = quarkx.vect(pos[0], pos[1], pos[2])
+                                quat = AngleQuaternion(rot)
+                                tempmatrix = quaternion2matrix(quat)
+                                bone_matrix = quarkx.matrix((tempmatrix[0][0], tempmatrix[0][1], tempmatrix[0][2]), (tempmatrix[1][0], tempmatrix[1][1], tempmatrix[1][2]), (tempmatrix[2][0], tempmatrix[2][1], tempmatrix[2][2]))
+                                if bone.parent != -1:
+                                    parent_bone_name = self.bones[bone.parent].pszName
+                                    parent_pos, parent_matrix = GetParentPosAndRot(parent_bone_name, frame_name + ":mf")
+                                    bone_pos = parent_pos + (parent_matrix * bone_pos)
+                                    bone_matrix = parent_matrix * bone_matrix
+                                bonelist[self.main_mdl_bones[i].name]['frames'][frame_name + ":mf"] = {}
+                                bonelist[self.main_mdl_bones[i].name]['frames'][frame_name + ":mf"]['position'] = bone_pos.tuple
+                                bonelist[self.main_mdl_bones[i].name]['frames'][frame_name + ":mf"]['rotmatrix'] = bone_matrix.tuple
+                            FoundIt = 1
+                            break
+                    if not FoundIt:
+                        #Bone not found; apply BaseFrame data
+                        for m_frame in xrange(anim.numframes):
+                            frame_name = anim.pszName.replace("@", "") + " frame " + str(m_frame+1)
+                            QuArK_bone = self.main_mdl_bones[i]
+                            bone_pos = quarkx.vect(bonelist[self.main_mdl_bones[i].name]['frames']["BaseFrame " + mdl_name + ":mf"]['position'])
+                            bone_matrix = quarkx.matrix(bonelist[self.main_mdl_bones[i].name]['frames']["BaseFrame " + mdl_name + ":mf"]['rotmatrix'])
+                            if QuArK_bone['parent_name'] != "None":
+                                old_parent_pos = quarkx.vect(bonelist[QuArK_bone['parent_name']]['frames']["BaseFrame " + mdl_name + ":mf"]['position'])
+                                old_parent_matrix = quarkx.matrix(bonelist[QuArK_bone['parent_name']]['frames']["BaseFrame " + mdl_name + ":mf"]['rotmatrix'])
+                                new_parent_pos = quarkx.vect(bonelist[QuArK_bone['parent_name']]['frames'][frame_name + ":mf"]['position'])
+                                new_parent_matrix = quarkx.matrix(bonelist[QuArK_bone['parent_name']]['frames'][frame_name + ":mf"]['rotmatrix'])
+                                #First, undo 'old' parent stuff
+                                bone_pos = (~old_parent_matrix) * (bone_pos - old_parent_pos)
+                                bone_matrix = (~old_parent_matrix) * bone_matrix
+                                #Now, apply 'new' parent stuff
+                                bone_pos = new_parent_pos + (new_parent_matrix * bone_pos)
+                                bone_matrix = new_parent_matrix * bone_matrix
+                            bonelist[self.main_mdl_bones[i].name]['frames'][frame_name + ":mf"] = {}
+                            bonelist[self.main_mdl_bones[i].name]['frames'][frame_name + ":mf"]['position'] = bone_pos.tuple
+                            bonelist[self.main_mdl_bones[i].name]['frames'][frame_name + ":mf"]['rotmatrix'] = bone_matrix.tuple
+                for bone in bones_not_moving:
+                    #Bone not moving; copy BaseFrame data
                     for m_frame in xrange(anim.numframes):
-                        frame_name = anim.pszName + " frame " + str(m_frame+1)
-                        new_frame = baseframe.copy()
-                        new_frame.shortname = frame_name
-                        newverts = [quarkx.vect(0.0, 0.0, 0.0)] * len(meshverts)
-                        for bone_index in range(len(QuArK_bones)):
-                            pbone = QuArK_bones[bone_index]
-                            if pbone.vtxlist.has_key(comp_name):
-                                vtxs = pbone.vtxlist[comp_name]
-                                for vert_index in vtxs:
-                                    Bpos_old = quarkx.vect(bonelist[pbone.name]['frames'][baseframe_name+':mf']['position'])
-                                    Brot_old = quarkx.matrix(bonelist[pbone.name]['frames'][baseframe_name+':mf']['rotmatrix'])
-                                    #FIXME: FAKE IT!
-                                    #!
-                                    Bpos_new = quarkx.vect(bonelist[pbone.name]['frames'][baseframe_name+':mf']['position'])
-                                    Brot_new = quarkx.matrix(bonelist[pbone.name]['frames'][baseframe_name+':mf']['rotmatrix'])
-                                    #!
-                                    #Bpos_new = quarkx.vect(bonelist[pbone.name]['frames'][frame_name+':mf']['position'])
-                                    #Brot_new = quarkx.matrix(bonelist[pbone.name]['frames'][frame_name+':mf']['rotmatrix'])
-                                    vert_pos = meshverts[vert_index]
-                                    vert_pos = (~Brot_old) * (vert_pos - Bpos_old)
-                                    newverts[vert_index] += Bpos_new + (Brot_new * vert_pos)
-                        new_frame.vertices = newverts
-                        framesgroup.appenditem(new_frame)
-                    break #FIXME: Stop it!
+                        frame_name = anim.pszName.replace("@", "") + " frame " + str(m_frame+1)
+                        bonelist[bone.name]['frames'][frame_name + ":mf"] = {}
+                        bonelist[bone.name]['frames'][frame_name + ":mf"]['position'] = bonelist[bone.name]['frames']["BaseFrame " + mdl_name + ":mf"]['position']
+                        bonelist[bone.name]['frames'][frame_name + ":mf"]['rotmatrix'] = bonelist[bone.name]['frames']["BaseFrame " + mdl_name + ":mf"]['rotmatrix']
 
-                self.new_mdl_comps.append(new_comp)
+        # Adds the animation baseframe to each component.
+        NumberOfAnimsToLoad = 0
+        for m_localanim in xrange(self.numlocalanim):
+            if LoadAnim[m_localanim]:
+                NumberOfAnimsToLoad += 1
+        Strings[2462] = main_mdl_name + "\n" + Strings[2462] #FIXME: Probably wrong...
+        progressbar = quarkx.progressbar(2462, len(self.main_mdl_comps)*NumberOfAnimsToLoad)
+        alltags = editor.Root.dictitems['Misc:mg'].findallsubitems("", ":tag")
+        model_tag_bone_names = []
+        test_tag_name = folder_name + "_" + main_mdl_name + "_tag_"
+        for tag in alltags:
+            if tag.name.startswith(test_tag_name):
+                self.tagsgroup.append(tag.copy())
+                model_tag_bone_names = model_tag_bone_names + [tag.dictspec['bone']]
+        for comp in range(len(self.main_mdl_comps)):
+            comp_name = self.main_mdl_comps[comp].name
+            new_comp = self.main_mdl_comps[comp].copy()
+            framesgroup = new_comp.dictitems['Frames:fg']
+            baseframe = framesgroup.dictitems['baseframe:mf']
 
-            Strings[2462] = Strings[2462].replace(main_mdl_name + "\n", "")
-            progressbar.close()
+            #Update baseframe vertices
+            baseframe_name = "BaseFrame " + mdl_name
+            new_frame = baseframe.copy()
+            new_frame.shortname = baseframe_name
+            meshverts = baseframe.vertices
+            newverts = [quarkx.vect(0.0, 0.0, 0.0)] * len(meshverts)
+            for bone_index in xrange(bones_names_count):
+                pbone = self.main_mdl_bones[bone_index]
+                Bpos_old = quarkx.vect(bonelist[pbone.name]['frames']['baseframe:mf']['position'])
+                Brot_old = quarkx.matrix(bonelist[pbone.name]['frames']['baseframe:mf']['rotmatrix'])
+                Bpos_new = quarkx.vect(bonelist[pbone.name]['frames'][baseframe_name+':mf']['position'])
+                Brot_new = quarkx.matrix(bonelist[pbone.name]['frames'][baseframe_name+':mf']['rotmatrix'])
+                # Updates all the tags adding their 'BaseFrame' for this model's imported animation.
+                if comp == 0 and pbone.name in model_tag_bone_names:
+                    for tag in self.tagsgroup:
+                        if tag.dictspec['bone'] == pbone.name:
+                            tagframe = tag.subitems[0].copy()
+                            tagframe.shortname = "Tag " + "BaseFrame " + mdl_name
+                            Tpos = quarkx.vect(tagframe.dictspec['origin'])
+                            Tpos = (~Brot_old) * (Tpos - Bpos_old)
+                            Tpos = Bpos_new + (Brot_new * Tpos)
+                            tagframe['origin'] = Tpos.tuple
+                            m = Brot_new.tuple
+                            tagframe['rotmatrix'] = (m[0][0], m[0][1], m[0][2], m[1][0], m[1][1], m[1][2], m[2][0], m[2][1], m[2][2])
+                            tag.appenditem(tagframe)
+                if pbone.vtxlist.has_key(comp_name):
+                    vtxs = pbone.vtxlist[comp_name]
+                    for vert_index in vtxs:
+                        if editor.ModelComponentList[comp_name]['weightvtxlist'].has_key(vert_index):
+                            weight_value = editor.ModelComponentList[comp_name]['weightvtxlist'][vert_index][pbone.name]['weight_value']
+                        else:
+                            weight_value = 1.0
+                        vert_pos = meshverts[vert_index]
+                        vert_pos = (~Brot_old) * (vert_pos - Bpos_old)
+                        newverts[vert_index] += weight_value * (Bpos_new + (Brot_new * vert_pos))
+            new_frame.vertices = newverts
+            framesgroup.appenditem(new_frame)
+            baseframe = new_frame   #This is now our new baseframe
+            meshverts = baseframe.vertices
 
+            #Update frame vertices
+            for m_localanim in xrange(self.numlocalanim):
+                if not LoadAnim[m_localanim]: continue
+                progressbar.progress()
+                anim = self.animation_descs[m_localanim]
+                for m_frame in xrange(anim.numframes):
+                    frame_name = anim.pszName.replace("@", "") + " frame " + str(m_frame+1)
+                    new_frame = baseframe.copy()
+                    new_frame.shortname = frame_name
+                    newverts = [quarkx.vect(0.0, 0.0, 0.0)] * len(meshverts)
+                    for bone_index in xrange(bones_names_count):
+                        pbone = self.main_mdl_bones[bone_index]
+                        Bpos_old = quarkx.vect(bonelist[pbone.name]['frames'][baseframe_name+':mf']['position'])
+                        Brot_old = quarkx.matrix(bonelist[pbone.name]['frames'][baseframe_name+':mf']['rotmatrix'])
+                        Bpos_new = quarkx.vect(bonelist[pbone.name]['frames'][frame_name+':mf']['position'])
+                        Brot_new = quarkx.matrix(bonelist[pbone.name]['frames'][frame_name+':mf']['rotmatrix'])
+                        # Updates all the tags adding their animation frames for this model's imported animation.
+                        if comp == 0 and pbone.name in model_tag_bone_names:
+                            for tag in self.tagsgroup:
+                                if tag.dictspec['bone'] == pbone.name:
+                                    tagframe = tag.dictitems["Tag " + baseframe_name + ":tagframe"].copy()
+                                    tagframe.shortname = "Tag " + frame_name
+                                    Tpos = quarkx.vect(tagframe.dictspec['origin'])
+                                    Tpos = (~Brot_old) * (Tpos - Bpos_old)
+                                    Tpos = Bpos_new + (Brot_new * Tpos)
+                                    tagframe['origin'] = Tpos.tuple
+                                    m = Brot_new.tuple
+                                    tagframe['rotmatrix'] = (m[0][0], m[0][1], m[0][2], m[1][0], m[1][1], m[1][2], m[2][0], m[2][1], m[2][2])
+                                    tag.appenditem(tagframe)
+                        if pbone.vtxlist.has_key(comp_name):
+                            vtxs = pbone.vtxlist[comp_name]
+                            for vert_index in vtxs:
+                                if editor.ModelComponentList[comp_name]['weightvtxlist'].has_key(vert_index):
+                                    weight_value = editor.ModelComponentList[comp_name]['weightvtxlist'][vert_index][pbone.name]['weight_value']
+                                else:
+                                    weight_value = 1.0
+                                vert_pos = meshverts[vert_index]
+                                vert_pos = (~Brot_old) * (vert_pos - Bpos_old)
+                                newverts[vert_index] += weight_value * (Bpos_new + (Brot_new * vert_pos))
+                    new_frame.vertices = newverts
+                    framesgroup.appenditem(new_frame)
+
+            self.new_mdl_comps.append(new_comp)
+
+        Strings[2462] = Strings[2462].replace(main_mdl_name + "\n", "")
+        progressbar.close()
+            
         return self, ComponentList, QuArK_bones, message, self.tagsgroup, self.version, self.main_mdl_comps, self.new_mdl_comps
 
 
 
-def Import(basepath, filename):
+def ImportMDL(basepath, filename):
     global tobj, logging, importername, textlog
 
     logging, tobj, starttime = ie_utils.default_start_logging(importername, textlog, filename, "IM") ### Use "EX" for exporter text, "IM" for importer text.
@@ -4722,16 +4765,15 @@ def Import(basepath, filename):
     file = open(filename,"rb")
     HL2 = Object()
     message = ""
-    MODEL, ComponentList, QuArK_bones, message, tagsgroup, version, main_mdl_comps, new_mdl_comps = HL2.load_Object(file, editor, ModelFolder, ModelName, message)
-    file.close()
+    MODEL, ComponentList, QuArK_bones, message, tagsgroup, version, main_mdl_comps, new_mdl_comps, main_mdl_name, total_frames, folder_name, mdl_name, SpecsList = HL2.load_Object(file, editor, ModelFolder, ModelName, message)
 
   #  if logging == 1:
   #      HL2.dump() # Writes the file Header last to the log for comparison reasons.
 
     if MODEL is None:
-        return None, None, None, message, tagsgroup, version, main_mdl_comps, new_mdl_comps
+        return MODEL, file, None, None, None, message, tagsgroup, version, main_mdl_comps, new_mdl_comps, main_mdl_name, total_frames, folder_name, mdl_name, SpecsList
 
-    return ComponentList, QuArK_bones, HL2.hitboxsets, message, tagsgroup, version, main_mdl_comps, new_mdl_comps
+    return MODEL, file, ComponentList, QuArK_bones, HL2.hitboxsets, message, tagsgroup, version, main_mdl_comps, new_mdl_comps, main_mdl_name, total_frames, folder_name, mdl_name, SpecsList
 
 
 def loadmodel(root, filename, gamename, nomessage=0):
@@ -4740,7 +4782,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
     "gamename is None."
     "For example:  C:\Valve\Steam\...\models\airboat.mdl"
 
-    global editor, tobj, logging, importername, textlog, Strings, basepath
+    global editor, logging, tobj, starttime, importername, textlog, Strings, basepath
     import quarkpy.mdleditor
     editor = quarkpy.mdleditor.mdleditor
 
@@ -4772,9 +4814,8 @@ def loadmodel(root, filename, gamename, nomessage=0):
     logging, tobj, starttime = ie_utils.default_start_logging(importername, textlog, filename, "IM") ### Use "EX" for exporter text, "IM" for importer text.
 
     ### Lines below here loads the model into the opened editor's current model.
-    ComponentList, QuArK_bones, hitboxsets, message, tagsgroup, version, main_mdl_comps, new_mdl_comps = Import(basepath, filename)
+    self, file, ComponentList, QuArK_bones, hitboxsets, message, tagsgroup, version, main_mdl_comps, new_mdl_comps, main_mdl_name, total_frames, folder_name, mdl_name, SpecsList = ImportMDL(basepath, filename)
 
- #   if ComponentList is None or len(ComponentList) == 0 or version is None or (version != 44 and version != 49):
     if version is None or (version != 44 and version != 49):
         quarkx.beep() # Makes the computer "Beep" once if a file is not valid. Add more info to message.
         if version == 6:
@@ -4790,17 +4831,33 @@ def loadmodel(root, filename, gamename, nomessage=0):
         except:
             pass
         return
+    if main_mdl_name is None:
+        FinishImport(file, editor, filename, ComponentList, QuArK_bones, hitboxsets, message, tagsgroup, main_mdl_comps, new_mdl_comps)
+    else:
+        # Calls the dialog to limit large animation importing.
+        UIImportDialog(self, file, editor, filename, ComponentList, QuArK_bones, hitboxsets, message, tagsgroup, main_mdl_comps, new_mdl_comps, main_mdl_name, total_frames, folder_name, mdl_name, SpecsList)
 
+def FinishImport(file, editor, filename, ComponentList, QuArK_bones, hitboxsets, message, tagsgroup, main_mdl_comps, new_mdl_comps):
+    file.close()
     if editor.form is not None:
         undo = quarkx.action()
     editor_dictitems = editor.Root.dictitems
 
     # Import the tags (attachments) if any.
-    for tag in range(len(tagsgroup)):
+    if editor.form is not None:
+        alltags = editor.Root.dictitems['Misc:mg'].findallsubitems("", ":tag")
+    for i in range(len(tagsgroup)):
         if editor.form is not None:
-            undo.put(editor_dictitems['Misc:mg'], tagsgroup[tag])
+            existing_tag = None
+            for tag in alltags:
+                if tag.name == tagsgroup[i].name:
+                    undo.exchange(tag, tagsgroup[i])
+                    existing_tag = 1
+                    break
+            if existing_tag is None:
+                undo.put(editor_dictitems['Misc:mg'], tagsgroup[i])
         else:
-            editor_dictitems['Misc:mg'].appenditem(tagsgroup[tag])
+            editor_dictitems['Misc:mg'].appenditem(tagsgroup[i])
 
     # Import the bboxes (hit boxes) if any.
     if editor.form is not None:
@@ -4859,7 +4916,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
             else:
                 editor.Root.currentcomponent.currentskin = None
 
-            compframes = editor.Root.currentcomponent.findallsubitems("", ':mf')   # get all frames
+            compframes = editor.Root.currentcomponent.findallsubitems("", ':mf') # get all frames
             for compframe in compframes:
                 compframe.compparent = editor.Root.currentcomponent # To allow frame relocation after editing.
 
@@ -5072,9 +5129,97 @@ def dataforminput(o):
                     comp['mesh_shader'] = "None"
 
 
+##########################################################
+# DIALOG SECTION (for limiting large .mdl animation files)
+##########################################################
+class ImportDlg(quarkpy.dlgclasses.LiveEditDlg):
+    size = (250, 500)
+    dlgflags = FWF_KEEPFOCUS
+    dfsep = 0.8      # sets 80% for labels and the rest for a check box.
+    dlgdef = """ """ # The dialog is created in the setup function to allow self generated items.
+
+    def cancel(self, dlg):
+        # Modified from dlgclasses.py
+        quarkpy.qmacro.dialogbox.close(self, dlg)
+        self.src = None
+
+
+def DialogClick(MDL, file, editor, filename, ComponentList, QuArK_bones, hitboxsets, message, tagsgroup, main_mdl_comps, new_mdl_comps, main_mdl_name, total_frames, folder_name, mdl_name):
+    if editor is None: return
+
+    def setup(self, editor=editor, total_frames=total_frames):
+        editor.importdlg = self
+        self.dlgdef = """
+            {
+            Style = "13"
+            Caption = "mdl Import Items"
+            sep: = {
+                Typ="S"
+                Txt="Instructions: place cursor here"
+                Hint = "Place your cursor over each item"$0D
+                       "below for a description of what it does."$0D$0D
+                       "The more frames = the longer to import (could be minutes)"$0D$0D
+                       "To import, check boxes then click the 'Close dialog' button at the very bottom."$0D$0D
+                       "You can cancel the entire import process at any time by clearing all"$0D
+                       "checked boxes and clicking the 'Close dialog' button at the very bottom."
+                   }
+            sep: = { Typ="S" Txt="" }
+
+            """ + SpecsList + """
+
+            sep: = { Typ="S" Txt="" }
+            exit:py = {Txt="Close dialog"}
+            }
+            """
+
+        src = self.src
+        self.all = src['all']
+
+    def action(self, editor=editor, MDL=MDL):
+        src = self.src
+        if src['all'] is not None and self.all is None:
+            for name in MDL.SRCsList:
+                if src[name] is not None:
+                    src[name] = None
+        else:
+            src['all'] = None
+
+    def onclosing(self, MDL=MDL, file=file, editor=editor, filename=filename, ComponentList=ComponentList, QuArK_bones=QuArK_bones, hitboxsets=hitboxsets, message=message, tagsgroup=tagsgroup, main_mdl_comps=main_mdl_comps, new_mdl_comps=new_mdl_comps, main_mdl_name=main_mdl_name, total_frames=total_frames, folder_name=folder_name, mdl_name=mdl_name):
+        LoadAnim = [] # List for which animation sequences to load.
+        src = self.src
+        if src['all'] is not None:
+            for name in MDL.SRCsList:
+                LoadAnim += [1]
+        else:
+            for name in MDL.SRCsList:
+                if src[name] is not None:
+                    LoadAnim += [1]
+                else:
+                    LoadAnim += [0]
+        MDL, ComponentList, QuArK_bones, message, MDL.tagsgroup, MDL.version, MDL.main_mdl_comps, MDL.new_mdl_comps = MDL.load_Animation(ComponentList, QuArK_bones, message, file, editor, folder_name, mdl_name, main_mdl_name, LoadAnim)
+        FinishImport(file, editor, filename, ComponentList, QuArK_bones, hitboxsets, message, tagsgroup, main_mdl_comps, new_mdl_comps)
+
+    ImportDlg(quarkx.clickform, 'importdlg', editor, setup, action, onclosing)
+
+
+def UIImportDialog(MDL, file, editor, filename, ComponentList, QuArK_bones, hitboxsets, message, tagsgroup, main_mdl_comps, new_mdl_comps, main_mdl_name, total_frames, folder_name, mdl_name, SpecsList):
+    if total_frames > 200:
+        # Sets up the new window form for the importers dialog for user selection settings and calls its class.
+        DialogClick(MDL, file, editor, filename, ComponentList, QuArK_bones, hitboxsets, message, tagsgroup, main_mdl_comps, new_mdl_comps, main_mdl_name, total_frames, folder_name, mdl_name)
+    else:
+        LoadAnim = [] # List for which animation sequences to load.
+        for name in MDL.SRCsList:
+            LoadAnim += [1]
+        MDL, ComponentList, QuArK_bones, message, MDL.tagsgroup, MDL.version, MDL.main_mdl_comps, MDL.new_mdl_comps = MDL.load_Animation(ComponentList, QuArK_bones, message, file, editor, folder_name, mdl_name, main_mdl_name, LoadAnim)
+        FinishImport(file, editor, filename, ComponentList, QuArK_bones, hitboxsets, message, tagsgroup, main_mdl_comps, new_mdl_comps)
+
+
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.4  2011/03/13 00:41:47  cdunde
+# Updating fixed for the Model Editor of the Texture Browser's Used Textures folder.
+#
 # Revision 1.3  2011/03/10 20:57:53  cdunde
 # Updating of Used Textures in the Model Editor Texture Browser for all imported skin textures
 # and allow bones and Skeleton folder to be placed in Userdata panel for reuse with other models.

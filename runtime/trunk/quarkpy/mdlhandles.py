@@ -706,6 +706,8 @@ class TagHandle(qhandles.GenericHandle):
                     frame_name = self.tagframe.shortname
                     if frame_name.find("baseframe") != -1:
                         frame_name = "baseframe"
+                    frame_name = frame_name.replace("Tag ", "")
+                    frame_name = frame_name.replace("tag ", "")
                     frame_name = frame_name + ":mf"
                     bone_pos = editor.ModelComponentList['bonelist'][tag_bonename]['frames'][frame_name]['position']
                     bp = view.proj(quarkx.vect(bone_pos))
@@ -6565,6 +6567,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.228  2011/03/15 19:49:55  cdunde
+#Bone handle fix by DanielPharos for True3Dview mode.
+#
 #Revision 1.227  2011/03/15 08:25:46  cdunde
 #Added cameraview saving duplicators and search systems, like in the Map Editor, to the Model Editor.
 #
