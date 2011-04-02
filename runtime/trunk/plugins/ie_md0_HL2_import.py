@@ -5187,17 +5187,21 @@ def DialogClick(MDL, file, editor, filename, ComponentList, QuArK_bones, hitboxs
     def onclosing(self, MDL=MDL, file=file, editor=editor, filename=filename, ComponentList=ComponentList, QuArK_bones=QuArK_bones, hitboxsets=hitboxsets, message=message, tagsgroup=tagsgroup, main_mdl_comps=main_mdl_comps, new_mdl_comps=new_mdl_comps, main_mdl_name=main_mdl_name, total_frames=total_frames, folder_name=folder_name, mdl_name=mdl_name):
         LoadAnim = [] # List for which animation sequences to load.
         src = self.src
+        cancel = 0
         if src['all'] is not None:
             for name in MDL.SRCsList:
                 LoadAnim += [1]
+                cancel += 1
         else:
             for name in MDL.SRCsList:
                 if src[name] is not None:
                     LoadAnim += [1]
+                    cancel += 1
                 else:
                     LoadAnim += [0]
-        MDL, ComponentList, QuArK_bones, message, MDL.tagsgroup, MDL.version, MDL.main_mdl_comps, MDL.new_mdl_comps = MDL.load_Animation(ComponentList, QuArK_bones, message, file, editor, folder_name, mdl_name, main_mdl_name, LoadAnim)
-        FinishImport(file, editor, filename, ComponentList, QuArK_bones, hitboxsets, message, tagsgroup, main_mdl_comps, new_mdl_comps)
+        if cancel != 0:
+            MDL, ComponentList, QuArK_bones, message, MDL.tagsgroup, MDL.version, MDL.main_mdl_comps, MDL.new_mdl_comps = MDL.load_Animation(ComponentList, QuArK_bones, message, file, editor, folder_name, mdl_name, main_mdl_name, LoadAnim)
+            FinishImport(file, editor, filename, ComponentList, QuArK_bones, hitboxsets, message, tagsgroup, main_mdl_comps, new_mdl_comps)
 
     ImportDlg(quarkx.clickform, 'importdlg', editor, setup, action, onclosing)
 
@@ -5217,6 +5221,9 @@ def UIImportDialog(MDL, file, editor, filename, ComponentList, QuArK_bones, hitb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.5  2011/04/02 01:08:10  cdunde
+# Added Half-Life 2 importer animation support with bone, attachment and bbox movement.
+#
 # Revision 1.4  2011/03/13 00:41:47  cdunde
 # Updating fixed for the Model Editor of the Texture Browser's Used Textures folder.
 #
