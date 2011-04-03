@@ -4235,6 +4235,7 @@ class Object(object):
     # Process animation data
     def load_Animation(self, ComponentList, QuArK_bones, message, file, editor, folder_name, mdl_name, main_mdl_name, LoadAnim):
         global progressbar
+        control_name = folder_name + "_" + main_mdl_name + "_"
         ani_file = self.ani_file
         #
         # Get all the moving bones
@@ -4242,14 +4243,17 @@ class Object(object):
         tmp_start_bones = [] # A list of 'topmost' bones that belong to the model
         for bone in editor.Root.dictitems['Skeleton:bg'].subitems:
             name = bone.shortname.lower() # Make sure all text is lower case.
-            if name.startswith(folder_name + "_" + main_mdl_name + "_"):
+            if name.startswith(control_name):
                 tmp_start_bones += [bone]
 
         # Determines if this bone is part of the animation?
-        def IsBoneMoving(self, bone):
-            test_name = bone.shortname.split(folder_name + "_" + main_mdl_name + "_")[1]
+        def IsBoneMoving(self, bone, control_name=control_name):
+            cont_name = control_name.lower()
+            test_name = bone.shortname.lower()
+            test_name = test_name.split(cont_name)[1]
             for b in self.bones:
-                if b.pszName == test_name:
+                name = b.pszName.lower()
+                if name == test_name:
                     return 1
             return 0
 
@@ -4273,9 +4277,15 @@ class Object(object):
             AutoSelect = 0
             self.main_mdl_bones += CheckBone(self, bone, AutoSelect)
 
+        # At this point we can check if control_name matches component or if upper and lower case cause a problem.
+        if not self.main_mdl_comps[0].name.startswith(control_name):
+            control_name = self.main_mdl_comps[0].name.split("_")
+            main_mdl_name = control_name[1]
+            control_name = control_name[0] + "_" + control_name[1] + "_"
+
         # Fill the bone names conversion list.
         for bone in self.main_mdl_bones:
-            name = bone.shortname.split(folder_name + "_" + main_mdl_name + "_")[1]
+            name = bone.shortname.split(control_name)[1]
             self.bones_names = self.bones_names + [name]
         bones_names_count = len(self.bones_names)
         self_bone_count = len(self.bones)
@@ -4284,7 +4294,7 @@ class Object(object):
         all_bones = editor.Root.dictitems['Skeleton:bg'].findallsubitems("", ':bone')
         bones_not_moving = []
         for bone in all_bones:
-            if bone not in self.main_mdl_bones:
+            if bone not in self.main_mdl_bones and bone.name.startswith(control_name):
                 bones_not_moving += [bone]
 
         # Find any bones in the animation that were not present in the bones we already got
@@ -4300,7 +4310,7 @@ class Object(object):
 
         bonelist = editor.ModelComponentList['bonelist']
         def GetParentPosAndRot(ParentName, FrameName):
-            ParentName = folder_name + "_" + main_mdl_name + "_" + ParentName + ":bone"
+            ParentName = control_name + ParentName + ":bone"
             if not bonelist.has_key(ParentName):
                 #Parent bone not found? Return default values
                 return quarkx.vect((0.0, 0.0, 0.0)), quarkx.matrix((1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (0.0, 0.0, 1.0))
@@ -5225,6 +5235,9 @@ def UIImportDialog(MDL, file, editor, filename, ComponentList, QuArK_bones, hitb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.7  2011/04/02 04:18:23  cdunde
+# To stop dupe BaseFrames when importing animations.
+#
 # Revision 1.6  2011/04/02 03:17:58  cdunde
 # Minor update to cancel animation importing..
 #
