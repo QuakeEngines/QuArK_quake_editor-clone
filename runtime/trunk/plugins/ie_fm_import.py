@@ -300,7 +300,7 @@ class fm_obj:
             for j in xrange(0,self.num_vertices):
                 self.frames[i].vertices.append(fm_alias_triangle())
 
-        #make the # of nodes for the model
+        #make the # of nodes for the model, each is a section of the mesh.
         self.num_mesh_nodes=data[43]
 
         ### Start reading and loading all the file data.
@@ -822,6 +822,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".fm HereticII Importer", ".fm file", "*.fm
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.3  2011/03/13 00:41:47  cdunde
+# Updating fixed for the Model Editor of the Texture Browser's Used Textures folder.
+#
 # Revision 1.2  2011/03/10 20:56:39  cdunde
 # Updating of Used Textures in the Model Editor Texture Browser for all imported skin textures
 # and allow bones and Skeleton folder to be placed in Userdata panel for reuse with other models.
