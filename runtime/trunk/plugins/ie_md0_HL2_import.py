@@ -653,9 +653,10 @@ class HL2_Bone:
                 break
             self.pszName = self.pszName + Namedata[0]
         if logging == 1:
-            print "pszName", self.pszName
-            print "pos, rot", self.pos, self.rot
-          #  print data
+            tobj.logcon ("pszName: " + self.pszName)
+            tobj.logcon ("pos: " + str(self.pos))
+            tobj.logcon ("rot: " + str(self.rot))
+            tobj.logcon ("-------------------------")
 
         file.seek(SaveCurOffset, 0) # Reset the file offset pointer back to where it should be now.
 
@@ -700,9 +701,14 @@ class HL2_BoneController:
         temp_data = file.read(struct.calcsize(self.binary_format))
         data = struct.unpack(self.binary_format, temp_data)
         if logging == 1:
-            print "======================================"
-            print "HL2import line 430 HL2_BoneController data"
-            print data
+            tobj.logcon ("=========================")
+            tobj.logcon ("HL2_BoneController data")
+            tobj.logcon ("bone: " + str(self.bone))
+            tobj.logcon ("type: " + str(self.type))
+            tobj.logcon ("start: " + str(self.start))
+            tobj.logcon ("end: " + str(self.end))
+            tobj.logcon ("rest: " + str(self.rest))
+            tobj.logcon ("inputfield: " + str(self.inputfield))
         self.bone = data[0]
         self.type = data[1]
         self.start = data[2]
@@ -814,13 +820,13 @@ class HL2_HitBox:
             file.seek(CurOffset, 0) # Reset the file offset pointer back to where it should be now.
 
         if logging == 1:
-            print "--------------HL2_HITBOX----------------"
-            print "HitBoxName", self.HitBoxName
-            print "bone", self.bone
-            print "group", self.group
-            print "bbmin", self.bbmin
-            print "bbmax", self.bbmax
-            print "szhitboxnameindex", self.szhitboxnameindex
+            tobj.logcon ("--------------HL2_HITBOX----------------")
+            tobj.logcon ("HitBoxName: " + self.HitBoxName)
+            tobj.logcon ("bone: " + str(self.bone))
+            tobj.logcon ("group: " + str(self.group))
+            tobj.logcon ("bbmin: " + str(self.bbmin))
+            tobj.logcon ("bbmax: "  + str(self.bbmax))
+            tobj.logcon ("szhitboxnameindex: " + str(self.szhitboxnameindex))
 
 
 class HL2_HitBoxSet:
@@ -840,8 +846,8 @@ class HL2_HitBoxSet:
 
     def load(self, file, QuArK_bones, bboxlist):
         if logging == 1:
-            print "==============HL2_HITBOXSET=============="
-            print "Offset at start", file.tell()
+            tobj.logcon ("==============HL2_HITBOXSET==============")
+            tobj.logcon ("Offset at start: " + str(file.tell()))
 
         binary_format="<3i" # data_read_in = 3i = 3*4 = 12
         data_read_in = 12   # Total binary_format byte value above, used below to set the file offset pointer back.
@@ -853,10 +859,10 @@ class HL2_HitBoxSet:
         SaveCurOffset = file.tell() # Save the file current offset pointer.
 
         if logging == 1:
-            print "sznameindex", self.sznameindex
-            print "numhitboxes", self.numhitboxes
-            print "hitboxindex", self.hitboxindex
-            print "SaveCurOffset", SaveCurOffset
+            tobj.logcon ("sznameindex: " + str(self.sznameindex))
+            tobj.logcon ("numhitboxes: " + str(self.numhitboxes))
+            tobj.logcon ("hitboxindex: " + str(self.hitboxindex))
+            tobj.logcon ("SaveCurOffset: " + str(SaveCurOffset))
 
         file.seek(SaveCurOffset + self.sznameindex - data_read_in, 0) # change the file offset pointer position.
         binary_format="<c"
@@ -867,7 +873,7 @@ class HL2_HitBoxSet:
                 break
             self.pszName = self.pszName + data[0]
         if logging == 1:
-            print "pszName", self.pszName
+            tobj.logcon ("pszName: " + self.pszName)
 
         # Makes QuArK bbox group folder.
         bbg_name = file.name.split("\\")
@@ -885,10 +891,10 @@ class HL2_HitBoxSet:
 
         file.seek(SaveCurOffset, 0) # Reset the file offset pointer back to where it should be now.
         if logging == 1:
-            print "------------------------"
-            print "Offset at end", file.tell()
-            print "========================"
-            print ""
+            tobj.logcon ("------------------------")
+            tobj.logcon ("Offset at end: " + str(file.tell()))
+            tobj.logcon ("========================")
+            tobj.logcon ("")
 
 
 class HL2_StudioMovement:
@@ -916,9 +922,15 @@ class HL2_StudioMovement:
         temp_data = file.read(struct.calcsize(self.binary_format))
         data = struct.unpack(self.binary_format, temp_data)
         if logging == 1:
-            print "========================"
-            print "HL2_StudioMovement data"
-            print data
+            tobj.logcon ("========================")
+            tobj.logcon ("HL2_StudioMovement data")
+            tobj.logcon ("endframe: " + str(self.endframe))
+            tobj.logcon ("motionflags: " + str(self.motionflags))
+            tobj.logcon ("v0: " + str(self.v0))
+            tobj.logcon ("v1: " + str(self.v1))
+            tobj.logcon ("angle: " + str(self.angle))
+            tobj.logcon ("vector: " + str(self.vector))
+            tobj.logcon ("position: " + str(self.position))
         self.endframe = data[0]
         self.motionflags = data[1]
         self.v0 = data[2]
@@ -1082,26 +1094,19 @@ class HL2_LocalAnimDesc:
                 break
             self.pszName = self.pszName + Namedata[0]
         if logging == 1:
-            print "pszName", self.pszName
-            print "fps", str(self.fps)
-            print "flags", str(self.flags)
-            print "numframes", str(self.numframes)
-            print "nummovements", str(self.nummovements)
-            print "movementindex", str(self.movementindex)
-            print "bboxmin", str(self.bboxmin)
-            print "bboxmax", str(self.bboxmax)
-            print "animblock", str(self.animblock)
-            print "animindex", str(self.animindex)
-            print "numikrules", str(self.numikrules)
-            print "ikruleindex", str(self.ikruleindex)
-            print "animblockikruleindex", str(self.animblockikruleindex)
-         #   print "unused1", str(self.unused1)
-         #   print "unused2", str(self.unused2)
-         #   print "unused3", str(self.unused3)
-         #   print "unused4", str(self.unused4)
-         #   print "unused5", str(self.unused5)
-         #   print "unused6", str(self.unused6)
-         #   print "unused7", str(self.unused7)
+            tobj.logcon ("pszName: " + self.pszName)
+            tobj.logcon ("fps: " + str(self.fps))
+            tobj.logcon ("flags: " + str(self.flags))
+            tobj.logcon ("numframes: " + str(self.numframes))
+            tobj.logcon ("nummovements: " + str(self.nummovements))
+            tobj.logcon ("movementindex: " + str(self.movementindex))
+            tobj.logcon ("bboxmin: " + str(self.bboxmin))
+            tobj.logcon ("bboxmax: " + str(self.bboxmax))
+            tobj.logcon ("animblock: " + str(self.animblock))
+            tobj.logcon ("animindex: " + str(self.animindex))
+            tobj.logcon ("numikrules: " + str(self.numikrules))
+            tobj.logcon ("ikruleindex: " + str(self.ikruleindex))
+            tobj.logcon ("animblockikruleindex: " + str(self.animblockikruleindex))
 
         # inline mstudiomovement_t * const pMovement( int i ) const { return (mstudiomovement_t *)(((byte *)this) + movementindex) + i; };
         file.seek(SaveCurOffset - self.data_read_in + self.movementindex, 0) # change the file offset pointer position.
@@ -1290,15 +1295,6 @@ class HL2_LocalSeqDesc:
         self.keyvaluesize = data[44]
         # inline const char * KeyValueText( void ) const { return keyvaluesize != 0 ? ((char *)this) + keyvalueindex : NULL; }
 
-      #  self.unused1 = data[45]
-      #  self.unused2 = data[46]
-      #  self.unused3 = data[47]
-      #  self.unused4 = data[48]
-      #  self.unused5 = data[49]
-      #  self.unused6 = data[50]
-      #  self.unused7 = data[51]
-      #  self.unused8 = data[52]
-
         SaveCurOffset = file.tell() # Save the file current offset pointer.
         file.seek(SaveCurOffset - self.data_read_in + self.szlabelindex, 0) # change the file offset pointer position.
         binary_format="<c"
@@ -1309,49 +1305,41 @@ class HL2_LocalSeqDesc:
                 break
             self.pszLabel = self.pszLabel + Labeldata[0]
         if logging == 1:
-            print "line 1060 pszLabel", self.pszLabel
-            print "szactivitynameindex", str(self.szactivitynameindex)
-            print "flags", str(self.flags)
-            print "activity", str(self.activity)
-            print "actweight", str(self.actweight)
-            print "numevents", str(self.numevents)
-            print "eventindex", str(self.eventindex)
-            print "bboxmin", str(self.bboxmin)
-            print "bboxmax", str(self.bboxmax)
-            print "animindexindex", str(self.animindexindex)
-            print "movementindex", str(self.movementindex)
-            print "groupsize", str(self.groupsize)
-            print "paramindex", str(self.paramindex)
-            print "paramstart", str(self.paramstart)
-            print "paramend", str(self.paramend)
-            print "paramparent", str(self.paramparent)
-            print "fadeintime", str(self.fadeintime)
-            print "fadeouttime", str(self.fadeouttime)
-            print "localentrynode", str(self.localentrynode)
-            print "localexitnode", str(self.localexitnode)
-            print "nodeflags", str(self.nodeflags)
-            print "entryphase", str(self.entryphase)
-            print "exitphase", str(self.exitphase)
-            print "lastframe", str(self.lastframe)
-            print "nextseq", str(self.nextseq)
-            print "pose", str(self.pose)
-            print "numikrules", str(self.numikrules)
-            print "numautolayers", str(self.numautolayers)
-            print "autolayerindex", str(self.autolayerindex)
-            print "weightlistindex", str(self.weightlistindex)
-            print "posekeyindex", str(self.posekeyindex)
-            print "numiklocks", str(self.numiklocks)
-            print "iklockindex", str(self.iklockindex)
-            print "keyvalueindex", str(self.keyvalueindex)
-            print "keyvaluesize", str(self.keyvaluesize)
-         #   print "unused1", str(self.unused1)
-         #   print "unused2", str(self.unused2)
-         #   print "unused3", str(self.unused3)
-         #   print "unused4", str(self.unused4)
-         #   print "unused5", str(self.unused5)
-         #   print "unused6", str(self.unused6)
-         #   print "unused7", str(self.unused7)
-         #   print "unused8", str(self.unused8)
+            tobj.logcon ("pszLabel: " + self.pszLabel)
+            tobj.logcon ("szactivitynameindex: " + str(self.szactivitynameindex))
+            tobj.logcon ("flags: " + str(self.flags))
+            tobj.logcon ("activity: " + str(self.activity))
+            tobj.logcon ("actweight: " + str(self.actweight))
+            tobj.logcon ("numevents: " + str(self.numevents))
+            tobj.logcon ("eventindex: " + str(self.eventindex))
+            tobj.logcon ("bboxmin: " + str(self.bboxmin))
+            tobj.logcon ("bboxmax: " + str(self.bboxmax))
+            tobj.logcon ("animindexindex: " + str(self.animindexindex))
+            tobj.logcon ("movementindex: " + str(self.movementindex))
+            tobj.logcon ("groupsize: " + str(self.groupsize))
+            tobj.logcon ("paramindex: " + str(self.paramindex))
+            tobj.logcon ("paramstart: " + str(self.paramstart))
+            tobj.logcon ("paramend: " + str(self.paramend))
+            tobj.logcon ("paramparent: " + str(self.paramparent))
+            tobj.logcon ("fadeintime: " + str(self.fadeintime))
+            tobj.logcon ("fadeouttime: " + str(self.fadeouttime))
+            tobj.logcon ("localentrynode: " + str(self.localentrynode))
+            tobj.logcon ("localexitnode: " + str(self.localexitnode))
+            tobj.logcon ("nodeflags: " + str(self.nodeflags))
+            tobj.logcon ("entryphase: " + str(self.entryphase))
+            tobj.logcon ("exitphase: " + str(self.exitphase))
+            tobj.logcon ("lastframe: " + str(self.lastframe))
+            tobj.logcon ("nextseq: " + str(self.nextseq))
+            tobj.logcon ("pose: " + str(self.pose))
+            tobj.logcon ("numikrules: " + str(self.numikrules))
+            tobj.logcon ("numautolayers: " + str(self.numautolayers))
+            tobj.logcon ("autolayerindex: " + str(self.autolayerindex))
+            tobj.logcon ("weightlistindex: " + str(self.weightlistindex))
+            tobj.logcon ("posekeyindex: " + str(self.posekeyindex))
+            tobj.logcon ("numiklocks: " + str(self.numiklocks))
+            tobj.logcon ("iklockindex: " + str(self.iklockindex))
+            tobj.logcon ("keyvalueindex: " + str(self.keyvalueindex))
+            tobj.logcon ("keyvaluesize: " + str(self.keyvaluesize))
         file.seek(SaveCurOffset, 0) # Reset the file offset pointer back to where it should be now.
 
         # DAN this is not right
@@ -1371,7 +1359,7 @@ class HL2_LocalSeqDesc:
                     continue
             self.pszActivityName = self.pszActivityName + Namedata[0]
         if logging == 1:
-            print "DAN PLEASE FIX THIS pszActivityName", self.pszActivityName
+            tobj.logcon ("DAN PLEASE FIX THIS pszActivityName: " + self.pszActivityName)
         file.seek(SaveCurOffset, 0) # Reset the file offset pointer back to where it should be now.
 
 
@@ -1421,9 +1409,14 @@ class HL2_TexturesInfo:
         temp_data = file.read(struct.calcsize(self.binary_format))
         data = struct.unpack(self.binary_format, temp_data)
         if logging == 1:
-            print "======================================"
-            print "HL2import line 910 HL2_TexturesInfo data"
-            print data
+            tobj.logcon ("======================================")
+            tobj.logcon ("HL2_TexturesInfo data")
+            tobj.logcon ("pszName: " + self.pszName)
+            tobj.logcon ("flags: " + str(self.flags))
+            tobj.logcon ("used: " + str(self.used))
+            tobj.logcon ("unknown: " + str(self.unknown))
+            tobj.logcon ("material: " + str(self.material))
+            tobj.logcon ("clientmaterial: " + str(self.clientmaterial))
         self.sznameindex = data[0]
         self.flags = data[1]
         self.used = data[2]
@@ -1451,7 +1444,7 @@ class HL2_TexturesInfo:
                 break
             self.pszName = self.pszName + data[0]
         if logging == 1:
-            print "pszName", self.pszName
+            tobj.logcon ("pszName: " + self.pszName)
         file.seek(SaveCurOffset, 0) # Reset the file offset pointer back to where it should be now.
 
 
@@ -1529,12 +1522,12 @@ class HL2_Mesh:
         self.unused7 = data[27]
         self.unused8 = data[28]
         if logging == 1:
-            print "======================================"
-            print "HL2import line 1139 HL2_Mesh data"
-            print "meshid ->", self.meshid
-            print "modelindex ->", self.modelindex
-            print "numvertices ->", self.numvertices
-            print "vertexoffset ->", self.vertexoffset
+            tobj.logcon ("======================================")
+            tobj.logcon ("HL2_Mesh data")
+            tobj.logcon ("meshid: " + str(self.meshid))
+            tobj.logcon ("modelindex: " + str(self.modelindex))
+            tobj.logcon ("numvertices: " + str(self.numvertices))
+            tobj.logcon ("vertexoffset: " + str(self.vertexoffset))
 
 
 class HL2_EyeBall:
@@ -1609,9 +1602,26 @@ class HL2_EyeBall:
         temp_data = file.read(struct.calcsize(self.binary_format))
         data = struct.unpack(self.binary_format, temp_data)
         if logging == 1:
-            print "======================================"
-            print "HL2import line 1219 HL2_EyeBall data"
-            print data
+            tobj.logcon ("======================================")
+            tobj.logcon ("HL2_EyeBall data")
+            tobj.logcon ("sznameindex: " + str(self.sznameindex))
+            tobj.logcon ("pszName: " + self.pszName)
+            tobj.logcon ("bone: " + str(self.bone))
+            tobj.logcon ("org: " + str(self.org))
+            tobj.logcon ("zoffset: " + str(self.zoffset))
+            tobj.logcon ("radius: " + str(self.radius))
+            tobj.logcon ("up: " + str(self.up))
+            tobj.logcon ("forward: " + str(self.forward))
+            tobj.logcon ("texture: " + str(self.texture))
+            tobj.logcon ("iris_material: " + str(self.iris_material))
+            tobj.logcon ("iris_scale: " + str(self.iris_scale))
+            tobj.logcon ("glint_material: " + str(self.glint_material))
+            tobj.logcon ("upperflexdesc: " + str(self.upperflexdesc))
+            tobj.logcon ("lowerflexdesc: " + str(self.lowerflexdesc))
+            tobj.logcon ("uppertarget: " + str(self.uppertarget))
+            tobj.logcon ("lowertarget: " + str(self.lowertarget))
+            tobj.logcon ("upperlidflexdesc: " + str(self.upperlidflexdesc))
+            tobj.logcon ("lowerlidflexdesc: " + str(self.lowerlidflexdesc))
         self.sznameindex = data[0]
         self.bone = data[1]
         self.org = (data[2], data[3], data[4])
@@ -1653,7 +1663,7 @@ class HL2_EyeBall:
                 break
             self.pszName = self.pszName + data[0]
         if logging == 1:
-            print "pszName", self.pszName
+            tobj.logcon ("pszName: " + self.pszName)
 
         file.seek(SaveCurOffset, 0) # Reset the file offset pointer back to where it should be now.
 
@@ -1742,13 +1752,21 @@ class HL2_Model:
         self.unused8 = data[21]
         SaveCurOffset = file.tell() # Save the file current offset pointer.
         if logging == 1:
-            print "======================================"
-            print "HL2import line 1352 HL2_Model data"
-            print "name ->", self.pszName
-            print "nummeshes ->", self.nummeshes
-            print "meshindex ->", self.meshindex
-            print "TOTAL numvertices ->", self.numvertices
-            print "START OF vertexindex ->", self.vertexindex
+            tobj.logcon ("======================================")
+            tobj.logcon ("HL2_Model data")
+            tobj.logcon ("pszName: " + self.pszName)
+            tobj.logcon ("type: " + str(self.type))
+            tobj.logcon ("boundingradius: " + str(self.boundingradius))
+            tobj.logcon ("nummeshes: " + str(self.nummeshes))
+            tobj.logcon ("meshindex: " + str(self.meshindex))
+            tobj.logcon ("numvertices: " + str(self.numvertices))
+            tobj.logcon ("vertexindex: " + str(self.vertexindex))
+            tobj.logcon ("tangentsindex: " + str(self.tangentsindex))
+            tobj.logcon ("numattachments: " + str(self.numattachments))
+            tobj.logcon ("attachmentindex: " + str(self.attachmentindex))
+            tobj.logcon ("numeyeballs: " + str(self.numeyeballs))
+            tobj.logcon ("eyeballindex: " + str(self.eyeballindex))
+            tobj.logcon ("vertexdata: " + str(self.vertexdata))
 
         file.seek(SaveCurOffset - data_read_in + self.meshindex, 0) # change the file offset pointer position to get the model.
         for m in xrange(self.nummeshes):
@@ -1804,10 +1822,11 @@ class HL2_BodyPartIndex:
             self.pszName = self.pszName + data[0]
 
         if logging == 1:
-            print "pszName", self.pszName
-            print "nummodels", self.nummodels
-            print "base", self.base
-            print "modelindex", self.modelindex
+            tobj.logcon ("sznameindex: " + str(self.sznameindex))
+            tobj.logcon ("pszName: " + self.pszName)
+            tobj.logcon ("nummodels: " + str(self.nummodels))
+            tobj.logcon ("base: " + str(self.base))
+            tobj.logcon ("modelindex: " + str(self.modelindex))
 
         file.seek(SaveCurOffset - data_read_in + self.modelindex, 0) # change the file offset pointer position to get the model.
         for m in xrange(self.nummodels):
@@ -1882,20 +1901,12 @@ class HL2_LocalAttachment:
         file.seek(SaveCurOffset, 0) # Reset the file offset pointer back to where it should be now.
 
         if logging == 1:
-            print "--------------HL2_LocalAttachment----------------"
-            print "sznameindex", self.sznameindex
-            print "pszName", self.pszName
-            print "flags", self.flags
-            print "localbone", self.localbone
-            print "local", self.local
-            print "unused1", [self.unused1]
-            print "unused2", [self.unused2]
-            print "unused3", [self.unused3]
-            print "unused4", [self.unused4]
-            print "unused5", [self.unused5]
-            print "unused6", [self.unused6]
-            print "unused7", [self.unused7]
-            print "unused8", [self.unused8]
+            tobj.logcon ("--------------HL2_LocalAttachment----------------")
+            tobj.logcon ("sznameindex: " + str(self.sznameindex))
+            tobj.logcon ("pszName: " + self.pszName)
+            tobj.logcon ("flags: " + str(self.flags))
+            tobj.logcon ("localbone: " + str(self.localbone))
+            tobj.logcon ("local: " + str(self.local))
 
 
 class HL2_Node:
@@ -1960,13 +1971,13 @@ class HL2_Node:
         self.pszLocalNodeName = data
 
         if logging == 1:
-            print "--------------HL2_Node----------------"
-            print "pszLocalNodeName", [self.pszLocalNodeName]
-            """print "bone", self.bone
-            print "group", self.group
-            print "bbmin", self.bbmin
-            print "bbmax", self.bbmax
-            print "szhitboxnameindex", self.szhitboxnameindex"""
+            tobj.logcon ("--------------HL2_Node----------------")
+            tobj.logcon ("pszLocalNodeName: " + str(self.pszLocalNodeName))
+            """tobj.logcon ("bone: " + str(self.bone))
+            tobj.logcon ("group: " + str(self.group))
+            tobj.logcon ("bbmin: " + str(self.bbmin))
+            tobj.logcon ("bbmax: " + str(self.bbmax))
+            tobj.logcon ("szhitboxnameindex: " + str(self.szhitboxnameindex))"""
 
 
 class HL2_FlexDesc:
@@ -1998,8 +2009,8 @@ class HL2_FlexDesc:
         file.seek(SaveCurOffset, 0) # Reset the file offset pointer back to where it should be now.
 
         if logging == 1:
-            print "szFACSindex", self.szFACSindex
-            print "pszFACS", self.pszFACS
+            tobj.logcon ("szFACSindex: " + str(self.szFACSindex))
+            tobj.logcon ("pszFACS: " + str(self.pszFACS))
 
 
 class HL2_FlexController:
@@ -2055,13 +2066,13 @@ class HL2_FlexController:
         file.seek(SaveCurOffset, 0) # Reset the file offset pointer back to where it should be now.
 
         if logging == 1:
-            print "sztypeindex", self.sztypeindex
-            print "pszType", self.pszType
-            print "sznameindex", self.sznameindex
-            print "pszName", self.pszName
-            print "link", self.link
-            print "min", self.min
-            print "max", self.max
+            tobj.logcon ("sztypeindex: " + str(self.sztypeindex))
+            tobj.logcon ("pszType: " + str(self.pszType))
+            tobj.logcon ("sznameindex: " + str(self.sznameindex))
+            tobj.logcon ("pszName: " + self.pszName)
+            tobj.logcon ("link: " + str(self.link))
+            tobj.logcon ("min: " + str(self.min))
+            tobj.logcon ("max: " + str(self.max))
 
 
 class HL2_FlexOp: # DAN not sure this is right
@@ -2082,8 +2093,8 @@ class HL2_FlexOp: # DAN not sure this is right
         self.union_value = data[1]
 
         if logging == 1:
-            print "op", self.op
-            print "union_value", self.union_value
+            tobj.logcon ("op: " + str(self.op))
+            tobj.logcon ("union_value: " + str(self.union_value))
 
 
 class HL2_FlexRule:
@@ -2108,16 +2119,16 @@ class HL2_FlexRule:
         self.opindex = data[2]
 
         if logging == 1:
-            print "flex", self.flex
-            print "numops", self.numops
-            print "opindex", self.opindex
+            tobj.logcon ("flex: " + str(self.flex))
+            tobj.logcon ("numops: " + str(self.numops))
+            tobj.logcon ("opindex: " + str(self.opindex))
 
         SaveCurOffset = file.tell() # Save the file current offset pointer.
 
         file.seek(SaveCurOffset - self.data_read_in + self.opindex, 0) # change the file offset pointer position.
         for op in xrange(self.numops):
             if logging == 1:
-                print "--------------" + str(op) + " HL2_FlexOp ----------------"
+                tobj.logcon ("--------------" + str(op) + " HL2_FlexOp ----------------")
             flexop = HL2_FlexOp()
             flexop.load(file)
 
@@ -2145,9 +2156,9 @@ class HL2_IKLink:
         self.unused0 = (data[4], data[5], data[6])
 
         if logging == 1:
-            print "bone", self.bone
-            print "kneeDir", self.kneeDir
-            print "unused0", self.unused0
+            tobj.logcon ("bone: " + str(self.bone))
+            tobj.logcon ("kneeDir: " + str(self.kneeDir))
+            tobj.logcon ("unused0: " + str(self.unused0))
 
 
 class HL2_IKChain:
@@ -2191,18 +2202,18 @@ class HL2_IKChain:
         file.seek(SaveCurOffset, 0) # Reset the file offset pointer back to where it should be now.
 
         if logging == 1:
-            print "sznameindex", self.sznameindex
-            print "pszName", self.pszName
-            print "linktype", self.linktype
-            print "numlinks", self.numlinks
-            print "linkindex", self.linkindex
+            tobj.logcon ("sznameindex: " + str(self.sznameindex))
+            tobj.logcon ("pszName: " + self.pszName)
+            tobj.logcon ("linktype: " + str(self.linktype))
+            tobj.logcon ("numlinks: " + str(self.numlinks))
+            tobj.logcon ("linkindex: " + str(self.linkindex))
 
         SaveCurOffset = file.tell() # Save the file current offset pointer.
 
         file.seek(SaveCurOffset - self.data_read_in + self.linkindex, 0) # change the file offset pointer position.
         for i in xrange(self.numlinks):
             if logging == 1:
-                print "--------------" + str(i) + " HL2_IKLink ----------------"
+                tobj.logcon ("--------------" + str(i) + " HL2_IKLink ----------------")
             link = HL2_IKLink()
             link.load(file)
             self.links.append(link)
@@ -2231,9 +2242,10 @@ class HL2_Mouth:
         self.flexdesc = data[4]
 
         if logging == 1:
-            print "bone", self.bone
-            print "forward", self.forward
-            print "flexdesc", self.flexdesc
+            tobj.logcon ("-------------HL2_Mouth---------------")
+            tobj.logcon ("bone: " + str(self.bone))
+            tobj.logcon ("forward: " + str(self.forward))
+            tobj.logcon ("flexdesc: " + str(self.flexdesc))
 
 
 class HL2_LocalPoseParameter:
@@ -2277,12 +2289,12 @@ class HL2_LocalPoseParameter:
         file.seek(SaveCurOffset, 0) # Reset the file offset pointer back to where it should be now.
 
         if logging == 1:
-            print "sznameindex", self.sznameindex
-            print "pszName", self.pszName
-            print "flags", self.flags
-            print "start", self.start
-            print "end", self.end
-            print "loop", self.loop
+            tobj.logcon ("sznameindex: " + str(self.sznameindex))
+            tobj.logcon ("pszName: " + self.pszName)
+            tobj.logcon ("flags: " + str(self.flags))
+            tobj.logcon ("start: " + str(self.start))
+            tobj.logcon ("end: " + str(self.end))
+            tobj.logcon ("loop: " + str(self.loop))
 
 
 class HL2_SurfaceProp:
@@ -2302,7 +2314,7 @@ class HL2_SurfaceProp:
             self.pszName = self.pszName + data[0]
 
         if logging == 1:
-            print "pszName", self.pszName
+            tobj.logcon ("pszName: " + self.pszName)
 
 
 class HL2_KeyValues(object):
@@ -2322,11 +2334,11 @@ class HL2_KeyValues(object):
         self.mdlkeyvalues = data[0].split("\x00")
 
         if logging == 1:
-            print ""
-            print "========================"
-            print "line 1623 HL2_KeyValues ofsBegin", ofsBegin
-            print "line 1625 HL2_KeyValues keyvaluesize", keyvaluesize, type(keyvaluesize)
-            print "line 1629 HL2_KeyValues self.mdlkeyvalues", self.mdlkeyvalues
+            tobj.logcon ("")
+            tobj.logcon ("======HL2_KeyValues======")
+            tobj.logcon ("ofsBegin: " + str(ofsBegin))
+            tobj.logcon ("keyvaluesize: " + str(keyvaluesize))
+            tobj.logcon ("mdlkeyvalues: " + str(self.mdlkeyvalues))
 
         return self
 
@@ -2368,14 +2380,10 @@ class HL2_LocalIKAutoplayLock:
         self.unused4 = data[7]
 
         if logging == 1:
-            print "chain", self.chain
-            print "flPosWeight", self.flPosWeight
-            print "flLocalQWeight", self.flLocalQWeight
-            print "flags", self.flags
-            print "unused1", self.unused1
-            print "unused2", self.unused2
-            print "unused3", self.unused3
-            print "unused4", self.unused4
+            tobj.logcon ("chain: " + str(self.chain))
+            tobj.logcon ("flPosWeight: " + str(self.flPosWeight))
+            tobj.logcon ("flLocalQWeight: " + str(self.flLocalQWeight))
+            tobj.logcon ("flags: " + str(self.flags))
 
 
 class HL2_ModelGroup:
@@ -2423,11 +2431,11 @@ class HL2_ModelGroup:
         file.seek(SaveCurOffset, 0) # Reset the file offset pointer back to where it should be now.
 
         if logging == 1:
-            print "----HL2_ModelGroup----"
-            print "szlabelindex", self.szlabelindex
-            print "pszLabel", self.pszLabel
-            print "sznameindex", self.sznameindex
-            print "pszName", self.pszName
+            tobj.logcon ("----HL2_ModelGroup----")
+            tobj.logcon ("szlabelindex: " + str(self.szlabelindex))
+            tobj.logcon ("pszLabel: " + self.pszLabel)
+            tobj.logcon ("sznameindex: " + str(self.sznameindex))
+            tobj.logcon ("pszName: " + self.pszName)
 
 
 ######################################################
@@ -2497,15 +2505,15 @@ class HL2_VVDFileReader:
         self.tangentDataStart = data[15]
 
         if logging == 1:
-            print "id", self.id
-            print "version", str(self.version)
-            print "checksum", str(self.checksum)
-            print "numLODs", str(self.numLODs)
-            print "numLODVertexes", str(self.numLODVertexes)
-            print "numFixups", str(self.numFixups)
-            print "fixupTableStart", str(self.fixupTableStart)
-            print "vertexDataStart", str(self.vertexDataStart)
-            print "tangentDataStart", str(self.tangentDataStart)
+            tobj.logcon ("id: " + str(self.id))
+            tobj.logcon ("version: " + str(self.version))
+            tobj.logcon ("checksum: " + str(self.checksum))
+            tobj.logcon ("numLODs: " + str(self.numLODs))
+            tobj.logcon ("numLODVertexes: " + str(self.numLODVertexes))
+            tobj.logcon ("numFixups: " + str(self.numFixups))
+            tobj.logcon ("fixupTableStart: " + str(self.fixupTableStart))
+            tobj.logcon ("vertexDataStart: " + str(self.vertexDataStart))
+            tobj.logcon ("tangentDataStart: " + str(self.tangentDataStart))
 
         return self
 
@@ -2531,9 +2539,9 @@ class HL2_VVDFixup:
         self.numVertexes = data[2]
 
       #  if logging == 1:
-      #      print "lod", str(self.lod)
-      #      print "sourceVertexID", str(self.sourceVertexID)
-      #      print "numVertexes", str(self.numVertexes)
+      #      tobj.logcon ("lod: " + str(self.lod))
+      #      tobj.logcon ("sourceVertexID: " + str(self.sourceVertexID))
+      #      tobj.logcon ("numVertexes: " + str(self.numVertexes))
 
         return self
 
@@ -2554,12 +2562,12 @@ def HL2_GetVertexData(mdl_name):
             return None
 
     if logging == 1:
-        print ""
-        print "===================="
-        print "      VVD FILE"
-        print vvd_file
-        print "===================="
-        print "--------- HL2_VVDFileReader ---------"
+        tobj.logcon ("")
+        tobj.logcon ("====================")
+        tobj.logcon ("      VVD FILE")
+        tobj.logcon ("vvd_file: " + str(vvd_file))
+        tobj.logcon ("====================")
+        tobj.logcon ("--------- HL2_VVDFileReader ---------")
 
     VVD = HL2_VVDFileReader()
     VVDFileReader = VVD.load(vvd_file)
@@ -2615,16 +2623,16 @@ class HL2_VTXFileReader:
         self.body_part_offset = data[9]
 
         if logging == 1:
-            print "vtx_version", self.vtx_version
-            print "vertex_cache_size", str(self.vertex_cache_size)
-            print "max_bones_per_strip", str(self.max_bones_per_strip)
-            print "max_bones_per_tri", str(self.max_bones_per_tri)
-            print "max_bones_per_vertex", str(self.max_bones_per_vertex)
-            print "check_sum", str(self.check_sum)
-            print "num_lods", str(self.num_lods)
-            print "mtl_replace_list_offset", str(self.mtl_replace_list_offset)
-            print "num_body_parts", str(self.num_body_parts)
-            print "body_part_offset", str(self.body_part_offset)
+            tobj.logcon ("vtx_version: " + str(self.vtx_version))
+            tobj.logcon ("vertex_cache_size: " + str(self.vertex_cache_size))
+            tobj.logcon ("max_bones_per_strip: " + str(self.max_bones_per_strip))
+            tobj.logcon ("max_bones_per_tri: " + str(self.max_bones_per_tri))
+            tobj.logcon ("max_bones_per_vertex: " + str(self.max_bones_per_vertex))
+            tobj.logcon ("check_sum: " + str(self.check_sum))
+            tobj.logcon ("num_lods: " + str(self.num_lods))
+            tobj.logcon ("mtl_replace_list_offset: " + str(self.mtl_replace_list_offset))
+            tobj.logcon ("num_body_parts: " + str(self.num_body_parts))
+            tobj.logcon ("body_part_offset: " + str(self.body_part_offset))
 
         vtx_file.seek(self.body_part_offset, 0)
         new_ComponentList = []
@@ -2636,9 +2644,9 @@ class HL2_VTXFileReader:
             model_offset = data[1]
 
             if logging == 1:
-                print "num_models", str(num_models)
-                print "model_offset", str(model_offset)
-                print "-------------------"
+                tobj.logcon ("num_models: " + str(num_models))
+                tobj.logcon ("model_offset: " + str(model_offset))
+                tobj.logcon ("-------------------")
 
             SaveCurBodyPartOffset = vtx_file.tell() # Save the file current LOD offset pointer.
             vtx_file.seek(self.body_part_offset + (i * 8) + model_offset, 0)
@@ -2651,9 +2659,9 @@ class HL2_VTXFileReader:
                 lod_offset = data[1]
 
                 if logging == 1:
-                    print "num_lods", str(num_lods)
-                    print "lod_offset", str(lod_offset)
-                    print "-------------------"
+                    tobj.logcon ("num_lods: " + str(num_lods))
+                    tobj.logcon ("lod_offset: " + str(lod_offset))
+                    tobj.logcon ("-------------------")
 
                 SaveCurModelOffset = vtx_file.tell() # Save the file current LOD offset pointer.
                 vtx_file.seek(self.body_part_offset + (i * 8) + model_offset + (j * 8) + lod_offset, 0)
@@ -2667,10 +2675,10 @@ class HL2_VTXFileReader:
                     switch_point = data[2]
 
                     if logging == 1:
-                        print "num_meshes", str(num_meshes)
-                        print "mesh_offset", str(mesh_offset)
-                        print "switch_point", str(switch_point)
-                        print "-------------------"
+                        tobj.logcon ("num_meshes: " + str(num_meshes))
+                        tobj.logcon ("mesh_offset: " + str(mesh_offset))
+                        tobj.logcon ("switch_point: " + str(switch_point))
+                        tobj.logcon ("-------------------")
 
                     if k == 0: # If we go beyond the 1st set the data turns to junk!?
                         # Setup things we will need.
@@ -2696,11 +2704,11 @@ class HL2_VTXFileReader:
                             mesh_flags = data[2] # 1 = teeth, 2 = eyes, 0 = other.
 
                             if logging == 1:
-                                print "========VTXMesh======="
-                                print "num_strip_groups", str(num_strip_groups)
-                                print "strip_group_offset", str(strip_group_offset)
-                                print "mesh_flags", str(mesh_flags)
-                                print "==================="
+                                tobj.logcon ("========VTXMesh=======")
+                                tobj.logcon ("num_strip_groups: " + str(num_strip_groups))
+                                tobj.logcon ("strip_group_offset: " + str(strip_group_offset))
+                                tobj.logcon ("mesh_flags: " + str(mesh_flags))
+                                tobj.logcon ("===================")
 
                             SaveCurMeshOffset = vtx_file.tell() # Save the file current Mesh offset pointer.
                             vtx_file.seek(mesh_pointer + strip_group_offset, 0)
@@ -2791,15 +2799,15 @@ class HL2_VTXFileReader:
                                 strip_group_flags = data[6]
 
                                 if logging == 1:
-                                    print "------VTXStripGroup------"
-                                    print "num_vertices", str(num_vertices)
-                                    print "vertex_offset", str(vertex_offset)
-                                    print "num_indices", str(num_indices)
-                                    print "index_offset", str(index_offset)
-                                    print "num_strips", str(num_strips)
-                                    print "strip_offset", str(strip_offset)
-                                    print "strip_group_flags", str(strip_group_flags)
-                                    print "------VTXVertex------"
+                                    tobj.logcon ("------VTXStripGroup------")
+                                    tobj.logcon ("num_vertices: " + str(num_vertices))
+                                    tobj.logcon ("vertex_offset: " + str(vertex_offset))
+                                    tobj.logcon ("num_indices: " + str(num_indices))
+                                    tobj.logcon ("index_offset: " + str(index_offset))
+                                    tobj.logcon ("num_strips: " + str(num_strips))
+                                    tobj.logcon ("strip_offset: " + str(strip_offset))
+                                    tobj.logcon ("strip_group_flags: " + str(strip_group_flags))
+                                    tobj.logcon ("------VTXVertex------")
 
                                 SaveCurGroupOffset =  vtx_file.tell() # Save the file current Group offset pointer.
 
@@ -2860,7 +2868,7 @@ class HL2_VTXFileReader:
                                     vtx_indexes.append(data[0])
 
                                 if logging == 1:
-                                    print "------VTXStrip------"
+                                    tobj.logcon ("------VTXStrip------")
 
                                 vtx_file.seek(strip_group_pointer + strip_offset, 0)
                                 binary_format="<4ihB2i"
@@ -2878,14 +2886,14 @@ class HL2_VTXFileReader:
                                     bone_state_change_offset = data[7]
 
                                     if logging == 1:
-                                        print "num_indices", str(num_indices)
-                                        print "index_offset", str(index_offset)
-                                        print "num_vertices", str(num_vertices)
-                                        print "vertex_offset", str(vertex_offset)
-                                        print "num_bones", str(num_bones)
-                                        print "strip_flags", str(strip_flags)
-                                        print "num_bone_state_changes", str(num_bone_state_changes)
-                                        print "bone_state_change_offset", str(bone_state_change_offset)
+                                        tobj.logcon ("num_indices: " + str(num_indices))
+                                        tobj.logcon ("index_offset: " + str(index_offset))
+                                        tobj.logcon ("num_vertices: " + str(num_vertices))
+                                        tobj.logcon ("vertex_offset: " + str(vertex_offset))
+                                        tobj.logcon ("num_bones: " + str(num_bones))
+                                        tobj.logcon ("strip_flags: " + str(strip_flags))
+                                        tobj.logcon ("num_bone_state_changes: " + str(num_bone_state_changes))
+                                        tobj.logcon ("bone_state_change_offset: " + str(bone_state_change_offset))
 
                                     if strip_flags == 1:
                                         #This is a triangle list
@@ -2968,8 +2976,8 @@ class Tags(object):
         self.mdltagvalues = data[0].split("\x00")
 
         if logging == 1:
-            print ""
-            print "Tags self.mdltagvalues", self.mdltagvalues
+            tobj.logcon ("")
+            tobj.logcon ("mdltagvalues: " + str(self.mdltagvalues))
 
         return self
 
@@ -3412,6 +3420,115 @@ class Object(object):
         self.bones_names = []       # A conversion list of self.main_mdl_bones name converted to importer self.bone names.
         self.new_mdl_comps = []     # A list of main model components updated copies in the main_mdl_comps list above.
 
+    def dump(self):
+        tobj.logcon ("")
+        tobj.logcon ("========================")
+        tobj.logcon ("Object file: " + str(file))
+        tobj.logcon ("")
+        tobj.logcon ("id: " + str(self.id))
+        tobj.logcon ("version: " + str(self.version))
+        tobj.logcon ("-----has to be the same in the phy and vtx files to load----")
+        tobj.logcon ("checksum: " + str(self.checksum))
+        tobj.logcon ("version: " + self.name)
+        tobj.logcon ("length: " + str(self.length))
+        tobj.logcon ("-----ideal eye position----")
+        tobj.logcon ("eyeposition: " + str(self.eyeposition))
+        tobj.logcon ("-----illumination center----")
+        tobj.logcon ("illumposition: " + str(self.illumposition))
+        tobj.logcon ("-----ideal movement hull size----")
+        tobj.logcon ("hull_min: " + str(self.hull_min))
+        tobj.logcon ("hull_max: " + str(self.hull_max))
+        tobj.logcon ("-----clipping bounding box----")
+        tobj.logcon ("view_bbmin: " + str(self.view_bbmin))
+        tobj.logcon ("view_bbmax: " + str(self.view_bbmax))
+        tobj.logcon ("-----flags----")
+        tobj.logcon ("flags: " + str(self.flags))
+        tobj.logcon ("-----bones----")
+        tobj.logcon ("numbones: " + str(self.numbones))
+        tobj.logcon ("boneindex: " + str(self.boneindex))
+        tobj.logcon ("-----bone controllers----")
+        tobj.logcon ("numbonecontrollers: " + str(self.numbonecontrollers))
+        tobj.logcon ("bonecontrollerindex: " + str(self.bonecontrollerindex))
+        tobj.logcon ("-----hitboxes----")
+        tobj.logcon ("numhitboxsets: " + str(self.numhitboxsets))
+        tobj.logcon ("hitboxsetindex: " + str(self.hitboxsetindex))
+        tobj.logcon ("-----animations----")
+        tobj.logcon ("numlocalanim: " + str(self.numlocalanim))
+        tobj.logcon ("localanimindex: " + str(self.localanimindex))
+        tobj.logcon ("-----sequences----")
+        tobj.logcon ("numlocalseq: " + str(self.numlocalseq))
+        tobj.logcon ("localseqindex: " + str(self.localseqindex))
+        tobj.logcon ("---initialization flags---")
+        tobj.logcon ("activitylistversion: " + str(self.activitylistversion))
+        tobj.logcon ("eventsindexed: " + str(self.eventsindexed))
+        tobj.logcon ("-----raw textures----")
+        tobj.logcon ("numtextures: " + str(self.numtextures))
+        tobj.logcon ("textureindex: " + str(self.textureindex))
+        tobj.logcon ("-----cd textures----")
+        tobj.logcon ("numcdtextures: " + str(self.numcdtextures))
+        tobj.logcon ("cdtextureindex: " + str(self.cdtextureindex))
+        tobj.logcon ("-----replaceable textures tables----")
+        tobj.logcon ("numskinref: " + str(self.numskinref))
+        tobj.logcon ("numskinfamilies: " + str(self.numskinfamilies))
+        tobj.logcon ("skinindex: " + str(self.skinindex))
+        tobj.logcon ("numbodyparts: " + str(self.numbodyparts))
+        tobj.logcon ("bodypartindex: " + str(self.bodypartindex))
+        tobj.logcon ("-----queryable attachable points----")
+        tobj.logcon ("numlocalattachments: " + str(self.numlocalattachments))
+        tobj.logcon ("localattachmentindex: " + str(self.localattachmentindex))
+        tobj.logcon ("-----animation node to animation node transition graph----")
+        tobj.logcon ("numlocalnodes: " + str(self.numlocalnodes))
+        tobj.logcon ("localnodeindex: " + str(self.localnodeindex))
+        tobj.logcon ("localnodenameindex: " + str(self.localnodenameindex))
+        tobj.logcon ("numflexdesc: " + str(self.numflexdesc))
+        tobj.logcon ("flexdescindex: " + str(self.flexdescindex))
+        tobj.logcon ("numflexcontrollers: " + str(self.numflexcontrollers))
+        tobj.logcon ("flexcontrollerindex: " + str(self.flexcontrollerindex))
+        tobj.logcon ("numflexrules: " + str(self.numflexrules))
+        tobj.logcon ("flexruleindex: " + str(self.flexruleindex))
+        tobj.logcon ("numikchains: " + str(self.numikchains))
+        tobj.logcon ("ikchainindex: " + str(self.ikchainindex))
+        tobj.logcon ("nummouths: " + str(self.nummouths))
+        tobj.logcon ("mouthindex: " + str(self.mouthindex))
+        tobj.logcon ("numlocalposeparameters: " + str(self.numlocalposeparameters))
+        tobj.logcon ("localposeparamindex: " + str(self.localposeparamindex))
+        tobj.logcon ("surfacepropindex: " + str(self.surfacepropindex))
+        tobj.logcon ("-----Key values----")
+        tobj.logcon ("keyvalueindex: " + str(self.keyvalueindex))
+        tobj.logcon ("keyvaluesize: " + str(self.keyvaluesize))
+        tobj.logcon ("numlocalikautoplaylocks: " + str(self.numlocalikautoplaylocks))
+        tobj.logcon ("localikautoplaylockindex: " + str(self.localikautoplaylockindex))
+        tobj.logcon ("-----collision model mass----")
+        tobj.logcon ("mass: " + str(self.mass))
+        tobj.logcon ("contents: " + str(self.contents))
+        tobj.logcon ("-----external animations, models, etc.----")
+        tobj.logcon ("numincludemodels: " + str(self.numincludemodels))
+        tobj.logcon ("includemodelindex: " + str(self.includemodelindex))
+        tobj.logcon ("-----implementation specific back pointer to virtual data----")
+        tobj.logcon ("virtualModel: " + str(self.virtualModel))
+        tobj.logcon ("-----for demand loaded animation blocks----")
+        tobj.logcon ("szanimblocknameindex: " + str(self.szanimblocknameindex))
+        tobj.logcon ("numanimblocks: " + str(self.numanimblocks))
+        tobj.logcon ("animblockindex: " + str(self.animblockindex))
+        tobj.logcon ("animblockModel: " + str(self.animblockModel))
+        tobj.logcon ("bonetablebynameindex: " + str(self.bonetablebynameindex))
+        tobj.logcon ("-----used by tools only that don't cache, but persist mdl's peer data----")
+        tobj.logcon ("-----engine uses virtualModel to back link to cache pointers----")
+        tobj.logcon ("pVertexBase: " + str(self.pVertexBase))
+        tobj.logcon ("pIndexBase: " + str(self.pIndexBase))
+        tobj.logcon ("rootLOD: " + str(self.rootLOD))
+        tobj.logcon ("unused1: " + str(self.unused1))
+        tobj.logcon ("unused2: " + str(self.unused2))
+        tobj.logcon ("zeroframecacheindex: " + str(self.zeroframecacheindex))
+        tobj.logcon ("array1: " + str(self.array1))
+        tobj.logcon ("array2: " + str(self.array2))
+        tobj.logcon ("array3: " + str(self.array3))
+        tobj.logcon ("array4: " + str(self.array4))
+        tobj.logcon ("array5: " + str(self.array5))
+        tobj.logcon ("array6: " + str(self.array6))
+        tobj.logcon ("")
+        tobj.logcon ("========================")
+
     def load_Object(self, file, editor, folder_name, mdl_name, message):
         global progressbar, SpecsList
         SpecsList = """ """
@@ -3561,117 +3678,7 @@ class Object(object):
         # where are we in the file (for calculating real offsets)
         ofsBegin = file.tell()
         if logging == 1:
-            print "ofsBegin", ofsBegin
-
-    #    def dump(self=self):
-            print ""
-            print "========================"
-            print "Object file-->", file
-            print "Object data", data
-            print ""
-            print "id-->", self.id
-            print "version-->", self.version
-            print "-----has to be the same in the phy and vtx files to load----"
-            print "checksum-->", self.checksum
-            print "name-->", self.name
-            print "length-->", self.length
-            print "-----ideal eye position----"
-            print "eyeposition-->", self.eyeposition
-            print "-----illumination center----"
-            print "illumposition-->", self.illumposition
-            print "-----ideal movement hull size----"
-            print "hull_min-->", self.hull_min
-            print "hull_max-->", self.hull_max
-            print "-----clipping bounding box----"
-            print "view_bbmin-->", self.view_bbmin
-            print "view_bbmax-->", self.view_bbmax
-            print "-----flags----"
-            print "flags-->", self.flags
-            print "-----bones----"
-            print "numbones-->", self.numbones
-            print "boneindex-->", self.boneindex
-            print "-----bone controllers----"
-            print "numbonecontrollers-->", self.numbonecontrollers
-            print "bonecontrollerindex-->", self.bonecontrollerindex
-            print "-----hitboxes----"
-            print "numhitboxsets-->", self.numhitboxsets
-            print "hitboxsetindex-->", self.hitboxsetindex
-            print "-----animations----"
-            print "numlocalanim (poses)-->", self.numlocalanim
-            print "localanimindex (descriptions)-->", self.localanimindex
-            print "-----sequences----"
-            print "numlocalseq-->", self.numlocalseq
-            print "localseqindex-->", self.localseqindex
-            print "---initialization flags---"
-            print "activitylistversion-->", self.activitylistversion
-            print "eventsindexed-->", self.eventsindexed
-            print "-----raw textures----"
-            print "numtextures-->", self.numtextures
-            print "textureindex-->", self.textureindex
-            print "-----cd textures----"
-            print "numcdtextures-->", self.numcdtextures
-            print "cdtextureindex-->", self.cdtextureindex
-            print "-----replaceable textures tables----"
-            print "numskinref-->", self.numskinref
-            print "numskinfamilies-->", self.numskinfamilies
-            print "skinindex-->", self.skinindex
-            print "numbodyparts-->", self.numbodyparts
-            print "bodypartindex-->", self.bodypartindex
-            print "-----queryable attachable points----"
-            print "numlocalattachments-->", self.numlocalattachments
-            print "localattachmentindex-->", self.localattachmentindex
-            print "-----animation node to animation node transition graph----"
-            print "numlocalnodes-->", self.numlocalnodes
-            print "localnodeindex-->", self.localnodeindex
-            print "localnodenameindex-->", self.localnodenameindex
-            print "numflexdesc-->", self.numflexdesc
-            print "flexdescindex-->", self.flexdescindex
-            print "numflexcontrollers-->", self.numflexcontrollers
-            print "flexcontrollerindex-->", self.flexcontrollerindex
-            print "numflexrules-->", self.numflexrules
-            print "flexruleindex-->", self.flexruleindex
-            print "numikchains-->", self.numikchains
-            print "ikchainindex-->", self.ikchainindex
-            print "nummouths-->", self.nummouths
-            print "mouthindex-->", self.mouthindex
-            print "numlocalposeparameters-->", self.numlocalposeparameters
-            print "localposeparamindex-->", self.localposeparamindex
-            print "surfacepropindex-->", self.surfacepropindex
-            print "-----Key values----"
-            print "keyvalueindex-->", self.keyvalueindex
-            print "keyvaluesize-->", self.keyvaluesize
-            print "numlocalikautoplaylocks-->", self.numlocalikautoplaylocks
-            print "localikautoplaylockindex-->", self.localikautoplaylockindex
-            print "-----collision model mass----"
-            print "mass-->", self.mass
-            print "contents-->", self.contents
-            print "-----external animations, models, etc.----"
-            print "numincludemodels-->", self.numincludemodels
-            print "includemodelindex-->", self.includemodelindex
-            print "-----implementation specific back pointer to virtual data----"
-            print "virtualModel-->", self.virtualModel
-            print "-----for demand loaded animation blocks----"
-            print "szanimblocknameindex-->", self.szanimblocknameindex
-            print "numanimblocks-->", self.numanimblocks
-            print "animblockindex-->", self.animblockindex
-            print "animblockModel-->", self.animblockModel
-            print "bonetablebynameindex-->", self.bonetablebynameindex
-            print "-----used by tools only that don't cache, but persist mdl's peer data----"
-            print "-----engine uses virtualModel to back link to cache pointers----"
-            print "pVertexBase-->", self.pVertexBase
-            print "pIndexBase-->", self.pIndexBase
-            print "rootLOD-->", self.rootLOD
-            print "unused1-->", self.unused1
-            print "unused2-->", self.unused2
-            print "zeroframecacheindex-->", self.zeroframecacheindex
-            print "array1-->", self.array1
-            print "array2-->", self.array2
-            print "array3-->", self.array3
-            print "array4-->", self.array4
-            print "array5-->", self.array5
-            print "array6-->", self.array6
-            print ""
-            print "========================"
+            tobj.logcon ("ofsBegin: " + str(ofsBegin))
 
         ## To get bonetablebynameindex BYTE?
         SaveCurOffset = file.tell() # Save the file current offset pointer.
@@ -3680,7 +3687,7 @@ class Object(object):
         tmpData = file.read(struct.calcsize(binaryFormat))
         data = struct.unpack(binaryFormat, tmpData)
         if logging == 1:
-            print "bonetablebynameindex", data
+            tobj.logcon ("bonetablebynameindex: " + str(data))
         # Just get garbage from file read below? Have DAN check this out.
     #    bonetablebyname = data[0]
     #    file.seek(SaveCurOffset + bonetablebyname, 0)
@@ -3693,24 +3700,24 @@ class Object(object):
         ## Load the bones data.
         file.seek(self.boneindex, 0)
         if logging == 1:
-            print ""
-            print "========================"
-            print "nbr of bones", self.numbones
+            tobj.logcon ("")
+            tobj.logcon ("========================")
+            tobj.logcon ("numbones: " + str(self.numbones))
         for i in xrange(self.numbones):
             bone = HL2_Bone()
             bone.bone_index = i
             bone.load(file)
             if logging == 1:
-                print "----------------------------"
-                print i, "index, HL2_Bone data"
+                tobj.logcon ("----------------------------")
+                tobj.logcon ("HL2_Bone data index: " + str(i))
             self.bones.append(bone)
             self.QuArKBonesData = self.QuArKBonesData + [[folder_name + '_' + mdl_name + '_' + bone.pszName + ':bone', {}]]
 
         ## Load the bone controllers data.
         if logging == 1:
-            print ""
-            print "========================"
-            print "nbr of bone controllers", self.numbonecontrollers
+            tobj.logcon ("")
+            tobj.logcon ("========================")
+            tobj.logcon ("numbonecontrollers: " + str(self.numbonecontrollers))
         file.seek(self.bonecontrollerindex, 0)
         for i in xrange(self.numbonecontrollers):
             bone_controller = HL2_BoneController()
@@ -3719,27 +3726,27 @@ class Object(object):
 
         ## Load the animblocks.
         if logging == 1:
-            print ""
-            print "========================"
-            print "nbr of animblocks", self.numanimblocks
+            tobj.logcon ("")
+            tobj.logcon ("========================")
+            tobj.logcon ("numanimblocks: " + str(self.numanimblocks))
         file.seek(self.animblockindex, 0)
         for i in xrange(self.numanimblocks):
             anim_block = HL2_AnimBlock()
             anim_block.load(file)
             #Please note: Block 0 is invalid, so the first AnimBlock is filled with rubbish numbers!
             if logging == 1:
-                print "========================"
-                print i, "index, HL2_AnimBlock data"
-                print "anim_block.datastart", anim_block.datastart
-                print "anim_block.dataend",  anim_block.dataend
-                print "----------------------------"
+                tobj.logcon ("========================")
+                tobj.logcon ("HL2_AnimBlock data index: " + str(i))
+                tobj.logcon ("anim_block.datastart: " + str(anim_block.datastart))
+                tobj.logcon ("anim_block.dataend: " + str(anim_block.dataend))
+                tobj.logcon ("----------------------------")
             self.anim_blocks.append(anim_block)
 
         ## Load the file local animations.
         if logging == 1:
-            print ""
-            print "========================"
-            print "numlocalanim", self.numlocalanim
+            tobj.logcon ("")
+            tobj.logcon ("========================")
+            tobj.logcon ("numlocalanim: " + str(self.numlocalanim))
         file.seek(self.localanimindex, 0)
         total_frames = 0
         if main_mdl_name is not None:
@@ -3749,11 +3756,11 @@ class Object(object):
             local_animation_desc = HL2_LocalAnimDesc()
             local_animation_desc.load(file, self.ani_file, self)
             if logging == 1:
-                print "========================"
-                print i, "index, HL2_LocalAnimDesc data"
-                print "pszName", local_animation_desc.pszName
-                print "numframes", local_animation_desc.numframes
-                print "----------------------------"
+                tobj.logcon ("========================")
+                tobj.logcon ("HL2_LocalAnimDesc data index: " + str(i))
+                tobj.logcon ("pszName: " + local_animation_desc.pszName)
+                tobj.logcon ("numframes: " + str(local_animation_desc.numframes))
+                tobj.logcon ("----------------------------")
             if main_mdl_name is not None:
                 name = local_animation_desc.pszName.replace("@", "")
                 frames = local_animation_desc.numframes
@@ -3765,8 +3772,8 @@ class Object(object):
             self.animation_descs.append(local_animation_desc)
         if main_mdl_name is not None:
             if logging == 1:
-                print ""
-                print "total_frames", total_frames
+                tobj.logcon ("")
+                tobj.logcon ("total_frames: " + str(total_frames))
             SpecsList = SpecsList + """sep: = { Typ="S" Txt="Sequence / nbr of frames"}"""
             SpecsList = SpecsList + """all: = {Txt = """
             SpecsList = SpecsList + '"Import All / ' + str(total_frames) + '"'
@@ -3776,17 +3783,17 @@ class Object(object):
 
         ## Load the file local sequences.
         if logging == 1:
-            print ""
-            print "========================"
-            print"numlocalseq", self.numlocalseq
+            tobj.logcon ("")
+            tobj.logcon ("========================")
+            tobj.logcon ("numlocalseq: " + str(self.numlocalseq))
         file.seek(self.localseqindex, 0)
         for i in xrange(self.numlocalseq):
             local_sequence_desc = HL2_LocalSeqDesc()
             local_sequence_desc.load(file)
             self.sequence_descs.append(local_sequence_desc)
             if logging == 1:
-                print "========================"
-                print i, "index, HL2_LocalSeqDesc data"
+                tobj.logcon ("========================")
+                tobj.logcon ("HL2_LocalSeqDesc data index: " + str(i))
 
         # Setup items needed for QuArK.
         ComponentList = []
@@ -3794,8 +3801,8 @@ class Object(object):
 
         ## Load the file textures info data.
         if logging == 1:
-            print ""
-            print "========================"
+            tobj.logcon ("")
+            tobj.logcon ("=====file textures=====")
         file.seek(self.textureindex, 0)
         skin_names = []
         for i in xrange(self.numtextures):
@@ -3804,23 +3811,23 @@ class Object(object):
             skin_name = textures_info.pszName.lower() # Make sure all text is lower case.
             skin_names.append(skin_name)
             if logging == 1:
-                print "========================"
-                print i, "index, HL2_TexturesInfo data"
+                tobj.logcon ("========================")
+                tobj.logcon ("HL2_TexturesInfo data index: " + str(i))
         self.skins_group, self.materials_group = LookForSkins(skin_names, self.skins_group, self.materials_group, folder_name, mdl_name, message)
 
         ## Load the body parts index data.
         if logging == 1:
-            print ""
-            print "========================"
-            print "nbr of HL2_BodyParts", self.numbodyparts
+            tobj.logcon ("")
+            tobj.logcon ("========================")
+            tobj.logcon ("numbodyparts: " + str(self.numbodyparts))
         file.seek(self.bodypartindex, 0)
         for i in xrange(self.numbodyparts):
             body_part_index = HL2_BodyPartIndex()
             body_part_index.load(file)
             self.bodyparts.append(body_part_index)
             if logging == 1:
-                print "========================"
-                print i, "index, HL2_BodyPartIndex data OFFSET->", self.bodypartindex
+                tobj.logcon ("========================")
+                tobj.logcon ("bodypartindex: " + str(self.bodypartindex))
 
         QuArK_bones = [] # A list to store all QuArK bones created.
         if main_mdl_file is not None:
@@ -3908,11 +3915,11 @@ class Object(object):
                             vertex_weights = mesh.vertex_weights
                             binary_format="<3f3bB3f3f2f"
                             if logging == 1:
-                                print "======================================"
-                                print "HL2import line 3307 HL2_Mesh"
-                                print "mesh-> meshid, numvertices, vertexoffset, VVDFileReader-> vertexDataStart"
-                                print "         ", mesh.meshid, "        ", mesh.numvertices, "         ", mesh.vertexoffset, "             ", VVDFileReader.vertexDataStart
-                                print "======================================"
+                                tobj.logcon ("======================================")
+                                tobj.logcon ("HL2import line 3307 HL2_Mesh")
+                                tobj.logcon ("mesh-> meshid, numvertices, vertexoffset, VVDFileReader-> vertexDataStart")
+                                tobj.logcon ("         " + str(mesh.meshid) + "        " + str(mesh.numvertices) + "         " + str(mesh.vertexoffset) + "             " + str(VVDFileReader.vertexDataStart))
+                                tobj.logcon ("======================================")
                             for l in xrange(mesh.numvertices):
                                 temp_data = vvd_file.read(struct.calcsize(binary_format))
                                 data = struct.unpack(binary_format, temp_data)
@@ -3920,14 +3927,14 @@ class Object(object):
                                 vertex_weights.append([[data[0], data[1], data[2]], [data[3], data[4], data[5]], data[6], (data[7], data[8], data[9]), (data[10], data[11], data[12]), [data[13], data[14]]])
 
                                 if logging == 1:
-                                    print "vertex", l, "data->"
-                                    print "weights->", data[0], data[1], data[2]
-                                    print "w-bones->", data[3], data[4], data[5]
-                                    print "nbr of w-bones->", data[6]
-                                    print "vtx pos->", data[7], data[8], data[9]
-                                    print "vtx nor->", data[10], data[11], data[12]
-                                    print "vtx UV->", data[13], data[14]
-                                    print "--------------------------------------"
+                                    tobj.logcon ("vertex" + str(l) + "data:")
+                                    tobj.logcon ("weights: " + str(data[0]) + str(data[1]) + str(data[2]))
+                                    tobj.logcon ("w-bones: " + str(data[3]) + str(data[4]) + str(data[5]))
+                                    tobj.logcon ("nbr of w-bones: " + str(data[6]))
+                                    tobj.logcon ("vtx pos: " + str(data[7]) + str(data[8]) + str(data[9]))
+                                    tobj.logcon ("vtx nor: " + str(data[10]) + str(data[11]) + str(data[12]))
+                                    tobj.logcon ("vtx UV: " + str(data[13]) + str(data[14]))
+                                    tobj.logcon ("--------------------------------------")
                         else:
                             mesh_weights = []
                             for vtx in xrange(mesh_vertex_count, mesh.numvertices+mesh_vertex_count):
@@ -3941,18 +3948,20 @@ class Object(object):
                 VTX = HL2_VTXFileReader()
                 ComponentList = VTX.load(vtx_file, self, vvd_file, ComponentList)
                 if logging == 1:
-                    print ""
-                    print "========================"
-                    print "VTX FILE", vtx_file
-                    print "========================"
-                    print "--------- HL2_VTXFileReader ---------"
+                    tobj.logcon ("")
+                    tobj.logcon ("========================")
+                    tobj.logcon ("vtx_file: " + str(vtx_file))
+                    tobj.logcon ("========================")
+                    tobj.logcon ("--------- HL2_VTXFileReader ---------")
 
 
             ## Load the attachments data, for position processing with bones they belong to.
             if len(self.bones) != 0 and len(ComponentList) != 0 and self.numlocalattachments != 0:
                 if logging == 1:
-                    print ""
-                    print "========================"
+                    tobj.logcon ("")
+                    tobj.logcon ("========================")
+                    tobj.logcon ("     attachments data")
+                    tobj.logcon ("------------------------")
                 file.seek(self.localattachmentindex, 0)
                 tag_comp = ComponentList[0] # Reset this if needed later.
                 for i in xrange(self.numlocalattachments):
@@ -3977,8 +3986,8 @@ class Object(object):
                         tag_comp['Tags'] = tag_comp.dictspec['Tags'] + ", " + tag_name
 
                     if logging == 1:
-                        print "tag_comp", tag_comp
-                        print "Tags", tag_comp.dictspec['Tags']
+                        tobj.logcon ("tag_comp: " + str(tag_comp))
+                        tobj.logcon ("Tags: " + str(tag_comp.dictspec['Tags']))
 
             # Create the bones, if any.
             if len(self.bones) != 0 and len(ComponentList) != 0:
@@ -4072,9 +4081,9 @@ class Object(object):
 
             ## Load the hitboxes data.
             if logging == 1:
-                print ""
-                print "========================"
-                print "nbr of hitboxes", self.numhitboxsets
+                tobj.logcon ("")
+                tobj.logcon ("========================")
+                tobj.logcon ("numhitboxsets: " + str(self.numhitboxsets))
             file.seek(self.hitboxsetindex, 0)
             bboxlist = editor.ModelComponentList['bboxlist']
             for i in xrange(self.numhitboxsets):
@@ -4085,9 +4094,9 @@ class Object(object):
         ## Test to try and get nodes data
         if self.numlocalnodes != 0:
             if logging == 1:
-                print ""
-                print "========================"
-                print "num of nodes", self.numlocalnodes
+                tobj.logcon ("")
+                tobj.logcon ("========================")
+                tobj.logcon ("numlocalnodes: " + str(self.numlocalnodes))
             file.seek(self.localnodenameindex, 0)
             NodeName = ""
             binary_format="<c"
@@ -4098,9 +4107,9 @@ class Object(object):
                     break
                 NodeName = NodeName + data[0]
             if logging == 1:
-                print "------------------------"
-                print "NodeName", NodeName
-                print "------------------------"
+                tobj.logcon ("------------------------")
+                tobj.logcon ("NodeName: " + str(NodeName))
+                tobj.logcon ("------------------------")
             file.seek(self.localnodeindex, 0)
             for i in xrange(self.numlocalnodes):
                 node = HL2_Node()
@@ -4109,84 +4118,84 @@ class Object(object):
         ## Load the flex desc data.
         file.seek(self.flexdescindex, 0)
         if logging == 1:
-            print ""
-            print "========================"
-            print "num of flex desc", self.numflexdesc
+            tobj.logcon ("")
+            tobj.logcon ("========================")
+            tobj.logcon ("numflexdesc: " + str(self.numflexdesc))
         for i in xrange(self.numflexdesc):
             flex_desc = HL2_FlexDesc()
             flex_desc.load(file)
             if logging == 1:
-                print "--------------" + str(i) + " HL2_FlexDesc ----------------"
+                tobj.logcon ("--------------" + str(i) + " HL2_FlexDesc ----------------")
 
         ## Load the flex controller data.
         file.seek(self.flexcontrollerindex, 0)
         if logging == 1:
-            print ""
-            print "========================"
-            print "num of flex controller", self.numflexcontrollers
+            tobj.logcon ("")
+            tobj.logcon ("========================")
+            tobj.logcon ("numflexcontrollers: " + str(self.numflexcontrollers))
         for i in xrange(self.numflexcontrollers):
             flex_cont = HL2_FlexController()
             flex_cont.load(file)
             if logging == 1:
-                print "--------------" + str(i) + " HL2_FlexController ----------------"
+                tobj.logcon ("--------------" + str(i) + " HL2_FlexController ----------------")
 
         ## Load the flex rules data.
         file.seek(self.flexruleindex, 0)
         if logging == 1:
-            print ""
-            print "========================"
-            print "num of flex rules", self.numflexrules
+            tobj.logcon ("")
+            tobj.logcon ("========================")
+            tobj.logcon ("numflexrules: " + str(self.numflexrules))
         for i in xrange(self.numflexrules):
             flex_rule = HL2_FlexRule()
             flex_rule.load(file)
             if logging == 1:
-                print "--------------" + str(i) + " HL2_FlexRule ----------------"
+                tobj.logcon ("--------------" + str(i) + " HL2_FlexRule ----------------")
 
         ## Load the ikchains data.
         file.seek(self.ikchainindex, 0)
         if logging == 1:
-            print ""
-            print "========================"
-            print "num of ikchains", self.numikchains
+            tobj.logcon ("")
+            tobj.logcon ("========================")
+            tobj.logcon ("numikchains: " + str(self.numikchains))
         for i in xrange(self.numikchains):
             IKChain = HL2_IKChain()
             IKChain.load(file)
             self.ikchains.append(IKChain)
             if logging == 1:
-                print "--------------" + str(i) + " HL2_IKChain ----------------"
+                tobj.logcon ("--------------" + str(i) + " HL2_IKChain ----------------")
 
         ## Load the mouths data.
         file.seek(self.mouthindex, 0)
         if logging == 1:
-            print ""
-            print "========================"
-            print "num of mouths", self.nummouths
+            tobj.logcon ("")
+            tobj.logcon ("========================")
+            tobj.logcon ("nummouths: " + str(self.nummouths))
         for i in xrange(self.nummouths):
             mouth = HL2_Mouth()
             mouth.load(file)
             if logging == 1:
-                print "--------------" + str(i) + " HL2_Mouth ----------------"
+                tobj.logcon ("--------------" + str(i) + " HL2_Mouth ----------------")
 
         ## Load the local pose parameters data.
         file.seek(self.localposeparamindex, 0)
         if logging == 1:
-            print ""
-            print "========================"
-            print "num of local pose parameters", self.numlocalposeparameters
+            tobj.logcon ("")
+            tobj.logcon ("========================")
+            tobj.logcon ("numlocalposeparameters: " + str(self.numlocalposeparameters))
         for i in xrange(self.numlocalposeparameters):
             localposeparameter = HL2_LocalPoseParameter()
             localposeparameter.load(file)
             if logging == 1:
-                print "--------------" + str(i) + " HL2_LocalPoseParameter ----------------"
+                tobj.logcon ("--------------" + str(i) + " HL2_LocalPoseParameter ----------------")
 
         ## Load the surface prop data.
         file.seek(self.surfacepropindex, 0)
         flex_rule = HL2_SurfaceProp()
         flex_rule.load(file)
         if logging == 1:
-            print ""
-            print "========================"
-            print "surface prop data"
+            tobj.logcon ("")
+            tobj.logcon ("========================")
+            tobj.logcon ("surface prop data")
 
         ## Load the keyvalues data.
         if self.keyvaluesize != 0:
@@ -4195,33 +4204,33 @@ class Object(object):
             self.keys.append(keyvalues)
             keyvalues.Load(file, self.keyvaluesize)
         if logging == 1:
-            print ""
-            print "========================"
-            print "keyvalues data"
+            tobj.logcon ("")
+            tobj.logcon ("========================")
+            tobj.logcon ("keyvalues data")
 
         ## Load the local ik autoplay locks data.
         file.seek(self.localikautoplaylockindex, 0)
         if logging == 1:
-            print ""
-            print "========================"
-            print "local ik autoplay locks"
+            tobj.logcon ("")
+            tobj.logcon ("========================")
+            tobj.logcon ("local ik autoplay locks")
         for i in xrange(self.numlocalikautoplaylocks):
             localikautoplaylock = HL2_LocalIKAutoplayLock()
             localikautoplaylock.load(file)
             if logging == 1:
-                print "--------------" + str(i) + " HL2_LocalIKAutoplayLock ----------------"
+                tobj.logcon ("--------------" + str(i) + " HL2_LocalIKAutoplayLock ----------------")
 
         ## Load the include models data.
         file.seek(self.includemodelindex, 0)
         if logging == 1:
-            print ""
-            print "========================"
-            print "include models data"
+            tobj.logcon ("")
+            tobj.logcon ("========================")
+            tobj.logcon ("include models data")
         for i in xrange(self.numincludemodels):
             localikautoplaylock = HL2_ModelGroup()
             localikautoplaylock.load(file)
             if logging == 1:
-                print "--------------" + str(i) + " HL2_ModelGroup ----------------"
+                tobj.logcon ("--------------" + str(i) + " HL2_ModelGroup ----------------")
 
         # load the tag info
         file.seek(self.surfacepropindex, 0)
@@ -4781,8 +4790,8 @@ def ImportMDL(basepath, filename):
     message = ""
     MODEL, ComponentList, QuArK_bones, message, tagsgroup, version, main_mdl_comps, new_mdl_comps, main_mdl_name, total_frames, folder_name, mdl_name, SpecsList = HL2.load_Object(file, editor, ModelFolder, ModelName, message)
 
-  #  if logging == 1:
-  #      HL2.dump() # Writes the file Header last to the log for comparison reasons.
+    if logging == 1:
+        HL2.dump() # Writes the file Header last to the log for comparison reasons.
 
     if MODEL is None:
         return MODEL, file, None, None, None, message, tagsgroup, version, main_mdl_comps, new_mdl_comps, main_mdl_name, total_frames, folder_name, mdl_name, SpecsList
@@ -5235,6 +5244,9 @@ def UIImportDialog(MDL, file, editor, filename, ComponentList, QuArK_bones, hitb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.8  2011/04/03 08:40:15  cdunde
+# Added code for misuse of upper and lower case item name changing.
+#
 # Revision 1.7  2011/04/02 04:18:23  cdunde
 # To stop dupe BaseFrames when importing animations.
 #
