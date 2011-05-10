@@ -32,6 +32,7 @@ import ie_utils
 from ie_utils import tobj
 from quarkpy.qdictionnary import Strings
 from quarkpy.qeditor import MapColor # Strictly needed for QuArK bones MapColor call.
+from quarkpy.qeditor import matrix_rot_x
 
 # Globals
 SS_MODEL = 3
@@ -303,17 +304,6 @@ class SKD_Surface:
                 w = SKD_Weight()
                 w.load(file)
                 boneIndex = w.boneIndex
-                #try:
-                #    print "name", bones[boneIndex].name, temp_bones[boneIndex].name, temp_bones[boneIndex].jointType
-                #    if bones[boneIndex].name.find("helper") != -1 and (temp_bones[boneIndex].jointType == 5 or temp_bones[boneIndex].jointType == 6):
-        #                continue
-        #                print "line 289 parent name", bones[boneIndex].dictspec['parent_name'], temp_bones[boneIndex].parent_index, bones[temp_bones[boneIndex].parent_index].name
-                 #       if temp_bones[boneIndex].jointType == 5:
-                #            boneIndex = temp_bones[boneIndex].parent_index
-                #        else:
-                #            continue
-                #except:
-                #    pass
                 weight_value = w.weight_value
                 vtx_offset = w.vtx_offset
                 jointType = bonelist[bones[boneIndex].name]['frames']['baseframe:mf']['SKD_JointType']
@@ -1082,6 +1072,15 @@ class SKC_Frame:
                             rotVert = rot
                             for bone_ref in bone_refs:
                                 rot = quarkx.matrix(bonelist[bone_ref]['frames'][frame_name]['rotmatrix'])
+                    else:
+                        if bonelist[bone.name]['frames']['baseframe:mf'].has_key('SKD_refs'):
+                            bone_refs = bonelist[bone.name]['frames']['baseframe:mf']['SKD_refs']
+                        else:
+                            bone_refs = None
+                        if bone_refs is not None:
+                            for bone_ref in bone_refs:
+                                ref_rot = quarkx.matrix(bonelist[bone_ref]['frames'][frame_name]['rotmatrix'])
+                                rot = ref_rot * matrix_rot_x(-math.pi/2.0) * quarkx.matrix((-1,0,0), (0,0,1), (0,1,0))
                 if (jointType == 6):
                     rotVert = None
 
@@ -1120,7 +1119,6 @@ class SKC_Frame:
                         if not bonelist[QuArK_bones[bone_index].name]['frames'].has_key(frame_name + ':mf'):
                             print "Warning: Bone %s missing frame %s!" % (QuArK_bones[bone_index].shortname, frame_name)
                             continue
-                      #  Bpos_old = quarkx.vect(bonelist[QuArK_bones[bone_index].name]['frames']['baseframe:mf']['position'])
                         Bpos_new = quarkx.vect(bonelist[QuArK_bones[bone_index].name]['frames'][frame_name+':mf']['position'])
                         Brot_new = quarkx.matrix(bonelist[QuArK_bones[bone_index].name]['frames'][frame_name+':mf']['rotmatrix'])
                         try:
@@ -1133,27 +1131,6 @@ class SKC_Frame:
                     if total_weight_value == 0.0:
                         total_weight_value = 1.0
                     vertpos = (vertpos / total_weight_value)
-                    if QuArK_bones[bone_index].name.find("ankle") != -1 and (frame_name.find("jump_land") != -1 or frame_name.find("jump_stretch") != -1):
-                        bone_refs = bonelist[QuArK_bones[bone_index].name]['frames']['baseframe:mf']['SKD_refs']
-                        for bone_ref in bone_refs:
-                            ref_bone_base = bonelist[bone_ref]['frames']['baseframe:mf']['position']
-                            bone_base = bonelist[QuArK_bones[bone_index].name]['frames']['baseframe:mf']['position']
-                            bone_lengthZ = ref_bone_base[0] - bone_base[0]
-                            temp = Bpos_new.tuple
-                            bone_ref_old = quarkx.vect(temp[0], temp[1], temp[2]+bone_lengthZ)
-                            bone_ref_pos = quarkx.vect(bonelist[bone_ref]['frames'][frame_name+':mf']['position'])
-                            normal = bone_ref_pos ^ bone_ref_old
-                          #  normal = Bpos_new ^ Bpos_old
-                            normal = normal.normalized
-                            npos = bone_ref_pos - Bpos_new
-                            npos = npos - normal*(normal*npos)
-                            texp4 = bone_ref_old - Bpos_new
-                            texp4 = texp4 - normal*(normal*texp4)
-                            m = quarkpy.qhandles.UserRotationMatrix(normal, npos, texp4, 0)
-                            if m is None:
-                                m = quarkx.matrix((1,0,0),(0,1,0),(0,0,1))
-                            vertpos = vertpos - Bpos_new
-                            vertpos = Bpos_new + (m * vertpos)
                     newverts[vert_counter] = vertpos
             QuArK_frame.vertices = newverts
 
@@ -1765,6 +1742,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".skd MOHAA Importer-mesh", ".skd file", "*
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.9  2011/05/08 06:08:38  cdunde
+# Update for MoHAA animation importing.
+#
 # Revision 1.8  2011/03/13 00:41:47  cdunde
 # Updating fixed for the Model Editor of the Texture Browser's Used Textures folder.
 #
