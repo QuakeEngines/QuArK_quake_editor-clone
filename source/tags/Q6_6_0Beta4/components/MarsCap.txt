@@ -1,0 +1,56 @@
+        MarsCaption v1.00   Copyright 1997, Chen Ken
+
+This is a free component, you can use it anywhere. But this is NOT
+guaranteed bug free!! If you use this component in your software,
+please give me an email, thanks!
+
+Purpose
+-------
+This is a component for gradient filled form's caption bar. Unlike
+other similar components, it can fill caption bar between any two
+colors, not only from one color to other color Win95 defined.
+
+
+Files
+-----
+readme.txt               This file
+DELPHI2			 Compiled unit for Delphi 2
+DELPHI3                  Compiled unit for Delphi 3
+BCB                      Compiled unit for Borand C++ Builder
+
+Known Bugs
+----------
+Display may be incorrect when designing forms.
+
+Contact
+-------
+If you find bugs or have some questions, please contact me.
+My email address:  chenken@public1.ptt.js.cn
+
+Source Code
+-----------
+All source code is free too. Please give me an
+email, and tell me which site do you get the component.
+I will send the source code to you.
+
+History
+-------
+1997.11.2      Initial release. Ver 1.00
+1997.11.3      Version 1.01
+               Bug fixed:                                             
+               1. TextRect Calculate Error when no buttons in caption 
+                  bar.                                                
+               2. Incorrect drawing  menu icon when dialog box        
+               3. Incorrect size window when minimize or maximize     
+                  button not avaiable                                 
+1997.11.4      Version 1.02                                 
+               Big bug fixed!                                          
+               1. Destroy message not transparent                     
+1997.11.5      Version 1.03                                 
+               1. Now can draw tool windows' system buttons           
+               2. Now can draw disabled minimize and maximize box     
+
+Thanks for select this component.
+
+Chen Ken
+1997.11
