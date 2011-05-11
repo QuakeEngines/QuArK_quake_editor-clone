@@ -101,7 +101,7 @@ SKC_MAX_CHANNEL_CHARS = 32
 #                                    1.0, 1.0, 1.0, 0.0)
 #                      bone channels: None
 #                      bone refs: ('Bip01 L UpperArm\x00',)
-# 6  JT_28BYTES      = (ofsChannels) 112 - 84 (ofsValues) = 24/4bytes =  7f values, 1 = jointWeight, 3 = pos x,y,z, 3 = quat qx,qy,qz (see elif bone.jointType == 6: section below for usage)
+# 6  JT_28BYTES      = (ofsChannels) 112 - 84 (ofsValues) = 28/4bytes =  7f values, 1 = jointWeight, 3 = pos x,y,z, 3 = quat qx,qy,qz (see elif bone.jointType == 6: section below for usage)
 #                      bone values: (0.5, 8.7047643661499023, -0.76852285861968994, -0.13475938141345978, 1.0, 1.0, 1.0)
 #                      bone channels: None
 #                      bone refs: ('helper Lshoulder\x00Bip01 L UpperArm\x00',) 1st & 2nd bone rot values appear to be the same, but if 1st does not exist use 2nd, we do anyway.
@@ -1742,6 +1742,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".skd MOHAA Importer-mesh", ".skd file", "*
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.11  2011/05/11 04:04:48  cdunde
+# Primarily to correct joint_type comments at top of file and some cleanup.
+#
 # Revision 1.10  2011/05/10 20:12:22  cdunde
 # Final code corrections for animation.
 #
