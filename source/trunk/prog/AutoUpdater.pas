@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.17  2010/04/16 21:18:45  danielpharos
+Move some version-stuff about. quarkpy now also checks the minor version number.
+
 Revision 1.16  2009/07/15 10:38:01  danielpharos
 Updated website link.
 
@@ -641,7 +644,8 @@ begin
   else
     DoOfflineUpdate := True;
 
-  if DoOfflineUpdate then
+  //FIXME: Disabling offline update...
+  (*if DoOfflineUpdate then
   begin
     //Offline 'update'
     if DaySpan(Now, QuArKCompileDate) >= QuArKDaysOld then
@@ -653,7 +657,7 @@ begin
           MessageBox(0, 'Unable to open website: Call to ShellExecute failed!' + #13#10#13#10 + 'Please manually go to: ' + QuArKWebsite, 'QuArK', MB_TASKMODAL or MB_ICONEXCLAMATION or MB_OK);
       end;
     end;
-  end;
+  end;*)
 end;
 
  {------------------------}
