@@ -27,6 +27,10 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.527  2011/03/26 23:35:16  cdunde
+//Updated Model Editor Camera Position system with Hotkeys to take quick shots of both Editor and Floating 3D views,
+//kept in separate folders for both Standard modes and True3D modes with Hotkeys to scroll through those shots.
+//
 //Revision 1.526  2011/03/16 05:43:31  cdunde
 //Added F5 Hotkey function for making Model Editor 3D camera positions.
 //
@@ -1703,7 +1707,7 @@ QQRKSRC1
   {
     General:config =     // ":config" objects are displayed in the Configuration dialog box
     {
-      Version = "QuArK 6.6 Beta 3"
+      Version = "QuArK 6.6 Beta 4"
       InternalVersion = '6.6'
       TextureBrowser = "Texture Browser..."
       NewMapItems = "New Map Items..."

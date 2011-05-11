@@ -28,11 +28,11 @@ SetCompressor /SOLID lzma   ; We will use LZMA for best compression
 
 !define BUILDDIR "C:\QuArK_installer_files"
 !define SPLASHDIR "C:\QuArK_installer_splash_image"
-!define INSTALLER_EXENAME "quark-win32-6.6.0Beta3.exe"
+!define INSTALLER_EXENAME "quark-win32-6.6.0Beta4.exe"
 !define PRODUCT_NAME "QuArK"
-!define PRODUCT_VERSION "6.6.0 Beta 3"
+!define PRODUCT_VERSION "6.6.0 Beta 4"
 !define PRODUCT_WEB_SITE "http://quark.sourceforge.net/"
-!define PRODUCT_WEB_FORUM "http://quark.sourceforge.net/forums/"     ; QuArK forum
+!define PRODUCT_WEB_FORUM "http://quark.sourceforge.net/forums/"
 !define PRODUCT_INFOBASE "http://quark.sourceforge.net/infobase/"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\QuArK.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
@@ -41,7 +41,7 @@ SetCompressor /SOLID lzma   ; We will use LZMA for best compression
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
 OutFile "${INSTALLER_EXENAME}"
-InstallDir "$PROGRAMFILES\QuArK 6.6.0 Beta 3"
+InstallDir "$PROGRAMFILES\QuArK 6.6.0 Beta 4"
 InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show
 ShowUnInstDetails show

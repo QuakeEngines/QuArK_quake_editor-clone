@@ -14,7 +14,7 @@ Dictionary of all strings used within the program
 
 
 Strings = {
-    0: "QuArK 6.6 Beta 3", #This is also used for version number checks between executable and Python scripts
+    0: "QuArK 6.6 Beta 4", #This is also used for version number checks between executable and Python scripts
     1: "  QuArK - Quake Army Knife      %s    by Armin Rigo     -  logo McKay & Brian",
 
     2: "&New %s",
@@ -1088,6 +1088,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.154  2010/12/11 22:29:33  danielpharos
+#Added CoD2 bsp file type.
+#
 #Revision 1.153  2010/10/16 22:50:17  danielpharos
 #Added experimental RMF file loading support; poly's only, no UV's or textures.
 #

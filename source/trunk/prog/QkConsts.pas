@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2010/04/16 21:48:00  danielpharos
+Added auto-Delphi-compiler version string selection, and moved compiler-string down a bit.
+
 Revision 1.3  2010/04/16 21:18:45  danielpharos
 Move some version-stuff about. quarkpy now also checks the minor version number.
 
@@ -43,8 +46,8 @@ uses SysUtils;
 
 const
   QuArKVersion            = 'QuArK 6.6';
-  QuArKMinorVersion       = 'Beta 3';
-  QuArKCopyright          = 'Copyright (C) 1996-2009 Armin Rigo and others';
+  QuArKMinorVersion       = 'Beta 4';
+  QuArKCopyright          = 'Copyright (C) 1996-2011 Armin Rigo and others';
 {$IFDEF CompiledWithDelphi1}
   QuArKUsedCompiler       = 'Delphi 1.0';
 {$ELSE}
@@ -74,7 +77,7 @@ const
 {$ENDIF}
 {$ENDIF}
 {$ENDIF}
-  QuArKCompileDate        = 40118;   //This is the compiled date
+  QuArKCompileDate        = 40674;   //This is the compiled date
   { Amount of days that have passed after 30 Dec 1899 (Delphi 2+).
     You can use EncodeDate(Year, Month, Day) to compute it, but this value
     really needs to be a constant, so put the resulting value in here.
