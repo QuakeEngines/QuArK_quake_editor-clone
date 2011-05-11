@@ -71,39 +71,40 @@ SKC_MAX_CHANNEL_CHARS = 32
 # A list of binary_formats to use based on a bone's jointType.
 # Examples for type 0-4 from MOHAA models\animal\dog\german_shepherd.skd
 # Examples for type 5-6 from MOHAA models\human\allied_airborne\airborne.skd
-# typedef enum {   x = looks right        84 = number of SKD_Bone header in bytes.
-# 0  JT_24BYTES1     = (ofsChannels) 108 - 84 (ofsValues) = 24/4bytes =  6f values, 3 = pos x,y,z, 3 = quat qx,qy,qz ????
+# typedef enum {   x = looks right         84 = number of SKD_Bone header in bytes.
+# 0  JT_24BYTES1     = (ofsChannels) 108 - 84 (ofsValues) = 24/4bytes =  6f values, 3 = pos x,y,z, 3 = quat qx,qy,qz (see if bone.jointType == 0: section below for usage)
 #                      bone values: (13.266192436218262, -0.0060352231375873089, 6.4365340222138911e-005, 1.0, 1.0, 1.0)
 #                      bone channels: ('Bip01 Neck rot\x00',)
 #                      bone refs: None
-# 1  JT_POSROT_SKC   = (ofsChannels)  96 - 84 (ofsValues) = 12/2bytes =  6h values, 3 = pos x,y,z, 3 = quat qx,qy,qz
-#                      bone values: (0, 16256, 0, 16256, 0, 16256)
-#                      bone channels: ('Bip01 rot\x00Bip01 pos\x00',) these look BACKWARDS, you CAN NOT have 0's for rot values!!!
+# 1  JT_POSROT_SKC   = (ofsChannels)  96 - 84 (ofsValues) = 12/4bytes =  3f values, 3 = quat qx,qy,qz (see elif bone.jointType == 1: section below for usage)
+#                      bone values: (1.0, 1.0, 1.0)
+#                      bone channels: ('Bip01 rot\x00Bip01 pos\x00',)
 #                      bone refs: None
-# 2? JT_40BYTES1     = (ofsChannels) 124 - 84 (ofsValues) = 40/4bytes = 10f values, unknown breakdown
+# 2? JT_40BYTES1     = (ofsChannels) 124 - 84 (ofsValues) = 40/4bytes = 10f values, 4 = quat qx,qy,qz,qw, 3 = pos x,y,z, 3 = quat qx,qy,qz (see elif bone.jointType == 2: section below for usage)
 #                      bone values: (0.81796324253082275, 0.56404381990432739, -0.10230085998773575, -0.048220913857221603,
 #                                    8.0932804848998785e-006, -3.153935722366441e-006, -5.1458311080932617, 1.0, 1.0, 1.0)
 #                      bone channels: None
 #                      bone refs: None
-# 3  JT_24BYTES2     = (ofsChannels) 108 - 84 (ofsValues) = 24/4bytes =  6f values, + ofsRefs has bone's name, channel has None, see example below:
-#                      3 = pos x,y,z, 3 = quat qx,qy,qz
+# 3  JT_24BYTES2     = (ofsChannels) 108 - 84 (ofsValues) = 24/4bytes =  6f values, + ofsRefs has another bone's name (not used at this time), channel has None, see example below:
+#                      3 = pos x,y,z, 3 = quat qx,qy,qz (see elif bone.jointType == 3: section below for usage)
 #                      bone values: (27.260543823242187, -1.0524528079258744e-005, -1.1960052688664291e-005, 1.0, 1.0, 1.0)
 #                      bone channels: None
 #                      bone refs: ('Bip01 R Thigh\x00',)
-# 4  JT_24BYTES3   x = (ofsChannels) 108 - 84 (ofsValues) = 24/2bytes = 12h values, + has an ofsRefs of another bone's name, see example below:
-#                      1st bone's channel data = x,qx,y,qy,z,qz then ref bone's data = x,qx,y,qy,z,qz
-#                      bone values: (-32595, 16771, 30473, -18922, 13960, 13813, 0, 16256, 0, 16256, 0, 16256)
-#                      bone channels: ('Bip01 R Foot rot\x00Bip01 R Foot pos\x00',) these look BACKWARDS, you CAN NOT have 0's for rot values!!!
+# 4  JT_24BYTES3   x = (ofsChannels) 108 - 84 (ofsValues) = 24/4bytes = 6f values, + ofsRefs has another bone's name (not used at this time)
+#                      3 = pos x,y,z, 3 = quat qx,qy,qz (see elif bone.jointType == 4: section below for usage)
+#                      bone values: (16.437829971313477, -2.24210293708893e-006, 1.8269793145009317e-006, 1.0, 1.0, 1.0)
+#                      bone channels: ('Bip01 R Foot rot\x00Bip01 R Foot pos\x00',)
 #                      bone refs: ('Bip01 R Thigh\x00',)
-# 5? JT_40BYTES2     = (ofsChannels) 124 - 84 (ofsValues) = 40/4bytes = 10f values, unknown breakdown ????
+# 5 JT_40BYTES2     = (ofsChannels) 124 - 84 (ofsValues) = 40/4bytes = 10f values,, + ofsRefs has another bone's name (used to replace bone's rotmatrix)
+#                      3 = jointWeight, Degrees?, unknown, 3 = pos x,y,z, 3 = quat qx,qy,qz, 1 = believe qw (see elif bone.jointType == 5: section below for usage)
 #                      bone values: (1.0, 180.0, 0.54000002145767212, 14.681717872619629, -1.238970810391038e-007, -1.0011821359512396e-005,
 #                                    1.0, 1.0, 1.0, 0.0)
 #                      bone channels: None
 #                      bone refs: ('Bip01 L UpperArm\x00',)
-# 6?  JT_28BYTES      = (ofsChannels) 112 - 84 (ofsValues) = 24/4bytes =  7f values, 3 = pos x,y,z, 4 = quat qx,qy,qz,qw ????
+# 6  JT_28BYTES      = (ofsChannels) 112 - 84 (ofsValues) = 24/4bytes =  7f values, 1 = jointWeight, 3 = pos x,y,z, 3 = quat qx,qy,qz (see elif bone.jointType == 6: section below for usage)
 #                      bone values: (0.5, 8.7047643661499023, -0.76852285861968994, -0.13475938141345978, 1.0, 1.0, 1.0)
 #                      bone channels: None
-#                      bone refs: ('helper Lshoulder\x00Bip01 L UpperArm\x00',)
+#                      bone refs: ('helper Lshoulder\x00Bip01 L UpperArm\x00',) 1st & 2nd bone rot values appear to be the same, but if 1st does not exist use 2nd, we do anyway.
 # } skdJointType_t;
 skdJointType = [
     "<3f3f",
@@ -285,7 +286,6 @@ class SKD_Surface:
         bonelist = editor.ModelComponentList['bonelist']
         bonevtxlist = editor.ModelComponentList[comp_name]['bonevtxlist']
         weightvtxlist = editor.ModelComponentList[comp_name]['weightvtxlist']
-        #m = quarkx.matrix((1.,0.,0.),(0.,0.,-1.),(0.,1.,0.)) # matrix to rotate 90 degs. on the X axis.
         m = quarkx.matrix((1.,0.,0.),(0.,1.,0.),(0.,0.,1.))
         for i in xrange(0, self.numVerts):
             skd_vert = SKD_Vertex()
@@ -676,8 +676,7 @@ class skd_obj:
                         tobj.logcon ("Bone " + str(i))
                         bone.dump()
 
-        # May not need this section, if not remove.
-        if self.version == 5: # MOHAA, WE ARE USING IT RIGHT NOW SO LEAVE IT IN.
+        if self.version == 5: # MOHAA
             #load the BaseFrame bones ****** QuArK basic, empty bones are created here.
             if logging == 1:
                 tobj.logcon ("")
@@ -689,7 +688,6 @@ class skd_obj:
                 tobj.logcon ("No bones to load into editor")
                 tobj.logcon ("")
             else:
-              #  scale = 1.0 / 64.0 # Applies to POS to avoid division by zero errors.
                 scale = 1.0 / 1024.0 # Applies to POS to avoid division by zero errors.
                 factor = 1.0 / 32767.0 # Applies to QUAT to convert rotation values into quaternion-units
                 bonelist = editor.ModelComponentList['bonelist']
@@ -784,14 +782,14 @@ class skd_obj:
                             quat = [qx, qy, qz, qw]
                             tempmatrix_rotFK = quaternion2matrix(quat)
                     elif bone.jointType == 5:   #JT_40BYTES2
-                        #bv[0]?
+                        #bv[0]? jointWeight
                         #bv[1]? Degrees?
-                        #bv[2]?
+                        #bv[2]? unknown
                         bv = bone.values
                         jointWeight = bv[0]
                         pos = (bv[3], bv[4], bv[5])
                         qx = 0.0
-                        qy = (bv[1] / 180.0) #FIXME: Is this right?
+                        qy = (bv[1] / 180.0)
                         qz = 0.0
                         qw = CalcQW(qx, qy, qz)
                         quat = [qx, qy, qz, qw]
@@ -1058,7 +1056,8 @@ class SKC_Frame:
                     if (jointType == 3) or (jointType == 4):
                         rot = parent_rot
                     else:
-                        rot = parent_rot * rot ### ankle helper bones rot gets changed here.
+                        rot = parent_rot * rot
+                ### ankle helper bones rot gets changed here with reference bone's rot and processed correctly.
                 if (jointType == 5) or (jointType == 6):
                     if bone.name.find("ankle") == -1:
                         if bonelist[bone.name]['frames']['baseframe:mf'].has_key('SKD_refs'):
@@ -1212,7 +1211,7 @@ class skc_obj:
 
         # SKC ident = 1312901971 or  "SKAN" version = 13
         if self.ident != "SKAN": # Not a valid .skc file.
-            quarkx.beep() # Makes the computer "Beep" once if a file is not valid. Add more info to message.
+            quarkx.beep() # Makes the computer "Beep" once if a file is not valid.
             quarkx.msgbox("Invalid model.\nEditor can not import it.\n\nSKC ident = SKAN version = 13\n\nFile has:\nident = " + self.ident + " version = " + str(self.version), quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
             return None
 
@@ -1245,9 +1244,10 @@ class skc_obj:
             temp_data = file.read(struct.calcsize(binary_format))
             data = struct.unpack(binary_format, temp_data)
             data = data[0].replace("\x00", "")
-            #print "------------------------"
-            #print "line 1139 channel: ", i
-            #print data
+            #if logging == 1:
+                #tobj.logcon ("------------------------")
+                #tobj.logcon ("channel " + str(i) + ":")
+                #tobj.logcon (str(data))
             if data.endswith(" pos"):
                 name = data.rsplit(" pos", 1)[0]
                 if not self.QuArK_bones_Name2Indexes.has_key(name):
@@ -1511,7 +1511,7 @@ def quaternion_normalize(q):
 # bones = A list of all the  bones in the QuArK's "Skeleton:bg" folder, in their proper tree-view order, to get our current bones from.
 def load_skc(filename, Components, QuArK_bones, Exist_Comps, anim_name):
     if len(QuArK_bones) == 0:
-        quarkx.beep() # Makes the computer "Beep" once if a file is not valid. Add more info to message.
+        quarkx.beep() # Makes the computer "Beep" once if a file is not valid.
         quarkx.msgbox("Could not apply animation.\nNo bones for the mesh file exist.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
         return
 
@@ -1551,7 +1551,7 @@ def load_skd(filename):
 #########################################
 
 def import_SK_model(filename, ComponentList=[], QuArK_bones=[], Exist_Comps=[], anim_name=None):
-    if filename.endswith(".skd"): # Calls to load the .skd model file.
+    if filename.endswith(".skd"): # Calls to load the .skd model mesh file.
         ComponentList, QuArK_bone_list, existing_bones, message = load_skd(filename)
         if ComponentList == []:
             return None
@@ -1614,7 +1614,7 @@ def loadmodel(root, filename, gamename):
                     base_file = model_path[0] + "\\" + file
                     break
             if base_file is None:
-                quarkx.beep() # Makes the computer "Beep" once if a file is not valid. Add more info to message.
+                quarkx.beep() # Makes the computer "Beep" once if a file is not valid.
                 quarkx.msgbox(".skd base mesh file not found !\n\nYou must have this animation's .skd file in:\n    " + model_path[0] + "\n\nbefore loading any .skc files from that same folder.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
                 try:
                     progressbar.close()
@@ -1630,7 +1630,7 @@ def loadmodel(root, filename, gamename):
         ComponentList, QuArK_bone_list, existing_bones, message = import_SK_model(base_file) # Calls to load the .skd file before the .skc file.
 
     if ComponentList is None:
-        quarkx.beep() # Makes the computer "Beep" once if a file is not valid. Add more info to message.
+        quarkx.beep() # Makes the computer "Beep" once if a file is not valid.
         quarkx.msgbox("Invalid file.\nEditor can not import it.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
         try:
             progressbar.close()
@@ -1742,6 +1742,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".skd MOHAA Importer-mesh", ".skd file", "*
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.10  2011/05/10 20:12:22  cdunde
+# Final code corrections for animation.
+#
 # Revision 1.9  2011/05/08 06:08:38  cdunde
 # Update for MoHAA animation importing.
 #
