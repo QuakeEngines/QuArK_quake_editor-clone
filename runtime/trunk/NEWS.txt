@@ -14,6 +14,8 @@ $Id$
 
 6.6.0 Beta 4
 ============
+* [cdunde/DanielPharos]: Started support for Kingpin MDX model format with animation and skin support.
+
 * [cdunde/DanielPharos]: Added Half-Life 2 importer animation support with bone, attachment and bbox movement.
 
 * [cdunde/DanielPharos]: Updated Model Editor Camera Position system with Hotkeys to take quick shots of both Editor and Floating 3D views,
