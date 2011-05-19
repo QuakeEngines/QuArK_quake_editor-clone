@@ -500,48 +500,49 @@ def load_textures(mdx, message):
         tobj.logcon ("#####################################################################")
     if int(mdx.num_skins) > 0:
         for i in xrange(0,mdx.num_skins):
+            # Only writes to the console here.
+           # mdx.skins[i].dump() # Comment out later, just prints to the console what the skin(s) are.
             if logging == 1:
                 tobj.logcon (mdx.skins[i].name)
             skinname = mdx.skins[i].name.split('/')
+            images = []
             if os.path.exists(os.getcwd() + "\\" + skinname[len(skinname)-1]):
                 images = [os.getcwd() + "\\" + skinname[len(skinname)-1]]
-            else:
-                #Probably skin not found; let's try the player-model variations
-                images = []
-                if skinname[-1].find("upper") != -1:
-                    for filename in os.listdir(os.getcwd()):
-                        if filename.startswith("body") and (filename.endswith(".tga") or filename.endswith(".TGA")):
-                            images += [os.getcwd() + "\\" + filename]
-                elif skinname[-1].find("head") != -1:
-                    for filename in os.listdir(os.getcwd()):
-                        if filename.startswith("head") and (filename.endswith(".tga") or filename.endswith(".TGA")):
-                            images += [os.getcwd() + "\\" + filename]
-                elif skinname[-1].find("lower") != -1:
-                    for filename in os.listdir(os.getcwd()):
-                        if filename.startswith("legs") and (filename.endswith(".tga") or filename.endswith(".TGA")):
-                            images += [os.getcwd() + "\\" + filename]
+        if len(images) == 0:
+            #Probably skin not found; let's try the player-model variations
+            if skinname[-1].find("upper") != -1:
+                for filename in os.listdir(os.getcwd()):
+                    if filename.startswith("body") and (filename.endswith(".tga") or filename.endswith(".TGA")):
+                        images += [os.getcwd() + "\\" + filename]
+            elif skinname[-1].find("head") != -1:
+                for filename in os.listdir(os.getcwd()):
+                    if filename.startswith("head") and (filename.endswith(".tga") or filename.endswith(".TGA")):
+                        images += [os.getcwd() + "\\" + filename]
+            elif skinname[-1].find("lower") != -1:
+                for filename in os.listdir(os.getcwd()):
+                    if filename.startswith("legs") and (filename.endswith(".tga") or filename.endswith(".TGA")):
+                        images += [os.getcwd() + "\\" + filename]
 
-            if len(images) == 0:
+        if len(images) == 0:
+            for i in xrange(0,mdx.num_skins):
                 message = message + "Missing skin name: " + mdx.skins[i].name + "\r\n"
 
-            for j in range(len(images)):
-                image = quarkx.openfileobj(images[j])
-                if len(images) > 1:
-                    skinname_temp = mdx.skins[i].name.rsplit(".",1)
-                    skinname_temp = skinname_temp[0] + "_" + str(j+1) + "." + skinname_temp[1]
-                    skin = quarkx.newobj(skinname_temp)
-                else:
-                    skin = quarkx.newobj(mdx.skins[i].name)
-                skin['Image1'] = image.dictspec['Image1']
-                try:
-                    skin['Pal'] = image.dictspec['Pal']
-                except:
-                    pass
-                skin['Size'] = image.dictspec['Size']
-                skingroup.appenditem(skin)
-                skinsize = (mdx.skin_width, mdx.skin_height) # Used for QuArK. 
-            # Only writes to the console here.
-          #  mdx.skins[i].dump() # Comment out later, just prints to the console what the skin(s) are.
+        for j in range(len(images)):
+            image = quarkx.openfileobj(images[j])
+            if len(images) > 1:
+                skinname_temp = mdx.skins[i].name.rsplit(".",1)
+                skinname_temp = skinname_temp[0] + "_" + str(j+1) + "." + skinname_temp[1]
+                skin = quarkx.newobj(skinname_temp)
+            else:
+                skin = quarkx.newobj(mdx.skins[i].name)
+            skin['Image1'] = image.dictspec['Image1']
+            try:
+                skin['Pal'] = image.dictspec['Pal']
+            except:
+                pass
+            skin['Size'] = image.dictspec['Size']
+            skingroup.appenditem(skin)
+            skinsize = (mdx.skin_width, mdx.skin_height) # Used for QuArK.
 
         return skinsize, skingroup, message # Used for QuArK.
     else:
@@ -730,6 +731,10 @@ quarkpy.qmdlbase.RegisterMdlImporter(".mdx Kingpin Importer", ".mdx file", "*.md
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.3  2011/05/19 01:35:16  cdunde
+# Update to import model by folder and file name
+# and add instructional message for missing textures.
+#
 # Revision 1.2  2011/05/16 00:10:06  cdunde
 # Update by Daniel Pharos to import separate model sections as multi components.
 #
