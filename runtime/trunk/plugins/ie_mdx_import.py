@@ -434,8 +434,11 @@ class mdx_obj:
         for i in xrange(0, self.num_SubObjects):
             Component = ComponentList[i]
             Tris = ''
-            TexWidth = self.skin_width
-            TexHeight = self.skin_height
+            # Don't use these, sometimes they are wrong. Use the actual imported texture skinsize instead.
+            #TexWidth = self.skin_width
+            #TexHeight = self.skin_height
+            TexWidth = skinsize[0]
+            TexHeight = skinsize[1]
             for j in xrange(0, len(faces[i])):
                 current_face = faces[i][j]
                 if logging == 1:
@@ -542,11 +545,12 @@ def load_textures(mdx, message):
                 pass
             skin['Size'] = image.dictspec['Size']
             skingroup.appenditem(skin)
-            skinsize = (mdx.skin_width, mdx.skin_height) # Used for QuArK.
+            if j == 0: # Only use the 1st one to set this.
+                skinsize = image.dictspec['Size'] # Used for QuArK.
 
-        return skinsize, skingroup, message # Used for QuArK.
+        return skinsize, skingroup, message
     else:
-        return skinsize, skingroup, message # Used for QuArK.
+        return skinsize, skingroup, message
 
 def animate_mdx(mdx): # The Frames Group is made here & returned to be added to the Component.
     global progressbar, tobj, logging
@@ -731,6 +735,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".mdx Kingpin Importer", ".mdx file", "*.md
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.4  2011/05/19 06:47:54  cdunde
+# To stop duplicate skin textures importing under another name.
+#
 # Revision 1.3  2011/05/19 01:35:16  cdunde
 # Update to import model by folder and file name
 # and add instructional message for missing textures.
