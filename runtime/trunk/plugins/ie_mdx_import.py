@@ -365,13 +365,18 @@ class mdx_obj:
         Strings[2454] = name + "\n" + Strings[2454]
         progressbar = quarkx.progressbar(2454, (self.num_faces * self.num_SubObjects) + self.num_frames)
 
-        skinsize, skingroup = load_textures(self) # Calls here to make the Skins Group.
+        message = "" # An empty string to add needed messages to.
+        skinsize, skingroup, message = load_textures(self, message) # Calls here to make the Skins Group.
 
         # Now we can name our component that will be imported.
         ComponentList = []
-        for i in xrange(0, self.num_SubObjects):
-            Component = quarkx.newobj(name + '_' + str(i) + ':mc')
+        if self.num_SubObjects < 2:
+            Component = quarkx.newobj(name + ':mc')
             ComponentList = ComponentList + [Component]
+        else:
+            for i in xrange(0, self.num_SubObjects):
+                Component = quarkx.newobj(name + '_' + str(i+1) + ':mc')
+                ComponentList = ComponentList + [Component]
 
         ######### Make the faces for QuArK, the 'component.triangles', which is also the 'Tris'.
         if logging == 1:
@@ -445,7 +450,7 @@ class mdx_obj:
                 progressbar.progress()
             Component['Tris'] = Tris
 
-        return self, ComponentList, skinsize, skingroup
+        return self, ComponentList, skinsize, skingroup, message
 
     def dump (self):
         global tobj, logging
@@ -482,7 +487,7 @@ class mdx_obj:
 ######################################################
 # Import functions
 ######################################################
-def load_textures(mdx):
+def load_textures(mdx, message):
     global tobj, logging
     # Checks if the model has textures specified with it.
     skinsize = (256, 256)
@@ -517,7 +522,7 @@ def load_textures(mdx):
                             images += [os.getcwd() + "\\" + filename]
 
             if len(images) == 0:
-                raise "Missing skins name: " + mdx.skins[i].name
+                message = message + "Missing skin name: " + mdx.skins[i].name + "\r\n"
 
             for j in range(len(images)):
                 image = quarkx.openfileobj(images[j])
@@ -538,9 +543,9 @@ def load_textures(mdx):
             # Only writes to the console here.
           #  mdx.skins[i].dump() # Comment out later, just prints to the console what the skin(s) are.
 
-        return skinsize, skingroup # Used for QuArK.
+        return skinsize, skingroup, message # Used for QuArK.
     else:
-        return skinsize, skingroup # Used for QuArK.
+        return skinsize, skingroup, message # Used for QuArK.
 
 def animate_mdx(mdx): # The Frames Group is made here & returned to be added to the Component.
     global progressbar, tobj, logging
@@ -578,16 +583,20 @@ def animate_mdx(mdx): # The Frames Group is made here & returned to be added to 
     return framesgroup
 
 
-def load_mdx(mdx_filename, name):
+def load_mdx(mdx_filename):
     global progressbar, tobj, logging, Strings
     #read the file in
     file = open(mdx_filename,"rb")
     mdx = mdx_obj()
-    MODEL, ComponentList, skinsize, skingroup = mdx.load(file, name)
+    name = mdx_filename.replace("\\", "/")
+    name = name.split(".")[0]
+    name = name.split("/")
+    name = name[len(name)-2] + "_" + name[len(name)-1]
+    MODEL, ComponentList, skinsize, skingroup, message = mdx.load(file, name)
 
     file.close()
     if MODEL is None:
-        return None, None, None, None
+        return None, None, None, None, message
 
     framesgroup = animate_mdx(mdx) # Calls here to make the Frames Group.
     
@@ -597,7 +606,7 @@ def load_mdx(mdx_filename, name):
     if logging == 1:
         mdx.dump() # Writes the file Header last to the log for comparison reasons.
 
-    return ComponentList, skinsize, skingroup, framesgroup
+    return ComponentList, skinsize, skingroup, framesgroup, message
 
 
 ########################
@@ -605,32 +614,11 @@ def load_mdx(mdx_filename, name):
 ########################
 
 def import_mdx_model(editor, mdx_filename):
-    # Now we start creating our Import Component.
-    # But first we check for any other "Import Component"s,
-    # if so we name this one 1 more then the largest number.
-    name = "None"
-    comparenbr = 0
-    for item in editor.Root.dictitems:
-        if editor.Root.dictitems[item].shortname.startswith('Import Component'):
-            getnbr = editor.Root.dictitems[item].shortname
-            getnbr = getnbr.replace('Import Component', '')
-            getnbr = getnbr.split("_",1)[0]
-            if getnbr == "":
-               nbr = 0
-            else:
-                nbr = int(getnbr)
-            if nbr > comparenbr:
-                comparenbr = nbr
-            nbr = comparenbr + 1
-            name = "Import Component " + str(nbr)
-    if name != "None":
-        pass
-    else:
-        name = "Import Component 1"
+    # Now we call to Import our Component(s).
 
-    ComponentList, skinsize, skingroup, framesgroup = load_mdx(mdx_filename, name) # Loads the model.
+    ComponentList, skinsize, skingroup, framesgroup, message = load_mdx(mdx_filename) # Loads the model.
     if ComponentList is None:
-        return None
+        return None, message
 
     sdogroup = quarkx.newobj('SDO:sdo')
     for Component in ComponentList:
@@ -642,7 +630,7 @@ def import_mdx_model(editor, mdx_filename):
         Component.appenditem(skingroup.copy())
         Component.appenditem(framesgroup.copy())
 
-    return ComponentList
+    return ComponentList, message
 
 
 def loadmodel(root, filename, gamename, nomessage=0):
@@ -674,7 +662,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
     logging, tobj, starttime = ie_utils.default_start_logging(importername, textlog, filename, "IM") ### Use "EX" for exporter text, "IM" for importer text.
 
     ### Lines below here loads the model into the opened editor's current model.
-    ComponentList = import_mdx_model(editor, filename)
+    ComponentList, message = import_mdx_model(editor, filename)
 
     if ComponentList is None:
         quarkx.beep() # Makes the computer "Beep" once if a file is not valid. Add more info to message.
@@ -703,7 +691,10 @@ def loadmodel(root, filename, gamename, nomessage=0):
 
         # This needs to be done for each component or bones will not work if used in the editor.
         quarkpy.mdlutils.make_tristodraw_dict(editor, Component)
-        editor.ok(undo, Component.shortname + " created")
+        if len(ComponentList) == 1:
+            editor.ok(undo, Component.shortname + " created")
+        else:
+            editor.ok(undo, str(len(ComponentList)) + " components created")
 
         comp = editor.Root.currentcomponent
         skins = comp.findallsubitems("", ':sg')      # Gets the skin group.
@@ -721,6 +712,16 @@ def loadmodel(root, filename, gamename, nomessage=0):
     else:
         quarkpy.mdlbtns.updateUsedTextures()
 
+    if message != "":
+        message = message + "================================\r\n"
+        message = message + "You need to find and supply the proper texture for the\r\n"
+        message = message + "imported components, see missing textures above.\r\n"
+        message = message + "It may be a texture in another model's folder.\r\n"
+        message = message + "You can import it by selecting one of the component 'Skins' folder,\r\n"
+        message = message + "open it's 'Specifics/Args' page and click on the 'import skin' icon button.\r\n"
+        message = message + "Once imported copy that skin to all the other imported component 'Skins' folders."
+        quarkx.textbox("WARNING", message, quarkpy.qutils.MT_WARNING)
+
 ### To register this Python plugin and put it on the importers menu.
 import quarkpy.qmdlbase
 import ie_mdx_import # This imports itself to be passed along so it can be used in mdlmgr.py later.
@@ -729,6 +730,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".mdx Kingpin Importer", ".mdx file", "*.md
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.2  2011/05/16 00:10:06  cdunde
+# Update by Daniel Pharos to import separate model sections as multi components.
+#
 # Revision 1.1  2011/05/15 18:15:48  danielpharos
 # Started support for Kingpin MDX model format with animation and skin support. Credit for this goes to cdunde.
 #
