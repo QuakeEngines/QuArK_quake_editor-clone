@@ -1,0 +1,29 @@
+QQRKSRC1
+// EF2 textures file for Quark
+
+//$Header$
+// ----------- REVISION HISTORY ------------
+//$Log$
+//Revision 1.1  2008/03/28 19:05:00  cdunde
+//Cleaned up, fixed if needed and brought into sync with all QuArK addons.
+//
+//
+
+{
+  QuArKProtected = "1"
+  Description = "EF2 Textures"
+
+  Textures.qtx =
+  {
+    Toolbox = "Texture Browser..."
+    Root = "EF2 Textures.qtxfolder"
+    HTML = "intro.texturebrowser.html"
+    EF2 Textures.qtxfolder =
+    {
+      Dynamically Found.osfolder =
+      {
+        path = "base"
+      }
+    }
+  }
+}

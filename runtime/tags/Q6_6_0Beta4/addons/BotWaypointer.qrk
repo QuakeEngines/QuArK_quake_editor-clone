@@ -1,0 +1,43 @@
+QQRKSRC1
+{
+//$Header$
+// ----------- REVISION HISTORY ------------
+//$Log$
+//Revision 1.1  2002/08/02 19:32:39  decker_dk
+//QuArK data addon for the Bot Waypointer plugin.
+//
+
+  Description = "Bot Waypointer"
+
+  Bot Waypointer.qtx =
+  {
+    ToolBox = "New map items..."
+    Root = "Bot Waypointer.qtxfolder"
+
+    Bot Waypointer.qtxfolder =
+    {
+        Bot Waypointer:d =
+        {
+          ;desc = "Edit bot waypoint files"
+          macro = "dup botwaypointer"
+        }
+    }
+  }
+
+  Entity forms.qctx =
+  {
+    dup botwaypointer:form =
+    {
+      macro:    = {Typ="ESR" Hint="This one is not for you, Saruman"}
+      loadfile: = {Typ="P" Cap="Load..." Txt=" " Macro="botwaypointer_loadfile" Hint="Push to choose a waypoint file to load."}
+      savefile: = {Typ="P" Cap="Save..." Txt=" " Macro="botwaypointer_savefile" Hint="Push to save waypoints to a file."}
+    }
+    dup botwaypointerpoint:form =
+    {
+      macro:      = {Typ="ESR" Hint="This one is not for you, Saruman"}
+      bbox        = '-16 -16 -4 16 16 4'
+      targetname: = {Hint="BotWaypoint Targetname"}
+      origin:     = {Hint="Origin of this waypoint"}
+    }
+  }
+}
