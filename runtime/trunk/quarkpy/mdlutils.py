@@ -600,7 +600,24 @@ def KeyframeLinearInterpolation(editor, sellistPerComp, IPF, frameindex1, framei
             includebones = []
             bones2move = []
             bonelist = editor.ModelComponentList['bonelist']
+            keys = bonelist.keys()
             for bone in allbones:
+                if not bone.name in keys:
+                    bone_comp = bone.dictspec['component']
+                    bone_frames = editor.Root.dictitems[bone_comp].dictitems['Frames:fg'].subitems
+                    bonelist[bone.name] = {}
+                    bonelist[bone.name]['frames'] = {}
+                    for frame in bone_frames:
+                        bonelist[bone.name]['frames'][frame.name] = {}
+                        vertices = frame.vertices
+                        vtxlist = bone.vtx_pos[bone_comp]
+                        vtxpos = quarkx.vect(0.0, 0.0, 0.0)
+                        for vtx in vtxlist:
+                            vtxpos = vtxpos + vertices[vtx]
+                        vtxpos = vtxpos/ float(len(vtxlist))
+                        pos = vtxpos + quarkx.vect(bone.dictspec['draw_offset'])
+                        bonelist[bone.name]['frames'][frame.name]['position'] = pos.tuple
+                        bonelist[bone.name]['frames'][frame.name]['rotmatrix'] = bone.rotmatrix.tuple
                 if bonelist[bone.name]['frames'].has_key(frames[frameindex1].name) and bonelist[bone.name]['frames'].has_key(frames[frameindex2].name):
                     if (str(bonelist[bone.name]['frames'][frames[frameindex1].name]['position']) != str(bonelist[bone.name]['frames'][frames[frameindex2].name]['position'])) or (str(bonelist[bone.name]['frames'][frames[frameindex1].name]['rotmatrix']) != str(bonelist[bone.name]['frames'][frames[frameindex2].name]['rotmatrix'])):
                         bones2move = bones2move + [bone.name]
@@ -4787,6 +4804,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.158  2011/05/22 09:13:15  cdunde
+#Added bone and bounding boxes support to Keyframe Linear Interpolation function.
+#
 #Revision 1.157  2011/02/21 20:18:29  cdunde
 #Removed redundant code and used new frame index dectspec to speed things up and Depreciation Alert fixed.
 #Also fixed errors and skins not showing when making new components from others.
