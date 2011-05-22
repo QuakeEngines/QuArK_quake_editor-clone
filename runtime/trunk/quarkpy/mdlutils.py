@@ -586,12 +586,26 @@ def fixUpVertexNos(tris, index):
 def KeyframeLinearInterpolation(editor, sellistPerComp, IPF, frameindex1, frameindex2):
     undo = quarkx.action()
     msg = str(int(round(1/IPF)-1)) + " key frames added"
+    check4bones = allbones = bones2move = None
     for comp in sellistPerComp:
         if comp[0].type == ":tag":
             parent = comp[0]
         else:
             parent = comp[0].dictitems['Frames:fg']
+            if allbones is None:
+                allbones = editor.Root.dictitems['Skeleton:bg'].findallsubitems("", ':bone')
         frames = parent.subitems
+        if check4bones is None and allbones is not None and len(allbones) != 0:
+            check4bones = 1
+            includebones = []
+            bones2move = []
+            bonelist = editor.ModelComponentList['bonelist']
+            for bone in allbones:
+                if bonelist[bone.name]['frames'].has_key(frames[frameindex1].name) and bonelist[bone.name]['frames'].has_key(frames[frameindex2].name):
+                    if (str(bonelist[bone.name]['frames'][frames[frameindex1].name]['position']) != str(bonelist[bone.name]['frames'][frames[frameindex2].name]['position'])) or (str(bonelist[bone.name]['frames'][frames[frameindex1].name]['rotmatrix']) != str(bonelist[bone.name]['frames'][frames[frameindex2].name]['rotmatrix'])):
+                        bones2move = bones2move + [bone.name]
+                    else:
+                        includebones = includebones + [bone.name]
         insertbefore = comp[1][1]
         Factor=0.0
         PrevFrame = comp[1][0].copy()
@@ -620,6 +634,25 @@ def KeyframeLinearInterpolation(editor, sellistPerComp, IPF, frameindex1, framei
                     pos = (OldPos * (1.0 - ReducedFactor)) + (NewPos * ReducedFactor)
                     newvertices = newvertices + [pos]
                 newframe.vertices = newvertices
+                if includebones is not None:
+                    for bone in includebones:
+                        OldPos = bonelist[bone]['frames'][PrevFrame.name]['position']
+                        OldRot = bonelist[bone]['frames'][PrevFrame.name]['rotmatrix']
+                        bonelist[bone]['frames'][newframe.name] = {}
+                        bonelist[bone]['frames'][newframe.name]['position'] = OldPos
+                        bonelist[bone]['frames'][newframe.name]['rotmatrix'] = OldRot
+                if bones2move is not None:
+                    for bone in bones2move:
+                        OldPos = quarkx.vect(bonelist[bone]['frames'][PrevFrame.name]['position'])
+                        OldRot = quarkx.matrix(bonelist[bone]['frames'][PrevFrame.name]['rotmatrix'])
+                        NewPos = quarkx.vect(bonelist[bone]['frames'][NextFrame.name]['position'])
+                        NewRot = quarkx.matrix(bonelist[bone]['frames'][NextFrame.name]['rotmatrix'])
+                        pos = (OldPos * (1.0 - ReducedFactor)) + (NewPos * ReducedFactor)
+                        rot = (OldRot * (1.0 - ReducedFactor)) + (NewRot * ReducedFactor)
+                        bonelist[bone]['frames'][newframe.name] = {}
+                        bonelist[bone]['frames'][newframe.name]['position'] = pos.tuple
+                        bonelist[bone]['frames'][newframe.name]['rotmatrix'] = rot.tuple
+                        
             undo.put(parent, newframe, insertbefore)
     editor.ok(undo, msg)
 
@@ -4754,6 +4787,10 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.157  2011/02/21 20:18:29  cdunde
+#Removed redundant code and used new frame index dectspec to speed things up and Depreciation Alert fixed.
+#Also fixed errors and skins not showing when making new components from others.
+#
 #Revision 1.156  2011/02/11 19:46:25  cdunde
 #Fixed broken mesh vertex merging function.
 #
