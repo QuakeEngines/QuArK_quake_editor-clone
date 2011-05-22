@@ -12,6 +12,10 @@ $Id$
        #####
         #####       Quake Army Knife 6.6 Changelog
 
+6.6.0 Beta 5
+============
+* [cdunde/DanielPharos]: Model editor, Added bone and bounding boxes support to Keyframe Linear Interpolation function.
+
 6.6.0 Beta 4
 ============
 * [cdunde/DanielPharos]: Started support for Kingpin MDX model format with animation and skin support.
