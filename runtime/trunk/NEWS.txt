@@ -16,6 +16,10 @@ $Id$
 ============
 * [cdunde/DanielPharos]: Model editor, Added bone and bounding boxes support to Keyframe Linear Interpolation function.
 
+* [cdunde]: Add support for BBoxes and updated the Kingpin importer to process its BBoxes.
+
+* [cdunde]: Revamped Bounding Box system for more flexibility with model formats that do not have bones, only single or multi components.
+
 6.6.0 Beta 4
 ============
 * [cdunde/DanielPharos]: Started support for Kingpin MDX model format with animation and skin support.
