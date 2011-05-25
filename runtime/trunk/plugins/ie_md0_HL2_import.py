@@ -815,7 +815,8 @@ class HL2_HitBox:
                     count += 1
             if count != 0:
                 self.poly.shortname = self.poly.shortname + str(count)
-            bboxlist[self.poly.name] = bbox
+            bboxlist[self.poly.name] = {}
+            bboxlist[self.poly.name]['size'] = bbox
             bboxgroup.appenditem(self.poly)
             file.seek(CurOffset, 0) # Reset the file offset pointer back to where it should be now.
 
@@ -5244,6 +5245,9 @@ def UIImportDialog(MDL, file, editor, filename, ComponentList, QuArK_bones, hitb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.9  2011/04/07 19:07:37  cdunde
+# Update to change all print statements over to logging system.
+#
 # Revision 1.8  2011/04/03 08:40:15  cdunde
 # Added code for misuse of upper and lower case item name changing.
 #

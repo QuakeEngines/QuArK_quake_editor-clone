@@ -1498,8 +1498,9 @@ def UpdateBBoxList(editor, newpoly, count=None):
             poly.appenditem(face)
 
         bbox = quarkx.boundingboxof([poly])
-
-        bboxlist[newpoly.name] = [bbox[0].tuple, bbox[1].tuple]
+        if not bboxlist.has_key(newpoly.name):
+            bboxlist[newpoly.name] = {}
+        bboxlist[newpoly.name]['size'] = [bbox[0].tuple, bbox[1].tuple]
 
         return poly # DO NOT move outside to combine calls, will break dragging of poly in editor.
 
@@ -1510,7 +1511,15 @@ def UpdateBBoxList(editor, newpoly, count=None):
         # Updates the bboxlist.
         poly = newpoly
         bbox = quarkx.boundingboxof([poly])
-        bboxlist[poly.name] = [bbox[0].tuple, bbox[1].tuple]
+        if not bboxlist.has_key(poly.name):
+            bboxlist[poly.name] = {}
+            bboxlist[poly.name]['size'] = []
+        if bboxlist[poly.name].has_key('size'):
+            bboxlist[poly.name]['size'] = [bbox[0].tuple, bbox[1].tuple]
+        elif bboxlist[poly.name].has_key('vtx_list'):
+            pass # still needs to be setup
+        elif bboxlist[poly.name].has_key('frames'):
+            pass # still needs to be setup
 
         return poly # DO NOT move outside to combine calls, will break dragging of poly in editor.
 
@@ -1649,9 +1658,26 @@ def DrawBBoxes(editor, explorer, comp):
                             bone_data = bonelist[bonename]
                             bpos = quarkx.vect(bone_data['frames'][bonelist_frame_name]['position'])
                             brot = quarkx.matrix(bone_data['frames'][bonelist_frame_name]['rotmatrix'])
-                            bbox = bboxlist[poly.name]
+                            bbox = bboxlist[poly.name]['size']
                             UpdateBBoxPoly(poly, bpos, brot, bbox)
                             found_frame = 1
+                    elif assigned2.endswith(":mc"):
+                        if bboxlist.has_key(poly.name):
+                            pass
+                        else:
+                            continue
+                        found_dict = None
+                        if bboxlist[poly.name].has_key('size'):
+                            bpos = quarkx.vect(0.,0.,0.)
+                            brot = quarkx.matrix((1.,0.,0.),(0.,1.,0.),(0.,0.,1.))
+                            frame_verts = Root.dictitems[assigned2].dictitems['Frames:fg'].dictitems[frame_name].vertices
+                            bbox = quarkx.boundingboxof(frame_verts)
+                            bbox = [bbox[0].tuple, bbox[1].tuple]
+                            UpdateBBoxPoly(poly, bpos, brot, bbox)
+                        elif bboxlist[poly.name].has_key('vtx_list'):
+                            pass # still needs to be setup
+                        elif bboxlist[poly.name].has_key('frames'):
+                            pass # still needs to be setup
 
 #
 # Creates a QuArK Internal Group Object which consist of QuArK internal Poly Objects
@@ -4804,6 +4830,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.159  2011/05/22 22:39:31  cdunde
+#Change to allow new QuArK bones assigned vertexes to use Keyframe function.
+#
 #Revision 1.158  2011/05/22 09:13:15  cdunde
 #Added bone and bounding boxes support to Keyframe Linear Interpolation function.
 #

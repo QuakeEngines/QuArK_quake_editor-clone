@@ -1703,7 +1703,8 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
                 editor.ModelComponentList['bonelist'][new_bone.name] = bonedata
                 if self.hitboxes.has_key(mdlbone):
                     bboxname = new_bone.name.replace(":bone", ":p")
-                    editor.ModelComponentList['bboxlist'][bboxname] = self.hitboxes[mdlbone]
+                    editor.ModelComponentList['bboxlist'][bboxname] = {}
+                    editor.ModelComponentList['bboxlist'][bboxname]['size'] = self.hitboxes[mdlbone]
 
         # load the meshes triangles data
         byte_count = 0
@@ -2259,7 +2260,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
                 bone_data = bonelist[bonename]
                 bpos = quarkx.vect(bone_data['frames'][frame_name]['position'])
                 brot = quarkx.matrix(bone_data['frames'][frame_name]['rotmatrix'])
-                bbox = bboxlist[bboxname]
+                bbox = bboxlist[bboxname]['size']
                 p = MakePoly(bonename, bpos, brot, bbox)
                 bboxgroup.appenditem(p)
 
@@ -2275,7 +2276,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
                 bone_data = bonelist[bonename]
                 bpos = quarkx.vect(bone_data['frames'][frame_name]['position'])
                 brot = quarkx.matrix(bone_data['frames'][frame_name]['rotmatrix'])
-                bbox = bboxlist[bboxname]
+                bbox = bboxlist[bboxname]['size']
                 p = MakePoly(bonename, bpos, brot, bbox)
                 bboxgroup.appenditem(p)
 
@@ -2373,6 +2374,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".mdl Half-Life1 Importer", ".mdl file", "*
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.4  2011/03/13 00:41:47  cdunde
+# Updating fixed for the Model Editor of the Texture Browser's Used Textures folder.
+#
 # Revision 1.3  2011/03/10 20:56:39  cdunde
 # Updating of Used Textures in the Model Editor Texture Browser for all imported skin textures
 # and allow bones and Skeleton folder to be placed in Userdata panel for reuse with other models.

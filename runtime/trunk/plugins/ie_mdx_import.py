@@ -178,6 +178,31 @@ class glCommandVertex_t:
         print "vertexIndex: ",self.vertexIndex
         print ""
 
+class BBox_t:
+    min=(0.,0.,0.)
+    max=(0.,0.,0.)
+
+    binary_format="<6f" #little-endian (<), 6 floats
+
+    def __init__(self):
+        self.min=(0.,0.,0.)
+        self.max=(0.,0.,0.)
+
+    def load (self, file):
+        # file is the model file & full path, ex: C:\Kingpin\main\models\weapons\crowbar.mdx
+        # data[0] through data[5] are coords as floats.
+        temp_data=file.read(struct.calcsize(self.binary_format))
+        data=struct.unpack(self.binary_format, temp_data)
+        self.min=(data[0], data[1], data[2])
+        self.max=(data[3], data[4], data[5])
+        return self
+
+    def dump (self):
+        print "MDX BBox Frames Structure"
+        print "min: ",self.min
+        print "max: ",self.max
+        print ""
+
 
 class mdx_skin:
     name=""
@@ -201,9 +226,9 @@ class mdx_skin:
         print ""
 
 class mdx_alias_frame:
-    scale=[]
-    translate=[]
-    name=[]
+    scale=[0.0]*3
+    translate=[0.0]*3
+    name=""
     vertices=[]
 
     binary_format="<3f3f16s" #little-endian (<), 3 float, 3 float char[16]
@@ -431,6 +456,52 @@ class mdx_obj:
                             faces[gl_command.SubObjectID] += [(vertex_info0, vertex_info1, vertex_info2)]
                             vertex_info1 = vertex_info2
 
+        #load the BBoxFrames info
+        file.seek(self.offset_BBoxFrames,0)
+        self.BBoxes = []
+        bboxgroup = quarkx.newobj("BBoxes "+name+":bbg")
+        bboxgroup['show'] = (1.0,)
+      #  print "BBoxes"
+        for i in xrange(0, self.num_SubObjects):
+            Component = ComponentList[i]
+      #      print "==============="
+      #      print "Component.name", Component.name
+      #      print "==============="
+            bboxSubObj = []
+            for j in xrange(0, self.num_frames):
+      #          print "-------"
+      #          print "frame name:", self.frames[j].name
+                BBox = BBox_t()
+                BBox.load(file)
+                bboxSubObj.append(BBox)
+      #          BBox.dump()
+                if j == 0: # Temp code until we figure out what to do with these, ref melutils.py DrawBBoxes function.
+                    bboxname = Component.name.replace(":mc", ":p")
+                    bbox = [BBox.min, BBox.max]
+                    editor.ModelComponentList['bboxlist'][bboxname] = {}
+                    editor.ModelComponentList['bboxlist'][bboxname]['size'] = bbox
+                    p = MakePoly(Component.name, bbox)
+                    bboxgroup.appenditem(p)
+            self.BBoxes.append(bboxSubObj)
+
+        # make up vertex index conversion lists.
+        self.fvc = {} # fvc = frames vertex index conversion.
+        for i in xrange(0, self.num_SubObjects):
+            self.fvc[i] = []
+            for j in xrange(0, len(faces[i])):
+                current_face = faces[i][j]
+                if not current_face[0][0] in self.fvc[i]:
+                    self.fvc[i].append(current_face[0][0])
+                if not current_face[1][0] in self.fvc[i]:
+                    self.fvc[i].append(current_face[1][0])
+                if not current_face[2][0] in self.fvc[i]:
+                    self.fvc[i].append(current_face[2][0])
+        tvc = {} # tvc = Tris vertex index conversion.
+        for i in xrange(0, self.num_SubObjects):
+            tvc[i] = {}
+            for j in range(len(self.fvc[i])):
+                tvc[i][self.fvc[i][j]] = j
+
         for i in xrange(0, self.num_SubObjects):
             Component = ComponentList[i]
             Tris = ''
@@ -443,17 +514,17 @@ class mdx_obj:
                 current_face = faces[i][j]
                 if logging == 1:
                     facelist = []
-                    facelist = facelist + [(current_face[0][0], int(TexWidth * current_face[0][1]), int(TexHeight * current_face[0][2]))]
-                    facelist = facelist + [(current_face[1][0], int(TexWidth * current_face[1][1]), int(TexHeight * current_face[1][2]))]
-                    facelist = facelist + [(current_face[2][0], int(TexWidth * current_face[2][1]), int(TexHeight * current_face[2][2]))]
+                    facelist = facelist + [(tvc[i][current_face[0][0]], int(TexWidth * current_face[0][1]), int(TexHeight * current_face[0][2]))]
+                    facelist = facelist + [(tvc[i][current_face[1][0]], int(TexWidth * current_face[1][1]), int(TexHeight * current_face[1][2]))]
+                    facelist = facelist + [(tvc[i][current_face[2][0]], int(TexWidth * current_face[2][1]), int(TexHeight * current_face[2][2]))]
                     tobj.logcon (str(j) + ": " + str(facelist))
-                Tris = Tris + struct.pack("Hhh", current_face[0][0], int(TexWidth * current_face[0][1]), int(TexHeight * current_face[0][2]))
-                Tris = Tris + struct.pack("Hhh", current_face[1][0], int(TexWidth * current_face[1][1]), int(TexHeight * current_face[1][2]))
-                Tris = Tris + struct.pack("Hhh", current_face[2][0], int(TexWidth * current_face[2][1]), int(TexHeight * current_face[2][2]))
+                Tris = Tris + struct.pack("Hhh", tvc[i][current_face[0][0]], int(TexWidth * current_face[0][1]), int(TexHeight * current_face[0][2]))
+                Tris = Tris + struct.pack("Hhh", tvc[i][current_face[1][0]], int(TexWidth * current_face[1][1]), int(TexHeight * current_face[1][2]))
+                Tris = Tris + struct.pack("Hhh", tvc[i][current_face[2][0]], int(TexWidth * current_face[2][1]), int(TexHeight * current_face[2][2]))
                 progressbar.progress()
             Component['Tris'] = Tris
 
-        return self, ComponentList, skinsize, skingroup, message
+        return self, ComponentList, skinsize, skingroup, message, bboxgroup
 
     def dump (self):
         global tobj, logging
@@ -488,8 +559,61 @@ class mdx_obj:
             tobj.logcon ("")
 
 ######################################################
-# Import functions
+# QuArK Import functions
 ######################################################
+# Create the bboxes (hit boxes).
+def MakePoly(compname, bbox):
+    m = bbox[0]
+    M = bbox[1]
+    shortname = compname.split(":")[0]
+    p = quarkx.newobj(shortname + ":p");
+    p["assigned2"] = compname
+    p['show'] = (1.0,)
+    face = quarkx.newobj("north:f") # BACK FACE
+    vtx0X, vtx0Y, vtx0Z = m[0],M[1],M[2]
+    vtx1X, vtx1Y, vtx1Z = M[0],M[1],M[2]
+    vtx2X, vtx2Y, vtx2Z = m[0],M[1],m[2]
+    face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
+    face["tex"] = None
+    p.appenditem(face)
+    face = quarkx.newobj("east:f") # RIGHT FACE
+    vtx0X, vtx0Y, vtx0Z = M[0],M[1],M[2]
+    vtx1X, vtx1Y, vtx1Z = M[0],m[1],M[2]
+    vtx2X, vtx2Y, vtx2Z = M[0],M[1],m[2]
+    face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
+    face["tex"] = None
+    p.appenditem(face)
+    face = quarkx.newobj("south:f") # FRONT FACE
+    vtx0X, vtx0Y, vtx0Z = M[0],m[1],M[2]
+    vtx1X, vtx1Y, vtx1Z = m[0],m[1],M[2]
+    vtx2X, vtx2Y, vtx2Z = M[0],m[1],m[2]
+    face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
+    face["tex"] = None
+    p.appenditem(face)
+    face = quarkx.newobj("west:f") # LEFT FACE
+    vtx0X, vtx0Y, vtx0Z = m[0],m[1],M[2]
+    vtx1X, vtx1Y, vtx1Z = m[0],M[1],M[2]
+    vtx2X, vtx2Y, vtx2Z = m[0],m[1],m[2]
+    face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
+    face["tex"] = None
+    p.appenditem(face)
+    face = quarkx.newobj("up:f") # TOP FACE
+    vtx0X, vtx0Y, vtx0Z = m[0],M[1],M[2]
+    vtx1X, vtx1Y, vtx1Z = m[0],m[1],M[2]
+    vtx2X, vtx2Y, vtx2Z = M[0],M[1],M[2]
+    face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
+    face["tex"] = None
+    p.appenditem(face)
+    face = quarkx.newobj("down:f") # BOTTOM FACE
+    vtx0X, vtx0Y, vtx0Z = m[0],M[1],m[2]
+    vtx1X, vtx1Y, vtx1Z = M[0],M[1],m[2]
+    vtx2X, vtx2Y, vtx2Z = m[0],m[1],m[2]
+    face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
+    face["tex"] = None
+    p.appenditem(face)
+
+    return p
+
 def load_textures(mdx, message):
     global tobj, logging
     # Checks if the model has textures specified with it.
@@ -552,40 +676,45 @@ def load_textures(mdx, message):
     else:
         return skinsize, skingroup, message
 
-def animate_mdx(mdx): # The Frames Group is made here & returned to be added to the Component.
+def animate_mdx(mdx, ComponentList, skingroup): # The Frames Group is made here & returned to be added to the Component.
     global progressbar, tobj, logging
     ######### Animate the verts through the QuArK Frames lists.
-    framesgroup = quarkx.newobj('Frames:fg')
+    sdogroup = quarkx.newobj('SDO:sdo')
+    for c in range(len(ComponentList)):
+        ComponentList[c].appenditem(sdogroup.copy())
+        ComponentList[c].appenditem(skingroup.copy())
+        framesgroup = quarkx.newobj('Frames:fg')
 
-    if logging == 1:
-        tobj.logcon ("")
-        tobj.logcon ("#####################################################################")
-        tobj.logcon ("Frame group data: " + str(mdx.num_frames) + " frames")
-        tobj.logcon ("frame: frame name")
-        tobj.logcon ("#####################################################################")
-
-    for i in xrange(0, mdx.num_frames):
-        ### mdx.frames[i].name is the frame name, ex: active_01
         if logging == 1:
-            tobj.logcon (str(i) + ": " + mdx.frames[i].name)
+            tobj.logcon ("")
+            tobj.logcon ("#####################################################################")
+            tobj.logcon ("Frame group data: " + str(mdx.num_frames) + " frames")
+            tobj.logcon ("frame: frame name")
+            tobj.logcon ("#####################################################################")
 
-        frame = quarkx.newobj(mdx.frames[i].name + ':mf')
-        mesh = ()
-        #update the vertices
-        for j in xrange(0,mdx.num_vertices):
-            x=(mdx.frames[i].scale[0]*mdx.frames[i].vertices[j].vertices[0]+mdx.frames[i].translate[0])*g_scale
-            y=(mdx.frames[i].scale[1]*mdx.frames[i].vertices[j].vertices[1]+mdx.frames[i].translate[1])*g_scale
-            z=(mdx.frames[i].scale[2]*mdx.frames[i].vertices[j].vertices[2]+mdx.frames[i].translate[2])*g_scale
+        fvc = mdx.fvc[c]
+        for i in xrange(0, mdx.num_frames):
+            ### mdx.frames[i].name is the frame name, ex: active_01
+            if logging == 1:
+                tobj.logcon (str(i) + ": " + mdx.frames[i].name)
 
-            #put the vertex in the right spot
-            mesh = mesh + (x,)
-            mesh = mesh + (y,)
-            mesh = mesh + (z,)
+            frame = quarkx.newobj(mdx.frames[i].name + ':mf')
+            mesh = ()
+            #update the vertices
+            for j in range(len(fvc)):
+                x=(mdx.frames[i].scale[0]*mdx.frames[i].vertices[fvc[j]].vertices[0]+mdx.frames[i].translate[0])*g_scale
+                y=(mdx.frames[i].scale[1]*mdx.frames[i].vertices[fvc[j]].vertices[1]+mdx.frames[i].translate[1])*g_scale
+                z=(mdx.frames[i].scale[2]*mdx.frames[i].vertices[fvc[j]].vertices[2]+mdx.frames[i].translate[2])*g_scale
 
-        frame['Vertices'] = mesh
-        framesgroup.appenditem(frame)
-        progressbar.progress()
-    return framesgroup
+                #put the vertex in the right spot
+                mesh = mesh + (x,)
+                mesh = mesh + (y,)
+                mesh = mesh + (z,)
+
+            frame['Vertices'] = mesh
+            framesgroup.appenditem(frame)
+            progressbar.progress()
+        ComponentList[c].appenditem(framesgroup)
 
 
 def load_mdx(mdx_filename):
@@ -597,13 +726,13 @@ def load_mdx(mdx_filename):
     name = name.split(".")[0]
     name = name.split("/")
     name = name[len(name)-2] + "_" + name[len(name)-1]
-    MODEL, ComponentList, skinsize, skingroup, message = mdx.load(file, name)
+    MODEL, ComponentList, skinsize, skingroup, message, bboxgroup = mdx.load(file, name)
 
     file.close()
     if MODEL is None:
         return None, None, None, None, message
 
-    framesgroup = animate_mdx(mdx) # Calls here to make the Frames Group.
+    animate_mdx(mdx, ComponentList, skingroup) # Calls here to make the Frames Group.
     
     progressbar.close()
     Strings[2454] = Strings[2454].replace(name + "\n", "")
@@ -611,7 +740,7 @@ def load_mdx(mdx_filename):
     if logging == 1:
         mdx.dump() # Writes the file Header last to the log for comparison reasons.
 
-    return ComponentList, skinsize, skingroup, framesgroup, message
+    return ComponentList, skinsize, message, bboxgroup
 
 
 ########################
@@ -621,21 +750,17 @@ def load_mdx(mdx_filename):
 def import_mdx_model(editor, mdx_filename):
     # Now we call to Import our Component(s).
 
-    ComponentList, skinsize, skingroup, framesgroup, message = load_mdx(mdx_filename) # Loads the model.
+    ComponentList, skinsize, message, bboxgroup = load_mdx(mdx_filename) # Loads the model.
     if ComponentList is None:
         return None, message
 
-    sdogroup = quarkx.newobj('SDO:sdo')
     for Component in ComponentList:
         # Set it up in the ModelComponentList.
         editor.ModelComponentList[Component.name] = {'bonevtxlist': {}, 'colorvtxlist': {}, 'weightvtxlist': {}}
         Component['skinsize'] = skinsize
         Component['show'] = chr(1)
-        Component.appenditem(sdogroup.copy())
-        Component.appenditem(skingroup.copy())
-        Component.appenditem(framesgroup.copy())
 
-    return ComponentList, message
+    return ComponentList, message, bboxgroup
 
 
 def loadmodel(root, filename, gamename, nomessage=0):
@@ -644,7 +769,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
     "and name of the .mdx file selected."
     "For example:  C:\Kingpin\main\models\weapons\crowbar.mdx"
 
-    global progressbar, tobj, logging, importername, textlog, Strings
+    global editor, progressbar, tobj, logging, importername, textlog, Strings
     import quarkpy.mdleditor
     editor = quarkpy.mdleditor.mdleditor
     # Step 1 to import model from QuArK's Explorer.
@@ -667,7 +792,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
     logging, tobj, starttime = ie_utils.default_start_logging(importername, textlog, filename, "IM") ### Use "EX" for exporter text, "IM" for importer text.
 
     ### Lines below here loads the model into the opened editor's current model.
-    ComponentList, message = import_mdx_model(editor, filename)
+    ComponentList, message, bboxgroup = import_mdx_model(editor, filename)
 
     if ComponentList is None:
         quarkx.beep() # Makes the computer "Beep" once if a file is not valid. Add more info to message.
@@ -678,6 +803,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
     if editor.form is None: # Step 2 to import model from QuArK's Explorer.
         md2fileobj = quarkx.newfileobj("New model.md2")
         md2fileobj['FileName'] = 'New model.qkl'
+        editor.Root.dictitems['Misc:mg'].appenditem(bboxgroup)
         for Component in ComponentList:
             editor.Root.appenditem(Component)
         md2fileobj['Root'] = editor.Root.name
@@ -685,6 +811,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
         md2fileobj.openinnewwindow()
     else: # Imports a model properly from within the editor.
         undo = quarkx.action()
+        undo.put(editor.Root.dictitems['Misc:mg'], bboxgroup)
         for Component in ComponentList:
             undo.put(editor.Root, Component)
             editor.Root.currentcomponent = Component
@@ -735,6 +862,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".mdx Kingpin Importer", ".mdx file", "*.md
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.5  2011/05/19 07:38:11  cdunde
+# Fix, sometimes imported file read in skin size is incorrect.
+#
 # Revision 1.4  2011/05/19 06:47:54  cdunde
 # To stop duplicate skin textures importing under another name.
 #
