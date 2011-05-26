@@ -14,6 +14,8 @@ $Id$
 
 6.6.0 Beta 5
 ============
+* [cdunde]: Model editor, Setup component bbox vertex assignment support.
+
 * [cdunde/DanielPharos]: Model editor, Added bone and bounding boxes support to Keyframe Linear Interpolation function.
 
 * [cdunde]: Add support for BBoxes and updated the Kingpin importer to process its BBoxes.

@@ -4,6 +4,7 @@ desc: treeviewrmbmenus
 desc: viewsrmbmenus
 desc: facermbmenu
 desc: vertexrmbmenu
+desc: bboxrmbmenu
 
 This is a special section that only covers the Model Editor's <g>RMB</g> menus.
 
