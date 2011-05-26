@@ -1517,9 +1517,9 @@ def UpdateBBoxList(editor, newpoly, count=None):
         if bboxlist[poly.name].has_key('size'):
             bboxlist[poly.name]['size'] = [bbox[0].tuple, bbox[1].tuple]
         elif bboxlist[poly.name].has_key('vtx_list'):
-            pass # still needs to be setup
+            pass # bbox drag can not change the bboxlist for this key. Just here for ref.
         elif bboxlist[poly.name].has_key('frames'):
-            pass # still needs to be setup
+            pass # bbox drag can not change the bboxlist for this key. Just here for ref.
 
         return poly # DO NOT move outside to combine calls, will break dragging of poly in editor.
 
@@ -1675,7 +1675,15 @@ def DrawBBoxes(editor, explorer, comp):
                             bbox = [bbox[0].tuple, bbox[1].tuple]
                             UpdateBBoxPoly(poly, bpos, brot, bbox)
                         elif bboxlist[poly.name].has_key('vtx_list'):
-                            pass # still needs to be setup
+                            bpos = quarkx.vect(0.,0.,0.)
+                            brot = quarkx.matrix((1.,0.,0.),(0.,1.,0.),(0.,0.,1.))
+                            frame_verts = []
+                            vertices = Root.dictitems[assigned2].dictitems['Frames:fg'].dictitems[frame_name].vertices
+                            for vtx_index in bboxlist[poly.name]['vtx_list']:
+                                frame_verts = frame_verts + [vertices[vtx_index]]
+                            bbox = quarkx.boundingboxof(frame_verts)
+                            bbox = [bbox[0].tuple, bbox[1].tuple]
+                            UpdateBBoxPoly(poly, bpos, brot, bbox)
                         elif bboxlist[poly.name].has_key('frames'):
                             pass # still needs to be setup
 
@@ -4830,6 +4838,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.160  2011/05/25 20:55:03  cdunde
+#Revamped Bounding Box system for more flexibility with model formats that do not have bones, only single or multi components.
+#
 #Revision 1.159  2011/05/22 22:39:31  cdunde
 #Change to allow new QuArK bones assigned vertexes to use Keyframe function.
 #

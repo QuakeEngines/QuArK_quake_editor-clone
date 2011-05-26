@@ -1097,6 +1097,17 @@ class PolyHandle(qhandles.CenterHandle):
                     menu = menu + [qmenu.item(compname.split(":")[0], onclick1)]
                 m.items = menu
 
+        def assign_vtxs_click(m, self=self, editor=editor, view=view):
+            comp = editor.Root.currentcomponent
+            explorer = editor.layout.explorer
+            poly = editor.layout.explorer.sellist[0]
+            poly['assigned2'] = comp.name
+            bboxlist = editor.ModelComponentList['bboxlist']
+            bboxlist[poly.name] = {}
+            bboxlist[poly.name]['vtx_list'] = editor.ModelVertexSelList
+            DrawBBoxes(editor, explorer, comp)
+            Update_Editor_Views(editor)
+
         def release_bbox_click(m, self=self, editor=editor, view=view):
             poly = editor.layout.explorer.sellist[0]
             assigned2 = poly.dictspec['assigned2']
@@ -1119,19 +1130,23 @@ class PolyHandle(qhandles.CenterHandle):
                 menu = menu + [qmenu.item(compname.split(":")[0], onclick4)]
             m.items = menu
 
-        AssignBBoxTo = qmenu.popup("Assign BBox To", [], assign_bbox_click, "|Assign BBox To:\n\nYou need to select a single BBox to use this function.\n\nThis will assign a selected bounding box to the component (if NOT Hidden) you select by means of a menu that will appear listing all available components to choose from, if any.", "intro.modeleditor.rmbmenus.html#facermbmenu")
-        ReleaseBBox = qmenu.popup("Release BBox", [], release_bbox_click, "|Release BBox:\n\nThis will release the selected bounding box assigned to the component (if NOT Hidden) you select by means of a menu that will appear listing the component it is assigned to.", "intro.modeleditor.rmbmenus.html#facermbmenu")
-        SelectBBoxes = qmenu.popup("Select BBoxes", [], select_bboxes_click, "|Select BBoxes:\n\nThis will select all the bounding boxes assigned to the component (if NOT Hidden) you select by means of a menu that will appear listing all available components to choose from, if any.", "intro.modeleditor.rmbmenus.html#facermbmenu")
-        ReleaseBBoxes = qmenu.popup("Release BBoxes", [], release_bboxes_click, "|Release BBoxes:\n\nThis will release all the bounding boxes assigned to the component (if NOT Hidden) you select by means of a menu that will appear listing all available components to choose from, if any.", "intro.modeleditor.rmbmenus.html#facermbmenu")
+        AssignBBoxTo = qmenu.popup("Assign BBox To", [], assign_bbox_click, "|Assign BBox To:\n\nYou need to select a single BBox to use this function.\n\nThis will assign a selected bounding box to the component (if NOT Hidden) you select by means of a menu that will appear listing all available components to choose from, if any.", "intro.modeleditor.rmbmenus.html#bboxrmbmenu")
+        AssignBBoxVtxs = qmenu.item("Assign Vtxs To BBox", assign_vtxs_click, "|Assign Vtxs To BBox:\n\nYou need to have some vertexes and a single BBox selected to use this function.\n\nThis will assign a selected bounding box to the selected vertexes of a component (if NOT Hidden) you must first select the vertexes then Ctrl select a bbox.|intro.modeleditor.rmbmenus.html#bboxrmbmenu")
+        ReleaseBBox = qmenu.popup("Release BBox", [], release_bbox_click, "|Release BBox:\n\nThis will release the selected bounding box assigned to the component (if NOT Hidden) you select by means of a menu that will appear listing the component it is assigned to.", "intro.modeleditor.rmbmenus.html#bboxrmbmenu")
+        SelectBBoxes = qmenu.popup("Select BBoxes", [], select_bboxes_click, "|Select BBoxes:\n\nThis will select all the bounding boxes assigned to the component (if NOT Hidden) you select by means of a menu that will appear listing all available components to choose from, if any.", "intro.modeleditor.rmbmenus.html#bboxrmbmenu")
+        ReleaseBBoxes = qmenu.popup("Release BBoxes", [], release_bboxes_click, "|Release BBoxes:\n\nThis will release all the bounding boxes assigned to the component (if NOT Hidden) you select by means of a menu that will appear listing all available components to choose from, if any.", "intro.modeleditor.rmbmenus.html#bboxrmbmenu")
 
         AssignBBoxTo.state = qmenu.disabled
+        AssignBBoxVtxs.state = qmenu.disabled
         SelectBBoxes.state = qmenu.disabled
         ReleaseBBoxes.state = qmenu.disabled
 
-        menu = [AssignBBoxTo, SelectBBoxes, ReleaseBBoxes]
+        menu = [AssignBBoxTo, AssignBBoxVtxs, SelectBBoxes, ReleaseBBoxes]
         if len(sellist) >= 1 and sellist[0].type == ":p":
             if sellist[0].dictspec['assigned2'] == "None":
                 AssignBBoxTo.state = qmenu.normal
+                if len(editor.ModelVertexSelList) != 0:
+                    AssignBBoxVtxs.state = qmenu.normal
             elif sellist[0].dictspec['assigned2'].endswith(":mc"):
                 menu = [ReleaseBBox, SelectBBoxes, ReleaseBBoxes]
             if len(bboxlist_comps) != 0:
@@ -1369,7 +1384,8 @@ class PolyHandle(qhandles.CenterHandle):
             return BBoxCompExtras + [qmenu.sep, HTBB, qmenu.sep, qmenu.item("&Force to grid", forcegrid1click, "force vertex to grid")] + self.OriginItems(editor, view)
         elif self.poly.dictspec['assigned2'] == "None":
             BBoxAssignComp = self.comp_extras_menu(editor, view)[0]
-            return [BBoxAssignComp] + [qmenu.sep, HTBB, qmenu.sep, qmenu.item("&Force to grid", forcegrid1click, "force vertex to grid")] + self.OriginItems(editor, view)
+            BBoxAssignVtxs = self.comp_extras_menu(editor, view)[1]
+            return [BBoxAssignComp, qmenu.sep, BBoxAssignVtxs] + [qmenu.sep, HTBB, qmenu.sep, qmenu.item("&Force to grid", forcegrid1click, "force vertex to grid")] + self.OriginItems(editor, view)
 
 
     def ok(self, editor, undo, old, new, view=None):
@@ -6567,6 +6583,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.229  2011/04/02 01:08:10  cdunde
+#Added Half-Life 2 importer animation support with bone, attachment and bbox movement.
+#
 #Revision 1.228  2011/03/15 19:49:55  cdunde
 #Bone handle fix by DanielPharos for True3Dview mode.
 #
