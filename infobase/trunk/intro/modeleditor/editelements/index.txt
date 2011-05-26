@@ -1,5 +1,6 @@
 title: Editing Elements
 desc: bones
+desc: boundingboxes
 desc: boundframes
 desc: tags
 

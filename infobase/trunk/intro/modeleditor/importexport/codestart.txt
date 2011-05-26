@@ -76,11 +76,7 @@ used latter in this function to stop the logging.
 
 <a name="import_md2_model1"></a>
 Then comes the actual importing function <a href="#import_md2_model2">import_md2_model</a>
-which will be <g>returning</g> the <g>ModelRoot</g>
-and the <g>Component</g> that we will be using next to finish the importation of the model. A <b>Note</b> here,
-the <g>ModelRoot</g> is <b>not</b> being used at this time and that could be eliminated, but this might be used
-later on to open the editor with directly using the model, so it doesn't hurt to have it there and ready to go.
-We will be covering this function and the bulk of the code in the next section below.
+which will be <g>returning</g> the <g>Component</g> that we will be using next to finish the importation of the model.
 
 Once the model has been imported it still needs to be <g>dropped</g> into the editor, that is what the
 <a href="src.quarkx.html#moduleundo">undo function</a>undo function</a>
@@ -138,12 +134,15 @@ which are whole sections of added functions for each <g>module</g>.
         comp.currentskin = None
 </code>
 
-If you were also importing <a href="intro.modeleditor.editelements.html#bones">Bones</a>
+<a name="place2"></a>
+If you were also importing <a href="intro.modeleditor.editelements.html#bones">Bones</a> or
+<a href="intro.modeleditor.editelements.html#boundingboxes">BBoxes</a> (bounding boxes)
 from the model this is the second of
-<a href="intro.modeleditor.importexport.html#componentcreation">two places</a>
+<a href="intro.modeleditor.importexport.html#place1">two places</a>
 where that code would be added now that the component has been created.<br>
 See the section below covering
-<a href="intro.modeleditor.importexport.html#bones2">Bones Structure, QuArK's ModelComponentList</a>
+<a href="intro.modeleditor.importexport.html#bones">Bones Structure</a> and
+<a href="intro.modeleditor.importexport.html#bones2">QuArK's ModelComponentList</a>
 for the needed code to copy and paste in this location of your import file.
 
 Last, but not least, at the very bottom of our importer file we need to <g>Register</g> our starting function so that

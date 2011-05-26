@@ -149,24 +149,34 @@ Below is an example of those data structures.
 
 The first three items <g>['bboxlist']</g>, <g>['bonelist']</g> and <g>['tristodraw']</g> do <b>not</b> use a component's name as their<br>
 <g>key</g> because they are used for <b>all</b> components to store <g>special</g> data that can not be stored with the individual<br>
-bones for components them selves because of code restrictions. This data is created directly from the model import file when it is read in.
+bones or bboxes for components them selves because of code restrictions. This data is created directly from the model import file when it is read in.
 
 The <g>['bboxlist']</g> is a dictionary list, its <g>keys</g> are the bbox names. If a bbox is associated with a bone then its name<br>
-matches that bone's name, for example upperleg:bone -> upperleg:p. Bboxes are <g>polyhedrons</g> just like in the map editor.<br>
+matches that bone's name, for example upperleg:bone -> upperleg:p and the same applies if they are associated with a component.
+
+Bboxes are <g>polyhedrons</g> just like in the map editor.<br>
 Bbox stands for bounding box which can also be used for a collision box depending on the model format's needs.
 
-Each bbox in the <g>['bboxlist']</g> contains another list of two sets of values, minimum x, y, z and maximum x, y, z values.<br>
+For bones, each bbox in the <g>['bboxlist']</g> contains another list of two sets of values, minimum x, y, z and maximum x, y, z values.<br>
 Below is a sample of what it looks like in the <g>ModelComponentList</g>:
 <code>
 editor.ModelComponentList['bboxlist']
     {
-    'upperleg:p': [(-34,-60,-14), (16,-30,16)]
+    'upperleg:p':
+        {'size':
+                [(-34,-60,-14), (16,-30,16)]
+        }
     }
 </code>
 Their positions get set by the bones they are assigned to for any animation frame that exist. They can be placed in the
 <a href="intro.modeleditor.dataforms.html#treeview">tree-view</a><br>
 individually or in a <a href="intro.modeleditor.misctools.html">BboxGroupFolder:bbg</a>,
 which is usually done to keep them identified with one particular imported model.
+
+For bboxes assigned to a component the same method above can also be used<br>
+and in addition they have two other methods available using different key names.<br>
+The second method uses ['vtx_list'] to create a list of vertexes for each bbox that will be used to surround them from frame to frame<br>
+The third method uses ['frames'] to create a list of two distinct minimum and maximum vectors, as described above, for each individual frame.
 
 The <g>['bonelist']</g> is also a dictionary list and its <g>keys</g> are the bone names.<br>
 It is used to store each bones exact imported position and rotation matrix for each animation frame.<br>
