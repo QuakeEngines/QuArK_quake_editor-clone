@@ -90,6 +90,7 @@ def RunQuArK():
     selicons = qutils.ico_objects[1]
     for i in range(0, qutils.iiTotalImageCount):
         quarkx.seticons(i, selicons[i], unselicons[i])
+    quarkx.seticons(qutils.iiPolyhedron, qutils.BBoxIconSel,       qutils.BBoxIconUnsel)
     quarkx.seticons(qutils.iiEntity,     qutils.EntityIconSel,     qutils.EntityIconUnsel)
     quarkx.seticons(qutils.iiGroup,      qutils.GroupIconSel,      qutils.GroupIconUnsel)
     quarkx.seticons(qutils.iiDuplicator, qutils.DuplicatorIconSel, qutils.DuplicatorIconUnsel)
@@ -119,6 +120,9 @@ def RunQuArK():
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.17  2010/04/30 18:22:08  danielpharos
+#Improved error message displayed on version conflict.
+#
 #Revision 1.16  2010/04/16 20:07:26  danielpharos
 #Move some version-stuff about. quarkpy now also checks the minor version number.
 #

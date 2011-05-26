@@ -557,9 +557,15 @@ def BBoxIcon(bbox, iconset):
         return icons[53]
 
 def BBoxIconSel(bbox):
+    import mdleditor
+    if not isinstance(mdleditor.mdleditor, mdleditor.ModelEditor):
+        return ico_objects[1][iiPolyhedron]
     return BBoxIcon(bbox, 1)
 
 def BBoxIconUnsel(bbox):
+    import mdleditor
+    if not isinstance(mdleditor.mdleditor, mdleditor.ModelEditor):
+        return ico_objects[0][iiPolyhedron]
     return BBoxIcon(bbox, 0)
 
 #
@@ -971,6 +977,9 @@ def sortdictionary(dictionary):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.57  2011/03/27 06:30:56  cdunde
+#Icon updates.
+#
 #Revision 1.56  2011/03/12 23:19:12  cdunde
 #Fix to handle Model Editor BBox icons properly.
 #
