@@ -3422,102 +3422,6 @@ def assign_release_vertices(editor, bone, comp, vtxsellist):
             pass
 
 #
-# This function does the rotation movement of all bones between two selected "Key frames".
-#
-def keyframes_rotation(editor, bonesgroup, frame1, frame2):
-    global keyframesrotation
-    import qhandles
-    comp = editor.Root.currentcomponent
-    new_comp = comp.copy()
-    framesgroup = new_comp.dictitems['Frames:fg']
-    count = 0
-    framecount = 0
-    keyframesrotation = 1
-    for frame in framesgroup.subitems:
-        if frame.name == frame1.name:
-            startframe = count
-        count = count + 1
-        if frame.name == frame2.name:
-            break
-        if frame.name == frame1.name or framecount != 0:
-            framecount = framecount + 1
-    for bone in bonesgroup.subitems:
-        # Gives us just bones with vertexes assigned to their start handle.
-        if bone.dictspec.has_key('start_vtxlist') and bone.dictspec.has_key('start_vtx_pos') and bone.dictspec['start_vtx_pos'] is not None:
-            common_handles_list, s_or_e_list = find_common_bone_handles(editor, bone.dictspec['start_point'])
-            for common_handle in range(len(common_handles_list)):
-                if s_or_e_list[common_handle] == 1:
-                    basebonehandle = common_handles_list[common_handle].start_handle
-                    import mdlhandles
-                    for item in basebonehandle:
-                        if isinstance(item, mdlhandles.BoneCornerHandle):
-                            handle = item
-                            break
-                    view = editor.layout.views[0]
-                    handle.groupselection = 1
-                    handle.start_drag(view, 0, 0, 1)
-                    break
-                else:
-                    basebonehandle = common_handles_list[common_handle].end_handle
-                    import mdlhandles
-                    for item in basebonehandle:
-                        if isinstance(item, mdlhandles.BoneCornerHandle):
-                            handle = item
-                            break
-                    view = editor.layout.views[0]
-                    handle.groupselection = 1
-                    handle.start_drag(view, 0, 0, 1)
-                    break
-            vtxlist = bone.dictspec['start_vtx_pos']
-            vtxlist = vtxlist.split(" ")
-            frame1_start_vtxpos = frame2_start_vtxpos = quarkx.vect(0, 0, 0)
-            for start_vtx in vtxlist:
-                frame1_start_vtxpos = frame1_start_vtxpos + frame1.vertices[int(start_vtx)]
-                frame2_start_vtxpos = frame2_start_vtxpos + frame2.vertices[int(start_vtx)]
-            frame1_start_vtxpos = frame1_start_vtxpos/ float(len(vtxlist))
-            frame2_start_vtxpos = frame2_start_vtxpos/ float(len(vtxlist))
-            if str(frame1_start_vtxpos) != str(frame2_start_vtxpos):
-                vex_diff = frame2_start_vtxpos - frame1_start_vtxpos
-                vex_diff = vex_diff.tuple
-                factor = 1-(framecount/framecount+1)
-                delta_diff = quarkx.vect(vex_diff[0]*factor, vex_diff[1]*factor, vex_diff[2]*factor)  # This way avoids division by zero errors.
-                count = 1
-                while count != framecount:
-                    delta = delta_diff * count
-                    frame = framesgroup.subitems[startframe + count]
-                    v1 = handle.pos
-                    v2 = v1 + delta
-                    flags = 2056
-                    oldobjectslist, newobjectslist = handle.drag(v1, v2, flags, view)
-                    change1 = frame1_start_vtxpos - handle.mgr.center
-                    change2 = frame2_start_vtxpos - handle.mgr.center
-                    changeaxis = change1 ^ change2   # Cross product
-                    m = qhandles.UserRotationMatrix(changeaxis.normalized, change2, change1, 0, float(count) / float(framecount))
-                    if m is None:
-                        m = quarkx.matrix(quarkx.vect(1, 0, 0), quarkx.vect(0, 1, 0), quarkx.vect(0, 0, 1))
-                    vtxs = []
-                    old_vtxs = frame1.vertices
-                    for item in newobjectslist:
-                        if item.type == ':g':
-                            for poly in item.subitems:
-                                vtx_index = int(poly.shortname)
-                                vtx_pos = (m * (old_vtxs[vtx_index] - handle.mgr.center)) + handle.mgr.center
-                ### 3 lines below gives a straight delta drag, use for straight Keyframe movement code.
-                #                newvtxlist = frame.vertices[vtx_index] + delta
-                #                vtxs = old_vtxs[:vtx_index] + [quarkx.vect(newvtxlist.tuple)] + old_vtxs[vtx_index+1:]
-                ### 1 line below gives a vertex rotation drag, use for rotation Keyframe movement code.
-                                vtxs = old_vtxs[:vtx_index] + [vtx_pos] + old_vtxs[vtx_index+1:]
-                                old_vtxs = vtxs
-                    frame.vertices = vtxs
-                    count = count + 1
-    for frame in framesgroup.subitems:
-        frame.compparent = new_comp # To allow frame relocation after editing.
-    undo = quarkx.action()
-    undo.exchange(comp, new_comp)
-    editor.ok(undo, "key frames rotation")
-    keyframesrotation = 0
-
-#
 # This recreates the bone's drag handle, o being the bone object (the bone).
 # frame = editor.Root.dictitems[o.dictspec['component']].dictitems['Frames:fg'].subitems[editor.bone_frame]
 # This does not need to be returned since it is changing the object itself.
@@ -4838,6 +4742,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.161  2011/05/26 09:32:19  cdunde
+#Setup component bbox vertex assignment support.
+#
 #Revision 1.160  2011/05/25 20:55:03  cdunde
 #Revamped Bounding Box system for more flexibility with model formats that do not have bones, only single or multi components.
 #

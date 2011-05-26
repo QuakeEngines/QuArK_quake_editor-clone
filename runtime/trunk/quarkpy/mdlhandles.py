@@ -5714,18 +5714,6 @@ class BoneCenterHandle(BoneHandle):
             Update_Editor_Views(editor)
             editor.layout.mpp.resetpage()
 
-        def keyframes_rotation_click(m, self=self, editor=editor, view=view):
-            frame1 = frame2 = None
-            for item in editor.layout.explorer.sellist:
-                if item.type == ":mf":
-                    if frame1 is None:
-                        frame1 = item
-                    else:
-                        frame2 = item
-                else:
-                    bonesgroup = item
-            keyframes_rotation(editor, bonesgroup, frame1, frame2)
-
         def ShowBones(m, self=self, editor=editor, view=view):
             quarkx.setupsubset(SS_MODEL, "Options")['HideBones'] = None
             SB1.state = qmenu.disabled
@@ -5824,7 +5812,6 @@ class BoneCenterHandle(BoneHandle):
         AlignBone2to1 = qmenu.item("Align  Bone 2 to 1", align__bone2to1_click, "|Align Bone 2 to 1:\n\nThis will align the second selected bone in the tree-view to the first selected bone in the tree-view, but not attach them.|intro.modeleditor.rmbmenus.html#bonecommands")
         SetHandlePosition = qmenu.item("Set Handle Position", set_handle_position_click, "|Set Handle Position:\n\nActive when one or more vertexes are selected that are assigned to that bone handle. Click this item to position and set that bone handle centered within those vertexes. An 'offset' can also be applied to this setting.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
         SetHandlePosition.state = qmenu.disabled
-        KeyframesRotation = qmenu.item("&Key frames Rotation move", keyframes_rotation_click, "|Key frames Rotation move:\n\nWhen the 'Skeleton' folder and two frames that have bone movement are selected, this movement will be spread from the 1st frames positions across all frames in between them to the 2nd frames positions using rotation and in the direction of the smallest angle (clockwise or counterclockwise).|intro.modeleditor.rmbmenus.html#bonecommands")
         SB1 = qmenu.item("&Show Bones", ShowBones, "|Show Bones:\n\nThis allows all bones to be displayed in the editor's views.|intro.modeleditor.rmbmenus.html#bonecommands")
         HB1 = qmenu.item("&Hide Bones", HideBones, "|Hide Bones:\n\nThis stops all bones from being displayed in the editor's views.|intro.modeleditor.rmbmenus.html#bonecommands")
         SelectHandleVertexes = qmenu.item("Se&lect Handle Vertexes", select_handle_vertexes_click, "|Select (bone handle name) Vertexes:\n\nWhen the cursor is over a bone's Center handle with vertexes assigned to it, click this item to select all of them from that bone's handle.\n\nOr, if another handle is attached that has the vertexes assigned to it instead, then those are the vertexes that will be selected.\n\nIf no vertexes have been assigned to any handle at that location, then the menu item will show disabled.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#bonecommands")
@@ -5881,12 +5868,6 @@ class BoneCenterHandle(BoneHandle):
                     count = count + 10
                 if item.type == ":mf":
                     count = count + 5
-            if count == 20:
-                KeyframesRotation.state = qmenu.normal
-            else:
-                KeyframesRotation.state = qmenu.disabled
-        else:
-            KeyframesRotation.state = qmenu.disabled
 
         AttachBone1to2.state = qmenu.disabled
         AttachBone2to1.state = qmenu.disabled
@@ -5912,7 +5893,7 @@ class BoneCenterHandle(BoneHandle):
         if not MdlOption("GridActive") or editor.gridstep <= 0:
             Forcetogrid.state = qmenu.disabled
 
-        menu = [AddBone, ContinueBones, qmenu.sep, AttachBone1to2, AttachBone2to1, qmenu.sep, DetachBones, qmenu.sep, AlignBone1to2, AlignBone2to1, qmenu.sep] + BBoxBoneExtras + [qmenu.sep, AssignReleaseVertices, qmenu.sep, SetHandlePosition, qmenu.sep] + sel_vtx_list + [qmenu.sep, bone_control, qmenu.sep, individual_bones_sel, qmenu.sep, handlescalepop, qmenu.sep, KeyframesRotation, qmenu.sep, SB1, HB1, qmenu.sep] + BoneExtras + [qmenu.sep, Forcetogrid]
+        menu = [AddBone, ContinueBones, qmenu.sep, AttachBone1to2, AttachBone2to1, qmenu.sep, DetachBones, qmenu.sep, AlignBone1to2, AlignBone2to1, qmenu.sep] + BBoxBoneExtras + [qmenu.sep, AssignReleaseVertices, qmenu.sep, SetHandlePosition, qmenu.sep] + sel_vtx_list + [qmenu.sep, bone_control, qmenu.sep, individual_bones_sel, qmenu.sep, handlescalepop, qmenu.sep, SB1, HB1, qmenu.sep] + BoneExtras + [qmenu.sep, Forcetogrid]
 
         return menu
 
@@ -6583,6 +6564,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.230  2011/05/26 09:32:19  cdunde
+#Setup component bbox vertex assignment support.
+#
 #Revision 1.229  2011/04/02 01:08:10  cdunde
 #Added Half-Life 2 importer animation support with bone, attachment and bbox movement.
 #
