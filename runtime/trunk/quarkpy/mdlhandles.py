@@ -1009,12 +1009,20 @@ class PolyHandle(qhandles.CenterHandle):
             poly = editor.layout.explorer.sellist[0]
             Old_poly = poly.copy()
             Old_poly['assigned2'] = m.text + ":mc"
-            Old_poly.shortname = m.text + " " + poly.shortname
+            name = m.text + " " + poly.shortname
+            polys = editor.Root.dictitems['Misc:mg'].findallsubitems("", ':p')
+            count = 1
+            for p in polys:
+                if p.shortname == name:
+                    count = count + 1
+            if count != 1:
+                name = m.text + " bbox " + str(count)
+            Old_poly.shortname = name
             New_poly = UpdateBBoxList(editor, Old_poly)
             explorer = editor.layout.explorer
             undo = quarkx.action()
             undo.exchange(poly, New_poly)
-            editor.ok(undo, "bbox assigned")
+            editor.ok(undo, "bbox assigned to component")
             DrawBBoxes(editor, explorer, editor.Root.currentcomponent)
             editor.layout.explorer.uniquesel = New_poly
             editor.layout.explorer.sellist = [New_poly]
@@ -1101,12 +1109,26 @@ class PolyHandle(qhandles.CenterHandle):
             comp = editor.Root.currentcomponent
             explorer = editor.layout.explorer
             poly = editor.layout.explorer.sellist[0]
-            poly['assigned2'] = comp.name
+            New_poly = poly.copy()
+            name = comp.shortname + " " + poly.shortname
+            polys = editor.Root.dictitems['Misc:mg'].findallsubitems("", ':p')
+            count = 1
+            for p in polys:
+                if p.shortname == name:
+                    count = count + 1
+            if count != 1:
+                name = comp.shortname + " bbox " + str(count)
+            New_poly.shortname = name
+            New_poly['assigned2'] = comp.name
             bboxlist = editor.ModelComponentList['bboxlist']
-            bboxlist[poly.name] = {}
-            bboxlist[poly.name]['vtx_list'] = editor.ModelVertexSelList
+            bboxlist[New_poly.name] = {}
+            bboxlist[New_poly.name]['vtx_list'] = editor.ModelVertexSelList
+            undo = quarkx.action()
+            undo.exchange(poly, New_poly)
+            editor.ok(undo, "bbox assigned vertexes")
             DrawBBoxes(editor, explorer, comp)
-            Update_Editor_Views(editor)
+            editor.layout.explorer.uniquesel = New_poly
+            editor.layout.explorer.sellist = [New_poly]
 
         def release_bbox_click(m, self=self, editor=editor, view=view):
             poly = editor.layout.explorer.sellist[0]
@@ -1199,7 +1221,7 @@ class PolyHandle(qhandles.CenterHandle):
             explorer = editor.layout.explorer
             undo = quarkx.action()
             undo.exchange(self.poly, New_poly)
-            editor.ok(undo, "bbox assigned")
+            editor.ok(undo, "bbox assigned to bone")
             DrawBBoxes(editor, explorer, editor.Root.currentcomponent)
             editor.layout.explorer.uniquesel = New_poly
             editor.layout.explorer.sellist = [New_poly]
@@ -6564,6 +6586,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.231  2011/05/26 22:57:48  cdunde
+#Removed OLD bones system Keyframe rotation function not used anymore.
+#
 #Revision 1.230  2011/05/26 09:32:19  cdunde
 #Setup component bbox vertex assignment support.
 #
