@@ -1656,7 +1656,10 @@ def DrawBBoxes(editor, explorer, comp):
                         # Updates the poly as needed.
                         if bonelist_frame_name is not None:
                             bone_data = bonelist[bonename]
-                            bpos = quarkx.vect(bone_data['frames'][bonelist_frame_name]['position'])
+                            try:
+                                bpos = quarkx.vect(bone_data['frames'][bonelist_frame_name]['position'])
+                            except:
+                                continue
                             brot = quarkx.matrix(bone_data['frames'][bonelist_frame_name]['rotmatrix'])
                             bbox = bboxlist[poly.name]['size']
                             UpdateBBoxPoly(poly, bpos, brot, bbox)
@@ -1670,7 +1673,11 @@ def DrawBBoxes(editor, explorer, comp):
                         if bboxlist[poly.name].has_key('size'):
                             bpos = quarkx.vect(0.,0.,0.)
                             brot = quarkx.matrix((1.,0.,0.),(0.,1.,0.),(0.,0.,1.))
-                            frame_verts = Root.dictitems[assigned2].dictitems['Frames:fg'].dictitems[frame_name].vertices
+                            frame_index = Root.currentcomponent.dictitems['Frames:fg'].dictitems[frame_name].index
+                            try:
+                                frame_verts = Root.dictitems[assigned2].dictitems['Frames:fg'].subitems[frame_index].vertices
+                            except:
+                                continue
                             bbox = quarkx.boundingboxof(frame_verts)
                             bbox = [bbox[0].tuple, bbox[1].tuple]
                             UpdateBBoxPoly(poly, bpos, brot, bbox)
@@ -1678,7 +1685,11 @@ def DrawBBoxes(editor, explorer, comp):
                             bpos = quarkx.vect(0.,0.,0.)
                             brot = quarkx.matrix((1.,0.,0.),(0.,1.,0.),(0.,0.,1.))
                             frame_verts = []
-                            vertices = Root.dictitems[assigned2].dictitems['Frames:fg'].dictitems[frame_name].vertices
+                            frame_index = Root.currentcomponent.dictitems['Frames:fg'].dictitems[frame_name].index
+                            try:
+                                vertices = Root.dictitems[assigned2].dictitems['Frames:fg'].subitems[frame_index].vertices
+                            except:
+                                continue
                             for vtx_index in bboxlist[poly.name]['vtx_list']:
                                 frame_verts = frame_verts + [vertices[vtx_index]]
                             bbox = quarkx.boundingboxof(frame_verts)
@@ -4742,6 +4753,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.162  2011/05/26 22:57:48  cdunde
+#Removed OLD bones system Keyframe rotation function not used anymore.
+#
 #Revision 1.161  2011/05/26 09:32:19  cdunde
 #Setup component bbox vertex assignment support.
 #
