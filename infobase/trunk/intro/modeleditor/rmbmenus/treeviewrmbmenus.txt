@@ -6,6 +6,9 @@ well self explanatory so we will only cover a couple of them that need it.
 
 <img border=1 align=right>treeviewrmbmenus1.png</img>
 
+<i>Expand Sub-items </i>&nbsp;: This will expand all of this items sub-folders and their sub-folders on down.
+
+
 <i>Force to grid </i>&nbsp;: This will cause any vertex to <g>snap</g> to the nearest location on
 the editor's grid.
 

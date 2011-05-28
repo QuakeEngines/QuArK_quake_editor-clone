@@ -8,15 +8,15 @@ previous action. The <i>something</i>, will be the action it will undo.
 <i>Undo/Redo</i> will open up the Undo/Redo window, where you can undo or redo
 more actions with one mouse-click.
 
+<i>Duplicate</i>. A copy <u>and</u> paste action, but without putting the
+selection in the clipboard.
+
 <i>Cut</i>. You know; remove the selection and put it into the clipboard.
 
 <i>Copy</i>. Just as easy; copy the selection into the clipboard.
 
 <i>Paste</i>. Take whatever is in the clipboard, and if it is something QuArK
 can use, it will paste it to where you point.
-
-<i>Duplicate</i>. A copy <u>and</u> paste action, but without putting the
-selection in the clipboard.
 
 <i>Delete</i>. Deletes the selection. Notice that it won't put anything in the
 clipboard.

@@ -2,11 +2,19 @@ title: Toolbars menu
 author: cdunde
 
 <img border=0 align=right>toolbars.png</img>
+
+<i>Editing Tools</i>. Wether or not the Editing Tools toolbar should be visible.
+
+<i>Display</i>. Wether or not the Display toolbar should be visible.
+
 <i>Movement Tool Palette</i>. Whether or not the Movement toolbar should be
 visible.
+
+<i>Animation</i>. Wether or not the Animation toolbar should be visible.
+
+<i>Paint modes</i>. Wether or not the Paint modes toolbar should be visible.
 
 <i>View Selection Modes</i>. Whether or not the View Selection Modes toolbar should be
 visible.
 
-<i>Display</i>. Wether or not the Display toolbar should be visible.
-
+<i>Object modes</i>. Wether or not the Object modes toolbar should be visible.

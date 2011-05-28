@@ -23,6 +23,8 @@ editortrue3dmode
 <area href="#axisxyzletters" shape="rect" coords="2, 475, 250, 489">
 <area href="#listofplugins" shape="rect" coords="2, 501, 250, 515">
 <area href="#configuration" shape="rect" coords="2, 518, 250, 532">
+<area href="#logconsole" shape="rect" coords="2, 543, 250, 557">
+<area href="#clearconsolelog" shape="rect" coords="2, 559, 250, 574">
 </map>
 
 <img border=0 align=right usemap="#optionsmenuMap0">options.png</img>
@@ -192,3 +194,11 @@ with the mouse.
 
 <a name="configuration"></a>
 <i><b><a href="#rulerguide">Configuration</a></b> </i>&nbsp;: Takes you to the <ref> intro/configuration </ref>.
+
+<a name="logconsole"></a>
+<i><b><a href="#rulerguide">Log Console</a></b> </i>&nbsp;: When active this will write everything that is printed
+to the console to a text file called 'Console.txt' which is located in QuArK's main folder.
+
+<a name="clearconsolelog"></a>
+<i><b><a href="#rulerguide">Clear Console Log</a></b> </i>&nbsp;: When clicked this will clear everything that is
+printed to the text file called 'Console.txt' which is located in QuArK's main folder.

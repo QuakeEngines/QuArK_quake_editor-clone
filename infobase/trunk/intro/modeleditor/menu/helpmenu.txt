@@ -14,6 +14,8 @@ author: cdunde
 
 <i>QuArK's Forums site</i>. Opens your web-browser to the on-line QuArK Forums site.
 
+<i>Check for updates</i>. Checks on-line for QuArK program updates.
+
 <i>View console</i>. Shows a Python-console. Usefull when debugging plug-ins.
 
 <i>About</i>. Shows the about box.
