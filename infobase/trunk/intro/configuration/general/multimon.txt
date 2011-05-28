@@ -55,11 +55,11 @@ cards such as some with the GeForce2MX chipset and some earlier Matrox
 video cards. Note that the drivers that ship with Windows will almost never 
 work in multimonitor setups, you'll need to download new drivers from the 
 maker (which can get tricky if the maker no longer exists, in which case 
-try places like www.driverguide.com which carry archives). Also note that 
-these discussions apply for dualhead cards where you wish to run 3 or more 
-monitors (ie. you'll need another card anyway). If you have a dualhead card 
-and only want to run 2 monitors, follow the instructions that came with the 
-card ;-)
+try places like <a href="http://www.driverguide.com">www.driverguide.com</a>
+which carry archives). Also note that these discussions apply for dualhead 
+cards where you wish to run 3 or more monitors (ie. you'll need another 
+card anyway). If you have a dualhead card and only want to run 2 monitors, 
+follow the instructions that came with the card ;-)
 
 
 DESKTOPS - WINDOWS 98SE/ME:
@@ -105,4 +105,4 @@ show single-monitor mode programs such as 3D games.
 
 For more information on other issues, as well as listings of combinations 
 of video cards that users have had success with, see 
-<a href=http://www.realtimesoft.com/multimon>www.realtimesoft.com/multimon</a> .
+<a href="http://www.realtimesoft.com/multimon">www.realtimesoft.com/multimon</a> .
