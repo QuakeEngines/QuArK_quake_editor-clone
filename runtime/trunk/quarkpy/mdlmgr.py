@@ -1492,6 +1492,14 @@ class ModelLayout(BaseLayout):
                         quarkx.beep()
                         quarkx.msgbox("Invalid Component Name\n\nNo tags start with the group name\n    " + newcompfile + "\n\nAll components and tags group names (1st part) must match\nThe tags with a name that starts with\n    " + oldcompfile + "\nhave been updated with this new component name.\n\nYou need to rename all other components\nand tags that this component belongs to\nor 'undo' this component's name change.", MT_ERROR, MB_OK)
 
+                # This section preserves, and passes on, data to the BBoxes (if any) when a component is renamed.
+                bboxes = self.editor.Root.dictitems['Misc:mg'].findallsubitems("", ':p')   # find all bboxes
+                for bbox in bboxes:
+                    if bbox.dictspec['assigned2'] == changednames[0][0]:
+                        new_bbox = bbox.copy()
+                        new_bbox['assigned2'] = changednames[0][1]
+                        undo.exchange(bbox, new_bbox)
+
                 self.editor.ok(undo, undo_msg)
 
         if comp != self.editor.Root.currentcomponent:
@@ -1609,7 +1617,20 @@ class ModelLayout(BaseLayout):
     def selectbbox(self, bbox):
         # This is when you select a particular bbox(s) in the 'Misc:mg' group of the Tree-view.
 
-        pass
+        changednames = quarkx.getchangednames()
+        if changednames is not None:
+            undo = quarkx.action()
+            undo_msg = "USE UNDO BELOW - bbox name changed"
+            new_bbox = bbox.copy()
+            old_name = changednames[0][0]
+            new_name = changednames[0][1].replace(":p", "")
+            new_bbox.shortname = new_name
+            tempdata = self.editor.ModelComponentList['bboxlist'][old_name]
+            del self.editor.ModelComponentList['bboxlist'][old_name]
+            new_name = new_name + ":p"
+            self.editor.ModelComponentList['bboxlist'][new_name] = tempdata
+            undo.exchange(bbox, new_bbox)
+            self.editor.ok(undo, undo_msg)
 
     def selecttag(self, tag):
         # This is when you select a particular tag(s) in the 'Misc:mg' group of the Tree-view.
@@ -1619,7 +1640,7 @@ class ModelLayout(BaseLayout):
             # This section deals with a tag's name change.
             if changednames[0][0].endswith(":tag"):
                 undo = quarkx.action()
-                undo_msg = "USE UNDO BELOW - " + changednames[0][1].replace(":tag", "") + " data updated"
+                undo_msg = "USE UNDO BELOW - tag name changed"
                 oldtag = changednames[0][0].replace(":tag", "")
                 oldtag = oldtag.split("_tag_")
                 oldtagfile = oldtag[0]
@@ -1681,6 +1702,26 @@ class ModelLayout(BaseLayout):
                     tempdata = self.editor.ModelComponentList[comp.name]['bonevtxlist'][changednames[0][0]]
                     del self.editor.ModelComponentList[comp.name]['bonevtxlist'][changednames[0][0]]
                     self.editor.ModelComponentList[comp.name]['bonevtxlist'][changednames[0][1]] = tempdata
+                weightvtxlist = self.editor.ModelComponentList[comp.name]['weightvtxlist']
+                keys = weightvtxlist.keys()
+                for key in keys:
+                    bone_names = weightvtxlist[key].keys()
+                    if changednames[0][0] in bone_names:
+                        tempdata = weightvtxlist[key][changednames[0][0]]
+                        del weightvtxlist[key][changednames[0][0]]
+                        weightvtxlist[key][changednames[0][1]] = tempdata
+
+            if self.editor.ModelComponentList['bonelist'].has_key(changednames[0][0]):
+                tempdata = self.editor.ModelComponentList['bonelist'][changednames[0][0]]
+                del self.editor.ModelComponentList['bonelist'][changednames[0][0]]
+                self.editor.ModelComponentList['bonelist'][changednames[0][1]] = tempdata
+
+            bboxes = self.editor.Root.dictitems['Misc:mg'].findallsubitems("", ':p')   # find all bboxes
+            for bbox in bboxes:
+                if bbox.dictspec['assigned2'] == changednames[0][0]:
+                    new_bbox = bbox.copy()
+                    new_bbox['assigned2'] = changednames[0][1]
+                    undo.exchange(bbox, new_bbox)
 
             if len(self.editor.Root.dictitems['Skeleton:bg'].subitems) != 0:
                 oldskelgroup = self.editor.Root.dictitems['Skeleton:bg']
@@ -1872,6 +1913,10 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.132  2011/03/10 20:56:39  cdunde
+#Updating of Used Textures in the Model Editor Texture Browser for all imported skin textures
+#and allow bones and Skeleton folder to be placed in Userdata panel for reuse with other models.
+#
 #Revision 1.131  2011/02/11 19:52:56  cdunde
 #Added import support for Heretic II and .m8 as supported texture file type.
 #
