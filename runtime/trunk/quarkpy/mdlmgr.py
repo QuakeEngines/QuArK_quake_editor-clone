@@ -1734,7 +1734,7 @@ class ModelLayout(BaseLayout):
                         bone['parent_name'] = changednames[0][1]
                 newskelgroup = boneundo(self.editor, old, new)
                 undo.exchange(oldskelgroup, newskelgroup)
-            
+
             self.editor.ok(undo, undo_msg)
 
 
@@ -1769,6 +1769,53 @@ class ModelLayout(BaseLayout):
 
         c = self.componentof(frame)
         if c is not None:
+            changednames = quarkx.getchangednames()
+            if changednames is not None:
+                undo = quarkx.action()
+                undo_msg = "USE UNDO BELOW - frame name changed"
+                comp_name = c.shortname
+                comp_name = comp_name.split("_")
+                if len(comp_name) == 1:
+                    check_comp_name = comp_name[0]
+                elif len(comp_name) < 3:
+                    check_comp_name = comp_name[0] + "_" + comp_name[1]
+                else:
+                    check_comp_name = comp_name[0] + "_" + comp_name[1] + "_" + comp_name[2]
+                # Updates effected component's frame name of bboxes, if any.
+                bboxlist = self.editor.ModelComponentList['bboxlist']
+                bboxes = self.editor.Root.dictitems['Misc:mg'].findallsubitems("", ':p')   # find all bboxes
+                for bbox in bboxes:
+                    assigned2 = bbox.dictspec['assigned2']
+                    if bboxlist.has_key(bbox.name) and bboxlist[bbox.name].has_key('frames'):
+                        if assigned2.find(check_comp_name) != -1 and bboxlist[bbox.name]['frames'].has_key(changednames[0][0]):
+                            tempdata = bboxlist[bbox.name]['frames'][changednames[0][0]]
+                            del bboxlist[bbox.name]['frames'][changednames[0][0]]
+                            bboxlist[bbox.name]['frames'][changednames[0][1]] = tempdata
+                # Updates effected component's frame name of bonelist, if any.
+                bonelist = self.editor.ModelComponentList['bonelist']
+                bones = self.editor.Root.dictitems['Skeleton:bg'].findallsubitems("", ':bone')   # find all bones
+                for bone in bones:
+                    if bonelist.has_key(bone.name) and bonelist[bone.name]['frames'].has_key(changednames[0][0]):
+                        tempdata = bonelist[bone.name]['frames'][changednames[0][0]]
+                        del bonelist[bone.name]['frames'][changednames[0][0]]
+                        bonelist[bone.name]['frames'][changednames[0][1]] = tempdata
+                # Updates ALL related component's frame renaming, if any and option to do so is active.
+                if quarkx.setupsubset(SS_MODEL, "Options")["AutoFrameRenaming"]:
+                    comps = self.editor.Root.findallsubitems("", ':mc')   # find all components
+                    for comp in comps:
+                        if comp.name == c.name:
+                            continue
+                        if comp.shortname.find(check_comp_name) != -1:
+                            old_framesgroup = comp.dictitems['Frames:fg']
+                            if old_framesgroup.dictitems.has_key(changednames[0][0]):
+                                new_framesgroup = old_framesgroup.copy()
+                                new_frame = new_framesgroup.dictitems[changednames[0][0]]
+                                shortname = changednames[0][1].replace(":mf", "")
+                                new_frame.shortname = shortname
+                                undo.exchange(old_framesgroup, new_framesgroup)
+
+                self.editor.ok(undo, undo_msg)
+
             self.selectcomponent(c)
             c.setframe(frame)
             c.setparentframes(frame)
@@ -1913,6 +1960,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.133  2011/05/29 21:15:17  cdunde
+#For bones and bboxes, all ModelComponentList items and related object dictspects updated.
+#
 #Revision 1.132  2011/03/10 20:56:39  cdunde
 #Updating of Used Textures in the Model Editor Texture Browser for all imported skin textures
 #and allow bones and Skeleton folder to be placed in Userdata panel for reuse with other models.

@@ -849,6 +849,7 @@ ft3dmode.state = qmenu.disabled
 
 mdleditor.ModelEditor.finishdrawing = newfinishdrawing
 
+AutoFrameRenaming = toggleitem("Auto &Frame Renaming", "AutoFrameRenaming", (0,0), hint="|Auto Frame Renaming:\n\nSome models consist of more then one component. If so, their frame names should always match.\n\nWhen checked, if a frame of one component is renamed, this will cause the same frame of all the other related components to be renamed also automatically.|intro.modeleditor.menu.html#optionsmenu")
 
 def OptionsMenu():
     "The Options menu, with its shortcuts."
@@ -860,7 +861,7 @@ def OptionsMenu():
     SkinViewOptions = qmenu.popup("Skin-view Options", [], SkinViewOptionsClick, "|Skin-view Options:\n\nThese functions deal with various Options pertaining directly to the Skin-view and the way certain elements can be manipulated and displayed while working on the Models Skin Mesh.\n\nPress the 'F1' key again or click the button below for further details.", "intro.modeleditor.skinview.html#funcsnmenus")
     PlugIns = qmenu.item("List of Plug-ins...", Plugins1Click)
     Config1 = qmenu.item("Confi&guration...", Config1Click,  hint = "|Configuration...:\n\nThis leads to the Configuration-Window where all elements of QuArK are setup. From the way the Editor looks and operates to Specific Game Configuration and Mapping or Modeling variables.\n\nBy pressing the F1 key one more time, or clicking the 'InfoBase' button below, you will be taken directly to the Infobase section that covers all of these areas, which can greatly assist you in setting up QuArK for a particular game you wish to map or model for.|intro.configuration.html")
-    Options1 = qmenu.popup("&Options", [RotationOptions, dhwr, et3dmode, ft3dmode, qmenu.sep]+[maiv, dbf, lineThicknessItem, qmenu.sep, BoneOptions, FaceSelOptions, VertexSelOptions, SkinViewOptions, qmenu.sep]+items+[qmenu.sep, PlugIns, Config1, qmenu.sep, consolelog, clearconsolelog], Options1Click)
+    Options1 = qmenu.popup("&Options", [RotationOptions, dhwr, et3dmode, ft3dmode, qmenu.sep]+[maiv, dbf, lineThicknessItem, qmenu.sep, BoneOptions, FaceSelOptions, VertexSelOptions, SkinViewOptions, AutoFrameRenaming, qmenu.sep]+items+[qmenu.sep, PlugIns, Config1, qmenu.sep, consolelog, clearconsolelog], Options1Click)
     return Options1, shortcuts
 
 
@@ -877,6 +878,9 @@ def OptionsMenuRMB():
 #
 #
 #$Log$
+#Revision 1.52  2011/03/27 06:30:56  cdunde
+#Icon updates.
+#
 #Revision 1.51  2010/06/06 08:56:13  cdunde
 #Fix to draw fillcolors correctly when true 3D is turned on or off.
 #

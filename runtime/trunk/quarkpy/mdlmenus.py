@@ -323,6 +323,12 @@ def MdlBackgroundMenu(editor, view=None, origin=None):
             if frame2parent == frame1parent and framecount == 2:
                 keyframepop.state = qmenu.normal
 
+            AFR = quarkx.setupsubset(SS_MODEL,"Options").getint("AutoFrameRenaming")
+            if AFR == 0:
+                mdloptions.AutoFrameRenaming.state = qmenu.normal
+            else:
+                mdloptions.AutoFrameRenaming.state = qmenu.checked
+
             if len(sellist) >= 1:
                 import mdlmgr
                 item = sellist[0]
@@ -341,9 +347,9 @@ def MdlBackgroundMenu(editor, view=None, origin=None):
                 qbackbmp.MdlBackBmpDlg(form, view)
             backbmp1 = qmenu.item("Background image...", backbmp1click, "|Background image:\n\nWhen selected, this will open a dialog box where you can choose a .bmp image file to place and display in the 2D view that the cursor was in when the RMB was clicked.\n\nClick on the 'InfoBase' button below for full detailed information about its functions and settings.|intro.mapeditor.rmb_menus.noselectionmenu.html#background")
             if editor.ModelFaceSelList != []:
-                extra = extra + [qmenu.sep, bboxpop, tagpop, bonepop, mdlfacepop, vertexpop, Search1, Commands1, qmenu.sep, keyframepop, qmenu.sep, BoneOptions, FaceSelOptions, VertexSelOptions, qmenu.sep] + TexModeMenu(editor, view) + [qmenu.sep, backbmp1]
+                extra = extra + [qmenu.sep, bboxpop, tagpop, bonepop, mdlfacepop, vertexpop, Search1, Commands1, qmenu.sep, keyframepop, qmenu.sep, BoneOptions, FaceSelOptions, VertexSelOptions, mdloptions.AutoFrameRenaming, qmenu.sep] + TexModeMenu(editor, view) + [qmenu.sep, backbmp1]
             else:
-                extra = extra + [qmenu.sep, bboxpop, tagpop, bonepop, vertexpop, Search1, Commands1, qmenu.sep, keyframepop, qmenu.sep, BoneOptions, FaceSelOptions, VertexSelOptions, qmenu.sep] + TexModeMenu(editor, view) + [qmenu.sep, backbmp1]
+                extra = extra + [qmenu.sep, bboxpop, tagpop, bonepop, vertexpop, Search1, Commands1, qmenu.sep, keyframepop, qmenu.sep, BoneOptions, FaceSelOptions, VertexSelOptions, mdloptions.AutoFrameRenaming, qmenu.sep] + TexModeMenu(editor, view) + [qmenu.sep, backbmp1]
         else:
             def resetSkinview(menu, editor=editor, view=view):
                 viewWidth, viewHeight = view.clientarea
@@ -440,6 +446,9 @@ def BaseMenu(sellist, editor):
 #
 #
 #$Log$
+#Revision 1.54  2011/02/11 18:55:20  cdunde
+#Added InfoBase section and direct links for Model Editor exporters to assist people in their use.
+#
 #Revision 1.53  2010/12/06 05:43:06  cdunde
 #Updates for Model Editor bounding box system.
 #

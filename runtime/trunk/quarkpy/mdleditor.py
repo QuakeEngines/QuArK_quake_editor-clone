@@ -432,6 +432,7 @@ class ModelEditor(BaseEditor):
 
     def explorermenu(self, reserved, view=None, origin=None):
         "The pop-up menu for the Explorer and views."
+        import mdloptions # Leave this here to avoid program crashing.
 
         def SaveSkinFile(m):
             quarkx.savefileobj(obj, FM_SaveAsFile, 0, None, 0)
@@ -472,24 +473,31 @@ class ModelEditor(BaseEditor):
         expand_subitems = qmenu.item("Expand Sub-items", expand_subitems_click, "|Expand Sub-items:\n\nThis will expand all of this items sub-folders and their sub-folders on down.|intro.modeleditor.rmbmenus.html#bonecommands")
         if len(sellist) != 0 and len(sellist[0].subitems) == 0:
             expand_subitems.state = qmenu.disabled
+
+        AFR = quarkx.setupsubset(SS_MODEL,"Options").getint("AutoFrameRenaming")
+        if AFR == 0:
+            mdloptions.AutoFrameRenaming.state = qmenu.normal
+        else:
+            mdloptions.AutoFrameRenaming.state = qmenu.checked
+
         if len(sellist)==1:
             if sellist[0].type == ':mf':
                 mdlcommands.NewFrame.state = qmenu.normal
                 if self.ModelFaceSelList != []:
                     mdlfacepop = qmenu.popup("Face Commands", mdlhandles.ModelFaceHandle(origin).menu(self, view), hint="")
-                    return [expand_subitems, qmenu.sep] + [mdlcommands.NewFrame , qmenu.sep , mdlfacepop, qmenu.sep] + mdlentities.CallManager("menu", sellist[0], self) + extra
-                return [expand_subitems, qmenu.sep] + [mdlcommands.NewFrame , qmenu.sep] + mdlentities.CallManager("menu", sellist[0], self) + extra
+                    return [expand_subitems, qmenu.sep, mdloptions.AutoFrameRenaming , qmenu.sep] + [mdlcommands.NewFrame , qmenu.sep , mdlfacepop, qmenu.sep] + mdlentities.CallManager("menu", sellist[0], self) + extra
+                return [expand_subitems, qmenu.sep, mdloptions.AutoFrameRenaming , qmenu.sep] + [mdlcommands.NewFrame , qmenu.sep] + mdlentities.CallManager("menu", sellist[0], self) + extra
             elif sellist[0].parent.type == ':sg':
                 obj = sellist[0]
                 saveskinfile = qmenu.item("&Save Skin File", SaveSkinFile, "|Save Skin File:\n\nOpens a file save window and allows you to save the selected skin as various types of image files.\n\nNOTE:\n   You can NOT save another type as a .pcx file because they do not have a 'palette' like .pcx files do, this will only cause an error.\n\nYou CAN save a .pcx file to another file type like .tga though.|intro.modeleditor.rmbmenus.html#treeviewrmbmenus")
-                return [expand_subitems, qmenu.sep] + [saveskinfile, qmenu.sep] + mdlentities.CallManager("menu", sellist[0], self) + extra
+                return [expand_subitems, qmenu.sep, mdloptions.AutoFrameRenaming , qmenu.sep] + [saveskinfile, qmenu.sep] + mdlentities.CallManager("menu", sellist[0], self) + extra
             elif sellist[0].type == ':tag':
-                return [expand_subitems, qmenu.sep] + mdlentities.CallManager("menu", sellist[0], self)
+                return [expand_subitems, qmenu.sep, mdloptions.AutoFrameRenaming , qmenu.sep] + mdlentities.CallManager("menu", sellist[0], self)
             elif sellist[0].type == ':bg' or sellist[0].type == ':bone':
                 BoneExtras = mdlhandles.BoneCenterHandle(origin,None,None).extrasmenu(self)
-                return [expand_subitems, qmenu.sep] + BoneExtras + [qmenu.sep] + mdlentities.CallManager("menu", sellist[0], self) + extra
+                return [expand_subitems, qmenu.sep, mdloptions.AutoFrameRenaming , qmenu.sep] + BoneExtras + [qmenu.sep] + mdlentities.CallManager("menu", sellist[0], self) + extra
             else:
-                return [expand_subitems, qmenu.sep] + mdlentities.CallManager("menu", sellist[0], self) + extra
+                return [expand_subitems, qmenu.sep, mdloptions.AutoFrameRenaming , qmenu.sep] + mdlentities.CallManager("menu", sellist[0], self) + extra
         elif len(sellist)>1:
             mc_count = 0
             for item in sellist:
@@ -498,13 +506,13 @@ class ModelEditor(BaseEditor):
                 if mc_count > 1:
                     mdlcommands.MatchFrameCount.state = qmenu.normal
                     mdlcommands.CheckC.state = qmenu.normal
-                    return [expand_subitems, qmenu.sep] + [mdlcommands.MatchFrameCount, mdlcommands.CheckC, qmenu.sep] + mdlmenus.MultiSelMenu(sellist, self) + extra
+                    return [expand_subitems, qmenu.sep, mdloptions.AutoFrameRenaming , qmenu.sep] + [mdlcommands.MatchFrameCount, mdlcommands.CheckC, qmenu.sep] + mdlmenus.MultiSelMenu(sellist, self) + extra
             if sellist[0].type == ':tag':
-                return [expand_subitems, qmenu.sep] + mdlentities.CallManager("menu", sellist[0], self)
+                return [expand_subitems, qmenu.sep, mdloptions.AutoFrameRenaming , qmenu.sep] + mdlentities.CallManager("menu", sellist[0], self)
             if sellist[0].type == ':bg' or sellist[0].type == ':bone':
                 BoneExtras = mdlhandles.BoneCenterHandle(origin,None,None).extrasmenu(self)
-                return [expand_subitems, qmenu.sep] + BoneExtras + [qmenu.sep] + mdlentities.CallManager("menu", sellist[0], self) + extra
-        return [expand_subitems, qmenu.sep] + mdlmenus.MultiSelMenu(sellist, self) + extra
+                return [expand_subitems, qmenu.sep, mdloptions.AutoFrameRenaming , qmenu.sep] + BoneExtras + [qmenu.sep] + mdlentities.CallManager("menu", sellist[0], self) + extra
+        return [expand_subitems, qmenu.sep, mdloptions.AutoFrameRenaming , qmenu.sep] + mdlmenus.MultiSelMenu(sellist, self) + extra
 
 
     def explorerdrop(self, ex, list, text):
@@ -1859,6 +1867,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.163  2011/03/15 08:25:46  cdunde
+#Added cameraview saving duplicators and search systems, like in the Map Editor, to the Model Editor.
+#
 #Revision 1.162  2011/03/13 00:41:47  cdunde
 #Updating fixed for the Model Editor of the Texture Browser's Used Textures folder.
 #
