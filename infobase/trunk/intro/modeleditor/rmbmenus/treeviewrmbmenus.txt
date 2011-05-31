@@ -8,6 +8,9 @@ well self explanatory so we will only cover a couple of them that need it.
 
 <i>Expand Sub-items </i>&nbsp;: This will expand all of this items sub-folders and their sub-folders on down.
 
+<i>Auto Frame Renaming </i>&nbsp;:Some models consist of more then one component. If so, their frame names
+should always match. When checked, if a frame of one component is renamed, this will cause the same frame
+of all the other related components to be renamed also automatically.
 
 <i>Force to grid </i>&nbsp;: This will cause any vertex to <g>snap</g> to the nearest location on
 the editor's grid.

@@ -13,6 +13,12 @@ author: cdunde
 <area href="#editorboneoptions" shape="rect" coords="2, 213, 155, 227">
 <area href="#editorfaceoptions" shape="rect" coords="2, 230, 155, 246">
 <area href="#editorvertexoptions" shape="rect" coords="2, 248, 155, 264">
+<area href="#autoframerenaming" shape="rect" coords="2, 267, 155, 282">
+<area href="#reset3dview" shape="rect" coords="2, 291, 155, 307">
+<area href="#boundingboxes" shape="rect" coords="2, 310, 155, 325">
+<area href="#componentcolors" shape="rect" coords="2, 328, 155, 343">
+<area href="#viewsettings" shape="rect" coords="2, 346, 155, 395">
+<area href="#backgroundimage" shape="rect" coords="2, 404, 155, 420">
 </map>
 
 <map name="rmbmenusMap1">
@@ -86,17 +92,26 @@ available and various visual tools to work with. They are strictly face related 
 <i>Editor Vertex Options </i>&nbsp;: These functions deal with the Model Mesh selection methods
 available and various visual tools to work with. They are strictly vertex related and are covered in detail below.
 
+<a name="autoframerenaming"></a>
+<i>Auto Frame Renaming </i>&nbsp;:Some models consist of more then one component. If so, their frame names
+should always match. When checked, if a frame of one component is renamed, this will cause the same frame
+of all the other related components to be renamed also automatically.
+
+<a name="reset3dview"></a>
 <i>Reset 3D view </i>&nbsp;: If the model becomes 'lost', goes out of the 3D view, you can use this
 function to reset the 3D view and bring the model back to its starting position when it was first opened
 and based on the 'Rotation Method' you last chose to rotate the model by.
 
+<a name="boundingboxes"></a>
 <i>Draw Bounding Boxes </i>&nbsp;: When checked this activates the display of model bounding boxes if any.
 Also known as <g>hit boxes</g> for Half-Life and by other names for different model formats.
 
+<a name="componentcolors"></a>
 <i>Use Component Colors </i>&nbsp;: When checked this activates the display of individual component colors,
 which can be set on the <a href="intro.modeleditor.dataforms.html#specsargsview">Specifics page</a>,
 to distinguish one model component mesh area from another.
 
+<a name="viewsettings"></a>
 <u>Each view can be set to one of three rendering modes :</u>
 
 <i>Wireframe </i>&nbsp;: The model mesh will be drawn as lines.
@@ -107,6 +122,7 @@ This means that you won't be able to 'see-through' the model once it is in view.
 
 <i>Textured </i>&nbsp;: The model is displayed with its full texture applied for the finished "skinned" look.
 
+<a name="backgroundimage"></a>
 <i>Background image... </i>&nbsp;: When selected, this will open a dialog box where you can choose any image
 file the <g>QuArK</g> supports to place and display in the 2D view that the cursor was in when the RMB was clicked.
 Click <a href="intro.mapeditor.rmb_menus.noselectionmenu.html#background">here</a> for full detailed information
