@@ -23,6 +23,10 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.99  2010/11/24 05:56:55  cdunde
+New quarkx function call changedfaces by DanielPharos.
+Makes the Delphi code add + sign to poly in the tree-view without going through undo code.
+
 Revision 1.98  2010/05/23 15:58:04  danielpharos
 Added some options to handle texture names better. Should fix wrong slashes on export.
 
@@ -1565,6 +1569,7 @@ var
   ListeSommets: TList;
   SommetEx: PVertexEx;
   NoAretes: array[1..2] of Integer;
+  DummyPointer: Pointer;
 
   procedure RemoveFace(FI: TFace; I: Integer);
   var
@@ -1843,8 +1848,8 @@ begin
           Surface^.Source:=Self;
           Surface^.F:=FJ;
           Surface^.prvVertexCount:=K;
-          Faces.Add(Surface);
-          FJ.LinkSurface(Surface);
+          //Faces.Add(Surface); //Moved to down below...
+          //FJ.LinkSurface(Surface);
           Inc(PChar(Surface), TailleBaseSurface+K*SizeOf(PVertex));
          end;
       except  // 3
@@ -1889,16 +1894,28 @@ begin
         Inc(J);
       until J=Vertices.Count;
       TamponArete^:=$8000;
-      {$IFDEF Debug}
-      Pointer(Source):=DescFaces;
-      {$ENDIF}
+
+      //Okay, problem. ReallocMem can change the pointer! So we have to make sure
+      //after the move, all our pointers are still pointing to the right things!
+
+      //Save original pointer
+      DummyPointer:=Pointer(DescFaces);
+
       ReallocMem(DescFaces, PChar(TamponArete)+SizeOf(Word)-PChar(DescFaces));
-      {$IFDEF Debug}
-      //FIXME: This happens! The guy that build this was mad enough to think
-      //ReallocMem never changes the pointer itself! This ofcourse DOES happen,
-      //so this code produces garbage in most cases!!!
-      if Pointer(Source)<>DescFaces then Raise InternalE('ReallocMem modified DescFaces');
-      {$ENDIF}
+
+      //Correct Surface pointer
+      Surface:=PSurface(PChar(Surface)+(PChar(DescFaces)-PChar(DummyPointer)));
+
+      DummyPointer:=PSurface(DescFaces);
+      for J:=0 to FaceList.Count-1 do
+      begin
+        FJ:=TFace(FaceList[J]);
+        K:=PSurface(DummyPointer)^.prvVertexCount;
+        Faces.Add(DummyPointer);
+        FJ.LinkSurface(DummyPointer);
+        Inc(PChar(DummyPointer), TailleBaseSurface+K*SizeOf(PVertex));
+      end;
+
       NbAretes2:=(PChar(Surface)-PChar(DescFaces)) div SizeOf(PVertex);
     finally // 2
    // here
@@ -2472,7 +2489,8 @@ end;*)
 
 procedure TPolyhedron.AnalyseClic;
 var
- I, J: Integer;
+ I: Integer;
+ IsOutside: Boolean;
  nP: TPointProj;
 begin
  if CheckPolyhedron then
@@ -2483,15 +2501,15 @@ begin
     AnalyseClic:=Nil;}
    if CCoord is T2DCoordinates then
     begin  { en vue non 3D, on peut cliquer sur un polyèdre dans lequel se trouve le point de départ 'Clic' }
-     J:=0;
+     IsOutside:=False;
      for I:=0 to Faces.Count-1 do
       with PSurface(Faces[I])^.F do
        if Dot(g_DrawInfo.Clic, Normale) > Dist then
         begin
-         J:=1;
+         IsOutside:=True;
          Break;
         end;
-     if J=0 then
+     if not IsOutside then
       begin  { point 'Clic' à l'intérieur }
        ResultatAnalyseClic(Liste, CCoord.Proj(g_DrawInfo.Clic), Nil);
        Exit;

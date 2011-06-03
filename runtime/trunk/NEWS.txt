@@ -14,6 +14,9 @@ $Id$
 
 6.6.0 Beta 5
 ============
+* [DanielPharos]: Fixed long-standing pointer corruption bug when loading poly faces. This was triggering errors when using
+          - FastMM. Now the map editor opens up properly with FastMM!
+
 * [cdunde]: Model editor, Setup component bbox vertex assignment support.
 
 * [cdunde/DanielPharos]: Model editor, Added bone and bounding boxes support to Keyframe Linear Interpolation function.
