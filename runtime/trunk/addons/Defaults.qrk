@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.528  2011/05/11 20:10:13  danielpharos
+//Updated all version numbers for 6.6 Beta 4 release.
+//
 //Revision 1.527  2011/03/26 23:35:16  cdunde
 //Updated Model Editor Camera Position system with Hotkeys to take quick shots of both Editor and Floating 3D views,
 //kept in separate folders for both Standard modes and True3D modes with Hotkeys to scroll through those shots.
@@ -1877,6 +1880,7 @@ QQRKSRC1
         .vmf = "1"     ivmf = '2'
         .cmap = "1"    icmap = '2'
         .bsp = "1"     ibsp = '3'
+        .d3dbsp = "1"  id3dbsp = '3'
         .qkl = "!"     iqkl = '4'
         .mdl = "1"     imdl = '4'
         .md2 = "1"     imd2 = '4'
@@ -1933,6 +1937,7 @@ QQRKSRC1
         .vmf = "Notepad.exe"
         .cmap = "Notepad.exe"
         .bsp = "<open>"
+        .d3dbsp = "<open>"
         .qkl = ""
         .mdl = "<open>"
         .md2 = "<open>"
@@ -6052,7 +6057,7 @@ QQRKSRC1
       Compiler: =
       {
         Txt = "Compiler"
-        Typ = "CL"   // combo box
+        Typ = "CL"   // Combobox list
         Hint = "Set this to the compiler version"
         Items = "*auto*"
              $0D"old"
@@ -9733,6 +9738,7 @@ QQRKSRC1
       .vmf: = { Txt="VMF map files" externaledit = ! }
       .cmap: = { Txt="CMAP map files" externaledit = ! }
       .bsp: = { Txt="BSP compiled maps" externaledit = ! }
+      .d3dbsp: = { Txt="BSP compiled CoD2 maps" externaledit = ! }
       //.qkl: = { Txt="QKL models" externaledit = ! }
       .mdl: = { Txt="MDL models" externaledit = ! }
       .md2: = { Txt="MD2 models" externaledit = ! }
@@ -9813,6 +9819,7 @@ QQRKSRC1
       .vmf: = {Typ="X" Cap=".vmf" Txt="Valve map format map files"}
       .cmap: = {Typ="X" Cap=".cmap" Txt="Sylphis map files"}
       .bsp: = {Typ="X" Cap=".bsp" Txt="Compiled maps"}
+      .d3dbsp: = {Typ="X" Cap=".d3dbsp" Txt="Compiled CoD2 maps"}
     //.qkl: = {Typ="X" Cap=".qkl" Txt="QuArK models (if not in .qrk)"}
       .mdl: = {Typ="X" Cap=".mdl" Txt="Standard Quake 1 Models"}
       .md2: = {Typ="X" Cap=".md2" Txt="Standard Quake 2 Models"}
