@@ -364,7 +364,22 @@ def Arrow(canvas, view, p1, p2, text=None):
 
 def quakecolor(v):     # v must be vector (x,y,z for color components)
     v = v*255.0
-    return quarkx.rnd(v.x) | (quarkx.rnd(v.y)<<8) | (quarkx.rnd(v.z)<<16)
+    red = quarkx.rnd(v.x)
+    green = quarkx.rnd(v.y)
+    blue = quarkx.rnd(v.z)
+    if red < 0:
+        red = 0
+    elif red > 255:
+        red = 255
+    if green < 0:
+        green = 0
+    elif green > 255:
+        green = 255
+    if blue < 0:
+        blue = 0
+    elif blue > 255:
+        blue = 255
+    return red | (green<<8) | (blue<<16)
 
 def colorquake(i):     # i must be a color as an integer
     v = quarkx.vect(i & 255, (i>>8) & 255, (i>>16) & 255)
@@ -1571,6 +1586,10 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.63  2011/03/26 23:35:16  cdunde
+#Updated Model Editor Camera Position system with Hotkeys to take quick shots of both Editor and Floating 3D views,
+#kept in separate folders for both Standard modes and True3D modes with Hotkeys to scroll through those shots.
+#
 #Revision 1.62  2010/12/06 05:43:06  cdunde
 #Updates for Model Editor bounding box system.
 #
