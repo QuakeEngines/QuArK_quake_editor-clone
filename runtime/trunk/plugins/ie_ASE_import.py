@@ -1094,7 +1094,7 @@ def spawn_mesh(obj, basepath, filename, ComponentList, message, CompNbr):
     framesgroup = quarkx.newobj('Frames:fg') # QuArK Frames group made here.
 
     # Because .ase models are "stagnat" models, (no animation), we only make 1 frame
-    # which is used to draw the model’s 'mesh' (shape) in the editor's views.
+    # which is used to draw the model's 'mesh' (shape) in the editor's views.
     # The Skin-view uses the model's 'Tris' to draw its lines. 
     frame = quarkx.newobj('baseframe:mf') # QuArK frame made here.
     comp_mesh = () # QuArK code
@@ -1263,7 +1263,7 @@ def spawn_mesh(obj, basepath, filename, ComponentList, message, CompNbr):
     # Adds all of the Component's Specifics page items to the Component.
     for key in comp_specifics[name].keys():
         Component[key] = comp_specifics[name][key]
-    # Resets all submaterials ' PARENT'  to the parent’s actual skin texture name.
+    # Resets all submaterials ' PARENT'  to the parent's actual skin texture name.
   #  for objkey in materials_list.keys():
   #      for key in materials_list[objkey].keys():
   #          if key.startswith("SUB") and key.endswith("_PARENT"):
@@ -2069,6 +2069,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.21  2011/03/13 00:41:47  cdunde
+# Updating fixed for the Model Editor of the Texture Browser's Used Textures folder.
+#
 # Revision 1.20  2011/03/10 20:56:39  cdunde
 # Updating of Used Textures in the Model Editor Texture Browser for all imported skin textures
 # and allow bones and Skeleton folder to be placed in Userdata panel for reuse with other models.

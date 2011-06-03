@@ -2008,7 +2008,7 @@ def create_objects(filename, polynames, clip_list, objspec_list, surf_list, base
         framesgroup = quarkx.newobj('Frames:fg')
 
         # Because .lwo models are "stagnat" models, (no animation), we only make 1 frame
-        # which is used to draw the model’s 'mesh' (shape) in the editor's views.
+        # which is used to draw the model's 'mesh' (shape) in the editor's views.
         # The Skin-view uses the model's 'Tris' to draw its nlines. 
         frame = quarkx.newobj('baseframe:mf')
         mesh = ()
@@ -2708,6 +2708,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.42  2011/03/13 00:41:47  cdunde
+# Updating fixed for the Model Editor of the Texture Browser's Used Textures folder.
+#
 # Revision 1.41  2011/03/10 20:56:39  cdunde
 # Updating of Used Textures in the Model Editor Texture Browser for all imported skin textures
 # and allow bones and Skeleton folder to be placed in Userdata panel for reuse with other models.
