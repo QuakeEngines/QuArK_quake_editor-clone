@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.56  2010/06/15 18:04:49  danielpharos
+Attempt to fix .qkl files being saved with the wrong extension.
+
 Revision 1.55  2009/07/15 10:38:01  danielpharos
 Updated website link.
 
@@ -2004,8 +2007,28 @@ var
  Light: Single;
  L4: array[1..4] of TDouble;
  L3: array[1..3] of TDouble;
+ I3: array[1..3] of Integer;
  S: String;
+ FoundAColor: Boolean;
  Color: TColorRef;
+
+ procedure ClambColorValues(var Color: array of Integer); //[1..3]
+ begin
+  if (Low(Color) <> 0) or (High(Color) <> 2) then InternalE('ClambColorValues: Array size mismatch!');
+  if Color[0] < 0 then
+    Color[0] := 0
+  else if Color[0] > 255 then
+    Color[0] := 255;
+  if Color[1] < 0 then
+    Color[1] := 0
+  else if Color[1] > 255 then
+    Color[1] := 255;
+  if Color[2] < 0 then
+    Color[2] := 0
+  else if Color[2] > 255 then
+    Color[2] := 255;
+ end;
+
 begin
   if HasOrigin then
   begin
@@ -2030,19 +2053,32 @@ begin
           Exit;
         end;
         Light:=L4[4];
-        Color:=Round(L4[1]) or (Round(L4[2]) shl 8) or (Round(L4[3]) shl 16);
+        I3[1] := Round(L4[1]);
+        I3[2] := Round(L4[2]);
+        I3[3] := Round(L4[3]);
+        ClambColorValues(I3);
+        Color:=I3[1] or (I3[2] shl 8) or (I3[3] shl 16);
       end
       else
       begin
+        FoundAColor:=false;
         Color:=clWhite;
         S:=Specifics.Values['_color'];
         if S<>'' then
         begin
           try
             ReadValues(S, L3);
-            Color:=Round(255*L3[1]) or (Round(255*L3[2]) shl 8) or (Round(255*L3[3]) shl 16);
+            FoundAColor:=true;
           except
             {rien}
+          end;
+          if FoundAColor then
+          begin
+            I3[1] := Round(255*L3[1]);
+            I3[2] := Round(255*L3[2]);
+            I3[3] := Round(255*L3[3]);
+            ClambColorValues(I3);
+            Color:=I3[1] or (I3[2] shl 8) or (I3[3] shl 16);
           end;
         end;
       end;
