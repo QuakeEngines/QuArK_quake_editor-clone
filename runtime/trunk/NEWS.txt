@@ -14,6 +14,8 @@ $Id$
 
 6.6.0 Beta 5
 ============
+* [cdunde]: Fixed problem with icon buttons sometimes disappearing next to compass.
+
 * [DanielPharos]: Fixed RGB float color values not being clamped.
 
 * [DanielPharos]: Fixed long-standing pointer corruption bug when loading poly faces. This was triggering errors when using
