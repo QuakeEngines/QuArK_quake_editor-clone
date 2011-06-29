@@ -450,6 +450,11 @@ class BaseLayout:
                     NewSkinsGroup.cmd = "newskingroup"
                     bb = CompassPanel.newbtnpanel(NewItem + [Trash, Undo, NewBBoxGroup, NewSkinsGroup])
                     bb.margins = (2,1)
+                else:
+                    NewGroup = qtoolbar.button(self.editor.editcmdclick, "New group||New group:\n\nCreates a new group in the tree-view, where you can place other objects in, so they are neatly grouped together.|intro.mapeditor.misctools.html#newgroup", ico_maped, 16)
+                    NewGroup.cmd = "newgroup"
+                    bb = CompassPanel.newbtnpanel(NewItem + [Trash, Undo, NewGroup])
+                    bb.margins = (2,1)
             except:
                 NewGroup = qtoolbar.button(self.editor.editcmdclick, "New group||New group:\n\nCreates a new group in the tree-view, where you can place other objects in, so they are neatly grouped together.|intro.mapeditor.misctools.html#newgroup", ico_maped, 16)
                 NewGroup.cmd = "newgroup"
@@ -645,6 +650,10 @@ class MPPage:
 #
 #
 #$Log$
+#Revision 1.40  2011/03/10 20:56:39  cdunde
+#Updating of Used Textures in the Model Editor Texture Browser for all imported skin textures
+#and allow bones and Skeleton folder to be placed in Userdata panel for reuse with other models.
+#
 #Revision 1.39  2011/03/02 04:19:45  cdunde
 #InfoBase link update.
 #
