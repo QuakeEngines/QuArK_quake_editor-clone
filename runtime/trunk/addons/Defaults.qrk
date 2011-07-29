@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.529  2011/06/03 20:31:14  danielpharos
+//Added missing d3dbsp Call of Duty 2 compiled map file items.
+//
 //Revision 1.528  2011/05/11 20:10:13  danielpharos
 //Updated all version numbers for 6.6 Beta 4 release.
 //
@@ -1710,7 +1713,7 @@ QQRKSRC1
   {
     General:config =     // ":config" objects are displayed in the Configuration dialog box
     {
-      Version = "QuArK 6.6 Beta 4"
+      Version = "QuArK 6.6 Beta 5"
       InternalVersion = '6.6'
       TextureBrowser = "Texture Browser..."
       NewMapItems = "New Map Items..."

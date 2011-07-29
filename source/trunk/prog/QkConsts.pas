@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2011/05/11 20:10:22  danielpharos
+Updated all version numbers for 6.6 Beta 4 release.
+
 Revision 1.4  2010/04/16 21:48:00  danielpharos
 Added auto-Delphi-compiler version string selection, and moved compiler-string down a bit.
 
@@ -46,7 +49,7 @@ uses SysUtils;
 
 const
   QuArKVersion            = 'QuArK 6.6';
-  QuArKMinorVersion       = 'Beta 4';
+  QuArKMinorVersion       = 'Beta 5';
   QuArKCopyright          = 'Copyright (C) 1996-2011 Armin Rigo and others';
 {$IFDEF CompiledWithDelphi1}
   QuArKUsedCompiler       = 'Delphi 1.0';
@@ -77,7 +80,7 @@ const
 {$ENDIF}
 {$ENDIF}
 {$ENDIF}
-  QuArKCompileDate        = 40674;   //This is the compiled date
+  QuArKCompileDate        = 40753;   //This is the compiled date
   { Amount of days that have passed after 30 Dec 1899 (Delphi 2+).
     You can use EncodeDate(Year, Month, Day) to compute it, but this value
     really needs to be a constant, so put the resulting value in here.
