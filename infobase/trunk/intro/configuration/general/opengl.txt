@@ -58,6 +58,10 @@ higher the number, the brighter the ambient lighting. Settings this high
 enough prevents the scene from being black at places where there are no
 lights.
 
+<i>Lighting quality on faces</i>. This determines how segmented a face can
+become when lighting is applied to it. The more segments per face, the
+smoother the lighting will look, at the cost of rendering speed.
+
 <i>Lighting quality when not moving</i>. This is the lighting quality that
 OpenGL will use when the camera is not moving. This option only has effect
 when Lighting is enabled. There are three options:<br>

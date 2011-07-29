@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.98  2010/09/04 18:34:08  danielpharos
+Fix an access violation in OpenGL lighting if there are no lights.
+
 Revision 1.97  2010/09/02 19:38:45  danielpharos
 Corrected alpha-texture mipmaps, and don't build normal texture if mipmaps are enabled.
 
@@ -361,6 +364,7 @@ type
    Culling: Boolean;
    Dithering: Boolean;
    MakeSections: Boolean;
+   GLLightingQuality: Integer;
    VCorrection2: Single;
    Lights: PLightList;
    NumberOfLights: GLint;
@@ -543,11 +547,11 @@ procedure RenderQuad(PV1, PV2, PV3, PV4: PVertex3D;
                      const NormalePlan: vec3_t;
                      Dist: scalar_t;
                      const LightParams: TLightParams;
-                     MakeSections: Boolean);
+                     GLLightingQuality: Integer);
 const
  StandardSectionSize = 77.0;
- SectionsI = 8;
- SectionsJ = 8;
+ SectionsI = 32;
+ SectionsJ = 32;
 var
  I, J, StepI, StepJ: Integer;
  Points: array[0..SectionsJ, 0..SectionsI] of TP3D;
@@ -558,7 +562,7 @@ var
  light: GLfloat4;
  NormalVector: array[0..2] of GLfloat;
 begin
-  if MakeSections=False then
+  if GLLightingQuality=0 then
   begin
     glBegin(GL_QUADS);
     try
@@ -639,20 +643,30 @@ begin
     Dist1:=       Abs(Points[SectionsJ,SectionsI].v.xyz[0]-Points[SectionsJ,0].v.xyz[0]); if Dist1>DistToSource then DistToSource:=Dist1;
     Dist1:=       Abs(Points[SectionsJ,SectionsI].v.xyz[1]-Points[SectionsJ,0].v.xyz[1]); if Dist1>DistToSource then DistToSource:=Dist1;
     Dist1:=       Abs(Points[SectionsJ,SectionsI].v.xyz[2]-Points[SectionsJ,0].v.xyz[2]); if Dist1>DistToSource then DistToSource:=Dist1;
-    if DistToSource>2*StandardSectionSize then
+    if (GLLightingQuality>=2) and (DistToSource>StandardSectionSize) then
     begin
-      if DistToSource>4*StandardSectionSize then
-        StepI:=1
+      if (GLLightingQuality>=3) and (DistToSource>2*StandardSectionSize) then
+      begin
+        if (GLLightingQuality>=4) and (DistToSource>4*StandardSectionSize) then
+        begin
+          if (GLLightingQuality>=5) and (DistToSource>8*StandardSectionSize) then
+          begin
+            if (GLLightingQuality>=6) and (DistToSource>16*StandardSectionSize) then
+              StepI:=1
+            else
+              StepI:=2;
+          end
+          else
+            StepI:=4
+        end
+        else
+          StepI:=8
+      end
       else
-        StepI:=2;
+        StepI:=16
     end
     else
-    begin
-      if DistToSource>StandardSectionSize then
-        StepI:=4
-      else
-        StepI:=8;
-    end;
+      StepI:=32;
 
     DistToSource:=Abs(Points[SectionsJ,0        ].v.xyz[0]-Points[0,0        ].v.xyz[0]);
     Dist1:=       Abs(Points[SectionsJ,0        ].v.xyz[1]-Points[0,0        ].v.xyz[1]); if Dist1>DistToSource then DistToSource:=Dist1;
@@ -660,20 +674,30 @@ begin
     Dist1:=       Abs(Points[SectionsJ,SectionsI].v.xyz[0]-Points[0,SectionsI].v.xyz[0]); if Dist1>DistToSource then DistToSource:=Dist1;
     Dist1:=       Abs(Points[SectionsJ,SectionsI].v.xyz[1]-Points[0,SectionsI].v.xyz[1]); if Dist1>DistToSource then DistToSource:=Dist1;
     Dist1:=       Abs(Points[SectionsJ,SectionsI].v.xyz[2]-Points[0,SectionsI].v.xyz[2]); if Dist1>DistToSource then DistToSource:=Dist1;
-    if DistToSource>2*StandardSectionSize then
+    if (GLLightingQuality>=2) and (DistToSource>StandardSectionSize) then
     begin
-      if DistToSource>4*StandardSectionSize then
-        StepJ:=1
+      if (GLLightingQuality>=3) and (DistToSource>2*StandardSectionSize) then
+      begin
+        if (GLLightingQuality>=4) and (DistToSource>4*StandardSectionSize) then
+        begin
+          if (GLLightingQuality>=5) and (DistToSource>8*StandardSectionSize) then
+          begin
+            if (GLLightingQuality>=6) and (DistToSource>16*StandardSectionSize) then
+              StepJ:=1
+            else
+              StepJ:=2
+          end
+          else
+            StepJ:=4
+        end
+        else
+          StepJ:=8
+      end
       else
-        StepJ:=2;
+        StepJ:=16
     end
     else
-    begin
-      if DistToSource>StandardSectionSize then
-        StepJ:=4
-      else
-        StepJ:=8;
-    end;
+      StepJ:=32;
 
     f:=0;
     fstep:=StepI*(1/SectionsI);
@@ -712,13 +736,6 @@ begin
       end;
       Inc(J, StepJ);
     end;
-
-    //FIXME: There is a very weird bug here... Something is very wrong
-    //with the way Points, StepI and StepJ are handled!
-    if StepI<SectionsI then
-      StepI:=StepI*2;
-    if StepJ<SectionsJ then
-      StepJ:=StepJ*2;
 
     J:=0;
     while J<SectionsJ do
@@ -1070,6 +1087,7 @@ begin
     Transparency:=Setup.Specifics.Values['Transparency']<>'';
     Lighting:=Setup.Specifics.Values['Lights']<>'';
     Culling:=Setup.Specifics.Values['Culling']<>'';
+    GLLightingQuality:=StrToIntDef(Setup.Specifics.Values['LightingQuality'], 4);
     LightParams.ZeroLight:=Setup.GetFloatSpec('Ambient', 0.4);
     LightParams.BrightnessSaturation:=SetupGameSet.GetFloatSpec('3DLight', 256);
     LightParams.LightFactor:=(1.0-LightParams.ZeroLight)/LightParams.BrightnessSaturation;
@@ -1080,6 +1098,7 @@ begin
     Transparency:=False;
     Lighting:=False;
     Culling:=False;
+    GLLightingQuality:=0;
     LightParams.ZeroLight:=1;
     LightParams.BrightnessSaturation:=256;
     LightParams.LightFactor:=(1.0-LightParams.ZeroLight)/LightParams.BrightnessSaturation;
@@ -1170,6 +1189,9 @@ begin
       It creates small sections out of big poly's, so the lighting effects are better.}
     else
       MakeSections:=False;
+
+    if not MakeSections then
+      GLLightingQuality:=0;
 
     if (DisplayMode=dmPanel) then
       glDisable(GL_DEPTH_TEST)
@@ -2464,14 +2486,14 @@ begin
             Case TextureMode of
             0:
               if Lighting and (LightingQuality=1) then
-                RenderQuad(PVBase, PV2, PV3, PV, Currentf, Lights, Normale, Dist, LightParams, MakeSections)
+                RenderQuad(PVBase, PV2, PV3, PV, Currentf, Lights, Normale, Dist, LightParams, LightingQuality)
               else
-                RenderQuad(PVBase, PV2, PV3, PV, Currentf, nil, Normale, Dist, FullBright, MakeSections);
+                RenderQuad(PVBase, PV2, PV3, PV, Currentf, nil, Normale, Dist, FullBright, LightingQuality);
             4:
               if Lighting and (LightingQuality=1) then
-                RenderQuad(PVBase, PV2, PV3, PV, Currentf, Lights, Normale, Dist, LightParams, MakeSections)
+                RenderQuad(PVBase, PV2, PV3, PV, Currentf, Lights, Normale, Dist, LightParams, LightingQuality)
               else
-                RenderQuad(PVBase, PV2, PV3, PV, Currentf, nil, Normale, Dist, FullBright, MakeSections);
+                RenderQuad(PVBase, PV2, PV3, PV, Currentf, nil, Normale, Dist, FullBright, LightingQuality);
             else
             begin
               if TextureMode=5 then
@@ -2481,9 +2503,9 @@ begin
                 Currentf[2]:=Currentf[0];
               end;
               if Lighting and (LightingQuality=1) then
-                RenderQuad(PVBase, PV2, PV3, PV, Currentf, Lights, Normale, Dist, LightParams, MakeSections)
+                RenderQuad(PVBase, PV2, PV3, PV, Currentf, Lights, Normale, Dist, LightParams, LightingQuality)
               else
-                RenderQuad(PVBase, PV2, PV3, PV, Currentf, nil, Normale, Dist, FullBright, MakeSections);
+                RenderQuad(PVBase, PV2, PV3, PV, Currentf, nil, Normale, Dist, FullBright, LightingQuality);
             end;
           end;
         end;

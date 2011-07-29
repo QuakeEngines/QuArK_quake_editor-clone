@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.531  2011/07/29 15:31:17  danielpharos
+//Updated for new notification.
+//
 //Revision 1.530  2011/07/29 15:19:31  danielpharos
 //Bumped version number to 6.6 Beta 5.
 //
@@ -1819,6 +1822,7 @@ QQRKSRC1
         GLLists = "1"
         Culling = "1"
         Ambient = '0.4'
+        LightingQuality = "4"
         StillQuality = "0"
         MovingQuality = "2"
         Form = "GeneralOpenGL"
@@ -9628,6 +9632,14 @@ QQRKSRC1
       Culling: = {Typ="X" Txt="Face culling" Cap="Enabled" Hint="Speeds up rendering by making all the backsides of faces invisible."
                                                              $0D"This doesn't apply to transparent faces." }
       Ambient: = {Txt="Ambient lighting brightness" Typ="EF1" Min="-10" Max="10" Hint="The brightness of the ambient lighting." }
+      LightingQuality: = {
+        Txt="Lighting quality on faces"
+        Typ="CL"
+        Items  = "2" $0D "3" $0D "4" $0D "5" $0D "6"
+        Values = "2" $0D "3" $0D "4" $0D "5" $0D "6"
+        Hint = "The higher the value, the higher the quality of lighting, but the slower the rendering will be. (It's the maximum number of subdivisions per face.)"
+            $0D"(Lighting needs to be enabled for this options to be effective)"
+      }
       StillQuality: = {
         Txt="Lighting quality when not moving"
         Typ="CL"

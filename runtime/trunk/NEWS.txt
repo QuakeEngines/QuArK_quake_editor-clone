@@ -14,6 +14,8 @@ $Id$
 
 6.6.0 Beta 5
 ============
+* [DanielPharos]: Added a new OpenGL lighting quality setting.
+
 * [cdunde]: Fixed problem with icon buttons sometimes disappearing next to compass.
 
 * [DanielPharos]: Fixed RGB float color values not being clamped.
