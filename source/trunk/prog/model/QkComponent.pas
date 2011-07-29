@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.37  2011/02/11 19:12:27  cdunde
+DanielPharos fixed .m8 texture display for the game Heretic II.
+
 Revision 1.36  2009/07/15 10:38:06  danielpharos
 Updated website link.
 
@@ -1250,7 +1253,7 @@ begin
       Exit;
     end else if StrComp(attr, 'currentskin') = 0 then begin
       Q:=QkObjFromPyObj(value);
-      if not (Q is QImage) and not (Q is QTexture) then
+      if not (Q is QImage) and not (Q is QTexture) then //FIXME: Adding the QTexture is a bad idea, actually...
         Q:=Nil;
       CurrentSkin:=QImage(Q);
       Result:=True;
