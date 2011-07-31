@@ -191,7 +191,6 @@ def writemapfile(root, mapname, selonly, wadfile, hxstr=None, group=None):
         m.filename = quarkx.outputfile("%s/%s" % (quarkx.getmapdir(), mapfullname))
     else:
         m.filename = quarkx.outputfile("%s/%s/%s" % (quarkx.getmapdir(), group, mapfullname))
-        m.filename = quarkx.outputfile("%s/%s" % (quarkx.getmapdir(), mapfullname))
     worldspawn = root.copy(1)   # preserve selection while copying
     m["Root"] = worldspawn.name
     m.setint("saveflags", saveflags)
@@ -410,17 +409,13 @@ def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile,
                 console = BuildPgmConsole_Advanced
 
                 # Check first Default build-tool directory
-                try:
-                    if setup["BuildPgmsDir"] is None:
-                       cmdline2 = cmdline
-                    else:
-                       cmdline2 = setup["BuildPgmsDir"] + "\\" + cmdline
-                    if (not quarkx.getfileattr(cmdline2)==FA_FILENOTFOUND):
-                        # Success, use this build-tool!
-                        cmdline = cmdline2
-
-                except:
-                    pass
+                if setup["BuildPgmsDir"] is None:
+                   cmdline2 = cmdline
+                else:
+                   cmdline2 = setup["BuildPgmsDir"] + "\\" + cmdline
+                if (not quarkx.getfileattr(cmdline2)==FA_FILENOTFOUND):
+                    # Success, use this build-tool!
+                    cmdline = cmdline2
 
                 if (not cmdline) or (quarkx.getfileattr(cmdline)==FA_FILENOTFOUND):
                     desc = setup["BuildDesc%d" % pgrmnbr] or cmdline or pgrmx
@@ -635,6 +630,9 @@ def QuakeMenu(editor):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.61  2010/02/21 15:42:49  danielpharos
+#Fixed orangebox compiler not finishing compile.
+#
 #Revision 1.60  2008/11/17 19:10:23  danielpharos
 #Centralized and fixed BSP file detection.
 #
