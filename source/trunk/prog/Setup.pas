@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.87  2010/08/28 18:01:05  danielpharos
+Update
+
 Revision 1.86  2010/05/08 07:41:12  cdunde
 Setup the QuArK Model Editor to allow obtaining textures dynamically in the Texture Browser.
 
@@ -326,7 +329,7 @@ unit Setup;
 interface
 
 uses Windows, SysUtils, Classes, Graphics, Forms, Dialogs, Controls, Reg2,
-     QkObjects, qmath, QkFileObjects;
+     QkObjects, QkFileObjects;
 
 const
 {FIXME: This should not be constants, but read from
@@ -439,7 +442,7 @@ procedure UpdateAddOnsContent;
 procedure CloseAddonsList;  { don't call this when toolboxes are open }
 procedure AddAddOn(NewAddOn: QObject);
 function GetSetupPath(Path: String; var Spec: String; var Q: QObject) : Boolean;
-procedure MakeAssociations(Config: Qobject);
+procedure MakeAssociations(Config: QObject);
 procedure RefreshAssociations(Forced: Boolean);
 procedure RemoveAssociations;
 function AssociationWithQuArK(const FileExt: String) : Boolean;
@@ -469,7 +472,7 @@ function InternalVersion : Single;
 
 implementation
 
-uses QkMapObjects, Travail, Game, Console, QkGroup, QkForm, Qk1,
+uses QkMapObjects, Travail, Game, Console, QkGroup, QkForm, Qk1, qmath,
      ToolBox1, Toolbar1, QkQuakeCtx, Quarkx, QkExceptions, Python, PyMapView,
      PyObjects, PyForms, Qk3D, EdSceneObject, QkObjectClassList, QkApplPaths,
      QkConsts, ExtraFunctionality, Logging;
@@ -1404,7 +1407,7 @@ begin
  Result:=Application.ExeName+' "%1"';
 end;
 
-procedure MakeAssociations(Config: Qobject);
+procedure MakeAssociations(Config: QObject);
 var
  I, P: Integer;
  Command, S, Ext: String;
