@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.41  2011/07/31 16:30:23  danielpharos
+Massive moving around of QuArK SAS stuff and SteamFS things.
+
 Revision 1.40  2011/07/31 10:55:13  danielpharos
 Updated Source engine configurations. (Note: QuArKSAS source2007 missing, and source2007 codepath probably wrong.)
 
@@ -366,10 +369,10 @@ begin
   QSASFile := ConcatPaths([QSASPath, QuArKSASEXE]);
   if CheckQuArKSAS then
   begin
+    if FileExists(ConcatPaths([GetQPath(pQuArKDll), QuArKSASEXE])) = false then
+      LogAndRaiseError('Unable to extract file from Steam. dlls/'+QuArKSASEXE+' not found.');
     if FileExists(QSASFile) = false then
     begin
-      if FileExists(ConcatPaths([GetQPath(pQuArKDll), QuArKSASEXE])) = false then
-        LogAndRaiseError('Unable to extract file from Steam. dlls/'+QuArKSASEXE+' not found.');
       if CopyFile(PChar(ConcatPaths([GetQPath(pQuArKDll), QuArKSASEXE])), PChar(QSASFile), true) = false then
         LogAndRaiseError('Unable to extract file from Steam. Call to CopyFile failed.');
     end
