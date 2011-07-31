@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.39  2010/02/16 19:56:23  danielpharos
+Added option to disable QuArKSAS extractor (and other small, related items).
+
 Revision 1.38  2010/02/06 21:52:54  danielpharos
 Corrected ep1 <--> orangebox.
 
@@ -376,12 +379,12 @@ begin
   QSASAdditionalParameters:=Setup.Specifics.Values['ExtractorParameters'];
 
   SteamCompiler:=GetSteamCompiler;
-  if (SteamCompiler = 'old') or (SteamCompiler = 'ep1') then
+  if (SteamCompiler = 'old') or (SteamCompiler = 'source2006') then
   begin
     if (SteamCompiler = 'old') then
       QuArKSASEXE := Setup.Specifics.Values['QuArKSASEXENameOld']
     else
-      QuArKSASEXE := Setup.Specifics.Values['QuArKSASEXENameEP1'];
+      QuArKSASEXE := Setup.Specifics.Values['QuArKSASEXENameSource2006'];
     FullFilename := ConvertPath(FileName);
     I := Pos(PathDelim, FullFilename);
     if (I > 0) then
@@ -395,9 +398,15 @@ begin
       FullFileName := Filename;
     end;
   end
-  else
+  else if (SteamCompiler = 'source2007') then
   begin
-    QuArKSASEXE := Setup.Specifics.Values['QuArKSASEXENameOrangebox'];
+    QuArKSASEXE := Setup.Specifics.Values['QuArKSASEXENameSource2007'];
+    GameIDDir := '';
+    FullFileName := FileName;
+  end
+  else //Includes source2009
+  begin
+    QuArKSASEXE := Setup.Specifics.Values['QuArKSASEXENameSource2009'];
     GameIDDir := '';
     FullFileName := FileName;
   end;
@@ -417,7 +426,7 @@ begin
     if CreateDir(ConcatPaths([SteamDirectory, SteamCacheDirectory])) = false then
       LogAndRaiseError('Unable to extract file from Steam. Cannot create cache directory.');
 
-  if (SteamCompiler = 'old') or (SteamCompiler = 'ep1') then
+  if (SteamCompiler = 'old') or (SteamCompiler = 'source2006') then
     if DirectoryExists(ConcatPaths([SteamDirectory, SteamCacheDirectory, GameIDDir])) = false then
       if CreateDir(ConcatPaths([SteamDirectory, SteamCacheDirectory, GameIDDir])) = false then
         LogAndRaiseError('Unable to extract file from Steam. Cannot create cache directory.');
@@ -448,7 +457,7 @@ begin
   end;
 
   SteamGameDir:=QuickResolveFilename(ConcatPaths([SteamDirectory, SteamGameDirectory]));
-  if (SteamCompiler = 'old') or (SteamCompiler = 'ep1') then
+  if (SteamCompiler = 'old') or (SteamCompiler = 'source2006') then
     OutputDir:=ConcatPaths([SteamDirectory, SteamCacheDirectory, GameIDDir])
   else
     OutputDir:=ConcatPaths([SteamDirectory, SteamCacheDirectory]);

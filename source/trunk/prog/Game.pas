@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.82  2010/05/05 19:23:23  danielpharos
+Fixed small bug in DEBUG output.
+
 Revision 1.81  2010/05/05 19:15:51  danielpharos
 Const-ed a string.
 
@@ -646,7 +649,7 @@ begin
  Result:=IncludeTrailingPathDelimiter(BaseOutputPath); //To make sure there already is a trailing slash
  if Length(FileName) <> 0 then
    if SetupGameSet.Specifics.Values['Steam']='1' then
-     if (GetSteamCompiler = 'orangebox') then
+     if (GetSteamCompiler = 'source2009') then
      begin
        I:=LastPos(PathDelim, RemoveTrailingSlash(Result));
        if I <> 0 then
@@ -832,7 +835,7 @@ begin
     end;
     if FileToResolve.FileType = ftTool then
       if SetupGameSet.Specifics.Values['Steam']='1' then
-        if (GetSteamCompiler = 'orangebox') then
+        if (GetSteamCompiler = 'source2009') then
         begin
           I:=LastPos(PathDelim, Result.Workdir);
           if I <> 0 then
@@ -1794,7 +1797,7 @@ begin
   Result:=SetupGameSet.Specifics.Values['MapPath'];
   if Result='' then
     Result:='maps';
-  if (GetSteamCompiler = 'orangebox') then
+  if (GetSteamCompiler = 'source2009') then
   begin
     TMPQuArK:=ConvertPath(GetSteamtmpQuArK);
     I:=LastPos(PathDelim, TMPQuArK);
@@ -1935,26 +1938,14 @@ begin
   Result := SetupGameSet.Specifics.Values['SourceSDKDir'];
   if Result = '*auto*' then
   begin
-    S := SetupGameSet.Specifics.Values['SteamGame'];
-    if S = 'HL2' then
+    S := GetSteamCompiler;
+    if S = 'old' then
+      Result := 'sourcesdk\bin'
+    else if S = 'source2006' then
       Result := 'sourcesdk\bin\ep1\bin'
-    else if S = 'CSS' then
-      Result := 'sourcesdk\bin\ep1\bin'
-    else if S = 'HL:S' then
-      Result := 'sourcesdk\bin\ep1\bin'
-    else if S = 'HL2:DM' then
-      Result := 'sourcesdk\bin\ep1\bin'
-    else if S = 'HL2:LC' then
-      Result := 'sourcesdk\bin\ep1\bin'
-    else if S = 'HL:DM:S' then
-      Result := 'sourcesdk\bin\ep1\bin'
-    else if S = 'HL2:EP1' then
-      Result := 'sourcesdk\bin\ep1\bin'
-    else if S = 'Portal' then
-      Result := 'sourcesdk\bin\orangebox\bin'
-    else if S = 'HL2:EP2' then
-      Result := 'sourcesdk\bin\orangebox\bin'
-    else if S = 'TF2' then
+    else if S = 'source2007' then
+      Result := 'sourcesdk\bin\source2007\bin'
+    else if S = 'source2009' then
       Result := 'sourcesdk\bin\orangebox\bin'
     else
     begin
@@ -1974,25 +1965,25 @@ begin
   begin
     S := SetupGameSet.Specifics.Values['SteamGame'];
     if S = 'HL2' then
-      Result := 'ep1'
+      Result := 'source2009'
     else if S = 'CSS' then
-      Result := 'ep1'
+      Result := 'source2009'
     else if S = 'HL:S' then
-      Result := 'ep1'
+      Result := 'source2006'
     else if S = 'HL2:DM' then
-      Result := 'ep1'
+      Result := 'source2006'
     else if S = 'HL2:LC' then
-      Result := 'ep1'
+      Result := 'source2006'
     else if S = 'HL:DM:S' then
-      Result := 'ep1'
+      Result := 'source2006'
     else if S = 'HL2:EP1' then
-      Result := 'ep1'
+      Result := 'source2009'
     else if S = 'Portal' then
-      Result := 'orangebox'
+      Result := 'source2009'
     else if S = 'HL2:EP2' then
-      Result := 'orangebox'
+      Result := 'source2009'
     else if S = 'TF2' then
-      Result := 'orangebox'
+      Result := 'source2009'
     else
     begin
       //Shouldn't happen!

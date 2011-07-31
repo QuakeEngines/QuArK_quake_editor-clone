@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.532  2011/07/29 19:23:14  danielpharos
+//Added a new OpenGL lighting quality setting.
+//
 //Revision 1.531  2011/07/29 15:31:17  danielpharos
 //Updated for new notification.
 //
@@ -3897,8 +3900,9 @@ QQRKSRC1
         ProgramDirectory = "steamapps"
         SourceSDKDirectory = "sourcesdk\bin"
         QuArKSASEXENameOld = "QuArKSAS.exe"
-        QuArKSASEXENameEP1 = "QuArKSAS.exe"
-        QuArKSASEXENameOrangebox = "QuArKSAS_orangebox.exe"
+        QuArKSASEXENameSource2006 = "QuArKSAS.exe"
+        QuArKSASEXENameSource2007 = "QuArKSAS_source2007.exe"
+        QuArKSASEXENameSource2009 = "QuArKSAS_orangebox.exe"
         Form = "GameSteam"
       }
 
@@ -4955,7 +4959,7 @@ QQRKSRC1
                $0D "Quark etp"
                $0D "Valve 220"
                $0D "Brush Primitives"
-        Hint="These are set for the game's reccommended build tools.  If you don't have these," $0D " Classic Quake1/2/3 will function at a minimal level"
+        Hint="These are set for the game's recommended build tools.  If you don't have these," $0D " Classic Quake1/2/3 will function at a minimal level"
       }
 //      Typ="X" Txt="Tools support brush primitives" Hint="When this is checked, if use brush primitives map option is also checked,"$0D" maps will be written in brush primitives format"}
       sep:        = {Typ="S" Txt="1st program"}
@@ -6062,6 +6066,7 @@ QQRKSRC1
         Items = "*auto*"
              $0D"sourcesdk\bin"
              $0D"sourcesdk\bin\ep1\bin"
+             $0D"sourcesdk\bin\source2007\bin"
              $0D"sourcesdk\bin\orangebox\bin"
       }
       Compiler: =
@@ -6071,8 +6076,14 @@ QQRKSRC1
         Hint = "Set this to the compiler version"
         Items = "*auto*"
              $0D"old"
-             $0D"ep1"
-             $0D"orangebox"
+             $0D"source2006 (ep1)"
+             $0D"source2007"
+             $0D"source2009 (orangebox)"
+        Values = "*auto*"
+             $0D"old"
+             $0D"source2006"
+             $0D"source2007"
+             $0D"source2009"
       }
       Templates: =
       {
