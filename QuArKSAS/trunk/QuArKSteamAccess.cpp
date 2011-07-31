@@ -86,7 +86,7 @@ int main(int argc, const char* argv[])
   printf("\r\n");
   printf("QuArK SAS (Steam Access System)\r\n");
   printf("-------------------------------\r\n");
-  printf("Version 1.02\r\n");
+  printf("Version 1.03\r\n");
   printf("\r\n");
 
   int GameCode = 220; //Default to HL2
@@ -100,7 +100,7 @@ int main(int argc, const char* argv[])
   sLog = new Logger("QuArKSAS.log");
   sLog->msg(0,"QuArK SAS (Steam Access System)\r\n");
   sLog->msg(0,"-------------------------------\r\n");
-  sLog->msg(0,"Version 1.02\r\n");
+  sLog->msg(0,"Version 1.03\r\n");
   sLog->msg(0,"\r\n");
 
   string Argument;

@@ -13,7 +13,7 @@ QQRKSRC1
     Root = "CS Source Textures.qtxfolder"
     HTML = "intro.texturebrowser.html"
 
-    t_css:incl =      {  v="QuArKApps" path="cstrike/materials/" PakFile="counter-strike source shared.gcf"}
+    t_css:incl =      {  v="%steampath%\SteamApps\%steamuser%\%steamgamedir%" path="cstrike/materials/" PakFile="counter-strike source shared.gcf"}
 
     CS Source Textures.qtxfolder =
     {

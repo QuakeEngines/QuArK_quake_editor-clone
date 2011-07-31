@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.71  2010/06/15 18:04:49  danielpharos
+Attempt to fix .qkl files being saved with the wrong extension.
+
 Revision 1.70  2010/04/16 21:18:45  danielpharos
 Move some version-stuff about. quarkpy now also checks the minor version number.
 
@@ -1255,6 +1258,7 @@ var
 {FileOp: TSHFILEOPSTRUCT;}
  Info1: TFileSibling;
 begin
+ Filename:=QuickResolveFilename(Filename);
  Update:=AlternateFile='';
  try
   Info1:=TFileSibling.Create; try

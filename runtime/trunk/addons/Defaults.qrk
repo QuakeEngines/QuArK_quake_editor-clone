@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.533  2011/07/31 10:55:16  danielpharos
+//Updated Source engine configurations. (Note: QuArKSAS source2007 missing, and source2007 codepath probably wrong.)
+//
 //Revision 1.532  2011/07/29 19:23:14  danielpharos
 //Added a new OpenGL lighting quality setting.
 //
@@ -2652,13 +2655,15 @@ QQRKSRC1
 
         BaseMenu = "Half Life"
 
-        Program = "%steampath%\steam.exe -applaunch %steamappid% -dev -console -window -width 800 -height 600"
-
         Steam = "1" //This game uses Steam
+
+        Program = "%steampath%\steam.exe -applaunch %steamappid% -dev -console -window -width 800 -height 600"
+        Directory = "%steampath%\SteamApps\%steamuser%\%steamgamedir%"
         SteamGame = "HL2"
         SteamAppID = "*auto*"
+        GameDir = "*auto*"
         BaseDir = "*auto*"
-        tmpQuArK = "*auto*"
+        tmpQuArK = "%basedir%"
         SourceSDKDir = "*auto*"
         Compiler = "*auto*"
         MapCommentsPrefix = "//"
@@ -3883,20 +3888,15 @@ QQRKSRC1
 
       Steam:config =
       {
-        Directory = "C:\Program Files\Valve\Steam"
+        SteamDirectory = "C:\Program Files\Valve\Steam"
         SteamUser = "<Your Steam Account>"
         ExtractorParameters = ""
         Autostart = "1"
         UseQuArKSAS = "1"
-        CacheGCF = "1"
-        WarnBeforeClear = "1"
-        AllowRecycle = ""
-        ClearcacheGCF = ""
-        Clearcache = "1"
 
         // hidden settings:
+        Directory = "%steampath%"
         SteamEXEName = "Steam.exe"
-        CacheDirectory = "QuArKApps"
         ProgramDirectory = "steamapps"
         SourceSDKDirectory = "sourcesdk\bin"
         QuArKSASEXENameOld = "QuArKSAS.exe"
@@ -5989,23 +5989,6 @@ QQRKSRC1
               $0D"HL2:EP2"
               $0D"TF2"
       }
-      tmpQuArK: =
-      {
-        Txt = "Game Directory"
-        Typ = "C"   // combo box
-        Hint = "relative to steam install directory, e.g. SteamApps\%steamuser%\counter-strike source\cstrike"
-        Items = "*auto*"
-             $0D"SteamApps\%steamuser%\half-life 2\hl2"
-             $0D"SteamApps\%steamuser%\counter-strike source\cstrike"
-             $0D"SteamApps\%steamuser%\half-life source\hl1"
-             $0D"SteamApps\%steamuser%\half-life 2 deathmatch\hl2mp"
-             $0D"SteamApps\%steamuser%\half-life 2 lostcoast\lostcoast"
-             $0D"SteamApps\%steamuser%\half-life deathmatch source\hl1mp"
-             $0D"SteamApps\%steamuser%\half-life 2 episode one\episodic"
-             $0D"SteamApps\%steamuser%\portal\portal"
-             $0D"SteamApps\%steamuser%\half-life 2 episode two\ep2"
-             $0D"SteamApps\%steamuser%\team fortress 2\tf"
-      }
       SteamAppId: =
       {
         Txt = "Steam App Id"
@@ -6031,6 +6014,23 @@ QQRKSRC1
              $0D"400"
              $0D"420"
              $0D"440"
+      }
+      GameDir: =
+      {
+        Txt = "Game Directory"
+        Typ = "C"   // combo box
+        Hint = "relative to game directory, e.g. counter-strike source"
+        Items = "*auto*"
+             $0D"half-life 2"
+             $0D"counter-strike source"
+             $0D"half-life source"
+             $0D"half-life 2 deathmatch"
+             $0D"half-life 2 lostcoast"
+             $0D"half-life deathmatch source"
+             $0D"half-life 2 episode one"
+             $0D"portal"
+             $0D"half-life 2 episode two"
+             $0D"team fortress 2"
       }
       BaseDir: =
       {
@@ -6183,7 +6183,7 @@ QQRKSRC1
                $0D "Quark etp"
                $0D "Valve 220"
                $0D "Brush Primitives"
-        Hint="These are set for the game's reccommended build tools.  If you don't have these," $0D " Classic Quake1/2/3 will function at a minimal level"
+        Hint="These are set for the game's recommended build tools.  If you don't have these," $0D " Classic Quake1/2/3 will function at a minimal level"
       }
 //      Typ="X" Txt="Tools support brush primitives" Hint="When this is checked, if use brush primitives map option is also checked,"$0D" maps will be written in brush primitives format"}
       sep:        = {Typ="S" Txt="1st program"}
@@ -7977,7 +7977,7 @@ QQRKSRC1
     {
       Style = "3"
       sep: = {Typ="S" Txt="---- Steam Settings ----"}
-      Directory: =
+      SteamDirectory: =
       {
         Txt = "Steam Directory"
         Typ = "ED"      // Edit Directory
@@ -8006,43 +8006,6 @@ QQRKSRC1
         Typ="X"
         Cap="Enabled"
         Hint = "Enables the use of the QuArKSAS extractor. This will allow extracting files directly from Steam."
-      }
-      CacheGCF: = {
-        Txt="Cache GCF files"
-        Typ="X"
-        Cap="Enabled"
-        Hint = "Enables caching for GCF files. This will copy GCF files to the cache location,"
-            $0D"so they can be accessed even when Steam is running."
-            $0D"The copying will probably only succeed when Steam is not running."
-      }
-      WarnBeforeClear: = {
-        Txt="Warn Before Clearing Cache"
-        Typ="X"
-        Cap="Enabled"
-        Hint = "Enables a warning before QuArK clears the cache. This will allow you to cancel the clearing."
-      }
-      AllowRecycle: = {
-        Txt="Allow Deletion to Recycle Bin"
-        Typ="X"
-        Cap="Enabled"
-        Hint = "This will delete the files to the recycle bin (if set in Windows), so they can be restored."
-            $0D"You will have to manually delete them from the bin."
-      }
-      ClearcacheGCF: = {
-        Txt="Clear Cache GCF"
-        Typ="X"
-        Cap="Enabled"
-        Hint = "Enables clearing the cache of GCF files. This will clear the Steam cache of GCF files when QuArK shutsdown,"
-            $0D"saving disc space. However, next time the files will have to be copied again,"
-            $0D"which is a slow process."
-      }
-      Clearcache: = {
-        Txt="Clear Cache other files"
-        Typ="X"
-        Cap="Enabled"
-        Hint = "Enables clearing the cache. This will clear the Steam cache when QuArK shutsdown,"
-            $0D"saving disc space. However, next time the files will have to be extracted again,"
-            $0D"which is a (relatively) slow process."
       }
     }
 

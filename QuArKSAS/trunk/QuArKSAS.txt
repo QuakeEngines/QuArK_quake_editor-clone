@@ -1,28 +1,30 @@
 QuArK SAS (Steam Access System)
 -------------------------------
-Version 1.02
-6 February 2010
+Version 1.03
+31 July 2011
 
 
 
 Program description
 -------------------
-QuArK SAS is a small command-line utility that allows you to extract files from Steam. For this to work, Steam must be running, and you probably have to be logged in. It produces a log-file which easily allows diagnoses when the program for some reason doesn't work. It's designed to be as light-weighted as possible (that's why there is no GUI), and run on as many systems as possible.
+QuArK SAS is a small command-line utility that allows you to extract files from Steam. For this to work, Steam must be running, and you should be logged in. It produces a log-file which allows for easy diagnosing when the program for some reason doesn't work properly. It's designed to be as light-weighted as possible (that's why there is no GUI), and run on as many systems as possible.
 
 The executable file has to be placed in the right folder to work:
-old:       %Steam%/steamapps/%username%/sourcesdk/bin
-ep1:       %Steam%/steamapps/%username%/sourcesdk/bin/ep1/bin
-orangebox: %Steam%/steamapps/%username%/sourcesdk/bin/orangebox/bin
 
-When not placed in a correct directory, it will not be able to find several Steam files (like tier0.dll) and will crash on startup.
+engine     | directory                                                 | executable filename     | remarks
+-----------|-----------------------------------------------------------|-------------------------|--------- - - -
+old        | %Steam%/steamapps/%username%/sourcesdk/bin                | QuArKSAS.exe            | Not used anymore
+source2006 | %Steam%/steamapps/%username%/sourcesdk/bin/ep1/bin        | QuArKSAS.exe            | Previously known as: ep1
+source2007 | %Steam%/steamapps/%username%/sourcesdk/bin/source2007/bin | QuArKSAS_source2007.exe | Previously known as: orangebox
+source2009 | %Steam%/steamapps/%username%/sourcesdk/bin/orangebox/bin  | QuArKSAS_orangebox.exe  |
 
-Also, use QuArKSAS.exe for the ep1 directory, and QuArKSAS_orangebox.exe for the orangebox directory.
+When not placed in the correct directory, QuArK SAS will not be able to find several Steam files (like tier0.dll) and will crash on startup. Also, make sure you've run the Source SDK at least once before (or manually refresh its contents), so the Steam files are set-up properly.
 
 
 
 Program usage
 -------------
-This is a direct copy from the program:
+This is a direct copy from the program's own output:
 
 QuArKSAS.exe [parameters] <filenames>
 <filenames>: All the filenames of the files to extract.
@@ -41,32 +43,39 @@ After all parameters have been read from left to right,
 the rest will be interpreted as <filenames>.
 
 Note: all parameters are case-sensitive.
-Note: do NOT include trailing slashes in pathnames!
 
 
 
 Source code
 -----------
-The source code of this program is freely available (also see 'License' below), and can be downloaded from the SourceForge site (http://www.sourceforge.net/projects/quark).
+The source code of this program is freely available (also see 'License' below), and can be downloaded from the SourceForge site (http://sourceforge.net/projects/quark/files/QuArKSAS/).
+
+In order to compile the source code, create a mod for the right engine through the Source SDK. Extract the source code into a folder in the 'utils' directory inside the mod directory. For example: *mod_dir*\utils\QuArKSAS.
+
+The source code should compile perfectly fine with any modern C++ compiler, under Win32. I've used Visual C++ Express 2010, freely available for download from Microsoft. Even though Steam now also runs on Mac OS, I've (currently) got no plans for porting, although I doubt it would be that difficult.
 
 
 
 Comments and suggestions
 ------------------------
-Do you have any comments or suggestions about this program? Below are links where you can find me.
+Do you have any comments or suggestions about this program? Below are links where you can find me. I go by the name of 'DanielPharos'.
 QuArK website: http://quark.sourceforge.net/
-QuArK forum:   http://quark.sourceforge.net/forums/
+QuArK forums:  http://quark.sourceforge.net/forums/
 
 
 
 Notes
 -----
-This program is used by the map/model editor QuArK (hence the name). However, it's free and open-source, so anybody can use this as they please (also see 'License' below). If you don't like the QuArK part of the name, simply call it QSAS :)
+This program is primarily made for usage by the map/model editor Quake Army Knife (QuArK), and hence the name. However, it's free and open-source, so anybody can use this as they please (also see 'License' below). If you don't like the QuArK part of the name, simply call it QSAS :)
 
 
 
 Version changes
 ---------------
+Version 1.03 - 31 July 2011:
+    Adjusted for newest Source SDK release, with the new engine naming scheme
+    Cleanup of source-code
+
 Version 1.02 - 6 February 2010:
     Adjusted for newest Steam release
 
@@ -94,7 +103,7 @@ License
 -------
 This program is distributed under the MIT license:
 
-Copyright (c) 2007-2010 DanielPharos
+Copyright (c) 2007-2011 DanielPharos
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 

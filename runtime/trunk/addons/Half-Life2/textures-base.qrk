@@ -11,7 +11,7 @@ QQRKSRC1
     Root = "Common Source Textures.qtxfolder"
     HTML = "intro.texturebrowser.html"
 
-    t_hl2:incl =      {  v="QuArKApps" path="hl2/materials/" PakFile="source materials.gcf"}
+    t_hl2:incl =      {  v="%steampath%\SteamApps\%steamuser%\%steamgamedir%" path="hl2/materials/" PakFile="source materials.gcf"}
 
     Common Source Textures.qtxfolder =
     {

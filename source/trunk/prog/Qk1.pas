@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.90  2010/06/13 16:13:26  danielpharos
+Stop weird item from appearing on Model import from QuArK Explorer.
+
 Revision 1.89  2010/04/16 21:18:45  danielpharos
 Move some version-stuff about. quarkpy now also checks the minor version number.
 
@@ -1844,8 +1847,6 @@ begin
  end;
  ClearGameBuffers(False);
  ClearPool(True);
- if LoadingComplete then
-   ClearSteamCache;
 // QObjectClassList.Free;
  ClearConsole;
  ShutdownPython;

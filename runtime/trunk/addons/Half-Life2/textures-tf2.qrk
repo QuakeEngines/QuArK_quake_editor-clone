@@ -13,10 +13,22 @@ QQRKSRC1
       Root = "TF2 Textures.qtxfolder"
       HTML = "intro.texturebrowser.html"
 
-      t_tf2:incl = { v="QuArKApps" path="tf/materials/" PakFile="team fortress 2 materials.gcf" }
+      t_tf2:incl = { v="%steampath%\SteamApps\%steamuser%\%steamgamedir%" path="tf/materials/" PakFile="team fortress 2 materials.gcf" }
 
       TF2 Textures.qtxfolder =
       {
+        ambulance.txlist =
+        {
+            ambulance/amb_blu.wl = { t_tf2=! }
+            ambulance/amb_red.wl = { t_tf2=! }
+        }
+
+        backpack.txlist =
+        {
+            backpack/flaregun_large.wl = { t_tf2=! }
+            backpack/flaregun_small.wl = { t_tf2=! }
+        }
+
         Brick.txlist =
         {
             Brick/brickwall001.wl = { t_tf2=! }
@@ -31,6 +43,8 @@ QQRKSRC1
             Brick/brickwall004c.wl = { t_tf2=! }
             Brick/brickwall004d.wl = { t_tf2=! }
             Brick/brickwall004e.wl = { t_tf2=! }
+            Brick/cobblewall001.wl = { t_tf2=! }
+            Brick/cobblewall001_snow.wl = { t_tf2=! }
             Brick/wall028.wl = { t_tf2=! }
             Brick/wall029.wl = { t_tf2=! }
         }
@@ -46,9 +60,17 @@ QQRKSRC1
             cable/white.wl = { t_tf2=! }
         }
 
+        coalmines.txlist =
+        {
+            coalmines/beach_dry.wl = { t_tf2=! }
+            coalmines/beach_wet.wl = { t_tf2=! }
+        }
+
         Concrete.txlist =
         {
             Concrete/ceiling_01.wl = { t_tf2=! }
+            Concrete/computerwall_blue_stained.wl = { t_tf2=! }
+            Concrete/computerwall_red_stained.wl = { t_tf2=! }
             Concrete/computerwall001.wl = { t_tf2=! }
             Concrete/computerwall002.wl = { t_tf2=! }
             Concrete/computerwall003.wl = { t_tf2=! }
@@ -126,6 +148,7 @@ QQRKSRC1
             Concrete/floor_carpet001.wl = { t_tf2=! }
             Concrete/floor_carpet002.wl = { t_tf2=! }
             Concrete/floor_carpet002a.wl = { t_tf2=! }
+            Concrete/stripe_blue.wl = { t_tf2=! }
             Concrete/wall010.wl = { t_tf2=! }
             Concrete/wall011.wl = { t_tf2=! }
             Concrete/wall011b.wl = { t_tf2=! }
@@ -138,6 +161,28 @@ QQRKSRC1
         {
             console/background01.wl = { t_tf2=! }
             console/background02.wl = { t_tf2=! }
+            console/replay_loading.wl = { t_tf2=! }
+            console/replay_loading_widescreen.wl = { t_tf2=! }
+            console/rewind_background.wl = { t_tf2=! }
+            console/rewind_background_widescreen.wl = { t_tf2=! }
+            console/title_blue.wl = { t_tf2=! }
+            console/title_blue_widescreen.wl = { t_tf2=! }
+            console/title_red.wl = { t_tf2=! }
+            console/title_red_widescreen.wl = { t_tf2=! }
+            console/title_team.wl = { t_tf2=! }
+            console/title_team_widescreen.wl = { t_tf2=! }
+            console/title_team_halloween.wl = { t_tf2=! }
+            console/title_team_halloween_widescreen.wl = { t_tf2=! }
+            console/title_war.wl = { t_tf2=! }
+            console/title_war_widescreen.wl = { t_tf2=! }
+        }
+
+        customdev.txlist =
+        {
+            customdev/dev_measuregeneric01blu.wl = { t_tf2=! }
+            customdev/dev_measuregeneric01red.wl = { t_tf2=! }
+            customdev/dev_measurewall01blu.wl = { t_tf2=! }
+            customdev/dev_measurewall01red.wl = { t_tf2=! }
         }
 
         Decals.txlist =
@@ -160,6 +205,9 @@ QQRKSRC1
             detail/detailsprites_2fort.wl = { t_tf2=! }
             detail/detailsprites_dustbowl.wl = { t_tf2=! }
             detail/detailsprites_granary.wl = { t_tf2=! }
+            detail/detailsprites_harvest.wl = { t_tf2=! }
+            detail/detailsprites_sawmill.wl = { t_tf2=! }
+            detail/detailsprites_trainyard.wl = { t_tf2=! }
         }
 
         Editor.txlist =
@@ -756,6 +804,9 @@ QQRKSRC1
             overlays/patch007.wl = { t_tf2=! }
             overlays/patch008.wl = { t_tf2=! }
             overlays/rubber_trim001.wl = { t_tf2=! }
+            overlays/snow_footsteps.wl = { t_tf2=! }
+            overlays/snow_horizontalwood.wl = { t_tf2=! }
+            overlays/snow_patch.wl = { t_tf2=! }
             overlays/Stain001.wl = { t_tf2=! }
             overlays/Stain002.wl = { t_tf2=! }
             overlays/Stain003.wl = { t_tf2=! }

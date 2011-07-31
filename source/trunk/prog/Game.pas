@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.83  2011/07/31 10:55:14  danielpharos
+Updated Source engine configurations. (Note: QuArKSAS source2007 missing, and source2007 codepath probably wrong.)
+
 Revision 1.82  2010/05/05 19:23:23  danielpharos
 Fixed small bug in DEBUG output.
 
@@ -369,7 +372,7 @@ function GameMapPath : String;
 function GameModelPath : String;
 function GameShaderList : String;
 function SteamAppID : String;
-function GetSteamtmpQuArK : String;
+function GetSteamGameDir : String;
 function GetSteamBaseDir : String;
 function SourceSDKDir : String;
 function GetSteamCompiler : String;
@@ -609,8 +612,6 @@ begin
  Result:=SetupGameSet.Specifics.Values['tmpQuArK'];
  if Result='' then
   Result:='tmpQuArK';
- if Result='*auto*' then
-   Result:=GetSteamtmpQuArK;
  Result:=ConvertPath(Result);
 end;
 
@@ -624,12 +625,10 @@ end;
 
 function QuakeDir : String;
 begin
-  Result:=SetupGameSet.Specifics.Values['Directory'];
-  if (Result = '') and (SetupGameSet.Specifics.Values['Steam'] = '1') then
-  begin
-    Result:=SetupSubSet(ssGames, 'Steam').Specifics.Values['Directory'];
-  end;
-  Result:=ConvertPath(Result);
+ Result:=SetupGameSet.Specifics.Values['Directory'];
+ if Result='' then
+  Result:='.'; //FIXME: What should we do...?
+ Result:=ConvertPath(Result);
 end;
 
 function BaseOutputPath : String;
@@ -649,7 +648,7 @@ begin
  Result:=IncludeTrailingPathDelimiter(BaseOutputPath); //To make sure there already is a trailing slash
  if Length(FileName) <> 0 then
    if SetupGameSet.Specifics.Values['Steam']='1' then
-     if (GetSteamCompiler = 'source2009') then
+     if (GetSteamCompiler = 'source2007') or (GetSteamCompiler = 'source2009') then
      begin
        I:=LastPos(PathDelim, RemoveTrailingSlash(Result));
        if I <> 0 then
@@ -720,6 +719,24 @@ begin
 end;
 
 function ResolveFilename(const FileToResolve : TFileToResolve) : TResolvedFilename;
+var
+  Setup, SteamSetup: QObject;
+
+  argument_mappath: String;
+  argument_mapfile: String;
+  argument_file: String;
+  argument_filename: String;
+  argument_fullfilename: String;
+  argument_grouppath: String;
+  argument_outputfile: String;
+
+  setupdirectory: String;
+  setupbasedir: String;
+  setuptmpquark: String;
+  MapExt: String;
+
+  S: String;
+  I: Integer;
 
  function ConstainsReplacer(const StringToCheck : String) : Boolean;
  var
@@ -768,24 +785,37 @@ function ResolveFilename(const FileToResolve : TFileToResolve) : TResolvedFilena
    end;
  end;
 
-var
-  Setup, SteamSetup: QObject;
+ procedure DoResolve(var path : string);
+ begin
+   if not ConstainsReplacer(path) then
+     //Shortcut if nothing to do
+     exit;
+   path:=StringReplace(path, '%output%', argument_outputfile, [rfReplaceAll]);
+   path:=StringReplace(path, '%grouppath%', argument_grouppath, [rfReplaceAll]);
+   if Setup.Specifics.Values['BuildPgmsDir']<>'' then
+     path:=StringReplace(path, '%buildpgmsdir%', Setup.Specifics.Values['BuildPgmsDir'], [rfReplaceAll]);
 
-  argument_mappath: String;
-  argument_mapfile: String;
-  argument_file: String;
-  argument_filename: String;
-  argument_fullfilename: String;
-  argument_grouppath: String;
-  argument_outputfile: String;
+   path:=StringReplace(path, '%mappath%', argument_mappath, [rfReplaceAll]);
+   path:=StringReplace(path, '%mapfile%', argument_mapfile, [rfReplaceAll]);
+   path:=StringReplace(path, '%file%', argument_file, [rfReplaceAll]);
+   path:=StringReplace(path, '%filename%', argument_filename, [rfReplaceAll]);
+   path:=StringReplace(path, '%fullfilename%', argument_fullfilename, [rfReplaceAll]);
+   path:=StringReplace(path, '%basepath%', setupdirectory, [rfReplaceAll]);
+   path:=StringReplace(path, '%gamedir%', setuptmpquark, [rfReplaceAll]);
+   path:=StringReplace(path, '%basedir%', setupbasedir, [rfReplaceAll]);
+   path:=StringReplace(path, '%quarkpath%', GetQPath(pQuArK), [rfReplaceAll]);
 
-  setupdirectory: String;
-  setupbasedir: String;
-  setuptmpquark: String;
-  MapExt: String;
+   //Steam replacers:
+   if SetupGameSet.Specifics.Values['Steam']='1' then
+   begin
+     path:=StringReplace(path, '%sourcesdkdir%', SourceSDKDir, [rfReplaceAll]);
+     path:=StringReplace(path, '%steampath%',    SteamSetup.Specifics.Values['SteamDirectory'], [rfReplaceAll]);
+     path:=StringReplace(path, '%steamappid%',   SteamAppID, [rfReplaceAll]);
+     path:=StringReplace(path, '%steamgamedir%', GetSteamGameDir, [rfReplaceAll]);
+     path:=StringReplace(path, '%steamuser%',    SteamSetup.Specifics.Values['SteamUser'], [rfReplaceAll]);
+   end;
+ end;
 
-  S: String;
-  I: Integer;
 begin
   //Workaround: Only try to resolve if there is anything to resolve. This fixes
   //crashes when the setup is not init-ed properly yet.
@@ -833,13 +863,18 @@ begin
         Result.Workdir := RemoveTrailingSlash(QuickResolveFilename(argument_outputfile));
       argument_mappath := GameMapPath;
     end;
-    if FileToResolve.FileType = ftTool then
-      if SetupGameSet.Specifics.Values['Steam']='1' then
-        if (GetSteamCompiler = 'source2009') then
+
+    //Steam path changes
+    if SetupGameSet.Specifics.Values['Steam']='1' then
+      if FileToResolve.FileType = ftTool then
+        if (GetSteamCompiler = 'source2007') or (GetSteamCompiler = 'source2009') then 
         begin
           I:=LastPos(PathDelim, Result.Workdir);
           if I <> 0 then
             Result.Workdir:=LeftStr(Result.Workdir, I-1);
+          I:=Pos(PathDelim, argument_mappath);
+          if I <> 0 then
+            argument_mappath:=RightStr(argument_mappath,Length(argument_mappath)-I);
         end;
 
     MapExt := Setup.Specifics.Values['MapExt'];
@@ -866,25 +901,8 @@ begin
 
   //Be careful when making changes here, because the order of these replacements is not arbitrary!
   Result.Filename:=FileToResolve.Commandline;
-  Result.Filename:=StringReplace(Result.Filename, '%output%', argument_outputfile, [rfReplaceAll]);
-  Result.Filename:=StringReplace(Result.Filename, '%grouppath%', argument_grouppath, [rfReplaceAll]);
-  if Setup.Specifics.Values['BuildPgmsDir']<>'' then
-    Result.Filename:=StringReplace(Result.Filename, '%buildpgmsdir%', Setup.Specifics.Values['BuildPgmsDir'], [rfReplaceAll]);
-
-  Result.Filename:=StringReplace(Result.Filename, '%mappath%', argument_mappath, [rfReplaceAll]);
-  Result.Filename:=StringReplace(Result.Filename, '%mapfile%', argument_mapfile, [rfReplaceAll]);
-  Result.Filename:=StringReplace(Result.Filename, '%file%', argument_file, [rfReplaceAll]);
-  Result.Filename:=StringReplace(Result.Filename, '%filename%', argument_filename, [rfReplaceAll]);
-  Result.Filename:=StringReplace(Result.Filename, '%fullfilename%', argument_fullfilename, [rfReplaceAll]);
-  Result.Filename:=StringReplace(Result.Filename, '%basepath%', setupdirectory, [rfReplaceAll]);
-  Result.Filename:=StringReplace(Result.Filename, '%gamedir%', setuptmpquark, [rfReplaceAll]);
-  Result.Filename:=StringReplace(Result.Filename, '%quarkpath%', GetQPath(pQuArK), [rfReplaceAll]);
-
-  //Steam replacers:
-  Result.Filename:=StringReplace(Result.Filename, '%sourcesdkdir%', SourceSDKDir, [rfReplaceAll]);
-  Result.Filename:=StringReplace(Result.Filename, '%steampath%',    SteamSetup.Specifics.Values['Directory'], [rfReplaceAll]);
-  Result.Filename:=StringReplace(Result.Filename, '%steamappid%',   SteamAppID, [rfReplaceAll]);
-  Result.Filename:=StringReplace(Result.Filename, '%steamuser%',    SteamSetup.Specifics.Values['SteamUser'], [rfReplaceAll]);
+  DoResolve(Result.Filename);
+  DoResolve(Result.Workdir);
 
   {$IFDEF Debug}
   if ConstainsReplacer(FileToResolve.CommandLine) then
@@ -1094,14 +1112,16 @@ var
  GetPakNames: TGetPakNames;
  Setup: QObject;
  SteamRunning: Boolean;
- SteamCacheDir: String;
 begin
   Log(LOG_VERBOSE, 'GetGameFileBase: %s, %s, %s, %s', [BaseDir, FileName, PakFileName, BoolToStr(LookInCD)]);
   Result := NIL;
   if (GameFiles=Nil) then
     GameFiles:=TQList.Create;
   SearchStage:=0;
-  AbsolutePath:=ConcatPaths([QuakeDir, BaseDir]);
+  if SetupGameSet.Specifics.Values['Steam']='1' then
+    AbsolutePath:=QuickResolveFilename(BaseDir)
+  else
+    AbsolutePath:=QuickResolveFilename(ConcatPaths([QuakeDir, BaseDir]));
   repeat
     // Buffer search
     RestartAliasing(FileName);
@@ -1141,16 +1161,14 @@ begin
         Log(LOG_WARNING, 'Steam is not running. Unable to extract files from it.')
       else
       begin
-        Setup:=SetupSubSet(ssGames, 'Steam');
-        SteamCacheDir:=ConcatPaths([Setup.Specifics.Values['Directory'], Setup.Specifics.Values['CacheDirectory']]);
         RestartAliasing(FileName);
         FilenameAlias := GetNextAlias;
         while (FilenameAlias <> '') do
         begin
           if RunSteamExtractor(FilenameAlias) then
-            if FileExists(ConcatPaths([SteamCacheDir, FilenameAlias])) then
+            if FileExists(ConcatPaths([ExtractFilePath(MakeTempFileName('QSAS')), FilenameAlias])) then
             begin
-              Result:=ExactFileLink(ConcatPaths([SteamCacheDir, FilenameAlias]), Nil, True);
+              Result:=ExactFileLink(ConcatPaths([ExtractFilePath(MakeTempFileName('QSAS')), FilenameAlias]), Nil, True);
               Result.Flags:=Result.Flags or ofWarnBeforeChange;
               GameFiles.Add(Result);
               GameFiles.Sort(ByFileName);
@@ -1168,17 +1186,8 @@ begin
     if SetupGameSet.Specifics.Values['Steam']='1' then
     begin
       Setup:=SetupSubSet(ssGames, 'Steam');
-      if Setup.Specifics.Values['CacheGCF'] = '1' then
-      begin
-        PakRealFileName:=GetGCFFile(PakFileName);
-        PakSearchPath:=ExtractFileDir(PakRealFileName);
-        PakRealFileName:=ExtractFileName(PakRealFileName);
-      end
-      else
-      begin
-        PakSearchPath:=ConcatPaths([Setup.Specifics.Values['Directory'], Setup.Specifics.Values['ProgramDirectory']]);
-        PakRealFileName:=PakFileName;
-      end;
+      PakSearchPath:=QuickResolveFilename(ConcatPaths([Setup.Specifics.Values['Directory'], Setup.Specifics.Values['ProgramDirectory']]));
+      PakRealFileName:=PakFileName;
     end
     else
     begin
@@ -1797,13 +1806,14 @@ begin
   Result:=SetupGameSet.Specifics.Values['MapPath'];
   if Result='' then
     Result:='maps';
-  if (GetSteamCompiler = 'source2009') then
-  begin
-    TMPQuArK:=ConvertPath(GetSteamtmpQuArK);
-    I:=LastPos(PathDelim, TMPQuArK);
-    if I <> 0 then
-      Result:=ConcatPaths([Copy(TMPQuArK, I+1, MaxInt), Result]);
-  end;
+  if SetupGameSet.Specifics.Values['Steam']='1' then
+    if (GetSteamCompiler = 'source2007') or (GetSteamCompiler = 'source2009') then 
+    begin
+      TMPQuArK:=ConvertPath(GetSteamGameDir);    //@
+      I:=LastPos(PathDelim, TMPQuArK);
+      if I <> 0 then
+        Result:=ConcatPaths([Copy(TMPQuArK, I+1, MaxInt), Result]);
+    end;
 end;
 
 function GameModelPath : String;
@@ -1857,38 +1867,38 @@ begin
   end;
 end;
 
-function GetSteamtmpQuArK : String;
+function GetSteamGameDir : String;
 var
   S: String;
 begin
-  Result := SetupGameSet.Specifics.Values['tmpQuArK'];
+  Result := SetupGameSet.Specifics.Values['GameDir'];
   if Result = '*auto*' then
   begin
     S := SetupGameSet.Specifics.Values['SteamGame'];
     if S = 'HL2' then
-      Result := 'SteamApps\%steamuser%\half-life 2\hl2'
+      Result := 'half-life 2'
     else if S = 'CSS' then
-      Result := 'SteamApps\%steamuser%\counter-strike source\cstrike'
+      Result := 'counter-strike source'
     else if S = 'HL:S' then
-      Result := 'SteamApps\%steamuser%\half-life source\hl1'
+      Result := 'half-life source'
     else if S = 'HL2:DM' then
-      Result := 'SteamApps\%steamuser%\half-life 2 deathmatch\hl2mp'
+      Result := 'half-life 2 deathmatch'
     else if S = 'HL2:LC' then
-      Result := 'SteamApps\%steamuser%\half-life 2 lostcoast\lostcoast'
+      Result := 'half-life 2 lostcoast'
     else if S = 'HL:DM:S' then
-      Result := 'SteamApps\%steamuser%\half-life deathmatch source\hl1mp'
+      Result := 'half-life deathmatch source'
     else if S = 'HL2:EP1' then
-      Result := 'SteamApps\%steamuser%\half-life 2 episode one\episodic'
+      Result := 'half-life 2 episode one'
     else if S = 'Portal' then
-      Result := 'SteamApps\%steamuser%\portal\portal'
+      Result := 'portal'
     else if S = 'HL2:EP2' then
-      Result := 'SteamApps\%steamuser%\half-life 2 episode two\ep2'
+      Result := 'half-life 2 episode two'
     else if S = 'TF2' then
-      Result := 'SteamApps\%steamuser%\team fortress 2\tf'
+      Result := 'team fortress 2'
     else
     begin
       //Shouldn't happen!
-      Log(LOG_WARNING, 'GetSteamtmpQuArK: Unknown SteamGame value!');
+      Log(LOG_WARNING, 'GetSteamGameDir: Unknown SteamGame value!');
       Result := '';
     end;
   end;
