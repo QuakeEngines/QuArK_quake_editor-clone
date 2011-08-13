@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2010/10/16 22:50:16  danielpharos
+Added experimental RMF file loading support; poly's only, no UV's or textures.
+
 Revision 1.1.2.1  2009/11/10 19:58:24  danielpharos
 Added limited WorldCraft file reading support.
 
@@ -59,7 +62,7 @@ type
   end;
 
   RMFTexture_21 = packed record //@ UNTESTED
-    texture: array[0..MAX_PATH-1] of Char;
+    texture: array[0..MAX_PATH-1] of Byte;
     rotate: Single;
     shift: array[0..1] of Single;
     scale: array[0..1] of Single;
@@ -71,7 +74,7 @@ type
   end;
 
   RMFTexture_33 = packed record //@ UNTESTED
-    texture: array[0..MAX_PATH-1] of Char; 
+    texture: array[0..MAX_PATH-1] of Byte; 
     UAxis: array[0..3] of Single;
     VAxis: array[0..3] of Single;
     rotate: Single;
@@ -211,32 +214,42 @@ var
      F.ReadBuffer(OldTex.texture[0], 16);
 
      // Ensure name is ASCIIZ
-     OldTex.texture[16]:=#0;
+     OldTex.texture[16]:=0;
 
      // Read the rest - skip the name
      F.ReadBuffer(OldTex.rotate, SizeOf(OldTex.rotate) + SizeOf(OldTex.shift) + SizeOf(OldTex.scale));
+
+     Surface.NomTex:=CharToPas(OldTex.texture);
    end
    else if RMFVersion < 1.2 then
    begin
      // Didn't have smooth/material groups
      F.ReadBuffer(OldTex.texture[0], 40);
      F.ReadBuffer(OldTex.texture[0], SizeOf(OldTex.texture) - (MAX_PATH) + SizeOf(OldTex.rotate) + SizeOf(OldTex.shift) + SizeOf(OldTex.scale));
+
+     Surface.NomTex:=CharToPas(OldTex.texture);
    end
    else if RMFVersion < 1.7 then
    begin
      // No quake2 fields yet and smaller texture size.
      F.ReadBuffer(OldTex.texture[0], 40);
      F.ReadBuffer(OldTex.rotate, SizeOf(OldTex) - 3*SizeOf(Integer) - MAX_PATH);
+
+     Surface.NomTex:=CharToPas(OldTex.texture);
    end
    else if RMFVersion < 1.8 then
    begin
      // Texture name field changed from 40 to MAX_PATH in size.
      F.ReadBuffer(OldTex.texture[0], 40);
      F.ReadBuffer(OldTex.rotate, SizeOf(OldTex) - MAX_PATH);
+
+     Surface.NomTex:=CharToPas(OldTex.texture);
    end
    else if RMFVersion < 2.2 then
    begin
      F.ReadBuffer(OldTex.texture[0], SizeOf(OldTex));
+
+     Surface.NomTex:=CharToPas(OldTex.texture);
    end
    else
    begin
@@ -246,6 +259,8 @@ var
      //
      F.ReadBuffer(OldTex33.texture[0], SizeOf(OldTex33));
      //@
+
+     Surface.NomTex:=CharToPas(OldTex33.texture);
    end;
 
    if RMFVersion < 0.6 then
