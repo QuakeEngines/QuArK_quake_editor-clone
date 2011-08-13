@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.77  2010/10/16 18:12:21  danielpharos
+Const-ed a few Pal-constants.
+
 Revision 1.76  2010/03/08 22:03:38  danielpharos
 Fixed issues with shaders and materials not showing because of slash-problems.
 
@@ -1234,11 +1237,11 @@ begin
         if CharModeJeu=mjHL2 then
         begin
           try // failing to load the textures produces an exception
-            Link:=NeedGameFileBase(S, ConcatPaths([Specifics.Values['path'], TexName+GameBuffer(StdGameTextureLinks[I].GameMode)^.TextureExt]), Specifics.Values['PakFile']) as QPixelSet;
+            Link:=NeedGameFileBase(S, ConcatPaths([GameTexturesPath, TexName+GameBuffer(StdGameTextureLinks[I].GameMode)^.TextureExt]), Specifics.Values['PakFile']) as QPixelSet;
           except
             // fall back to vtf file loading if default texture extension (vmt) fails
             if Link=Nil then
-              Link:=NeedGameFileBase(S, ConcatPaths([Specifics.Values['path'], TexName+'.vtf']), Specifics.Values['PakFile']) as QPixelSet;
+              Link:=NeedGameFileBase(S, ConcatPaths([GameTexturesPath, TexName+'.vtf']), Specifics.Values['PakFile']) as QPixelSet;
           end;
           if Link=Nil then
             Raise EErrorFmt(5755, [TexName, Arg]);

@@ -13,7 +13,7 @@ QQRKSRC1
       Root = "TF2 Textures.qtxfolder"
       HTML = "intro.texturebrowser.html"
 
-      t_tf2:incl = { v="%steampath%\SteamApps\%steamuser%\%steamgamedir%" path="tf/materials/" PakFile="team fortress 2 materials.gcf" }
+      t_tf2:incl = { v="tf" PakFile="team fortress 2 materials.gcf" }
 
       TF2 Textures.qtxfolder =
       {

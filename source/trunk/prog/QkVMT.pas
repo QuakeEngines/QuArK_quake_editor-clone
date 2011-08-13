@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.25  2009/07/15 10:38:01  danielpharos
+Updated website link.
+
 Revision 1.24  2009/03/18 23:15:31  danielpharos
 Fixed broken merge prev rev.
 
@@ -130,7 +133,7 @@ type
 implementation
 
 uses SysUtils, Setup, Quarkx, QkExceptions, QkObjectClassList, Game, Logging,
-     QkVTF, StrUtils, ExtraFunctionality, QkApplPaths;
+     QkVTF, StrUtils, ExtraFunctionality, QkApplPaths, QkTextures;
 
 var
   VMTLoaded: Boolean;
@@ -224,7 +227,6 @@ end;
 function QVMTFile.DefaultImage : QPixelSet;
 var
  GCFFilename: String;
- TexturePath: String;
  FullTextureFile: String;
  DefaultImageName: array[0..9] of String;
  DefaultImageIndex: Integer;
@@ -245,12 +247,10 @@ begin
   if ReverseLink<>nil then
   begin
     GCFFilename:=ReverseLink.Specifics.Values['PakFile'];
-    TexturePath:=ConvertPath(ReverseLink.Specifics.Values['path']);
   end
   else
   begin
     GCFFilename:='';
-    TexturePath:='';
   end;
 
   //FIXME: Horribly horriby workaround...! We need to get into the first
@@ -290,7 +290,7 @@ begin
       if (DefaultImageName[DefaultImageIndex]<>'') then
       begin
         ImageFileName:=DefaultImageName[DefaultImageIndex]+TexExt;
-        FullTextureFile:=IncludeTrailingPathDelimiter(TexturePath) + ImageFileName;
+        FullTextureFile:=ConcatPaths([GameTexturesPath, ImageFileName]);
         Log(LOG_VERBOSE,'attempting to load '+FullTextureFile);
         try
           Result:=NeedGameFile(FullTextureFile, GCFFilename) as QPixelSet
@@ -311,7 +311,7 @@ begin
       ImageFileName:=ReverseLink.name + TexExt
     else
       ImageFileName:=self.name + TexExt;
-    FullTextureFile:=IncludeTrailingPathDelimiter(TexturePath) + ImageFileName;
+    FullTextureFile:=ConcatPaths([GameTexturesPath, ImageFileName]);
     Log(LOG_VERBOSE,'attempting to load '+FullTextureFile);
     try
       Result:=NeedGameFile(FullTextureFile, GCFFilename) as QPixelSet;

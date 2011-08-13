@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.84  2011/07/31 16:30:23  danielpharos
+Massive moving around of QuArK SAS stuff and SteamFS things.
+
 Revision 1.83  2011/07/31 10:55:14  danielpharos
 Updated Source engine configurations. (Note: QuArKSAS source2007 missing, and source2007 codepath probably wrong.)
 
@@ -646,14 +649,6 @@ var
  I: Integer;
 begin
  Result:=IncludeTrailingPathDelimiter(BaseOutputPath); //To make sure there already is a trailing slash
- if Length(FileName) <> 0 then
-   if SetupGameSet.Specifics.Values['Steam']='1' then
-     if (GetSteamCompiler = 'source2007') or (GetSteamCompiler = 'source2009') then
-     begin
-       I:=LastPos(PathDelim, RemoveTrailingSlash(Result));
-       if I <> 0 then
-         Result:=LeftStr(Result, I-1);
-     end;
  I:=Length(Result)+1;
  Result:=ConcatPaths([Result, FileName]);
  if ExtractFileName(Result) <> '' then
@@ -869,12 +864,11 @@ begin
       if FileToResolve.FileType = ftTool then
         if (GetSteamCompiler = 'source2007') or (GetSteamCompiler = 'source2009') then 
         begin
-          I:=LastPos(PathDelim, Result.Workdir);
+          //Newer compilers want to run one directory upwards
+          argument_mappath:=ConcatPaths([Result.Workdir, argument_mappath]);
+          I:=LastPos(PathDelim, RemoveTrailingSlash(Result.Workdir));
           if I <> 0 then
             Result.Workdir:=LeftStr(Result.Workdir, I-1);
-          I:=Pos(PathDelim, argument_mappath);
-          if I <> 0 then
-            argument_mappath:=RightStr(argument_mappath,Length(argument_mappath)-I);
         end;
 
     MapExt := Setup.Specifics.Values['MapExt'];
@@ -1112,16 +1106,14 @@ var
  GetPakNames: TGetPakNames;
  Setup: QObject;
  SteamRunning: Boolean;
+ I: Integer;
 begin
   Log(LOG_VERBOSE, 'GetGameFileBase: %s, %s, %s, %s', [BaseDir, FileName, PakFileName, BoolToStr(LookInCD)]);
   Result := NIL;
   if (GameFiles=Nil) then
     GameFiles:=TQList.Create;
   SearchStage:=0;
-  if SetupGameSet.Specifics.Values['Steam']='1' then
-    AbsolutePath:=QuickResolveFilename(BaseDir)
-  else
-    AbsolutePath:=QuickResolveFilename(ConcatPaths([QuakeDir, BaseDir]));
+  AbsolutePath:=QuickResolveFilename(ConcatPaths([QuakeDir, BaseDir]));
   repeat
     // Buffer search
     RestartAliasing(FileName);
@@ -1188,6 +1180,14 @@ begin
       Setup:=SetupSubSet(ssGames, 'Steam');
       PakSearchPath:=QuickResolveFilename(ConcatPaths([Setup.Specifics.Values['Directory'], Setup.Specifics.Values['ProgramDirectory']]));
       PakRealFileName:=PakFileName;
+      //GCF is different from PAK: Move the gamedir-part into the filename
+      I:=LastPos(PathDelim, RemoveTrailingSlash(AbsolutePath));
+      if I <> 0 then
+      begin
+        RestartAliasing(ConcatPaths([RightStr(AbsolutePath,Length(AbsolutePath)-I),FileName]));
+        FilenameAlias := GetNextAlias;
+        AbsolutePath:=LeftStr(AbsolutePath,I);
+      end;
     end
     else
     begin
@@ -1799,21 +1799,10 @@ begin
 end;
 
 function GameMapPath : String;
-var
-  TMPQuArK: string;
-  I: Integer;
 begin
   Result:=SetupGameSet.Specifics.Values['MapPath'];
   if Result='' then
     Result:='maps';
-  if SetupGameSet.Specifics.Values['Steam']='1' then
-    if (GetSteamCompiler = 'source2007') or (GetSteamCompiler = 'source2009') then 
-    begin
-      TMPQuArK:=ConvertPath(GetSteamGameDir);    //@
-      I:=LastPos(PathDelim, TMPQuArK);
-      if I <> 0 then
-        Result:=ConcatPaths([Copy(TMPQuArK, I+1, MaxInt), Result]);
-    end;
 end;
 
 function GameModelPath : String;
