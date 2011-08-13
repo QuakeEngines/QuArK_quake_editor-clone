@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.5  2008/06/30 17:31:55  cdunde
+//Updates, additions and a new mod addon by X7.
+//
 //Revision 1.4  2008/06/03 23:52:00  cdunde
 //A couple of corrections noted by our uses, Thank you.
 //
@@ -1075,8 +1078,8 @@ QQRKSRC1
         func_object:b =
         {
           dmg = "2"
-          ;desc = "This is solid bmodel that will fall if it's support it remo"
-           "ved."
+          ;desc = "This is solid bmodel that will fall if its support is remov"
+           "ed."
           poly:p =
           {
             east:f =
@@ -2167,7 +2170,7 @@ QQRKSRC1
           ;desc = "Used to make those cool guns."
         }
       }
-      other entitie.qtxfolder =
+      other entities.qtxfolder =
       {
         viewthing:e =
         {
@@ -5155,7 +5158,7 @@ QQRKSRC1
     }
     func_object:form =
     {
-      Help = "This is solid bmodel that will fall if it's support is removed."
+      Help = "This is solid bmodel that will fall if its support is removed."
       dmg: =
       {
         Txt = "&"
@@ -9242,7 +9245,7 @@ QQRKSRC1
       {
         Txt = "&"
         Hint = "If targeted, the light will toggle between on and off. Must ha"
-         "ve a "$22"light entitie"$22" with the same targetname to work."
+         "ve a "$22"light entity"$22" with the same targetname to work."
       }
       spawnflags: =
       {
@@ -9379,7 +9382,7 @@ QQRKSRC1
       {
         Txt = "&"
         Hint = "If targeted, the light will toggle between on and off. Must ha"
-         "ve a "$22"light entitie"$22" with the same targetname to work."
+         "ve a "$22"light entity"$22" with the same targetname to work."
       }
       spawnflags: =
       {
