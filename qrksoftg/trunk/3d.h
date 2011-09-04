@@ -1,33 +1,59 @@
+#ifndef H_3d
+#define H_3d
 
-typedef unsigned char  FxU8;
-typedef   signed char  FxI8;
-typedef unsigned short FxU16;
-typedef   signed short FxI16;
-typedef unsigned long  FxU32;
-typedef   signed long  FxI32;
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-typedef struct {
-    int smallLod, largeLod;
-    int aspectRatio;
-    int format;
-    char *data;
-} grTexInfo_t;
+typedef unsigned char      FxU8;
+typedef   signed char      FxI8;
+typedef unsigned short int FxU16;
+typedef   signed short int FxI16;
+typedef unsigned long int  FxU32;
+typedef   signed long int  FxI32;
+typedef          long int  FxBool;
+
+
+typedef FxU32 GrColor_t;
+typedef FxU8  GrAlpha_t;
+typedef FxI32 GrChipID_t;
+typedef FxI32 GrCombineFunction_t;
+typedef FxI32 GrColorCombineFunction_t;
+typedef FxI32 GrAspectRatio_t;
+//typedef FxI32 GrFogMode_t;
+typedef FxI32 GrColorFormat_t;
+typedef FxI32 GrOriginLocation_t;
+typedef FxI32 GrLOD_t;
+typedef FxI32 GrTextureFormat_t;
+typedef FxU32 GrTexTable_t;
+typedef FxU32 GrHint_t;
+typedef FxU32 GrScreenResolution_t;
+typedef FxU32 GrScreenRefresh_t;
+typedef GrHint_t GrHints_t; //Hmm, why is there a naming conflict here?
+
+
+typedef struct { //__declspec(align(4))?
+    GrLOD_t smallLod, largeLod;
+    GrAspectRatio_t aspectRatio;
+    GrTextureFormat_t format;
+    void *data;
+} GrTexInfo;
 
 #define GR_TEXFMT_RGB_565  10
 #define GR_TEXFMT_RGB_443  222    // custom internal format
 
-typedef struct {
+typedef struct { //__declspec(align(4))?
     float sow, tow, oow;
-} grTmuVertex_t;
+} GrTmuVertex;
 
-typedef struct {
+typedef struct { //__declspec(align(4))?
     float x, y, z;
     float r, g, b;
     float ooz;
     float a;
     float oow;
-    grTmuVertex_t tmuvtx[2];
-} grVertex_t;
+    GrTmuVertex tmuvtx[2];
+} GrVertex;
 
 
 #define EPSILON          (1.0/64)
@@ -40,27 +66,23 @@ typedef struct {
 #define MAXOOWBIAS       (int)(OOWTABLEBASE/MAXW)
 
 
-#ifndef GCC
-#include <windows.h>
-#ifdef _MSC_VER
-#define __attribute__(x)           __declspec(dllexport) WINAPI
-#else
-#define __attribute__(x)           WINAPI __declspec(dllexport)
-#endif
+void __declspec(dllexport) __stdcall grTexSource(GrChipID_t tmu, FxU32 startAddress, FxU32 evenOdd, GrTexInfo *info);
+void __declspec(dllexport) __stdcall softgLoadFrameBuffer(int *buffer, int format);
+void __declspec(dllexport) __stdcall grDrawTriangle(const GrVertex *a, const GrVertex *b, const GrVertex *c);
+void __declspec(dllexport) __stdcall grBufferClear(GrColor_t color, GrAlpha_t alpha, FxU16 depth);
+void __declspec(dllexport) __stdcall grTexDownloadTable(GrChipID_t tmu, GrTexTable_t type, void *data);
+void __declspec(dllexport) __stdcall grGlideInit(void);
+void __declspec(dllexport) __stdcall grClipWindow(FxU32 minx, FxU32 miny, FxU32 maxx, FxU32 maxy);
+FxBool __declspec(dllexport) __stdcall grSstWinOpen(FxU32 hwnd, GrScreenResolution_t res, GrScreenRefresh_t ref, GrColorFormat_t cformat, GrOriginLocation_t org_loc, int num_buffers, int num_aux_buffers);
+void __declspec(dllexport) __stdcall grSstWinClose(void);
+int  __declspec(dllexport) __stdcall softgQuArK(void);
+void __declspec(dllexport) __stdcall grConstantColorValue(GrColor_t color);
+//void __declspec(dllexport) __stdcall grFogColorValue(GrColor_t color);
+void __declspec(dllexport) __stdcall guColorCombineFunction(GrColorCombineFunction_t func);
+void __declspec(dllexport) __stdcall grHints(GrHints_t type, FxU32 hintMask);
+
+#ifdef __cplusplus
+}
 #endif
 
-
-void __attribute__((__stdcall__)) grTexSource(int tmu, int startAddress, int evenOdd, grTexInfo_t *info);
-void __attribute__((__stdcall__)) softgLoadFrameBuffer(int *buffer, int format);
-void __attribute__((__stdcall__)) grDrawTriangle(grVertex_t *a, grVertex_t *b, grVertex_t *c);
-void __attribute__((__stdcall__)) grBufferClear(int reserved1, int reserved2, int reserved3);
-void __attribute__((__stdcall__)) grTexDownloadTable(int reserved1, int reserved2, void *table);
-void __attribute__((__stdcall__)) grGlideInit();
-void __attribute__((__stdcall__)) grClipWindow(int left, int top, int right, int bottom);
-int  __attribute__((__stdcall__)) grSstWinOpen(int reserved1, int reserved2, int reserved3, int reserved4, int reserved5, int reserved6, int reserved7);
-void __attribute__((__stdcall__)) grSstWinClose();
-int  __attribute__((__stdcall__)) softgQuArK();
-void __attribute__((__stdcall__)) grConstantColorValue(FxU32 color);
-//void __attribute__((__stdcall__)) grFogColorValue(FxU32 color);
-void __attribute__((__stdcall__)) guColorCombineFunction(int mode);
-void __attribute__((__stdcall__)) grHints(int mode, int value);
+#endif //H_3d
