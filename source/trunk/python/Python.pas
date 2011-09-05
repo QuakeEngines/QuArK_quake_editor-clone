@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.52  2010/11/06 15:32:51  danielpharos
+Fixed a typo.
+
 Revision 1.51  2010/04/17 20:41:00  danielpharos
 Removed unneeded empty log line.
 
@@ -315,10 +318,12 @@ type
  getiterfunc     = function(ob1 : PyObject) : PyObject; cdecl;
  iternextfunc    = function(ob1 : PyObject) : PyObject; cdecl;
 
- readbufferproc  = function(o: PyObject; i: Py_ssize_t; p: Pointer): Py_ssize_t; cdecl;
- writebufferproc = function(o: PyObject; i: Py_ssize_t; p: Pointer): Py_ssize_t; cdecl;
- segcountproc    = function(o: PyObject; i: Py_ssize_t): Py_ssize_t; cdecl;
- charbufferproc  = function(o: PyObject; i: Py_ssize_t; p: PChar): Py_ssize_t; cdecl;
+ readbufferproc    = function(o: PyObject; i: Py_ssize_t; p: Pointer): Py_ssize_t; cdecl;
+ writebufferproc   = function(o: PyObject; i: Py_ssize_t; p: Pointer): Py_ssize_t; cdecl;
+ segcountproc      = function(o: PyObject; i: Py_ssize_t): Py_ssize_t; cdecl;
+ charbufferproc    = function(o: PyObject; i: Py_ssize_t; p: PChar): Py_ssize_t; cdecl;
+ getbufferproc     = function(o: PyObject; p: Pointer; i: Integer): Integer; cdecl;
+ releasebufferproc = procedure(o: PyObject; p: Pointer); cdecl;
 
  PyNumberMethods = ^TyNumberMethods;
  TyNumberMethods = packed record
@@ -376,8 +381,8 @@ type
                   bf_getwritebuffer: writebufferproc;
                   bf_getsegcount: segcountproc;
                   bf_getcharbuffer: charbufferproc;
-                  //bf_getbuffer: getbufferproc;         //Added March 2008 (Python trunk revision 65874)
-                  //bf_releasebuffer: releasebufferproc; //Don't know if they are needed
+                  bf_getbuffer: getbufferproc;
+                  bf_releasebuffer: releasebufferproc;
                  end;
 
  TyTypeObject = object(TyVarObject)
@@ -459,7 +464,7 @@ const
  //   1010 for Python 2.1a2 (and probably 2.1 as well)
  //   1011 for Python 2.2
  //   1012 for Python 2.3 and 2.4
- //   1013 for Python 2.5 and 2.6 and 2.7?
+ //   1013 for Python 2.5 and 2.6 and 2.7
  // Version info from here: http://svn.python.org/view/python/trunk/Include/modsupport.h
 {$IFDEF PYTHON27}
  PYTHON_API_VERSION = 1013;
@@ -827,12 +832,23 @@ var
   VersionNumber: TVersionNumber;
   VersionNumberString: String;
   FoundGoodVersion: Boolean;
+  FoundOwnVersion: Boolean;
 begin
   //See ProbableCauseOfFatalError in QuarkX for return value meaning
   Result:=6;
 
+  if SetEnvironmentVariable('PYTHONHOME', PChar(ExtractFileDir(Application.Exename))) = false then
+    Exit;
   if SetEnvironmentVariable('PYTHONPATH', PChar(ConcatPaths([ExtractFileDir(Application.Exename), 'Lib']))) = false then
     Exit;
+  if SetEnvironmentVariable('PYTHONOPTIMIZE', '1') = false then
+    Exit;
+{$IFDEF Debug}
+  if SetEnvironmentVariable('PYTHONDEBUG', '1') = false then
+    Exit;
+  if SetEnvironmentVariable('PYTHONDUMPREFS', '1') = false then
+    Exit;
+{$ENDIF}
   Result:=5;
 
   if PythonLib=0 then
@@ -913,6 +929,7 @@ begin
 
   //Process Py_GetVersion to find version number
   FoundGoodVersion:=False;
+  FoundOwnVersion:=False;
   
   //DanielPharos: We're going to assume the Python version numbers is
   //format of integers delimited by periods '.', with the number starting
@@ -923,29 +940,37 @@ begin
     VersionNumberString:=LeftStr(s, Index-1);
     VersionNumber:=SplitVersionNumber(VersionNumberString);
 
-    if Length(VersionNumber) >= 2 then
+    if Length(VersionNumber) >= 1 then
     begin
-      if VersionNumber[0] >= 2 then
+      if VersionNumber[0] > 2 then
       begin
-        if (VersionNumber[0] = 2) then
+        //Python 3 or larger: Procede at own risk!
+        FoundGoodVersion:=True;
+        LogAndWarn('Unsupported, future version ('+VersionNumberString+') of Python found! QuArK might behave unpredictably!');
+      end
+      else if (VersionNumber[0] = 2) then
+      begin
+        if Length(VersionNumber) >= 2 then
         begin
-          if (VersionNumber[1] = 3) or (VersionNumber[1] = 4) then
+          if (VersionNumber[1] >= 5) then
           begin
-            //Python 2.3 or 2.4: Supported!
+            //Python 2.5 or higher: Supported!
             FoundGoodVersion:=True;
-          end
-          else if (VersionNumber[1] > 4) then
-          begin
-            //Python 2.x (> 2.4): Future version: Might work...
-            FoundGoodVersion:=True;
-            LogAndWarn('Newer version ('+VersionNumberString+') of Python than supported found! QuArK might behave unpredictably!');
+            if (VersionNumber[1] = 6) then
+            begin
+              if Length(VersionNumber) >= 3 then
+              begin
+                if (VersionNumber[2] = 6) then
+                begin
+                  FoundOwnVersion:=True;
+                end;
+              end;
+            end;
+            if not FoundOwnVersion then
+            begin
+              LogAndWarn('A different version ('+VersionNumberString+') of Python than supported found! QuArK might behave unpredictably!');
+            end;
           end;
-        end
-        else
-        begin
-          //Python 3 or larger: Procede at own risk!
-          FoundGoodVersion:=True;
-          LogAndWarn('Unsupported, future version ('+VersionNumberString+') of Python found! QuArK might behave unpredictably!');
         end;
       end;
     end;
