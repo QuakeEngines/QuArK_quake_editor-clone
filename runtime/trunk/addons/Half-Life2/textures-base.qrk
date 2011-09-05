@@ -3,6 +3,13 @@ QQRKSRC1
   QuArKProtected = "1"
   Description = "Source Textures from source materials.gcf (august/12/2005)"
 
+  HL2 directory infos.qctx =
+  {
+    Game = "Half-Life2"
+    SourceDir = "hl2"
+    GameDir = "hl2"
+  }
+
 // Common Source Materials
 
   HL2Textures.qtx =

@@ -3,6 +3,13 @@ QQRKSRC1
   QuArKProtected = "1"
   Description = "TF2 Textures from team fortress 2 materials.gcf (february/12/2008)"
 
+  TF2 directory infos.qctx =
+  {
+    Game = "Half-Life2"
+    SourceDir = "tf"
+    GameDir = "tf"
+  }
+
 //
 // Materials for TF2
 //

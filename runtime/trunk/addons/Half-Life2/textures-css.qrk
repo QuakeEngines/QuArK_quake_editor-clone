@@ -3,6 +3,13 @@ QQRKSRC1
   QuArKProtected = "1"
   Description = "CS Source Textures from counter-strike source shared.gcf (august/12/2005)"
 
+  CS Source directory infos.qctx =
+  {
+    Game = "Half-Life2"
+    SourceDir = "cstrike"
+    GameDir = "cstrike"
+  }
+
 //
 // Materials for Counter Strike Source
 //

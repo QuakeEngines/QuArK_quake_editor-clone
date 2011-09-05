@@ -3,6 +3,13 @@ QQRKSRC1
   QuArKProtected = "1"
   Description = "HL2 Episode 1 from episode 1 shared.gcf (august/14/2011)"
 
+  HL2EP1 directory infos.qctx =
+  {
+    Game = "Half-Life2"
+    SourceDir = "episodic"
+    GameDir = "episodic"
+  }
+
 //
 // Materials for Half Life 2 Episode 1
 //

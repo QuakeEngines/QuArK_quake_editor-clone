@@ -3,6 +3,13 @@ QQRKSRC1
   QuArKProtected = "1"
   Description = "Portal Textures from portal content.gcf (April 24,2008) by Who Gives A Dam"
 
+  Portal directory infos.qctx =
+  {
+    Game = "Half-Life2"
+    SourceDir = "portal"
+    GameDir = "portal"
+  }
+
 //
 // Materials for Portal
 //
