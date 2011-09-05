@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.26  2011/08/13 22:17:19  danielpharos
+Simplified Steam file path handling. Should be much more uniform.
+
 Revision 1.25  2009/07/15 10:38:01  danielpharos
 Updated website link.
 
@@ -373,7 +376,7 @@ var
   Setup: QObject;
 
   RawBuffer: String;
-  VMTMaterial: Cardinal;
+  VMTMaterial: vlUInt;
   Stage: QVMTStage;
   StageList: array of QObject;
   GroupEndWorkaround: Boolean;
@@ -451,6 +454,7 @@ begin
             end;
           NODE_TYPE_GROUP_END:
             begin
+              if (NodeLevel = 0) then raise Exception.Create('ERROR: QkVMT: NodeLevel < 0!');
               NodeLevel:=NodeLevel-1;
               SetLength(StageList, NodeLevel+1);
             end;
@@ -479,6 +483,7 @@ begin
           else
             GroupEndWorkaround:=false;
         until vlMaterialGetNextNode=vlFalse;
+        if (NodeLevel <> 0) then raise Exception.Create('ERROR: QkVMT: NodeLevel != 0!');
       finally
         vlDeleteMaterial(VMTMaterial);
       end;
