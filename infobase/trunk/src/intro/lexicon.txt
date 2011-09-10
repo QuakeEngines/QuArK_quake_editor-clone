@@ -21,6 +21,8 @@ Deplacer    - to move
 
 
 
+Effacer     - to clear
+
 Enfant      - child
 
 Enregistrer - to save
