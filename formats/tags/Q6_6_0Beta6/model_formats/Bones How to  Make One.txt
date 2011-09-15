@@ -1,0 +1,250 @@
+Bones Specific/Args page
+========================
+The form itself made in:
+-----------------------
+mdlentities.py, class BoneType, def dataformname function
+
+called from mdlmgr.py:
+----------------------
+(use "formobj = mdlentities.CallManager("dataformname", bone)" for search)
+def makesettingclick
+def filldataform
+def helpbtnclick
+
+Making a bone
+=============
+=============
+For each component's vertexes we need a list (store in  the bone) for ex:
+bone.vtxlist  = {} or { 'mesh1:mc' : [0, 18, 34, 36, 7, 8] , 'mesh2:mc' : [0, 3, 45, 88] }
+uses the bone.dictspec['_color']
+(make its color the same as the Bone's color, stored with the bone)
+
+In the source code
+source\prog\model\QkModelBone.pas
+it has these python arguments
+that can be used:
+=========================
+DanielPharos says:
+position
+rotmatrix
+vtxlist
+vtx_pos
+_color
+
+Other stuff:
+===========
+DanielPharos says: (example of calling the CallManager)
+return mapentities.CallManager("menu", sellist[0], self) + extra
+
+Example of making a bone
+========================
+DanielPharos says:
+o = quarkx.newobj("NewBone:bone")
+o.position = quarkx.vect (100.0,100.0,0.0)
+skeletongroup.appenditem(o)
+# Redraw treeview...
+
+=========================================================
+=========================================================
+DanielPharos says: only applys to dictspec items. (does NOT show up in the tree-view)
+"blablabla"  can take a string.
+
+103   can take a single intiger.
+
+(0.4, 0.1, 0.5)  can take a TUPLE of floats, meaning they are IMMUTABLE (can't change them).
+
+make one like this:
+skeletongroup['vtxlist'] = "2 5 7 10 14" or
+skeletongroup['vtxlist'] = (2.0, 5.0, 7.0, 10.0, 14.0) but might be read back in as
+1.0, 5.0, 6.0, 10.0 14.0 because Python int(list[0]) rounds down for ANY amount over .0 even .99999999.
+
+==========================================================
+==========================================================
+WHAT WE HAVE PER BONE: (some saved as binary data to avoid using Python split() function for speed)
+========================
+bone.name      = NewBone2:bone
+bone.position  = -1.34 5.60 2.09 or quarkx.vect(-1.34, 5.60, 2.09)
+bone.rotmatrix = quarkx.matrix((sqrt(2)/2, -sqrt(2)/2, 0), (sqrt(2)/2, sqrt(2)/2, 0), (0, 0, 1))
+bone.vtxlist  = {} or { 'mesh1:mc' : [0, 18, 34, 36, 7, 8] , 'mesh2:mc' : [0, 3, 45, 88] }
+bone.vtx_pos  = {} or { 'mesh1:mc' : [18, 34, 36] }
+bone.dictspec
+    {
+    'flags': (0,0,0,0,0,0),
+    'show': (1.0,),
+    'parent_name': 'NewBone1:bone',
+    'position': (-1.3428442478179932, 5.5962123870849609, 2.0868406295776367)
+(STOP USING) 'rotmatrix': (3.0132664570972154e+023, 1.801776647567749, 3.0132664570972154e+023, -1.801776647567749, 0.0, 0.0, 3.0132664570972154e+023, 1.801776647567749, 3.0132664570972154e+023, 1.801776647567749, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.875),
+    'scale': (1.0,),
+    'bone_length': (0.0, 0.0, 0.0),
+    'component': 'h_head:mc',
+    'draw_offset': (0.0, 0.0, 0.0),
+    '_color': '\x00\xff\xff',
+    }
+
+WHAT WE HAVE IN ModelComponentList:
+==================================
+Created from the:
+editor.ModelVertexSelList
+[[92, <vect 211.72 197.40 -14.58>],
+ [90, <vect 210.12 203.39 -21.97>],
+ [91, <vect 211.92 209.79 -14.98>]
+]
+
+# As originally setup in mdleditor.py and confirmed in mdlutils.py.
+self(or editor).ModelComponentList = {'bboxlist': {}, 'bonelist': {}, 'tristodraw': {}}
+
+bboxlist
+--------
+ (DONE Updating for bone)
+bbox.name = bbox.shortname + ":p"
+If assigned to a bone bbox shortname = bone shortname
+editor.ModelComponentList['bboxlist'][bbox.name] = {}
+editor.ModelComponentList['bboxlist'][bbox.name]['size'] = [(-34,-60,-14), (16,-30,16)]
+
+ (DONE updating for component and framename)
+If assigned to a component bbox shortname = component shortname + "bbox " + str(count nbr)
+also has these dictionary keys, one of which MUST be used:
+editor.ModelComponentList['bboxlist'][bbox.name] = {}
+editor.ModelComponentList['bboxlist'][bbox.name]['size'] = [(-34,-60,-14), (16,-30,16)] # for all vtxs
+editor.ModelComponentList['bboxlist'][bbox.name]['vtx_list'] = [list of comp vtx_indexes]
+editor.ModelComponentList['bboxlist'][bbox.name]['frames'][frame_name] = [(-34,-60,-14), (16,-30,16)] # size of bbox
+
+bonelist (DONE Updating for bone and framename)
+--------
+editor.ModelComponentList['bonelist']
+editor.ModelComponentList['bonelist'][bone.name] = (used for all bones by bones full name as the key)
+editor.ModelComponentList['bonelist'][bone.name]['frames'][frame.name]['position']
+editor.ModelComponentList['bonelist'][bone.name]['frames'][frame.name]['rotmatrix']
+editor.ModelComponentList['bonelist'][bone.name]['type'] = 'md5'
+
+{
+'lostsoul_lost_flame1:bone':
+    {'frames': {
+               'meshframe:mf':
+                   {
+                   'position': (2.48, -0.04, -1.79),
+                   'rotmatrix': ((0.91, 0.41, -1.57), (-9.01, -1.81, -1.0), (-0.41, 0.91, -1.28))
+                   }
+               }
+    }
+    {'type': 'md5'}
+}
+
+ (DONE Updating for component)
+editor.ModelComponentList['tristodraw'] = (used for all components)
+{
+'h_head:mc':
+    {0: [35, 34, 21, 2, 1],
+     1: [21, 20, 2, 0],
+     2: [39, 35, 1, 0],
+     3: [27, 25, 17,13, 12, 5, 4],
+     ....
+     90: [91, 92, 5, 3],
+     91: [28, 92, 90, 3],
+     92: [28, 26, 25, 91, 90]
+    }
+}
+
+# For each component.
+# As originally setup in mdleditor.py and confirmed in other Python files.
+self(or editor).ModelComponentList[comp.name] = {'bonevtxlist': {}, 'colorvtxlist': {}, 'weightvtxlist': {}}
+
+
+ (DONE Updating for component)
+ (DONE Updating for bone)
+editor.ModelComponentList[comp.name]['bonevtxlist'] = (component's full name as the key)
+{
+'NewBone2:bone':
+    {18: {'color': '\xa4\x00\xa4'},
+     34: {'color': '\xa4\x00\xa4'},
+....
+     90: {'color': '\x00\x00\xff'}
+    }
+'NewBone3:bone':
+    {92: {'color': '\x00\x00\xff'},
+     90: {'color': '\x00\x00\xff'},
+....
+     91: {'color': '\x00\x00\xff'}
+    }
+}
+
+ (DONE Updating for component)
+editor.ModelComponentList[comp.name]['colorvtxlist'] = (component's full name as the key)
+{
+   39: {'vtx_color': '\xbf\xbf\xbf\x00'},
+   38: {'vtx_color': '\xbf\xbf\xbf\x00'},
+   49: {'vtx_color': '\xbf\xbf\xbf\x00'},
+....
+   51: {'vtx_color': '\xbf\xbf\xbf\x00'},
+   57: {'vtx_color': '\xbf\xbf\xbf\x00'},
+....
+}
+
+
+ (DONE Updating for component)
+ (DONE Updating for bone)
+editor.ModelComponentList[comp.name]['weightvtxlist'] = (component's full name as the key)
+{
+   18: {'NewBone2:bone': {'weight_value': 0.8, 'color': 'x00\xb7'}}
+       {'NewBone3:bone': {'weight_value': 0.2, 'color': 'x00\xa4'}}
+}
+
+How about using the Paint mode stuff for that ?
+Like you said...get the 3 RGB numbers, add them together, divide by 3
+then divide by 255...say....we could call that "Weighted Averaging" 8-9
+(sounds right) 8-|
+   114+35+206 = 355 = round(118) / 255 = .462745
+and apply that number to the weight_list[vtx 67] = .462745   8-9
+then put that vertex weight button on that paint toolbar to display those
+vertexes colors and turn the vtx paint mode on and off.
+
+
+New bone tree-view structure limits, don't use ['Skeleton:bg'].dictspec, ['Skeleton:bg'].dictitems or ['Skeleton:bg'].subitems anymore.
+only find all bones with                                 (Done)                    (Done)          (Done)
+        bones = editor.Root.dictitems['Skeleton:bg'].findallsubitems("", ':bone') # Get all bones.
+        for this_bone in bones:
+            if this_bone.name == bone.name:
+                old_bone = this_bone
+
+             Made new funciton in mdlutils.py called "findbone" to do the job:
+                bone = findbone(self.mgr.editor, bone.dictspec['parent_name'])
+                quarkpy.mdlutils.findbone(editor, o.name) is not None
+
+BONE FUNCTION CALLS AFTER A DRAG:
+=================================
+   File Name            Function Call
+----------------     ------------------
+mdlhandles		class BoneHandle > def ok
+mdleditor 		class ModelEditor > def ok
+mdleditor 		class ModelEditor > def explorerselchange
+mdlmgr 			def selchange
+mdlmgr 			def makesettingclick
+mdlhandles 		def BuildCommonHandles (also def BuildHandles)
+  ###### NOW FOR EACH BONE IN TREE-VIEW or IMPORTED (NOT JUST DRAGGED BONES) CAN WE CHANGE THIS FOR SPEED UP? ######
+  ###### ALSO HAPPENS EACH TIME Root, Misc, Skeleton, Component, Skins (or image), Frames (or frame-needed) ######
+  ###### pan, zoom, rotate. any rect drag, many funcitons or nothing IS SELECTED ######
+  mdlentities 		class BoneType > def handlesopt ****** CALLS FUNCTION BELOW ******
+    mdlutils 		def Rebuild_Bone **********************************
+  mdlhandles 		class HandlesManager > def BuildHandles (same time problem here)
+
+
+TODO LIST:
+==========
+
+A) In mdlbtns.py Edit & RMB menu in tree-view Duplicate (DONE), Delete (need help in deleteitems & dropitemsnow), Copy, Paste, 
+
+1) Main "Edit" menu "Delete" for vtx(s), face, all frames, bone > update (some or all) 'tristodraw', 'bonevtxlist' & 'colorvtxlist'.
+	Delete & Cut for components and bones DONE.
+
+2) Fix or remove RMB on bone menu "Duplicate" for bone error.
+
+3) Fix Depreciations errors in mdlutils.py "def SubdivideFaces" for vtx_index, U, V float values S/B integers.
+
+4) See if ForceToGrid working right. in mdlbtns.py line 454 is that function and elsewhere.
+
+5) On "Vertex weights" dialog = check all weights total 1.0 before closing, maybe not. Can there be partial weights?
+
+6) What about "Bone Length Locked"? And "classname" changing problem?
+
+7) Update Infobase Docs on Bones and How to write an import\exporter.
+
