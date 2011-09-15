@@ -1,0 +1,325 @@
+	Mouse action		LMB	RMB	L & RMB		CMB	L & CMB		R & CMB  Ctrl+LMB
+	============		===	===	=======		===	=======		======== ========
+Just passing over a view  16384
+without any buttons pressed
+(these are MB_ in qeditor)
+
+Clicked on a view      344?      264     272menu  280zoom       288zoom  304menu        296zoom
+==================                                344 double click
+DRAG or ROTATING IN VIEW
+========================
+    Pressed to start drag	 520                                                                524
+    While dragging		1032      def finishdrawing(self, view)                            1036
+    Released button at end	2056      def invalidateviews(self, rebuild=0, viewmodes='')       2060
+
+PANNING (Scrolling)
+===================
+    Pressed to start pan		 528
+    While panning			1040
+    Released button at end		2064
+
+ZOOMING
+============
+    Pressed to start zoom			  536		 544
+    While zooming				 1048		1056
+    Released button(s) at end			 2072		2080
+                                                                             block from panning
+Undefined (R & CMB is now)                                                       use for RecSel
+=========                                                                         in 3D views
+    Pressed to start							 552		 560
+    While moving mouse							1064		1072
+    Released button at end						2088		2096
+
+ mouse controle chart use, for example:
+    from qbaseeditor import flagsmouse
+    if flagsmouse == 536 or flagsmouse == 544:
+
+1032 while dragging sequence:
+=============================
+qbaseeditor "elif flags & MB_DRAGGING" > calls mdlhandles "def drag(self, v1, v2, flags, view):"
+   which does:
+   ----------
+   1) view.repaint() # to clear the view
+   2) editor.finishdrawing(view) # to draw things like the axisicon, gridscale ...
+       a) this is where v.handles, h.draw calls the mdlhandles "def draw" function to draw the mesh.
+            BUT the handles them selves should not be drawn.
+            A faster way would be to put code in the "def drag" section to minimize the
+               MESH lines drawn first and in their original color then remove the h.draw call above.
+   3) # draws the actual movement "guide" lines you see during the drag by using the "def drag" function.
+
+
+=======================================================================
+
+qhandles.py (starting at line #1154) handles the Zooming function while Zooming.
+class FreeZoomDragObject(DragObject):
+    def dragto(self, x, y, flags): (if X,Y or Z view calls cdleditor.commonhandles to keep)
+                                   (meshfill color correct while zooming, other wise repaints view)
+
+qhandles.py (starting at line #1195) handles the Scrolling (panning) function.
+def MakeScroller(layout, view):  (updates the view as it scrolls)
+
+qhandles.py (starting at line #1216) handles the Scrolling (panning) function while scrolling (panning).
+class ScrollViewDragObject(DragObject):
+    def dragto
+
+Below (starting at line #1476) is the 3D views rotation for the Model Editor, during rotation.
+qhandles.py
+class Rotator2D(DragObject):
+    def dragto   (Just repaints the view as it rotates.)
+
+qhandles.py (starting at line # 1506 has cursor detection of items it passes over test)
+class Rotator2D(DragObject):
+    def dragto
+
+qbaseeditor.py in "def mousemap" end of zoom drag at line # 574 flags is 2080
+
+On Selection Modes toolbar
+=========================
+One button for vertexes and one for Faces.
+Vertex selection like TG Touchup function.
+Face selection like TG Paint Brush function.
+
+Selection of vertexes option to be the same on Skin-view page.
+
+Select in 3D view and drag in 2D views.
+Select by moving pointer over it and deselect by moving over it again when selected,
+or multipal selection by Red Drag Box (for vertexes only) building a list of items to drag.
+Selection cleared by single click empty space or maybe double click.
+Once selected in 3D view, can drag in 2D views. LMB held for dragging & keep selection when done.
+
+Drag by holding down LMB in 2D & 3D views.
+Model can be rotated by holding RMB and (rotating) zoom with CMB in 3D views.
+Model can be panned by holding RMB and zoom with CMB in 2D views.
+
+Options
+=======
+Show ticks (handles) with Views Options button (does that now kind of) on Views Selection toolbar
+made in the plugins\mdlmodes.py file and contoles the drawing of the handles in the
+quarkpy\mdleditor.py file, "def commonhandles" function at the bottom.
+Add Component mesh viewable or not for all selections (frames) to Views Selection toolbar.
+
+
+Painting Model
+==============
+Done in 3D view like Terrain Generator Paint Brush funciton
+with color selection chart and same zoom & pan as Map Editor.
+
+
+Wish List
+=========
+1) Frame selection for movement drags (smae based on model locaiton).
+2) Animation for selected frames and FPT setting while running.
+3) Bone creation and movement.
+4) Object maker (use Map Editors).
+5) Face extrution.
+6) Save md3 models and skins.
+7) Area selection (groups) for mutipal textures (like MilkShpae does)
+
+======================================================
+NOTES:
+======
+All of the handles (a list) for a model component are only created once by the "draw" function
+of the files below when the component is selected.
+The funcitons below remake that list as handles are dragged in their "drag" function which is
+called by the "mousemap" function in the qbaseeditor.py file.(see Infobase docs link below)
+
+C:\QuArK_6.5.0Beta2\help\src.topics.mapviewmouse.html
+
+
+mldhandles.py draws and appends the handles in the "def buildskinvertices" function with:
+    h.append(SkinHandle(quarkx.vect(vtx[1]-int(texWidth*.5), vtx[2]-int(texHeight*.5), 0), i, j, component, texWidth, texHeight, tri))
+
+SkinHandle, same file, draws the lines and handles for the Face-view.
+
+VertexHandle, same file, draws the lines and handles for all the other views.
+This is called from the mdlentities.py file, "class FrameType"
+
+The BoneHandle setup of the bones is done in the mdlentities.py file, "class BoneType" then the
+BoneHandle, in the mldhandles.py file, draws the lines and handles for all the other views.
+
+===============================================================================================
+
+To Build the LinearHandle view.handles
+--------------------------------------
+
+                        if (quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1") and (len(self.ModelFaceSelList) != 0 or len(self.ModelVertexSelList) != 0):
+                            cv = view.canvas()
+                            if len(view.handles) == 0:
+                                print "qbaseeditor line 459 went to BuildHandles, flagsmouse, nbr of handles",flagsmouse, len(view.handles)
+                                view.handles = mdlhandles.BuildHandles(self, self.layout.explorer, view)
+                            for h in view.handles:
+                                print "qbaseeditor line 462 print h",h
+                                h.draw(view, cv, draghandle)
+                            #
+                            # Draw the red wireframe image.
+                            # This part may not be needed here.
+                            if self.dragobject is not None:
+                                self.dragobject.drawredimages(view)
+
+Traceback (most recent call last):
+  File "C:\Program Files\QuArK 6.5.0 Beta 2.Test Copy\quarkpy\qbaseeditor.py", l
+ine 821, in mousemap
+    self.dragobject.ok(self, x, y, flags)
+  File "C:\Program Files\QuArK 6.5.0 Beta 2.Test Copy\quarkpy\qhandles.py", line
+ 1150, in ok
+    self.handle.ok(editor, undo, old, self.redimages)
+  File "C:\Program Files\QuArK 6.5.0 Beta 2.Test Copy\quarkpy\qhandles.py", line
+ 208, in ok
+    editor.ok(undo, self.undomsg)
+  File "C:\Program Files\QuArK 6.5.0 Beta 2.Test Copy\quarkpy\mdleditor.py", lin
+e 223, in ok
+    undo.ok(self.Root, msg)
+quarkx.error: Access violation at address 004F6664 in module 'QuArK.exe'. Read o
+f address 00000008. [0052CD10]
+
+
+=========================================================================
+
+qbaseeditor line 616,flagsmouse, view  2056 3Dwindow
+2 flagsmouse, currentview  2056 3Dwindow
+3 flagsmouse, currentview  2056 3Dwindow
+qbaseeditor line 679 flagsmouse at end, button release is  2056 3Dwindow 3Dwindo
+w <quarkpy.qhandles.HandleDragObject instance at 0x0134C968>
+qbaseeditor line 681 flagsmouse at end 2056 3Dwindow 3Dwindow <quarkpy.qhandles.
+HandleDragObject instance at 0x0134C968>
+mdleditor line 412 commonhandles start ,flagsmouse, currentview, dragobject, dra
+gobject handle  2056 3Dwindow <quarkpy.qhandles.HandleDragObject instance at 0x0
+134C968> <quarkpy.mdlhandles.VertexHandle instance at 0x0134EC88>
+
+
+
+
+                    mdleditor.paintframefill(self, view, currentview)
+
+
+        from qbaseeditor import currentview
+        from mdleditor import setframefillcolor
+        setframefillcolor(editor, currentview)
+
+
+ if isinstance(self.dragobject, qhandles.HandleDragObject)
+
+
+ --- QuArK ---  Quake Army Knife  QuArK 6.5 Beta
+mdleditor line 102 buildhandles at startup
+base view for handles is  XY 0
+XY 0
+base view for handles is  XY 0
+XZ 0
+this view is just coping the handles  XZ 0
+base view for handles is  XY 0
+YZ 0
+this view is just coping the handles  YZ 0
+base view for handles is  XY 0
+editors3Dview 0
+this view is just coping the handles  editors3Dview 0
+mdleditor line 102 buildhandles at startup
+base view for handles is  XY 0
+XY 0
+base view for handles is  XY 0
+XZ 0
+this view is just coping the handles  XZ 0
+base view for handles is  XY 0
+YZ 0
+this view is just coping the handles  YZ 0
+base view for handles is  XY 0
+editors3Dview 0
+this view is just coping the handles  editors3Dview 0
+mdleditor commonhandles line 411 flagsmouse, currentview
+       None mdlhandles line 916 BuildCommonHandles flagsmouse, currentview, len(
+currentview.handles)  None None
+mdleditor line 102 buildhandles at startup
+base view for handles is  XY 0
+XY 0
+base view for handles is  XY 0
+XZ 0
+this view is just coping the handles  XZ 0
+base view for handles is  XY 0
+YZ 0
+this view is just coping the handles  YZ 0
+base view for handles is  XY 0
+editors3Dview 0
+this view is just coping the handles  editors3Dview 0
+qbaseeditor line 561 invalidateviews, currentview is  YZ
+mdleditor commonhandles line 411 flagsmouse, currentview
+       16384 YZ
+mdleditor commonhandles line 412 flags, view, dragobject, view.handles
+       None mdlhandles line 918 BuildCommonHandles flagsmouse, currentview, len(
+currentview.handles)  16384 YZ 0
+
+
+
+Traceback (most recent call last):
+  File "C:\Copy of QuArK_6.5.0Beta2\quarkpy\qbaseeditor.py", line 434, in draw1
+    drawmap(view)
+  File "C:\Copy of QuArK_6.5.0Beta2\quarkpy\qbaseeditor.py", line 325, in drawma
+p
+    self.finishdrawing(view)
+  File "C:\Copy of QuArK_6.5.0Beta2\quarkpy\qbaseeditor.py", line 375, in finish
+drawing
+    print bob
+NameError: global name 'bob' is not defined
+Traceback (most recent call last):
+  File "C:\Copy of QuArK_6.5.0Beta2\quarkpy\qbaseeditor.py", line 434, in draw1
+    drawmap(view)
+  File "C:\Copy of QuArK_6.5.0Beta2\quarkpy\qbaseeditor.py", line 325, in drawma
+p
+    self.finishdrawing(view)
+  File "C:\Copy of QuArK_6.5.0Beta2\quarkpy\qbaseeditor.py", line 375, in finish
+drawing
+    print bob
+NameError: global name 'bob' is not defined
+Traceback (most recent call last):
+  File "C:\Copy of QuArK_6.5.0Beta2\quarkpy\qbaseeditor.py", line 434, in draw1
+    drawmap(view)
+  File "C:\Copy of QuArK_6.5.0Beta2\quarkpy\qbaseeditor.py", line 325, in drawma
+p
+    self.finishdrawing(view)
+  File "C:\Copy of QuArK_6.5.0Beta2\quarkpy\qbaseeditor.py", line 375, in finish
+drawing
+    print bob
+NameError: global name 'bob' is not defined
+Traceback (most recent call last):
+  File "C:\Copy of QuArK_6.5.0Beta2\quarkpy\qbaseeditor.py", line 434, in draw1
+    drawmap(view)
+  File "C:\Copy of QuArK_6.5.0Beta2\quarkpy\qbaseeditor.py", line 325, in drawma
+p
+    self.finishdrawing(view)
+  File "C:\Copy of QuArK_6.5.0Beta2\quarkpy\qbaseeditor.py", line 375, in finish
+drawing
+    print bob
+NameError: global name 'bob' is not defined
+Traceback (most recent call last):
+  File "C:\Copy of QuArK_6.5.0Beta2\quarkpy\qbaseeditor.py", line 434, in draw1
+    drawmap(view)
+  File "C:\Copy of QuArK_6.5.0Beta2\quarkpy\qbaseeditor.py", line 325, in drawma
+p
+    self.finishdrawing(view)
+  File "C:\Copy of QuArK_6.5.0Beta2\quarkpy\qbaseeditor.py", line 375, in finish
+drawing
+    print bob
+NameError: global name 'bob' is not defined
+Traceback (most recent call last):
+  File "C:\Copy of QuArK_6.5.0Beta2\quarkpy\qbaseeditor.py", line 434, in draw1
+    drawmap(view)
+  File "C:\Copy of QuArK_6.5.0Beta2\quarkpy\qbaseeditor.py", line 325, in drawma
+p
+    self.finishdrawing(view)
+  File "C:\Copy of QuArK_6.5.0Beta2\quarkpy\qbaseeditor.py", line 375, in finish
+drawing
+    print bob
+NameError: global name 'bob' is not defined
+
+
+
+            if choice != [] and (flagsmouse == 544 or flagsmouse == 1056):
+                if quarkx.setupsubset(SS_MODEL, "Options")["CrossCursor"] == "1":
+                    view.cursor = CR_CROSS
+                    view.handlecursor = CR_CROSS
+                else:
+                    view.cursor = CR_ARROW
+                    view.handlecursor = CR_ARROW
+
+
+
+
