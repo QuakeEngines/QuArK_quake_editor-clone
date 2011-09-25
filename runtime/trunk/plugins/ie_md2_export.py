@@ -4,7 +4,7 @@
 
 """   QuArK  -  Quake Army Knife
 
-QuArK Model Editor importer for Quake 2 .md2 model files.
+QuArK Model Editor exporter for Quake 2 .md2 model files.
 """
 #
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
@@ -943,6 +943,9 @@ quarkpy.qmdlbase.RegisterMdlExporter(".md2 Quake 2 Exporter", ".md2 file", "*.md
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.4  2009/03/06 05:21:06  cdunde
+# To embed skin names into model file.
+#
 # Revision 1.3  2009/02/08 13:57:10  cdunde
 # Some minor possible error fixing.
 #
