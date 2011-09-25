@@ -4326,7 +4326,7 @@ def Update_Skin_View(editor, option=1):
         editor.layout.selectskin(skin)
         editor.layout.mpp.resetpage()
         # Updates the lower (view) section and centers the texture.
-        if SkinView1 is not None:
+        if SkinView1 is not None and SkinView1.info is not None:
             viewWidth, viewHeight = SkinView1.clientarea
             try:
                 texWidth, texHeight = skin["Size"]
@@ -4753,6 +4753,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.163  2011/05/28 00:11:27  cdunde
+#Fixes to avoid error from bboxes of multiple models in the editor at the same time.
+#
 #Revision 1.162  2011/05/26 22:57:48  cdunde
 #Removed OLD bones system Keyframe rotation function not used anymore.
 #
