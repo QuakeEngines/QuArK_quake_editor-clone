@@ -938,3 +938,7 @@ quarkpy.qmdlbase.RegisterMdlExporter(".fm Heretic II Exporter", ".fm file", "*.f
 
 # ----------- REVISION HISTORY ------------
 #
+# $Log$
+# Revision 1.1  2011/09/28 105:15:46  cdunde
+# Added export support for Heretic II static and animation models .fm file type.
+#
