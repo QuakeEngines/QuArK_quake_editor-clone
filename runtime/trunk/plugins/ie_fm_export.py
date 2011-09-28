@@ -201,7 +201,12 @@ class fm_skin: # See .md2 format doc "Texture information".
     def __init__(self):
         self.name=""
     def save(self, file):
-        temp_data=self.name
+        if not self.name.endswith(".m8") and not self.name.endswith(".m32"):
+            fixname=self.name.split(".")[0]
+            fixname=fixname + ".m8"
+            temp_data=fixname
+        else:
+            temp_data=self.name
         data=struct.pack(self.binary_format, temp_data)
         file.write(data)
     def dump (self):
@@ -922,7 +927,7 @@ def save_fm(filename):
     #cleanup
     fm = 0
 
-    add_to_message = "Any used skin textures that are not a .m8 or .m32\nwill need to be created by saving it as a .m8 or .m32 to go with the model"
+    add_to_message = "Any used skin textures that are not a .m8 or .m32\nwill need to be created by saving it as a .m8 to go with the model"
     ie_utils.default_end_logging(filename, "EX", starttime, add_to_message) ### Use "EX" for exporter text, "IM" for importer text.
 
 # Saves the model file: root is the actual file,
@@ -939,6 +944,9 @@ quarkpy.qmdlbase.RegisterMdlExporter(".fm Heretic II Exporter", ".fm file", "*.f
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.2  2011/09/28 05:29:23  cdunde
+# Comment update.
+#
 # Revision 1.1  2011/09/28 105:15:46  cdunde
 # Added export support for Heretic II static and animation models .fm file type.
 #

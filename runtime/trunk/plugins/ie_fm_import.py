@@ -155,7 +155,7 @@ class fm_skin:
         temp_data=file.read(struct.calcsize(self.binary_format))
         data=struct.unpack(self.binary_format, temp_data)
         for i in xrange(64):
-            if not str(data[i]).isalnum() and str(data[i]) != "\\" and str(data[i]) != "/" and str(data[i]) != "!" and str(data[i]) != ".":
+            if not str(data[i]).isalnum() and str(data[i]) != "\\" and str(data[i]) != "/" and str(data[i]) != "!" and str(data[i]) != "." and str(data[i]) != "_" and str(data[i]) != "-":
                 continue
             self.name = self.name + str(data[i])
         return self
@@ -822,6 +822,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".fm HereticII Importer", ".fm file", "*.fm
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.4  2011/04/05 20:51:42  cdunde
+# Comment update.
+#
 # Revision 1.3  2011/03/13 00:41:47  cdunde
 # Updating fixed for the Model Editor of the Texture Browser's Used Textures folder.
 #
