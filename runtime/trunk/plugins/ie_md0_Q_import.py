@@ -44,8 +44,8 @@ MDL_MAX_VERTICES = 1024
 MDL_MAX_TEXCOORDS = 1024
 MDL_MAX_FRAMES = 256
 MDL_MAX_NORMALS = 162
-MDL_MAX_SKINS = 32 # need to find and change to correct number
-MDL_MAX_FRAMESIZE = (MDL_MAX_VERTICES * 4 + 128) # need to find and change to correct number
+MDL_MAX_SKINS = 32 # Need to find and change to correct number.
+MDL_MAX_FRAMESIZE = (MDL_MAX_VERTICES * 4 + 128) # Need to find and change to correct number.
 
 ######################################################
 # MDL Vector Constants
@@ -60,7 +60,7 @@ MDL_COLORMAP = (( 0, 0, 0), ( 15, 15, 15), ( 31, 31, 31), ( 47, 47, 47), ( 63, 6
 class mdl_face:
     facesfront = 1
     vertex_index = [0, 0, 0]
-    binary_format = "<4i" #little-endian (<), 4 ints
+    binary_format = "<4i" # little-endian (<), 4 ints.
     
     def __init__(self):
         self.facesfront = 1
@@ -78,6 +78,7 @@ class mdl_face:
         return self
 
     def dump(self):
+
         print "MDL Face Structure"
         print "facesfront: ", self.facesfront
         print "vertex index: ", self.vertex_index[0]
@@ -86,10 +87,10 @@ class mdl_face:
         print "------------------"
 
 class mdl_tex_coord:
+    binary_format = "<3i" # little-endian (<), 3 ints.
     onseam = 0
     u = 0
     v = 0
-    binary_format = "<3i" #little-endian (<), 3 ints
 
     def __init__(self):
         self.onseam = 0
@@ -109,6 +110,8 @@ class mdl_tex_coord:
         self.u = data[1]
         self.v = data[2]
         return self
+
+
 
     def dump(self):
         print "MDL Texture Coordinate Structure"
@@ -196,12 +199,12 @@ class mdl_texture_info:
 
 class mdl_vertex:
     v = [0, 0, 0]
-    normalIndex = (0.0, 0.0, 0.0)
-    binary_format = "<3B1B" #little-endian (<), 3  unsigned chars for coordinate, 1 unsigned char for normalIndex
+    normalIndex = 0
+    binary_format = "<3B1B" #little-endian (<), 3  unsigned chars for coordinate, 1 unsigned char for normalIndex.
 
     def __init__(self):
         self.v = [0, 0, 0]
-        self.normalIndex = (0.0, 0.0, 0.0)
+        self.normalIndex = 0
 
     def load(self, file):
         temp_data = file.read(struct.calcsize(self.binary_format))
@@ -217,19 +220,19 @@ class mdl_vertex:
         print "===================="
 
 class mdl_frame:
-    group = 0   #item  0   int, This is the frame group setting, 0 = simple single frame, not 0 = group of frames
-    time = 0.0 # (used in load function below), float, time duration for each frame above
+    group = 0   # int, This is the frame group setting, 0 = simple single frame, not 0 = group of frames.
+    time = 0.0  # (used in load function below), float, time duration for each frame above.
     bboxmin = []
     bboxmax = []
     name = ""
     vertices = []
-    frames = [] # for group of frames
-    binary_format = "<i" #little-endian (<), 1 int for group setting
+    frames = [] # For group of frames.
+    binary_format = "<i" # little-endian (<), 1 int for group setting.
 
     def __init__(self):
-        self.group = 0 # 0 = simple single frame, not 0 = group of frames
+        self.group = 0 # 0 = simple single frame, not 0 = group of frames.
         self.time = 0.0
-        self.binary_format = "<i" #little-endian (<), 1 int for group setting, changed in load function of this class.
+        self.binary_format = "<i" # little-endian (<), 1 int for group setting, changed in load function of this class.
         self.bboxmin = [0.0]*3
         self.bboxmax = [0.0]*3
         self.name = ""
@@ -293,24 +296,24 @@ class mdl_frame:
         print "===================="
 
 class mdl_obj:
-    #Header Structure
-    ident = 0              #item  0   int, This is used to identify the file
-    version = 0            #item  1   int, The version number of the file (Must be 8)
-    scale = [0.0]*3        #item  2   3 floats, the scale factor, as a vector
-    translate = [0.0]*3    #item  3   3 floats, the translation vector
-    boundingradius = 0.0   #item  4   float, the radius of the bounding box, for collision
-    eyeposition = [0.0]*3  #item  5   3 floats, the eye's position, as a vector
-    num_skins = 0          #item  6   int, The number of skins associated with the model
-    skin_width = 0         #item  7   int, The skin width in pixels
-    skin_height = 0        #item  8   int, The skin height in pixels
-    num_verts = 0          #item  9   int, The number of vertices (constant for each frame)
-    num_tris = 0           #item 10   int, The number of triangle faces (polygons)
-    num_frames = 0         #item 11   int, The number of animation frames
-    synctype = 0           #item 12   int, 0 = synchron, 1 = random
-    flags = 0              #item 13   int, State flag
-    size = 0.0             #item 14   float, Don't know what this is
+    # Header Structure.
+    ident = 0              #item  0   int, This is used to identify the file.
+    version = 0            #item  1   int, The version number of the file (Must be 8).
+    scale = [0.0]*3        #item  2   3 floats, the scale factor, as a vector.
+    translate = [0.0]*3    #item  3   3 floats, the translation vector.
+    boundingradius = 0.0   #item  4   float, the radius of the bounding box, for collision.
+    eyeposition = [0.0]*3  #item  5   3 floats, the eye's position, as a vector.
+    num_skins = 0          #item  6   int, The number of skins associated with the model.
+    skin_width = 0         #item  7   int, The skin width in pixels.
+    skin_height = 0        #item  8   int, The skin height in pixels.
+    num_verts = 0          #item  9   int, The number of vertices (constant for each frame).
+    num_tris = 0           #item 10   int, The number of triangle faces (polygons).
+    num_frames = 0         #item 11   int, The number of animation frames.
+    synctype = 0           #item 12   int, 0 = synchron, 1 = random.
+    flags = 0              #item 13   int, State flag.
+    size = 0.0             #item 14   float, Don't know what this is.
 
-    binary_format = "<2i3f3ff3f8if"  #little-endian (<), see #item descriptions above
+    binary_format = "<2i3f3ff3f8if"  #little-endian (<), see "#item" descriptions above.
 
     texture_info = None
 
@@ -343,6 +346,9 @@ class mdl_obj:
 
         self.scale = data[2],data[3],data[4]
         self.translate = data[5],data[6],data[7]
+
+
+
         self.boundingradius = data[8]
         self.eyeposition = data[9],data[10],data[11]
         self.num_skins = data[12]
@@ -359,7 +365,11 @@ class mdl_obj:
         self.texture_info = mdl_texture_info()
         self.texture_info.load(file, self.num_skins, self.skin_width, self.skin_height)
 
-        #load the # of raw texture coordinates data for model, some get updated later.
+
+
+
+
+        # load the # of raw texture coordinates data for model, some get updated later.
         for i in xrange(0,self.num_verts):
             self.tex_coords.append(mdl_tex_coord())
             self.tex_coords[i].load(file)
@@ -489,7 +499,9 @@ def animate_mdl(mdl): # The Frames Group is made here & returned to be added to 
         progressbar.progress()
     return framesgroup
 
-
+######################################################
+# Load MDL Format
+######################################################
 def load_mdl(mdl_filename, name):
     global progressbar, tobj, logging, Strings, mdl
     #read the file in
@@ -660,6 +672,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".mdl Quake\HexenII Importer", ".mdl file",
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.8  2011/03/13 00:41:47  cdunde
+# Updating fixed for the Model Editor of the Texture Browser's Used Textures folder.
+#
 # Revision 1.7  2011/03/10 20:56:39  cdunde
 # Updating of Used Textures in the Model Editor Texture Browser for all imported skin textures
 # and allow bones and Skeleton folder to be placed in Userdata panel for reuse with other models.

@@ -80,6 +80,7 @@ def RadiusFromBounds(mins, maxs):
 # MDL data structures
 ######################################################
 class mdl_face:
+
     tris_list = [] # A list of integers. 0 = backface, 1 = frontface, data[1],[2],[3] ints, 3 vertex indexes as integers.
     binary_format = "<4i" # little-endian (<), 4 ints.
     
@@ -101,8 +102,9 @@ class mdl_face:
             print "------------------"
 
 class mdl_tex_coord:
-    uv_list = [] # A list of integers, 1 for "onseam" and 2 for the s,t or u,v texture coordinates.
     binary_format = "<3i" # little-endian (<), 3 ints.
+    uv_list = [] # A list of integers, 1 for "onseam" and 2 for the s,t or u,v texture coordinates.
+
 
     def __init__(self):
         self.uv_list = []
@@ -181,7 +183,7 @@ class mdl_vertex:
 
     def dump(self):
         print "MDL Vertex"
-        print "v: ", self.v[0], self.v[1], self.v[2]
+        print "v: ",self.v[0], self.v[1], self.v[2]
         print "normalIndex: ", self.normalIndex
         print "===================="
 
@@ -209,9 +211,9 @@ class mdl_frame:
         data = struct.pack(self.binary_format, self.group)
         file.write(data)
         if self.group == 0:
-            self.bboxmin = mdl_vertex() #!
+            self.bboxmin = mdl_vertex()
             self.bboxmin.save(file)
-            self.bboxmax = mdl_vertex() #!
+            self.bboxmax = mdl_vertex()
             self.bboxmax.save(file)
             if len(self.name) > 15:
                 output_name = self.name[:15] + '\0'
@@ -229,9 +231,9 @@ class mdl_frame:
             file.write(data)
             for i in xrange(0,self.group):
                 self.frames.append(mdl_frame())
-                self.bboxmin = mdl_vertex() #!
+                self.bboxmin = mdl_vertex()
                 self.bboxmin.save(file)
-                self.bboxmax = mdl_vertex() #!
+                self.bboxmax = mdl_vertex()
                 self.bboxmax.save(file)
                 if len(self.frames[i].name) > 15:
                     output_name = self.frames[i].name[:15] + '\0'
@@ -310,6 +312,8 @@ class mdl_obj:
             self.translate = component.dictspec['Q1translate']
         else:
             self.translate = (0.0, 0.0, 0.0)
+
+
         self.boundingradius = abs(RadiusFromBounds(mins, maxs))
         self.eyeposition = (0.0, 0.0, -24.0)
         self.num_skins = len(skins)
@@ -334,6 +338,10 @@ class mdl_obj:
                 self.texture_info.nb = self.num_skins
                 self.texture_info.time = 0.025
         self.texture_info.save(file, self.num_skins, skins, self.skin_width, self.skin_height)
+
+
+
+
 
         # Write the texture coordinates and faces data for model.
         self.tex_coords = mdl_tex_coord()
@@ -510,6 +518,9 @@ quarkpy.qmdlbase.RegisterMdlExporter(".mdl Quake\HexenII Exporter", ".mdl file",
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.2  2011/02/11 18:49:57  cdunde
+# Small name update.
+#
 # Revision 1.1  2010/03/30 17:19:37  cdunde
 # Needed to change file name for proper listing on menu.
 #
