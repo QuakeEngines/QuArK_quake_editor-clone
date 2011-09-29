@@ -784,11 +784,6 @@ def loadmodel(root, filename, gamename, nomessage=0):
         editor.Root.appenditem(skeleton_group)
         editor.form = None
 
-    ### First we test for a valid (proper) model path.
-    basepath = ie_utils.validpath(filename)
-    if basepath is None:
-        return
-
     logging, tobj, starttime = ie_utils.default_start_logging(importername, textlog, filename, "IM") ### Use "EX" for exporter text, "IM" for importer text.
 
     ### Lines below here loads the model into the opened editor's current model.
@@ -862,6 +857,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".mdx Kingpin Importer", ".mdx file", "*.md
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.6  2011/05/25 20:55:03  cdunde
+# Revamped Bounding Box system for more flexibility with model formats that do not have bones, only single or multi components.
+#
 # Revision 1.5  2011/05/19 07:38:11  cdunde
 # Fix, sometimes imported file read in skin size is incorrect.
 #
