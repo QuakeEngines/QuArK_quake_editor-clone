@@ -76,7 +76,7 @@ FM_FRAME_NAME_LIST=(("stand",1,40),
 ######################################################
 # FM data structures
 ######################################################
-class fm_point: # See .md2 format doc "Vertices". A QuArK's "frame" ['Vertices'].
+class fm_alias_triangle: # See .md2 format doc "Vertices". A QuArK's "frame" ['Vertices'].
     vertices = []
     lightnormalindex = 0
     binary_format = "<3BB"
@@ -214,12 +214,13 @@ class fm_skin: # See .md2 format doc "Texture information".
         print "skin name: ",self.name
         print ""
         
-class fm_frame: # See .md2 format doc "Vector", "Vertices" and "Frames". QuArK's "component.dictitems['Frames']".
+class fm_alias_frame: # See .md2 format doc "Vector", "Vertices" and "Frames". QuArK's "component.dictitems['Frames']".
     scale=[]
     translate=[]
     name=[]
     vertices=[]
-    binary_format="<3f3f16s"
+ #   binary_format="<3f3f16s"
+    binary_format="<3f3f"
 
     def __init__(self):
         self.scale=[0.0]*3
@@ -234,9 +235,22 @@ class fm_frame: # See .md2 format doc "Vector", "Vertices" and "Frames". QuArK's
         temp_data[3]=float(self.translate[0])
         temp_data[4]=float(self.translate[1])
         temp_data[5]=float(self.translate[2])
-        temp_data[6]=self.name
-        data=struct.pack(self.binary_format, temp_data[0],temp_data[1],temp_data[2],temp_data[3],temp_data[4],temp_data[5],temp_data[6])
+      #  temp_data[6]=self.name
+      #  data=struct.pack(self.binary_format, temp_data[0],temp_data[1],temp_data[2],temp_data[3],temp_data[4],temp_data[5],temp_data[6])
+        data=struct.pack(self.binary_format, temp_data[0],temp_data[1],temp_data[2],temp_data[3],temp_data[4],temp_data[5])
         file.write(data)
+
+        binary_format="<c"
+        name=self.name
+        for i in xrange(16):
+            temp_data=[0]
+            if i >= len(self.name):
+                temp_data[0]='\x00'
+            else:
+                temp_data[0]=name[i]
+            data = struct.pack(binary_format, temp_data[0])
+            file.write(data)
+
         progressbar.progress()
 
     def dump (self):
@@ -301,7 +315,7 @@ class fm_obj:
         temp_data[8]=self.num_faces
         temp_data[9]=self.num_GL_commands
         temp_data[10]=self.num_frames
-        temp_data[11]=self.num_mesh_nodes
+        temp_data[11]=0 # IF SET BY self.num_mesh_nodes CAUSES GAME TO BLOW UP!
         data=struct.pack(self.binary_format, temp_data[0],temp_data[1],temp_data[2],temp_data[3],temp_data[4],temp_data[5],temp_data[6],temp_data[7],temp_data[8],temp_data[9],temp_data[10],temp_data[11])
         file.write(data)
 
@@ -404,29 +418,29 @@ class fm_obj:
             progressbar.progress()
 
         #write the "glcmds" header
-      #  binary_format="<c"
-      #  glcmds = "glcmds"
-      #  for i in xrange(32):
-      #      temp_data=[0]
-      #      if i > 5:
-      #          temp_data[0]='\x00'
-      #      else:
-      #          temp_data[0]=glcmds[i]
-      #      data = struct.pack(binary_format, temp_data[0])
-      #      file.write(data)
-      #  binary_format="<2i"
-      #  self.section_version = 1
-      #  self.section_byte_size = self.num_GL_commands * 4 # The binary_format for a fm_GL_command
+        binary_format="<c"
+        glcmds = "glcmds"
+        for i in xrange(32):
+            temp_data=[0]
+            if i > 5:
+                temp_data[0]='\x00'
+            else:
+                temp_data[0]=glcmds[i]
+            data = struct.pack(binary_format, temp_data[0])
+            file.write(data)
+        binary_format="<2i"
+        self.section_version = 1
+        self.section_byte_size = self.num_GL_commands * 4 # The binary_format for a fm_GL_command
       #  print "GL_commands, num_GL_commands", len(self.GL_commands), self.num_GL_commands
-      #  temp_data=[0]*2
-      #  temp_data[0]=self.section_version
-      #  temp_data[1]=self.section_byte_size
-      #  data=struct.pack(binary_format, temp_data[0],temp_data[1])
-      #  file.write(data)
+        temp_data=[0]*2
+        temp_data[0]=self.section_version
+        temp_data[1]=self.section_byte_size
+        data=struct.pack(binary_format, temp_data[0],temp_data[1])
+        file.write(data)
         #save the "glcmds" GL command List data
-      #  for cmd in self.GL_commands:
-      #      cmd.save(file)
-      #      progressbar.progress()
+        for cmd in self.GL_commands:
+            cmd.save(file)
+            progressbar.progress()
 
     def dump (self):
         global tobj
@@ -567,7 +581,7 @@ def fill_fm(fm, component):
         tobj.logcon ("#####################################################################")
     for frame in range(0,fm.num_frames):
         #add a frame
-        fm.frames.append(fm_frame())
+        fm.frames.append(fm_alias_frame())
         
 # Each frame has a scale and transform value that gets the vertex value between 0-255.
 # Since the scale and transform are the same for all the verts in the frame,
@@ -605,7 +619,7 @@ def fill_fm(fm, component):
         # Now for the frame vertices.
         for vert_counter in range(0, fm.num_vertices):
             # Add a vertex to the fm structure.
-            fm.frames[frame].vertices.append(fm_point())
+            fm.frames[frame].vertices.append(fm_alias_triangle())
 
             #figure out the new coords based on scale and transform
             #then translates the point so it's not less than 0
@@ -944,6 +958,9 @@ quarkpy.qmdlbase.RegisterMdlExporter(".fm Heretic II Exporter", ".fm file", "*.f
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.3  2011/09/28 06:56:54  cdunde
+# Texture naming update.
+#
 # Revision 1.2  2011/09/28 05:29:23  cdunde
 # Comment update.
 #
