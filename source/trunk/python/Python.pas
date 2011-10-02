@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.53  2011/09/05 09:10:10  danielpharos
+Updated to Python 2.6.6.
+
 Revision 1.52  2010/11/06 15:32:51  danielpharos
 Fixed a typo.
 
@@ -841,8 +844,9 @@ begin
     Exit;
   if SetEnvironmentVariable('PYTHONPATH', PChar(ConcatPaths([ExtractFileDir(Application.Exename), 'Lib']))) = false then
     Exit;
-  if SetEnvironmentVariable('PYTHONOPTIMIZE', '1') = false then
-    Exit;
+//FIXME: Not used for now
+//  if SetEnvironmentVariable('PYTHONOPTIMIZE', '1') = false then
+//    Exit;
 {$IFDEF Debug}
   if SetEnvironmentVariable('PYTHONDEBUG', '1') = false then
     Exit;
@@ -952,15 +956,15 @@ begin
       begin
         if Length(VersionNumber) >= 2 then
         begin
-          if (VersionNumber[1] >= 5) then
+          if (VersionNumber[1] >= 4) then
           begin
-            //Python 2.5 or higher: Supported!
+            //Python 2.4 or higher: Supported!
             FoundGoodVersion:=True;
-            if (VersionNumber[1] = 6) then
+            if (VersionNumber[1] = 4) then
             begin
               if Length(VersionNumber) >= 3 then
               begin
-                if (VersionNumber[2] = 6) then
+                if (VersionNumber[2] = 4) then
                 begin
                   FoundOwnVersion:=True;
                 end;
