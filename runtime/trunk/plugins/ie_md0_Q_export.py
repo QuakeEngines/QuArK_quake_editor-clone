@@ -304,14 +304,16 @@ class mdl_obj:
         # Fill in the header data.
         self.ident = 1330660425
         self.version = 6
-        if component.dictspec.has_key("Q1scale"):
-            self.scale = component.dictspec['Q1scale']
-        else:
-            self.scale = (1.0, 1.0, 1.0)
-        if component.dictspec.has_key("Q1translate"):
-            self.translate = component.dictspec['Q1translate']
-        else:
-            self.translate = (0.0, 0.0, 0.0)
+        #the scale is the difference between the min and max (on that axis) / 255
+        frame_scale_x=(bounding_box[1].x-bounding_box[0].x)/255
+        frame_scale_y=(bounding_box[1].y-bounding_box[0].y)/255
+        frame_scale_z=(bounding_box[1].z-bounding_box[0].z)/255
+        self.scale = (frame_scale_x, frame_scale_y, frame_scale_z)
+        #translate value of the mesh to center it on the origin
+        frame_trans_x=bounding_box[0].x
+        frame_trans_y=bounding_box[0].y
+        frame_trans_z=bounding_box[0].z
+        self.translate = (frame_trans_x, frame_trans_y, frame_trans_z)
 
 
         self.boundingradius = abs(RadiusFromBounds(mins, maxs))
@@ -518,6 +520,9 @@ quarkpy.qmdlbase.RegisterMdlExporter(".mdl Quake\HexenII Exporter", ".mdl file",
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.3  2011/09/29 02:24:26  cdunde
+# To match up importer and exporter code better for comparison, make needed corrections and file cleanup.
+#
 # Revision 1.2  2011/02/11 18:49:57  cdunde
 # Small name update.
 #

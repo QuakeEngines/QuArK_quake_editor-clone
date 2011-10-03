@@ -578,8 +578,6 @@ def import_mdl_model(editor, mdl_filename):
     Component.appenditem(sdogroup)
     Component.appenditem(skingroup)
     Component.appenditem(framesgroup)
-    Component['Q1scale'] = mdl.scale
-    Component['Q1translate'] = mdl.translate
 
     return Component, version
 
@@ -672,6 +670,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".mdl Quake\HexenII Importer", ".mdl file",
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.9  2011/09/29 02:24:26  cdunde
+# To match up importer and exporter code better for comparison, make needed corrections and file cleanup.
+#
 # Revision 1.8  2011/03/13 00:41:47  cdunde
 # Updating fixed for the Model Editor of the Texture Browser's Used Textures folder.
 #
