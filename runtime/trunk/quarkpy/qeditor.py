@@ -349,12 +349,7 @@ def Arrow(canvas, view, p1, p2, text=None):
         p3 = p3.normalized
         eye = view.vector(p2).normalized   # vector from p2 pointing to the eye
 
-     #   arrowx, arrowy = quarkx.setupsubset(SS_MAP, "Display")["ArrowSize"]
-     # fix for Linux
-        try:
-            arrowx, arrowy = quarkx.setupsubset(SS_MAP, "Display")["ArrowSize"]
-        except:
-            arrowx, arrowy = 40,27 # linux issue with single quote
+        arrowx, arrowy = quarkx.setupsubset(SS_MAP, "Display")["ArrowSize"]
 
         p4 = arrowy*(eye ^ p3)    # cross product
         p5 = p2 - arrowx*p3
@@ -1586,6 +1581,9 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.64  2011/06/03 19:30:30  danielpharos
+#Fixed RGB float color values not being clamped.
+#
 #Revision 1.63  2011/03/26 23:35:16  cdunde
 #Updated Model Editor Camera Position system with Hotkeys to take quick shots of both Editor and Floating 3D views,
 #kept in separate folders for both Standard modes and True3D modes with Hotkeys to scroll through those shots.

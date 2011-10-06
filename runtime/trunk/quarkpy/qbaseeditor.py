@@ -142,14 +142,7 @@ class BaseEditor:
             def DrawAxis(setup=setup, view=view, MODE=self.MODE):
                 X, Y, Z = setup["MapLimit"]
                 if (quarkx.setupsubset()["MapLimit"]<>None):    # games can overide default setting
-
-               #     X, Y, Z = quarkx.setupsubset()["MapLimit"]
-               # fix for Linux
-                    try:
-                        X, Y, Z = quarkx.setupsubset()["MapLimit"]
-                    except:
-                        X, Y, Z = 4096,4096,4096  # linux issue with single quote
-
+                    X, Y, Z = quarkx.setupsubset()["MapLimit"]
 
                 ax = []
                 if MapOption("DrawAxis", MODE):
@@ -1802,6 +1795,9 @@ class NeedViewError(Exception):
 #
 #
 #$Log$
+#Revision 1.151  2011/03/15 08:25:46  cdunde
+#Added cameraview saving duplicators and search systems, like in the Map Editor, to the Model Editor.
+#
 #Revision 1.150  2010/12/07 22:11:34  cdunde
 #Model Editor selection update.
 #

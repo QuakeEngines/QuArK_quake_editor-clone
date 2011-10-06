@@ -379,16 +379,9 @@ def loadbbox(sender):
     sender.boundingboxes = bbox
     return bbox
 
-# fix for Linux
 def autosavetime():
-  #  minutes, = quarkx.setupsubset(SS_MAP, "Building")["AutoSave"]
-  #  return minutes * 60000.0
-    try:
-        minutes = int(quarkx.setupsubset(SS_MAP, "Building")["AutoSave"][0])
-    except:
-        return 10 * 60000.0 # linux issue with single quote
-    else:
-        return minutes * 60000.0
+    minutes, = quarkx.setupsubset(SS_MAP, "Building")["AutoSave"]
+    return minutes * 60000.0
 
 def autosave(editor):
     if (editor.Root is not None) and (editor.fileobject.flags & OF_MODIFIED):
@@ -413,6 +406,9 @@ def autosave(editor):
 #
 #
 #$Log$
+#Revision 1.24  2011/03/13 00:41:47  cdunde
+#Updating fixed for the Model Editor of the Texture Browser's Used Textures folder.
+#
 #Revision 1.23  2010/10/14 20:03:32  danielpharos
 #Fix bone-position with Undo/Redo dialog box and made some fixes to selection-holding code.
 #

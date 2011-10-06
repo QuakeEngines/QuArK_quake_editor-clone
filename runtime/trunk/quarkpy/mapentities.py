@@ -879,12 +879,7 @@ class DefaultDrawEntityLines:
                         #radius = L3[3]
                         #color = makeRGBcolor(L3[0], L3[1], L3[2])
 
-                #    lightfactor, = quarkx.setupsubset()["LightFactor"]
-                # fix for Linux
-                    try:
-                        lightfactor, = quarkx.setupsubset()["LightFactor"]
-                    except:
-                        lightfactor = 0.9 # linux issue with single quote
+                    lightfactor, = quarkx.setupsubset()["LightFactor"]
 
                     radius = radius * view.scale(org) * lightfactor
                     radius = int(radius)   #py2.4
@@ -1162,6 +1157,9 @@ def LoadEntityForm(sl):  # Let's find all the objects (items) in sl (a list)
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.61  2008/07/08 18:27:48  cdunde
+#More new entity line drawing features by X7.
+#
 #Revision 1.60  2008/07/06 14:07:41  cdunde
 #Added new entity line drawing features by X7.
 #

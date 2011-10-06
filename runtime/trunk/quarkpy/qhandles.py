@@ -84,12 +84,7 @@ def cleargrid():
 #
 
 def alignanglevect(v, mode):
-  #  anglestep = quarkx.setupsubset(mode, "Building")["ForceAngleStep"][0]
-  # fix for Linux
-    try:
-        anglestep = quarkx.setupsubset(mode, "Building")["ForceAngleStep"][0]
-    except:
-        anglestep = 15 # linux issue with single quote
+    anglestep = quarkx.setupsubset(mode, "Building")["ForceAngleStep"][0]
 
     pitch,roll,yaw = vec2angles1(v)
     pitch = quarkx.rnd(pitch/anglestep)*anglestep
@@ -410,12 +405,7 @@ class Rotate3DHandle(GenericHandle):
         def forceangle1click(m, self=self, editor=editor, view=view):
             self.Action(editor, self.pos, self.pos, MB_CTRL, view, Strings[559])
 
-     #   anglestep = quarkx.setupsubset(self.MODE, "Building")["ForceAngleStep"][0]
-     # fix for Linux
-        try:
-            anglestep = quarkx.setupsubset(self.MODE, "Building")["ForceAngleStep"][0]
-        except:
-            anglestep = 15 # linux issue with single quote
+        anglestep = quarkx.setupsubset(self.MODE, "Building")["ForceAngleStep"][0]
 
         return [qmenu.item("&Force to nearest %s deg.\tCtrl" % quarkx.ftos(anglestep), forceangle1click,
           "|This command forces the angle to a 'round' value. It works like a kind of grid for angles.\n\nSet the 'angle grid' in the Configuration box, Map, Building, 'Force to angle'. See also the Options menu, 'Adjust angles automatically'.")]
@@ -1462,12 +1452,7 @@ class FreeZoomDragObject(DragObject):
                 self.dragobject = None
                 return
 
-     #   sensitivity, = quarkx.setupsubset(self.MODE, "Display")["FreeZoom"]
-     # fix for Linux
-        try:
-            sensitivity, = quarkx.setupsubset(self.MODE, "Display")["FreeZoom"]
-        except:
-            sensitivity = 1 # linux issue with single quote
+        sensitivity, = quarkx.setupsubset(self.MODE, "Display")["FreeZoom"]
 
         scale = self.scale0 * math.exp((x-self.x0+y-self.y0) * sensitivity * self.BaseSensitivity)
         if scale<self.AbsoluteMinimum:
@@ -2265,6 +2250,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.100  2011/03/15 08:25:46  cdunde
+#Added cameraview saving duplicators and search systems, like in the Map Editor, to the Model Editor.
+#
 #Revision 1.99  2011/02/13 03:37:47  cdunde
 #Fixed all force to grid functions for model editor bones, vertexes, tags and bboxes.
 #

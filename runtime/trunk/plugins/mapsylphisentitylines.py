@@ -59,12 +59,7 @@ class SylphisDrawEntityLines(DefaultDrawEntityLines):
             maxY = max(cy)
             minY = min(cy)
 
-        #    lightfactor, = quarkx.setupsubset()['LightFactor']
-        # fix for Linux
-            try:
-                lightfactor, = quarkx.setupsubset()['LightFactor']
-            except:
-                lightfactor = 0.9 # linux issue with single quote
+            lightfactor, = quarkx.setupsubset()['LightFactor']
 
             radius = 100
             try:
@@ -107,6 +102,10 @@ quarkpy.mapentities.EntityLinesMapping.update({
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.4  2006/01/30 08:20:00  cdunde
+#To commit all files involved in project with Philippe C
+#to allow QuArK to work better with Linux using Wine.
+#
 #Revision 1.3  2005/10/15 00:51:24  cdunde
 #To reinstate headers and history
 #
