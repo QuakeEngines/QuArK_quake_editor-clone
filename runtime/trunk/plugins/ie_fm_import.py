@@ -309,13 +309,14 @@ class fm_obj:
         binary_format="<32c2i"
         temp_data=file.read(struct.calcsize(binary_format))
         data=struct.unpack(binary_format, temp_data)
-        self.SectionName=""
+        SectionName=""
         for i in xrange(32):
             if str(data[i]) == "\x00":
                 continue
-            self.SectionName = self.SectionName + str(data[i])
-        self.section_version=data[32]
-        self.section_byte_size=data[33]
+            SectionName = SectionName + str(data[i])
+        section_version=data[32]
+        section_byte_size=data[33]
+
         for i in xrange(0, self.num_skins):
             self.skins[i].load(file)
             #self.skins[i].dump()
@@ -324,13 +325,14 @@ class fm_obj:
         binary_format="<32c2i"
         temp_data=file.read(struct.calcsize(binary_format))
         data=struct.unpack(binary_format, temp_data)
-        self.SectionName=""
+        SectionName=""
         for i in xrange(32):
             if str(data[i]) == "\x00":
                 continue
-            self.SectionName = self.SectionName + str(data[i])
-        self.section_version=data[32]
-        self.section_byte_size=data[33]
+            SectionName = SectionName + str(data[i])
+        section_version=data[32]
+        section_byte_size=data[33]
+
         for i in xrange(0, self.num_tex_coords):
             self.tex_coords[i].load(file)
             #self.tex_coords[i].dump()
@@ -339,13 +341,14 @@ class fm_obj:
         binary_format="<32c2i"
         temp_data=file.read(struct.calcsize(binary_format))
         data=struct.unpack(binary_format, temp_data)
-        self.SectionName=""
+        SectionName=""
         for i in xrange(32):
             if str(data[i]) == "\x00":
                 continue
-            self.SectionName = self.SectionName + str(data[i])
-        self.section_version=data[32]
-        self.section_byte_size=data[33]
+            SectionName = SectionName + str(data[i])
+        section_version=data[32]
+        section_byte_size=data[33]
+
         for i in xrange(0, self.num_faces):
             self.faces[i].load(file)
             #self.faces[i].dump()
@@ -354,13 +357,14 @@ class fm_obj:
         binary_format="<32c2i"
         temp_data=file.read(struct.calcsize(binary_format))
         data=struct.unpack(binary_format, temp_data)
-        self.SectionName=""
+        SectionName=""
         for i in xrange(32):
             if str(data[i]) == "\x00":
                 continue
-            self.SectionName = self.SectionName + str(data[i])
-        self.section_version=data[32]
-        self.section_byte_size=data[33]
+            SectionName = SectionName + str(data[i])
+        section_version=data[32]
+        section_byte_size=data[33]
+
         for i in xrange(0, self.num_frames):
             self.frames[i].load(file)
             #self.frames[i].dump()
@@ -375,119 +379,126 @@ class fm_obj:
         binary_format="<32c2i"
         temp_data=file.read(struct.calcsize(binary_format))
         data=struct.unpack(binary_format, temp_data)
-        self.SectionName=""
+        SectionName=""
         for i in xrange(32):
             if str(data[i]) == "\x00":
                 continue
-            self.SectionName = self.SectionName + str(data[i])
-        self.section_version=data[32]
-        self.section_byte_size=data[33]
+            SectionName = SectionName + str(data[i])
+        section_version=data[32]
+        section_byte_size=data[33]
+
 
         #load the "short frames" section if any.
-        if self.SectionName == "short frames":
-            file.seek(file.tell()+self.section_byte_size,0) # To skip over reading in "short frames" section data, don't know how.
+        if SectionName == "short frames":
+            file.seek(file.tell()+section_byte_size,0) # To skip over reading in "short frames" section data, don't know how.
             if file.tell() >= filesize: # Check if end of file. If so, stop here and return.
                 return self
             #read the next section header data.
             binary_format="<32c2i"
             temp_data=file.read(struct.calcsize(binary_format))
             data=struct.unpack(binary_format, temp_data)
-            self.SectionName=""
+            SectionName=""
             for i in xrange(32):
                 if str(data[i]) == "\x00":
                     continue
-                self.SectionName = self.SectionName + str(data[i])
-            self.section_version=data[32]
-            self.section_byte_size=data[33]
+                SectionName = SectionName + str(data[i])
+            section_version=data[32]
+            section_byte_size=data[33]
+
 
         #load the "normals" section if any.
-        if self.SectionName == "normals":
-            file.seek(file.tell()+self.section_byte_size,0) # To skip over reading in "normals" section data, don't know how.
+        if SectionName == "normals":
+            file.seek(file.tell()+section_byte_size,0) # To skip over reading in "normals" section data, don't know how.
             if file.tell() >= filesize: # Check if end of file. If so, stop here and return.
                 return self
             #read the next section header data.
             binary_format="<32c2i"
             temp_data=file.read(struct.calcsize(binary_format))
             data=struct.unpack(binary_format, temp_data)
-            self.SectionName=""
+            SectionName=""
             for i in xrange(32):
                 if str(data[i]) == "\x00":
                     continue
-                self.SectionName = self.SectionName + str(data[i])
-            self.section_version=data[32]
-            self.section_byte_size=data[33]
+                SectionName = SectionName + str(data[i])
+            section_version=data[32]
+            section_byte_size=data[33]
+
 
         #load the "comp data" section if any.
-        if self.SectionName == "comp data":
-            file.seek(file.tell()+self.section_byte_size,0) # To skip over reading in "comp data" section data, don't know how.
+        if SectionName == "comp data":
+            file.seek(file.tell()+section_byte_size,0) # To skip over reading in "comp data" section data, don't know how.
             if file.tell() >= filesize: # Check if end of file. If so, stop here and return.
                 return self
             #read the next section header data.
             binary_format="<32c2i"
             temp_data=file.read(struct.calcsize(binary_format))
             data=struct.unpack(binary_format, temp_data)
-            self.SectionName=""
+            SectionName=""
             for i in xrange(32):
                 if str(data[i]) == "\x00":
                     continue
-                self.SectionName = self.SectionName + str(data[i])
-            self.section_version=data[32]
-            self.section_byte_size=data[33]
+                SectionName = SectionName + str(data[i])
+            section_version=data[32]
+            section_byte_size=data[33]
+
 
         #load the "glcmds" section if any (ex: num_GL_commands-> 1135 ints * 4bytes = 4540).
-        if self.SectionName == "glcmds" and self.num_GL_commands > 0:
-            file.seek(file.tell()+self.section_byte_size,0) # To skip over reading in "glcmds" section data, don't know how.
+        if SectionName == "glcmds" and self.num_GL_commands > 0:
+            file.seek(file.tell()+section_byte_size,0) # To skip over reading in "glcmds" section data, don't know how.
             if file.tell() >= filesize: # Check if end of file. If so, stop here and return.
                 return self
             #read the next section header data.
             binary_format="<32c2i"
             temp_data=file.read(struct.calcsize(binary_format))
             data=struct.unpack(binary_format, temp_data)
-            self.SectionName=""
+            SectionName=""
             for i in xrange(32):
                 if str(data[i]) == "\x00":
                     continue
-                self.SectionName = self.SectionName + str(data[i])
-            self.section_version=data[32]
-            self.section_byte_size=data[33]
+                SectionName = SectionName + str(data[i])
+            section_version=data[32]
+            section_byte_size=data[33]
+
 
         #load the "mesh nodes" (nodes = bone joints)
-        if self.SectionName == "mesh nodes" and self.num_mesh_nodes > 0:
-            file.seek(file.tell()+self.section_byte_size,0) # To skip over reading in "mesh nodes" section data, don't know how.
+        if SectionName == "mesh nodes" and self.num_mesh_nodes > 0:
+            file.seek(file.tell()+section_byte_size,0) # To skip over reading in "mesh nodes" section data, don't know how.
             if file.tell() >= filesize: # Check if end of file. If so, stop here and return.
                 return self
             #read the next section header data.
             binary_format="<32c2i"
             temp_data=file.read(struct.calcsize(binary_format))
             data=struct.unpack(binary_format, temp_data)
-            self.SectionName=""
+            SectionName=""
             for i in xrange(32):
                 if str(data[i]) == "\x00":
                     continue
-                self.SectionName = self.SectionName + str(data[i])
-            self.section_version=data[32]
-            self.section_byte_size=data[33]
+                SectionName = SectionName + str(data[i])
+            section_version=data[32]
+            section_byte_size=data[33]
+
 
         #load the "skeleton" (nodes = bone joints).
-        if self.SectionName == "skeleton":
-            file.seek(file.tell()+self.section_byte_size,0) # To skip over reading in "skeleton" section data, don't know how.
+        if SectionName == "skeleton":
+            file.seek(file.tell()+section_byte_size,0) # To skip over reading in "skeleton" section data, don't know how.
             if file.tell() >= filesize: # Check if end of file. If so, stop here and return.
                 return self
             #read the next section header data.
             binary_format="<32c2i"
             temp_data=file.read(struct.calcsize(binary_format))
             data=struct.unpack(binary_format, temp_data)
-            self.SectionName=""
+            SectionName=""
             for i in xrange(32):
                 if str(data[i]) == "\x00":
                     continue
-                self.SectionName = self.SectionName + str(data[i])
-            self.section_version=data[32]
-            self.section_byte_size=data[33]
+                SectionName = SectionName + str(data[i])
+            section_version=data[32]
+            section_byte_size=data[33]
+
 
         #load the "references".
-        if self.SectionName == "references":
-            file.seek(file.tell()+self.section_byte_size,0) # To skip over reading in "references" section data, don't know how.
+        if SectionName == "references":
+            file.seek(file.tell()+section_byte_size,0) # To skip over reading in "references" section data, don't know how.
 
         return self
 
@@ -822,6 +833,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".fm HereticII Importer", ".fm file", "*.fm
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.5  2011/09/28 06:56:54  cdunde
+# Texture naming update.
+#
 # Revision 1.4  2011/04/05 20:51:42  cdunde
 # Comment update.
 #
