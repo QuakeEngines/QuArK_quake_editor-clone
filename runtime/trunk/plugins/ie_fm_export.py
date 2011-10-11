@@ -37,6 +37,7 @@ exportername = "ie_fm_export.py"
 textlog = "fm_ie_log.txt"
 progressbar = None
 user_frame_list=[]
+user_skins_list=[]
 g_scale = 1.0
 
 
@@ -93,12 +94,9 @@ class fm_alias_triangle: # See .md2 format doc "Vertices". A QuArK's "frame" ['V
         file.write(data)
         progressbar.progress()
     def dump(self):
-        print "FM Point Structure"
-        print "vertex X: ", self.vertices[0]
-        print "vertex Y: ", self.vertices[1]
-        print "vertex Z: ", self.vertices[2]
-        print "lightnormalindex: ",self.lightnormalindex
-        print ""
+        global tobj, logging
+        tobj.logcon ("vertex 0,1,2, lightnormalindex: " + str(self.vertices[0]) + ", " + str(self.vertices[1]) + ", " + str(self.vertices[2]) + ", " + str(self.lightnormalindex))
+        tobj.logcon ("----------------------------------------")
         
 class fm_face: # See .md2 format doc "Triangles". QuArK's "component.triangles".
     vertex_index=[]
@@ -119,14 +117,10 @@ class fm_face: # See .md2 format doc "Triangles". QuArK's "component.triangles".
         file.write(data)
         progressbar.progress()
     def dump (self):
-        print "FM Face Structure"
-        print "vertex 1 index: ", self.vertex_index[0]
-        print "vertex 2 index: ", self.vertex_index[1]
-        print "vertex 3 index: ", self.vertex_index[2]
-        print "texture 1 index: ", self.texture_index[0]
-        print "texture 2 index: ", self.texture_index[1]
-        print "texture 3 index: ", self.texture_index[2]
-        print ""
+        global tobj, logging
+        tobj.logcon ("vertex indexes: " + str(self.vertex_index[0]) + ", " + str(self.vertex_index[1]) + ", " + str(self.vertex_index[2]))
+        tobj.logcon ("texture indexes: " + str(self.texture_index[0]) + ", " + str(self.texture_index[1]) + ", " + str(self.texture_index[2]))
+        tobj.logcon ("----------------------------------------")
         
 class fm_tex_coord: # See .md2 format doc "Texture coordinates". QuArK's "component.triangles".
     u=0
@@ -139,16 +133,15 @@ class fm_tex_coord: # See .md2 format doc "Texture coordinates". QuArK's "compon
         temp_data=[0]*2
       #  temp_data[0]=self.u
       #  temp_data[1]=self.v
-        temp_data[0]=st_coord[0]
-        temp_data[1]=st_coord[1]
+        temp_data[0]=self.u=st_coord[0]
+        temp_data[1]=self.v=st_coord[1]
         data=struct.pack(self.binary_format, temp_data[0], temp_data[1])
         file.write(data)
         progressbar.progress()
     def dump (self):
-        print "FM Texture Coordinate Structure"
-        print "texture coordinate u: ",self.u, st_coord[0]
-        print "texture coordinate v: ",self.v, st_coord[1]
-        print ""
+        global tobj, logging
+        tobj.logcon ("texture coordinate u, v: " + str(self.u) + ", " + str(self.v))
+        tobj.logcon ("----------------------------------------")
         
 class fm_GL_command: # See .md2 format doc "OpenGL Commands".
     s=0.0
@@ -254,15 +247,11 @@ class fm_alias_frame: # See .md2 format doc "Vector", "Vertices" and "Frames". Q
         progressbar.progress()
 
     def dump (self):
-        print "FM Frame"
-        print "scale x: ",self.scale[0]
-        print "scale y: ",self.scale[1]
-        print "scale z: ",self.scale[2]
-        print "translate x: ",self.translate[0]
-        print "translate y: ",self.translate[1]
-        print "translate z: ",self.translate[2]
-        print "name: ",self.name
-        print ""
+        global tobj, logging
+        tobj.logcon ("scale x,y,z: " + str(self.scale[0]) + ", " + str(self.scale[1]) + ", " + str(self.scale[2]))
+        tobj.logcon ("translate x,y,z: " + str(self.translate[0]) + ", " + str(self.translate[1]) + ", " + str(self.translate[2]))
+        tobj.logcon ("name: " + self.name)
+        tobj.logcon ("----------------------------------------")
         
 class fm_obj:
     #Header Structure
@@ -287,6 +276,7 @@ class fm_obj:
     frames=[]
     skins=[]
     GL_commands=[]
+    facelist=[]
 
     def __init__ (self):
         self.tex_coords=[]
@@ -294,8 +284,10 @@ class fm_obj:
         self.faces=[]
         self.frames=[]
         self.skins=[]
+        self.facelist=[]
 
     def save(self, file):
+        global tobj, logging
         #write the "header" data
         binary_format="<c"
         for i in xrange(len(self.SectionName)):
@@ -315,7 +307,7 @@ class fm_obj:
         temp_data[8]=self.num_faces
         temp_data[9]=self.num_GL_commands
         temp_data[10]=self.num_frames
-        temp_data[11]=0 # IF SET BY self.num_mesh_nodes CAUSES GAME TO BLOW UP!
+        temp_data[11]=self.num_mesh_nodes
         data=struct.pack(self.binary_format, temp_data[0],temp_data[1],temp_data[2],temp_data[3],temp_data[4],temp_data[5],temp_data[6],temp_data[7],temp_data[8],temp_data[9],temp_data[10],temp_data[11])
         file.write(data)
 
@@ -331,13 +323,20 @@ class fm_obj:
             data = struct.pack(binary_format, temp_data[0])
             file.write(data)
         binary_format="<2i"
-        self.section_version = 1
-        self.section_byte_size = self.num_skins * 64 # The binary_format for a fm_skin
+        section_version = 1
+        section_byte_size = self.num_skins * 64 # The binary_format for a fm_skin
         temp_data=[0]*2
-        temp_data[0]=self.section_version
-        temp_data[1]=self.section_byte_size
+        temp_data[0]=section_version
+        temp_data[1]=section_byte_size
         data=struct.pack(binary_format, temp_data[0],temp_data[1])
         file.write(data)
+        if logging == 1:
+            tobj.logcon ("")
+            tobj.logcon ("#####################################################################")
+            tobj.logcon ("SectionName: skin")
+            tobj.logcon ("section_version: " + str(section_version))
+            tobj.logcon ("section_byte_size: " + str(section_byte_size))
+            tobj.logcon ("#####################################################################")
         #save the "skin" data
         for skin in self.skins:
             skin.save(file)
@@ -355,17 +354,27 @@ class fm_obj:
             data = struct.pack(binary_format, temp_data[0])
             file.write(data)
         binary_format="<2i"
-        self.section_version = 1
-        self.section_byte_size = self.num_tex_coords * 4 # The binary_format for a fm_tex_coord
+        section_version = 1
+        section_byte_size = self.num_tex_coords * 4 # The binary_format for a fm_tex_coord
         temp_data=[0]*2
-        temp_data[0]=self.section_version
-        temp_data[1]=self.section_byte_size
+        temp_data[0]=section_version
+        temp_data[1]=section_byte_size
         data=struct.pack(binary_format, temp_data[0],temp_data[1])
         file.write(data)
+        if logging == 1:
+            tobj.logcon ("")
+            tobj.logcon ("#####################################################################")
+            tobj.logcon ("SectionName: st coord")
+            tobj.logcon ("section_version: " + str(section_version))
+            tobj.logcon ("section_byte_size: " + str(section_byte_size))
+            tobj.logcon ("#####################################################################")
         #save the "st coord" (texture coordinates) data
         for i in xrange(0, self.num_tex_coords):
             self.tex_coords[i].save(file, self.st_coord[i])
             progressbar.progress()
+            if logging == 1:
+                tobj.logcon ("fm_tex_coord " + str(i))
+                self.tex_coords[i].dump()
 
         #write the "tris" header
         binary_format="<c"
@@ -379,17 +388,29 @@ class fm_obj:
             data = struct.pack(binary_format, temp_data[0])
             file.write(data)
         binary_format="<2i"
-        self.section_version = 1
-        self.section_byte_size = self.num_faces * 12 # The binary_format for a fm_face
+        section_version = 1
+        section_byte_size = self.num_faces * 12 # The binary_format for a fm_face
         temp_data=[0]*2
-        temp_data[0]=self.section_version
-        temp_data[1]=self.section_byte_size
+        temp_data[0]=section_version
+        temp_data[1]=section_byte_size
         data=struct.pack(binary_format, temp_data[0],temp_data[1])
         file.write(data)
+        if logging == 1:
+            tobj.logcon ("")
+            tobj.logcon ("#####################################################################")
+            tobj.logcon ("SectionName: tris")
+            tobj.logcon ("section_version: " + str(section_version))
+            tobj.logcon ("section_byte_size: " + str(section_byte_size))
+            tobj.logcon ("#####################################################################")
         #save the "tris" data
+        count=-1
         for face in self.faces:
             face.save(file)
             progressbar.progress()
+            if logging == 1:
+                count+=1
+                tobj.logcon ("fm_face " + str(count))
+                face.dump()
 
         #write the "frames" header
         binary_format="<c"
@@ -403,21 +424,38 @@ class fm_obj:
             data = struct.pack(binary_format, temp_data[0])
             file.write(data)
         binary_format="<2i"
-        self.section_version = 1
-        self.section_byte_size = self.frame_size * self.num_frames
+        section_version = 1
+        section_byte_size = self.frame_size * self.num_frames
         temp_data=[0]*2
-        temp_data[0]=self.section_version
-        temp_data[1]=self.section_byte_size
+        temp_data[0]=section_version
+        temp_data[1]=section_byte_size
         data=struct.pack(binary_format, temp_data[0],temp_data[1])
         file.write(data)
+        if logging == 1:
+            tobj.logcon ("")
+            tobj.logcon ("#####################################################################")
+            tobj.logcon ("SectionName: frames")
+            tobj.logcon ("section_version: " + str(section_version))
+            tobj.logcon ("section_byte_size: " + str(section_byte_size))
+            tobj.logcon ("#####################################################################")
         #save the "frames" data
+        count=-1
         for frame in self.frames:
             frame.save(file)
+            if logging == 1:
+                count+=1
+                tobj.logcon ("fm_alias_frame " + str(count))
+                frame.dump()
+                count2=-1
             for vert in frame.vertices:
                 vert.save(file)
+                if logging == 1:
+                    count2+=1
+                    tobj.logcon ("fm_alias_triangle " + str(count2))
+                    vert.dump()
             progressbar.progress()
 
-        #write the "glcmds" header
+        #write the "glcmds" header, see models.c BuildGlCmds for GL_commands list creation code.
         binary_format="<c"
         glcmds = "glcmds"
         for i in xrange(32):
@@ -429,28 +467,141 @@ class fm_obj:
             data = struct.pack(binary_format, temp_data[0])
             file.write(data)
         binary_format="<2i"
-        self.section_version = 1
-        self.section_byte_size = self.num_GL_commands * 4 # The binary_format for a fm_GL_command
-      #  print "GL_commands, num_GL_commands", len(self.GL_commands), self.num_GL_commands
+        section_version = 1
+        section_byte_size = self.num_GL_commands * 4 # The binary_format for a fm_GL_command
         temp_data=[0]*2
-        temp_data[0]=self.section_version
-        temp_data[1]=self.section_byte_size
+        temp_data[0]=section_version
+        temp_data[1]=section_byte_size
         data=struct.pack(binary_format, temp_data[0],temp_data[1])
         file.write(data)
-        #save the "glcmds" GL command List data
+        if logging == 1:
+            tobj.logcon ("")
+            tobj.logcon ("#####################################################################")
+            tobj.logcon ("SectionName: glcmds")
+            tobj.logcon ("section_version: " + str(section_version))
+            tobj.logcon ("section_byte_size: " + str(section_byte_size))
+            tobj.logcon ("#####################################################################")
+        if logging == 1:
+            tobj.logcon ("START OF GLCMDS at, num_GL_commands: " + str(file.tell()) + ", " + str(self.num_GL_commands))
+        #save the "glcmds" GL command List data, see models.c BuildGlCmds for GL_commands list creation code.
         for cmd in self.GL_commands:
             cmd.save(file)
             progressbar.progress()
 
+        #write the "mesh nodes" header
+        binary_format="<c"
+        meshnodes = "mesh nodes"
+        for i in xrange(32):
+            temp_data=[0]
+            if i > 9:
+                temp_data[0]='\x00'
+            else:
+                temp_data[0]=meshnodes[i]
+            data = struct.pack(binary_format, temp_data[0])
+            file.write(data)
+        binary_format="<2i"
+        section_version=3
+        section_byte_size=516
+        temp_data=[0]*2
+        temp_data[0]=section_version
+        temp_data[1]=section_byte_size
+        data=struct.pack(binary_format, temp_data[0],temp_data[1])
+        file.write(data)
+        if logging == 1:
+            tobj.logcon ("")
+            tobj.logcon ("#####################################################################")
+            tobj.logcon ("SectionName: mesh nodes")
+            tobj.logcon ("section_version: " + str(section_version))
+            tobj.logcon ("section_byte_size: " + str(section_byte_size))
+            tobj.logcon ("#####################################################################")
+        #save the "mesh nodes" data
+        if logging == 1:
+            tobj.logcon ("num_mesh_nodes: " + str(self.num_mesh_nodes))
+            tobj.logcon ("============================")
+            tobj.logcon ("pointer location at start: " + str(file.tell()))
+        binary_format="<5b"
+        temp_data=[0]*5
+        temp_data[0]=temp_data[1]=temp_data[2]=temp_data[3]=-1
+        temp_data[4]=1
+        data=struct.pack(binary_format, temp_data[0],temp_data[1],temp_data[2],temp_data[3],temp_data[4])
+        file.write(data)
+        if logging == 1:
+            for item in temp_data:
+                tobj.logcon ("tri data: (" + str(item) + ",)")
+            tobj.logcon ("pointer at end of tri data: " + str(file.tell()))
+        binary_format="<b"
+        count=256-5
+        while count > 0:
+            temp_data=[0]
+            temp_data[0]=0
+            data = struct.pack(binary_format, temp_data[0])
+            file.write(data)
+            count-=1
+        binary_format="<3b"
+        temp_data=[0]*3
+        temp_data[0]=temp_data[1]=-1
+        temp_data[2]=127
+        data=struct.pack(binary_format, temp_data[0],temp_data[1],temp_data[2])
+        file.write(data)
+        if logging == 1:
+            for item in temp_data:
+                tobj.logcon ("vert data: (" + str(item) + ",)")
+            tobj.logcon ("pointer at end of vert data: " + str(file.tell()))
+            tobj.logcon ("")
+        binary_format="<b"
+        count=256-3
+        while count > 0:
+            temp_data=[0]
+            temp_data[0]=0
+            data = struct.pack(binary_format, temp_data[0])
+            file.write(data)
+            count-=1
+        binary_format="<2h"
+        temp_data=[0]*2
+        temp_data[0]=0
+        temp_data[1]=self.num_GL_commands
+        data=struct.pack(binary_format, temp_data[0],temp_data[1])
+        file.write(data)
+        if logging == 1:
+            tobj.logcon ("pointer after, glstart, nbrglcmds: " + str(file.tell()) + ", " + str(temp_data[0]) + ", " + str(temp_data[1]))
+
+        if logging == 1:
+            tobj.logcon ("")
+            tobj.logcon ("#####################################################################")
+            tobj.logcon ("Skins group data: " + str(self.num_skins) + " skins")
+            tobj.logcon ("#####################################################################")
+            for skin_counter in range(0, self.num_skins):
+                tobj.logcon (user_skins_list.subitems[skin_counter].name)
+
+        if logging == 1:
+            tobj.logcon ("")
+            tobj.logcon ("#####################################################################")
+            tobj.logcon ("Face group data: " + str(len(self.facelist)/3) + " faces")
+            tobj.logcon ("face: (vert_index, U, V)")
+            tobj.logcon ("#####################################################################")
+            for i in xrange(0, len(self.facelist)/3):
+                set=i*3
+                tobj.logcon (str(i) + ": [" + str(self.facelist[set]) + ", " + str(self.facelist[set+1]) + ", " + str(self.facelist[set+2]) + "]")
+
+        if logging == 1:
+            tobj.logcon ("")
+            tobj.logcon ("#####################################################################")
+            tobj.logcon ("Frame group data: " + str(self.num_frames) + " frames")
+            tobj.logcon ("frame: frame name")
+            tobj.logcon ("#####################################################################")
+            for frame in range(0,self.num_frames):
+                tobj.logcon (str(frame) + ": " + user_frame_list.subitems[frame].shortname)
+
     def dump (self):
-        global tobj
+        global tobj, logging
         if logging == 1:
             tobj.logcon ("")
             tobj.logcon ("#####################################################################")
             tobj.logcon ("Header Information")
             tobj.logcon ("#####################################################################")
-            tobj.logcon ("SectionName: " + str(self.SectionName))
-            tobj.logcon ("section_version: " + str(self.section_version))
+            tobj.logcon ("Section Name: header")
+            tobj.logcon ("section version: " + str(self.section_version))
+            tobj.logcon ("section byte size: " + str(self.section_byte_size))
             tobj.logcon ("skin width: " + str(int(self.skin_width)))
             tobj.logcon ("skin height: " + str(int(self.skin_height)))
             tobj.logcon ("frames byte size: " + str(self.frame_size))
@@ -467,7 +618,7 @@ class fm_obj:
 # Fill FM data structure
 ######################################################
 def fill_fm(fm, component):
-    global user_frame_list, progressbar, tobj, Strings
+    global user_frame_list, user_skins_list, progressbar, tobj, Strings
 
     # Get the component Mesh.
     mesh = component.triangles
@@ -508,26 +659,13 @@ def fill_fm(fm, component):
             size = user_skins_list.subitems[0].dictspec['Size']
             fm.skin_width = size[0]
             fm.skin_height = size[1]
-    if logging == 1:
-        tobj.logcon ("")
-        tobj.logcon ("#####################################################################")
-        tobj.logcon ("Skins group data: " + str(fm.num_skins) + " skins")
-        tobj.logcon ("#####################################################################")
     for skin_counter in range(0, fm.num_skins):
         #add a skin node to the fm data structure
         fm.skins.append(fm_skin())
         fm.skins[skin_counter].name = user_skins_list.subitems[skin_counter].name
-        if logging == 1:
-            tobj.logcon (user_skins_list.subitems[skin_counter].name)
 
     # Put texture information in the fm structure.
     # Build UV coords dictionary (prevents double entries-saves space).
-    if logging == 1:
-        tobj.logcon ("")
-        tobj.logcon ("#####################################################################")
-        tobj.logcon ("Face group data: " + str(len(mesh)) + " faces")
-        tobj.logcon ("face: (vert_index, U, V)")
-        tobj.logcon ("#####################################################################")
     for face in range(0, len(mesh)):
         for i in range(0, len(mesh[face])):
             # A list of sub-lists of the u, v coords. Each vert has its own UV coords.
@@ -536,23 +674,19 @@ def fill_fm(fm, component):
     for face in range(0, len(mesh)):
         fm.faces.append(fm_face())
 
-        if logging == 1:
-            facelist = []
         for i in range(0, len(mesh[face])):
             t=(mesh[face][i][1], mesh[face][i][2])
             tex_key=(t[0],t[1])
-            fm.tex_coords[(face*3)+i].u = mesh[face][i][1]
-            fm.tex_coords[(face*3)+i].v = mesh[face][i][2]
+            fm.tex_coords[(face*3)+i].u = mesh[face][i][1] # tex_coords is screwed up here.
+            fm.tex_coords[(face*3)+i].v = mesh[face][i][2] # tex_coords is screwed up here.
             fm.faces[face].vertex_index[i] = mesh[face][i][0]
             if logging == 1:
-                facelist = facelist + [(mesh[face][i][0], mesh[face][i][1], mesh[face][i][2])]
+                fm.facelist = fm.facelist + [(mesh[face][i][0], mesh[face][i][1], mesh[face][i][2])]
             if not tex_list.has_key(tex_key):
                 tex_list[tex_key] = tex_count
                 fm.st_coord[tex_count] = tex_key
                 tex_count+=1
             fm.faces[face].texture_index[i] = tex_list[tex_key]
-        if logging == 1:
-            tobj.logcon (str(face) + ": " + str(facelist))
         progressbar.progress()
 
     fm.num_tex_coords = len(tex_list) # Number of non-duplicated UV coords in Skin-view.
@@ -571,14 +705,7 @@ def fill_fm(fm, component):
     else:
         fm.num_frames = len(user_frame_list.dictitems) # Number of frames in the Frames group, 'Frames:fg'.
 
-
     #fill in each frame with frame info and all the vertex data for that frame
-    if logging == 1:
-        tobj.logcon ("")
-        tobj.logcon ("#####################################################################")
-        tobj.logcon ("Frame group data: " + str(fm.num_frames) + " frames")
-        tobj.logcon ("frame: frame name")
-        tobj.logcon ("#####################################################################")
     for frame in range(0,fm.num_frames):
         #add a frame
         fm.frames.append(fm_alias_frame())
@@ -590,8 +717,6 @@ def fill_fm(fm, component):
         #we need to start with the bounding box
         vertices = []
         framename = user_frame_list.subitems[frame].name
-        if logging == 1:
-            tobj.logcon (str(frame) + ": " + user_frame_list.subitems[frame].shortname)
         frameVertices = user_frame_list.dictitems[framename].dictspec['Vertices']
         for vert_counter in range(0, fm.num_vertices):
             x= frameVertices[(vert_counter*3)]
@@ -624,10 +749,12 @@ def fill_fm(fm, component):
             #figure out the new coords based on scale and transform
             #then translates the point so it's not less than 0
             #then scale it so it's between 0..255
-            new_x=float((frameVertices[(vert_counter*3)]-translate[0])/scale[0])
-            new_y=float((frameVertices[(vert_counter*3)+1]-translate[1])/scale[1])
-            new_z=float((frameVertices[(vert_counter*3)+2]-translate[2])/scale[2])
-
+            new_x=round(float((frameVertices[(vert_counter*3)]-translate[0])/scale[0]), 0)
+            new_y=round(float((frameVertices[(vert_counter*3)+1]-translate[1])/scale[1]), 0)
+            new_z=round(float((frameVertices[(vert_counter*3)+2]-translate[2])/scale[2]), 0)
+            new_x=int(new_x)
+            new_y=int(new_y)
+            new_z=int(new_z)
             # Put them in the structure.
             fm.frames[frame].vertices[vert_counter].vertices = (new_x, new_y, new_z)
 
@@ -709,7 +836,7 @@ def find_strip_length(fm, start_tri, start_vert):
             else:
                 m1=fm.faces[check].vertex_index[(k+2)%3]
                 st1=fm.faces[check].texture_index[(k+2)%3]
-            
+
             strip_vert[strip_count+2]=fm.faces[tri_counter].vertex_index[(k+2)%3]
             strip_st[strip_count+2]=fm.faces[tri_counter].texture_index[(k+2)%3]
             strip_tris[strip_count]=tri_counter
@@ -822,7 +949,8 @@ def build_GL_commands(fm):
     t=0.0
     
     for face_counter in range(0,fm.num_faces):
-        if used[face_counter]!=0: #don't evaluate a tri that's been used
+      #  if used[face_counter]!=0: #don't evaluate a tri that's been used
+        if used[face_counter]==100:
             #print "found a used triangle: ", face_counter
             pass
         else:
@@ -838,7 +966,7 @@ def build_GL_commands(fm):
                         best_vert[index]=strip_vert[index]
                     for index in range(0, best_length):
                         best_tris[index]=strip_tris[index]
-                
+
                 strip_length=find_strip_length(fm, face_counter, start_vert)
                 if (strip_length>best_length): 
                     best_type=0
@@ -848,11 +976,11 @@ def build_GL_commands(fm):
                         best_vert[index]=strip_vert[index]
                     for index in range(0, best_length):
                         best_tris[index]=strip_tris[index]
-            
+
             #mark the tris on the best strip/fan as used
             for used_counter in range (0, best_length):
                 used[best_tris[used_counter]]=1
-    
+
             temp_cmdlist=fm_GL_cmd_list()
             #push the number of commands into the command stream
             if best_type==1:
@@ -866,8 +994,10 @@ def build_GL_commands(fm):
                 cmd=fm_GL_command()
                 index=best_st[command_counter]
                 #calc and put S/T coords in the structure
-                s=fm.tex_coords[index].u
-                t=fm.tex_coords[index].v
+            #    s=fm.tex_coords[index].u # tex_coords is screwed up here.
+            #    t=fm.tex_coords[index].v # tex_coords is screwed up here.
+                s=fm.st_coord[index][0]
+                t=fm.st_coord[index][1]
                 try:
                     s=(s+0.5)/fm.skin_width
                     t=(t+0.5)/fm.skin_height
@@ -928,12 +1058,12 @@ def save_fm(filename):
     component = editor.layout.explorer.sellist[0] #this gets the first component (should be only one)
 
     fill_fm(fm, component)
-    if logging == 1:
-        fm.dump() # Writes the file Header last to the log for comparison reasons.
 
     #actually write it to disk
     file = open(filename,"wb")
     fm.save(file)
+    if logging == 1:
+        fm.dump() # Writes the file Header last to the log for comparison reasons.
     file.close()
     progressbar.close()
     Strings[2455] = Strings[2455].replace(component.shortname + "\n", "")
@@ -958,6 +1088,10 @@ quarkpy.qmdlbase.RegisterMdlExporter(".fm Heretic II Exporter", ".fm file", "*.f
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.4  2011/10/02 06:18:31  cdunde
+# To match class names with importer and fix cause of blowing up the game.
+# Model does NOT show up in game but its bounding box works. Need someone to fix this.
+#
 # Revision 1.3  2011/09/28 06:56:54  cdunde
 # Texture naming update.
 #
