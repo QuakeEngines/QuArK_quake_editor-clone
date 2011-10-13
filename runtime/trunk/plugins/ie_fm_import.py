@@ -74,12 +74,9 @@ class fm_alias_triangle:
         return self
 
     def dump(self):
-        print "FM Alias_Triangle Structure"
-        print "vertex: ", self.vertices[0]
-        print "vertex: ", self.vertices[1]
-        print "vertex: ", self.vertices[2]
-        print "lightnormalindex: ",self.lightnormalindex
-        print ""
+        global tobj, logging
+        tobj.logcon ("vertex 0,1,2, lightnormalindex: " + str(self.vertices[0]) + ", " + str(self.vertices[1]) + ", " + str(self.vertices[2]) + ", " + str(self.lightnormalindex))
+        tobj.logcon ("----------------------------------------")
 
 class fm_face:
     vertex_index=[]
@@ -105,14 +102,10 @@ class fm_face:
         return self
 
     def dump (self):
-        print "FM Face Structure"
-        print "vertex index: ", self.vertex_index[0]
-        print "vertex index: ", self.vertex_index[1]
-        print "vertex index: ", self.vertex_index[2]
-        print "texture index: ", self.texture_index[0]
-        print "texture index: ", self.texture_index[1]
-        print "texture index: ", self.texture_index[2]
-        print ""
+        global tobj, logging
+        tobj.logcon ("vertex indexes: " + str(self.vertex_index[0]) + ", " + str(self.vertex_index[1]) + ", " + str(self.vertex_index[2]))
+        tobj.logcon ("texture indexes: " + str(self.texture_index[0]) + ", " + str(self.texture_index[1]) + ", " + str(self.texture_index[2]))
+        tobj.logcon ("----------------------------------------")
 
 class fm_tex_coord:
     u=0
@@ -135,10 +128,9 @@ class fm_tex_coord:
         return self
 
     def dump (self):
-        print "FM Texture Coordinate Structure"
-        print "texture coordinate u: ",self.u
-        print "texture coordinate v: ",self.v
-        print ""
+        global tobj, logging
+        tobj.logcon ("texture coordinate u, v: " + str(self.u) + ", " + str(self.v))
+        tobj.logcon ("----------------------------------------")
 
 
 class fm_skin:
@@ -210,15 +202,11 @@ class fm_alias_frame:
         return self
 
     def dump (self):
-        print "FM Alias Frame"
-        print "scale x: ",self.scale[0]
-        print "scale y: ",self.scale[1]
-        print "scale z: ",self.scale[2]
-        print "translate x: ",self.translate[0]
-        print "translate y: ",self.translate[1]
-        print "translate z: ",self.translate[2]
-        print "name: ",self.name
-        print ""
+        global tobj, logging
+        tobj.logcon ("scale x,y,z: " + str(self.scale[0]) + ", " + str(self.scale[1]) + ", " + str(self.scale[2]))
+        tobj.logcon ("translate x,y,z: " + str(self.translate[0]) + ", " + str(self.translate[1]) + ", " + str(self.translate[2]))
+        tobj.logcon ("name: " + self.name)
+        tobj.logcon ("----------------------------------------")
 
 class fm_obj:
     #Header Structure
@@ -254,6 +242,7 @@ class fm_obj:
 
 
     def load (self, file):
+        global tobj, logging
         # file is the model file & full path, ex: C:\Heretic II\base\models\monsters\chicken2\tris.fm
         # data is all of the header data amounts.
         filesize = os.path.getsize(file.name) # The full size in Bytes of this file for checking later on.
@@ -316,7 +305,13 @@ class fm_obj:
             SectionName = SectionName + str(data[i])
         section_version=data[32]
         section_byte_size=data[33]
-
+        if logging == 1:
+            tobj.logcon ("")
+            tobj.logcon ("#####################################################################")
+            tobj.logcon ("SectionName: " + SectionName)
+            tobj.logcon ("section_version: " + str(section_version))
+            tobj.logcon ("section_byte_size: " + str(section_byte_size))
+            tobj.logcon ("#####################################################################")
         for i in xrange(0, self.num_skins):
             self.skins[i].load(file)
             #self.skins[i].dump()
@@ -332,10 +327,18 @@ class fm_obj:
             SectionName = SectionName + str(data[i])
         section_version=data[32]
         section_byte_size=data[33]
-
+        if logging == 1:
+            tobj.logcon ("")
+            tobj.logcon ("#####################################################################")
+            tobj.logcon ("SectionName: " + SectionName)
+            tobj.logcon ("section_version: " + str(section_version))
+            tobj.logcon ("section_byte_size: " + str(section_byte_size))
+            tobj.logcon ("#####################################################################")
         for i in xrange(0, self.num_tex_coords):
             self.tex_coords[i].load(file)
-            #self.tex_coords[i].dump()
+            if logging == 1:
+                tobj.logcon ("fm_tex_coord " + str(i))
+                self.tex_coords[i].dump()
 
         #load the "tris" section.
         binary_format="<32c2i"
@@ -348,10 +351,18 @@ class fm_obj:
             SectionName = SectionName + str(data[i])
         section_version=data[32]
         section_byte_size=data[33]
-
+        if logging == 1:
+            tobj.logcon ("")
+            tobj.logcon ("#####################################################################")
+            tobj.logcon ("SectionName: " + SectionName)
+            tobj.logcon ("section_version: " + str(section_version))
+            tobj.logcon ("section_byte_size: " + str(section_byte_size))
+            tobj.logcon ("#####################################################################")
         for i in xrange(0, self.num_faces):
             self.faces[i].load(file)
-            #self.faces[i].dump()
+            if logging == 1:
+                tobj.logcon ("fm_face " + str(i))
+                self.faces[i].dump()
 
         #load the "frames" section.
         binary_format="<32c2i"
@@ -364,13 +375,23 @@ class fm_obj:
             SectionName = SectionName + str(data[i])
         section_version=data[32]
         section_byte_size=data[33]
-
+        if logging == 1:
+            tobj.logcon ("")
+            tobj.logcon ("#####################################################################")
+            tobj.logcon ("SectionName: " + SectionName)
+            tobj.logcon ("section_version: " + str(section_version))
+            tobj.logcon ("section_byte_size: " + str(section_byte_size))
+            tobj.logcon ("#####################################################################")
         for i in xrange(0, self.num_frames):
             self.frames[i].load(file)
-            #self.frames[i].dump()
+            if logging == 1:
+                tobj.logcon ("fm_alias_frame " + str(i))
+                self.frames[i].dump()
             for j in xrange(0,self.num_vertices):
                 self.frames[i].vertices[j].load(file)
-                #self.frames[i].vertices[j].dump()
+                if logging == 1:
+                    tobj.logcon ("fm_alias_triangle " + str(j))
+                    self.frames[i].vertices[j].dump()
 
         if file.tell() >= filesize: # Check if end of file. If so, stop here and return.
             return self
@@ -386,7 +407,13 @@ class fm_obj:
             SectionName = SectionName + str(data[i])
         section_version=data[32]
         section_byte_size=data[33]
-
+        if logging == 1:
+            tobj.logcon ("")
+            tobj.logcon ("#####################################################################")
+            tobj.logcon ("SectionName: " + SectionName)
+            tobj.logcon ("section_version: " + str(section_version))
+            tobj.logcon ("section_byte_size: " + str(section_byte_size))
+            tobj.logcon ("#####################################################################")
 
         #load the "short frames" section if any.
         if SectionName == "short frames":
@@ -404,7 +431,13 @@ class fm_obj:
                 SectionName = SectionName + str(data[i])
             section_version=data[32]
             section_byte_size=data[33]
-
+            if logging == 1:
+                tobj.logcon ("")
+                tobj.logcon ("#####################################################################")
+                tobj.logcon ("SectionName: " + SectionName)
+                tobj.logcon ("section_version: " + str(section_version))
+                tobj.logcon ("section_byte_size: " + str(section_byte_size))
+                tobj.logcon ("#####################################################################")
 
         #load the "normals" section if any.
         if SectionName == "normals":
@@ -422,7 +455,13 @@ class fm_obj:
                 SectionName = SectionName + str(data[i])
             section_version=data[32]
             section_byte_size=data[33]
-
+            if logging == 1:
+                tobj.logcon ("")
+                tobj.logcon ("#####################################################################")
+                tobj.logcon ("SectionName: " + SectionName)
+                tobj.logcon ("section_version: " + str(section_version))
+                tobj.logcon ("section_byte_size: " + str(section_byte_size))
+                tobj.logcon ("#####################################################################")
 
         #load the "comp data" section if any.
         if SectionName == "comp data":
@@ -440,10 +479,23 @@ class fm_obj:
                 SectionName = SectionName + str(data[i])
             section_version=data[32]
             section_byte_size=data[33]
-
+            if logging == 1:
+                tobj.logcon ("")
+                tobj.logcon ("#####################################################################")
+                tobj.logcon ("SectionName: " + SectionName)
+                tobj.logcon ("section_version: " + str(section_version))
+                tobj.logcon ("section_byte_size: " + str(section_byte_size))
+                tobj.logcon ("#####################################################################")
 
         #load the "glcmds" section if any (ex: num_GL_commands-> 1135 ints * 4bytes = 4540).
         if SectionName == "glcmds" and self.num_GL_commands > 0:
+            if logging == 1:
+                tobj.logcon ("START OF GLCMDS at, num_GL_commands: " + str(file.tell()) + ", " + str(self.num_GL_commands))
+              #  binary_format="<f"
+              #  for i in xrange(self.num_GL_commands):
+              #      temp_data=file.read(struct.calcsize(binary_format))
+              #      data=struct.unpack(binary_format, temp_data)
+              #      print data[0]
             file.seek(file.tell()+section_byte_size,0) # To skip over reading in "glcmds" section data, don't know how.
             if file.tell() >= filesize: # Check if end of file. If so, stop here and return.
                 return self
@@ -458,10 +510,49 @@ class fm_obj:
                 SectionName = SectionName + str(data[i])
             section_version=data[32]
             section_byte_size=data[33]
-
+            if logging == 1:
+                tobj.logcon ("")
+                tobj.logcon ("#####################################################################")
+                tobj.logcon ("SectionName: " + SectionName)
+                tobj.logcon ("section_version: " + str(section_version))
+                tobj.logcon ("section_byte_size: " + str(section_byte_size))
+                tobj.logcon ("#####################################################################")
 
         #load the "mesh nodes" (nodes = bone joints)
         if SectionName == "mesh nodes" and self.num_mesh_nodes > 0:
+            holdpointer = file.tell()
+
+            if logging == 1:
+                tobj.logcon ("num_mesh_nodes: " + str(self.num_mesh_nodes))
+                tobj.logcon ("============================")
+                tobj.logcon ("pointer location at start: " + str(holdpointer))
+                binary_format="<b"
+                count=256
+                while count > 0:
+                    temp_data=file.read(struct.calcsize(binary_format))
+                    data=struct.unpack(binary_format, temp_data)
+                    count-=1
+                    if data[0] == 0:
+                        continue
+                    tobj.logcon ("tri data: " + str(data))
+                tobj.logcon ("pointer at end of tri data: " + str(file.tell()))
+                count=256
+                while count > 0:
+                    temp_data=file.read(struct.calcsize(binary_format))
+                    data=struct.unpack(binary_format, temp_data)
+                    count-=1
+                    if data[0] == 0:
+                        continue
+                    tobj.logcon ("vert data: " + str(data))
+                tobj.logcon ("pointer at end of vert data: " + str(file.tell()))
+                file.seek(filesize-4,0)
+                tobj.logcon ("pointer 2h data: " + str(file.tell()))
+                binary_format="<2h"
+                temp_data=file.read(struct.calcsize(binary_format))
+                data=struct.unpack(binary_format, temp_data)
+                tobj.logcon ("pointer after, glstart, nbrglcmds: " + str(file.tell()) + ", " + str(data[0]) + ", " + str(data[1]))
+
+            file.seek(holdpointer,0)
             file.seek(file.tell()+section_byte_size,0) # To skip over reading in "mesh nodes" section data, don't know how.
             if file.tell() >= filesize: # Check if end of file. If so, stop here and return.
                 return self
@@ -476,7 +567,13 @@ class fm_obj:
                 SectionName = SectionName + str(data[i])
             section_version=data[32]
             section_byte_size=data[33]
-
+            if logging == 1:
+                tobj.logcon ("")
+                tobj.logcon ("#####################################################################")
+                tobj.logcon ("SectionName: " + SectionName)
+                tobj.logcon ("section_version: " + str(section_version))
+                tobj.logcon ("section_byte_size: " + str(section_byte_size))
+                tobj.logcon ("#####################################################################")
 
         #load the "skeleton" (nodes = bone joints).
         if SectionName == "skeleton":
@@ -494,11 +591,37 @@ class fm_obj:
                 SectionName = SectionName + str(data[i])
             section_version=data[32]
             section_byte_size=data[33]
-
+            if logging == 1:
+                tobj.logcon ("")
+                tobj.logcon ("#####################################################################")
+                tobj.logcon ("SectionName: " + SectionName)
+                tobj.logcon ("section_version: " + str(section_version))
+                tobj.logcon ("section_byte_size: " + str(section_byte_size))
+                tobj.logcon ("#####################################################################")
 
         #load the "references".
         if SectionName == "references":
             file.seek(file.tell()+section_byte_size,0) # To skip over reading in "references" section data, don't know how.
+            if file.tell() >= filesize: # Check if end of file. If so, stop here and return.
+                return self
+            #read the next section header data.
+            binary_format="<32c2i"
+            temp_data=file.read(struct.calcsize(binary_format))
+            data=struct.unpack(binary_format, temp_data)
+            SectionName=""
+            for i in xrange(32):
+                if str(data[i]) == "\x00":
+                    continue
+                SectionName = SectionName + str(data[i])
+            section_version=data[32]
+            section_byte_size=data[33]
+            if logging == 1:
+                tobj.logcon ("")
+                tobj.logcon ("#####################################################################")
+                tobj.logcon ("SectionName: " + SectionName)
+                tobj.logcon ("section_version: " + str(section_version))
+                tobj.logcon ("section_byte_size: " + str(section_byte_size))
+                tobj.logcon ("#####################################################################")
 
         return self
 
@@ -833,6 +956,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".fm HereticII Importer", ".fm file", "*.fm
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.6  2011/10/06 08:59:52  cdunde
+# Logging correction to stop header data from being over written.
+#
 # Revision 1.5  2011/09/28 06:56:54  cdunde
 # Texture naming update.
 #
