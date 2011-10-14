@@ -107,6 +107,60 @@ class fm_face:
         tobj.logcon ("texture indexes: " + str(self.texture_index[0]) + ", " + str(self.texture_index[1]) + ", " + str(self.texture_index[2]))
         tobj.logcon ("----------------------------------------")
 
+class glGLCommands_t:
+    TrisTypeNum=None
+
+    binary_format="<i" #little-endian (<), 1 int
+
+    def __init__(self):
+        self.TrisTypeNum=None
+
+    def load (self, file):
+        # file is the model file & full path, ex: C:\Heretic II\base\models\monsters\chicken2\tris.fm
+        # data[0] ex: (4) or (-7), positive int = a triangle strip, negative int = a triangle fan, 0 = end of valid GL_commands data.
+        temp_data=file.read(struct.calcsize(self.binary_format))
+        data=struct.unpack(self.binary_format, temp_data)
+        self.TrisTypeNum=data[0]
+        return self
+
+    def dump (self):
+        global tobj, logging
+        tobj.logcon ("-------------------")
+        tobj.logcon ("FM OpenGL Command Structure")
+        tobj.logcon ("TrisTypeNum: " + str(self.TrisTypeNum))
+        tobj.logcon ("-------------------")
+
+class glCommandVertex_t:
+    u=0.0
+    v=0.0
+    vertexIndex=0
+
+    binary_format="<2fi" #little-endian (<), 2 floats + 1 int
+
+    def __init__(self):
+        self.u=0.0
+        self.v=0.0
+        self.vertexIndex=0
+
+    def load (self, file):
+        # file is the model file & full path, ex: C:\Heretic II\base\models\monsters\chicken2\tris.fm
+        # data[0] and data[1] ex: (0.1397, 0.6093), are 2D skin texture coords as floats, percentage of skin size.
+        # data[2] the face vertex index the u,v belong to.
+        temp_data=file.read(struct.calcsize(self.binary_format))
+        data=struct.unpack(self.binary_format, temp_data)
+        self.u=data[0]
+        self.v=data[1]
+        self.vertexIndex=data[2]
+        return self
+
+    def dump (self):
+        global tobj, logging
+        tobj.logcon ("FM OpenGL Command Vertex")
+        tobj.logcon ("u: " + str(self.u))
+        tobj.logcon ("v: " + str(self.v))
+        tobj.logcon ("vertexIndex: " + str(self.vertexIndex))
+        tobj.logcon ("")
+
 class fm_tex_coord:
     u=0
     v=0
@@ -491,12 +545,48 @@ class fm_obj:
         if SectionName == "glcmds" and self.num_GL_commands > 0:
             if logging == 1:
                 tobj.logcon ("START OF GLCMDS at, num_GL_commands: " + str(file.tell()) + ", " + str(self.num_GL_commands))
-              #  binary_format="<f"
-              #  for i in xrange(self.num_GL_commands):
-              #      temp_data=file.read(struct.calcsize(binary_format))
-              #      data=struct.unpack(binary_format, temp_data)
-              #      print data[0]
-            file.seek(file.tell()+section_byte_size,0) # To skip over reading in "glcmds" section data, don't know how.
+            for i in xrange(0, self.num_GL_commands):
+                gl_command = glGLCommands_t()
+                gl_command.load(file)
+                if logging == 1:
+                    gl_command.dump()
+                if gl_command.TrisTypeNum is not None:
+                    if gl_command.TrisTypeNum == 0: # end of valid GL_commands data section
+                        break
+                    if gl_command.TrisTypeNum > -1: # a triangle strip
+                        for j in xrange(0, gl_command.TrisTypeNum):
+                            gl_vertex = glCommandVertex_t()
+                            gl_vertex.load(file)
+                            if logging == 1:
+                                gl_vertex.dump()
+
+                            if j == 0:
+                                vertex_info0 = (gl_vertex.vertexIndex, gl_vertex.u, gl_vertex.v)
+                            elif j == 1:
+                                vertex_info1 = (gl_vertex.vertexIndex, gl_vertex.u, gl_vertex.v)
+                            else:
+                                vertex_info2 = (gl_vertex.vertexIndex, gl_vertex.u, gl_vertex.v)
+                              #  faces[gl_command.SubObjectID] += [(vertex_info0, vertex_info1, vertex_info2)]
+                                if not j&1: # This test if a number is even.
+                                    vertex_info0 = vertex_info2
+                                else: # else it is odd.
+                                    vertex_info1 = vertex_info2
+                    else: # a triangle fan
+                        for j in xrange(0, gl_command.TrisTypeNum * -1):
+                            gl_vertex = glCommandVertex_t()
+                            gl_vertex.load(file)
+                            if logging == 1:
+                                gl_vertex.dump()
+
+                            if j == 0:
+                                vertex_info0 = (gl_vertex.vertexIndex, gl_vertex.u, gl_vertex.v)
+                            elif j == 1:
+                                vertex_info1 = (gl_vertex.vertexIndex, gl_vertex.u, gl_vertex.v)
+                            else:
+                                vertex_info2 = (gl_vertex.vertexIndex, gl_vertex.u, gl_vertex.v)
+                              #  faces[gl_command.SubObjectID] += [(vertex_info0, vertex_info1, vertex_info2)]
+                                vertex_info1 = vertex_info2
+
             if file.tell() >= filesize: # Check if end of file. If so, stop here and return.
                 return self
             #read the next section header data.
@@ -956,6 +1046,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".fm HereticII Importer", ".fm file", "*.fm
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.7  2011/10/13 19:35:29  cdunde
+# Update for logging to match exporter logging.
+#
 # Revision 1.6  2011/10/06 08:59:52  cdunde
 # Logging correction to stop header data from being over written.
 #
