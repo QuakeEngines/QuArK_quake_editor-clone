@@ -142,18 +142,46 @@ class fm_tex_coord: # See .md2 format doc "Texture coordinates". QuArK's "compon
         global tobj, logging
         tobj.logcon ("texture coordinate u, v: " + str(self.u) + ", " + str(self.v))
         tobj.logcon ("----------------------------------------")
+
+class glGLCommands_t:
+    TrisTypeNum=0
+    cmd_list=[]
+    binary_format="<i" #little-endian (<), 1 int
+    
+    def __init__(self):
+        self.TrisTypeNum=0
+        self.cmd_list=[]
+    
+    def save(self,file):
+        # file is the model file & full path, ex: C:\Heretic II\base\models\monsters\chicken2\tris.fm
+        # data[0] ex: (4) or (-7), positive int = a triangle strip, negative int = a triangle fan, 0 = end of valid GL_commands data.
+        data=struct.pack(self.binary_format, self.TrisTypeNum)
+        file.write(data)
+        for cmd in self.cmd_list:
+            cmd.save(file)
+    def dump(self):
+        global tobj, logging
+        tobj.logcon ("-------------------")
+        tobj.logcon ("FM OpenGL Command Structure")
+        tobj.logcon ("TrisTypeNum: " + str(self.TrisTypeNum))
+        tobj.logcon ("-------------------")
+        for cmd in self.cmd_list:
+            cmd.dump()
         
-class fm_GL_command: # See .md2 format doc "OpenGL Commands".
+class glCommandVertex_t:
     s=0.0
     t=0.0
     vert_index=0
-    binary_format="<2fi"
+    binary_format="<2fi" #little-endian (<), 2 floats + 1 int
     
     def __init__(self):
         self.s=0.0
         self.t=0.0
         vert_index=0
     def save(self,file):
+        # file is the model file & full path, ex: C:\Heretic II\base\models\monsters\chicken2\tris.fm
+        # temp_data[0] and temp_data[1] ex: (0.1397, 0.6093), are 2D skin texture coords as floats, percentage of skin size.
+        # temp_data[2] the face vertex index the s,t belong to.
         temp_data=[0]*3
         temp_data[0]=float(self.s)
         temp_data[1]=float(self.t)
@@ -161,32 +189,12 @@ class fm_GL_command: # See .md2 format doc "OpenGL Commands".
         data=struct.pack(self.binary_format, temp_data[0],temp_data[1],temp_data[2])
         file.write(data)
     def dump (self):
-        print "FM OpenGL Command"
-        print "s: ", self.s
-        print "t: ", self.t
-        print "Vertex Index: ", self.vert_index
-        print ""
-
-class fm_GL_cmd_list: # See .md2 format doc "Using OpenGL commands".
-    num=0
-    cmd_list=[]
-    binary_format="<i"
-    
-    def __init__(self):
-        self.num=0
-        self.cmd_list=[]
-    
-    def save(self,file):
-        data=struct.pack(self.binary_format, self.num)
-        file.write(data)
-        for cmd in self.cmd_list:
-            cmd.save(file)
-    def dump(self):
-        print "FM OpenGL Command List"
-        print "number: ", self.num
-        for cmd in self.cmd_list:
-            cmd.dump()
-        print ""
+        global tobj, logging
+        tobj.logcon ("FM OpenGL Command Vertex")
+        tobj.logcon ("s: " + str(self.s))
+        tobj.logcon ("t: " + str(self.t))
+        tobj.logcon ("vertexIndex: " + str(self.vert_index))
+        tobj.logcon ("")
 
 class fm_skin: # See .md2 format doc "Texture information".
     name=""
@@ -468,7 +476,7 @@ class fm_obj:
             file.write(data)
         binary_format="<2i"
         section_version = 1
-        section_byte_size = self.num_GL_commands * 4 # The binary_format for a fm_GL_command
+        section_byte_size = self.num_GL_commands * 4 # The binary_format for a glCommandVertex_t
         temp_data=[0]*2
         temp_data[0]=section_version
         temp_data[1]=section_byte_size
@@ -486,6 +494,8 @@ class fm_obj:
         #save the "glcmds" GL command List data, see models.c BuildGlCmds for GL_commands list creation code.
         for cmd in self.GL_commands:
             cmd.save(file)
+            if logging == 1:
+                cmd.dump()
             progressbar.progress()
 
         #write the "mesh nodes" header
@@ -949,24 +959,12 @@ def build_GL_commands(fm):
     t=0.0
     
     for face_counter in range(0,fm.num_faces):
-      #  if used[face_counter]!=0: #don't evaluate a tri that's been used
-        if used[face_counter]==100:
-            #print "found a used triangle: ", face_counter
+        if used[face_counter]!=0: #don't evaluate a tri that's been used
             pass
         else:
             best_length=0 #restart the counter
             #for each vertex index in this face
             for start_vert in range(0,3):
-                fan_length=find_fan_length(fm, face_counter, start_vert)
-                if (fan_length>best_length):
-                    best_type=1
-                    best_length=fan_length
-                    for index in range (0, best_length+2):
-                        best_st[index]=strip_st[index]
-                        best_vert[index]=strip_vert[index]
-                    for index in range(0, best_length):
-                        best_tris[index]=strip_tris[index]
-
                 strip_length=find_strip_length(fm, face_counter, start_vert)
                 if (strip_length>best_length): 
                     best_type=0
@@ -977,21 +975,31 @@ def build_GL_commands(fm):
                     for index in range(0, best_length):
                         best_tris[index]=strip_tris[index]
 
+                fan_length=find_fan_length(fm, face_counter, start_vert)
+                if (fan_length>best_length):
+                    best_type=1
+                    best_length=fan_length
+                    for index in range (0, best_length+2):
+                        best_st[index]=strip_st[index]
+                        best_vert[index]=strip_vert[index]
+                    for index in range(0, best_length):
+                        best_tris[index]=strip_tris[index]
+
             #mark the tris on the best strip/fan as used
             for used_counter in range (0, best_length):
                 used[best_tris[used_counter]]=1
 
-            temp_cmdlist=fm_GL_cmd_list()
+            temp_cmdlist=glGLCommands_t()
             #push the number of commands into the command stream
             if best_type==1:
-                temp_cmdlist.num=best_length+2
+                temp_cmdlist.TrisTypeNum=(-(best_length+2))
                 num_commands+=1
-            else:    
-                temp_cmdlist.num=(-(best_length+2))
+            else:
+                temp_cmdlist.TrisTypeNum=best_length+2
                 num_commands+=1
             for command_counter in range (0, best_length+2):
                 #emit a vertex into the reorder buffer
-                cmd=fm_GL_command()
+                cmd=glCommandVertex_t()
                 index=best_st[command_counter]
                 #calc and put S/T coords in the structure
             #    s=fm.tex_coords[index].u # tex_coords is screwed up here.
@@ -1012,8 +1020,8 @@ def build_GL_commands(fm):
             fm.GL_commands.append(temp_cmdlist)
     
     #end of list
-    temp_cmdlist=fm_GL_cmd_list()    
-    temp_cmdlist.num=0
+    temp_cmdlist=glGLCommands_t()    
+    temp_cmdlist.TrisTypeNum=0
     fm.GL_commands.append(temp_cmdlist)  
     num_commands+=1
     
@@ -1088,6 +1096,10 @@ quarkpy.qmdlbase.RegisterMdlExporter(".fm Heretic II Exporter", ".fm file", "*.f
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.5  2011/10/11 07:19:36  cdunde
+# Update to display full model in game without blowing it up.
+# build_GL_commands section and related functions still not correct, needs work.
+#
 # Revision 1.4  2011/10/02 06:18:31  cdunde
 # To match class names with importer and fix cause of blowing up the game.
 # Model does NOT show up in game but its bounding box works. Need someone to fix this.
