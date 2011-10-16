@@ -135,7 +135,8 @@ class glGLCommands_t:
 
     def load (self, file):
         # file is the model file & full path, ex: C:\Kingpin\main\models\weapons\crowbar.mdx
-        # data[0] and data[1] ex: (169, 213), are 2D skin texture coords as integers.
+        # data[0] ex: (4) or (-7), positive int = a triangle strip, negative int = a triangle fan, 0 = end of valid GL_commands data.
+        # data[1] ex: (3), positive int, the model component (section) this data applies to.
         temp_data=file.read(struct.calcsize(self.binary_format))
         data=struct.unpack(self.binary_format, temp_data)
         self.TrisTypeNum=data[0]
@@ -162,7 +163,7 @@ class glCommandVertex_t:
 
     def load (self, file):
         # file is the model file & full path, ex: C:\Kingpin\main\models\weapons\crowbar.mdx
-        # data[0] and data[1] ex: (169, 213), are 2D skin texture coords as integers.
+        # data[0] and data[1] ex: (0.1397, 0.6093), are 2D skin texture coords as floats, percentage of skin size.
         # data[3] the face vertex index the u,v belong to.
         temp_data=file.read(struct.calcsize(self.binary_format))
         data=struct.unpack(self.binary_format, temp_data)
@@ -366,13 +367,13 @@ class mdx_obj:
         self.offset_DummyEnd=data[21]
         self.offset_end=data[22]
 
-        #load the skin info
+        #load the skin data
         file.seek(self.offset_skins,0)
         for i in xrange(0, self.num_skins):
             self.skins[i].load(file)
             #self.skins[i].dump()
 
-        #load the face info
+        #load the face data
         file.seek(self.offset_faces,0)
         for i in xrange(0, self.num_faces):
             self.faces[i].load(file)
@@ -456,7 +457,7 @@ class mdx_obj:
                             faces[gl_command.SubObjectID] += [(vertex_info0, vertex_info1, vertex_info2)]
                             vertex_info1 = vertex_info2
 
-        #load the BBoxFrames info
+        #load the BBoxFrames data
         file.seek(self.offset_BBoxFrames,0)
         self.BBoxes = []
         bboxgroup = quarkx.newobj("BBoxes "+name+":bbg")
@@ -633,29 +634,62 @@ def load_textures(mdx, message):
                 tobj.logcon (mdx.skins[i].name)
             skinname = mdx.skins[i].name.split('/')
             images = []
+            # First try to find the skin in the current model's folder.
             if os.path.exists(os.getcwd() + "\\" + skinname[len(skinname)-1]):
                 images = [os.getcwd() + "\\" + skinname[len(skinname)-1]]
         if len(images) == 0:
-            #Probably skin not found; let's try the player-model variations
-            if skinname[-1].find("upper") != -1:
+            # Probably skin not found; let's try the player-model variations
+            if skinname[-1].find("skin_upper") != -1:
                 for filename in os.listdir(os.getcwd()):
                     if filename.startswith("body") and (filename.endswith(".tga") or filename.endswith(".TGA")):
                         images += [os.getcwd() + "\\" + filename]
-            elif skinname[-1].find("head") != -1:
+            elif skinname[-1].find("skin_head") != -1:
                 for filename in os.listdir(os.getcwd()):
                     if filename.startswith("head") and (filename.endswith(".tga") or filename.endswith(".TGA")):
                         images += [os.getcwd() + "\\" + filename]
-            elif skinname[-1].find("lower") != -1:
+            elif skinname[-1].find("skin_lower") != -1:
                 for filename in os.listdir(os.getcwd()):
                     if filename.startswith("legs") and (filename.endswith(".tga") or filename.endswith(".TGA")):
                         images += [os.getcwd() + "\\" + filename]
+
+        if len(images) == 0: # Skin maybe in another folder, try to find it.
+            dir = os.getcwd()
+            skinname = mdx.skins[0].name
+            if dir.find("\\main") != -1:
+                dir = dir.split("main")[0]
+                if skinname.startswith("/") or skinname.startswith("\\"):
+                    fullpath = dir + "main" + skinname
+                else:
+                    fullpath = dir + "main/" + skinname
+                # let's try the player-model variations first
+                if skinname.find("skin_upper") != -1:
+                    path = fullpath.rsplit("/", 1)[0]
+                    for filename in os.listdir(path):
+                        if filename.startswith("body") and (filename.endswith(".tga") or filename.endswith(".TGA")):
+                            images += [path + "\\" + filename]
+                elif skinname.find("skin_head") != -1:
+                    path = fullpath.rsplit("/", 1)[0]
+                    for filename in os.listdir(path):
+                        if filename.startswith("head") and (filename.endswith(".tga") or filename.endswith(".TGA")):
+                            images += [path + "\\" + filename]
+                elif skinname.find("skin_lower") != -1:
+                    path = fullpath.rsplit("/", 1)[0]
+                    for filename in os.listdir(path):
+                        if filename.startswith("legs") and (filename.endswith(".tga") or filename.endswith(".TGA")):
+                            images += [path + "\\" + filename]
+                else:
+                    images += [fullpath]
 
         if len(images) == 0:
             for i in xrange(0,mdx.num_skins):
                 message = message + "Missing skin name: " + mdx.skins[i].name + "\r\n"
 
         for j in range(len(images)):
-            image = quarkx.openfileobj(images[j])
+            try:
+                image = quarkx.openfileobj(images[j])
+            except:
+                message = message + "Missing skin name: " + mdx.skins[i].name + "\r\n"
+                continue
             if len(images) > 1:
                 skinname_temp = mdx.skins[i].name.rsplit(".",1)
                 skinname_temp = skinname_temp[0] + "_" + str(j+1) + "." + skinname_temp[1]
@@ -857,6 +891,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".mdx Kingpin Importer", ".mdx file", "*.md
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.7  2011/09/29 22:35:39  cdunde
+# Removed folder restriction call because not all model folders are in the models folder.
+#
 # Revision 1.6  2011/05/25 20:55:03  cdunde
 # Revamped Bounding Box system for more flexibility with model formats that do not have bones, only single or multi components.
 #
