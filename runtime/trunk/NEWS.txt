@@ -14,11 +14,10 @@ $Id$
 
 6.6.0 Beta 5
 ============
-* [DanielPharos]: Switched back to Python 2.4.4 for Windows 95/NT4 compatibility.
+* [cdunde]: Added export support for Kingpin static and animation models .mdx file type.
+          - Updated importer for better skin texture file locating and loading.
 
 * [cdunde/DanielPharos]: Added export support for Heretic II static and animation models .fm file type.
-
-* [DanielPharos]: Updated to Python 2.6.6.
 
 * [DanielPharos]: Added a new OpenGL lighting quality setting.
 
