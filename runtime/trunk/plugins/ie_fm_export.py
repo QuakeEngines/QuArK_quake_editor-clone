@@ -959,7 +959,7 @@ def build_GL_commands(fm):
     t=0.0
     
     for face_counter in range(0,fm.num_faces):
-        if used[face_counter]!=0: #don't evaluate a tri that's been used
+        if used[face_counter]==1: #don't evaluate a tri that's been used
             pass
         else:
             best_length=0 #restart the counter
@@ -1096,6 +1096,9 @@ quarkpy.qmdlbase.RegisterMdlExporter(".fm Heretic II Exporter", ".fm file", "*.f
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.6  2011/10/14 05:27:10  cdunde
+# Final, fixed the GLcommands properly.
+#
 # Revision 1.5  2011/10/11 07:19:36  cdunde
 # Update to display full model in game without blowing it up.
 # build_GL_commands section and related functions still not correct, needs work.
