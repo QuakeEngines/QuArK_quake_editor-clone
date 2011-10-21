@@ -843,6 +843,8 @@ def loadmodel(root, filename, gamename, nomessage=0):
         undo.put(editor.Root.dictitems['Misc:mg'], bboxgroup)
         for Component in ComponentList:
             undo.put(editor.Root, Component)
+            # This needs to be done for each component or bones will not work if used in the editor.
+            quarkpy.mdlutils.make_tristodraw_dict(editor, Component)
             editor.Root.currentcomponent = Component
         compframes = editor.Root.currentcomponent.findallsubitems("", ':mf') # get all frames
         for compframe in compframes:
@@ -850,8 +852,6 @@ def loadmodel(root, filename, gamename, nomessage=0):
 
         ie_utils.default_end_logging(filename, "IM", starttime) ### Use "EX" for exporter text, "IM" for importer text.
 
-        # This needs to be done for each component or bones will not work if used in the editor.
-        quarkpy.mdlutils.make_tristodraw_dict(editor, Component)
         if len(ComponentList) == 1:
             editor.ok(undo, Component.shortname + " created")
         else:
@@ -891,6 +891,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".mdx Kingpin Importer", ".mdx file", "*.md
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.8  2011/10/16 20:57:27  cdunde
+# Updated importer for better skin texture file locating and loading.
+#
 # Revision 1.7  2011/09/29 22:35:39  cdunde
 # Removed folder restriction call because not all model folders are in the models folder.
 #
