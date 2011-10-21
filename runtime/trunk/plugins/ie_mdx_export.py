@@ -112,7 +112,7 @@ class mdx_alias_triangle: # See .md2 format doc "Vertices". A QuArK's "frame" ['
         global tobj, logging
         tobj.logcon ("vertex 0,1,2, lightnormalindex: " + str(self.vertices[0]) + ", " + str(self.vertices[1]) + ", " + str(self.vertices[2]) + ", " + str(self.lightnormalindex))
         tobj.logcon ("----------------------------------------")
-        
+
 class mdx_face: # See .md2 format doc "Triangles". QuArK's "component.triangles".
     vertex_index=[]
     texture_index=[]
@@ -136,7 +136,7 @@ class mdx_face: # See .md2 format doc "Triangles". QuArK's "component.triangles"
         tobj.logcon ("vertex indexes: " + str(self.vertex_index[0]) + ", " + str(self.vertex_index[1]) + ", " + str(self.vertex_index[2]))
         tobj.logcon ("texture indexes: " + str(self.texture_index[0]) + ", " + str(self.texture_index[1]) + ", " + str(self.texture_index[2]))
         tobj.logcon ("----------------------------------------")
-        
+
 class mdx_tex_coord: # See .md2 format doc "Texture coordinates". QuArK's "component.triangles".
     u=0
     v=0
@@ -158,12 +158,12 @@ class glGLCommands_t:
     SubObjectID=0
     cmd_list=[]
     binary_format="<2i" #little-endian (<), 2 ints
-    
+
     def __init__(self):
         self.TrisTypeNum=0
         self.SubObjectID=0
         self.cmd_list=[]
-    
+
     def save(self,file):
         # file is the model file & full path, ex: C:\Kingpin\main\models\weapons\crowbar.mdx
         # data[0] ex: (4) or (-7), positive int = a triangle strip, negative int = a triangle fan, 0 = end of valid GL_commands data.
@@ -172,6 +172,7 @@ class glGLCommands_t:
         file.write(data)
         for cmd in self.cmd_list:
             cmd.save(file)
+            progressbar.progress()
     def dump(self):
         global tobj, logging
         tobj.logcon ("-------------------")
@@ -181,13 +182,13 @@ class glGLCommands_t:
         tobj.logcon ("-------------------")
         for cmd in self.cmd_list:
             cmd.dump()
-        
+
 class glCommandVertex_t:
     s=0.0
     t=0.0
     vert_index=0
     binary_format="<2fi" #little-endian (<), 2 floats + 1 int
-    
+
     def __init__(self):
         self.s=0.0
         self.t=0.0
@@ -202,6 +203,7 @@ class glCommandVertex_t:
         temp_data[2]=self.vert_index
         data=struct.pack(self.binary_format, temp_data[0],temp_data[1],temp_data[2])
         file.write(data)
+        progressbar.progress()
     def dump (self):
         global tobj, logging
         tobj.logcon ("MDX OpenGL Command Vertex")
@@ -209,7 +211,7 @@ class glCommandVertex_t:
         tobj.logcon ("t: " + str(self.t))
         tobj.logcon ("vertexIndex: " + str(self.vert_index))
         tobj.logcon ("")
-        
+
 class VertexInfo_t:
     # See http://web.archive.org/web/20020404103848/http://members.cheapnet.co.uk/~tical/misc/mdx.htm#VERTEXINFO
     # There is the vertex_info_list, which is made up of a series of numVertices int's,
@@ -227,6 +229,7 @@ class VertexInfo_t:
     def save(self, file):
         data=struct.pack(self.binary_format, self.sub_obj_index)
         file.write(data)
+        progressbar.progress()
     def dump (self):
         global tobj, logging
         tobj.logcon ("VertexInfo sub_obj_index: " + str(self.sub_obj_index))
@@ -252,6 +255,7 @@ class BBox_t:
         temp_data[5]=self.max[2]
         data=struct.pack(self.binary_format, temp_data[0],temp_data[1],temp_data[2],temp_data[3],temp_data[4],temp_data[5])
         file.write(data)
+        progressbar.progress()
     def dump (self):
         global tobj, logging
         tobj.logcon ("MDX BBox Frames Structure")
@@ -274,7 +278,7 @@ class mdx_skin: # See .md2 format doc "Texture information".
         print "MDX Skin"
         print "skin name: ",self.name
         print ""
-        
+
 class mdx_alias_frame: # See .md2 format doc "Vector", "Vertices" and "Frames". QuArK's "component.dictitems['Frames']".
     scale=[]
     translate=[]
@@ -308,8 +312,6 @@ class mdx_alias_frame: # See .md2 format doc "Vector", "Vertices" and "Frames". 
                 temp_data[0]=name[i]
             data = struct.pack(binary_format, temp_data[0])
             file.write(data)
-
-        progressbar.progress()
 
     def dump (self):
         global tobj, logging
@@ -408,7 +410,6 @@ class mdx_obj:
             tobj.logcon ("#####################################################################")
         for skin in self.skins:
             skin.save(file)
-            progressbar.progress()
 
         #process the "st coord" (texture coordinates) data
         if logging == 1:
@@ -491,7 +492,7 @@ class mdx_obj:
             tobj.logcon ("#####################################################################")
             tobj.logcon ("SectionName: BBoxFrames")
             tobj.logcon ("#####################################################################")
-        for i in xrange(0, self.num_frames):
+        for i in xrange(0, len(self.bbox_frames)):
             self.bbox_frames[i].save(file)
             if logging == 1:
                 self.bbox_frames[i].dump()
@@ -561,170 +562,185 @@ class mdx_obj:
 ######################################################
 def fill_mdx(mdx, component):
     global user_frame_list, user_skins_list, progressbar, tobj, Strings
-
-    # Get the component Mesh.
-    mesh = component.triangles
-    Strings[2455] = component.shortname + "\n" + Strings[2455]
-    progressbar = quarkx.progressbar(2455, len(mesh)*6)
     
-    #load up some intermediate data structures
-    tex_list={}
-    tex_count=0
-    user_frame_list = component.dictitems['Frames:fg']
+    mdx.num_SubObjects=len(component)
 
     # Header information data.
     mdx.ident = 1481655369   # Must be this number.
     mdx.version = 4          # Must be this number.
 
-    mdx.num_vertices = len(user_frame_list.dictitems[user_frame_list.subitems[0].name].dictspec['Vertices'])/3 # Number of vertices per frame.
-    mdx.num_faces = len(component.triangles) # Number of triangles.
-
     # Get the skin information.
-    user_skins_list = component.dictitems['Skins:sg']
+    user_skins_list = component[0].dictitems['Skins:sg']
     try:
-        size = component.dictspec['skinsize']
+        size = component[0].dictspec['skinsize']
         mdx.skin_width = size[0]
         mdx.skin_height = size[1]
-        # Use line below as option, embeds skin names into model, none if left out.
-        mdx.num_skins = len(user_skins_list.subitems) # Number of skins.
     except:
-        if len(user_skins_list.subitems) == 0:
-            mdx.num_skins = 0 # If no skins exist.
-        else:
-            # Use line below as option, embeds skin names into model, none if left out.
-            mdx.num_skins = len(user_skins_list.subitems) # Number of skins.
-            size = user_skins_list.subitems[0].dictspec['Size']
-            mdx.skin_width = size[0]
-            mdx.skin_height = size[1]
-    for skin_counter in range(0, mdx.num_skins):
-        #add a skin node to the mdx data structure
-        mdx.skins.append(mdx_skin())
-        mdx.skins[skin_counter].name = user_skins_list.subitems[skin_counter].name
+        size = user_skins_list.subitems[0].dictspec['Size']
+        mdx.skin_width = size[0]
+        mdx.skin_height = size[1]
+    mdx.num_skins = 1
+    #add a skin node to the mdx data structure
+    mdx.skins.append(mdx_skin())
+    name = user_skins_list.subitems[0].name
+    if name.find("skin_head") != -1 or name.find("skin_upper") != -1 or name.find("skin_lower") != -1:
+        name = name.rsplit("_", 1)[0] + ".tga"
+    mdx.skins[0].name = name
 
-    # Put texture information in the mdx structure.
-    # Build UV coords dictionary (prevents double entries-saves space).
-    for face in range(0, len(mesh)):
-        for i in range(0, len(mesh[face])):
-            # A list of sub-lists of the u, v coords. Each vert has its own UV coords.
-            mdx.tex_coords.append(mdx_tex_coord())
-        progressbar.progress()
-    for face in range(0, len(mesh)):
-        mdx.faces.append(mdx_face())
+    mdx.num_frames = len(component[0].dictitems['Frames:fg'].dictitems) # Number of frames in the Frames group, 'Frames:fg'.
 
-        for i in range(0, len(mesh[face])):
-            t=(mesh[face][i][1], mesh[face][i][2])
-            tex_key=(t[0],t[1])
-            mdx.tex_coords[(face*3)+i].u = mesh[face][i][1] # tex_coords is screwed up here.
-            mdx.tex_coords[(face*3)+i].v = mesh[face][i][2] # tex_coords is screwed up here.
-            mdx.faces[face].vertex_index[i] = mesh[face][i][0]
-            if logging == 1:
-                mdx.facelist = mdx.facelist + [(mesh[face][i][0], mesh[face][i][1], mesh[face][i][2])]
-            if not tex_list.has_key(tex_key):
-                tex_list[tex_key] = tex_count
-                mdx.st_coord[tex_count] = tex_key
-                tex_count+=1
-            mdx.faces[face].texture_index[i] = tex_list[tex_key]
-        progressbar.progress()
+    #load up some intermediate data structures
+    tex_list={}
+    tex_count=0
+    face_count=0
+    vertices_count=0
+
+    # Setup our progressbar
+    for i in xrange(0, mdx.num_SubObjects):
+        mdx.num_faces = mdx.num_faces + len(component[i].triangles) # Number of triangles.
+        mdx.num_vertices = mdx.num_vertices + len(component[i].dictitems['Frames:fg'].subitems[0].dictspec['Vertices'])/3
+    progressbar = quarkx.progressbar(2455, (mdx.num_faces+mdx.num_vertices)*6)
+
+    for i in xrange(0, mdx.num_SubObjects):
+
+        # Get the current (i) component Mesh.
+        mesh = component[i].triangles
+        user_frame_list = component[i].dictitems['Frames:fg']
+
+        comp_num_of_vertices = len(user_frame_list.dictitems[user_frame_list.subitems[0].name].dictspec['Vertices'])/3 # Number of vertices per frame.
+        comp_num_of_faces = len(mesh)
+
+        #build the VertexInfo list
+        for j in xrange(0, comp_num_of_vertices):
+            #add a VertexInfo_t
+            mdx.vertex_info_list.append(VertexInfo_t())
+            mdx.vertex_info_list[j].sub_obj_index=i # Identifies which vertexes belong to which component (SubObject).
+            progressbar.progress()
+
+        # Put texture information in the mdx structure.
+        # Build UV coords dictionary (prevents double entries-saves space).
+        for face in range(0, len(mesh)):
+            mdx.faces.append(mdx_face())
+            for j in range(0, len(mesh[face])):
+                # A list of sub-lists of the u, v coords. Each vert has its own UV coords.
+                mdx.tex_coords.append(mdx_tex_coord())
+                t=(mesh[face][j][1], mesh[face][j][2])
+                tex_key=(t[0],t[1])
+                mdx.faces[face+face_count].vertex_index[j] = mesh[face][j][0] + vertices_count
+                mdx.tex_coords[(face*3)+j].u = mesh[face][j][1] # tex_coords is screwed up here.
+                mdx.tex_coords[(face*3)+j].v = mesh[face][j][2] # tex_coords is screwed up here.
+                if logging == 1:
+                    mdx.facelist = mdx.facelist + [(mesh[face][j][0] + vertices_count, mesh[face][j][1], mesh[face][j][2])]
+                if not tex_list.has_key(tex_key):
+                    tex_list[tex_key] = tex_count
+                    mdx.st_coord[tex_count] = tex_key
+                    tex_count+=1
+                mdx.faces[face+face_count].texture_index[j] = tex_list[tex_key]
+            progressbar.progress()
+
+        #get the frame list
+        user_frame_list = component[i].dictitems['Frames:fg']
+
+        #fill in each frame with frame info and all the vertex data for that frame
+        #fill in each bbox_frame with the min and max data for that bbox_frame
+        for frame in range(0, mdx.num_frames):
+            if i == 0:
+                #add a frame
+                mdx.frames.append(mdx_alias_frame())
+            #add a bbox_frame
+            mdx.bbox_frames.append(BBox_t())
+            
+            # Each frame has a scale and transform value that gets the vertex value between 0-255.
+            # Since the scale and transform are the same for all the verts in the frame,
+            # we only need to figure this out once per frame
+
+            #we need to start with the bounding box
+            vertices = []
+            framename = component[0].dictitems['Frames:fg'].subitems[frame].name
+            frameVertices = user_frame_list.dictitems[framename].dictspec['Vertices']
+            for vert_counter in range(0, comp_num_of_vertices):
+                x= frameVertices[(vert_counter*3)]
+                y= frameVertices[(vert_counter*3)+1]
+                z= frameVertices[(vert_counter*3)+2]
+                vertices = vertices + [quarkx.vect(x, y, z)]
+            bounding_box = quarkx.boundingboxof(vertices) # Uses the component's frame.vertices
+
+            #fill in the bbox_frame data WE REALLY NEED THE MAX AND MIN OF THE ABOVE x,y,z VALUES FOR A PROPPER BBOX SHAPE.
+            mdx.bbox_frames[frame+i].min = bounding_box[0].tuple
+            mdx.bbox_frames[frame+i].max = bounding_box[1].tuple
+
+            #the scale is the difference between the min and max OF ALL SubObjects COMBINED (on that axis) / 255
+            #we need to start with the bounding box OF ALL SubObjects COMBINED
+            vertices = []
+            for j in xrange(0, mdx.num_SubObjects):
+                CompVertices = component[j].dictitems['Frames:fg'].dictitems[framename].dictspec['Vertices']
+                for vert_counter in range(0, len(CompVertices)/3):
+                    x= CompVertices[(vert_counter*3)]
+                    y= CompVertices[(vert_counter*3)+1]
+                    z= CompVertices[(vert_counter*3)+2]
+                    vertices = vertices + [quarkx.vect(x, y, z)]
+            bounding_box = quarkx.boundingboxof(vertices) # Uses the COMBINED component's frame.vertices
+
+            frame_scale_x=(bounding_box[1].x-bounding_box[0].x)/255
+            frame_scale_y=(bounding_box[1].y-bounding_box[0].y)/255
+            frame_scale_z=(bounding_box[1].z-bounding_box[0].z)/255
+            scale = (frame_scale_x, frame_scale_y, frame_scale_z)
+
+            #translate value of the mesh to center it on the origin
+            frame_trans_x=bounding_box[0].x
+            frame_trans_y=bounding_box[0].y
+            frame_trans_z=bounding_box[0].z
+            translate = (frame_trans_x, frame_trans_y, frame_trans_z)
+
+            #fill in the data
+            if i == 0:
+                mdx.frames[frame].scale = scale
+                mdx.frames[frame].translate = translate
+
+            # Now for the frame vertices.
+            for vert_counter in range(0, comp_num_of_vertices):
+                # Add a vertex to the mdx structure.
+                mdx.frames[frame].vertices.append(mdx_alias_triangle())
+
+                #figure out the new coords based on scale and transform
+                #then translates the point so it's not less than 0
+                #then scale it so it's between 0..255
+                new_x=round(float((frameVertices[(vert_counter*3)]-translate[0])/scale[0]), 0)
+                new_y=round(float((frameVertices[(vert_counter*3)+1]-translate[1])/scale[1]), 0)
+                new_z=round(float((frameVertices[(vert_counter*3)+2]-translate[2])/scale[2]), 0)
+                new_x=int(new_x)
+                new_y=int(new_y)
+                new_z=int(new_z)
+                # Put them in the structure.
+                mdx.frames[frame].vertices[vert_counter+vertices_count].vertices = (new_x, new_y, new_z)
+
+                # We need to add the lookup table check here.
+                mdx.frames[frame].vertices[vert_counter+vertices_count].lightnormalindex = 0
+
+            # Output all the frame names in the user_frame_list.
+            mdx.frames[frame].name = framename.split(":")[0]
+
+        vertices_count = vertices_count + comp_num_of_vertices
+        face_count = face_count + comp_num_of_faces
 
     mdx.num_tex_coords = len(tex_list) # Number of non-duplicated UV coords in Skin-view.
 
     #compute GL commands
-    mdx.num_GL_commands=build_GL_commands(mdx)
-
-    #build the vert info list
-    for i in range(0, mdx.num_vertices):
-        #add a VertexInfo_t
-        mdx.vertex_info_list.append(VertexInfo_t())
-        mdx.vertex_info_list[i].sub_obj_index=1 # NEED TO ADD TO THIS THE COMP NBR FOR EACH COMP BY ITS num_vertices
+    mdx.num_GL_commands=build_GL_commands(mdx, component)
 
     #get the frame data
     #calculate 1 frame size  + (1 vert size*num_verts)
-    mdx.frame_size=40+(mdx.num_vertices*4) #in bytes
-    
-    #get the frame list
-    user_frame_list = component.dictitems['Frames:fg']
-    if user_frame_list=="default":
-        mdx.num_frames=198
-    else:
-        mdx.num_frames = len(user_frame_list.dictitems) # Number of frames in the Frames group, 'Frames:fg'.
-
-    #fill in each frame with frame info and all the vertex data for that frame
-    #fill in each bbox_frame with the min and max data for that bbox_frame
-    for frame in range(0,mdx.num_frames):
-        #add a frame
-        mdx.frames.append(mdx_alias_frame())
-        #add a bbox_frame
-        mdx.bbox_frames.append(BBox_t())
-        
-# Each frame has a scale and transform value that gets the vertex value between 0-255.
-# Since the scale and transform are the same for all the verts in the frame,
-# we only need to figure this out once per frame
-
-        #we need to start with the bounding box
-        vertices = []
-        framename = user_frame_list.subitems[frame].name
-        frameVertices = user_frame_list.dictitems[framename].dictspec['Vertices']
-        for vert_counter in range(0, mdx.num_vertices):
-            x= frameVertices[(vert_counter*3)]
-            y= frameVertices[(vert_counter*3)+1]
-            z= frameVertices[(vert_counter*3)+2]
-            vertices = vertices + [quarkx.vect(x, y, z)]
-        bounding_box = quarkx.boundingboxof(vertices) # Uses the component's frame.vertices
-
-        #fill in the bbox_frame data WE REALLY NEED THE MAX AND MIN OF THE ABOVE x,y,z VALUES FOR A PROPPER BBOX SHAPE.
-        mdx.bbox_frames[frame].min = bounding_box[0].tuple
-        mdx.bbox_frames[frame].max = bounding_box[1].tuple
-
-        #the scale is the difference between the min and max (on that axis) / 255
-        frame_scale_x=(bounding_box[1].x-bounding_box[0].x)/255
-        frame_scale_y=(bounding_box[1].y-bounding_box[0].y)/255
-        frame_scale_z=(bounding_box[1].z-bounding_box[0].z)/255
-        scale = (frame_scale_x, frame_scale_y, frame_scale_z)
-        
-        #translate value of the mesh to center it on the origin
-        frame_trans_x=bounding_box[0].x
-        frame_trans_y=bounding_box[0].y
-        frame_trans_z=bounding_box[0].z
-        translate = (frame_trans_x, frame_trans_y, frame_trans_z)
-
-        #fill in the data
-        mdx.frames[frame].scale = scale
-        mdx.frames[frame].translate = translate
-        
-        # Now for the frame vertices.
-        for vert_counter in range(0, mdx.num_vertices):
-            # Add a vertex to the mdx structure.
-            mdx.frames[frame].vertices.append(mdx_alias_triangle())
-
-            #figure out the new coords based on scale and transform
-            #then translates the point so it's not less than 0
-            #then scale it so it's between 0..255
-            new_x=round(float((frameVertices[(vert_counter*3)]-translate[0])/scale[0]), 0)
-            new_y=round(float((frameVertices[(vert_counter*3)+1]-translate[1])/scale[1]), 0)
-            new_z=round(float((frameVertices[(vert_counter*3)+2]-translate[2])/scale[2]), 0)
-            new_x=int(new_x)
-            new_y=int(new_y)
-            new_z=int(new_z)
-            # Put them in the structure.
-            mdx.frames[frame].vertices[vert_counter].vertices = (new_x, new_y, new_z)
-
-            # We need to add the lookup table check here.
-            mdx.frames[frame].vertices[vert_counter].lightnormalindex = 0
-            
-    # Output all the frame names in the user_frame_list.
-        mdx.frames[frame].name = framename.split(":")[0]
-        progressbar.progress()
+    mdx.frame_size=40+(4*mdx.num_vertices) #in bytes
 
     # Compute these after everthing is loaded into a mdx structure.
     header_size = 23 * 4 # 23 integers, each integer is 4 bytes.
     skin_size = 64 * mdx.num_skins # 64 char per skin * number of skins.
     face_size = 12 * mdx.num_faces # 3 shorts for vertex index, 3 shorts for tex index.
     vertex_info_size = 4 * mdx.num_vertices # 1 int, gives component (SubObject) number a vertex belongs to.
-    frames_size = (((12+12+16) + (4 * mdx.num_vertices)) * mdx.num_frames) # Frame info + verts per frame * num frames.
+    frames_size = ((12+12+16) + (4 * mdx.num_vertices)) * mdx.num_frames # (Frame info + num_vertices per frame) * num_frames.
     GL_command_size = mdx.num_GL_commands * 4 # Each is an integer or float, so 4 bytes per.
-    bbox_frames_size = (6 * 4) * mdx.num_frames # 6 floats per BBox * num frames.
+    bbox_frames_size = (6 * 4) * mdx.num_frames * mdx.num_SubObjects # 6 floats per BBox * num_frames * num_SubObjects.
 
-    mdx.num_SubObjects=1
     mdx.offset_skins=header_size
     mdx.offset_faces=mdx.offset_skins + skin_size
     mdx.offset_frames=mdx.offset_faces + face_size
@@ -739,7 +755,7 @@ def fill_mdx(mdx, component):
 ######################################################
 # Tri-Strip/Tri-Fan functions
 ######################################################
-def find_strip_length(mdx, start_tri, start_vert):
+def find_strip_length(mdx, start_tri, start_vert, num_faces, face_count):
     #variables shared between fan and strip functions
     global used
     global strip_vert
@@ -749,67 +765,67 @@ def find_strip_length(mdx, start_tri, start_vert):
 
     m1=m2=0
     st1=st2=0
-    
+
     used[start_tri]=2
 
     last=start_tri
 
-    strip_vert[0]=mdx.faces[last].vertex_index[start_vert%3]
-    strip_vert[1]=mdx.faces[last].vertex_index[(start_vert+1)%3]
-    strip_vert[2]=mdx.faces[last].vertex_index[(start_vert+2)%3]
+    strip_vert[0]=mdx.faces[last+face_count].vertex_index[start_vert%3]
+    strip_vert[1]=mdx.faces[last+face_count].vertex_index[(start_vert+1)%3]
+    strip_vert[2]=mdx.faces[last+face_count].vertex_index[(start_vert+2)%3]
 
-    strip_st[0]=mdx.faces[last].texture_index[start_vert%3]
-    strip_st[1]=mdx.faces[last].texture_index[(start_vert+1)%3]
-    strip_st[2]=mdx.faces[last].texture_index[(start_vert+2)%3]
+    strip_st[0]=mdx.faces[last+face_count].texture_index[start_vert%3]
+    strip_st[1]=mdx.faces[last+face_count].texture_index[(start_vert+1)%3]
+    strip_st[2]=mdx.faces[last+face_count].texture_index[(start_vert+2)%3]
 
     strip_tris[0]=start_tri
     strip_count=1
 
-    m1=mdx.faces[last].vertex_index[(start_vert+2)%3]
-    st1=mdx.faces[last].texture_index[(start_vert+2)%3]
-    m2=mdx.faces[last].vertex_index[(start_vert+1)%3]
-    st2=mdx.faces[last].texture_index[(start_vert+1)%3]
-    
+    m1=mdx.faces[last+face_count].vertex_index[(start_vert+2)%3]
+    st1=mdx.faces[last+face_count].texture_index[(start_vert+2)%3]
+    m2=mdx.faces[last+face_count].vertex_index[(start_vert+1)%3]
+    st2=mdx.faces[last+face_count].texture_index[(start_vert+1)%3]
+
     #look for matching triangle
     check=start_tri+1
-    
-    for tri_counter in range(start_tri+1, mdx.num_faces):
-        
+
+    for tri_counter in range(start_tri+1, num_faces):
+
         for k in range(0,3):
-            if mdx.faces[check].vertex_index[k]!=m1:
+            if mdx.faces[check+face_count].vertex_index[k]!=m1:
                 continue
-            if mdx.faces[check].texture_index[k]!=st1:
+            if mdx.faces[check+face_count].texture_index[k]!=st1:
                 continue
-            if mdx.faces[check].vertex_index[(k+1)%3]!=m2:
+            if mdx.faces[check+face_count].vertex_index[(k+1)%3]!=m2:
                 continue
-            if mdx.faces[check].texture_index[(k+1)%3]!=st2:
+            if mdx.faces[check+face_count].texture_index[(k+1)%3]!=st2:
                 continue
-            
+
             #if we can't use this triangle, this tri_strip is done
             if (used[tri_counter]!=0):
-                for clear_counter in range(start_tri+1, mdx.num_faces):
+                for clear_counter in range(start_tri+1, num_faces):
                     if used[clear_counter]==2:
                         used[clear_counter]=0
                 return strip_count
 
             #new edge
             if (strip_count & 1):
-                m2=mdx.faces[check].vertex_index[(k+2)%3]
-                st2=mdx.faces[check].texture_index[(k+2)%3]
+                m2=mdx.faces[check+face_count].vertex_index[(k+2)%3]
+                st2=mdx.faces[check+face_count].texture_index[(k+2)%3]
             else:
-                m1=mdx.faces[check].vertex_index[(k+2)%3]
-                st1=mdx.faces[check].texture_index[(k+2)%3]
+                m1=mdx.faces[check+face_count].vertex_index[(k+2)%3]
+                st1=mdx.faces[check+face_count].texture_index[(k+2)%3]
 
-            strip_vert[strip_count+2]=mdx.faces[tri_counter].vertex_index[(k+2)%3]
-            strip_st[strip_count+2]=mdx.faces[tri_counter].texture_index[(k+2)%3]
+            strip_vert[strip_count+2]=mdx.faces[tri_counter+face_count].vertex_index[(k+2)%3]
+            strip_st[strip_count+2]=mdx.faces[tri_counter+face_count].texture_index[(k+2)%3]
             strip_tris[strip_count]=tri_counter
             strip_count+=1
-    
+
             used[tri_counter]=2
         check+=1
     return strip_count
 
-def find_fan_length(mdx, start_tri, start_vert):
+def find_fan_length(mdx, start_tri, start_vert, num_faces, face_count):
     #variables shared between fan and strip functions
     global used
     global strip_vert
@@ -819,56 +835,56 @@ def find_fan_length(mdx, start_tri, start_vert):
 
     m1=m2=0
     st1=st2=0
-    
+
     used[start_tri]=2
 
     last=start_tri
 
-    strip_vert[0]=mdx.faces[last].vertex_index[start_vert%3]
-    strip_vert[1]=mdx.faces[last].vertex_index[(start_vert+1)%3]
-    strip_vert[2]=mdx.faces[last].vertex_index[(start_vert+2)%3]
-    
-    strip_st[0]=mdx.faces[last].texture_index[start_vert%3]
-    strip_st[1]=mdx.faces[last].texture_index[(start_vert+1)%3]
-    strip_st[2]=mdx.faces[last].texture_index[(start_vert+2)%3]
+    strip_vert[0]=mdx.faces[last+face_count].vertex_index[start_vert%3]
+    strip_vert[1]=mdx.faces[last+face_count].vertex_index[(start_vert+1)%3]
+    strip_vert[2]=mdx.faces[last+face_count].vertex_index[(start_vert+2)%3]
+
+    strip_st[0]=mdx.faces[last+face_count].texture_index[start_vert%3]
+    strip_st[1]=mdx.faces[last+face_count].texture_index[(start_vert+1)%3]
+    strip_st[2]=mdx.faces[last+face_count].texture_index[(start_vert+2)%3]
 
     strip_tris[0]=start_tri
     strip_count=1
 
-    m1=mdx.faces[last].vertex_index[(start_vert+0)%3]
-    st1=mdx.faces[last].texture_index[(start_vert+0)%3]
-    m2=mdx.faces[last].vertex_index[(start_vert+2)%3]
-    st2=mdx.faces[last].texture_index[(start_vert+2)%3]
+    m1=mdx.faces[last+face_count].vertex_index[(start_vert+0)%3]
+    st1=mdx.faces[last+face_count].texture_index[(start_vert+0)%3]
+    m2=mdx.faces[last+face_count].vertex_index[(start_vert+2)%3]
+    st2=mdx.faces[last+face_count].texture_index[(start_vert+2)%3]
 
     #look for matching triangle    
     check=start_tri+1
-    for tri_counter in range(start_tri+1, mdx.num_faces):
+    for tri_counter in range(start_tri+1, num_faces):
         for k in range(0,3):
-            if mdx.faces[check].vertex_index[k]!=m1:
+            if mdx.faces[check+face_count].vertex_index[k]!=m1:
                 continue
-            if mdx.faces[check].texture_index[k]!=st1:
+            if mdx.faces[check+face_count].texture_index[k]!=st1:
                 continue
-            if mdx.faces[check].vertex_index[(k+1)%3]!=m2:
+            if mdx.faces[check+face_count].vertex_index[(k+1)%3]!=m2:
                 continue
-            if mdx.faces[check].texture_index[(k+1)%3]!=st2:
+            if mdx.faces[check+face_count].texture_index[(k+1)%3]!=st2:
                 continue
-            
+
             #if we can't use this triangle, this tri_strip is done
             if (used[tri_counter]!=0):
-                for clear_counter in range(start_tri+1, mdx.num_faces):
+                for clear_counter in range(start_tri+1, num_faces):
                     if used[clear_counter]==2:
                         used[clear_counter]=0
                 return strip_count
 
             #new edge
-            m2=mdx.faces[check].vertex_index[(k+2)%3]
-            st2=mdx.faces[check].texture_index[(k+2)%3]
-            
+            m2=mdx.faces[check+face_count].vertex_index[(k+2)%3]
+            st2=mdx.faces[check+face_count].texture_index[(k+2)%3]
+
             strip_vert[strip_count+2]=m2
             strip_st[strip_count+2]=st2
             strip_tris[strip_count]=tri_counter
             strip_count+=1
-    
+
             used[tri_counter]=2
         check+=1
     return strip_count
@@ -886,100 +902,105 @@ strip_count=0
 ######################################################
 # Build GL command List
 ######################################################
-def build_GL_commands(mdx):
-    #variables shared between fan and strip functions
-    global used
-    used=[0]*mdx.num_faces
-    global strip_vert
-    strip_vert=[0]*128
-    global strip_st
-    strip_st=[0]*128
-    global strip_tris
-    strip_tris=[0]*128
-    global strip_count
-    strip_count=0
-    
+def build_GL_commands(mdx, component):
     #variables
     num_commands=0
-    start_vert=0
-    fan_length=strip_length=0
-    length=best_length=0
-    best_type=0
-    best_vert=[0]*1024
-    best_st=[0]*1024
-    best_tris=[0]*1024
-    s=0.0
-    t=0.0
-    
-    for face_counter in range(0,mdx.num_faces):
-        if used[face_counter]!=0: #don't evaluate a tri that's been used
-            pass
-        else:
-            best_length=0 #restart the counter
-            #for each vertex index in this face
-            for start_vert in range(0,3):
-                strip_length=find_strip_length(mdx, face_counter, start_vert)
-                if (strip_length>best_length): 
-                    best_type=0
-                    best_length=strip_length
-                    for index in range (0, best_length+2):
-                        best_st[index]=strip_st[index]
-                        best_vert[index]=strip_vert[index]
-                    for index in range(0, best_length):
-                        best_tris[index]=strip_tris[index]
+    face_count=0
+    for i in xrange(0, mdx.num_SubObjects):
+        num_faces=len(component[i].triangles)
+        #variables shared between fan and strip functions
+        global used
+        used=[0]*num_faces
+        global strip_vert
+        strip_vert=[0]*128
+        global strip_st
+        strip_st=[0]*128
+        global strip_tris
+        strip_tris=[0]*128
+        global strip_count
+        strip_count=0
 
-                fan_length=find_fan_length(mdx, face_counter, start_vert)
-                if (fan_length>best_length):
-                    best_type=1
-                    best_length=fan_length
-                    for index in range (0, best_length+2):
-                        best_st[index]=strip_st[index]
-                        best_vert[index]=strip_vert[index]
-                    for index in range(0, best_length):
-                        best_tris[index]=strip_tris[index]
+        #variables
+        start_vert=0
+        fan_length=strip_length=0
+        length=best_length=0
+        best_type=0
+        best_vert=[0]*1024
+        best_st=[0]*1024
+        best_tris=[0]*1024
+        s=0.0
+        t=0.0
 
-            #mark the tris on the best strip/fan as used
-            for used_counter in range (0, best_length):
-                used[best_tris[used_counter]]=1
-
-            temp_cmdlist=glGLCommands_t()
-            temp_cmdlist.SubObjectID=0 # SEND COMP NBR TO SET THIS WITH
-            num_commands+=1 # ups count for SubOjectID's int value
-            #push the number of commands into the command stream
-            if best_type==1:
-                temp_cmdlist.TrisTypeNum=(-(best_length+2))
-                num_commands+=1
+        for face_counter in range(0, num_faces):
+            if used[face_counter]==1: #don't evaluate a tri that's been used
+                pass
             else:
-                temp_cmdlist.TrisTypeNum=best_length+2
-                num_commands+=1
-            for command_counter in range (0, best_length+2):
-                #emit a vertex into the reorder buffer
-                cmd=glCommandVertex_t()
-                index=best_st[command_counter]
-                #calc and put S/T coords in the structure
-            #    s=mdx.tex_coords[index].u # tex_coords is screwed up here.
-            #    t=mdx.tex_coords[index].v # tex_coords is screwed up here.
-                s=mdx.st_coord[index][0]
-                t=mdx.st_coord[index][1]
-                try:
-                    s=(s+0.5)/mdx.skin_width
-                    t=(t+0.5)/mdx.skin_height
-                except:
-                    s=(s+0.5)/1
-                    t=(t+0.5)/1
-                cmd.s=s
-                cmd.t=t
-                cmd.vert_index=best_vert[command_counter]
-                temp_cmdlist.cmd_list.append(cmd)
-                num_commands+=3
-            mdx.GL_commands.append(temp_cmdlist)
-    
+                best_length=0 #restart the counter
+                #for each vertex index in this face
+                for start_vert in range(0,3):
+                    strip_length=find_strip_length(mdx, face_counter, start_vert, num_faces, face_count)
+                    if (strip_length>best_length): 
+                        best_type=0
+                        best_length=strip_length
+                        for index in range (0, best_length+2):
+                            best_st[index]=strip_st[index]
+                            best_vert[index]=strip_vert[index]
+                        for index in range(0, best_length):
+                            best_tris[index]=strip_tris[index]
+
+                    fan_length=find_fan_length(mdx, face_counter, start_vert, num_faces, face_count)
+                    if (fan_length>best_length):
+                        best_type=1
+                        best_length=fan_length
+                        for index in range (0, best_length+2):
+                            best_st[index]=strip_st[index]
+                            best_vert[index]=strip_vert[index]
+                        for index in range(0, best_length):
+                            best_tris[index]=strip_tris[index]
+
+                #mark the tris on the best strip/fan as used
+                for used_counter in range (0, best_length):
+                    used[best_tris[used_counter]]=1
+
+                temp_cmdlist=glGLCommands_t()
+                temp_cmdlist.SubObjectID=i # SEND COMP NBR TO SET THIS WITH
+                num_commands+=1 # ups count for SubOjectID's int value
+                #push the number of commands into the command stream
+                if best_type==1:
+                    temp_cmdlist.TrisTypeNum=(-(best_length+2))
+                    num_commands+=1
+                else:
+                    temp_cmdlist.TrisTypeNum=best_length+2
+                    num_commands+=1
+                for command_counter in range (0, best_length+2):
+                    #emit a vertex into the reorder buffer
+                    cmd=glCommandVertex_t()
+                    index=best_st[command_counter]
+                    #calc and put S/T coords in the structure
+                #    s=mdx.tex_coords[index].u # tex_coords is screwed up here.
+                #    t=mdx.tex_coords[index].v # tex_coords is screwed up here.
+                    s=mdx.st_coord[index][0]
+                    t=mdx.st_coord[index][1]
+                    try:
+                        s=(s+0.5)/mdx.skin_width
+                        t=(t+0.5)/mdx.skin_height
+                    except:
+                        s=(s+0.5)/1
+                        t=(t+0.5)/1
+                    cmd.s=s
+                    cmd.t=t
+                    cmd.vert_index=best_vert[command_counter]
+                    temp_cmdlist.cmd_list.append(cmd)
+                    num_commands+=3
+                mdx.GL_commands.append(temp_cmdlist)
+        face_count = face_count + num_faces
+
     #end of list
-    temp_cmdlist=glGLCommands_t()    
+    temp_cmdlist=glGLCommands_t()
     temp_cmdlist.TrisTypeNum=0
     mdx.GL_commands.append(temp_cmdlist)  
     num_commands+=2
-    
+
     #cleanup and return
     used=best_vert=best_st=best_tris=strip_vert=strip_st=strip_tris=0
     return num_commands
@@ -998,29 +1019,40 @@ def save_mdx(filename):
     if not objects:
         quarkx.msgbox("No Components have been selected for exporting.", quarkpy.qutils.MT_INFORMATION, quarkpy.qutils.MB_OK)
         return
-    for object in objects:
+    for i in range(len(objects)):
+        object = objects[i]
         if not object.name.endswith(":mc"):
-            quarkx.msgbox("Improper Selection !\n\nYou can ONLY select one component\nfolder at a time for exporting.\n\nAn item that is not a component folder\nis in your selections.\n\nDeselect it and try again.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
+            quarkx.msgbox("Improper Selection !\n\nYou can ONLY select component folders for exporting.\n\nAn item that is not a component folder\nis in your selections.\n\nDeselect it and try again.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
             return
-    if len(objects) > 1:
-        quarkx.msgbox(str(len(objects)) + " Components have been selected for exporting.\nYou can ONLY select one component folder at a time for exporting.\n\nComponents can be combined or copied into one,\nbut only one skin can be used at a time.\n\nCorrect and try again.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
-        return
-    else:
-        if not objects[0].dictitems['Frames:fg'] or len(objects[0].dictitems['Frames:fg'].subitems) == 0:
-            quarkx.msgbox("No frames exist for exporting.\nCan not create model.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
+        if not object.dictitems['Frames:fg'] or len(object.dictitems['Frames:fg'].subitems) == 0:
+            quarkx.msgbox("No frames exist for " + object.shortname + ".\nCan not create model.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
             return
-        if len(objects[0].dictitems['Frames:fg'].subitems[0].dictspec['Vertices']) == 0:
-            quarkx.msgbox("Nothing exist for exporting.\nCan not create model.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
+        if not object.dictitems['Skins:sg'] or len(object.dictitems['Skins:sg'].subitems) == 0:
+            quarkx.msgbox("No skin exist for " + object.shortname + ".\nCan not create model.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
+            return
+        if i == 0:
+            frame_count = len(object.dictitems['Frames:fg'].subitems)
+            name = object.dictitems['Skins:sg'].subitems[0].name
+            if not name.startswith("models") and not name.startswith("/models") and not name.startswith("\\models") and not name.startswith("textures") and not name.startswith("/textures") and not name.startswith("//textures"):
+                quarkx.msgbox("Skin name for " + object.shortname + "\ndoes not start with either models/ or textures/ folder name.\n\nThe first skin name of each component must start\nwith the name of the upper folder the skin is in. Correct and try again.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
+                return
+            skin_size = object.dictitems['Skins:sg'].subitems[0].dictspec['Size']
+        object_skin_size = object.dictitems['Skins:sg'].subitems[0].dictspec['Size']
+        if int(object_skin_size[0]) != int(skin_size[0]) or int(object_skin_size[1]) != int(skin_size[1]) or object.dictitems['Skins:sg'].subitems[0].name != name:
+            quarkx.msgbox("Component skins are not the same.\nCan not create model.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
+            return
+        if len(object.dictitems['Frames:fg'].subitems[0].dictspec['Vertices']) == 0:
+            quarkx.msgbox("Nothing exist for " + object.shortname + ".\nCan not create model.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
+            return
+        if len(object.dictitems['Frames:fg'].subitems) != frame_count:
+            quarkx.msgbox("Number of frames of selected components do not match.\nMatch the frames for each component and try again.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
             return
 
     logging, tobj, starttime = ie_utils.default_start_logging(exportername, textlog, filename, "EX") ### Use "EX" for exporter text, "IM" for importer text.
 
     mdx = mdx_obj()  #blank mdx object to save
 
-    #get the component
-    component = editor.layout.explorer.sellist[0] #this gets the first component (should be only one)
-
-    fill_mdx(mdx, component)# To build and fill the values for the file header.
+    fill_mdx(mdx, objects)# To build and fill the values for the file header.
 
     #actually write it to disk
     file = open(filename,"wb")
@@ -1029,7 +1061,6 @@ def save_mdx(filename):
         mdx.dump() # Writes the file Header last to the log for comparison reasons.
     file.close()
     progressbar.close()
-    Strings[2455] = Strings[2455].replace(component.shortname + "\n", "")
 
     #cleanup
     mdx = 0
@@ -1039,8 +1070,8 @@ def save_mdx(filename):
 
 # Saves the model file: root is the actual file,
 # filename is the full path and name of the .mdx file to create.
-# gamename is None.
 # For example:  C:\Kingpin\main\models\weapons\crowbar.mdx
+# gamename is None.
 def savemodel(root, filename, gamename, nomessage=0):
     save_mdx(filename)
 
@@ -1051,4 +1082,7 @@ quarkpy.qmdlbase.RegisterMdlExporter(".mdx Kingpin Exporter", ".mdx file", "*.md
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.1  2011/10/16 20:57:11  cdunde
+# Added export support for Kingpin static and animation models .mdx file type.
+#
 #
