@@ -66,18 +66,18 @@ STUDIO_NF_CHROME     = 2
 STUDIO_NF_FULLBRIGHT = 4
 
 # motion flags from -> motion flags
-STUDIO_X     =    1
-STUDIO_Y     =    2    
-STUDIO_Z     =    4
-STUDIO_XR    =    8
-STUDIO_YR    =   16
-STUDIO_ZR    =   32
-STUDIO_LX    =   64
-STUDIO_LY    =  128
-STUDIO_LZ    =  256
-STUDIO_AX    =  512
-STUDIO_AY    = 1024
-STUDIO_AZ    = 2048
+STUDIO_X     =     1
+STUDIO_Y     =     2
+STUDIO_Z     =     4
+STUDIO_XR    =     8
+STUDIO_YR    =    16
+STUDIO_ZR    =    32
+STUDIO_LX    =    64
+STUDIO_LY    =   128
+STUDIO_LZ    =   256
+STUDIO_AX    =   512
+STUDIO_AY    =  1024
+STUDIO_AZ    =  2048
 STUDIO_AXR   =  4096
 STUDIO_AYR   =  8192
 STUDIO_AZR   = 16384
@@ -1165,7 +1165,7 @@ def SetUpBones(self, QuArK_bones): # self = the mdl_obj. Done cdunde from -> hlm
         if logging == 1:
             total = len(pbones)*6*2
             tobj.logcon ("----------------")
-            tobj.logcon ("start bones data: NumBones " + str(len(pbones)) + " x 6 offsets x 2 bytes ea. = " + str(total) + " bytes")
+            tobj.logcon ("start mdl_bone_anim data: NumBones " + str(len(pbones)) + " x 6 offsets x 2 bytes ea. = " + str(total) + " bytes")
             tobj.logcon ("      pointer at start seq " + str(m_sequence) + ": " + str(file.tell()))
             tobj.logcon ("      frames data pointer s/b " + str(file.tell()+total))
             tobj.logcon ("----------------")
@@ -1196,10 +1196,6 @@ def SetUpBones(self, QuArK_bones): # self = the mdl_obj. Done cdunde from -> hlm
 
             for pbone in range(len(self.bones)):
                 panim = seq_panims[0][pbone]
-                bone = self.bones[pbone]
-                #dirty = float(m_frame) / float(seq.numframes)
-                #quat[pbone] = CalcBoneQuaternion(self, 0, dirty, pbone, panim, m_adj)
-                #pos[pbone] = CalcBonePosition(self, 0, dirty, pbone, panim, m_adj)
                 quat[pbone] = CalcBoneQuaternion(self, m_frame, 0.0, pbone, panim, m_adj)
                 pos[pbone] = CalcBonePosition(self, m_frame, 0.0, pbone, panim, m_adj)
 
@@ -1540,7 +1536,7 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
             frame = quarkx.newobj('baseframe:mf')
             frame['Vertices'] = ''
             framesgroup.appenditem(frame)
-            
+
             Component['skinsize'] = skinsize
             Component['show'] = chr(1)
             Component.appenditem(sdogroup)
@@ -1750,10 +1746,9 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
         #          #  for l in xrange(self.bodyparts[i].models[j].meshes[k].numnorms):
         #            temp_data = file.read(struct.calcsize(binary_format))
         #            data = struct.unpack(binary_format, temp_data)
-                        
+
 
                 # Now get the meshes triangles data.
-            #    verts = self.bodyparts[i].models[j].verts
                 for k in xrange(self.bodyparts[i].models[j].nummesh):
                     Component_index += 1
                     start = self.bodyparts[i].models[j].meshes[k].tri_offset
@@ -1811,28 +1806,21 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
                                     vtx0 = triangle.index0vert
                                     vtx0uv0 = int(round((skinwidth/index1uv)*skinwidth))
                                     vtx0uv1 = int(round((skinheight/index1uv)*skinheight))
-                                 #  vtx0uv0 = triangle.index2u + skinwidth
-                                 #  vtx0uv1 = triangle.index3v
                                     vtx0u = triangle.index2u
                                     vtx0v = triangle.index3v
                                 elif l == 1:
                                     vtx1 = triangle.index0vert
                                     vtx1uv0 = int(round((skinwidth/index1uv)*skinwidth))
                                     vtx1uv1 = int(round((skinheight/index1uv)*skinheight))
-                                  # vtx1uv0 = triangle.index2u + skinwidth
-                                  # vtx1uv1 = triangle.index3v
                                     vtx1u = triangle.index2u
                                     vtx1v = triangle.index3v
                                 else:
                                     vtx2 = triangle.index0vert
                                     vtx2uv0 = int(round((skinwidth/index1uv)*skinwidth))
                                     vtx2uv1 = int(round((skinheight/index1uv)*skinheight))
-                                  # vtx2uv0 = triangle.index2u + skinwidth
-                                  # vtx2uv1 = triangle.index3v
                                     vtx2u = triangle.index2u
                                     vtx2v = triangle.index3v
                                     if skinflags == 3:
-                            #        if verts[vtx0].v[1] < 0 and verts[vtx1].v[1] < 0 and verts[vtx2].v[1] < 0:
                                         triangles = triangles + [[[vtx0,vtx0uv0,vtx0uv1], [vtx1,vtx1uv0,vtx1uv1], [vtx2,vtx2uv0,vtx2uv1]]]
                                     else:
                                         triangles = triangles + [[[vtx0,vtx0u,vtx0v], [vtx1,vtx1u,vtx1v], [vtx2,vtx2u,vtx2v]]]
@@ -1860,28 +1848,21 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
                                     vtx0 = triangle.index0vert
                                     vtx0uv0 = int(round((skinwidth/index1uv)*skinwidth))
                                     vtx0uv1 = int(round((skinheight/index1uv)*skinheight))
-                                  # vtx0uv0 = triangle.index2u + skinwidth
-                                  # vtx0uv1 = triangle.index3v
                                     vtx0u = triangle.index2u
                                     vtx0v = triangle.index3v
                                 elif l == 1:
                                     vtx1 = triangle.index0vert
                                     vtx1uv0 = int(round((skinwidth/index1uv)*skinwidth))
                                     vtx1uv1 = int(round((skinheight/index1uv)*skinheight))
-                                  # vtx1uv0 = triangle.index2u + skinwidth
-                                  # vtx1uv1 = triangle.index3v
                                     vtx1u = triangle.index2u
                                     vtx1v = triangle.index3v
                                 else:
                                     vtx2 = triangle.index0vert
                                     vtx2uv0 = int(round((skinwidth/index1uv)*skinwidth))
                                     vtx2uv1 = int(round((skinheight/index1uv)*skinheight))
-                                  # vtx2uv0 = triangle.index2u + skinwidth
-                                  # vtx2uv1 = triangle.index3v
                                     vtx2u = triangle.index2u
                                     vtx2v = triangle.index3v
                                     if skinflags == 3:
-                            #        if verts[vtx0].v[1] < 0 and verts[vtx1].v[1] < 0 and verts[vtx2].v[1] < 0:
                                         triangles = triangles + [[[vtx0,vtx0uv0,vtx0uv1], [vtx1,vtx1uv0,vtx1uv1], [vtx2,vtx2uv0,vtx2uv1]]]
                                     else:
                                         triangles = triangles + [[[vtx0,vtx0u,vtx0v], [vtx1,vtx1u,vtx1v], [vtx2,vtx2u,vtx2v]]]
@@ -2035,8 +2016,8 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
                         framesgroup.appenditem(new_frame)
                 Strings[2462] = Strings[2462].replace(comp.shortname + "\n", "")
                 progressbar.close()
-        
-        return self, ComponentList, QuArK_bones, message, self.tagsgroup, self.version # END FOR THIS IMPORTER.
+
+        return self, ComponentList, QuArK_bones, message, self.tagsgroup, self.version
 
     def dump(self):
         if logging == 1:
@@ -2318,7 +2299,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
     else: # Imports a model properly from within the editor.
         for bone in newbones:
             undo.put(editor.Root.dictitems['Skeleton:bg'], bone)
-            
+
 
         # Now we process the Components.
         for Component in ComponentList:
@@ -2374,6 +2355,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".mdl Half-Life1 Importer", ".mdl file", "*
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.5  2011/05/25 20:55:03  cdunde
+# Revamped Bounding Box system for more flexibility with model formats that do not have bones, only single or multi components.
+#
 # Revision 1.4  2011/03/13 00:41:47  cdunde
 # Updating fixed for the Model Editor of the Texture Browser's Used Textures folder.
 #
