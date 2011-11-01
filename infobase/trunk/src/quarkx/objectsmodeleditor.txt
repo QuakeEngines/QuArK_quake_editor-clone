@@ -78,12 +78,12 @@ Not used by QuArK. Reserved for Python code.
 <tr><td class="doccode">
 vertices
 </td><td>
-This attribute is a way to quickly read or set the Vertices Specific of the frame (see below). It returns or can be set to a list of Vector objects.
+This attribute is a way to quickly read or set a Vertices Specific of a frame (see below). It returns a list of Vector objects or can be used to set one.
 </td></tr>
 
 </table>
 
-Frame objects usually have a Vertices Specific that lists the 3D position of all vertices in the frame, as a large tuple where
-each three consecutive values give the X, Y and Z coordinates, respectively.
+Frame objects usually have a Vertices Specific that gives the 3D position of all vertices in a frame. This is a single large list of
+Vector objects that give the X, Y and Z coordinates of each vertices.
 
 For additional information, please see the files mdl*.py.
