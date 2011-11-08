@@ -788,6 +788,7 @@ class mdl_hitbox: # Done cdunde from -> hlmviewer source file -> studio.h -> mst
         print "bbmax: ", self.bbmax
         print "===================="
 
+### NOT USED
 class mdl_demand_hdr_group: # Done cdunde from -> hlmviewer source file -> studio.h -> studioseqhdr_t
                             #item of data file, size & type,   description
     id = 0                  #item  0      int, group id.
@@ -1142,7 +1143,7 @@ def SetUpBones(self, QuArK_bones): # self = the mdl_obj. Done cdunde from -> hlm
             tobj.logcon ("========================")
             tobj.logcon ("seq %d: sequence name -> %s" % (m_sequence+1, seq_name))
             tobj.logcon ("========================")
-        #Not used:
+        ### NOT USED
         file.seek(self.ofsBegin + seq.pivot_offset, 0)
         if logging == 1:
             tobj.logcon ("seq.numpivots: " + str(seq.numpivots))
@@ -1168,6 +1169,9 @@ def SetUpBones(self, QuArK_bones): # self = the mdl_obj. Done cdunde from -> hlm
             tobj.logcon ("start mdl_bone_anim data: NumBones " + str(len(pbones)) + " x 6 offsets x 2 bytes ea. = " + str(total) + " bytes")
             tobj.logcon ("      pointer at start seq " + str(m_sequence) + ": " + str(file.tell()))
             tobj.logcon ("      frames data pointer s/b " + str(file.tell()+total))
+            tobj.logcon ("----------------")
+        if logging == 1:
+            tobj.logcon ("seq.numblends: " + str(seq.numblends) + "  file at: " + str(file.tell()))
             tobj.logcon ("----------------")
         for m_blend in range(seq.numblends):
             seq_panims.append([])
@@ -1332,14 +1336,12 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
     bodyparts = []
     anim_seqs_data = []
 
-    texture_info = None
     tex_coords = []
     faces = []
     vertices = []
     tagsgroup = []
 
     def __init__ (self):
-        self.origin = quarkx.vect(0.0, 0.0, 0.0)
         self.bones = []             # A list of the bones.
         self.skins_group = []       # A list of the skins.
         self.demand_seq_groups = [] # A list of the demand sequence groups.
@@ -2355,6 +2357,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".mdl Half-Life1 Importer", ".mdl file", "*
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.6  2011/10/25 19:47:05  cdunde
+# Some file cleanup.
+#
 # Revision 1.5  2011/05/25 20:55:03  cdunde
 # Revamped Bounding Box system for more flexibility with model formats that do not have bones, only single or multi components.
 #
