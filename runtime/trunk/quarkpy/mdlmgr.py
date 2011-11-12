@@ -697,6 +697,30 @@ class ModelLayout(BaseLayout):
             check_comp_list = selitem.dictspec['comp_list']
             check_pos = selitem.dictspec['position']
             check_color = selitem.dictspec['_color']
+            skeletongroup = self.editor.Root.dictitems['Skeleton:bg']  # get the bones group
+            bones = skeletongroup.findallsubitems("", ':bone')    # get all bones
+            if selitem.dictspec['parent_name'] != "None":
+                for bone in bones:
+                    if bone.name == selitem.dictspec['parent_name']:
+                        try:
+                            frames = self.editor.ModelComponentList['bonelist'][bone.name]['frames']
+                            currentframe = self.editor.Root.currentcomponent.currentframe
+                            currentframe_name = currentframe.name
+                            currentframe_index = currentframe.index
+                            try:
+                                parent_pos = frames[currentframe_name]['position']
+                            except:
+                                try:
+                                    frame_name = self.editor.Root.dictitems[bone.dictspec['component']].dictitems['Frames:fg'].subitems[currentframe_index].name
+                                    parent_pos = frames[frame_name]['position']
+                                except:
+                                    selitem['bone_length'] = (selitem.position - bone.position).tuple
+                                    break
+                            selitem['bone_length'] = (selitem.position - quarkx.vect(parent_pos)).tuple
+                            break
+                        except:
+                            selitem['bone_length'] = (selitem.position - bone.position).tuple
+                            break
             checkbone_length = selitem.dictspec['bone_length']
             check_offset = selitem.dictspec['draw_offset']
             checkbone_scale = selitem.dictspec['scale']
@@ -1009,12 +1033,14 @@ class ModelLayout(BaseLayout):
                     undo = quarkx.action()
                     new_bone = selitem.copy()
                     new_bone['draw_offset'] = check_offset
+                    diff = quarkx.vect(check_offset) - quarkx.vect(old_pos)
+                    new_bone.position = selitem.position + diff
+                    new_bone['position'] = new_bone.position.tuple
+                    new_bone['bone_length'] = (quarkx.vect(selitem.dictspec['bone_length']) + diff).tuple
                     try:
-                        new_bone.position = selitem.position + quarkx.vect(check_offset) - quarkx.vect(old_pos)
-                        new_bone['position'] = new_bone.position.tuple
-                        new_bone['bone_length'] = (quarkx.vect(selitem.dictspec['bone_length']) + quarkx.vect(check_offset) - quarkx.vect(old_pos)).tuple
-                        frame = self.editor.Root.currentcomponent.currentframe
-                        self.editor.ModelComponentList['bonelist'][new_bone.name]['frames'][frame.name]['position'] = new_bone.position.tuple
+                        frames = self.editor.ModelComponentList['bonelist'][new_bone.name]['frames']
+                        for frame in frames.keys():
+                            frames[frame]['position'] = (quarkx.vect(frames[frame]['position']) + diff).tuple
                     except:
                         pass
                     undo.exchange(selitem, new_bone)
@@ -1960,6 +1986,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.134  2011/05/30 20:46:32  cdunde
+#Added frame name change to complete updatings and AutoFrameRenaming function.
+#
 #Revision 1.133  2011/05/29 21:15:17  cdunde
 #For bones and bboxes, all ModelComponentList items and related object dictspects updated.
 #
