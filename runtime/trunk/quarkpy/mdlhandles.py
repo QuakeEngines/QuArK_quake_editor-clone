@@ -5721,18 +5721,28 @@ class BoneCenterHandle(BoneHandle):
             comp = editor.Root.currentcomponent
             old_vertices = self.bone.vtx_pos
             vtx_pos = []
-            vtxpos = quarkx.vect(0, 0, 0)
-            frame = editor.Root.dictitems[comp.name].dictitems['Frames:fg'].subitems[editor.bone_frame]
+            frames = editor.Root.dictitems[comp.name].dictitems['Frames:fg'].subitems
+            frame = frames[editor.bone_frame]
             for vtx in range(len(editor.ModelVertexSelList)):
-                vtxpos = vtxpos + frame.vertices[editor.ModelVertexSelList[vtx]]
                 vtx_pos = vtx_pos + [editor.ModelVertexSelList[vtx]]
             vtx_pos.sort()
+            vtxs = len(vtx_pos)
             old_vertices[comp.name] = vtx_pos
             self.bone.vtx_pos = old_vertices
-            vtxpos = vtxpos/ float(len(editor.ModelVertexSelList))
-            start_point = vtxpos + quarkx.vect(self.bone.dictspec['draw_offset'])
-            self.bone['position'] = start_point.tuple
-            self.bone['component'] = comp.name
+            for frame2 in frames:
+                vertices = frame2.vertices
+                vtxpos = quarkx.vect(0.0, 0.0, 0.0)
+                for vtx in vtx_pos:
+                    try:
+                        vtxpos = vtxpos + vertices[vtx]
+                    except:
+                        return
+                vtxpos = vtxpos/ float(vtxs)
+                editor.ModelComponentList['bonelist'][self.bone.name]['frames'][frame2.name]['position'] = (vtxpos + quarkx.vect(self.bone.dictspec['draw_offset'])).tuple
+                if frame2.name == frame.name:
+                    self.bone.position = vtxpos + quarkx.vect(self.bone.dictspec['draw_offset'])
+                    self.bone['position'] = self.bone.position.tuple
+                    self.bone['component'] = comp.name
             Update_Editor_Views(editor)
             editor.layout.mpp.resetpage()
 
@@ -6586,6 +6596,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.233  2011/05/28 15:58:20  cdunde
+#Menu updates.
+#
 #Revision 1.232  2011/05/27 20:57:04  cdunde
 #Update for bbox handling for undo system.
 #

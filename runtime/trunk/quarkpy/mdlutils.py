@@ -3326,7 +3326,7 @@ def align__bone1to2(editor, bone1, bone2):
     newpoint = bone2.position
     new_bone['position'] = newpoint.tuple
     new_bone['draw_offset'] = bone2.dictspec['draw_offset']
-    if new_bone.dictspec.has_key("parent_name"):
+    if new_bone.dictspec.has_key("parent_name") and new_bone.dictspec['parent_name'] != "None":
         for bone in bones:
             if bone.name == new_bone.dictspec['parent_name']:
                 new_bone['bone_length'] = (new_bone.position - bone.position).tuple
@@ -3336,6 +3336,19 @@ def align__bone1to2(editor, bone1, bone2):
             new_bone = bone.copy()
             new_bone['bone_length'] = (new_bone.position - bone2.position).tuple
             undo.exchange(bone, new_bone)
+    try:
+        bone1_frames = self.editor.ModelComponentList['bonelist'][bone1.name]['frames']
+        bone2_frames = self.editor.ModelComponentList['bonelist'][bone2.name]['frames']
+        bone1_keys = bone1_frames.keys()
+        bone2_keys = bone2_frames.keys()
+        if len(bone1_frames) <= len(bone2_frames):
+            for i in range(len(bone1_keys)):
+                bone1_frames[bone1_keys[i]]['position'] = bone2_frames[bone2_keys[i]]['position']
+        else:
+            for i in range(len(bone2_keys)):
+                bone1_frames[bone1_keys[i]]['position'] = bone2_frames[bone2_keys[i]]['position']
+    except:
+        pass
     editor.ok(undo, "align bone 1 to 2")
 
 #
@@ -3359,6 +3372,19 @@ def align__bone2to1(editor, bone1, bone2):
             new_bone = bone.copy()
             new_bone['bone_length'] = (new_bone.position - bone1.position).tuple
             undo.exchange(bone, new_bone)
+    try:
+        bone1_frames = self.editor.ModelComponentList['bonelist'][bone1.name]['frames']
+        bone2_frames = self.editor.ModelComponentList['bonelist'][bone2.name]['frames']
+        bone1_keys = bone1_frames.keys()
+        bone2_keys = bone2_frames.keys()
+        if len(bone2_frames) <= len(bone1_frames):
+            for i in range(len(bone2_keys)):
+                bone2_frames[bone2_keys[i]]['position'] = bone1_frames[bone1_keys[i]]['position']
+        else:
+            for i in range(len(bone1_keys)):
+                bone2_frames[bone2_keys[i]]['position'] = bone1_frames[bone1_keys[i]]['position']
+    except:
+        pass
     editor.ok(undo, "align bone 2 to 1")
 
 #
@@ -3438,26 +3464,33 @@ def assign_release_vertices(editor, bone, comp, vtxsellist):
 # This does not need to be returned since it is changing the object itself.
 def Rebuild_Bone(editor, o, frame):
     try:
-        o.position = quarkx.vect(editor.ModelComponentList['bonelist'][o.name]['frames'][frame.name]['position'])
-        o['position'] = o.position.tuple
+        if len(o.vtx_pos) == 0:
+            del editor.ModelComponentList['bonelist'][o.name]
+        else:
+            o.position = quarkx.vect(editor.ModelComponentList['bonelist'][o.name]['frames'][frame.name]['position'])
+            o['position'] = o.position.tuple
     except:
         if len(o.vtx_pos) != 0:
+            editor.ModelComponentList['bonelist'][o.name] = {}
+            editor.ModelComponentList['bonelist'][o.name]['frames'] = {}
+            editor.ModelComponentList['bonelist'][o.name]['default'] = {}
             frames = editor.Root.dictitems[o.dictspec['component']].dictitems['Frames:fg'].subitems
             for frame2 in frames:
+                vertices = frame2.vertices
+                vtxlist = o.vtx_pos[o.dictspec['component']]
+                vtxpos = quarkx.vect(0.0, 0.0, 0.0)
+                for vtx in vtxlist:
+                    try:
+                        vtxpos = vtxpos + vertices[vtx]
+                    except:
+                        return
+                vtxpos = vtxpos/ float(len(vtxlist))
+                editor.ModelComponentList['bonelist'][o.name]['frames'][frame2.name] = {}
+                editor.ModelComponentList['bonelist'][o.name]['frames'][frame2.name]['position'] = (vtxpos + quarkx.vect(o.dictspec['draw_offset'])).tuple
+                editor.ModelComponentList['bonelist'][o.name]['frames'][frame2.name]['rotmatrix'] = o.rotmatrix.tuple
                 if frame2.name == frame.name:
-                    frame = frame2
-                    break
-            vertices = frame.vertices
-            vtxlist = o.vtx_pos[o.dictspec['component']]
-            vtxpos = quarkx.vect(0.0, 0.0, 0.0)
-            for vtx in vtxlist:
-                try:
-                    vtxpos = vtxpos + vertices[vtx]
-                except:
-                    return
-            vtxpos = vtxpos/ float(len(vtxlist))
-            o.position = vtxpos + quarkx.vect(o.dictspec['draw_offset'])
-            o['position'] = o.position.tuple
+                    o.position = vtxpos + quarkx.vect(o.dictspec['draw_offset'])
+                    o['position'] = o.position.tuple
 
 
 
@@ -4753,6 +4786,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.164  2011/09/25 05:15:09  cdunde
+#To fix occasional error message.
+#
 #Revision 1.163  2011/05/28 00:11:27  cdunde
 #Fixes to avoid error from bboxes of multiple models in the editor at the same time.
 #
