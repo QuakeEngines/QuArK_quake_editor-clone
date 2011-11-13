@@ -2439,13 +2439,13 @@ class BoneType(EntityManager):
                 control = 0
                 for key in keys:
                     if key.startswith("control_"):
-                        bone_control = 'Sep: = {Typ = "S"   Txt = ""} Sep: = {Typ="S" Txt="Bone Control Settings" Hint="Used in some games player models"$0D"such as Half-Life 1."$0D"Select component to change this control."}'
+                        bone_control = 'Sep: = {Typ = "S"   Txt = ""} Sep: = {Typ="S" Txt="Bone Control Settings" Hint="Used in some games player models"$0D"such as Half-Life 1 and 2 where"$0D"index 0-3 = bone controls, index 4 = mouth."}'
                         control = 1
                         break
                 if control == 1:
                     for key in keys:
                         if key == "control_index":
-                            bone_control = bone_control + 'control_index: = {Typ="E" Txt="index" Hint="Which control this one is."$0D"Half-Life 1 allows up to 4."}'
+                            bone_control = bone_control + 'control_index: = {Typ="E" Txt="index" Hint="Which control this one is."$0D"Half-Life 1 & 2 allows up to 5."$0D"index 0-3 = bone controls, index 4 = mouth."}'
                             break
                     for key in keys:
                         if key == "control_type":
@@ -3227,6 +3227,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.89  2011/11/13 03:15:10  cdunde
+#To allow the changing of bonecontrol indexes.
+#
 #Revision 1.88  2011/03/26 23:35:16  cdunde
 #Updated Model Editor Camera Position system with Hotkeys to take quick shots of both Editor and Floating 3D views,
 #kept in separate folders for both Standard modes and True3D modes with Hotkeys to scroll through those shots.
