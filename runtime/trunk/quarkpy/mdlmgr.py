@@ -56,6 +56,7 @@ check_use_weights = None
 check_show_weight_color = None
 check_apply_vtx_weights = None
 check_tag_pos = None
+check_bone_control = None
 
 class ModelLayout(BaseLayout):
     "An abstract base class for Model Editor screen layouts."
@@ -470,7 +471,7 @@ class ModelLayout(BaseLayout):
     def makesettingclick(self, m):
         "This function fills in the Default values of the Specifics/Args page form"
         "and changes the form's values when a setting is made."
-        global check_currentcomponent, check_comp_list, check_pos, check_color, checkbone_length, check_offset, checkbone_scale, check_show_vtx_color, check_show_weight_color, check_apply_vtx_weights, check_use_weights, check_tag_pos
+        global check_currentcomponent, check_comp_list, check_pos, check_color, checkbone_length, check_offset, checkbone_scale, check_show_vtx_color, check_show_weight_color, check_apply_vtx_weights, check_use_weights, check_tag_pos, check_bone_control
 
         check_currentcomponent = self.editor.Root.currentcomponent.name
 
@@ -697,6 +698,10 @@ class ModelLayout(BaseLayout):
             check_comp_list = selitem.dictspec['comp_list']
             check_pos = selitem.dictspec['position']
             check_color = selitem.dictspec['_color']
+            try:
+                check_bone_control = selitem.dictspec['control_index']
+            except:
+                pass
             skeletongroup = self.editor.Root.dictitems['Skeleton:bg']  # get the bones group
             bones = skeletongroup.findallsubitems("", ':bone')    # get all bones
             if selitem.dictspec['parent_name'] != "None":
@@ -735,7 +740,7 @@ class ModelLayout(BaseLayout):
     def filldataform(self, reserved):
         "This function creates the Specifics/Args page form (formobj) for the first time"
         "or when selecting another item in the tree-view that uses a form."
-        global treeviewselchanged, check_currentcomponent, check_comp_list, check_pos, check_color, checkbone_length, check_offset, checkbone_scale, check_show_vtx_color, check_show_weight_color, check_apply_vtx_weights, check_use_weights, check_tag_pos
+        global treeviewselchanged, check_currentcomponent, check_comp_list, check_pos, check_color, checkbone_length, check_offset, checkbone_scale, check_show_vtx_color, check_show_weight_color, check_apply_vtx_weights, check_use_weights, check_tag_pos, check_bone_control
 
         # Stops filling Specifics page (flickering) during animation.
         if quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] == "1":
@@ -1173,6 +1178,23 @@ class ModelLayout(BaseLayout):
                     except:
                         pass
                     self.editor.ok(undo, 'bone length changed')
+
+                try:
+                    folder_name = selitem.name.split("_")[0]
+                    if check_bone_control != selitem["control_index"]:
+                        for item in self.editor.Root.subitems:
+                            if item.type == ":mc" and item.name.startswith(folder_name):
+                                if item.dictspec.has_key("bone_control_" + selitem["control_index"]):
+                                    quarkx.msgbox("Improper Action!\n\nThis bone control index already exist.\nUse another number or delete that control first.", MT_ERROR, MB_OK)
+                                    selitem["control_index"] = check_bone_control
+                                    self.dataform.setdata([selitem], formobj)
+                                    quarkx.update(self.editor.form)
+                                    return
+                                else:
+                                    item["bone_control_" + check_bone_control] = ""
+                                    item["bone_control_" + selitem["control_index"]] = selitem.name
+                except:
+                    pass
 
             ### This section handles the Tag Frames default settings and data input for the Specifics/Args page.
             if (selitem.type == ":tagframe") and (not isinstance(reserved, qtoolbar.button)):
@@ -1986,6 +2008,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.135  2011/11/12 06:01:59  cdunde
+#Updated bone settings.
+#
 #Revision 1.134  2011/05/30 20:46:32  cdunde
 #Added frame name change to complete updatings and AutoFrameRenaming function.
 #

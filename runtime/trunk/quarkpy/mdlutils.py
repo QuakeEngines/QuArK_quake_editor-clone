@@ -3229,6 +3229,9 @@ def add_bone_control(editor, spec_bone):
             keys.sort()
             for key in keys:
                 if key.startswith("bone_control_"):
+                    chk_nbr = int(key.split("_")[2])
+                    if chk_nbr != nbr+1:
+                        break
                     nbr = int(key.split("_")[2])
             break
     undo = quarkx.action()
@@ -4786,6 +4789,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.165  2011/11/12 06:01:12  cdunde
+#Changed needed functions to affect bonelist.
+#
 #Revision 1.164  2011/09/25 05:15:09  cdunde
 #To fix occasional error message.
 #

@@ -2445,7 +2445,7 @@ class BoneType(EntityManager):
                 if control == 1:
                     for key in keys:
                         if key == "control_index":
-                            bone_control = bone_control + 'control_index: = {Typ="E R" Txt="index" Hint="Which control this one is."$0D"Half-Life 1 allows up to 4."}'
+                            bone_control = bone_control + 'control_index: = {Typ="E" Txt="index" Hint="Which control this one is."$0D"Half-Life 1 allows up to 4."}'
                             break
                     for key in keys:
                         if key == "control_type":
@@ -3227,6 +3227,10 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.88  2011/03/26 23:35:16  cdunde
+#Updated Model Editor Camera Position system with Hotkeys to take quick shots of both Editor and Floating 3D views,
+#kept in separate folders for both Standard modes and True3D modes with Hotkeys to scroll through those shots.
+#
 #Revision 1.87  2011/03/17 18:11:38  cdunde
 #Removed code that messed all the 2D views drawing up.
 #
