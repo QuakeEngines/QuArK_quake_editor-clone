@@ -687,73 +687,6 @@ class SKA_Frame:
         data = struct.pack(self.binary_format, tmpData[0], tmpData[1], tmpData[2], tmpData[3], tmpData[4], tmpData[5], tmpData[6], tmpData[7], tmpData[8], tmpData[9])
         file.write(data)
 
-    def apply(self, numBones, QuArK_bones, bonelist, numComponents, comp_names, baseframes, framesgroups, frame_name, real_bone_index):
-            check_name = frame_name + ":mf"
-            self.SetupBones(numBones, QuArK_bones, bonelist, check_name, real_bone_index)
-
-            #A list of bones.name -> bone_index, to speed things up
-            ConvertBoneNameToIndex = {}
-            for bone_index in range(len(QuArK_bones)):
-                ConvertBoneNameToIndex[QuArK_bones[bone_index].name] = bone_index
-
-            for i in xrange(0, numComponents):
-                baseframe = baseframes[i]
-                framesgroup = framesgroups[i]
-                QuArK_frame = baseframe.copy()
-                QuArK_frame.shortname = frame_name
-                meshverts = baseframe.vertices
-                newverts = QuArK_frame.vertices
-                comp_name = comp_names[i]
-                for vert_counter in range(len(newverts)):
-                    if editor.ModelComponentList[comp_name]['weightvtxlist'].has_key(vert_counter):
-                        vertpos = quarkx.vect(0.0, 0.0, 0.0) #This will be the new position
-                        total_weight_value = 0.0 #To make sure we get a total weight of 1.0 in the end
-                        for key in editor.ModelComponentList[comp_name]['weightvtxlist'][vert_counter].keys():
-                            bone_index = ConvertBoneNameToIndex[key]
-                            if bone_index == -1:
-                                continue
-                            if not bonelist[QuArK_bones[bone_index].name]['frames'].has_key(frame_name + ':mf'):
-                                print "Warning: Bone %s missing frame %s!" % (QuArK_bones[bone_index].shortname, frame_name)
-                                continue
-                            Bpos = quarkx.vect(bonelist[QuArK_bones[bone_index].name]['frames'][frame_name+':mf']['position'])
-                            Brot = quarkx.matrix(bonelist[QuArK_bones[bone_index].name]['frames'][frame_name+':mf']['rotmatrix'])
-                            try:
-                                weight_value = editor.ModelComponentList[comp_name]['weightvtxlist'][vert_counter][QuArK_bones[bone_index].name]['weight_value']
-                            except:
-                                weight_value = 1.0
-                            total_weight_value += weight_value
-                            oldpos = quarkx.vect(editor.ModelComponentList[comp_name]['weightvtxlist'][vert_counter][QuArK_bones[bone_index].name]['vtx_offset'])
-                            vertpos = vertpos + ((Bpos + (Brot * oldpos)) * weight_value)
-                        if total_weight_value == 0.0:
-                            total_weight_value = 1.0
-                        newverts[vert_counter] = (vertpos / total_weight_value)
-                QuArK_frame.vertices = newverts
-
-                if QuArK_frame.name.endswith(" 1:mf"):
-                    baseframe = QuArK_frame.copy()
-                    baseframe.shortname = frame_name.rsplit(" ", 1)[0] + " baseframe"
-                    framesgroup.appenditem(baseframe)
-                framesgroup.appenditem(QuArK_frame)
-
-
-    def SetupBones(self, numBones, QuArK_bones, bonelist, QuArK_frame_name, real_bone_index):
-        for i in xrange(0, len(self.bones)):
-            if real_bone_index[i] == []:
-                #No corresponding SKB bone
-                continue
-            QuArK_bone = QuArK_bones[real_bone_index[i]]
-            if not bonelist[QuArK_bone.name]['frames'].has_key(QuArK_frame_name):
-                bonelist[QuArK_bone.name]['frames'][QuArK_frame_name] = {}
-            bone = self.bones[i] # self = a Frame
-            bonelist[QuArK_bone.name]['frames'][QuArK_frame_name]['position'] = bone.SetPosition.tuple
-            bonelist[QuArK_bone.name]['frames'][QuArK_frame_name]['rotmatrix'] = bone.SetRotation.tuple
-
-            if QuArK_frame_name.endswith(" 1:mf"):
-                baseframe = QuArK_frame_name.rsplit(" ", 1)[0] + " baseframe:mf"
-                bonelist[QuArK_bone.name]['frames'][baseframe] = {}
-                bonelist[QuArK_bone.name]['frames'][baseframe]['position'] = bonelist[QuArK_bone.name]['frames'][QuArK_frame_name]['position']
-                bonelist[QuArK_bone.name]['frames'][baseframe]['rotmatrix'] = bonelist[QuArK_bone.name]['frames'][QuArK_frame_name]['rotmatrix']
-
     def dump(self):
         tobj.logcon ("bounds: " + str(self.bounds))
         tobj.logcon ("radius: " + str(self.radius))
@@ -851,7 +784,6 @@ class ska_obj:
         message = ""
         self.file_pointer = self.header_size # Update our pointer for the file header that will be written first in the "save" call.
 
-        self.totaltime = self.numFrames * self.frametime
         if self.version == 3:
             self.ofsFrames = self.file_pointer
         else:
@@ -898,10 +830,11 @@ class ska_obj:
         if logging == 1:
             tobj.logcon ("")
             tobj.logcon ("============================")
-            tobj.logcon ("PROCESSING FRAMES, numFrames: " + str(self.numFrames))
+            tobj.logcon ("PROCESSING FRAMES: ")
             tobj.logcon ("============================")
             tobj.logcon ("")
-        for i in xrange(0, self.numFrames):
+        frame_count = self.numFrames
+        for i in xrange(0, frame_count):
             frame = SKA_Frame()
             # We need to start with the bounding box of all the components being exported combined.
             mins = [10000.0, 10000.0, 10000.0]
@@ -925,10 +858,12 @@ class ska_obj:
             frame_scale = [0.0, 0.0, 0.0]
             for j in xrange(0, 3):
                 frame_scale[j] = (maxs[j] - mins[j]) / 65536
+            if frame_name == "baseframe:mf":
+                self.numFrames -= 1
+                continue
             self.frames.append(frame)
 
             frame.fill(frame_name, frame_maxs, frame_offset, frame_scale, bonelist, self.numBones, QuArK_bones, ConvertBoneNameToIndex)
-        #    frame.apply(self.numBones, QuArK_bones, bonelist, numComponents, comp_names, baseframes, framesgroups, frame_name, real_bone_index)
             if logging == 1:
                 tobj.logcon ("---------------------")
                 tobj.logcon ("frame " + str(i))
@@ -936,7 +871,8 @@ class ska_obj:
                 frame.dump()
                 tobj.logcon ("=====================")
                 tobj.logcon ("")
-                
+
+        self.totaltime = self.numFrames * self.frametime
         return message
 
     def dump(self):
@@ -1232,6 +1168,9 @@ quarkpy.qmdlbase.RegisterMdlExporter(".skb Alice\EF2\FAKK2 Exporter-mesh", ".skb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.6  2010/11/09 05:48:10  cdunde
+# To reverse previous changes, some to be reinstated after next release.
+#
 # Revision 1.5  2010/11/06 13:31:04  danielpharos
 # Moved a lot of math-code to ie_utils, and replaced magic constant 3 with variable SS_MODEL.
 #
