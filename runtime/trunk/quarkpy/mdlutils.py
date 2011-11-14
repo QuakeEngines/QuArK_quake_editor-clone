@@ -3467,16 +3467,14 @@ def assign_release_vertices(editor, bone, comp, vtxsellist):
 # This does not need to be returned since it is changing the object itself.
 def Rebuild_Bone(editor, o, frame):
     try:
-        if len(o.vtx_pos) == 0:
-            del editor.ModelComponentList['bonelist'][o.name]
-        else:
-            o.position = quarkx.vect(editor.ModelComponentList['bonelist'][o.name]['frames'][frame.name]['position'])
-            o['position'] = o.position.tuple
+        o.position = quarkx.vect(editor.ModelComponentList['bonelist'][o.name]['frames'][frame.name]['position'])
+        o['position'] = o.position.tuple
     except:
         if len(o.vtx_pos) != 0:
-            editor.ModelComponentList['bonelist'][o.name] = {}
-            editor.ModelComponentList['bonelist'][o.name]['frames'] = {}
-            editor.ModelComponentList['bonelist'][o.name]['default'] = {}
+            if not o.name in editor.ModelComponentList['bonelist'].keys():
+                editor.ModelComponentList['bonelist'][o.name] = {}
+                editor.ModelComponentList['bonelist'][o.name]['frames'] = {}
+                editor.ModelComponentList['bonelist'][o.name]['type'] = 'default'
             frames = editor.Root.dictitems[o.dictspec['component']].dictitems['Frames:fg'].subitems
             for frame2 in frames:
                 vertices = frame2.vertices
@@ -4789,6 +4787,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.166  2011/11/13 03:15:09  cdunde
+#To allow the changing of bonecontrol indexes.
+#
 #Revision 1.165  2011/11/12 06:01:12  cdunde
 #Changed needed functions to affect bonelist.
 #
