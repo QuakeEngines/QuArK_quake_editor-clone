@@ -227,7 +227,10 @@ class SKB_Surface:
             for j in xrange(0, vert.num_weights):
                 boneIndex = ConvertBoneNameToIndex[bonenames[j]]
                 weight_value = vert_weights[bonenames[j]]['weight_value']
-                vtx_offset = vert_weights[bonenames[j]]['vtx_offset']
+                try:
+                    vtx_offset = vert_weights[bonenames[j]]['vtx_offset']
+                except:
+                    vtx_offset = (0.0, 0.0, 0.0)
                 MYvtx_offset = (vertices[i] * weight_value).tuple
 
         #        boneIndex = data[0]
@@ -1130,7 +1133,10 @@ def savemodel(root, filename, gamename):
             # Now, recreate the relevant bone lists in this new order
             QuArK_bones_new = [None] * len(QuArKBoneNames)
             for QuArK_bone in QuArK_bones:
-                index = operator.indexOf(QuArKBoneNames, QuArK_bone.name)
+                try:
+                    index = operator.indexOf(QuArKBoneNames, QuArK_bone.name)
+                except:
+                    index = -1
                 if index == -1:
                     #Not found; add to back
                     QuArK_bones_new += [QuArK_bone]
@@ -1168,6 +1174,11 @@ quarkpy.qmdlbase.RegisterMdlExporter(".skb Alice\EF2\FAKK2 Exporter-mesh", ".skb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.7  2011/11/14 07:33:37  cdunde
+# Removed unused code and fixed baseframe exporting error.
+# Still needs more work, exporting mesh does not match original causing model to distort
+# and can not add new bones or assign them vertices without causing export blowup.
+#
 # Revision 1.6  2010/11/09 05:48:10  cdunde
 # To reverse previous changes, some to be reinstated after next release.
 #
