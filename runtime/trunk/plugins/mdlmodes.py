@@ -1051,11 +1051,6 @@ class BBoxMakerDragObject(parent):
         comp = editor.Root.currentcomponent
         quarkpy.mdleditor.setsingleframefillcolor(editor, view)
         plugins.mdlgridscale.gridfinishdrawing(editor, view)
-        cv = view.canvas()
-        if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] != "1":
-            for h in view.handles:
-                h.draw(view, cv, h)
-
         for v in editor.layout.views:
             bbox = quarkx.boundingboxof([rectangle])
             m = bbox[0].tuple
@@ -1183,6 +1178,9 @@ Lock_Z.state = int(quarkx.setupsubset(SS_MODEL, "Options")["setLock_Z"])
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.30  2011/03/02 04:38:24  cdunde
+# InfoBase link update.
+#
 # Revision 1.29  2011/03/01 08:09:20  cdunde
 # InfoBase link update.
 #
