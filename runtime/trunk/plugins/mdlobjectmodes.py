@@ -4635,6 +4635,7 @@ def selectmode(btn):
         tb2 = editor.layout.toolbars["tb_paintmodes"]
         tb3 = editor.layout.toolbars["tb_animation"]
         tb4 = editor.layout.toolbars["tb_edittools"]
+        tb5 = editor.layout.toolbars["tb_AxisLock"]
     except:
         return
     for b in tb1.tb.buttons:
@@ -4648,10 +4649,14 @@ def selectmode(btn):
     for b in range(len(tb4.tb.buttons)):
         if b == 7:
             tb4.tb.buttons[b].state = quarkpy.qtoolbar.normal
+    for b in range(len(tb5.tb.buttons)):
+        if b == 5:
+            tb5.tb.buttons[b].state = quarkpy.qtoolbar.normal
     quarkx.update(editor.form)
     quarkx.setupsubset(SS_MODEL, "Building").setint("ObjectMode", btn.i)
     quarkx.setupsubset(SS_MODEL, "Building").setint("PaintMode", 0)
     quarkx.setupsubset(SS_MODEL, "Options")["FaceCutTool"] = None
+    quarkx.setupsubset(SS_MODEL, "Options")["MakeBBox"] = None
     from quarkpy.mdlanimation import playlist, playNR
     if quarkpy.mdlanimation.playlist != []:
         editor.layout.explorer.sellist = quarkpy.mdlanimation.playlist
@@ -5621,6 +5626,9 @@ def ConvertPolyObject(editor, newobjectslist, flags, view, undomsg, option=1, nb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.20  2011/03/04 06:50:28  cdunde
+# Added new face cutting tool, for selected faces, like in the map editor with option to allow vertex separation.
+#
 # Revision 1.19  2009/10/12 20:49:56  cdunde
 # Added support for .md3 animationCFG (configuration) support and editing.
 #

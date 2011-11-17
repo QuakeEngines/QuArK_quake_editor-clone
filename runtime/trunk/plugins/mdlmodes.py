@@ -1115,14 +1115,25 @@ def BBoxClick(m):
     editor = mapeditor()
     quarkpy.qtoolbar.toggle(m)
     tb1 = editor.layout.toolbars["tb_AxisLock"]
+    tb2 = editor.layout.toolbars["tb_objmodes"]
+    tb3 = editor.layout.toolbars["tb_edittools"]
     if not MdlOption("MakeBBox"):
         quarkx.setupsubset(SS_MODEL, "Options")["MakeBBox"] = "1"
-        tb1.tb.buttons[5].state = qtoolbar.selected
+        quarkx.setupsubset(SS_MODEL, "Options")["FaceCutTool"] = None
+        tb1.tb.buttons[5].state = quarkpy.qtoolbar.selected
+        for b in range(len(tb2.tb.buttons)):
+            if b == 1:
+                tb2.tb.buttons[b].state = quarkpy.qtoolbar.selected
+            else:
+                tb2.tb.buttons[b].state = quarkpy.qtoolbar.normal
+        for b in range(len(tb3.tb.buttons)):
+            if b == 7:
+                tb3.tb.buttons[b].state = quarkpy.qtoolbar.normal
         quarkx.update(editor.form)
         editor.MouseDragMode = BBoxMakerDragObject
     else:
         quarkx.setupsubset(SS_MODEL, "Options")["MakeBBox"] = None
-        tb1.tb.buttons[5].state = qtoolbar.normal
+        tb1.tb.buttons[5].state = quarkpy.qtoolbar.normal
         quarkx.update(editor.form)
         editor.MouseDragMode = mdlhandles.RectSelDragObject
 
@@ -1178,6 +1189,9 @@ Lock_Z.state = int(quarkx.setupsubset(SS_MODEL, "Options")["setLock_Z"])
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.31  2011/11/16 07:40:29  cdunde
+# Removed handle drawing call to stop dupe drawing of them.
+#
 # Revision 1.30  2011/03/02 04:38:24  cdunde
 # InfoBase link update.
 #

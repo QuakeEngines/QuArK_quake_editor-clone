@@ -660,6 +660,7 @@ class AnimationBar(ToolBar):
             tb2 = editor.layout.toolbars["tb_objmodes"]
             tb3 = editor.layout.toolbars["tb_paintmodes"]
             tb4 = editor.layout.toolbars["tb_edittools"]
+            tb5 = editor.layout.toolbars["tb_AxisLock"]
             for b in range(len(tb2.tb.buttons)):
                 if b == 1:
                     tb2.tb.buttons[b].state = qtoolbar.selected
@@ -670,12 +671,16 @@ class AnimationBar(ToolBar):
             for b in range(len(tb4.tb.buttons)):
                 if b == 7:
                     tb4.tb.buttons[b].state = qtoolbar.normal
+            for b in range(len(tb5.tb.buttons)):
+                if b == 5:
+                    tb5.tb.buttons[b].state = qtoolbar.normal
         except:
             pass
         quarkx.update(editor.form)
         quarkx.setupsubset(SS_MODEL, "Building").setint("ObjectMode", 0)
         quarkx.setupsubset(SS_MODEL, "Building").setint("PaintMode", 0)
         quarkx.setupsubset(SS_MODEL, "Options")["FaceCutTool"] = None
+        quarkx.setupsubset(SS_MODEL, "Options")["MakeBBox"] = None
         editor.MouseDragMode = mdlhandles.RectSelDragObject
         for view in editor.layout.views:
             if MapOption("CrossCursor", SS_MODEL):
@@ -744,6 +749,7 @@ class AnimationBar(ToolBar):
             tb2 = editor.layout.toolbars["tb_objmodes"]
             tb3 = editor.layout.toolbars["tb_paintmodes"]
             tb4 = editor.layout.toolbars["tb_edittools"]
+            tb5 = editor.layout.toolbars["tb_AxisLock"]
             for b in range(len(tb2.tb.buttons)):
                 if b == 1:
                     tb2.tb.buttons[b].state = qtoolbar.selected
@@ -754,12 +760,16 @@ class AnimationBar(ToolBar):
             for b in range(len(tb4.tb.buttons)):
                 if b == 7:
                     tb4.tb.buttons[b].state = qtoolbar.normal
+            for b in range(len(tb5.tb.buttons)):
+                if b == 5:
+                    tb5.tb.buttons[b].state = qtoolbar.normal
         except:
             pass
         quarkx.update(editor.form)
         quarkx.setupsubset(SS_MODEL, "Building").setint("ObjectMode", 0)
         quarkx.setupsubset(SS_MODEL, "Building").setint("PaintMode", 0)
         quarkx.setupsubset(SS_MODEL, "Options")["FaceCutTool"] = None
+        quarkx.setupsubset(SS_MODEL, "Options")["MakeBBox"] = None
         editor.MouseDragMode = mdlhandles.RectSelDragObject
         for view in editor.layout.views:
             if MapOption("CrossCursor", SS_MODEL):
@@ -812,12 +822,16 @@ class AnimationBar(ToolBar):
                             playlistcount = playlistcount + 1
         try:
             tb2 = editor.layout.toolbars["tb_objmodes"]
+            tb3 = editor.layout.toolbars["tb_AxisLock"]
             tb4 = editor.layout.toolbars["tb_edittools"]
             for b in range(len(tb2.tb.buttons)):
                 if b == 1:
                     tb2.tb.buttons[b].state = qtoolbar.selected
                 else:
                     tb2.tb.buttons[b].state = qtoolbar.normal
+            for b in range(len(tb3.tb.buttons)):
+                if b == 5:
+                    tb3.tb.buttons[b].state = qtoolbar.normal
             for b in range(len(tb4.tb.buttons)):
                 if b == 7:
                     tb4.tb.buttons[b].state = qtoolbar.normal
@@ -825,6 +839,7 @@ class AnimationBar(ToolBar):
             pass
         quarkx.update(editor.form)
         quarkx.setupsubset(SS_MODEL, "Building").setint("ObjectMode", 0)
+        quarkx.setupsubset(SS_MODEL, "Options")["MakeBBox"] = None
         quarkx.setupsubset(SS_MODEL, "Options")["FaceCutTool"] = None
         editor.MouseDragMode = mdlhandles.RectSelDragObject
 
@@ -1086,6 +1101,9 @@ class AnimationBar(ToolBar):
 #
 #
 #$Log$
+#Revision 1.26  2011/03/04 06:50:28  cdunde
+#Added new face cutting tool, for selected faces, like in the map editor with option to allow vertex separation.
+#
 #Revision 1.25  2011/02/12 08:36:37  cdunde
 #Fixed auto turn off of Objects Maker not working with other toolbars.
 #

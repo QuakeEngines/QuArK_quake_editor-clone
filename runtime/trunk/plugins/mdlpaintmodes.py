@@ -2696,6 +2696,7 @@ def selectmode(btn):
         tb2 = editor.layout.toolbars["tb_objmodes"]
         tb3 = editor.layout.toolbars["tb_animation"]
         tb4 = editor.layout.toolbars["tb_edittools"]
+        tb5 = editor.layout.toolbars["tb_AxisLock"]
     except:
         return
     select1(btn, tb1, editor)
@@ -2710,11 +2711,15 @@ def selectmode(btn):
     for b in range(len(tb4.tb.buttons)):
         if b == 7:
             tb4.tb.buttons[b].state = quarkpy.qtoolbar.normal
+    for b in range(len(tb5.tb.buttons)):
+        if b == 5:
+            tb5.tb.buttons[b].state = quarkpy.qtoolbar.normal
     paintcursor(editor)
     quarkx.update(editor.form)
     quarkx.setupsubset(SS_MODEL, "Building").setint("PaintMode", PaintModes[btn.i][1])
     quarkx.setupsubset(SS_MODEL, "Building").setint("ObjectMode", 0)
     quarkx.setupsubset(SS_MODEL, "Options")["FaceCutTool"] = None
+    quarkx.setupsubset(SS_MODEL, "Options")["MakeBBox"] = None
     editor.MouseDragMode = quarkpy.mdlhandles.RectSelDragObject
     from quarkpy.mdlanimation import playlist, playNR
     if quarkpy.mdlanimation.playlist != []:
@@ -2831,6 +2836,9 @@ quarkpy.mdltoolbars.toolbars["tb_paintmodes"] = PaintModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.7  2011/03/04 06:50:28  cdunde
+# Added new face cutting tool, for selected faces, like in the map editor with option to allow vertex separation.
+#
 # Revision 1.6  2011/02/12 08:36:37  cdunde
 # Fixed auto turn off of Objects Maker not working with other toolbars.
 #
