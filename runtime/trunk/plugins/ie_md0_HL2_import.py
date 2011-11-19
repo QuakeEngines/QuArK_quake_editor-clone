@@ -39,6 +39,7 @@ textlog = "HL2mdl_ie_log.txt"
 progressbar = None
 editor = None
 SpecsList = """ """
+framename = None
 
 ######################################################
 # MDL Flag Settings from -> studio.h
@@ -4698,6 +4699,7 @@ class Object(object):
                     frame_name = anim.pszName.replace("@", "") + " frame " + str(m_frame+1)
                     new_frame = baseframe.copy()
                     new_frame.shortname = frame_name
+                    new_frame['frame_flags'] = str(anim.flags)
                     newverts = [quarkx.vect(0.0, 0.0, 0.0)] * len(meshverts)
                     for bone_index in xrange(bones_names_count):
                         pbone = self.main_mdl_bones[bone_index]
@@ -4998,6 +5000,27 @@ def dataformname(o):
     # Next line calls for the External Skin Editor Module in mdlentities.py to be used.
     external_skin_editor_dialog_plugin = quarkpy.mdlentities.UseExternalSkinEditor()
 
+    # Next lines create the spacific items for a frame if the o object is a selected frame.
+    if o.type == ":mf":
+        flag_items = []
+        flag__values = []
+        flag_items = flag_items + ['"None"$0D']
+        flag_items = flag_items + ['"non-looping"$0D']
+        flag_items = flag_items + ['"looping"']
+        flag__values = flag__values + ['"None"$0D']
+        flag__values = flag__values + ['"0"$0D']
+        flag__values = flag__values + ['"1"']
+
+        frame_items = """sep: = { Typ="S" Txt="" } frame_flags: = {Typ = "CL" Txt = "frame flags" items = """
+        for item in flag_items:
+            frame_items = frame_items + item
+
+        frame_items = frame_items + """ values = """
+        for item in flag__values:
+            frame_items = frame_items + item
+
+        frame_items = frame_items + """ Hint="List of available frame flags."$0D"Will be applied to all 'group' frames (starting with the same name)."$0D"non-looping = 0 (default), looping = 1"}"""
+
     # Next line calls for the Vertex Weights Specifics Module in mdlentities.py to be used.
     vertex_weights_specifics_plugin = quarkpy.mdlentities.UseVertexWeightsSpecifics()
 
@@ -5006,12 +5029,15 @@ def dataformname(o):
 
     dlgdef = """
     {
-      Help = "These are the Specific settings for Half-Life 2 (.mdl) model types."$0D
+      Help = "These are the Specific settings for Half-Life 1 & 2 (.mdl) model types."$0D
              "mdl models use 'meshes' the same way that QuArK uses 'components'."$0D
              "Each can have its own special Surface or skin texture settings."$0D
              "These textures have a 'material' (or shader) .vmf file that they use for special effects."$0D0D22
              "skin name"$22" - The currently selected skin texture name."$0D22
              "edit skin"$22" - Opens this skin texture in an external editor (can not open .vtf files)."$0D22
+             "frame_flags"$22" - (Appears when frame is selected) List of available frame flags."$0D
+             "        Will be applied to all 'group' frames (starting with the same name)."$0D
+             "        non-looping = 0 (default), looping = 1"$0D22
              "shader file"$22" - Gives the full path and name of the .vmf material"$0D
              "           shader file that the selected skin texture uses, if any."$0D22
              "shader name"$22" - Gives the name of the shader located in the above file"$0D
@@ -5024,10 +5050,11 @@ def dataformname(o):
              "          This can be copied to a text file, changed and saved."
       skin_name:      = {t_ModelEditor_texturebrowser = ! Txt="skin name"    Hint="The currently selected skin texture name."}
       """ + external_skin_editor_dialog_plugin + """
-      """ + vertex_weights_specifics_plugin + """
-      """ + Shader_dialog_plugin + """
-    }
     """
+    if o.type == ":mf":
+        dlgdef = dlgdef + """""" + frame_items + """"""
+    dlgdef = dlgdef + """""" + vertex_weights_specifics_plugin + """
+    """ + Shader_dialog_plugin + """}"""
 
     editor = quarkpy.mdleditor.mdleditor # Get the editor.
     ico_mdlskv = ico_dict['ico_mdlskv']  # Just to shorten our call later.
@@ -5073,6 +5100,62 @@ def dataformname(o):
         DummyItem = DummyItem.parent
     comp = DummyItem
 
+    # This sections handles the data for this model type frame page form.
+    if o.type == ":mf":
+        global framename
+        if comp.dictspec.has_key('frame_flags'):
+            if o.dictspec.has_key('frame_flags'):
+                if framename is not None and o.name.startswith(framename):
+                    if comp.dictspec['frame_flags'] == "None":
+                        frame_flags = "" # Update group frames here.
+                        frames = o.parent.subitems
+                        group = None
+                        for frame in frames:
+                            if frame.name.startswith(framename):
+                                frame['frame_flags'] = frame_flags
+                                group = 1
+                            elif group is not None:
+                                break
+                    elif comp.dictspec['frame_flags'] != o.dictspec['frame_flags']:
+                        frame_flags = comp.dictspec['frame_flags'] # Update group frames here.
+                        frames = o.parent.subitems
+                        group = None
+                        for frame in frames:
+                            if frame.name.startswith(framename):
+                                frame['frame_flags'] = frame_flags
+                                group = 1
+                            elif group is not None:
+                                break
+            else:
+                if comp.dictspec['frame_flags'] != "None" and (framename is not None and o.name.startswith(framename)):
+                    frame_flags = comp.dictspec['frame_flags'] # Update group frames here.
+                    frames = o.parent.subitems
+                    group = None
+                    for frame in frames:
+                        if frame.name.startswith(framename):
+                            frame['frame_flags'] = frame_flags
+                            group = 1
+                        elif group is not None:
+                            break
+        else:
+            comp['frame_flags'] = "None"
+        framename = o.shortname.split(" ")[0]
+        if framename[len(framename)-1].isdigit():
+            list = []
+            for i in framename:
+                list.append(i)
+            list.reverse()
+            for i in list:
+                if i.isdigit():
+                    list.remove(i)
+                    continue
+                if not i.isdigit():
+                    break
+            list.reverse()
+            framename = ""
+            for i in list:
+                framename += i
+
     if comp.type == ":mc": # Just makes sure what we have is a model component.
         if comp.dictspec.has_key('shader_file') and o.dictspec.has_key('shader_file') and comp.dictspec.has_key('mesh_shader') and o.dictspec.has_key('mesh_shader'):
             if comp.dictspec['shader_file'] == o.dictspec['shader_file'] and comp.dictspec['mesh_shader'] != o.dictspec['mesh_shader']:
@@ -5094,6 +5177,14 @@ def dataforminput(o):
         DummyItem = DummyItem.parent
     if DummyItem.type == ":mc":
         comp = DummyItem
+
+        # This sections handles the data for this model type frame page form.
+        if o.type == ":mf":
+            if o.dictspec.has_key('frame_flags'):
+                comp['frame_flags'] = o.dictspec['frame_flags']
+            else:
+                comp['frame_flags'] = "None"
+
         # This sections handles the data for this model type skin page form.
         # This makes sure what is selected is a model skin, if so it fills the Skin page data and adds the items to the component.
         # It also handles the shader file which its name is the full path and name of the skin texture.
@@ -5245,6 +5336,9 @@ def UIImportDialog(MDL, file, editor, filename, ComponentList, QuArK_bones, hitb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.10  2011/05/25 20:55:03  cdunde
+# Revamped Bounding Box system for more flexibility with model formats that do not have bones, only single or multi components.
+#
 # Revision 1.9  2011/04/07 19:07:37  cdunde
 # Update to change all print statements over to logging system.
 #

@@ -2001,6 +2001,7 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
                         frame_name = seq_name + " frame " + str(m_frame+1)
                         new_frame = baseframe.copy()
                         new_frame.shortname = frame_name
+                        new_frame['frame_flags'] = str(seq.flags)
                         newverts = [quarkx.vect(0.0, 0.0, 0.0)] * len(meshverts)
                         for bone_index in range(len(QuArK_bones)):
                             pbone = QuArK_bones[bone_index]
@@ -2357,6 +2358,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".mdl Half-Life1 Importer", ".mdl file", "*
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.7  2011/11/08 01:41:20  cdunde
+# Removed some unused code.
+#
 # Revision 1.6  2011/10/25 19:47:05  cdunde
 # Some file cleanup.
 #
