@@ -22,7 +22,7 @@ Info = {
    "author e-mail": "cdunde@sbcglobal.net",
    "quark":         "Version 6.6.0 Beta 4" }
 
-import struct, sys, os, time, operator, math
+import struct, sys, os, time, math
 from math import sqrt
 import quarkx
 import quarkpy.qutils
@@ -118,93 +118,90 @@ skdJointType = [
 
 class SKD_Bone:
     #Header Structure      #item of data file, size & type,   description.
-    if file_version == 5: # MOHAA
-        name = ""              #item   0-31   32 char, the bone's name.
-        parent = ""            #item   32-63  32 char, the bone's parent name.
-        jointType = 0          #item   64     1 signed short int, see skdJointType list description above.
-        ofsValues = 0          #item   65     1 signed short int, constant = number of SKD_Bone header in bytes.
-        ofsChannels = 0        #item   66     1 signed short int, ofsChannels - ofsValues = skdJointType in bytes.
-        ofsRefs = 0            #item   67     1 signed short int, unknown but ofsEnd - ofsRefs = 24bytes maybe 7h at 2 bytes per h.
-        ofsEnd = 0             #item   68     1 signed short int.
-        binary_format="<32c32c5i"  #little-endian (<), see #item descriptions above.
+    name = ""              #item   0-31   32 char, the bone's name.
+    parent = ""            #item   32-63  32 char, the bone's parent name.
+    jointType = 0          #item   64     1 signed short int, see skdJointType list description above.
+    ofsValues = 0          #item   65     1 signed short int, constant = number of SKD_Bone header in bytes.
+    ofsChannels = 0        #item   66     1 signed short int, ofsValues + skdJointType in bytes (6 floats for type 0).
+    ofsRefs = 0            #item   67     1 signed short int, ofsChannels + the bone's name, 1 byte per letter + 5 bytes for ' rot\x00' including the blank space for type 0.
+    ofsEnd = 0             #item   68     1 signed short int, usually the same as ofsRefs for type 0.
+    binary_format="<32c32c5i"  #little-endian (<), see #item descriptions above.
 
-        values = []            # A list to store a bone's Channels data in.
-        channels = "None"      # String giving the bone name(s) and "pos", "rot" and "rotFK" of what the above Channel data values are.
-        refs = "None"          # String referencing another bone's name OR replaces "channels" above when it is "None".
-        parent_index = -1      # For our own use while loading the files bones.
+    values = []            # A list to store a bone's Channels data in.
+    channels = "None"      # String giving the bone name(s) and "pos", "rot" and "rotFK" of what the above Channel data values are.
+    refs = "None"          # String referencing another bone's name OR replaces "channels" above when it is "None".
+    parent_index = -1      # For our own use while loading the files bones.
 
     def __init__(self):
-        if file_version == 5: # MOHAA
-            self.name = ""
-            self.parent = ""
-            self.jointType = 0
-            self.ofsValues = 0
-            self.ofsChannels = 0
-            self.ofsRefs = 0
-            self.ofsEnd = 0
-            self.binary_format="<32c32c5i"  #little-endian (<), see #item descriptions above.
+        self.name = ""
+        self.parent = ""
+        self.jointType = 0
+        self.ofsValues = 0
+        self.ofsChannels = 0
+        self.ofsRefs = 0
+        self.ofsEnd = 0
+        self.binary_format="<32c32c5i"  #little-endian (<), see #item descriptions above.
 
-            self.values = []
-            self.channels = "None"
-            self.refs = "None"
-            self.parent_index = -1
+        self.values = []
+        self.channels = "None"
+        self.refs = "None"
+        self.parent_index = -1
 
     def load(self, file):
         start_pos = file.tell()
         temp_data = file.read(struct.calcsize(self.binary_format))
         data = struct.unpack(self.binary_format, temp_data)
 
-        if file_version == 5: # MOHAA
-            char = 32 # See above data items.
-            for c in xrange(0, char):
-                if data[c] == "\x00":
-                    continue
-                self.name = self.name + data[c]
-            char = 32 + 32 # See above data items.
-            for c in xrange(32, char):
-                if data[c] == "\x00":
-                    continue
-                self.parent = self.parent + data[c]
-            self.jointType = data[64]
-            self.ofsValues = data[65]
-            self.ofsChannels = data[66]
-            self.ofsRefs = data[67]
-            self.ofsEnd = data[68]
+        char = 32 # See above data items.
+        for c in xrange(0, char):
+            if data[c] == "\x00":
+                continue
+            self.name = self.name + data[c]
+        char = 32 + 32 # See above data items.
+        for c in xrange(32, char):
+            if data[c] == "\x00":
+                continue
+            self.parent = self.parent + data[c]
+        self.jointType = data[64]
+        self.ofsValues = data[65]
+        self.ofsChannels = data[66]
+        self.ofsRefs = data[67]
+        self.ofsEnd = data[68]
 
-            # After reading the bone header we read in the bone's pos and quat and FK values.
-            file.seek(start_pos + self.ofsValues, 0)
-            binary_format = skdJointType[self.jointType]
+        # After reading the bone header we read in the bone's pos and quat and FK values.
+        file.seek(start_pos + self.ofsValues, 0)
+        binary_format = skdJointType[self.jointType]
+        temp_data = file.read(struct.calcsize(binary_format))
+        self.values = struct.unpack(binary_format, temp_data)
+
+        # Now we read the bone's Channels data (if any).
+        if self.ofsChannels != self.ofsRefs:
+            file.seek(start_pos + self.ofsChannels, 0)
+            binary_format = "<%ds" % (self.ofsRefs - self.ofsChannels)
             temp_data = file.read(struct.calcsize(binary_format))
-            self.values = struct.unpack(binary_format, temp_data)
+            self.channels = struct.unpack(binary_format, temp_data)
 
-            # Now we read the bone's Channels data (if any).
-            if self.ofsChannels != self.ofsRefs:
-                file.seek(start_pos + self.ofsChannels, 0)
-                binary_format = "<%ds" % (self.ofsRefs - self.ofsChannels)
-                temp_data = file.read(struct.calcsize(binary_format))
-                self.channels = struct.unpack(binary_format, temp_data)
-
-            # Now we read the bone's Refs data (if any).
-            if self.ofsRefs != self.ofsEnd:
-                file.seek(start_pos + self.ofsRefs, 0)
-                binary_format = "<%ds" % (self.ofsEnd - self.ofsRefs)
-                temp_data = file.read(struct.calcsize(binary_format))
-                self.refs = struct.unpack(binary_format, temp_data)[0].split('\x00')[:-1]
+        # Now we read the bone's Refs data (if any).
+        if self.ofsRefs != self.ofsEnd:
+            file.seek(start_pos + self.ofsRefs, 0)
+            binary_format = "<%ds" % (self.ofsEnd - self.ofsRefs)
+            temp_data = file.read(struct.calcsize(binary_format))
+            self.refs = struct.unpack(binary_format, temp_data)[0].split('\x00')[:-1]
 
     def dump(self):
-        if file_version == 5: # MOHAA
-            tobj.logcon ("bone name: " + str(self.name))
-            tobj.logcon ("bone parent: " + str(self.parent))
-            tobj.logcon ("parent_index: " + str(self.parent_index))
-            tobj.logcon ("jointType: " + str(self.jointType))
-            tobj.logcon ("ofsValues: " + str(self.ofsValues))
-            tobj.logcon ("ofsChannels: " + str(self.ofsChannels))
-            tobj.logcon ("ofsRefs: " + str(self.ofsRefs))
-            tobj.logcon ("ofsEnd: " + str(self.ofsEnd))
-            tobj.logcon ("bone values: " + str(self.values))
-            tobj.logcon ("bone channels: " + str(self.channels))
-            tobj.logcon ("bone refs: " + str(self.refs))
-            tobj.logcon ("")
+        tobj.logcon ("bone name: " + str(self.name))
+        tobj.logcon ("bone parent: " + str(self.parent))
+        tobj.logcon ("parent_index: " + str(self.parent_index))
+        tobj.logcon ("jointType: " + str(self.jointType))
+        tobj.logcon ("ofsValues: " + str(self.ofsValues))
+        tobj.logcon ("ofsChannels: " + str(self.ofsChannels))
+        tobj.logcon ("ofsRefs: " + str(self.ofsRefs))
+        tobj.logcon ("ofsEnd: " + str(self.ofsEnd))
+        tobj.logcon ("bone values: " + str(self.values))
+        tobj.logcon ("bone channels: " + str(self.channels))
+        tobj.logcon ("bone refs: " + str(self.refs))
+      #  tobj.logcon ("bonelist" + str(bonelist[bones[boneIndex].name]['frames']['baseframe:mf']))
+        tobj.logcon ("")
 
     def dump_baseframe(self):
         tobj.logcon ("bone name: " + str(self.name))
@@ -310,7 +307,7 @@ class SKD_Surface:
 
                 if logging == 1:
                     tobj.logcon ("  weight " + str(j))
-                    tobj.logcon ("    boneIndex " + str(boneIndex))
+                    tobj.logcon ("    boneIndex, name " + str(boneIndex) + ", " + bones[boneIndex].name)
                     tobj.logcon ("    weight_value " + str(weight_value))
                     tobj.logcon ("    vtx_offset " + str(vtx_offset))
                   #  tobj.logcon ("    bonevtxlist " + str(bonevtxlist[bones[boneIndex].name][i]))
@@ -563,7 +560,7 @@ class skd_obj:
         FullPathName = file.name.replace("\\", "/")
         # FolderPath is the full path to the model's folder w/o slash at end.
         FolderPath = FullPathName.rsplit("/", 1)
-        FolderPath, ModelName = FolderPath[0], FolderPath[1]
+        FolderPath, ModelName = FolderPath[0], FolderPath[1].split(".")[0]
         # ModelFolder is just the model file's FOLDER name without any path, slashes or the ".skd" file name.
         # Probably best to use ModelFolder to keep all the tags and bones (if any) together for a particular model.
         ModelFolder = FolderPath.rsplit("/", 1)[1]
@@ -651,13 +648,10 @@ class skd_obj:
                             break
                     if bone.parent == "worldbone":
                         QuArK_Bone['parent_name'] = "None"
-                        QuArK_Bone.position = quarkx.vect(0.0,0.0,0.0)
                         QuArK_Bone['bone_length'] = (0.0,0.0,0.0)
                     else:
                         parent = self.bones[bone.parent_index]
                         QuArK_Bone['parent_name'] = parent.name
-                        QuArK_Bone.position = parent.position + quarkx.vect(8.0,2.0,2.0)
-                        QuArK_Bone['bone_length'] = (8.0,2.0,2.0)
 
                     QuArK_Bone['flags'] = (0,0,0,0,0,0)
                     QuArK_Bone.vtxlist = {}
@@ -688,8 +682,6 @@ class skd_obj:
                 tobj.logcon ("No bones to load into editor")
                 tobj.logcon ("")
             else:
-                scale = 1.0 / 1024.0 # Applies to POS to avoid division by zero errors.
-                factor = 1.0 / 32767.0 # Applies to QUAT to convert rotation values into quaternion-units
                 bonelist = editor.ModelComponentList['bonelist']
                 for i in xrange(0, self.numBones):
                     QuArK_Bone = self.bones[i]
@@ -843,6 +835,8 @@ class skd_obj:
                     QuArK_Bone.position = pos
                     QuArK_Bone['position'] = QuArK_Bone.position.tuple
                     QuArK_Bone.rotmatrix = rotmatrix
+                    parent = self.bones[bone.parent_index]
+                    QuArK_Bone['bone_length'] = (pos - parent.position).tuple
                     bone_data = {}
                     bone_data['SKD_position'] = old_pos.tuple
                     bone_data['position'] = QuArK_Bone.position.tuple
@@ -877,10 +871,7 @@ class skd_obj:
 
             file.seek(self.ofsSurfaces + next_surf_offset,0)
             surface = SKD_Surface()
-            name = self.name.replace("\\", "/")
-            name = name.rsplit("/", 1)
-            name = name[len(name)-1]
-            Comp_name = ModelFolder + "_" + name + str(i+1)
+            Comp_name = ModelFolder + "_" + ModelName
             Component = quarkx.newobj(Comp_name + ':mc')
             Component['skinsize'] = (256, 256)
             Component['show'] = chr(1)
@@ -914,16 +905,17 @@ class skd_obj:
             self.ComponentList.append(Component)
 
         # To sort and place the components in their proper order.
-        import operator
         templist = []
-        for name in range(len(self.ComponentList)):
-            try:
-                itemindex = operator.indexOf(self.ComponentList, self.ComponentList[name])
-            except:
-                pass
-            else:
-                templist = templist + [self.ComponentList[itemindex]]
-        self.ComponentList = templist
+        newlist = []
+        for Comp in self.ComponentList:
+            templist.append(Comp.name)
+        templist.sort()
+        for i in range(len(templist)):
+            for Comp in self.ComponentList:
+                if Comp.name == templist[i]:
+                    newlist.append(Comp)
+                    break
+        self.ComponentList = newlist
         return self, message
 
     def dump(self):
@@ -952,7 +944,7 @@ class skd_obj:
 ######################################################
 # SKC data structures
 ######################################################
-class SKC_Channel:
+class SKC_Frame_Channel:
     #Header Structure       #item of data file, size & type,   description.
     values = (0.0)*4        #item   0    0-3   4 floats, a bone's rot, quat or rotFK (rotation Forward Kinematics) values.
 
@@ -968,7 +960,7 @@ class SKC_Channel:
         self.values = (data[0], data[1], data[2], data[3])
 
     def dump(self):
-        tobj.logcon ("channel values: " + str(self.values))
+        tobj.logcon ("Frame_Channel values: " + str(self.values))
         tobj.logcon ("")
 
 class SKC_Frame:
@@ -1005,9 +997,9 @@ class SKC_Frame:
         current_pointer_count = file.tell()
         file.seek(self.ofsChannelData,0)
         for i in xrange(0, skcobj.numChannels):
-            channel = SKC_Channel()
+            channel = SKC_Frame_Channel()
             channel.load(file)
-            self.Channels += [channel.values]
+            self.Channels.append(channel)
 
         for i in xrange(0, len(QuArK_bones)):
             bone = QuArK_bones[i]
@@ -1023,7 +1015,7 @@ class SKC_Frame:
                 channels = skcobj.QuArK_Index2Channels[i]
                 for ChannelType in channels.keys():
                     ChannelIndex = channels[ChannelType]
-                    channel = self.Channels[ChannelIndex]
+                    channel = self.Channels[ChannelIndex].values
                     if ChannelType == "pos":
                         pos = quarkx.vect(channel[0], channel[1], channel[2])
                     elif ChannelType == "rot":
@@ -1034,9 +1026,9 @@ class SKC_Frame:
                         quat = (channel[0], channel[1], channel[2], channel[3])
                         tempmatrix = quaternion2matrix(quat)
                         rotFK = quarkx.matrix((tempmatrix[0][0], tempmatrix[0][1], tempmatrix[0][2]), (tempmatrix[1][0], tempmatrix[1][1], tempmatrix[1][2]), (tempmatrix[2][0], tempmatrix[2][1], tempmatrix[2][2]))
-            if logging == 1:
-                tobj.logcon ("channel " + str(i) + ":")
-                channel.dump()
+                    if logging == 1:
+                        tobj.logcon ("channel " + str(i) + ":")
+                        self.Channels[ChannelIndex].dump()
             # Resolve absolute channel position and rotation
             parent_index = parent_indexes[i]
             if parent_index != -1:
@@ -1310,7 +1302,7 @@ class skc_obj:
         for i in xrange(0, numComponents):
             comp_names = comp_names + [Components[i].name]
             old_framesgroup = Components[i].dictitems['Frames:fg']
-            baseframes = baseframes + [old_framesgroup.subitems[0]]
+            baseframes = baseframes + [old_framesgroup.dictitems['baseframe:mf']]
             if Exist_Comps != []:
                 old_framesgroup = Exist_Comps[i].dictitems['Frames:fg']
                 new_framesgroup = old_framesgroup.copy()
@@ -1742,6 +1734,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".skd MOHAA Importer-mesh", ".skd file", "*
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.12  2011/05/11 04:15:09  cdunde
+# To fix typo error.
+#
 # Revision 1.11  2011/05/11 04:04:48  cdunde
 # Primarily to correct joint_type comments at top of file and some cleanup.
 #
