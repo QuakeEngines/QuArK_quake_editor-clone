@@ -186,7 +186,8 @@ class SKD_Bone:
             file.seek(start_pos + self.ofsRefs, 0)
             binary_format = "<%ds" % (self.ofsEnd - self.ofsRefs)
             temp_data = file.read(struct.calcsize(binary_format))
-            self.refs = struct.unpack(binary_format, temp_data)[0].split('\x00')[:-1]
+            self.refs = struct.unpack(binary_format, temp_data)
+            self.refs = self.refs[0].split('\x00')[:-1]
 
     def dump(self):
         tobj.logcon ("bone name: " + str(self.name))
@@ -283,7 +284,6 @@ class SKD_Surface:
         bonelist = editor.ModelComponentList['bonelist']
         bonevtxlist = editor.ModelComponentList[comp_name]['bonevtxlist']
         weightvtxlist = editor.ModelComponentList[comp_name]['weightvtxlist']
-        m = quarkx.matrix((1.,0.,0.),(0.,1.,0.),(0.,0.,1.))
         for i in xrange(0, self.numVerts):
             skd_vert = SKD_Vertex()
             skd_vert.load(file)
@@ -303,7 +303,6 @@ class SKD_Surface:
                 boneIndex = w.boneIndex
                 weight_value = w.weight_value
                 vtx_offset = w.vtx_offset
-                jointType = bonelist[bones[boneIndex].name]['frames']['baseframe:mf']['SKD_JointType']
 
                 if logging == 1:
                     tobj.logcon ("  weight " + str(j))
@@ -322,7 +321,7 @@ class SKD_Surface:
             weightvtxlist[i] = vtxweight
             if total_weight == 0.0:
                 total_weight = 1.0
-            mesh = mesh + (m * (pos/total_weight)).tuple
+            mesh = mesh + (pos/total_weight).tuple
 
             if logging == 1:
               #  tobj.logcon ("    vtxweight " + str(weightvtxlist[i]))
@@ -846,12 +845,13 @@ class skd_obj:
                         bone_data['SKD_rotmatrixFK'] = rotmatrix_rotFK.tuple
                     bone_data['SKD_JointType'] = bone.jointType
                     bone_data['SKD_jointWeight'] = jointWeight
+                    bone_data['SKD_JointChannels'] = bone.channels
                     if bone.refs != "None":
                         #Needs to QuArK-ify the bonenames
                         bone_refs = []
                         for bone_ref in bone.refs:
                             bone_refs += [ModelFolder + "_" + bone_ref + ":bone"]
-                        bone_data['SKD_refs'] = bone_refs
+                        bone_data['SKD_JointRefs'] = bone_refs
                     bonelist[QuArK_Bone.name]['frames']['baseframe:mf'] = bone_data
 
                  #   bone.basejunk1 = data[7]
@@ -1052,8 +1052,8 @@ class SKC_Frame:
                 ### ankle helper bones rot gets changed here with reference bone's rot and processed correctly.
                 if (jointType == 5) or (jointType == 6):
                     if bone.name.find("ankle") == -1:
-                        if bonelist[bone.name]['frames']['baseframe:mf'].has_key('SKD_refs'):
-                            bone_refs = bonelist[bone.name]['frames']['baseframe:mf']['SKD_refs']
+                        if bonelist[bone.name]['frames']['baseframe:mf'].has_key('SKD_JointRefs'):
+                            bone_refs = bonelist[bone.name]['frames']['baseframe:mf']['SKD_JointRefs']
                         else:
                             bone_refs = None
                         if bone_refs is None:
@@ -1064,8 +1064,8 @@ class SKC_Frame:
                             for bone_ref in bone_refs:
                                 rot = quarkx.matrix(bonelist[bone_ref]['frames'][frame_name]['rotmatrix'])
                     else:
-                        if bonelist[bone.name]['frames']['baseframe:mf'].has_key('SKD_refs'):
-                            bone_refs = bonelist[bone.name]['frames']['baseframe:mf']['SKD_refs']
+                        if bonelist[bone.name]['frames']['baseframe:mf'].has_key('SKD_JointRefs'):
+                            bone_refs = bonelist[bone.name]['frames']['baseframe:mf']['SKD_JointRefs']
                         else:
                             bone_refs = None
                         if bone_refs is not None:
@@ -1734,6 +1734,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".skd MOHAA Importer-mesh", ".skd file", "*
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.13  2011/11/24 02:38:15  cdunde
+# File cleanup and corrections.
+#
 # Revision 1.12  2011/05/11 04:15:09  cdunde
 # To fix typo error.
 #
