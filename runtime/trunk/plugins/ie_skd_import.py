@@ -904,18 +904,6 @@ class skd_obj:
             self.surfaceList.append(surface)
             self.ComponentList.append(Component)
 
-        # To sort and place the components in their proper order.
-        templist = []
-        newlist = []
-        for Comp in self.ComponentList:
-            templist.append(Comp.name)
-        templist.sort()
-        for i in range(len(templist)):
-            for Comp in self.ComponentList:
-                if Comp.name == templist[i]:
-                    newlist.append(Comp)
-                    break
-        self.ComponentList = newlist
         return self, message
 
     def dump(self):
@@ -1734,6 +1722,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".skd MOHAA Importer-mesh", ".skd file", "*
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.14  2011/12/01 07:00:11  cdunde
+# Update and remove unused code.
+#
 # Revision 1.13  2011/11/24 02:38:15  cdunde
 # File cleanup and corrections.
 #
