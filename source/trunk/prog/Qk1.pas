@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.91  2011/07/31 16:30:23  danielpharos
+Massive moving around of QuArK SAS stuff and SteamFS things.
+
 Revision 1.90  2010/06/13 16:13:26  danielpharos
 Stop weird item from appearing on Model import from QuArK Explorer.
 
@@ -776,6 +779,8 @@ begin
    Splash.Release;
    Application.ProcessMessages;
  end;
+
+ Log(LOG_VERBOSE, 'Preparing QuArK Explorer...');
 
 (*ImageList1.Handle:=ImageList_LoadImage(HInstance, MakeIntResource(101),
   16, 2, clTeal, Image_Bitmap, 0);
