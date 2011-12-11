@@ -343,9 +343,7 @@ class SKD_Surface:
             # boneIndex         item   0    int, the bone index number in list order.
             # weight_value      item   1    float, this is the QuArK ModelComponentList['weightvtxlist'][vertex]['weight_value']
             # vtx_offset        item   2-4  3 floats, offset between the bone position and a vertex's position.
-            verts_pointer = verts_pointer + (vert.num_weights * (5 * 4))
-        #    binary_format = "<if3f"
-        #    vtxweight = {}
+            verts_pointer = verts_pointer + (vert.num_weights * (5 * 4)) # binary_format = "<if3f" or 5 items @ 4 bytes ea.
             pos = vertices[i]
             for j in xrange(0, vert.num_weights):
                 boneIndex = ConvertBoneNameToIndex[bonenames[j]]
@@ -382,7 +380,7 @@ class SKD_Surface:
         # CollapseMap data here - the reduction of number of model mesh faces when viewed further away.
         self.ofsCollapseMap = self.ofsVerts + verts_pointer
         self.ofsCollapseIndex = self.ofsCollapseMap + (self.numVerts * 4)
-      #  self.ofsEnd = self.ofsCollapseIndex + (self.numVerts * 4)
+      #  self.ofsEnd = self.ofsCollapseIndex + (self.numVerts * 4) # NOT being exported at this time.
         self.ofsEnd = self.ofsCollapseIndex
 
     def save(self, file):
@@ -676,7 +674,7 @@ class skd_obj:
                 parent_pos = quarkx.vect(bonelist[QuArK_parent_name]['frames']['baseframe:mf']['position'])
                 parent_rot = quarkx.matrix(bonelist[QuArK_parent_name]['frames']['baseframe:mf']['rotmatrix'])
                 bone_pos1 = quarkx.vect(bonelist[QuArK_bone_name]['frames']['baseframe:mf']['position'])
-              #  bone.basepos = (~parent_rot * (bone_pos1 - parent_pos)).tuple
+
                 bone.basepos = (bone_pos1 - parent_pos).tuple
                 bone_rot1 = quarkx.matrix(bonelist[QuArK_bone_name]['frames']['baseframe:mf']['rotmatrix'])
                 bone_rot = (~parent_rot * bone_rot1).tuple
@@ -762,8 +760,8 @@ class skd_obj:
                 surf_name = name.replace(ModelFolder + "_", "")
                 surf_name = surf_name.replace(ModelName + "_", "")
             if surf_name is None:
-                material = Component.dictitems['Skins:sg'].subitems[0].shortname
-                surf_name = material
+                surf_name = name.split("_")
+                surf_name = surf_name[len(surf_name)-1]
                 if use_count is not None:
                     surf_name = surf_name + str(i+1)
                 else:
@@ -908,10 +906,6 @@ class SKC_Frame:
                                     bone_rot = bone_rot.tuple
                                     bone_rot = ((bone_rot[0][0], bone_rot[0][1], bone_rot[0][2], 0.0), (bone_rot[1][0], bone_rot[1][1], bone_rot[1][2], 0.0), (bone_rot[2][0], bone_rot[2][1], bone_rot[2][2], 0.0), (0.0, 0.0, 0.0, 1.0))
                                     bone_quat = matrix2quaternion(bone_rot)
-                    if (bone_jointType == 6):
-            #            bone_quat = (1.0, 1.0, 1.0, 1.0)
-                        if (bone_jointType == 6 and QuArK_bone.name.find("Lelbow") == -1):
-                            bone_pos = (-bone_pos[0], bone_pos[1], -bone_pos[2])
                 else:
                     bone_pos = (~parent_rot * (bone_pos1 - parent_pos)).tuple
                     bone_rot = bone_rot1.tuple
@@ -926,10 +920,6 @@ class SKC_Frame:
                 bone_quat = (-bone_quat[0], -bone_quat[1], -bone_quat[2], bone_quat[3])
                 if bonelist.has_key(QuArK_bone.name) and bonelist[QuArK_bone.name]['frames'].has_key('baseframe:mf') and bonelist[QuArK_bone.name]['frames']['baseframe:mf'].has_key('SKD_JointType'):
                     bone_jointType = bonelist[QuArK_bone.name]['frames']['baseframe:mf']['SKD_JointType']
-                    if (bone_jointType == 5) or (bone_jointType == 6):
-                      #  bone_quat = (1.0, 1.0, 1.0, 1.0)
-                        if (bone_jointType == 6):
-                            bone_pos = (-bone_pos[0], bone_pos[1], -bone_pos[2])
 
             POSchannel.values = (bone_pos[0], bone_pos[1], bone_pos[2], 0.0)
             self.Channels.append(POSchannel)
@@ -1103,7 +1093,7 @@ class skc_obj:
         for i in xrange(0, len(QuArK_bones)):
             name = QuArK_bones[i].shortname
             try:
-                name = name.split("_", 1)[1]
+                name = name.replace(ModelFolder + "_", "")
             except:
                 pass
             channel = SKC_Bone_Channel()
@@ -1419,6 +1409,10 @@ quarkpy.qmdlbase.RegisterMdlExporter(".skd MOHAA Exporter-mesh", ".skd file", "*
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.2  2011/12/10 02:43:22  cdunde
+# Update & corrections for skdJointType 0-4, mesh & anim work perfect.
+# Added support for skdJointType 5 & 6, mesh fine but anim needs work.
+#
 # Revision 1.1  2011/12/01 06:08:54  cdunde
 # Added export support for MoHAA static and animation models .skd and .skc file types.
 #
