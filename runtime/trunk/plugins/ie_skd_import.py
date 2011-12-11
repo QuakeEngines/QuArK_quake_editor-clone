@@ -997,7 +997,6 @@ class SKC_Frame:
                 rotFK = quarkx.matrix(bonelist[bone.name]['frames']['baseframe:mf']['SKD_rotmatrixFK'])
             else:
                 rotFK = None
-            rotVert = None
             jointType = bonelist[bone.name]['frames']['baseframe:mf']['SKD_JointType']
             if skcobj.QuArK_Index2Channels.has_key(i):
                 channels = skcobj.QuArK_Index2Channels[i]
@@ -1045,10 +1044,8 @@ class SKC_Frame:
                         else:
                             bone_refs = None
                         if bone_refs is None:
-                            rotVert = rot
                             rot = parent_rot
                         else:
-                            rotVert = rot
                             for bone_ref in bone_refs:
                                 rot = quarkx.matrix(bonelist[bone_ref]['frames'][frame_name]['rotmatrix'])
                     else:
@@ -1060,8 +1057,6 @@ class SKC_Frame:
                             for bone_ref in bone_refs:
                                 ref_rot = quarkx.matrix(bonelist[bone_ref]['frames'][frame_name]['rotmatrix'])
                                 rot = ref_rot * matrix_rot_x(-math.pi/2.0) * quarkx.matrix((-1,0,0), (0,0,1), (0,1,0))
-                if (jointType == 6):
-                    rotVert = None
 
             if not bonelist[bone.name]['frames'].has_key(frame_name):
                 bonelist[bone.name]['frames'][frame_name] = {}
@@ -1722,6 +1717,10 @@ quarkpy.qmdlbase.RegisterMdlImporter(".skd MOHAA Importer-mesh", ".skd file", "*
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.15  2011/12/02 06:36:20  cdunde
+# Stopped sorting of skd component importing.
+# Throws them out of sequence with skc animation component importing.
+#
 # Revision 1.14  2011/12/01 07:00:11  cdunde
 # Update and remove unused code.
 #
