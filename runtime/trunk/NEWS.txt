@@ -14,7 +14,7 @@ $Id$
 
 6.6.0 Beta 5
 ============
-* [cdunde]: Added export support for MoHAA static and animation models .skd and .skc file types.
+* [cdunde/DanielPharos]: Added export support for MoHAA static and animation models .skd and .skc file types.
 
 * [cdunde]: Added export support for Kingpin static and animation models .mdx file type.
           - Updated importer for better skin texture file locating and loading.
