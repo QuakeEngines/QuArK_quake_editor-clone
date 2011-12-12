@@ -861,7 +861,7 @@ class ska_obj:
             frame_scale = [0.0, 0.0, 0.0]
             for j in xrange(0, 3):
                 frame_scale[j] = (maxs[j] - mins[j]) / 65536
-            if frame_name == "baseframe:mf":
+            if frame_name.find("baseframe") != -1:
                 self.numFrames -= 1
                 continue
             self.frames.append(frame)
@@ -973,7 +973,7 @@ def save_ska(filename, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex):
     file = open(filename, "wb")
     ska = ska_obj() # Making an "instance" of this class.
     ska.name = filename.rsplit("\\", 1)[1]
-    ska.numFrames = len(QuArK_comps[0].dictitems['Frames:fg'].subitems) - 1
+    ska.numFrames = len(QuArK_comps[0].dictitems['Frames:fg'].subitems)
     ska.numBones = len(QuArK_bones)
 
     # Fill the needed data for exporting.
@@ -1076,14 +1076,25 @@ def savemodel(root, filename, gamename):
 
     # A dictionary list by bones.name = (QuArK_bones)list_index to speed things up.
     ConvertBoneNameToIndex = {}
-    list_count = 0
+    new_bones = []
     for group in editor.Root.dictitems['Skeleton:bg'].subitems:
         if group.name.startswith(ModelFolder + "_"):
             group_bones = group.findallsubitems("", ':bone') # Make a list of all bones in this group.
-            for bone_index in range(len(group_bones)):
-                ConvertBoneNameToIndex[group_bones[bone_index].name] = list_count
-                list_count = list_count + 1
-            QuArK_bones = QuArK_bones + group_bones
+            skd_bones_indexes = {}
+            for bone in group_bones:
+                if bone.dictspec.has_key('_skb_boneindex'):
+                    skd_bones_indexes[int(bone.dictspec['_skb_boneindex'])] = bone
+                else:
+                    new_bones.append(bone)
+            skd_keys = skd_bones_indexes.keys()
+            skd_keys.sort()
+            for key in skd_keys:
+                QuArK_bones.append(skd_bones_indexes[key])
+    QuArK_bones = QuArK_bones + new_bones
+    list_count = 0
+    for bone_index in range(len(QuArK_bones)):
+        ConvertBoneNameToIndex[QuArK_bones[bone_index].name] = list_count
+        list_count = list_count + 1
     if len(QuArK_bones) == 0:
         quarkx.beep() # Makes the computer "Beep" once if a file is not valid. Add more info to message.
         quarkx.msgbox("Could not export model.\nNo bones for a selected component exist.", MT_ERROR, MB_OK)
@@ -1109,45 +1120,6 @@ def savemodel(root, filename, gamename):
             if choice == 6:
                 base_file = filename.replace(".ska", ".skb")
                 message = export_SK_model(base_file, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex) # Calls to save the .skb file before the .ska file.
-        if file_version == 3 and base_file is not None:
-            # The bone order in the ska file needs to match the one in the skb file for FAKK2 and Alice models
-            # Ugly hack: Partially copied and modified code from the importer!
-            QuArKBoneNames = []
-            import ie_skb_import
-            file = open(base_file, "rb")
-            try:
-                binary_format = "<4si64c5i"
-                temp_data = file.read(struct.calcsize(binary_format))
-                data = struct.unpack(binary_format, temp_data)
-
-                numBones = data[67]
-                ofsBones = data[68]
-                file.seek(ofsBones,0)
-                for i in xrange(0, numBones):
-                    bone = ie_skb_import.SKB_Bone()
-                    bone.load(file)
-                    QuArKBoneNames += [ModelFolder + "_" + bone.name + ":bone"]
-            finally:
-                file.close()
-            
-            # Now, recreate the relevant bone lists in this new order
-            QuArK_bones_new = [None] * len(QuArKBoneNames)
-            for QuArK_bone in QuArK_bones:
-                try:
-                    index = operator.indexOf(QuArKBoneNames, QuArK_bone.name)
-                except:
-                    index = -1
-                if index == -1:
-                    #Not found; add to back
-                    QuArK_bones_new += [QuArK_bone]
-                else:
-                    QuArK_bones_new[index] = QuArK_bone
-            QuArK_bones = QuArK_bones_new
-
-            ConvertBoneNameToIndex = {}
-            for QuArK_bone_index in range(len(QuArK_bones)):
-                QuArK_bone = QuArK_bones[QuArK_bone_index]
-                ConvertBoneNameToIndex[QuArK_bone.name] = QuArK_bone_index
 
         # Call to write ska file.
         message = export_SK_model(filename, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex) # Calls to save the .ska animation file.
@@ -1174,6 +1146,12 @@ quarkpy.qmdlbase.RegisterMdlExporter(".skb Alice\EF2\FAKK2 Exporter-mesh", ".skb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.8  2011/11/15 05:07:07  cdunde
+# Code added to enable adding bones & assigning existing vertices to it.
+# Sill can not delete bones, vertices or triangles or
+# add new vertices and triangles. Theses things need to be enabled
+# to allow true editing of the models.
+#
 # Revision 1.7  2011/11/14 07:33:37  cdunde
 # Removed unused code and fixed baseframe exporting error.
 # Still needs more work, exporting mesh does not match original causing model to distort
