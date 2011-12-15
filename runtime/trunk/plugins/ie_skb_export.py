@@ -156,6 +156,9 @@ class SKB_Surface:
         self.CollapseMapVerts = []
 
     def fill(self, Component, QuArK_bones, ConvertBoneNameToIndex):
+        #Get the QuArK's ModelComponentList['bonelist'].
+        bonelist = editor.ModelComponentList['bonelist']
+
         surf_offset_pointer = struct.calcsize(self.binary_format) # Add its header size in bytes (see above).
 
         # Get this Component's baseframe vertices and Component's name.
@@ -199,7 +202,7 @@ class SKB_Surface:
             tobj.logcon ("-----------------------------")
             tobj.logcon ("Vert UV's & Weights, numVerts: " + str(self.numVerts))
             tobj.logcon ("-----------------------------")
-    #    mesh = ()
+
         # Get this Component's ModelComponentList 'weightvtxlist'.
         weightvtxlist = editor.ModelComponentList[comp_name]['weightvtxlist']
         #Data Structure    #item of data file, size & type,   description.
@@ -220,36 +223,49 @@ class SKB_Surface:
             # boneIndex         item   0    int, the bone index number in list order.
             # weight_value      item   1    float, this is the QuArK ModelComponentList['weightvtxlist'][vertex]['weight_value']
             # vtx_offset        item   2-4  3 floats, offset between the bone position and a vertex's position.
-            verts_pointer = verts_pointer + (vert.num_weights * (5 * 4))
-        #    binary_format = "<if3f"
-        #    vtxweight = {}
-            pos = quarkx.vect(0, 0, 0)
+            verts_pointer = verts_pointer + (vert.num_weights * (5 * 4)) # binary_format = "<if3f" or 5 items/4 bytes each.
+
+            vtx_pos = vertices[i]
+            fix_offsets = None
             for j in xrange(0, vert.num_weights):
                 boneIndex = ConvertBoneNameToIndex[bonenames[j]]
                 weight_value = vert_weights[bonenames[j]]['weight_value']
                 try:
                     vtx_offset = vert_weights[bonenames[j]]['vtx_offset']
+                    if weight_value == 1.0:
+                        check_pos = vtx_pos.tuple
+                        if str(check_pos) != str(vtx_offset):
+                            vtx_offset = check_pos
+                    else:
+                        vtx_offsets = quarkx.vect(0.0, 0.0, 0.0)
+                        for k in xrange(0, vert.num_weights):
+                            vtx_offsets += quarkx.vect(vert_weights[bonenames[k]]['vtx_offset'])
+                        ovp = (vtx_offsets / vert.num_weights).tuple             # ovp = original vtx_pos (computed)
+                        cp = (round(ovp[0],6), round(ovp[1],6), round(ovp[2],6)) # cp = compare vtx pos
+                        vp = vtx_pos.tuple
+                        if (fix_offsets is None) and ((abs(cp[0]) > abs(vp[0])+0.1) or (abs(cp[0]) < abs(vp[0])-0.1) or (abs(cp[1]) > abs(vp[1])+0.1) or (abs(cp[1]) < abs(vp[1])-0.1) or (abs(cp[2]) > abs(vp[2])+0.1) or (abs(cp[2]) < abs(vp[2])-0.1)):
+                            fix_offsets = 1
+                    if fix_offsets is not None:
+                        temp = [0.0, 0.0, 0.0]
+                        vo = vert_weights[bonenames[j]]['vtx_offset']
+                        for k in xrange(3):
+                            temp[k] = (vp[k] * (vo[k] / ovp[k]))
+                        vtx_offset = (temp[0], temp[1], temp[2])
                 except:
-                    vtx_offset = (0.0, 0.0, 0.0)
-                MYvtx_offset = (vertices[i] * weight_value).tuple
+                    try:
+                        Bpos = quarkx.vect(bonelist[bonenames[j]]['frames']['baseframe:mf']['position'])
+                        vtx_offset = (vtx_pos - quarkx.vect(Bpos)).tuple
+                    except:
+                        vtx_offset = (0.0, 0.0, 0.0)
 
-        #        boneIndex = data[0]
-        #        weight_value = data[1]
-        #        vtx_offset = (data[2], data[3], data[4])
-
-        #        pos += quarkx.vect(vtx_offset)
-        #        vtxweight[bones[boneIndex].name] = {'weight_value': weight_value, 'color': quarkpy.mdlutils.weights_color(editor, weight_value), 'vtx_offset': vtx_offset}
                 if logging == 1:
                     tobj.logcon ("  weight " + str(j))
                     tobj.logcon ("    boneIndex " + str(boneIndex))
                     tobj.logcon ("    weight_value " + str(weight_value))
                     tobj.logcon ("    vtx_offset " + str(vtx_offset))
-                    tobj.logcon ("    MYvtx_offset " + str(MYvtx_offset)) # just for testing here, remove when done
 
                 vert.weights[j] = [boneIndex, weight_value, vtx_offset]
 
-        #    weightvtxlist[i] = vtxweight
-        #    mesh = mesh + (pos/vert.num_weights).tuple
             if logging == 1:
         #        tobj.logcon ("    vtxweight " + str(weightvtxlist[i]))
                 tobj.logcon ("    -------------")
@@ -1096,7 +1112,7 @@ def savemodel(root, filename, gamename):
         ConvertBoneNameToIndex[QuArK_bones[bone_index].name] = list_count
         list_count = list_count + 1
     if len(QuArK_bones) == 0:
-        quarkx.beep() # Makes the computer "Beep" once if a file is not valid. Add more info to message.
+        quarkx.beep() # Makes the computer "Beep" once if a file is not valid.
         quarkx.msgbox("Could not export model.\nNo bones for a selected component exist.", MT_ERROR, MB_OK)
         return
 
@@ -1115,7 +1131,7 @@ def savemodel(root, filename, gamename):
                 base_file = model_path[0] + "\\" + file
                 break
         if base_file is None:
-            quarkx.beep() # Makes the computer "Beep" once if a file is not valid. Add more info to message.
+            quarkx.beep() # Makes the computer "Beep" once if a file is not valid.
             choice = quarkx.msgbox(".skb base mesh file not found !\n\nDo you wish to have one created ?", MT_INFORMATION, MB_YES|MB_NO)
             if choice == 6:
                 base_file = filename.replace(".ska", ".skb")
@@ -1146,6 +1162,11 @@ quarkpy.qmdlbase.RegisterMdlExporter(".skb Alice\EF2\FAKK2 Exporter-mesh", ".skb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.9  2011/12/12 23:05:31  cdunde
+# Update to export mesh and animation files without use of original mesh file
+# to setup for model full editing abilities, add & remove bones, faces & vertices
+# and also work with original files if no editing is done.
+#
 # Revision 1.8  2011/11/15 05:07:07  cdunde
 # Code added to enable adding bones & assigning existing vertices to it.
 # Sill can not delete bones, vertices or triangles or
